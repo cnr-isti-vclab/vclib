@@ -41,6 +41,8 @@ template<typename T>
 concept ElementConcept = requires (T o, const T& co)
 {
 	T::ELEMENT_TYPE;
+	typename T::Components;
+	typename T::ParentMeshType;
 	{ co.index() } -> std::same_as<uint>;
 };
 

@@ -74,15 +74,21 @@ protected:
 	void setParentMeshPointers(void* pm);
 
 	template<typename C>
-	bool isOptionalComponentEnabled() const;
+	bool isOptionalComponentTypeEnabled() const;
 
 	template<uint COMP_TYPE>
 	bool isOptionalComponentEnabled() const;
 
 	template<typename C>
-	void enableOptionalComponent();
+	void enableOptionalComponentType();
+
+	template<uint COMP_TYPE>
+	void enaleOptionalComponent();
 
 	template<typename C>
+	void disableOptionalComponentType();
+
+	template<uint COMP_TYPE>
 	void disableOptionalComponent();
 
 	// Custom Components

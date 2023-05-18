@@ -404,7 +404,7 @@ void HalfEdgeContainer<T>::disableAllPerHalfEdgeOptionalComponents()
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const requires hedge::HasOptionalColor<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Color>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Color>();
 }
 
 /**
@@ -415,7 +415,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const requires hedge::Has
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>
 {
-	return Base::template enableOptionalComponent<typename T::Color>();
+	return Base::template enableOptionalComponentType<typename T::Color>();
 }
 
 /**
@@ -426,7 +426,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeColor() requires hedge::HasOptionalC
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>
 {
-	return Base::template disableOptionalComponent<typename T::Color>();
+	return Base::template disableOptionalComponentType<typename T::Color>();
 }
 
 /**
@@ -439,7 +439,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeColor() requires hedge::HasOptional
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const requires hedge::HasOptionalMark<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Mark>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Mark>();
 }
 
 /**
@@ -450,7 +450,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const requires hedge::HasO
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>
 {
-	return Base::template enableOptionalComponent<typename T::Mark>();
+	return Base::template enableOptionalComponentType<typename T::Mark>();
 }
 
 /**
@@ -461,7 +461,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeMark() requires hedge::HasOptionalMa
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>
 {
-	return Base::template disableOptionalComponent<typename T::Mark>();
+	return Base::template disableOptionalComponentType<typename T::Mark>();
 }
 
 /**
@@ -474,7 +474,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeMark() requires hedge::HasOptionalM
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeQualityEnabled() const requires hedge::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Quality>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Quality>();
 }
 /**
  * @brief Enables the Optional Quality of the halfedge.
@@ -484,7 +484,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeQualityEnabled() const requires hedge::H
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeQuality() requires hedge::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::Quality>();
+	return Base::template enableOptionalComponentType<typename T::Quality>();
 }
 
 /**
@@ -495,7 +495,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeQuality() requires hedge::HasOptiona
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeQuality() requires hedge::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::Quality>();
+	return Base::template disableOptionalComponentType<typename T::Quality>();
 }
 
 /**
@@ -508,7 +508,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeQuality() requires hedge::HasOption
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::TexCoord>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::TexCoord>();
 }
 /**
  * @brief Enables the Optional TexCoord of the halfedge.
@@ -518,7 +518,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
 {
-	return Base::template enableOptionalComponent<typename T::TexCoord>();
+	return Base::template enableOptionalComponentType<typename T::TexCoord>();
 }
 
 /**
@@ -529,7 +529,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOption
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
 {
-	return Base::template disableOptionalComponent<typename T::TexCoord>();
+	return Base::template disableOptionalComponentType<typename T::TexCoord>();
 }
 
 /**

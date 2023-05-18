@@ -42,13 +42,6 @@ constexpr uint VerticalComponentsVectorTuple<Comp...>::componentsNumber()
 
 template<typename ...Comp>
 template<typename C>
-constexpr uint VerticalComponentsVectorTuple<Comp...>::indexOfType()
-{
-	return vcl::IndexInTypes<C, Comp...>::value;
-}
-
-template<typename ...Comp>
-template<typename C>
 constexpr std::vector<typename C::DataValueType>& VerticalComponentsVectorTuple<Comp...>::vector()
 {
 	constexpr uint ind = indexOfType<C>();
@@ -109,7 +102,7 @@ void VerticalComponentsVectorTuple<Comp...>::clear()
 
 template<typename ...Comp>
 template<typename C>
-bool VerticalComponentsVectorTuple<Comp...>::isComponentEnabled() const
+bool VerticalComponentsVectorTuple<Comp...>::isComponentTypeEnabled() const
 {
 	constexpr uint ind = indexOfType<C>();
 	return vecEnabled[ind];
@@ -120,12 +113,12 @@ template<uint COMP_TYPE>
 bool VerticalComponentsVectorTuple<Comp...>::isComponentEnabled() const
 {
 	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
-	return isComponentEnabled<C>;
+	return isComponentTypeEnabled<C>;
 }
 
 template<typename ...Comp>
 template<typename C>
-void VerticalComponentsVectorTuple<Comp...>::enableComponent()
+void VerticalComponentsVectorTuple<Comp...>::enableComponentType()
 {
 	constexpr uint ind = indexOfType<C>();
 	vecEnabled[ind] = true;
@@ -133,12 +126,35 @@ void VerticalComponentsVectorTuple<Comp...>::enableComponent()
 }
 
 template<typename ...Comp>
+template<uint COMP_TYPE>
+void VerticalComponentsVectorTuple<Comp...>::enableComponent()
+{
+	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
+	enableComponentType<C>();
+}
+
+template<typename ...Comp>
 template<typename C>
-void VerticalComponentsVectorTuple<Comp...>::disableComponent()
+void VerticalComponentsVectorTuple<Comp...>::disableComponentType()
 {
 	constexpr uint ind = indexOfType<C>();
 	vecEnabled[ind] = false;
 	vector<C>().clear();
+}
+
+template<typename ...Comp>
+template<uint COMP_TYPE>
+void VerticalComponentsVectorTuple<Comp...>::disableComponent()
+{
+	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
+	disableComponentType<C>();
+}
+
+template<typename ...Comp>
+template<typename C>
+constexpr uint VerticalComponentsVectorTuple<Comp...>::indexOfType()
+{
+	return vcl::IndexInTypes<C, Comp...>::value;
 }
 
 template<typename ...Comp>
@@ -179,10 +195,10 @@ template<typename C, bool E>
 void VerticalComponentsVectorTuple<Comp...>::setComponentEnabled()
 {
 	if constexpr (E) {
-		enableComponent<C>();
+		enableComponentType<C>();
 	}
 	else {
-		disableComponent<C>();
+		disableComponentType<C>();
 	}
 }
 
