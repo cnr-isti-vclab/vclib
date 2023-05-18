@@ -618,7 +618,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 
 		const OContainer& c = static_cast<const OContainer&>(m);
 
-		EnableComponentsStruct<typename T::Components>::enableSameOptionalComponents(*this, c);
+		enableSameOptionalComponents(typename T::Components(), c);
 	}
 }
 
@@ -815,40 +815,36 @@ void ElementContainer<T>::importPointersOnComponentFrom(
 }
 
 template<ElementConcept T>
-template<typename ...Comps>
-template<typename Cont1, typename Cont2>
-void ElementContainer<T>::EnableComponentsStruct<Comps...>::enableSameOptionalComponents(
-	Cont1& c1,
-	const Cont2& c2)
+template<typename Cont2, typename... Comps>
+void ElementContainer<T>::enableSameOptionalComponents(TypeWrapper<Comps...>, const Cont2& c2)
 {
 	// for each Component in Comps, will call enableSameOptionalComponent
-	(enableSameOptionalComponent<Comps>(c1, c2), ...);
+	(enableSameOptionalComponent<Comps>(c2), ...);
 }
 
+/**
+ * This function enables the component Comp in this container if it is available in Cont2
+ */
 template<ElementConcept T>
-template<typename ...Comps>
-template<typename Comp, typename Cont1, typename Cont2>
-void ElementContainer<T>::EnableComponentsStruct<Comps...>::enableSameOptionalComponent(
-	Cont1& c1,
-	const Cont2& c2)
+template<typename Comp, typename Cont2>
+void ElementContainer<T>::enableSameOptionalComponent(const Cont2& c2)
 {
-	// if Comp is an optional component in Cont1
+	// if Comp is an optional component in This container
 	if constexpr (comp::IsOptionalComponent<Comp>) {
 		// if Comp is available in Cont2
 		if constexpr (comp::HasComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>){
 			// if Comp is optional in Cont2
 			if constexpr (comp::HasOptionalComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>) {
-				// if Comp is enabled in Cont2, we enable it in Cont1
+				// if Comp is enabled in Cont2, we enable it in this container
 				if (c2.template isOptionalComponentEnabled<Comp::COMPONENT_TYPE>()) {
-					c1.template enableOptionalComponent<Comp::COMPONENT_TYPE>();
+					enableOptionalComponent<Comp::COMPONENT_TYPE>();
 				}
 			}
-			else { // if Comp is not optional (but is available), we enable it in Cont1
-				c1.template enableOptionalComponent<Comp::COMPONENT_TYPE>();
+			else { // if Comp is not optional (but is available), we enable it in this container
+				enableOptionalComponent<Comp::COMPONENT_TYPE>();
 			}
 		}
 	}
-
 }
 
 } // namespace vcl::mesh

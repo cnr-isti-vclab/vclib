@@ -221,22 +221,11 @@ private:
 		ElPtr*           base,
 		const CBase*     cbase);
 
-	// This structure calls the enable methods for the optional components in the Comps template
-	template<typename ...Comps>
-	struct EnableComponentsStruct {
+	template<typename Cont2, typename... Comps>
+	void enableSameOptionalComponents(TypeWrapper<Comps...>, const Cont2& c2);
 
-		template<typename Cont1, typename Cont2>
-		static void enableSameOptionalComponents(Cont1& c1, const Cont2& c2);
-
-		// Check if Comp must be enabled in Cont1, that means if it is available in Cont2
-		template<typename Comp, typename Cont1, typename Cont2>
-		static void enableSameOptionalComponent (Cont1& c1, const Cont2& c2);
-	};
-
-	// TypeWrapper specialization
-	template<typename ...Comps>
-	struct EnableComponentsStruct<TypeWrapper<Comps...>> : public EnableComponentsStruct<Comps...>
-	{};
+	template<typename Comp, typename Cont2>
+	void enableSameOptionalComponent(const Cont2& c2);
 };
 
 } // namespace vcl::mesh
