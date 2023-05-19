@@ -121,12 +121,7 @@ uint FaceContainer<T>::addFace(V... args) requires (sizeof...(args) >= 3)
 	constexpr uint n = sizeof...(args);
 
 	if constexpr (T::VERTEX_NUMBER < 0) {
-		if constexpr (!comp::HasFaceHalfEdgePointers<T>) {
-			f.resizeVertices(n);
-		}
-		else {
-			Base::parentMesh->addHalfEdgesToFace(n, f);
-		}
+		f.resizeVertices(n);
 	}
 	else {
 		static_assert(n == T::VERTEX_NUMBER, "Wrong number of vertices in Mesh::addFace.");
@@ -150,13 +145,7 @@ uint FaceContainer<T>::addFace(Iterator begin, Iterator end)
 
 	if constexpr (T::VERTEX_NUMBER < 0) {
 		fid = addFace();
-
-		if constexpr (!comp::HasFaceHalfEdgePointers<T>) {
-			face(fid).resizeVertices(n);
-		}
-		else {
-			Base::parentMesh->addHalfEdgesToFace(n, face(fid));
-		}
+		face(fid).resizeVertices(n);
 	}
 	else {
 		assert(n == T::VERTEX_NUMBER);
@@ -692,10 +681,7 @@ void FaceContainer<T>::disablePerFaceQuality() requires face::HasOptionalQuality
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>
 {
-	if constexpr (comp::HasOptionalWedgeColors<T>)
-		return Base::template isOptionalComponentTypeEnabled<typename T::WedgeColors>();
-	else
-		return Base::parentMesh->isPerHalfEdgeColorEnabled();
+	return Base::template isOptionalComponentTypeEnabled<typename T::WedgeColors>();
 }
 
 /**
@@ -710,10 +696,7 @@ bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOpt
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
-	if constexpr (comp::HasOptionalWedgeColors<T>)
-		Base::template enableOptionalComponentType<typename T::WedgeColors>();
-	else
-		Base::parentMesh->enablePerHalfEdgeColor();
+	Base::template enableOptionalComponentType<typename T::WedgeColors>();
 }
 
 /**
@@ -724,10 +707,7 @@ void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedg
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
 {
-	if constexpr (comp::HasOptionalWedgeColors<T>)
-		Base::template disableOptionalComponentType<typename T::WedgeColors>();
-	else
-		Base::parentMesh->disablePerHalfEdgeColor();
+	Base::template disableOptionalComponentType<typename T::WedgeColors>();
 }
 
 /**
@@ -741,10 +721,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
 	const requires face::HasOptionalWedgeTexCoords<T>
 {
-	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
-		return Base::template isOptionalComponentTypeEnabled<typename T::WedgeTexCoords>();
-	else
-		return Base::parentMesh->isPerHalfEdgeTexCoordEnabled();
+	return Base::template isOptionalComponentTypeEnabled<typename T::WedgeTexCoords>();
 }
 
 /**
@@ -760,10 +737,7 @@ bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
-	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
-		Base::template enableOptionalComponentType<typename T::WedgeTexCoords>();
-	else
-		Base::parentMesh->enablePerHalfEdgeTexCoord();
+	Base::template enableOptionalComponentType<typename T::WedgeTexCoords>();
 }
 
 /**
@@ -775,10 +749,7 @@ void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalW
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
 {
-	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
-		Base::template disableOptionalComponentType<typename T::WedgeTexCoords>();
-	else
-		Base::parentMesh->disablePerHalfEdgeTexCoord();
+	Base::template disableOptionalComponentType<typename T::WedgeTexCoords>();
 }
 
 /**

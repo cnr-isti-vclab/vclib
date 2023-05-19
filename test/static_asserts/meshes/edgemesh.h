@@ -16,12 +16,10 @@ void edgemeshStaticAsserts()
 	static_assert(!QuadMeshConcept<EdgeMesh>, "The EdgeMesh is a static Quad Mesh.");
 	static_assert(EdgeMeshConcept<EdgeMesh>, "The EdgeMesh is not a valid Edge Mesh.");
 	static_assert(!PolygonMeshConcept<EdgeMesh>, "The EdgeMesh is a PolygonMesh.");
-	static_assert(!DcelMeshConcept<EdgeMesh>, "The EdgeMesh is a DcelMesh.");
 
 	static_assert(HasVertices<EdgeMesh>, "");
 	static_assert(!HasFaces<EdgeMesh>, "");
 	static_assert(HasEdges<EdgeMesh>, "");
-	static_assert(!HasHalfEdges<EdgeMesh>, "");
 
 	static_assert(!HasTriangles<EdgeMesh>, "");
 	static_assert(!HasQuads<EdgeMesh>, "");

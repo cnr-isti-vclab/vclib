@@ -201,36 +201,24 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 		// Now I need to manage imports between different types of meshes (same type of meshes are
 		// already managed from importFrom and importPointersFrom member functions).
 		//
-		// Generally speaking, Polygon or Dcel meshes can import from any other type of mesh.
+		// Generally speaking, Polygon meshes can import from any other type of mesh.
 		// We need to take care when this mesh has static vertex pointers number in the face
 		// container (VERTEX_NUMBER >= 3).
 		//
 		// The follwing case don't need to be managed:
-		// - import polygon non-dcel mesh from triangle mesh
+		// - import polygon mesh from triangle mesh
 		//
 		// I can manage the following cases:
-		// - import triangle mesh from polygon mesh (also dcel): need triangulation
-		// - import dcel from non-dcel mesh (need to add half edges into the dcel)
+		// - import triangle mesh from polygon mesh: need triangulation
 		//
 		// I cannot manage the follwing cases:
 		// - import static non-triangle mesh from polygon mesh or from a mesh with different
 		//   VERTEX_NUMBER
 
-		// if this is not a Dcel Mesh
-		if constexpr (!DcelMeshConcept<Mesh<Args...>>) {
-			// in case of import from poly (could be also dcel) to triangle mesh, I need to manage
-			// triangulation of polygons and create additional triangle faces for each of the
-			// imported polygons. This function statically asserts that the import can be done.
-			manageImportTriFromPoly(m);
-		}
-		else { // if this is a dcel mesh
-			// manage import from another non-dcel mesh (no need to manage the import from another
-			// dcel)
-			if constexpr(!DcelMeshConcept<OtherMeshType>) {
-				manageImportDcelFromMesh(m);
-			}
-		}
-
+		// in case of import from poly to triangle mesh, I need to manage
+		// triangulation of polygons and create additional triangle faces for each of the
+		// imported polygons. This function statically asserts that the import can be done.
+		manageImportTriFromPoly(m);
 	}
 }
 
@@ -528,47 +516,6 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 				}
 			}
 		}
-	}
-}
-
-/**
- * @brief This function manages the case where we try to import into a Dcel another type of Mesh.
- * Faces have been already imported, but not vertex pointers (half edges still need to be created)
- * and other components that depend on the number of vertices (e.g. adjacent faces and wedges)
- */
-template<typename... Args> requires HasVertices<Args...>
-template<typename OthMesh>
-void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
-{
-	using VertexType = typename Mesh<Args...>::VertexType;
-	using MVertexType = typename OthMesh::VertexType;
-	using FaceType = typename Mesh<Args...>::FaceType;
-	using MFaceType = typename OthMesh::FaceType;
-
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-	using FaceContainer = typename Mesh<Args...>::FaceContainer;
-	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-
-	// base and mvbase are needed to convert vertex pointers from other to this mesh
-	VertexType* base = VertexContainer::vec.data();
-	const MVertexType* mvbase = &m.vertex(0);
-
-	for (const MFaceType& mf : m.faces()) {
-		// f is the face with same index of mf in mesh m
-		FaceType& f = FaceContainer::face(m.index(mf));
-
-		// add mf.vertexNumber() half edges to this mesh, and all these half edges are adjacent to
-		// face f (all next and prev relations are set here, and therefore they will allow to
-		// iterate over f components)
-		HalfEdgeContainer::addHalfEdgesToFace(mf.vertexNumber(), f);
-
-		// this can be optimized
-		// set each vertex of f computing the right pointers from mesh m and face mf
-		for (uint j = 0; j < mf.vertexNumber(); ++j) {
-			f.vertex(j) = base + (mf.vertex(j) - mvbase);
-		}
-
-		// TODO: adjacent faces and wedges
 	}
 }
 

@@ -9,7 +9,6 @@ VCLib provides a set of prebuilt mesh data structures:
 - vcl::PolyMesh: a Polygon Mesh data structure, allows to store a container of Vertices, a container of Polygons (no costraints on the number of vertices of each polygon) and some other components;
 - vcl::EdgeMesh: a Mesh data structore that allows to store a container of Vertices, a container of Edges (segments), and some other components;
 - vcl::PointClout: a Mesh data structure that stores just a container of Vertices and some other components;
-- vcl::Dcel: a Doubly-Connected Edge List mesh, that allows to stores containers of Vertices, Faces and Half Edges, allowing practical and efficient topology navigation;
 - (ToDo: QuadMesh)
 - (ToDo: volumetric data structures)
 

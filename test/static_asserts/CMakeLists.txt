@@ -15,7 +15,6 @@ set(HEADERS
 	meshes.h
 	loggers.h
 	space.h
-	meshes/dcel.h
 	meshes/edgemesh.h
 	meshes/mesh_views.h
 	meshes/pointcloud.h

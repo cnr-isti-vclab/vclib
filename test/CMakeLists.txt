@@ -16,7 +16,6 @@ add_definitions(-DVCL_TEST_DATA_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data")
 add_definitions(-DVCL_TEST_MODELS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data/models")
 add_definitions(-DVCL_TEST_RESULTS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/data/results")
 
-add_subdirectory(dcel_basic_test)
 add_subdirectory(distance)
 add_subdirectory(edge_mesh_basic_test)
 add_subdirectory(grid)

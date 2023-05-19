@@ -84,8 +84,6 @@ concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
 concept HasFaceBitFlags = comp::HasFaceBitFlags<T>;
 template<typename T>
-concept HasHalfEdgePointers = comp::HasFaceHalfEdgePointers<T>;
-template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
@@ -110,15 +108,11 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
 template<typename T>
 concept HasWedgeColors = comp::HasWedgeColors<T>;
 template<typename T>
-concept HasOptionalWedgeColors =
-	(comp::HasOptionalWedgeColors<T> ||
-		(comp::HasFaceHalfEdgePointers<T> && comp::HasOptionalColor<typename T::HalfEdgeType>));
+concept HasOptionalWedgeColors = comp::HasOptionalWedgeColors<T>;
 template<typename T>
 concept HasWedgeTexCoords = comp::HasWedgeTexCoords<T>;
 template<typename T>
-concept HasOptionalWedgeTexCoords =
-	(comp::HasOptionalWedgeTexCoords<T> ||
-		(comp::HasFaceHalfEdgePointers<T> && comp::HasOptionalTexCoord<typename T::HalfEdgeType>));
+concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 
 /** @} */ // end of group
 
@@ -176,10 +170,6 @@ concept TriangleFaceConcept =
 template<typename T>
 concept PolygonFaceConcept =
 	T::VERTEX_NUMBER < 0 && FaceConcept<T>;
-
-template<typename T>
-concept NonDcelPolygonFaceConcept =
-	T::VERTEX_NUMBER < 0 && FaceConcept<T> && !face::HasHalfEdgePointers<T>;
 
 } // namespace vcl
 

@@ -31,7 +31,6 @@ int main()
 
 	loggersStaticAsserts();
 
-	dcelStaticAsserts();
 	edgemeshStaticAsserts();
 	pointcloudStaticAsserts();
 	polymeshStaticAsserts();

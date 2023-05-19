@@ -84,22 +84,6 @@ void meshViewsStaticAsserts()
 			std::ranges::range<decltype(cm | vcl::views::edges)>,
 			"The view returned by pipe operation cm | views::edges is not a valid range.");
 	}
-
-	if constexpr (vcl::HasHalfEdges<MeshType>) {
-		static_assert(
-			std::ranges::range<decltype(m.halfEdges())>,
-			"The MeshType HalfEdgeView is not a valid range.");
-		static_assert(
-			std::ranges::range<decltype(cm.halfEdges())>,
-			"The MeshType ConstHalfEdgeView is not a valid range.");
-
-		static_assert(
-			std::ranges::range<decltype(m | vcl::views::halfEdges)>,
-			"The view returned by pipe operation m | views::halfEdges is not a valid range.");
-		static_assert(
-			std::ranges::range<decltype(cm | vcl::views::halfEdges)>,
-			"The view returned by pipe operation cm | views::halfEdges is not a valid range.");
-	}
 #endif
 }
 

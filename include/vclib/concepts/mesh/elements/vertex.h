@@ -88,8 +88,6 @@ concept HasCustomComponents = comp::HasCustomComponents<T>;
 template<typename T>
 concept HasCoordinate = comp::HasCoordinate<T>;
 template<typename T>
-concept HasHalfEdgePointer = comp::HasVertexHalfEdgePointer<T>;
-template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;

@@ -6,7 +6,7 @@
     - [ ] implement per edge concepts
   - Components:
     - [ ] add a static boolean that allows to discriminate components that are tied to vertex number when used in faces
-    - [ ] add FaceEdgeBitFlag component - a bit flag for each edge of the face (tied with number of vertices or, in case of dcel, stored in half edge)
+    - [ ] add FaceEdgeBitFlag component - a bit flag for each edge of the face (tied with number of vertices)
       - [ ] needs to be interchangeable with TriangleBitFlags and PolygonBitFlags
     - [ ] add an enum COMPONENT_TYPE that allows to identify same class of components easily -- same usage of ELEMENT_TYPE for elements
       - [ ] then allow to write a generic enableSameOptionalComponentsOf member function in ElementContainer
@@ -19,15 +19,12 @@
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers
-    - [ ] import dcel from mesh: update adjacent faces and wedges 
-    - [ ] Dcel Mesh shouldn't use PolygonBitFlags, but implement them in the FaceHalfEdgePointers component
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] intersection functions (like distance functions)
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
-  - [ ] update adjacent faces optimized for dcel
 - Space:
   - [ ] Grid data structures work only with const pointers when doing queries (must well manage constness in std::functions for intersection and distance)
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)

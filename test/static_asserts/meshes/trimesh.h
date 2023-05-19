@@ -16,12 +16,10 @@ void trimeshStaticAsserts()
 	static_assert(!QuadMeshConcept<TriMesh>, "The TriMesh is a static Quad Mesh.");
 	static_assert(!EdgeMeshConcept<TriMesh>, "The TriMesh is an Edge Mesh.");
 	static_assert(!PolygonMeshConcept<TriMesh>, "The TriMesh is a valid Polygon Mesh.");
-	static_assert(!DcelMeshConcept<TriMesh>, "The TriMesh is a Dcel Mesh.");
 
 	static_assert(HasVertices<TriMesh>, "");
 	static_assert(HasFaces<TriMesh>, "");
 	static_assert(!HasEdges<TriMesh>, "");
-	static_assert(!HasHalfEdges<TriMesh>, "");
 
 	static_assert(HasTriangles<TriMesh>, "");
 	static_assert(!HasQuads<TriMesh>, "");

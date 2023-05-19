@@ -43,9 +43,6 @@ enum ComponentEnumType {
 	ADJ_VERTICES,
 	WEDGE_COLORS,
 	WEDGE_TEX_COORDS,
-	FACE_HALF_EDGE_PTRS,
-	HALF_EDGE_PTRS,
-	VERTEX_HALF_EDGE_PTRS,
 	BOUNDING_BOX,
 	NAME,
 	TEXTURE_PATHS,
@@ -53,7 +50,7 @@ enum ComponentEnumType {
 	CUSTOM_COMPONENTS
 };
 
-inline static constexpr uint COMPONENTS_NUMBER = 22;
+inline static constexpr uint COMPONENTS_NUMBER = 19;
 
 /**
  * @brief The ComponentConcept is evaluated to true whenever the type T is a valid component.

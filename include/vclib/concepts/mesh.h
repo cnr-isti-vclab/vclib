@@ -27,7 +27,6 @@
 #include "mesh/components.h"
 #include "mesh/containers.h"
 #include "mesh/per_face.h"
-#include "mesh/per_half_edge.h"
 #include "mesh/per_vertex.h"
 
 /**
@@ -183,46 +182,6 @@ concept EdgeMeshConcept =
 	{ o.addEdges(uint()) } -> std::same_as<uint>;
 	{ o.reserveEdges(uint()) } -> std::same_as<void>;
 	{ o.compactEdges() } -> std::same_as<void>;
-};
-
-/**
- * @brief The DcelMeshConcept is satisfied when:
- * - The FaceMeshConcpt is satisfied
- * - The Mesh has HalfEdge, Face and Vertex containers
- * - The HalfEdge element has HalfEdgePointers component
- * - The Vertex Element has HalfEdgePointer component
- * - The Face Element has HalfEdgePointers component
- * - The Vertex Element does not have AdjacentVertices component (it is simulated by half edges)
- * - The Face Element does not have AdjacentFaces component (it is simulated by half edges)
- * - The Face Element does not have WedgeColors component (it is simulated by half edges)
- * - The Face Element does not have WedgeTexCoords component (it is simulated by half edges)
- *
- * @ingroup mesh_concepts
- */
-template<typename T>
-concept DcelMeshConcept =
-	FaceMeshConcept<T> &&
-	HasHalfEdges<T> &&
-	HasPerVertexHalfEdgePointer<T> &&
-	HasPerFaceHalfEdgePointers<T> &&
-	!comp::HasAdjacentVerticesComponent<typename T::VertexType> &&
-	!comp::HasAdjacentFacesComponent<typename T::FaceType> &&
-	!comp::HasWedgeColorsComponent<typename T::FaceType> &&
-	!comp::HasWedgeTexCoordsComponent<typename T::FaceType> &&
-	requires(
-		T o,
-		const T& co,
-		typename T::HalfEdgeType e)
-{
-	typename T::HalfEdgeType;
-	typename T::HalfEdgeContainer;
-
-	{ co.index(e) } -> std::same_as<uint>;
-	{ co.index(&e) } -> std::same_as<uint>;
-	{ o.addHalfEdge() } -> std::same_as<uint>;
-	{ o.addHalfEdges(uint()) } -> std::same_as<uint>;
-	{ o.reserveHalfEdges(uint()) } -> std::same_as<void>;
-	{ o.compactHalfEdges() } -> std::same_as<void>;
 };
 
 /**

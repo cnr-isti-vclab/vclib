@@ -403,12 +403,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		unorderedEdges.insert(std::make_pair(i, (i+1) % (uint)polygon.size()));
 
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
-		if constexpr(HasHalfEdges<MeshType>) {
-			m.addHalfEdgesToFace(3, f);
-		}
-		else {
-			f.resizeVertices(3);
-		}
+		f.resizeVertices(3);
 	}
 
 	// set the first triangle of the loaded polygon
@@ -432,12 +427,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		uint ff              = m.addFace();
 
 		if constexpr (FaceType::VERTEX_NUMBER < 0) {
-			if constexpr( HasHalfEdges<MeshType>) {
-				m.addHalfEdgesToFace(3, f);
-			}
-			else {
-				m.face(ff).resizeVertices(3);
-			}
+			m.face(ff).resizeVertices(3);
 		}
 
 		uint j = 0; // from 0 to 2, vertices indices of the triangle

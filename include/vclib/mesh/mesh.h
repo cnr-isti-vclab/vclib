@@ -181,9 +181,6 @@ private:
 	template<typename OthMesh>
 	void manageImportTriFromPoly(const OthMesh& m);
 
-	template<typename OthMesh>
-	void manageImportDcelFromMesh(const OthMesh& m);
-
 	template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
 	static void importTriPointersHelper(
 		FaceType&                f,
