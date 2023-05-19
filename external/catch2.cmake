@@ -9,7 +9,7 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-if (VCLIB_BUILD_TESTS)
+if (VCLIB_BUILD_AND_RUN_TESTS)
 	find_package(Catch2 3 QUIET)
 
 	if(VCLIB_ALLOW_SYSTEM_CATCH2 AND TARGET Catch2::Catch2WithMain)
@@ -25,7 +25,7 @@ if (VCLIB_BUILD_TESTS)
 	else()
 		message(
 			FATAL_ERROR
-			"Catch2 is required to build tests - VCLIB_ALLOW_BUNDLED_CATCH2 must be enabled and found.")
+			"Catch2 is required to build tests - VCLIB_ALLOW_DOWNLOAD_CATCH2 must be enabled and found.")
 	endif()
 
 	add_library(vclib-external-catch2 INTERFACE)

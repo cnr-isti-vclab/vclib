@@ -16,7 +16,8 @@ project(vclib)
 set(CMAKE_CXX_STANDARD 20)
 
 ### Options
-option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
+option(VCLIB_BUILD_EXAMPLES "Build VCLib examples" ON)
+option(VCLIB_BUILD_AND_RUN_TESTS "Build and Run VCLib tests" ON)
 option(VCLIB_IDE "Create an utility target to show the library tree on IDEs" ON)
 
 # In case of building shared libraries, on windows we need to export all symbols
@@ -589,7 +590,8 @@ if (VCLIB_IDE)
 		${HEADERS} ${HEADERS_LIB} ${SOURCES} ${SOURCES_LIB} ${FORMS_LIB})
 endif()
 
-if (VCLIB_BUILD_TESTS)
+if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_AND_RUN_TESTS)
+	include(CTest)
 	add_subdirectory(test)
 endif()
 
