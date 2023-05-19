@@ -10,21 +10,26 @@
 #****************************************************************************/
 
 if (VCLIB_BUILD_TESTS)
-	set(VCLIB_DOCTEST_DIR ${CMAKE_CURRENT_LIST_DIR}/doctest-2.4.9)
+	find_package(Catch2 3 QUIET)
 
-	if (VCLIB_ALLOW_BUNDLED_DOCTEST AND EXISTS ${VCLIB_DOCTEST_DIR}/doctest/doctest.h)
-		message(STATUS "- Doctest - using bundled source")
+	if(VCLIB_ALLOW_SYSTEM_CATCH2 AND TARGET Catch2::Catch2WithMain)
+		message(STATUS "- Catch2 - using system-provided library")
+	elseif (VCLIB_ALLOW_DOWNLOAD_CATCH2)
+		message(STATUS "- Catch2 - using downloaded source")
+
+		FetchContent_Declare(Catch2
+			GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+			GIT_TAG        v3.3.2)
+
+		FetchContent_MakeAvailable(Catch2)
 	else()
 		message(
 			FATAL_ERROR
-			"Doctest is required to build tests - VCLIB_ALLOW_BUNDLED_DOCTEST must be enabled and found.")
+			"Catch2 is required to build tests - VCLIB_ALLOW_BUNDLED_CATCH2 must be enabled and found.")
 	endif()
 
-	set(DOCTEST_INCLUDE_DIRS ${VCLIB_DOCTEST_DIR})
+	add_library(vclib-external-catch2 INTERFACE)
+	target_link_libraries(vclib-external-catch2 INTERFACE Catch2::Catch2WithMain)
 
-	add_library(vclib-external-doctest SHARED src/doctest_src.cpp)
-
-	target_include_directories(vclib-external-doctest PUBLIC ${DOCTEST_INCLUDE_DIRS})
-
-	list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-doctest)
+	list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-catch2)
 endif()

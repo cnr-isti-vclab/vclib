@@ -27,7 +27,7 @@
 #include <vclib/load_save.h>
 #include <vclib/space/kd_tree.h>
 
-#include <doctest/doctest.h>
+#include <catch2/catch_test_macros.hpp>
 
 using PointType = vcl::TriMesh::VertexType::CoordType;
 
@@ -43,6 +43,6 @@ std::vector<uint> getKNearestNeighbors(const PointType& p, uint k, std::string m
 static const PointType p(0.5, 0.5, 0.5);
 
 TEST_CASE("testing nearest neighbours to [0.5, 0.5, 0.5] in bone.ply") {
-	CHECK(getKNearestNeighbors(p, 1)[0] == 1558);
-	CHECK(getKNearestNeighbors(p, 5) == std::vector<uint>{1558, 1613, 1720, 1576, 163});
+	REQUIRE(getKNearestNeighbors(p, 1)[0] == 1558);
+	REQUIRE(getKNearestNeighbors(p, 5) == std::vector<uint>{1558, 1613, 1720, 1576, 163});
 }

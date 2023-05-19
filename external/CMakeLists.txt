@@ -12,6 +12,8 @@
 cmake_minimum_required(VERSION 3.13)
 project(vclib-external)
 
+include(FetchContent)
+
 # Eigen options
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
@@ -21,6 +23,12 @@ option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut so
 
 if (APPLE)
 	option(VCLIB_ALLOW_BUNDLED_PSTLD "Allow use of bundled pstld source" ON)
+endif()
+
+# Catch2
+if (VCLIB_BUILD_TESTS)
+	option(VCLIB_ALLOW_DOWNLOAD_CATCH2 "Allow use of downloaded Catch2 source" ON)
+	option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 endif()
 
 # Doctest
@@ -60,8 +68,8 @@ endif()
 
 # === OPTIONAL === #
 
-### Doctest
-include(doctest.cmake)
+### Catch2
+include(catch2.cmake)
 
 ### OpenGL
 include(opengl.cmake)
