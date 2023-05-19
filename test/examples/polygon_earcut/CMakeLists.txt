@@ -2,18 +2,18 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2022                                                    *
+#* Copyright(C) 2021-2023                                                    *
 #* Alessandro Muntoni                                                        *
 #* VCLab - ISTI - Italian National Research Council                          *
 #*                                                                           *
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-polygon-earcut-test)
+project(vclib-polygon-earcut-example)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-polygon-earcut-test ${SOURCES})
+add_executable(vclib-polygon-earcut-example ${SOURCES})
 
-target_link_libraries(vclib-polygon-earcut-test PUBLIC vclib)
+target_link_libraries(vclib-polygon-earcut-example PUBLIC vclib)

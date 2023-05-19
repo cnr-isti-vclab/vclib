@@ -2,18 +2,18 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2022                                                    *
+#* Copyright(C) 2021-2023                                                    *
 #* Alessandro Muntoni                                                        *
 #* VCLab - ISTI - Italian National Research Council                          *
 #*                                                                           *
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-grid-test)
+project(vclib-grid-example)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-grid-test ${SOURCES})
+add_executable(vclib-grid-example ${SOURCES})
 
-target_link_libraries(vclib-grid-test PUBLIC vclib)
+target_link_libraries(vclib-grid-example PUBLIC vclib)
