@@ -36,4 +36,4 @@ jobs:
       shell: bash
       run: |
         cd build
-        ctest
+        ctest --verbose
