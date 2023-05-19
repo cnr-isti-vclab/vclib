@@ -55,5 +55,6 @@ endif()
 # tests
 if (VCLIB_BUILD_AND_RUN_TESTS)
 	add_subdirectory(tests/kd_tree)
+	add_subdirectory(tests/trimesh_base)
 endif()
 
