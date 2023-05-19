@@ -34,6 +34,8 @@ namespace vcl {
 template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh()
 {
+	// Set to all element containers their parent mesh (this)
+	updateAllParentMeshPointers();
 }
 
 /**
@@ -46,7 +48,7 @@ template<typename... Args> requires HasVertices<Args...>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 		Args(oth)... // call auto copy constructors for all the container elements and components
 {
-	// Set to all elements their parent mesh (this)
+	// Set to all element containers their parent mesh (this)
 	updateAllParentMeshPointers();
 
 	// save base pointer of each container of the other mesh
@@ -79,13 +81,13 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::clear()
 {
-	(clearElements<Args>(), ...);
+    (clearContainer<Args>(), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
 void Mesh<Args...>::compact()
 {
-	(compactElements<Args>(), ...);
+	(compactContainer<Args>(), ...);
 }
 
 /**
@@ -118,7 +120,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 constexpr bool Mesh<Args...>::hasContainerOf()
 {
-	return HasContainerOfPred<El>::value;
+	return mesh::HasContainerOfPred<Mesh<Args...>, El>::value;
 }
 
 /**
@@ -177,10 +179,10 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 	// In case of containers, it first creates the same number of elements in the container,
 	// and then calls the importFrom function for each new element.
 	// Pointers are not managed here, since they need additional parameters to be imported
-	
-	(importContainersAndComponents<Args>(m), ...);
 
-	// Set to all elements their parent mesh (this)
+	(Args::importFrom(m), ...);
+
+	// Set to all element containers their parent mesh (this)
 	updateAllParentMeshPointers();
 
 	// after importing ordinary components, we need to convert the pointers between containers.
@@ -290,7 +292,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El& e) const requires (hasContainerOf<El>())
 {
-	using Container = typename GetContainerOf<El>::type;
+	using Container = typename ContainerOf<El>::type;
 	return Container::index(&e);
 }
 
@@ -308,521 +310,44 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 {
-	using Container = typename GetContainerOf<El>::type;
+	using Container = typename ContainerOf<El>::type;
 	return Container::index(e);
 }
 
-/**
- * @brief Add a new vertex into the mesh, returning the index of the added vertex.
- *
- * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex pointers contained in the Mesh.
- *
- * @return the index of the new vertex.
- */
 template<typename... Args> requires HasVertices<Args...>
-uint Mesh<Args...>::addVertex()
+template<uint EL_TYPE>
+uint Mesh<Args...>::addElement()
 {
-	using VertexContainer = typename Mesh::VertexContainer;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
-	return addElement<VertexContainer>();
-}
-
-/**
- * @brief Add a new vertex with the given coordinate into the mesh, returning the id of the added
- * vertex.
- *
- * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex pointers contained in the Mesh.
- *
- * @param p: coordinate of the new vertex.
- * @return the id of the new vertex.
- */
-template<typename... Args> requires HasVertices<Args...>
-uint Mesh<Args...>::addVertex(const typename Mesh::VertexType::CoordType& p)
-{
-	using VertexContainer = typename Mesh::VertexContainer;
-
-	uint vid = addVertex();                   // using the previously defined addVertex function
-	VertexContainer::vertex(vid).coord() = p; // set the coordinate to the vertex
-	return vid;
-}
-
-/**
- * @brief Add an arbitrary number of n vertices, returning the id of the first added vertex.
- *
- * This means that, if you want to add 5 vertices and this member function returns 4, the added
- * vertices will have id from 4 to id 8 included.
- *
- * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex pointers contained in the Mesh.
- *
- * @param n: the number of vertices to add to the mesh.
- * @return the id of the first added vertex.
- */
-template<typename... Args> requires HasVertices<Args...>
-uint Mesh<Args...>::addVertices(uint n)
-{
-	using VertexContainer = typename Mesh::VertexContainer;
-
-	return addElements<VertexContainer>(n);
-}
-
-/**
- * @brief Add an arbitrary number of vertices with the given coordinates, returning the id of the
- * first added vertex.
- *
- * You can call this member function like:
- *
- * @code{.cpp}
- * CoordType p0, p1, p2, p3;
- * // init coords...
- * m.addVertices(p0, p1, p2, p3);
- * @endcode
- *
- * The number of accepted Coordtype arguments is variable.
- *
- * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex pointers contained in the Mesh.
- *
- * @param p: first vertex coordinate
- * @param v: list of other vertex coordinates
- * @return the id of the first added vertex.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<typename... VC>
-uint Mesh<Args...>::addVertices(
-	const typename Mesh::VertexType::CoordType& p,
-	const VC&... v) // parameter pack of points
-{
-	using VertexContainer = typename Mesh::VertexContainer;
-	uint vid              = VertexContainer::vertexContainerSize();
-	reserveVertices(vid + sizeof...(VC) + 1); // reserve the new number of vertices
-
-	addVertex(p);
-	// pack expansion: will be translated at compile time as an addVertex() call for each argument
-	// of the addVertices member function
-	(addVertex(v), ...);
-
-	return vid;
-}
-
-/**
- * @brief Reserve a number of vertices in the container of Vertices. This is useful when you know
- * (or you have an idea) of how much vertices are going to add into a newly of existing mesh.
- * Calling this function before any add_vertex() call will avoid unuseful reallocations of the
- * container, saving execution time.
- *
- * The filosofy of this function is similar to the one of the
- * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
- * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
- *
- * If the call of this function will cause a reallocation of the Vertex container, the function
- * will automatically take care of updating all the Vertex pointers contained in the Mesh.
- *
- * @param n: the new capacity of the vertex container.
- */
-template<typename... Args> requires HasVertices<Args...>
-void Mesh<Args...>::reserveVertices(uint n)
-{
-	using VertexContainer = typename Mesh::VertexContainer;
-
-	reserveElements<VertexContainer>(n);
-}
-
-/**
- * @brief Compacts the Vertex Container, removing all the vertices marked as deleted. Vertices
- * indices will change accordingly. The function will automatically take care of updating all the
- * Vertex pointers contained in the Mesh.
- */
-template<typename... Args> requires HasVertices<Args...>
-void Mesh<Args...>::compactVertices()
-{
-	using VertexContainer = typename Mesh::VertexContainer;
-
-	compactElements<VertexContainer>();
+	return Cont::addElement();
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-uint Mesh<Args...>::addFace()
+template<uint EL_TYPE>
+uint Mesh<Args...>::addElements(uint n)
 {
-	using FaceContainer = typename M::FaceContainer;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
-	return addElement<FaceContainer>();
+	return Cont::addElements(n); // add the number elements
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename... V>
-uint Mesh<Args...>::addFace(V... args)
+template<uint EL_TYPE>
+void Mesh<Args...>::reserveElements(uint n)
 {
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
-	uint  fid = addFace();
-	Face& f   = FaceContainer::face(fid);
-
-	constexpr uint n = sizeof...(args);
-	static_assert(n >= 3, "Faces must have at least 3 vertices");
-	if constexpr (Face::VERTEX_NUMBER < 0) {
-		if constexpr (!comp::HasFaceHalfEdgePointers<Face>) {
-			f.resizeVertices(n);
-		}
-		else {
-			addHalfEdgesToFace(n, f);
-		}
-	}
-	else {
-		static_assert(n == Face::VERTEX_NUMBER, "Wrong number of vertices in Mesh::addFace.");
-	}
-
-	addFaceHelper(f, args...);
-	return fid;
+	Cont::reserveElements(n);
 }
 
 template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename Iterator>
-uint Mesh<Args...>::addFace(Iterator begin, Iterator end)
+template<uint EL_TYPE>
+void Mesh<Args...>::compactElements()
 {
-	using Face          = typename M::FaceType;
-	using FaceContainer = typename M::FaceContainer;
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
-	if (begin == end) return UINT_NULL;
-
-	uint  fid = addFace();
-	Face& f   = FaceContainer::face(fid);
-	
-	if constexpr (comp::HasFaceHalfEdgePointers<Face>) {
-		using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-		using HalfEdge          = typename HalfEdgeContainer::HalfEdgeType;
-		using Vertex = typename Mesh<Args...>::VertexType;
-		HalfEdge* first = nullptr;
-		HalfEdge* prev = nullptr;
-		HalfEdge* curr;
-		for (Iterator it = begin; it != end; ++it) {
-			Vertex* v = &VertexContainer::vertex(*it);
-			uint heid = addHalfEdge();
-			curr = &HalfEdgeContainer::halfEdge(heid);
-			curr->fromVertex() = v;
-			v->halfEdge() = curr;
-			if (prev != nullptr) {
-				prev->next() = curr;
-				curr->prev() = prev;
-			}
-			if (first == nullptr)
-				first = curr;
-			prev = curr;
-		}
-		first->prev() = curr;
-		curr->next() = first;
-		f.outerHalfEdge() = first;
-	}
-	else {
-		if constexpr (Face::VERTEX_NUMBER < 0) {
-			uint n = std::distance(begin, end);
-			f.resizeVertices(n);
-		}
-
-		unsigned int i = 0;
-		for (Iterator it = begin; it != end; ++it) {
-			f.vertex(i) = &VertexContainer::vertex(*it);
-			++i;
-		}
-	}
-
-	return fid;
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-uint Mesh<Args...>::addFaces(uint n)
-{
-	using FaceContainer = typename M::FaceContainer;
-
-	return addElements<FaceContainer>(n);
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::reserveFaces(uint n)
-{
-	using FaceContainer = typename M::FaceContainer;
-
-	reserveElements<FaceContainer>(n);
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::compactFaces()
-{
-	using FaceContainer = typename M::FaceContainer;
-
-	compactElements<FaceContainer>();
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-bool Mesh<Args...>::isPerFaceWedgeColorsEnabled() const
-	requires internal::OptionalWedgeColorsConcept<M>
-{
-	// if there is a WedgeColors component in the Face element
-	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
-		return M::FaceContainer::isPerFaceWedgeColorsEnabled(); // use the container function
-	}
-	else { // otherwise, due to the OptionalWedgeColorsConcept, we are in a Dcel
-		// Dcel having half edges with optional color - to be used as wedge colors
-		return M::HalfEdgeContainer::isPerHalfEdgeColorEnabled();
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::enablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>
-{
-	// if there is a WedgeColors component in the Face element
-	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
-		M::FaceContainer::enablePerFaceWedgeColors(); // use the container function
-	}
-	else { // otherwise, due to the OptionalWedgeColorsConcept, we are in a Dcel
-		// Dcel having half edges with optional color - to be used as wedge colors
-		return M::HalfEdgeContainer::enablePerHalfEdgeColor();
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::disablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>
-{
-	// if there is a WedgeColors component in the Face element
-	if constexpr (face::HasOptionalWedgeColors<typename M::FaceType>) {
-		M::FaceContainer::disablePerFaceWedgeColors(); // use the container function
-	}
-	else { // otherwise, due to the OptionalWedgeColorsConcept, we are in a Dcel
-		// Dcel having half edges with optional color - to be used as wedge colors
-		return M::HalfEdgeContainer::disablePerHalfEdgeColor();
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-bool Mesh<Args...>::isPerFaceWedgeTexCoordsEnabled() const
-	requires internal::OptionalWedgeTexCoordsConcept<M>
-{
-	// if there is a WedgeTexCoords component in the Face element
-	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
-		return M::FaceContainer::isPerFaceWedgeTexCoordsEnabled(); // use the container function
-	}
-	else { // otherwise, due to the OptionalWedgeTexCoordsConcept, we are in a Dcel
-		// Dcel having half edges with optional tex coords - to be used as wedge tex coords
-		return M::HalfEdgeContainer::isPerHalfEdgeTexCoordEnabled();
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::enablePerFaceWedgeTexCoords()
-	requires internal::OptionalWedgeTexCoordsConcept<M>
-{
-	// if there is a WedgeTexCoords component in the Face element
-	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
-		M::FaceContainer::enablePerFaceWedgeTexCoords(); // use the container function
-	}
-	else { // otherwise, due to the OptionalWedgeTexCoordsConcept, we are in a Dcel
-		// Dcel having half edges with optional tex coords - to be used as wedge tex coords
-		return M::HalfEdgeContainer::enablePerHalfEdgeTexCoord();
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::disablePerFaceWedgeTexCoords()
-	requires internal::OptionalWedgeTexCoordsConcept<M>
-{
-	// if there is a WedgeTexCoords component in the Face element
-	if constexpr (face::HasOptionalWedgeTexCoords<typename M::FaceType>) {
-		M::FaceContainer::disablePerFaceWedgeTexCoords(); // use the container function
-	}
-	else { // otherwise, due to the OptionalWedgeTexCoordsConcept, we are in a Dcel
-		// Dcel having half edges with optional tex coords - to be used as wedge tex coords
-		return M::HalfEdgeContainer::disablePerHalfEdgeTexCoord();
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-uint Mesh<Args...>::addEdge()
-{
-	using EdgeContainer = typename M::EdgeContainer;
-
-	return addElement<EdgeContainer>();
-}
-
-/**
- * @brief Add an arbitrary number of n edges, returning the id of the first added edge.
- *
- * This means that, if you want to add 5 edges and this member function returns 4, the added
- * edges will have id from 4 to id 8 included.
- *
- * If the call of this function will cause a reallocation of the EdgeContainer, the function
- * will automatically take care of updating all the Edge pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the Edge Container**.
- *
- * @param n: the number of edges to add to the mesh.
- * @return the id of the first added edge.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-uint Mesh<Args...>::addEdges(uint n)
-{
-	using EdgeContainer = typename M::EdgeContainer;
-
-	return addElements<EdgeContainer>(n);
-}
-
-/**
- * @brief Reserve a number of edges in the container of Edges. This is useful when you know
- * (or you have an idea) of how much edges are going to add into a newly of existing mesh.
- * Calling this function before any addEdge() call will avoid unuseful reallocations of the
- * container, saving execution time.
- *
- * The filosofy of this function is similar to the one of the
- * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
- * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
- *
- * If the call of this function will cause a reallocation of the Edge container, the function
- * will automatically take care of updating all the Edge pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the Edge Container**.
- *
- * @param n: the new capacity of the edge container.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-void Mesh<Args...>::reserveEdges(uint n)
-{
-	using EdgeContainer = typename M::EdgeContainer;
-
-	reserveElements<EdgeContainer>(n);
-}
-
-/**
- * @brief Compacts the EdgeContainer, removing all the edges marked as deleted. Edges indices
- * will change accordingly. The function will automatically take care of updating all the Edge
- * pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the Edge Container**.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasEdges M>
-void Mesh<Args...>::compactEdges()
-{
-	using EdgeContainer = typename M::EdgeContainer;
-
-	compactElements<EdgeContainer>();
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-uint Mesh<Args...>::addHalfEdge()
-{
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-
-	return addElement<HalfEdgeContainer>();
-}
-
-/**
- * @brief Add an arbitrary number of n Halfedges, returning the id of the first added Halfedge.
- *
- * This means that, if you want to add 5 Halfedges and this member function returns 4, the added
- * Halfedges will have id from 4 to id 8 included.
- *
- * If the call of this function will cause a reallocation of the HalfEdgeContainer, the function
- * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the HalfEdge Container**.
- *
- * @param n: the number of Halfedges to add to the mesh.
- * @return the id of the first added Halfedge.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-uint Mesh<Args...>::addHalfEdges(uint n)
-{
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-
-	return addElements<HalfEdgeContainer>(n);
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename M> requires HasHalfEdges<M> && HasFaces<M>
-uint Mesh<Args...>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
-{
-	using HalfEdge = typename Mesh<Args...>::HalfEdgeType;
-	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
-
-	uint first = addHalfEdges(n);
-	HalfEdge* hef =  &HalfEdgeContainer::halfEdge(first);
-	uint curr;
-	HalfEdge* prev = nullptr;
-	for (curr = first; curr < HalfEdgeContainer::halfEdgeNumber(); ++curr) {
-		HalfEdge& he = HalfEdgeContainer::halfEdge(curr);
-		he.face() = &f;
-		if (prev != nullptr) {
-			he.prev() = prev;
-			prev->next() = &he;
-		}
-		prev = &he;
-	}
-	if (prev != nullptr) {
-		hef->prev() = prev;
-		prev->next() = hef;
-	}
-	f.outerHalfEdge() = hef;
-	return first;
-}
-
-/**
- * @brief Reserve a number of Halfedges in the container of HalfEdges. This is useful when you know
- * (or you have an idea) of how much Halfedges are going to add into a newly of existing mesh.
- * Calling this function before any addHalfEdge() call will avoid unuseful reallocations of the
- * container, saving execution time.
- *
- * The filosofy of this function is similar to the one of the
- * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
- * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
- *
- * If the call of this function will cause a reallocation of the HalfEdge container, the function
- * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the HalfEdge Container**.
- *
- * @param n: the new capacity of the Halfedge container.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-void Mesh<Args...>::reserveHalfEdges(uint n)
-{
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-
-	reserveElements<HalfEdgeContainer>(n);
-}
-
-/**
- * @brief Compacts the HalfEdgeContainer, removing all the Halfedges marked as deleted. HalfEdges
- * indices will change accordingly. The function will automatically take care of updating all the
- * HalfEdge pointers contained in the Mesh.
- *
- * This function will be available only **if the Mesh has the HalfEdge Container**.
- */
-template<typename... Args> requires HasVertices<Args...>
-template<HasHalfEdges M>
-void Mesh<Args...>::compactHalfEdges()
-{
-	using HalfEdgeContainer = typename M::HalfEdgeContainer;
-
-	compactElements<HalfEdgeContainer>();
+	Cont::compactElements();
 }
 
 /*********************
@@ -831,79 +356,30 @@ void Mesh<Args...>::compactHalfEdges()
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
-uint Mesh<Args...>::addElement()
-{
-	using Element = typename Cont::ElementType;
-
-	// If the base pointer of the container of elements changes, it means that all the elements
-	// pointers contained in the elements need to be updated
-
-	Element* oldBase = Cont::vec.data();
-	uint     eid     = Cont::addElement(this);
-	Element* newBase = Cont::vec.data();
-	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the element pointers in the containers
-		(updatePointers<Args>(oldBase, newBase), ...);
-	}
-	return eid;
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-uint Mesh<Args...>::addElements(uint n)
-{
-	using Element = typename Cont::ElementType;
-
-	// If the base pointer of the container of elements changes, it means that all the elements
-	// pointers contained in the other elements need to be updated
-
-	Element* oldBase = Cont::vec.data();
-	uint     eid     = Cont::addElements(n, this); // add the number elements
-	Element* newBase = Cont::vec.data();
-
-	if (oldBase != nullptr && oldBase != newBase) { // if true, pointer of container is changed
-		// change all the element pointers in the other containers
-		(updatePointers<Args>(oldBase, newBase), ...);
-	}
-	return eid;
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-void Mesh<Args...>::reserveElements(uint n)
-{
-	using Element = typename Cont::ElementType;
-
-	Element* oldBase = Cont::vec.data();
-	Cont::reserveElements(n, this);
-	Element* newBase = Cont::vec.data();
-	if (oldBase != nullptr && oldBase != newBase)
-		(updatePointers<Args>(oldBase, newBase), ...);
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont>
-void Mesh<Args...>::compactElements()
+void Mesh<Args...>::compactContainer()
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		if (Cont::elementNumber() != Cont::elementContainerSize()) {
-			auto* oldBase = Cont::vec.data();
-			std::vector<int> newIndices = Cont::compactElements();
-			auto* newBase = Cont::vec.data();
-			assert(oldBase == newBase);
-
-			(updatePointersAfterCompact<Args>(oldBase, newIndices), ...);
+			Cont::compactElements();
 		}
 	}
 }
 
 template<typename... Args> requires HasVertices<Args...>
 template<typename Cont>
-void Mesh<Args...>::clearElements()
+void Mesh<Args...>::clearContainer()
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::clearElements();
 	}
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept Element>
+void Mesh<Args...>::updateAllPointers(const Element* oldBase, const Element* newBase)
+{
+	if (oldBase != nullptr && oldBase != newBase)
+		(updatePointers<Args>(oldBase, newBase), ...);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -918,6 +394,15 @@ void Mesh<Args...>::updatePointers(
 }
 
 template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept Element>
+void Mesh<Args...>::updateAllPointersAfterCompact(
+	const Element* base,
+	const std::vector<int>& newIndices)
+{
+	(updatePointersAfterCompact<Args>(base, newIndices), ...);
+}
+
+template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Element>
 void Mesh<Args...>::updatePointersAfterCompact(
 	const Element*          base,
@@ -926,50 +411,6 @@ void Mesh<Args...>::updatePointersAfterCompact(
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updatePointersAfterCompact(base, newIndices);
 	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<uint EL_TYPE, typename T>
-uint Mesh<Args...>::elementIndex(const T* el) const
-{
-	using Cont = typename GetContainerOfElID<EL_TYPE>::type;
-	using ElType = typename Cont::ElementType;
-	return index(static_cast<const ElType*>(el));
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M>
-void Mesh<Args...>::addFaceHelper(typename M::FaceType&)
-{
-	// base case: no need to add any other vertices
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename... V>
-void Mesh<Args...>::addFaceHelper(
-	typename M::FaceType&   f,
-	typename Mesh<Args...>::VertexType* v,
-	V... args)
-{
-	using FaceContainer = typename Mesh<Args...>::FaceContainer;
-
-	// position on which add the vertex
-	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-	f.vertex(n)         = v;   // set the vertex
-	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<HasFaces M, typename... V>
-void Mesh<Args...>::addFaceHelper(typename M::FaceType& f, uint vid, V... args)
-{
-	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-
-	// position on which add the vertex
-	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-	f.vertex(n)         = &VertexContainer::vertex(vid); // set the vertex
-	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -993,18 +434,6 @@ void Mesh<Args...>::setParentMeshPointers()
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::setParentMeshPointers(this);
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename Cont, typename OthMesh>
-void Mesh<Args...>::importContainersAndComponents(const OthMesh &m)
-{
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
-		Cont::importFrom(m, this);
-	}
-	else {
-		Cont::importFrom(m);
 	}
 }
 
@@ -1089,7 +518,7 @@ void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
 
 				// number of other faces to add
 				uint nf = tris.size() / 3 - 1;
-				uint fid = FaceContainer::addElements(nf, this);
+				uint fid = FaceContainer::addElements(nf);
 
 				uint i = 3; // index that cycles into tris
 				for (; fid < FaceContainer::faceContainerSize(); ++fid) {
@@ -1118,6 +547,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 
 	using VertexContainer = typename Mesh<Args...>::VertexContainer;
 	using FaceContainer = typename Mesh<Args...>::FaceContainer;
+	using HalfEdgeContainer = typename Mesh<Args...>::HalfEdgeContainer;
 
 	// base and mvbase are needed to convert vertex pointers from other to this mesh
 	VertexType* base = VertexContainer::vec.data();
@@ -1130,7 +560,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 		// add mf.vertexNumber() half edges to this mesh, and all these half edges are adjacent to
 		// face f (all next and prev relations are set here, and therefore they will allow to
 		// iterate over f components)
-		addHalfEdgesToFace(mf.vertexNumber(), f);
+		HalfEdgeContainer::addHalfEdgesToFace(mf.vertexNumber(), f);
 
 		// this can be optimized
 		// set each vertex of f computing the right pointers from mesh m and face mf
@@ -1138,7 +568,7 @@ void Mesh<Args...>::manageImportDcelFromMesh(const OthMesh &m)
 			f.vertex(j) = base + (mf.vertex(j) - mvbase);
 		}
 
-		// todo: adjacent faces and wedges
+		// TODO: adjacent faces and wedges
 	}
 }
 
@@ -1246,10 +676,19 @@ void Mesh<Args...>::updatePointersOfContainerType(Mesh<A...>& m, const Array& ba
 }
 
 template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, typename T>
+uint Mesh<Args...>::elementIndex(const T* el) const
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using ElType = typename Cont::ElementType;
+	return index(static_cast<const ElType*>(el));
+}
+
+template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 auto& Mesh<Args...>::customComponents()
 {
-	using ElCont = typename GetContainerOf<El>::type;
+	using ElCont = typename ContainerOf<El>::type;
 
 	return ElCont::ccVecMap;
 }
@@ -1258,7 +697,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 const auto& Mesh<Args...>::customComponents() const
 {
-	using ElCont = typename GetContainerOf<El>::type;
+	using ElCont = typename ContainerOf<El>::type;
 
 	return ElCont::ccVecMap;
 }
@@ -1267,7 +706,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 auto& Mesh<Args...>::verticalComponents()
 {
-	using ElCont = typename GetContainerOf<El>::type;
+	using ElCont = typename ContainerOf<El>::type;
 
 	return ElCont::vcVecTuple;
 }
@@ -1276,7 +715,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename El>
 const auto& Mesh<Args...>::verticalComponents() const
 {
-	using ElCont = typename GetContainerOf<El>::type;
+	using ElCont = typename ContainerOf<El>::type;
 
 	return ElCont::vcVecTuple;
 }

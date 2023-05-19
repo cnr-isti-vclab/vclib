@@ -53,19 +53,19 @@ struct IsElementContainerPred
 /**
  * @brief Given the ElementEnumType of an Element and a list of ElementContainers, this predicate
  * sets its bool `value` to `true` if there exists an ElementContainer in the list that contains
- * Elements having the ID El, and sets `type` to the TypeWrapper of the found container.
+ * Elements having the ID EL_TPE, and sets `type` to the TypeWrapper of the found container.
  *
  * If no Container was found, value will be set to `false` and type will contain an empty
  * TypeWrapper.
  */
-template<uint El, typename ... Containers>
+template<uint EL_TPE, typename ... Containers>
 struct ContainerOfElementPred
 {
 private:
 	template <typename Cont>
 	struct SameElPred
 	{
-		static constexpr bool value = Cont::ELEMENT_TYPE == El;
+		static constexpr bool value = Cont::ELEMENT_TYPE == EL_TPE;
 	};
 
 public:
@@ -74,10 +74,18 @@ public:
 	static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 
-template<uint El, typename ... Containers>
-struct ContainerOfElementPred<El, TypeWrapper<Containers...>> :
-		public ContainerOfElementPred<El, Containers...>
+// TypeWrapper specialization
+template<uint EL_TPE, typename ... Containers>
+struct ContainerOfElementPred<EL_TPE, TypeWrapper<Containers...>> :
+		public ContainerOfElementPred<EL_TPE, Containers...>
 {
+};
+
+template<typename MeshType, ElementConcept El>
+struct HasContainerOfPred
+{
+	static constexpr bool value =
+		mesh::ContainerOfElementPred<El::ELEMENT_TYPE, typename MeshType::Containers>::value;
 };
 
 } // namespace vcl::mesh

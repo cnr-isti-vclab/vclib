@@ -29,6 +29,7 @@ namespace vcl::comp {
 /**
  * @private
  * @brief The ParentMeshPointer class
+ * TODO check if MeshType can be constrained with MeshConcept
  */
 template<typename MeshType>
 class ParentMeshPointer

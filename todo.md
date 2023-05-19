@@ -18,6 +18,7 @@
     - [ ] set properly container concepts
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
+    - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers
     - [ ] import dcel from mesh: update adjacent faces and wedges 
     - [ ] Dcel Mesh shouldn't use PolygonBitFlags, but implement them in the FaceHalfEdgePointers component
 - Algorithms:

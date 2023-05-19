@@ -105,6 +105,98 @@ uint FaceContainer<T>::deletedFaceNumber() const
 	return Base::deletedElementNumber();
 }
 
+template<FaceConcept T>
+uint FaceContainer<T>::addFace()
+{
+	return Base::addElement();
+}
+
+template<FaceConcept T>
+template<typename... V>
+uint FaceContainer<T>::addFace(V... args) requires (sizeof...(args) >= 3)
+{
+	uint  fid = addFace();
+	Face& f   = face(fid);
+
+	constexpr uint n = sizeof...(args);
+
+	if constexpr (T::VERTEX_NUMBER < 0) {
+		if constexpr (!comp::HasFaceHalfEdgePointers<T>) {
+			f.resizeVertices(n);
+		}
+		else {
+			Base::parentMesh->addHalfEdgesToFace(n, f);
+		}
+	}
+	else {
+		static_assert(n == T::VERTEX_NUMBER, "Wrong number of vertices in Mesh::addFace.");
+	}
+
+	addFaceHelper(f, args...);
+	return fid;
+}
+
+template<FaceConcept T>
+template<typename Iterator>
+uint FaceContainer<T>::addFace(Iterator begin, Iterator end)
+{
+	if (begin == end) return UINT_NULL;
+	uint n = std::distance(begin, end);
+
+	uint fid = UINT_NULL;
+
+	assert(n >= 3);
+	if (n < 3) return UINT_NULL;
+
+	if constexpr (T::VERTEX_NUMBER < 0) {
+		fid = addFace();
+
+		if constexpr (!comp::HasFaceHalfEdgePointers<T>) {
+			face(fid).resizeVertices(n);
+		}
+		else {
+			Base::parentMesh->addHalfEdgesToFace(n, face(fid));
+		}
+	}
+	else {
+		assert(n == T::VERTEX_NUMBER);
+		if (n == T::VERTEX_NUMBER)
+			fid = addFace();
+	}
+
+	if (fid != UINT_NULL) {
+		Face& f = face(fid);
+
+		unsigned int i = 0;
+		for (Iterator it = begin; it != end; ++it) {
+			if constexpr (std::integral<typename Iterator::value_type>)
+				f.vertex(i) = &Base::parentMesh->vertex(*it);
+			else
+				f.vertex(i) = *it;
+			++i;
+		}
+	}
+	return fid;
+}
+
+template<FaceConcept T>
+uint FaceContainer<T>::addFaces(uint n)
+{
+	return Base::addElements(n);
+}
+
+template<FaceConcept T>
+void FaceContainer<T>::reserveFaces(uint n)
+{
+	return Base::reserveElements(n);
+}
+
+template<FaceConcept T>
+void FaceContainer<T>::compactFaces()
+{
+	return Base::compactElements();
+}
+
 /**
  * @brief Marks as deleted the face with the given id.
  *
@@ -337,7 +429,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceAdjacentEdgesEnabled()
 	const requires face::HasOptionalAdjacentEdges<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdges>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentEdges>();
 }
 
 /**
@@ -353,7 +445,7 @@ bool FaceContainer<T>::isPerFaceAdjacentEdgesEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
 {
-	Base::template enableOptionalComponent<typename T::AdjacentEdges>();
+	Base::template enableOptionalComponentType<typename T::AdjacentEdges>();
 }
 
 /**
@@ -365,7 +457,7 @@ void FaceContainer<T>::enablePerFaceAdjacentEdges() requires face::HasOptionalAd
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
 {
-	Base::template disableOptionalComponent<typename T::AdjacentEdges>();
+	Base::template disableOptionalComponentType<typename T::AdjacentEdges>();
 }
 
 /**
@@ -380,7 +472,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceAdjacentFacesEnabled()
 	const requires face::HasOptionalAdjacentFaces<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::AdjacentFaces>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentFaces>();
 }
 
 /**
@@ -396,7 +488,7 @@ bool FaceContainer<T>::isPerFaceAdjacentFacesEnabled()
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
 {
-	Base::template enableOptionalComponent<typename T::AdjacentFaces>();
+	Base::template enableOptionalComponentType<typename T::AdjacentFaces>();
 }
 
 /**
@@ -408,7 +500,7 @@ void FaceContainer<T>::enablePerFaceAdjacentFaces() requires face::HasOptionalAd
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
 {
-	Base::template disableOptionalComponent<typename T::AdjacentFaces>();
+	Base::template disableOptionalComponentType<typename T::AdjacentFaces>();
 }
 
 /**
@@ -421,7 +513,7 @@ void FaceContainer<T>::disablePerFaceAdjacentFaces() requires face::HasOptionalA
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceColorEnabled() const requires face::HasOptionalColor<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Color>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Color>();
 }
 
 /**
@@ -432,7 +524,7 @@ bool FaceContainer<T>::isPerFaceColorEnabled() const requires face::HasOptionalC
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceColor() requires face::HasOptionalColor<T>
 {
-	return Base::template enableOptionalComponent<typename T::Color>();
+	return Base::template enableOptionalComponentType<typename T::Color>();
 }
 
 /**
@@ -443,7 +535,7 @@ void FaceContainer<T>::enablePerFaceColor() requires face::HasOptionalColor<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceColor() requires face::HasOptionalColor<T>
 {
-	return Base::template disableOptionalComponent<typename T::Color>();
+	return Base::template disableOptionalComponentType<typename T::Color>();
 }
 
 /**
@@ -456,7 +548,7 @@ void FaceContainer<T>::disablePerFaceColor() requires face::HasOptionalColor<T>
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceMarkEnabled() const requires face::HasOptionalMark<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Mark>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Mark>();
 }
 
 /**
@@ -467,7 +559,7 @@ bool FaceContainer<T>::isPerFaceMarkEnabled() const requires face::HasOptionalMa
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceMark() requires face::HasOptionalMark<T>
 {
-	return Base::template enableOptionalComponent<typename T::Mark>();
+	return Base::template enableOptionalComponentType<typename T::Mark>();
 }
 
 /**
@@ -478,7 +570,7 @@ void FaceContainer<T>::enablePerFaceMark() requires face::HasOptionalMark<T>
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceMark() requires face::HasOptionalMark<T>
 {
-	return Base::template disableOptionalComponent<typename T::Mark>();
+	return Base::template disableOptionalComponentType<typename T::Mark>();
 }
 
 /**
@@ -491,7 +583,7 @@ void FaceContainer<T>::disablePerFaceMark() requires face::HasOptionalMark<T>
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceNormalEnabled() const requires face::HasOptionalNormal<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Normal>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Normal>();
 }
 
 /**
@@ -502,7 +594,7 @@ bool FaceContainer<T>::isPerFaceNormalEnabled() const requires face::HasOptional
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceNormal() requires face::HasOptionalNormal<T>
 {
-	return Base::template enableOptionalComponent<typename T::Normal>();
+	return Base::template disableOptionalComponentType<typename T::Normal>();
 }
 
 /**
@@ -528,7 +620,7 @@ template<FaceConcept T>
 bool FaceContainer<T>::isPerFacePrincipalCurvatureEnabled()
 	const requires face::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::PrincipalCurvature>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::PrincipalCurvature>();
 }
 /**
  * @brief Enables the Optional PrincipalCurvature of the face.
@@ -540,7 +632,7 @@ template<FaceConcept T>
 void FaceContainer<T>::enablePerFacePrincipalCurvature()
 	requires face::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template enableOptionalComponent<typename T::PrincipalCurvature>();
+	return Base::template enableOptionalComponentType<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -553,7 +645,7 @@ template<FaceConcept T>
 void FaceContainer<T>::disablePerFacePrincipalCurvature()
 	requires face::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template disableOptionalComponent<typename T::PrincipalCurvature>();
+	return Base::template disableOptionalComponentType<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -566,7 +658,7 @@ void FaceContainer<T>::disablePerFacePrincipalCurvature()
 template<FaceConcept T>
 bool FaceContainer<T>::isPerFaceQualityEnabled() const requires face::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Quality>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Quality>();
 }
 /**
  * @brief Enables the Optional Quality of the face.
@@ -576,7 +668,7 @@ bool FaceContainer<T>::isPerFaceQualityEnabled() const requires face::HasOptiona
 template<FaceConcept T>
 void FaceContainer<T>::enablePerFaceQuality() requires face::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::Quality>();
+	return Base::template enableOptionalComponentType<typename T::Quality>();
 }
 
 /**
@@ -587,7 +679,106 @@ void FaceContainer<T>::enablePerFaceQuality() requires face::HasOptionalQuality<
 template<FaceConcept T>
 void FaceContainer<T>::disablePerFaceQuality() requires face::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::Quality>();
+	return Base::template disableOptionalComponentType<typename T::Quality>();
+}
+
+/**
+ * @brief Checks if the face Optional WedgeColors Faces is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
+ *
+ * @return true if the Optional WedgeColors is enabled, false otherwise.
+ */
+template<FaceConcept T>
+bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>
+{
+	if constexpr (comp::HasOptionalWedgeColors<T>)
+		return Base::template isOptionalComponentTypeEnabled<typename T::WedgeColors>();
+	else
+		return Base::parentMesh->isPerHalfEdgeColorEnabled();
+}
+
+/**
+ * @brief Enable the Optional Wedge Colors of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
+ *
+ * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge colors number will
+ * be the same of the vertex number for each face of the container. This is because, for Faces,
+ * Wedge Colors number is tied to the number of vertices.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
+{
+	if constexpr (comp::HasOptionalWedgeColors<T>)
+		Base::template enableOptionalComponentType<typename T::WedgeColors>();
+	else
+		Base::parentMesh->enablePerHalfEdgeColor();
+}
+
+/**
+ * @brief Disables the Optional Wedge Colors of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
+{
+	if constexpr (comp::HasOptionalWedgeColors<T>)
+		Base::template disableOptionalComponentType<typename T::WedgeColors>();
+	else
+		Base::parentMesh->disablePerHalfEdgeColor();
+}
+
+/**
+ * @brief Checks if the face Optional WedgeTexCoords Faces is enabled.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
+ * @return true if the Optional WedgeTexCoords is enabled, false otherwise.
+ */
+template<FaceConcept T>
+bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
+	const requires face::HasOptionalWedgeTexCoords<T>
+{
+	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
+		return Base::template isOptionalComponentTypeEnabled<typename T::WedgeTexCoords>();
+	else
+		return Base::parentMesh->isPerHalfEdgeTexCoordEnabled();
+}
+
+/**
+ * @brief Enables the Optional Wedge TexCoords of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
+ *
+ * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge texcoord number
+ * will be the same of the vertex number for each face of the container. This is because, for Faces,
+ * Wedge TexCoords number is tied to the number of vertices.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
+{
+	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
+		Base::template enableOptionalComponentType<typename T::WedgeTexCoords>();
+	else
+		Base::parentMesh->enablePerHalfEdgeTexCoord();
+}
+
+/**
+ * @brief Disables the Optional WedgeTex Coords of the face.
+ *
+ * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
+ * Component.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
+{
+	if constexpr (comp::HasOptionalWedgeTexCoords<T>)
+		Base::template disableOptionalComponentType<typename T::WedgeTexCoords>();
+	else
+		Base::parentMesh->disablePerHalfEdgeTexCoord();
 }
 
 /**
@@ -801,85 +992,30 @@ ConstCustomComponentVectorHandle<K> FaceContainer<T>::perFaceCustomComponentVect
 	return Base::template customComponentVectorHandle<K>(name);
 }
 
-/**
- * @brief Checks if the face Optional WedgeColors Faces is enabled.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
- *
- * @return true if the Optional WedgeColors is enabled, false otherwise.
- */
-template<FaceConcept T>
-bool FaceContainer<T>::isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>
+template<FaceConcept F>
+void FaceContainer<F>::addFaceHelper(F&)
 {
-	return Base::template isOptionalComponentEnabled<typename T::WedgeColors>();
+	// base case: no need to add any other vertices
 }
 
-/**
- * @brief Enable the Optional Wedge Colors of the face.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
- *
- * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge colors number will
- * be the same of the vertex number for each face of the container. This is because, for Faces,
- * Wedge Colors number is tied to the number of vertices.
- */
-template<FaceConcept T>
-void FaceContainer<T>::enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
+template<FaceConcept F>
+template<typename... V>
+void FaceContainer<F>::addFaceHelper(F& f, typename F::VertexType* v, V... args)
 {
-	return Base::template enableOptionalComponent<typename T::WedgeColors>();
+	// position on which add the vertex
+	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+	f.vertex(n)         = v;   // set the vertex
+	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
-/**
- * @brief Disables the Optional Wedge Colors of the face.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeColors Component.
- */
-template<FaceConcept T>
-void FaceContainer<T>::disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>
+template<FaceConcept F>
+template<typename... V>
+void FaceContainer<F>::addFaceHelper(F& f, uint vid, V... args)
 {
-	return Base::template disableOptionalComponent<typename T::WedgeColors>();
-}
-
-/**
- * @brief Checks if the face Optional WedgeTexCoords Faces is enabled.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
- * Component.
- * @return true if the Optional WedgeTexCoords is enabled, false otherwise.
- */
-template<FaceConcept T>
-bool FaceContainer<T>::isPerFaceWedgeTexCoordsEnabled()
-	const requires face::HasOptionalWedgeTexCoords<T>
-{
-	return Base::template isOptionalComponentEnabled<typename T::WedgeTexCoords>();
-}
-
-/**
- * @brief Enables the Optional Wedge TexCoords of the face.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
- * Component.
- *
- * @note If the Face is polygonal (dynamic size, N < 0), when enabled, the wedge texcoord number
- * will be the same of the vertex number for each face of the container. This is because, for Faces,
- * Wedge TexCoords number is tied to the number of vertices.
- */
-template<FaceConcept T>
-void FaceContainer<T>::enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
-{
-	return Base::template enableOptionalComponent<typename T::WedgeTexCoords>();
-}
-
-/**
- * @brief Disables the Optional WedgeTex Coords of the face.
- *
- * @note This function is available only if the Face Element has the OptionalWedgeTexCoords
- * Component.
- */
-template<FaceConcept T>
-void FaceContainer<T>::disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>
-{
-	return Base::template disableOptionalComponent<typename T::WedgeTexCoords>();
+	// position on which add the vertex
+	const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
+	f.vertex(n)         = &Base::parentMesh->vertex(vid); // set the vertex
+	addFaceHelper(f, args...); // set the remanining vertices, recursive variadics
 }
 
 } // namespace vcl::mesh

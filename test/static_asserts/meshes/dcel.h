@@ -26,6 +26,12 @@ void dcelStaticAsserts()
 	static_assert(!HasQuads<DcelMesh>, "");
 	static_assert(HasPolygons<DcelMesh>, "");
 
+	static_assert(HasPerFaceWedgeColors<DcelMesh>, "");
+	static_assert(HasPerFaceWedgeTexCoords<DcelMesh>, "");
+
+	static_assert(face::HasOptionalWedgeColors<DcelMesh::Face>, "");
+	static_assert(face::HasOptionalWedgeTexCoords<DcelMesh::Face>, "");
+
 	meshViewsStaticAsserts<DcelMesh>();
 }
 

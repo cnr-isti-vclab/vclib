@@ -273,30 +273,6 @@ concept HasTexturePaths = MeshConcept<MeshType> && mesh::HasTexturePaths<MeshTyp
 template<typename MeshType>
 concept HasTransformMatrix = MeshConcept<MeshType> && mesh::HasTransformMatrix<MeshType>;
 
-namespace internal {
-
-// Concept used to enable PerFaceWedgeColors member functions in Mesh class
-// they can be enabled if:
-// - they have per face optional WedgeColors, or
-// - if the mesh is a Dcel, HalfEdges have optional Color
-template <typename M>
-concept OptionalWedgeColorsConcept =
-	FaceMeshConcept<M> &&
-	(face::HasOptionalWedgeColors<typename M::FaceType> ||
-	 (HasHalfEdges<M> && hedge::HasOptionalColor<typename M::HalfEdge>));
-
-// Concept used to enable PerFaceWedgeTexCoords member functions in Mesh class
-// they can be enabled if:
-// - they have per face optional WedgeTexCoords, or
-// - if the mesh is a Dcel, HalfEdges have optional TexCoord
-template <typename M>
-concept OptionalWedgeTexCoordsConcept =
-	FaceMeshConcept<M> &&
-	(face::HasOptionalWedgeTexCoords<typename M::FaceType> ||
-	 (HasHalfEdges<M> && hedge::HasOptionalTexCoord<typename M::HalfEdge>));
-
-} // namespace vcl::internal
-
 } // namespace vcl
 
 #endif // VCL_CONCEPTS_MESH_H

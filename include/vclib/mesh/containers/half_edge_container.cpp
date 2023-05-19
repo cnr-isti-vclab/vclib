@@ -107,6 +107,87 @@ uint HalfEdgeContainer<T>::deletedHalfEdgeNumber() const
 	return Base::deletedElementNumber();
 }
 
+template<HalfEdgeConcept T>
+uint HalfEdgeContainer<T>::addHalfEdge()
+{
+	return Base::addElement();
+}
+
+/**
+ * @brief Add an arbitrary number of n Halfedges, returning the id of the first added Halfedge.
+ *
+ * This means that, if you want to add 5 Halfedges and this member function returns 4, the added
+ * Halfedges will have id from 4 to id 8 included.
+ *
+ * If the call of this function will cause a reallocation of the HalfEdgeContainer, the function
+ * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
+ *
+ * @param n: the number of Halfedges to add to the mesh.
+ * @return the id of the first added Halfedge.
+ */
+template<HalfEdgeConcept T>
+uint HalfEdgeContainer<T>::addHalfEdges(uint n)
+{
+	return Base::addElements(n);
+}
+
+template<HalfEdgeConcept T>
+template<typename M> requires HasFaces<M>
+uint HalfEdgeContainer<T>::addHalfEdgesToFace(uint n, typename M::FaceType& f)
+{
+	uint first = addHalfEdges(n);
+	HalfEdge* hef =  &halfEdge(first);
+	uint curr;
+	HalfEdge* prev = nullptr;
+	for (curr = first; curr < halfEdgeNumber(); ++curr) {
+		HalfEdge& he = halfEdge(curr);
+		he.face() = &f;
+		if (prev != nullptr) {
+			he.prev() = prev;
+			prev->next() = &he;
+		}
+		prev = &he;
+	}
+	if (prev != nullptr) {
+		hef->prev() = prev;
+		prev->next() = hef;
+	}
+	f.outerHalfEdge() = hef;
+	return first;
+}
+
+/**
+ * @brief Reserve a number of Halfedges in the container of HalfEdges. This is useful when you know
+ * (or you have an idea) of how much Halfedges are going to add into a newly of existing mesh.
+ * Calling this function before any addHalfEdge() call will avoid unuseful reallocations of the
+ * container, saving execution time.
+ *
+ * The filosofy of this function is similar to the one of the
+ * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
+ * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
+ *
+ * If the call of this function will cause a reallocation of the HalfEdge container, the function
+ * will automatically take care of updating all the HalfEdge pointers contained in the Mesh.
+ *
+ * @param n: the new capacity of the Halfedge container.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::reserveHalfEdges(uint n)
+{
+	Base::reserveElements(n);
+}
+
+/**
+ * @brief Compacts the HalfEdgeContainer, removing all the Halfedges marked as deleted. HalfEdges
+ * indices will change accordingly. The function will automatically take care of updating all the
+ * HalfEdge pointers contained in the Mesh.
+ */
+template<HalfEdgeConcept T>
+void HalfEdgeContainer<T>::compactHalfEdges()
+{
+	Base::compactElements();
+}
+
 /**
  * @brief Marks as deleted the halfedge with the given id.
  *
@@ -323,7 +404,7 @@ void HalfEdgeContainer<T>::disableAllPerHalfEdgeOptionalComponents()
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const requires hedge::HasOptionalColor<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Color>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Color>();
 }
 
 /**
@@ -334,7 +415,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeColorEnabled() const requires hedge::Has
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>
 {
-	return Base::template enableOptionalComponent<typename T::Color>();
+	return Base::template enableOptionalComponentType<typename T::Color>();
 }
 
 /**
@@ -345,7 +426,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeColor() requires hedge::HasOptionalC
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeColor() requires hedge::HasOptionalColor<T>
 {
-	return Base::template disableOptionalComponent<typename T::Color>();
+	return Base::template disableOptionalComponentType<typename T::Color>();
 }
 
 /**
@@ -358,7 +439,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeColor() requires hedge::HasOptional
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const requires hedge::HasOptionalMark<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Mark>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Mark>();
 }
 
 /**
@@ -369,7 +450,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeMarkEnabled() const requires hedge::HasO
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>
 {
-	return Base::template enableOptionalComponent<typename T::Mark>();
+	return Base::template enableOptionalComponentType<typename T::Mark>();
 }
 
 /**
@@ -380,7 +461,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeMark() requires hedge::HasOptionalMa
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeMark() requires hedge::HasOptionalMark<T>
 {
-	return Base::template disableOptionalComponent<typename T::Mark>();
+	return Base::template disableOptionalComponentType<typename T::Mark>();
 }
 
 /**
@@ -393,7 +474,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeMark() requires hedge::HasOptionalM
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeQualityEnabled() const requires hedge::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Quality>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Quality>();
 }
 /**
  * @brief Enables the Optional Quality of the halfedge.
@@ -403,7 +484,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeQualityEnabled() const requires hedge::H
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeQuality() requires hedge::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::Quality>();
+	return Base::template enableOptionalComponentType<typename T::Quality>();
 }
 
 /**
@@ -414,7 +495,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeQuality() requires hedge::HasOptiona
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeQuality() requires hedge::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::Quality>();
+	return Base::template disableOptionalComponentType<typename T::Quality>();
 }
 
 /**
@@ -427,7 +508,7 @@ void HalfEdgeContainer<T>::disablePerHalfEdgeQuality() requires hedge::HasOption
 template<HalfEdgeConcept T>
 bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::HasOptionalTexCoord<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::TexCoord>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::TexCoord>();
 }
 /**
  * @brief Enables the Optional TexCoord of the halfedge.
@@ -437,7 +518,7 @@ bool HalfEdgeContainer<T>::isPerHalfEdgeTexCoordEnabled() const requires hedge::
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
 {
-	return Base::template enableOptionalComponent<typename T::TexCoord>();
+	return Base::template enableOptionalComponentType<typename T::TexCoord>();
 }
 
 /**
@@ -448,7 +529,7 @@ void HalfEdgeContainer<T>::enablePerHalfEdgeTexCoord() requires hedge::HasOption
 template<HalfEdgeConcept T>
 void HalfEdgeContainer<T>::disablePerHalfEdgeTexCoord() requires hedge::HasOptionalTexCoord<T>
 {
-	return Base::template disableOptionalComponent<typename T::TexCoord>();
+	return Base::template disableOptionalComponentType<typename T::TexCoord>();
 }
 
 /**

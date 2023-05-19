@@ -23,6 +23,9 @@
 
 #include "wedge_tex_coords.h"
 
+#include <vclib/concepts/mesh/components/face_half_edge_pointers.h>
+#include <vclib/concepts/mesh/components/tex_coord.h>
+
 namespace vcl::comp {
 
 template<typename Scalar, int N, typename El, bool O>
@@ -224,7 +227,17 @@ WedgeTexCoords<Scalar, N, El, O>::texCoords() const
 template <typename T>
 bool isWedgeTexCoordsEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalWedgeTexCoords<T>) {
+	if constexpr (HasFaceHalfEdgePointers<T>) { // Dcel case
+		// Half edges with optional tex coords
+		if constexpr (HasOptionalTexCoord<typename T::HalfEdgeType>) {
+			return element.outerHalfEdge() != nullptr &&
+				element.outerHalfEdge()->isTexCoordEnabled();
+		}
+		else { // half edge with/out static tex coords
+			return HasTexCoord<typename T::HalfEdgeType>;
+		}
+	}
+	else if constexpr (HasOptionalWedgeTexCoords<T>) { // No Dcel case
 		return element.isWedgeTexCoordsEnabled();
 	}
 	else {
