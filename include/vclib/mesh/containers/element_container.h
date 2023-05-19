@@ -47,7 +47,8 @@ class ElementContainer : public ElementContainerTriggerer
 	using ElementContainerType = ElementContainer<T>;
 
 public:
-	using ElementType          = T;
+	using ElementType    = T;
+	using ParentMeshType = typename T::ParentMeshType;
 
 	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
 
@@ -70,16 +71,24 @@ protected:
 	uint elementIndexIfCompact(uint i) const;
 	std::vector<int> elementCompactIndices() const;
 
-	template<typename MeshType>
-	void setParentMeshPointers(MeshType* parentMesh);
+	void setParentMeshPointers(void* pm);
 
 	template<typename C>
+	bool isOptionalComponentTypeEnabled() const;
+
+	template<uint COMP_TYPE>
 	bool isOptionalComponentEnabled() const;
 
 	template<typename C>
+	void enableOptionalComponentType();
+
+	template<uint COMP_TYPE>
 	void enableOptionalComponent();
 
 	template<typename C>
+	void disableOptionalComponentType();
+
+	template<uint COMP_TYPE>
 	void disableOptionalComponent();
 
 	// Custom Components
@@ -125,17 +134,10 @@ protected:
 	uint index(const T *e) const;
 	void clearElements();
 
-	template<typename MeshType>
-	uint addElement(MeshType* parentMesh);
-
-	template<typename MeshType>
-	uint addElements(uint size, MeshType* parentMesh);
-
-	template<typename MeshType>
-	void reserveElements(uint size, MeshType* parentMesh);
-
-	template<typename MeshType>
-	void resizeElements(uint size, MeshType* parentMesh);
+	uint addElement();
+	uint addElements(uint size);
+	void reserveElements(uint size);
+	void resizeElements(uint size);
 
 	std::vector<int> compactElements();
 
@@ -148,15 +150,17 @@ protected:
 	template<typename OtherMesh>
 	void enableOptionalComponentsOf(const OtherMesh& m);
 
-	template<typename OtherMesh, typename ParentMeshType>
-	void importFrom(const OtherMesh& m, ParentMeshType* parent);
+	template<typename OtherMesh>
+	void importFrom(const OtherMesh& m);
 
 	template<typename OtherMesh, typename ElPtrBase>
 	void importPointersFrom(const OtherMesh& othMesh, ElPtrBase* base);
 	
 	// filter components of elements, taking only vertical ones
 	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
-	
+
+	ParentMeshType* parentMesh = nullptr;
+
 	/**
 	 * @brief en: the number of elements in the container. Could be different from elements.size()
 	 * due to elements marked as deleted into the container.
@@ -216,6 +220,12 @@ private:
 		const Container& c,
 		ElPtr*           base,
 		const CBase*     cbase);
+
+	template<typename Cont2, typename... Comps>
+	void enableSameOptionalComponents(TypeWrapper<Comps...>, const Cont2& c2);
+
+	template<typename Comp, typename Cont2>
+	void enableSameOptionalComponent(const Cont2& c2);
 };
 
 } // namespace vcl::mesh

@@ -36,7 +36,6 @@
 #include "../components/parent_mesh_pointer.h"
 #include "../components/principal_curvature.h"
 #include "../components/quality.h"
-#include "../components/vertex_half_edge_pointer.h"
 #include "../components/tex_coord.h"
 
 /**
@@ -125,10 +124,6 @@ using VerticalCoordinate3d = comp::Coordinate3d<VertexType>;
 /* Port CustomComponents class into vert namespace */
 template<typename VertexType>
 using CustomComponents = comp::CustomComponents<VertexType>;
-
-/* Port HalfEdgePointer into vert namespace*/
-template<typename HalfEdge>
-using HalfEdgePointer = comp::VertexHalfEdgePointer<HalfEdge>;
 
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark<>;

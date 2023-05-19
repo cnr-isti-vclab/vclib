@@ -59,15 +59,15 @@ public:
 	template<typename... V>
 	void setVertices(V... args);
 
-	void resizeVertices(uint n) requires NonDcelPolygonFaceConcept<Face>;
+	void resizeVertices(uint n) requires PolygonFaceConcept<Face>;
 
-	void pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face>;
+	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>;
 
-	void insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face>;
+	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>;
 
-	void eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face>;
+	void eraseVertex(uint i) requires PolygonFaceConcept<Face>;
 
-	void clearVertices() requires NonDcelPolygonFaceConcept<Face>;
+	void clearVertices() requires PolygonFaceConcept<Face>;
 
 private:
 	template<typename Comp>

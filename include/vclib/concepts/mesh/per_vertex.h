@@ -46,10 +46,6 @@ concept HasPerVertexColor =
 	HasVertices<MeshType> && vcl::vert::HasColor<typename MeshType::VertexType>;
 
 template<typename MeshType>
-concept HasPerVertexHalfEdgePointer =
-	HasVertices<MeshType> && vcl::vert::HasHalfEdgePointer<typename MeshType::VertexType>;
-
-template<typename MeshType>
 concept HasPerVertexMark =
 	HasVertices<MeshType> && vcl::vert::HasMark<typename MeshType::VertexType>;
 

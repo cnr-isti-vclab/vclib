@@ -108,6 +108,122 @@ uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
 }
 
 /**
+ * @brief Add a new vertex into the vertex container, returning the index of the added vertex.
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
+ *
+ * @return the index of the new vertex.
+ */
+template<vcl::VertexConcept T>
+uint VertexContainer<T>::addVertex()
+{
+	return Base::addElement();
+}
+
+/**
+ * @brief Add a new vertex with the given coordinate into the vertex container, returning the id of
+ * the added vertex.
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
+ *
+ * @param p: coordinate of the new vertex.
+ * @return the id of the new vertex.
+ */
+template<vcl::VertexConcept T>
+uint VertexContainer<T>::addVertex(const typename T::CoordType& p)
+{
+	uint vid = addVertex();  // using the previously defined addVertex function
+	vertex(vid).coord() = p; // set the coordinate to the vertex
+	return vid;
+}
+
+/**
+ * @brief Add an arbitrary number of n vertices, returning the id of the first added vertex.
+ *
+ * This means that, if you want to add 5 vertices and this member function returns 4, the added
+ * vertices will have id from 4 to id 8 included.
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
+ *
+ * @param n: the number of vertices to add to the mesh.
+ * @return the id of the first added vertex.
+ */
+template<vcl::VertexConcept T>
+uint VertexContainer<T>::addVertices(uint n)
+{
+	return Base::addElements(n);
+}
+
+/**
+ * @brief Add an arbitrary number of vertices with the given coordinates, returning the id of the
+ * first added vertex.
+ *
+ * You can call this member function like:
+ *
+ * @code{.cpp}
+ * CoordType p0, p1, p2, p3;
+ * // init coords...
+ * m.addVertices(p0, p1, p2, p3);
+ * @endcode
+ *
+ * The number of accepted Coordtype arguments is variable.
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
+ *
+ * @param p: first vertex coordinate
+ * @param v: list of other vertex coordinates
+ * @return the id of the first added vertex.
+ */
+template<vcl::VertexConcept T>
+template<typename... VC>
+uint VertexContainer<T>::addVertices(const typename T::CoordType& p, const VC&... v)
+{
+	uint vid = vertexContainerSize();
+	reserveVertices(vid + sizeof...(VC) + 1); // reserve the new number of vertices
+	addVertex(p);
+	// pack expansion: will be translated at compile time as an addVertex() call for each argument
+	// of the addVertices member function
+	(addVertex(v), ...);
+	return vid;
+}
+
+/**
+ * @brief Reserve a number of vertices in the container of Vertices. This is useful when you know
+ * (or you have an idea) of how much vertices are going to add into a newly or existing mesh.
+ * Calling this function before any add_vertex() call will avoid unuseful reallocations of the
+ * container, saving execution time.
+ *
+ * The filosofy of this function is similar to the one of the
+ * [reserve()](https://en.cppreference.com/w/cpp/container/vector/reserve) function of the
+ * [std::vector class](https://en.cppreference.com/w/cpp/container/vector).
+ *
+ * If the call of this function will cause a reallocation of the Vertex container, the function
+ * will automatically take care of updating all the Vertex pointers contained in the Mesh.
+ *
+ * @param n: the new capacity of the vertex container.
+ */
+template<vcl::VertexConcept T>
+void VertexContainer<T>::reserveVertices(uint n)
+{
+	Base::reserveElements(n);
+}
+
+/**
+ * @brief Compacts the Vertex Container, removing all the vertices marked as deleted. Vertices
+ * indices will change accordingly. The function will automatically take care of updating all the
+ * Vertex pointers contained in the Mesh.
+ */
+template<vcl::VertexConcept T>
+void VertexContainer<T>::compactVertices()
+{
+	Base::compactElements();
+}
+
+/**
  * @brief Marks as deleted the vertex with the given id.
  *
  * This member function does not perform any reallocation of the vertices: the deleted vertices
@@ -345,7 +461,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentEdgesEnabled()
 	const requires vert::HasOptionalAdjacentEdges<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdges>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentEdges>();
 }
 
 /**
@@ -357,7 +473,7 @@ bool VertexContainer<T>::isPerVertexAdjacentEdgesEnabled()
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>
 {
-	Base::template enableOptionalComponent<typename T::AdjacentEdges>();
+	Base::template enableOptionalComponentType<typename T::AdjacentEdges>();
 }
 
 /**
@@ -369,7 +485,7 @@ void VertexContainer<T>::enablePerVertexAdjacentEdges() requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>
 {
-	Base::template disableOptionalComponent<typename T::AdjacentEdges>();
+	Base::template disableOptionalComponentType<typename T::AdjacentEdges>();
 }
 
 /**
@@ -383,7 +499,7 @@ void VertexContainer<T>::disablePerVertexAdjacentEdges() requires vert::HasOptio
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::HasOptionalAdjacentFaces<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::AdjacentFaces>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentFaces>();
 }
 
 /**
@@ -395,7 +511,7 @@ bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
-	Base::template enableOptionalComponent<typename T::AdjacentFaces>();
+	Base::template enableOptionalComponentType<typename T::AdjacentFaces>();
 }
 
 /**
@@ -407,7 +523,7 @@ void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
-	Base::template disableOptionalComponent<typename T::AdjacentFaces>();
+	Base::template disableOptionalComponentType<typename T::AdjacentFaces>();
 }
 
 /**
@@ -422,7 +538,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentVerticesEnabled()
 	const requires vert::HasOptionalAdjacentVertices<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::AdjacentVertices>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentVertices>();
 }
 
 /**
@@ -435,7 +551,7 @@ template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentVertices()
 	requires vert::HasOptionalAdjacentVertices<T>
 {
-	Base::template enableOptionalComponent<typename T::AdjacentVertices>();
+	Base::template enableOptionalComponentType<typename T::AdjacentVertices>();
 }
 
 /**
@@ -448,7 +564,7 @@ template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentVertices()
 	requires vert::HasOptionalAdjacentVertices<T>
 {
-	Base::template disableOptionalComponent<typename T::AdjacentVertices>();
+	Base::template disableOptionalComponentType<typename T::AdjacentVertices>();
 }
 
 /**
@@ -461,7 +577,7 @@ void VertexContainer<T>::disablePerVertexAdjacentVertices()
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptionalColor<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Color>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Color>();
 }
 
 /**
@@ -472,7 +588,7 @@ bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptio
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<T>
 {
-	return Base::template enableOptionalComponent<typename T::Color>();
+	return Base::template enableOptionalComponentType<typename T::Color>();
 }
 
 /**
@@ -483,7 +599,7 @@ void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor<T>
 {
-	return Base::template disableOptionalComponent<typename T::Color>();
+	return Base::template disableOptionalComponentType<typename T::Color>();
 }
 
 /**
@@ -496,7 +612,7 @@ void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOptionalMark<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Mark>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Mark>();
 }
 
 /**
@@ -507,7 +623,7 @@ bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 {
-	return Base::template enableOptionalComponent<typename T::Mark>();
+	return Base::template enableOptionalComponentType<typename T::Mark>();
 }
 
 /**
@@ -518,7 +634,7 @@ void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T>
 {
-	return Base::template disableOptionalComponent<typename T::Mark>();
+	return Base::template disableOptionalComponentType<typename T::Mark>();
 }
 
 /**
@@ -532,7 +648,7 @@ void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOptionalNormal<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Normal>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Normal>();
 }
 
 /**
@@ -543,7 +659,7 @@ bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOpti
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
-	return Base::template enableOptionalComponent<typename T::Normal>();
+	return Base::template enableOptionalComponentType<typename T::Normal>();
 }
 
 /**
@@ -554,7 +670,7 @@ void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNorma
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
-	return Base::template disableOptionalComponent<typename T::Normal>();
+	return Base::template disableOptionalComponentType<typename T::Normal>();
 }
 
 /**
@@ -569,7 +685,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled()
 	const requires vert::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::PrincipalCurvature>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -582,7 +698,7 @@ template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexPrincipalCurvature()
 	requires vert::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template enableOptionalComponent<typename T::PrincipalCurvature>();
+	return Base::template enableOptionalComponentType<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -595,7 +711,7 @@ template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 	requires vert::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template disableOptionalComponent<typename T::PrincipalCurvature>();
+	return Base::template disableOptionalComponentType<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -608,7 +724,7 @@ void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexQualityEnabled() const requires vert::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::Quality>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::Quality>();
 }
 
 /**
@@ -619,7 +735,7 @@ bool VertexContainer<T>::isPerVertexQualityEnabled() const requires vert::HasOpt
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexQuality() requires vert::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponent<typename T::Quality>();
+	return Base::template enableOptionalComponentType<typename T::Quality>();
 }
 
 /**
@@ -630,7 +746,7 @@ void VertexContainer<T>::enablePerVertexQuality() requires vert::HasOptionalQual
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexQuality() requires vert::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponent<typename T::Quality>();
+	return Base::template disableOptionalComponentType<typename T::Quality>();
 }
 
 /**
@@ -643,7 +759,7 @@ void VertexContainer<T>::disablePerVertexQuality() requires vert::HasOptionalQua
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOptionalTexCoord<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::TexCoord>();
+	return Base::template isOptionalComponentTypeEnabled<typename T::TexCoord>();
 }
 
 /**
@@ -654,7 +770,7 @@ bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOp
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
-	return Base::template enableOptionalComponent<typename T::TexCoord>();
+	return Base::template enableOptionalComponentType<typename T::TexCoord>();
 }
 
 /**
@@ -665,7 +781,7 @@ void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTex
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
-	return Base::template disableOptionalComponent<typename T::TexCoord>();
+	return Base::template disableOptionalComponentType<typename T::TexCoord>();
 }
 
 /**

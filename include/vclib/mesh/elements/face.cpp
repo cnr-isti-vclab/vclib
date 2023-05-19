@@ -31,16 +31,12 @@ Face<MeshType, Comps...>::Face()
 }
 
 /**
- * @brief Constructs a Face with the given set of vertices.
+ * @brief Constructs a Face with the given set of vertex pointers.
  *
- * Sets a list of Vertex pointers to the face. If the Face size is non-dcel dynamic, will
- * take care to update the also the number of adjacent faces and the number of wedge components, if
- * these components are part of the Face and if the size of the Face is changed. On the contrary, if
- * the Face size is static or it belongs to a Dcel mesh, the number of vertices of the list must be
- * equal to the size of the Face (the value returned by vertexNumber()).
- *
- * @note This constructor cannot resize the number of vertices (and other components tied to the
- * number of vertices) if it called from a Face of a Dcel mesh.
+ * Sets a list of Vertex pointers to the face.
+ * If the Face size is static, the number of vertices of the list must be equal to the size of the
+ * Face (the value returned by vertexNumber()). If the Face size is dynamic, it will take care to
+ * update the also the size of the components tied to the vertex number of the face.
  *
  * @todo do proper checks on the number of vertices at compile time and at runtime
  *
@@ -54,13 +50,11 @@ Face<MeshType, Comps...>::Face(const std::vector<VertexType*>& list) // TODO add
 }
 
 /**
- * @brief Sets a list of Vertex references to the face. If the Face size is non-dcel dynamic, will
- * take care to update the also the number of adjacent faces and the number of wedge components, if
- * these components are part of the Face and if the size of the Face is changed. On the contrary, if
- * the Face size is static or it belongs to a Dcel mesh, the number of arguments of this function
- * must be equal to the size of the Face (the value returned by vertexNumber()).
+ * @brief Sets a list of Vertex pointers to the face.
  *
- * @note This constructor cannot be called if the Face type belongs to a Dcel mesh.
+ * If the Face size is static, the number of vertices of the list must be equal to the size of the
+ * Face (the value returned by vertexNumber()). If the Face size is dynamic, it will take care to
+ * update the also the size of the components tied to the vertex number of the face.
  *
  * @param[in] args: a variable number of vertex pointers in counterclockwise order that will be set
  *                  as vertices of the face.
@@ -73,11 +67,11 @@ Face<MeshType, Comps...>::Face(V... args) // TODO add requires
 }
 
 /**
- * @brief Sets a list of Vertex references to the face. If the Face size is non-dcel dynamic, will
- * take care to update the also the number of adjacent faces and the number of wedge components, if
- * these components are part of the Face and if the size of the Face is changed. On the contrary, if
- * the Face size is static or it belongs to a Dcel mesh, the number of vertices of the list must be
- * equal to the size of the Face (the value returned by vertexNumber()).
+ * @brief Sets a list of Vertex pointers to the face.
+ *
+ * If the Face size is static, the number of vertices of the list must be equal to the size of the
+ * Face (the value returned by vertexNumber()). If the Face size is dynamic, it will take care to
+ * update the also the size of the components tied to the vertex number of the face.
  *
  * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
  *                  vertices of the face.
@@ -116,7 +110,7 @@ void Face<MeshType, Comps...>::setVertices(V... args)
  */
 template<typename MeshType, typename... Comps>
 void Face<MeshType, Comps...>::resizeVertices(uint n)
-	requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
+	requires PolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::resizeVertices(n);
 
@@ -125,7 +119,7 @@ void Face<MeshType, Comps...>::resizeVertices(uint n)
 }
 
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::pushVertex(v);
 
@@ -134,7 +128,7 @@ void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires NonDcelPolygon
 }
 
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::insertVertex(i, v);
 
@@ -143,7 +137,7 @@ void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires NonD
 }
 
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::eraseVertex(uint i) requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::eraseVertex(i);
 
@@ -152,7 +146,7 @@ void Face<MeshType, Comps...>::eraseVertex(uint i) requires NonDcelPolygonFaceCo
 }
 
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::clearVertices() requires NonDcelPolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::clearVertices() requires PolygonFaceConcept<Face<MeshType, Comps...>>
 {
 	VPtrs::clearVertices();
 

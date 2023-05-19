@@ -26,7 +26,6 @@
 
 #include "containers/edge_container.h"
 #include "containers/face_container.h"
-#include "containers/half_edge_container.h"
 #include "containers/vertex_container.h"
 
 #endif //  VCL_CONCEPTS_MESH_CONTAINERS_H

@@ -73,19 +73,6 @@ concept HasWedgeColors = requires(
 };
 
 /**
- * @private
- * @brief HasWedgeColorsComponent concept is used to discriminate between the WedgeColors (or
- * OptionalWedgeColors) component, and the FaceHalfEdgePointers component, which using half edges
- * allows to access to wedge colors. This concept is intended only for internal use, useful to check
- * that a Face does not have both WedgeColors and FaceHalfEdgePointers components.
- */
-template<typename T>
-concept HasWedgeColorsComponent = HasWedgeColors<T> && requires(T o)
-{
-	{ o.__wedgeColors() } -> std::same_as<void>;
-};
-
-/**
  * @brief HasOptionalWedgeColors concept is satisfied only if a class satisfies the
  * HasWedgeColors concept and has the static boolean constant IS_OPTIONAL is set to true.
  *
@@ -93,7 +80,7 @@ concept HasWedgeColorsComponent = HasWedgeColors<T> && requires(T o)
  */
 template<typename T>
 concept HasOptionalWedgeColors =
-	HasWedgeColorsComponent<T> && IsOptionalComponent<typename T::WedgeColors>;
+	HasWedgeColors<T> && IsOptionalComponent<typename T::WedgeColors>;
 
 /**
  * @private

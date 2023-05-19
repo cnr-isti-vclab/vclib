@@ -23,6 +23,8 @@
 
 #include "wedge_colors.h"
 
+#include <vclib/concepts/mesh/components/color.h>
+
 namespace vcl::comp {
 
 template<int N, typename El, bool O>

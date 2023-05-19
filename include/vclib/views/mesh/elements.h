@@ -41,9 +41,6 @@ concept CleanVertexPtrsConcept = comp::HasVertexPointers<RemoveConstRef<T>>;
 template<typename T>
 concept CleanEdgeMeshConcept = EdgeMeshConcept<RemoveConstRef<T>>;
 
-template<typename T>
-concept CleanDcelMeshConcept = DcelMeshConcept<RemoveConstRef<T>>;
-
 struct VerticesView
 {
 	constexpr VerticesView() = default;
@@ -83,17 +80,6 @@ struct EdgesView
 	}
 };
 
-struct HalfEdgesView
-{
-	constexpr HalfEdgesView() = default;
-
-	template <CleanDcelMeshConcept R>
-	friend constexpr auto operator|(R&& r, HalfEdgesView)
-	{
-		return r.halfEdges();
-	}
-};
-
 } // namespace vcl::views::internal
 
 /**
@@ -124,15 +110,6 @@ inline constexpr internal::FacesView faces;
  * @ingroup views
  */
 inline constexpr internal::EdgesView edges;
-
-/**
- * @brief A view that allows to iterate overt the HalfEdge elements of an object.
- *
- * This view can be applied to objects having type that satisfies the HalfEdgeMeshConcept
- *
- * @ingroup views
- */
-inline constexpr internal::HalfEdgesView halfEdges;
 
 } // namespace vcl::views
 

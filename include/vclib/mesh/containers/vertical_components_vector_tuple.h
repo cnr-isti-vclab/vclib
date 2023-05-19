@@ -43,9 +43,6 @@ public:
 	static constexpr uint componentsNumber();
 
 	template<typename C>
-	static constexpr uint indexOfType();
-
-	template<typename C>
 	constexpr std::vector<typename C::DataValueType>& vector();
 
 	template<typename C>
@@ -61,12 +58,21 @@ public:
 	void clear();
 
 	template<typename C>
+	bool isComponentTypeEnabled() const;
+
+	template<uint COMP_TYPE>
 	bool isComponentEnabled() const;
 
 	template<typename C>
+	void enableComponentType();
+
+	template<uint COMP_TYPE>
 	void enableComponent();
 
 	template<typename C>
+	void disableComponentType();
+
+	template<uint COMP_TYPE>
 	void disableComponent();
 
 private:
@@ -74,6 +80,9 @@ private:
 
 	std::array<bool, componentsNumber()> vecEnabled;
 	std::size_t siz = 0;
+
+	template<typename C>
+	static constexpr uint indexOfType();
 
 	template<std::size_t N>
 	void vectorResize(std::size_t size);

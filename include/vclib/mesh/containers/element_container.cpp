@@ -198,26 +198,33 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 }
 
 template<ElementConcept T>
-template<typename MeshType>
-void ElementContainer<T>::setParentMeshPointers(MeshType* parentMesh)
+void ElementContainer<T>::setParentMeshPointers(void* pm)
 {
+	parentMesh = static_cast<ParentMeshType*>(pm);
 	for (auto& e : elements(false)) {
-		e.setParentMesh(parentMesh);
+		e.setParentMesh(pm);
 	}
 }
 
 template<ElementConcept T>
 template<typename C>
+bool ElementContainer<T>::isOptionalComponentTypeEnabled() const
+{
+	return vcVecTuple.template isComponentTypeEnabled<C>();
+}
+
+template<ElementConcept T>
+template<uint COMP_TYPE>
 bool ElementContainer<T>::isOptionalComponentEnabled() const
 {
-	return vcVecTuple.template isComponentEnabled<C>();
+	return vcVecTuple.template isComponentEnabled<COMP_TYPE>();
 }
 
 template<ElementConcept T>
 template<typename C>
-void ElementContainer<T>::enableOptionalComponent()
+void ElementContainer<T>::enableOptionalComponentType()
 {
-	vcVecTuple.template enableComponent<C>();
+	vcVecTuple.template enableComponentType<C>();
 	// first call init on all the just enabled components
 	if constexpr (comp::HasInitMemberFunction<C>) {
 		for (auto& e : elements()) {
@@ -236,10 +243,25 @@ void ElementContainer<T>::enableOptionalComponent()
 }
 
 template<ElementConcept T>
+template<uint COMP_TYPE>
+void ElementContainer<T>::enableOptionalComponent()
+{
+	using C = comp::ComponentOfTypeT<COMP_TYPE, typename T::Components>;
+	enableOptionalComponentType<C>();
+}
+
+template<ElementConcept T>
 template<typename C>
+void ElementContainer<T>::disableOptionalComponentType()
+{
+	vcVecTuple.template disableComponentType<C>();
+}
+
+template<ElementConcept T>
+template<uint COMP_TYPE>
 void ElementContainer<T>::disableOptionalComponent()
 {
-	vcVecTuple.template disableComponent<C>();
+	vcVecTuple.template disableComponent<COMP_TYPE>();
 }
 
 template<ElementConcept T>
@@ -447,8 +469,7 @@ void ElementContainer<T>::clearElements()
 }
 
 template<ElementConcept T>
-template<typename MeshType>
-uint ElementContainer<T>::addElement(MeshType* parentMesh)
+uint ElementContainer<T>::addElement()
 {
 	vcVecTuple.resize(vec.size() + 1);
 	ccVecMap.resize(vec.size() + 1);
@@ -463,6 +484,7 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
 	}
 
 	return vec.size() - 1;
@@ -477,8 +499,7 @@ uint ElementContainer<T>::addElement(MeshType* parentMesh)
  * @return the id of the first added element.
  */
 template<ElementConcept T>
-template<typename MeshType>
-uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
+uint ElementContainer<T>::addElements(uint size)
 {
 	ccVecMap.resize(vec.size() + size);
 	vcVecTuple.resize(vec.size() + size);
@@ -496,14 +517,14 @@ uint ElementContainer<T>::addElements(uint size, MeshType* parentMesh)
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
 	}
 
 	return baseId;
 }
 
 template<ElementConcept T>
-template<typename MeshType>
-void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
+void ElementContainer<T>::reserveElements(uint size)
 {
 	T* oldB = vec.data();
 	vec.reserve(size);
@@ -514,12 +535,12 @@ void ElementContainer<T>::reserveElements(uint size, MeshType* parentMesh)
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
 	}
 }
 
 template<ElementConcept T>
-template<typename MeshType>
-void ElementContainer<T>::resizeElements(uint size, MeshType* parentMesh)
+void ElementContainer<T>::resizeElements(uint size)
 {
 	T* oldB = vec.data();
 	vec.resize(size);
@@ -530,6 +551,7 @@ void ElementContainer<T>::resizeElements(uint size, MeshType* parentMesh)
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
 	}
 }
 
@@ -554,10 +576,14 @@ std::vector<int> ElementContainer<T>::compactElements()
 			}
 		}
 		k++;
+		T* base = vec.data();
 		vec.resize(k);
+		assert(base == vec.data());
 
 		ccVecMap.compact(newIndices);
 		vcVecTuple.compact(newIndices);
+
+		parentMesh->updateAllPointersAfterCompact(base, newIndices);
 	}
 	return newIndices;
 }
@@ -588,132 +614,27 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using Container = typename OtherMesh::template GetContainerOf<T>::type;
+		using OContainer = typename OtherMesh::template ContainerOf<T>::type;
 
-		const Container& c = (const Container&)m;
+		const OContainer& c = static_cast<const OContainer&>(m);
 
-		// unfortunately, this function cannot be shortened in a smart way
-		using CT = typename Container::ElementType;
-
-		// Adjacent Edges
-		// if this Element of this container has optional adjacent edges
-		if constexpr (comp::HasOptionalAdjacentEdges<T>) {
-			// if the other Container Element type has adjacent edges
-			if constexpr (comp::HasAdjacentEdges<CT>) {
-
-				// short circuited or: if optional, then I check if enabled; if not optional, then true
-				if (!comp::HasOptionalAdjacentEdges<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::AdjacentEdges>()) {
-					enableOptionalComponent<typename T::AdjacentEdges>();
-				}
-			}
-		}
-		// Adjacent Faces
-		if constexpr (comp::HasOptionalAdjacentFaces<T>) {
-			if constexpr (comp::HasAdjacentFaces<CT>) {
-				if (!comp::HasOptionalAdjacentFaces<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::AdjacentFaces>()) {
-					enableOptionalComponent<typename T::AdjacentFaces>();
-				}
-			}
-		}
-		// Adjacent Vertices
-		if constexpr (comp::HasOptionalAdjacentVertices<T>) {
-			if constexpr (comp::HasAdjacentVertices<CT>) {
-				if (!comp::HasOptionalAdjacentVertices<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::AdjacentVertices>()) {
-					enableOptionalComponent<typename T::AdjacentVertices>();
-				}
-			}
-		}
-		// Color
-		if constexpr (comp::HasOptionalColor<T>) {
-			if constexpr (comp::HasColor<CT>) {
-				if (!comp::HasOptionalColor<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::Color>()) {
-					enableOptionalComponent<typename T::Color>();
-				}
-			}
-		}
-		// Mark
-		if constexpr (comp::HasOptionalMark<T>) {
-			if constexpr (comp::HasMark<CT>) {
-				if (!comp::HasOptionalMark<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::Mark>()) {
-					enableOptionalComponent<typename T::Mark>();
-				}
-			}
-		}
-		// Normal
-		if constexpr (comp::HasOptionalNormal<T>) {
-			if constexpr (comp::HasNormal<CT>) {
-				if (!comp::HasOptionalNormal<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::Normal>()) {
-					enableOptionalComponent<typename T::Normal>();
-				}
-			}
-		}
-		// Principal Curvature
-		if constexpr (comp::HasOptionalPrincipalCurvature<T>) {
-			if constexpr (comp::HasPrincipalCurvature<CT>) {
-				if (!comp::HasOptionalPrincipalCurvature<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::PrincipalCurvature>()) {
-					enableOptionalComponent<typename T::PrincipalCurvature>();
-				}
-			}
-		}
-		// Quality
-		if constexpr (comp::HasOptionalQuality<T>) {
-			if constexpr (comp::HasQuality<CT>) {
-				if (!comp::HasOptionalQuality<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::Quality>()) {
-					enableOptionalComponent<typename T::Quality>();
-				}
-			}
-		}
-		// TexCoord
-		if constexpr (comp::HasOptionalTexCoord<T>) {
-			if constexpr (comp::HasTexCoord<CT>) {
-				if (!comp::HasOptionalTexCoord<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::TexCoord>()) {
-					enableOptionalComponent<typename T::TexCoord>();
-				}
-			}
-		}
-		// Wedge Colors
-		if constexpr (comp::HasOptionalWedgeColors<T>) {
-			if constexpr (comp::HasWedgeColors<CT>) {
-				if (!comp::HasOptionalWedgeColors<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::WedgeColors>()) {
-					enableOptionalComponent<typename T::WedgeColors>();
-				}
-			}
-		}
-		// Wedge TexCoords
-		if constexpr (comp::HasOptionalWedgeTexCoords<T>) {
-			if constexpr (comp::HasWedgeTexCoords<CT>) {
-				if (!comp::HasOptionalWedgeTexCoords<CT> ||
-					c.template isOptionalComponentEnabled<typename CT::WedgeTexCoords>()) {
-					enableOptionalComponent<typename T::WedgeTexCoords>();
-				}
-			}
-		}
+		enableSameOptionalComponents(typename T::Components(), c);
 	}
 }
 
 template<ElementConcept T>
-template<typename OtherMesh, typename ParentMeshType>
-void ElementContainer<T>::importFrom(const OtherMesh &m, ParentMeshType* parent)
+template<typename OtherMesh>
+void ElementContainer<T>::importFrom(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using Container = typename OtherMesh::template GetContainerOf<T>::type;
+		using Container = typename OtherMesh::template ContainerOf<T>::type;
 
 		const Container& c = (const Container&)m;
 
 		clearElements();
 		// pointer to parent mesh needs to be updated later by the mesh
-		addElements(c.elementContainerSize(), parent);
+		addElements(c.elementContainerSize());
 		unsigned int eid = 0;
 		for (const typename Container::ElementType& e : c.elements(false)) {
 			element(eid).importFrom(e);
@@ -747,9 +668,9 @@ void ElementContainer<T>::ElementContainer::importPointersFrom(
 		OtherMesh::template hasContainerOf<T>() && OtherMesh::template hasContainerOf<ElPtrBase>()) {
 
 		// get the containe type of the other mesh for MyBase - used for get the base pointer
-		using OthBaseContainer = typename OtherMesh::template GetContainerOf<ElPtrBase>::type;
+		using OthBaseContainer = typename OtherMesh::template ContainerOf<ElPtrBase>::type;
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using OthTContainer = typename OtherMesh::template GetContainerOf<T>::type;
+		using OthTContainer = typename OtherMesh::template ContainerOf<T>::type;
 
 		// get the container base of the other mesh, that we use to import pointers
 		const auto* cbase = othMesh.OthBaseContainer::vec.data();
@@ -834,7 +755,7 @@ void ElementContainer<T>::updatePointersOnComponent(const ElPtr* oldBase, const 
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentEnabled<Comp>()) {
+			if(isOptionalComponentTypeEnabled<Comp>()) {
 				for (T& e : elements()) {
 					e.Comp::updatePointers(oldBase, newBase);
 				}
@@ -856,7 +777,7 @@ void ElementContainer<T>::updatePointersAfterCompactOnComponent(
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentEnabled<Comp>()) {
+			if(isOptionalComponentTypeEnabled<Comp>()) {
 				for (T& e : elements()) {
 					e.Comp::updatePointersAfterCompact(base, newIndices);
 				}
@@ -879,7 +800,7 @@ void ElementContainer<T>::importPointersOnComponentFrom(
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentEnabled<Comp>()) {
+			if(isOptionalComponentTypeEnabled<Comp>()) {
 				for (uint i = 0; i < elementContainerSize(); ++i) {
 					element(i).Comp::importPointersFrom(c.element(i), base, cbase);
 				}
@@ -888,6 +809,39 @@ void ElementContainer<T>::importPointersOnComponentFrom(
 		else {
 			for (uint i = 0; i < elementContainerSize(); ++i) {
 				element(i).Comp::importPointersFrom(c.element(i), base, cbase);
+			}
+		}
+	}
+}
+
+template<ElementConcept T>
+template<typename Cont2, typename... Comps>
+void ElementContainer<T>::enableSameOptionalComponents(TypeWrapper<Comps...>, const Cont2& c2)
+{
+	// for each Component in Comps, will call enableSameOptionalComponent
+	(enableSameOptionalComponent<Comps>(c2), ...);
+}
+
+/**
+ * This function enables the component Comp in this container if it is available in Cont2
+ */
+template<ElementConcept T>
+template<typename Comp, typename Cont2>
+void ElementContainer<T>::enableSameOptionalComponent(const Cont2& c2)
+{
+	// if Comp is an optional component in This container
+	if constexpr (comp::IsOptionalComponent<Comp>) {
+		// if Comp is available in Cont2
+		if constexpr (comp::HasComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>){
+			// if Comp is optional in Cont2
+			if constexpr (comp::HasOptionalComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>) {
+				// if Comp is enabled in Cont2, we enable it in this container
+				if (c2.template isOptionalComponentEnabled<Comp::COMPONENT_TYPE>()) {
+					enableOptionalComponent<Comp::COMPONENT_TYPE>();
+				}
+			}
+			else { // if Comp is not optional (but is available), we enable it in this container
+				enableOptionalComponent<Comp::COMPONENT_TYPE>();
 			}
 		}
 	}

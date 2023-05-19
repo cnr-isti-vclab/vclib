@@ -42,10 +42,6 @@ concept HasPerFaceColor =
 	HasFaces<MeshType> && vcl::face::HasColor<typename MeshType::FaceType>;
 
 template<typename MeshType>
-concept HasPerFaceHalfEdgePointers =
-	HasFaces<MeshType> && vcl::face::HasHalfEdgePointers<typename MeshType::FaceType>;
-
-template<typename MeshType>
 concept HasPerFaceMark =
 	HasFaces<MeshType> && vcl::face::HasMark<typename MeshType::FaceType>;
 

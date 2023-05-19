@@ -24,7 +24,6 @@
 #ifndef VCL_MESH_MESH_REQUIREMENTS_H
 #define VCL_MESH_MESH_REQUIREMENTS_H
 
-#include "half_edge_requirements.h"
 #include "face_requirements.h"
 #include "vertex_requirements.h"
 

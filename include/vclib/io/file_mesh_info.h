@@ -83,7 +83,7 @@ public:
 	 *
 	 * @note: MESH is not an element, but it is used since some components can be stored per mesh.
 	 */
-	enum Element { VERTEX, FACE, EDGE, HALF_EDGE, MESH, NUM_ELEMENTS };
+	enum Element { VERTEX, FACE, EDGE, MESH, NUM_ELEMENTS };
 
 	/**
 	 * @brief Enum used to describe the type of Components that each Element can have.

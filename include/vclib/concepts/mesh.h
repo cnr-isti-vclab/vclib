@@ -27,7 +27,6 @@
 #include "mesh/components.h"
 #include "mesh/containers.h"
 #include "mesh/per_face.h"
-#include "mesh/per_half_edge.h"
 #include "mesh/per_vertex.h"
 
 /**
@@ -61,13 +60,13 @@ using IsDerivedFromMesh = IsDerivedFromTemplateSpecialization<Derived, Mesh>;
 // checks if a type is a vcl::Mesh<Args...>
 template<class T>
 struct IsAMesh : // Default case, no pattern match
-				 std::false_type
+		 std::false_type
 {
 };
 
 template<class... Args>
 struct IsAMesh<Mesh<Args...>> : // For types matching the pattern Mesh<Args...>
-								std::true_type
+		std::true_type
 {
 };
 
@@ -186,46 +185,6 @@ concept EdgeMeshConcept =
 };
 
 /**
- * @brief The DcelMeshConcept is satisfied when:
- * - The FaceMeshConcpt is satisfied
- * - The Mesh has HalfEdge, Face and Vertex containers
- * - The HalfEdge element has HalfEdgePointers component
- * - The Vertex Element has HalfEdgePointer component
- * - The Face Element has HalfEdgePointers component
- * - The Vertex Element does not have AdjacentVertices component (it is simulated by half edges)
- * - The Face Element does not have AdjacentFaces component (it is simulated by half edges)
- * - The Face Element does not have WedgeColors component (it is simulated by half edges)
- * - The Face Element does not have WedgeTexCoords component (it is simulated by half edges)
- *
- * @ingroup mesh_concepts
- */
-template<typename T>
-concept DcelMeshConcept =
-	FaceMeshConcept<T> &&
-	HasHalfEdges<T> &&
-	HasPerVertexHalfEdgePointer<T> &&
-	HasPerFaceHalfEdgePointers<T> &&
-	!comp::HasAdjacentVerticesComponent<typename T::VertexType> &&
-	!comp::HasAdjacentFacesComponent<typename T::FaceType> &&
-	!comp::HasWedgeColorsComponent<typename T::FaceType> &&
-	!comp::HasWedgeTexCoordsComponent<typename T::FaceType> &&
-	requires(
-		T o,
-		const T& co,
-		typename T::HalfEdgeType e)
-{
-	typename T::HalfEdgeType;
-	typename T::HalfEdgeContainer;
-
-	{ co.index(e) } -> std::same_as<uint>;
-	{ co.index(&e) } -> std::same_as<uint>;
-	{ o.addHalfEdge() } -> std::same_as<uint>;
-	{ o.addHalfEdges(uint()) } -> std::same_as<uint>;
-	{ o.reserveHalfEdges(uint()) } -> std::same_as<void>;
-	{ o.compactHalfEdges() } -> std::same_as<void>;
-};
-
-/**
  * @brief Concept that is evaluated true if a Mesh has the BoundingBox component.
  *
  * @ingroup mesh_concepts
@@ -272,30 +231,6 @@ concept HasTexturePaths = MeshConcept<MeshType> && mesh::HasTexturePaths<MeshTyp
  */
 template<typename MeshType>
 concept HasTransformMatrix = MeshConcept<MeshType> && mesh::HasTransformMatrix<MeshType>;
-
-namespace internal {
-
-// Concept used to enable PerFaceWedgeColors member functions in Mesh class
-// they can be enabled if:
-// - they have per face optional WedgeColors, or
-// - if the mesh is a Dcel, HalfEdges have optional Color
-template <typename M>
-concept OptionalWedgeColorsConcept =
-	FaceMeshConcept<M> &&
-	(face::HasOptionalWedgeColors<typename M::FaceType> ||
-	 (HasHalfEdges<M> && hedge::HasOptionalColor<typename M::HalfEdge>));
-
-// Concept used to enable PerFaceWedgeTexCoords member functions in Mesh class
-// they can be enabled if:
-// - they have per face optional WedgeTexCoords, or
-// - if the mesh is a Dcel, HalfEdges have optional TexCoord
-template <typename M>
-concept OptionalWedgeTexCoordsConcept =
-	FaceMeshConcept<M> &&
-	(face::HasOptionalWedgeTexCoords<typename M::FaceType> ||
-	 (HasHalfEdges<M> && hedge::HasOptionalTexCoord<typename M::HalfEdge>));
-
-} // namespace vcl::internal
 
 } // namespace vcl
 

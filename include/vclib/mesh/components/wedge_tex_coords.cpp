@@ -23,6 +23,8 @@
 
 #include "wedge_tex_coords.h"
 
+#include <vclib/concepts/mesh/components/tex_coord.h>
+
 namespace vcl::comp {
 
 template<typename Scalar, int N, typename El, bool O>
