@@ -61,6 +61,11 @@ public:
 	uint edgeContainerSize() const;
 	uint deletedEdgeNumber() const;
 
+	uint addEdge();
+	uint addEdges(uint n);
+	void reserveEdges(uint n);
+	void compactEdges();
+
 	void deleteEdge(uint i);
 	void deleteEdge(const EdgeType* e);
 
@@ -135,18 +140,6 @@ public:
 	ConstCustomComponentVectorHandle<K>
 	perEdgeCustomComponentVectorHandle(const std::string& name) const
 		requires edge::HasCustomComponents<T>;
-
-protected:
-	template<typename MeshType>
-	uint addEdge(MeshType* parentMesh);
-
-	template<typename MeshType>
-	uint addEdges(uint nEdges, MeshType* parentMesh);
-
-	template<typename MeshType>
-	void reserveEdges(uint size, MeshType* parentMesh);
-
-	std::vector<int> compactEdges();
 };
 
 } // namespace vcl::mesh

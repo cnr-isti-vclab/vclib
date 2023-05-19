@@ -31,16 +31,17 @@ namespace vcl {
 enum ElementEnumType {
 	VERTEX = 0,
 	FACE,
-	EDGE,
-	HALF_EDGE
+	EDGE
 };
 
-inline static constexpr uint ELEMENTS_NUMBER = 4;
+inline static constexpr uint ELEMENTS_NUMBER = 3;
 
 template<typename T>
 concept ElementConcept = requires (T o, const T& co)
 {
 	T::ELEMENT_TYPE;
+	typename T::Components;
+	typename T::ParentMeshType;
 	{ co.index() } -> std::same_as<uint>;
 };
 

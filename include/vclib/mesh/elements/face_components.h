@@ -29,7 +29,6 @@
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/custom_components.h"
-#include "../components/face_half_edge_pointers.h"
 #include "../components/mark.h"
 #include "../components/normal.h"
 #include "../components/parent_mesh_pointer.h"
@@ -113,10 +112,6 @@ using OptionalColor = comp::Color<FaceType, true>;
 /* Port CustomComponents class into face namespace */
 template<typename FaceType>
 using CustomComponents = comp::CustomComponents<FaceType>;
-
-/* Port HalfEdgePointers into face namespace*/
-template<typename HalfEdge>
-using HalfEdgePointers = comp::FaceHalfEdgePointers<HalfEdge>;
 
 /* Port Mark class into face namespace */
 using Mark = comp::Mark<>;

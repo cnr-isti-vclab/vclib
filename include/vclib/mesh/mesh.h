@@ -118,112 +118,35 @@ public:
 	template<ElementConcept El>
 	uint index(const El* e) const requires (hasContainerOf<El>());
 
-	/*** Vertices ***/
+	template<uint EL_TYPE>
+	uint addElement();
 
-	uint addVertex();
-	uint addVertex(const typename Mesh::VertexType::CoordType& p);
-	uint addVertices(uint n);
+	template<uint EL_TYPE>
+	uint addElements(uint n);
 
-	template<typename... VC>
-	uint addVertices(const typename Mesh::VertexType::CoordType& p, const VC&... v);
+	template<uint EL_TYPE>
+	void reserveElements(uint n);
 
-	void reserveVertices(uint n);
-	void compactVertices();
-
-	/*** Faces ***/
-
-	template<HasFaces M = Mesh>
-	uint addFace();
-
-	template<HasFaces M = Mesh, typename... V>
-	uint addFace(V... args);
-
-	template<HasFaces M = Mesh, typename Iterator>
-	uint addFace(Iterator begin, Iterator end);
-
-	template<HasFaces M = Mesh>
-	uint addFaces(uint n);
-
-	template<HasFaces M = Mesh>
-	void reserveFaces(uint n);
-
-	template<HasFaces M = Mesh>
-	void compactFaces();
-
-	// functions that could involve other components
-	// need to be here and not in the FaceContainer due to the possibility to be in a Dcel
-
-	// WedgeColors
-	template<HasFaces M = Mesh>
-	bool isPerFaceWedgeColorsEnabled() const requires internal::OptionalWedgeColorsConcept<M>;
-
-	template<HasFaces M = Mesh>
-	void enablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>;
-
-	template<HasFaces M = Mesh>
-	void disablePerFaceWedgeColors() requires internal::OptionalWedgeColorsConcept<M>;
-
-	// WedgeTexCoords
-	template<HasFaces M = Mesh>
-	bool isPerFaceWedgeTexCoordsEnabled() const requires internal::OptionalWedgeTexCoordsConcept<M>;
-
-	template<HasFaces M = Mesh>
-	void enablePerFaceWedgeTexCoords() requires internal::OptionalWedgeTexCoordsConcept<M>;
-
-	template<HasFaces M = Mesh>
-	void disablePerFaceWedgeTexCoords() requires internal::OptionalWedgeTexCoordsConcept<M>;
-
-	/*** Edges ***/
-
-	template<HasEdges M = Mesh>
-	uint addEdge();
-
-	template<HasEdges M = Mesh>
-	uint addEdges(uint n);
-
-	template<HasEdges M = Mesh>
-	void reserveEdges(uint n);
-
-	template<HasEdges M = Mesh>
-	void compactEdges();
-
-	/*** HalfEdges ***/
-
-	template<HasHalfEdges M = Mesh>
-	uint addHalfEdge();
-
-	template<HasHalfEdges M = Mesh>
-	uint addHalfEdges(uint n);
-
-	template<typename M = Mesh> requires HasHalfEdges<M> && HasFaces<M>
-	uint addHalfEdgesToFace(uint n, typename M::FaceType& f);
-
-	template<HasHalfEdges M = Mesh>
-	void reserveHalfEdges(uint n);
-
-	template<HasHalfEdges M = Mesh>
-	void compactHalfEdges();
+	template<uint EL_TYPE>
+	void compactElements();
 
 protected:
 	template<typename Cont>
-	uint addElement();
+	void compactContainer();
 
 	template<typename Cont>
-	uint addElements(uint n);
+	void clearContainer();
 
-	template<typename Cont>
-	void reserveElements(uint n);
-
-	template<typename Cont>
-	void compactElements();
-
-	template<typename Cont>
-	void clearElements();
+	template<ElementConcept Element>
+	void updateAllPointers(const Element* oldBase, const Element* newBase);
 
 	template<typename Cont, typename Element>
 	void updatePointers(
 		const Element* oldBase,
 		const Element* newBase);
+
+	template<ElementConcept Element>
+	void updateAllPointersAfterCompact(const Element* base, const std::vector<int>& newIndices);
 
 	template<typename Cont, typename Element>
 	void updatePointersAfterCompact(
@@ -234,21 +157,6 @@ private:
 	// hide init and isEnabled members
 	void init() {};
 	bool isEnabled() { return true; }
-
-	template<uint EL_TYPE, typename T>
-	uint elementIndex(const T* el) const;
-
-	template<HasFaces M = Mesh>
-	void addFaceHelper(typename M::FaceType& f);
-
-	template<HasFaces M = Mesh, typename... V>
-	void addFaceHelper(
-		typename M::FaceType&   f,
-		typename Mesh<Args...>::VertexType* v,
-		V... args);
-
-	template<HasFaces M = Mesh, typename... V>
-	void addFaceHelper(typename M::FaceType& f, uint vid, V... args);
 
 	// enable optional components
 
@@ -265,9 +173,6 @@ private:
 	// private import member functions
 
 	template<typename Cont, typename OthMesh>
-	void importContainersAndComponents(const OthMesh& m);
-
-	template<typename Cont, typename OthMesh>
 	void importPointers(const OthMesh& m);
 
 	template<typename Cont, typename ElemCont, typename OthMesh>
@@ -275,9 +180,6 @@ private:
 
 	template<typename OthMesh>
 	void manageImportTriFromPoly(const OthMesh& m);
-
-	template<typename OthMesh>
-	void manageImportDcelFromMesh(const OthMesh& m);
 
 	template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
 	static void importTriPointersHelper(
@@ -301,6 +203,9 @@ private:
 
 	// member functions used by friends
 
+	template<uint EL_TYPE, typename T>
+	uint elementIndex(const T* el) const;
+
 	template<typename El>
 	auto& customComponents();
 
@@ -315,61 +220,25 @@ private:
 
 	// Predicate structures
 
-	// Elements can be individuated with their ID, which is an unsigned int.
-	// This struct sets its bool `value` to true if this Mesh has a Container of Elements with the
-	// given unsigned integer El
-	// Sets also `type` with a TypeWrapper contianing the Container that satisfied the condition.
-	// the TypeWrapper will be empty if no Containers were found.
-	template<uint El>
-	struct ContainerOfTypeIndexPred
-	{
-	private:
-		template <typename Cont>
-		struct SameElPred
-		{
-			static constexpr bool value = Cont::ELEMENT_TYPE == El;
-		};
-
-	public:
-		// TypeWrapper of the found container, if any
-		using type = typename vcl::FilterTypesByCondition<SameElPred, Containers>::type;
-		static constexpr bool value = NumberOfTypes<type>::value == 1;
-	};
-
-	template<ElementConcept El>
-	struct HasContainerOfPred
-	{
-		static constexpr bool value = ContainerOfTypeIndexPred<El::ELEMENT_TYPE>::value;
-	};
-
 	template<uint EL_TYPE>
-	struct GetContainerOfElID
+	struct ContainerOfElement
 	{
-	private:
-		template<typename>
-		struct TypeUnwrapper {};
-
-		template<typename C>
-		struct TypeUnwrapper<TypeWrapper<C>>
-		{
-			using type = C;
-		};
 	public:
-		using type = typename TypeUnwrapper<
-			typename ContainerOfTypeIndexPred<EL_TYPE>::type>::type;
+		using type = typename FirstType<
+			typename mesh::ContainerOfElementPred<EL_TYPE, Containers>::type>::type;
 	};
 
 	/**
-	 * @brief The GetContainerOf struct allows to get the Container of an Element on this Mesh.
+	 * @brief The ContainerOf struct allows to get the Container of an Element on this Mesh.
 	 *
 	 * Usage:
 	 *
 	 * ```cpp
-	 * using Container = GetContainerOf<ElementType>::type;
+	 * using Container = ContainerOf<ElementType>::type;
 	 * ```
 	 */
 	template<ElementConcept El>
-	struct GetContainerOf : public GetContainerOfElID<El::ELEMENT_TYPE>
+	struct ContainerOf : public ContainerOfElement<El::ELEMENT_TYPE>
 	{
 	};
 };

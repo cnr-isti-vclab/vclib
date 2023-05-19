@@ -41,3 +41,8 @@ jobs:
         cd build
         cmake -DCMAKE_C_COMPILER=/usr/local/opt/llvm/bin/clang -DCMAKE_CXX_COMPILER=/usr/local/opt/llvm/bin/clang++ -GNinja -DCMAKE_BUILD_TYPE=Release ..
         ninja
+    - name: Run Tests
+      shell: bash
+      run: |
+        cd build
+        ctest --verbose

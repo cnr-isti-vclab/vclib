@@ -80,20 +80,6 @@ concept HasAdjacentFaces = requires(
 };
 
 /**
- * @private
- * @brief HasAdjacentFacesComponent concept is used to discriminate between the AdjacentFaces (or
- * OptionalAdjacentFaces) component, and the FaceHalfEdgePointers component, which using half
- * edges in a Dcel Mesh data structure, allows to access to adjacent faces. This concept is intended
- * only for internal use, useful to check that a Face does not have both AdjacentFaces and
- * FaceHalfEdgePointers components.
- */
-template<typename T>
-concept HasAdjacentFacesComponent = HasAdjacentFaces<T> && requires(T o)
-{
-	{ o.__adjacentFaces() } -> std::same_as<void>;
-};
-
-/**
  * @brief HasOptionalAdjacentFaces concept is satisfied only if a class satisfies the
  * HasAdjacentFacesComponent concept and the static boolean constant IS_OPTIONAL is set to true.
  *
@@ -101,7 +87,7 @@ concept HasAdjacentFacesComponent = HasAdjacentFaces<T> && requires(T o)
  */
 template<typename T>
 concept HasOptionalAdjacentFaces =
-	HasAdjacentFacesComponent<T> && IsOptionalComponent<typename T::AdjacentFaces>;
+	HasAdjacentFaces<T> && IsOptionalComponent<typename T::AdjacentFaces>;
 
 /**
  * @private

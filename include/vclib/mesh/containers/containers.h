@@ -26,7 +26,6 @@
 
 #include "edge_container.h"
 #include "face_container.h"
-#include "half_edge_container.h"
 #include "vertex_container.h"
 
 /**

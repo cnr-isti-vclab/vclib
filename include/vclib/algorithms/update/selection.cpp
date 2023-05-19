@@ -59,12 +59,6 @@ void clearEdgeSelection(MeshType& m)
 	internal::clearSelection(m.edges());
 }
 
-template<DcelMeshConcept MeshType>
-void clearHalfEdgeSelection(MeshType& m)
-{
-	internal::clearSelection(m.halfEdges());
-}
-
 template<FaceMeshConcept MeshType>
 void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
 {

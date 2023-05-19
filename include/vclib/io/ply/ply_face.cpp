@@ -58,12 +58,7 @@ void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 	bool splitFace = false;
 	// we have a polygonal mesh
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
-		if constexpr (HasHalfEdges<MeshType>) {
-			m.addHalfEdgesToFace(vids.size(), f);
-		}
-		else {
-			f.resizeVertices(vids.size()); // need to resize the face to the right number of verts
-		}
+		f.resizeVertices(vids.size()); // need to resize the face to the right number of verts
 	}
 	else if (FaceType::VERTEX_NUMBER != vids.size()) {
 		// we have faces with static sizes (triangles), but we are loading faces with number of

@@ -24,7 +24,6 @@
 #ifndef VCL_MESHES_H
 #define VCL_MESHES_H
 
-#include "meshes/dcel_mesh.h"
 #include "meshes/edge_mesh.h"
 #include "meshes/point_cloud.h"
 #include "meshes/poly_mesh.h"
