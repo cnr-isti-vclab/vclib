@@ -1,7 +1,7 @@
 #!/bin/bash
 
 THIS_PATH="$(dirname "$(realpath "$0")")"
-VCLIB_PATH=$THIS_PATH/../include
+VCLIB_PATH=$THIS_PATH/../../include
 
 x1=1
 y1=22
