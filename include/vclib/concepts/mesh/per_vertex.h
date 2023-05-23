@@ -24,7 +24,7 @@
 #ifndef VCL_CONCEPTS_MESH_PER_VERTEX_H
 #define VCL_CONCEPTS_MESH_PER_VERTEX_H
 
-#include "containers.h"
+#include "containers/vertex_container.h"
 #include "elements/vertex.h"
 
 namespace vcl {

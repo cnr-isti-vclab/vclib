@@ -104,7 +104,11 @@ set(HEADERS
 	include/vclib/concepts/space.h
 	include/vclib/concepts/mesh/components.h
 	include/vclib/concepts/mesh/containers.h
+	include/vclib/concepts/mesh/edge_mesh_concept.h
+	include/vclib/concepts/mesh/face_mesh_concept.h
+	include/vclib/concepts/mesh/mesh_concept.h
 	include/vclib/concepts/mesh/per_face.h
+	include/vclib/concepts/mesh/per_mesh.h
 	include/vclib/concepts/mesh/per_vertex.h
 	include/vclib/concepts/mesh/components/adjacent_edges.h
 	include/vclib/concepts/mesh/components/adjacent_faces.h

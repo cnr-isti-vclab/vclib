@@ -30,10 +30,21 @@ namespace vcl {
 namespace mesh {
 
 template <typename T>
-concept HasEdgeContainer = requires(T o)
+concept HasEdgeContainer = requires(
+	T o,
+	const T& co,
+	typename T::EdgeType* e)
 {
 	typename T::EdgeType;
-	o.edge(uint());
+	typename T::EdgeIterator;
+	typename T::ConstEdgeIterator;
+	{ o.edge(uint()) } -> std::same_as<typename T::EdgeType&>;
+	{ co.edge(uint()) } -> std::same_as<const typename T::EdgeType&>;
+
+	{ o.addEdge() } -> std::same_as<uint>;
+	{ o.addEdges(uint()) } -> std::same_as<uint>;
+	{ o.reserveEdges(uint()) } -> std::same_as<void>;
+	{ o.compactEdges() } -> std::same_as<void>;
 };
 
 } // namespace vcl::mesh

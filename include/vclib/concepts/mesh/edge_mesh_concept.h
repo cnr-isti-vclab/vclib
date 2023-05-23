@@ -21,54 +21,26 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_PER_FACE_H
-#define VCL_CONCEPTS_MESH_PER_FACE_H
+#ifndef VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
+#define VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
 
-#include "containers/face_container.h"
-#include "elements/face.h"
+#include "mesh_concept.h"
+//#include "per_edge.h"
 
 namespace vcl {
 
-template<typename MeshType>
-concept HasPerFaceAdjacentEdges =
-	HasFaces<MeshType> && vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceAdjacentFaces =
-	HasFaces<MeshType> && vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceColor =
-	HasFaces<MeshType> && vcl::face::HasColor<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceMark =
-	HasFaces<MeshType> && vcl::face::HasMark<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceNormal =
-	HasFaces<MeshType> && vcl::face::HasNormal<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFacePrincipalCurvature =
-	HasFaces<MeshType> && vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceQuality =
-	HasFaces<MeshType> && vcl::face::HasQuality<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceWedgeColors =
-	HasFaces<MeshType> && vcl::face::HasWedgeColors<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceWedgeTexCoords =
-	HasFaces<MeshType> && vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceCustomComponents =
-	HasFaces<MeshType> && vcl::face::HasCustomComponents<typename MeshType::FaceType>;
+template<typename T>
+concept EdgeMeshConcept =
+	MeshConcept<T> && mesh::HasEdgeContainer<T> &&
+	requires(
+		T o,
+		const T& co,
+		typename T::EdgeType e)
+{
+	{ co.index(e) } -> std::same_as<uint>;
+	{ co.index(&e) } -> std::same_as<uint>;
+};
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_PER_FACE_H
+#endif // VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H

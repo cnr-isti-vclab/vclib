@@ -33,13 +33,25 @@ namespace vcl {
 namespace mesh {
 
 template <typename T>
-concept HasVertexContainer = requires(T o, const T& co, typename T::VertexType* v)
+concept HasVertexContainer = requires(
+	T o,
+	const T& co,
+	typename T::VertexType* v,
+	typename T::VertexType::CoordType c)
 {
 	typename T::VertexType;
 	typename T::VertexIterator;
 	typename T::ConstVertexIterator;
 	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
 	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
+
+	{ o.addVertex() } -> std::same_as<uint>;
+	{ o.addVertex(c) } -> std::same_as<uint>;
+	{ o.addVertices(uint()) } -> std::same_as<uint>;
+	{ o.addVertices(c, c, c, c) } -> std::same_as<uint>;
+	{ o.reserveVertices(uint()) } -> std::same_as<void>;
+	{ o.compactVertices() } -> std::same_as<void>;
+
 	{ co.vertexNumber() } -> std::same_as<uint>;
 	{ co.vertexContainerSize() } -> std::same_as<uint>;
 	{ co.deletedVertexNumber() } -> std::same_as<uint>;

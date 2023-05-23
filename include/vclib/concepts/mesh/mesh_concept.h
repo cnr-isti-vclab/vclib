@@ -21,54 +21,62 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_PER_FACE_H
-#define VCL_CONCEPTS_MESH_PER_FACE_H
+#ifndef VCL_CONCEPTS_MESH_MESH_CONCEPT_H
+#define VCL_CONCEPTS_MESH_MESH_CONCEPT_H
 
-#include "containers/face_container.h"
-#include "elements/face.h"
+#include "containers.h"
 
 namespace vcl {
 
-template<typename MeshType>
-concept HasPerFaceAdjacentEdges =
-	HasFaces<MeshType> && vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
+template<typename... Args> requires HasVertices<Args...>
+class Mesh;
 
-template<typename MeshType>
-concept HasPerFaceAdjacentFaces =
-	HasFaces<MeshType> && vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
+namespace mesh {
 
-template<typename MeshType>
-concept HasPerFaceColor =
-	HasFaces<MeshType> && vcl::face::HasColor<typename MeshType::FaceType>;
+// checks if a type derives from vcl::Mesh<Args...>
+template<typename Derived>
+using IsDerivedFromMesh = IsDerivedFromTemplateSpecialization<Derived, Mesh>;
 
-template<typename MeshType>
-concept HasPerFaceMark =
-	HasFaces<MeshType> && vcl::face::HasMark<typename MeshType::FaceType>;
+// checks if a type is a vcl::Mesh<Args...>
+template<class T>
+struct IsAMesh : // Default case, no pattern match
+				 std::false_type
+{
+};
 
-template<typename MeshType>
-concept HasPerFaceNormal =
-	HasFaces<MeshType> && vcl::face::HasNormal<typename MeshType::FaceType>;
+template<class... Args>
+struct IsAMesh<Mesh<Args...>> : // For types matching the pattern Mesh<Args...>
+								std::true_type
+{
+};
 
-template<typename MeshType>
-concept HasPerFacePrincipalCurvature =
-	HasFaces<MeshType> && vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
+} // namespace mesh
 
-template<typename MeshType>
-concept HasPerFaceQuality =
-	HasFaces<MeshType> && vcl::face::HasQuality<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceWedgeColors =
-	HasFaces<MeshType> && vcl::face::HasWedgeColors<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceWedgeTexCoords =
-	HasFaces<MeshType> && vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceCustomComponents =
-	HasFaces<MeshType> && vcl::face::HasCustomComponents<typename MeshType::FaceType>;
+/**
+ * @brief The Mesh Concept is evaluated to true when the type is a Mesh.
+ *
+ * A type T is a Mesh whem it inherits from or it is a template specialization of the vcl::Mesh
+ * class, and it contains a VertexContainer, which is the only container that is mandatory in
+ * a vcl::Mesh.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept MeshConcept =
+	(mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
+	mesh::HasVertexContainer<T> &&
+	requires(
+		T o,
+		const T& co,
+		typename T::VertexType v)
+{
+	{ co.index(v) } -> std::same_as<uint>;
+	{ co.index(&v) } -> std::same_as<uint>;
+	{ o.clear() } -> std::same_as<void>;
+	{ o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
+	{ o.importFrom(T()) } -> std::same_as<void>;
+};
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_PER_FACE_H
+#endif // VCL_CONCEPTS_MESH_MESH_CONCEPT_H

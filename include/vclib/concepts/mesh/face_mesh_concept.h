@@ -21,54 +21,58 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_PER_FACE_H
-#define VCL_CONCEPTS_MESH_PER_FACE_H
+#ifndef VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H
+#define VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H
 
-#include "containers/face_container.h"
-#include "elements/face.h"
+#include "mesh_concept.h"
+#include "per_face.h"
 
 namespace vcl {
 
 template<typename MeshType>
-concept HasPerFaceAdjacentEdges =
-	HasFaces<MeshType> && vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
+concept HasTriangles =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
 
 template<typename MeshType>
-concept HasPerFaceAdjacentFaces =
-	HasFaces<MeshType> && vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
+concept HasQuads =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
 
 template<typename MeshType>
-concept HasPerFaceColor =
-	HasFaces<MeshType> && vcl::face::HasColor<typename MeshType::FaceType>;
+concept HasPolygons =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
 
-template<typename MeshType>
-concept HasPerFaceMark =
-	HasFaces<MeshType> && vcl::face::HasMark<typename MeshType::FaceType>;
+template<typename T>
+concept FaceMeshConcept =
+	MeshConcept<T> && mesh::HasFaceContainer<T> &&
+	requires(
+		T o,
+		const T& co,
+		typename T::FaceType f)
+{
+	typename T::FaceType;
+	typename T::FaceContainer;
 
-template<typename MeshType>
-concept HasPerFaceNormal =
-	HasFaces<MeshType> && vcl::face::HasNormal<typename MeshType::FaceType>;
+	{ co.index(f) } -> std::same_as<uint>;
+	{ co.index(&f) } -> std::same_as<uint>;
+	{ o.addFace() } -> std::same_as<uint>;
+	{ o.addFace(uint(), uint(), uint()) } -> std::same_as<uint>;
+	{ o.addFaces(uint()) } -> std::same_as<uint>;
+	{ o.reserveFaces(uint()) } -> std::same_as<void>;
+	{ o.compactFaces() } -> std::same_as<void>;
+};
 
-template<typename MeshType>
-concept HasPerFacePrincipalCurvature =
-	HasFaces<MeshType> && vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
+template<typename T>
+concept TriangleMeshConcept =
+	FaceMeshConcept<T> && HasTriangles<T>;
 
-template<typename MeshType>
-concept HasPerFaceQuality =
-	HasFaces<MeshType> && vcl::face::HasQuality<typename MeshType::FaceType>;
+template<typename T>
+concept QuadMeshConcept =
+	FaceMeshConcept<T> && HasQuads<T>;
 
-template<typename MeshType>
-concept HasPerFaceWedgeColors =
-	HasFaces<MeshType> && vcl::face::HasWedgeColors<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceWedgeTexCoords =
-	HasFaces<MeshType> && vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
-
-template<typename MeshType>
-concept HasPerFaceCustomComponents =
-	HasFaces<MeshType> && vcl::face::HasCustomComponents<typename MeshType::FaceType>;
+template<typename T>
+concept PolygonMeshConcept =
+	FaceMeshConcept<T> && HasPolygons<T>;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_PER_FACE_H
+#endif // VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H
