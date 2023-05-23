@@ -3,6 +3,7 @@ import argparse
 from generators.common import Element
 from generators.el_components import generate_elem_components
 from generators.el_concept import generate_elem_concept
+from generators.el_container_concept import generate_elem_container_concept
 from generators.el_header import generate_elem_header
 
 def main():
@@ -22,6 +23,7 @@ def main():
     generate_elem_header(element)
     generate_elem_concept(element)
     generate_elem_components(element)
+    generate_elem_container_concept(element)
 
 
 if __name__ == "__main__":

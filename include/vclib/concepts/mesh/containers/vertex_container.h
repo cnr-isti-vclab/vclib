@@ -45,13 +45,6 @@ concept HasVertexContainer = requires(
 	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
 	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
 
-	{ o.addVertex() } -> std::same_as<uint>;
-	{ o.addVertex(c) } -> std::same_as<uint>;
-	{ o.addVertices(uint()) } -> std::same_as<uint>;
-	{ o.addVertices(c, c, c, c) } -> std::same_as<uint>;
-	{ o.reserveVertices(uint()) } -> std::same_as<void>;
-	{ o.compactVertices() } -> std::same_as<void>;
-
 	{ co.vertexNumber() } -> std::same_as<uint>;
 	{ co.vertexContainerSize() } -> std::same_as<uint>;
 	{ co.deletedVertexNumber() } -> std::same_as<uint>;
@@ -59,6 +52,13 @@ concept HasVertexContainer = requires(
 	o.deleteVertex(v);
 	{ o.vertexIndexIfCompact(uint()) } -> std::same_as<uint>;
 	{ o.vertexCompactIndices() } -> std::same_as<std::vector<int>>;
+
+	{ o.addVertex() } -> std::same_as<uint>;
+	{ o.addVertex(c) } -> std::same_as<uint>;
+	{ o.addVertices(uint()) } -> std::same_as<uint>;
+	{ o.addVertices(c, c, c, c) } -> std::same_as<uint>;
+	{ o.reserveVertices(uint()) } -> std::same_as<void>;
+	{ o.compactVertices() } -> std::same_as<void>;
 
 	{ o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
 	{ co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
