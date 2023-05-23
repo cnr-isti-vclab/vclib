@@ -1,6 +1,8 @@
 from . import common
 
 def generate_elem_components(element):
+    target_file = "include/vclib/mesh/elements/" + element.name + '_components.h'
+
     # Read in the file
     with open('templates/element_components.h', 'r') as file :
         element_components = file.read()
@@ -27,7 +29,8 @@ def generate_elem_components(element):
 
     element_components = element_components.replace('%ELEMENT_COMPONENTS%', comp_string)
 
-    with open("../include/vclib/mesh/elements/" + element.name + '_components.h', 'w') as file:
+    with open("../" + target_file, 'w') as file:
         file.write(element_components)
 
-    print("Generated Element Components: include/vclib/mesh/elements/" + element.name + '_components.h')
+    print("Generated Element Header: " + target_file)
+    return target_file

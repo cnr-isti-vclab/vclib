@@ -24,6 +24,7 @@
 #ifndef VCL_CONCEPTS_MESH_H
 #define VCL_CONCEPTS_MESH_H
 
+#include "mesh/edge_mesh_concept.h"
 #include "mesh/face_mesh_concept.h"
 #include "mesh/per_mesh.h"
 #include "mesh/per_vertex.h"
@@ -44,28 +45,5 @@
  *
  * @brief List of concepts for types related to the Elements of a Mesh.
  */
-
-namespace vcl {
-
-template<typename T>
-concept EdgeMeshConcept =
-	MeshConcept<T> && mesh::HasEdgeContainer<T> &&
-	requires(
-		T o,
-		const T& co,
-		typename T::EdgeType e)
-{
-	typename T::EdgeType;
-	typename T::EdgeContainer;
-
-	{ co.index(e) } -> std::same_as<uint>;
-	{ co.index(&e) } -> std::same_as<uint>;
-	{ o.addEdge() } -> std::same_as<uint>;
-	{ o.addEdges(uint()) } -> std::same_as<uint>;
-	{ o.reserveEdges(uint()) } -> std::same_as<void>;
-	{ o.compactEdges() } -> std::same_as<void>;
-};
-
-} // namespace vcl
 
 #endif // VCL_CONCEPTS_MESH_H

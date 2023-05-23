@@ -54,11 +54,6 @@ concept FaceMeshConcept =
 
 	{ co.index(f) } -> std::same_as<uint>;
 	{ co.index(&f) } -> std::same_as<uint>;
-	{ o.addFace() } -> std::same_as<uint>;
-	{ o.addFace(uint(), uint(), uint()) } -> std::same_as<uint>;
-	{ o.addFaces(uint()) } -> std::same_as<uint>;
-	{ o.reserveFaces(uint()) } -> std::same_as<void>;
-	{ o.compactFaces() } -> std::same_as<void>;
 };
 
 template<typename T>

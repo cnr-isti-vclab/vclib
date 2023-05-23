@@ -5,6 +5,7 @@ from generators.el_components import generate_elem_components
 from generators.el_concept import generate_elem_concept
 from generators.el_container_concept import generate_elem_container_concept
 from generators.el_header import generate_elem_header
+from generators.per_el_concepts import generate_per_elem_concepts
 
 def main():
     parser = argparse.ArgumentParser(description="Generate a Mesh Element for the VCLib library",
@@ -20,11 +21,12 @@ def main():
 
     element = Element(args.elem_name, args.namespace, args.components, args.vertical_components, args.optional_components)
 
-    generate_elem_header(element)
-    generate_elem_concept(element)
-    generate_elem_components(element)
+    generate_per_elem_concepts(element)
     generate_elem_container_concept(element)
-
+    generate_elem_concept(element)
+    generate_elem_header(element)
+    generate_elem_components(element)
+    
 
 if __name__ == "__main__":
     main()
