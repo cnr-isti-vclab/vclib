@@ -42,6 +42,7 @@ concept HasVertexContainer = requires(
 	typename T::VertexType;
 	typename T::VertexIterator;
 	typename T::ConstVertexIterator;
+
 	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
 	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
 
@@ -99,6 +100,8 @@ concept HasVertexContainer = requires(
  *     // ...
  * }
  * @endcode
+ *
+ * @note This concept does not check if a Mesh is a valid Mesh. To do that, use the MeshConcept.
  */
 template<typename... Args>
 concept HasVertices = (vcl::mesh::HasVertexContainer<Args> || ...);

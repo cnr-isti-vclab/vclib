@@ -31,7 +31,14 @@
 namespace vcl {
 
 /**
- * @brief The Edge class
+ * @brief The Edge class represents an Edge element of the vcl::Mesh class.
+ *
+ * Using the EdgeContainer class, it is possible to add a vector of Edge elements to a mesh, and
+ * manage them with the member functions exposed by the EdgeContainer. Each Edge element exposes
+ * all the member functions of its Component types.
+ *
+ * @tparam MeshType The type of the parent mesh.
+ * @tparam Comps The types of the components of the element.
  *
  * @ingroup elements
  */
