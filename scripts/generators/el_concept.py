@@ -25,4 +25,4 @@ def generate_elem_concept(element):
         file.write(element_concept)
 
     print("Generated Element Header: " + target_file)
-    return target_file
+    return [target_file],[]

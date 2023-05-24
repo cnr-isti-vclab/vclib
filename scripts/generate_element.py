@@ -6,6 +6,7 @@ from generators.el_concept import generate_elem_concept
 from generators.el_container_concept import generate_elem_container_concept
 from generators.el_header import generate_elem_header
 from generators.per_el_concepts import generate_per_elem_concepts
+from generators.update_cmake import update_cmake_file
 
 def main():
     parser = argparse.ArgumentParser(description="Generate a Mesh Element for the VCLib library",
@@ -21,11 +22,26 @@ def main():
 
     element = Element(args.elem_name, args.namespace, args.components, args.vertical_components, args.optional_components)
 
-    generate_per_elem_concepts(element)
-    generate_elem_container_concept(element)
-    generate_elem_concept(element)
-    generate_elem_header(element)
-    generate_elem_components(element)
+    headers_list = []
+    sources_list = []
+
+    h, s = generate_per_elem_concepts(element)
+    headers_list += h
+    sources_list += s
+    h, s = generate_elem_container_concept(element)
+    headers_list += h
+    sources_list += s
+    h, s = generate_elem_concept(element)
+    headers_list += h
+    sources_list += s
+    h, s = generate_elem_header(element)
+    headers_list += h
+    sources_list += s
+    h, s = generate_elem_components(element)
+    headers_list += h
+    sources_list += s
+        
+    update_cmake_file(headers_list, sources_list)
     
 
 if __name__ == "__main__":

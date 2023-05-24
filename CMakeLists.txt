@@ -479,7 +479,8 @@ set(SOURCES
 	include/vclib/space/grid/static_grid.cpp
 	include/vclib/space/sampler/mesh_sampler.cpp
 	include/vclib/space/sampler/point_sampler.cpp
-	include/vclib/space/sampler/vertex_sampler.cpp)
+	include/vclib/space/sampler/vertex_sampler.cpp
+)
 
 set(HEADERS_LIB
 	)

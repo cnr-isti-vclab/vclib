@@ -15,4 +15,4 @@ def generate_elem_header(element):
         file.write(element_header)
 
     print("Generated Element Header: " + target_file)
-    return target_file
+    return [target_file],[]
