@@ -17,6 +17,7 @@ def main():
     parser.add_argument('-c', '--components', nargs='*', help='Horizontal Components of the element.')
     parser.add_argument('-vc', '--vertical_components', nargs='*', help='Vertical Components of the element.')
     parser.add_argument('-oc', '--optional_components', nargs='*', help='Optional Components of the element.')
+    parser.add_argument('-dc', '--define_components', help='Define Components of the element in its namespace, by default this is not done.', action='store_true')
 
     args = parser.parse_args()
 
@@ -37,9 +38,10 @@ def main():
     h, s = generate_elem_header(element)
     headers_list += h
     sources_list += s
-    h, s = generate_elem_components(element)
-    headers_list += h
-    sources_list += s
+    if args.define_components:
+        h, s = generate_elem_components(element)
+        headers_list += h
+        sources_list += s
         
     update_cmake_file(headers_list, sources_list)
     
