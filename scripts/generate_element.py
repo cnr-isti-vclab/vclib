@@ -6,6 +6,7 @@ from generators.el_concept import generate_elem_concept
 from generators.el_container_concept import generate_elem_container_concept
 from generators.el_header import generate_elem_header
 from generators.el_mesh_concept import generate_elem_mesh_concepts
+from generators.el_range_concept import generate_elem_range_concept
 from generators.per_el_concepts import generate_per_elem_concepts
 from generators.update_cmake import update_cmake_file
 from generators.update_element_type_list import update_element_list
@@ -28,28 +29,35 @@ def main():
     headers_list = []
     sources_list = []
 
-    h, s = generate_per_elem_concepts(element)
-    headers_list += h
-    sources_list += s
-    h, s = generate_elem_mesh_concepts(element)
-    headers_list += h
-    sources_list += s
-    h, s = generate_elem_container_concept(element)
-    headers_list += h
-    sources_list += s
-    h, s = generate_elem_concept(element)
-    headers_list += h
-    sources_list += s
-    h, s = generate_elem_header(element)
-    headers_list += h
-    sources_list += s
-    if args.define_components:
-        h, s = generate_elem_components(element)
-        headers_list += h
-        sources_list += s
-        
+    gen_function_list = [
+        generate_per_elem_concepts,
+        generate_elem_mesh_concepts,
+        generate_elem_container_concept,
+        generate_elem_concept,
+        generate_elem_range_concept,
+        generate_elem_header,
+        generate_elem_components,
+    ]
+
+    update_function_list = [
+        update_element_list
+    ]
+
+    for f in gen_function_list:
+        if f == generate_elem_components:
+            if args.define_components:
+                h, s = f(element)
+                headers_list += h
+                sources_list += s
+        else:
+            h, s = f(element)
+            headers_list += h
+            sources_list += s
+
+    for f in update_function_list:
+        f(element)
+
     update_cmake_file(headers_list, sources_list)
-    update_element_list(element)
     
 
 if __name__ == "__main__":

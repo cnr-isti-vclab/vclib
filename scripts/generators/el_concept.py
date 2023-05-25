@@ -7,9 +7,7 @@ def generate_elem_concept(element):
     with open('templates/element_concept.h', 'r') as file :
         element_concept = file.read()
 
-    element_concept = common.replace_header(element_concept)
-
-    element_concept = common.replace_element_strings(element_concept, element)
+    element_concept = common.replace_header_and_element_strings(element_concept, element)
     
     comp_string = ""
     for c in element.components:

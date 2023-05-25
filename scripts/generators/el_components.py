@@ -7,9 +7,7 @@ def generate_elem_components(element):
     with open('templates/element_components.h', 'r') as file :
         element_components = file.read()
 
-    element_components = common.replace_header(element_components)
-
-    element_components = common.replace_element_strings(element_components, element)
+    element_components = common.replace_header_and_element_strings(element_components, element)
 
     include_comp_string = ""
     comp_string = ""

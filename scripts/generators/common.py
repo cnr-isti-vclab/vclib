@@ -54,3 +54,21 @@ def replace_header(file_string):
 
     file_string = file_string.replace('%HEADER%', header)
     return file_string
+
+def replace_header_and_element_strings(file_string, element):
+    file_string = replace_header(file_string)
+    file_string = replace_element_strings(file_string, element)
+    return file_string
+
+def simple_string_replacement(target_file_name, template_file_name, element):
+    # Read in the file
+    with open('templates/' + template_file_name, 'r') as file :
+        file_string = file.read()
+
+    file_string = replace_header_and_element_strings(file_string, element)
+
+    with open("../" + target_file_name, 'w') as file:
+        file.write(file_string)
+
+    print("Generated Element Header: " + target_file_name)
+    return [target_file_name],[]
