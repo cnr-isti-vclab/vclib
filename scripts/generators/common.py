@@ -16,6 +16,7 @@ class Element:
         self.name_upper_camel = string.capwords(name, "_").replace("_", "")
         self.name_camel = self.name_upper_camel[0].lower() + self.name_upper_camel[1:]
         self.components = []
+        self.has_custom_components = False
         if (namespace is not None):
             self.namespace = namespace
         else:
@@ -26,6 +27,8 @@ class Element:
             for value in components:
                 if value is not None:
                     self.components.append(Component(value))
+                    if value == "custom_components":
+                        self.has_custom_components = True
     
         if (vertical_components is not None):
             for value in vertical_components:

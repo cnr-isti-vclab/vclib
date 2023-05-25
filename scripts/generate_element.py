@@ -3,6 +3,7 @@ import argparse
 from generators.common import Element
 from generators.el_components import generate_elem_components
 from generators.el_concept import generate_elem_concept
+from generators.el_container import generate_elem_container
 from generators.el_container_concept import generate_elem_container_concept
 from generators.el_header import generate_elem_header
 from generators.el_mesh_concept import generate_elem_mesh_concepts
@@ -37,6 +38,7 @@ def main():
         generate_elem_range_concept,
         generate_elem_header,
         generate_elem_components,
+        generate_elem_container
     ]
 
     update_function_list = [

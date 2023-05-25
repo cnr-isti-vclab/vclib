@@ -1,0 +1,33 @@
+	// Custom Components
+	bool hasPer%EL_UC%CustomComponent(const std::string& name) const
+		requires %EL_NS%::HasCustomComponents<T>;
+
+	std::vector<std::string> per%EL_UC%CustomComponentNames() const
+		requires %EL_NS%::HasCustomComponents<T>;
+
+	template<typename K>
+	bool isPer%EL_UC%CustomComponentOfType(const std::string& name) const
+		requires %EL_NS%::HasCustomComponents<T>;
+
+	std::type_index per%EL_UC%CustomComponentType(const std::string& name) const
+		requires %EL_NS%::HasCustomComponents<T>;
+
+	template<typename K>
+	std::vector<std::string> per%EL_UC%CustomComponentNamesOfType() const
+		requires %EL_NS%::HasCustomComponents<T>;
+
+	template<typename K>
+	void addPer%EL_UC%CustomComponent(const std::string& name)
+		requires %EL_NS%::HasCustomComponents<T>;
+
+	void deletePer%EL_UC%CustomComponent(const std::string& name)
+		requires %EL_NS%::HasCustomComponents<T>;
+
+	template<typename K>
+	CustomComponentVectorHandle<K> per%EL_UC%CustomComponentVectorHandle(const std::string& name)
+		requires %EL_NS%::HasCustomComponents<T>;
+
+	template<typename K>
+	ConstCustomComponentVectorHandle<K>
+	per%EL_UC%CustomComponentVectorHandle(const std::string& name) const
+		requires %EL_NS%::HasCustomComponents<T>;

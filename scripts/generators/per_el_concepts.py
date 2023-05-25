@@ -11,7 +11,7 @@ def generate_per_elem_concepts(element):
     for c in element.components:
         comp_string += per_comp_string.replace('%CNUC%', c.name_upper_camel)
 
-    with open('templates/per_element_concepts.h', 'r') as file :
+    with open('templates/' + template_file, 'r') as file :
         per_element_concepts = file.read()
 
     per_element_concepts = per_element_concepts.replace('%PER_ELEM_CONCEPTS%', comp_string)

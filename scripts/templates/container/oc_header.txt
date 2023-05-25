@@ -1,0 +1,5 @@
+	// %CNUC%
+	bool isPer%EL_UC%%CNUC%Enabled() const requires %EL_NS%::HasOptional%CNUC%<T>;
+	void enablePer%EL_UC%%CNUC%() requires %EL_NS%::HasOptional%CNUC%<T>;
+	void disablePer%EL_UC%%CNUC%() requires %EL_NS%::HasOptional%CNUC%<T>;
+

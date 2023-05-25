@@ -1,0 +1,213 @@
+/**
+ * @brief Checks if %EL_UC%s have a custom component with the given name.
+ *
+ * This function does not take into account the type of the custom component.
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @return `true` if the %EL_UC% Element has a custom component with the given name.
+ */
+template<%EL_UC%Concept T>
+bool %EL_UC%Container<T>::hasPer%EL_UC%CustomComponent(const std::string& name) const
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	return Base::hasElemCustomComponent(name);
+}
+
+/**
+ * @brief Returns a vector containing all the names of the custom components of any type associated
+ * to the %EL_UC% Element.
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @return A vector of strings representing all the names of the custom components.
+ */
+template<%EL_UC%Concept T>
+std::vector<std::string> %EL_UC%Container<T>::per%EL_UC%CustomComponentNames() const
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	return Base::elemCustomComponentNames();
+}
+
+/**
+ * @brief Checks if the custom component of the %EL_UC% Element having the given name has the same type
+ * of the given template argument type of this function.
+ *
+ * For example, the following code checks if the component called `cc` is of type `double`:
+ * @code{.cpp}
+ * if (m.isPer%EL_UC%CustomComponentOfType<double>("cc")) {
+ *   ...
+ * }
+ * @endcode
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @tparam K: the type of the custom component to check.
+ *
+ * @param[in] name: the name of the custom component to check.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return `true` if the custom component is of the same type of the template argument.
+ */
+template<%EL_UC%Concept T>
+template<typename K>
+bool %EL_UC%Container<T>::isPer%EL_UC%CustomComponentOfType(const std::string& name) const
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	return Base::template isElemCustomComponentOfType<K>(name);
+}
+
+/**
+ * @brief Returns the std::type_index of the custom component of the %EL_UC% Element having the given
+ * input name.
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @param[in] name: the name of the custom component to get the std::type_index from.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return The std::type_index of the custom component having the given input name.
+ */
+template<vcl::%EL_UC%Concept T>
+std::type_index %EL_UC%Container<T>::per%EL_UC%CustomComponentType(const std::string& name) const
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	return Base::elemComponentType(name);
+}
+
+/**
+ * @brief Returns a vector containing all the names of the custom components associated to the Edge
+ * Element having the same type of the given template argument type of this function.
+ *
+ * For example, the following code gets a vector containing all the custom components of type
+ * `double`:
+ * @code{.cpp}
+ * std::vector<std::string> cdouble = m.per%EL_UC%CustomComponentNamesOfType<double>();
+ * @endcode
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @tparam K: the type of the custom component names.
+ * @return A vector of strings representing the names of the custom components of a given type.
+ */
+template<%EL_UC%Concept T>
+template<typename K>
+std::vector<std::string> %EL_UC%Container<T>::per%EL_UC%CustomComponentNamesOfType() const
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	return Base::template elemCustomComponentNamesOfType<K>();
+}
+
+/**
+ * @brief Adds a custom component of type K to the %EL_UC%, having the given name.
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @tparam K: the type of the custom component added to the %EL_UC%.
+ * @param[in] name: the name of the custom component added to the %EL_UC%.
+ */
+template<%EL_UC%Concept T>
+template<typename K>
+void %EL_UC%Container<T>::addPer%EL_UC%CustomComponent(const std::string& name)
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	Base::template addElemCustomComponent<K>(name);
+}
+
+/**
+ * @brief Deletes the custom component of the given name from the %EL_UC% Element.
+ *
+ * The function does nothing if the custom component does not exists.
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @param[in] name: the name of the custom component that will be removed from the %EL_UC%.
+ */
+template<%EL_UC%Concept T>
+void %EL_UC%Container<T>::deletePer%EL_UC%CustomComponent(const std::string& name)
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	Base::deleteElemCustomComponent(name);
+}
+
+/**
+ * @brief Returns a vector handle to the given custom component. The handle can be used like a
+ * normal std::vector, but does not have access to the modifiers member functions (resize,
+ * push_back...). The handle contains **references** to the custom component, therefore you can
+ * modify the custom component by modifying the element of the handle vector normally. Since
+ * the handle stores references, there are no copies performed when calling this function.
+ *
+ * For example, assuming that the mesh has a %EL_UC% custom component named "cc" of type int:
+ *
+ * @code{.cpp}
+ * auto handle = m.getPer%EL_UC%CustomComponentVectorHandle<int>("cc");
+ * for (%EL_UC%& e : m.%EL_C%s() {
+ *    handle[m.index(e)] = 5; // e.customComponent<int>("cc") == 5
+ *    assert(e.customComponent<int>("cc") == 5);
+ * }
+ * @endcode
+ *
+ * Using handles allows to access more efficiently to custom components rather accessing from an
+ * element object. However, note that references are binded to the container of the mesh.
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @note Since the handle contains references, any operation that changes the size of the container
+ * could be destructive and invalidate the references contained in the handle.
+ *
+ * @tparam K: the type of the custom component on which return the handle.
+ *
+ * @param[in] name: name of the custom component on which return the handle.
+ * @throws std::out_of_range if no custom component of the given name was found.
+ *
+ * @return a vector handle that allows to access to the custom component.
+ */
+template<%EL_UC%Concept T>
+template<typename K>
+CustomComponentVectorHandle<K>
+%EL_UC%Container<T>::per%EL_UC%CustomComponentVectorHandle(const std::string& name)
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	return Base::template customComponentVectorHandle<K>(name);
+}
+
+/**
+ * @brief Returns a const vector handle to the given custom component. The handle can be used like a
+ * normal std::vector, but does not have access to the modifiers member functions (resize,
+ * push_back...). The handle contains **const references** to the custom component, therefore you
+ * can access to the custom component by accessing the element of the handle vector normally. Since
+ * the handle stores references, there are no copies performed when calling this function.
+ *
+ * For example, assuming that the mesh has a %EL_UC% custom component named "cc" of type int:
+ *
+ * @code{.cpp}
+ * // access to the const handle by making const the template parameter:
+ * auto handle = m.per%EL_UC%CustomComponentVectorHandle<const int>("cc");
+ * int sum = 0;
+ * for (const %EL_UC%& e : m.%EL_C%s() {
+ *    sum += handle[m.index(e)];
+ *    // handle[m.index(e)] = 5; // not allowed, because the handle is const
+ * }
+ * @endcode
+ *
+ * Using handles allows to access more efficiently to custom components rather accessing from an
+ * element object. However, note that references are binded to the container of the mesh.
+ *
+ * @note This function is available only if the %EL_UC% Element has the CustomComponents Component.
+ *
+ * @note Since the handle contains references, any operation that changes the size of the container
+ * could be destructive and invalidate the references contained in the handle.
+ *
+ * @tparam K: the type of the custom component on which return the handle.
+ * @param[in] name: name of the custom component on which return the handle.
+ *
+ * @return a const vector handle that allows to access to the custom component.
+ */
+template<%EL_UC%Concept T>
+template<typename K>
+ConstCustomComponentVectorHandle<K>
+%EL_UC%Container<T>::per%EL_UC%CustomComponentVectorHandle(const std::string& name) const
+	requires %EL_NS%::HasCustomComponents<T>
+{
+	return Base::template customComponentVectorHandle<K>(name);
+}
