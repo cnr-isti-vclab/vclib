@@ -31,7 +31,7 @@ namespace vcl {
 enum ElementEnumType {
 	VERTEX = 0,
 	FACE,
-	EDGE
+	EDGE,
 };
 
 inline static constexpr uint ELEMENTS_NUMBER = 3;

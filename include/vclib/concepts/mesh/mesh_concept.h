@@ -25,6 +25,7 @@
 #define VCL_CONCEPTS_MESH_MESH_CONCEPT_H
 
 #include "containers.h"
+#include "elements/element.h"
 
 namespace vcl {
 
@@ -73,8 +74,10 @@ concept MeshConcept =
 	{ co.index(v) } -> std::same_as<uint>;
 	{ co.index(&v) } -> std::same_as<uint>;
 	{ o.clear() } -> std::same_as<void>;
+	{ o.compact() } -> std::same_as<void>;
 	{ o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
 	{ o.importFrom(T()) } -> std::same_as<void>;
+	{ o.swap(o) } -> std::same_as<void>;
 };
 
 } // namespace vcl
