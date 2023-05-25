@@ -73,6 +73,9 @@ protected:
 
 	void setParentMeshPointers(void* pm);
 
+	void enableAllOptionalComponents();
+	void disableAllOptionalComponents();
+
 	template<typename C>
 	bool isOptionalComponentTypeEnabled() const;
 

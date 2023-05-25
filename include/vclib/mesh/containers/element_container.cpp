@@ -207,6 +207,18 @@ void ElementContainer<T>::setParentMeshPointers(void* pm)
 }
 
 template<ElementConcept T>
+void ElementContainer<T>::enableAllOptionalComponents()
+{
+	vcVecTuple.enableAllOptionalComponents();
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::disableAllOptionalComponents()
+{
+	vcVecTuple.disableAllOptionalComponents();
+}
+
+template<ElementConcept T>
 template<typename C>
 bool ElementContainer<T>::isOptionalComponentTypeEnabled() const
 {

@@ -402,24 +402,7 @@ auto VertexContainer<T>::vertices(bool jumpDeleted) const
 template<VertexConcept T>
 void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 {
-	if constexpr (vert::HasOptionalAdjacentEdges<T>)
-		enablePerVertexAdjacentEdges();
-	if constexpr (vert::HasOptionalAdjacentFaces<T>)
-		enablePerVertexAdjacentFaces();
-	if constexpr (vert::HasOptionalAdjacentVertices<T>)
-		enablePerVertexAdjacentVertices();
-	if constexpr (vert::HasOptionalColor<T>)
-		enablePerVertexColor();
-	if constexpr (vert::HasOptionalMark<T>)
-		enablePerVertexMark();
-	if constexpr (vert::HasOptionalNormal<T>)
-		enablePerVertexNormal();
-	if constexpr (vert::HasOptionalPrincipalCurvature<T>)
-		enablePerVertexPrincipalCurvature();
-	if constexpr (vert::HasOptionalQuality<T>)
-		enablePerVertexQuality();
-	if constexpr (vert::HasOptionalTexCoord<T>)
-		enablePerVertexTexCoord();
+	Base::enableAllOptionalComponents();
 }
 
 /**
@@ -429,24 +412,7 @@ void VertexContainer<T>::enableAllPerVertexOptionalComponents()
 template<VertexConcept T>
 void VertexContainer<T>::disableAllPerVertexOptionalComponents()
 {
-	if constexpr (vert::HasOptionalAdjacentEdges<T>)
-		disablePerVertexAdjacentEdges();
-	if constexpr (vert::HasOptionalAdjacentFaces<T>)
-		disablePerVertexAdjacentFaces();
-	if constexpr (vert::HasOptionalAdjacentVertices<T>)
-		disablePerVertexAdjacentVertices();
-	if constexpr (vert::HasOptionalColor<T>)
-		disablePerVertexColor();
-	if constexpr (vert::HasOptionalMark<T>)
-		disablePerVertexMark();
-	if constexpr (vert::HasOptionalNormal<T>)
-		disablePerVertexNormal();
-	if constexpr (vert::HasOptionalPrincipalCurvature<T>)
-		disablePerVertexPrincipalCurvature();
-	if constexpr (vert::HasOptionalQuality<T>)
-		disablePerVertexQuality();
-	if constexpr (vert::HasOptionalTexCoord<T>)
-		disablePerVertexTexCoord();
+	Base::disableAllOptionalComponents();
 }
 
 /**

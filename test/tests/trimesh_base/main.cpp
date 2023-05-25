@@ -49,6 +49,24 @@ SCENARIO( "TriMesh usage" ) {
 			REQUIRE( m.perFaceCustomComponentNames().size() == 0);
 		}
 
+		WHEN( "Enabling and disabling all the per vertex optional components" ) {
+			m.enableAllPerVertexOptionalComponents();
+
+			REQUIRE( m.isPerVertexAdjacentFacesEnabled() == true);
+			REQUIRE( m.isPerVertexAdjacentVerticesEnabled() == true);
+			REQUIRE( m.isPerVertexPrincipalCurvatureEnabled() == true);
+			REQUIRE( m.isPerVertexTexCoordEnabled() == true);
+			REQUIRE( m.isPerVertexMarkEnabled() == true);
+
+			m.disableAllPerVertexOptionalComponents();
+
+			REQUIRE( m.isPerVertexAdjacentFacesEnabled() == false);
+			REQUIRE( m.isPerVertexAdjacentVerticesEnabled() == false);
+			REQUIRE( m.isPerVertexPrincipalCurvatureEnabled() == false);
+			REQUIRE( m.isPerVertexTexCoordEnabled() == false);
+			REQUIRE( m.isPerVertexMarkEnabled() == false);
+		}
+
 		WHEN( "Adding and removing vertices" ) {
 			uint vi0 = m.addVertex();
 

@@ -359,24 +359,7 @@ auto FaceContainer<T>::faces(bool jumpDeleted) const
 template<FaceConcept T>
 void FaceContainer<T>::enableAllPerFaceOptionalComponents()
 {
-	if constexpr (face::HasOptionalAdjacentEdges<T>)
-		enablePerFaceAdjacentEdges();
-	if constexpr (face::HasOptionalAdjacentFaces<T>)
-		enablePerFaceAdjacentFaces();
-	if constexpr (face::HasOptionalColor<T>)
-		enablePerFaceColor();
-	if constexpr (face::HasOptionalMark<T>)
-		enablePerFaceMark();
-	if constexpr (face::HasOptionalNormal<T>)
-		enablePerFaceNormal();
-	if constexpr (face::HasOptionalPrincipalCurvature<T>)
-		enablePerFacePrincipalCurvature();
-	if constexpr (face::HasOptionalQuality<T>)
-		enablePerFaceQuality();
-	if constexpr (face::HasOptionalWedgeColors<T>)
-		enablePerFaceWedgeColors();
-	if constexpr (face::HasOptionalWedgeTexCoords<T>)
-		enablePerFaceWedgeTexCoords();
+	Base::enableAllOptionalComponents();
 }
 
 /**
@@ -386,24 +369,7 @@ void FaceContainer<T>::enableAllPerFaceOptionalComponents()
 template<FaceConcept T>
 void FaceContainer<T>::disableAllPerFaceOptionalComponents()
 {
-	if constexpr (face::HasOptionalAdjacentEdges<T>)
-		disablePerFaceAdjacentEdges();
-	if constexpr (face::HasOptionalAdjacentFaces<T>)
-		disablePerFaceAdjacentFaces();
-	if constexpr (face::HasOptionalColor<T>)
-		disablePerFaceColor();
-	if constexpr (face::HasOptionalMark<T>)
-		disablePerFaceMark();
-	if constexpr (face::HasOptionalNormal<T>)
-		disablePerFaceNormal();
-	if constexpr (face::HasOptionalPrincipalCurvature<T>)
-		disablePerFacePrincipalCurvature();
-	if constexpr (face::HasOptionalQuality<T>)
-		disablePerFaceQuality();
-	if constexpr (face::HasOptionalWedgeColors<T>)
-		disablePerFaceWedgeColors();
-	if constexpr (face::HasOptionalWedgeTexCoords<T>)
-		disablePerFaceWedgeTexCoords();
+	Base::disableAllOptionalComponents();
 }
 
 /**

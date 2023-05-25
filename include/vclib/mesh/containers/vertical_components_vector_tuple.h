@@ -57,6 +57,9 @@ public:
 
 	void clear();
 
+	void enableAllOptionalComponents();
+	void disableAllOptionalComponents();
+
 	template<typename C>
 	bool isComponentTypeEnabled() const;
 
@@ -95,6 +98,9 @@ private:
 
 	template<typename C, bool E>
 	void setComponentEnabled();
+
+	template<typename C, bool E>
+	void setComponentEnabledIfOptional();
 };
 
 /** Crucial specialization - allows to catch components that are passed with a TypeWrapper **/

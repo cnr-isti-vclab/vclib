@@ -334,16 +334,7 @@ auto EdgeContainer<T>::edges(bool jumpDeleted) const
 template<EdgeConcept T>
 void EdgeContainer<T>::enableAllPerEdgeOptionalComponents()
 {
-	if constexpr (edge::HasOptionalAdjacentEdges<T>)
-		enablePerEdgeAdjacentEdges();
-	if constexpr (edge::HasOptionalAdjacentFaces<T>)
-		enablePerEdgeAdjacentFaces();
-	if constexpr (edge::HasOptionalColor<T>)
-		enablePerEdgeColor();
-	if constexpr (edge::HasOptionalMark<T>)
-		enablePerEdgeMark();
-	if constexpr (edge::HasOptionalQuality<T>)
-		enablePerEdgeQuality();
+	Base::enableAllOptionalComponents();
 }
 
 /**
@@ -353,16 +344,7 @@ void EdgeContainer<T>::enableAllPerEdgeOptionalComponents()
 template<EdgeConcept T>
 void EdgeContainer<T>::disableAllPerEdgeOptionalComponents()
 {
-	if constexpr (edge::HasOptionalAdjacentEdges<T>)
-		disablePerEdgeAdjacentEdges();
-	if constexpr (edge::HasOptionalAdjacentFaces<T>)
-		disablePerEdgeAdjacentFaces();
-	if constexpr (edge::HasOptionalColor<T>)
-		disablePerEdgeColor();
-	if constexpr (edge::HasOptionalMark<T>)
-		disablePerEdgeMark();
-	if constexpr (edge::HasOptionalQuality<T>)
-		disablePerEdgeQuality();
+	Base::disableAllOptionalComponents();
 }
 
 /**

@@ -101,6 +101,18 @@ void VerticalComponentsVectorTuple<Comp...>::clear()
 }
 
 template<typename ...Comp>
+void VerticalComponentsVectorTuple<Comp...>::enableAllOptionalComponents()
+{
+	(setComponentEnabledIfOptional<Comp, true>(), ...);
+}
+
+template<typename ...Comp>
+void VerticalComponentsVectorTuple<Comp...>::disableAllOptionalComponents()
+{
+	(setComponentEnabledIfOptional<Comp, false>(), ...);
+}
+
+template<typename ...Comp>
 template<typename C>
 bool VerticalComponentsVectorTuple<Comp...>::isComponentTypeEnabled() const
 {
@@ -199,6 +211,15 @@ void VerticalComponentsVectorTuple<Comp...>::setComponentEnabled()
 	}
 	else {
 		disableComponentType<C>();
+	}
+}
+
+template<typename ...Comp>
+template<typename C, bool E>
+void VerticalComponentsVectorTuple<Comp...>::setComponentEnabledIfOptional()
+{
+	if constexpr (vcl::comp::IsOptionalComponent<C>) {
+		setComponentEnabled<C, E>();
 	}
 }
 
