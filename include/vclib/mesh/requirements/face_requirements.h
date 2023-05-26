@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_FACE_REQUIREMENTS_H
-#define VCL_MESH_FACE_REQUIREMENTS_H
+#ifndef VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H
+#define VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H
 
 #include <vclib/concepts/mesh.h>
 
@@ -162,4 +162,4 @@ void requirePerFaceWedgeTexCoords(const MeshType& m)
 
 #include "face_requirements.cpp"
 
-#endif // VCL_MESH_FACE_REQUIREMENTS_H
+#endif // VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H

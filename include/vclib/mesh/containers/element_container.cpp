@@ -109,6 +109,110 @@ inline uint ElementContainer<T>::deletedElementNumber() const
 	return elementContainerSize() - elementNumber();
 }
 
+template<ElementConcept T>
+uint ElementContainer<T>::addElement()
+{
+	vcVecTuple.resize(vec.size() + 1);
+	ccVecMap.resize(vec.size() + 1);
+
+	T* oldB = vec.data();
+	vec.push_back(T());
+	T* newB = vec.data();
+	en++;
+
+	vec.back().setParentMesh(parentMesh);
+	vec.back().initVerticalComponents();
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
+	}
+
+	return vec.size() - 1;
+}
+
+/**
+ * @brief Adds size elements to the Element Container.
+ *
+ * Returns the id of the first added element.
+ *
+ * @param size
+ * @return the id of the first added element.
+ */
+template<ElementConcept T>
+uint ElementContainer<T>::addElements(uint size)
+{
+	ccVecMap.resize(vec.size() + size);
+	vcVecTuple.resize(vec.size() + size);
+
+	uint baseId = vec.size();
+	T*   oldB   = vec.data();
+	vec.resize(vec.size() + size);
+	T* newB = vec.data();
+	en += size;
+
+	for (uint i = baseId; i < vec.size(); ++i) {
+		vec[i].setParentMesh(parentMesh);
+		vec[i].initVerticalComponents();
+	}
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
+	}
+
+	return baseId;
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::reserveElements(uint size)
+{
+	T* oldB = vec.data();
+	vec.reserve(size);
+	T* newB = vec.data();
+
+	ccVecMap.reserve(size);
+	vcVecTuple.reserve(size);
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
+	}
+}
+
+/**
+ * @brief Compacts the element container, keeping only the non-deleted elements.
+ *
+ * @return a vector that tells, for each old element index, the new index of the element. Will
+ * contain -1 if the element has been deleted.
+ */
+template<ElementConcept T>
+std::vector<int> ElementContainer<T>::compactElements()
+{
+	std::vector<int> newIndices = elementCompactIndices();
+	if (elementNumber() != elementContainerSize()) {
+		// k will indicate the position of the ith non-deleted vertices after compacting
+		uint k = 0;
+		for (uint i = 0; i < newIndices.size(); ++i) {
+			if (newIndices[i] >= 0) {
+				k = newIndices[i];
+				if (i != k)
+					vec[k] = vec[i];
+			}
+		}
+		k++;
+		T* base = vec.data();
+		vec.resize(k);
+		assert(base == vec.data());
+
+		ccVecMap.compact(newIndices);
+		vcVecTuple.compact(newIndices);
+
+		parentMesh->updateAllPointersAfterCompact(base, newIndices);
+	}
+	return newIndices;
+}
+
 /**
  * @brief Marks as deleted the element with the given id.
  *
@@ -197,13 +301,120 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 	return newIndices;
 }
 
+/**
+ * @brief Returns an iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted elements of the container. You can change
+ * this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
+ * @return An iterator the the first element of the container.
+ */
 template<ElementConcept T>
-void ElementContainer<T>::setParentMeshPointers(void* pm)
+typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted)
 {
-	parentMesh = static_cast<ParentMeshType*>(pm);
-	for (auto& e : elements(false)) {
-		e.setParentMesh(pm);
+	auto it = vec.begin();
+	if (jumpDeleted) {
+		// if the user asked to jump the deleted elements, and the first element is deleted, we need
+		// to move forward until we find the first non-deleted element
+		while (it != vec.end() && it->deleted()) {
+			++it;
+		}
 	}
+	return ElementIterator(it, vec, jumpDeleted && vec.size() != en);
+}
+
+/**
+ * @brief Returns an iterator to the end of the container.
+ * @return An iterator to the end of the container.
+ */
+template<ElementConcept T>
+typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementEnd()
+{
+	return ElementIterator(vec.end(), vec);
+}
+
+/**
+ * @brief Returns a const iterator to the beginning of the container.
+ *
+ * The iterator is automatically initialized to jump deleted elements of the container. You can change
+ * this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
+ * @return A const iterator the the first element of the container.
+ */
+template<ElementConcept T>
+typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted) const
+{
+	auto it = vec.begin();
+	if (jumpDeleted) {
+		// if the user asked to jump the deleted elements, and the first element is deleted, we need
+		// to move forward until we find the first non-deleted element
+		while (it != vec.end() && it->deleted()) {
+			++it;
+		}
+	}
+	return ConstElementIterator(it, vec, jumpDeleted && vec.size() != en);
+}
+
+/**
+ * @brief Returns a const iterator to the end of the container.
+ * @return A const iterator to the end of the container.
+ */
+template<ElementConcept T>
+typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementEnd() const
+{
+	return ConstElementIterator(vec.end(), vec);
+}
+
+/**
+ * @brief Returns a view object that allows to iterate over the elements of the containers,
+ * providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the elements using the C++ foreach
+ * syntax:
+ *
+ * @code{.cpp}
+ * for (Element& f : m.elements()){
+ *     // do something with this element
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over elements is automatically initialized to jump deleted elements of the
+ * container. You can change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
+template<ElementConcept T>
+auto ElementContainer<T>::elements(bool jumpDeleted)
+{
+	return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+}
+
+/**
+ * @brief Returns a view object that allows to iterate over the elements of the containers,
+ * providing two member functions begin() and end().
+ *
+ * This member function is very useful when you want to iterate over the elements using the C++ foreach
+ * syntax:
+ *
+ * @code{.cpp}
+ * for (const Element& f : m.elements()){
+ *     // do something with this element
+ * }
+ * @endcode
+ *
+ * The iterator used to iterate over elements is automatically initialized to jump deleted elements of the
+ * container. You can change this option by calling this function with jumpDeleted=false.
+ *
+ * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
+ * @return An object having begin() and end() function, allowing to iterate over the container.
+ */
+template<ElementConcept T>
+auto ElementContainer<T>::elements(bool jumpDeleted) const
+{
+	return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }
 
 template<ElementConcept T>
@@ -347,127 +558,20 @@ ConstCustomComponentVectorHandle<K> ElementContainer<T>::customComponentVectorHa
 	return cc;
 }
 
-/**
- * @brief Returns an iterator to the beginning of the container.
- *
- * The iterator is automatically initialized to jump deleted elements of the container. You can change
- * this option by calling this function with jumpDeleted=false.
- *
- * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
- * @return An iterator the the first element of the container.
- */
-template<ElementConcept T>
-typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted)
-{
-	auto it = vec.begin();
-	if (jumpDeleted) {
-		// if the user asked to jump the deleted elements, and the first element is deleted, we need
-		// to move forward until we find the first non-deleted element
-		while (it != vec.end() && it->deleted()) {
-			++it;
-		}
-	}
-	return ElementIterator(it, vec, jumpDeleted && vec.size() != en);
-}
-
-/**
- * @brief Returns an iterator to the end of the container.
- * @return An iterator to the end of the container.
- */
-template<ElementConcept T>
-typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementEnd()
-{
-	return ElementIterator(vec.end(), vec);
-}
-
-/**
- * @brief Returns a const iterator to the beginning of the container.
- *
- * The iterator is automatically initialized to jump deleted elements of the container. You can change
- * this option by calling this function with jumpDeleted=false.
- *
- * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
- * @return A const iterator the the first element of the container.
- */
-template<ElementConcept T>
-typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted) const
-{
-	auto it = vec.begin();
-	if (jumpDeleted) {
-		// if the user asked to jump the deleted elements, and the first element is deleted, we need
-		// to move forward until we find the first non-deleted element
-		while (it != vec.end() && it->deleted()) {
-			++it;
-		}
-	}
-	return ConstElementIterator(it, vec, jumpDeleted && vec.size() != en);
-}
-
-/**
- * @brief Returns a const iterator to the end of the container.
- * @return A const iterator to the end of the container.
- */
-template<ElementConcept T>
-typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementEnd() const
-{
-	return ConstElementIterator(vec.end(), vec);
-}
-
-/**
- * @brief Returns a view object that allows to iterate over the elements of the containers,
- * providing two member functions begin() and end().
- *
- * This member function is very useful when you want to iterate over the elements using the C++ foreach
- * syntax:
- *
- * @code{.cpp}
- * for (Element& f : m.elements()){
- *     // do something with this element
- * }
- * @endcode
- *
- * The iterator used to iterate over elements is automatically initialized to jump deleted elements of the
- * container. You can change this option by calling this function with jumpDeleted=false.
- *
- * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
- * @return An object having begin() and end() function, allowing to iterate over the container.
- */
-template<ElementConcept T>
-auto ElementContainer<T>::elements(bool jumpDeleted)
-{
-	return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
-}
-
-/**
- * @brief Returns a view object that allows to iterate over the elements of the containers,
- * providing two member functions begin() and end().
- *
- * This member function is very useful when you want to iterate over the elements using the C++ foreach
- * syntax:
- *
- * @code{.cpp}
- * for (const Element& f : m.elements()){
- *     // do something with this element
- * }
- * @endcode
- *
- * The iterator used to iterate over elements is automatically initialized to jump deleted elements of the
- * container. You can change this option by calling this function with jumpDeleted=false.
- *
- * @param[in] jumpDeleted (def: true): boolean that tells if the iterator should jump deleted elements.
- * @return An object having begin() and end() function, allowing to iterate over the container.
- */
-template<ElementConcept T>
-auto ElementContainer<T>::elements(bool jumpDeleted) const
-{
-	return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
-}
-
 template<ElementConcept T>
 inline uint ElementContainer<T>::index(const T* e) const
 {
 	assert(!vec.empty() && e >= vec.data() && e <= &vec.back());
 	return e - vec.data();
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::setParentMeshPointers(void* pm)
+{
+	parentMesh = static_cast<ParentMeshType*>(pm);
+	for (auto& e : elements(false)) {
+		e.setParentMesh(pm);
+	}
 }
 
 template<ElementConcept T>
@@ -478,77 +582,6 @@ void ElementContainer<T>::clearElements()
 
 	vcVecTuple.clear();
 	ccVecMap.clear();
-}
-
-template<ElementConcept T>
-uint ElementContainer<T>::addElement()
-{
-	vcVecTuple.resize(vec.size() + 1);
-	ccVecMap.resize(vec.size() + 1);
-
-	T* oldB = vec.data();
-	vec.push_back(T());
-	T* newB = vec.data();
-	en++;
-
-	vec.back().setParentMesh(parentMesh);
-	vec.back().initVerticalComponents();
-
-	if (oldB != newB) {
-		setParentMeshPointers(parentMesh);
-		parentMesh->updateAllPointers(oldB, newB);
-	}
-
-	return vec.size() - 1;
-}
-
-/**
- * @brief Adds size elements to the Element Container.
- *
- * Returns the id of the first added element.
- *
- * @param size
- * @return the id of the first added element.
- */
-template<ElementConcept T>
-uint ElementContainer<T>::addElements(uint size)
-{
-	ccVecMap.resize(vec.size() + size);
-	vcVecTuple.resize(vec.size() + size);
-
-	uint baseId = vec.size();
-	T*   oldB   = vec.data();
-	vec.resize(vec.size() + size);
-	T* newB = vec.data();
-	en += size;
-
-	for (uint i = baseId; i < vec.size(); ++i) {
-		vec[i].setParentMesh(parentMesh);
-		vec[i].initVerticalComponents();
-	}
-
-	if (oldB != newB) {
-		setParentMeshPointers(parentMesh);
-		parentMesh->updateAllPointers(oldB, newB);
-	}
-
-	return baseId;
-}
-
-template<ElementConcept T>
-void ElementContainer<T>::reserveElements(uint size)
-{
-	T* oldB = vec.data();
-	vec.reserve(size);
-	T* newB = vec.data();
-
-	ccVecMap.reserve(size);
-	vcVecTuple.reserve(size);
-
-	if (oldB != newB) {
-		setParentMeshPointers(parentMesh);
-		parentMesh->updateAllPointers(oldB, newB);
-	}
 }
 
 template<ElementConcept T>
@@ -565,39 +598,6 @@ void ElementContainer<T>::resizeElements(uint size)
 		setParentMeshPointers(parentMesh);
 		parentMesh->updateAllPointers(oldB, newB);
 	}
-}
-
-/**
- * @brief Compacts the element container, keeping only the non-deleted elements.
- *
- * @return a vector that tells, for each old element index, the new index of the element. Will
- * contain -1 if the element has been deleted.
- */
-template<ElementConcept T>
-std::vector<int> ElementContainer<T>::compactElements()
-{
-	std::vector<int> newIndices = elementCompactIndices();
-	if (elementNumber() != elementContainerSize()) {
-		// k will indicate the position of the ith non-deleted vertices after compacting
-		uint k = 0;
-		for (uint i = 0; i < newIndices.size(); ++i) {
-			if (newIndices[i] >= 0) {
-				k = newIndices[i];
-				if (i != k)
-					vec[k] = vec[i];
-			}
-		}
-		k++;
-		T* base = vec.data();
-		vec.resize(k);
-		assert(base == vec.data());
-
-		ccVecMap.compact(newIndices);
-		vcVecTuple.compact(newIndices);
-
-		parentMesh->updateAllPointersAfterCompact(base, newIndices);
-	}
-	return newIndices;
 }
 
 template<ElementConcept T>

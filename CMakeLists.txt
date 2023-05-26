@@ -238,6 +238,7 @@ set(HEADERS
 	include/vclib/mesh/elements/face_components.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
+	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_requirements.h
@@ -433,6 +434,7 @@ set(SOURCES
 	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
 	include/vclib/mesh/elements/element.cpp
 	include/vclib/mesh/elements/face.cpp
+	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp

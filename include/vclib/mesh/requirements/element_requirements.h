@@ -21,32 +21,18 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
+#define VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
 
-#include <vclib/space.h>
+#include <vclib/concepts/mesh.h>
 
-class Bar {
-public:
-	template<typename T>
-	void foo()
-	{
-		std::cout << "foo" << std::endl;
-	}
+namespace vcl {
 
-	template<uint T>
-	void foo()
-	{
-		std::cout << "foo " << T << std::endl;
-	}
+template<uint ELEMENT_TYPE, MeshConcept MeshType>
+bool isElementContainerCompact(const MeshType&);
 
-};
+} // namespace vcl
 
-int main()
-{
-	Bar b;
+#include "element_requirements.cpp"
 
-	b.foo<int>();
-	b.foo<3>();
-
-	return 0;
-}
+#endif // VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H

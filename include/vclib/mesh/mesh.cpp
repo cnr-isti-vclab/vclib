@@ -304,6 +304,51 @@ uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
+const auto& Mesh<Args...>::element(uint i) const
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::element(i);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+auto& Mesh<Args...>::element(uint i)
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::element(i);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::elementNumber() const
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementNumber();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::elementContainerSize() const
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementContainerSize();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::deletedElementNumber() const
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::deletedElementNumber();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
 uint Mesh<Args...>::addElement()
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;

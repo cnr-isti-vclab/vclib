@@ -119,6 +119,21 @@ public:
 	uint index(const El* e) const requires (hasContainerOf<El>());
 
 	template<uint EL_TYPE>
+	const auto& element(uint i) const;
+
+	template<uint EL_TYPE>
+	auto& element(uint i);
+
+	template<uint EL_TYPE>
+	uint elementNumber() const;
+
+	template<uint EL_TYPE>
+	uint elementContainerSize() const;
+
+	template<uint EL_TYPE>
+	uint deletedElementNumber() const;
+
+	template<uint EL_TYPE>
 	uint addElement();
 
 	template<uint EL_TYPE>

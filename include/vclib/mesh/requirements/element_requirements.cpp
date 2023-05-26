@@ -21,32 +21,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#include "element_requirements.h"
 
-#include <vclib/space.h>
+namespace vcl {
 
-class Bar {
-public:
-	template<typename T>
-	void foo()
-	{
-		std::cout << "foo" << std::endl;
-	}
-
-	template<uint T>
-	void foo()
-	{
-		std::cout << "foo " << T << std::endl;
-	}
-
-};
-
-int main()
+/**
+ * @brief Returns `true` if the given mesh has its Container of the given Element compact.
+ *
+ * @tparam ELEMENT_TYPE: the ElementEnumType of the ElementContainer to check.
+ * @tparam MeshType: the type of the Mesh to check.
+ *
+ * @param m: the mesh on which check the compactness of the Container of the given Element.
+ * @return `true` if the Container of the given Element is compact.
+ */
+template<uint ELEMENT_TYPE, typename MeshType>
+bool isElementContainerCompact(const MeshType& m)
 {
-	Bar b;
-
-	b.foo<int>();
-	b.foo<3>();
-
-	return 0;
+	return (m.template elementNumber<ELEMENT_TYPE>() == m.template elementContainerSize<ELEMENT_TYPE>());
 }
+
+} // namespace vcl

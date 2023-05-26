@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_REQUIREMENTS_H
-#define VCL_MESH_MESH_REQUIREMENTS_H
+#ifndef VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
+#define VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 
 #include "face_requirements.h"
 #include "vertex_requirements.h"
@@ -71,4 +71,4 @@ void requireCompactness(const MeshType&);
 
 #include "mesh_requirements.cpp"
 
-#endif // VCL_MESH_MESH_REQUIREMENTS_H
+#endif // VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
