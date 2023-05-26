@@ -114,7 +114,7 @@ void VerticalComponentsVectorTuple<Comp...>::disableAllOptionalComponents()
 
 template<typename ...Comp>
 template<typename C>
-bool VerticalComponentsVectorTuple<Comp...>::isComponentTypeEnabled() const
+bool VerticalComponentsVectorTuple<Comp...>::isComponentEnabled() const
 {
 	constexpr uint ind = indexOfType<C>();
 	return vecEnabled[ind];
@@ -125,12 +125,12 @@ template<uint COMP_TYPE>
 bool VerticalComponentsVectorTuple<Comp...>::isComponentEnabled() const
 {
 	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
-	return isComponentTypeEnabled<C>();
+	return isComponentEnabled<C>();
 }
 
 template<typename ...Comp>
 template<typename C>
-void VerticalComponentsVectorTuple<Comp...>::enableComponentType()
+void VerticalComponentsVectorTuple<Comp...>::enableComponent()
 {
 	constexpr uint ind = indexOfType<C>();
 	vecEnabled[ind] = true;
@@ -142,12 +142,12 @@ template<uint COMP_TYPE>
 void VerticalComponentsVectorTuple<Comp...>::enableComponent()
 {
 	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
-	enableComponentType<C>();
+	enableComponent<C>();
 }
 
 template<typename ...Comp>
 template<typename C>
-void VerticalComponentsVectorTuple<Comp...>::disableComponentType()
+void VerticalComponentsVectorTuple<Comp...>::disableComponent()
 {
 	constexpr uint ind = indexOfType<C>();
 	vecEnabled[ind] = false;
@@ -159,7 +159,7 @@ template<uint COMP_TYPE>
 void VerticalComponentsVectorTuple<Comp...>::disableComponent()
 {
 	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
-	disableComponentType<C>();
+	disableComponent<C>();
 }
 
 template<typename ...Comp>
@@ -207,10 +207,10 @@ template<typename C, bool E>
 void VerticalComponentsVectorTuple<Comp...>::setComponentEnabled()
 {
 	if constexpr (E) {
-		enableComponentType<C>();
+		enableComponent<C>();
 	}
 	else {
-		disableComponentType<C>();
+		disableComponent<C>();
 	}
 }
 

@@ -61,19 +61,19 @@ public:
 	void disableAllOptionalComponents();
 
 	template<typename C>
-	bool isComponentTypeEnabled() const;
+	bool isComponentEnabled() const;
 
 	template<uint COMP_TYPE>
 	bool isComponentEnabled() const;
 
 	template<typename C>
-	void enableComponentType();
+	void enableComponent();
 
 	template<uint COMP_TYPE>
 	void enableComponent();
 
 	template<typename C>
-	void disableComponentType();
+	void disableComponent();
 
 	template<uint COMP_TYPE>
 	void disableComponent();

@@ -427,7 +427,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentEdgesEnabled()
 	const requires vert::HasOptionalAdjacentEdges<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentEdges>();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdges>();
 }
 
 /**
@@ -439,7 +439,7 @@ bool VertexContainer<T>::isPerVertexAdjacentEdgesEnabled()
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>
 {
-	Base::template enableOptionalComponentType<typename T::AdjacentEdges>();
+	Base::template enableOptionalComponent<typename T::AdjacentEdges>();
 }
 
 /**
@@ -451,7 +451,7 @@ void VertexContainer<T>::enablePerVertexAdjacentEdges() requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentEdges() requires vert::HasOptionalAdjacentEdges<T>
 {
-	Base::template disableOptionalComponentType<typename T::AdjacentEdges>();
+	Base::template disableOptionalComponent<typename T::AdjacentEdges>();
 }
 
 /**
@@ -465,7 +465,7 @@ void VertexContainer<T>::disablePerVertexAdjacentEdges() requires vert::HasOptio
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::HasOptionalAdjacentFaces<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentFaces>();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentFaces>();
 }
 
 /**
@@ -477,7 +477,7 @@ bool VertexContainer<T>::isPerVertexAdjacentFacesEnabled() const requires vert::
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
-	Base::template enableOptionalComponentType<typename T::AdjacentFaces>();
+	Base::template enableOptionalComponent<typename T::AdjacentFaces>();
 }
 
 /**
@@ -489,7 +489,7 @@ void VertexContainer<T>::enablePerVertexAdjacentFaces() requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentFaces() requires vert::HasOptionalAdjacentFaces<T>
 {
-	Base::template disableOptionalComponentType<typename T::AdjacentFaces>();
+	Base::template disableOptionalComponent<typename T::AdjacentFaces>();
 }
 
 /**
@@ -504,7 +504,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexAdjacentVerticesEnabled()
 	const requires vert::HasOptionalAdjacentVertices<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentVertices>();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentVertices>();
 }
 
 /**
@@ -517,7 +517,7 @@ template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexAdjacentVertices()
 	requires vert::HasOptionalAdjacentVertices<T>
 {
-	Base::template enableOptionalComponentType<typename T::AdjacentVertices>();
+	Base::template enableOptionalComponent<typename T::AdjacentVertices>();
 }
 
 /**
@@ -530,7 +530,7 @@ template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexAdjacentVertices()
 	requires vert::HasOptionalAdjacentVertices<T>
 {
-	Base::template disableOptionalComponentType<typename T::AdjacentVertices>();
+	Base::template disableOptionalComponent<typename T::AdjacentVertices>();
 }
 
 /**
@@ -543,7 +543,7 @@ void VertexContainer<T>::disablePerVertexAdjacentVertices()
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptionalColor<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::Color>();
+	return Base::template isOptionalComponentEnabled<typename T::Color>();
 }
 
 /**
@@ -554,7 +554,7 @@ bool VertexContainer<T>::isPerVertexColorEnabled() const requires vert::HasOptio
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<T>
 {
-	return Base::template enableOptionalComponentType<typename T::Color>();
+	return Base::template enableOptionalComponent<typename T::Color>();
 }
 
 /**
@@ -565,7 +565,7 @@ void VertexContainer<T>::enablePerVertexColor() requires vert::HasOptionalColor<
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor<T>
 {
-	return Base::template disableOptionalComponentType<typename T::Color>();
+	Base::template disableOptionalComponent<typename T::Color>();
 }
 
 /**
@@ -578,7 +578,7 @@ void VertexContainer<T>::disablePerVertexColor() requires vert::HasOptionalColor
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOptionalMark<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::Mark>();
+	return Base::template isOptionalComponentEnabled<typename T::Mark>();
 }
 
 /**
@@ -589,7 +589,7 @@ bool VertexContainer<T>::isPerVertexMarkEnabled() const requires vert::HasOption
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 {
-	return Base::template enableOptionalComponentType<typename T::Mark>();
+	Base::template enableOptionalComponent<typename T::Mark>();
 }
 
 /**
@@ -600,7 +600,7 @@ void VertexContainer<T>::enablePerVertexMark() requires vert::HasOptionalMark<T>
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T>
 {
-	return Base::template disableOptionalComponentType<typename T::Mark>();
+	Base::template disableOptionalComponent<typename T::Mark>();
 }
 
 /**
@@ -614,7 +614,7 @@ void VertexContainer<T>::disablePerVertexMark() requires vert::HasOptionalMark<T
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOptionalNormal<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::Normal>();
+	return Base::template isOptionalComponentEnabled<typename T::Normal>();
 }
 
 /**
@@ -625,7 +625,7 @@ bool VertexContainer<T>::isPerVertexNormalEnabled() const requires vert::HasOpti
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
-	return Base::template enableOptionalComponentType<typename T::Normal>();
+	Base::template enableOptionalComponent<typename T::Normal>();
 }
 
 /**
@@ -636,7 +636,7 @@ void VertexContainer<T>::enablePerVertexNormal() requires vert::HasOptionalNorma
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexNormal() requires vert::HasOptionalNormal<T>
 {
-	return Base::template disableOptionalComponentType<typename T::Normal>();
+	Base::template disableOptionalComponent<typename T::Normal>();
 }
 
 /**
@@ -651,7 +651,7 @@ template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexPrincipalCurvatureEnabled()
 	const requires vert::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::PrincipalCurvature>();
+	return Base::template isOptionalComponentEnabled<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -664,7 +664,7 @@ template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexPrincipalCurvature()
 	requires vert::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template enableOptionalComponentType<typename T::PrincipalCurvature>();
+	Base::template enableOptionalComponent<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -677,7 +677,7 @@ template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 	requires vert::HasOptionalPrincipalCurvature<T>
 {
-	return Base::template disableOptionalComponentType<typename T::PrincipalCurvature>();
+	Base::template disableOptionalComponent<typename T::PrincipalCurvature>();
 }
 
 /**
@@ -690,7 +690,7 @@ void VertexContainer<T>::disablePerVertexPrincipalCurvature()
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexQualityEnabled() const requires vert::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::Quality>();
+	return Base::template isOptionalComponentEnabled<typename T::Quality>();
 }
 
 /**
@@ -701,7 +701,7 @@ bool VertexContainer<T>::isPerVertexQualityEnabled() const requires vert::HasOpt
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexQuality() requires vert::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponentType<typename T::Quality>();
+	Base::template enableOptionalComponent<typename T::Quality>();
 }
 
 /**
@@ -712,7 +712,7 @@ void VertexContainer<T>::enablePerVertexQuality() requires vert::HasOptionalQual
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexQuality() requires vert::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponentType<typename T::Quality>();
+	Base::template disableOptionalComponente<typename T::Quality>();
 }
 
 /**
@@ -725,7 +725,7 @@ void VertexContainer<T>::disablePerVertexQuality() requires vert::HasOptionalQua
 template<VertexConcept T>
 bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOptionalTexCoord<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::TexCoord>();
+	return Base::template isOptionalComponentEnabled<typename T::TexCoord>();
 }
 
 /**
@@ -736,7 +736,7 @@ bool VertexContainer<T>::isPerVertexTexCoordEnabled() const requires vert::HasOp
 template<VertexConcept T>
 void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
-	return Base::template enableOptionalComponentType<typename T::TexCoord>();
+	Base::template enableOptionalComponent<typename T::TexCoord>();
 }
 
 /**
@@ -747,7 +747,7 @@ void VertexContainer<T>::enablePerVertexTexCoord() requires vert::HasOptionalTex
 template<VertexConcept T>
 void VertexContainer<T>::disablePerVertexTexCoord() requires vert::HasOptionalTexCoord<T>
 {
-	return Base::template disableOptionalComponentType<typename T::TexCoord>();
+	Base::template disableOptionalComponent<typename T::TexCoord>();
 }
 
 /**

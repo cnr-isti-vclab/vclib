@@ -431,9 +431,9 @@ void ElementContainer<T>::disableAllOptionalComponents()
 
 template<ElementConcept T>
 template<typename C>
-bool ElementContainer<T>::isOptionalComponentTypeEnabled() const
+bool ElementContainer<T>::isOptionalComponentEnabled() const
 {
-	return vcVecTuple.template isComponentTypeEnabled<C>();
+	return vcVecTuple.template isComponentEnabled<C>();
 }
 
 template<ElementConcept T>
@@ -445,9 +445,9 @@ bool ElementContainer<T>::isOptionalComponentEnabled() const
 
 template<ElementConcept T>
 template<typename C>
-void ElementContainer<T>::enableOptionalComponentType()
+void ElementContainer<T>::enableOptionalComponent()
 {
-	vcVecTuple.template enableComponentType<C>();
+	vcVecTuple.template enableComponent<C>();
 	// first call init on all the just enabled components
 	if constexpr (comp::HasInitMemberFunction<C>) {
 		for (auto& e : elements()) {
@@ -470,14 +470,14 @@ template<uint COMP_TYPE>
 void ElementContainer<T>::enableOptionalComponent()
 {
 	using C = comp::ComponentOfTypeT<COMP_TYPE, typename T::Components>;
-	enableOptionalComponentType<C>();
+	enableOptionalComponent<C>();
 }
 
 template<ElementConcept T>
 template<typename C>
-void ElementContainer<T>::disableOptionalComponentType()
+void ElementContainer<T>::disableOptionalComponent()
 {
-	vcVecTuple.template disableComponentType<C>();
+	vcVecTuple.template disableComponent<C>();
 }
 
 template<ElementConcept T>
@@ -767,7 +767,7 @@ void ElementContainer<T>::updatePointersOnComponent(const ElPtr* oldBase, const 
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentTypeEnabled<Comp>()) {
+			if(isOptionalComponentEnabled<Comp>()) {
 				for (T& e : elements()) {
 					e.Comp::updatePointers(oldBase, newBase);
 				}
@@ -789,7 +789,7 @@ void ElementContainer<T>::updatePointersAfterCompactOnComponent(
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentTypeEnabled<Comp>()) {
+			if(isOptionalComponentEnabled<Comp>()) {
 				for (T& e : elements()) {
 					e.Comp::updatePointersAfterCompact(base, newIndices);
 				}
@@ -812,7 +812,7 @@ void ElementContainer<T>::importPointersOnComponentFrom(
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentTypeEnabled<Comp>()) {
+			if(isOptionalComponentEnabled<Comp>()) {
 				for (uint i = 0; i < elementContainerSize(); ++i) {
 					element(i).Comp::importPointersFrom(c.element(i), base, cbase);
 				}

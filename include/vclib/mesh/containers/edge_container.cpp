@@ -359,7 +359,7 @@ template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled()
 	const requires edge::HasOptionalAdjacentEdges<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentEdges>();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentEdges>();
 }
 
 /**
@@ -375,7 +375,7 @@ bool EdgeContainer<T>::isPerEdgeAdjacentEdgesEnabled()
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
-	Base::template enableOptionalComponentType<typename T::AdjacentEdges>();
+	Base::template enableOptionalComponent<typename T::AdjacentEdges>();
 }
 
 /**
@@ -387,7 +387,7 @@ void EdgeContainer<T>::enablePerEdgeAdjacentEdges() requires edge::HasOptionalAd
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 {
-	Base::template disableOptionalComponentType<typename T::AdjacentEdges>();
+	Base::template disableOptionalComponent<typename T::AdjacentEdges>();
 }
 
 /**
@@ -401,7 +401,7 @@ void EdgeContainer<T>::disablePerEdgeAdjacentEdges() requires edge::HasOptionalA
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const requires edge::HasOptionalAdjacentFaces<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::AdjacentFaces>();
+	return Base::template isOptionalComponentEnabled<typename T::AdjacentFaces>();
 }
 
 /**
@@ -413,7 +413,7 @@ bool EdgeContainer<T>::isPerEdgeAdjacentFacesEnabled() const requires edge::HasO
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 {
-	Base::template enableOptionalComponentType<typename T::AdjacentFaces>();
+	Base::template enableOptionalComponent<typename T::AdjacentFaces>();
 }
 
 /**
@@ -425,7 +425,7 @@ void EdgeContainer<T>::enablePerEdgeAdjacentFaces() requires edge::HasOptionalAd
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 {
-	Base::template disableOptionalComponentType<typename T::AdjacentFaces>();
+	Base::template disableOptionalComponent<typename T::AdjacentFaces>();
 }
 
 /**
@@ -438,7 +438,7 @@ void EdgeContainer<T>::disablePerEdgeAdjacentFaces() requires edge::HasOptionalA
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeColorEnabled() const requires edge::HasOptionalColor<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::Color>();
+	return Base::template isOptionalComponentEnabled<typename T::Color>();
 }
 
 /**
@@ -449,7 +449,7 @@ bool EdgeContainer<T>::isPerEdgeColorEnabled() const requires edge::HasOptionalC
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeColor() requires edge::HasOptionalColor<T>
 {
-	return Base::template enableOptionalComponentType<typename T::Color>();
+	Base::template enableOptionalComponent<typename T::Color>();
 }
 
 /**
@@ -460,7 +460,7 @@ void EdgeContainer<T>::enablePerEdgeColor() requires edge::HasOptionalColor<T>
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeColor() requires edge::HasOptionalColor<T>
 {
-	return Base::template disableOptionalComponentType<typename T::Color>();
+	Base::template disableOptionalComponent<typename T::Color>();
 }
 
 /**
@@ -473,7 +473,7 @@ void EdgeContainer<T>::disablePerEdgeColor() requires edge::HasOptionalColor<T>
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeMarkEnabled() const requires edge::HasOptionalMark<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::Mark>();
+	return Base::template isOptionalComponentEnabled<typename T::Mark>();
 }
 
 /**
@@ -484,7 +484,7 @@ bool EdgeContainer<T>::isPerEdgeMarkEnabled() const requires edge::HasOptionalMa
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeMark() requires edge::HasOptionalMark<T>
 {
-	return Base::template enableOptionalComponentType<typename T::Mark>();
+	Base::template enableOptionalComponent<typename T::Mark>();
 }
 
 /**
@@ -495,7 +495,7 @@ void EdgeContainer<T>::enablePerEdgeMark() requires edge::HasOptionalMark<T>
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeMark() requires edge::HasOptionalMark<T>
 {
-	return Base::template disableOptionalComponentType<typename T::Mark>();
+	Base::template disableOptionalComponent<typename T::Mark>();
 }
 
 /**
@@ -508,7 +508,7 @@ void EdgeContainer<T>::disablePerEdgeMark() requires edge::HasOptionalMark<T>
 template<EdgeConcept T>
 bool EdgeContainer<T>::isPerEdgeQualityEnabled() const requires edge::HasOptionalQuality<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::Quality>();
+	return Base::template isOptionalComponentEnabled<typename T::Quality>();
 }
 /**
  * @brief Enables the Optional Quality of the edge.
@@ -518,7 +518,7 @@ bool EdgeContainer<T>::isPerEdgeQualityEnabled() const requires edge::HasOptiona
 template<EdgeConcept T>
 void EdgeContainer<T>::enablePerEdgeQuality() requires edge::HasOptionalQuality<T>
 {
-	return Base::template enableOptionalComponentType<typename T::Quality>();
+	Base::template enableOptionalComponent<typename T::Quality>();
 }
 
 /**
@@ -529,7 +529,7 @@ void EdgeContainer<T>::enablePerEdgeQuality() requires edge::HasOptionalQuality<
 template<EdgeConcept T>
 void EdgeContainer<T>::disablePerEdgeQuality() requires edge::HasOptionalQuality<T>
 {
-	return Base::template disableOptionalComponentType<typename T::Quality>();
+	Base::template disableOptionalComponent<typename T::Quality>();
 }
 
 /**

@@ -9,7 +9,7 @@
 template<%EL_UC%Concept T>
 bool %EL_UC%Container<T>::isPer%EL_UC%%CNUC%Enabled() const requires %EL_NS%::HasOptional%CNUC%<T>
 {
-	return Base::template isOptionalComponentTypeEnabled<typename T::%CNUC%>();
+	return Base::template isOptionalComponentEnabled<typename T::%CNUC%>();
 }
 
 /**
@@ -21,7 +21,7 @@ bool %EL_UC%Container<T>::isPer%EL_UC%%CNUC%Enabled() const requires %EL_NS%::Ha
 template<%EL_UC%Concept T>
 void %EL_UC%Container<T>::enablePer%EL_UC%%CNUC%() requires %EL_NS%::HasOptional%CNUC%<T>
 {
-	Base::template enableOptionalComponentType<typename T::%CNUC%>();
+	Base::template enableOptionalComponent<typename T::%CNUC%>();
 }
 
 /**
@@ -33,6 +33,6 @@ void %EL_UC%Container<T>::enablePer%EL_UC%%CNUC%() requires %EL_NS%::HasOptional
 template<%EL_UC%Concept T>
 void %EL_UC%Container<T>::disablePer%EL_UC%%CNUC%() requires %EL_NS%::HasOptional%CNUC%<T>
 {
-	Base::template disableOptionalComponentType<typename T::%CNUC%>();
+	Base::template disableOptionalComponent<typename T::%CNUC%>();
 }
 
