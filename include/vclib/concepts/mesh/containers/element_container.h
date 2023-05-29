@@ -81,11 +81,18 @@ struct ContainerOfElementPred<EL_TPE, TypeWrapper<Containers...>> :
 {
 };
 
-template<typename MeshType, ElementConcept El>
+template<ElementConcept El, typename MeshType>
 struct HasContainerOfPred
 {
 	static constexpr bool value =
 		mesh::ContainerOfElementPred<El::ELEMENT_TYPE, typename MeshType::Containers>::value;
+};
+
+template<uint EL_TYPE, typename MeshType>
+struct HasContainerOfElementPred
+{
+	static constexpr bool value =
+		mesh::ContainerOfElementPred<EL_TYPE, typename MeshType::Containers>::value;
 };
 
 } // namespace vcl::mesh

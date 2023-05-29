@@ -101,6 +101,9 @@ public:
 	template<ElementConcept El>
 	static constexpr bool hasContainerOf();
 
+	template<uint EL_TYPE>
+	static constexpr bool hasContainerOf();
+
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
 
@@ -119,31 +122,31 @@ public:
 	uint index(const El* e) const requires (hasContainerOf<El>());
 
 	template<uint EL_TYPE>
-	const auto& element(uint i) const;
+	const auto& element(uint i) const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto& element(uint i);
+	auto& element(uint i) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint elementNumber() const;
+	uint elementNumber() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint elementContainerSize() const;
+	uint elementContainerSize() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint deletedElementNumber() const;
+	uint deletedElementNumber() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint addElement();
+	uint addElement() requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint addElements(uint n);
+	uint addElements(uint n) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	void reserveElements(uint n);
+	void reserveElements(uint n) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	void compactElements();
+	void compactElements() requires (hasContainerOf<EL_TYPE>());
 
 protected:
 	template<typename Cont>
