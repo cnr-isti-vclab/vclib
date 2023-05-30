@@ -104,6 +104,9 @@ public:
 	template<uint EL_TYPE>
 	static constexpr bool hasContainerOf();
 
+	template<uint EL_TYPE, uint COMP_TYPE>
+	static constexpr bool hasPerElementOptionalComponent();
+
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
 
@@ -147,6 +150,10 @@ public:
 
 	template<uint EL_TYPE>
 	void compactElements() requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE, uint COMP_TYPE>
+	bool isPerElementComponentEnabled() const
+		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
 
 protected:
 	template<typename Cont>
@@ -239,12 +246,7 @@ private:
 	// Predicate structures
 
 	template<uint EL_TYPE>
-	struct ContainerOfElement
-	{
-	public:
-		using type = typename FirstType<
-			typename mesh::ContainerOfElementPred<EL_TYPE, Containers>::type>::type;
-	};
+	struct ContainerOfElement : public mesh::ContainerOfElement<EL_TYPE, Mesh<Args...>> {};
 
 	/**
 	 * @brief The ContainerOf struct allows to get the Container of an Element on this Mesh.

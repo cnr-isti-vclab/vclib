@@ -130,6 +130,13 @@ constexpr bool Mesh<Args...>::hasContainerOf()
 	return mesh::HasContainerOfElementPred<EL_TYPE, typename Mesh<Args...>::Containers>::value;
 }
 
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, uint COMP_TYPE>
+constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
+{
+	return mesh::HasPerElementOptionalComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
+}
+
 /**
  * @brief Enables all the OptionalComponents of this mesh according to the Components available
  * on the OtherMeshType m.
@@ -388,6 +395,16 @@ void Mesh<Args...>::compactElements() requires (hasContainerOf<EL_TYPE>())
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	Cont::compactElements();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, uint COMP_TYPE>
+bool Mesh<Args...>::isPerElementComponentEnabled() const
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::template isOptionalComponentEnabled<COMP_TYPE>();
 }
 
 /*********************

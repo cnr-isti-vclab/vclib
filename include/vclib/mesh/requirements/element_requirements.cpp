@@ -40,4 +40,43 @@ bool isElementContainerCompact(const MeshType& m)
 	return (m.template elementNumber<ELEMENT_TYPE>() == m.template elementContainerSize<ELEMENT_TYPE>());
 }
 
+/**
+ * @brief Returns true if the given component is available (enabled) in the given element of the
+ * input mesh m.
+ *
+ * This function returns `true` when the component can be used on the element, whether the component
+ * is horizontal, vertical or optional.
+ *
+ * These are the following cases:
+ * - if the Mesh does not have an ElementContainer of the given ElementEnumType, the function returns `false`;
+ * - if the Element does not have a Component of the given ComponentEnumType, the function returns `false`;
+ * - if the Element has a non-optional Component of the given ComponentEnumType, the function returns `true`;
+ * - if the Element has an optional Component of the given ComponentEnumType, the function returns `true` if the
+ *   component is enabled, false otherwise (this check is the only one that is made at runtime);
+ *
+ * @tparam ELEMENT_TYPE: the ElementEnumType of the Element to check.
+ * @tparam COMPONENT_TYPE: the ComponentEnumType of the Component to check.
+ * @tparam MeshType: the type of the Mesh to check.
+ *
+ * @param[in] m: the mesh on which check the availability of the Component in the Element.
+ * @return `true` if the Component is available in the Element of the given Mesh.
+ */
+template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
+bool isPerElementComponentEnabled(const MeshType& m)
+{
+	if constexpr (mesh::HasElementContainer<MeshType, ELEMENT_TYPE>) {
+		using Container = mesh::ContainerOfElementType<ELEMENT_TYPE, MeshType>;
+		using Element = typename Container::ElementType;
+		if constexpr (comp::HasOptionalComponentOfType<Element, COMPONENT_TYPE>) {
+			return m.template isPerElementComponentEnabled<ELEMENT_TYPE, COMPONENT_TYPE>();
+		}
+		else {
+			return comp::HasComponentOfType<Element, COMPONENT_TYPE>;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
 } // namespace vcl

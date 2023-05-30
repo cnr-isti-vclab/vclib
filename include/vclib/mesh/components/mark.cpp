@@ -113,12 +113,7 @@ int Mark<El, O>::m() const
 template <typename T>
 bool isMarkEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalMark<T>) {
-		return element.isMarkEnabled();
-	}
-	else {
-		return HasMark<T>;
-	}
+	return isComponentEnabledOn<MARK>(element);
 }
 
 } // namespace vcl::comp

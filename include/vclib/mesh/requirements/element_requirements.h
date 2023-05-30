@@ -31,6 +31,9 @@ namespace vcl {
 template<uint ELEMENT_TYPE, MeshConcept MeshType>
 bool isElementContainerCompact(const MeshType&);
 
+template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
+bool isPerElementComponentEnabled(const MeshType& m);
+
 } // namespace vcl
 
 #include "element_requirements.cpp"

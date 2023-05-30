@@ -469,7 +469,7 @@ template<ElementConcept T>
 template<uint COMP_TYPE>
 void ElementContainer<T>::enableOptionalComponent()
 {
-	using C = comp::ComponentOfTypeT<COMP_TYPE, typename T::Components>;
+	using C = comp::ComponentOfType<COMP_TYPE, typename T::Components>;
 	enableOptionalComponent<C>();
 }
 

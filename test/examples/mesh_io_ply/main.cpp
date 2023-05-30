@@ -49,7 +49,8 @@ int main()
 	assert(loadedInfo.hasTextures());
 	assert(m.textureNumber() == 1);
 	assert(loadedInfo.hasFaceWedgeTexCoords());
-	assert(m.isPerFaceWedgeTexCoordsEnabled());
+	assert(vcl::isPerFaceWedgeTexCoordsEnabled(m));
+	assert(!vcl::isPerFaceAdjacentFacesEnabled(m));
 
 	m =  vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
 

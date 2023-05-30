@@ -63,12 +63,7 @@ void Normal<P, El, O>::importFrom(const Element& e)
 template <typename T>
 bool isNormalEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalNormal<T>) {
-		return element.isNormalEnabled();
-	}
-	else {
-		return HasNormal<T>;
-	}
+	return isComponentEnabledOn<NORMAL>(element);
 }
 
 } // namespace vcl::comp

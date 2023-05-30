@@ -124,7 +124,7 @@ template<typename ...Comp>
 template<uint COMP_TYPE>
 bool VerticalComponentsVectorTuple<Comp...>::isComponentEnabled() const
 {
-	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
+	using C = comp::ComponentOfType<COMP_TYPE, Comp...>;
 	return isComponentEnabled<C>();
 }
 
@@ -141,7 +141,7 @@ template<typename ...Comp>
 template<uint COMP_TYPE>
 void VerticalComponentsVectorTuple<Comp...>::enableComponent()
 {
-	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
+	using C = comp::ComponentOfType<COMP_TYPE, Comp...>;
 	enableComponent<C>();
 }
 
@@ -158,7 +158,7 @@ template<typename ...Comp>
 template<uint COMP_TYPE>
 void VerticalComponentsVectorTuple<Comp...>::disableComponent()
 {
-	using C = comp::ComponentOfTypeT<COMP_TYPE, Comp...>;
+	using C = comp::ComponentOfType<COMP_TYPE, Comp...>;
 	disableComponent<C>();
 }
 

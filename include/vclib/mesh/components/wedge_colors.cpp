@@ -195,12 +195,7 @@ const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
 template <typename T>
 bool isWedgeColorsEnabledOn(const T& element)
 {
-	if constexpr(HasOptionalWedgeColors<T>) {
-		return element.isWedgeColorsEnabled();
-	}
-	else {
-		return HasWedgeColors<T>;
-	}
+	return isComponentEnabledOn<WEDGE_COLORS>(element);
 }
 
 } // namespace vcl::comp
