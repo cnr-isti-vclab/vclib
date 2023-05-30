@@ -33,6 +33,8 @@ int main()
 
 	m.addEdges(2);
 
+	m.elementNumber<vcl::EDGE>();
+
 	m.edge(0).vertex(0) = &m.vertex(0);
 	m.edge(0).vertex(1) = &m.vertex(1);
 	m.edge(1).vertex(0) = &m.vertex(1);

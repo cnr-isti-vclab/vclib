@@ -24,6 +24,8 @@
 #ifndef VCL_MESH_UTILS_TRI_POLY_INDEX_BIMAP_H
 #define VCL_MESH_UTILS_TRI_POLY_INDEX_BIMAP_H
 
+#include <vector>
+
 #include <vclib/types.h>
 
 namespace vcl{

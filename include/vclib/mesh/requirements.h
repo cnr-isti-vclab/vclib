@@ -26,4 +26,12 @@
 
 #include "requirements/mesh_requirements.h"
 
+/**
+ * @defgroup mesh_requirements Mesh Requirements
+ * @ingroup mesh
+ *
+ * @brief List functions that allows to check, enable and assert the availability of components
+ * in the Elements of a Mesh.
+ */
+
 #endif // VCL_MESH_REQUIREMENTS_H

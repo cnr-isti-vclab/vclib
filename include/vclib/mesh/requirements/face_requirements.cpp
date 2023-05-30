@@ -41,247 +41,103 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 bool isFaceContainerCompact(const MeshType& m)
 {
-	return (m.faceNumber() == m.faceContainerSize());
+	return isElementContainerCompact<FACE>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalAdjacentFaces<typename MeshType::FaceType>) {
-			return m.isPerFaceAdjacentFacesEnabled();
-		}
-		else {
-			return vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
-		}
-	}
-	else {
-		return false;
-	}
+	return isPerElementComponentEnabled<FACE, ADJ_FACES>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 {
-	if constexpr (HasPerFaceAdjacentFaces<MeshType>) {
-		if constexpr(vcl::face::HasOptionalAdjacentFaces<typename MeshType::FaceType>) {
-			m.enablePerFaceAdjacentFaces();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+	return enableIfPerElementComponentOptional<FACE, ADJ_FACES>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceColorEnabled(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalColor<typename MeshType::FaceType>) {
-			return m.isPerFaceColorEnabled();
-		}
-		else {
-			return vcl::face::HasColor<typename MeshType::FaceType>;
-		}
-	}
-	else {
-		return false;
-	}
+	return isPerElementComponentEnabled<FACE, COLOR>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceColorOptional(MeshType& m)
 {
-	if constexpr (HasPerFaceColor<MeshType>) {
-		if constexpr(vcl::face::HasOptionalColor<typename MeshType::FaceType>) {
-			m.enablePerFaceColor();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+	return enableIfPerElementComponentOptional<FACE, COLOR>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceMarkEnabled(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalMark<typename MeshType::FaceType>) {
-			return m.isPerFaceMarkEnabled();
-		}
-		else {
-			return vcl::face::HasMark<typename MeshType::FaceType>;
-		}
-	}
-	else {
-		return false;
-	}
+	return isPerElementComponentEnabled<FACE, MARK>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceMarkOptional(MeshType& m)
 {
-	if constexpr (HasPerFaceMark<MeshType>) {
-		if constexpr(vcl::face::HasOptionalMark<typename MeshType::FaceType>) {
-			m.enablePerFaceMark();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+	return enableIfPerElementComponentOptional<FACE, MARK>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceNormalEnabled(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalNormal<typename MeshType::FaceType>) {
-			return m.isPerFaceNormalEnabled();
-		}
-		else {
-			return vcl::face::HasNormal<typename MeshType::FaceType>;
-		}
-	}
-	else {
-		return false;
-	}
+	return isPerElementComponentEnabled<FACE, NORMAL>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceNormalOptional(MeshType& m)
 {
-	if constexpr (HasPerFaceNormal<MeshType>) {
-		if constexpr(vcl::face::HasOptionalNormal<typename MeshType::FaceType>) {
-			m.enablePerFaceNormal();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+	return enableIfPerElementComponentOptional<FACE, NORMAL>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalPrincipalCurvature<typename MeshType::FaceType>) {
-			return m.isPerFacePrincipalCurvatureEnabled();
-		}
-		else {
-			return vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
-		}
-	}
-	else {
-		return false;
-	}
+	return isPerElementComponentEnabled<FACE, PRINCIPAL_CURVATURE>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 {
-	if constexpr (HasPerFacePrincipalCurvature<MeshType>) {
-		if constexpr(vcl::face::HasOptionalPrincipalCurvature<typename MeshType::FaceType>) {
-			m.enablePerFacePrincipalCurvature();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+	return enableIfPerElementComponentOptional<FACE, PRINCIPAL_CURVATURE>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceQualityEnabled(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalQuality<typename MeshType::FaceType>) {
-			return m.isPerFaceQualityEnabled();
-		}
-		else {
-			return vcl::face::HasQuality<typename MeshType::FaceType>;
-		}
-	}
-	else {
-		return false;
-	}
+	return isPerElementComponentEnabled<FACE, QUALITY>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceQualityOptional(MeshType& m)
 {
-	if constexpr (HasPerFaceQuality<MeshType>) {
-		if constexpr(vcl::face::HasOptionalQuality<typename MeshType::FaceType>) {
-			m.enablePerFaceQuality();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+	return enableIfPerElementComponentOptional<FACE, QUALITY>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeColorsEnabled(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalWedgeColors<typename MeshType::FaceType>) {
-			return m.isPerFaceWedgeColorsEnabled();
-		}
-		else {
-			return vcl::face::HasWedgeColors<typename MeshType::FaceType>;
-		}
-	}
-	else {
-		return false;
-	}
+	return isPerElementComponentEnabled<FACE, WEDGE_COLORS>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
 {
-	if constexpr (HasPerFaceWedgeColors<MeshType>) {
-		if constexpr(vcl::face::HasOptionalWedgeColors<typename MeshType::FaceType>) {
-			m.enablePerFaceWedgeColors();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+	return enableIfPerElementComponentOptional<FACE, WEDGE_COLORS>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
 {
-	if constexpr (HasFaces<MeshType>) {
-		if constexpr (vcl::face::HasOptionalWedgeTexCoords<typename MeshType::FaceType>) {
-			return m.isPerFaceWedgeTexCoordsEnabled();
-		}
-		else {
-			return vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
-		}
-	}
-	else {
-		return false;
-	}
+	return isPerElementComponentEnabled<FACE, WEDGE_TEX_COORDS>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
 {
-	if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-		if constexpr(vcl::face::HasOptionalWedgeTexCoords<typename MeshType::FaceType>) {
-			m.enablePerFaceWedgeTexCoords();
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+	return enableIfPerElementComponentOptional<FACE, WEDGE_TEX_COORDS>(m);
 }
 
 /*********************
@@ -291,72 +147,63 @@ bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 void requireFaceContainerCompactness(const MeshType& m)
 {
-	if (!isFaceContainerCompact(m))
-		throw vcl::MissingCompactnessException("Face Container of the Mesh is not compact.");
+	requireElementContainerCompactness<FACE>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceAdjacentFaces(const MeshType& m)
 	requires HasPerFaceAdjacentFaces<MeshType>
 {
-	if (!isPerFaceAdjacentFacesEnabled(m))
-		throw vcl::MissingComponentException("Per face adjacent faces not enabled.");
+	requirePerElementComponent<FACE, ADJ_FACES>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceColor(const MeshType& m)
 	requires HasPerFaceColor<MeshType>
 {
-	if (!isPerFaceColorEnabled(m))
-		throw vcl::MissingComponentException("Face colors not enabled.");
+	requirePerElementComponent<FACE, COLOR>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceMark(const MeshType& m)
 	requires HasPerFaceMark<MeshType>
 {
-	if (!isPerFaceMarkEnabled(m))
-		throw vcl::MissingComponentException("Face mark not enabled.");
+	requirePerElementComponent<FACE, MARK>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceNormal(const MeshType& m)
 	requires HasPerFaceNormal<MeshType>
 {
-	if (!isPerFaceNormalEnabled(m))
-		throw vcl::MissingComponentException("Face normals not enabled.");
+	requirePerElementComponent<FACE, NORMAL>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void requirePerFacePrincipalCurvature(const MeshType& m)
 	requires HasPerFacePrincipalCurvature<MeshType>
 {
-	if (!isPerFacePrincipalCurvatureEnabled(m))
-		throw vcl::MissingComponentException("Face principal curvature not enabled.");
+	requirePerElementComponent<FACE, PRINCIPAL_CURVATURE>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceQuality(const MeshType& m)
 	requires HasPerFaceQuality<MeshType>
 {
-	if (!isPerFaceQualityEnabled(m))
-		throw vcl::MissingComponentException("Face quality not enabled.");
+	requirePerElementComponent<FACE, QUALITY>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeColors(const MeshType& m)
 	requires HasPerFaceWedgeColors<MeshType>
 {
-	if (!isPerFaceWedgeColorsEnabled(m))
-		throw vcl::MissingComponentException("Face wedge colors not enabled.");
+	requirePerElementComponent<FACE, WEDGE_COLORS>(m);
 }
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeTexCoords(const MeshType& m)
 	requires HasPerFaceWedgeTexCoords<MeshType>
 {
-	if (!isPerFaceWedgeTexCoordsEnabled(m))
-		throw vcl::MissingComponentException("Face wedge texcoords not enabled.");
+	requirePerElementComponent<FACE, WEDGE_TEX_COORDS>(m);
 }
 
 } // namespace vcl

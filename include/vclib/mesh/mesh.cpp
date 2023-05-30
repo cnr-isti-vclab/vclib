@@ -127,7 +127,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
 constexpr bool Mesh<Args...>::hasContainerOf()
 {
-	return mesh::HasContainerOfElementPred<EL_TYPE, typename Mesh<Args...>::Containers>::value;
+	return mesh::HasContainerOfElementPred<EL_TYPE, Mesh<Args...>>::value;
 }
 
 template<typename... Args> requires HasVertices<Args...>

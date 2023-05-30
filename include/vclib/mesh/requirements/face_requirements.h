@@ -26,6 +26,8 @@
 
 #include <vclib/concepts/mesh.h>
 
+#include "element_requirements.h"
+
 namespace vcl {
 
 /*************************
