@@ -354,12 +354,7 @@ void AdjacentFaces<Face, N, TT, El, O>::importPtrsFrom(
 template <typename T>
 bool isAdjacentFacesEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalAdjacentFaces<T>) {
-		return element.isAdjFacesEnabled();
-	}
-	else {
-		return HasAdjacentFaces<T>;
-	}
+	return isComponentEnabledOn<ADJ_FACES>(element);
 }
 
 } // namespace vcl::comp

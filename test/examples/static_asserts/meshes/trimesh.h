@@ -31,7 +31,7 @@ void trimeshStaticAsserts()
 	static_assert(!comp::ComponentConcept<TriMesh::VertexContainer>, "");
 	static_assert(comp::ComponentConcept<TriMesh::BoundingBox>, "");
 
-	static_assert(comp::HasOptionalComponentOfType<TriMesh::Face, comp::WEDGE_TEX_COORDS>, "");
+	static_assert(comp::HasOptionalComponentOfType<TriMesh::Face, WEDGE_TEX_COORDS>, "");
 
 	// mesh views
 	meshViewsStaticAsserts<TriMesh>();

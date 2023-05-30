@@ -63,12 +63,7 @@ void TexCoord<Scalar, El, O>::importFrom(const Element& e)
 template <typename T>
 bool isTexCoordEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalTexCoord<T>) {
-		return element.isTexCoordEnabled();
-	}
-	else {
-		return HasTexCoord<T>;
-	}
+	return isComponentEnabledOn<TEX_COORD>(element);
 }
 
 } // namespace vcl::comp

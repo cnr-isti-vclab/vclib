@@ -144,6 +144,18 @@ private:
 	internal::ComponentData<DataValueType, IS_VERTICAL> cdata;
 };
 
+template<uint COMPONENT_TYPE, typename T>
+bool isComponentEnabledOn(const T& element)
+{
+	if constexpr (HasOptionalComponentOfType<T, COMPONENT_TYPE>) {
+		using ComponentType = ComponentOfType<COMPONENT_TYPE, typename T::Components>;
+		const ComponentType& c = static_cast<const ComponentType&>(element);
+		return c.isEnabled();
+	}
+	else
+		return HasComponentOfType<T, COMPONENT_TYPE>;
+}
+
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_BASES_COMPONENT_H

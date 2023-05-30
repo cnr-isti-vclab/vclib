@@ -104,7 +104,11 @@ set(HEADERS
 	include/vclib/concepts/space.h
 	include/vclib/concepts/mesh/components.h
 	include/vclib/concepts/mesh/containers.h
+	include/vclib/concepts/mesh/edge_mesh_concept.h
+	include/vclib/concepts/mesh/face_mesh_concept.h
+	include/vclib/concepts/mesh/mesh_concept.h
 	include/vclib/concepts/mesh/per_face.h
+	include/vclib/concepts/mesh/per_mesh.h
 	include/vclib/concepts/mesh/per_vertex.h
 	include/vclib/concepts/mesh/components/adjacent_edges.h
 	include/vclib/concepts/mesh/components/adjacent_faces.h
@@ -233,6 +237,7 @@ set(HEADERS
 	include/vclib/mesh/elements/face_components.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
+	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
 	include/vclib/mesh/requirements/vertex_requirements.h
@@ -304,6 +309,8 @@ set(HEADERS
 	include/vclib/types/base.h
 	include/vclib/types/const_correctness.h
 	include/vclib/types/inheritance.h
+	include/vclib/types/mesh_components.h
+	include/vclib/types/mesh_elements.h
 	include/vclib/types/pointers.h
 	include/vclib/types/variadic_templates.h
 	include/vclib/views/mesh.h
@@ -428,6 +435,7 @@ set(SOURCES
 	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
 	include/vclib/mesh/elements/element.cpp
 	include/vclib/mesh/elements/face.cpp
+	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
 	include/vclib/mesh/requirements/vertex_requirements.cpp
@@ -474,7 +482,8 @@ set(SOURCES
 	include/vclib/space/grid/static_grid.cpp
 	include/vclib/space/sampler/mesh_sampler.cpp
 	include/vclib/space/sampler/point_sampler.cpp
-	include/vclib/space/sampler/vertex_sampler.cpp)
+	include/vclib/space/sampler/vertex_sampler.cpp
+)
 
 set(HEADERS_LIB
 	)

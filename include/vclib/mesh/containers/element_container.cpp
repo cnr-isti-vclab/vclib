@@ -109,6 +109,110 @@ inline uint ElementContainer<T>::deletedElementNumber() const
 	return elementContainerSize() - elementNumber();
 }
 
+template<ElementConcept T>
+uint ElementContainer<T>::addElement()
+{
+	vcVecTuple.resize(vec.size() + 1);
+	ccVecMap.resize(vec.size() + 1);
+
+	T* oldB = vec.data();
+	vec.push_back(T());
+	T* newB = vec.data();
+	en++;
+
+	vec.back().setParentMesh(parentMesh);
+	vec.back().initVerticalComponents();
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
+	}
+
+	return vec.size() - 1;
+}
+
+/**
+ * @brief Adds size elements to the Element Container.
+ *
+ * Returns the id of the first added element.
+ *
+ * @param size
+ * @return the id of the first added element.
+ */
+template<ElementConcept T>
+uint ElementContainer<T>::addElements(uint size)
+{
+	ccVecMap.resize(vec.size() + size);
+	vcVecTuple.resize(vec.size() + size);
+
+	uint baseId = vec.size();
+	T*   oldB   = vec.data();
+	vec.resize(vec.size() + size);
+	T* newB = vec.data();
+	en += size;
+
+	for (uint i = baseId; i < vec.size(); ++i) {
+		vec[i].setParentMesh(parentMesh);
+		vec[i].initVerticalComponents();
+	}
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
+	}
+
+	return baseId;
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::reserveElements(uint size)
+{
+	T* oldB = vec.data();
+	vec.reserve(size);
+	T* newB = vec.data();
+
+	ccVecMap.reserve(size);
+	vcVecTuple.reserve(size);
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
+	}
+}
+
+/**
+ * @brief Compacts the element container, keeping only the non-deleted elements.
+ *
+ * @return a vector that tells, for each old element index, the new index of the element. Will
+ * contain -1 if the element has been deleted.
+ */
+template<ElementConcept T>
+std::vector<int> ElementContainer<T>::compactElements()
+{
+	std::vector<int> newIndices = elementCompactIndices();
+	if (elementNumber() != elementContainerSize()) {
+		// k will indicate the position of the ith non-deleted vertices after compacting
+		uint k = 0;
+		for (uint i = 0; i < newIndices.size(); ++i) {
+			if (newIndices[i] >= 0) {
+				k = newIndices[i];
+				if (i != k)
+					vec[k] = vec[i];
+			}
+		}
+		k++;
+		T* base = vec.data();
+		vec.resize(k);
+		assert(base == vec.data());
+
+		ccVecMap.compact(newIndices);
+		vcVecTuple.compact(newIndices);
+
+		parentMesh->updateAllPointersAfterCompact(base, newIndices);
+	}
+	return newIndices;
+}
+
 /**
  * @brief Marks as deleted the element with the given id.
  *
@@ -195,144 +299,6 @@ std::vector<int> ElementContainer<T>::elementCompactIndices() const
 		}
 	}
 	return newIndices;
-}
-
-template<ElementConcept T>
-void ElementContainer<T>::setParentMeshPointers(void* pm)
-{
-	parentMesh = static_cast<ParentMeshType*>(pm);
-	for (auto& e : elements(false)) {
-		e.setParentMesh(pm);
-	}
-}
-
-template<ElementConcept T>
-template<typename C>
-bool ElementContainer<T>::isOptionalComponentTypeEnabled() const
-{
-	return vcVecTuple.template isComponentTypeEnabled<C>();
-}
-
-template<ElementConcept T>
-template<uint COMP_TYPE>
-bool ElementContainer<T>::isOptionalComponentEnabled() const
-{
-	return vcVecTuple.template isComponentEnabled<COMP_TYPE>();
-}
-
-template<ElementConcept T>
-template<typename C>
-void ElementContainer<T>::enableOptionalComponentType()
-{
-	vcVecTuple.template enableComponentType<C>();
-	// first call init on all the just enabled components
-	if constexpr (comp::HasInitMemberFunction<C>) {
-		for (auto& e : elements()) {
-			e.C::init();
-		}
-	}
-	// then resize the component containers with tied size to vertex number
-	if constexpr (comp::IsTiedToVertexNumber<C>) {
-		static const int N = T::VERTEX_NUMBER;
-		if constexpr (N < 0) {
-			for (auto& e : elements()) {
-				e.C::resize(e.vertexNumber());
-			}
-		}
-	}
-}
-
-template<ElementConcept T>
-template<uint COMP_TYPE>
-void ElementContainer<T>::enableOptionalComponent()
-{
-	using C = comp::ComponentOfTypeT<COMP_TYPE, typename T::Components>;
-	enableOptionalComponentType<C>();
-}
-
-template<ElementConcept T>
-template<typename C>
-void ElementContainer<T>::disableOptionalComponentType()
-{
-	vcVecTuple.template disableComponentType<C>();
-}
-
-template<ElementConcept T>
-template<uint COMP_TYPE>
-void ElementContainer<T>::disableOptionalComponent()
-{
-	vcVecTuple.template disableComponent<COMP_TYPE>();
-}
-
-template<ElementConcept T>
-bool ElementContainer<T>::hasElemCustomComponent(const std::string& name) const
-	requires comp::HasCustomComponents<T>
-{
-	return ccVecMap.componentExists(name);
-}
-
-template<ElementConcept T>
-std::vector<std::string> ElementContainer<T>::elemCustomComponentNames() const
-	requires comp::HasCustomComponents<T>
-{
-	return ccVecMap.allComponentNames();
-}
-
-template<ElementConcept T>
-template<typename K>
-bool ElementContainer<T>::isElemCustomComponentOfType(const std::string& name) const
-	requires comp::HasCustomComponents<T>
-{
-	return ccVecMap.template isComponentOfType<K>(name);
-}
-
-template<ElementConcept T>
-std::type_index ElementContainer<T>::elemComponentType(const std::string &name) const
-{
-	return ccVecMap.componentType(name);
-}
-
-template<ElementConcept T>
-template<typename K>
-std::vector<std::string> ElementContainer<T>::elemCustomComponentNamesOfType() const
-	requires comp::HasCustomComponents<T>
-{
-	return ccVecMap.template allComponentNamesOfType<K>();
-}
-
-template<ElementConcept T>
-template<typename K>
-void ElementContainer<T>::addElemCustomComponent(const std::string& name)
-	requires comp::HasCustomComponents<T>
-{
-	ccVecMap.template addNewComponent<K>(name, elementContainerSize());
-}
-
-template<ElementConcept T>
-void ElementContainer<T>::deleteElemCustomComponent(const std::string& name)
-	requires comp::HasCustomComponents<T>
-{
-	ccVecMap.deleteComponent(name);
-}
-
-template<ElementConcept T>
-template<typename K>
-CustomComponentVectorHandle<K> ElementContainer<T>::customComponentVectorHandle(
-	const std::string& name) requires comp::HasCustomComponents<T>
-{
-	std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
-	CustomComponentVectorHandle<K> v(cc);
-	return v;
-}
-
-template<ElementConcept T>
-template<typename K>
-ConstCustomComponentVectorHandle<K> ElementContainer<T>::customComponentVectorHandle(
-	const std::string& name) const requires comp::HasCustomComponents<T>
-{
-	const std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
-	ConstCustomComponentVectorHandle<K> v(cc);
-	return cc;
 }
 
 /**
@@ -452,10 +418,160 @@ auto ElementContainer<T>::elements(bool jumpDeleted) const
 }
 
 template<ElementConcept T>
+void ElementContainer<T>::enableAllOptionalComponents()
+{
+	vcVecTuple.enableAllOptionalComponents();
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::disableAllOptionalComponents()
+{
+	vcVecTuple.disableAllOptionalComponents();
+}
+
+template<ElementConcept T>
+template<typename C>
+bool ElementContainer<T>::isOptionalComponentEnabled() const
+{
+	return vcVecTuple.template isComponentEnabled<C>();
+}
+
+template<ElementConcept T>
+template<uint COMP_TYPE>
+bool ElementContainer<T>::isOptionalComponentEnabled() const
+{
+	return vcVecTuple.template isComponentEnabled<COMP_TYPE>();
+}
+
+template<ElementConcept T>
+template<typename C>
+void ElementContainer<T>::enableOptionalComponent()
+{
+	vcVecTuple.template enableComponent<C>();
+	// first call init on all the just enabled components
+	if constexpr (comp::HasInitMemberFunction<C>) {
+		for (auto& e : elements()) {
+			e.C::init();
+		}
+	}
+	// then resize the component containers with tied size to vertex number
+	if constexpr (comp::IsTiedToVertexNumber<C>) {
+		static const int N = T::VERTEX_NUMBER;
+		if constexpr (N < 0) {
+			for (auto& e : elements()) {
+				e.C::resize(e.vertexNumber());
+			}
+		}
+	}
+}
+
+template<ElementConcept T>
+template<uint COMP_TYPE>
+void ElementContainer<T>::enableOptionalComponent()
+{
+	using C = comp::ComponentOfType<COMP_TYPE, typename T::Components>;
+	enableOptionalComponent<C>();
+}
+
+template<ElementConcept T>
+template<typename C>
+void ElementContainer<T>::disableOptionalComponent()
+{
+	vcVecTuple.template disableComponent<C>();
+}
+
+template<ElementConcept T>
+template<uint COMP_TYPE>
+void ElementContainer<T>::disableOptionalComponent()
+{
+	vcVecTuple.template disableComponent<COMP_TYPE>();
+}
+
+template<ElementConcept T>
+bool ElementContainer<T>::hasElemCustomComponent(const std::string& name) const
+	requires comp::HasCustomComponents<T>
+{
+	return ccVecMap.componentExists(name);
+}
+
+template<ElementConcept T>
+std::vector<std::string> ElementContainer<T>::elemCustomComponentNames() const
+	requires comp::HasCustomComponents<T>
+{
+	return ccVecMap.allComponentNames();
+}
+
+template<ElementConcept T>
+template<typename K>
+bool ElementContainer<T>::isElemCustomComponentOfType(const std::string& name) const
+	requires comp::HasCustomComponents<T>
+{
+	return ccVecMap.template isComponentOfType<K>(name);
+}
+
+template<ElementConcept T>
+std::type_index ElementContainer<T>::elemComponentType(const std::string &name) const
+{
+	return ccVecMap.componentType(name);
+}
+
+template<ElementConcept T>
+template<typename K>
+std::vector<std::string> ElementContainer<T>::elemCustomComponentNamesOfType() const
+	requires comp::HasCustomComponents<T>
+{
+	return ccVecMap.template allComponentNamesOfType<K>();
+}
+
+template<ElementConcept T>
+template<typename K>
+void ElementContainer<T>::addElemCustomComponent(const std::string& name)
+	requires comp::HasCustomComponents<T>
+{
+	ccVecMap.template addNewComponent<K>(name, elementContainerSize());
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::deleteElemCustomComponent(const std::string& name)
+	requires comp::HasCustomComponents<T>
+{
+	ccVecMap.deleteComponent(name);
+}
+
+template<ElementConcept T>
+template<typename K>
+CustomComponentVectorHandle<K> ElementContainer<T>::customComponentVectorHandle(
+	const std::string& name) requires comp::HasCustomComponents<T>
+{
+	std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
+	CustomComponentVectorHandle<K> v(cc);
+	return v;
+}
+
+template<ElementConcept T>
+template<typename K>
+ConstCustomComponentVectorHandle<K> ElementContainer<T>::customComponentVectorHandle(
+	const std::string& name) const requires comp::HasCustomComponents<T>
+{
+	const std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
+	ConstCustomComponentVectorHandle<K> v(cc);
+	return cc;
+}
+
+template<ElementConcept T>
 inline uint ElementContainer<T>::index(const T* e) const
 {
 	assert(!vec.empty() && e >= vec.data() && e <= &vec.back());
 	return e - vec.data();
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::setParentMeshPointers(void* pm)
+{
+	parentMesh = static_cast<ParentMeshType*>(pm);
+	for (auto& e : elements(false)) {
+		e.setParentMesh(pm);
+	}
 }
 
 template<ElementConcept T>
@@ -466,77 +582,6 @@ void ElementContainer<T>::clearElements()
 
 	vcVecTuple.clear();
 	ccVecMap.clear();
-}
-
-template<ElementConcept T>
-uint ElementContainer<T>::addElement()
-{
-	vcVecTuple.resize(vec.size() + 1);
-	ccVecMap.resize(vec.size() + 1);
-
-	T* oldB = vec.data();
-	vec.push_back(T());
-	T* newB = vec.data();
-	en++;
-
-	vec.back().setParentMesh(parentMesh);
-	vec.back().initVerticalComponents();
-
-	if (oldB != newB) {
-		setParentMeshPointers(parentMesh);
-		parentMesh->updateAllPointers(oldB, newB);
-	}
-
-	return vec.size() - 1;
-}
-
-/**
- * @brief Adds size elements to the Element Container.
- *
- * Returns the id of the first added element.
- *
- * @param size
- * @return the id of the first added element.
- */
-template<ElementConcept T>
-uint ElementContainer<T>::addElements(uint size)
-{
-	ccVecMap.resize(vec.size() + size);
-	vcVecTuple.resize(vec.size() + size);
-
-	uint baseId = vec.size();
-	T*   oldB   = vec.data();
-	vec.resize(vec.size() + size);
-	T* newB = vec.data();
-	en += size;
-
-	for (uint i = baseId; i < vec.size(); ++i) {
-		vec[i].setParentMesh(parentMesh);
-		vec[i].initVerticalComponents();
-	}
-
-	if (oldB != newB) {
-		setParentMeshPointers(parentMesh);
-		parentMesh->updateAllPointers(oldB, newB);
-	}
-
-	return baseId;
-}
-
-template<ElementConcept T>
-void ElementContainer<T>::reserveElements(uint size)
-{
-	T* oldB = vec.data();
-	vec.reserve(size);
-	T* newB = vec.data();
-
-	ccVecMap.reserve(size);
-	vcVecTuple.reserve(size);
-
-	if (oldB != newB) {
-		setParentMeshPointers(parentMesh);
-		parentMesh->updateAllPointers(oldB, newB);
-	}
 }
 
 template<ElementConcept T>
@@ -553,39 +598,6 @@ void ElementContainer<T>::resizeElements(uint size)
 		setParentMeshPointers(parentMesh);
 		parentMesh->updateAllPointers(oldB, newB);
 	}
-}
-
-/**
- * @brief Compacts the element container, keeping only the non-deleted elements.
- *
- * @return a vector that tells, for each old element index, the new index of the element. Will
- * contain -1 if the element has been deleted.
- */
-template<ElementConcept T>
-std::vector<int> ElementContainer<T>::compactElements()
-{
-	std::vector<int> newIndices = elementCompactIndices();
-	if (elementNumber() != elementContainerSize()) {
-		// k will indicate the position of the ith non-deleted vertices after compacting
-		uint k = 0;
-		for (uint i = 0; i < newIndices.size(); ++i) {
-			if (newIndices[i] >= 0) {
-				k = newIndices[i];
-				if (i != k)
-					vec[k] = vec[i];
-			}
-		}
-		k++;
-		T* base = vec.data();
-		vec.resize(k);
-		assert(base == vec.data());
-
-		ccVecMap.compact(newIndices);
-		vcVecTuple.compact(newIndices);
-
-		parentMesh->updateAllPointersAfterCompact(base, newIndices);
-	}
-	return newIndices;
 }
 
 template<ElementConcept T>
@@ -755,7 +767,7 @@ void ElementContainer<T>::updatePointersOnComponent(const ElPtr* oldBase, const 
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentTypeEnabled<Comp>()) {
+			if(isOptionalComponentEnabled<Comp>()) {
 				for (T& e : elements()) {
 					e.Comp::updatePointers(oldBase, newBase);
 				}
@@ -777,7 +789,7 @@ void ElementContainer<T>::updatePointersAfterCompactOnComponent(
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentTypeEnabled<Comp>()) {
+			if(isOptionalComponentEnabled<Comp>()) {
 				for (T& e : elements()) {
 					e.Comp::updatePointersAfterCompact(base, newIndices);
 				}
@@ -800,7 +812,7 @@ void ElementContainer<T>::importPointersOnComponentFrom(
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-			if(isOptionalComponentTypeEnabled<Comp>()) {
+			if(isOptionalComponentEnabled<Comp>()) {
 				for (uint i = 0; i < elementContainerSize(); ++i) {
 					element(i).Comp::importPointersFrom(c.element(i), base, cbase);
 				}

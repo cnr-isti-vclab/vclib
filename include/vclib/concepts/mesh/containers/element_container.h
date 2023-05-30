@@ -24,31 +24,13 @@
 #ifndef VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 #define VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 
+#include <vclib/concepts/mesh/components/component.h>
 #include <vclib/concepts/mesh/elements/element.h>
 
 namespace vcl {
 namespace mesh {
 
-class ElementContainerTriggerer
-{
-};
-
-/**
- * @brief ElementContainerConcept is a concept satisfied when the type T is an Element Container.
- */
-template<typename T>
-concept ElementContainerConcept =
-	std::is_base_of<ElementContainerTriggerer, T>::value;
-
-/**
- * @brief The predicate IsElementContainerPred sets its bool `value` to `true` when the type T
- * satisfies the ElementContainerConcept concept
- */
-template<typename T>
-struct IsElementContainerPred
-{
-	static const bool value = ElementContainerConcept<T>;
-};
+namespace internal {
 
 /**
  * @brief Given the ElementEnumType of an Element and a list of ElementContainers, this predicate
@@ -81,12 +63,97 @@ struct ContainerOfElementPred<EL_TPE, TypeWrapper<Containers...>> :
 {
 };
 
-template<typename MeshType, ElementConcept El>
+} // namespace internal
+
+class ElementContainerTriggerer
+{
+};
+
+/**
+ * @brief ElementContainerConcept is a concept satisfied when the type T is an Element Container.
+ */
+template<typename T>
+concept ElementContainerConcept =
+	std::is_base_of<ElementContainerTriggerer, T>::value;
+
+/**
+ * @brief The predicate IsElementContainerPred sets its bool `value` to `true` when the type T
+ * satisfies the ElementContainerConcept concept
+ */
+template<typename T>
+struct IsElementContainerPred
+{
+	static const bool value = ElementContainerConcept<T>;
+};
+
+/**
+ * @brief The ContainerOfElement structure exposes the type of the container of the given MeshType
+ * having the given ElementEnumType EL_TYPE.
+ *
+ * If no container was found, the usage of this structure will cause a build error.
+ *
+ * @tparam EL_TYPE The ElementEnumType of the Element
+ * @tparam MeshType The MeshType of the Mesh from which we need the type of the Container of Element
+ * having the given ElementEnumType
+ *
+ * Usage:
+ * @code{.cpp}
+ *
+ * using VertexContainer = typename mesh::ContainerOfElement<VERTEX, MyMesh>::type;
+ *
+ * @endcode
+ */
+template<uint EL_TYPE, typename MeshType>
+struct ContainerOfElement
+{
+public:
+	using type = typename FirstType<
+		typename internal::ContainerOfElementPred<EL_TYPE, typename MeshType::Containers>::type>::type;
+};
+
+/**
+ * @brief The ContainerOfElementType structure exposes the type of the container of the given MeshType
+ * having the given ElementEnumType EL_TYPE.
+ *
+ * If no container was found, the usage of this structure will cause a build error.
+ *
+ * @tparam EL_TYPE The ElementEnumType of the Element
+ * @tparam MeshType The MeshType of the Mesh from which we need the type of the Container of Element
+ * having the given ElementEnumType
+ *
+ * Usage:
+ * @code{.cpp}
+ *
+ * using VertexContainer = mesh::ContainerOfElementType<VERTEX, MyMesh>;
+ *
+ * @endcode
+ */
+template<uint EL_TYPE, typename MeshType>
+using ContainerOfElementType = typename ContainerOfElement<EL_TYPE, MeshType>::type;
+
+template<ElementConcept El, typename MeshType>
 struct HasContainerOfPred
 {
 	static constexpr bool value =
-		mesh::ContainerOfElementPred<El::ELEMENT_TYPE, typename MeshType::Containers>::value;
+		internal::ContainerOfElementPred<El::ELEMENT_TYPE, typename MeshType::Containers>::value;
 };
+
+template<uint EL_TYPE, typename MeshType>
+struct HasContainerOfElementPred
+{
+	static constexpr bool value =
+		internal::ContainerOfElementPred<EL_TYPE, typename MeshType::Containers>::value;
+};
+
+template<typename MeshType, uint EL_TYPE>
+concept HasElementContainer = HasContainerOfElementPred<EL_TYPE, MeshType>::value;
+
+template<typename MeshType, uint EL_TYPE, uint COMP_TYPE>
+concept HasPerElementOptionalComponent =
+	HasElementContainer<MeshType, EL_TYPE> &&
+	comp::HasOptionalComponentOfType<
+			typename ContainerOfElementType<EL_TYPE, MeshType>::ElementType,
+			COMP_TYPE>;
 
 } // namespace vcl::mesh
 } // namespace vcl

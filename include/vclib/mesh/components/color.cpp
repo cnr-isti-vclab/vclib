@@ -81,12 +81,7 @@ const vcl::Color& Color<El, O>::c() const
 template <typename T>
 bool isColorEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalColor<T>) {
-		return element.isColorEnabled();
-	}
-	else {
-		return HasColor<T>;
-	}
+	return isComponentEnabledOn<COLOR>(element);
 }
 
 } // namespace vcl::comp

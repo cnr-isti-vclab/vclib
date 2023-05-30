@@ -31,6 +31,8 @@
 
 #include "types/const_correctness.h"
 #include "types/inheritance.h"
+#include "types/mesh_components.h"
+#include "types/mesh_elements.h"
 #include "types/pointers.h"
 #include "types/variadic_templates.h"
 

@@ -63,12 +63,7 @@ void Quality<T, El, O>::importFrom(const Element& e)
 template <typename T>
 bool isQualityEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalQuality<T>) {
-		return element.isQualityEnabled();
-	}
-	else {
-		return HasQuality<T>;
-	}
+	return isComponentEnabledOn<QUALITY>(element);
 }
 
 } // namespace vcl::comp

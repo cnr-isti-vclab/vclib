@@ -20,3 +20,54 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
  * for more details.                                                         *
  ****************************************************************************/
+
+#ifndef VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H
+#define VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H
+
+#include "mesh_concept.h"
+#include "per_face.h"
+
+namespace vcl {
+
+template<typename MeshType>
+concept HasTriangles =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
+
+template<typename MeshType>
+concept HasQuads =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
+
+template<typename MeshType>
+concept HasPolygons =
+	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
+
+template<typename T>
+concept FaceMeshConcept =
+	MeshConcept<T> && mesh::HasFaceContainer<T> &&
+	requires(
+		T o,
+		const T& co,
+		typename T::FaceType f)
+{
+	typename T::FaceType;
+	typename T::FaceContainer;
+
+	{ co.index(f) } -> std::same_as<uint>;
+	{ co.index(&f) } -> std::same_as<uint>;
+};
+
+template<typename T>
+concept TriangleMeshConcept =
+	FaceMeshConcept<T> && HasTriangles<T>;
+
+template<typename T>
+concept QuadMeshConcept =
+	FaceMeshConcept<T> && HasQuads<T>;
+
+template<typename T>
+concept PolygonMeshConcept =
+	FaceMeshConcept<T> && HasPolygons<T>;
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H

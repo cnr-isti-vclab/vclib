@@ -120,7 +120,21 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept El>
 constexpr bool Mesh<Args...>::hasContainerOf()
 {
-	return mesh::HasContainerOfPred<Mesh<Args...>, El>::value;
+	return mesh::HasContainerOfPred<El, Mesh<Args...>>::value;
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+constexpr bool Mesh<Args...>::hasContainerOf()
+{
+	return mesh::HasContainerOfElementPred<EL_TYPE, Mesh<Args...>>::value;
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, uint COMP_TYPE>
+constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
+{
+	return mesh::HasPerElementOptionalComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
 }
 
 /**
@@ -304,7 +318,52 @@ uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-uint Mesh<Args...>::addElement()
+const auto& Mesh<Args...>::element(uint i) const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::element(i);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::element(i);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::elementNumber() const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementNumber();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::elementContainerSize() const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementContainerSize();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::deletedElementNumber() const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::deletedElementNumber();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+uint Mesh<Args...>::addElement() requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -313,7 +372,7 @@ uint Mesh<Args...>::addElement()
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-uint Mesh<Args...>::addElements(uint n)
+uint Mesh<Args...>::addElements(uint n) requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -322,7 +381,7 @@ uint Mesh<Args...>::addElements(uint n)
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-void Mesh<Args...>::reserveElements(uint n)
+void Mesh<Args...>::reserveElements(uint n) requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -331,11 +390,41 @@ void Mesh<Args...>::reserveElements(uint n)
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-void Mesh<Args...>::compactElements()
+void Mesh<Args...>::compactElements() requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	Cont::compactElements();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, uint COMP_TYPE>
+bool Mesh<Args...>::isPerElementComponentEnabled() const
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::template isOptionalComponentEnabled<COMP_TYPE>();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, uint COMP_TYPE>
+void Mesh<Args...>::enablePerElementComponent()
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	Cont::template enableOptionalComponent<COMP_TYPE>();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, uint COMP_TYPE>
+void Mesh<Args...>::disablePerElementComponent()
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	Cont::template disableOptionalComponent<COMP_TYPE>();
 }
 
 /*********************

@@ -55,6 +55,7 @@ public:
 	ElementContainer();
 
 protected:
+	/* Members that are directly inherited by Containers (just renaming them) */
 	using ElementIterator      = ElementContainerIterator<std::vector, T>;
 	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
 
@@ -65,28 +66,42 @@ protected:
 	uint elementContainerSize() const;
 	uint deletedElementNumber() const;
 
+	uint addElement();
+	uint addElements(uint size);
+
+	void reserveElements(uint size);
+	std::vector<int> compactElements();
+
 	void deleteElement(uint i);
 	void deleteElement(const T* e);
 
 	uint elementIndexIfCompact(uint i) const;
 	std::vector<int> elementCompactIndices() const;
 
-	void setParentMeshPointers(void* pm);
+	ElementIterator      elementBegin(bool jumpDeleted = true);
+	ElementIterator      elementEnd();
+	ConstElementIterator elementBegin(bool jumpDeleted = true) const;
+	ConstElementIterator elementEnd() const;
+	auto                 elements(bool jumpDeleted = true);
+	auto                 elements(bool jumpDeleted = true) const;
+
+	void enableAllOptionalComponents();
+	void disableAllOptionalComponents();
 
 	template<typename C>
-	bool isOptionalComponentTypeEnabled() const;
+	bool isOptionalComponentEnabled() const;
 
 	template<uint COMP_TYPE>
 	bool isOptionalComponentEnabled() const;
 
 	template<typename C>
-	void enableOptionalComponentType();
+	void enableOptionalComponent();
 
 	template<uint COMP_TYPE>
 	void enableOptionalComponent();
 
 	template<typename C>
-	void disableOptionalComponentType();
+	void disableOptionalComponent();
 
 	template<uint COMP_TYPE>
 	void disableOptionalComponent();
@@ -124,22 +139,13 @@ protected:
 	ConstCustomComponentVectorHandle<K> customComponentVectorHandle(
 		const std::string& name) const requires comp::HasCustomComponents<T>;
 
-	ElementIterator      elementBegin(bool jumpDeleted = true);
-	ElementIterator      elementEnd();
-	ConstElementIterator elementBegin(bool jumpDeleted = true) const;
-	ConstElementIterator elementEnd() const;
-	auto                 elements(bool jumpDeleted = true);
-	auto                 elements(bool jumpDeleted = true) const;
-
 	uint index(const T *e) const;
+
+	void setParentMeshPointers(void* pm);
+
 	void clearElements();
 
-	uint addElement();
-	uint addElements(uint size);
-	void reserveElements(uint size);
 	void resizeElements(uint size);
-
-	std::vector<int> compactElements();
 
 	template<typename Element>
 	void updatePointers(const Element* oldBase, const Element* newBase);
