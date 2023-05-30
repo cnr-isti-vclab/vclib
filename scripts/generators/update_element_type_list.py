@@ -1,7 +1,6 @@
 from . import common
 
-def replace(element_file_string, new_element):
-    start = 'enum ElementEnumType {'
+def replace(element_file_string, new_element, start):
     end = '};'
 
     start_index = element_file_string.index(start)
@@ -18,13 +17,17 @@ def replace(element_file_string, new_element):
     return element_file_string
 
 def update_element_list(element):
-    target_file = "../include/vclib/concepts/mesh/elements/element.h"
+    target_file = "../include/vclib/types/mesh_elements.h"
 
     # Read in the file
     with open(target_file, 'r') as file :
         element_file = file.read()
 
-    element_file = replace(element_file, element.name_upper)
+    start = 'enum ElementEnumType {'
+    element_file = replace(element_file, element.name_upper, start)
+
+    start = 'ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {'
+    element_file = replace(element_file, '"' + element.name_upper_camel + '"', start)
     
     with open(target_file, 'w') as file:
         file.write(element_file)

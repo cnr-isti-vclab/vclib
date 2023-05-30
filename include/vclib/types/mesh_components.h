@@ -21,31 +21,75 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
-#define VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
+#ifndef VCL_TYPES_MESH_COMPONENTS_H
+#define VCL_TYPES_MESH_COMPONENTS_H
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh_exceptions.h>
+#include "base.h"
 
 namespace vcl {
 
-template<uint ELEMENT_TYPE, MeshConcept MeshType>
-bool isElementContainerCompact(const MeshType&);
+enum ComponentEnumType {
+	BIT_FLAGS = 0,
+	COORDINATE,
+	NORMAL,
+	COLOR,
+	QUALITY,
+	MARK,
+	PRINCIPAL_CURVATURE,
+	TEX_COORD,
+	VERTEX_PTRS,
+	ADJ_EDGES,
+	ADJ_FACES,
+	ADJ_VERTICES,
+	WEDGE_COLORS,
+	WEDGE_TEX_COORDS,
+	BOUNDING_BOX,
+	NAME,
+	TEXTURE_PATHS,
+	TRANSFORM_MATRIX,
+	CUSTOM_COMPONENTS
+};
 
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
-bool isPerElementComponentEnabled(const MeshType& m);
+inline static constexpr uint COMPONENTS_NUMBER = 19;
 
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
-bool enableIfPerElementComponentOptional(MeshType& m);
+inline static constexpr const char* COMPONENT_ENUM_STRINGS[COMPONENTS_NUMBER] = {
+	"BitFlags",
+	"Coordinate",
+	"Normal",
+	"Color",
+	"Quality",
+	"Mark",
+	"PrincipalCurvature",
+	"TexCoord",
+	"VertexPointers",
+	"AdjEdges",
+	"AdjFaces",
+	"AdjVertices",
+	"WedgeColors",
+	"WedgeTexCoords",
+	"BoundingBox",
+	"Name",
+	"TexturePaths",
+	"TransformMatrix",
+	"CustomComponents",
+};
 
-template<uint ELEMENT_TYPE, MeshConcept MeshType>
-void requireElementContainerCompactness(const MeshType& m);
+template<uint COMP_TYPE>
+struct ComponentString {
+	const char* str = COMPONENT_ENUM_STRINGS[COMP_TYPE];
+};
 
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
-void requirePerElementComponent(const MeshType& m);
+template<uint COMP_TYPE>
+constexpr const char* componentEnumString()
+{
+	static_assert(
+		COMP_TYPE < COMPONENTS_NUMBER,
+		"Invalid ComponentEnumType. You should specialize the 'ComponentString' struct with "
+		"your COMP_TYPE value.");
+
+	return ComponentString<COMP_TYPE>().str;
+}
 
 } // namespace vcl
 
-#include "element_requirements.cpp"
-
-#endif // VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
+#endif // VCL_TYPES_MESH_COMPONENTS_H

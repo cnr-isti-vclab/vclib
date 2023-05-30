@@ -21,31 +21,43 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
-#define VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
+#ifndef VCL_TYPES_MESH_ELEMENTS_H
+#define VCL_TYPES_MESH_ELEMENTS_H
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh_exceptions.h>
+#include "base.h"
 
 namespace vcl {
 
-template<uint ELEMENT_TYPE, MeshConcept MeshType>
-bool isElementContainerCompact(const MeshType&);
+enum ElementEnumType {
+	VERTEX = 0,
+	FACE,
+	EDGE,
+};
 
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
-bool isPerElementComponentEnabled(const MeshType& m);
+inline static constexpr uint ELEMENTS_NUMBER = 3;
 
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
-bool enableIfPerElementComponentOptional(MeshType& m);
+inline static constexpr const char* ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {
+	"Vertex",
+	"Face",
+	"Edge",
+};
 
-template<uint ELEMENT_TYPE, MeshConcept MeshType>
-void requireElementContainerCompactness(const MeshType& m);
+template<uint ELEM_TYPE>
+struct ElemenetString {
+	const char* str = ELEMENT_ENUM_STRINGS[ELEM_TYPE];
+};
 
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
-void requirePerElementComponent(const MeshType& m);
+template<uint ELEM_TYPE>
+constexpr const char* elementEnumString()
+{
+	static_assert(
+		ELEM_TYPE < ELEMENTS_NUMBER,
+		"Invalid ElementEnumType. You should specialize 'the ElementString' struct with "
+		"your ELEM_TYPE value.");
+
+	return ElemenetString<ELEM_TYPE>().str;
+}
 
 } // namespace vcl
 
-#include "element_requirements.cpp"
-
-#endif // VCL_MESH_REQUIREMENTS_ELEMENT_REQUIREMENTS_H
+#endif // VCL_TYPES_MESH_ELEMENTS_H

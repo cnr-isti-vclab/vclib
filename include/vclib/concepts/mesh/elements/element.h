@@ -24,17 +24,11 @@
 #ifndef VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
 #define VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
 
+#include <string>
+
 #include <vclib/types.h>
 
 namespace vcl {
-
-enum ElementEnumType {
-	VERTEX = 0,
-	FACE,
-	EDGE,
-};
-
-inline static constexpr uint ELEMENTS_NUMBER = 3;
 
 template<typename T>
 concept ElementConcept = requires (T o, const T& co)

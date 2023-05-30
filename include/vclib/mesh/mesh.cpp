@@ -407,6 +407,26 @@ bool Mesh<Args...>::isPerElementComponentEnabled() const
 	return Cont::template isOptionalComponentEnabled<COMP_TYPE>();
 }
 
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, uint COMP_TYPE>
+void Mesh<Args...>::enablePerElementComponent()
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	Cont::template enableOptionalComponent<COMP_TYPE>();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE, uint COMP_TYPE>
+void Mesh<Args...>::disablePerElementComponent()
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	Cont::template disableOptionalComponent<COMP_TYPE>();
+}
+
 /*********************
  * Protected Members *
  *********************/

@@ -155,6 +155,12 @@ public:
 	bool isPerElementComponentEnabled() const
 		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
 
+	template<uint EL_TYPE, uint COMP_TYPE>
+	void enablePerElementComponent() requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+
+	template<uint EL_TYPE, uint COMP_TYPE>
+	void disablePerElementComponent() requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+
 protected:
 	template<typename Cont>
 	void compactContainer();

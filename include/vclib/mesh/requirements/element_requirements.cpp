@@ -79,4 +79,42 @@ bool isPerElementComponentEnabled(const MeshType& m)
 	}
 }
 
+template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
+bool enableIfPerElementComponentOptional(MeshType& m)
+{
+	if constexpr (mesh::HasElementContainer<MeshType, ELEMENT_TYPE>) {
+		using Container = mesh::ContainerOfElementType<ELEMENT_TYPE, MeshType>;
+		using Element = typename Container::ElementType;
+		if constexpr (comp::HasOptionalComponentOfType<Element, COMPONENT_TYPE>) {
+			m.template enablePerElementComponent<ELEMENT_TYPE, COMPONENT_TYPE>();
+			return true;
+		}
+		else {
+			return comp::HasComponentOfType<Element, COMPONENT_TYPE>;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+template<uint ELEMENT_TYPE, MeshConcept MeshType>
+void requireElementContainerCompactness(const MeshType& m)
+{
+	if (!isElementContainerCompact<ELEMENT_TYPE>(m))
+		throw vcl::MissingCompactnessException(
+			std::string(elementEnumString<ELEMENT_TYPE>()) +
+			" Container of the Mesh is not compact.");
+}
+
+template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
+void requirePerElementComponent(const MeshType& m)
+{
+	if (!isPerElementComponentEnabled<ELEMENT_TYPE, COMPONENT_TYPE>(m)) {
+		throw vcl::MissingComponentException(
+			"Per " + std::string(elementEnumString<ELEMENT_TYPE>()) +
+			" " + std::string(componentEnumString<COMPONENT_TYPE>()) + " Component is not enabled.");
+	}
+}
+
 } // namespace vcl

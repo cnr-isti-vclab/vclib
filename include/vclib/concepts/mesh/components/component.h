@@ -28,30 +28,6 @@
 
 namespace vcl::comp {
 
-enum ComponentEnumType {
-	BIT_FLAGS = 0,
-	COORDINATE,
-	NORMAL,
-	COLOR,
-	QUALITY,
-	MARK,
-	PRINCIPAL_CURVATURE,
-	TEX_COORD,
-	VERTEX_PTRS,
-	ADJ_EDGES,
-	ADJ_FACES,
-	ADJ_VERTICES,
-	WEDGE_COLORS,
-	WEDGE_TEX_COORDS,
-	BOUNDING_BOX,
-	NAME,
-	TEXTURE_PATHS,
-	TRANSFORM_MATRIX,
-	CUSTOM_COMPONENTS
-};
-
-inline static constexpr uint COMPONENTS_NUMBER = 19;
-
 namespace internal {
 
 /**
