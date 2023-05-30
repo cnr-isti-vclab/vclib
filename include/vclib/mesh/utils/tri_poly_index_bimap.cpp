@@ -120,16 +120,16 @@ inline void TriPolyIndexBiMap::insert(uint triangleIndex, uint polygonIndex)
 {
 	// add the index of the polygon associated to the triangle
 	if (triangleIndex >= triToPoly.size()) {
-		triToPoly.resize(triangleIndex + 1, -1);
+		triToPoly.resize(triangleIndex + 1, UINT_NULL);
 	}
 	triToPoly[triangleIndex] = polygonIndex;
 
 	// add the index of the triangle associated to the polygon,
 	// but only if it is the first triangle index of the polygon!
 	if (polygonIndex >= polyToTri.size()) {
-		polyToTri.resize(polygonIndex + 1, -1);
+		polyToTri.resize(polygonIndex + 1, UINT_NULL);
 	}
-	if (polyToTri[polygonIndex] == -1 || triangleIndex < polyToTri[polygonIndex])
+	if (polyToTri[polygonIndex] == UINT_NULL || triangleIndex < polyToTri[polygonIndex])
 		polyToTri[polygonIndex] = triangleIndex;
 }
 

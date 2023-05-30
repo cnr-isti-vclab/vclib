@@ -24,23 +24,56 @@
 #ifndef VCL_CONCEPTS_MESH_CONTAINERS_EDGE_CONTAINER_H
 #define VCL_CONCEPTS_MESH_CONTAINERS_EDGE_CONTAINER_H
 
+#include <ranges>
+#include <vector>
+
 #include "element_container.h"
 
 namespace vcl {
 namespace mesh {
 
 template <typename T>
-concept HasEdgeContainer = requires(T o)
+concept HasEdgeContainer = requires(
+	T o,
+	const T& co,
+	typename T::EdgeType* e)
 {
 	typename T::EdgeType;
-	o.edge(uint());
+	typename T::EdgeIterator;
+	typename T::ConstEdgeIterator;
+
+	{ o.edge(uint()) } -> std::same_as<typename T::EdgeType&>;
+	{ co.edge(uint()) } -> std::same_as<const typename T::EdgeType&>;
+
+	{ co.edgeNumber() } -> std::same_as<uint>;
+	{ co.edgeContainerSize() } -> std::same_as<uint>;
+	{ co.deletedEdgeNumber() } -> std::same_as<uint>;
+	o.deleteEdge(uint());
+	o.deleteEdge(e);
+	{ o.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
+	{ o.edgeCompactIndices() } -> std::same_as<std::vector<int>>;
+
+	{ o.addEdge() } -> std::same_as<uint>;
+	{ o.addEdges(uint()) } -> std::same_as<uint>;
+	{ o.reserveEdges(uint()) } -> std::same_as<void>;
+	{ o.compactEdges() } -> std::same_as<void>;
+
+	{ o.edgeBegin() } -> std::same_as<typename T::EdgeIterator>;
+	{ co.edgeBegin() } -> std::same_as<typename T::ConstEdgeIterator>;
+	{ o.edgeEnd() } -> std::same_as<typename T::EdgeIterator>;
+	{ co.edgeEnd() } -> std::same_as<typename T::ConstEdgeIterator>;
+
+#ifdef VCLIB_USES_RANGES
+	std::ranges::range<decltype(o.edges())>;
+	std::ranges::range<decltype(co.edges())>;
+#endif
 };
 
 } // namespace vcl::mesh
 
 /**
- * @brief HasEdges concepts is satisfied when at least one of its types is (or inherits from)
- * a EdgeContainer. It can be used both to check if a Mesh has edges, or if in a list of types
+ * @brief HasEdges concepts is satisfied when at least one of its template types is (or inherits
+ * from) a EdgeContainer. It can be used both to check if a Mesh has edges, or if in a list of types
  * there is a EdgeContainer.
  *
  * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
@@ -64,6 +97,8 @@ concept HasEdgeContainer = requires(T o)
  *     // ...
  * }
  * @endcode
+ *
+ * @note This concept does not check if a Mesh is a valid EdgeMesh. To do that, use the EdgeMeshConcept.
  */
 template<typename... Args>
 concept HasEdges = (vcl::mesh::HasEdgeContainer<Args> || ...);

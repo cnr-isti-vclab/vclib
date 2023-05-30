@@ -25,19 +25,28 @@
 
 #include <vclib/space.h>
 
-int main()
-{
-	vcl::BitSet<int> b;
-
-	static_assert(sizeof(b) == 4, "");
-
-	b.set();
-
-	for(uint i = 0; i < b.size(); ++i) {
-		assert(b[i] == true);
+class Bar {
+public:
+	template<typename T>
+	void foo()
+	{
+		std::cout << "foo" << std::endl;
 	}
 
-	assert(b.all());
+	template<uint T>
+	void foo()
+	{
+		std::cout << "foo " << T << std::endl;
+	}
+
+};
+
+int main()
+{
+	Bar b;
+
+	b.foo<int>();
+	b.foo<3>();
 
 	return 0;
 }

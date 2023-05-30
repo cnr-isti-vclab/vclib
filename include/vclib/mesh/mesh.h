@@ -101,6 +101,12 @@ public:
 	template<ElementConcept El>
 	static constexpr bool hasContainerOf();
 
+	template<uint EL_TYPE>
+	static constexpr bool hasContainerOf();
+
+	template<uint EL_TYPE, uint COMP_TYPE>
+	static constexpr bool hasPerElementOptionalComponent();
+
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
 
@@ -119,16 +125,41 @@ public:
 	uint index(const El* e) const requires (hasContainerOf<El>());
 
 	template<uint EL_TYPE>
-	uint addElement();
+	const auto& element(uint i) const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint addElements(uint n);
+	auto& element(uint i) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	void reserveElements(uint n);
+	uint elementNumber() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	void compactElements();
+	uint elementContainerSize() const requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
+	uint deletedElementNumber() const requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
+	uint addElement() requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
+	uint addElements(uint n) requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
+	void reserveElements(uint n) requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
+	void compactElements() requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE, uint COMP_TYPE>
+	bool isPerElementComponentEnabled() const
+		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+
+	template<uint EL_TYPE, uint COMP_TYPE>
+	void enablePerElementComponent() requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+
+	template<uint EL_TYPE, uint COMP_TYPE>
+	void disablePerElementComponent() requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
 
 protected:
 	template<typename Cont>
@@ -221,12 +252,7 @@ private:
 	// Predicate structures
 
 	template<uint EL_TYPE>
-	struct ContainerOfElement
-	{
-	public:
-		using type = typename FirstType<
-			typename mesh::ContainerOfElementPred<EL_TYPE, Containers>::type>::type;
-	};
+	struct ContainerOfElement : public mesh::ContainerOfElement<EL_TYPE, Mesh<Args...>> {};
 
 	/**
 	 * @brief The ContainerOf struct allows to get the Container of an Element on this Mesh.

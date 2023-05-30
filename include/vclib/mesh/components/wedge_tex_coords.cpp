@@ -226,12 +226,7 @@ WedgeTexCoords<Scalar, N, El, O>::texCoords() const
 template <typename T>
 bool isWedgeTexCoordsEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalWedgeTexCoords<T>) {
-		return element.isWedgeTexCoordsEnabled();
-	}
-	else {
-		return HasWedgeTexCoords<T>;
-	}
+	return isComponentEnabledOn<WEDGE_TEX_COORDS>(element);
 }
 
 } // namespace vcl::comp

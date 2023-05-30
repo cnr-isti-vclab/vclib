@@ -65,12 +65,7 @@ void PrincipalCurvature<Scalar, El, O>::importFrom(const Element& e)
 template <typename T>
 bool isPrincipalCurvatureEnabledOn(const T& element)
 {
-	if constexpr (HasOptionalPrincipalCurvature<T>) {
-		return element.isPrincipalCurvatureEnabled();
-	}
-	else {
-		return HasPrincipalCurvature<T>;
-	}
+	return isComponentEnabledOn<PRINCIPAL_CURVATURE>(element);
 }
 
 } // namespace vcl::comp

@@ -28,51 +28,7 @@
 
 namespace vcl::comp {
 
-enum ComponentEnumType {
-	BIT_FLAGS = 0,
-	COORDINATE,
-	NORMAL,
-	COLOR,
-	QUALITY,
-	MARK,
-	PRINCIPAL_CURVATURE,
-	TEX_COORD,
-	VERTEX_PTRS,
-	ADJ_EDGES,
-	ADJ_FACES,
-	ADJ_VERTICES,
-	WEDGE_COLORS,
-	WEDGE_TEX_COORDS,
-	BOUNDING_BOX,
-	NAME,
-	TEXTURE_PATHS,
-	TRANSFORM_MATRIX,
-	CUSTOM_COMPONENTS
-};
-
-inline static constexpr uint COMPONENTS_NUMBER = 19;
-
-/**
- * @brief The ComponentConcept is evaluated to true whenever the type T is a valid component.
- *
- * @tparam T: the type to be evaluated
- */
-template<typename T>
-concept ComponentConcept = requires {
-	{ T::COMPONENT_TYPE } -> std::same_as<const uint&>;
-};
-
-/**
- * @brief The predicate struct IsComponentPred sets its bool `value` to `true` when the type T
- * satisfies the ComponentConcept concept
- *
- * @tparam T: the type to be evaluated
- */
-template<typename T>
-struct IsComponentPred
-{
-	static const bool value = ComponentConcept<T>;
-};
+namespace internal {
 
 /**
  * @brief Given the ComponentEnumType of a Component and a list of Components, this predicate
@@ -105,9 +61,33 @@ struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Components...>> :
 {
 };
 
+} // namespace vcl::comp::internal
+
+/**
+ * @brief The ComponentConcept is evaluated to true whenever the type T is a valid component.
+ *
+ * @tparam T: the type to be evaluated
+ */
+template<typename T>
+concept ComponentConcept = requires {
+	{ T::COMPONENT_TYPE } -> std::same_as<const uint&>;
+};
+
+/**
+ * @brief The predicate struct IsComponentPred sets its bool `value` to `true` when the type T
+ * satisfies the ComponentConcept concept
+ *
+ * @tparam T: the type to be evaluated
+ */
+template<typename T>
+struct IsComponentPred
+{
+	static const bool value = ComponentConcept<T>;
+};
+
 template<uint COMP_TYPE, typename... Components>
-using ComponentOfTypeT =
-	typename FirstType<typename ComponentOfTypePred<COMP_TYPE, Components...>::type>::type;
+using ComponentOfType =
+	typename FirstType<typename internal::ComponentOfTypePred<COMP_TYPE, Components...>::type>::type;
 
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
@@ -130,8 +110,6 @@ concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)
 	typename T::DataValueType;
 	{ o.IS_VERTICAL } -> std::same_as<const bool&>;
 };
-
-
 
 template<typename T>
 struct IsVerticalComponentPred
@@ -188,18 +166,18 @@ concept HasOptionalPointersOfType = HasPointersOfType<T, R> && IsOptionalCompone
 // The type T is generally a Mesh or a MeshElement.
 
 template<typename T, uint COMP_TYPE>
-concept HasComponentOfType = ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
+concept HasComponentOfType = internal::ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
 
 template<typename T, uint COMP_TYPE>
 concept HasVerticalComponentOfType
 	= HasComponentOfType<T, COMP_TYPE>
-	  && IsVerticalComponent<ComponentOfTypeT<COMP_TYPE, typename T::Components>>;
+	  && IsVerticalComponent<ComponentOfType<COMP_TYPE, typename T::Components>>;
 
 template<typename T, uint COMP_TYPE>
 concept HasOptionalComponentOfType
 	= HasComponentOfType<T, COMP_TYPE>
-	  && IsOptionalComponent<ComponentOfTypeT<COMP_TYPE, typename T::Components>>;
+	  && IsOptionalComponent<ComponentOfType<COMP_TYPE, typename T::Components>>;
 
-} // namespace vcl
+} // namespace vcl::comp
 
 #endif // VCL_CONCEPTS_MESH_COMPONENTS_COMPONENT_H

@@ -33,13 +33,18 @@ namespace vcl {
 namespace mesh {
 
 template <typename T>
-concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
+concept HasFaceContainer = requires(
+	T o,
+	const T& co,
+	typename T::FaceType* f)
 {
 	typename T::FaceType;
 	typename T::FaceIterator;
 	typename T::ConstFaceIterator;
+
 	{ o.face(uint()) } -> std::same_as<typename T::FaceType&>;
 	{ co.face(uint()) } -> std::same_as<const typename T::FaceType&>;
+
 	{ co.faceNumber() } -> std::same_as<uint>;
 	{ co.faceContainerSize() } -> std::same_as<uint>;
 	{ co.deletedFaceNumber() } -> std::same_as<uint>;
@@ -47,6 +52,11 @@ concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
 	o.deleteFace(f);
 	{ o.faceIndexIfCompact(uint()) } -> std::same_as<uint>;
 	{ o.faceCompactIndices() } -> std::same_as<std::vector<int>>;
+
+	{ o.addFace() } -> std::same_as<uint>;
+	{ o.addFaces(uint()) } -> std::same_as<uint>;
+	{ o.reserveFaces(uint()) } -> std::same_as<void>;
+	{ o.compactFaces() } -> std::same_as<void>;
 
 	{ o.faceBegin() } -> std::same_as<typename T::FaceIterator>;
 	{ co.faceBegin() } -> std::same_as<typename T::ConstFaceIterator>;
@@ -87,6 +97,8 @@ concept HasFaceContainer = requires(T o, const T& co, typename T::FaceType* f)
  *     // ...
  * }
  * @endcode
+ *
+ * @note This concept does not check if a Mesh is a valid FaceMesh. To do that, use the FaceMeshConcept
  */
 template<typename... Args>
 concept HasFaces = (vcl::mesh::HasFaceContainer<Args> || ...);
