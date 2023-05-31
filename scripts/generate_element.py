@@ -8,6 +8,7 @@ from generators.el_container_concept import generate_elem_container_concept
 from generators.el_header import generate_elem_header
 from generators.el_mesh_concept import generate_elem_mesh_concepts
 from generators.el_range_concept import generate_elem_range_concept
+from generators.el_requirements import generate_elem_requirements
 from generators.per_el_concepts import generate_per_elem_concepts
 from generators.update_cmake import update_cmake_file
 from generators.update_element_type_list import update_element_list
@@ -38,7 +39,8 @@ def main():
         generate_elem_range_concept,
         generate_elem_header,
         generate_elem_components,
-        generate_elem_container
+        generate_elem_container,
+        generate_elem_requirements
     ]
 
     update_function_list = [
