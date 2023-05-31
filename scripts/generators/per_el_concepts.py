@@ -2,9 +2,9 @@ from . import common
 
 def generate_per_elem_concepts(element):
     target_file = "include/vclib/concepts/mesh/per_" + element.name + '.h'
-    template_file = "per_element_concepts.h"
+    template_file = "concepts/mesh/per_element.h"
 
-    with open('templates/per_comp_concept.txt', 'r') as file :
+    with open('templates/concepts/mesh/per_comp.txt', 'r') as file :
         per_comp_string = file.read()
     
     comp_string = ""

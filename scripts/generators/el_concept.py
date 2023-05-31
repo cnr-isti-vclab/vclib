@@ -4,7 +4,7 @@ def generate_elem_concept(element):
     target_file = "include/vclib/concepts/mesh/elements/" + element.name + '.h'
 
     # Read in the file
-    with open('templates/element_concept.h', 'r') as file :
+    with open('templates/concepts/mesh/elements/element.h', 'r') as file :
         element_concept = file.read()
 
     element_concept = common.replace_header_and_element_strings(element_concept, element)

@@ -1,7 +1,7 @@
 from . import common
 
 def get_comp_string(element, type):
-    with open('templates/container/oc_' + type + '.txt', 'r') as file :
+    with open('templates/mesh/containers/oc_' + type + '.txt', 'r') as file :
         per_comp_string = file.read()
 
     comp_string = ""
@@ -12,7 +12,7 @@ def get_comp_string(element, type):
             comp_string += per_comp_string.replace('%CNUC%', c.name_upper_camel)
 
     if element.has_custom_components:
-        with open('templates/container/cc_' + type +'.txt', 'r') as file :
+        with open('templates/mesh/containers/cc_' + type +'.txt', 'r') as file :
             cc_string = file.read()
         comp_string += cc_string
     
@@ -20,7 +20,7 @@ def get_comp_string(element, type):
 
 def generate_elem_container(element):
     target_file_h = "include/vclib/mesh/containers/" + element.name + '_container.h'
-    template_file_h = "container/element_container.h"
+    template_file_h = "mesh/containers/element_container.h"
 
     comp_string = get_comp_string(element, "header")
 
@@ -38,7 +38,7 @@ def generate_elem_container(element):
     print("Generated Element Container Header: " + target_file_h)
 
     target_file_cpp = "include/vclib/mesh/containers/" + element.name + '_container.cpp'
-    template_file_cpp = "container/element_container.cpp"
+    template_file_cpp = "mesh/containers/element_container.cpp"
 
     comp_string = get_comp_string(element, "source")
 

@@ -4,7 +4,7 @@ def generate_elem_components(element):
     target_file = "include/vclib/mesh/elements/" + element.name + '_components.h'
 
     # Read in the file
-    with open('templates/element_components.h', 'r') as file :
+    with open('templates/mesh/elements/element_components.h', 'r') as file :
         element_components = file.read()
 
     element_components = common.replace_header_and_element_strings(element_components, element)
