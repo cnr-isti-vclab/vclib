@@ -11,7 +11,10 @@ def replace(cmake_file_string, start, list):
 
     if list is not None:
         for new_header in list:
-            bisect.insort(files, '\t' + new_header)
+            item = '\t' + new_header
+            pos = bisect.bisect_left(files, item)
+            if pos == len(files) or files[pos] != item:
+                bisect.insort(files, item)
 
         files_string ='\n'.join(files) + '\n'
 

@@ -1,0 +1,6 @@
+// %EL_UC% %CNUC%
+
+template<%EL_UC%MeshConcept MeshType>
+void requirePer%EL_UC%%CNUC%(const MeshType& m)
+	requires HasPer%EL_UC%%CNUC%<MeshType>;
+

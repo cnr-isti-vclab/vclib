@@ -20,10 +20,10 @@ concept Has%EL_UC%Container = requires(
 	typename T::%EL_UC%Type;
 	typename T::%EL_UC%Iterator;
 	typename T::Const%EL_UC%Iterator;
-	
+
 	{ o.%EL_C%(uint()) } -> std::same_as<typename T::%EL_UC%Type&>;
 	{ co.%EL_C%(uint()) } -> std::same_as<const typename T::%EL_UC%Type&>;
-	
+
 	{ co.%EL_C%Number() } -> std::same_as<uint>;
 	{ co.%EL_C%ContainerSize() } -> std::same_as<uint>;
 	{ co.deleted%EL_UC%Number() } -> std::same_as<uint>;

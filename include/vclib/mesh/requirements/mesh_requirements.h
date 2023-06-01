@@ -24,8 +24,7 @@
 #ifndef VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 
-#include "face_requirements.h"
-#include "vertex_requirements.h"
+#include <vclib/concepts/mesh.h>
 
 namespace vcl {
 

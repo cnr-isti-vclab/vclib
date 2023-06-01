@@ -1,4 +1,5 @@
 from . import common
+import re
 
 def replace(element_file_string, new_element, start):
     end = '};'
@@ -16,6 +17,20 @@ def replace(element_file_string, new_element, start):
     
     return element_file_string
 
+def increment_number_in_string(string):
+    regex = r'\d+'
+
+    # Find the first number in the string, using a regular expression
+    number = re.findall(regex, string)[0]
+
+    # Increment the number by one
+    number = str(int(number) + 1)
+
+    # Replace the first occurance of the number in the string with the new number
+    string = re.sub(regex, number, string, count=1)
+
+    return string
+
 def update_element_list(element):
     target_file = "../include/vclib/types/mesh_elements.h"
 
@@ -29,5 +44,16 @@ def update_element_list(element):
     start = 'ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {'
     element_file = replace(element_file, '"' + element.name_upper_camel + '"', start)
     
+    # update the number of elements
+    list = element_file.split('\n')
+
+    for i in range(len(list)):
+        line = list[i]
+        if line.find('ELEMENTS_NUMBER') != -1:
+            list[i] = increment_number_in_string(line)
+            break
+    
+    element_file = '\n'.join(list)
+
     with open(target_file, 'w') as file:
         file.write(element_file)

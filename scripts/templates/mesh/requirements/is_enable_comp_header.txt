@@ -1,0 +1,8 @@
+// %EL_UC% %CNUC%
+
+template<%EL_UC%MeshConcept MeshType>
+bool isPer%EL_UC%%CNUC%Enabled(const MeshType&);
+
+template<%EL_UC%MeshConcept MeshType>
+bool enableIfPer%EL_UC%%CNUC%Optional(MeshType&);
+

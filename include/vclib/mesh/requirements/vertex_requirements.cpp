@@ -47,25 +47,25 @@ bool isVertexContainerCompact(const MeshType& m)
 template<MeshConcept MeshType>
 bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, ADJ_FACES>(m);
+	return isPerElementComponentEnabled<VERTEX, ADJACENT_FACES>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentFacesOptional(MeshType& m)
 {
-	return enableIfPerElementComponentOptional<VERTEX, ADJ_FACES>(m);
+	return enableIfPerElementComponentOptional<VERTEX, ADJACENT_FACES>(m);
 }
 
 template<MeshConcept MeshType>
 bool isPerVertexAdjacentVerticesEnabled(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, ADJ_VERTICES>(m);
+	return isPerElementComponentEnabled<VERTEX, ADJACENT_VERTICES>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 {
-	return enableIfPerElementComponentOptional<VERTEX, ADJ_VERTICES>(m);
+	return enableIfPerElementComponentOptional<VERTEX, ADJACENT_VERTICES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -154,14 +154,14 @@ template<typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m)
 	requires HasPerVertexAdjacentFaces<MeshType>
 {
-	requirePerElementComponent<VERTEX, ADJ_FACES>(m);
+	requirePerElementComponent<VERTEX, ADJACENT_FACES>(m);
 }
 
 template<typename MeshType>
 void requirePerVertexAdjacentVertices(const MeshType& m)
 	requires HasPerVertexAdjacentVertices<MeshType>
 {
-	requirePerElementComponent<VERTEX, ADJ_VERTICES>(m);
+	requirePerElementComponent<VERTEX, ADJACENT_VERTICES>(m);
 }
 
 template<typename MeshType>

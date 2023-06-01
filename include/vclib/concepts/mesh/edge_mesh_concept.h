@@ -25,7 +25,7 @@
 #define VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
 
 #include "mesh_concept.h"
-//#include "per_edge.h"
+#include "per_edge.h"
 
 namespace vcl {
 

@@ -57,9 +57,9 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Face, int N, bool TTVN, typename ElementType = void, bool OPT = false>
-class AdjacentFaces : public PointersContainerComponent<ADJ_FACES, Face, N, ElementType, OPT, TTVN>
+class AdjacentFaces : public PointersContainerComponent<ADJACENT_FACES, Face, N, ElementType, OPT, TTVN>
 {
-	using Base = PointersContainerComponent<ADJ_FACES, Face, N, ElementType, OPT, TTVN>;
+	using Base = PointersContainerComponent<ADJACENT_FACES, Face, N, ElementType, OPT, TTVN>;
 
 public:
 	/**

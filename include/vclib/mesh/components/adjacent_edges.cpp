@@ -354,7 +354,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::importPtrsFrom(
 template <typename T>
 bool isAdjacentEdgesEnabledOn(const T& element)
 {
-	return isComponentEnabledOn<ADJ_EDGES>(element);
+	return isComponentEnabledOn<ADJACENT_EDGES>(element);
 }
 
 } // namespace vcl::comp
