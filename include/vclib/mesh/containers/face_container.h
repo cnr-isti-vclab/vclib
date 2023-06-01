@@ -33,12 +33,17 @@
 namespace vcl::mesh {
 
 /**
- * @brief The Face Container class, will be used when the template argument given to the Mesh is a
- * Face.
+ * @brief The FaceContainer class represents a container of Face elements that can be used in a
+ * Mesh class.
+ * 
+ * This class adds a container (vector) of Faces to the Mesh, making available the accessors
+ * members to them and their components.
+ * 
+ * It provides all the add, delete, reserve, compact and other functions to manage the Faces, plus 
+ * the iterators and views to iterate over them. It also provides the functions to enable and disable
+ * the optional components of the Faces.
  *
- * This class adds a container (vector) of faces to the Mesh, making available the accessors members
- * to the faces, the face number, iterators... This class will also take care to add
- * enablers/disablers of the eventual optional components of the face.
+ * @tparam T: The type of the Face elements. It must satisfy the FaceConcept.
  *
  * @ingroup containers
  */
@@ -161,8 +166,8 @@ public:
 	void addPerFaceCustomComponent(const std::string& name)
 		requires face::HasCustomComponents<T>;
 
-	void deletePerFaceCustomComponent(
-		const std::string& name) requires face::HasCustomComponents<T>;
+	void deletePerFaceCustomComponent(const std::string& name)
+		requires face::HasCustomComponents<T>;
 
 	template<typename K>
 	CustomComponentVectorHandle<K> perFaceCustomComponentVectorHandle(const std::string& name)
