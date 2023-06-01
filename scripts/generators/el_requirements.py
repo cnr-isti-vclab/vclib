@@ -15,7 +15,8 @@ def get_comp_string(element, functions, type):
     return comp_string
 
 def generate_elem_requirements(element):
-    target_file_h = "include/vclib/mesh/requirements/" + element.name + '_requirements.h'
+    include_file = 'requirements/' + element.name + '_requirements.h'
+    target_file_h = "include/vclib/mesh/" + include_file
     template_file_h = "mesh/requirements/element_requirements.h"
 
     is_enable_comp_string = get_comp_string(element, "is_enable", "header")
@@ -32,6 +33,8 @@ def generate_elem_requirements(element):
 
     with open("../" + target_file_h, 'w') as file:
         file.write(element_requirements)
+
+    common.insert_include_in_file("include/vclib/mesh/requirements.h", include_file)
 
     print("Generated Element Container Header: " + target_file_h)
 

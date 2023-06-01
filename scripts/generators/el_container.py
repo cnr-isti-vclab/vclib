@@ -19,7 +19,8 @@ def get_comp_string(element, type):
     return comp_string
 
 def generate_elem_container(element):
-    target_file_h = "include/vclib/mesh/containers/" + element.name + '_container.h'
+    include_file = "containers/" + element.name + '_container.h'
+    target_file_h = "include/vclib/mesh/" + include_file
     template_file_h = "mesh/containers/element_container.h"
 
     comp_string = get_comp_string(element, "header")
@@ -34,6 +35,8 @@ def generate_elem_container(element):
 
     with open("../" + target_file_h, 'w') as file:
         file.write(element_container)
+
+    common.insert_include_in_file("include/vclib/mesh/mesh_containers.h", include_file)
 
     print("Generated Element Container Header: " + target_file_h)
 
