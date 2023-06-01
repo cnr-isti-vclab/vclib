@@ -36,8 +36,6 @@ def generate_elem_requirements(element):
 
     common.insert_include_in_file("include/vclib/mesh/requirements.h", include_file)
 
-    print("Generated Element Container Header: " + target_file_h)
-
     target_file_cpp = "include/vclib/mesh/requirements/" + element.name + '_requirements.cpp'
     template_file_cpp = "mesh/requirements/element_requirements.cpp"
 
@@ -55,7 +53,5 @@ def generate_elem_requirements(element):
 
     with open("../" + target_file_cpp, 'w') as file:
         file.write(element_requirements)
-
-    print("Generated Element Container Source: " + target_file_cpp)
 
     return [target_file_h],[target_file_cpp]

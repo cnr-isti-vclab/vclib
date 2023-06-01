@@ -22,5 +22,4 @@ def generate_elem_concept(element):
     with open("../" + target_file, 'w') as file:
         file.write(element_concept)
 
-    print("Generated Element Header: " + target_file)
     return [target_file],[]

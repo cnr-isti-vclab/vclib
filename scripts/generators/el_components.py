@@ -30,5 +30,4 @@ def generate_elem_components(element):
     with open("../" + target_file, 'w') as file:
         file.write(element_components)
 
-    print("Generated Element Header: " + target_file)
     return [target_file],[]

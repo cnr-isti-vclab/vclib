@@ -38,8 +38,6 @@ def generate_elem_container(element):
 
     common.insert_include_in_file("include/vclib/mesh/mesh_containers.h", include_file)
 
-    print("Generated Element Container Header: " + target_file_h)
-
     target_file_cpp = "include/vclib/mesh/containers/" + element.name + '_container.cpp'
     template_file_cpp = "mesh/containers/element_container.cpp"
 
@@ -55,7 +53,5 @@ def generate_elem_container(element):
 
     with open("../" + target_file_cpp, 'w') as file:
         file.write(element_container)
-
-    print("Generated Element Container Source: " + target_file_cpp)
 
     return [target_file_h],[target_file_cpp]

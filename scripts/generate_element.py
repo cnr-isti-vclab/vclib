@@ -64,6 +64,14 @@ def main():
         f(element)
 
     update_cmake_file(headers_list, sources_list)
+
+    print("Generated Headers:")
+    for h in headers_list:
+        print('\t' + h)
+
+    print("Generated Sources:")
+    for s in sources_list:
+        print('\t' + s)
     
 
 if __name__ == "__main__":
