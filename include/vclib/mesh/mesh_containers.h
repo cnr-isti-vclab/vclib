@@ -21,12 +21,12 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_CONTAINERS_H
-#define VCL_MESH_CONTAINER_CONTAINERS_H
+#ifndef VCL_MESH_MESH_CONTAINERS_H
+#define VCL_MESH_MESH_CONTAINERS_H
 
-#include "edge_container.h"
-#include "face_container.h"
-#include "vertex_container.h"
+#include "containers/edge_container.h"
+#include "containers/face_container.h"
+#include "containers/vertex_container.h"
 
 /**
  * @defgroup containers Containers
@@ -35,4 +35,4 @@
  * @brief List af all the Element Container classes, along with their concepts and functions.
  */
 
-#endif // VCL_MESH_CONTAINER_CONTAINERS_H
+#endif // VCL_MESH_MESH_CONTAINERS_H

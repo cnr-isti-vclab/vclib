@@ -195,6 +195,7 @@ set(HEADERS
 	include/vclib/math/transform.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_components.h
+	include/vclib/mesh/mesh_containers.h
 	include/vclib/mesh/requirements.h
 	include/vclib/mesh/components/adjacent_edges.h
 	include/vclib/mesh/components/adjacent_faces.h
@@ -223,7 +224,6 @@ set(HEADERS
 	include/vclib/mesh/components/bases/pointers_container_component.h
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/custom_components_data.h
-	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/custom_component_vector_handle.h
 	include/vclib/mesh/containers/custom_components_vector_map.h
 	include/vclib/mesh/containers/edge_container.h

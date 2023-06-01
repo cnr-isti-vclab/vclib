@@ -173,6 +173,10 @@ public:
 	perFaceCustomComponentVectorHandle(const std::string& name) const
 		requires face::HasCustomComponents<T>;
 
+protected:
+	template<typename OthMesh>
+	void manageImportTriFromPoly(const OthMesh& m);
+
 private:
 	void addFaceHelper(T& f);
 
@@ -181,6 +185,15 @@ private:
 
 	template<typename... V>
 	void addFaceHelper(T& f, uint vid, V... args);
+
+	template<typename MFaceType, typename VertexType, typename MVertexType>
+	static void importTriPointersHelper(
+		FaceType&                f,
+		const MFaceType&         mf,
+		VertexType*              base,
+		const MVertexType*       mvbase,
+		const std::vector<uint>& tris,
+		uint                     basetri);
 };
 
 } // namespace vcl::mesh
