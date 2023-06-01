@@ -52,9 +52,9 @@ namespace vcl::comp {
  */
 template<typename Vertex, typename ElementType = void, bool OPT = false>
 class AdjacentVertices :
-		public PointersContainerComponent<ADJ_VERTICES, Vertex, -1, ElementType, OPT, false>
+		public PointersContainerComponent<ADJACENT_VERTICES, Vertex, -1, ElementType, OPT, false>
 {
-	using Base = PointersContainerComponent<ADJ_VERTICES, Vertex, -1, ElementType, OPT, false>;
+	using Base = PointersContainerComponent<ADJACENT_VERTICES, Vertex, -1, ElementType, OPT, false>;
 
 public:
 	using AdjacentVertexType = Vertex;

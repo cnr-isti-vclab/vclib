@@ -25,9 +25,9 @@
 #define VCL_MESH_MESH_H
 
 #include <vclib/concepts/mesh.h>
-#include <vclib/mesh/containers/containers.h>
 
 #include "mesh_components.h"
+#include "mesh_containers.h"
 
 namespace vcl {
 
@@ -208,18 +208,6 @@ private:
 
 	template<typename Cont, typename ElemCont, typename OthMesh>
 	void importPointersOfElement(const OthMesh& m);
-
-	template<typename OthMesh>
-	void manageImportTriFromPoly(const OthMesh& m);
-
-	template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
-	static void importTriPointersHelper(
-		FaceType&                f,
-		const MFaceType&         mf,
-		VertexType*              base,
-		const MVertexType*       mvbase,
-		const std::vector<uint>& tris,
-		uint                     basetri);
 
 	// private copy and swap member functions
 

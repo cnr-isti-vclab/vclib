@@ -107,6 +107,7 @@ set(HEADERS
 	include/vclib/concepts/mesh/edge_mesh_concept.h
 	include/vclib/concepts/mesh/face_mesh_concept.h
 	include/vclib/concepts/mesh/mesh_concept.h
+	include/vclib/concepts/mesh/per_edge.h
 	include/vclib/concepts/mesh/per_face.h
 	include/vclib/concepts/mesh/per_mesh.h
 	include/vclib/concepts/mesh/per_vertex.h
@@ -140,6 +141,8 @@ set(HEADERS
 	include/vclib/concepts/mesh/elements/vertex.h
 	include/vclib/concepts/ranges/mesh.h
 	include/vclib/concepts/ranges/range.h
+	include/vclib/concepts/ranges/mesh/edge_range.h
+	include/vclib/concepts/ranges/mesh/face_range.h
 	include/vclib/concepts/ranges/mesh/vertex_range.h
 	include/vclib/concepts/space/box.h
 	include/vclib/concepts/space/matrix.h
@@ -194,6 +197,7 @@ set(HEADERS
 	include/vclib/math/transform.h
 	include/vclib/mesh/mesh.h
 	include/vclib/mesh/mesh_components.h
+	include/vclib/mesh/mesh_containers.h
 	include/vclib/mesh/requirements.h
 	include/vclib/mesh/components/adjacent_edges.h
 	include/vclib/mesh/components/adjacent_faces.h
@@ -222,7 +226,6 @@ set(HEADERS
 	include/vclib/mesh/components/bases/pointers_container_component.h
 	include/vclib/mesh/components/internal/component_data.h
 	include/vclib/mesh/components/internal/custom_components_data.h
-	include/vclib/mesh/containers/containers.h
 	include/vclib/mesh/containers/custom_component_vector_handle.h
 	include/vclib/mesh/containers/custom_components_vector_map.h
 	include/vclib/mesh/containers/edge_container.h
@@ -237,6 +240,7 @@ set(HEADERS
 	include/vclib/mesh/elements/face_components.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
+	include/vclib/mesh/requirements/edge_requirements.h
 	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
@@ -328,6 +332,9 @@ set(HEADERS
 	include/vclib/views/mesh/components/quality.h
 	include/vclib/views/mesh/components/selection.h
 	include/vclib/views/mesh/components/tex_coords.h
+	include/vclib/views/mesh/elements/edge.h
+	include/vclib/views/mesh/elements/face.h
+	include/vclib/views/mesh/elements/vertex.h
 )
 
 set(SOURCES
@@ -435,6 +442,7 @@ set(SOURCES
 	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
 	include/vclib/mesh/elements/element.cpp
 	include/vclib/mesh/elements/face.cpp
+	include/vclib/mesh/requirements/edge_requirements.cpp
 	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp
@@ -583,6 +591,7 @@ endif()
 
 if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_AND_RUN_TESTS)
 	include(CTest)
-	add_subdirectory(test)
+
+add_subdirectory(test)
 endif()
 

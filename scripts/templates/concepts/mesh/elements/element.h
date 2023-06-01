@@ -25,7 +25,7 @@ namespace %EL_NS% {
 template<typename Derived>
 using IsDerivedFrom%EL_UC% = IsDerivedFromTemplateSpecialization<Derived, %EL_UC%>;
 
-// checks if a type is an vcl::%EL_UC%<Args...>
+// checks if a type is a vcl::%EL_UC%<Args...>
 template<class T>
 struct IsA%EL_UC% : // Default case, no pattern match
 		std::false_type

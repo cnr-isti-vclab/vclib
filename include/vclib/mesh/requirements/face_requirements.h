@@ -28,6 +28,14 @@
 
 #include "element_requirements.h"
 
+/**
+ * @defgroup face_requirements Face Requirements
+ * @ingroup mesh_requirements
+ *
+ * @brief List functions that allows to check, enable and assert the availability of components
+ * in the Face Elements of a Mesh.
+ */
+
 namespace vcl {
 
 /*************************
@@ -39,7 +47,15 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 bool isFaceContainerCompact(const MeshType&);
 
-// Face Adjacent Faces
+// Face AdjacentEdges
+
+template<FaceMeshConcept MeshType>
+bool isPerFaceAdjacentEdgesEnabled(const MeshType&);
+
+template<FaceMeshConcept MeshType>
+bool enableIfPerFaceAdjacentEdgesOptional(MeshType&);
+
+// Face AdjacentFaces
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType&);
@@ -71,7 +87,7 @@ bool isPerFaceNormalEnabled(const MeshType&);
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceNormalOptional(MeshType&);
 
-// Face Principal Curvature
+// Face PrincipalCurvature
 
 template<FaceMeshConcept MeshType>
 bool isPerFacePrincipalCurvatureEnabled(const MeshType&);
@@ -87,7 +103,7 @@ bool isPerFaceQualityEnabled(const MeshType&);
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceQualityOptional(MeshType&);
 
-// Face Wedge Colors
+// Face WedgeColors
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeColorsEnabled(const MeshType&);
@@ -95,13 +111,14 @@ bool isPerFaceWedgeColorsEnabled(const MeshType&);
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeColorsOptional(MeshType&);
 
-// Face Wedge TexCoords
+// Face WedgeTexCoords
 
 template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeTexCoordsEnabled(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeTexCoordsOptional(MeshType&);
+
 
 /*********************
  * require functions *
@@ -112,7 +129,13 @@ bool enableIfPerFaceWedgeTexCoordsOptional(MeshType&);
 template<FaceMeshConcept MeshType>
 void requireFaceContainerCompactness(const MeshType& m);
 
-// Face Adjacent Faces
+// Face AdjacentEdges
+
+template<FaceMeshConcept MeshType>
+void requirePerFaceAdjacentEdges(const MeshType& m)
+	requires HasPerFaceAdjacentEdges<MeshType>;
+
+// Face AdjacentFaces
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceAdjacentFaces(const MeshType& m)
@@ -136,7 +159,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceNormal(const MeshType& m)
 	requires HasPerFaceNormal<MeshType>;
 
-// Face Principal Curvature
+// Face PrincipalCurvature
 
 template<FaceMeshConcept MeshType>
 void requirePerFacePrincipalCurvature(const MeshType& m)
@@ -148,17 +171,18 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceQuality(const MeshType& m)
 	requires HasPerFaceQuality<MeshType>;
 
-// Face Wedge Colors
+// Face WedgeColors
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeColors(const MeshType& m)
 	requires HasPerFaceWedgeColors<MeshType>;
 
-// Face Wedge TexCoords
+// Face WedgeTexCoords
 
 template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeTexCoords(const MeshType& m)
 	requires HasPerFaceWedgeTexCoords<MeshType>;
+
 
 } // namespace vcl
 

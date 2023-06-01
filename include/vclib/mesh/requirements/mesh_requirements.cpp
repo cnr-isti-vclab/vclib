@@ -23,6 +23,8 @@
 
 #include "mesh_requirements.h"
 
+#include <vclib/exceptions/mesh_exceptions.h>
+
 namespace vcl {
 
 /********************

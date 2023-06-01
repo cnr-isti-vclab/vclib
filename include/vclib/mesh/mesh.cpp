@@ -23,9 +23,6 @@
 
 #include "mesh.h"
 
-#include <vclib/views/mesh.h>
-#include <vclib/space/polygon.h>
-
 namespace vcl {
 
 /**
@@ -211,7 +208,7 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 
 	(importPointers<Args>(m), ...);
 
-	if constexpr(mesh::HasFaceContainer<Mesh<Args...>> && mesh::HasFaceContainer<OtherMeshType>) {
+	if constexpr(mesh::HasFaceContainer<Mesh<Args...>>) {
 		// Now I need to manage imports between different types of meshes (same type of meshes are
 		// already managed from importFrom and importPointersFrom member functions).
 		//
@@ -232,7 +229,8 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 		// in case of import from poly to triangle mesh, I need to manage
 		// triangulation of polygons and create additional triangle faces for each of the
 		// imported polygons. This function statically asserts that the import can be done.
-		manageImportTriFromPoly(m);
+		using FaceContainer = typename Mesh<Args...>::FaceContainer;
+		FaceContainer::manageImportTriFromPoly(m);
 	}
 }
 
@@ -534,104 +532,6 @@ void Mesh<Args...>::importPointersOfElement(const OthMesh& m)
 	if constexpr(mesh::ElementContainerConcept<Cont> && mesh::ElementContainerConcept<ElemCont>) {
 		// import in Cont the ElemCont pointers from m
 		Cont::importPointersFrom(m, ElemCont::vec.data());
-	}
-}
-
-/**
- * @brief This function manages the case where we try to import into a TriMesh a PolyMesh
- * Faces have been already imported, but without vertex pointers and other components that
- * depend on the number of vertices (e.g. wedges)
- */
-template<typename... Args> requires HasVertices<Args...>
-template<typename OthMesh>
-void Mesh<Args...>::manageImportTriFromPoly(const OthMesh &m)
-{
-	using VertexType = typename Mesh<Args...>::VertexType;
-	using MVertexType = typename OthMesh::VertexType;
-	using MCoordType = typename MVertexType::CoordType;
-	using FaceType = typename Mesh<Args...>::FaceType;
-	using MFaceType = typename OthMesh::FaceType;
-
-	using VertexContainer = typename Mesh<Args...>::VertexContainer;
-	using FaceContainer   = typename Mesh<Args...>::FaceContainer;
-
-	// if this is not a triangle mesh nor a polygon mesh (meaning that we can't control the
-	// number of vertex pointers in this mesh), and this mesh does not have the same
-	// number of vertex pointers of the other, it means that we don't know how to convert
-	// these type of meshes (e.g. we don't know how to convert a polygon mesh into a quad
-	// mesh, or convert a quad mesh into a pentagonal mesh...)
-	static_assert(
-		!(FaceType::VERTEX_NUMBER != 3 && FaceType::VERTEX_NUMBER > 0 &&
-		  FaceType::VERTEX_NUMBER != MFaceType::VERTEX_NUMBER),
-		"Cannot import from that type of Mesh. Don't know how to convert faces.");
-
-	// we need to manage conversion from poly or faces with cardinality > 3 (e.g. quads) to
-	// triangle meshes. In this case, we triangulate the polygon using the earcut algorithm.
-	if constexpr (
-		FaceType::VERTEX_NUMBER == 3 &&
-		(MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0)) {
-
-		VertexType* base = VertexContainer::vec.data();
-		const MVertexType* mvbase = &m.vertex(0);
-
-		for (const MFaceType& mf : m.faces()) {
-			// if the current face has the same number of vertices of this faces (3), then
-			// the vertex pointers have been correctly imported from the import pointers
-			// function. The import pointers function does nothing when importing from a face
-			// with at least 4 vertices
-			if (mf.vertexNumber() != FaceType::VERTEX_NUMBER) {
-				// triangulate mf; the first triangle of the triangulation will be
-				// this->face(m.index(mf));
-				// the other triangles will be added at the end of the container
-				std::vector<uint> tris =
-					Polygon<MCoordType>::earCut(mf.vertices() | vcl::views::coords);
-				FaceType& f = FaceContainer::face(m.index(mf));
-				importTriPointersHelper(f, mf, base, mvbase, tris, 0);
-
-				// number of other faces to add
-				uint nf = tris.size() / 3 - 1;
-				uint fid = FaceContainer::addElements(nf);
-
-				uint i = 3; // index that cycles into tris
-				for (; fid < FaceContainer::faceContainerSize(); ++fid) {
-					FaceType& f = FaceContainer::face(fid);
-					importTriPointersHelper(f, mf, base, mvbase, tris, i);
-					i+=3;
-				}
-			}
-		}
-	}
-}
-
-template<typename... Args> requires HasVertices<Args...>
-template<typename FaceType, typename MFaceType, typename VertexType, typename MVertexType>
-void Mesh<Args...>::importTriPointersHelper(
-	FaceType&                f,
-	const MFaceType&         mf,
-	VertexType*              base,
-	const MVertexType*       mvbase,
-	const std::vector<uint>& tris,
-	uint                     basetri)
-{
-	f.importFrom(mf); // import all the components from mf
-	for (uint i = basetri, j = 0; i < basetri+3; i++, j++) {
-		f.vertex(j) = base + (mf.vertex(tris[i]) - mvbase);
-
-		// wedge colors
-		if constexpr(face::HasWedgeColors<FaceType> && face::HasWedgeColors<MFaceType>) {
-			if (comp::isWedgeColorsEnabledOn(f) && comp::isWedgeColorsEnabledOn(mf)) {
-				f.wedgeColor(j) = mf.wedgeColor(tris[i]);
-			}
-		}
-
-		// wedge texcoords
-		if constexpr(face::HasWedgeTexCoords<FaceType> && face::HasWedgeTexCoords<MFaceType>) {
-			if (comp::isWedgeTexCoordsEnabledOn(f) && comp::isWedgeTexCoordsEnabledOn(mf)) {
-				f.wedgeTexCoord(j) =
-					mf.wedgeTexCoord(tris[i])
-						.template cast<typename FaceType::WedgeTexCoordType::ScalarType>();
-			}
-		}
 	}
 }
 

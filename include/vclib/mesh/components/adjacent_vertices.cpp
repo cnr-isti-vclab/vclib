@@ -274,7 +274,7 @@ void AdjacentVertices<Vertex, El, O>::importPtrsFrom(
 template <typename T>
 bool isAdjacentVerticesEnabledOn(const T& element)
 {
-	return isComponentEnabledOn<ADJ_VERTICES>(element);
+	return isComponentEnabledOn<ADJACENT_VERTICES>(element);
 }
 
 } // namespace vcl::comp
