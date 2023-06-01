@@ -21,11 +21,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_ELEMENTS_H
-#define VCL_VIEWS_MESH_ELEMENTS_H
+#ifndef VCL_VIEWS_MESH_ELEMENTS_FACE_H
+#define VCL_VIEWS_MESH_ELEMENTS_FACE_H
 
-#include "elements/edge.h"
-#include "elements/face.h"
-#include "elements/vertex.h"
+#include <vclib/concepts/mesh.h>
 
-#endif // VCL_VIEWS_MESH_ELEMENTS_H
+namespace vcl::views {
+namespace internal {
+
+template<typename T>
+concept CleanFaceMeshConcept = FaceMeshConcept<RemoveConstRef<T>>;
+
+struct FacesView
+{
+	constexpr FacesView() = default;
+
+	template <CleanFaceMeshConcept R>
+	friend constexpr auto operator|(R&& r, FacesView)
+	{
+		return r.faces();
+	}
+};
+
+} // namespace vcl::views::internal
+
+/**
+ * @brief A view that allows to iterate overt the Face elements of an object.
+ *
+ * This view can be applied to objects having type that satisfies the FaceMeshConcept
+ *
+ * @ingroup views
+ */
+inline constexpr internal::FacesView faces;
+
+} // namespace vcl::views
+
+#endif // VCL_VIEWS_MESH_ELEMENTS_FACE_H

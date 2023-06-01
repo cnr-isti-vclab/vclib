@@ -333,6 +333,9 @@ set(HEADERS
 	include/vclib/views/mesh/components/quality.h
 	include/vclib/views/mesh/components/selection.h
 	include/vclib/views/mesh/components/tex_coords.h
+	include/vclib/views/mesh/elements/edge.h
+	include/vclib/views/mesh/elements/face.h
+	include/vclib/views/mesh/elements/vertex.h
 )
 
 set(SOURCES
@@ -606,6 +609,7 @@ endif()
 
 if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_AND_RUN_TESTS)
 	include(CTest)
-	add_subdirectory(test)
+
+add_subdirectory(test)
 endif()
 
