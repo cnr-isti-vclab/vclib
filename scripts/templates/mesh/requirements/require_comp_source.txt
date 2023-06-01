@@ -1,4 +1,4 @@
-// %CNUC% %EL_UC%s
+// %EL_UC% %CNUC%
 
 /**
  * @brief This function asserts that a Mesh has a %EL_UC%Container,

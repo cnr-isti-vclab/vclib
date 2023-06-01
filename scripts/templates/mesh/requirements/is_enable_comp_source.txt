@@ -1,4 +1,4 @@
-// %CNUC% %EL_UC%s
+// %EL_UC% %CNUC%
 
 /**
  * @brief Returns true if the %CNUC% component is available (enabled) in the %EL_UC% element of the

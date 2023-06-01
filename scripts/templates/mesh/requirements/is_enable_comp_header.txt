@@ -1,4 +1,4 @@
-// %CNUC% %EL_UC%s
+// %EL_UC% %CNUC%
 
 template<%EL_UC%MeshConcept MeshType>
 bool isPer%EL_UC%%CNUC%Enabled(const MeshType&);

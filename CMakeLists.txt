@@ -107,6 +107,7 @@ set(HEADERS
 	include/vclib/concepts/mesh/edge_mesh_concept.h
 	include/vclib/concepts/mesh/face_mesh_concept.h
 	include/vclib/concepts/mesh/mesh_concept.h
+	include/vclib/concepts/mesh/per_edge.h
 	include/vclib/concepts/mesh/per_face.h
 	include/vclib/concepts/mesh/per_mesh.h
 	include/vclib/concepts/mesh/per_vertex.h
@@ -138,7 +139,6 @@ set(HEADERS
 	include/vclib/concepts/mesh/elements/element.h
 	include/vclib/concepts/mesh/elements/face.h
 	include/vclib/concepts/mesh/elements/vertex.h
-	include/vclib/concepts/mesh/per_edge.h
 	include/vclib/concepts/ranges/mesh.h
 	include/vclib/concepts/ranges/range.h
 	include/vclib/concepts/ranges/mesh/edge_range.h

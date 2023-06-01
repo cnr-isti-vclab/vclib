@@ -2,7 +2,7 @@
  * @brief Concept that checks if a Mesh has the per %EL_UC% %CNUC% component.
  *
  * Evaluates to true if %CNUC% is part of the %EL_UC% element, whether it is horizontal, vertical or optional.
- * 
+ *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup %EL%_mesh_concepts

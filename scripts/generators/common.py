@@ -94,7 +94,10 @@ def insert_include_in_file(target_file_name, include_string):
 
     includes = file_string[start_index + len(start):(end_index)].split('\n')
 
-    bisect.insort(includes, '#include "' + include_string + '"')
+    item = '#include "' + include_string + '"'
+    pos = bisect.bisect_left(includes, item)
+    if pos == len(includes) or includes[pos] != item:
+        bisect.insort(includes, item)
 
     files_string ='\n'.join(includes)
 

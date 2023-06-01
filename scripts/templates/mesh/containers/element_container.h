@@ -12,7 +12,17 @@
 namespace vcl::mesh {
 
 /**
- * @brief The %EL_UC%Container class
+ * @brief The %EL_UC%Container class represents a container of %EL_UC% elements that can be used in a
+ * Mesh class.
+ * 
+ * This class adds a container (vector) of %EL_UC%s to the Mesh, making available the accessors
+ * members to them and their components.
+ * 
+ * It provides all the add, delete, reserve, compact and other functions to manage the %EL_UC%s, plus 
+ * the iterators and views to iterate over them. It also provides the functions to enable and disable
+ * the optional components of the %EL_UC%s.
+ *
+ * @tparam T: The type of the %EL_UC% elements. It must satisfy the %EL_UC%Concept.
  *
  * @ingroup containers
  */
