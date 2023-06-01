@@ -140,8 +140,9 @@ set(HEADERS
 	include/vclib/concepts/mesh/elements/vertex.h
 	include/vclib/concepts/mesh/per_edge.h
 	include/vclib/concepts/ranges/mesh.h
-	include/vclib/concepts/ranges/mesh/edge_range.h
 	include/vclib/concepts/ranges/range.h
+	include/vclib/concepts/ranges/mesh/edge_range.h
+	include/vclib/concepts/ranges/mesh/face_range.h
 	include/vclib/concepts/ranges/mesh/vertex_range.h
 	include/vclib/concepts/space/box.h
 	include/vclib/concepts/space/matrix.h

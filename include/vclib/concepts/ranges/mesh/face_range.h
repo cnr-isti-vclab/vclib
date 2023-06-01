@@ -21,11 +21,41 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCLIB_CONCEPTS_RANGES_MESH_H
-#define VCLIB_CONCEPTS_RANGES_MESH_H
+#ifndef VCLIB_CONCEPTS_RANGES_MESH_FACE_RANGE_H
+#define VCLIB_CONCEPTS_RANGES_MESH_FACE_RANGE_H
 
-#include "mesh/vertex_range.h"
-#include "mesh/edge_range.h"
-#include "mesh/face_range.h"
+#include <vclib/concepts/pointers.h>
+#include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts/mesh/elements/face.h>
 
-#endif // VCLIB_CONCEPTS_RANGES_MESH_H
+namespace vcl {
+
+/**
+ * @brief The FaceRangeConcept evaluates to true if Rng is a valid Range on Faces.
+ *
+ * This means that Rng must be a Range of FaceConcept: the iterated type must satisfy the
+ * FaceConcept.
+ *
+ * @ingroup face_concepts
+ */
+template<typename Rng>
+concept FaceRangeConcept =
+	Range<Rng> && FaceConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+
+/**
+ * @brief The FacePointerRangeConcept evaluates to true if Rng is a valid Range on Face
+ * Pointers.
+ *
+ * This means that Rng must be a Range of pointers to a type that satisfy the FaceConcept.
+ *
+ * @ingroup face_concepts
+ */
+template<typename Rng>
+concept FacePointerRangeConcept =
+	Range<Rng> && IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+	FaceConcept<typename std::decay_t<
+		std::remove_pointer_t<typename std::ranges::iterator_t<Rng>::value_type>>>;
+
+} // namespace vcl
+
+#endif // VCLIB_CONCEPTS_RANGES_MESH_FACE_RANGE_H
