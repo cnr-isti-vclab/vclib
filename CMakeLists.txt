@@ -138,7 +138,9 @@ set(HEADERS
 	include/vclib/concepts/mesh/elements/element.h
 	include/vclib/concepts/mesh/elements/face.h
 	include/vclib/concepts/mesh/elements/vertex.h
+	include/vclib/concepts/mesh/per_edge.h
 	include/vclib/concepts/ranges/mesh.h
+	include/vclib/concepts/ranges/mesh/edge_range.h
 	include/vclib/concepts/ranges/range.h
 	include/vclib/concepts/ranges/mesh/vertex_range.h
 	include/vclib/concepts/space/box.h
@@ -238,6 +240,7 @@ set(HEADERS
 	include/vclib/mesh/elements/face_components.h
 	include/vclib/mesh/elements/vertex.h
 	include/vclib/mesh/elements/vertex_components.h
+	include/vclib/mesh/requirements/edge_requirements.h
 	include/vclib/mesh/requirements/element_requirements.h
 	include/vclib/mesh/requirements/face_requirements.h
 	include/vclib/mesh/requirements/mesh_requirements.h
@@ -436,6 +439,7 @@ set(SOURCES
 	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
 	include/vclib/mesh/elements/element.cpp
 	include/vclib/mesh/elements/face.cpp
+	include/vclib/mesh/requirements/edge_requirements.cpp
 	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp
 	include/vclib/mesh/requirements/mesh_requirements.cpp

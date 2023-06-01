@@ -47,13 +47,13 @@ bool isFaceContainerCompact(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, ADJ_FACES>(m);
+	return isPerElementComponentEnabled<FACE, ADJACENT_FACES>(m);
 }
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 {
-	return enableIfPerElementComponentOptional<FACE, ADJ_FACES>(m);
+	return enableIfPerElementComponentOptional<FACE, ADJACENT_FACES>(m);
 }
 
 template<FaceMeshConcept MeshType>
@@ -154,7 +154,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceAdjacentFaces(const MeshType& m)
 	requires HasPerFaceAdjacentFaces<MeshType>
 {
-	requirePerElementComponent<FACE, ADJ_FACES>(m);
+	requirePerElementComponent<FACE, ADJACENT_FACES>(m);
 }
 
 template<FaceMeshConcept MeshType>

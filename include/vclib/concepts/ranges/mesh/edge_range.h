@@ -21,26 +21,41 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
-#define VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
+#ifndef VCLIB_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
+#define VCLIB_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
 
-#include "mesh_concept.h"
-#include "per_edge.h"
+#include <vclib/concepts/pointers.h>
+#include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts/mesh/elements/edge.h>
 
 namespace vcl {
 
-template<typename T>
-concept EdgeMeshConcept =
-	MeshConcept<T> && mesh::HasEdgeContainer<T> &&
-	requires(
-		T o,
-		const T& co,
-		typename T::EdgeType e)
-{
-	{ co.index(e) } -> std::same_as<uint>;
-	{ co.index(&e) } -> std::same_as<uint>;
-};
+/**
+ * @brief The EdgeRangeConcept evaluates to true if Rng is a valid Range on Edges.
+ *
+ * This means that Rng must be a Range of EdgeConcept: the iterated type must satisfy the
+ * EdgeConcept.
+ *
+ * @ingroup edge_concepts
+ */
+template<typename Rng>
+concept EdgeRangeConcept =
+	Range<Rng> && EdgeConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+
+/**
+ * @brief The EdgePointerRangeConcept evaluates to true if Rng is a valid Range on Edge
+ * Pointers.
+ *
+ * This means that Rng must be a Range of pointers to a type that satisfy the EdgeConcept.
+ *
+ * @ingroup edge_concepts
+ */
+template<typename Rng>
+concept EdgePointerRangeConcept =
+	Range<Rng> && IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+	EdgeConcept<typename std::decay_t<
+		std::remove_pointer_t<typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
+#endif // VCLIB_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
