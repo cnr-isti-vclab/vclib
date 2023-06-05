@@ -108,40 +108,50 @@ void Face<MeshType, Comps...>::setVertices(V... args)
  *
  * @param n: the new number of vertices.
  */
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename MeshType, typename... Comps>
-//void Face<MeshType, Comps...>::resizeVertices(uint n) requires PolygonFaceConcept<Face>
-//{
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::resizeVertices(uint n) requires PolygonFaceConcept<Face>
+{
+	VPtrs::resizeVertices(n);
 
-//}
+	// Now I need to resize all the TTVN components
+	(resizeTTVNComponent<Comps>(n), ...);
+}
 
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename MeshType, typename... Comps>
-//void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
-//{
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
+{
+	VPtrs::pushVertex(v);
 
-//}
+	// Now I need to pushBack in all the TTVN components
+	(pushBackTTVNComponent<Comps>(), ...);
+}
 
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename MeshType, typename... Comps>
-//void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
-//{
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
+{
+	VPtrs::insertVertex(i, v);
 
-//}
+	// Now I need to insert in all the TTVN components
+	(insertTTVNComponent<Comps>(i), ...);
+}
 
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename MeshType, typename... Comps>
-//void Face<MeshType, Comps...>::eraseVertex(uint i) requires PolygonFaceConcept<Face>
-//{
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::eraseVertex(uint i) requires PolygonFaceConcept<Face>
+{
+	VPtrs::eraseVertex(i);
 
-//}
+	// Now I need to erase in all the TTVN components
+	(eraseTTVNComponent<Comps>(i), ...);
+}
 
-//TODO: Clang bug. Move definition here when it will be solved
-//template<typename MeshType, typename... Comps>
-//void Face<MeshType, Comps...>::clearVertices() requires PolygonFaceConcept<Face>
-//{
+template<typename MeshType, typename... Comps>
+void Face<MeshType, Comps...>::clearVertices() requires PolygonFaceConcept<Face>
+{
+	VPtrs::clearVertices();
 
-//}
+	// Now I need to clear all the TTVN components
+	(clearTTVNComponent<Comps>(), ...);
+}
 
 /**
  * Calls the resize(n) on all the component containers that are tied to the vertex number
