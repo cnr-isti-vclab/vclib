@@ -25,17 +25,18 @@ jobs:
         sudo apt-get install cmake ninja-build libtbb-dev
     - name: Install dependencies
       if: runner.os == 'macOS'
+      shell: bash
       run: |
-        brew install cmake ninja llvm
+        brew install cmake ninja llvm # TODO remove llvm when clang 16 will be default on macos runners
     - name: Build
-      if: runner.os != 'macOS'
+      if: runner.os != 'macOS' # TODO remove this when clang 16 will be default on macos runners
       shell: bash
       run: |
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_BUILD_TYPE=Release ..
         ninja
-    - name: Build MacOS
+    - name: Build MacOS # TODO remove this when clang 16 will be default on macos runners
       if: runner.os == 'macOS'
       shell: bash
       run: |
