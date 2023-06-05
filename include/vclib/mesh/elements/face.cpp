@@ -109,8 +109,7 @@ void Face<MeshType, Comps...>::setVertices(V... args)
  * @param n: the new number of vertices.
  */
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::resizeVertices(uint n)
-	requires PolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::resizeVertices(uint n) requires PolygonFaceConcept<Face>
 {
 	VPtrs::resizeVertices(n);
 
@@ -119,7 +118,7 @@ void Face<MeshType, Comps...>::resizeVertices(uint n)
 }
 
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
 {
 	VPtrs::pushVertex(v);
 
@@ -128,7 +127,7 @@ void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires PolygonFaceCon
 }
 
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
 {
 	VPtrs::insertVertex(i, v);
 
@@ -137,7 +136,7 @@ void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires Poly
 }
 
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::eraseVertex(uint i) requires PolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::eraseVertex(uint i) requires PolygonFaceConcept<Face>
 {
 	VPtrs::eraseVertex(i);
 
@@ -146,7 +145,7 @@ void Face<MeshType, Comps...>::eraseVertex(uint i) requires PolygonFaceConcept<F
 }
 
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::clearVertices() requires PolygonFaceConcept<Face<MeshType, Comps...>>
+void Face<MeshType, Comps...>::clearVertices() requires PolygonFaceConcept<Face>
 {
 	VPtrs::clearVertices();
 
