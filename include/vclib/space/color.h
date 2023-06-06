@@ -39,8 +39,8 @@ namespace vcl {
 class Color : public Point4<uint8_t>
 {
 public:
-	/// ARGB enum with some standard colors.
-	/// Can be used to initialize a color with an ARGB integer
+	/// RGBA enum with some standard colors.
+	/// Can be used to initialize a color with an RGBA integer
 	enum ColorRGBA {
 		Black     = 0x000000ff,
 		DarkGray  = 0x404040ff,

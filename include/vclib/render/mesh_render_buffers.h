@@ -24,9 +24,9 @@
 #ifndef VCL_RENDER_MESH_RENDER_BUFFERS_H
 #define VCL_RENDER_MESH_RENDER_BUFFERS_H
 
-#include <vclib/image/image.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/mesh/utils/tri_poly_index_bimap.h>
+#include <vclib/space/image.h>
 
 #include "mesh_render_settings.h"
 

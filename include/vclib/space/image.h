@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IMAGE_IMAGE_H
-#define VCL_IMAGE_IMAGE_H
+#ifndef VCL_SPACE_IMAGE_H
+#define VCL_SPACE_IMAGE_H
 
 #include <string>
 
@@ -39,6 +39,9 @@
 
 namespace vcl {
 
+/**
+ * @brief The Image class stores an Image in 8 bit RGBA format.
+ */
 class Image
 {
 public:
@@ -67,4 +70,4 @@ private:
 
 #include "image.cpp"
 
-#endif // VCL_IMAGE_IMAGE_H
+#endif // VCL_SPACE_IMAGE_H

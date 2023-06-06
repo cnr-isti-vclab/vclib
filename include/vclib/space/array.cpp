@@ -314,9 +314,20 @@ typename Array<T, N>::ConstPointer Array<T, N>::data(I... indices) const
  * @return A std::vector containing the elements of the array in row-major order.
  */
 template<class T, uint N>
-std::vector<T> Array<T, N>::stdVector()
+std::vector<T> Array<T, N>::stdVector() &
 {
 	return v;
+}
+
+/**
+ * @brief Returns a std::vector containing the elements of the array in row-major order
+ *
+ * @return A std::vector containing the elements of the array in row-major order.
+ */
+template<class T, uint N>
+std::vector<T>&& Array<T, N>::stdVector() &&
+{
+	return std::move(v);
 }
 
 /**
@@ -325,7 +336,7 @@ std::vector<T> Array<T, N>::stdVector()
  * @return A const reference to a std::vector containing the elements of the array in row-major order.
  */
 template<class T, uint N>
-const std::vector<T>& Array<T, N>::stdVector() const
+const std::vector<T>& Array<T, N>::stdVector() const&
 {
 	return v;
 }
