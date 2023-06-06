@@ -95,7 +95,7 @@ struct CustomComponentsData
 	void addCustomComponent(const std::string& compName, const CompType c = CompType())
 	{
 		map[compName] = c;
-		compType.insert({compName, typeid(CompType)});
+		compType.emplace(compName, typeid(CompType));
 	}
 
 	void deleteCustomComponent(const std::string& compName)

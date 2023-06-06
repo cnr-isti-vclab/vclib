@@ -116,7 +116,7 @@ uint ElementContainer<T>::addElement()
 	ccVecMap.resize(vec.size() + 1);
 
 	T* oldB = vec.data();
-	vec.push_back(T());
+	vec.emplace_back();
 	T* newB = vec.data();
 	en++;
 

@@ -45,7 +45,7 @@ std::vector<MeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(MeshType& m, b
 	for (FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
 		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (includeFauxEdges || !f.edgeFaux(j)) {
-				vec.push_back(MeshEdgeUtil<MeshType>(f, j));
+				vec.emplace_back(f, j);
 			}
 		}
 	}
@@ -71,7 +71,7 @@ fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges)
 	for (const FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
 		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (includeFauxEdges || !f.edgeFaux(j)) {
-				vec.push_back(ConstMeshEdgeUtil<MeshType>(f, j));
+				vec.emplace_back(f, j);
 			}
 		}
 	}

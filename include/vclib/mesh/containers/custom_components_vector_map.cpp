@@ -107,7 +107,7 @@ void CustomComponentsVectorMap<T, true>::addNewComponent(
 	std::vector<std::any>& v = map[name];
 	v.resize(size, CompType());
 	needToInitialize[name] = false;
-	compType.insert({name, typeid(CompType)});
+	compType.emplace(name, typeid(CompType));
 }
 
 /**

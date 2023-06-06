@@ -400,7 +400,7 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 	// the earcut algorithm
 	std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>> unorderedEdges;
 	for (uint i = 0; i < polygon.size(); ++i)
-		unorderedEdges.insert(std::make_pair(i, (i+1) % (uint)polygon.size()));
+		unorderedEdges.emplace(i, (i+1) % (uint)polygon.size());
 
 	if constexpr (FaceType::VERTEX_NUMBER < 0) {
 		f.resizeVertices(3);
