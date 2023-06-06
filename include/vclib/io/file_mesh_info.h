@@ -113,6 +113,7 @@ public:
 	struct CustomComponent {
 		std::string name;
 		DataType type;
+		CustomComponent(std::string n, DataType t) : name(n), type(t) {}
 	};
 
 	FileMeshInfo();
