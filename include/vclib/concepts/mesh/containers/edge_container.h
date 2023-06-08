@@ -64,8 +64,8 @@ concept HasEdgeContainer = requires(
 	{ co.edgeEnd() } -> std::same_as<typename T::ConstEdgeIterator>;
 
 #ifdef VCLIB_USES_RANGES
-	std::ranges::range<decltype(o.edges())>;
-	std::ranges::range<decltype(co.edges())>;
+	requires std::ranges::range<decltype(o.edges())>;
+	requires std::ranges::range<decltype(co.edges())>;
 #endif
 };
 

@@ -9,11 +9,13 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.24)
 project(vclib)
 
 ### Build settings
 set(CMAKE_CXX_STANDARD 20)
+
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 ### Options
 option(VCLIB_BUILD_EXAMPLES "Build VCLib examples" ON)

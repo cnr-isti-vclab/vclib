@@ -64,8 +64,8 @@ concept HasFaceContainer = requires(
 	{ co.faceEnd() } -> std::same_as<typename T::ConstFaceIterator>;
 
 #ifdef VCLIB_USES_RANGES
-	std::ranges::range<decltype(o.faces())>;
-	std::ranges::range<decltype(co.faces())>;
+	requires std::ranges::range<decltype(o.faces())>;
+	requires std::ranges::range<decltype(co.faces())>;
 #endif
 };
 
