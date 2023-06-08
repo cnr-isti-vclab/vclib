@@ -9,11 +9,13 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.24)
 project(vclib)
 
 ### Build settings
 set(CMAKE_CXX_STANDARD 20)
+
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 ### Options
 option(VCLIB_BUILD_EXAMPLES "Build VCLib examples" ON)
@@ -156,7 +158,6 @@ set(HEADERS
 	include/vclib/exceptions/io_exceptions.h
 	include/vclib/exceptions/mesh_exceptions.h
 	include/vclib/exceptions/misc_exceptions.h
-	include/vclib/image/image.h
 	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h
 	include/vclib/io/save.h
@@ -283,6 +284,7 @@ set(HEADERS
 	include/vclib/space/color.h
 	include/vclib/space/graph.h
 	include/vclib/space/grid.h
+	include/vclib/space/image.h
 	include/vclib/space/kd_tree.h
 	include/vclib/space/matrix.h
 	include/vclib/space/plane.h
@@ -372,7 +374,6 @@ set(SOURCES
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
-	include/vclib/image/image.cpp
 	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load.cpp
 	include/vclib/io/save.cpp
@@ -470,6 +471,7 @@ set(SOURCES
 	include/vclib/space/color.cpp
 	include/vclib/space/matrix.cpp
 	include/vclib/space/kd_tree.cpp
+	include/vclib/space/image.cpp
 	include/vclib/space/plane.cpp
 	include/vclib/space/principal_curvature.cpp
 	include/vclib/space/point.cpp

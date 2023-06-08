@@ -372,8 +372,7 @@ uint removeDuplicatedFaces(MeshType& m)
 	// pointer to the face.
 	std::vector<internal::SortedTriple<FaceType*>> fvec;
 	for (FaceType& f : m.faces()) {
-		fvec.push_back(internal::SortedTriple(
-			m.index(f.vertex(0)), m.index(f.vertex(1)), m.index(f.vertex(2)), &f));
+		fvec.emplace_back(m.index(f.vertex(0)), m.index(f.vertex(1)), m.index(f.vertex(2)), &f);
 	}
 
 	// sort the vector based on the face vertex indices.
@@ -626,7 +625,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 			visitedFaces[m.index(f)] = true;
 
 			// new connected component
-			cc.push_back(std::set<uint>());
+			cc.emplace_back();
 			std::set<uint>& ccf = cc[cc.size()-1];
 			ccf.insert(m.index(f));
 

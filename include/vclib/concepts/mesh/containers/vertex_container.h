@@ -67,8 +67,8 @@ concept HasVertexContainer = requires(
 	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
 
 #ifdef VCLIB_USES_RANGES
-	std::ranges::range<decltype(o.vertices())>;
-	std::ranges::range<decltype(co.vertices())>;
+	requires std::ranges::range<decltype(o.vertices())>;
+	requires std::ranges::range<decltype(co.vertices())>;
 #endif
 };
 

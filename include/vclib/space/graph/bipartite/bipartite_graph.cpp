@@ -167,7 +167,7 @@ bool BipartiteGraph<T1, T2>::addLeftNode(const T1& info)
 	if (mapL.find(info) == mapL.end()) {
 		if (unusedLNodes.size() == 0) {
 			mapL[info] = (unsigned int) nodesL.size();
-			nodesL.push_back(UndirectedNode<T1>(info));
+			nodesL.emplace_back(info);
 		}
 		else {
 			unsigned int id = *(unusedLNodes.begin());
@@ -192,7 +192,7 @@ bool BipartiteGraph<T1, T2>::addRightNode(const T2& info)
 	if (mapR.find(info) == mapR.end()) {
 		if (unusedRNodes.size() == 0) {
 			mapR[info] = (unsigned int) nodesR.size();
-			nodesR.push_back(UndirectedNode<T2>(info));
+			nodesR.emplace_back(info);
 		}
 		else {
 			unsigned int id = *(unusedRNodes.begin());

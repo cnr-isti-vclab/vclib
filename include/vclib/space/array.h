@@ -116,8 +116,9 @@ public:
 	template<typename... I>
 	ConstPointer data(I... indices) const requires(sizeof...(indices) < N);
 
-	std::vector<T>        stdVector();
-	const std::vector<T>& stdVector() const;
+	std::vector<T>        stdVector() &;
+	std::vector<T>&&      stdVector() &&;
+	const std::vector<T>& stdVector() const&;
 
 	void fill(const T& t);
 

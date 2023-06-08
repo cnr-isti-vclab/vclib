@@ -194,7 +194,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insertInCell(
 	const ValueType& v)
 {
 	if constexpr (AllowDuplicates) {
-		map.insert(MapValueType(k, v));
+		map.emplace(k, v);
 		return true;
 	}
 	else {
@@ -206,7 +206,7 @@ bool HashTableGrid<GridType, ValueType, AllowDuplicates>::insertInCell(
 			}
 		}
 		if (!found)
-			map.insert(MapValueType(k, v));
+			map.emplace(k, v);
 		return !found;
 	}
 }

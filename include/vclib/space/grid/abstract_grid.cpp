@@ -631,7 +631,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 					const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 					for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
 						auto tmp = distFunction(qv, it->second);
-						res.insert(std::make_pair(tmp, it));
+						res.emplace(tmp, it);
 					}
 				}
 			}

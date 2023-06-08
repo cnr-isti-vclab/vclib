@@ -411,10 +411,10 @@ inline void FileMeshInfo::setTextures(bool b)
 	setElementComponents(MESH, TEXTURES, b, UNKNOWN);
 }
 
-inline void FileMeshInfo::addElementCustomComponent(Element el, const std::string &name, DataType t)
+inline void FileMeshInfo::addElementCustomComponent(Element el, const std::string& name, DataType t)
 {
 	setElementComponents(el, CUSTOM_COMPONENTS, true, UNKNOWN);
-	perElemCustomComponents[el].push_back(CustomComponent{name, t});
+	perElemCustomComponents[el].emplace_back(name, t);
 }
 
 inline void FileMeshInfo::clearElementCustomComponents(Element el)

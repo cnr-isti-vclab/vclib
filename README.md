@@ -30,6 +30,8 @@ VCLib currently builds with the follwing compilers:
 
 There is no guarantee that old compiler versions are capable to build the library.
 
+If you use CMake, the minimum required version is 3.24.
+
 ## C++20
 
 VCLib is designed to work with the most recent features of C++20:

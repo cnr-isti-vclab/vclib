@@ -117,16 +117,13 @@ public:
 
 	/** Member functions specific for vector **/
 
-	void resize(uint n)
-		requires(N < 0);
-	void pushBack(const T& v)
-		requires(N < 0);
-	void insert(uint i, const T& v)
-		requires(N < 0);
-	void erase(uint i)
-		requires(N < 0);
-	void clear()
-		requires(N < 0);
+	void resize(uint n) requires(N < 0);
+	void pushBack(const T& v) requires(N < 0);
+	void insert(uint i, const T& v) requires(N < 0);
+	template<typename... Args>
+	void emplace(uint i, Args&&... args) requires (N < 0);
+	void erase(uint i) requires(N < 0);
+	void clear() requires(N < 0);
 
 	/** Operators **/
 	Reference operator[](uint i);

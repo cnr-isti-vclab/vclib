@@ -322,6 +322,25 @@ void Vector<T, N>::insert(uint i, const T& v) requires (N < 0)
 }
 
 /**
+ * @brief Insert an element at the specified position in the Vector.
+ *
+ * Inserts the newly constructed element with the args at the position specified by `i` in the
+ * Vector by calling the `emplace()` member function of the underlying `std::vector`. This member
+ * function is only available if the size of the Vector is not known at compile-time, as specified
+ * by the concept requirement `requires (N < 0)`.
+ *
+ * @param[in] i: The index at which to insert the element.
+ * @param[in] args: Arguments to forward to the constructor of the element.
+ */
+template<typename T, int N>
+template<typename... Args>
+void Vector<T, N>::emplace(uint i, Args&&... args) requires (N < 0)
+{
+	assert(i < size() + 1);
+	container.emplace(container.begin() + i, std::forward<Args>(args)...);
+}
+
+/**
  * @brief Remove the element at the specified index from the Vector.
  *
  * Removes the element at the position specified by `i` in the Vector by calling the `erase()`

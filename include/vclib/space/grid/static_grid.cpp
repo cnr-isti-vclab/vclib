@@ -204,7 +204,7 @@ template<typename GridType, typename ValueType>
 bool StaticGrid<GridType, ValueType>::insertInCell(const KeyType& cell, const ValueType& v)
 {
 	uint cellIndex = GridType::indexOfCell(cell);
-	values.push_back(std::make_pair(cellIndex, v));
+	values.emplace_back(cellIndex, v);
 	return true;
 }
 

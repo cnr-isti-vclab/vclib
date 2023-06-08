@@ -358,7 +358,7 @@ std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 	// vector of contours, where each contour is a vector of points. In this case, there is only one
 	// contour, which is represented as a vector of points.
 	std::vector<std::vector<Point2<Scalar>>> poly;
-	poly.push_back(std::vector<Point2<Scalar>>(begin, end));
+	poly.emplace_back(begin, end);
 
 	// Use the earcut library to triangulate the polygon and return the result.
 	return mapbox::earcut<uint>(poly);
@@ -415,7 +415,7 @@ std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 
 	for (auto i = begin; i != end; ++i){
 		// project i-th polygon in a 2D plane
-		poly2D.push_back(Point2<Scalar>(*i*u, *i*v));
+		poly2D.emplace_back(*i*u, *i*v);
 	}
 
 	// Use the ear-cut algorithm to triangulate the polygon in the 2D plane and return the result.

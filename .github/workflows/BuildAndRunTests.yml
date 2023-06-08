@@ -28,6 +28,10 @@ jobs:
       shell: bash
       run: |
         brew install cmake ninja llvm # TODO remove llvm when clang 16 will be default on macos runners
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ runner.os }}-${{ github.ref }}
     - name: Build
       if: runner.os != 'macOS' # TODO remove this when clang 16 will be default on macos runners
       shell: bash

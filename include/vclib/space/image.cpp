@@ -61,7 +61,7 @@ inline vcl::Color Image::pixel(uint i, uint j) const
 
 inline const unsigned char* Image::data() const
 {
-	return (unsigned char* ) img.data();
+	return reinterpret_cast<const unsigned char*>(img.data());
 }
 
 inline bool Image::load(const std::string &filename)
@@ -82,7 +82,7 @@ inline bool Image::load(const std::string &filename)
 	}
 }
 
-void Image::mirror(bool horizontal, bool vertical)
+inline void Image::mirror(bool horizontal, bool vertical)
 {
 	if (horizontal) {
 		for (uint i = 0; i < img.rows(); i++) {
