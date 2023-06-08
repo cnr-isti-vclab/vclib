@@ -25,6 +25,10 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew install cmake ninja
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ runner.os }}-${{ github.ref }}
     - name: Build
       shell: bash
       run: |
