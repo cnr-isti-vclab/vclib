@@ -42,10 +42,8 @@ concept Has%EL_UC%Container = requires(
 	{ o.%EL_C%End() } -> std::same_as<typename T::%EL_UC%Iterator>;
 	{ co.%EL_C%End() } -> std::same_as<typename T::Const%EL_UC%Iterator>;
 
-#ifdef VCLIB_USES_RANGES
 	std::ranges::range<decltype(o.%EL_C%s())>;
 	std::ranges::range<decltype(co.%EL_C%s())>;
-#endif
 };
 
 } // namespace vcl::mesh

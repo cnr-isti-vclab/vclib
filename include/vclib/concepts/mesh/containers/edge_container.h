@@ -63,10 +63,8 @@ concept HasEdgeContainer = requires(
 	{ o.edgeEnd() } -> std::same_as<typename T::EdgeIterator>;
 	{ co.edgeEnd() } -> std::same_as<typename T::ConstEdgeIterator>;
 
-#ifdef VCLIB_USES_RANGES
 	requires std::ranges::range<decltype(o.edges())>;
 	requires std::ranges::range<decltype(co.edges())>;
-#endif
 };
 
 } // namespace vcl::mesh

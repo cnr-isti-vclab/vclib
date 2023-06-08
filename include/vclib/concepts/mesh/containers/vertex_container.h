@@ -66,10 +66,8 @@ concept HasVertexContainer = requires(
 	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
 	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
 
-#ifdef VCLIB_USES_RANGES
 	requires std::ranges::range<decltype(o.vertices())>;
 	requires std::ranges::range<decltype(co.vertices())>;
-#endif
 };
 
 } // namespace vcl::mesh
