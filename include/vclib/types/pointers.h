@@ -75,13 +75,13 @@ auto dereferencePtr(T&& obj)
  * @return the address of 'obj' if obj is not a pointer, or obj if it is a pointer.
  */
 template<typename T>
-auto addressOfObj(T&& obj)
+auto addressOfObj(T& obj)
 {
 	if constexpr (IsPointer<T>) {
-		return std::forward<T>(obj);
+		return obj;
 	}
 	else {
-		return &(std::forward<T>(obj));
+		return &obj;
 	}
 }
 
