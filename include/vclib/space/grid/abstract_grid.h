@@ -107,7 +107,7 @@ private:
 	// ValueType could be anything. We need to understand if it is a pointer, a reference or not, in
 	// order to make proper optimized operations. Therefore, we declare VT, that is used internally
 	// in this class. VT is ValueType without pointers or references:
-	using VT = RemoveRefAndPointer<ValueType>;
+	using VT = RemoveCVRefAndPointer<ValueType>;
 
 public:
 	using KeyType = typename GridType::CellCoord;

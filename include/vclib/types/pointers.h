@@ -33,7 +33,7 @@ namespace vcl {
  * Utility to get clean type from an input type that could have a reference or a pointer.
  */
 template<typename T>
-using RemoveRefAndPointer =
+using RemoveCVRefAndPointer =
 	typename std::remove_cvref_t<std::remove_pointer_t<T>>;
 
 /*

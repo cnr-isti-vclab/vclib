@@ -245,8 +245,8 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	using ScalarType = typename GridType::ScalarType;
 	using PointType = typename GridType::PointType;
 	using ResType = typename DerivedGrid::ConstIterator;
-
-	using QVT = RemoveRefAndPointer<QueryValueType>;
+	
+	using QVT = RemoveCVRefAndPointer<QueryValueType>;
 	const QVT* qvv = getCleanValueTypePointer(qv);
 	ResType result = static_cast<const DerivedGrid*>(this)->end();
 
@@ -375,7 +375,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	auto it = set.size() >= n ? std::next(set.begin(), n) : set.end();
 	// if we didn't found n values, it means that there aren't n values in the grid - nothing to do
 	if (it != set.end()) {
-		using QVT = RemoveRefAndPointer<QueryValueType>;
+		using QVT = RemoveCVRefAndPointer<QueryValueType>;
 		const QVT* qvv = getCleanValueTypePointer(qv);
 
 		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
@@ -613,8 +613,8 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 		std::pair<typename GridType::ScalarType, typename DerivedGrid::ConstIterator>;
 	using KClosestSet = std::set<KClosestPairType, DistIterPairComparator<KClosestPairType>>;
 	KClosestSet res;
-
-	using QVT = RemoveRefAndPointer<QueryValueType>;
+	
+	using QVT = RemoveCVRefAndPointer<QueryValueType>;
 	const QVT* qvv = getCleanValueTypePointer(qv);
 
 	if (qvv) {
@@ -673,7 +673,7 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename T>
 auto AbstractGrid<GridType, ValueType, DerivedGrid>::getCleanValueTypePointer(const T& v)
 {
-	using NT = RemoveRefAndPointer<T>;
+	using NT = RemoveCVRefAndPointer<T>;
 	const NT* vv = nullptr; // vv is a pointer to T
 	if constexpr(std::is_pointer<T>::value) {
 		vv = v;
