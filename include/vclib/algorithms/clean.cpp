@@ -77,39 +77,70 @@ std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m)
 }
 
 /**
- * @brief The SortedTriple class stores a sorted triplet of values that implement the operator <
+ * @brief The SortedIndexContainer class stores a sorted container of indices of type IndexType,
+ * plus a Sentinel value.
  *
- * @todo this class should become SortedVector, in order to support sorting of Polygonal Faces
+ * The size of the container can be specified at compile time, or left unspecified with the -1 value
+ * (in this case, the container is dynamically allocated).
+ *
+ * The container provides the operator < and ==, that allow to sort and compare two containers.
+ * Two containers with same indices but different Sentinel values are considered equal.
  */
-template<typename FacePointer>
-class SortedTriple
+template<typename IndexType, typename SentinelType, int N>
+class SortedIndexContainer
 {
 public:
-	SortedTriple() {}
-	SortedTriple(uint v0, uint v1, uint v2, FacePointer _fp)
+	SortedIndexContainer() {}
+
+	template<Range RangeType>
+	SortedIndexContainer(SentinelType s, RangeType rng) : s(s), v(rng)
 	{
-		v[0] = v0;
-		v[1] = v1;
-		v[2] = v2;
-		fp   = _fp;
-		std::sort(v, v + 3);
-	}
-	bool operator<(const SortedTriple& p) const
-	{
-		return (v[2] != p.v[2]) ? (v[2] < p.v[2]) :
-			   (v[1] != p.v[1]) ? (v[1] < p.v[1]) :
-                                  (v[0] < p.v[0]);
+		std::sort(v.begin(), v.end());
 	}
 
-	bool operator==(const SortedTriple& s) const
+	bool operator<(const SortedIndexContainer& s) const
 	{
-		if ((v[0] == s.v[0]) && (v[1] == s.v[1]) && (v[2] == s.v[2]))
+		if constexpr (N >= 0) {
+			for (uint i = 0; i < N; ++i) {
+				if (v[i] != s.v[i])
+					return v[i] < s.v[i];
+			}
+			return false;
+		}
+		else {
+			for (uint i = 0; i < v.size() && s.v.size(); ++i) {
+				if (v[i] != s.v[i])
+					return v[i] < s.v[i];
+			}
+			return v.size() < s.v.size();
+		}
+	}
+
+	bool operator==(const SortedIndexContainer& s) const
+	{
+		if constexpr (N >= 0) {
+			for (uint i = 0; i < N; ++i) {
+				if (v[i] != s.v[i])
+					return false;
+			}
 			return true;
-		return false;
+		}
+		else {
+			if (v.size() != s.v.size())
+				return false;
+			for (uint i = 0; i < v.size(); ++i) {
+				if (v[i] != s.v[i])
+					return false;
+			}
+			return true;
+		}
 	}
 
-	uint v[3];
-	FacePointer  fp;
+	SentinelType sentinel() const { return s; }
+
+private:
+	vcl::Vector<IndexType, N> v;
+	SentinelType s;
 };
 
 template<FaceMeshConcept MeshType>
@@ -363,16 +394,18 @@ uint removeDuplicatedVertices(MeshType& m)
  *
  * @ingroup clean
  */
-template<TriangleMeshConcept MeshType> // TODO: remove this and adjust the function for polymeshes
+template<FaceMeshConcept MeshType>
 uint removeDuplicatedFaces(MeshType& m)
 {
+	using VertexType = typename MeshType::VertexType;
 	using FaceType = typename MeshType::FaceType;
 
-	// create a vector of sorted triples, where each triple represents a face's vertex indices and a
+	// create a vector of sorted tuples of indices, where each tuple represents a face's vertices and a
 	// pointer to the face.
-	std::vector<internal::SortedTriple<FaceType*>> fvec;
+	std::vector<internal::SortedIndexContainer<VertexType*, FaceType*, FaceType::VERTEX_NUMBER>> fvec;
+
 	for (FaceType& f : m.faces()) {
-		fvec.emplace_back(m.index(f.vertex(0)), m.index(f.vertex(1)), m.index(f.vertex(2)), &f);
+		fvec.emplace_back(&f, f.vertices());
 	}
 
 	// sort the vector based on the face vertex indices.
@@ -383,7 +416,7 @@ uint removeDuplicatedFaces(MeshType& m)
 	for (uint i = 0; i < fvec.size() - 1; ++i) {
 		if (fvec[i] == fvec[i + 1]) {
 			total++;
-			m.deleteFace(fvec[i].fp);
+			m.deleteFace(fvec[i].sentinel());
 		}
 	}
 	return total;
