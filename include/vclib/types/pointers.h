@@ -27,6 +27,8 @@
 #include <type_traits>
 #include <utility>
 
+#include <vclib/concepts/pointers.h>
+
 namespace vcl {
 
 /*
@@ -47,40 +49,40 @@ using RemoveConstFromPointer =
 	std::add_pointer_t<typename std::remove_cv_t<typename std::remove_pointer_t<T>>>,
 	T>;
 
+/**
+ * @brief Utility function that applies the unary operator '*' to the argument only if
+ * the object is a pointer.
+ *
+ * @param obj
+ * @return obj if it is not a pointer, or *obj if it is a pointer.
+ */
 template<typename T>
-T&& dereference(T&& obj)
+auto dereferencePtr(T&& obj)
 {
-	return std::forward<T>(obj);
+	if constexpr (IsPointer<T>) {
+		return *obj;
+	}
+	else {
+		return std::forward<T>(obj);
+	}
 }
 
+/**
+ * @brief Utility function that applies the unary operator '&' to the argument only if it
+ * is not a pointer.
+ *
+ * @param obj
+ * @return the address of 'obj' if obj is not a pointer, or obj if it is a pointer.
+ */
 template<typename T>
-T& dereference(T* obj)
+auto addressOfObj(T&& obj)
 {
-	return *obj;
-}
-
-template<typename T>
-const T& dereference(const T* obj)
-{
-	return *obj;
-}
-
-template<typename T>
-auto addressOf(T&& obj)
-{
-	return &(std::forward<T>(obj));
-}
-
-template<typename T>
-T* addressOf(T* obj)
-{
-	return obj;
-}
-
-template<typename T>
-const T* addressOf(const T* obj)
-{
-	return obj;
+	if constexpr (IsPointer<T>) {
+		return std::forward<T>(obj);
+	}
+	else {
+		return &(std::forward<T>(obj));
+	}
 }
 
 } // namespace vcl

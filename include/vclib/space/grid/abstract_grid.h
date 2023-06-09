@@ -112,16 +112,16 @@ private:
 public:
 	using KeyType = typename GridType::CellCoord;
 	using IsInCellFunction =
-		std::function<bool(const typename GridType::BBoxType&, const ValueType&)>;
+		std::function<bool(const typename GridType::BBoxType&, const RemoveCVRefAndPointer<ValueType>&)>;
 
 	template<typename QueryValueType>
 	using QueryDistFunction =
-		std::function<typename GridType::ScalarType(const QueryValueType&, const ValueType&)>;
+		std::function<typename GridType::ScalarType(const QueryValueType&, const RemoveCVRefAndPointer<ValueType>&)>;
 
 	template<typename QueryValueType>
 	using QueryBoundedDistFunction = std::function<typename GridType::ScalarType(
 		const QueryValueType&,
-		const ValueType&,
+		const RemoveCVRefAndPointer<ValueType>&,
 		typename GridType::ScalarType)>;
 
 	bool cellEmpty(const KeyType& k) const;
@@ -255,9 +255,6 @@ private:
 		uint                              n,
 		QueryDistFunction<QueryValueType> distFunction,
 		Boxui& ignore) const;
-
-	template<typename T>
-	static auto getCleanValueTypePointer(const T& v);
 };
 
 } // namespace vcl

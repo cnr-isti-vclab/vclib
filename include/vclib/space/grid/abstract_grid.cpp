@@ -54,7 +54,7 @@ std::size_t AbstractGrid<GridType, ValueType, DerivedGrid>::countInCell(const Ke
 template<typename GridType, typename ValueType, typename DerivedGrid>
 bool AbstractGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v)
 {
-	const VT* vv = getCleanValueTypePointer(v);
+	const VT* vv = addressOfObj(v);
 
 	if (vv) { // if vv is a valid pointer (ValueType, or ValueType* if ValueType is not a pointer)
 
@@ -80,7 +80,7 @@ bool AbstractGrid<GridType, ValueType, DerivedGrid>::insert(const ValueType& v)
 
 		if (intersects) { // custom intersection function between cell and value
 			for (const auto& cell : GridType::cells(bmin, bmax)) {
-				if (intersects(GridType::cellBox(cell), v)) {
+				if (intersects(GridType::cellBox(cell), dereferencePtr(v))) {
 					ins |= static_cast<DerivedGrid*>(this)->insertInCell(cell, v);
 				}
 			}
@@ -129,7 +129,7 @@ uint AbstractGrid<GridType, ValueType, DerivedGrid>::insert(Rng&& r)
 template<typename GridType, typename ValueType, typename DerivedGrid>
 bool AbstractGrid<GridType, ValueType, DerivedGrid>::erase(const ValueType& v)
 {
-	const VT* vv = getCleanValueTypePointer(v);
+	const VT* vv = addressOfObj(v);
 
 	if (vv) {
 		KeyType bmin, bmax; // first and last cell where erase (could be the same)
@@ -247,7 +247,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	using ResType = typename DerivedGrid::ConstIterator;
 	
 	using QVT = RemoveCVRefAndPointer<QueryValueType>;
-	const QVT* qvv = getCleanValueTypePointer(qv);
+	const QVT* qvv = addressOfObj(qv);
 	ResType result = static_cast<const DerivedGrid*>(this)->end();
 
 	if (qvv) {
@@ -316,7 +316,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	typename GridType::ScalarType& dist) const
 {
 	QueryBoundedDistFunction<QueryValueType> boundDistFun =
-		[&](const QueryValueType& q, const ValueType& v, typename GridType::ScalarType)
+		[&](const QueryValueType& q, const RemoveCVRefAndPointer<ValueType>& v, typename GridType::ScalarType)
 	{
 		return distFunction(q, v);
 	};
@@ -342,7 +342,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	const QueryValueType& qv,
 	typename GridType::ScalarType& dist) const
 {
-	std::function f = boundedDistFunction<QueryValueType, ValueType, typename GridType::ScalarType>();
+	std::function f = boundedDistFunction<QueryValueType, RemoveCVRefAndPointer<ValueType>, typename GridType::ScalarType>();
 	return closestValue(qv, f, dist);
 }
 
@@ -350,7 +350,7 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 template<typename QueryValueType>
 auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(const QueryValueType& qv) const
 {
-	std::function f = boundedDistFunction<QueryValueType, ValueType, typename GridType::ScalarType>();
+	std::function f = boundedDistFunction<QueryValueType, RemoveCVRefAndPointer<ValueType>, typename GridType::ScalarType>();
 	typename GridType::ScalarType dist = std::numeric_limits<typename GridType::ScalarType>::max();
 	return closestValue(qv, f, dist);
 }
@@ -376,7 +376,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	// if we didn't found n values, it means that there aren't n values in the grid - nothing to do
 	if (it != set.end()) {
 		using QVT = RemoveCVRefAndPointer<QueryValueType>;
-		const QVT* qvv = getCleanValueTypePointer(qv);
+		const QVT* qvv = addressOfObj(qv);
 
 		typename GridType::BBoxType bb = vcl::boundingBox(*qvv); //bbox of query value
 		// we need to be sure that there are no values that are closest w.r.t. the n-th that we
@@ -393,7 +393,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 			if (!ignore.isInsideOpenBox(c)) {
 				const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 				for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-					auto tmp = distFunction(qv, it->second);
+					auto tmp = distFunction(qv, dereferencePtr(it->second));
 					set.insert(std::make_pair(tmp, it));
 				}
 			}
@@ -418,7 +418,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::kClosestValues(
 	const QueryValueType& qv,
 	uint                  n) const
 {
-	std::function f = distFunction<QueryValueType, ValueType>();
+	std::function f = distFunction<QueryValueType, RemoveCVRefAndPointer<ValueType>>();
 	return kClosestValues(qv, n, f);
 }
 
@@ -550,7 +550,7 @@ bool AbstractGrid<GridType, ValueType, DerivedGrid>::valueIsInSpehere(
 	const Iterator& it,
 	const Sphere<typename GridType::ScalarType>& s) const
 {
-	const VT* vv = getCleanValueTypePointer(it->second);
+	const VT* vv = addressOfObj(it->second);
 
 	bool test = false;
 	if constexpr (PointConcept<VT> || VertexConcept<VT>) {
@@ -589,7 +589,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 			// p is a pair of iterators
 			const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 			for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-				auto tmp = distFunction(qv, it->second, dist);
+				auto tmp = distFunction(qv, dereferencePtr(it->second), dist);
 				if (tmp < dist) {
 					dist = tmp;
 					res = it;
@@ -615,7 +615,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 	KClosestSet res;
 	
 	using QVT = RemoveCVRefAndPointer<QueryValueType>;
-	const QVT* qvv = getCleanValueTypePointer(qv);
+	const QVT* qvv = addressOfObj(qv);
 
 	if (qvv) {
 		Boxui currentIntervalBox;
@@ -630,7 +630,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 				if (!ignore.isInsideOpenBox(c)) {
 					const auto& p = static_cast<const DerivedGrid*>(this)->valuesInCell(c);
 					for (auto it = p.first; it != p.second; ++it) { // for each value contained in the cell
-						auto tmp = distFunction(qv, it->second);
+						auto tmp = distFunction(qv, dereferencePtr(it->second));
 						res.emplace(tmp, it);
 					}
 				}
@@ -646,43 +646,6 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::valuesInCellNeighborhood(
 	}
 
 	return res;
-}
-
-/**
- * @brief This function returns a clean pointer (VT*) to the given valuetype.
- * It is just an utility function used to avoid code duplication. It allows equal treatment of
- * ValueType variable, whether that v is a pointer or not.
- *
- * Example: you have a ValueType v, and you want to compute its bounding box, but you don't know if
- * ValueType is a pointer or not.
- * Instead of doing:
- * if constexpr(std::is_pointer<ValueType>::value) {
- *     if (vv) vcl::boundingBox(*v);
- * }
- * else{
- *     vcl::boundingBox(v);
- * }
- *
- * you can do:
- * const VT* vv = getCleanValueTypePointer(v);
- * if (vv) vcl::boundingBox(*vv);
- *
- * @param v
- */
-template<typename GridType, typename ValueType, typename DerivedGrid>
-template<typename T>
-auto AbstractGrid<GridType, ValueType, DerivedGrid>::getCleanValueTypePointer(const T& v)
-{
-	using NT = RemoveCVRefAndPointer<T>;
-	const NT* vv = nullptr; // vv is a pointer to T
-	if constexpr(std::is_pointer<T>::value) {
-		vv = v;
-	}
-	else {
-		vv = &v;
-	}
-
-	return vv;
 }
 
 } // namespace vcl
