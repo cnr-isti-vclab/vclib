@@ -56,7 +56,7 @@ struct DistFunctionStruct
 template<typename Obj1, typename Obj2>
 auto distFunction()
 {
-	return DistFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>, double>::distFun;
+	return DistFunctionStruct<RemoveConstFromPointer<Obj1>, RemoveConstFromPointer<Obj2>, double>::distFun;
 }
 
 /**
@@ -83,7 +83,7 @@ auto distFunction()
 template<typename Obj1, typename Obj2, typename ScalarType = double>
 auto boundedDistFunction()
 {
-	return DistFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>, ScalarType>::boundDistFun;
+	return DistFunctionStruct<RemoveConstFromPointer<Obj1>, RemoveConstFromPointer<Obj2>, ScalarType>::boundDistFun;
 }
 
 /********* DistFunctionStruct Specializations *********/
@@ -165,7 +165,7 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 			[](const Obj1& o1, const Obj2& o2, ScalarType) { return o1.dist(o2.coord()); };
 };
 
-// Specialization for distance between Point and Vertex*
+//// Specialization for distance between Point and Vertex*
 template<Point3Concept Obj1, VertexConcept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2*, ScalarType>
 {

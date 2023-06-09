@@ -32,7 +32,7 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<RemoveConstRef<T>>;
+concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<std::remove_cvref_t<T>>;
 
 struct AdjEdgesView
 {

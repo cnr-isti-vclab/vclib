@@ -35,7 +35,7 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept CleanWedgeColorsConcept = comp::HasWedgeColors<RemoveConstRef<T>>;
+concept CleanWedgeColorsConcept = comp::HasWedgeColors<std::remove_cvref_t<T>>;
 
 struct ColorsView
 {

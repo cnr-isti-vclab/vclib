@@ -56,7 +56,7 @@ struct IntersFunctionStruct
 template<typename Obj1, typename Obj2>
 auto intersectFunction()
 {
-	return IntersFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>>::intersFun;
+	return IntersFunctionStruct<RemoveConstFromPointer<Obj1>, RemoveConstFromPointer<Obj2>>::intersFun;
 }
 
 /********* IntersFunctionStruct Specializations *********/

@@ -25,6 +25,7 @@
 #define VCL_TYPES_POINTERS_H
 
 #include <type_traits>
+#include <utility>
 
 namespace vcl {
 
@@ -33,13 +34,7 @@ namespace vcl {
  */
 template<typename T>
 using RemoveRefAndPointer =
-	typename std::remove_pointer_t<typename std::remove_reference_t<T>>;
-
-/*
- * Utility to get clean type from an input type that could have a const reference.
- */
-template<typename T>
-using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
+	typename std::remove_cvref_t<std::remove_pointer_t<T>>;
 
 /*
  * Utility to get a pointer type without the constness.
@@ -47,10 +42,46 @@ using RemoveConstRef = typename std::remove_const_t<std::remove_reference_t<T>>;
  * If the type is not a pointer, it is left as it was
  */
 template<typename T>
-using RemoveConstPointer =
+using RemoveConstFromPointer =
 	std::conditional_t<std::is_pointer_v<T>, 
 	std::add_pointer_t<typename std::remove_cv_t<typename std::remove_pointer_t<T>>>,
 	T>;
+
+template<typename T>
+T&& dereference(T&& obj)
+{
+	return std::forward<T>(obj);
+}
+
+template<typename T>
+T& dereference(T* obj)
+{
+	return *obj;
+}
+
+template<typename T>
+const T& dereference(const T* obj)
+{
+	return *obj;
+}
+
+template<typename T>
+auto addressOf(T&& obj)
+{
+	return &(std::forward<T>(obj));
+}
+
+template<typename T>
+T* addressOf(T* obj)
+{
+	return obj;
+}
+
+template<typename T>
+const T* addressOf(const T* obj)
+{
+	return obj;
+}
 
 } // namespace vcl
 

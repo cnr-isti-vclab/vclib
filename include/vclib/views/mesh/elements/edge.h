@@ -30,7 +30,7 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept CleanEdgeMeshConcept = EdgeMeshConcept<RemoveConstRef<T>>;
+concept CleanEdgeMeshConcept = EdgeMeshConcept<std::remove_cvref_t<T>>;
 
 struct EdgesView
 {

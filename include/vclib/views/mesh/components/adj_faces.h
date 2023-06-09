@@ -25,6 +25,7 @@
 #define VCL_VIEWS_MESH_COMPONENTS_ADJ_FACES_H
 
 #include <vclib/concepts/mesh.h>
+#include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
 
 namespace vcl::views {
@@ -32,7 +33,7 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept CleanAdjFacesConcept = comp::HasAdjacentFaces<RemoveConstRef<T>>;
+concept CleanAdjFacesConcept = comp::HasAdjacentFaces<std::remove_cvref_t<T>>;
 
 struct AdjFacesView
 {
