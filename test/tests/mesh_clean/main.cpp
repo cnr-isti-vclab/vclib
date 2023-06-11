@@ -44,6 +44,7 @@ void populateTriMesh(MeshType& tm)
 	tm.addFace(1, 3, 0); // dup of 3
 	tm.addFace(1, 4, 0); // not dup of 3 (different coordinates)
 	tm.addFace(2, 1, 0); // dup of 0
+	tm.addFace(0, 1, 2); // dup of 0
 }
 
 template<vcl::FaceMeshConcept MeshType>
@@ -75,10 +76,10 @@ TEST_CASE("Clean Duplicated Faces") {
 		populateTriMesh(tm);
 
 		REQUIRE( tm.vertexNumber() == 5 );
-		REQUIRE( tm.faceNumber() == 7 );
+		REQUIRE( tm.faceNumber() == 8 );
 
 		uint nr = vcl::removeDuplicatedFaces(tm);
-		REQUIRE( nr == 4 );
+		REQUIRE( nr == 5 );
 		REQUIRE( tm.vertexNumber() == 5 );
 		REQUIRE( tm.faceNumber() == 3 );
 	}
@@ -89,10 +90,10 @@ TEST_CASE("Clean Duplicated Faces") {
 		populateTriMesh(pm);
 
 		REQUIRE(pm.vertexNumber() == 5 );
-		REQUIRE(pm.faceNumber() == 7 );
+		REQUIRE(pm.faceNumber() == 8 );
 
 		uint nr = vcl::removeDuplicatedFaces(pm);
-		REQUIRE( nr == 4 );
+		REQUIRE( nr == 5 );
 		REQUIRE(pm.vertexNumber() == 5 );
 		REQUIRE(pm.faceNumber() == 3 );
 	}
@@ -106,6 +107,7 @@ TEST_CASE("Clean Duplicated Faces") {
 		REQUIRE( pm.faceNumber() == 6 );
 
 		uint nr = vcl::removeDuplicatedFaces(pm);
+
 		REQUIRE( nr == 3 );
 		REQUIRE( pm.vertexNumber() == 5 );
 		REQUIRE( pm.faceNumber() == 3 );

@@ -108,7 +108,7 @@ public:
 			return false;
 		}
 		else {
-			for (uint i = 0; i < v.size() && s.v.size(); ++i) {
+			for (uint i = 0; i < v.size() && i < s.v.size(); ++i) {
 				if (v[i] != s.v[i])
 					return v[i] < s.v[i];
 			}
