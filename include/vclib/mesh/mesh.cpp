@@ -396,6 +396,31 @@ void Mesh<Args...>::compactElements() requires (hasContainerOf<EL_TYPE>())
 }
 
 template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	Cont::deleteElement(i);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept El>
+void Mesh<Args...>::deleteElement(const El* e) const requires (hasContainerOf<El>())
+{
+	using Cont = typename ContainerOf<El>::type;
+	return Cont::deleteElement(e);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept El>
+void Mesh<Args...>::deleteElement(const El& e) const requires (hasContainerOf<El>())
+{
+	using Cont = typename ContainerOf<El>::type;
+	return Cont::deleteElement(&e);
+}
+
+template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE, uint COMP_TYPE>
 bool Mesh<Args...>::isPerElementComponentEnabled() const
 	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())

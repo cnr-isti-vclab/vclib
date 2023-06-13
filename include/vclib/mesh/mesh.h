@@ -150,6 +150,15 @@ public:
 
 	template<uint EL_TYPE>
 	void compactElements() requires (hasContainerOf<EL_TYPE>());
+	
+	template<uint EL_TYPE>
+	void deleteElement(uint i) requires (hasContainerOf<EL_TYPE>());
+
+	template<ElementConcept El>
+	void deleteElement(const El* e) const requires (hasContainerOf<El>());
+
+	template<ElementConcept El>
+	void deleteElement(const El& e) const requires (hasContainerOf<El>());
 
 	template<uint EL_TYPE, uint COMP_TYPE>
 	bool isPerElementComponentEnabled() const
