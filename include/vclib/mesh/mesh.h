@@ -164,22 +164,22 @@ public:
 	void updateIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto begin(bool jumpDeleted = true);
+	auto begin(bool jumpDeleted = true) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto end();
+	auto end() requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto begin(bool jumpDeleted = true) const;
+	auto begin(bool jumpDeleted = true) const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto end() const;
+	auto end() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto elements(bool jumpDeleted = true);
+	auto elements(bool jumpDeleted = true) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto elements(bool jumpDeleted = true) const;
+	auto elements(bool jumpDeleted = true) const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE, uint COMP_TYPE>
 	bool isPerElementComponentEnabled() const

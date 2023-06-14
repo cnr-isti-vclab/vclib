@@ -431,7 +431,7 @@ void Mesh<Args...>::updateIndices(const std::vector<uint>& newIndices) requires 
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-auto Mesh<Args...>::begin(bool jumpDeleted)
+auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -440,7 +440,7 @@ auto Mesh<Args...>::begin(bool jumpDeleted)
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-auto Mesh<Args...>::end()
+auto Mesh<Args...>::end() requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -449,7 +449,7 @@ auto Mesh<Args...>::end()
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-auto Mesh<Args...>::begin(bool jumpDeleted) const
+auto Mesh<Args...>::begin(bool jumpDeleted) const requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -458,7 +458,7 @@ auto Mesh<Args...>::begin(bool jumpDeleted) const
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-auto Mesh<Args...>::end() const
+auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -467,7 +467,7 @@ auto Mesh<Args...>::end() const
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-auto Mesh<Args...>::elements(bool jumpDeleted)
+auto Mesh<Args...>::elements(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -476,7 +476,7 @@ auto Mesh<Args...>::elements(bool jumpDeleted)
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-auto Mesh<Args...>::elements(bool jumpDeleted) const
+auto Mesh<Args...>::elements(bool jumpDeleted) const requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
