@@ -287,11 +287,23 @@ uint removeUnreferencedVertices(MeshType& m)
 	uint n = 0;
 	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m, n);
 
-	// Iterate over all vertices in the mesh, and mark any unreferenced vertices as deleted.
-	for (const VertexType& v : m.vertices()) {
-		if (!referredVertices[m.index(v)]) {
-			m.deleteVertex(m.index(v));
+	// need to mark as deleted vertices only if the number of unreferenced is less than vn
+	if (n < m.vertexNumber()) {
+		// will store on this vector only the indices of the referenced vertices
+		std::vector<uint> refVertIndices(m.vertexContainerSize(), UINT_NULL);
+		// Iterate over all vertices in the mesh, and mark any unreferenced vertex as deleted.
+		for (const VertexType& v : m.vertices()) {
+			if (!referredVertices[m.index(v)]) {
+				m.deleteVertex(m.index(v));
+			}
+			else {
+				refVertIndices[m.index(v)] = m.index(v);
+			}
 		}
+
+		// update the vertex indices of the mesh, setting to null the indices of the
+		// unreferenced vertices (it may happen on adjacent vertices of some container).
+		m.updateVertexIndices(refVertIndices);
 	}
 
 	return n;
