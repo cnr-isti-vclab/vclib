@@ -131,25 +131,22 @@ public:
 	auto& element(uint i) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint elementNumber() const requires (hasContainerOf<EL_TYPE>());
+	uint number() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint elementContainerSize() const requires (hasContainerOf<EL_TYPE>());
+	uint containerSize() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint deletedElementNumber() const requires (hasContainerOf<EL_TYPE>());
+	uint deletedNumber() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint addElement() requires (hasContainerOf<EL_TYPE>());
+	uint add() requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	uint addElements(uint n) requires (hasContainerOf<EL_TYPE>());
+	uint add(uint n) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	void reserveElements(uint n) requires (hasContainerOf<EL_TYPE>());
-
-	template<uint EL_TYPE>
-	void compactElements() requires (hasContainerOf<EL_TYPE>());
+	void reserve(uint n) requires (hasContainerOf<EL_TYPE>());
 	
 	template<uint EL_TYPE>
 	void deleteElement(uint i) requires (hasContainerOf<EL_TYPE>());
@@ -161,10 +158,28 @@ public:
 	void deleteElement(const El& e) const requires (hasContainerOf<El>());
 
 	template<uint EL_TYPE>
-	std::vector<uint> elementConpactIndices() const requires (hasContainerOf<EL_TYPE>());
+	std::vector<uint> conpactIndices() const requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	void updateElementIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>());
+	void updateIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
+	auto begin(bool jumpDeleted = true);
+
+	template<uint EL_TYPE>
+	auto end();
+
+	template<uint EL_TYPE>
+	auto begin(bool jumpDeleted = true) const;
+
+	template<uint EL_TYPE>
+	auto end() const;
+
+	template<uint EL_TYPE>
+	auto elements(bool jumpDeleted = true);
+
+	template<uint EL_TYPE>
+	auto elements(bool jumpDeleted = true) const;
 
 	template<uint EL_TYPE, uint COMP_TYPE>
 	bool isPerElementComponentEnabled() const
