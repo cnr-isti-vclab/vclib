@@ -53,7 +53,7 @@ public:
 	void resize(std::size_t size);
 	void reserve(std::size_t size);
 
-	void compact(const std::vector<int>& newIndices);
+	void compact(const std::vector<uint>& newIndices);
 
 	void clear();
 
@@ -94,7 +94,7 @@ private:
 	void vectorReserve(std::size_t size);
 
 	template<std::size_t N>
-	void vectorCompact(const std::vector<int>& newIndices);
+	void vectorCompact(const std::vector<uint>& newIndices);
 
 	template<typename C, bool E>
 	void setComponentEnabled();

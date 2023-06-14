@@ -68,9 +68,9 @@ protected:
 
 	template<typename Comp>
 	void updateElementPointersAfterCompact(
-		const Elem*             base,
-		const std::vector<int>& newIndices,
-		Comp*                   comp);
+		const Elem*              base,
+		const std::vector<uint>& newIndices,
+		Comp*                    comp);
 };
 
 } // namespace vcl::comp

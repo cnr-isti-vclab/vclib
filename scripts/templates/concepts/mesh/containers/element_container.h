@@ -30,7 +30,7 @@ concept Has%EL_UC%Container = requires(
 	o.delete%EL_UC%(uint());
 	o.delete%EL_UC%(e);
 	{ o.%EL_C%IndexIfCompact(uint()) } -> std::same_as<uint>;
-	{ o.%EL_C%CompactIndices() } -> std::same_as<std::vector<int>>;
+	{ o.%EL_C%CompactIndices() } -> std::same_as<std::vector<uint>>;
 
 	{ o.add%EL_UC%() } -> std::same_as<uint>;
 	{ o.add%EL_UC%s(uint()) } -> std::same_as<uint>;

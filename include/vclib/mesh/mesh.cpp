@@ -497,7 +497,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept Element>
 void Mesh<Args...>::updateAllPointersAfterCompact(
 	const Element* base,
-	const std::vector<int>& newIndices)
+	const std::vector<uint>& newIndices)
 {
 	(updatePointersAfterCompact<Args>(base, newIndices), ...);
 }
@@ -506,7 +506,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Element>
 void Mesh<Args...>::updatePointersAfterCompact(
 	const Element*          base,
-	const std::vector<int>& newIndices)
+	const std::vector<uint>& newIndices)
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updatePointersAfterCompact(base, newIndices);

@@ -69,8 +69,8 @@ public:
 	void deleteEdge(uint i);
 	void deleteEdge(const EdgeType* e);
 
-	uint             edgeIndexIfCompact(uint id) const;
-	std::vector<int> edgeCompactIndices() const;
+	uint              edgeIndexIfCompact(uint id) const;
+	std::vector<uint> edgeCompactIndices() const;
 
 	EdgeIterator      edgeBegin(bool jumpDeleted = true);
 	EdgeIterator      edgeEnd();

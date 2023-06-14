@@ -52,7 +52,7 @@ concept HasVertexContainer = requires(
 	o.deleteVertex(uint());
 	o.deleteVertex(v);
 	{ o.vertexIndexIfCompact(uint()) } -> std::same_as<uint>;
-	{ o.vertexCompactIndices() } -> std::same_as<std::vector<int>>;
+	{ o.vertexCompactIndices() } -> std::same_as<std::vector<uint>>;
 
 	{ o.addVertex() } -> std::same_as<uint>;
 	{ o.addVertex(c) } -> std::same_as<uint>;

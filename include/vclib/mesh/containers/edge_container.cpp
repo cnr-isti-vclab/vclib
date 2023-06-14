@@ -214,7 +214,7 @@ uint EdgeContainer<T>::edgeIndexIfCompact(uint i) const
 /**
  * @brief Returns a vector that tells, for each actual edge index, the new index that the edge
  * would have in a compacted container. For each deleted edge index, the value of the vector will
- * be -1.
+ * be UINT_NULL.
  *
  * This is useful if you need to know the indices of the edges that they would have in a
  * compact container, without considering the deleted ones.
@@ -222,7 +222,7 @@ uint EdgeContainer<T>::edgeIndexIfCompact(uint i) const
  * @return A vector containing, for each edge index, its index if the container would be compact.
  */
 template<EdgeConcept T>
-std::vector<int> EdgeContainer<T>::edgeCompactIndices() const
+std::vector<uint> EdgeContainer<T>::edgeCompactIndices() const
 {
 	return Base::elementCompactIndices();
 }

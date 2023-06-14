@@ -186,12 +186,12 @@ protected:
 		const Element* newBase);
 
 	template<ElementConcept Element>
-	void updateAllPointersAfterCompact(const Element* base, const std::vector<int>& newIndices);
+	void updateAllPointersAfterCompact(const Element* base, const std::vector<uint>& newIndices);
 
 	template<typename Cont, typename Element>
 	void updatePointersAfterCompact(
 		const Element*          base,
-		const std::vector<int>& newIndices);
+		const std::vector<uint>& newIndices);
 
 private:
 	// hide init and isEnabled members

@@ -30,27 +30,27 @@ namespace vcl {
  * vector newIndices.
  *
  * Given the vector newIndices having the following features:
- * - have the same size of vec
+ * - has the same size of vec
  * - for each position i:
  *   - newIndices[i] contains the new position of the element vec[i] after the compactness
- *   - newIndices[i] contains a value < 0 if the element vec[i] must be deleted
+ *   - newIndices[i] contains the value UINT_NULL if the element vec[i] must be deleted
  *
- * Non-negative elements of newIndices must unique, and their value must be less than the new size
- * of vec after the compactness. The new size of vec will be the number of non-negative elements of
+ * Non-null elements of newIndices must unique, and their value must be less than the new size
+ * of vec after the compactness. The new size of vec will be the number of non-null elements of
  * newIndices.
  *
  * @param vec
  * @param newIndices
  */
 template<typename T, typename... Args>
-void compactVector(std::vector<T, Args...>& vec, const std::vector<int>& newIndices)
+void compactVector(std::vector<T, Args...>& vec, const std::vector<uint>& newIndices)
 {
 	assert(vec.size() == newIndices.size());
 	uint newSize = 0;
 	for (uint i = 0; i < newIndices.size(); ++i) {
-		if (newIndices[i] >= 0) {
+		if (newIndices[i] != UINT_NULL) {
 			++newSize;
-			if ((uint) newIndices[i] != i) {
+			if (newIndices[i] != i) {
 				// must move the element from position i to position newIndices[i]
 				vec[newIndices[i]] = std::move(vec[i]);
 			}

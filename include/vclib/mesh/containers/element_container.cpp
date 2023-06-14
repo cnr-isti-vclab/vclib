@@ -184,12 +184,12 @@ void ElementContainer<T>::reserveElements(uint size)
  * @brief Compacts the element container, keeping only the non-deleted elements.
  *
  * @return a vector that tells, for each old element index, the new index of the element. Will
- * contain -1 if the element has been deleted.
+ * contain UINT_NULL if the element has been deleted.
  */
 template<ElementConcept T>
-std::vector<int> ElementContainer<T>::compactElements()
+std::vector<uint> ElementContainer<T>::compactElements()
 {
-	std::vector<int> newIndices = elementCompactIndices();
+	std::vector<uint> newIndices = elementCompactIndices();
 	if (elementNumber() != elementContainerSize()) {
 		T* base = vec.data();
 
@@ -268,7 +268,7 @@ uint ElementContainer<T>::elementIndexIfCompact(uint i) const
 /**
  * @brief Returns a vector that tells, for each actual element index, the new index that the element
  * would have in a compacted container. For each deleted element index, the value of the vector will
- * be -1.
+ * be UINT_NULL.
  *
  * This is useful if you need to know the indices of the elements that they would have in a
  * compact container, without considering the deleted ones.
@@ -276,17 +276,17 @@ uint ElementContainer<T>::elementIndexIfCompact(uint i) const
  * @return A vector containing, for each element index, its index if the container would be compact.
  */
 template<ElementConcept T>
-std::vector<int> ElementContainer<T>::elementCompactIndices() const
+std::vector<uint> ElementContainer<T>::elementCompactIndices() const
 {
-	std::vector<int> newIndices(vec.size());
-	uint             k = 0;
+	std::vector<uint> newIndices(vec.size());
+	uint              k = 0;
 	for (uint i = 0; i < vec.size(); ++i) {
 		if (!vec[i].deleted()) {
 			newIndices[i] = k;
 			k++;
 		}
 		else {
-			newIndices[i] = -1;
+			newIndices[i] = UINT_NULL;
 		}
 	}
 	return newIndices;
@@ -604,7 +604,7 @@ template<ElementConcept T>
 template<typename Element>
 void ElementContainer<T>::updatePointersAfterCompact(
 	const Element*          base,
-	const std::vector<int>& newIndices)
+	const std::vector<uint>& newIndices)
 {
 	using Comps = typename T::Components;
 
@@ -697,7 +697,7 @@ template<ElementConcept T>
 template<typename ElPtr, typename... Comps>
 void ElementContainer<T>::updatePointersAfterCompactOnComponents(
 	const ElPtr* base,
-	const std::vector<int>& newIndices,
+	const std::vector<uint>& newIndices,
 	TypeWrapper<Comps...>)
 {
 	(updatePointersAfterCompactOnComponent<Comps>(base, newIndices), ...);
@@ -776,7 +776,7 @@ template<ElementConcept T>
 template<typename Comp, typename ElPtr>
 void ElementContainer<T>::updatePointersAfterCompactOnComponent(
 	const ElPtr* base,
-	const std::vector<int>& newIndices)
+	const std::vector<uint>& newIndices)
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {

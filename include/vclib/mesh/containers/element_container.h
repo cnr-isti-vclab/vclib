@@ -70,13 +70,13 @@ protected:
 	uint addElements(uint size);
 
 	void reserveElements(uint size);
-	std::vector<int> compactElements();
+	std::vector<uint> compactElements();
 
 	void deleteElement(uint i);
 	void deleteElement(const T* e);
 
 	uint elementIndexIfCompact(uint i) const;
-	std::vector<int> elementCompactIndices() const;
+	std::vector<uint> elementCompactIndices() const;
 
 	ElementIterator      elementBegin(bool jumpDeleted = true);
 	ElementIterator      elementEnd();
@@ -151,7 +151,7 @@ protected:
 	void updatePointers(const Element* oldBase, const Element* newBase);
 
 	template<typename Element>
-	void updatePointersAfterCompact(const Element* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const Element* base, const std::vector<uint>& newIndices);
 
 	template<typename OtherMesh>
 	void enableOptionalComponentsOf(const OtherMesh& m);
@@ -200,7 +200,7 @@ private:
 	template<typename ElPtr, typename... Comps>
 	void updatePointersAfterCompactOnComponents(
 		const ElPtr*            base,
-		const std::vector<int>& newIndices,
+		const std::vector<uint>& newIndices,
 		TypeWrapper<Comps...>);
 
 	template<typename Container, typename MyBase, typename CBase>
@@ -219,7 +219,7 @@ private:
 	template<typename Comp, typename ElPtr>
 	void updatePointersAfterCompactOnComponent(
 		const ElPtr* base,
-		const std::vector<int>& newIndices);
+		const std::vector<uint>& newIndices);
 
 	template<typename Comp, typename Container, typename ElPtr, typename CBase>
 	void importPointersOnComponentFrom(

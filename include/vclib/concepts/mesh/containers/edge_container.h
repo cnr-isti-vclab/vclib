@@ -51,7 +51,7 @@ concept HasEdgeContainer = requires(
 	o.deleteEdge(uint());
 	o.deleteEdge(e);
 	{ o.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
-	{ o.edgeCompactIndices() } -> std::same_as<std::vector<int>>;
+	{ o.edgeCompactIndices() } -> std::same_as<std::vector<uint>>;
 
 	{ o.addEdge() } -> std::same_as<uint>;
 	{ o.addEdges(uint()) } -> std::same_as<uint>;

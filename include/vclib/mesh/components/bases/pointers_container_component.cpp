@@ -60,13 +60,13 @@ template<uint CT, typename Elem, int N, typename El, bool o, bool TT>
 template<typename Comp>
 void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointersAfterCompact(
 	const Elem*             base,
-	const std::vector<int>& newIndices,
+	const std::vector<uint>& newIndices,
 	Comp* comp)
 {
 	for (uint j = 0; j < container(comp).size(); ++j) {
 		if (container(comp).at(j) != nullptr) {
 			size_t diff = container(comp).at(j) - base;
-			if (newIndices[diff] < 0) { // element has been removed
+			if (newIndices[diff] == UINT_NULL) { // element has been removed
 				container(comp).at(j) = nullptr;
 			}
 			else { // the new pointer will be base + newIndices[diff]

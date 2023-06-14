@@ -193,7 +193,7 @@ uint %EL_UC%Container<T>::%EL_C%IndexIfCompact(uint i) const
 /**
  * @brief Returns a vector that tells, for each actual %EL_UC% index, the new index that the %EL_UC%
  * would have in a compacted container. For each deleted %EL_UC% index, the value of the vector will
- * be -1.
+ * be UINT_NULL.
  *
  * This is useful if you need to know the indices of the %EL_UC%s that they would have in a
  * compact container, without considering the deleted ones.
@@ -201,7 +201,7 @@ uint %EL_UC%Container<T>::%EL_C%IndexIfCompact(uint i) const
  * @return A vector containing, for each %EL_UC% index, its index if the container would be compact.
  */
 template<%EL_UC%Concept T>
-std::vector<int> %EL_UC%Container<T>::%EL_C%CompactIndices() const
+std::vector<uint> %EL_UC%Container<T>::%EL_C%CompactIndices() const
 {
 	return Base::elementCompactIndices();
 }

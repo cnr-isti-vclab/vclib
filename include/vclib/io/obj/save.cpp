@@ -187,7 +187,7 @@ void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo&
 		using FaceType = typename MeshType::FaceType;
 
 		// indices of vertices that do not consider deleted vertices
-		std::vector<int> vIndices = m.vertexCompactIndices();
+		std::vector<uint> vIndices = m.vertexCompactIndices();
 
 		uint wedgeTexCoord = 1;
 		for (const FaceType& f : m.faces()) {

@@ -277,7 +277,7 @@ uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint i) const
 /**
  * @brief Returns a vector that tells, for each actual vertex index, the new index that the vertex
  * would have in a compacted container. For each deleted vertex index, the value of the vector will
- * be -1.
+ * be UINT_NULL.
  *
  * This is useful if you need to know the indices of the vertices that they would have in a
  * compact container, without considering the deleted ones.
@@ -285,7 +285,7 @@ uint vcl::mesh::VertexContainer<T>::vertexIndexIfCompact(uint i) const
  * @return A vector containing, for each vertex index, its index if the container would be compact.
  */
 template<VertexConcept T>
-std::vector<int> VertexContainer<T>::vertexCompactIndices() const
+std::vector<uint> VertexContainer<T>::vertexCompactIndices() const
 {
 	return Base::elementCompactIndices();
 }

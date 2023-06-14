@@ -31,7 +31,7 @@
 namespace vcl {
 
 template<typename T, typename... Args>
-void compactVector(std::vector<T, Args...>& vec, const std::vector<int>& newIndices);
+void compactVector(std::vector<T, Args...>& vec, const std::vector<uint>& newIndices);
 
 } // namespace vcl
 

@@ -81,7 +81,7 @@ void CustomComponentsVectorMap<T, true>::resize(uint size)
  * @param newIndices
  */
 template<typename T>
-void CustomComponentsVectorMap<T, true>::compact(const std::vector<int>& newIndices)
+void CustomComponentsVectorMap<T, true>::compact(const std::vector<uint>& newIndices)
 {
 	for (auto& p : map) {
 		vcl::compactVector(p.second, newIndices);

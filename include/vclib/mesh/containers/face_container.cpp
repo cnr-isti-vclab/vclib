@@ -282,7 +282,7 @@ uint FaceContainer<T>::faceIndexIfCompact(uint i) const
  * @return A vector containing, for each Face index, its index if the container would be compact.
  */
 template<FaceConcept T>
-std::vector<int> FaceContainer<T>::faceCompactIndices() const
+std::vector<uint> FaceContainer<T>::faceCompactIndices() const
 {
 	return Base::elementCompactIndices();
 }
