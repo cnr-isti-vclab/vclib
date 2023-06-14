@@ -22,6 +22,7 @@
  ****************************************************************************/
 
 #include <vclib/algorithms.h>
+#include <vclib/load_save.h>
 #include <vclib/meshes.h>
 #include <catch2/catch_test_macros.hpp>
 
@@ -111,6 +112,26 @@ TEST_CASE("Clean Duplicated Faces") {
 		REQUIRE( nr == 3 );
 		REQUIRE( pm.vertexNumber() == 5 );
 		REQUIRE( pm.faceNumber() == 3 );
+	}
+}
+
+TEST_CASE (" WaterTightness ") {
+	SECTION( "A TriMesh that is not watertight" ) {
+		vcl::TriMesh t = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
+
+		REQUIRE( t.vertexNumber() == 18844 );
+		REQUIRE( t.faceNumber() == 36752 );
+
+		REQUIRE( !vcl::isWaterTight(t) );
+	}
+
+	SECTION( "A TriMesh that is watertight" ) {
+		vcl::TriMesh t = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+
+		REQUIRE( t.vertexNumber() == 1872 );
+		REQUIRE( t.faceNumber() == 3022 );
+
+		REQUIRE( vcl::isWaterTight(t) );
 	}
 }
 
