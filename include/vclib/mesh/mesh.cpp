@@ -421,6 +421,24 @@ void Mesh<Args...>::deleteElement(const El& e) const requires (hasContainerOf<El
 }
 
 template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+std::vector<uint> Mesh<Args...>::elementConpactIndices() const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementConpactIndices();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+void Mesh<Args...>::updateElementIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::updateElementIndices(newIndices);
+}
+
+template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE, uint COMP_TYPE>
 bool Mesh<Args...>::isPerElementComponentEnabled() const
 	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())

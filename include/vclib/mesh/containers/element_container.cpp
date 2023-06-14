@@ -191,15 +191,12 @@ std::vector<uint> ElementContainer<T>::compactElements()
 {
 	std::vector<uint> newIndices = elementCompactIndices();
 	if (elementNumber() != elementContainerSize()) {
-		T* base = vec.data();
-
 		compactVector(vec, newIndices);
-		assert(base == vec.data());
 
 		ccVecMap.compact(newIndices);
 		vcVecTuple.compact(newIndices);
 
-		parentMesh->updateAllPointersAfterCompact(base, newIndices);
+		updateElementIndices(newIndices);
 	}
 	return newIndices;
 }
@@ -290,6 +287,38 @@ std::vector<uint> ElementContainer<T>::elementCompactIndices() const
 		}
 	}
 	return newIndices;
+}
+
+/**
+ * @brief Updates all the indices and pointers of the elements of this container that are stored in
+ * any container of the mesh, according to the mapping stored in the newIndices vector, that tells
+ * for each old element index, the new element index.
+ *
+ * This function is useful when some elements of this container have been deleted, and you want to
+ * update the indices/pointers stored in all the containers of the mesh accordingly.
+ *
+ * E.g.: if this is a vertex container, this function will update the indices and pointers of the
+ * vertices stored in all the continers of the mesh (e.g. the face container that stores vertex
+ * pointers, or the vertex container itself that stores adjacent vertices) according to the mapping
+ * stored in the newIndices vector.
+ *
+ * Supposing you deleted a set of vertices, you can give to this function the vector telling, for each
+ * of the old vertex indices, the new vertex index (or UINT_NULL if you want to leave unreferences that
+ * vertices). This function will update all the pointers stored in the mesh containers accordingly.
+ *
+ * @note This function *does not change the position of the elements in this container*. It just updates
+ * the indices/pointers of the elements stored in this or other containers.
+ *
+ * @param[in] newIndices: a vector that tells, for each old element index, the new element index. If the
+ * old element must be left as unreferenced (setting `nullptr` to the pointers), the value of the vector
+ * must be UINT_NULL.
+ */
+template<ElementConcept T>
+void ElementContainer<T>::updateElementIndices(const std::vector<uint>& newIndices)
+{
+	T* base = vec.data();
+
+	parentMesh->updateAllPointersAfterCompact(base, newIndices);
 }
 
 /**

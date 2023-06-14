@@ -78,6 +78,8 @@ protected:
 	uint elementIndexIfCompact(uint i) const;
 	std::vector<uint> elementCompactIndices() const;
 
+	void updateElementIndices(const std::vector<uint>& newIndices);
+
 	ElementIterator      elementBegin(bool jumpDeleted = true);
 	ElementIterator      elementEnd();
 	ConstElementIterator elementBegin(bool jumpDeleted = true) const;

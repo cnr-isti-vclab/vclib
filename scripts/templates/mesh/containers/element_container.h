@@ -61,6 +61,8 @@ public:
 	uint              %EL_C%IndexIfCompact(uint id) const;
 	std::vector<uint> %EL_C%CompactIndices() const;
 
+	void update%EL_UC%Indices(const std::vector<uint>& newIndices);
+
 	%EL_UC%Iterator      %EL_C%Begin(bool jumpDeleted = true);
 	%EL_UC%Iterator      %EL_C%End();
 	Const%EL_UC%Iterator %EL_C%Begin(bool jumpDeleted = true) const;

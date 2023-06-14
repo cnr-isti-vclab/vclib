@@ -291,6 +291,32 @@ std::vector<uint> VertexContainer<T>::vertexCompactIndices() const
 }
 
 /**
+ * @brief Updates all the indices and pointers of the vertices of this container that are stored in
+ * any container of the mesh, according to the mapping stored in the newIndices vector, that tells
+ * for each old vertex index, the new vertex index.
+ *
+ * This function is useful when some vertices, and you want to update the indices/pointers stored
+ * in all the containers of the mesh accordingly.
+ *
+ * E.g. Supposing you deleted a set of vertices, you can give to this function the vector telling, for
+ * each of the old vertex indices, the new vertex index (or UINT_NULL if you want to leave it
+ * unreferenced). This function will update all the pointers stored in the mesh containers accordingly
+ * (if they store adjacencies to the vertices).
+ *
+ * @note This function *does not change the position of the vertices in this container*. It just updates
+ * the indices/pointers of the vertices stored in this or other containers.
+ *
+ * @param[in] newIndices: a vector that tells, for each old vertex index, the new vertex index. If the
+ * old vertex must be left as unreferenced (setting `nullptr` to the pointers), the value of the vector
+ * must be UINT_NULL.
+ */
+template<VertexConcept T>
+void VertexContainer<T>::updateVertexIndices(const std::vector<uint>& newIndices)
+{
+	Base::updateElementIndices(newIndices);
+}
+
+/**
  * @brief Returns an iterator to the beginning of the container.
  *
  * The iterator is automatically initialized to jump deleted vertices of the container. You can

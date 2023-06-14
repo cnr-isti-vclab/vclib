@@ -84,6 +84,8 @@ public:
 	uint              vertexIndexIfCompact(uint id) const;
 	std::vector<uint> vertexCompactIndices() const;
 
+	void updateVertexIndices(const std::vector<uint>& newIndices);
+
 	VertexIterator      vertexBegin(bool jumpDeleted = true);
 	VertexIterator      vertexEnd();
 	ConstVertexIterator vertexBegin(bool jumpDeleted = true) const;

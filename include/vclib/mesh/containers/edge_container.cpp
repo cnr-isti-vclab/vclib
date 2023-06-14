@@ -228,6 +228,32 @@ std::vector<uint> EdgeContainer<T>::edgeCompactIndices() const
 }
 
 /**
+ * @brief Updates all the indices and pointers of the Edges of this container that are stored in
+ * any container of the mesh, according to the mapping stored in the newIndices vector, that tells
+ * for each old Edge index, the new Edge index.
+ *
+ * This function is useful when delete some Edges, and you want to update the indices/pointers stored
+ * in all the containers of the mesh accordingly.
+ *
+ * E.g. Supposing you deleted a set of Edges, you can give to this function the vector telling, for
+ * each one of the old Edge indices, the new Edge index (or UINT_NULL if you want to leave it
+ * unreferenced). This function will update all the pointers stored in the mesh containers accordingly
+ * (if they store adjacencies to the Edges).
+ *
+ * @note This function *does not change the position of the Edges in this container*. It just updates
+ * the indices/pointers of the Edges stored in this or other containers.
+ *
+ * @param[in] newIndices: a vector that tells, for each old Edge index, the new Edge index. If the
+ * old Edge must be left as unreferenced (setting `nullptr` to the pointers), the value of the vector
+ * must be UINT_NULL.
+ */
+template<EdgeConcept T>
+void EdgeContainer<T>::updateEdgeIndices(const std::vector<uint>& newIndices)
+{
+	Base::updateElementIndices(newIndices);
+}
+
+/**
  * @brief Returns an iterator to the beginning of the container.
  *
  * The iterator is automatically initialized to jump deleted edges of the container. You can change

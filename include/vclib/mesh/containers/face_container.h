@@ -89,6 +89,8 @@ public:
 	uint             faceIndexIfCompact(uint id) const;
 	std::vector<uint> faceCompactIndices() const;
 
+	void updateFaceIndices(const std::vector<uint>& newIndices);
+
 	FaceIterator      faceBegin(bool jumpDeleted = true);
 	FaceIterator      faceEnd();
 	ConstFaceIterator faceBegin(bool jumpDeleted = true) const;

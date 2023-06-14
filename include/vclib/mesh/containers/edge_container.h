@@ -72,6 +72,8 @@ public:
 	uint              edgeIndexIfCompact(uint id) const;
 	std::vector<uint> edgeCompactIndices() const;
 
+	void updateEdgeIndices(const std::vector<uint>& newIndices);
+
 	EdgeIterator      edgeBegin(bool jumpDeleted = true);
 	EdgeIterator      edgeEnd();
 	ConstEdgeIterator edgeBegin(bool jumpDeleted = true) const;

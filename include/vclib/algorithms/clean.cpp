@@ -303,7 +303,8 @@ uint removeDuplicatedVertices(MeshType& m)
 		return 0;
 
 	// a map that will be used to keep track of deleted vertices and their corresponding pointers.
-	std::map<VertexPointer, VertexPointer> deletedVertsMap;
+	std::vector<uint> newVertexIndices(m.vertexNumber());
+	std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0); // assigning each vertex index to itself.
 
 	uint deleted = 0;
 
@@ -328,7 +329,7 @@ uint removeDuplicatedVertices(MeshType& m)
 		uint j = i + 1;
 		while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
 			// j will be deleted, so we map its pointer to the i-th vertex's pointer.
-			deletedVertsMap[perm[j]] = perm[i]; // map j into i
+			newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j into i
 			m.deleteVertex(m.index(perm[j]));
 			j++;
 			deleted++;
@@ -337,37 +338,10 @@ uint removeDuplicatedVertices(MeshType& m)
 		i = j;
 	}
 
-	// update the face vertex pointers to point to the correct vertices.
-	if constexpr (HasFaces<MeshType>) {
-		using FaceType = typename MeshType::FaceType;
-
-		for (FaceType& f : m.faces()) {
-			for (VertexPointer& v : f.vertices()) {
-				// if v is in the map of the deleted vertices, update its pointer to point to the
-				// corresponding non-deleted vertex.
-				if (deletedVertsMap.find(v) != deletedVertsMap.end()) {
-					v = deletedVertsMap[v];
-				}
-			}
-		}
-	}
-
-	if constexpr (HasEdges<MeshType>) {
-		using EdgeType = typename MeshType::EdgeType;
-
-		for (EdgeType& e : m.edges()) {
-			for (VertexPointer& v : e.vertices()) {
-				// if v is in the map of the deleted vertices, update its pointer to point to the
-				// corresponding non-deleted vertex.
-				if (deletedVertsMap.find(v) != deletedVertsMap.end()) {
-					v = deletedVertsMap[v];
-				}
-			}
-		}
-	}
+	// update the vertex pointers to point to the correct vertices, in every container of the mesh
+	m.updateVertexIndices(newVertexIndices);
 
 	// todo:
-	// - automatic detection for vertex references and update in the mesh
 	// - add a flag that removes degenerate elements after
 	return deleted;
 }

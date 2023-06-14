@@ -160,6 +160,12 @@ public:
 	template<ElementConcept El>
 	void deleteElement(const El& e) const requires (hasContainerOf<El>());
 
+	template<uint EL_TYPE>
+	std::vector<uint> elementConpactIndices() const requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
+	void updateElementIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>());
+
 	template<uint EL_TYPE, uint COMP_TYPE>
 	bool isPerElementComponentEnabled() const
 		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
