@@ -191,18 +191,9 @@ std::vector<int> ElementContainer<T>::compactElements()
 {
 	std::vector<int> newIndices = elementCompactIndices();
 	if (elementNumber() != elementContainerSize()) {
-		// k will indicate the position of the ith non-deleted vertices after compacting
-		uint k = 0;
-		for (uint i = 0; i < newIndices.size(); ++i) {
-			if (newIndices[i] >= 0) {
-				k = newIndices[i];
-				if (i != k)
-					vec[k] = vec[i];
-			}
-		}
-		k++;
 		T* base = vec.data();
-		vec.resize(k);
+
+		compactVector(vec, newIndices);
 		assert(base == vec.data());
 
 		ccVecMap.compact(newIndices);

@@ -33,7 +33,7 @@ namespace vcl {
 template<typename T, typename... Args>
 void compactVector(std::vector<T, Args...>& vec, const std::vector<int>& newIndices);
 
-}
+} // namespace vcl
 
 #include "compactness.cpp"
 
