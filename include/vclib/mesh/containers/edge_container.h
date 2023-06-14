@@ -62,6 +62,8 @@ public:
 	uint deletedEdgeNumber() const;
 
 	uint addEdge();
+	uint addEdge(uint v0, uint v1);
+	uint addEdge(typename T::VertexType* v0, typename T::VertexType* v1);
 	uint addEdges(uint n);
 	void reserveEdges(uint n);
 	void compactEdges();

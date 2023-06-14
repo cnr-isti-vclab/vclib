@@ -69,7 +69,22 @@ void populatePolyMesh(MeshType& pm)
 	pm.addFace(0, 2, 1, 3); // dup of 1
 	pm.addFace(4, 1, 2, 0); // dup of 2
 	pm.addFace(0, 2, 1); // dup of 0
+}
 
+template<vcl::EdgeMeshConcept MeshType>
+void populateEdgeMesh(MeshType& m)
+{
+	const vcl::Point3d p0(0,0,0);
+	const vcl::Point3d p1(1,0,0);
+	const vcl::Point3d p2(0,1,0); // unref
+	const vcl::Point3d p3(1,1,0);
+
+	m.addVertices(p0, p1, p2, p3);
+
+	m.addEdge(0, 1);
+	m.addEdge(0, 3);
+	m.addEdge(1, 3);
+	m.addEdge(3, 1);
 }
 
 TEST_CASE( "Clean Duplicated Faces" ) {
@@ -150,6 +165,28 @@ TEST_CASE ( "Duplicated Vertices" ) {
 	REQUIRE( nv == 1);
 
 	REQUIRE (tm.face(5).vertex(1) == &tm.vertex(3) );
+}
+
+TEST_CASE ( "Unreferenced Vertices" ) {
+	SECTION("TriMesh") {
+		vcl::TriMesh tm;
+
+		populateTriMesh(tm);
+
+		uint nv = vcl::numberUnreferencedVertices(tm);
+
+		REQUIRE( nv == 1);
+	}
+
+	SECTION("EdgeMesh") {
+		vcl::EdgeMesh em;
+
+		populateEdgeMesh(em);
+
+		uint nv = vcl::numberUnreferencedVertices(em);
+
+		REQUIRE( nv == 1);
+	}
 }
 
 TEST_CASE ( "Duplicated Vertices brain.ply" ) {

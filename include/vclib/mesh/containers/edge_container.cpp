@@ -111,6 +111,24 @@ uint EdgeContainer<T>::addEdge()
 	return Base::addElement();
 }
 
+template<EdgeConcept T>
+uint EdgeContainer<T>::addEdge(uint v0, uint v1)
+{
+	uint eid = addEdge();
+	edge(eid).vertex(0) = &Base::parentMesh->vertex(v0);
+	edge(eid).vertex(1) = &Base::parentMesh->vertex(v1);
+	return eid;
+}
+
+template<EdgeConcept T>
+uint EdgeContainer<T>::addEdge(typename T::VertexType* v0, typename T::VertexType* v1)
+{
+	uint eid = addEdge();
+	edge(eid).vertex(0) = v0;
+	edge(eid).vertex(1) = v1;
+	return eid;
+}
+
 /**
  * @brief Add an arbitrary number of n edges, returning the id of the first added edge.
  *

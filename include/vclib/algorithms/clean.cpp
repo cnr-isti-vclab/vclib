@@ -47,6 +47,37 @@ public:
 	}
 };
 
+template<typename Cont, typename MeshType>
+void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, uint& nRefs)
+{
+	// check if the Cont container of the Mesh has vertex pointers
+	if constexpr (comp::HasVertexPointers<typename Cont::ElementType>) {
+		// if there are still some vertices non-referenced
+		if (nRefs < m.vertexNumber()) {
+			constexpr uint EL_TYPE = Cont::ElementType::ELEMENT_TYPE;
+			// for eache element of the Cont container
+			for (const typename Cont::ElementType& el : m.template elements<EL_TYPE>()) {
+				// for each vertex pointer of the element
+				for (const typename Cont::ElementType::VertexType* v : el.vertices()) {
+					if (! refs[m.index(v)]) {
+						// set the vertex as referenced
+						refs[m.index(v)] = true;
+						nRefs++;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+template<typename MeshType, typename... Cont>
+void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, uint& nRefs, TypeWrapper<Cont...>)
+{
+	// call the setReferencedVerticesOnVector function for each container of the mesh
+	(setReferencedVerticesOnVector<Cont>(m, refs, nRefs), ...);
+}
+
 /**
  * @brief unreferencedVerticesVectorBool returns a vector of boolean telling, for each vertex of the
  * Mesh m, if it is referenced by any other Element of the Mesh.
@@ -58,20 +89,15 @@ public:
  * @return
  */
 template<typename MeshType>
-std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m)
+std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m, uint& nUnref)
 {
 	using VertexType = typename MeshType::VertexType;
 
+	uint nRefs = 0;
 	std::vector<bool> referredVertices(m.vertexContainerSize(), false);
-	if constexpr (vcl::HasFaces<MeshType>) {
-		using FaceType = typename MeshType::FaceType;
 
-		for (const FaceType& f : m.faces()) {
-			for (const VertexType* v : f.vertices()) {
-				referredVertices[m.index(v)] = true;
-			}
-		}
-	}
+	setReferencedVerticesOnVector(m, referredVertices, nRefs, typename MeshType::Containers());
+	nUnref = m.vertexNumber() - nRefs;
 
 	return referredVertices;
 }
@@ -227,16 +253,10 @@ uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifold
 template<MeshConcept MeshType>
 uint numberUnreferencedVertices(const MeshType& m)
 {
+	uint nV = 0;
 	// Generate a vector of boolean flags indicating whether each vertex is referenced by any of the
 	// mesh's elements.
-	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
-
-	// Count the number of unreferenced vertices in parallel.
-	uint nV = std::count(std::execution::par_unseq, referredVertices.begin(), referredVertices.end(), false);
-
-	// Subtract the number of deleted vertices to obtain the final count of non-deleted unreferenced
-	// vertices.
-	nV -= m.deletedVertexNumber();
+	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m, nV);
 
 	return nV;
 }
@@ -263,14 +283,14 @@ uint removeUnreferencedVertices(MeshType& m)
 
 	// Generate a vector of boolean flags indicating whether each vertex is referenced by any of the
 	// mesh's elements.
-	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
+
+	uint n = 0;
+	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m, n);
 
 	// Iterate over all vertices in the mesh, and mark any unreferenced vertices as deleted.
-	uint n = 0;
 	for (const VertexType& v : m.vertices()) {
 		if (!referredVertices[m.index(v)]) {
 			m.deleteVertex(m.index(v));
-			++n;
 		}
 	}
 
