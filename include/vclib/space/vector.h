@@ -94,6 +94,12 @@ public:
 
 	Vector();
 
+	template<typename ItType>
+	Vector(ItType first, ItType last);
+
+	template<Range RangeType>
+	Vector(RangeType&& rng);
+
 	uint size() const;
 
 	Reference      at(uint i);

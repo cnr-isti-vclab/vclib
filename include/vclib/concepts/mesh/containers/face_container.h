@@ -51,7 +51,7 @@ concept HasFaceContainer = requires(
 	o.deleteFace(uint());
 	o.deleteFace(f);
 	{ o.faceIndexIfCompact(uint()) } -> std::same_as<uint>;
-	{ o.faceCompactIndices() } -> std::same_as<std::vector<int>>;
+	{ o.faceCompactIndices() } -> std::same_as<std::vector<uint>>;
 
 	{ o.addFace() } -> std::same_as<uint>;
 	{ o.addFaces(uint()) } -> std::same_as<uint>;

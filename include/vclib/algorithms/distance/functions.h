@@ -52,11 +52,23 @@ struct DistFunctionStruct
  * If the distance function for your types is not defined, you can write your own DistFunctionStruct
  * specialization that defines a proper `static const inline` object called `distFun` of
  * `std::function` type.
+ *
+ * @note The distFunction works only for non-pointer types. This means that you cannot ask for the distance
+ * function between a vcl::Point3d and a vcl::Vertex*. If you are working with template types that you
+ * don't know if they are pointers or not, you can do the following:
+ * @code{.cpp}
+ * // don't know if T1 and T2 are pointers or non-pointers
+ * auto f = distFunction<RemoveCVRefAndPointer<T1>, RemoveCVRefAndPointer<T2>>();
+ * // obj1 is of type T1, obj2 is of type T2 (may be pointers or non-pointers)
+ * auto dist = f(dereferencePtr(obj1), dereferencePtr(obj2));
+ * @endcode
+ *
+ * @ingroup distance
  */
 template<typename Obj1, typename Obj2>
 auto distFunction()
 {
-	return DistFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>, double>::distFun;
+	return DistFunctionStruct<Obj1, Obj2, double>::distFun;
 }
 
 /**
@@ -79,11 +91,23 @@ auto distFunction()
  * If the distance function for your types is not defined, you can write your own DistFunctionStruct
  * specialization that defines a proper `static const inline` object called `boundDistFun` of
  * `std::function` type.
+ *
+ * @note The boundedDistFunction works only for non-pointer types. This means that you cannot ask for the distance
+ * function between a vcl::Point3d and a vcl::Vertex*. If you are working with template types that you
+ * don't know if they are pointers or not, you can do the following:
+ * @code{.cpp}
+ * // don't know if T1 and T2 are pointers or non-pointers
+ * auto f = boundedDistFunction<RemoveCVRefAndPointer<T1>, RemoveCVRefAndPointer<T2>, double>();
+ * // obj1 is of type T1, obj2 is of type T2 (may be pointers or non-pointers)
+ * auto dist = f(dereferencePtr(obj1), dereferencePtr(obj2), maxDist);
+ * @endcode
+ *
+ * @ingroup distance
  */
 template<typename Obj1, typename Obj2, typename ScalarType = double>
 auto boundedDistFunction()
 {
-	return DistFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>, ScalarType>::boundDistFun;
+	return DistFunctionStruct<Obj1, Obj2, ScalarType>::boundDistFun;
 }
 
 /********* DistFunctionStruct Specializations *********/
@@ -141,19 +165,6 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 	};
 };
 
-// Specialization for distance between Vertex* and Point
-template<VertexConcept Obj1, Point3Concept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1*, Obj2, ScalarType>
-{
-	static inline const auto distFun = [](const Obj1* const& o1, const Obj2& o2) {
-		return o1->coord().dist(o2);
-	};
-
-	static inline const auto boundDistFun = [](const Obj1* const& o1, const Obj2& o2, ScalarType) {
-		return o1->coord().dist(o2);
-	};
-};
-
 // Specialization for distance between Point and Vertex
 template<Point3Concept Obj1, VertexConcept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
@@ -163,19 +174,6 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 	static inline const std::function<ScalarType(const Obj1&, const Obj2&, ScalarType)>
 		boundDistFun =
 			[](const Obj1& o1, const Obj2& o2, ScalarType) { return o1.dist(o2.coord()); };
-};
-
-// Specialization for distance between Point and Vertex*
-template<Point3Concept Obj1, VertexConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1, Obj2*, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1& o1, const Obj2* const& o2) {
-		return o1.dist(o2->coord());
-	};
-
-	static const inline auto boundDistFun = [](const Obj1& o1, const Obj2* const& o2, ScalarType) {
-		return o1.dist(o2->coord());
-	};
 };
 
 // Specialization for distance between Vertex and Vertex
@@ -191,46 +189,6 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 	};
 };
 
-// Specialization for distance between Vertex and Vertex*
-template<VertexConcept Obj1, VertexConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1, Obj2*, ScalarType>
-{
-	static inline const auto distFun = [](const Obj1& o1, const Obj2* const& o2) {
-		return o1.coord().dist(o2->coord());
-	};
-
-	static inline const auto boundDistFun = [](const Obj1& o1, const Obj2* const& o2, ScalarType) {
-		return o1.coord().dist(o2->coord());
-	};
-};
-
-// Specialization for distance between Vertex* and Vertex
-template<VertexConcept Obj1, VertexConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1*, Obj2, ScalarType>
-{
-	static inline const auto distFun = [](const Obj1* const& o1, const Obj2& o2) {
-		return o1->coord().dist(o2.coord());
-	};
-
-	static inline const auto boundDistFun = [](const Obj1* const& o1, const Obj2& o2, ScalarType) {
-		return o1->coord().dist(o2.coord());
-	};
-};
-
-// Specialization for distance between Vertex* and Vertex*
-template<VertexConcept Obj1, VertexConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1*, Obj2*, ScalarType>
-{
-	static inline const auto distFun = [](const Obj1* const& o1, const Obj2* const& o2) {
-		return o1->coord().dist(o2->coord());
-	};
-
-	static inline const auto boundDistFun =
-		[](const Obj1* const& o1, const Obj2* const& o2, ScalarType) {
-			return o1->coord().dist(o2->coord());
-		};
-};
-
 // Specialization for distance between Point and Face
 template<Point3Concept Obj1, FaceConcept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
@@ -242,20 +200,6 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 	static const inline auto boundDistFun = [](const Obj1& o1, const Obj2& o2, ScalarType m) {
 		return pointFaceDistance(o1, o2, m);
 	};
-};
-
-// Specialization for distance between Point and Face*
-template<Point3Concept Obj1, FaceConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1, Obj2*, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1& o1, const Obj2* const& o2) {
-		return pointFaceDistance(o1, *o2);
-	};
-
-	static const inline auto boundDistFun =
-		[](const Obj1& o1, const Obj2* const& o2, ScalarType m) {
-			return pointFaceDistance(o1, *o2, m);
-		};
 };
 
 // Specialization for distance between Face and Point
@@ -271,20 +215,6 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 	};
 };
 
-// Specialization for distance between Face* and Point
-template<FaceConcept Obj1, Point3Concept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1*, Obj2, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1* const& o1, const Obj2& o2) {
-		return pointFaceDistance(o2, *o1);
-	};
-
-	static const inline auto boundDistFun =
-		[](const Obj1* const& o1, const Obj2& o2, ScalarType m) {
-			return pointFaceDistance(o2, *o1, m);
-		};
-};
-
 // Specialization for distance between Vertex and Face
 template<VertexConcept Obj1, FaceConcept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
@@ -298,48 +228,6 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 	};
 };
 
-// Specialization for distance between Vertex* and Face
-template<VertexConcept Obj1, FaceConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1*, Obj2, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1* const& o1, const Obj2& o2) {
-		return pointFaceDistance(o1->coord(), o2);
-	};
-
-	static const inline auto boundDistFun =
-		[](const Obj1* const& o1, const Obj2& o2, ScalarType m) {
-			return pointFaceDistance(o1->coord(), o2, m);
-		};
-};
-
-// Specialization for distance between Vertex and Face*
-template<VertexConcept Obj1, FaceConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1, Obj2*, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1& o1, const Obj2* const& o2) {
-		return pointFaceDistance(o1.coord(), *o2);
-	};
-
-	static const inline std::function<ScalarType(const Obj1&, const Obj2* const&, ScalarType)>
-		boundDistFun = [](const Obj1& o1, const Obj2* const& o2, ScalarType m) {
-			return pointFaceDistance(o1.coord(), *o2, m);
-		};
-};
-
-// Specialization for distance between Vertex* and Face*
-template<VertexConcept Obj1, FaceConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1*, Obj2*, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1* const& o1, const Obj2* const& o2) {
-		return pointFaceDistance(o1->coord(), *o2);
-	};
-
-	static const inline auto boundDistFun =
-		[](const Obj1* const& o1, const Obj2* const& o2, ScalarType m) {
-			return pointFaceDistance(o1->coord(), *o2, m);
-		};
-};
-
 // Specialization for distance between Face and Vertex
 template<FaceConcept Obj1, VertexConcept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
@@ -351,48 +239,6 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 	static const inline auto boundDistFun = [](const Obj1& o1, const Obj2& o2, ScalarType m) {
 		return pointFaceDistance(o2.coord(), o1, m);
 	};
-};
-
-// Specialization for distance between Face* and Vertex
-template<FaceConcept Obj1, VertexConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1*, Obj2, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1* const& o1, const Obj2& o2) {
-		return pointFaceDistance(o2.coord(), *o1);
-	};
-
-	static const inline auto boundDistFun =
-		[](const Obj1* const& o1, const Obj2& o2, ScalarType m) {
-			return pointFaceDistance(o2.coord(), *o1, m);
-		};
-};
-
-// Specialization for distance between Face and Vertex*
-template<FaceConcept Obj1, VertexConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1, Obj2*, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1& o1, const Obj2* const& o2) {
-		return pointFaceDistance(o2->coord(), o1);
-	};
-
-	static const inline auto boundDistFun =
-		[](const Obj1& o1, const Obj2* const& o2, ScalarType m) {
-			return pointFaceDistance(o2->coord(), o1, m);
-		};
-};
-
-// Specialization for distance between Face* and Vertex*
-template<FaceConcept Obj1, VertexConcept Obj2, typename ScalarType>
-struct DistFunctionStruct<Obj1*, Obj2*, ScalarType>
-{
-	static const inline auto distFun = [](const Obj1* const& o1, const Obj2* const& o2) {
-		return pointFaceDistance(o2->coord(), *o1);
-	};
-
-	static const inline auto boundDistFun =
-		[](const Obj1* const& o1, const Obj2* const& o2, ScalarType m) {
-			return pointFaceDistance(o2->coord(), *o1, m);
-		};
 };
 
 } // namespace vcl

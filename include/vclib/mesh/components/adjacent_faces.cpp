@@ -300,7 +300,7 @@ void AdjacentFaces<Face, N, TT, El, O>::updatePointers(const Face* oldBase, cons
 template<typename Face, int N, bool TT, typename El, bool O>
 void AdjacentFaces<Face, N, TT, El, O>::updatePointersAfterCompact(
 	const Face*             base,
-	const std::vector<int>& newIndices)
+	const std::vector<uint>& newIndices)
 {
 	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }

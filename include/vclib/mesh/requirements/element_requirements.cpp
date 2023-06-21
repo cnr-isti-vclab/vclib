@@ -39,7 +39,7 @@ namespace vcl {
 template<uint ELEMENT_TYPE, MeshConcept MeshType>
 bool isElementContainerCompact(const MeshType& m)
 {
-	return (m.template elementNumber<ELEMENT_TYPE>() == m.template elementContainerSize<ELEMENT_TYPE>());
+	return (m.template number<ELEMENT_TYPE>() == m.template containerSize<ELEMENT_TYPE>());
 }
 
 /**

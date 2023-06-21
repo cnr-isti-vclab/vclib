@@ -47,6 +47,37 @@ public:
 	}
 };
 
+template<typename Cont, typename MeshType>
+void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, uint& nRefs)
+{
+	// check if the Cont container of the Mesh has vertex pointers
+	if constexpr (comp::HasVertexPointers<typename Cont::ElementType>) {
+		// if there are still some vertices non-referenced
+		if (nRefs < m.vertexNumber()) {
+			constexpr uint EL_TYPE = Cont::ElementType::ELEMENT_TYPE;
+			// for eache element of the Cont container
+			for (const typename Cont::ElementType& el : m.template elements<EL_TYPE>()) {
+				// for each vertex pointer of the element
+				for (const typename Cont::ElementType::VertexType* v : el.vertices()) {
+					if (! refs[m.index(v)]) {
+						// set the vertex as referenced
+						refs[m.index(v)] = true;
+						nRefs++;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+template<typename MeshType, typename... Cont>
+void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, uint& nRefs, TypeWrapper<Cont...>)
+{
+	// call the setReferencedVerticesOnVector function for each container of the mesh
+	(setReferencedVerticesOnVector<Cont>(m, refs, nRefs), ...);
+}
+
 /**
  * @brief unreferencedVerticesVectorBool returns a vector of boolean telling, for each vertex of the
  * Mesh m, if it is referenced by any other Element of the Mesh.
@@ -58,58 +89,84 @@ public:
  * @return
  */
 template<typename MeshType>
-std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m)
+std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m, uint& nUnref)
 {
 	using VertexType = typename MeshType::VertexType;
 
+	uint nRefs = 0;
 	std::vector<bool> referredVertices(m.vertexContainerSize(), false);
-	if constexpr (vcl::HasFaces<MeshType>) {
-		using FaceType = typename MeshType::FaceType;
 
-		for (const FaceType& f : m.faces()) {
-			for (const VertexType* v : f.vertices()) {
-				referredVertices[m.index(v)] = true;
-			}
-		}
-	}
+	setReferencedVerticesOnVector(m, referredVertices, nRefs, typename MeshType::Containers());
+	nUnref = m.vertexNumber() - nRefs;
 
 	return referredVertices;
 }
 
 /**
- * @brief The SortedTriple class stores a sorted triplet of values that implement the operator <
+ * @brief The SortedIndexContainer class stores a sorted container of indices of type IndexType,
+ * plus a Sentinel value.
  *
- * @todo this class should become SortedVector, in order to support sorting of Polygonal Faces
+ * The size of the container can be specified at compile time, or left unspecified with the -1 value
+ * (in this case, the container is dynamically allocated).
+ *
+ * The container provides the operator < and ==, that allow to sort and compare two containers.
+ * Two containers with same indices but different Sentinel values are considered equal.
  */
-template<typename FacePointer>
-class SortedTriple
+template<typename IndexType, typename SentinelType, int N>
+class SortedIndexContainer
 {
 public:
-	SortedTriple() {}
-	SortedTriple(uint v0, uint v1, uint v2, FacePointer _fp)
+	SortedIndexContainer() {}
+
+	template<Range RangeType>
+	SortedIndexContainer(SentinelType s, RangeType rng) : s(s), v(rng)
 	{
-		v[0] = v0;
-		v[1] = v1;
-		v[2] = v2;
-		fp   = _fp;
-		std::sort(v, v + 3);
-	}
-	bool operator<(const SortedTriple& p) const
-	{
-		return (v[2] != p.v[2]) ? (v[2] < p.v[2]) :
-			   (v[1] != p.v[1]) ? (v[1] < p.v[1]) :
-                                  (v[0] < p.v[0]);
+		std::sort(v.begin(), v.end());
 	}
 
-	bool operator==(const SortedTriple& s) const
+	bool operator<(const SortedIndexContainer& s) const
 	{
-		if ((v[0] == s.v[0]) && (v[1] == s.v[1]) && (v[2] == s.v[2]))
+		if constexpr (N >= 0) {
+			for (uint i = 0; i < N; ++i) {
+				if (v[i] != s.v[i])
+					return v[i] < s.v[i];
+			}
+			return false;
+		}
+		else {
+			for (uint i = 0; i < v.size() && i < s.v.size(); ++i) {
+				if (v[i] != s.v[i])
+					return v[i] < s.v[i];
+			}
+			return v.size() < s.v.size();
+		}
+	}
+
+	bool operator==(const SortedIndexContainer& s) const
+	{
+		if constexpr (N >= 0) {
+			for (uint i = 0; i < N; ++i) {
+				if (v[i] != s.v[i])
+					return false;
+			}
 			return true;
-		return false;
+		}
+		else {
+			if (v.size() != s.v.size())
+				return false;
+			for (uint i = 0; i < v.size(); ++i) {
+				if (v[i] != s.v[i])
+					return false;
+			}
+			return true;
+		}
 	}
 
-	uint v[3];
-	FacePointer  fp;
+	SentinelType sentinel() const { return s; }
+
+private:
+	vcl::Vector<IndexType, N> v;
+	SentinelType s;
 };
 
 template<FaceMeshConcept MeshType>
@@ -196,16 +253,10 @@ uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifold
 template<MeshConcept MeshType>
 uint numberUnreferencedVertices(const MeshType& m)
 {
+	uint nV = 0;
 	// Generate a vector of boolean flags indicating whether each vertex is referenced by any of the
 	// mesh's elements.
-	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
-
-	// Count the number of unreferenced vertices in parallel.
-	uint nV = std::count(std::execution::par_unseq, referredVertices.begin(), referredVertices.end(), false);
-
-	// Subtract the number of deleted vertices to obtain the final count of non-deleted unreferenced
-	// vertices.
-	nV -= m.deletedVertexNumber();
+	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m, nV);
 
 	return nV;
 }
@@ -232,15 +283,27 @@ uint removeUnreferencedVertices(MeshType& m)
 
 	// Generate a vector of boolean flags indicating whether each vertex is referenced by any of the
 	// mesh's elements.
-	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m);
 
-	// Iterate over all vertices in the mesh, and mark any unreferenced vertices as deleted.
 	uint n = 0;
-	for (const VertexType& v : m.vertices()) {
-		if (!referredVertices[m.index(v)]) {
-			m.deleteVertex(m.index(v));
-			++n;
+	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m, n);
+
+	// need to mark as deleted vertices only if the number of unreferenced is less than vn
+	if (n < m.vertexNumber()) {
+		// will store on this vector only the indices of the referenced vertices
+		std::vector<uint> refVertIndices(m.vertexContainerSize(), UINT_NULL);
+		// Iterate over all vertices in the mesh, and mark any unreferenced vertex as deleted.
+		for (const VertexType& v : m.vertices()) {
+			if (!referredVertices[m.index(v)]) {
+				m.deleteVertex(m.index(v));
+			}
+			else {
+				refVertIndices[m.index(v)] = m.index(v);
+			}
 		}
+
+		// update the vertex indices of the mesh, setting to null the indices of the
+		// unreferenced vertices (it may happen on adjacent vertices of some container).
+		m.updateVertexIndices(refVertIndices);
 	}
 
 	return n;
@@ -272,7 +335,8 @@ uint removeDuplicatedVertices(MeshType& m)
 		return 0;
 
 	// a map that will be used to keep track of deleted vertices and their corresponding pointers.
-	std::map<VertexPointer, VertexPointer> deletedVertsMap;
+	std::vector<uint> newVertexIndices(m.vertexNumber());
+	std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0); // assigning each vertex index to itself.
 
 	uint deleted = 0;
 
@@ -297,7 +361,7 @@ uint removeDuplicatedVertices(MeshType& m)
 		uint j = i + 1;
 		while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
 			// j will be deleted, so we map its pointer to the i-th vertex's pointer.
-			deletedVertsMap[perm[j]] = perm[i]; // map j into i
+			newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j into i
 			m.deleteVertex(m.index(perm[j]));
 			j++;
 			deleted++;
@@ -306,37 +370,10 @@ uint removeDuplicatedVertices(MeshType& m)
 		i = j;
 	}
 
-	// update the face vertex pointers to point to the correct vertices.
-	if constexpr (HasFaces<MeshType>) {
-		using FaceType = typename MeshType::FaceType;
-
-		for (FaceType& f : m.faces()) {
-			for (VertexPointer& v : f.vertices()) {
-				// if v is in the map of the deleted vertices, update its pointer to point to the
-				// corresponding non-deleted vertex.
-				if (deletedVertsMap.find(v) != deletedVertsMap.end()) {
-					v = deletedVertsMap[v];
-				}
-			}
-		}
-	}
-
-	if constexpr (HasEdges<MeshType>) {
-		using EdgeType = typename MeshType::EdgeType;
-
-		for (EdgeType& e : m.edges()) {
-			for (VertexPointer& v : e.vertices()) {
-				// if v is in the map of the deleted vertices, update its pointer to point to the
-				// corresponding non-deleted vertex.
-				if (deletedVertsMap.find(v) != deletedVertsMap.end()) {
-					v = deletedVertsMap[v];
-				}
-			}
-		}
-	}
+	// update the vertex pointers to point to the correct vertices, in every container of the mesh
+	m.updateVertexIndices(newVertexIndices);
 
 	// todo:
-	// - automatic detection for vertex references and update in the mesh
 	// - add a flag that removes degenerate elements after
 	return deleted;
 }
@@ -363,16 +400,18 @@ uint removeDuplicatedVertices(MeshType& m)
  *
  * @ingroup clean
  */
-template<TriangleMeshConcept MeshType> // TODO: remove this and adjust the function for polymeshes
+template<FaceMeshConcept MeshType>
 uint removeDuplicatedFaces(MeshType& m)
 {
+	using VertexType = typename MeshType::VertexType;
 	using FaceType = typename MeshType::FaceType;
 
-	// create a vector of sorted triples, where each triple represents a face's vertex indices and a
+	// create a vector of sorted tuples of indices, where each tuple represents a face's vertices and a
 	// pointer to the face.
-	std::vector<internal::SortedTriple<FaceType*>> fvec;
+	std::vector<internal::SortedIndexContainer<VertexType*, FaceType*, FaceType::VERTEX_NUMBER>> fvec;
+
 	for (FaceType& f : m.faces()) {
-		fvec.emplace_back(m.index(f.vertex(0)), m.index(f.vertex(1)), m.index(f.vertex(2)), &f);
+		fvec.emplace_back(&f, f.vertices());
 	}
 
 	// sort the vector based on the face vertex indices.
@@ -383,7 +422,7 @@ uint removeDuplicatedFaces(MeshType& m)
 	for (uint i = 0; i < fvec.size() - 1; ++i) {
 		if (fvec[i] == fvec[i + 1]) {
 			total++;
-			m.deleteFace(fvec[i].fp);
+			m.deleteFace(fvec[i].sentinel());
 		}
 	}
 	return total;

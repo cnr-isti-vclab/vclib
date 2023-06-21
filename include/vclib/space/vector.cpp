@@ -29,6 +29,8 @@
 #include <utility>
 #include <vector>
 
+#include <vclib/views/view.h>
+
 namespace vcl {
 
 /**
@@ -40,6 +42,46 @@ namespace vcl {
 template<typename T, int N>
 Vector<T, N>::Vector()
 {
+}
+
+/**
+ * @brief Constructs the container with the contents of the range [first, last).
+ *
+ * If the container is dynamic, the size of the container is determined by the number of elements
+ * in the range [first, last). If the container is static, the elements are initialized
+ * with the contents of the first N elements of the range [first, last). If the range contains less
+ * than N elements, the remaining elements are initialized with their empty constructor.
+ *
+ * @tparam ItType: The type of the iterators used to access the elements in the range.
+ *
+ * @param[in] first: The beginning of the range.
+ * @param[in] last: The end of the range.
+ */
+template<typename T, int N>
+template<typename ItType>
+Vector<T, N>::Vector(ItType first, ItType last)
+{
+	set(vcl::View(first, last));
+}
+
+/**
+ * @brief Constructs the container with the contents of the range rng.
+ *
+ * If the container is dynamic, the size of the container is determined by the number of elements
+ * in the input range. If the container is static, the elements are initialized
+ * with the contents of the first N elements of the range. If the range contains less
+ * than N elements, the remaining elements are initialized with their empty constructor.
+ *
+ * @tparam RangeType: The type of the range used to access the elements in the range. It must
+ * satisfy the vcl::Range concept.
+ *
+ * @param[in] rng: a range of T elements.
+ */
+template<typename T, int N>
+template<Range RangeType>
+Vector<T, N>::Vector(RangeType&& rng)
+{
+	set(rng);
 }
 
 /**
@@ -147,10 +189,10 @@ void Vector<T, N>::set(const T& e, uint i)
  * @brief Set the elements of the Vector using the values from a range.
  *
  * Sets the elements of the Vector to the values from the range `r`. If the size of the Vector is
- * known at compile-time and is not negative, the first N elements from the range `r` are copied
- * into the Vector using `std::copy_n()`. If the size of the Vector is negative or not known at
- * compile-time, the elements of the Vector are set to the values from the range `r` by
- * constructing a new std::vector from the range `r`.
+ * known at compile-time and is not negative, the first N elements from the range `r` (or all of
+ * them, if they are less than N) are copied into the Vector using `std::copy_n()`. If the size
+ * of the Vector is negative or not known at compile-time, the elements of the Vector are set to
+ * the values from the range `r` by constructing a new std::vector from the range `r`.
  *
  * @tparam Rng: The type of the range.
  *
@@ -161,7 +203,8 @@ template<Range Rng>
 void Vector<T, N>::set(Rng&& r)
 {
 	if constexpr (N >= 0) {
-		std::copy_n(std::ranges::begin(r), N, container.begin());
+		uint n = std::min(N, (int)std::distance(std::ranges::begin(r), std::ranges::end(r)));
+		std::copy_n(std::ranges::begin(r), n, container.begin());
 	}
 	else {
 		container = std::vector<T>(std::ranges::begin(r), std::ranges::end(r));

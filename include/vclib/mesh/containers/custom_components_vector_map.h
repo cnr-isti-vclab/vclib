@@ -42,7 +42,7 @@ public:
 	void clear() {}
 	void reserve(uint) {}
 	void resize(uint) {}
-	void compact(const std::vector<int>&) {}
+	void compact(const std::vector<uint>&) {}
 };
 
 template<typename T>
@@ -55,7 +55,7 @@ public:
 
 	void resize(uint size);
 
-	void compact(const std::vector<int>& newIndices);
+	void compact(const std::vector<uint>& newIndices);
 
 	template<typename CompType>
 	void addNewComponent(const std::string& name, uint size);

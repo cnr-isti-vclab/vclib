@@ -80,7 +80,7 @@ void VerticalComponentsVectorTuple<Comp...>::reserve(std::size_t size)
 }
 
 template<typename ...Comp>
-void VerticalComponentsVectorTuple<Comp...>::compact(const std::vector<int>& newIndices)
+void VerticalComponentsVectorTuple<Comp...>::compact(const std::vector<uint>& newIndices)
 {
 	if constexpr (componentsNumber() > 0) {
 		vectorCompact<componentsNumber()-1>(newIndices);
@@ -193,7 +193,7 @@ void VerticalComponentsVectorTuple<Comp...>::vectorReserve(std::size_t size)
 
 template<typename ...Comp>
 template<std::size_t N>
-void VerticalComponentsVectorTuple<Comp...>::vectorCompact(const std::vector<int>& newIndices)
+void VerticalComponentsVectorTuple<Comp...>::vectorCompact(const std::vector<uint>& newIndices)
 {
 	if (vecEnabled[N]) {
 		vcl::compactVector(std::get<N>(tuple), newIndices);

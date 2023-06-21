@@ -50,7 +50,7 @@ uint removeUnreferencedVertices(MeshType& m);
 template <MeshConcept MeshType>
 uint removeDuplicatedVertices(MeshType& m);
 
-template <TriangleMeshConcept MeshType>
+template <FaceMeshConcept MeshType>
 uint removeDuplicatedFaces(MeshType& m);
 
 template <MeshConcept MeshType>

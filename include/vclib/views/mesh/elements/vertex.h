@@ -30,10 +30,10 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept CleanMeshConcept = MeshConcept<RemoveConstRef<T>>;
+concept CleanMeshConcept = MeshConcept<std::remove_cvref_t<T>>;
 
 template<typename T>
-concept CleanVertexPtrsConcept = comp::HasVertexPointers<RemoveConstRef<T>>;
+concept CleanVertexPtrsConcept = comp::HasVertexPointers<std::remove_cvref_t<T>>;
 
 struct VerticesView
 {

@@ -27,4 +27,14 @@
 #include "distance/functions.h"
 #include "distance/mesh.h"
 
+/**
+ * @defgroup distance Distance Algorithms
+ *
+ * @ingroup algorithms
+ *
+ * @brief List of distance algorithms.
+ *
+ * You can access these algorithms by including `#include <vclib/algorithms/distance.h>`
+ */
+
 #endif // VCL_ALGORITHMS_DISTANCE_H

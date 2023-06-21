@@ -113,7 +113,7 @@ void saveOff(const MeshType& m, const std::string& filename, const FileMeshInfo&
 		using FaceType = typename MeshType::FaceType;
 
 		// indices of vertices that do not consider deleted vertices
-		std::vector<int> vIndices = m.vertexCompactIndices();
+		std::vector<uint> vIndices = m.vertexCompactIndices();
 
 		for (const FaceType& f : m.faces()) {
 			io::internal::writeInt(fp, f.vertexNumber(), false);

@@ -32,7 +32,7 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept CleanAdjVerticesConcept = comp::HasAdjacentVertices<RemoveConstRef<T>>;
+concept CleanAdjVerticesConcept = comp::HasAdjacentVertices<std::remove_cvref_t<T>>;
 
 struct AdjVerticesView
 {

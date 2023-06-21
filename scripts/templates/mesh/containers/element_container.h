@@ -58,8 +58,10 @@ public:
 	void delete%EL_UC%(uint i);
 	void delete%EL_UC%(const %EL_UC%Type* e);
 
-	uint             %EL_C%IndexIfCompact(uint id) const;
-	std::vector<int> %EL_C%CompactIndices() const;
+	uint              %EL_C%IndexIfCompact(uint id) const;
+	std::vector<uint> %EL_C%CompactIndices() const;
+
+	void update%EL_UC%Indices(const std::vector<uint>& newIndices);
 
 	%EL_UC%Iterator      %EL_C%Begin(bool jumpDeleted = true);
 	%EL_UC%Iterator      %EL_C%End();

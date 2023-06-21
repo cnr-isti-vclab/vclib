@@ -30,7 +30,7 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept CleanFaceMeshConcept = FaceMeshConcept<RemoveConstRef<T>>;
+concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_cvref_t<T>>;
 
 struct FacesView
 {

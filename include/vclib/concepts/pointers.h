@@ -29,7 +29,8 @@
 namespace vcl {
 
 /**
- * @brief Utility concept that is evaluated true if T is a Pointer
+ * @brief Utility concept that is evaluated true if T is a Pointer, even if the type is a T
+ * is a reference to a pointer.
  *
  * @ingroup uconcepts
  */

@@ -73,7 +73,7 @@ namespace vcl::comp {
  *
  * void updatePointers(const PointedType* oldBase, const PointedType* newBase);
  *
- * void updatePointersAfterCompact(const PointedType* base, const std::vector<int>& newIndices);
+ * void updatePointersAfterCompact(const PointedType* base, const std::vector<uint>& newIndices);
  * ```
  *
  * If your component stores a Container of pointers, look for the @ref PointersContainerComponent

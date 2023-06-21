@@ -282,9 +282,35 @@ uint FaceContainer<T>::faceIndexIfCompact(uint i) const
  * @return A vector containing, for each Face index, its index if the container would be compact.
  */
 template<FaceConcept T>
-std::vector<int> FaceContainer<T>::faceCompactIndices() const
+std::vector<uint> FaceContainer<T>::faceCompactIndices() const
 {
 	return Base::elementCompactIndices();
+}
+
+/**
+ * @brief Updates all the indices and pointers of the Faces of this container that are stored in
+ * any container of the mesh, according to the mapping stored in the newIndices vector, that tells
+ * for each old Face index, the new Face index.
+ *
+ * This function is useful when delete some Faces, and you want to update the indices/pointers stored
+ * in all the containers of the mesh accordingly.
+ *
+ * E.g. Supposing you deleted a set of Faces, you can give to this function the vector telling, for
+ * each one of the old Face indices, the new Face index (or UINT_NULL if you want to leave it
+ * unreferenced). This function will update all the pointers stored in the mesh containers accordingly
+ * (if they store adjacencies to the Faces).
+ *
+ * @note This function *does not change the position of the Faces in this container*. It just updates
+ * the indices/pointers of the Faces stored in this or other containers.
+ *
+ * @param[in] newIndices: a vector that tells, for each old Face index, the new Face index. If the
+ * old Face must be left as unreferenced (setting `nullptr` to the pointers), the value of the vector
+ * must be UINT_NULL.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::updateFaceIndices(const std::vector<uint>& newIndices)
+{
+	Base::updateElementIndices(newIndices);
 }
 
 /**

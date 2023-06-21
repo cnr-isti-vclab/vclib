@@ -111,6 +111,24 @@ uint EdgeContainer<T>::addEdge()
 	return Base::addElement();
 }
 
+template<EdgeConcept T>
+uint EdgeContainer<T>::addEdge(uint v0, uint v1)
+{
+	uint eid = addEdge();
+	edge(eid).vertex(0) = &Base::parentMesh->vertex(v0);
+	edge(eid).vertex(1) = &Base::parentMesh->vertex(v1);
+	return eid;
+}
+
+template<EdgeConcept T>
+uint EdgeContainer<T>::addEdge(typename T::VertexType* v0, typename T::VertexType* v1)
+{
+	uint eid = addEdge();
+	edge(eid).vertex(0) = v0;
+	edge(eid).vertex(1) = v1;
+	return eid;
+}
+
 /**
  * @brief Add an arbitrary number of n edges, returning the id of the first added edge.
  *
@@ -214,7 +232,7 @@ uint EdgeContainer<T>::edgeIndexIfCompact(uint i) const
 /**
  * @brief Returns a vector that tells, for each actual edge index, the new index that the edge
  * would have in a compacted container. For each deleted edge index, the value of the vector will
- * be -1.
+ * be UINT_NULL.
  *
  * This is useful if you need to know the indices of the edges that they would have in a
  * compact container, without considering the deleted ones.
@@ -222,9 +240,35 @@ uint EdgeContainer<T>::edgeIndexIfCompact(uint i) const
  * @return A vector containing, for each edge index, its index if the container would be compact.
  */
 template<EdgeConcept T>
-std::vector<int> EdgeContainer<T>::edgeCompactIndices() const
+std::vector<uint> EdgeContainer<T>::edgeCompactIndices() const
 {
 	return Base::elementCompactIndices();
+}
+
+/**
+ * @brief Updates all the indices and pointers of the Edges of this container that are stored in
+ * any container of the mesh, according to the mapping stored in the newIndices vector, that tells
+ * for each old Edge index, the new Edge index.
+ *
+ * This function is useful when delete some Edges, and you want to update the indices/pointers stored
+ * in all the containers of the mesh accordingly.
+ *
+ * E.g. Supposing you deleted a set of Edges, you can give to this function the vector telling, for
+ * each one of the old Edge indices, the new Edge index (or UINT_NULL if you want to leave it
+ * unreferenced). This function will update all the pointers stored in the mesh containers accordingly
+ * (if they store adjacencies to the Edges).
+ *
+ * @note This function *does not change the position of the Edges in this container*. It just updates
+ * the indices/pointers of the Edges stored in this or other containers.
+ *
+ * @param[in] newIndices: a vector that tells, for each old Edge index, the new Edge index. If the
+ * old Edge must be left as unreferenced (setting `nullptr` to the pointers), the value of the vector
+ * must be UINT_NULL.
+ */
+template<EdgeConcept T>
+void EdgeContainer<T>::updateEdgeIndices(const std::vector<uint>& newIndices)
+{
+	Base::updateElementIndices(newIndices);
 }
 
 /**

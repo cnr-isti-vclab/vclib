@@ -36,12 +36,12 @@ namespace internal {
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void saveFaceIndices(
-	std::ofstream&          file,
-	Property                p,
-	const MeshType&         m,
-	const std::vector<int>& vIndices,
-	const FaceType&         f,
-	bool                    bin)
+	std::ofstream&           file,
+	Property                 p,
+	const MeshType&          m,
+	const std::vector<uint>& vIndices,
+	const FaceType&          f,
+	bool                     bin)
 {
 	using VertexType = typename MeshType::VertexType;
 
@@ -264,7 +264,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 	bool bin = header.format() == ply::BINARY;
 
 	// indices of vertices that do not consider deleted vertices
-	std::vector<int> vIndices = mesh.vertexCompactIndices();
+	std::vector<uint> vIndices = mesh.vertexCompactIndices();
 
 	for (const FaceType& f : mesh.faces()) {
 		for (const ply::Property& p : header.faceProperties()) {

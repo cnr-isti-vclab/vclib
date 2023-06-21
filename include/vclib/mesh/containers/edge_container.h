@@ -62,6 +62,8 @@ public:
 	uint deletedEdgeNumber() const;
 
 	uint addEdge();
+	uint addEdge(uint v0, uint v1);
+	uint addEdge(typename T::VertexType* v0, typename T::VertexType* v1);
 	uint addEdges(uint n);
 	void reserveEdges(uint n);
 	void compactEdges();
@@ -69,8 +71,10 @@ public:
 	void deleteEdge(uint i);
 	void deleteEdge(const EdgeType* e);
 
-	uint             edgeIndexIfCompact(uint id) const;
-	std::vector<int> edgeCompactIndices() const;
+	uint              edgeIndexIfCompact(uint id) const;
+	std::vector<uint> edgeCompactIndices() const;
+
+	void updateEdgeIndices(const std::vector<uint>& newIndices);
 
 	EdgeIterator      edgeBegin(bool jumpDeleted = true);
 	EdgeIterator      edgeEnd();

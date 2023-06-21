@@ -193,7 +193,7 @@ uint %EL_UC%Container<T>::%EL_C%IndexIfCompact(uint i) const
 /**
  * @brief Returns a vector that tells, for each actual %EL_UC% index, the new index that the %EL_UC%
  * would have in a compacted container. For each deleted %EL_UC% index, the value of the vector will
- * be -1.
+ * be UINT_NULL.
  *
  * This is useful if you need to know the indices of the %EL_UC%s that they would have in a
  * compact container, without considering the deleted ones.
@@ -201,9 +201,35 @@ uint %EL_UC%Container<T>::%EL_C%IndexIfCompact(uint i) const
  * @return A vector containing, for each %EL_UC% index, its index if the container would be compact.
  */
 template<%EL_UC%Concept T>
-std::vector<int> %EL_UC%Container<T>::%EL_C%CompactIndices() const
+std::vector<uint> %EL_UC%Container<T>::%EL_C%CompactIndices() const
 {
 	return Base::elementCompactIndices();
+}
+
+/**
+ * @brief Updates all the indices and pointers of the %EL_UC%s of this container that are stored in
+ * any container of the mesh, according to the mapping stored in the newIndices vector, that tells
+ * for each old %EL_UC% index, the new %EL_UC% index.
+ *
+ * This function is useful when delete some %EL_UC%s, and you want to update the indices/pointers stored
+ * in all the containers of the mesh accordingly.
+ *
+ * E.g. Supposing you deleted a set of %EL_UC%s, you can give to this function the vector telling, for
+ * each one of the old %EL_UC% indices, the new %EL_UC% index (or UINT_NULL if you want to leave it
+ * unreferenced). This function will update all the pointers stored in the mesh containers accordingly
+ * (if they store adjacencies to the %EL_UC%s).
+ *
+ * @note This function *does not change the position of the %EL_UC%s in this container*. It just updates
+ * the indices/pointers of the %EL_UC%s stored in this or other containers.
+ *
+ * @param[in] newIndices: a vector that tells, for each old %EL_UC% index, the new %EL_UC% index. If the
+ * old %EL_UC% must be left as unreferenced (setting `nullptr` to the pointers), the value of the vector
+ * must be UINT_NULL.
+ */
+template<%EL_UC%Concept T>
+void %EL_UC%Container<T>::update%EL_UC%Indices(const std::vector<uint>& newIndices)
+{
+	Base::updateElementIndices(newIndices);
 }
 
 /**

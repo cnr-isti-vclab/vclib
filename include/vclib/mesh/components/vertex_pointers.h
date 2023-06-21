@@ -105,7 +105,7 @@ protected:
 
 	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
 
-	void updatePointersAfterCompact(const Vertex* base, const std::vector<int>& newIndices);
+	void updatePointersAfterCompact(const Vertex* base, const std::vector<uint>& newIndices);
 
 private:
 	template<typename Element, typename ElVType>

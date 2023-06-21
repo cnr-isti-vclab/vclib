@@ -300,7 +300,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::updatePointers(const Edge* oldBase, cons
 template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::updatePointersAfterCompact(
 	const Edge*             base,
-	const std::vector<int>& newIndices)
+	const std::vector<uint>& newIndices)
 {
 	Base::updateElementPointersAfterCompact(base, newIndices, this);
 }

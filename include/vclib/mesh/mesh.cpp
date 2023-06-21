@@ -334,7 +334,7 @@ auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<EL_TYPE>())
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-uint Mesh<Args...>::elementNumber() const requires (hasContainerOf<EL_TYPE>())
+uint Mesh<Args...>::number() const requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -343,7 +343,7 @@ uint Mesh<Args...>::elementNumber() const requires (hasContainerOf<EL_TYPE>())
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-uint Mesh<Args...>::elementContainerSize() const requires (hasContainerOf<EL_TYPE>())
+uint Mesh<Args...>::containerSize() const requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -352,7 +352,7 @@ uint Mesh<Args...>::elementContainerSize() const requires (hasContainerOf<EL_TYP
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-uint Mesh<Args...>::deletedElementNumber() const requires (hasContainerOf<EL_TYPE>())
+uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -361,7 +361,7 @@ uint Mesh<Args...>::deletedElementNumber() const requires (hasContainerOf<EL_TYP
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-uint Mesh<Args...>::addElement() requires (hasContainerOf<EL_TYPE>())
+uint Mesh<Args...>::add() requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -370,7 +370,7 @@ uint Mesh<Args...>::addElement() requires (hasContainerOf<EL_TYPE>())
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-uint Mesh<Args...>::addElements(uint n) requires (hasContainerOf<EL_TYPE>())
+uint Mesh<Args...>::add(uint n) requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -379,7 +379,7 @@ uint Mesh<Args...>::addElements(uint n) requires (hasContainerOf<EL_TYPE>())
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-void Mesh<Args...>::reserveElements(uint n) requires (hasContainerOf<EL_TYPE>())
+void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -388,11 +388,99 @@ void Mesh<Args...>::reserveElements(uint n) requires (hasContainerOf<EL_TYPE>())
 
 template<typename... Args> requires HasVertices<Args...>
 template<uint EL_TYPE>
-void Mesh<Args...>::compactElements() requires (hasContainerOf<EL_TYPE>())
+void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
-	Cont::compactElements();
+	Cont::deleteElement(i);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept El>
+void Mesh<Args...>::deleteElement(const El* e) const requires (hasContainerOf<El>())
+{
+	using Cont = typename ContainerOf<El>::type;
+	return Cont::deleteElement(e);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<ElementConcept El>
+void Mesh<Args...>::deleteElement(const El& e) const requires (hasContainerOf<El>())
+{
+	using Cont = typename ContainerOf<El>::type;
+	return Cont::deleteElement(&e);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+std::vector<uint> Mesh<Args...>::conpactIndices() const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementConpactIndices();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+void Mesh<Args...>::updateIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::updateElementIndices(newIndices);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementBegin(jumpDeleted);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+auto Mesh<Args...>::end() requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementEnd();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+auto Mesh<Args...>::begin(bool jumpDeleted) const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementBegin(jumpDeleted);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elementEnd();
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+auto Mesh<Args...>::elements(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elements(jumpDeleted);
+}
+
+template<typename... Args> requires HasVertices<Args...>
+template<uint EL_TYPE>
+auto Mesh<Args...>::elements(bool jumpDeleted) const requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	return Cont::elements(jumpDeleted);
 }
 
 template<typename... Args> requires HasVertices<Args...>
@@ -472,7 +560,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<ElementConcept Element>
 void Mesh<Args...>::updateAllPointersAfterCompact(
 	const Element* base,
-	const std::vector<int>& newIndices)
+	const std::vector<uint>& newIndices)
 {
 	(updatePointersAfterCompact<Args>(base, newIndices), ...);
 }
@@ -481,7 +569,7 @@ template<typename... Args> requires HasVertices<Args...>
 template<typename Cont, typename Element>
 void Mesh<Args...>::updatePointersAfterCompact(
 	const Element*          base,
-	const std::vector<int>& newIndices)
+	const std::vector<uint>& newIndices)
 {
 	if constexpr(mesh::ElementContainerConcept<Cont>) {
 		Cont::updatePointersAfterCompact(base, newIndices);

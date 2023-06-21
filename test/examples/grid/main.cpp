@@ -130,7 +130,7 @@ int main()
 	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
 	using ST = vcl::TriMesh::ScalarType;
 
-	auto intersects = vcl::intersectFunction<vcl::Box3<ST>, const vcl::TriMesh::Face*>();
+	auto intersects = vcl::intersectFunction<vcl::Box3<ST>, vcl::TriMesh::Face>();
 
 	vcl::HashTableGrid3<const vcl::TriMesh::Face*, ST> fsht(m.faces() | vcl::views::constAddrOf, intersects);
 

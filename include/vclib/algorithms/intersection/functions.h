@@ -52,18 +52,28 @@ struct IntersFunctionStruct
  * If the intersection function for your types is not defined, you can write
  * your own IntersFunctionStruct specialization that defines a proper `static const inline` object
  * called `intersFun` of `std::function` type.
+ *
+ * @note The intersectFunction works only for non-pointer types. This means that you cannot ask for the intersect
+ * function between a vcl::Box3 and a vcl::Face*. If you are working with template types that you
+ * don't know if they are pointers or not, you can do the following:
+ * @code{.cpp}
+ * // don't know if T1 and T2 are pointers or non-pointers
+ * auto f = intersectFunction<RemoveCVRefAndPointer<T1>, RemoveCVRefAndPointer<T2>>();
+ * // obj1 is of type T1, obj2 is of type T2 (may be pointers or non-pointers)
+ * bool theyIntersect = f(dereferencePtr(obj1), dereferencePtr(obj2));
+ * @endcode
+ *
+ * @ingroup intersection
  */
 template<typename Obj1, typename Obj2>
 auto intersectFunction()
 {
-	return IntersFunctionStruct<RemoveConstPointer<Obj1>, RemoveConstPointer<Obj2>>::intersFun;
+	return IntersFunctionStruct<Obj1, Obj2>::intersFun;
 }
 
 /********* IntersFunctionStruct Specializations *********/
 
 // Note: for every specialization there is also its commutative;
-//       for Elements (Vertices, Faces, ...) there are also the pointer variants
-//       e.g. intersection between Box and Face, intersection between Box and Face*
 //
 // List of Specializations:
 // - Box3-Face
@@ -81,30 +91,12 @@ struct IntersFunctionStruct<Obj1, Obj2>
 	};
 };
 
-// Specialization for intersection between Box and Face*
-template<Box3Concept Obj1, FaceConcept Obj2>
-struct IntersFunctionStruct<Obj1, Obj2*>
-{
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2* const& o2) {
-		return faceBoxIntersect(*o2, o1);
-	};
-};
-
 // Specialization for intersection between Face and Box
 template<FaceConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
 	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return faceBoxIntersect(o1, o2);
-	};
-};
-
-// Specialization for intersection between Face* and Box
-template<FaceConcept Obj1, Box3Concept Obj2>
-struct IntersFunctionStruct<Obj1*, Obj2>
-{
-	static inline const auto intersFun = [](const Obj1* const& o1, const Obj2& o2) {
-		return faceBoxIntersect(*o1, o2);
 	};
 };
 
@@ -117,30 +109,12 @@ struct IntersFunctionStruct<Obj1, Obj2>
 	};
 };
 
-// Specialization for intersection between Sphere and Face*
-template<SphereConcept Obj1, FaceConcept Obj2>
-struct IntersFunctionStruct<Obj1, Obj2*>
-{
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2* const& o2) {
-		return faceSphereIntersect(*o2, o1);
-	};
-};
-
 // Specialization for intersection between Face and Sphere
 template<FaceConcept Obj1, SphereConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
 	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
 		return faceSphereIntersect(o1, o2);
-	};
-};
-
-// Specialization for intersection between Face* and Sphere
-template<FaceConcept Obj1, SphereConcept Obj2>
-struct IntersFunctionStruct<Obj1*, Obj2>
-{
-	static inline const auto intersFun = [](const Obj1* const& o1, const Obj2& o2) {
-		return faceSphereIntersect(*o1, o2);
 	};
 };
 
