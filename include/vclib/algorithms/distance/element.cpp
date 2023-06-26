@@ -40,7 +40,8 @@ namespace vcl {
  * @param[in] p: The point to calculate the distance from.
  * @param[in] f: The face to calculate the distance to.
  * @param[out] closest: The closest point on the triangle to the given point.
- * @param[in] signedDist: Whether to calculate the signed distance. Default is false.
+ * @param[in] signedDist: Whether to calculate the signed distance. Default is
+ * false.
  * @return The distance between the point and the face.
  */
 template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
@@ -60,34 +61,36 @@ auto pointFaceDistance(
 	const FPointType& fp1 = f.vertex(1)->coord();
 	const FPointType& fp2 = f.vertex(2)->coord();
 
-	// If the face is degenerate (i.e. its normal vector has zero length), consider it as a segment.
+	// If the face is degenerate (i.e. its normal vector has zero length),
+	// consider it as a segment.
 	if (f.normal().norm() == 0) {
 		// Calculate the bounding box of the face.
-		Box3<ScalarType> box = vcl::boundingBox(f);
+		Box3<ScalarType>     box = vcl::boundingBox(f);
 		Segment3<ScalarType> s(box.min(), box.max());
-		// If the diagonal of the bounding box is greater than zero, calculate the distance between
-		// the query point and the segment.
+		// If the diagonal of the bounding box is greater than zero, calculate
+		// the distance between the query point and the segment.
 		if (box.diagonal() > 0) {
 			dist = vcl::pointSegmentDistance(p, s, closest);
 		}
 		else {
-			// If the diagonal of the bounding box is zero, set the closest point to be the minimum
-			// corner of the bounding box and calculate the distance between the query point and
-			// this point.
+			// If the diagonal of the bounding box is zero, set the closest
+			// point to be the minimum corner of the bounding box and calculate
+			// the distance between the query point and this point.
 			closest = box.min();
-			dist = p.dist(closest);
+			dist    = p.dist(closest);
 		}
 	}
 	else {
-		// Calculate the distance between the query point and the plane of the triangle.
+		// Calculate the distance between the query point and the plane of the
+		// triangle.
 		Plane<ScalarType> fPlane(fp0, f.normal());
 		dist = pointPlaneDistance(p, fPlane, true);
 
 		if (dist >= maxDist)
 			return dist;
 
-		// Project the query point onto the triangle plane to obtain the closest point on the
-		// triangle.
+		// Project the query point onto the triangle plane to obtain the closest
+		// point on the triangle.
 		closest = p - fPlane.direction() * dist;
 
 		// Calculate the three edges of the triangle.
@@ -96,8 +99,8 @@ auto pointFaceDistance(
 		fEdge[1] = fp2 - fp1;
 		fEdge[2] = fp0 - fp2;
 
-		// Determine the best axis to use for projection by finding the axis with the largest
-		// component of the normal vector.
+		// Determine the best axis to use for projection by finding the axis
+		// with the largest component of the normal vector.
 		int bestAxis;
 		if (std::abs(f.normal()[0]) > std::abs(f.normal()[1])) {
 			if (std::abs(f.normal()[0]) > std::abs(f.normal()[2]))
@@ -112,7 +115,8 @@ auto pointFaceDistance(
 				bestAxis = 2; /* 2 > 1 ? 2 */
 		}
 
-		// Scale the edges by the inverse of the projection direction on the best axis.
+		// Scale the edges by the inverse of the projection direction on the
+		// best axis.
 		ScalarType scaleFactor = 1 / fPlane.direction()[bestAxis];
 		fEdge[0] *= scaleFactor;
 		fEdge[1] *= scaleFactor;
@@ -120,25 +124,28 @@ auto pointFaceDistance(
 
 		// Compute barycentric coordinates of closest point
 		ScalarType b0, b1, b2;
-		int ba = (bestAxis + 2) % 3;
-		int bb = (bestAxis + 1) % 3;
+		int        ba = (bestAxis + 2) % 3;
+		int        bb = (bestAxis + 1) % 3;
 
 		Segment3<ScalarType> s0(fp1, fp2), s1(fp2, fp0), s2(fp0, fp1);
-		b0 = fEdge[1][bb] * (closest[ba] - fp1[ba]) - fEdge[1][ba] * (closest[bb] - fp1[bb]);
+		b0 = fEdge[1][bb] * (closest[ba] - fp1[ba]) -
+			 fEdge[1][ba] * (closest[bb] - fp1[bb]);
 		if (b0 <= 0) {
 			return pointSegmentDistance(p, s0, closest);
 		}
-		b1 = fEdge[2][bb] * (closest[ba] - fp2[ba]) - fEdge[2][ba] * (closest[bb] - fp2[bb]);
+		b1 = fEdge[2][bb] * (closest[ba] - fp2[ba]) -
+			 fEdge[2][ba] * (closest[bb] - fp2[bb]);
 		if (b1 <= 0) {
 			return pointSegmentDistance(p, s1, closest);
 		}
-		b2 = fEdge[0][bb] * (closest[ba] - fp0[ba]) - fEdge[0][ba] * (closest[bb] - fp0[bb]);
+		b2 = fEdge[0][bb] * (closest[ba] - fp0[ba]) -
+			 fEdge[0][ba] * (closest[bb] - fp0[bb]);
 		if (b2 <= 0) {
 			return pointSegmentDistance(p, s2, closest);
 		}
 
 		const ScalarType EPS = ScalarType(0.000001);
-		ScalarType b = vcl::min(b0, b1, b2);
+		ScalarType       b   = vcl::min(b0, b1, b2);
 		if (b < EPS * faceArea(f)) {
 			ScalarType bt;
 			if (b == b0)
@@ -160,14 +167,22 @@ auto pointFaceDistance(
 }
 
 template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
-auto pointFaceDistance(const PointType& p, const FaceType& f, ScalarType maxDist, bool signedDist)
+auto pointFaceDistance(
+	const PointType& p,
+	const FaceType&  f,
+	ScalarType       maxDist,
+	bool             signedDist)
 {
 	PointType closest;
 	return pointFaceDistance(p, f, maxDist, closest, signedDist);
 }
 
 template<Point3Concept PointType, FaceConcept FaceType>
-auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest, bool signedDist)
+auto pointFaceDistance(
+	const PointType& p,
+	const FaceType&  f,
+	PointType&       closest,
+	bool             signedDist)
 {
 	using ScalarType = typename PointType::ScalarType;
 
@@ -183,7 +198,8 @@ auto pointFaceDistance(const PointType& p, const FaceType& f, PointType& closest
  *
  * @param[in] p: The point to calculate the distance from.
  * @param[in] f: The face to calculate the distance to.
- * @param[in] signedDist: Whether to calculate the signed distance. Default is false.
+ * @param[in] signedDist: Whether to calculate the signed distance. Default is
+ * false.
  * @return The distance between the point and the face.
  */
 template<Point3Concept PointType, FaceConcept FaceType>

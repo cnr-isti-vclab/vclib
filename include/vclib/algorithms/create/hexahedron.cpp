@@ -60,11 +60,12 @@ void fillHexahedronQuads(MeshType& m)
 } // namespace internal
 
 /**
- * @brief Creates and returns a hexahedron having as extremes the points ``(-1, -1, -1)``
- * and ``(1, 1, 1)``.
+ * @brief Creates and returns a hexahedron having as extremes the points ``(-1,
+ * -1, -1)`` and ``(1, 1, 1)``.
  *
- * If the mesh is composed of triangles, the the returned mesh is already triangulated.
- * If the mesh is composed of quads or polygons, a mesh containing 6 quads will be returned.
+ * If the mesh is composed of triangles, the the returned mesh is already
+ * triangulated. If the mesh is composed of quads or polygons, a mesh containing
+ * 6 quads will be returned.
  *
  * @return A Mesh containing a ``[(-1, -1, -1), (1, 1, 1)]``Hexahedron .
  *
@@ -75,20 +76,23 @@ MeshType createHexahedron()
 {
 	using CoordType = typename MeshType::Vertex::CoordType;
 
-	return createHexahedron<MeshType>(CoordType(-1, -1, -1), CoordType(1, 1, 1));
+	return createHexahedron<MeshType>(
+		CoordType(-1, -1, -1), CoordType(1, 1, 1));
 }
 
 /**
- * @brief Creates and returns a Hexahedron having as extremes points min and max given as arguments.
+ * @brief Creates and returns a Hexahedron having as extremes points min and max
+ * given as arguments.
  *
- * If the mesh is composed of triangles, the the returned mesh is already triangulated.
- * If the mesh is composed of quads or polygons, a mesh containing 6 quads will be returned.
+ * If the mesh is composed of triangles, the the returned mesh is already
+ * triangulated. If the mesh is composed of quads or polygons, a mesh containing
+ * 6 quads will be returned.
  *
  * @return A Mesh containing a ``[min, max]``Hexahedron.
  *
  * @ingroup create
  */
-template<FaceMeshConcept MeshType, PointConcept CoordType>
+template<FaceMeshConcept MeshType, Point3Concept CoordType>
 MeshType createHexahedron(const CoordType& min, const CoordType& max)
 {
 	MeshType m;
@@ -115,23 +119,21 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
 }
 
 /**
- * @brief Creates and returns a Cube having ``min`` as minimum extreme and the given edge length.
+ * @brief Creates and returns a Cube having ``min`` as minimum extreme and the
+ * given edge length.
  *
- * If the mesh is composed of triangles, the the returned mesh is already triangulated.
- * If the mesh is composed of quads or polygons, a mesh containing 6 quads will be returned.
+ * If the mesh is composed of triangles, the the returned mesh is already
+ * triangulated. If the mesh is composed of quads or polygons, a mesh containing
+ * 6 quads will be returned.
  *
  * @return A Mesh containing a ``[min, min+edgeLength]`` Cube.
  *
  * @ingroup create
  */
-template<FaceMeshConcept MeshType, PointConcept CoordType>
-MeshType createCube(
-	const CoordType& min,
-	double edgeLength)
+template<FaceMeshConcept MeshType, Point3Concept CoordType>
+MeshType createCube(const CoordType& min, double edgeLength)
 {
-	return createHexahedron<MeshType>(
-		min,
-		CoordType(min + edgeLength));
+	return createHexahedron<MeshType>(min, CoordType(min + edgeLength));
 }
 
 } // namespace vcl

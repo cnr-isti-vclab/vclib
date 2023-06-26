@@ -105,10 +105,12 @@ MeshType createDodecahedron(LogType& log)
 }
 
 /**
- * @brief Creates and returns a Triangle Mesh containing a triangulated Dodecahedron.
+ * @brief Creates and returns a Triangle Mesh containing a triangulated
+ * Dodecahedron.
  *
- * If the mesh is composed of triangles, the the returned mesh is already triangulated.
- * If the mesh is polygonal, a mesh containing 12 pentagons will be returned.
+ * If the mesh is composed of triangles, the the returned mesh is already
+ * triangulated. If the mesh is polygonal, a mesh containing 12 pentagons will
+ * be returned.
  *
  * @return A Mesh containing a dodecahedron.
  *
@@ -121,7 +123,8 @@ MeshType createDodecahedron(LogType& log)
 		log.startNewTask(0, 75, "Create Polygonal Dodecahedron.");
 	}
 
-	internal::TMPSimplePolyMesh pmesh = createDodecahedron<internal::TMPSimplePolyMesh>(log);
+	internal::TMPSimplePolyMesh pmesh =
+		createDodecahedron<internal::TMPSimplePolyMesh>(log);
 
 	if constexpr (isLoggerValid<LogType>()) {
 		log.endTask("Create Polygonal Dodecahedron.");

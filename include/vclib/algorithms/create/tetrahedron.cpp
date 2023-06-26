@@ -26,7 +26,8 @@
 namespace vcl {
 
 /**
- * @brief createTetrahedron creates a simple tetrahedron mesh with the following point coordinates:
+ * @brief Creates a simple tetrahedron mesh with the following point
+ * coordinates:
  *
  * ```
  * ( 1,  1,  1),
@@ -35,7 +36,8 @@ namespace vcl {
  * ( 1, -1, -1)
  * ```
  *
- * @tparam MeshType: the type of the mesh to be generated, it must satisfy the FaceMeshConcept.
+ * @tparam MeshType: the type of the mesh to be generated, it must satisfy the
+ * FaceMeshConcept.
  *
  * @return a Mesh containing a Tetrahedron.
  *
@@ -46,16 +48,22 @@ MeshType createTetrahedron()
 {
 	using CoordType = typename MeshType::Vertex::CoordType;
 	return createTetrahedron<MeshType>(
-		CoordType(1, 1, 1), CoordType(-1, 1, -1), CoordType(-1, -1, 1), CoordType(1, -1, -1));
+		CoordType(1, 1, 1),
+		CoordType(-1, 1, -1),
+		CoordType(-1, -1, 1),
+		CoordType(1, -1, -1));
 }
 
 /**
- * @brief createTetrahedron createTetrahedron creates a simple tetrahedron mesh with the given
- * points. The function assumes that the points p0, p1 and p2 are in counterclockwise order, and
- * does not perform any sanity check about the validity of the points.
+ * @brief createTetrahedron createTetrahedron creates a simple tetrahedron mesh
+ * with the given points. The function assumes that the points p0, p1 and p2 are
+ * in counterclockwise order, and does not perform any sanity check about the
+ * validity of the points.
  *
- * @tparam MeshType: the type of the mesh to be generated, it must satisfy the FaceMeshConcept.
- * @tparam CoordType: the type of the coordinates of the points, it must satisfy the PointConcept.
+ * @tparam MeshType: the type of the mesh to be generated, it must satisfy the
+ * FaceMeshConcept.
+ * @tparam CoordType: the type of the coordinates of the points, it must satisfy
+ * the Point3Concept.
  *
  * @param[in] p0: the first point of the tetrahedron.
  * @param[in] p1: the second point of the tetrahedron.
@@ -66,7 +74,7 @@ MeshType createTetrahedron()
  *
  * @ingroup create
  */
-template<FaceMeshConcept MeshType, PointConcept CoordType>
+template<FaceMeshConcept MeshType, Point3Concept CoordType>
 MeshType createTetrahedron(
 	const CoordType& p0,
 	const CoordType& p1,
