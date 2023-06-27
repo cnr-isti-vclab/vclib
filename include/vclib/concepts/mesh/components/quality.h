@@ -29,17 +29,18 @@
 namespace vcl::comp {
 
 /**
- * @brief HasQuality concept is satisfied only if a Element class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * Quality component of a given element.
+ * @brief HasQuality concept is satisfied only if a Element class provides the
+ * types and member functions specified in this concept. These types and member
+ * functions allow to access to a Quality component of a given element.
  *
- * Note that this concept does not discriminate between the Horizontal Quality component
- * and the vertical OptionalQuality component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides Quality component at runtime
- * (it is guaranteed only that the proper member functions are available at compile time).
+ * Note that this concept does not discriminate between the Horizontal Quality
+ * component and the vertical OptionalQuality component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * Quality component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
  *
- * To be completely sure that Quality is available at runtime, you need to call the member
- * function `isQualityEnabled()`.
+ * To be completely sure that Quality is available at runtime, you need to call
+ * the member function `isQualityEnabled()`.
  *
  * @ingroup components_concepts
  */
@@ -55,13 +56,15 @@ concept HasQuality = requires(
 };
 
 /**
- * @brief HasOptionalQuality concept is satisfied only if a class satisfis the HasQuality concept and
- * the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalQuality concept is satisfied only if a class satisfis the
+ * HasQuality concept and the static boolean constant IS_OPTIONAL is set to
+ * true.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalQuality = HasQuality<T> && IsOptionalComponent<typename T::Quality>;
+concept HasOptionalQuality =
+	HasQuality<T> && IsOptionalComponent<typename T::Quality>;
 
 } // namespace vcl::comp
 

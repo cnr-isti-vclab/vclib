@@ -31,12 +31,13 @@ namespace vcl::comp {
 namespace internal {
 
 /**
- * @brief Given the ComponentEnumType of a Component and a list of Components, this predicate
- * sets its bool `value` to `true` if there exists a Component in the list having the ID COMP_TYPE,
- * and sets `type` to the TypeWrapper of the found component.
+ * @brief Given the ComponentEnumType of a Component and a list of Components,
+ * this predicate sets its bool `value` to `true` if there exists a Component in
+ * the list having the ID COMP_TYPE, and sets `type` to the TypeWrapper of the
+ * found component.
  *
- * If no Component was found, value will be set to `false` and type will contain an empty
- * TypeWrapper.
+ * If no Component was found, value will be set to `false` and type will contain
+ * an empty TypeWrapper.
  */
 template<uint COMP_TYPE, typename ... Components>
 struct ComponentOfTypePred
@@ -50,7 +51,8 @@ private:
 
 public:
 	// TypeWrapper of the found container, if any
-	using type = typename vcl::FilterTypesByCondition<SameCompPred, Components...>::type;
+	using type =
+		typename vcl::FilterTypesByCondition<SameCompPred, Components...>::type;
 	static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 
@@ -64,7 +66,8 @@ struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Components...>> :
 } // namespace vcl::comp::internal
 
 /**
- * @brief The ComponentConcept is evaluated to true whenever the type T is a valid component.
+ * @brief The ComponentConcept is evaluated to true whenever the type T is a
+ * valid component.
  *
  * @tparam T: the type to be evaluated
  */
@@ -74,8 +77,8 @@ concept ComponentConcept = requires {
 };
 
 /**
- * @brief The predicate struct IsComponentPred sets its bool `value` to `true` when the type T
- * satisfies the ComponentConcept concept
+ * @brief The predicate struct IsComponentPred sets its bool `value` to `true`
+ * when the type T satisfies the ComponentConcept concept
  *
  * @tparam T: the type to be evaluated
  */
@@ -86,8 +89,9 @@ struct IsComponentPred
 };
 
 template<uint COMP_TYPE, typename... Components>
-using ComponentOfType =
-	typename FirstType<typename internal::ComponentOfTypePred<COMP_TYPE, Components...>::type>::type;
+using ComponentOfType = typename FirstType<
+	typename internal::ComponentOfTypePred<COMP_TYPE, Components...>::type>::
+	type;
 
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
@@ -118,7 +122,8 @@ struct IsVerticalComponentPred
 };
 
 template<typename T>
-concept IsOptionalComponent = IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires(T o)
+concept IsOptionalComponent =
+	IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires(T o)
 {
 	{ o.IS_OPTIONAL } -> std::same_as<const bool&>;
 };
@@ -137,16 +142,19 @@ class PointersComponentTriggerer
  * - provide the following **protected** member functions:
  *   - void updatePointers(const R* oldBase, const R* newBase);
  *
- *     the function updates the stored R pointers having the old base of the container and the
- *     new base of the container.
+ *     the function updates the stored R pointers having the old base of the
+ *     container and the new base of the container.
  *
- *   - void updatePointersAfterCompact(const R* base, const std::vector<uint>& newIndices);
+ *   - void updatePointersAfterCompact(
+ *         const R* base, const std::vector<uint>& newIndices);
  *
- *     the function updates the stored R pointers having the base of the container, and, for each
- *     old element index, its new index in the container.
+ *     the function updates the stored R pointers having the base of the
+ *     container, and, for each old element index, its new index in the
+ *     container.
  *
  *   - template<typename Element, typename ElRType>
- *     void importPointersFrom(const Element& e, const R* base, const ElRType* ebase);
+ *     void importPointersFrom(
+ *         const Element& e, const R* base, const ElRType* ebase);
  *
  *     the function imports the pointers from the pointers of another element.
  *     - e is the another element;
@@ -158,25 +166,27 @@ concept HasPointersOfType =
 	std::is_base_of<PointersComponentTriggerer<R>, T>::value;
 
 template<typename T, typename R>
-concept HasOptionalPointersOfType = HasPointersOfType<T, R> && IsOptionalComponent<T>;
+concept HasOptionalPointersOfType =
+	HasPointersOfType<T, R> && IsOptionalComponent<T>;
 
 // ======== Has Component Concepts ======== //
-// Concepts that needs to be called on a type T that has the "Components" type defined as a
-// TypeWrapper of components.
-// The type T is generally a Mesh or a MeshElement.
+// Concepts that needs to be called on a type T that has the "Components" type
+// defined as a TypeWrapper of components. The type T is generally a Mesh or a
+// MeshElement.
 
 template<typename T, uint COMP_TYPE>
-concept HasComponentOfType = internal::ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
+concept HasComponentOfType =
+	internal::ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
 
 template<typename T, uint COMP_TYPE>
-concept HasVerticalComponentOfType
-	= HasComponentOfType<T, COMP_TYPE>
-	  && IsVerticalComponent<ComponentOfType<COMP_TYPE, typename T::Components>>;
+concept HasVerticalComponentOfType =
+	HasComponentOfType<T, COMP_TYPE> &&
+	IsVerticalComponent<ComponentOfType<COMP_TYPE, typename T::Components>>;
 
 template<typename T, uint COMP_TYPE>
-concept HasOptionalComponentOfType
-	= HasComponentOfType<T, COMP_TYPE>
-	  && IsOptionalComponent<ComponentOfType<COMP_TYPE, typename T::Components>>;
+concept HasOptionalComponentOfType =
+	HasComponentOfType<T, COMP_TYPE> &&
+	IsOptionalComponent<ComponentOfType<COMP_TYPE, typename T::Components>>;
 
 } // namespace vcl::comp
 

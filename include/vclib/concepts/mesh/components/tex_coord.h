@@ -29,17 +29,18 @@
 namespace vcl::comp {
 
 /**
- * @brief HasTexCoord concept is satisfied only if a Element class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * TexCoord component of a given element.
+ * @brief HasTexCoord concept is satisfied only if a Element class provides the
+ * types and member functions specified in this concept. These types and member
+ * functions allow to access to a TexCoord component of a given element.
  *
- * Note that this concept does not discriminate between the Horizontal TexCoord component
- * and the vertical OptionalTexCoord component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides TexCoord component at runtime
- * (it is guaranteed only that the proper member functions are available at compile time).
+ * Note that this concept does not discriminate between the Horizontal TexCoord
+ * component and the vertical OptionalTexCoord component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * TexCoord component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
  *
- * To be completely sure that TexCoord is available at runtime, you need to call the member
- * function `isTexCoordEnabled()`.
+ * To be completely sure that TexCoord is available at runtime, you need to call
+ * the member function `isTexCoordEnabled()`.
  *
  * @ingroup components_concepts
  */
@@ -55,13 +56,15 @@ concept HasTexCoord = requires(
 };
 
 /**
- * @brief HasOptionalTexCoord concept is satisfied only if a class satisfis the HasTexCoord concept
- * and the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalTexCoord concept is satisfied only if a class satisfis the
+ * HasTexCoord concept and the static boolean constant IS_OPTIONAL is set to
+ * true.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalTexCoord = HasTexCoord<T> && IsOptionalComponent<typename T::TexCoord>;
+concept HasOptionalTexCoord =
+	HasTexCoord<T> && IsOptionalComponent<typename T::TexCoord>;
 
 } // namespace vcl::comp
 

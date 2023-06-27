@@ -31,17 +31,19 @@
 namespace vcl::comp {
 
 /**
- * @brief HasColor concept is satisfied only if a Element/Mesh class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * Color component of a given element/mesh.
+ * @brief HasColor concept is satisfied only if a Element/Mesh class provides
+ * the types and member functions specified in this concept. These types and
+ * member functions allow to access to a Color component of a given
+ * element/mesh.
  *
- * Note that this concept does not discriminate between the Horizontal Color component
- * and the vertical OptionalColor component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides Color component at runtime
- * (it is guaranteed only that the proper member functions are available at compile time).
+ * Note that this concept does not discriminate between the Horizontal Color
+ * component and the vertical OptionalColor component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * Color component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
  *
- * To be completely sure that Color is available at runtime, you need to call the member
- * function `isColorEnabled()`.
+ * To be completely sure that Color is available at runtime, you need to call
+ * the member function `isColorEnabled()`.
  *
  * @ingroup components_concepts
  */
@@ -57,13 +59,14 @@ concept HasColor = requires(
 };
 
 /**
- * @brief HasOptionalColor concept is satisfied only if a class satisfis the HasColor concept and
- * the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalColor concept is satisfied only if a class satisfis the
+ * HasColor concept and the static boolean constant IS_OPTIONAL is set to true.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalColor = HasColor<T> && IsOptionalComponent<typename T::Color>;
+concept HasOptionalColor =
+	HasColor<T> && IsOptionalComponent<typename T::Color>;
 
 } // namespace vcl::comp
 

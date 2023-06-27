@@ -29,17 +29,18 @@
 namespace vcl::comp {
 
 /**
- * @brief HasNormal concept is satisfied only if a Element class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * Normal component of a given element.
+ * @brief HasNormal concept is satisfied only if a Element class provides the
+ * types and member functions specified in this concept. These types and member
+ * functions allow to access to a Normal component of a given element.
  *
- * Note that this concept does not discriminate between the Horizontal Normal component
- * and the vertical OptionalNormal component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides Normal component at runtime
- * (it is guaranteed only that the proper member functions are available at compile time).
+ * Note that this concept does not discriminate between the Horizontal Normal
+ * component and the vertical OptionalNormal component, therefore it does not
+ * guarantee that a template Element type that satisfies this concept provides
+ * Normal component at runtime (it is guaranteed only that the proper member
+ * functions are available at compile time).
  *
- * To be completely sure that Normal is available at runtime, you need to call the member
- * function `isNormalEnabled()`.
+ * To be completely sure that Normal is available at runtime, you need to call
+ * the member function `isNormalEnabled()`.
  *
  * @ingroup components_concepts
  */
@@ -55,13 +56,14 @@ concept HasNormal = requires(
 };
 
 /**
- * @brief HasOptionalNormal concept is satisfied only if a class satisfis the HasNormal concept and
- * the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalNormal concept is satisfied only if a class satisfis the
+ * HasNormal concept and the static boolean constant IS_OPTIONAL is set to true.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalNormal = HasNormal<T> && IsOptionalComponent<typename T::Normal>;
+concept HasOptionalNormal =
+	HasNormal<T> && IsOptionalComponent<typename T::Normal>;
 
 } // namespace vcl::comp
 

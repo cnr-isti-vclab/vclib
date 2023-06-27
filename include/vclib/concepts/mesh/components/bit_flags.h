@@ -29,9 +29,9 @@
 namespace vcl::comp {
 
 /**
- * @brief HasBitFlags concept is satisfied only if a Element class provides the member functions
- * specified in this concept. These member functions allows to access to a BitFlag component of a
- * given element.
+ * @brief HasBitFlags concept is satisfied only if a Element class provides the
+ * member functions specified in this concept. These member functions allows to
+ * access to a BitFlag component of a given element.
  *
  * @ingroup components_concepts
  */
@@ -43,6 +43,7 @@ concept HasBitFlags = requires(
 	{ co.deleted() } -> std::same_as<bool>;
 	{ co.selected() } -> std::same_as<bool>;
 	{ co.onBorder() } -> std::same_as<bool>;
+	{ co.selected() } -> std::same_as<bool>;
 	{ co.userBit(uint()) } -> std::same_as<bool>;
 
 	{ o.resetBitFlags() } -> std::same_as<void>;
@@ -50,11 +51,13 @@ concept HasBitFlags = requires(
 	{ co.exportToVCGFlags() } -> std::same_as<int>;
 };
 
+namespace internal {
+
 /**
- * @brief Concept for internal use - contains all the flags member functions that are contained on
- * both the BitFlags components for Face Elements.
+ * @private
+ * @brief Concept for internal use - contains all the flags member functions
+ * that are contained on both the BitFlags components for Face Elements.
  *
- * @ingroup components_concepts
  */
 template<typename T>
 concept FaceBitFlagsConcept = HasBitFlags<T> &&
@@ -64,41 +67,46 @@ concept FaceBitFlagsConcept = HasBitFlags<T> &&
 {
 	{ co.edgeOnBorder(uint()) } -> std::same_as<bool>;
 	{ co.edgeSelected(uint()) } -> std::same_as<bool>;
+	{ co.edgeVisited(uint()) } -> std::same_as<bool>;
 	{ co.edgeFaux(uint()) } -> std::same_as<bool>;
 };
 
+} // namespace internal
+
 /**
- * @brief HasPolygonBitFlags concept is satisfied only if a Element class (that should be a Face)
- * provides the member functions specified in this concept. These member functions allows to access
- * to PolygonBitFlags component of a given element.
+ * @brief HasPolygonBitFlags concept is satisfied only if a Element class (that
+ * should be a Face) provides the member functions specified in this concept.
+ * These member functions allows to access to PolygonBitFlags component of a
+ * given element.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPolygonBitFlags = FaceBitFlagsConcept<T> &&
+concept HasPolygonBitFlags = internal::FaceBitFlagsConcept<T> &&
 	requires(T o)
 {
 	{ o.__polygonBitFlags() } -> std::same_as<void>;
 };
 
 /**
- * @brief HasTriangleBitFlags concept is satisfied only if a Element class (that should be a Face)
- * provides the member functions specified in this concept. These member functions allows to access
- * to TriangleBitFlags component of a given element.
+ * @brief HasTriangleBitFlags concept is satisfied only if a Element class (that
+ * should be a Face) provides the member functions specified in this concept.
+ * These member functions allows to access to TriangleBitFlags component of a
+ * given element.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTriangleBitFlags = FaceBitFlagsConcept<T> &&
+concept HasTriangleBitFlags = internal::FaceBitFlagsConcept<T> &&
 	requires(T o)
 {
 	{ o.__triangleBitFlags() } -> std::same_as<void>;
 };
 
 /**
- * @brief HasFaceBitFlags concept is satisfied if one between HasPolygonBitFlags and
- * HasTriangleBitFlags concept is satisfied. This concept allows to make sure that a Face element
- * has proper FaceBitFlags (Triangle or Polygon).
+ * @brief HasFaceBitFlags concept is satisfied if one between HasPolygonBitFlags
+ * and HasTriangleBitFlags concept is satisfied. This concept allows to make
+ * sure that a Face element has proper FaceBitFlags (Triangle or Polygon).
  *
  * @ingroup components_concepts
  */
