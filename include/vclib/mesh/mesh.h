@@ -98,13 +98,13 @@ public:
 	using Components = typename vcl::
 		FilterTypesByCondition<comp::IsComponentPred, vcl::TypeWrapper<Args...>>::type;
 
+	/* constructors */
+
 	Mesh();
 	Mesh(const Mesh& oth);
 	Mesh(Mesh&& oth);
 
-	void clear();
-
-	void compact();
+	/* constexpr static member functions */
 
 	template<ElementConcept El>
 	static constexpr bool hasContainerOf();
@@ -113,7 +113,16 @@ public:
 	static constexpr bool hasContainerOf();
 
 	template<uint EL_TYPE, uint COMP_TYPE>
+	static constexpr bool hasPerElementComponent();
+
+	template<uint EL_TYPE, uint COMP_TYPE>
 	static constexpr bool hasPerElementOptionalComponent();
+
+	/* member functions */
+
+	void clear();
+
+	void compact();
 
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);

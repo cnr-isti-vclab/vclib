@@ -79,28 +79,6 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 }
 
 /**
- * @brief Clears all the Elements contained in the mesh.
- * @todo manage also other components
- */
-template<typename... Args>
-void Mesh<Args...>::clear()
-{
-	(clearContainer<Args>(), ...);
-}
-
-/**
- * @brief Compacts all the containers of the mesh.
- *
- * Removes all the deleted elements from each container, compacting the
- * the containers and then updating automatically all the pointers.
- */
-template<typename... Args>
-void Mesh<Args...>::compact()
-{
-	(compactContainer<Args>(), ...);
-}
-
-/**
  * @brief Returns true if this Mesh has a container of elements having the same
  *Element ID of the template Element El.
  *
@@ -155,6 +133,49 @@ constexpr bool Mesh<Args...>::hasContainerOf()
 	return mesh::HasContainerOfElementPred<EL_TYPE, Mesh<Args...>>::value;
 }
 
+/**
+ * @brief Returns true if this Mesh has a container of elements having the same
+ * Element ID of the template EL_TYPE ID and the Element of that container has
+ * a Component having the same Component ID of the template COMP_TYPE ID.
+ *
+ * Example of usage (Note: TriMesh has per Vertex TexCoords, but not adj edges):
+ *
+ * @code{.cpp}
+ * static_assert(vcl::TriMesh::hasPerElementComponent<
+ *         vcl::VERTEX, vcl::TEX_COORDS>(),
+ *         "TriMesh does not have per Vertex TexCoords");
+ *
+ * static_assert(!vcl::TriMesh::hasPerElementComponent<
+ *        vcl::VERTEX, vcl::ADJ_EDGES>(),
+ *        "TriMesh has per Vertex Adjacent Edges");
+ * @endcode
+ */
+template<typename... Args>
+template<uint EL_TYPE, uint COMP_TYPE>
+constexpr bool Mesh<Args...>::hasPerElementComponent()
+{
+	return mesh::HasPerElementComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
+}
+
+/**
+ * @brief Returns true if this Mesh has a container of elements having the same
+ * Element ID of the template EL_TYPE ID and the Element of that container has
+ * an Optional Component having the same Component ID of the template COMP_TYPE
+ * ID.
+ *
+ * Example of usage (Note: TriMesh has per Vertex optional TexCoords, and
+ * non-optional Normals):
+ *
+ * @code{.cpp}
+ * static_assert(vcl::TriMesh::hasPerElementOptionalComponent<
+ *         vcl::VERTEX, vcl::TEX_COORDS>(),
+ *         "TriMesh does not have per Vertex Optional TexCoords");
+ *
+ * static_assert(!vcl::TriMesh::hasPerElementOptionalComponent<
+ *        vcl::VERTEX, vcl::NORMALS>(),
+ *        "TriMesh has per Vertex Optional Normals");
+ * @endcode
+ */
 template<typename... Args>
 template<uint EL_TYPE, uint COMP_TYPE>
 constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
@@ -164,15 +185,39 @@ constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
 }
 
 /**
- * @brief Enables all the OptionalComponents of this mesh according to the Components available
- * on the OtherMeshType m.
+ * @brief Clears all the Elements contained in the mesh.
+ * @todo manage also other components
+ */
+template<typename... Args>
+void Mesh<Args...>::clear()
+{
+	(clearContainer<Args>(), ...);
+}
+
+/**
+ * @brief Compacts all the containers of the mesh.
  *
- * This function is useful to call before importing data from another MeshType, to be sure that
- * all the available data contained in the MeshType mesh will be imported.
+ * Removes all the deleted elements from each container, compacting the
+ * the containers and then updating automatically all the pointers.
+ */
+template<typename... Args>
+void Mesh<Args...>::compact()
+{
+	(compactContainer<Args>(), ...);
+}
+
+/**
+ * @brief Enables all the OptionalComponents of this mesh according to the
+ * Components available on the OtherMeshType m.
+ *
+ * This function is useful to call before importing data from another MeshType,
+ * to be sure that all the available data contained in the MeshType mesh will be
+ * imported.
  *
  * This function:
  * - disables all the optional components that are not available in m
- * - enables all the optional components that are available in m (which can be both optional or not)
+ * - enables all the optional components that are available in m (which can be
+ * both optional or not)
  *
  * Example of usage:
  *
@@ -182,8 +227,10 @@ constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
  *
  * // do stuff on m2
  *
- * m1.enableSameOptionalComponentsOf(m2); // m1 enables all the available components of m2
- * m1.importFrom(m2); // m1 will import all the data contained in m2 that can be stored in m1
+ * m1.enableSameOptionalComponentsOf(m2); // m1 enables all the available
+ *                                        // components of m2
+ * m1.importFrom(m2); // m1 will import all the data contained
+ *                    // in m2 that can be stored in m1
  * @endcode
  *
  * @param m
@@ -192,21 +239,23 @@ template<typename... Args>
 template<typename OtherMeshType>
 void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 {
-	// enable all optional components of this Mesh depending on what's available in the
-	// OtherMeshType
+	// enable all optional components of this Mesh depending on what's available
+	// in the OtherMeshType
 
 	(enableSameOptionalComponentsOf<Args>(m), ...);
 }
 
 /**
- * @brief Imports all the components that can be imported from another type of mesh.
+ * @brief Imports all the components that can be imported from another type of
+ * mesh.
  *
- * This function can be called from any Mesh type having all the Elements and Components that
- * implement the member function importFrom.
+ * This function can be called from any Mesh type having all the Elements and
+ * Components that implement the member function importFrom.
  *
- * Note that this function does not enable optional components that are disabled.
- * If you want to import all the possible data including also disabled components of this mesh, you
- * should call the function m1.enableSameOptionalComponentsOf(m2) before this function.
+ * Note that this function does not enable optional components that are
+ * disabled. If you want to import all the possible data including also disabled
+ * components of this mesh, you should call the function
+ * m1.enableSameOptionalComponentsOf(m2) before this function.
  *
  * @param[in] m: the mesh from which import all the data.
  */
@@ -215,35 +264,39 @@ template<typename OtherMeshType>
 void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
 	// This function will first:
-	// Call, for each Container and Component of the mesh, its importFrom function.
-	// In case of containers, it first creates the same number of elements in the container,
-	// and then calls the importFrom function for each new element.
-	// Pointers are not managed here, since they need additional parameters to be imported
+	// Call, for each Container and Component of the mesh, its importFrom
+	// function. In case of containers, it first creates the same number of
+	// elements in the container, and then calls the importFrom function for
+	// each new element. Pointers are not managed here, since they need
+	// additional parameters to be imported
 
 	(Args::importFrom(m), ...);
 
 	// Set to all element containers their parent mesh (this)
 	updateAllParentMeshPointers();
 
-	// after importing ordinary components, we need to convert the pointers between containers.
-	// each container can import more than one pointer type, e.g.:
-	// - VertexContainer could import vertex pointers (adjacent vertices), face pointers
-	//   (adjacent faces), and so on;
-	// - FaceContainer will always import vertex pointers, but could also import face pointers
-	//   (adjacent faces), edge pointers (adjacent edges)...
-	// for each container of this Mesh, we'll call the importPointers passing the container (Args)
-	// as template parameter. This parameter will be used to call all the possible import functions
-	// available (vertices, faces, edges, half edges)
+	// after importing ordinary components, we need to convert the pointers
+	// between containers. each container can import more than one pointer type,
+	// e.g.:
+	// - VertexContainer could import vertex pointers (adjacent vertices), face
+	//   pointers (adjacent faces), and so on;
+	// - FaceContainer will always import vertex pointers, but could also import
+	//   face pointers (adjacent faces), edge pointers (adjacent edges)...
+	// for each container of this Mesh, we'll call the importPointers passing
+	// the container (Args) as template parameter. This parameter will be used
+	// to call all the possible import functions available (vertices, faces,
+	// edges, half edges)
 
 	(importPointers<Args>(m), ...);
 
 	if constexpr(mesh::HasFaceContainer<Mesh<Args...>>) {
-		// Now I need to manage imports between different types of meshes (same type of meshes are
-		// already managed from importFrom and importPointersFrom member functions).
+		// Now I need to manage imports between different types of meshes (same
+		// type of meshes are already managed from importFrom and
+		// importPointersFrom member functions).
 		//
-		// Generally speaking, Polygon meshes can import from any other type of mesh.
-		// We need to take care when this mesh has static vertex pointers number in the face
-		// container (VERTEX_NUMBER >= 3).
+		// Generally speaking, Polygon meshes can import from any other type of
+		// mesh. We need to take care when this mesh has static vertex pointers
+		// number in the face container (VERTEX_NUMBER >= 3).
 		//
 		// The follwing case don't need to be managed:
 		// - import polygon mesh from triangle mesh
@@ -252,12 +305,13 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 		// - import triangle mesh from polygon mesh: need triangulation
 		//
 		// I cannot manage the follwing cases:
-		// - import static non-triangle mesh from polygon mesh or from a mesh with different
-		//   VERTEX_NUMBER
+		// - import static non-triangle mesh from polygon mesh or from a mesh
+		//   with different VERTEX_NUMBER
 
 		// in case of import from poly to triangle mesh, I need to manage
-		// triangulation of polygons and create additional triangle faces for each of the
-		// imported polygons. This function statically asserts that the import can be done.
+		// triangulation of polygons and create additional triangle faces for
+		// each of the imported polygons. This function statically asserts that
+		// the import can be done.
 		using FaceContainer = typename Mesh<Args...>::FaceContainer;
 		FaceContainer::manageImportTriFromPoly(m);
 	}
@@ -272,17 +326,20 @@ void Mesh<Args...>::swap(Mesh& m2)
 {
 	Mesh<Args...>& m1 = *this;
 
-	constexpr uint N_CONTAINERS = NumberOfTypes<typename Mesh<Args...>::Containers>::value;
+	constexpr uint N_CONTAINERS =
+		NumberOfTypes<typename Mesh<Args...>::Containers>::value;
 	static_assert(N_CONTAINERS != 0);
 
 	// container bases of each container for m1 and m2
 	// we save the bases of the containers before swap
-	std::array<const void*, N_CONTAINERS> m1Bases = Mesh<Args...>::getContainerBases(m1);
-	std::array<const void*, N_CONTAINERS> m2Bases = Mesh<Args...>::getContainerBases(m2);
+	std::array<const void*, N_CONTAINERS> m1Bases =
+		Mesh<Args...>::getContainerBases(m1);
+	std::array<const void*, N_CONTAINERS> m2Bases =
+		Mesh<Args...>::getContainerBases(m2);
 
 	// actual swap of all the containers and the components of the mesh
-	// using pack expansion: swap will be called for each of the containers (or components!) that
-	// compose the Mesh
+	// using pack expansion: swap will be called for each of the containers (or
+	// components!) that compose the Mesh
 	using std::swap;
 	(swap((Args&) m1, (Args&) m2), ...);
 
@@ -290,9 +347,10 @@ void Mesh<Args...>::swap(Mesh& m2)
 	m1.updateAllParentMeshPointers();
 	m2.updateAllParentMeshPointers();
 
-	// update all the pointers to m1 and m2: old base of m1 is now "old base" of m2, and viceversa
-	(Mesh<Args...>::template updatePointersOfContainerType<Args>(m1, m2Bases), ...);
-	(Mesh<Args...>::template updatePointersOfContainerType<Args>(m2, m1Bases), ...);
+	// update all the pointers to m1 and m2: old base of m1 is now "old base" of
+	// m2, and viceversa
+	(updatePointersOfContainerType<Args>(m1, m2Bases), ...);
+	(updatePointersOfContainerType<Args>(m2, m1Bases), ...);
 }
 
 /**
@@ -310,8 +368,8 @@ Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
 /**
  * @brief Returns the index of the given element in its Container of the Mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type El. Otherwise, a compiler
- * error will be triggered.
+ * The function requires that the Mesh has a Container of Elements of type El.
+ * Otherwise, a compiler error will be triggered.
  *
  * @tparam El: The type of the Element, it must satisfy the ElementConcept.
  * @param e: a reference of an element of the Mesh.
@@ -328,8 +386,8 @@ uint Mesh<Args...>::index(const El& e) const requires (hasContainerOf<El>())
 /**
  * @brief Returns the index of the given element in its Container of the Mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type El. Otherwise, a compiler
- * error will be triggered.
+ * The function requires that the Mesh has a Container of Elements of type El.
+ * Otherwise, a compiler error will be triggered.
  *
  * @tparam El: The type of the Element, it must satisfy the ElementConcept.
  * @param e: a pointer to an element of the Mesh.
@@ -343,15 +401,44 @@ uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 	return Container::index(e);
 }
 
+/**
+ * @brief Returns the element of the given type at the given index inside its
+ * container of this mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * The function does not perform any check on the index. If the index is out of
+ * range, the behaviour is undefined.
+ *
+ * @tparam EL_TYPE: the type ID of the element to return.
+ * @return the element of the given type ID at the given index inside its
+ * container of this mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
-const auto& Mesh<Args...>::element(uint i) const requires (hasContainerOf<EL_TYPE>())
+const auto& Mesh<Args...>::element(uint i) const
+	requires(hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::element(i);
 }
 
+/**
+ * @brief Returns the element of the given type at the given index inside its
+ * container of this mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * The function does not perform any check on the index. If the index is out of
+ * range, the behaviour is undefined.
+ *
+ * @tparam EL_TYPE: the type ID of the element to return.
+ * @return the element of the given type ID at the given index inside its
+ * container of this mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<EL_TYPE>())
@@ -361,6 +448,15 @@ auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<EL_TYPE>())
 	return Cont::element(i);
 }
 
+/**
+ * @brief Returns the number of elements of the given type in this mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @return the number of elements of the given type in this mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::number() const requires (hasContainerOf<EL_TYPE>())
@@ -691,26 +787,32 @@ auto Mesh<Args...>::getContainerBases(const Mesh<A...>& m)
 }
 
 /**
- * This function is called for each container of the mesh.
+ * This function *is static*, and is generally called for each container of the
+ * mesh, that is the template argument Cont.
  *
- * In general, for each container, we need to update all the pointers contained in it,
- * that may of any element of the mesh (example: in the VertexContainer there could be
- * Vertex pointers, but also Face or Edge pointers).
+ * In general, for each container, we need to update all the pointers contained
+ * in it, that may of any element of the mesh (example: in the VertexContainer
+ * there could be Vertex pointers, but also Face or Edge pointers).
  *
- * Here in this function, we loop into the containers of the Mesh m using pack expansion, and
- * we use the Cont type to choose which pointers type we are updating.
+ * Here in this function, we loop into the containers of the Mesh m using pack
+ * expansion, and we use the Cont type to choose which pointers type we are
+ * updating.
  *
  * bases contains the old bases (the ones of the other mesh) for each container.
  */
 template<typename... Args>
 template<typename Cont, typename Array, typename... A>
-void Mesh<Args...>::updatePointersOfContainerType(Mesh<A...>& m, const Array& bases)
+void Mesh<Args...>::updatePointersOfContainerType(
+	Mesh<A...>&  m,
+	const Array& bases)
 {
-	// since this function is called using pack expansion, it means that Cont could be a mesh
-	// component and not a cointainer. We check if Cont is a container
+	// since this function is called using pack expansion, it means that Cont
+	// could be a mesh component and not a cointainer. We check if Cont is a
+	// container
 	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		// The element type contained in the container
-		// We need it to get back the actual type of the element from the old bases
+		// We need it to get back the actual type of the element from the old
+		// bases
 		using ElType = typename Cont::ElementType;
 
 		using Containers = typename Mesh<A...>::Containers;
@@ -718,8 +820,11 @@ void Mesh<Args...>::updatePointersOfContainerType(Mesh<A...>& m, const Array& ba
 		static_assert(I >= 0 && I != UINT_NULL);
 
 		// for each Container A in m, we update the pointers of ElType.
-		// old base is contained in the array bases, the new base is the base of the container
-		(m.template updatePointers<A>((const ElType*)bases[I], m.Cont::vec.data()), ...);
+		// old base is contained in the array bases, the new base is the base of
+		// the container
+		(m.template updatePointers<A>(
+			 (const ElType*) bases[I], m.Cont::vec.data()),
+		 ...);
 	}
 }
 

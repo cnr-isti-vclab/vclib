@@ -149,6 +149,13 @@ template<typename MeshType, uint EL_TYPE>
 concept HasElementContainer = HasContainerOfElementPred<EL_TYPE, MeshType>::value;
 
 template<typename MeshType, uint EL_TYPE, uint COMP_TYPE>
+concept HasPerElementComponent =
+	HasElementContainer<MeshType, EL_TYPE> &&
+	comp::HasComponentOfType<
+			typename ContainerOfElementType<EL_TYPE, MeshType>::ElementType,
+			COMP_TYPE>;
+
+template<typename MeshType, uint EL_TYPE, uint COMP_TYPE>
 concept HasPerElementOptionalComponent =
 	HasElementContainer<MeshType, EL_TYPE> &&
 	comp::HasOptionalComponentOfType<
