@@ -28,7 +28,7 @@ namespace vcl {
 /**
  * @brief Empty constructor, constructs an empty mesh.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 Mesh<Args...>::Mesh()
 {
 	// Set to all element containers their parent mesh (this)
@@ -36,67 +36,80 @@ Mesh<Args...>::Mesh()
 }
 
 /**
- * @brief Copy constructor of the Mesh. Will create a deep copy of the given input mesh,
- * taking care of copying everithing and then update all the pointers
+ * @brief Copy constructor of the Mesh. Will create a deep copy of the given
+ * input mesh, taking care of copying everithing and then update all the
+ * pointers
  *
  * @param oth: the mesh from which constructo this Mesh.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
-		Args(oth)... // call auto copy constructors for all the container elements and components
+		Args(oth)... // call auto copy constructors for all the container
+					 // elements and components
 {
 	// Set to all element containers their parent mesh (this)
 	updateAllParentMeshPointers();
 
-	// save base pointer of each container of the other mesh
-	constexpr uint N_CONTAINERS = NumberOfTypes<typename Mesh<Args...>::Containers>::value;
-	std::array<const void*, N_CONTAINERS> othBases = Mesh<Args...>::getContainerBases(oth);
+	// for each container of oth, save its base pointer
+	// will need it to update all the pointers of this mesh
+	constexpr uint N_CONTAINERS =
+		NumberOfTypes<typename Mesh<Args...>::Containers>::value;
+	std::array<const void*, N_CONTAINERS> othBases =
+		Mesh<Args...>::getContainerBases(oth);
 
 	// update all the pointers contained on each container
-	// use the base pointer of each container of oth to update all the pointers in this mesh
-	// each pointer of oth that was copied in this mesh, will be updated computing its offset wrt
-	// the base of oth, and then adding that offset to the new base pointer of this mesh
-	(Mesh<Args...>::template updatePointersOfContainerType<Args>(*this, othBases), ...);
+	// use the base pointer of each container of oth to update all the pointers
+	// in this mesh each pointer of oth that was copied in this mesh, will be
+	// updated computing its offset wrt the base of oth, and then adding that
+	// offset to the new base pointer of this mesh
+	(Mesh<Args...>::updatePointersOfContainerType<Args>(*this, othBases), ...);
 }
 
 /**
- * @brief Move constructor, moves the given mesh into this one, without any other
- * resource acquisition.
+ * @brief Move constructor, moves the given mesh into this one, without any
+ * other resource acquisition.
  *
  * @param oth: the mesh that will be moved into this Mesh.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 {
-	swap(oth); // use copy ans swap idiom: this (empty) mesh is swapped with the input one
+	swap(oth); // use copy ans swap idiom: this (empty) mesh is swapped with the
+			   // input one
 }
 
 /**
  * @brief Clears all the Elements contained in the mesh.
  * @todo manage also other components
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 void Mesh<Args...>::clear()
 {
-    (clearContainer<Args>(), ...);
+	(clearContainer<Args>(), ...);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+/**
+ * @brief Compacts all the containers of the mesh.
+ *
+ * Removes all the deleted elements from each container, compacting the
+ * the containers and then updating automatically all the pointers.
+ */
+template<typename... Args>
 void Mesh<Args...>::compact()
 {
 	(compactContainer<Args>(), ...);
 }
 
 /**
- * @brief The HasContainerOf struct sets the bool `value` to true if this Mesh has a container
- * of elements having the same Element ID of the template Element El.
+ * @brief Returns true if this Mesh has a container of elements having the same
+ *Element ID of the template Element El.
  *
- * This means that this the only value checked is the ELEMENT_TYPE unsigned int exposed by the
- * Element, meaning that it does not check if the Elements of this mesh are exactly the same of
- * El.
+ * This means that this the only value checked is the ELEMENT_TYPE unsigned int
+ * exposed by the Element, meaning that it does not check if the Elements of
+ * this mesh are exactly the same of El.
  *
- * In other words, it returns true also if we pass an Element of another mesh that is of the
- * same ELEMENT_TYPE (both Vertices, Faces, ecc).
+ * In other words, it returns true also if we pass an Element of another mesh
+ * that is of the same ELEMENT_TYPE (both Vertices, Faces, ecc).
  *
  * Example of usage (Note: EdgeMesh has Vertices, but not Faces):
  *
@@ -107,31 +120,47 @@ void Mesh<Args...>::compact()
  *					"EdgeMesh has Faces");
  * @endcode
  *
- * HasContainerOf sets its value to true when El is the TriMesh::Vertex, because EdgeMesh has
- * a Container of Vertices (Vertices of TriMesh and EdgeMesh are defined in different ways, but
- * they have the same ELEMENT_TYPE id).
- * HasContainerOf sets its value to false when El is the TriMesh::Face, because EdgeMesh does
- * not have a Container of Faces.
+ * @tparam El: the Element type to check.
+ * @return true if this Mesh has a container of elements having the same
+ * Element ID of the template Element El.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<ElementConcept El>
 constexpr bool Mesh<Args...>::hasContainerOf()
 {
 	return mesh::HasContainerOfPred<El, Mesh<Args...>>::value;
 }
 
-template<typename... Args> requires HasVertices<Args...>
+/**
+ * @brief Returns true if this Mesh has a container of elements having the same
+ * Element ID of the template EL_TYPE ID.
+ *
+ * Example of usage (Note: EdgeMesh has Vertices, but not Faces):
+ *
+ * @code{.cpp}
+ * static_assert(vcl::EdgeMesh::hasContainerOf<vcl::VERTEX>(),
+ *					"EdgeMesh does not have Vertices");
+ * static_assert(!vcl::EdgeMesh::hasContainerOf<vcl::FACE>(),
+ *					"EdgeMesh has Faces");
+ * @endcode
+ *
+ * @tparam EL_TYPE: the Element type ID to check.
+ * @return true if this Mesh has a container of elements having the same
+ * Element ID of the template EL_TYPE ID.
+ */
+template<typename... Args>
 template<uint EL_TYPE>
 constexpr bool Mesh<Args...>::hasContainerOf()
 {
 	return mesh::HasContainerOfElementPred<EL_TYPE, Mesh<Args...>>::value;
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE, uint COMP_TYPE>
 constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
 {
-	return mesh::HasPerElementOptionalComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
+	return mesh::
+		HasPerElementOptionalComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
 }
 
 /**
@@ -159,7 +188,7 @@ constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
  *
  * @param m
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename OtherMeshType>
 void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 {
@@ -181,7 +210,7 @@ void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
  *
  * @param[in] m: the mesh from which import all the data.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename OtherMeshType>
 void Mesh<Args...>::importFrom(const OtherMeshType& m)
 {
@@ -238,7 +267,7 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
  * @brief Swaps this mesh with the other input Mesh m2.
  * @param m2: the Mesh to swap with this Mesh.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 void Mesh<Args...>::swap(Mesh& m2)
 {
 	Mesh<Args...>& m1 = *this;
@@ -271,7 +300,7 @@ void Mesh<Args...>::swap(Mesh& m2)
  * @param oth: the Mesh from which will create a copy and assign to this Mesh
  * @return a reference to this Mesh after the assignemnt.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
 {
 	swap(oth);
@@ -288,7 +317,7 @@ Mesh<Args...>& Mesh<Args...>::operator=(Mesh<Args...> oth)
  * @param e: a reference of an element of the Mesh.
  * @return the index of the given element.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El& e) const requires (hasContainerOf<El>())
 {
@@ -306,7 +335,7 @@ uint Mesh<Args...>::index(const El& e) const requires (hasContainerOf<El>())
  * @param e: a pointer to an element of the Mesh.
  * @return the index of the given element.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 {
@@ -314,7 +343,7 @@ uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 	return Container::index(e);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 const auto& Mesh<Args...>::element(uint i) const requires (hasContainerOf<EL_TYPE>())
 {
@@ -323,7 +352,7 @@ const auto& Mesh<Args...>::element(uint i) const requires (hasContainerOf<EL_TYP
 	return Cont::element(i);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<EL_TYPE>())
 {
@@ -332,7 +361,7 @@ auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<EL_TYPE>())
 	return Cont::element(i);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::number() const requires (hasContainerOf<EL_TYPE>())
 {
@@ -341,7 +370,7 @@ uint Mesh<Args...>::number() const requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementNumber();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::containerSize() const requires (hasContainerOf<EL_TYPE>())
 {
@@ -350,7 +379,7 @@ uint Mesh<Args...>::containerSize() const requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementContainerSize();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<EL_TYPE>())
 {
@@ -359,7 +388,7 @@ uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<EL_TYPE>())
 	return Cont::deletedElementNumber();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::add() requires (hasContainerOf<EL_TYPE>())
 {
@@ -368,7 +397,7 @@ uint Mesh<Args...>::add() requires (hasContainerOf<EL_TYPE>())
 	return Cont::addElement();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::add(uint n) requires (hasContainerOf<EL_TYPE>())
 {
@@ -377,7 +406,7 @@ uint Mesh<Args...>::add(uint n) requires (hasContainerOf<EL_TYPE>())
 	return Cont::addElements(n); // add the number elements
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<EL_TYPE>())
 {
@@ -386,7 +415,7 @@ void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<EL_TYPE>())
 	Cont::reserveElements(n);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<EL_TYPE>())
 {
@@ -395,7 +424,7 @@ void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<EL_TYPE>())
 	Cont::deleteElement(i);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<ElementConcept El>
 void Mesh<Args...>::deleteElement(const El* e) const requires (hasContainerOf<El>())
 {
@@ -403,7 +432,7 @@ void Mesh<Args...>::deleteElement(const El* e) const requires (hasContainerOf<El
 	return Cont::deleteElement(e);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<ElementConcept El>
 void Mesh<Args...>::deleteElement(const El& e) const requires (hasContainerOf<El>())
 {
@@ -411,7 +440,7 @@ void Mesh<Args...>::deleteElement(const El& e) const requires (hasContainerOf<El
 	return Cont::deleteElement(&e);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 std::vector<uint> Mesh<Args...>::conpactIndices() const requires (hasContainerOf<EL_TYPE>())
 {
@@ -420,7 +449,7 @@ std::vector<uint> Mesh<Args...>::conpactIndices() const requires (hasContainerOf
 	return Cont::elementConpactIndices();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 void Mesh<Args...>::updateIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>())
 {
@@ -429,7 +458,7 @@ void Mesh<Args...>::updateIndices(const std::vector<uint>& newIndices) requires 
 	return Cont::updateElementIndices(newIndices);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
 {
@@ -438,7 +467,7 @@ auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementBegin(jumpDeleted);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::end() requires (hasContainerOf<EL_TYPE>())
 {
@@ -447,7 +476,7 @@ auto Mesh<Args...>::end() requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementEnd();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::begin(bool jumpDeleted) const requires (hasContainerOf<EL_TYPE>())
 {
@@ -456,7 +485,7 @@ auto Mesh<Args...>::begin(bool jumpDeleted) const requires (hasContainerOf<EL_TY
 	return Cont::elementBegin(jumpDeleted);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
 {
@@ -465,7 +494,7 @@ auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementEnd();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::elements(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
 {
@@ -474,7 +503,7 @@ auto Mesh<Args...>::elements(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>
 	return Cont::elements(jumpDeleted);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::elements(bool jumpDeleted) const requires (hasContainerOf<EL_TYPE>())
 {
@@ -483,7 +512,7 @@ auto Mesh<Args...>::elements(bool jumpDeleted) const requires (hasContainerOf<EL
 	return Cont::elements(jumpDeleted);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE, uint COMP_TYPE>
 bool Mesh<Args...>::isPerElementComponentEnabled() const
 	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
@@ -493,7 +522,7 @@ bool Mesh<Args...>::isPerElementComponentEnabled() const
 	return Cont::template isOptionalComponentEnabled<COMP_TYPE>();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE, uint COMP_TYPE>
 void Mesh<Args...>::enablePerElementComponent()
 	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
@@ -503,7 +532,7 @@ void Mesh<Args...>::enablePerElementComponent()
 	Cont::template enableOptionalComponent<COMP_TYPE>();
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE, uint COMP_TYPE>
 void Mesh<Args...>::disablePerElementComponent()
 	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
@@ -517,7 +546,7 @@ void Mesh<Args...>::disablePerElementComponent()
  * Protected Members *
  *********************/
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont>
 void Mesh<Args...>::compactContainer()
 {
@@ -528,7 +557,7 @@ void Mesh<Args...>::compactContainer()
 	}
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont>
 void Mesh<Args...>::clearContainer()
 {
@@ -537,7 +566,7 @@ void Mesh<Args...>::clearContainer()
 	}
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<ElementConcept Element>
 void Mesh<Args...>::updateAllPointers(const Element* oldBase, const Element* newBase)
 {
@@ -545,7 +574,7 @@ void Mesh<Args...>::updateAllPointers(const Element* oldBase, const Element* new
 		(updatePointers<Args>(oldBase, newBase), ...);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont, typename Element>
 void Mesh<Args...>::updatePointers(
 	const Element* oldBase,
@@ -556,7 +585,7 @@ void Mesh<Args...>::updatePointers(
 	}
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<ElementConcept Element>
 void Mesh<Args...>::updateAllPointersAfterCompact(
 	const Element* base,
@@ -565,7 +594,7 @@ void Mesh<Args...>::updateAllPointersAfterCompact(
 	(updatePointersAfterCompact<Args>(base, newIndices), ...);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont, typename Element>
 void Mesh<Args...>::updatePointersAfterCompact(
 	const Element*          base,
@@ -576,7 +605,7 @@ void Mesh<Args...>::updatePointersAfterCompact(
 	}
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont, typename OtherMeshType>
 void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 {
@@ -585,13 +614,13 @@ void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 	}
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 void Mesh<Args...>::updateAllParentMeshPointers()
 {
 	(setParentMeshPointers<Args>(), ...);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont>
 void Mesh<Args...>::setParentMeshPointers()
 {
@@ -604,7 +633,7 @@ void Mesh<Args...>::setParentMeshPointers()
  * This function will import, for a given container of this mesh that is passed as a template
  * parameter Cont, all the pointers of all the elements from the other mesh m.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont, typename OthMesh>
 void Mesh<Args...>::importPointers(const OthMesh &m)
 {
@@ -612,7 +641,7 @@ void Mesh<Args...>::importPointers(const OthMesh &m)
 	(importPointersOfElement<Cont, Args>(m), ...);
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont, typename ElemCont, typename OthMesh>
 void Mesh<Args...>::importPointersOfElement(const OthMesh& m)
 {
@@ -630,7 +659,7 @@ void Mesh<Args...>::importPointersOfElement(const OthMesh& m)
  * In the Ith position will be placed the base pointer of the vector of the elements contained
  * in the container Cont.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint I, typename Cont, typename Array, typename... A>
 void Mesh<Args...>::setContainerBase(const Mesh<A...>& m, Array& bases)
 {
@@ -642,7 +671,7 @@ void Mesh<Args...>::setContainerBase(const Mesh<A...>& m, Array& bases)
 	}
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename... A>
 auto Mesh<Args...>::getContainerBases(const Mesh<A...>& m)
 {
@@ -673,7 +702,7 @@ auto Mesh<Args...>::getContainerBases(const Mesh<A...>& m)
  *
  * bases contains the old bases (the ones of the other mesh) for each container.
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename Cont, typename Array, typename... A>
 void Mesh<Args...>::updatePointersOfContainerType(Mesh<A...>& m, const Array& bases)
 {
@@ -694,7 +723,7 @@ void Mesh<Args...>::updatePointersOfContainerType(Mesh<A...>& m, const Array& ba
 	}
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<uint EL_TYPE, typename T>
 uint Mesh<Args...>::elementIndex(const T* el) const
 {
@@ -703,7 +732,7 @@ uint Mesh<Args...>::elementIndex(const T* el) const
 	return index(static_cast<const ElType*>(el));
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename El>
 auto& Mesh<Args...>::customComponents()
 {
@@ -712,7 +741,7 @@ auto& Mesh<Args...>::customComponents()
 	return ElCont::ccVecMap;
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename El>
 const auto& Mesh<Args...>::customComponents() const
 {
@@ -721,7 +750,7 @@ const auto& Mesh<Args...>::customComponents() const
 	return ElCont::ccVecMap;
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename El>
 auto& Mesh<Args...>::verticalComponents()
 {
@@ -730,7 +759,7 @@ auto& Mesh<Args...>::verticalComponents()
 	return ElCont::vcVecTuple;
 }
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 template<typename El>
 const auto& Mesh<Args...>::verticalComponents() const
 {

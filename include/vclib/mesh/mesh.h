@@ -34,35 +34,43 @@ namespace vcl {
 /**
  * @defgroup mesh Mesh
  *
- * @brief List of classes, aliases, concepts and functions used for the creation, customization,
- * usage and manipulation of Mesh classes.
+ * @brief List of classes, aliases, concepts and functions used for the
+ * creation, customization, usage and manipulation of Mesh classes.
  */
 
 /**
  * @defgroup components Components
  * @ingroup mesh
  *
- * @brief List of all the Component classes, along with their concepts and functions.
+ * @brief List of all the Component classes, along with their concepts and
+ * functions.
  */
 
 /**
- * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
- * containers of Elements (which can be vertices, faces, edges...), plus some other components.
+ * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a
+ * generic number of containers of Elements (which can be vertices, faces,
+ * edges...), plus some other components.
  *
- * The Mesh class will expose all the public members of its containers and is components, and its
- * role is to implement all the functionalities that allow these containers to comunicate
- * (e.g. an operation on the vertex container that requires to update also some face information).
+ * The Mesh class will expose all the public members of its containers and is
+ * components, and its role is to implement all the functionalities that allow
+ * these containers to comunicate (e.g. an operation on the vertex container
+ * that requires to update also some face information).
  *
- * Therefore, in this page are documented only the functions that in some way need to modify the
- * status of more than one Container of the Mesh. Other functions are inherited by the Container
- * classes of the Elements of the Mesh, or from its Components, and depend on all the templates
- * that compose a specific Mesh definition.
+ * Therefore, in this page are documented only the functions that in some way
+ * need to modify the status of more than one Container of the Mesh. Other
+ * functions are inherited by the Container classes of the Elements of the Mesh,
+ * or from its Components, and depend on all the templates that compose a
+ * specific Mesh definition.
  *
  * @ingroup mesh
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 class Mesh : public Args...
 {
+	static_assert(
+		HasVertices<Args...>,
+		"A Mesh must have a VertexContainer.");
+
 	template<typename El, bool b>
 	friend struct comp::internal::CustomComponentsData;
 
