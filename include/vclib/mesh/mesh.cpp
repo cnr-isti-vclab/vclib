@@ -62,7 +62,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 	// in this mesh each pointer of oth that was copied in this mesh, will be
 	// updated computing its offset wrt the base of oth, and then adding that
 	// offset to the new base pointer of this mesh
-	(Mesh<Args...>::updatePointersOfContainerType<Args>(*this, othBases), ...);
+	(updatePointersOfContainerType<Args>(*this, othBases), ...);
 }
 
 /**
@@ -74,7 +74,7 @@ Mesh<Args...>::Mesh(const Mesh<Args...>& oth) :
 template<typename... Args>
 Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 {
-	swap(oth); // use copy ans swap idiom: this (empty) mesh is swapped with the
+	swap(oth); // use copy and swap idiom: this (empty) mesh is swapped with the
 			   // input one
 }
 
