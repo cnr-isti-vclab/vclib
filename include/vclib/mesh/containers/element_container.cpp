@@ -31,38 +31,38 @@ namespace vcl::mesh {
  * @brief Empty constructor that creates an empty container of Elements.
  */
 template<ElementConcept T>
-inline ElementContainer<T>::ElementContainer()
+ElementContainer<T>::ElementContainer()
 {
 }
 
 /**
- * @brief Returns a const reference of the element at the i-th position in the Element Container of
- * the Mesh, which will be the element having index = i.
+ * @brief Returns a const reference of the element at the i-th position in the
+ * Element Container of the Mesh, which will be the element having index = i.
  *
- * This function does not perform any sanity check: if i is less than elementContainerSize(), this
- * function will return a valid Element reference (note that the Element may have been flagged as
- * deleted).
+ * This function does not perform any sanity check: if i is less than
+ * elementContainerSize(), this function will return a valid Element reference
+ * (note that the Element may have been flagged as deleted).
  *
  * @param[in] i: the index of the element that will be returned.
  */
 template<ElementConcept T>
-inline const T& ElementContainer<T>::element(uint i) const
+const T& ElementContainer<T>::element(uint i) const
 {
 	return vec[i];
 }
 
 /**
- * @brief Returns a reference of the element at the i-th position in the Element Container of the
- * Mesh, which will be the element having index = i.
+ * @brief Returns a reference of the element at the i-th position in the Element
+ * Container of the Mesh, which will be the element having index = i.
  *
- * This function does not perform any sanity check: if i is less than elementContainerSize(), this
- * function will return a valid Element reference (note that the Element may have been flagged as
- * deleted).
+ * This function does not perform any sanity check: if i is less than
+ * elementContainerSize(), this function will return a valid Element reference
+ * (note that the Element may have been flagged as deleted).
  *
  * @param[in] i: the index of the element that will be returned.
  */
 template<ElementConcept T>
-inline T& ElementContainer<T>::element(uint i)
+T& ElementContainer<T>::element(uint i)
 {
 	return vec[i];
 }
@@ -77,7 +77,7 @@ inline T& ElementContainer<T>::element(uint i)
  * @return The number of non-deleted elements of the Mesh.
  */
 template<ElementConcept T>
-inline uint ElementContainer<T>::elementNumber() const
+uint ElementContainer<T>::elementNumber() const
 {
 	return en;
 }
@@ -92,7 +92,7 @@ inline uint ElementContainer<T>::elementNumber() const
  * @return The number of all the elements contained in the Mesh.
  */
 template<ElementConcept T>
-inline uint ElementContainer<T>::elementContainerSize() const
+uint ElementContainer<T>::elementContainerSize() const
 {
 	return vec.size();
 }
@@ -104,7 +104,7 @@ inline uint ElementContainer<T>::elementContainerSize() const
  * @return The number of deleted elements in the container.
  */
 template<ElementConcept T>
-inline uint ElementContainer<T>::deletedElementNumber() const
+uint ElementContainer<T>::deletedElementNumber() const
 {
 	return elementContainerSize() - elementNumber();
 }
@@ -318,7 +318,7 @@ void ElementContainer<T>::updateElementIndices(const std::vector<uint>& newIndic
 {
 	T* base = vec.data();
 
-	parentMesh->updateAllPointersAfterCompact(base, newIndices);
+	parentMesh->updateAllPointers(base, newIndices);
 }
 
 /**
@@ -631,13 +631,13 @@ void ElementContainer<T>::updatePointers(const Element* oldBase, const Element* 
 
 template<ElementConcept T>
 template<typename Element>
-void ElementContainer<T>::updatePointersAfterCompact(
+void ElementContainer<T>::updatePointers(
 	const Element*          base,
 	const std::vector<uint>& newIndices)
 {
 	using Comps = typename T::Components;
 
-	updatePointersAfterCompactOnComponents(base, newIndices, Comps());
+	updatePointersOnComponents(base, newIndices, Comps());
 }
 
 template<ElementConcept T>
@@ -724,12 +724,12 @@ void ElementContainer<T>::updatePointersOnComponents(
 
 template<ElementConcept T>
 template<typename ElPtr, typename... Comps>
-void ElementContainer<T>::updatePointersAfterCompactOnComponents(
+void ElementContainer<T>::updatePointersOnComponents(
 	const ElPtr* base,
 	const std::vector<uint>& newIndices,
 	TypeWrapper<Comps...>)
 {
-	(updatePointersAfterCompactOnComponent<Comps>(base, newIndices), ...);
+	(updatePointersOnComponent<Comps>(base, newIndices), ...);
 }
 
 /**
@@ -803,7 +803,7 @@ void ElementContainer<T>::updatePointersOnComponent(const ElPtr* oldBase, const 
 
 template<ElementConcept T>
 template<typename Comp, typename ElPtr>
-void ElementContainer<T>::updatePointersAfterCompactOnComponent(
+void ElementContainer<T>::updatePointersOnComponent(
 	const ElPtr* base,
 	const std::vector<uint>& newIndices)
 {
@@ -811,13 +811,13 @@ void ElementContainer<T>::updatePointersAfterCompactOnComponent(
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
 			if(isOptionalComponentEnabled<Comp>()) {
 				for (T& e : elements()) {
-					e.Comp::updatePointersAfterCompact(base, newIndices);
+					e.Comp::updatePointers(base, newIndices);
 				}
 			}
 		}
 		else {
 			for (T& e : elements()) {
-				e.Comp::updatePointersAfterCompact(base, newIndices);
+				e.Comp::updatePointers(base, newIndices);
 			}
 		}
 	}

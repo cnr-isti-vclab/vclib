@@ -119,7 +119,7 @@ protected:
 
 	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
 
-	void updatePointersAfterCompact(const Vertex* base, const std::vector<uint>& newIndices);
+	void updatePointers(const Vertex* base, const std::vector<uint>& newIndices);
 
 	// ContainerComponent interface functions
 

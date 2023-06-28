@@ -248,11 +248,11 @@ void AdjacentVertices<Vertex, El, O>::updatePointers(const Vertex* oldBase, cons
 }
 
 template<typename Vertex, typename El, bool O>
-void AdjacentVertices<Vertex, El, O>::updatePointersAfterCompact(
+void AdjacentVertices<Vertex, El, O>::updatePointers(
 	const Vertex*           base,
 	const std::vector<uint>& newIndices)
 {
-	Base::updateElementPointersAfterCompact(base, newIndices, this);
+	Base::updateElementPointers(base, newIndices, this);
 }
 
 template<typename Vertex, typename El, bool O>

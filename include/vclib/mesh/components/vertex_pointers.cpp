@@ -237,11 +237,11 @@ void VertexPointers<Vertex, N, ElementType, OPT>::updatePointers(
 }
 
 template<typename Vertex, int N, typename ElementType, bool OPT>
-void VertexPointers<Vertex, N, ElementType, OPT>::updatePointersAfterCompact(
+void VertexPointers<Vertex, N, ElementType, OPT>::updatePointers(
 	const Vertex*           base,
 	const std::vector<uint>& newIndices)
 {
-	Base::updateElementPointersAfterCompact(base, newIndices, this);
+	Base::updateElementPointers(base, newIndices, this);
 }
 
 template<typename Vertex, int N, typename El, bool O>

@@ -145,7 +145,7 @@ class PointersComponentTriggerer
  *     the function updates the stored R pointers having the old base of the
  *     container and the new base of the container.
  *
- *   - void updatePointersAfterCompact(
+ *   - void updatePointers(
  *         const R* base, const std::vector<uint>& newIndices);
  *
  *     the function updates the stored R pointers having the base of the

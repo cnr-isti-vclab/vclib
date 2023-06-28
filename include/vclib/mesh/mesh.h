@@ -230,12 +230,12 @@ protected:
 	void updatePointers(const Element* oldBase, const Element* newBase);
 
 	template<ElementConcept Element>
-	void updateAllPointersAfterCompact(
+	void updateAllPointers(
 		const Element*           base,
 		const std::vector<uint>& newIndices);
 
 	template<typename Cont, typename Element>
-	void updatePointersAfterCompact(
+	void updatePointers(
 		const Element*           base,
 		const std::vector<uint>& newIndices);
 

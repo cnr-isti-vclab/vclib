@@ -135,7 +135,7 @@ protected:
 
 	void updatePointers(const Face* oldBase, const Face* newBase);
 
-	void updatePointersAfterCompact(const Face* base, const std::vector<uint>& newIndices);
+	void updatePointers(const Face* base, const std::vector<uint>& newIndices);
 
 	// ContainerComponent interface functions
 	void resize(uint n) requires (N < 0);

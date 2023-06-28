@@ -1004,21 +1004,21 @@ void Mesh<Args...>::updatePointers(
 
 template<typename... Args>
 template<ElementConcept Element>
-void Mesh<Args...>::updateAllPointersAfterCompact(
+void Mesh<Args...>::updateAllPointers(
 	const Element*           base,
 	const std::vector<uint>& newIndices)
 {
-	(updatePointersAfterCompact<Args>(base, newIndices), ...);
+	(updatePointers<Args>(base, newIndices), ...);
 }
 
 template<typename... Args>
 template<typename Cont, typename Element>
-void Mesh<Args...>::updatePointersAfterCompact(
+void Mesh<Args...>::updatePointers(
 	const Element*           base,
 	const std::vector<uint>& newIndices)
 {
 	if constexpr (mesh::ElementContainerConcept<Cont>) {
-		Cont::updatePointersAfterCompact(base, newIndices);
+		Cont::updatePointers(base, newIndices);
 	}
 }
 

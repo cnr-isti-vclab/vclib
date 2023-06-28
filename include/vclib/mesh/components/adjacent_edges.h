@@ -127,7 +127,7 @@ protected:
 
 	void updatePointers(const Edge* oldBase, const Edge* newBase);
 
-	void updatePointersAfterCompact(const Edge* base, const std::vector<uint>& newIndices);
+	void updatePointers(const Edge* base, const std::vector<uint>& newIndices);
 
 	// ContainerComponent interface functions
 	void resize(uint n) requires (N < 0);
