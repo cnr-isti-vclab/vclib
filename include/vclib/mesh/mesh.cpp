@@ -289,7 +289,7 @@ void Mesh<Args...>::importFrom(const OtherMeshType& m)
 
 	(importPointers<Args>(m), ...);
 
-	if constexpr(mesh::HasFaceContainer<Mesh<Args...>>) {
+	if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
 		// Now I need to manage imports between different types of meshes (same
 		// type of meshes are already managed from importFrom and
 		// importPointersFrom member functions).
@@ -418,7 +418,7 @@ uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 template<typename... Args>
 template<uint EL_TYPE>
 const auto& Mesh<Args...>::element(uint i) const
-	requires(hasContainerOf<EL_TYPE>())
+	requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
@@ -466,6 +466,19 @@ uint Mesh<Args...>::number() const requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementNumber();
 }
 
+/**
+ * @brief Returns the size of the container of elements of the given type in
+ * this mesh.
+ *
+ * The size of a container may be different from the number of elements, if the
+ * container has some deleted elements.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @return the size of the container of elements of the given type in this mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::containerSize() const requires (hasContainerOf<EL_TYPE>())
@@ -475,6 +488,15 @@ uint Mesh<Args...>::containerSize() const requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementContainerSize();
 }
 
+/**
+ * @brief Returns the number of deleted elements of the given type in this mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @return the number of deleted elements of the given type in this mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<EL_TYPE>())
@@ -484,6 +506,20 @@ uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<EL_TYPE>())
 	return Cont::deletedElementNumber();
 }
 
+/**
+ * @brief Adds a new element of the given type into its container, returning the
+ * index of the added element in its container.
+ *
+ * If the call of this function will cause a reallocation of the container, the
+ * function will automatically take care of updating all the pointers to the
+ * elements stored in all the containers of the Mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @return the index of the added element in its container.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::add() requires (hasContainerOf<EL_TYPE>())
@@ -493,6 +529,21 @@ uint Mesh<Args...>::add() requires (hasContainerOf<EL_TYPE>())
 	return Cont::addElement();
 }
 
+/**
+ * @brief Adds `n` new elements of the given type into its container, returning
+ * the index of the first added element in its container.
+ *
+ * If the call of this function will cause a reallocation of the container, the
+ * function will automatically take care of updating all the pointers to the
+ * elements stored in all the containers of the Mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] n: the number of elements to add.
+ * @return the index of the first added element in its container.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 uint Mesh<Args...>::add(uint n) requires (hasContainerOf<EL_TYPE>())
@@ -502,6 +553,26 @@ uint Mesh<Args...>::add(uint n) requires (hasContainerOf<EL_TYPE>())
 	return Cont::addElements(n); // add the number elements
 }
 
+/**
+ * @brief Reserves a number of elements of the given type in its container. The
+ * function does not add any element to the container, but it just reserves a
+ * number of elements that can be added without causing a reallocation of the
+ * container.
+ *
+ * This is useful when you know (or you have an idea) of how much elements are
+ * going to add in a mesh, and you want to avoid multiple (expansive)
+ * reallocations of the container during the addition of the elements.
+ *
+ * If the call of this function will cause a reallocation of the container, the
+ * function will automatically take care of updating all the pointers to the
+ * elements stored in all the containers of the Mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] n: the new capacity of the container in the mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<EL_TYPE>())
@@ -511,6 +582,22 @@ void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<EL_TYPE>())
 	Cont::reserveElements(n);
 }
 
+/**
+ * @brief Marks as deleted the element at the given index from its container,
+ * deduced from the template index EL_TYPE.
+ *
+ * The function does not remove the element from the container, and therefore it
+ * does not cause reallocation or compacting of the container. The element will
+ * be removed from the container only when the container will be compacted.
+ *
+ * The complexity of this function is O(1).
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] i: the index of the element to delete.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<EL_TYPE>())
@@ -520,40 +607,134 @@ void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<EL_TYPE>())
 	Cont::deleteElement(i);
 }
 
+/**
+ * @brief Marks as deleted the given element from its container.
+ *
+ * The function does not remove the element from the container, and therefore it
+ * does not cause reallocation or compacting of the container. The element will
+ * be removed from the container only when the container will be compacted.
+ *
+ * The complexity of this function is O(1).
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * of the argument. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam El: the type of the element to delete. It must satisfy the
+ * ElementConcept.
+ * @param[in] e: a pointer to the element to delete.
+ */
 template<typename... Args>
 template<ElementConcept El>
-void Mesh<Args...>::deleteElement(const El* e) const requires (hasContainerOf<El>())
+void Mesh<Args...>::deleteElement(const El* e) const
+	requires (hasContainerOf<El>())
 {
 	using Cont = typename ContainerOf<El>::type;
 	return Cont::deleteElement(e);
 }
 
+/**
+ * @brief Marks as deleted the given element from its container.
+ *
+ * The function does not remove the element from the container, and therefore it
+ * does not cause reallocation or compacting of the container. The element will
+ * be removed from the container only when the container will be compacted.
+ *
+ * The complexity of this function is O(1).
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * of the argument. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam El: the type of the element to delete. It must satisfy the
+ * ElementConcept.
+ * @param[in] e: the element to delete.
+ */
 template<typename... Args>
 template<ElementConcept El>
-void Mesh<Args...>::deleteElement(const El& e) const requires (hasContainerOf<El>())
+void Mesh<Args...>::deleteElement(const El& e) const
+	requires (hasContainerOf<El>())
 {
 	using Cont = typename ContainerOf<El>::type;
 	return Cont::deleteElement(&e);
 }
 
+/**
+ * @brief Returns a vector that tells, for each element of the container of
+ * EL_TYPE in the mesh, the new index of the element after the container has
+ * been compacted. For each deleted element, its position will be set to
+ * UINT_NULL.
+ *
+ * This function is useful when you need to know the indices of the elements
+ * that they would have in a compact container, without considering the deleted
+ * ones.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @return a vector containing, for each element index, the new index if the
+ * container would be compacted.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
-std::vector<uint> Mesh<Args...>::conpactIndices() const requires (hasContainerOf<EL_TYPE>())
+std::vector<uint> Mesh<Args...>::conpactIndices() const
+	requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::elementConpactIndices();
 }
 
+/**
+ * @brief Updates all the indices and pointers of the elements of the container
+ * of EL_TYPE in the mesh, according to the mapping stored in the newIndices
+ * vector, that tells for each old element index, the new index of the element
+ * in the same container (or UINT_NULL if the element must be left as
+ * unreferenced - useful when a vertex is deleted).
+ *
+ * This function is useful when you move some vertices (e.g. it is automatically
+ * called after every compacting of a container), and you want to update the
+ * indices/pointers of the elements stored in all the containers of the mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @note This function *does not change the position of the elements in their
+ * container*. It just updates the indices/pointers of the elements stored in
+ * their or other containers. This function should be called after the elements
+ * have been actually moved in their container.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] newIndices: a vector that tells, for each old element index, the
+ * new element index. If the old element must be left as unreferenced (setting
+ * `nullptr` to the pointers), the value of the vector must be UINT_NULL.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
-void Mesh<Args...>::updateIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>())
+void Mesh<Args...>::updateIndices(const std::vector<uint>& newIndices)
+	requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::updateElementIndices(newIndices);
 }
 
+/**
+ * @brief Returns an iterator to the begining of the container of the elements
+ * of type EL_TYPE in the mesh.
+ *
+ * The iterator is automatically initialized to jump deleted elements in the
+ * container. You can change this option by calling this member function with
+ * the `jumpDeleted` parameter set to `false`.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] jumpDeleted: if `true`, the iterator will be initialized to jump
+ * deleted elements in the container.
+ * @return an iterator to the begining of the container of the elements of type
+ * EL_TYPE in the mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
@@ -563,6 +744,17 @@ auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementBegin(jumpDeleted);
 }
 
+/**
+ * @brief Returns an iterator to the end of the container of the elements of
+ * type EL_TYPE in the mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @return an iterator to the end of the container of the elements of type
+ * EL_TYPE in the mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::end() requires (hasContainerOf<EL_TYPE>())
@@ -572,15 +764,44 @@ auto Mesh<Args...>::end() requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementEnd();
 }
 
+/**
+ * @brief Returns a const iterator to the begining of the container of the
+ * elements of type EL_TYPE in the mesh.
+ *
+ * The iterator is automatically initialized to jump deleted elements in the
+ * container. You can change this option by calling this member function with
+ * the `jumpDeleted` parameter set to `false`.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] jumpDeleted: if `true`, the iterator will be initialized to jump
+ * deleted elements in the container.
+ * @return a const iterator to the begining of the container of the elements of
+ * type EL_TYPE in the mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
-auto Mesh<Args...>::begin(bool jumpDeleted) const requires (hasContainerOf<EL_TYPE>())
+auto Mesh<Args...>::begin(bool jumpDeleted) const
+	requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::elementBegin(jumpDeleted);
 }
 
+/**
+ * @brief Returns a const iterator to the end of the container of the elements
+ * of type EL_TYPE in the mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @return a const iterator to the end of the container of the elements of type
+ * EL_TYPE in the mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
 auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
@@ -590,24 +811,82 @@ auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
 	return Cont::elementEnd();
 }
 
+/**
+ * Returns a lightweght view object that stores the begin and end iterators of
+ * the container of the elements of type EL_TYPE in the mesh. The view object
+ * exposes the iterators trough the `begin()` and `end()` member functions, and
+ * therefore the returned object can be used in range-based for loops:
+ *
+ * @code{.cpp}
+ * for (auto& el : mesh.elements<VERTEX>()) {
+ *     // Do something with el
+ * }
+ * @endcode
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] jumpDeleted: if `true`, the view will be initialized to jump
+ * deleted elements in the container.
+ * @return a lightweight view object that can be used in range-based for loops
+ * to iterate over elements.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
-auto Mesh<Args...>::elements(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
+auto Mesh<Args...>::elements(bool jumpDeleted)
+	requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::elements(jumpDeleted);
 }
 
+/**
+ * Returns a lightweght const view object that stores the begin and end
+ * const iterators of the container of the elements of type EL_TYPE in the mesh.
+ * The view object exposes the iterators trough the `begin()` and `end()` member
+ * functions, and therefore the returned object can be used in range-based for
+ * loops:
+ *
+ * @code{.cpp}
+ * for (const auto& el : mesh.elements<VERTEX>()) {
+ *     // Do something read-only with el
+ * }
+ * @endcode
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] jumpDeleted: if `true`, the view will be initialized to jump
+ * deleted elements in the container.
+ * @return a lightweight view object that can be used in range-based for loops
+ * to iterate over elements.
+ */
 template<typename... Args>
 template<uint EL_TYPE>
-auto Mesh<Args...>::elements(bool jumpDeleted) const requires (hasContainerOf<EL_TYPE>())
+auto Mesh<Args...>::elements(bool jumpDeleted) const
+	requires (hasContainerOf<EL_TYPE>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::elements(jumpDeleted);
 }
 
+/**
+ * @brief Returns `true` if optional Component `COMP_TYPE` is enabled for
+ * elements of type `EL_TYPE` in the mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
+ * Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @tparam COMP_TYPE: the type ID of the component.
+ * @return `true` if optional Component `COMP_TYPE` is enabled for elements of
+ * type `EL_TYPE` in the mesh.
+ */
 template<typename... Args>
 template<uint EL_TYPE, uint COMP_TYPE>
 bool Mesh<Args...>::isPerElementComponentEnabled() const
@@ -618,6 +897,17 @@ bool Mesh<Args...>::isPerElementComponentEnabled() const
 	return Cont::template isOptionalComponentEnabled<COMP_TYPE>();
 }
 
+/**
+ * @brief Enables the optional Component `COMP_TYPE` for elements of type
+ * `EL_TYPE` in the mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
+ * Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @tparam COMP_TYPE: the type ID of the component.
+ */
 template<typename... Args>
 template<uint EL_TYPE, uint COMP_TYPE>
 void Mesh<Args...>::enablePerElementComponent()
@@ -628,6 +918,17 @@ void Mesh<Args...>::enablePerElementComponent()
 	Cont::template enableOptionalComponent<COMP_TYPE>();
 }
 
+/**
+ * @brief Disables the optional Component `COMP_TYPE` for elements of type
+ * `EL_TYPE` in the mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
+ * Otherwise, a compiler error will be triggered.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @tparam COMP_TYPE: the type ID of the component.
+ */
 template<typename... Args>
 template<uint EL_TYPE, uint COMP_TYPE>
 void Mesh<Args...>::disablePerElementComponent()
@@ -642,29 +943,49 @@ void Mesh<Args...>::disablePerElementComponent()
  * Protected Members *
  *********************/
 
+/**
+ * This function will compact the Cont container of this mesh (if Cont is
+ * actually a container).
+ *
+ * This function is made to be called trough pack expansion:
+ * @code{.cpp}
+ * (compactContainer<Args>(), ...);
+ * @endcode
+ */
 template<typename... Args>
 template<typename Cont>
 void Mesh<Args...>::compactContainer()
 {
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		if (Cont::elementNumber() != Cont::elementContainerSize()) {
 			Cont::compactElements();
 		}
 	}
 }
 
+/**
+ * This function will clear the Cont container of this mesh (if Cont is
+ * actually a container).
+ *
+ * This function is made to be called trough pack expansion:
+ * @code{.cpp}
+ * (clearContainer<Args>(), ...);
+ * @endcode
+ */
 template<typename... Args>
 template<typename Cont>
 void Mesh<Args...>::clearContainer()
 {
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		Cont::clearElements();
 	}
 }
 
 template<typename... Args>
 template<ElementConcept Element>
-void Mesh<Args...>::updateAllPointers(const Element* oldBase, const Element* newBase)
+void Mesh<Args...>::updateAllPointers(
+	const Element* oldBase,
+	const Element* newBase)
 {
 	if (oldBase != nullptr && oldBase != newBase)
 		(updatePointers<Args>(oldBase, newBase), ...);
@@ -676,7 +997,7 @@ void Mesh<Args...>::updatePointers(
 	const Element* oldBase,
 	const Element* newBase)
 {
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		Cont::updatePointers(oldBase, newBase);
 	}
 }
@@ -684,7 +1005,7 @@ void Mesh<Args...>::updatePointers(
 template<typename... Args>
 template<ElementConcept Element>
 void Mesh<Args...>::updateAllPointersAfterCompact(
-	const Element* base,
+	const Element*           base,
 	const std::vector<uint>& newIndices)
 {
 	(updatePointersAfterCompact<Args>(base, newIndices), ...);
@@ -693,10 +1014,10 @@ void Mesh<Args...>::updateAllPointersAfterCompact(
 template<typename... Args>
 template<typename Cont, typename Element>
 void Mesh<Args...>::updatePointersAfterCompact(
-	const Element*          base,
+	const Element*           base,
 	const std::vector<uint>& newIndices)
 {
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		Cont::updatePointersAfterCompact(base, newIndices);
 	}
 }
@@ -705,7 +1026,7 @@ template<typename... Args>
 template<typename Cont, typename OtherMeshType>
 void Mesh<Args...>::enableSameOptionalComponentsOf(const OtherMeshType& m)
 {
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		Cont::enableOptionalComponentsOf(m);
 	}
 }
@@ -720,20 +1041,22 @@ template<typename... Args>
 template<typename Cont>
 void Mesh<Args...>::setParentMeshPointers()
 {
-	if constexpr(mesh::ElementContainerConcept<Cont>) {
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		Cont::setParentMeshPointers(this);
 	}
 }
 
 /**
- * This function will import, for a given container of this mesh that is passed as a template
- * parameter Cont, all the pointers of all the elements from the other mesh m.
+ * This function will import, for a given container of this mesh that is passed
+ * as a template parameter Cont, all the pointers of all the elements from the
+ * other mesh m.
  */
 template<typename... Args>
 template<typename Cont, typename OthMesh>
-void Mesh<Args...>::importPointers(const OthMesh &m)
+void Mesh<Args...>::importPointers(const OthMesh& m)
 {
-	// will loop again on Args. Args will be the element pointers imported on Cont
+	// will loop again on Args. Args will be the element pointers imported on
+	// Cont
 	(importPointersOfElement<Cont, Args>(m), ...);
 }
 
@@ -742,25 +1065,29 @@ template<typename Cont, typename ElemCont, typename OthMesh>
 void Mesh<Args...>::importPointersOfElement(const OthMesh& m)
 {
 	// if Cont and ElemCont are containers (could be mesh components)
-	if constexpr(mesh::ElementContainerConcept<Cont> && mesh::ElementContainerConcept<ElemCont>) {
+	if constexpr (
+		mesh::ElementContainerConcept<Cont> &&
+		mesh::ElementContainerConcept<ElemCont>)
+	{
 		// import in Cont the ElemCont pointers from m
 		Cont::importPointersFrom(m, ElemCont::vec.data());
 	}
 }
 
 /**
- * This function sets the Ith position of the array bases, where I is an index of a container in
- * a TypeWrapper of containers
+ * This function sets the Ith position of the array bases, where I is an index
+ * of a container in a TypeWrapper of containers
  *
- * In the Ith position will be placed the base pointer of the vector of the elements contained
- * in the container Cont.
+ * In the Ith position will be placed the base pointer of the vector of the
+ * elements contained in the container Cont.
  */
 template<typename... Args>
 template<uint I, typename Cont, typename Array, typename... A>
 void Mesh<Args...>::setContainerBase(const Mesh<A...>& m, Array& bases)
 {
-	// since this function is called using pack expansion, it means that Cont could be a mesh
-	// component and not a cointainer. We check if Cont is a container
+	// since this function is called using pack expansion, it means that Cont
+	// could be a mesh component and not a cointainer. We check if Cont is a
+	// container
 	if constexpr (mesh::ElementContainerConcept<Cont>) {
 		static_assert(I >= 0 && I != UINT_NULL);
 		bases[I] = m.Cont::vec.data();
@@ -775,12 +1102,12 @@ auto Mesh<Args...>::getContainerBases(const Mesh<A...>& m)
 
 	// the number of containers in Mesh<A...>
 	constexpr uint N_CONTAINERS = NumberOfTypes<Containers>::value;
-	// each element of this array will contain the base pointer of the vector of elements contained
-	// in each container of Mesh<A...>
+	// each element of this array will contain the base pointer of the vector of
+	// elements contained in each container of Mesh<A...>
 	std::array<const void*, N_CONTAINERS> bases;
 
-	// for each container/component of Mesh<A...>, we set call the function that sets
-	// the base of the container in its index
+	// for each container/component of Mesh<A...>, we set call the function that
+	// sets the base of the container in its index
 	(setContainerBase<IndexInTypes<A, Containers>::value, A>(m, bases), ...);
 
 	return bases;
@@ -832,7 +1159,7 @@ template<typename... Args>
 template<uint EL_TYPE, typename T>
 uint Mesh<Args...>::elementIndex(const T* el) const
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont   = typename ContainerOfElement<EL_TYPE>::type;
 	using ElType = typename Cont::ElementType;
 	return index(static_cast<const ElType*>(el));
 }
