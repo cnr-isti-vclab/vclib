@@ -72,7 +72,7 @@ concept HasAdjacentEdges = requires(
 	{ o.findAdjEdge(&e) } -> std::same_as<typename T::AdjacentEdgeIterator>;
 	{ co.findAdjEdge(&e) } ->
 		std::same_as<typename T::ConstAdjacentEdgeIterator>;
-	{ co.indexOfAdjEdge(&e) } -> std::same_as<int>;
+	{ co.indexOfAdjEdge(&e) } -> std::same_as<uint>;
 	{ co.isAdjEdgesEnabled() } -> std::same_as<bool>;
 
 	{ o.adjEdgeBegin() } -> std::same_as<typename T::AdjacentEdgeIterator>;

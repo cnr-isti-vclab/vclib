@@ -72,7 +72,7 @@ concept HasAdjacentFaces = requires(
 	{ o.findAdjFace(&f) } -> std::same_as<typename T::AdjacentFaceIterator>;
 	{ co.findAdjFace(&f) } ->
 		std::same_as<typename T::ConstAdjacentFaceIterator>;
-	{ co.indexOfAdjFace(&f) } -> std::same_as<int>;
+	{ co.indexOfAdjFace(&f) } -> std::same_as<uint>;
 	{ co.isAdjFacesEnabled() } -> std::same_as<bool>;
 
 	{ o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;

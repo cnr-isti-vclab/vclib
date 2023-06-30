@@ -102,7 +102,7 @@ public:
 	AdjacentFaceIterator findAdjFace(const Face* f);
 	ConstAdjacentFaceIterator findAdjFace(const Face* f) const;
 
-	int indexOfAdjFace(const Face* f) const;
+	uint indexOfAdjFace(const Face* f) const;
 
 	/* Member functions specific for vector adjacent faces */
 

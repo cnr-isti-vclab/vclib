@@ -168,7 +168,7 @@ AdjacentFaces<Face, N, TT, El, O>::findAdjFace(const Face* f) const
 }
 
 template<typename Face, int N, bool TT, typename El, bool O>
-int AdjacentFaces<Face, N, TT, El, O>::indexOfAdjFace(const Face* f) const
+uint AdjacentFaces<Face, N, TT, El, O>::indexOfAdjFace(const Face* f) const
 {
 	return Base::container(this).indexOf(f);
 }

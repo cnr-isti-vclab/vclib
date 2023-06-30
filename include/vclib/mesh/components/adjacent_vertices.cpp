@@ -140,7 +140,7 @@ AdjacentVertices<Vertex, El, O>::findAdjVertex(const Vertex* v) const
 }
 
 template<typename Vertex, typename El, bool O>
-int AdjacentVertices<Vertex, El, O>::indexOfAdjVertex(const Vertex* v) const
+uint AdjacentVertices<Vertex, El, O>::indexOfAdjVertex(const Vertex* v) const
 {
 	return Base::container(this).indexOf(v);
 }

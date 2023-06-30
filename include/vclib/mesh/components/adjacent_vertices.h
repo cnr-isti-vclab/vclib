@@ -88,7 +88,7 @@ public:
 	AdjacentVertexIterator findAdjVertex(const Vertex* v);
 	ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const;
 
-	int indexOfAdjVertex(const Vertex* v) const;
+	uint indexOfAdjVertex(const Vertex* v) const;
 
 	void resizeAdjVertices(uint n);
 	void pushAdjVertex(Vertex* v);

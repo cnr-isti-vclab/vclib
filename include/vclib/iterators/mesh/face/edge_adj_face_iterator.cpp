@@ -52,8 +52,8 @@ template<typename FaceType, bool CNST>
 EdgeAdjFaceIterator<FaceType, CNST>& EdgeAdjFaceIterator<FaceType, CNST>::operator++()
 {
 	assert(current);
-	int edge = current->indexOfEdge(v0, v1);
-	assert(edge >= 0);
+	uint edge = current->indexOfEdge(v0, v1);
+	assert(edge != UINT_NULL);
 	current = current->adjFace(edge);
 	if (current == end || current == nullptr) {
 		current = nullptr;
