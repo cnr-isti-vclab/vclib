@@ -812,7 +812,7 @@ auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
 }
 
 /**
- * Returns a lightweght view object that stores the begin and end iterators of
+ * Returns a lightweight view object that stores the begin and end iterators of
  * the container of the elements of type EL_TYPE in the mesh. The view object
  * exposes the iterators trough the `begin()` and `end()` member functions, and
  * therefore the returned object can be used in range-based for loops:
@@ -843,7 +843,7 @@ auto Mesh<Args...>::elements(bool jumpDeleted)
 }
 
 /**
- * Returns a lightweght const view object that stores the begin and end
+ * Returns a lightweight const view object that stores the begin and end
  * const iterators of the container of the elements of type EL_TYPE in the mesh.
  * The view object exposes the iterators trough the `begin()` and `end()` member
  * functions, and therefore the returned object can be used in range-based for

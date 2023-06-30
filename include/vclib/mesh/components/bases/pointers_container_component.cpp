@@ -29,7 +29,8 @@ namespace vcl::comp {
 
 /*
  * This member function is called when we need to update the pointers in this
- * container.
+ * container after a reallocation (the pointer of the first element of the
+ * container is changed from oldBase to newBase).
  *
  * This is necessary when, for example, the original container of Elements has
  * been reallocated. When this happens, the all the Elements have been moved in
@@ -62,6 +63,17 @@ void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointers(
 	}
 }
 
+/*
+ * This member function is called when we need to update the pointers in this
+ * containers, usually after a compaction of the container (but not always).
+ *
+ * In this case, the address of the first element in the container is not
+ * changed, but may change the position of each element inside the container.
+ * The function takes the base pointer of the first element of the container,
+ * and a vector that stores, for each old element position, the new position
+ * in the container (UINT_NULL if the element has been removed and must be
+ * left unreferenced).
+ */
 template<uint CT, typename Elem, int N, typename El, bool o, bool TT>
 template<typename Comp>
 void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointers(

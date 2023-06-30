@@ -83,17 +83,22 @@ class AdjacentEdges :
 		TTVN>;
 
 public:
-	/// Static size of the container. If the container is dynamic, this value
-	/// will be negative and you should use the adjEdgesNumber() member
-	/// function.
-	static const int ADJ_EDGE_NUMBER = Base::SIZE;
-
+	/**
+	 * @brief Expose the type of the Adjacent Edge.
+	 */
 	using AdjacentEdgeType = Edge;
 
 	/* Iterator Types declaration */
 
 	using AdjacentEdgeIterator      = typename Base::Iterator;
 	using ConstAdjacentEdgeIterator = typename Base::ConstIterator;
+
+	/**
+	 * @brief Static size of the container. If the container is dynamic, this
+	 * value will be negative and you should use the adjEdgesNumber() member
+	 * function.
+	 */
+	static const int ADJ_EDGE_NUMBER = Base::SIZE;
 
 	/* Constructor and isEnabled */
 
