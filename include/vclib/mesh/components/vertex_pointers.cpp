@@ -100,27 +100,27 @@ VertexPointers<Vertex, N, El, O>::findVertex(const Vertex* v) const
 }
 
 template<typename Vertex, int N, typename El, bool O>
-int VertexPointers<Vertex, N, El, O>::indexOfVertex(const Vertex* v) const
+uint VertexPointers<Vertex, N, El, O>::indexOfVertex(const Vertex* v) const
 {
 	return Base::container(this).indexOf(v);
 }
 
 template<typename Vertex, int N, typename El, bool O>
-int VertexPointers<Vertex, N, El, O>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
+uint VertexPointers<Vertex, N, El, O>::indexOfEdge(const Vertex* v1, const Vertex* v2) const
 {
-	int vid = indexOfVertex(v1);
-	if (vid < 0) {
-		return -1;
+	uint vid = indexOfVertex(v1);
+	if (vid == UINT_NULL) {
+		return UINT_NULL;
 	}
 	else if (vertexMod(vid+1) == v2) {
 		return vid;
 	}
-	else if (vertexMod(vid-1) == v2) {
+	else if (vertexMod((int)vid-1) == v2) {
 		uint n = vertexNumber();
 		return ((vid-1) % n + n) % n;
 	}
 	else {
-		return -1;
+		return UINT_NULL;
 	}
 }
 
@@ -237,11 +237,11 @@ void VertexPointers<Vertex, N, ElementType, OPT>::updatePointers(
 }
 
 template<typename Vertex, int N, typename ElementType, bool OPT>
-void VertexPointers<Vertex, N, ElementType, OPT>::updatePointersAfterCompact(
+void VertexPointers<Vertex, N, ElementType, OPT>::updatePointers(
 	const Vertex*           base,
 	const std::vector<uint>& newIndices)
 {
-	Base::updateElementPointersAfterCompact(base, newIndices, this);
+	Base::updateElementPointers(base, newIndices, this);
 }
 
 template<typename Vertex, int N, typename El, bool O>

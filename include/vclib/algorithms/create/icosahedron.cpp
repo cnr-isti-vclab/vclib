@@ -28,7 +28,8 @@ namespace vcl {
 /**
  * @brief Creates and returns an icosahedron mesh.
  *
- * @tparam MeshType: The type of the mesh to create, it must satisfy the FaceMeshConcept.
+ * @tparam MeshType: The type of the mesh to create, it must satisfy the
+ * FaceMeshConcept.
  * @param[in] normalizeVertices: If true, the vertices are normalized.
  *
  * @return The icosahedron mesh.
@@ -39,25 +40,25 @@ template<FaceMeshConcept MeshType>
 MeshType createIcosahedron(bool normalizeVertices)
 {
 	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
+	using CoordType  = typename VertexType::CoordType;
 
 	MeshType mesh;
 
 	const double t = (1.0 + std::sqrt(5.0)) / 2.0;
 
 	// Vertices
-	mesh.addVertex(CoordType(-1.0,  t, 0.0));
-	mesh.addVertex(CoordType( 1.0,  t, 0.0));
+	mesh.addVertex(CoordType(-1.0, t, 0.0));
+	mesh.addVertex(CoordType(1.0, t, 0.0));
 	mesh.addVertex(CoordType(-1.0, -t, 0.0));
-	mesh.addVertex(CoordType( 1.0, -t, 0.0));
-	mesh.addVertex(CoordType(0.0, -1.0,  t));
-	mesh.addVertex(CoordType(0.0,  1.0,  t));
+	mesh.addVertex(CoordType(1.0, -t, 0.0));
+	mesh.addVertex(CoordType(0.0, -1.0, t));
+	mesh.addVertex(CoordType(0.0, 1.0, t));
 	mesh.addVertex(CoordType(0.0, -1.0, -t));
-	mesh.addVertex(CoordType(0.0,  1.0, -t));
-	mesh.addVertex(CoordType( t, 0.0, -1.0));
-	mesh.addVertex(CoordType( t, 0.0,  1.0));
+	mesh.addVertex(CoordType(0.0, 1.0, -t));
+	mesh.addVertex(CoordType(t, 0.0, -1.0));
+	mesh.addVertex(CoordType(t, 0.0, 1.0));
 	mesh.addVertex(CoordType(-t, 0.0, -1.0));
-	mesh.addVertex(CoordType(-t, 0.0,  1.0));
+	mesh.addVertex(CoordType(-t, 0.0, 1.0));
 
 	if (normalizeVertices) {
 		for (VertexType& v : mesh.vertices())

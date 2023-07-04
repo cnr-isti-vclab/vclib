@@ -31,9 +31,10 @@
 namespace vcl::comp {
 
 /**
- * @brief HasCustomComponents concept is satisfied only if a Element class provides the types and
- * member functions specified in this concept. These types and member functions allow to access to a
- * CustomComponents component of a given element.
+ * @brief HasCustomComponents concept is satisfied only if a Element class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to a CustomComponents component of
+ * a given element.
  *
  * @ingroup components_concepts
  */

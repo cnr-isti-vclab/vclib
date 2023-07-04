@@ -32,54 +32,97 @@
 namespace vcl::comp {
 
 /**
- * @brief The PolygonBitFlags class represents a collection of 8 bits plus 8 bits for each edge that
- * will be part of a generic Polygonal Face of a Mesh.
+ * @brief The PolygonBitFlags class represents a collection of 8 bits plus 8
+ * bits for each edge that will be part of a generic Polygonal Face of a Mesh.
  *
- * This class also provides 3 flags for faux edges. These flags are added just to make portable all
- * the algorithms that use faux flags also for PolygonMeshes. However, these flags should be used
- * only when the mesh is a Triangle mesh, that is when each face has vertexNumber() == 3.
+ * This is a specialization class of the BitFlags component, meaning that it can
+ * be used in sostitution to that component. The difference is that this class
+ * is meant to be used on Polygonal Faces, and adds bits with particular
+ * meanings for polygons.
+ *
+ * This class also provides 3 flags for faux edges. These flags are added just
+ * to make portable all the algorithms that use faux flags also for
+ * PolygonMeshes. However, these flags should be used only when the mesh is a
+ * Triangle mesh, that is when each face has vertexNumber() == 3.
  *
  * The bits have the follwing meaning:
  * - 0: deleted: if the current Polygon has been deleted - read only
  * - 1: selected: if the current Polygon has been selected
- * - 2: visited:if the current Polygon has been visited (useful for some visit algorithms)
- * - from 3 to 5: edge faux: if the current Face has is i-th edge (i in [0, 2]) marked as faux
+ * - 2: visited: if the current Polygon has been visited (useful for some visit
+ *               algorithms)
+ * - from 3 to 5: edge faux: if the current Face has is i-th edge (i in [0, 2])
+ *                marked as faux
  * - from 6 to 7: user bits that can have custom meanings to the user
  *
- * This class provides 2 user bits, that can be accessed using the member function userBit(uint i)
- * with position in the interval [0, 1].
+ * This class provides 2 user bits, that can be accessed using the member
+ * function userBit(uint i) with position in the interval [0, 1].
  *
- * Additionally, this class provides the following bits for each edge of the Polygonal Face:
+ * Additionally, this class provides the following bits for each edge of the
+ * Polygonal Face:
  * - 0: edge border: if the current Polygonal face has the i-th edge on border
- * - 1: edge selection: if  the current Polygonal face has the i-th edge selected
- * - 2: edge visited: if the i-th edge of the current Polygonal face has been visited
- * - from 3 to 7: user bits of the i-th edge that can have custo meanings to the user
+ * - 1: edge selection: if  the current Polygonal face has the i-th edge
+ *                      selected
+ * - 2: edge visited: if the i-th edge of the current Polygonal face has been
+ *                    visited
+ * - from 3 to 7: user bits of the i-th edge that can have custo meanings to the
+ *                user
  *
- * The member functions of this class will be available in the instance of any Element that will
- * contain this component.
+ * The member functions of this class will be available in the instance of any
+ * Element that will contain this component.
  *
- * For example, if you have a Face Element `f` that has the PolygonBitFlags component, you'll be
- * able to access to this component member functions from `f`:
+ * For example, if you have a Face Element `f` that has the PolygonBitFlags
+ * component, you'll be able to access to this component member functions from
+ * `f`:
  *
  * @code{.cpp}
  * v.isAnyEdgeOnBorder();
  * @endcode
  *
- * @note This component is *Tied To Vertex Number*: it means that the size of the container,
- * if dynamic, will change automatically along the Vertex Number of the Component.
- * For further details check the documentation of the @ref ContainerComponent class.
+ * @note This component is *Tied To Vertex Number*: it means that the size of
+ * the container, if dynamic, will change automatically along the Vertex Number
+ * of the Component. For further details check the documentation of the @ref
+ * ContainerComponent class.
  *
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool OPT = false>
 class PolygonBitFlags :
-		public ContainerComponent<BIT_FLAGS, BitSet<int>, N, BitSet<int>, ElementType, OPT, true>
+		public ContainerComponent<
+			BIT_FLAGS,
+			BitSet<char>,
+			N,
+			BitSet<char>,
+			ElementType,
+			OPT,
+			true>
 {
-	using FT = int; // FlagsType, the integral type used for the flags
+	using FT = char; // FlagsType, the integral type used for the flags
 
-	using Base = ContainerComponent<BIT_FLAGS, BitSet<FT>, N, BitSet<FT>, ElementType, OPT, true>;
+	using Base = ContainerComponent<
+		BIT_FLAGS,
+		BitSet<FT>,
+		N,
+		BitSet<FT>,
+		ElementType,
+		OPT,
+		true>;
+
+	static const uint FIRST_USER_BIT = 6;
+	static const uint FIRST_EDGE_USER_BIT = 3;
 
 public:
+	/**
+	 * @brief Static number of bits that can have custom meanings to the user
+	 */
+	static const uint USER_BITS_NUMBER = sizeof(FT) * 8 - FIRST_USER_BIT;
+
+	/**
+	 * @brief Static number of bits for each edge that can have custom meanings
+	 * to the user
+	 */
+	static const uint EDGE_USER_BITS_NUMBER =
+		sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
+
 	/* Constructor and isEnabled */
 	PolygonBitFlags();
 
@@ -140,16 +183,12 @@ protected:
 	void clear() requires (N < 0);
 
 private:
-	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
+	// members that allow to access the flags, trough data (horizontal) or
+	// trough parent (vertical)
 	BitSet<FT>& flags();
 	const BitSet<FT>& flags() const;
 	Vector<BitSet<FT>, -1>& edgeFlags();
 	const Vector<BitSet<FT>, -1>& edgeFlags() const;
-
-	static const uint FIRST_USER_BIT = 6;
-	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
-	static const uint FIRST_EDGE_USER_BIT = 3;
-	static const uint N_EDGE_USER_BITS = sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
 
 	// indices of the bits
 	enum {

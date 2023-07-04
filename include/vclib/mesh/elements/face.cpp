@@ -218,6 +218,19 @@ void Face<MeshType, Comps...>::clearTTVNComponent()
 	}
 }
 
+template<typename MeshType, typename... Comps>
+template<typename ElType>
+void Face<MeshType, Comps...>::importFrom(const ElType& v)
+{
+	if constexpr (comp::HasVertexPointers<ElType> && NV < 0) {
+		VPtrs::resizeVertices(v.vertexNumber());
+		// Now I need to resize all the TTVN components
+		(resizeTTVNComponent<Comps>(v.vertexNumber()), ...);
+	}
+
+	Base::importFrom(v);
+}
+
 } // namespace vcl
 
 

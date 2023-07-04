@@ -4,14 +4,24 @@ namespace vcl::comp {
 
 /*
  * Create a container of T objects.
- * If this Container is a static array, all its element will be initialized to T().
- * If this Container is a dynamic vector, it will be an empty container.
+ * If this Container is a static array, all its element will be initialized to
+ * T(). If this Container is a dynamic vector, it will be an empty container.
  */
-template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+template<
+	uint CT,
+	typename T,
+	int N,
+	typename AD,
+	typename El,
+	bool o,
+	bool TTVN,
+	typename... PT>
 ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::ContainerComponent()
 {
 	if constexpr (!Base::IS_VERTICAL) {
 		if constexpr (N >= 0) {
+			// the void* nullptr here is ignored, since the component is
+			// horizontal
 			Base::data((void*)nullptr).fill(T());
 		}
 	}
@@ -19,10 +29,18 @@ ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::ContainerComponent()
 
 /*
  * Create a container of Objects.
- * If this Container is a static array, all its element will be initialized to T().
- * If this Container is a dynamic vector, it will be an empty container.
+ * If this Container is a static array, all its element will be initialized to
+ * T(). If this Container is a dynamic vector, it will be an empty container.
  */
-template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+template<
+	uint CT,
+	typename T,
+	int N,
+	typename AD,
+	typename El,
+	bool o,
+	bool TTVN,
+	typename... PT>
 template<typename Comp>
 void ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::init(Comp* comp)
 {
@@ -38,9 +56,18 @@ void ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::init(Comp* comp)
 	}
 }
 
-template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+template<
+	uint CT,
+	typename T,
+	int N,
+	typename AD,
+	typename El,
+	bool o,
+	bool TTVN,
+	typename... PT>
 template<typename Comp>
-Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::container(Comp* comp)
+Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::container(
+	Comp* comp)
 {
 	if constexpr (HAS_ADDITIONAL_DATA) {
 		return std::get<0>(Base::data(comp));
@@ -50,9 +77,18 @@ Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::container(Co
 	}
 }
 
-template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+template<
+	uint CT,
+	typename T,
+	int N,
+	typename AD,
+	typename El,
+	bool o,
+	bool TTVN,
+	typename... PT>
 template<typename Comp>
-const Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::container(const Comp* comp) const
+const Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::
+	container(const Comp* comp) const
 {
 	if constexpr (HAS_ADDITIONAL_DATA) {
 		return std::get<0>(Base::data(comp));
@@ -62,18 +98,34 @@ const Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::contai
 	}
 }
 
-//template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+//template<
+//	uint CT,
+//	typename T,
+//	int N,
+//	typename AD,
+//	typename El,
+//	bool o,
+//	bool TTVN,
+//	typename... PT>
 //template<typename Comp, typename AdDt>
-//AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::additionalData(Comp* comp)
-//	requires(HAS_ADDITIONAL_DATA)
+//AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::additionalData(
+//	Comp* comp) requires (HAS_ADDITIONAL_DATA)
 //{
 //	return std::get<1>(Base::data(comp));
 //}
 
-//template<uint CT, typename T, int N, typename AD, typename El, bool o, bool TTVN, typename... PT>
+//template<
+//	uint CT,
+//	typename T,
+//	int N,
+//	typename AD,
+//	typename El,
+//	bool o,
+//	bool TTVN,
+//	typename... PT>
 //template<typename Comp, typename AdDt>
-//const AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::additionalData(const Comp* comp) const
-//	requires(HAS_ADDITIONAL_DATA)
+//const AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::
+//	additionalData(const Comp* comp) const requires (HAS_ADDITIONAL_DATA)
 //{
 //	return std::get<1>(Base::data(comp));
 //}

@@ -29,9 +29,10 @@
 namespace vcl::comp {
 
 /**
- * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class provides the member
- * functions specified in this concept. These member functions allows to access to a BoundingBox
- * component of a given element/mesh.
+ * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class
+ * provides the member functions specified in this concept. These member
+ * functions allows to access to a BoundingBox component of a given
+ * element/mesh.
  *
  * @ingroup components_concepts
  */

@@ -34,35 +34,41 @@ namespace vcl {
 /**
  * @defgroup mesh Mesh
  *
- * @brief List of classes, aliases, concepts and functions used for the creation, customization,
- * usage and manipulation of Mesh classes.
+ * @brief List of classes, aliases, concepts and functions used for the
+ * creation, customization, usage and manipulation of Mesh classes.
  */
 
 /**
  * @defgroup components Components
  * @ingroup mesh
  *
- * @brief List of all the Component classes, along with their concepts and functions.
+ * @brief List of all the Component classes, along with their concepts and
+ * functions.
  */
 
 /**
- * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a generic number of
- * containers of Elements (which can be vertices, faces, edges...), plus some other components.
+ * @brief The Mesh class represents a generic 3D mesh. A mesh is composed of a
+ * generic number of containers of Elements (which can be vertices, faces,
+ * edges...), plus some other components.
  *
- * The Mesh class will expose all the public members of its containers and is components, and its
- * role is to implement all the functionalities that allow these containers to comunicate
- * (e.g. an operation on the vertex container that requires to update also some face information).
+ * The Mesh class will expose all the public members of its containers and is
+ * components, and its role is to implement all the functionalities that allow
+ * these containers to comunicate (e.g. an operation on the vertex container
+ * that requires to update also some face information).
  *
- * Therefore, in this page are documented only the functions that in some way need to modify the
- * status of more than one Container of the Mesh. Other functions are inherited by the Container
- * classes of the Elements of the Mesh, or from its Components, and depend on all the templates
- * that compose a specific Mesh definition.
+ * Therefore, in this page are documented only the functions that in some way
+ * need to modify the status of more than one Container of the Mesh. Other
+ * functions are inherited by the Container classes of the Elements of the Mesh,
+ * or from its Components, and depend on all the templates that compose a
+ * specific Mesh definition.
  *
  * @ingroup mesh
  */
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 class Mesh : public Args...
 {
+	static_assert(HasVertices<Args...>, "A Mesh must have a VertexContainer.");
+
 	template<typename El, bool b>
 	friend struct comp::internal::CustomComponentsData;
 
@@ -72,31 +78,35 @@ class Mesh : public Args...
 	template<ElementConcept T>
 	friend class mesh::ElementContainer;
 
-	template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+	template<uint ELEM_TYPE, typename MeshType, typename... Comps>
 	friend class Element;
 
 public:
 	/**
-	 * @brief Containers is a vcl::TypeWrapper that wraps all the types from which the Mesh inherits
-	 * (Args) that are ElementContainers (they satisfy the ElementContainerConcept).
+	 * @brief Containers is a vcl::TypeWrapper that wraps all the types from
+	 * which the Mesh inherits (Args) that are ElementContainers (they satisfy
+	 * the ElementContainerConcept).
 	 */
-	using Containers = typename vcl::
-		FilterTypesByCondition<mesh::IsElementContainerPred, vcl::TypeWrapper<Args...>>::type;
+	using Containers = typename vcl::FilterTypesByCondition<
+		mesh::IsElementContainerPred,
+		vcl::TypeWrapper<Args...>>::type;
 
 	/**
-	 * @brief Components is a vcl::TypeWrapper that wraps all the types from which the Mesh inherits
-	 * (Args) that are Components (they satisfy the ComponentConcept).
+	 * @brief Components is a vcl::TypeWrapper that wraps all the types from
+	 * which the Mesh inherits (Args) that are Components (they satisfy the
+	 * ComponentConcept).
 	 */
-	using Components = typename vcl::
-		FilterTypesByCondition<comp::IsComponentPred, vcl::TypeWrapper<Args...>>::type;
+	using Components = typename vcl::FilterTypesByCondition<
+		comp::IsComponentPred,
+		vcl::TypeWrapper<Args...>>::type;
+
+	/* constructors */
 
 	Mesh();
 	Mesh(const Mesh& oth);
 	Mesh(Mesh&& oth);
 
-	void clear();
-
-	void compact();
+	/* constexpr static member functions */
 
 	template<ElementConcept El>
 	static constexpr bool hasContainerOf();
@@ -105,7 +115,16 @@ public:
 	static constexpr bool hasContainerOf();
 
 	template<uint EL_TYPE, uint COMP_TYPE>
+	static constexpr bool hasPerElementComponent();
+
+	template<uint EL_TYPE, uint COMP_TYPE>
 	static constexpr bool hasPerElementOptionalComponent();
+
+	/* member functions */
+
+	void clear();
+
+	void compact();
 
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
@@ -147,7 +166,7 @@ public:
 
 	template<uint EL_TYPE>
 	void reserve(uint n) requires (hasContainerOf<EL_TYPE>());
-	
+
 	template<uint EL_TYPE>
 	void deleteElement(uint i) requires (hasContainerOf<EL_TYPE>());
 
@@ -158,10 +177,12 @@ public:
 	void deleteElement(const El& e) const requires (hasContainerOf<El>());
 
 	template<uint EL_TYPE>
-	std::vector<uint> conpactIndices() const requires (hasContainerOf<EL_TYPE>());
+	std::vector<uint> conpactIndices() const
+		requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	void updateIndices(const std::vector<uint>& newIndices) requires (hasContainerOf<EL_TYPE>());
+	void updateIndices(const std::vector<uint>& newIndices)
+		requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
 	auto begin(bool jumpDeleted = true) requires (hasContainerOf<EL_TYPE>());
@@ -170,7 +191,8 @@ public:
 	auto end() requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto begin(bool jumpDeleted = true) const requires (hasContainerOf<EL_TYPE>());
+	auto begin(bool jumpDeleted = true) const
+		requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
 	auto end() const requires (hasContainerOf<EL_TYPE>());
@@ -179,17 +201,20 @@ public:
 	auto elements(bool jumpDeleted = true) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
-	auto elements(bool jumpDeleted = true) const requires (hasContainerOf<EL_TYPE>());
+	auto elements(bool jumpDeleted = true) const
+		requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE, uint COMP_TYPE>
 	bool isPerElementComponentEnabled() const
 		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
 
 	template<uint EL_TYPE, uint COMP_TYPE>
-	void enablePerElementComponent() requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+	void enablePerElementComponent()
+		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
 
 	template<uint EL_TYPE, uint COMP_TYPE>
-	void disablePerElementComponent() requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+	void disablePerElementComponent()
+		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
 
 protected:
 	template<typename Cont>
@@ -202,21 +227,22 @@ protected:
 	void updateAllPointers(const Element* oldBase, const Element* newBase);
 
 	template<typename Cont, typename Element>
-	void updatePointers(
-		const Element* oldBase,
-		const Element* newBase);
+	void updatePointers(const Element* oldBase, const Element* newBase);
 
 	template<ElementConcept Element>
-	void updateAllPointersAfterCompact(const Element* base, const std::vector<uint>& newIndices);
+	void updateAllPointers(
+		const Element*           base,
+		const std::vector<uint>& newIndices);
 
 	template<typename Cont, typename Element>
-	void updatePointersAfterCompact(
-		const Element*          base,
+	void updatePointers(
+		const Element*           base,
 		const std::vector<uint>& newIndices);
 
 private:
 	// hide init and isEnabled members
 	void init() {};
+
 	bool isEnabled() { return true; }
 
 	// enable optional components
@@ -230,7 +256,7 @@ private:
 
 	template<typename Cont>
 	void setParentMeshPointers();
-	
+
 	// private import member functions
 
 	template<typename Cont, typename OthMesh>
@@ -248,7 +274,9 @@ private:
 	static auto getContainerBases(const Mesh<A...>& m);
 
 	template<typename Cont, typename Array, typename... A>
-	static void updatePointersOfContainerType(Mesh<A...>& m, const Array& bases);
+	static void updatePointersOfContainerType(
+		Mesh<A...>&  m,
+		const Array& bases);
 
 	// member functions used by friends
 
@@ -260,20 +288,24 @@ private:
 
 	template<typename El>
 	const auto& customComponents() const;
-	
+
 	template<typename El>
 	auto& verticalComponents();
-	
+
 	template<typename El>
 	const auto& verticalComponents() const;
 
 	// Predicate structures
 
 	template<uint EL_TYPE>
-	struct ContainerOfElement : public mesh::ContainerOfElement<EL_TYPE, Mesh<Args...>> {};
+	struct ContainerOfElement :
+			public mesh::ContainerOfElement<EL_TYPE, Mesh<Args...>>
+	{
+	};
 
 	/**
-	 * @brief The ContainerOf struct allows to get the Container of an Element on this Mesh.
+	 * @brief The ContainerOf struct allows to get the Container of an Element
+	 * on this Mesh.
 	 *
 	 * Usage:
 	 *

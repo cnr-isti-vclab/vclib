@@ -38,10 +38,10 @@
 
 namespace vcl::mesh {
 
-template <ElementConcept T>
+template<ElementConcept T>
 class ElementContainer : public ElementContainerTriggerer
 {
-	template <ElementConcept U>
+	template<ElementConcept U>
 	friend class ElementContainer;
 
 	using ElementContainerType = ElementContainer<T>;
@@ -60,7 +60,7 @@ protected:
 	using ConstElementIterator = ConstElementContainerIterator<std::vector, T>;
 
 	const T& element(uint i) const;
-	T& element(uint i);
+	T&       element(uint i);
 
 	uint elementNumber() const;
 	uint elementContainerSize() const;
@@ -69,13 +69,13 @@ protected:
 	uint addElement();
 	uint addElements(uint size);
 
-	void reserveElements(uint size);
+	void              reserveElements(uint size);
 	std::vector<uint> compactElements();
 
 	void deleteElement(uint i);
 	void deleteElement(const T* e);
 
-	uint elementIndexIfCompact(uint i) const;
+	uint              elementIndexIfCompact(uint i) const;
 	std::vector<uint> elementCompactIndices() const;
 
 	void updateElementIndices(const std::vector<uint>& newIndices);
@@ -119,7 +119,7 @@ protected:
 	template<typename K>
 	bool isElemCustomComponentOfType(const std::string& name) const
 		requires comp::HasCustomComponents<T>;
-	
+
 	std::type_index elemComponentType(const std::string& name) const;
 
 	template<typename K>
@@ -134,14 +134,14 @@ protected:
 		requires comp::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> customComponentVectorHandle(const std::string& name)
-		requires comp::HasCustomComponents<T>;
+	CustomComponentVectorHandle<K> customComponentVectorHandle(
+		const std::string& name) requires comp::HasCustomComponents<T>;
 
 	template<typename K>
 	ConstCustomComponentVectorHandle<K> customComponentVectorHandle(
 		const std::string& name) const requires comp::HasCustomComponents<T>;
 
-	uint index(const T *e) const;
+	uint index(const T* e) const;
 
 	void setParentMeshPointers(void* pm);
 
@@ -153,7 +153,9 @@ protected:
 	void updatePointers(const Element* oldBase, const Element* newBase);
 
 	template<typename Element>
-	void updatePointersAfterCompact(const Element* base, const std::vector<uint>& newIndices);
+	void updatePointers(
+		const Element*           base,
+		const std::vector<uint>& newIndices);
 
 	template<typename OtherMesh>
 	void enableOptionalComponentsOf(const OtherMesh& m);
@@ -163,32 +165,38 @@ protected:
 
 	template<typename OtherMesh, typename ElPtrBase>
 	void importPointersFrom(const OtherMesh& othMesh, ElPtrBase* base);
-	
+
 	// filter components of elements, taking only vertical ones
-	using vComps = typename vcl::FilterTypesByCondition<comp::IsVerticalComponentPred, typename T::Components>::type;
+	using vComps = typename vcl::FilterTypesByCondition<
+		comp::IsVerticalComponentPred,
+		typename T::Components>::type;
 
 	ParentMeshType* parentMesh = nullptr;
 
 	/**
-	 * @brief en: the number of elements in the container. Could be different from elements.size()
-	 * due to elements marked as deleted into the container.
+	 * @brief en: the number of elements in the container. Could be different
+	 * from elements.size() due to elements marked as deleted into the
+	 * container.
 	 */
 	uint en = 0;
 
 	/**
-	 * @brief vec: the vector of elements: will contain the set of elements, each one of these will
-	 * contain the data of the horizontal components and a pointer to the parent mesh
+	 * @brief vec: the vector of elements: will contain the set of elements,
+	 * each one of these will contain the data of the horizontal components and
+	 * a pointer to the parent mesh
 	 */
 	std::vector<T> vec;
 
 	/**
-	 * @brief vcVecTuple the tuple of vectors of all the vertical components of the element. Contains
-	 * both the optional and the persistent vertical components
+	 * @brief vcVecTuple the tuple of vectors of all the vertical components of
+	 * the element. Contains both the optional and the persistent vertical
+	 * components
 	 */
 	VerticalComponentsVectorTuple<vComps> vcVecTuple;
 
 	/**
-	 * @brief ccVecMap the map that associates a string to a vector of custom components
+	 * @brief ccVecMap the map that associates a string to a vector of custom
+	 * components
 	 */
 	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVecMap;
 
@@ -200,15 +208,22 @@ private:
 		TypeWrapper<Comps...>);
 
 	template<typename ElPtr, typename... Comps>
-	void updatePointersAfterCompactOnComponents(
-		const ElPtr*            base,
+	void updatePointersOnComponents(
+		const ElPtr*             base,
 		const std::vector<uint>& newIndices,
 		TypeWrapper<Comps...>);
 
 	template<typename Container, typename MyBase, typename CBase>
-	void importPointersFromContainer(const Container& c, MyBase* base, const CBase* cbase);
+	void importPointersFromContainer(
+		const Container& c,
+		MyBase*          base,
+		const CBase*     cbase);
 
-	template<typename Container, typename ElPtr, typename CBase, typename... Comps>
+	template<
+		typename Container,
+		typename ElPtr,
+		typename CBase,
+		typename... Comps>
 	void importPointersOnComponentsFrom(
 		const Container& c,
 		ElPtr*           base,
@@ -219,8 +234,8 @@ private:
 	void updatePointersOnComponent(const ElPtr* oldBase, const ElPtr* newBase);
 
 	template<typename Comp, typename ElPtr>
-	void updatePointersAfterCompactOnComponent(
-		const ElPtr* base,
+	void updatePointersOnComponent(
+		const ElPtr*             base,
 		const std::vector<uint>& newIndices);
 
 	template<typename Comp, typename Container, typename ElPtr, typename CBase>

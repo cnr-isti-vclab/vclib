@@ -31,9 +31,10 @@
 namespace vcl::comp {
 
 /**
- * @brief HasTexturePaths concept is satisfied only if a Element or Mesh class provides the member
- * functions specified in this concept. These member functions allows to access to a TexturePaths
- * component of a given element/mesh.
+ * @brief HasTexturePaths concept is satisfied only if a Element or Mesh class
+ * provides the member functions specified in this concept. These member
+ * functions allows to access to a TexturePaths component of a given
+ * element/mesh.
  *
  * @ingroup components_concepts
  */
@@ -57,8 +58,10 @@ concept HasTexturePaths = requires(
 
 	{ o.texturePathBegin() } -> std::same_as<typename T::TexFileNamesIterator>;
 	{ o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
-	{ co.texturePathBegin() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
-	{ co.texturePathEnd() } -> std::same_as<typename T::ConstTexFileNamesIterator>;
+	{ co.texturePathBegin() } ->
+		std::same_as<typename T::ConstTexFileNamesIterator>;
+	{ co.texturePathEnd() } ->
+		std::same_as<typename T::ConstTexFileNamesIterator>;
 	o.texturePaths();
 	co.texturePaths();
 };

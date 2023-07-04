@@ -46,6 +46,8 @@ namespace vcl {
 template<typename MeshType, typename... Comps>
 class Face : public Element<FACE, MeshType, Comps...>
 {
+	using Base = Element<FACE, MeshType, Comps...>;
+
 	// VertexPointers component of the Face
 	using VPtrs = typename Face::VertexPointers;
 
@@ -75,6 +77,9 @@ public:
 	void eraseVertex(uint i) requires PolygonFaceConcept<Face>;
 
 	void clearVertices() requires PolygonFaceConcept<Face>;
+
+	template<typename ElType>
+	void importFrom(const ElType& v);
 
 private:
 	template<typename Comp>

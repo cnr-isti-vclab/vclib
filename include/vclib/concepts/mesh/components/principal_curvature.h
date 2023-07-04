@@ -29,17 +29,20 @@
 namespace vcl::comp {
 
 /**
- * @brief HasPrincipalCurvature concept is satisfied only if a Element class provides the types and
- * member functions specified in this concept. These types and member functions allow to access to a
- * PrincipalCurvature component of a given element.
+ * @brief HasPrincipalCurvature concept is satisfied only if a Element class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to a PrincipalCurvature component
+ * of a given element.
  *
- * Note that this concept does not discriminate between the Horizontal PrincipalCurvature component
- * and the vertical OptionalPrincipalCurvature component, therefore it does not guarantee that a
- * template Element type that satisfies this concept provides PrincipalCurvature component at
- * runtime (it is guaranteed only that the proper member functions are available at compile time).
+ * Note that this concept does not discriminate between the Horizontal
+ * PrincipalCurvature component and the vertical OptionalPrincipalCurvature
+ * component, therefore it does not guarantee that a template Element type that
+ * satisfies this concept provides PrincipalCurvature component at runtime (it
+ * is guaranteed only that the proper member functions are available at compile
+ * time).
  *
- * To be completely sure that PrincipalCurvature is available at runtime, you need to call the
- * member function `isPrincipalCurvatureEnabled()`.
+ * To be completely sure that PrincipalCurvature is available at runtime, you
+ * need to call the member function `isPrincipalCurvatureEnabled()`.
  *
  * @ingroup components_concepts
  */
@@ -49,19 +52,24 @@ concept HasPrincipalCurvature = requires(
 	const T& co)
 {
 	typename T::PrincipalCurvatureType;
-	{ o.principalCurvature() } -> std::same_as<typename T::PrincipalCurvatureType&>;
-	{ co.principalCurvature() } -> std::same_as<const typename T::PrincipalCurvatureType&>;
+	{ o.principalCurvature() } ->
+		std::same_as<typename T::PrincipalCurvatureType&>;
+	{ co.principalCurvature() } ->
+		std::same_as<const typename T::PrincipalCurvatureType&>;
 	{ co.isPrincipalCurvatureEnabled() } -> std::same_as<bool>;
 };
 
 /**
- * @brief HasOptionalPrincipalCurvature concept is satisfied only if a class satisfis the
- * HasPrincipalCurvature concept and the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalPrincipalCurvature concept is satisfied only if a class
+ * satisfis the HasPrincipalCurvature concept and the static boolean constant
+ * IS_OPTIONAL is set to true.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasOptionalPrincipalCurvature = HasPrincipalCurvature<T> && IsOptionalComponent<typename T::PrincipalCurvature>;
+concept HasOptionalPrincipalCurvature =
+	HasPrincipalCurvature<T> &&
+	IsOptionalComponent<typename T::PrincipalCurvature>;
 
 } // namespace vcl::comp
 

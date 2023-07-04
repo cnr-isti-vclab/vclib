@@ -29,7 +29,7 @@
 
 namespace vcl {
 
-template<typename... Args> requires HasVertices<Args...>
+template<typename... Args>
 class Mesh;
 
 namespace mesh {
@@ -39,15 +39,15 @@ template<typename Derived>
 using IsDerivedFromMesh = IsDerivedFromTemplateSpecialization<Derived, Mesh>;
 
 // checks if a type is a vcl::Mesh<Args...>
+// Default case, no pattern match
 template<class T>
-struct IsAMesh : // Default case, no pattern match
-				 std::false_type
+struct IsAMesh : std::false_type
 {
 };
 
+// For types matching the pattern Mesh<Args...>
 template<class... Args>
-struct IsAMesh<Mesh<Args...>> : // For types matching the pattern Mesh<Args...>
-								std::true_type
+struct IsAMesh<Mesh<Args...>> : std::true_type
 {
 };
 
@@ -56,9 +56,9 @@ struct IsAMesh<Mesh<Args...>> : // For types matching the pattern Mesh<Args...>
 /**
  * @brief The Mesh Concept is evaluated to true when the type is a Mesh.
  *
- * A type T is a Mesh whem it inherits from or it is a template specialization of the vcl::Mesh
- * class, and it contains a VertexContainer, which is the only container that is mandatory in
- * a vcl::Mesh.
+ * A type T is a Mesh whem it inherits from or it is a template specialization
+ * of the vcl::Mesh class, and it contains a VertexContainer, which is the only
+ * container that is mandatory in a vcl::Mesh.
  *
  * @ingroup mesh_concepts
  */

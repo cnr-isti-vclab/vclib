@@ -31,17 +31,19 @@
 namespace vcl::comp {
 
 /**
- * @brief HasAdjacentFaces concept is satisfied only if a Element class provides the types and
- * member functions specified in this concept. These types and member functions allow to access to
- * an AdjacentFaces component of a given element.
+ * @brief HasAdjacentFaces concept is satisfied only if a Element class provides
+ * the types and member functions specified in this concept. These types and
+ * member functions allow to access to an AdjacentFaces component of a given
+ * element.
  *
- * Note that this concept does not discriminate between the Horizontal AdjacentFaces component and
- * the vertical OptionalAdjacentFaces component, therefore it does not guarantee that a template
- * Element type that satisfies this concept provides AdjacentFaces component at runtime (it is
- * guaranteed only that the proper member functions are available at compile time).
+ * Note that this concept does not discriminate between the Horizontal
+ * AdjacentFaces component and the vertical OptionalAdjacentFaces component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides AdjacentFaces component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
  *
- * To be completely sure that AdjacentFaces is available at runtime, you need to call the member
- * function `isAdjFacesEnabled()`.
+ * To be completely sure that AdjacentFaces is available at runtime, you need to
+ * call the member function `isAdjFacesEnabled()`.
  *
  * @ingroup components_concepts
  */
@@ -61,27 +63,31 @@ concept HasAdjacentFaces = requires(
 	{ o.adjFace(uint()) } -> std::same_as<typename T::AdjacentFaceType*&>;
 	{ co.adjFace(uint()) } -> std::same_as<const typename T::AdjacentFaceType*>;
 	{ o.adjFaceMod(int()) } -> std::same_as<typename T::AdjacentFaceType*&>;
-	{ co.adjFaceMod(int()) } -> std::same_as<const typename T::AdjacentFaceType*>;
+	{ co.adjFaceMod(int()) } ->
+		std::same_as<const typename T::AdjacentFaceType*>;
 	{ o.setAdjFace(&f, uint()) } -> std::same_as<void>;
 	{ o.setAdjFaces(v) } -> std::same_as<void>;
 	{ co.containsAdjFace(&f) } -> std::same_as<bool>;
 
 	{ o.findAdjFace(&f) } -> std::same_as<typename T::AdjacentFaceIterator>;
-	{ co.findAdjFace(&f) } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
-	{ co.indexOfAdjFace(&f) } -> std::same_as<int>;
+	{ co.findAdjFace(&f) } ->
+		std::same_as<typename T::ConstAdjacentFaceIterator>;
+	{ co.indexOfAdjFace(&f) } -> std::same_as<uint>;
 	{ co.isAdjFacesEnabled() } -> std::same_as<bool>;
 
 	{ o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;
 	{ o.adjFaceEnd() } -> std::same_as<typename T::AdjacentFaceIterator>;
-	{ co.adjFaceBegin() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
+	{ co.adjFaceBegin() } ->
+		std::same_as<typename T::ConstAdjacentFaceIterator>;
 	{ co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
 	o.adjFaces();
 	co.adjFaces();
 };
 
 /**
- * @brief HasOptionalAdjacentFaces concept is satisfied only if a class satisfies the
- * HasAdjacentFacesComponent concept and the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalAdjacentFaces concept is satisfied only if a class
+ * satisfies the HasAdjacentFacesComponent concept and the static boolean
+ * constant IS_OPTIONAL is set to true.
  *
  * @ingroup components_concepts
  */
@@ -93,11 +99,11 @@ concept HasOptionalAdjacentFaces =
  * @private
  * @brief HasRightNumberOfAdjacentFaces concept
  *
- * This concept is designed to be used with Face components, where the number of adjacent faces must
- * be consisted w.r.t. the number of vertices of the face.
+ * This concept is designed to be used with Face components, where the number of
+ * adjacent faces must be consisted w.r.t. the number of vertices of the face.
  *
- * This concept is satisfied only if static number of adjacent faces is the same of the static
- * number of vertices.
+ * This concept is satisfied only if static number of adjacent faces is the same
+ * of the static number of vertices.
  */
 template<typename T>
 concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
@@ -106,12 +112,13 @@ concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
  * @private
  * @brief SanityCheckAdjacentFaces concept
  *
- * This concept is designed to be used with Face components, where the number of adjacent faces must
- * be consistent w.r.t. the number of vertices of the face.
+ * This concept is designed to be used with Face components, where the number of
+ * adjacent faces must be consistent w.r.t. the number of vertices of the face.
  *
  * It is satisfied if:
  * - the component does *not* have adjacent faces;
- * - in case it has adjacent faces, they have the same number of vertices of the face.
+ * - in case it has adjacent faces, they have the same number of vertices of the
+ * face.
  */
 template<typename T>
 concept SanityCheckAdjacentFaces = !HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;

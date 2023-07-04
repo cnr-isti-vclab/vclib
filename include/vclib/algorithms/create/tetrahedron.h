@@ -31,7 +31,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createTetrahedron();
 
-template<FaceMeshConcept MeshType, PointConcept CoordType>
+template<FaceMeshConcept MeshType, Point3Concept CoordType>
 MeshType createTetrahedron(
 	const CoordType& p0,
 	const CoordType& p1,

@@ -30,37 +30,55 @@
 namespace vcl {
 
 /**
- * @brief The CreateSphereArgs structs contains a series of parameters to generate a sphere.
+ * @brief The CreateSphereArgs structs contains a series of parameters to
+ * generate a sphere.
  *
- * The main parameter is `mode`, an enumeration that indicates the method used to generate the
- * sphere mesh. Its values can be: `UV` (default), `NORMALIZED_CUBE`, `SPHERIFIED_CUBE` and
- * `ICOSAHEDRON`.
- * Please refer to https://github.com/caosdoar/spheres for more details about the available modes.
+ * The main parameter is `mode`, an enumeration that indicates the method used
+ * to generate the sphere mesh. Its values can be: `UV` (default),
+ * `NORMALIZED_CUBE`, `SPHERIFIED_CUBE` and `ICOSAHEDRON`. Please refer to
+ * https://github.com/caosdoar/spheres for more details about the available
+ * modes.
  *
  * Other arguments are:
  * - parallels (default 10): used when mode == `UV`;
  * - meridians (default 20): used when mode == `UV`;
- * - divisions (default 20): used when mode == `NORMALIZED_CUBE` or `SPHERIFIED_CUBE`
+ * - divisions (default 20): used when mode == `NORMALIZED_CUBE`,
+ *   `SPHERIFIED_CUBE`, `ICOSAHEDRON`
  *
  * @ingroup create
  */
-struct CreateSphereArgs {
-	typedef enum { UV = 0, NORMALIZED_CUBE, SPHERIFIED_CUBE, ICOSAHEDRON } CreateSphereMode;
+struct CreateSphereArgs
+{
+	typedef enum {
+		UV = 0,
+		NORMALIZED_CUBE,
+		SPHERIFIED_CUBE,
+		ICOSAHEDRON
+	} CreateSphereMode;
 
-	CreateSphereMode mode      = UV;
-	uint             parallels = 10; // used for mode = UV
-	uint             meridians = 20; // used for mode = UV
-	uint             divisions = 20; // used for mode = NORMALIZED_CUBE, SPHERIFIED_CUBE, ICOSAHEDRON
+	CreateSphereMode mode = UV;
+
+	// used for mode = UV
+	uint parallels = 10;
+	uint meridians = 20;
+
+	// used for mode = NORMALIZED_CUBE, SPHERIFIED_CUBE, ICOSAHEDRON
+	uint divisions = 20;
 };
 
 template<FaceMeshConcept MeshType>
-MeshType createSphereUV(const SphereConcept auto& sp, uint parallels = 10, uint meridians = 20);
+MeshType createSphereUV(
+	const SphereConcept auto& sp,
+	uint                      parallels = 10,
+	uint                      meridians = 20);
 
 template<FaceMeshConcept MeshType>
-MeshType createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions);
+MeshType
+createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions);
 
 template<FaceMeshConcept MeshType>
-MeshType createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions);
+MeshType
+createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions);
 
 template<FaceMeshConcept MeshType>
 MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions);
@@ -68,7 +86,7 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions);
 template<FaceMeshConcept MeshType>
 MeshType createSphere(
 	const SphereConcept auto& sp,
-	const CreateSphereArgs& args = CreateSphereArgs());
+	const CreateSphereArgs&   args = CreateSphereArgs());
 
 template<FaceMeshConcept MeshType>
 MeshType createSphere();

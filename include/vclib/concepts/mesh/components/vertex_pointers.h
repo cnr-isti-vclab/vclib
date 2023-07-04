@@ -31,9 +31,10 @@
 namespace vcl::comp {
 
 /**
- * @brief HasVertexPointers concept is satisfied only if a Element class provides the types and
- * member functions specified in this concept. These types and member functions allow to access to
- * an VertexPointers component of a given element.
+ * @brief HasVertexPointers concept is satisfied only if a Element class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to an VertexPointers component of
+ * a given element.
  *
  * @ingroup components_concepts
  */
@@ -62,8 +63,8 @@ concept HasVertexPointers = requires(
 	{ o.findVertex(&v) } -> std::same_as<typename T::VertexIterator>;
 	{ co.findVertex(&v) } -> std::same_as<typename T::ConstVertexIterator>;
 
-	{ co.indexOfVertex(&v) } -> std::same_as<int>;
-	{ co.indexOfEdge(&v, &v) } -> std::same_as<int>;
+	{ co.indexOfVertex(&v) } -> std::same_as<uint>;
+	{ co.indexOfEdge(&v, &v) } -> std::same_as<uint>;
 
 	{ o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
 	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;

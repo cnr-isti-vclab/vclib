@@ -28,40 +28,58 @@
 namespace vcl::comp {
 
 /*
- * This member function is called when we need to update the pointers in this container.
+ * This member function is called when we need to update the pointers in this
+ * container after a reallocation (the pointer of the first element of the
+ * container is changed from oldBase to newBase).
  *
- * This is necessary when, for example, the original container of Elements has been reallocated.
- * When this happens, the all the Elements have been moved in another portion of memory, and
- * all the pointers to that Elements must be updated. Since in this container are stored pointers
- * to Elements, we need to update them.
+ * This is necessary when, for example, the original container of Elements has
+ * been reallocated. When this happens, the all the Elements have been moved in
+ * another portion of memory, and all the pointers to that Elements must be
+ * updated. Since in this container are stored pointers to Elements, we need to
+ * update them.
  *
- * To update them, we need to know the oldBase (the pointer to the first Element of the reallocated
- * Container before the reallocation) and the newBase (the pointer to the first Element of the
- * reallocated Container after the reallocation. We can then compute, for each pointer, the offset
- * w.r.t. the first element of the Container, and update the the pointer accordingly using the
- * newBase.
+ * To update them, we need to know the oldBase (the pointer to the first Element
+ * of the reallocated Container before the reallocation) and the newBase (the
+ * pointer to the first Element of the reallocated Container after the
+ * reallocation. We can then compute, for each pointer, the offset w.r.t. the
+ * first element of the Container, and update the the pointer accordingly using
+ * the newBase.
  */
 template<uint CT, typename Elem, int N, typename El, bool o, bool TT>
 template<typename Comp>
 void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointers(
 	const Elem* oldBase,
 	const Elem* newBase,
-	Comp* comp)
+	Comp*       comp)
 {
-	for (uint j = 0; j < container(comp).size(); ++j) { // for each pointer in this container
+	for (uint j = 0; j < container(comp).size(); ++j)
+	{ // for each pointer in this container
 		if (container(comp).at(j) != nullptr) {
-			size_t diff = container(comp).at(j) - oldBase; // offset w.r.t. the old base
-			container(comp).at(j)  = (Elem*) newBase + diff; // update the pointer using newBase
+			size_t diff =
+				container(comp).at(j) - oldBase; // offset w.r.t. the old base
+			container(comp).at(j) =
+				(Elem*) newBase + diff; // update the pointer using newBase
 		}
 	}
 }
 
+/*
+ * This member function is called when we need to update the pointers in this
+ * containers, usually after a compaction of the container (but not always).
+ *
+ * In this case, the address of the first element in the container is not
+ * changed, but may change the position of each element inside the container.
+ * The function takes the base pointer of the first element of the container,
+ * and a vector that stores, for each old element position, the new position
+ * in the container (UINT_NULL if the element has been removed and must be
+ * left unreferenced).
+ */
 template<uint CT, typename Elem, int N, typename El, bool o, bool TT>
 template<typename Comp>
-void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointersAfterCompact(
-	const Elem*             base,
+void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointers(
+	const Elem*              base,
 	const std::vector<uint>& newIndices,
-	Comp* comp)
+	Comp*                    comp)
 {
 	for (uint j = 0; j < container(comp).size(); ++j) {
 		if (container(comp).at(j) != nullptr) {

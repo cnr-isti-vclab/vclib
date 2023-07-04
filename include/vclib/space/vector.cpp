@@ -36,8 +36,8 @@ namespace vcl {
 /**
  * @brief Creates an empty Vector object.
  *
- * If the container is dynamic, its size is 0. When the container is static, the size is N and its
- * elements are initialized with their empty constructor.
+ * If the container is dynamic, its size is 0. When the container is static, the
+ * size is N and its elements are initialized with their empty constructor.
  */
 template<typename T, int N>
 Vector<T, N>::Vector()
@@ -47,12 +47,14 @@ Vector<T, N>::Vector()
 /**
  * @brief Constructs the container with the contents of the range [first, last).
  *
- * If the container is dynamic, the size of the container is determined by the number of elements
- * in the range [first, last). If the container is static, the elements are initialized
- * with the contents of the first N elements of the range [first, last). If the range contains less
- * than N elements, the remaining elements are initialized with their empty constructor.
+ * If the container is dynamic, the size of the container is determined by the
+ * number of elements in the range [first, last). If the container is static,
+ * the elements are initialized with the contents of the first N elements of the
+ * range [first, last). If the range contains less than N elements, the
+ * remaining elements are initialized with their empty constructor.
  *
- * @tparam ItType: The type of the iterators used to access the elements in the range.
+ * @tparam ItType: The type of the iterators used to access the elements in the
+ * range.
  *
  * @param[in] first: The beginning of the range.
  * @param[in] last: The end of the range.
@@ -67,13 +69,14 @@ Vector<T, N>::Vector(ItType first, ItType last)
 /**
  * @brief Constructs the container with the contents of the range rng.
  *
- * If the container is dynamic, the size of the container is determined by the number of elements
- * in the input range. If the container is static, the elements are initialized
- * with the contents of the first N elements of the range. If the range contains less
- * than N elements, the remaining elements are initialized with their empty constructor.
+ * If the container is dynamic, the size of the container is determined by the
+ * number of elements in the input range. If the container is static, the
+ * elements are initialized with the contents of the first N elements of the
+ * range. If the range contains less than N elements, the remaining elements are
+ * initialized with their empty constructor.
  *
- * @tparam RangeType: The type of the range used to access the elements in the range. It must
- * satisfy the vcl::Range concept.
+ * @tparam RangeType: The type of the range used to access the elements in the
+ * range. It must satisfy the vcl::Range concept.
  *
  * @param[in] rng: a range of T elements.
  */
@@ -87,8 +90,8 @@ Vector<T, N>::Vector(RangeType&& rng)
 /**
  * @brief Returns the size of the container.
  *
- * If the container is static, the size is N. If the container is dynamic, the size is determined by
- * the number of elements currently stored.
+ * If the container is static, the size is N. If the container is dynamic, the
+ * size is determined by the number of elements currently stored.
  *
  * @return The size of the container.
  */
@@ -106,13 +109,15 @@ uint Vector<T, N>::size() const
 /**
  * @brief Access the specified element with bounds checking.
  *
- * Returns a reference to the element at position `i` in the Vector, with bounds checking. If `i` is
- * not within the range of valid indices for the Vector, an `std::out_of_range` exception is thrown.
+ * Returns a reference to the element at position `i` in the Vector, with bounds
+ * checking. If `i` is not within the range of valid indices for the Vector, an
+ * `std::out_of_range` exception is thrown.
  *
  * @param[in] i: The position of the element.
  * @return A reference to the element at position `i`.
  *
- * @throws std::out_of_range If `i` is not within the range of valid indices for the Vector.
+ * @throws std::out_of_range If `i` is not within the range of valid indices for
+ * the Vector.
  */
 template<typename T, int N>
 typename Vector<T, N>::Reference Vector<T, N>::at(uint i)
@@ -123,14 +128,15 @@ typename Vector<T, N>::Reference Vector<T, N>::at(uint i)
 /**
  * @brief Access the specified element with bounds checking.
  *
- * Returns a const reference to the element at position `i` in the Vector, with bounds checking. If
- * `i` is not within the range of valid indices for the Vector, an `std::out_of_range` exception is
- * thrown.
+ * Returns a const reference to the element at position `i` in the Vector, with
+ * bounds checking. If `i` is not within the range of valid indices for the
+ * Vector, an `std::out_of_range` exception is thrown.
  *
  * @param[in] i: The position of the element.
  * @return A const reference to the element at position `i`.
  *
- * @throws std::out_of_range If `i` is not within the range of valid indices for the Vector.
+ * @throws std::out_of_range If `i` is not within the range of valid indices for
+ * the Vector.
  */
 template<typename T, int N>
 typename Vector<T, N>::ConstReference Vector<T, N>::at(uint i) const
@@ -139,10 +145,11 @@ typename Vector<T, N>::ConstReference Vector<T, N>::at(uint i) const
 }
 
 /**
- * @brief Access the specified element, computing first the module of the position w.r.t. the size
- * of the container.
+ * @brief Access the specified element, computing first the module of the
+ * position w.r.t. the size of the container.
  *
- * Takes into account negative indices: atMod(-1) will access to the last element of the container.
+ * Takes into account negative indices: atMod(-1) will access to the last
+ * element of the container.
  *
  * @param[in] i: The position of the element.
  * @return A reference to the element at position i % size().
@@ -155,10 +162,11 @@ typename Vector<T, N>::Reference Vector<T, N>::atMod(int i)
 }
 
 /**
- * @brief Access the specified element, computing first the module of the position w.r.t. the size
- * of the container.
+ * @brief Access the specified element, computing first the module of the
+ * position w.r.t. the size of the container.
  *
- * Takes into account negative indices: atMod(-1) will access to the last element of the container.
+ * Takes into account negative indices: atMod(-1) will access to the last
+ * element of the container.
  *
  * @param[in] i The position of the element.
  * @return A const reference to the element at position i % size().
@@ -173,7 +181,8 @@ typename Vector<T, N>::ConstReference Vector<T, N>::atMod(int i) const
 /**
  * @brief Set the value of the element at the specified position.
  *
- * Sets the value of the element at position `i` in the Vector to the specified value `e`.
+ * Sets the value of the element at position `i` in the Vector to the specified
+ * value `e`.
  *
  * @param[in] e: The new value of the element.
  * @param[in] i: The position of the element.
@@ -188,11 +197,13 @@ void Vector<T, N>::set(const T& e, uint i)
 /**
  * @brief Set the elements of the Vector using the values from a range.
  *
- * Sets the elements of the Vector to the values from the range `r`. If the size of the Vector is
- * known at compile-time and is not negative, the first N elements from the range `r` (or all of
- * them, if they are less than N) are copied into the Vector using `std::copy_n()`. If the size
- * of the Vector is negative or not known at compile-time, the elements of the Vector are set to
- * the values from the range `r` by constructing a new std::vector from the range `r`.
+ * Sets the elements of the Vector to the values from the range `r`. If the size
+ * of the Vector is known at compile-time and is not negative, the first N
+ * elements from the range `r` (or all of them, if they are less than N) are
+ * copied into the Vector using `std::copy_n()`. If the size of the Vector is
+ * negative or not known at compile-time, the elements of the Vector are set to
+ * the values from the range `r` by constructing a new std::vector from the
+ * range `r`.
  *
  * @tparam Rng: The type of the range.
  *
@@ -214,7 +225,8 @@ void Vector<T, N>::set(Rng&& r)
 /**
  * @brief Fill all elements of the Vector with the specified value.
  *
- * Sets all elements of the Vector to the value specified by `e`, using the `std::fill()` algorithm.
+ * Sets all elements of the Vector to the value specified by `e`, using the
+ * `std::fill()` algorithm.
  *
  * @param[in] e: The value to fill the Vector with.
  */
@@ -227,7 +239,8 @@ void Vector<T, N>::fill(const T& e)
 /**
  * @brief Check if the Vector contains the specified element.
  *
- * Checks if the Vector contains the element specified by `e`, using the `std::find()` algorithm.
+ * Checks if the Vector contains the element specified by `e`, using the
+ * `std::find()` algorithm.
  *
  * @param[in] e: The element to search for in the Vector.
  * @return `true` if the element is found in the Vector, `false` otherwise.
@@ -241,12 +254,12 @@ bool Vector<T, N>::contains(const typename MakeConstPointer<T>::type& e) const
 /**
  * @brief Find the first occurrence of the specified element in the Vector.
  *
- * Finds the first occurrence of the element specified by `e` in the Vector, using the `std::find()`
- * algorithm.
+ * Finds the first occurrence of the element specified by `e` in the Vector,
+ * using the `std::find()` algorithm.
  *
  * @param[in] e: The element to search for in the Vector.
- * @return An iterator to the first occurrence of the element in the Vector, or `end()` if the
- * element is not found.
+ * @return An iterator to the first occurrence of the element in the Vector, or
+ * `end()` if the element is not found.
  */
 template<typename T, int N>
 typename Vector<T, N>::Iterator Vector<T, N>::find(const typename MakeConstPointer<T>::type& e)
@@ -257,12 +270,12 @@ typename Vector<T, N>::Iterator Vector<T, N>::find(const typename MakeConstPoint
 /**
  * @brief Find the first occurrence of the specified element in the Vector.
  *
- * Finds the first occurrence of the element specified by `e` in the Vector, using the `std::find()`
- * algorithm.
+ * Finds the first occurrence of the element specified by `e` in the Vector,
+ * using the `std::find()` algorithm.
  *
  * @param[in] e: The element to search for in the Vector.
- * @return A const iterator to the first occurrence of the element in the Vector, or `end()` if the
- * element is not found.
+ * @return A const iterator to the first occurrence of the element in the
+ * Vector, or `end()` if the element is not found.
  */
 template<typename T, int N>
 typename Vector<T, N>::ConstIterator
@@ -272,29 +285,30 @@ Vector<T, N>::find(const typename MakeConstPointer<T>::type& e) const
 }
 
 /**
- * @brief Get the index of the first occurrence of the specified element in the Vector.
+ * @brief Get the index of the first occurrence of the specified element in the
+ * Vector.
  *
- * Finds the first occurrence of the element specified by `e` in the Vector, using the `std::find()`
- * algorithm, and returns its index. If the element is not found in the Vector, the member function
- * returns -1.
+ * Finds the first occurrence of the element specified by `e` in the Vector,
+ * using the `std::find()` algorithm, and returns its index. If the element is
+ * not found in the Vector, the member function returns UINT_NULL.
  *
  * @param[in] e: The element to search for in the Vector.
- * @return The index of the first occurrence of the element in the Vector, or -1 if the element is
- * not found.
+ * @return The index of the first occurrence of the element in the Vector, or
+ * UINT_NULL if the element is not found.
  */
 template<typename T, int N>
-int Vector<T, N>::indexOf(const typename MakeConstPointer<T>::type& e) const
+uint Vector<T, N>::indexOf(const typename MakeConstPointer<T>::type& e) const
 {
 	auto it = find(e);
 	if (it == end())
-		return -1;
+		return UINT_NULL;
 	else
 		return it - begin();
 }
 
 /**
- * @brief Returns a reference to the element at specified location i. No bounds checking is
- * performed.
+ * @brief Returns a reference to the element at specified location i. No bounds
+ * checking is performed.
  * @param[in] i: Position of the element to return
  * @return A reference to the requested element.
  */
@@ -305,8 +319,8 @@ typename Vector<T, N>::Reference Vector<T, N>::operator[](uint i)
 }
 
 /**
- * @brief Returns a const reference to the element at specified location i. No bounds checking is
- * performed.
+ * @brief Returns a const reference to the element at specified location i. No
+ * bounds checking is performed.
  * @param[in] i: Position of the element to return
  * @return A const reference to the requested element.
  */
@@ -319,9 +333,10 @@ typename Vector<T, N>::ConstReference Vector<T, N>::operator[](uint i) const
 /**
  * @brief Resize the Vector to the specified size.
  *
- * Resizes the Vector to the specified size `n` by resizing the underlying `std::vector`. This
- * member function is only available if the size of the Vector is not known at compile-time, as
- * specified by the concept requirement `requires (N < 0)`.
+ * Resizes the Vector to the specified size `n` by resizing the underlying
+ * `std::vector`. This member function is only available if the size of the
+ * Vector is not known at compile-time, as specified by the concept requirement
+ * `requires (N < 0)`.
  *
  * @param[in] n: The new size of the Vector.
  */
@@ -334,9 +349,10 @@ void Vector<T, N>::resize(uint n) requires (N < 0)
 /**
  * @brief Add an element to the end of the Vector.
  *
- * Adds the element `v` to the end of the Vector by calling the `push_back()` member function of the
- * underlying `std::vector`. This member function is only available if the size of the Vector is not
- * known at compile-time, as specified by the concept requirement `requires (N < 0)`.
+ * Adds the element `v` to the end of the Vector by calling the `push_back()`
+ * member function of the underlying `std::vector`. This member function is only
+ * available if the size of the Vector is not known at compile-time, as
+ * specified by the concept requirement `requires (N < 0)`.
  *
  * @param[in] v: The value to add to the end of the Vector.
  */
@@ -349,10 +365,10 @@ void Vector<T, N>::pushBack(const T& v) requires (N < 0)
 /**
  * @brief Insert an element at the specified position in the Vector.
  *
- * Inserts the element `v` at the position specified by `i` in the Vector by calling the `insert()`
- * member function of the underlying `std::vector`. This member function is only available if the
- * size of the Vector is not known at compile-time, as specified by the concept requirement
- * `requires (N < 0)`.
+ * Inserts the element `v` at the position specified by `i` in the Vector by
+ * calling the `insert()` member function of the underlying `std::vector`. This
+ * member function is only available if the size of the Vector is not known at
+ * compile-time, as specified by the concept requirement `requires (N < 0)`.
  *
  * @param[in] i: The index at which to insert the element.
  * @param[in] v: The value to insert into the Vector.
@@ -367,10 +383,11 @@ void Vector<T, N>::insert(uint i, const T& v) requires (N < 0)
 /**
  * @brief Insert an element at the specified position in the Vector.
  *
- * Inserts the newly constructed element with the args at the position specified by `i` in the
- * Vector by calling the `emplace()` member function of the underlying `std::vector`. This member
- * function is only available if the size of the Vector is not known at compile-time, as specified
- * by the concept requirement `requires (N < 0)`.
+ * Inserts the newly constructed element with the args at the position specified
+ * by `i` in the Vector by calling the `emplace()` member function of the
+ * underlying `std::vector`. This member function is only available if the size
+ * of the Vector is not known at compile-time, as specified by the concept
+ * requirement `requires (N < 0)`.
  *
  * @param[in] i: The index at which to insert the element.
  * @param[in] args: Arguments to forward to the constructor of the element.
@@ -386,10 +403,10 @@ void Vector<T, N>::emplace(uint i, Args&&... args) requires (N < 0)
 /**
  * @brief Remove the element at the specified index from the Vector.
  *
- * Removes the element at the position specified by `i` in the Vector by calling the `erase()`
- * member function of the underlying `std::vector`. This member function is only available if the
- * size of the Vector is not known at compile-time, as specified by the concept requirement
- * `requires (N < 0)`.
+ * Removes the element at the position specified by `i` in the Vector by calling
+ * the `erase()` member function of the underlying `std::vector`. This member
+ * function is only available if the size of the Vector is not known at
+ * compile-time, as specified by the concept requirement `requires (N < 0)`.
  *
  * @param[in] i: The index of the element to remove from the Vector.
  */
@@ -403,9 +420,10 @@ void Vector<T, N>::erase(uint i) requires (N < 0)
 /**
  * @brief Remove all elements from the Vector.
  *
- * Removes all elements from the Vector by calling the `clear()` member function of the underlying
- * `std::vector`. This member function is only available if the size of the Vector is not known at
- * compile-time, as specified by the concept requirement `requires (N < 0)`.
+ * Removes all elements from the Vector by calling the `clear()` member function
+ * of the underlying `std::vector`. This member function is only available if
+ * the size of the Vector is not known at compile-time, as specified by the
+ * concept requirement `requires (N < 0)`.
  */
 template<typename T, int N>
 void Vector<T, N>::clear() requires (N < 0)

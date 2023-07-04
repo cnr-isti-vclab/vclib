@@ -31,17 +31,19 @@
 namespace vcl::comp {
 
 /**
- * @brief HasAdjacentEdges concept is satisfied only if a Element class provides the types and
- * member functions specified in this concept. These types and member functions allow to access to
- * an AdjacentEdges component of a given element.
+ * @brief HasAdjacentEdges concept is satisfied only if a Element class provides
+ * the types and member functions specified in this concept. These types and
+ * member functions allow to access to an AdjacentEdges component of a given
+ * element.
  *
- * Note that this concept does not discriminate between the Horizontal AdjacentEdges component and
- * the vertical OptionalAdjacentEdges component, therefore it does not guarantee that a template
- * Element type that satisfies this concept provides AdjacentEdges component at runtime (it is
- * guaranteed only that the proper member functions are available at compile time).
+ * Note that this concept does not discriminate between the Horizontal
+ * AdjacentEdges component and the vertical OptionalAdjacentEdges component,
+ * therefore it does not guarantee that a template Element type that satisfies
+ * this concept provides AdjacentEdges component at runtime (it is guaranteed
+ * only that the proper member functions are available at compile time).
  *
- * To be completely sure that AdjacentEdges is available at runtime, you need to call the member
- * function `isAdjEdgesEnabled()`.
+ * To be completely sure that AdjacentEdges is available at runtime, you need to
+ * call the member function `isAdjEdgesEnabled()`.
  *
  * @ingroup components_concepts
  */
@@ -61,27 +63,31 @@ concept HasAdjacentEdges = requires(
 	{ o.adjEdge(uint()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
 	{ co.adjEdge(uint()) } -> std::same_as<const typename T::AdjacentEdgeType*>;
 	{ o.adjEdgeMod(int()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
-	{ co.adjEdgeMod(int()) } -> std::same_as<const typename T::AdjacentEdgeType*>;
+	{ co.adjEdgeMod(int()) } ->
+		std::same_as<const typename T::AdjacentEdgeType*>;
 	{ o.setAdjEdge(&e, uint()) } -> std::same_as<void>;
 	{ o.setAdjEdges(v) } -> std::same_as<void>;
 	{ co.containsAdjEdge(&e) } -> std::same_as<bool>;
 
 	{ o.findAdjEdge(&e) } -> std::same_as<typename T::AdjacentEdgeIterator>;
-	{ co.findAdjEdge(&e) } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
-	{ co.indexOfAdjEdge(&e) } -> std::same_as<int>;
+	{ co.findAdjEdge(&e) } ->
+		std::same_as<typename T::ConstAdjacentEdgeIterator>;
+	{ co.indexOfAdjEdge(&e) } -> std::same_as<uint>;
 	{ co.isAdjEdgesEnabled() } -> std::same_as<bool>;
 
 	{ o.adjEdgeBegin() } -> std::same_as<typename T::AdjacentEdgeIterator>;
 	{ o.adjEdgeEnd() } -> std::same_as<typename T::AdjacentEdgeIterator>;
-	{ co.adjEdgeBegin() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
+	{ co.adjEdgeBegin() } ->
+		std::same_as<typename T::ConstAdjacentEdgeIterator>;
 	{ co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
 	o.adjEdges();
 	co.adjEdges();
 };
 
 /**
- * @brief HasOptionalAdjacentEdges concept is satisfied only if a class satisfies the
- * HasAdjacentEdges concept and the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalAdjacentEdges concept is satisfied only if a class
+ * satisfies the HasAdjacentEdges concept and the static boolean constant
+ * IS_OPTIONAL is set to true.
  *
  * @ingroup components_concepts
  */
@@ -93,11 +99,11 @@ concept HasOptionalAdjacentEdges =
  * @private
  * @brief HasRightNumberOfAdjacentEdges concept
  *
- * This concept is designed to be used with Face components, where the number of adjacent edges must
- * be consistent w.r.t. the number of vertices of the face.
+ * This concept is designed to be used with Face components, where the number of
+ * adjacent edges must be consistent w.r.t. the number of vertices of the face.
  *
- * This concept is satisfied only if static number of adjacent edges is the same of the static
- * number of vertices.
+ * This concept is satisfied only if static number of adjacent edges is the same
+ * of the static number of vertices.
  */
 template<typename T>
 concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
@@ -106,15 +112,17 @@ concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
  * @private
  * @brief SanityCheckAdjacentEdges concept
  *
- * This concept is designed to be used with Face components, where the number of adjacent edges must
- * be consistent w.r.t. the number of vertices of the face.
+ * This concept is designed to be used with Face components, where the number of
+ * adjacent edges must be consistent w.r.t. the number of vertices of the face.
  *
  * It is satisfied if:
  * - the component does *not* have adjacent edges, or
- * - in case it has adjacent edges, they have the same number of vertices of the face.
+ * - in case it has adjacent edges, they have the same number of vertices of the
+ * face.
  */
 template<typename T>
-concept SanityCheckAdjacentEdges = !HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
+concept SanityCheckAdjacentEdges =
+	!HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
 
 } // namespace vcl::comp
 

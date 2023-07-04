@@ -62,7 +62,7 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjace
 		return true;
 	}
 	else { // Check if the edge is shared by exactly two faces.
-		return f.adjFace(edge)->indexOfAdjFace(&f) >= 0;
+		return f.adjFace(edge)->indexOfAdjFace(&f) != UINT_NULL;
 	}
 }
 
@@ -139,8 +139,8 @@ bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces
 	const VertexType* v1 = f.vertexMod(edge+1);
 
 	const FaceType* of = f.adjFace(edge);
-	int oe = of->indexOfAdjFace(&f);
-	assert(oe);
+	uint oe = of->indexOfAdjFace(&f);
+	assert(oe != UINT_NULL);
 
 	// check if the vertices of the edge are the same
 	// e.g. the mesh has to be well oriented
@@ -269,14 +269,14 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacen
 		}
 
 		if (nextFace == prevFace) { // manifold case
-			int en = nextFace->indexOfAdjFace(&f);
-			assert(en >= 0);
+			uint en = nextFace->indexOfAdjFace(&f);
+			assert(en != UINT_NULL);
 			nextFace->adjFace(en) = nullptr;
 		}
 		else { // non manifold case
 			// the prev face does not have to point to f anymore, but to nextFace
-			int pn = prevFace->indexOfAdjFace(&f);
-			assert(pn >= 0);
+			uint pn = prevFace->indexOfAdjFace(&f);
+			assert(pn != UINT_NULL);
 			prevFace->adjFace(pn) = nextFace;
 		}
 		f.adjFace(edge) = nullptr;
@@ -316,9 +316,11 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 		if constexpr (comp::HasAdjacentFaces<VertexType>) {
 			if (comp::isAdjacentFacesEnabledOn(f.vertex(e))) {
 				VertexType* v = f.vertex(e);
-				int vpos = v->indexOfAdjFace(&f);
-				if (vpos >= 0) { // may happen if vertex adj faces are not initialized / updated
-						v->eraseAdjFace(vpos); // the vertex v has not anymore the adjacent face f
+				uint vpos = v->indexOfAdjFace(&f);
+				if (vpos != UINT_NULL) {   // may happen if vertex adj faces are
+										   // not initialized / updated
+					v->eraseAdjFace(vpos); // the vertex v has not anymore the
+										   // adjacent face f
 				}
 			}
 		}

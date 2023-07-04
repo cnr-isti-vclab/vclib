@@ -32,46 +32,73 @@
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentEdges class is a container of Edge pointers. It could be used by any
- * Element to save adjacencies information (also the Edge element itself).
+ * @brief The AdjacentEdges class is a container of Edge pointers. It could be
+ * used by any Element to save adjacencies information (also the Edge element
+ * itself).
  *
- * It is a random access container having static or dynamic size, depending on the value of N (a
- * negative number means dynamic).
+ * It is a random access container having static or dynamic size, depending on
+ * the value of N (a negative number means dynamic).
  *
- * The member functions of this class will be available in the instance of any Element that will
- * contain this component.
+ * The member functions of this class will be available in the instance of any
+ * Element that will contain this component.
  *
- * For example, if you have a Vertex Element `v` that has the AdjacentEdges component, you'll be
- * able to access to this component member functions from `v`:
+ * For example, if you have a Vertex Element `v` that has the AdjacentEdges
+ * component, you'll be able to access to this component member functions from
+ * `v`:
  *
  * @code{.cpp}
  * v.adjEdgesNumber();
  * @endcode
  *
- * @note This component can be *Tied To Vertex Number*: it means that the size of the container,
- * if dynamic, will change automatically along the Vertex Number of the Component.
- * Check the `TTVN` template value on the specialization of your component to check if it is tied to
- * the Vertex Number. For further details check the documentation of the @ref ContainerComponent
+ * @note This component can be *Tied To Vertex Number*: it means that the size
+ * of the container, if dynamic, will change automatically along the Vertex
+ * Number of the Component. Check the `TTVN` template value on the
+ * specialization of your component to check if it is tied to the Vertex Number.
+ * For further details check the documentation of the @ref ContainerComponent
  * class.
  *
  * @ingroup components
  */
-template<typename Edge, int N, bool TTVN, typename ElementType = void, bool OPT = false>
-class AdjacentEdges : public PointersContainerComponent<ADJACENT_EDGES, Edge, N, ElementType, OPT, TTVN>
+template<
+	typename Edge,
+	int  N,
+	bool TTVN,
+	typename ElementType = void,
+	bool OPT             = false>
+class AdjacentEdges :
+		public PointersContainerComponent<
+			ADJACENT_EDGES,
+			Edge,
+			N,
+			ElementType,
+			OPT,
+			TTVN>
 {
-	using Base = PointersContainerComponent<ADJACENT_EDGES, Edge, N, ElementType, OPT, TTVN>;
+	using Base = PointersContainerComponent<
+		ADJACENT_EDGES,
+		Edge,
+		N,
+		ElementType,
+		OPT,
+		TTVN>;
 
 public:
-	/// Static size of the container. If the container is dynamic, this value will be negative and
-	/// you should use the adjEdgesNumber() member function.
-	static const int ADJ_EDGE_NUMBER = Base::SIZE;
-
+	/**
+	 * @brief Expose the type of the Adjacent Edge.
+	 */
 	using AdjacentEdgeType = Edge;
 
 	/* Iterator Types declaration */
 
 	using AdjacentEdgeIterator      = typename Base::Iterator;
 	using ConstAdjacentEdgeIterator = typename Base::ConstIterator;
+
+	/**
+	 * @brief Static size of the container. If the container is dynamic, this
+	 * value will be negative and you should use the adjEdgesNumber() member
+	 * function.
+	 */
+	static const int ADJ_EDGE_NUMBER = Base::SIZE;
 
 	/* Constructor and isEnabled */
 
@@ -97,7 +124,7 @@ public:
 	AdjacentEdgeIterator      findAdjEdge(const Edge* e);
 	ConstAdjacentEdgeIterator findAdjEdge(const Edge* e) const;
 
-	int indexOfAdjEdge(const Edge* e) const;
+	uint indexOfAdjEdge(const Edge* e) const;
 
 	/* Member functions specific for vector of adjacent edges */
 
@@ -127,7 +154,7 @@ protected:
 
 	void updatePointers(const Edge* oldBase, const Edge* newBase);
 
-	void updatePointersAfterCompact(const Edge* base, const std::vector<uint>& newIndices);
+	void updatePointers(const Edge* base, const std::vector<uint>& newIndices);
 
 	// ContainerComponent interface functions
 	void resize(uint n) requires (N < 0);

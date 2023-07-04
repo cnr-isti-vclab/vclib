@@ -31,9 +31,10 @@
 namespace vcl::comp {
 
 /**
- * @brief HasCoordinate concept is satisfied only if a Element class provides the types and member
- * functions specified in this concept. These types and member functions allow to access to a
- * Coordinate component of a given element.
+ * @brief HasCoordinate concept is satisfied only if a Element class provides
+ * the types and member functions specified in this concept. These types and
+ * member functions allow to access to a Coordinate component of a given
+ * element.
  *
  * @ingroup components_concepts
  */

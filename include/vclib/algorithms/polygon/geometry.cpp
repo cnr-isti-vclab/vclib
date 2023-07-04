@@ -191,8 +191,8 @@ auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjace
 	assert(f.adjFace(e) != nullptr);
 	const FaceType& f1 = *(f.adjFace(e));
 
-	int e1 = f1.indexOfAdjFace(&f);
-	assert(e1 != -1);
+	uint e1 = f1.indexOfAdjFace(&f);
+	assert(e1 != UINT_NULL);
 
 	const auto& vf0 = *(f.vertexMod((int) e - 1));
 	const auto& vf1 = *(f1.vertexMod(e1 - 1));

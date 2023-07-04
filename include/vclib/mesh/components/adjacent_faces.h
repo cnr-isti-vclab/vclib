@@ -32,34 +32,55 @@
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentFaces class is a container of Face pointers. It could be used by any
- * Element to save adjacencies information (also the Face element itself).
+ * @brief The AdjacentFaces class is a container of Face pointers. It could be
+ * used by any Element to save adjacencies information (also the Face element
+ * itself).
  *
- * It is a random access container having static or dynamic size, depending on the value of N (a
- * negative number means dynamic).
+ * It is a random access container having static or dynamic size, depending on
+ * the value of N (a negative number means dynamic).
  *
- * The member functions of this class will be available in the instance of any Element that will
- * contain this component.
+ * The member functions of this class will be available in the instance of any
+ * Element that will contain this component.
  *
- * For example, if you have a Vertex Element `v` that has the AdjacentFaces component, you'll be
- * able to access to this component member functions from `v`:
+ * For example, if you have a Vertex Element `v` that has the AdjacentFaces
+ * component, you'll be able to access to this component member functions from
+ * `v`:
  *
  * @code{.cpp}
  * v.adjFacesNumber();
  * @endcode
  *
- * @note This component can be *Tied To Vertex Number*: it means that the size of the container,
- * if dynamic, will change automatically along the Vertex Number of the Component.
- * Check the `TTVN` template value on the specialization of your component to check if it is tied to
- * the Vertex Number. For further details check the documentation of the @ref ContainerComponent
+ * @note This component can be *Tied To Vertex Number*: it means that the size
+ * of the container, if dynamic, will change automatically along the Vertex
+ * Number of the Component. Check the `TTVN` template value on the
+ * specialization of your component to check if it is tied to the Vertex Number.
+ * For further details check the documentation of the @ref ContainerComponent
  * class.
  *
  * @ingroup components
  */
-template<typename Face, int N, bool TTVN, typename ElementType = void, bool OPT = false>
-class AdjacentFaces : public PointersContainerComponent<ADJACENT_FACES, Face, N, ElementType, OPT, TTVN>
+template<
+	typename Face,
+	int  N,
+	bool TTVN,
+	typename ElementType = void,
+	bool OPT             = false>
+class AdjacentFaces :
+		public PointersContainerComponent<
+			ADJACENT_FACES,
+			Face,
+			N,
+			ElementType,
+			OPT,
+			TTVN>
 {
-	using Base = PointersContainerComponent<ADJACENT_FACES, Face, N, ElementType, OPT, TTVN>;
+	using Base = PointersContainerComponent<
+		ADJACENT_FACES,
+		Face,
+		N,
+		ElementType,
+		OPT,
+		TTVN>;
 
 public:
 	/**
@@ -73,8 +94,9 @@ public:
 	using ConstAdjacentFaceIterator = typename Base::ConstIterator;
 
 	/**
-	 * @brief Static size of the container. If the container is dynamic, this value will be negative
-	 * and you should use the adjFacesNumber() member function.
+	 * @brief Static size of the container. If the container is dynamic, this
+	 * value will be negative and you should use the adjFacesNumber() member
+	 * function.
 	 */
 	static const int ADJ_FACE_NUMBER = Base::SIZE;
 
@@ -102,7 +124,7 @@ public:
 	AdjacentFaceIterator findAdjFace(const Face* f);
 	ConstAdjacentFaceIterator findAdjFace(const Face* f) const;
 
-	int indexOfAdjFace(const Face* f) const;
+	uint indexOfAdjFace(const Face* f) const;
 
 	/* Member functions specific for vector adjacent faces */
 
@@ -121,7 +143,8 @@ public:
 	auto                      adjFaces();
 	auto                      adjFaces() const;
 
-	// dummy member to discriminate between AdjacentFaces and FaceHalfEdgePointers
+	// dummy member to discriminate between AdjacentFaces and
+	// FaceHalfEdgePointers
 	void __adjacentFaces() const {}
 
 protected:
@@ -135,7 +158,7 @@ protected:
 
 	void updatePointers(const Face* oldBase, const Face* newBase);
 
-	void updatePointersAfterCompact(const Face* base, const std::vector<uint>& newIndices);
+	void updatePointers(const Face* base, const std::vector<uint>& newIndices);
 
 	// ContainerComponent interface functions
 	void resize(uint n) requires (N < 0);
