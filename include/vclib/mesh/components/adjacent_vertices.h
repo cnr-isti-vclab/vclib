@@ -32,17 +32,19 @@
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentVertices class is a container of Vertex pointers. It is a component that
- * makes sense to use mostly on Vertex Elements. For Faces and Edges, see the VertexPointers
- * component (which is similar, but has different member function names).
+ * @brief The AdjacentVertices class is a container of Vertex pointers. It is a
+ * component that makes sense to use mostly on Vertex Elements. For Faces and
+ * Edges, see the VertexPointers component (which is similar, but has different
+ * member function names).
  *
  * It is a random access container having dynamic size.
  *
- * The member functions of this class will be available in the instance of any Element that will
- * contain this component.
+ * The member functions of this class will be available in the instance of any
+ * Element that will contain this component.
  *
- * For example, if you have a Vertex Element `v` that has the AdjacentVertices component, you'll be
- * able to access to this component member functions from `v`:
+ * For example, if you have a Vertex Element `v` that has the AdjacentVertices
+ * component, you'll be able to access to this component member functions from
+ * `v`:
  *
  * @code{.cpp}
  * v.adjVerticesNumber();
@@ -52,11 +54,26 @@ namespace vcl::comp {
  */
 template<typename Vertex, typename ElementType = void, bool OPT = false>
 class AdjacentVertices :
-		public PointersContainerComponent<ADJACENT_VERTICES, Vertex, -1, ElementType, OPT, false>
+		public PointersContainerComponent<
+			ADJACENT_VERTICES,
+			Vertex,
+			-1,
+			ElementType,
+			OPT,
+			false>
 {
-	using Base = PointersContainerComponent<ADJACENT_VERTICES, Vertex, -1, ElementType, OPT, false>;
+	using Base = PointersContainerComponent<
+		ADJACENT_VERTICES,
+		Vertex,
+		-1,
+		ElementType,
+		OPT,
+		false>;
 
 public:
+	/**
+	 * @brief Expose the type of the Adjacent Vertex.
+	 */
 	using AdjacentVertexType = Vertex;
 
 	/* Iterator Types declaration */
@@ -105,7 +122,8 @@ public:
 	auto                        adjVertices();
 	auto                        adjVertices() const;
 
-	// dummy member to discriminate between AdjacentVertices and VertexHalfEdgePointers
+	// dummy member to discriminate between AdjacentVertices and
+	// VertexHalfEdgePointers
 	void __adjacentVertices() const {}
 
 protected:
@@ -115,13 +133,16 @@ protected:
 
 	// PointersContainerComponent interface functions
 	template<typename Element, typename ElVType>
-	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
+	void importPointersFrom(
+		const Element& e,
+		Vertex*        base,
+		const ElVType* ebase);
 
 	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
 
-	void updatePointers(const Vertex* base, const std::vector<uint>& newIndices);
-
-	// ContainerComponent interface functions
+	void updatePointers(
+		const Vertex*            base,
+		const std::vector<uint>& newIndices);
 
 private:
 	template<typename Element, typename ElVType>

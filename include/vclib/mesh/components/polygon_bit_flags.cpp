@@ -174,7 +174,7 @@ bool PolygonBitFlags<N, El, O>::edgeFaux(uint i) const
 template<int N, typename El, bool O>
 bool PolygonBitFlags<N, El, O>::userBit(uint bit) const
 {
-	assert(bit < N_USER_BITS);
+	assert(bit < USER_BITS_NUMBER);
 	return flags()[bit + FIRST_USER_BIT];
 }
 
@@ -189,21 +189,21 @@ bool PolygonBitFlags<N, El, O>::userBit(uint bit) const
 template<int N, typename El, bool O>
 BitProxy<typename PolygonBitFlags<N, El, O>::FT> PolygonBitFlags<N, El, O>::userBit(uint bit)
 {
-	assert(bit < N_USER_BITS);
+	assert(bit < USER_BITS_NUMBER);
 	return flags()[bit + FIRST_USER_BIT];
 }
 
 template<int N, typename El, bool O>
 bool PolygonBitFlags<N, El, O>::edgeUserBit(uint i, uint bit) const
 {
-	assert(bit < N_EDGE_USER_BITS);
+	assert(bit < EDGE_USER_BITS_NUMBER);
 	return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
 }
 
 template<int N, typename El, bool O>
 BitProxy<typename PolygonBitFlags<N, El, O>::FT> PolygonBitFlags<N, El, O>::edgeUserBit(uint i, uint bit)
 {
-	assert(bit < N_EDGE_USER_BITS);
+	assert(bit < EDGE_USER_BITS_NUMBER);
 	return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
 }
 

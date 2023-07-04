@@ -158,7 +158,7 @@ bool TriangleBitFlags<El, O>::edgeFaux(uint i) const
 template<typename El, bool O>
 bool TriangleBitFlags<El, O>::userBit(uint bit) const
 {
-	assert(bit < N_USER_BITS);
+	assert(bit < USER_BITS_NUMBER);
 	return flags()[bit + FIRST_USER_BIT];
 }
 
@@ -173,7 +173,7 @@ bool TriangleBitFlags<El, O>::userBit(uint bit) const
 template<typename El, bool O>
 BitProxy<typename TriangleBitFlags<El, O>::FT> TriangleBitFlags<El, O>::userBit(uint bit)
 {
-	assert(bit < N_USER_BITS);
+	assert(bit < USER_BITS_NUMBER);
 	return flags()[bit + FIRST_USER_BIT];
 }
 

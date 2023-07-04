@@ -32,26 +32,28 @@
 namespace vcl::comp {
 
 /**
- * @brief The BitFlags component class represents a collection of 8 bits that will be part of an
- * Element (e.g. Vertex, Face, ...).
+ * @brief The BitFlags component class represents a collection of 8 bits that
+ * will be part of an Element (e.g. Vertex, Face, ...).
  *
- * This Component (or a specialization) is mandatory into every Element of the mesh.
+ * This Component (or a specialization, that is any class that satisfies the
+ * HasBitFlags concept) is mandatory into every Element of the mesh.
  *
  * The bits have the following meaning:
  * - 0: deleted: if the current Element has been deleted - read only
  * - 1: selected: if the current Element has been selected
  * - 2: border: if the current Element is on border
- * - 3: visited: if the current Element has been visited (useful for some visit algorithms)
+ * - 3: visited: if the current Element has been visited (useful for some visit
+ *               algorithms)
  * - other: user bits that can have custom meanings to the user
  *
- * This class provides 4 user bits, that can be accessed using the member function userBit(uint i)
- * with position in the interval [0, 3].
+ * This class provides 4 user bits, that can be accessed using the member
+ * function userBit(uint i) with position in the interval [0, 3].
  *
- * The member functions of this class will be available in the instance of any Element that will
- * contain this component.
+ * The member functions of this class will be available in the instance of any
+ * Element that will contain this component.
  *
- * For example, if you have a Vertex Element `v` with the BitFlags component, you'll be able to
- * access to this component member functions from `v`:
+ * For example, if you have a Vertex Element `v` with the BitFlags component,
+ * you'll be able to access to this component member functions from `v`:
  *
  * @code{.cpp}
  * bool isD = v.deleted();
@@ -66,7 +68,14 @@ class BitFlags : public Component<BIT_FLAGS, BitSet<char>, ElementType, OPT>
 
 	using FT = char; // FlagsType, the integral type used for the flags
 
+	static const uint FIRST_USER_BIT = 4;
+
 public:
+	/**
+	 * @brief Static number of bits that can have custom meanings to the user
+	 */
+	static const uint USER_BITS_NUMBER = sizeof(FT) * 8 - FIRST_USER_BIT;
+
 	/* Constructor and isEnabled */
 
 	BitFlags();
@@ -104,12 +113,10 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
+	// members that allow to access the flags, trough data (horizontal) or
+	// trough parent (vertical)
 	BitSet<FT>& flags();
 	BitSet<FT> flags() const;
-
-	static const uint FIRST_USER_BIT = 4;
-	static const uint N_USER_BITS = sizeof(FT) * 8 - FIRST_USER_BIT;
 
 	// indices of the bits
 	enum {

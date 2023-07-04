@@ -25,6 +25,10 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ * @brief Constructor that initializes the bits to false.
+ */
 template<typename El, bool O>
 BitFlags<El, O>::BitFlags()
 {
@@ -33,12 +37,30 @@ BitFlags<El, O>::BitFlags()
 	}
 }
 
+/**
+ * @private
+ * @brief Initializes the bits to false.
+ *
+ * It is made in the init function since the component could be not available
+ * during construction (e.g. if the component is optional and not enabled).
+ *
+ * This member function is hidden by the element that inherits this class.
+ */
 template<typename El, bool O>
 void BitFlags<El, O>::init()
 {
 	flags().reset();
 }
 
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<typename El, bool O>
 bool BitFlags<El, O>::isEnabled() const
 {
@@ -56,7 +78,8 @@ bool BitFlags<El, O>::deleted() const
 }
 
 /**
- * @brief Accesses the 'selected' bit of this Element, returning a reference to it.
+ * @brief Accesses the 'selected' bit of this Element, returning a reference to
+ * it.
  * @return a reference to the 'selected' bit of this Element.
  */
 template<typename El, bool O>
@@ -76,7 +99,8 @@ bool BitFlags<El, O>::selected() const
 }
 
 /**
- * @brief Accesses the 'onBorder' bit of this Element, returning a reference to it.
+ * @brief Accesses the 'onBorder' bit of this Element, returning a reference to
+ * it.
  * @return a reference to the 'onBorder' bit of this Element.
  */
 template<typename El, bool O>
@@ -96,7 +120,8 @@ bool BitFlags<El, O>::onBorder() const
 }
 
 /**
- * @brief Accesses the 'visited' bit of this Element, returning a reference to it.
+ * @brief Accesses the 'visited' bit of this Element, returning a reference to
+ * it.
  * @return a reference to the 'visited' bit of this Element.
  */
 template<typename El, bool O>
@@ -116,8 +141,9 @@ bool BitFlags<El, O>::visited() const
 }
 
 /**
- * @brief Returns a reference to the value of the user bit of this Element given in input. The bit
- * is checked to be less than the total number of assigned user bits, which in this class is 4.
+ * @brief Returns a reference to the value of the user bit of this Element given
+ * in input. The bit is checked to be less than the total number of assigned
+ * user bits, which in this class is 4.
  *
  * @param[in] bit: the position of the bit, in the interval [0 - 3].
  * @return a reference to the desired user bit.
@@ -125,28 +151,29 @@ bool BitFlags<El, O>::visited() const
 template<typename El, bool O>
 bool BitFlags<El, O>::userBit(uint bit) const
 {
-	assert(bit < N_USER_BITS);
+	assert(bit < USER_BITS_NUMBER);
 	return flags()[bit + FIRST_USER_BIT];
 }
 
 /**
- * @brief Returns the boolean value of the user bit of this Element given in input. The bit
- * is checked to be less than the total number of assigned user bits, which in this class is 4.
+ * @brief Returns the boolean value of the user bit of this Element given in
+ * input. The bit is checked to be less than the total number of assigned user
+ * bits, which in this class is 4.
  *
- * @param[in] bit: the position of the bit, in the interval [0 - 3], that will be returned by
- * reference.
+ * @param[in] bit: the position of the bit, in the interval [0 - 3], that will
+ * be returned by reference.
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
 template<typename El, bool O>
 BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::userBit(uint bit)
 {
-	assert(bit < N_USER_BITS);
+	assert(bit < USER_BITS_NUMBER);
 	return flags()[bit + FIRST_USER_BIT];
 }
 
 /**
- * @brief Unsets all the flags of this Element and sets them to `false`, **except the deleted
- * flag**, which needs to be manually reset.
+ * @brief Unsets all the flags of this Element and sets them to `false`,
+ * **except the deleted flag**, which needs to be manually reset.
  */
 template<typename El, bool O>
 void BitFlags<El, O>::resetBitFlags()
@@ -156,20 +183,36 @@ void BitFlags<El, O>::resetBitFlags()
 	deleted() = isD;
 }
 
+/**
+ * @brief Sets all the flags of this element to the values contained in the
+ * integer input parameter, that represents the bit flags of the VCG library.
+ * @param[in] f: bit flags in the format of the VCG library.
+ */
 template<typename El, bool O>
 void BitFlags<El, O>::importFromVCGFlags(int f)
 {
 	resetBitFlags();
+	if (f & 0x0010)
+		visited() = true;
 	if (f & 0x0020)
 		selected() = true;
 	if (f & 0x0100)
 		onBorder() = true;
 }
 
+/**
+ * @brief Returns the bit flags of this element in the format of the VCG
+ * library.
+ *
+ * @return an integer representing the bit flags of this element in the format
+ * of the VCG library.
+ */
 template<typename El, bool O>
 int BitFlags<El, O>::exportToVCGFlags() const
 {
 	int f = 0;
+	if (visited())
+		f &= 0x0010;
 	if (selected())
 		f &= 0x0020;
 	if (onBorder())
@@ -189,15 +232,22 @@ void BitFlags<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasBitFlags<Element>) {
 		resetBitFlags();
-		if constexpr (HasPolygonBitFlags<Element>) {
-			// todo
-		}
-		else if constexpr (HasTriangleBitFlags<Element>) {
-			// todo
+		if constexpr (
+			HasPolygonBitFlags<Element> || HasTriangleBitFlags<Element>)
+		{
+			selected() = e.selected();
+			visited() = e.visited();
+			onBorder() = e.onBorder();
+			constexpr uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
+			for (uint i = 0; i < UM; ++i)
+				userBit(i) = e.userBit(i);
 		}
 		else {
+			bool isD = deleted();
 			flags() = e.flags();
+			deleted() = isD;
 		}
+
 	}
 }
 
