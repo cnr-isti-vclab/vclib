@@ -132,7 +132,8 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
+	// members that allow to access the flags, trough data (horizontal) or
+	// trough parent (vertical)
 	BitSet<FT>& flags();
 	BitSet<FT> flags() const;
 
@@ -142,11 +143,12 @@ private:
 		SELECTED = 1, // bit 1
 		VISITED  = 2, // bit 2
 		// Edge border
-		BORDER0  = 3, // bits [3, 5]
+		BORDER0 = 3, // bits [3, 5]
 		// Edge selection
 		EDGESEL0 = 6, // bits [6, 8]
-		// Faux edges: when representing polygonal meshes on triangle meshes, some triangle edges
-		// can be marked as "faux", meaning that they are internal on the polygon
+		// Faux edges: when representing polygonal meshes on triangle meshes,
+		// some triangle edges can be marked as "faux", meaning that they are
+		// internal on the polygon
 		FAUX0 = 9 // bits [9, 11]
 	};
 };

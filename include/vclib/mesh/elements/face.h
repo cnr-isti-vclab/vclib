@@ -46,6 +46,8 @@ namespace vcl {
 template<typename MeshType, typename... Comps>
 class Face : public Element<FACE, MeshType, Comps...>
 {
+	using Base = Element<FACE, MeshType, Comps...>;
+
 	// VertexPointers component of the Face
 	using VPtrs = typename Face::VertexPointers;
 
@@ -115,6 +117,9 @@ public:
 		// Now I need to clear all the TTVN components
 		(clearTTVNComponent<Comps>(), ...);
 	}
+
+	template<typename ElType>
+	void importFrom(const ElType& v);
 
 private:
 	template<typename Comp>

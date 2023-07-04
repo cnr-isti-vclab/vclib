@@ -89,14 +89,14 @@ template<int N, typename ElementType = void, bool OPT = false>
 class PolygonBitFlags :
 		public ContainerComponent<
 			BIT_FLAGS,
-			BitSet<int>,
+			BitSet<char>,
 			N,
-			BitSet<int>,
+			BitSet<char>,
 			ElementType,
 			OPT,
 			true>
 {
-	using FT = int; // FlagsType, the integral type used for the flags
+	using FT = char; // FlagsType, the integral type used for the flags
 
 	using Base = ContainerComponent<
 		BIT_FLAGS,
@@ -183,7 +183,8 @@ protected:
 	void clear() requires (N < 0);
 
 private:
-	// members that allow to access the flags, trough data (horizontal) or trough parent (vertical)
+	// members that allow to access the flags, trough data (horizontal) or
+	// trough parent (vertical)
 	BitSet<FT>& flags();
 	const BitSet<FT>& flags() const;
 	Vector<BitSet<FT>, -1>& edgeFlags();
