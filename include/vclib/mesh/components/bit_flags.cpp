@@ -238,7 +238,7 @@ void BitFlags<El, O>::importFrom(const Element& e)
 			selected() = e.selected();
 			visited() = e.visited();
 			onBorder() = e.onBorder();
-			constexpr uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
+			const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
 			for (uint i = 0; i < UM; ++i)
 				userBit(i) = e.userBit(i);
 		}
