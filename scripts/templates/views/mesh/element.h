@@ -25,9 +25,11 @@ struct %EL_UC%sView
 } // namespace vcl::views::internal
 
 /**
- * @brief A view that allows to iterate overt the %EL_UC% elements of an object.
+ * @brief A view that allows to iterate overt the %EL_UC% elements of an
+ * object.
  *
- * This view can be applied to objects having type that satisfies the %EL_UC%MeshConcept
+ * This view can be applied to objects having type that satisfies the
+ * %EL_UC%MeshConcept
  *
  * @ingroup views
  */

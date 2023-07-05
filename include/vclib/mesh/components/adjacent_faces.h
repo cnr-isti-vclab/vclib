@@ -185,8 +185,7 @@ private:
 
 /* Detector function to check if a class has AdjacentFaces enabled */
 
-template <typename T>
-bool isAdjacentFacesEnabledOn(const T& element);
+bool isAdjacentFacesEnabledOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

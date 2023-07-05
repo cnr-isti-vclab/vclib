@@ -80,6 +80,16 @@ concept MeshConcept =
 	{ o.swap(o) } -> std::same_as<void>;
 };
 
+/**
+ * @brief the ElementOrMesh Concept is evaluated to true when the type is either
+ * a Mesh or an Element.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename T>
+concept ElementOrMeshConcept =
+	MeshConcept<T> || ElementConcept<T>;
+
 } // namespace vcl
 
 #endif // VCL_CONCEPTS_MESH_MESH_CONCEPT_H

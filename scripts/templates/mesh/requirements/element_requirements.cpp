@@ -15,7 +15,8 @@ namespace vcl {
 /**
  * @brief Returns `true` if the given mesh has its %EL_UC%Container compact.
  *
- * @tparam MeshType: the type of the Mesh to check, it must satisfy the %EL_UC%MeshConcept.
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy
+ * the %EL_UC%MeshConcept.
  *
  * @param m: the mesh on which check the compactness of the %EL_UC%Container.
  * @return `true` if the %EL_UC%Container is compact.
@@ -37,13 +38,17 @@ bool is%EL_UC%ContainerCompact(const MeshType& m)
  * @brief This function asserts that a Mesh has the %EL_UC%Container compact
  * (no elements flagged as deleted).
  *
- * If the %EL_UC%Container is not compact, a vcl::MissingCompactnessException will be thrown.
+ * If the %EL_UC%Container is not compact, a
+ * vcl::MissingCompactnessException will be thrown.
  *
- * @tparam MeshType: the type of the Mesh to check, it must satisfy the %EL_UC%MeshConcept.
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * %EL_UC%MeshConcept.
  *
- * @throws vcl::MissingCompactnessException if the %EL_UC%Container is not compact.
+ * @throws vcl::MissingCompactnessException if the %EL_UC%Container
+ * is not compact.
  *
- * @param[in] m: the mesh on which check the compactness of the %EL_UC%Container.
+ * @param[in] m: the mesh on which check the compactness of the
+ * %EL_UC%Container.
  *
  * @ingroup %EL%_requirements
  */

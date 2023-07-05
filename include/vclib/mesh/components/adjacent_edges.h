@@ -181,8 +181,7 @@ private:
 
 /* Detector function to check if a class has AdjacentEdges enabled */
 
-template <typename T>
-bool isAdjacentEdgesEnabledOn(const T& element);
+bool isAdjacentEdgesEnabledOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

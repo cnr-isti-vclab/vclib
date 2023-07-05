@@ -11,8 +11,8 @@
  * @defgroup %EL%_requirements %EL_UC% Requirements
  * @ingroup mesh_requirements
  *
- * @brief List functions that allows to check, enable and assert the availability of components
- * in the %EL_UC% Elements of a Mesh.
+ * @brief List functions that allows to check, enable and assert the
+ * availability of components in the %EL_UC% Elements of a Mesh.
  */
 
 namespace vcl {

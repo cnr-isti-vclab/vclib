@@ -97,10 +97,11 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
 } // namespace vcl::edge
 
 /**
- * @brief The EdgeConcept describes how a Edge element that can be used for a EdgeContainer should
- * be organized.
+ * @brief The EdgeConcept describes how a Edge element that can be used for a
+ * EdgeContainer should be organized.
  *
- * The Edge concept is satisfied for a class E if ALL the following sentences are true:
+ * The Edge concept is satisfied for a class E if ALL the following sentences
+ * are true:
  * - The class E is vcl::Edge, or derives from it;
  * - The class E has the BitFlags component (or a derivate);
  * - The class E has the VertexPointers component (or a derivate);
@@ -110,6 +111,7 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
  */
 template<typename T>
 concept EdgeConcept =
+	ElementConcept<T> &&
 	T::ELEMENT_TYPE == EDGE &&
 	(edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value) &&
 	edge::HasBitFlags<T> &&
