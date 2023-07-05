@@ -32,8 +32,8 @@
 namespace vcl::comp {
 
 /**
- * @brief The Color class represents a RGBA color that will be part of an Element
- * (e.g. Vertex, Face, ...).
+ * @brief The Color class represents a RGBA color that will be part of an
+ * Element (e.g. Vertex, Face, ...).
  *
  * Allows to get and set an object of type Color.
  *

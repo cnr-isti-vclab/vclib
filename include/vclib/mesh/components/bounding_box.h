@@ -32,14 +32,14 @@
 namespace vcl::comp {
 
 /**
- * @brief The BoundingBox component class represents an axis aligned bounding box. This class is
- * usually used as a component of a Mesh.
+ * @brief The BoundingBox component class represents an axis aligned bounding
+ * box. This class is usually used as a component of a Mesh.
  *
- * The member functions of this class will be available in the instance of any Element or Mesh that
- * will contain this component.
+ * The member functions of this class will be available in the instance of any
+ * Element or Mesh that will contain this component.
  *
- * For example, if you have a Mesh `m` with the BoundingBox component, you'll be able to
- * access to this component member functions from `m`:
+ * For example, if you have a Mesh `m` with the BoundingBox component, you'll be
+ * able to access to this component member functions from `m`:
  *
  * @code{.cpp}
  * m.boundingBox();
@@ -48,7 +48,8 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<PointConcept PointType, typename ElementType = void, bool OPT = false>
-class BoundingBox : public Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>
+class BoundingBox :
+		public Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>
 {
 	using Base = Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>;
 

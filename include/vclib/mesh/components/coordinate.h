@@ -31,7 +31,11 @@
 
 namespace vcl::comp {
 /**
- * @brief The Coordinate class
+ * @brief The Coordinate class represents a N-Dimensional point that will be
+ * part of an Element (e.g. Vertex...).
+ *
+ * Allows to get and set an object that represents a coordinate. The type of
+ * this object must satisfy the PointConcept.
  *
  * @ingroup components
  */
