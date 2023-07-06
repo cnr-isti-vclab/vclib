@@ -25,12 +25,27 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<typename El, bool O>
 bool Color<El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
+/**
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<typename El, bool O>
 bool Color<El, O>::isColorEnabled() const
 {
@@ -38,21 +53,23 @@ bool Color<El, O>::isColorEnabled() const
 }
 
 /**
- * @brief Returns const reference of the color of the element.
+ * @brief Returns a const reference of the color of the element.
+ * @return a const reference of the color of the element.
  */
 template<typename El, bool O>
 const vcl::Color& Color<El, O>::color() const
 {
-	return c();
+	return Base::data(this);
 }
 
 /**
  * @brief Returns a reference pf the color of the element.
+ * @return a reference pf the color of the element.
  */
 template<typename El, bool O>
 vcl::Color& Color<El, O>::color()
 {
-	return c();
+	return Base::data(this);
 }
 
 template<typename El, bool O>
@@ -61,25 +78,24 @@ void Color<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasColor<Element>) {
 		if (isColorEnabledOn(e)) {
-			c() = e.color();
+			color() = e.color();
 		}
 	}
 }
 
-template<typename El, bool O>
-vcl::Color& Color<El, O>::c()
-{
-	return Base::data(this);
-}
-
-template<typename El, bool O>
-const vcl::Color& Color<El, O>::c() const
-{
-	return Base::data(this);
-}
-
-template <typename T>
-bool isColorEnabledOn(const T& element)
+/**
+ * @brief Checks if the given Element has Color component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that satisfies
+ * the ElementOrMeshConcept.
+ * @return `true` if the element has Color component available, `false`
+ * otherwise.
+ */
+bool isColorEnabledOn(const ElementOrMeshConcept auto& element)
 {
 	return isComponentEnabledOn<COLOR>(element);
 }

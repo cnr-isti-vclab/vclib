@@ -64,16 +64,11 @@ protected:
 	// Component interface function
 	template<typename Element>
 	void importFrom(const Element& e);
-
-private:
-	vcl::Color& c();
-	const vcl::Color& c() const;
 };
 
 /* Detector function to check if a class has Color enabled */
 
-template <typename T>
-bool isColorEnabledOn(const T& element);
+bool isColorEnabledOn(const ElementOrMeshConcept auto& element);
 
 } // namespace vcl::comp
 
