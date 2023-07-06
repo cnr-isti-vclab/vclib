@@ -115,21 +115,13 @@ public:
 	template<typename CompType>
 	CompType& customComponent(const std::string& compName);
 
-	// TODO msvc and clang bug - move in cpp when solved
 	template<typename CompType>
 	void addCustomComponent(
 		const std::string& compName,
-		const CompType&    value = CompType()) requires (!IS_VERTICAL)
-	{
-		return data.template addCustomComponent<CompType>(compName, value);
-	}
+		const CompType&    value = CompType()) requires (!IS_VERTICAL);
 
-	// TODO msvc and clang bug - move in cpp when solved
 	void deleteCustomComponent(const std::string& compName)
-		requires (!IS_VERTICAL)
-	{
-		return data.deleteCustomComponent(compName);
-	}
+		requires (!IS_VERTICAL);
 
 protected:
 	template <typename Element>
