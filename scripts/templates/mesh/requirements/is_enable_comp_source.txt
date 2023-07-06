@@ -1,23 +1,28 @@
 // %EL_UC% %CNUC%
 
 /**
- * @brief Returns true if the %CNUC% component is available (enabled) in the %EL_UC% element of the
- * input mesh m.
+ * @brief Returns true if the %CNUC% component is available (enabled) in
+ * the %EL_UC% element of the input mesh m.
  *
- * This function returns `true` when the %CNUC% component can be used on the element, whether the 
- * component is horizontal, vertical or optional.
+ * This function returns `true` when the %CNUC% component can be used on the
+ * element, whether the component is horizontal, vertical or optional.
  *
  * These are the following cases:
- * - if the %EL_UC% Element does not have a %CNUC% Component, the function returns `false`;
- * - if the %EL_UC% Element has a non-optional %CNUC% Component, the function returns `true`;
- * - if the %EL_UC% Element has an optional %CNUC% Component, the function returns
- *   `true` if the %CNUC% component is enabled, false otherwise (this check is the only 
- *   one that is made at runtime);
+ * - if the %EL_UC% Element does not have a %CNUC% Component, the
+ *   function returns `false`;
+ * - if the %EL_UC% Element has a non-optional %CNUC% Component, the
+ *   function returns `true`;
+ * - if the %EL_UC% Element has an optional %CNUC% Component, the function
+ *   returns `true` if the %CNUC% component is enabled, false otherwise
+ *   (this check is the only one that is made at runtime);
  *
- * @tparam MeshType: the type of the Mesh to check, it must satisfy the %EL_UC%MeshConcept.
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * %EL_UC%MeshConcept.
  *
- * @param[in] m: the mesh on which check the availability of the %CNUC% Component in the %EL_UC% Element.
- * @return `true` if the %CNUC% Component is available in the %EL_UC% Element of the given Mesh.
+ * @param[in] m: the mesh on which check the availability of the %CNUC%
+ * Component in the %EL_UC% Element.
+ * @return `true` if the %CNUC% Component is available in the %EL_UC%
+ * Element of the given Mesh.
  *
  * @ingroup %EL%_requirements
  */
@@ -28,16 +33,20 @@ bool isPer%EL_UC%%CNUC%Enabled(const MeshType& m)
 }
 
 /**
- * @brief If the input mesh has a %EL_UC%Container, and the %EL_UC% Element has a
- * %CNUC% Component, this function enables the Component in the Element if
- * the component needs to be enabled (meaning that it is optional).
- * Returns `true` if, after the call of this function, the %CNUC% component will be available in the
- * %EL_UC% Element of the mesh.
+ * @brief If the input mesh has a %EL_UC%Container, and the %EL_UC%
+ * Element has a %CNUC% Component, this function enables the Component in
+ * the Element if the component needs to be enabled (meaning that it is
+ * optional).
+ * Returns `true` if, after the call of this function, the %CNUC% component
+ * will be available in the %EL_UC% Element of the mesh.
  *
- * @tparam MeshType: the type of the Mesh to check, it must satisfy the %EL_UC%MeshConcept.
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * %EL_UC%MeshConcept.
  *
- * @param[in] m: the mesh on which enable the %CNUC% component in the %EL_UC% Element.
- * @return `true` if the %CNUC% Component is available in the %EL_UC%Element after the call of this funciton.
+ * @param[in] m: the mesh on which enable the %CNUC% component in the
+ * %EL_UC% Element.
+ * @return `true` if the %CNUC% Component is available in the %EL_UC%Element
+ * after the call of this funciton.
  *
  * @ingroup %EL%_requirements
  */

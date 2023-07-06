@@ -83,6 +83,15 @@ namespace vcl::comp {
  * of the Component. For further details check the documentation of the @ref
  * ContainerComponent class.
  *
+ * @tparam N: The size of the container, that will represent the number of
+ * storable bit flags for each edge of the Polygon. If negative, the container
+ * is dynamic and tied to the vertex number.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool OPT = false>

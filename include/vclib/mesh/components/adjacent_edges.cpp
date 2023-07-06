@@ -500,8 +500,18 @@ void AdjacentEdges<Edge, N, TT, El, O>::importPtrsFrom(
 	}
 }
 
-template <typename T>
-bool isAdjacentEdgesEnabledOn(const T& element)
+/**
+ * @brief Checks if the given Element has AdjacentEdges available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that satisfies
+ * the ElementConcept.
+ * @return `true` if the element has AdjacentEdges available, `false` otherwise.
+ */
+bool isAdjacentEdgesEnabledOn(const ElementConcept auto& element)
 {
 	return isComponentEnabledOn<ADJACENT_EDGES>(element);
 }

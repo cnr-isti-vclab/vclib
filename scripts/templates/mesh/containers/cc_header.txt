@@ -24,8 +24,8 @@
 		requires %EL_NS%::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> per%EL_UC%CustomComponentVectorHandle(const std::string& name)
-		requires %EL_NS%::HasCustomComponents<T>;
+	CustomComponentVectorHandle<K> per%EL_UC%CustomComponentVectorHandle(
+		const std::string& name) requires %EL_NS%::HasCustomComponents<T>;
 
 	template<typename K>
 	ConstCustomComponentVectorHandle<K>

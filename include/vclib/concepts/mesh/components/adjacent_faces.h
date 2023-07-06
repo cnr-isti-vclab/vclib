@@ -121,7 +121,8 @@ concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
  * face.
  */
 template<typename T>
-concept SanityCheckAdjacentFaces = !HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;
+concept SanityCheckAdjacentFaces =
+	!HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;
 
 } // namespace vcl::comp
 

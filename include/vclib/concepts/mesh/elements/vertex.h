@@ -44,7 +44,8 @@ namespace vert {
 
 // checks if a type derives from vcl::Vertex<Args...>
 template<typename Derived>
-using IsDerivedFromVertex = IsDerivedFromTemplateSpecialization<Derived, Vertex>;
+using IsDerivedFromVertex =
+	IsDerivedFromTemplateSpecialization<Derived, Vertex>;
 
 // checks if a type is a vcl::Vertex<Args...>
 template<class T>
@@ -53,8 +54,9 @@ struct IsAVertex : // Default case, no pattern match
 {
 };
 
-template<class... Args> // note: here the templated types are the components of the Vertex
-struct IsAVertex<Vertex<Args...>> : // For types matching the pattern Vertex<Args...>
+// note: here the templated types are the components of the Vertex
+template<class... Args>
+struct IsAVertex<Vertex<Args...>> : // types matching pattern Vertex<Args...>
 		std::true_type
 {
 };
@@ -113,10 +115,11 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 } // namespace vcl::vert
 
 /**
- * @brief The VertexConcept describes how a Vertex element that can be used for a VertexContainer
- * should be organized.
+ * @brief The VertexConcept describes how a Vertex element that can be used for
+ * a VertexContainer should be organized.
  *
- * The Vertex concept is satisfied for a class V if ALL the following sentences are true:
+ * The Vertex concept is satisfied for a class V if ALL the following sentences
+ * are true:
  * - The class V is a vcl::Vertex, or derives from it;
  * - The class V has the BitFlags component (or a derivate);
  * - The class V has the Coordinate component (or a derivate);
@@ -125,6 +128,7 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
  */
 template<typename T>
 concept VertexConcept =
+	ElementConcept<T> &&
 	T::ELEMENT_TYPE == VERTEX &&
 	(vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value) &&
 	vert::HasBitFlags<T> &&

@@ -32,23 +32,32 @@
 namespace vcl::comp {
 
 /**
- * @brief The BoundingBox component class represents an axis aligned bounding box. This class is
- * usually used as a component of a Mesh.
+ * @brief The BoundingBox component class represents an axis aligned bounding
+ * box. This class is usually used as a component of a Mesh.
  *
- * The member functions of this class will be available in the instance of any Element or Mesh that
- * will contain this component.
+ * The member functions of this class will be available in the instance of any
+ * Element or Mesh that will contain this component.
  *
- * For example, if you have a Mesh `m` with the BoundingBox component, you'll be able to
- * access to this component member functions from `m`:
+ * For example, if you have a Mesh `m` with the BoundingBox component, you'll be
+ * able to access to this component member functions from `m`:
  *
  * @code{.cpp}
  * m.boundingBox();
  * @endcode
  *
+ * @tparam PointType: The type of the point that will be used to represent the
+ * bounding box. This template argument must satisfy the PointConcept.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
  * @ingroup components
  */
 template<PointConcept PointType, typename ElementType = void, bool OPT = false>
-class BoundingBox : public Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>
+class BoundingBox :
+		public Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>
 {
 	using Base = Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>;
 
@@ -64,12 +73,49 @@ protected:
 	void importFrom(const Element& e);
 };
 
+/**
+ * @brief The BoundingBox3 component class is an alias of the BoundingBox
+ * component that uses 3 dimensional Points.
+ *
+ * @tparam S: The scalar type of the point.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
 template <typename S, typename ElementType = void, bool OPT = false>
 using BoundingBox3  = BoundingBox<Point3<S>, ElementType, OPT>;
 
+/**
+ * @brief The BoundingBox3f component class is an alias of the BoundingBox
+ * component that uses 3 dimensional Points with float precision.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
 template<typename ElementType = void, bool OPT = false>
 using BoundingBox3f = BoundingBox<Point3f, ElementType, OPT>;
 
+/**
+ * @brief The BoundingBox3d component class is an alias of the BoundingBox
+ * component that uses 3 dimensional Points with double precision.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
 template<typename ElementType = void, bool OPT = false>
 using BoundingBox3d = BoundingBox<Point3d, ElementType, OPT>;
 

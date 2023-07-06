@@ -109,11 +109,11 @@ public:
 	 * @brief Boolean that tells if this component stores a container having its
 	 * size tied to the number of the vertices of the Element.
 	 *
-	 * E.g. suppose to have a Polygonal Face f, having 5 vertices (and 5 edges).
-	 * This means that if the Face has the AdjacentFaces component, then it
-	 * should store 5 adjacent faces (the same number of the vertices). In this
-	 * case, the AdjacentFaces component will have the boolean
-	 * TIED_TO_VERTEX_NUMBER set to true.
+	 * E.g. suppose to have a Polygonal Face f (dynamic number of vertices),
+	 * having 5 vertices (and 5 edges). This means that if the Face has the
+	 * AdjacentFaces component, then it should store 5 adjacent faces (the same
+	 * number of the vertices). In this case, the AdjacentFaces component will
+	 * have the boolean TIED_TO_VERTEX_NUMBER set to true.
 	 */
 	static const bool TIED_TO_VERTEX_NUMBER = TTVN;
 

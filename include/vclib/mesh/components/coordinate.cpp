@@ -25,12 +25,20 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief Returns a const reference of the coordinate of the element.
+ * @return a const reference of the coordinate of the element.
+ */
 template<PointConcept P, typename El, bool O>
 const P& Coordinate<P, El, O>::coord() const
 {
 	return Base::data(this);
 }
 
+/**
+ * @brief Returns a reference of the coordinate of the element.
+ * @return a reference of the coordinate of the element.
+ */
 template<PointConcept P, typename El, bool O>
 P& Coordinate<P, El, O>::coord()
 {

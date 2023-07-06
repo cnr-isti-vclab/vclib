@@ -23,7 +23,8 @@ namespace %EL_NS% {
 
 // checks if a type derives from vcl::%EL_UC%<Args...>
 template<typename Derived>
-using IsDerivedFrom%EL_UC% = IsDerivedFromTemplateSpecialization<Derived, %EL_UC%>;
+using IsDerivedFrom%EL_UC% =
+		IsDerivedFromTemplateSpecialization<Derived, %EL_UC%>;
 
 // checks if a type is a vcl::%EL_UC%<Args...>
 template<class T>
@@ -51,10 +52,11 @@ struct IsA%EL_UC%<%EL_UC%<Args...>> : // For types matching the pattern %EL_UC%<
 } // namespace vcl::%EL_NS%
 
 /**
- * @brief The %EL_UC%Concept describes how a %EL_UC% element that can be used for a %EL_UC%Container should
- * be organized.
+ * @brief The %EL_UC%Concept describes how a %EL_UC% element that can be
+ * used for a %EL_UC%Container should be organized.
  *
- * The %EL_UC% concept is satisfied for a class E if ALL the following sentences are true:
+ * The %EL_UC% concept is satisfied for a class E if ALL the following
+ * sentences are true:
  * - The class E is vcl::%EL_UC%, or derives from it;
  * - The class E has the BitFlags component (or an equivalent one);
  *
@@ -62,6 +64,7 @@ struct IsA%EL_UC%<%EL_UC%<Args...>> : // For types matching the pattern %EL_UC%<
  */
 template<typename T>
 concept %EL_UC%Concept =
+	ElementConcept<T> &&
 	T::ELEMENT_TYPE == %EL_U% &&
 	(%EL_NS%::IsDerivedFrom%EL_UC%<T>::value || %EL_NS%::IsA%EL_UC%<T>::value) &&
 	%EL_NS%::HasBitFlags<T>;

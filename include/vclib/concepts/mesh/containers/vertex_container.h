@@ -73,12 +73,12 @@ concept HasVertexContainer = requires(
 } // namespace vcl::mesh
 
 /**
- * @brief HasVertices concepts is satisfied when at least one of its types is (or inherits from)
- * a VertexContainer. It can be used both to check if a Mesh has vertices, or if in a list of types
- * there is a VertexContainer.
+ * @brief HasVertices concepts is satisfied when at least one of its types is
+ * (or inherits from) a VertexContainer. It can be used both to check if a Mesh
+ * has vertices, or if in a list of types there is a VertexContainer.
  *
- * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
- * VertexContainer:
+ * In the following example, a MyMesh type can be instatiated only if one of its
+ * template Args is a VertexContainer:
  * @code{.cpp}
  * template <typename... Args> requires HasVertices<Args...>
  * class MyMesh {
@@ -99,7 +99,8 @@ concept HasVertexContainer = requires(
  * }
  * @endcode
  *
- * @note This concept does not check if a Mesh is a valid Mesh. To do that, use the MeshConcept.
+ * @note This concept does not check if a Mesh is a valid Mesh. To do that, use
+ * the MeshConcept.
  */
 template<typename... Args>
 concept HasVertices = (vcl::mesh::HasVertexContainer<Args> || ...);

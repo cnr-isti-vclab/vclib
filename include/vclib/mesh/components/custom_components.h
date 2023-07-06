@@ -38,13 +38,13 @@ namespace vcl::comp {
  * @brief The CustomComponents Component is a container of additional components
  * associated to an Element (e.g. Vertex, Face).
  *
- * CustomComponents are components that can be added at runtime. Each custom component
- * is composed of:
+ * CustomComponents are components that can be added at runtime. Each custom
+ * component is composed of:
  * - a name, which is an std::string
  * - a type, which needs to be known at compile time
  *
- * E.g., to access to a CustomComponent of type 'int' called "myCustomComponent" from an
- * element el:
+ * E.g., to access to a CustomComponent of type 'int' called "myCustomComponent"
+ * from an element el:
  *
  * @code{.cpp}
  * el.customComponent<int>("myCustomComponent");
@@ -52,31 +52,40 @@ namespace vcl::comp {
  *
  * CustomComponents can be stored horizontally or vertically.
  *
- * If the CustomComponents component is horizontal (this happens mostly on Mesh data 
- * structures), a custom component can be added or removed from the object itself.
+ * If the CustomComponents component is horizontal (this happens mostly on Mesh
+ * data structures), a custom component can be added or removed from the object
+ * itself.
  *
- * For example, having a Mesh m of type 'MyMesh' that has horizontal CustomComponents:
+ * For example, having a Mesh m of type 'MyMesh' that has horizontal
+ * CustomComponents:
  *
  * @code{.cpp}
  * m.addCustomComponent<int>("myCustomComponent");
  * @endcode
  *
- * Otherwise, if the CustomComponents component is vertical (this happens mostly on
- * Element types, like Vertex, Face...), the addition/deletion of a custom component
- * cannot be performed by the object, because its storage its managed by the Container
- * of objects (that must provide a proper member function to do that).
- * 
- * For exampl, having a Mesh m of type MyMesh that has a VertexContainer where its Vertex
- * has (vertical) CustomComponents:
- * 
+ * Otherwise, if the CustomComponents component is vertical (this happens mostly
+ * on Element types stored in a container, like Vertex, Face...), the
+ * addition/deletion of a custom component cannot be performed by the object,
+ * because its storage its managed by the Container of objects (that must
+ * provide a proper member function to do that).
+ *
+ * For example, having a Mesh m of type MyMesh that has a VertexContainer where
+ * its Vertex has (vertical) CustomComponents:
+ *
  * @code{.cpp}
  * m.addPerVertexCustomComponent<int>("myCustomComponent");
  * @endcode
- * 
- * After this call, all the Vertices of the VertexContainer will have their custom 
- * component of type int called "myCustomComponent".
- * The member function addPerVertexCustomComponent is provided by the VertexContainer and
- * can be accessed directly from the Mesh.
+ *
+ * After this call, all the Vertices of the VertexContainer will have their
+ * custom component of type int called "myCustomComponent". The member function
+ * addPerVertexCustomComponent is provided by the VertexContainer and can be
+ * accessed directly from the Mesh.
+ *
+ * @tparam ElementType: This type is used to discriminate between horizontal and
+ * vertical components. When a component is horizontal, this type must be void.
+ * When a component is vertical, this type must be the type of the Element that
+ * has the component, and it will be used by the vcl::Mesh to access to the data
+ * stored vertically.
  *
  * @ingroup components
  */
@@ -85,9 +94,12 @@ class CustomComponents
 {
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
+	/**
+	 * @brief The ID of the type of component.
+	 */
 	static const uint COMPONENT_TYPE = CUSTOM_COMPONENTS;
 
-	bool hasCustomComponent(const std::string& attrName) const;
+	bool hasCustomComponent(const std::string& compName) const;
 
 	template<typename CompType>
 	bool isCustomComponentOfType(const std::string& compName) const;
@@ -98,21 +110,23 @@ public:
 	std::vector<std::string> customComponentNamesOfType() const;
 
 	template<typename CompType>
-	const CompType& customComponent(const std::string& attrName) const;
+	const CompType& customComponent(const std::string& compName) const;
 
 	template<typename CompType>
-	CompType& customComponent(const std::string& attrName);
+	CompType& customComponent(const std::string& compName);
 
-	// msvc and clang bug - move in cpp when solved
+	// TODO msvc and clang bug - move in cpp when solved
 	template<typename CompType>
-	void addCustomComponent(const std::string& compName, const CompType& value = CompType())
-		requires(!IS_VERTICAL)
+	void addCustomComponent(
+		const std::string& compName,
+		const CompType&    value = CompType()) requires (!IS_VERTICAL)
 	{
 		return data.template addCustomComponent<CompType>(compName, value);
 	}
 
-	// msvc and clang bug - move in cpp when solved
-	void deleteCustomComponent(const std::string& compName) requires (!IS_VERTICAL)
+	// TODO msvc and clang bug - move in cpp when solved
+	void deleteCustomComponent(const std::string& compName)
+		requires (!IS_VERTICAL)
 	{
 		return data.deleteCustomComponent(compName);
 	}

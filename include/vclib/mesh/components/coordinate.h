@@ -31,7 +31,19 @@
 
 namespace vcl::comp {
 /**
- * @brief The Coordinate class
+ * @brief The Coordinate class represents a N-Dimensional point that will be
+ * part of an Element (e.g. Vertex...).
+ *
+ * Allows to get and set an object that represents a coordinate. The type of
+ * this object must satisfy the PointConcept.
+ *
+ * @tparam P: The type of the coordinate. This template argument must be a type
+ * that satisfies the PointConcept.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
@@ -53,6 +65,16 @@ protected:
 };
 
 /**
+ * @brief The Coordinate3 class is an alias of the Coordinate component that
+ * uses 3 dimensional Points.
+ *
+ * @tparam Scalar: The scalar type of the point.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
  * @ingroup components
  */
 template<
@@ -62,12 +84,32 @@ template<
 using Coordinate3 = Coordinate<Point3<Scalar>, ElementType, OPT>;
 
 /**
+ * @brief The Coordinate3f class is an alias of the Coordinate component that
+ * uses 3 dimensional Points with float precision.
+ *
+ * @tparam Scalar: The scalar type of the point.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
 using Coordinate3f = Coordinate3<float, ElementType, OPT>;
 
 /**
+ * @brief The Coordinate3d class is an alias of the Coordinate component that
+ * uses 3 dimensional Points with double precision.
+ *
+ * @tparam Scalar: The scalar type of the point.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>

@@ -11,7 +11,8 @@
  * @defgroup %EL%_components %EL_UC% Components
  * @ingroup components
  *
- * @brief This group lists all the Components that may be used by the %EL_UC% element.
+ * @brief This group lists all the Components that may be used by
+ * the %EL_UC% element.
  *
  * All these components are listed inside the vcl::%EL_NS% namespace.
  */

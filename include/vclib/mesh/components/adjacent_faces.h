@@ -50,12 +50,23 @@ namespace vcl::comp {
  * v.adjFacesNumber();
  * @endcode
  *
- * @note This component can be *Tied To Vertex Number*: it means that the size
+ * @note This component could be *Tied To Vertex Number*: it means that the size
  * of the container, if dynamic, will change automatically along the Vertex
  * Number of the Component. Check the `TTVN` template value on the
  * specialization of your component to check if it is tied to the Vertex Number.
  * For further details check the documentation of the @ref ContainerComponent
  * class.
+ *
+ * @tparam Face: The type of the adjacent Face element.
+ * @tparam N: The size of the container, that will represent the number of
+ * storable adjacent faces. If negative, the container is dynamic.
+ * @tparam TTVN: If true, the size of the container will be tied to the Vertex
+ * Number of the component (this is used mostly on Face elements).
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
@@ -174,8 +185,7 @@ private:
 
 /* Detector function to check if a class has AdjacentFaces enabled */
 
-template <typename T>
-bool isAdjacentFacesEnabledOn(const T& element);
+bool isAdjacentFacesEnabledOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

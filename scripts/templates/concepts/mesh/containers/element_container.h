@@ -49,12 +49,13 @@ concept Has%EL_UC%Container = requires(
 } // namespace vcl::mesh
 
 /**
- * @brief Has%EL_UC%s concepts is satisfied when at least one of its template types is (or inherits
- * from) a %EL_UC%Container. It can be used both to check if a Mesh has %EL_C%s, or if in a list of types
- * there is a %EL_UC%Container.
+ * @brief Has%EL_UC%s concepts is satisfied when at least one of its
+ * template types is (or inherits from) a %EL_UC%Container. It can be used
+ * both to check if a Mesh has %EL_C%s, or if in a list of types there is
+ * a %EL_UC%Container.
  *
- * In the following example, a MyMesh type can be instatiated only if one of its template Args is a
- * %EL_UC%Container:
+ * In the following example, a MyMesh type can be instatiated only if one of its
+ *  template Args is a %EL_UC%Container:
  * @code{.cpp}
  * template <typename... Args> requires Has%EL_UC%s<Args...>
  * class MyMesh {
@@ -75,7 +76,8 @@ concept Has%EL_UC%Container = requires(
  * }
  * @endcode
  *
- * @note This concept does not check if a Mesh is a valid %EL_UC%Mesh. To do that, use the %EL_UC%MeshConcept.
+ * @note This concept does not check if a Mesh is a valid %EL_UC%Mesh.
+ * To do that, use the %EL_UC%MeshConcept.
  */
 template<typename... Args>
 concept Has%EL_UC%s = (vcl::mesh::Has%EL_UC%Container<Args> || ...);

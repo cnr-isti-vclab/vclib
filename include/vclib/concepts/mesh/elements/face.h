@@ -119,29 +119,32 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 } // namespace vcl::face
 
 /**
- * @brief The FaceConcept describes how a Face element that can be used for a FaceContainer should
- * be organized.
+ * @brief The FaceConcept describes how a Face element that can be used for a
+ * FaceContainer should be organized.
  *
- * The Face concept is satisfied for a class F if ALL the following sentences are true:
+ * The Face concept is satisfied for a class F if ALL the following sentences
+ * are true:
  * - The class F is vcl::Face, or derives from it;
  * - The class F has the BitFlags component (or a derivate);
  * - The class F has the VertexPointers component (or a derivate);
- * - The number of vertices of the VertexPointers is -1 (dynamic size) or at least 3 (static size)
- * - If the class F has the TriangleBitFlags component (or a derivate), the number of vertices must
- *   be 3 (static)
- * - If the class F has the AdjacentEdges component (or a derivate), its size must be the same of
- *   the vertices;
- * - If the class F has the AdjacentFaces component (or a derivate), its size must be the same of
- *   the vertices;
- * - If the class F has the WedgeColors component (or a derivate), its size must be the same of the
- *   vertices;
- * - If the class F has the WedgeTexCoords component (or a derivate), its size must be the same of
- *   the vertices;
+ * - The number of vertices of the VertexPointers is -1 (dynamic size) or at
+ * least 3 (static size)
+ * - If the class F has the TriangleBitFlags component (or a derivate), the
+ * number of vertices must be 3 (static)
+ * - If the class F has the AdjacentEdges component (or a derivate), its size
+ * must be the same of the vertices;
+ * - If the class F has the AdjacentFaces component (or a derivate), its size
+ * must be the same of the vertices;
+ * - If the class F has the WedgeColors component (or a derivate), its size must
+ * be the same of the vertices;
+ * - If the class F has the WedgeTexCoords component (or a derivate), its size
+ * must be the same of the vertices;
  *
  * @ingroup face_concepts
  */
 template<typename T>
 concept FaceConcept =
+	ElementConcept<T> &&
 	T::ELEMENT_TYPE == FACE &&
 	(face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value) &&
 	face::HasBitFlags<T> &&
@@ -158,12 +161,14 @@ concept TriangleFaceConcept =
 	T::VERTEX_NUMBER == 3 && FaceConcept<T>;
 
 /**
- * @brief The PolygonFaceConcept describes how a Face element class should be organized to be a
- * polygonal face with dynamic size.
+ * @brief The PolygonFaceConcept describes how a Face element class should be
+ * organized to be a polygonal face with dynamic size.
  *
- * The PolygonFace concept is satisfied for a class F if ALL the following sentences are true:
+ * The PolygonFace concept is satisfied for a class F if ALL the following
+ * sentences are true:
  * - It satisfies the FaceConcept;
- * - The number of vertices of the VertexPointers component is -1 (dynamic size);
+ * - The number of vertices of the VertexPointers component is -1 (dynamic
+ * size);
  *
  * @ingroup face_concepts
  */

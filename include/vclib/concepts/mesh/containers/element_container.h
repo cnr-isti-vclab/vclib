@@ -33,12 +33,13 @@ namespace mesh {
 namespace internal {
 
 /**
- * @brief Given the ElementEnumType of an Element and a list of ElementContainers, this predicate
- * sets its bool `value` to `true` if there exists an ElementContainer in the list that contains
- * Elements having the ID EL_TPE, and sets `type` to the TypeWrapper of the found container.
+ * @brief Given the ElementEnumType of an Element and a list of
+ * ElementContainers, this predicate sets its bool `value` to `true` if there
+ * exists an ElementContainer in the list that contains Elements having the ID
+ * EL_TPE, and sets `type` to the TypeWrapper of the found container.
  *
- * If no Container was found, value will be set to `false` and type will contain an empty
- * TypeWrapper.
+ * If no Container was found, value will be set to `false` and type will contain
+ * an empty TypeWrapper.
  */
 template<uint EL_TPE, typename ... Containers>
 struct ContainerOfElementPred
@@ -52,7 +53,8 @@ private:
 
 public:
 	// TypeWrapper of the found container, if any
-	using type = typename vcl::FilterTypesByCondition<SameElPred, Containers...>::type;
+	using type =
+		typename vcl::FilterTypesByCondition<SameElPred, Containers...>::type;
 	static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 
@@ -70,15 +72,16 @@ class ElementContainerTriggerer
 };
 
 /**
- * @brief ElementContainerConcept is a concept satisfied when the type T is an Element Container.
+ * @brief ElementContainerConcept is a concept satisfied when the type T is an
+ * Element Container.
  */
 template<typename T>
 concept ElementContainerConcept =
 	std::is_base_of<ElementContainerTriggerer, T>::value;
 
 /**
- * @brief The predicate IsElementContainerPred sets its bool `value` to `true` when the type T
- * satisfies the ElementContainerConcept concept
+ * @brief The predicate IsElementContainerPred sets its bool `value` to `true`
+ * when the type T satisfies the ElementContainerConcept concept
  */
 template<typename T>
 struct IsElementContainerPred
@@ -87,19 +90,21 @@ struct IsElementContainerPred
 };
 
 /**
- * @brief The ContainerOfElement structure exposes the type of the container of the given MeshType
- * having the given ElementEnumType EL_TYPE.
+ * @brief The ContainerOfElement structure exposes the type of the container of
+ * the given MeshType having the given ElementEnumType EL_TYPE.
  *
- * If no container was found, the usage of this structure will cause a build error.
+ * If no container was found, the usage of this structure will cause a build
+ * error.
  *
  * @tparam EL_TYPE The ElementEnumType of the Element
- * @tparam MeshType The MeshType of the Mesh from which we need the type of the Container of Element
- * having the given ElementEnumType
+ * @tparam MeshType The MeshType of the Mesh from which we need the type of the
+ * Container of Element having the given ElementEnumType
  *
  * Usage:
  * @code{.cpp}
  *
- * using VertexContainer = typename mesh::ContainerOfElement<VERTEX, MyMesh>::type;
+ * using VertexContainer = typename mesh::ContainerOfElement<VERTEX,
+ * MyMesh>::type;
  *
  * @endcode
  */
@@ -107,19 +112,21 @@ template<uint EL_TYPE, typename MeshType>
 struct ContainerOfElement
 {
 public:
-	using type = typename FirstType<
-		typename internal::ContainerOfElementPred<EL_TYPE, typename MeshType::Containers>::type>::type;
+	using type = typename FirstType<typename internal::ContainerOfElementPred<
+		EL_TYPE,
+		typename MeshType::Containers>::type>::type;
 };
 
 /**
- * @brief The ContainerOfElementType structure exposes the type of the container of the given MeshType
- * having the given ElementEnumType EL_TYPE.
+ * @brief The ContainerOfElementType structure exposes the type of the container
+ * of the given MeshType having the given ElementEnumType EL_TYPE.
  *
- * If no container was found, the usage of this structure will cause a build error.
+ * If no container was found, the usage of this structure will cause a build
+ * error.
  *
  * @tparam EL_TYPE The ElementEnumType of the Element
- * @tparam MeshType The MeshType of the Mesh from which we need the type of the Container of Element
- * having the given ElementEnumType
+ * @tparam MeshType The MeshType of the Mesh from which we need the type of the
+ * Container of Element having the given ElementEnumType
  *
  * Usage:
  * @code{.cpp}
@@ -129,24 +136,27 @@ public:
  * @endcode
  */
 template<uint EL_TYPE, typename MeshType>
-using ContainerOfElementType = typename ContainerOfElement<EL_TYPE, MeshType>::type;
+using ContainerOfElementType =
+	typename ContainerOfElement<EL_TYPE, MeshType>::type;
 
 template<ElementConcept El, typename MeshType>
 struct HasContainerOfPred
 {
-	static constexpr bool value =
-		internal::ContainerOfElementPred<El::ELEMENT_TYPE, typename MeshType::Containers>::value;
+	static constexpr bool value = internal::ContainerOfElementPred<
+		El::ELEMENT_TYPE,
+		typename MeshType::Containers>::value;
 };
 
 template<uint EL_TYPE, typename MeshType>
 struct HasContainerOfElementPred
 {
-	static constexpr bool value =
-		internal::ContainerOfElementPred<EL_TYPE, typename MeshType::Containers>::value;
+	static constexpr bool value = internal::
+		ContainerOfElementPred<EL_TYPE, typename MeshType::Containers>::value;
 };
 
 template<typename MeshType, uint EL_TYPE>
-concept HasElementContainer = HasContainerOfElementPred<EL_TYPE, MeshType>::value;
+concept HasElementContainer =
+	HasContainerOfElementPred<EL_TYPE, MeshType>::value;
 
 template<typename MeshType, uint EL_TYPE, uint COMP_TYPE>
 concept HasPerElementComponent =

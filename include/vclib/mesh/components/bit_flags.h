@@ -59,6 +59,12 @@ namespace vcl::comp {
  * bool isD = v.deleted();
  * @endcode
  *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
