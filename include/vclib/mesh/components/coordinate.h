@@ -55,6 +55,8 @@ class Coordinate : public Component<COORDINATE, P, ElementType, OPT>
 public:
 	using CoordType = P;
 
+	bool isEnabled() const;
+
 	const P& coord() const;
 	P&       coord();
 
@@ -63,6 +65,10 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& v);
 };
+
+/* Detector function to check if a class has Coordinate enabled */
+
+bool isCoordinateEnabledOn(const ElementConcept auto& element);
 
 /**
  * @brief The Coordinate3 class is an alias of the Coordinate component that
@@ -87,7 +93,6 @@ using Coordinate3 = Coordinate<Point3<Scalar>, ElementType, OPT>;
  * @brief The Coordinate3f class is an alias of the Coordinate component that
  * uses 3 dimensional Points with float precision.
  *
- * @tparam Scalar: The scalar type of the point.
  * @tparam ElementType: This template argument must be `void` if the component
  * needs to be stored horizontally, or the type of the element that will contain
  * this component if the component needs to be stored vertically.
@@ -103,7 +108,6 @@ using Coordinate3f = Coordinate3<float, ElementType, OPT>;
  * @brief The Coordinate3d class is an alias of the Coordinate component that
  * uses 3 dimensional Points with double precision.
  *
- * @tparam Scalar: The scalar type of the point.
  * @tparam ElementType: This template argument must be `void` if the component
  * needs to be stored horizontally, or the type of the element that will contain
  * this component if the component needs to be stored vertically.

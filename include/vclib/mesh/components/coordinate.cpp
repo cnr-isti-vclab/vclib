@@ -26,6 +26,21 @@
 namespace vcl::comp {
 
 /**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
+template<PointConcept P, typename El, bool O>
+bool Coordinate<P, El, O>::isEnabled() const
+{
+	return Base::isEnabled(this);
+}
+
+/**
  * @brief Returns a const reference of the coordinate of the element.
  * @return a const reference of the coordinate of the element.
  */
@@ -52,6 +67,23 @@ void Coordinate<P, El, O>::importFrom(const Element& v)
 	if constexpr (HasCoordinate<Element>) {
 		coord() = v.coord().template cast<typename CoordType::ScalarType>();
 	}
+}
+
+/**
+ * @brief Checks if the given Element has Coordinate component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element has Coordinate component available, `false`
+ * otherwise.
+ */
+bool isCoordinateEnabledOn(const ElementConcept auto& element)
+{
+	return isComponentEnabledOn<COORDINATE>(element);
 }
 
 } // namespace vcl::comp

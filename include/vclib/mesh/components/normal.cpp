@@ -25,18 +25,35 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<PointConcept P, typename El, bool O>
 bool Normal<P, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
+/**
+ * @brief Returns a const reference of the normal of the element.
+ * @return a const reference of the normal of the element.
+ */
 template<PointConcept P, typename El, bool O>
 const P& Normal<P, El, O>::normal() const
 {
 	return Base::data(this);
 }
 
+/**
+ * @brief Returns a reference of the normal of the element.
+ * @return a reference of the normal of the element.
+ */
 template<PointConcept P, typename El, bool O>
 P& Normal<P, El, O>::normal()
 {
@@ -54,8 +71,19 @@ void Normal<P, El, O>::importFrom(const Element& e)
 	}
 }
 
-template <typename T>
-bool isNormalEnabledOn(const T& element)
+/**
+ * @brief Checks if the given Element has Normal component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementConcept.
+ * @return `true` if the element has Normal component available, `false`
+ * otherwise.
+ */
+bool isNormalEnabledOn(const ElementConcept auto& element)
 {
 	return isComponentEnabledOn<NORMAL>(element);
 }
