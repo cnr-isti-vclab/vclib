@@ -101,7 +101,6 @@ public:
 	void init();
 
 	bool isEnabled() const;
-	bool isAdjVerticesEnabled() const;
 
 	/* Member functions */
 

@@ -61,7 +61,6 @@ public:
 	/* Member functions */
 
 	bool isEnabled() const;
-	bool isWedgeTexCoordsEnabled() const;
 
 	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);
 	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const;

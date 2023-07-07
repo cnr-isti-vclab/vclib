@@ -33,9 +33,11 @@ namespace vcl::comp {
 
 /**
  * @brief The Color class represents a RGBA color that will be part of an
- * Element (e.g. Vertex, Face, ...).
+ * Element (e.g. Vertex, Face, ...) or Mesh.
  *
  * Allows to get and set an object of type Color.
+ *
+ * @note This component can be both used for Elements and Meshes.
  *
  * @tparam ElementType: This template argument must be `void` if the component
  * needs to be stored horizontally, or the type of the element that will contain
@@ -51,10 +53,7 @@ class Color : public Component<COLOR, vcl::Color, ElementType, OPT>
 	using Base = Component<COLOR, vcl::Color, ElementType, OPT>;
 
 public:
-	using ColorType = vcl::Color;
-
 	bool isEnabled() const;
-	bool isColorEnabled() const;
 
 	const vcl::Color& color() const;
 

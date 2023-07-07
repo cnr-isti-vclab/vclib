@@ -32,12 +32,6 @@ bool PrincipalCurvature<Scalar, El, O>::isEnabled() const
 }
 
 template<typename Scalar, typename El, bool O>
-bool PrincipalCurvature<Scalar, El, O>::isPrincipalCurvatureEnabled() const
-{
-	return isEnabled();
-}
-
-template<typename Scalar, typename El, bool O>
 const typename PrincipalCurvature<Scalar, El, O>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, O>::principalCurvature() const
 {

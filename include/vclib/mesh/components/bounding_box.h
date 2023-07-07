@@ -45,6 +45,8 @@ namespace vcl::comp {
  * m.boundingBox();
  * @endcode
  *
+ * @note This component can be both used for Elements and Meshes.
+ *
  * @tparam PointType: The type of the point that will be used to represent the
  * bounding box. This template argument must satisfy the PointConcept.
  * @tparam ElementType: This template argument must be `void` if the component
@@ -64,6 +66,8 @@ class BoundingBox :
 public:
 	using BoundingBoxType = Box<PointType>;
 
+	bool isEnabled() const;
+
 	const BoundingBoxType& boundingBox() const;
 	BoundingBoxType&       boundingBox();
 
@@ -72,6 +76,10 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 };
+
+/* Detector function to check if a class has BoundingBox enabled */
+
+bool isBoundingBoxEnabledOn(const ElementOrMeshConcept auto& element);
 
 /**
  * @brief The BoundingBox3 component class is an alias of the BoundingBox

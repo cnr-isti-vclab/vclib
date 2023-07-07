@@ -34,12 +34,6 @@ bool WedgeTexCoords<Scalar, N, El, O>::isEnabled() const
 }
 
 template<typename Scalar, int N, typename El, bool O>
-bool WedgeTexCoords<Scalar, N, El, O>::isWedgeTexCoordsEnabled() const
-{
-	return isEnabled();
-}
-
-template<typename Scalar, int N, typename El, bool O>
 vcl::TexCoord<Scalar>& WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoord(uint i)
 {
 	return texCoords().at(i);

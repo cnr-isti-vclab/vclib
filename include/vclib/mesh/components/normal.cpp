@@ -32,12 +32,6 @@ bool Normal<P, El, O>::isEnabled() const
 }
 
 template<PointConcept P, typename El, bool O>
-bool Normal<P, El, O>::isNormalEnabled() const
-{
-	return isEnabled();
-}
-
-template<PointConcept P, typename El, bool O>
 const P& Normal<P, El, O>::normal() const
 {
 	return Base::data(this);

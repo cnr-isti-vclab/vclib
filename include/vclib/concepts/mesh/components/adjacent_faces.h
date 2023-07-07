@@ -42,9 +42,6 @@ namespace vcl::comp {
  * this concept provides AdjacentFaces component at runtime (it is guaranteed
  * only that the proper member functions are available at compile time).
  *
- * To be completely sure that AdjacentFaces is available at runtime, you need to
- * call the member function `isAdjFacesEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -73,7 +70,6 @@ concept HasAdjacentFaces = requires(
 	{ co.findAdjFace(&f) } ->
 		std::same_as<typename T::ConstAdjacentFaceIterator>;
 	{ co.indexOfAdjFace(&f) } -> std::same_as<uint>;
-	{ co.isAdjFacesEnabled() } -> std::same_as<bool>;
 
 	{ o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;
 	{ o.adjFaceEnd() } -> std::same_as<typename T::AdjacentFaceIterator>;

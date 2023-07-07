@@ -26,6 +26,21 @@
 namespace vcl::comp {
 
 /**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
+template<typename El, bool O>
+bool Name<El, O>::isEnabled() const
+{
+	return Base::isEnabled(this);
+}
+
+/**
  * @brief Returns the name of this object.
  * @return The name of this object.
  */
@@ -52,6 +67,23 @@ void Name<El, O>::importFrom(const Element &e)
 	if constexpr(HasName<Element>) {
 		name() = e.name();
 	}
+}
+
+/**
+ * @brief Checks if the given Element/Mesh has Name component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has Name component available, `false`
+ * otherwise.
+ */
+bool isNameEnabledOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentEnabledOn<NAME>(element);
 }
 
 } // namespace vcl::comp

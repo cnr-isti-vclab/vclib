@@ -45,7 +45,6 @@ public:
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
 	bool isEnabled() const;
-	bool isTexCoordEnabled() const;
 
 	const TexCoordType& texCoord() const;
 	TexCoordType&       texCoord();

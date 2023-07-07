@@ -39,9 +39,6 @@ namespace vcl::comp {
  * Quality component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
- * To be completely sure that Quality is available at runtime, you need to call
- * the member function `isQualityEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -52,7 +49,6 @@ concept HasQuality = requires(
 	typename T::QualityType;
 	{ o.quality() } -> std::same_as<typename T::QualityType&>;
 	{ co.quality() } -> std::same_as<const typename T::QualityType&>;
-	{ co.isQualityEnabled() } -> std::same_as<bool>;
 };
 
 /**

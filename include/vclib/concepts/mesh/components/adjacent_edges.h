@@ -42,9 +42,6 @@ namespace vcl::comp {
  * this concept provides AdjacentEdges component at runtime (it is guaranteed
  * only that the proper member functions are available at compile time).
  *
- * To be completely sure that AdjacentEdges is available at runtime, you need to
- * call the member function `isAdjEdgesEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -73,7 +70,6 @@ concept HasAdjacentEdges = requires(
 	{ co.findAdjEdge(&e) } ->
 		std::same_as<typename T::ConstAdjacentEdgeIterator>;
 	{ co.indexOfAdjEdge(&e) } -> std::same_as<uint>;
-	{ co.isAdjEdgesEnabled() } -> std::same_as<bool>;
 
 	{ o.adjEdgeBegin() } -> std::same_as<typename T::AdjacentEdgeIterator>;
 	{ o.adjEdgeEnd() } -> std::same_as<typename T::AdjacentEdgeIterator>;

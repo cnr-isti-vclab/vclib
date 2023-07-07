@@ -43,9 +43,6 @@ namespace vcl::comp {
  * guaranteed only that the proper member functions are available at compile
  * time).
  *
- * To be completely sure that AdjacentVertices is available at runtime, you need
- * to call the member function `isAdjVerticesEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -75,7 +72,6 @@ concept HasAdjacentVertices = requires(
 	{ co.findAdjVertex(&v) } ->
 		std::same_as<typename T::ConstAdjacentVertexIterator>;
 	{ co.indexOfAdjVertex(&v) } -> std::same_as<uint>;
-	{ co.isAdjVerticesEnabled() } -> std::same_as<bool>;
 
 	{ o.adjVertexBegin() } -> std::same_as<typename T::AdjacentVertexIterator>;
 	{ o.adjVertexEnd() } -> std::same_as<typename T::AdjacentVertexIterator>;

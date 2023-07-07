@@ -45,7 +45,6 @@ public:
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
 	bool isEnabled() const;
-	bool isPrincipalCurvatureEnabled() const;
 
 	const PrincipalCurvatureType& principalCurvature() const;
 	PrincipalCurvatureType&       principalCurvature();

@@ -56,18 +56,6 @@ bool AdjacentEdges<Edge, N, TT, El, O>::isEnabled() const
 }
 
 /**
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
- *
- * @return `true` if the component is enabled, `false` otherwise.
- */
-template<typename Edge, int N, bool TT, typename El, bool O>
-bool AdjacentEdges<Edge, N, TT, El, O>::isAdjEdgesEnabled() const
-{
-	return isEnabled();
-}
-
-/**
  * @brief Returns the number of adjacent edges of this element.
  * @return The number of adjacent edges of this element.
  */

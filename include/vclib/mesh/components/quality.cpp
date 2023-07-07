@@ -32,12 +32,6 @@ bool Quality<T, El, O>::isEnabled() const
 }
 
 template<typename T, typename El, bool O>
-bool Quality<T, El, O>::isQualityEnabled() const
-{
-	return isEnabled();
-}
-
-template<typename T, typename El, bool O>
 const T& Quality<T, El, O>::quality() const
 {
 	return Base::data(this);

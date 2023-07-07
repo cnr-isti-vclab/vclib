@@ -44,7 +44,6 @@ public:
 	using QualityType = T;
 
 	bool isEnabled() const;
-	bool isQualityEnabled() const;
 
 	const QualityType& quality() const;
 	QualityType&       quality();

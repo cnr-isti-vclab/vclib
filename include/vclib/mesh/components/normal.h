@@ -45,7 +45,6 @@ public:
 	using NormalType = P;
 
 	bool isEnabled() const;
-	bool isNormalEnabled() const;
 
 	const P& normal() const;
 	P&       normal();

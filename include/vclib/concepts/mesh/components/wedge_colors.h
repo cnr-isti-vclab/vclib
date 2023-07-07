@@ -42,9 +42,6 @@ namespace vcl::comp {
  * this concept provides WedgeColors component at runtime (it is guaranteed only
  * that the proper member functions are available at compile time).
  *
- * To be completely sure that WedgeColors is available at runtime, you need to
- * call the member function `isWedgeColorsEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -64,7 +61,6 @@ concept HasWedgeColors = requires(
 	{ co.wedgeColorMod(int()) } -> std::same_as<const vcl::Color&>;
 	{ o.setWedgeColor(c, uint()) } -> std::same_as<void>;
 	{ o.setWedgeColors(v) } -> std::same_as<void>;
-	{ co.isWedgeColorsEnabled() } -> std::same_as<bool>;
 
 	{ o.wedgeColorBegin() } -> std::same_as<typename T::WedgeColorsIterator>;
 	{ o.wedgeColorEnd() } -> std::same_as<typename T::WedgeColorsIterator>;

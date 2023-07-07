@@ -56,18 +56,6 @@ bool AdjacentVertices<Vertex, El, O>::isEnabled() const
 }
 
 /**
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
- *
- * @return `true` if the component is enabled, `false` otherwise.
- */
-template<typename Vertex, typename El, bool O>
-bool AdjacentVertices<Vertex, El, O>::isAdjVerticesEnabled() const
-{
-	return isEnabled();
-}
-
-/**
  * @brief Returns the number of adjacent vertices of the element.
  * @return The number of adjacent vertices of the element.
  */

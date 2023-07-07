@@ -41,9 +41,6 @@ namespace vcl::comp {
  * is guaranteed only that the proper member functions are available at compile
  * time).
  *
- * To be completely sure that PrincipalCurvature is available at runtime, you
- * need to call the member function `isPrincipalCurvatureEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -56,7 +53,6 @@ concept HasPrincipalCurvature = requires(
 		std::same_as<typename T::PrincipalCurvatureType&>;
 	{ co.principalCurvature() } ->
 		std::same_as<const typename T::PrincipalCurvatureType&>;
-	{ co.isPrincipalCurvatureEnabled() } -> std::same_as<bool>;
 };
 
 /**

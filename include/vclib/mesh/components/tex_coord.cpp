@@ -32,12 +32,6 @@ bool TexCoord<Scalar, El, O>::isEnabled() const
 }
 
 template<typename Scalar, typename El, bool O>
-bool TexCoord<Scalar, El, O>::isTexCoordEnabled() const
-{
-	return isEnabled();
-}
-
-template<typename Scalar, typename El, bool O>
 const typename TexCoord<Scalar, El, O>::TexCoordType& TexCoord<Scalar, El, O>::texCoord() const
 {
 	return Base::data(this);

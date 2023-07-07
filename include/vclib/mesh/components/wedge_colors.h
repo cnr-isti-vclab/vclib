@@ -55,7 +55,6 @@ public:
 	using ConstWedgeColorsIterator = typename Base::ConstIterator;
 
 	bool isEnabled() const;
-	bool isWedgeColorsEnabled() const;
 
 	/* Member functions */
 

@@ -42,9 +42,6 @@ namespace vcl::comp {
  * Color component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
- * To be completely sure that Color is available at runtime, you need to call
- * the member function `isColorEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -52,10 +49,8 @@ concept HasColor = requires(
 	T o,
 	const T& co)
 {
-	typename T::ColorType;
 	{ o.color() } -> std::same_as<vcl::Color&>;
 	{ co.color() } -> std::same_as<const vcl::Color&>;
-	{ co.isColorEnabled() } -> std::same_as<bool>;
 };
 
 /**

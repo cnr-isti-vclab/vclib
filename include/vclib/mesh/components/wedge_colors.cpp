@@ -34,12 +34,6 @@ bool WedgeColors<N, El, O>::isEnabled() const
 }
 
 template<int N, typename El, bool O>
-bool WedgeColors<N, El, O>::isWedgeColorsEnabled() const
-{
-	return isEnabled();
-}
-
-template<int N, typename El, bool O>
 vcl::Color& WedgeColors<N, El, O>::wedgeColor(uint i)
 {
 	return colors().at(i);

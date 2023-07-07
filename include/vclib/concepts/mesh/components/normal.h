@@ -39,9 +39,6 @@ namespace vcl::comp {
  * Normal component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
- * To be completely sure that Normal is available at runtime, you need to call
- * the member function `isNormalEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -52,7 +49,6 @@ concept HasNormal = requires(
 	typename T::NormalType;
 	{ o.normal() } -> std::same_as<typename T::NormalType&>;
 	{ co.normal() } -> std::same_as<const typename T::NormalType&>;
-	{ co.isNormalEnabled() } -> std::same_as<bool>;
 };
 
 /**
