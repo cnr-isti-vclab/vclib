@@ -31,10 +31,11 @@ SCENARIO( "Mesh Conversions" ) {
 
 		tm.addCustomComponent<int>("cust_comp", 4);
 		tm.addPerVertexCustomComponent<float>("v_comp");
+		tm.deleteFace(3);
 
 		THEN( "The mesh has 8 vertices, 4 triangles, per face wedge texcoords" ) {
 			REQUIRE( tm.vertexNumber() == 8 );
-			REQUIRE( tm.faceNumber() == 4 );
+			REQUIRE( tm.faceNumber() == 3 );
 			REQUIRE( tm.isPerFaceWedgeTexCoordsEnabled() );
 			REQUIRE( tm.hasCustomComponent("cust_comp") );
 			REQUIRE( tm.isCustomComponentOfType<int>("cust_comp") );
@@ -52,7 +53,7 @@ SCENARIO( "Mesh Conversions" ) {
 
 		THEN ("The imported PolyMesh has same vertex and face number") {
 			REQUIRE( pm.vertexNumber() == 8 );
-			REQUIRE( pm.faceNumber() == 4 );
+			REQUIRE( pm.faceNumber() == 3 );
 		}
 
 		THEN ("The imported vetices have same coordinates") {
@@ -86,6 +87,8 @@ SCENARIO( "Mesh Conversions" ) {
 			REQUIRE( pm.isCustomComponentOfType<int>("cust_comp") );
 			REQUIRE( !pm.isCustomComponentOfType<uint>("cust_comp") );
 			REQUIRE( pm.customComponent<int>("cust_comp") == 4 );
+			REQUIRE( pm.hasPerVertexCustomComponent("v_comp") );
+			REQUIRE( pm.isPerVertexCustomComponentOfType<float>("v_comp") );
 		}
 	}
 

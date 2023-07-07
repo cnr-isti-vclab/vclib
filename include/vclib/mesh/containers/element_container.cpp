@@ -672,6 +672,12 @@ void ElementContainer<T>::importFrom(const OtherMesh &m)
 			element(eid).importFrom(e);
 			++eid;
 		}
+		en = c.en;
+		if constexpr (comp::HasCustomComponents<
+						  typename Container::ElementType>)
+		{
+			ccVecMap.importFrom(c.ccVecMap);
+		}
 	}
 }
 

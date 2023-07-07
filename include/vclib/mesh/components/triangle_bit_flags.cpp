@@ -340,12 +340,11 @@ void TriangleBitFlags<El, O>::importFrom(const Element& e)
 	if constexpr (HasBitFlags<Element>) {
 		resetBitFlags();
 		if constexpr (HasTriangleBitFlags<Element>) {
-			bool isD = deleted();
 			flags() = e.flags();
-			deleted() = isD;
 		}
 		else {
 			// BitFlags
+			deleted() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);

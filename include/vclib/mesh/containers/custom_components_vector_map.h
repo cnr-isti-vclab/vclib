@@ -48,6 +48,9 @@ public:
 template<typename T>
 class CustomComponentsVectorMap<T, true>
 {
+	template<typename U, bool b>
+	friend class CustomComponentsVectorMap;
+
 public:
 	void clear();
 
@@ -77,10 +80,14 @@ public:
 	std::vector<std::string> allComponentNamesOfType() const;
 
 	template<typename CompType>
-	const std::vector<std::any>& componentVector(const std::string& compName) const;
+	const std::vector<std::any>&
+	componentVector(const std::string& compName) const;
 
 	template<typename CompType>
 	std::vector<std::any>& componentVector(const std::string& compName);
+
+	template<typename U>
+	void importFrom(const CustomComponentsVectorMap<U, true>& v);
 
 private:
 	// the actual map containing, for each name of a custom component, the vector

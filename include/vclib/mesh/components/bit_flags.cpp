@@ -235,6 +235,7 @@ void BitFlags<El, O>::importFrom(const Element& e)
 		if constexpr (
 			HasPolygonBitFlags<Element> || HasTriangleBitFlags<Element>)
 		{
+			deleted() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			onBorder() = e.onBorder();
@@ -243,9 +244,7 @@ void BitFlags<El, O>::importFrom(const Element& e)
 				userBit(i) = e.userBit(i);
 		}
 		else {
-			bool isD = deleted();
 			flags() = e.flags();
-			deleted() = isD;
 		}
 
 	}

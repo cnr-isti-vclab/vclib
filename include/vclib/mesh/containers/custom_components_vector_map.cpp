@@ -266,6 +266,20 @@ CustomComponentsVectorMap<T, true>::componentVector(const std::string& compName)
 	return v;
 }
 
+/**
+ * @brief Function that allows to import the same custom components from another
+ * vector having different Element (different components) than T.
+ */
+template<typename T>
+template<typename U>
+void CustomComponentsVectorMap<T, true>::importFrom(
+	const CustomComponentsVectorMap<U, true>& v)
+{
+	map = v.map;
+	needToInitialize = v.needToInitialize;
+	compType = v.compType;
+}
+
 template<typename T>
 template<typename CompType>
 void CustomComponentsVectorMap<T, true>::checkComponentType(
