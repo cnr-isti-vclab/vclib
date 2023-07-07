@@ -183,12 +183,12 @@ CompType& CustomComponents<El>::customComponent(const std::string& compName)
 
 template<typename El>
 template<typename Element>
-void CustomComponents<El>::importFrom(const Element&)
+void CustomComponents<El>::importFrom(const Element& e)
 {
 	// if the component is vertical, the import is managed by the container.
 	// if is horizontal, it must be managed by the component itself.
-	if constexpr (!IS_VERTICAL) {
-		// TODO
+	if constexpr (!IS_VERTICAL && HasCustomComponents<Element>) {
+		data = e.CustomComponents::data;
 	}
 }
 

@@ -29,10 +29,18 @@ SCENARIO( "Mesh Conversions" ) {
 	GIVEN( "The TextureDouble mesh loaded on TriMesh" ) {
 		vcl::TriMesh tm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
 
+		tm.addCustomComponent<int>("cust_comp", 4);
+		tm.addPerVertexCustomComponent<float>("v_comp");
+
 		THEN( "The mesh has 8 vertices, 4 triangles, per face wedge texcoords" ) {
 			REQUIRE( tm.vertexNumber() == 8 );
 			REQUIRE( tm.faceNumber() == 4 );
 			REQUIRE( tm.isPerFaceWedgeTexCoordsEnabled() );
+			REQUIRE( tm.hasCustomComponent("cust_comp") );
+			REQUIRE( tm.isCustomComponentOfType<int>("cust_comp") );
+			REQUIRE( !tm.isCustomComponentOfType<uint>("cust_comp") );
+			REQUIRE( tm.customComponent<int>("cust_comp") == 4 );
+			REQUIRE( tm.hasPerVertexCustomComponent("v_comp") );
 		}
 
 		vcl::PolyMesh pm;
@@ -71,6 +79,13 @@ SCENARIO( "Mesh Conversions" ) {
 					++i;
 				}
 			}
+		}
+
+		THEN ("The imported PolyMesh has same custom components") {
+			REQUIRE( pm.hasCustomComponent("cust_comp") );
+			REQUIRE( pm.isCustomComponentOfType<int>("cust_comp") );
+			REQUIRE( !pm.isCustomComponentOfType<uint>("cust_comp") );
+			REQUIRE( pm.customComponent<int>("cust_comp") == 4 );
 		}
 	}
 
