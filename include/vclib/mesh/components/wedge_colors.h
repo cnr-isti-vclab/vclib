@@ -101,8 +101,7 @@ private:
 
 /* Detector function to check if a class has WedgeColors enabled */
 
-template <typename T>
-bool isWedgeColorsEnabledOn(const T& element);
+bool isWedgeColorsEnabledOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

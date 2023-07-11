@@ -25,12 +25,25 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<typename Scalar, typename El, bool O>
 bool PrincipalCurvature<Scalar, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
+/**
+ * @brief Returns a const reference of the principal curvature of the element.
+ * @return a const reference of the principal curvature of the element.
+ */
 template<typename Scalar, typename El, bool O>
 const typename PrincipalCurvature<Scalar, El, O>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, O>::principalCurvature() const
@@ -38,6 +51,10 @@ PrincipalCurvature<Scalar, El, O>::principalCurvature() const
 	return Base::data(this);
 }
 
+/**
+ * @brief Returns a reference of the principal curvature of the element.
+ * @return a reference of the principal curvature of the element.
+ */
 template<typename Scalar, typename El, bool O>
 typename PrincipalCurvature<Scalar, El, O>::PrincipalCurvatureType&
 PrincipalCurvature<Scalar, El, O>::principalCurvature()
@@ -51,13 +68,26 @@ void PrincipalCurvature<Scalar, El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasPrincipalCurvature<Element>) {
 		if (isPrincipalCurvatureEnabledOn(e)) {
-			principalCurvature() = e.principalCurvature().template cast<Scalar>();
+			principalCurvature() =
+				e.principalCurvature().template cast<Scalar>();
 		}
 	}
 }
 
-template <typename T>
-bool isPrincipalCurvatureEnabledOn(const T& element)
+/**
+ * @brief Checks if the given Element has PrincipalCurvature component
+ * available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementConcept.
+ * @return `true` if the element has PrincipalCurvature component available,
+ * `false` otherwise.
+ */
+bool isPrincipalCurvatureEnabledOn(const ElementConcept auto& element)
 {
 	return isComponentEnabledOn<PRINCIPAL_CURVATURE>(element);
 }

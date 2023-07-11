@@ -32,14 +32,38 @@
 namespace vcl::comp {
 
 /**
- * @brief The PrincipalCurvature class
+ * @brief The PrincipalCurvature class represents a component that stores
+ * the principal curvature directions and values at a point on a surface.
+ * This component could be part of Vertices or Faces.
+ *
+ * It exposes a vcl::PrincipalCurvature object, that stores the two principal
+ * curvature directions (`maxDir()` and `minDir()`, also note as k1 and k2
+ * respectively) and the maximum and minimum values of the curvature
+ * (`maxValue()` and `minValue()`).
+ *
+ *
+ * @tparam Scalar: The scalar type of the principal curvature values.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
-class PrincipalCurvature : public Component<PRINCIPAL_CURVATURE, vcl::PrincipalCurvature<Scalar>, ElementType, OPT>
+class PrincipalCurvature :
+		public Component<
+			PRINCIPAL_CURVATURE,
+			vcl::PrincipalCurvature<Scalar>,
+			ElementType,
+			OPT>
 {
-	using Base = Component<PRINCIPAL_CURVATURE, vcl::PrincipalCurvature<Scalar>, ElementType, OPT>;
+	using Base = Component<
+		PRINCIPAL_CURVATURE,
+		vcl::PrincipalCurvature<Scalar>,
+		ElementType,
+		OPT>;
 
 public:
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
@@ -50,19 +74,42 @@ public:
 	PrincipalCurvatureType&       principalCurvature();
 
 protected:
-	// PointersComponent interface functions
+	// Component interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
 };
 
 /* Detector function to check if a class has PrincipalCurvature enabled */
 
-template <typename T>
-bool isPrincipalCurvatureEnabledOn(const T& element);
+bool isPrincipalCurvatureEnabledOn(const ElementConcept auto& element);
 
+/**
+ * The PrincipalCurvaturef class is an alias of the PrincipalCurvature component
+ * that uses float as scalar type.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
 template<typename ElementType = void, bool OPT = false>
 using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, OPT>;
 
+/**
+ * The PrincipalCurvatured class is an alias of the PrincipalCurvature component
+ * that uses double as scalar type.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
 template<typename ElementType = void, bool OPT = false>
 using PrincipalCurvatured = PrincipalCurvature<double, ElementType, OPT>;
 

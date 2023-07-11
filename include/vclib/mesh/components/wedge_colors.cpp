@@ -186,8 +186,7 @@ const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
 	return Base::container(this);
 }
 
-template <typename T>
-bool isWedgeColorsEnabledOn(const T& element)
+bool isWedgeColorsEnabledOn(const ElementConcept auto& element)
 {
 	return isComponentEnabledOn<WEDGE_COLORS>(element);
 }

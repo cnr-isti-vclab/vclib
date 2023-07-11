@@ -165,8 +165,7 @@ private:
 
 /* Detector function to check if a class has AdjacentVertices enabled */
 
-template <typename T>
-bool isAdjacentVerticesEnabledOn(const T& element);
+bool isAdjacentVerticesEnabledOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

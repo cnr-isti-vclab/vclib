@@ -77,7 +77,7 @@ public:
 	auto                      texturePaths() const;
 
 protected:
-	// PointersComponent interface functions
+	// Component interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
 

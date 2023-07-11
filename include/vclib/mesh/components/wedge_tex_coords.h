@@ -112,8 +112,7 @@ private:
 
 /* Detector function to check if a class has WedgeTexCoords enabled */
 
-template <typename T>
-bool isWedgeTexCoordsEnabledOn(const T& element);
+bool isWedgeTexCoordsEnabledOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

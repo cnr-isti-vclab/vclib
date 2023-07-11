@@ -217,8 +217,7 @@ WedgeTexCoords<Scalar, N, El, O>::texCoords() const
 	return Base::container(this);
 }
 
-template <typename T>
-bool isWedgeTexCoordsEnabledOn(const T& element)
+bool isWedgeTexCoordsEnabledOn(const ElementConcept auto& element)
 {
 	return isComponentEnabledOn<WEDGE_TEX_COORDS>(element);
 }
