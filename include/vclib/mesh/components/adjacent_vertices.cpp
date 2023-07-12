@@ -136,8 +136,8 @@ const Vertex* AdjacentVertices<Vertex, El, O>::adjVertexMod(int i) const
 }
 
 /**
- * @brief Sets the i-th adjacent vertex of this element.
- * @param[in] e: The pointer to the adjacent vertex to set to this element.
+ * @brief Sets the i-th adjacent vertex of the element.
+ * @param[in] v: The pointer to the adjacent vertex to set to this element.
  * @param[in] i: the position in the container on which set the adj vertex; the
  * value must be between 0 and the number of adj vertices.
  */
@@ -166,7 +166,7 @@ void AdjacentVertices<Vertex, El, O>::setAdjVertices(
  * @brief Returns `true` if the container of adjacent vertices contains the
  * given vertex, `false` otherwise.
  *
- * @param[in] e: the pointer to the vertex to search.
+ * @param[in] v: the pointer to the vertex to search.
  * @return `true` if the container of adjacent vertices contains the given
  * vertex, `false` otherwise.
  */
@@ -181,9 +181,9 @@ bool AdjacentVertices<Vertex, El, O>::containsAdjVertex(const Vertex* v) const
  * this component that is equal to the given vertex. If no such adjacent vertex
  * is found, past-the-end iterator is returned.
  *
- * @param[in] e: the pointer to the vertex to search.
+ * @param[in] v: the pointer to the vertex to search.
  * @return an iterator pointing to the first adjacent vertex equal to the given
- * edge, or end if no such adjacent vertex is found.
+ * vertex, or end if no such adjacent vertex is found.
  */
 template<typename Vertex, typename El, bool O>
 typename AdjacentVertices<Vertex, El, O>::AdjacentVertexIterator
@@ -197,7 +197,7 @@ AdjacentVertices<Vertex, El, O>::findAdjVertex(const Vertex* v)
  * of this component that is equal to the given vertex. If no such adjacent
  * vertex is found, past-the-end iterator is returned.
  *
- * @param[in] e: the pointer to the vertex to search.
+ * @param[in] v: the pointer to the vertex to search.
  * @return a const iterator pointing to the first adjacent vertex equal to the
  * given vertex, or end if no such adjacent vertex is found.
  */
@@ -210,10 +210,10 @@ AdjacentVertices<Vertex, El, O>::findAdjVertex(const Vertex* v) const
 
 /**
  * @brief Returns the index of the given adjacent vertex in the container of
- * this element. If the given adjacent vertex is not in the container, returns
+ * the element. If the given adjacent vertex is not in the container, returns
  * UINT_NULL.
  *
- * @param[in] e: the pointer to the adjacent vertex to search.
+ * @param[in] v: the pointer to the adjacent vertex to search.
  * @return the index of the given adjacent vertex, or UINT_NULL if it is not
  * found.
  */
@@ -226,7 +226,7 @@ uint AdjacentVertices<Vertex, El, O>::indexOfAdjVertex(const Vertex* v) const
 /**
  * @brief Resize the container of the adjacent vertices to the given size.
  * @note This function is available only if the container of the Adjacent
- * Vertices is has dynamic size.
+ * Vertices has dynamic size.
  * @param[in] n: The new size of the adjacent vertices container.
  */
 template<typename Vertex, typename El, bool O>
@@ -239,7 +239,7 @@ void AdjacentVertices<Vertex, El, O>::resizeAdjVertices(uint n)
  * @brief Pushes in the back of the container the given adjacent vertex.
  * @note This function is available only if the container of the Adjacent
  * Vertices component has dynamic size.
- * @param[in] e: The pointer to the adjacent vertex to push in the back of the
+ * @param[in] v: The pointer to the adjacent vertex to push in the back of the
  * container.
  */
 template<typename Vertex, typename El, bool O>
@@ -255,7 +255,7 @@ void AdjacentVertices<Vertex, El, O>::pushAdjVertex(Vertex* v)
  * Vertices component has dynamic size.
  * @param[in] i: The position in the container where to insert the adjacent
  * vertex.
- * @param[in] e: The pointer to the adjacent vertex to insert in the container.
+ * @param[in] v: The pointer to the adjacent vertex to insert in the container.
  */
 template<typename Vertex, typename El, bool O>
 void AdjacentVertices<Vertex, El, O>::insertAdjVertex(uint i, Vertex* v)
