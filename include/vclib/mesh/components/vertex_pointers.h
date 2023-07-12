@@ -32,16 +32,70 @@
 namespace vcl::comp {
 
 /**
- * @brief The VertexPointers class
+ * @brief The VertexPointers class represents a component that stores a
+ * container of pointers to vertices that will be part of an Element (e.g.
+ * Face, Edge, Tetrahedron, etc.).
+ *
+ * The container of Vertex pointers is a random access container that could have
+ * static or dynamic size, depending on the value of the template argument N
+ * (a negative number means dynamic).
+ *
+ * For example, if a Face element should represent only triangles, N could be
+ * 3. In this case, the container will have static size and it can't be resized
+ * in any way. If N is -1, the container will have dynamic size and it will be
+ * possible to resize it (e.g. if the Face element should represent a polygon).
+ *
+ * The member functions of this class will be available in the instance of any
+ * Element that will contain this component.
+ *
+ * For example, if you have a Face Element `f` that has the VertexPointers
+ * component, you'll be able to access to this component member functions from
+ * `f`:
+ *
+ * @code{.cpp}
+ * uint n = f.vertexNumber();
+ * auto* v = f.vertex(0);
+ * @endcode
+ *
+ * @note This component is usually the main component of an Element, and
+ * therefore it cannot be optional.
+ *
+ * @note Several components are *Tied To Vertex Number*: in other words, they
+ * are composed by a container that has the same size of the VertexPointers
+ * and, when the VertexPointers container is resized, also the container of
+ * these components is resized automatically.
+ *
+ * @tparam Vertex The type of the vertices.
+ * @tparam N: The size of the container, that will represent the number of
+ * storable vertex pointers. If negative, the container is dynamic.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
  *
  * @ingroup components
  */
-template<typename Vertex, int N, typename ElementType = void, bool OPT = false>
-class VertexPointers : public PointersContainerComponent<VERTEX_PTRS, Vertex, N, ElementType, OPT, false>
+template<typename Vertex, int N, typename ElementType = void>
+class VertexPointers :
+		public PointersContainerComponent<
+			VERTEX_PTRS,
+			Vertex,
+			N,
+			ElementType,
+			false,
+			false>
 {
-	using Base = PointersContainerComponent<VERTEX_PTRS, Vertex, N, ElementType, OPT, false>;
+	using Base = PointersContainerComponent<
+		VERTEX_PTRS,
+		Vertex,
+		N,
+		ElementType,
+		false,
+		false>;
 
 public:
+	/**
+	 * @brief Expose the type of the Vertex.
+	 */
 	using VertexType = Vertex;
 
 	static const int VERTEX_NUMBER = Base::SIZE;

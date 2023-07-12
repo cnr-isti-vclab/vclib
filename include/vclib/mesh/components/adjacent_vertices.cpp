@@ -27,7 +27,7 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Initializes the container of adjacent vertices to nullptr.
+ * @brief Initializes an empty container of adjacent vertices.
  *
  * It is made in the init function since the component could be not available
  * during construction (e.g. if the component is optional and not enabled).
@@ -76,7 +76,7 @@ uint AdjacentVertices<Vertex, El, O>::adjVerticesNumber() const
  *                                // the k-th vertex of the mesh.
  * @endcode
  *
- * @param i: the position of the required adjacent list in the container.
+ * @param[in] i: the position of the required adjacent vertex in the container.
  * @return The pointer i-th adjacent vertex of the element.
  */
 template<typename Vertex, typename El, bool O>
@@ -86,10 +86,10 @@ Vertex*& AdjacentVertices<Vertex, El, O>::adjVertex(uint i)
 }
 
 /**
- * @brief Returns a const pointer to the i-th adjacent vertex of this element.
+ * @brief Returns a const pointer to the i-th adjacent vertex of the element.
  * @param[in] i: the position of the required adjacent vertex in the container;
  * the value must be between 0 and the number of adj vertices.
- * @return The pointer to the i-th adjacent vertex of this element.
+ * @return The pointer to the i-th adjacent vertex of the element.
  */
 template<typename Vertex, typename El, bool O>
 const Vertex* AdjacentVertices<Vertex, El, O>::adjVertex(uint i) const
@@ -98,11 +98,11 @@ const Vertex* AdjacentVertices<Vertex, El, O>::adjVertex(uint i) const
 }
 
 /**
- * @brief Returns a reference of the pointer to the i-th adjacent vertex of this
- * element but using as index the module between i and the number of adjacent
+ * @brief Returns a reference of the pointer to the i-th adjacent vertex of the
+ * element, but using as index the module between i and the number of adjacent
  * vertices. You can use this function if you need to get the "next adjacent
  * vertex after position k", without check if it is less than the number of adj
- * faces. Works also for negative numbers:
+ * vertices. Works also for negative numbers:
  *
  * @code{.cpp}
  * k = pos; // some position of an adjacent vertex
@@ -114,7 +114,7 @@ const Vertex* AdjacentVertices<Vertex, El, O>::adjVertex(uint i) const
  *
  * @param[in] i: the position of the required adjacent vertex in the container,
  * w.r.t. the position 0; value is modularized on adjVertexNumber().
- * @return The pointer to the required adjacent vertex of this element.
+ * @return The pointer to the required adjacent vertex of the element.
  */
 template<typename Vertex, typename El, bool O>
 Vertex*& AdjacentVertices<Vertex, El, O>::adjVertexMod(int i)
@@ -127,7 +127,7 @@ Vertex*& AdjacentVertices<Vertex, El, O>::adjVertexMod(int i)
  * vertex.
  * @param[in] i: the position of the required adjacent vertex in the container,
  * w.r.t. the position 0; value is modularized on adjVertexNumber().
- * @return The pointer to the required adjacent vertex of this element.
+ * @return The pointer to the required adjacent vertex of the element.
  */
 template<typename Vertex, typename El, bool O>
 const Vertex* AdjacentVertices<Vertex, El, O>::adjVertexMod(int i) const
