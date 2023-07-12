@@ -25,6 +25,9 @@
 
 namespace vcl::comp {
 
+/**
+ * @brief Constructor that initializes the transform matrix to identity.
+ */
 template<typename Scalar, typename El, bool O>
 TransformMatrix<Scalar, El, O>::TransformMatrix()
 {
@@ -33,18 +36,40 @@ TransformMatrix<Scalar, El, O>::TransformMatrix()
 	}
 }
 
+/**
+ * @private
+ * @brief Initializes transform matrix to identity.
+ *
+ * It is made in the init function since the component could be not available
+ * during construction (e.g. if the component is optional and not enabled).
+ *
+ * This member function is hidden by the element that inherits this class.
+ */
 template<typename Scalar, typename El, bool O>
 void TransformMatrix<Scalar, El, O>::init()
 {
 	transformMatrix().setIdentity();
 }
 
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<typename Scalar, typename El, bool O>
 bool TransformMatrix<Scalar, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
+/**
+ * @brief Returns a const reference to the transform matrix.
+ * @return A const reference to the transform matrix.
+ */
 template<typename Scalar, typename El, bool O>
 const typename TransformMatrix<Scalar, El, O>::TransformMatrixType&
 TransformMatrix<Scalar, El, O>::transformMatrix() const
@@ -52,6 +77,10 @@ TransformMatrix<Scalar, El, O>::transformMatrix() const
 	return Base::data(this);
 }
 
+/**
+ * @brief Returns a reference to the transform matrix.
+ * @return A reference to the transform matrix.
+ */
 template<typename Scalar, typename El, bool O>
 typename TransformMatrix<Scalar, El, O>::TransformMatrixType&
 TransformMatrix<Scalar, El, O>::transformMatrix()
@@ -66,6 +95,24 @@ void TransformMatrix<Scalar, El, O>::importFrom(const Element& e)
 	if constexpr(HasTransformMatrix<Element>) {
 		transformMatrix() = e.transformMatrix().template cast<Scalar>();
 	}
+}
+
+/**
+ * @brief Checks if the given Element/Mesh has TransformMatrix component
+ * available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has TransformMatrix component available,
+ * `false` otherwise.
+ */
+bool isTransformMatrixEnabledOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentEnabledOn<TRANSFORM_MATRIX>(element);
 }
 
 } // namespace vcl::comp

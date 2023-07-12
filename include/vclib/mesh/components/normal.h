@@ -38,6 +38,13 @@ namespace vcl::comp {
  * Allows to get and set an object that represents a normal. The type of this
  * object must satisfy the PointConcept.
  *
+ * For example, if you have a Vertex Element `v` with the Normal component,
+ * you'll be able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * auto n = v.normal();
+ * @endcode
+ *
  * @tparam P: The type of the normal. This template argument must be a type that
  * satisfies the PointConcept.
  * @tparam ElementType: This template argument must be `void` if the component
@@ -54,6 +61,9 @@ class Normal : public Component<NORMAL, P, ElementType, OPT>
 	using Base = Component<NORMAL, P, ElementType, OPT>;
 
 public:
+	/**
+	 * @brief Expose the type of the Normal.
+	 */
 	using NormalType = P;
 
 	bool isEnabled() const;

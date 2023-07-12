@@ -37,6 +37,13 @@ namespace vcl::comp {
  *
  * Allows to get and set an object of type Color.
  *
+ * For example, if you have a Vertex Element `v` with the Color component,
+ * you'll be able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * vcl::Color c = v.color();
+ * @endcode
+ *
  * @note This component can be both used for Elements and Meshes.
  *
  * @tparam ElementType: This template argument must be `void` if the component

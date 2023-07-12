@@ -37,6 +37,13 @@ namespace vcl::comp {
  * This scalar is actually used for a lot of different purposes, depending on
  * the applications.
  *
+ * For example, if you have a Vertex Element `v` with the Quality component,
+ * you'll be able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * auto q = v.quality();
+ * @endcode
+ *
  * @tparam Scalar: The scalar type of the Quality value.
  * @tparam ElementType: This template argument must be `void` if the component
  * needs to be stored horizontally, or the type of the element that will contain
@@ -52,6 +59,9 @@ class Quality : public Component<QUALITY, Scalar, ElementType, OPT>
 	using Base = Component<QUALITY, Scalar, ElementType, OPT>;
 
 public:
+	/**
+	 * @brief Exposes the scalar used as Quality type.
+	 */
 	using QualityType = Scalar;
 
 	bool isEnabled() const;

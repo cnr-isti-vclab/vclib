@@ -38,6 +38,13 @@ namespace vcl::comp {
  * It exposes a vcl::TexCoord object, that stores a texture coordinate and an
  * id of the texture to use.
  *
+ * For example, if you have a Vertex Element `v` with the TexCoord component,
+ * you'll be able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * auto texcoord = v.texCoord();
+ * @endcode
+ *
  * @tparam Scalar: The scalar type of the texture coordinate values.
  * @tparam ElementType: This template argument must be `void` if the component
  * needs to be stored horizontally, or the type of the element that will contain
@@ -54,6 +61,9 @@ class TexCoord :
 	using Base = Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>;
 
 public:
+	/**
+	 * @brief Expose the type of the TexCoord.
+	 */
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
 	bool isEnabled() const;
@@ -83,7 +93,7 @@ bool isTexCoordEnabledOn(const ElementConcept auto& element);
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool horizontal = true, bool OPT = false>
+template<typename ElementType = void, bool OPT = false>
 using TexCoordf = TexCoord<float, ElementType, OPT>;
 
 /**
@@ -98,7 +108,7 @@ using TexCoordf = TexCoord<float, ElementType, OPT>;
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool horizontal = true, bool OPT = false>
+template<typename ElementType = void, bool OPT = false>
 using TexCoordd = TexCoord<double, ElementType, OPT>;
 
 } // namespace vcl::comp

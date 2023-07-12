@@ -64,6 +64,9 @@ class BoundingBox :
 	using Base = Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>;
 
 public:
+	/**
+	 * @brief Expose the type of the bounding box.
+	 */
 	using BoundingBoxType = Box<PointType>;
 
 	bool isEnabled() const;

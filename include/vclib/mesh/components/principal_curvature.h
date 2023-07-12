@@ -41,6 +41,14 @@ namespace vcl::comp {
  * respectively) and the maximum and minimum values of the curvature
  * (`maxValue()` and `minValue()`).
  *
+ * For example, if you have a Vertex Element `v` with the PrincipalCurvature
+ * component, you'll be able to access to this component member functions from
+ * `v`:
+ *
+ * @code{.cpp}
+ * auto k1 = v.principalCurvature().maxDir();
+ * auto maxv = v.principalCurvature().maxValue();
+ * @endcode
  *
  * @tparam Scalar: The scalar type of the principal curvature values.
  * @tparam ElementType: This template argument must be `void` if the component
@@ -66,6 +74,9 @@ class PrincipalCurvature :
 		OPT>;
 
 public:
+	/**
+	 * @brief Expose the type of the principal curvature object.
+	 */
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
 	bool isEnabled() const;

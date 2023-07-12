@@ -25,116 +25,173 @@
 
 namespace vcl::comp {
 
-template<typename El, bool O>
-uint TexturePaths<El, O>::textureNumber() const
+/**
+ * @brief Empty constructor. It initializes the component with an empty vector
+ * of texture paths, and an empty string as mesh base path.
+ */
+TexturePaths::TexturePaths()
+{
+}
+
+/**
+ * @brief Returns the number of texture paths of the mesh.
+ */
+uint TexturePaths::textureNumber() const
 {
 	return texPaths().size();
 }
 
-template<typename El, bool O>
-const std::string& TexturePaths<El, O>::texturePath(uint i) const
+/**
+ * @brief Returns the path of the i-th texture of the mesh. The path is relative
+ * to the mesh base path.
+ * @param[in] i: The index of the texture.
+ */
+const std::string& TexturePaths::texturePath(uint i) const
 {
 	return texPaths()[i];
 }
 
-template<typename El, bool O>
-std::string& TexturePaths<El, O>::texturePath(uint i)
+/**
+ * @brief Returns a reference to the path of the i-th texture of the mesh. The
+ * path is relative to the mesh base path.
+ * @param[in] i: The index of the texture.
+ */
+std::string& TexturePaths::texturePath(uint i)
 {
 	return texPaths()[i];
 }
 
-template<typename El, bool O>
-const std::string &TexturePaths<El, O>::meshBasePath() const
+/**
+ * @brief Returns the mesh base path.
+ */
+const std::string& TexturePaths::meshBasePath() const
 {
-	return meshPath();
+	return Base::data(this).meshPath;
 }
 
-template<typename El, bool O>
-std::string &TexturePaths<El, O>::meshBasePath()
+/**
+ * @brief Returns a reference to the mesh base path.
+ */
+std::string& TexturePaths::meshBasePath()
 {
-	return meshPath();
+	return Base::data(this).meshPath;
 }
 
-template<typename El, bool O>
-void TexturePaths<El, O>::clearTexturePaths()
+/**
+ * @brief Clears the vector of texture paths.
+ */
+void TexturePaths::clearTexturePaths()
 {
 	texPaths().clear();
 }
 
-template<typename El, bool O>
-void TexturePaths<El, O>::pushTexturePath(const std::string& textName)
+/**
+ * @brief Adds a texture path to the vector of texture paths.
+ * @param[in] textName: The texture path to add.
+ */
+void TexturePaths::pushTexturePath(const std::string& textName)
 {
 	texPaths().push_back(textName);
 }
 
-template<typename El, bool O>
-typename TexturePaths<El, O>::TexFileNamesIterator TexturePaths<El, O>::texturePathBegin()
+/**
+ * @brief Returns an iterator to the beginning of the vector of texture paths.
+ * @return an iterator to the beginning of the vector of texture paths.
+ */
+typename TexturePaths::TexFileNamesIterator TexturePaths::texturePathBegin()
 {
 	return texPaths().begin();
 }
 
-template<typename El, bool O>
-typename TexturePaths<El, O>::TexFileNamesIterator TexturePaths<El, O>::texturePathEnd()
+/**
+ * @brief Returns an iterator to the end of the vector of texture paths.
+ * @return an iterator to the end of the vector of texture paths.
+ */
+typename TexturePaths::TexFileNamesIterator TexturePaths::texturePathEnd()
 {
 	return texPaths().end();
 }
 
-template<typename El, bool O>
-typename TexturePaths<El, O>::ConstTexFileNamesIterator TexturePaths<El, O>::texturePathBegin() const
+/**
+ * @brief Returns a const iterator to the beginning of the vector of texture
+ * paths.
+ * @return a const iterator to the beginning of the vector of texture paths.
+ */
+typename TexturePaths::ConstTexFileNamesIterator
+TexturePaths::texturePathBegin() const
 {
 	return texPaths().begin();
 }
 
-template<typename El, bool O>
-typename TexturePaths<El, O>::ConstTexFileNamesIterator TexturePaths<El, O>::texturePathEnd() const
+/**
+ * @brief Returns a const iterator to the end of the vector of texture paths.
+ * @return a const iterator to the end of the vector of texture paths.
+ */
+typename TexturePaths::ConstTexFileNamesIterator
+TexturePaths::texturePathEnd() const
 {
 	return texPaths().end();
 }
 
-template<typename El, bool O>
-auto TexturePaths<El, O>::texturePaths()
+/**
+ * @brief Returns a lightweigth view object that stores the begin and end
+ * iterators of the vector of texture paths. The view
+ * object exposes the iterators trough the `begin()` and `end()` member
+ * functions, and therefore the returned object can be used in range-based for
+ * loops:
+ *
+ * @code{.cpp}
+ * for (auto& tpath : m.texturePaths()) {
+ *     // Do something with tpath
+ * }
+ * @endcode
+ *
+ * @return a lightweight view object that can be used in range-based for loops
+ * to iterate over the vector of texture paths.
+ */
+auto TexturePaths::texturePaths()
 {
 	return View(texturePathBegin(), texturePathEnd());
 }
 
-template<typename El, bool O>
-auto TexturePaths<El, O>::texturePaths() const
+/**
+ * @brief Returns a lightweigth const view object that stores the begin and end
+ * iterators of the vector of texture paths. The view
+ * object exposes the iterators trough the `begin()` and `end()` member
+ * functions, and therefore the returned object can be used in range-based for
+ * loops:
+ *
+ * @code{.cpp}
+ * for (const auto& tpath : m.texturePaths()) {
+ *     // Do something with tpath
+ * }
+ * @endcode
+ *
+ * @return a lightweight view object that can be used in range-based for loops
+ * to iterate over the vector of texture paths.
+ */
+auto TexturePaths::texturePaths() const
 {
 	return View(texturePathBegin(), texturePathEnd());
 }
 
-template<typename El, bool O>
 template<typename Element>
-void TexturePaths<El, O>::importFrom(const Element& e)
+void TexturePaths::importFrom(const Element& e)
 {
 	if constexpr (HasTexturePaths<Element>) {
 		texPaths() = e.texPaths();
-		meshPath() = e.meshPath();
+		meshBasePath() = e.meshBasePath();
 	}
 }
 
-template<typename El, bool O>
-std::vector<std::string>& TexturePaths<El, O>::texPaths()
+std::vector<std::string>& TexturePaths::texPaths()
 {
 	return Base::data(this).texPaths;
 }
 
-template<typename El, bool O>
-const std::vector<std::string>& TexturePaths<El, O>::texPaths() const
+const std::vector<std::string>& TexturePaths::texPaths() const
 {
 	return Base::data(this).texPaths;
-}
-
-template<typename El, bool O>
-std::string& TexturePaths<El, O>::meshPath()
-{
-	return Base::data(this).meshPath;
-}
-
-template<typename El, bool O>
-const std::string& TexturePaths<El, O>::meshPath() const
-{
-	return Base::data(this).meshPath;
 }
 
 } // namespace vcl::comp

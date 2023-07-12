@@ -26,7 +26,6 @@
 namespace vcl::comp {
 
 /**
- * @private
  * @brief Constructor that initializes the bits to false.
  */
 template<int N, typename El, bool O>

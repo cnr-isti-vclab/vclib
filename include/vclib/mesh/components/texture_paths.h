@@ -44,19 +44,41 @@ struct TPData {
 } // namespace vcl::comp::internal
 
 /**
- * @brief The TexturePaths class
+ * @brief The TexturePaths class represents a component that stores the paths of
+ * the textures used by a mesh. This component makes sense only if it is used by
+ * meshes, and therefore it cannot be stored vertically or be optional (no
+ * template arguments are needed for these options).
+ *
+ * The TexturePaths component stores a vector of texture paths that are relative
+ * to the mesh path. The mesh path is stored as well, and it is used to
+ * construct the absolute paths of the textures.
+ *
+ * The member functions of this class will be available in the instance of any
+ * Mesh that will contain this component.
+ *
+ * For example, if you have a Mesh `m` with the TexturePaths component, you'll
+ * be able to access to this component member functions from `m`:
+ *
+ * @code{.cpp}
+ * for (const auto& texPath : m.texturePaths()) {
+ *     auto absPath = m.meshBasePath() + texPath;
+ *     // do something with absPath
+ * }
+ * @endcode
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
-class TexturePaths : public Component<TEXTURE_PATHS, internal::TPData, ElementType, OPT>
+class TexturePaths :
+		public Component<TEXTURE_PATHS, internal::TPData, void, false>
 {
-	using Base = Component<TEXTURE_PATHS, internal::TPData, ElementType, OPT>;
+	using Base = Component<TEXTURE_PATHS, internal::TPData, void, false>;
 
 public:
 	// iterators
 	using TexFileNamesIterator      = std::vector<std::string>::iterator;
 	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
+
+	TexturePaths();
 
 	uint textureNumber() const;
 
@@ -85,8 +107,6 @@ private:
 	// members that allow to access the data
 	std::vector<std::string>& texPaths();
 	const std::vector<std::string>& texPaths() const;
-	std::string& meshPath();
-	const std::string& meshPath() const;
 };
 
 } // namespace vcl::comp

@@ -41,8 +41,8 @@ bool BoundingBox<P, El, O>::isEnabled() const
 }
 
 /**
- * @brief Returns the bounding box of this object.
- * @return The bounding box of this object.
+ * @brief Returns a const reference to the bounding box of this object.
+ * @return A const reference to the bounding box of this object.
  */
 template<PointConcept P, typename El, bool O>
 const Box<P>& BoundingBox<P, El, O>::boundingBox() const
@@ -51,8 +51,8 @@ const Box<P>& BoundingBox<P, El, O>::boundingBox() const
 }
 
 /**
- * @brief Returns the bounding box of this object.
- * @return The bounding box of this object.
+ * @brief Returns a reference to the bounding box of this object.
+ * @return A reference to the bounding box of this object.
  */
 template<PointConcept P, typename El, bool O>
 Box<P>& BoundingBox<P, El, O>::boundingBox()
