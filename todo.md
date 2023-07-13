@@ -8,6 +8,7 @@
     - [ ] Make the Component class use the CRTP and remove from all the components the isEnabled member function 
           (and, in general, all the members that use this)
     - [ ] the setVertices, setAdj*s that take as input a vector should take as input a range
+    - [ ] write and comment all the empty constructors of the components
   - Elements:
     - [ ] set properly elements concepts
     - [ ] set constructors for Edge element

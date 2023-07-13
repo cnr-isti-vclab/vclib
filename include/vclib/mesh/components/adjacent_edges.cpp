@@ -66,7 +66,7 @@ uint AdjacentEdges<Edge, N, TT, El, O>::adjEdgesNumber() const
 }
 
 /**
- * @brief Returns a reference of the pointer to the i-th adjacent edge of this
+ * @brief Returns a reference of the pointer to the i-th adjacent edge of the
  * element.
  *
  * You can use this function to set the i-th adjacent edge:
@@ -78,7 +78,7 @@ uint AdjacentEdges<Edge, N, TT, El, O>::adjEdgesNumber() const
  *
  * @param[in] i: the position of the required adjacent edge in the container;
  * the value must be between 0 and the number of adj edges.
- * @return The pointer to the i-th adjacent edge of this element.
+ * @return The pointer to the i-th adjacent edge of the element.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
 Edge*& AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i)
@@ -87,10 +87,10 @@ Edge*& AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i)
 }
 
 /**
- * @brief Returns a const pointer to the i-th adjacent edge of this element.
+ * @brief Returns a const pointer to the i-th adjacent edge of the element.
  * @param[in] i: the position of the required adjacent edge in the container;
  * the value must be between 0 and the number of adj edges.
- * @return The pointer to the i-th adjacent edge of this element.
+ * @return The pointer to the i-th adjacent edge of the element.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
 const Edge* AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i) const
@@ -99,7 +99,7 @@ const Edge* AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i) const
 }
 
 /**
- * @brief Returns a reference of the pointer to the i-th adjacent edge of this
+ * @brief Returns a reference of the pointer to the i-th adjacent edge of the
  * element but using as index the module between i and the number of adjacent
  * edges. You can use this function if you need to get the "next adjacent edge
  * after position k", without check if it is less than the number of adj edges.
@@ -115,7 +115,7 @@ const Edge* AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i) const
  *
  * @param[in] i: the position of the required adjacent edge in the container,
  * w.r.t. the position 0; value is modularized on adjEdgeNumber().
- * @return The pointer to the required adjacent edge of this element.
+ * @return The pointer to the required adjacent edge of the element.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
 Edge*& AdjacentEdges<Edge, N, TT, El, O>::adjEdgeMod(int i)
@@ -136,8 +136,8 @@ const Edge* AdjacentEdges<Edge, N, TT, El, O>::adjEdgeMod(int i) const
 }
 
 /**
- * @brief Sets the i-th adjacent edge of this element.
- * @param[in] e: The pointer to the adjacent edge to set to this element.
+ * @brief Sets the i-th adjacent edge of the element.
+ * @param[in] e: The pointer to the adjacent edge to set to the element.
  * @param[in] i: the position in the container on which set the adj edge; the
  * value must be between 0 and the number of adj edges.
  */
@@ -148,7 +148,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::setAdjEdge(Edge* e, uint i)
 }
 
 /**
- * @brief Sets all the adjacent edges of this element.
+ * @brief Sets all the adjacent edges of the element.
  *
  * If the size of the container is static, the size of the input vector must be
  * the same one of the container.
@@ -209,7 +209,7 @@ AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e) const
 }
 
 /**
- * @brief Returns the index of the given adjacent edge in the container of this
+ * @brief Returns the index of the given adjacent edge in the container of the
  * element. If the given adjacent edge is not in the container, returns
  * UINT_NULL.
  *
