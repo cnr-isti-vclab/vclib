@@ -19,6 +19,7 @@
     - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
+  - [ ] Implement importer/exporter from VCG
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
