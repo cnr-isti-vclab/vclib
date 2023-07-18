@@ -9,7 +9,7 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept Clean%EL_UC%MeshConcept = %EL_UC%MeshConcept<RemoveConstRef<T>>;
+concept Clean%EL_UC%MeshConcept = %EL_UC%MeshConcept<std::remove_cvref_t<T>>;
 
 struct %EL_UC%sView
 {

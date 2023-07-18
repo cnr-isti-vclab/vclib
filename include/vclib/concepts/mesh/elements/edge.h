@@ -44,17 +44,18 @@ namespace edge {
 
 // checks if a type derives from vcl::Edge<Args...>
 template<typename Derived>
-using IsDerivedFromEdge = IsDerivedFromTemplateSpecialization<Derived, Edge>;
+using IsDerivedFromEdge =
+		IsDerivedFromTemplateSpecialization<Derived, Edge>;
 
-// checks if a type is an vcl::Edge<Args...>
+// checks if a type is a vcl::Edge<Args...>
 template<class T>
-struct IsAnEdge : // Default case, no pattern match
+struct IsAEdge : // Default case, no pattern match
 		std::false_type
 {
 };
 
 template<class... Args>
-struct IsAnEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
+struct IsAEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
 		std::true_type
 {
 };
@@ -64,7 +65,7 @@ struct IsAnEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
  * @{
  */
 
-/* Port concepts into the vert namespace */
+/* Port concepts into the edge namespace */
 template<typename T>
 concept HasAdjacentEdges = comp::HasAdjacentEdges<T>;
 template<typename T>
@@ -97,13 +98,13 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
 } // namespace vcl::edge
 
 /**
- * @brief The EdgeConcept describes how a Edge element that can be used for a
- * EdgeContainer should be organized.
+ * @brief The EdgeConcept describes how a Edge element that can be
+ * used for a EdgeContainer should be organized.
  *
- * The Edge concept is satisfied for a class E if ALL the following sentences
- * are true:
+ * The Edge concept is satisfied for a class E if ALL the following
+ * sentences are true:
  * - The class E is vcl::Edge, or derives from it;
- * - The class E has the BitFlags component (or a derivate);
+ * - The class E has the BitFlags component (or an equivalent one);
  * - The class E has the VertexPointers component (or a derivate);
  * - The number of vertices of the VertexPointers is 2.
  *
@@ -113,7 +114,7 @@ template<typename T>
 concept EdgeConcept =
 	ElementConcept<T> &&
 	T::ELEMENT_TYPE == EDGE &&
-	(edge::IsDerivedFromEdge<T>::value || edge::IsAnEdge<T>::value) &&
+	(edge::IsDerivedFromEdge<T>::value || edge::IsAEdge<T>::value) &&
 	edge::HasBitFlags<T> &&
 	edge::HasVertexPointers<T> &&
 	T::VERTEX_NUMBER == 2;

@@ -32,8 +32,8 @@
  * @defgroup edge_requirements Edge Requirements
  * @ingroup mesh_requirements
  *
- * @brief List functions that allows to check, enable and assert the availability of components
- * in the Edge Elements of a Mesh.
+ * @brief List functions that allows to check, enable and assert the
+ * availability of components in the Edge Elements of a Mesh.
  */
 
 namespace vcl {
@@ -47,7 +47,7 @@ namespace vcl {
 template<EdgeMeshConcept MeshType>
 bool isEdgeContainerCompact(const MeshType&);
 
-// AdjacentEdges Edges
+// Edge AdjacentEdges
 
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeAdjacentEdgesEnabled(const MeshType&);
@@ -55,7 +55,7 @@ bool isPerEdgeAdjacentEdgesEnabled(const MeshType&);
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeAdjacentEdgesOptional(MeshType&);
 
-// AdjacentFaces Edges
+// Edge AdjacentFaces
 
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeAdjacentFacesEnabled(const MeshType&);
@@ -63,7 +63,7 @@ bool isPerEdgeAdjacentFacesEnabled(const MeshType&);
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeAdjacentFacesOptional(MeshType&);
 
-// Color Edges
+// Edge Color
 
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeColorEnabled(const MeshType&);
@@ -71,7 +71,7 @@ bool isPerEdgeColorEnabled(const MeshType&);
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeColorOptional(MeshType&);
 
-// Mark Edges
+// Edge Mark
 
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeMarkEnabled(const MeshType&);
@@ -79,7 +79,7 @@ bool isPerEdgeMarkEnabled(const MeshType&);
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeMarkOptional(MeshType&);
 
-// Quality Edges
+// Edge Quality
 
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeQualityEnabled(const MeshType&);
@@ -97,31 +97,31 @@ bool enableIfPerEdgeQualityOptional(MeshType&);
 template<EdgeMeshConcept MeshType>
 void requireEdgeContainerCompactness(const MeshType& m);
 
-// AdjacentEdges Edges
+// Edge AdjacentEdges
 
 template<EdgeMeshConcept MeshType>
 void requirePerEdgeAdjacentEdges(const MeshType& m)
 	requires HasPerEdgeAdjacentEdges<MeshType>;
 
-// AdjacentFaces Edges
+// Edge AdjacentFaces
 
 template<EdgeMeshConcept MeshType>
 void requirePerEdgeAdjacentFaces(const MeshType& m)
 	requires HasPerEdgeAdjacentFaces<MeshType>;
 
-// Color Edges
+// Edge Color
 
 template<EdgeMeshConcept MeshType>
 void requirePerEdgeColor(const MeshType& m)
 	requires HasPerEdgeColor<MeshType>;
 
-// Mark Edges
+// Edge Mark
 
 template<EdgeMeshConcept MeshType>
 void requirePerEdgeMark(const MeshType& m)
 	requires HasPerEdgeMark<MeshType>;
 
-// Quality Edges
+// Edge Quality
 
 template<EdgeMeshConcept MeshType>
 void requirePerEdgeQuality(const MeshType& m)

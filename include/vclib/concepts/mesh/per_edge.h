@@ -38,36 +38,57 @@
 namespace vcl {
 
 /**
- * @brief Concept that checks if a Mesh has the per Edge AdjacentEdges component.
+ * @brief Concept that checks if a Mesh has the per Edge AdjacentEdges
+ * component.
  *
- * Evaluates to true if AdjacentEdges is part of the Edge element, whether it is horizontal, vertical or optional.
- * 
+ * Evaluates to true if AdjacentEdges is part of the Edge element, whether it is
+ * horizontal, vertical or optional.
+ *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup edge_mesh_concepts
  */
 template<typename MeshType>
 concept HasPerEdgeAdjacentEdges =
-	HasEdges<MeshType> && vcl::edge::HasAdjacentEdges<typename MeshType::EdgeType>;
+	HasEdges<MeshType> &&
+	vcl::edge::HasAdjacentEdges<typename MeshType::EdgeType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Edge AdjacentFaces component.
+ * @brief Concept that checks if a Mesh has the per Edge AdjacentFaces
+ * component.
  *
- * Evaluates to true if AdjacentFaces is part of the Edge element, whether it is horizontal, vertical or optional.
- * 
+ * Evaluates to true if AdjacentFaces is part of the Edge element, whether it is
+ * horizontal, vertical or optional.
+ *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup edge_mesh_concepts
  */
 template<typename MeshType>
 concept HasPerEdgeAdjacentFaces =
-	HasEdges<MeshType> && vcl::edge::HasAdjacentFaces<typename MeshType::EdgeType>;
+	HasEdges<MeshType> &&
+	vcl::edge::HasAdjacentFaces<typename MeshType::EdgeType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Edge BitFlags component.
+ *
+ * Evaluates to true if BitFlags is part of the Edge element, whether it is
+ * horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup edge_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerEdgeBitFlags =
+	HasEdges<MeshType> && vcl::edge::HasBitFlags<typename MeshType::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge Color component.
  *
- * Evaluates to true if Color is part of the Edge element, whether it is horizontal, vertical or optional.
- * 
+ * Evaluates to true if Color is part of the Edge element, whether it is
+ * horizontal, vertical or optional.
+ *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup edge_mesh_concepts
@@ -77,23 +98,27 @@ concept HasPerEdgeColor =
 	HasEdges<MeshType> && vcl::edge::HasColor<typename MeshType::EdgeType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Edge CustomComponents component.
+ * @brief Concept that checks if a Mesh has the per Edge CustomComponents
+ * component.
  *
- * Evaluates to true if CustomComponents is part of the Edge element, whether it is horizontal, vertical or optional.
- * 
+ * Evaluates to true if CustomComponents is part of the Edge element, whether it
+ * is horizontal, vertical or optional.
+ *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup edge_mesh_concepts
  */
 template<typename MeshType>
 concept HasPerEdgeCustomComponents =
-	HasEdges<MeshType> && vcl::edge::HasCustomComponents<typename MeshType::EdgeType>;
+	HasEdges<MeshType> &&
+	vcl::edge::HasCustomComponents<typename MeshType::EdgeType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Edge Mark component.
  *
- * Evaluates to true if Mark is part of the Edge element, whether it is horizontal, vertical or optional.
- * 
+ * Evaluates to true if Mark is part of the Edge element, whether it is
+ * horizontal, vertical or optional.
+ *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup edge_mesh_concepts
@@ -105,8 +130,9 @@ concept HasPerEdgeMark =
 /**
  * @brief Concept that checks if a Mesh has the per Edge Quality component.
  *
- * Evaluates to true if Quality is part of the Edge element, whether it is horizontal, vertical or optional.
- * 
+ * Evaluates to true if Quality is part of the Edge element, whether it is
+ * horizontal, vertical or optional.
+ *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup edge_mesh_concepts
@@ -116,17 +142,20 @@ concept HasPerEdgeQuality =
 	HasEdges<MeshType> && vcl::edge::HasQuality<typename MeshType::EdgeType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Edge VertexPointers component.
+ * @brief Concept that checks if a Mesh has the per Edge VertexPointers
+ * component.
  *
- * Evaluates to true if VertexPointers is part of the Edge element, whether it is horizontal, vertical or optional.
- * 
+ * Evaluates to true if VertexPointers is part of the Edge element, whether it
+ * is horizontal, vertical or optional.
+ *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup edge_mesh_concepts
  */
 template<typename MeshType>
 concept HasPerEdgeVertexPointers =
-	HasEdges<MeshType> && vcl::edge::HasVertexPointers<typename MeshType::EdgeType>;
+	HasEdges<MeshType> &&
+	vcl::edge::HasVertexPointers<typename MeshType::EdgeType>;
 
 } // namespace vcl
 

@@ -2,8 +2,8 @@
 
 /**
  * @brief This function asserts that a Mesh has a %EL_UC%Container,
- * the %EL_UC% has a %CNUC% Component, and that the %CNUC% Component is
- * enabled and available at runtime.
+ * the %EL_UC% has a %CNUC% Component, and that the %CNUC% Component
+ * is enabled and available at runtime.
  *
  * If the Mesh:
  * - has not a Container of the given ElementEnumType;

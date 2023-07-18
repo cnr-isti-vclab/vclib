@@ -43,8 +43,8 @@ concept Has%EL_UC%Container = requires(
 	{ co.%EL_C%End() } -> std::same_as<typename T::Const%EL_UC%Iterator>;
 
 #ifdef VCLIB_USES_RANGES
-	std::ranges::range<decltype(o.%EL_C%s())>;
-	std::ranges::range<decltype(co.%EL_C%s())>;
+	requires std::ranges::range<decltype(o.%EL_C%s())>;
+	requires std::ranges::range<decltype(co.%EL_C%s())>;
 #endif
 };
 
@@ -57,7 +57,7 @@ concept Has%EL_UC%Container = requires(
  * a %EL_UC%Container.
  *
  * In the following example, a MyMesh type can be instatiated only if one of its
- *  template Args is a %EL_UC%Container:
+ * template Args is a %EL_UC%Container:
  * @code{.cpp}
  * template <typename... Args> requires Has%EL_UC%s<Args...>
  * class MyMesh {

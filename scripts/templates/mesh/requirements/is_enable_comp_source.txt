@@ -4,8 +4,8 @@
  * @brief Returns true if the %CNUC% component is available (enabled) in
  * the %EL_UC% element of the input mesh m.
  *
- * This function returns `true` when the %CNUC% component can be used on the
- * element, whether the component is horizontal, vertical or optional.
+ * This function returns `true` when the %CNUC% component can be used on
+ * the element, whether the component is horizontal, vertical or optional.
  *
  * These are the following cases:
  * - if the %EL_UC% Element does not have a %CNUC% Component, the
@@ -37,8 +37,8 @@ bool isPer%EL_UC%%CNUC%Enabled(const MeshType& m)
  * Element has a %CNUC% Component, this function enables the Component in
  * the Element if the component needs to be enabled (meaning that it is
  * optional).
- * Returns `true` if, after the call of this function, the %CNUC% component
- * will be available in the %EL_UC% Element of the mesh.
+ * Returns `true` if, after the call of this function, the %CNUC%
+ * component will be available in the %EL_UC% Element of the mesh.
  *
  * @tparam MeshType: the type of the Mesh to check, it must satisfy the
  * %EL_UC%MeshConcept.

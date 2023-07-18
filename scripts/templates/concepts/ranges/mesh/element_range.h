@@ -20,7 +20,8 @@ namespace vcl {
  */
 template<typename Rng>
 concept %EL_UC%RangeConcept =
-	Range<Rng> && %EL_UC%Concept<typename std::ranges::iterator_t<Rng>::value_type>;
+	Range<Rng> &&
+	%EL_UC%Concept<typename std::ranges::iterator_t<Rng>::value_type>;
 
 /**
  * @brief The %EL_UC%PointerRangeConcept evaluates to true if Rng is a valid
