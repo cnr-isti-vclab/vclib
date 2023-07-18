@@ -118,8 +118,9 @@ public:
 	template<Range Rng>
 	void set(Rng&& r)
 #ifdef VCLIB_USES_RANGES
-		requires RangeOfConvertibleTo<Rng, T>;
+		requires RangeOfConvertibleTo<Rng, T>
 #endif
+		;
 
 	void fill(const T& e);
 
