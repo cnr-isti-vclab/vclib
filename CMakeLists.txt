@@ -571,31 +571,6 @@ add_library(vclib INTERFACE)
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
 target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
-if (WIN32 OR TARGET vclib-external-tbb)
-	message(STATUS "VCLib: using parallel algorithms")
-else()
-	message(STATUS "VCLib: not using parallel algorithms")
-endif()
-
-# ToDo: remove this and all the code under the not defined VCLIB_USES_RANGES when Apple Clang will 
-# be updated by default to Clang 16 and supports the ranges library
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	# using Clang
-	if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 16.0)
-		target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
-		message(STATUS "VCLib: using std::ranges library")
-	else()
-		message(STATUS "VCLib: not using std::ranges library")
-	endif()
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-	# using GCC or Visual Studio C++
-	target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
-	message(STATUS "VCLib: using std::ranges library")
-else()
-	message(STATUS "VCLib: not using std::ranges library")
-endif()
-	
-
 if (TARGET vclib-external-qt)
 	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
 	target_include_directories(vclib-qt PRIVATE ${VCLIB_INCLUDE_DIR})
@@ -607,6 +582,38 @@ endif()
 if (VCLIB_IDE)
 	add_custom_target(vclib_ide SOURCES
 		${HEADERS} ${HEADERS_LIB} ${SOURCES} ${SOURCES_LIB} ${FORMS_LIB})
+endif()
+
+if (WIN32 OR TARGET vclib-external-tbb)
+	message(STATUS "VCLib: using parallel algorithms")
+else()
+	message(STATUS "VCLib: not using parallel algorithms")
+endif()
+
+# ToDo: remove this and all the code under the not defined VCLIB_USES_RANGES
+# when Apple Clang will be updated by default to Clang 16 and supports the
+# ranges library
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	# using Clang
+	if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 16.0)
+		target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
+		message(STATUS "VCLib: using std::ranges library")
+		if (TARGET vclib-external-qt)
+			target_compile_definitions(vclib-qt PRIVATE VCLIB_USES_RANGES)
+		endif()
+	else()
+		message(STATUS "VCLib: not using std::ranges library")
+	endif()
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+		OR CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+	# using GCC or Visual Studio C++
+	target_compile_definitions(vclib INTERFACE VCLIB_USES_RANGES)
+	message(STATUS "VCLib: using std::ranges library")
+	if (TARGET vclib-external-qt)
+		target_compile_definitions(vclib-qt PRIVATE VCLIB_USES_RANGES)
+	endif()
+else()
+	message(STATUS "VCLib: not using std::ranges library")
 endif()
 
 if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_AND_RUN_TESTS)

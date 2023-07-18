@@ -29,8 +29,8 @@
 namespace vcl {
 
 /*
- * Utility type that makes possible to treat const pointers in a templated class that can treat a
- * both const and non-const pointer type.
+ * Utility type that makes possible to treat const pointers in a templated class
+ * that can treat a both const and non-const pointer type.
  */
 template<typename T>
 struct MakeConstPointer
@@ -45,17 +45,18 @@ struct MakeConstPointer<T*>
 };
 
 /*
- * Full deduction for the possibility to re-use same code for const and non-const member functions
- * https://stackoverflow.com/a/47369227/5851101
+ * Full deduction for the possibility to re-use same code for const and
+ * non-const member functions https://stackoverflow.com/a/47369227/5851101
  */
 
 template<typename T>
-constexpr T& asConst(T const& value) noexcept
+constexpr T& asConst(const T& value) noexcept
 {
 	return const_cast<T&>(value);
 }
+
 template<typename T>
-constexpr T* asConst(T const* value) noexcept
+constexpr T* asConst(const T* value) noexcept
 {
 	return const_cast<T*>(value);
 }
@@ -64,8 +65,9 @@ constexpr T* asConst(T* value) noexcept
 {
 	return value;
 }
+
 template<typename T>
-void asConst(T const&&) = delete;
+void asConst(const T&&) = delete;
 
 } // namespace vcl
 
