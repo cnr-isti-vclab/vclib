@@ -25,6 +25,13 @@
 
 namespace vcl {
 
+/**
+ * @brief Empty constructor.
+ *
+ * Calls automatically all the empty constructors of all the components
+ * available in the Face (for all the components non-available, their empty
+ * constructor is called when they are enabled).
+ */
 template<typename MeshType, typename... Comps>
 Face<MeshType, Comps...>::Face()
 {
@@ -34,14 +41,16 @@ Face<MeshType, Comps...>::Face()
  * @brief Constructs a Face with the given set of vertex pointers.
  *
  * Sets a list of Vertex pointers to the face.
- * If the Face size is static, the number of vertices of the list must be equal to the size of the
- * Face (the value returned by vertexNumber()). If the Face size is dynamic, it will take care to
- * update the also the size of the components tied to the vertex number of the face.
+ * If the Face size is static, the number of vertices of the list must be equal
+ * to the size of the Face (the value returned by vertexNumber()). If the Face
+ * size is dynamic, it will take care to update the also the size of the
+ * components tied to the vertex number of the face.
  *
- * @todo do proper checks on the number of vertices at compile time and at runtime
+ * @todo do proper checks on the number of vertices at compile time and at
+ * runtime
  *
- * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
- *                  vertices of the face.
+ * @param[in] list: a container of vertex pointers in counterclockwise order
+ * that will be set as vertices of the face.
  */
 template<typename MeshType, typename... Comps>
 Face<MeshType, Comps...>::Face(const std::vector<VertexType*>& list) // TODO add requires
@@ -50,14 +59,15 @@ Face<MeshType, Comps...>::Face(const std::vector<VertexType*>& list) // TODO add
 }
 
 /**
- * @brief Sets a list of Vertex pointers to the face.
+ * @brief Creates a new Face, setting a list of Vertex pointers to it.
  *
- * If the Face size is static, the number of vertices of the list must be equal to the size of the
- * Face (the value returned by vertexNumber()). If the Face size is dynamic, it will take care to
- * update the also the size of the components tied to the vertex number of the face.
+ * If the Face size is static, the number of vertices of the list must be equal
+ * to the size of the Face (the value returned by vertexNumber()). If the Face
+ * size is dynamic, it will take care to update the also the size of the
+ * components tied to the vertex number of the face.
  *
- * @param[in] args: a variable number of vertex pointers in counterclockwise order that will be set
- *                  as vertices of the face.
+ * @param[in] args: a variable number of vertex pointers in counterclockwise
+ * order that will be set as vertices of the face.
  */
 template<typename MeshType, typename... Comps>
 template<typename... V>
@@ -69,15 +79,17 @@ Face<MeshType, Comps...>::Face(V... args) // TODO add requires
 /**
  * @brief Sets a list of Vertex pointers to the face.
  *
- * If the Face size is static, the number of vertices of the list must be equal to the size of the
- * Face (the value returned by vertexNumber()). If the Face size is dynamic, it will take care to
- * update the also the size of the components tied to the vertex number of the face.
+ * If the Face size is static, the number of vertices of the list must be equal
+ * to the size of the Face (the value returned by vertexNumber()). If the Face
+ * size is dynamic, it will take care to update the also the size of the
+ * components tied to the vertex number of the face.
  *
- * @param[in] list: a container of vertex pointers in counterclockwise order that will be set as
- *                  vertices of the face.
+ * @param[in] list: a container of vertex pointers in counterclockwise order
+ * that will be set as vertices of the face.
  */
 template<typename MeshType, typename... Comps>
 void Face<MeshType, Comps...>::setVertices(const std::vector<VertexType*>& list)
+// TODO - use a view instead of vector of vertex pointers
 {
 	using F = Face<MeshType, TypeWrapper<Comps...>>;
 	
@@ -89,6 +101,17 @@ void Face<MeshType, Comps...>::setVertices(const std::vector<VertexType*>& list)
 	}
 }
 
+/**
+ * @brief Sets a list of Vertex pointers to the face.
+ *
+ * If the Face size is static, the number of vertices of the list must be equal
+ * to the size of the Face (the value returned by vertexNumber()). If the Face
+ * size is dynamic, it will take care to update the also the size of the
+ * components tied to the vertex number of the face.
+ *
+ * @param[in] args: a variable number of vertex pointers in counterclockwise
+ * order that will be set as vertices of the face.
+ */
 template<typename MeshType, typename... Comps>
 template<typename... V>
 void Face<MeshType, Comps...>::setVertices(V... args)
@@ -97,14 +120,16 @@ void Face<MeshType, Comps...>::setVertices(V... args)
 }
 
 /**
- * @brief Resize the number of Vertex Pointers of the Face, taking care of updating also the
- * other components of the Face that are tied to that number.
+ * @brief Resize the number of Vertex Pointers of the Face, taking care of
+ * updating also the other components of the Face that are tied to that number.
  *
- * If n is greater than the old number of vertex pointers, n vertex pointers (and relative
- * tied components) will be added. If n is lower than the old number of vertex pointers, the
- * difference of vertex pointers (and relative tied components) will be removed.
+ * If n is greater than the old number of vertex pointers, n vertex pointers
+ * (and relative tied components) will be added. If n is lower than the old
+ * number of vertex pointers, the difference of vertex pointers (and relative
+ * tied components) will be removed.
  *
- * This member function is available only **if the face is polygonal (its size is dynamic, N < 0)**.
+ * This member function is available only **if the face is polygonal (its size
+ * is dynamic, N < 0)**.
  *
  * @param n: the new number of vertices.
  */
@@ -157,7 +182,8 @@ void Face<MeshType, Comps...>::resizeTTVNComponent(uint n)
 }
 
 /**
- * Calls the pushBack() on all the component containers that are tied to the vertex number
+ * Calls the pushBack() on all the component containers that are tied to the
+ * vertex number
  */
 template<typename MeshType, typename... Comps>
 template<typename Comp>
@@ -170,7 +196,8 @@ void Face<MeshType, Comps...>::pushBackTTVNComponent()
 }
 
 /**
- * Calls the insert(i) on all the component containers that are tied to the vertex number
+ * Calls the insert(i) on all the component containers that are tied to the
+ * vertex number
  */
 template<typename MeshType, typename... Comps>
 template<typename Comp>
@@ -183,7 +210,8 @@ void Face<MeshType, Comps...>::insertTTVNComponent(uint i)
 }
 
 /**
- * Calls the erase(i) on all the component containers that are tied to the vertex number
+ * Calls the erase(i) on all the component containers that are tied to the
+ * vertex number
  */
 template<typename MeshType, typename... Comps>
 template<typename Comp>
@@ -196,7 +224,8 @@ void Face<MeshType, Comps...>::eraseTTVNComponent(uint i)
 }
 
 /**
- * Calls the clear() on all the component containers that are tied to the vertex number
+ * Calls the clear() on all the component containers that are tied to the vertex
+ * number
  */
 template<typename MeshType, typename... Comps>
 template<typename Comp>

@@ -32,8 +32,8 @@
  * @defgroup face_requirements Face Requirements
  * @ingroup mesh_requirements
  *
- * @brief List functions that allows to check, enable and assert the availability of components
- * in the Face Elements of a Mesh.
+ * @brief List functions that allows to check, enable and assert the
+ * availability of components in the Face Elements of a Mesh.
  */
 
 namespace vcl {

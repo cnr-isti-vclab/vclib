@@ -199,7 +199,7 @@ void %EL_UC%Container<T>::delete%EL_UC%(const %EL_UC%Type* e)
 }
 
 /**
- * @brief This is an utility member function that returns the index of an 
+ * @brief This is an utility member function that returns the index of an
  * element if the container would be compact, that is the number of non-deleted
  * elements before the %EL_UC% with the given index.
  *

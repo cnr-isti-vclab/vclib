@@ -33,7 +33,8 @@ template<typename T>
 concept CleanMeshConcept = MeshConcept<std::remove_cvref_t<T>>;
 
 template<typename T>
-concept CleanVertexPtrsConcept = comp::HasVertexPointers<std::remove_cvref_t<T>>;
+concept CleanVertexPtrsConcept =
+	comp::HasVertexPointers<std::remove_cvref_t<T>>;
 
 struct VerticesView
 {
@@ -57,7 +58,8 @@ struct VerticesView
 /**
  * @brief A view that allows to iterate over the Vertex elements of an object.
  *
- * This view can be applied to objects having type that satisfies one of the following concepts:
+ * This view can be applied to objects having type that satisfies one of the
+ * following concepts:
  * - MeshConcept
  * - HasVertexPointers
  *

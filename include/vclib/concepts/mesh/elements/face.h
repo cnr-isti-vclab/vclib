@@ -44,7 +44,8 @@ namespace face {
 
 // checks if a type derives from vcl::Face<Args...>
 template<typename Derived>
-using IsDerivedFromFace = IsDerivedFromTemplateSpecialization<Derived, Face>;
+using IsDerivedFromFace =
+		IsDerivedFromTemplateSpecialization<Derived, Face>;
 
 // checks if a type is a vcl::Face<Args...>
 template<class T>
@@ -119,8 +120,8 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 } // namespace vcl::face
 
 /**
- * @brief The FaceConcept describes how a Face element that can be used for a
- * FaceContainer should be organized.
+ * @brief The FaceConcept describes how a Face element that can be
+ * used for a FaceContainer should be organized.
  *
  * The Face concept is satisfied for a class F if ALL the following sentences
  * are true:

@@ -49,7 +49,7 @@ struct EdgesView
  * @brief A view that allows to iterate overt the Edge elements of an object.
  *
  * This view can be applied to objects having type that satisfies the
- * EdgeMeshConcept
+ * EdgeMeshConcept.
  *
  * @ingroup views
  */

@@ -29,7 +29,7 @@ struct %EL_UC%sView
  * object.
  *
  * This view can be applied to objects having type that satisfies the
- * %EL_UC%MeshConcept
+ * %EL_UC%MeshConcept.
  *
  * @ingroup views
  */

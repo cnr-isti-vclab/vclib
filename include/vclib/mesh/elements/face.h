@@ -34,9 +34,10 @@ namespace vcl {
 /**
  * @brief The Face class represents an Face element of the vcl::Mesh class.
  *
- * Using the FaceContainer class, it is possible to add a vector of Face elements to a mesh, and
- * manage them with the member functions exposed by the FaceContainer. Each Face element exposes
- * all the member functions of its Component types.
+ * Using the FaceContainer class, it is possible to add a vector of Face
+ * elements to a mesh, and manage them with the member functions exposed by the
+ * FaceContainer. Each Face element exposes all the member functions of its
+ * Component types.
  *
  * @tparam MeshType The type of the parent mesh.
  * @tparam Comps The types of the components of the element.

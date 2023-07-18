@@ -103,14 +103,20 @@ public:
 	void disableAllPerFaceOptionalComponents();
 
 	// AdjacentEdges
-	bool isPerFaceAdjacentEdgesEnabled() const requires face::HasOptionalAdjacentEdges<T>;
-	void enablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>;
-	void disablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>;
+	bool isPerFaceAdjacentEdgesEnabled() const
+		requires face::HasOptionalAdjacentEdges<T>;
+	void enablePerFaceAdjacentEdges()
+		requires face::HasOptionalAdjacentEdges<T>;
+	void disablePerFaceAdjacentEdges()
+		requires face::HasOptionalAdjacentEdges<T>;
 
 	// AdjacentFaces
-	bool isPerFaceAdjacentFacesEnabled() const requires face::HasOptionalAdjacentFaces<T>;
-	void enablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>;
-	void disablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>;
+	bool isPerFaceAdjacentFacesEnabled() const
+		requires face::HasOptionalAdjacentFaces<T>;
+	void enablePerFaceAdjacentFaces()
+		requires face::HasOptionalAdjacentFaces<T>;
+	void disablePerFaceAdjacentFaces()
+		requires face::HasOptionalAdjacentFaces<T>;
 
 	// Color
 	bool isPerFaceColorEnabled() const requires face::HasOptionalColor<T>;
@@ -128,9 +134,12 @@ public:
 	void disablePerFaceNormal() requires face::HasOptionalNormal<T>;
 
 	// PrincipalCurvature
-	bool isPerFacePrincipalCurvatureEnabled() const requires face::HasOptionalPrincipalCurvature<T>;
-	void enablePerFacePrincipalCurvature() requires face::HasOptionalPrincipalCurvature<T>;
-	void disablePerFacePrincipalCurvature() requires face::HasOptionalPrincipalCurvature<T>;
+	bool isPerFacePrincipalCurvatureEnabled() const
+		requires face::HasOptionalPrincipalCurvature<T>;
+	void enablePerFacePrincipalCurvature()
+		requires face::HasOptionalPrincipalCurvature<T>;
+	void disablePerFacePrincipalCurvature()
+		requires face::HasOptionalPrincipalCurvature<T>;
 
 	// Quality
 	bool isPerFaceQualityEnabled() const requires face::HasOptionalQuality<T>;
@@ -138,14 +147,18 @@ public:
 	void disablePerFaceQuality() requires face::HasOptionalQuality<T>;
 
 	// WedgeColors
-	bool isPerFaceWedgeColorsEnabled() const requires face::HasOptionalWedgeColors<T>;
+	bool isPerFaceWedgeColorsEnabled() const
+		requires face::HasOptionalWedgeColors<T>;
 	void enablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
 	void disablePerFaceWedgeColors() requires face::HasOptionalWedgeColors<T>;
 
 	// WedgeTexCoords
-	bool isPerFaceWedgeTexCoordsEnabled() const requires face::HasOptionalWedgeTexCoords<T>;
-	void enablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
-	void disablePerFaceWedgeTexCoords() requires face::HasOptionalWedgeTexCoords<T>;
+	bool isPerFaceWedgeTexCoordsEnabled() const
+		requires face::HasOptionalWedgeTexCoords<T>;
+	void enablePerFaceWedgeTexCoords()
+		requires face::HasOptionalWedgeTexCoords<T>;
+	void disablePerFaceWedgeTexCoords()
+		requires face::HasOptionalWedgeTexCoords<T>;
 
 	// Custom Components
 	bool hasPerFaceCustomComponent(const std::string& name) const
@@ -173,7 +186,8 @@ public:
 		requires face::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> perFaceCustomComponentVectorHandle(const std::string& name)
+	CustomComponentVectorHandle<K>
+	perFaceCustomComponentVectorHandle(const std::string& name)
 		requires face::HasCustomComponents<T>;
 
 	template<typename K>
