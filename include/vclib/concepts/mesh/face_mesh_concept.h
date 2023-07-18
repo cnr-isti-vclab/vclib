@@ -49,9 +49,6 @@ concept FaceMeshConcept =
 		const T& co,
 		typename T::FaceType f)
 {
-	typename T::FaceType;
-	typename T::FaceContainer;
-
 	{ co.index(f) } -> std::same_as<uint>;
 	{ co.index(&f) } -> std::same_as<uint>;
 };

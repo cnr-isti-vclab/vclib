@@ -120,7 +120,8 @@ protected:
 	bool isElemCustomComponentOfType(const std::string& name) const
 		requires comp::HasCustomComponents<T>;
 
-	std::type_index elemComponentType(const std::string& name) const;
+	std::type_index elemComponentType(const std::string& name) const
+		requires comp::HasCustomComponents<T>;
 
 	template<typename K>
 	std::vector<std::string> elemCustomComponentNamesOfType() const
@@ -198,7 +199,7 @@ protected:
 	 * @brief ccVecMap the map that associates a string to a vector of custom
 	 * components
 	 */
-	CustomComponentsVectorMap<T, comp::HasCustomComponents<T>> ccVecMap;
+	CustomComponentsVectorMap<comp::HasCustomComponents<T>> ccVecMap;
 
 private:
 	template<typename ElPtr, typename... Comps>

@@ -5,15 +5,13 @@
     - [ ] complete space data structures concepts
     - [ ] implement per edge concepts
   - Components:
-    - [ ] add a static boolean that allows to discriminate components that are tied to vertex number when used in faces
-    - [ ] add FaceEdgeBitFlag component - a bit flag for each edge of the face (tied with number of vertices)
-      - [ ] needs to be interchangeable with TriangleBitFlags and PolygonBitFlags
-    - [ ] add an enum COMPONENT_TYPE that allows to identify same class of components easily -- same usage of ELEMENT_TYPE for elements
-      - [ ] then allow to write a generic enableSameOptionalComponentsOf member function in ElementContainer
+    - [ ] Make the Component class use the CRTP and remove from all the components the isEnabled member function 
+          (and, in general, all the members that use this)
+    - [ ] the setVertices, setAdj*s that take as input a vector should take as input a range
+    - [ ] write and comment all the empty constructors of the components
   - Elements:
     - [ ] set properly elements concepts
     - [ ] set constructors for Edge element
-    - [ ] set constructors for HalfEdge element
   - Containers:
     - [ ] set properly container concepts
   - Mesh:
@@ -21,16 +19,13 @@
     - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
-  - [ ] intersection functions (like distance functions)
+  - [ ] Implement importer/exporter from VCG
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
 - Space:
-  - [ ] Grid data structures work only with const pointers when doing queries (must well manage constness in std::functions for intersection and distance)
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
-  - [ ] move random access container in space. In general, every data structure must be in space directory
 - External:
   - [ ] make render functions using bgfx
 - Documentation:
-  - [ ] Make documentation using only doxygen
   - [ ] Explain appropriately the structure of the library

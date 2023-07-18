@@ -31,18 +31,26 @@
 namespace vcl::comp {
 
 /**
- * @brief The Name component class represents a simple name stored as string. This class is
- * usually used as a component of a Mesh.
+ * @brief The Name component class represents a simple name stored as string.
+ * This class is usually used as a component of a Mesh.
  *
- * The member functions of this class will be available in the instance of any Element or Mesh that
- * will contain this component.
+ * The member functions of this class will be available in the instance of any
+ * Element or Mesh that will contain this component.
  *
- * For example, if you have a Mesh `m` with the Name component, you'll be able to
- * access to this component member functions from `m`:
+ * For example, if you have a Mesh `m` with the Name component, you'll be able
+ * to access to this component member functions from `m`:
  *
  * @code{.cpp}
  * m.name();
  * @endcode
+ *
+ * @note This component can be both used for Elements and Meshes.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
@@ -52,6 +60,8 @@ class Name : public Component<NAME, std::string, ElementType, OPT>
 	using Base = Component<NAME, std::string, ElementType, OPT>;
 
 public:
+	bool isEnabled() const;
+
 	std::string& name();
 	const std::string& name() const;
 
@@ -60,6 +70,10 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& e);
 };
+
+/* Detector function to check if a class has Name enabled */
+
+bool isNameEnabledOn(const ElementOrMeshConcept auto& element);
 
 } // namespace vcl::comp
 

@@ -37,7 +37,7 @@ namespace vcl::comp {
  * itself).
  *
  * It is a random access container having static or dynamic size, depending on
- * the value of N (a negative number means dynamic).
+ * the value of the template argument N (a negative number means dynamic).
  *
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component.
@@ -116,7 +116,6 @@ public:
 	void init();
 
 	bool isEnabled() const;
-	bool isAdjEdgesEnabled() const;
 
 	/* Member functions */
 

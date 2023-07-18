@@ -29,10 +29,9 @@
 namespace vcl::mesh {
 
 /**
- * @brief Removes all the custom components associated to the T element
+ * @brief Removes all the custom component vectors stored in the map.
  */
-template<typename T>
-void CustomComponentsVectorMap<T, true>::clear()
+inline void CustomComponentsVectorMap<true>::clear()
 {
 	map.clear();
 	needToInitialize.clear();
@@ -40,12 +39,10 @@ void CustomComponentsVectorMap<T, true>::clear()
 }
 
 /**
- * @brief When the method reserve() is called on the container of the T element, it is necessary to
- * reserve also all the vectors for each custom component of the T element.
- * @param size
+ * @brief For each custom component vector, it reserves the given size.
+ * @param[in] size: the size to reserve for each custom component vector.
  */
-template<typename T>
-void CustomComponentsVectorMap<T, true>::reserve(uint size)
+inline void CustomComponentsVectorMap<true>::reserve(uint size)
 {
 	for (auto& p : map) {
 		p.second.reserve(size);
@@ -53,19 +50,19 @@ void CustomComponentsVectorMap<T, true>::reserve(uint size)
 }
 
 /**
- * @brief When the method resize() is called on the container of the T element, it is necessary to
- * resize also all the vectors for each custom component of the T element.
- *
- * At this call, we don't know statically the types of each custo component, therefore we cannot
- * initialize them (std::any of each vector will be in an invalid state). Therefore, we mark all the
- * resized custom components as 'needToInitialize'. Initiaization will be made just on the
- * uninitialized values of the vectors at the first access of each custom component.
- * @param size
+ * @brief For each custom component vector, it resizes the vector to the given
+ * size.
+ * @param[in] size: the size to reserve for each custom component vector.
  */
-template<typename T>
-void CustomComponentsVectorMap<T, true>::resize(uint size)
+inline void CustomComponentsVectorMap<true>::resize(uint size)
 {
 	for (auto& p : map) {
+		// At this call, we don't know statically the types of each custom
+		// component, therefore we cannot initialize them (std::any of each
+		// vector will be in an invalid state). Therefore, we mark all the
+		// resized custom components as 'needToInitialize'. Initiaization will
+		// be made just on the uninitialized values of the vectors at the first
+		// access of each custom component.
 		if (p.second.size() < size)
 			needToInitialize.at(p.first) = true;
 		p.second.resize(size);
@@ -73,15 +70,18 @@ void CustomComponentsVectorMap<T, true>::resize(uint size)
 }
 
 /**
- * @brief When the method compact() is called on the container of the T element, it is necessary to
- * compact also the vectors for each vustom component of the T element.
+ * @brief Compacts each custom component vector according to the given indices.
  *
- * We just need to compact each custom component vector according to the new indices given. Moving a
- * std::any object from a vector position to another is perfectly safe.
- * @param newIndices
+ * All the indices  of the newIndices vector with value UINT_NULL are considered
+ * as deleted, and the corresponding elements in the custom component vectors
+ * are removed. The remaining indices are compacted, and the custom component
+ * vectors are resized to the new size.
+ *
+ * @param[in] newIndices: a vector that tells, for each element index, the
+ * new index of the element, and UINT_NULL if the element has been deleted.
  */
-template<typename T>
-void CustomComponentsVectorMap<T, true>::compact(const std::vector<uint>& newIndices)
+inline void CustomComponentsVectorMap<true>::compact(
+	const std::vector<uint>& newIndices)
 {
 	for (auto& p : map) {
 		vcl::compactVector(p.second, newIndices);
@@ -89,18 +89,20 @@ void CustomComponentsVectorMap<T, true>::compact(const std::vector<uint>& newInd
 }
 
 /**
- * @brief Adds a new custom component to the T element, with the given name and with the template
- * argumet CompType. The size is the same of the Container of the T element.
+ * @brief Adds a new vector of custom components having the given size, the
+ * given name and with the template argumet CompType.
  *
- * A new vector of custom components is added, and data are initialized with the empty constructor
- * of CompType.
+ * Data is initialized with the empty constructor of CompType.
  *
- * @param name
- * @param size
+ * @note If a custom component with the same name already exists, it is
+ * replaced, no matter of the old type.
+ *
+ * @tparam CompType: the type of the newly added custom component.
+ * @param[in] name: the unique name of the custom component.
+ * @param[in] size: the initial size of the custom component vector.
  */
-template<typename T>
 template<typename CompType>
-void CustomComponentsVectorMap<T, true>::addNewComponent(
+void CustomComponentsVectorMap<true>::addNewComponent(
 	const std::string& name,
 	uint       size)
 {
@@ -111,12 +113,12 @@ void CustomComponentsVectorMap<T, true>::addNewComponent(
 }
 
 /**
- * @brief Deletes the custom component with the given name from the T element.
+ * @brief Deletes the custom component vector with the given name.
  * It does nothing if the element does not exist.
- * @param name
+ * @param[in] name: the name of the custom component vector to delete.
  */
-template<typename T>
-void CustomComponentsVectorMap<T, true>::deleteComponent(const std::string& name)
+inline void CustomComponentsVectorMap<true>::deleteComponent(
+	const std::string& name)
 {
 	map.erase(name);
 	needToInitialize.erase(name);
@@ -125,10 +127,10 @@ void CustomComponentsVectorMap<T, true>::deleteComponent(const std::string& name
 
 /**
  * @brief Asserts that the compName component exists.
- * @param compName
+ *
+ * @param[in] compName: the name of the custom component to check.
  */
-template<typename T>
-void CustomComponentsVectorMap<T, true>::assertComponentExists(
+inline void CustomComponentsVectorMap<true>::assertComponentExists(
 	const std::string& compName) const
 {
 	(void) (compName);
@@ -137,23 +139,22 @@ void CustomComponentsVectorMap<T, true>::assertComponentExists(
 
 /**
  * @brief Returns true if the compName exists.
- * @param compName
- * @return
+ * @param[in] compName: the name of the custom component to check.
+ * @return true if the compName exists.
  */
-template<typename T>
-bool CustomComponentsVectorMap<T, true>::componentExists(
+inline bool CustomComponentsVectorMap<true>::componentExists(
 	const std::string& compName) const
 {
 	return (map.find(compName) != map.end());
 }
 
 /**
- * @brief Returns a vector of all the custom components associated to the T element, regardless the
- * types of the custom components.
- * @return
+ * @brief Returns a vector of std::string containing all the custom components,
+ * regardless the types of the custom components.
+ * @return a vector of std::string containing all the custom components.
  */
-template<typename T>
-std::vector<std::string> CustomComponentsVectorMap<T, true>::allComponentNames() const
+inline std::vector<std::string>
+CustomComponentsVectorMap<true>::allComponentNames() const
 {
 	std::vector<std::string> names;
 	names.reserve(map.size());
@@ -163,14 +164,16 @@ std::vector<std::string> CustomComponentsVectorMap<T, true>::allComponentNames()
 }
 
 /**
- * @brief Returns true if the type associated to the compName custom component is the same of the
- * given template argument CompType.
- * @param compName
- * @return
+ * @brief Returns true if the type associated to the compName custom component
+ * is the same of the given template argument CompType.
+ *
+ * @tparam CompType: the type to check.
+ * @param[in] compName: the name of the custom component to check.
+ * @return true if the type associated to the compName custom component
+ * is the same of the given template argument CompType.
  */
-template<typename T>
 template<typename CompType>
-bool CustomComponentsVectorMap<T, true>::isComponentOfType(
+bool CustomComponentsVectorMap<true>::isComponentOfType(
 	const std::string& compName) const
 {
 	std::type_index t(typeid(CompType));
@@ -179,25 +182,32 @@ bool CustomComponentsVectorMap<T, true>::isComponentOfType(
 }
 
 /**
- * @brief Returns the std::type_index of the type of the CustomComponent having the input name.
+ * @brief Returns the std::type_index of the type of the CustomComponent having
+ * the input name.
  *
- * @param compName
- * @return
+ * @throws std::out_of_range if the compName does not exist.
+ * @param[in] compName: the name of the custom component.
+ * @return the std::type_index of the type of the CustomComponent having
+ * the input name.
  */
-template<typename T>
-std::type_index vcl::mesh::CustomComponentsVectorMap<T, true>::componentType(const std::string& compName) const
+inline std::type_index
+vcl::mesh::CustomComponentsVectorMap<true>::componentType(
+	const std::string& compName) const
 {
 	return compType.at(compName);
 }
 
 /**
- * @brief Returns a vector of all the custom components associated to the T element having as type
- * the given template argument CompType.
- * @return
+ * @brief Returns a vector of strings of all the custom components having as
+ * type the given template argument CompType.
+ *
+ * @tparam CompType: the type of the custom components to return.
+ * @return a vector of strings of all the custom components having as
+ * type the given template argument CompType.
  */
-template<typename T>
 template<typename CompType>
-std::vector<std::string> CustomComponentsVectorMap<T, true>::allComponentNamesOfType() const
+std::vector<std::string>
+CustomComponentsVectorMap<true>::allComponentNamesOfType() const
 {
 	std::vector<std::string> names;
 	std::type_index t(typeid(CompType));
@@ -209,24 +219,25 @@ std::vector<std::string> CustomComponentsVectorMap<T, true>::allComponentNamesOf
 }
 
 /**
- * @brief Returns a const reference of std::vector<std::any> of the custom component with the given
- * name and the given template argument CompType.
+ * @brief Returns a const reference of std::vector<std::any> of the custom
+ * component with the given name and the given template argument CompType.
  *
  * If the CompType does not mach with the type associated with compName, thows a
  * vcl::BadCustomComponentTypeException.
  *
- * This function will initialize all the uninitialized values of the accessed custom component.
- *
- * @param compName
- * @return
+ * @tparam CompType: the type of the custom component to return.
+ * @param[in] compName: the name of the custom component to return.
+ * @return a const reference of std::vector<std::any> of the custom component
+ * with the given name and the given template argument CompType.
  */
-template<typename T>
 template<typename CompType>
-const std::vector<std::any>&
-CustomComponentsVectorMap<T, true>::componentVector(const std::string& compName) const
+const std::vector<std::any>& CustomComponentsVectorMap<true>::componentVector(
+	const std::string& compName) const
 {
 	checkComponentType<CompType>(compName);
-	std::vector<std::any>& v = const_cast<std::vector<std::any>&>(map.at(compName));
+	std::vector<std::any>& v =
+		const_cast<std::vector<std::any>&>(map.at(compName));
+	// if the component needs to be initialized (e.g. we made a resize)
 	if (needToInitialize.at(compName)) {
 		for (std::any& a : v) {
 			if (!a.has_value())
@@ -238,24 +249,27 @@ CustomComponentsVectorMap<T, true>::componentVector(const std::string& compName)
 }
 
 /**
- * @brief Returns a reference of std::vector<std::any> of the custom component with the given
- * name and the given template argument CompType.
+ * @brief Returns a reference of std::vector<std::any> of the custom component
+ * with the given name and the given template argument CompType.
  *
  * If the CompType does not mach with the type associated with compName, thows a
  * vcl::BadCustomComponentTypeException.
  *
- * This function will initialize all the uninitialized values of the accessed custom component.
+ * This function will initialize all the uninitialized values of the accessed
+ * custom component.
  *
- * @param compName
- * @return
+ * @tparam CompType: the type of the custom component to return.
+ * @param[in] compName: the name of the custom component to return.
+ * @return a reference of std::vector<std::any> of the custom component
+ * with the given name and the given template argument CompType.
  */
-template<typename T>
 template<typename CompType>
 std::vector<std::any>&
-CustomComponentsVectorMap<T, true>::componentVector(const std::string& compName)
+CustomComponentsVectorMap<true>::componentVector(const std::string& compName)
 {
 	checkComponentType<CompType>(compName);
 	std::vector<std::any>& v = map.at(compName);
+	// if the component needs to be initialized (e.g. we made a resize)
 	if (needToInitialize.at(compName)) {
 		for (std::any& a : v) {
 			if (!a.has_value())
@@ -266,17 +280,16 @@ CustomComponentsVectorMap<T, true>::componentVector(const std::string& compName)
 	return v;
 }
 
-template<typename T>
 template<typename CompType>
-void CustomComponentsVectorMap<T, true>::checkComponentType(
+void CustomComponentsVectorMap<true>::checkComponentType(
 	const std::string& compName) const
 {
 	std::type_index t(typeid(CompType));
 	if (t != compType.at(compName)) {
 		throw BadCustomComponentTypeException(
-			"Expected type " + std::string(compType.at(compName).name()) + " for " +
-			compName + ", but was " + std::string(t.name()) + ".");
+			"Expected type " + std::string(compType.at(compName).name()) +
+			" for " + compName + ", but was " + std::string(t.name()) + ".");
 	}
 }
 
-} // namespace vcl::internal
+} // namespace vcl::mesh

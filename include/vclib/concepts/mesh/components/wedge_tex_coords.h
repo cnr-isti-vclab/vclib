@@ -42,9 +42,6 @@ namespace vcl::comp {
  * this concept provides WedgeTexCoords component at runtime (it is guaranteed
  * only that the proper member functions are available at compile time).
  *
- * To be completely sure that WedgeTexCoords is available at runtime, you need
- * to call the member function `isWedgeTexCoordsEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -70,7 +67,6 @@ concept HasWedgeTexCoords = requires(
 	{ o.setWedgeTexCoords(v) } -> std::same_as<void>;
 	{ o.textureIndex() } -> std::same_as<short&>;
 	{ co.textureIndex() } -> std::same_as<short>;
-	{ co.isWedgeTexCoordsEnabled() } -> std::same_as<bool>;
 
 	{ o.wedgeTexCoordBegin() } ->
 		std::same_as<typename T::WedgeTexCoordsIterator>;

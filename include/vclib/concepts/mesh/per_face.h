@@ -38,9 +38,11 @@
 namespace vcl {
 
 /**
- * @brief Concept that checks if a Mesh has the per Face AdjacentEdges component.
+ * @brief Concept that checks if a Mesh has the per Face AdjacentEdges
+ * component.
  *
- * Evaluates to true if AdjacentEdges is part of the Face element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if AdjacentEdges is part of the Face element, whether
+ * it is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -48,12 +50,15 @@ namespace vcl {
  */
 template<typename MeshType>
 concept HasPerFaceAdjacentEdges =
-	HasFaces<MeshType> && vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
+	HasFaces<MeshType> &&
+	vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Face AdjacentFaces component.
+ * @brief Concept that checks if a Mesh has the per Face AdjacentFaces
+ * component.
  *
- * Evaluates to true if AdjacentFaces is part of the Face element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if AdjacentFaces is part of the Face element, whether
+ * it is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -61,12 +66,31 @@ concept HasPerFaceAdjacentEdges =
  */
 template<typename MeshType>
 concept HasPerFaceAdjacentFaces =
-	HasFaces<MeshType> && vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
+	HasFaces<MeshType> &&
+	vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Face Color component.
+ * @brief Concept that checks if a Mesh has the per Face BitFlags
+ * component.
  *
- * Evaluates to true if Color is part of the Face element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if BitFlags is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceBitFlags =
+	HasFaces<MeshType> &&
+	vcl::face::HasBitFlags<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face Color
+ * component.
+ *
+ * Evaluates to true if Color is part of the Face element, whether
+ * it is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -74,90 +98,15 @@ concept HasPerFaceAdjacentFaces =
  */
 template<typename MeshType>
 concept HasPerFaceColor =
-	HasFaces<MeshType> && vcl::face::HasColor<typename MeshType::FaceType>;
+	HasFaces<MeshType> &&
+	vcl::face::HasColor<typename MeshType::FaceType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Face Mark component.
+ * @brief Concept that checks if a Mesh has the per Face CustomComponents
+ * component.
  *
- * Evaluates to true if Mark is part of the Face element, whether it is horizontal, vertical or optional.
- *
- * @tparam MeshType: mesh type to check.
- *
- * @ingroup face_mesh_concepts
- */
-template<typename MeshType>
-concept HasPerFaceMark =
-	HasFaces<MeshType> && vcl::face::HasMark<typename MeshType::FaceType>;
-
-/**
- * @brief Concept that checks if a Mesh has the per Face Normal component.
- *
- * Evaluates to true if Normal is part of the Face element, whether it is horizontal, vertical or optional.
- *
- * @tparam MeshType: mesh type to check.
- *
- * @ingroup face_mesh_concepts
- */
-template<typename MeshType>
-concept HasPerFaceNormal =
-	HasFaces<MeshType> && vcl::face::HasNormal<typename MeshType::FaceType>;
-
-/**
- * @brief Concept that checks if a Mesh has the per Face PrincipalCurvature component.
- *
- * Evaluates to true if PrincipalCurvature is part of the Face element, whether it is horizontal, vertical or optional.
- *
- * @tparam MeshType: mesh type to check.
- *
- * @ingroup face_mesh_concepts
- */
-template<typename MeshType>
-concept HasPerFacePrincipalCurvature =
-	HasFaces<MeshType> && vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
-
-/**
- * @brief Concept that checks if a Mesh has the per Face Quality component.
- *
- * Evaluates to true if Quality is part of the Face element, whether it is horizontal, vertical or optional.
- *
- * @tparam MeshType: mesh type to check.
- *
- * @ingroup face_mesh_concepts
- */
-template<typename MeshType>
-concept HasPerFaceQuality =
-	HasFaces<MeshType> && vcl::face::HasQuality<typename MeshType::FaceType>;
-
-/**
- * @brief Concept that checks if a Mesh has the per Face WedgeColors component.
- *
- * Evaluates to true if WedgeColors is part of the Face element, whether it is horizontal, vertical or optional.
- *
- * @tparam MeshType: mesh type to check.
- *
- * @ingroup face_mesh_concepts
- */
-template<typename MeshType>
-concept HasPerFaceWedgeColors =
-	HasFaces<MeshType> && vcl::face::HasWedgeColors<typename MeshType::FaceType>;
-
-/**
- * @brief Concept that checks if a Mesh has the per Face WedgeTexCoords component.
- *
- * Evaluates to true if WedgeTexCoords is part of the Face element, whether it is horizontal, vertical or optional.
- *
- * @tparam MeshType: mesh type to check.
- *
- * @ingroup face_mesh_concepts
- */
-template<typename MeshType>
-concept HasPerFaceWedgeTexCoords =
-	HasFaces<MeshType> && vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
-
-/**
- * @brief Concept that checks if a Mesh has the per Face CustomComponents.
- *
- * Evaluates to true if CustomComponents is part of the Face element.
+ * Evaluates to true if CustomComponents is part of the Face element, whether
+ * it is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -165,7 +114,154 @@ concept HasPerFaceWedgeTexCoords =
  */
 template<typename MeshType>
 concept HasPerFaceCustomComponents =
-	HasFaces<MeshType> && vcl::face::HasCustomComponents<typename MeshType::FaceType>;
+	HasFaces<MeshType> &&
+	vcl::face::HasCustomComponents<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face Mark
+ * component.
+ *
+ * Evaluates to true if Mark is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceMark =
+	HasFaces<MeshType> &&
+	vcl::face::HasMark<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face Normal
+ * component.
+ *
+ * Evaluates to true if Normal is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceNormal =
+	HasFaces<MeshType> &&
+	vcl::face::HasNormal<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face PolygonBitFlags
+ * component.
+ *
+ * Evaluates to true if PolygonBitFlags is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFacePolygonBitFlags =
+	HasFaces<MeshType> &&
+	vcl::face::HasPolygonBitFlags<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face PrincipalCurvature
+ * component.
+ *
+ * Evaluates to true if PrincipalCurvature is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFacePrincipalCurvature =
+	HasFaces<MeshType> &&
+	vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face Quality
+ * component.
+ *
+ * Evaluates to true if Quality is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceQuality =
+	HasFaces<MeshType> &&
+	vcl::face::HasQuality<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face TriangleBitFlags
+ * component.
+ *
+ * Evaluates to true if TriangleBitFlags is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceTriangleBitFlags =
+	HasFaces<MeshType> &&
+	vcl::face::HasTriangleBitFlags<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face VertexPointers
+ * component.
+ *
+ * Evaluates to true if VertexPointers is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceVertexPointers =
+	HasFaces<MeshType> &&
+	vcl::face::HasVertexPointers<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face WedgeColors
+ * component.
+ *
+ * Evaluates to true if WedgeColors is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceWedgeColors =
+	HasFaces<MeshType> &&
+	vcl::face::HasWedgeColors<typename MeshType::FaceType>;
+
+/**
+ * @brief Concept that checks if a Mesh has the per Face WedgeTexCoords
+ * component.
+ *
+ * Evaluates to true if WedgeTexCoords is part of the Face element, whether
+ * it is horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup face_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerFaceWedgeTexCoords =
+	HasFaces<MeshType> &&
+	vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
+
+
 
 } // namespace vcl
 

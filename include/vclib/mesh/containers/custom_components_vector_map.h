@@ -34,19 +34,39 @@
 
 namespace vcl::mesh {
 
-// we do not have custom components, we leave this class empty
-template<typename, bool HasCustomComponent>
+/**
+ * @brief The CustomComponentsVectorMap class stores a map of vectors of custom
+ * components.
+ *
+ * Each vector of custom components has two main properties:
+ * - component name: an unique std::string that identifies the vector of
+ *   components;
+ * - component type: the type of the component, that is a template parameter
+ *   and must be know at compile time.
+ *
+ * The class allows to access to the vectors of custom components trough their
+ * name and type.
+ *
+ * For each custom component, the class stores a vector of std::any, that
+ * allows to store any type of data. The actual type of the data stored in the
+ * vectors is required to access to the vector data.
+ *
+ * @note This class is templated over a boolean value that enables the
+ * functionalities of the class. If a CustomComponentsVectorMap<false> is
+ * instantiated, no memory will be used by the instance of the class, and no
+ * member functions will be available. The class can be used only when a
+ * CustomComponentsVectorMap<true> is instantiated.
+ *
+ * @tparam HasCustomComponent: A boolean value that enables the functionalities
+ * of the class.
+ */
+template<bool HasCustomComponent>
 class CustomComponentsVectorMap
 {
-public:
-	void clear() {}
-	void reserve(uint) {}
-	void resize(uint) {}
-	void compact(const std::vector<uint>&) {}
 };
 
-template<typename T>
-class CustomComponentsVectorMap<T, true>
+template<>
+class CustomComponentsVectorMap<true>
 {
 public:
 	void clear();
@@ -77,20 +97,22 @@ public:
 	std::vector<std::string> allComponentNamesOfType() const;
 
 	template<typename CompType>
-	const std::vector<std::any>& componentVector(const std::string& compName) const;
+	const std::vector<std::any>&
+	componentVector(const std::string& compName) const;
 
 	template<typename CompType>
 	std::vector<std::any>& componentVector(const std::string& compName);
 
 private:
-	// the actual map containing, for each name of a custom component, the vector
-	// of values (a value for each element(vertex/face...) of the mesh)
+	// the actual map containing, for each name of a custom component, the
+	// vector of values (a value for each element(vertex/face...) of the mesh)
 	std::unordered_map<std::string, std::vector<std::any>> map;
 	// map that stores if some custom components need to be initialized
-	// this happens when we resize the container of an element: we need to resize also the vectors
-	// of the custom components, but we cannot initialize them with the right type (because we don't
-	// know it in resize phase). The initialization will be made when the type is known (get of the
-	// custom component vector).
+	// this happens when we resize the container of an element: we need to
+	// resize also the vectors of the custom components, but we cannot
+	// initialize them with the right type (because we don't know it in resize
+	// phase). The initialization will be made when the type is known (get of
+	// the custom component vector).
 	mutable std::unordered_map<std::string, bool> needToInitialize;
 	// types used for each custom component
 	std::unordered_map<std::string, std::type_index> compType;

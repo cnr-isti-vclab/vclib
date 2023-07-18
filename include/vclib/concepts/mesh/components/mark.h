@@ -39,9 +39,6 @@ namespace vcl::comp {
  * Mark component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
- * To be completely sure that Color is available at runtime, you need to call
- * the member function `isMarkEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -53,7 +50,6 @@ concept HasMark = requires(
 	{ o.resetMark() } -> std::same_as<void>;
 	{ o.incrementMark() } -> std::same_as<void>;
 	{ o.decrementMark() } -> std::same_as<void>;
-	{ co.isMarkEnabled() } -> std::same_as<bool>;
 };
 
 /**

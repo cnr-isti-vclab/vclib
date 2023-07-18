@@ -166,12 +166,6 @@ CompType& CustomComponents<El>::customComponent(const std::string& compName)
 }
 
 template<typename El>
-template<typename Element>
-void CustomComponents<El>::importFrom(const Element&)
-{
-}
-
-template<typename El>
 template<typename CompType>
 void CustomComponents<El>::addCustomComponent(
 	const std::string& compName,
@@ -185,6 +179,17 @@ void CustomComponents<El>::deleteCustomComponent(const std::string& compName)
 	requires (!IS_VERTICAL)
 {
 	return data.deleteCustomComponent(compName);
+}
+
+template<typename El>
+template<typename Element>
+void CustomComponents<El>::importFrom(const Element& e)
+{
+	// if the component is vertical, the import is managed by the container.
+	// if is horizontal, it must be managed by the component itself.
+	if constexpr (!IS_VERTICAL && HasCustomComponents<Element>) {
+		data = e.CustomComponents::data;
+	}
 }
 
 } // namespace vcl::comp

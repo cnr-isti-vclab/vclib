@@ -116,7 +116,8 @@ public:
 	void set(const T& e, uint i);
 
 	template<Range Rng>
-	void set(Rng&& r);
+	void set(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, T>;
 
 	void fill(const T& e);
 

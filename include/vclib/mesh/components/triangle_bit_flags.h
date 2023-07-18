@@ -133,7 +133,7 @@ public:
 protected:
 	BitProxy<FT> deleted();
 
-	// PointersComponent interface functions
+	// Component interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
 

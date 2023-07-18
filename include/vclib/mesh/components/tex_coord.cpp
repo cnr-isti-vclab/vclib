@@ -25,26 +25,39 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<typename Scalar, typename El, bool O>
 bool TexCoord<Scalar, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
+/**
+ * @brief Returns a const reference of the tex coord of the element.
+ * @return a const reference of the tex coord of the element.
+ */
 template<typename Scalar, typename El, bool O>
-bool TexCoord<Scalar, El, O>::isTexCoordEnabled() const
-{
-	return isEnabled();
-}
-
-template<typename Scalar, typename El, bool O>
-const typename TexCoord<Scalar, El, O>::TexCoordType& TexCoord<Scalar, El, O>::texCoord() const
+const typename TexCoord<Scalar, El, O>::TexCoordType&
+TexCoord<Scalar, El, O>::texCoord() const
 {
 	return Base::data(this);
 }
 
+/**
+ * @brief Returns a reference of the tex coord of the element.
+ * @return a reference of the tex coord of the element.
+ */
 template<typename Scalar, typename El, bool O>
-typename TexCoord<Scalar, El, O>::TexCoordType& TexCoord<Scalar, El, O>::texCoord()
+typename TexCoord<Scalar, El, O>::TexCoordType&
+TexCoord<Scalar, El, O>::texCoord()
 {
 	return Base::data(this);
 }
@@ -60,8 +73,20 @@ void TexCoord<Scalar, El, O>::importFrom(const Element& e)
 	}
 }
 
-template <typename T>
-bool isTexCoordEnabledOn(const T& element)
+/**
+ * @brief Checks if the given Element has TexCoord component
+ * available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementConcept.
+ * @return `true` if the element has TexCoord component available,
+ * `false` otherwise.
+ */
+bool isTexCoordEnabledOn(const ElementConcept auto& element)
 {
 	return isComponentEnabledOn<TEX_COORD>(element);
 }

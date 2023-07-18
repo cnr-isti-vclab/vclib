@@ -33,18 +33,60 @@
 namespace vcl::comp {
 
 /**
- * @brief The WedgeColors class
+ * @brief The WedgeColors class is a container of colors associated to the
+ * wedges of a Face element.
  *
- * @note This component is *Tied To Vertex Number*: it means that the size of the container,
- * if dynamic, will change automatically along the Vertex Number of the Component.
- * For further details check the documentation of the @ref ContainerComponent class.
+ * It is a static or dynamic size container of colors, depending on the value of
+ * the template argument N (a negative value indicates a dynamic size).
+ *
+ * The member functions of this class will be available in the instance of any
+ * Element that will contain this component, altough it is usually used (and it
+ * makes sense only) on the Face element.
+ *
+ * For example, if you have a Face Element `f` that has the WedgeColors
+ * component, you'll be able to access to this component member functions from
+ * `f`:
+ *
+ * @code{.cpp}
+ * vcl::Color c = f.wedgeColor(0);
+ * @endcode
+ *
+ * @note This component is *Tied To Vertex Number*: it means that the size of
+ * the container, if dynamic, will change automatically along the Vertex Number
+ * of the Component. For further details check the documentation of the @ref
+ * ContainerComponent class.
+ *
+ * @tparam N: The size of the container, that will represent the number of
+ * storable wedge colors. If N is negative, the container will be dynamic.
+ * In any case, N must be the same of the Vertex Number of the Element that
+ * will contain this component.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
 template<int N, typename ElementType = void, bool OPT = false>
-class WedgeColors : public ContainerComponent<WEDGE_COLORS, vcl::Color, N, void, ElementType, OPT, true>
+class WedgeColors :
+		public ContainerComponent<
+			WEDGE_COLORS,
+			vcl::Color,
+			N,
+			void,
+			ElementType,
+			OPT,
+			true>
 {
-	using Base = ContainerComponent<WEDGE_COLORS, vcl::Color, N, void, ElementType, OPT, true>;
+	using Base = ContainerComponent<
+		WEDGE_COLORS,
+		vcl::Color,
+		N,
+		void,
+		ElementType,
+		OPT,
+		true>;
 
 public:
 	static const int WEDGE_COLOR_NUMBER = Base::SIZE;
@@ -55,7 +97,6 @@ public:
 	using ConstWedgeColorsIterator = typename Base::ConstIterator;
 
 	bool isEnabled() const;
-	bool isWedgeColorsEnabled() const;
 
 	/* Member functions */
 
@@ -65,7 +106,7 @@ public:
 	vcl::Color&       wedgeColorMod(int i);
 	const vcl::Color& wedgeColorMod(int i) const;
 
-	void setWedgeColor(const vcl::Color& t, uint i);
+	void setWedgeColor(const vcl::Color& c, uint i);
 	void setWedgeColors(const std::vector<vcl::Color>& list);
 
 	/* Iterator Member functions */
@@ -102,8 +143,7 @@ private:
 
 /* Detector function to check if a class has WedgeColors enabled */
 
-template <typename T>
-bool isWedgeColorsEnabledOn(const T& element);
+bool isWedgeColorsEnabledOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

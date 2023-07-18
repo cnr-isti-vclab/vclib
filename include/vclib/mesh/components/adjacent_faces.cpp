@@ -56,18 +56,6 @@ bool AdjacentFaces<Face, N, TT, El, O>::isEnabled() const
 }
 
 /**
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
- *
- * @return `true` if the component is enabled, `false` otherwise.
- */
-template<typename Face, int N, bool TT, typename El, bool O>
-bool AdjacentFaces<Face, N, TT, El, O>::isAdjFacesEnabled() const
-{
-	return isEnabled();
-}
-
-/**
  * @brief Returns the number of adjacent faces of this element.
  * @return The number of adjacent faces of this element.
  */

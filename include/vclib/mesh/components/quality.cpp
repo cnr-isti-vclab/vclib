@@ -25,33 +25,44 @@
 
 namespace vcl::comp {
 
-template<typename T, typename El, bool O>
-bool Quality<T, El, O>::isEnabled() const
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
+template<typename S, typename El, bool O>
+bool Quality<S, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<typename T, typename El, bool O>
-bool Quality<T, El, O>::isQualityEnabled() const
-{
-	return isEnabled();
-}
-
-template<typename T, typename El, bool O>
-const T& Quality<T, El, O>::quality() const
+/**
+ * @brief Returns a const reference of the quality of the element.
+ * @return a const reference of the quality of the element.
+ */
+template<typename S, typename El, bool O>
+const S& Quality<S, El, O>::quality() const
 {
 	return Base::data(this);
 }
 
-template<typename T, typename El, bool O>
-T& Quality<T, El, O>::quality()
+/**
+ * @brief Returns a reference of the quality of the element.
+ * @return a reference of the quality of the element.
+ */
+template<typename S, typename El, bool O>
+S& Quality<S, El, O>::quality()
 {
 	return Base::data(this);
 }
 
-template<typename T, typename El, bool O>
+template<typename S, typename El, bool O>
 template<typename Element>
-void Quality<T, El, O>::importFrom(const Element& e)
+void Quality<S, El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasQuality<Element>) {
 		if (isQualityEnabledOn(e)){
@@ -60,8 +71,19 @@ void Quality<T, El, O>::importFrom(const Element& e)
 	}
 }
 
-template <typename T>
-bool isQualityEnabledOn(const T& element)
+/**
+ * @brief Checks if the given Element has Quality component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element has Quality component available,
+ * `false` otherwise.
+ */
+bool isQualityEnabledOn(const ElementOrMeshConcept auto& element)
 {
 	return isComponentEnabledOn<QUALITY>(element);
 }

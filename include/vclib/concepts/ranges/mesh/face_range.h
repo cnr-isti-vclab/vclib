@@ -31,30 +31,35 @@
 namespace vcl {
 
 /**
- * @brief The FaceRangeConcept evaluates to true if Rng is a valid Range on Faces.
+ * @brief The FaceRangeConcept evaluates to true if Rng is a valid Range
+ * on Faces.
  *
- * This means that Rng must be a Range of FaceConcept: the iterated type must satisfy the
- * FaceConcept.
+ * This means that Rng must be a Range of FaceConcept: the iterated type
+ * must satisfy the FaceConcept.
  *
  * @ingroup face_concepts
  */
 template<typename Rng>
 concept FaceRangeConcept =
-	Range<Rng> && FaceConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+	Range<Rng> &&
+	FaceConcept<typename std::ranges::iterator_t<Rng>::value_type>;
 
 /**
- * @brief The FacePointerRangeConcept evaluates to true if Rng is a valid Range on Face
- * Pointers.
+ * @brief The FacePointerRangeConcept evaluates to true if Rng is a valid
+ * Range on Face Pointers.
  *
- * This means that Rng must be a Range of pointers to a type that satisfy the FaceConcept.
+ * This means that Rng must be a Range of pointers to a type that satisfy the
+ * FaceConcept.
  *
  * @ingroup face_concepts
  */
 template<typename Rng>
 concept FacePointerRangeConcept =
-	Range<Rng> && IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+	Range<Rng> &&
+	IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
 	FaceConcept<typename std::decay_t<
-		std::remove_pointer_t<typename std::ranges::iterator_t<Rng>::value_type>>>;
+		std::remove_pointer_t<
+			typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 

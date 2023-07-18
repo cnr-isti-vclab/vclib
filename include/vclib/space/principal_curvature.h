@@ -28,10 +28,25 @@
 
 namespace vcl {
 
+/**
+ * @brief The PrincipalCurvature class stores the principal curvature directions
+ * and values at a point on a surface.
+ *
+ * It stores the two principal curvature directions (`maxDir()` and `minDir()`,
+ * also note as k1 and k2 respectively) and the maximum and minimum values of
+ * the curvature (`maxValue()` and `minValue()`).
+ *
+ * @tparam Scalar: The scalar type of the curvature values.
+ *
+ * @ingroup space
+ */
 template<typename Scalar>
 class PrincipalCurvature
 {
 public:
+	/**
+	 * @brief The scalar type of the curvature values.
+	 */
 	using ScalarType = Scalar;
 
 	PrincipalCurvature();

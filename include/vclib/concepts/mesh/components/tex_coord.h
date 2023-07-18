@@ -39,9 +39,6 @@ namespace vcl::comp {
  * TexCoord component at runtime (it is guaranteed only that the proper member
  * functions are available at compile time).
  *
- * To be completely sure that TexCoord is available at runtime, you need to call
- * the member function `isTexCoordEnabled()`.
- *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -52,7 +49,6 @@ concept HasTexCoord = requires(
 	typename T::TexCoordType;
 	{ o.texCoord() } -> std::same_as<typename T::TexCoordType&>;
 	{ co.texCoord() } -> std::same_as<const typename T::TexCoordType&>;
-	{ co.isTexCoordEnabled() } -> std::same_as<bool>;
 };
 
 /**

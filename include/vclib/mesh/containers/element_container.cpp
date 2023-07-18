@@ -113,7 +113,8 @@ template<ElementConcept T>
 uint ElementContainer<T>::addElement()
 {
 	vcVecTuple.resize(vec.size() + 1);
-	ccVecMap.resize(vec.size() + 1);
+	if constexpr (comp::HasCustomComponents<T>)
+		ccVecMap.resize(vec.size() + 1);
 
 	T* oldB = vec.data();
 	vec.emplace_back();
@@ -142,8 +143,9 @@ uint ElementContainer<T>::addElement()
 template<ElementConcept T>
 uint ElementContainer<T>::addElements(uint size)
 {
-	ccVecMap.resize(vec.size() + size);
 	vcVecTuple.resize(vec.size() + size);
+	if constexpr (comp::HasCustomComponents<T>)
+		ccVecMap.resize(vec.size() + size);
 
 	uint baseId = vec.size();
 	T*   oldB   = vec.data();
@@ -171,8 +173,9 @@ void ElementContainer<T>::reserveElements(uint size)
 	vec.reserve(size);
 	T* newB = vec.data();
 
-	ccVecMap.reserve(size);
 	vcVecTuple.reserve(size);
+	if constexpr (comp::HasCustomComponents<T>)
+		ccVecMap.reserve(size);
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
@@ -193,8 +196,9 @@ std::vector<uint> ElementContainer<T>::compactElements()
 	if (elementNumber() != elementContainerSize()) {
 		compactVector(vec, newIndices);
 
-		ccVecMap.compact(newIndices);
 		vcVecTuple.compact(newIndices);
+		if constexpr (comp::HasCustomComponents<T>)
+			ccVecMap.compact(newIndices);
 
 		updateElementIndices(newIndices);
 	}
@@ -531,6 +535,7 @@ bool ElementContainer<T>::isElemCustomComponentOfType(const std::string& name) c
 
 template<ElementConcept T>
 std::type_index ElementContainer<T>::elemComponentType(const std::string &name) const
+	requires comp::HasCustomComponents<T>
 {
 	return ccVecMap.componentType(name);
 }
@@ -601,7 +606,8 @@ void ElementContainer<T>::clearElements()
 	en = 0;
 
 	vcVecTuple.clear();
-	ccVecMap.clear();
+	if constexpr (comp::HasCustomComponents<T>)
+		ccVecMap.clear();
 }
 
 template<ElementConcept T>
@@ -611,8 +617,9 @@ void ElementContainer<T>::resizeElements(uint size)
 	vec.resize(size);
 	T* newB = vec.data();
 
-	ccVecMap.resize(size);
 	vcVecTuple.resize(size);
+	if constexpr (comp::HasCustomComponents<T>)
+		ccVecMap.resize(size);
 
 	if (oldB != newB) {
 		setParentMeshPointers(parentMesh);
@@ -659,18 +666,34 @@ template<typename OtherMesh>
 void ElementContainer<T>::importFrom(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
-		// get the container type of the other mesh for T - used to upcast othMesh
+		// get the container type of the other mesh for T - used to upcast
+		// othMesh
 		using Container = typename OtherMesh::template ContainerOf<T>::type;
 
 		const Container& c = (const Container&)m;
 
 		clearElements();
-		// pointer to parent mesh needs to be updated later by the mesh
+
+		// recreate a container having the same number of elements as the other
+		// mesh
+		// this call will also update the parentMesh pointers and sets the
+		// vertical components vectors in vcVecTuple
 		addElements(c.elementContainerSize());
 		unsigned int eid = 0;
 		for (const typename Container::ElementType& e : c.elements(false)) {
+			// import the components of the e, when they are available
+			// note that will set also the deleted flag of e, therefore if e is
+			// deleted, then also element(eid) will be deleted.
 			element(eid).importFrom(e);
 			++eid;
+		}
+		// set the number of elements (different from the container size)
+		en = c.en;
+		if constexpr (
+			comp::HasCustomComponents<T> &&
+			comp::HasCustomComponents<typename Container::ElementType>)
+		{
+			ccVecMap = c.ccVecMap;
 		}
 	}
 }

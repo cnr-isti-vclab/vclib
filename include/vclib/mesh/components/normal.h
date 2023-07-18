@@ -32,7 +32,26 @@
 namespace vcl::comp {
 
 /**
- * @brief The NormalT class
+ * @brief The Normal class represents a N-Dimensional normal vector that will be
+ * part of an Element (e.g. Vertex, Face...).
+ *
+ * Allows to get and set an object that represents a normal. The type of this
+ * object must satisfy the PointConcept.
+ *
+ * For example, if you have a Vertex Element `v` with the Normal component,
+ * you'll be able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * auto n = v.normal();
+ * @endcode
+ *
+ * @tparam P: The type of the normal. This template argument must be a type that
+ * satisfies the PointConcept.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
@@ -42,10 +61,12 @@ class Normal : public Component<NORMAL, P, ElementType, OPT>
 	using Base = Component<NORMAL, P, ElementType, OPT>;
 
 public:
+	/**
+	 * @brief Expose the type of the Normal.
+	 */
 	using NormalType = P;
 
 	bool isEnabled() const;
-	bool isNormalEnabled() const;
 
 	const P& normal() const;
 	P&       normal();
@@ -58,18 +79,54 @@ protected:
 
 /* Detector function to check if a class has Normal enabled */
 
-template <typename T>
-bool isNormalEnabledOn(const T& element);
+bool isNormalEnabledOn(const ElementConcept auto& element);
 
+/**
+ * @brief The Normal3 class is an alias of the Normal component that uses 3
+ * dimensional Points.
+ *
+ * @tparam Scalar: The scalar type of the point.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
 template<
 	typename Scalar,
 	typename ElementType = void,
 	bool OPT        = false>
 using Normal3 = Normal<Point3<Scalar>, ElementType, OPT>;
 
+/**
+ * @brief The Normal3f class is an alias of the Normal component that uses
+ * 3 dimensional Points with float precision.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
 template<typename ElementType = void, bool OPT = false>
 using Normal3f = Normal3<float, ElementType, OPT>;
 
+/**
+ * @brief The Normal3d class is an alias of the Normal component that uses
+ * 3 dimensional Points with double precision.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
 template<typename ElementType = void, bool OPT = false>
 using Normal3d = Normal3<double, ElementType, OPT>;
 

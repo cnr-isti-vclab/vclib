@@ -90,6 +90,15 @@ uint %EL_UC%Container<T>::deleted%EL_UC%Number() const
 	return Base::deletedElementNumber();
 }
 
+/**
+ * @brief Add a %EL_UC% to the container, returning its index.
+ *
+ * If the call of this function will cause a reallocation of the
+ * %EL_UC%Container, the function will automatically take care of updating
+ * all the %EL_UC% pointers contained in the Mesh.
+ *
+ * @return the id of the newly added %EL_UC%.
+ */
 template<%EL_UC%Concept T>
 uint %EL_UC%Container<T>::add%EL_UC%()
 {
@@ -190,7 +199,7 @@ void %EL_UC%Container<T>::delete%EL_UC%(const %EL_UC%Type* e)
 }
 
 /**
- * @brief This is an utility member function that returns the index of an 
+ * @brief This is an utility member function that returns the index of an
  * element if the container would be compact, that is the number of non-deleted
  * elements before the %EL_UC% with the given index.
  *

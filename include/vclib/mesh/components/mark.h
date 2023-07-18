@@ -31,23 +31,27 @@
 namespace vcl::comp {
 
 /**
- * @brief The Mark class is an utility class useful to un-mark components in constant time.
+ * @brief The Mark class is an utility class useful to un-mark components in
+ * constant time.
  *
- * Its implementation is just an integer that can be incremented and decremented.
+ * Its implementation is just an integer that can be incremented and
+ * decremented.
  *
- * Assuming that two Elements (or a Mesh and an Element) have the Mark component: you can consider
- * one of the elements "marked" if it has the same mark value of the other element/mesh.
+ * Assuming that two Elements (or a Mesh and an Element) have the Mark
+ * component: you can consider one of the elements "marked" if it has the same
+ * mark value of the other element/mesh.
  *
- * Example: suppose that you have a Mesh with Vertex Elements, and both Mesh and Vertices have the
- * Mark component. In initialization, all the elements are considered marked, because the elements
- * have the same mark value of the Mesh. To un-mark all the vertices of the mesh:
+ * Example: suppose that you have a Mesh with Vertex Elements, and both Mesh and
+ * Vertices have the Mark component. In initialization, all the elements are
+ * considered marked, because the elements have the same mark value of the Mesh.
+ * To un-mark all the vertices of the mesh:
  *
  * @code{.cpp}
  * m.incrementMark();
  * @endcode
  *
- * Now all the vertices (and all the other elements) are un-marked because they have a different
- * mark value w.r.t. the one of the mesh.
+ * Now all the vertices (and all the other elements) are un-marked because they
+ * have a different mark value w.r.t. the one of the mesh.
  *
  * Then, if you want to mark the vertices having index 3 and 5:
  *
@@ -63,6 +67,14 @@ namespace vcl::comp {
  * m.hasSameMark(m.vertex(5)); // or: m.vertex(5).hasSameMark(m)
  * @endcode
  *
+ * @note This component can be both used for Elements and Meshes.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
@@ -72,12 +84,12 @@ class Mark : public Component<MARK, int, ElementType, OPT>
 
 public:
 	/* Constructor and isEnabled */
+
 	Mark();
 
 	void init();
 
 	bool isEnabled() const;
-	bool isMarkEnabled() const;
 
 	/* Member functions */
 
@@ -96,15 +108,12 @@ protected:
 	void importFrom(const Element& e);
 
 private:
-	// members that allow to access the point, trough data (horizontal) or trough parent (vertical)
-	int& m();
-	int m() const;
+	int& mark();
 };
 
 /* Detector function to check if a class has Mark enabled */
 
-template <typename T>
-bool isMarkEnabledOn(const T& element);
+bool isMarkEnabledOn(const ElementOrMeshConcept auto& element);
 
 } // namespace vcl::comp
 

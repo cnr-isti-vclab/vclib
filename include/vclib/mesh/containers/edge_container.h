@@ -33,7 +33,19 @@
 namespace vcl::mesh {
 
 /**
- * @brief The EdgeContainer class
+ * @brief The EdgeContainer class represents a container of Edge
+ * elements that can be used in a Mesh class.
+ * 
+ * This class adds a container (vector) of Edges to the Mesh, making
+ * available the accessors members to them and their components.
+ * 
+ * It provides all the add, delete, reserve, compact and other functions to
+ * manage the Edges, plus the iterators and views to iterate over them.
+ * It also provides the functions to enable and disable the optional components
+ * of the Edges.
+ *
+ * @tparam T: The type of the Edge elements. It must satisfy the
+ * EdgeConcept.
  *
  * @ingroup containers
  */
@@ -87,14 +99,20 @@ public:
 	void disableAllPerEdgeOptionalComponents();
 
 	// AdjacentEdges
-	bool isPerEdgeAdjacentEdgesEnabled() const requires edge::HasOptionalAdjacentEdges<T>;
-	void enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>;
-	void disablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>;
+	bool isPerEdgeAdjacentEdgesEnabled() const
+		requires edge::HasOptionalAdjacentEdges<T>;
+	void enablePerEdgeAdjacentEdges()
+		requires edge::HasOptionalAdjacentEdges<T>;
+	void disablePerEdgeAdjacentEdges()
+		requires edge::HasOptionalAdjacentEdges<T>;
 
 	// AdjacentFaces
-	bool isPerEdgeAdjacentFacesEnabled() const requires edge::HasOptionalAdjacentFaces<T>;
-	void enablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>;
-	void disablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>;
+	bool isPerEdgeAdjacentFacesEnabled() const
+		requires edge::HasOptionalAdjacentFaces<T>;
+	void enablePerEdgeAdjacentFaces()
+		requires edge::HasOptionalAdjacentFaces<T>;
+	void disablePerEdgeAdjacentFaces()
+		requires edge::HasOptionalAdjacentFaces<T>;
 
 	// Color
 	bool isPerEdgeColorEnabled() const requires edge::HasOptionalColor<T>;
@@ -137,8 +155,8 @@ public:
 		requires edge::HasCustomComponents<T>;
 
 	template<typename K>
-	CustomComponentVectorHandle<K> perEdgeCustomComponentVectorHandle(const std::string& name)
-		requires edge::HasCustomComponents<T>;
+	CustomComponentVectorHandle<K> perEdgeCustomComponentVectorHandle(
+		const std::string& name) requires edge::HasCustomComponents<T>;
 
 	template<typename K>
 	ConstCustomComponentVectorHandle<K>

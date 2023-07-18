@@ -41,18 +41,6 @@ bool Color<El, O>::isEnabled() const
 }
 
 /**
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
- *
- * @return `true` if the component is enabled, `false` otherwise.
- */
-template<typename El, bool O>
-bool Color<El, O>::isColorEnabled() const
-{
-	return isEnabled();
-}
-
-/**
  * @brief Returns a const reference of the color of the element.
  * @return a const reference of the color of the element.
  */
@@ -84,15 +72,15 @@ void Color<El, O>::importFrom(const Element& e)
 }
 
 /**
- * @brief Checks if the given Element has Color component available.
+ * @brief Checks if the given Element/Mesh has Color component available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element. The runtime check is performed only when the
  * component is optional.
  *
- * @param[in] element: The element to check. Must be of a type that satisfies
- * the ElementOrMeshConcept.
- * @return `true` if the element has Color component available, `false`
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has Color component available, `false`
  * otherwise.
  */
 bool isColorEnabledOn(const ElementOrMeshConcept auto& element)

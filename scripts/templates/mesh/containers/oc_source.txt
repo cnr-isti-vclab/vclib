@@ -10,7 +10,8 @@ template<%EL_UC%Concept T>
 bool %EL_UC%Container<T>::isPer%EL_UC%%CNUC%Enabled() const
 	requires %EL_NS%::HasOptional%CNUC%<T>
 {
-	return Base::template isOptionalComponentEnabled<typename T::%CNUC%>();
+	return Base::template isOptionalComponentEnabled<
+		typename T::%CNUC%>();
 }
 
 /**

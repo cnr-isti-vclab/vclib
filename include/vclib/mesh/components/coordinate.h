@@ -37,6 +37,13 @@ namespace vcl::comp {
  * Allows to get and set an object that represents a coordinate. The type of
  * this object must satisfy the PointConcept.
  *
+ * For example, if you have a Vertex Element `v` with the Coordinate component,
+ * you'll be able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * auto coord = v.coord();
+ * @endcode
+ *
  * @tparam P: The type of the coordinate. This template argument must be a type
  * that satisfies the PointConcept.
  * @tparam ElementType: This template argument must be `void` if the component
@@ -53,7 +60,12 @@ class Coordinate : public Component<COORDINATE, P, ElementType, OPT>
 	using Base = Component<COORDINATE, P, ElementType, OPT>;
 
 public:
+	/**
+	 * @brief Expose the type of the Coordinate.
+	 */
 	using CoordType = P;
+
+	bool isEnabled() const;
 
 	const P& coord() const;
 	P&       coord();
@@ -63,6 +75,10 @@ protected:
 	template<typename Element>
 	void importFrom(const Element& v);
 };
+
+/* Detector function to check if a class has Coordinate enabled */
+
+bool isCoordinateEnabledOn(const ElementConcept auto& element);
 
 /**
  * @brief The Coordinate3 class is an alias of the Coordinate component that
@@ -87,7 +103,6 @@ using Coordinate3 = Coordinate<Point3<Scalar>, ElementType, OPT>;
  * @brief The Coordinate3f class is an alias of the Coordinate component that
  * uses 3 dimensional Points with float precision.
  *
- * @tparam Scalar: The scalar type of the point.
  * @tparam ElementType: This template argument must be `void` if the component
  * needs to be stored horizontally, or the type of the element that will contain
  * this component if the component needs to be stored vertically.
@@ -103,7 +118,6 @@ using Coordinate3f = Coordinate3<float, ElementType, OPT>;
  * @brief The Coordinate3d class is an alias of the Coordinate component that
  * uses 3 dimensional Points with double precision.
  *
- * @tparam Scalar: The scalar type of the point.
  * @tparam ElementType: This template argument must be `void` if the component
  * needs to be stored horizontally, or the type of the element that will contain
  * this component if the component needs to be stored vertically.

@@ -61,7 +61,7 @@ using BoundingBox3d = comp::BoundingBox3d<>;
 /** Port Color class into mesh namespace **/
 using Color = comp::Color<>;
 
-/* Port CustomComponents class into mesh namespace */
+/** Port CustomComponents class into mesh namespace **/
 using CustomComponents = comp::CustomComponents<>;
 
 /** Port Mark class into mesh namespace **/
@@ -71,14 +71,14 @@ using Mark = comp::Mark<>;
 using Name = comp::Name<>;
 
 /** Port TexturePaths class into mesh namespace **/
-using TexturePaths = comp::TexturePaths<>;
+using TexturePaths = comp::TexturePaths;
 
 /** Port TransformMatrix class into mesh namespace **/
 template <typename Scalar>
 using TransformMatrix = comp::TransformMatrix<Scalar>;
 
-using TransformMatrixf = comp::TransformMatrix<float>;
-using TransformMatrixd = comp::TransformMatrix<double>;
+using TransformMatrixf = comp::TransformMatrixf<>;
+using TransformMatrixd = comp::TransformMatrixd<>;
 
 /** @} */ // end of mesh_components group
 

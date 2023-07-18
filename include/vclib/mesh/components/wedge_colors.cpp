@@ -27,46 +27,97 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<int N, typename El, bool O>
 bool WedgeColors<N, El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<int N, typename El, bool O>
-bool WedgeColors<N, El, O>::isWedgeColorsEnabled() const
-{
-	return isEnabled();
-}
-
+/**
+ * @brief Returns a reference to the i-th wedge color of the element.
+ *
+ * You can use this function to set the i-th color of the element:
+ *
+ * @code{.cpp}
+ * f.wedgeColor(0) = vcl::Color::Red;
+ * @endcode
+ *
+ * @param[in] i: the index of the wedge color to return. The value must be
+ * between 0 and the number of vertices of the element.
+ * @return A reference to the i-th wedge color of the element.
+ */
 template<int N, typename El, bool O>
 vcl::Color& WedgeColors<N, El, O>::wedgeColor(uint i)
 {
 	return colors().at(i);
 }
 
+/**
+ * @brief Returns a const reference to the i-th wedge color of the element.
+ *
+ * @param[in] i: the index of the wedge color to return. The value must be
+ * between 0 and the number of vertices of the element.
+ * @return A const reference to the i-th wedge color of the element.
+ */
 template<int N, typename El, bool O>
 const vcl::Color& WedgeColors<N, El, O>::wedgeColor(uint i) const
 {
 	return colors().at(i);
 }
 
+/**
+ * @brief Returns a reference to the i-th wedge color of the element but using
+ * as index the module between i and the number of vertices of the element. You
+ * can use this function if you need to get the "next wedge color after
+ * position k", without check if it is less than the number of vertices. Works
+ * also for negative numbers:
+ *
+ * @code{.cpp}
+ * f.wedgeColorMod(-1) = vcl::Color::Red; // the wedge color in position
+ *                                        // vertexNumber() - 1
+ * @endcode
+ *
+ * @param[in] i: the position of the required wedge color in the container,
+ * w.r.t. the position 0; value is modularized on vertexNumber().
+ * @return A reference to the required wedge color of the element.
+ */
 template<int N, typename El, bool O>
 vcl::Color& WedgeColors<N, El, O>::wedgeColorMod(int i)
 {
 	return colors().atMod(i);
 }
 
+/**
+ * @brief Same of wedgeColorMod(int) but returns a const reference.
+ * @param[in] i: the position of the required wedge color in the container,
+ * w.r.t. the position 0; value is modularized on vertexNumber().
+ * @return A const reference to the required wedge color of the element.
+ */
 template<int N, typename El, bool O>
 const vcl::Color& WedgeColors<N, El, O>::wedgeColorMod(int i) const
 {
 	return colors().atMod(i);
 }
 
+/**
+ * @brief Sets the i-th wedge color of the element.
+ * @param[in] c: the new wedge color.
+ * @param[in] i: the position in the container on which set the wedge color; the
+ * value must be between 0 and the number of vertices of the element.
+ */
 template<int N, typename El, bool O>
-void WedgeColors<N, El, O>::setWedgeColor(const vcl::Color& t, uint i)
+void WedgeColors<N, El, O>::setWedgeColor(const vcl::Color& c, uint i)
 {
-	colors().set(t, i);
+	colors().set(c, i);
 }
 
 template<int N, typename El, bool O>
@@ -75,36 +126,93 @@ void WedgeColors<N, El, O>::setWedgeColors(const std::vector<vcl::Color>& list)
 	colors().set(list);
 }
 
+/**
+ * @brief Returns an iterator to the first wedge color in the container of
+ * this component.
+ *
+ * @return an iterator pointing to the begin of this container.
+ */
 template<int N, typename El, bool O>
-typename WedgeColors<N, El, O>::WedgeColorsIterator WedgeColors<N, El, O>::wedgeColorBegin()
+typename WedgeColors<N, El, O>::WedgeColorsIterator
+WedgeColors<N, El, O>::wedgeColorBegin()
 {
 	return colors().begin();
 }
 
+/**
+ * @brief Returns an iterator to the end of the container of this component.
+ *
+ * @return an iterator pointing to the end of this container.
+ */
 template<int N, typename El, bool O>
-typename WedgeColors<N, El, O>::WedgeColorsIterator WedgeColors<N, El, O>::wedgeColorEnd()
+typename WedgeColors<N, El, O>::WedgeColorsIterator
+WedgeColors<N, El, O>::wedgeColorEnd()
 {
 	return colors().end();
 }
 
+/**
+ * @brief Returns a const iterator to the first wedge color in the container of
+ * this component.
+ *
+ * @return a const iterator pointing to the begin of this container.
+ */
 template<int N, typename El, bool O>
-typename WedgeColors<N, El, O>::ConstWedgeColorsIterator WedgeColors<N, El, O>::wedgeColorBegin() const
+typename WedgeColors<N, El, O>::ConstWedgeColorsIterator
+WedgeColors<N, El, O>::wedgeColorBegin() const
 {
 	return colors().begin();
 }
 
+/**
+ * @brief Returns a const iterator to the end of the container of this
+ * component.
+ *
+ * @return an iterator pointing to the end of this container.
+ */
 template<int N, typename El, bool O>
-typename WedgeColors<N, El, O>::ConstWedgeColorsIterator WedgeColors<N, El, O>::wedgeColorEnd() const
+typename WedgeColors<N, El, O>::ConstWedgeColorsIterator
+WedgeColors<N, El, O>::wedgeColorEnd() const
 {
 	return colors().end();
 }
 
+/**
+ * @brief Returns a lightweight view object that stores the begin and end
+ * iterators of the container of wedge colors of the element. The view object
+ * exposes the iterators trough the `begin()` and `end()` member functions, and
+ * therefore the returned object can be used in range-based for loops:
+ *
+ * @code{.cpp}
+ * for (auto& wc : el.wedgeColors()) {
+ *     // Do something with wc
+ * }
+ * @endcode
+ *
+ * @return a lightweight view object that can be used in range-based for loops
+ * to iterate over wedge colors.
+ */
 template<int N, typename El, bool O>
 auto WedgeColors<N, El, O>::wedgeColors()
 {
 	return View(wedgeColorBegin(), wedgeColorEnd());
 }
 
+/**
+ * @brief Returns a lightweight const view object that stores the begin and end
+ * iterators of the container of wedge colors of the element. The view object
+ * exposes the iterators trough the `begin()` and `end()` member functions, and
+ * therefore the returned object can be used in range-based for loops:
+ *
+ * @code{.cpp}
+ * for (const auto& wc : el.wedgeColors()) {
+ *     // Do something read-only with wc
+ * }
+ * @endcode
+ *
+ * @return a lightweight view object that can be used in range-based for loops
+ * to iterate over wedge colors.
+ */
 template<int N, typename El, bool O>
 auto WedgeColors<N, El, O>::wedgeColors() const
 {
@@ -192,8 +300,18 @@ const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
 	return Base::container(this);
 }
 
-template <typename T>
-bool isWedgeColorsEnabledOn(const T& element)
+/**
+ * @brief Checks if the given Element has WedgeColors available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that satisfies
+ * the ElementConcept.
+ * @return `true` if the element has WedgeColors available, `false` otherwise.
+ */
+bool isWedgeColorsEnabledOn(const ElementConcept auto& element)
 {
 	return isComponentEnabledOn<WEDGE_COLORS>(element);
 }

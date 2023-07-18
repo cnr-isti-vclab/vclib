@@ -570,14 +570,6 @@ add_library(vclib INTERFACE)
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
 target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
-if (WIN32 OR TARGET vclib-external-tbb)
-	message(STATUS "VCLib: using parallel algorithms")
-else()
-	message(STATUS "VCLib: not using parallel algorithms")
-endif()
-
-message(STATUS "VCLib: using std::ranges library")
-
 if (TARGET vclib-external-qt)
 	add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
 	target_include_directories(vclib-qt PRIVATE ${VCLIB_INCLUDE_DIR})
@@ -590,6 +582,14 @@ if (VCLIB_IDE)
 	add_custom_target(vclib_ide SOURCES
 		${HEADERS} ${HEADERS_LIB} ${SOURCES} ${SOURCES_LIB} ${FORMS_LIB})
 endif()
+
+if (WIN32 OR TARGET vclib-external-tbb)
+	message(STATUS "VCLib: using parallel algorithms")
+else()
+	message(STATUS "VCLib: not using parallel algorithms")
+endif()
+
+message(STATUS "VCLib: using std::ranges library")
 
 if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_AND_RUN_TESTS)
 	include(CTest)

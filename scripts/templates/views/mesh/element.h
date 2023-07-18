@@ -9,7 +9,7 @@ namespace vcl::views {
 namespace internal {
 
 template<typename T>
-concept Clean%EL_UC%MeshConcept = %EL_UC%MeshConcept<RemoveConstRef<T>>;
+concept Clean%EL_UC%MeshConcept = %EL_UC%MeshConcept<std::remove_cvref_t<T>>;
 
 struct %EL_UC%sView
 {
@@ -29,7 +29,7 @@ struct %EL_UC%sView
  * object.
  *
  * This view can be applied to objects having type that satisfies the
- * %EL_UC%MeshConcept
+ * %EL_UC%MeshConcept.
  *
  * @ingroup views
  */

@@ -116,7 +116,6 @@ public:
 	void init();
 
 	bool isEnabled() const;
-	bool isAdjFacesEnabled() const;
 
 	/* Member functions */
 

@@ -32,39 +32,83 @@
 namespace vcl::comp {
 
 /**
- * @brief The TexCoord class
+ * @brief The TexCoord class represents a component that stores a texture
+ * coordinate.
+ *
+ * It exposes a vcl::TexCoord object, that stores a texture coordinate and an
+ * id of the texture to use.
+ *
+ * For example, if you have a Vertex Element `v` with the TexCoord component,
+ * you'll be able to access to this component member functions from `v`:
+ *
+ * @code{.cpp}
+ * auto texcoord = v.texCoord();
+ * @endcode
+ *
+ * @tparam Scalar: The scalar type of the texture coordinate values.
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
-class TexCoord : public Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>
+class TexCoord :
+		public Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>
 {
 	using Base = Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>;
 
 public:
+	/**
+	 * @brief Expose the type of the TexCoord.
+	 */
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
 	bool isEnabled() const;
-	bool isTexCoordEnabled() const;
 
 	const TexCoordType& texCoord() const;
 	TexCoordType&       texCoord();
 
 protected:
-	// PointersComponent interface functions
+	// Component interface functions
 	template<typename Element>
 	void importFrom(const Element& e);
 };
 
 /* Detector function to check if a class has TexCoord enabled */
 
-template <typename T>
-bool isTexCoordEnabledOn(const T& element);
+bool isTexCoordEnabledOn(const ElementConcept auto& element);
 
-template<typename ElementType = void, bool horizontal = true, bool OPT = false>
+/**
+ * The TexCoordf class is an alias of the TexCoord component that uses float as
+ * scalar type.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
+template<typename ElementType = void, bool OPT = false>
 using TexCoordf = TexCoord<float, ElementType, OPT>;
 
-template<typename ElementType = void, bool horizontal = true, bool OPT = false>
+/**
+ * The TexCoordd class is an alias of the TexCoord component that uses double as
+ * scalar type.
+ *
+ * @tparam ElementType: This template argument must be `void` if the component
+ * needs to be stored horizontally, or the type of the element that will contain
+ * this component if the component needs to be stored vertically.
+ * @tparam OPT: If true, the component will be optional. This argument is
+ * considered only if the component is stored vertically.
+ *
+ * @ingroup components
+ */
+template<typename ElementType = void, bool OPT = false>
 using TexCoordd = TexCoord<double, ElementType, OPT>;
 
 } // namespace vcl::comp

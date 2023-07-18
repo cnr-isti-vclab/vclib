@@ -48,7 +48,8 @@ struct FacesView
 /**
  * @brief A view that allows to iterate overt the Face elements of an object.
  *
- * This view can be applied to objects having type that satisfies the FaceMeshConcept
+ * This view can be applied to objects having type that satisfies the
+ * FaceMeshConcept.
  *
  * @ingroup views
  */

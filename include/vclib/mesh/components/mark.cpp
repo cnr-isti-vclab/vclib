@@ -25,6 +25,10 @@
 
 namespace vcl::comp {
 
+/**
+ * @private
+ * @brief Constructor that initializes the mark to 0.
+ */
 template<typename El, bool O>
 Mark<El, O>::Mark()
 {
@@ -33,58 +37,90 @@ Mark<El, O>::Mark()
 	}
 }
 
+/**
+ * @private
+ * @brief Initializes the mark to 0.
+ *
+ * It is made in the init function since the component could be not available
+ * during construction (e.g. if the component is optional and not enabled).
+ *
+ * This member function is hidden by the element that inherits this class.
+ */
 template<typename El, bool O>
 void Mark<El, O>::init()
 {
-	m() = 0;
+	mark() = 0;
 }
 
+/**
+ * @private
+ * @brief Returns `true` if the component is enabled, `false` otherwise.
+ * This member function can return `false` only if the component is optional.
+ *
+ * This member function is hidden by the element that inherits this class.
+ *
+ * @return `true` if the component is enabled, `false` otherwise.
+ */
 template<typename El, bool O>
 bool Mark<El, O>::isEnabled() const
 {
 	return Base::isEnabled(this);
 }
 
-template<typename El, bool O>
-bool Mark<El, O>::isMarkEnabled() const
-{
-	return isEnabled();
-}
-
+/**
+ * @brief Returns the value of the mark.
+ * @return the value of the mark.
+ */
 template<typename El, bool O>
 int Mark<El, O>::mark() const
 {
-	return m();
+	return Base::data(this);
 }
 
+/**
+ * @brief Resets the mark to 0.
+ */
 template<typename El, bool O>
 void Mark<El, O>::resetMark()
 {
-	m() = 0;
+	mark() = 0;
 }
 
+/**
+ * @brief Checks if the current element/mesh has the same mark of the given
+ * input element/mesh `e`.
+ *
+ * @tparam E: the type of the input element/mesh.
+ * @param e: the input element/mesh.
+ */
 template<typename El, bool O>
 template<typename E>
 bool Mark<El, O>::hasSameMark(const E& e) const
 {
 	if constexpr (std::is_pointer<E>::value) {
-		return e->mark() == m();
+		return e->mark() == mark();
 	}
 	else {
-		return e.mark() == m();
+		return e.mark() == mark();
 	}
 }
 
+/**
+ * @brief Increments the mark of the current element/mesh by 1.
+ */
 template<typename El, bool O>
 void Mark<El, O>::incrementMark()
 {
-	m()++;
+	mark()++;
 }
 
+/**
+ * @brief Decrements the mark of the current element/mesh by 1.
+ */
 template<typename El, bool O>
 void Mark<El, O>::decrementMark()
 {
-	m()--;
+	mark()--;
 }
 
 template<typename El, bool O>
@@ -93,25 +129,30 @@ void Mark<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasMark<Element>) {
 		if (isMarkEnabledOn(e)) {
-			m() = e.mark();
+			mark() = e.mark();
 		}
 	}
 }
 
 template<typename El, bool O>
-int& Mark<El, O>::m()
+int& Mark<El, O>::mark()
 {
 	return Base::data(this);
 }
 
-template<typename El, bool O>
-int Mark<El, O>::m() const
-{
-	return Base::data(this);
-}
-
-template <typename T>
-bool isMarkEnabledOn(const T& element)
+/**
+ * @brief Checks if the given Element/Mesh has the Mark component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has the Mark component available, `false`
+ * otherwise.
+ */
+bool isMarkEnabledOn(const ElementOrMeshConcept auto& element)
 {
 	return isComponentEnabledOn<MARK>(element);
 }

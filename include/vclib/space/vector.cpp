@@ -205,16 +205,19 @@ void Vector<T, N>::set(const T& e, uint i)
  * the values from the range `r` by constructing a new std::vector from the
  * range `r`.
  *
- * @tparam Rng: The type of the range.
+ * @tparam Rng: The type of the range, it must satisfy the Range concept and the
+ * value type of the range must be convertible to T.
  *
  * @param[in] r: The range of values to set the elements of the Vector to.
  */
 template<typename T, int N>
 template<Range Rng>
 void Vector<T, N>::set(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, T>
 {
 	if constexpr (N >= 0) {
-		uint n = std::min(N, (int)std::distance(std::ranges::begin(r), std::ranges::end(r)));
+		uint n = std::min(
+			N, (int) std::distance(std::ranges::begin(r), std::ranges::end(r)));
 		std::copy_n(std::ranges::begin(r), n, container.begin());
 	}
 	else {
@@ -262,7 +265,8 @@ bool Vector<T, N>::contains(const typename MakeConstPointer<T>::type& e) const
  * `end()` if the element is not found.
  */
 template<typename T, int N>
-typename Vector<T, N>::Iterator Vector<T, N>::find(const typename MakeConstPointer<T>::type& e)
+typename Vector<T, N>::Iterator
+Vector<T, N>::find(const typename MakeConstPointer<T>::type& e)
 {
 	return std::find(container.begin(), container.end(), e);
 }

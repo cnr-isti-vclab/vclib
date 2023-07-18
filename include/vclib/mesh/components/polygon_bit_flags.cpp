@@ -26,7 +26,6 @@
 namespace vcl::comp {
 
 /**
- * @private
  * @brief Constructor that initializes the bits to false.
  */
 template<int N, typename El, bool O>
@@ -417,13 +416,12 @@ void PolygonBitFlags<N, El, O>::importFrom(const Element& e)
 	if constexpr (HasBitFlags<Element>) {
 		resetBitFlags();
 		if constexpr (HasPolygonBitFlags<Element>) {
-			bool isD = deleted();
 			flags() = e.flags();
 			edgeFlags() = e.edgeFlags();
-			deleted() = isD;
 		}
 		else {
 			// BitFlags
+			deleted() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
