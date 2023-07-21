@@ -21,32 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_H
-#define VCL_ALGORITHMS_H
+#ifndef VCL_ALGORITHMS_EXPORT_H
+#define VCL_ALGORITHMS_EXPORT_H
 
-#include "algorithms/bounding_box.h"
-#include "algorithms/clean.h"
-#include "algorithms/create.h"
-#include "algorithms/distance.h"
-#include "algorithms/export.h"
-#include "algorithms/fitting.h"
-#include "algorithms/generate.h"
-#include "algorithms/intersection.h"
-#include "algorithms/point_sampling.h"
-#include "algorithms/polygon.h"
-#include "algorithms/shuffle.h"
-#include "algorithms/smooth.h"
-#include "algorithms/sort.h"
-#include "algorithms/stat.h"
-#include "algorithms/update.h"
+#include "export/to_matrix.h"
 
-/**
- * @defgroup algorithms Algorithms
- *
- * @brief List of function algorithms of VCLib.
- *
- * You can access all the algorithms of VCLib by including
- * `#include <vclib/algorithms.h>`
- */
-
-#endif // VCL_ALGORITHMS_H
+#endif // VCL_ALGORITHMS_EXPORT_H

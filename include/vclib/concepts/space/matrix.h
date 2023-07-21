@@ -24,10 +24,20 @@
 #ifndef VCL_CONCEPTS_SPACE_MATRIX_H
 #define VCL_CONCEPTS_SPACE_MATRIX_H
 
+#include <vclib/types.h>
+
 namespace vcl {
 
+/**
+ * @brief Concept for Eigen matrices. It is satisfied when `T` is an Eigen
+ * matrix.
+ *
+ * The concept just checks that `T` has the following members:
+ * - `T::RowsAtCompileTime`
+ * - `T::ColsAtCompileTime`
+ */
 template<typename T>
-concept EigenMatrixConcept = requires(T o, const T& co)
+concept EigenMatrixConcept = requires (T o, const T& co)
 {
 	o.RowsAtCompileTime;
 	o.ColsAtCompileTime;
