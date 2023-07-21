@@ -40,14 +40,17 @@ Array<T, N>::Array() : v(0)
 }
 
 /**
- * @brief Constructor for the Array class that creates an N-dimensional array with the given sizes.
- * All its elements are initialized to 0.
+ * @brief Constructor for the Array class that creates an N-dimensional array
+ * with the given sizes. All its elements are initialized to 0.
  *
- * @tparam Sizes: Variadic parameter pack containing N sizes, one for every dimension of the array.
+ * @tparam Sizes: Variadic parameter pack containing N sizes, one for every
+ * dimension of the array.
  *
- * @param[in] s: Variadic parameter pack containing N sizes, one for every dimension of the array.
+ * @param[in] s: Variadic parameter pack containing N sizes, one for every
+ * dimension of the array.
  *
- * @note The number of arguments must match the number of dimensions of the array.
+ * @note The number of arguments must match the number of dimensions of the
+ * array.
  */
 template<class T, uint N>
 template<typename... Sizes>
@@ -63,8 +66,9 @@ Array<T, N>::Array(Sizes... s) requires(sizeof...(s) == N)
 }
 
 /**
- * @brief Creates and initializes an N-dimensional array. Sizes are given by the maximum size of the
- * initializer lists for every dimension, and missing values are automatically set to zero.
+ * @brief Creates and initializes an N-dimensional array. Sizes are given by the
+ * maximum size of the initializer lists for every dimension, and missing values
+ * are automatically set to zero.
  *
  * Example code:
  * @code{.cpp}
@@ -80,8 +84,8 @@ Array<T, N>::Array(Sizes... s) requires(sizeof...(s) == N)
  *
  * @param[in] values: The nested initializer lists of values.
  *
- * @warning The number of levels of the nested initializer lists must correspond to the number of
- * dimensions of the array.
+ * @note The number of levels of the nested initializer lists must correspond
+ * to the number of dimensions of the array.
  */
 template<class T, uint N>
 Array<T, N>::Array(NestedInitializerLists<T, N> values)
@@ -145,7 +149,8 @@ std::size_t Array<T, N>::cols() const requires (N == 2)
  *
  * @return The size of the X dimension of the array.
  *
- * @note This function can only be called for arrays with at least one dimension.
+ * @note This function can only be called for arrays with at least one
+ * dimension.
  */
 template<class T, uint N>
 std::size_t Array<T, N>::sizeX() const requires (N >= 1)
@@ -158,7 +163,8 @@ std::size_t Array<T, N>::sizeX() const requires (N >= 1)
  *
  * @return The size of the Y dimension of the array.
  *
- * @note This function can only be called for arrays with at least two dimensions.
+ * @note This function can only be called for arrays with at least two
+ * dimensions.
  */
 template<class T, uint N>
 std::size_t Array<T, N>::sizeY() const requires (N >= 2)
@@ -171,7 +177,8 @@ std::size_t Array<T, N>::sizeY() const requires (N >= 2)
  *
  * @return The size of the Z dimension of the array.
  *
- * @note This function can only be called for arrays with at least three dimensions.
+ * @note This function can only be called for arrays with at least three
+ * dimensions.
  */
 template<class T, uint N>
 std::size_t Array<T, N>::sizeZ() const requires (N >= 3)
@@ -184,7 +191,8 @@ std::size_t Array<T, N>::sizeZ() const requires (N >= 3)
  *
  * @return The size of the W dimension of the array.
  *
- * @note This function can only be called for arrays with at least four dimensions.
+ * @note This function can only be called for arrays with at least four
+ * dimensions.
  */
 template<class T, uint N>
 std::size_t Array<T, N>::sizeW() const requires (N >= 4)
@@ -193,8 +201,8 @@ std::size_t Array<T, N>::sizeW() const requires (N >= 4)
 }
 
 /**
- * @brief Operator () that allows to access one element of the array. It can be used as left or
- * right value.
+ * @brief Operator () that allows to access one element of the array. It can be
+ * used as left or right value.
  *
  * @tparam I: Types of the indices used to access the element of the array.
  *
@@ -205,15 +213,16 @@ std::size_t Array<T, N>::sizeW() const requires (N >= 4)
  */
 template<class T, uint N>
 template<typename... I>
-typename Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(sizeof...(indices) == N)
+typename Array<T, N>::Reference Array<T, N>::operator()(I... indices)
+	requires (sizeof...(indices) == N)
 {
 	std::size_t args[N] = {static_cast<std::size_t>(indices)...};
 	return v[getIndex(args)];
 }
 
 /**
- * @brief Operator () that allows to access one element of the array. It can be used only as right
- * value.
+ * @brief Operator () that allows to access one element of the array. It can be
+ * used only as right value.
  *
  * @tparam I: Types of the indices used to access the element of the array.
  *
@@ -225,60 +234,73 @@ typename Array<T, N>::Reference Array<T, N>::operator()(I... indices) requires(s
 template<class T, uint N>
 template<typename... I>
 typename Array<T, N>::ConstReference Array<T, N>::operator()(I... indices) const
-	requires(sizeof...(indices) == N)
+	requires (sizeof...(indices) == N)
 {
 	std::size_t args[N] = {static_cast<std::size_t>(indices)...};
 	return v[getIndex(args)];
 }
 
 /**
- * @brief Allows to get the data of the Array, through a pointer to the first element.
+ * @brief Allows to get the data of the Array, through a pointer to the first
+ * element.
  *
- * The function also allows to get the pointer of a specific position in the array.
+ * The function also allows to get the pointer of a specific position in the
+ * array.
  *
  * Example:
  * @code{.cpp}
  * Array<int, 3> array(10, 13, 4);
  * //...
- * int* carray = array.data(3); //carray will point to the element in position (3, 0, 0).
+ * int* carray = array.data(3); // carray will point to the element in position
+ *                              // (3, 0, 0).
  *
- * carray = array.data(5, 2); // carray will point to the element in position (5, 2, 0).
+ * carray = array.data(5, 2); // carray will point to the element in position
+ *                            // (5, 2, 0).
  *
- * carray = array.data(); // carray will point to the element in position (0, 0, 0).
+ * carray = array.data(); // carray will point to the element in position
+ *                        // (0, 0, 0).
  * @endcode
  *
  * @tparam I: Types of the indices used to access a subarray of the array.
  *
- * @param[in] indices: A number of indices that is less than the number of dimensions of the array.
+ * @param[in] indices: A number of indices that is less than the number of
+ * dimensions of the array.
  *
  * @return A pointer to the requested subarray.
  */
 template<class T, uint N>
 template<typename... I>
-typename Array<T, N>::Pointer Array<T, N>::data(I... indices) requires(sizeof...(indices) < N)
+typename Array<T, N>::Pointer Array<T, N>::data(I... indices)
+	requires (sizeof...(indices) < N)
 {
 	return const_cast<Pointer>(std::as_const(*this).data(indices...));
 }
 
 /**
- * @brief Allows to get the data of the Array, through a pointer to the first element.
+ * @brief Allows to get the data of the Array, through a pointer to the first
+ * element.
  *
- * The function also allows to get the pointer of a specific position in the array.
+ * The function also allows to get the pointer of a specific position in the
+ * array.
  *
  * Example:
  * @code{.cpp}
  * Array<int, 3> array(10, 13, 4);
  * //...
- * const int* carray = array.data(3); //carray will point to the element in position (3, 0, 0).
+ * const int* carray = array.data(3); // carray will point to the element in
+ *                                    // position (3, 0, 0).
  *
- * carray = array.data(5, 2); // carray will point to the element in position (5, 2, 0).
+ * carray = array.data(5, 2); // carray will point to the element in position
+ *                            // (5, 2, 0).
  *
- * carray = array.data(); // carray will point to the element in position (0, 0, 0).
+ * carray = array.data(); // carray will point to the element in position
+ *                        // (0, 0, 0).
  * @endcode
  *
  * @tparam I: Types of the indices used to access a subarray of the array.
  *
- * @param[in] indices: A number of indices that is less than the number of dimensions of the array.
+ * @param[in] indices: A number of indices that is less than the number of
+ * dimensions of the array.
  *
  * @return A const pointer to the requested subarray.
  */
@@ -309,9 +331,11 @@ typename Array<T, N>::ConstPointer Array<T, N>::data(I... indices) const
 }
 
 /**
- * @brief Returns a std::vector containing the elements of the array in row-major order
+ * @brief Returns a std::vector containing the elements of the array in
+ * row-major order.
  *
- * @return A std::vector containing the elements of the array in row-major order.
+ * @return A std::vector containing the elements of the array in row-major
+ * order.
  */
 template<class T, uint N>
 std::vector<T> Array<T, N>::stdVector() &
@@ -320,9 +344,11 @@ std::vector<T> Array<T, N>::stdVector() &
 }
 
 /**
- * @brief Returns a std::vector containing the elements of the array in row-major order
+ * @brief Returns a std::vector containing the elements of the array in
+ * row-major order.
  *
- * @return A std::vector containing the elements of the array in row-major order.
+ * @return A std::vector containing the elements of the array in row-major
+ * order.
  */
 template<class T, uint N>
 std::vector<T>&& Array<T, N>::stdVector() &&
@@ -331,9 +357,11 @@ std::vector<T>&& Array<T, N>::stdVector() &&
 }
 
 /**
- * @brief Returns a std::vector containing the elements of the array in row-major order
+ * @brief Returns a std::vector containing the elements of the array in
+ * row-major order.
  *
- * @return A const reference to a std::vector containing the elements of the array in row-major order.
+ * @return A const reference to a std::vector containing the elements of the
+ * array in row-major order.
  */
 template<class T, uint N>
 const std::vector<T>& Array<T, N>::stdVector() const&
@@ -353,31 +381,39 @@ void Array<T, N>::fill(const T& t)
 }
 
 /**
- * @brief Fills the entire Array with the values contained in the range r, in row-major order.
+ * @brief Fills the entire Array with the values contained in the range r, in
+ * row-major order.
  *
- * If the size of the container is greater than the total size of the array, the remaining elements
- * of the container will be ignored. If the size of the container is less than the total size of the
- * array, the remaining values in the array will be left unchanged.
+ * If the size of the container is greater than the total size of the array, the
+ * remaining elements of the container will be ignored. If the size of the
+ * container is less than the total size of the array, the remaining values in
+ * the array will be left unchanged.
  *
- * @tparam Rng: Type of the range of values to fill the array with. It must satisfy the Range
- * concept.
+ * @tparam Rng: Type of the range of values to fill the array with. It must
+ * satisfy the Range concept.
  *
- * @param[in] r: A range of the same type as the array. The range must have `begin()` and `end()`
- * members provided.
+ * @param[in] r: A range of the same type as the array. The range must have
+ * `begin()` and `end()` members provided.
  */
 template<class T, uint N>
 template<Range Rng>
 void Array<T, N>::fill(Rng&& r)
 {
 	uint i = 0;
-	for (auto it = std::ranges::begin(r); it != std::ranges::end(r) && i < v.size(); ++i, ++it)
+	for (auto it = std::ranges::begin(r);
+		 it != std::ranges::end(r) && i < v.size();
+		 ++i, ++it)
+	{
 		v[i] = *it;
+	}
 }
 
 /**
- * @brief Allows to resize the Array, not conserving the values of the previous array.
+ * @brief Allows to resize the Array, not conserving the values of the previous
+ * array.
  *
- * @tparam Sizes: Types of the arguments representing the new sizes of the Array.
+ * @tparam Sizes: Types of the arguments representing the new sizes of the
+ * Array.
  *
  * @param[in] s: N elements representing the new sizes of the Array.
  */
@@ -395,12 +431,15 @@ void Array<T, N>::resize(Sizes... s) requires(sizeof...(s) == N)
 }
 
 /**
- * @brief Allows to resize the Array, conserving the values of the previous array.
+ * @brief Allows to resize the Array, conserving the values of the previous
+ * array.
  *
- * The new array will have the specified sizes if possible, but if any dimension is smaller
- * than the previous size, then the values in those dimensions will be conserved.
+ * The new array will have the specified sizes if possible, but if any dimension
+ * is smaller than the previous size, then the values in those dimensions will
+ * be conserved.
  *
- * @tparam Sizes: Types of the arguments representing the new sizes of the Array.
+ * @tparam Sizes: Types of the arguments representing the new sizes of the
+ * Array.
  *
  * @param[in] s: N elements representing the new sizes of the Array.
  */
@@ -444,17 +483,19 @@ void Array<T, N>::clear()
 }
 
 /**
- * @brief Creates a new subArray of dimension N-1, starting from the given index at its first
- * dimension.
+ * @brief Creates a new subArray of dimension N-1, starting from the given index
+ * at its first dimension.
  *
- * The new subArray has the same type as the original array, but one dimension less, and contains
- * the elements of the original array starting from the given index at its first dimension.
+ * The new subArray has the same type as the original array, but one dimension
+ * less, and contains the elements of the original array starting from the given
+ * index at its first dimension.
  *
  * Example:
  * @code{.cpp}
  * Array<int, 3> a(4,2,6);
  * Array<int, 2> sa = a.subArray(1);
- * // sa is a 2x6 2D Array, containing the elements at the second "row" of Array a.
+ * // sa is a 2x6 2D Array, containing the elements at the second "row" of Array
+ * a.
  * @endcode
  *
  * @param r: Index at the first dimension to start the sub-array.
@@ -547,7 +588,8 @@ std::array<std::size_t, N> Array<T, N>::reverseIndex(uint index)
 }
 
 template<class T, uint N>
-std::size_t Array<T, N>::getIndex(const std::size_t indices[], const std::size_t sizes[])
+std::size_t
+Array<T, N>::getIndex(const std::size_t indices[], const std::size_t sizes[])
 {
 	std::size_t ind = indices[0];
 	assert(indices[0] < sizes[0]);
@@ -562,7 +604,8 @@ std::size_t Array<T, N>::getIndex(const std::size_t indices[], const std::size_t
 template<typename T, uint N>
 void Array<T, N>::initializeNestedLists(NestedInitializerLists<T, N> values)
 {
-	std::list<std::size_t> szs = NestedInitializerListsProcessor<T, N>::maxDimensionsLevels(values);
+	std::list<std::size_t> szs =
+		NestedInitializerListsProcessor<T, N>::maxDimensionsLevels(values);
 
 	uint   i         = 0;
 	size_t totalSize = 1;
