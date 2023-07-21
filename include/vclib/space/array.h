@@ -28,6 +28,7 @@
 #include <array>
 #include <vector>
 
+#include <vclib/concepts/space/array.h>
 #include <vclib/concepts/range.h>
 #include <vclib/misc/nested_initializer_lists.h>
 #include <vclib/types.h>

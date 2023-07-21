@@ -24,6 +24,7 @@
 #ifndef VCL_CONCEPTS_SPACE_H
 #define VCL_CONCEPTS_SPACE_H
 
+#include "space/array.h"
 #include "space/box.h"
 #include "space/matrix.h"
 #include "space/point.h"

@@ -147,6 +147,7 @@ set(HEADERS
 	include/vclib/concepts/ranges/mesh/edge_range.h
 	include/vclib/concepts/ranges/mesh/face_range.h
 	include/vclib/concepts/ranges/mesh/vertex_range.h
+	include/vclib/concepts/space/array.h
 	include/vclib/concepts/space/box.h
 	include/vclib/concepts/space/matrix.h
 	include/vclib/concepts/space/plane.h
