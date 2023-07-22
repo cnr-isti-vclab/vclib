@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
-#define VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
+#ifndef VCL_ALGORITHMS_EXPORT_MATRIX_H
+#define VCL_ALGORITHMS_EXPORT_MATRIX_H
 
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/mesh/requirements.h>
@@ -41,8 +41,17 @@ Matrix edgeMatrix(const MeshType& m);
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexNormalsMatrix(const MeshType& m);
 
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceNormalsMatrix(const MeshType& m);
+
+template<MatrixConcept Matrix, MeshConcept MeshType>
+Matrix vertexColorsMatrix(const MeshType& m);
+
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceColorsMatrix(const MeshType& m);
+
 } // namespace vcl
 
-#include "to_matrix.cpp"
+#include "matrix.cpp"
 
-#endif // VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
+#endif // VCL_ALGORITHMS_EXPORT_MATRIX_H

@@ -80,7 +80,7 @@ set(HEADERS
 	include/vclib/algorithms/distance/element.h
 	include/vclib/algorithms/distance/mesh.h
 	include/vclib/algorithms/distance/misc.h
-	include/vclib/algorithms/export/to_matrix.h
+	include/vclib/algorithms/export/matrix.h
 	include/vclib/algorithms/intersection/element.h
 	include/vclib/algorithms/intersection/functions.h
 	include/vclib/algorithms/intersection/mesh.h
@@ -360,7 +360,7 @@ set(SOURCES
 	include/vclib/algorithms/distance/element.cpp
 	include/vclib/algorithms/distance/mesh.cpp
 	include/vclib/algorithms/distance/misc.cpp
-	include/vclib/algorithms/export/to_matrix.cpp
+	include/vclib/algorithms/export/matrix.cpp
 	include/vclib/algorithms/intersection/element.cpp
 	include/vclib/algorithms/intersection/mesh.cpp
 	include/vclib/algorithms/intersection/misc.cpp

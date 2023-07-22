@@ -21,7 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "to_matrix.h"
+#include "matrix.h"
 
 namespace vcl {
 
@@ -52,12 +52,10 @@ namespace vcl {
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexMatrix(const MeshType& mesh)
 {
-	using VertexType = typename MeshType::VertexType;
-
 	Matrix V(mesh.vertexNumber(), 3);
 
 	uint i = 0;
-	for (const VertexType& v : mesh.vertices()) {
+	for (const auto& v : mesh.vertices()) {
 		for (uint j = 0; j < 3; ++j) {
 			V(i, j) = v.coord()[j];
 		}
@@ -102,13 +100,10 @@ Matrix faceMatrix(const MeshType& mesh)
 {
 	vcl::requireVertexContainerCompactness(mesh);
 
-	using VertexType = typename MeshType::VertexType;
-	using FaceType = typename MeshType::FaceType;
-
 	Matrix F(mesh.faceNumber(), 3);
 
 	uint i = 0;
-	for (const FaceType& f : mesh.faces()){
+	for (const auto& f : mesh.faces()){
 		// check if this face is greater than the cols of the matrix
 		if (f.vertexNumber() > F.cols()) { // need to resize
 			uint oldCols = F.cols(); // save old cols number
@@ -120,7 +115,7 @@ Matrix faceMatrix(const MeshType& mesh)
 			}
 		}
 		uint j = 0;
-		for (const VertexType* v : f.vertices()){
+		for (const auto* v : f.vertices()){
 			F(i, j) = mesh.index(v);
 			j++;
 		}
@@ -164,13 +159,10 @@ Matrix edgeMatrix(const MeshType &mesh)
 {
 	vcl::requireVertexContainerCompactness(mesh);
 
-	using VertexType = typename MeshType::VertexType;
-	using EdgeType = typename MeshType::EdgeType;
-
 	Matrix E(mesh.edgeNumber(), 2);
 
 	uint i = 0;
-	for (const EdgeType& e : mesh.edges()){
+	for (const auto& e : mesh.edges()){
 		E(i, 0) = mesh.index(e.vertex(0));
 		E(i, 1) = mesh.index(e.vertex(1));
 		++i; // go to next edge/row
@@ -182,13 +174,17 @@ Matrix edgeMatrix(const MeshType &mesh)
  * @brief Get a #V*3 Matrix of scalars containing the normals of the vertices of
  * a Mesh. The function is templated on the Matrix itself.
  *
- * This function works with every Matrix type that satisfies the MatrixConcept.
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-vertex normals.
  *
  * Usage example with Eigen Matrix:
  *
  * @code{.cpp}
  * Eigen::MatrixX3d VN = vcl::vertexNormalsMatrix<Eigen::MatrixX3d>(myMesh);
  * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * normals enabled.
  *
  * @note This function does not guarantee that the rows of the vertices
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -203,18 +199,139 @@ Matrix vertexNormalsMatrix(const MeshType& mesh)
 {
 	requirePerVertexNormal(mesh);
 
-	using VertexType = typename MeshType::VertexType;
-
 	Matrix VN(mesh.vertexNumber(), 3);
 
 	uint i = 0;
-	for (const VertexType& v : mesh.vertices()) {
+	for (const auto& v : mesh.vertices()) {
 		for (uint j = 0; j < 3; ++j) {
 			VN(i, j) = v.normal()[j];
 		}
 		++i;
 	}
 	return VN;
+}
+
+/**
+ * @brief Get a #F*3 Matrix of scalars containing the normals of the faces of
+ * a Mesh. The function is templated on the Matrix itself.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-face normals.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixX3d FN = vcl::faceNormalsMatrix<Eigen::MatrixX3d>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * normals enabled.
+ *
+ * @note This function does not guarantee that the rows of the faces
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return #F*3 matrix of scalars (face normals)
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceNormalsMatrix(const MeshType& mesh)
+{
+	vcl::requirePerFaceNormal(mesh);
+
+	Matrix FN(mesh.faceNumber(), 3);
+
+	uint i = 0;
+	for (const auto& f : mesh.faces()) {
+		for (uint j = 0; j < 3; ++j) {
+			FN(i, j) = f.normal()[j];
+		}
+		++i;
+	}
+	return FN;
+}
+
+/**
+ * @brief Get a #V*4 Matrix of integers containing the colors of the vertices of
+ * a Mesh. The function is templated on the Matrix itself.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-vertex colors.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixX4i VC = vcl::vertexColorsMatrix<Eigen::MatrixX4i>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * colors enabled.
+ *
+ * @note This function does not guarantee that the rows of the vertices
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return #V*4 matrix of integers (vertex colors)
+ */
+template<MatrixConcept Matrix, MeshConcept MeshType>
+Matrix vertexColorsMatrix(const MeshType& mesh)
+{
+	requirePerVertexColor(mesh);
+
+	Matrix VC(mesh.vertexNumber(), 4);
+
+	uint i = 0;
+	for (const auto& v : mesh.vertices()) {
+		for (uint j = 0; j < 4; ++j) {
+			VC(i, j) = v.color()[j];
+		}
+		++i;
+	}
+	return VC;
+}
+
+/**
+ * @brief Get a #F*4 Matrix of integers containing the colors of the faces of
+ * a Mesh. The function is templated on the Matrix itself.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-face colors.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixX4i FC = vcl::faceColorsMatrix<Eigen::MatrixX4i>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * colors enabled.
+ *
+ * @note This function does not guarantee that the rows of the faces
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return #F*4 matrix of integers (face colors)
+ */
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceColorsMatrix(const MeshType& mesh)
+{
+	vcl::requirePerFaceColor(mesh);
+
+	Matrix FC(mesh.faceNumber(), 3);
+
+	uint i = 0;
+	for (const auto& f : mesh.faces()) {
+		for (uint j = 0; j < 4; ++j) {
+			FC(i, j) = f.color()[j];
+		}
+		++i;
+	}
+	return FC;
 }
 
 } // namespace vcl
