@@ -107,6 +107,8 @@ public:
 
 	Vector();
 
+	Vector(std::size_t size, const T& value = T());
+
 	template<typename ItType>
 	Vector(ItType first, ItType last);
 
@@ -151,6 +153,8 @@ public:
 	/** Operators **/
 	Reference operator[](uint i);
 	ConstReference operator[](uint i) const;
+	Reference operator()(uint i);
+	ConstReference operator()(uint i) const;
 
 	/** Iterator Member functions **/
 

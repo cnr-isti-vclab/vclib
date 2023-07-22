@@ -127,6 +127,46 @@ Matrix faceMatrix(const MeshType& mesh)
 }
 
 /**
+ * @brief Get a #F Vector of integers containing the sizes of the faces of a
+ * Mesh.
+ *
+ * It could be useful when dealing with polygonal meshes.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator(uint).
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi F = vcl::faceSizesVector<Eigen::VectorXi>(myMesh);
+ * @endif
+ *
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ *
+ * @tparam Vect: type of the vector to be returned.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return #F vector of integers (face sizes)
+ */
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceSizesVector(const MeshType& mesh)
+{
+	vcl::requireVertexContainerCompactness(mesh);
+
+	Vect F(mesh.faceNumber());
+
+	uint i = 0;
+	for (const auto& f : mesh.faces()){
+		F(i) = f.vertexNumber();
+		++i;
+	}
+	return F;
+}
+
+/**
  * @brief Get a #E*2 Matrix of integers containing the indices of the vertices
  * of the edges of a Mesh. The function is templated on the Matrix itself.
  *
@@ -332,6 +372,88 @@ Matrix faceColorsMatrix(const MeshType& mesh)
 		++i;
 	}
 	return FC;
+}
+
+/**
+ * @brief Get a #V Vector of scalars containing the quality of the vertices of
+ * a Mesh. The function is templated on the Vector itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator(uint), and requires that the mesh has
+ * per-vertex quality.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXd VQ = vcl::vertexQualityVector<Eigen::VectorXd>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-vertex
+ * quality enabled.
+ *
+ * @note This function does not guarantee that the rows of the vertices
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return #V vector of scalars (vertex quality)
+ */
+template<typename Vect, MeshConcept MeshType>
+Vect vertexQualityVector(const MeshType& mesh)
+{
+	vcl::requirePerVertexQuality(mesh);
+
+	Vect VQ(mesh.vertexNumber());
+
+	uint i = 0;
+	for (const auto& v : mesh.vertices()) {
+		VQ(i) = v.quality();
+		++i;
+	}
+
+	return VQ;
+}
+
+/**
+ * @brief Get a #F Vector of scalars containing the quality of the faces of
+ * a Mesh. The function is templated on the Vector itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator(uint), and requires that the mesh has
+ * per-face quality.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXd FQ = vcl::faceQualityVector<Eigen::VectorXd>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-face
+ * quality enabled.
+ *
+ * @note This function does not guarantee that the rows of the faces
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @param[in] mesh: input mesh
+ * @return #F vector of scalars (face quality)
+ */
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceQualityVector(const MeshType& mesh)
+{
+	vcl::requirePerFaceQuality(mesh);
+
+	Vect FQ(mesh.faceNumber());
+
+	uint i = 0;
+	for (const auto& f : mesh.faces()) {
+		FQ(i) = f.quality();
+		++i;
+	}
+
+	return FQ;
 }
 
 } // namespace vcl

@@ -30,25 +30,34 @@
 namespace vcl {
 
 template<MatrixConcept Matrix, MeshConcept MeshType>
-Matrix vertexMatrix(const MeshType& m);
+Matrix vertexMatrix(const MeshType& mesh);
 
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix faceMatrix(const MeshType& m);
+Matrix faceMatrix(const MeshType& mesh);
+
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceSizesVector(const MeshType& mesh);
 
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
-Matrix edgeMatrix(const MeshType& m);
+Matrix edgeMatrix(const MeshType& mesh);
 
 template<MatrixConcept Matrix, MeshConcept MeshType>
-Matrix vertexNormalsMatrix(const MeshType& m);
+Matrix vertexNormalsMatrix(const MeshType& mesh);
 
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix faceNormalsMatrix(const MeshType& m);
+Matrix faceNormalsMatrix(const MeshType& mesh);
 
 template<MatrixConcept Matrix, MeshConcept MeshType>
-Matrix vertexColorsMatrix(const MeshType& m);
+Matrix vertexColorsMatrix(const MeshType& mesh);
 
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
-Matrix faceColorsMatrix(const MeshType& m);
+Matrix faceColorsMatrix(const MeshType& mesh);
+
+template<typename Vect, MeshConcept MeshType>
+Vect vertexQualityVector(const MeshType& mesh);
+
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceQualityVector(const MeshType& mesh);
 
 } // namespace vcl
 

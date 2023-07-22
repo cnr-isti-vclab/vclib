@@ -29,6 +29,7 @@
 #include <utility>
 #include <vector>
 
+#include <vclib/exceptions.h>
 #include <vclib/views/view.h>
 
 namespace vcl {
@@ -42,6 +43,36 @@ namespace vcl {
 template<typename T, int N>
 Vector<T, N>::Vector()
 {
+}
+
+/**
+ * @brief Creates a Vector object with the specified size.
+ *
+ * If the container is dynamic, its size is set to `size`.
+ * When the container is static, the given size must be equal to N.
+ * The elements are initialized with their empty constructor if the argument
+ * `value` is not specified. Otherwise, the elements are initialized with the
+ * given value.
+ *
+ * @throws WrongSizeException if the given size is not equal to N and the
+ * container is static.
+ *
+ * @param[in] size: the size of the container.
+ * @param[in] value: the value to initialize the elements with.
+ */
+template<typename T, int N>
+Vector<T, N>::Vector(std::size_t size, const T& value)
+{
+	if constexpr (N >= 0) {
+		if (size != N) {
+			throw WrongSizeException(
+				"Vector must have " + std::to_string(N) + " size.");
+		}
+		fill(value);
+	}
+	else {
+		container.resize(size, value);
+	}
 }
 
 /**
@@ -332,6 +363,30 @@ typename Vector<T, N>::Reference Vector<T, N>::operator[](uint i)
  */
 template<typename T, int N>
 typename Vector<T, N>::ConstReference Vector<T, N>::operator[](uint i) const
+{
+	return container[i];
+}
+
+/**
+ * @brief Returns a reference to the element at specified location i. No bounds
+ * checking is performed.
+ * @param[in] i: Position of the element to return
+ * @return A reference to the requested element.
+ */
+template<typename T, int N>
+typename Vector<T, N>::Reference Vector<T, N>::operator()(uint i)
+{
+	return container[i];
+}
+
+/**
+ * @brief Returns a const reference to the element at specified location i. No
+ * bounds checking is performed.
+ * @param[in] i: Position of the element to return
+ * @return A const reference to the requested element.
+ */
+template<typename T, int N>
+typename Vector<T, N>::ConstReference Vector<T, N>::operator()(uint i) const
 {
 	return container[i];
 }
