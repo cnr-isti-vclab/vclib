@@ -29,24 +29,27 @@ namespace vcl {
  * @brief Get a #V*3 Matrix of scalars containing the coordinates of the
  * vertices of a Mesh. The function is templated on the Matrix itself.
  *
- * This function works with every Matrix type that:
- * - has a constructor with rows and columns numbers;
- * - has the `()` operator to acces to the (i,j) element (e.g.: `M(i,j) = 0;`).
+ * This function works with every Matrix type that satisfies the MatrixConcept.
  *
- * Usage example with Eigen Matrix:
+ * Usage example with an Eigen Matrix:
  *
  * @code{.cpp}
  * Eigen::MatrixX3d V = vcl::vertexMatrix<Eigen::MatrixX3d>(myMesh);
  * @endif
  *
- * Requirements:
- * - Mesh:
- *   - Vertices
+ * @note This function does not guarantee that the rows of the vertices
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
  *
  * @param[in] mesh: input mesh
  * @return #V*3 matrix of scalars (vertex coordinates)
  */
-template<typename Matrix, MeshConcept MeshType>
+template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexMatrix(const MeshType& mesh)
 {
 	using VertexType = typename MeshType::VertexType;
@@ -70,11 +73,7 @@ Matrix vertexMatrix(const MeshType& mesh)
  * If the mesh is polygonal, the matrix will have a number of rows equal to the
  * greatest polygon of the mesh, and unused values will be set to -1.
  *
- * This function works with every Matrix type that:
- * - has a constructor with rows and columns numbers;
- * - has the `()` operator to acces to the (i,j) element (e.g.: `M(i,j) = 0;`);
- * - has the rows() and cols() member functions;
- * - has the conservativeResize() member function.
+ * This function works with every Matrix type that satisfies the MatrixConcept.
  *
  * Usage example with Eigen Matrix:
  *
@@ -82,16 +81,23 @@ Matrix vertexMatrix(const MeshType& mesh)
  * Eigen::MatrixXi F = vcl::faceMatrix<Eigen::MatrixXi>(myMesh);
  * @endif
  *
- * Requirements:
- * - Mesh:
- *   - Vertices
- *     - Compactness
- *   - Faces
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ *
+ * @note This function does not guarantee that the rows of the faces
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
  *
  * @param[in] mesh: input mesh
- * @return #F*max(size(F))3 matrix of vertex indices
+ * @return #F*max(size(F)) matrix of vertex indices
  */
-template<typename Matrix, FaceMeshConcept MeshType>
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceMatrix(const MeshType& mesh)
 {
 	vcl::requireVertexContainerCompactness(mesh);
@@ -129,9 +135,7 @@ Matrix faceMatrix(const MeshType& mesh)
  * @brief Get a #E*2 Matrix of integers containing the indices of the vertices
  * of the edges of a Mesh. The function is templated on the Matrix itself.
  *
- * This function works with every Matrix type that:
- * - has a constructor with rows and columns numbers;
- * - has the `()` operator to acces to the (i,j) element (e.g.: `M(i,j) = 0;`).
+ * This function works with every Matrix type that satisfies the MatrixConcept.
  *
  * Usage example with Eigen Matrix:
  *
@@ -139,16 +143,23 @@ Matrix faceMatrix(const MeshType& mesh)
  * Eigen::MatrixXi E = vcl::edgeMatrix<Eigen::MatrixXi>(myMesh);
  * @endcode
  *
- * Requirements:
- * - Mesh:
- *   - Edges
- *   - Vertices
- *     - Compactness
+ * @throws vcl::MissingCompactnessException if the vertex container is not
+ * compact.
+ *
+ * @note This function does not guarantee that the rows of the edges
+ * correspond to the edge indices of the mesh. This scenario is possible
+ * when the mesh has deleted edges. To be sure to have a direct
+ * correspondence, compact the edge container before calling this function.
+ *
+ * @tparam Matrix: type of the matrix to be returned, it must satisfy the
+ * MatrixConcept.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * EdgeMeshConcept.
  *
  * @param[in] mesh: input mesh
  * @return #E*2 matrix of integers (edge indices)
  */
-template<typename Matrix, EdgeMeshConcept MeshType>
+template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix edgeMatrix(const MeshType &mesh)
 {
 	vcl::requireVertexContainerCompactness(mesh);
@@ -171,9 +182,7 @@ Matrix edgeMatrix(const MeshType &mesh)
  * @brief Get a #V*3 Matrix of scalars containing the normals of the vertices of
  * a Mesh. The function is templated on the Matrix itself.
  *
- * This function works with every Matrix type that:
- * - has a constructor with rows and columns numbers;
- * - has the `()` operator to acces to the (i,j) element (e.g.: `M(i,j) = 0;`).
+ * This function works with every Matrix type that satisfies the MatrixConcept.
  *
  * Usage example with Eigen Matrix:
  *
@@ -181,15 +190,15 @@ Matrix edgeMatrix(const MeshType &mesh)
  * Eigen::MatrixX3d VN = vcl::vertexNormalsMatrix<Eigen::MatrixX3d>(myMesh);
  * @endcode
  *
- * Requirements:
- * - Mesh:
- *   - Vertices
- *      - Normals
+ * @note This function does not guarantee that the rows of the vertices
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
  *
  * @param[in] mesh: input mesh
  * @return #V*3 matrix of scalars (vertex normals)
  */
-template<typename Matrix, MeshConcept MeshType>
+template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexNormalsMatrix(const MeshType& mesh)
 {
 	requirePerVertexNormal(mesh);

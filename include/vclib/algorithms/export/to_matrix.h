@@ -24,20 +24,21 @@
 #ifndef VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
 #define VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
 
+#include <vclib/concepts/space/matrix.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename Matrix, MeshConcept MeshType>
+template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexMatrix(const MeshType& m);
 
-template<typename Matrix, FaceMeshConcept MeshType>
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceMatrix(const MeshType& m);
 
-template<typename Matrix, EdgeMeshConcept MeshType>
+template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix edgeMatrix(const MeshType& m);
 
-template<typename Matrix, MeshConcept MeshType>
+template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexNormalsMatrix(const MeshType& m);
 
 } // namespace vcl
