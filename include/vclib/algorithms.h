@@ -28,7 +28,7 @@
 #include "algorithms/clean.h"
 #include "algorithms/create.h"
 #include "algorithms/distance.h"
-#include "algorithms/export_to_matrix.h"
+#include "algorithms/export.h"
 #include "algorithms/fitting.h"
 #include "algorithms/generate.h"
 #include "algorithms/intersection.h"
@@ -45,7 +45,8 @@
  *
  * @brief List of function algorithms of VCLib.
  *
- * You can access all the algorithms of VCLib by including `#include <vclib/algorithms.h>`
+ * You can access all the algorithms of VCLib by including
+ * `#include <vclib/algorithms.h>`
  */
 
 #endif // VCL_ALGORITHMS_H

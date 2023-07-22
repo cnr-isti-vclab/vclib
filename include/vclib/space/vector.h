@@ -35,25 +35,25 @@
 namespace vcl {
 
 /**
- * @brief The Vector class is a generic container of objects of type T, that
- * could have fixed or dynamic size, depending on the templated size N.
+ * @brief The Vector class is a generic container of objects of type `T`, that
+ * could have fixed or dynamic size, depending on the templated size `N`.
  *
- * The Vector class is a container that can hold objects of type T. The size of
- * the container can be either fixed or dynamic, depending on the value of the
- * template parameter N. If N is greater than or equal to zero, the container
- * will have a fixed size of N elements, and it will use an array to store the
- * elements. If N is less than zero, the container will have a dynamic size, and
- * it will use a vector to store the elements. The Vector class provides several
- * member functions to manipulate the elements of the container, such as getting
- * and setting individual elements, filling the container with a value, checking
- * if the container contains a certain element, and finding the index of a
- * certain element.
+ * The Vector class is a container that can hold objects of type `T`. The size
+ * of the container can be either fixed or dynamic, depending on the value of
+ * the template parameter `N`. If `N` is greater than or equal to zero, the
+ * container will have a fixed size of N elements, and it will use an array to
+ * store the elements. If `N` is less than zero, the container will have a
+ * dynamic size, and it will use a vector to store the elements. The Vector
+ * class provides several member functions to manipulate the elements of the
+ * container, such as getting and setting individual elements, filling the
+ * container with a value, checking if the container contains a certain element,
+ * and finding the index of a certain element.
  *
  * @tparam T: the type of the objects stored in the container.
- * @tparam N: the size of the container. If N is greater than or equal to zero,
- * the container will have a fixed size of N elements, and it will use an array
- * to store the elements. If N is less than zero, the container will have a
- * dynamic size, and it will use a vector to store the elements.
+ * @tparam N: the size of the container. If `N` is greater than or equal to
+ * zero, the container will have a fixed size of `N` elements, and it will use
+ * an array to store the elements. If `N` is less than zero, the container will
+ * have a dynamic size, and it will use a vector to store the elements.
  *
  * @ingroup space
  */
@@ -73,29 +73,36 @@ private:
 		typename std::vector<T>>;
 
 public:
-	/** The type of the elements stored in the Vector. */
+	/** @brief The type of the elements stored in the Vector. */
 	using ValueType = typename Container::value_type;
 
-	/** A const reference to the type of the elements stored in the Vector. */
+	/**
+	 * @brief A const reference to the type of the elements stored in the
+	 * Vector.
+	 */
 	using ConstReference = typename Container::const_reference;
 
-	/** A reference to the type of the elements stored in the Vector. */
+	/** @brief A reference to the type of the elements stored in the Vector. */
 	using Reference = typename Container::reference;
 
-	/** A const pointer to the type of the elements stored in the Vector. */
+	/**
+	 * @brief A const pointer to the type of the elements stored in the Vector.
+	 */
 	using ConstPointer = typename Container::const_pointer;
 
-	/** A pointer to the type of the elements stored in the Vector. */
+	/** @brief A pointer to the type of the elements stored in the Vector. */
 	using Pointer = typename Container::pointer;
 
-	/** An iterator to the elements of the Vector. */
+	/** @brief An iterator to the elements of the Vector. */
 	using Iterator = typename Container::iterator;
 
-	/** A const iterator to the elements of the Vector. */
+	/** @brief A const iterator to the elements of the Vector. */
 	using ConstIterator = typename Container::const_iterator;
 
-	/** Size of the vector at compile time. It will be -1 if the Vector has
-	 * dynamic size. */
+	/**
+	 * @brief Size of the vector at compile time. It will be -1 if the Vector
+	 * has dynamic size.
+	 */
 	static const int SIZE = N;
 
 	Vector();

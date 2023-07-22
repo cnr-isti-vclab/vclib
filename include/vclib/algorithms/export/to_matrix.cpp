@@ -21,13 +21,13 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "export_to_matrix.h"
+#include "to_matrix.h"
 
 namespace vcl {
 
 /**
- * @brief Get a #V*3 Matrix of scalars containing the coordinates of the vertices of a Mesh.
- * The function is templated on the Matrix itself.
+ * @brief Get a #V*3 Matrix of scalars containing the coordinates of the
+ * vertices of a Mesh. The function is templated on the Matrix itself.
  *
  * This function works with every Matrix type that:
  * - has a constructor with rows and columns numbers;
@@ -64,11 +64,11 @@ Matrix vertexMatrix(const MeshType& mesh)
 }
 
 /**
- * @brief Get a #F*max(size(F)) Matrix of integers containing the vertex indices for each face
- * of a Mesh.
+ * @brief Get a #F*max(size(F)) Matrix of integers containing the vertex indices
+ * for each face of a Mesh.
  *
- * If the mesh is polygonal, the matrix will have a number of rows equal to the greatest polygon of
- * the mesh, and unused values will be set to -1.
+ * If the mesh is polygonal, the matrix will have a number of rows equal to the
+ * greatest polygon of the mesh, and unused values will be set to -1.
  *
  * This function works with every Matrix type that:
  * - has a constructor with rows and columns numbers;
@@ -126,8 +126,8 @@ Matrix faceMatrix(const MeshType& mesh)
 }
 
 /**
- * @brief Get a #E*2 Matrix of integers containing the indices of the vertices of the edges of a Mesh.
- * The function is templated on the Matrix itself.
+ * @brief Get a #E*2 Matrix of integers containing the indices of the vertices
+ * of the edges of a Mesh. The function is templated on the Matrix itself.
  *
  * This function works with every Matrix type that:
  * - has a constructor with rows and columns numbers;
@@ -152,12 +152,12 @@ template<typename Matrix, EdgeMeshConcept MeshType>
 Matrix edgeMatrix(const MeshType &mesh)
 {
 	vcl::requireVertexContainerCompactness(mesh);
-	
+
 	using VertexType = typename MeshType::VertexType;
 	using EdgeType = typename MeshType::EdgeType;
-	
+
 	Matrix E(mesh.edgeNumber(), 2);
-	
+
 	uint i = 0;
 	for (const EdgeType& e : mesh.edges()){
 		E(i, 0) = mesh.index(e.vertex(0));
@@ -168,8 +168,8 @@ Matrix edgeMatrix(const MeshType &mesh)
 }
 
 /**
- * @brief Get a #V*3 Matrix of scalars containing the normals of the vertices of a Mesh.
- * The function is templated on the Matrix itself.
+ * @brief Get a #V*3 Matrix of scalars containing the normals of the vertices of
+ * a Mesh. The function is templated on the Matrix itself.
  *
  * This function works with every Matrix type that:
  * - has a constructor with rows and columns numbers;
@@ -190,14 +190,14 @@ Matrix edgeMatrix(const MeshType &mesh)
  * @return #V*3 matrix of scalars (vertex normals)
  */
 template<typename Matrix, MeshConcept MeshType>
-Matrix vertexNormalsMatrix(const MeshType& mesh) requires HasPerVertexNormal<MeshType>
+Matrix vertexNormalsMatrix(const MeshType& mesh)
 {
 	requirePerVertexNormal(mesh);
-	
+
 	using VertexType = typename MeshType::VertexType;
-	
+
 	Matrix VN(mesh.vertexNumber(), 3);
-	
+
 	uint i = 0;
 	for (const VertexType& v : mesh.vertices()) {
 		for (uint j = 0; j < 3; ++j) {

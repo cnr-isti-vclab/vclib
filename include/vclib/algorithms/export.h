@@ -21,25 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SPACE_H
-#define VCL_CONCEPTS_SPACE_H
+#ifndef VCL_ALGORITHMS_EXPORT_H
+#define VCL_ALGORITHMS_EXPORT_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/matrix.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/triangle.h"
+#include "export/to_matrix.h"
 
-/**
- * @defgroup space_concepts Space Concepts
- * @ingroup lconcepts
- *
- * @brief List of concepts for types related to the Spatial data structures of the library. They allow
- * to discriminate between different Data Structures types and their features.
- */
-
-#endif // VCL_CONCEPTS_SPACE_H
+#endif // VCL_ALGORITHMS_EXPORT_H

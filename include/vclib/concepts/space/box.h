@@ -31,9 +31,10 @@ namespace vcl {
 /**
  * @brief A concept representing a N-Dimensional Box.
  *
- * This concept defines a set of requirements that must be satisfied by any type that
- * wishes to be considered a Box. A Box is a geometric object that is defined by two points
- * in space, typically referred to as the minimum and maximum corners of the box.
+ * This concept defines a set of requirements that must be satisfied by any type
+ * that wishes to be considered a Box. A Box is a geometric object that is
+ * defined by two points in space, typically referred to as the minimum and
+ * maximum corners of the box.
  *
  * @tparam T: The type to be tested for conformity to the BoxConcept.
  */
@@ -89,11 +90,12 @@ concept BoxConcept = requires(
 };
 
 /**
- * @brief A concept that requires a type to satisfy the BoxConcept and have a dimension of 2.
+ * @brief A concept that requires a type to satisfy the BoxConcept and have a
+ * dimension of 2.
  *
- * The Box2Concept concept requires that the given type satisfies the BoxConcept concept and
- * that its dimension is equal to 2. This can be used to constrain template parameters of
- * functions or classes that require a 2D box.
+ * The Box2Concept concept requires that the given type satisfies the BoxConcept
+ * concept and that its dimension is equal to 2. This can be used to constrain
+ * template parameters of functions or classes that require a 2D box.
  *
  * @tparam T: The type to be tested for conformity to the Box2Concept.
  */
@@ -101,11 +103,12 @@ template<typename T>
 concept Box2Concept = BoxConcept<T> && T::DIM == 2;
 
 /**
- * @brief A concept that requires a type to satisfy the BoxConcept and have a dimension of 3.
+ * @brief A concept that requires a type to satisfy the BoxConcept and have a
+ * dimension of 3.
  *
- * The Box3Concept concept requires that the given type satisfies the BoxConcept concept and
- * that its dimension is equal to 3. This can be used to constrain template parameters of
- * functions or classes that require a 3D box.
+ * The Box3Concept concept requires that the given type satisfies the BoxConcept
+ * concept and that its dimension is equal to 3. This can be used to constrain
+ * template parameters of functions or classes that require a 3D box.
  *
  * @tparam T: The type to be tested for conformity to the Box2Concept.
  */

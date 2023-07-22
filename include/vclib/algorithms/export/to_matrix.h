@@ -38,10 +38,10 @@ template<typename Matrix, EdgeMeshConcept MeshType>
 Matrix edgeMatrix(const MeshType& m);
 
 template<typename Matrix, MeshConcept MeshType>
-Matrix vertexNormalsMatrix(const MeshType& m) requires HasPerVertexNormal<MeshType>;
+Matrix vertexNormalsMatrix(const MeshType& m);
 
 } // namespace vcl
 
-#include "export_to_matrix.cpp"
+#include "to_matrix.cpp"
 
 #endif // VCL_ALGORITHMS_EXPORT_TO_MATRIX_H

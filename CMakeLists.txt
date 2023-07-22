@@ -60,7 +60,7 @@ set(HEADERS
 	include/vclib/algorithms/clean.h
 	include/vclib/algorithms/create.h
 	include/vclib/algorithms/distance.h
-	include/vclib/algorithms/export_to_matrix.h
+	include/vclib/algorithms/export.h
 	include/vclib/algorithms/fitting.h
 	include/vclib/algorithms/generate.h
 	include/vclib/algorithms/intersection.h
@@ -80,6 +80,7 @@ set(HEADERS
 	include/vclib/algorithms/distance/element.h
 	include/vclib/algorithms/distance/mesh.h
 	include/vclib/algorithms/distance/misc.h
+	include/vclib/algorithms/export/to_matrix.h
 	include/vclib/algorithms/intersection/element.h
 	include/vclib/algorithms/intersection/functions.h
 	include/vclib/algorithms/intersection/mesh.h
@@ -146,6 +147,7 @@ set(HEADERS
 	include/vclib/concepts/ranges/mesh/edge_range.h
 	include/vclib/concepts/ranges/mesh/face_range.h
 	include/vclib/concepts/ranges/mesh/vertex_range.h
+	include/vclib/concepts/space/array.h
 	include/vclib/concepts/space/box.h
 	include/vclib/concepts/space/matrix.h
 	include/vclib/concepts/space/plane.h
@@ -342,7 +344,6 @@ set(HEADERS
 set(SOURCES
 	include/vclib/algorithms/bounding_box.cpp
 	include/vclib/algorithms/clean.cpp
-	include/vclib/algorithms/export_to_matrix.cpp
 	include/vclib/algorithms/fitting.cpp
 	include/vclib/algorithms/generate.cpp
 	include/vclib/algorithms/point_sampling.cpp
@@ -358,6 +359,7 @@ set(SOURCES
 	include/vclib/algorithms/distance/element.cpp
 	include/vclib/algorithms/distance/mesh.cpp
 	include/vclib/algorithms/distance/misc.cpp
+	include/vclib/algorithms/export/to_matrix.cpp
 	include/vclib/algorithms/intersection/element.cpp
 	include/vclib/algorithms/intersection/mesh.cpp
 	include/vclib/algorithms/intersection/misc.cpp
