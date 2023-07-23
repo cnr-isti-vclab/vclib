@@ -37,7 +37,7 @@ namespace vcl {
  * Eigen::MatrixX3d V = vcl::vertexMatrix<Eigen::MatrixX3d>(myMesh);
  * @endif
  *
- * @note This function does not guarantee that the rows of the vertices
+ * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
  * when the mesh has deleted vertices. To be sure to have a direct
  * correspondence, compact the vertex container before calling this function.
@@ -82,7 +82,7 @@ Matrix vertexMatrix(const MeshType& mesh)
  * @throws vcl::MissingCompactnessException if the vertex container is not
  * compact.
  *
- * @note This function does not guarantee that the rows of the faces
+ * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible
  * when the mesh has deleted faces. To be sure to have a direct
  * correspondence, compact the face container before calling this function.
@@ -144,6 +144,11 @@ Matrix faceMatrix(const MeshType& mesh)
  * @throws vcl::MissingCompactnessException if the vertex container is not
  * compact.
  *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
  * @tparam Vect: type of the vector to be returned.
  * @tparam MeshType: type of the input mesh, it must satisfy the
  * FaceMeshConcept.
@@ -181,7 +186,7 @@ Vect faceSizesVector(const MeshType& mesh)
  * @throws vcl::MissingCompactnessException if the vertex container is not
  * compact.
  *
- * @note This function does not guarantee that the rows of the edges
+ * @note This function does not guarantee that the rows of the matrix
  * correspond to the edge indices of the mesh. This scenario is possible
  * when the mesh has deleted edges. To be sure to have a direct
  * correspondence, compact the edge container before calling this function.
@@ -211,6 +216,79 @@ Matrix edgeMatrix(const MeshType &mesh)
 }
 
 /**
+ * @brief Get a #V Vector of booleans (or integers) containing the selection
+ * status of the vertices of a Mesh. The function is templated on the Vector
+ * itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator(uint).
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi S = vcl::vertexSelectionVector<Eigen::VectorXi>(myMesh);
+ * @endif
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the vertex indices of the mesh. This scenario is possible
+ * when the mesh has deleted vertices. To be sure to have a direct
+ * correspondence, compact the vertex container before calling this function.
+ *
+ * @tparam Vect: type of the vector to be returned.
+ * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return #V vector of booleans or integers (vertex selection)
+ */
+template<typename Vect, MeshConcept MeshType>
+Vect vertexSelectionVector(const MeshType& mesh)
+{
+	Vect S(mesh.vertexNumber());
+
+	uint i = 0;
+	for (const auto& v : mesh.vertices())
+		S(i) = v.selected();
+	return S;
+}
+
+/**
+ * @brief Get a #F Vector of booleans (or integers) containing the selection
+ * status of the faces of a Mesh. The function is templated on the Vector
+ * itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator(uint).
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi S = vcl::faceSelectionVector<Eigen::VectorXi>(myMesh);
+ * @endif
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the face indices of the mesh. This scenario is possible
+ * when the mesh has deleted faces. To be sure to have a direct
+ * correspondence, compact the face container before calling this function.
+ *
+ * @tparam Vect: type of the vector to be returned.
+ * @tparam MeshType: type of the input mesh, it must satisfy the
+ * FaceMeshConcept.
+ *
+ * @param[in] mesh: input mesh
+ * @return #F vector of booleans or integers (face selection)
+ */
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceSelectionVector(const MeshType& mesh)
+{
+	Vect S(mesh.faceNumber());
+
+	uint i = 0;
+	for (const auto& f : mesh.faces())
+		S(i) = f.selected();
+	return S;
+}
+
+/**
  * @brief Get a #V*3 Matrix of scalars containing the normals of the vertices of
  * a Mesh. The function is templated on the Matrix itself.
  *
@@ -226,7 +304,7 @@ Matrix edgeMatrix(const MeshType &mesh)
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
  * normals enabled.
  *
- * @note This function does not guarantee that the rows of the vertices
+ * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
  * when the mesh has deleted vertices. To be sure to have a direct
  * correspondence, compact the vertex container before calling this function.
@@ -267,7 +345,7 @@ Matrix vertexNormalsMatrix(const MeshType& mesh)
  * @throws vcl::MissingComponentException if the mesh does not have per-face
  * normals enabled.
  *
- * @note This function does not guarantee that the rows of the faces
+ * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible
  * when the mesh has deleted faces. To be sure to have a direct
  * correspondence, compact the face container before calling this function.
@@ -308,7 +386,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
  * colors enabled.
  *
- * @note This function does not guarantee that the rows of the vertices
+ * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
  * when the mesh has deleted vertices. To be sure to have a direct
  * correspondence, compact the vertex container before calling this function.
@@ -349,7 +427,7 @@ Matrix vertexColorsMatrix(const MeshType& mesh)
  * @throws vcl::MissingComponentException if the mesh does not have per-face
  * colors enabled.
  *
- * @note This function does not guarantee that the rows of the faces
+ * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible
  * when the mesh has deleted faces. To be sure to have a direct
  * correspondence, compact the face container before calling this function.
@@ -391,7 +469,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
  * quality enabled.
  *
- * @note This function does not guarantee that the rows of the vertices
+ * @note This function does not guarantee that the rows of the vector
  * correspond to the vertex indices of the mesh. This scenario is possible
  * when the mesh has deleted vertices. To be sure to have a direct
  * correspondence, compact the vertex container before calling this function.
@@ -432,7 +510,7 @@ Vect vertexQualityVector(const MeshType& mesh)
  * @throws vcl::MissingComponentException if the mesh does not have per-face
  * quality enabled.
  *
- * @note This function does not guarantee that the rows of the faces
+ * @note This function does not guarantee that the rows of the vector
  * correspond to the face indices of the mesh. This scenario is possible
  * when the mesh has deleted faces. To be sure to have a direct
  * correspondence, compact the face container before calling this function.

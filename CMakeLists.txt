@@ -63,6 +63,7 @@ set(HEADERS
 	include/vclib/algorithms/export.h
 	include/vclib/algorithms/fitting.h
 	include/vclib/algorithms/generate.h
+	include/vclib/algorithms/import.h
 	include/vclib/algorithms/intersection.h
 	include/vclib/algorithms/point_sampling.h
 	include/vclib/algorithms/polygon.h
@@ -81,6 +82,7 @@ set(HEADERS
 	include/vclib/algorithms/distance/mesh.h
 	include/vclib/algorithms/distance/misc.h
 	include/vclib/algorithms/export/matrix.h
+	include/vclib/algorithms/import/matrix.h
 	include/vclib/algorithms/intersection/element.h
 	include/vclib/algorithms/intersection/functions.h
 	include/vclib/algorithms/intersection/mesh.h
@@ -361,6 +363,7 @@ set(SOURCES
 	include/vclib/algorithms/distance/mesh.cpp
 	include/vclib/algorithms/distance/misc.cpp
 	include/vclib/algorithms/export/matrix.cpp
+	include/vclib/algorithms/import/matrix.cpp
 	include/vclib/algorithms/intersection/element.cpp
 	include/vclib/algorithms/intersection/mesh.cpp
 	include/vclib/algorithms/intersection/misc.cpp
