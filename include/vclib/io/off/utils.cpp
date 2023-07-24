@@ -79,7 +79,7 @@ static const float GEOMVIEW_COLOR_MAP[148][4] = {
 	{0.0f, 0.0f, 0.0f, 0.0f},     {0.0f, 0.0f, 0.0f, 0.0f},     {0.4f, 0.4f, 0.4f, 0.4f},
 	{0.8f, 0.8f, 0.8f, 0.8f}};
 
-void loadOffHeader(std::ifstream& file, FileMeshInfo& fileInfo, uint& nv, uint& nf, uint& ne)
+void loadOffHeader(std::ifstream& file, MeshInfo& fileInfo, uint& nv, uint& nf, uint& ne)
 {
 	fileInfo.reset();
 	vcl::Tokenizer           tokens = internal::nextNonEmptyTokenizedLine(file);

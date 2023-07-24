@@ -33,7 +33,7 @@ template<MeshConcept MeshType, MatrixConcept VMatrix>
 MeshType pointCloudMeshFromMatrices(const VMatrix& vertices);
 
 template<FaceMeshConcept MeshType, MatrixConcept VMatrix, MatrixConcept FMatrix>
-MeshType FaceMeshFromMatrices(const VMatrix& vertices, const FMatrix& faces);
+MeshType faceMeshFromMatrices(const VMatrix& vertices, const FMatrix& faces);
 
 } // namespace vcl
 

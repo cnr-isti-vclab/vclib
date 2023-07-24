@@ -30,19 +30,19 @@ namespace vcl::io {
 template<MeshConcept MeshType, LoggerConcept LogType>
 void savePly(const MeshType& m, const std::string& filename, LogType& log, bool binary)
 {
-	FileMeshInfo info(m);
+	MeshInfo info(m);
 	savePly(m, filename, info, log, binary);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
 void savePly(
-	const MeshType&     m,
-	const std::string&  filename,
-	const FileMeshInfo& info,
-	LogType&            log,
-	bool                binary)
+	const MeshType&    m,
+	const std::string& filename,
+	const MeshInfo&    info,
+	LogType&           log,
+	bool               binary)
 {
-	FileMeshInfo meshInfo(m);
+	MeshInfo meshInfo(m);
 
 	// make sure that the given info contains only components that are actually available in the
 	// mesh. meshInfo will contain the intersection between the components that the user wants to

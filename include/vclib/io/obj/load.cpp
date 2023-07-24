@@ -141,12 +141,12 @@ void loadMaterials(
 
 template<MeshConcept MeshType>
 void loadVertexCoord(
-	MeshType&                    m,
-	vcl::Tokenizer::iterator&    token,
-	FileMeshInfo&                loadedInfo,
-	const vcl::Tokenizer&        tokens,
-	const obj::Material&         currentMaterial,
-	bool                         enableOptionalComponents)
+	MeshType&                 m,
+	vcl::Tokenizer::iterator& token,
+	MeshInfo&                 loadedInfo,
+	const vcl::Tokenizer&     tokens,
+	const obj::Material&      currentMaterial,
+	bool                      enableOptionalComponents)
 {
 	// first, need to set that I'm loading vertices
 	if (m.vertexNumber() == 0) {
@@ -192,7 +192,7 @@ void loadVertexNormal(
 	internal::NormalsMap<MeshType>& mapNormalsCache,
 	uint                            vn,
 	vcl::Tokenizer::iterator&       token,
-	FileMeshInfo&                   loadedInfo,
+	MeshInfo&                       loadedInfo,
 	bool                            enableOptionalComponents)
 {
 	using NormalType = typename MeshType::VertexType::NormalType;
@@ -228,12 +228,12 @@ void loadVertexNormal(
 
 template<FaceMeshConcept MeshType>
 void loadFace(
-	MeshType& m,
-	FileMeshInfo&         loadedInfo,
-	const vcl::Tokenizer& tokens,
+	MeshType&                          m,
+	MeshInfo&                          loadedInfo,
+	const vcl::Tokenizer&              tokens,
 	const std::vector<vcl::TexCoordd>& wedgeTexCoords,
-	const obj::Material&         currentMaterial,
-	bool                  enableOptionalComponents)
+	const obj::Material&               currentMaterial,
+	bool                               enableOptionalComponents)
 {
 	using FaceType = typename MeshType::FaceType;
 
@@ -379,14 +379,14 @@ void loadFace(
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType loadObj(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	return loadObj<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType loadObj(
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {
@@ -396,9 +396,13 @@ MeshType loadObj(
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
-void loadObj(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
+void loadObj(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log,
+	bool               enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
@@ -406,7 +410,7 @@ template<MeshConcept MeshType, LoggerConcept LogType>
 void loadObj(
 	MeshType&          m,
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {

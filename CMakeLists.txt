@@ -162,7 +162,6 @@ set(HEADERS
 	include/vclib/exceptions/io_exceptions.h
 	include/vclib/exceptions/mesh_exceptions.h
 	include/vclib/exceptions/misc_exceptions.h
-	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h
 	include/vclib/io/save.h
 	include/vclib/io/internal/io_read.h
@@ -265,6 +264,7 @@ set(HEADERS
 	include/vclib/misc/hash.h
 	include/vclib/misc/logger.h
 	include/vclib/misc/mark.h
+	include/vclib/misc/mesh_info.h
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/pair.h
 	include/vclib/misc/parallel.h
@@ -380,7 +380,6 @@ set(SOURCES
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
-	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load.cpp
 	include/vclib/io/save.cpp
 	include/vclib/io/internal/io_read.cpp
@@ -459,6 +458,7 @@ set(SOURCES
 	include/vclib/mesh/utils/tri_poly_index_bimap.cpp
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
+	include/vclib/misc/mesh_info.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/parallel.cpp
 	include/vclib/misc/string.cpp

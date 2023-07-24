@@ -29,12 +29,12 @@
 
 int main()
 {
-	vcl::FileMeshInfo info;
+	vcl::MeshInfo info;
 
 	// want to save just these infos in the files, ignore the rest
 	info.setVertices();
 	info.setFaces();
-	info.setVertexCoords(true, vcl::FileMeshInfo::FLOAT);
+	info.setVertexCoords(true, vcl::MeshInfo::FLOAT);
 	info.setFaceVRefs();
 
 	vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();

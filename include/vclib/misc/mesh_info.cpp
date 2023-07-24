@@ -21,7 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "file_mesh_info.h"
+#include "mesh_info.h"
 #include "vclib/concepts/mesh/per_vertex.h"
 #include <vclib/mesh/requirements.h>
 
@@ -33,20 +33,20 @@ namespace vcl {
  * All the Elements/Components are disabled, their type is set to DataType::UNKNOWN and the Mesh
  * Type is set to MeshType::POLYGON_MESH.
  */
-inline FileMeshInfo::FileMeshInfo()
+inline MeshInfo::MeshInfo()
 {
 	perElemComponentsType.fill(UNKNOWN);
 }
 
 /**
- * @brief Sets the current status of the FileMeshInfo object from the input mesh.
+ * @brief Sets the current status of the MeshInfo object from the input mesh.
  *
  * @tparam Mesh: The type of the input mesh, it must satisfy the MeshConcept.
  *
- * @param[in] m: the mesh from which construct the FileMeshInfo object
+ * @param[in] m: the mesh from which construct the MeshInfo object
  */
 template<MeshConcept Mesh>
-FileMeshInfo::FileMeshInfo(const Mesh& m)
+MeshInfo::MeshInfo(const Mesh& m)
 {
 	setVertices();
 	setVertexCoords(true, getType<typename Mesh::VertexType::CoordType::ScalarType>());
@@ -125,7 +125,7 @@ FileMeshInfo::FileMeshInfo(const Mesh& m)
  * @brief Returns true if the current object has Mesh type set to MeshType::QUAD_MESH.
  * @return true if the current Mesh type is set to MeshType::QUAD_MESH.
  */
-inline bool FileMeshInfo::isTriangleMesh() const
+inline bool MeshInfo::isTriangleMesh() const
 {
 	return type == TRIANGLE_MESH;
 }
@@ -134,7 +134,7 @@ inline bool FileMeshInfo::isTriangleMesh() const
  * @brief Returns true if the current object has Mesh type set to MeshType::TRIANGLE_MESH.
  * @return true if the current Mesh type is set to MeshType::TRIANGLE_MESH.
  */
-inline bool FileMeshInfo::isQuadMesh() const
+inline bool MeshInfo::isQuadMesh() const
 {
 	return type == QUAD_MESH;
 }
@@ -143,17 +143,17 @@ inline bool FileMeshInfo::isQuadMesh() const
  * @brief Returns true if the current object has Mesh type set to MeshType::POLYGON_MESH.
  * @return true if the current Mesh type is set to MeshType::POLYGON_MESH.
  */
-inline bool FileMeshInfo::isPolygonMesh() const
+inline bool MeshInfo::isPolygonMesh() const
 {
 	return type == POLYGON_MESH;
 }
 
-inline bool FileMeshInfo::hasElement(Element el) const
+inline bool MeshInfo::hasElement(Element el) const
 {
 	return elements[el];
 }
 
-inline bool FileMeshInfo::hasPerElementComponent(Element el, Component comp) const
+inline bool MeshInfo::hasPerElementComponent(Element el, Component comp) const
 {
 	return perElemComponents[el][comp];
 }
@@ -162,7 +162,7 @@ inline bool FileMeshInfo::hasPerElementComponent(Element el, Component comp) con
  * @brief Returns true if the current object has Vertex Elements.
  * @return true if the current object has Vertex Elements.
  */
-inline bool FileMeshInfo::hasVertices() const
+inline bool MeshInfo::hasVertices() const
 {
 	return hasElement(VERTEX);
 }
@@ -171,7 +171,7 @@ inline bool FileMeshInfo::hasVertices() const
  * @brief Returns true if the current object has Vertex Coordinates.
  * @return true if the current object has Vertex Coordinates.
  */
-inline bool FileMeshInfo::hasVertexCoords() const
+inline bool MeshInfo::hasVertexCoords() const
 {
 	return hasPerElementComponent(VERTEX, COORD);
 }
@@ -180,7 +180,7 @@ inline bool FileMeshInfo::hasVertexCoords() const
  * @brief Returns true if the current object has Vertex Normals.
  * @return true if the current object has Vertex Normals.
  */
-inline bool FileMeshInfo::hasVertexNormals() const
+inline bool MeshInfo::hasVertexNormals() const
 {
 	return hasPerElementComponent(VERTEX, NORMAL);
 }
@@ -189,7 +189,7 @@ inline bool FileMeshInfo::hasVertexNormals() const
  * @brief Returns true if the current object has Vertex Colors.
  * @return true if the current object has Vertex Colors.
  */
-inline bool FileMeshInfo::hasVertexColors() const
+inline bool MeshInfo::hasVertexColors() const
 {
 	return hasPerElementComponent(VERTEX, COLOR);
 }
@@ -198,7 +198,7 @@ inline bool FileMeshInfo::hasVertexColors() const
  * @brief Returns true if the current object has Vertex Quality.
  * @return true if the current object has Vertex Quality.
  */
-inline bool FileMeshInfo::hasVertexQuality() const
+inline bool MeshInfo::hasVertexQuality() const
 {
 	return hasPerElementComponent(VERTEX, QUALITY);
 }
@@ -207,7 +207,7 @@ inline bool FileMeshInfo::hasVertexQuality() const
  * @brief Returns true if the current object has Vertex Texture Coordinates.
  * @return true if the current object has Vertex Texture Coordinates.
  */
-inline bool FileMeshInfo::hasVertexTexCoords() const
+inline bool MeshInfo::hasVertexTexCoords() const
 {
 	return hasPerElementComponent(VERTEX, TEXCOORD);
 }
@@ -216,7 +216,7 @@ inline bool FileMeshInfo::hasVertexTexCoords() const
  * @brief Returns true if the current object has Vertex Custom Components.
  * @return true if the current object has Vertex Custom Components.
  */
-inline bool FileMeshInfo::hasVertexCustomComponents() const
+inline bool MeshInfo::hasVertexCustomComponents() const
 {
 	return hasPerElementComponent(VERTEX, CUSTOM_COMPONENTS);
 }
@@ -225,7 +225,7 @@ inline bool FileMeshInfo::hasVertexCustomComponents() const
  * @brief Returns true if the current object has Face Elements.
  * @return true if the current object has Face Elements.
  */
-inline bool FileMeshInfo::hasFaces() const
+inline bool MeshInfo::hasFaces() const
 {
 	return hasElement(FACE);
 }
@@ -234,32 +234,32 @@ inline bool FileMeshInfo::hasFaces() const
  * @brief Returns true if the current object has per Face Vertex References.
  * @return true if the current object has per Face Vertex References.
  */
-inline bool FileMeshInfo::hasFaceVRefs() const
+inline bool MeshInfo::hasFaceVRefs() const
 {
 	return hasPerElementComponent(FACE, VREFS);
 }
 
-inline bool FileMeshInfo::hasFaceNormals() const
+inline bool MeshInfo::hasFaceNormals() const
 {
 	return hasPerElementComponent(FACE, NORMAL);
 }
 
-inline bool FileMeshInfo::hasFaceColors() const
+inline bool MeshInfo::hasFaceColors() const
 {
 	return hasPerElementComponent(FACE, COLOR);
 }
 
-inline bool FileMeshInfo::hasFaceQuality() const
+inline bool MeshInfo::hasFaceQuality() const
 {
 	return hasPerElementComponent(FACE, QUALITY);
 }
 
-inline bool FileMeshInfo::hasFaceWedgeTexCoords() const
+inline bool MeshInfo::hasFaceWedgeTexCoords() const
 {
 	return hasPerElementComponent(FACE, WEDGE_TEXCOORDS);
 }
 
-inline bool FileMeshInfo::hasFaceCustomComponents() const
+inline bool MeshInfo::hasFaceCustomComponents() const
 {
 	return hasPerElementComponent(FACE, CUSTOM_COMPONENTS);
 }
@@ -268,52 +268,52 @@ inline bool FileMeshInfo::hasFaceCustomComponents() const
  * @brief Returns true if the current object has Edge Elements.
  * @return true if the current object has Edge Elements.
  */
-inline bool FileMeshInfo::hasEdges() const
+inline bool MeshInfo::hasEdges() const
 {
 	return hasElement(EDGE);
 }
 
-inline bool FileMeshInfo::hasEdgeVRefs() const
+inline bool MeshInfo::hasEdgeVRefs() const
 {
 	return hasPerElementComponent(EDGE, VREFS);
 }
 
-inline bool FileMeshInfo::hasEdgeColors() const
+inline bool MeshInfo::hasEdgeColors() const
 {
 	return hasPerElementComponent(EDGE, COLOR);
 }
 
-inline bool FileMeshInfo::hasTextures() const
+inline bool MeshInfo::hasTextures() const
 {
 	return hasPerElementComponent(MESH, TEXTURES);
 }
 
-inline void FileMeshInfo::setTriangleMesh()
+inline void MeshInfo::setTriangleMesh()
 {
 	type = TRIANGLE_MESH;
 }
 
-inline void FileMeshInfo::setQuadMesh()
+inline void MeshInfo::setQuadMesh()
 {
 	type = QUAD_MESH;
 }
 
-inline void FileMeshInfo::setPolygonMesh()
+inline void MeshInfo::setPolygonMesh()
 {
 	type = POLYGON_MESH;
 }
 
-inline void FileMeshInfo::setMeshType(MeshType t)
+inline void MeshInfo::setMeshType(MeshType t)
 {
 	type = t;
 }
 
-void FileMeshInfo::setElement(Element el, bool b)
+void MeshInfo::setElement(Element el, bool b)
 {
 	elements[el] = b;
 }
 
-void FileMeshInfo::setElementComponents(Element el, Component c, bool b, DataType t)
+void MeshInfo::setElementComponents(Element el, Component c, bool b, DataType t)
 {
 	elements[el] = b;
 	perElemComponents[el][c] = b;
@@ -321,205 +321,207 @@ void FileMeshInfo::setElementComponents(Element el, Component c, bool b, DataTyp
 		perElemComponentsType(el, c) = t;
 }
 
-inline void FileMeshInfo::setVertices(bool b)
+inline void MeshInfo::setVertices(bool b)
 {
 	setElement(VERTEX, b);
 }
 
-inline void FileMeshInfo::setVertexCoords(bool b, DataType t)
+inline void MeshInfo::setVertexCoords(bool b, DataType t)
 {
 	setElementComponents(VERTEX, COORD, b, t);
 }
 
-inline void FileMeshInfo::setVertexNormals(bool b, DataType t)
+inline void MeshInfo::setVertexNormals(bool b, DataType t)
 {
 	setElementComponents(VERTEX, NORMAL, b, t);
 }
 
-inline void FileMeshInfo::setVertexColors(bool b, DataType t)
+inline void MeshInfo::setVertexColors(bool b, DataType t)
 {
 	setElementComponents(VERTEX, COLOR, b, t);
 }
 
-inline void FileMeshInfo::setVertexQuality(bool b, DataType t)
+inline void MeshInfo::setVertexQuality(bool b, DataType t)
 {
 	setElementComponents(VERTEX, QUALITY, b, t);
 }
 
-void FileMeshInfo::setVertexTexCoords(bool b, DataType t)
+void MeshInfo::setVertexTexCoords(bool b, DataType t)
 {
 	setElementComponents(VERTEX, TEXCOORD, b, t);
 }
 
-inline void FileMeshInfo::setVertexCustomComponents(bool b)
+inline void MeshInfo::setVertexCustomComponents(bool b)
 {
 	setElementComponents(VERTEX, CUSTOM_COMPONENTS, b, UNKNOWN);
 }
 
-inline void FileMeshInfo::setFaces(bool b)
+inline void MeshInfo::setFaces(bool b)
 {
 	setElement(FACE, b);
 }
 
-inline void FileMeshInfo::setFaceVRefs(bool b)
+inline void MeshInfo::setFaceVRefs(bool b)
 {
 	setElementComponents(FACE, VREFS, b, UNKNOWN);
 }
 
-inline void FileMeshInfo::setFaceNormals(bool b, DataType t)
+inline void MeshInfo::setFaceNormals(bool b, DataType t)
 {
 	setElementComponents(FACE, NORMAL, b, t);
 }
 
-inline void FileMeshInfo::setFaceColors(bool b, DataType t)
+inline void MeshInfo::setFaceColors(bool b, DataType t)
 {
 	setElementComponents(FACE, COLOR, b, t);
 }
 
-inline void FileMeshInfo::setFaceQuality(bool b, DataType t)
+inline void MeshInfo::setFaceQuality(bool b, DataType t)
 {
 	setElementComponents(FACE, QUALITY, b, t);
 }
 
-inline void FileMeshInfo::setFaceWedgeTexCoords(bool b, DataType t)
+inline void MeshInfo::setFaceWedgeTexCoords(bool b, DataType t)
 {
 	setElementComponents(FACE, WEDGE_TEXCOORDS, b, t);
 }
 
-inline void FileMeshInfo::setFaceCustomComponents(bool b)
+inline void MeshInfo::setFaceCustomComponents(bool b)
 {
 	setElementComponents(FACE, CUSTOM_COMPONENTS, b, UNKNOWN);
 }
 
-inline void FileMeshInfo::setEdges(bool b)
+inline void MeshInfo::setEdges(bool b)
 {
 	setElement(EDGE, b);
 }
 
-inline void FileMeshInfo::setEdgeVRefs(bool b)
+inline void MeshInfo::setEdgeVRefs(bool b)
 {
 	setElementComponents(EDGE, VREFS, b, UNKNOWN);
 }
 
-inline void FileMeshInfo::setEdgeColors(bool b, DataType t)
+inline void MeshInfo::setEdgeColors(bool b, DataType t)
 {
 	setElementComponents(EDGE, COLOR, b, t);
 }
 
-inline void FileMeshInfo::setTextures(bool b)
+inline void MeshInfo::setTextures(bool b)
 {
 	setElementComponents(MESH, TEXTURES, b, UNKNOWN);
 }
 
-inline void FileMeshInfo::addElementCustomComponent(Element el, const std::string& name, DataType t)
+inline void MeshInfo::addElementCustomComponent(Element el, const std::string& name, DataType t)
 {
 	setElementComponents(el, CUSTOM_COMPONENTS, true, UNKNOWN);
 	perElemCustomComponents[el].emplace_back(name, t);
 }
 
-inline void FileMeshInfo::clearElementCustomComponents(Element el)
+inline void MeshInfo::clearElementCustomComponents(Element el)
 {
 	setElementComponents(el, CUSTOM_COMPONENTS, false, UNKNOWN);
 	perElemCustomComponents[el].clear();
 }
 
-inline void FileMeshInfo::addVertexCustomComponent(const std::string& name, DataType t)
+inline void MeshInfo::addVertexCustomComponent(const std::string& name, DataType t)
 {
 	addElementCustomComponent(VERTEX, name, t);
 }
 
-inline void FileMeshInfo::clearVertexCustomComponents()
+inline void MeshInfo::clearVertexCustomComponents()
 {
 	clearElementCustomComponents(VERTEX);
 }
 
-inline void FileMeshInfo::addFaceCustomComponent(const std::string &name, DataType t)
+inline void MeshInfo::addFaceCustomComponent(const std::string &name, DataType t)
 {
 	addElementCustomComponent(FACE, name, t);
 }
 
-inline void FileMeshInfo::clearFaceCustomComponents()
+inline void MeshInfo::clearFaceCustomComponents()
 {
 	clearElementCustomComponents(FACE);
 }
 
-FileMeshInfo::DataType FileMeshInfo::elementComponentType(Element el, Component comp) const
+MeshInfo::DataType MeshInfo::elementComponentType(Element el, Component comp) const
 {
 	return perElemComponentsType(el, comp);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::vertexCoordsType() const
+inline MeshInfo::DataType MeshInfo::vertexCoordsType() const
 {
 	return elementComponentType(VERTEX, COORD);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::vertexNormalsType() const
+inline MeshInfo::DataType MeshInfo::vertexNormalsType() const
 {
 	return elementComponentType(VERTEX, NORMAL);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::vertexColorsType() const
+inline MeshInfo::DataType MeshInfo::vertexColorsType() const
 {
 	return elementComponentType(VERTEX, COLOR);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::vertexQualityType() const
+inline MeshInfo::DataType MeshInfo::vertexQualityType() const
 {
 	return elementComponentType(VERTEX, QUALITY);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::vertexTexCoordsType() const
+inline MeshInfo::DataType MeshInfo::vertexTexCoordsType() const
 {
 	return elementComponentType(VERTEX, TEXCOORD);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::faceNormalsType() const
+inline MeshInfo::DataType MeshInfo::faceNormalsType() const
 {
 	return elementComponentType(FACE, NORMAL);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::faceColorsType() const
+inline MeshInfo::DataType MeshInfo::faceColorsType() const
 {
 	return elementComponentType(FACE, COLOR);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::faceQualityType() const
+inline MeshInfo::DataType MeshInfo::faceQualityType() const
 {
 	return elementComponentType(FACE, QUALITY);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::faceWedgeTexCoordsType() const
+inline MeshInfo::DataType MeshInfo::faceWedgeTexCoordsType() const
 {
 	return elementComponentType(FACE, WEDGE_TEXCOORDS);
 }
 
-inline FileMeshInfo::DataType FileMeshInfo::edgeColorsType() const
+inline MeshInfo::DataType MeshInfo::edgeColorsType() const
 {
 	return elementComponentType(EDGE, COLOR);
 }
 
-inline const std::vector<FileMeshInfo::CustomComponent>& FileMeshInfo::vertexCustomComponents() const
+inline const std::vector<MeshInfo::CustomComponent>& MeshInfo::vertexCustomComponents() const
 {
 	return perElemCustomComponents[VERTEX];
 }
 
-inline const std::vector<FileMeshInfo::CustomComponent>& FileMeshInfo::faceCustomComponents() const
+inline const std::vector<MeshInfo::CustomComponent>& MeshInfo::faceCustomComponents() const
 {
 	return perElemCustomComponents[FACE];
 }
 
 /**
- * @brief Returns a FileMeshInfo object that is the intersection between this and `info`.
+ * @brief Returns a MeshInfo object that is the intersection between this and
+ * `info`.
  *
- * The intersection is a FileMeshInfo object that has Elements/Components enable only if they are
- * enabled both in this object and in `info`. Types are imported from this FileMeshInfo.
+ * The intersection is a MeshInfo object that has Elements/Components enable
+ * only if they are enabled both in this object and in `info`. Types are
+ * imported from this MeshInfo.
  *
  * @param[in] info: The info object to compute the intersection with.
  * @return The intersection between this and `info`.
  */
-inline FileMeshInfo FileMeshInfo::intersect(const FileMeshInfo& info) const
+inline MeshInfo MeshInfo::intersect(const MeshInfo& info) const
 {
-	FileMeshInfo res;
+	MeshInfo res;
 	for (uint i = 0; i < NUM_ELEMENTS; ++i) {
 		res.elements[i] = elements[i] && info.elements[i];
 		for (uint j = 0; j < NUM_COMPONENTS; ++j) {
@@ -539,7 +541,7 @@ inline FileMeshInfo FileMeshInfo::intersect(const FileMeshInfo& info) const
 	return res;
 }
 
-inline void FileMeshInfo::reset()
+inline void MeshInfo::reset()
 {
 	elements.reset();
 	for (auto& comp : perElemComponents)
@@ -559,7 +561,7 @@ inline void FileMeshInfo::reset()
  * @return
  */
 template<typename T>
-FileMeshInfo::DataType FileMeshInfo::getType()
+MeshInfo::DataType MeshInfo::getType()
 {
 	if constexpr (std::is_same_v<T, char>) return CHAR;
 	if constexpr (std::is_same_v<T, unsigned char>) return UCHAR;
@@ -574,7 +576,7 @@ FileMeshInfo::DataType FileMeshInfo::getType()
 	return UNKNOWN;
 }
 
-FileMeshInfo::DataType FileMeshInfo::getType(std::type_index ti)
+MeshInfo::DataType MeshInfo::getType(std::type_index ti)
 {
 	if (ti == typeid(char)) return CHAR;
 	if (ti == typeid(unsigned char)) return UCHAR;

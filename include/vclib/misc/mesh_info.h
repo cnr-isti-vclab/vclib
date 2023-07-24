@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_FILE_MESH_INFO_H
-#define VCL_IO_FILE_MESH_INFO_H
+#ifndef VCL_MISC_MESH_INFO_H
+#define VCL_MISC_MESH_INFO_H
 
 #include <array>
 #include <list>
@@ -36,14 +36,16 @@
 namespace vcl {
 
 /**
- * @brief A simple class that allows to store which components has been loaded or are going
- * to be saved on a mesh file.
+ * @brief A simple class that allows to store which elements and their
+ * components have been imported/loaded or are going to be exported/saved on a
+ * mesh file or some other data structure.
  *
- * When loading a Mesh from a file, an object of this type is used to know which Elements/Components
- * have been loaded from the file, using the getter functions:
+ * For example, when loading a Mesh from a file, an object of this type is used
+ * to know which Elements/Components have been loaded from the file, using the
+ * getter functions:
  *
  * @code{.cpp}
- * FileMeshInfo info;
+ * MeshInfo info;
  * AMeshType m = vcl::load<AMeshType>("meshfile.ply", info);
  *
  * if (info.hasFaces()) { // the file had faces
@@ -53,40 +55,45 @@ namespace vcl {
  * }
  * @endcode
  *
- * When saving a Mesh to a file, an object of this type is used to tell which Elements/Components
- * save on the file and, when the file format supports it, to choose the type used to store a
- * specific component:
+ * When saving a Mesh to a file, an object of this type is used to tell which
+ * Elements/Components save on the file and, when the file format supports it,
+ * to choose the type used to store a specific component:
  *
  * @code{.cpp}
  * AMeshType m;
- * FileMeshInfo info(m); // compute the default FileMeshInfo object from the Mesh
+ * MeshInfo info(m); // compute the default MeshInfo object from the
+ * Mesh
  *
- * info.setVertexCoords(true, FileMeshInfo::FLOAT); // force to store vertex coords using floats
- * info.setVertexColors(false); // do not store
+ * info.setVertexCoords(true, MeshInfo::FLOAT); // force to store vertex
+ * coords using floats info.setVertexColors(false); // do not store
  *
  * vcl::save(m, "meshfile.ply", info);
  * @endcode
  *
  * @ingroup load_save
+ * @ingroup miscellaneous
  */
-class FileMeshInfo
+class MeshInfo
 {
 public:
 	/**
-	 * @brief Enum used to describe the type of the Mesh - by default, a mesh is considered
-	 * polygonal
+	 * @brief Enum used to describe the type of the Mesh - by default, a mesh is
+	 * considered polygonal
 	 */
 	enum MeshType { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH };
 
 	/**
-	 * @brief Enum used to describe the type of Elements that can be found in a file.
+	 * @brief Enum used to describe the type of Elements that can be found in a
+	 * file.
 	 *
-	 * @note: MESH is not an element, but it is used since some components can be stored per mesh.
+	 * @note: MESH is not an element, but it is used since some components can
+	 * be stored per mesh.
 	 */
 	enum Element { VERTEX, FACE, EDGE, MESH, NUM_ELEMENTS };
 
 	/**
-	 * @brief Enum used to describe the type of Components that each Element can have.
+	 * @brief Enum used to describe the type of Components that each Element can
+	 * have.
 	 */
 	enum Component {
 		COORD,
@@ -104,11 +111,21 @@ public:
 	/**
 	 * @brief Enum used to describe the type of Data stored in a component
 	 */
-	enum DataType { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, UNKNOWN };
+	enum DataType {
+		CHAR,
+		UCHAR,
+		SHORT,
+		USHORT,
+		INT,
+		UINT,
+		FLOAT,
+		DOUBLE,
+		UNKNOWN
+	};
 
 	/**
-	 * @brief The CustomComponent struct is a simple structure that describes a custom component
-	 * of an Element (or of the Mesh)
+	 * @brief The CustomComponent struct is a simple structure that describes a
+	 * custom component of an Element (or of the Mesh)
 	 */
 	struct CustomComponent {
 		std::string name;
@@ -116,18 +133,19 @@ public:
 		CustomComponent(std::string n, DataType t) : name(n), type(t) {}
 	};
 
-	FileMeshInfo();
+	MeshInfo();
 
 	template<MeshConcept Mesh>
-	FileMeshInfo(const Mesh& m);
+	MeshInfo(const Mesh& m);
 
 	bool isTriangleMesh() const;
 	bool isQuadMesh() const;
 	bool isPolygonMesh() const;
 
 	/*
-	 * Getter Elements/Components functions: they are used mostly after the loading of a Mesh from a
-	 * file, to know if Elements/Components have been loaded.
+	 * Getter Elements/Components functions: they are used mostly after the
+	 * loading of a Mesh from a file, to know if Elements/Components have been
+	 * loaded.
 	 */
 
 	bool hasElement(Element el) const;
@@ -153,9 +171,10 @@ public:
 	bool hasTextures() const;
 
 	/*
-	 * Setter functions: they are used by the load functions to tell which Elements/Components are
-	 * loaded from a file, and they can be used by the user that wants to save in a file only a
-	 * specific set of Elements/Components of a Mesh.
+	 * Setter functions: they are used by the load functions to tell which
+	 * Elements/Components are loaded from a file, and they can be used by the
+	 * user that wants to save in a file only a specific set of
+	 * Elements/Components of a Mesh.
 	 */
 
 	void setTriangleMesh();
@@ -185,7 +204,8 @@ public:
 	void setEdgeColors(bool b = true, DataType t = UCHAR);
 	void setTextures(bool b = true);
 
-	void addElementCustomComponent(Element el, const std::string& name, DataType t);
+	void addElementCustomComponent(
+		Element el, const std::string& name, DataType t);
 	void clearElementCustomComponents(Element el);
 	void addVertexCustomComponent(const std::string& name, DataType t);
 	void clearVertexCustomComponents();
@@ -193,8 +213,8 @@ public:
 	void clearFaceCustomComponents();
 
 	/*
-	 * Getter Component type functions : they are used mostly by save functions to know the type
-	 * that needs to use to save a given Component
+	 * Getter Component type functions : they are used mostly by save functions
+	 * to know the type that needs to use to save a given Component
 	 */
 
 	DataType elementComponentType(Element el, Component comp) const;
@@ -213,7 +233,7 @@ public:
 	const std::vector<CustomComponent>& vertexCustomComponents() const;
 	const std::vector<CustomComponent>& faceCustomComponents() const;
 
-	FileMeshInfo intersect(const FileMeshInfo& i) const;
+	MeshInfo intersect(const MeshInfo& i) const;
 
 	void reset();
 
@@ -222,13 +242,15 @@ private:
 	std::bitset<NUM_ELEMENTS> elements = {false};
 
 	// Tell if per element components are present in the file
-	std::array<std::bitset<NUM_COMPONENTS>, NUM_ELEMENTS> perElemComponents = {false};
+	std::array<std::bitset<NUM_COMPONENTS>, NUM_ELEMENTS> perElemComponents = {
+		false};
 
 	// Tell the data type for each component of each element
 	Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS> perElemComponentsType;
 
 	// Store name and type of per element custom components
-	std::array<std::vector<CustomComponent>, NUM_ELEMENTS> perElemCustomComponents;
+	std::array<std::vector<CustomComponent>, NUM_ELEMENTS>
+		perElemCustomComponents;
 
 	// Mesh Type
 	MeshType type = POLYGON_MESH;
@@ -241,6 +263,6 @@ private:
 
 } // namespace vcl
 
-#include "file_mesh_info.cpp"
+#include "mesh_info.cpp"
 
-#endif // VCL_IO_FILE_MESH_INFO_H
+#endif // VCL_MISC_MESH_INFO_H

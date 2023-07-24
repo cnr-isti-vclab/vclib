@@ -30,7 +30,7 @@
 
 int main()
 {
-	vcl::FileMeshInfo loadedInfo;
+	vcl::MeshInfo loadedInfo;
 	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
 
 	assert(loadedInfo.hasVertices());

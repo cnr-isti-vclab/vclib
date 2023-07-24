@@ -37,7 +37,7 @@
 int main(int argc, char **argv)
 {
 	vcl::ConsoleLogger log;
-	vcl::FileMeshInfo loadedInfo;
+	vcl::MeshInfo loadedInfo;
 
 	log.startTimer();
 	vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo, log);

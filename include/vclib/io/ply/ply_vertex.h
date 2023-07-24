@@ -24,9 +24,9 @@
 #ifndef VCL_PLY_VERTEX_H
 #define VCL_PLY_VERTEX_H
 
-#include "../file_mesh_info.h"
-#include "ply_header.h"
 #include <fstream>
+
+#include "ply_header.h"
 
 namespace vcl::io::ply {
 

@@ -36,7 +36,7 @@ namespace vcl::io {
 namespace internal {
 
 template<VertexConcept VertexType, MeshConcept MeshType>
-obj::Material materialFromVertex(const VertexType& v, const FileMeshInfo& fi)
+obj::Material materialFromVertex(const VertexType& v, const MeshInfo& fi)
 {
 	obj::Material mat;
 	if constexpr (HasPerVertexColor<MeshType>) {
@@ -51,7 +51,7 @@ obj::Material materialFromVertex(const VertexType& v, const FileMeshInfo& fi)
 }
 
 template<FaceConcept FaceType, MeshConcept MeshType>
-obj::Material materialFromFace(const FaceType& f, const MeshType& m, const FileMeshInfo& fi)
+obj::Material materialFromFace(const FaceType& f, const MeshType& m, const MeshInfo& fi)
 {
 	obj::Material mat;
 	if (fi.hasFaceColors()) {
@@ -73,7 +73,7 @@ template<typename ElementType, MeshConcept MeshType>
 void writeElementMaterial(
 	const ElementType&                    e,
 	const MeshType&                       m,
-	const FileMeshInfo&                   fi,
+	const MeshInfo&                       fi,
 	obj::Material&                        lastMaterial,
 	std::map<obj::Material, std::string>& materialMap,
 	std::ofstream&                        fp,
@@ -113,14 +113,18 @@ void writeElementMaterial(
 template<MeshConcept MeshType, LoggerConcept LogType>
 void saveObj(const MeshType& m, const std::string& filename, LogType& log)
 {
-	FileMeshInfo info(m);
+	MeshInfo info(m);
 	saveObj(m, filename, info, log);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
-void saveObj(const MeshType& m, const std::string& filename, const FileMeshInfo& info, LogType& log)
+void saveObj(
+	const MeshType&    m,
+	const std::string& filename,
+	const MeshInfo&    info,
+	LogType&           log)
 {
-	FileMeshInfo meshInfo(m);
+	MeshInfo meshInfo(m);
 
 	// make sure that the given info contains only components that are actually available in the
 	// mesh. meshInfo will contain the intersection between the components that the user wants to
