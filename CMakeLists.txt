@@ -63,6 +63,7 @@ set(HEADERS
 	include/vclib/algorithms/export.h
 	include/vclib/algorithms/fitting.h
 	include/vclib/algorithms/generate.h
+	include/vclib/algorithms/import.h
 	include/vclib/algorithms/intersection.h
 	include/vclib/algorithms/point_sampling.h
 	include/vclib/algorithms/polygon.h
@@ -80,7 +81,8 @@ set(HEADERS
 	include/vclib/algorithms/distance/element.h
 	include/vclib/algorithms/distance/mesh.h
 	include/vclib/algorithms/distance/misc.h
-	include/vclib/algorithms/export/to_matrix.h
+	include/vclib/algorithms/export/matrix.h
+	include/vclib/algorithms/import/matrix.h
 	include/vclib/algorithms/intersection/element.h
 	include/vclib/algorithms/intersection/functions.h
 	include/vclib/algorithms/intersection/mesh.h
@@ -160,7 +162,6 @@ set(HEADERS
 	include/vclib/exceptions/io_exceptions.h
 	include/vclib/exceptions/mesh_exceptions.h
 	include/vclib/exceptions/misc_exceptions.h
-	include/vclib/io/file_mesh_info.h
 	include/vclib/io/load.h
 	include/vclib/io/save.h
 	include/vclib/io/internal/io_read.h
@@ -262,6 +263,7 @@ set(HEADERS
 	include/vclib/misc/hash.h
 	include/vclib/misc/logger.h
 	include/vclib/misc/mark.h
+	include/vclib/misc/mesh_info.h
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/pair.h
 	include/vclib/misc/parallel.h
@@ -359,7 +361,8 @@ set(SOURCES
 	include/vclib/algorithms/distance/element.cpp
 	include/vclib/algorithms/distance/mesh.cpp
 	include/vclib/algorithms/distance/misc.cpp
-	include/vclib/algorithms/export/to_matrix.cpp
+	include/vclib/algorithms/export/matrix.cpp
+	include/vclib/algorithms/import/matrix.cpp
 	include/vclib/algorithms/intersection/element.cpp
 	include/vclib/algorithms/intersection/mesh.cpp
 	include/vclib/algorithms/intersection/misc.cpp
@@ -376,7 +379,6 @@ set(SOURCES
 	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
-	include/vclib/io/file_mesh_info.cpp
 	include/vclib/io/load.cpp
 	include/vclib/io/save.cpp
 	include/vclib/io/internal/io_read.cpp
@@ -455,6 +457,7 @@ set(SOURCES
 	include/vclib/mesh/utils/tri_poly_index_bimap.cpp
 	include/vclib/misc/compactness.cpp
 	include/vclib/misc/file_info.cpp
+	include/vclib/misc/mesh_info.cpp
 	include/vclib/misc/nested_initializer_lists.cpp
 	include/vclib/misc/parallel.cpp
 	include/vclib/misc/string.cpp

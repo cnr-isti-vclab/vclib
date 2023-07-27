@@ -35,14 +35,14 @@ namespace vcl::io {
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType loadPly(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	return loadPly<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType loadPly(
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {
@@ -69,7 +69,7 @@ MeshType loadPly(
 template<MeshConcept MeshType, LoggerConcept LogType>
 void loadPly(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
@@ -93,7 +93,7 @@ template<MeshConcept MeshType, LoggerConcept LogType>
 void loadPly(
 	MeshType&          m,
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {

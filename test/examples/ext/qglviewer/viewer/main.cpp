@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 	// Instantiate the viewer.
 	vcl::ViewerMainWindow viewer;
 
-	vcl::FileMeshInfo loadedInfo;
+	vcl::MeshInfo loadedInfo;
 
 	vcl::PolyMesh tm = vcl::load<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
 	vcl::updatePerFaceNormals(tm);

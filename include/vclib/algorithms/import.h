@@ -21,37 +21,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_SAVE_H
-#define VCL_IO_PLY_SAVE_H
+#ifndef VCL_ALGORITHMS_IMPORT_H
+#define VCL_ALGORITHMS_IMPORT_H
 
-#include <vclib/exceptions/io_exceptions.h>
-#include <vclib/misc/logger.h>
+#include "import/matrix.h"
 
-#include "ply.h"
-#include "ply_edge.h"
-#include "ply_extra.h"
-#include "ply_face.h"
-#include "ply_vertex.h"
-
-namespace vcl::io {
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log    = nullLogger,
-	bool               binary = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	const MeshInfo&    info,
-	LogType&           log    = nullLogger,
-	bool               binary = true);
-
-} // namespace vcl::io
-
-#include "save.cpp"
-
-#endif // VCL_IO_PLY_SAVE_H
+#endif // VCL_ALGORITHMS_IMPORT_H

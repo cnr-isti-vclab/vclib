@@ -28,6 +28,14 @@
 
 #include "element_requirements.h"
 
+/**
+ * @defgroup vertex_requirements Vertex Requirements
+ * @ingroup mesh_requirements
+ *
+ * @brief List functions that allows to check, enable and assert the
+ * availability of components in the Vertex Elements of a Mesh.
+ */
+
 namespace vcl {
 
 /*************************

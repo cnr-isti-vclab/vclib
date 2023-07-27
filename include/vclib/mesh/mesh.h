@@ -122,6 +122,8 @@ public:
 
 	/* member functions */
 
+	bool isCompact() const;
+
 	void clear();
 
 	void compact();
@@ -217,6 +219,9 @@ public:
 		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
 
 protected:
+	template<typename Cont>
+	bool isContainerCompact() const;
+
 	template<typename Cont>
 	void compactContainer();
 

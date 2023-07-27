@@ -109,7 +109,7 @@ void saveStl(
 	bool               binary,
 	bool               magicsMode)
 {
-	FileMeshInfo info(m);
+	MeshInfo info(m);
 	saveStl(m, filename, info, log, binary, magicsMode);
 }
 
@@ -126,14 +126,14 @@ void saveStl(
  */
 template<MeshConcept MeshType, LoggerConcept LogType>
 void saveStl(
-	const MeshType&     m,
-	const std::string&  filename,
-	const FileMeshInfo& info,
-	LogType&            log,
-	bool                binary,
-	bool                magicsMode)
+	const MeshType&    m,
+	const std::string& filename,
+	const MeshInfo&    info,
+	LogType&           log,
+	bool               binary,
+	bool               magicsMode)
 {
-	FileMeshInfo meshInfo(m);
+	MeshInfo meshInfo(m);
 
 	// make sure that the given info contains only components that are actually available in the
 	// mesh. meshInfo will contain the intersection between the components that the user wants to

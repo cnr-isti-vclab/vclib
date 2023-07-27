@@ -35,7 +35,8 @@ namespace vcl {
 
 /**
  * @brief Returns `true` if the given mesh has its Vertex Container compact.
- * @param[in] m: input mesh on which test if the its Vertex Container is compact.
+ * @param[in] m: input mesh on which test if the its Vertex Container is
+ * compact.
  * @return `true` if the Vertex Container of the mesh is compact.
  */
 template<MeshConcept MeshType>

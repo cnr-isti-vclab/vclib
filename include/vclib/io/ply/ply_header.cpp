@@ -22,6 +22,7 @@
  ****************************************************************************/
 
 #include "ply_header.h"
+
 #include <clocale>
 
 #include <vclib/misc/file_info.h>
@@ -44,7 +45,7 @@ inline PlyHeader::PlyHeader() :
 
 inline PlyHeader::PlyHeader(
 	Format                   format,
-	const FileMeshInfo&      info,
+	const MeshInfo&      info,
 	std::vector<std::string> textureFiles) :
 		frmt(format),
 		valid(true),
@@ -170,9 +171,9 @@ inline ply::Format PlyHeader::format() const
 	return frmt;
 }
 
-inline FileMeshInfo PlyHeader::getInfo() const
+inline MeshInfo PlyHeader::getInfo() const
 {
-	FileMeshInfo mod;
+	MeshInfo mod;
 	// x, y, z, nx, ny, nz, red, green, blue, alpha, vertex_indices
 
 	if (vertElemPos >= 0) {
@@ -193,7 +194,7 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::texture_u: mod.setVertexTexCoords(); break;
 			case ply::unknown:
 				if (p.type <= PropertyType::DOUBLE) {
-					mod.addVertexCustomComponent(p.unknownPropertyName, (FileMeshInfo::DataType)p.type);
+					mod.addVertexCustomComponent(p.unknownPropertyName, (MeshInfo::DataType)p.type);
 				}
 			default: break;
 			}
@@ -215,7 +216,7 @@ inline FileMeshInfo PlyHeader::getInfo() const
 			case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
 			case ply::unknown:
 				if (p.type <= PropertyType::DOUBLE) {
-					mod.addFaceCustomComponent(p.unknownPropertyName, (FileMeshInfo::DataType)p.type);
+					mod.addFaceCustomComponent(p.unknownPropertyName, (MeshInfo::DataType)p.type);
 				}
 			default: break;
 			}
@@ -360,7 +361,7 @@ inline void PlyHeader::pushTextureFileName(const std::string& tn)
 }
 
 inline void PlyHeader::setInfo(
-	const FileMeshInfo& info,
+	const MeshInfo& info,
 	std::vector<std::string> textureFileNames,
 	bool binary)
 {
@@ -431,7 +432,7 @@ inline void PlyHeader::setInfo(
 		}
 		if (info.hasVertexCustomComponents()) {
 			for (const auto& cc : info.vertexCustomComponents()) {
-				if (cc.type <= FileMeshInfo::DOUBLE) {
+				if (cc.type <= MeshInfo::DOUBLE) {
 					ply::Property pp;
 					pp.name = unknown;
 					pp.unknownPropertyName = cc.name;
@@ -500,7 +501,7 @@ inline void PlyHeader::setInfo(
 		}
 		if (info.hasFaceCustomComponents()) {
 			for (const auto& cc : info.faceCustomComponents()) {
-				if (cc.type <= FileMeshInfo::DOUBLE) {
+				if (cc.type <= MeshInfo::DOUBLE) {
 					ply::Property pp;
 					pp.name = unknown;
 					pp.unknownPropertyName = cc.name;

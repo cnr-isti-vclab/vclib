@@ -21,27 +21,31 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
-#define VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
+#ifndef VCL_ALGORITHMS_IMPORT_MATRIX_H
+#define VCL_ALGORITHMS_IMPORT_MATRIX_H
 
+#include <vclib/concepts/space/matrix.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
-template<typename Matrix, MeshConcept MeshType>
-Matrix vertexMatrix(const MeshType& m);
+template<MeshConcept MeshType, MatrixConcept VMatrix, MatrixConcept VNMatrix>
+MeshType pointCloudMeshFromMatrices(
+	const VMatrix&  vertices,
+	const VNMatrix& vertexNormals = VNMatrix());
 
-template<typename Matrix, FaceMeshConcept MeshType>
-Matrix faceMatrix(const MeshType& m);
-
-template<typename Matrix, EdgeMeshConcept MeshType>
-Matrix edgeMatrix(const MeshType& m);
-
-template<typename Matrix, MeshConcept MeshType>
-Matrix vertexNormalsMatrix(const MeshType& m);
+template<
+	FaceMeshConcept MeshType,
+	MatrixConcept   VMatrix,
+	MatrixConcept   FMatrix,
+	MatrixConcept   VNMatrix>
+MeshType meshFromMatrices(
+	const VMatrix&  vertices,
+	const FMatrix&  faces = FMatrix(),
+	const VNMatrix& vertexNormals = VNMatrix());
 
 } // namespace vcl
 
-#include "to_matrix.cpp"
+#include "matrix.cpp"
 
-#endif // VCL_ALGORITHMS_EXPORT_TO_MATRIX_H
+#endif // VCL_ALGORITHMS_IMPORT_MATRIX_H

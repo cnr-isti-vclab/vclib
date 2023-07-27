@@ -26,27 +26,31 @@
 namespace vcl {
 
 template<MeshConcept MeshType, LoggerConcept LogType>
-void save(const MeshType& m, const std::string& filename, LogType& log, bool binary)
+void save(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log,
+	bool               binary)
 {
-	FileMeshInfo info(m);
+	MeshInfo info(m);
 	save(m, filename, info, log, binary);
 }
 
 template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, bool binary)
 {
-	FileMeshInfo info(m);
+	MeshInfo info(m);
 	NullLogger log;
 	save(m, filename, info, log, binary);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
 void save(
-	const MeshType&     m,
-	const std::string&  filename,
-	const FileMeshInfo& info,
-	LogType&            log,
-	bool                binary)
+	const MeshType&    m,
+	const std::string& filename,
+	const MeshInfo&    info,
+	LogType&           log,
+	bool               binary)
 {
 	std::string ext = FileInfo::extension(filename);
 	ext = vcl::str::toLower(ext);

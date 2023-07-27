@@ -28,7 +28,7 @@
 
 int main()
 {
-	vcl::FileMeshInfo loadedInfo;
+	vcl::MeshInfo loadedInfo;
 	vcl::TriMesh m = vcl::io::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.off", loadedInfo);
 
 	assert(loadedInfo.hasVertices());

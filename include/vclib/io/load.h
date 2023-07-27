@@ -40,7 +40,7 @@ MeshType load(
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType load(
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 
@@ -55,7 +55,7 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void load(
 	MeshType&          m,
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 

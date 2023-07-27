@@ -24,8 +24,8 @@
 #ifndef VCL_IO_STL_SAVE_H
 #define VCL_IO_STL_SAVE_H
 
-#include <vclib/io/file_mesh_info.h>
 #include <vclib/misc/logger.h>
+#include <vclib/misc/mesh_info.h>
 
 namespace vcl::io {
 
@@ -39,12 +39,12 @@ void saveStl(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveStl(
-	const MeshType&     m,
-	const std::string&  filename,
-	const FileMeshInfo& info,
-	LogType&            log        = nullLogger,
-	bool                binary     = true,
-	bool                magicsMode = false);
+	const MeshType&    m,
+	const std::string& filename,
+	const MeshInfo&    info,
+	LogType&           log        = nullLogger,
+	bool               binary     = true,
+	bool               magicsMode = false);
 
 } // namespace vcl::io
 

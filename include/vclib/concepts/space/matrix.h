@@ -24,7 +24,7 @@
 #ifndef VCL_CONCEPTS_SPACE_MATRIX_H
 #define VCL_CONCEPTS_SPACE_MATRIX_H
 
-#include <vclib/types.h>
+#include "array.h"
 
 namespace vcl {
 
@@ -35,13 +35,53 @@ namespace vcl {
  * The concept just checks that `T` has the following members:
  * - `T::RowsAtCompileTime`
  * - `T::ColsAtCompileTime`
+ * - `T::rows()`
+ * - `T::cols()`
+ * - `T::operator()(std::size_t, std::size_t)`
  */
 template<typename T>
 concept EigenMatrixConcept = requires (T o, const T& co)
 {
-	o.RowsAtCompileTime;
-	o.ColsAtCompileTime;
+	co.RowsAtCompileTime;
+	co.ColsAtCompileTime;
+
+	co.rows();
+	co.cols();
+
+	o.operator()(std::size_t(), std::size_t());
+	co.operator()(std::size_t(), std::size_t());
 };
+
+/**
+ * @brief Concept for Eigen matrices that can be resized. It is satisfied when
+ * `T` is an Eigen matrix.
+ *
+ * The concept just checks that `T` is an Eigen matrix and has the following
+ * members:
+ * - `T::resize()`
+ * - `T::conservativeResize()`
+ *
+ * @note The fact that an Eigen matrix has the two methods above does not mean
+ * that it can be resized. For example, a matrix with fixed size cannot be
+ * resized, but it has the two methods above, and calling them with the same
+ * sizes of the matrix does not cause any error.
+ */
+template<typename T>
+concept ResizableEigenMatrixConceipt = EigenMatrixConcept<T> && requires (T o)
+{
+	o.resize(std::size_t(), std::size_t());
+	o.conservativeResize(std::size_t(), std::size_t());
+};
+
+/**
+ * @brief Concept for 2D arrays (matrices). It is satisfied when `T` is a
+ * matrix, no matter its sizes.
+ *
+ * The concept just checks that `T` is an resizable Eigen matrix or an Array2,
+ * trough their respective concepts.
+ */
+template<typename T>
+concept MatrixConcept = ResizableEigenMatrixConceipt<T> || Array2Concept<T>;
 
 } // namespace vcl
 

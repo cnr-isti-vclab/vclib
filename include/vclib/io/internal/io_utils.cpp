@@ -59,33 +59,33 @@ inline std::ifstream loadFileStream(const std::string& filename)
 }
 
 template<MeshConcept MeshType>
-void addPerVertexCustomComponent(MeshType& m, const FileMeshInfo::CustomComponent& cc)
+void addPerVertexCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
 	switch (cc.type) {
-	case FileMeshInfo::CHAR: m.template addPerVertexCustomComponent<char>(cc.name); break;
-	case FileMeshInfo::UCHAR: m.template addPerVertexCustomComponent<unsigned char>(cc.name); break;
-	case FileMeshInfo::SHORT: m.template addPerVertexCustomComponent<short>(cc.name); break;
-	case FileMeshInfo::USHORT: m.template addPerVertexCustomComponent<unsigned short>(cc.name); break;
-	case FileMeshInfo::INT: m.template addPerVertexCustomComponent<int>(cc.name); break;
-	case FileMeshInfo::UINT: m.template addPerVertexCustomComponent<uint>(cc.name); break;
-	case FileMeshInfo::FLOAT: m.template addPerVertexCustomComponent<float>(cc.name); break;
-	case FileMeshInfo::DOUBLE: m.template addPerVertexCustomComponent<double>(cc.name); break;
+	case MeshInfo::CHAR: m.template addPerVertexCustomComponent<char>(cc.name); break;
+	case MeshInfo::UCHAR: m.template addPerVertexCustomComponent<unsigned char>(cc.name); break;
+	case MeshInfo::SHORT: m.template addPerVertexCustomComponent<short>(cc.name); break;
+	case MeshInfo::USHORT: m.template addPerVertexCustomComponent<unsigned short>(cc.name); break;
+	case MeshInfo::INT: m.template addPerVertexCustomComponent<int>(cc.name); break;
+	case MeshInfo::UINT: m.template addPerVertexCustomComponent<uint>(cc.name); break;
+	case MeshInfo::FLOAT: m.template addPerVertexCustomComponent<float>(cc.name); break;
+	case MeshInfo::DOUBLE: m.template addPerVertexCustomComponent<double>(cc.name); break;
 	default: assert(0);
 	}
 }
 
 template<FaceMeshConcept MeshType>
-void addPerFaceCustomComponent(MeshType& m, const FileMeshInfo::CustomComponent& cc)
+void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
 	switch (cc.type) {
-	case FileMeshInfo::CHAR: m.template addPerFaceCustomComponent<char>(cc.name); break;
-	case FileMeshInfo::UCHAR: m.template addPerFaceCustomComponent<unsigned char>(cc.name); break;
-	case FileMeshInfo::SHORT: m.template addPerFaceCustomComponent<short>(cc.name); break;
-	case FileMeshInfo::USHORT: m.template addPerFaceCustomComponent<unsigned short>(cc.name); break;
-	case FileMeshInfo::INT: m.template addPerFaceCustomComponent<int>(cc.name); break;
-	case FileMeshInfo::UINT: m.template addPerFaceCustomComponent<uint>(cc.name); break;
-	case FileMeshInfo::FLOAT: m.template addPerFaceCustomComponent<float>(cc.name); break;
-	case FileMeshInfo::DOUBLE: m.template addPerFaceCustomComponent<double>(cc.name); break;
+	case MeshInfo::CHAR: m.template addPerFaceCustomComponent<char>(cc.name); break;
+	case MeshInfo::UCHAR: m.template addPerFaceCustomComponent<unsigned char>(cc.name); break;
+	case MeshInfo::SHORT: m.template addPerFaceCustomComponent<short>(cc.name); break;
+	case MeshInfo::USHORT: m.template addPerFaceCustomComponent<unsigned short>(cc.name); break;
+	case MeshInfo::INT: m.template addPerFaceCustomComponent<int>(cc.name); break;
+	case MeshInfo::UINT: m.template addPerFaceCustomComponent<uint>(cc.name); break;
+	case MeshInfo::FLOAT: m.template addPerFaceCustomComponent<float>(cc.name); break;
+	case MeshInfo::DOUBLE: m.template addPerFaceCustomComponent<double>(cc.name); break;
 	default: assert(0);
 	}
 }
@@ -103,7 +103,7 @@ void addPerFaceCustomComponent(MeshType& m, const FileMeshInfo::CustomComponent&
  * @param m
  */
 template<MeshConcept MeshType>
-void enableOptionalComponents(FileMeshInfo& info, MeshType& m)
+void enableOptionalComponents(MeshInfo& info, MeshType& m)
 {
 	if (info.hasVertices()) {
 		if (info.hasVertexColors()) {

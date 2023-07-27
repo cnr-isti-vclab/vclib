@@ -34,12 +34,12 @@ namespace vcl::io {
 
 namespace internal {
 
-template <MeshConcept MeshType>
+template<MeshConcept MeshType>
 void loadOffVertices(
-	MeshType& mesh,
-	std::ifstream& file,
-	const FileMeshInfo& fileInfo,
-	uint nv)
+	MeshType&       mesh,
+	std::ifstream&  file,
+	const MeshInfo& fileInfo,
+	uint            nv)
 {
 	using VertexType = typename MeshType::VertexType;
 
@@ -108,7 +108,7 @@ template<FaceMeshConcept MeshType>
 void loadOffFaces(
 	MeshType&      mesh,
 	std::ifstream& file,
-	FileMeshInfo&  loadedInfo,
+	MeshInfo&      loadedInfo,
 	uint           nf,
 	bool           enableOptionalComponents)
 {
@@ -179,14 +179,14 @@ void loadOffFaces(
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType loadOff(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	return loadOff<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType loadOff(
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {
@@ -198,7 +198,7 @@ MeshType loadOff(
 template<MeshConcept MeshType, LoggerConcept LogType>
 void loadOff(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
@@ -206,7 +206,7 @@ template<MeshConcept MeshType, LoggerConcept LogType>
 void loadOff(
 	MeshType&          m,
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {
@@ -217,7 +217,7 @@ void loadOff(
 		m.name() = FileInfo::filenameWithoutExtension(filename);
 	}
 
-	FileMeshInfo fileInfo; // data that needs to be read from the file
+	MeshInfo fileInfo; // data that needs to be read from the file
 
 	off::loadOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
 	loadedInfo = fileInfo; // data that will be stored in the mesh!

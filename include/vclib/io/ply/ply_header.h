@@ -28,7 +28,8 @@
 #include <string>
 #include <fstream>
 
-#include "../file_mesh_info.h"
+#include <vclib/misc/mesh_info.h>
+
 #include "ply.h"
 
 namespace vcl {
@@ -48,7 +49,7 @@ public:
 	PlyHeader();
 	PlyHeader(
 		ply::Format              f,
-		const FileMeshInfo&      info,
+		const MeshInfo&      info,
 		std::vector<std::string> textureFiles = std::vector<std::string>());
 	PlyHeader(const std::string& filename, std::ifstream& file);
 
@@ -57,7 +58,7 @@ public:
 
 	ply::Format format() const;
 
-	FileMeshInfo getInfo() const;
+	MeshInfo getInfo() const;
 
 	bool hasVertices() const;
 	bool hasFaces() const;
@@ -85,7 +86,7 @@ public:
 	void pushTextureFileName(const std::string& tn);
 
 	void setInfo(
-		const FileMeshInfo&  info,
+		const MeshInfo&  info,
 		std::vector<std::string> textureFiles = std::vector<std::string>(),
 		bool                     binary       = true);
 

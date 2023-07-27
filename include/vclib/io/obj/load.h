@@ -24,8 +24,8 @@
 #ifndef VCL_IO_OBJ_LOAD_H
 #define VCL_IO_OBJ_LOAD_H
 
-#include <vclib/io/file_mesh_info.h>
 #include <vclib/misc/logger.h>
+#include <vclib/misc/mesh_info.h>
 
 namespace vcl::io {
 
@@ -38,7 +38,7 @@ MeshType loadObj(
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadObj(
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 
@@ -53,7 +53,7 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadObj(
 	MeshType&          m,
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
 

@@ -24,6 +24,6 @@
 #ifndef VCL_ALGORITHMS_EXPORT_H
 #define VCL_ALGORITHMS_EXPORT_H
 
-#include "export/to_matrix.h"
+#include "export/matrix.h"
 
 #endif // VCL_ALGORITHMS_EXPORT_H

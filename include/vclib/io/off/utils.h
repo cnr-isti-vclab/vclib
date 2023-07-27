@@ -24,13 +24,12 @@
 #ifndef VCL_IO_OFF_UTILS_H
 #define VCL_IO_OFF_UTILS_H
 
+#include <vclib/misc/mesh_info.h>
 #include <vclib/misc/tokenizer.h>
-
-#include "../file_mesh_info.h"
 
 namespace vcl::io::off {
 
-void loadOffHeader(std::ifstream& file, FileMeshInfo& fileInfo, uint& nv, uint& nf, uint& ne);
+void loadOffHeader(std::ifstream& file, MeshInfo& fileInfo, uint& nv, uint& nf, uint& ne);
 
 vcl::Color loadColor(vcl::Tokenizer::iterator& token, int nColorComponents);
 

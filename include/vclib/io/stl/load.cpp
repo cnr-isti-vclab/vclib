@@ -88,7 +88,7 @@ template<MeshConcept MeshType, LoggerConcept LogType>
 void loadStlBin(
 	MeshType&      m,
 	std::ifstream& fp,
-	FileMeshInfo&  loadedInfo,
+	MeshInfo&  loadedInfo,
 	LogType&       log,
 	bool           enableOptionalComponents)
 {
@@ -175,7 +175,7 @@ template<MeshConcept MeshType, LoggerConcept LogType>
 void loadStlAscii(
 	MeshType&      m,
 	std::ifstream& fp,
-	FileMeshInfo&  loadedInfo,
+	MeshInfo&      loadedInfo,
 	LogType&       log,
 	std::size_t    fsize,
 	bool           enableOptionalComponents)
@@ -252,16 +252,19 @@ void loadStlAscii(
 } // namespace vcl::io::internal
 
 template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType loadStl(const std::string& filename, LogType& log, bool enableOptionalComponents)
+MeshType loadStl(
+	const std::string& filename,
+	LogType&           log,
+	bool               enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	return loadStl<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType loadStl(
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {
@@ -271,9 +274,13 @@ MeshType loadStl(
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
-void loadStl(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
+void loadStl(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log,
+	bool               enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
@@ -281,7 +288,7 @@ template<MeshConcept MeshType, LoggerConcept LogType>
 void loadStl(
 	MeshType&          m,
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {
@@ -300,7 +307,7 @@ void loadStl(
 
 	std::ifstream fp = internal::loadFileStream(filename);
 
-	loadedInfo = FileMeshInfo();
+	loadedInfo = MeshInfo();
 	loadedInfo.setVertices();
 	loadedInfo.setVertexCoords();
 	if constexpr(HasFaces<MeshType>) {

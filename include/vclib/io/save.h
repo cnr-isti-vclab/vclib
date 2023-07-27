@@ -43,11 +43,11 @@ void save(const MeshType& m, const std::string& filename, bool binary);
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
-	const MeshType&     m,
-	const std::string&  filename,
-	const FileMeshInfo& info,
-	LogType&            log    = nullLogger,
-	bool                binary = true);
+	const MeshType&    m,
+	const std::string& filename,
+	const MeshInfo&    info,
+	LogType&           log    = nullLogger,
+	bool               binary = true);
 
 } // namespace vcl
 

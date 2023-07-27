@@ -21,37 +21,52 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_SAVE_H
-#define VCL_IO_PLY_SAVE_H
+#ifndef VCL_ALGORITHMS_EXPORT_MATRIX_H
+#define VCL_ALGORITHMS_EXPORT_MATRIX_H
 
-#include <vclib/exceptions/io_exceptions.h>
-#include <vclib/misc/logger.h>
+#include <vclib/concepts/space/matrix.h>
+#include <vclib/mesh/requirements.h>
 
-#include "ply.h"
-#include "ply_edge.h"
-#include "ply_extra.h"
-#include "ply_face.h"
-#include "ply_vertex.h"
+namespace vcl {
 
-namespace vcl::io {
+template<MatrixConcept Matrix, MeshConcept MeshType>
+Matrix vertexMatrix(const MeshType& mesh);
 
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log    = nullLogger,
-	bool               binary = true);
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceMatrix(const MeshType& mesh);
 
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	const MeshInfo&    info,
-	LogType&           log    = nullLogger,
-	bool               binary = true);
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceSizesVector(const MeshType& mesh);
 
-} // namespace vcl::io
+template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
+Matrix edgeMatrix(const MeshType& mesh);
 
-#include "save.cpp"
+template<typename Vect, MeshConcept MeshType>
+Vect vertexSelectionVector(const MeshType& mesh);
 
-#endif // VCL_IO_PLY_SAVE_H
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceSelectionVector(const MeshType& mesh);
+
+template<MatrixConcept Matrix, MeshConcept MeshType>
+Matrix vertexNormalsMatrix(const MeshType& mesh);
+
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceNormalsMatrix(const MeshType& mesh);
+
+template<MatrixConcept Matrix, MeshConcept MeshType>
+Matrix vertexColorsMatrix(const MeshType& mesh);
+
+template<MatrixConcept Matrix, FaceMeshConcept MeshType>
+Matrix faceColorsMatrix(const MeshType& mesh);
+
+template<typename Vect, MeshConcept MeshType>
+Vect vertexQualityVector(const MeshType& mesh);
+
+template<typename Vect, FaceMeshConcept MeshType>
+Vect faceQualityVector(const MeshType& mesh);
+
+} // namespace vcl
+
+#include "matrix.cpp"
+
+#endif // VCL_ALGORITHMS_EXPORT_MATRIX_H

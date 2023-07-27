@@ -46,7 +46,7 @@ namespace vcl {
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType load(const std::string& filename, LogType& log, bool enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	return load<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
@@ -73,7 +73,7 @@ MeshType load(const std::string& filename, LogType& log, bool enableOptionalComp
 template<MeshConcept MeshType, LoggerConcept LogType>
 MeshType load(
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {
@@ -103,9 +103,13 @@ MeshType load(
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType>
-void load(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
+void load(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log,
+	bool               enableOptionalComponents)
 {
-	FileMeshInfo loadedInfo;
+	MeshInfo loadedInfo;
 	load(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
@@ -133,7 +137,7 @@ template<MeshConcept MeshType, LoggerConcept LogType>
 void load(
 	MeshType&          m,
 	const std::string& filename,
-	FileMeshInfo&      loadedInfo,
+	MeshInfo&          loadedInfo,
 	LogType&           log,
 	bool               enableOptionalComponents)
 {
