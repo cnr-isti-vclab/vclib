@@ -65,20 +65,50 @@ void importFaces(MeshType& mesh, const FMatrix& faces)
 	}
 }
 
+template<MeshConcept MeshType, MatrixConcept VNMatrix>
+void importVertexNormals(MeshType& mesh, const VNMatrix& vertexNormals)
+{
+	using NormalType = typename MeshType::VertexType::NormalType;
+
+	if (vertexNormals.cols() != 3)
+		throw WrongSizeException(
+			"The input vertex normal matrix must have 3 columns");
+
+	if (vertexNormals.rows() != mesh.numVertices())
+		throw WrongSizeException(
+			"The input vertex normal matrix must have the same number of rows "
+			"as the number of vertices in the mesh");
+
+	enableIfPerVertexNormalOptional(mesh);
+
+	for (uint i = 0; i < vertexNormals.rows(); ++i)
+		mesh.vertex(i).normal() = NormalType(
+			vertexNormals(i, 0), vertexNormals(i, 1), vertexNormals(i, 2));
+}
+
 template<
 	MeshConcept MeshType,
 	MatrixConcept VMatrix,
-	MatrixConcept FMatrix = Eigen::MatrixX3i>
+	MatrixConcept FMatrix = Eigen::MatrixX3i,
+	MatrixConcept VNMatrix = Eigen::MatrixX3d>
 MeshType meshFromMatrices(
 	const VMatrix& vertices,
-	const FMatrix& faces = FMatrix())
+	const FMatrix& faces = FMatrix(),
+	const VNMatrix& vertexNormals = VNMatrix())
 {
 	MeshType mesh;
 
 	importVertices(mesh, vertices);
 
-	if constexpr (HasFaces<MeshType>){
-		importFaces(mesh, faces);
+	if constexpr (HasFaces<MeshType>) {
+		if (faces.rows() > 0)
+			importFaces(mesh, faces);
+	}
+
+	if constexpr (HasPerVertexNormal<MeshType>) {
+		if (vertexNormals.rows() > 0) {
+			importVertexNormals(mesh, vertexNormals);
+		}
 	}
 
 	return mesh;
@@ -86,16 +116,89 @@ MeshType meshFromMatrices(
 
 } // namespace internal
 
-template<MeshConcept MeshType, MatrixConcept VMatrix>
-MeshType pointCloudMeshFromMatrices(const VMatrix& vertices)
+/**
+ * @brief Creates and returns a new point cloud mesh from the input vertex
+ * matrix and the other matrices that are given as arguments.
+ *
+ * The function accepts several input matrices, that are used only if their
+ * number of rows is different from zero.
+ *
+ * @throws vcl::WrongSizeException if the sizes of the non-empty input matrices
+ * have not the expected sizes.
+ *
+ * @tparam MeshType: the type of the mesh to be created. It must satisfy the
+ * MeshConcept.
+ * @tparam VMatrix: the type of the input vertex matrix. It must satisfy the
+ * MatrixConcept.
+ * @tparam VNMatrix: the type of the input vertex normal matrix. It must satisfy
+ * the MatrixConcept.
+ *
+ * @param[in] vertices: a #V*3 matrix containing the coordinates of the vertices
+ * of the mesh.
+ * @param[in] vertexNormals: a #V*3 matrix containing the normals of the
+ * vertices of the mesh. If the number of rows of this matrix is zero, the
+ * function will not add vertex normals to the mesh.
+ *
+ * @return a new point cloud mesh containing the data passed as argument.
+ */
+template<
+	MeshConcept MeshType,
+	MatrixConcept VMatrix,
+	MatrixConcept VNMatrix>
+MeshType pointCloudMeshFromMatrices(
+	const VMatrix& vertices,
+	const VNMatrix& vertexNormals)
 {
-	return internal::meshFromMatrices<MeshType>(vertices);
+	return internal::meshFromMatrices<MeshType>(
+		vertices,
+		Eigen::MatrixX3i(),
+		vertexNormals);
 }
 
-template<FaceMeshConcept MeshType, MatrixConcept VMatrix, MatrixConcept FMatrix>
-MeshType faceMeshFromMatrices(const VMatrix& vertices, const FMatrix& faces)
+/**
+ * @brief Creates and returns a new mesh from the input vertex and face
+ * matrices, and the other matrices that are given as arguments.
+ *
+ * The function accepts several input matrices, that are used only if their
+ * number of rows is different from zero.
+ *
+ * @throws vcl::WrongSizeException if the sizes of the non-empty input matrices
+ * have not the expected sizes.
+ *
+ * @tparam MeshType: the type of the mesh to be created. It must satisfy the
+ * FaceMeshConcept.
+ * @tparam VMatrix: the type of the input vertex matrix. It must satisfy the
+ * MatrixConcept.
+ * @tparam FMatrix: the type of the input face matrix. It must satisfy the
+ * MatrixConcept.
+ * @tparam VNMatrix: the type of the input vertex normal matrix. It must satisfy
+ * the MatrixConcept.
+ *
+ * @param[in] vertices: a #V*3 matrix containing the coordinates of the vertices
+ * of the mesh.
+ * @param[in] faces: a #F*3 matrix containing the indices of the vertices of the
+ * faces of the mesh. If the number of rows of this matrix is zero, the
+ * function will not add faces to the mesh.
+ * @param[in] vertexNormals: a #V*3 matrix containing the normals of the
+ * vertices of the mesh. If the number of rows of this matrix is zero, the
+ * function will not add vertex normals to the mesh.
+ *
+ * @return a new mesh containing the data passed as argument.
+ */
+template<
+	FaceMeshConcept MeshType,
+	MatrixConcept VMatrix,
+	MatrixConcept FMatrix,
+	MatrixConcept VNMatrix>
+MeshType meshFromMatrices(
+	const VMatrix& vertices,
+	const FMatrix& faces,
+	const VNMatrix& vertexNormals)
 {
-	return internal::meshFromMatrices<MeshType>(vertices, faces);
+	return internal::meshFromMatrices<MeshType>(
+		vertices,
+		faces,
+		vertexNormals);
 }
 
 } // namespace vcl

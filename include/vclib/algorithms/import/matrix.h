@@ -29,11 +29,20 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType, MatrixConcept VMatrix>
-MeshType pointCloudMeshFromMatrices(const VMatrix& vertices);
+template<MeshConcept MeshType, MatrixConcept VMatrix, MatrixConcept VNMatrix>
+MeshType pointCloudMeshFromMatrices(
+	const VMatrix&  vertices,
+	const VNMatrix& vertexNormals = VNMatrix());
 
-template<FaceMeshConcept MeshType, MatrixConcept VMatrix, MatrixConcept FMatrix>
-MeshType faceMeshFromMatrices(const VMatrix& vertices, const FMatrix& faces);
+template<
+	FaceMeshConcept MeshType,
+	MatrixConcept   VMatrix,
+	MatrixConcept   FMatrix,
+	MatrixConcept   VNMatrix>
+MeshType meshFromMatrices(
+	const VMatrix&  vertices,
+	const FMatrix&  faces = FMatrix(),
+	const VNMatrix& vertexNormals = VNMatrix());
 
 } // namespace vcl
 
