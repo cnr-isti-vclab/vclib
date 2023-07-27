@@ -74,6 +74,7 @@ concept MeshConcept =
 	{ co.index(v) } -> std::same_as<uint>;
 	{ co.index(&v) } -> std::same_as<uint>;
 	{ o.clear() } -> std::same_as<void>;
+	{ co.isCompact() } -> std::same_as<bool>;
 	{ o.compact() } -> std::same_as<void>;
 	{ o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
 	{ o.importFrom(T()) } -> std::same_as<void>;

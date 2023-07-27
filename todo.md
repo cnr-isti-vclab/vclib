@@ -21,7 +21,6 @@
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers
-    - [ ] isCompact check shoul be a member of the mesh
 - Exceptions:
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Algorithms:

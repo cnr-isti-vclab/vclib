@@ -106,24 +106,17 @@ bool isQuadMesh(const MeshType& m)
 /**
  * @brief Checks if a Mesh is compact, that is if it does not contains deleted
  * elements.
- * @return `true` if `m` is compact, `false` otherwise.
  *
- * @todo remove this function - use isCompact from mesh
+ * It is equivalent to call `m.isCompact()`.
+ *
+ * @return `true` if `m` is compact, `false` otherwise.
  *
  * @ingroup mesh_requirements
  */
 template<MeshConcept MeshType>
 bool isCompact(const MeshType& m)
 {
-	bool c = true;
-	c = c && isVertexContainerCompact(m);
-	if constexpr (HasFaces<MeshType>) {
-		c = c && isFaceContainerCompact(m);
-	}
-	if constexpr (HasEdges<MeshType>) {
-		c = c && (m.edgeNumber() == m.edgeContainerSize());
-	}
-	return c;
+	return m.isCompact();
 }
 
 /*********************
@@ -210,7 +203,7 @@ void requireQuadMesh(const MeshType& m)
 template <MeshConcept MeshType>
 void requireCompactness(const MeshType& m)
 {
-	if (!isCompact(m))
+	if (!m.isCompact())
 		throw MissingCompactnessException("Mesh is not compact.");
 }
 

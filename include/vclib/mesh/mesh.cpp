@@ -79,8 +79,22 @@ Mesh<Args...>::Mesh(Mesh<Args...>&& oth)
 }
 
 /**
+ * @brief Returns true if this mesh is compact, meaning that all its containers
+ * have no deleted elements (size == element number).
+ *
+ * @return true if this mesh is compact, false otherwise.
+ */
+template<typename... Args>
+bool Mesh<Args...>::isCompact() const
+{
+	bool isCompact = true;
+	((isCompact &= isContainerCompact<Args>()), ...);
+	return isCompact;
+}
+
+/**
  * @brief Returns true if this Mesh has a container of elements having the same
- *Element ID of the template Element El.
+ * Element ID of the template Element El.
  *
  * This means that this the only value checked is the ELEMENT_TYPE unsigned int
  * exposed by the Element, meaning that it does not check if the Elements of
@@ -942,6 +956,18 @@ void Mesh<Args...>::disablePerElementComponent()
 /*********************
  * Protected Members *
  *********************/
+
+template<typename... Args>
+template<typename Cont>
+bool Mesh<Args...>::isContainerCompact() const
+{
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		return Cont::elementNumber() == Cont::elementContainerSize();
+	}
+	else {
+		return true; // does not count as a container
+	}
+}
 
 /**
  * This function will compact the Cont container of this mesh (if Cont is
