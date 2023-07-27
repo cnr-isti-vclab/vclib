@@ -9,6 +9,10 @@
           (and, in general, all the members that use this)
     - [ ] the setVertices, setAdj*s that take as input a vector should take as input a range
     - [ ] write and comment all the empty constructors of the components
+    - [ ] reorganize keywords for optioal and availability checks of components:
+      - [ ] enable/disable keywords should be used only when the component is optional
+      - [ ] available keyword should be used when check the general availability of the component, regardless its optionality
+            (e.g. in the requirements functions and in the component member functions)
   - Elements:
     - [ ] set properly elements concepts
     - [ ] set constructors for Edge element
@@ -17,6 +21,9 @@
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
     - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers
+    - [ ] isCompact check shoul be a member of the mesh
+- Exceptions:
+  - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] Implement importer/exporter from VCG
