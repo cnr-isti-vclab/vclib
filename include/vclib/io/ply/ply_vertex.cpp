@@ -48,7 +48,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	}
 	if (p.name >= ply::nx && p.name <= ply::nz) {
 		if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-			if (vcl::isPerVertexNormalEnabled(mesh)) {
+			if (vcl::isPerVertexNormalAvailable(mesh)) {
 				using Scalar = typename VertexType::NormalType::ScalarType;
 				int a = p.name - ply::nx;
 				v.normal()[a] = io::internal::readProperty<Scalar>(file, p.type);
@@ -58,7 +58,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	}
 	if (p.name >= ply::red && p.name <= ply::alpha) {
 		if constexpr (vcl::HasPerVertexColor<MeshType>) {
-			if (vcl::isPerVertexColorEnabled(mesh)) {
+			if (vcl::isPerVertexColorAvailable(mesh)) {
 				int a = p.name - ply::red;
 				v.color()[a] = io::internal::readProperty<unsigned char>(file, p.type);
 				hasBeenRead = true;
@@ -68,7 +68,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	if (p.name == ply::quality) {
 		if constexpr (vcl::HasPerVertexQuality<MeshType>) {
 			using QualityType = typename VertexType::QualityType;
-			if (vcl::isPerVertexQualityEnabled(mesh)) {
+			if (vcl::isPerVertexQualityAvailable(mesh)) {
 				v.quality() = io::internal::readProperty<QualityType>(file, p.type);
 				hasBeenRead = true;
 			}
@@ -77,7 +77,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
 		if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
 			using Scalar = typename VertexType::TexCoordType::ScalarType;
-			if (vcl::isPerVertexTexCoordEnabled(mesh)) {
+			if (vcl::isPerVertexTexCoordAvailable(mesh)) {
 				int a = p.name - ply::texture_u;
 				v.texCoord()[a] = io::internal::readProperty<Scalar>(file, p.type);
 				hasBeenRead = true;

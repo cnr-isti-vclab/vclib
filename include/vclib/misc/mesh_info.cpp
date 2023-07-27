@@ -51,16 +51,16 @@ MeshInfo::MeshInfo(const Mesh& m)
 	setVertices();
 	setVertexCoords(true, getType<typename Mesh::VertexType::CoordType::ScalarType>());
 	if constexpr (vcl::HasPerVertexNormal<Mesh>)
-		if (vcl::isPerVertexNormalEnabled(m))
+		if (vcl::isPerVertexNormalAvailable(m))
 			setVertexNormals(true, getType<typename Mesh::VertexType::NormalType::ScalarType>());
 	if constexpr (vcl::HasPerVertexColor<Mesh>)
-		if (vcl::isPerVertexColorEnabled(m))
+		if (vcl::isPerVertexColorAvailable(m))
 			setVertexColors(true, UCHAR);
 	if constexpr (vcl::HasPerVertexQuality<Mesh>)
-		if (vcl::isPerVertexQualityEnabled(m))
+		if (vcl::isPerVertexQualityAvailable(m))
 			setVertexQuality(true, getType<typename Mesh::VertexType::QualityType>());
 	if constexpr (vcl::HasPerVertexTexCoord<Mesh>)
-		if (vcl::isPerVertexTexCoordEnabled(m))
+		if (vcl::isPerVertexTexCoordAvailable(m))
 			setVertexTexCoords(
 				true,
 				getType<typename Mesh::VertexType::TexCoordType::ScalarType>());
@@ -84,16 +84,16 @@ MeshInfo::MeshInfo(const Mesh& m)
 		else
 			setPolygonMesh();
 		if constexpr (vcl::HasPerFaceNormal<Mesh>)
-			if (vcl::isPerFaceNormalEnabled(m))
+			if (vcl::isPerFaceNormalAvailable(m))
 				setFaceNormals(true, getType<typename Mesh::FaceType::NormalType::ScalarType>());
 		if constexpr (vcl::HasPerFaceColor<Mesh>)
-			if (vcl::isPerFaceColorEnabled(m))
+			if (vcl::isPerFaceColorAvailable(m))
 				setFaceColors(true, UCHAR);
 		if constexpr (vcl::HasPerFaceQuality<Mesh>)
-			if (vcl::isPerFaceQualityEnabled(m))
+			if (vcl::isPerFaceQualityAvailable(m))
 				setFaceQuality(true, getType<typename Mesh::FaceType::QualityType>());
 		if constexpr (vcl::HasPerFaceWedgeTexCoords<Mesh>)
-			if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
+			if (vcl::isPerFaceWedgeTexCoordsAvailable(m))
 				setFaceWedgeTexCoords(true, getType<typename Mesh::FaceType::WedgeTexCoordType::ScalarType>());
 		if constexpr(vcl::HasPerFaceCustomComponents<Mesh>) {
 			auto names = m.perFaceCustomComponentNames();

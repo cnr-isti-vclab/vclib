@@ -36,12 +36,12 @@ void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool 
 	}
 	if (updateNormals) {
 		if constexpr (HasPerVertexNormal<MeshType>) {
-			if (isPerVertexNormalEnabled(mesh)) {
+			if (isPerVertexNormalAvailable(mesh)) {
 				multiplyPerVertexNormalsByMatrix(mesh, matrix);
 			}
 		}
 		if constexpr (HasPerFaceNormal<MeshType>) {
-			if (isPerFaceNormalEnabled(mesh)) {
+			if (isPerFaceNormalAvailable(mesh)) {
 				multiplyPerFaceNormalsByMatrix(mesh, matrix);
 			}
 		}

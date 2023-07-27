@@ -50,7 +50,7 @@ bool isEdgeContainerCompact(const MeshType&);
 // Edge AdjacentEdges
 
 template<EdgeMeshConcept MeshType>
-bool isPerEdgeAdjacentEdgesEnabled(const MeshType&);
+bool isPerEdgeAdjacentEdgesAvailable(const MeshType&);
 
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeAdjacentEdgesOptional(MeshType&);
@@ -58,7 +58,7 @@ bool enableIfPerEdgeAdjacentEdgesOptional(MeshType&);
 // Edge AdjacentFaces
 
 template<EdgeMeshConcept MeshType>
-bool isPerEdgeAdjacentFacesEnabled(const MeshType&);
+bool isPerEdgeAdjacentFacesAvailable(const MeshType&);
 
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeAdjacentFacesOptional(MeshType&);
@@ -66,7 +66,7 @@ bool enableIfPerEdgeAdjacentFacesOptional(MeshType&);
 // Edge Color
 
 template<EdgeMeshConcept MeshType>
-bool isPerEdgeColorEnabled(const MeshType&);
+bool isPerEdgeColorAvailable(const MeshType&);
 
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeColorOptional(MeshType&);
@@ -74,7 +74,7 @@ bool enableIfPerEdgeColorOptional(MeshType&);
 // Edge Mark
 
 template<EdgeMeshConcept MeshType>
-bool isPerEdgeMarkEnabled(const MeshType&);
+bool isPerEdgeMarkAvailable(const MeshType&);
 
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeMarkOptional(MeshType&);
@@ -82,7 +82,7 @@ bool enableIfPerEdgeMarkOptional(MeshType&);
 // Edge Quality
 
 template<EdgeMeshConcept MeshType>
-bool isPerEdgeQualityEnabled(const MeshType&);
+bool isPerEdgeQualityAvailable(const MeshType&);
 
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeQualityOptional(MeshType&);

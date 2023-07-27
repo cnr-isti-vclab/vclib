@@ -80,7 +80,7 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
 			if (qH[m.index(f.vertex(j))] == 0) {
 				ptVec.push_back(f.vertex(j)->coord());
 				if constexpr(HasPerVertexNormal<MeshType>) {
-					if (isPerVertexNormalEnabled(m)) {
+					if (isPerVertexNormalAvailable(m)) {
 						nmVec.push_back(f.vertex(j)->normal());
 					}
 				}
@@ -95,7 +95,7 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
 				CoordType                       pp = pl.segmentIntersection(seg);
 				ptVec.push_back(pp);
 				if constexpr(HasPerVertexNormal<MeshType>) {
-					if (isPerVertexNormalEnabled(m)) {
+					if (isPerVertexNormalAvailable(m)) {
 						using NormalType = typename VertexType::NormalType;
 						const NormalType& n0 = f.vertex(j)->normal();
 						const NormalType& n1 = f.vertexMod(j + 1)->normal();
@@ -114,7 +114,7 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
 			em.edge(eid).vertex(0) = &em.vertex(v0);
 			em.edge(eid).vertex(1) = &em.vertex(v1);
 			if constexpr (HasPerVertexNormal<MeshType> && HasPerVertexNormal<EdgeMesh>) {
-				if (isPerVertexNormalEnabled(m) && isPerVertexNormalEnabled(em)) {
+				if (isPerVertexNormalAvailable(m) && isPerVertexNormalAvailable(em)) {
 					em.vertex(v0).normal() = nmVec[0];
 					em.vertex(v1).normal() = nmVec[1];
 				}

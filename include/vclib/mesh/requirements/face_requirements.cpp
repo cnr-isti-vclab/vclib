@@ -79,9 +79,9 @@ bool isFaceContainerCompact(const MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFaceAdjacentEdgesEnabled(const MeshType& m)
+bool isPerFaceAdjacentEdgesAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, ADJACENT_EDGES>(m);
+	return isPerElementComponentAvailable<FACE, ADJACENT_EDGES>(m);
 }
 
 /**
@@ -137,9 +137,9 @@ bool enableIfPerFaceAdjacentEdgesOptional(MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFaceAdjacentFacesEnabled(const MeshType& m)
+bool isPerFaceAdjacentFacesAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, ADJACENT_FACES>(m);
+	return isPerElementComponentAvailable<FACE, ADJACENT_FACES>(m);
 }
 
 /**
@@ -195,9 +195,9 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFaceColorEnabled(const MeshType& m)
+bool isPerFaceColorAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, COLOR>(m);
+	return isPerElementComponentAvailable<FACE, COLOR>(m);
 }
 
 /**
@@ -253,9 +253,9 @@ bool enableIfPerFaceColorOptional(MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFaceMarkEnabled(const MeshType& m)
+bool isPerFaceMarkAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, MARK>(m);
+	return isPerElementComponentAvailable<FACE, MARK>(m);
 }
 
 /**
@@ -311,9 +311,9 @@ bool enableIfPerFaceMarkOptional(MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFaceNormalEnabled(const MeshType& m)
+bool isPerFaceNormalAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, NORMAL>(m);
+	return isPerElementComponentAvailable<FACE, NORMAL>(m);
 }
 
 /**
@@ -370,9 +370,9 @@ bool enableIfPerFaceNormalOptional(MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFacePrincipalCurvatureEnabled(const MeshType& m)
+bool isPerFacePrincipalCurvatureAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, PRINCIPAL_CURVATURE>(m);
+	return isPerElementComponentAvailable<FACE, PRINCIPAL_CURVATURE>(m);
 }
 
 /**
@@ -428,9 +428,9 @@ bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFaceQualityEnabled(const MeshType& m)
+bool isPerFaceQualityAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, QUALITY>(m);
+	return isPerElementComponentAvailable<FACE, QUALITY>(m);
 }
 
 /**
@@ -486,9 +486,9 @@ bool enableIfPerFaceQualityOptional(MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFaceWedgeColorsEnabled(const MeshType& m)
+bool isPerFaceWedgeColorsAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, WEDGE_COLORS>(m);
+	return isPerElementComponentAvailable<FACE, WEDGE_COLORS>(m);
 }
 
 /**
@@ -544,9 +544,9 @@ bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-bool isPerFaceWedgeTexCoordsEnabled(const MeshType& m)
+bool isPerFaceWedgeTexCoordsAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<FACE, WEDGE_TEX_COORDS>(m);
+	return isPerElementComponentAvailable<FACE, WEDGE_TEX_COORDS>(m);
 }
 
 /**
