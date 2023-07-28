@@ -52,7 +52,7 @@ void AdjacentFaces<Face, N, TT, El, O>::init()
 template<typename Face, int N, bool TT, typename El, bool O>
 bool AdjacentFaces<Face, N, TT, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -501,7 +501,7 @@ void AdjacentFaces<Face, N, TT, El, O>::importPtrsFrom(
  */
 bool isAdjacentFacesEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<ADJACENT_FACES>(element);
+	return isComponentAvailableOn<ADJACENT_FACES>(element);
 }
 
 } // namespace vcl::comp

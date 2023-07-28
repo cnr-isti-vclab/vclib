@@ -54,7 +54,7 @@ void VertexPointers<Vertex, N, El>::init()
 template<typename Vertex, int N, typename El>
 bool VertexPointers<Vertex, N, El>::isEnabled()
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**

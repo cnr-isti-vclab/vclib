@@ -63,7 +63,7 @@ void PolygonBitFlags<N, El, O>::init()
 template<int N, typename El, bool O>
 bool PolygonBitFlags<N, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**

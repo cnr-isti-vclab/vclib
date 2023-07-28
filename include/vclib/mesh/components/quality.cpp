@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<typename S, typename El, bool O>
 bool Quality<S, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -85,7 +85,7 @@ void Quality<S, El, O>::importFrom(const Element& e)
  */
 bool isQualityEnabledOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentEnabledOn<QUALITY>(element);
+	return isComponentAvailableOn<QUALITY>(element);
 }
 
 } // namespace vcl::comp

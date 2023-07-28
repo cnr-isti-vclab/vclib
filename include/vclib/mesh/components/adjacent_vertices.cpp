@@ -52,7 +52,7 @@ void AdjacentVertices<Vertex, El, O>::init()
 template<typename Vertex, typename El, bool O>
 bool AdjacentVertices<Vertex, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -452,7 +452,7 @@ void AdjacentVertices<Vertex, El, O>::importPtrsFrom(
  */
 bool isAdjacentVerticesEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<ADJACENT_VERTICES>(element);
+	return isComponentAvailableOn<ADJACENT_VERTICES>(element);
 }
 
 } // namespace vcl::comp

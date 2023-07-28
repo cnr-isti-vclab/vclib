@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<PointConcept P, typename El, bool O>
 bool Normal<P, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -85,7 +85,7 @@ void Normal<P, El, O>::importFrom(const Element& e)
  */
 bool isNormalEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<NORMAL>(element);
+	return isComponentAvailableOn<NORMAL>(element);
 }
 
 } // namespace vcl::comp

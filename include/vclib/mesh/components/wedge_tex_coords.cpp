@@ -39,7 +39,7 @@ namespace vcl::comp {
 template<typename Scalar, int N, typename El, bool O>
 bool WedgeTexCoords<Scalar, N, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -351,7 +351,7 @@ WedgeTexCoords<Scalar, N, El, O>::texCoords() const
  */
 bool isWedgeTexCoordsEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<WEDGE_TEX_COORDS>(element);
+	return isComponentAvailableOn<WEDGE_TEX_COORDS>(element);
 }
 
 } // namespace vcl::comp

@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<typename El, bool O>
 bool Name<El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -83,7 +83,7 @@ void Name<El, O>::importFrom(const Element &e)
  */
 bool isNameEnabledOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentEnabledOn<NAME>(element);
+	return isComponentAvailableOn<NAME>(element);
 }
 
 } // namespace vcl::comp

@@ -52,7 +52,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::init()
 template<typename Edge, int N, bool TT, typename El, bool O>
 bool AdjacentEdges<Edge, N, TT, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -501,7 +501,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::importPtrsFrom(
  */
 bool isAdjacentEdgesEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<ADJACENT_EDGES>(element);
+	return isComponentAvailableOn<ADJACENT_EDGES>(element);
 }
 
 } // namespace vcl::comp

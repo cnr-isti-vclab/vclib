@@ -45,7 +45,7 @@ struct ComponentData
 	}
 
 	template<typename, typename Comp>
-	constexpr bool isComponentEnabled(const Comp*) const
+	constexpr bool isComponentAvailable(const Comp*) const
 	{
 		return true;
 	}
@@ -118,7 +118,7 @@ struct ComponentData<Data, true>
 	}
 
 	template<typename ElementType, typename ComponentType>
-	bool isComponentEnabled(const ComponentType* comp) const
+	bool isComponentAvailable(const ComponentType* comp) const
 	{
 		// just vertical component
 		if constexpr (!IsOptionalComponent<ComponentType>) {

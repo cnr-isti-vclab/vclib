@@ -64,7 +64,7 @@ void Mark<El, O>::init()
 template<typename El, bool O>
 bool Mark<El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -154,7 +154,7 @@ int& Mark<El, O>::mark()
  */
 bool isMarkEnabledOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentEnabledOn<MARK>(element);
+	return isComponentAvailableOn<MARK>(element);
 }
 
 } // namespace vcl::comp

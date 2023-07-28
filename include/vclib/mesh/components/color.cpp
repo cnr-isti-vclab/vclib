@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<typename El, bool O>
 bool Color<El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -85,7 +85,7 @@ void Color<El, O>::importFrom(const Element& e)
  */
 bool isColorEnabledOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentEnabledOn<COLOR>(element);
+	return isComponentAvailableOn<COLOR>(element);
 }
 
 } // namespace vcl::comp

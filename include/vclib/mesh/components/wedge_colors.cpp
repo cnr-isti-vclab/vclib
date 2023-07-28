@@ -39,7 +39,7 @@ namespace vcl::comp {
 template<int N, typename El, bool O>
 bool WedgeColors<N, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -313,7 +313,7 @@ const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
  */
 bool isWedgeColorsEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<WEDGE_COLORS>(element);
+	return isComponentAvailableOn<WEDGE_COLORS>(element);
 }
 
 } // namespace vcl::comp

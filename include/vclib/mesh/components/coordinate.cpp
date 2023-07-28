@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<PointConcept P, typename El, bool O>
 bool Coordinate<P, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -83,7 +83,7 @@ void Coordinate<P, El, O>::importFrom(const Element& v)
  */
 bool isCoordinateEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<COORDINATE>(element);
+	return isComponentAvailableOn<COORDINATE>(element);
 }
 
 } // namespace vcl::comp

@@ -112,7 +112,7 @@ void TransformMatrix<Scalar, El, O>::importFrom(const Element& e)
  */
 bool isTransformMatrixEnabledOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentEnabledOn<TRANSFORM_MATRIX>(element);
+	return isComponentAvailableOn<TRANSFORM_MATRIX>(element);
 }
 
 } // namespace vcl::comp

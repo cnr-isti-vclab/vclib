@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<typename Scalar, typename El, bool O>
 bool TexCoord<Scalar, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -88,7 +88,7 @@ void TexCoord<Scalar, El, O>::importFrom(const Element& e)
  */
 bool isTexCoordEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<TEX_COORD>(element);
+	return isComponentAvailableOn<TEX_COORD>(element);
 }
 
 } // namespace vcl::comp

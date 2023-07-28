@@ -63,7 +63,7 @@ void BitFlags<El, O>::init()
 template<typename El, bool O>
 bool BitFlags<El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**

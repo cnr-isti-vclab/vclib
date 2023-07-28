@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<typename Scalar, typename El, bool O>
 bool PrincipalCurvature<Scalar, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -89,7 +89,7 @@ void PrincipalCurvature<Scalar, El, O>::importFrom(const Element& e)
  */
 bool isPrincipalCurvatureEnabledOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<PRINCIPAL_CURVATURE>(element);
+	return isComponentAvailableOn<PRINCIPAL_CURVATURE>(element);
 }
 
 } // namespace vcl::comp

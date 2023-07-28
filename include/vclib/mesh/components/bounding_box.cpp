@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<PointConcept P, typename El, bool O>
 bool BoundingBox<P, El, O>::isEnabled() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -84,7 +84,7 @@ void BoundingBox<P, El, O>::importFrom(const Element& e)
  */
 bool isBoundingBoxEnabledOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentEnabledOn<BOUNDING_BOX>(element);
+	return isComponentAvailableOn<BOUNDING_BOX>(element);
 }
 
 } // namespace vcl::comp
