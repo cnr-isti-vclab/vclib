@@ -1224,8 +1224,8 @@ void FaceContainer<F>::importTriPointersHelper(
 		if constexpr (
 			face::HasWedgeColors<FaceType> && face::HasWedgeColors<MFaceType>)
 		{
-			if (comp::isWedgeColorsEnabledOn(f) &&
-				comp::isWedgeColorsEnabledOn(mf))
+			if (comp::isWedgeColorsAvailableOn(f) &&
+				comp::isWedgeColorsAvailableOn(mf))
 			{
 				f.wedgeColor(j) = mf.wedgeColor(tris[i]);
 			}
@@ -1236,8 +1236,8 @@ void FaceContainer<F>::importTriPointersHelper(
 			face::HasWedgeTexCoords<FaceType> &&
 			face::HasWedgeTexCoords<MFaceType>)
 		{
-			if (comp::isWedgeTexCoordsEnabledOn(f) &&
-				comp::isWedgeTexCoordsEnabledOn(mf))
+			if (comp::isWedgeTexCoordsAvailableOn(f) &&
+				comp::isWedgeTexCoordsAvailableOn(mf))
 			{
 				f.wedgeTexCoord(j) =
 					mf.wedgeTexCoord(tris[i])

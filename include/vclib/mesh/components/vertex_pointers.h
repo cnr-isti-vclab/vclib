@@ -105,11 +105,11 @@ public:
 	using VertexIterator      = typename Base::Iterator;
 	using ConstVertexIterator = typename Base::ConstIterator;
 
-	/* Constructor and isEnabled */
+	/* Constructor and isAvailable */
 
 	void init();
 
-	bool isEnabled();
+	bool isAvailable();
 
 	/* Member functions */
 

@@ -76,9 +76,9 @@ public:
 	void importFrom(const ElType& v);
 
 private:
-	// hide init and isEnabled members
+	// hide init and isAvailable members
 	void init() {}
-	bool isEnabled() { return true; }
+	bool isAvailable() const { return true; }
 
 	// init to call after set parent mesh
 	void initVerticalComponents();

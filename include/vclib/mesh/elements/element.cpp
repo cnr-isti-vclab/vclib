@@ -66,13 +66,17 @@ template<uint ELEM_TYPE, typename MeshType, typename... Comps>
 template<typename Comp>
 void Element<ELEM_TYPE, MeshType, Comps...>::construct()
 {
-	if constexpr (comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>) {
-		if constexpr (comp::HasIsEnabledMemberFunction<Comp>) {
-			if (Comp::isEnabled()) {
+	if constexpr (
+		comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>)
+	{
+		if constexpr (comp::HasIsAvailableMemberFunction<Comp>) {
+			if (Comp::isAvailable()) {
 				Comp::init();
 			}
 		}
-		else { // no possibility to check if is enabled
+		// no possibility to check if is available, it means that is always
+		// available
+		else {
 			Comp::init();
 		}
 	}

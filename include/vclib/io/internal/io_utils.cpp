@@ -92,7 +92,7 @@ void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 
 /**
  * @brief enableOptionalComponents enables all the components that are in the file mesh info and
- * that may be enabled in the mesh. If these components are not present in the mesh, the info file
+ * that may be enabled in the mesh. If these components are not available in the mesh, the info file
  * will be modified in order to tell that a particular component cannot be saved into the mesh.
  *
  * This function is useful when you know what components are going to load from a file, and you want

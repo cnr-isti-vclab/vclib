@@ -54,15 +54,17 @@ void Mark<El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename El, bool O>
-bool Mark<El, O>::isEnabled() const
+bool Mark<El, O>::isAvailable() const
 {
 	return Base::isAvailable(this);
 }
@@ -128,7 +130,7 @@ template<typename Element>
 void Mark<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasMark<Element>) {
-		if (isMarkEnabledOn(e)) {
+		if (isMarkAvailableOn(e)) {
 			mark() = e.mark();
 		}
 	}
@@ -152,7 +154,7 @@ int& Mark<El, O>::mark()
  * @return `true` if the element/mesh has the Mark component available, `false`
  * otherwise.
  */
-bool isMarkEnabledOn(const ElementOrMeshConcept auto& element)
+bool isMarkAvailableOn(const ElementOrMeshConcept auto& element)
 {
 	return isComponentAvailableOn<MARK>(element);
 }

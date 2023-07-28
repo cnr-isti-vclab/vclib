@@ -110,7 +110,7 @@ MeshInfo::MeshInfo(const Mesh& m)
 		setEdges();
 		setEdgeVRefs();
 //		if constexpr (vcl::HasPerEdgeColor<Mesh>)
-//			if (vcl::isPerEdgeColorEnabled(m))
+//			if (vcl::isPerEdgeColorAvailable(m))
 //				setEdgeColors(true, UCHAR);
 	}
 
@@ -512,7 +512,7 @@ inline const std::vector<MeshInfo::CustomComponent>& MeshInfo::faceCustomCompone
  * @brief Returns a MeshInfo object that is the intersection between this and
  * `info`.
  *
- * The intersection is a MeshInfo object that has Elements/Components enable
+ * The intersection is a MeshInfo object that has Elements/Components enabled
  * only if they are enabled both in this object and in `info`. Types are
  * imported from this MeshInfo.
  *

@@ -245,10 +245,10 @@ protected:
 		const std::vector<uint>& newIndices);
 
 private:
-	// hide init and isEnabled members
+	// hide init and isAvailable members
 	void init() {};
 
-	bool isEnabled() { return true; }
+	bool isAvailable() const { return true; }
 
 	// enable optional components
 

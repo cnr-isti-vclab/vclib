@@ -110,7 +110,7 @@ public:
 
 	/* Member functions */
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);
 	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const;
@@ -162,9 +162,9 @@ private:
 	const Vector<vcl::TexCoord<Scalar>, N>& texCoords() const;
 };
 
-/* Detector function to check if a class has WedgeTexCoords enabled */
+/* Detector function to check if a class has WedgeTexCoords available */
 
-bool isWedgeTexCoordsEnabledOn(const ElementConcept auto& element);
+bool isWedgeTexCoordsAvailableOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

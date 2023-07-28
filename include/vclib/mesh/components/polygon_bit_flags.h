@@ -132,12 +132,12 @@ public:
 	static const uint EDGE_USER_BITS_NUMBER =
 		sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
 
-	/* Constructor and isEnabled */
+	/* Constructor and isAvailable */
 	PolygonBitFlags();
 
 	void init();
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	/* Member functions */
 

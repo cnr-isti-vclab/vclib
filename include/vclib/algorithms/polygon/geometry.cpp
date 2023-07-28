@@ -199,12 +199,12 @@ auto faceAngleOnVertexRad(const FaceType& f, uint vi)
  * @param[in] e The index of the edge shared between the two faces.
  * @return The signed dihedral angle between the normals of the given face and its adjacent face
  * on the edge e.
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not available on \p f.
  */
 template<FaceConcept FaceType>
 auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 

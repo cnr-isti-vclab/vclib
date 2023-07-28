@@ -53,17 +53,19 @@ void TransformMatrix<Scalar, El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename Scalar, typename El, bool O>
-bool TransformMatrix<Scalar, El, O>::isEnabled() const
+bool TransformMatrix<Scalar, El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -110,7 +112,7 @@ void TransformMatrix<Scalar, El, O>::importFrom(const Element& e)
  * @return `true` if the element/mesh has TransformMatrix component available,
  * `false` otherwise.
  */
-bool isTransformMatrixEnabledOn(const ElementOrMeshConcept auto& element)
+bool isTransformMatrixAvailableOn(const ElementOrMeshConcept auto& element)
 {
 	return isComponentAvailableOn<TRANSFORM_MATRIX>(element);
 }

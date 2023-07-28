@@ -27,15 +27,17 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<PointConcept P, typename El, bool O>
-bool Coordinate<P, El, O>::isEnabled() const
+bool Coordinate<P, El, O>::isAvailable() const
 {
 	return Base::isAvailable(this);
 }
@@ -81,7 +83,7 @@ void Coordinate<P, El, O>::importFrom(const Element& v)
  * @return `true` if the element has Coordinate component available, `false`
  * otherwise.
  */
-bool isCoordinateEnabledOn(const ElementConcept auto& element)
+bool isCoordinateAvailableOn(const ElementConcept auto& element)
 {
 	return isComponentAvailableOn<COORDINATE>(element);
 }

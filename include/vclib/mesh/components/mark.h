@@ -83,13 +83,13 @@ class Mark : public Component<MARK, int, ElementType, OPT>
 	using Base = Component<MARK, int, ElementType, OPT>;
 
 public:
-	/* Constructor and isEnabled */
+	/* Constructor and isAvailable */
 
 	Mark();
 
 	void init();
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -111,9 +111,9 @@ private:
 	int& mark();
 };
 
-/* Detector function to check if a class has Mark enabled */
+/* Detector function to check if a class has Mark available */
 
-bool isMarkEnabledOn(const ElementOrMeshConcept auto& element);
+bool isMarkAvailableOn(const ElementOrMeshConcept auto& element);
 
 } // namespace vcl::comp
 

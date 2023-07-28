@@ -91,12 +91,12 @@ public:
 	 */
 	static const uint USER_BITS_NUMBER = sizeof(FT) * 8 - FIRST_USER_BIT;
 
-	/* Constructor and isEnabled */
+	/* Constructor and isAvailable */
 	TriangleBitFlags();
 
 	void init();
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	/* Member functions */
 

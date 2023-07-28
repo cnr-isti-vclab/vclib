@@ -70,7 +70,7 @@ public:
 	void setVertices(V... args);
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	// https://stackoverflow.com/questions/72897153/
 	void resizeVertices(uint n) requires PolygonFaceConcept<Face>
 	{
 		VPtrs::resizeVertices(n);
@@ -80,7 +80,7 @@ public:
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	// https://stackoverflow.com/questions/72897153/
 	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
 	{
 		VPtrs::pushVertex(v);
@@ -90,7 +90,7 @@ public:
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	// https://stackoverflow.com/questions/72897153/
 	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
 	{
 		VPtrs::insertVertex(i, v);
@@ -100,7 +100,7 @@ public:
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	// https://stackoverflow.com/questions/72897153/
 	void eraseVertex(uint i) requires PolygonFaceConcept<Face>
 	{
 		VPtrs::eraseVertex(i);
@@ -110,7 +110,7 @@ public:
 	}
 
 	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/outside-class-definition-of-member-function-enabled-with-concept
+	// https://stackoverflow.com/questions/72897153/
 	void clearVertices() requires PolygonFaceConcept<Face>
 	{
 		VPtrs::clearVertices();

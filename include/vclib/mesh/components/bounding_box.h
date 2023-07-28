@@ -69,7 +69,7 @@ public:
 	 */
 	using BoundingBoxType = Box<PointType>;
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	const BoundingBoxType& boundingBox() const;
 	BoundingBoxType&       boundingBox();
@@ -80,9 +80,9 @@ protected:
 	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has BoundingBox enabled */
+/* Detector function to check if a class has BoundingBox available */
 
-bool isBoundingBoxEnabledOn(const ElementOrMeshConcept auto& element);
+bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element);
 
 /**
  * @brief The BoundingBox3 component class is an alias of the BoundingBox

@@ -111,11 +111,11 @@ public:
 	 */
 	static const int ADJ_FACE_NUMBER = Base::SIZE;
 
-	/* Constructor and isEnabled */
+	/* Constructor and isAvailable */
 
 	void init();
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -182,9 +182,9 @@ private:
 	void importPtrsFrom(const Element& e, Face* base, const ElFType* ebase);
 };
 
-/* Detector function to check if a class has AdjacentFaces enabled */
+/* Detector function to check if a class has AdjacentFaces available */
 
-bool isAdjacentFacesEnabledOn(const ElementConcept auto& element);
+bool isAdjacentFacesAvailableOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

@@ -42,15 +42,17 @@ void AdjacentEdges<Edge, N, TT, El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-bool AdjacentEdges<Edge, N, TT, El, O>::isEnabled() const
+bool AdjacentEdges<Edge, N, TT, El, O>::isAvailable() const
 {
 	return Base::isAvailable(this);
 }
@@ -399,7 +401,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::importPointersFrom(
 	const ElEType* ebase)
 {
 	if constexpr (HasAdjacentEdges<Element>) {
-		if (isAdjacentEdgesEnabledOn(e)) {
+		if (isAdjacentEdgesAvailableOn(e)) {
 			if constexpr (N > 0) {
 				// same static size
 				if constexpr (N == Element::ADJ_EDGE_NUMBER) {
@@ -499,7 +501,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::importPtrsFrom(
  * the ElementConcept.
  * @return `true` if the element has AdjacentEdges available, `false` otherwise.
  */
-bool isAdjacentEdgesEnabledOn(const ElementConcept auto& element)
+bool isAdjacentEdgesAvailableOn(const ElementConcept auto& element)
 {
 	return isComponentAvailableOn<ADJACENT_EDGES>(element);
 }

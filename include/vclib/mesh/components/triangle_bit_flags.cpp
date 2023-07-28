@@ -53,15 +53,17 @@ void TriangleBitFlags<El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename El, bool O>
-bool TriangleBitFlags<El, O>::isEnabled() const
+bool TriangleBitFlags<El, O>::isAvailable() const
 {
 	return Base::isAvailable(this);
 }

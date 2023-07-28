@@ -23,6 +23,8 @@
 
 #include "mesh_pos.h"
 
+#include <vclib/mesh/components/adjacent_faces.h>
+
 namespace vcl {
 
 /**
@@ -42,7 +44,7 @@ bool MeshPos<FaceType>::isValid(const FaceType* f, const VertexType* v, short e)
 {
 	if (f == nullptr || v == nullptr || e < 0)
 		return false;
-	if (!comp::isAdjacentFacesEnabledOn(*f))
+	if (!comp::isAdjacentFacesAvailableOn(*f))
 		return false;
 	return
 		(ushort)e < f->vertexNumber() && (v == f->vertex(e) || v == f->vertexMod(e+1));

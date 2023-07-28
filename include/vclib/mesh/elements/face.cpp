@@ -30,7 +30,7 @@ namespace vcl {
  *
  * Calls automatically all the empty constructors of all the components
  * available in the Face (for all the components non-available, their empty
- * constructor is called when they are enabled).
+ * constructor is called only when they become available).
  */
 template<typename MeshType, typename... Comps>
 Face<MeshType, Comps...>::Face()
@@ -176,7 +176,7 @@ template<typename Comp>
 void Face<MeshType, Comps...>::resizeTTVNComponent(uint n)
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isEnabled())
+		if (Comp::isAvailable())
 			Comp::resize(n);
 	}
 }
@@ -190,7 +190,7 @@ template<typename Comp>
 void Face<MeshType, Comps...>::pushBackTTVNComponent()
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isEnabled())
+		if (Comp::isAvailable())
 			Comp::pushBack();
 	}
 }
@@ -204,7 +204,7 @@ template<typename Comp>
 void Face<MeshType, Comps...>::insertTTVNComponent(uint i)
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isEnabled())
+		if (Comp::isAvailable())
 			Comp::insert(i);
 	}
 }
@@ -218,7 +218,7 @@ template<typename Comp>
 void Face<MeshType, Comps...>::eraseTTVNComponent(uint i)
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isEnabled())
+		if (Comp::isAvailable())
 			Comp::erase(i);
 	}
 }
@@ -232,7 +232,7 @@ template<typename Comp>
 void Face<MeshType, Comps...>::clearTTVNComponent()
 {
 	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isEnabled())
+		if (Comp::isAvailable())
 			Comp::clear();
 	}
 }

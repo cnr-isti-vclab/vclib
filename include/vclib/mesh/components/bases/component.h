@@ -181,7 +181,7 @@ bool isComponentAvailableOn(const T& obj)
 		using ComponentType =
 			ComponentOfType<COMPONENT_TYPE, typename T::Components>;
 		const ComponentType& c = static_cast<const ComponentType&>(obj);
-		return c.isEnabled();
+		return c.isAvailable();
 	}
 	else
 		return HasComponentOfType<T, COMPONENT_TYPE>;

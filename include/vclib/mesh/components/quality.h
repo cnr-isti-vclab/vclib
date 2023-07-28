@@ -64,7 +64,7 @@ public:
 	 */
 	using QualityType = Scalar;
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	const QualityType& quality() const;
 	QualityType&       quality();
@@ -75,9 +75,9 @@ protected:
 	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has Quality enabled */
+/* Detector function to check if a class has Quality available */
 
-bool isQualityEnabledOn(const ElementOrMeshConcept auto& element);
+bool isQualityAvailableOn(const ElementOrMeshConcept auto& element);
 
 /**
  * The Qualityf class is an alias of the Quality component that uses float as

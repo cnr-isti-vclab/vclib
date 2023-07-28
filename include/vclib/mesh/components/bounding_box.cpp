@@ -27,15 +27,17 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<PointConcept P, typename El, bool O>
-bool BoundingBox<P, El, O>::isEnabled() const
+bool BoundingBox<P, El, O>::isAvailable() const
 {
 	return Base::isAvailable(this);
 }
@@ -82,7 +84,7 @@ void BoundingBox<P, El, O>::importFrom(const Element& e)
  * @return `true` if the element/mesh has BoundingBox component available,
  * `false` otherwise.
  */
-bool isBoundingBoxEnabledOn(const ElementOrMeshConcept auto& element)
+bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
 {
 	return isComponentAvailableOn<BOUNDING_BOX>(element);
 }

@@ -27,15 +27,17 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename El, bool O>
-bool Color<El, O>::isEnabled() const
+bool Color<El, O>::isAvailable() const
 {
 	return Base::isAvailable(this);
 }
@@ -65,7 +67,7 @@ template<typename Element>
 void Color<El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasColor<Element>) {
-		if (isColorEnabledOn(e)) {
+		if (isColorAvailableOn(e)) {
 			color() = e.color();
 		}
 	}
@@ -83,7 +85,7 @@ void Color<El, O>::importFrom(const Element& e)
  * @return `true` if the element/mesh has Color component available, `false`
  * otherwise.
  */
-bool isColorEnabledOn(const ElementOrMeshConcept auto& element)
+bool isColorAvailableOn(const ElementOrMeshConcept auto& element)
 {
 	return isComponentAvailableOn<COLOR>(element);
 }

@@ -71,13 +71,13 @@ public:
 	 */
 	using TransformMatrixType = Matrix44<Scalar>;
 
-	/* Constructor and isEnabled */
+	/* Constructor and isAvailable */
 
 	TransformMatrix();
 
 	void init();
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -90,9 +90,9 @@ protected:
 	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has TransformMatrix enabled */
+/* Detector function to check if a class has TransformMatrix available */
 
-bool isTransformMatrixEnabledOn(const ElementOrMeshConcept auto& element);
+bool isTransformMatrixAvailableOn(const ElementOrMeshConcept auto& element);
 
 /**
  * The TransformMatrixf class is an alias of the TransformMatrix component that

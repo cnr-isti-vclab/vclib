@@ -27,15 +27,17 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename El, bool O>
-bool Name<El, O>::isEnabled() const
+bool Name<El, O>::isAvailable() const
 {
 	return Base::isAvailable(this);
 }
@@ -81,7 +83,7 @@ void Name<El, O>::importFrom(const Element &e)
  * @return `true` if the element/mesh has Name component available, `false`
  * otherwise.
  */
-bool isNameEnabledOn(const ElementOrMeshConcept auto& element)
+bool isNameAvailableOn(const ElementOrMeshConcept auto& element)
 {
 	return isComponentAvailableOn<NAME>(element);
 }

@@ -51,13 +51,13 @@ namespace vcl {
  *
  * @return true if the edge is manifold, false otherwise.
  *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not available on \p f.
  */
 template<FaceConcept FaceType>
 bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
 {
-	// Check if the AdjacentFaces component is enabled for the given face.
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	// Check if the AdjacentFaces component is available for the given face.
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
@@ -82,12 +82,12 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjace
  *
  * @return true if the edge is on the border, false otherwise.
  *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not available on \p f.
  */
 template<FaceConcept FaceType>
 bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
@@ -97,7 +97,7 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacent
 /**
  * @brief Returns a boolean value indicating whether the edge flip operation is allowed or not.
  *
- * This function requires AdjacentFaces component, that must be enabled and computed before calling
+ * This function requires AdjacentFaces component, that must be available and computed before calling
  * this function.
  *
  * The function first checks if the specified edge is a boundary edge, in which case the flip
@@ -122,12 +122,12 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacent
  *
  * @return true if the edge flip is allowed, false otherwise.
  *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not available on \p f.
  */
 template<FaceConcept FaceType>
 bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
@@ -175,7 +175,7 @@ bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces
  * face) or 2 (two adjacent faces on the edge). If the edge is non manifold, the number of faces
  * adjacent to the given face will be counted.
  *
- * This function requires AdjacentFaces component, that must be enabled and computed before calling
+ * This function requires AdjacentFaces component, that must be available and computed before calling
  * this function.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
@@ -184,13 +184,13 @@ bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces
  * @param[in] edge: the index of the edge of the face
  * @return the number of adjacent faces to the given edge of the face \p f
  *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not available on \p f.
  */
 template<FaceConcept FaceType>
 uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
 	requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
@@ -206,7 +206,7 @@ uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
 /**
  * @brief Returns the number of edges that are on border (no adjacent faces) on the given face.
  *
- * This function requires AdjacentFaces component, that must be enabled and computed before calling
+ * This function requires AdjacentFaces component, that must be available and computed before calling
  * this function.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
@@ -214,12 +214,12 @@ uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
  * @param[in] f: The face to check for border edges.
  * @return The number of edges on the border of the face.
  *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not available on \p f.
  */
 template <FaceConcept FaceType>
 uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
@@ -243,20 +243,20 @@ uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<
  * from the ring of faces incident on the edge. The given face f will have the given edge set as a
  * border (nullptr).
  *
- * This function is designed to work with faces that have an enabled "AdjacentFaces" component.
- * If the component is not enabled, a MissingComponentException is thrown.
+ * This function is designed to work with faces that have an available "AdjacentFaces" component.
+ * If the component is not available, a MissingComponentException is thrown.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] f: The face to detach on the given edge.
  * @param[in] edge: The index of the edge to detach the face from.
  *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not available on \p f.
  */
 template <FaceConcept FaceType>
 void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
@@ -295,19 +295,19 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacen
  * face, and \p f will no longer have any adjacent faces (all their values are set to nullptr). The
  * vertices of the face \p f are unchanged.
  *
- * This function is designed to work with faces that have an enabled "Adjacent Faces" component.
- * If the component is not enabled, a MissingComponentException is thrown.
+ * This function is designed to work with faces that have an available "Adjacent Faces" component.
+ * If the component is not available, a MissingComponentException is thrown.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] f: The face to detach from its vertices and adjacent faces.
  *
- * @throws MissingComponentException if the adjacent faces component is not enabled on the face.
+ * @throws MissingComponentException if the adjacent faces component is not available on the face.
  */
 template <FaceConcept FaceType>
 void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
@@ -318,7 +318,7 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 
 		// if the vertices have adjacent faces
 		if constexpr (comp::HasAdjacentFaces<VertexType>) {
-			if (comp::isAdjacentFacesEnabledOn(f.vertex(e))) {
+			if (comp::isAdjacentFacesAvailableOn(f.vertex(e))) {
 				VertexType* v = f.vertex(e);
 				uint vpos = v->indexOfAdjFace(&f);
 				if (vpos != UINT_NULL) {   // may happen if vertex adj faces are

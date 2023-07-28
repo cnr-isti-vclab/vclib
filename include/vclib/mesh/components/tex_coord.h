@@ -66,7 +66,7 @@ public:
 	 */
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	const TexCoordType& texCoord() const;
 	TexCoordType&       texCoord();
@@ -77,9 +77,9 @@ protected:
 	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has TexCoord enabled */
+/* Detector function to check if a class has TexCoord available */
 
-bool isTexCoordEnabledOn(const ElementConcept auto& element);
+bool isTexCoordAvailableOn(const ElementConcept auto& element);
 
 /**
  * The TexCoordf class is an alias of the TexCoord component that uses float as

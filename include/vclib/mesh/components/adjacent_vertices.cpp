@@ -42,15 +42,17 @@ void AdjacentVertices<Vertex, El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename Vertex, typename El, bool O>
-bool AdjacentVertices<Vertex, El, O>::isEnabled() const
+bool AdjacentVertices<Vertex, El, O>::isAvailable() const
 {
 	return Base::isAvailable(this);
 }
@@ -396,7 +398,7 @@ void AdjacentVertices<Vertex, El, O>::importPointersFrom(
 	const ElVType* ebase)
 {
 	if constexpr (HasAdjacentVertices<Element>) {
-		if (isAdjacentVerticesEnabledOn(e)) {
+		if (isAdjacentVerticesAvailableOn(e)) {
 			// from static/dynamic to dynamic size: need to resize first, then
 			// import
 			resizeAdjVertices(e.adjVerticesNumber());
@@ -450,7 +452,7 @@ void AdjacentVertices<Vertex, El, O>::importPtrsFrom(
  * @return `true` if the element has AdjacentVertices component available,
  * `false` otherwise.
  */
-bool isAdjacentVerticesEnabledOn(const ElementConcept auto& element)
+bool isAdjacentVerticesAvailableOn(const ElementConcept auto& element)
 {
 	return isComponentAvailableOn<ADJACENT_VERTICES>(element);
 }
