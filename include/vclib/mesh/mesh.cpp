@@ -221,6 +221,26 @@ void Mesh<Args...>::compact()
 }
 
 /**
+ * @brief Enables all the optional components of the elements of the containers
+ * if the mesh.
+ */
+template<typename... Args>
+void Mesh<Args...>::enableAllOptionalComponents()
+{
+	(enableAllOptionalComponentsInContainer<Args>(), ...);
+}
+
+/**
+ * @brief Disables all the optional components of the elements of the containers
+ * if the mesh.
+ */
+template<typename... Args>
+void Mesh<Args...>::disableAllOptionalComponents()
+{
+	(disableAllOptionalComponentsInContainer<Args>(), ...);
+}
+
+/**
  * @brief Enables all the OptionalComponents of this mesh according to the
  * Components available on the OtherMeshType m.
  *
@@ -986,6 +1006,42 @@ void Mesh<Args...>::compactContainer()
 		if (Cont::elementNumber() != Cont::elementContainerSize()) {
 			Cont::compactElements();
 		}
+	}
+}
+
+/**
+ * This function will enable all the optional components of the element of the
+ * Cont container of this mesh (if Cont is actually a container).
+ *
+ * This function is made to be called trough pack expansion:
+ * @code{.cpp}
+ * (enableAllOptionalComponentsInContainer<Args>(), ...);
+ * @endcode
+ */
+template<typename... Args>
+template<typename Cont>
+void Mesh<Args...>::enableAllOptionalComponentsInContainer()
+{
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		Cont::enableAllOptionalComponents();
+	}
+}
+
+/**
+ * This function will disable all the optional components of the element of the
+ * Cont container of this mesh (if Cont is actually a container).
+ *
+ * This function is made to be called trough pack expansion:
+ * @code{.cpp}
+ * (disableAllOptionalComponentsInContainer<Args>(), ...);
+ * @endcode
+ */
+template<typename... Args>
+template<typename Cont>
+void Mesh<Args...>::disableAllOptionalComponentsInContainer()
+{
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		Cont::disableAllOptionalComponents();
 	}
 }
 

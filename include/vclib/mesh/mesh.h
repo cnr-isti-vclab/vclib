@@ -128,6 +128,9 @@ public:
 
 	void compact();
 
+	void enableAllOptionalComponents();
+	void disableAllOptionalComponents();
+
 	template<typename OtherMeshType>
 	void enableSameOptionalComponentsOf(const OtherMeshType& m);
 
@@ -224,6 +227,12 @@ protected:
 
 	template<typename Cont>
 	void compactContainer();
+
+	template<typename Cont>
+	void enableAllOptionalComponentsInContainer();
+
+	template<typename Cont>
+	void disableAllOptionalComponentsInContainer();
 
 	template<typename Cont>
 	void clearContainer();
