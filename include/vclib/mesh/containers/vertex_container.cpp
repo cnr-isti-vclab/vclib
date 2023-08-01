@@ -115,7 +115,7 @@ uint vcl::mesh::VertexContainer<T>::deletedVertexNumber() const
  *
  * @return the index of the new vertex.
  */
-template<vcl::VertexConcept T>
+template<VertexConcept T>
 uint VertexContainer<T>::addVertex()
 {
 	return Base::addElement();
@@ -131,7 +131,7 @@ uint VertexContainer<T>::addVertex()
  * @param p: coordinate of the new vertex.
  * @return the id of the new vertex.
  */
-template<vcl::VertexConcept T>
+template<VertexConcept T>
 uint VertexContainer<T>::addVertex(const typename T::CoordType& p)
 {
 	uint vid = addVertex();  // using the previously defined addVertex function
@@ -151,7 +151,7 @@ uint VertexContainer<T>::addVertex(const typename T::CoordType& p)
  * @param n: the number of vertices to add to the mesh.
  * @return the id of the first added vertex.
  */
-template<vcl::VertexConcept T>
+template<VertexConcept T>
 uint VertexContainer<T>::addVertices(uint n)
 {
 	return Base::addElements(n);
@@ -189,6 +189,56 @@ uint VertexContainer<T>::addVertices(const typename T::CoordType& p, const VC&..
 	// of the addVertices member function
 	(addVertex(v), ...);
 	return vid;
+}
+
+/**
+ * @brief Clears the Vertex container of the Mesh, deleting all the vertices.
+ *
+ * @note This function does not cause a reallocation of the Vertex container.
+ *
+ * @warning Any pointer to vertices in the Mesh will be left unchanged, and
+ * therefore will point to invalid vertices. This means that, if you have a
+ * pointer to a vertex and you call this function, you will have a dangling
+ * pointer.
+ */
+template<VertexConcept T>
+void VertexContainer<T>::clearVertices()
+{
+	Base::clearElements();
+}
+
+/**
+ * @brief Resizes the Vertex container to contain `n` vertices.
+ *
+ * If the new size is greater than the old one, new vertices are added to the
+ * container, and a reallocation may happen. If the new size is smaller than the
+ * old one, the container will keep its first non-deleted `n` vertices, and
+ * the remaining vertices are marked as deleted.
+ *
+ * If the call of this function will cause a reallocation of the Vertex
+ * container, the function will automatically take care of updating all the
+ * Vertex pointers contained in the Mesh.
+ *
+ * @warning The given size `n` is relative to the number of non-deleted
+ * vertices, not to the size of the vertex container. For example, if you have a
+ * mesh with 10 vertices and vertexContainerSize() == 20, calling
+ * resizeVertices(5) will not cause a reallocation of the container, but will
+ * mark as deleted the least 5 non-deleted vertices of the container. In the
+ * same scenario, calling resizeVertices(15) will result in a vertex container
+ * having 15 new vertices and vertexContainerSize() == 25. The latest 5 vertices
+ * will be the newly added.
+ *
+ * @warning Any pointer to deleted vertices in the Mesh will be left unchanged,
+ * and therefore will point to invalid vertices. This means that if you call
+ * this member function with a lower number of vertices, you'll need to manually
+ * manage the pointers to the deleted vertices.
+ *
+ * @param[in] n: the new size of the Vertex container.
+ */
+template<VertexConcept T>
+void VertexContainer<T>::resizeVertices(uint n)
+{
+	Base::resizeElements(n);
 }
 
 /**

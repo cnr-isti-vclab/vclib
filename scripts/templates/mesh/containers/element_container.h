@@ -54,7 +54,11 @@ public:
 
 	uint add%EL_UC%();
 	uint add%EL_UC%s(uint n);
+
+	void clear%EL_UC%s();
+	void resize%EL_UC%s(uint n);
 	void reserve%EL_UC%s(uint n);
+
 	void compact%EL_UC%s();
 
 	void delete%EL_UC%(uint i);

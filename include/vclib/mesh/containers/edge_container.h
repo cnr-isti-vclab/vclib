@@ -77,7 +77,11 @@ public:
 	uint addEdge(uint v0, uint v1);
 	uint addEdge(typename T::VertexType* v0, typename T::VertexType* v1);
 	uint addEdges(uint n);
+
+	void clearEdges();
+	void resizeEdges(uint n);
 	void reserveEdges(uint n);
+
 	void compactEdges();
 
 	void deleteEdge(uint i);

@@ -75,7 +75,10 @@ public:
 	template<typename... VC>
 	uint addVertices(const typename T::CoordType& p, const VC&... v);
 
+	void clearVertices();
+	void resizeVertices(uint n);
 	void reserveVertices(uint n);
+
 	void compactVertices();
 
 	void deleteVertex(uint i);
