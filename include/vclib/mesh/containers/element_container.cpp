@@ -167,6 +167,65 @@ uint ElementContainer<T>::addElements(uint size)
 }
 
 template<ElementConcept T>
+void ElementContainer<T>::clearElements()
+{
+	vec.clear();
+	en = 0;
+
+	// clear vertical and custom components
+
+	vcVecTuple.clear();
+	if constexpr (comp::HasCustomComponents<T>)
+		ccVecMap.clear();
+}
+
+template<ElementConcept T>
+void ElementContainer<T>::resizeElements(uint size)
+{
+	uint oldSize = vec.size();
+
+	T* oldB = vec.data();
+	vec.resize(size);
+	T* newB = vec.data();
+
+	// resize vertical and custom components
+
+	vcVecTuple.resize(size);
+	if constexpr (comp::HasCustomComponents<T>)
+		ccVecMap.resize(size);
+
+	// update pointers if there was a reallocation
+
+	if (oldB != newB) {
+		setParentMeshPointers(parentMesh);
+		parentMesh->updateAllPointers(oldB, newB);
+	}
+
+	// need to update the element number
+
+	// reducing number of vertices, need to count the number of deleted elements
+	if (size < oldSize) {
+		uint de = 0;
+		if (elementNumber() != elementContainerSize()) {
+			for (uint i = size; i < oldSize; ++i) {
+				if (vec[i].isDeleted())
+					de++;
+			}
+		}
+
+		en -= (oldSize - size - de);
+	}
+	// increasing number of vertices, we need to initialize the new ones
+	else {
+		en += (size - oldSize);
+		for (uint i = oldSize; i < size; ++i) {
+			vec[i].setParentMesh(parentMesh);
+			vec[i].initVerticalComponents();
+		}
+	}
+}
+
+template<ElementConcept T>
 void ElementContainer<T>::reserveElements(uint size)
 {
 	T* oldB = vec.data();
@@ -600,36 +659,10 @@ void ElementContainer<T>::setParentMeshPointers(void* pm)
 }
 
 template<ElementConcept T>
-void ElementContainer<T>::clearElements()
-{
-	vec.clear();
-	en = 0;
-
-	vcVecTuple.clear();
-	if constexpr (comp::HasCustomComponents<T>)
-		ccVecMap.clear();
-}
-
-template<ElementConcept T>
-void ElementContainer<T>::resizeElements(uint size)
-{
-	T* oldB = vec.data();
-	vec.resize(size);
-	T* newB = vec.data();
-
-	vcVecTuple.resize(size);
-	if constexpr (comp::HasCustomComponents<T>)
-		ccVecMap.resize(size);
-
-	if (oldB != newB) {
-		setParentMeshPointers(parentMesh);
-		parentMesh->updateAllPointers(oldB, newB);
-	}
-}
-
-template<ElementConcept T>
 template<typename Element>
-void ElementContainer<T>::updatePointers(const Element* oldBase, const Element* newBase)
+void ElementContainer<T>::updatePointers(
+	const Element* oldBase,
+	const Element* newBase)
 {
 	using Comps = typename T::Components;
 
@@ -801,12 +834,14 @@ void ElementContainer<T>::importPointersOnComponentsFrom(
 /*
  * This function is called for each component of the element.
  *
- * Only if a component has references of the type ElPtr, then the updatePointers on each element
- * will be executed
+ * Only if a component has references of the type ElPtr, then the updatePointers
+ * on each element will be executed
  */
 template<ElementConcept T>
 template<typename Comp, typename ElPtr>
-void ElementContainer<T>::updatePointersOnComponent(const ElPtr* oldBase, const ElPtr* newBase)
+void ElementContainer<T>::updatePointersOnComponent(
+	const ElPtr* oldBase,
+	const ElPtr* newBase)
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {

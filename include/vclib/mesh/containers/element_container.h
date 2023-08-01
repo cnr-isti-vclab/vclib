@@ -69,7 +69,10 @@ protected:
 	uint addElement();
 	uint addElements(uint size);
 
-	void              reserveElements(uint size);
+	void clearElements();
+	void resizeElements(uint size);
+	void reserveElements(uint size);
+
 	std::vector<uint> compactElements();
 
 	void deleteElement(uint i);
@@ -145,10 +148,6 @@ protected:
 	uint index(const T* e) const;
 
 	void setParentMeshPointers(void* pm);
-
-	void clearElements();
-
-	void resizeElements(uint size);
 
 	template<typename Element>
 	void updatePointers(const Element* oldBase, const Element* newBase);
