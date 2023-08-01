@@ -208,6 +208,10 @@ uint FaceContainer<T>::addFaces(uint n)
  * @brief Clears the Face container of the Mesh, deleting all the
  * Faces.
  *
+ * The contained faces are actually removed from the container, not only
+ * marked as deleted. Therefore, the container will have size 0
+ * (`faceContainerSize() == 0`) after the call of this function.
+ *
  * @note This function does not cause a reallocation of the Face
  * container.
  *

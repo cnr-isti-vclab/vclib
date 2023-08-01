@@ -194,6 +194,10 @@ uint VertexContainer<T>::addVertices(const typename T::CoordType& p, const VC&..
 /**
  * @brief Clears the Vertex container of the Mesh, deleting all the vertices.
  *
+ * The contained vertices are actually removed from the container, not only
+ * marked as deleted. Therefore, the container will have size 0
+ * (`vertexContainerSize() == 0`) after the call of this function.
+ *
  * @note This function does not cause a reallocation of the Vertex container.
  *
  * @warning Any pointer to vertices in the Mesh will be left unchanged, and

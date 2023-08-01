@@ -129,6 +129,10 @@ uint %EL_UC%Container<T>::add%EL_UC%s(uint n)
  * @brief Clears the %EL_UC% container of the Mesh, deleting all the
  * %EL_UC%s.
  *
+ * The contained %EL_UC%s are actually removed from the container, not only
+ * marked as deleted. Therefore, the container will have size 0
+ * (`%EL_C%ContainerSize() == 0`) after the call of this function.
+ *
  * @note This function does not cause a reallocation of the %EL_UC%
  * container.
  *

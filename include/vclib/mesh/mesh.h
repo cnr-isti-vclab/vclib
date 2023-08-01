@@ -170,6 +170,12 @@ public:
 	uint add(uint n) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>
+	void clearElements() requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
+	void resize(uint n) requires (hasContainerOf<EL_TYPE>());
+
+	template<uint EL_TYPE>
 	void reserve(uint n) requires (hasContainerOf<EL_TYPE>());
 
 	template<uint EL_TYPE>

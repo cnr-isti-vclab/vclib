@@ -192,6 +192,10 @@ uint EdgeContainer<T>::addEdges(uint n)
  * @brief Clears the Edge container of the Mesh, deleting all the
  * Edges.
  *
+ * The contained edges are actually removed from the container, not only
+ * marked as deleted. Therefore, the container will have size 0
+ * (`edgeContainerSize() == 0`) after the call of this function.
+ *
  * @note This function does not cause a reallocation of the Edge
  * container.
  *
