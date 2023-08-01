@@ -66,19 +66,30 @@ void importMeshFromMatrices(
 	const VNMatrix& vertexNormals = VNMatrix(),
 	const FNMatrix& faceNormals   = FNMatrix());
 
+
 template<MeshConcept MeshType, MatrixConcept VMatrix>
-void importVerticesFromMatrix(MeshType& mesh, const VMatrix& vertices);
+void importVerticesFromMatrix(
+	MeshType&      mesh,
+	const VMatrix& vertices,
+	bool           clearBeforeSet = true);
 
 template<FaceMeshConcept MeshType, MatrixConcept FMatrix>
-void importFacesFromMatrix(MeshType& mesh, const FMatrix& faces);
+void importFacesFromMatrix(
+	MeshType&      mesh,
+	const FMatrix& faces,
+	bool           clearBeforeSet = true);
 
 template<EdgeMeshConcept MeshType, MatrixConcept EMatrix>
-void importEdgesFromMatrix(MeshType& mesh, const EMatrix& edges);
+void importEdgesFromMatrix(
+	MeshType&      mesh,
+	const EMatrix& edges,
+	bool           clearBeforeSet = true);
 
 template<FaceMeshConcept MeshType, MatrixConcept VNMatrix>
 void importVertexNormalsFromMatrix(
 	MeshType&       mesh,
 	const VNMatrix& vertexNormals);
+
 
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals);
