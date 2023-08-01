@@ -85,7 +85,7 @@ void importEdgesFromMatrix(
 	const EMatrix& edges,
 	bool           clearBeforeSet = true);
 
-template<FaceMeshConcept MeshType, MatrixConcept VNMatrix>
+template<MeshConcept MeshType, MatrixConcept VNMatrix>
 void importVertexNormalsFromMatrix(
 	MeshType&       mesh,
 	const VNMatrix& vertexNormals);

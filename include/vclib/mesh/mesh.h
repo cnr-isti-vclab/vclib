@@ -81,6 +81,29 @@ class Mesh : public Args...
 	template<uint ELEM_TYPE, typename MeshType, typename... Comps>
 	friend class Element;
 
+	// Predicate structures
+
+	template<uint EL_TYPE>
+	struct ContainerOfElement :
+			public mesh::ContainerOfElement<EL_TYPE, Mesh<Args...>>
+	{
+	};
+
+	/**
+	 * @brief The ContainerOf struct allows to get the Container of an Element
+	 * on this Mesh.
+	 *
+	 * Usage:
+	 *
+	 * ```cpp
+	 * using Container = ContainerOf<ElementType>::type;
+	 * ```
+	 */
+	template<ElementConcept El>
+	struct ContainerOf : public ContainerOfElement<El::ELEMENT_TYPE>
+	{
+	};
+
 public:
 	/**
 	 * @brief Containers is a vcl::TypeWrapper that wraps all the types from
@@ -92,13 +115,27 @@ public:
 		vcl::TypeWrapper<Args...>>::type;
 
 	/**
-	 * @brief Components is a vcl::TypeWrapper that wraps all the types from
-	 * which the Mesh inherits (Args) that are Components (they satisfy the
-	 * ComponentConcept).
+	 * @brief Components is an alias to a vcl::TypeWrapper that wraps all the
+	 * types from which the Mesh inherits (Args) that are Components (they
+	 * satisfy the ComponentConcept).
 	 */
 	using Components = typename vcl::FilterTypesByCondition<
 		comp::IsComponentPred,
 		vcl::TypeWrapper<Args...>>::type;
+
+	/**
+	 * @brief ElementType is an alias that exposes the type of the Element
+	 * identified by the template parameter EL_TYPE.
+	 *
+	 * To be used, the Mesh must have an ElementContainer of type EL_TYPE.
+	 *
+	 * Usage:
+	 * ```cpp
+	 * using VertexType = typename MeshType::template ElementType<VERTEX>;
+	 * ```
+	 */
+	template<uint EL_TYPE>
+	using ElementType = typename ContainerOfElement<EL_TYPE>::type::ElementType;
 
 	/* constructors */
 
@@ -314,29 +351,6 @@ private:
 
 	template<typename El>
 	const auto& verticalComponents() const;
-
-	// Predicate structures
-
-	template<uint EL_TYPE>
-	struct ContainerOfElement :
-			public mesh::ContainerOfElement<EL_TYPE, Mesh<Args...>>
-	{
-	};
-
-	/**
-	 * @brief The ContainerOf struct allows to get the Container of an Element
-	 * on this Mesh.
-	 *
-	 * Usage:
-	 *
-	 * ```cpp
-	 * using Container = ContainerOf<ElementType>::type;
-	 * ```
-	 */
-	template<ElementConcept El>
-	struct ContainerOf : public ContainerOfElement<El::ELEMENT_TYPE>
-	{
-	};
 };
 
 } // namespace vcl

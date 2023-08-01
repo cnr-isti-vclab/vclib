@@ -27,6 +27,42 @@
 
 namespace vcl {
 
+namespace internal {
+
+template<uint EL_TYPE, MeshConcept MeshType, MatrixConcept NMatrix>
+void importElementNormalsFromMatrix(
+	MeshType&      mesh,
+	const NMatrix& normals)
+{
+	// The type of the normal of the element
+	using NormalType =
+		typename MeshType::template ElementType<EL_TYPE>::NormalType;
+
+	if (normals.cols() != 3)
+		throw WrongSizeException(
+			"The input " + std::string(elementEnumString<EL_TYPE>()) +
+			" normal matrix must have 3 columns");
+
+	// matrix rows must be equal to the number of elements of the given type
+	if (normals.rows() != mesh.template number<EL_TYPE>())
+		throw WrongSizeException(
+			"The input normal matrix must have the same number of rows "
+			"as the number of " +
+			std::string(elementEnumString<EL_TYPE>()) + " element in the mesh");
+
+	enableIfPerElementComponentOptional<EL_TYPE, NORMAL>(mesh);
+	requirePerElementComponent<EL_TYPE, NORMAL>(mesh);
+
+	uint i = 0;
+	for (auto& e : mesh.template elements<EL_TYPE>()) {
+		e.normal() = NormalType(
+			normals(i, 0), normals(i, 1), normals(i, 2));
+		i++;
+	}
+}
+
+}
+
 /**
  * @brief Creates and returns a new point cloud mesh from the input vertex
  * matrix and the other matrices that are given as arguments.
@@ -410,54 +446,18 @@ void importEdgesFromMatrix(
 	}
 }
 
-template<FaceMeshConcept MeshType, MatrixConcept VNMatrix>
+template<MeshConcept MeshType, MatrixConcept VNMatrix>
 void importVertexNormalsFromMatrix(
 	MeshType&       mesh,
 	const VNMatrix& vertexNormals)
 {
-	using NormalType = typename MeshType::VertexType::NormalType;
-
-	if (vertexNormals.cols() != 3)
-		throw WrongSizeException(
-			"The input vertex normal matrix must have 3 columns");
-
-	if (vertexNormals.rows() != mesh.vertexNumber())
-		throw WrongSizeException(
-			"The input vertex normal matrix must have the same number of rows "
-			"as the number of vertices in the mesh");
-
-	enableIfPerVertexNormalOptional(mesh);
-
-	uint i = 0;
-	for (auto& v : mesh.vertices()) {
-		v.normal() = NormalType(
-			vertexNormals(i, 0), vertexNormals(i, 1), vertexNormals(i, 2));
-		i++;
-	}
+	internal::importElementNormalsFromMatrix<VERTEX>(mesh, vertexNormals);
 }
 
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 {
-	using NormalType = typename MeshType::FaceType::NormalType;
-
-	if (faceNormals.cols() != 3)
-		throw WrongSizeException(
-			"The input face normal matrix must have 3 columns");
-
-	if (faceNormals.rows() != mesh.faceNumber())
-		throw WrongSizeException(
-			"The input vertex normal matrix must have the same number of rows "
-			"as the number of vertices in the mesh");
-
-	enableIfPerFaceNormalOptional(mesh);
-
-	uint i = 0;
-	for (auto& f : mesh.faces()) {
-		f.normal() =
-			NormalType(faceNormals(i, 0), faceNormals(i, 1), faceNormals(i, 2));
-		i++;
-	}
+	internal::importElementNormalsFromMatrix<FACE>(mesh, faceNormals);
 }
 
 } // namespace vcl
