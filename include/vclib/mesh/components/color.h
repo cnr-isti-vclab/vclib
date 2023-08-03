@@ -60,7 +60,7 @@ class Color : public Component<COLOR, vcl::Color, ElementType, OPT>
 	using Base = Component<COLOR, vcl::Color, ElementType, OPT>;
 
 public:
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	const vcl::Color& color() const;
 
@@ -72,9 +72,9 @@ protected:
 	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has Color enabled */
+/* Detector function to check if a class has Color available */
 
-bool isColorEnabledOn(const ElementOrMeshConcept auto& element);
+bool isColorAvailableOn(const ElementOrMeshConcept auto& element);
 
 } // namespace vcl::comp
 

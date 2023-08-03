@@ -37,8 +37,11 @@ namespace vcl {
 /**
  * @brief Check if an edge in the given face is manifold.
  *
- * An edge is considered manifold if it is either a boundary edge or if it is shared by exactly two
- * faces.
+ * An edge is considered manifold if it is either a boundary edge or if it is
+ * shared by exactly two faces.
+ *
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is
+ * not available on \p f.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
@@ -46,15 +49,15 @@ namespace vcl {
  * @param[in] edge: The index of the edge to check.
  *
  * @return true if the edge is manifold, false otherwise.
- *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
  */
 template<FaceConcept FaceType>
-bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
+bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
+	requires comp::HasAdjacentFaces<FaceType>
 {
-	// Check if the AdjacentFaces component is enabled for the given face.
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	// Check if the AdjacentFaces component is available for the given face.
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
+		throw vcl::MissingComponentException(
+			"Face has no Adjacent Faces component.");
 	}
 
 	// Check if the edge is a boundary edge.
@@ -69,7 +72,11 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjace
 /**
  * @brief Check if an edge in the given face is on the border.
  *
- * An edge is considered to be on the border if it is not shared by another face.
+ * An edge is considered to be on the border if it is not shared by another
+ * face.
+ *
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is
+ * not available on \p f.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
@@ -77,39 +84,45 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjace
  * @param[in] edge: The index of the edge to check.
  *
  * @return true if the edge is on the border, false otherwise.
- *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
  */
 template<FaceConcept FaceType>
-bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
+bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
+	requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
+		throw vcl::MissingComponentException(
+			"Face has no Adjacent Faces component.");
 	}
 
 	return f->adjFace(edge) == nullptr;
 }
 
 /**
- * @brief Returns a boolean value indicating whether the edge flip operation is allowed or not.
+ * @brief Returns a boolean value indicating whether the edge flip operation is
+ * allowed or not.
  *
- * This function requires AdjacentFaces component, that must be enabled and computed before calling
- * this function.
+ * This function requires AdjacentFaces component, that must be available and
+ * computed before calling this function.
  *
- * The function first checks if the specified edge is a boundary edge, in which case the flip
- * operation is not allowed. If the edge is not a boundary edge, the function checks whether the
- * mesh is well-oriented by verifying that the vertices of the edge to be flipped are the same in
- * the adjacent face.
+ * The function first checks if the specified edge is a boundary edge, in which
+ * case the flip operation is not allowed. If the edge is not a boundary edge,
+ * the function checks whether the mesh is well-oriented by verifying that the
+ * vertices of the edge to be flipped are the same in the adjacent face.
  *
- * Next, the function checks if the flipped edge already exists in the mesh. To do this, the
- * function performs a depth-first search starting from the current face, following the edges that
- * share the opposite vertex to the edge being flipped. The search checks if the vertex on the other
- * end of the flipped edge is already connected to any other face in the mesh. If it is, the flip
+ * Next, the function checks if the flipped edge already exists in the mesh. To
+ * do this, the function performs a depth-first search starting from the current
+ * face, following the edges that share the opposite vertex to the edge being
+ * flipped. The search checks if the vertex on the other end of the flipped edge
+ * is already connected to any other face in the mesh. If it is, the flip
  * operation is not allowed.
  *
- * The depth-first search is limited to the faces that share the opposite vertex to the edge being
- * flipped, so it does not perform an exhaustive search of the entire mesh. However, it is
- * sufficient to detect non-manifoldness caused by the flipped edge.
+ * The depth-first search is limited to the faces that share the opposite vertex
+ * to the edge being flipped, so it does not perform an exhaustive search of the
+ * entire mesh. However, it is sufficient to detect non-manifoldness caused by
+ * the flipped edge.
+ *
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is
+ * not available on \p f.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
@@ -117,14 +130,14 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacent
  * @param[in] edge: The index of the edge to flip.
  *
  * @return true if the edge flip is allowed, false otherwise.
- *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
  */
 template<FaceConcept FaceType>
-bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
+bool checkFlipEdge(const FaceType& f, uint edge)
+	requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
+		throw vcl::MissingComponentException(
+			"Face has no Adjacent Faces component.");
 	}
 
 	using VertexType = typename FaceType::VertexType;
@@ -167,27 +180,30 @@ bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces
 /**
  * @brief Returns the number of adjacent faces to the given edge of the face f.
  *
- * If the given edge is manifold, the returned number will be 1 (if the edge is on border - just one
- * face) or 2 (two adjacent faces on the edge). If the edge is non manifold, the number of faces
- * adjacent to the given face will be counted.
+ * If the given edge is manifold, the returned number will be 1 (if the edge is
+ * on border - just one face) or 2 (two adjacent faces on the edge). If the edge
+ * is non manifold, the number of faces adjacent to the given face will be
+ * counted.
  *
- * This function requires AdjacentFaces component, that must be enabled and computed before calling
- * this function.
+ * This function requires AdjacentFaces component, that must be available and
+ * computed before calling this function.
+ *
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is
+ * not available on \p f.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] f: the face containing the edge
  * @param[in] edge: the index of the edge of the face
  * @return the number of adjacent faces to the given edge of the face \p f
- *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
  */
 template<FaceConcept FaceType>
 uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
 	requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
+		throw vcl::MissingComponentException(
+			"Face has no Adjacent Faces component.");
 	}
 
 	ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
@@ -200,23 +216,27 @@ uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
 }
 
 /**
- * @brief Returns the number of edges that are on border (no adjacent faces) on the given face.
+ * @brief Returns the number of edges that are on border (no adjacent faces) on
+ * the given face.
  *
- * This function requires AdjacentFaces component, that must be enabled and computed before calling
- * this function.
+ * This function requires AdjacentFaces component, that must be available and
+ * computed before calling this function.
+ *
+ * @throws vcl::MissingComponentException if the "AdjacentFaces" component is
+ * not available on \p f.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] f: The face to check for border edges.
  * @return The number of edges on the border of the face.
- *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
  */
-template <FaceConcept FaceType>
-uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<FaceType>
+template<FaceConcept FaceType>
+uint faceEdgesOnBorderNumber(const FaceType& f)
+	requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
+		throw vcl::MissingComponentException(
+			"Face has no Adjacent Faces component.");
 	}
 
 	uint cnt = 0;
@@ -228,32 +248,37 @@ uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<
 }
 
 /**
- * @brief Detaches the face \p f on the given edge, which consists on updating adjacent faces such
- * that any face that was linking the face \p f won't link it anymore. It manages also non-manifold
- * edges.
+ * @brief Detaches the face \p f on the given edge, which consists on updating
+ * adjacent faces such that any face that was linking the face \p f won't link
+ * it anymore. It manages also non-manifold edges.
  *
  * If the given pair face-edge is on border, nothing is done.
- * If the given pair face-edge is a normal manifold edge, this operation will set nullptr as
- * adjacent face of f (making edge a border) and vice versa on the adjacent face.
- * If the given pair face-edge is a non-manifold edge, the function will "remove" the current face
- * from the ring of faces incident on the edge. The given face f will have the given edge set as a
- * border (nullptr).
+ * If the given pair face-edge is a normal manifold edge, this operation will
+ * set nullptr as adjacent face of f (making edge a border) and vice versa on
+ * the adjacent face. If the given pair face-edge is a non-manifold edge, the
+ * function will "remove" the current face from the ring of faces incident on
+ * the edge. The given face f will have the given edge set as a border
+ * (nullptr).
  *
- * This function is designed to work with faces that have an enabled "AdjacentFaces" component.
- * If the component is not enabled, a MissingComponentException is thrown.
+ * This function is designed to work with faces that have an available
+ * "AdjacentFaces" component. If the component is not available, a
+ * MissingComponentException is thrown.
+ *
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is
+ * not available on \p f.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] f: The face to detach on the given edge.
  * @param[in] edge: The index of the edge to detach the face from.
- *
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not enabled on \p f.
  */
-template <FaceConcept FaceType>
-void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>
+template<FaceConcept FaceType>
+void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
+	requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
+		throw vcl::MissingComponentException(
+			"Face has no Adjacent Faces component.");
 	}
 
 	FaceType* nextFace = f.adjFace(edge);
@@ -274,7 +299,8 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacen
 			nextFace->adjFace(en) = nullptr;
 		}
 		else { // non manifold case
-			// the prev face does not have to point to f anymore, but to nextFace
+			// the prev face does not have to point to f anymore, but to
+			// nextFace
 			uint pn = prevFace->indexOfAdjFace(&f);
 			assert(pn != UINT_NULL);
 			prevFace->adjFace(pn) = nextFace;
@@ -284,26 +310,30 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacen
 }
 
 /**
- * @brief Detaches the given face from all its adjacent vertices and adjacent faces.
+ * @brief Detaches the given face from all its adjacent vertices and adjacent
+ * faces.
  *
- * The detachFace function detaches the given face from all its adjacent vertices and adjacent
- * faces. This means that every vertex and face will no longer link to the face \p f as an adjacent
- * face, and \p f will no longer have any adjacent faces (all their values are set to nullptr). The
- * vertices of the face \p f are unchanged.
+ * The detachFace function detaches the given face from all its adjacent
+ * vertices and adjacent faces. This means that every vertex and face will no
+ * longer link to the face \p f as an adjacent face, and \p f will no longer
+ * have any adjacent faces (all their values are set to nullptr). The vertices
+ * of the face \p f are unchanged.
  *
- * This function is designed to work with faces that have an enabled "Adjacent Faces" component.
- * If the component is not enabled, a MissingComponentException is thrown.
+ * This function is designed to work with faces that have an available "Adjacent
+ * Faces" component. If the component is not available, a
+ * MissingComponentException is thrown.
+ *
+ * @throws MissingComponentException if the adjacent faces component is not
+ * available on the face.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] f: The face to detach from its vertices and adjacent faces.
- *
- * @throws MissingComponentException if the adjacent faces component is not enabled on the face.
  */
 template <FaceConcept FaceType>
 void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesEnabledOn(f)) {
+	if (! comp::isAdjacentFacesAvailableOn(f)) {
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
@@ -314,7 +344,7 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 
 		// if the vertices have adjacent faces
 		if constexpr (comp::HasAdjacentFaces<VertexType>) {
-			if (comp::isAdjacentFacesEnabledOn(f.vertex(e))) {
+			if (comp::isAdjacentFacesAvailableOn(f.vertex(e))) {
 				VertexType* v = f.vertex(e);
 				uint vpos = v->indexOfAdjFace(&f);
 				if (vpos != UINT_NULL) {   // may happen if vertex adj faces are
@@ -328,20 +358,22 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 }
 
 /**
- * @brief Computes the earcut algorithm of a 3D *planar* polygon, that returns a triangulation of
- * the polygon.
+ * @brief Computes the earcut algorithm of a 3D *planar* polygon, that returns a
+ * triangulation of the polygon.
  *
- * Returns a list of indices in which each index is the index of a point of the 3D input polgon,
- * organized in triplets, each one of these is a triangle of the resulting triangulation.
+ * Returns a list of indices in which each index is the index of a point of the
+ * 3D input polgon, organized in triplets, each one of these is a triangle of
+ * the resulting triangulation.
  *
- * This algorithm first computes the normal of the given polygon, then projects it in a 2D plane
- * and executes the classic 2D EarCut algorithm.
+ * This algorithm first computes the normal of the given polygon, then projects
+ * it in a 2D plane and executes the classic 2D EarCut algorithm.
  *
  * @tparam Face: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] polygon: A (polygonal) face of a vcl::Mesh.
  *
- * @return A vector of indices, representing the triplets of the triangulation of the polygon.
+ * @return A vector of indices, representing the triplets of the triangulation
+ * of the polygon.
  */
 template <FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
@@ -351,18 +383,23 @@ std::vector<uint> earCut(const Face& polygon)
 }
 
 /**
- * @brief Given a vector of indices of vertices in a mesh representing a polyon, this function adds
- * N triangular faces to the mesh, that are the triangulation of the input polygon. Triangle edges
- * that are internal in the polygon are marked as faux.
+ * @brief Given a vector of indices of vertices in a mesh representing a polyon,
+ * this function adds N triangular faces to the mesh, that are the triangulation
+ * of the input polygon. Triangle edges that are internal in the polygon are
+ * marked as faux.
  *
- * This function assumes that the first (triangular) face has been already added to the mesh and
- * just needs to be filled with vertex references. This is useful in some cases (e.g. when reading
- * from file and you realize just at some point that you need to manage a polygon). In all the other
- * cases, you should use the function that does not take a face in input, that is:
+ * This function assumes that the first (triangular) face has been already added
+ * to the mesh and just needs to be filled with vertex references. This is
+ * useful in some cases (e.g. when reading from file and you realize just at
+ * some point that you need to manage a polygon). In all the other cases, you
+ * should use the function that does not take a face in input, that is:
  *
  * @code{.cpp}
  * uint fid = addTriangleFacesFromPolygon(mesh, polygon);
  * @endcode
+ *
+ * @throws BadVertexIndexException if there is a vertex index in the polygon
+ * that is out of range, or that references a vertex that results deleted.
  *
  * @tparam MeshType: the type of the face that satisfies the FaceMeshConcept.
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
@@ -371,8 +408,11 @@ std::vector<uint> earCut(const Face& polygon)
  * @param[in,out] f: the first face of the triangulation, that will be filled.
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  */
-template <FaceMeshConcept MeshType, FaceConcept FaceType>
-void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon)
+template<FaceMeshConcept MeshType, FaceConcept FaceType>
+void addTriangleFacesFromPolygon(
+	MeshType&                m,
+	FaceType&                f,
+	const std::vector<uint>& polygon)
 {
 	using VertexType = typename MeshType::VertexType;
 	using CoordType = typename VertexType::CoordType;
@@ -380,19 +420,27 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 	// from the ids, create a polygon of coordinates
 	std::vector<CoordType> polCoords(polygon.size());
 	for (uint i = 0; i < polygon.size(); ++i) {
-		if (polygon[i] >= m.vertexContainerSize()){
-			throw BadVertexIndexException(std::to_string(polygon[i]));
+		if (polygon[i] >= m.vertexContainerSize()) {
+			throw BadVertexIndexException(
+				"Index " + std::to_string(polygon[i]) + " is out of range in "
+				"Vertex Container.");
+		}
+		if (m.vertex(polygon[i]).deleted()) {
+			throw BadVertexIndexException(
+				"Vertex " + std::to_string(polygon[i]) + " is deleted.");
 		}
 		polCoords[i] = m.vertex(polygon[i]).coord();
 	}
 
 	// compute earcut of the polygons
-	std::vector<uint> tris = Polygon<CoordType>::earCut(polCoords.begin(), polCoords.end());
+	std::vector<uint> tris =
+		Polygon<CoordType>::earCut(polCoords.begin(), polCoords.end());
 
 	// faux edges management: create a set of unordered edges of the polygon
-	// note: we use indices from 0 to polygon.size() because that are the output indices given by
-	// the earcut algorithm
-	std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>> unorderedEdges;
+	// note: we use indices from 0 to polygon.size() because that are the output
+	// indices given by the earcut algorithm
+	std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>>
+		unorderedEdges;
 	for (uint i = 0; i < polygon.size(); ++i)
 		unorderedEdges.emplace(i, (i+1) % (uint)polygon.size());
 
@@ -408,11 +456,14 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 	}
 
 	if constexpr(face::HasFaceBitFlags<FaceType>) {
-		if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) == unorderedEdges.end())
+		if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) ==
+			unorderedEdges.end())
 			f.edgeFaux(0) = true;
-		if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) == unorderedEdges.end())
+		if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) ==
+			unorderedEdges.end())
 			f.edgeFaux(1) = true;
-		if (unorderedEdges.find(std::make_pair(tris[2], tris[0])) == unorderedEdges.end())
+		if (unorderedEdges.find(std::make_pair(tris[2], tris[0])) ==
+			unorderedEdges.end())
 			f.edgeFaux(2) = true;
 	}
 
@@ -431,21 +482,27 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 		}
 
 		if constexpr(face::HasFaceBitFlags<FaceType>) {
-			if (unorderedEdges.find(std::make_pair(tris[i], tris[i+1])) == unorderedEdges.end())
+			if (unorderedEdges.find(std::make_pair(tris[i], tris[i + 1])) ==
+				unorderedEdges.end())
 				m.face(ff).edgeFaux(0) = true;
-			if (unorderedEdges.find(std::make_pair(tris[i+1], tris[i+2])) == unorderedEdges.end())
+			if (unorderedEdges.find(std::make_pair(tris[i + 1], tris[i + 2])) ==
+				unorderedEdges.end())
 				m.face(ff).edgeFaux(1) = true;
-			if (unorderedEdges.find(std::make_pair(tris[i+2], tris[i+0])) == unorderedEdges.end())
+			if (unorderedEdges.find(std::make_pair(tris[i + 2], tris[i + 0])) ==
+				unorderedEdges.end())
 				m.face(ff).edgeFaux(2) = true;
 		}
 	}
 }
 
 /**
- * @brief Given a vector of indices of vertices in a mesh representing a polyon, this function adds
- * N triangular faces to the mesh, that are the triangulation of the input polygon. Triangle edges
- * that are internal in the polygon are marked as faux. This function returns the index of the first
- * added triangle.
+ * @brief Given a vector of indices of vertices in a mesh representing a polyon,
+ * this function adds N triangular faces to the mesh, that are the triangulation
+ * of the input polygon. Triangle edges that are internal in the polygon are
+ * marked as faux. This function returns the index of the first added triangle.
+ *
+ * @throws BadVertexIndexException if there is a vertex index in the polygon
+ * that is out of range, or that references a vertex that results deleted.
  *
  * @tparam MeshType: the type of the face that satisfies the FaceMeshConcept.
  *

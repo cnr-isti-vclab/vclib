@@ -76,7 +76,13 @@ int main()
 	// adding a per vertex custom component of chars, called 'prova'
 	m.addPerVertexCustomComponent<char>("prova");
 	
-	for (auto& v : m.vertices())
+	// using generic element type alias trough element type index
+	// this is just for test - it is possible to just use
+	// using VT = vcl::TriMesh::VertexType;
+	// or just use `auto` in range for
+	using VT = typename vcl::TriMesh::ElementType<vcl::VERTEX>;
+
+	for (VT& v : m.vertices())
 		v.customComponent<char>("prova") = 'a'; // set the custom component for each vertex
 	
 	// enable per face quality, which is optional

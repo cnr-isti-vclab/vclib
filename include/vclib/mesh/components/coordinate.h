@@ -65,7 +65,7 @@ public:
 	 */
 	using CoordType = P;
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	const P& coord() const;
 	P&       coord();
@@ -76,9 +76,9 @@ protected:
 	void importFrom(const Element& v);
 };
 
-/* Detector function to check if a class has Coordinate enabled */
+/* Detector function to check if a class has Coordinate available */
 
-bool isCoordinateEnabledOn(const ElementConcept auto& element);
+bool isCoordinateAvailableOn(const ElementConcept auto& element);
 
 /**
  * @brief The Coordinate3 class is an alias of the Coordinate component that

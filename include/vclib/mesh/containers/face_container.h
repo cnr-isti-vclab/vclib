@@ -81,7 +81,11 @@ public:
 	uint addFace(Iterator begin, Iterator end);
 
 	uint addFaces(uint n);
+
+	void clearFaces();
+	void resizeFaces(uint n);
 	void reserveFaces(uint n);
+
 	void compactFaces();
 
 	void deleteFace(uint i);

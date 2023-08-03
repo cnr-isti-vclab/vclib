@@ -126,6 +126,62 @@ uint %EL_UC%Container<T>::add%EL_UC%s(uint n)
 }
 
 /**
+ * @brief Clears the %EL_UC% container of the Mesh, deleting all the
+ * %EL_UC%s.
+ *
+ * The contained %EL_UC%s are actually removed from the container, not only
+ * marked as deleted. Therefore, the container will have size 0
+ * (`%EL_C%ContainerSize() == 0`) after the call of this function.
+ *
+ * @note This function does not cause a reallocation of the %EL_UC%
+ * container.
+ *
+ * @warning Any pointer to %EL_UC%s in the Mesh will be left unchanged, and
+ * therefore will point to invalid %EL_UC%s. This means that, if you have a
+ * pointer to a %EL_UC% and you call this function, you will have a dangling
+ * pointer.
+ */
+template<%EL_UC%Concept T>
+void %EL_UC%Container<T>::clear%EL_UC%s()
+{
+	Base::clearElements();
+}
+
+/**
+ * @brief Resizes the %EL_UC% container to contain `n` %EL_UC%s.
+ *
+ * If the new size is greater than the old one, new %EL_UC%s are added to the
+ * container, and a reallocation may happen. If the new size is smaller than the
+ * old one, the container will keep its first non-deleted `n` %EL_UC%s, and
+ * the remaining %EL_UC%s are marked as deleted.
+ *
+ * If the call of this function will cause a reallocation of the %EL_UC%
+ * container, the function will automatically take care of updating all the
+ * %EL_UC% pointers contained in the Mesh.
+ *
+ * @warning The given size `n` is relative to the number of non-deleted
+ * %EL_UC%s, not to the size of the %EL_UC% container. For example, if you
+ * have a mesh with 10 %EL_UC%s and %EL_C%ContainerSize() == 20, calling
+ * resize%EL_UC%s(5) will not cause a reallocation of the container, but will
+ * mark as deleted the least 5 non-deleted %EL_UC%s of the container. In the
+ * same scenario, calling resize%EL_UC%s(15) will result in a %EL_UC%
+ * container having 15 new %EL_UC%s and %EL_C%ContainerSize() == 25.
+ * The latest 5 %EL_UC%s will be the newly added.
+ *
+ * @warning Any pointer to deleted %EL_UC%s in the Mesh will be left
+ * unchanged, and therefore will point to invalid %EL_UC%s. This means that
+ * if you call this member function with a lower number of %EL_UC%s, you'll
+ * need to manually manage the pointers to the deleted %EL_UC%s.
+ *
+ * @param[in] n: the new size of the %EL_UC% container.
+ */
+template<%EL_UC%Concept T>
+void %EL_UC%Container<T>::resize%EL_UC%s(uint n)
+{
+	Base::resizeElements(n);
+}
+
+/**
  * @brief Reserve a number of %EL_UC%s in the container of %EL_UC%s. This
  * is useful when you know (or you have an idea) of how much %EL_UC%s are
  * going to add into a newly of existing mesh. Calling this function before any

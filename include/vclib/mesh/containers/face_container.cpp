@@ -205,6 +205,62 @@ uint FaceContainer<T>::addFaces(uint n)
 }
 
 /**
+ * @brief Clears the Face container of the Mesh, deleting all the
+ * Faces.
+ *
+ * The contained faces are actually removed from the container, not only
+ * marked as deleted. Therefore, the container will have size 0
+ * (`faceContainerSize() == 0`) after the call of this function.
+ *
+ * @note This function does not cause a reallocation of the Face
+ * container.
+ *
+ * @warning Any pointer to Faces in the Mesh will be left unchanged, and
+ * therefore will point to invalid Faces. This means that, if you have a
+ * pointer to a Face and you call this function, you will have a dangling
+ * pointer.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::clearFaces()
+{
+	Base::clearElements();
+}
+
+/**
+ * @brief Resizes the Face container to contain `n` Faces.
+ *
+ * If the new size is greater than the old one, new Faces are added to the
+ * container, and a reallocation may happen. If the new size is smaller than the
+ * old one, the container will keep its first non-deleted `n` Faces, and
+ * the remaining Faces are marked as deleted.
+ *
+ * If the call of this function will cause a reallocation of the Face
+ * container, the function will automatically take care of updating all the
+ * Face pointers contained in the Mesh.
+ *
+ * @warning The given size `n` is relative to the number of non-deleted
+ * Faces, not to the size of the Face container. For example, if you
+ * have a mesh with 10 Faces and faceContainerSize() == 20, calling
+ * resizeFaces(5) will not cause a reallocation of the container, but will
+ * mark as deleted the least 5 non-deleted Faces of the container. In the
+ * same scenario, calling resizeFaces(15) will result in a Face
+ * container having 15 new Faces and faceContainerSize() == 25.
+ * The latest 5 Faces will be the newly added.
+ *
+ * @warning Any pointer to deleted Faces in the Mesh will be left
+ * unchanged, and therefore will point to invalid Faces. This means that
+ * if you call this member function with a lower number of Faces, you'll
+ * need to manually manage the pointers to the deleted Faces.
+ *
+ * @param[in] n: the new size of the Face container.
+ */
+template<FaceConcept T>
+void FaceContainer<T>::resizeFaces(uint n)
+{
+	Base::resizeElements(n);
+}
+
+/**
  * @brief Reserve a number of Faces in the container of Faces. This is useful
  * when you know (or you have an idea) of how much Faces are going to add into a
  * newly of existing mesh. Calling this function before any addFace() call will
@@ -1219,8 +1275,8 @@ void FaceContainer<F>::importTriPointersHelper(
 		if constexpr (
 			face::HasWedgeColors<FaceType> && face::HasWedgeColors<MFaceType>)
 		{
-			if (comp::isWedgeColorsEnabledOn(f) &&
-				comp::isWedgeColorsEnabledOn(mf))
+			if (comp::isWedgeColorsAvailableOn(f) &&
+				comp::isWedgeColorsAvailableOn(mf))
 			{
 				f.wedgeColor(j) = mf.wedgeColor(tris[i]);
 			}
@@ -1231,8 +1287,8 @@ void FaceContainer<F>::importTriPointersHelper(
 			face::HasWedgeTexCoords<FaceType> &&
 			face::HasWedgeTexCoords<MFaceType>)
 		{
-			if (comp::isWedgeTexCoordsEnabledOn(f) &&
-				comp::isWedgeTexCoordsEnabledOn(mf))
+			if (comp::isWedgeTexCoordsAvailableOn(f) &&
+				comp::isWedgeTexCoordsAvailableOn(mf))
 			{
 				f.wedgeTexCoord(j) =
 					mf.wedgeTexCoord(tris[i])

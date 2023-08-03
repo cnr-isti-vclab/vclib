@@ -35,9 +35,13 @@ namespace vcl {
 
 /**
  * @brief Returns `true` if the given mesh has its Vertex Container compact.
+ *
+ * @tparam MeshType: type of the mesh. It must satisfy the MeshConcept.
  * @param[in] m: input mesh on which test if the its Vertex Container is
  * compact.
  * @return `true` if the Vertex Container of the mesh is compact.
+ *
+ * @ingroup vertex_requirements
  */
 template<MeshConcept MeshType>
 bool isVertexContainerCompact(const MeshType& m)
@@ -46,9 +50,9 @@ bool isVertexContainerCompact(const MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexAdjacentFacesEnabled(const MeshType& m)
+bool isPerVertexAdjacentFacesAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, ADJACENT_FACES>(m);
+	return isPerElementComponentAvailable<VERTEX, ADJACENT_FACES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -58,9 +62,9 @@ bool enableIfPerVertexAdjacentFacesOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexAdjacentVerticesEnabled(const MeshType& m)
+bool isPerVertexAdjacentVerticesAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, ADJACENT_VERTICES>(m);
+	return isPerElementComponentAvailable<VERTEX, ADJACENT_VERTICES>(m);
 }
 
 template<MeshConcept MeshType>
@@ -70,9 +74,9 @@ bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexColorEnabled(const MeshType& m)
+bool isPerVertexColorAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, COLOR>(m);
+	return isPerElementComponentAvailable<VERTEX, COLOR>(m);
 }
 
 template<MeshConcept MeshType>
@@ -82,9 +86,9 @@ bool enableIfPerVertexColorOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexMarkEnabled(const MeshType& m)
+bool isPerVertexMarkAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, MARK>(m);
+	return isPerElementComponentAvailable<VERTEX, MARK>(m);
 }
 
 template<MeshConcept MeshType>
@@ -94,9 +98,9 @@ bool enableIfPerVertexMarkOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexNormalEnabled(const MeshType& m)
+bool isPerVertexNormalAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, NORMAL>(m);
+	return isPerElementComponentAvailable<VERTEX, NORMAL>(m);
 }
 
 template<MeshConcept MeshType>
@@ -106,9 +110,9 @@ bool enableIfPerVertexNormalOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexPrincipalCurvatureEnabled(const MeshType& m)
+bool isPerVertexPrincipalCurvatureAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, PRINCIPAL_CURVATURE>(m);
+	return isPerElementComponentAvailable<VERTEX, PRINCIPAL_CURVATURE>(m);
 }
 
 template<MeshConcept MeshType>
@@ -118,9 +122,9 @@ bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexQualityEnabled(const MeshType& m)
+bool isPerVertexQualityAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, QUALITY>(m);
+	return isPerElementComponentAvailable<VERTEX, QUALITY>(m);
 }
 
 template<MeshConcept MeshType>
@@ -130,9 +134,9 @@ bool enableIfPerVertexQualityOptional(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-bool isPerVertexTexCoordEnabled(const MeshType& m)
+bool isPerVertexTexCoordAvailable(const MeshType& m)
 {
-	return isPerElementComponentEnabled<VERTEX, TEX_COORD>(m);
+	return isPerElementComponentAvailable<VERTEX, TEX_COORD>(m);
 }
 
 template<MeshConcept MeshType>

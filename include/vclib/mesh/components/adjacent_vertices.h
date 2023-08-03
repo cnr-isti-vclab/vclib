@@ -96,11 +96,11 @@ public:
 	using AdjacentVertexIterator      = typename Base::Iterator;
 	using ConstAdjacentVertexIterator = typename Base::ConstIterator;
 
-	/* Constructor and isEnabled */
+	/* Constructor and isAvailable */
 
 	void init();
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -163,9 +163,9 @@ private:
 	void importPtrsFrom(const Element& e, Vertex* base, const ElVType* ebase);
 };
 
-/* Detector function to check if a class has AdjacentVertices enabled */
+/* Detector function to check if a class has AdjacentVertices available */
 
-bool isAdjacentVerticesEnabledOn(const ElementConcept auto& element);
+bool isAdjacentVerticesAvailableOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

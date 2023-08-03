@@ -302,7 +302,7 @@ Vect faceSelectionVector(const MeshType& mesh)
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
- * normals enabled.
+ * normals available.
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -343,7 +343,7 @@ Matrix vertexNormalsMatrix(const MeshType& mesh)
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
- * normals enabled.
+ * normals available.
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible
@@ -384,7 +384,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
- * colors enabled.
+ * colors available.
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -425,7 +425,7 @@ Matrix vertexColorsMatrix(const MeshType& mesh)
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
- * colors enabled.
+ * colors available.
  *
  * @note This function does not guarantee that the rows of the matrix
  * correspond to the face indices of the mesh. This scenario is possible
@@ -467,7 +467,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-vertex
- * quality enabled.
+ * quality available.
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the vertex indices of the mesh. This scenario is possible
@@ -508,7 +508,7 @@ Vect vertexQualityVector(const MeshType& mesh)
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-face
- * quality enabled.
+ * quality available.
  *
  * @note This function does not guarantee that the rows of the vector
  * correspond to the face indices of the mesh. This scenario is possible

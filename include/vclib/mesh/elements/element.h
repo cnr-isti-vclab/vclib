@@ -34,7 +34,8 @@
  * @defgroup elements Elements
  * @ingroup mesh
  *
- * @brief List of all the Element classes, along with their concepts and functions.
+ * @brief List of all the Element classes, along with their concepts and
+ * functions.
  */
 
 namespace vcl::mesh {
@@ -59,8 +60,15 @@ class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 
 public:
 	using ParentMeshType = MeshType;
-	using Components = typename vcl::
-		FilterTypesByCondition<comp::IsComponentPred, vcl::TypeWrapper<Comps...>>::type;
+
+	/**
+	 * @brief Components is an alias to a vcl::TypeWrapper that wraps all the
+	 * types from which the Element inherits (Comps) that are Components (they
+	 * satisfy the ComponentConcept).
+	 */
+	using Components = typename vcl::FilterTypesByCondition<
+		comp::IsComponentPred,
+		vcl::TypeWrapper<Comps...>>::type;
 
 	static const uint ELEMENT_TYPE = ELEM_TYPE;
 
@@ -76,9 +84,9 @@ public:
 	void importFrom(const ElType& v);
 
 private:
-	// hide init and isEnabled members
+	// hide init and isAvailable members
 	void init() {}
-	bool isEnabled() { return true; }
+	bool isAvailable() const { return true; }
 
 	// init to call after set parent mesh
 	void initVerticalComponents();
@@ -87,11 +95,12 @@ private:
 	void construct();
 
 	// Predicate structures
+
 	// Components can be individuated with their ID, which is an unsigned int.
-	// This struct sets its bool `value` to true if this Element has a Component with the
-	// given unsigned integer Cmp
-	// Sets also `type` with a TypeWrapper contianing the Component that satisfied the condition.
-	// the TypeWrapper will be empty if no Components were found.
+	// This struct sets its bool `value` to true if this Element has a Component
+	// with the given unsigned integer Cmp Sets also `type` with a TypeWrapper
+	// contianing the Component that satisfied the condition. the TypeWrapper
+	// will be empty if no Components were found.
 	template<uint Cmp>
 	struct ComponentIndexPred
 	{
@@ -104,7 +113,8 @@ private:
 
 	public:
 		// TypeWrapper of the found component, if any
-		using type = typename vcl::FilterTypesByCondition<SameCmpPred, Components>::type;
+		using type =
+			typename vcl::FilterTypesByCondition<SameCmpPred, Components>::type;
 		static constexpr bool value = NumberOfTypes<type>::value == 1;
 	};
 
@@ -122,7 +132,7 @@ private:
 		};
 	public:
 		using type = typename TypeUnwrapper<
-		    typename ComponentIndexPred<Cmp>::type>::type;
+			typename ComponentIndexPred<Cmp>::type>::type;
 	};
 };
 

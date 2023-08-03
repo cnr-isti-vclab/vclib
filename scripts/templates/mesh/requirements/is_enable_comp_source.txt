@@ -1,8 +1,8 @@
 // %EL_UC% %CNUC%
 
 /**
- * @brief Returns true if the %CNUC% component is available (enabled) in
- * the %EL_UC% element of the input mesh m.
+ * @brief Returns true if the %CNUC% component is available in the
+ * %EL_UC% element of the input mesh m.
  *
  * This function returns `true` when the %CNUC% component can be used on
  * the element, whether the component is horizontal, vertical or optional.
@@ -27,9 +27,9 @@
  * @ingroup %EL%_requirements
  */
 template<%EL_UC%MeshConcept MeshType>
-bool isPer%EL_UC%%CNUC%Enabled(const MeshType& m)
+bool isPer%EL_UC%%CNUC%Available(const MeshType& m)
 {
-	return isPerElementComponentEnabled<%EL_U%, %CNU%>(m);
+	return isPerElementComponentAvailable<%EL_U%, %CNU%>(m);
 }
 
 /**

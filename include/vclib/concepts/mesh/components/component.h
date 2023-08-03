@@ -100,9 +100,9 @@ concept HasInitMemberFunction = requires(T o)
 };
 
 template<typename T>
-concept HasIsEnabledMemberFunction = requires(T o)
+concept HasIsAvailableMemberFunction = requires(T o)
 {
-	{ o.isEnabled() } -> std::same_as<bool>;
+	{ o.isAvailable() } -> std::same_as<bool>;
 };
 
 template<typename T>

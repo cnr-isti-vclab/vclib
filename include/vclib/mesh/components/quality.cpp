@@ -27,17 +27,19 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename S, typename El, bool O>
-bool Quality<S, El, O>::isEnabled() const
+bool Quality<S, El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -65,7 +67,7 @@ template<typename Element>
 void Quality<S, El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasQuality<Element>) {
-		if (isQualityEnabledOn(e)){
+		if (isQualityAvailableOn(e)){
 			quality() = e.quality();
 		}
 	}
@@ -83,9 +85,9 @@ void Quality<S, El, O>::importFrom(const Element& e)
  * @return `true` if the element has Quality component available,
  * `false` otherwise.
  */
-bool isQualityEnabledOn(const ElementOrMeshConcept auto& element)
+bool isQualityAvailableOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentEnabledOn<QUALITY>(element);
+	return isComponentAvailableOn<QUALITY>(element);
 }
 
 } // namespace vcl::comp

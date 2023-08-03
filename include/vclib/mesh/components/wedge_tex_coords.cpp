@@ -29,17 +29,19 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename Scalar, int N, typename El, bool O>
-bool WedgeTexCoords<Scalar, N, El, O>::isEnabled() const
+bool WedgeTexCoords<Scalar, N, El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -253,7 +255,7 @@ template<typename Element>
 void WedgeTexCoords<Scalar, N, El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasWedgeTexCoords<Element>) {
-		if (isWedgeTexCoordsEnabledOn(e)) {
+		if (isWedgeTexCoordsAvailableOn(e)) {
 			if constexpr(N > 0) {
 				// same static size
 				if constexpr (N == Element::WEDGE_TEX_COORD_NUMBER) {
@@ -349,9 +351,9 @@ WedgeTexCoords<Scalar, N, El, O>::texCoords() const
  * @return `true` if the element has WedgeTexCoords available, `false`
  * otherwise.
  */
-bool isWedgeTexCoordsEnabledOn(const ElementConcept auto& element)
+bool isWedgeTexCoordsAvailableOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<WEDGE_TEX_COORDS>(element);
+	return isComponentAvailableOn<WEDGE_TEX_COORDS>(element);
 }
 
 } // namespace vcl::comp

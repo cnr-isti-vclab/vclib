@@ -79,7 +79,7 @@ public:
 	 */
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	const PrincipalCurvatureType& principalCurvature() const;
 	PrincipalCurvatureType&       principalCurvature();
@@ -90,9 +90,9 @@ protected:
 	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has PrincipalCurvature enabled */
+/* Detector function to check if a class has PrincipalCurvature available */
 
-bool isPrincipalCurvatureEnabledOn(const ElementConcept auto& element);
+bool isPrincipalCurvatureAvailableOn(const ElementConcept auto& element);
 
 /**
  * The PrincipalCurvaturef class is an alias of the PrincipalCurvature component

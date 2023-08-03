@@ -221,6 +221,26 @@ void Mesh<Args...>::compact()
 }
 
 /**
+ * @brief Enables all the optional components of the elements of the containers
+ * if the mesh.
+ */
+template<typename... Args>
+void Mesh<Args...>::enableAllOptionalComponents()
+{
+	(enableAllOptionalComponentsInContainer<Args>(), ...);
+}
+
+/**
+ * @brief Disables all the optional components of the elements of the containers
+ * if the mesh.
+ */
+template<typename... Args>
+void Mesh<Args...>::disableAllOptionalComponents()
+{
+	(disableAllOptionalComponentsInContainer<Args>(), ...);
+}
+
+/**
  * @brief Enables all the OptionalComponents of this mesh according to the
  * Components available on the OtherMeshType m.
  *
@@ -565,6 +585,76 @@ uint Mesh<Args...>::add(uint n) requires (hasContainerOf<EL_TYPE>())
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
 	return Cont::addElements(n); // add the number elements
+}
+
+/**
+ * @brief Clears the container of EL_TYPE elements the Mesh, deleting all the
+ * Elements.
+ *
+ * The contained elements are actually removed from the container, not only
+ * marked as deleted. Therefore, the container will have size 0
+ * (`mesh.containerSize<EL_TYPE>() == 0`) after the call of this function.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @note This function does not cause a reallocation of the container.
+ *
+ * @warning Any pointer to EL_TYPE elements in the Mesh will be left unchanged,
+ * and therefore will point to invalid elements. This means that, if you have a
+ * pointer to a EL_TYPE element and you call this function, you will have a
+ * dangling pointer.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ */
+template<typename... Args>
+template<uint EL_TYPE>
+void Mesh<Args...>::clearElements() requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	Cont::clearElements();
+}
+
+/**
+ * @brief Resizes the Element container to contain `n` Elements of type EL_TYPE.
+ *
+ * If the new size is greater than the old one, new Elements are added to the
+ * container, and a reallocation may happen. If the new size is smaller than the
+ * old one, the container will keep its first non-deleted `n` Elements, and
+ * the remaining Elements are marked as deleted.
+ *
+ * If the call of this function will cause a reallocation of the container, the
+ * function will automatically take care of updating all the pointers to the
+ * elements stored in all the containers of the Mesh.
+ *
+ * The function requires that the Mesh has a Container of Elements of type
+ * EL_TYPE. Otherwise, a compiler error will be triggered.
+ *
+ * @warning The given size `n` is relative to the number of non-deleted
+ * Elements, not to the size of the Element container. For example, if you
+ * have a mesh with 10 Faces and faceContainerSize() == 20, calling
+ * resize<FACE>(5) will not cause a reallocation of the container, but will
+ * mark as deleted the least 5 non-deleted Faces of the container. In the
+ * same scenario, calling resize<FACE>(15) will result in a Face
+ * container having 15 new Faces and faceContainerSize() == 25.
+ * The latest 5 Faces will be the newly added.
+ *
+ * @warning Any pointer to deleted Elements in the Mesh will be left
+ * unchanged, and therefore will point to invalid Elements. This means that
+ * if you call this member function with a lower number of Elements, you'll
+ * need to manually manage the pointers to the deleted Elements.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] n: the new size of the container in the mesh.
+ */
+template<typename... Args>
+template<uint EL_TYPE>
+void Mesh<Args...>::resize(uint n) requires (hasContainerOf<EL_TYPE>())
+{
+	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+
+	Cont::resizeElements(n);
 }
 
 /**
@@ -986,6 +1076,42 @@ void Mesh<Args...>::compactContainer()
 		if (Cont::elementNumber() != Cont::elementContainerSize()) {
 			Cont::compactElements();
 		}
+	}
+}
+
+/**
+ * This function will enable all the optional components of the element of the
+ * Cont container of this mesh (if Cont is actually a container).
+ *
+ * This function is made to be called trough pack expansion:
+ * @code{.cpp}
+ * (enableAllOptionalComponentsInContainer<Args>(), ...);
+ * @endcode
+ */
+template<typename... Args>
+template<typename Cont>
+void Mesh<Args...>::enableAllOptionalComponentsInContainer()
+{
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		Cont::enableAllOptionalComponents();
+	}
+}
+
+/**
+ * This function will disable all the optional components of the element of the
+ * Cont container of this mesh (if Cont is actually a container).
+ *
+ * This function is made to be called trough pack expansion:
+ * @code{.cpp}
+ * (disableAllOptionalComponentsInContainer<Args>(), ...);
+ * @endcode
+ */
+template<typename... Args>
+template<typename Cont>
+void Mesh<Args...>::disableAllOptionalComponentsInContainer()
+{
+	if constexpr (mesh::ElementContainerConcept<Cont>) {
+		Cont::disableAllOptionalComponents();
 	}
 }
 

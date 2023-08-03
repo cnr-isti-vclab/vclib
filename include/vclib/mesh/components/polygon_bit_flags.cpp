@@ -53,17 +53,19 @@ void PolygonBitFlags<N, El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<int N, typename El, bool O>
-bool PolygonBitFlags<N, El, O>::isEnabled() const
+bool PolygonBitFlags<N, El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -331,7 +333,7 @@ void PolygonBitFlags<N, El, O>::resetBitFlags()
 	flags().reset();
 	for (uint i = 0; i < edgeFlags().size(); ++i)
 		edgeFlags()[i].reset();
-	deleted() = isD;
+	deletedBit() = isD;
 }
 
 /**
@@ -404,7 +406,7 @@ int PolygonBitFlags<N, El, O>::exportToVCGFlags() const
 
 template<int N, typename El, bool O>
 BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::deleted()
+PolygonBitFlags<N, El, O>::deletedBit()
 {
 	return flags()[DELETED];
 }
@@ -421,7 +423,7 @@ void PolygonBitFlags<N, El, O>::importFrom(const Element& e)
 		}
 		else {
 			// BitFlags
-			deleted() = e.deleted();
+			deletedBit() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);

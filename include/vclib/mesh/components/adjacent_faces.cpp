@@ -42,17 +42,19 @@ void AdjacentFaces<Face, N, TT, El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-bool AdjacentFaces<Face, N, TT, El, O>::isEnabled() const
+bool AdjacentFaces<Face, N, TT, El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -399,7 +401,7 @@ void AdjacentFaces<Face, N, TT, El, O>::importPointersFrom(
 	const ElFType* ebase)
 {
 	if constexpr (HasAdjacentFaces<Element>) {
-		if (isAdjacentFacesEnabledOn(e)) {
+		if (isAdjacentFacesAvailableOn(e)) {
 			if constexpr (N > 0) {
 				// same static size
 				if constexpr (N == Element::ADJ_FACE_NUMBER) {
@@ -499,9 +501,9 @@ void AdjacentFaces<Face, N, TT, El, O>::importPtrsFrom(
  * the ElementConcept.
  * @return `true` if the element has AdjacentFaces available, `false` otherwise.
  */
-bool isAdjacentFacesEnabledOn(const ElementConcept auto& element)
+bool isAdjacentFacesAvailableOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<ADJACENT_FACES>(element);
+	return isComponentAvailableOn<ADJACENT_FACES>(element);
 }
 
 } // namespace vcl::comp

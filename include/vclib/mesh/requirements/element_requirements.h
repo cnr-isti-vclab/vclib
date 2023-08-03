@@ -33,7 +33,7 @@ template<uint ELEMENT_TYPE, MeshConcept MeshType>
 bool isElementContainerCompact(const MeshType&);
 
 template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
-bool isPerElementComponentEnabled(const MeshType& m);
+bool isPerElementComponentAvailable(const MeshType& m);
 
 template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
 bool enableIfPerElementComponentOptional(MeshType& m);

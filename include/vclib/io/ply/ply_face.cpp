@@ -135,7 +135,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	}
 	if (p.name == ply::texcoord) { // loading wedge texcoords
 		if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+			if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
 				using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
 				uint uvSize  = io::internal::readProperty<uint>(file, p.listSizeType);
 				uint fSize   = uvSize / 2;
@@ -153,7 +153,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	}
 	if (p.name == ply::texnumber) { // loading texture id associated to ALL the wedges
 		if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-			if (vcl::isPerFaceWedgeTexCoordsEnabled(mesh)) {
+			if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
 				uint n      = io::internal::readProperty<uint>(file, p.type);
 				hasBeenRead = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh
@@ -165,7 +165,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	}
 	if (p.name >= ply::nx && p.name <= ply::nz) { // loading one of the normal components
 		if constexpr (vcl::HasPerFaceNormal<MeshType>) {
-			if (vcl::isPerFaceNormalEnabled(mesh)) {
+			if (vcl::isPerFaceNormalAvailable(mesh)) {
 				using Scalar = typename FaceType::NormalType::ScalarType;
 				int    a     = p.name - ply::nx;
 				Scalar n     = io::internal::readProperty<Scalar>(file, p.type);
@@ -179,7 +179,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	}
 	if (p.name >= ply::red && p.name <= ply::alpha) { // loading one of the color components
 		if constexpr (vcl::HasPerFaceColor<MeshType>) {
-			if (vcl::isPerFaceColorEnabled(mesh)) {
+			if (vcl::isPerFaceColorAvailable(mesh)) {
 				int           a = p.name - ply::red;
 				unsigned char c = io::internal::readProperty<unsigned char>(file, p.type);
 				hasBeenRead     = true;
@@ -193,7 +193,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	if (p.name == ply::quality) { // loading the quality component
 		if constexpr (vcl::HasPerFaceQuality<MeshType>) {
 			using QualityType = typename FaceType::QualityType;
-			if (vcl::isPerFaceQualityEnabled(mesh)) {
+			if (vcl::isPerFaceQualityAvailable(mesh)) {
 				QualityType s = io::internal::readProperty<QualityType>(file, p.type);
 				hasBeenRead   = true;
 				// in case the loaded polygon has been triangulated in the last n triangles of mesh

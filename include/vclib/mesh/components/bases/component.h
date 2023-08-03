@@ -140,9 +140,9 @@ public:
 
 protected:
 	template<typename Comp>
-	bool isEnabled(const Comp* c) const
+	bool isAvailable(const Comp* c) const
 	{
-		return cdata.template isComponentEnabled<ElementType>(c);
+		return cdata.template isComponentAvailable<ElementType>(c);
 	}
 
 	template<typename Comp>
@@ -175,13 +175,13 @@ private:
  * otherwise.
  */
 template<uint COMPONENT_TYPE, ElementOrMeshConcept T>
-bool isComponentEnabledOn(const T& obj)
+bool isComponentAvailableOn(const T& obj)
 {
 	if constexpr (HasOptionalComponentOfType<T, COMPONENT_TYPE>) {
 		using ComponentType =
 			ComponentOfType<COMPONENT_TYPE, typename T::Components>;
 		const ComponentType& c = static_cast<const ComponentType&>(obj);
-		return c.isEnabled();
+		return c.isAvailable();
 	}
 	else
 		return HasComponentOfType<T, COMPONENT_TYPE>;

@@ -53,17 +53,19 @@ void BitFlags<El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename El, bool O>
-bool BitFlags<El, O>::isEnabled() const
+bool BitFlags<El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -179,7 +181,7 @@ void BitFlags<El, O>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
-	deleted() = isD;
+	deletedBit() = isD;
 }
 
 /**
@@ -220,7 +222,7 @@ int BitFlags<El, O>::exportToVCGFlags() const
 }
 
 template<typename El, bool O>
-BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::deleted()
+BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::deletedBit()
 {
 	return flags()[DELETED];
 }
@@ -234,7 +236,7 @@ void BitFlags<El, O>::importFrom(const Element& e)
 		if constexpr (
 			HasPolygonBitFlags<Element> || HasTriangleBitFlags<Element>)
 		{
-			deleted() = e.deleted();
+			deletedBit() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			onBorder() = e.onBorder();

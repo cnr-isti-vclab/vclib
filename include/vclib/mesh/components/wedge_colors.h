@@ -96,7 +96,7 @@ public:
 	using WedgeColorsIterator      = typename Base::Iterator;
 	using ConstWedgeColorsIterator = typename Base::ConstIterator;
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -141,9 +141,9 @@ private:
 	const Vector<vcl::Color, N>& colors() const;
 };
 
-/* Detector function to check if a class has WedgeColors enabled */
+/* Detector function to check if a class has WedgeColors available */
 
-bool isWedgeColorsEnabledOn(const ElementConcept auto& element);
+bool isWedgeColorsAvailableOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

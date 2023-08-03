@@ -723,7 +723,7 @@ void MeshRenderSettings::setRenderCapabilityFrom(const MeshType& m)
 		drawModeCapability |= DRAW_POINTS_COLOR_USER;
 
 		if constexpr (vcl::HasPerVertexColor<MeshType>) {
-			if (vcl::isPerVertexColorEnabled(m)) {
+			if (vcl::isPerVertexColorAvailable(m)) {
 				drawModeCapability |= DRAW_POINTS_COLOR_VERTEX;
 			}
 		}
@@ -747,29 +747,29 @@ void MeshRenderSettings::setRenderCapabilityFrom(const MeshType& m)
 				}
 
 				if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-					if (vcl::isPerVertexNormalEnabled(m))
+					if (vcl::isPerVertexNormalAvailable(m))
 						drawModeCapability |= DRAW_SURF_SMOOTH;
 				}
 
 				if constexpr (vcl::HasPerFaceColor<MeshType>) {
-					if (vcl::isPerFaceColorEnabled(m))
+					if (vcl::isPerFaceColorAvailable(m))
 						drawModeCapability |= DRAW_SURF_COLOR_FACE;
 				}
 
 				if constexpr (vcl::HasPerVertexColor<MeshType>) {
-					if (vcl::isPerVertexColorEnabled(m)) {
+					if (vcl::isPerVertexColorAvailable(m)) {
 						drawModeCapability |= DRAW_SURF_COLOR_VERTEX;
 					}
 				}
 
 				if constexpr (vcl::HasTexturePaths<MeshType>) {
 					if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-						if (vcl::isPerVertexTexCoordEnabled(m))
+						if (vcl::isPerVertexTexCoordAvailable(m))
 							drawModeCapability |= DRAW_SURF_TEX_VERTEX;
 					}
 
 					if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-						if (vcl::isPerFaceWedgeTexCoordsEnabled(m))
+						if (vcl::isPerFaceWedgeTexCoordsAvailable(m))
 							drawModeCapability |= DRAW_SURF_TEX_WEDGE;
 					}
 				}

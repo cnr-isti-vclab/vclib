@@ -167,7 +167,7 @@ void loadVertexCoord(
 					loadedInfo.setVertexColors();
 				}
 				else {
-					if (isPerVertexColorEnabled(m))
+					if (isPerVertexColorAvailable(m))
 						loadedInfo.setVertexColors();
 				}
 			}
@@ -204,7 +204,7 @@ void loadVertexNormal(
 			loadedInfo.setVertexNormals();
 		}
 		else {
-			if (isPerVertexNormalEnabled(m))
+			if (isPerVertexNormalAvailable(m))
 				loadedInfo.setVertexNormals();
 		}
 	}
@@ -297,7 +297,7 @@ void loadFace(
 					loadedInfo.setFaceColors();
 				}
 				else {
-					if (isPerFaceColorEnabled(m))
+					if (isPerFaceColorAvailable(m))
 						loadedInfo.setFaceColors();
 				}
 			}
@@ -324,7 +324,7 @@ void loadFace(
 					loadedInfo.setFaceWedgeTexCoords();
 				}
 				else {
-					if (isPerFaceWedgeTexCoordsEnabled(m))
+					if (isPerFaceWedgeTexCoordsAvailable(m))
 						loadedInfo.setFaceWedgeTexCoords();
 				}
 			}
@@ -525,7 +525,7 @@ void loadObj(
 					loadedInfo.setVertexTexCoords();
 				}
 				else {
-					if (isPerVertexTexCoordEnabled(m))
+					if (isPerVertexTexCoordAvailable(m))
 						loadedInfo.setVertexTexCoords();
 				}
 				if (loadedInfo.hasVertexTexCoords()) {

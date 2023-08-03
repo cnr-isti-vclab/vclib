@@ -189,6 +189,62 @@ uint EdgeContainer<T>::addEdges(uint n)
 }
 
 /**
+ * @brief Clears the Edge container of the Mesh, deleting all the
+ * Edges.
+ *
+ * The contained edges are actually removed from the container, not only
+ * marked as deleted. Therefore, the container will have size 0
+ * (`edgeContainerSize() == 0`) after the call of this function.
+ *
+ * @note This function does not cause a reallocation of the Edge
+ * container.
+ *
+ * @warning Any pointer to Edges in the Mesh will be left unchanged, and
+ * therefore will point to invalid Edges. This means that, if you have a
+ * pointer to a Edge and you call this function, you will have a dangling
+ * pointer.
+ */
+template<EdgeConcept T>
+void EdgeContainer<T>::clearEdges()
+{
+	Base::clearElements();
+}
+
+/**
+ * @brief Resizes the Edge container to contain `n` Edges.
+ *
+ * If the new size is greater than the old one, new Edges are added to the
+ * container, and a reallocation may happen. If the new size is smaller than the
+ * old one, the container will keep its first non-deleted `n` Edges, and
+ * the remaining Edges are marked as deleted.
+ *
+ * If the call of this function will cause a reallocation of the Edge
+ * container, the function will automatically take care of updating all the
+ * Edge pointers contained in the Mesh.
+ *
+ * @warning The given size `n` is relative to the number of non-deleted
+ * Edges, not to the size of the Edge container. For example, if you
+ * have a mesh with 10 Edges and edgeContainerSize() == 20, calling
+ * resizeEdges(5) will not cause a reallocation of the container, but will
+ * mark as deleted the least 5 non-deleted Edges of the container. In the
+ * same scenario, calling resizeEdges(15) will result in a Edge
+ * container having 15 new Edges and edgeContainerSize() == 25.
+ * The latest 5 Edges will be the newly added.
+ *
+ * @warning Any pointer to deleted Edges in the Mesh will be left
+ * unchanged, and therefore will point to invalid Edges. This means that
+ * if you call this member function with a lower number of Edges, you'll
+ * need to manually manage the pointers to the deleted Edges.
+ *
+ * @param[in] n: the new size of the Edge container.
+ */
+template<EdgeConcept T>
+void EdgeContainer<T>::resizeEdges(uint n)
+{
+	Base::resizeElements(n);
+}
+
+/**
  * @brief Reserve a number of Edges in the container of Edges. This
  * is useful when you know (or you have an idea) of how much Edges are
  * going to add into a newly of existing mesh. Calling this function before any

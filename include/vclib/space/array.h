@@ -67,6 +67,9 @@ public:
 	/** @brief The type of the elements stored in the array. */
 	using ValueType      = typename std::vector<T>::value_type;
 
+	/** @brief Same of ValueType, just for compatibility with Eigen Matrices */
+	using Scalar = ValueType;
+
 	/**
 	 * @brief A const reference to the type of the elements stored in the array.
 	 */

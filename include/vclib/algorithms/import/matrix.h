@@ -29,20 +29,78 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType, MatrixConcept VMatrix, MatrixConcept VNMatrix>
+template<
+	MeshConcept   MeshType,
+	MatrixConcept VMatrix,
+	MatrixConcept VNMatrix = Eigen::MatrixX3d>
 MeshType pointCloudMeshFromMatrices(
 	const VMatrix&  vertices,
 	const VNMatrix& vertexNormals = VNMatrix());
 
+
 template<
-	FaceMeshConcept MeshType,
-	MatrixConcept   VMatrix,
-	MatrixConcept   FMatrix,
-	MatrixConcept   VNMatrix>
+	MeshConcept   MeshType,
+	MatrixConcept VMatrix,
+	MatrixConcept FMatrix  = Eigen::MatrixX3i,
+	MatrixConcept VNMatrix = Eigen::MatrixX3d,
+	MatrixConcept FNMatrix = Eigen::MatrixX3d>
 MeshType meshFromMatrices(
 	const VMatrix&  vertices,
-	const FMatrix&  faces = FMatrix(),
-	const VNMatrix& vertexNormals = VNMatrix());
+	const FMatrix&  faces         = FMatrix(),
+	const VNMatrix& vertexNormals = VNMatrix(),
+	const FNMatrix& faceNormals   = FNMatrix());
+
+
+template<
+	MeshConcept   MeshType,
+	MatrixConcept VMatrix,
+	MatrixConcept FMatrix  = Eigen::MatrixX3i,
+	MatrixConcept EMatrix  = Eigen::MatrixX2i,
+	MatrixConcept VNMatrix = Eigen::MatrixX3d,
+	MatrixConcept FNMatrix = Eigen::MatrixX3d>
+void importMeshFromMatrices(
+	MeshType&       mesh,
+	const VMatrix&  vertices,
+	const FMatrix&  faces         = FMatrix(),
+	const EMatrix&  edges         = EMatrix(),
+	const VNMatrix& vertexNormals = VNMatrix(),
+	const FNMatrix& faceNormals   = FNMatrix());
+
+
+template<MeshConcept MeshType, MatrixConcept VMatrix>
+void importVerticesFromMatrix(
+	MeshType&      mesh,
+	const VMatrix& vertices,
+	bool           clearBeforeSet = true);
+
+template<FaceMeshConcept MeshType, MatrixConcept FMatrix>
+void importFacesFromMatrix(
+	MeshType&      mesh,
+	const FMatrix& faces,
+	bool           clearBeforeSet = true);
+
+template<EdgeMeshConcept MeshType, MatrixConcept EMatrix>
+void importEdgesFromMatrix(
+	MeshType&      mesh,
+	const EMatrix& edges,
+	bool           clearBeforeSet = true);
+
+template<MeshConcept MeshType, MatrixConcept VNMatrix>
+void importVertexNormalsFromMatrix(
+	MeshType&       mesh,
+	const VNMatrix& vertexNormals);
+
+template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
+void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals);
+
+template<MeshConcept MeshType, MatrixConcept VCMatrix>
+void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors);
+
+template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
+void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors);
+
+template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
+void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors);
 
 } // namespace vcl
 

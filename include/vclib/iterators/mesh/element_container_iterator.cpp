@@ -197,7 +197,7 @@ ElementContainerIterator<Container, T, CNST>::incrementJump()
 {
 	do {
 		++it;
-	} while (it != vec->end() && std::as_const(*it).deleted());
+	} while (it != vec->end() && it->deleted());
 	return *this;
 }
 
@@ -211,7 +211,7 @@ ElementContainerIterator<Container, T, CNST>::postIncrementJump()
 	ElementContainerIterator old = *this;
 	do {
 		++it;
-	} while (it != vec->end() && std::as_const(*it).deleted());
+	} while (it != vec->end() && it->deleted());
 	return old;
 }
 
@@ -247,7 +247,7 @@ ElementContainerIterator<Container, T, CNST>::decrementJump()
 {
 	do {
 		--it;
-	} while (it != vec->begin() && std::as_const(*it).deleted());
+	} while (it != vec->begin() && it->deleted());
 	return *this;
 }
 
@@ -261,7 +261,7 @@ ElementContainerIterator<Container, T, CNST>::postDecrementJump()
 	ElementContainerIterator old = *this;
 	do {
 		--it;
-	} while (it != vec->begin() && std::as_const(*it).deleted());
+	} while (it != vec->begin() && it->deleted());
 	return old;
 }
 

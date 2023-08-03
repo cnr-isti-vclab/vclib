@@ -66,7 +66,7 @@ public:
 	 */
 	using NormalType = P;
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	const P& normal() const;
 	P&       normal();
@@ -77,9 +77,9 @@ protected:
 	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has Normal enabled */
+/* Detector function to check if a class has Normal available */
 
-bool isNormalEnabledOn(const ElementConcept auto& element);
+bool isNormalAvailableOn(const ElementConcept auto& element);
 
 /**
  * @brief The Normal3 class is an alias of the Normal component that uses 3

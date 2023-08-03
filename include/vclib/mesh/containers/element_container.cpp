@@ -167,6 +167,63 @@ uint ElementContainer<T>::addElements(uint size)
 }
 
 template<ElementConcept T>
+void ElementContainer<T>::clearElements()
+{
+	vec.clear();
+	en = 0;
+
+	// clear vertical and custom components
+
+	vcVecTuple.clear();
+	if constexpr (comp::HasCustomComponents<T>)
+		ccVecMap.clear();
+}
+
+/**
+ * @brief Resizes the element container to contain `size` elements.
+ *
+ * If the new size is greater than the old one, new elements are added to the
+ * container, and a reallocation may happen. If the new size is smaller than the
+ * old one, the container will keep its first non-deleted `size` elements, and
+ * the remaining elements are marked as deleted.
+ *
+ * If the call of this function will cause a reallocation of the Element
+ * container, the function will automatically take care of updating all the
+ * Element pointers contained in the Mesh.
+ *
+ * @warning The given `size` is relative to the number of non-deleted elements,
+ * not to the size of the element container. For example, if you have a mesh
+ * with 10 elements and elementContainerSize() == 20, calling resizeElements(5)
+ * will not cause a reallocation of the container, but will mark as deleted the
+ * least 5 non-deleted elements of the container. In the same scenario, calling
+ * resizeElements(15) will result in a element container having 15 new elements
+ * and elementContainerSize() == 25. The latest 5 elements will be the newly
+ * added.
+ *
+ * @warning Any pointer to deleted elements in the Mesh will be left unchanged,
+ * and therefore will point to invalid elements. This means that if you call
+ * this member function with a lower number of elements, you'll need to manually
+ * manage the pointers to the deleted elements.
+ *
+ * @param[in] size: the new size of the Element container.
+ */
+template<ElementConcept T>
+void ElementContainer<T>::resizeElements(uint size)
+{
+	if (size > en) {
+		addElements(size - en);
+	}
+	else if (size < en) {
+		uint nToDelete = en - size;
+		for (uint i = vec.size() - 1; nToDelete > 0; --i) {
+			if (!vec[i].isDeleted()) {
+				deleteElement(i);
+			}
+		}
+	}
+}
+
+template<ElementConcept T>
 void ElementContainer<T>::reserveElements(uint size)
 {
 	T* oldB = vec.data();
@@ -208,28 +265,38 @@ std::vector<uint> ElementContainer<T>::compactElements()
 /**
  * @brief Marks as deleted the element with the given id.
  *
- * This member function does not perform any reallocation of the elements: the deleted elements
- * will stay in the Element Container, but will be marked as deleted.
+ * This member function does not perform any reallocation of the elements: the
+ * deleted elements will stay in the Element Container, but will be marked as
+ * deleted.
  *
- * Deleted elements are automatically jumped by the iterators provided by the Element Container.
+ * Deleted elements are automatically jumped by the iterators provided by the
+ * Element Container.
+ *
+ * @warning If there were pointers to the deleted element in this or other
+ * containers, they will not be updated.
  *
  * @param[in] i: the id of the element that will be marked as deleted.
  */
 template<ElementConcept T>
 inline void ElementContainer<T>::deleteElement(uint i)
 {
-	vec[i].deleted() = true;
+	vec[i].deletedBit() = true;
 	--en;
 }
 
 /**
- * @brief Marks as deleted the given element, before asserting that the element belongs to this
- * container.
+ * @brief Marks as deleted the given element, before asserting that the element
+ * belongs to this container.
  *
- * This member function does not perform any reallocation of the elements: the deleted elements
- * will stay in the Element Container, but will be marked as deleted.
+ * This member function does not perform any reallocation of the elements: the
+ * deleted elements will stay in the Element Container, but will be marked as
+ * deleted.
  *
- * Deleted elements are automatically jumped by the iterators provided by the Element Container.
+ * Deleted elements are automatically jumped by the iterators provided by the
+ * Element Container.
+ *
+ * @warning If there were pointers to the deleted element in this or other
+ * containers, they will not be updated.
  *
  * @param[in] e: the pointer of the element that will be marked as deleted.
  */
@@ -600,36 +667,10 @@ void ElementContainer<T>::setParentMeshPointers(void* pm)
 }
 
 template<ElementConcept T>
-void ElementContainer<T>::clearElements()
-{
-	vec.clear();
-	en = 0;
-
-	vcVecTuple.clear();
-	if constexpr (comp::HasCustomComponents<T>)
-		ccVecMap.clear();
-}
-
-template<ElementConcept T>
-void ElementContainer<T>::resizeElements(uint size)
-{
-	T* oldB = vec.data();
-	vec.resize(size);
-	T* newB = vec.data();
-
-	vcVecTuple.resize(size);
-	if constexpr (comp::HasCustomComponents<T>)
-		ccVecMap.resize(size);
-
-	if (oldB != newB) {
-		setParentMeshPointers(parentMesh);
-		parentMesh->updateAllPointers(oldB, newB);
-	}
-}
-
-template<ElementConcept T>
 template<typename Element>
-void ElementContainer<T>::updatePointers(const Element* oldBase, const Element* newBase)
+void ElementContainer<T>::updatePointers(
+	const Element* oldBase,
+	const Element* newBase)
 {
 	using Comps = typename T::Components;
 
@@ -801,12 +842,14 @@ void ElementContainer<T>::importPointersOnComponentsFrom(
 /*
  * This function is called for each component of the element.
  *
- * Only if a component has references of the type ElPtr, then the updatePointers on each element
- * will be executed
+ * Only if a component has references of the type ElPtr, then the updatePointers
+ * on each element will be executed
  */
 template<ElementConcept T>
 template<typename Comp, typename ElPtr>
-void ElementContainer<T>::updatePointersOnComponent(const ElPtr* oldBase, const ElPtr* newBase)
+void ElementContainer<T>::updatePointersOnComponent(
+	const ElPtr* oldBase,
+	const ElPtr* newBase)
 {
 	if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
 		if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {

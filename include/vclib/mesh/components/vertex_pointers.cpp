@@ -43,18 +43,19 @@ void VertexPointers<Vertex, N, El>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional
- * (impossible in this case).
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename Vertex, int N, typename El>
-bool VertexPointers<Vertex, N, El>::isEnabled()
+bool VertexPointers<Vertex, N, El>::isAvailable()
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**

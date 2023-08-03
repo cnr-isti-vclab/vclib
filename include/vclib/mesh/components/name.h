@@ -60,7 +60,7 @@ class Name : public Component<NAME, std::string, ElementType, OPT>
 	using Base = Component<NAME, std::string, ElementType, OPT>;
 
 public:
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	std::string& name();
 	const std::string& name() const;
@@ -71,9 +71,9 @@ protected:
 	void importFrom(const Element& e);
 };
 
-/* Detector function to check if a class has Name enabled */
+/* Detector function to check if a class has Name available */
 
-bool isNameEnabledOn(const ElementOrMeshConcept auto& element);
+bool isNameAvailableOn(const ElementOrMeshConcept auto& element);
 
 } // namespace vcl::comp
 

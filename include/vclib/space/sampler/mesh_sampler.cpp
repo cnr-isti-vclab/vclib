@@ -116,7 +116,7 @@ void MeshSampler<MeshType>::add(const EdgeType& e, double u, bool copyQuality)
 
 	if constexpr (vcl::HasPerVertexQuality<MeshType> && vcl::edge::HasQuality<EdgeType>) {
 		if (copyQuality) {
-			if (vcl::isPerVertexQualityEnabled(m) && comp::isQualityEnabledOn(e)) {
+			if (vcl::isPerVertexQualityAvailable(m) && comp::isQualityAvailableOn(e)) {
 				m.vertex(vi).quality() = e.quality();
 			}
 		}
@@ -133,7 +133,7 @@ void MeshSampler<MeshType>::set(uint i, const EdgeType& e, double u, bool copyQu
 
 	if constexpr (vcl::HasPerVertexQuality<MeshType> && vcl::edge::HasQuality<EdgeType>) {
 		if (copyQuality) {
-			if (vcl::isPerVertexQualityEnabled(m) && comp::isQualityEnabledOn(e)) {
+			if (vcl::isPerVertexQualityAvailable(m) && comp::isQualityAvailableOn(e)) {
 				m.vertex(i).quality() = e.quality();
 			}
 		}
@@ -268,7 +268,7 @@ void MeshSampler<MeshType>::copyComponents(
 {
 	if constexpr (vcl::HasPerVertexNormal<MeshType> && vcl::face::HasNormal<FaceType>) {
 		if (copyNormal) {
-			if (vcl::isPerVertexNormalEnabled(m) && comp::isNormalEnabledOn(f)) {
+			if (vcl::isPerVertexNormalAvailable(m) && comp::isNormalAvailableOn(f)) {
 				m.vertex(vi).normal() = f.normal();
 			}
 		}
@@ -276,7 +276,7 @@ void MeshSampler<MeshType>::copyComponents(
 
 	if constexpr (vcl::HasPerVertexQuality<MeshType> && vcl::face::HasQuality<FaceType>) {
 		if (copyQuality) {
-			if (vcl::isPerVertexQualityEnabled(m) && comp::isQualityEnabledOn(f)) {
+			if (vcl::isPerVertexQualityAvailable(m) && comp::isQualityAvailableOn(f)) {
 				m.vertex(vi).quality() = f.quality();
 			}
 		}

@@ -18,15 +18,16 @@
     - [ ] set constructors for Edge element
   - Containers:
     - [ ] set properly container concepts
+    - [ ] add clear and resize for each container of the mesh, adding warnings about potential undefined behaviours in the docs
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
-    - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers
+    - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers 
 - Exceptions:
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] Implement importer/exporter from VCG
-  - [ ] Implement importer from matrix
+  - [ ] Implement importer/exporter from matrix
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range

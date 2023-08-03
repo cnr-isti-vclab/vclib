@@ -50,7 +50,7 @@ bool isVertexContainerCompact(const MeshType&);
 // Vertex Adjacent Faces
 
 template<MeshConcept MeshType>
-bool isPerVertexAdjacentFacesEnabled(const MeshType&);
+bool isPerVertexAdjacentFacesAvailable(const MeshType&);
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentFacesOptional(MeshType&);
@@ -58,7 +58,7 @@ bool enableIfPerVertexAdjacentFacesOptional(MeshType&);
 // Vertex Adjacent Vertices
 
 template<MeshConcept MeshType>
-bool isPerVertexAdjacentVerticesEnabled(const MeshType&);
+bool isPerVertexAdjacentVerticesAvailable(const MeshType&);
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType&);
@@ -66,7 +66,7 @@ bool enableIfPerVertexAdjacentVerticesOptional(MeshType&);
 // Vertex Color
 
 template<MeshConcept MeshType>
-bool isPerVertexColorEnabled(const MeshType&);
+bool isPerVertexColorAvailable(const MeshType&);
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexColorOptional(MeshType&);
@@ -74,7 +74,7 @@ bool enableIfPerVertexColorOptional(MeshType&);
 // Vertex Mark
 
 template<MeshConcept MeshType>
-bool isPerVertexMarkEnabled(const MeshType&);
+bool isPerVertexMarkAvailable(const MeshType&);
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexMarkOptional(MeshType&);
@@ -82,7 +82,7 @@ bool enableIfPerVertexMarkOptional(MeshType&);
 // Vertex Normal
 
 template<MeshConcept MeshType>
-bool isPerVertexNormalEnabled(const MeshType&);
+bool isPerVertexNormalAvailable(const MeshType&);
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexNormalOptional(MeshType&);
@@ -98,7 +98,7 @@ bool enableIfPerVertexPrincipalCurvatureOptional(MeshType&);
 // Vertex Quality
 
 template<MeshConcept MeshType>
-bool isPerVertexQualityEnabled(const MeshType&);
+bool isPerVertexQualityAvailable(const MeshType&);
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexQualityOptional(MeshType&);
@@ -106,7 +106,7 @@ bool enableIfPerVertexQualityOptional(MeshType&);
 // Vertex TexCoord
 
 template<MeshConcept MeshType>
-bool isPerVertexTexCoordEnabled(const MeshType&);
+bool isPerVertexTexCoordAvailable(const MeshType&);
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexTexCoordOptional(MeshType&);

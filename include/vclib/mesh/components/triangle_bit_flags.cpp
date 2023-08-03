@@ -53,17 +53,19 @@ void TriangleBitFlags<El, O>::init()
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<typename El, bool O>
-bool TriangleBitFlags<El, O>::isEnabled() const
+bool TriangleBitFlags<El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -254,7 +256,7 @@ void TriangleBitFlags<El, O>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
-	deleted() = isD;
+	deletedBit() = isD;
 }
 
 /**
@@ -327,7 +329,7 @@ int TriangleBitFlags<El, O>::exportToVCGFlags() const
 
 template<typename El, bool O>
 BitProxy<typename TriangleBitFlags<El, O>::FT>
-TriangleBitFlags<El, O>::deleted()
+TriangleBitFlags<El, O>::deletedBit()
 {
 	return flags()[DELETED];
 }
@@ -343,7 +345,7 @@ void TriangleBitFlags<El, O>::importFrom(const Element& e)
 		}
 		else {
 			// BitFlags
-			deleted() = e.deleted();
+			deletedBit() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);

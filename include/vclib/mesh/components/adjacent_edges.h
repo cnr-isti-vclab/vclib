@@ -111,11 +111,11 @@ public:
 	 */
 	static const int ADJ_EDGE_NUMBER = Base::SIZE;
 
-	/* Constructor and isEnabled */
+	/* Constructor and isAvailable */
 
 	void init();
 
-	bool isEnabled() const;
+	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -178,9 +178,9 @@ private:
 	void importPtrsFrom(const Element& e, Edge* base, const ElEType* ebase);
 };
 
-/* Detector function to check if a class has AdjacentEdges enabled */
+/* Detector function to check if a class has AdjacentEdges available */
 
-bool isAdjacentEdgesEnabledOn(const ElementConcept auto& element);
+bool isAdjacentEdgesAvailableOn(const ElementConcept auto& element);
 
 } // namespace vcl::comp
 

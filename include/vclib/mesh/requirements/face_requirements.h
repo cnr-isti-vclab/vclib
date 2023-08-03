@@ -50,7 +50,7 @@ bool isFaceContainerCompact(const MeshType&);
 // Face AdjacentEdges
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceAdjacentEdgesEnabled(const MeshType&);
+bool isPerFaceAdjacentEdgesAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceAdjacentEdgesOptional(MeshType&);
@@ -58,7 +58,7 @@ bool enableIfPerFaceAdjacentEdgesOptional(MeshType&);
 // Face AdjacentFaces
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceAdjacentFacesEnabled(const MeshType&);
+bool isPerFaceAdjacentFacesAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
@@ -66,7 +66,7 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType&);
 // Face Color
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceColorEnabled(const MeshType&);
+bool isPerFaceColorAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceColorOptional(MeshType&);
@@ -74,7 +74,7 @@ bool enableIfPerFaceColorOptional(MeshType&);
 // Face Mark
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceMarkEnabled(const MeshType&);
+bool isPerFaceMarkAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceMarkOptional(MeshType&);
@@ -82,7 +82,7 @@ bool enableIfPerFaceMarkOptional(MeshType&);
 // Face Normal
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceNormalEnabled(const MeshType&);
+bool isPerFaceNormalAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceNormalOptional(MeshType&);
@@ -90,7 +90,7 @@ bool enableIfPerFaceNormalOptional(MeshType&);
 // Face PrincipalCurvature
 
 template<FaceMeshConcept MeshType>
-bool isPerFacePrincipalCurvatureEnabled(const MeshType&);
+bool isPerFacePrincipalCurvatureAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFacePrincipalCurvatureOptional(MeshType&);
@@ -98,7 +98,7 @@ bool enableIfPerFacePrincipalCurvatureOptional(MeshType&);
 // Face Quality
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceQualityEnabled(const MeshType&);
+bool isPerFaceQualityAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceQualityOptional(MeshType&);
@@ -106,7 +106,7 @@ bool enableIfPerFaceQualityOptional(MeshType&);
 // Face WedgeColors
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceWedgeColorsEnabled(const MeshType&);
+bool isPerFaceWedgeColorsAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeColorsOptional(MeshType&);
@@ -114,7 +114,7 @@ bool enableIfPerFaceWedgeColorsOptional(MeshType&);
 // Face WedgeTexCoords
 
 template<FaceMeshConcept MeshType>
-bool isPerFaceWedgeTexCoordsEnabled(const MeshType&);
+bool isPerFaceWedgeTexCoordsAvailable(const MeshType&);
 
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeTexCoordsOptional(MeshType&);

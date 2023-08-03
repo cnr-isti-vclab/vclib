@@ -42,6 +42,7 @@ template<typename T>
 concept ArrayConcept = requires(T o, const T& co)
 {
 	typename T::ValueType;
+	typename T::Scalar;
 	typename T::ConstReference;
 	typename T::Reference;
 	typename T::ConstPointer;

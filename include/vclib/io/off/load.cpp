@@ -59,7 +59,7 @@ void loadOffVertices(
 		}
 
 		if constexpr(vcl::HasPerVertexNormal<MeshType>) {
-			if (vcl::isPerVertexNormalEnabled(mesh) && fileInfo.hasVertexNormals()) {
+			if (vcl::isPerVertexNormalAvailable(mesh) && fileInfo.hasVertexNormals()) {
 				// Read 3 normal coordinates
 				for (unsigned int j = 0; j < 3; j++) {
 					v.normal()[j] = io::internal::readDouble<double>(token);
@@ -76,7 +76,7 @@ void loadOffVertices(
 		const int nColorComponents = (int)tokens.size() - nReadComponents - nTexCoords;
 
 		if constexpr(vcl::HasPerVertexColor<MeshType>) {
-			if (vcl::isPerVertexColorEnabled(mesh) && fileInfo.hasVertexColors()) {
+			if (vcl::isPerVertexColorAvailable(mesh) && fileInfo.hasVertexColors()) {
 				if (nColorComponents != 1 && nColorComponents != 3 && nColorComponents != 4)
 					throw MalformedFileException("Wrong number of components in line.");
 				v.color() = off::loadColor(token, nColorComponents);
@@ -89,7 +89,7 @@ void loadOffVertices(
 		}
 
 		if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
-			if (vcl::isPerVertexTexCoordEnabled(mesh) && fileInfo.hasVertexTexCoords()) {
+			if (vcl::isPerVertexTexCoordAvailable(mesh) && fileInfo.hasVertexTexCoords()) {
 				// Read 2 tex coordinates
 				for (unsigned int j = 0; j < 2; j++) {
 					v.texCoord()[j] = io::internal::readDouble<double>(token);
@@ -155,7 +155,7 @@ void loadOffFaces(
 			// read face color
 			if (token != tokens.end()) { // there are colors to read
 				if constexpr (HasPerFaceColor<MeshType>) {
-					if (isPerFaceColorEnabled(mesh) ||
+					if (isPerFaceColorAvailable(mesh) ||
 						(enableOptionalComponents && enableIfPerFaceColorOptional(mesh))){
 						loadedInfo.setFaceColors();
 						f.color() = off::loadColor(token, tokens.size() - (token - tokens.begin()));

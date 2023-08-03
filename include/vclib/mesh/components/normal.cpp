@@ -27,17 +27,19 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<PointConcept P, typename El, bool O>
-bool Normal<P, El, O>::isEnabled() const
+bool Normal<P, El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -65,7 +67,7 @@ template<typename Element>
 void Normal<P, El, O>::importFrom(const Element& e)
 {
 	if constexpr(HasNormal<Element>) {
-		if (isNormalEnabledOn(e)){
+		if (isNormalAvailableOn(e)){
 			normal() = e.normal().template cast<typename NormalType::ScalarType>();
 		}
 	}
@@ -83,9 +85,9 @@ void Normal<P, El, O>::importFrom(const Element& e)
  * @return `true` if the element has Normal component available, `false`
  * otherwise.
  */
-bool isNormalEnabledOn(const ElementConcept auto& element)
+bool isNormalAvailableOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<NORMAL>(element);
+	return isComponentAvailableOn<NORMAL>(element);
 }
 
 } // namespace vcl::comp

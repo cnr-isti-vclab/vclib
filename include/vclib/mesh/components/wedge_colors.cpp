@@ -29,17 +29,19 @@ namespace vcl::comp {
 
 /**
  * @private
- * @brief Returns `true` if the component is enabled, `false` otherwise.
- * This member function can return `false` only if the component is optional.
+ * @brief Returns `true` if the component is available, `false` otherwise.
+ *
+ * This member function can return `false` only if the component is optional,
+ * and it is not enabled.
  *
  * This member function is hidden by the element that inherits this class.
  *
- * @return `true` if the component is enabled, `false` otherwise.
+ * @return `true` if the component is available, `false` otherwise.
  */
 template<int N, typename El, bool O>
-bool WedgeColors<N, El, O>::isEnabled() const
+bool WedgeColors<N, El, O>::isAvailable() const
 {
-	return Base::isEnabled(this);
+	return Base::isAvailable(this);
 }
 
 /**
@@ -224,7 +226,7 @@ template<typename Element>
 void WedgeColors<N, El, O>::importFrom(const Element& e)
 {
 	if constexpr (HasWedgeColors<Element>) {
-		if (isWedgeColorsEnabledOn(e)) {
+		if (isWedgeColorsAvailableOn(e)) {
 			if constexpr(N > 0) {
 				// same static size
 				if constexpr (N == Element::WEDGE_COLOR_NUMBER) {
@@ -311,9 +313,9 @@ const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
  * the ElementConcept.
  * @return `true` if the element has WedgeColors available, `false` otherwise.
  */
-bool isWedgeColorsEnabledOn(const ElementConcept auto& element)
+bool isWedgeColorsAvailableOn(const ElementConcept auto& element)
 {
-	return isComponentEnabledOn<WEDGE_COLORS>(element);
+	return isComponentAvailableOn<WEDGE_COLORS>(element);
 }
 
 } // namespace vcl::comp
