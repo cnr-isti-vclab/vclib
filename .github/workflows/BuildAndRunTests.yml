@@ -32,6 +32,10 @@ jobs:
       shell: bash
       run: |
         brew install cmake ninja
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      run: |
+        choco upgrade ccache ninja
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -41,7 +45,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -GNinja -DCMAKE_BUILD_TYPE=Release ..
+        cmake -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=Release ..
         ninja
     - name: Run Tests
       shell: bash

@@ -36,10 +36,11 @@
  *
  * @ingroup algorithms
  *
- * @brief List of overloaded boundingBox functions that take in input an object (or a Range of
- * objects) and return its bounding box.
+ * @brief List of overloaded boundingBox functions that take in input an object
+ * (or a Range of objects) and return its bounding box.
  *
- * You can access these algorithms by including `#include <vclib/algorithms/bounding_box.h>`
+ * You can access these algorithms by including
+ * `#include <vclib/algorithms/bounding_box.h>`
  */
 
 namespace vcl {

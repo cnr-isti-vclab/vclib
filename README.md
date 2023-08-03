@@ -25,8 +25,8 @@ VCLib requires recent compiler versions in order to build the newly features of 
 
 VCLib currently builds with the follwing compilers:
   - GCC 11.3 (default in Ubuntu 22.04)
-  - CLang 16 (can be installed in MacOS by running `brew install llvm`)
-  - MSVC 19.34 (last version in Visual Studio 2022)
+  - CLang 16 (default in XCode 15.0 on MacOS)
+  - MSVC 19.36 (last version in Visual Studio 2022)
 
 There is no guarantee that old compiler versions are capable to build the library.
 

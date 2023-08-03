@@ -26,8 +26,10 @@
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
+  - [ ] move generate algorithms - delete bool vector algorithms and move the other ones in filter.h
   - [ ] Implement importer/exporter from VCG
   - [ ] Implement importer/exporter from matrix
+  - [ ] Shuffle algorithms should be all made using views
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
