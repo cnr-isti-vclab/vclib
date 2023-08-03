@@ -42,17 +42,21 @@ struct ColorAvgInfo
 } // namespace internal
 
 /**
- * @brief Sets the color of the vertices. If the `onlySelected` flag is set to `true`, only the
- * color of the selected vertices will be set. Otherwise, all the vertices will have the same color.
+ * @brief Sets the color of the vertices. If the `onlySelected` flag is set to
+ * `true`, only the color of the selected vertices will be set. Otherwise, all
+ * the vertices will have the same color.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Color
+ * @throws vcl::MissingComponentException if the mesh does not have the
+ * per vertex color component available.
+ *
+ * @tparam MeshType: type of the input mesh. It must satisfy the MeshConcept.
  *
  * @param[in,out] m: the mesh on which set the vertex color.
  * @param[in] c: the color to set to the vertices of the mesh.
- * @param[in] onlySelected: if `true`, the color will be set just on the selected vertices.
+ * @param[in] onlySelected: if `true`, the color will be set just on the
+ * selected vertices.
+ *
+ * @ingroup update
  */
 template<MeshConcept MeshType>
 void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
@@ -78,17 +82,22 @@ void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
 }
 
 /**
- * @brief Sets the color of the faces. If the `onlySelected` flag is set to `true`, only the
- * color of the selected faces will be set. Otherwise, all the faces will have the same color.
+ * @brief Sets the color of the faces. If the `onlySelected` flag is set to
+ * `true`, only the color of the selected faces will be set. Otherwise, all the
+ * faces will have the same color.
  *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - Color
+ * @throws vcl::MissingComponentException if the mesh does not have the
+ * per face color component available.
+ *
+ * @tparam MeshType: type of the input mesh. It must satisfy the
+ * FaceMeshConcept.
  *
  * @param[in,out] m: the mesh on which set the face color.
  * @param[in] c: the color to set to the faces of the mesh.
- * @param[in] onlySelected: if `true`, the color will be set just on the selected faces.
+ * @param[in] onlySelected: if `true`, the color will be set just on the
+ * selected faces.
+ *
+ * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
@@ -116,12 +125,13 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
 /**
  * @brief Sets the color component of a mesh.
  *
- * Requirements:
- * - Mesh:
- *   - Color
+ * @tparam MeshType: type of the input mesh. It must satisfy the HasColor
+ * concept.
  *
  * @param[in,out] m: the mesh on which set the color.
  * @param[in] c: the color to set to the mesh.
+ *
+ * @ingroup update
  */
 template<HasColor MeshType>
 void setMeshColor(MeshType& m, vcl::Color c)
@@ -141,6 +151,8 @@ void setMeshColor(MeshType& m, vcl::Color c)
  *     - Color
  *
  * @param[in,out] m: mesh on which transfer the face color into the vertex color.
+ *
+ * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m)
@@ -177,6 +189,8 @@ void setPerVertexColorFromFaceColor(MeshType& m)
  *     - Color
  *
  * @param[in,out] m: mesh on which transfer the vertex color into the face color.
+ *
+ * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromVertexColor(MeshType& m)
@@ -214,6 +228,8 @@ void setPerFaceColorFromVertexColor(MeshType& m)
  * @param[in] colorMap: the colormap to use to color the vertices of the mesh (default: RedBlue).
  * @param[in] minQuality: the minimum value of the range to use for coloring (default: 0).
  * @param[in] maxQuality: the maximum value of the range to use for coloring (default: 0).
+ *
+ * @ingroup update
  */
 template<MeshConcept MeshType>
 void setPerVertexColorFromQuality(
@@ -255,6 +271,8 @@ void setPerVertexColorFromQuality(
  * @param[in] colorMap: the colormap to use to color the faces of the mesh (default: RedBlue).
  * @param[in] minQuality: the minimum value of the range to use for coloring (default: 0).
  * @param[in] maxQuality: the maximum value of the range to use for coloring (default: 0).
+ *
+ * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromQuality(
@@ -298,6 +316,8 @@ void setPerFaceColorFromQuality(
  * non on border.
  * @param[in] mixColor: the color of vertices that are part of edges that are both on border and non
  * on border.
+ *
+ * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceBorderFlag(
@@ -353,6 +373,8 @@ void setPerVertexColorFromFaceBorderFlag(
  * @param[in,out] m: the mesh on which set the face colors according to its connected components.
  * @param[in] connectedComponents: a vector of sets, each one of them containing the face ids of a
  * connected component.
+ *
+ * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromConnectedComponents(
@@ -382,6 +404,8 @@ void setPerFaceColorFromConnectedComponents(
  *     - Color
  *
  * @param[in,out] m: the mesh on which set the face colors according to its connected components.
+ *
+ * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromConnectedComponents(MeshType& m)
@@ -394,10 +418,11 @@ void setPerFaceColorFromConnectedComponents(MeshType& m)
 }
 
 /**
- * @brief This function colors each face of the mesh using a given number of scattering colors
- * (default number is 50). By default, colors uniformely adjacent faces having faux edges in common.
- * This check is made only if the option `checkFauxEdges` is set to true, and if the per Face
- * AdjacentFaces component is available in the mesh.
+ * @brief This function colors each face of the mesh using a given number of
+ * scattering colors (default number is 50). By default, colors uniformely
+ * adjacent faces having faux edges in common. This check is made only if the
+ * option `checkFauxEdges` is set to true, and if the per Face AdjacentFaces
+ * component is available in the mesh.
  *
  * Requirements:
  * - Mesh:
@@ -411,8 +436,10 @@ void setPerFaceColorFromConnectedComponents(MeshType& m)
  *
  * @param[in,out] m: mesh on which set the face colors.
  * @param[in] nColors: number of colors used for the scattering (default 50).
- * @param[in] checkFauxEdges: if true, colors uniformely adjacent faces with faux edges (default
- * `true`).
+ * @param[in] checkFauxEdges: if true, colors uniformely adjacent faces with
+ * faux edges (default `true`).
+ *
+ * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
@@ -444,24 +471,32 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
 }
 
 /**
- * @brief Set the vertex color according to a perlin noise computed on the vertex coordinates.
+ * @brief Set the vertex color according to a perlin noise computed on the
+ * vertex coordinates.
  *
  * To make things weirder each color band can have its own offset and frequency.
  * Period is expressed in absolute terms.
- * So as period it is meaningful could be to use something in the range of 1/10 of the bbox diag.
+ * So as period it is meaningful could be to use something in the range of 1/10
+ * of the bbox diag.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Color
+ * @throws vcl::MissingComponentException if the mesh does not have a per vertex
+ * color component.
+ *
+ * @tparam MeshType: the type of the mesh. It must satisfy the MeshConcept.
  *
  * @param m
  * @param period
  * @param offset
  * @param onSelected
+ *
+ * @ingroup update
  */
 template<MeshConcept MeshType, PointConcept PointType>
-void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offset, bool onSelected)
+void setPerVertexColorPerlinNoise(
+	MeshType& m,
+	PointType period,
+	PointType offset,
+	bool      onSelected)
 {
 	vcl::requirePerVertexColor(m);
 
@@ -484,13 +519,13 @@ void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offse
 }
 
 /**
- * @brief Simple Perlin color mixing. `color1` and `color2` are mixed according the perlin noise
- * function, with period and offset.
+ * @brief Simple Perlin color mixing. `color1` and `color2` are mixed according
+ * the perlin noise function, with `period` and `offset`.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Color
+ * @throws vcl::MissingComponentException if the mesh does not have a per vertex
+ * color component.
+ *
+ * @tparam MeshType: the type of the mesh. It must satisfy the MeshConcept.
  *
  * @param m
  * @param period
@@ -498,6 +533,8 @@ void setPerVertexColorPerlinNoise(MeshType& m, PointType period, PointType offse
  * @param color1
  * @param color2
  * @param onSelected
+ *
+ * @ingroup update
  */
 template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexPerlinColor(

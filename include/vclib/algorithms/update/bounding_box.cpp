@@ -30,18 +30,16 @@ namespace vcl {
 /**
  * @brief Updates the bounding box of the mesh.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices
- *   - BoundingBox
+ * @tparam MeshType: type of the input mesh. It must satisfy the HasBoundingBox
+ * concept.
  *
- * @param m
+ * @param[in] m: input mesh on which the bounding box is computed and updated.
+ *
+ * @ingroup update
  */
 template<HasBoundingBox MeshType>
 void updateBoundingBox(MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
-
 	m.boundingBox() = vcl::boundingBox(m);
 }
 
