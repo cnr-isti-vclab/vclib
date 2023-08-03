@@ -25,6 +25,10 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew install cmake ninja
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      run: |
+        choco upgrade ccache ninja
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
