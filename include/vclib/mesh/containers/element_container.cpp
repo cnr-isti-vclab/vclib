@@ -280,7 +280,7 @@ std::vector<uint> ElementContainer<T>::compactElements()
 template<ElementConcept T>
 inline void ElementContainer<T>::deleteElement(uint i)
 {
-	vec[i].deleted() = true;
+	vec[i].deletedBit() = true;
 	--en;
 }
 

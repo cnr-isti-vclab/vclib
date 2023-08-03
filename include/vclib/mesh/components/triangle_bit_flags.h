@@ -131,7 +131,7 @@ public:
 	void __triangleBitFlags() const {}
 
 protected:
-	BitProxy<FT> deleted();
+	BitProxy<FT> deletedBit();
 
 	// Component interface functions
 	template<typename Element>

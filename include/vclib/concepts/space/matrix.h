@@ -42,6 +42,8 @@ namespace vcl {
 template<typename T>
 concept EigenMatrixConcept = requires (T o, const T& co)
 {
+	typename T::Scalar;
+
 	co.RowsAtCompileTime;
 	co.ColsAtCompileTime;
 

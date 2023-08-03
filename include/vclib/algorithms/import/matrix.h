@@ -90,9 +90,17 @@ void importVertexNormalsFromMatrix(
 	MeshType&       mesh,
 	const VNMatrix& vertexNormals);
 
-
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals);
+
+template<MeshConcept MeshType, MatrixConcept VCMatrix>
+void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors);
+
+template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
+void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors);
+
+template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
+void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors);
 
 } // namespace vcl
 

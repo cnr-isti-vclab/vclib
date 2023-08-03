@@ -256,7 +256,7 @@ void TriangleBitFlags<El, O>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
-	deleted() = isD;
+	deletedBit() = isD;
 }
 
 /**
@@ -329,7 +329,7 @@ int TriangleBitFlags<El, O>::exportToVCGFlags() const
 
 template<typename El, bool O>
 BitProxy<typename TriangleBitFlags<El, O>::FT>
-TriangleBitFlags<El, O>::deleted()
+TriangleBitFlags<El, O>::deletedBit()
 {
 	return flags()[DELETED];
 }
@@ -345,7 +345,7 @@ void TriangleBitFlags<El, O>::importFrom(const Element& e)
 		}
 		else {
 			// BitFlags
-			deleted() = e.deleted();
+			deletedBit() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);

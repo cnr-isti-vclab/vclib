@@ -24,10 +24,23 @@
 #include "matrix.h"
 
 #include <vclib/exceptions.h>
+#include <vclib/space/polygon.h>
 
 namespace vcl {
 
 namespace internal {
+
+template<MatrixConcept FMatrix>
+std::vector<uint> faceVertIndices(const FMatrix& faces, uint f)
+{
+	std::vector<uint> fVerts;
+
+	uint j = 0;
+	while (j < faces.cols() && faces(f, j) != -1 && faces(f, j) != UINT_NULL)
+		fVerts.push_back(faces(f, j));
+
+	return fVerts;
+}
 
 template<uint EL_TYPE, MeshConcept MeshType, MatrixConcept NMatrix>
 void importElementNormalsFromMatrix(
@@ -61,7 +74,60 @@ void importElementNormalsFromMatrix(
 	}
 }
 
+template<uint EL_TYPE, MeshConcept MeshType, MatrixConcept CMatrix>
+void importElementColorsFromMatrix(
+	MeshType&      mesh,
+	const CMatrix& colors)
+{
+	using MatrixScalar = typename CMatrix::Scalar;
+
+	if (colors.cols() != 3 && colors.cols() != 4)
+		throw WrongSizeException(
+			"The input " + std::string(elementEnumString<EL_TYPE>()) +
+			" color matrix must have 3 or 4 columns");
+
+	// matrix rows must be equal to the number of elements of the given type
+	if (colors.rows() != mesh.template number<EL_TYPE>())
+		throw WrongSizeException(
+			"The input color matrix must have the same number of rows "
+			"as the number of " +
+			std::string(elementEnumString<EL_TYPE>()) + " element in the mesh");
+
+	enableIfPerElementComponentOptional<EL_TYPE, COLOR>(mesh);
+	requirePerElementComponent<EL_TYPE, COLOR>(mesh);
+
+	uint i = 0;
+	for (auto& e : mesh.template elements<EL_TYPE>()) {
+		// Matrix has colors in range 0-255
+		if constexpr (std::integral<MatrixScalar>) {
+			if (colors.cols() == 3) {
+				e.color() =
+					vcl::Color(colors(i, 0), colors(i, 1), colors(i, 2));
+			}
+			else {
+				e.color() = vcl::Color(
+					colors(i, 0), colors(i, 1), colors(i, 2), colors(i, 3));
+			}
+		}
+		else { // Matrix has colors in range 0-1
+			if (colors.cols() == 3) {
+				e.color() = vcl::Color(
+					colors(i, 0) * 255, colors(i, 1) * 255, colors(i, 2) * 255);
+			}
+			else {
+				e.color() = vcl::Color(
+					colors(i, 0) * 255,
+					colors(i, 1) * 255,
+					colors(i, 2) * 255,
+					colors(i, 3) * 255);
+			}
+		}
+
+		i++;
+	}
 }
+
+} // namespace vcl::internal
 
 /**
  * @brief Creates and returns a new point cloud mesh from the input vertex
@@ -378,7 +444,21 @@ void importFacesFromMatrix(
 	}
 
 	if constexpr (HasPolygons<MeshType>) {
-		// TODO - import polygon
+		uint i = 0;
+		for (auto& f : mesh.faces()) {
+			uint vertexNumber = 0;
+
+			// count the number of vertices of the face
+			while (vertexNumber < faces.cols() &&
+				   faces(i, vertexNumber) != -1 &&
+				   faces(i, vertexNumber) != UINT_NULL)
+				vertexNumber++;
+
+			f.resizeVertices(vertexNumber);
+
+			for (uint j = 0; j < vertexNumber; ++j)
+				f.vertex(j) = &mesh.vertex(faces(i, j));
+		}
 	}
 	else { // the vertex number of mesh faces is fixed
 		using FaceType = typename MeshType::FaceType;
@@ -400,10 +480,17 @@ void importFacesFromMatrix(
 					throw WrongSizeException(
 						"Cannot import the input face matrix into the mesh "
 						"without clearing the face container first "
-						"(a triangulation that does not guarantee a predefined "
-						"number of faces is required).");
+						"(need to perform a triangulation to import polygons "
+						"in a triangle mesh, and this operation that does not "
+						"guarantee a predefined number of faces is required).");
 				}
-				// TODO - manage triangulation
+				mesh.reserveFaces(faces.rows());
+				for (uint i = 0; i < faces.rows(); ++i) {
+					std::vector<uint> fVertIndices =
+						internal::faceVertIndices(faces, i);
+
+					addTriangleFacesFromPolygon(mesh, fVertIndices);
+				}
 			}
 			else {
 				// no triangulation available because VN != 3, we don't
@@ -458,6 +545,24 @@ template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 {
 	internal::importElementNormalsFromMatrix<FACE>(mesh, faceNormals);
+}
+
+template<MeshConcept MeshType, MatrixConcept VCMatrix>
+void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
+{
+	internal::importElementColorsFromMatrix<VERTEX>(mesh, vertexColors);
+}
+
+template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
+void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
+{
+	internal::importElementColorsFromMatrix<FACE>(mesh, faceColors);
+}
+
+template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
+void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
+{
+	internal::importElementColorsFromMatrix<EDGE>(mesh, edgeColors);
 }
 
 } // namespace vcl

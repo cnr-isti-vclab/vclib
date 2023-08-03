@@ -181,7 +181,7 @@ void BitFlags<El, O>::resetBitFlags()
 {
 	bool isD = deleted();
 	flags().reset();
-	deleted() = isD;
+	deletedBit() = isD;
 }
 
 /**
@@ -222,7 +222,7 @@ int BitFlags<El, O>::exportToVCGFlags() const
 }
 
 template<typename El, bool O>
-BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::deleted()
+BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::deletedBit()
 {
 	return flags()[DELETED];
 }
@@ -236,7 +236,7 @@ void BitFlags<El, O>::importFrom(const Element& e)
 		if constexpr (
 			HasPolygonBitFlags<Element> || HasTriangleBitFlags<Element>)
 		{
-			deleted() = e.deleted();
+			deletedBit() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			onBorder() = e.onBorder();

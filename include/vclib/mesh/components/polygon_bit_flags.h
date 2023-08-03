@@ -178,7 +178,7 @@ public:
 	void __polygonBitFlags() const {}
 
 protected:
-	BitProxy<FT> deleted();
+	BitProxy<FT> deletedBit();
 
 	// Component interface function
 	template<typename Element>

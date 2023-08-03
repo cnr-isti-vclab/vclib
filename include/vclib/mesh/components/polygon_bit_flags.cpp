@@ -333,7 +333,7 @@ void PolygonBitFlags<N, El, O>::resetBitFlags()
 	flags().reset();
 	for (uint i = 0; i < edgeFlags().size(); ++i)
 		edgeFlags()[i].reset();
-	deleted() = isD;
+	deletedBit() = isD;
 }
 
 /**
@@ -406,7 +406,7 @@ int PolygonBitFlags<N, El, O>::exportToVCGFlags() const
 
 template<int N, typename El, bool O>
 BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::deleted()
+PolygonBitFlags<N, El, O>::deletedBit()
 {
 	return flags()[DELETED];
 }
@@ -423,7 +423,7 @@ void PolygonBitFlags<N, El, O>::importFrom(const Element& e)
 		}
 		else {
 			// BitFlags
-			deleted() = e.deleted();
+			deletedBit() = e.deleted();
 			selected() = e.selected();
 			visited() = e.visited();
 			const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);

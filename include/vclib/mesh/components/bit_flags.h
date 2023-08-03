@@ -112,7 +112,7 @@ public:
 	int exportToVCGFlags() const;
 
 protected:
-	BitProxy<FT> deleted();
+	BitProxy<FT> deletedBit();
 
 	// Component interface function
 	template<typename Element>

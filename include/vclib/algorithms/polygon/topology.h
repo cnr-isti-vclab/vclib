@@ -28,11 +28,13 @@
 
 namespace vcl {
 
-template <FaceConcept FaceType>
-bool isFaceManifoldOnEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
+template<FaceConcept FaceType>
+bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
+	requires comp::HasAdjacentFaces<FaceType>;
 
 template<FaceConcept FaceType>
-bool isFaceEdgeOnBorder(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
+bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
+	requires comp::HasAdjacentFaces<FaceType>;
 
 template<FaceConcept FaceType>
 bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
