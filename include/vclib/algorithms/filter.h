@@ -21,60 +21,22 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_VIEW_H
-#define VCL_VIEWS_VIEW_H
+#ifndef VCL_ALGORITHMS_FILTER_H
+#define VCL_ALGORITHMS_FILTER_H
 
-#include <ranges>
-
-#if __has_include(<zip_tuple.hpp>)
-#include <zip_tuple.hpp>
-#else
-// inclusion for usage of vclib without CMake - not ideal but necessary for header only
-#include "../../../../external/zip-iterator-master/zip_tuple.hpp"
-#endif
+#include <vclib/mesh/requirements.h>
+#include <vclib/views.h>
 
 namespace vcl {
 
-/**
- * @brief The View class is a simple class that stores and exposes two iterators begin and end.
- *
- * It is useful for classes that expose multiple containers, and they do not expose the classic
- * member functions begin()/end().
- * In these cases, it is possible to expose the view of a selected container by returning a View
- * object initialized with the begin/end iterators.
- *
- * For example, a Mesh can expose Vertex and Face containers.
- * The mesh exposes the member functions:
- * - vertexBegin()
- * - vertexEnd()
- * - faceBegin()
- * - faceEnd()
- * To allow view iteration over vertices, the Mesh could expose a vertices() member function that
- * returns a View object that is constructed in this way: View(vertexBegin(), vertexEnd());
- *
- * @ingroup views
- */
-template<typename It>
-class View
-#ifdef VCLIB_USES_RANGES
-		: public std::ranges::view_interface<View<It>>
-#endif
-{
-public:
-	using iterator = It;
-	using const_iterator = It;
-
-	View() = default;
-	View(It begin, It end) : b(begin), e(end) {}
-
-	auto begin() const { return b; }
-
-	auto end() const { return e; }
-
-protected:
-	It b, e;
-};
+template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
+OutMeshType perVertexMeshFilter(
+	const InMeshType& m,
+	Range auto&& vertexFilterRng,
+	bool saveBirthIndicesInCustomComponent = true);
 
 } // namespace vcl
 
-#endif // VCL_VIEWS_VIEW_H
+#include "filter.cpp"
+
+#endif // VCL_ALGORITHMS_FILTER_H

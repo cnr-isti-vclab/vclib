@@ -29,6 +29,7 @@
 #include "algorithms/create.h"
 #include "algorithms/distance.h"
 #include "algorithms/export.h"
+#include "algorithms/filter.h"
 #include "algorithms/fitting.h"
 #include "algorithms/generate.h"
 #include "algorithms/import.h"

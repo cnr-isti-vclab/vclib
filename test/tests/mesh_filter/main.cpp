@@ -21,60 +21,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_VIEW_H
-#define VCL_VIEWS_VIEW_H
+#include <vclib/algorithms.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes.h>
+#include <catch2/catch_test_macros.hpp>
 
-#include <ranges>
+TEST_CASE( "TriMesh Filter" ) {
+	vcl::TriMesh tm =
+		vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-#if __has_include(<zip_tuple.hpp>)
-#include <zip_tuple.hpp>
-#else
-// inclusion for usage of vclib without CMake - not ideal but necessary for header only
-#include "../../../../external/zip-iterator-master/zip_tuple.hpp"
-#endif
+	THEN("The mesh has 8 vertices, 12 triangles")
+	{
+		REQUIRE(tm.vertexNumber() == 8);
+		REQUIRE(tm.faceNumber() == 12);
+	}
 
-namespace vcl {
+	std::vector<bool> filter = {
+		true, false, false, true, false, false, true, true};
 
-/**
- * @brief The View class is a simple class that stores and exposes two iterators begin and end.
- *
- * It is useful for classes that expose multiple containers, and they do not expose the classic
- * member functions begin()/end().
- * In these cases, it is possible to expose the view of a selected container by returning a View
- * object initialized with the begin/end iterators.
- *
- * For example, a Mesh can expose Vertex and Face containers.
- * The mesh exposes the member functions:
- * - vertexBegin()
- * - vertexEnd()
- * - faceBegin()
- * - faceEnd()
- * To allow view iteration over vertices, the Mesh could expose a vertices() member function that
- * returns a View object that is constructed in this way: View(vertexBegin(), vertexEnd());
- *
- * @ingroup views
- */
-template<typename It>
-class View
-#ifdef VCLIB_USES_RANGES
-		: public std::ranges::view_interface<View<It>>
-#endif
-{
-public:
-	using iterator = It;
-	using const_iterator = It;
+	vcl::TriMesh anotherMesh = vcl::perVertexMeshFilter(tm, filter);
 
-	View() = default;
-	View(It begin, It end) : b(begin), e(end) {}
+	THEN("The mesh has been filtered")
+	{
+		REQUIRE(anotherMesh.vertexNumber() == 4);
+		REQUIRE(anotherMesh.faceNumber() == 0);
 
-	auto begin() const { return b; }
-
-	auto end() const { return e; }
-
-protected:
-	It b, e;
-};
-
-} // namespace vcl
-
-#endif // VCL_VIEWS_VIEW_H
+		REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
+		REQUIRE(
+			anotherMesh.vertex(0).customComponent<uint>("birthVertex") == 0);
+		REQUIRE(
+			anotherMesh.vertex(1).customComponent<uint>("birthVertex") == 3);
+		REQUIRE(
+			anotherMesh.vertex(2).customComponent<uint>("birthVertex") == 6);
+		REQUIRE(
+			anotherMesh.vertex(3).customComponent<uint>("birthVertex") == 7);
+	}
+}

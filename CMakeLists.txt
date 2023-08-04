@@ -61,6 +61,7 @@ set(HEADERS
 	include/vclib/algorithms/create.h
 	include/vclib/algorithms/distance.h
 	include/vclib/algorithms/export.h
+	include/vclib/algorithms/filter.h
 	include/vclib/algorithms/fitting.h
 	include/vclib/algorithms/generate.h
 	include/vclib/algorithms/import.h
@@ -347,6 +348,7 @@ set(HEADERS
 set(SOURCES
 	include/vclib/algorithms/bounding_box.cpp
 	include/vclib/algorithms/clean.cpp
+	include/vclib/algorithms/filter.cpp
 	include/vclib/algorithms/fitting.cpp
 	include/vclib/algorithms/generate.cpp
 	include/vclib/algorithms/point_sampling.cpp

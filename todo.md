@@ -37,5 +37,6 @@
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
 - External:
   - [ ] make render functions using bgfx
+  - [ ] remove zip-iterator library when c++23 zip-view will be supported
 - Documentation:
   - [ ] Explain appropriately the structure of the library
