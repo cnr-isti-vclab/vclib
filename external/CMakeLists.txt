@@ -19,7 +19,12 @@ option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 
 # MapBox earcut
-option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT "Allow use of bundled Mapbox-Eaurcut source" ON)
+option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
+	"Allow use of bundled Mapbox-Eaurcut source" ON)
+
+# Zip iterator
+option(VCLIB_ALLOW_BUNDLED_ZIP_ITERATOR
+	"Allow use of bundled Zip Iterator source" ON)
 
 if (APPLE)
 	option(VCLIB_ALLOW_BUNDLED_PSTLD "Allow use of bundled pstld source" ON)
@@ -27,7 +32,8 @@ endif()
 
 # Catch2
 if (VCLIB_BUILD_AND_RUN_TESTS)
-	option(VCLIB_ALLOW_DOWNLOAD_CATCH2 "Allow use of downloaded Catch2 source" ON)
+	option(VCLIB_ALLOW_DOWNLOAD_CATCH2
+		"Allow use of downloaded Catch2 source" ON)
 	option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 endif()
 
@@ -56,7 +62,11 @@ include(eigen.cmake)
 ### Mapbox-Earcut
 include(mapbox.cmake)
 
-### pstld, required on Apple clang (waiting for c++17 parallel algorithms support)
+### Zip iterator
+include(zip-iterator.cmake)
+
+### pstld, required on AppleClang
+### (waiting for c++17 parallel algorithms support)
 if (APPLE)
 	include(pstld.cmake)
 endif()

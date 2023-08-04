@@ -26,6 +26,13 @@
 
 #include <ranges>
 
+#if __has_include(<zip_tuple.hpp>)
+#include <zip_tuple.hpp>
+#else
+// inclusion for usage of vclib without CMake - not ideal but necessary for header only
+#include "../../../../external/zip-iterator-master/zip_tuple.hpp"
+#endif
+
 namespace vcl {
 
 /**
