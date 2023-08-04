@@ -28,22 +28,16 @@
 
 namespace vcl {
 
-template<MeshConcept MeshType>
-std::vector<bool> boolVectorFromVertexSelection(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-std::vector<bool> boolVectorFromFaceSelection(const MeshType& m);
-
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
 OutMeshType generateMeshFromVertexBoolVector(
 	const InMeshType& m,
-	std::vector<bool>& vec,
+	const std::vector<bool>& vec,
 	bool saveBirthIndicesInCustomComponent = true);
 
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
 OutMeshType generateMeshFromFaceBoolVector(
 	const InMeshType& m,
-	std::vector<bool>& vec,
+	const std::vector<bool>& vec,
 	bool saveBirthIndicesInCustomComponent = true);
 
 } // namespace vcl

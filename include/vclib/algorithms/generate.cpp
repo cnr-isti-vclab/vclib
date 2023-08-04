@@ -26,45 +26,6 @@
 namespace vcl {
 
 /**
- * @brief Returns a vector of boolean values. For each ith vertex in the mesh, the corresponding
- * value in the vector will be true if the vertex is selected, false otherwise.
- *
- * @param m: input mesh.
- * @return
- */
-template<MeshConcept MeshType>
-std::vector<bool> boolVectorFromVertexSelection(const MeshType& m)
-{
-	using VertexType = typename MeshType::VertexType;
-
-	std::vector<bool> res(m.vertexContainerSize(), false);
-	for (const VertexType& v : m.vertices()) {
-		if (v.selected())
-			res[m.index(v)] = true;
-	}
-	return res;
-}
-
-/**
- * @brief Returns a vector of boolean values. For each ith face in the mesh, the corresponding
- * value in the vector will be true if the face is selected, false otherwise.
- * @param m
- * @return
- */
-template<FaceMeshConcept MeshType>
-std::vector<bool> boolVectorFromFaceSelection(const MeshType& m)
-{
-	using FaceType = typename MeshType::FaceType;
-
-	std::vector<bool> res(m.faceContainerSize(), false);
-	for (const FaceType& f : m.faces()) {
-		if (f.selected())
-			res[m.index(f)] = true;
-	}
-	return res;
-}
-
-/**
  * @brief Generates and returns a new mesh that is composed of the vertices of the input mesh `m`
  * having their value in the input vector of booleans `vec` set to true.
  *
@@ -80,7 +41,7 @@ std::vector<bool> boolVectorFromFaceSelection(const MeshType& m)
 template<MeshConcept InMeshType, MeshConcept OutMeshType>
 OutMeshType generateMeshFromVertexBoolVector(
 	const InMeshType&  m,
-	std::vector<bool>& vec,
+	const std::vector<bool>& vec,
 	bool               saveBirthIndicesInCustomComponent)
 {
 	assert(vec.size() == m.vertexContainerSize());
@@ -128,7 +89,7 @@ OutMeshType generateMeshFromVertexBoolVector(
 template<MeshConcept InMeshType, MeshConcept OutMeshType>
 OutMeshType generateMeshFromFaceBoolVector(
 	const InMeshType& m,
-	std::vector<bool>& vec,
+	const std::vector<bool>& vec,
 	bool saveBirthIndicesInCustomComponent)
 {
 	using InVertexType = typename InMeshType::VertexType;
