@@ -31,7 +31,6 @@
 #include "algorithms/export.h"
 #include "algorithms/filter.h"
 #include "algorithms/fitting.h"
-#include "algorithms/generate.h"
 #include "algorithms/import.h"
 #include "algorithms/intersection.h"
 #include "algorithms/point_sampling.h"

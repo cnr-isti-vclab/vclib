@@ -35,6 +35,12 @@ OutMeshType perVertexMeshFilter(
 	Range auto&& vertexFilterRng,
 	bool saveBirthIndicesInCustomComponent = true);
 
+template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
+OutMeshType perFaceMeshFilter(
+	const InMeshType& m,
+	Range auto&& faceFilterRng,
+	bool saveBirthIndicesInCustomComponent = true);
+
 } // namespace vcl
 
 #include "filter.cpp"

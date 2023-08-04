@@ -23,7 +23,7 @@
 
 #include "mesh.h"
 
-#include <vclib/algorithms/generate.h>
+#include <vclib/algorithms/filter.h>
 
 namespace vcl {
 
@@ -179,15 +179,19 @@ MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& s
 	using ScalarType = typename CoordType::ScalarType;
 	using FaceType = typename MeshType::FaceType;
 
-	std::vector<bool> fIntersect(m.faceNumber(), false);
+	std::vector<bool> fIntersect;
+	fIntersect.reserve(m.faceNumber());
 
 	for (const FaceType& f : m.faces()) {
 		if (faceSphereItersect(f, sphere)) {
-			fIntersect[m.index(f)] = true;
+			fIntersect.push_back(true);
+		}
+		else {
+			fIntersect.push_back(false);
 		}
 	}
 
-	MeshType res = generateMeshFromFaceBoolVector(m, fIntersect);
+	MeshType res = perFaceMeshFilter(m, fIntersect);
 
 	uint i = 0;
 	while (i < res.faceContainerSize()) {
