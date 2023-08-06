@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <typeinfo>
+#include <ranges>
 
 
 namespace c9 {
@@ -39,19 +40,19 @@ auto any_match(std::tuple<Args...> const & lhs, std::tuple<Args...> const & rhs)
 
 
 
-template <typename ... Iters>
+template <std::ranges::range ... Rng>
 class zip_iterator
 {
 public:
 
-    using value_type = std::tuple<
-        select_access_type_for<Iters>...
+	using value_type = std::tuple<
+		std::ranges::range_reference_t<Rng>...
     >;
 
     zip_iterator() = delete;
 
-    zip_iterator(Iters && ... iters)
-        : m_iters {std::forward<Iters>(iters)...}
+    zip_iterator(std::ranges::iterator_t<Rng> && ... iters)
+        : m_iters {std::forward<std::ranges::iterator_t<Rng>>(iters)...}
     {
     }
 
@@ -87,24 +88,14 @@ public:
     }
 
 private:
-    std::tuple<Iters...> m_iters;
+    std::tuple<std::ranges::iterator_t<Rng>...> m_iters;
 };
 
-
-/* std::decay needed because T is a reference, and is not a complete type */
-template <typename T>
-using select_iterator_for = std::conditional_t<
-    std::is_const_v<std::remove_reference_t<T>>, 
-    typename std::decay_t<T>::const_iterator,
-    typename std::decay_t<T>::iterator>;
-
-
-
-template <typename ... T>
+template <std::ranges::range ... T>
 class zipper
 {
 public:
-    using zip_type = zip_iterator<select_iterator_for<T> ...>;
+    using zip_type = zip_iterator<T ...>;
 
     template <typename ... Args>
     zipper(Args && ... args)
@@ -114,14 +105,14 @@ public:
 
     auto begin() -> zip_type
     {
-        return std::apply([](auto && ... args){ 
-                return zip_type(std::begin(args)...); 
+        return std::apply([](auto && ... args){
+            return zip_type(std::ranges::begin(args)...);
             }, m_args);
     }
     auto end() -> zip_type
     {
-        return std::apply([](auto && ... args){ 
-                return zip_type(std::end(args)...); 
+        return std::apply([](auto && ... args){
+            return zip_type(std::ranges::end(args)...);
             }, m_args);
     }
 
@@ -131,7 +122,7 @@ private:
 };
 
 
-template <typename ... T>
+template <std::ranges::range ... T>
 auto zip(T && ... t)
 {
     return zipper<T ...>{std::forward<T>(t)...};
