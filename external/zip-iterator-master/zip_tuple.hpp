@@ -58,7 +58,7 @@ public:
 
     auto operator++() -> zip_iterator& 
     {
-        std::apply([](auto && ... args){ ((args += 1), ...); }, m_iters);
+        std::apply([](auto && ... args){ ((++args), ...); }, m_iters);
         return *this;
     }
 
