@@ -21,70 +21,44 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "generate.h"
+#include "filter.h"
 
 namespace vcl {
 
 /**
- * @brief Returns a vector of boolean values. For each ith vertex in the mesh, the corresponding
- * value in the vector will be true if the vertex is selected, false otherwise.
+ * @brief Generates and returns a new mesh that is composed of the vertices of
+ * the input mesh `m` filtered using the `vertexFilterRng` range.
  *
- * @param m: input mesh.
- * @return
- */
-template<MeshConcept MeshType>
-std::vector<bool> boolVectorFromVertexSelection(const MeshType& m)
-{
-	using VertexType = typename MeshType::VertexType;
-
-	std::vector<bool> res(m.vertexContainerSize(), false);
-	for (const VertexType& v : m.vertices()) {
-		if (v.selected())
-			res[m.index(v)] = true;
-	}
-	return res;
-}
-
-/**
- * @brief Returns a vector of boolean values. For each ith face in the mesh, the corresponding
- * value in the vector will be true if the face is selected, false otherwise.
- * @param m
- * @return
- */
-template<FaceMeshConcept MeshType>
-std::vector<bool> boolVectorFromFaceSelection(const MeshType& m)
-{
-	using FaceType = typename MeshType::FaceType;
-
-	std::vector<bool> res(m.faceContainerSize(), false);
-	for (const FaceType& f : m.faces()) {
-		if (f.selected())
-			res[m.index(f)] = true;
-	}
-	return res;
-}
-
-/**
- * @brief Generates and returns a new mesh that is composed of the vertices of the input mesh `m`
- * having their value in the input vector of booleans `vec` set to true.
+ * Only the vertices having the corresponding boolean in `vertexFilterRng`
+ * evaluated to `true` will be put in the output mesh. The order of the vertices
+ * in the output mesh is preserved.
  *
- * By default, the type of the output mesh will be the same of the input mesh type.
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `MeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `MeshConcept`. By default, it is the same of the input mesh type.
+ *
  * @param[in] m: input mesh
- * @param[in] vec: vector of booleans that will tell which vertices put in the output mesh.
- * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the output mesh type
- * has the per vertex CustomComponents component, will set a per vertex custom component of type
- * `uint` in the output mesh telling, for each vertex, the index of its birth vertex in the input
- * mesh. The name of the custom component is `"birthVertex"`.
- * @return
+ * @param[in] vertexFilterRng: range of values that are evaluated as booleans,
+ * one for each vertex of the input mesh. Its type must satisfy the `Range`
+ * concept.
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex CustomComponents component, will set a
+ * per vertex custom component of type `uint` in the output mesh telling, for
+ * each vertex, the index of its birth vertex in the input mesh. The name of the
+ * custom component is `"birthVertex"`.
+ *
+ * @return A new Mesh created by filtering the vertices of the input mesh `m`.
  */
 template<MeshConcept InMeshType, MeshConcept OutMeshType>
-OutMeshType generateMeshFromVertexBoolVector(
-	const InMeshType&  m,
-	std::vector<bool>& vec,
-	bool               saveBirthIndicesInCustomComponent)
+OutMeshType perVertexMeshFilter(
+	const InMeshType& m,
+	Range auto&& vertexFilterRng,
+	bool saveBirthIndicesInCustomComponent)
 {
-	assert(vec.size() == m.vertexContainerSize());
-
 	OutMeshType res;
 	res.enableSameOptionalComponentsOf(m);
 
@@ -95,13 +69,17 @@ OutMeshType generateMeshFromVertexBoolVector(
 		}
 	}
 
-	for (uint i = 0; i < vec.size(); ++i) {
-		if (vec[i]) {
+	for (const auto& [birthV, filter] : c9::zip(m.vertices(), vertexFilterRng))
+	{
+		if (filter) {
 			uint v = res.addVertex();
-			res.vertex(v).importFrom(m.vertex(i)); // import all the components from the input mesh
-			if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) { // set the birth vertex
+			// import all the components from the input mesh
+			res.vertex(v).importFrom(birthV);
+			// set the birth vertex
+			if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
 				if (saveBirthIndicesInCustomComponent) {
-					res.vertex(v).template customComponent<uint>("birthVertex") = i;
+					res.vertex(v).template customComponent<uint>(
+						"birthVertex") = m.index(birthV);
 				}
 			}
 		}
@@ -111,29 +89,42 @@ OutMeshType generateMeshFromVertexBoolVector(
 }
 
 /**
- * @brief Generates and returns a new mesh that is composed of the faces of the input mesh `m`
- * having their value in the input vector of booleans `vec` set to true. Only vertices belonging to
- * the imported faces will be imported in the output mesh.
+ * @brief Generates and returns a new mesh that is composed of the faces of the
+ * input mesh `m` filtered using the `faceFilterRng` range. Only vertices
+ * belonging to the imported faces will be imported in the output mesh.
  *
- * By default, the type of the output mesh will be the same of the input mesh type.
+ * Only the faces having the corresponding boolean in `faceFilterRng` evaluated
+ * to `true` and their vertices will be put in the output mesh. The order of the
+ * faces and vertices in the output mesh is preserved.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `FaceMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `FaceMeshConcept`. By default, it is the same of the input mesh type.
+ *
  * @param[in] m: input mesh
- * @param[in] vec: vector of booleans that will tell which faces put in the output mesh.
- * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the output mesh type
- * has the per vertex and/or per face CustomComponents component, will set a per vertex/per face
- * custom component of type `uint` in the output mesh telling, for each vertex/face, the index of
- * its birth vertex/birth face in the input mesh. The names of the custom components are
+ * @param[in] vertexFilterRng: range of values that are evaluated as booleans,
+ * one for each face of the input mesh. Its type must satisfy the `Range`
+ * concept.
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex and/or per face CustomComponents
+ * component, will set a per vertex/per face custom component of type `uint` in
+ * the output mesh telling, for each vertex/face, the index of its birth
+ * vertex/birth face in the input mesh. The names of the custom components are
  * `"birthVertex"` and `"birthFace"`.
- * @return
+ *
+ * @return A new Mesh created by filtering the faces of the input mesh `m`.
  */
-template<MeshConcept InMeshType, MeshConcept OutMeshType>
-OutMeshType generateMeshFromFaceBoolVector(
+template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType>
+OutMeshType perFaceMeshFilter(
 	const InMeshType& m,
-	std::vector<bool>& vec,
+	Range auto&& faceFilterRng,
 	bool saveBirthIndicesInCustomComponent)
 {
 	using InVertexType = typename InMeshType::VertexType;
-
-	assert(vec.size() == m.faceContainerSize());
 
 	OutMeshType res;
 	res.enableSameOptionalComponentsOf(m);
@@ -154,9 +145,9 @@ OutMeshType generateMeshFromFaceBoolVector(
 
 	std::vector<uint> vertexMapping(m.vertexContainerSize(), UINT_NULL);
 
-	for (uint i = 0; i < vec.size(); ++i) {
-		if (vec[i]) {
-			std::vector<uint> verts(m.face(i).vertexNumber(), UINT_NULL);
+	for (const auto& [birthF, filter] : c9::zip(m.faces(), faceFilterRng)) {
+		if (filter) {
+			std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
 			uint vi = 0; // incremented with vertices of the face
 			// set all the vertex indices in the verts vector
 			// two cases here:
@@ -164,7 +155,7 @@ OutMeshType generateMeshFromFaceBoolVector(
 			//   the out mesh from the vertexMapping vector
 			// - the ith vertex of the face has not been added: we need to add it and import all
 			//   its components, and update the vertexMappingVector
-			for (const InVertexType* v : m.face(i).vertices()) {
+			for (const InVertexType* v : birthF.vertices()) {
 				if (vertexMapping[m.index(v)] == UINT_NULL) { // the vertex has not already added
 					// add the vertex to the out mesh
 					uint ov = res.addVertex();
@@ -185,10 +176,10 @@ OutMeshType generateMeshFromFaceBoolVector(
 
 			// now all the vertices of the face are in the out mesh, we can add the actual face
 			uint f = res.addFace(verts.begin(), verts.end());
-			res.face(f).importFrom(m.face(i)); // import all the components from the input mesh
+			res.face(f).importFrom(birthF); // import all the components from the input mesh
 			if constexpr (vcl::HasPerFaceCustomComponents<OutMeshType>) { // set the birth face
 				if (saveBirthIndicesInCustomComponent) {
-					res.face(f).template customComponent<uint>("birthFace") = i;
+					res.face(f).template customComponent<uint>("birthFace") = m.index(birthF);
 				}
 			}
 		}

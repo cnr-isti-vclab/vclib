@@ -21,33 +21,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_GENERATE_H
-#define VCL_ALGORITHMS_GENERATE_H
+#include <vclib/algorithms.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes.h>
+#include <catch2/catch_test_macros.hpp>
 
-#include <vclib/mesh/requirements.h>
+TEST_CASE( "TriMesh Filter" ) {
+	vcl::TriMesh tm =
+		vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-namespace vcl {
+	THEN("The mesh has 8 vertices, 12 triangles")
+	{
+		REQUIRE(tm.vertexNumber() == 8);
+		REQUIRE(tm.faceNumber() == 12);
+	}
 
-template<MeshConcept MeshType>
-std::vector<bool> boolVectorFromVertexSelection(const MeshType& m);
+	std::vector<bool> filter = {
+		true, false, false, true, false, false, true, true};
 
-template<FaceMeshConcept MeshType>
-std::vector<bool> boolVectorFromFaceSelection(const MeshType& m);
+	vcl::TriMesh anotherMesh = vcl::perVertexMeshFilter(tm, filter);
 
-template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
-OutMeshType generateMeshFromVertexBoolVector(
-	const InMeshType& m,
-	std::vector<bool>& vec,
-	bool saveBirthIndicesInCustomComponent = true);
+	THEN("The mesh has been filtered")
+	{
+		REQUIRE(anotherMesh.vertexNumber() == 4);
+		REQUIRE(anotherMesh.faceNumber() == 0);
 
-template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
-OutMeshType generateMeshFromFaceBoolVector(
-	const InMeshType& m,
-	std::vector<bool>& vec,
-	bool saveBirthIndicesInCustomComponent = true);
-
-} // namespace vcl
-
-#include "generate.cpp"
-
-#endif // VCL_ALGORITHMS_GENERATE_H
+		REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
+		REQUIRE(
+			anotherMesh.vertex(0).customComponent<uint>("birthVertex") == 0);
+		REQUIRE(
+			anotherMesh.vertex(1).customComponent<uint>("birthVertex") == 3);
+		REQUIRE(
+			anotherMesh.vertex(2).customComponent<uint>("birthVertex") == 6);
+		REQUIRE(
+			anotherMesh.vertex(3).customComponent<uint>("birthVertex") == 7);
+	}
+}

@@ -26,6 +26,13 @@
 
 #include <ranges>
 
+#if __has_include(<zip_tuple.hpp>)
+#include <zip_tuple.hpp>
+#else
+// inclusion for usage of vclib without CMake - not ideal but necessary for header only
+#include "../../../../external/zip-iterator-master/zip_tuple.hpp"
+#endif
+
 namespace vcl {
 
 /**
@@ -52,6 +59,7 @@ class View : public std::ranges::view_interface<View<It>>
 {
 public:
 	using iterator = It;
+	using const_iterator = It;
 
 	View() = default;
 	View(It begin, It end) : b(begin), e(end) {}

@@ -216,12 +216,51 @@ Matrix edgeMatrix(const MeshType &mesh)
 }
 
 /**
+ * @brief Get a #E Vector of booleans (or integers) containing the selection
+ * status of the elements identified by `EL_TYPE` of a Mesh. The function is
+ * templated on the Vector itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint].
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXi S =
+ *     vcl::elementSelectionVector<VERTEX, Eigen::VectorXi>(myMesh);
+ * @endif
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @tparam Vect: type of the vector to be returned.
+ * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] mesh: input mesh
+ * @return #E vector of booleans or integers (element selection)
+ */
+template<uint EL_TYPE, typename Vect, MeshConcept MeshType>
+Vect elementSelectionVector(const MeshType& mesh)
+{
+	Vect S(mesh.template number<EL_TYPE>());
+
+	uint i = 0;
+	for (const auto& e : mesh.template elements<EL_TYPE>())
+		S[i] = e.selected();
+	return S;
+}
+
+/**
  * @brief Get a #V Vector of booleans (or integers) containing the selection
  * status of the vertices of a Mesh. The function is templated on the Vector
  * itself.
  *
  * This function works with every Vector type that has a constructor with a
- * size_t argument and an operator(uint).
+ * size_t argument and an operator[uint].
  *
  * Usage example with Eigen Vector:
  *
@@ -243,12 +282,7 @@ Matrix edgeMatrix(const MeshType &mesh)
 template<typename Vect, MeshConcept MeshType>
 Vect vertexSelectionVector(const MeshType& mesh)
 {
-	Vect S(mesh.vertexNumber());
-
-	uint i = 0;
-	for (const auto& v : mesh.vertices())
-		S(i) = v.selected();
-	return S;
+	return elementSelectionVector<VERTEX, Vect>(mesh);
 }
 
 /**
@@ -257,7 +291,7 @@ Vect vertexSelectionVector(const MeshType& mesh)
  * itself.
  *
  * This function works with every Vector type that has a constructor with a
- * size_t argument and an operator(uint).
+ * size_t argument and an operator[uint].
  *
  * Usage example with Eigen Vector:
  *
@@ -280,12 +314,51 @@ Vect vertexSelectionVector(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceSelectionVector(const MeshType& mesh)
 {
-	Vect S(mesh.faceNumber());
+	return elementSelectionVector<FACE, Vect>(mesh);
+}
+
+/**
+ * @brief Get a #E*3 Matrix of scalars containing the normals of the elements
+ * identified by `EL_TYPE` of a Mesh. The function is templated on the Matrix
+ * itself.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-element normals.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixX3d VN =
+ *     vcl::elementNormalsMatrix<VERTEX, Eigen::MatrixX3d>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * normals available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] mesh: input mesh
+ * @return #E*3 matrix of scalars (element normals)
+ */
+template<uint EL_TYPE, MatrixConcept Matrix, MeshConcept MeshType>
+Matrix elementNormalsMatrix(const MeshType& mesh)
+{
+	requirePerElementComponent<EL_TYPE, NORMAL>(mesh);
+
+	Matrix EN(mesh.template number<EL_TYPE>(), 3);
 
 	uint i = 0;
-	for (const auto& f : mesh.faces())
-		S(i) = f.selected();
-	return S;
+	for (const auto& e : mesh.template elements<EL_TYPE>()) {
+		for (uint j = 0; j < 3; ++j) {
+			EN(i, j) = e.normal()[j];
+		}
+		++i;
+	}
+	return EN;
 }
 
 /**
@@ -315,18 +388,7 @@ Vect faceSelectionVector(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexNormalsMatrix(const MeshType& mesh)
 {
-	requirePerVertexNormal(mesh);
-
-	Matrix VN(mesh.vertexNumber(), 3);
-
-	uint i = 0;
-	for (const auto& v : mesh.vertices()) {
-		for (uint j = 0; j < 3; ++j) {
-			VN(i, j) = v.normal()[j];
-		}
-		++i;
-	}
-	return VN;
+	return elementNormalsMatrix<VERTEX, Matrix>(mesh);
 }
 
 /**
@@ -356,18 +418,51 @@ Matrix vertexNormalsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceNormalsMatrix(const MeshType& mesh)
 {
-	vcl::requirePerFaceNormal(mesh);
+	return elementNormalsMatrix<FACE, Matrix>(mesh);
+}
 
-	Matrix FN(mesh.faceNumber(), 3);
+/**
+ * @brief Get a #E*4 Matrix of integers containing the colors of the elements
+ * identified by `EL_TYPE` of a Mesh. The function is templated on the Matrix
+ * itself.
+ *
+ * This function works with every Matrix type that satisfies the MatrixConcept,
+ * and requires that the mesh has per-element colors.
+ *
+ * Usage example with Eigen Matrix:
+ *
+ * @code{.cpp}
+ * Eigen::MatrixX4i EC =
+ *     vcl::elementColorsMatrix<VERTEX, Eigen::MatrixX4i>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * colors available.
+ *
+ * @note This function does not guarantee that the rows of the matrix
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] mesh: input mesh
+ * @return #E*4 matrix of integers (element colors)
+ */
+template<uint EL_TYPE, MatrixConcept Matrix, MeshConcept MeshType>
+Matrix elementColorsMatrix(const MeshType& mesh)
+{
+	requirePerElementComponent<EL_TYPE, COLOR>(mesh);
+
+	Matrix EC(mesh.template number<EL_TYPE>(), 4);
 
 	uint i = 0;
-	for (const auto& f : mesh.faces()) {
-		for (uint j = 0; j < 3; ++j) {
-			FN(i, j) = f.normal()[j];
+	for (const auto& e : mesh.template elements<EL_TYPE>()) {
+		for (uint j = 0; j < 4; ++j) {
+			EC(i, j) = e.color()[j];
 		}
 		++i;
 	}
-	return FN;
+	return EC;
 }
 
 /**
@@ -397,18 +492,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexColorsMatrix(const MeshType& mesh)
 {
-	requirePerVertexColor(mesh);
-
-	Matrix VC(mesh.vertexNumber(), 4);
-
-	uint i = 0;
-	for (const auto& v : mesh.vertices()) {
-		for (uint j = 0; j < 4; ++j) {
-			VC(i, j) = v.color()[j];
-		}
-		++i;
-	}
-	return VC;
+	return elementColorsMatrix<VERTEX, Matrix>(mesh);
 }
 
 /**
@@ -438,18 +522,51 @@ Matrix vertexColorsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceColorsMatrix(const MeshType& mesh)
 {
-	vcl::requirePerFaceColor(mesh);
+	return elementColorsMatrix<FACE, Matrix>(mesh);
+}
 
-	Matrix FC(mesh.faceNumber(), 3);
+/**
+ * @brief Get a #E Vector of scalars containing the quality of the elements
+ * identified by `EL_TYPE` of a Mesh. The function is templated on the Vector
+ * itself.
+ *
+ * This function works with every Vector type that has a constructor with a
+ * size_t argument and an operator[uint], and requires that the mesh has
+ * per-element quality.
+ *
+ * Usage example with Eigen Vector:
+ *
+ * @code{.cpp}
+ * Eigen::VectorXd EQ =
+ *     vcl::elementQualityVector<VERTEX, Eigen::VectorXd>(myMesh);
+ * @endcode
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have per-element
+ * quality available.
+ *
+ * @note This function does not guarantee that the rows of the vector
+ * correspond to the element indices of the mesh. This scenario is possible
+ * when the mesh has deleted elements. To be sure to have a direct
+ * correspondence, compact the element container before calling this function.
+ *
+ * @tparam EL_TYPE: the type ID of the element.
+ * @param[in] mesh: input mesh
+ * @return #V vector of scalars (element quality)
+ */
+template<uint EL_TYPE, typename Vect, MeshConcept MeshType>
+Vect elementQualityVector(const MeshType& mesh)
+{
+	requirePerElementComponent<EL_TYPE, QUALITY>(mesh);
+
+	Vect EQ(mesh.template number<EL_TYPE>(), 3);
 
 	uint i = 0;
-	for (const auto& f : mesh.faces()) {
-		for (uint j = 0; j < 4; ++j) {
-			FC(i, j) = f.color()[j];
-		}
+	for (const auto& e : mesh.template elements<EL_TYPE>()) {
+		EQ[i] = e.quality();
 		++i;
 	}
-	return FC;
+
+	return EQ;
 }
 
 /**
@@ -480,17 +597,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
 template<typename Vect, MeshConcept MeshType>
 Vect vertexQualityVector(const MeshType& mesh)
 {
-	vcl::requirePerVertexQuality(mesh);
-
-	Vect VQ(mesh.vertexNumber());
-
-	uint i = 0;
-	for (const auto& v : mesh.vertices()) {
-		VQ(i) = v.quality();
-		++i;
-	}
-
-	return VQ;
+	return elementQualityVector<VERTEX, Vect>(mesh);
 }
 
 /**
@@ -521,17 +628,7 @@ Vect vertexQualityVector(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceQualityVector(const MeshType& mesh)
 {
-	vcl::requirePerFaceQuality(mesh);
-
-	Vect FQ(mesh.faceNumber());
-
-	uint i = 0;
-	for (const auto& f : mesh.faces()) {
-		FQ(i) = f.quality();
-		++i;
-	}
-
-	return FQ;
+	return elementQualityVector<FACE, Vect>(mesh);
 }
 
 } // namespace vcl
