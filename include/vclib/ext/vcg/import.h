@@ -21,57 +21,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
-#define VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
+#ifndef VCL_EXT_VCG_IMPORT_H
+#define VCL_EXT_VCG_IMPORT_H
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
+#include <vclib/mesh/requirements.h>
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-
-#include <vclib/space/color.h>
-#include <vclib/space/point.h>
+#include <vcg/complex/complex.h>
 
 namespace vcl {
 
-void drawPoint2(const Point2d& p, const Color& c, int size);
+template<MeshConcept MeshType, typename VCGMeshType>
+MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh);
 
-void drawLine2(const Point2d& a, const Point2d& b, const Color& c, int width = 3);
-
-void drawTriangle2(
-	const std::array<Point2d, 3>& arr,
-	const Color&                  c,
-	int                           width = 3,
-	bool                          fill  = false);
-
-void drawTriangle2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
-
-void drawQuad2(const std::array<Point2d, 4>& arr, const Color& c, int width = 3, bool fill = false);
-
-void drawQuad2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Point2d& p4,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
+template<MeshConcept MeshType, typename VCGMeshType>
+void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh);
 
 } // namespace vcl
 
-#include "draw_objects2.cpp"
+#include "import.cpp"
 
-#endif // VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
+#endif // VCL_EXT_VCG_IMPORT_H

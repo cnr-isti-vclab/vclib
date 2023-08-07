@@ -52,6 +52,9 @@ option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
 # TBB
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 
+#VCG
+option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
+
 set(VCLIB_EXTERNAL_LIBRARIES "")
 
 # === REQUIRED === #
@@ -90,5 +93,8 @@ include(stb.cmake)
 
 ### TBB
 include(tbb.cmake)
+
+### VCG
+include(vcg.cmake)
 
 set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)
