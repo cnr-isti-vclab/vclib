@@ -3,14 +3,6 @@
 #include "zip_view.hpp"
 
 #include <cassert>
-#include <iostream>
-
-#include <iostream>
-#include <memory>
-#include <type_traits>
-
-#include <cxxabi.h>
-
 
 auto main() -> int 
 {

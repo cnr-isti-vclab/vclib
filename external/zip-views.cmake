@@ -23,7 +23,7 @@ endif()
 
 set(ZIP_VIEWS_INCLUDE_DIRS ${VCLIB_ZIP_VIEWS_DIR})
 
-set(ZIP_VIEW_BUILD_TEST OFF)
+set(ZIP_VIEW_BUILD_TEST OFF CACHE BOOL "Build ZipViews tests")
 add_subdirectory(${VCLIB_ZIP_VIEWS_DIR})
 
 add_library(vclib-external-zip-views INTERFACE)

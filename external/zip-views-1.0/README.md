@@ -1,6 +1,6 @@
 # C++20 Zip Views
 
-This is a fork from the [ZipIterator](https://github.com/CommitThis/zip-iterator) modified in order to:
+This is a fork from the [ZipIterator](https://github.com/CommitThis/zip-iterator) repository, modified in order to:
 
 - build with c++20
 - implement zip and make it available on std::ranges and std::views.
