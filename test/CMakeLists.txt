@@ -60,5 +60,9 @@ if (VCLIB_BUILD_AND_RUN_TESTS)
 	add_subdirectory(tests/mesh_filter)
 	add_subdirectory(tests/mesh_topology)
 	add_subdirectory(tests/trimesh_base)
+
+	if (TARGET vclib-external-vcg)
+		add_subdirectory(tests/ext/vcg/mesh_import_vcg)
+	endif()
 endif()
 

@@ -21,57 +21,48 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
-#define VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-
-#include <vclib/space/color.h>
-#include <vclib/space/point.h>
+#include "import.h"
 
 namespace vcl {
 
-void drawPoint2(const Point2d& p, const Color& c, int size);
+template<MeshConcept MeshType, typename VCGMeshType>
+MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh)
+{
+	MeshType mesh;
 
-void drawLine2(const Point2d& a, const Point2d& b, const Color& c, int width = 3);
+	importMeshFromVCGMesh(mesh, vcgMesh);
 
-void drawTriangle2(
-	const std::array<Point2d, 3>& arr,
-	const Color&                  c,
-	int                           width = 3,
-	bool                          fill  = false);
+	return mesh;
+}
 
-void drawTriangle2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
+template<MeshConcept MeshType, typename VCGMeshType>
+void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
+{
+	using CoordType = typename MeshType::VertexType::CoordType;
 
-void drawQuad2(const std::array<Point2d, 4>& arr, const Color& c, int width = 3, bool fill = false);
+	mesh.reserveVertices(vcgMesh.VN());
 
-void drawQuad2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Point2d& p4,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
+	// copy vertices
+	for (uint i = 0; i < vcgMesh.vert.size(); i++) {
+		if (!vcgMesh.vert[i].IsD()) {
+			uint vi = mesh.addVertex(CoordType(
+				vcgMesh.vert[i].P()[0],
+				vcgMesh.vert[i].P()[1],
+				vcgMesh.vert[i].P()[2]));
+
+			if constexpr (HasPerVertexNormal<MeshType>) {
+				using NormalType = typename MeshType::VertexType::NormalType;
+				if (isPerVertexNormalAvailable(mesh)) {
+					if (vcg::tri::HasPerVertexNormal(vcgMesh)) {
+						mesh.vertex(vi).normal() = NormalType(
+							vcgMesh.vert[i].N()[0],
+							vcgMesh.vert[i].N()[1],
+							vcgMesh.vert[i].N()[2]);
+					}
+				}
+			}
+		}
+	}
+}
 
 } // namespace vcl
-
-#include "draw_objects2.cpp"
-
-#endif // VCL_EXT_OPENGL2_DRAW_OBJECTS2_H

@@ -571,6 +571,15 @@ if (TARGET vclib-external-qt)
 	endif()
 endif()
 
+# headers and sources to include only if using VCG
+if (TARGET vclib-external-vcg)
+	list(APPEND HEADERS
+		include/vclib/ext/vcg/import.h)
+
+	list(APPEND SOURCES
+		include/vclib/ext/vcg/import.cpp)
+endif()
+
 add_library(vclib INTERFACE)
 
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})

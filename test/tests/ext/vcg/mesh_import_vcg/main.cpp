@@ -21,57 +21,25 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
-#define VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
+#include <vclib/ext/vcg/import.h>
+#include <vclib/meshes.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
+#include <catch2/catch_test_macros.hpp>
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
+#include <wrap/io_trimesh/import_ply.h>
 
-#include <vclib/space/color.h>
-#include <vclib/space/point.h>
+#include "mesh.h"
 
-namespace vcl {
+TEST_CASE( "Import Mesh from VCG" ) {
+	VCGMesh vcgMesh;
 
-void drawPoint2(const Point2d& p, const Color& c, int size);
+	vcg::tri::io::ImporterPLY<VCGMesh>::Open(
+		vcgMesh, VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-void drawLine2(const Point2d& a, const Point2d& b, const Color& c, int width = 3);
+	REQUIRE(vcgMesh.VN() == 8);
+	REQUIRE(vcgMesh.FN() == 12);
 
-void drawTriangle2(
-	const std::array<Point2d, 3>& arr,
-	const Color&                  c,
-	int                           width = 3,
-	bool                          fill  = false);
+	vcl::TriMesh tm = vcl::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
 
-void drawTriangle2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
-
-void drawQuad2(const std::array<Point2d, 4>& arr, const Color& c, int width = 3, bool fill = false);
-
-void drawQuad2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Point2d& p4,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
-
-} // namespace vcl
-
-#include "draw_objects2.cpp"
-
-#endif // VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
+	REQUIRE(tm.vertexNumber() == 8);
+}
