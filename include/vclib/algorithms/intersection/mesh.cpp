@@ -179,19 +179,11 @@ MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& s
 	using ScalarType = typename CoordType::ScalarType;
 	using FaceType = typename MeshType::FaceType;
 
-	std::vector<bool> fIntersect;
-	fIntersect.reserve(m.faceNumber());
+	auto ffilter = [&sphere](const FaceType& f) -> bool {
+		return faceSphereItersect(f, sphere);
+	};
 
-	for (const FaceType& f : m.faces()) {
-		if (faceSphereItersect(f, sphere)) {
-			fIntersect.push_back(true);
-		}
-		else {
-			fIntersect.push_back(false);
-		}
-	}
-
-	MeshType res = perFaceMeshFilter(m, fIntersect);
+	MeshType res = perFaceMeshFilter(m, ffilter);
 
 	uint i = 0;
 	while (i < res.faceContainerSize()) {
