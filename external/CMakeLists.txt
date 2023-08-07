@@ -23,8 +23,8 @@ option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
 	"Allow use of bundled Mapbox-Eaurcut source" ON)
 
 # Zip iterator
-option(VCLIB_ALLOW_BUNDLED_ZIP_ITERATOR
-	"Allow use of bundled Zip Iterator source" ON)
+option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
+	"Allow use of bundled ZipViews source" ON)
 
 if (APPLE)
 	option(VCLIB_ALLOW_BUNDLED_PSTLD "Allow use of bundled pstld source" ON)
@@ -63,7 +63,7 @@ include(eigen.cmake)
 include(mapbox.cmake)
 
 ### Zip iterator
-include(zip-iterator.cmake)
+include(zip-views.cmake)
 
 ### pstld, required on AppleClang
 ### (waiting for c++17 parallel algorithms support)

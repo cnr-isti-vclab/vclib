@@ -9,23 +9,27 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-set(VCLIB_ZIP_ITERATOR_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-iterator-master)
+set(VCLIB_ZIP_VIEWS_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-views-1.0)
 
-if (VCLIB_ALLOW_BUNDLED_ZIP_ITERATOR AND
-		EXISTS ${VCLIB_ZIP_ITERATOR_DIR}/zip_tuple.hpp)
-	message(STATUS "- Zip-Iterator - using bundled source")
+if (VCLIB_ALLOW_BUNDLED_ZIP_VIEWS AND
+		EXISTS ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp)
+	message(STATUS "- ZipViews - using bundled source")
 else()
 	message(
 		FATAL_ERROR
-		"Zip-Iterator is required -
-		VCLIB_ALLOW_BUNDLED_ZIP_ITERATOR must be enabled and found.")
+		"ZipViews is required -
+		VCLIB_ALLOW_BUNDLED_ZIP_VIEWS must be enabled and found.")
 endif()
 
-set(ZIP_ITERATOR_INCLUDE_DIRS ${VCLIB_ZIP_ITERATOR_DIR})
+set(ZIP_VIEWS_INCLUDE_DIRS ${VCLIB_ZIP_VIEWS_DIR})
 
-add_library(vclib-external-zip-iterator INTERFACE)
+set(ZIP_VIEW_BUILD_TEST OFF)
+add_subdirectory(${VCLIB_ZIP_VIEWS_DIR})
 
-target_include_directories(vclib-external-zip-iterator INTERFACE
-	${ZIP_ITERATOR_INCLUDE_DIRS})
+add_library(vclib-external-zip-views INTERFACE)
 
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-zip-iterator)
+target_link_libraries(vclib-external-zip-views INTERFACE zip-view)
+target_compile_definitions(vclib-external-zip-views INTERFACE
+	ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE)
+
+list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-zip-views)

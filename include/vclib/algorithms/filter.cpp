@@ -69,7 +69,8 @@ OutMeshType perVertexMeshFilter(
 		}
 	}
 
-	for (const auto& [birthV, filter] : c9::zip(m.vertices(), vertexFilterRng))
+	for (const auto& [birthV, filter] :
+		 std::views::zip(m.vertices(), vertexFilterRng))
 	{
 		if (filter) {
 			uint v = res.addVertex();
@@ -145,7 +146,9 @@ OutMeshType perFaceMeshFilter(
 
 	std::vector<uint> vertexMapping(m.vertexContainerSize(), UINT_NULL);
 
-	for (const auto& [birthF, filter] : c9::zip(m.faces(), faceFilterRng)) {
+	for (const auto& [birthF, filter] :
+		 std::views::zip(m.faces(), faceFilterRng))
+	{
 		if (filter) {
 			std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
 			uint vi = 0; // incremented with vertices of the face

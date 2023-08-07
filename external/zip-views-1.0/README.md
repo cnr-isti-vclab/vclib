@@ -1,3 +1,72 @@
+# C++20 Zip Views
+
+This is a fork from the [ZipIterator](https://github.com/CommitThis/zip-iterator) modified in order to:
+
+- build with c++20
+- implement zip and make it available on std::ranges and std::views.
+
+List of changes and old readme can be found below.
+
+## Disclaimer
+
+If you have a [c++23 compiler](https://en.cppreference.com/w/cpp/compiler_support/23) that implements [std::views::zip](https://en.cppreference.com/w/cpp/ranges/zip_view), you should not use this library.
+
+If you don't have a c++23 compiler, but you need an implementation of [std::views::zip](https://en.cppreference.com/w/cpp/ranges/zip_view) that works in your c++20 compiler, this is what you're looking for! 
+
+## Usage
+
+### Include
+
+Just set the root of this repo as an include directory and you're good to go, or, using CMake:
+
+```cmake
+
+add_subdirectory(zip-views)
+
+target_link_libraries(your_target PRIVATE zip-view)
+
+```
+
+Then, in your code:
+
+```cpp
+#include <zip_view.hpp>
+```
+
+If you want to inject the zip view into the std namespace to be compatible with c++23 zip view, you can do so by defining the macro `ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE` before including the header.
+
+```cpp
+#define ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
+#include <zip_view.hpp>
+```
+
+### Example
+
+Given two views `a` and `b`, and a container `c`, you can zip `a` and `b` into `c` like this:
+
+```cpp
+#include <zip_view.hpp>
+
+for (auto && [x, y] : c9::zip(a, b)) {
+    c.push_back(x + z);
+}
+```
+
+# List of Changes
+
+[ZipIterator](https://github.com/CommitThis/zip-iterator) was coded in order to work with containers that defined `iterator` or `const_iterator` type that was a random access iterator.
+
+I modified the old `zip_tuple.hpp` in order to work with any view, using the functions provided by the [c++20 ranges library](https://en.cppreference.com/w/cpp/ranges).
+
+I also:
+- added the possibility to inject the zip view into the std namespace to be compatible with c++23 zip view;
+- added the possibility to include the repo as a subdirectory in a cmake project, and added an option to not build the tests;
+- removed the `zip_two.hpp` file and its test;
+
+Detailed edits can be found in the commit history of the repo.
+
+# === OLD README ===
+
 C++: Zip Iteration
 ==================
 This document is licensed CC-BY-NC-SA 3.0, everything else is licensed under 
