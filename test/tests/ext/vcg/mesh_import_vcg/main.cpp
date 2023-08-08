@@ -42,4 +42,14 @@ TEST_CASE( "Import Mesh from VCG" ) {
 	vcl::TriMesh tm = vcl::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
 
 	REQUIRE(tm.vertexNumber() == 8);
+	REQUIRE(tm.faceNumber() == 12);
+
+	for (uint fi = 0; fi < tm.faceNumber(); ++fi) {
+		const auto& f = tm.face(fi);
+		const auto& vcgf = vcgMesh.face[fi];
+		for (uint vi = 0; vi < 3; ++vi) {
+			REQUIRE(
+				tm.index(f.vertex(vi)) == vcg::tri::Index(vcgMesh, vcgf.V(vi)));
+		}
+	}
 }

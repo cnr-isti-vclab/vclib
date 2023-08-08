@@ -63,6 +63,24 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 			}
 		}
 	}
+
+	// copy faces
+	if constexpr (HasFaces<MeshType>) {
+		using FaceType = typename MeshType::FaceType;
+
+		for (uint i = 0; i < vcgMesh.face.size(); ++i) {
+			if (!vcgMesh.face[i].IsD()) {
+				uint fi = mesh.addFace();
+				if constexpr (FaceType::VERTEX_NUMBER < 0) {
+					mesh.face(fi).resizeVertices(3);
+				}
+				for (uint j = 0; j < 3; ++j) {
+					uint vi = vcg::tri::Index(vcgMesh, vcgMesh.face[i].V(j));
+					mesh.face(fi).vertex(j) = &mesh.vertex(vi);
+				}
+			}
+		}
+	}
 }
 
 } // namespace vcl
