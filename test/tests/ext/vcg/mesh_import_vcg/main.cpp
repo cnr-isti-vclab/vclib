@@ -30,7 +30,7 @@
 
 #include "mesh.h"
 
-TEST_CASE( "Import Mesh from VCG" ) {
+TEST_CASE( "Import TriMesh from VCG" ) {
 	VCGMesh vcgMesh;
 
 	vcg::tri::io::ImporterPLY<VCGMesh>::Open(
@@ -50,6 +50,32 @@ TEST_CASE( "Import Mesh from VCG" ) {
 		for (uint vi = 0; vi < 3; ++vi) {
 			REQUIRE(
 				tm.index(f.vertex(vi)) == vcg::tri::Index(vcgMesh, vcgf.V(vi)));
+		}
+	}
+}
+
+TEST_CASE( "Import PolyMesh from VCG" ) {
+	VCGMesh vcgMesh;
+
+	vcg::tri::io::ImporterPLY<VCGMesh>::Open(
+		vcgMesh, VCL_TEST_MODELS_PATH "/cube_tri.ply");
+
+	REQUIRE(vcgMesh.VN() == 8);
+	REQUIRE(vcgMesh.FN() == 12);
+
+	vcl::PolyMesh pm = vcl::meshFromVCGMesh<vcl::PolyMesh>(vcgMesh);
+
+	REQUIRE(pm.vertexNumber() == 8);
+	REQUIRE(pm.faceNumber() == 12);
+
+	for (uint fi = 0; fi < pm.faceNumber(); ++fi) {
+		const auto& f = pm.face(fi);
+		const auto& vcgf = vcgMesh.face[fi];
+
+		REQUIRE(f.vertexNumber() == 3);
+		for (uint vi = 0; vi < 3; ++vi) {
+			REQUIRE(
+				pm.index(f.vertex(vi)) == vcg::tri::Index(vcgMesh, vcgf.V(vi)));
 		}
 	}
 }
