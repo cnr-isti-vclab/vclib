@@ -42,6 +42,9 @@ using ContCompBase = std::conditional_t<
  *
  * For further details , please refer to the page @ref implement_component page.
  *
+ * @tparam COMP_TYPE: The type of the component. It is a value of the enum
+ * ComponentType, or an integer value that is not already used by any other
+ * component. It is used to identify the component at compile time.
  * @tparam T: The type of the data that the component needs to store in a
  * Container. E.g. a WedgeTexCoord component would have vcl::TexCoordd as
  * DataType.

@@ -41,6 +41,11 @@ namespace vcl::comp {
  *
  * For further details , please refer to the page @ref implement_component page.
  *
+ * @tparam DerivedComponent: The type of the Derived Component. It is used to
+ * implement the CRTP pattern.
+ * @tparam COMP_TYPE: The type of the component. It is a value of the enum
+ * ComponentType, or an integer value that is not already used by any other
+ * component. It is used to identify the component at compile time.
  * @tparam Elem: The type of the Element of which the pointers are stored. E.g.
  * a VertexPointers component would have VertexType as Elem.
  * @tparam N: The size of the container: if >= 0 the size is static, if < 0 the

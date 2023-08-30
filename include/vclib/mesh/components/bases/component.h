@@ -92,6 +92,9 @@ namespace vcl::comp {
  *
  * For further details , please refer to the page @ref implement_component page.
  *
+ * @tparam COMP_TYPE: The type of the component. It is a value of the enum
+ * ComponentType, or an integer value that is not already used by any other
+ * component. It is used to identify the component at compile time.
  * @tparam DataType: The type of the data that the component needs to store.
  * E.g. a Normal component would store a vcl::Point3d.
  * @tparam ElementType: This type is used to discriminate between horizontal and
