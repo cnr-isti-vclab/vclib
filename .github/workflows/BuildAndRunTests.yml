@@ -17,8 +17,6 @@ jobs:
         submodules: recursive
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
-      with: # TODO remove this config when will be default on github actions
-        toolset: "14.36" 
     - name: Setup XCode # TODO remove this when xcode 15 will be default on github actions
       uses: maxim-lobanov/setup-xcode@v1 
       if: runner.os == 'macOS'
