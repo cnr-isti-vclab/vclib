@@ -98,36 +98,36 @@ const Vector<T, N>& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::
 	}
 }
 
-//template<
-//	uint CT,
-//	typename T,
-//	int N,
-//	typename AD,
-//	typename El,
-//	bool o,
-//	bool TTVN,
-//	typename... PT>
-//template<typename Comp, typename AdDt>
-//AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::additionalData(
-//	Comp* comp) requires (HAS_ADDITIONAL_DATA)
-//{
-//	return std::get<1>(Base::data(comp));
-//}
+template<
+	uint CT,
+	typename T,
+	int N,
+	typename AD,
+	typename El,
+	bool o,
+	bool TTVN,
+	typename... PT>
+template<typename Comp, typename AdDt>
+AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::additionalData(
+	Comp* comp) requires (HAS_ADDITIONAL_DATA)
+{
+	return std::get<1>(Base::data(comp));
+}
 
-//template<
-//	uint CT,
-//	typename T,
-//	int N,
-//	typename AD,
-//	typename El,
-//	bool o,
-//	bool TTVN,
-//	typename... PT>
-//template<typename Comp, typename AdDt>
-//const AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::
-//	additionalData(const Comp* comp) const requires (HAS_ADDITIONAL_DATA)
-//{
-//	return std::get<1>(Base::data(comp));
-//}
+template<
+	uint CT,
+	typename T,
+	int N,
+	typename AD,
+	typename El,
+	bool o,
+	bool TTVN,
+	typename... PT>
+template<typename Comp, typename AdDt>
+const AdDt& ContainerComponent<CT, T, N, AD, El, o, TTVN, PT...>::
+	additionalData(const Comp* comp) const requires (HAS_ADDITIONAL_DATA)
+{
+	return std::get<1>(Base::data(comp));
+}
 
 } // namespace vcl::comp

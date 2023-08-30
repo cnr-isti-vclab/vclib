@@ -138,20 +138,12 @@ protected:
 	template<typename Comp>
 	const Vector<T, N>& container(const Comp* comp) const;
 
-	// TODO: move in cpp file when CLang will solve this bug
 	template<typename Comp, typename AdDt = AdditionalData>
-	AdDt& additionalData(Comp* comp) requires (HAS_ADDITIONAL_DATA)
-	{
-		return std::get<1>(Base::data(comp));
-	}
+	AdDt& additionalData(Comp* comp) requires (HAS_ADDITIONAL_DATA);
 
-	// TODO: move in cpp file when CLang will solve this bug
 	template<typename Comp, typename AdDt = AdditionalData>
 	const AdDt& additionalData(const Comp* comp) const
-		requires (HAS_ADDITIONAL_DATA)
-	{
-		return std::get<1>(Base::data(comp));
-	}
+		requires (HAS_ADDITIONAL_DATA);
 };
 
 } // namespace vcl::comp
