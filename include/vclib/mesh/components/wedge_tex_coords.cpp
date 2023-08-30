@@ -142,7 +142,7 @@ void WedgeTexCoords<Scalar, N, El, O>::setWedgeTexCoords(
 template<typename Scalar, int N, typename El, bool O>
 short& WedgeTexCoords<Scalar, N, El, O>::textureIndex()
 {
-	return Base::additionalData(this);
+	return Base::additionalData();
 }
 
 /**
@@ -154,7 +154,7 @@ short& WedgeTexCoords<Scalar, N, El, O>::textureIndex()
 template<typename Scalar, int N, typename El, bool O>
 short WedgeTexCoords<Scalar, N, El, O>::textureIndex() const
 {
-	return Base::additionalData(this);
+	return Base::additionalData();
 }
 
 /**
@@ -329,14 +329,14 @@ void WedgeTexCoords<Scalar, N, El, O>::importWedgeTexCoordsFrom(
 template<typename Scalar, int N, typename El, bool O>
 Vector<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, O>::texCoords()
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 template<typename Scalar, int N, typename El, bool O>
 const Vector<vcl::TexCoord<Scalar>, N>&
 WedgeTexCoords<Scalar, N, El, O>::texCoords() const
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 /**

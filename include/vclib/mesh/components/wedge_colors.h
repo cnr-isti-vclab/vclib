@@ -71,6 +71,7 @@ namespace vcl::comp {
 template<int N, typename ElementType = void, bool OPT = false>
 class WedgeColors :
 		public ContainerComponent<
+			WedgeColors<N, ElementType, OPT>,
 			WEDGE_COLORS,
 			vcl::Color,
 			N,
@@ -80,6 +81,7 @@ class WedgeColors :
 			true>
 {
 	using Base = ContainerComponent<
+		WedgeColors<N, ElementType, OPT>,
 		WEDGE_COLORS,
 		vcl::Color,
 		N,

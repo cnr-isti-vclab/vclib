@@ -72,6 +72,7 @@ template<
 	bool TTVN>
 class PointersContainerComponent :
 		public ContainerComponent<
+			DerivedComponent,
 			COMP_TYPE,
 			Elem*,
 			N,
@@ -82,6 +83,7 @@ class PointersContainerComponent :
 			Elem>
 {
 	using Base = ContainerComponent<
+		DerivedComponent,
 		COMP_TYPE,
 		Elem*,
 		N,

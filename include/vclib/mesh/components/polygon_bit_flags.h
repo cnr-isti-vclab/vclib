@@ -97,6 +97,7 @@ namespace vcl::comp {
 template<int N, typename ElementType = void, bool OPT = false>
 class PolygonBitFlags :
 		public ContainerComponent<
+			PolygonBitFlags<N, ElementType, OPT>,
 			BIT_FLAGS,
 			BitSet<char>,
 			N,
@@ -108,6 +109,7 @@ class PolygonBitFlags :
 	using FT = char; // FlagsType, the integral type used for the flags
 
 	using Base = ContainerComponent<
+		PolygonBitFlags<N, ElementType, OPT>,
 		BIT_FLAGS,
 		BitSet<FT>,
 		N,

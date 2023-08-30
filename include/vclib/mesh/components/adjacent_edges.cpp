@@ -37,7 +37,7 @@ namespace vcl::comp {
 template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::init()
 {
-	Base::init(this);
+	Base::init();
 }
 
 /**
@@ -64,7 +64,7 @@ bool AdjacentEdges<Edge, N, TT, El, O>::isAvailable() const
 template<typename Edge, int N, bool TT, typename El, bool O>
 uint AdjacentEdges<Edge, N, TT, El, O>::adjEdgesNumber() const
 {
-	return Base::container(this).size();
+	return Base::container().size();
 }
 
 /**
@@ -85,7 +85,7 @@ uint AdjacentEdges<Edge, N, TT, El, O>::adjEdgesNumber() const
 template<typename Edge, int N, bool TT, typename El, bool O>
 Edge*& AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i)
 {
-	return Base::container(this).at(i);
+	return Base::container().at(i);
 }
 
 /**
@@ -97,7 +97,7 @@ Edge*& AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i)
 template<typename Edge, int N, bool TT, typename El, bool O>
 const Edge* AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i) const
 {
-	return Base::container(this).at(i);
+	return Base::container().at(i);
 }
 
 /**
@@ -122,7 +122,7 @@ const Edge* AdjacentEdges<Edge, N, TT, El, O>::adjEdge(uint i) const
 template<typename Edge, int N, bool TT, typename El, bool O>
 Edge*& AdjacentEdges<Edge, N, TT, El, O>::adjEdgeMod(int i)
 {
-	return Base::container(this).atMod(i);
+	return Base::container().atMod(i);
 }
 
 /**
@@ -134,7 +134,7 @@ Edge*& AdjacentEdges<Edge, N, TT, El, O>::adjEdgeMod(int i)
 template<typename Edge, int N, bool TT, typename El, bool O>
 const Edge* AdjacentEdges<Edge, N, TT, El, O>::adjEdgeMod(int i) const
 {
-	return Base::container(this).atMod(i);
+	return Base::container().atMod(i);
 }
 
 /**
@@ -146,7 +146,7 @@ const Edge* AdjacentEdges<Edge, N, TT, El, O>::adjEdgeMod(int i) const
 template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::setAdjEdge(Edge* e, uint i)
 {
-	Base::container(this).set(e, i);
+	Base::container().set(e, i);
 }
 
 /**
@@ -161,7 +161,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::setAdjEdges(
 	const std::vector<Edge*>& list)
 {
-	Base::container(this).set(list);
+	Base::container().set(list);
 }
 
 /**
@@ -175,7 +175,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::setAdjEdges(
 template<typename Edge, int N, bool TT, typename El, bool O>
 bool AdjacentEdges<Edge, N, TT, El, O>::containsAdjEdge(const Edge* e) const
 {
-	return Base::container(this).contains(e);
+	return Base::container().contains(e);
 }
 
 /**
@@ -191,7 +191,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 typename AdjacentEdges<Edge, N, TT, El, O>::AdjacentEdgeIterator
 AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e)
 {
-	return Base::container(this).find(e);
+	return Base::container().find(e);
 }
 
 /**
@@ -207,7 +207,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 typename AdjacentEdges<Edge, N, TT, El, O>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e) const
 {
-	return Base::container(this).find(e);
+	return Base::container().find(e);
 }
 
 /**
@@ -222,7 +222,7 @@ AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e) const
 template<typename Edge, int N, bool TT, typename El, bool O>
 uint AdjacentEdges<Edge, N, TT, El, O>::indexOfAdjEdge(const Edge* e) const
 {
-	return Base::container(this).indexOf(e);
+	return Base::container().indexOf(e);
 }
 
 /**
@@ -235,7 +235,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::resizeAdjEdges(uint n)
 	requires(N < 0 && !TT)
 {
-	Base::container(this).resize(n);
+	Base::container().resize(n);
 }
 
 /**
@@ -249,7 +249,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::pushAdjEdge(Edge* e)
 	requires(N < 0 && !TT)
 {
-	Base::container(this).pushBack(e);
+	Base::container().pushBack(e);
 }
 
 /**
@@ -265,7 +265,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::insertAdjEdge(uint i, Edge* e)
 	requires(N < 0 && !TT)
 {
-	Base::container(this).insert(i, e);
+	Base::container().insert(i, e);
 }
 
 /**
@@ -279,7 +279,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::eraseAdjEdge(uint i)
 	requires(N < 0 && !TT)
 {
-	Base::container(this).erase(i);
+	Base::container().erase(i);
 }
 
 /**
@@ -291,7 +291,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::clearAdjEdges()
 	requires(N < 0 && !TT)
 {
-	Base::container(this).clear();
+	Base::container().clear();
 }
 
 /**
@@ -304,7 +304,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 typename AdjacentEdges<Edge, N, TT, El, O>::AdjacentEdgeIterator
 AdjacentEdges<Edge, N, TT, El, O>::adjEdgeBegin()
 {
-	return Base::container(this).begin();
+	return Base::container().begin();
 }
 
 /**
@@ -316,7 +316,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 typename AdjacentEdges<Edge, N, TT, El, O>::AdjacentEdgeIterator
 AdjacentEdges<Edge, N, TT, El, O>::adjEdgeEnd()
 {
-	return Base::container(this).end();
+	return Base::container().end();
 }
 
 /**
@@ -329,7 +329,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 typename AdjacentEdges<Edge, N, TT, El, O>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N, TT, El, O>::adjEdgeBegin() const
 {
-	return Base::container(this).begin();
+	return Base::container().begin();
 }
 
 /**
@@ -342,7 +342,7 @@ template<typename Edge, int N, bool TT, typename El, bool O>
 typename AdjacentEdges<Edge, N, TT, El, O>::ConstAdjacentEdgeIterator
 AdjacentEdges<Edge, N, TT, El, O>::adjEdgeEnd() const
 {
-	return Base::container(this).end();
+	return Base::container().end();
 }
 
 /**
@@ -447,31 +447,31 @@ void AdjacentEdges<Edge, N, TT, El, O>::updatePointers(
 template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::resize(uint n) requires (N < 0)
 {
-	Base::container(this).resize(n);
+	Base::container().resize(n);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::pushBack(Edge* e) requires (N < 0)
 {
-	Base::container(this).pushBack(e);
+	Base::container().pushBack(e);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::insert(uint i, Edge* e) requires (N < 0)
 {
-	Base::container(this).insert(i, e);
+	Base::container().insert(i, e);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::erase(uint i) requires (N < 0)
 {
-	Base::container(this).erase(i);
+	Base::container().erase(i);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool O>
 void AdjacentEdges<Edge, N, TT, El, O>::clear() requires (N < 0)
 {
-	Base::container(this).clear();
+	Base::container().clear();
 }
 
 template<typename Edge, int N, bool TT, typename El, bool O>

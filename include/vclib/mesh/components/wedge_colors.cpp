@@ -293,13 +293,13 @@ void WedgeColors<N, El, O>::importWedgeColorsFrom(const Element& e)
 template<int N, typename El, bool O>
 Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors()
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 template<int N, typename El, bool O>
 const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 /**

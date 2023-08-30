@@ -476,28 +476,28 @@ template<int N, typename El, bool O>
 BitSet<typename PolygonBitFlags<N, El, O>::FT>&
 PolygonBitFlags<N, El, O>::flags()
 {
-	return Base::additionalData(this);
+	return Base::additionalData();
 }
 
 template<int N, typename El, bool O>
 const BitSet<typename PolygonBitFlags<N, El, O>::FT>&
 PolygonBitFlags<N, El, O>::flags() const
 {
-	return Base::additionalData(this);
+	return Base::additionalData();
 }
 
 template<int N, typename El, bool O>
 Vector<BitSet<typename PolygonBitFlags<N, El, O>::FT>, -1>&
 PolygonBitFlags<N, El, O>::edgeFlags()
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 template<int N, typename El, bool O>
 const Vector<BitSet<typename PolygonBitFlags<N, El, O>::FT>, -1>&
 PolygonBitFlags<N, El, O>::edgeFlags() const
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 } // namespace vcl::comp

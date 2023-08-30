@@ -57,7 +57,7 @@ void PointersContainerComponent<DC, CT, Elem, N, El, o, TT>::
 	updateElementPointers(const Elem* oldBase, const Elem* newBase)
 {
 
-	auto& baseContainer = Base::container(static_cast<DC*>(this));
+	auto& baseContainer = Base::container();
 
 	for (uint j = 0; j < baseContainer.size(); ++j)
 	{ // for each pointer in this container
@@ -92,7 +92,7 @@ template<
 void PointersContainerComponent<DC, CT, Elem, N, El, o, TT>::
 	updateElementPointers(const Elem* base, const std::vector<uint>& newIndices)
 {
-	auto& baseContainer = Base::container(static_cast<DC*>(this));
+	auto& baseContainer = Base::container();
 
 	for (uint j = 0; j < baseContainer.size(); ++j) {
 		if (baseContainer.at(j) != nullptr) {

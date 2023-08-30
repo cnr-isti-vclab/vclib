@@ -42,6 +42,8 @@ using ContCompBase = std::conditional_t<
  *
  * For further details , please refer to the page @ref implement_component page.
  *
+ * @tparam DerivedComponent: The type of the Derived Component. It is used to
+ * implement the CRTP pattern.
  * @tparam COMP_TYPE: The type of the component. It is a value of the enum
  * ComponentType, or an integer value that is not already used by any other
  * component. It is used to identify the component at compile time.
@@ -75,6 +77,7 @@ using ContCompBase = std::conditional_t<
  * happens.
  */
 template<
+	typename DerivedComponent,
 	uint COMP_TYPE,
 	typename T,
 	int N,
@@ -132,20 +135,17 @@ protected:
 
 	ContainerComponent();
 
-	template<typename Comp>
-	void init(Comp* comp);
+	void init();
 
-	template<typename Comp>
-	Vector<T, N>& container(Comp* comp);
+	Vector<T, N>& container();
 
-	template<typename Comp>
-	const Vector<T, N>& container(const Comp* comp) const;
+	const Vector<T, N>& container() const;
 
-	template<typename Comp, typename AdDt = AdditionalData>
-	AdDt& additionalData(Comp* comp) requires (HAS_ADDITIONAL_DATA);
+	template<typename AdDt = AdditionalData>
+	AdDt& additionalData() requires (HAS_ADDITIONAL_DATA);
 
-	template<typename Comp, typename AdDt = AdditionalData>
-	const AdDt& additionalData(const Comp* comp) const
+	template<typename AdDt = AdditionalData>
+	const AdDt& additionalData() const
 		requires (HAS_ADDITIONAL_DATA);
 };
 
