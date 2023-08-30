@@ -26,30 +26,13 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<PointConcept P, typename El, bool O>
-bool Normal<P, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns a const reference of the normal of the element.
  * @return a const reference of the normal of the element.
  */
 template<PointConcept P, typename El, bool O>
 const P& Normal<P, El, O>::normal() const
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 /**
@@ -59,7 +42,7 @@ const P& Normal<P, El, O>::normal() const
 template<PointConcept P, typename El, bool O>
 P& Normal<P, El, O>::normal()
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 template<PointConcept P, typename El, bool O>

@@ -26,30 +26,13 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename El, bool O>
-bool Color<El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns a const reference of the color of the element.
  * @return a const reference of the color of the element.
  */
 template<typename El, bool O>
 const vcl::Color& Color<El, O>::color() const
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 /**
@@ -59,7 +42,7 @@ const vcl::Color& Color<El, O>::color() const
 template<typename El, bool O>
 vcl::Color& Color<El, O>::color()
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 template<typename El, bool O>

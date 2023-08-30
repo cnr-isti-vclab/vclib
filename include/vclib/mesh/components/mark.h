@@ -78,9 +78,10 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
-class Mark : public Component<MARK, int, ElementType, OPT>
+class Mark :
+		public Component<Mark<ElementType, OPT>, MARK, int, ElementType, OPT>
 {
-	using Base = Component<MARK, int, ElementType, OPT>;
+	using Base = Component<Mark<ElementType, OPT>, MARK, int, ElementType, OPT>;
 
 public:
 	/* Constructor and isAvailable */
@@ -88,8 +89,6 @@ public:
 	Mark();
 
 	void init();
-
-	bool isAvailable() const;
 
 	/* Member functions */
 

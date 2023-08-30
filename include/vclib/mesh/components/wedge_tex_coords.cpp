@@ -28,23 +28,6 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename Scalar, int N, typename El, bool O>
-bool WedgeTexCoords<Scalar, N, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns a reference to the i-th wedge texcoord of the element.
  *
  * You can use this function to set the i-th texcoord of the element:

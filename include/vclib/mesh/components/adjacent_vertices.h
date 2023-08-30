@@ -98,12 +98,6 @@ public:
 	using AdjacentVertexIterator      = typename Base::Iterator;
 	using ConstAdjacentVertexIterator = typename Base::ConstIterator;
 
-	/* Constructor and isAvailable */
-
-	void init();
-
-	bool isAvailable() const;
-
 	/* Member functions */
 
 	uint adjVerticesNumber() const;

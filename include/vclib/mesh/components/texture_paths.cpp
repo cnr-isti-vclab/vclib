@@ -66,7 +66,7 @@ std::string& TexturePaths::texturePath(uint i)
  */
 const std::string& TexturePaths::meshBasePath() const
 {
-	return Base::data(this).meshPath;
+	return Base::data().meshPath;
 }
 
 /**
@@ -74,7 +74,7 @@ const std::string& TexturePaths::meshBasePath() const
  */
 std::string& TexturePaths::meshBasePath()
 {
-	return Base::data(this).meshPath;
+	return Base::data().meshPath;
 }
 
 /**
@@ -186,12 +186,12 @@ void TexturePaths::importFrom(const Element& e)
 
 std::vector<std::string>& TexturePaths::texPaths()
 {
-	return Base::data(this).texPaths;
+	return Base::data().texPaths;
 }
 
 const std::vector<std::string>& TexturePaths::texPaths() const
 {
-	return Base::data(this).texPaths;
+	return Base::data().texPaths;
 }
 
 } // namespace vcl::comp

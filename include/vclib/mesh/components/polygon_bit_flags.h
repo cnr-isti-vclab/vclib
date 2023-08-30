@@ -139,8 +139,6 @@ public:
 
 	void init();
 
-	bool isAvailable() const;
-
 	/* Member functions */
 
 	bool deleted() const;

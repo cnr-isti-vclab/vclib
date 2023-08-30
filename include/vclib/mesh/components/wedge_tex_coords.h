@@ -112,8 +112,6 @@ public:
 
 	/* Member functions */
 
-	bool isAvailable() const;
-
 	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);
 	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const;
 

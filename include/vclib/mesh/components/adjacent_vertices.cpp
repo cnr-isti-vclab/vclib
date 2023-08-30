@@ -26,38 +26,6 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Initializes an empty container of adjacent vertices.
- *
- * It is made in the init function since the component could be not available
- * during construction (e.g. if the component is optional and not enabled).
- *
- * This member function is hidden by the element that inherits this class.
- */
-template<typename Vertex, typename El, bool O>
-void AdjacentVertices<Vertex, El, O>::init()
-{
-	Base::init();
-}
-
-/**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename Vertex, typename El, bool O>
-bool AdjacentVertices<Vertex, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns the number of adjacent vertices of the element.
  * @return The number of adjacent vertices of the element.
  */

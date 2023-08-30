@@ -26,39 +26,6 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Initializes the container of vertices to nullptr, or an empty
- * container if the container is dynamic.
- *
- * It is made in the init function for sake of compatibility with the other
- * components.
- *
- * This member function is hidden by the element that inherits this class.
- */
-template<typename Vertex, int N, typename El>
-void VertexPointers<Vertex, N, El>::init()
-{
-	Base::init();
-}
-
-/**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename Vertex, int N, typename El>
-bool VertexPointers<Vertex, N, El>::isAvailable()
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns the number of vertices of the element.
  * @return The number of vertices of the element.
  */

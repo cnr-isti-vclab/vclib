@@ -60,10 +60,19 @@ namespace vcl::comp {
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
 class TransformMatrix :
-		public Component<TRANSFORM_MATRIX, Matrix44<Scalar>, ElementType, OPT>
+		public Component<
+			TransformMatrix<Scalar, ElementType, OPT>,
+			TRANSFORM_MATRIX,
+			Matrix44<Scalar>,
+			ElementType,
+			OPT>
 {
-	using Base =
-		Component<TRANSFORM_MATRIX, Matrix44<Scalar>, ElementType, OPT>;
+	using Base = Component<
+		TransformMatrix<Scalar, ElementType, OPT>,
+		TRANSFORM_MATRIX,
+		Matrix44<Scalar>,
+		ElementType,
+		OPT>;
 
 public:
 	/**
@@ -76,8 +85,6 @@ public:
 	TransformMatrix();
 
 	void init();
-
-	bool isAvailable() const;
 
 	/* Member functions */
 

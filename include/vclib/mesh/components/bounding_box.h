@@ -59,17 +59,25 @@ namespace vcl::comp {
  */
 template<PointConcept PointType, typename ElementType = void, bool OPT = false>
 class BoundingBox :
-		public Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>
+		public Component<
+			BoundingBox<PointType, ElementType, OPT>,
+			BOUNDING_BOX,
+			Box<PointType>,
+			ElementType,
+			OPT>
 {
-	using Base = Component<BOUNDING_BOX, Box<PointType>, ElementType, OPT>;
+	using Base = Component<
+		BoundingBox<PointType, ElementType, OPT>,
+		BOUNDING_BOX,
+		Box<PointType>,
+		ElementType,
+		OPT>;
 
 public:
 	/**
 	 * @brief Expose the type of the bounding box.
 	 */
 	using BoundingBoxType = Box<PointType>;
-
-	bool isAvailable() const;
 
 	const BoundingBoxType& boundingBox() const;
 	BoundingBoxType&       boundingBox();

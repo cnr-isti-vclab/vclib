@@ -98,8 +98,6 @@ public:
 	using WedgeColorsIterator      = typename Base::Iterator;
 	using ConstWedgeColorsIterator = typename Base::ConstIterator;
 
-	bool isAvailable() const;
-
 	/* Member functions */
 
 	vcl::Color&       wedgeColor(uint i);

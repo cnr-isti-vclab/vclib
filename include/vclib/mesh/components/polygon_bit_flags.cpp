@@ -52,23 +52,6 @@ void PolygonBitFlags<N, El, O>::init()
 }
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<int N, typename El, bool O>
-bool PolygonBitFlags<N, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns whether the current Polygon is deleted or not.
  * @return true if the Polygon is deleted, false otherwise.
  */

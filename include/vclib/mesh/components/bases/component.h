@@ -92,6 +92,8 @@ namespace vcl::comp {
  *
  * For further details , please refer to the page @ref implement_component page.
  *
+ * @tparam DerivedComponent: The type of the Derived Component. It is used to
+ * implement the CRTP pattern.
  * @tparam COMP_TYPE: The type of the component. It is a value of the enum
  * ComponentType, or an integer value that is not already used by any other
  * component. It is used to identify the component at compile time.
@@ -110,6 +112,7 @@ namespace vcl::comp {
  * happens.
  */
 template<
+	typename DerivedComponent,
 	uint COMP_TYPE,
 	typename DataType,
 	typename ElementType,
@@ -141,23 +144,34 @@ public:
 	 */
 	static const bool IS_OPTIONAL = OPT;
 
+	/**
+	 * @private
+	 * @brief Returns `true` if the component is available, `false` otherwise.
+	 *
+	 * This member function can return `false` only if the component is
+	 * optional, and it is not enabled.
+	 *
+	 * This member function is hidden by the element that inherits this class.
+	 *
+	 * @return `true` if the component is available, `false` otherwise.
+	 */
+	bool isAvailable() const
+	{
+		return cdata.template isComponentAvailable<ElementType>(
+			static_cast<const DerivedComponent*>(this));
+	}
+
 protected:
-	template<typename Comp>
-	bool isAvailable(const Comp* c) const
+	DataValueType& data()
 	{
-		return cdata.template isComponentAvailable<ElementType>(c);
+		return cdata.template get<ElementType>(
+			static_cast<DerivedComponent*>(this));
 	}
 
-	template<typename Comp>
-	DataValueType& data(Comp* c)
+	const DataValueType& data() const
 	{
-		return cdata.template get<ElementType>(c);
-	}
-
-	template<typename Comp>
-	const DataValueType& data(const Comp* c) const
-	{
-		return cdata.template get<ElementType>(c);
+		return cdata.template get<ElementType>(
+			static_cast<const DerivedComponent*>(this));
 	}
 
 private:

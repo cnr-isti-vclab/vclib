@@ -21,9 +21,7 @@ ContainerComponent<DC, CT, T, N, AD, El, o, TTVN, PT...>::ContainerComponent()
 {
 	if constexpr (!Base::IS_VERTICAL) {
 		if constexpr (N >= 0) {
-			// the void* nullptr here is ignored, since the component is
-			// horizontal
-			Base::data((void*)nullptr).fill(T());
+			Base::data().fill(T());
 		}
 	}
 }
@@ -71,10 +69,10 @@ Vector<T, N>&
 ContainerComponent<DC, CT, T, N, AD, El, o, TTVN, PT...>::container()
 {
 	if constexpr (HAS_ADDITIONAL_DATA) {
-		return std::get<0>(Base::data(static_cast<DC*>(this)));
+		return std::get<0>(Base::data());
 	}
 	else {
-		return Base::data(static_cast<DC*>(this));
+		return Base::data();
 	}
 }
 
@@ -92,10 +90,10 @@ const Vector<T, N>&
 ContainerComponent<DC, CT, T, N, AD, El, o, TTVN, PT...>::container() const
 {
 	if constexpr (HAS_ADDITIONAL_DATA) {
-		return std::get<0>(Base::data(static_cast<const DC*>(this)));
+		return std::get<0>(Base::data());
 	}
 	else {
-		return Base::data(static_cast<const DC*>(this));
+		return Base::data();
 	}
 }
 
@@ -113,7 +111,7 @@ template<typename AdDt>
 AdDt& ContainerComponent<DC, CT, T, N, AD, El, o, TTVN, PT...>::additionalData()
 	requires (HAS_ADDITIONAL_DATA)
 {
-	return std::get<1>(Base::data(static_cast<DC*>(this)));
+	return std::get<1>(Base::data());
 }
 
 template<
@@ -131,7 +129,7 @@ const AdDt&
 ContainerComponent<DC, CT, T, N, AD, El, o, TTVN, PT...>::additionalData() const
 	requires (HAS_ADDITIONAL_DATA)
 {
-	return std::get<1>(Base::data(static_cast<const DC*>(this)));
+	return std::get<1>(Base::data());
 }
 
 } // namespace vcl::comp

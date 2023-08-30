@@ -107,12 +107,6 @@ public:
 	using VertexIterator      = typename Base::Iterator;
 	using ConstVertexIterator = typename Base::ConstIterator;
 
-	/* Constructor and isAvailable */
-
-	void init();
-
-	bool isAvailable();
-
 	/* Member functions */
 
 	uint vertexNumber() const;

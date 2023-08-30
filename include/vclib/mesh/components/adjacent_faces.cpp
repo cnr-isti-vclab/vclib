@@ -26,38 +26,6 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Initializes the container of adjacent faces to nullptr.
- *
- * It is made in the init function since the component could be not available
- * during construction (e.g. if the component is optional and not enabled).
- *
- * This member function is hidden by the element that inherits this class.
- */
-template<typename Face, int N, bool TT, typename El, bool O>
-void AdjacentFaces<Face, N, TT, El, O>::init()
-{
-	Base::init();
-}
-
-/**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename Face, int N, bool TT, typename El, bool O>
-bool AdjacentFaces<Face, N, TT, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns the number of adjacent faces of this element.
  * @return The number of adjacent faces of this element.
  */

@@ -113,12 +113,6 @@ public:
 	 */
 	static const int ADJ_FACE_NUMBER = Base::SIZE;
 
-	/* Constructor and isAvailable */
-
-	void init();
-
-	bool isAvailable() const;
-
 	/* Member functions */
 
 	uint adjFacesNumber() const;

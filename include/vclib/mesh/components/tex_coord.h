@@ -56,17 +56,25 @@ namespace vcl::comp {
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
 class TexCoord :
-		public Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>
+		public Component<
+			TexCoord<Scalar, ElementType, OPT>,
+			TEX_COORD,
+			vcl::TexCoord<Scalar>,
+			ElementType,
+			OPT>
 {
-	using Base = Component<TEX_COORD, vcl::TexCoord<Scalar>, ElementType, OPT>;
+	using Base = Component<
+		TexCoord<Scalar, ElementType, OPT>,
+		TEX_COORD,
+		vcl::TexCoord<Scalar>,
+		ElementType,
+		OPT>;
 
 public:
 	/**
 	 * @brief Expose the type of the TexCoord.
 	 */
 	using TexCoordType = vcl::TexCoord<Scalar>;
-
-	bool isAvailable() const;
 
 	const TexCoordType& texCoord() const;
 	TexCoordType&       texCoord();

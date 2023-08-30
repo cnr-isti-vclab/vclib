@@ -15,6 +15,7 @@ namespace internal {
 // if AD is not void, there is additional data, and the component will have
 // a tuple containing a Vector and the additional data
 template<
+	typename DC,
 	uint CT,
 	typename T,
 	int N,
@@ -25,8 +26,8 @@ template<
 	typename... PT>
 using ContCompBase = std::conditional_t<
 	std::is_same_v<AD, void>,
-	Component<CT, Vector<T, N>, El, o, PT...>,
-	Component<CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
+	Component<DC, CT, Vector<T, N>, El, o, PT...>,
+	Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
 
 } // namespace vcl::comp::internal
 
@@ -88,6 +89,7 @@ template<
 	typename... PointedTypes>
 class ContainerComponent :
 		public internal::ContCompBase<
+			DerivedComponent,
 			COMP_TYPE,
 			T,
 			N,
@@ -101,6 +103,7 @@ class ContainerComponent :
 		!std::is_same_v<AdditionalData, void>;
 
 	using Base = internal::ContCompBase<
+		DerivedComponent,
 		COMP_TYPE,
 		T,
 		N,

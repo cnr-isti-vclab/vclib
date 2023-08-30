@@ -113,12 +113,6 @@ public:
 	 */
 	static const int ADJ_EDGE_NUMBER = Base::SIZE;
 
-	/* Constructor and isAvailable */
-
-	void init();
-
-	bool isAvailable() const;
-
 	/* Member functions */
 
 	uint adjEdgesNumber() const;

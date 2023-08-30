@@ -55,17 +55,26 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<PointConcept P, typename ElementType = void, bool OPT = false>
-class Coordinate : public Component<COORDINATE, P, ElementType, OPT>
+class Coordinate :
+		public Component<
+			Coordinate<P, ElementType, OPT>,
+			COORDINATE,
+			P,
+			ElementType,
+			OPT>
 {
-	using Base = Component<COORDINATE, P, ElementType, OPT>;
+	using Base = Component<
+		Coordinate<P, ElementType, OPT>,
+		COORDINATE,
+		P,
+		ElementType,
+		OPT>;
 
 public:
 	/**
 	 * @brief Expose the type of the Coordinate.
 	 */
 	using CoordType = P;
-
-	bool isAvailable() const;
 
 	const P& coord() const;
 	P&       coord();

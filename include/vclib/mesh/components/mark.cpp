@@ -53,30 +53,13 @@ void Mark<El, O>::init()
 }
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename El, bool O>
-bool Mark<El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns the value of the mark.
  * @return the value of the mark.
  */
 template<typename El, bool O>
 int Mark<El, O>::mark() const
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 /**
@@ -139,7 +122,7 @@ void Mark<El, O>::importFrom(const Element& e)
 template<typename El, bool O>
 int& Mark<El, O>::mark()
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 /**
