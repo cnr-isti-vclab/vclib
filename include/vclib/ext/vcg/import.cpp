@@ -42,7 +42,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
 	mesh.reserveVertices(vcgMesh.VN());
 
-	// copy vertices
+	// vertices
 	for (uint i = 0; i < vcgMesh.vert.size(); i++) {
 		if (!vcgMesh.vert[i].IsD()) {
 			uint vi = mesh.addVertex(CoordType(
@@ -50,6 +50,10 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 				vcgMesh.vert[i].P()[1],
 				vcgMesh.vert[i].P()[2]));
 
+			// flags
+			mesh.vertex(vi).importFromVCGFlags(vcgMesh.vert[i].Flags());
+
+			// normal
 			if constexpr (HasPerVertexNormal<MeshType>) {
 				using NormalType = typename MeshType::VertexType::NormalType;
 				if (isPerVertexNormalAvailable(mesh)) {
@@ -58,6 +62,114 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 							vcgMesh.vert[i].N()[0],
 							vcgMesh.vert[i].N()[1],
 							vcgMesh.vert[i].N()[2]);
+					}
+				}
+			}
+
+			// color
+			if constexpr (HasPerVertexColor<MeshType>) {
+				if (isPerVertexColorAvailable(mesh)) {
+					if (vcg::tri::HasPerVertexColor(vcgMesh)) {
+						mesh.vertex(vi).color() = Color(
+							vcgMesh.vert[i].C()[0],
+							vcgMesh.vert[i].C()[1],
+							vcgMesh.vert[i].C()[2],
+							vcgMesh.vert[i].C()[3]);
+					}
+				}
+			}
+
+			// quality
+			if constexpr (HasPerVertexQuality<MeshType>) {
+				if (isPerVertexQualityAvailable(mesh)) {
+					if (vcg::tri::HasPerVertexQuality(vcgMesh)) {
+						mesh.vertex(vi).quality() = vcgMesh.vert[i].Q();
+					}
+				}
+			}
+
+			// texcoord
+			if constexpr (HasPerVertexTexCoord<MeshType>) {
+				using TexCoordType =
+					typename MeshType::VertexType::TexCoordType;
+				if (isPerVertexTexCoordAvailable(mesh)) {
+					if (vcg::tri::HasPerVertexTexCoord(vcgMesh)) {
+						mesh.vertex(vi).texCoord() = TexCoordType(
+							vcgMesh.vert[i].T().U(),
+							vcgMesh.vert[i].T().V());
+					}
+				}
+			}
+		}
+	}
+
+	// faces
+	if constexpr (HasFaces<MeshType>) {
+		using FaceType = typename MeshType::FaceType;
+
+		for (uint i = 0; i < vcgMesh.face.size(); ++i) {
+			if (!vcgMesh.face[i].IsD()) {
+				uint fi = mesh.addFace();
+				if constexpr (FaceType::VERTEX_NUMBER < 0) {
+					mesh.face(fi).resizeVertices(3);
+				}
+				for (uint j = 0; j < 3; ++j) {
+					uint vi = vcg::tri::Index(vcgMesh, vcgMesh.face[i].V(j));
+					mesh.face(fi).vertex(j) = &mesh.vertex(vi);
+				}
+
+				// flags
+				mesh.face(fi).importFromVCGFlags(vcgMesh.face[i].Flags());
+
+				// normal
+				if constexpr (HasPerFaceNormal<MeshType>) {
+					using NormalType = typename MeshType::FaceType::NormalType;
+					if (isPerFaceNormalAvailable(mesh)) {
+						if (vcg::tri::HasPerFaceNormal(vcgMesh)) {
+							mesh.face(fi).normal() = NormalType(
+								vcgMesh.face[i].N()[0],
+								vcgMesh.face[i].N()[1],
+								vcgMesh.face[i].N()[2]);
+						}
+					}
+				}
+
+				// color
+				if constexpr (HasPerFaceColor<MeshType>) {
+					if (isPerFaceColorAvailable(mesh)) {
+						if (vcg::tri::HasPerFaceColor(vcgMesh)) {
+							mesh.face(fi).color() = Color(
+								vcgMesh.face[i].C()[0],
+								vcgMesh.face[i].C()[1],
+								vcgMesh.face[i].C()[2],
+								vcgMesh.face[i].C()[3]);
+						}
+					}
+				}
+
+				// quality
+				if constexpr (HasPerFaceQuality<MeshType>) {
+					if (isPerFaceQualityAvailable(mesh)) {
+						if (vcg::tri::HasPerFaceQuality(vcgMesh)) {
+							mesh.face(fi).quality() = vcgMesh.face[i].Q();
+						}
+					}
+				}
+
+				// wedge texcoords
+				if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
+					using WTType =
+						typename MeshType::FaceType::WedgeTexCoordType;
+					if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
+						if (vcg::tri::HasPerWedgeTexCoord(vcgMesh)) {
+							mesh.face(fi).textureIndex() =
+								vcgMesh.face[i].WT(0).N();
+							for (uint j = 0; j < 3; ++j) {
+								mesh.face(fi).wedgeTexCoord(j) = WTType(
+									vcgMesh.face[i].WT(j).U(),
+									vcgMesh.face[i].WT(j).V());
+							}
+						}
 					}
 				}
 			}

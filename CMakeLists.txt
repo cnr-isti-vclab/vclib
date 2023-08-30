@@ -597,7 +597,7 @@ if (VCLIB_IDE)
 		${HEADERS} ${HEADERS_LIB} ${SOURCES} ${SOURCES_LIB} ${FORMS_LIB})
 endif()
 
-if (WIN32 OR TARGET vclib-external-tbb)
+if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)
 	message(STATUS "VCLib: using parallel algorithms")
 else()
 	message(STATUS "VCLib: not using parallel algorithms")
