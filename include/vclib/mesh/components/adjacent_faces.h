@@ -162,10 +162,6 @@ protected:
 	template<typename Element, typename ElFType>
 	void importPointersFrom(const Element& e, Face* base, const ElFType* ebase);
 
-	void updatePointers(const Face* oldBase, const Face* newBase);
-
-	void updatePointers(const Face* base, const std::vector<uint>& newIndices);
-
 	// ContainerComponent interface functions
 	void resize(uint n) requires (N < 0);
 	void pushBack(Face* f = nullptr) requires (N < 0);

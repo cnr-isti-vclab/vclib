@@ -376,22 +376,6 @@ void AdjacentVertices<Vertex, El, O>::importPointersFrom(
 }
 
 template<typename Vertex, typename El, bool O>
-void AdjacentVertices<Vertex, El, O>::updatePointers(
-	const Vertex* oldBase,
-	const Vertex* newBase)
-{
-	Base::updateElementPointers(oldBase, newBase);
-}
-
-template<typename Vertex, typename El, bool O>
-void AdjacentVertices<Vertex, El, O>::updatePointers(
-	const Vertex*           base,
-	const std::vector<uint>& newIndices)
-{
-	Base::updateElementPointers(base, newIndices);
-}
-
-template<typename Vertex, typename El, bool O>
 template<typename Element, typename ElVType>
 void AdjacentVertices<Vertex, El, O>::importPtrsFrom(
 	const Element& e,

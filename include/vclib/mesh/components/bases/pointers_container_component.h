@@ -96,13 +96,9 @@ class PointersContainerComponent :
 protected:
 	using Base::container;
 
-	void updateElementPointers(
-		const Elem* oldBase,
-		const Elem* newBase);
+	void updatePointers(const Elem* oldBase, const Elem* newBase);
 
-	void updateElementPointers(
-		const Elem*              base,
-		const std::vector<uint>& newIndices);
+	void updatePointers(const Elem* base, const std::vector<uint>& newIndices);
 };
 
 } // namespace vcl::comp

@@ -397,22 +397,6 @@ void AdjacentFaces<Face, N, TT, El, O>::importPointersFrom(
 }
 
 template<typename Face, int N, bool TT, typename El, bool O>
-void AdjacentFaces<Face, N, TT, El, O>::updatePointers(
-	const Face* oldBase,
-	const Face* newBase)
-{
-	Base::updateElementPointers(oldBase, newBase);
-}
-
-template<typename Face, int N, bool TT, typename El, bool O>
-void AdjacentFaces<Face, N, TT, El, O>::updatePointers(
-	const Face*             base,
-	const std::vector<uint>& newIndices)
-{
-	Base::updateElementPointers(base, newIndices);
-}
-
-template<typename Face, int N, bool TT, typename El, bool O>
 void AdjacentFaces<Face, N, TT, El, O>::resize(uint n) requires (N < 0)
 {
 	Base::container().resize(n);

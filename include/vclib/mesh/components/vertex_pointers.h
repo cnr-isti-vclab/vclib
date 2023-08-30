@@ -151,11 +151,8 @@ protected:
 
 	// PointersComponent interface functions
 	template<typename Element, typename ElVType>
-	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
-
-	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
-
-	void updatePointers(const Vertex* base, const std::vector<uint>& newIndices);
+	void
+	importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
 
 private:
 	template<typename Element, typename ElVType>

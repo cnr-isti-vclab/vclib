@@ -148,12 +148,6 @@ protected:
 		Vertex*        base,
 		const ElVType* ebase);
 
-	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
-
-	void updatePointers(
-		const Vertex*            base,
-		const std::vector<uint>& newIndices);
-
 private:
 	template<typename Element, typename ElVType>
 	void importPtrsFrom(const Element& e, Vertex* base, const ElVType* ebase);

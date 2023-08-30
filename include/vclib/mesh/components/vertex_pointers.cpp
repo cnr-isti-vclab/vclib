@@ -415,21 +415,6 @@ void VertexPointers<Vertex, N, El>::importPointersFrom(
 }
 
 template<typename Vertex, int N, typename El>
-void VertexPointers<Vertex, N, El>::updatePointers(
-	const Vertex* oldBase, const Vertex* newBase)
-{
-	Base::updateElementPointers(oldBase, newBase);
-}
-
-template<typename Vertex, int N, typename El>
-void VertexPointers<Vertex, N, El>::updatePointers(
-	const Vertex*           base,
-	const std::vector<uint>& newIndices)
-{
-	Base::updateElementPointers(base, newIndices);
-}
-
-template<typename Vertex, int N, typename El>
 template<typename Element, typename ElVType>
 void VertexPointers<Vertex, N, El>::importPtrsFrom(
 	const Element& e,

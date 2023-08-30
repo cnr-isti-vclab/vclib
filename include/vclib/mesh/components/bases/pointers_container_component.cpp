@@ -53,8 +53,9 @@ template<
 	typename El,
 	bool o,
 	bool TT>
-void PointersContainerComponent<DC, CT, Elem, N, El, o, TT>::
-	updateElementPointers(const Elem* oldBase, const Elem* newBase)
+void PointersContainerComponent<DC, CT, Elem, N, El, o, TT>::updatePointers(
+	const Elem* oldBase,
+	const Elem* newBase)
 {
 
 	auto& baseContainer = Base::container();
@@ -89,8 +90,9 @@ template<
 	typename El,
 	bool o,
 	bool TT>
-void PointersContainerComponent<DC, CT, Elem, N, El, o, TT>::
-	updateElementPointers(const Elem* base, const std::vector<uint>& newIndices)
+void PointersContainerComponent<DC, CT, Elem, N, El, o, TT>::updatePointers(
+	const Elem*              base,
+	const std::vector<uint>& newIndices)
 {
 	auto& baseContainer = Base::container();
 

@@ -158,10 +158,6 @@ protected:
 	template<typename Element, typename ElEType>
 	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase);
 
-	void updatePointers(const Edge* oldBase, const Edge* newBase);
-
-	void updatePointers(const Edge* base, const std::vector<uint>& newIndices);
-
 	// ContainerComponent interface functions
 	void resize(uint n) requires (N < 0);
 	void pushBack(Edge* e = nullptr) requires (N < 0);
