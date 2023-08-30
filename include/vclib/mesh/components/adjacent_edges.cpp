@@ -433,7 +433,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::updatePointers(
 	const Edge* oldBase,
 	const Edge* newBase)
 {
-	Base::updateElementPointers(oldBase, newBase, this);
+	Base::updateElementPointers(oldBase, newBase);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool O>
@@ -441,7 +441,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::updatePointers(
 	const Edge*             base,
 	const std::vector<uint>& newIndices)
 {
-	Base::updateElementPointers(base, newIndices, this);
+	Base::updateElementPointers(base, newIndices);
 }
 
 template<typename Edge, int N, bool TT, typename El, bool O>

@@ -78,6 +78,7 @@ template<
 	bool OPT             = false>
 class AdjacentEdges :
 		public PointersContainerComponent<
+			AdjacentEdges<Edge, N, TTVN, ElementType, OPT>,
 			ADJACENT_EDGES,
 			Edge,
 			N,
@@ -86,6 +87,7 @@ class AdjacentEdges :
 			TTVN>
 {
 	using Base = PointersContainerComponent<
+		AdjacentEdges<Edge, N, TTVN, ElementType, OPT>,
 		ADJACENT_EDGES,
 		Edge,
 		N,

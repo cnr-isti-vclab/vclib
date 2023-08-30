@@ -77,6 +77,7 @@ namespace vcl::comp {
 template<typename Vertex, int N, typename ElementType = void>
 class VertexPointers :
 		public PointersContainerComponent<
+			VertexPointers<Vertex, N, ElementType>,
 			VERTEX_PTRS,
 			Vertex,
 			N,
@@ -85,6 +86,7 @@ class VertexPointers :
 			false>
 {
 	using Base = PointersContainerComponent<
+		VertexPointers<Vertex, N, ElementType>,
 		VERTEX_PTRS,
 		Vertex,
 		N,

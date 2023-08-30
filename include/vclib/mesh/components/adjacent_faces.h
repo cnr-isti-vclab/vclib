@@ -78,6 +78,7 @@ template<
 	bool OPT             = false>
 class AdjacentFaces :
 		public PointersContainerComponent<
+			AdjacentFaces<Face, N, TTVN, ElementType, OPT>,
 			ADJACENT_FACES,
 			Face,
 			N,
@@ -86,6 +87,7 @@ class AdjacentFaces :
 			TTVN>
 {
 	using Base = PointersContainerComponent<
+		AdjacentFaces<Face, N, TTVN, ElementType, OPT>,
 		ADJACENT_FACES,
 		Face,
 		N,

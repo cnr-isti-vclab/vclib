@@ -70,6 +70,7 @@ namespace vcl::comp {
 template<typename Vertex, typename ElementType = void, bool OPT = false>
 class AdjacentVertices :
 		public PointersContainerComponent<
+			AdjacentVertices<Vertex, ElementType, OPT>,
 			ADJACENT_VERTICES,
 			Vertex,
 			-1,
@@ -78,6 +79,7 @@ class AdjacentVertices :
 			false>
 {
 	using Base = PointersContainerComponent<
+		AdjacentVertices<Vertex, ElementType, OPT>,
 		ADJACENT_VERTICES,
 		Vertex,
 		-1,

@@ -451,7 +451,7 @@ template<typename Vertex, int N, typename El>
 void VertexPointers<Vertex, N, El>::updatePointers(
 	const Vertex* oldBase, const Vertex* newBase)
 {
-	Base::updateElementPointers(oldBase, newBase, this);
+	Base::updateElementPointers(oldBase, newBase);
 }
 
 template<typename Vertex, int N, typename El>
@@ -459,7 +459,7 @@ void VertexPointers<Vertex, N, El>::updatePointers(
 	const Vertex*           base,
 	const std::vector<uint>& newIndices)
 {
-	Base::updateElementPointers(base, newIndices, this);
+	Base::updateElementPointers(base, newIndices);
 }
 
 template<typename Vertex, int N, typename El>

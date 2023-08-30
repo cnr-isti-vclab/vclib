@@ -58,6 +58,7 @@ namespace vcl::comp {
  * to the number of vertices.
  */
 template<
+	typename DerivedComponent,
 	uint COMP_TYPE,
 	typename Elem,
 	int N,
@@ -88,17 +89,13 @@ class PointersContainerComponent :
 protected:
 	using Base::container;
 
-	template<typename Comp>
 	void updateElementPointers(
 		const Elem* oldBase,
-		const Elem* newBase,
-		Comp*       comp);
+		const Elem* newBase);
 
-	template<typename Comp>
 	void updateElementPointers(
 		const Elem*              base,
-		const std::vector<uint>& newIndices,
-		Comp*                    comp);
+		const std::vector<uint>& newIndices);
 };
 
 } // namespace vcl::comp
