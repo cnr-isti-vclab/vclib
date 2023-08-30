@@ -603,8 +603,6 @@ else()
 	message(STATUS "VCLib: not using parallel algorithms")
 endif()
 
-message(STATUS "VCLib: using std::ranges library")
-
 if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_AND_RUN_TESTS)
 	include(CTest)
 
