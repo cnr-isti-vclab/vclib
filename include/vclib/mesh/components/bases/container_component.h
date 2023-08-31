@@ -46,7 +46,7 @@ using ContCompBase = std::conditional_t<
  * @tparam DerivedComponent: The type of the Derived Component. It is used to
  * implement the CRTP pattern.
  * @tparam COMPONENT_ID: The id of the component. It is a value of the enum
- * ComponentType, or an integer value that is not already used by any other
+ * ComponentIDEnum, or an integer value that is not already used by any other
  * component. It is used to identify the component at compile time.
  * @tparam T: The type of the data that the component needs to store in a
  * Container. E.g. a WedgeTexCoord component would have vcl::TexCoordd as
@@ -78,7 +78,7 @@ using ContCompBase = std::conditional_t<
  * happens.
  */
 template<
-	typename DerivedComponent, // crtp pattern, derived class
+	typename DerivedComponent, // CRTP pattern, derived class
 	uint COMP_ID,              // component id
 	typename T,                // data stored in container
 	int N,                     // container size

@@ -96,19 +96,19 @@ protected:
 	template<typename C>
 	bool isOptionalComponentEnabled() const;
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	bool isOptionalComponentEnabled() const;
 
 	template<typename C>
 	void enableOptionalComponent();
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	void enableOptionalComponent();
 
 	template<typename C>
 	void disableOptionalComponent();
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	void disableOptionalComponent();
 
 	// Custom Components

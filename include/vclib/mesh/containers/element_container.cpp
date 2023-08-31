@@ -528,10 +528,10 @@ bool ElementContainer<T>::isOptionalComponentEnabled() const
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 bool ElementContainer<T>::isOptionalComponentEnabled() const
 {
-	return vcVecTuple.template isComponentEnabled<COMP_TYPE>();
+	return vcVecTuple.template isComponentEnabled<COMP_ID>();
 }
 
 template<ElementConcept T>
@@ -557,10 +557,10 @@ void ElementContainer<T>::enableOptionalComponent()
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 void ElementContainer<T>::enableOptionalComponent()
 {
-	using C = comp::ComponentOfType<COMP_TYPE, typename T::Components>;
+	using C = comp::ComponentOfType<COMP_ID, typename T::Components>;
 	enableOptionalComponent<C>();
 }
 
@@ -572,10 +572,10 @@ void ElementContainer<T>::disableOptionalComponent()
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 void ElementContainer<T>::disableOptionalComponent()
 {
-	vcVecTuple.template disableComponent<COMP_TYPE>();
+	vcVecTuple.template disableComponent<COMP_ID>();
 }
 
 template<ElementConcept T>

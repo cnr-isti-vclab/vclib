@@ -150,7 +150,7 @@ constexpr bool Mesh<Args...>::hasContainerOf()
 /**
  * @brief Returns true if this Mesh has a container of elements having the same
  * Element ID of the template EL_TYPE ID and the Element of that container has
- * a Component having the same Component ID of the template COMP_TYPE ID.
+ * a Component having the same Component ID of the template COMP_ID.
  *
  * Example of usage (Note: TriMesh has per Vertex TexCoords, but not adj edges):
  *
@@ -165,17 +165,16 @@ constexpr bool Mesh<Args...>::hasContainerOf()
  * @endcode
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint EL_TYPE, uint COMP_ID>
 constexpr bool Mesh<Args...>::hasPerElementComponent()
 {
-	return mesh::HasPerElementComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
+	return mesh::HasPerElementComponent<Mesh<Args...>, EL_TYPE, COMP_ID>;
 }
 
 /**
  * @brief Returns true if this Mesh has a container of elements having the same
  * Element ID of the template EL_TYPE ID and the Element of that container has
- * an Optional Component having the same Component ID of the template COMP_TYPE
- * ID.
+ * an Optional Component having the same Component ID of the template COMP_ID.
  *
  * Example of usage (Note: TriMesh has per Vertex optional TexCoords, and
  * non-optional Normals):
@@ -191,11 +190,11 @@ constexpr bool Mesh<Args...>::hasPerElementComponent()
  * @endcode
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint EL_TYPE, uint COMP_ID>
 constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
 {
 	return mesh::
-		HasPerElementOptionalComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
+		HasPerElementOptionalComponent<Mesh<Args...>, EL_TYPE, COMP_ID>;
 }
 
 /**
@@ -979,68 +978,68 @@ auto Mesh<Args...>::elements(bool jumpDeleted) const
 }
 
 /**
- * @brief Returns `true` if optional Component `COMP_TYPE` is enabled for
- * elements of type `EL_TYPE` in the mesh.
+ * @brief Returns `true` if optional Component having ID `COMP_ID` is enabled
+ * for elements of type `EL_TYPE` in the mesh.
  *
  * The function requires that the Mesh has a Container of Elements of type
  * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
  * Otherwise, a compiler error will be triggered.
  *
  * @tparam EL_TYPE: the type ID of the element.
- * @tparam COMP_TYPE: the type ID of the component.
- * @return `true` if optional Component `COMP_TYPE` is enabled for elements of
+ * @tparam COMP_ID: the type ID of the component.
+ * @return `true` if optional Component `COMP_ID` is enabled for elements of
  * type `EL_TYPE` in the mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint EL_TYPE, uint COMP_ID>
 bool Mesh<Args...>::isPerElementComponentEnabled() const
-	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_ID>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
-	return Cont::template isOptionalComponentEnabled<COMP_TYPE>();
+	return Cont::template isOptionalComponentEnabled<COMP_ID>();
 }
 
 /**
- * @brief Enables the optional Component `COMP_TYPE` for elements of type
- * `EL_TYPE` in the mesh.
+ * @brief Enables the optional Component havinf IF `COMP_TYPE` for elements of
+ * type `EL_TYPE` in the mesh.
  *
  * The function requires that the Mesh has a Container of Elements of type
  * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
  * Otherwise, a compiler error will be triggered.
  *
  * @tparam EL_TYPE: the type ID of the element.
- * @tparam COMP_TYPE: the type ID of the component.
+ * @tparam COMP_ID: the type ID of the component.
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint EL_TYPE, uint COMP_ID>
 void Mesh<Args...>::enablePerElementComponent()
-	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_ID>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
-	Cont::template enableOptionalComponent<COMP_TYPE>();
+	Cont::template enableOptionalComponent<COMP_ID>();
 }
 
 /**
- * @brief Disables the optional Component `COMP_TYPE` for elements of type
- * `EL_TYPE` in the mesh.
+ * @brief Disables the optional Component having ID `COMP_ID` for elements of
+ * type `EL_TYPE` in the mesh.
  *
  * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
+ * EL_TYPE, and that the Element has a optional component of type COMP_ID.
  * Otherwise, a compiler error will be triggered.
  *
  * @tparam EL_TYPE: the type ID of the element.
- * @tparam COMP_TYPE: the type ID of the component.
+ * @tparam COMP_ID: the type ID of the component.
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint EL_TYPE, uint COMP_ID>
 void Mesh<Args...>::disablePerElementComponent()
-	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_ID>())
 {
 	using Cont = typename ContainerOfElement<EL_TYPE>::type;
 
-	Cont::template disableOptionalComponent<COMP_TYPE>();
+	Cont::template disableOptionalComponent<COMP_ID>();
 }
 
 /*********************

@@ -151,10 +151,10 @@ public:
 	template<uint EL_TYPE>
 	static constexpr bool hasContainerOf();
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint EL_TYPE, uint COMP_ID>
 	static constexpr bool hasPerElementComponent();
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint EL_TYPE, uint COMP_ID>
 	static constexpr bool hasPerElementOptionalComponent();
 
 	/* member functions */
@@ -252,17 +252,17 @@ public:
 	auto elements(bool jumpDeleted = true) const
 		requires (hasContainerOf<EL_TYPE>());
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint EL_TYPE, uint COMP_ID>
 	bool isPerElementComponentEnabled() const
-		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_ID>());
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint EL_TYPE, uint COMP_ID>
 	void enablePerElementComponent()
-		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_ID>());
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint EL_TYPE, uint COMP_ID>
 	void disablePerElementComponent()
-		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_ID>());
 
 protected:
 	template<typename Cont>

@@ -94,7 +94,7 @@ namespace vcl::comp {
  *
  * @tparam DerivedComponent: The type of the Derived Component. It is used to
  * implement the CRTP pattern.
- * @tparam COMP_ID: The if of the component. It is a value of the enum
+ * @tparam COMP_ID: The id of the component. It is a value of the enum
  * ComponentIDEnum, or an integer value that is not already used by any other
  * component. It is used to identify the component at compile time.
  * @tparam DataType: The type of the data that the component needs to store.
