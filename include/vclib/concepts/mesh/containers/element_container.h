@@ -48,7 +48,7 @@ private:
 	template <typename Cont>
 	struct SameElPred
 	{
-		static constexpr bool value = Cont::ELEMENT_TYPE == ELEM_ID;
+		static constexpr bool value = Cont::ELEMENT_ID == ELEM_ID;
 	};
 
 public:
@@ -143,7 +143,7 @@ template<ElementConcept El, typename MeshType>
 struct HasContainerOfPred
 {
 	static constexpr bool value = internal::ContainerOfElementPred<
-		El::ELEMENT_TYPE,
+		El::ELEMENT_ID,
 		typename MeshType::Containers>::value;
 };
 

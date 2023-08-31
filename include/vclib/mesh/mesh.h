@@ -100,7 +100,7 @@ class Mesh : public Args...
 	 * ```
 	 */
 	template<ElementConcept El>
-	struct ContainerOf : public ContainerOfElement<El::ELEMENT_TYPE>
+	struct ContainerOf : public ContainerOfElement<El::ELEMENT_ID>
 	{
 	};
 

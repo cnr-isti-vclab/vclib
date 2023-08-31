@@ -41,18 +41,18 @@ void Element<ELEM_TYPE, MeshType, Comps...>::importFrom(const ElType& v)
 }
 
 template <uint ELEM_TYPE, typename MeshType, typename... Comps>
-template<uint COMPONENT_ID>
+template<uint COMP_ID>
 auto& Element<ELEM_TYPE, MeshType, Comps...>::component()
 {
-	using Comp = typename GetComponentFromID<COMPONENT_ID>::type;
+	using Comp = typename GetComponentFromID<COMP_ID>::type;
 	return *static_cast<Comp*>(this);
 }
 
 template <uint ELEM_TYPE, typename MeshType, typename... Comps>
-template<uint COMPONENT_ID>
+template<uint COMP_ID>
 const auto& Element<ELEM_TYPE, MeshType, Comps...>::component() const
 {
-	using Comp = typename GetComponentFromID<COMPONENT_ID>::type;
+	using Comp = typename GetComponentFromID<COMP_ID>::type;
 	return *static_cast<const Comp*>(this);
 }
 

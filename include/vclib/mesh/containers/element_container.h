@@ -50,7 +50,7 @@ public:
 	using ElementType    = T;
 	using ParentMeshType = typename T::ParentMeshType;
 
-	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
+	static const uint ELEMENT_ID = T::ELEMENT_ID;
 
 	ElementContainer();
 

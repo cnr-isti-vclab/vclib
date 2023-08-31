@@ -146,7 +146,7 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 template<typename T>
 concept FaceConcept =
 	ElementConcept<T> &&
-	T::ELEMENT_TYPE == FACE &&
+	T::ELEMENT_ID == FACE &&
 	(face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value) &&
 	face::HasBitFlags<T> &&
 	face::HasVertexPointers<T> &&

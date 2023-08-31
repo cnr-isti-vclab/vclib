@@ -96,12 +96,12 @@ bool Mesh<Args...>::isCompact() const
  * @brief Returns true if this Mesh has a container of elements having the same
  * Element ID of the template Element El.
  *
- * This means that this the only value checked is the ELEMENT_TYPE unsigned int
+ * This means that this the only value checked is the ELEMENT_ID unsigned int
  * exposed by the Element, meaning that it does not check if the Elements of
  * this mesh are exactly the same of El.
  *
  * In other words, it returns true also if we pass an Element of another mesh
- * that is of the same ELEMENT_TYPE (both Vertices, Faces, ecc).
+ * that is of the same ELEMENT_ID (both Vertices, Faces, ecc).
  *
  * Example of usage (Note: EdgeMesh has Vertices, but not Faces):
  *

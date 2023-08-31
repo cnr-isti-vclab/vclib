@@ -70,14 +70,14 @@ public:
 		comp::IsComponentPred,
 		vcl::TypeWrapper<Comps...>>::type;
 
-	static const uint ELEMENT_TYPE = ELEM_TYPE;
+	static const uint ELEMENT_ID = ELEM_TYPE;
 
 	uint index() const;
 
-	template<uint COMPONENT_ID>
+	template<uint COMP_ID>
 	auto& component();
 
-	template<uint COMPONENT_ID>
+	template<uint COMP_ID>
 	const auto& component() const;
 
 	template<typename ElType>

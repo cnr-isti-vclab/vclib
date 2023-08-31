@@ -54,9 +54,9 @@ void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, u
 	if constexpr (comp::HasVertexPointers<typename Cont::ElementType>) {
 		// if there are still some vertices non-referenced
 		if (nRefs < m.vertexNumber()) {
-			constexpr uint EL_TYPE = Cont::ElementType::ELEMENT_TYPE;
+			constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
 			// for eache element of the Cont container
-			for (const typename Cont::ElementType& el : m.template elements<EL_TYPE>()) {
+			for (const typename Cont::ElementType& el : m.template elements<ELEM_ID>()) {
 				// for each vertex pointer of the element
 				for (const typename Cont::ElementType::VertexType* v : el.vertices()) {
 					if (! refs[m.index(v)]) {

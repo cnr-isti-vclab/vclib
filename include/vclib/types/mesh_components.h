@@ -77,39 +77,37 @@ inline static constexpr const char* COMPONENT_ENUM_STRINGS[COMPONENTS_NUMBER] =
 
 /**
  * @brief The ComponentString class is used to retrieve the string associated
- * to a COMPONENT_ID value, trough its member 'str'.
+ * to a COMP_ID value, trough its member 'str'.
  *
  * If you use a custom component class, you should specialize this struct with
- * your COMPONENT_ID value (that is >= COMPONENTS_NUMBER).
+ * your COMP_ID value (that is >= COMPONENTS_NUMBER).
  *
- * @tparam COMPONENT_ID The COMPONENT_ID value associated to the string.
+ * @tparam COMP_ID: The COMP_ID value associated to the string.
  */
-template<uint COMPONENT_ID>
+template<uint COMP_ID>
 struct ComponentString {
 	/**
 	 * @brief The string associated to the COMPONENT_ID.
 	 */
-	const char* str = COMPONENT_ID < COMPONENTS_NUMBER ?
-						  COMPONENT_ENUM_STRINGS[COMPONENT_ID] :
-						  nullptr;
+	const char* str =
+		COMP_ID < COMPONENTS_NUMBER ? COMPONENT_ENUM_STRINGS[COMP_ID] : nullptr;
 };
 
 /**
- * @brief Returns the string associated to the COMPONENT_ID value.
+ * @brief Returns the string associated to the COMP_ID value.
  *
- * @tparam COMPONENT_ID: an unsigned integer that idetinfies the component.
- * @return The string associated to the COMPONENT_ID value.
+ * @tparam COMP_ID: an unsigned integer that idetinfies the component.
+ * @return The string associated to the COMP_ID value.
  */
-template<uint COMPONENT_ID>
+template<uint COMP_ID>
 constexpr const char* componentEnumString()
 {
 	static_assert(
-		ComponentString<COMPONENT_ID>().str != nullptr,
-		"Invalid ComponentEnumType. You should specialize the "
-		"'ComponentString' struct with "
-		"your COMPONENT_ID value.");
+		ComponentString<COMP_ID>().str != nullptr,
+		"Invalid ComponentIDEnum. You should specialize the 'ComponentString' "
+		"struct with your COMP_ID value.");
 
-	return ComponentString<COMPONENT_ID>().str;
+	return ComponentString<COMP_ID>().str;
 }
 
 } // namespace vcl
