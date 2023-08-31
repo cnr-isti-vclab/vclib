@@ -31,22 +31,22 @@ namespace vcl::comp {
 namespace internal {
 
 /**
- * @brief Given the ComponentEnumType of a Component and a list of Components,
+ * @brief Given the ID of a Component and a list of Component types,
  * this predicate sets its bool `value` to `true` if there exists a Component in
- * the list having the ID COMP_TYPE, and sets `type` to the TypeWrapper of the
+ * the list having the COMP_ID, and sets `type` to the TypeWrapper of the
  * found component.
  *
  * If no Component was found, value will be set to `false` and type will contain
  * an empty TypeWrapper.
  */
-template<uint COMP_TYPE, typename ... Components>
+template<uint COMP_ID, typename ... Components>
 struct ComponentOfTypePred
 {
 private:
 	template <typename Comp>
 	struct SameCompPred
 	{
-		static constexpr bool value = Comp::COMPONENT_TYPE == COMP_TYPE;
+		static constexpr bool value = Comp::COMPONENT_ID == COMP_ID;
 	};
 
 public:
@@ -57,9 +57,9 @@ public:
 };
 
 // TypeWrapper specialization
-template<uint COMP_TYPE, typename ... Components>
-struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Components...>> :
-		public ComponentOfTypePred<COMP_TYPE, Components...>
+template<uint COMP_ID, typename... Components>
+struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
+		public ComponentOfTypePred<COMP_ID, Components...>
 {
 };
 
@@ -73,7 +73,7 @@ struct ComponentOfTypePred<COMP_TYPE, TypeWrapper<Components...>> :
  */
 template<typename T>
 concept ComponentConcept = requires {
-	{ T::COMPONENT_TYPE } -> std::same_as<const uint&>;
+	{ T::COMPONENT_ID } -> std::same_as<const uint&>;
 };
 
 /**
@@ -88,10 +88,9 @@ struct IsComponentPred
 	static const bool value = ComponentConcept<T>;
 };
 
-template<uint COMP_TYPE, typename... Components>
+template<uint COMP_ID, typename... Components>
 using ComponentOfType = typename FirstType<
-	typename internal::ComponentOfTypePred<COMP_TYPE, Components...>::type>::
-	type;
+	typename internal::ComponentOfTypePred<COMP_ID, Components...>::type>::type;
 
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
@@ -174,19 +173,19 @@ concept HasOptionalPointersOfType =
 // defined as a TypeWrapper of components. The type T is generally a Mesh or a
 // MeshElement.
 
-template<typename T, uint COMP_TYPE>
+template<typename T, uint COMP_ID>
 concept HasComponentOfType =
-	internal::ComponentOfTypePred<COMP_TYPE, typename T::Components>::value;
+	internal::ComponentOfTypePred<COMP_ID, typename T::Components>::value;
 
-template<typename T, uint COMP_TYPE>
+template<typename T, uint COMP_ID>
 concept HasVerticalComponentOfType =
-	HasComponentOfType<T, COMP_TYPE> &&
-	IsVerticalComponent<ComponentOfType<COMP_TYPE, typename T::Components>>;
+	HasComponentOfType<T, COMP_ID> &&
+	IsVerticalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
 
-template<typename T, uint COMP_TYPE>
+template<typename T, uint COMP_ID>
 concept HasOptionalComponentOfType =
-	HasComponentOfType<T, COMP_TYPE> &&
-	IsOptionalComponent<ComponentOfType<COMP_TYPE, typename T::Components>>;
+	HasComponentOfType<T, COMP_ID> &&
+	IsOptionalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
 
 } // namespace vcl::comp
 

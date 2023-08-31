@@ -77,6 +77,7 @@ namespace vcl::comp {
 template<typename Vertex, int N, typename ElementType = void>
 class VertexPointers :
 		public PointersContainerComponent<
+			VertexPointers<Vertex, N, ElementType>,
 			VERTEX_PTRS,
 			Vertex,
 			N,
@@ -85,6 +86,7 @@ class VertexPointers :
 			false>
 {
 	using Base = PointersContainerComponent<
+		VertexPointers<Vertex, N, ElementType>,
 		VERTEX_PTRS,
 		Vertex,
 		N,
@@ -104,12 +106,6 @@ public:
 
 	using VertexIterator      = typename Base::Iterator;
 	using ConstVertexIterator = typename Base::ConstIterator;
-
-	/* Constructor and isAvailable */
-
-	void init();
-
-	bool isAvailable();
 
 	/* Member functions */
 
@@ -155,11 +151,8 @@ protected:
 
 	// PointersComponent interface functions
 	template<typename Element, typename ElVType>
-	void importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
-
-	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
-
-	void updatePointers(const Vertex* base, const std::vector<uint>& newIndices);
+	void
+	importPointersFrom(const Element& e, Vertex* base, const ElVType* ebase);
 
 private:
 	template<typename Element, typename ElVType>

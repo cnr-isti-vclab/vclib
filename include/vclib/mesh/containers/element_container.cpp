@@ -528,10 +528,10 @@ bool ElementContainer<T>::isOptionalComponentEnabled() const
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 bool ElementContainer<T>::isOptionalComponentEnabled() const
 {
-	return vcVecTuple.template isComponentEnabled<COMP_TYPE>();
+	return vcVecTuple.template isComponentEnabled<COMP_ID>();
 }
 
 template<ElementConcept T>
@@ -557,10 +557,10 @@ void ElementContainer<T>::enableOptionalComponent()
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 void ElementContainer<T>::enableOptionalComponent()
 {
-	using C = comp::ComponentOfType<COMP_TYPE, typename T::Components>;
+	using C = comp::ComponentOfType<COMP_ID, typename T::Components>;
 	enableOptionalComponent<C>();
 }
 
@@ -572,10 +572,10 @@ void ElementContainer<T>::disableOptionalComponent()
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 void ElementContainer<T>::disableOptionalComponent()
 {
-	vcVecTuple.template disableComponent<COMP_TYPE>();
+	vcVecTuple.template disableComponent<COMP_ID>();
 }
 
 template<ElementConcept T>
@@ -921,7 +921,8 @@ void ElementContainer<T>::enableSameOptionalComponents(TypeWrapper<Comps...>, co
 }
 
 /**
- * This function enables the component Comp in this container if it is available in Cont2
+ * This function enables the component Comp in this container if it is available
+ * in Cont2
  */
 template<ElementConcept T>
 template<typename Comp, typename Cont2>
@@ -930,16 +931,25 @@ void ElementContainer<T>::enableSameOptionalComponent(const Cont2& c2)
 	// if Comp is an optional component in This container
 	if constexpr (comp::IsOptionalComponent<Comp>) {
 		// if Comp is available in Cont2
-		if constexpr (comp::HasComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>){
+		if constexpr (comp::HasComponentOfType<
+						  typename Cont2::ElementType,
+						  Comp::COMPONENT_ID>)
+		{
 			// if Comp is optional in Cont2
-			if constexpr (comp::HasOptionalComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>) {
+			if constexpr (comp::HasOptionalComponentOfType<
+							  typename Cont2::ElementType,
+							  Comp::COMPONENT_ID>)
+			{
 				// if Comp is enabled in Cont2, we enable it in this container
-				if (c2.template isOptionalComponentEnabled<Comp::COMPONENT_TYPE>()) {
-					enableOptionalComponent<Comp::COMPONENT_TYPE>();
+				if (c2.template isOptionalComponentEnabled<
+						Comp::COMPONENT_ID>())
+				{
+					enableOptionalComponent<Comp::COMPONENT_ID>();
 				}
 			}
-			else { // if Comp is not optional (but is available), we enable it in this container
-				enableOptionalComponent<Comp::COMPONENT_TYPE>();
+			else { // if Comp is not optional (but is available), we enable it
+				   // in this container
+				enableOptionalComponent<Comp::COMPONENT_ID>();
 			}
 		}
 	}

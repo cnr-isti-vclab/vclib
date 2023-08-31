@@ -63,19 +63,19 @@ public:
 	template<typename C>
 	bool isComponentEnabled() const;
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	bool isComponentEnabled() const;
 
 	template<typename C>
 	void enableComponent();
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	void enableComponent();
 
 	template<typename C>
 	void disableComponent();
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	void disableComponent();
 
 private:

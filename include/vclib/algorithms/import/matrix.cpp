@@ -42,39 +42,39 @@ std::vector<uint> faceVertIndices(const FMatrix& faces, uint f)
 	return fVerts;
 }
 
-template<uint EL_TYPE, MeshConcept MeshType, MatrixConcept NMatrix>
+template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
 void importElementNormalsFromMatrix(
 	MeshType&      mesh,
 	const NMatrix& normals)
 {
 	// The type of the normal of the element
 	using NormalType =
-		typename MeshType::template ElementType<EL_TYPE>::NormalType;
+		typename MeshType::template ElementType<ELEM_ID>::NormalType;
 
 	if (normals.cols() != 3)
 		throw WrongSizeException(
-			"The input " + std::string(elementEnumString<EL_TYPE>()) +
+			"The input " + std::string(elementEnumString<ELEM_ID>()) +
 			" normal matrix must have 3 columns");
 
 	// matrix rows must be equal to the number of elements of the given type
-	if (normals.rows() != mesh.template number<EL_TYPE>())
+	if (normals.rows() != mesh.template number<ELEM_ID>())
 		throw WrongSizeException(
 			"The input normal matrix must have the same number of rows "
 			"as the number of " +
-			std::string(elementEnumString<EL_TYPE>()) + " element in the mesh");
+			std::string(elementEnumString<ELEM_ID>()) + " element in the mesh");
 
-	enableIfPerElementComponentOptional<EL_TYPE, NORMAL>(mesh);
-	requirePerElementComponent<EL_TYPE, NORMAL>(mesh);
+	enableIfPerElementComponentOptional<ELEM_ID, NORMAL>(mesh);
+	requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
 	uint i = 0;
-	for (auto& e : mesh.template elements<EL_TYPE>()) {
+	for (auto& e : mesh.template elements<ELEM_ID>()) {
 		e.normal() = NormalType(
 			normals(i, 0), normals(i, 1), normals(i, 2));
 		i++;
 	}
 }
 
-template<uint EL_TYPE, MeshConcept MeshType, MatrixConcept CMatrix>
+template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
 void importElementColorsFromMatrix(
 	MeshType&      mesh,
 	const CMatrix& colors)
@@ -83,21 +83,21 @@ void importElementColorsFromMatrix(
 
 	if (colors.cols() != 3 && colors.cols() != 4)
 		throw WrongSizeException(
-			"The input " + std::string(elementEnumString<EL_TYPE>()) +
+			"The input " + std::string(elementEnumString<ELEM_ID>()) +
 			" color matrix must have 3 or 4 columns");
 
 	// matrix rows must be equal to the number of elements of the given type
-	if (colors.rows() != mesh.template number<EL_TYPE>())
+	if (colors.rows() != mesh.template number<ELEM_ID>())
 		throw WrongSizeException(
 			"The input color matrix must have the same number of rows "
 			"as the number of " +
-			std::string(elementEnumString<EL_TYPE>()) + " element in the mesh");
+			std::string(elementEnumString<ELEM_ID>()) + " element in the mesh");
 
-	enableIfPerElementComponentOptional<EL_TYPE, COLOR>(mesh);
-	requirePerElementComponent<EL_TYPE, COLOR>(mesh);
+	enableIfPerElementComponentOptional<ELEM_ID, COLOR>(mesh);
+	requirePerElementComponent<ELEM_ID, COLOR>(mesh);
 
 	uint i = 0;
-	for (auto& e : mesh.template elements<EL_TYPE>()) {
+	for (auto& e : mesh.template elements<ELEM_ID>()) {
 		// Matrix has colors in range 0-255
 		if constexpr (std::integral<MatrixScalar>) {
 			if (colors.cols() == 3) {

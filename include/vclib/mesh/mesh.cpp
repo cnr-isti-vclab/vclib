@@ -96,12 +96,12 @@ bool Mesh<Args...>::isCompact() const
  * @brief Returns true if this Mesh has a container of elements having the same
  * Element ID of the template Element El.
  *
- * This means that this the only value checked is the ELEMENT_TYPE unsigned int
+ * This means that this the only value checked is the ELEMENT_ID unsigned int
  * exposed by the Element, meaning that it does not check if the Elements of
  * this mesh are exactly the same of El.
  *
  * In other words, it returns true also if we pass an Element of another mesh
- * that is of the same ELEMENT_TYPE (both Vertices, Faces, ecc).
+ * that is of the same ELEMENT_ID (both Vertices, Faces, ecc).
  *
  * Example of usage (Note: EdgeMesh has Vertices, but not Faces):
  *
@@ -125,7 +125,7 @@ constexpr bool Mesh<Args...>::hasContainerOf()
 
 /**
  * @brief Returns true if this Mesh has a container of elements having the same
- * Element ID of the template EL_TYPE ID.
+ * Element ID of the template ELEM_ID.
  *
  * Example of usage (Note: EdgeMesh has Vertices, but not Faces):
  *
@@ -136,21 +136,21 @@ constexpr bool Mesh<Args...>::hasContainerOf()
  *					"EdgeMesh has Faces");
  * @endcode
  *
- * @tparam EL_TYPE: the Element type ID to check.
+ * @tparam ELEM_ID: the Element ID to check.
  * @return true if this Mesh has a container of elements having the same
- * Element ID of the template EL_TYPE ID.
+ * Element ID of the template ELEM_ID.
  */
 template<typename... Args>
-template<uint EL_TYPE>
+template<uint ELEM_ID>
 constexpr bool Mesh<Args...>::hasContainerOf()
 {
-	return mesh::HasContainerOfElementPred<EL_TYPE, Mesh<Args...>>::value;
+	return mesh::HasContainerOfElementPred<ELEM_ID, Mesh<Args...>>::value;
 }
 
 /**
  * @brief Returns true if this Mesh has a container of elements having the same
- * Element ID of the template EL_TYPE ID and the Element of that container has
- * a Component having the same Component ID of the template COMP_TYPE ID.
+ * Element ID of the template ELEM_ID and the Element of that container has
+ * a Component having the same Component ID of the template COMP_ID.
  *
  * Example of usage (Note: TriMesh has per Vertex TexCoords, but not adj edges):
  *
@@ -165,17 +165,16 @@ constexpr bool Mesh<Args...>::hasContainerOf()
  * @endcode
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint ELEM_ID, uint COMP_ID>
 constexpr bool Mesh<Args...>::hasPerElementComponent()
 {
-	return mesh::HasPerElementComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
+	return mesh::HasPerElementComponent<Mesh<Args...>, ELEM_ID, COMP_ID>;
 }
 
 /**
  * @brief Returns true if this Mesh has a container of elements having the same
- * Element ID of the template EL_TYPE ID and the Element of that container has
- * an Optional Component having the same Component ID of the template COMP_TYPE
- * ID.
+ * Element ID of the template ELEM_ID and the Element of that container has
+ * an Optional Component having the same Component ID of the template COMP_ID.
  *
  * Example of usage (Note: TriMesh has per Vertex optional TexCoords, and
  * non-optional Normals):
@@ -191,11 +190,11 @@ constexpr bool Mesh<Args...>::hasPerElementComponent()
  * @endcode
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint ELEM_ID, uint COMP_ID>
 constexpr bool Mesh<Args...>::hasPerElementOptionalComponent()
 {
 	return mesh::
-		HasPerElementOptionalComponent<Mesh<Args...>, EL_TYPE, COMP_TYPE>;
+		HasPerElementOptionalComponent<Mesh<Args...>, ELEM_ID, COMP_ID>;
 }
 
 /**
@@ -439,22 +438,22 @@ uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
  * @brief Returns the element of the given type at the given index inside its
  * container of this mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
  * The function does not perform any check on the index. If the index is out of
  * range, the behaviour is undefined.
  *
- * @tparam EL_TYPE: the type ID of the element to return.
+ * @tparam ELEM_ID: the ID of the element to return.
  * @return the element of the given type ID at the given index inside its
  * container of this mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
+template<uint ELEM_ID>
 const auto& Mesh<Args...>::element(uint i) const
-	requires (hasContainerOf<EL_TYPE>())
+	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::element(i);
 }
@@ -463,21 +462,21 @@ const auto& Mesh<Args...>::element(uint i) const
  * @brief Returns the element of the given type at the given index inside its
  * container of this mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
  * The function does not perform any check on the index. If the index is out of
  * range, the behaviour is undefined.
  *
- * @tparam EL_TYPE: the type ID of the element to return.
+ * @tparam ELEM_ID: the ID of the element to return.
  * @return the element of the given type ID at the given index inside its
  * container of this mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::element(i);
 }
@@ -485,17 +484,17 @@ auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<EL_TYPE>())
 /**
  * @brief Returns the number of elements of the given type in this mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @return the number of elements of the given type in this mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-uint Mesh<Args...>::number() const requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+uint Mesh<Args...>::number() const requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementNumber();
 }
@@ -507,17 +506,17 @@ uint Mesh<Args...>::number() const requires (hasContainerOf<EL_TYPE>())
  * The size of a container may be different from the number of elements, if the
  * container has some deleted elements.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @return the size of the container of elements of the given type in this mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-uint Mesh<Args...>::containerSize() const requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+uint Mesh<Args...>::containerSize() const requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementContainerSize();
 }
@@ -525,17 +524,17 @@ uint Mesh<Args...>::containerSize() const requires (hasContainerOf<EL_TYPE>())
 /**
  * @brief Returns the number of deleted elements of the given type in this mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @return the number of deleted elements of the given type in this mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::deletedElementNumber();
 }
@@ -548,17 +547,17 @@ uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<EL_TYPE>())
  * function will automatically take care of updating all the pointers to the
  * elements stored in all the containers of the Mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @return the index of the added element in its container.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-uint Mesh<Args...>::add() requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+uint Mesh<Args...>::add() requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::addElement();
 }
@@ -571,53 +570,53 @@ uint Mesh<Args...>::add() requires (hasContainerOf<EL_TYPE>())
  * function will automatically take care of updating all the pointers to the
  * elements stored in all the containers of the Mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] n: the number of elements to add.
  * @return the index of the first added element in its container.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-uint Mesh<Args...>::add(uint n) requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+uint Mesh<Args...>::add(uint n) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::addElements(n); // add the number elements
 }
 
 /**
- * @brief Clears the container of EL_TYPE elements the Mesh, deleting all the
+ * @brief Clears the container of ELEM_ID elements the Mesh, deleting all the
  * Elements.
  *
  * The contained elements are actually removed from the container, not only
  * marked as deleted. Therefore, the container will have size 0
- * (`mesh.containerSize<EL_TYPE>() == 0`) after the call of this function.
+ * (`mesh.containerSize<ELEM_ID>() == 0`) after the call of this function.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
  * @note This function does not cause a reallocation of the container.
  *
- * @warning Any pointer to EL_TYPE elements in the Mesh will be left unchanged,
+ * @warning Any pointer to ELEM_ID elements in the Mesh will be left unchanged,
  * and therefore will point to invalid elements. This means that, if you have a
- * pointer to a EL_TYPE element and you call this function, you will have a
+ * pointer to a ELEM_ID element and you call this function, you will have a
  * dangling pointer.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-void Mesh<Args...>::clearElements() requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+void Mesh<Args...>::clearElements() requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	Cont::clearElements();
 }
 
 /**
- * @brief Resizes the Element container to contain `n` Elements of type EL_TYPE.
+ * @brief Resizes the Element container to contain `n` Elements of type ELEM_ID.
  *
  * If the new size is greater than the old one, new Elements are added to the
  * container, and a reallocation may happen. If the new size is smaller than the
@@ -628,8 +627,8 @@ void Mesh<Args...>::clearElements() requires (hasContainerOf<EL_TYPE>())
  * function will automatically take care of updating all the pointers to the
  * elements stored in all the containers of the Mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
  * @warning The given size `n` is relative to the number of non-deleted
  * Elements, not to the size of the Element container. For example, if you
@@ -645,14 +644,14 @@ void Mesh<Args...>::clearElements() requires (hasContainerOf<EL_TYPE>())
  * if you call this member function with a lower number of Elements, you'll
  * need to manually manage the pointers to the deleted Elements.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] n: the new size of the container in the mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-void Mesh<Args...>::resize(uint n) requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+void Mesh<Args...>::resize(uint n) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	Cont::resizeElements(n);
 }
@@ -671,24 +670,24 @@ void Mesh<Args...>::resize(uint n) requires (hasContainerOf<EL_TYPE>())
  * function will automatically take care of updating all the pointers to the
  * elements stored in all the containers of the Mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the type ID of the element.
  * @param[in] n: the new capacity of the container in the mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	Cont::reserveElements(n);
 }
 
 /**
  * @brief Marks as deleted the element at the given index from its container,
- * deduced from the template index EL_TYPE.
+ * deduced from the template index ELEM_ID.
  *
  * The function does not remove the element from the container, and therefore it
  * does not cause reallocation or compacting of the container. The element will
@@ -696,17 +695,17 @@ void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<EL_TYPE>())
  *
  * The complexity of this function is O(1).
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] i: the index of the element to delete.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	Cont::deleteElement(i);
 }
@@ -763,7 +762,7 @@ void Mesh<Args...>::deleteElement(const El& e) const
 
 /**
  * @brief Returns a vector that tells, for each element of the container of
- * EL_TYPE in the mesh, the new index of the element after the container has
+ * ELEM_ID in the mesh, the new index of the element after the container has
  * been compacted. For each deleted element, its position will be set to
  * UINT_NULL.
  *
@@ -771,26 +770,26 @@ void Mesh<Args...>::deleteElement(const El& e) const
  * that they would have in a compact container, without considering the deleted
  * ones.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @return a vector containing, for each element index, the new index if the
  * container would be compacted.
  */
 template<typename... Args>
-template<uint EL_TYPE>
+template<uint ELEM_ID>
 std::vector<uint> Mesh<Args...>::conpactIndices() const
-	requires (hasContainerOf<EL_TYPE>())
+	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementConpactIndices();
 }
 
 /**
  * @brief Updates all the indices and pointers of the elements of the container
- * of EL_TYPE in the mesh, according to the mapping stored in the newIndices
+ * of ELEM_ID in the mesh, according to the mapping stored in the newIndices
  * vector, that tells for each old element index, the new index of the element
  * in the same container (or UINT_NULL if the element must be left as
  * unreferenced - useful when a vertex is deleted).
@@ -799,125 +798,125 @@ std::vector<uint> Mesh<Args...>::conpactIndices() const
  * called after every compacting of a container), and you want to update the
  * indices/pointers of the elements stored in all the containers of the mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
  * @note This function *does not change the position of the elements in their
  * container*. It just updates the indices/pointers of the elements stored in
  * their or other containers. This function should be called after the elements
  * have been actually moved in their container.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] newIndices: a vector that tells, for each old element index, the
  * new element index. If the old element must be left as unreferenced (setting
  * `nullptr` to the pointers), the value of the vector must be UINT_NULL.
  */
 template<typename... Args>
-template<uint EL_TYPE>
+template<uint ELEM_ID>
 void Mesh<Args...>::updateIndices(const std::vector<uint>& newIndices)
-	requires (hasContainerOf<EL_TYPE>())
+	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::updateElementIndices(newIndices);
 }
 
 /**
  * @brief Returns an iterator to the begining of the container of the elements
- * of type EL_TYPE in the mesh.
+ * having ID ELEM_ID in the mesh.
  *
  * The iterator is automatically initialized to jump deleted elements in the
  * container. You can change this option by calling this member function with
  * the `jumpDeleted` parameter set to `false`.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] jumpDeleted: if `true`, the iterator will be initialized to jump
  * deleted elements in the container.
  * @return an iterator to the begining of the container of the elements of type
- * EL_TYPE in the mesh.
+ * ELEM_ID in the mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementBegin(jumpDeleted);
 }
 
 /**
- * @brief Returns an iterator to the end of the container of the elements of
- * type EL_TYPE in the mesh.
+ * @brief Returns an iterator to the end of the container of the elements having
+ * ID ELEM_ID in the mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @return an iterator to the end of the container of the elements of type
- * EL_TYPE in the mesh.
+ * ELEM_ID in the mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-auto Mesh<Args...>::end() requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+auto Mesh<Args...>::end() requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementEnd();
 }
 
 /**
  * @brief Returns a const iterator to the begining of the container of the
- * elements of type EL_TYPE in the mesh.
+ * elements having ID ELEM_ID in the mesh.
  *
  * The iterator is automatically initialized to jump deleted elements in the
  * container. You can change this option by calling this member function with
  * the `jumpDeleted` parameter set to `false`.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] jumpDeleted: if `true`, the iterator will be initialized to jump
  * deleted elements in the container.
  * @return a const iterator to the begining of the container of the elements of
- * type EL_TYPE in the mesh.
+ * type ELEM_ID in the mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
+template<uint ELEM_ID>
 auto Mesh<Args...>::begin(bool jumpDeleted) const
-	requires (hasContainerOf<EL_TYPE>())
+	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementBegin(jumpDeleted);
 }
 
 /**
  * @brief Returns a const iterator to the end of the container of the elements
- * of type EL_TYPE in the mesh.
+ * having ID ELEM_ID in the mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @return a const iterator to the end of the container of the elements of type
- * EL_TYPE in the mesh.
+ * ELEM_ID in the mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE>
-auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
+template<uint ELEM_ID>
+auto Mesh<Args...>::end() const requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementEnd();
 }
 
 /**
  * Returns a lightweight view object that stores the begin and end iterators of
- * the container of the elements of type EL_TYPE in the mesh. The view object
+ * the container of the elements having ID ELEM_ID in the mesh. The view object
  * exposes the iterators trough the `begin()` and `end()` member functions, and
  * therefore the returned object can be used in range-based for loops:
  *
@@ -927,28 +926,28 @@ auto Mesh<Args...>::end() const requires (hasContainerOf<EL_TYPE>())
  * }
  * @endcode
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] jumpDeleted: if `true`, the view will be initialized to jump
  * deleted elements in the container.
  * @return a lightweight view object that can be used in range-based for loops
  * to iterate over elements.
  */
 template<typename... Args>
-template<uint EL_TYPE>
+template<uint ELEM_ID>
 auto Mesh<Args...>::elements(bool jumpDeleted)
-	requires (hasContainerOf<EL_TYPE>())
+	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elements(jumpDeleted);
 }
 
 /**
  * Returns a lightweight const view object that stores the begin and end
- * const iterators of the container of the elements of type EL_TYPE in the mesh.
+ * const iterators of the container of the elements having ID ELEM_ID in the mesh.
  * The view object exposes the iterators trough the `begin()` and `end()` member
  * functions, and therefore the returned object can be used in range-based for
  * loops:
@@ -959,88 +958,88 @@ auto Mesh<Args...>::elements(bool jumpDeleted)
  * }
  * @endcode
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE. Otherwise, a compiler error will be triggered.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID. Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] jumpDeleted: if `true`, the view will be initialized to jump
  * deleted elements in the container.
  * @return a lightweight view object that can be used in range-based for loops
  * to iterate over elements.
  */
 template<typename... Args>
-template<uint EL_TYPE>
+template<uint ELEM_ID>
 auto Mesh<Args...>::elements(bool jumpDeleted) const
-	requires (hasContainerOf<EL_TYPE>())
+	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elements(jumpDeleted);
 }
 
 /**
- * @brief Returns `true` if optional Component `COMP_TYPE` is enabled for
- * elements of type `EL_TYPE` in the mesh.
+ * @brief Returns `true` if optional Component having ID `COMP_ID` is enabled
+ * for elements having ID `ELEM_ID` in the mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID, and that the Element has a optional component having ID COMP_ID.
  * Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
- * @tparam COMP_TYPE: the type ID of the component.
- * @return `true` if optional Component `COMP_TYPE` is enabled for elements of
- * type `EL_TYPE` in the mesh.
+ * @tparam ELEM_ID: the ID of the element.
+ * @tparam COMP_ID: the ID of the component.
+ * @return `true` if optional Component `COMP_ID` is enabled for elements of
+ * type `ELEM_ID` in the mesh.
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint ELEM_ID, uint COMP_ID>
 bool Mesh<Args...>::isPerElementComponentEnabled() const
-	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+	requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
-	return Cont::template isOptionalComponentEnabled<COMP_TYPE>();
+	return Cont::template isOptionalComponentEnabled<COMP_ID>();
 }
 
 /**
- * @brief Enables the optional Component `COMP_TYPE` for elements of type
- * `EL_TYPE` in the mesh.
+ * @brief Enables the optional Component having ID `COMP_ID` for elements having
+ * ID `ELEM_ID` in the mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID, and that the Element has a optional component having ID COMP_TYPE.
  * Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
- * @tparam COMP_TYPE: the type ID of the component.
+ * @tparam ELEM_ID: the ID of the element.
+ * @tparam COMP_ID: the ID of the component.
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint ELEM_ID, uint COMP_ID>
 void Mesh<Args...>::enablePerElementComponent()
-	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+	requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
-	Cont::template enableOptionalComponent<COMP_TYPE>();
+	Cont::template enableOptionalComponent<COMP_ID>();
 }
 
 /**
- * @brief Disables the optional Component `COMP_TYPE` for elements of type
- * `EL_TYPE` in the mesh.
+ * @brief Disables the optional Component having ID `COMP_ID` for elements
+ * having ID `ELEM_ID` in the mesh.
  *
- * The function requires that the Mesh has a Container of Elements of type
- * EL_TYPE, and that the Element has a optional component of type COMP_TYPE.
+ * The function requires that the Mesh has a Container of Elements having ID
+ * ELEM_ID, and that the Element has a optional component having ID COMP_ID.
  * Otherwise, a compiler error will be triggered.
  *
- * @tparam EL_TYPE: the type ID of the element.
- * @tparam COMP_TYPE: the type ID of the component.
+ * @tparam ELEM_ID: the ID of the element.
+ * @tparam COMP_ID: the ID of the component.
  */
 template<typename... Args>
-template<uint EL_TYPE, uint COMP_TYPE>
+template<uint ELEM_ID, uint COMP_ID>
 void Mesh<Args...>::disablePerElementComponent()
-	requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>())
+	requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>())
 {
-	using Cont = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont = typename ContainerOfElement<ELEM_ID>::type;
 
-	Cont::template disableOptionalComponent<COMP_TYPE>();
+	Cont::template disableOptionalComponent<COMP_ID>();
 }
 
 /*********************
@@ -1308,10 +1307,10 @@ void Mesh<Args...>::updatePointersOfContainerType(
 }
 
 template<typename... Args>
-template<uint EL_TYPE, typename T>
+template<uint ELEM_ID, typename T>
 uint Mesh<Args...>::elementIndex(const T* el) const
 {
-	using Cont   = typename ContainerOfElement<EL_TYPE>::type;
+	using Cont   = typename ContainerOfElement<ELEM_ID>::type;
 	using ElType = typename Cont::ElementType;
 	return index(static_cast<const ElType*>(el));
 }

@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-enum ElementEnumType {
+enum ElementIDEnum : uint {
 	VERTEX = 0,
 	FACE,
 	EDGE,
@@ -42,20 +42,33 @@ inline static constexpr const char* ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {
 	"Edge",
 };
 
-template<uint ELEM_TYPE>
+/**
+ * @brief The ElemenetString class is used to retrieve the string associated
+ * to a ELEM_ID value, trough its member 'str'.
+ *
+ * If you use a custom element class, you should specialize this struct with
+ * your ELEM_ID value (that is >= ELEMENTS_NUMBER).
+ *
+ * @tparam ELEM_ID: The ELEM_ID value associated to the string.
+ */
+template<uint ELEM_ID>
 struct ElemenetString {
-	const char* str = ELEMENT_ENUM_STRINGS[ELEM_TYPE];
+	/**
+	 * @brief The string associated to the ELEM_ID.
+	 */
+	const char* str =
+		ELEM_ID < ELEMENTS_NUMBER ? ELEMENT_ENUM_STRINGS[ELEM_ID] : nullptr;
 };
 
-template<uint ELEM_TYPE>
+template<uint ELEM_ID>
 constexpr const char* elementEnumString()
 {
 	static_assert(
-		ELEM_TYPE < ELEMENTS_NUMBER,
-		"Invalid ElementEnumType. You should specialize 'the ElementString' struct with "
-		"your ELEM_TYPE value.");
+		ElemenetString<ELEM_ID>().str != nullptr,
+		"Invalid ElementIDEnum. You should specialize 'the ElementString' "
+		"struct with your ELEM_ID value.");
 
-	return ElemenetString<ELEM_TYPE>().str;
+	return ElemenetString<ELEM_ID>().str;
 }
 
 } // namespace vcl

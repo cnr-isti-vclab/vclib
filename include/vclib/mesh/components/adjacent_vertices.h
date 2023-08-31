@@ -70,6 +70,7 @@ namespace vcl::comp {
 template<typename Vertex, typename ElementType = void, bool OPT = false>
 class AdjacentVertices :
 		public PointersContainerComponent<
+			AdjacentVertices<Vertex, ElementType, OPT>,
 			ADJACENT_VERTICES,
 			Vertex,
 			-1,
@@ -78,6 +79,7 @@ class AdjacentVertices :
 			false>
 {
 	using Base = PointersContainerComponent<
+		AdjacentVertices<Vertex, ElementType, OPT>,
 		ADJACENT_VERTICES,
 		Vertex,
 		-1,
@@ -95,12 +97,6 @@ public:
 
 	using AdjacentVertexIterator      = typename Base::Iterator;
 	using ConstAdjacentVertexIterator = typename Base::ConstIterator;
-
-	/* Constructor and isAvailable */
-
-	void init();
-
-	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -151,12 +147,6 @@ protected:
 		const Element& e,
 		Vertex*        base,
 		const ElVType* ebase);
-
-	void updatePointers(const Vertex* oldBase, const Vertex* newBase);
-
-	void updatePointers(
-		const Vertex*            base,
-		const std::vector<uint>& newIndices);
 
 private:
 	template<typename Element, typename ElVType>

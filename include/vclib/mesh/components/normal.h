@@ -56,17 +56,22 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<PointConcept P, typename ElementType = void, bool OPT = false>
-class Normal : public Component<NORMAL, P, ElementType, OPT>
+class Normal :
+		public Component<
+			Normal<P, ElementType, OPT>,
+			NORMAL,
+			P,
+			ElementType,
+			OPT>
 {
-	using Base = Component<NORMAL, P, ElementType, OPT>;
+	using Base =
+		Component<Normal<P, ElementType, OPT>, NORMAL, P, ElementType, OPT>;
 
 public:
 	/**
 	 * @brief Expose the type of the Normal.
 	 */
 	using NormalType = P;
-
-	bool isAvailable() const;
 
 	const P& normal() const;
 	P&       normal();

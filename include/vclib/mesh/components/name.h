@@ -55,13 +55,18 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
-class Name : public Component<NAME, std::string, ElementType, OPT>
+class Name :
+		public Component<
+			Name<ElementType, OPT>,
+			NAME,
+			std::string,
+			ElementType,
+			OPT>
 {
-	using Base = Component<NAME, std::string, ElementType, OPT>;
+	using Base =
+		Component<Name<ElementType, OPT>, NAME, std::string, ElementType, OPT>;
 
 public:
-	bool isAvailable() const;
-
 	std::string& name();
 	const std::string& name() const;
 

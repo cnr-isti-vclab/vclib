@@ -26,30 +26,13 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<PointConcept P, typename El, bool O>
-bool BoundingBox<P, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns a const reference to the bounding box of this object.
  * @return A const reference to the bounding box of this object.
  */
 template<PointConcept P, typename El, bool O>
 const Box<P>& BoundingBox<P, El, O>::boundingBox() const
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 /**
@@ -59,7 +42,7 @@ const Box<P>& BoundingBox<P, El, O>::boundingBox() const
 template<PointConcept P, typename El, bool O>
 Box<P>& BoundingBox<P, El, O>::boundingBox()
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 template<PointConcept P, typename El, bool O>

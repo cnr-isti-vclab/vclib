@@ -28,23 +28,6 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<int N, typename El, bool O>
-bool WedgeColors<N, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns a reference to the i-th wedge color of the element.
  *
  * You can use this function to set the i-th color of the element:
@@ -293,13 +276,13 @@ void WedgeColors<N, El, O>::importWedgeColorsFrom(const Element& e)
 template<int N, typename El, bool O>
 Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors()
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 template<int N, typename El, bool O>
 const Vector<vcl::Color, N>& WedgeColors<N, El, O>::colors() const
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 /**

@@ -77,9 +77,19 @@ namespace vcl::comp {
  */
 template<typename ElementType = void, bool OPT = false>
 class TriangleBitFlags :
-		public Component<BIT_FLAGS, BitSet<short>, ElementType, OPT>
+		public Component<
+			TriangleBitFlags<ElementType, OPT>,
+			BIT_FLAGS,
+			BitSet<short>,
+			ElementType,
+			OPT>
 {
-	using Base = Component<BIT_FLAGS, BitSet<short>, ElementType, OPT>;
+	using Base = Component<
+		TriangleBitFlags<ElementType, OPT>,
+		BIT_FLAGS,
+		BitSet<short>,
+		ElementType,
+		OPT>;
 
 	using FT = short; // FlagsType, the integral type used for the flags
 
@@ -95,8 +105,6 @@ public:
 	TriangleBitFlags();
 
 	void init();
-
-	bool isAvailable() const;
 
 	/* Member functions */
 
