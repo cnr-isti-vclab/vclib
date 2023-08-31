@@ -45,7 +45,7 @@ using ContCompBase = std::conditional_t<
  *
  * @tparam DerivedComponent: The type of the Derived Component. It is used to
  * implement the CRTP pattern.
- * @tparam COMP_TYPE: The type of the component. It is a value of the enum
+ * @tparam COMPONENT_ID: The id of the component. It is a value of the enum
  * ComponentType, or an integer value that is not already used by any other
  * component. It is used to identify the component at compile time.
  * @tparam T: The type of the data that the component needs to store in a
@@ -78,19 +78,19 @@ using ContCompBase = std::conditional_t<
  * happens.
  */
 template<
-	typename DerivedComponent,
-	uint COMP_TYPE,
-	typename T,
-	int N,
-	typename AdditionalData,
-	typename ElementType,
-	bool OPT,
-	bool TTVN,
-	typename... PointedTypes>
+	typename DerivedComponent, // crtp pattern, derived class
+	uint COMP_ID,              // component id
+	typename T,                // data stored in container
+	int N,                     // container size
+	typename AdditionalData,   // additional data outside container
+	typename ElementType,      // element type, void if horizontal
+	bool OPT,                  // true if component vertical and optional
+	bool TTVN,                 // true if container size tied to vertex number
+	typename... PointedTypes>  // types of pointers stored by the component
 class ContainerComponent :
 		public internal::ContCompBase<
 			DerivedComponent,
-			COMP_TYPE,
+			COMP_ID,
 			T,
 			N,
 			AdditionalData,
@@ -104,7 +104,7 @@ class ContainerComponent :
 
 	using Base = internal::ContCompBase<
 		DerivedComponent,
-		COMP_TYPE,
+		COMP_ID,
 		T,
 		N,
 		AdditionalData,

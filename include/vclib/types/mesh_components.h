@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-enum ComponentEnumType {
+enum ComponentIDEnum : uint {
 	BIT_FLAGS = 0,
 	COORDINATE,
 	NORMAL,
@@ -52,42 +52,64 @@ enum ComponentEnumType {
 
 inline static constexpr uint COMPONENTS_NUMBER = 19;
 
-inline static constexpr const char* COMPONENT_ENUM_STRINGS[COMPONENTS_NUMBER] = {
-	"BitFlags",
-	"Coordinate",
-	"Normal",
-	"Color",
-	"Quality",
-	"Mark",
-	"PrincipalCurvature",
-	"TexCoord",
-	"VertexPointers",
-	"AdjacentEdges",
-	"AdjacentFaces",
-	"AdjacentVertices",
-	"WedgeColors",
-	"WedgeTexCoords",
-	"BoundingBox",
-	"Name",
-	"TexturePaths",
-	"TransformMatrix",
-	"CustomComponents",
+inline static constexpr const char* COMPONENT_ENUM_STRINGS[COMPONENTS_NUMBER] =
+	{
+		"BitFlags",
+		"Coordinate",
+		"Normal",
+		"Color",
+		"Quality",
+		"Mark",
+		"PrincipalCurvature",
+		"TexCoord",
+		"VertexPointers",
+		"AdjacentEdges",
+		"AdjacentFaces",
+		"AdjacentVertices",
+		"WedgeColors",
+		"WedgeTexCoords",
+		"BoundingBox",
+		"Name",
+		"TexturePaths",
+		"TransformMatrix",
+		"CustomComponents",
 };
 
-template<uint COMP_TYPE>
+/**
+ * @brief The ComponentString class is used to retrieve the string associated
+ * to a COMPONENT_ID value, trough its member 'str'.
+ *
+ * If you use a custom component class, you should specialize this struct with
+ * your COMPONENT_ID value (that is >= COMPONENTS_NUMBER).
+ *
+ * @tparam COMPONENT_ID The COMPONENT_ID value associated to the string.
+ */
+template<uint COMPONENT_ID>
 struct ComponentString {
-	const char* str = COMPONENT_ENUM_STRINGS[COMP_TYPE];
+	/**
+	 * @brief The string associated to the COMPONENT_ID.
+	 */
+	const char* str = COMPONENT_ID < COMPONENTS_NUMBER ?
+						  COMPONENT_ENUM_STRINGS[COMPONENT_ID] :
+						  nullptr;
 };
 
-template<uint COMP_TYPE>
+/**
+ * @brief Returns the string associated to the COMPONENT_ID value.
+ *
+ * @tparam COMPONENT_ID: an unsigned integer that idetinfies the component.
+ * @return The string associated to the COMPONENT_ID value.
+ */
+template<uint COMPONENT_ID>
 constexpr const char* componentEnumString()
 {
 	static_assert(
-		COMP_TYPE < COMPONENTS_NUMBER,
-		"Invalid ComponentEnumType. You should specialize the 'ComponentString' struct with "
-		"your COMP_TYPE value.");
+		ComponentString<COMPONENT_ID>().str != nullptr,
+		"Invalid ComponentEnumType. You should specialize the "
+		"'ComponentString' struct with "
+		"your COMPONENT_ID value.");
 
-	return ComponentString<COMP_TYPE>().str;
+	return ComponentString<COMPONENT_ID>().str;
 }
 
 } // namespace vcl

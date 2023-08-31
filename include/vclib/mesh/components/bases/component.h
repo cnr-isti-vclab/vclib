@@ -112,12 +112,12 @@ namespace vcl::comp {
  * happens.
  */
 template<
-	typename DerivedComponent,
-	uint COMP_TYPE,
-	typename DataType,
-	typename ElementType,
-	bool OPT,
-	typename... PointedTypes>
+	typename DerivedComponent, // CRTP pattern, derived class
+	uint COMP_ID,              // component id
+	typename DataType,         // data stored by the component
+	typename ElementType,      // element type, void if horizontal
+	bool OPT,                  // true if component vertical and optional
+	typename... PointedTypes>  // types of the pointers stored by the component
 class Component : public PointersComponentTriggerer<PointedTypes>...
 {
 public:
@@ -130,7 +130,7 @@ public:
 	/**
 	 * @brief The ID of the type of component.
 	 */
-	static const uint COMPONENT_TYPE = COMP_TYPE;
+	static const uint COMPONENT_TYPE = COMP_ID;
 
 	/**
 	 * @brief Boolean that tells if this component type stores its data
