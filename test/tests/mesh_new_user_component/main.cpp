@@ -25,6 +25,8 @@
 
 #include "foo_mesh.h"
 
+#include <vclib/meshes/tri_mesh.h>
+
 TEST_CASE( "Simple User Component" ) {
 
 	FooMesh m;
@@ -38,4 +40,13 @@ TEST_CASE( "Simple User Component" ) {
 	for (uint i = 0; i < 10; ++i) {
 		REQUIRE (m.vertex(i).foo() == 42 + i);
 	}
+
+	vcl::TriMesh tm;
+
+	// when importing in a trimesh, the foo component is not copied
+	// because the trimesh does not have the component in its vertices
+	tm.importFrom(m);
+
+	// reverse importFrom, to assert that everything builds correctly
+	m.importFrom(tm);
 }
