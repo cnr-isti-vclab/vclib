@@ -24,4 +24,4 @@ target_link_libraries(vclib-mesh-new-user-component-test PUBLIC vclib)
 
 enable_testing()
 add_test(NAME mesh-new-user-component-test
-	COMMAND vclib-mesh-new-user-component-test-test)
+	COMMAND vclib-mesh-new-user-component-test)
