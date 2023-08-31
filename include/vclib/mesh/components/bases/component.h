@@ -94,8 +94,8 @@ namespace vcl::comp {
  *
  * @tparam DerivedComponent: The type of the Derived Component. It is used to
  * implement the CRTP pattern.
- * @tparam COMP_TYPE: The type of the component. It is a value of the enum
- * ComponentType, or an integer value that is not already used by any other
+ * @tparam COMP_ID: The if of the component. It is a value of the enum
+ * ComponentIDEnum, or an integer value that is not already used by any other
  * component. It is used to identify the component at compile time.
  * @tparam DataType: The type of the data that the component needs to store.
  * E.g. a Normal component would store a vcl::Point3d.
@@ -128,9 +128,9 @@ public:
 	using DataValueType = DataType;
 
 	/**
-	 * @brief The ID of the type of component.
+	 * @brief The ID of the component.
 	 */
-	static const uint COMPONENT_TYPE = COMP_ID;
+	static const uint COMPONENT_ID = COMP_ID;
 
 	/**
 	 * @brief Boolean that tells if this component type stores its data
@@ -180,7 +180,7 @@ private:
 
 /**
  * @brief Checks if the given Element or Mesh has the component having
- * COMPONENT_TYPE ID available.
+ * COMPONENT_ID available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element/mesh. The runtime check is performed only when the
@@ -191,17 +191,17 @@ private:
  * @return `true` if the element/mesh has the component available, `false`
  * otherwise.
  */
-template<uint COMPONENT_TYPE, ElementOrMeshConcept T>
+template<uint COMPONENT_ID, ElementOrMeshConcept T>
 bool isComponentAvailableOn(const T& obj)
 {
-	if constexpr (HasOptionalComponentOfType<T, COMPONENT_TYPE>) {
+	if constexpr (HasOptionalComponentOfType<T, COMPONENT_ID>) {
 		using ComponentType =
-			ComponentOfType<COMPONENT_TYPE, typename T::Components>;
+			ComponentOfType<COMPONENT_ID, typename T::Components>;
 		const ComponentType& c = static_cast<const ComponentType&>(obj);
 		return c.isAvailable();
 	}
 	else
-		return HasComponentOfType<T, COMPONENT_TYPE>;
+		return HasComponentOfType<T, COMPONENT_ID>;
 }
 
 } // namespace vcl::comp

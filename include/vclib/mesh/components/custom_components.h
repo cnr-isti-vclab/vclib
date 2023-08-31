@@ -95,9 +95,9 @@ class CustomComponents
 	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 public:
 	/**
-	 * @brief The ID of the type of component.
+	 * @brief The ID of component.
 	 */
-	static const uint COMPONENT_TYPE = CUSTOM_COMPONENTS;
+	static const uint COMPONENT_ID = CUSTOM_COMPONENTS;
 
 	bool hasCustomComponent(const std::string& compName) const;
 
