@@ -52,7 +52,7 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+template <uint ELEM_ID, typename MeshType, typename... Comps>
 class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 {
 	template<ElementConcept>
@@ -70,7 +70,7 @@ public:
 		comp::IsComponentPred,
 		vcl::TypeWrapper<Comps...>>::type;
 
-	static const uint ELEMENT_ID = ELEM_TYPE;
+	static const uint ELEMENT_ID = ELEM_ID;
 
 	uint index() const;
 
