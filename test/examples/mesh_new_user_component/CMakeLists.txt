@@ -9,18 +9,16 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-new-user-component-test)
+project(vclib-mesh-new-user-component)
+
+set(HEADERS
+	bar_component.h
+	foo_component.h
+	foo_mesh.h)
 
 set(SOURCES
 	main.cpp)
 
-add_executable(vclib-mesh-new-user-component-test ${SOURCES})
+add_executable(vclib-mesh-new-user-component ${HEADERS} ${SOURCES})
 
-target_link_libraries(vclib-mesh-new-user-component-test PUBLIC vclib)
-target_include_directories(vclib-mesh-new-user-component-test
-	PUBLIC
-		${CMAKE_CURRENT_SOURCE_DIR}/../../examples/mesh_new_user_component)
-
-enable_testing()
-add_test(NAME mesh-new-user-component-test
-	COMMAND vclib-mesh-new-user-component-test)
+target_link_libraries(vclib-mesh-new-user-component PUBLIC vclib)
