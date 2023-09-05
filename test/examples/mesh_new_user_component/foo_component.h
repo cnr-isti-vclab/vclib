@@ -37,8 +37,8 @@
 // the concept should just check if the element/mesh has the member functions
 // that are part of the component class.
 template<typename T>
-concept HasFooComponent = requires(T t, const T& ct) {
-
+concept HasFooComponent = requires(T t, const T& ct)
+{
 	// accessor to the foo component, returns int&
 	{ t.foo() } -> std::same_as<int&>;
 

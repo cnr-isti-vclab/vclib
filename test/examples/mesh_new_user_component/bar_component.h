@@ -24,6 +24,7 @@
 #ifndef BAR_COMPONENT_H
 #define BAR_COMPONENT_H
 
+#include <vclib/mesh/components/bases/component.h>
 #include <vclib/types.h>
 
 /*
@@ -42,8 +43,8 @@
 // the concept should just check if the element/mesh has the member functions
 // that are part of the component class.
 template<typename T>
-concept HasBarComponent = requires(T t, const T& ct) {
-
+concept HasBarComponent = requires(T t, const T& ct)
+{
 	// accessor to the int value of the bar component, returns int&
 	{ t.foo() } -> std::same_as<int&>;
 
@@ -57,41 +58,118 @@ concept HasBarComponent = requires(T t, const T& ct) {
 	{ ct.bar() } -> std::same_as<double>;
 };
 
-// TODO: BarComponent inherit from vcl::Component
-class BarComponent
-{
-public:
-	// first requirement: an unique static const uint ID of the component
-	// vcl::COMPONENTS_NUMBER is the number of components that are already
-	// defined in VCLib. You can use it to avoid collisions.
-	static const uint COMPONENT_ID = vcl::COMPONENTS_NUMBER + 0;
+// define a constant uint that identifies the component (same idea used for
+// COMPONENT_ID in the FooComponent)
+inline static const uint BAR_COMPONENT = vcl::COMPONENTS_NUMBER + 0;
 
+namespace internal {
+
+// we wrap all the data stored by the component in a struct.
+// in this case we could use also a std::pair, but it doesn't matter
+// the only important thing is to have all the data wrapped in a single type
+struct BarData
+{
+	int foo;
+	double bar;
+};
+
+} // namespace internal
+
+// We declare here a function that checks at runtime if the component is
+// available. The check is a combination of a compile time check (if the
+// component actually exists) and a runtime check (in case the component is
+// optional, if it is enabled).
+// You can use the ElementOrMeshConcept if you plan to use this component also
+// on a Mesh. If you plan to use it only on Elements, use the ElementConcept.
+// We will implement the function later
+bool isBarComponentAvailableOn(const vcl::ElementOrMeshConcept auto& element);
+
+// class of the Bar component
+// we called it BarComponentT because BarComponent will be aliased without
+// template arguments later (and will be the horizontal component).
+//
+// template arguments are two:
+// - ElementType: void if the component will be horizontal, or the type of the
+//   Element that will have the component if vertical;
+// - OPTIONAL: true if the component will be optional. Will be valid only if
+//   ElementType != void
+//
+// The class inherits from the vcl::comp::Component class, that has a list of
+// template arguments.
+template<typename ElementType = void, bool OPTIONAL = false>
+class BarComponentT :
+		public vcl::comp::Component<
+
+			// CRTP: the first argument is always the component class itself
+			BarComponentT<ElementType, OPTIONAL>,
+
+			// ID of the component, same used in the FooComponent, but in this
+			// case it is a template argument of the vcl::comp::Component class
+			BAR_COMPONENT,
+
+			// The type of the data that the component stores. It is needed
+			// because if vertical, the mesh must know what data to store
+			internal::BarData,
+
+			// Same ElementType argument of the BarComponentT class
+			ElementType,
+
+			// Same OPTIONAL argument of the BarComponentT class
+			OPTIONAL>
+{
+	// alias of the base vcl::comp::Component class - just for internal use
+	// to access the member functions of the base class
+	using Base = vcl::comp::Component<
+		BarComponentT<ElementType, OPTIONAL>,
+		BAR_COMPONENT,
+		internal::BarData,
+		ElementType,
+		OPTIONAL>;
+
+public:
 	// any member that you want to add to the component
 
-	int& foo() { return fooData; }
-	int foo() const { return fooData; }
+	// we access the data stored by calling Base::data(). The returned type
+	// is the same of the third template argument of the vcl::comp::Component
+	// class -- in this case, internal::BarData
+	int& foo() { return Base::data().foo; }
+	int foo() const { return Base::data().foo; }
 
-	double& bar() { return barData; }
-	double bar() const { return barData; }
+	double& bar() { return Base::data().bar; }
+	double bar() const { return Base::data().bar; }
 
 protected:
-	// second requirement: a protected `importFrom` member function
+	// first requirement: a protected `importFrom` member function
 	template<typename Element> // another element, maybe from another mesh type
 	void importFrom(const Element& e)
 	{
-		// will import the foo component from the element e only if it also has
-		// the foo component
+		// will import the bar component from the element e only if it also has
+		// the bar component
 		if constexpr (HasBarComponent<Element>) { // compile time check
-			fooData = e.foo();
-			barData = e.bar();
+			if (isBarComponentAvailableOn(e)) { // runtime check
+				foo() = e.foo();
+				bar() = e.bar();
+			}
 		}
 	}
-
-private:
-	// the data that you want to store in a component
-	int fooData;
-	double barData;
 };
+
+// implementation of the availability checker function
+bool isBarComponentAvailableOn(const vcl::ElementOrMeshConcept auto& element)
+{
+	// we use the utility function provided by vclib, using the ID of the
+	// component
+	return vcl::comp::isComponentAvailableOn<BAR_COMPONENT>(element);
+}
+
+// Aliases
+using BarComponent = BarComponentT<>; // horizontal component
+
+template<typename ElementType>
+using VerticalBarComponent = BarComponentT<ElementType>; // vertical component
+
+template<typename ElementType>
+using OptionalBarComponent = BarComponentT<ElementType, true>; // optional
 
 static_assert(
 	HasBarComponent<BarComponent>,
