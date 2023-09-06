@@ -58,6 +58,13 @@ concept HasBarComponent = requires(T t, const T& ct)
 	{ ct.bar() } -> std::same_as<double>;
 };
 
+// if you want, you can also define a concept that checks if an element has
+// the bar component optional -- it could be useful in some contexts
+template<typename T>
+concept HasOptionalColor =
+	HasBarComponent<T> &&
+	vcl::comp::IsOptionalComponent<typename T::BarComponentT>;
+
 // define a constant uint that identifies the component (same idea used for
 // COMPONENT_ID in the FooComponent)
 inline static const uint BAR_COMPONENT = vcl::COMPONENTS_NUMBER + 0;
