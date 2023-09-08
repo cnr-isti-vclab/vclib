@@ -188,8 +188,8 @@ bool AdjacentFaces<Face, N, TT, El, O>::containsAdjFace(const Face* f) const
  * face, or end if no such adjacent face is found.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-typename AdjacentFaces<Face, N, TT, El, O>::AdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, O>::findAdjFace(const Face* f)
+auto AdjacentFaces<Face, N, TT, El, O>::findAdjFace(const Face* f)
+	-> AdjacentFaceIterator
 {
 	return Base::container(this).find(f);
 }
@@ -204,8 +204,8 @@ AdjacentFaces<Face, N, TT, El, O>::findAdjFace(const Face* f)
  * given face, or end if no such adjacent face is found.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-typename AdjacentFaces<Face, N, TT, El, O>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, O>::findAdjFace(const Face* f) const
+auto AdjacentFaces<Face, N, TT, El, O>::findAdjFace(const Face* f) const
+	-> ConstAdjacentFaceIterator
 {
 	return Base::container(this).find(f);
 }
@@ -301,8 +301,7 @@ void AdjacentFaces<Face, N, TT, El, O>::clearAdjFaces()
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-typename AdjacentFaces<Face, N, TT, El, O>::AdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, O>::adjFaceBegin()
+auto AdjacentFaces<Face, N, TT, El, O>::adjFaceBegin() -> AdjacentFaceIterator
 {
 	return Base::container(this).begin();
 }
@@ -313,8 +312,7 @@ AdjacentFaces<Face, N, TT, El, O>::adjFaceBegin()
  * @return an iterator pointing to the end of this container.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-typename AdjacentFaces<Face, N, TT, El, O>::AdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, O>::adjFaceEnd()
+auto AdjacentFaces<Face, N, TT, El, O>::adjFaceEnd() -> AdjacentFaceIterator
 {
 	return Base::container(this).end();
 }
@@ -326,8 +324,8 @@ AdjacentFaces<Face, N, TT, El, O>::adjFaceEnd()
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-typename AdjacentFaces<Face, N, TT, El, O>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, O>::adjFaceBegin() const
+auto AdjacentFaces<Face, N, TT, El, O>::adjFaceBegin() const
+	-> ConstAdjacentFaceIterator
 {
 	return Base::container(this).begin();
 }
@@ -339,8 +337,8 @@ AdjacentFaces<Face, N, TT, El, O>::adjFaceBegin() const
  * @return an iterator pointing to the end of this container.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-typename AdjacentFaces<Face, N, TT, El, O>::ConstAdjacentFaceIterator
-AdjacentFaces<Face, N, TT, El, O>::adjFaceEnd() const
+auto AdjacentFaces<Face, N, TT, El, O>::adjFaceEnd() const
+	-> ConstAdjacentFaceIterator
 {
 	return Base::container(this).end();
 }
@@ -361,7 +359,7 @@ AdjacentFaces<Face, N, TT, El, O>::adjFaceEnd() const
  * to iterate over adjacent faces.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-auto AdjacentFaces<Face, N, TT, El, O>::adjFaces()
+auto AdjacentFaces<Face, N, TT, El, O>::adjFaces() -> View<AdjacentFaceIterator>
 {
 	return View(adjFaceBegin(), adjFaceEnd());
 }
@@ -383,6 +381,7 @@ auto AdjacentFaces<Face, N, TT, El, O>::adjFaces()
  */
 template<typename Face, int N, bool TT, typename El, bool O>
 auto AdjacentFaces<Face, N, TT, El, O>::adjFaces() const
+	-> View<ConstAdjacentFaceIterator>
 {
 	return View(adjFaceBegin(), adjFaceEnd());
 }

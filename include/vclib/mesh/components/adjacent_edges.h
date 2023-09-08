@@ -131,8 +131,8 @@ public:
 
 	bool containsAdjEdge(const Edge* e) const;
 
-	AdjacentEdgeIterator      findAdjEdge(const Edge* e);
-	ConstAdjacentEdgeIterator findAdjEdge(const Edge* e) const;
+	auto findAdjEdge(const Edge* e) -> AdjacentEdgeIterator;
+	auto findAdjEdge(const Edge* e) const -> ConstAdjacentEdgeIterator;
 
 	uint indexOfAdjEdge(const Edge* e) const;
 
@@ -146,12 +146,12 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentEdgeIterator      adjEdgeBegin();
-	AdjacentEdgeIterator      adjEdgeEnd();
-	ConstAdjacentEdgeIterator adjEdgeBegin() const;
-	ConstAdjacentEdgeIterator adjEdgeEnd() const;
-	auto                      adjEdges();
-	auto                      adjEdges() const;
+	auto adjEdgeBegin() -> AdjacentEdgeIterator;
+	auto adjEdgeEnd() -> AdjacentEdgeIterator;
+	auto adjEdgeBegin() const -> ConstAdjacentEdgeIterator;
+	auto adjEdgeEnd() const -> ConstAdjacentEdgeIterator;
+	auto adjEdges() -> View<AdjacentEdgeIterator>;
+	auto adjEdges() const -> View<ConstAdjacentEdgeIterator>;
 
 protected:
 	// Component interface function
