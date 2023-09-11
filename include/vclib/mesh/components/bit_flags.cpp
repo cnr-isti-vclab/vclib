@@ -84,7 +84,7 @@ bool BitFlags<El, O>::deleted() const
  * @return a reference to the 'selected' bit of this Element.
  */
 template<typename El, bool O>
-BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::selected()
+auto BitFlags<El, O>::selected() -> BitProxy<FT>
 {
 	return flags()[SELECTED];
 }
@@ -105,7 +105,7 @@ bool BitFlags<El, O>::selected() const
  * @return a reference to the 'onBorder' bit of this Element.
  */
 template<typename El, bool O>
-BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::onBorder()
+auto BitFlags<El, O>::onBorder() -> BitProxy<FT>
 {
 	return flags()[BORDER];
 }
@@ -126,7 +126,7 @@ bool BitFlags<El, O>::onBorder() const
  * @return a reference to the 'visited' bit of this Element.
  */
 template<typename El, bool O>
-BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::visited()
+auto BitFlags<El, O>::visited() -> BitProxy<FT>
 {
 	return flags()[VISITED];
 }
@@ -166,7 +166,7 @@ bool BitFlags<El, O>::userBit(uint bit) const
  * @return `true` if the required bit is enabled, `false` otherwise.
  */
 template<typename El, bool O>
-BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::userBit(uint bit)
+auto BitFlags<El, O>::userBit(uint bit) -> BitProxy<FT>
 {
 	assert(bit < USER_BITS_NUMBER);
 	return flags()[bit + FIRST_USER_BIT];
@@ -222,7 +222,7 @@ int BitFlags<El, O>::exportToVCGFlags() const
 }
 
 template<typename El, bool O>
-BitProxy<typename BitFlags<El, O>::FT> BitFlags<El, O>::deletedBit()
+auto BitFlags<El, O>::deletedBit() -> BitProxy<FT>
 {
 	return flags()[DELETED];
 }
@@ -252,13 +252,13 @@ void BitFlags<El, O>::importFrom(const Element& e)
 }
 
 template<typename El, bool O>
-BitSet<typename BitFlags<El, O>::FT>& BitFlags<El, O>::flags()
+auto BitFlags<El, O>::flags()-> BitSet<FT>&
 {
 	return Base::data(this);
 }
 
 template<typename El, bool O>
-BitSet<typename BitFlags<El, O>::FT> BitFlags<El, O>::flags() const
+auto BitFlags<El, O>::flags() const -> BitSet<FT>
 {
 	return Base::data(this);
 }
