@@ -47,8 +47,7 @@ bool TexCoord<Scalar, El, O>::isAvailable() const
  * @return a const reference of the tex coord of the element.
  */
 template<typename Scalar, typename El, bool O>
-const typename TexCoord<Scalar, El, O>::TexCoordType&
-TexCoord<Scalar, El, O>::texCoord() const
+auto TexCoord<Scalar, El, O>::texCoord() const -> const TexCoordType&
 {
 	return Base::data(this);
 }
@@ -58,8 +57,7 @@ TexCoord<Scalar, El, O>::texCoord() const
  * @return a reference of the tex coord of the element.
  */
 template<typename Scalar, typename El, bool O>
-typename TexCoord<Scalar, El, O>::TexCoordType&
-TexCoord<Scalar, El, O>::texCoord()
+auto TexCoord<Scalar, El, O>::texCoord() -> TexCoordType&
 {
 	return Base::data(this);
 }

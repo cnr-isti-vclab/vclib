@@ -125,7 +125,7 @@ public:
 
 	bool containsVertex(const Vertex* v) const;
 
-	VertexIterator findVertex(const Vertex* v);
+	VertexIterator      findVertex(const Vertex* v);
 	ConstVertexIterator findVertex(const Vertex* v) const;
 
 	uint indexOfVertex(const Vertex* v) const;
@@ -141,12 +141,12 @@ public:
 
 	/* Iterator Member functions */
 
-	VertexIterator           vertexBegin();
-	VertexIterator           vertexEnd();
-	ConstVertexIterator      vertexBegin() const;
-	ConstVertexIterator      vertexEnd() const;
-	auto                     vertices();
-	auto                     vertices() const;
+	VertexIterator            vertexBegin();
+	VertexIterator            vertexEnd();
+	ConstVertexIterator       vertexBegin() const;
+	ConstVertexIterator       vertexEnd() const;
+	View<VertexIterator>      vertices();
+	View<ConstVertexIterator> vertices() const;
 
 protected:
 	// Component interface function

@@ -178,8 +178,8 @@ bool VertexPointers<Vertex, N, El>::containsVertex(const Vertex* v) const
  * vertex, or end if no such vertex is found.
  */
 template<typename Vertex, int N, typename El>
-typename VertexPointers<Vertex, N, El>::VertexIterator
-VertexPointers<Vertex, N, El>::findVertex(const Vertex* v)
+auto VertexPointers<Vertex, N, El>::findVertex(const Vertex* v)
+	-> VertexIterator
 {
 	return Base::container(this).find(v);
 }
@@ -195,8 +195,8 @@ VertexPointers<Vertex, N, El>::findVertex(const Vertex* v)
  * vertex, or end if no such vertex is found.
  */
 template<typename Vertex, int N, typename El>
-typename VertexPointers<Vertex, N, El>::ConstVertexIterator
-VertexPointers<Vertex, N, El>::findVertex(const Vertex* v) const
+auto VertexPointers<Vertex, N, El>::findVertex(const Vertex* v) const
+	-> ConstVertexIterator
 {
 	return Base::container(this).find(v);
 }
@@ -320,8 +320,7 @@ void VertexPointers<Vertex, N, El>::clearVertices() requires (N < 0)
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Vertex, int N, typename El>
-typename VertexPointers<Vertex, N, El>::VertexIterator
-VertexPointers<Vertex, N, El>::vertexBegin()
+auto VertexPointers<Vertex, N, El>::vertexBegin() -> VertexIterator
 {
 	return Base::container(this).begin();
 }
@@ -332,8 +331,7 @@ VertexPointers<Vertex, N, El>::vertexBegin()
  * @return an iterator pointing to the end of this container.
  */
 template<typename Vertex, int N, typename El>
-typename VertexPointers<Vertex, N, El>::VertexIterator
-VertexPointers<Vertex, N, El>::vertexEnd()
+auto VertexPointers<Vertex, N, El>::vertexEnd() -> VertexIterator
 {
 	return Base::container(this).end();
 }
@@ -345,8 +343,7 @@ VertexPointers<Vertex, N, El>::vertexEnd()
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Vertex, int N, typename El>
-typename VertexPointers<Vertex, N, El>::ConstVertexIterator
-VertexPointers<Vertex, N, El>::vertexBegin() const
+auto VertexPointers<Vertex, N, El>::vertexBegin() const -> ConstVertexIterator
 {
 	return Base::container(this).begin();
 }
@@ -358,8 +355,7 @@ VertexPointers<Vertex, N, El>::vertexBegin() const
  * @return an iterator pointing to the end of this container.
  */
 template<typename Vertex, int N, typename El>
-typename VertexPointers<Vertex, N, El>::ConstVertexIterator
-VertexPointers<Vertex, N, El>::vertexEnd() const
+auto VertexPointers<Vertex, N, El>::vertexEnd() const -> ConstVertexIterator
 {
 	return Base::container(this).end();
 }
@@ -381,7 +377,7 @@ VertexPointers<Vertex, N, El>::vertexEnd() const
  * to iterate over vertices.
  */
 template<typename Vertex, int N, typename El>
-auto VertexPointers<Vertex, N, El>::vertices()
+auto VertexPointers<Vertex, N, El>::vertices() -> View<VertexIterator>
 {
 	return View(vertexBegin(), vertexEnd());
 }
@@ -404,6 +400,7 @@ auto VertexPointers<Vertex, N, El>::vertices()
  */
 template<typename Vertex, int N, typename El>
 auto VertexPointers<Vertex, N, El>::vertices() const
+	-> View<ConstVertexIterator>
 {
 	return View(vertexBegin(), vertexEnd());
 }

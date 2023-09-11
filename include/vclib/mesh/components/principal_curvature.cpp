@@ -47,8 +47,8 @@ bool PrincipalCurvature<Scalar, El, O>::isAvailable() const
  * @return a const reference of the principal curvature of the element.
  */
 template<typename Scalar, typename El, bool O>
-const typename PrincipalCurvature<Scalar, El, O>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, O>::principalCurvature() const
+auto PrincipalCurvature<Scalar, El, O>::principalCurvature() const
+	-> const PrincipalCurvatureType&
 {
 	return Base::data(this);
 }
@@ -58,8 +58,8 @@ PrincipalCurvature<Scalar, El, O>::principalCurvature() const
  * @return a reference of the principal curvature of the element.
  */
 template<typename Scalar, typename El, bool O>
-typename PrincipalCurvature<Scalar, El, O>::PrincipalCurvatureType&
-PrincipalCurvature<Scalar, El, O>::principalCurvature()
+auto PrincipalCurvature<Scalar, El, O>::principalCurvature()
+	-> PrincipalCurvatureType&
 {
 	return Base::data(this);
 }

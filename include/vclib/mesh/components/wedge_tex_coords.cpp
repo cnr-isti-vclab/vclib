@@ -164,8 +164,8 @@ short WedgeTexCoords<Scalar, N, El, O>::textureIndex() const
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Scalar, int N, typename El, bool O>
-typename WedgeTexCoords<Scalar, N, El, O>::WedgeTexCoordsIterator
-WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordBegin()
+auto WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordBegin()
+	-> WedgeTexCoordsIterator
 {
 	return texCoords().begin();
 }
@@ -176,8 +176,8 @@ WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordBegin()
  * @return an iterator pointing to the end of this container.
  */
 template<typename Scalar, int N, typename El, bool O>
-typename WedgeTexCoords<Scalar, N, El, O>::WedgeTexCoordsIterator
-WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordEnd()
+auto WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordEnd()
+	-> WedgeTexCoordsIterator
 {
 	return texCoords().end();
 }
@@ -189,8 +189,8 @@ WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordEnd()
  * @return a const iterator pointing to the begin of this container.
  */
 template<typename Scalar, int N, typename El, bool O>
-typename WedgeTexCoords<Scalar, N, El, O>::ConstWedgeTexCoordsIterator
-WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordBegin() const
+auto WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordBegin() const
+	-> ConstWedgeTexCoordsIterator
 {
 	return texCoords().begin();
 }
@@ -202,8 +202,8 @@ WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordBegin() const
  * @return a const iterator pointing to the end of this container.
  */
 template<typename Scalar, int N, typename El, bool O>
-typename WedgeTexCoords<Scalar, N, El, O>::ConstWedgeTexCoordsIterator
-WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordEnd() const
+auto WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordEnd() const
+	-> ConstWedgeTexCoordsIterator
 {
 	return texCoords().end();
 }
@@ -225,6 +225,7 @@ WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoordEnd() const
  */
 template<typename Scalar, int N, typename El, bool O>
 auto WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoords()
+	-> View<WedgeTexCoordsIterator>
 {
 	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }
@@ -246,6 +247,7 @@ auto WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoords()
  */
 template<typename Scalar, int N, typename El, bool O>
 auto WedgeTexCoords<Scalar, N, El, O>::wedgeTexCoords() const
+	-> View<ConstWedgeTexCoordsIterator>
 {
 	return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
 }

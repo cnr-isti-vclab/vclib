@@ -73,8 +73,8 @@ bool TransformMatrix<Scalar, El, O>::isAvailable() const
  * @return A const reference to the transform matrix.
  */
 template<typename Scalar, typename El, bool O>
-const typename TransformMatrix<Scalar, El, O>::TransformMatrixType&
-TransformMatrix<Scalar, El, O>::transformMatrix() const
+auto TransformMatrix<Scalar, El, O>::transformMatrix() const
+	-> const TransformMatrixType&
 {
 	return Base::data(this);
 }
@@ -84,8 +84,7 @@ TransformMatrix<Scalar, El, O>::transformMatrix() const
  * @return A reference to the transform matrix.
  */
 template<typename Scalar, typename El, bool O>
-typename TransformMatrix<Scalar, El, O>::TransformMatrixType&
-TransformMatrix<Scalar, El, O>::transformMatrix()
+auto TransformMatrix<Scalar, El, O>::transformMatrix() -> TransformMatrixType&
 {
 	return Base::data(this);
 }
