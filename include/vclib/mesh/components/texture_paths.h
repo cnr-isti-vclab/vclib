@@ -97,12 +97,12 @@ public:
 
 	void pushTexturePath(const std::string& textName);
 
-	TexFileNamesIterator      texturePathBegin();
-	TexFileNamesIterator      texturePathEnd();
-	ConstTexFileNamesIterator texturePathBegin() const;
-	ConstTexFileNamesIterator texturePathEnd() const;
-	auto                      texturePaths();
-	auto                      texturePaths() const;
+	TexFileNamesIterator            texturePathBegin();
+	TexFileNamesIterator            texturePathEnd();
+	ConstTexFileNamesIterator       texturePathBegin() const;
+	ConstTexFileNamesIterator       texturePathEnd() const;
+	View<TexFileNamesIterator>      texturePaths();
+	View<ConstTexFileNamesIterator> texturePaths() const;
 
 protected:
 	// Component interface functions

@@ -127,7 +127,7 @@ public:
 
 	bool containsAdjFace(const Face* f) const;
 
-	AdjacentFaceIterator findAdjFace(const Face* f);
+	AdjacentFaceIterator      findAdjFace(const Face* f);
 	ConstAdjacentFaceIterator findAdjFace(const Face* f) const;
 
 	uint indexOfAdjFace(const Face* f) const;
@@ -142,12 +142,12 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentFaceIterator      adjFaceBegin();
-	AdjacentFaceIterator      adjFaceEnd();
-	ConstAdjacentFaceIterator adjFaceBegin() const;
-	ConstAdjacentFaceIterator adjFaceEnd() const;
-	auto                      adjFaces();
-	auto                      adjFaces() const;
+	AdjacentFaceIterator            adjFaceBegin();
+	AdjacentFaceIterator            adjFaceEnd();
+	ConstAdjacentFaceIterator       adjFaceBegin() const;
+	ConstAdjacentFaceIterator       adjFaceEnd() const;
+	View<AdjacentFaceIterator>      adjFaces();
+	View<ConstAdjacentFaceIterator> adjFaces() const;
 
 	// dummy member to discriminate between AdjacentFaces and
 	// FaceHalfEdgePointers

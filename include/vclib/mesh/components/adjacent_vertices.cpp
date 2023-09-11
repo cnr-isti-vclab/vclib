@@ -156,8 +156,8 @@ bool AdjacentVertices<Vertex, El, O>::containsAdjVertex(const Vertex* v) const
  * vertex, or end if no such adjacent vertex is found.
  */
 template<typename Vertex, typename El, bool O>
-typename AdjacentVertices<Vertex, El, O>::AdjacentVertexIterator
-AdjacentVertices<Vertex, El, O>::findAdjVertex(const Vertex* v)
+auto AdjacentVertices<Vertex, El, O>::findAdjVertex(const Vertex* v)
+	-> AdjacentVertexIterator
 {
 	return Base::container().find(v);
 }
@@ -172,8 +172,8 @@ AdjacentVertices<Vertex, El, O>::findAdjVertex(const Vertex* v)
  * given vertex, or end if no such adjacent vertex is found.
  */
 template<typename Vertex, typename El, bool O>
-typename AdjacentVertices<Vertex, El, O>::ConstAdjacentVertexIterator
-AdjacentVertices<Vertex, El, O>::findAdjVertex(const Vertex* v) const
+auto AdjacentVertices<Vertex, El, O>::findAdjVertex(const Vertex* v) const
+	-> ConstAdjacentVertexIterator
 {
 	return Base::container().find(v);
 }
@@ -264,8 +264,7 @@ void AdjacentVertices<Vertex, El, O>::clearAdjVertices()
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Vertex, typename El, bool O>
-typename AdjacentVertices<Vertex, El, O>::AdjacentVertexIterator
-AdjacentVertices<Vertex, El, O>::adjVertexBegin()
+auto AdjacentVertices<Vertex, El, O>::adjVertexBegin() -> AdjacentVertexIterator
 {
 	return Base::container().begin();
 }
@@ -276,8 +275,7 @@ AdjacentVertices<Vertex, El, O>::adjVertexBegin()
  * @return an iterator pointing to the end of this container.
  */
 template<typename Vertex, typename El, bool O>
-typename AdjacentVertices<Vertex, El, O>::AdjacentVertexIterator
-AdjacentVertices<Vertex, El, O>::adjVertexEnd()
+auto AdjacentVertices<Vertex, El, O>::adjVertexEnd() -> AdjacentVertexIterator
 {
 	return Base::container().end();
 }
@@ -289,8 +287,8 @@ AdjacentVertices<Vertex, El, O>::adjVertexEnd()
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Vertex, typename El, bool O>
-typename AdjacentVertices<Vertex, El, O>::ConstAdjacentVertexIterator
-AdjacentVertices<Vertex, El, O>::adjVertexBegin() const
+auto AdjacentVertices<Vertex, El, O>::adjVertexBegin() const
+	-> ConstAdjacentVertexIterator
 {
 	return Base::container().begin();
 }
@@ -302,8 +300,8 @@ AdjacentVertices<Vertex, El, O>::adjVertexBegin() const
  * @return an iterator pointing to the end of this container.
  */
 template<typename Vertex, typename El, bool O>
-typename AdjacentVertices<Vertex, El, O>::ConstAdjacentVertexIterator
-AdjacentVertices<Vertex, El, O>::adjVertexEnd() const
+auto AdjacentVertices<Vertex, El, O>::adjVertexEnd() const
+	-> ConstAdjacentVertexIterator
 {
 	return Base::container().end();
 }
@@ -326,6 +324,7 @@ AdjacentVertices<Vertex, El, O>::adjVertexEnd() const
  */
 template<typename Vertex, typename El, bool O>
 auto AdjacentVertices<Vertex, El, O>::adjVertices()
+	-> View<AdjacentVertexIterator>
 {
 	return View(adjVertexBegin(), adjVertexEnd());
 }
@@ -348,6 +347,7 @@ auto AdjacentVertices<Vertex, El, O>::adjVertices()
  */
 template<typename Vertex, typename El, bool O>
 auto AdjacentVertices<Vertex, El, O>::adjVertices() const
+	-> View<ConstAdjacentVertexIterator>
 {
 	return View(adjVertexBegin(), adjVertexEnd());
 }

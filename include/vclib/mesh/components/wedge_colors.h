@@ -111,12 +111,12 @@ public:
 
 	/* Iterator Member functions */
 
-	WedgeColorsIterator      wedgeColorBegin();
-	WedgeColorsIterator      wedgeColorEnd();
-	ConstWedgeColorsIterator wedgeColorBegin() const;
-	ConstWedgeColorsIterator wedgeColorEnd() const;
-	auto                     wedgeColors();
-	auto                     wedgeColors() const;
+	WedgeColorsIterator            wedgeColorBegin();
+	WedgeColorsIterator            wedgeColorEnd();
+	ConstWedgeColorsIterator       wedgeColorBegin() const;
+	ConstWedgeColorsIterator       wedgeColorEnd() const;
+	View<WedgeColorsIterator>      wedgeColors();
+	View<ConstWedgeColorsIterator> wedgeColors() const;
 
 	// dummy member to discriminate between WedgeColors and FaceHalfEdgePointers
 	void __wedgeColors() const {}

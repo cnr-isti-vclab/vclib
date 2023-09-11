@@ -156,8 +156,8 @@ bool AdjacentEdges<Edge, N, TT, El, O>::containsAdjEdge(const Edge* e) const
  * edge, or end if no such adjacent edge is found.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-typename AdjacentEdges<Edge, N, TT, El, O>::AdjacentEdgeIterator
-AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e)
+auto AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e)
+	-> AdjacentEdgeIterator
 {
 	return Base::container().find(e);
 }
@@ -172,8 +172,8 @@ AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e)
  * given edge, or end if no such adjacent edge is found.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-typename AdjacentEdges<Edge, N, TT, El, O>::ConstAdjacentEdgeIterator
-AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e) const
+auto AdjacentEdges<Edge, N, TT, El, O>::findAdjEdge(const Edge* e) const
+	-> ConstAdjacentEdgeIterator
 {
 	return Base::container().find(e);
 }
@@ -269,8 +269,7 @@ void AdjacentEdges<Edge, N, TT, El, O>::clearAdjEdges()
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-typename AdjacentEdges<Edge, N, TT, El, O>::AdjacentEdgeIterator
-AdjacentEdges<Edge, N, TT, El, O>::adjEdgeBegin()
+auto AdjacentEdges<Edge, N, TT, El, O>::adjEdgeBegin() -> AdjacentEdgeIterator
 {
 	return Base::container().begin();
 }
@@ -281,8 +280,7 @@ AdjacentEdges<Edge, N, TT, El, O>::adjEdgeBegin()
  * @return an iterator pointing to the end of this container.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-typename AdjacentEdges<Edge, N, TT, El, O>::AdjacentEdgeIterator
-AdjacentEdges<Edge, N, TT, El, O>::adjEdgeEnd()
+auto AdjacentEdges<Edge, N, TT, El, O>::adjEdgeEnd() -> AdjacentEdgeIterator
 {
 	return Base::container().end();
 }
@@ -294,8 +292,8 @@ AdjacentEdges<Edge, N, TT, El, O>::adjEdgeEnd()
  * @return an iterator pointing to the begin of this container.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-typename AdjacentEdges<Edge, N, TT, El, O>::ConstAdjacentEdgeIterator
-AdjacentEdges<Edge, N, TT, El, O>::adjEdgeBegin() const
+auto AdjacentEdges<Edge, N, TT, El, O>::adjEdgeBegin() const
+	-> ConstAdjacentEdgeIterator
 {
 	return Base::container().begin();
 }
@@ -307,8 +305,8 @@ AdjacentEdges<Edge, N, TT, El, O>::adjEdgeBegin() const
  * @return an iterator pointing to the end of this container.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-typename AdjacentEdges<Edge, N, TT, El, O>::ConstAdjacentEdgeIterator
-AdjacentEdges<Edge, N, TT, El, O>::adjEdgeEnd() const
+auto AdjacentEdges<Edge, N, TT, El, O>::adjEdgeEnd() const
+	-> ConstAdjacentEdgeIterator
 {
 	return Base::container().end();
 }
@@ -329,7 +327,7 @@ AdjacentEdges<Edge, N, TT, El, O>::adjEdgeEnd() const
  * to iterate over adjacent edges.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-auto AdjacentEdges<Edge, N, TT, El, O>::adjEdges()
+auto AdjacentEdges<Edge, N, TT, El, O>::adjEdges() -> View<AdjacentEdgeIterator>
 {
 	return View(adjEdgeBegin(), adjEdgeEnd());
 }
@@ -351,6 +349,7 @@ auto AdjacentEdges<Edge, N, TT, El, O>::adjEdges()
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
 auto AdjacentEdges<Edge, N, TT, El, O>::adjEdges() const
+	-> View<ConstAdjacentEdgeIterator>
 {
 	return View(adjEdgeBegin(), adjEdgeEnd());
 }

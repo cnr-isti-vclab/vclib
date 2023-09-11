@@ -142,12 +142,12 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentEdgeIterator      adjEdgeBegin();
-	AdjacentEdgeIterator      adjEdgeEnd();
-	ConstAdjacentEdgeIterator adjEdgeBegin() const;
-	ConstAdjacentEdgeIterator adjEdgeEnd() const;
-	auto                      adjEdges();
-	auto                      adjEdges() const;
+	AdjacentEdgeIterator            adjEdgeBegin();
+	AdjacentEdgeIterator            adjEdgeEnd();
+	ConstAdjacentEdgeIterator       adjEdgeBegin() const;
+	ConstAdjacentEdgeIterator       adjEdgeEnd() const;
+	View<AdjacentEdgeIterator>      adjEdges();
+	View<ConstAdjacentEdgeIterator> adjEdges() const;
 
 protected:
 	// Component interface function

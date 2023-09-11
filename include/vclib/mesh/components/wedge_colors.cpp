@@ -118,8 +118,7 @@ void WedgeColors<N, El, O>::setWedgeColors(const std::vector<vcl::Color>& list)
  * @return an iterator pointing to the begin of this container.
  */
 template<int N, typename El, bool O>
-typename WedgeColors<N, El, O>::WedgeColorsIterator
-WedgeColors<N, El, O>::wedgeColorBegin()
+auto WedgeColors<N, El, O>::wedgeColorBegin() -> WedgeColorsIterator
 {
 	return colors().begin();
 }
@@ -130,8 +129,7 @@ WedgeColors<N, El, O>::wedgeColorBegin()
  * @return an iterator pointing to the end of this container.
  */
 template<int N, typename El, bool O>
-typename WedgeColors<N, El, O>::WedgeColorsIterator
-WedgeColors<N, El, O>::wedgeColorEnd()
+auto WedgeColors<N, El, O>::wedgeColorEnd() -> WedgeColorsIterator
 {
 	return colors().end();
 }
@@ -143,8 +141,7 @@ WedgeColors<N, El, O>::wedgeColorEnd()
  * @return a const iterator pointing to the begin of this container.
  */
 template<int N, typename El, bool O>
-typename WedgeColors<N, El, O>::ConstWedgeColorsIterator
-WedgeColors<N, El, O>::wedgeColorBegin() const
+auto WedgeColors<N, El, O>::wedgeColorBegin() const -> ConstWedgeColorsIterator
 {
 	return colors().begin();
 }
@@ -156,8 +153,7 @@ WedgeColors<N, El, O>::wedgeColorBegin() const
  * @return an iterator pointing to the end of this container.
  */
 template<int N, typename El, bool O>
-typename WedgeColors<N, El, O>::ConstWedgeColorsIterator
-WedgeColors<N, El, O>::wedgeColorEnd() const
+auto WedgeColors<N, El, O>::wedgeColorEnd() const -> ConstWedgeColorsIterator
 {
 	return colors().end();
 }
@@ -178,7 +174,7 @@ WedgeColors<N, El, O>::wedgeColorEnd() const
  * to iterate over wedge colors.
  */
 template<int N, typename El, bool O>
-auto WedgeColors<N, El, O>::wedgeColors()
+auto WedgeColors<N, El, O>::wedgeColors() -> View<WedgeColorsIterator>
 {
 	return View(wedgeColorBegin(), wedgeColorEnd());
 }
@@ -200,6 +196,7 @@ auto WedgeColors<N, El, O>::wedgeColors()
  */
 template<int N, typename El, bool O>
 auto WedgeColors<N, El, O>::wedgeColors() const
+	-> View<ConstWedgeColorsIterator>
 {
 	return View(wedgeColorBegin(), wedgeColorEnd());
 }

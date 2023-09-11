@@ -67,8 +67,7 @@ bool PolygonBitFlags<N, El, O>::deleted() const
  * @return a reference to the 'selected' bit of this Polygon.
  */
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::selected()
+auto PolygonBitFlags<N, El, O>::selected() -> BitProxy<FT>
 {
 	return flags()[SELECTED];
 }
@@ -89,8 +88,7 @@ bool PolygonBitFlags<N, El, O>::selected() const
  * @return a reference to the 'visited' bit of this Polygon.
  */
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::visited()
+auto PolygonBitFlags<N, El, O>::visited() -> BitProxy<FT>
 {
 	return flags()[VISITED];
 }
@@ -126,8 +124,7 @@ bool PolygonBitFlags<N, El, O>::onBorder() const
  * @return a reference to the 'onBorder' bit of the i-th edge of the polygon.
  */
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::edgeOnBorder(uint i)
+auto PolygonBitFlags<N, El, O>::edgeOnBorder(uint i) -> BitProxy<FT>
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGEBORD];
@@ -153,8 +150,7 @@ bool PolygonBitFlags<N, El, O>::edgeOnBorder(uint i) const
  * @return a reference to the 'selected' bit of the i-th edge of the polygon.
  */
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::edgeSelected(uint i)
+auto PolygonBitFlags<N, El, O>::edgeSelected(uint i) -> BitProxy<FT>
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGESEL];
@@ -180,8 +176,7 @@ bool PolygonBitFlags<N, El, O>::edgeSelected(uint i) const
  * @return a reference to the 'visited' bit of the i-th edge of the polygon.
  */
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::edgeVisited(uint i)
+auto PolygonBitFlags<N, El, O>::edgeVisited(uint i) -> BitProxy<FT>
 {
 	assert(i < edgeFlags().size());
 	return edgeFlags()[i][EDGEVIS];
@@ -214,8 +209,7 @@ bool PolygonBitFlags<N, El, O>::edgeVisited(uint i) const
  * @return a reference to the 'faux' bit of the i-th edge of the polygon.
  */
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::edgeFaux(uint i)
+auto PolygonBitFlags<N, El, O>::edgeFaux(uint i) -> BitProxy<FT>
 {
 	assert(i < 3);
 	return flags()[FAUX0 + i];
@@ -265,8 +259,7 @@ bool PolygonBitFlags<N, El, O>::userBit(uint bit) const
  * @return a reference to the desired user bit.
  */
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::userBit(uint bit)
+auto PolygonBitFlags<N, El, O>::userBit(uint bit) -> BitProxy<FT>
 {
 	assert(bit < USER_BITS_NUMBER);
 	return flags()[bit + FIRST_USER_BIT];
@@ -298,8 +291,7 @@ bool PolygonBitFlags<N, El, O>::edgeUserBit(uint i, uint bit) const
  * @return a reference to the desired user bit.
  */
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::edgeUserBit(uint i, uint bit)
+auto PolygonBitFlags<N, El, O>::edgeUserBit(uint i, uint bit) -> BitProxy<FT>
 {
 	assert(bit < EDGE_USER_BITS_NUMBER);
 	return edgeFlags()[i][bit + FIRST_EDGE_USER_BIT];
@@ -388,8 +380,7 @@ int PolygonBitFlags<N, El, O>::exportToVCGFlags() const
 }
 
 template<int N, typename El, bool O>
-BitProxy<typename PolygonBitFlags<N, El, O>::FT>
-PolygonBitFlags<N, El, O>::deletedBit()
+auto PolygonBitFlags<N, El, O>::deletedBit() -> BitProxy<FT>
 {
 	return flags()[DELETED];
 }
@@ -456,29 +447,26 @@ void PolygonBitFlags<N, El, O>::clear() requires (N < 0)
 }
 
 template<int N, typename El, bool O>
-BitSet<typename PolygonBitFlags<N, El, O>::FT>&
-PolygonBitFlags<N, El, O>::flags()
+auto PolygonBitFlags<N, El, O>::flags() -> BitSet<FT>&
 {
 	return Base::additionalData();
 }
 
 template<int N, typename El, bool O>
-const BitSet<typename PolygonBitFlags<N, El, O>::FT>&
-PolygonBitFlags<N, El, O>::flags() const
+auto PolygonBitFlags<N, El, O>::flags() const -> const BitSet<FT>&
 {
 	return Base::additionalData();
 }
 
 template<int N, typename El, bool O>
-Vector<BitSet<typename PolygonBitFlags<N, El, O>::FT>, -1>&
-PolygonBitFlags<N, El, O>::edgeFlags()
+auto PolygonBitFlags<N, El, O>::edgeFlags() -> Vector<BitSet<FT>, -1>&
 {
 	return Base::container();
 }
 
 template<int N, typename El, bool O>
-const Vector<BitSet<typename PolygonBitFlags<N, El, O>::FT>, -1>&
-PolygonBitFlags<N, El, O>::edgeFlags() const
+auto PolygonBitFlags<N, El, O>::edgeFlags() const
+	-> const Vector<BitSet<FT>, -1>&
 {
 	return Base::container();
 }

@@ -126,12 +126,12 @@ public:
 
 	/* Iterator Member functions */
 
-	WedgeTexCoordsIterator      wedgeTexCoordBegin();
-	WedgeTexCoordsIterator      wedgeTexCoordEnd();
-	ConstWedgeTexCoordsIterator wedgeTexCoordBegin() const;
-	ConstWedgeTexCoordsIterator wedgeTexCoordEnd() const;
-	auto                        wedgeTexCoords();
-	auto                        wedgeTexCoords() const;
+	WedgeTexCoordsIterator            wedgeTexCoordBegin();
+	WedgeTexCoordsIterator            wedgeTexCoordEnd();
+	ConstWedgeTexCoordsIterator       wedgeTexCoordBegin() const;
+	ConstWedgeTexCoordsIterator       wedgeTexCoordEnd() const;
+	View<WedgeTexCoordsIterator>      wedgeTexCoords();
+	View<ConstWedgeTexCoordsIterator> wedgeTexCoords() const;
 
 	// dummy member to discriminate between WedgeTexCoords and
 	// FaceHalfEdgePointers

@@ -98,7 +98,7 @@ void TexturePaths::pushTexturePath(const std::string& textName)
  * @brief Returns an iterator to the beginning of the vector of texture paths.
  * @return an iterator to the beginning of the vector of texture paths.
  */
-typename TexturePaths::TexFileNamesIterator TexturePaths::texturePathBegin()
+auto TexturePaths::texturePathBegin() -> TexFileNamesIterator
 {
 	return texPaths().begin();
 }
@@ -107,7 +107,7 @@ typename TexturePaths::TexFileNamesIterator TexturePaths::texturePathBegin()
  * @brief Returns an iterator to the end of the vector of texture paths.
  * @return an iterator to the end of the vector of texture paths.
  */
-typename TexturePaths::TexFileNamesIterator TexturePaths::texturePathEnd()
+auto TexturePaths::texturePathEnd() -> TexFileNamesIterator
 {
 	return texPaths().end();
 }
@@ -117,8 +117,7 @@ typename TexturePaths::TexFileNamesIterator TexturePaths::texturePathEnd()
  * paths.
  * @return a const iterator to the beginning of the vector of texture paths.
  */
-typename TexturePaths::ConstTexFileNamesIterator
-TexturePaths::texturePathBegin() const
+auto TexturePaths::texturePathBegin() const -> ConstTexFileNamesIterator
 {
 	return texPaths().begin();
 }
@@ -127,8 +126,7 @@ TexturePaths::texturePathBegin() const
  * @brief Returns a const iterator to the end of the vector of texture paths.
  * @return a const iterator to the end of the vector of texture paths.
  */
-typename TexturePaths::ConstTexFileNamesIterator
-TexturePaths::texturePathEnd() const
+auto TexturePaths::texturePathEnd() const -> ConstTexFileNamesIterator
 {
 	return texPaths().end();
 }
@@ -149,7 +147,7 @@ TexturePaths::texturePathEnd() const
  * @return a lightweight view object that can be used in range-based for loops
  * to iterate over the vector of texture paths.
  */
-auto TexturePaths::texturePaths()
+auto TexturePaths::texturePaths() -> View<TexFileNamesIterator>
 {
 	return View(texturePathBegin(), texturePathEnd());
 }
@@ -170,7 +168,7 @@ auto TexturePaths::texturePaths()
  * @return a lightweight view object that can be used in range-based for loops
  * to iterate over the vector of texture paths.
  */
-auto TexturePaths::texturePaths() const
+auto TexturePaths::texturePaths() const -> View<ConstTexFileNamesIterator>
 {
 	return View(texturePathBegin(), texturePathEnd());
 }

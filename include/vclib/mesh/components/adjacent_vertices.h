@@ -112,7 +112,7 @@ public:
 
 	bool containsAdjVertex(const Vertex* v) const;
 
-	AdjacentVertexIterator findAdjVertex(const Vertex* v);
+	AdjacentVertexIterator      findAdjVertex(const Vertex* v);
 	ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const;
 
 	uint indexOfAdjVertex(const Vertex* v) const;
@@ -125,12 +125,12 @@ public:
 
 	/* Iterator Member functions */
 
-	AdjacentVertexIterator      adjVertexBegin();
-	AdjacentVertexIterator      adjVertexEnd();
-	ConstAdjacentVertexIterator adjVertexBegin() const;
-	ConstAdjacentVertexIterator adjVertexEnd() const;
-	auto                        adjVertices();
-	auto                        adjVertices() const;
+	AdjacentVertexIterator            adjVertexBegin();
+	AdjacentVertexIterator            adjVertexEnd();
+	ConstAdjacentVertexIterator       adjVertexBegin() const;
+	ConstAdjacentVertexIterator       adjVertexEnd() const;
+	View<AdjacentVertexIterator>      adjVertices();
+	View<ConstAdjacentVertexIterator> adjVertices() const;
 
 	// dummy member to discriminate between AdjacentVertices and
 	// VertexHalfEdgePointers
