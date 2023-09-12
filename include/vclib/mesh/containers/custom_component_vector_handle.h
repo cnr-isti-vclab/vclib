@@ -60,8 +60,9 @@ class CustomComponentVectorHandle
 public:
 	class Iterator : public std::vector<std::reference_wrapper<T>>::iterator
 	{
-		using Base = std::vector<std::reference_wrapper<T>>::iterator;
+		using Base = typename std::vector<std::reference_wrapper<T>>::iterator;
 	public:
+		Iterator(Base it) : Base(it) {}
 		using value_type = T;
 		using reference = value_type&;
 		using pointer = value_type*;
@@ -72,8 +73,11 @@ public:
 	class ConstIterator :
 		public std::vector<std::reference_wrapper<T>>::const_iterator
 	{
-		using Base = std::vector<std::reference_wrapper<T>>::const_iterator;
+		using Base =
+			typename std::vector<std::reference_wrapper<T>>::const_iterator;
+
 	public:
+		ConstIterator(Base it) : Base(it) {}
 		using value_type = T;
 		using reference = const value_type&;
 		using pointer = const value_type*;
