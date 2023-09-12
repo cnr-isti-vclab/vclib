@@ -34,8 +34,8 @@ class PointSampler
 {
 public:
 	using PointType = PointT;
-	using ScalarType = typename PointT::ScalarType;
-	using ConstIterator = typename std::vector<PointT>::const_iterator;
+	using ScalarType = PointT::ScalarType;
+	using ConstIterator = std::vector<PointT>::const_iterator;
 
 	PointSampler() = default;
 

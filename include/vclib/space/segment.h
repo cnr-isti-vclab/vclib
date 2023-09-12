@@ -51,7 +51,7 @@ public:
 	/**
 	 * @brief The scalar type of the endpoint points.
 	 */
-	using ScalarType = typename PointT::ScalarType;
+	using ScalarType = PointT::ScalarType;
 
 	/**
 	 * @brief The dimensionality of the segment.

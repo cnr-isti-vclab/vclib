@@ -33,7 +33,7 @@ template<PointConcept PointT>
 class Triangle
 {
 public:
-	using ScalarType = typename PointT::ScalarType;
+	using ScalarType = PointT::ScalarType;
 	using PointType = PointT;
 
 	static const uint DIM = PointT::DIM;

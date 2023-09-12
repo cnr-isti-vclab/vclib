@@ -61,11 +61,11 @@ public:
 		"Not allowing duplicates in a Spatial Data Structures means that ValueType must implement "
 		"operator==.");
 
-	using KeyType = typename AbsGrid::KeyType;
-	using IsInCellFunction = typename AbsGrid::IsInCellFunction;
+	using KeyType = AbsGrid::KeyType;
+	using IsInCellFunction = AbsGrid::IsInCellFunction;
 
-	using Iterator = typename std::unordered_multimap<KeyType, ValueType>::iterator;
-	using ConstIterator = typename std::unordered_multimap<KeyType, ValueType>::const_iterator;
+	using Iterator = std::unordered_multimap<KeyType, ValueType>::iterator;
+	using ConstIterator = std::unordered_multimap<KeyType, ValueType>::const_iterator;
 
 	HashTableGrid();
 	HashTableGrid(const GridType& g);
@@ -96,8 +96,8 @@ public:
 	ConstIterator end() const;
 
 private:
-	using MapType      = typename std::unordered_multimap<KeyType, ValueType>;
-	using MapValueType = typename MapType::value_type;
+	using MapType      = std::unordered_multimap<KeyType, ValueType>;
+	using MapValueType = MapType::value_type;
 
 	mutable uint m = 1;
 	MapType map;

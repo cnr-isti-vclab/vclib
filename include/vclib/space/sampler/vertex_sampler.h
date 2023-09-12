@@ -12,11 +12,11 @@ namespace internal {
 template<VertexConcept VertexType, bool CNST = false>
 class VertexSampler
 {
-	using VP = typename std::conditional_t<CNST, const VertexType*, VertexType*>;
-	using VPar = typename std::conditional_t<CNST, const VertexType&, VertexType&>;
+	using VP = std::conditional_t<CNST, const VertexType*, VertexType*>;
+	using VPar = std::conditional_t<CNST, const VertexType&, VertexType&>;
 
 public:
-	using PointType = typename VertexType::CoordType;
+	using PointType = VertexType::CoordType;
 
 	VertexSampler();
 

@@ -180,7 +180,7 @@ template<typename GridType, typename ValueType, typename DerivedGrid>
 auto AbstractGrid<GridType, ValueType, DerivedGrid>::valuesInSphere(
 	const Sphere<typename GridType::ScalarType>& s) const
 {
-	using Iter = typename DerivedGrid::ConstIterator;
+	using Iter = DerivedGrid::ConstIterator;
 	using IterSet = std::set<Iter, IterComparator<Iter>>;
 
 	// will use this set only if the value type is not a point -- that is when the value can occupy
@@ -242,9 +242,9 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestValue(
 	QueryBoundedDistFunction<QueryValueType> distFunction,
 	typename GridType::ScalarType& dist) const
 {
-	using ScalarType = typename GridType::ScalarType;
-	using PointType = typename GridType::PointType;
-	using ResType = typename DerivedGrid::ConstIterator;
+	using ScalarType = GridType::ScalarType;
+	using PointType = GridType::PointType;
+	using ResType = DerivedGrid::ConstIterator;
 	
 	using QVT = RemoveCVRefAndPointer<QueryValueType>;
 	const QVT* qvv = addressOfObj(qv);
@@ -499,9 +499,9 @@ AbstractGrid<GridType, ValueType, DerivedGrid>::AbstractGrid(
 	IsInCellFunction intersects) :
 		intersects(intersects)
 {
-	using ScalarType = typename GridType::ScalarType;
-	using BBoxType = typename GridType::BBoxType;
-	using CellCoord = typename GridType::CellCoord;
+	using ScalarType = GridType::ScalarType;
+	using BBoxType = GridType::BBoxType;
+	using CellCoord = GridType::CellCoord;
 
 	BBoxType bbox = boundingBox(begin, end);
 	uint nElements = std::distance(begin, end);
@@ -580,7 +580,7 @@ auto AbstractGrid<GridType, ValueType, DerivedGrid>::closestInCells(
 	QueryBoundedDistFunction<QueryValueType> distFunction,
 	const Boxui&                             ignore) const
 {
-	using ResType = typename DerivedGrid::ConstIterator;
+	using ResType = DerivedGrid::ConstIterator;
 	ResType res = static_cast<const DerivedGrid*>(this)->end();
 
 	// for each cell in the interval

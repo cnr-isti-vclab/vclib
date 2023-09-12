@@ -47,8 +47,8 @@ class StaticGrid : public AbstractGrid<GridType, ValueType, StaticGrid<GridType,
 	friend AbsGrid;
 
 public:
-	using KeyType = typename AbsGrid::KeyType;
-	using IsInCellFunction = typename AbsGrid::IsInCellFunction;
+	using KeyType = AbsGrid::KeyType;
+	using IsInCellFunction = AbsGrid::IsInCellFunction;
 
 	using Iterator = StaticGridIterator<KeyType, ValueType, GridType>;
 	using ConstIterator = ConstStaticGridIterator<KeyType, ValueType, GridType>;

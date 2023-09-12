@@ -41,8 +41,8 @@ template<FaceMeshConcept MeshType>
 class MeshEdgeUtil
 {
 public:
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
 
 	VertexType* v[2]; // Pointer to the two (ordered) vertices of the edge
 	FaceType*   f;    // Pointer to the face of the edge
@@ -79,8 +79,8 @@ template<FaceMeshConcept MeshType>
 class ConstMeshEdgeUtil
 {
 public:
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
 
 	const VertexType* v[2]; // Pointer to the two (ordered) vertices of the edge
 	const FaceType*   f;    // Pointer to the face of the edge

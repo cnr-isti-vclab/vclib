@@ -40,8 +40,8 @@ class %EL_UC%Container : public ElementContainer<T>
 public:
 	using %EL_UC%              = T;
 	using %EL_UC%Type          = T;
-	using %EL_UC%Iterator      = typename Base::ElementIterator;
-	using Const%EL_UC%Iterator = typename Base::ConstElementIterator;
+	using %EL_UC%Iterator      = Base::ElementIterator;
+	using Const%EL_UC%Iterator = Base::ConstElementIterator;
 
 	%EL_UC%Container();
 

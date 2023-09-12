@@ -43,13 +43,13 @@ struct TypeWrapper
 template<typename... Args>
 struct FirstType
 {
-	using type = typename std::tuple_element<0, std::tuple<Args...>>::type;
+	using type = std::tuple_element<0, std::tuple<Args...>>::type;
 };
 
 template<typename... Args>
 struct FirstType<TypeWrapper<Args...>>
 {
-	using type = typename std::tuple_element<0, std::tuple<Args...>>::type;
+	using type = std::tuple_element<0, std::tuple<Args...>>::type;
 };
 
 /*
@@ -159,7 +159,7 @@ struct FilterTypesByCondition
 template <template <class> class Pred, typename Head, typename ...Tail>
 struct FilterTypesByCondition<Pred, Head, Tail...>
 {
-	using type = typename std::conditional<
+	using type = std::conditional<
 		Pred<Head>::value,
 		typename internal::TypeWrapperConstructor<
 			Head,
@@ -171,7 +171,7 @@ struct FilterTypesByCondition<Pred, Head, Tail...>
 template <template <class> class Pred, typename ...Tail>
 struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
 {
-	using type = typename FilterTypesByCondition<Pred, Tail...>::type;
+	using type = FilterTypesByCondition<Pred, Tail...>::type;
 };
 
 /**
@@ -192,7 +192,7 @@ template <template <class> class Pred, typename ...Args>
 struct TypesContainConditionType
 {
 private:
-	using ResTypes = typename FilterTypesByCondition<Pred, Args...>::type;
+	using ResTypes = FilterTypesByCondition<Pred, Args...>::type;
 public:
 	static constexpr bool value = NumberOfTypes<ResTypes>::value != 0;
 };
@@ -201,7 +201,7 @@ public:
 template <template <class> class Pred, typename ...Args>
 struct TypesContainConditionType<Pred, TypeWrapper<Args...>>
 {
-	using type = typename TypesContainConditionType<Pred, Args...>::type;
+	using type = TypesContainConditionType<Pred, Args...>::type;
 };
 
 /**
@@ -218,16 +218,16 @@ template <template <class> class Pred, typename ...Args>
 struct GetTypeByCondition
 {
 private:
-	using ResTypes = typename FilterTypesByCondition<Pred, Args...>::type;
+	using ResTypes = FilterTypesByCondition<Pred, Args...>::type;
 public:
-	using type = typename FirstType<ResTypes>::type;
+	using type = FirstType<ResTypes>::type;
 };
 
 // TypeWrapper specialization
 template <template <class> class Pred, typename ...Args>
 struct GetTypeByCondition<Pred, TypeWrapper<Args...>>
 {
-	using type = typename GetTypeByCondition<Pred, Args...>::type;
+	using type = GetTypeByCondition<Pred, Args...>::type;
 };
 
 } // namespace vcl

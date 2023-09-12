@@ -33,7 +33,7 @@ class AdjacentLeftNodeIterator : public AdjacentNodeIterator<Graph, Iterator>
 {
 	using Base = AdjacentNodeIterator<Graph, Iterator>;
 public:
-	using value_type = typename Graph::RightType;
+	using value_type = Graph::RightType;
 	using reference  = const value_type&;
 	using pointer    = const value_type*;
 

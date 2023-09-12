@@ -81,7 +81,7 @@ bool isPerElementComponentAvailable(const MeshType& m)
 {
 	if constexpr (mesh::HasElementContainer<MeshType, ELEM_ID>) {
 		using Container = mesh::ContainerOfElementType<ELEM_ID, MeshType>;
-		using Element   = typename Container::ElementType;
+		using Element   = Container::ElementType;
 		if constexpr (comp::HasOptionalComponentOfType<Element, COMP_ID>) {
 			return m.template isPerElementComponentEnabled<ELEM_ID, COMP_ID>();
 		}
@@ -119,7 +119,7 @@ bool enableIfPerElementComponentOptional(MeshType& m)
 {
 	if constexpr (mesh::HasElementContainer<MeshType, ELEM_ID>) {
 		using Container = mesh::ContainerOfElementType<ELEM_ID, MeshType>;
-		using Element   = typename Container::ElementType;
+		using Element   = Container::ElementType;
 		if constexpr (comp::HasOptionalComponentOfType<Element, COMP_ID>) {
 			m.template enablePerElementComponent<ELEM_ID, COMP_ID>();
 			return true;

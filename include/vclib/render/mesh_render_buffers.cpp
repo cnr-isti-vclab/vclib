@@ -407,7 +407,7 @@ template<MeshConcept MeshType>
 template<typename FaceType>
 void MeshRenderBuffers<MeshType>::fillFaceNormals(const FaceType &f, bool triangle, uint fi)
 {
-	using NormalType = typename FaceType::VertexType::CoordType;
+	using NormalType = FaceType::VertexType::CoordType;
 	NormalType n = vcl::faceNormal(f);
 	if (triangle) {
 		tNormals.push_back(n.x());

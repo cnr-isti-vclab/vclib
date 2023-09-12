@@ -56,7 +56,7 @@ struct NestedInitializerListsTraits<T, 0>
  * used does not correspond to the number of used levels.
  */
 template<typename T, std::size_t L>
-using NestedInitializerLists = typename internal::NestedInitializerListsTraits<T, L>::type;
+using NestedInitializerLists = internal::NestedInitializerListsTraits<T, L>::type;
 
 // Processors that allow to automatically iterate through nested initializer lists
 

@@ -65,7 +65,7 @@ class Array
 
 public:
 	/** @brief The type of the elements stored in the array. */
-	using ValueType      = typename std::vector<T>::value_type;
+	using ValueType      = std::vector<T>::value_type;
 
 	/** @brief Same of ValueType, just for compatibility with Eigen Matrices */
 	using Scalar = ValueType;
@@ -73,24 +73,24 @@ public:
 	/**
 	 * @brief A const reference to the type of the elements stored in the array.
 	 */
-	using ConstReference = typename std::vector<T>::const_reference;
+	using ConstReference = std::vector<T>::const_reference;
 
 	/** @brief A reference to the type of the elements stored in the array. */
-	using Reference      = typename std::vector<T>::reference;
+	using Reference      = std::vector<T>::reference;
 
 	/**
 	 * @brief A const pointer to the type of the elements stored in the array.
 	 */
-	using ConstPointer   = typename std::vector<T>::const_pointer;
+	using ConstPointer   = std::vector<T>::const_pointer;
 
 	/** @brief A pointer to the type of the elements stored in the array. */
-	using Pointer        = typename std::vector<T>::pointer;
+	using Pointer        = std::vector<T>::pointer;
 
 	/** @brief An iterator to the elements of the array. */
-	using Iterator       = typename std::vector<T>::iterator;
+	using Iterator       = std::vector<T>::iterator;
 
 	/** @brief A const iterator to the elements of the array. */
-	using ConstIterator  = typename std::vector<T>::const_iterator;
+	using ConstIterator  = std::vector<T>::const_iterator;
 
 	/** @brief The number of dimensions of the array. */
 	static constexpr uint DIM = N;

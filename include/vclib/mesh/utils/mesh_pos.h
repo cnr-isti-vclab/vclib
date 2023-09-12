@@ -45,7 +45,7 @@ template <face::HasAdjacentFaces FaceType>
 class MeshPos
 {
 public:
-	using VertexType = typename FaceType::VertexType;
+	using VertexType = FaceType::VertexType;
 
 	static bool isValid(const FaceType* f, const VertexType* v, short e);
 

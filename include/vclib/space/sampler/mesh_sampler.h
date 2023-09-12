@@ -34,10 +34,10 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshSampler
 {
-	using CoordView = decltype(typename vcl::View<typename MeshType::VertexIterator>() | views::coords);
+	using CoordView = decltype(vcl::View<typename MeshType::VertexIterator>() | views::coords);
 public:
-	using PointType  = typename MeshType::VertexType::CoordType;
-	using ScalarType = typename PointType::ScalarType;
+	using PointType  = MeshType::VertexType::CoordType;
+	using ScalarType = PointType::ScalarType;
 	using ConstIterator = std::ranges::iterator_t<CoordView>;
 
 	MeshSampler();
