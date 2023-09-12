@@ -46,7 +46,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createTetrahedron()
 {
-	using CoordType = typename MeshType::Vertex::CoordType;
+	using CoordType = MeshType::Vertex::CoordType;
 	return createTetrahedron<MeshType>(
 		CoordType(1, 1, 1),
 		CoordType(-1, 1, -1),

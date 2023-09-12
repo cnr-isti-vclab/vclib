@@ -55,7 +55,7 @@ SamplerType allVerticesPointSampling(
 	std::vector<uint>& birthVertices,
 	bool               onlySelected)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	SamplerType sampler;
 
@@ -128,7 +128,7 @@ SamplerType allFacesPointSampling(
 	std::vector<uint>& birthFaces,
 	bool               onlySelected)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	SamplerType sampler;
 
@@ -568,8 +568,8 @@ SamplerType vertexQualityWeightedPointSampling(const MeshType& m, uint nSamples,
 {
 	vcl::requirePerVertexQuality(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using QualityType = typename VertexType::QualityType;
+	using VertexType = MeshType::VertexType;
+	using QualityType = VertexType::QualityType;
 
 	std::vector<QualityType> weights;
 	weights.resize(m.vertexContainerSize(), 0);
@@ -595,8 +595,8 @@ SamplerType faceQualityWeightedPointSampling(const MeshType& m, uint nSamples, b
 {
 	vcl::requirePerFaceQuality(m);
 
-	using FaceType = typename MeshType::FaceType;
-	using QualityType = typename FaceType::QualityType;
+	using FaceType = MeshType::FaceType;
+	using QualityType = FaceType::QualityType;
 
 	std::vector<QualityType> weights;
 	weights.resize(m.faceContainerSize(), 0);
@@ -620,9 +620,9 @@ SamplerType faceQualityWeightedPointSampling(const MeshType& m, uint nSamples, b
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType vertexAreaWeightedPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
-	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::ScalarType;
-	using FaceType = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using ScalarType = VertexType::ScalarType;
+	using FaceType = MeshType::FaceType;
 
 	std::vector<ScalarType> weights(m.vertexContainerSize(), 0);
 	std::vector<uint> cnt(m.vertexContainerSize(), 0);
@@ -662,7 +662,7 @@ SamplerType faceAreaWeightedPointSampling(
 	uint nSamples,
 	bool deterministic)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	std::vector<double> weights(m.faceContainerSize());
 
@@ -697,9 +697,9 @@ SamplerType montecarloPointSampling(
 	std::vector<uint>& birthFaces,
 	bool               deterministic)
 {
-	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::CoordType::ScalarType;
-	using FaceType = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using ScalarType = VertexType::CoordType::ScalarType;
+	using FaceType = MeshType::FaceType;
 	using Interval = std::pair<ScalarType, const FaceType*>;
 
 	vcl::FirstElementPairComparator<Interval> comparator;
@@ -770,8 +770,8 @@ SamplerType montecarloPointSampling(const MeshType& m, uint nSamples, bool deter
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
-	using FaceType = typename MeshType::FaceType;
-	using ScalarType = typename SamplerType::ScalarType;
+	using FaceType = MeshType::FaceType;
+	using ScalarType = SamplerType::ScalarType;
 
 	SamplerType ps;
 
@@ -821,8 +821,8 @@ SamplerType stratifiedMontecarloPointSampling(const MeshType& m, uint nSamples, 
 template<SamplerConcept SamplerType, FaceMeshConcept MeshType>
 SamplerType montecarloPoissonPointSampling(const MeshType& m, uint nSamples, bool deterministic)
 {
-	using FaceType = typename MeshType::FaceType;
-	using ScalarType = typename SamplerType::ScalarType;
+	using FaceType = MeshType::FaceType;
+	using ScalarType = SamplerType::ScalarType;
 
 	SamplerType ps;
 
@@ -854,7 +854,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
 	double variance,
 	bool deterministic)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	// lambda function to compute radius weighted area of a face
 	auto weightedArea =
@@ -909,8 +909,8 @@ SamplerType vertexQualityWeightedMontecarloPointSampling(
 {
 	vcl::requirePerVertexQuality(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using QualityType = typename VertexType::QualityType;
+	using VertexType = MeshType::VertexType;
+	using QualityType = VertexType::QualityType;
 
 	std::vector<QualityType> weights;
 	weights.resize(m.vertexContainerSize(), 0);

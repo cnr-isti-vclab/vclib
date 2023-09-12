@@ -74,7 +74,7 @@ void fillHexahedronQuads(MeshType& m)
 template<FaceMeshConcept MeshType>
 MeshType createHexahedron()
 {
-	using CoordType = typename MeshType::Vertex::CoordType;
+	using CoordType = MeshType::Vertex::CoordType;
 
 	return createHexahedron<MeshType>(
 		CoordType(-1, -1, -1), CoordType(1, 1, 1));

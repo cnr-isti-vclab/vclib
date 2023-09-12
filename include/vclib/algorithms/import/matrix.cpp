@@ -48,8 +48,7 @@ void importElementNormalsFromMatrix(
 	const NMatrix& normals)
 {
 	// The type of the normal of the element
-	using NormalType =
-		typename MeshType::template ElementType<ELEM_ID>::NormalType;
+	using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
 
 	if (normals.cols() != 3)
 		throw WrongSizeException(
@@ -79,7 +78,7 @@ void importElementColorsFromMatrix(
 	MeshType&      mesh,
 	const CMatrix& colors)
 {
-	using MatrixScalar = typename CMatrix::Scalar;
+	using MatrixScalar = CMatrix::Scalar;
 
 	if (colors.cols() != 3 && colors.cols() != 4)
 		throw WrongSizeException(
@@ -400,7 +399,7 @@ void importVerticesFromMatrix(
 	const VMatrix& vertices,
 	bool           clearBeforeSet)
 {
-	using CoordType = typename MeshType::VertexType::CoordType;
+	using CoordType = MeshType::VertexType::CoordType;
 
 	if (vertices.cols() != 3)
 		throw WrongSizeException("The input vertex matrix must have 3 columns");
@@ -461,7 +460,7 @@ void importFacesFromMatrix(
 		}
 	}
 	else { // the vertex number of mesh faces is fixed
-		using FaceType = typename MeshType::FaceType;
+		using FaceType = MeshType::FaceType;
 
 		constexpr int VN = FaceType::VERTEX_NUMBER;
 		if (faces.cols() == VN) { // faces of matrix and mesh have same size

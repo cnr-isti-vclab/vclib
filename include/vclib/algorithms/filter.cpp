@@ -210,7 +210,7 @@ OutMeshType perFaceMeshFilter(
 	Range auto&& faceFilterRng,
 	bool saveBirthIndicesInCustomComponent)
 {
-	using InVertexType = typename InMeshType::VertexType;
+	using InVertexType = InMeshType::VertexType;
 
 	OutMeshType res;
 	res.enableSameOptionalComponentsOf(m);

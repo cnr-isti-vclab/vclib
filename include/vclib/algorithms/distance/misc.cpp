@@ -38,7 +38,7 @@ template<PointConcept PointType, SegmentConcept SegmentType>
 auto pointSegmentDistance(const PointType& p, const SegmentType& s, PointType& closest)
 	requires (PointType::DIM == SegmentType::DIM)
 {
-	using ScalarType = typename PointType::ScalarType;
+	using ScalarType = PointType::ScalarType;
 
 	ScalarType dist;
 

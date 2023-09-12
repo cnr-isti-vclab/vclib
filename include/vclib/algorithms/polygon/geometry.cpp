@@ -40,7 +40,7 @@ namespace vcl {
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 {
-	using CoordType = typename FaceType::VertexType::CoordType;
+	using CoordType = FaceType::VertexType::CoordType;
 	if constexpr (TriangleFaceConcept<FaceType>) {
 		return Triangle<CoordType>::normal(
 			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
@@ -68,7 +68,7 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 {
-	using CoordType = typename FaceType::VertexType::CoordType;
+	using CoordType = FaceType::VertexType::CoordType;
 	if constexpr (TriangleFaceConcept<FaceType>) {
 		return Triangle<CoordType>::barycenter(
 			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
@@ -90,7 +90,7 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 template<FaceConcept FaceType>
 auto faceArea(const FaceType& f)
 {
-	using CoordType = typename FaceType::VertexType::CoordType;
+	using CoordType = FaceType::VertexType::CoordType;
 	if constexpr (TriangleFaceConcept<FaceType>) {
 		return Triangle<CoordType>::area(
 			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
@@ -118,7 +118,7 @@ auto faceArea(const FaceType& f)
 template<FaceConcept FaceType>
 auto facePerimeter(const FaceType& f)
 {
-	using CoordType = typename FaceType::VertexType::CoordType;
+	using CoordType = FaceType::VertexType::CoordType;
 	if constexpr (TriangleFaceConcept<FaceType>) {
 		return Triangle<CoordType>::perimeter(
 			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());

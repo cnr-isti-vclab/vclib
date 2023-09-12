@@ -41,8 +41,8 @@ HausdorffDistResult hausdorffDist(
 	const GridType& g,
 	LogType& log)
 {
-	using PointSampleType = typename SamplerType::PointType;
-	using ScalarType = typename PointSampleType::ScalarType;
+	using PointSampleType = SamplerType::PointType;
+	using ScalarType = PointSampleType::ScalarType;
 
 	HausdorffDistResult res;
 	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
@@ -111,7 +111,7 @@ HausdorffDistResult samplerMeshHausdorff(
 	LogType& log)
 	requires(!HasFaces<MeshType>)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	std::string meshName = "first mesh";
 	if constexpr (HasName<MeshType>){
@@ -137,9 +137,9 @@ HausdorffDistResult samplerMeshHausdorff(
 	const SamplerType& s,
 	LogType& log)
 {
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
-	using ScalarType = typename VertexType::CoordType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
+	using ScalarType = VertexType::CoordType::ScalarType;
 
 	std::string meshName = "first mesh";
 	if constexpr (HasName<MeshType>){

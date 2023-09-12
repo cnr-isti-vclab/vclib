@@ -62,9 +62,9 @@ namespace vcl {
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, PlaneConcept PlaneType>
 EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
 {
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
-	using CoordType  = typename VertexType::CoordType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
+	using CoordType  = VertexType::CoordType;
 
 	EdgeMesh em;
 
@@ -96,7 +96,7 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
 				ptVec.push_back(pp);
 				if constexpr(HasPerVertexNormal<MeshType>) {
 					if (isPerVertexNormalAvailable(m)) {
-						using NormalType = typename VertexType::NormalType;
+						using NormalType = VertexType::NormalType;
 						const NormalType& n0 = f.vertex(j)->normal();
 						const NormalType& n1 = f.vertexMod(j + 1)->normal();
 						CoordType nn = (n0 * fabs(q1) + n1 * fabs(q0)) / fabs(q0 - q1);
@@ -174,10 +174,10 @@ MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& s
 template<FaceMeshConcept MeshType, typename SScalar>
 MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere, double tol)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
-	using ScalarType = typename CoordType::ScalarType;
-	using FaceType = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using CoordType = VertexType::CoordType;
+	using ScalarType = CoordType::ScalarType;
+	using FaceType = MeshType::FaceType;
 
 	auto ffilter = [&sphere](const FaceType& f) -> bool {
 		return faceSphereItersect(f, sphere);
