@@ -31,7 +31,8 @@ CustomComponentVectorHandle<T>::CustomComponentVectorHandle()
 }
 
 template<typename T>
-CustomComponentVectorHandle<T>::CustomComponentVectorHandle(std::vector<std::any>& cc)
+CustomComponentVectorHandle<T>::CustomComponentVectorHandle(
+	std::vector<std::any>& cc)
 {
 	v.reserve(cc.size());
 	for (uint i = 0; i < cc.size(); ++i) {
@@ -94,27 +95,27 @@ const T& CustomComponentVectorHandle<T>::operator[](uint i) const
 }
 
 template<typename T>
-typename CustomComponentVectorHandle<T>::iterator CustomComponentVectorHandle<T>::begin()
+auto CustomComponentVectorHandle<T>::begin() -> Iterator
 {
-	return v.begin();
+	return Iterator(v.begin());
 }
 
 template<typename T>
-typename CustomComponentVectorHandle<T>::iterator CustomComponentVectorHandle<T>::end()
+auto CustomComponentVectorHandle<T>::end() -> Iterator
 {
-	return v.end();
+	return Iterator(v.end());
 }
 
 template<typename T>
-typename CustomComponentVectorHandle<T>::const_iterator CustomComponentVectorHandle<T>::begin() const
+auto CustomComponentVectorHandle<T>::begin() const -> ConstIterator
 {
-	return v.begin();
+	return ConstIterator(v.begin());
 }
 
 template<typename T>
-typename CustomComponentVectorHandle<T>::const_iterator CustomComponentVectorHandle<T>::end() const
+auto CustomComponentVectorHandle<T>::end() const -> ConstIterator
 {
-	return v.end();
+	return ConstIterator(v.end());
 }
 
 } // namespace vcl

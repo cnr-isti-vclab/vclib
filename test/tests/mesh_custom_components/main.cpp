@@ -46,7 +46,7 @@ TEST_CASE( "Test Custom Components and Handles" ) {
 		m.perVertexCustomComponentVectorHandle<int>("flag");
 
 	int tmp = 8;
-	for (int& m : v){
+	for (auto& m : v){
 		m = tmp;
 	}
 	int tmp2 = 4;

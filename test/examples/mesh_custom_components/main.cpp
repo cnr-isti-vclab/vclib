@@ -43,7 +43,7 @@ int main()
 	
 	vcl::CustomComponentVectorHandle<int> v = m.perVertexCustomComponentVectorHandle<int>("flag");
 
-	for (int& m : v){
+	for (auto& m : v) {
 		m = 8;
 	}
 

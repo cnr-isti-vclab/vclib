@@ -32,16 +32,54 @@
 namespace vcl {
 
 /**
- * @brief The CustomComponentVectorHandle is a class that allows to access to the 
- * custom components stored in a Contaner of Elements, trough the classic std::vector 
- * accessors.
+ * @brief Allows to access directly to a custom component.
+ *
+ * The class allows to access a custom component stored in a Contaner of
+ * Elements without having to use the Container itself and avoiding copies, and
+ * it can be used as a normal std::vector. The class stores references to the
+ * custom components, therefore it allows to modify them.
+ *
+ * It is meant to be created by a Container, that constructs it from the vector
+ * of custom components and then returns it to the user.
+ *
+ * @note A CustomComponentVectorHandle object is meant to be used to access the
+ * custom components. It does not make sense to modify the size of the container
+ * or to add or remove elements. Member functions that modify the size of the
+ * container are not implemented.
+ *
+ * @note If the Element Container is modified after the creation of a
+ * CustomComponentVectorHandle, the CustomComponentVectorHandle is not updated
+ * and still contains the old references to the custom components (that may be
+ * invalidated).
+ *
+ * @tparam T: The type of the custom component.
  */
 template<typename T>
 class CustomComponentVectorHandle
 {
 public:
-	using iterator = typename std::vector<std::reference_wrapper<T>>::iterator;
-	using const_iterator = typename std::vector<std::reference_wrapper<T>>::const_iterator;
+	class Iterator : public std::vector<std::reference_wrapper<T>>::iterator
+	{
+		using Base = std::vector<std::reference_wrapper<T>>::iterator;
+	public:
+		using value_type = T;
+		using reference = value_type&;
+		using pointer = value_type*;
+		reference operator*() const { return Base::operator*().get(); }
+		pointer operator->() const { return &(Base::operator*().get()); }
+	};
+
+	class ConstIterator :
+		public std::vector<std::reference_wrapper<T>>::const_iterator
+	{
+		using Base = std::vector<std::reference_wrapper<T>>::const_iterator;
+	public:
+		using value_type = T;
+		using reference = const value_type&;
+		using pointer = const value_type*;
+		reference operator*() const { return Base::operator*().get(); }
+		pointer operator->() const { return &(Base::operator*().get()); }
+	};
 
 	CustomComponentVectorHandle();
 	CustomComponentVectorHandle(std::vector<std::any>& cc);
@@ -60,10 +98,10 @@ public:
 	T& operator[](uint i);
 	const T& operator[](uint i) const;
 
-	iterator begin();
-	iterator end();
-	const_iterator begin() const;
-	const_iterator end() const;
+	Iterator begin();
+	Iterator end();
+	ConstIterator begin() const;
+	ConstIterator end() const;
 
 private:
 	std::vector<std::reference_wrapper<T>> v;
