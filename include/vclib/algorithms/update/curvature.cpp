@@ -46,11 +46,11 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 	vcl::requirePerVertexAdjacentFaces(m);
 	vcl::requirePerFaceAdjacentFaces(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
-	using NormalType = typename VertexType::NormalType;
-	using ScalarType = typename CoordType::ScalarType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using CoordType = VertexType::CoordType;
+	using NormalType = VertexType::NormalType;
+	using ScalarType = CoordType::ScalarType;
+	using FaceType   = MeshType::FaceType;
 
 	// Auxiliary data structure
 	struct AdjVertex {
@@ -248,14 +248,14 @@ void updatePrincipalCurvaturePCA(
 	bool       montecarloSampling,
 	LogType&   log)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
-	using ScalarType = typename CoordType::ScalarType;
-	using NormalType = typename VertexType::NormalType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using CoordType = VertexType::CoordType;
+	using ScalarType = CoordType::ScalarType;
+	using NormalType = VertexType::NormalType;
+	using FaceType   = MeshType::FaceType;
 
-	using VGrid = typename vcl::StaticGrid3<VertexType*, ScalarType>;
-	using VGridIterator = typename VGrid::ConstIterator;
+	using VGrid = vcl::StaticGrid3<VertexType*, ScalarType>;
+	using VGridIterator = VGrid::ConstIterator;
 
 	VGrid pGrid;
 	ScalarType area;

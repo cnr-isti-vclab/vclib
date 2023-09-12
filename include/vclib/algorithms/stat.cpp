@@ -42,8 +42,8 @@ namespace vcl {
 template <MeshConcept MeshType>
 typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
+	using VertexType = MeshType::VertexType;
+	using CoordType = VertexType::CoordType;
 
 	CoordType bar;
 
@@ -73,9 +73,9 @@ typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType
 {
 	vcl::requirePerVertexQuality(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
-	using QualityType = typename VertexType::QualityType;
+	using VertexType = MeshType::VertexType;
+	using CoordType = VertexType::CoordType;
+	using QualityType = VertexType::QualityType;
 
 	CoordType bar;
 	QualityType weightedSum = 0;
@@ -105,10 +105,10 @@ typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType
 template<FaceMeshConcept MeshType>
 typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
-	using FaceType = typename MeshType::FaceType;
-	using CoordType = typename VertexType::CoordType;
-	using ScalarType = typename CoordType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using FaceType = MeshType::FaceType;
+	using CoordType = VertexType::CoordType;
+	using ScalarType = CoordType::ScalarType;
 
 	CoordType bar;
 	bar.setZero();
@@ -147,7 +147,7 @@ double volume(const MeshType& m)
 template<FaceMeshConcept MeshType>
 double surfaceArea(const MeshType& m)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	double area = 0;
 	for (const FaceType& f : m.faces()) {
@@ -166,7 +166,7 @@ double surfaceArea(const MeshType& m)
 template<FaceMeshConcept MeshType>
 double borderLength(const MeshType& m)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	double l = 0;
 	for (const FaceType& f : m.faces()){
@@ -212,8 +212,8 @@ auto covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
 template<MeshConcept MeshType>
 auto covarianceMatrixOfPointCloud(const MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
-	using ScalarType = typename VertexType::CoordType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using ScalarType = VertexType::CoordType::ScalarType;
 
 	auto barycenter = vcl::barycenter(m);
 
@@ -264,10 +264,10 @@ auto weightedCovarianceMatrixOfPointCloud(
 template<FaceMeshConcept MeshType>
 auto covarianceMatrixOfMesh(const MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
-	using FaceType = typename MeshType::FaceType;
-	using CoordType = typename VertexType::CoordType;
-	using ScalarType = typename CoordType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using FaceType = MeshType::FaceType;
+	using CoordType = VertexType::CoordType;
+	using ScalarType = CoordType::ScalarType;
 
 	CoordType bar = shellBarycenter(m);
 	Matrix33<ScalarType> C;
@@ -341,7 +341,7 @@ std::vector<ScalarType> vertexRadiusFromWeights(
 	double                         radiusVariance,
 	bool                           invert)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	std::vector<ScalarType> radius(m.vertexContainerSize());
 	auto minmax = std::minmax_element(weights.begin(), weights.end());

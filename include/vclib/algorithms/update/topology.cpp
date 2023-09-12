@@ -45,7 +45,7 @@ void clearPerVertexAdjacentFaces(MeshType& m)
 {
 	vcl::requirePerVertexAdjacentFaces(m);
 
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
 		v.clearAdjFaces();
@@ -68,8 +68,8 @@ void updatePerVertexAdjacentFaces(MeshType& m)
 {
 	clearPerVertexAdjacentFaces(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
 
 	for (VertexType& v : m.vertices()) {
 		v.clearAdjFaces();
@@ -100,7 +100,7 @@ void clearPerVertexAdjacentVertices(MeshType& m)
 {
 	vcl::requirePerVertexAdjacentVertices(m);
 
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
 		v.clearAdjVertices();
@@ -123,7 +123,7 @@ void updatePerVertexAdjacentVertices(MeshType& m)
 {
 	clearPerVertexAdjacentVertices(m);
 
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	// vector that contains edges sorted trough unordered vertex pointers
 	// it contains clusters of "same" edges, but each one of them has its face pointer
@@ -163,7 +163,7 @@ void clearPerFaceAdjacentFaces(MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
 
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
 		for (FaceType*& adjF : f.adjFaces()) {

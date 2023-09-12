@@ -140,8 +140,8 @@ void setPerVertexColorFromFaceColor(MeshType& m)
 	vcl::requirePerVertexColor(m);
 	vcl::requirePerFaceColor(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
 
 	std::vector<internal::ColorAvgInfo> csi(m.vertexContainerSize());
 
@@ -178,8 +178,8 @@ void setPerFaceColorFromVertexColor(MeshType& m)
 	vcl::requirePerVertexColor(m);
 	vcl::requirePerFaceColor(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
 
 	for (FaceType& f : m.faces()) {
 		vcl::Point4<uint> avg(0, 0, 0, 0);
@@ -221,8 +221,8 @@ void setPerVertexColorFromQuality(
 	vcl::requirePerVertexColor(m);
 	vcl::requirePerVertexQuality(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using QualityType = typename VertexType::QualityType;
+	using VertexType = MeshType::VertexType;
+	using QualityType = VertexType::QualityType;
 
 	if (minQuality == maxQuality) {
 		std::pair<QualityType, QualityType> pair = vertexQualityMinMax(m);
@@ -264,8 +264,8 @@ void setPerFaceColorFromQuality(
 	vcl::requirePerFaceColor(m);
 	vcl::requirePerFaceQuality(m);
 
-	using FaceType   = typename MeshType::FaceType;
-	using QualityType = typename FaceType::QualityType;
+	using FaceType   = MeshType::FaceType;
+	using QualityType = FaceType::QualityType;
 
 	if (minQuality == maxQuality) {
 		std::pair<QualityType, QualityType> pair = faceQualityMinMax(m);
@@ -308,7 +308,7 @@ void setPerVertexColorFromFaceBorderFlag(
 {
 	vcl::requirePerVertexColor(m);
 
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	const vcl::Color baseColor = Color::Green;
 
@@ -426,7 +426,7 @@ void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
 {
 	vcl::requirePerFaceColor(m);
 
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	Color baseColor = Color::Black;
 	setPerFaceColor(m, baseColor);
@@ -480,7 +480,7 @@ void setPerVertexColorPerlinNoise(
 {
 	vcl::requirePerVertexColor(m);
 
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	PointType p[3];
 
@@ -527,7 +527,7 @@ void setPerVertexPerlinColor(
 {
 	vcl::requirePerVertexColor(m);
 
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
 		if (!onSelected || v.selected()) {

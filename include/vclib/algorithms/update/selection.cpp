@@ -64,7 +64,7 @@ void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
 {
 	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);
 
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
 		if (nonManifoldVertices[m.index(v)]) {

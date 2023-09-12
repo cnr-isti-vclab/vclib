@@ -32,7 +32,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 std::vector<MeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(MeshType& m, bool includeFauxEdges)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	std::vector<MeshEdgeUtil<MeshType>> vec;
 
@@ -58,7 +58,7 @@ template<FaceMeshConcept MeshType>
 std::vector<ConstMeshEdgeUtil<MeshType>>
 fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	std::vector<ConstMeshEdgeUtil<MeshType>> vec;
 
