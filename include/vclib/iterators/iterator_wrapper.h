@@ -44,7 +44,7 @@ template<typename PointerType>
 class IteratorWrapper
 {
 public:
-	using value_type = typename std::remove_pointer_t<PointerType>;
+	using value_type = std::remove_pointer_t<PointerType>;
 	using reference = value_type&;
 	using pointer = value_type*;
 	using difference_type = std::ptrdiff_t;

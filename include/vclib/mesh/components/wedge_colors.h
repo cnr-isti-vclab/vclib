@@ -95,8 +95,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using WedgeColorsIterator      = typename Base::Iterator;
-	using ConstWedgeColorsIterator = typename Base::ConstIterator;
+	using WedgeColorsIterator      = Base::Iterator;
+	using ConstWedgeColorsIterator = Base::ConstIterator;
 
 	/* Member functions */
 

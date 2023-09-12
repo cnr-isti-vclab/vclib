@@ -72,15 +72,13 @@ EdgeAdjFaceIterator<FaceType, CNST> EdgeAdjFaceIterator<FaceType, CNST>::operato
 }
 
 template<typename FaceType, bool CNST>
-typename EdgeAdjFaceIterator<FaceType, CNST>::reference
-EdgeAdjFaceIterator<FaceType, CNST>::operator*() const
+auto EdgeAdjFaceIterator<FaceType, CNST>::operator*() const -> reference
 {
 	return current;
 }
 
 template<typename FaceType, bool CNST>
-typename EdgeAdjFaceIterator<FaceType, CNST>::pointer
-EdgeAdjFaceIterator<FaceType, CNST>::operator->() const
+auto EdgeAdjFaceIterator<FaceType, CNST>::operator->() const -> pointer
 {
 	return &current;
 }

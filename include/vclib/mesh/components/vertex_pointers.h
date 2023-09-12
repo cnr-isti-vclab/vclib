@@ -104,8 +104,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using VertexIterator      = typename Base::Iterator;
-	using ConstVertexIterator = typename Base::ConstIterator;
+	using VertexIterator      = Base::Iterator;
+	using ConstVertexIterator = Base::ConstIterator;
 
 	/* Member functions */
 

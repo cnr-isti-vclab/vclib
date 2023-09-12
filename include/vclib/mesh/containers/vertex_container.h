@@ -56,8 +56,8 @@ class VertexContainer : public ElementContainer<T>
 public:
 	using Vertex              = T;
 	using VertexType          = T;
-	using VertexIterator      = typename Base::ElementIterator;
-	using ConstVertexIterator = typename Base::ConstElementIterator;
+	using VertexIterator      = Base::ElementIterator;
+	using ConstVertexIterator = Base::ConstElementIterator;
 
 	VertexContainer();
 

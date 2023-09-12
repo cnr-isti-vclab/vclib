@@ -66,7 +66,7 @@ public:
 	 * types from which the Element inherits (Comps) that are Components (they
 	 * satisfy the ComponentConcept).
 	 */
-	using Components = typename vcl::FilterTypesByCondition<
+	using Components = vcl::FilterTypesByCondition<
 		comp::IsComponentPred,
 		vcl::TypeWrapper<Comps...>>::type;
 
@@ -113,8 +113,7 @@ private:
 
 	public:
 		// TypeWrapper of the found component, if any
-		using type =
-			typename vcl::FilterTypesByCondition<SameCmpPred, Components>::type;
+		using type = vcl::FilterTypesByCondition<SameCmpPred, Components>::type;
 		static constexpr bool value = NumberOfTypes<type>::value == 1;
 	};
 
@@ -131,8 +130,8 @@ private:
 			using type = C;
 		};
 	public:
-		using type = typename TypeUnwrapper<
-			typename ComponentIDPred<COMP_ID>::type>::type;
+		using type =
+			TypeUnwrapper<typename ComponentIDPred<COMP_ID>::type>::type;
 	};
 };
 

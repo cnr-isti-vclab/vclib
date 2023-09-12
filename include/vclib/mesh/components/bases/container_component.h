@@ -131,8 +131,8 @@ public:
 protected:
 	/* Iterator Types declaration */
 
-	using Iterator      = typename Vector<T, N>::Iterator;
-	using ConstIterator = typename Vector<T, N>::ConstIterator;
+	using Iterator      = Vector<T, N>::Iterator;
+	using ConstIterator = Vector<T, N>::ConstIterator;
 
 	/* Constructor */
 

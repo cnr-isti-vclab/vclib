@@ -95,8 +95,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentVertexIterator      = typename Base::Iterator;
-	using ConstAdjacentVertexIterator = typename Base::ConstIterator;
+	using AdjacentVertexIterator      = Base::Iterator;
+	using ConstAdjacentVertexIterator = Base::ConstIterator;
 
 	/* Member functions */
 

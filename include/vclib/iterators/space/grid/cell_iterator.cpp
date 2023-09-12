@@ -45,13 +45,13 @@ CellIterator<N>::CellIterator(const vcl::Point<uint, N> &first, const vcl::Point
 }
 
 template<int N>
-typename CellIterator<N>::reference CellIterator<N>::operator*() const
+auto CellIterator<N>::operator*() const -> reference
 {
 	return it;
 }
 
 template<int N>
-typename CellIterator<N>::pointer CellIterator<N>::operator->() const
+auto CellIterator<N>::operator->() const -> pointer
 {
 	return &it;
 }

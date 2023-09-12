@@ -1168,13 +1168,13 @@ template<typename OthMesh>
 void FaceContainer<F>::manageImportTriFromPoly(const OthMesh& m)
 {
 	if constexpr (HasFaceContainer<OthMesh>) {
-		using ParentMesh = typename Base::ParentMeshType;
-		using VertexType = typename ParentMesh::VertexType;
-		using MVertexType = typename OthMesh::VertexType;
-		using MCoordType = typename MVertexType::CoordType;
-		using MFaceType = typename OthMesh::FaceType;
+		using ParentMesh = Base::ParentMeshType;
+		using VertexType = ParentMesh::VertexType;
+		using MVertexType = OthMesh::VertexType;
+		using MCoordType = MVertexType::CoordType;
+		using MFaceType = OthMesh::FaceType;
 
-		using VertexContainer = typename ParentMesh::VertexContainer;
+		using VertexContainer = ParentMesh::VertexContainer;
 
 		// if this is not a triangle mesh nor a polygon mesh (meaning that we
 		// can't control the number of vertex pointers in this mesh), and this

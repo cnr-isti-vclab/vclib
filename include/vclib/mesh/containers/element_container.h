@@ -48,7 +48,7 @@ class ElementContainer : public ElementContainerTriggerer
 
 public:
 	using ElementType    = T;
-	using ParentMeshType = typename T::ParentMeshType;
+	using ParentMeshType = T::ParentMeshType;
 
 	static const uint ELEMENT_ID = T::ELEMENT_ID;
 
@@ -167,7 +167,7 @@ protected:
 	void importPointersFrom(const OtherMesh& othMesh, ElPtrBase* base);
 
 	// filter components of elements, taking only vertical ones
-	using vComps = typename vcl::FilterTypesByCondition<
+	using vComps = vcl::FilterTypesByCondition<
 		comp::IsVerticalComponentPred,
 		typename T::Components>::type;
 

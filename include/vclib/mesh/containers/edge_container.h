@@ -61,8 +61,8 @@ class EdgeContainer : public ElementContainer<T>
 public:
 	using Edge              = T;
 	using EdgeType          = T;
-	using EdgeIterator      = typename Base::ElementIterator;
-	using ConstEdgeIterator = typename Base::ConstElementIterator;
+	using EdgeIterator      = Base::ElementIterator;
+	using ConstEdgeIterator = Base::ConstElementIterator;
 
 	EdgeContainer();
 

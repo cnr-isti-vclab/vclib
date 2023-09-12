@@ -44,7 +44,7 @@ template <uint ELEM_ID, typename MeshType, typename... Comps>
 template<uint COMP_ID>
 auto& Element<ELEM_ID, MeshType, Comps...>::component()
 {
-	using Comp = typename GetComponentFromID<COMP_ID>::type;
+	using Comp = GetComponentFromID<COMP_ID>::type;
 	return *static_cast<Comp*>(this);
 }
 
@@ -52,7 +52,7 @@ template <uint ELEM_ID, typename MeshType, typename... Comps>
 template<uint COMP_ID>
 const auto& Element<ELEM_ID, MeshType, Comps...>::component() const
 {
-	using Comp = typename GetComponentFromID<COMP_ID>::type;
+	using Comp = GetComponentFromID<COMP_ID>::type;
 	return *static_cast<const Comp*>(this);
 }
 

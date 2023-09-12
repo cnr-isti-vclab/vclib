@@ -50,7 +50,7 @@ template<typename Element>
 void BoundingBox<P, El, O>::importFrom(const Element& e)
 {
 	if constexpr(HasBoundingBox<Element>) {
-		using ScalarType = typename P::ScalarType;
+		using ScalarType = P::ScalarType;
 		boundingBox() = e.boundingBox().template cast<ScalarType>();
 	}
 }

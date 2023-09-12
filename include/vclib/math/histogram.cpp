@@ -324,7 +324,7 @@ uint Histogram<ScalarType>::binIndex(ScalarType elem) const
 	// lower_bound returns the furthermost iterator i in [first, last) such that, for every iterator
 	// j in [first, i), *j < value. E.g. An iterator pointing to the first element "not less than"
 	// val, or end() if every element is less than val.
-	typename std::vector<ScalarType>::const_iterator it = std::lower_bound(R.begin(),R.end(), elem);
+	auto it = std::lower_bound(R.begin(),R.end(), elem);
 
 	assert(it != R.begin());
 	assert(it != R.end());

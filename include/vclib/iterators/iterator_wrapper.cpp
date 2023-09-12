@@ -72,7 +72,8 @@ IteratorWrapper<PointerType> IteratorWrapper<PointerType>::operator+(difference_
 }
 
 template<typename PointerType>
-IteratorWrapper<PointerType>& IteratorWrapper<PointerType>::operator+=(difference_type n) {
+IteratorWrapper<PointerType>& IteratorWrapper<PointerType>::operator+=(difference_type n)
+{
 	ptr += n;
 	return *this;
 }
@@ -80,63 +81,75 @@ IteratorWrapper<PointerType>& IteratorWrapper<PointerType>::operator+=(differenc
 
 
 template<typename PointerType>
-IteratorWrapper<PointerType> IteratorWrapper<PointerType>::operator-(difference_type n) const {
+IteratorWrapper<PointerType> IteratorWrapper<PointerType>::operator-(difference_type n) const
+{
 	return IteratorWrapper(ptr - n);
 }
 
 template<typename PointerType>
-bool IteratorWrapper<PointerType>::operator==(const IteratorWrapper& rhs) const {
+bool IteratorWrapper<PointerType>::operator==(const IteratorWrapper& rhs) const
+{
 	return ptr == rhs.ptr;
 }
 
 template<typename PointerType>
-bool IteratorWrapper<PointerType>::operator!=(const IteratorWrapper& rhs) const {
+bool IteratorWrapper<PointerType>::operator!=(const IteratorWrapper& rhs) const
+{
 	return ptr != rhs.ptr;
 }
 
 template<typename PointerType>
-bool IteratorWrapper<PointerType>::operator<(const IteratorWrapper& rhs) const {
+bool IteratorWrapper<PointerType>::operator<(const IteratorWrapper& rhs) const
+{
 	return ptr < rhs.ptr;
 }
 
 template<typename PointerType>
-bool IteratorWrapper<PointerType>::operator<=(const IteratorWrapper& rhs) const {
+bool IteratorWrapper<PointerType>::operator<=(const IteratorWrapper& rhs) const
+{
 	return ptr <= rhs.ptr;
 }
 
 template<typename PointerType>
-bool IteratorWrapper<PointerType>::operator>(const IteratorWrapper& rhs) const {
+bool IteratorWrapper<PointerType>::operator>(const IteratorWrapper& rhs) const
+{
 	return ptr > rhs.ptr;
 }
 
 template<typename PointerType>
-bool IteratorWrapper<PointerType>::operator>=(const IteratorWrapper& rhs) const {
+bool IteratorWrapper<PointerType>::operator>=(const IteratorWrapper& rhs) const
+{
 	return ptr >= rhs.ptr;
 }
 
 template<typename PointerType>
-typename IteratorWrapper<PointerType>::reference IteratorWrapper<PointerType>::operator*() const {
+auto IteratorWrapper<PointerType>::operator*() const -> reference
+{
 	return *ptr;
 }
 
 template<typename PointerType>
-typename IteratorWrapper<PointerType>::pointer IteratorWrapper<PointerType>::operator->() const {
+auto IteratorWrapper<PointerType>::operator->() const -> pointer
+{
 	return ptr;
 }
 
 template<typename PointerType>
-typename IteratorWrapper<PointerType>::reference IteratorWrapper<PointerType>::operator[](difference_type n) const {
+auto IteratorWrapper<PointerType>::operator[](difference_type n) const -> reference
+{
 	return *(ptr + n);
 }
 
 template<typename PointerType>
-IteratorWrapper<PointerType>& IteratorWrapper<PointerType>::operator-=(difference_type n) {
+IteratorWrapper<PointerType>& IteratorWrapper<PointerType>::operator-=(difference_type n)
+{
 	ptr -= n;
 	return *this;
 }
 
 template<typename PointerType>
-typename IteratorWrapper<PointerType>::difference_type IteratorWrapper<PointerType>::operator-(const IteratorWrapper& rhs) const {
+auto IteratorWrapper<PointerType>::operator-(const IteratorWrapper& rhs) const -> difference_type
+{
 	return ptr - rhs.ptr;
 }
 

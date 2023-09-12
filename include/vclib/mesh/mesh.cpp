@@ -412,7 +412,7 @@ template<typename... Args>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El& e) const requires (hasContainerOf<El>())
 {
-	using Container = typename ContainerOf<El>::type;
+	using Container = ContainerOf<El>::type;
 	return Container::index(&e);
 }
 
@@ -430,7 +430,7 @@ template<typename... Args>
 template<ElementConcept El>
 uint Mesh<Args...>::index(const El* e) const requires (hasContainerOf<El>())
 {
-	using Container = typename ContainerOf<El>::type;
+	using Container = ContainerOf<El>::type;
 	return Container::index(e);
 }
 
@@ -453,7 +453,7 @@ template<uint ELEM_ID>
 const auto& Mesh<Args...>::element(uint i) const
 	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::element(i);
 }
@@ -476,7 +476,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 auto& Mesh<Args...>::element(uint i) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::element(i);
 }
@@ -494,7 +494,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 uint Mesh<Args...>::number() const requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementNumber();
 }
@@ -516,7 +516,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 uint Mesh<Args...>::containerSize() const requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementContainerSize();
 }
@@ -534,7 +534,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 uint Mesh<Args...>::deletedNumber() const requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::deletedElementNumber();
 }
@@ -557,7 +557,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 uint Mesh<Args...>::add() requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::addElement();
 }
@@ -581,7 +581,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 uint Mesh<Args...>::add(uint n) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::addElements(n); // add the number elements
 }
@@ -610,7 +610,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 void Mesh<Args...>::clearElements() requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	Cont::clearElements();
 }
@@ -651,7 +651,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 void Mesh<Args...>::resize(uint n) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	Cont::resizeElements(n);
 }
@@ -680,7 +680,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 void Mesh<Args...>::reserve(uint n) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	Cont::reserveElements(n);
 }
@@ -705,7 +705,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 void Mesh<Args...>::deleteElement(uint i) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	Cont::deleteElement(i);
 }
@@ -731,7 +731,7 @@ template<ElementConcept El>
 void Mesh<Args...>::deleteElement(const El* e) const
 	requires (hasContainerOf<El>())
 {
-	using Cont = typename ContainerOf<El>::type;
+	using Cont = ContainerOf<El>::type;
 	return Cont::deleteElement(e);
 }
 
@@ -756,7 +756,7 @@ template<ElementConcept El>
 void Mesh<Args...>::deleteElement(const El& e) const
 	requires (hasContainerOf<El>())
 {
-	using Cont = typename ContainerOf<El>::type;
+	using Cont = ContainerOf<El>::type;
 	return Cont::deleteElement(&e);
 }
 
@@ -782,7 +782,7 @@ template<uint ELEM_ID>
 std::vector<uint> Mesh<Args...>::conpactIndices() const
 	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementConpactIndices();
 }
@@ -816,7 +816,7 @@ template<uint ELEM_ID>
 void Mesh<Args...>::updateIndices(const std::vector<uint>& newIndices)
 	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::updateElementIndices(newIndices);
 }
@@ -842,7 +842,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 auto Mesh<Args...>::begin(bool jumpDeleted) requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementBegin(jumpDeleted);
 }
@@ -862,7 +862,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 auto Mesh<Args...>::end() requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementEnd();
 }
@@ -889,7 +889,7 @@ template<uint ELEM_ID>
 auto Mesh<Args...>::begin(bool jumpDeleted) const
 	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementBegin(jumpDeleted);
 }
@@ -909,7 +909,7 @@ template<typename... Args>
 template<uint ELEM_ID>
 auto Mesh<Args...>::end() const requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elementEnd();
 }
@@ -940,7 +940,7 @@ template<uint ELEM_ID>
 auto Mesh<Args...>::elements(bool jumpDeleted)
 	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elements(jumpDeleted);
 }
@@ -972,7 +972,7 @@ template<uint ELEM_ID>
 auto Mesh<Args...>::elements(bool jumpDeleted) const
 	requires (hasContainerOf<ELEM_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::elements(jumpDeleted);
 }
@@ -995,7 +995,7 @@ template<uint ELEM_ID, uint COMP_ID>
 bool Mesh<Args...>::isPerElementComponentEnabled() const
 	requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	return Cont::template isOptionalComponentEnabled<COMP_ID>();
 }
@@ -1016,7 +1016,7 @@ template<uint ELEM_ID, uint COMP_ID>
 void Mesh<Args...>::enablePerElementComponent()
 	requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	Cont::template enableOptionalComponent<COMP_ID>();
 }
@@ -1037,7 +1037,7 @@ template<uint ELEM_ID, uint COMP_ID>
 void Mesh<Args...>::disablePerElementComponent()
 	requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>())
 {
-	using Cont = typename ContainerOfElement<ELEM_ID>::type;
+	using Cont = ContainerOfElement<ELEM_ID>::type;
 
 	Cont::template disableOptionalComponent<COMP_ID>();
 }
@@ -1249,7 +1249,7 @@ template<typename... Args>
 template<typename... A>
 auto Mesh<Args...>::getContainerBases(const Mesh<A...>& m)
 {
-	using Containers = typename Mesh<A...>::Containers;
+	using Containers = Mesh<A...>::Containers;
 
 	// the number of containers in Mesh<A...>
 	constexpr uint N_CONTAINERS = NumberOfTypes<Containers>::value;
@@ -1291,9 +1291,9 @@ void Mesh<Args...>::updatePointersOfContainerType(
 		// The element type contained in the container
 		// We need it to get back the actual type of the element from the old
 		// bases
-		using ElType = typename Cont::ElementType;
+		using ElType = Cont::ElementType;
 
-		using Containers = typename Mesh<A...>::Containers;
+		using Containers = Mesh<A...>::Containers;
 		constexpr uint I = IndexInTypes<Cont, Containers>::value;
 		static_assert(I >= 0 && I != UINT_NULL);
 
@@ -1310,8 +1310,8 @@ template<typename... Args>
 template<uint ELEM_ID, typename T>
 uint Mesh<Args...>::elementIndex(const T* el) const
 {
-	using Cont   = typename ContainerOfElement<ELEM_ID>::type;
-	using ElType = typename Cont::ElementType;
+	using Cont   = ContainerOfElement<ELEM_ID>::type;
+	using ElType = Cont::ElementType;
 	return index(static_cast<const ElType*>(el));
 }
 
@@ -1319,7 +1319,7 @@ template<typename... Args>
 template<typename El>
 auto& Mesh<Args...>::customComponents()
 {
-	using ElCont = typename ContainerOf<El>::type;
+	using ElCont = ContainerOf<El>::type;
 
 	return ElCont::ccVecMap;
 }
@@ -1328,7 +1328,7 @@ template<typename... Args>
 template<typename El>
 const auto& Mesh<Args...>::customComponents() const
 {
-	using ElCont = typename ContainerOf<El>::type;
+	using ElCont = ContainerOf<El>::type;
 
 	return ElCont::ccVecMap;
 }
@@ -1337,7 +1337,7 @@ template<typename... Args>
 template<typename El>
 auto& Mesh<Args...>::verticalComponents()
 {
-	using ElCont = typename ContainerOf<El>::type;
+	using ElCont = ContainerOf<El>::type;
 
 	return ElCont::vcVecTuple;
 }
@@ -1346,7 +1346,7 @@ template<typename... Args>
 template<typename El>
 const auto& Mesh<Args...>::verticalComponents() const
 {
-	using ElCont = typename ContainerOf<El>::type;
+	using ElCont = ContainerOf<El>::type;
 
 	return ElCont::vcVecTuple;
 }

@@ -33,9 +33,9 @@ namespace vcl {
 template<typename FaceType, bool CNST = false>
 class EdgeAdjFaceIterator
 {
-	using FT = typename std::conditional_t<CNST, FaceType, const FaceType>;
+	using FT = std::conditional_t<CNST, FaceType, const FaceType>;
 
-	using VT = typename std::conditional_t<CNST,
+	using VT = std::conditional_t<CNST,
 		typename FT::VertexType,
 		const typename FT::VertexType>;
 public:

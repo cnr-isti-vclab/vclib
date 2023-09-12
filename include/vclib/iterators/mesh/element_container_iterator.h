@@ -33,7 +33,7 @@ template<template<typename, typename...> typename Container, typename T, bool CN
 class ElementContainerIterator
 {
 private:
-	using ContIt = typename std::conditional_t<
+	using ContIt = std::conditional_t<
 		CNST,
 		typename Container<T>::const_iterator,
 		typename Container<T>::iterator>;
@@ -41,8 +41,8 @@ private:
 public:
 	using difference_type   = ptrdiff_t;
 	using value_type        = T;
-	using reference         = typename std::conditional_t<CNST, const T&, T&>;
-	using pointer           = typename std::conditional_t<CNST, const T*, T*>;
+	using reference         = std::conditional_t<CNST, const T&, T&>;
+	using pointer           = std::conditional_t<CNST, const T*, T*>;
 	using iterator_category = std::random_access_iterator_tag;
 
 	ElementContainerIterator();

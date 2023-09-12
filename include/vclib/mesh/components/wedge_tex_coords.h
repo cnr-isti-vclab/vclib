@@ -105,10 +105,9 @@ public:
 
 	/* Iterator Types declaration */
 
-	using WedgeTexCoordsIterator =
-		typename Vector<vcl::TexCoord<Scalar>, N>::Iterator;
+	using WedgeTexCoordsIterator = Vector<vcl::TexCoord<Scalar>, N>::Iterator;
 	using ConstWedgeTexCoordsIterator =
-		typename Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
+		Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
 
 	/* Member functions */
 

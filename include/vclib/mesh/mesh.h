@@ -110,7 +110,7 @@ public:
 	 * which the Mesh inherits (Args) that are ElementContainers (they satisfy
 	 * the ElementContainerConcept).
 	 */
-	using Containers = typename vcl::FilterTypesByCondition<
+	using Containers = vcl::FilterTypesByCondition<
 		mesh::IsElementContainerPred,
 		vcl::TypeWrapper<Args...>>::type;
 
@@ -119,7 +119,7 @@ public:
 	 * types from which the Mesh inherits (Args) that are Components (they
 	 * satisfy the ComponentConcept).
 	 */
-	using Components = typename vcl::FilterTypesByCondition<
+	using Components = vcl::FilterTypesByCondition<
 		comp::IsComponentPred,
 		vcl::TypeWrapper<Args...>>::type;
 
@@ -131,11 +131,11 @@ public:
 	 *
 	 * Usage:
 	 * ```cpp
-	 * using VertexType = typename MeshType::template ElementType<VERTEX>;
+	 * using VertexType = MeshType::template ElementType<VERTEX>;
 	 * ```
 	 */
 	template<uint ELEM_ID>
-	using ElementType = typename ContainerOfElement<ELEM_ID>::type::ElementType;
+	using ElementType = ContainerOfElement<ELEM_ID>::type::ElementType;
 
 	/* constructors */
 

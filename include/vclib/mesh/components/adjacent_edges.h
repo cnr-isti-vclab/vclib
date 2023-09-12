@@ -103,8 +103,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentEdgeIterator      = typename Base::Iterator;
-	using ConstAdjacentEdgeIterator = typename Base::ConstIterator;
+	using AdjacentEdgeIterator      = Base::Iterator;
+	using ConstAdjacentEdgeIterator = Base::ConstIterator;
 
 	/**
 	 * @brief Static size of the container. If the container is dynamic, this

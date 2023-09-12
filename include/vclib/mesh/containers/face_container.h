@@ -60,8 +60,8 @@ class FaceContainer : public ElementContainer<T>
 public:
 	using Face              = T;
 	using FaceType          = T;
-	using FaceIterator      = typename Base::ElementIterator;
-	using ConstFaceIterator = typename Base::ConstElementIterator;
+	using FaceIterator      = Base::ElementIterator;
+	using ConstFaceIterator = Base::ConstElementIterator;
 
 	FaceContainer();
 

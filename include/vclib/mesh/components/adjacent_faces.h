@@ -103,8 +103,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentFaceIterator      = typename Base::Iterator;
-	using ConstAdjacentFaceIterator = typename Base::ConstIterator;
+	using AdjacentFaceIterator      = Base::Iterator;
+	using ConstAdjacentFaceIterator = Base::ConstIterator;
 
 	/**
 	 * @brief Static size of the container. If the container is dynamic, this

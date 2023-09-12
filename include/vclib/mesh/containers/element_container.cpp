@@ -672,7 +672,7 @@ void ElementContainer<T>::updatePointers(
 	const Element* oldBase,
 	const Element* newBase)
 {
-	using Comps = typename T::Components;
+	using Comps = T::Components;
 
 	updatePointersOnComponents(oldBase, newBase, Comps());
 }
@@ -683,7 +683,7 @@ void ElementContainer<T>::updatePointers(
 	const Element*          base,
 	const std::vector<uint>& newIndices)
 {
-	using Comps = typename T::Components;
+	using Comps = T::Components;
 
 	updatePointersOnComponents(base, newIndices, Comps());
 }
@@ -694,7 +694,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using OContainer = typename OtherMesh::template ContainerOf<T>::type;
+		using OContainer = OtherMesh::template ContainerOf<T>::type;
 
 		const OContainer& c = static_cast<const OContainer&>(m);
 
@@ -709,7 +709,7 @@ void ElementContainer<T>::importFrom(const OtherMesh &m)
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast
 		// othMesh
-		using Container = typename OtherMesh::template ContainerOf<T>::type;
+		using Container = OtherMesh::template ContainerOf<T>::type;
 
 		const Container& c = (const Container&)m;
 
@@ -764,9 +764,9 @@ void ElementContainer<T>::ElementContainer::importPointersFrom(
 		OtherMesh::template hasContainerOf<T>() && OtherMesh::template hasContainerOf<ElPtrBase>()) {
 
 		// get the containe type of the other mesh for MyBase - used for get the base pointer
-		using OthBaseContainer = typename OtherMesh::template ContainerOf<ElPtrBase>::type;
+		using OthBaseContainer = OtherMesh::template ContainerOf<ElPtrBase>::type;
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using OthTContainer = typename OtherMesh::template ContainerOf<T>::type;
+		using OthTContainer = OtherMesh::template ContainerOf<T>::type;
 
 		// get the container base of the other mesh, that we use to import pointers
 		const auto* cbase = othMesh.OthBaseContainer::vec.data();
@@ -823,7 +823,7 @@ void ElementContainer<T>::importPointersFromContainer(
 	MyBase*          base,
 	const CBase*     cbase)
 {
-	using Comps = typename T::Components;
+	using Comps = T::Components;
 
 	importPointersOnComponentsFrom(c, base, cbase, Comps());
 }

@@ -61,15 +61,13 @@ ElementContainerIterator<Container, T, CNST>::ElementContainerIterator(
 }
 
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-typename ElementContainerIterator<Container, T, CNST>::reference
-ElementContainerIterator<Container, T, CNST>::operator*() const
+auto ElementContainerIterator<Container, T, CNST>::operator*() const -> reference
 {
 	return *it;
 }
 
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-typename ElementContainerIterator<Container, T, CNST>::pointer
-ElementContainerIterator<Container, T, CNST>::operator->() const
+auto ElementContainerIterator<Container, T, CNST>::operator->() const -> pointer
 {
 	return &*it;
 }
@@ -147,15 +145,13 @@ ElementContainerIterator<Container, T, CNST>::operator-(difference_type n) const
 }
 
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-typename ElementContainerIterator<Container, T, CNST>::difference_type
-ElementContainerIterator<Container, T, CNST>::operator-(const ElementContainerIterator& oi) const
+auto ElementContainerIterator<Container, T, CNST>::operator-(const ElementContainerIterator& oi) const -> difference_type
 {
 	return (this->*diff)(oi);
 }
 
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-typename ElementContainerIterator<Container, T, CNST>::reference
-ElementContainerIterator<Container, T, CNST>::operator[](difference_type i)
+auto ElementContainerIterator<Container, T, CNST>::operator[](difference_type i) -> reference
 {
 	return *(*this + i);
 }
@@ -312,8 +308,7 @@ ElementContainerIterator<Container, T, CNST>::assignSumFast(difference_type n)
 }
 
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-typename ElementContainerIterator<Container, T, CNST>::difference_type
-ElementContainerIterator<Container, T, CNST>::diffJump(const ElementContainerIterator& oi) const
+auto ElementContainerIterator<Container, T, CNST>::diffJump(const ElementContainerIterator& oi) const -> difference_type
 {
 	ElementContainerIterator i    = oi;
 	difference_type          diff = 0;
@@ -325,8 +320,7 @@ ElementContainerIterator<Container, T, CNST>::diffJump(const ElementContainerIte
 }
 
 template<template<typename, typename...> typename Container, typename T, bool CNST>
-typename ElementContainerIterator<Container, T, CNST>::difference_type
-ElementContainerIterator<Container, T, CNST>::diffFast(const ElementContainerIterator& oi) const
+auto ElementContainerIterator<Container, T, CNST>::diffFast(const ElementContainerIterator& oi) const -> difference_type
 {
 	return this->it - oi.it;
 }
