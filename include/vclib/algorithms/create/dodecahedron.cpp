@@ -40,9 +40,9 @@ namespace vcl {
 template<PolygonMeshConcept MeshType, LoggerConcept LogType>
 MeshType createDodecahedron(LogType& log)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType  = typename VertexType::CoordType;
-	using ScalarType = typename CoordType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using CoordType  = VertexType::CoordType;
+	using ScalarType = CoordType::ScalarType;
 
 	MeshType mesh;
 
@@ -132,7 +132,7 @@ MeshType createDodecahedron(LogType& log)
 	}
 
 	MeshType mesh;
-	using ST = typename MeshType::VertexType::CoordType::ScalarType;
+	using ST = MeshType::VertexType::CoordType::ScalarType;
 	mesh.reserveVertices(pmesh.vertexNumber());
 	for (const auto& v : pmesh.vertices()) {
 		mesh.addVertex(v.coord().cast<ST>());

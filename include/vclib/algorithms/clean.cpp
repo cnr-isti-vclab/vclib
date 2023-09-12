@@ -91,7 +91,7 @@ void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, u
 template<typename MeshType>
 std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m, uint& nUnref)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	uint nRefs = 0;
 	std::vector<bool> referredVertices(m.vertexContainerSize(), false);
@@ -175,7 +175,7 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
 
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	std::vector<bool> nonManifoldVertices(m.vertexContainerSize(), false);
 
@@ -279,7 +279,7 @@ uint numberUnreferencedVertices(const MeshType& m)
 template<MeshConcept MeshType>
 uint removeUnreferencedVertices(MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	// Generate a vector of boolean flags indicating whether each vertex is referenced by any of the
 	// mesh's elements.
@@ -328,8 +328,8 @@ uint removeUnreferencedVertices(MeshType& m)
 template<MeshConcept MeshType>
 uint removeDuplicatedVertices(MeshType& m)
 {
-	using VertexType    = typename MeshType::VertexType;
-	using VertexPointer = typename MeshType::VertexType*;
+	using VertexType    = MeshType::VertexType;
+	using VertexPointer = MeshType::VertexType*;
 
 	if (m.vertexNumber() == 0)
 		return 0;
@@ -403,8 +403,8 @@ uint removeDuplicatedVertices(MeshType& m)
 template<FaceMeshConcept MeshType>
 uint removeDuplicatedFaces(MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
-	using FaceType = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using FaceType = MeshType::FaceType;
 
 	// create a vector of sorted tuples of indices, where each tuple represents a face's vertices and a
 	// pointer to the face.
@@ -450,7 +450,7 @@ uint removeDuplicatedFaces(MeshType& m)
 template<MeshConcept MeshType>
 uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	int count_vd = 0;
 
@@ -466,7 +466,7 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 	// If the mesh has faces and the `deleteAlsoFaces` flag is true, delete all faces incident on
 	// deleted vertices.
 	if constexpr (HasFaces<MeshType>) {
-		using FaceType = typename MeshType::FaceType;
+		using FaceType = MeshType::FaceType;
 		if (deleteAlsoFaces) {
 			for (FaceType& f : m.faces()) {
 				bool deg = false;
@@ -508,7 +508,7 @@ template<FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m)
 {
 	uint count = 0;
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	// iterate over all faces in the mesh, and mark any that are degenerate as deleted.
 	for (FaceType& f : m.faces()){
@@ -594,8 +594,8 @@ uint numberHoles(const MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using FaceType = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using FaceType = MeshType::FaceType;
 
 	uint loopNum=0;
 
@@ -648,7 +648,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
 
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	std::vector<std::set<uint>> cc;
 
