@@ -149,7 +149,7 @@ void saveStl(
 	internal::writeStlHeader(fp, magicsMode, binary);
 
 	if constexpr (HasFaces<MeshType>) {
-		using FaceType = typename MeshType::FaceType;
+		using FaceType = MeshType::FaceType;
 
 		if (binary) {
 			internal::writeInt(fp, m.faceNumber());

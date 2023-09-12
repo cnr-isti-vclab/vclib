@@ -79,7 +79,7 @@ void saveOff(
 
 	// vertices
 	if constexpr (vcl::HasVertices<MeshType>) {
-		using VertexType = typename MeshType::VertexType;
+		using VertexType = MeshType::VertexType;
 		for (const VertexType& v : m.vertices()) {
 			io::internal::writeDouble(fp, v.coord().x(), false);
 			io::internal::writeDouble(fp, v.coord().y(), false);
@@ -113,8 +113,8 @@ void saveOff(
 
 	// faces
 	if constexpr (vcl::HasFaces<MeshType>) {
-		using VertexType = typename MeshType::VertexType;
-		using FaceType = typename MeshType::FaceType;
+		using VertexType = MeshType::VertexType;
+		using FaceType = MeshType::FaceType;
 
 		// indices of vertices that do not consider deleted vertices
 		std::vector<uint> vIndices = m.vertexCompactIndices();

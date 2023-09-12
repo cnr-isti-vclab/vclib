@@ -38,7 +38,7 @@ MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh)
 template<MeshConcept MeshType, typename VCGMeshType>
 void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 {
-	using CoordType = typename MeshType::VertexType::CoordType;
+	using CoordType = MeshType::VertexType::CoordType;
 
 	mesh.reserveVertices(vcgMesh.VN());
 
@@ -55,7 +55,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
 			// normal
 			if constexpr (HasPerVertexNormal<MeshType>) {
-				using NormalType = typename MeshType::VertexType::NormalType;
+				using NormalType = MeshType::VertexType::NormalType;
 				if (isPerVertexNormalAvailable(mesh)) {
 					if (vcg::tri::HasPerVertexNormal(vcgMesh)) {
 						mesh.vertex(vi).normal() = NormalType(
@@ -90,8 +90,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
 			// texcoord
 			if constexpr (HasPerVertexTexCoord<MeshType>) {
-				using TexCoordType =
-					typename MeshType::VertexType::TexCoordType;
+				using TexCoordType = MeshType::VertexType::TexCoordType;
 				if (isPerVertexTexCoordAvailable(mesh)) {
 					if (vcg::tri::HasPerVertexTexCoord(vcgMesh)) {
 						mesh.vertex(vi).texCoord() = TexCoordType(
@@ -105,7 +104,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
 	// faces
 	if constexpr (HasFaces<MeshType>) {
-		using FaceType = typename MeshType::FaceType;
+		using FaceType = MeshType::FaceType;
 
 		for (uint i = 0; i < vcgMesh.face.size(); ++i) {
 			if (!vcgMesh.face[i].IsD()) {
@@ -123,7 +122,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
 				// normal
 				if constexpr (HasPerFaceNormal<MeshType>) {
-					using NormalType = typename MeshType::FaceType::NormalType;
+					using NormalType = MeshType::FaceType::NormalType;
 					if (isPerFaceNormalAvailable(mesh)) {
 						if (vcg::tri::HasPerFaceNormal(vcgMesh)) {
 							mesh.face(fi).normal() = NormalType(
@@ -158,8 +157,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
 				// wedge texcoords
 				if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
-					using WTType =
-						typename MeshType::FaceType::WedgeTexCoordType;
+					using WTType = MeshType::FaceType::WedgeTexCoordType;
 					if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
 						if (vcg::tri::HasPerWedgeTexCoord(vcgMesh)) {
 							mesh.face(fi).textureIndex() =

@@ -41,7 +41,7 @@ void loadOffVertices(
 	const MeshInfo& fileInfo,
 	uint            nv)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	const uint nTexCoords = fileInfo.hasVertexTexCoords() ? 2 : 0;
 
@@ -113,7 +113,7 @@ void loadOffFaces(
 	bool           enableOptionalComponents)
 {
 	if constexpr (HasFaces<MeshType>) {
-		using FaceType = typename MeshType::FaceType;
+		using FaceType = MeshType::FaceType;
 
 		mesh.reserveFaces(nf);
 		for (uint fid = 0; fid < nf; ++fid) {

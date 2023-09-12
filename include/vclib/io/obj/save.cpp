@@ -155,7 +155,7 @@ void saveObj(
 	obj::Material lastMaterial;
 
 	// vertices
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 	for (const VertexType& v : m.vertices()) {
 		if (useMtl) { // mtl management
 			internal::writeElementMaterial<VertexType, MeshType>(v, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
@@ -187,8 +187,8 @@ void saveObj(
 
 	// faces
 	if constexpr (vcl::HasFaces<MeshType>) {
-		using VertexType = typename MeshType::VertexType;
-		using FaceType = typename MeshType::FaceType;
+		using VertexType = MeshType::VertexType;
+		using FaceType = MeshType::FaceType;
 
 		// indices of vertices that do not consider deleted vertices
 		std::vector<uint> vIndices = m.vertexCompactIndices();
@@ -200,7 +200,7 @@ void saveObj(
 			}
 			if constexpr(HasPerFaceWedgeTexCoords<MeshType>){
 				if (meshInfo.hasFaceWedgeTexCoords()) {
-					using WedgeTexCoordType = typename FaceType::WedgeTexCoordType;
+					using WedgeTexCoordType = FaceType::WedgeTexCoordType;
 					for (const WedgeTexCoordType wt : f.wedgeTexCoords()){
 						fp << "vt ";
 						internal::writeFloat(fp, wt.u(), false);

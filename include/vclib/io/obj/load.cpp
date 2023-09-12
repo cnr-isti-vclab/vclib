@@ -195,7 +195,7 @@ void loadVertexNormal(
 	MeshInfo&                       loadedInfo,
 	bool                            enableOptionalComponents)
 {
-	using NormalType = typename MeshType::VertexType::NormalType;
+	using NormalType = MeshType::VertexType::NormalType;
 
 	// first, need to check if I can store normals in the mesh
 	if (vn == 0) {
@@ -235,7 +235,7 @@ void loadFace(
 	const obj::Material&               currentMaterial,
 	bool                               enableOptionalComponents)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	std::vector<uint> vids;
 	std::vector<uint> wids;
@@ -516,7 +516,7 @@ void loadObj(
 		}
 	}
 	if constexpr (HasPerVertexTexCoord<MeshType>) {
-		using VertexType = typename MeshType::VertexType;
+		using VertexType = MeshType::VertexType;
 		if (!loadedInfo.hasFaceWedgeTexCoords()) {
 			// we can set the loaded texCoords to vertices, also if they are not supported in obj
 			if (texCoords.size() == m.vertexNumber()) {
