@@ -278,7 +278,7 @@ std::vector<uint> ElementContainer<T>::compactElements()
  * @param[in] i: the id of the element that will be marked as deleted.
  */
 template<ElementConcept T>
-inline void ElementContainer<T>::deleteElement(uint i)
+void ElementContainer<T>::deleteElement(uint i)
 {
 	vec[i].deletedBit() = true;
 	--en;
@@ -301,7 +301,7 @@ inline void ElementContainer<T>::deleteElement(uint i)
  * @param[in] e: the pointer of the element that will be marked as deleted.
  */
 template<ElementConcept T>
-inline void ElementContainer<T>::deleteElement(const T* e)
+void ElementContainer<T>::deleteElement(const T* e)
 {
 	deleteElement(index(e));
 }
@@ -402,7 +402,7 @@ void ElementContainer<T>::updateElementIndices(const std::vector<uint>& newIndic
  * @return An iterator the the first element of the container.
  */
 template<ElementConcept T>
-typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted)
+auto ElementContainer<T>::elementBegin(bool jumpDeleted) -> ElementIterator
 {
 	auto it = vec.begin();
 	if (jumpDeleted) {
@@ -420,7 +420,7 @@ typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementBegin(
  * @return An iterator to the end of the container.
  */
 template<ElementConcept T>
-typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementEnd()
+auto ElementContainer<T>::elementEnd() -> ElementIterator
 {
 	return ElementIterator(vec.end(), vec);
 }
@@ -435,7 +435,7 @@ typename ElementContainer<T>::ElementIterator ElementContainer<T>::elementEnd()
  * @return A const iterator the the first element of the container.
  */
 template<ElementConcept T>
-typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementBegin(bool jumpDeleted) const
+auto ElementContainer<T>::elementBegin(bool jumpDeleted) const -> ConstElementIterator
 {
 	auto it = vec.begin();
 	if (jumpDeleted) {
@@ -453,7 +453,7 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementB
  * @return A const iterator to the end of the container.
  */
 template<ElementConcept T>
-typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementEnd() const
+auto ElementContainer<T>::elementEnd() const -> ConstElementIterator
 {
 	return ConstElementIterator(vec.end(), vec);
 }
@@ -478,7 +478,7 @@ typename ElementContainer<T>::ConstElementIterator ElementContainer<T>::elementE
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<ElementConcept T>
-auto ElementContainer<T>::elements(bool jumpDeleted)
+auto ElementContainer<T>::elements(bool jumpDeleted) -> View<ElementIterator>
 {
 	return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }
@@ -503,7 +503,7 @@ auto ElementContainer<T>::elements(bool jumpDeleted)
  * @return An object having begin() and end() function, allowing to iterate over the container.
  */
 template<ElementConcept T>
-auto ElementContainer<T>::elements(bool jumpDeleted) const
+auto ElementContainer<T>::elements(bool jumpDeleted) const -> View<ConstElementIterator>
 {
 	return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
 }

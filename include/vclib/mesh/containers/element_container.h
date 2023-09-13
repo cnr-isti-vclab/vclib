@@ -83,12 +83,12 @@ protected:
 
 	void updateElementIndices(const std::vector<uint>& newIndices);
 
-	ElementIterator      elementBegin(bool jumpDeleted = true);
-	ElementIterator      elementEnd();
-	ConstElementIterator elementBegin(bool jumpDeleted = true) const;
-	ConstElementIterator elementEnd() const;
-	auto                 elements(bool jumpDeleted = true);
-	auto                 elements(bool jumpDeleted = true) const;
+	ElementIterator            elementBegin(bool jumpDeleted = true);
+	ElementIterator            elementEnd();
+	ConstElementIterator       elementBegin(bool jumpDeleted = true) const;
+	ConstElementIterator       elementEnd() const;
+	View<ElementIterator>      elements(bool jumpDeleted = true);
+	View<ConstElementIterator> elements(bool jumpDeleted = true) const;
 
 	void enableAllOptionalComponents();
 	void disableAllOptionalComponents();
