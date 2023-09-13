@@ -49,7 +49,7 @@ bool EdgeAdjFaceIterator<FaceType, CNST>::operator!=(const EdgeAdjFaceIterator& 
 }
 
 template<typename FaceType, bool CNST>
-EdgeAdjFaceIterator<FaceType, CNST>& EdgeAdjFaceIterator<FaceType, CNST>::operator++()
+auto EdgeAdjFaceIterator<FaceType, CNST>::operator++() -> EdgeAdjFaceIterator&
 {
 	assert(current);
 	uint edge = current->indexOfEdge(v0, v1);
@@ -64,7 +64,7 @@ EdgeAdjFaceIterator<FaceType, CNST>& EdgeAdjFaceIterator<FaceType, CNST>::operat
 }
 
 template<typename FaceType, bool CNST>
-EdgeAdjFaceIterator<FaceType, CNST> EdgeAdjFaceIterator<FaceType, CNST>::operator++(int)
+auto EdgeAdjFaceIterator<FaceType, CNST>::operator++(int) -> EdgeAdjFaceIterator
 {
 	auto it = *this;
 	++(*this);
