@@ -45,13 +45,13 @@ CellIterator<N>::CellIterator(const vcl::Point<uint, N> &first, const vcl::Point
 }
 
 template<int N>
-typename CellIterator<N>::reference CellIterator<N>::operator*() const
+auto CellIterator<N>::operator*() const -> reference
 {
 	return it;
 }
 
 template<int N>
-typename CellIterator<N>::pointer CellIterator<N>::operator->() const
+auto CellIterator<N>::operator->() const -> pointer
 {
 	return &it;
 }
@@ -69,7 +69,7 @@ bool CellIterator<N>::operator!=(const CellIterator &oi) const
 }
 
 template<int N>
-CellIterator<N> CellIterator<N>::operator++()
+auto CellIterator<N>::operator++() -> CellIterator
 {
 	uint d = N-1;
 	while (d != -1 && it(d) == end(d) - 1) {
@@ -84,7 +84,7 @@ CellIterator<N> CellIterator<N>::operator++()
 }
 
 template<int N>
-CellIterator<N> CellIterator<N>::operator++(int)
+auto CellIterator<N>::operator++(int) -> CellIterator
 {
 	CellIterator<N> oit = it;
 	++(*this);

@@ -40,16 +40,14 @@ StaticGridIterator<KeyType, ValueType, GridType>::StaticGridIterator(
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-typename StaticGridIterator<KeyType, ValueType, GridType>::value_type
-StaticGridIterator<KeyType, ValueType, GridType>::operator*() const
+auto StaticGridIterator<KeyType, ValueType, GridType>::operator*() const -> value_type
 {
 	KeyType cell = g->cellOfIndex(vecIt->first);
 	return value_type(cell, vecIt->second);
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-typename StaticGridIterator<KeyType, ValueType, GridType>::ArrowHelper
-StaticGridIterator<KeyType, ValueType, GridType>::operator->() const
+auto StaticGridIterator<KeyType, ValueType, GridType>::operator->() const -> ArrowHelper
 {
 	return **this;
 }
@@ -69,16 +67,14 @@ bool StaticGridIterator<KeyType, ValueType, GridType>::operator!=(
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-StaticGridIterator<KeyType, ValueType, GridType>
-StaticGridIterator<KeyType, ValueType, GridType>::operator++()
+auto StaticGridIterator<KeyType, ValueType, GridType>::operator++() -> StaticGridIterator
 {
 	++vecIt;
 	return *this;
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-StaticGridIterator<KeyType, ValueType, GridType>
-StaticGridIterator<KeyType, ValueType, GridType>::operator++(int)
+auto StaticGridIterator<KeyType, ValueType, GridType>::operator++(int) -> StaticGridIterator
 {
 	StaticGridIterator old = *this;
 	++vecIt;
@@ -100,16 +96,14 @@ ConstStaticGridIterator<KeyType, ValueType, GridType>::ConstStaticGridIterator(
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-typename ConstStaticGridIterator<KeyType, ValueType, GridType>::value_type
-ConstStaticGridIterator<KeyType, ValueType, GridType>::operator*() const
+auto ConstStaticGridIterator<KeyType, ValueType, GridType>::operator*() const -> value_type
 {
 	KeyType cell = g->cellOfIndex(vecIt->first);
 	return value_type(cell, vecIt->second);
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-typename ConstStaticGridIterator<KeyType, ValueType, GridType>::ArrowHelper
-ConstStaticGridIterator<KeyType, ValueType, GridType>::operator->() const
+auto ConstStaticGridIterator<KeyType, ValueType, GridType>::operator->() const -> ArrowHelper
 {
 	return **this;
 }
@@ -129,16 +123,14 @@ bool ConstStaticGridIterator<KeyType, ValueType, GridType>::operator!=(
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-ConstStaticGridIterator<KeyType, ValueType, GridType>
-ConstStaticGridIterator<KeyType, ValueType, GridType>::operator++()
+auto ConstStaticGridIterator<KeyType, ValueType, GridType>::operator++() -> ConstStaticGridIterator
 {
 	++vecIt;
 	return *this;
 }
 
 template<typename KeyType, typename ValueType, typename GridType>
-ConstStaticGridIterator<KeyType, ValueType, GridType>
-ConstStaticGridIterator<KeyType, ValueType, GridType>::operator++(int)
+auto ConstStaticGridIterator<KeyType, ValueType, GridType>::operator++(int) -> ConstStaticGridIterator
 {
 	ConstStaticGridIterator old = *this;
 	++vecIt;
