@@ -217,7 +217,7 @@ Matrix edgeMatrix(const MeshType &mesh)
 
 /**
  * @brief Get a #E Vector of booleans (or integers) containing the selection
- * status of the elements identified by `EL_TYPE` of a Mesh. The function is
+ * status of the elements identified by `ELEM_ID` of a Mesh. The function is
  * templated on the Vector itself.
  *
  * This function works with every Vector type that has a constructor with a
@@ -235,21 +235,20 @@ Matrix edgeMatrix(const MeshType &mesh)
  * when the mesh has deleted elements. To be sure to have a direct
  * correspondence, compact the element container before calling this function.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @tparam Vect: type of the vector to be returned.
  * @tparam MeshType: type of the input mesh, it must satisfy the MeshConcept.
  *
- * @tparam EL_TYPE: the type ID of the element.
  * @param[in] mesh: input mesh
  * @return #E vector of booleans or integers (element selection)
  */
-template<uint EL_TYPE, typename Vect, MeshConcept MeshType>
+template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh)
 {
-	Vect S(mesh.template number<EL_TYPE>());
+	Vect S(mesh.template number<ELEM_ID>());
 
 	uint i = 0;
-	for (const auto& e : mesh.template elements<EL_TYPE>())
+	for (const auto& e : mesh.template elements<ELEM_ID>())
 		S[i] = e.selected();
 	return S;
 }
@@ -319,7 +318,7 @@ Vect faceSelectionVector(const MeshType& mesh)
 
 /**
  * @brief Get a #E*3 Matrix of scalars containing the normals of the elements
- * identified by `EL_TYPE` of a Mesh. The function is templated on the Matrix
+ * identified by `ELEM_ID` of a Mesh. The function is templated on the Matrix
  * itself.
  *
  * This function works with every Matrix type that satisfies the MatrixConcept,
@@ -340,19 +339,19 @@ Vect faceSelectionVector(const MeshType& mesh)
  * when the mesh has deleted elements. To be sure to have a direct
  * correspondence, compact the element container before calling this function.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
  * @return #E*3 matrix of scalars (element normals)
  */
-template<uint EL_TYPE, MatrixConcept Matrix, MeshConcept MeshType>
+template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh)
 {
-	requirePerElementComponent<EL_TYPE, NORMAL>(mesh);
+	requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
-	Matrix EN(mesh.template number<EL_TYPE>(), 3);
+	Matrix EN(mesh.template number<ELEM_ID>(), 3);
 
 	uint i = 0;
-	for (const auto& e : mesh.template elements<EL_TYPE>()) {
+	for (const auto& e : mesh.template elements<ELEM_ID>()) {
 		for (uint j = 0; j < 3; ++j) {
 			EN(i, j) = e.normal()[j];
 		}
@@ -423,7 +422,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
 
 /**
  * @brief Get a #E*4 Matrix of integers containing the colors of the elements
- * identified by `EL_TYPE` of a Mesh. The function is templated on the Matrix
+ * identified by `ELEM_ID` of a Mesh. The function is templated on the Matrix
  * itself.
  *
  * This function works with every Matrix type that satisfies the MatrixConcept,
@@ -444,19 +443,19 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
  * when the mesh has deleted elements. To be sure to have a direct
  * correspondence, compact the element container before calling this function.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
  * @return #E*4 matrix of integers (element colors)
  */
-template<uint EL_TYPE, MatrixConcept Matrix, MeshConcept MeshType>
+template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh)
 {
-	requirePerElementComponent<EL_TYPE, COLOR>(mesh);
+	requirePerElementComponent<ELEM_ID, COLOR>(mesh);
 
-	Matrix EC(mesh.template number<EL_TYPE>(), 4);
+	Matrix EC(mesh.template number<ELEM_ID>(), 4);
 
 	uint i = 0;
-	for (const auto& e : mesh.template elements<EL_TYPE>()) {
+	for (const auto& e : mesh.template elements<ELEM_ID>()) {
 		for (uint j = 0; j < 4; ++j) {
 			EC(i, j) = e.color()[j];
 		}
@@ -527,7 +526,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
 
 /**
  * @brief Get a #E Vector of scalars containing the quality of the elements
- * identified by `EL_TYPE` of a Mesh. The function is templated on the Vector
+ * identified by `ELEM_ID` of a Mesh. The function is templated on the Vector
  * itself.
  *
  * This function works with every Vector type that has a constructor with a
@@ -549,19 +548,19 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  * when the mesh has deleted elements. To be sure to have a direct
  * correspondence, compact the element container before calling this function.
  *
- * @tparam EL_TYPE: the type ID of the element.
+ * @tparam ELEM_ID: the ID of the element.
  * @param[in] mesh: input mesh
  * @return #V vector of scalars (element quality)
  */
-template<uint EL_TYPE, typename Vect, MeshConcept MeshType>
+template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
 {
-	requirePerElementComponent<EL_TYPE, QUALITY>(mesh);
+	requirePerElementComponent<ELEM_ID, QUALITY>(mesh);
 
-	Vect EQ(mesh.template number<EL_TYPE>(), 3);
+	Vect EQ(mesh.template number<ELEM_ID>(), 3);
 
 	uint i = 0;
-	for (const auto& e : mesh.template elements<EL_TYPE>()) {
+	for (const auto& e : mesh.template elements<ELEM_ID>()) {
 		EQ[i] = e.quality();
 		++i;
 	}

@@ -69,9 +69,15 @@ struct TPData {
  * @ingroup components
  */
 class TexturePaths :
-		public Component<TEXTURE_PATHS, internal::TPData, void, false>
+		public Component<
+			TexturePaths,
+			TEXTURE_PATHS,
+			internal::TPData,
+			void,
+			false>
 {
-	using Base = Component<TEXTURE_PATHS, internal::TPData, void, false>;
+	using Base =
+		Component<TexturePaths, TEXTURE_PATHS, internal::TPData, void, false>;
 
 public:
 	// iterators

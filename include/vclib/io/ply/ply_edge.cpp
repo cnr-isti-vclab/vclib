@@ -30,7 +30,7 @@ namespace vcl::io::ply {
 template<EdgeMeshConcept MeshType>
 void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType& mesh)
 {
-	using EdgeType = typename MeshType::EdgeType;
+	using EdgeType = MeshType::EdgeType;
 	bool bin = header.format() == ply::BINARY;
 
 	// indices of vertices that do not consider deleted vertices

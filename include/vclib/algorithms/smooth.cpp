@@ -35,7 +35,7 @@ namespace internal {
 template<typename CoordType>
 struct LaplacianInfo
 {
-	using ScalarType = typename CoordType::ScalarType;
+	using ScalarType = CoordType::ScalarType;
 	CoordType  sum;
 	ScalarType cnt;
 };
@@ -46,9 +46,9 @@ void accumulateLaplacianInfo(
 	std::vector<LaplacianInfo<CoordType>>& data,
 	bool                                   cotangentFlag = false)
 {
-	using ScalarType = typename CoordType::ScalarType;
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
+	using ScalarType = CoordType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
 
 	ScalarType weight = 1.0f;
 
@@ -129,8 +129,8 @@ void laplacianSmoothing(
 	bool         smoothSelected,
 	bool         cotangentWeight /*, vcl::CallBackPos *cb*/)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType  = typename VertexType::CoordType;
+	using VertexType = MeshType::VertexType;
+	using CoordType  = VertexType::CoordType;
 
 	const internal::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
 
@@ -156,8 +156,8 @@ void taubinSmoothing(
 	float     mu,
 	bool      smoothSelected /*, vcl::CallBackPos *cb*/)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType  = typename VertexType::CoordType;
+	using VertexType = MeshType::VertexType;
+	using CoordType  = VertexType::CoordType;
 
 	const internal::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
 
@@ -201,7 +201,7 @@ void taubinSmoothing(
 template<MeshConcept MeshType>
 void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNum)
 {
-	using Scalar = typename MeshType::VertexType::CoordType::ScalarType;
+	using Scalar = MeshType::VertexType::CoordType::ScalarType;
 	KDTree<Scalar> tree(m);
 	updatePerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
 }
@@ -228,9 +228,9 @@ void smoothPerVertexNormalsPointCloud(
 {
 	vcl::requirePerVertexNormal(m);
 
-	using Scalar     = typename PointType::ScalarType;
-	using VertexType = typename MeshType::VertexType;
-	using NormalType = typename VertexType::NormalType;
+	using Scalar     = PointType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using NormalType = VertexType::NormalType;
 
 	std::vector<NormalType> TD(m.vertexContainerSize(), NormalType(0,0,0));
 

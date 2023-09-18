@@ -33,7 +33,7 @@ namespace internal {
 template<FaceMeshConcept MeshType>
 void facesFromTriStrip(MeshType& m, const std::vector<int>& tristrip)
 {
-	using FaceType   = typename MeshType::FaceType;
+	using FaceType   = MeshType::FaceType;
 
 	bool firstOddPos = false;
 	for (uint k = 0; k < tristrip.size() - 2; ++k) {

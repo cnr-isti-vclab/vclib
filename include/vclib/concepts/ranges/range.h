@@ -28,8 +28,6 @@
 
 namespace vcl {
 
-#ifdef VCLIB_USES_RANGES
-
 /**
  * @brief Utility concept that is evaluated true if T is a range, e.g. if has a
  * begin and an end.
@@ -59,25 +57,6 @@ concept RangeOf = Range<R> && std::is_same_v<std::ranges::range_value_t<R>, T>;
 template<typename R, typename T>
 concept RangeOfConvertibleTo =
 	Range<R> && std::convertible_to<std::ranges::range_value_t<R>, T>;
-
-#else
-
-/**
- * @brief Utility concept that is evaluated true if T is a range, e.g. if has a
- * begin and an end.
- *
- * It is equivalent to std::ranges::range.
- *
- * @ingroup uconcepts
- */
-template<typename T>
-concept Range = requires(T o)
-{
-	std::ranges::begin(o);
-	std::ranges::end(o);
-};
-
-#endif
 
 } // namespace vcl
 

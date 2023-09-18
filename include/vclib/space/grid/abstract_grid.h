@@ -110,7 +110,7 @@ private:
 	using VT = RemoveCVRefAndPointer<ValueType>;
 
 public:
-	using KeyType = typename GridType::CellCoord;
+	using KeyType = GridType::CellCoord;
 	using IsInCellFunction =
 		std::function<bool(const typename GridType::BBoxType&, const RemoveCVRefAndPointer<ValueType>&)>;
 

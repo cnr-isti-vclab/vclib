@@ -528,10 +528,10 @@ bool ElementContainer<T>::isOptionalComponentEnabled() const
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 bool ElementContainer<T>::isOptionalComponentEnabled() const
 {
-	return vcVecTuple.template isComponentEnabled<COMP_TYPE>();
+	return vcVecTuple.template isComponentEnabled<COMP_ID>();
 }
 
 template<ElementConcept T>
@@ -557,10 +557,10 @@ void ElementContainer<T>::enableOptionalComponent()
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 void ElementContainer<T>::enableOptionalComponent()
 {
-	using C = comp::ComponentOfType<COMP_TYPE, typename T::Components>;
+	using C = comp::ComponentOfType<COMP_ID, typename T::Components>;
 	enableOptionalComponent<C>();
 }
 
@@ -572,10 +572,10 @@ void ElementContainer<T>::disableOptionalComponent()
 }
 
 template<ElementConcept T>
-template<uint COMP_TYPE>
+template<uint COMP_ID>
 void ElementContainer<T>::disableOptionalComponent()
 {
-	vcVecTuple.template disableComponent<COMP_TYPE>();
+	vcVecTuple.template disableComponent<COMP_ID>();
 }
 
 template<ElementConcept T>
@@ -672,7 +672,7 @@ void ElementContainer<T>::updatePointers(
 	const Element* oldBase,
 	const Element* newBase)
 {
-	using Comps = typename T::Components;
+	using Comps = T::Components;
 
 	updatePointersOnComponents(oldBase, newBase, Comps());
 }
@@ -683,7 +683,7 @@ void ElementContainer<T>::updatePointers(
 	const Element*          base,
 	const std::vector<uint>& newIndices)
 {
-	using Comps = typename T::Components;
+	using Comps = T::Components;
 
 	updatePointersOnComponents(base, newIndices, Comps());
 }
@@ -694,7 +694,7 @@ void ElementContainer<T>::enableOptionalComponentsOf(const OtherMesh &m)
 {
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using OContainer = typename OtherMesh::template ContainerOf<T>::type;
+		using OContainer = OtherMesh::template ContainerOf<T>::type;
 
 		const OContainer& c = static_cast<const OContainer&>(m);
 
@@ -709,7 +709,7 @@ void ElementContainer<T>::importFrom(const OtherMesh &m)
 	if constexpr (OtherMesh::template hasContainerOf<T>()) {
 		// get the container type of the other mesh for T - used to upcast
 		// othMesh
-		using Container = typename OtherMesh::template ContainerOf<T>::type;
+		using Container = OtherMesh::template ContainerOf<T>::type;
 
 		const Container& c = (const Container&)m;
 
@@ -764,9 +764,9 @@ void ElementContainer<T>::ElementContainer::importPointersFrom(
 		OtherMesh::template hasContainerOf<T>() && OtherMesh::template hasContainerOf<ElPtrBase>()) {
 
 		// get the containe type of the other mesh for MyBase - used for get the base pointer
-		using OthBaseContainer = typename OtherMesh::template ContainerOf<ElPtrBase>::type;
+		using OthBaseContainer = OtherMesh::template ContainerOf<ElPtrBase>::type;
 		// get the container type of the other mesh for T - used to upcast othMesh
-		using OthTContainer = typename OtherMesh::template ContainerOf<T>::type;
+		using OthTContainer = OtherMesh::template ContainerOf<T>::type;
 
 		// get the container base of the other mesh, that we use to import pointers
 		const auto* cbase = othMesh.OthBaseContainer::vec.data();
@@ -823,7 +823,7 @@ void ElementContainer<T>::importPointersFromContainer(
 	MyBase*          base,
 	const CBase*     cbase)
 {
-	using Comps = typename T::Components;
+	using Comps = T::Components;
 
 	importPointersOnComponentsFrom(c, base, cbase, Comps());
 }
@@ -921,7 +921,8 @@ void ElementContainer<T>::enableSameOptionalComponents(TypeWrapper<Comps...>, co
 }
 
 /**
- * This function enables the component Comp in this container if it is available in Cont2
+ * This function enables the component Comp in this container if it is available
+ * in Cont2
  */
 template<ElementConcept T>
 template<typename Comp, typename Cont2>
@@ -930,16 +931,25 @@ void ElementContainer<T>::enableSameOptionalComponent(const Cont2& c2)
 	// if Comp is an optional component in This container
 	if constexpr (comp::IsOptionalComponent<Comp>) {
 		// if Comp is available in Cont2
-		if constexpr (comp::HasComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>){
+		if constexpr (comp::HasComponentOfType<
+						  typename Cont2::ElementType,
+						  Comp::COMPONENT_ID>)
+		{
 			// if Comp is optional in Cont2
-			if constexpr (comp::HasOptionalComponentOfType<typename Cont2::ElementType, Comp::COMPONENT_TYPE>) {
+			if constexpr (comp::HasOptionalComponentOfType<
+							  typename Cont2::ElementType,
+							  Comp::COMPONENT_ID>)
+			{
 				// if Comp is enabled in Cont2, we enable it in this container
-				if (c2.template isOptionalComponentEnabled<Comp::COMPONENT_TYPE>()) {
-					enableOptionalComponent<Comp::COMPONENT_TYPE>();
+				if (c2.template isOptionalComponentEnabled<
+						Comp::COMPONENT_ID>())
+				{
+					enableOptionalComponent<Comp::COMPONENT_ID>();
 				}
 			}
-			else { // if Comp is not optional (but is available), we enable it in this container
-				enableOptionalComponent<Comp::COMPONENT_TYPE>();
+			else { // if Comp is not optional (but is available), we enable it
+				   // in this container
+				enableOptionalComponent<Comp::COMPONENT_ID>();
 			}
 		}
 	}

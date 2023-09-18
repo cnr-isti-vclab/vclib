@@ -34,10 +34,10 @@ template<typename ValueType>
 class MarkableVector
 {
 public:
-	using Iterator = typename std::vector<ValueType>::iterator;
-	using ConstIterator = typename std::vector<ValueType>::iterator;
-	using ReverseIterator = typename std::vector<ValueType>::reverse_iterator;
-	using ConstReverseIterator = typename std::vector<ValueType>::const_reverse_iterator;
+	using Iterator = std::vector<ValueType>::iterator;
+	using ConstIterator = std::vector<ValueType>::iterator;
+	using ReverseIterator = std::vector<ValueType>::reverse_iterator;
+	using ConstReverseIterator = std::vector<ValueType>::const_reverse_iterator;
 
 	MarkableVector();
 

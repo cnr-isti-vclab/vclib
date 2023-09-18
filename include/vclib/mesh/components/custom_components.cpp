@@ -165,21 +165,21 @@ CompType& CustomComponents<El>::customComponent(const std::string& compName)
 	return data.template get<CompType>(compName, static_cast<El*>(this));
 }
 
-//template<typename El>
-//template<typename CompType>
-//void CustomComponents<El>::addCustomComponent(
-//	const std::string& compName,
-//	const CompType&    value) requires (!IS_VERTICAL)
-//{
-//	return data.template addCustomComponent<CompType>(compName, value);
-//}
+template<typename El>
+template<typename CompType>
+void CustomComponents<El>::addCustomComponent(
+	const std::string& compName,
+	const CompType&    value) requires (!IS_VERTICAL)
+{
+	return data.template addCustomComponent<CompType>(compName, value);
+}
 
-//template<typename El>
-//void CustomComponents<El>::deleteCustomComponent(const std::string& compName)
-//	requires (!IS_VERTICAL)
-//{
-//	return data.deleteCustomComponent(compName);
-//}
+template<typename El>
+void CustomComponents<El>::deleteCustomComponent(const std::string& compName)
+	requires (!IS_VERTICAL)
+{
+	return data.deleteCustomComponent(compName);
+}
 
 template<typename El>
 template<typename Element>

@@ -60,7 +60,7 @@ struct IsDerivedFromImplementation
  * http://coliru.stacked-crooked.com/a/9feadc62e7594eb2
  */
 template<typename derived, template<typename...> class base>
-using IsDerivedFromTemplateSpecialization = typename std::invoke_result<
+using IsDerivedFromTemplateSpecialization = std::invoke_result<
 	internal::IsDerivedFromImplementation<base>,
 	typename std::remove_cv<derived>::type*>::type;
 

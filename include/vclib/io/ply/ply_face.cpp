@@ -43,7 +43,7 @@ void saveFaceIndices(
 	const FaceType&          f,
 	bool                     bin)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	uint fsize = f.vertexNumber();
 	io::internal::writeProperty(file, fsize, p.listSizeType, bin);
@@ -136,7 +136,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	if (p.name == ply::texcoord) { // loading wedge texcoords
 		if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
 			if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
-				using Scalar = typename FaceType::WedgeTexCoordType::ScalarType;
+				using Scalar = FaceType::WedgeTexCoordType::ScalarType;
 				uint uvSize  = io::internal::readProperty<uint>(file, p.listSizeType);
 				uint fSize   = uvSize / 2;
 				std::vector<std::pair<Scalar, Scalar>> wedges(fSize);
@@ -166,7 +166,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	if (p.name >= ply::nx && p.name <= ply::nz) { // loading one of the normal components
 		if constexpr (vcl::HasPerFaceNormal<MeshType>) {
 			if (vcl::isPerFaceNormalAvailable(mesh)) {
-				using Scalar = typename FaceType::NormalType::ScalarType;
+				using Scalar = FaceType::NormalType::ScalarType;
 				int    a     = p.name - ply::nx;
 				Scalar n     = io::internal::readProperty<Scalar>(file, p.type);
 				hasBeenRead  = true;
@@ -192,7 +192,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 	}
 	if (p.name == ply::quality) { // loading the quality component
 		if constexpr (vcl::HasPerFaceQuality<MeshType>) {
-			using QualityType = typename FaceType::QualityType;
+			using QualityType = FaceType::QualityType;
 			if (vcl::isPerFaceQualityAvailable(mesh)) {
 				QualityType s = io::internal::readProperty<QualityType>(file, p.type);
 				hasBeenRead   = true;
@@ -259,7 +259,7 @@ void loadFaceBin(
 template<FaceMeshConcept MeshType>
 void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mesh)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	bool bin = header.format() == ply::BINARY;
 
@@ -329,7 +329,7 @@ void saveFaces(std::ofstream& file, const PlyHeader& header, const MeshType& mes
 template<FaceMeshConcept MeshType>
 void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 	mesh.reserveFaces(header.numberFaces());
 	for (uint fid = 0; fid < header.numberFaces(); ++fid) {
 		uint      ffid = mesh.addFace();

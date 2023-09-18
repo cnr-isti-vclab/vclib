@@ -41,10 +41,20 @@ namespace vcl::comp {
  *
  * For further details , please refer to the page @ref implement_component page.
  *
+ * @tparam DerivedComponent: The type of the Derived Component. It is used to
+ * implement the CRTP pattern.
+ * @tparam COMP_ID: The id of the component. It is a value of the enum
+ * ComponentIDEnum, or an integer value that is not already used by any other
+ * component. It is used to identify the component at compile time.
  * @tparam Elem: The type of the Element of which the pointers are stored. E.g.
  * a VertexPointers component would have VertexType as Elem.
  * @tparam N: The size of the container: if >= 0 the size is static, if < 0 the
  * size is dynamic.
+ * @tparam ElementType: This type is used to discriminate between horizontal and
+ * vertical components. When a component is horizontal, this type must be void.
+ * When a component is vertical, this type must be the type of the Element that
+ * has the component, and it will be used by the vcl::Mesh to access to the data
+ * stored vertically.
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
@@ -58,15 +68,17 @@ namespace vcl::comp {
  * to the number of vertices.
  */
 template<
-	uint COMP_TYPE,
-	typename Elem,
-	int N,
-	typename ElementType,
-	bool OPT,
-	bool TTVN>
+	typename DerivedComponent, // CRTP pattern, derived class
+	uint COMP_ID,              // component id
+	typename Elem,             // element type for which the pointers are stored
+	int N,                     // container size
+	typename ElementType,      // element type, void if horizontal
+	bool OPT,                  // true if component vertical and optional
+	bool TTVN>                 // true if container size tied to vertex number
 class PointersContainerComponent :
 		public ContainerComponent<
-			COMP_TYPE,
+			DerivedComponent,
+			COMP_ID,
 			Elem*,
 			N,
 			void,
@@ -76,7 +88,8 @@ class PointersContainerComponent :
 			Elem>
 {
 	using Base = ContainerComponent<
-		COMP_TYPE,
+		DerivedComponent,
+		COMP_ID,
 		Elem*,
 		N,
 		void,
@@ -88,17 +101,9 @@ class PointersContainerComponent :
 protected:
 	using Base::container;
 
-	template<typename Comp>
-	void updateElementPointers(
-		const Elem* oldBase,
-		const Elem* newBase,
-		Comp*       comp);
+	void updatePointers(const Elem* oldBase, const Elem* newBase);
 
-	template<typename Comp>
-	void updateElementPointers(
-		const Elem*              base,
-		const std::vector<uint>& newIndices,
-		Comp*                    comp);
+	void updatePointers(const Elem* base, const std::vector<uint>& newIndices);
 };
 
 } // namespace vcl::comp

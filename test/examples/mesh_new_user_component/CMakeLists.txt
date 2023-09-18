@@ -9,23 +9,16 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-set(VCLIB_ZIP_ITERATOR_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-iterator-master)
+project(vclib-mesh-new-user-component)
 
-if (VCLIB_ALLOW_BUNDLED_ZIP_ITERATOR AND
-		EXISTS ${VCLIB_ZIP_ITERATOR_DIR}/zip_tuple.hpp)
-	message(STATUS "- Zip-Iterator - using bundled source")
-else()
-	message(
-		FATAL_ERROR
-		"Zip-Iterator is required -
-		VCLIB_ALLOW_BUNDLED_ZIP_ITERATOR must be enabled and found.")
-endif()
+set(HEADERS
+	bar_component.h
+	foo_component.h
+	foo_mesh.h)
 
-set(ZIP_ITERATOR_INCLUDE_DIRS ${VCLIB_ZIP_ITERATOR_DIR})
+set(SOURCES
+	main.cpp)
 
-add_library(vclib-external-zip-iterator INTERFACE)
+add_executable(vclib-mesh-new-user-component ${HEADERS} ${SOURCES})
 
-target_include_directories(vclib-external-zip-iterator INTERFACE
-	${ZIP_ITERATOR_INCLUDE_DIRS})
-
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-zip-iterator)
+target_link_libraries(vclib-mesh-new-user-component PUBLIC vclib)

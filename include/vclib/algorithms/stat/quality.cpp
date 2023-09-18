@@ -46,22 +46,7 @@ vertexQualityMinMax(const MeshType& m)
 {
 	vcl::requirePerVertexQuality(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using QualityType = typename VertexType::QualityType;
-
-#ifdef VCLIB_USES_RANGES
 	auto [min, max] = std::ranges::minmax(m.vertices() | views::quality);
-#else
-	QualityType min = std::numeric_limits<QualityType>::max(), max = std::numeric_limits<QualityType>::lowest();
-	
-	for (const VertexType& v : m.vertices()) {
-		if (v.quality() < min)
-			min = v.quality();
-		if (v.quality() > max)
-			max = v.quality();
-	}
-#endif
-
 	return std::make_pair(min, max);;
 }
 
@@ -83,21 +68,7 @@ faceQualityMinMax(const MeshType& m)
 {
 	vcl::requirePerFaceQuality(m);
 
-	using FaceType   = typename MeshType::FaceType;
-	using QualityType = typename FaceType::QualityType;
-	
-#ifdef VCLIB_USES_RANGES
 	auto [min, max] = std::ranges::minmax(m.faces() | views::quality);
-#else
-	QualityType min = std::numeric_limits<QualityType>::max(), max = std::numeric_limits<QualityType>::lowest();
-	
-	for (const FaceType& f : m.faces()) {
-		if (f.quality() < min)
-			min = f.quality();
-		if (f.quality() > max)
-			max = f.quality();
-	}
-#endif
 
 	return std::make_pair(min, max);
 }
@@ -118,8 +89,8 @@ typename MeshType::VertexType::QualityType vertexQualityAverage(const MeshType& 
 {
 	vcl::requirePerVertexQuality(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using QualityType = typename VertexType::QualityType;
+	using VertexType = MeshType::VertexType;
+	using QualityType = VertexType::QualityType;
 
 	QualityType avg = 0;
 
@@ -145,8 +116,8 @@ typename MeshType::FaceType::QualityType faceQualityAverage(const MeshType& m)
 {
 	vcl::requirePerFaceQuality(m);
 
-	using FaceType   = typename MeshType::FaceType;
-	using QualityType = typename FaceType::QualityType;
+	using FaceType   = MeshType::FaceType;
+	using QualityType = FaceType::QualityType;
 
 	QualityType avg = 0;
 
@@ -178,8 +149,8 @@ std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
 {
 	vcl::requirePerVertexQuality(m);
 
-	using VertexType = typename MeshType::VertexType;
-	using QualityType = typename VertexType::QualityType;
+	using VertexType = MeshType::VertexType;
+	using QualityType = VertexType::QualityType;
 
 	std::vector<QualityType> radius(m.vertexContainerSize());
 	std::pair<QualityType, QualityType> minmax = vertexQualityMinMax(m);
@@ -201,7 +172,7 @@ Histogram<HScalar> vertexQualityHistogram(const MeshType& m, bool selectionOnly,
 {
 	vcl::requirePerVertexQuality(m);
 
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	auto minmax = vertexQualityMinMax(m);
 
@@ -220,7 +191,7 @@ Histogram<HScalar> faceQualityHistogram(const MeshType& m, bool selectionOnly, u
 {
 	vcl::requirePerFaceQuality(m);
 
-	using FaceType = typename MeshType::FaceType;
+	using FaceType = MeshType::FaceType;
 
 	auto minmax = vertexQualityMinMax(m);
 

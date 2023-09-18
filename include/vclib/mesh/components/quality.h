@@ -54,17 +54,26 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
-class Quality : public Component<QUALITY, Scalar, ElementType, OPT>
+class Quality :
+		public Component<
+			Quality<Scalar, ElementType, OPT>,
+			QUALITY,
+			Scalar,
+			ElementType,
+			OPT>
 {
-	using Base = Component<QUALITY, Scalar, ElementType, OPT>;
+	using Base = Component<
+		Quality<Scalar, ElementType, OPT>,
+		QUALITY,
+		Scalar,
+		ElementType,
+		OPT>;
 
 public:
 	/**
 	 * @brief Exposes the scalar used as Quality type.
 	 */
 	using QualityType = Scalar;
-
-	bool isAvailable() const;
 
 	const QualityType& quality() const;
 	QualityType&       quality();

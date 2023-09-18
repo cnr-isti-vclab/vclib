@@ -26,30 +26,13 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename Scalar, typename El, bool O>
-bool TexCoord<Scalar, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns a const reference of the tex coord of the element.
  * @return a const reference of the tex coord of the element.
  */
 template<typename Scalar, typename El, bool O>
 auto TexCoord<Scalar, El, O>::texCoord() const -> const TexCoordType&
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 /**
@@ -59,7 +42,7 @@ auto TexCoord<Scalar, El, O>::texCoord() const -> const TexCoordType&
 template<typename Scalar, typename El, bool O>
 auto TexCoord<Scalar, El, O>::texCoord() -> TexCoordType&
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 template<typename Scalar, typename El, bool O>

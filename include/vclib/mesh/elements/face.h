@@ -69,55 +69,15 @@ public:
 	template<typename... V>
 	void setVertices(V... args);
 
-	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/
-	void resizeVertices(uint n) requires PolygonFaceConcept<Face>
-	{
-		VPtrs::resizeVertices(n);
+	void resizeVertices(uint n) requires PolygonFaceConcept<Face>;
 
-		// Now I need to resize all the TTVN components
-		(resizeTTVNComponent<Comps>(n), ...);
-	}
+	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>;
 
-	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/
-	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
-	{
-		VPtrs::pushVertex(v);
+	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>;
 
-		// Now I need to pushBack in all the TTVN components
-		(pushBackTTVNComponent<Comps>(), ...);
-	}
+	void eraseVertex(uint i) requires PolygonFaceConcept<Face>;
 
-	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/
-	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
-	{
-		VPtrs::insertVertex(i, v);
-
-		// Now I need to insert in all the TTVN components
-		(insertTTVNComponent<Comps>(i), ...);
-	}
-
-	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/
-	void eraseVertex(uint i) requires PolygonFaceConcept<Face>
-	{
-		VPtrs::eraseVertex(i);
-
-		// Now I need to erase in all the TTVN components
-		(eraseTTVNComponent<Comps>(i), ...);
-	}
-
-	// TODO: move definition in face.cpp when Clang bug will be solved
-	// https://stackoverflow.com/questions/72897153/
-	void clearVertices() requires PolygonFaceConcept<Face>
-	{
-		VPtrs::clearVertices();
-
-		// Now I need to clear all the TTVN components
-		(clearTTVNComponent<Comps>(), ...);
-	}
+	void clearVertices() requires PolygonFaceConcept<Face>;
 
 	template<typename ElType>
 	void importFrom(const ElType& v);

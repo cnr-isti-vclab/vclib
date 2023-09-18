@@ -33,7 +33,7 @@ namespace vcl {
 template<typename KeyType, typename ValueType, typename GridType>
 class StaticGridIterator
 {
-	using VecIt = typename std::vector<std::pair<uint, ValueType>>::iterator;
+	using VecIt = std::vector<std::pair<uint, ValueType>>::iterator;
 
 public:
 	using T = SecondRefPair<KeyType, ValueType>;
@@ -68,7 +68,7 @@ private:
 template<typename KeyType, typename ValueType, typename GridType>
 class ConstStaticGridIterator
 {
-	using VecIt = typename std::vector<std::pair<uint, ValueType>>::const_iterator;
+	using VecIt = std::vector<std::pair<uint, ValueType>>::const_iterator;
 
 public:
 	using T = SecondRefPair<KeyType, const ValueType>;

@@ -52,7 +52,7 @@ auto pointFaceDistance(
 	PointType&       closest,
 	bool             signedDist)
 {
-	using FPointType = typename FaceType::VertexType::CoordType;
+	using FPointType = FaceType::VertexType::CoordType;
 
 	ScalarType dist;
 
@@ -184,7 +184,7 @@ auto pointFaceDistance(
 	PointType&       closest,
 	bool             signedDist)
 {
-	using ScalarType = typename PointType::ScalarType;
+	using ScalarType = PointType::ScalarType;
 
 	ScalarType maxDist = std::numeric_limits<ScalarType>::max();
 	return pointFaceDistance(p, f, maxDist, closest, signedDist);
@@ -205,7 +205,7 @@ auto pointFaceDistance(
 template<Point3Concept PointType, FaceConcept FaceType>
 auto pointFaceDistance(const PointType& p, const FaceType& f, bool signedDist)
 {
-	using ScalarType = typename PointType::ScalarType;
+	using ScalarType = PointType::ScalarType;
 
 	PointType closest;
 

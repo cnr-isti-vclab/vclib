@@ -73,7 +73,7 @@ int main()
 
 	double avgDist = 0;
 	using CT = vcl::TriMesh::Vertex::CoordType;
-	using ST = typename CT::ScalarType;
+	using ST = CT::ScalarType;
 	for (vcl::TriMesh::Vertex& v : m.vertices()) {
 		avgDist += v.coord().dist(oldCoords[m.index(v)].cast<ST>());
 	}

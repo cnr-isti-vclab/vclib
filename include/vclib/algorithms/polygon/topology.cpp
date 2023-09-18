@@ -32,10 +32,6 @@
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>
 
-#ifndef VCLIB_USES_RANGES
-#include "geometry.h"
-#endif
-
 namespace vcl {
 
 /**
@@ -144,7 +140,7 @@ bool checkFlipEdge(const FaceType& f, uint edge)
 			"Face has no Adjacent Faces component.");
 	}
 
-	using VertexType = typename FaceType::VertexType;
+	using VertexType = FaceType::VertexType;
 
 	if (f.vertexNumber() > 3)
 		return false;
@@ -341,7 +337,7 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
 	}
 
-	using VertexType = typename FaceType::VertexType;
+	using VertexType = FaceType::VertexType;
 
 	for (uint e = 0; e < f.vertexNumber(); ++e) {
 		detachAdjacentFacesOnEdge(f, e);
@@ -382,12 +378,8 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 template <FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
-	using CoordType = typename Face::VertexType::CoordType;
-#ifdef VCLIB_USES_RANGES
+	using CoordType = Face::VertexType::CoordType;
 	return Polygon<CoordType>::earCut(polygon.vertices() | views::coords);
-#else
-	return Polygon<CoordType>::earCut(faceCoords(polygon));
-#endif
 }
 
 /**
@@ -422,8 +414,8 @@ void addTriangleFacesFromPolygon(
 	FaceType&                f,
 	const std::vector<uint>& polygon)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType = typename VertexType::CoordType;
+	using VertexType = MeshType::VertexType;
+	using CoordType = VertexType::CoordType;
 
 	// from the ids, create a polygon of coordinates
 	std::vector<CoordType> polCoords(polygon.size());

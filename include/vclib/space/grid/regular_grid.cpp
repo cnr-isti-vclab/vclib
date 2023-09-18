@@ -253,7 +253,7 @@ void RegularGrid<Scalar, N>::set(const Box<Point<Scalar, N> >& box, const Point<
 template<PointConcept PointType>
 Point<uint, PointType::DIM> bestGridSize(const PointType& lengths, uint nElements)
 {
-	using Scalar = typename PointType::ScalarType;
+	using Scalar = PointType::ScalarType;
 
 	static const int DIM = PointType::DIM;
 

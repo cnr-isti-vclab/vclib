@@ -15,6 +15,7 @@ namespace internal {
 // if AD is not void, there is additional data, and the component will have
 // a tuple containing a Vector and the additional data
 template<
+	typename DC,
 	uint CT,
 	typename T,
 	int N,
@@ -25,8 +26,8 @@ template<
 	typename... PT>
 using ContCompBase = std::conditional_t<
 	std::is_same_v<AD, void>,
-	Component<CT, Vector<T, N>, El, o, PT...>,
-	Component<CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
+	Component<DC, CT, Vector<T, N>, El, o, PT...>,
+	Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
 
 } // namespace vcl::comp::internal
 
@@ -42,6 +43,11 @@ using ContCompBase = std::conditional_t<
  *
  * For further details , please refer to the page @ref implement_component page.
  *
+ * @tparam DerivedComponent: The type of the Derived Component. It is used to
+ * implement the CRTP pattern.
+ * @tparam COMPONENT_ID: The id of the component. It is a value of the enum
+ * ComponentIDEnum, or an integer value that is not already used by any other
+ * component. It is used to identify the component at compile time.
  * @tparam T: The type of the data that the component needs to store in a
  * Container. E.g. a WedgeTexCoord component would have vcl::TexCoordd as
  * DataType.
@@ -72,17 +78,19 @@ using ContCompBase = std::conditional_t<
  * happens.
  */
 template<
-	uint COMP_TYPE,
-	typename T,
-	int N,
-	typename AdditionalData,
-	typename ElementType,
-	bool OPT,
-	bool TTVN,
-	typename... PointedTypes>
+	typename DerivedComponent, // CRTP pattern, derived class
+	uint COMP_ID,              // component id
+	typename T,                // data stored in container
+	int N,                     // container size
+	typename AdditionalData,   // additional data outside container
+	typename ElementType,      // element type, void if horizontal
+	bool OPT,                  // true if component vertical and optional
+	bool TTVN,                 // true if container size tied to vertex number
+	typename... PointedTypes>  // types of pointers stored by the component
 class ContainerComponent :
 		public internal::ContCompBase<
-			COMP_TYPE,
+			DerivedComponent,
+			COMP_ID,
 			T,
 			N,
 			AdditionalData,
@@ -95,7 +103,8 @@ class ContainerComponent :
 		!std::is_same_v<AdditionalData, void>;
 
 	using Base = internal::ContCompBase<
-		COMP_TYPE,
+		DerivedComponent,
+		COMP_ID,
 		T,
 		N,
 		AdditionalData,
@@ -122,36 +131,25 @@ public:
 protected:
 	/* Iterator Types declaration */
 
-	using Iterator      = typename Vector<T, N>::Iterator;
-	using ConstIterator = typename Vector<T, N>::ConstIterator;
+	using Iterator      = Vector<T, N>::Iterator;
+	using ConstIterator = Vector<T, N>::ConstIterator;
 
 	/* Constructor */
 
 	ContainerComponent();
 
-	template<typename Comp>
-	void init(Comp* comp);
+	void init();
 
-	template<typename Comp>
-	Vector<T, N>& container(Comp* comp);
+	Vector<T, N>& container();
 
-	template<typename Comp>
-	const Vector<T, N>& container(const Comp* comp) const;
+	const Vector<T, N>& container() const;
 
-	// TODO: move in cpp file when CLang will solve this bug
-	template<typename Comp, typename AdDt = AdditionalData>
-	AdDt& additionalData(Comp* comp) requires (HAS_ADDITIONAL_DATA)
-	{
-		return std::get<1>(Base::data(comp));
-	}
+	template<typename AdDt = AdditionalData>
+	AdDt& additionalData() requires (HAS_ADDITIONAL_DATA);
 
-	// TODO: move in cpp file when CLang will solve this bug
-	template<typename Comp, typename AdDt = AdditionalData>
-	const AdDt& additionalData(const Comp* comp) const
-		requires (HAS_ADDITIONAL_DATA)
-	{
-		return std::get<1>(Base::data(comp));
-	}
+	template<typename AdDt = AdditionalData>
+	const AdDt& additionalData() const
+		requires (HAS_ADDITIONAL_DATA);
 };
 
 } // namespace vcl::comp

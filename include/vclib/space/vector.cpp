@@ -244,9 +244,7 @@ void Vector<T, N>::set(const T& e, uint i)
 template<typename T, int N>
 template<Range Rng>
 void Vector<T, N>::set(Rng&& r)
-#ifdef VCLIB_USES_RANGES
 	requires RangeOfConvertibleTo<Rng, T>
-#endif
 {
 	if constexpr (N >= 0) {
 		uint n = std::min(

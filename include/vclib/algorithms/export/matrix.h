@@ -41,7 +41,7 @@ Vect faceSizesVector(const MeshType& mesh);
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix edgeMatrix(const MeshType& mesh);
 
-template<uint EL_TYPE, typename Vect, MeshConcept MeshType>
+template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh);
 
 template<typename Vect, MeshConcept MeshType>
@@ -50,7 +50,7 @@ Vect vertexSelectionVector(const MeshType& mesh);
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceSelectionVector(const MeshType& mesh);
 
-template<uint EL_TYPE, MatrixConcept Matrix, MeshConcept MeshType>
+template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh);
 
 template<MatrixConcept Matrix, MeshConcept MeshType>
@@ -59,7 +59,7 @@ Matrix vertexNormalsMatrix(const MeshType& mesh);
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceNormalsMatrix(const MeshType& mesh);
 
-template<uint EL_TYPE, MatrixConcept Matrix, MeshConcept MeshType>
+template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh);
 
 template<MatrixConcept Matrix, MeshConcept MeshType>
@@ -68,7 +68,7 @@ Matrix vertexColorsMatrix(const MeshType& mesh);
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceColorsMatrix(const MeshType& mesh);
 
-template<uint EL_TYPE, typename Vect, MeshConcept MeshType>
+template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh);
 
 template<typename Vect, MeshConcept MeshType>

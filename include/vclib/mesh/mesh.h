@@ -78,14 +78,14 @@ class Mesh : public Args...
 	template<ElementConcept T>
 	friend class mesh::ElementContainer;
 
-	template<uint ELEM_TYPE, typename MeshType, typename... Comps>
+	template<uint ELEM_ID, typename MeshType, typename... Comps>
 	friend class Element;
 
 	// Predicate structures
 
-	template<uint EL_TYPE>
+	template<uint ELEM_ID>
 	struct ContainerOfElement :
-			public mesh::ContainerOfElement<EL_TYPE, Mesh<Args...>>
+			public mesh::ContainerOfElement<ELEM_ID, Mesh<Args...>>
 	{
 	};
 
@@ -100,7 +100,7 @@ class Mesh : public Args...
 	 * ```
 	 */
 	template<ElementConcept El>
-	struct ContainerOf : public ContainerOfElement<El::ELEMENT_TYPE>
+	struct ContainerOf : public ContainerOfElement<El::ELEMENT_ID>
 	{
 	};
 
@@ -110,7 +110,7 @@ public:
 	 * which the Mesh inherits (Args) that are ElementContainers (they satisfy
 	 * the ElementContainerConcept).
 	 */
-	using Containers = typename vcl::FilterTypesByCondition<
+	using Containers = vcl::FilterTypesByCondition<
 		mesh::IsElementContainerPred,
 		vcl::TypeWrapper<Args...>>::type;
 
@@ -119,23 +119,23 @@ public:
 	 * types from which the Mesh inherits (Args) that are Components (they
 	 * satisfy the ComponentConcept).
 	 */
-	using Components = typename vcl::FilterTypesByCondition<
+	using Components = vcl::FilterTypesByCondition<
 		comp::IsComponentPred,
 		vcl::TypeWrapper<Args...>>::type;
 
 	/**
 	 * @brief ElementType is an alias that exposes the type of the Element
-	 * identified by the template parameter EL_TYPE.
+	 * identified by the template parameter ELEM_ID.
 	 *
-	 * To be used, the Mesh must have an ElementContainer of type EL_TYPE.
+	 * To be used, the Mesh must have an ElementContainer having ID ELEM_ID.
 	 *
 	 * Usage:
 	 * ```cpp
-	 * using VertexType = typename MeshType::template ElementType<VERTEX>;
+	 * using VertexType = MeshType::template ElementType<VERTEX>;
 	 * ```
 	 */
-	template<uint EL_TYPE>
-	using ElementType = typename ContainerOfElement<EL_TYPE>::type::ElementType;
+	template<uint ELEM_ID>
+	using ElementType = ContainerOfElement<ELEM_ID>::type::ElementType;
 
 	/* constructors */
 
@@ -148,13 +148,13 @@ public:
 	template<ElementConcept El>
 	static constexpr bool hasContainerOf();
 
-	template<uint EL_TYPE>
+	template<uint ELEM_ID>
 	static constexpr bool hasContainerOf();
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint ELEM_ID, uint COMP_ID>
 	static constexpr bool hasPerElementComponent();
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint ELEM_ID, uint COMP_ID>
 	static constexpr bool hasPerElementOptionalComponent();
 
 	/* member functions */
@@ -185,38 +185,38 @@ public:
 	template<ElementConcept El>
 	uint index(const El* e) const requires (hasContainerOf<El>());
 
-	template<uint EL_TYPE>
-	const auto& element(uint i) const requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	const auto& element(uint i) const requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	auto& element(uint i) requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	auto& element(uint i) requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	uint number() const requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	uint number() const requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	uint containerSize() const requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	uint containerSize() const requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	uint deletedNumber() const requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	uint deletedNumber() const requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	uint add() requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	uint add() requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	uint add(uint n) requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	uint add(uint n) requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	void clearElements() requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	void clearElements() requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	void resize(uint n) requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	void resize(uint n) requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	void reserve(uint n) requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	void reserve(uint n) requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	void deleteElement(uint i) requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	void deleteElement(uint i) requires (hasContainerOf<ELEM_ID>());
 
 	template<ElementConcept El>
 	void deleteElement(const El* e) const requires (hasContainerOf<El>());
@@ -224,45 +224,45 @@ public:
 	template<ElementConcept El>
 	void deleteElement(const El& e) const requires (hasContainerOf<El>());
 
-	template<uint EL_TYPE>
+	template<uint ELEM_ID>
 	std::vector<uint> conpactIndices() const
-		requires (hasContainerOf<EL_TYPE>());
+		requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
+	template<uint ELEM_ID>
 	void updateIndices(const std::vector<uint>& newIndices)
-		requires (hasContainerOf<EL_TYPE>());
+		requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	auto begin(bool jumpDeleted = true) requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	auto begin(bool jumpDeleted = true) requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	auto end() requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	auto end() requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
+	template<uint ELEM_ID>
 	auto begin(bool jumpDeleted = true) const
-		requires (hasContainerOf<EL_TYPE>());
+		requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	auto end() const requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	auto end() const requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
-	auto elements(bool jumpDeleted = true) requires (hasContainerOf<EL_TYPE>());
+	template<uint ELEM_ID>
+	auto elements(bool jumpDeleted = true) requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE>
+	template<uint ELEM_ID>
 	auto elements(bool jumpDeleted = true) const
-		requires (hasContainerOf<EL_TYPE>());
+		requires (hasContainerOf<ELEM_ID>());
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint ELEM_ID, uint COMP_ID>
 	bool isPerElementComponentEnabled() const
-		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+		requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>());
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint ELEM_ID, uint COMP_ID>
 	void enablePerElementComponent()
-		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+		requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>());
 
-	template<uint EL_TYPE, uint COMP_TYPE>
+	template<uint ELEM_ID, uint COMP_ID>
 	void disablePerElementComponent()
-		requires (hasPerElementOptionalComponent<EL_TYPE, COMP_TYPE>());
+		requires (hasPerElementOptionalComponent<ELEM_ID, COMP_ID>());
 
 protected:
 	template<typename Cont>
@@ -337,7 +337,7 @@ private:
 
 	// member functions used by friends
 
-	template<uint EL_TYPE, typename T>
+	template<uint ELEM_ID, typename T>
 	uint elementIndex(const T* el) const;
 
 	template<typename El>

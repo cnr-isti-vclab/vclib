@@ -26,30 +26,13 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename El, bool O>
-bool Name<El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns the name of this object.
  * @return The name of this object.
  */
 template<typename El, bool O>
 std::string& Name<El, O>::name()
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 /**
@@ -59,7 +42,7 @@ std::string& Name<El, O>::name()
 template<typename El, bool O>
 const std::string& Name<El, O>::name() const
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 template<typename El, bool O>

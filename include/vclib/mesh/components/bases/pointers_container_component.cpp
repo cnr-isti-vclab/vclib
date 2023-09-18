@@ -45,19 +45,27 @@ namespace vcl::comp {
  * first element of the Container, and update the the pointer accordingly using
  * the newBase.
  */
-template<uint CT, typename Elem, int N, typename El, bool o, bool TT>
-template<typename Comp>
-void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointers(
+template<
+	typename DC,
+	uint CT,
+	typename Elem,
+	int N,
+	typename El,
+	bool o,
+	bool TT>
+void PointersContainerComponent<DC, CT, Elem, N, El, o, TT>::updatePointers(
 	const Elem* oldBase,
-	const Elem* newBase,
-	Comp*       comp)
+	const Elem* newBase)
 {
-	for (uint j = 0; j < container(comp).size(); ++j)
+
+	auto& baseContainer = Base::container();
+
+	for (uint j = 0; j < baseContainer.size(); ++j)
 	{ // for each pointer in this container
-		if (container(comp).at(j) != nullptr) {
+		if (baseContainer.at(j) != nullptr) {
 			size_t diff =
-				container(comp).at(j) - oldBase; // offset w.r.t. the old base
-			container(comp).at(j) =
+				baseContainer.at(j) - oldBase; // offset w.r.t. the old base
+			baseContainer.at(j) =
 				(Elem*) newBase + diff; // update the pointer using newBase
 		}
 	}
@@ -74,21 +82,28 @@ void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointers(
  * in the container (UINT_NULL if the element has been removed and must be
  * left unreferenced).
  */
-template<uint CT, typename Elem, int N, typename El, bool o, bool TT>
-template<typename Comp>
-void PointersContainerComponent<CT, Elem, N, El, o, TT>::updateElementPointers(
+template<
+	typename DC,
+	uint CT,
+	typename Elem,
+	int N,
+	typename El,
+	bool o,
+	bool TT>
+void PointersContainerComponent<DC, CT, Elem, N, El, o, TT>::updatePointers(
 	const Elem*              base,
-	const std::vector<uint>& newIndices,
-	Comp*                    comp)
+	const std::vector<uint>& newIndices)
 {
-	for (uint j = 0; j < container(comp).size(); ++j) {
-		if (container(comp).at(j) != nullptr) {
-			size_t diff = container(comp).at(j) - base;
+	auto& baseContainer = Base::container();
+
+	for (uint j = 0; j < baseContainer.size(); ++j) {
+		if (baseContainer.at(j) != nullptr) {
+			size_t diff = baseContainer.at(j) - base;
 			if (newIndices[diff] == UINT_NULL) { // element has been removed
-				container(comp).at(j) = nullptr;
+				baseContainer.at(j) = nullptr;
 			}
 			else { // the new pointer will be base + newIndices[diff]
-				container(comp).at(j) = (Elem*) base + newIndices[diff];
+				baseContainer.at(j) = (Elem*) base + newIndices[diff];
 			}
 		}
 	}

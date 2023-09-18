@@ -52,7 +52,7 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+template <uint ELEM_ID, typename MeshType, typename... Comps>
 class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 {
 	template<ElementConcept>
@@ -66,18 +66,18 @@ public:
 	 * types from which the Element inherits (Comps) that are Components (they
 	 * satisfy the ComponentConcept).
 	 */
-	using Components = typename vcl::FilterTypesByCondition<
+	using Components = vcl::FilterTypesByCondition<
 		comp::IsComponentPred,
 		vcl::TypeWrapper<Comps...>>::type;
 
-	static const uint ELEMENT_TYPE = ELEM_TYPE;
+	static const uint ELEMENT_ID = ELEM_ID;
 
 	uint index() const;
 
-	template<uint COMPONENT_ID>
+	template<uint COMP_ID>
 	auto& component();
 
-	template<uint COMPONENT_ID>
+	template<uint COMP_ID>
 	const auto& component() const;
 
 	template<typename ElType>
@@ -98,27 +98,26 @@ private:
 
 	// Components can be individuated with their ID, which is an unsigned int.
 	// This struct sets its bool `value` to true if this Element has a Component
-	// with the given unsigned integer Cmp Sets also `type` with a TypeWrapper
-	// contianing the Component that satisfied the condition. the TypeWrapper
-	// will be empty if no Components were found.
-	template<uint Cmp>
-	struct ComponentIndexPred
+	// with the given unsigned integer COMP_ID. Sets also `type` with a
+	// TypeWrapper contianing the Component that satisfied the condition. The
+	// TypeWrapper will be empty if no Components were found.
+	template<uint COMP_ID>
+	struct ComponentIDPred
 	{
 	private:
 		template <typename Cont>
 		struct SameCmpPred
 		{
-			static constexpr bool value = Cont::COMPONENT_TYPE == Cmp;
+			static constexpr bool value = Cont::COMPONENT_ID == COMP_ID;
 		};
 
 	public:
 		// TypeWrapper of the found component, if any
-		using type =
-			typename vcl::FilterTypesByCondition<SameCmpPred, Components>::type;
+		using type = vcl::FilterTypesByCondition<SameCmpPred, Components>::type;
 		static constexpr bool value = NumberOfTypes<type>::value == 1;
 	};
 
-	template<uint Cmp>
+	template<uint COMP_ID>
 	struct GetComponentFromID
 	{
 	private:
@@ -131,8 +130,8 @@ private:
 			using type = C;
 		};
 	public:
-		using type = typename TypeUnwrapper<
-			typename ComponentIndexPred<Cmp>::type>::type;
+		using type =
+			TypeUnwrapper<typename ComponentIDPred<COMP_ID>::type>::type;
 	};
 };
 

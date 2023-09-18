@@ -52,23 +52,6 @@ void TriangleBitFlags<El, O>::init()
 }
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename El, bool O>
-bool TriangleBitFlags<El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns whether the current Triangle is deleted or not.
  * @return true if the Triangle is deleted, false otherwise.
  */
@@ -360,13 +343,13 @@ void TriangleBitFlags<El, O>::importFrom(const Element& e)
 template<typename El, bool O>
 auto TriangleBitFlags<El, O>::flags() -> BitSet<FT>&
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 template<typename El, bool O>
 auto TriangleBitFlags<El, O>::flags() const -> BitSet<FT>
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 } // namespace vcl::comp

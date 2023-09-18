@@ -36,6 +36,7 @@
     #else
         // inclusion for usage of vclib without cmake
         #define PSTLD_HEADER_ONLY // no prebuilt library, only the header
+        #define PSTLD_HACK_INTO_STD // hack into std namespace
         #include "../../../external/pstld-master/pstld/pstld.h"
     #endif
 #else

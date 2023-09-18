@@ -41,7 +41,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 {
 	bool hasBeenRead = false;
 	if (p.name >= ply::x && p.name <= ply::z) {
-		using Scalar = typename VertexType::CoordType::ScalarType;
+		using Scalar = VertexType::CoordType::ScalarType;
 		int a = p.name - ply::x;
 		v.coord()[a] = io::internal::readProperty<Scalar>(file, p.type);
 		hasBeenRead = true;
@@ -49,7 +49,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	if (p.name >= ply::nx && p.name <= ply::nz) {
 		if constexpr (vcl::HasPerVertexNormal<MeshType>) {
 			if (vcl::isPerVertexNormalAvailable(mesh)) {
-				using Scalar = typename VertexType::NormalType::ScalarType;
+				using Scalar = VertexType::NormalType::ScalarType;
 				int a = p.name - ply::nx;
 				v.normal()[a] = io::internal::readProperty<Scalar>(file, p.type);
 				hasBeenRead = true;
@@ -67,7 +67,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	}
 	if (p.name == ply::quality) {
 		if constexpr (vcl::HasPerVertexQuality<MeshType>) {
-			using QualityType = typename VertexType::QualityType;
+			using QualityType = VertexType::QualityType;
 			if (vcl::isPerVertexQualityAvailable(mesh)) {
 				v.quality() = io::internal::readProperty<QualityType>(file, p.type);
 				hasBeenRead = true;
@@ -76,7 +76,7 @@ void loadVertexProperty(Stream& file, MeshType& mesh, VertexType& v, ply::Proper
 	}
 	if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
 		if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-			using Scalar = typename VertexType::TexCoordType::ScalarType;
+			using Scalar = VertexType::TexCoordType::ScalarType;
 			if (vcl::isPerVertexTexCoordAvailable(mesh)) {
 				int a = p.name - ply::texture_u;
 				v.texCoord()[a] = io::internal::readProperty<Scalar>(file, p.type);
@@ -141,7 +141,7 @@ void saveVertices(
 	const PlyHeader& header,
 	const MeshType& mesh)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	bool bin = header.format() == ply::BINARY;
 	for(const VertexType& v : mesh.vertices()) {

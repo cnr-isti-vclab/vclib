@@ -29,7 +29,7 @@ namespace vcl {
  * @brief Returns `true` if the given mesh has its Container of the given
  * Element compact.
  *
- * @tparam ELEMENT_TYPE: the ElementEnumType of the ElementContainer to check.
+ * @tparam ELEM_ID: the Element ID of the ElementContainer to check.
  * @tparam MeshType: the type of the Mesh to check. It must satisfy the
  * MeshConcept.
  *
@@ -39,12 +39,12 @@ namespace vcl {
  *
  * @ingroup mesh_requirements
  */
-template<uint ELEMENT_TYPE, MeshConcept MeshType>
+template<uint ELEM_ID, MeshConcept MeshType>
 bool isElementContainerCompact(const MeshType& m)
 {
 	return (
-		m.template number<ELEMENT_TYPE>() ==
-		m.template containerSize<ELEMENT_TYPE>());
+		m.template number<ELEM_ID>() ==
+		m.template containerSize<ELEM_ID>());
 }
 
 /**
@@ -55,18 +55,18 @@ bool isElementContainerCompact(const MeshType& m)
  * whether the component is horizontal, vertical or optional.
  *
  * These are the following cases:
- * - if the Mesh does not have an ElementContainer of the given ElementEnumType,
+ * - if the Mesh does not have an ElementContainer of the given Element ID,
  *   the function returns `false`;
- * - if the Element does not have a Component of the given ComponentEnumType,
+ * - if the Element does not have a Component of the given Component ID,
  *   the function returns `false`;
- * - if the Element has a non-optional Component of the given ComponentEnumType,
+ * - if the Element has a non-optional Component of the given Component ID,
  *   the function returns `true`;
- * - if the Element has an optional Component of the given ComponentEnumType,
+ * - if the Element has an optional Component of the given Component ID,
  *   the function returns `true` if the component is enabled, false otherwise
  *   (this check is the only one that is made at runtime);
  *
- * @tparam ELEMENT_TYPE: the ElementEnumType of the Element to check.
- * @tparam COMPONENT_TYPE: the ComponentEnumType of the Component to check.
+ * @tparam ELEM_ID: the ID of the Element to check.
+ * @tparam COMP_ID: the ID of the Component to check.
  * @tparam MeshType: the type of the Mesh to check.
  *
  * @param[in] m: the mesh on which check the availability of the Component in
@@ -76,20 +76,17 @@ bool isElementContainerCompact(const MeshType& m)
  *
  * @ingroup mesh_requirements
  */
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
+template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
 bool isPerElementComponentAvailable(const MeshType& m)
 {
-	if constexpr (mesh::HasElementContainer<MeshType, ELEMENT_TYPE>) {
-		using Container = mesh::ContainerOfElementType<ELEMENT_TYPE, MeshType>;
-		using Element = typename Container::ElementType;
-		if constexpr (comp::HasOptionalComponentOfType<Element, COMPONENT_TYPE>)
-		{
-			return m.template isPerElementComponentEnabled<
-				ELEMENT_TYPE,
-				COMPONENT_TYPE>();
+	if constexpr (mesh::HasElementContainer<MeshType, ELEM_ID>) {
+		using Container = mesh::ContainerOfElementType<ELEM_ID, MeshType>;
+		using Element   = Container::ElementType;
+		if constexpr (comp::HasOptionalComponentOfType<Element, COMP_ID>) {
+			return m.template isPerElementComponentEnabled<ELEM_ID, COMP_ID>();
 		}
 		else {
-			return comp::HasComponentOfType<Element, COMPONENT_TYPE>;
+			return comp::HasComponentOfType<Element, COMP_ID>;
 		}
 	}
 	else {
@@ -101,15 +98,14 @@ bool isPerElementComponentAvailable(const MeshType& m)
  * @brief Makes available the given Component in the given Element of the input
  * mesh m, and returns `true` if it succeeds.
  *
- * If the input mesh has a Container of the given ElementEnumType, and
- * the Element has a Component of the given ComponentEnumType, this function
- * enables the Component in the Element if the component needs to be enabled.
- * Returns `true` if, after the call of this function, the component will be
- * available in the Element of the mesh.
+ * If the input mesh has a Container of the given Element ID, and the Element
+ * has a Component of the given Component ID, this function enables the
+ * Component in the Element if the component needs to be enabled. Returns `true`
+ * if, after the call of this function, the component will be available in the
+ * Element of the mesh.
  *
- * @tparam ELEMENT_TYPE: the ElementEnumType of the Element on which enable the
- * component.
- * @tparam COMPONENT_TYPE: the ComponentEnumType of the Component to enable.
+ * @tparam ELEM_ID: the ID of the Element on which enable the component.
+ * @tparam COMP_ID: the ID of the Component to enable.
  * @tparam MeshType: the type of the Mesh to check.
  *
  * @param[in] m: the mesh on which enable the component in the Element.
@@ -118,21 +114,18 @@ bool isPerElementComponentAvailable(const MeshType& m)
  *
  * @ingroup mesh_requirements
  */
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
+template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
 bool enableIfPerElementComponentOptional(MeshType& m)
 {
-	if constexpr (mesh::HasElementContainer<MeshType, ELEMENT_TYPE>) {
-		using Container = mesh::ContainerOfElementType<ELEMENT_TYPE, MeshType>;
-		using Element = typename Container::ElementType;
-		if constexpr (comp::HasOptionalComponentOfType<Element, COMPONENT_TYPE>)
-		{
-			m.template enablePerElementComponent<
-				ELEMENT_TYPE,
-				COMPONENT_TYPE>();
+	if constexpr (mesh::HasElementContainer<MeshType, ELEM_ID>) {
+		using Container = mesh::ContainerOfElementType<ELEM_ID, MeshType>;
+		using Element   = Container::ElementType;
+		if constexpr (comp::HasOptionalComponentOfType<Element, COMP_ID>) {
+			m.template enablePerElementComponent<ELEM_ID, COMP_ID>();
 			return true;
 		}
 		else {
-			return comp::HasComponentOfType<Element, COMPONENT_TYPE>;
+			return comp::HasComponentOfType<Element, COMP_ID>;
 		}
 	}
 	else {
@@ -142,13 +135,13 @@ bool enableIfPerElementComponentOptional(MeshType& m)
 
 /**
  * @brief This function asserts that a Mesh has the Container of the given
- * ElementEnumType compact (no elements flagged as deleted).
+ * Element ID compact (no elements flagged as deleted).
  *
- * If the Container of the given ElementEnumType is not compact, a
+ * If the Container of the given Element ID is not compact, a
  * vcl::MissingCompactnessException will be thrown. If the mesh has not a
- * Container of the given ElementEnumType, a build error will be raised.
+ * Container of the given Element ID, a build error will be raised.
  *
- * @tparam ELEMENT_TYPE: the ElementEnumType of the ElementContainer to check.
+ * @tparam ELEM_ID: the Element ID of the ElementContainer to check.
  * @tparam MeshType: the type of the Mesh to check.
  *
  * @throws vcl::MissingCompactnessException if the Container of the given
@@ -159,18 +152,18 @@ bool enableIfPerElementComponentOptional(MeshType& m)
  *
  * @ingroup mesh_requirements
  */
-template<uint ELEMENT_TYPE, MeshConcept MeshType>
+template<uint ELEM_ID, MeshConcept MeshType>
 void requireElementContainerCompactness(const MeshType& m)
 {
-	if (!isElementContainerCompact<ELEMENT_TYPE>(m))
+	if (!isElementContainerCompact<ELEM_ID>(m))
 		throw vcl::MissingCompactnessException(
-			std::string(elementEnumString<ELEMENT_TYPE>()) +
+			std::string(elementEnumString<ELEM_ID>()) +
 			" Container of the Mesh is not compact.");
 }
 
 /**
  * @brief This function asserts that a Mesh has the Container of the given
- * ElementEnumType, the Element has a Component of the given ComponentEnumType,
+ * Element ID, the Element has a Component of the given Component ID,
  * and that Component is available at runtime.
  *
  * If the Mesh does not satisfy one of these conditions, a
@@ -181,8 +174,8 @@ void requireElementContainerCompactness(const MeshType& m)
  * - has the Container, the Element has the Component, but the Component is not
  *   enabled.
  *
- * @tparam ELEMENT_TYPE: the ElementEnumType of the Element to check.
- * @tparam COMPONENT_TYPE: the ComponentEnumType of the Component to check.
+ * @tparam ELEM_ID: the ID of the Element to check.
+ * @tparam COMP_ID: the ID of the Component to check.
  * @tparam MeshType: the type of the Mesh to check.
  *
  * @throws vcl::MissingComponentException if the Component is not enabled or
@@ -195,13 +188,13 @@ void requireElementContainerCompactness(const MeshType& m)
  *
  * @ingroup mesh_requirements
  */
-template<uint ELEMENT_TYPE, uint COMPONENT_TYPE, MeshConcept MeshType>
+template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
 void requirePerElementComponent(const MeshType& m)
 {
-	if (!isPerElementComponentAvailable<ELEMENT_TYPE, COMPONENT_TYPE>(m)) {
+	if (!isPerElementComponentAvailable<ELEM_ID, COMP_ID>(m)) {
 		throw vcl::MissingComponentException(
-			"Per " + std::string(elementEnumString<ELEMENT_TYPE>()) + " " +
-			std::string(componentEnumString<COMPONENT_TYPE>()) +
+			"Per " + std::string(elementEnumString<ELEM_ID>()) + " " +
+			std::string(componentEnumString<COMP_ID>()) +
 			" Component is not enabled.");
 	}
 }

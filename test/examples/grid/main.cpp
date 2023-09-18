@@ -131,9 +131,8 @@ int main()
 	using ST = vcl::TriMesh::ScalarType;
 
 	auto intersects = vcl::intersectFunction<vcl::Box3<ST>, vcl::TriMesh::Face>();
-#ifdef VCLIB_USES_RANGES
-	vcl::HashTableGrid3<const vcl::TriMesh::Face*, ST> fsht(
-		m.faces() | vcl::views::constAddrOf, intersects);
+
+	vcl::HashTableGrid3<const vcl::TriMesh::Face*, ST> fsht(m.faces() | vcl::views::constAddrOf, intersects);
 
 	std::cerr << "Values in HashTableGrid: \n";
 
@@ -183,6 +182,6 @@ int main()
 	for (const auto& p : vec) {
 		std::cerr << p->first << ": " << m.index(p->second) << "\n";
 	}
-#endif
+
 	return 0;
 }

@@ -43,8 +43,8 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 void updateBorder(MeshType& m)
 {
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
 
 	for (FaceType& f : m.faces())
 		f.unsetAllEdgesOnBorder();

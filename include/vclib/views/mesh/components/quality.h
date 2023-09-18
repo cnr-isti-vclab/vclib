@@ -52,8 +52,7 @@ struct QualityView
 		else
 			return p.quality();
 	};
-	
-#ifdef VCLIB_USES_RANGES
+
 	template <std::ranges::range R>
 	friend constexpr auto operator|(R&& r, QualityView)
 	{
@@ -63,7 +62,6 @@ struct QualityView
 		else
 			return std::forward<R>(r) | std::views::transform(quality);
 	}
-#endif
 };
 
 } // namespace vcl::views::internal

@@ -78,6 +78,7 @@ template<
 	bool OPT             = false>
 class AdjacentFaces :
 		public PointersContainerComponent<
+			AdjacentFaces<Face, N, TTVN, ElementType, OPT>,
 			ADJACENT_FACES,
 			Face,
 			N,
@@ -86,6 +87,7 @@ class AdjacentFaces :
 			TTVN>
 {
 	using Base = PointersContainerComponent<
+		AdjacentFaces<Face, N, TTVN, ElementType, OPT>,
 		ADJACENT_FACES,
 		Face,
 		N,
@@ -101,8 +103,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentFaceIterator      = typename Base::Iterator;
-	using ConstAdjacentFaceIterator = typename Base::ConstIterator;
+	using AdjacentFaceIterator      = Base::Iterator;
+	using ConstAdjacentFaceIterator = Base::ConstIterator;
 
 	/**
 	 * @brief Static size of the container. If the container is dynamic, this
@@ -110,12 +112,6 @@ public:
 	 * function.
 	 */
 	static const int ADJ_FACE_NUMBER = Base::SIZE;
-
-	/* Constructor and isAvailable */
-
-	void init();
-
-	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -165,10 +161,6 @@ protected:
 	// PointersComponent interface functions
 	template<typename Element, typename ElFType>
 	void importPointersFrom(const Element& e, Face* base, const ElFType* ebase);
-
-	void updatePointers(const Face* oldBase, const Face* newBase);
-
-	void updatePointers(const Face* base, const std::vector<uint>& newIndices);
 
 	// ContainerComponent interface functions
 	void resize(uint n) requires (N < 0);

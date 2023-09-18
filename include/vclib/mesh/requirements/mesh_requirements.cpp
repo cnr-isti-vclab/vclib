@@ -55,7 +55,7 @@ bool isTriangleMesh(const MeshType& m)
 		return true;
 	}
 	else if constexpr (HasFaces<MeshType>) {
-		using F = typename MeshType::FaceType;
+		using F = MeshType::FaceType;
 		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 3)
 				return false;
@@ -91,7 +91,7 @@ bool isQuadMesh(const MeshType& m)
 		return true;
 	}
 	else if constexpr (HasFaces<MeshType>) {
-		using F = typename MeshType::FaceType;
+		using F = MeshType::FaceType;
 		for (const F& f : m.faces()) {
 			if (f.vertexNumber() != 4)
 				return false;

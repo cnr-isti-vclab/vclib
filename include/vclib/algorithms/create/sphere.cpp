@@ -80,9 +80,9 @@ template<FaceMeshConcept MeshType>
 MeshType
 createSphereUV(const SphereConcept auto& sp, uint parallels, uint meridians)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType  = typename VertexType::CoordType;
-	using Facetype   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using CoordType  = VertexType::CoordType;
+	using Facetype   = MeshType::FaceType;
 
 	MeshType mesh;
 
@@ -159,10 +159,10 @@ template<FaceMeshConcept MeshType>
 MeshType
 createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType  = typename VertexType::CoordType;
-	using Facetype   = typename MeshType::FaceType;
-	using ScalarType = typename CoordType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using CoordType  = VertexType::CoordType;
+	using Facetype   = MeshType::FaceType;
+	using ScalarType = CoordType::ScalarType;
 
 	MeshType mesh;
 
@@ -237,10 +237,10 @@ template<FaceMeshConcept MeshType>
 MeshType
 createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType  = typename VertexType::CoordType;
-	using ScalarType = typename CoordType::ScalarType;
-	using Facetype   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using CoordType  = VertexType::CoordType;
+	using ScalarType = CoordType::ScalarType;
+	using Facetype   = MeshType::FaceType;
 
 	MeshType mesh;
 
@@ -323,9 +323,9 @@ createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions)
 template<FaceMeshConcept MeshType>
 MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType  = typename VertexType::CoordType;
-	using FaceType   = typename MeshType::FaceType;
+	using VertexType = MeshType::VertexType;
+	using CoordType  = VertexType::CoordType;
+	using FaceType   = MeshType::FaceType;
 
 	MeshType mesh = vcl::createIcosahedron<MeshType>(true);
 

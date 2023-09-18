@@ -25,46 +25,46 @@
 
 namespace vcl {
 
-template <uint ELEM_TYPE, typename MeshType, typename... Comps>
-uint Element<ELEM_TYPE, MeshType, Comps...>::index() const
+template <uint ELEM_ID, typename MeshType, typename... Comps>
+uint Element<ELEM_ID, MeshType, Comps...>::index() const
 {
 	assert(comp::ParentMeshPointer<MeshType>::parentMesh());
 	return comp::ParentMeshPointer<MeshType>::parentMesh()
-		->template elementIndex<ELEM_TYPE>(this);
+		->template elementIndex<ELEM_ID>(this);
 }
 
-template <uint ELEM_TYPE, typename MeshType, typename... Comps>
+template <uint ELEM_ID, typename MeshType, typename... Comps>
 template<typename ElType>
-void Element<ELEM_TYPE, MeshType, Comps...>::importFrom(const ElType& v)
+void Element<ELEM_ID, MeshType, Comps...>::importFrom(const ElType& v)
 {
 	(Comps::importFrom(v), ...);
 }
 
-template <uint ELEM_TYPE, typename MeshType, typename... Comps>
-template<uint COMPONENT_ID>
-auto& Element<ELEM_TYPE, MeshType, Comps...>::component()
+template <uint ELEM_ID, typename MeshType, typename... Comps>
+template<uint COMP_ID>
+auto& Element<ELEM_ID, MeshType, Comps...>::component()
 {
-	using Comp = typename GetComponentFromID<COMPONENT_ID>::type;
+	using Comp = GetComponentFromID<COMP_ID>::type;
 	return *static_cast<Comp*>(this);
 }
 
-template <uint ELEM_TYPE, typename MeshType, typename... Comps>
-template<uint COMPONENT_ID>
-const auto& Element<ELEM_TYPE, MeshType, Comps...>::component() const
+template <uint ELEM_ID, typename MeshType, typename... Comps>
+template<uint COMP_ID>
+const auto& Element<ELEM_ID, MeshType, Comps...>::component() const
 {
-	using Comp = typename GetComponentFromID<COMPONENT_ID>::type;
+	using Comp = GetComponentFromID<COMP_ID>::type;
 	return *static_cast<const Comp*>(this);
 }
 
-template<uint ELEM_TYPE, typename MeshType, typename... Comps>
-void Element<ELEM_TYPE, MeshType, Comps...>::initVerticalComponents()
+template<uint ELEM_ID, typename MeshType, typename... Comps>
+void Element<ELEM_ID, MeshType, Comps...>::initVerticalComponents()
 {
 	(construct<Comps>(), ...);
 }
 
-template<uint ELEM_TYPE, typename MeshType, typename... Comps>
+template<uint ELEM_ID, typename MeshType, typename... Comps>
 template<typename Comp>
-void Element<ELEM_TYPE, MeshType, Comps...>::construct()
+void Element<ELEM_ID, MeshType, Comps...>::construct()
 {
 	if constexpr (
 		comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>)

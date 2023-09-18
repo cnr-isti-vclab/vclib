@@ -78,6 +78,7 @@ template<
 	bool OPT             = false>
 class AdjacentEdges :
 		public PointersContainerComponent<
+			AdjacentEdges<Edge, N, TTVN, ElementType, OPT>,
 			ADJACENT_EDGES,
 			Edge,
 			N,
@@ -86,6 +87,7 @@ class AdjacentEdges :
 			TTVN>
 {
 	using Base = PointersContainerComponent<
+		AdjacentEdges<Edge, N, TTVN, ElementType, OPT>,
 		ADJACENT_EDGES,
 		Edge,
 		N,
@@ -101,8 +103,8 @@ public:
 
 	/* Iterator Types declaration */
 
-	using AdjacentEdgeIterator      = typename Base::Iterator;
-	using ConstAdjacentEdgeIterator = typename Base::ConstIterator;
+	using AdjacentEdgeIterator      = Base::Iterator;
+	using ConstAdjacentEdgeIterator = Base::ConstIterator;
 
 	/**
 	 * @brief Static size of the container. If the container is dynamic, this
@@ -110,12 +112,6 @@ public:
 	 * function.
 	 */
 	static const int ADJ_EDGE_NUMBER = Base::SIZE;
-
-	/* Constructor and isAvailable */
-
-	void init();
-
-	bool isAvailable() const;
 
 	/* Member functions */
 
@@ -161,10 +157,6 @@ protected:
 	// PointersComponent interface functions
 	template<typename Element, typename ElEType>
 	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase);
-
-	void updatePointers(const Edge* oldBase, const Edge* newBase);
-
-	void updatePointers(const Edge* base, const std::vector<uint>& newIndices);
 
 	// ContainerComponent interface functions
 	void resize(uint n) requires (N < 0);

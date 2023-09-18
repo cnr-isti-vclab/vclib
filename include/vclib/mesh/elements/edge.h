@@ -51,7 +51,7 @@ class Edge : public Element<EDGE, MeshType, Comps...>
 	using VPtrs = typename Edge::VertexPointers;
 
 public:
-	using VertexType = typename VPtrs::VertexType;
+	using VertexType = VPtrs::VertexType;
 };
 
 template<typename MeshType, typename... Comps>

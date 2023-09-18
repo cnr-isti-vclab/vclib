@@ -19,7 +19,6 @@ void meshViewsStaticAsserts()
 		vcl::VertexRangeConcept<decltype(cm.vertices())>,
 		"The MeshType ConstVertexView is not a valid range of vertices.");
 
-#ifdef VCLIB_USES_RANGES
 	static_assert(
 		std::ranges::range<decltype(m | vcl::views::vertices)>,
 		"The view returned by pipe operation m | views::vertices is not a valid range.");
@@ -84,7 +83,6 @@ void meshViewsStaticAsserts()
 			std::ranges::range<decltype(cm | vcl::views::edges)>,
 			"The view returned by pipe operation cm | views::edges is not a valid range.");
 	}
-#endif
 }
 
 #endif // MESH_VIEWS_H

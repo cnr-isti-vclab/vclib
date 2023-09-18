@@ -39,8 +39,8 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createIcosahedron(bool normalizeVertices)
 {
-	using VertexType = typename MeshType::VertexType;
-	using CoordType  = typename VertexType::CoordType;
+	using VertexType = MeshType::VertexType;
+	using CoordType  = VertexType::CoordType;
 
 	MeshType mesh;
 

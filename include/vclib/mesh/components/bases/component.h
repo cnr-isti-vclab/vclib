@@ -92,6 +92,11 @@ namespace vcl::comp {
  *
  * For further details , please refer to the page @ref implement_component page.
  *
+ * @tparam DerivedComponent: The type of the Derived Component. It is used to
+ * implement the CRTP pattern.
+ * @tparam COMP_ID: The id of the component. It is a value of the enum
+ * ComponentIDEnum, or an integer value that is not already used by any other
+ * component. It is used to identify the component at compile time.
  * @tparam DataType: The type of the data that the component needs to store.
  * E.g. a Normal component would store a vcl::Point3d.
  * @tparam ElementType: This type is used to discriminate between horizontal and
@@ -107,11 +112,12 @@ namespace vcl::comp {
  * happens.
  */
 template<
-	uint COMP_TYPE,
-	typename DataType,
-	typename ElementType,
-	bool OPT,
-	typename... PointedTypes>
+	typename DerivedComponent, // CRTP pattern, derived class
+	uint COMP_ID,              // component id
+	typename DataType,         // data stored by the component
+	typename ElementType,      // element type, void if horizontal
+	bool OPT,                  // true if component vertical and optional
+	typename... PointedTypes>  // types of the pointers stored by the component
 class Component : public PointersComponentTriggerer<PointedTypes>...
 {
 public:
@@ -122,9 +128,9 @@ public:
 	using DataValueType = DataType;
 
 	/**
-	 * @brief The ID of the type of component.
+	 * @brief The ID of the component.
 	 */
-	static const uint COMPONENT_TYPE = COMP_TYPE;
+	static const uint COMPONENT_ID = COMP_ID;
 
 	/**
 	 * @brief Boolean that tells if this component type stores its data
@@ -138,23 +144,34 @@ public:
 	 */
 	static const bool IS_OPTIONAL = OPT;
 
+	/**
+	 * @private
+	 * @brief Returns `true` if the component is available, `false` otherwise.
+	 *
+	 * This member function can return `false` only if the component is
+	 * optional, and it is not enabled.
+	 *
+	 * This member function is hidden by the element that inherits this class.
+	 *
+	 * @return `true` if the component is available, `false` otherwise.
+	 */
+	bool isAvailable() const
+	{
+		return cdata.template isComponentAvailable<ElementType>(
+			static_cast<const DerivedComponent*>(this));
+	}
+
 protected:
-	template<typename Comp>
-	bool isAvailable(const Comp* c) const
+	DataValueType& data()
 	{
-		return cdata.template isComponentAvailable<ElementType>(c);
+		return cdata.template get<ElementType>(
+			static_cast<DerivedComponent*>(this));
 	}
 
-	template<typename Comp>
-	DataValueType& data(Comp* c)
+	const DataValueType& data() const
 	{
-		return cdata.template get<ElementType>(c);
-	}
-
-	template<typename Comp>
-	const DataValueType& data(const Comp* c) const
-	{
-		return cdata.template get<ElementType>(c);
+		return cdata.template get<ElementType>(
+			static_cast<const DerivedComponent*>(this));
 	}
 
 private:
@@ -163,7 +180,7 @@ private:
 
 /**
  * @brief Checks if the given Element or Mesh has the component having
- * COMPONENT_TYPE ID available.
+ * COMPONENT_ID available.
  *
  * This function returns `true` also if the component is horizontal and always
  * available in the element/mesh. The runtime check is performed only when the
@@ -174,17 +191,17 @@ private:
  * @return `true` if the element/mesh has the component available, `false`
  * otherwise.
  */
-template<uint COMPONENT_TYPE, ElementOrMeshConcept T>
+template<uint COMPONENT_ID, ElementOrMeshConcept T>
 bool isComponentAvailableOn(const T& obj)
 {
-	if constexpr (HasOptionalComponentOfType<T, COMPONENT_TYPE>) {
+	if constexpr (HasOptionalComponentOfType<T, COMPONENT_ID>) {
 		using ComponentType =
-			ComponentOfType<COMPONENT_TYPE, typename T::Components>;
+			ComponentOfType<COMPONENT_ID, typename T::Components>;
 		const ComponentType& c = static_cast<const ComponentType&>(obj);
 		return c.isAvailable();
 	}
 	else
-		return HasComponentOfType<T, COMPONENT_TYPE>;
+		return HasComponentOfType<T, COMPONENT_ID>;
 }
 
 } // namespace vcl::comp

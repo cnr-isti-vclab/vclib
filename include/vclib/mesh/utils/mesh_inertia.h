@@ -52,9 +52,9 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 class MeshInertia
 {
-	using VertexType = typename MeshType::VertexType;
-	using FaceType   = typename MeshType::FaceType;
-	using ScalarType = typename VertexType::CoordType::ScalarType;
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
+	using ScalarType = VertexType::CoordType::ScalarType;
 
 public:
 	MeshInertia(const MeshType& m);

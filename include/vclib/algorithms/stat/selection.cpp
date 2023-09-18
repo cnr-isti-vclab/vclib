@@ -30,35 +30,13 @@ namespace vcl {
 template<MeshConcept MeshType>
 uint vertexSelectionNumber(const MeshType &m)
 {
-#ifdef VCLIB_USES_RANGES
 	return std::ranges::distance(m.vertices() | views::selected);
-#else
-	using VertexType = typename MeshType::VertexType;
-	
-	uint cnt = 0;
-	for (const VertexType& v : m.vertices())
-		if (v.selected())
-			cnt++;
-	
-	return cnt;
-#endif
 }
 
 template<FaceMeshConcept MeshType>
 uint faceSelectionNumber(const MeshType &m)
 {
-#ifdef VCLIB_USES_RANGES
 	return std::ranges::distance(m.faces() | views::selected);
-#else
-	using FaceType = typename MeshType::FaceType;
-	
-	uint cnt = 0;
-	for (const FaceType& f : m.faces())
-		if (f.selected())
-			cnt++;
-	
-	return cnt;
-#endif
 }
 
 } // namespace vcl

@@ -71,7 +71,7 @@ KDTree<PointType>::KDTree(const MeshType& m, uint pointsPerCell, uint maxDepth, 
 		pointsPerCell(pointsPerCell),
 		maxDepth(maxDepth)
 {
-	using VertexType = typename MeshType::VertexType;
+	using VertexType = MeshType::VertexType;
 
 	uint           i = 0;
 	for (const VertexType& v : m.vertices()) {

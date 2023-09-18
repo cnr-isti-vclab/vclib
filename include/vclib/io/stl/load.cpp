@@ -135,14 +135,14 @@ void loadStlBin(
 		unsigned short attr = internal::readShort<unsigned short>(fp);
 
 		if constexpr (HasFaces<MeshType>) {
-			using FaceType = typename MeshType::FaceType;
+			using FaceType = MeshType::FaceType;
 
 			uint fi = m.addFace();
 			FaceType& f = m.face(fi);
 			for (uint j = 0; j < 3; ++j)
 				f.vertex(j) = &m.vertex(vi + j);
 			if (HasPerFaceNormal<MeshType>) {
-				using ST = typename FaceType::NormalType::ScalarType;
+				using ST = FaceType::NormalType::ScalarType;
 				if (isPerFaceNormalAvailable(m)) {
 					f.normal() = norm.cast<ST>();
 				}
@@ -222,14 +222,14 @@ void loadStlAscii(
 				internal::nextNonEmptyTokenizedLine(fp); // endfacet
 
 				if constexpr (HasFaces<MeshType>) {
-					using FaceType = typename MeshType::FaceType;
+					using FaceType = MeshType::FaceType;
 					uint fi = m.addFace();
 
 					FaceType& f = m.face(fi);
 					for (uint j = 0; j < 3; ++j)
 						f.vertex(j) = &m.vertex(vi + j);
 					if (HasPerFaceNormal<MeshType>) {
-						using ST = typename FaceType::NormalType::ScalarType;
+						using ST = FaceType::NormalType::ScalarType;
 						if (isPerFaceNormalAvailable(m)) {
 							f.normal() = normal.cast<ST>();
 						}

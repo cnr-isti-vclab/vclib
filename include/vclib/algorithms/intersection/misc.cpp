@@ -223,8 +223,8 @@ inline bool axisTestZ0(
 template<PlaneConcept PlaneType, Box3Concept BoxType>
 bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
 {
-	using PointType = typename BoxType::PointType;
-	using ScalarType = typename PointType::ScalarType;
+	using PointType = BoxType::PointType;
+	using ScalarType = PointType::ScalarType;
 
 	// Convert AABB to center-extents representation
 	PointType c = (box.max() + box.min()) * 0.5f; // Compute AABB center
@@ -258,7 +258,7 @@ bool planeSegmentIntersect(
 	const SegmentType&               s,
 	typename SegmentType::PointType& intersection)
 {
-	using ScalarType = typename SegmentType::ScalarType;
+	using ScalarType = SegmentType::ScalarType;
 
 	// Compute the projection of the segment endpoints onto the plane.
 	ScalarType p1_proj = s.p1() * p.direction() - p.offset();
@@ -334,8 +334,8 @@ bool sphereBoxIntersect(const SphereType& s, const BoxType& box)
 template<ConstTriangle2Concept TriangleType, Point2Concept PointType>
 bool trianglePointIntersect(const TriangleType& tr, const PointType& p)
 {
-	using TP = typename TriangleType::PointType;
-	using ScalarType = typename TP::ScalarType;
+	using TP = TriangleType::PointType;
+	using ScalarType = TP::ScalarType;
 
 	const TP& p0 = tr.point(0);
 	const TP& p1 = tr.point(1);
@@ -382,8 +382,8 @@ bool triangleBoxIntersect(
 	const TriangleType& t,
 	const BoxType& box)
 {
-	using PointType = typename TriangleType::PointType;
-	using ScalarType = typename PointType::ScalarType;
+	using PointType = TriangleType::PointType;
+	using ScalarType = PointType::ScalarType;
 
 	PointType boxcenter = box.center();
 	PointType bHalfSixe = box.size() / 2;
@@ -581,7 +581,7 @@ bool triangleSphereItersect(
 template<ConstTriangle3Concept TriangleType, SphereConcept SphereType>
 bool triangleSphereItersect(const TriangleType& t, const SphereType& sphere)
 {
-	using SScalar = typename SphereType::ScalarType;
+	using SScalar = SphereType::ScalarType;
 	typename TriangleType::PointType witness;
 	std::pair<SScalar, SScalar> res;
 	return triangleBoxIntersect(t, sphere, witness, res);

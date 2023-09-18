@@ -32,7 +32,19 @@ namespace vcl {
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
 OutMeshType perVertexMeshFilter(
 	const InMeshType& m,
+	std::function<bool(const typename InMeshType::VertexType&)>&& vertexFilter,
+	bool saveBirthIndicesInCustomComponent = true);
+
+template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
+OutMeshType perVertexMeshFilter(
+	const InMeshType& m,
 	Range auto&& vertexFilterRng,
+	bool saveBirthIndicesInCustomComponent = true);
+
+template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
+OutMeshType perFaceMeshFilter(
+	const InMeshType& m,
+	std::function<bool(const typename InMeshType::FaceType&)>&& faceFilter,
 	bool saveBirthIndicesInCustomComponent = true);
 
 template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>

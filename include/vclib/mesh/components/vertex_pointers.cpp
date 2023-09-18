@@ -26,46 +26,13 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Initializes the container of vertices to nullptr, or an empty
- * container if the container is dynamic.
- *
- * It is made in the init function for sake of compatibility with the other
- * components.
- *
- * This member function is hidden by the element that inherits this class.
- */
-template<typename Vertex, int N, typename El>
-void VertexPointers<Vertex, N, El>::init()
-{
-	Base::init(this);
-}
-
-/**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename Vertex, int N, typename El>
-bool VertexPointers<Vertex, N, El>::isAvailable()
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns the number of vertices of the element.
  * @return The number of vertices of the element.
  */
 template<typename Vertex, int N, typename El>
 uint VertexPointers<Vertex, N, El>::vertexNumber() const
 {
-	return Base::container(this).size();
+	return Base::container().size();
 }
 
 /**
@@ -84,7 +51,7 @@ uint VertexPointers<Vertex, N, El>::vertexNumber() const
 template<typename Vertex, int N, typename El>
 Vertex*& VertexPointers<Vertex, N, El>::vertex(uint i)
 {
-	return Base::container(this).at(i);
+	return Base::container().at(i);
 }
 
 /**
@@ -96,7 +63,7 @@ Vertex*& VertexPointers<Vertex, N, El>::vertex(uint i)
 template<typename Vertex, int N, typename El>
 const Vertex* VertexPointers<Vertex, N, El>::vertex(uint i) const
 {
-	return Base::container(this).at(i);
+	return Base::container().at(i);
 }
 
 /**
@@ -120,7 +87,7 @@ const Vertex* VertexPointers<Vertex, N, El>::vertex(uint i) const
 template<typename Vertex, int N, typename El>
 Vertex*& VertexPointers<Vertex, N, El>::vertexMod(int i)
 {
-	return Base::container(this).atMod(i);
+	return Base::container().atMod(i);
 }
 
 /**
@@ -132,7 +99,7 @@ Vertex*& VertexPointers<Vertex, N, El>::vertexMod(int i)
 template<typename Vertex, int N, typename El>
 const Vertex* VertexPointers<Vertex, N, El>::vertexMod(int i) const
 {
-	return Base::container(this).atMod(i);
+	return Base::container().atMod(i);
 }
 
 /**
@@ -144,14 +111,14 @@ const Vertex* VertexPointers<Vertex, N, El>::vertexMod(int i) const
 template<typename Vertex, int N, typename El>
 void VertexPointers<Vertex, N, El>::setVertex(Vertex* v, uint i)
 {
-	Base::container(this).set(v, i);
+	Base::container().set(v, i);
 }
 
 template<typename Vertex, int N, typename El>
 void VertexPointers<Vertex, N, El>::setVertices(
 	const std::vector<Vertex*>& list)
 {
-	Base::container(this).set(list);
+	Base::container().set(list);
 }
 
 /**
@@ -165,7 +132,7 @@ void VertexPointers<Vertex, N, El>::setVertices(
 template<typename Vertex, int N, typename El>
 bool VertexPointers<Vertex, N, El>::containsVertex(const Vertex* v) const
 {
-	return Base::container(this).contains(v);
+	return Base::container().contains(v);
 }
 
 /**
@@ -181,7 +148,7 @@ template<typename Vertex, int N, typename El>
 auto VertexPointers<Vertex, N, El>::findVertex(const Vertex* v)
 	-> VertexIterator
 {
-	return Base::container(this).find(v);
+	return Base::container().find(v);
 }
 
 
@@ -198,7 +165,7 @@ template<typename Vertex, int N, typename El>
 auto VertexPointers<Vertex, N, El>::findVertex(const Vertex* v) const
 	-> ConstVertexIterator
 {
-	return Base::container(this).find(v);
+	return Base::container().find(v);
 }
 
 /**
@@ -213,7 +180,7 @@ auto VertexPointers<Vertex, N, El>::findVertex(const Vertex* v) const
 template<typename Vertex, int N, typename El>
 uint VertexPointers<Vertex, N, El>::indexOfVertex(const Vertex* v) const
 {
-	return Base::container(this).indexOf(v);
+	return Base::container().indexOf(v);
 }
 
 /**
@@ -261,7 +228,7 @@ uint VertexPointers<Vertex, N, El>::indexOfEdge(
 template<typename Vertex, int N, typename El>
 void VertexPointers<Vertex, N, El>::resizeVertices(uint n) requires (N < 0)
 {
-	Base::container(this).resize(n);
+	Base::container().resize(n);
 }
 
 /**
@@ -273,7 +240,7 @@ void VertexPointers<Vertex, N, El>::resizeVertices(uint n) requires (N < 0)
 template<typename Vertex, int N, typename El>
 void VertexPointers<Vertex, N, El>::pushVertex(Vertex* v) requires (N < 0)
 {
-	Base::container(this).pushBack(v);
+	Base::container().pushBack(v);
 }
 
 /**
@@ -287,7 +254,7 @@ template<typename Vertex, int N, typename El>
 void VertexPointers<Vertex, N, El>::insertVertex(uint i, Vertex* v)
 	requires (N < 0)
 {
-	Base::container(this).insert(i, v);
+	Base::container().insert(i, v);
 }
 
 /**
@@ -299,7 +266,7 @@ void VertexPointers<Vertex, N, El>::insertVertex(uint i, Vertex* v)
 template<typename Vertex, int N, typename El>
 void VertexPointers<Vertex, N, El>::eraseVertex(uint i) requires (N < 0)
 {
-	Base::container(this).erase(i);
+	Base::container().erase(i);
 }
 
 /**
@@ -310,7 +277,7 @@ void VertexPointers<Vertex, N, El>::eraseVertex(uint i) requires (N < 0)
 template<typename Vertex, int N, typename El>
 void VertexPointers<Vertex, N, El>::clearVertices() requires (N < 0)
 {
-	Base::container(this).clear();
+	Base::container().clear();
 }
 
 /**
@@ -322,7 +289,7 @@ void VertexPointers<Vertex, N, El>::clearVertices() requires (N < 0)
 template<typename Vertex, int N, typename El>
 auto VertexPointers<Vertex, N, El>::vertexBegin() -> VertexIterator
 {
-	return Base::container(this).begin();
+	return Base::container().begin();
 }
 
 /**
@@ -333,7 +300,7 @@ auto VertexPointers<Vertex, N, El>::vertexBegin() -> VertexIterator
 template<typename Vertex, int N, typename El>
 auto VertexPointers<Vertex, N, El>::vertexEnd() -> VertexIterator
 {
-	return Base::container(this).end();
+	return Base::container().end();
 }
 
 /**
@@ -345,7 +312,7 @@ auto VertexPointers<Vertex, N, El>::vertexEnd() -> VertexIterator
 template<typename Vertex, int N, typename El>
 auto VertexPointers<Vertex, N, El>::vertexBegin() const -> ConstVertexIterator
 {
-	return Base::container(this).begin();
+	return Base::container().begin();
 }
 
 /**
@@ -357,7 +324,7 @@ auto VertexPointers<Vertex, N, El>::vertexBegin() const -> ConstVertexIterator
 template<typename Vertex, int N, typename El>
 auto VertexPointers<Vertex, N, El>::vertexEnd() const -> ConstVertexIterator
 {
-	return Base::container(this).end();
+	return Base::container().end();
 }
 
 /**
@@ -442,21 +409,6 @@ void VertexPointers<Vertex, N, El>::importPointersFrom(
 			importPtrsFrom(e, base, ebase);
 		}
 	}
-}
-
-template<typename Vertex, int N, typename El>
-void VertexPointers<Vertex, N, El>::updatePointers(
-	const Vertex* oldBase, const Vertex* newBase)
-{
-	Base::updateElementPointers(oldBase, newBase, this);
-}
-
-template<typename Vertex, int N, typename El>
-void VertexPointers<Vertex, N, El>::updatePointers(
-	const Vertex*           base,
-	const std::vector<uint>& newIndices)
-{
-	Base::updateElementPointers(base, newIndices, this);
 }
 
 template<typename Vertex, int N, typename El>

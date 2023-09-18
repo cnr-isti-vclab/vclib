@@ -220,7 +220,7 @@ template<typename Iterator, typename WIterator>
 PointT Polygon<PointT>::weightedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
 	requires (std::is_same_v<typename Iterator::value_type, PointT>)
 {
-	using ScalarType = typename WIterator::value_type;
+	using ScalarType = WIterator::value_type;
 
 	PointT bar;
 	bar.setZero();
@@ -262,7 +262,7 @@ template<typename Iterator>
 typename PointT::ScalarType Polygon<PointT>::perimeter(Iterator begin, Iterator end)
 	requires (std::is_same_v<typename Iterator::value_type, PointT>)
 {
-	using Scalar = typename PointType::ScalarType;
+	using Scalar = PointType::ScalarType;
 
 	Scalar per = 0;
 	for (auto i = begin; i != end; ++i){
@@ -301,7 +301,7 @@ template<typename Iterator>
 typename PointT::ScalarType  Polygon<PointT>::area(Iterator begin, Iterator end)
 	requires (std::is_same_v<typename Iterator::value_type, PointT>)
 {
-	using Scalar = typename PointType::ScalarType;
+	using Scalar = PointType::ScalarType;
 
 	PointType bar = barycenter(begin, end);
 	Scalar area = 0;
@@ -351,7 +351,7 @@ template<typename Iterator>
 std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 	requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 2)
 {
-	using Scalar = typename PointT::ScalarType;
+	using Scalar = PointT::ScalarType;
 
 	// Convert the polygon represented as a sequence of vertices to a vector of vectors of points.
 	// This is necessary because the earcut library expects the polygon to be represented as a
@@ -396,7 +396,7 @@ template<typename Iterator>
 std::vector<uint> Polygon<PointT>::earCut(Iterator begin, Iterator end)
 	requires (std::is_same_v<typename Iterator::value_type, PointT> && PointT::DIM == 3)
 {
-	using Scalar = typename PointType::ScalarType;
+	using Scalar = PointType::ScalarType;
 
 	// Calculate the normal vector of the polygon and an orthonormal basis for the plane containing
 	// the polygon.

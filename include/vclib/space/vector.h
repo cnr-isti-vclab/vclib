@@ -67,37 +67,37 @@ private:
 	static const int ARRAY_SIZE = N >= 0 ? N : 0;
 
 	// the Container type will be array or vector, depending on N value
-	using Container = typename std::conditional_t<
+	using Container = std::conditional_t<
 		(N >= 0),
 		typename std::array<T, ARRAY_SIZE>,
 		typename std::vector<T>>;
 
 public:
 	/** @brief The type of the elements stored in the Vector. */
-	using ValueType = typename Container::value_type;
+	using ValueType = Container::value_type;
 
 	/**
 	 * @brief A const reference to the type of the elements stored in the
 	 * Vector.
 	 */
-	using ConstReference = typename Container::const_reference;
+	using ConstReference = Container::const_reference;
 
 	/** @brief A reference to the type of the elements stored in the Vector. */
-	using Reference = typename Container::reference;
+	using Reference = Container::reference;
 
 	/**
 	 * @brief A const pointer to the type of the elements stored in the Vector.
 	 */
-	using ConstPointer = typename Container::const_pointer;
+	using ConstPointer = Container::const_pointer;
 
 	/** @brief A pointer to the type of the elements stored in the Vector. */
-	using Pointer = typename Container::pointer;
+	using Pointer = Container::pointer;
 
 	/** @brief An iterator to the elements of the Vector. */
-	using Iterator = typename Container::iterator;
+	using Iterator = Container::iterator;
 
 	/** @brief A const iterator to the elements of the Vector. */
-	using ConstIterator = typename Container::const_iterator;
+	using ConstIterator = Container::const_iterator;
 
 	/**
 	 * @brief Size of the vector at compile time. It will be -1 if the Vector
@@ -126,10 +126,7 @@ public:
 
 	template<Range Rng>
 	void set(Rng&& r)
-#ifdef VCLIB_USES_RANGES
-		requires RangeOfConvertibleTo<Rng, T>
-#endif
-		;
+		requires RangeOfConvertibleTo<Rng, T>;
 
 	void fill(const T& e);
 

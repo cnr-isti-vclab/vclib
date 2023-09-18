@@ -246,7 +246,6 @@ void MeshSampler<MeshType>::set(
 	setBirthElement(i, "birthFace", f.index());
 }
 
-#ifdef VCLIB_USES_RANGES
 template<MeshConcept MeshType>
 typename MeshSampler<MeshType>::ConstIterator MeshSampler<MeshType>::begin() const
 {
@@ -258,18 +257,6 @@ typename MeshSampler<MeshType>::ConstIterator MeshSampler<MeshType>::end() const
 {
 	return std::ranges::end(m.vertices() | views::coords);
 }
-#else
-template<MeshConcept MeshType>
-auto MeshSampler<MeshType>::points() const
-{
-	std::vector<PointType> vec;
-	vec.reserve(m.vertexNumber());
-	for (const auto& v : m.vertices())
-		vec.push_back(v.coord());
-	return vec;
-}
-
-#endif
 
 template<MeshConcept MeshType>
 template<FaceConcept FaceType>

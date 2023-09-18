@@ -48,9 +48,9 @@ class ElementContainer : public ElementContainerTriggerer
 
 public:
 	using ElementType    = T;
-	using ParentMeshType = typename T::ParentMeshType;
+	using ParentMeshType = T::ParentMeshType;
 
-	static const uint ELEMENT_TYPE = T::ELEMENT_TYPE;
+	static const uint ELEMENT_ID = T::ELEMENT_ID;
 
 	ElementContainer();
 
@@ -96,19 +96,19 @@ protected:
 	template<typename C>
 	bool isOptionalComponentEnabled() const;
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	bool isOptionalComponentEnabled() const;
 
 	template<typename C>
 	void enableOptionalComponent();
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	void enableOptionalComponent();
 
 	template<typename C>
 	void disableOptionalComponent();
 
-	template<uint COMP_TYPE>
+	template<uint COMP_ID>
 	void disableOptionalComponent();
 
 	// Custom Components
@@ -167,7 +167,7 @@ protected:
 	void importPointersFrom(const OtherMesh& othMesh, ElPtrBase* base);
 
 	// filter components of elements, taking only vertical ones
-	using vComps = typename vcl::FilterTypesByCondition<
+	using vComps = vcl::FilterTypesByCondition<
 		comp::IsVerticalComponentPred,
 		typename T::Components>::type;
 

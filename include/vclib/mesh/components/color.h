@@ -55,13 +55,18 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename ElementType = void, bool OPT = false>
-class Color : public Component<COLOR, vcl::Color, ElementType, OPT>
+class Color :
+		public Component<
+			Color<ElementType, OPT>,
+			COLOR,
+			vcl::Color,
+			ElementType,
+			OPT>
 {
-	using Base = Component<COLOR, vcl::Color, ElementType, OPT>;
+	using Base =
+		Component<Color<ElementType, OPT>, COLOR, vcl::Color, ElementType, OPT>;
 
 public:
-	bool isAvailable() const;
-
 	const vcl::Color& color() const;
 
 	vcl::Color& color();

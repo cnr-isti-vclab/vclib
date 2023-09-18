@@ -52,23 +52,6 @@ void TransformMatrix<Scalar, El, O>::init()
 }
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename Scalar, typename El, bool O>
-bool TransformMatrix<Scalar, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns a const reference to the transform matrix.
  * @return A const reference to the transform matrix.
  */
@@ -76,7 +59,7 @@ template<typename Scalar, typename El, bool O>
 auto TransformMatrix<Scalar, El, O>::transformMatrix() const
 	-> const TransformMatrixType&
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 /**
@@ -86,7 +69,7 @@ auto TransformMatrix<Scalar, El, O>::transformMatrix() const
 template<typename Scalar, typename El, bool O>
 auto TransformMatrix<Scalar, El, O>::transformMatrix() -> TransformMatrixType&
 {
-	return Base::data(this);
+	return Base::data();
 }
 
 template<typename Scalar, typename El, bool O>

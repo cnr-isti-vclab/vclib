@@ -27,6 +27,47 @@ namespace vcl {
 
 /**
  * @brief Generates and returns a new mesh that is composed of the vertices of
+ * the input mesh `m` filtered using the `vertexFilter` function.
+ *
+ * Only the vertices for which the `vertexFilter` returns `true` will be put in
+ * the output mesh. The order of the vertices in the output mesh is preserved.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `MeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `MeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] vertexFilter: a function that takes a vertex as input and returns
+ * a boolean value that tells whether the vertex should be put in the output
+ * mesh.
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex CustomComponents component, will set a
+ * per vertex custom component of type `uint` in the output mesh telling, for
+ * each vertex, the index of its birth vertex in the input mesh. The name of the
+ * custom component is `"birthVertex"`.
+ *
+ * @return A new Mesh created by filtering the vertices of the input mesh `m`.
+ */
+template<MeshConcept InMeshType, MeshConcept OutMeshType>
+OutMeshType perVertexMeshFilter(
+	const InMeshType& m,
+	std::function<bool(const typename InMeshType::VertexType&)>&& vertexFilter,
+	bool saveBirthIndicesInCustomComponent)
+{
+	auto view = m.vertices() | std::views::transform(vertexFilter);
+
+	return perVertexMeshFilter<InMeshType, OutMeshType>(
+		m,
+		view,
+		saveBirthIndicesInCustomComponent);
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the vertices of
  * the input mesh `m` filtered using the `vertexFilterRng` range.
  *
  * Only the vertices having the corresponding boolean in `vertexFilterRng`
@@ -69,7 +110,8 @@ OutMeshType perVertexMeshFilter(
 		}
 	}
 
-	for (const auto& [birthV, filter] : c9::zip(m.vertices(), vertexFilterRng))
+	for (const auto& [birthV, filter] :
+		 std::views::zip(m.vertices(), vertexFilterRng))
 	{
 		if (filter) {
 			uint v = res.addVertex();
@@ -90,6 +132,50 @@ OutMeshType perVertexMeshFilter(
 
 /**
  * @brief Generates and returns a new mesh that is composed of the faces of the
+ * input mesh `m` filtered using the `faceFilter` function. Only vertices
+ * belonging to the imported faces will be imported in the output mesh.
+ *
+ * Only the faces for which the `faceFilter` function returns  true` and their
+ * vertices will be put in the output mesh. The order of the faces and vertices
+ * in the output mesh is preserved.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `FaceMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `FaceMeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] faceFilter: a function that takes a face as input and returns a
+ * boolean value that tells whether the face should be imported in the output
+ * mesh or not.
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex and/or per face CustomComponents
+ * component, will set a per vertex/per face custom component of type `uint` in
+ * the output mesh telling, for each vertex/face, the index of its birth
+ * vertex/birth face in the input mesh. The names of the custom components are
+ * `"birthVertex"` and `"birthFace"`.
+ *
+ * @return A new Mesh created by filtering the faces of the input mesh `m`.
+ */
+template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType>
+OutMeshType perFaceMeshFilter(
+	const InMeshType& m,
+	std::function<bool(const typename InMeshType::FaceType&)>&& faceFilter,
+	bool saveBirthIndicesInCustomComponent)
+{
+	auto view = m.faces() | std::views::transform(faceFilter);
+
+	return perFaceMeshFilter<InMeshType, OutMeshType>(
+		m,
+		view,
+		saveBirthIndicesInCustomComponent);
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the faces of the
  * input mesh `m` filtered using the `faceFilterRng` range. Only vertices
  * belonging to the imported faces will be imported in the output mesh.
  *
@@ -106,7 +192,7 @@ OutMeshType perVertexMeshFilter(
  * `FaceMeshConcept`. By default, it is the same of the input mesh type.
  *
  * @param[in] m: input mesh
- * @param[in] vertexFilterRng: range of values that are evaluated as booleans,
+ * @param[in] faceFilterRng: range of values that are evaluated as booleans,
  * one for each face of the input mesh. Its type must satisfy the `Range`
  * concept.
  * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
@@ -124,7 +210,7 @@ OutMeshType perFaceMeshFilter(
 	Range auto&& faceFilterRng,
 	bool saveBirthIndicesInCustomComponent)
 {
-	using InVertexType = typename InMeshType::VertexType;
+	using InVertexType = InMeshType::VertexType;
 
 	OutMeshType res;
 	res.enableSameOptionalComponentsOf(m);
@@ -145,7 +231,9 @@ OutMeshType perFaceMeshFilter(
 
 	std::vector<uint> vertexMapping(m.vertexContainerSize(), UINT_NULL);
 
-	for (const auto& [birthF, filter] : c9::zip(m.faces(), faceFilterRng)) {
+	for (const auto& [birthF, filter] :
+		 std::views::zip(m.faces(), faceFilterRng))
+	{
 		if (filter) {
 			std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
 			uint vi = 0; // incremented with vertices of the face

@@ -30,7 +30,7 @@ namespace internal {
 template<Point3Concept PointType>
 PointType sphericalFibonacciPoint(uint i, uint n)
 {
-	using ScalarType = typename PointType::ScalarType;
+	using ScalarType = PointType::ScalarType;
 
 	const ScalarType Phi      = ScalarType(std::sqrt(ScalarType(5)) * 0.5 + 0.5);
 	const ScalarType phi      = 2.0 * M_PI * (i / Phi - std::floor(i / Phi));
@@ -58,7 +58,7 @@ PointType sphericalFibonacciPoint(uint i, uint n)
 template<Point3Concept PointType>
 std::vector<PointType> sphericalFibonacciPointSet(uint n)
 {
-	using ScalarType = typename PointType::ScalarType;
+	using ScalarType = PointType::ScalarType;
 
 	std::vector<PointType> v(n);
 	for (uint i = 0; i < n; ++i)

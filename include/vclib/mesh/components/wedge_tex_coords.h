@@ -76,6 +76,7 @@ namespace vcl::comp {
 template<typename Scalar, int N, typename ElementType = void, bool OPT = false>
 class WedgeTexCoords :
 		public ContainerComponent<
+			WedgeTexCoords<Scalar, N, ElementType, OPT>,
 			WEDGE_TEX_COORDS,
 			vcl::TexCoord<Scalar>,
 			N,
@@ -85,6 +86,7 @@ class WedgeTexCoords :
 			true>
 {
 	using Base = ContainerComponent<
+		WedgeTexCoords<Scalar, N, ElementType, OPT>,
 		WEDGE_TEX_COORDS,
 		vcl::TexCoord<Scalar>,
 		N,
@@ -103,14 +105,11 @@ public:
 
 	/* Iterator Types declaration */
 
-	using WedgeTexCoordsIterator =
-		typename Vector<vcl::TexCoord<Scalar>, N>::Iterator;
+	using WedgeTexCoordsIterator = Vector<vcl::TexCoord<Scalar>, N>::Iterator;
 	using ConstWedgeTexCoordsIterator =
-		typename Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
+		Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
 
 	/* Member functions */
-
-	bool isAvailable() const;
 
 	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);
 	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const;

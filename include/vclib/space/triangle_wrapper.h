@@ -32,7 +32,7 @@ template<PointConcept PointT>
 class TriangleWrapper
 {
 public:
-	using ScalarType = typename PointT::ScalarType;
+	using ScalarType = PointT::ScalarType;
 	using PointType = PointT;
 
 	static const uint DIM = PointT::DIM;

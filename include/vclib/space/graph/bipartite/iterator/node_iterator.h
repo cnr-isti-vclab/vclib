@@ -32,7 +32,7 @@ class NodeIterator
 public:
 	using Iterator::Iterator;
 
-	using value_type = typename Iterator::value_type::InfoType;
+	using value_type = Iterator::value_type::InfoType;
 	using reference = const value_type&;
 	using pointer = const value_type*;
 

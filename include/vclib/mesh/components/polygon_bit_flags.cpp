@@ -52,23 +52,6 @@ void PolygonBitFlags<N, El, O>::init()
 }
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<int N, typename El, bool O>
-bool PolygonBitFlags<N, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns whether the current Polygon is deleted or not.
  * @return true if the Polygon is deleted, false otherwise.
  */
@@ -466,26 +449,26 @@ void PolygonBitFlags<N, El, O>::clear() requires (N < 0)
 template<int N, typename El, bool O>
 auto PolygonBitFlags<N, El, O>::flags() -> BitSet<FT>&
 {
-	return Base::additionalData(this);
+	return Base::additionalData();
 }
 
 template<int N, typename El, bool O>
 auto PolygonBitFlags<N, El, O>::flags() const -> const BitSet<FT>&
 {
-	return Base::additionalData(this);
+	return Base::additionalData();
 }
 
 template<int N, typename El, bool O>
 auto PolygonBitFlags<N, El, O>::edgeFlags() -> Vector<BitSet<FT>, -1>&
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 template<int N, typename El, bool O>
 auto PolygonBitFlags<N, El, O>::edgeFlags() const
 	-> const Vector<BitSet<FT>, -1>&
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 } // namespace vcl::comp

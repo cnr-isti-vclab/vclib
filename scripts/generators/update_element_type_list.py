@@ -38,7 +38,7 @@ def update_element_list(element):
     with open(target_file, 'r') as file :
         element_file = file.read()
 
-    start = 'enum ElementEnumType {'
+    start = 'enum ElementIDEnum : uint {'
     element_file = replace(element_file, element.name_upper, start)
 
     start = 'ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {'

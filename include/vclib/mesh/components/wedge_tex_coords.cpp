@@ -28,23 +28,6 @@
 namespace vcl::comp {
 
 /**
- * @private
- * @brief Returns `true` if the component is available, `false` otherwise.
- *
- * This member function can return `false` only if the component is optional,
- * and it is not enabled.
- *
- * This member function is hidden by the element that inherits this class.
- *
- * @return `true` if the component is available, `false` otherwise.
- */
-template<typename Scalar, int N, typename El, bool O>
-bool WedgeTexCoords<Scalar, N, El, O>::isAvailable() const
-{
-	return Base::isAvailable(this);
-}
-
-/**
  * @brief Returns a reference to the i-th wedge texcoord of the element.
  *
  * You can use this function to set the i-th texcoord of the element:
@@ -142,7 +125,7 @@ void WedgeTexCoords<Scalar, N, El, O>::setWedgeTexCoords(
 template<typename Scalar, int N, typename El, bool O>
 short& WedgeTexCoords<Scalar, N, El, O>::textureIndex()
 {
-	return Base::additionalData(this);
+	return Base::additionalData();
 }
 
 /**
@@ -154,7 +137,7 @@ short& WedgeTexCoords<Scalar, N, El, O>::textureIndex()
 template<typename Scalar, int N, typename El, bool O>
 short WedgeTexCoords<Scalar, N, El, O>::textureIndex() const
 {
-	return Base::additionalData(this);
+	return Base::additionalData();
 }
 
 /**
@@ -331,14 +314,14 @@ void WedgeTexCoords<Scalar, N, El, O>::importWedgeTexCoordsFrom(
 template<typename Scalar, int N, typename El, bool O>
 Vector<vcl::TexCoord<Scalar>, N>& WedgeTexCoords<Scalar, N, El, O>::texCoords()
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 template<typename Scalar, int N, typename El, bool O>
 const Vector<vcl::TexCoord<Scalar>, N>&
 WedgeTexCoords<Scalar, N, El, O>::texCoords() const
 {
-	return Base::container(this);
+	return Base::container();
 }
 
 /**
