@@ -71,7 +71,7 @@ Face<MeshType, Comps...>::Face(Rng&& r)
 template<typename MeshType, typename... Comps>
 template<typename... V>
 Face<MeshType, Comps...>::Face(V... args)
-	requires (std::convertible_to<V, VertexType*>, ...)
+	requires (std::convertible_to<V, VertexType*> && ...)
 {
 	setVertices(std::list({args...}));
 }
@@ -116,7 +116,7 @@ void Face<MeshType, Comps...>::setVertices(Rng&& r)
 template<typename MeshType, typename... Comps>
 template<typename... V>
 void Face<MeshType, Comps...>::setVertices(V... args)
-	requires (std::convertible_to<V, VertexType*>, ...)
+	requires (std::convertible_to<V, VertexType*> && ...)
 {
 	setVertices(std::list({args...}));
 }

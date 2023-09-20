@@ -67,7 +67,7 @@ public:
 
 	template<typename... V>
 	Face(V... args)
-		requires (std::convertible_to<V, VertexType*>, ...);
+		requires (std::convertible_to<V, VertexType*> && ...);
 
 	template<Range Rng>
 	void setVertices(Rng&& r)
@@ -75,7 +75,7 @@ public:
 
 	template<typename... V>
 	void setVertices(V... args)
-		requires (std::convertible_to<V, VertexType*>, ...);
+		requires (std::convertible_to<V, VertexType*> && ...);
 
 	void resizeVertices(uint n) requires PolygonFaceConcept<Face>;
 
