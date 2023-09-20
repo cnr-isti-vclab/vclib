@@ -38,28 +38,27 @@ Face<MeshType, Comps...>::Face()
 }
 
 /**
- * @brief Constructs a Face with the given set of vertex pointers.
+ * @brief Constructs a Face with the given range of vertex pointers.
  *
- * Sets a list of Vertex pointers to the face.
- * If the Face size is static, the number of vertices of the list must be equal
+ * Sets a range of Vertex pointers to the face.
+ * If the Face size is static, the number of vertices of the range must be equal
  * to the size of the Face (the value returned by vertexNumber()). If the Face
  * size is dynamic, it will take care to update the also the size of the
  * components tied to the vertex number of the face.
  *
- * @todo do proper checks on the number of vertices at compile time and at
- * runtime
- *
- * @param[in] list: a container of vertex pointers in counterclockwise order
+ * @param[in] r: a range of vertex pointers in counterclockwise order
  * that will be set as vertices of the face.
  */
 template<typename MeshType, typename... Comps>
-Face<MeshType, Comps...>::Face(const std::vector<VertexType*>& list) // TODO add requires
+template<Range Rng>
+Face<MeshType, Comps...>::Face(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, VertexType*>
 {
-	setVertices(list);
+	setVertices(r);
 }
 
 /**
- * @brief Creates a new Face, setting a list of Vertex pointers to it.
+ * @brief Creates a new Face, setting the Vertex pointer arguments to it.
  *
  * If the Face size is static, the number of vertices of the list must be equal
  * to the size of the Face (the value returned by vertexNumber()). If the Face
@@ -71,33 +70,35 @@ Face<MeshType, Comps...>::Face(const std::vector<VertexType*>& list) // TODO add
  */
 template<typename MeshType, typename... Comps>
 template<typename... V>
-Face<MeshType, Comps...>::Face(V... args) // TODO add requires
+Face<MeshType, Comps...>::Face(V... args)
+	requires (std::convertible_to<V, VertexType*>, ...)
 {
-	setVertices({args...});
+	setVertices(std::list({args...}));
 }
 
 /**
- * @brief Sets a list of Vertex pointers to the face.
+ * @brief Sets all the Vertex pointers to the face.
  *
- * If the Face size is static, the number of vertices of the list must be equal
- * to the size of the Face (the value returned by vertexNumber()). If the Face
- * size is dynamic, it will take care to update the also the size of the
+ * If the Face size is static, the number of vertices of the input range must be
+ * equal to the size of the Face (the value returned by vertexNumber()). If the
+ * Face size is dynamic, it will take care to update the also the size of the
  * components tied to the vertex number of the face.
  *
- * @param[in] list: a container of vertex pointers in counterclockwise order
+ * @param[in] r: a range of vertex pointers in counterclockwise order
  * that will be set as vertices of the face.
  */
 template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::setVertices(const std::vector<VertexType*>& list)
-// TODO - use a view instead of vector of vertex pointers
+template<Range Rng>
+void Face<MeshType, Comps...>::setVertices(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, VertexType*>
 {
 	using F = Face<MeshType, TypeWrapper<Comps...>>;
 	
-	VPtrs::setVertices(list);
+	VPtrs::setVertices(r);
 
 	// if polygonal, I need to resize all the TTVN components
 	if constexpr (NV < 0) {
-		(resizeTTVNComponent<Comps>(list.size()), ...);
+		(resizeTTVNComponent<Comps>(std::ranges::size(r)), ...);
 	}
 }
 
@@ -115,8 +116,9 @@ void Face<MeshType, Comps...>::setVertices(const std::vector<VertexType*>& list)
 template<typename MeshType, typename... Comps>
 template<typename... V>
 void Face<MeshType, Comps...>::setVertices(V... args)
+	requires (std::convertible_to<V, VertexType*>, ...)
 {
-	setVertices({args...});
+	setVertices(std::list({args...}));
 }
 
 /**

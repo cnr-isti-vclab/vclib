@@ -25,9 +25,11 @@
 #define VCL_MESH_ELEMENTS_FACE_H
 
 #include <vclib/concepts/mesh/elements/face.h>
+#include <vclib/concepts/ranges/range.h>
 #include <vclib/views/view.h>
 
 #include "element.h"
+
 
 namespace vcl {
 
@@ -59,15 +61,21 @@ public:
 
 	Face();
 
-	Face(const std::vector<VertexType*>& list); // todo add requires
+	template<Range Rng>
+	Face(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, VertexType*>;
 
 	template<typename... V>
-	Face(V... args); // todo add requires
+	Face(V... args)
+		requires (std::convertible_to<V, VertexType*>, ...);
 
-	void setVertices(const std::vector<VertexType*>& list);
+	template<Range Rng>
+	void setVertices(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, VertexType*>;
 
 	template<typename... V>
-	void setVertices(V... args);
+	void setVertices(V... args)
+		requires (std::convertible_to<V, VertexType*>, ...);
 
 	void resizeVertices(uint n) requires PolygonFaceConcept<Face>;
 
