@@ -120,16 +120,20 @@ void AdjacentFaces<Face, N, TT, El, O>::setAdjFace(Face* f, uint i)
 /**
  * @brief Sets all the adjacent faces of this element.
  *
- * If the size of the container is static, the size of the input vector must be
+ * If the size of the container is static, the size of the input range must be
  * the same one of the container.
  *
- * @param[in] list: vector of adjacent faces to set.
+ * @tparam Rng: The type of the range of adjacent faces to set. The value type
+ * of the range must be convertible to a pointer to an AdjacentFace.
+ *
+ * @param[in] r: range of adjacent faces to set.
  */
 template<typename Face, int N, bool TT, typename El, bool O>
-void AdjacentFaces<Face, N, TT, El, O>::setAdjFaces(
-	const std::vector<Face*>& list)
+template<Range Rng>
+void AdjacentFaces<Face, N, TT, El, O>::setAdjFaces(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, Face*>
 {
-	Base::container().set(list);
+	Base::container().set(r);
 }
 
 /**

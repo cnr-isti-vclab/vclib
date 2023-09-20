@@ -120,16 +120,20 @@ void AdjacentEdges<Edge, N, TT, El, O>::setAdjEdge(Edge* e, uint i)
 /**
  * @brief Sets all the adjacent edges of the element.
  *
- * If the size of the container is static, the size of the input vector must be
+ * If the size of the container is static, the size of the input range must be
  * the same one of the container.
  *
- * @param[in] list: vector of adjacent edges to set.
+ * @tparam Rng: The type of the range of adjacent edges to set. The value type
+ * of the range must be convertible to a pointer to an AdjacentEdge.
+ *
+ * @param[in] r: range of adjacent edges to set.
  */
 template<typename Edge, int N, bool TT, typename El, bool O>
-void AdjacentEdges<Edge, N, TT, El, O>::setAdjEdges(
-	const std::vector<Edge*>& list)
+template<Range Rng>
+void AdjacentEdges<Edge, N, TT, El, O>::setAdjEdges(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, Edge*>
 {
-	Base::container().set(list);
+	Base::container().set(r);
 }
 
 /**

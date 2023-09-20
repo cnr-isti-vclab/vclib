@@ -109,11 +109,23 @@ void WedgeTexCoords<Scalar, N, El, O>::setWedgeTexCoord(
 	texCoords().set(t, i);
 }
 
+/**
+ * @brief Sets all the wedge texcoords of the element.
+ *
+ * If the size of the container is static, the size of the input range must be
+ * the same one of the container.
+ *
+ * @tparam Rng: The type of the range of wedge texcoords to set. The value type
+ * of the range must be convertible to a vcl::TexCoord<Scalar>.
+ *
+ * @param[in] r: range of texcoords to set.
+ */
 template<typename Scalar, int N, typename El, bool O>
-void WedgeTexCoords<Scalar, N, El, O>::setWedgeTexCoords(
-	const std::vector<vcl::TexCoord<Scalar>>& list)
+template<Range Rng>
+void WedgeTexCoords<Scalar, N, El, O>::setWedgeTexCoords(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, vcl::TexCoord<Scalar>>
 {
-	texCoords().set(list);
+	texCoords().set(r);
 }
 
 /**

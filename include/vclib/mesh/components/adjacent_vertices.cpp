@@ -120,16 +120,20 @@ void AdjacentVertices<Vertex, El, O>::setAdjVertex(Vertex* v, uint i)
 /**
  * @brief Sets all the adjacent vertices of this element.
  *
- * If the size of the container is static, the size of the input vector must be
+ * If the size of the container is static, the size of the input range must be
  * the same one of the container.
  *
- * @param[in] list: vector of adjacent vertices to set.
+ * @tparam Rng: The type of the range of adjacent vertices to set. The value
+ * type of the range must be convertible to a pointer to an AdjacentVertex.
+ *
+ * @param[in] r: range of adjacent vertices to set.
  */
 template<typename Vertex, typename El, bool O>
-void AdjacentVertices<Vertex, El, O>::setAdjVertices(
-	const std::vector<Vertex*>& list)
+template<Range Rng>
+void AdjacentVertices<Vertex, El, O>::setAdjVertices(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, Vertex*>
 {
-	Base::container().set(list);
+	Base::container().set(r);
 }
 
 /**

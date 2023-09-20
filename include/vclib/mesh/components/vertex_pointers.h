@@ -117,7 +117,10 @@ public:
 	const Vertex* vertexMod(int i) const;
 
 	void setVertex(Vertex* v, uint i);
-	void setVertices(const std::vector<Vertex*>& list);
+
+	template<Range Rng>
+	void setVertices(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, Vertex*>;
 
 	bool containsVertex(const Vertex* v) const;
 

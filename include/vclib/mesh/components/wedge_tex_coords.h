@@ -118,7 +118,10 @@ public:
 	const vcl::TexCoord<Scalar>& wedgeTexCoordMod(int i) const;
 
 	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
-	void setWedgeTexCoords(const std::vector<vcl::TexCoord<Scalar>>& list);
+
+	template<Range Rng>
+	void setWedgeTexCoords(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, vcl::TexCoord<Scalar>>;
 
 	short& textureIndex();
 	short textureIndex() const;

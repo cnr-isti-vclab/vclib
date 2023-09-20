@@ -114,11 +114,23 @@ void VertexPointers<Vertex, N, El>::setVertex(Vertex* v, uint i)
 	Base::container().set(v, i);
 }
 
+/**
+ * @brief Sets all the vertex pointers of the element.
+ *
+ * If the size of the container is static, the size of the input range must be
+ * the same one of the container.
+ *
+ * @tparam Rng: The type of the range of vertex pointers to set. The value type
+ * of the range must be convertible to a pointer to a Vertex.
+ *
+ * @param[in] r: range of vertex pointers to set.
+ */
 template<typename Vertex, int N, typename El>
-void VertexPointers<Vertex, N, El>::setVertices(
-	const std::vector<Vertex*>& list)
+template<Range Rng>
+void VertexPointers<Vertex, N, El>::setVertices(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, Vertex*>
 {
-	Base::container().set(list);
+	Base::container().set(r);
 }
 
 /**

@@ -123,7 +123,10 @@ public:
 	const Face* adjFaceMod(int i) const;
 
 	void setAdjFace(Face* f, uint i);
-	void setAdjFaces(const std::vector<Face*>& list);
+
+	template<Range Rng>
+	void setAdjFaces(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, Face*>;
 
 	bool containsAdjFace(const Face* f) const;
 

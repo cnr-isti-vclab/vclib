@@ -43,7 +43,7 @@ constexpr const MeshType* ParentMeshPointer<MeshType>::parentMesh() const
 }
 
 template<typename MeshType>
-void ParentMeshPointer<MeshType>::setParentMesh(void *parentMesh)
+void ParentMeshPointer<MeshType>::setParentMesh(void* parentMesh)
 {
 	parent = static_cast<MeshType*>(parentMesh);
 }

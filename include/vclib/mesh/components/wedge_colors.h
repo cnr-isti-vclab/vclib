@@ -107,7 +107,10 @@ public:
 	const vcl::Color& wedgeColorMod(int i) const;
 
 	void setWedgeColor(const vcl::Color& c, uint i);
-	void setWedgeColors(const std::vector<vcl::Color>& list);
+
+	template<Range Rng>
+	void setWedgeColors(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, vcl::Color>;
 
 	/* Iterator Member functions */
 

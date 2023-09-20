@@ -105,10 +105,23 @@ void WedgeColors<N, El, O>::setWedgeColor(const vcl::Color& c, uint i)
 	colors().set(c, i);
 }
 
+/**
+ * @brief Sets all the wedge colors of the element.
+ *
+ * If the size of the container is static, the size of the input range must be
+ * the same one of the container.
+ *
+ * @tparam Rng: The type of the range of wedge colors to set. The value type
+ * of the range must be convertible to a vcl::Color.
+ *
+ * @param[in] r: range of colors to set.
+ */
 template<int N, typename El, bool O>
-void WedgeColors<N, El, O>::setWedgeColors(const std::vector<vcl::Color>& list)
+template<Range Rng>
+void WedgeColors<N, El, O>::setWedgeColors(Rng&& r)
+	requires RangeOfConvertibleTo<Rng, vcl::Color>
 {
-	colors().set(list);
+	colors().set(r);
 }
 
 /**

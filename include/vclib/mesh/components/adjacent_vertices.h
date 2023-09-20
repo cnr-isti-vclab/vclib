@@ -108,7 +108,10 @@ public:
 	const Vertex* adjVertexMod(int i) const;
 
 	void setAdjVertex(Vertex* v, uint i);
-	void setAdjVertices(const std::vector<Vertex*>& list);
+
+	template<Range Rng>
+	void setAdjVertices(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, Vertex*>;
 
 	bool containsAdjVertex(const Vertex* v) const;
 

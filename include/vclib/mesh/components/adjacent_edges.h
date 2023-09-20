@@ -123,7 +123,10 @@ public:
 	const Edge* adjEdgeMod(int i) const;
 
 	void setAdjEdge(Edge* f, uint i);
-	void setAdjEdges(const std::vector<Edge*>& list);
+
+	template<Range Rng>
+	void setAdjEdges(Rng&& r)
+		requires RangeOfConvertibleTo<Rng, Edge*>;
 
 	bool containsAdjEdge(const Edge* e) const;
 
