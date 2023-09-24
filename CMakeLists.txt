@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/bounding_box.cpp
 	include/vclib/algorithms/clean.cpp
 	include/vclib/algorithms/filter.cpp
 	include/vclib/algorithms/fitting.cpp
