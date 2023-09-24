@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/shuffle.cpp
 	include/vclib/algorithms/smooth.cpp
 	include/vclib/algorithms/sort.cpp
 	include/vclib/algorithms/stat.cpp
