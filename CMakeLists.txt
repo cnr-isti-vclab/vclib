@@ -343,8 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/sort.cpp
-	include/vclib/algorithms/stat.cpp
 	include/vclib/algorithms/create/dodecahedron.cpp
 	include/vclib/algorithms/create/hexahedron.cpp
 	include/vclib/algorithms/create/icosahedron.cpp
