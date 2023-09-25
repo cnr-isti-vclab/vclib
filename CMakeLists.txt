@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/export/matrix.cpp
 	include/vclib/algorithms/import/matrix.cpp
 	include/vclib/algorithms/intersection/element.cpp
 	include/vclib/algorithms/intersection/mesh.cpp
