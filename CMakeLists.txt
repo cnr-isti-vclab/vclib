@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/stat/quality.cpp
 	include/vclib/algorithms/stat/selection.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
 	include/vclib/algorithms/update/color.cpp
