@@ -24,15 +24,37 @@
 #ifndef VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H
 #define VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/algorithms/bounding_box.h>
 
 namespace vcl {
+
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<HasBoundingBox MeshType>
 void updateBoundingBox(MeshType& m);
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "bounding_box.cpp"
+/**
+ * @brief Updates the bounding box of the mesh.
+ *
+ * @tparam MeshType: type of the input mesh. It must satisfy the HasBoundingBox
+ * concept.
+ *
+ * @param[in] m: input mesh on which the bounding box is computed and updated.
+ *
+ * @ingroup update
+ */
+template<HasBoundingBox MeshType>
+void updateBoundingBox(MeshType& m)
+{
+	m.boundingBox() = vcl::boundingBox(m);
+}
+
+} // namespace vcl
 
 #endif // VCL_ALGORITHMS_UPDATE_BOUNDING_BOX_H

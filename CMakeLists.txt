@@ -343,8 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/update/bounding_box.cpp
-	include/vclib/algorithms/update/color.cpp
 	include/vclib/algorithms/update/curvature.cpp
 	include/vclib/algorithms/update/flag.cpp
 	include/vclib/algorithms/update/normal.cpp
