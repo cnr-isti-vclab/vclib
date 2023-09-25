@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/distance/mesh.cpp
 	include/vclib/algorithms/distance/misc.cpp
 	include/vclib/algorithms/export/matrix.cpp
 	include/vclib/algorithms/import/matrix.cpp
