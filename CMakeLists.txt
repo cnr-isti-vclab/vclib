@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/polygon/topology.cpp
 	include/vclib/algorithms/stat/quality.cpp
 	include/vclib/algorithms/stat/selection.cpp
 	include/vclib/algorithms/update/bounding_box.cpp
