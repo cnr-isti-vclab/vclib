@@ -343,8 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/create/dodecahedron.cpp
-	include/vclib/algorithms/create/hexahedron.cpp
 	include/vclib/algorithms/create/icosahedron.cpp
 	include/vclib/algorithms/create/sphere.cpp
 	include/vclib/algorithms/create/tetrahedron.cpp
