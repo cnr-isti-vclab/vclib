@@ -24,9 +24,16 @@
 #ifndef VCL_ALGORITHMS_UPDATE_SELECTION_H
 #define VCL_ALGORITHMS_UPDATE_SELECTION_H
 
+#include <vclib/concepts/range.h>
 #include <vclib/mesh/requirements.h>
 
+#include "../clean.h"
+
 namespace vcl {
+
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<MeshConcept MeshType>
 void clearVertexSelection(MeshType& m);
@@ -40,8 +47,57 @@ void clearEdgeSelection(MeshType& m);
 template<FaceMeshConcept MeshType>
 void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst);
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "selection.cpp"
+namespace internal {
+
+template<vcl::Range Rng>
+void clearSelection(Rng&& r)
+{
+	for (auto& e : r) {
+		e.selected() = false;
+	}
+}
+
+} // namespace vcl::internal
+
+template<MeshConcept MeshType>
+void clearVertexSelection(MeshType& m)
+{
+	internal::clearSelection(m.vertices());
+}
+
+template<FaceMeshConcept MeshType>
+void clearFaceSelection(MeshType& m)
+{
+	internal::clearSelection(m.faces());
+}
+
+template<EdgeMeshConcept MeshType>
+void clearEdgeSelection(MeshType& m)
+{
+	internal::clearSelection(m.edges());
+}
+
+template<FaceMeshConcept MeshType>
+void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
+{
+	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);
+
+	using VertexType = MeshType::VertexType;
+
+	for (VertexType& v : m.vertices()) {
+		if (nonManifoldVertices[m.index(v)]) {
+			v.selected() = true;
+		}
+		else if (clearSelectionFirst) {
+			v.selected() = false;
+		}
+	}
+}
+
+} // namespace vcl
 
 #endif // VCL_ALGORITHMS_UPDATE_SELECTION_H

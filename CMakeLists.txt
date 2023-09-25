@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/update/selection.cpp
 	include/vclib/algorithms/update/topology.cpp
 	include/vclib/algorithms/update/transform.cpp
 	include/vclib/io/load.cpp
