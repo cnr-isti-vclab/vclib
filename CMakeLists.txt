@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/update/curvature.cpp
 	include/vclib/algorithms/update/flag.cpp
 	include/vclib/algorithms/update/normal.cpp
 	include/vclib/algorithms/update/quality.cpp
