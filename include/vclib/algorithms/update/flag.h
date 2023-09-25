@@ -24,15 +24,64 @@
 #ifndef VCL_ALGORITHMS_UPDATE_FLAG_H
 #define VCL_ALGORITHMS_UPDATE_FLAG_H
 
+#include <vclib/algorithms/sort.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<FaceMeshConcept MeshType>
 void updateBorder(MeshType& m);
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "flag.cpp"
+/**
+ * @brief Computes per-face border flags without requiring any kind of
+ * topology info.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices
+ *   - Faces
+ *
+ * Complexity: O(NF log (NF))
+ *
+ * @param m: the mesh on which the border flags will be updated
+ */
+template<FaceMeshConcept MeshType>
+void updateBorder(MeshType& m)
+{
+	using VertexType = MeshType::VertexType;
+	using FaceType   = MeshType::FaceType;
+
+	for (FaceType& f : m.faces())
+		f.unsetAllEdgesOnBorder();
+
+	if (m.faceNumber() == 0)
+		return;
+
+	std::vector<MeshEdgeUtil<MeshType>> e = fillAndSortMeshEdgeUtilVector(m);
+
+	typename std::vector<MeshEdgeUtil<MeshType>>::iterator pe, ps;
+	ps = e.begin();
+	pe = e.begin();
+	do {
+		if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
+			if (pe - ps == 1) {
+				ps->f->edgeOnBorder(ps->e) = true;
+			}
+			ps = pe;
+		}
+		if (pe != e.end())
+			++pe;
+	} while (pe != e.end());
+}
+
+} // namespace vcl
 
 #endif // VCL_ALGORITHMS_UPDATE_FLAG_H
