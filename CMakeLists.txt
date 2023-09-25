@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/intersection/mesh.cpp
 	include/vclib/algorithms/intersection/misc.cpp
 	include/vclib/algorithms/polygon/geometry.cpp
 	include/vclib/algorithms/polygon/topology.cpp
