@@ -33,9 +33,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
 auto pointFaceDistance(
@@ -65,9 +65,9 @@ auto pointFaceDistance(
 	const FaceType&  f,
 	bool             signedDist = false);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 /**
  * @brief Calculate the distance between a 3D point and a 3D triangle face.

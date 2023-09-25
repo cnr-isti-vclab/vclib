@@ -32,9 +32,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<PlaneConcept PlaneType, Box3Concept BoxType>
 bool planeBoxIntersect(const PlaneType& p, const BoxType& box);
@@ -76,9 +76,9 @@ bool triangleSphereItersect(
 	const TriangleType&   t,
 	const SphereType& sphere);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 namespace internal {
 

@@ -31,9 +31,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<PolygonMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType createDodecahedron(LogType& log = nullLogger);
@@ -41,9 +41,9 @@ MeshType createDodecahedron(LogType& log = nullLogger);
 template<TriangleMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType createDodecahedron(LogType& log = nullLogger);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 /**
  * @brief Creates and returns a Polygon Mesh containing a Dodecahedron.

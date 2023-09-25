@@ -34,9 +34,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<FaceConcept FaceType, PointConcept PointType>
 bool faceBoxIntersect(
@@ -55,9 +55,9 @@ bool faceSphereItersect(
 	const FaceType& f,
 	const Sphere<SScalar>& sphere);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 template<FaceConcept FaceType, PointConcept PointType>
 bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)

@@ -28,9 +28,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<FaceMeshConcept MeshType>
 MeshType createHexahedron();
@@ -41,9 +41,9 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max);
 template<FaceMeshConcept MeshType, Point3Concept CoordType>
 MeshType createCube(const CoordType& min, double edgeLength);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 namespace internal {
 

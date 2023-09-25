@@ -30,9 +30,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceNormal(const FaceType& f);
@@ -52,9 +52,9 @@ auto faceAngleOnVertexRad(const FaceType& f, uint v);
 template<FaceConcept FaceType>
 auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjacentFaces<FaceType>;
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 /**
  * @brief Computes the normal of a face, without modifying the face. Works both for triangle and

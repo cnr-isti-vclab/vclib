@@ -36,9 +36,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<FaceConcept FaceType>
 bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
@@ -73,9 +73,9 @@ void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uin
 template<FaceMeshConcept MeshType>
 uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 /**
  * @brief Check if an edge in the given face is manifold.

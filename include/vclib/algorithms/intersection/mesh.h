@@ -28,9 +28,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<EdgeMeshConcept EdgeMesh, FaceMeshConcept MeshType, PlaneConcept PlaneType>
 EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl);
@@ -41,9 +41,9 @@ MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& s
 template<FaceMeshConcept MeshType, typename SScalar>
 MeshType meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere, double tol);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 /**
  * @brief Takes a mesh and a plane as inputs and computes the intersection between the mesh and the

@@ -28,9 +28,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<FaceMeshConcept MeshType>
 MeshType createTetrahedron();
@@ -42,9 +42,9 @@ MeshType createTetrahedron(
 	const CoordType& p2,
 	const CoordType& p3);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 /**
  * @brief Creates a simple tetrahedron mesh with the following point

@@ -36,9 +36,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 struct HausdorffDistResult {
 	double minDist  = std::numeric_limits<double>::max();
@@ -63,9 +63,9 @@ HausdorffDistResult hausdorffDistance(
 	uint nSamples = 0,
 	bool deterministic = false);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 namespace internal {
 

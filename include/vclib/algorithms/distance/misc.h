@@ -29,9 +29,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<Point3Concept PointType, PlaneConcept PlaneType>
 auto pointPlaneDistance(const PointType& p, const PlaneType& plane, bool signedDist = false);
@@ -44,9 +44,9 @@ template<PointConcept PointType, SegmentConcept SegmentType>
 auto pointSegmentDistance(const PointType& p, const SegmentType& s)
 	requires (PointType::DIM == SegmentType::DIM);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 template<Point3Concept PointType, PlaneConcept PlaneType>
 auto pointPlaneDistance(const PointType& p, const PlaneType& plane, bool signedDist)

@@ -29,9 +29,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexMatrix(const MeshType& mesh);
@@ -81,9 +81,9 @@ Vect vertexQualityVector(const MeshType& mesh);
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceQualityVector(const MeshType& mesh);
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 /**
  * @brief Get a #V*3 Matrix of scalars containing the coordinates of the

@@ -33,9 +33,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 /**
  * @brief The CreateSphereArgs structs contains a series of parameters to
@@ -99,9 +99,9 @@ MeshType createSphere(
 template<FaceMeshConcept MeshType>
 MeshType createSphere();
 
-/***************
- * Definitions *
- ***************/
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
 namespace internal {
 
