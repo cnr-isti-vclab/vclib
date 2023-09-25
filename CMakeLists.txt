@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/update/transform.cpp
 	include/vclib/io/load.cpp
 	include/vclib/io/save.cpp
 	include/vclib/io/internal/io_read.cpp
