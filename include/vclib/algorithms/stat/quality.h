@@ -251,6 +251,4 @@ Histogram<HScalar> faceQualityHistogram(const MeshType& m, bool selectionOnly, u
 
 } // namespace vcl
 
-#include "quality.cpp"
-
 #endif // VCL_ALGORITHMS_STAT_QUALITY_H
