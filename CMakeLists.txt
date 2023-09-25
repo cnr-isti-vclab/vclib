@@ -343,7 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/algorithms/create/tetrahedron.cpp
 	include/vclib/algorithms/distance/element.cpp
 	include/vclib/algorithms/distance/mesh.cpp
 	include/vclib/algorithms/distance/misc.cpp
