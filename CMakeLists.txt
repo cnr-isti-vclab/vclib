@@ -382,17 +382,6 @@ set(SOURCES
 	include/vclib/mesh/utils/mesh_inertia.cpp
 	include/vclib/mesh/utils/mesh_pos.cpp
 	include/vclib/mesh/utils/tri_poly_index_bimap.cpp
-	include/vclib/space/bit_set/bit_proxy.cpp
-	include/vclib/space/graph/undirected_node.cpp
-	include/vclib/space/graph/bipartite/bipartite_graph.cpp
-	include/vclib/space/graph/bipartite/iterator/adjacent_node_iterator.cpp
-	include/vclib/space/grid/abstract_grid.cpp
-	include/vclib/space/grid/hash_table_grid.cpp
-	include/vclib/space/grid/regular_grid.cpp
-	include/vclib/space/grid/static_grid.cpp
-	include/vclib/space/sampler/mesh_sampler.cpp
-	include/vclib/space/sampler/point_sampler.cpp
-	include/vclib/space/sampler/vertex_sampler.cpp
 )
 
 set(HEADERS_LIB

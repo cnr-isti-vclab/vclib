@@ -26,6 +26,10 @@
 
 namespace vcl::internal {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<typename Graph, typename Iterator>
 class AdjacentNodeIterator
 {
@@ -44,8 +48,48 @@ protected:
 	Iterator it;
 };
 
-} // namespace vcl::internal
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "adjacent_node_iterator.cpp"
+template<typename Graph, typename Iterator>
+AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator()
+{
+}
+
+template<typename Graph, typename Iterator>
+AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator(const Graph& g, Iterator it) :
+		g(&g), it(it)
+{
+}
+
+template<typename Graph, typename Iterator>
+bool AdjacentNodeIterator<Graph, Iterator>::operator==(const AdjacentNodeIterator& otherIterator) const
+{
+	return (g == otherIterator.g && it == otherIterator.it);
+}
+
+template<typename Graph, typename Iterator>
+bool AdjacentNodeIterator<Graph, Iterator>::operator!=(const AdjacentNodeIterator& otherIterator) const
+{
+	return !(*this == otherIterator);
+}
+
+template<typename Graph, typename Iterator>
+AdjacentNodeIterator<Graph, Iterator> AdjacentNodeIterator<Graph, Iterator>::operator++()
+{
+	++it;
+	return *this;
+}
+
+template<typename Graph, typename Iterator>
+AdjacentNodeIterator<Graph, Iterator> AdjacentNodeIterator<Graph, Iterator>::operator++(int)
+{
+	AdjacentNodeIterator tmp;
+	++it;
+	return tmp;
+}
+
+} // namespace vcl::internal
 
 #endif // VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
