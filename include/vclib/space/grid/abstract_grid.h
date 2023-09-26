@@ -31,7 +31,6 @@
 #include <vclib/concepts/range.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/comparators.h>
-#include <vclib/misc/mark.h>
 #include <vclib/space/sphere.h>
 
 namespace vcl {

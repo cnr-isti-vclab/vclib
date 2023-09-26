@@ -31,6 +31,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief The Timer class allows to instantiate simple Timer objects that can be used everywhere.
  *
@@ -58,8 +62,116 @@ private:
 	std::chrono::high_resolution_clock::time_point begin, end;
 };
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "timer.cpp"
+/**
+ * @brief Creates a timer with the caption "Timer". If the given boolean is true, the timer starts.
+ *
+ * @param[in] _start: if true, the timer will start when the object is created.
+ */
+inline Timer::Timer(bool _start) : caption("Timer"), isStopped(false)
+{
+	if (_start)
+		start();
+}
+
+/**
+ * @brief Creates a timer with the given caption. If the given boolean is true, the timer starts.
+ *
+ * @param[in] caption: the caption of the timer.
+ * @param[in] _start: if true, the timer will start when the object is created.
+ */
+inline Timer::Timer(const char* caption, bool _start) : caption(caption), isStopped(false)
+{
+	if (_start)
+		start();
+}
+
+/**
+ * @brief Creates a timer with the given caption. If the given boolean is true, the timer starts.
+ *
+ * @param[in] caption: the caption of the timer.
+ * @param[in] _start: if true, the timer will start when the object is created.
+ */
+inline Timer::Timer(const std::string& caption, bool _start) : caption(caption), isStopped(false)
+{
+	if (_start)
+		start();
+}
+
+/**
+ * @brief Starts the timer.
+ */
+inline void Timer::start()
+{
+	begin = std::chrono::high_resolution_clock::now();
+}
+
+/**
+ * @brief Stops the timer and prints the time passed between the call of start() and this member
+ * function. Printed time is expressed in seconds.
+ */
+inline void Timer::stopAndPrint()
+{
+	stop();
+	print();
+}
+
+/**
+ * @brief Stops the timer.
+ */
+inline void Timer::stop()
+{
+	end       = std::chrono::high_resolution_clock::now();
+	isStopped = true;
+}
+
+/**
+ * @brief Prints the time passed between the call of start() and this member function. Works also if
+ * the timer is not stopped. Printed time is expressed in seconds.
+ */
+inline void Timer::print() const
+{
+	double secs = delay();
+	int    mins = (int) secs / 60;
+	if (mins == 0)
+		std::cout << "[" << secs << " secs]\t" << caption << std::endl;
+	else {
+		secs      = secs - mins * 60;
+		int hours = mins / 60;
+		if (hours == 0)
+			std::cout << "[" << mins << " mins; " << secs << " secs]\t" << caption << std::endl;
+		else {
+			mins = mins - hours * 60;
+			std::cout << "[" << hours << " hours; " << mins << " mins; " << secs << " secs]\t"
+					  << caption << std::endl;
+		}
+	}
+}
+
+/**
+ * @brief Returns the time passed between the call of start() and this member function. Works also
+ * if the timer is not stopped. Returned time is expressed in seconds.
+ */
+inline double Timer::delay() const
+{
+	double secs;
+	if (isStopped) {
+		secs =
+			(double) (std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) /
+			1000000;
+	}
+	else {
+		std::chrono::high_resolution_clock::time_point s =
+			std::chrono::high_resolution_clock::now();
+		secs = (double) (std::chrono::duration_cast<std::chrono::microseconds>(s - begin).count()) /
+			   1000000;
+	}
+	return secs;
+}
+
+} // namespace vcl
 
 #endif // VCL_MISC_TIMER_H

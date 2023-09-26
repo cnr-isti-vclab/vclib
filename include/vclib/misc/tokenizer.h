@@ -31,6 +31,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief The Tokenizer class
  */
@@ -39,8 +43,11 @@ class Tokenizer
 public:
 	Tokenizer();
 	Tokenizer(const char* string, char separator, bool jumpEmptyTokens = true);
-	Tokenizer(const std::string& string, char separator, bool jumpEmptyTokens = true);
-	
+	Tokenizer(
+		const std::string& string,
+		char               separator,
+		bool               jumpEmptyTokens = true);
+
 	using iterator = std::vector<std::string>::const_iterator;
 	
 	iterator begin() const;
@@ -55,8 +62,70 @@ private:
 	std::vector<std::string> splitted;
 };
 
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
+
+inline Tokenizer::Tokenizer() : separator('\0')
+{
 }
 
-#include "tokenizer.cpp"
+inline Tokenizer::Tokenizer(
+	const char* string,
+	char        separator,
+	bool        jumpEmptyTokens) :
+		separator(separator)
+{
+	split(string, jumpEmptyTokens);
+}
+
+inline Tokenizer::Tokenizer(
+	const std::string& string,
+	char               separator,
+	bool               jumpEmptyTokens) :
+		separator(separator)
+{
+	split(string.c_str(), jumpEmptyTokens);
+}
+
+inline Tokenizer::iterator Tokenizer::begin() const
+{
+	return splitted.begin();
+}
+
+inline Tokenizer::iterator Tokenizer::end() const
+{
+	return splitted.end();
+}
+
+inline unsigned long Tokenizer::size() const
+{
+	return (unsigned long) splitted.size();
+}
+
+inline const std::string& Tokenizer::operator[](uint i) const
+{
+	return splitted[i];
+}
+
+inline void Tokenizer::split(const char* str, bool jumpEmptyTokens)
+{
+	// https://stackoverflow.com/questions/53849/
+	splitted.clear();
+	if (*str != '\0') {
+		do {
+			const char* begin = str;
+			while (*str != separator && *str)
+				str++;
+			if (begin != str)
+				splitted.push_back(std::string(begin, str));
+			else if (!jumpEmptyTokens){
+				splitted.push_back(std::string());
+			}
+		} while ('\0' != *str++);
+	}
+}
+
+} // namespace vcl
 
 #endif // VCL_MISC_TOKENIZER_H

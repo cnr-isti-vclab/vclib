@@ -30,6 +30,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 class ConsoleLogger : public Logger<std::ostream>
 {
 public:
@@ -50,8 +54,37 @@ private:
 	std::ostream& debugStream = std::cerr;
 };
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "console_logger.cpp"
+inline ConsoleLogger::ConsoleLogger(
+	std::ostream& errStream,
+	std::ostream& warnStream,
+	std::ostream& progStream,
+	std::ostream& debugStream) :
+		errStream(errStream),
+		warnStream(warnStream),
+		progStream(progStream),
+		debugStream(debugStream)
+{
+}
+
+inline std::ostream* ConsoleLogger::levelStream(LogLevel lvl)
+{
+	switch (lvl) {
+	case ERROR:
+		return &errStream;
+	case WARNING:
+		return &warnStream;
+	case PROGRESS:
+		return &progStream;
+	case DEBUG:
+		return &debugStream;
+	}
+	return nullptr;
+}
+
+} // namespace vcl
 
 #endif // VCL_MISC_LOGGER_CONSOLE_LOGGER_H

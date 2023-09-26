@@ -24,7 +24,6 @@
 #ifndef VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H
 #define VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H
 
-#include <vclib/misc/mark.h>
 #include <vclib/misc/pair.h>
 #include <vclib/space/point.h>
 
@@ -119,7 +118,6 @@ StaticGridIterator<KeyType, ValueType, GridType>::StaticGridIterator(
 	const GridType& g) :
 		vecIt(it), g(&g)
 {
-
 }
 
 template<typename KeyType, typename ValueType, typename GridType>

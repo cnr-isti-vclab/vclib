@@ -30,11 +30,51 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<typename T, typename... Args>
 void compactVector(std::vector<T, Args...>& vec, const std::vector<uint>& newIndices);
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "compactness.cpp"
+/**
+ * @brief It will take care of compacting the vector vec, depending on the content of the
+ * vector newIndices.
+ *
+ * Given the vector newIndices having the following features:
+ * - has the same size of vec
+ * - for each position i:
+ *   - newIndices[i] contains the new position of the element vec[i] after the compactness
+ *   - newIndices[i] contains the value UINT_NULL if the element vec[i] must be deleted
+ *
+ * Non-null elements of newIndices must unique, and their value must be less than the new size
+ * of vec after the compactness. The new size of vec will be the number of non-null elements of
+ * newIndices.
+ *
+ * @param vec
+ * @param newIndices
+ */
+template<typename T, typename... Args>
+void compactVector(std::vector<T, Args...>& vec, const std::vector<uint>& newIndices)
+{
+	assert(vec.size() == newIndices.size());
+	uint newSize = 0;
+	for (uint i = 0; i < newIndices.size(); ++i) {
+		if (newIndices[i] != UINT_NULL) {
+			++newSize;
+			if (newIndices[i] != i) {
+				// must move the element from position i to position newIndices[i]
+				vec[newIndices[i]] = std::move(vec[i]);
+			}
+		}
+	}
+	vec.resize(newSize);
+}
+
+} // namespace vcl
 
 #endif // VCL_MISC_COMPACTNESS_H
