@@ -31,6 +31,10 @@
 
 namespace vcl::comp {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief The PrincipalCurvature class represents a component that stores
  * the principal curvature directions and values at a point on a surface.
@@ -124,8 +128,62 @@ using PrincipalCurvaturef = PrincipalCurvature<float, ElementType, OPT>;
 template<typename ElementType = void, bool OPT = false>
 using PrincipalCurvatured = PrincipalCurvature<double, ElementType, OPT>;
 
-} // namespace vcl::comp
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "principal_curvature.cpp"
+/**
+ * @brief Returns a const reference of the principal curvature of the element.
+ * @return a const reference of the principal curvature of the element.
+ */
+template<typename Scalar, typename El, bool O>
+auto PrincipalCurvature<Scalar, El, O>::principalCurvature() const
+	-> const PrincipalCurvatureType&
+{
+	return Base::data();
+}
+
+/**
+ * @brief Returns a reference of the principal curvature of the element.
+ * @return a reference of the principal curvature of the element.
+ */
+template<typename Scalar, typename El, bool O>
+auto PrincipalCurvature<Scalar, El, O>::principalCurvature()
+	-> PrincipalCurvatureType&
+{
+	return Base::data();
+}
+
+template<typename Scalar, typename El, bool O>
+template<typename Element>
+void PrincipalCurvature<Scalar, El, O>::importFrom(const Element& e)
+{
+	if constexpr (HasPrincipalCurvature<Element>) {
+		if (isPrincipalCurvatureAvailableOn(e)) {
+			principalCurvature() =
+				e.principalCurvature().template cast<Scalar>();
+		}
+	}
+}
+
+/**
+ * @brief Checks if the given Element has PrincipalCurvature component
+ * available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementConcept.
+ * @return `true` if the element has PrincipalCurvature component available,
+ * `false` otherwise.
+ */
+bool isPrincipalCurvatureAvailableOn(const ElementConcept auto& element)
+{
+	return isComponentAvailableOn<PRINCIPAL_CURVATURE>(element);
+}
+
+} // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H

@@ -31,6 +31,10 @@
 
 namespace vcl::comp {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief The Normal class represents a N-Dimensional normal vector that will be
  * part of an Element (e.g. Vertex, Face...).
@@ -135,8 +139,58 @@ using Normal3f = Normal3<float, ElementType, OPT>;
 template<typename ElementType = void, bool OPT = false>
 using Normal3d = Normal3<double, ElementType, OPT>;
 
-} // namespace vcl::comp
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "normal.cpp"
+/**
+ * @brief Returns a const reference of the normal of the element.
+ * @return a const reference of the normal of the element.
+ */
+template<PointConcept P, typename El, bool O>
+const P& Normal<P, El, O>::normal() const
+{
+	return Base::data();
+}
+
+/**
+ * @brief Returns a reference of the normal of the element.
+ * @return a reference of the normal of the element.
+ */
+template<PointConcept P, typename El, bool O>
+P& Normal<P, El, O>::normal()
+{
+	return Base::data();
+}
+
+template<PointConcept P, typename El, bool O>
+template<typename Element>
+void Normal<P, El, O>::importFrom(const Element& e)
+{
+	if constexpr(HasNormal<Element>) {
+		if (isNormalAvailableOn(e)){
+			normal() = e.normal().template cast<typename NormalType::ScalarType>();
+		}
+	}
+}
+
+/**
+ * @brief Checks if the given Element has Normal component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementConcept.
+ * @return `true` if the element has Normal component available, `false`
+ * otherwise.
+ */
+bool isNormalAvailableOn(const ElementConcept auto& element)
+{
+	return isComponentAvailableOn<NORMAL>(element);
+}
+
+} // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_NORMAL_H

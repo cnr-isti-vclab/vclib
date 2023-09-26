@@ -340,31 +340,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/mesh/mesh.cpp
-	include/vclib/mesh/components/adjacent_edges.cpp
-	include/vclib/mesh/components/adjacent_faces.cpp
-	include/vclib/mesh/components/adjacent_vertices.cpp
-	include/vclib/mesh/components/bit_flags.cpp
-	include/vclib/mesh/components/bounding_box.cpp
-	include/vclib/mesh/components/color.cpp
-	include/vclib/mesh/components/coordinate.cpp
-	include/vclib/mesh/components/custom_components.cpp
-	include/vclib/mesh/components/mark.cpp
-	include/vclib/mesh/components/name.cpp
-	include/vclib/mesh/components/normal.cpp
-	include/vclib/mesh/components/parent_mesh_pointer.cpp
-	include/vclib/mesh/components/polygon_bit_flags.cpp
-	include/vclib/mesh/components/principal_curvature.cpp
-	include/vclib/mesh/components/quality.cpp
-	include/vclib/mesh/components/tex_coord.cpp
-	include/vclib/mesh/components/texture_paths.cpp
-	include/vclib/mesh/components/transform_matrix.cpp
-	include/vclib/mesh/components/triangle_bit_flags.cpp
-	include/vclib/mesh/components/vertex_pointers.cpp
-	include/vclib/mesh/components/wedge_colors.cpp
-	include/vclib/mesh/components/wedge_tex_coords.cpp
-	include/vclib/mesh/components/bases/container_component.cpp
-	include/vclib/mesh/components/bases/pointers_container_component.cpp
 	include/vclib/mesh/containers/custom_component_vector_handle.cpp
 	include/vclib/mesh/containers/custom_components_vector_map.cpp
 	include/vclib/mesh/containers/edge_container.cpp
@@ -390,7 +365,7 @@ set(HEADERS_LIB
 set(SOURCES_LIB
 	)
 
-set (FORMS_LIB
+set(FORMS_LIB
 	)
 
 # headers and sources to include only if using OpenGL

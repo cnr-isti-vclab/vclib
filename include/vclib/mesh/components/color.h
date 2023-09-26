@@ -31,6 +31,10 @@
 
 namespace vcl::comp {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief The Color class represents a RGBA color that will be part of an
  * Element (e.g. Vertex, Face, ...) or Mesh.
@@ -81,8 +85,58 @@ protected:
 
 bool isColorAvailableOn(const ElementOrMeshConcept auto& element);
 
-} // namespace vcl::comp
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "color.cpp"
+/**
+ * @brief Returns a const reference of the color of the element.
+ * @return a const reference of the color of the element.
+ */
+template<typename El, bool O>
+const vcl::Color& Color<El, O>::color() const
+{
+	return Base::data();
+}
+
+/**
+ * @brief Returns a reference pf the color of the element.
+ * @return a reference pf the color of the element.
+ */
+template<typename El, bool O>
+vcl::Color& Color<El, O>::color()
+{
+	return Base::data();
+}
+
+template<typename El, bool O>
+template<typename Element>
+void Color<El, O>::importFrom(const Element& e)
+{
+	if constexpr (HasColor<Element>) {
+		if (isColorAvailableOn(e)) {
+			color() = e.color();
+		}
+	}
+}
+
+/**
+ * @brief Checks if the given Element/Mesh has Color component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has Color component available, `false`
+ * otherwise.
+ */
+bool isColorAvailableOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentAvailableOn<COLOR>(element);
+}
+
+} // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_COLOR_H

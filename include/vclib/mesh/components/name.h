@@ -30,6 +30,10 @@
 
 namespace vcl::comp {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief The Name component class represents a simple name stored as string.
  * This class is usually used as a component of a Mesh.
@@ -80,8 +84,56 @@ protected:
 
 bool isNameAvailableOn(const ElementOrMeshConcept auto& element);
 
-} // namespace vcl::comp
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "name.cpp"
+/**
+ * @brief Returns the name of this object.
+ * @return The name of this object.
+ */
+template<typename El, bool O>
+std::string& Name<El, O>::name()
+{
+	return Base::data();
+}
+
+/**
+ * @brief Returns the name of this object.
+ * @return The name of this object.
+ */
+template<typename El, bool O>
+const std::string& Name<El, O>::name() const
+{
+	return Base::data();
+}
+
+template<typename El, bool O>
+template<typename Element>
+void Name<El, O>::importFrom(const Element &e)
+{
+	if constexpr(HasName<Element>) {
+		name() = e.name();
+	}
+}
+
+/**
+ * @brief Checks if the given Element/Mesh has Name component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has Name component available, `false`
+ * otherwise.
+ */
+bool isNameAvailableOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentAvailableOn<NAME>(element);
+}
+
+} // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_NAME_H

@@ -26,6 +26,10 @@
 
 namespace vcl::comp {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @private
  * @brief The ParentMeshPointer class
@@ -55,8 +59,33 @@ private:
 	MeshType* parent = nullptr;
 };
 
-} // namespace vcl::comp
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "parent_mesh_pointer.cpp"
+template<typename MeshType>
+ParentMeshPointer<MeshType>::ParentMeshPointer()
+{
+}
+
+template<typename MeshType>
+constexpr MeshType* ParentMeshPointer<MeshType>::parentMesh()
+{
+	return parent;
+}
+
+template<typename MeshType>
+constexpr const MeshType* ParentMeshPointer<MeshType>::parentMesh() const
+{
+	return parent;
+}
+
+template<typename MeshType>
+void ParentMeshPointer<MeshType>::setParentMesh(void* parentMesh)
+{
+	parent = static_cast<MeshType*>(parentMesh);
+}
+
+} // namespace vcl::comp
 
 #endif // PARENT_MESH_POINTER_H
