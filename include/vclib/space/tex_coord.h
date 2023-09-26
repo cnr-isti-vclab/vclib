@@ -28,6 +28,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<typename Scalar>
 class TexCoord
 {
@@ -68,8 +72,110 @@ using TexCoordi = TexCoord<int>;
 using TexCoordf = TexCoord<float>;
 using TexCoordd = TexCoord<double>;
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "tex_coord.cpp"
+template<typename Scalar>
+TexCoord<Scalar>::TexCoord() : coord(0, 0)
+{
+}
+
+template<typename Scalar>
+TexCoord<Scalar>::TexCoord(const Scalar &s1, const Scalar &s2) : coord(s1, s2)
+{
+}
+
+template<typename Scalar>
+TexCoord<Scalar>::TexCoord(const Point2<Scalar> &p) : coord(p)
+{
+}
+
+template<typename Scalar>
+template<typename S>
+TexCoord<S> TexCoord<Scalar>::cast() const
+{
+	if constexpr (std::is_same<Scalar, S>::value) {
+		return *this;
+	}
+	else {
+		TexCoord<S> tmp;
+		tmp.coord = coord.template cast<S>();
+		return tmp;
+	}
+}
+
+template<typename Scalar>
+Scalar TexCoord<Scalar>::u() const
+{
+	return coord.x();
+}
+
+template<typename Scalar>
+Scalar TexCoord<Scalar>::v() const
+{
+	return coord.y();
+}
+
+template<typename Scalar>
+Scalar& TexCoord<Scalar>::u()
+{
+	return coord.x();
+}
+
+template<typename Scalar>
+Scalar& TexCoord<Scalar>::v()
+{
+	return coord.y();
+}
+
+template<typename Scalar>
+void TexCoord<Scalar>::setU(Scalar s)
+{
+	assert(s >= 0 && s <= 1);
+	coord.x() = s;
+}
+
+template<typename Scalar>
+void TexCoord<Scalar>::setV(Scalar s)
+{
+	assert(s >= 0 && s <= 1);
+	coord.y() = s;
+}
+
+template<typename Scalar>
+void TexCoord<Scalar>::set(Scalar u, Scalar v)
+{
+	assert(u >= 0 && u <= 1);
+	assert(v >= 0 && v <= 1);
+	coord.x() = u;
+	coord.y() = v;
+}
+
+template<typename Scalar>
+Scalar& TexCoord<Scalar>::operator()(uint i)
+{
+	return coord[i];
+}
+
+template<typename Scalar>
+const Scalar& TexCoord<Scalar>::operator()(uint i) const
+{
+	return coord[i];
+}
+
+template<typename Scalar>
+Scalar& TexCoord<Scalar>::operator[](uint i)
+{
+	return coord[i];
+}
+
+template<typename Scalar>
+const Scalar& TexCoord<Scalar>::operator[](uint i) const
+{
+	return coord[i];
+}
+
+} // namespace vcl
 
 #endif // VCL_SPACE_TEX_COORD_H

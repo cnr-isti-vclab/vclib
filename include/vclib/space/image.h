@@ -39,6 +39,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief The Image class stores an Image in 8 bit RGBA format.
  */
@@ -66,8 +70,82 @@ private:
 	vcl::Array2<uint32_t> img;
 };
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "image.cpp"
+inline Image::Image()
+{
+}
+
+inline Image::Image(const std::string &filename)
+{
+	load(filename);
+}
+
+inline bool Image::isNull() const
+{
+	return img.empty();
+}
+
+inline int Image::height() const
+{
+	return img.rows();
+}
+
+inline int Image::width() const
+{
+	return img.cols();
+}
+
+inline std::size_t Image::sizeInBytes() const
+{
+	return img.rows() * img.cols() * 4;
+}
+
+inline vcl::Color Image::pixel(uint i, uint j) const
+{
+	return vcl::Color((vcl::Color::ColorRGBA)img(i,j));
+}
+
+inline const unsigned char* Image::data() const
+{
+	return reinterpret_cast<const unsigned char*>(img.data());
+}
+
+inline bool Image::load(const std::string &filename)
+{
+	int w, h;
+	// we first load the data, then we copy it into our array2d, and then we free it.
+	unsigned char* tmp = stbi_load(filename.c_str(), &w, &h, nullptr, 4); // force 4 channels
+	if (tmp) {
+		std::size_t size = w * h * 4;
+
+		img.resize(w, h);
+		std::copy(tmp, tmp + size, (unsigned char*)img.data());
+		stbi_image_free(tmp);
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+inline void Image::mirror(bool horizontal, bool vertical)
+{
+	if (horizontal) {
+		for (uint i = 0; i < img.rows(); i++) {
+			std::reverse(img.data(i), img.data(i) + img.cols());
+		}
+	}
+	if (vertical) {
+		for (uint i = 0; i < img.rows() / 2; i++) {
+			uint mir = img.rows() - i - 1;
+			std::swap_ranges(img.data(i), img.data(i) + img.cols(), img.data(mir));
+		}
+	}
+}
+
+} // namespace vcl
 
 #endif // VCL_SPACE_IMAGE_H

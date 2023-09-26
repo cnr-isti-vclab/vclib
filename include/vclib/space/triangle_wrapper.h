@@ -28,6 +28,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<PointConcept PointT>
 class TriangleWrapper
 {
@@ -78,8 +82,108 @@ using TriangleWrapper3 = TriangleWrapper<Point3<Scalar>>;
 using TriangleWrapper3f = TriangleWrapper<Point3f>;
 using TriangleWrapper3d = TriangleWrapper<Point3d>;
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "triangle_wrapper.cpp"
+template<PointConcept PointT>
+TriangleWrapper<PointT>::TriangleWrapper(const PointT& p0, const PointT& p1, const PointT& p2) :
+		p0(p0), p1(p1), p2(p2)
+{
+}
+
+template<PointConcept PointT>
+const PointT& TriangleWrapper<PointT>::point(uint i) const
+{
+	switch(i) {
+	case 0:
+		return p0;
+	case 1:
+		return p1;
+	default:
+		return p2;
+	}
+}
+
+template<PointConcept PointT>
+const PointT& TriangleWrapper<PointT>::point0() const
+{
+	return p0;
+}
+
+template<PointConcept PointT>
+const PointT& TriangleWrapper<PointT>::point1() const
+{
+	return p1;
+}
+
+template<PointConcept PointT>
+const PointT& TriangleWrapper<PointT>::point2() const
+{
+	return p2;
+}
+
+template<PointConcept PointT>
+typename TriangleWrapper<PointT>::ScalarType TriangleWrapper<PointT>::sideLength(uint i) const
+{
+	switch(i%3) {
+	case 0:
+		return p0.dist(p1);
+	case 1:
+		return p1.dist(p2);
+	default:
+		return p2.dist(p0);
+	}
+}
+
+template<PointConcept PointT>
+typename TriangleWrapper<PointT>::ScalarType TriangleWrapper<PointT>::sideLength0() const
+{
+	return p0.dist(p1);
+}
+
+template<PointConcept PointT>
+typename TriangleWrapper<PointT>::ScalarType TriangleWrapper<PointT>::sideLength1() const
+{
+	return p1.dist(p2);
+}
+
+template<PointConcept PointT>
+typename TriangleWrapper<PointT>::ScalarType TriangleWrapper<PointT>::sideLength2() const
+{
+	return p2.dist(p0);
+}
+
+template<PointConcept PointT>
+PointT TriangleWrapper<PointT>::normal() const requires (PointT::DIM == 3)
+{
+	return Triangle<PointT>::normal(p0, p1, p2);
+}
+
+template<PointConcept PointT>
+PointT TriangleWrapper<PointT>::barycenter() const
+{
+	return Triangle<PointT>::barycenter(p0, p1, p2);
+}
+
+template<PointConcept PointT>
+PointT TriangleWrapper<PointT>::circumcenter() const
+{
+	return Triangle<PointT>::circumcenter(p0, p1, p2);
+}
+
+template<PointConcept PointT>
+typename TriangleWrapper<PointT>::ScalarType TriangleWrapper<PointT>::perimeter() const
+{
+	return Triangle<PointT>::perimeter(p0, p1, p2);
+}
+
+template<PointConcept PointT>
+typename TriangleWrapper<PointT>::ScalarType TriangleWrapper<PointT>::area() const
+{
+	return Triangle<PointT>::area(p0, p1, p2);
+}
+
+} // namespace vcl
 
 #endif // VCL_SPACE_TRIANGLE_WRAPPER_H

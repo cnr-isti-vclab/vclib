@@ -30,6 +30,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief A class representing a line segment in n-dimensional space. The class is parameterized
  * by a `PointConcept`, which must provide the `DIM` constant and the `[]` operator for
@@ -108,8 +112,165 @@ using Segment3i = Segment<Point3i>;
 using Segment3f = Segment<Point3f>;
 using Segment3d = Segment<Point3d>;
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "segment.cpp"
+/**
+ * @brief Default constructor. Creates a segment with endpoints at the origin.
+ */
+template<PointConcept PointT>
+Segment<PointT>::Segment()
+{
+}
+
+/**
+ * @brief Creates a segment with the given endpoints.
+ *
+ * @param[in] p0: The first endpoint of the segment.
+ * @param[in] p1: The second endpoint of the segment.
+ */
+template<PointConcept PointT>
+Segment<PointT>::Segment(const PointT& p0, const PointT& p1) : point0(p0), point1(p1)
+{
+}
+
+/**
+ * @brief Returns the first endpoint of the segment.
+ *
+ * @return A reference to the first endpoint of the segment.
+ */
+template<PointConcept PointT>
+PointT& Segment<PointT>::p0()
+{
+	return point0;
+}
+
+/**
+ * @brief Returns the first endpoint of the segment.
+ *
+ * @return A const reference to the first endpoint of the segment.
+ */
+template<PointConcept PointT>
+const PointT& Segment<PointT>::p0() const
+{
+	return point0;
+}
+
+/**
+ * @brief Returns the second endpoint of the segment.
+ *
+ * @return A reference to the second endpoint of the segment.
+ */
+template<PointConcept PointT>
+PointT& Segment<PointT>::p1()
+{
+	return point1;
+}
+
+/**
+ * @brief Returns the second endpoint of the segment.
+ *
+ * @return A const reference to the second endpoint of the segment.
+ */
+template<PointConcept PointT>
+const PointT& Segment<PointT>::p1() const
+{
+	return point1;
+}
+
+template<PointConcept PointT>
+PointT Segment<PointT>::midPoint() const
+{
+	return (point0 + point1) / 2.0;
+}
+
+template<PointConcept PointT>
+PointT Segment<PointT>::direction() const
+{
+	return point1 - point0;
+}
+
+template<PointConcept PointT>
+PointT Segment<PointT>::normalizedDirection() const
+{
+	return (point1 - point0).normalize();
+}
+
+template<PointConcept PointT>
+typename Segment<PointT>::ScalarType Segment<PointT>::length() const
+{
+	(point0 - point1).norm();
+}
+
+template<PointConcept PointT>
+typename Segment<PointT>::ScalarType Segment<PointT>::squaredLength() const
+{
+	(point0 - point1).squaredNorm();
+}
+
+template<PointConcept PointT>
+void Segment<PointT>::flip()
+{
+	std::swap(point0, point1);
+}
+
+template<PointConcept PointT>
+Segment<PointT> Segment<PointT>::operator+(const Segment<PointT>& s) const
+{
+	return Segment<PointT>(point0 + s.point0, point1 + s.point1);
+}
+
+template<PointConcept PointT>
+Segment<PointT> Segment<PointT>::operator-(const Segment<PointT>& s) const
+{
+	return Segment<PointT>(point0 - s.point0, point1 - s.point1);
+}
+
+template<PointConcept PointT>
+Segment<PointT> Segment<PointT>::operator*(const ScalarType& s) const
+{
+	return Segment<PointT>(point0 * s, point1 * s);
+}
+
+template<PointConcept PointT>
+Segment<PointT> Segment<PointT>::operator/(const ScalarType& s) const
+{
+	return Segment<PointT>(point0 / s, point1 / s);
+}
+
+template<PointConcept PointT>
+Segment<PointT>& Segment<PointT>::operator+=(const Segment<PointT>& s) const
+{
+	point0 += s.point0;
+	point1 += s.point1;
+	return *this;
+}
+
+template<PointConcept PointT>
+Segment<PointT>& Segment<PointT>::operator-=(const Segment<PointT>& s) const
+{
+	point0 -= s.point0;
+	point1 -= s.point1;
+	return *this;
+}
+
+template<PointConcept PointT>
+Segment<PointT>& Segment<PointT>::operator*=(const ScalarType& s) const
+{
+	point0 *= s;
+	point1 *= s;
+	return *this;
+}
+
+template<PointConcept PointT>
+Segment<PointT>& Segment<PointT>::operator/=(const ScalarType& s) const
+{
+	point0 /= s;
+	point1 /= s;
+	return *this;
+}
+
+} // namespace vcl
 
 #endif // VCL_SPACE_SEGMENT_H

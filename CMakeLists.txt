@@ -382,23 +382,6 @@ set(SOURCES
 	include/vclib/mesh/utils/mesh_inertia.cpp
 	include/vclib/mesh/utils/mesh_pos.cpp
 	include/vclib/mesh/utils/tri_poly_index_bimap.cpp
-	include/vclib/space/array.cpp
-	include/vclib/space/bit_set.cpp
-	include/vclib/space/box.cpp
-	include/vclib/space/color.cpp
-	include/vclib/space/matrix.cpp
-	include/vclib/space/kd_tree.cpp
-	include/vclib/space/image.cpp
-	include/vclib/space/plane.cpp
-	include/vclib/space/principal_curvature.cpp
-	include/vclib/space/point.cpp
-	include/vclib/space/polygon.cpp
-	include/vclib/space/segment.cpp
-	include/vclib/space/sphere.cpp
-	include/vclib/space/tex_coord.cpp
-	include/vclib/space/triangle.cpp
-	include/vclib/space/triangle_wrapper.cpp
-	include/vclib/space/vector.cpp
 	include/vclib/space/bit_set/bit_proxy.cpp
 	include/vclib/space/graph/undirected_node.cpp
 	include/vclib/space/graph/bipartite/bipartite_graph.cpp
