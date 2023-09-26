@@ -29,6 +29,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 class GenericDrawableMesh : public vcl::DrawableObject
 {
 public:
@@ -52,8 +56,30 @@ protected:
 	MeshRenderSettings mrs;
 };
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "generic_drawable_mesh.cpp"
+inline GenericDrawableMesh::GenericDrawableMesh()
+{
+}
+
+template<MeshConcept MeshType>
+GenericDrawableMesh::GenericDrawableMesh(const MeshType &m) :
+		mrs(m)
+{
+}
+
+inline const MeshRenderSettings& GenericDrawableMesh::renderSettings() const
+{
+	return mrs;
+}
+
+inline void GenericDrawableMesh::setRenderSettings(const MeshRenderSettings& rs)
+{
+	mrs = rs;
+}
+
+} // namespace vcl
 
 #endif // VCL_RENDER_GENERIC_DRAWABLE_MESH_H

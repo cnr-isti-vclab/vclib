@@ -382,10 +382,6 @@ set(SOURCES
 	include/vclib/mesh/utils/mesh_inertia.cpp
 	include/vclib/mesh/utils/mesh_pos.cpp
 	include/vclib/mesh/utils/tri_poly_index_bimap.cpp
-	include/vclib/render/drawable_object_vector.cpp
-	include/vclib/render/generic_drawable_mesh.cpp
-	include/vclib/render/mesh_render_buffers.cpp
-	include/vclib/render/mesh_render_settings.cpp
 	include/vclib/space/array.cpp
 	include/vclib/space/bit_set.cpp
 	include/vclib/space/box.cpp
