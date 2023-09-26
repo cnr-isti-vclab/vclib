@@ -343,8 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/io/stl/load.cpp
-	include/vclib/io/stl/save.cpp
 	include/vclib/iterators/mesh/element_container_iterator.cpp
 	include/vclib/iterators/mesh/face/edge_adj_face_iterator.cpp
 	include/vclib/iterators/space/grid/cell_iterator.cpp

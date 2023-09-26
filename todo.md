@@ -28,6 +28,7 @@
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] Implement importer/exporter from VCG
   - [ ] Implement importer/exporter from matrix
+  - [ ] Implement importer/exporter from buffer
   - [ ] Shuffle algorithms should be all made using views
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
