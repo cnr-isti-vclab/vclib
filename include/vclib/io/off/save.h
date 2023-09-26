@@ -24,13 +24,24 @@
 #ifndef VCL_IO_OFF_SAVE_H
 #define VCL_IO_OFF_SAVE_H
 
+#include <vclib/exceptions/io_exceptions.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
+#include "../internal/io_utils.h"
+#include "../internal/io_write.h"
+
 namespace vcl::io {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveOff(const MeshType& m, const std::string& filename, LogType& log = nullLogger);
+void saveOff(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log = nullLogger);
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
@@ -39,8 +50,119 @@ void saveOff(
 	const MeshInfo&    info,
 	LogType&           log = nullLogger);
 
-} // namespace vcl::io
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "save.cpp"
+template<MeshConcept MeshType, LoggerConcept LogType>
+void saveOff(const MeshType& m, const std::string& filename, LogType& log)
+{
+	MeshInfo info(m);
+	saveOff(m, filename, info, log);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType>
+void saveOff(
+	const MeshType&    m,
+	const std::string& filename,
+	const MeshInfo&    info,
+	LogType&           log)
+{
+	MeshInfo meshInfo(m);
+
+	// make sure that the given info contains only components that are actually available in the
+	// mesh. meshInfo will contain the intersection between the components that the user wants to
+	// save and the components that are available in the mesh.
+	meshInfo = info.intersect(meshInfo);
+	std::ofstream fp = internal::saveFileStream(filename, "off");
+	if (meshInfo.hasVertexNormals())
+		fp << "N";
+	if (meshInfo.hasVertexColors())
+		fp << "C";
+	if (meshInfo.hasVertexTexCoords())
+		fp << "ST";
+	fp << "OFF" << std::endl;
+
+	uint vn = 0;
+	uint fn = 0;
+	uint en = 0;
+	if constexpr (vcl::HasVertices<MeshType>) {
+		vn = m.vertexNumber();
+	}
+	if constexpr (vcl::HasFaces<MeshType>) {
+		fn = m.faceNumber();
+	}
+	if constexpr (vcl::HasEdges<MeshType>) {
+		en = m.edgeNumber();
+	}
+
+	io::internal::writeInt(fp, vn, false);
+	io::internal::writeInt(fp, fn, false);
+	io::internal::writeInt(fp, en, false);
+	fp << std::endl;
+
+	// vertices
+	if constexpr (vcl::HasVertices<MeshType>) {
+		using VertexType = MeshType::VertexType;
+		for (const VertexType& v : m.vertices()) {
+			io::internal::writeDouble(fp, v.coord().x(), false);
+			io::internal::writeDouble(fp, v.coord().y(), false);
+			io::internal::writeDouble(fp, v.coord().z(), false);
+
+			if constexpr(vcl::HasPerVertexColor<MeshType>) {
+				if (meshInfo.hasVertexColors()) {
+					io::internal::writeInt(fp, v.color().red(), false);
+					io::internal::writeInt(fp, v.color().green(), false);
+					io::internal::writeInt(fp, v.color().blue(), false);
+					io::internal::writeInt(fp, v.color().alpha(), false);
+				}
+			}
+			if constexpr(vcl::HasPerVertexNormal<MeshType>) {
+				if (meshInfo.hasVertexNormals()) {
+					io::internal::writeDouble(fp, v.normal().x(), false);
+					io::internal::writeDouble(fp, v.normal().y(), false);
+					io::internal::writeDouble(fp, v.normal().z(), false);
+				}
+			}
+			if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
+				if (meshInfo.hasVertexTexCoords()) {
+					io::internal::writeDouble(fp, v.texCoord().u(), false);
+					io::internal::writeDouble(fp, v.texCoord().v(), false);
+				}
+			}
+
+			fp << std::endl;
+		}
+	}
+
+	// faces
+	if constexpr (vcl::HasFaces<MeshType>) {
+		using VertexType = MeshType::VertexType;
+		using FaceType = MeshType::FaceType;
+
+		// indices of vertices that do not consider deleted vertices
+		std::vector<uint> vIndices = m.vertexCompactIndices();
+
+		for (const FaceType& f : m.faces()) {
+			io::internal::writeInt(fp, f.vertexNumber(), false);
+			for (const VertexType* v : f.vertices()) {
+				io::internal::writeInt(fp, vIndices[m.index(v)], false);
+			}
+			if constexpr(vcl::HasPerFaceColor<MeshType>) {
+				if (meshInfo.hasFaceColors()) {
+					io::internal::writeInt(fp, f.color().red(), false);
+					io::internal::writeInt(fp, f.color().green(), false);
+					io::internal::writeInt(fp, f.color().blue(), false);
+					io::internal::writeInt(fp, f.color().alpha(), false);
+				}
+			}
+
+			fp << std::endl;
+		}
+	}
+	fp.close();
+}
+
+} // namespace vcl::io
 
 #endif // VCL_IO_OFF_SAVE_H

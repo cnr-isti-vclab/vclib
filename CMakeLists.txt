@@ -343,9 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/io/off/load.cpp
-	include/vclib/io/off/save.cpp
-	include/vclib/io/off/utils.cpp
 	include/vclib/io/ply/load.cpp
 	include/vclib/io/ply/ply_edge.cpp
 	include/vclib/io/ply/ply_extra.cpp
