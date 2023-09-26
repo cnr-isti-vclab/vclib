@@ -24,10 +24,18 @@
 #ifndef VCL_IO_PLY_EXTRA_H
 #define VCL_IO_PLY_EXTRA_H
 
-#include "ply_header.h"
 #include <fstream>
 
+#include <vclib/mesh/requirements.h>
+
+#include "ply_header.h"
+#include "../internal/io_read.h"
+
 namespace vcl::io::ply {
+
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
 
 template<MeshConcept MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh);
@@ -37,8 +45,53 @@ void saveTextures(PlyHeader& header, const MeshType& mesh);
 
 void readUnknownElements(std::ifstream& file, const PlyHeader& header, Element el);
 
-} // namespace vcl::ply
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "ply_extra.cpp"
+template<MeshConcept MeshType>
+void loadTextures(const PlyHeader& header, MeshType& mesh)
+{
+	if constexpr (vcl::HasTexturePaths<MeshType>) {
+		for (const std::string& str : header.textureFileNames()) {
+			mesh.pushTexturePath(str);
+		}
+	}
+}
+
+template<MeshConcept MeshType>
+void saveTextures(PlyHeader& header, const MeshType& mesh)
+{
+	if constexpr (vcl::HasTexturePaths<MeshType>) {
+		for (const std::string& str : mesh.texturePaths()) {
+			header.pushTextureFileName(str);
+		}
+	}
+}
+
+void readUnknownElements(std::ifstream& file, const PlyHeader& header, ply::Element el)
+{
+	if (header.format() == ply::ASCII) {
+		for (uint i = 0; i < el.numberElements; ++i) {
+			io::internal::nextNonEmptyTokenizedLine(file);
+		}
+	}
+	else {
+		for (uint i = 0; i < el.numberElements; ++i) {
+			for (const Property& p : el.properties) {
+				if (p.list) {
+					uint s = io::internal::readProperty<int>(file, p.listSizeType);
+					for (uint i = 0; i < s; ++i)
+						io::internal::readProperty<int>(file, p.type);
+				}
+				else {
+					io::internal::readProperty<int>(file, p.type);
+				}
+			}
+		}
+	}
+}
+
+} // namespace vcl::ply
 
 #endif // VCL_IO_PLY_EXTRA_H

@@ -343,14 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/io/ply/load.cpp
-	include/vclib/io/ply/ply_edge.cpp
-	include/vclib/io/ply/ply_extra.cpp
-	include/vclib/io/ply/ply_face.cpp
-	include/vclib/io/ply/ply_header.cpp
-	include/vclib/io/ply/ply_tristrip.cpp
-	include/vclib/io/ply/ply_vertex.cpp
-	include/vclib/io/ply/save.cpp
 	include/vclib/io/stl/load.cpp
 	include/vclib/io/stl/save.cpp
 	include/vclib/iterators/mesh/element_container_iterator.cpp

@@ -27,8 +27,18 @@
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
+#include "ply.h"
+#include "ply_vertex.h"
+#include "ply_face.h"
+#include "ply_tristrip.h"
+#include "ply_extra.h"
+
 namespace vcl::io {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadPly(
 	const std::string& filename,
@@ -56,9 +66,115 @@ void loadPly(
 	MeshInfo&          loadedInfo,
 	LogType&           log                      = nullLogger,
 	bool               enableOptionalComponents = true);
+
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
+
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType loadPly(const std::string& filename, LogType& log, bool enableOptionalComponents)
+{
+	MeshInfo loadedInfo;
+	return loadPly<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType>
+MeshType loadPly(
+	const std::string& filename,
+	MeshInfo&          loadedInfo,
+	LogType&           log,
+	bool               enableOptionalComponents)
+{
+	MeshType m;
+	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+	return m;
+}
+
+/**
+ * @brief loadPly loads the given ply file and puts the content into the mesh m.
+ *
+ * The function will fill all the components read into the file that can be filled into the mesh.
+ * If the enableOprionalComponents argument is enabled, some eventual optional components of the
+ * mesh that were not enabled and that can be loaded from the file, will be enabled before loading
+ * the file.
+ *
+ * If you need to know what elements and components have been loaded after the loading of the file,
+ * please see the overload of the function with the additional 'loadedInfo' argument.
+ *
+ * @param m
+ * @param filename
+ * @param enableOptionalComponents
+ */
+template<MeshConcept MeshType, LoggerConcept LogType>
+void loadPly(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
+{
+	MeshInfo loadedInfo;
+	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+}
+
+/**
+ * @brief loadPly loads the given ply file and puts the content into the mesh m.
+ *
+ * The function will fill all the components read into the file that can be filled into the mesh.
+ * If the enableOprionalComponents argument is enabled, some eventual optional components of the
+ * mesh that were not enabled and that can be loaded from the file, will be enabled before loading
+ * the file.
+ *
+ * The info about what elements and components have been loaded from the file will be stored into
+ * the loadedInfo argument.
+ *
+ * @param m
+ * @param filename
+ * @param loadedInfo
+ * @param enableOptionalComponents
+ */
+template<MeshConcept MeshType, LoggerConcept LogType>
+void loadPly(
+	MeshType&          m,
+	const std::string& filename,
+	MeshInfo&          loadedInfo,
+	LogType&           log,
+	bool               enableOptionalComponents)
+{
+	std::ifstream file = internal::loadFileStream(filename);
+
+	ply::PlyHeader header(filename, file);
+	if (header.errorWhileLoading())
+		throw MalformedFileException("Header not valid: " + filename);
+
+	m.clear();
+
+	loadedInfo = header.getInfo();
+
+	if (enableOptionalComponents)
+		internal::enableOptionalComponents(loadedInfo, m);
+
+	if constexpr (HasName<MeshType>) {
+		m.name() = FileInfo::filenameWithoutExtension(filename);
+	}
+	if constexpr (HasTexturePaths<MeshType>) {
+		m.meshBasePath() = FileInfo::pathWithoutFilename(filename);
+	}
+	try {
+		for (const ply::Element& el : header) {
+			switch (el.type) {
+			case ply::VERTEX: ply::loadVertices(file, header, m); break;
+			case ply::FACE: ply::loadFaces(file, header, m); break;
+			case ply::TRISTRIP: ply::loadTriStrips(file, header, m); break;
+			default: ply::readUnknownElements(file, header, el); break;
+			}
+		}
+		ply::loadTextures(header, m);
+	}
+	catch(const std::runtime_error& err) {
+		m.clear();
+		file.close();
+		throw err;
+	}
+
+	file.close();
+}
 
 } // namespace vcl::io
-
-#include "load.cpp"
 
 #endif // VCL_IO_PLY_LOAD_H
