@@ -343,8 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/io/obj/load.cpp
-	include/vclib/io/obj/material.cpp
 	include/vclib/io/obj/save.cpp
 	include/vclib/io/off/load.cpp
 	include/vclib/io/off/save.cpp

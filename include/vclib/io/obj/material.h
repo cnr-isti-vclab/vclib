@@ -29,6 +29,10 @@
 
 namespace vcl::io::obj {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 struct Material
 {
 	Material();
@@ -64,8 +68,115 @@ struct Material
 
 std::ostream& operator<<(std::ostream& out, const Material& m);
 
-} // namespace vcl::io::obj
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "material.cpp"
+inline Material::Material()
+{
+}
+
+inline Material::Material(const Color& c) : hasColor(true)
+{
+	Kd.x() = c.redF();
+	Kd.y() = c.greenF();
+	Kd.z() = c.blueF();
+	d = c.alphaF();
+}
+
+inline Material::Material(const std::string& txtName) : map_Kd(txtName), hasTexture(true)
+{
+}
+
+inline Material::Material(const Color& c, const std::string& txtName) :
+		map_Kd(txtName), hasColor(true), hasTexture(true)
+{
+	Kd.x() = c.redF();
+	Kd.y() = c.greenF();
+	Kd.z() = c.blueF();
+	d = c.alphaF();
+}
+
+inline bool Material::isEmpty() const
+{
+	return !hasColor && !hasTexture;
+}
+
+inline Color Material::color() const
+{
+	return vcl::Color(Kd.x()*255, Kd.y()*255, Kd.z()* 255, d*255);
+}
+
+inline const std::string& Material::texture() const
+{
+	return map_Kd;
+}
+
+inline uint Material::textureId() const
+{
+	return mapId;
+}
+
+/**
+ * @brief Operator that allows to sort materials
+ * first we sort trough color
+ * - if a material has no color, is < than one that has a color
+ * - if both materials have color, order by color: if same, check texture
+ * sort trough texture
+ * - if a material has no texture, is < than one that has texture
+ * - if both materials have texture, order by texture name
+ */
+inline bool Material::operator<(const Material& m) const
+{
+	if (hasColor) {
+		if (!m.hasColor) // color > no color
+			return false;
+		if (Kd != m.Kd)
+			return Kd < m.Kd;
+		if (d != m.d)
+			return d < m.d;
+	}
+	else if (m.hasColor) { // no color < color
+		return true;
+	}
+	// will arrive here only if:
+	// - this Material and m have both no color
+	// - this Material has the same color of m
+	if (hasTexture) {
+		if (!m.hasTexture) // texture > no texture
+			return false;
+		return map_Kd < m.map_Kd;
+	}
+	else if (m.hasTexture) { // no texture < texture
+		return true;
+	}
+	else { // no color and texture in both materials
+		return false;
+	}
+}
+
+bool Material::operator==(const Material& m) const
+{
+	return !(*this < m) && !(m < *this);
+}
+
+bool Material::operator!=(const Material& m) const
+{
+	return !(*this == m);
+}
+
+std::ostream& operator<<(std::ostream& out, const Material& m)
+{
+	if (m.hasColor) {
+		out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z() << std::endl;
+		out << "d " << m.d << std::endl;
+	}
+	if (m.hasTexture) {
+		out << "map_Kd " << m.map_Kd << std::endl;
+	}
+	return out;
+}
+
+} // namespace vcl::io::obj
 
 #endif // VCL_IO_OBJ_MATERIAL_H
