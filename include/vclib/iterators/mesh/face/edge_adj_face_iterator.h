@@ -30,6 +30,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<typename FaceType, bool CNST = false>
 class EdgeAdjFaceIterator
 {
@@ -67,8 +71,68 @@ private:
 template<typename FaceType>
 using ConstEdgeAdjFaceIterator = EdgeAdjFaceIterator<FaceType, true>;
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "edge_adj_face_iterator.cpp"
+template<typename FaceType, bool CNST>
+EdgeAdjFaceIterator<FaceType, CNST>::EdgeAdjFaceIterator()
+{
+}
+
+template<typename FaceType, bool CNST>
+EdgeAdjFaceIterator<FaceType, CNST>::EdgeAdjFaceIterator(FT& f, uint edge) :
+		current(&f), end(&f), v0(f.vertex(edge)), v1(f.vertexMod(edge+1))
+{
+}
+
+template<typename FaceType, bool CNST>
+bool EdgeAdjFaceIterator<FaceType, CNST>::operator==(const EdgeAdjFaceIterator& oi) const
+{
+	return current == oi.current && v0 == oi.v0 && v1 == oi.v1;
+}
+
+template<typename FaceType, bool CNST>
+bool EdgeAdjFaceIterator<FaceType, CNST>::operator!=(const EdgeAdjFaceIterator& oi) const
+{
+	return !(*this == oi);
+}
+
+template<typename FaceType, bool CNST>
+auto EdgeAdjFaceIterator<FaceType, CNST>::operator++() -> EdgeAdjFaceIterator&
+{
+	assert(current);
+	uint edge = current->indexOfEdge(v0, v1);
+	assert(edge != UINT_NULL);
+	current = current->adjFace(edge);
+	if (current == end || current == nullptr) {
+		current = nullptr;
+		v0 = nullptr;
+		v1 = nullptr;
+	}
+	return *this;
+}
+
+template<typename FaceType, bool CNST>
+auto EdgeAdjFaceIterator<FaceType, CNST>::operator++(int) -> EdgeAdjFaceIterator
+{
+	auto it = *this;
+	++(*this);
+	return it;
+}
+
+template<typename FaceType, bool CNST>
+auto EdgeAdjFaceIterator<FaceType, CNST>::operator*() const -> reference
+{
+	return current;
+}
+
+template<typename FaceType, bool CNST>
+auto EdgeAdjFaceIterator<FaceType, CNST>::operator->() const -> pointer
+{
+	return &current;
+}
+
+} // namespace vcl
 
 #endif // VCL_ITERATORS_MESH_EDGE_ADJ_FACE_ITERATOR_H

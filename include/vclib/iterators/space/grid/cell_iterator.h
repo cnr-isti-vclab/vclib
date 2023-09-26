@@ -28,6 +28,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<int N>
 class CellIterator
 {
@@ -40,7 +44,9 @@ public:
 
 	CellIterator();
 	CellIterator(const vcl::Point<uint, N>& end);
-	CellIterator(const vcl::Point<uint, N>& first, const vcl::Point<uint, N>& end);
+	CellIterator(
+		const vcl::Point<uint, N>& first,
+		const vcl::Point<uint, N>& end);
 
 	reference operator*() const;
 	pointer   operator->() const;
@@ -58,8 +64,79 @@ private:
 	void incrementIt(uint d);
 };
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "cell_iterator.cpp"
+template<int N>
+CellIterator<N>::CellIterator()
+{
+	it.setConstant(-1);
+	first = end = it;
+}
+
+template<int N>
+CellIterator<N>::CellIterator(const vcl::Point<uint, N>& end) :
+		it(end), first(end), end(end)
+{
+}
+
+template<int N>
+CellIterator<N>::CellIterator(
+	const vcl::Point<uint, N>& first,
+	const vcl::Point<uint, N>& end) :
+		it(first),
+		first(first), end(end)
+{
+}
+
+template<int N>
+auto CellIterator<N>::operator*() const -> reference
+{
+	return it;
+}
+
+template<int N>
+auto CellIterator<N>::operator->() const -> pointer
+{
+	return &it;
+}
+
+template<int N>
+bool CellIterator<N>::operator==(const CellIterator& oi) const
+{
+	return (it == oi.it);
+}
+
+template<int N>
+bool CellIterator<N>::operator!=(const CellIterator &oi) const
+{
+	return (it != oi.it);
+}
+
+template<int N>
+auto CellIterator<N>::operator++() -> CellIterator
+{
+	uint d = N-1;
+	while (d != -1 && it(d) == end(d) - 1) {
+		it(d) = first(d);
+		d--;
+	}
+	if (d != -1)
+		it(d)++;
+	else
+		it.setConstant(-1);
+	return it;
+}
+
+template<int N>
+auto CellIterator<N>::operator++(int) -> CellIterator
+{
+	CellIterator<N> oit = it;
+	++(*this);
+	return oit;
+}
+
+} // namespace vcl
 
 #endif // VCL_ITERATORS_SPACE_GRID_CELL_ITERATOR_H

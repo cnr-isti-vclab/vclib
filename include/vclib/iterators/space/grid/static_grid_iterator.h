@@ -30,6 +30,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<typename KeyType, typename ValueType, typename GridType>
 class StaticGridIterator
 {
@@ -100,8 +104,126 @@ private:
 	const GridType* g = nullptr;
 };
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "static_grid_iterator.cpp"
+template<typename KeyType, typename ValueType, typename GridType>
+StaticGridIterator<KeyType, ValueType, GridType>::StaticGridIterator()
+{
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+StaticGridIterator<KeyType, ValueType, GridType>::StaticGridIterator(
+	VecIt           it,
+	const GridType& g) :
+		vecIt(it), g(&g)
+{
+
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+auto StaticGridIterator<KeyType, ValueType, GridType>::operator*() const
+	-> value_type
+{
+	KeyType cell = g->cellOfIndex(vecIt->first);
+	return value_type(cell, vecIt->second);
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+auto StaticGridIterator<KeyType, ValueType, GridType>::operator->() const
+	-> ArrowHelper
+{
+	return **this;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+bool StaticGridIterator<KeyType, ValueType, GridType>::operator==(
+	const StaticGridIterator& oi) const
+{
+	return vecIt == oi.vecIt;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+bool StaticGridIterator<KeyType, ValueType, GridType>::operator!=(
+	const StaticGridIterator& oi) const
+{
+	return vecIt != oi.vecIt;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+auto StaticGridIterator<KeyType, ValueType, GridType>::operator++() -> StaticGridIterator
+{
+	++vecIt;
+	return *this;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+auto StaticGridIterator<KeyType, ValueType, GridType>::operator++(int) -> StaticGridIterator
+{
+	StaticGridIterator old = *this;
+	++vecIt;
+	return old;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+ConstStaticGridIterator<KeyType, ValueType, GridType>::ConstStaticGridIterator()
+{
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+ConstStaticGridIterator<KeyType, ValueType, GridType>::ConstStaticGridIterator(
+	VecIt           it,
+	const GridType& g) :
+		vecIt(it), g(&g)
+{
+
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+auto ConstStaticGridIterator<KeyType, ValueType, GridType>::operator*() const
+	-> value_type
+{
+	KeyType cell = g->cellOfIndex(vecIt->first);
+	return value_type(cell, vecIt->second);
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+auto ConstStaticGridIterator<KeyType, ValueType, GridType>::operator->() const
+	-> ArrowHelper
+{
+	return **this;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+bool ConstStaticGridIterator<KeyType, ValueType, GridType>::operator==(
+	const ConstStaticGridIterator& oi) const
+{
+	return vecIt == oi.vecIt;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+bool ConstStaticGridIterator<KeyType, ValueType, GridType>::operator!=(
+	const ConstStaticGridIterator& oi) const
+{
+	return vecIt != oi.vecIt;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+auto ConstStaticGridIterator<KeyType, ValueType, GridType>::operator++() -> ConstStaticGridIterator
+{
+	++vecIt;
+	return *this;
+}
+
+template<typename KeyType, typename ValueType, typename GridType>
+auto ConstStaticGridIterator<KeyType, ValueType, GridType>::operator++(int) -> ConstStaticGridIterator
+{
+	ConstStaticGridIterator old = *this;
+	++vecIt;
+	return old;
+}
+
+} // namespace vcl
 
 #endif // VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H

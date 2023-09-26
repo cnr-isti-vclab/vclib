@@ -343,10 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/iterators/mesh/element_container_iterator.cpp
-	include/vclib/iterators/mesh/face/edge_adj_face_iterator.cpp
-	include/vclib/iterators/space/grid/cell_iterator.cpp
-	include/vclib/iterators/space/grid/static_grid_iterator.cpp
 	include/vclib/math/distribution.cpp
 	include/vclib/math/fibonacci.cpp
 	include/vclib/math/histogram.cpp
