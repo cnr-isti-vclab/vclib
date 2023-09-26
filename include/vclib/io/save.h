@@ -31,6 +31,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
 	const MeshType&    m,
@@ -49,8 +53,56 @@ void save(
 	LogType&           log    = nullLogger,
 	bool               binary = true);
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "save.cpp"
+template<MeshConcept MeshType, LoggerConcept LogType>
+void save(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log,
+	bool               binary)
+{
+	MeshInfo info(m);
+	save(m, filename, info, log, binary);
+}
+
+template<MeshConcept MeshType>
+void save(const MeshType& m, const std::string& filename, bool binary)
+{
+	MeshInfo info(m);
+	NullLogger log;
+	save(m, filename, info, log, binary);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType>
+void save(
+	const MeshType&    m,
+	const std::string& filename,
+	const MeshInfo&    info,
+	LogType&           log,
+	bool               binary)
+{
+	std::string ext = FileInfo::extension(filename);
+	ext = vcl::str::toLower(ext);
+	if (ext == ".obj") {
+		io::saveObj(m, filename, info, log);
+	}
+	else if (ext == ".off") {
+		io::saveOff(m, filename, info, log);
+	}
+	else if (ext == ".ply") {
+		io::savePly(m, filename, info, log, binary);
+	}
+	else if (ext == ".stl") {
+		io::saveStl(m, filename, info, log, binary);
+	}
+	else {
+		throw vcl::UnknownFileFormatException(ext);
+	}
+}
+
+} // namespace vcl
 
 #endif // VCL_IO_SAVE_H

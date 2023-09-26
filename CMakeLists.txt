@@ -343,9 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/io/load.cpp
-	include/vclib/io/save.cpp
-	include/vclib/io/internal/io_read.cpp
 	include/vclib/io/internal/io_utils.cpp
 	include/vclib/io/internal/io_write.cpp
 	include/vclib/io/obj/load.cpp
