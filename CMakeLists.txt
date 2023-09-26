@@ -343,14 +343,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/math/distribution.cpp
-	include/vclib/math/fibonacci.cpp
-	include/vclib/math/histogram.cpp
-	include/vclib/math/min_max.cpp
-	include/vclib/math/perlin_noise.cpp
-	include/vclib/math/base.cpp
-	include/vclib/math/random.cpp
-	include/vclib/math/transform.cpp
 	include/vclib/mesh/mesh.cpp
 	include/vclib/mesh/components/adjacent_edges.cpp
 	include/vclib/mesh/components/adjacent_faces.cpp
