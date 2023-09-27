@@ -340,14 +340,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/mesh/requirements/edge_requirements.cpp
-	include/vclib/mesh/requirements/element_requirements.cpp
-	include/vclib/mesh/requirements/face_requirements.cpp
-	include/vclib/mesh/requirements/mesh_requirements.cpp
-	include/vclib/mesh/requirements/vertex_requirements.cpp
-	include/vclib/mesh/utils/mesh_inertia.cpp
-	include/vclib/mesh/utils/mesh_pos.cpp
-	include/vclib/mesh/utils/tri_poly_index_bimap.cpp
 )
 
 set(HEADERS_LIB
