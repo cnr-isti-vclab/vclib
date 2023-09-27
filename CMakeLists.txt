@@ -340,8 +340,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/mesh/elements/element.cpp
-	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/requirements/edge_requirements.cpp
 	include/vclib/mesh/requirements/element_requirements.cpp
 	include/vclib/mesh/requirements/face_requirements.cpp

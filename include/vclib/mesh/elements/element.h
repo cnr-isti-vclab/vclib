@@ -38,6 +38,10 @@
  * functions.
  */
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 namespace vcl::mesh {
 
 template<ElementConcept>
@@ -135,8 +139,67 @@ private:
 	};
 };
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "element.cpp"
+template <uint ELEM_ID, typename MeshType, typename... Comps>
+uint Element<ELEM_ID, MeshType, Comps...>::index() const
+{
+	assert(comp::ParentMeshPointer<MeshType>::parentMesh());
+	return comp::ParentMeshPointer<MeshType>::parentMesh()
+		->template elementIndex<ELEM_ID>(this);
+}
+
+template <uint ELEM_ID, typename MeshType, typename... Comps>
+template<typename ElType>
+void Element<ELEM_ID, MeshType, Comps...>::importFrom(const ElType& v)
+{
+	(Comps::importFrom(v), ...);
+}
+
+template <uint ELEM_ID, typename MeshType, typename... Comps>
+template<uint COMP_ID>
+auto& Element<ELEM_ID, MeshType, Comps...>::component()
+{
+	using Comp = GetComponentFromID<COMP_ID>::type;
+	return *static_cast<Comp*>(this);
+}
+
+template <uint ELEM_ID, typename MeshType, typename... Comps>
+template<uint COMP_ID>
+const auto& Element<ELEM_ID, MeshType, Comps...>::component() const
+{
+	using Comp = GetComponentFromID<COMP_ID>::type;
+	return *static_cast<const Comp*>(this);
+}
+
+template<uint ELEM_ID, typename MeshType, typename... Comps>
+void Element<ELEM_ID, MeshType, Comps...>::initVerticalComponents()
+{
+	(construct<Comps>(), ...);
+}
+
+template<uint ELEM_ID, typename MeshType, typename... Comps>
+template<typename Comp>
+void Element<ELEM_ID, MeshType, Comps...>::construct()
+{
+	if constexpr (
+		comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>)
+	{
+		if constexpr (comp::HasIsAvailableMemberFunction<Comp>) {
+			if (Comp::isAvailable()) {
+				Comp::init();
+			}
+		}
+		// no possibility to check if is available, it means that is always
+		// available
+		else {
+			Comp::init();
+		}
+	}
+}
+
+} // namespace vcl
 
 #endif // VCL_MESH_ELEMENTS_ELEMENT_H
