@@ -340,13 +340,6 @@ set(HEADERS
 )
 
 set(SOURCES
-	include/vclib/mesh/containers/custom_component_vector_handle.cpp
-	include/vclib/mesh/containers/custom_components_vector_map.cpp
-	include/vclib/mesh/containers/edge_container.cpp
-	include/vclib/mesh/containers/element_container.cpp
-	include/vclib/mesh/containers/face_container.cpp
-	include/vclib/mesh/containers/vertex_container.cpp
-	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
 	include/vclib/mesh/elements/element.cpp
 	include/vclib/mesh/elements/face.cpp
 	include/vclib/mesh/requirements/edge_requirements.cpp

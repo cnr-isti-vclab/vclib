@@ -31,6 +31,10 @@
 
 namespace vcl {
 
+/******************************************************************************
+ *                                Declarations                                *
+ ******************************************************************************/
+
 /**
  * @brief Allows to access directly to a custom component.
  *
@@ -113,8 +117,104 @@ private:
 template<typename T>
 using ConstCustomComponentVectorHandle = CustomComponentVectorHandle<const T>;
 
-} // namespace vcl
+/******************************************************************************
+ *                                Definitions                                 *
+ ******************************************************************************/
 
-#include "custom_component_vector_handle.cpp"
+template<typename T>
+CustomComponentVectorHandle<T>::CustomComponentVectorHandle()
+{
+}
+
+template<typename T>
+CustomComponentVectorHandle<T>::CustomComponentVectorHandle(
+	std::vector<std::any>& cc)
+{
+	v.reserve(cc.size());
+	for (uint i = 0; i < cc.size(); ++i) {
+		v.push_back(std::any_cast<T&>(cc[i]));
+	}
+}
+
+template<typename T>
+T& CustomComponentVectorHandle<T>::at(uint i)
+{
+	return v[i].get();
+}
+
+template<typename T>
+const T& CustomComponentVectorHandle<T>::at(uint i) const
+{
+	return v[i].get();
+}
+
+template<typename T>
+T& CustomComponentVectorHandle<T>::front()
+{
+	return v.begin()->get();
+}
+
+template<typename T>
+const T& CustomComponentVectorHandle<T>::front() const
+{
+	return v.begin()->get();
+}
+
+template<typename T>
+T& CustomComponentVectorHandle<T>::back()
+{
+	return std::prev(v.end())->get();
+}
+
+template<typename T>
+const T& CustomComponentVectorHandle<T>::back() const
+{
+	return std::prev(v.end())->get();
+}
+
+template<typename T>
+uint CustomComponentVectorHandle<T>::size() const
+{
+	return v.size();
+}
+
+template<typename T>
+T& CustomComponentVectorHandle<T>::operator[](uint i)
+{
+	return v[i].get();
+}
+
+template<typename T>
+const T& CustomComponentVectorHandle<T>::operator[](uint i) const
+{
+	return v[i].get();
+}
+
+template<typename T>
+auto CustomComponentVectorHandle<T>::begin() -> Iterator
+{
+	return Iterator(v.begin());
+}
+
+template<typename T>
+auto CustomComponentVectorHandle<T>::end() -> Iterator
+{
+	return Iterator(v.end());
+}
+
+template<typename T>
+auto CustomComponentVectorHandle<T>::begin() const -> ConstIterator
+{
+	return ConstIterator(v.begin());
+}
+
+template<typename T>
+auto CustomComponentVectorHandle<T>::end() const -> ConstIterator
+{
+	return ConstIterator(v.end());
+}
+
+
+} // namespace vcl
 
 #endif // VCL_MESH_CONTAINERS_CUSTOM_COMPONENT_VECTOR_HANDLE_H
