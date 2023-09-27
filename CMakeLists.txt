@@ -339,9 +339,6 @@ set(HEADERS
 	include/vclib/views/mesh/elements/vertex.h
 )
 
-set(SOURCES
-)
-
 set(HEADERS_LIB
 	)
 
@@ -357,20 +354,12 @@ if (TARGET vclib-external-opengl)
 		include/vclib/ext/opengl2/draw_objects2.h
 		include/vclib/ext/opengl2/draw_objects3.h
 		include/vclib/ext/opengl2/drawable_mesh.h)
-
-	list(APPEND SOURCES
-		include/vclib/ext/opengl2/draw_objects2.cpp
-		include/vclib/ext/opengl2/draw_objects3.cpp
-		include/vclib/ext/opengl2/drawable_mesh.cpp)
 endif()
 
 # headers and sources to include only if using qt
 if (TARGET vclib-external-qt)
 	# header only sources
 	list(APPEND HEADERS
-		)
-
-	list(APPEND SOURCES
 		)
 
 	# sources that must be built
@@ -397,9 +386,6 @@ if (TARGET vclib-external-qt)
 		list(APPEND HEADERS
 			include/vclib/ext/qglviewer/gl_area.h)
 
-		list(APPEND SOURCES
-			include/vclib/ext/qglviewer/gl_area.cpp)
-
 		# sources that must be built
 		list(APPEND HEADERS_LIB
 			include/vclib/ext/qglviewer/viewer_main_window.h)
@@ -416,9 +402,6 @@ endif()
 if (TARGET vclib-external-vcg)
 	list(APPEND HEADERS
 		include/vclib/ext/vcg/import.h)
-
-	list(APPEND SOURCES
-		include/vclib/ext/vcg/import.cpp)
 endif()
 
 add_library(vclib INTERFACE)
@@ -436,7 +419,7 @@ endif()
 
 if (VCLIB_IDE)
 	add_custom_target(vclib_ide SOURCES
-		${HEADERS} ${HEADERS_LIB} ${SOURCES} ${SOURCES_LIB} ${FORMS_LIB})
+		${HEADERS} ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
 endif()
 
 if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)
