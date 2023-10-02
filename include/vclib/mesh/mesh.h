@@ -295,8 +295,8 @@ public:
 	/* member functions */
 
 	/**
-	 * @brief Returns true if this mesh is compact, meaning that all its containers
-	 * have no deleted elements (size == element number).
+	 * @brief Returns true if this mesh is compact, meaning that all its
+	 * containers have no deleted elements (size == element number).
 	 *
 	 * @return true if this mesh is compact, false otherwise.
 	 */
@@ -346,14 +346,14 @@ public:
 	 * @brief Enables all the OptionalComponents of this mesh according to the
 	 * Components available on the OtherMeshType m.
 	 *
-	 * This function is useful to call before importing data from another MeshType,
-	 * to be sure that all the available data contained in the MeshType mesh will be
-	 * imported.
+	 * This function is useful to call before importing data from another
+	 * MeshType, to be sure that all the available data contained in the
+	 * MeshType mesh will be imported.
 	 *
 	 * This function:
 	 * - disables all the optional components that are not available in m
-	 * - enables all the optional components that are available in m (which can be
-	 * both optional or not)
+	 * - enables all the optional components that are available in m (which can
+	 *   be both optional or not)
 	 *
 	 * Example of usage:
 	 *
@@ -1371,8 +1371,8 @@ private:
 		// is a container
 		if constexpr (mesh::ElementContainerConcept<Cont>) {
 			// The element type contained in the container
-			// We need it to get back the actual type of the element from the old
-			// bases
+			// We need it to get back the actual type of the element from the
+			// old bases
 			using ElType = Cont::ElementType;
 
 			using Containers = Mesh<A...>::Containers;
