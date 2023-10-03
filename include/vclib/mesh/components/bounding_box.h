@@ -31,10 +31,6 @@
 
 namespace vcl::comp {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The BoundingBox component class represents an axis aligned bounding
  * box. This class is usually used as a component of a Mesh.
@@ -83,18 +79,48 @@ public:
 	 */
 	using BoundingBoxType = Box<PointType>;
 
-	const BoundingBoxType& boundingBox() const;
-	BoundingBoxType&       boundingBox();
+	/**
+	 * @brief Returns a const reference to the bounding box of this object.
+	 * @return A const reference to the bounding box of this object.
+	 */
+	const BoundingBoxType& boundingBox() const { return Base::data(); }
+
+	/**
+	 * @brief Returns a reference to the bounding box of this object.
+	 * @return A reference to the bounding box of this object.
+	 */
+	BoundingBoxType& boundingBox() { return Base::data(); }
 
 protected:
 	// Component interface function
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr(HasBoundingBox<Element>) {
+			using ScalarType = PointType::ScalarType;
+			boundingBox() = e.boundingBox().template cast<ScalarType>();
+		}
+	}
 };
 
 /* Detector function to check if a class has BoundingBox available */
 
-bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element);
+/**
+ * @brief Checks if the given Element/Mesh has BoundingBox component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has BoundingBox component available,
+ * `false` otherwise.
+ */
+bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentAvailableOn<BOUNDING_BOX>(element);
+}
 
 /**
  * @brief The BoundingBox3 component class is an alias of the BoundingBox
@@ -141,57 +167,6 @@ using BoundingBox3f = BoundingBox<Point3f, ElementType, OPT>;
  */
 template<typename ElementType = void, bool OPT = false>
 using BoundingBox3d = BoundingBox<Point3d, ElementType, OPT>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-/**
- * @brief Returns a const reference to the bounding box of this object.
- * @return A const reference to the bounding box of this object.
- */
-template<PointConcept P, typename El, bool O>
-const Box<P>& BoundingBox<P, El, O>::boundingBox() const
-{
-	return Base::data();
-}
-
-/**
- * @brief Returns a reference to the bounding box of this object.
- * @return A reference to the bounding box of this object.
- */
-template<PointConcept P, typename El, bool O>
-Box<P>& BoundingBox<P, El, O>::boundingBox()
-{
-	return Base::data();
-}
-
-template<PointConcept P, typename El, bool O>
-template<typename Element>
-void BoundingBox<P, El, O>::importFrom(const Element& e)
-{
-	if constexpr(HasBoundingBox<Element>) {
-		using ScalarType = P::ScalarType;
-		boundingBox() = e.boundingBox().template cast<ScalarType>();
-	}
-}
-
-/**
- * @brief Checks if the given Element/Mesh has BoundingBox component available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element/mesh to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element/mesh has BoundingBox component available,
- * `false` otherwise.
- */
-bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
-{
-	return isComponentAvailableOn<BOUNDING_BOX>(element);
-}
 
 } // namespace vcl::comp
 

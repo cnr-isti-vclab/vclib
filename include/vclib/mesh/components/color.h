@@ -31,10 +31,6 @@
 
 namespace vcl::comp {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The Color class represents a RGBA color that will be part of an
  * Element (e.g. Vertex, Face, ...) or Mesh.
@@ -71,54 +67,32 @@ class Color :
 		Component<Color<ElementType, OPT>, COLOR, vcl::Color, ElementType, OPT>;
 
 public:
-	const vcl::Color& color() const;
+	/**
+	 * @brief Returns a const reference of the color of the element.
+	 * @return a const reference of the color of the element.
+	 */
+	const vcl::Color& color() const { return Base::data(); }
 
-	vcl::Color& color();
+	/**
+	 * @brief Returns a reference pf the color of the element.
+	 * @return a reference pf the color of the element.
+	 */
+	vcl::Color& color() { return Base::data(); }
 
 protected:
 	// Component interface function
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr (HasColor<Element>) {
+			if (isColorAvailableOn(e)) {
+				color() = e.color();
+			}
+		}
+	}
 };
 
 /* Detector function to check if a class has Color available */
-
-bool isColorAvailableOn(const ElementOrMeshConcept auto& element);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-/**
- * @brief Returns a const reference of the color of the element.
- * @return a const reference of the color of the element.
- */
-template<typename El, bool O>
-const vcl::Color& Color<El, O>::color() const
-{
-	return Base::data();
-}
-
-/**
- * @brief Returns a reference pf the color of the element.
- * @return a reference pf the color of the element.
- */
-template<typename El, bool O>
-vcl::Color& Color<El, O>::color()
-{
-	return Base::data();
-}
-
-template<typename El, bool O>
-template<typename Element>
-void Color<El, O>::importFrom(const Element& e)
-{
-	if constexpr (HasColor<Element>) {
-		if (isColorAvailableOn(e)) {
-			color() = e.color();
-		}
-	}
-}
 
 /**
  * @brief Checks if the given Element/Mesh has Color component available.
