@@ -5,6 +5,7 @@
     - [ ] complete space data structures concepts
     - [ ] implement per edge concepts
   - Components:
+    - [ ] Bit Flags member: import/exportFromVCGFlags must be renamed into import/exportFlagsFromVCG
     - [ ] Make the Component class use the CRTP and remove from all the components the isEnabled member function 
           (and, in general, all the members that use this)
     - [ ] the setVertices, setAdj*s that take as input a vector should take as input a range
