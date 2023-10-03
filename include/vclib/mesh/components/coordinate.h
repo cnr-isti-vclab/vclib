@@ -31,10 +31,6 @@
 
 namespace vcl::comp {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The Coordinate class represents a N-Dimensional point that will be
  * part of an Element (e.g. Vertex...).
@@ -81,22 +77,47 @@ public:
 	 */
 	using CoordType = P;
 
-	const P& coord() const;
-	P&       coord();
+	/**
+	 * @brief Returns a const reference of the coordinate of the element.
+	 * @return a const reference of the coordinate of the element.
+	 */
+	const P& coord() const { return Base::data(); }
+
+	/**
+	 * @brief Returns a reference of the coordinate of the element.
+	 * @return a reference of the coordinate of the element.
+	 */
+	P& coord() { return Base::data(); }
 
 protected:
 	// Component interface function
 	template<typename Element>
-	void importFrom(const Element& v);
+	void importFrom(const Element& v)
+	{
+		if constexpr (HasCoordinate<Element>) {
+			coord() = v.coord().template cast<typename CoordType::ScalarType>();
+		}
+	}
 };
 
 /* Detector function to check if a class has Coordinate available */
 
-bool isCoordinateAvailableOn(const ElementConcept auto& element);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
+/**
+ * @brief Checks if the given Element has Coordinate component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element has Coordinate component available, `false`
+ * otherwise.
+ */
+bool isCoordinateAvailableOn(const ElementConcept auto& element)
+{
+	return isComponentAvailableOn<COORDINATE>(element);
+}
 
 /**
  * @brief The Coordinate3 class is an alias of the Coordinate component that
@@ -111,10 +132,7 @@ bool isCoordinateAvailableOn(const ElementConcept auto& element);
  *
  * @ingroup components
  */
-template<
-	typename Scalar,
-	typename ElementType = void,
-	bool OPT        = false>
+template<typename Scalar, typename ElementType = void, bool OPT = false>
 using Coordinate3 = Coordinate<Point3<Scalar>, ElementType, OPT>;
 
 /**
@@ -146,52 +164,6 @@ using Coordinate3f = Coordinate3<float, ElementType, OPT>;
  */
 template<typename ElementType = void, bool OPT = false>
 using Coordinate3d = Coordinate3<double, ElementType, OPT>;
-
-/**
- * @brief Returns a const reference of the coordinate of the element.
- * @return a const reference of the coordinate of the element.
- */
-template<PointConcept P, typename El, bool O>
-const P& Coordinate<P, El, O>::coord() const
-{
-	return Base::data();
-}
-
-/**
- * @brief Returns a reference of the coordinate of the element.
- * @return a reference of the coordinate of the element.
- */
-template<PointConcept P, typename El, bool O>
-P& Coordinate<P, El, O>::coord()
-{
-	return Base::data();
-}
-
-template<PointConcept P, typename El, bool O>
-template<typename Element>
-void Coordinate<P, El, O>::importFrom(const Element& v)
-{
-	if constexpr (HasCoordinate<Element>) {
-		coord() = v.coord().template cast<typename CoordType::ScalarType>();
-	}
-}
-
-/**
- * @brief Checks if the given Element has Coordinate component available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element has Coordinate component available, `false`
- * otherwise.
- */
-bool isCoordinateAvailableOn(const ElementConcept auto& element)
-{
-	return isComponentAvailableOn<COORDINATE>(element);
-}
 
 } // namespace vcl::comp
 
