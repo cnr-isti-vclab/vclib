@@ -119,6 +119,8 @@ bool isCoordinateAvailableOn(const ElementConcept auto& element)
 	return isComponentAvailableOn<COORDINATE>(element);
 }
 
+/* Specializations */
+
 /**
  * @brief The Coordinate3 class is an alias of the Coordinate component that
  * uses 3 dimensional Points.

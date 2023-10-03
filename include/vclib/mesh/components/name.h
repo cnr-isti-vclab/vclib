@@ -30,10 +30,6 @@
 
 namespace vcl::comp {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The Name component class represents a simple name stored as string.
  * This class is usually used as a component of a Mesh.
@@ -71,51 +67,30 @@ class Name :
 		Component<Name<ElementType, OPT>, NAME, std::string, ElementType, OPT>;
 
 public:
-	std::string& name();
-	const std::string& name() const;
+	/**
+	 * @brief Returns the name of this object.
+	 * @return The name of this object.
+	 */
+	std::string& name() { return Base::data(); }
+
+	/**
+	 * @brief Returns the name of this object.
+	 * @return The name of this object.
+	 */
+	const std::string& name() const { return Base::data(); }
 
 protected:
 	// Component interface function
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr(HasName<Element>) {
+			name() = e.name();
+		}
+	}
 };
 
 /* Detector function to check if a class has Name available */
-
-bool isNameAvailableOn(const ElementOrMeshConcept auto& element);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-/**
- * @brief Returns the name of this object.
- * @return The name of this object.
- */
-template<typename El, bool O>
-std::string& Name<El, O>::name()
-{
-	return Base::data();
-}
-
-/**
- * @brief Returns the name of this object.
- * @return The name of this object.
- */
-template<typename El, bool O>
-const std::string& Name<El, O>::name() const
-{
-	return Base::data();
-}
-
-template<typename El, bool O>
-template<typename Element>
-void Name<El, O>::importFrom(const Element &e)
-{
-	if constexpr(HasName<Element>) {
-		name() = e.name();
-	}
-}
 
 /**
  * @brief Checks if the given Element/Mesh has Name component available.

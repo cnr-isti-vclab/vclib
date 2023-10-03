@@ -122,6 +122,8 @@ bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
 	return isComponentAvailableOn<BOUNDING_BOX>(element);
 }
 
+/* Specializations */
+
 /**
  * @brief The BoundingBox3 component class is an alias of the BoundingBox
  * component that uses 3 dimensional Points.

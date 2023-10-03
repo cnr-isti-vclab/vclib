@@ -30,10 +30,6 @@
 
 namespace vcl::comp {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The Mark class is an utility class useful to un-mark components in
  * constant time.
@@ -90,137 +86,90 @@ class Mark :
 public:
 	/* Constructor and isAvailable */
 
-	Mark();
+	/**
+	 * @private
+	 * @brief Constructor that initializes the mark to 0.
+	 */
+	Mark()
+	{
+		if constexpr (!Base::IS_VERTICAL) {
+			init();
+		}
+	}
 
-	void init();
+	/**
+	 * @private
+	 * @brief Initializes the mark to 0.
+	 *
+	 * It is made in the init function since the component could be not
+	 * available during construction (e.g. if the component is optional and not
+	 * enabled).
+	 *
+	 * This member function is hidden by the element that inherits this class.
+	 */
+	void init()
+	{
+		mark() = 0;
+	}
 
 	/* Member functions */
 
-	int  mark() const;
-	void resetMark();
+	/**
+	 * @brief Returns the value of the mark.
+	 * @return the value of the mark.
+	 */
+	int mark() const { return Base::data(); }
 
+	/**
+	 * @brief Resets the mark to 0.
+	 */
+	void resetMark() { mark() = 0; }
+
+	/**
+	 * @brief Checks if the current element/mesh has the same mark of the given
+	 * input element/mesh `e`.
+	 *
+	 * @tparam E: the type of the input element/mesh.
+	 * @param e: the input element/mesh.
+	 */
 	template<typename E>
-	bool hasSameMark(const E& e) const;
+	bool hasSameMark(const E& e) const
+	{
+		if constexpr (std::is_pointer<E>::value) {
+			return e->mark() == mark();
+		}
+		else {
+			return e.mark() == mark();
+		}
+	}
 
-	void incrementMark();
-	void decrementMark();
+	/**
+	 * @brief Increments the mark of the current element/mesh by 1.
+	 */
+	void incrementMark() { mark()++; }
+
+	/**
+	 * @brief Decrements the mark of the current element/mesh by 1.
+	 */
+	void decrementMark() { mark()--; }
 
 protected:
 	// Component interface function
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr (HasMark<Element>) {
+			if (isMarkAvailableOn(e)) {
+				mark() = e.mark();
+			}
+		}
+	}
 
 private:
-	int& mark();
+	int& mark() { return Base::data(); }
 };
 
 /* Detector function to check if a class has Mark available */
-
-bool isMarkAvailableOn(const ElementOrMeshConcept auto& element);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-/**
- * @private
- * @brief Constructor that initializes the mark to 0.
- */
-template<typename El, bool O>
-Mark<El, O>::Mark()
-{
-	if constexpr (!Base::IS_VERTICAL) {
-		init();
-	}
-}
-
-/**
- * @private
- * @brief Initializes the mark to 0.
- *
- * It is made in the init function since the component could be not available
- * during construction (e.g. if the component is optional and not enabled).
- *
- * This member function is hidden by the element that inherits this class.
- */
-template<typename El, bool O>
-void Mark<El, O>::init()
-{
-	mark() = 0;
-}
-
-/**
- * @brief Returns the value of the mark.
- * @return the value of the mark.
- */
-template<typename El, bool O>
-int Mark<El, O>::mark() const
-{
-	return Base::data();
-}
-
-/**
- * @brief Resets the mark to 0.
- */
-template<typename El, bool O>
-void Mark<El, O>::resetMark()
-{
-	mark() = 0;
-}
-
-/**
- * @brief Checks if the current element/mesh has the same mark of the given
- * input element/mesh `e`.
- *
- * @tparam E: the type of the input element/mesh.
- * @param e: the input element/mesh.
- */
-template<typename El, bool O>
-template<typename E>
-bool Mark<El, O>::hasSameMark(const E& e) const
-{
-	if constexpr (std::is_pointer<E>::value) {
-		return e->mark() == mark();
-	}
-	else {
-		return e.mark() == mark();
-	}
-}
-
-/**
- * @brief Increments the mark of the current element/mesh by 1.
- */
-template<typename El, bool O>
-void Mark<El, O>::incrementMark()
-{
-	mark()++;
-}
-
-/**
- * @brief Decrements the mark of the current element/mesh by 1.
- */
-template<typename El, bool O>
-void Mark<El, O>::decrementMark()
-{
-	mark()--;
-}
-
-template<typename El, bool O>
-template<typename Element>
-void Mark<El, O>::importFrom(const Element& e)
-{
-	if constexpr (HasMark<Element>) {
-		if (isMarkAvailableOn(e)) {
-			mark() = e.mark();
-		}
-	}
-}
-
-template<typename El, bool O>
-int& Mark<El, O>::mark()
-{
-	return Base::data();
-}
 
 /**
  * @brief Checks if the given Element/Mesh has the Mark component available.
