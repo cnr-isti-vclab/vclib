@@ -26,10 +26,6 @@
 
 namespace vcl::comp {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @private
  * @brief The ParentMeshPointer class
@@ -37,54 +33,35 @@ namespace vcl::comp {
 template<typename MeshType>
 class ParentMeshPointer
 {
+	MeshType* parent = nullptr;
+
 public:
 	using ParentMeshType = MeshType;
 
-	ParentMeshPointer();
+	ParentMeshPointer() {}
 
 	// copy and move semantics: nothing will be done here
 	// this instance will be updated only by the mesh, and optional data
 	// can be accessed only when an element is part of a mesh
 	ParentMeshPointer(const ParentMeshPointer<MeshType>&) {}
-	ParentMeshPointer(ParentMeshPointer<MeshType>&&) {}
-	ParentMeshPointer& operator=(const ParentMeshPointer<MeshType>&) {return *this;}
 
-	constexpr MeshType* parentMesh();
-	constexpr const MeshType* parentMesh() const;
+	ParentMeshPointer(ParentMeshPointer<MeshType>&&) {}
+
+	ParentMeshPointer& operator=(const ParentMeshPointer<MeshType>&)
+	{
+		return *this;
+	}
+
+	constexpr MeshType* parentMesh() { return parent; }
+
+	constexpr const MeshType* parentMesh() const { return parent; }
 
 protected:
-	void setParentMesh(void* parentMesh);
-
-private:
-	MeshType* parent = nullptr;
+	void setParentMesh(void* parentMesh)
+	{
+		parent = static_cast<MeshType*>(parentMesh);
+	}
 };
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<typename MeshType>
-ParentMeshPointer<MeshType>::ParentMeshPointer()
-{
-}
-
-template<typename MeshType>
-constexpr MeshType* ParentMeshPointer<MeshType>::parentMesh()
-{
-	return parent;
-}
-
-template<typename MeshType>
-constexpr const MeshType* ParentMeshPointer<MeshType>::parentMesh() const
-{
-	return parent;
-}
-
-template<typename MeshType>
-void ParentMeshPointer<MeshType>::setParentMesh(void* parentMesh)
-{
-	parent = static_cast<MeshType*>(parentMesh);
-}
 
 } // namespace vcl::comp
 

@@ -30,10 +30,6 @@
 
 namespace vcl::comp {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The Quality class represents a component that stores the quality of a
  * mesh element, that is represented by a scalar.
@@ -79,18 +75,51 @@ public:
 	 */
 	using QualityType = Scalar;
 
-	const QualityType& quality() const;
-	QualityType&       quality();
+	/**
+	 * @brief Returns a const reference of the quality of the element.
+	 * @return a const reference of the quality of the element.
+	 */
+	const QualityType& quality() const { return Base::data(); }
+
+	/**
+	 * @brief Returns a reference of the quality of the element.
+	 * @return a reference of the quality of the element.
+	 */
+	QualityType& quality() { return Base::data(); }
 
 protected:
 	// Component interface functions
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr (HasQuality<Element>) {
+			if (isQualityAvailableOn(e)){
+				quality() = e.quality();
+			}
+		}
+	}
 };
 
 /* Detector function to check if a class has Quality available */
 
-bool isQualityAvailableOn(const ElementOrMeshConcept auto& element);
+/**
+ * @brief Checks if the given Element has Quality component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element has Quality component available,
+ * `false` otherwise.
+ */
+bool isQualityAvailableOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentAvailableOn<QUALITY>(element);
+}
+
+/* Specialization Aliases */
 
 /**
  * The Qualityf class is an alias of the Quality component that uses float as
@@ -121,58 +150,6 @@ using Qualityf = Quality<float, ElementType, OPT>;
  */
 template<typename ElementType = void, bool OPT = false>
 using Qualityd = Quality<double, ElementType, OPT>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-/**
- * @brief Returns a const reference of the quality of the element.
- * @return a const reference of the quality of the element.
- */
-template<typename S, typename El, bool O>
-const S& Quality<S, El, O>::quality() const
-{
-	return Base::data();
-}
-
-/**
- * @brief Returns a reference of the quality of the element.
- * @return a reference of the quality of the element.
- */
-template<typename S, typename El, bool O>
-S& Quality<S, El, O>::quality()
-{
-	return Base::data();
-}
-
-template<typename S, typename El, bool O>
-template<typename Element>
-void Quality<S, El, O>::importFrom(const Element& e)
-{
-	if constexpr (HasQuality<Element>) {
-		if (isQualityAvailableOn(e)){
-			quality() = e.quality();
-		}
-	}
-}
-
-/**
- * @brief Checks if the given Element has Quality component available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementOrMeshConcept.
- * @return `true` if the element has Quality component available,
- * `false` otherwise.
- */
-bool isQualityAvailableOn(const ElementOrMeshConcept auto& element)
-{
-	return isComponentAvailableOn<QUALITY>(element);
-}
 
 } // namespace vcl::comp
 

@@ -117,7 +117,7 @@ bool isNormalAvailableOn(const ElementConcept auto& element)
 	return isComponentAvailableOn<NORMAL>(element);
 }
 
-/* Specializations */
+/* Specialization Aliases */
 
 /**
  * @brief The Normal3 class is an alias of the Normal component that uses 3

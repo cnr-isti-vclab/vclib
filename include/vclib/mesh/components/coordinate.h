@@ -119,7 +119,7 @@ bool isCoordinateAvailableOn(const ElementConcept auto& element)
 	return isComponentAvailableOn<COORDINATE>(element);
 }
 
-/* Specializations */
+/* Specialization Aliases */
 
 /**
  * @brief The Coordinate3 class is an alias of the Coordinate component that

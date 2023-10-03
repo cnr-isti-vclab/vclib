@@ -87,7 +87,6 @@ public:
 	/* Constructor and isAvailable */
 
 	/**
-	 * @private
 	 * @brief Constructor that initializes the mark to 0.
 	 */
 	Mark()
