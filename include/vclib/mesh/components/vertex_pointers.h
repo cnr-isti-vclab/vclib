@@ -324,20 +324,14 @@ public:
 	 * has dynamic size.
 	 * @param[in] i: The position of the vertex to remove from the container.
 	 */
-	void eraseVertex(uint i) requires (N < 0)
-	{
-		Base::container().erase(i);
-	}
+	void eraseVertex(uint i) requires (N < 0) { Base::container().erase(i); }
 
 	/**
 	 * @brief Clears the container of vertices, making it empty.
 	 * @note This function is available only if the container of the Vertices
 	 * has dynamic size.
 	 */
-	void clearVertices() requires (N < 0)
-	{
-		Base::container().clear();
-	}
+	void clearVertices() requires (N < 0) { Base::container().clear(); }
 
 	/* Iterator Member functions */
 
