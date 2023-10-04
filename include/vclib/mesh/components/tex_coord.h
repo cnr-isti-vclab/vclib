@@ -31,10 +31,6 @@
 
 namespace vcl::comp {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The TexCoord class represents a component that stores a texture
  * coordinate.
@@ -80,18 +76,52 @@ public:
 	 */
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
-	const TexCoordType& texCoord() const;
-	TexCoordType&       texCoord();
+	/**
+	 * @brief Returns a const reference of the tex coord of the element.
+	 * @return a const reference of the tex coord of the element.
+	 */
+	const TexCoordType& texCoord() const { return Base::data(); }
+
+	/**
+	 * @brief Returns a reference of the tex coord of the element.
+	 * @return a reference of the tex coord of the element.
+	 */
+	TexCoordType& texCoord() { return Base::data(); }
 
 protected:
 	// Component interface functions
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr(HasTexCoord<Element>) {
+			if (isTexCoordAvailableOn(e)){
+				texCoord() = e.texCoord().template cast<Scalar>();
+			}
+		}
+	}
 };
 
 /* Detector function to check if a class has TexCoord available */
 
-bool isTexCoordAvailableOn(const ElementConcept auto& element);
+/**
+ * @brief Checks if the given Element has TexCoord component
+ * available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementConcept.
+ * @return `true` if the element has TexCoord component available,
+ * `false` otherwise.
+ */
+bool isTexCoordAvailableOn(const ElementConcept auto& element)
+{
+	return isComponentAvailableOn<TEX_COORD>(element);
+}
+
+/* Specialization Aliases */
 
 /**
  * The TexCoordf class is an alias of the TexCoord component that uses float as
@@ -122,59 +152,6 @@ using TexCoordf = TexCoord<float, ElementType, OPT>;
  */
 template<typename ElementType = void, bool OPT = false>
 using TexCoordd = TexCoord<double, ElementType, OPT>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-/**
- * @brief Returns a const reference of the tex coord of the element.
- * @return a const reference of the tex coord of the element.
- */
-template<typename Scalar, typename El, bool O>
-auto TexCoord<Scalar, El, O>::texCoord() const -> const TexCoordType&
-{
-	return Base::data();
-}
-
-/**
- * @brief Returns a reference of the tex coord of the element.
- * @return a reference of the tex coord of the element.
- */
-template<typename Scalar, typename El, bool O>
-auto TexCoord<Scalar, El, O>::texCoord() -> TexCoordType&
-{
-	return Base::data();
-}
-
-template<typename Scalar, typename El, bool O>
-template<typename Element>
-void TexCoord<Scalar, El, O>::importFrom(const Element& e)
-{
-	if constexpr(HasTexCoord<Element>) {
-		if (isTexCoordAvailableOn(e)){
-			texCoord() = e.texCoord().template cast<Scalar>();
-		}
-	}
-}
-
-/**
- * @brief Checks if the given Element has TexCoord component
- * available.
- *
- * This function returns `true` also if the component is horizontal and always
- * available in the element. The runtime check is performed only when the
- * component is optional.
- *
- * @param[in] element: The element to check. Must be of a type that
- * satisfies the ElementConcept.
- * @return `true` if the element has TexCoord component available,
- * `false` otherwise.
- */
-bool isTexCoordAvailableOn(const ElementConcept auto& element)
-{
-	return isComponentAvailableOn<TEX_COORD>(element);
-}
 
 } // namespace vcl::comp
 
