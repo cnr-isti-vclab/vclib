@@ -26,69 +26,43 @@
 
 namespace vcl::internal {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<typename Graph, typename Iterator>
 class AdjacentNodeIterator
 {
-public:
-	AdjacentNodeIterator();
-	AdjacentNodeIterator(const Graph& g, Iterator it);
-
-	bool operator==(const AdjacentNodeIterator& otherIterator) const;
-	bool operator!=(const AdjacentNodeIterator& otherIterator) const;
-
-	AdjacentNodeIterator operator++();
-	AdjacentNodeIterator operator++(int);
-
 protected:
 	const Graph* g = nullptr;
 	Iterator it;
+
+public:
+	AdjacentNodeIterator() {}
+
+	AdjacentNodeIterator(const Graph& g, Iterator it) : g(&g), it(it) {}
+
+	bool operator==(const AdjacentNodeIterator& otherIterator) const
+	{
+		return (g == otherIterator.g && it == otherIterator.it);
+	}
+
+	bool operator!=(const AdjacentNodeIterator& otherIterator) const
+	{
+		return !(*this == otherIterator);
+	}
+
+	AdjacentNodeIterator operator++()
+	{
+		++it;
+		return *this;
+	}
+
+	AdjacentNodeIterator operator++(int)
+	{
+		AdjacentNodeIterator tmp;
+		++it;
+		return tmp;
+	}
+
+
 };
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<typename Graph, typename Iterator>
-AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator()
-{
-}
-
-template<typename Graph, typename Iterator>
-AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator(const Graph& g, Iterator it) :
-		g(&g), it(it)
-{
-}
-
-template<typename Graph, typename Iterator>
-bool AdjacentNodeIterator<Graph, Iterator>::operator==(const AdjacentNodeIterator& otherIterator) const
-{
-	return (g == otherIterator.g && it == otherIterator.it);
-}
-
-template<typename Graph, typename Iterator>
-bool AdjacentNodeIterator<Graph, Iterator>::operator!=(const AdjacentNodeIterator& otherIterator) const
-{
-	return !(*this == otherIterator);
-}
-
-template<typename Graph, typename Iterator>
-AdjacentNodeIterator<Graph, Iterator> AdjacentNodeIterator<Graph, Iterator>::operator++()
-{
-	++it;
-	return *this;
-}
-
-template<typename Graph, typename Iterator>
-AdjacentNodeIterator<Graph, Iterator> AdjacentNodeIterator<Graph, Iterator>::operator++(int)
-{
-	AdjacentNodeIterator tmp;
-	++it;
-	return tmp;
-}
 
 } // namespace vcl::internal
 
