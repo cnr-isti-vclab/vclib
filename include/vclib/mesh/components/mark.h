@@ -84,7 +84,7 @@ class Mark :
 	using Base = Component<Mark<ElementType, OPT>, MARK, int, ElementType, OPT>;
 
 public:
-	/* Constructor and isAvailable */
+	/* Constructors */
 
 	/**
 	 * @brief Constructor that initializes the mark to 0.

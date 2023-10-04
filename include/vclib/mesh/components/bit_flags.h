@@ -101,7 +101,7 @@ public:
 	 */
 	static const uint USER_BITS_NUMBER = sizeof(FT) * 8 - FIRST_USER_BIT;
 
-	/* Constructor and isAvailable */
+	/* Constructors */
 
 	/**
 	 * @brief Constructor that initializes the bits to false.

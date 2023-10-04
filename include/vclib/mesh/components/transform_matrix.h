@@ -80,7 +80,7 @@ public:
 	 */
 	using TransformMatrixType = Matrix44<Scalar>;
 
-	/* Constructor and isAvailable */
+	/* Constructors */
 
 	/**
 	 * @brief Constructor that initializes the transform matrix to identity.

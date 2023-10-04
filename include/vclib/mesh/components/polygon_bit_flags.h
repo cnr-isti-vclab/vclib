@@ -150,7 +150,7 @@ public:
 	static const uint EDGE_USER_BITS_NUMBER =
 		sizeof(FT) * 8 - FIRST_EDGE_USER_BIT;
 
-	/* Constructor and isAvailable */
+	/* Constructors */
 
 	/**
 	 * @brief Constructor that initializes the bits to false.
