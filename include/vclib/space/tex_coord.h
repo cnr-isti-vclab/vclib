@@ -28,153 +28,79 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<typename Scalar>
 class TexCoord
 {
 	template<typename S>
 	friend class TexCoord;
 
+	Point2<Scalar> coord;
+
 public:
 	using ScalarType = Scalar;
 
-	TexCoord();
-	TexCoord(const Scalar& s1, const Scalar& s2);
-	TexCoord(const Point2<Scalar>& p);
+	TexCoord() = default;
+
+	TexCoord(const Scalar& s1, const Scalar& s2) : coord(s1, s2) {}
+
+	TexCoord(const Point2<Scalar>& p) : coord(p) {}
 
 	template<typename S>
-	TexCoord<S> cast() const;
+	TexCoord<S> cast() const
+	{
+		if constexpr (std::is_same<Scalar, S>::value) {
+			return *this;
+		}
+		else {
+			TexCoord<S> tmp;
+			tmp.coord = coord.template cast<S>();
+			return tmp;
+		}
+	}
 
-	Scalar  u() const;
-	Scalar  v() const;
-	Scalar& u();
-	Scalar& v();
-	void    setU(Scalar s);
-	void    setV(Scalar s);
-	void    set(Scalar u, Scalar v);
+	Scalar u() const { return coord.x(); }
+
+	Scalar v() const { return coord.y(); }
+
+	Scalar& u() { return coord.x(); }
+
+	Scalar& v() { return coord.y(); }
+
+	void setU(Scalar s)
+	{
+		assert(s >= 0 && s <= 1);
+		coord.x() = s;
+	}
+
+	void setV(Scalar s)
+	{
+		assert(s >= 0 && s <= 1);
+		coord.y() = s;
+	}
+
+	void set(Scalar u, Scalar v)
+	{
+		setU(u);
+		setV(v);
+	}
 
 	// operators
-	Scalar&       operator()(uint i);
-	const Scalar& operator()(uint i) const;
-	Scalar&       operator[](uint i);
-	const Scalar& operator[](uint i) const;
+	Scalar& operator()(uint i) { return coord[i]; }
+
+	const Scalar& operator()(uint i) const { return coord[i]; }
+
+	Scalar& operator[](uint i) { return coord[i]; }
+
+	const Scalar& operator[](uint i) const { return coord[i]; }
 
 	bool operator==(const TexCoord& t1) const = default;
-
-private:
-	Point2<Scalar> coord;
 };
+
+/* Specialization Aliases */
 
 using TexCoordi = TexCoord<int>;
 using TexCoordf = TexCoord<float>;
 using TexCoordd = TexCoord<double>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<typename Scalar>
-TexCoord<Scalar>::TexCoord() : coord(0, 0)
-{
-}
-
-template<typename Scalar>
-TexCoord<Scalar>::TexCoord(const Scalar &s1, const Scalar &s2) : coord(s1, s2)
-{
-}
-
-template<typename Scalar>
-TexCoord<Scalar>::TexCoord(const Point2<Scalar> &p) : coord(p)
-{
-}
-
-template<typename Scalar>
-template<typename S>
-TexCoord<S> TexCoord<Scalar>::cast() const
-{
-	if constexpr (std::is_same<Scalar, S>::value) {
-		return *this;
-	}
-	else {
-		TexCoord<S> tmp;
-		tmp.coord = coord.template cast<S>();
-		return tmp;
-	}
-}
-
-template<typename Scalar>
-Scalar TexCoord<Scalar>::u() const
-{
-	return coord.x();
-}
-
-template<typename Scalar>
-Scalar TexCoord<Scalar>::v() const
-{
-	return coord.y();
-}
-
-template<typename Scalar>
-Scalar& TexCoord<Scalar>::u()
-{
-	return coord.x();
-}
-
-template<typename Scalar>
-Scalar& TexCoord<Scalar>::v()
-{
-	return coord.y();
-}
-
-template<typename Scalar>
-void TexCoord<Scalar>::setU(Scalar s)
-{
-	assert(s >= 0 && s <= 1);
-	coord.x() = s;
-}
-
-template<typename Scalar>
-void TexCoord<Scalar>::setV(Scalar s)
-{
-	assert(s >= 0 && s <= 1);
-	coord.y() = s;
-}
-
-template<typename Scalar>
-void TexCoord<Scalar>::set(Scalar u, Scalar v)
-{
-	assert(u >= 0 && u <= 1);
-	assert(v >= 0 && v <= 1);
-	coord.x() = u;
-	coord.y() = v;
-}
-
-template<typename Scalar>
-Scalar& TexCoord<Scalar>::operator()(uint i)
-{
-	return coord[i];
-}
-
-template<typename Scalar>
-const Scalar& TexCoord<Scalar>::operator()(uint i) const
-{
-	return coord[i];
-}
-
-template<typename Scalar>
-Scalar& TexCoord<Scalar>::operator[](uint i)
-{
-	return coord[i];
-}
-
-template<typename Scalar>
-const Scalar& TexCoord<Scalar>::operator[](uint i) const
-{
-	return coord[i];
-}
 
 } // namespace vcl
 
