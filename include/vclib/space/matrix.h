@@ -31,10 +31,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<typename Scalar>
 using Matrix33 = Eigen::Matrix<Scalar, 3, 3>;
 
@@ -48,16 +44,6 @@ using Matrix44 = Eigen::Matrix<Scalar, 4, 4>;
 using Matrix44i = Matrix44<int>;
 using Matrix44f = Matrix44<float>;
 using Matrix44d = Matrix44<double>;
-
-template<EigenMatrixConcept MatrixType, PointConcept PointType>
-PointType operator*(const MatrixType& m, const PointType& p)
-	requires(
-		MatrixType::RowsAtCompileTime == PointType::DIM &&
-		MatrixType::ColsAtCompileTime == PointType::DIM);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
 
 /**
  * @brief Multiplies a matrix and a point
