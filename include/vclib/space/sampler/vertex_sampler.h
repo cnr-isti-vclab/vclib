@@ -7,10 +7,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 namespace internal {
 
 template<VertexConcept VertexType, bool CNST = false>
@@ -19,29 +15,35 @@ class VertexSampler
 	using VP = std::conditional_t<CNST, const VertexType*, VertexType*>;
 	using VPar = std::conditional_t<CNST, const VertexType&, VertexType&>;
 
+	std::vector<VP> samplesVec;
+
 public:
 	using PointType = VertexType::CoordType;
 
-	VertexSampler();
+	VertexSampler() {}
 
-	const std::vector<VP> samples() const;
+	const std::vector<VP> samples() const { return samplesVec; }
 
-	const typename VertexType::CoordType& sample(uint i) const;
+	const typename VertexType::CoordType& sample(uint i) const
+	{
+		return samplesVec[i]->coord();
+	}
 
-	std::size_t size() const;
+	std::size_t size() const { return samplesVec.size(); }
 
-	void clear();
-	void reserve(uint n);
-	void resize(uint n);
+	void clear() { samplesVec.clear(); }
 
-	void add(VPar v);
-	void set(uint i, VPar v);
+	void reserve(uint n) { samplesVec.reserve(n); }
 
-	auto begin() const;
-	auto end() const;
+	void resize(uint n) { samplesVec.resize(n); }
 
-private:
-	std::vector<VP> samplesVec;
+	void add(VPar v) { samplesVec.push_back(&v); }
+
+	void set(uint i, VPar v) { samplesVec[i] = &v; }
+
+	auto begin() const { return std::begin(samplesVec | views::coords); }
+
+	auto end() const { return std::end(samplesVec | views::coords); }
 };
 
 } // namespace vcl::internal
@@ -51,80 +53,6 @@ using VertexSampler = internal::VertexSampler<VertexType, false>;
 
 template<VertexConcept VertexType>
 using ConstVertexSampler = internal::VertexSampler<VertexType, true>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-namespace internal {
-
-template<VertexConcept VertexType, bool CNST>
-VertexSampler<VertexType, CNST>::VertexSampler()
-{
-}
-
-template<VertexConcept VertexType, bool CNST>
-const std::vector<typename VertexSampler<VertexType, CNST>::VP>
-VertexSampler<VertexType, CNST>::samples() const
-{
-	return samplesVec;
-}
-
-template<VertexConcept VertexType, bool CNST>
-const typename VertexType::CoordType& VertexSampler<VertexType, CNST>::sample(uint i) const
-{
-	return samplesVec[i]->coord();
-}
-
-template<VertexConcept VertexType, bool CNST>
-std::size_t vcl::internal::VertexSampler<VertexType, CNST>::size() const
-{
-	return samplesVec.size();
-}
-
-template<VertexConcept VertexType, bool CNST>
-void VertexSampler<VertexType, CNST>::clear()
-{
-	samplesVec.clear();
-}
-
-template<VertexConcept VertexType, bool CNST>
-void VertexSampler<VertexType, CNST>::reserve(uint n)
-{
-	samplesVec.reserve(n);
-}
-
-template<VertexConcept VertexType, bool CNST>
-void VertexSampler<VertexType, CNST>::resize(uint n)
-{
-	samplesVec.resize(n);
-}
-
-template<VertexConcept VertexType, bool CNST>
-void VertexSampler<VertexType, CNST>::add(VPar v)
-{
-	samplesVec.push_back(&v);
-}
-
-template<VertexConcept VertexType, bool CNST>
-void VertexSampler<VertexType, CNST>::set(uint i, VPar v)
-{
-	samplesVec[i] = &v;
-}
-
-template<VertexConcept VertexType, bool CNST>
-auto VertexSampler<VertexType, CNST>::begin() const
-{
-	return std::begin(samplesVec | views::coords);
-}
-
-template<VertexConcept VertexType, bool CNST>
-auto VertexSampler<VertexType, CNST>::end() const
-{
-	return std::end(samplesVec | views::coords);
-}
-
-} // namespace vcl::internal
 
 } // namespace vcl
 
