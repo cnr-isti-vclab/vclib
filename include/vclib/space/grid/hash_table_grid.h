@@ -75,7 +75,6 @@ private:
 	using MapType      = std::unordered_multimap<KeyType, ValueType>;
 	using MapValueType = MapType::value_type;
 
-	mutable uint m = 1;
 	MapType map;
 
 public:

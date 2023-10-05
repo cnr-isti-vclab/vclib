@@ -94,7 +94,7 @@ public:
 
 	/**
 	 * @brief Returns the number of cells of the Grid in the d-th dimension
-	 * @param i
+	 * @param d
 	 * @return
 	 */
 	uint cellNumber(uint d) const { return siz(d); }
@@ -128,7 +128,7 @@ public:
 	 * @param index
 	 * @return
 	 */
-	CellCoord cellOfIndex(uint i) const
+	CellCoord cellOfIndex(uint index) const
 	{
 		typename RegularGrid<Scalar, N>::CellCoord c;
 		for (long int i = N - 1; i >= 0; i--) {
@@ -140,7 +140,7 @@ public:
 
 	/**
 	 * @brief Returns the length of a cell of the grid in the d-th dimension
-	 * @param i
+	 * @param d
 	 * @return
 	 */
 	Scalar cellLength(uint d) const
@@ -322,8 +322,6 @@ bestGridSize(const PointType& lengths, uint nElements)
 
 	return sizes;
 }
-
-
 
 } // namespace vcl
 

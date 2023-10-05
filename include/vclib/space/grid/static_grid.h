@@ -35,19 +35,31 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<typename GridType, typename ValueType>
-class StaticGrid : public AbstractGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>
+class StaticGrid :
+		public AbstractGrid<
+			GridType,
+			ValueType,
+			StaticGrid<GridType, ValueType>>
 {
-	using AbsGrid = AbstractGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
+	using AbsGrid =
+		AbstractGrid<GridType, ValueType, StaticGrid<GridType, ValueType>>;
 
 	using PairType =  std::pair<uint, ValueType>;
 	using PairComparator = FirstElementPairComparator<PairType>;
 
 	friend AbsGrid;
+
+	PairComparator comparator = PairComparator();
+
+	// each value is stored as a pair: [cell index of the grid - value]
+	// when the grid is built, this vector is sorted by the cell indices
+	std::vector<PairType> values;
+
+	// for each cell of the grid, we store the index (in the values vector ) of
+	// the first ValueType object contained in the cell, or values.size() if the
+	// cell is empty
+	std::vector<uint> grid;
 
 public:
 	using KeyType = AbsGrid::KeyType;
@@ -56,52 +68,174 @@ public:
 	using Iterator = StaticGridIterator<KeyType, ValueType, GridType>;
 	using ConstIterator = ConstStaticGridIterator<KeyType, ValueType, GridType>;
 
-	StaticGrid();
-	StaticGrid(const GridType& g);
+	StaticGrid() {}
+
+	StaticGrid(const GridType& g) : AbsGrid(g) {}
 
 	template<typename ObjIterator>
-	StaticGrid(ObjIterator begin, ObjIterator end, const IsInCellFunction& intersects = nullptr);
+	StaticGrid(
+		ObjIterator             begin,
+		ObjIterator             end,
+		const IsInCellFunction& intersects = nullptr) :
+			AbsGrid(begin, end, intersects)
+	{
+		AbsGrid::insert(begin, end);
+		build();
+	}
 
 	template<vcl::Range Rng>
-	StaticGrid(Rng&& r, const IsInCellFunction& intersects = nullptr);
+	StaticGrid(Rng&& r, const IsInCellFunction& intersects = nullptr) :
+			StaticGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
+	{
+	}
 
-	void build();
+	void build()
+	{
+		uint totCellNumber = 1;
+		for (uint i = 0; i < GridType::DIM; ++i) {
+			totCellNumber *= GridType::cellNumber(i);
+		}
 
-	bool empty() const;
-	bool cellEmpty(const KeyType& k) const;
-	std::set<KeyType> nonEmptyCells() const;
+		grid.resize(totCellNumber);
 
-	std::size_t countInCell(const KeyType& k) const;
+		std::sort(values.begin(), values.end(), comparator);
 
-	std::pair<Iterator, Iterator> valuesInCell(const KeyType& k);
-	std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const;
+		// values[vi].first points to the next non empty cell in the grid
+		uint vi = 0;
 
-	Iterator begin();
-	ConstIterator begin() const;
-	Iterator end();
-	ConstIterator end() const;
+		// for each cell
+		for (uint ci = 0; ci < grid.size(); ++ci) {
+			// values[vi] is in the cell ci
+			if (vi < values.size() && values[vi].first == ci)
+				grid[ci] = vi;
+			else { // there are no values in this grid cell
+				grid[ci] = values.size(); // set the sentinel value
+			}
+
+			// move vi to the next non-empty cell
+			// skip all the values that are in the current cell ci
+			// won't increment vi if the values[vi].first is not equal to ci
+			while (vi < values.size() && values[vi].first == ci) {
+				vi++;
+			}
+		}
+	}
+
+	bool empty() const { return values.empty(); }
+
+	bool cellEmpty(const KeyType& k) const
+	{
+		uint ind = GridType::indexOfCell(k);
+		return grid[ind] == values.size();
+	}
+
+	std::set<KeyType> nonEmptyCells() const
+	{
+		std::set<KeyType> keys;
+		uint actualInd = values.size();
+		for (uint i = 0; i < values.size(); ++i) {
+			if (values[i].first != actualInd) {
+				actualInd = values[i].first;
+				keys.insert(GridType::cellOfIndex(actualInd));
+			}
+		}
+		return keys;
+	}
+
+	std::size_t countInCell(const KeyType& k) const
+	{
+		uint ind = GridType::indexOfCell(k);
+		uint i = grid[ind];
+		uint cnt = 0;
+
+		while(i < values.size() && values[i].first == ind) {
+			i++;
+			cnt++;
+		}
+		return cnt;
+	}
+
+	std::pair<Iterator, Iterator> valuesInCell(const KeyType& k)
+	{
+		uint ind = GridType::indexOfCell(k);
+		uint i = grid[ind];
+		if (i < values.size()) {
+			std::pair<Iterator, Iterator> p;
+			p.first = Iterator(values.begin() + i, (const GridType&)*this);
+			while(i < values.size() && values[i].first == ind) {
+				i++;
+			}
+			auto it = i < values.size() ? values.begin() + i : values.end();
+			p.second = Iterator(it, (const GridType&)*this);
+			return p;
+		}
+		else {
+			return std::make_pair(end(), end());
+		}
+	}
+
+	std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const
+	{
+		uint ind = GridType::indexOfCell(k);
+		uint i = grid[ind];
+		if (i < values.size()) {
+			std::pair<ConstIterator, ConstIterator> p;
+			p.first = ConstIterator(values.begin() + i, (const GridType&)*this);
+			while(i < values.size() && values[i].first == ind) {
+				i++;
+			}
+			auto it = i < values.size() ? values.begin() + i : values.end();
+			p.second = ConstIterator(it, (const GridType&)*this);
+			return p;
+		}
+		else {
+			return std::make_pair(end(), end());
+		}
+	}
+
+	Iterator begin()
+	{
+		return Iterator(values.begin(), (const GridType&)*this);
+	}
+
+	ConstIterator begin() const
+	{
+		return ConstIterator(values.begin(), (const GridType&) *this);
+	}
+
+	Iterator end() { return Iterator(values.end(), (const GridType&) *this); }
+
+	ConstIterator end() const
+	{
+		return ConstIterator(values.end(), (const GridType&)*this);
+	}
 
 private:
-	PairComparator comparator = PairComparator();
-
-	// each value is stored as a pair: [cell index of the grid - value]
-	// when the grid is built, this vector is sorted by the cell indices
-	std::vector<PairType> values;
-
-	// for each cell of the grid, we store the index (in the values vector ) of the first ValueType
-	// object contained in the cell, or values.size() if the cell is empty
-	std::vector<uint> grid;
-
 	// not available member functions
 	using AbsGrid::erase;
 	using AbsGrid::eraseAllInCell;
 	using AbsGrid::eraseInSphere;
 
-	bool insertInCell(const KeyType& cell, const ValueType& v);
-	bool eraseInCell(const KeyType&, const ValueType&) { return false; }; // not allowing to erase
+	bool insertInCell(const KeyType& cell, const ValueType& v)
+	{
+		uint cellIndex = GridType::indexOfCell(cell);
+		values.emplace_back(cellIndex, v);
+		return true;
+	}
+
+	// not allowing to erase
+	bool eraseInCell(const KeyType&, const ValueType&) { return false; };
 };
 
-// deduction guides
+/* Specialization Aliases */
+
+template<typename ValueType, typename ScalarType = double>
+using StaticGrid2 = StaticGrid<RegularGrid2<ScalarType>, ValueType>;
+
+template<typename ValueType, typename ScalarType = double>
+using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
+
+/* Deduction guides */
 
 template<PointIteratorConcept It>
 StaticGrid(It, It) -> StaticGrid<
@@ -116,206 +250,14 @@ StaticGrid(It, It, F) -> StaticGrid<
 template<VertexPointerRangeConcept Rng>
 StaticGrid(Rng) -> StaticGrid<
 	RegularGrid<
-		// scalar type used for the grid, the same of the CoordType of the Vertex
-		typename std::remove_pointer_t<
-			typename std::ranges::iterator_t<Rng>::value_type>::CoordType::ScalarType,
+		// scalar type used for the grid, the same of the CoordType of the
+		// Vertex
+		typename std::remove_pointer_t<typename std::ranges::iterator_t<
+			Rng>::value_type>::CoordType::ScalarType,
 		3>, // the dimension of the Grid
-	// the ValueType of the StaticGrid, which is the iterated type in the given range
-	// (pointer to vertex)
+	// the ValueType of the StaticGrid, which is the iterated type in the given
+	// range (pointer to vertex)
 	typename std::ranges::iterator_t<Rng>::value_type>;
-
-template<typename ValueType, typename ScalarType = double>
-using StaticGrid2 = StaticGrid<RegularGrid2<ScalarType>, ValueType>;
-
-template<typename ValueType, typename ScalarType = double>
-using StaticGrid3 = StaticGrid<RegularGrid3<ScalarType>, ValueType>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<typename GridType, typename ValueType>
-StaticGrid<GridType, ValueType>::StaticGrid()
-{
-}
-
-template<typename GridType, typename ValueType>
-StaticGrid<GridType, ValueType>::StaticGrid(const GridType& g) :
-		AbsGrid(g)
-{
-}
-
-template<typename GridType, typename ValueType>
-template<typename ObjIterator>
-StaticGrid<GridType, ValueType>::StaticGrid(
-	ObjIterator             begin,
-	ObjIterator             end,
-	const IsInCellFunction& intersects) :
-		AbsGrid(begin, end, intersects)
-{
-	AbsGrid::insert(begin, end);
-	build();
-}
-
-template<typename GridType, typename ValueType>
-template<vcl::Range Rng>
-StaticGrid<GridType, ValueType>::StaticGrid(
-	Rng&& r,
-	const IsInCellFunction& intersects) :
-		StaticGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
-{
-}
-
-template<typename GridType, typename ValueType>
-void StaticGrid<GridType, ValueType>::build()
-{
-	uint totCellNumber = 1;
-	for (uint i = 0; i < GridType::DIM; ++i) {
-		totCellNumber *= GridType::cellNumber(i);
-	}
-
-	grid.resize(totCellNumber);
-
-	std::sort(values.begin(), values.end(), comparator);
-
-	uint vi = 0; // values[vi].first points to the next non empty cell in the grid
-
-	for (uint ci = 0; ci < grid.size(); ++ci) { // for each cell
-		if (vi < values.size() && values[vi].first == ci) // values[vi] is in the cell ci
-			grid[ci] = vi;
-		else { // there are no values in this grid cell
-			grid[ci] = values.size(); // set the sentinel value
-		}
-
-			   // move vi to the next non-empty cell
-			   // skip all the values that are in the current cell ci
-			   // won't increment vi if the values[vi].first is not equal to ci
-		while (vi < values.size() && values[vi].first == ci) {
-			vi++;
-		}
-	}
-}
-
-template<typename GridType, typename ValueType>
-bool StaticGrid<GridType, ValueType>::empty() const
-{
-	return values.empty();
-}
-
-template<typename GridType, typename ValueType>
-bool StaticGrid<GridType, ValueType>::cellEmpty(const KeyType& k) const
-{
-	uint ind = GridType::indexOfCell(k);
-	return grid[ind] == values.size();
-}
-
-template<typename GridType, typename ValueType>
-std::set<typename StaticGrid<GridType, ValueType>::KeyType>
-StaticGrid<GridType, ValueType>::nonEmptyCells() const
-{
-	std::set<KeyType> keys;
-	uint actualInd = values.size();
-	for (uint i = 0; i < values.size(); ++i) {
-		if (values[i].first != actualInd) {
-			actualInd = values[i].first;
-			keys.insert(GridType::cellOfIndex(actualInd));
-		}
-	}
-	return keys;
-}
-
-template<typename GridType, typename ValueType>
-std::size_t StaticGrid<GridType, ValueType>::countInCell(const KeyType& k) const
-{
-	uint ind = GridType::indexOfCell(k);
-	uint i = grid[ind];
-	uint cnt = 0;
-
-	while(i < values.size() && values[i].first == ind) {
-		i++;
-		cnt++;
-	}
-	return cnt;
-}
-
-template<typename GridType, typename ValueType>
-std::pair<
-	typename StaticGrid<GridType, ValueType>::Iterator,
-	typename StaticGrid<GridType, ValueType>::Iterator>
-StaticGrid<GridType, ValueType>::valuesInCell(const KeyType& k)
-{
-	uint ind = GridType::indexOfCell(k);
-	uint i = grid[ind];
-	if (i < values.size()) {
-		std::pair<Iterator, Iterator> p;
-		p.first = Iterator(values.begin() + i, (const GridType&)*this);
-		while(i < values.size() && values[i].first == ind) {
-			i++;
-		}
-		auto it = i < values.size() ? values.begin() + i : values.end();
-		p.second = Iterator(it, (const GridType&)*this);
-		return p;
-	}
-	else {
-		return std::make_pair(end(), end());
-	}
-}
-
-template<typename GridType, typename ValueType>
-std::pair<
-	typename StaticGrid<GridType, ValueType>::ConstIterator,
-	typename StaticGrid<GridType, ValueType>::ConstIterator>
-StaticGrid<GridType, ValueType>::valuesInCell(const KeyType& k) const
-{
-	uint ind = GridType::indexOfCell(k);
-	uint i = grid[ind];
-	if (i < values.size()) {
-		std::pair<ConstIterator, ConstIterator> p;
-		p.first = ConstIterator(values.begin() + i, (const GridType&)*this);
-		while(i < values.size() && values[i].first == ind) {
-			i++;
-		}
-		auto it = i < values.size() ? values.begin() + i : values.end();
-		p.second = ConstIterator(it, (const GridType&)*this);
-		return p;
-	}
-	else {
-		return std::make_pair(end(), end());
-	}
-}
-
-template<typename GridType, typename ValueType>
-typename StaticGrid<GridType, ValueType>::Iterator StaticGrid<GridType, ValueType>::begin()
-{
-	return Iterator(values.begin(), (const GridType&)*this);
-}
-
-template<typename GridType, typename ValueType>
-typename StaticGrid<GridType, ValueType>::ConstIterator
-StaticGrid<GridType, ValueType>::begin() const
-{
-	return ConstIterator(values.begin(), (const GridType&)*this);
-}
-
-template<typename GridType, typename ValueType>
-typename StaticGrid<GridType, ValueType>::Iterator StaticGrid<GridType, ValueType>::end()
-{
-	return Iterator(values.end(), (const GridType&)*this);
-}
-
-template<typename GridType, typename ValueType>
-typename StaticGrid<GridType, ValueType>::ConstIterator StaticGrid<GridType, ValueType>::end() const
-{
-	return ConstIterator(values.end(), (const GridType&)*this);
-}
-
-template<typename GridType, typename ValueType>
-bool StaticGrid<GridType, ValueType>::insertInCell(const KeyType& cell, const ValueType& v)
-{
-	uint cellIndex = GridType::indexOfCell(cell);
-	values.emplace_back(cellIndex, v);
-	return true;
-}
 
 } // namespace vcl
 

@@ -36,6 +36,7 @@
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
 - Space:
+  - [ ] improve documentation for Grid data structures
   - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
 - External:
   - [ ] make render functions using bgfx
