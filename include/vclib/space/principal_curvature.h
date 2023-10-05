@@ -28,10 +28,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The PrincipalCurvature class stores the principal curvature directions
  * and values at a point on a surface.
@@ -47,150 +43,95 @@ namespace vcl {
 template<typename Scalar>
 class PrincipalCurvature
 {
+	Point3<Scalar> dir1, dir2;
+	Scalar         k1 = 0, k2 = 0;
+
 public:
 	/**
 	 * @brief The scalar type of the curvature values.
 	 */
 	using ScalarType = Scalar;
 
-	PrincipalCurvature();
+	/**
+	 * @brief Empty constructor. Directions and values are set to 0.
+	 */
+	PrincipalCurvature() {}
 
+	/**
+	 * @brief Casts the PrincipalCurvature object to a different scalar type.
+	 *
+	 * The function returns a new PrincipalCurvature object with each scalar
+	 * value casted to a different type.
+	 *
+	 * @tparam S: The scalar type to cast to.
+	 *
+	 * @return A new PrincipalCurvature object with each scalar value casted to
+	 * a different type.
+	 */
 	template<typename S>
-	PrincipalCurvature<S> cast() const;
+	PrincipalCurvature<S> cast() const
+	{
+		if constexpr (std::is_same<Scalar, S>::value) {
+			return *this;
+		}
+		else {
+			PrincipalCurvature<S> tmp;
+			tmp.maxDir() = dir1.template cast<S>();
+			tmp.minDir() = dir2.template cast<S>();
+			tmp.maxValue() = k1;
+			tmp.minValue() = k2;
+			return tmp;
+		}
+	}
 
-	const Point3<Scalar>& maxDir() const;
-	Point3<Scalar>&       maxDir();
-	const Point3<Scalar>& minDir() const;
-	Point3<Scalar>&       minDir();
-	const Scalar&         maxValue() const;
-	Scalar&               maxValue();
-	const Scalar&         minValue() const;
-	Scalar&               minValue();
+	/**
+	 * @brief Returns a const reference to the maximum curvature direction.
+	 * @return A const reference to the maximum curvature direction.
+	 */
+	const Point3<Scalar>& maxDir() const { return dir1; }
 
-private:
-	Point3<Scalar> dir1, dir2;
-	Scalar         k1 = 0, k2 = 0;
+	/**
+	 * @brief Returns a reference to the maximum curvature direction.
+	 * @return A reference to the maximum curvature direction.
+	 */
+	Point3<Scalar>& maxDir() { return dir1; }
+
+	/**
+	 * @brief Returns a const reference to the minimum curvature direction.
+	 * @return A const reference to the minimum curvature direction.
+	 */
+	const Point3<Scalar>& minDir() const { return dir2; }
+
+	/**
+	 * @brief Returns a reference to the minimum curvature direction.
+	 * @return A reference to the minimum curvature direction.
+	 */
+	Point3<Scalar>& minDir() { return dir2; }
+
+	/**
+	 * @brief Returns a const reference to the maximum curvature value.
+	 * @return A const reference to the maximum curvature value.
+	 */
+	const Scalar& maxValue() const { return k1; }
+
+	/**
+	 * @brief Returns a reference to the maximum curvature value.
+	 * @return A reference to the maximum curvature value.
+	 */
+	Scalar& maxValue() { return k1; }
+
+	/**
+	 * @brief Returns a const reference to the minimum curvature value.
+	 * @return A const reference to the minimum curvature value.
+	 */
+	const Scalar& minValue() const { return k2; }
+
+	/**
+	 * @brief Returns a reference to the minimum curvature value.
+	 * @return A reference to the minimum curvature value.
+	 */
+	Scalar& minValue() { return k2; }
 };
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-/**
- * @brief Empty constructor. Directions and values are set to 0.
- */
-template<typename Scalar>
-PrincipalCurvature<Scalar>::PrincipalCurvature()
-{
-}
-
-/**
- * @brief Casts the PrincipalCurvature object to a different scalar type.
- *
- * The function returns a new PrincipalCurvature object with each scalar value
- * casted to a different type.
- *
- * @tparam S: The scalar type to cast to.
- *
- * @return A new PrincipalCurvature object with each scalar value casted to a
- * different type.
- */
-template<typename Scalar>
-template<typename S>
-PrincipalCurvature<S> PrincipalCurvature<Scalar>::cast() const
-{
-	if constexpr (std::is_same<Scalar, S>::value) {
-		return *this;
-	}
-	else {
-		PrincipalCurvature<S> tmp;
-		tmp.maxDir() = dir1.template cast<S>();
-		tmp.minDir() = dir2.template cast<S>();
-		tmp.maxValue() = k1;
-		tmp.minValue() = k2;
-		return tmp;
-	}
-}
-
-/**
- * @brief Returns a const reference to the maximum curvature direction.
- * @return A const reference to the maximum curvature direction.
- */
-template<typename Scalar>
-const Point3<Scalar>& PrincipalCurvature<Scalar>::maxDir() const
-{
-	return dir1;
-}
-
-/**
- * @brief Returns a reference to the maximum curvature direction.
- * @return A reference to the maximum curvature direction.
- */
-template<typename Scalar>
-Point3<Scalar>& PrincipalCurvature<Scalar>::maxDir()
-{
-	return dir1;
-}
-
-/**
- * @brief Returns a const reference to the minimum curvature direction.
- * @return A const reference to the minimum curvature direction.
- */
-template<typename Scalar>
-const Point3<Scalar>& PrincipalCurvature<Scalar>::minDir() const
-{
-	return dir2;
-}
-
-/**
- * @brief Returns a reference to the minimum curvature direction.
- * @return A reference to the minimum curvature direction.
- */
-template<typename Scalar>
-Point3<Scalar>& PrincipalCurvature<Scalar>::minDir()
-{
-	return dir2;
-}
-
-/**
- * @brief Returns a const reference to the maximum curvature value.
- * @return A const reference to the maximum curvature value.
- */
-template<typename Scalar>
-const Scalar& PrincipalCurvature<Scalar>::maxValue() const
-{
-	return k1;
-}
-
-/**
- * @brief Returns a reference to the maximum curvature value.
- * @return A reference to the maximum curvature value.
- */
-template<typename Scalar>
-Scalar& PrincipalCurvature<Scalar>::maxValue()
-{
-	return k1;
-}
-
-/**
- * @brief Returns a const reference to the minimum curvature value.
- * @return A const reference to the minimum curvature value.
- */
-template<typename Scalar>
-const Scalar& PrincipalCurvature<Scalar>::minValue() const
-{
-	return k2;
-}
-
-/**
- * @brief Returns a reference to the minimum curvature value.
- * @return A reference to the minimum curvature value.
- */
-template<typename Scalar>
-Scalar& PrincipalCurvature<Scalar>::minValue()
-{
-	return k2;
-}
 
 } // namespace vcl
 
