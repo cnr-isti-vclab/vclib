@@ -29,29 +29,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<uint ELEMENT_ID, MeshConcept MeshType>
-bool isElementContainerCompact(const MeshType&);
-
-template<uint ELEMENT_ID, uint COMPONENT_ID, MeshConcept MeshType>
-bool isPerElementComponentAvailable(const MeshType& m);
-
-template<uint ELEMENT_ID, uint COMPONENT_ID, MeshConcept MeshType>
-bool enableIfPerElementComponentOptional(MeshType& m);
-
-template<uint ELEMENT_ID, MeshConcept MeshType>
-void requireElementContainerCompactness(const MeshType& m);
-
-template<uint ELEMENT_ID, uint COMPONENT_ID, MeshConcept MeshType>
-void requirePerElementComponent(const MeshType& m);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Returns `true` if the given mesh has its Container of the given
  * Element compact.

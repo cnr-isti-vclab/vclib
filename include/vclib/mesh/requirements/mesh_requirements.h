@@ -29,52 +29,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-/********************
- * is/has functions *
- ********************/
-
-// Triangles
-
-template<MeshConcept MeshType>
-bool isTriangleMesh(const MeshType&);
-
-// Quads
-
-template<MeshConcept MeshType>
-bool isQuadMesh(const MeshType&);
-
-// Mesh Compactness
-
-template<MeshConcept MeshType>
-bool isCompact(const MeshType&);
-
-/*********************
- * require functions *
- *********************/
-
-// Triangles
-
-template<FaceMeshConcept MeshType>
-void requireTriangleMesh(const MeshType&);
-
-// Quads
-
-template<FaceMeshConcept MeshType>
-void requireQuadMesh(const MeshType&);
-
-// Mesh Compactness
-
-template <MeshConcept MeshType>
-void requireCompactness(const MeshType&);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /********************
  * is/has functions *
  ********************/
