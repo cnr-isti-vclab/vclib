@@ -5,14 +5,6 @@
 namespace vcl::mesh {
 
 /**
- * @brief Empty constructor that creates an empty container of %EL_UC%s.
- */
-template<%EL_UC%Concept T>
-%EL_UC%Container<T>::%EL_UC%Container()
-{
-}
-
-/**
  * @brief Returns a const reference of the %EL_UC% at the i-th position
  * in the %EL_UC% Container of the Mesh, which will be the %EL_UC% having
  * index = i.

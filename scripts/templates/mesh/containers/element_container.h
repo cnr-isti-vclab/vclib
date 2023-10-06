@@ -43,7 +43,10 @@ public:
 	using %EL_UC%Iterator      = Base::ElementIterator;
 	using Const%EL_UC%Iterator = Base::ConstElementIterator;
 
-	%EL_UC%Container();
+	/**
+	 * @brief Empty constructor that creates an empty container of %EL_UC%s.
+	 */
+	%EL_UC%Container() = default;
 
 	const %EL_UC%Type& %EL_C%(uint i) const;
 	%EL_UC%Type&       %EL_C%(uint i);

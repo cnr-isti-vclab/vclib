@@ -500,8 +500,7 @@ public:
 	 * @note This function is available only if the Edge Element has
 	 * the OptionalAdjacentEdges Component.
 	 */
-	void enablePerEdgeAdjacentEdges()
-		requires edge::HasOptionalAdjacentEdges<T>
+	void enablePerEdgeAdjacentEdges() requires edge::HasOptionalAdjacentEdges<T>
 	{
 		Base::template enableOptionalComponent<typename T::AdjacentEdges>();
 	}
@@ -541,8 +540,7 @@ public:
 	 * @note This function is available only if the Edge Element has
 	 * the OptionalAdjacentFaces Component.
 	 */
-	void enablePerEdgeAdjacentFaces()
-		requires edge::HasOptionalAdjacentFaces<T>
+	void enablePerEdgeAdjacentFaces() requires edge::HasOptionalAdjacentFaces<T>
 	{
 		Base::template enableOptionalComponent<typename T::AdjacentFaces>();
 	}
