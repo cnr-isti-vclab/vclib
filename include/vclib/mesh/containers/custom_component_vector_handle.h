@@ -31,10 +31,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief Allows to access directly to a custom component.
  *
@@ -61,16 +57,22 @@ namespace vcl {
 template<typename T>
 class CustomComponentVectorHandle
 {
+	std::vector<std::reference_wrapper<T>> v;
+
 public:
 	class Iterator : public std::vector<std::reference_wrapper<T>>::iterator
 	{
 		using Base = std::vector<std::reference_wrapper<T>>::iterator;
+
 	public:
-		Iterator(Base it) : Base(it) {}
 		using value_type = T;
 		using reference = value_type&;
 		using pointer = value_type*;
+
+		Iterator(Base it) : Base(it) {}
+
 		reference operator*() const { return Base::operator*().get(); }
+
 		pointer operator->() const { return &(Base::operator*().get()); }
 	};
 
@@ -80,140 +82,56 @@ public:
 		using Base = std::vector<std::reference_wrapper<T>>::const_iterator;
 
 	public:
-		ConstIterator(Base it) : Base(it) {}
 		using value_type = T;
 		using reference = const value_type&;
 		using pointer = const value_type*;
+
+		ConstIterator(Base it) : Base(it) {}
+
 		reference operator*() const { return Base::operator*().get(); }
+
 		pointer operator->() const { return &(Base::operator*().get()); }
 	};
 
-	CustomComponentVectorHandle();
-	CustomComponentVectorHandle(std::vector<std::any>& cc);
+	CustomComponentVectorHandle() {}
 
-	T& at(uint i);
-	const T& at(uint i) const;
+	CustomComponentVectorHandle(std::vector<std::any>& cc)
+	{
+		v.reserve(cc.size());
+		for (uint i = 0; i < cc.size(); ++i) {
+			v.push_back(std::any_cast<T&>(cc[i]));
+		}
+	}
 
-	T& front();
-	const T& front() const;
+	T& at(uint i) { return v[i].get(); }
 
-	T& back();
-	const T& back() const;
+	const T& at(uint i) const { return v[i].get(); }
 
-	uint size() const;
+	T& front() { return v.begin()->get(); }
 
-	T& operator[](uint i);
-	const T& operator[](uint i) const;
+	const T& front() const { return v.begin()->get(); }
 
-	Iterator begin();
-	Iterator end();
-	ConstIterator begin() const;
-	ConstIterator end() const;
+	T& back() { return std::prev(v.end())->get(); }
 
-private:
-	std::vector<std::reference_wrapper<T>> v;
+	const T& back() const { return std::prev(v.end())->get(); }
+
+	uint size() const { return v.size(); }
+
+	T& operator[](uint i) { return v[i].get(); }
+
+	const T& operator[](uint i) const { return v[i].get(); }
+
+	Iterator begin() { return Iterator(v.begin()); }
+
+	Iterator end() { return Iterator(v.end()); }
+
+	ConstIterator begin() const { return ConstIterator(v.begin()); }
+
+	ConstIterator end() const { return ConstIterator(v.end()); }
 };
 
 template<typename T>
 using ConstCustomComponentVectorHandle = CustomComponentVectorHandle<const T>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<typename T>
-CustomComponentVectorHandle<T>::CustomComponentVectorHandle()
-{
-}
-
-template<typename T>
-CustomComponentVectorHandle<T>::CustomComponentVectorHandle(
-	std::vector<std::any>& cc)
-{
-	v.reserve(cc.size());
-	for (uint i = 0; i < cc.size(); ++i) {
-		v.push_back(std::any_cast<T&>(cc[i]));
-	}
-}
-
-template<typename T>
-T& CustomComponentVectorHandle<T>::at(uint i)
-{
-	return v[i].get();
-}
-
-template<typename T>
-const T& CustomComponentVectorHandle<T>::at(uint i) const
-{
-	return v[i].get();
-}
-
-template<typename T>
-T& CustomComponentVectorHandle<T>::front()
-{
-	return v.begin()->get();
-}
-
-template<typename T>
-const T& CustomComponentVectorHandle<T>::front() const
-{
-	return v.begin()->get();
-}
-
-template<typename T>
-T& CustomComponentVectorHandle<T>::back()
-{
-	return std::prev(v.end())->get();
-}
-
-template<typename T>
-const T& CustomComponentVectorHandle<T>::back() const
-{
-	return std::prev(v.end())->get();
-}
-
-template<typename T>
-uint CustomComponentVectorHandle<T>::size() const
-{
-	return v.size();
-}
-
-template<typename T>
-T& CustomComponentVectorHandle<T>::operator[](uint i)
-{
-	return v[i].get();
-}
-
-template<typename T>
-const T& CustomComponentVectorHandle<T>::operator[](uint i) const
-{
-	return v[i].get();
-}
-
-template<typename T>
-auto CustomComponentVectorHandle<T>::begin() -> Iterator
-{
-	return Iterator(v.begin());
-}
-
-template<typename T>
-auto CustomComponentVectorHandle<T>::end() -> Iterator
-{
-	return Iterator(v.end());
-}
-
-template<typename T>
-auto CustomComponentVectorHandle<T>::begin() const -> ConstIterator
-{
-	return ConstIterator(v.begin());
-}
-
-template<typename T>
-auto CustomComponentVectorHandle<T>::end() const -> ConstIterator
-{
-	return ConstIterator(v.end());
-}
-
 
 } // namespace vcl
 
