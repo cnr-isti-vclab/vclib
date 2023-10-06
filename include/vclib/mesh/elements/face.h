@@ -33,10 +33,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The Face class represents an Face element of the vcl::Mesh class.
  *
@@ -63,299 +59,231 @@ class Face : public Element<FACE, MeshType, Comps...>
 public:
 	using VertexType = typename VPtrs::VertexType;
 
-	Face();
+	/**
+	 * @brief Empty constructor.
+	 *
+	 * Calls automatically all the empty constructors of all the components
+	 * available in the Face (for all the components non-available, their empty
+	 * constructor is called only when they become available).
+	 */
+	Face() = default;
 
+	/**
+	 * @brief Constructs a Face with the given range of vertex pointers.
+	 *
+	 * Sets a range of Vertex pointers to the face.
+	 * If the Face size is static, the number of vertices of the range must be
+	 * equal to the size of the Face (the value returned by vertexNumber()). If
+	 * the Face size is dynamic, it will take care to update the also the size
+	 * of the components tied to the vertex number of the face.
+	 *
+	 * @param[in] r: a range of vertex pointers in counterclockwise order
+	 * that will be set as vertices of the face.
+	 */
 	template<Range Rng>
-	Face(Rng&& r)
-		requires RangeOfConvertibleTo<Rng, VertexType*>;
+	Face(Rng&& r) requires RangeOfConvertibleTo<Rng, VertexType*>
+	{
+		setVertices(r);
+	}
 
+	/**
+	 * @brief Creates a new Face, setting the Vertex pointer arguments to it.
+	 *
+	 * If the Face size is static, the number of vertices of the list must be
+	 * equal to the size of the Face (the value returned by vertexNumber()). If
+	 * the Face size is dynamic, it will take care to update the also the size
+	 * of the components tied to the vertex number of the face.
+	 *
+	 * @param[in] args: a variable number of vertex pointers in counterclockwise
+	 * order that will be set as vertices of the face.
+	 */
 	template<typename... V>
-	Face(V... args)
-		requires (std::convertible_to<V, VertexType*> && ...);
+	Face(V... args) requires (std::convertible_to<V, VertexType*> && ...)
+	{
+		setVertices(std::list({args...}));
+	}
 
+	/**
+	 * @brief Sets all the Vertex pointers to the face.
+	 *
+	 * If the Face size is static, the number of vertices of the input range
+	 * must be equal to the size of the Face (the value returned by
+	 * vertexNumber()). If the Face size is dynamic, it will take care to update
+	 * the also the size of the components tied to the vertex number of the
+	 * face.
+	 *
+	 * @param[in] r: a range of vertex pointers in counterclockwise order
+	 * that will be set as vertices of the face.
+	 */
 	template<Range Rng>
-	void setVertices(Rng&& r)
-		requires RangeOfConvertibleTo<Rng, VertexType*>;
+	void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, VertexType*>
+	{
+		using F = Face<MeshType, TypeWrapper<Comps...>>;
 
+		VPtrs::setVertices(r);
+
+			   // if polygonal, I need to resize all the TTVN components
+		if constexpr (NV < 0) {
+			(resizeTTVNComponent<Comps>(std::ranges::size(r)), ...);
+		}
+	}
+
+	/**
+	 * @brief Sets a list of Vertex pointers to the face.
+	 *
+	 * If the Face size is static, the number of vertices of the list must be
+	 * equal to the size of the Face (the value returned by vertexNumber()). If
+	 * the Face size is dynamic, it will take care to update the also the size
+	 * of the components tied to the vertex number of the face.
+	 *
+	 * @param[in] args: a variable number of vertex pointers in counterclockwise
+	 * order that will be set as vertices of the face.
+	 */
 	template<typename... V>
 	void setVertices(V... args)
-		requires (std::convertible_to<V, VertexType*> && ...);
+		requires (std::convertible_to<V, VertexType*> && ...)
+	{
+		setVertices(std::list({args...}));
+	}
 
-	void resizeVertices(uint n) requires PolygonFaceConcept<Face>;
+	/**
+	 * @brief Resize the number of Vertex Pointers of the Face, taking care of
+	 * updating also the other components of the Face that are tied to that
+	 * number.
+	 *
+	 * If n is greater than the old number of vertex pointers, n vertex pointers
+	 * (and relative tied components) will be added. If n is lower than the old
+	 * number of vertex pointers, the difference of vertex pointers (and
+	 * relative tied components) will be removed.
+	 *
+	 * This member function is available only **if the face is polygonal (its
+	 * size is dynamic, N < 0)**.
+	 *
+	 * @param n: the new number of vertices.
+	 */
+	void resizeVertices(uint n) requires PolygonFaceConcept<Face>
+	{
+		VPtrs::resizeVertices(n);
 
-	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>;
+		// Now I need to resize all the TTVN components
+		(resizeTTVNComponent<Comps>(n), ...);
+	}
 
-	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>;
+	void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
+	{
+		VPtrs::pushVertex(v);
 
-	void eraseVertex(uint i) requires PolygonFaceConcept<Face>;
+		// Now I need to pushBack in all the TTVN components
+		(pushBackTTVNComponent<Comps>(), ...);
+	}
 
-	void clearVertices() requires PolygonFaceConcept<Face>;
+	void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
+	{
+		VPtrs::insertVertex(i, v);
+
+		// Now I need to insert in all the TTVN components
+		(insertTTVNComponent<Comps>(i), ...);
+	}
+
+	void eraseVertex(uint i) requires PolygonFaceConcept<Face>
+	{
+		VPtrs::eraseVertex(i);
+
+		// Now I need to erase in all the TTVN components
+		(eraseTTVNComponent<Comps>(i), ...);
+	}
+
+	void clearVertices() requires PolygonFaceConcept<Face>
+	{
+		VPtrs::clearVertices();
+
+		// Now I need to clear all the TTVN components
+		(clearTTVNComponent<Comps>(), ...);
+	}
 
 	template<typename ElType>
-	void importFrom(const ElType& v);
+	void importFrom(const ElType& v)
+	{
+		if constexpr (comp::HasVertexPointers<ElType> && NV < 0) {
+			VPtrs::resizeVertices(v.vertexNumber());
+			// Now I need to resize all the TTVN components
+			(resizeTTVNComponent<Comps>(v.vertexNumber()), ...);
+		}
+
+		Base::importFrom(v);
+	}
 
 private:
+	/**
+	 * Calls the resize(n) on all the component containers that are tied to the
+	 * vertex number
+	 */
 	template<typename Comp>
-	void resizeTTVNComponent(uint n);
+	void resizeTTVNComponent(uint n)
+	{
+		if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+			if (Comp::isAvailable())
+				Comp::resize(n);
+		}
+	}
 
+	/**
+	 * Calls the pushBack() on all the component containers that are tied to the
+	 * vertex number
+	 */
 	template<typename Comp>
-	void pushBackTTVNComponent();
+	void pushBackTTVNComponent()
+	{
+		if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+			if (Comp::isAvailable())
+				Comp::pushBack();
+		}
+	}
 
+	/**
+	 * Calls the insert(i) on all the component containers that are tied to the
+	 * vertex number
+	 */
 	template<typename Comp>
-	void insertTTVNComponent(uint i);
+	void insertTTVNComponent(uint i)
+	{
+		if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+			if (Comp::isAvailable())
+				Comp::insert(i);
+		}
+	}
 
+	/**
+	 * Calls the erase(i) on all the component containers that are tied to the
+	 * vertex number
+	 */
 	template<typename Comp>
-	void eraseTTVNComponent(uint i);
+	void eraseTTVNComponent(uint i)
+	{
+		if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+			if (Comp::isAvailable())
+				Comp::erase(i);
+		}
+	}
 
+	/**
+	 * Calls the clear() on all the component containers that are tied to the
+	 * vertex number
+	 */
 	template<typename Comp>
-	void clearTTVNComponent();
+	void clearTTVNComponent()
+	{
+		if constexpr (comp::IsTiedToVertexNumber<Comp>) {
+			if (Comp::isAvailable())
+				Comp::clear();
+		}
+	}
 };
 
 template<typename MeshType, typename... Comps>
 class Face<MeshType, TypeWrapper<Comps...>> : public Face<MeshType, Comps...>
 {
 };
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-/**
- * @brief Empty constructor.
- *
- * Calls automatically all the empty constructors of all the components
- * available in the Face (for all the components non-available, their empty
- * constructor is called only when they become available).
- */
-template<typename MeshType, typename... Comps>
-Face<MeshType, Comps...>::Face()
-{
-}
-
-/**
- * @brief Constructs a Face with the given range of vertex pointers.
- *
- * Sets a range of Vertex pointers to the face.
- * If the Face size is static, the number of vertices of the range must be equal
- * to the size of the Face (the value returned by vertexNumber()). If the Face
- * size is dynamic, it will take care to update the also the size of the
- * components tied to the vertex number of the face.
- *
- * @param[in] r: a range of vertex pointers in counterclockwise order
- * that will be set as vertices of the face.
- */
-template<typename MeshType, typename... Comps>
-template<Range Rng>
-Face<MeshType, Comps...>::Face(Rng&& r)
-	requires RangeOfConvertibleTo<Rng, VertexType*>
-{
-	setVertices(r);
-}
-
-/**
- * @brief Creates a new Face, setting the Vertex pointer arguments to it.
- *
- * If the Face size is static, the number of vertices of the list must be equal
- * to the size of the Face (the value returned by vertexNumber()). If the Face
- * size is dynamic, it will take care to update the also the size of the
- * components tied to the vertex number of the face.
- *
- * @param[in] args: a variable number of vertex pointers in counterclockwise
- * order that will be set as vertices of the face.
- */
-template<typename MeshType, typename... Comps>
-template<typename... V>
-Face<MeshType, Comps...>::Face(V... args)
-	requires (std::convertible_to<V, VertexType*> && ...)
-{
-	setVertices(std::list({args...}));
-}
-
-/**
- * @brief Sets all the Vertex pointers to the face.
- *
- * If the Face size is static, the number of vertices of the input range must be
- * equal to the size of the Face (the value returned by vertexNumber()). If the
- * Face size is dynamic, it will take care to update the also the size of the
- * components tied to the vertex number of the face.
- *
- * @param[in] r: a range of vertex pointers in counterclockwise order
- * that will be set as vertices of the face.
- */
-template<typename MeshType, typename... Comps>
-template<Range Rng>
-void Face<MeshType, Comps...>::setVertices(Rng&& r)
-	requires RangeOfConvertibleTo<Rng, VertexType*>
-{
-	using F = Face<MeshType, TypeWrapper<Comps...>>;
-
-	VPtrs::setVertices(r);
-
-		   // if polygonal, I need to resize all the TTVN components
-	if constexpr (NV < 0) {
-		(resizeTTVNComponent<Comps>(std::ranges::size(r)), ...);
-	}
-}
-
-/**
- * @brief Sets a list of Vertex pointers to the face.
- *
- * If the Face size is static, the number of vertices of the list must be equal
- * to the size of the Face (the value returned by vertexNumber()). If the Face
- * size is dynamic, it will take care to update the also the size of the
- * components tied to the vertex number of the face.
- *
- * @param[in] args: a variable number of vertex pointers in counterclockwise
- * order that will be set as vertices of the face.
- */
-template<typename MeshType, typename... Comps>
-template<typename... V>
-void Face<MeshType, Comps...>::setVertices(V... args)
-	requires (std::convertible_to<V, VertexType*> && ...)
-{
-	setVertices(std::list({args...}));
-}
-
-/**
- * @brief Resize the number of Vertex Pointers of the Face, taking care of
- * updating also the other components of the Face that are tied to that number.
- *
- * If n is greater than the old number of vertex pointers, n vertex pointers
- * (and relative tied components) will be added. If n is lower than the old
- * number of vertex pointers, the difference of vertex pointers (and relative
- * tied components) will be removed.
- *
- * This member function is available only **if the face is polygonal (its size
- * is dynamic, N < 0)**.
- *
- * @param n: the new number of vertices.
- */
-template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::resizeVertices(uint n) requires PolygonFaceConcept<Face>
-{
-	VPtrs::resizeVertices(n);
-
-		   // Now I need to resize all the TTVN components
-	(resizeTTVNComponent<Comps>(n), ...);
-}
-
-template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
-{
-	VPtrs::pushVertex(v);
-
-		   // Now I need to pushBack in all the TTVN components
-	(pushBackTTVNComponent<Comps>(), ...);
-}
-
-template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
-{
-	VPtrs::insertVertex(i, v);
-
-		   // Now I need to insert in all the TTVN components
-	(insertTTVNComponent<Comps>(i), ...);
-}
-
-template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::eraseVertex(uint i) requires PolygonFaceConcept<Face>
-{
-	VPtrs::eraseVertex(i);
-
-		   // Now I need to erase in all the TTVN components
-	(eraseTTVNComponent<Comps>(i), ...);
-}
-
-template<typename MeshType, typename... Comps>
-void Face<MeshType, Comps...>::clearVertices() requires PolygonFaceConcept<Face>
-{
-	VPtrs::clearVertices();
-
-		   // Now I need to clear all the TTVN components
-	(clearTTVNComponent<Comps>(), ...);
-}
-
-/**
- * Calls the resize(n) on all the component containers that are tied to the vertex number
- */
-template<typename MeshType, typename... Comps>
-template<typename Comp>
-void Face<MeshType, Comps...>::resizeTTVNComponent(uint n)
-{
-	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isAvailable())
-			Comp::resize(n);
-	}
-}
-
-/**
- * Calls the pushBack() on all the component containers that are tied to the
- * vertex number
- */
-template<typename MeshType, typename... Comps>
-template<typename Comp>
-void Face<MeshType, Comps...>::pushBackTTVNComponent()
-{
-	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isAvailable())
-			Comp::pushBack();
-	}
-}
-
-/**
- * Calls the insert(i) on all the component containers that are tied to the
- * vertex number
- */
-template<typename MeshType, typename... Comps>
-template<typename Comp>
-void Face<MeshType, Comps...>::insertTTVNComponent(uint i)
-{
-	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isAvailable())
-			Comp::insert(i);
-	}
-}
-
-/**
- * Calls the erase(i) on all the component containers that are tied to the
- * vertex number
- */
-template<typename MeshType, typename... Comps>
-template<typename Comp>
-void Face<MeshType, Comps...>::eraseTTVNComponent(uint i)
-{
-	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isAvailable())
-			Comp::erase(i);
-	}
-}
-
-/**
- * Calls the clear() on all the component containers that are tied to the vertex
- * number
- */
-template<typename MeshType, typename... Comps>
-template<typename Comp>
-void Face<MeshType, Comps...>::clearTTVNComponent()
-{
-	if constexpr (comp::IsTiedToVertexNumber<Comp>) {
-		if (Comp::isAvailable())
-			Comp::clear();
-	}
-}
-
-template<typename MeshType, typename... Comps>
-template<typename ElType>
-void Face<MeshType, Comps...>::importFrom(const ElType& v)
-{
-	if constexpr (comp::HasVertexPointers<ElType> && NV < 0) {
-		VPtrs::resizeVertices(v.vertexNumber());
-		// Now I need to resize all the TTVN components
-		(resizeTTVNComponent<Comps>(v.vertexNumber()), ...);
-	}
-
-	Base::importFrom(v);
-}
 
 } // namespace vcl
 
