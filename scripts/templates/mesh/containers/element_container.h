@@ -67,7 +67,7 @@ public:
 	void delete%EL_UC%(uint i);
 	void delete%EL_UC%(const %EL_UC%Type* e);
 
-	uint              %EL_C%IndexIfCompact(uint id) const;
+	uint              %EL_C%IndexIfCompact(uint i) const;
 	std::vector<uint> %EL_C%CompactIndices() const;
 
 	void update%EL_UC%Indices(const std::vector<uint>& newIndices);
