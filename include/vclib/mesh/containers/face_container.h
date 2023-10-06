@@ -448,7 +448,7 @@ void FaceContainer<T>::clearFaces()
  * resizeFaces(5) will not cause a reallocation of the container, but will
  * mark as deleted the least 5 non-deleted Faces of the container. In the
  * same scenario, calling resizeFaces(15) will result in a Face
- * container having 15 new Faces and faceContainerSize() == 25.
+ * container having 15 Faces and faceContainerSize() == 25.
  * The latest 5 Faces will be the newly added.
  *
  * @warning Any pointer to deleted Faces in the Mesh will be left
