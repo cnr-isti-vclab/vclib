@@ -30,60 +30,44 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 class ConsoleLogger : public Logger<std::ostream>
 {
+	std::ostream& errStream   = std::cerr;
+	std::ostream& warnStream  = std::cout;
+	std::ostream& progStream  = std::cout;
+	std::ostream& debugStream = std::cerr;
+
 public:
 	ConsoleLogger() = default;
+
 	ConsoleLogger(
 		std::ostream& errStream,
 		std::ostream& warnStream,
 		std::ostream& progStream,
-		std::ostream& debugStream);
+		std::ostream& debugStream) :
+			errStream(errStream),
+			warnStream(warnStream),
+			progStream(progStream),
+			debugStream(debugStream)
+	{
+	}
 
 protected:
-	std::ostream* levelStream(LogLevel lvl);
-
-private:
-	std::ostream& errStream = std::cerr;
-	std::ostream& warnStream = std::cout;
-	std::ostream& progStream = std::cout;
-	std::ostream& debugStream = std::cerr;
-};
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-inline ConsoleLogger::ConsoleLogger(
-	std::ostream& errStream,
-	std::ostream& warnStream,
-	std::ostream& progStream,
-	std::ostream& debugStream) :
-		errStream(errStream),
-		warnStream(warnStream),
-		progStream(progStream),
-		debugStream(debugStream)
-{
-}
-
-inline std::ostream* ConsoleLogger::levelStream(LogLevel lvl)
-{
-	switch (lvl) {
-	case ERROR:
-		return &errStream;
-	case WARNING:
-		return &warnStream;
-	case PROGRESS:
-		return &progStream;
-	case DEBUG:
-		return &debugStream;
+	std::ostream* levelStream(LogLevel lvl)
+	{
+		switch (lvl) {
+		case ERROR:
+			return &errStream;
+		case WARNING:
+			return &warnStream;
+		case PROGRESS:
+			return &progStream;
+		case DEBUG:
+			return &debugStream;
+		}
+		return nullptr;
 	}
-	return nullptr;
-}
+};
 
 } // namespace vcl
 
