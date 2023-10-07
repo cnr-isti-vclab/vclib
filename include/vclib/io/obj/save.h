@@ -172,7 +172,7 @@ void saveObj(
 				   (meshInfo.hasVertexTexCoords() || meshInfo.hasFaceWedgeTexCoords()));
 	if (useMtl) {
 		mtlfp                   = internal::saveFileStream(filename, "mtl");
-		std::string mtlFileName = FileInfo::filenameWithExtension(filename) + ".mtl";
+		std::string mtlFileName = FileInfo::fileNameWithExtension(filename) + ".mtl";
 		fp << "mtllib ./" << mtlFileName << std::endl;
 	}
 

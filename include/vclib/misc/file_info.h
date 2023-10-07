@@ -33,298 +33,253 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 class FileInfo
 {
-public:
-	FileInfo();
+	std::string filename;
 
-	FileInfo(const std::string& filename);
+public:
+	FileInfo() = default;
+
+	FileInfo(const std::string& filename) : filename(filename) {}
 
 	/* Static members */
 
 	// file stat
 
-	bool exists(const std::string& filename);
+	/**
+	 * @brief Check if a file exists.
+	 *
+	 * @param[in] filename: string containing the filename
+	 * @return true if the file exists, false otherwise
+	 */
+	static bool exists(const std::string& filename)
+	{
+		return std::filesystem::exists(filename);
+	}
 
-	static std::size_t fileSize(const std::string& filename);
+	/**
+	 * @brief Get the size of a file.
+	 *
+	 * @param[in] filename: string containing the filename
+	 * @return the size of the file in bytes
+	 */
+	static std::size_t fileSize(const std::string& filename)
+	{
+		std::ifstream file(filename, std::ios::binary | std::ios::ate);
+		return file.tellg();
+	}
 
-	static bool isFileBinary(const std::string& filename);
+	/**
+	 * @brief Check if a file is binary.
+	 *
+	 * The function checks the first 1000 bytes of the file. If a single byte is
+	 * not an ASCII character (i.e., its value is greater than 127), the file is
+	 * considered binary.
+	 *
+	 * @param[in] filename: string containing the filename
+	 * @return true if the file is binary, false otherwise
+	 * @throws vcl::MalformedFileException if the file cannot be read
+	 */
+	static bool isFileBinary(const std::string& filename)
+	{
+		const std::size_t CHECK_BUFF_SIZE = 1000;
+
+		std::ifstream file(filename, std::ios::binary | std::ios::ate);
+		std::size_t fsize = file.tellg();
+		std::size_t size = std::min(fsize, CHECK_BUFF_SIZE);
+		file.seekg(0, std::ios::beg);
+
+		std::vector<unsigned char> buffer(size);
+		if (file.read((char*)buffer.data(), size)) {
+			for (uint i = 0; i < buffer.size(); ++i) {
+				if (buffer[i] > 127)
+					return true;
+			}
+		}
+		else {
+			throw vcl::MalformedFileException("Cannot read data from file.");
+		}
+		return false;
+	}
 
 	// name and extension management
 
-	static void separateExtensionFromFilename(
+	/**
+	 * @brief Extracts the extension of a string that contains a filename.
+	 *
+	 * Example of usage:
+	 * @code{.cpp}
+	 * std::string fullname = "/usr/bin/foo.sh";
+	 * std::string filename, extension;
+	 * FileInfo::separateExtensionFromFileName(fullname, filename, extension);
+	 * //filename = "/usr/bin/foo"
+	 * //extension = ".sh"
+	 * @endcode
+	 *
+	 * To separate the path from the filename, see
+	 * FileInfo::separateFilenameFromPath
+	 *
+	 * @param[in] fullname: string containing the filename
+	 * @param[out] rawname: output string containing the filename without the
+	 * extension
+	 * @param[out] extension: output string containing the extension of the
+	 * filename
+	 */
+	static void separateExtensionFromFileName(
 		const std::string& fullname,
 		std::string& rawname,
-		std::string& extension);
+		std::string& extension)
+	{
+		// https://stackoverflow.com/questions/6417817
 
-	static void separateFilenameFromPath(
-		const std::string& fullpath,
-		std::string& path,
-		std::string& filename);
-
-	static std::string pathWithoutFilename(const std::string& fullpath);
-
-	static std::string filenameWithoutExtension(const std::string& fullpath);
-
-	static std::string filenameWithExtension(const std::string& fullpath);
-
-	static std::string extension(const std::string& filename);
-
-	static std::string addExtensionToFileName(
-		const std::string& filename,
-		const std::string& ext);
-
-private:
-	std::string filename;
-};
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-inline FileInfo::FileInfo()
-{
-}
-
-inline FileInfo::FileInfo(const std::string& filename) : filename(filename)
-{
-}
-
-/**
- * @brief Check if a file exists.
- *
- * @param[in] filename: string containing the filename
- * @return true if the file exists, false otherwise
- */
-inline bool FileInfo::exists(const std::string& filename)
-{
-	return std::filesystem::exists(filename);
-}
-
-/**
- * @brief Get the size of a file.
- *
- * @param[in] filename: string containing the filename
- * @return the size of the file in bytes
- */
-inline std::size_t FileInfo::fileSize(const std::string& filename)
-{
-	std::ifstream file(filename, std::ios::binary | std::ios::ate);
-	return file.tellg();
-}
-
-/**
- * @brief Check if a file is binary.
- *
- * The function checks the first 1000 bytes of the file. If a single byte is not
- * an ASCII character (i.e., its value is greater than 127), the file is
- * considered binary.
- *
- * @param[in] filename: string containing the filename
- * @return true if the file is binary, false otherwise
- * @throws vcl::MalformedFileException if the file cannot be read
- */
-inline bool FileInfo::isFileBinary(const std::string& filename)
-{
-	const std::size_t CHECK_BUFF_SIZE = 1000;
-
-	std::ifstream file(filename, std::ios::binary | std::ios::ate);
-	std::size_t fsize = file.tellg();
-	std::size_t size = std::min(fsize, CHECK_BUFF_SIZE);
-	file.seekg(0, std::ios::beg);
-
-	std::vector<unsigned char> buffer(size);
-	if (file.read((char*)buffer.data(), size)) {
-		for (uint i = 0; i < buffer.size(); ++i) {
-			if (buffer[i] > 127)
-				return true;
+		size_t lastindex = fullname.find_last_of(".");
+		if (lastindex != std::string::npos){
+			rawname = fullname.substr(0, lastindex);
+			extension = fullname.substr(lastindex, fullname.size());
+		}
+		else {
+			rawname = fullname;
 		}
 	}
-	else {
-		throw vcl::MalformedFileException("Cannot read data from file.");
+
+	/**
+	 * @brief Extracts the filename (extension included) of a string that
+	 * contains a fullpath.
+	 *
+	 * Example of usage:
+	 * @code{.cpp}
+	 * std::string fullname = "/usr/bin/foo.sh";
+	 * std::string path, filename;
+	 * FileInfo::separateExtensionFromFileName(fullname, path, filename);
+	 * //path = "/usr/bin"
+	 * //filename = "foo.sh"
+	 * @endcode
+	 *
+	 * @param[in] fullpath: string containing the fullpath
+	 * @param[out] path: output string containing the path of the file
+	 * @param[out] filename: output string containing the filename (extension
+	 * included)
+	 */
+	static void separateFileNameFromPath(
+		const std::string& fullpath,
+		std::string& path,
+		std::string& filename)
+	{
+		size_t lastindex = fullpath.find_last_of("/");
+		if (lastindex != std::string::npos){
+			path = fullpath.substr(0, lastindex);
+			filename = fullpath.substr(lastindex+1, fullpath.size());
+		}
+		else {
+			filename = fullpath;
+		}
 	}
-	return false;
-}
 
-/**
- * @brief Extracts the extension of a string that contains a filename.
- *
- * Example of usage:
- * @code{.cpp}
- * std::string fullname = "/usr/bin/foo.sh";
- * std::string filename, extension;
- * FileInfo::separateExtensionFromFilename(fullname, filename, extension);
- * //filename = "/usr/bin/foo"
- * //extension = ".sh"
- * @endcode
- *
- * To separate the path from the filename, see
- * FileInfo::separateFilenameFromPath
- *
- * @param[in] fullname: string containing the filename
- * @param[out] rawname: output string containing the filename without the
- * extension
- * @param[out] extension: output string containing the extension of the filename
- */
-inline void FileInfo::separateExtensionFromFilename(
-	const std::string& fullname,
-	std::string& rawname,
-	std::string& extension)
-{
-	// https://stackoverflow.com/questions/6417817
-
-	size_t lastindex = fullname.find_last_of(".");
-	if (lastindex != std::string::npos){
-		rawname = fullname.substr(0, lastindex);
-		extension = fullname.substr(lastindex, fullname.size());
+	/**
+	 * @brief Get the path of a file.
+	 *
+	 * Example of usage:
+	 * @code{.cpp}
+	 * std::string fullname = "/usr/bin/foo.sh";
+	 * std::string path = FileInfo::pathWithoutFileName(fullname);
+	 * //path = "/usr/bin/"
+	 * @endcode
+	 *
+	 * @param[in] fullpath: string containing the full path of the file
+	 * @return the path of the file
+	 */
+	static std::string pathWithoutFileName(const std::string& fullpath)
+	{
+		std::string path, filename;
+		separateFileNameFromPath(fullpath, path, filename);
+		return path + "/";
 	}
-	else {
-		rawname = fullname;
+
+	/**
+	 * @brief Get the file name without extension of a file.
+	 *
+	 * Example of usage:
+	 * @code{.cpp}
+	 * std::string fullname = "/usr/bin/foo.sh";
+	 * std::string filename = FileInfo::fileNameWithoutExtension(fullname);
+	 * //filename = "foo"
+	 * @endcode
+	 *
+	 * @param[in] fullpath string containing the full path of the file
+	 * @return the filename without extension of the file
+	 */
+	static std::string fileNameWithoutExtension(const std::string& fullpath)
+	{
+		std::string filename = fileNameWithExtension(fullpath), ext;
+		separateExtensionFromFileName(filename, filename, ext);
+		return filename;
 	}
-}
 
-/**
- * @brief Extracts the filename (extension included) of a string that contains a
- * fullpath.
- *
- * Example of usage:
- * @code{.cpp}
- * std::string fullname = "/usr/bin/foo.sh";
- * std::string path, filename;
- * FileInfo::separateExtensionFromFilename(fullname, path, filename);
- * //path = "/usr/bin"
- * //filename = "foo.sh"
- * @endcode
- *
- * @param[in] fullpath: string containing the fullpath
- * @param[out] path: output string containing the path of the file
- * @param[out] filename: output string containing the filename (extension
- * included)
- */
-inline void FileInfo::separateFilenameFromPath(
-	const std::string &fullpath,
-	std::string &path,
-	std::string &filename)
-{
-	size_t lastindex = fullpath.find_last_of("/");
-	if (lastindex != std::string::npos){
-		path = fullpath.substr(0, lastindex);
-		filename = fullpath.substr(lastindex+1, fullpath.size());
+	/**
+	 * @brief Get the filename with extension of a file.
+	 *
+	 * Example of usage:
+	 * @code{.cpp}
+	 * std::string fullname = "/usr/bin/foo.sh";
+	 * std::string filename = FileInfo::fileNameWithExtension(fullname);
+	 * //filename = "foo.sh"
+	 * @endcode
+	 *
+	 * @param[in] fullpath: string containing the full path of the file
+	 * @return the filename with extension of the file
+	 */
+	static std::string fileNameWithExtension(const std::string& fullpath)
+	{
+		std::string filename, path, ext;
+		separateFileNameFromPath(fullpath, path, filename);
+		return filename;
 	}
-	else {
-		filename = fullpath;
+
+	/**
+	 * @brief Get the extension of a file.
+	 *
+	 * Example of usage:
+	 * @code{.cpp}
+	 * std::string fullname = "/usr/bin/foo.sh";
+	 * std::string ext = FileInfo::extension(fullname);
+	 * //ext = ".sh"
+	 * @endcode
+	 *
+	 * @param[in] filename: string containing the filename
+	 * @return the extension of the file
+	 */
+	static std::string extension(const std::string& filename)
+	{
+		std::string fn, ext;
+		separateExtensionFromFileName(filename, fn, ext);
+		return ext;
 	}
-}
 
-/**
- * @brief Get the path of a file.
- *
- * Example of usage:
- * @code{.cpp}
- * std::string fullname = "/usr/bin/foo.sh";
- * std::string path = FileInfo::pathWithoutFilename(fullname);
- * //path = "/usr/bin/"
- * @endcode
- *
- * @param[in] fullpath: string containing the full path of the file
- * @return the path of the file
- */
-inline std::string FileInfo::pathWithoutFilename(const std::string& fullpath)
-{
-	std::string path, filename;
-	separateFilenameFromPath(fullpath, path, filename);
-	return path + "/";
-}
-
-/**
- * @brief Get the filename with extension of a file.
- *
- * Example of usage:
- * @code{.cpp}
- * std::string fullname = "/usr/bin/foo.sh";
- * std::string filename = FileInfo::filenameWithExtension(fullname);
- * //filename = "foo.sh"
- * @endcode
- *
- * @param[in] fullpath: string containing the full path of the file
- * @return the filename with extension of the file
- */
-inline std::string FileInfo::filenameWithExtension(const std::string& fullpath)
-{
-	std::string filename, path, ext;
-	separateFilenameFromPath(fullpath, path, filename);
-	return filename;
-}
-
-/**
- * @brief Get the filename without extension of a file.
- *
- * Example of usage:
- * @code{.cpp}
- * std::string fullname = "/usr/bin/foo.sh";
- * std::string filename = FileInfo::filenameWithoutExtension(fullname);
- * //filename = "foo"
- * @endcode
- *
- * @param[in] fullpath string containing the full path of the file
- * @return the filename without extension of the file
- */
-inline std::string FileInfo::filenameWithoutExtension(
-	const std::string& fullpath)
-{
-	std::string filename = filenameWithExtension(fullpath), ext;
-	separateExtensionFromFilename(filename, filename, ext);
-	return filename;
-}
-
-/**
- * @brief Get the extension of a file.
- *
- * Example of usage:
- * @code{.cpp}
- * std::string fullname = "/usr/bin/foo.sh";
- * std::string ext = FileInfo::extension(fullname);
- * //ext = ".sh"
- * @endcode
- *
- * @param[in] filename: string containing the filename
- * @return the extension of the file
- */
-inline std::string FileInfo::extension(const std::string& filename)
-{
-	std::string fn, ext;
-	separateExtensionFromFilename(filename, fn, ext);
-	return ext;
-}
-
-/**
- * @brief Adds an extension to a file name if it doesn't already have it.
- *
- * @param[in] filename: The file name to add the extension to.
- * @param[in] ext: The extension to add to the file name.
- * @return The file name with the extension added.
- */
-inline std::string FileInfo::addExtensionToFileName(
-	const std::string& filename,
-	const std::string& ext)
-{
-	std::string actualfilename;
-	size_t lastindex = filename.find_last_of(".");
-	if (lastindex != std::string::npos) {
-		std::string e = filename.substr(lastindex+1, filename.size());
-		if (e == ext)
-			actualfilename = filename;
+	/**
+	 * @brief Adds an extension to a file name if it doesn't already have it.
+	 *
+	 * @param[in] filename: The file name to add the extension to.
+	 * @param[in] ext: The extension to add to the file name.
+	 * @return The file name with the extension added.
+	 */
+	static std::string addExtensionToFileName(
+		const std::string& filename,
+		const std::string& ext)
+	{
+		std::string actualfilename;
+		size_t lastindex = filename.find_last_of(".");
+		if (lastindex != std::string::npos) {
+			std::string e = filename.substr(lastindex+1, filename.size());
+			if (e == ext)
+				actualfilename = filename;
+			else
+				actualfilename = filename + "." + ext;
+		}
 		else
 			actualfilename = filename + "." + ext;
+		return actualfilename;
 	}
-	else
-		actualfilename = filename + "." + ext;
-	return actualfilename;
-}
+};
 
 } // namespace vcl
 

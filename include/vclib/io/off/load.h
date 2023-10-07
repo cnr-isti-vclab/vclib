@@ -253,7 +253,7 @@ void loadOff(
 	uint nVertices, nFaces, nEdges;
 
 	if constexpr (HasName<MeshType>) {
-		m.name() = FileInfo::filenameWithoutExtension(filename);
+		m.name() = FileInfo::fileNameWithoutExtension(filename);
 	}
 
 	MeshInfo fileInfo; // data that needs to be read from the file

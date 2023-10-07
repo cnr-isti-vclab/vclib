@@ -468,8 +468,8 @@ void loadObj(
 		   // some obj files do not declare the material file name with mtllib, but they assume that
 		   // material file has the same name of the obj file. Therefore, we first load this file if it
 		   // exists.
-	std::string stdmtlfile = FileInfo::pathWithoutFilename(filename) +
-							 FileInfo::filenameWithoutExtension(filename) + ".mtl";
+	std::string stdmtlfile = FileInfo::pathWithoutFileName(filename) +
+							 FileInfo::fileNameWithoutExtension(filename) + ".mtl";
 	try {
 		internal::loadMaterials(materialMap, m, stdmtlfile);
 	}
@@ -478,11 +478,11 @@ void loadObj(
 	}
 
 	if constexpr (HasTexturePaths<MeshType>) {
-		m.meshBasePath() = FileInfo::pathWithoutFilename(filename);
+		m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
 	}
 
 	if constexpr (HasName<MeshType>) {
-		m.name() = FileInfo::filenameWithoutExtension(filename);
+		m.name() = FileInfo::fileNameWithoutExtension(filename);
 	}
 
 		   // cycle that reads line by line
@@ -492,7 +492,7 @@ void loadObj(
 			vcl::Tokenizer::iterator token = tokens.begin();
 			std::string header = *token++;
 			if (header == "mtllib") { // material file
-				std::string mtlfile = FileInfo::pathWithoutFilename(filename) + *token;
+				std::string mtlfile = FileInfo::pathWithoutFileName(filename) + *token;
 				internal::loadMaterials(materialMap, m, mtlfile);
 			}
 			if (header == "usemtl") { // use a new material - change currentMaterial

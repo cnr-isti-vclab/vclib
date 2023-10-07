@@ -357,7 +357,7 @@ void loadStl(
 	}
 
 	if constexpr (HasName<MeshType>) {
-		m.name() = FileInfo::filenameWithoutExtension(filename);
+		m.name() = FileInfo::fileNameWithoutExtension(filename);
 	}
 
 	if constexpr (isLoggerValid<LogType>()) {

@@ -150,10 +150,10 @@ void loadPly(
 		internal::enableOptionalComponents(loadedInfo, m);
 
 	if constexpr (HasName<MeshType>) {
-		m.name() = FileInfo::filenameWithoutExtension(filename);
+		m.name() = FileInfo::fileNameWithoutExtension(filename);
 	}
 	if constexpr (HasTexturePaths<MeshType>) {
-		m.meshBasePath() = FileInfo::pathWithoutFilename(filename);
+		m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
 	}
 	try {
 		for (const ply::Element& el : header) {
