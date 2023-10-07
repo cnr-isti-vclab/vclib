@@ -31,24 +31,26 @@
 
 // Apple clang does not support c++17 parallel algorithms.
 // To compensate this lack, waiting for Apple to support them, we use pstld
-// (https://github.com/mikekazakov/pstld) that implements them in the stl namespace
+// (https://github.com/mikekazakov/pstld) that implements them in the stl
+// namespace
 #if defined(__clang__) && defined(__APPLE__)
     #if __has_include(<pstld/pstld.h>)
         #include <pstld/pstld.h>
     #else
-        // inclusion for usage of vclib without cmake
+// inclusion for usage of vclib without cmake
         #define PSTLD_HEADER_ONLY // no prebuilt library, only the header
         #define PSTLD_HACK_INTO_STD // hack into std namespace
         #include "../../../external/pstld-master/pstld/pstld.h"
     #endif
 #else
-    // tbb and qt conflicts: if both are linked, we need to first undef Qt's emit
-    // see: https://github.com/oneapi-src/oneTBB/issues/547
+    // tbb and qt conflicts: if both are linked, we need to first undef Qt's
+    // emit - see: https://github.com/oneapi-src/oneTBB/issues/547
     #ifndef Q_MOC_RUN
         #if defined(emit)
             #undef emit
             #include <execution>
-            #define emit // restore the macro definition of "emit", as it was defined in gtmetamacros.h
+            #define emit // restore the macro definition of "emit", as it was
+                         // defined in gtmetamacros.h
         #else
             #include <execution>
         #endif
@@ -56,26 +58,6 @@
 #endif
 
 namespace vcl {
-
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<typename Iterator, typename Lambda>
-void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F);
-
-template<typename Iterator, typename Lambda>
-void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F);
-
-template<vcl::Range Rng, typename Lambda>
-void parallelFor(Rng&& r, Lambda&& F);
-
-template<vcl::Range Rng, typename Lambda>
-void parallelFor(const Rng& r, Lambda&& F);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
 
 /**
  * @brief This function executes a parallel for over the elements
@@ -85,9 +67,10 @@ void parallelFor(const Rng& r, Lambda&& F);
  * Example of usage on a vcl::Mesh, iterating over vertices:
  *
  * @code{.cpp}
- * vcl::parallelFor(m.vertices().begin(), m.vertices().end(), [&](VertexType& v) {
- *     // make some computing on v
- * });
+ * vcl::parallelFor(m.vertices().begin(), m.vertices().end(),
+ *     [&](VertexType& v) {
+ *         // make some computing on v
+ *     });
  * @endcode
  *
  * @param[in] begin: iterator of the first element to iterate
@@ -108,9 +91,10 @@ void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
  * Example of usage on a vcl::Mesh, iterating over vertices:
  *
  * @code{.cpp}
- * vcl::parallelFor(m.vertices().begin(), m.vertices().end(), [&](VertexType& v) {
- *     // make some computing on v
- * });
+ * vcl::parallelFor(m.vertices().begin(), m.vertices().end(),
+ *     [&](VertexType& v) {
+ *         // make some computing on v
+ *     });
  * @endcode
  *
  * @param[in] begin: iterator of the first element to iterate
