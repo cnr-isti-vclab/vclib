@@ -29,56 +29,36 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 class GenericDrawableMesh : public vcl::DrawableObject
 {
+protected:
+	MeshRenderSettings mrs;
+
 public:
-	GenericDrawableMesh();
+	GenericDrawableMesh() = default;
 
 	template<MeshConcept MeshType>
-	GenericDrawableMesh(const MeshType& m);
+	GenericDrawableMesh(const MeshType& m) : mrs(m)
+	{
+	}
 
-	const MeshRenderSettings& renderSettings() const;
-	void setRenderSettings(const MeshRenderSettings& rs);
+	const MeshRenderSettings& renderSettings() const { return mrs; }
+
+	void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
 
 	// DrawableObject implementation
 	void draw() const = 0;
+
 	vcl::Point3d center() const = 0;
+
 	double radius() const = 0;
+
 	DrawableObject* clone() const = 0;
+
 	inline bool isVisible() const { return mrs.isVisible(); }
+
 	inline void setVisibility(bool vis) { mrs.setVisibility(vis); }
-
-protected:
-	MeshRenderSettings mrs;
 };
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-inline GenericDrawableMesh::GenericDrawableMesh()
-{
-}
-
-template<MeshConcept MeshType>
-GenericDrawableMesh::GenericDrawableMesh(const MeshType &m) :
-		mrs(m)
-{
-}
-
-inline const MeshRenderSettings& GenericDrawableMesh::renderSettings() const
-{
-	return mrs;
-}
-
-inline void GenericDrawableMesh::setRenderSettings(const MeshRenderSettings& rs)
-{
-	mrs = rs;
-}
 
 } // namespace vcl
 

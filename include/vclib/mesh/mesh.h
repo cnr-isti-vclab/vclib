@@ -137,56 +137,6 @@ public:
 	template<uint ELEM_ID>
 	using ElementType = ContainerOfElement<ELEM_ID>::type::ElementType;
 
-	/* constructors */
-
-	/**
-	 * @brief Empty constructor, constructs an empty mesh.
-	 */
-	Mesh()
-	{
-		// Set to all element containers their parent mesh (this)
-		updateAllParentMeshPointers();
-	}
-
-	/**
-	 * @brief Copy constructor of the Mesh. Will create a deep copy of the given
-	 * input mesh, taking care of copying everithing and then update all the
-	 * pointers
-	 *
-	 * @param oth: the mesh from which constructo this Mesh.
-	 */
-	Mesh(const Mesh& oth)
-	{
-		// Set to all element containers their parent mesh (this)
-		updateAllParentMeshPointers();
-
-		// for each container of oth, save its base pointer
-		// will need it to update all the pointers of this mesh
-		constexpr uint N_CONTAINERS =
-			NumberOfTypes<typename Mesh<Args...>::Containers>::value;
-		std::array<const void*, N_CONTAINERS> othBases =
-			Mesh<Args...>::getContainerBases(oth);
-
-		// update all the pointers contained on each container
-		// use the base pointer of each container of oth to update all the
-		// pointers in this mesh each pointer of oth that was copied in this
-		// mesh, will be updated computing its offset wrt the base of oth, and
-		// then adding that offset to the new base pointer of this mesh
-		(updatePointersOfContainerType<Args>(*this, othBases), ...);
-	}
-
-	/**
-	 * @brief Move constructor, moves the given mesh into this one, without any
-	 * other resource acquisition.
-	 *
-	 * @param oth: the mesh that will be moved into this Mesh.
-	 */
-	Mesh(Mesh&& oth)
-	{
-		swap(oth); // use copy and swap idiom: this (empty) mesh is swapped with
-				   // the input one
-	}
-
 	/* constexpr static member functions */
 
 	/**
@@ -290,6 +240,56 @@ public:
 	{
 		return mesh::
 			HasPerElementOptionalComponent<Mesh<Args...>, ELEM_ID, COMP_ID>;
+	}
+
+	/* constructors */
+
+	/**
+	 * @brief Empty constructor, constructs an empty mesh.
+	 */
+	Mesh()
+	{
+		// Set to all element containers their parent mesh (this)
+		updateAllParentMeshPointers();
+	}
+
+	/**
+	 * @brief Copy constructor of the Mesh. Will create a deep copy of the given
+	 * input mesh, taking care of copying everithing and then update all the
+	 * pointers
+	 *
+	 * @param oth: the mesh from which constructo this Mesh.
+	 */
+	Mesh(const Mesh& oth)
+	{
+		// Set to all element containers their parent mesh (this)
+		updateAllParentMeshPointers();
+
+		// for each container of oth, save its base pointer
+		// will need it to update all the pointers of this mesh
+		constexpr uint N_CONTAINERS =
+			NumberOfTypes<typename Mesh<Args...>::Containers>::value;
+		std::array<const void*, N_CONTAINERS> othBases =
+			Mesh<Args...>::getContainerBases(oth);
+
+		// update all the pointers contained on each container
+		// use the base pointer of each container of oth to update all the
+		// pointers in this mesh each pointer of oth that was copied in this
+		// mesh, will be updated computing its offset wrt the base of oth, and
+		// then adding that offset to the new base pointer of this mesh
+		(updatePointersOfContainerType<Args>(*this, othBases), ...);
+	}
+
+	/**
+	 * @brief Move constructor, moves the given mesh into this one, without any
+	 * other resource acquisition.
+	 *
+	 * @param oth: the mesh that will be moved into this Mesh.
+	 */
+	Mesh(Mesh&& oth)
+	{
+		swap(oth); // use copy and swap idiom: this (empty) mesh is swapped with
+				   // the input one
 	}
 
 	/* member functions */

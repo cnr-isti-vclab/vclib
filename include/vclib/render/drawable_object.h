@@ -48,14 +48,16 @@ namespace vcl {
  * mandatory:
  * - init();
  *
- * For more details about these member functions, check the documentation of each
- * one.
+ * For more details about these member functions, check the documentation of
+ * each one.
  */
 class DrawableObject
 {
+	std::string n; /**< @brief Name of the object */
+
 public:
 	/**< @brief Empty constructor */
-	DrawableObject() {}
+	DrawableObject()  = default;
 
 	virtual ~DrawableObject() {}
 
@@ -130,8 +132,6 @@ public:
 	 * @param[in] name: The name of the object.
 	 */
 	std::string& name() { return n; }
-private:
-	std::string n;
 };
 
 } // namespace vcl
