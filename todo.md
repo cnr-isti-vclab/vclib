@@ -26,6 +26,8 @@
     - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers 
 - Exceptions:
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
+- Iterators:
+  - [ ] make just one StaticGridIterator class that can be both const and non-const (avoid code duplication)
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] Implement importer/exporter from VCG

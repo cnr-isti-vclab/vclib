@@ -30,10 +30,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<typename FaceType, bool CNST = false>
 class EdgeAdjFaceIterator
 {
@@ -42,6 +38,12 @@ class EdgeAdjFaceIterator
 	using VT = std::conditional_t<CNST,
 		typename FT::VertexType,
 		const typename FT::VertexType>;
+
+	FT* current = nullptr;
+	FT* end     = nullptr;
+	VT* v0      = nullptr;
+	VT* v1      = nullptr;
+
 public:
 	using difference_type   = ptrdiff_t;
 	using iterator_category = std::forward_iterator_tag;
@@ -49,89 +51,51 @@ public:
 	using reference         = FT*&;
 	using pointer           = FT**;
 
-	EdgeAdjFaceIterator();
-	EdgeAdjFaceIterator(FT& f, uint edge);
+	EdgeAdjFaceIterator() = default;
 
-	bool operator==(const EdgeAdjFaceIterator& oi) const;
-	bool operator!=(const EdgeAdjFaceIterator& oi) const;
+	EdgeAdjFaceIterator(FT& f, uint edge) :
+			current(&f), end(&f), v0(f.vertex(edge)), v1(f.vertexMod(edge + 1))
+	{
+	}
 
-	EdgeAdjFaceIterator& operator++();
-	EdgeAdjFaceIterator operator++(int);
+	bool operator==(const EdgeAdjFaceIterator& oi) const
+	{
+		return current == oi.current && v0 == oi.v0 && v1 == oi.v1;
+	}
 
-	reference operator*() const;
-	pointer operator->() const;
+	bool operator!=(const EdgeAdjFaceIterator& oi) const
+	{
+		return !(*this == oi);
+	}
 
-private:
-	FT* current = nullptr;
-	FT* end     = nullptr;
-	VT* v0      = nullptr;
-	VT* v1      = nullptr;
+	EdgeAdjFaceIterator& operator++()
+	{
+		assert(current);
+		uint edge = current->indexOfEdge(v0, v1);
+		assert(edge != UINT_NULL);
+		current = current->adjFace(edge);
+		if (current == end || current == nullptr) {
+			current = nullptr;
+			v0 = nullptr;
+			v1 = nullptr;
+		}
+		return *this;
+	}
+
+	EdgeAdjFaceIterator operator++(int)
+	{
+		auto it = *this;
+		++(*this);
+		return it;
+	}
+
+	reference operator*() const { return current; }
+
+	pointer operator->() const { return &current; }
 };
 
 template<typename FaceType>
 using ConstEdgeAdjFaceIterator = EdgeAdjFaceIterator<FaceType, true>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<typename FaceType, bool CNST>
-EdgeAdjFaceIterator<FaceType, CNST>::EdgeAdjFaceIterator()
-{
-}
-
-template<typename FaceType, bool CNST>
-EdgeAdjFaceIterator<FaceType, CNST>::EdgeAdjFaceIterator(FT& f, uint edge) :
-		current(&f), end(&f), v0(f.vertex(edge)), v1(f.vertexMod(edge+1))
-{
-}
-
-template<typename FaceType, bool CNST>
-bool EdgeAdjFaceIterator<FaceType, CNST>::operator==(const EdgeAdjFaceIterator& oi) const
-{
-	return current == oi.current && v0 == oi.v0 && v1 == oi.v1;
-}
-
-template<typename FaceType, bool CNST>
-bool EdgeAdjFaceIterator<FaceType, CNST>::operator!=(const EdgeAdjFaceIterator& oi) const
-{
-	return !(*this == oi);
-}
-
-template<typename FaceType, bool CNST>
-auto EdgeAdjFaceIterator<FaceType, CNST>::operator++() -> EdgeAdjFaceIterator&
-{
-	assert(current);
-	uint edge = current->indexOfEdge(v0, v1);
-	assert(edge != UINT_NULL);
-	current = current->adjFace(edge);
-	if (current == end || current == nullptr) {
-		current = nullptr;
-		v0 = nullptr;
-		v1 = nullptr;
-	}
-	return *this;
-}
-
-template<typename FaceType, bool CNST>
-auto EdgeAdjFaceIterator<FaceType, CNST>::operator++(int) -> EdgeAdjFaceIterator
-{
-	auto it = *this;
-	++(*this);
-	return it;
-}
-
-template<typename FaceType, bool CNST>
-auto EdgeAdjFaceIterator<FaceType, CNST>::operator*() const -> reference
-{
-	return current;
-}
-
-template<typename FaceType, bool CNST>
-auto EdgeAdjFaceIterator<FaceType, CNST>::operator->() const -> pointer
-{
-	return &current;
-}
 
 } // namespace vcl
 

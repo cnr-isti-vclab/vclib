@@ -28,13 +28,12 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<int N>
 class CellIterator
 {
+	vcl::Point<uint, N> it;
+	vcl::Point<uint, N> first, end;
+
 public:
 	using difference_type   = ptrdiff_t;
 	using value_type        = vcl::Point<uint, N>;
@@ -42,100 +41,49 @@ public:
 	using pointer           = const vcl::Point<uint, N>*;
 	using iterator_category = std::forward_iterator_tag;
 
-	CellIterator();
-	CellIterator(const vcl::Point<uint, N>& end);
+	CellIterator()
+	{
+		it.setConstant(-1);
+		first = end = it;
+	}
+
 	CellIterator(
 		const vcl::Point<uint, N>& first,
-		const vcl::Point<uint, N>& end);
-
-	reference operator*() const;
-	pointer   operator->() const;
-
-	bool operator==(const CellIterator& oi) const;
-	bool operator!=(const CellIterator& oi) const;
-
-	CellIterator operator++();
-	CellIterator operator++(int);
-
-private:
-	vcl::Point<uint, N> it;
-	vcl::Point<uint, N> first, end;
-
-	void incrementIt(uint d);
-};
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<int N>
-CellIterator<N>::CellIterator()
-{
-	it.setConstant(-1);
-	first = end = it;
-}
-
-template<int N>
-CellIterator<N>::CellIterator(const vcl::Point<uint, N>& end) :
-		it(end), first(end), end(end)
-{
-}
-
-template<int N>
-CellIterator<N>::CellIterator(
-	const vcl::Point<uint, N>& first,
-	const vcl::Point<uint, N>& end) :
-		it(first),
-		first(first), end(end)
-{
-}
-
-template<int N>
-auto CellIterator<N>::operator*() const -> reference
-{
-	return it;
-}
-
-template<int N>
-auto CellIterator<N>::operator->() const -> pointer
-{
-	return &it;
-}
-
-template<int N>
-bool CellIterator<N>::operator==(const CellIterator& oi) const
-{
-	return (it == oi.it);
-}
-
-template<int N>
-bool CellIterator<N>::operator!=(const CellIterator &oi) const
-{
-	return (it != oi.it);
-}
-
-template<int N>
-auto CellIterator<N>::operator++() -> CellIterator
-{
-	uint d = N-1;
-	while (d != -1 && it(d) == end(d) - 1) {
-		it(d) = first(d);
-		d--;
+		const vcl::Point<uint, N>& end) :
+			it(first),
+			first(first), end(end)
+	{
 	}
-	if (d != -1)
-		it(d)++;
-	else
-		it.setConstant(-1);
-	return it;
-}
 
-template<int N>
-auto CellIterator<N>::operator++(int) -> CellIterator
-{
-	CellIterator<N> oit = it;
-	++(*this);
-	return oit;
-}
+	reference operator*() const { return it; }
+
+	pointer operator->() const { return &it; }
+
+	bool operator==(const CellIterator& oi) const { return (it == oi.it); }
+
+	bool operator!=(const CellIterator& oi) const { return (it != oi.it); }
+
+	CellIterator operator++()
+	{
+		uint d = N-1;
+		while (d != -1 && it(d) == end(d) - 1) {
+			it(d) = first(d);
+			d--;
+		}
+		if (d != -1)
+			it(d)++;
+		else
+			it.setConstant(-1);
+		return *this;
+	}
+
+	CellIterator operator++(int)
+	{
+		CellIterator<N> oit = it;
+		++(*this);
+		return oit;
+	}
+};
 
 } // namespace vcl
 
