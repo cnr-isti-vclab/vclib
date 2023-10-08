@@ -46,9 +46,11 @@ namespace vcl {
 template <face::HasAdjacentFaces FaceType>
 class MeshPos
 {
-	const FaceType*             f = nullptr;
-	const FaceType::VertexType* v = nullptr;
-	short                       e = -1;
+	const FaceType* f = nullptr;
+
+	const typename FaceType::VertexType* v = nullptr;
+
+	short e = -1;
 
 public:
 	using VertexType = FaceType::VertexType;
