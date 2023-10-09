@@ -30,20 +30,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType, typename VCGMeshType>
-MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh);
-
-template<MeshConcept MeshType, typename VCGMeshType>
-void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 template<MeshConcept MeshType, typename VCGMeshType>
 MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh)
 {
