@@ -41,43 +41,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-void drawPoint2(const Point2d& p, const Color& c, int size);
-
-void drawLine2(const Point2d& a, const Point2d& b, const Color& c, int width = 3);
-
-void drawTriangle2(
-	const std::array<Point2d, 3>& arr,
-	const Color&                  c,
-	int                           width = 3,
-	bool                          fill  = false);
-
-void drawTriangle2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
-
-void drawQuad2(const std::array<Point2d, 4>& arr, const Color& c, int width = 3, bool fill = false);
-
-void drawQuad2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Point2d& p4,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief drawPoint2
  *
@@ -111,7 +74,11 @@ inline void drawPoint2(const Point2d& p, const Color& c, int size = 8)
  * @param c: color of the line
  * @param width: width of the line (default: 3)
  */
-inline void drawLine2(const Point2d& a, const Point2d& b, const Color& c, int width)
+inline void drawLine2(
+	const Point2d& a,
+	const Point2d& b,
+	const Color&   c,
+	int            width = 3)
 {
 	glLineWidth(width);
 
@@ -125,34 +92,13 @@ inline void drawLine2(const Point2d& a, const Point2d& b, const Color& c, int wi
 	glEnd();
 }
 
-/**
- * @brief drawTriangle2
- * @param arr
- * @param c
- * @param width
- * @param fill
- */
-inline void drawTriangle2(const std::array<Point2d, 3>& arr, const Color& c, int width, bool fill)
-{
-	drawTriangle2(arr[0], arr[1], arr[2], c, width, fill);
-}
-
-/**
- * @brief drawTriangle2
- * @param p1
- * @param p2
- * @param p3
- * @param c
- * @param width
- * @param fill
- */
 inline void drawTriangle2(
 	const Point2d& p1,
 	const Point2d& p2,
 	const Point2d& p3,
 	const Color&   c,
-	int            width,
-	bool           fill)
+	int            width = 3,
+	bool           fill  = false)
 {
 	if (width != 0) {
 		vcl::drawLine2(p1, p2, c, width);
@@ -168,14 +114,20 @@ inline void drawTriangle2(
 	}
 }
 
-/**
- * @brief drawQuad2
- * @param points
- * @param c
- * @param width
- * @param fill
- */
-inline void drawQuad2(const std::array<Point2d, 4>& points, const Color& c, int width, bool fill)
+inline void drawTriangle2(
+	const std::array<Point2d, 3>& arr,
+	const Color&                  c,
+	int                           width = 3,
+	bool                          fill  = false)
+{
+	drawTriangle2(arr[0], arr[1], arr[2], c, width, fill);
+}
+
+inline void drawQuad2(
+	const std::array<Point2d, 4>& points,
+	const Color&                  c,
+	int                           width = 3,
+	bool                          fill  = false)
 {
 	for (unsigned int i = 0; i < 4; i++) {
 		vcl::drawLine2(points[i], points[(i + 1) % 4], c, width);
@@ -184,36 +136,37 @@ inline void drawQuad2(const std::array<Point2d, 4>& points, const Color& c, int 
 		// find angle >=90°
 		int pivot = -1;
 		for (unsigned int i = 0; i < 4; i++) {
-			double angle = (points[(i - 1) % 4] - points[i]).dot(points[(i + 1) % 4] - points[i]);
+			double angle = (points[(i - 1) % 4] - points[i])
+							   .dot(points[(i + 1) % 4] - points[i]);
 			if (angle <= 0)
 				pivot = i;
 		}
 		assert(pivot >= 0);
 		vcl::drawTriangle2(
-			points[pivot], points[(pivot + 1) % 4], points[(pivot + 2) % 4], c, 0, true);
+			points[pivot],
+			points[(pivot + 1) % 4],
+			points[(pivot + 2) % 4],
+			c,
+			0,
+			true);
 		vcl::drawTriangle2(
-			points[(pivot + 2) % 4], points[(pivot + 3) % 4], points[pivot], c, 0, true);
+			points[(pivot + 2) % 4],
+			points[(pivot + 3) % 4],
+			points[pivot],
+			c,
+			0,
+			true);
 	}
 }
 
-/**
- * @brief drawQuad2D
- * @param p1
- * @param p2
- * @param p3
- * @param p4
- * @param c
- * @param width
- * @param fill
- */
 inline void drawQuad2(
 	const Point2d& p1,
 	const Point2d& p2,
 	const Point2d& p3,
 	const Point2d& p4,
 	const Color&   c,
-	int            width,
-	bool           fill)
+	int            width = 3,
+	bool           fill  = false)
 {
 	std::array<Point2d, 4> arr = {p1, p2, p3, p4};
 	vcl::drawQuad2(arr, c, width, fill);

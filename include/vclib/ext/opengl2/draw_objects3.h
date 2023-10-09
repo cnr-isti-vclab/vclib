@@ -40,80 +40,14 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-void drawPoint3(const Point3d& p, const Color& c, int size = 8);
-
-void drawSphere(const Point3d& center, float radius, const Color& color, int precision = 4);
-
-void drawCylinder(
-	const Point3d& a,
-	const Point3d& b,
-	float          top_radius,
-	float          bottom_radius,
-	const Color&   color,
-	unsigned int   slices = 50,
-	unsigned int   stacks = 10);
-
-void drawArrow3(
-	const Point3d& a,
-	const Point3d& b,
-	float          bottom_radius,
-	const Color&   color,
-	unsigned int   slices = 50,
-	unsigned int   stacks = 10);
-
-void drawLine3(const Point3d& a, const Point3d& b, const Color& c, int width = 3);
-
-void drawSegment3(const Point3d& a, const Point3d& b, const Color& c, int width = 3);
-
-void drawDashedLine3(const Point3d& a, const Point3d& b, const Color& c, int width = 3);
-
-void drawTriangle(
-	const Point3d& p1,
-	const Point3d& p2,
-	const Point3d& p3,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false);
-
-void drawQuad3(
-	const Point3d& a,
-	const Point3d& b,
-	const Point3d& c,
-	const Point3d& d,
-	int            width = 3);
-
-void drawBox3(const Point3d& min, const Point3d& max, const Color& c, int width = 3);
-
-void drawBox3(const std::vector<Point3d>& p, const Color& c, int width = 3);
-
-void drawBox3(
-	const Point3d& p0,
-	const Point3d& p1,
-	const Point3d& p2,
-	const Point3d& p3,
-	const Point3d& p4,
-	const Point3d& p5,
-	const Point3d& p6,
-	const Point3d& p7,
-	const Color&   c,
-	int            width = 3);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Draws a point on the plane (coord z = 0 if 3D).
  *
  * @param p: coordinates of the point
  * @param c: color of the point
- * @param size: size of the point (default: 8)
+ * @param size: size of the point
  */
-inline void drawPoint3(const Point3d& p, const Color& c, int size)
+inline void drawPoint3(const Point3d& p, const Color& c, int size = 8)
 {
 	glEnable(GL_POINT_SMOOTH);
 	glPointSize(size);
@@ -132,9 +66,13 @@ inline void drawPoint3(const Point3d& p, const Color& c, int size)
  * @param center: coordinates of the center of the sphere
  * @param radius: radius of the sphere
  * @param color: color of the sphere
- * @param precision: precision of the rendered sphere (default: 4)
+ * @param precision: precision of the rendered sphere
  */
-inline void drawSphere(const Point3d& center, float radius, const Color& color, int precision)
+inline void drawSphere(
+	const Point3d& center,
+	float          radius,
+	const Color&   color,
+	int            precision = 4)
 {
 	glEnable(GL_LIGHTING);
 	glShadeModel(GL_SMOOTH);
@@ -149,9 +87,7 @@ inline void drawSphere(const Point3d& center, float radius, const Color& color, 
 }
 
 /**
- * @brief drawCylinder
- *
- * Draws a cylinder with opengl.
+ * @brief Draws a cylinder with opengl.
  * The cylinder links the two points passed as parameters
  *
  * @param a: first point of the cylinder
@@ -166,8 +102,8 @@ inline void drawCylinder(
 	float          top_radius,
 	float          bottom_radius,
 	const Color&   color,
-	unsigned int   slices,
-	unsigned int   stacks)
+	unsigned int   slices = 50,
+	unsigned int   stacks = 10)
 {
 	Point3d dir = b - a;
 	dir.normalize();
@@ -187,7 +123,8 @@ inline void drawCylinder(
 	GLUquadric* cylinder = gluNewQuadric();
 	gluQuadricNormals(cylinder, GLU_SMOOTH);
 	gluQuadricOrientation(cylinder, GLU_OUTSIDE);
-	gluCylinder(cylinder, top_radius, bottom_radius, (a - b).norm(), slices, stacks);
+	gluCylinder(
+		cylinder, top_radius, bottom_radius, (a - b).norm(), slices, stacks);
 
 	GLUquadric* disk1 = gluNewQuadric();
 	gluQuadricNormals(disk1, GLU_SMOOTH);
@@ -206,39 +143,34 @@ inline void drawCylinder(
 		glEnable(GL_CULL_FACE);
 }
 
-/**
- * @brief drawArrow
- * @param a
- * @param b
- * @param bottom_radius
- * @param color
- * @param slices
- * @param stacks
- */
 inline void drawArrow3(
 	const Point3d& a,
 	const Point3d& b,
 	float          bottom_radius,
 	const Color&   color,
-	unsigned int   slices,
-	unsigned int   stacks)
+	unsigned int   slices = 50,
+	unsigned int   stacks = 10)
 {
 	Point3d midPoint = (a * 1 + b * 9) / 10;
-	drawCylinder(a, midPoint, bottom_radius, bottom_radius, color, slices, stacks);
+	drawCylinder(
+		a, midPoint, bottom_radius, bottom_radius, color, slices, stacks);
 	drawCylinder(midPoint, b, bottom_radius * 2, 0, color, slices, stacks);
 }
 
 /**
- * @brief drawLine
- *
- * Draws a line with opengl that links the two points passed as parameters.
+ * @brief Draws a line with opengl that links the two points passed as
+ * parameters.
  *
  * @param a: first point of the line
  * @param b: second point of the line
  * @param c: color of the line
  * @param width: width of the line (default: 3)
  */
-inline void drawLine3(const Point3d& a, const Point3d& b, const Color& c, int width)
+inline void drawLine3(
+	const Point3d& a,
+	const Point3d& b,
+	const Color&   c,
+	int            width = 3)
 {
 	glLineWidth(width);
 	glColor3f(c.redF(), c.greenF(), c.blueF());
@@ -253,7 +185,11 @@ inline void drawLine3(const Point3d& a, const Point3d& b, const Color& c, int wi
  * @brief
  * @see drawLine3
  */
-inline void drawSegment3(const Point3d& a, const Point3d& b, const Color& c, int width)
+inline void drawSegment3(
+	const Point3d& a,
+	const Point3d& b,
+	const Color&   c,
+	int            width = 3)
 {
 	drawLine3(a, b, c, width);
 }
@@ -261,14 +197,19 @@ inline void drawSegment3(const Point3d& a, const Point3d& b, const Color& c, int
 /**
  * @brief drawDashedLine
  *
- * Draws a dashed line with opengl that links the two points passed as parameters.
+ * Draws a dashed line with opengl that links the two points passed as
+ * parameters.
  *
  * @param a: first point of the dashed line
  * @param b: second point of the dashed line
  * @param c: color of the dashed line
  * @param width: width of the dashed line (default: 3)
  */
-inline void drawDashedLine3(const Point3d& a, const Point3d& b, const Color& c, int width)
+inline void drawDashedLine3(
+	const Point3d& a,
+	const Point3d& b,
+	const Color&   c,
+	int            width = 3)
 {
 	glPushAttrib(GL_ENABLE_BIT);
 
@@ -284,22 +225,13 @@ inline void drawDashedLine3(const Point3d& a, const Point3d& b, const Color& c, 
 	glPopAttrib();
 }
 
-/**
- * @brief drawTriangle
- * @param p1
- * @param p2
- * @param p3
- * @param c
- * @param width
- * @param fill
- */
 inline void drawTriangle(
 	const Point3d& p1,
 	const Point3d& p2,
 	const Point3d& p3,
 	const Color&   c,
-	int            width,
-	bool           fill)
+	int            width = 3,
+	bool           fill  = false)
 {
 	if (width != 0) {
 		vcl::drawLine3(p1, p2, c, width);
@@ -315,16 +247,12 @@ inline void drawTriangle(
 	}
 }
 
-/**
- * @brief drawQuad3
- * @param a
- * @param b
- * @param c
- * @param d
- * @param width
- */
-inline void
-drawQuad3(const Point3d& a, const Point3d& b, const Point3d& c, const Point3d& d, int width)
+inline void drawQuad3(
+	const Point3d& a,
+	const Point3d& b,
+	const Point3d& c,
+	const Point3d& d,
+	int            width = 3)
 {
 	glBegin(GL_QUADS);
 	glLineWidth(width);
@@ -336,73 +264,59 @@ drawQuad3(const Point3d& a, const Point3d& b, const Point3d& c, const Point3d& d
 }
 
 /**
- * @brief drawBox3
- *
- * Draws an axis aligned 3D box using opengl lines.
+ * @brief Draws an axis aligned 3D box using opengl lines.
  *
  * @param min
  * @param max
  * @param c
  * @param width
  */
-inline void drawBox3(const Point3d& min, const Point3d& max, const Color& c, int width)
+inline void drawBox3(
+	const Point3d& min,
+	const Point3d& max,
+	const Color&   c,
+	int            width = 3)
 {
 	drawLine3(min, Point3d(max.x(), min.y(), min.z()), c, width);
-	drawLine3(Point3d(max.x(), min.y(), min.z()), Point3d(max.x(), min.y(), max.z()), c, width);
-	drawLine3(Point3d(max.x(), min.y(), max.z()), Point3d(min.x(), min.y(), max.z()), c, width);
+	drawLine3(
+		Point3d(max.x(), min.y(), min.z()),
+		Point3d(max.x(), min.y(), max.z()),
+		c,
+		width);
+	drawLine3(
+		Point3d(max.x(), min.y(), max.z()),
+		Point3d(min.x(), min.y(), max.z()),
+		c,
+		width);
 	drawLine3(min, Point3d(min.x(), min.y(), max.z()), c, width);
 
-	drawLine3(Point3d(min.x(), max.y(), min.z()), Point3d(max.x(), max.y(), min.z()), c, width);
+	drawLine3(
+		Point3d(min.x(), max.y(), min.z()),
+		Point3d(max.x(), max.y(), min.z()),
+		c,
+		width);
 	drawLine3(Point3d(max.x(), max.y(), min.z()), max, c, width);
 	drawLine3(max, Point3d(min.x(), max.y(), max.z()), c, width);
-	drawLine3(Point3d(min.x(), max.y(), min.z()), Point3d(min.x(), max.y(), max.z()), c, width);
+	drawLine3(
+		Point3d(min.x(), max.y(), min.z()),
+		Point3d(min.x(), max.y(), max.z()),
+		c,
+		width);
 
 	drawLine3(min, Point3d(min.x(), max.y(), min.z()), c, width);
-	drawLine3(Point3d(max.x(), min.y(), min.z()), Point3d(max.x(), max.y(), min.z()), c, width);
+	drawLine3(
+		Point3d(max.x(), min.y(), min.z()),
+		Point3d(max.x(), max.y(), min.z()),
+		c,
+		width);
 	drawLine3(Point3d(max.x(), min.y(), max.z()), max, c, width);
-	drawLine3(Point3d(min.x(), min.y(), max.z()), Point3d(min.x(), max.y(), max.z()), c, width);
+	drawLine3(
+		Point3d(min.x(), min.y(), max.z()),
+		Point3d(min.x(), max.y(), max.z()),
+		c,
+		width);
 }
 
-/**
- * @brief drawBox3
- *
- * draws the box composed by the first 8 point contained on the vector passed as parameter.
- *
- * @param p
- * @param c
- * @param width
- */
-inline void drawBox3(const std::vector<Point3d>& p, const Color& c, int width)
-{
-	drawLine3(p[0], p[1], c, width);
-	drawLine3(p[1], p[2], c, width);
-	drawLine3(p[2], p[3], c, width);
-	drawLine3(p[0], p[3], c, width);
-
-	drawLine3(p[4], p[5], c, width);
-	drawLine3(p[5], p[6], c, width);
-	drawLine3(p[6], p[7], c, width);
-	drawLine3(p[4], p[7], c, width);
-
-	drawLine3(p[0], p[4], c, width);
-	drawLine3(p[1], p[5], c, width);
-	drawLine3(p[2], p[6], c, width);
-	drawLine3(p[3], p[7], c, width);
-}
-
-/**
- * @brief drawBox3
- * @param p0
- * @param p1
- * @param p2
- * @param p3
- * @param p4
- * @param p5
- * @param p6
- * @param p7
- * @param c
- * @param width
- */
 inline void drawBox3(
 	const Point3d& p0,
 	const Point3d& p1,
@@ -413,7 +327,7 @@ inline void drawBox3(
 	const Point3d& p6,
 	const Point3d& p7,
 	const Color&   c,
-	int            width)
+	int            width = 3)
 {
 	drawLine3(p0, p1, c, width);
 	drawLine3(p1, p2, c, width);
@@ -429,6 +343,20 @@ inline void drawBox3(
 	drawLine3(p1, p5, c, width);
 	drawLine3(p2, p6, c, width);
 	drawLine3(p3, p7, c, width);
+}
+
+/**
+ * @brief Draws the box composed by the first 8 point contained on the vector
+ * passed as parameter.
+ *
+ * @param p
+ * @param c
+ * @param width
+ */
+inline void
+drawBox3(const std::vector<Point3d>& p, const Color& c, int width = 3)
+{
+	drawBox3(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], c, width);
 }
 
 } // namespace vcl
