@@ -35,10 +35,6 @@
 
 namespace vcl::io::internal {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 typedef enum {
 	CHAR,
 	UCHAR,
@@ -51,38 +47,8 @@ typedef enum {
 	NONE
 } PropertyType;
 
-std::ofstream saveFileStream(
-	const std::string& filename,
-	const std::string& ext);
-
-std::ifstream loadFileStream(const std::string& filename);
-
-template<MeshConcept MeshType>
-void addPerVertexCustomComponent(
-	MeshType&                        m,
-	const MeshInfo::CustomComponent& cc);
-
-template<FaceMeshConcept MeshType>
-void addPerFaceCustomComponent(
-	MeshType&                        m,
-	const MeshInfo::CustomComponent& cc);
-
-template<MeshConcept MeshType>
-void enableOptionalComponents(MeshInfo& info, MeshType& m);
-
-vcl::Tokenizer nextNonEmptyTokenizedLine(
-	std::ifstream& file,
-	char separator = ' ');
-
-vcl::Tokenizer nextNonEmptyTokenizedLineNoThrow(
-	std::ifstream& file,
-	char separator = ' ');
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-inline std::ofstream saveFileStream(const std::string& filename, const std::string& ext)
+inline std::ofstream
+saveFileStream(const std::string& filename, const std::string& ext)
 {
 	setlocale(LC_ALL, "C");
 	std::string actualfilename = FileInfo::addExtensionToFileName(filename, ext);
@@ -90,7 +56,8 @@ inline std::ofstream saveFileStream(const std::string& filename, const std::stri
 	std::ofstream fp;
 	fp.imbue(std::locale().classic());
 
-	fp.open(actualfilename, std::ofstream::binary); // need to set binary or windows will fail
+	// need to set binary or windows will fail
+	fp.open(actualfilename, std::ofstream::binary);
 	if (!fp) {
 		throw vcl::CannotOpenFileException(actualfilename);
 	}
@@ -101,7 +68,8 @@ inline std::ofstream saveFileStream(const std::string& filename, const std::stri
 inline std::ifstream loadFileStream(const std::string& filename)
 {
 	setlocale(LC_ALL, "C");
-	std::ifstream fp(filename, std::ifstream::binary); // need to set binary or windows will fail
+	// need to set binary or windows will fail
+	std::ifstream fp(filename, std::ifstream::binary);
 	fp.imbue(std::locale().classic());
 	if (!fp.is_open()) {
 		throw vcl::CannotOpenFileException(filename);
@@ -110,17 +78,35 @@ inline std::ifstream loadFileStream(const std::string& filename)
 }
 
 template<MeshConcept MeshType>
-void addPerVertexCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
+void addPerVertexCustomComponent(
+	MeshType&                        m,
+	const MeshInfo::CustomComponent& cc)
 {
 	switch (cc.type) {
-	case MeshInfo::CHAR: m.template addPerVertexCustomComponent<char>(cc.name); break;
-	case MeshInfo::UCHAR: m.template addPerVertexCustomComponent<unsigned char>(cc.name); break;
-	case MeshInfo::SHORT: m.template addPerVertexCustomComponent<short>(cc.name); break;
-	case MeshInfo::USHORT: m.template addPerVertexCustomComponent<unsigned short>(cc.name); break;
-	case MeshInfo::INT: m.template addPerVertexCustomComponent<int>(cc.name); break;
-	case MeshInfo::UINT: m.template addPerVertexCustomComponent<uint>(cc.name); break;
-	case MeshInfo::FLOAT: m.template addPerVertexCustomComponent<float>(cc.name); break;
-	case MeshInfo::DOUBLE: m.template addPerVertexCustomComponent<double>(cc.name); break;
+	case MeshInfo::CHAR:
+		m.template addPerVertexCustomComponent<char>(cc.name);
+		break;
+	case MeshInfo::UCHAR:
+		m.template addPerVertexCustomComponent<unsigned char>(cc.name);
+		break;
+	case MeshInfo::SHORT:
+		m.template addPerVertexCustomComponent<short>(cc.name);
+		break;
+	case MeshInfo::USHORT:
+		m.template addPerVertexCustomComponent<unsigned short>(cc.name);
+		break;
+	case MeshInfo::INT:
+		m.template addPerVertexCustomComponent<int>(cc.name);
+		break;
+	case MeshInfo::UINT:
+		m.template addPerVertexCustomComponent<uint>(cc.name);
+		break;
+	case MeshInfo::FLOAT:
+		m.template addPerVertexCustomComponent<float>(cc.name);
+		break;
+	case MeshInfo::DOUBLE:
+		m.template addPerVertexCustomComponent<double>(cc.name);
+		break;
 	default: assert(0);
 	}
 }
@@ -129,14 +115,30 @@ template<FaceMeshConcept MeshType>
 void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
 	switch (cc.type) {
-	case MeshInfo::CHAR: m.template addPerFaceCustomComponent<char>(cc.name); break;
-	case MeshInfo::UCHAR: m.template addPerFaceCustomComponent<unsigned char>(cc.name); break;
-	case MeshInfo::SHORT: m.template addPerFaceCustomComponent<short>(cc.name); break;
-	case MeshInfo::USHORT: m.template addPerFaceCustomComponent<unsigned short>(cc.name); break;
-	case MeshInfo::INT: m.template addPerFaceCustomComponent<int>(cc.name); break;
-	case MeshInfo::UINT: m.template addPerFaceCustomComponent<uint>(cc.name); break;
-	case MeshInfo::FLOAT: m.template addPerFaceCustomComponent<float>(cc.name); break;
-	case MeshInfo::DOUBLE: m.template addPerFaceCustomComponent<double>(cc.name); break;
+	case MeshInfo::CHAR:
+		m.template addPerFaceCustomComponent<char>(cc.name);
+		break;
+	case MeshInfo::UCHAR:
+		m.template addPerFaceCustomComponent<unsigned char>(cc.name);
+		break;
+	case MeshInfo::SHORT:
+		m.template addPerFaceCustomComponent<short>(cc.name);
+		break;
+	case MeshInfo::USHORT:
+		m.template addPerFaceCustomComponent<unsigned short>(cc.name);
+		break;
+	case MeshInfo::INT:
+		m.template addPerFaceCustomComponent<int>(cc.name);
+		break;
+	case MeshInfo::UINT:
+		m.template addPerFaceCustomComponent<uint>(cc.name);
+		break;
+	case MeshInfo::FLOAT:
+		m.template addPerFaceCustomComponent<float>(cc.name);
+		break;
+	case MeshInfo::DOUBLE:
+		m.template addPerFaceCustomComponent<double>(cc.name);
+		break;
 	default: assert(0);
 	}
 }
@@ -230,7 +232,8 @@ void enableOptionalComponents(MeshInfo& info, MeshType& m)
 	}
 }
 
-vcl::Tokenizer nextNonEmptyTokenizedLine(std::ifstream& file, char separator)
+vcl::Tokenizer
+nextNonEmptyTokenizedLine(std::ifstream& file, char separator = ' ')
 {
 	std::string line;
 	vcl::Tokenizer tokenizer;
@@ -247,7 +250,8 @@ vcl::Tokenizer nextNonEmptyTokenizedLine(std::ifstream& file, char separator)
 	return tokenizer;
 }
 
-vcl::Tokenizer nextNonEmptyTokenizedLineNoThrow(std::ifstream& file, char separator)
+vcl::Tokenizer
+nextNonEmptyTokenizedLineNoThrow(std::ifstream& file, char separator = ' ')
 {
 	std::string line;
 	vcl::Tokenizer tokenizer;

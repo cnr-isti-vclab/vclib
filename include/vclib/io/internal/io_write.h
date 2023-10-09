@@ -30,56 +30,8 @@
 
 namespace vcl::io::internal {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<typename T>
-void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeUChar(std::ofstream& file, T p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeShort(std::ofstream& file, T p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeUShort(std::ofstream& file, T p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeInt(std::ofstream& file, T p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeUInt(std::ofstream& file, T p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeFloat(std::ofstream& file, const T& p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeDouble(std::ofstream& file, const T& p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeProperty(
-	std::ofstream& file,
-	const T&       p,
-	PropertyType   type,
-	bool           bin     = true,
-	bool           isColor = false);
-
-template<ElementConcept El>
-void writeCustomComponent(
-	std::ofstream&     file,
-	const El&          elem,
-	const std::string& cName,
-	PropertyType       type,
-	bool               bin = true);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<typename T>
-void writeChar(std::ofstream& file, T p, bool bin, bool isColor)
+void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 {
 	if (isColor && !std::is_integral<T>::value)
 		p *= 255;
@@ -91,7 +43,7 @@ void writeChar(std::ofstream& file, T p, bool bin, bool isColor)
 }
 
 template<typename T>
-void writeUChar(std::ofstream& file, T p, bool bin, bool isColor)
+void writeUChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 {
 	if (isColor && !std::is_integral<T>::value)
 		p *= 255;
@@ -103,7 +55,7 @@ void writeUChar(std::ofstream& file, T p, bool bin, bool isColor)
 }
 
 template<typename T>
-void writeShort(std::ofstream& file, T p, bool bin, bool isColor)
+void writeShort(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 {
 	if (isColor && !std::is_integral<T>::value)
 		p *= 255;
@@ -115,7 +67,11 @@ void writeShort(std::ofstream& file, T p, bool bin, bool isColor)
 }
 
 template<typename T>
-void writeUShort(std::ofstream& file, T p, bool bin, bool isColor)
+void writeUShort(
+	std::ofstream& file,
+	T              p,
+	bool           bin     = true,
+	bool           isColor = false)
 {
 	if (isColor && !std::is_integral<T>::value)
 		p *= 255;
@@ -127,7 +83,7 @@ void writeUShort(std::ofstream& file, T p, bool bin, bool isColor)
 }
 
 template<typename T>
-void writeInt(std::ofstream& file, T p, bool bin, bool isColor)
+void writeInt(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 {
 	if (isColor && !std::is_integral<T>::value)
 		p *= 255;
@@ -139,7 +95,7 @@ void writeInt(std::ofstream& file, T p, bool bin, bool isColor)
 }
 
 template<typename T>
-void writeUInt(std::ofstream& file, T p, bool bin, bool isColor)
+void writeUInt(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 {
 	if (isColor && !std::is_integral<T>::value)
 		p *= 255;
@@ -151,7 +107,11 @@ void writeUInt(std::ofstream& file, T p, bool bin, bool isColor)
 }
 
 template<typename T>
-void writeFloat(std::ofstream& file, const T& p, bool bin, bool isColor)
+void writeFloat(
+	std::ofstream& file,
+	const T&       p,
+	bool           bin     = true,
+	bool           isColor = false)
 {
 	float tmp = p;
 	if (isColor && std::is_integral<T>::value)
@@ -163,7 +123,11 @@ void writeFloat(std::ofstream& file, const T& p, bool bin, bool isColor)
 }
 
 template<typename T>
-void writeDouble(std::ofstream& file, const T& p, bool bin, bool isColor)
+void writeDouble(
+	std::ofstream& file,
+	const T&       p,
+	bool           bin     = true,
+	bool           isColor = false)
 {
 	double tmp = p;
 	if (isColor && std::is_integral<T>::value)
@@ -175,7 +139,12 @@ void writeDouble(std::ofstream& file, const T& p, bool bin, bool isColor)
 }
 
 template<typename T>
-void writeProperty(std::ofstream& file, const T& p, PropertyType type, bool bin, bool isColor)
+void writeProperty(
+	std::ofstream& file,
+	const T&       p,
+	PropertyType   type,
+	bool           bin     = true,
+	bool           isColor = false)
 {
 	switch (type) {
 	case CHAR: writeChar(file, p, bin, isColor); break;
@@ -196,25 +165,39 @@ void writeCustomComponent(
 	const El&          elem,
 	const std::string& cName,
 	PropertyType       type,
-	bool               bin)
+	bool               bin = true)
 {
 	std::type_index ti = elem.customComponentType(cName);
 	if (ti == typeid(char))
-		writeProperty(file, elem.template customComponent<char>(cName), type, bin);
+		writeProperty(
+			file, elem.template customComponent<char>(cName), type, bin);
 	else if (ti == typeid(unsigned char))
-		writeProperty(file, elem.template customComponent<unsigned char>(cName), type, bin);
+		writeProperty(
+			file,
+			elem.template customComponent<unsigned char>(cName),
+			type,
+			bin);
 	else if (ti == typeid(short))
-		writeProperty(file, elem.template customComponent<short>(cName), type, bin);
+		writeProperty(
+			file, elem.template customComponent<short>(cName), type, bin);
 	else if (ti == typeid(unsigned short))
-		writeProperty(file, elem.template customComponent<unsigned short>(cName), type, bin);
+		writeProperty(
+			file,
+			elem.template customComponent<unsigned short>(cName),
+			type,
+			bin);
 	else if (ti == typeid(int))
-		writeProperty(file, elem.template customComponent<int>(cName), type, bin);
+		writeProperty(
+			file, elem.template customComponent<int>(cName), type, bin);
 	else if (ti == typeid(unsigned int))
-		writeProperty(file, elem.template customComponent<uint>(cName), type, bin);
+		writeProperty(
+			file, elem.template customComponent<uint>(cName), type, bin);
 	else if (ti == typeid(float))
-		writeProperty(file, elem.template customComponent<float>(cName), type, bin);
+		writeProperty(
+			file, elem.template customComponent<float>(cName), type, bin);
 	else if (ti == typeid(double))
-		writeProperty(file, elem.template customComponent<double>(cName), type, bin);
+		writeProperty(
+			file, elem.template customComponent<double>(cName), type, bin);
 	else
 		assert(0);
 }
