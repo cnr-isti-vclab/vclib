@@ -31,38 +31,12 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
 	const MeshType&    m,
 	const std::string& filename,
 	LogType&           log    = nullLogger,
-	bool               binary = true);
-
-template<MeshConcept MeshType>
-void save(const MeshType& m, const std::string& filename, bool binary);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
-	const MeshType&    m,
-	const std::string& filename,
-	const MeshInfo&    info,
-	LogType&           log    = nullLogger,
-	bool               binary = true);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-void save(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log,
-	bool               binary)
+	bool               binary = true)
 {
 	MeshInfo info(m);
 	save(m, filename, info, log, binary);
@@ -76,13 +50,13 @@ void save(const MeshType& m, const std::string& filename, bool binary)
 	save(m, filename, info, log, binary);
 }
 
-template<MeshConcept MeshType, LoggerConcept LogType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
 	const MeshType&    m,
 	const std::string& filename,
 	const MeshInfo&    info,
-	LogType&           log,
-	bool               binary)
+	LogType&           log    = nullLogger,
+	bool               binary = true)
 {
 	std::string ext = FileInfo::extension(filename);
 	ext = vcl::str::toLower(ext);
