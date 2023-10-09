@@ -33,22 +33,6 @@
 
 namespace vcl::io::ply {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType>
-void loadTextures(const PlyHeader& header, MeshType& mesh);
-
-template<MeshConcept MeshType>
-void saveTextures(PlyHeader& header, const MeshType& mesh);
-
-void readUnknownElements(std::ifstream& file, const PlyHeader& header, Element el);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 template<MeshConcept MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh)
 {
@@ -69,7 +53,10 @@ void saveTextures(PlyHeader& header, const MeshType& mesh)
 	}
 }
 
-void readUnknownElements(std::ifstream& file, const PlyHeader& header, ply::Element el)
+inline void readUnknownElements(
+	std::ifstream&   file,
+	const PlyHeader& header,
+	ply::Element     el)
 {
 	if (header.format() == ply::ASCII) {
 		for (uint i = 0; i < el.numberElements; ++i) {
@@ -80,7 +67,8 @@ void readUnknownElements(std::ifstream& file, const PlyHeader& header, ply::Elem
 		for (uint i = 0; i < el.numberElements; ++i) {
 			for (const Property& p : el.properties) {
 				if (p.list) {
-					uint s = io::internal::readProperty<int>(file, p.listSizeType);
+					uint s =
+						io::internal::readProperty<int>(file, p.listSizeType);
 					for (uint i = 0; i < s; ++i)
 						io::internal::readProperty<int>(file, p.type);
 				}

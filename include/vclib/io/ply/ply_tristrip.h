@@ -33,20 +33,6 @@
 
 namespace vcl::io::ply {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceMeshConcept MeshType>
-void loadTriStrips(
-	std::ifstream&   file,
-	const PlyHeader& header,
-	MeshType&        mesh);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 template<FaceMeshConcept MeshType>

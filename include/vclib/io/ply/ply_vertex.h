@@ -37,23 +37,6 @@
 
 namespace vcl::io::ply {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType>
-void saveVertices(
-	std::ofstream&   file,
-	const PlyHeader& header,
-	const MeshType&  mesh);
-
-template<MeshConcept MeshType>
-void loadVertices(std::ifstream& file, const PlyHeader& header, MeshType& mesh);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 template<MeshConcept MeshType, VertexConcept VertexType, typename Stream>
@@ -163,7 +146,7 @@ void loadVertexBin(
 	}
 }
 
-} //namespace vcl::ply::internal
+} //namespace vcl::io::ply::internal
 
 template <MeshConcept MeshType>
 void saveVertices(
@@ -250,6 +233,6 @@ void loadVertices(
 	}
 }
 
-} // namespace vcl
+} // namespace vcl::io::ply
 
 #endif // VCL_PLY_VERTEX_H

@@ -35,106 +35,29 @@
 
 namespace vcl::io {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadPly(
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadPly(
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadPly(
-	MeshType&          m,
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadPly(
-	MeshType&          m,
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType loadPly(const std::string& filename, LogType& log, bool enableOptionalComponents)
-{
-	MeshInfo loadedInfo;
-	return loadPly<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType loadPly(
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log,
-	bool               enableOptionalComponents)
-{
-	MeshType m;
-	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
-	return m;
-}
-
 /**
- * @brief loadPly loads the given ply file and puts the content into the mesh m.
+ * @brief Loads the given ply file and puts the content into the mesh m.
  *
- * The function will fill all the components read into the file that can be filled into the mesh.
- * If the enableOprionalComponents argument is enabled, some eventual optional components of the
- * mesh that were not enabled and that can be loaded from the file, will be enabled before loading
- * the file.
+ * The function will fill all the components read into the file that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the file, will be enabled before loading the file.
  *
- * If you need to know what elements and components have been loaded after the loading of the file,
- * please see the overload of the function with the additional 'loadedInfo' argument.
- *
- * @param m
- * @param filename
- * @param enableOptionalComponents
- */
-template<MeshConcept MeshType, LoggerConcept LogType>
-void loadPly(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
-{
-	MeshInfo loadedInfo;
-	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
-}
-
-/**
- * @brief loadPly loads the given ply file and puts the content into the mesh m.
- *
- * The function will fill all the components read into the file that can be filled into the mesh.
- * If the enableOprionalComponents argument is enabled, some eventual optional components of the
- * mesh that were not enabled and that can be loaded from the file, will be enabled before loading
- * the file.
- *
- * The info about what elements and components have been loaded from the file will be stored into
- * the loadedInfo argument.
+ * The info about what elements and components have been loaded from the file
+ * will be stored into the loadedInfo argument.
  *
  * @param m
  * @param filename
  * @param loadedInfo
  * @param enableOptionalComponents
  */
-template<MeshConcept MeshType, LoggerConcept LogType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
 	MeshType&          m,
 	const std::string& filename,
 	MeshInfo&          loadedInfo,
-	LogType&           log,
-	bool               enableOptionalComponents)
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
 {
 	std::ifstream file = internal::loadFileStream(filename);
 
@@ -173,6 +96,55 @@ void loadPly(
 	}
 
 	file.close();
+}
+
+/**
+ * @brief Loads the given ply file and puts the content into the mesh m.
+ *
+ * The function will fill all the components read into the file that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the file, will be enabled before loading the file.
+ *
+ * If you need to know what elements and components have been loaded after the
+ * loading of the file, please see the overload of the function with the
+ * additional 'loadedInfo' argument.
+ *
+ * @param m
+ * @param filename
+ * @param enableOptionalComponents
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadPly(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshInfo loadedInfo;
+	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadPly(
+	const std::string& filename,
+	MeshInfo&          loadedInfo,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshType m;
+	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+	return m;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadPly(
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshInfo loadedInfo;
+	return loadPly<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
 } // namespace vcl::io

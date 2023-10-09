@@ -36,47 +36,13 @@
 
 namespace vcl::io {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log    = nullLogger,
-	bool               binary = true);
-
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
 	const MeshType&    m,
 	const std::string& filename,
 	const MeshInfo&    info,
 	LogType&           log    = nullLogger,
-	bool               binary = true);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log,
-	bool               binary)
-{
-	MeshInfo info(m);
-	savePly(m, filename, info, log, binary);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	const MeshInfo&    info,
-	LogType&           log,
-	bool               binary)
+	bool               binary = true)
 {
 	MeshInfo meshInfo(m);
 
@@ -123,6 +89,17 @@ void savePly(
 	}
 
 	fp.close();
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void savePly(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log    = nullLogger,
+	bool               binary = true)
+{
+	MeshInfo info(m);
+	savePly(m, filename, info, log, binary);
 }
 
 } // namespace vcl::io
