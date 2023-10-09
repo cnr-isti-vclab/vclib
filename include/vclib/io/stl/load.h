@@ -32,45 +32,12 @@
 
 namespace vcl::io {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadStl(
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadStl(
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadStl(
-	MeshType&          m,
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadStl(
-	MeshType&          m,
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
-bool isBinStlMalformed(const std::string& filename, bool& isBinary, std::size_t& fsize)
+bool isBinStlMalformed(
+	const std::string& filename,
+	bool&              isBinary,
+	std::size_t&       fsize)
 {
 	fsize = FileInfo::fileSize(filename);
 	isBinary = FileInfo::isFileBinary(filename);
@@ -81,14 +48,15 @@ bool isBinStlMalformed(const std::string& filename, bool& isBinary, std::size_t&
 		fp.seekg(80); // size of the header
 		uint fnum = internal::readUInt<uint>(fp);
 		std::size_t expectedFileSize =
-			80 + 4 + // header and number of faces
-			fnum * ( // for each face
-					   3 * sizeof(float) + // 3 floats for the face normal
-					   3 * 3 * sizeof(float) + // 3 floats for each vertex of the face
-					   sizeof(unsigned short)); // a short containing attributes
+			80 + 4 +                     // header and number of faces
+			fnum *                       // for each face
+				(3 * sizeof(float) +     // 3 floats for the face normal
+				 3 * 3 * sizeof(float) + // 3 floats for each vertex of the face
+				 sizeof(unsigned short)); // a short containing attributes
 		if (expectedFileSize != fsize) {
 			// sometimes the size is a bit wrong
-			std::size_t diff = std::abs((long int)expectedFileSize - (long int)fsize);
+			std::size_t diff =
+				std::abs((long int) expectedFileSize - (long int) fsize);
 			if (diff > fsize / 20)
 				return true;
 		}
@@ -112,7 +80,8 @@ bool isStlColored(std::ifstream& fp, bool& magicsMode)
 		magicsMode = false;
 	uint fnum = internal::readUInt<uint>(fp);
 	static const uint fmax = 1000;
-	static const uint fdataSize = 12 * sizeof(float); // 3 floats for normal and 9 for vcoords
+	// 3 floats for normal and 9 for vcoords
+	static const uint fdataSize = 12 * sizeof(float);
 
 	for (uint i = 0; i < std::min(fnum, fmax); ++i) {
 		fp.seekg(fdataSize, std::ios::cur);
@@ -248,16 +217,21 @@ void loadStlAscii(
 				normal.z() = io::internal::readFloat<float>(token);
 
 				internal::nextNonEmptyTokenizedLine(fp); // outer loop
-				tokens = internal::nextNonEmptyTokenizedLine(fp); // vertex x y z
+				// vertex x y z
+				tokens = internal::nextNonEmptyTokenizedLine(fp);
 
 				for (uint i = 0; i < 3; i++) { // read the three vertices
 					token = tokens.begin(); ++token; // skip the "vertex" word
 
-					m.vertex(vi + i).coord().x() = io::internal::readFloat<float>(token);
-					m.vertex(vi + i).coord().y() = io::internal::readFloat<float>(token);
-					m.vertex(vi + i).coord().z() = io::internal::readFloat<float>(token);
+					m.vertex(vi + i).coord().x() =
+						io::internal::readFloat<float>(token);
+					m.vertex(vi + i).coord().y() =
+						io::internal::readFloat<float>(token);
+					m.vertex(vi + i).coord().z() =
+						io::internal::readFloat<float>(token);
 
-					tokens = internal::nextNonEmptyTokenizedLine(fp); // next vertex
+					// next vertex
+					tokens = internal::nextNonEmptyTokenizedLine(fp);
 				}
 				internal::nextNonEmptyTokenizedLine(fp); // endfacet
 
@@ -291,46 +265,13 @@ void loadStlAscii(
 
 } // namespace vcl::io::internal
 
-template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType loadStl(
-	const std::string& filename,
-	LogType&           log,
-	bool               enableOptionalComponents)
-{
-	MeshInfo loadedInfo;
-	return loadStl<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType loadStl(
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log,
-	bool               enableOptionalComponents)
-{
-	MeshType m;
-	loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
-	return m;
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-void loadStl(
-	MeshType&          m,
-	const std::string& filename,
-	LogType&           log,
-	bool               enableOptionalComponents)
-{
-	MeshInfo loadedInfo;
-	loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadStl(
 	MeshType&          m,
 	const std::string& filename,
 	MeshInfo&          loadedInfo,
-	LogType&           log,
-	bool               enableOptionalComponents)
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
 {
 	if constexpr (isLoggerValid<LogType>()) {
 		log.log(0, "Checking STL file");
@@ -367,11 +308,46 @@ void loadStl(
 	if (isBinary)
 		internal::loadStlBin(m, fp, loadedInfo, log, enableOptionalComponents);
 	else
-		internal::loadStlAscii(m, fp, loadedInfo, log, filesize, enableOptionalComponents);
+		internal::loadStlAscii(
+			m, fp, loadedInfo, log, filesize, enableOptionalComponents);
 
 	if constexpr (isLoggerValid<LogType>()) {
 		log.log(100, "STL file loaded");
 	}
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadStl(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshInfo loadedInfo;
+	loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadStl(
+	const std::string& filename,
+	MeshInfo&          loadedInfo,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshType m;
+	loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
+	return m;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadStl(
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshInfo loadedInfo;
+	return loadStl<MeshType>(
+		filename, loadedInfo, log, enableOptionalComponents);
 }
 
 } // namespace vcl::io

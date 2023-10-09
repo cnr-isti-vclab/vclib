@@ -33,31 +33,6 @@
 
 namespace vcl::io {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveStl(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log        = nullLogger,
-	bool               binary     = true,
-	bool               magicsMode = false);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveStl(
-	const MeshType&    m,
-	const std::string& filename,
-	const MeshInfo&    info,
-	LogType&           log        = nullLogger,
-	bool               binary     = true,
-	bool               magicsMode = false);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 void writeStlHeader(std::ofstream& fp, bool magicsMode, bool binary)
@@ -105,67 +80,50 @@ void writeTriangle(
 		internal::writeUShort(fp, attributes);
 	}
 	else {
-		fp << "  facet normal " << n.x() << " " << n.y() << " " << n.z() << std::endl;
+		fp << "  facet normal " << n.x() << " " << n.y() << " " << n.z()
+		   << std::endl;
 		fp << "    outer loop" << std::endl;
 
-		fp << "      vertex "  << p0.x() << " " << p0.y() << " " << p0.z() << std::endl;
-		fp << "      vertex "  << p1.x() << " " << p1.y() << " " << p1.z() << std::endl;
-		fp << "      vertex "  << p2.x() << " " << p2.y() << " " << p2.z() << std::endl;
+		fp << "      vertex " << p0.x() << " " << p0.y() << " " << p0.z()
+		   << std::endl;
+		fp << "      vertex " << p1.x() << " " << p1.y() << " " << p1.z()
+		   << std::endl;
+		fp << "      vertex " << p2.x() << " " << p2.y() << " " << p2.z()
+		   << std::endl;
 
 		fp << "    endloop" << std::endl;
 		fp << "  endfacet" << std::endl;
 	}
 }
 
-}
-
-/**
- * @brief saveStl
- * @param m
- * @param filename
- * @param[in] magicsMode: indicates whether the STL file should be saved in Magics mode or not.
- * Magics mode is a specific file format used by the Magics software, which includes more
- * information than the standard STL format, like face colors. The magicsMode works only when binary
- * flag is set to `true`.
- * @param binary
- */
-template<MeshConcept MeshType, LoggerConcept LogType>
-void saveStl(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log,
-	bool               binary,
-	bool               magicsMode)
-{
-	MeshInfo info(m);
-	saveStl(m, filename, info, log, binary, magicsMode);
-}
+} // namespace vcl::io::internal
 
 /**
  * @brief saveStl
  * @param m
  * @param filename
  * @param info
- * @param[in] magicsMode: indicates whether the STL file should be saved in Magics mode or not.
- * Magics mode is a specific file format used by the Magics software, which includes more
- * information than the standard STL format, like face colors. The magicsMode works only when binary
- * flag is set to `true`.
+ * @param[in] magicsMode: indicates whether the STL file should be saved in
+ * Magics mode or not. Magics mode is a specific file format used by the Magics
+ * software, which includes more information than the standard STL format, like
+ * face colors. The magicsMode works only when binary flag is set to `true`.
  * @param binary
  */
-template<MeshConcept MeshType, LoggerConcept LogType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveStl(
 	const MeshType&    m,
 	const std::string& filename,
 	const MeshInfo&    info,
-	LogType&           log,
-	bool               binary,
-	bool               magicsMode)
+	LogType&           log        = nullLogger,
+	bool               binary     = true,
+	bool               magicsMode = false)
 {
 	MeshInfo meshInfo(m);
 
-		   // make sure that the given info contains only components that are actually available in the
-		   // mesh. meshInfo will contain the intersection between the components that the user wants to
-		   // save and the components that are available in the mesh.
+	// make sure that the given info contains only components that are actually
+	// available in the mesh. meshInfo will contain the intersection between the
+	// components that the user wants to save and the components that are
+	// available in the mesh.
 	meshInfo = info.intersect(meshInfo);
 
 	std::ofstream fp = internal::saveFileStream(filename, "stl");
@@ -240,6 +198,28 @@ void saveStl(
 	}
 
 	fp.close();
+}
+
+/**
+ * @brief saveStl
+ * @param m
+ * @param filename
+ * @param[in] magicsMode: indicates whether the STL file should be saved in
+ * Magics mode or not. Magics mode is a specific file format used by the Magics
+ * software, which includes more information than the standard STL format, like
+ * face colors. The magicsMode works only when binary flag is set to `true`.
+ * @param binary
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveStl(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log        = nullLogger,
+	bool               binary     = true,
+	bool               magicsMode = false)
+{
+	MeshInfo info(m);
+	saveStl(m, filename, info, log, binary, magicsMode);
 }
 
 } // namespace vcl::io
