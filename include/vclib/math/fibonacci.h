@@ -28,17 +28,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<Point3Concept PointType>
-std::vector<PointType> sphericalFibonacciPointSet(uint n);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 template<Point3Concept PointType>
