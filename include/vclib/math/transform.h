@@ -31,44 +31,14 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<typename MatrixType, PointConcept PointType, typename ScalarType>
-void setTransformMatrixRotation(
-	MatrixType&       matrix,
-	PointType         axis,
-	const ScalarType& angleRad);
-
-template<typename MatrixType, PointConcept PointType, typename ScalarType>
-void setTransformMatrixRotationDeg(
-	MatrixType&       matrix,
-	PointType         axis,
-	const ScalarType& angleDeg);
-
-template<typename ScalarType, PointConcept PointType>
-void setTrasformMatrixTranslation(Matrix44<ScalarType>& matrix, const PointType& translation);
-
-template<typename ScalarType, PointConcept PointType>
-void setTrasformMatrixScale(Matrix44<ScalarType>& matrix, const PointType& scale);
-
-template<typename MatrixType, PointConcept PointType, typename ScalarType>
-MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad);
-
-template<typename MatrixType, PointConcept PointType, typename ScalarType>
-MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
- * @brief Given an 3D axis and an angle expressed in randiants, fills the given matrix with a
- * transform matrix that represents the rotation matrix of the given axis/angle.
+ * @brief Given an 3D axis and an angle expressed in randiants, fills the given
+ * matrix with a transform matrix that represents the rotation matrix of the
+ * given axis/angle.
  *
- * The given matrix must be at least a 3x3 matrix. If the matrix is a higher than 3x3 (e.g. 4x4),
- * only the 3x3 submatrix will be set, leaving unchanged the other values.
+ * The given matrix must be at least a 3x3 matrix. If the matrix is a higher
+ * than 3x3 (e.g. 4x4), only the 3x3 submatrix will be set, leaving unchanged
+ * the other values.
  *
  * @param matrix
  * @param axis
@@ -97,11 +67,13 @@ void setTransformMatrixRotation(
 }
 
 /**
- * @brief Given an 3D axis and an angle expressed in degrees, fills the given matrix with a
- * transform matrix that represents the rotation matrix of the given axis/angle.
+ * @brief Given an 3D axis and an angle expressed in degrees, fills the given
+ * matrix with a transform matrix that represents the rotation matrix of the
+ * given axis/angle.
  *
- * The given matrix must be at least a 3x3 matrix. If the matrix is a higher than 3x3 (e.g. 4x4),
- * only the 3x3 submatrix will be set, leaving unchanged the other values.
+ * The given matrix must be at least a 3x3 matrix. If the matrix is a higher
+ * than 3x3 (e.g. 4x4), only the 3x3 submatrix will be set, leaving unchanged
+ * the other values.
  *
  * @param matrix
  * @param axis
@@ -118,7 +90,9 @@ void setTransformMatrixRotationDeg(
 }
 
 template<typename ScalarType, PointConcept PointType>
-void setTrasformMatrixTranslation(Matrix44<ScalarType>& matrix, const PointType& translation)
+void setTrasformMatrixTranslation(
+	Matrix44<ScalarType>& matrix,
+	const PointType&      translation)
 {
 	matrix(0, 3) = translation[0];
 	matrix(1, 3) = translation[1];
@@ -126,7 +100,9 @@ void setTrasformMatrixTranslation(Matrix44<ScalarType>& matrix, const PointType&
 }
 
 template<typename ScalarType, PointConcept PointType>
-void setTrasformMatrixScale(Matrix44<ScalarType>& matrix, const PointType& scale)
+void setTrasformMatrixScale(
+	Matrix44<ScalarType>& matrix,
+	const PointType&      scale)
 {
 	matrix(0, 0) = scale[0];
 	matrix(1, 1) = scale[0];
@@ -135,12 +111,13 @@ void setTrasformMatrixScale(Matrix44<ScalarType>& matrix, const PointType& scale
 }
 
 /**
- * @brief Given an 3D axis and an angle expressed in randiants, returns a transform matrix that
- * represents the rotation matrix of the given axis/angle.
+ * @brief Given an 3D axis and an angle expressed in randiants, returns a
+ * transform matrix that represents the rotation matrix of the given axis/angle.
  *
- * The MatrixType must be at least a 3x3 matrix having the setIdentity() member function.
- * If the matrix is a higher than 3x3 (e.g. 4x4), only the 3x3 submatrix will be set, leaving the
- * identity values in the other cells of the matrix.
+ * The MatrixType must be at least a 3x3 matrix having the setIdentity() member
+ * function. If the matrix is a higher than 3x3 (e.g. 4x4), only the 3x3
+ * submatrix will be set, leaving the identity values in the other cells of the
+ * matrix.
  *
  * @param axis
  * @param angleRad
@@ -156,11 +133,13 @@ MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
 }
 
 /**
- * @brief Given an 3D axis and an angle expressed in degrees, fills the given matrix with a
- * transform matrix that represents the rotation matrix of the given axis/angle.
+ * @brief Given an 3D axis and an angle expressed in degrees, fills the given
+ * matrix with a transform matrix that represents the rotation matrix of the
+ * given axis/angle.
  *
- * The given matrix must be at least a 3x3 matrix. If the matrix is a higher than 3x3 (e.g. 4x4),
- * only the 3x3 submatrix will be set, leaving unchanged the other values.
+ * The given matrix must be at least a 3x3 matrix. If the matrix is a higher
+ * than 3x3 (e.g. 4x4), only the 3x3 submatrix will be set, leaving unchanged
+ * the other values.
  *
  * @param axis
  * @param angleDeg

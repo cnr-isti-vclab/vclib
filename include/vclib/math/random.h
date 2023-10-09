@@ -32,40 +32,12 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-int poissonRatioOfUniformsInteger(double L, std::mt19937& gen);
-
-int poissonRatioOfUniformsInteger(double L);
-
-int poissonRandomNumber(double lambda, std::mt19937& gen);
-
-int poissonRandomNumber(double lambda);
-
-template<typename ScalarType>
-vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate(std::mt19937& gen);
-
-template<typename ScalarType>
-vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate();
-
-template<typename ScalarType>
-std::vector<ScalarType> randomPolygonBarycentricCoordinate(uint polySize, std::mt19937& gen);
-
-template<typename ScalarType>
-std::vector<ScalarType> randomPolygonBarycentricCoordinate(uint polySize);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
- * @brief This subfunction generates a integer with the poisson distribution using the
- * ratio-of-uniforms rejection method (PRUAt).
- * This approach is STABLE even for large L (e.g. it does not suffer from the overflow limit of
- * the classical Knuth implementation) Execution time does not depend on L, except that it matters
- * whether is within the range where ln(n!) is tabulated.
+ * @brief This subfunction generates a integer with the poisson distribution
+ * using the ratio-of-uniforms rejection method (PRUAt). This approach is STABLE
+ * even for large L (e.g. it does not suffer from the overflow limit of the
+ * classical Knuth implementation) Execution time does not depend on L, except
+ * that it matters whether is within the range where ln(n!) is tabulated.
  *
  * Reference:
  *
@@ -74,8 +46,8 @@ std::vector<ScalarType> randomPolygonBarycentricCoordinate(uint polySize);
  * Journal of Computational and Applied Mathematics,
  * vol. 31, no. 1, 1990, pp. 181-189.
  *
- * Partially adapted/inspired from some subfunctions of the Agner Fog stocc library (
- * www.agner.org/random ) Same licensing scheme.
+ * Partially adapted/inspired from some subfunctions of the Agner Fog stocc
+ * library ( www.agner.org/random ) Same licensing scheme.
  *
  * @param L
  * @return
@@ -94,7 +66,7 @@ inline int poissonRatioOfUniformsInteger(double L, std::mt19937& gen)
 	double pois_a     = L + 0.5; // hat center
 	int    mode       = (int) L; // mode
 	double pois_g     = std::log(L);
-	double pois_f0    = mode * pois_g - lnOfFactorial(mode);     // value at mode
+	double pois_f0    = mode * pois_g - lnOfFactorial(mode);  // value at mode
 	double pois_h     = std::sqrt(SHAT1 * (L + 0.5)) + SHAT2; // hat width
 	double pois_bound = (int) (pois_a + 6.0 * pois_h);   // safety-bound
 
@@ -198,7 +170,8 @@ vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate()
 }
 
 template<typename ScalarType>
-std::vector<ScalarType> randomPolygonBarycentricCoordinate(uint polySize, std::mt19937& gen)
+std::vector<ScalarType>
+randomPolygonBarycentricCoordinate(uint polySize, std::mt19937& gen)
 {
 	std::vector<ScalarType> barCoord(polySize);
 	ScalarType sum = 0;

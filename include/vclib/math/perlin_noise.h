@@ -28,16 +28,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-double perlinNoise(double x, double y, double z);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 inline int perlinNoiseP(int i)
@@ -103,7 +93,7 @@ inline double perlinNoiseFade(double t)
 	return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-} // namespace internal
+} // namespace vcl::internal
 
 /**
  * @brief 3D Perlin noise, returns a value in the [-1,1] range with period 255
@@ -129,7 +119,8 @@ inline double perlinNoise(double x, double y, double z)
 		w    = internal::perlinNoiseFade(z);
 	int A = internal::perlinNoiseP(X) + Y, AA = internal::perlinNoiseP(A) + Z,
 		AB = internal::perlinNoiseP(A + 1) + Z, // HASH COORDINATES OF
-		B = internal::perlinNoiseP(X + 1) + Y, BA = internal::perlinNoiseP(B) + Z,
+		B  = internal::perlinNoiseP(X + 1) + Y,
+		BA = internal::perlinNoiseP(B) + Z,
 		BB = internal::perlinNoiseP(B + 1) + Z; // THE 8 CUBE CORNERS,
 
 	return internal::perlinNoiseLerp(

@@ -28,44 +28,15 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<typename T>
-constexpr auto min(const T& el1, const T& el2);
-
-template <typename Head, typename... Tail>
-constexpr auto min(const Head& head0, const Head& head1, const Tail&... tail) requires(sizeof...(tail) > 0);
-
-template<typename T>
-constexpr auto max(const T& el1, const T& el2);
-
-template <typename Head, typename... Tail>
-constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail) requires(sizeof...(tail) > 0);
-
-// min specializations
-
-template<PointConcept PointType>
-constexpr auto min(const PointType& p1, const PointType& p2);
-
-// max specializations
-
-template<PointConcept PointType>
-constexpr auto max(const PointType& p1, const PointType& p2);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 template<typename T>
 constexpr auto min(const T& el1, const T& el2)
 {
 	return std::min(el1, el2);
 }
 
-template <typename Head, typename... Tail>
-constexpr auto min(const Head& head0, const Head& head1, const Tail&... tail) requires(sizeof...(tail) > 0)
+template<typename Head, typename... Tail>
+constexpr auto min(const Head& head0, const Head& head1, const Tail&... tail)
+	requires (sizeof...(tail) > 0)
 {
 	return min(min(head0, head1), tail...);
 }
@@ -76,8 +47,9 @@ constexpr auto max(const T& el1, const T& el2)
 	return std::max(el1, el2);
 }
 
-template <typename Head, typename... Tail>
-constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail) requires(sizeof...(tail) > 0)
+template<typename Head, typename... Tail>
+constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail)
+	requires (sizeof...(tail) > 0)
 {
 	return max(max(head0, head1), tail...);
 }
