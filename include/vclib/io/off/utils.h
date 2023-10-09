@@ -31,18 +31,6 @@
 
 namespace vcl::io::off {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-void loadOffHeader(std::ifstream& file, MeshInfo& fileInfo, uint& nv, uint& nf, uint& ne);
-
-vcl::Color loadColor(vcl::Tokenizer::iterator& token, int nColorComponents);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 static const float GEOMVIEW_COLOR_MAP[148][4] = {
 	{1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
 	{1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
@@ -156,7 +144,12 @@ static const float GEOMVIEW_COLOR_MAP[148][4] = {
 	{0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f }
 };
 
-void loadOffHeader(std::ifstream& file, MeshInfo& fileInfo, uint& nv, uint& nf, uint& ne)
+void loadOffHeader(
+	std::ifstream& file,
+	MeshInfo&      fileInfo,
+	uint&          nv,
+	uint&          nf,
+	uint&          ne)
 {
 	fileInfo.reset();
 	vcl::Tokenizer           tokens = internal::nextNonEmptyTokenizedLine(file);
@@ -173,16 +166,18 @@ void loadOffHeader(std::ifstream& file, MeshInfo& fileInfo, uint& nv, uint& nf, 
 			else if (u > 0 && header[u - 1] == 'S' && header[u] == 'T')
 				fileInfo.setVertexTexCoords();
 			else if (header[u] == '4')
-				throw vcl::MalformedFileException("Unsupported Homogeneus components in OFF.");
+				throw vcl::MalformedFileException(
+					"Unsupported Homogeneus components in OFF.");
 			else if (header[u] == 'n')
-				throw vcl::MalformedFileException("Unsupported High Dimension OFF.");
+				throw vcl::MalformedFileException(
+					"Unsupported High Dimension OFF.");
 		}
 	}
 	else
 		throw vcl::MalformedFileException("Missing OFF header in file.");
 
-	// If the file is slightly malformed and it has nvert and nface AFTER the OFF string instead of
-	// in the next line we manage it here...
+	// If the file is slightly malformed and it has nvert and nface AFTER the
+	// OFF string instead of in the next line we manage it here...
 	if (tokens.size() == 1) {
 		tokens = internal::nextNonEmptyTokenizedLine(file);
 		token = tokens.begin();
@@ -201,7 +196,8 @@ void loadOffHeader(std::ifstream& file, MeshInfo& fileInfo, uint& nv, uint& nf, 
 	//	loadedInfo.setEdges();
 }
 
-inline vcl::Color loadColor(vcl::Tokenizer::iterator& token, int nColorComponents)
+inline vcl::Color
+loadColor(vcl::Tokenizer::iterator& token, int nColorComponents)
 {
 	uint red, green, blue, alpha = 255;
 

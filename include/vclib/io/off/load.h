@@ -35,42 +35,6 @@
 
 namespace vcl::io {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadOff(
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType loadOff(
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadOff(
-	MeshType&          m,
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void loadOff(
-	MeshType&          m,
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 template<MeshConcept MeshType>
@@ -88,7 +52,7 @@ void loadOffVertices(
 	for (uint i = 0; i < nv; i++) {
 		VertexType& v = mesh.vertex(i);
 
-		vcl::Tokenizer           tokens = internal::nextNonEmptyTokenizedLine(file);
+		vcl::Tokenizer tokens = internal::nextNonEmptyTokenizedLine(file);
 		vcl::Tokenizer::iterator token  = tokens.begin();
 
 		// Read 3 vertex coordinates
@@ -98,44 +62,58 @@ void loadOffVertices(
 		}
 
 		if constexpr(vcl::HasPerVertexNormal<MeshType>) {
-			if (vcl::isPerVertexNormalAvailable(mesh) && fileInfo.hasVertexNormals()) {
+			if (vcl::isPerVertexNormalAvailable(mesh) &&
+				fileInfo.hasVertexNormals())
+			{
 				// Read 3 normal coordinates
 				for (unsigned int j = 0; j < 3; j++) {
 					v.normal()[j] = io::internal::readDouble<double>(token);
 				}
 			}
 		}
-		else if (fileInfo.hasVertexNormals()){ // need to read and throw away data
+		// need to read and throw away data
+		else if (fileInfo.hasVertexNormals()){
 			for (unsigned int j = 0; j < 3; j++) {
 				io::internal::readDouble<double>(token);
 			}
 		}
 
 		const uint nReadComponents = token - tokens.begin();
-		const int nColorComponents = (int)tokens.size() - nReadComponents - nTexCoords;
+		const int  nColorComponents =
+			(int) tokens.size() - nReadComponents - nTexCoords;
 
 		if constexpr(vcl::HasPerVertexColor<MeshType>) {
-			if (vcl::isPerVertexColorAvailable(mesh) && fileInfo.hasVertexColors()) {
-				if (nColorComponents != 1 && nColorComponents != 3 && nColorComponents != 4)
-					throw MalformedFileException("Wrong number of components in line.");
+			if (vcl::isPerVertexColorAvailable(mesh) &&
+				fileInfo.hasVertexColors())
+			{
+				if (nColorComponents != 1 && nColorComponents != 3 &&
+					nColorComponents != 4)
+					throw MalformedFileException(
+						"Wrong number of components in line.");
 				v.color() = off::loadColor(token, nColorComponents);
 			}
 		}
-		else if (fileInfo.hasVertexColors()){ // need to read and throw away data
-			if (nColorComponents != 1 && nColorComponents != 3 && nColorComponents != 4)
-				throw MalformedFileException("Wrong number of components in line.");
+		// need to read and throw away data
+		else if (fileInfo.hasVertexColors()){
+			if (nColorComponents != 1 && nColorComponents != 3 &&
+				nColorComponents != 4)
+				throw MalformedFileException(
+					"Wrong number of components in line.");
 			off::loadColor(token, nColorComponents);
 		}
 
 		if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
-			if (vcl::isPerVertexTexCoordAvailable(mesh) && fileInfo.hasVertexTexCoords()) {
+			if (vcl::isPerVertexTexCoordAvailable(mesh) &&
+				fileInfo.hasVertexTexCoords())
+			{
 				// Read 2 tex coordinates
 				for (unsigned int j = 0; j < 2; j++) {
 					v.texCoord()[j] = io::internal::readDouble<double>(token);
 				}
 			}
 		}
-		else if (fileInfo.hasVertexTexCoords()){ // need to read and throw away data
+		// need to read and throw away data
+		else if (fileInfo.hasVertexTexCoords()){
 			for (unsigned int j = 0; j < 2; j++) {
 				io::internal::readDouble<double>(token);
 			}
@@ -156,32 +134,37 @@ void loadOffFaces(
 
 		mesh.reserveFaces(nf);
 		for (uint fid = 0; fid < nf; ++fid) {
-			vcl::Tokenizer tokens = vcl::io::internal::nextNonEmptyTokenizedLine(file);
+			vcl::Tokenizer tokens =
+				vcl::io::internal::nextNonEmptyTokenizedLine(file);
 			vcl::Tokenizer::iterator token = tokens.begin();
 			mesh.addFace();
 			FaceType& f = mesh.face(mesh.faceNumber() - 1);
 
 			// read vertex indices
 			uint fSize = io::internal::readUInt<uint>(token);
-			std::vector<uint> vids; // contains the vertex ids of the actual face
+			// contains the vertex ids of the actual face
+			std::vector<uint> vids;
 			vids.resize(fSize);
 			for (uint i = 0; i < fSize; ++i) {
 				vids[i] = io::internal::readUInt<uint>(token);
 				bool splitFace = false;
 				// we have a polygonal mesh
 				if constexpr (FaceType::VERTEX_NUMBER < 0) {
-					f.resizeVertices(vids.size()); // need to resize to the right number of verts
+					// need to resize to the right number of verts
+					f.resizeVertices(vids.size());
 				}
 				else if (FaceType::VERTEX_NUMBER != vids.size()) {
-					// we have faces with static sizes (triangles), but we are loading faces with
-					// number of verts > 3. Need to split the face we are loading in n faces!
+					// we have faces with static sizes (triangles), but we are
+					// loading faces with number of verts > 3. Need to split the
+					// face we are loading in n faces!
 					splitFace = true;
 				}
 				if (!splitFace) { // classic load, no split needed
 					for (uint i = 0; i < vids.size(); ++i) {
 						if (vids[i] >= mesh.vertexNumber()) {
 							throw vcl::MalformedFileException(
-								"Bad vertex index for face " + std::to_string(i));
+								"Bad vertex index for face " +
+								std::to_string(i));
 						}
 						f.vertex(i) = &mesh.vertex(vids[i]);
 					}
@@ -195,11 +178,17 @@ void loadOffFaces(
 			if (token != tokens.end()) { // there are colors to read
 				if constexpr (HasPerFaceColor<MeshType>) {
 					if (isPerFaceColorAvailable(mesh) ||
-						(enableOptionalComponents && enableIfPerFaceColorOptional(mesh))){
+						(enableOptionalComponents &&
+						 enableIfPerFaceColorOptional(mesh)))
+					{
 						loadedInfo.setFaceColors();
-						f.color() = off::loadColor(token, tokens.size() - (token - tokens.begin()));
-						// in case the loaded polygon has been triangulated in the last n triangles
-						for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
+						f.color() = off::loadColor(
+							token, tokens.size() - (token - tokens.begin()));
+						// in case the loaded polygon has been triangulated in
+						// the last n triangles
+						for (uint ff = mesh.index(f); ff < mesh.faceNumber();
+							 ++ff)
+						{
 							mesh.face(ff).color() = f.color();
 						}
 					}
@@ -215,39 +204,13 @@ void loadOffFaces(
 
 } // namespace internal
 
-template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType loadOff(const std::string& filename, LogType& log, bool enableOptionalComponents)
-{
-	MeshInfo loadedInfo;
-	return loadOff<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-MeshType loadOff(
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log,
-	bool               enableOptionalComponents)
-{
-	MeshType m;
-	loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
-	return m;
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-void loadOff(MeshType& m, const std::string& filename, LogType& log, bool enableOptionalComponents)
-{
-	MeshInfo loadedInfo;
-	loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadOff(
 	MeshType&          m,
 	const std::string& filename,
 	MeshInfo&          loadedInfo,
-	LogType&           log,
-	bool               enableOptionalComponents)
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
 {
 	std::ifstream file = internal::loadFileStream(filename);
 	uint nVertices, nFaces, nEdges;
@@ -269,6 +232,41 @@ void loadOff(
 		loadedInfo = fileInfo;
 	// internal::loadOffEdges(m, file, loadedInfo, nEdges);
 }
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadOff(
+	MeshType&          m,
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshInfo loadedInfo;
+	loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadOff(
+	const std::string& filename,
+	MeshInfo&          loadedInfo,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshType m;
+	loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
+	return m;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadOff(
+	const std::string& filename,
+	LogType&           log                      = nullLogger,
+	bool               enableOptionalComponents = true)
+{
+	MeshInfo loadedInfo;
+	return loadOff<MeshType>(
+		filename, loadedInfo, log, enableOptionalComponents);
+}
+
 
 } // namespace vcl::io
 

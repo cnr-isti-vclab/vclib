@@ -33,46 +33,19 @@
 
 namespace vcl::io {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveOff(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log = nullLogger);
-
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
 	const MeshType&    m,
 	const std::string& filename,
 	const MeshInfo&    info,
-	LogType&           log = nullLogger);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-void saveOff(const MeshType& m, const std::string& filename, LogType& log)
-{
-	MeshInfo info(m);
-	saveOff(m, filename, info, log);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType>
-void saveOff(
-	const MeshType&    m,
-	const std::string& filename,
-	const MeshInfo&    info,
-	LogType&           log)
+	LogType&           log = nullLogger)
 {
 	MeshInfo meshInfo(m);
 
-	// make sure that the given info contains only components that are actually available in the
-	// mesh. meshInfo will contain the intersection between the components that the user wants to
-	// save and the components that are available in the mesh.
+	// make sure that the given info contains only components that are actually
+	// available in the mesh. meshInfo will contain the intersection between the
+	// components that the user wants to save and the components that are
+	// available in the mesh.
 	meshInfo = info.intersect(meshInfo);
 	std::ofstream fp = internal::saveFileStream(filename, "off");
 	if (meshInfo.hasVertexNormals())
@@ -161,6 +134,16 @@ void saveOff(
 		}
 	}
 	fp.close();
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveOff(
+	const MeshType&    m,
+	const std::string& filename,
+	LogType&           log = nullLogger)
+{
+	MeshInfo info(m);
+	saveOff(m, filename, info, log);
 }
 
 } // namespace vcl::io
