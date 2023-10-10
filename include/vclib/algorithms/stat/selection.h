@@ -29,28 +29,14 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<MeshConcept MeshType>
-uint vertexSelectionNumber(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-uint faceSelectionNumber(const MeshType& m);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<MeshConcept MeshType>
-uint vertexSelectionNumber(const MeshType &m)
+uint vertexSelectionNumber(const MeshType& m)
 {
 	return std::ranges::distance(m.vertices() | views::selected);
 }
 
 template<FaceMeshConcept MeshType>
-uint faceSelectionNumber(const MeshType &m)
+uint faceSelectionNumber(const MeshType& m)
 {
 	return std::ranges::distance(m.faces() | views::selected);
 }

@@ -36,57 +36,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
-
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType barycenter(const MeshType& m);
-
-template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double volume(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double surfaceArea(const MeshType& m);
-
-template<FaceMeshConcept MeshType>
-double borderLength(const MeshType& m);
-
-template<PointConcept PointType>
-auto covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec);
-
-template<MeshConcept MeshType>
-auto covarianceMatrixOfPointCloud(const MeshType& m);
-
-template<PointConcept PointType>
-auto weightedCovarianceMatrixOfPointCloud(
-	const std::vector<PointType>& pointVec,
-	const std::vector<typename PointType::ScalarType>& weigths);
-
-template<FaceMeshConcept MeshType>
-auto covarianceMatrixOfMesh(const MeshType& m);
-
-template<MeshConcept MeshType, typename ScalarType>
-std::vector<ScalarType> vertexRadiusFromWeights(
-	const MeshType&                m,
-	const std::vector<ScalarType>& weights,
-	double                         diskRadius,
-	double                         radiusVariance,
-	bool                           invert = false);
-
-/***************
- * Definitions *
- ***************/
-
 /**
- * @brief Returns the barycenter of the mesh, that is the simple average of all the vertex
- * coordintes of the mesh.
+ * @brief Returns the barycenter of the mesh, that is the simple average of all
+ * the vertex coordintes of the mesh.
  *
  * Requirements:
  * - Mesh:
@@ -111,10 +63,11 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
 }
 
 /**
- * @brief Returns the barycenter of the mesh weighted on the per vertex quality values.
+ * @brief Returns the barycenter of the mesh weighted on the per vertex quality
+ * values.
  *
- * The output baryceter is computed as a weighted average of the vertices of the mesh, using the
- * per Vertex Quality values as weights.
+ * The output baryceter is computed as a weighted average of the vertices of the
+ * mesh, using the per Vertex Quality values as weights.
  *
  * Requirements:
  * - Mesh:
@@ -124,8 +77,9 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
  * @param[in] m: input mesh on which compute the barycenter.
  * @return The barycenter weighted on the per vertex quality.
  */
-template <MeshConcept MeshType>
-typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType& m)
+template<MeshConcept MeshType>
+typename MeshType::VertexType::CoordType
+scalarWeightedBarycenter(const MeshType& m)
 {
 	vcl::requirePerVertexQuality(m);
 
@@ -146,9 +100,10 @@ typename MeshType::VertexType::CoordType scalarWeightedBarycenter(const MeshType
 
 /**
  * @brief Computes the barycenter of the surface thin-shell.
- * E.g. it assume a 'empty' model where all the mass is located on the surface and compute the
- * barycenter of that thinshell. Works for any polygonal model (no problem with open, nonmanifold
- * selfintersecting models). Useful for computing the barycenter of 2D planar figures.
+ * E.g. it assume a 'empty' model where all the mass is located on the surface
+ * and compute the barycenter of that thinshell. Works for any polygonal model
+ * (no problem with open, nonmanifold selfintersecting models). Useful for
+ * computing the barycenter of 2D planar figures.
  *
  * Requirements:
  * - Mesh:
@@ -180,8 +135,8 @@ typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
 }
 
 /**
- * @brief Computes the volume of a closed surface Mesh. Returned value is meaningful only if
- * the input mesh is watertight.
+ * @brief Computes the volume of a closed surface Mesh. Returned value is
+ * meaningful only if the input mesh is watertight.
  *
  * @param[in] m: closed mesh on which compute the volume.
  * @return The volume of the given mesh.
@@ -194,8 +149,8 @@ double volume(const MeshType& m)
 }
 
 /**
- * @brief Computes the surface area of the given Mesh, that is the sum of the areas of each face of
- * the mesh.
+ * @brief Computes the surface area of the given Mesh, that is the sum of the
+ * areas of each face of the mesh.
  *
  * @param[in] m: mesh on which compute the surface area.
  * @return The surface area of the given mesh.
@@ -213,8 +168,8 @@ double surfaceArea(const MeshType& m)
 }
 
 /**
- * @brief Computes the border length of the given Mesh, that is the sum of the length of the edges
- * that are on border in the given mesh.
+ * @brief Computes the border length of the given Mesh, that is the sum of the
+ * length of the edges that are on border in the given mesh.
  *
  * @param[in] m: mesh on which compute the border length.
  * @return The border length of the given mesh.
@@ -245,9 +200,10 @@ auto covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
 {
 	Matrix33<typename PointType::ScalarType> m;
 	m.setZero();
-	PointType barycenter = Polygon<PointType>::barycenter(pointVec.begin(), pointVec.end());
+	PointType barycenter =
+		Polygon<PointType>::barycenter(pointVec.begin(), pointVec.end());
 
-		   // compute covariance matrix
+	// compute covariance matrix
 	for (const PointType& p : pointVec){
 		auto e = (p-barycenter).eigenVector();
 		m += e.transpose()*e; // outer product
@@ -296,10 +252,10 @@ auto weightedCovarianceMatrixOfPointCloud(
 {
 	Matrix33<typename PointType::ScalarType> m;
 	m.setZero();
-	PointType barycenter =
-		polygonWeighedBarycenter(pointVec.begin(), pointVec.end(), weights.begin());
+	PointType barycenter = polygonWeighedBarycenter(
+		pointVec.begin(), pointVec.end(), weights.begin());
 
-		   // compute covariance matrix
+	// compute covariance matrix
 	typename PointType::ScalarType wsum = 0;
 	for (uint i = 0; i < pointVec.size(); ++i){
 		auto e = ((pointVec[i]-barycenter)*weights[i]).eigenVector();
@@ -360,8 +316,8 @@ auto covarianceMatrixOfMesh(const MeshType& m)
 		for (uint j = 0; j < 3; j++)
 			delta(j) = tmpp(j);
 
-		/* DC is calculated as integral of (A*x+delta) * (A*x+delta)^T over the triangle,
-		 * where delta = v0-bary */
+		/* DC is calculated as integral of (A*x+delta) * (A*x+delta)^T over the
+		 * triangle, where delta = v0-bary */
 		DC.setZero();
 		DC += A* C0 * A.transpose();
 		Matrix33<ScalarType> tmp = (A*x) * delta.transpose();
@@ -376,11 +332,11 @@ auto covarianceMatrixOfMesh(const MeshType& m)
 }
 
 /**
- * @brief When performing an adptive pruning for each sample we expect a varying radius to be
- * removed.
- * The radius is a PerVertex attribute that we compute from the current per vertex weights given as
- * argument. The expected radius of the sample is computed so that it linearly maps the quality
- * between diskradius and diskradius*variance
+ * @brief When performing an adptive pruning for each sample we expect a varying
+ * radius to be removed. The radius is a PerVertex attribute that we compute
+ * from the current per vertex weights given as argument. The expected radius of
+ * the sample is computed so that it linearly maps the quality between
+ * diskradius and diskradius*variance
  *
  * @param m
  * @param weights
@@ -395,7 +351,7 @@ std::vector<ScalarType> vertexRadiusFromWeights(
 	const std::vector<ScalarType>& weights,
 	double                         diskRadius,
 	double                         radiusVariance,
-	bool                           invert)
+	bool                           invert = false)
 {
 	using VertexType = MeshType::VertexType;
 
@@ -410,7 +366,8 @@ std::vector<ScalarType> vertexRadiusFromWeights(
 		ScalarType w = weights[m.index(v)];
 		radius[m.index(v)] =
 			minRad +
-			deltaRad * ((invert ? *minmax.second - w : w - *minmax.first) / deltaQ);
+			deltaRad *
+				((invert ? *minmax.second - w : w - *minmax.first) / deltaQ);
 	}
 
 	return radius;

@@ -31,23 +31,9 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
-
 template<FaceMeshConcept MeshType>
-std::vector<MeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(MeshType& m, bool includeFauxEdges = true);
-
-template<FaceMeshConcept MeshType>
-std::vector<ConstMeshEdgeUtil<MeshType>>
-fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges = true);
-
-/***************
- * Definitions *
- ***************/
-
-template<FaceMeshConcept MeshType>
-std::vector<MeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(MeshType& m, bool includeFauxEdges)
+std::vector<MeshEdgeUtil<MeshType>>
+fillAndSortMeshEdgeUtilVector(MeshType& m, bool includeFauxEdges = true)
 {
 	using FaceType = MeshType::FaceType;
 
@@ -66,14 +52,16 @@ std::vector<MeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(MeshType& m, b
 			}
 		}
 	}
-	std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // Lo ordino per vertici
+
+	// Lo ordino per vertici
+	std::sort(std::execution::par_unseq, vec.begin(), vec.end());
 
 	return vec;
 }
 
 template<FaceMeshConcept MeshType>
 std::vector<ConstMeshEdgeUtil<MeshType>>
-fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges)
+fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges = true)
 {
 	using FaceType = MeshType::FaceType;
 
@@ -93,7 +81,8 @@ fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges)
 		}
 	}
 
-	std::sort(std::execution::par_unseq, vec.begin(), vec.end()); // Lo ordino per vertici
+	// Lo ordino per vertici
+	std::sort(std::execution::par_unseq, vec.begin(), vec.end());
 
 	return vec;
 }
