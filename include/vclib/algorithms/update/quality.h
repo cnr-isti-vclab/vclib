@@ -31,68 +31,6 @@
 
 namespace vcl {
 
-/*****************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType>
-void setPerVertexQuality(MeshType& m, typename MeshType::VertexType::QualityType s);
-
-template<FaceMeshConcept MeshType>
-void setPerFaceQuality(MeshType& m, typename MeshType::FaceType::QualityType s);
-
-template<MeshConcept MeshType>
-void clampPerVertexQuality(
-	MeshType&                                 m,
-	typename MeshType::VertexType::QualityType minS,
-	typename MeshType::VertexType::QualityType maxS);
-
-template<FaceMeshConcept MeshType>
-void clampPerFaceQuality(
-	MeshType&                               m,
-	typename MeshType::FaceType::QualityType minS,
-	typename MeshType::FaceType::QualityType maxS);
-
-template<MeshConcept MeshType>
-void normalizePerVertexQuality(
-	MeshType&                                 m,
-	typename MeshType::VertexType::QualityType minS = 0,
-	typename MeshType::VertexType::QualityType maxS = 1);
-
-template<FaceMeshConcept MeshType>
-void normalizePerFaceQuality(
-	MeshType&                               m,
-	typename MeshType::FaceType::QualityType minS = 0,
-	typename MeshType::FaceType::QualityType maxS = 1);
-
-template<FaceMeshConcept MeshType>
-void setPerVertexQualityFromVertexValence(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void setPerFaceQualityFromFaceArea(MeshType& m);
-
-template<MeshConcept MeshType>
-void setPerVertexQualityFromPrincipalCurvatureGaussian(MeshType& m);
-
-template<MeshConcept MeshType>
-void setPerVertexQualityFromPrincipalCurvatureMean(MeshType& m);
-
-template<MeshConcept MeshType>
-void setPerVertexQualityFromPrincipalCurvatureMinValue(MeshType& m);
-
-template<MeshConcept MeshType>
-void setPerVertexQualityFromPrincipalCurvatureMaxValue(MeshType& m);
-
-template<MeshConcept MeshType>
-void setPerVertexQualityFromPrincipalCurvatureShapeIndex(MeshType& m);
-
-template<MeshConcept MeshType>
-void setPerVertexQualityFromPrincipalCurvatureCurvedness(MeshType& m);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Sets a constant value to all the vertex quality of the mesh.
  *
@@ -105,7 +43,9 @@ void setPerVertexQualityFromPrincipalCurvatureCurvedness(MeshType& m);
  * @param[in] s: quality value to set
  */
 template<MeshConcept MeshType>
-void setPerVertexQuality(MeshType& m, typename MeshType::VertexType::QualityType s)
+void setPerVertexQuality(
+	MeshType&                                  m,
+	typename MeshType::VertexType::QualityType s)
 {
 	vcl::requirePerVertexQuality(m);
 
@@ -194,7 +134,8 @@ void clampPerFaceQuality(
 }
 
 /**
- * @brief Normalizes the vertex quality of a mesh in a given interval (default [0, 1]).
+ * @brief Normalizes the vertex quality of a mesh in a given interval (default
+ * [0, 1]).
  *
  * Requirements:
  * - Mesh:
@@ -202,14 +143,14 @@ void clampPerFaceQuality(
  *     - Quality
  *
  * @param[in,out] m: mesh on which normalize the vertex quality
- * @param[in] minS: minimum value of the normalizing interval, default 0
- * @param[in] maxS: maximum value of the normalizing interval, default 1
+ * @param[in] minS: minimum value of the normalizing interval
+ * @param[in] maxS: maximum value of the normalizing interval
  */
 template<MeshConcept MeshType>
 void normalizePerVertexQuality(
 	MeshType&                                 m,
-	typename MeshType::VertexType::QualityType minS,
-	typename MeshType::VertexType::QualityType maxS)
+	typename MeshType::VertexType::QualityType minS = 0,
+	typename MeshType::VertexType::QualityType maxS = 1)
 {
 	vcl::requirePerVertexQuality(m);
 
@@ -220,12 +161,14 @@ void normalizePerVertexQuality(
 	std::pair<QualityType, QualityType> p = vertexQualityMinMax(m);
 
 	for (VertexType& v : m.vertices()) {
-		v.quality() = minS + range * ((v.quality() - p.first)/(p.second-p.first));
+		v.quality() =
+			minS + range * ((v.quality() - p.first) / (p.second - p.first));
 	}
 }
 
 /**
- * @brief Normalizes the face quality of a mesh in a given interval (default [0, 1]).
+ * @brief Normalizes the face quality of a mesh in a given interval (default [0,
+ * 1]).
  *
  * Requirements:
  * - Mesh:
@@ -233,14 +176,14 @@ void normalizePerVertexQuality(
  *     - Quality
  *
  * @param[in,out] m: mesh on which normalize the face quality
- * @param[in] minS: minimum value of the normalizing interval, default 0
- * @param[in] maxS: maximum value of the normalizing interval, default 1
+ * @param[in] minS: minimum value of the normalizing interval
+ * @param[in] maxS: maximum value of the normalizing interval
  */
 template<FaceMeshConcept MeshType>
 void normalizePerFaceQuality(
 	MeshType&                                 m,
-	typename MeshType::FaceType::QualityType minS,
-	typename MeshType::FaceType::QualityType maxS)
+	typename MeshType::FaceType::QualityType minS = 0,
+	typename MeshType::FaceType::QualityType maxS = 1)
 {
 	vcl::requirePerFaceQuality(m);
 
@@ -251,13 +194,14 @@ void normalizePerFaceQuality(
 	std::pair<QualityType, QualityType> p = faceQualityMinMax(m);
 
 	for (FaceType& f : m.faces()) {
-		f.quality() = minS + range * ((f.quality() - p.first)/(p.second-p.first));
+		f.quality() =
+			minS + range * ((f.quality() - p.first) / (p.second - p.first));
 	}
 }
 
 /**
- * @brief Assign to the vertex quality of the mesh the valence of each vertex, that is the number of
- * adjacent faces of the vertex.
+ * @brief Assign to the vertex quality of the mesh the valence of each vertex,
+ * that is the number of adjacent faces of the vertex.
  *
  * Requirements:
  * - Mesh:
@@ -315,7 +259,8 @@ void setPerVertexQualityFromPrincipalCurvatureGaussian(MeshType &m)
 	using VertexType = MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.quality() = v.principalCurvature().maxValue() * v.principalCurvature().minValue();
+		v.quality() = v.principalCurvature().maxValue() *
+					  v.principalCurvature().minValue();
 	}
 }
 
@@ -328,7 +273,9 @@ void setPerVertexQualityFromPrincipalCurvatureMean(MeshType& m)
 	using VertexType = MeshType::VertexType;
 
 	for (VertexType& v : m.vertices()) {
-		v.quality() = (v.principalCurvature().maxValue() + v.principalCurvature().minValue()) / 2;
+		v.quality() = (v.principalCurvature().maxValue() +
+					   v.principalCurvature().minValue()) /
+					  2;
 	}
 }
 
@@ -359,8 +306,8 @@ void setPerVertexQualityFromPrincipalCurvatureMaxValue(MeshType& m)
 }
 
 /**
- * @brief Computes the Shape Index S from the Principal Curvature, as defined by [Koenderink 1992]
- * and stores it in the per-vertex quality.
+ * @brief Computes the Shape Index S from the Principal Curvature, as defined by
+ * [Koenderink 1992] and stores it in the per-vertex quality.
  *
  * S = 2/pi atan(k1+k2/k1-k2)
  *
@@ -387,8 +334,8 @@ void setPerVertexQualityFromPrincipalCurvatureShapeIndex(MeshType& m)
 }
 
 /**
- * @brief Computes the Curvedness C from the Principal Curvature, as defined by [Koenderink 1992]
- * and stores it in the per-vertex quality.
+ * @brief Computes the Curvedness C from the Principal Curvature, as defined by
+ * [Koenderink 1992] and stores it in the per-vertex quality.
  *
  * C =  Sqrt((k1*k1+k2*k2)/2.0)
  *

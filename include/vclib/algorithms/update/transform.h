@@ -31,31 +31,11 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<MeshConcept MeshType, typename ScalarM>
 void applyTransformMatrix(
 	MeshType&                mesh,
 	const Matrix44<ScalarM>& matrix,
-	bool                     updateNormals = true);
-
-template<MeshConcept MeshType, PointConcept PointType>
-void translate(MeshType& mesh, const PointType& t);
-
-template<MeshConcept MeshType, PointConcept PointType>
-void scale(MeshType& mesh, const PointType& s);
-
-template<MeshConcept MeshType, typename Scalar = double>
-void scale(MeshType& mesh, const Scalar& s);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<MeshConcept MeshType, typename ScalarM>
-void applyTransformMatrix(MeshType& mesh, const Matrix44<ScalarM>& matrix, bool updateNormals)
+	bool                     updateNormals = true)
 {
 	using VertexType = typename MeshType::VertexType;
 	for (VertexType& v : mesh.vertices()) {
@@ -95,7 +75,7 @@ void scale(MeshType& mesh, const PointType& s)
 	}
 }
 
-template<MeshConcept MeshType, typename Scalar>
+template<MeshConcept MeshType, typename Scalar = double>
 void scale(MeshType& mesh, const Scalar& s)
 {
 	using VertexType = typename MeshType::VertexType;

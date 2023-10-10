@@ -31,26 +31,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType>
-void clearVertexSelection(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void clearFaceSelection(MeshType& m);
-
-template<EdgeMeshConcept MeshType>
-void clearEdgeSelection(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 template<vcl::Range Rng>
@@ -84,7 +64,8 @@ void clearEdgeSelection(MeshType& m)
 template<FaceMeshConcept MeshType>
 void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
 {
-	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);
+	std::vector<bool> nonManifoldVertices =
+		internal::nonManifoldVerticesVectorBool(m);
 
 	using VertexType = MeshType::VertexType;
 

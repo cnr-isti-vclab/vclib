@@ -31,53 +31,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceMeshConcept MeshType>
-void normalizePerFaceNormals(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void updatePerFaceNormals(MeshType& m, bool normalize = true);
-
-template<MeshConcept MeshType>
-void clearPerVertexNormals(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void clearPerReferencedVertexNormals(MeshType& m);
-
-template<MeshConcept MeshType>
-void normalizePerVertexNormals(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void updatePerVertexNormals(MeshType& m, bool normalize = true);
-
-template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize = true);
-
-template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true);
-
-template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true);
-
-template<FaceMeshConcept MeshType, typename MScalar>
-void multiplyPerFaceNormalsByMatrix(
-	MeshType&                     mesh,
-	const vcl::Matrix44<MScalar>& mat,
-	bool                          removeScalingFromMatrix = true);
-
-template<MeshConcept MeshType, typename MScalar>
-void multiplyPerVertexNormalsByMatrix(
-	MeshType&                     mesh,
-	const vcl::Matrix44<MScalar>& mat,
-	bool                          removeScalingFromMatrix = true);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Normalizes the length of the face normals.
  *
@@ -101,10 +54,11 @@ void normalizePerFaceNormals(MeshType& m)
 /**
  * @brief updatePerFaceNormals
  * @param m
- * @param[in] normalize: if true (default), normals are normalized after computation.
+ * @param[in] normalize: if true (default), normals are normalized after
+ * computation.
  */
 template<FaceMeshConcept MeshType>
-void updatePerFaceNormals(MeshType& m, bool normalize)
+void updatePerFaceNormals(MeshType& m, bool normalize = true)
 {
 	vcl::requirePerFaceNormal(m);
 
@@ -119,7 +73,8 @@ void updatePerFaceNormals(MeshType& m, bool normalize)
 }
 
 /**
- * @brief Sets to zero the normals of all the vertices of the mesh, including the unreferenced ones.
+ * @brief Sets to zero the normals of all the vertices of the mesh, including
+ * the unreferenced ones.
  *
  * Requirements:
  * - Mesh:
@@ -139,8 +94,9 @@ void clearPerVertexNormals(MeshType& m)
 }
 
 /**
- * @brief Sets to zero all the normals of vertices that are referenced by at least one face, leaving
- * unchanged all the normals of the unreferenced vertices that may be still useful.
+ * @brief Sets to zero all the normals of vertices that are referenced by at
+ * least one face, leaving unchanged all the normals of the unreferenced
+ * vertices that may be still useful.
  *
  * Requirements:
  * - Mesh:
@@ -188,8 +144,8 @@ void normalizePerVertexNormals(MeshType& m)
 /**
  * @brief Computes the vertex normal as the classic area weighted average.
  *
- * This function does not need or exploit current face normals. Unreferenced vertex normals are left
- * unchanged.
+ * This function does not need or exploit current face normals. Unreferenced
+ * vertex normals are left unchanged.
  *
  * Requirements:
  * - Mesh:
@@ -198,10 +154,11 @@ void normalizePerVertexNormals(MeshType& m)
  *   - Faces
  *
  * @param[in,out] m: the mesh on which compute the vertex normals.
- * @param[in] normalize: if true (default), normals are normalized after computation.
+ * @param[in] normalize: if true (default), normals are normalized after
+ * computation.
  */
 template<FaceMeshConcept MeshType>
-void updatePerVertexNormals(MeshType& m, bool normalize)
+void updatePerVertexNormals(MeshType& m, bool normalize = true)
 {
 	clearPerReferencedVertexNormals(m);
 
@@ -210,7 +167,8 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
 	using NormalType = VertexType::NormalType;
 
 	for (FaceType& f : m.faces()) {
-		NormalType n = faceNormal(f).template cast<typename NormalType::ScalarType>();
+		NormalType n =
+			faceNormal(f).template cast<typename NormalType::ScalarType>();
 		for (VertexType* v : f.vertices()) {
 			v->normal() += n;
 		}
@@ -232,10 +190,11 @@ void updatePerVertexNormals(MeshType& m, bool normalize)
  *     - Normal
  *
  * @param[in,out] m: the mesh on which compute the vertex normals.
- * @param[in] normalize: if true (default), normals are normalized after computation.
+ * @param[in] normalize: if true (default), normals are normalized after
+ * computation.
  */
 template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize)
+void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize = true)
 {
 	vcl::requirePerFaceNormal(m);
 
@@ -256,8 +215,8 @@ void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize)
 /**
  * @brief Computes the vertex normal as an angle weighted average.
  *
- * The normal of a vertex `v` computed as a weighted sum the incident face normals.
- * The weight is simlply the angle of the involved wedge. Described in:
+ * The normal of a vertex `v` computed as a weighted sum the incident face
+ * normals. The weight is simlply the angle of the involved wedge. Described in:
  *
  * ```
  * G. Thurmer, C. A. Wuthrich
@@ -265,8 +224,8 @@ void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize)
  *   Journal of Graphics Tools, 1998
  * ```
  *
- * This function does not need or exploit current face normals. Unreferenced vertex normals are left
- * unchanged.
+ * This function does not need or exploit current face normals. Unreferenced
+ * vertex normals are left unchanged.
  *
  * Requirements:
  * - Mesh:
@@ -274,11 +233,13 @@ void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize)
  *     - Normal
  *   - Faces
  *
- * @param[in,out] m: the mesh on which compute the angle weighted vertex normals.
- * @param[in] normalize: if true (default), normals are normalized after computation.
+ * @param[in,out] m: the mesh on which compute the angle weighted vertex
+ * normals.
+ * @param[in] normalize: if true (default), normals are normalized after
+ * computation.
  */
 template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
+void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true)
 {
 	clearPerReferencedVertexNormals(m);
 
@@ -291,12 +252,14 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
 		NormalType n = faceNormal(f).template cast<NScalarType>();
 
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			NormalType vec1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
-								  .normalized()
-								  .template cast<NScalarType>();
-			NormalType vec2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
-								  .normalized()
-								  .template cast<NScalarType>();
+			NormalType vec1 =
+				(f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+					.normalized()
+					.template cast<NScalarType>();
+			NormalType vec2 =
+				(f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+					.normalized()
+					.template cast<NScalarType>();
 
 			f.vertex(i)->normal() += n * vec1.angle(vec2);
 		}
@@ -316,12 +279,12 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
  *   Journal of Graphics Tools, 4(2) (1999)
  * ```
  *
- * The weight for each wedge is the cross product of the two edge over the product of the square of
- * the two edge lengths. According to the original paper it is perfect only for spherical surface,
- * but it should perform well...
+ * The weight for each wedge is the cross product of the two edge over the
+ * product of the square of the two edge lengths. According to the original
+ * paper it is perfect only for spherical surface, but it should perform well...
  *
- * This function does not need or exploit current face normals. Unreferenced vertex normals are left
- * unchanged.
+ * This function does not need or exploit current face normals. Unreferenced
+ * vertex normals are left unchanged.
  *
  * Requirements:
  * - Mesh:
@@ -329,11 +292,13 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize)
  *     - Normal
  *   - Faces
  *
- * @param[in,out] m: the mesh on which compute the Max et al. weighted vertex normals.
- * @param[in] normalize: if true (default), normals are normalized after computation.
+ * @param[in,out] m: the mesh on which compute the Max et al. weighted vertex
+ * normals.
+ * @param[in] normalize: if true (default), normals are normalized after
+ * computation.
  */
 template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
+void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true)
 {
 	clearPerReferencedVertexNormals(m);
 
@@ -346,8 +311,12 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
 		NormalType n = faceNormal(f).template cast<NScalarType>();
 
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			NScalarType e1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
-			NScalarType e2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord()).squaredNorm();
+			NScalarType e1 =
+				(f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+					.squaredNorm();
+			NScalarType e2 =
+				(f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+					.squaredNorm();
 
 			f.vertex(i)->normal() += n / (e1 * e2);
 		}
@@ -367,14 +336,14 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize)
  *
  * @param[in,out] mesh: the mesh on which multiply the face normals.
  * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
- * @param[in] removeScalingFromMatrix: if true (default), the scale component is removed from the
- * matrix.
+ * @param[in] removeScalingFromMatrix: if true (default), the scale component is
+ * removed from the matrix.
  */
 template<FaceMeshConcept MeshType, typename MScalar>
 void multiplyPerFaceNormalsByMatrix(
 	MeshType&                     mesh,
 	const vcl::Matrix44<MScalar>& mat,
-	bool                          removeScalingFromMatrix)
+	bool                          removeScalingFromMatrix = true)
 {
 	requirePerFaceNormal(mesh);
 
@@ -382,12 +351,15 @@ void multiplyPerFaceNormalsByMatrix(
 
 	Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
 	if (removeScalingFromMatrix) {
-		MScalar scaleX =
-			std::sqrt(m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) + m33(0, 2) * m33(0, 2));
-		MScalar scaleY =
-			std::sqrt(m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) + m33(1, 2) * m33(1, 2));
-		MScalar scaleZ =
-			std::sqrt(m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) + m33(2, 2) * m33(2, 2));
+		MScalar scaleX = std::sqrt(
+			m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) +
+			m33(0, 2) * m33(0, 2));
+		MScalar scaleY = std::sqrt(
+			m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) +
+			m33(1, 2) * m33(1, 2));
+		MScalar scaleZ = std::sqrt(
+			m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) +
+			m33(2, 2) * m33(2, 2));
 		for (int i = 0; i < 3; ++i) {
 			m33(0, i) /= scaleX;
 			m33(1, i) /= scaleY;
@@ -410,14 +382,14 @@ void multiplyPerFaceNormalsByMatrix(
  *
  * @param[in,out] mesh: the mesh on which multiply the vertex normals.
  * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
- * @param[in] removeScalingFromMatrix: if true (default), the scale component is removed from the
- * matrix.
+ * @param[in] removeScalingFromMatrix: if true (default), the scale component is
+ * removed from the matrix.
  */
 template<MeshConcept MeshType, typename MScalar>
 void multiplyPerVertexNormalsByMatrix(
 	MeshType&                     mesh,
 	const vcl::Matrix44<MScalar>& mat,
-	bool                          removeScalingFromMatrix)
+	bool                          removeScalingFromMatrix = true)
 {
 	requirePerVertexNormal(mesh);
 
@@ -425,12 +397,15 @@ void multiplyPerVertexNormalsByMatrix(
 
 	Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
 	if (removeScalingFromMatrix) {
-		MScalar scaleX =
-			std::sqrt(m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) + m33(0, 2) * m33(0, 2));
-		MScalar scaleY =
-			std::sqrt(m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) + m33(1, 2) * m33(1, 2));
-		MScalar scaleZ =
-			std::sqrt(m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) + m33(2, 2) * m33(2, 2));
+		MScalar scaleX = std::sqrt(
+			m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) +
+			m33(0, 2) * m33(0, 2));
+		MScalar scaleY = std::sqrt(
+			m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) +
+			m33(1, 2) * m33(1, 2));
+		MScalar scaleZ = std::sqrt(
+			m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) +
+			m33(2, 2) * m33(2, 2));
 		for (int i = 0; i < 3; ++i) {
 			m33(0, i) /= scaleX;
 			m33(1, i) /= scaleY;

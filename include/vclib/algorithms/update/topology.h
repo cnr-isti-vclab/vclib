@@ -29,37 +29,11 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType>
-void clearPerVertexAdjacentFaces(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void updatePerVertexAdjacentFaces(MeshType& m);
-
-template<MeshConcept MeshType>
-void clearPerVertexAdjacentVertices(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void updatePerVertexAdjacentVertices(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void clearPerFaceAdjacentFaces(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void updatePerFaceAdjacentFaces(MeshType& m);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Clears the adjacent faces of each vertex of the mesh.
  *
- * Since the number of adjacent faces per vertex is dynamic, at the end of this function each
- * vertex will have 0 adjacent Faces.
+ * Since the number of adjacent faces per vertex is dynamic, at the end of this
+ * function each vertex will have 0 adjacent Faces.
  *
  * Requirements:
  * - Mesh:
@@ -113,8 +87,8 @@ void updatePerVertexAdjacentFaces(MeshType& m)
 /**
  * @brief Clears the adjacent vertices of each vertex of the mesh.
  *
- * Since the number of adjacent vertices per vertex is dynamic, at the end of this function each
- * vertex will have 0 adjacent vertices.
+ * Since the number of adjacent vertices per vertex is dynamic, at the end of
+ * this function each vertex will have 0 adjacent vertices.
  *
  * Requirements:
  * - Mesh:
@@ -153,9 +127,10 @@ void updatePerVertexAdjacentVertices(MeshType& m)
 
 	using VertexType = MeshType::VertexType;
 
-		   // vector that contains edges sorted trough unordered vertex pointers
-		   // it contains clusters of "same" edges, but each one of them has its face pointer
-		   // note that in case on non-manifold mesh, clusters may be of size >= 2
+	// vector that contains edges sorted trough unordered vertex pointers
+	// it contains clusters of "same" edges, but each one of them has its face
+	// pointer note that in case on non-manifold mesh, clusters may be of size
+	// >= 2
 	std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
 
 		   // store the last pair of vertices
@@ -176,8 +151,9 @@ void updatePerVertexAdjacentVertices(MeshType& m)
 /**
  * @brief Clears the adjacent faces of each face of the mesh.
  *
- * Since the number of adjacent faces per face is tied to the number of vertices of the face, at
- * the end of this function each face will have f->vertexNumber() adjacent faces set to nullptr.
+ * Since the number of adjacent faces per face is tied to the number of vertices
+ * of the face, at the end of this function each face will have
+ * f->vertexNumber() adjacent faces set to nullptr.
  *
  * Requirements:
  * - Mesh:
@@ -203,14 +179,15 @@ void clearPerFaceAdjacentFaces(MeshType& m)
 /**
  * @brief Updates the per face adjacent face component.
  *
- * All the faces that does not have an adjacent face (border) will have the adjacent face set to
- * nullptr.
+ * All the faces that does not have an adjacent face (border) will have the
+ * adjacent face set to nullptr.
  *
- * If there are non-manifold edges (edges on which there are more than two incident faces), then
- * a chain-link composed of all the incident faces is built.
+ * If there are non-manifold edges (edges on which there are more than two
+ * incident faces), then a chain-link composed of all the incident faces is
+ * built.
  *
- * Assuming that we have 3 faces f0, f1 and f2 on the same edge composed of vi and vj, we can define
- * the edge indices in the three faces as:
+ * Assuming that we have 3 faces f0, f1 and f2 on the same edge composed of vi
+ * and vj, we can define the edge indices in the three faces as:
  *
  * @code{.cpp}
  * e0 = f0.indexOfEdge(vi, vj);
@@ -248,22 +225,27 @@ void updatePerFaceAdjacentFaces(MeshType& m)
 {
 	vcl::requirePerFaceAdjacentFaces(m);
 
-		   // vector that contains edges sorted trough unordered vertex pointers
-		   // it contains clusters of "same" edges, but each one of them has its face pointer
-		   // note that in case on non-manifold mesh, clusters may be of size >= 2
+	// vector that contains edges sorted trough unordered vertex pointers
+	// it contains clusters of "same" edges, but each one of them has its face
+	// pointer note that in case on non-manifold mesh, clusters may be of size
+	// >= 2
 	std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
 
 	if (vec.size() > 0) {
-		// in this loop, base will point to the first element of a cluster of edges
-		for (auto base = vec.begin(); base != vec.end(); /* increment of clusters into loop*/) {
+		// in this loop, base will point to the first element of a cluster of
+		// edges
+		// increment of clusters into loop
+		for (auto base = vec.begin(); base != vec.end(); ) {
 			auto first = base; // remember the first to set adj to the last
 
-				   // i and j will increment together, and if i == j, i will be adj to j, but j will not be
-				   // adj to i (to manage non manifold edges and make cyclic adj on the same edge)
+			// i and j will increment together, and if i == j, i will be adj to
+			// j, but j will not be adj to i (to manage non manifold edges and
+			// make cyclic adj on the same edge)
 			auto i = base;
 			auto j = i + 1;
 			if (j != vec.end()) {
-				if (*i != *j) { // case of cluster composed of one element. adj of i is nullptr
+				// case of cluster composed of one element. adj of i is nullptr
+				if (*i != *j) {
 					i->f->adjFace(i->e) = nullptr;
 				}
 				else { // at least two edges in the cluster
@@ -277,7 +259,7 @@ void updatePerFaceAdjacentFaces(MeshType& m)
 				}
 			}
 
-				   // j is the first different edge from first (or it is vec.end()!)
+			// j is the first different edge from first (or it is vec.end()!)
 			base = j;
 		}
 	}
