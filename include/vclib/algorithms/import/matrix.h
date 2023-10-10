@@ -31,87 +31,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<
-	MeshConcept   MeshType,
-	MatrixConcept VMatrix,
-	MatrixConcept VNMatrix = Eigen::MatrixX3d>
-MeshType pointCloudMeshFromMatrices(
-	const VMatrix&  vertices,
-	const VNMatrix& vertexNormals = VNMatrix());
-
-
-template<
-	MeshConcept   MeshType,
-	MatrixConcept VMatrix,
-	MatrixConcept FMatrix  = Eigen::MatrixX3i,
-	MatrixConcept VNMatrix = Eigen::MatrixX3d,
-	MatrixConcept FNMatrix = Eigen::MatrixX3d>
-MeshType meshFromMatrices(
-	const VMatrix&  vertices,
-	const FMatrix&  faces         = FMatrix(),
-	const VNMatrix& vertexNormals = VNMatrix(),
-	const FNMatrix& faceNormals   = FNMatrix());
-
-
-template<
-	MeshConcept   MeshType,
-	MatrixConcept VMatrix,
-	MatrixConcept FMatrix  = Eigen::MatrixX3i,
-	MatrixConcept EMatrix  = Eigen::MatrixX2i,
-	MatrixConcept VNMatrix = Eigen::MatrixX3d,
-	MatrixConcept FNMatrix = Eigen::MatrixX3d>
-void importMeshFromMatrices(
-	MeshType&       mesh,
-	const VMatrix&  vertices,
-	const FMatrix&  faces         = FMatrix(),
-	const EMatrix&  edges         = EMatrix(),
-	const VNMatrix& vertexNormals = VNMatrix(),
-	const FNMatrix& faceNormals   = FNMatrix());
-
-
-template<MeshConcept MeshType, MatrixConcept VMatrix>
-void importVerticesFromMatrix(
-	MeshType&      mesh,
-	const VMatrix& vertices,
-	bool           clearBeforeSet = true);
-
-template<FaceMeshConcept MeshType, MatrixConcept FMatrix>
-void importFacesFromMatrix(
-	MeshType&      mesh,
-	const FMatrix& faces,
-	bool           clearBeforeSet = true);
-
-template<EdgeMeshConcept MeshType, MatrixConcept EMatrix>
-void importEdgesFromMatrix(
-	MeshType&      mesh,
-	const EMatrix& edges,
-	bool           clearBeforeSet = true);
-
-template<MeshConcept MeshType, MatrixConcept VNMatrix>
-void importVertexNormalsFromMatrix(
-	MeshType&       mesh,
-	const VNMatrix& vertexNormals);
-
-template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
-void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals);
-
-template<MeshConcept MeshType, MatrixConcept VCMatrix>
-void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors);
-
-template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
-void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors);
-
-template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
-void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 template<MatrixConcept FMatrix>
@@ -139,7 +58,7 @@ void importElementNormalsFromMatrix(
 			"The input " + std::string(elementEnumString<ELEM_ID>()) +
 			" normal matrix must have 3 columns");
 
-		   // matrix rows must be equal to the number of elements of the given type
+	// matrix rows must be equal to the number of elements of the given type
 	if (normals.rows() != mesh.template number<ELEM_ID>())
 		throw WrongSizeException(
 			"The input normal matrix must have the same number of rows "
@@ -169,7 +88,7 @@ void importElementColorsFromMatrix(
 			"The input " + std::string(elementEnumString<ELEM_ID>()) +
 			" color matrix must have 3 or 4 columns");
 
-		   // matrix rows must be equal to the number of elements of the given type
+	// matrix rows must be equal to the number of elements of the given type
 	if (colors.rows() != mesh.template number<ELEM_ID>())
 		throw WrongSizeException(
 			"The input color matrix must have the same number of rows "
@@ -250,10 +169,10 @@ void importElementColorsFromMatrix(
 template<
 	MeshConcept MeshType,
 	MatrixConcept VMatrix,
-	MatrixConcept VNMatrix>
+	MatrixConcept VNMatrix = Eigen::MatrixX3d>
 MeshType pointCloudMeshFromMatrices(
 	const VMatrix& vertices,
-	const VNMatrix& vertexNormals)
+	const VNMatrix& vertexNormals = VNMatrix())
 {
 	MeshType mesh;
 
@@ -314,16 +233,16 @@ MeshType pointCloudMeshFromMatrices(
  * @return a new mesh containing the data passed as argument.
  */
 template<
-	MeshConcept MeshType,
+	MeshConcept   MeshType,
 	MatrixConcept VMatrix,
-	MatrixConcept FMatrix,
-	MatrixConcept VNMatrix,
-	MatrixConcept FNMatrix>
+	MatrixConcept FMatrix  = Eigen::MatrixX3i,
+	MatrixConcept VNMatrix = Eigen::MatrixX3d,
+	MatrixConcept FNMatrix = Eigen::MatrixX3d>
 MeshType meshFromMatrices(
-	const VMatrix& vertices,
-	const FMatrix& faces,
-	const VNMatrix& vertexNormals,
-	const FNMatrix& faceNormals)
+	const VMatrix&  vertices,
+	const FMatrix&  faces         = FMatrix(),
+	const VNMatrix& vertexNormals = VNMatrix(),
+	const FNMatrix& faceNormals   = FNMatrix())
 {
 	MeshType mesh;
 
@@ -397,19 +316,19 @@ MeshType meshFromMatrices(
  * add face normals to the mesh.
  */
 template<
-	MeshConcept MeshType,
+	MeshConcept   MeshType,
 	MatrixConcept VMatrix,
-	MatrixConcept FMatrix,
-	MatrixConcept EMatrix,
-	MatrixConcept VNMatrix,
-	MatrixConcept FNMatrix>
+	MatrixConcept FMatrix  = Eigen::MatrixX3i,
+	MatrixConcept EMatrix  = Eigen::MatrixX2i,
+	MatrixConcept VNMatrix = Eigen::MatrixX3d,
+	MatrixConcept FNMatrix = Eigen::MatrixX3d>
 void importMeshFromMatrices(
-	MeshType& mesh,
-	const VMatrix& vertices,
-	const FMatrix& faces,
-	const EMatrix& edges,
-	const VNMatrix& vertexNormals,
-	const FNMatrix& faceNormals)
+	MeshType&       mesh,
+	const VMatrix&  vertices,
+	const FMatrix&  faces         = FMatrix(),
+	const EMatrix&  edges         = EMatrix(),
+	const VNMatrix& vertexNormals = VNMatrix(),
+	const FNMatrix& faceNormals   = FNMatrix())
 {
 	mesh.clear();
 	mesh.disableAllOptionalComponents();
@@ -481,7 +400,7 @@ template<MeshConcept MeshType, MatrixConcept VMatrix>
 void importVerticesFromMatrix(
 	MeshType&      mesh,
 	const VMatrix& vertices,
-	bool           clearBeforeSet)
+	bool           clearBeforeSet = true)
 {
 	using CoordType = MeshType::VertexType::CoordType;
 
@@ -512,7 +431,7 @@ template<FaceMeshConcept MeshType, MatrixConcept FMatrix>
 void importFacesFromMatrix(
 	MeshType&      mesh,
 	const FMatrix& faces,
-	bool           clearBeforeSet)
+	bool           clearBeforeSet = true)
 {
 	if (clearBeforeSet) {
 		mesh.clearFaces();
@@ -590,7 +509,7 @@ template<EdgeMeshConcept MeshType, MatrixConcept EMatrix>
 void importEdgesFromMatrix(
 	MeshType&      mesh,
 	const EMatrix& edges,
-	bool           clearBeforeSet)
+	bool           clearBeforeSet = true)
 {
 	if (edges.cols() != 2)
 		throw WrongSizeException(

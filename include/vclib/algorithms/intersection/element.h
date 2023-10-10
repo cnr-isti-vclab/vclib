@@ -34,37 +34,16 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceConcept FaceType, PointConcept PointType>
-bool faceBoxIntersect(
-	const FaceType& f,
-	const Box<PointType>& box);
-
-template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
-bool faceSphereItersect(
-	const FaceType&              f,
-	const Sphere<SScalar>&       sphere,
-	PointType&                   witness,
-	std::pair<SScalar, SScalar>& res);
-
-template<FaceConcept FaceType, typename SScalar>
-bool faceSphereItersect(
-	const FaceType& f,
-	const Sphere<SScalar>& sphere);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 template<FaceConcept FaceType, PointConcept PointType>
 bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
 {
 	if constexpr(TriangleFaceConcept<FaceType>) {
 		return triangleBoxIntersect(
-			TriangleWrapper(f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord()), box);
+			TriangleWrapper(
+				f.vertex(0)->coord(),
+				f.vertex(1)->coord(),
+				f.vertex(2)->coord()),
+			box);
 	}
 	else {
 		bool b = false;
@@ -82,18 +61,21 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
 }
 
 /**
- * @brief Compute the intersection between a sphere and a face, that may be also polygonal.
+ * @brief Compute the intersection between a sphere and a face, that may be also
+ * polygonal.
  *
  * If the face is a triangle, the triangleSphereIntersect function will be used.
- * If the face is polygonal, the face is first triangulated using an earcut algorithm, and then
- * for each triangle, the triangleSphereIntersect is computed.
+ * If the face is polygonal, the face is first triangulated using an earcut
+ * algorithm, and then for each triangle, the triangleSphereIntersect is
+ * computed.
  *
  * @param[in] f: the input face
  * @param[in] sphere: the input sphere
- * @param[out] witness: the point on the triangle nearest to the center of the sphere (even when
- *                      there isn't intersection)
- * @param[out] res: if not null, in the first item is stored the minimum distance between the
- *                  face and the sphere, while in the second item is stored the penetration depth
+ * @param[out] witness: the point on the triangle nearest to the center of the
+ * sphere (even when there isn't intersection)
+ * @param[out] res: if not null, in the first item is stored the minimum
+ * distance between the face and the sphere, while in the second item is stored
+ * the penetration depth
  * @return true iff there is an intersection between the sphere and the face
  */
 template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
@@ -105,7 +87,10 @@ bool faceSphereItersect(
 {
 	if constexpr(TriangleFaceConcept<FaceType>) {
 		return triangleSphereItersect(
-			TriangleWrapper(f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord()),
+			TriangleWrapper(
+				f.vertex(0)->coord(),
+				f.vertex(1)->coord(),
+				f.vertex(2)->coord()),
 			sphere,
 			witness,
 			res);
@@ -113,7 +98,10 @@ bool faceSphereItersect(
 	else {
 		if (f.vertexNumber() == 3) {
 			return triangleSphereItersect(
-				TriangleWrapper(f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord()),
+				TriangleWrapper(
+					f.vertex(0)->coord(),
+					f.vertex(1)->coord(),
+					f.vertex(2)->coord()),
 				sphere,
 				witness,
 				res);
@@ -145,11 +133,13 @@ bool faceSphereItersect(
 }
 
 /**
- * @brief Compute the intersection between a sphere and a face, that may be also polygonal.
+ * @brief Compute the intersection between a sphere and a face, that may be also
+ * polygonal.
  *
  * If the face is a triangle, the triangleSphereIntersect function will be used.
- * If the face is polygonal, the face is first triangulated using an earcut algorithm, and then
- * for each triangle, the triangleSphereIntersect is computed.
+ * If the face is polygonal, the face is first triangulated using an earcut
+ * algorithm, and then for each triangle, the triangleSphereIntersect is
+ * computed.
  *
  * @param[in] f: the input face
  * @param[in] sphere: the input sphere
