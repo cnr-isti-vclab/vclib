@@ -29,17 +29,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceMeshConcept MeshType>
-void updateBorder(MeshType& m);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Computes per-face border flags without requiring any kind of
  * topology info.

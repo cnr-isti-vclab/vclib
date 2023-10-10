@@ -36,77 +36,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<MeshConcept MeshType>
-void setPerVertexColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlySelected = false);
-
-template<FaceMeshConcept MeshType>
-void setPerFaceColor(MeshType& m, vcl::Color c = vcl::Color::White, bool onlySelected = false);
-
-template<HasColor MeshType>
-void setMeshColor(MeshType& m, vcl::Color c = vcl::Color::White);
-
-template<FaceMeshConcept MeshType>
-void setPerVertexColorFromFaceColor(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void setPerFaceColorFromVertexColor(MeshType& m);
-
-template<MeshConcept MeshType>
-void setPerVertexColorFromQuality(
-	MeshType&                                  m,
-	vcl::Color::ColorMap                       colorMap  = vcl::Color::RedBlue,
-	typename MeshType::VertexType::QualityType minQuality = 0,
-	typename MeshType::VertexType::QualityType maxQuality = 0);
-
-template<FaceMeshConcept MeshType>
-void setPerFaceColorFromQuality(
-	MeshType&                                m,
-	vcl::Color::ColorMap                     colorMap  = vcl::Color::RedBlue,
-	typename MeshType::FaceType::QualityType minQuality = 0,
-	typename MeshType::FaceType::QualityType maxQuality = 0);
-
-template<FaceMeshConcept MeshType>
-void setPerVertexColorFromFaceBorderFlag(
-	MeshType&  m,
-	vcl::Color borderColor   = vcl::Color::Blue,
-	vcl::Color internalColor = vcl::Color::White,
-	vcl::Color mixColor      = vcl::Color::Cyan);
-
-template<FaceMeshConcept MeshType>
-void setPerFaceColorFromConnectedComponents(
-	MeshType& m,
-	const std::vector<std::set<uint>>& connectedComponents);
-
-template<FaceMeshConcept MeshType>
-void setPerFaceColorFromConnectedComponents(MeshType& m);
-
-template<FaceMeshConcept MeshType>
-void setPerFaceColorScattering(MeshType& m, uint nColors = 50, bool checkFauxEdges = true);
-
-template<MeshConcept MeshType, PointConcept PointType>
-void setPerVertexColorPerlinNoise(
-	MeshType& m,
-	PointType period,
-	PointType offset     = PointType(0, 0, 0),
-	bool      onSelected = false);
-
-template<MeshConcept MeshType, PointConcept PointType>
-void setPerVertexPerlinColor(
-	MeshType& m,
-	double period,
-	PointType offset  = PointType(0, 0, 0),
-	Color color1 = Color::Black,
-	Color color2 = Color::White,
-	bool onSelected = false);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 struct ColorAvgInfo
@@ -135,7 +64,10 @@ struct ColorAvgInfo
  * @ingroup update
  */
 template<MeshConcept MeshType>
-void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
+void setPerVertexColor(
+	MeshType&  m,
+	vcl::Color c            = vcl::Color::White,
+	bool       onlySelected = false)
 {
 	vcl::requirePerVertexColor(m);
 
@@ -166,7 +98,10 @@ void setPerVertexColor(MeshType& m, vcl::Color c, bool onlySelected)
  * @ingroup update
  */
 template<FaceMeshConcept MeshType>
-void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
+void setPerFaceColor(
+	MeshType&  m,
+	vcl::Color c            = vcl::Color::White,
+	bool       onlySelected = false)
 {
 	vcl::requirePerFaceColor(m);
 
@@ -190,14 +125,14 @@ void setPerFaceColor(MeshType& m, vcl::Color c, bool onlySelected)
  * @ingroup update
  */
 template<HasColor MeshType>
-void setMeshColor(MeshType& m, vcl::Color c)
+void setMeshColor(MeshType& m, vcl::Color c = vcl::Color::White)
 {
 	m.color() = c;
 }
 
 /**
- * @brief Sets the vertex colors from its incident face colors, computing a plain average of the
- * face colors.
+ * @brief Sets the vertex colors from its incident face colors, computing a
+ * plain average of the face colors.
  *
  * Requirements:
  * - Mesh:
@@ -206,7 +141,8 @@ void setMeshColor(MeshType& m, vcl::Color c)
  *   - Faces:
  *     - Color
  *
- * @param[in,out] m: mesh on which transfer the face color into the vertex color.
+ * @param[in,out] m: mesh on which transfer the face color into the vertex
+ * color.
  *
  * @ingroup update
  */
@@ -234,8 +170,8 @@ void setPerVertexColorFromFaceColor(MeshType& m)
 }
 
 /**
- * @brief Sets the face colors from its incident vertex colors, computing a plain average of the
- * vertex colors.
+ * @brief Sets the face colors from its incident vertex colors, computing a
+ * plain average of the vertex colors.
  *
  * Requirements:
  * - Mesh:
@@ -244,7 +180,8 @@ void setPerVertexColorFromFaceColor(MeshType& m)
  *   - Faces:
  *     - Color
  *
- * @param[in,out] m: mesh on which transfer the vertex color into the face color.
+ * @param[in,out] m: mesh on which transfer the vertex color into the face
+ * color.
  *
  * @ingroup update
  */
@@ -268,11 +205,12 @@ void setPerFaceColorFromVertexColor(MeshType& m)
 }
 
 /**
- * @brief Sets the vertex colors from the quality values by computing a shading in the given color
- * map (default is Red to Blue color map), in the given interval [minQuality, maxQuality].
+ * @brief Sets the vertex colors from the quality values by computing a shading
+ * in the given color map (default is Red to Blue color map), in the given
+ * interval [minQuality, maxQuality].
  *
- * If minQuality and maxQuality are not set (or if they are equal), the range is automatically
- * computed.
+ * If minQuality and maxQuality are not set (or if they are equal), the range is
+ * automatically computed.
  *
  * Requirements:
  * - Mesh:
@@ -281,18 +219,21 @@ void setPerFaceColorFromVertexColor(MeshType& m)
  *     - Quality
  *
  * @param[in,out] m: mesh on which compute the vertex color.
- * @param[in] colorMap: the colormap to use to color the vertices of the mesh (default: RedBlue).
- * @param[in] minQuality: the minimum value of the range to use for coloring (default: 0).
- * @param[in] maxQuality: the maximum value of the range to use for coloring (default: 0).
+ * @param[in] colorMap: the colormap to use to color the vertices of the mesh
+ * (default: RedBlue).
+ * @param[in] minQuality: the minimum value of the range to use for coloring
+ * (default: 0).
+ * @param[in] maxQuality: the maximum value of the range to use for coloring
+ * (default: 0).
  *
  * @ingroup update
  */
 template<MeshConcept MeshType>
 void setPerVertexColorFromQuality(
 	MeshType&                                 m,
-	vcl::Color::ColorMap                      colorMap,
-	typename MeshType::VertexType::QualityType minQuality,
-	typename MeshType::VertexType::QualityType maxQuality)
+	vcl::Color::ColorMap                      colorMap = vcl::Color::RedBlue,
+	typename MeshType::VertexType::QualityType minQuality = 0,
+	typename MeshType::VertexType::QualityType maxQuality = 0)
 {
 	vcl::requirePerVertexColor(m);
 	vcl::requirePerVertexQuality(m);
@@ -306,16 +247,18 @@ void setPerVertexColorFromQuality(
 		maxQuality                              = pair.second;
 	}
 	for (VertexType& v : m.vertices()) {
-		v.color() = colorFromInterval(minQuality, maxQuality, v.quality(), colorMap);
+		v.color() =
+			colorFromInterval(minQuality, maxQuality, v.quality(), colorMap);
 	}
 }
 
 /**
- * @brief Sets the face colors from the quality values by computing a shading in the given color
- * map (default is Red to Blue color map), in the given interval [minQuality, maxQuality].
+ * @brief Sets the face colors from the quality values by computing a shading in
+ * the given color map (default is Red to Blue color map), in the given interval
+ * [minQuality, maxQuality].
  *
- * If minQuality and maxQuality are not set (or if they are equal), the range is automatically
- * computed.
+ * If minQuality and maxQuality are not set (or if they are equal), the range is
+ * automatically computed.
  *
  * Requirements:
  * - Mesh:
@@ -324,18 +267,21 @@ void setPerVertexColorFromQuality(
  *     - Quality
  *
  * @param[in,out] m: mesh on which compute the face color.
- * @param[in] colorMap: the colormap to use to color the faces of the mesh (default: RedBlue).
- * @param[in] minQuality: the minimum value of the range to use for coloring (default: 0).
- * @param[in] maxQuality: the maximum value of the range to use for coloring (default: 0).
+ * @param[in] colorMap: the colormap to use to color the faces of the mesh
+ * (default: RedBlue).
+ * @param[in] minQuality: the minimum value of the range to use for coloring
+ * (default: 0).
+ * @param[in] maxQuality: the maximum value of the range to use for coloring
+ * (default: 0).
  *
  * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromQuality(
 	MeshType&                               m,
-	vcl::Color::ColorMap                    colorMap,
-	typename MeshType::FaceType::QualityType minQuality,
-	typename MeshType::FaceType::QualityType maxQuality)
+	vcl::Color::ColorMap                    colorMap = vcl::Color::RedBlue,
+	typename MeshType::FaceType::QualityType minQuality = 0,
+	typename MeshType::FaceType::QualityType maxQuality = 0)
 {
 	vcl::requirePerFaceColor(m);
 	vcl::requirePerFaceQuality(m);
@@ -349,14 +295,17 @@ void setPerFaceColorFromQuality(
 		maxQuality                              = pair.second;
 	}
 	for (FaceType& f : m.faces()) {
-		f.color() = colorFromInterval(minQuality, maxQuality, f.quality(), colorMap);
+		f.color() =
+			colorFromInterval(minQuality, maxQuality, f.quality(), colorMap);
 	}
 }
 
 /**
- * @brief Color the vertices of the mesh that are on border, using the border flags of the faces.
+ * @brief Color the vertices of the mesh that are on border, using the border
+ * flags of the faces.
  *
- * Before using this function, you should update the face border flags accordingly.
+ * Before using this function, you should update the face border flags
+ * accordingly.
  *
  * Requirements:
  * - Mesh:
@@ -365,22 +314,23 @@ void setPerFaceColorFromQuality(
  *   - Faces:
  *     - TriangleFlags/PolygonFlags
  *
- * @param[in,out] m: the mesh on which update the vertex color from the border face flags.
- * @param[in] borderColor: the color of the vertices that are part of edges that are all marked as
- * on border.
- * @param[in] internalColor: the color of the vertices that are part of edges that are all marked as
- * non on border.
- * @param[in] mixColor: the color of vertices that are part of edges that are both on border and non
- * on border.
+ * @param[in,out] m: the mesh on which update the vertex color from the border
+ * face flags.
+ * @param[in] borderColor: the color of the vertices that are part of edges that
+ * are all marked as on border.
+ * @param[in] internalColor: the color of the vertices that are part of edges
+ * that are all marked as non on border.
+ * @param[in] mixColor: the color of vertices that are part of edges that are
+ * both on border and non on border.
  *
  * @ingroup update
  */
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceBorderFlag(
 	MeshType& m,
-	Color     borderColor,
-	Color     internalColor,
-	Color     mixColor)
+	Color     borderColor = vcl::Color::Blue,
+	Color     internalColor = vcl::Color::White,
+	Color     mixColor = vcl::Color::Cyan)
 {
 	vcl::requirePerVertexColor(m);
 
@@ -418,17 +368,19 @@ void setPerVertexColorFromFaceBorderFlag(
 
 /**
  * @brief Given an already computed vector of sets of connected components (see
- * vcl::connectedComponents(m) in `vclib/algorithms/clean.h`), sets face colors according from
- * connected components of the mesh. Each connected component will have a different per face color.
+ * vcl::connectedComponents(m) in `vclib/algorithms/clean.h`), sets face colors
+ * according from connected components of the mesh. Each connected component
+ * will have a different per face color.
  *
  * Requirements:
  * - Mesh:
  *   - Faces:
  *     - Color
  *
- * @param[in,out] m: the mesh on which set the face colors according to its connected components.
- * @param[in] connectedComponents: a vector of sets, each one of them containing the face ids of a
- * connected component.
+ * @param[in,out] m: the mesh on which set the face colors according to its
+ * connected components.
+ * @param[in] connectedComponents: a vector of sets, each one of them containing
+ * the face ids of a connected component.
  *
  * @ingroup update
  */
@@ -449,9 +401,10 @@ void setPerFaceColorFromConnectedComponents(
 }
 
 /**
- * @brief Sets face colors according from connected components of the mesh. Each connected component
- * will have a different per face color. Since this function will need to compute connected
- * components of the mesh, also per Face AdjacentFaces component is required.
+ * @brief Sets face colors according from connected components of the mesh. Each
+ * connected component will have a different per face color. Since this function
+ * will need to compute connected components of the mesh, also per Face
+ * AdjacentFaces component is required.
  *
  * Requirements:
  * - Mesh:
@@ -459,7 +412,8 @@ void setPerFaceColorFromConnectedComponents(
  *     - AdjacentFaces
  *     - Color
  *
- * @param[in,out] m: the mesh on which set the face colors according to its connected components.
+ * @param[in,out] m: the mesh on which set the face colors according to its
+ * connected components.
  *
  * @ingroup update
  */
@@ -498,7 +452,10 @@ void setPerFaceColorFromConnectedComponents(MeshType& m)
  * @ingroup update
  */
 template<FaceMeshConcept MeshType>
-void setPerFaceColorScattering(MeshType& m, uint nColors, bool checkFauxEdges)
+void setPerFaceColorScattering(
+	MeshType& m,
+	uint      nColors        = 50,
+	bool      checkFauxEdges = true)
 {
 	vcl::requirePerFaceColor(m);
 
@@ -551,8 +508,8 @@ template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexColorPerlinNoise(
 	MeshType& m,
 	PointType period,
-	PointType offset,
-	bool      onSelected)
+	PointType offset = PointType(0, 0, 0),
+	bool      onSelected = false)
 {
 	vcl::requirePerVertexColor(m);
 
@@ -596,10 +553,10 @@ template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexPerlinColor(
 	MeshType&      m,
 	double         period,
-	PointType      offset,
-	Color          color1,
-	Color          color2,
-	bool           onSelected)
+	PointType      offset = PointType(0, 0, 0),
+	Color          color1 = Color::Black,
+	Color          color2 = Color::White,
+	bool           onSelected = false)
 {
 	vcl::requirePerVertexColor(m);
 

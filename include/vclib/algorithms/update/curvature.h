@@ -42,41 +42,12 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 typedef enum {
 	VCL_PRINCIPAL_CURVATURE_TAUBIN95,
 	VCL_PRINCIPAL_CURVATURE_PCA
 } VCLibPrincipalCurvatureAlgorithm;
 
-template <FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log = nullLogger);
-
-template<
-	FaceMeshConcept MeshType,
-	LoggerConcept LogType = NullLogger>
-void updatePrincipalCurvaturePCA(
-	MeshType&  m,
-	typename MeshType::VertexType::CoordType::ScalarType radius,
-	bool       montecarloSampling = true,
-	LogType&   log                = nullLogger);
-
 template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void updatePrincipalCurvature(MeshType& m, LogType& log = nullLogger);
-
-template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void updatePrincipalCurvature(
-	MeshType&                        m,
-	VCLibPrincipalCurvatureAlgorithm alg = VCL_PRINCIPAL_CURVATURE_TAUBIN95,
-	LogType&                         log = nullLogger);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 {
 	vcl::requirePerVertexPrincipalCurvature(m);
@@ -118,7 +89,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 		const VertexType* tmpVertex;
 		float totalDoubleAreaSize = 0;
 
-			   // compute the area of each triangle around the central vertex as well as their total area
+		// compute the area of each triangle around the central vertex as well
+		// as their total area
 		do {
 			pos.nextEdgeAdjacentToV();
 			tmpVertex = pos.adjVertex();
@@ -139,13 +111,14 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 			else {
 				weights.push_back(
 					0.5f *
-					(vertices[i].doubleArea + vertices[(i - 1) % vertices.size()].doubleArea) /
+					(vertices[i].doubleArea +
+					 vertices[(i - 1) % vertices.size()].doubleArea) /
 					totalDoubleAreaSize);
 			}
 			assert(weights.back() < 1.0f);
 		}
 
-			   // compute I-NN^t to be used for computing the T_i's
+		// compute I-NN^t to be used for computing the T_i's
 		Matrix33<ScalarType> Tp;
 
 		NormalType n = v.normal();
@@ -155,20 +128,21 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 		Tp(1, 2) = Tp(2, 1) = -1.0f * (n[1] * n[2]);
 		Tp(0, 2) = Tp(2, 0) = -1.0f * (n[0] * n[2]);
 
-			   // for all neighbors vi compute the directional curvatures k_i and the T_i
-			   // compute M by summing all w_i k_i T_i T_i^t
+		// for all neighbors vi compute the directional curvatures k_i and the
+		// T_i compute M by summing all w_i k_i T_i T_i^t
 		Matrix33<ScalarType> tempMatrix;
 		Matrix33<ScalarType> M = Matrix33<ScalarType>::Zero();
 		for (size_t i = 0; i < vertices.size(); ++i) {
 			CoordType edge = (v.coord() - vertices[i].vert->coord());
-			float curvature = (2.0f * (v.normal().dot(edge)) ) / edge.squaredNorm();
+			float     curvature =
+				(2.0f * (v.normal().dot(edge))) / edge.squaredNorm();
 			CoordType t(Tp * edge.eigenVector().transpose());
 			t.normalize();
 			tempMatrix = t.outerProduct(t);
 			M += tempMatrix * weights[i] * curvature ;
 		}
 
-			   // compute vector W for the Householder matrix
+		// compute vector W for the Householder matrix
 		CoordType w;
 		CoordType e1(1.0f, 0.0f, 0.0f);
 		if ((e1 - v.normal()).squaredNorm() > (e1 + v.normal()).squaredNorm())
@@ -177,7 +151,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 			w = e1 + v.normal();
 		w.normalize();
 
-			   // compute the Householder matrix I - 2WW^t
+		// compute the Householder matrix I - 2WW^t
 		Matrix33<ScalarType> Q = Matrix33<ScalarType>::Identity();
 		tempMatrix = w.outerProduct(w);
 		Q -= tempMatrix * 2.0f;
@@ -195,7 +169,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 		ScalarType beta  = QtMQ(2, 1);
 
 		ScalarType h[2];
-		ScalarType delta = std::sqrt(4.0f * std::pow(alpha, 2) + 16.0f * std::pow(beta, 2));
+		ScalarType delta =
+			std::sqrt(4.0f * std::pow(alpha, 2) + 16.0f * std::pow(beta, 2));
 		h[0] = (2.0f * alpha + delta) / (2.0f * beta);
 		h[1] = (2.0f * alpha - delta) / (2.0f * beta);
 
@@ -214,9 +189,12 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 				s = (2.0f * t[j]) / denominator;
 				c = (1 - squaredT) / denominator;
 
-				ScalarType approximation = c * s * alpha + (std::pow(c, 2) - std::pow(s, 2)) * beta;
-				ScalarType angleSimilarity = std::abs(std::acos(c) / std::asin(s));
-				ScalarType error = std::abs(1.0f - angleSimilarity) + std::abs(approximation);
+				ScalarType approximation =
+					c * s * alpha + (std::pow(c, 2) - std::pow(s, 2)) * beta;
+				ScalarType angleSimilarity =
+					std::abs(std::acos(c) / std::asin(s));
+				ScalarType error =
+					std::abs(1.0f - angleSimilarity) + std::abs(approximation);
 				if (error < minError) {
 					minError = error;
 					bestC    = c;
@@ -230,8 +208,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 		Eigen::Matrix2f minor2x2;
 		Eigen::Matrix2f S;
 
-
-			   // diagonalize M
+		// diagonalize M
 		minor2x2(0, 0) = QtMQ(1, 1);
 		minor2x2(0, 1) = QtMQ(1, 2);
 		minor2x2(1, 0) = QtMQ(2, 1);
@@ -243,7 +220,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 
 		Eigen::Matrix2f StMS = S.transpose() * minor2x2 * S;
 
-			   // compute curvatures and curvature directions
+		// compute curvatures and curvature directions
 		ScalarType principalCurv1 = (3.0f * StMS(0,0)) - StMS(1,1);
 		ScalarType principalCurv2 = (3.0f * StMS(1,1)) - StMS(0,0);
 
@@ -268,22 +245,22 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 
 /**
  * @brief Computes the Principal Curvature meseaure as described in the paper:
- * Robust principal curvatures on Multiple Scales, Yong-Liang Yang, Yu-Kun Lai, Shi-Min Hu Helmut
- * Pottmann SGP 2004.
- * If montecarloSampling==true the covariance is computed by montecarlo sampling on the mesh
- * (faster); If montecarloSampling==false the covariance is computed by (analytic)integration over
- * the surface (slower).
+ * Robust principal curvatures on Multiple Scales, Yong-Liang Yang, Yu-Kun Lai,
+ * Shi-Min Hu Helmut Pottmann SGP 2004. If montecarloSampling==true the
+ * covariance is computed by montecarlo sampling on the mesh (faster); If
+ * montecarloSampling==false the covariance is computed by (analytic)integration
+ * over the surface (slower).
  * @param m
  * @param radius
  * @param montecarloSampling
  * @param log
  */
-template<FaceMeshConcept MeshType, LoggerConcept LogType>
+template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvaturePCA(
 	MeshType&  m,
 	typename MeshType::VertexType::CoordType::ScalarType radius,
-	bool       montecarloSampling,
-	LogType&   log)
+	bool       montecarloSampling = true,
+	LogType&   log = nullLogger)
 {
 	using VertexType = MeshType::VertexType;
 	using CoordType = VertexType::CoordType;
@@ -339,49 +316,64 @@ void updatePrincipalCurvaturePCA(
 		eigenvalues = CoordType(eig.eigenvalues());
 		eigenvectors = eig.eigenvectors(); // eigenvector are stored as columns.
 		// get the estimate of curvatures from eigenvalues and eigenvectors
-		// find the 2 most tangent eigenvectors (by finding the one closest to the normal)
+		// find the 2 most tangent eigenvectors (by finding the one closest to
+		// the normal)
 		uint best = 0;
-		ScalarType bestv = std::abs(v.normal().dot(CoordType(eigenvectors.col(0).normalized())));
+		ScalarType bestv = std::abs(
+			v.normal().dot(CoordType(eigenvectors.col(0).normalized())));
 		for(uint i  = 1 ; i < 3; ++i){
-			ScalarType prod = std::abs(v.normal().dot(CoordType(eigenvectors.col(i).normalized())));
+			ScalarType prod = std::abs(
+				v.normal().dot(CoordType(eigenvectors.col(i).normalized())));
 			if(prod > bestv){
 				bestv = prod;
 				best = i;
 			}
 		}
-		v.principalCurvature().maxDir() = (eigenvectors.col((best + 1) % 3).normalized());
-		v.principalCurvature().minDir() = (eigenvectors.col((best + 2) % 3).normalized());
+		v.principalCurvature().maxDir() =
+			(eigenvectors.col((best + 1) % 3).normalized());
+		v.principalCurvature().minDir() =
+			(eigenvectors.col((best + 2) % 3).normalized());
 
 		vcl::Matrix33<ScalarType> rot;
 		ScalarType angle;
 		angle = acos(v.principalCurvature().maxDir().dot(v.normal()));
 
 		rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(
-			v.principalCurvature().maxDir().cross(v.normal()), -(M_PI * 0.5 - angle));
+			v.principalCurvature().maxDir().cross(v.normal()),
+			-(M_PI * 0.5 - angle));
 
 		v.principalCurvature().maxDir() = rot * v.principalCurvature().maxDir();
 
 		angle = acos(v.principalCurvature().minDir().dot(v.normal()));
 
 		rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(
-			v.principalCurvature().minDir().cross(v.normal()), -(M_PI * 0.5 - angle));
+			v.principalCurvature().minDir().cross(v.normal()),
+			-(M_PI * 0.5 - angle));
 
 		v.principalCurvature().minDir() = rot * v.principalCurvature().minDir();
 
-			   // computes the curvature values
+		// computes the curvature values
 		const ScalarType r5 = std::pow(radius, 5);
 		const ScalarType r6 = r5 * radius;
-		v.principalCurvature().maxValue() = (2.0 / 5.0) *
-											(4.0 * M_PI * r5 + 15 * eigenvalues[(best + 2) % 3] -
-											 45.0 * eigenvalues[(best + 1) % 3]) /
-											(M_PI * r6);
-		v.principalCurvature().minValue() = (2.0 / 5.0) *
-											(4.0 * M_PI * r5 + 15 * eigenvalues[(best + 1) % 3] -
-											 45.0 * eigenvalues[(best + 2) % 3]) /
-											(M_PI * r6);
-		if (v.principalCurvature().maxValue() < v.principalCurvature().minValue()) {
-			std::swap(v.principalCurvature().minValue(), v.principalCurvature().maxValue());
-			std::swap(v.principalCurvature().minDir(), v.principalCurvature().maxDir());
+		v.principalCurvature().maxValue() =
+			(2.0 / 5.0) *
+			(4.0 * M_PI * r5 + 15 * eigenvalues[(best + 2) % 3] -
+			 45.0 * eigenvalues[(best + 1) % 3]) /
+			(M_PI * r6);
+		v.principalCurvature().minValue() =
+			(2.0 / 5.0) *
+			(4.0 * M_PI * r5 + 15 * eigenvalues[(best + 1) % 3] -
+			 45.0 * eigenvalues[(best + 2) % 3]) /
+			(M_PI * r6);
+		if (v.principalCurvature().maxValue() <
+			v.principalCurvature().minValue())
+		{
+			std::swap(
+				v.principalCurvature().minValue(),
+				v.principalCurvature().maxValue());
+			std::swap(
+				v.principalCurvature().minDir(),
+				v.principalCurvature().maxDir());
 		}
 
 		if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -396,16 +388,19 @@ void updatePrincipalCurvaturePCA(
 	}
 }
 
-template<FaceMeshConcept MeshType, LoggerConcept LogType>
-void updatePrincipalCurvature(MeshType& m, LogType& log)
+template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void updatePrincipalCurvature(MeshType& m, LogType& log = nullLogger)
 {
 	vcl::requirePerVertexPrincipalCurvature(m);
 
 	updatePrincipalCurvatureTaubin95(m, log);
 }
 
-template<FaceMeshConcept MeshType, LoggerConcept LogType>
-void updatePrincipalCurvature(MeshType& m, VCLibPrincipalCurvatureAlgorithm alg, LogType& log)
+template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void updatePrincipalCurvature(
+	MeshType&                        m,
+	VCLibPrincipalCurvatureAlgorithm alg = VCL_PRINCIPAL_CURVATURE_TAUBIN95,
+	LogType&                         log = nullLogger)
 {
 	vcl::requirePerVertexPrincipalCurvature(m);
 
