@@ -81,18 +81,56 @@ public:
 	 */
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
-	const PrincipalCurvatureType& principalCurvature() const;
-	PrincipalCurvatureType&       principalCurvature();
+	/**
+	 * @brief Returns a const reference of the principal curvature of the element.
+	 * @return a const reference of the principal curvature of the element.
+	 */
+	const PrincipalCurvatureType& principalCurvature() const
+	{
+		return Base::data();
+	}
+
+	/**
+	 * @brief Returns a reference of the principal curvature of the element.
+	 * @return a reference of the principal curvature of the element.
+	 */
+	PrincipalCurvatureType& principalCurvature() { return Base::data(); }
 
 protected:
 	// Component interface functions
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr (HasPrincipalCurvature<Element>) {
+			if (isPrincipalCurvatureAvailableOn(e)) {
+				principalCurvature() =
+					e.principalCurvature().template cast<Scalar>();
+			}
+		}
+	}
 };
 
 /* Detector function to check if a class has PrincipalCurvature available */
 
-bool isPrincipalCurvatureAvailableOn(const ElementConcept auto& element);
+/**
+ * @brief Checks if the given Element has PrincipalCurvature component
+ * available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that
+ * satisfies the ElementConcept.
+ * @return `true` if the element has PrincipalCurvature component available,
+ * `false` otherwise.
+ */
+bool isPrincipalCurvatureAvailableOn(const ElementConcept auto& element)
+{
+	return isComponentAvailableOn<PRINCIPAL_CURVATURE>(element);
+}
+
+/* Specialization Aliases */
 
 /**
  * The PrincipalCurvaturef class is an alias of the PrincipalCurvature component
@@ -125,7 +163,5 @@ template<typename ElementType = void, bool OPT = false>
 using PrincipalCurvatured = PrincipalCurvature<double, ElementType, OPT>;
 
 } // namespace vcl::comp
-
-#include "principal_curvature.cpp"
 
 #endif // VCL_MESH_COMPONENTS_PRINCIPAL_CURVATURE_H

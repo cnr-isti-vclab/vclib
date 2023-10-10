@@ -31,11 +31,12 @@
 namespace vcl {
 
 /**
- * @brief Returns the index of a type T in a std::tuple<U, Us...> passed as parameter;
- * Returns UINT_NULL if the type T is not found in the tuple
+ * @brief Returns the index of a type T in a std::tuple<U, Us...> passed as
+ * parameter; Returns UINT_NULL if the type T is not found in the tuple
  */
-template <typename T, typename U, typename... Us>
-constexpr uint tupleIndexByType(const std::tuple<U, Us...> &) {
+template<typename T, typename U, typename... Us>
+constexpr uint tupleIndexByType(const std::tuple<U, Us...>&)
+{
 	return IndexInTypes<T, U, Us...>::value;
 }
 

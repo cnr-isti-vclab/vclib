@@ -67,21 +67,48 @@ class Name :
 		Component<Name<ElementType, OPT>, NAME, std::string, ElementType, OPT>;
 
 public:
-	std::string& name();
-	const std::string& name() const;
+	/**
+	 * @brief Returns the name of this object.
+	 * @return The name of this object.
+	 */
+	std::string& name() { return Base::data(); }
+
+	/**
+	 * @brief Returns the name of this object.
+	 * @return The name of this object.
+	 */
+	const std::string& name() const { return Base::data(); }
 
 protected:
 	// Component interface function
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr(HasName<Element>) {
+			name() = e.name();
+		}
+	}
 };
 
 /* Detector function to check if a class has Name available */
 
-bool isNameAvailableOn(const ElementOrMeshConcept auto& element);
+/**
+ * @brief Checks if the given Element/Mesh has Name component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has Name component available, `false`
+ * otherwise.
+ */
+bool isNameAvailableOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentAvailableOn<NAME>(element);
+}
 
 } // namespace vcl::comp
-
-#include "name.cpp"
 
 #endif // VCL_MESH_COMPONENTS_NAME_H

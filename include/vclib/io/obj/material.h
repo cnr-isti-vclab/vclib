@@ -31,21 +31,6 @@ namespace vcl::io::obj {
 
 struct Material
 {
-	Material();
-	Material(const vcl::Color& c);
-	Material(const std::string& txtName);
-	Material(const vcl::Color& c, const std::string& txtName);
-
-	bool isEmpty() const;
-
-	vcl::Color         color() const;
-	const std::string& texture() const;
-	uint textureId() const;
-
-	bool operator<(const Material& m) const;
-	bool operator==(const Material& m) const;
-	bool operator!=(const Material& m) const;
-
 	Point3f Ka = Point3f(0.2f, 0.2f, 0.2f); // ambient
 	Point3f Kd = Point3f(1.0f, 1.0f, 1.0f); // diffuse
 	Point3f Ks = Point3f(1.0f, 1.0f, 1.0f); // specular
@@ -56,16 +41,104 @@ struct Material
 	float Ns    = 0.f;
 
 	std::string map_Kd; // filename texture
-	uint        mapId;  // id of the texture in the mesh, used when loading materials
+
+	// id of the texture in the mesh, used when loading materials
+	uint mapId;
 
 	bool hasColor   = false;
 	bool hasTexture = false;
+
+	Material() = default;
+
+	Material(const vcl::Color& c) : hasColor(true)
+	{
+		Kd.x() = c.redF();
+		Kd.y() = c.greenF();
+		Kd.z() = c.blueF();
+		d = c.alphaF();
+	}
+
+	Material(const std::string& txtName) : map_Kd(txtName), hasTexture(true) {}
+
+	Material(const vcl::Color& c, const std::string& txtName) :
+			map_Kd(txtName), hasColor(true), hasTexture(true)
+	{
+		Kd.x() = c.redF();
+		Kd.y() = c.greenF();
+		Kd.z() = c.blueF();
+		d = c.alphaF();
+	}
+
+	bool isEmpty() const { return !hasColor && !hasTexture; }
+
+	vcl::Color color() const
+	{
+		return vcl::Color(Kd.x()*255, Kd.y()*255, Kd.z()* 255, d*255);
+	}
+
+	const std::string& texture() const { return map_Kd; }
+
+	uint textureId() const { return mapId; }
+
+	/**
+	 * @brief Operator that allows to sort materials
+	 * first we sort trough color
+	 * - if a material has no color, is < than one that has a color
+	 * - if both materials have color, order by color: if same, check texture
+	 *   sort trough texture
+	 * - if a material has no texture, is < than one that has texture
+	 * - if both materials have texture, order by texture name
+	 */
+	bool operator<(const Material& m) const
+	{
+		if (hasColor) {
+			if (!m.hasColor) // color > no color
+				return false;
+			if (Kd != m.Kd)
+				return Kd < m.Kd;
+			if (d != m.d)
+				return d < m.d;
+		}
+		else if (m.hasColor) { // no color < color
+			return true;
+		}
+		// will arrive here only if:
+		// - this Material and m have both no color
+		// - this Material has the same color of m
+		if (hasTexture) {
+			if (!m.hasTexture) // texture > no texture
+				return false;
+			return map_Kd < m.map_Kd;
+		}
+		else if (m.hasTexture) { // no texture < texture
+			return true;
+		}
+		else { // no color and texture in both materials
+			return false;
+		}
+	}
+
+	bool operator==(const Material& m) const
+	{
+		return !(*this < m) && !(m < *this);
+	}
+
+	bool operator!=(const Material& m) const { return !(*this == m); }
 };
 
-std::ostream& operator<<(std::ostream& out, const Material& m);
+std::ostream& operator<<(std::ostream& out, const Material& m)
+{
+	if (m.hasColor) {
+		out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z()
+			<< std::endl;
+		out << "d " << m.d << std::endl;
+	}
+	if (m.hasTexture) {
+		out << "map_Kd " << m.map_Kd << std::endl;
+	}
+	return out;
+}
 
 } // namespace vcl::io::obj
-
-#include "material.cpp"
 
 #endif // VCL_IO_OBJ_MATERIAL_H

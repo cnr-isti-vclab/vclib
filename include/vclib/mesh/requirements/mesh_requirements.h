@@ -25,6 +25,7 @@
 #define VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H
 
 #include <vclib/concepts/mesh.h>
+#include <vclib/exceptions/mesh_exceptions.h>
 
 namespace vcl {
 
@@ -32,42 +33,182 @@ namespace vcl {
  * is/has functions *
  ********************/
 
-// Triangles
-
+/**
+ * @brief Checks *at run time* if the mesh m is composed of triangles.
+ *
+ * This function works both for triangle and polygonal meshes composed of faces
+ * having 3 vertices. If the size of the Face Vertices is static and 3, this
+ * check is immediate. If it is not 3, the functions checks for each face if it
+ * has 3 vertices.
+ *
+ * Complexity: *O(n)*
+ *
+ * @tparam MeshType: the type of the mesh. It must satisfy the MeshConcept.
+ *
+ * @param[in] m: the mesh on which check if each face has 3 vertices.
+ * @return `true` if every face of the mesh is composed of 3 vertices.
+ *
+ * @ingroup mesh_requirements
+ */
 template<MeshConcept MeshType>
-bool isTriangleMesh(const MeshType&);
+bool isTriangleMesh(const MeshType& m)
+{
+	if constexpr (HasTriangles<MeshType>) {
+		return true;
+	}
+	else if constexpr (HasFaces<MeshType>) {
+		using F = MeshType::FaceType;
+		for (const F& f : m.faces()) {
+			if (f.vertexNumber() != 3)
+				return false;
+		}
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
-// Quads
-
+/**
+ * @brief Checks *at run time* if the mesh is composed of quads.
+ *
+ * This function works both for quad and polygonal meshes composed of faces
+ * having 4 vertices. If the size of the Face Vertices is 4, this check
+ * is immediate. If it is not 4, the functions checks for each face if it has 4
+ * vertices.
+ *
+ * Complexity: *O(n)*
+ *
+ * @tparam MeshType: the type of the mesh. It must satisfy the MeshConcept.
+ *
+ * @param[in] m: the mesh on which check if each face has 4 vertices.
+ * @return `true` if every face of the mesh is composed of 4 vertices.
+ *
+ * @ingroup mesh_requirements
+ */
 template<MeshConcept MeshType>
-bool isQuadMesh(const MeshType&);
+bool isQuadMesh(const MeshType& m)
+{
+	if constexpr (HasQuads<MeshType>) {
+		return true;
+	}
+	else if constexpr (HasFaces<MeshType>) {
+		using F = MeshType::FaceType;
+		for (const F& f : m.faces()) {
+			if (f.vertexNumber() != 4)
+				return false;
+		}
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
-// Mesh Compactness
-
+/**
+ * @brief Checks if a Mesh is compact, that is if it does not contains deleted
+ * elements.
+ *
+ * It is equivalent to call `m.isCompact()`.
+ *
+ * @return `true` if `m` is compact, `false` otherwise.
+ *
+ * @ingroup mesh_requirements
+ */
 template<MeshConcept MeshType>
-bool isCompact(const MeshType&);
+bool isCompact(const MeshType& m)
+{
+	return m.isCompact();
+}
 
 /*********************
  * require functions *
  *********************/
 
-// Triangles
-
+/**
+ * @brief Checks if the mesh is composed of triangles, and if not, throws an
+ * exception.
+ *
+ * This function works both for triangle and polygonal meshes composed of faces
+ * having 3 vertices. If the size of the Face Vertices is static and 3, this
+ * check is immediate. If it is not 3, the functions checks for each face if it
+ * has 3 vertices.
+ *
+ * Complexity: *O(n)*
+ *
+ * @throws vcl::MissingTriangularRequirementException if the mesh is not
+ * composed of triangles.
+ *
+ * @tparam MeshType: the type of the mesh. It must satisfy the FaceMeshConcept.
+ *
+ * @param[in] m: the mesh on which check if each face has 3 vertices.
+ *
+ * @ingroup mesh_requirements
+ */
 template<FaceMeshConcept MeshType>
-void requireTriangleMesh(const MeshType&);
+void requireTriangleMesh(const MeshType& m)
+{
+	if constexpr (!HasTriangles<MeshType>) {
+		for (const auto& f : m.faces()) {
+			if (f.vertexNumber() != 3) {
+				throw MissingTriangularRequirementException(
+					"Triangle Mesh Required.");
+			}
+		}
+	}
+}
 
-// Quads
-
+/**
+ * @brief Checks if the mesh is composed of quads, and if not, throws an
+ * exception.
+ *
+ * This function works both for quad and polygonal meshes composed of faces
+ * having 4 vertices. If the size of the Face Vertices is static and 3, this
+ * check is immediate. If it is not 4, the functions checks for each face if it
+ * has 4 vertices.
+ *
+ * Complexity: *O(n)*
+ *
+ * @throws vcl::MissingQuadRequirementException if the mesh is not
+ * composed of quads.
+ *
+ * @tparam MeshType: the type of the mesh. It must satisfy the FaceMeshConcept.
+ *
+ * @param[in] m: the mesh on which check if each face has 4 vertices.
+ *
+ * @ingroup mesh_requirements
+ */
 template<FaceMeshConcept MeshType>
-void requireQuadMesh(const MeshType&);
+void requireQuadMesh(const MeshType& m)
+{
+	if constexpr (!HasQuads<MeshType>) {
+		for (const auto& f : m.faces()) {
+			if (f.vertexNumber() != 4) {
+				throw MissingQuadRequirementException("Quad Mesh Required.");
+			}
+		}
+	}
+}
 
-// Mesh Compactness
-
+/**
+ * @brief Checks if a Mesh is compact, that is if it does not contains deleted
+ * elements, and if not, throws an exception.
+ *
+ * @throws vcl::MissingCompactnessException if the mesh is not compact.
+ *
+ * @tparam MeshType: the type of the mesh. It must satisfy the MeshConcept.
+ *
+ * @param[in] m: the mesh on which check if is compact.
+ *
+ * @ingroup mesh_requirements
+ */
 template <MeshConcept MeshType>
-void requireCompactness(const MeshType&);
+void requireCompactness(const MeshType& m)
+{
+	if (!m.isCompact())
+		throw MissingCompactnessException("Mesh is not compact.");
+}
 
 } // namespace vcl
-
-#include "mesh_requirements.cpp"
 
 #endif // VCL_MESH_REQUIREMENTS_MESH_REQUIREMENTS_H

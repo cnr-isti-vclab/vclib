@@ -31,40 +31,83 @@ namespace vcl {
 template<PointConcept PointT>
 class TriangleWrapper
 {
+	const PointT& p0;
+	const PointT& p1;
+	const PointT& p2;
+
 public:
 	using ScalarType = PointT::ScalarType;
 	using PointType = PointT;
 
 	static const uint DIM = PointT::DIM;
 
-	TriangleWrapper(const PointT& p0, const PointT& p1, const PointT& p2);
+	TriangleWrapper(const PointT& p0, const PointT& p1, const PointT& p2) :
+			p0(p0), p1(p1), p2(p2)
+	{
+	}
 
 	constexpr uint size() const { return 3; }
 
-	const PointT& point(uint i) const;
-	const PointT& point0() const;
-	const PointT& point1() const;
-	const PointT& point2() const;
+	const PointT& point(uint i) const
+	{
+		switch(i) {
+		case 0:
+			return p0;
+		case 1:
+			return p1;
+		default:
+			return p2;
+		}
+	}
 
-	ScalarType sideLength(uint i) const;
-	ScalarType sideLength0() const;
-	ScalarType sideLength1() const;
-	ScalarType sideLength2() const;
+	const PointT& point0() const { return p0; }
 
-	PointT normal() const requires (PointT::DIM == 3);
+	const PointT& point1() const { return p1; }
 
-	PointT barycenter() const;
+	const PointT& point2() const { return p2; }
 
-	PointT circumcenter() const;
+	ScalarType sideLength(uint i) const
+	{
+		switch(i%3) {
+		case 0:
+			return p0.dist(p1);
+		case 1:
+			return p1.dist(p2);
+		default:
+			return p2.dist(p0);
+		}
+	}
 
-	ScalarType perimeter() const;
-	ScalarType area() const;
+	ScalarType sideLength0() const { return p0.dist(p1); }
 
-private:
-	const PointT& p0;
-	const PointT& p1;
-	const PointT& p2;
+	ScalarType sideLength1() const { return p1.dist(p2); }
+
+	ScalarType sideLength2() const { return p2.dist(p0); }
+
+	PointT normal() const requires (PointT::DIM == 3)
+	{
+		return Triangle<PointT>::normal(p0, p1, p2);
+	}
+
+	PointT barycenter() const
+	{
+		return Triangle<PointT>::barycenter(p0, p1, p2);
+	}
+
+	PointT circumcenter() const
+	{
+		return Triangle<PointT>::circumcenter(p0, p1, p2);
+	}
+
+	ScalarType perimeter() const
+	{
+		return Triangle<PointT>::perimeter(p0, p1, p2);
+	}
+
+	ScalarType area() const { return Triangle<PointT>::area(p0, p1, p2); }
 };
+
+/* Specialization Aliases */
 
 template<typename Scalar>
 using TriangleWrapper2 = TriangleWrapper<Point2<Scalar>>;
@@ -79,7 +122,5 @@ using TriangleWrapper3f = TriangleWrapper<Point3f>;
 using TriangleWrapper3d = TriangleWrapper<Point3d>;
 
 } // namespace vcl
-
-#include "triangle_wrapper.cpp"
 
 #endif // VCL_SPACE_TRIANGLE_WRAPPER_H

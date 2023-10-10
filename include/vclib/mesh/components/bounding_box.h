@@ -79,18 +79,50 @@ public:
 	 */
 	using BoundingBoxType = Box<PointType>;
 
-	const BoundingBoxType& boundingBox() const;
-	BoundingBoxType&       boundingBox();
+	/**
+	 * @brief Returns a const reference to the bounding box of this object.
+	 * @return A const reference to the bounding box of this object.
+	 */
+	const BoundingBoxType& boundingBox() const { return Base::data(); }
+
+	/**
+	 * @brief Returns a reference to the bounding box of this object.
+	 * @return A reference to the bounding box of this object.
+	 */
+	BoundingBoxType& boundingBox() { return Base::data(); }
 
 protected:
 	// Component interface function
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr(HasBoundingBox<Element>) {
+			using ScalarType = PointType::ScalarType;
+			boundingBox() = e.boundingBox().template cast<ScalarType>();
+		}
+	}
 };
 
 /* Detector function to check if a class has BoundingBox available */
 
-bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element);
+/**
+ * @brief Checks if the given Element/Mesh has BoundingBox component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has BoundingBox component available,
+ * `false` otherwise.
+ */
+bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentAvailableOn<BOUNDING_BOX>(element);
+}
+
+/* Specializations */
 
 /**
  * @brief The BoundingBox3 component class is an alias of the BoundingBox
@@ -139,7 +171,5 @@ template<typename ElementType = void, bool OPT = false>
 using BoundingBox3d = BoundingBox<Point3d, ElementType, OPT>;
 
 } // namespace vcl::comp
-
-#include "bounding_box.cpp"
 
 #endif // VCL_MESH_COMPONENTS_BOUNDING_BOX_H

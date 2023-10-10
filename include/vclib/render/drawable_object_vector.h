@@ -30,46 +30,106 @@ namespace vcl {
 
 class DrawableObjectVector
 {
+	std::vector<DrawableObject*> drawVector;
+
 public:
 	using iterator = std::vector<DrawableObject*>::iterator;
 	using const_iterator = std::vector<DrawableObject*>::const_iterator;
 
-	DrawableObjectVector();
-	DrawableObjectVector(const DrawableObjectVector& oth);
-	DrawableObjectVector(DrawableObjectVector&& oth);
+	DrawableObjectVector() = default;
 
-	~DrawableObjectVector();
+	DrawableObjectVector(const DrawableObjectVector& oth)
+	{
+		drawVector.resize(oth.size());
+		for (uint i = 0; i < oth.size(); i++)
+			drawVector[i] = oth[i].clone();
+	}
 
-	uint pushBack(const DrawableObject& obj);
-	uint pushBack(const DrawableObject* obj);
+	DrawableObjectVector(DrawableObjectVector&& oth)
+	{
+		swap(oth);
+	}
 
-	DrawableObject& at(uint i);
-	const DrawableObject& at(uint i) const;
+	~DrawableObjectVector()
+	{
+		// delete all the DrawableObjects
+		for (DrawableObject* obj : drawVector) {
+			delete obj;
+		}
+	}
 
-	DrawableObject& operator[](uint i);
-	const DrawableObject& operator[](uint i) const;
+	/**
+	 * @brief Pushes a copy of the DrawableObject to the vector.
+	 *
+	 * This function creates a **copy** of the given argument and inserts it
+	 * into the back of the vector.
+	 *
+	 * @param obj
+	 * @return
+	 */
+	uint pushBack(const DrawableObject& obj)
+	{
+		drawVector.push_back(obj.clone());
+		return drawVector.size();
+	}
 
-	std::size_t size() const;
+	/**
+	 * @brief Pushes a copy of the DrawableObject to the vector.
+	 *
+	 * This function creates a **copy** of the given argument and inserts it
+	 * into the back of the vector. If the given argument is a nullptr, the
+	 * function returns UINT_NULL.
+	 *
+	 * @param obj
+	 * @return
+	 */
+	uint pushBack(const DrawableObject* obj)
+	{
+		if (obj == nullptr)
+			return UINT_NULL;
+		drawVector.push_back(obj->clone());
+		return drawVector.size();
+	}
 
-	/// @private
-	friend void swap(DrawableObjectVector& v1, DrawableObjectVector& v2);
-	void swap(DrawableObjectVector& oth);
+	DrawableObject& at(uint i)
+	{
+		assert(i < drawVector.size());
+		return *drawVector.at(i);
+	}
 
-	DrawableObjectVector& operator=(DrawableObjectVector oth);
+	const DrawableObject& at(uint i) const
+	{
+		assert(i < drawVector.size());
+		return *drawVector.at(i);
+	}
 
-	iterator begin();
-	iterator end();
-	const_iterator begin() const;
-	const_iterator end() const;
+	DrawableObject& operator[](uint i) { return *drawVector[i]; }
 
-private:
-	std::vector<DrawableObject*> drawVector;
+	const DrawableObject& operator[](uint i) const { return *drawVector[i]; }
+
+	std::size_t size() const { return drawVector.size(); }
+
+	void swap(DrawableObjectVector& oth)
+	{
+		using std::swap;
+		swap(drawVector, oth.drawVector);
+	}
+
+	DrawableObjectVector& operator=(DrawableObjectVector oth)
+	{
+		swap(oth);
+		return *this;
+	}
+
+	iterator begin() { return drawVector.begin(); }
+
+	iterator end() { return drawVector.end(); }
+
+	const_iterator begin() const { return drawVector.begin(); }
+
+	const_iterator end() const { return drawVector.end(); }
 };
 
-inline void swap(DrawableObjectVector& v1, DrawableObjectVector& v2);
-
 } // namespace vcl
-
-#include "drawable_object_vector.cpp"
 
 #endif // VCL_RENDER_DRAWABLE_OBJECT_VECTOR_H

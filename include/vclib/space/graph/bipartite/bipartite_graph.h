@@ -42,13 +42,24 @@ namespace vcl {
 template<class T1, class T2>
 class BipartiteGraph
 {
+protected:
+	std::map<T1, unsigned int> mapL;
+	std::map<T2, unsigned int> mapR;
+
+	std::vector<UndirectedNode<T1>> nodesL;
+	std::vector<UndirectedNode<T2>> nodesR;
+
+	std::set<unsigned int> unusedLNodes;
+	std::set<unsigned int> unusedRNodes;
+
 public:
 	using LeftType  = T1;
 	using RightType = T2;
 	using LeftNodeType  = UndirectedNode<T1>;
 	using RightNodeType = UndirectedNode<T2>;
 
-	using LeftNodeIterator = NodeIterator<typename std::vector<UndirectedNode<T1>>::const_iterator>;
+	using LeftNodeIterator =
+		NodeIterator<typename std::vector<UndirectedNode<T1>>::const_iterator>;
 	using RightNodeIterator =
 		NodeIterator<typename std::vector<UndirectedNode<T2>>::const_iterator>;
 	
@@ -65,61 +76,353 @@ public:
 	using AdjacentLeftNodeView  = vcl::View<AdjacentLeftNodeIterator>;
 	using AdjacentRightNodeView = vcl::View<AdjacentRightNodeIterator>;
 
-	BipartiteGraph();
+	/**
+	 * @brief Default constructor. It creates an empty Bipartite Graph.
+	 */
+	BipartiteGraph() {}
 
-	bool leftNodeExists(const T1& lNode) const;
-	bool rightNodeExists(const T2& rNode) const;
+	/**
+	 * @brief Checks if a node exists on the left side of the graph
+	 * @param lNode
+	 * @return true if the node exists
+	 */
+	bool leftNodeExists(const T1& lNode) const
+	{
+		return mapL.find(lNode) != mapL.end();
+	}
 
-	uint leftNodesNumber() const;
-	uint rightNodesNumber() const;
-	uint adjacentLeftNodeNumber(const T1& lNode) const;
-	uint adjacentRightNodeNumber(const T2& rNode) const;
+	/**
+	 * @brief Checks if a node exists on the right side of the graph
+	 * @param rNode
+	 * @return true if the node exists
+	 */
+	bool rightNodeExists(const T2& rNode) const
+	{
+		return mapR.find(rNode) != mapR.end();
+	}
 
-	bool addLeftNode(const T1& info);
-	bool addRightNode(const T2& info);
-	bool deleteLeftNode(const T1& lNode);
-	bool deleteRightNode(const T2& rNode);
-	bool addArc(const T1& lNode, const T2& rNode);
-	bool deleteArc(const T1& lNode, const T2& rNode);
-	bool clearAdjacencesLeftNode(const T1& lNode);
-	bool clearAdjacencesRightNode(const T2& rNode);
-	bool setLeftNode(const T1& old, const T1& newInfo);
-	bool setRightNode(const T2& old, const T2& newInfo);
+	/**
+	 * @brief Returns the number of left nodes of the graph.
+	 * @return the number of nodes on the left side of the graph
+	 */
+	uint leftNodesNumber() const
+	{
+		return (unsigned int) (nodesL.size() - unusedLNodes.size());
+	}
 
-	AdjacentLeftNodeIterator adjacentLeftNodeBegin(const T1& lNode) const;
-	AdjacentLeftNodeIterator adjacentLeftNodeEnd(const T1& lNode) const;
+	/**
+	 * @brief Returns the number of right nodes of the graph.
+	 * @return the number of nodes on the right side of the graph
+	 */
+	uint rightNodesNumber() const
+	{
+		return (unsigned int) (nodesR.size() - unusedRNodes.size());
+	}
 
-	AdjacentRightNodeIterator adjacentRightNodeBegin(const T2& rNode) const;
-	AdjacentRightNodeIterator adjacentRightNodeEnd(const T2& rNode) const;
+	/**
+	 * @brief Returns the number of adjacent nodes to `lNode`.
+	 * @param lNode
+	 * @return the number of adjacent nodes to lNode
+	 */
+	uint adjacentLeftNodeNumber(const T1& lNode) const
+	{
+		int uid = getIdLeftNode(lNode);
+		return nodesL[uid].sizeAdjacentNodes();
+	}
 
-	LeftNodeIterator leftNodeBegin() const;
-	LeftNodeIterator leftNodeEnd() const;
+	/**
+	 * @brief Returns the number of adjacent nodes to `rNode`.
+	 * @param rNode
+	 * @return the number of adjacent nodes to rNode
+	 */
+	uint adjacentRightNodeNumber(const T2& rNode) const
+	{
+		int vid = getIdRightNode(rNode);
+		return nodesR[vid].sizeAdjacentNodes();
+	}
 
-	RightNodeIterator rightNodeBegin() const;
-	RightNodeIterator rightNodeEnd() const;
+	/**
+	 * @brief Adds a new node on the left side of the graph.
+	 * @param[in] info: the value associated to the new node
+	 * @return true if the node is correctly added, false otherwise (if the node
+	 * already exists)
+	 */
+	bool addLeftNode(const T1& info)
+	{
+		if (mapL.find(info) == mapL.end()) {
+			if (unusedLNodes.size() == 0) {
+				mapL[info] = (unsigned int) nodesL.size();
+				nodesL.emplace_back(info);
+			}
+			else {
+				unsigned int id = *(unusedLNodes.begin());
+				unusedLNodes.erase(unusedLNodes.begin());
+				mapL[info] = id;
+				nodesL[id] = UndirectedNode<T1>(info);
+			}
+			return true;
+		}
+		else
+			return false;
+	}
 
-	LeftNodeView leftNodes() const;
-	RightNodeView rightNodes() const;
+	/**
+	 * @brief Adds a new node on the right side of the graph.
+	 * @param[in] info: the value associated to the new node
+	 * @return true if the node is correctly added, false otherwise (if the node
+	 * already exists)
+	 */
+	bool addRightNode(const T2& info)
+	{
+		if (mapR.find(info) == mapR.end()) {
+			if (unusedRNodes.size() == 0) {
+				mapR[info] = (unsigned int) nodesR.size();
+				nodesR.emplace_back(info);
+			}
+			else {
+				unsigned int id = *(unusedRNodes.begin());
+				unusedRNodes.erase(unusedRNodes.begin());
+				mapR[info] = id;
+				nodesR[id] = UndirectedNode<T2>(info);
+			}
+			return true;
+		}
+		else
+			return false;
+	}
 
-	AdjacentLeftNodeView  adjacentLeftNodes(const T1& lNode) const;
-	AdjacentRightNodeView adjacentRightNodes(const T2& rNode) const;
+	/**
+	 * @brief Removes lNode and all its arcs from the graph
+	 * @param lNode
+	 * @return true if the node is successfully deleted
+	 */
+	bool deleteLeftNode(const T1& lNode)
+	{
+		if (clearAdjacencesLeftNode(lNode)) {
+			unusedLNodes.insert(mapL[lNode]);
+			mapL.erase(lNode);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	/**
+	 * @brief Removes rNode and all its arcs from the graph
+	 * @param rNode
+	 * @return true if the node is successfully deleted
+	 */
+	bool deleteRightNode(const T2& rNode)
+	{
+		if (clearAdjacencesRightNode(rNode)) {
+			unusedRNodes.insert(mapR[rNode]);
+			mapR.erase(rNode);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	/**
+	 * @brief Creates an arc between lNode and rNode
+	 * @param lNode
+	 * @param rNode
+	 * @return true if the arc is successfully created (both nodes exists in the
+	 * graph)
+	 */
+	bool addArc(const T1& lNode, const T2& rNode)
+	{
+		try {
+			int uid = getIdLeftNode(lNode);
+			int vid = getIdRightNode(rNode);
+			assert((unsigned int) uid < nodesL.size());
+			assert((unsigned int) vid < nodesR.size());
+			nodesL[uid].addAdjacent(vid);
+			nodesR[vid].addAdjacent(uid);
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
+	}
+
+	/**
+	 * @brief Removes the arc between lNode and rNode
+	 * @param lNode
+	 * @param rNode
+	 * @return true if the arc is successfully deleted (both nodes and the arc
+	 * exists in the graph)
+	 */
+	bool deleteArc(const T1& lNode, const T2& rNode)
+	{
+		try {
+			int uid = getIdLeftNode(lNode);
+			int vid = getIdRightNode(rNode);
+			assert((unsigned int) uid < nodesL.size());
+			assert((unsigned int) vid < nodesR.size());
+			nodesL[uid].deleteAdjacent(vid);
+			nodesR[vid].deleteAdjacent(uid);
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
+	}
+
+	/**
+	 * @brief Removes all the arcs connected to lNode (lNode won't have adjacent
+	 * nodes)
+	 * @param lNode
+	 * @return true if all the arcs are successfully removes
+	 */
+	bool clearAdjacencesLeftNode(const T1& lNode)
+	{
+		try {
+			int uid = getIdLeftNode(lNode);
+			for (unsigned int adj : nodesL[uid]) {
+				nodesR[adj].deleteAdjacent(uid);
+			}
+			nodesL[uid].clearAdjacentNodes();
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
+	}
+
+	/**
+	 * @brief Removes all the arcs connected to rNode (lNode won't have adjacent
+	 * nodes)
+	 * @param rNode
+	 * @return true if all the arcs are successfully removes
+	 */
+	bool clearAdjacencesRightNode(const T2& rNode)
+	{
+		try {
+			int vid = getIdRightNode(rNode);
+			for (unsigned int adj : nodesR[vid]) {
+				nodesL[adj].deleteAdjacent(vid);
+			}
+			nodesR[vid].clearAdjacentNodes();
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
+	}
+
+	/**
+	 * @brief Sets the key of an lNode
+	 * @param old
+	 * @param newInfo
+	 * @return true if the key of the node is successfully modified
+	 */
+	bool setLeftNode(const T1& old, const T1& newInfo)
+	{
+		try {
+			int uid     = getIdLeftNode(old);
+			nodesL[uid] = UndirectedNode<T1>(newInfo);
+			mapL.erase(old);
+			mapL[newInfo] = uid;
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
+	}
+
+	/**
+	 * @brief Sets the key of a rNode
+	 * @param old
+	 * @param newInfo
+	 * @return true if the key of the node is successfully modified
+	 */
+	bool setRightNode(const T2& old, const T2& newInfo)
+	{
+		try {
+			int vid     = getIdRightNode(old);
+			nodesR[vid] = UndirectedNode<T2>(newInfo);
+			mapR.erase(old);
+			mapR[newInfo] = vid;
+			return true;
+		}
+		catch (...) {
+			return false;
+		}
+	}
+
+	AdjacentLeftNodeIterator adjacentLeftNodeBegin(const T1& lNode) const
+	{
+		int uid = getIdLeftNode(lNode);
+		return AdjacentLeftNodeIterator(*this, nodesL[uid].begin());
+	}
+
+	AdjacentLeftNodeIterator adjacentLeftNodeEnd(const T1& lNode) const
+	{
+		int uid = getIdLeftNode(lNode);
+		return AdjacentLeftNodeIterator(*this, nodesL[uid].end());
+	}
+
+	AdjacentRightNodeIterator adjacentRightNodeBegin(const T2& rNode) const
+	{
+		int vid = getIdRightNode(rNode);
+		return AdjacentRightNodeIterator(*this, nodesR[vid].begin());
+	}
+
+	AdjacentRightNodeIterator adjacentRightNodeEnd(const T2& rNode) const
+	{
+		int vid = getIdRightNode(rNode);
+		return AdjacentRightNodeIterator(*this, nodesR[vid].end());
+	}
+
+	LeftNodeIterator leftNodeBegin() const
+	{
+		return LeftNodeIterator(nodesL.begin());
+	}
+
+	LeftNodeIterator leftNodeEnd() const
+	{
+		return LeftNodeIterator(nodesL.end());
+	}
+
+	RightNodeIterator rightNodeBegin() const
+	{
+		return RightNodeIterator(nodesR.begin());
+	}
+
+	RightNodeIterator rightNodeEnd() const
+	{
+		return RightNodeIterator(nodesR.end());
+	}
+
+	LeftNodeView leftNodes() const
+	{
+		return LeftNodeView(leftNodeBegin(), leftNodeEnd());
+	}
+
+	RightNodeView rightNodes() const
+	{
+		return RightNodeView(rightNodeBegin(), rightNodeEnd());
+	}
+
+	AdjacentLeftNodeView  adjacentLeftNodes(const T1& lNode) const
+	{
+		return AdjacentLeftNodeView(
+			adjacentLeftNodeBegin(lNode), adjacentLeftNodeEnd(lNode));
+	}
+
+	AdjacentRightNodeView adjacentRightNodes(const T2& rNode) const
+	{
+		return AdjacentRightNodeView(
+			adjacentRightNodeBegin(rNode), adjacentRightNodeEnd(rNode));
+	}
 
 protected:
-	int getIdLeftNode(const T1& uNode) const;
-	int getIdRightNode(const T2& vNode) const;
+	int getIdLeftNode(const T1& uNode) const { return mapL.at(uNode); }
 
-	std::map<T1, unsigned int> mapL;
-	std::map<T2, unsigned int> mapR;
-
-	std::vector<UndirectedNode<T1>> nodesL;
-	std::vector<UndirectedNode<T2>> nodesR;
-
-	std::set<unsigned int> unusedLNodes;
-	std::set<unsigned int> unusedRNodes;
+	int getIdRightNode(const T2& vNode) const { return mapR.at(vNode); }
 };
 
 } // namespace vcl
-
-#include "bipartite_graph.cpp"
 
 #endif // VCL_SPACE_GRAPH_BIPARTITE_BIPARTITE_GRAPH_H

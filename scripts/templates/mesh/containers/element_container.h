@@ -43,7 +43,10 @@ public:
 	using %EL_UC%Iterator      = Base::ElementIterator;
 	using Const%EL_UC%Iterator = Base::ConstElementIterator;
 
-	%EL_UC%Container();
+	/**
+	 * @brief Empty constructor that creates an empty container of %EL_UC%s.
+	 */
+	%EL_UC%Container() = default;
 
 	const %EL_UC%Type& %EL_C%(uint i) const;
 	%EL_UC%Type&       %EL_C%(uint i);
@@ -64,7 +67,7 @@ public:
 	void delete%EL_UC%(uint i);
 	void delete%EL_UC%(const %EL_UC%Type* e);
 
-	uint              %EL_C%IndexIfCompact(uint id) const;
+	uint              %EL_C%IndexIfCompact(uint i) const;
 	std::vector<uint> %EL_C%CompactIndices() const;
 
 	void update%EL_UC%Indices(const std::vector<uint>& newIndices);

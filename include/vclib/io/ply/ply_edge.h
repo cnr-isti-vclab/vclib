@@ -28,15 +28,44 @@
 #include <vclib/misc/tokenizer.h>
 
 #include "ply_header.h"
+#include "../internal/io_write.h"
 
 namespace vcl::io::ply {
 
 template<EdgeMeshConcept MeshType>
-void saveEdges(std::ofstream& file, const PlyHeader& header, const MeshType& mesh);
+void saveEdges(
+	std::ofstream&   file,
+	const PlyHeader& header,
+	const MeshType&  mesh)
+{
+	using EdgeType = MeshType::EdgeType;
+	bool bin = header.format() == ply::BINARY;
 
+	// indices of vertices that do not consider deleted vertices
+	std::vector<int> vIndices = mesh.vertexCompactIndices();
+
+	for (const EdgeType& e : mesh.edges()) {
+		for (const ply::Property& p : header.edgeProperties()) {
+			bool hasBeenWritten = false;
+			if (p.name == ply::vertex1) {
+				io::internal::writeProperty(
+					file, vIndices[mesh.index(e.vertex(0))], p.type, bin);
+				hasBeenWritten = true;
+			}
+			if (p.name == ply::vertex2) {
+				io::internal::writeProperty(
+					file, vIndices[mesh.index(e.vertex(1))], p.type, bin);
+				hasBeenWritten = true;
+			}
+			if (!hasBeenWritten) {
+				// be sure to write something if the header declares some
+				// property that is not in the mesh
+				io::internal::writeProperty(file, 0, p.type, bin);
+			}
+		}
+	}
+}
 
 } // namespace vcl::ply
-
-#include "ply_edge.cpp"
 
 #endif // VCL_IO_PLY_EDGE_H

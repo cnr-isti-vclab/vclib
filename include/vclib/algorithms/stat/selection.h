@@ -25,17 +25,22 @@
 #define VCL_ALGORITHMS_STAT_SELECTION_H
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/views/mesh.h>
 
 namespace vcl {
 
 template<MeshConcept MeshType>
-uint vertexSelectionNumber(const MeshType& m);
+uint vertexSelectionNumber(const MeshType& m)
+{
+	return std::ranges::distance(m.vertices() | views::selected);
+}
 
 template<FaceMeshConcept MeshType>
-uint faceSelectionNumber(const MeshType& m);
+uint faceSelectionNumber(const MeshType& m)
+{
+	return std::ranges::distance(m.faces() | views::selected);
+}
 
 } // namespace vcl
-
-#include "selection.cpp"
 
 #endif // VCL_ALGORITHMS_STAT_SELECTION_H

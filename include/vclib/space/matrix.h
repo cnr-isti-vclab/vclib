@@ -45,14 +45,37 @@ using Matrix44i = Matrix44<int>;
 using Matrix44f = Matrix44<float>;
 using Matrix44d = Matrix44<double>;
 
+/**
+ * @brief Multiplies a matrix and a point
+ *
+ * This function multiplies a matrix and a point and returns the resulting
+ * point.
+ *
+ * @tparam MatrixType: A type that satisfies the EigenMatrixConcept
+ * @tparam PointType: A type that satisfies the PointConcept
+ *
+ * @param[in] m: The matrix to be multiplied with the point
+ * @param[in] p: The point to be multiplied with the matrix
+ * @return The resulting point after multiplying the matrix and point
+ *
+ * @requires MatrixType::RowsAtCompileTime == PointType::DIM &&
+ *           MatrixType::ColsAtCompileTime == PointType::DIM
+ */
 template<EigenMatrixConcept MatrixType, PointConcept PointType>
 PointType operator*(const MatrixType& m, const PointType& p)
 	requires(
 		MatrixType::RowsAtCompileTime == PointType::DIM &&
-		MatrixType::ColsAtCompileTime == PointType::DIM);
+		MatrixType::ColsAtCompileTime == PointType::DIM)
+{
+	PointType res;
+	for (uint i = 0; i < PointType::DIM; i++) {
+		for (uint j = 0; j < PointType::DIM; j++) {
+			res(i) += m(i,j)* p(i);
+		}
+	}
+	return res;
+}
 
 } // namespace vcl
-
-#include "matrix.cpp"
 
 #endif // VCL_SPACE_MATRIX_H

@@ -25,6 +25,7 @@
 #define VCL_SPACE_PLANE_H
 
 #include <vclib/concepts/space/plane.h>
+#include <vclib/exceptions/misc_exceptions.h>
 
 #include "point.h"
 
@@ -33,8 +34,8 @@ namespace vcl {
 /**
  * @brief The Plane class represent a 2D plane in 3D space.
  *
- * This is the class for infinite planes in 3D space. A Plane is stored just as a Point3 and a
- * scalar:
+ * This is the class for infinite planes in 3D space. A Plane is stored just as
+ * a Point3 and a scalar:
  * - a direction (not necessarily normalized),
  * - an offset from the origin
  *
@@ -48,37 +49,121 @@ namespace vcl {
 template<typename Scalar, bool NORM=true>
 class Plane
 {
+	Point3<Scalar> dir;
+	Scalar off;
+
 public:
 	using ScalarType = Scalar;
 	using PointType = vcl::Point3<Scalar>;
 
-	Plane();
-	Plane(const Point3<Scalar>& direction, Scalar offset);
-	Plane(const Point3<Scalar>& p0, const Point3<Scalar>& normal);
-	Plane(const Point3<Scalar>& p0, const Point3<Scalar>& p1, const Point3<Scalar>& p2);
+	/**
+	 * @brief Empty constructor. The plane is uninitialized.
+	 */
+	Plane() {}
+
+	/**
+	 * @brief Constructor of a plane given a direction and an offset.
+	 * @param direction
+	 * @param offset
+	 */
+	Plane(const Point3<Scalar>& direction, Scalar offset) :
+			dir(direction), off(offset)
+	{
+		if constexpr(NORM) {
+			Scalar n = dir.norm();
+			dir /= n;
+			off /= n;
+		}
+	}
+
+	/**
+	 * @brief Constructor of a plane given a point lying to the plane and the
+	 * normal of the plane.
+	 * @param p0
+	 * @param normal
+	 */
+	Plane(const Point3<Scalar>& p0, const Point3<Scalar>& normal)
+	{
+		dir = normal;
+		if constexpr(NORM) {
+			dir.normalize();
+		}
+		off = p0.dot(dir);
+	}
+
+	/**
+	 * @brief Constructor of a plane given three points.
+	 * @param p0
+	 * @param p1
+	 * @param p2
+	 */
+	Plane(
+		const Point3<Scalar>& p0,
+		const Point3<Scalar>& p1,
+		const Point3<Scalar>& p2):
+			Plane<Scalar, NORM>(p0, (p2 - p0).cross(p1 - p0))
+	{
+	}
 
 	template<typename S>
-	Plane<S, NORM> cast() const;
+	Plane<S, NORM> cast() const
+	{
+		if constexpr (std::is_same<Scalar, S>::value) {
+			return *this;
+		}
+		else {
+			return Plane<S, NORM>(dir.template cast<S>(), off);
+		}
+	}
 
-	const Point3<Scalar>& direction() const;
-	Scalar offset() const;
+	/**
+	 * @brief Returns the direction component of the plane.
+	 * @return
+	 */
+	const Point3<Scalar>& direction() const { return dir; }
 
-	Point3<Scalar> projectPoint(const Point3<Scalar>& p) const;
-	Point3<Scalar> mirrorPoint(const Point3<Scalar>& p) const;
+	/**
+	 * @brief Returns the offset component of the plane.
+	 * @return
+	 */
+	Scalar offset() const { return off; }
 
-	bool operator==(const Plane& p) const;
-	bool operator!=(const Plane& p) const;
+	/**
+	 * @brief Given a point, returns the point projected to this plane.
+	 * @param p
+	 * @return
+	 */
+	Point3<Scalar> projectPoint(const Point3<Scalar>& p) const
+	{
+		Scalar k = p.dot(dir) - off;
+		return p - dir * k;
+	}
 
-private:
-	Point3<Scalar> dir;
-	Scalar off;
+	/**
+	 * @brief Given a point, returns the point mirrored w.r.t. this plane.
+	 * @param p
+	 * @return
+	 */
+	Point3<Scalar> mirrorPoint(const Point3<Scalar>& p) const
+	{
+		Point3<Scalar> mirr=projectPoint(p);
+		mirr += mirr-p;
+		return mirr;
+	}
+
+	bool operator==(const Plane& p) const
+	{
+		return off == p.off && dir == p.dir;
+	}
+
+	bool operator!=(const Plane& p) const { return !(*this == p); }
 };
+
+/* Specialization Aliases */
 
 using Planef = Plane<float>;
 using Planed = Plane<double>;
 
 } // namespace vcl
-
-#include "plane.cpp"
 
 #endif // VCL_SPACE_PLANE_H

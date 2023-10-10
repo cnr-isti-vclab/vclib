@@ -115,70 +115,381 @@ public:
 
 	/* Member functions */
 
-	uint adjEdgesNumber() const;
+	/**
+	 * @brief Returns the number of adjacent edges of this element.
+	 * @return The number of adjacent edges of this element.
+	 */
+	uint adjEdgesNumber() const { return Base::container().size(); }
 
-	Edge*&      adjEdge(uint i);
-	const Edge* adjEdge(uint i) const;
-	Edge*&      adjEdgeMod(int i);
-	const Edge* adjEdgeMod(int i) const;
+	/**
+	 * @brief Returns a reference of the pointer to the i-th adjacent edge of
+	 * the element.
+	 *
+	 * You can use this function to set the i-th adjacent edge:
+	 *
+	 * @code{.cpp}
+	 * e.adjEdge(2) = &m.edge(k); // the second adj edge of e will point to the
+	 *                            // k-th edge of the mesh.
+	 * @endcode
+	 *
+	 * @param[in] i: the position of the required adjacent edge in the
+	 * container; the value must be between 0 and the number of adj edges.
+	 * @return The pointer to the i-th adjacent edge of the element.
+	 */
+	Edge*& adjEdge(uint i) { return Base::container().at(i); }
 
-	void setAdjEdge(Edge* f, uint i);
+	/**
+	 * @brief Returns a const pointer to the i-th adjacent edge of the element.
+	 * @param[in] i: the position of the required adjacent edge in the
+	 * container; the value must be between 0 and the number of adj edges.
+	 * @return The pointer to the i-th adjacent edge of the element.
+	 */
+	const Edge* adjEdge(uint i) const { return Base::container().at(i); }
 
+	/**
+	 * @brief Returns a reference of the pointer to the i-th adjacent edge of
+	 * the element but using as index the module between i and the number of
+	 * adjacent edges. You can use this function if you need to get the "next
+	 * adjacent edge after position k", without check if it is less than the
+	 * number of adj edges. Works also for negative numbers:
+	 *
+	 * @code{.cpp}
+	 * k = pos; // some position of an adjacent edge
+	 * auto* next = e.adjEdgeMod(k+1); // the adj edge next to k, that may also
+	 *                                 // be at pos 0
+	 * auto* last = e.adjEdgeMod(-1); // the adj edge in position
+	 *                                // adjEdgeNumber()-1
+	 * @endcode
+	 *
+	 * @param[in] i: the position of the required adjacent edge in the
+	 * container, w.r.t. the position 0; value is modularized on
+	 * adjEdgeNumber().
+	 * @return The pointer to the required adjacent edge of the element.
+	 */
+	Edge*& adjEdgeMod(int i) { return Base::container().atMod(i); }
+
+	/**
+	 * @brief Same of adjEdgeMod, but returns a const Pointer to the adjacent
+	 * edge.
+	 * @param[in] i: the position of the required adjacent edge in the
+	 * container, w.r.t. the position 0; value is modularized on
+	 * adjEdgeNumber().
+	 * @return The pointer to the required adjacent edge of this element.
+	 */
+	const Edge* adjEdgeMod(int i) const { return Base::container().atMod(i); }
+
+	/**
+	 * @brief Sets the i-th adjacent edge of the element.
+	 * @param[in] e: The pointer to the adjacent edge to set to the element.
+	 * @param[in] i: the position in the container on which set the adj edge;
+	 * the value must be between 0 and the number of adj edges.
+	 */
+	void setAdjEdge(Edge* e, uint i) { Base::container().set(e, i); }
+
+	/**
+	 * @brief Sets all the adjacent edges of the element.
+	 *
+	 * If the size of the container is static, the size of the input range must
+	 * be the same one of the container.
+	 *
+	 * @tparam Rng: The type of the range of adjacent edges to set. The value
+	 * type of the range must be convertible to a pointer to an AdjacentEdge.
+	 *
+	 * @param[in] r: range of adjacent edges to set.
+	 */
 	template<Range Rng>
-	void setAdjEdges(Rng&& r)
-		requires RangeOfConvertibleTo<Rng, Edge*>;
+	void setAdjEdges(Rng&& r) requires RangeOfConvertibleTo<Rng, Edge*>
+	{
+		Base::container().set(r);
+	}
 
-	bool containsAdjEdge(const Edge* e) const;
+	/**
+	 * @brief Returns `true` if the container of adjacent edges contains the
+	 * given edge, `false` otherwise.
+	 *
+	 * @param[in] e: the pointer to the edge to search.
+	 * @return `true` if the container of adjacent edges contains the given
+	 * edge, `false` otherwise.
+	 */
+	bool containsAdjEdge(const Edge* e) const
+	{
+		return Base::container().contains(e);
+	}
 
-	AdjacentEdgeIterator      findAdjEdge(const Edge* e);
-	ConstAdjacentEdgeIterator findAdjEdge(const Edge* e) const;
+	/**
+	 * @brief Returns an iterator to the first adjacent edge in the container of
+	 * this component that is equal to the given edge. If no such adjacent edge
+	 * is found, past-the-end iterator is returned.
+	 *
+	 * @param[in] e: the pointer to the edge to search.
+	 * @return an iterator pointing to the first adjacent edge equal to the
+	 * given edge, or end if no such adjacent edge is found.
+	 */
+	AdjacentEdgeIterator findAdjEdge(const Edge* e)
+	{
+		return Base::container().find(e);
+	}
 
-	uint indexOfAdjEdge(const Edge* e) const;
+	/**
+	 * @brief Returns a const iterator to the first adjacent edge in the
+	 * container of this component that is equal to the given edge. If no such
+	 * adjacent edge is found, past-the-end iterator is returned.
+	 *
+	 * @param[in] e: the pointer to the edge to search.
+	 * @return a const iterator pointing to the first adjacent edge equal to the
+	 * given edge, or end if no such adjacent edge is found.
+	 */
+	ConstAdjacentEdgeIterator findAdjEdge(const Edge* e) const
+	{
+		return Base::container().find(e);
+	}
+
+	/**
+	 * @brief Returns the index of the given adjacent edge in the container of
+	 * the element. If the given adjacent edge is not in the container, returns
+	 * UINT_NULL.
+	 *
+	 * @param[in] e: the pointer to the adjacent edge to search.
+	 * @return the index of the given adjacent edge, or UINT_NULL if it is not
+	 * found.
+	 */
+	uint indexOfAdjEdge(const Edge* e) const
+	{
+		return Base::container().indexOf(e);
+	}
 
 	/* Member functions specific for vector of adjacent edges */
 
-	void resizeAdjEdges(uint n) requires (N < 0 && !TTVN);
-	void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN);
-	void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVN);
-	void eraseAdjEdge(uint i) requires (N < 0 && !TTVN);
-	void clearAdjEdges() requires (N < 0 && !TTVN);
+	/**
+	 * @brief Resize the container of the adjacent edges to the given size.
+	 * @note This function is available only if the container of the Adjacent
+	 * Edges component has dynamic size.
+	 * @param[in] n: The new size of the adjacent edges container.
+	 */
+	void resizeAdjEdges(uint n) requires (N < 0 && !TTVN)
+	{
+		Base::container().resize(n);
+	}
+
+	/**
+	 * @brief Pushes in the back of the container the given adjacent edge.
+	 * @note This function is available only if the container of the Adjacent
+	 * Edges component has dynamic size.
+	 * @param[in] e: The pointer to the adjacent edge to push in the back of the
+	 * container.
+	 */
+	void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN)
+	{
+		Base::container().pushBack(e);
+	}
+
+	/**
+	 * @brief Inserts the given adjacent edge in the container at the given
+	 * position.
+	 * @note This function is available only if the container of the Adjacent
+	 * Edges component has dynamic size.
+	 * @param[in] i: The position in the container where to insert the adjacent
+	 * edge.
+	 * @param[in] e: The pointer to the adjacent edge to insert in the
+	 * container.
+	 */
+	void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVN)
+	{
+		Base::container().insert(i, e);
+	}
+
+	/**
+	 * @brief Removes the adjacent edge at the given position from the
+	 * container.
+	 * @note This function is available only if the container of the Adjacent
+	 * Edges component has dynamic size.
+	 * @param[in] i: The position of the adjacent edge to remove from the
+	 * container.
+	 */
+	void eraseAdjEdge(uint i) requires (N < 0 && !TTVN)
+	{
+		Base::container().erase(i);
+	}
+
+	/**
+	 * @brief Clears the container of adjacent edges, making it empty.
+	 * @note This function is available only if the container of the Adjacent
+	 * Edges component has dynamic size.
+	 */
+	void clearAdjEdges() requires (N < 0 && !TTVN)
+	{
+		Base::container().clear();
+	}
 
 	/* Iterator Member functions */
 
-	AdjacentEdgeIterator            adjEdgeBegin();
-	AdjacentEdgeIterator            adjEdgeEnd();
-	ConstAdjacentEdgeIterator       adjEdgeBegin() const;
-	ConstAdjacentEdgeIterator       adjEdgeEnd() const;
-	View<AdjacentEdgeIterator>      adjEdges();
-	View<ConstAdjacentEdgeIterator> adjEdges() const;
+	/**
+	 * @brief Returns an iterator to the first adjacent edge in the container of
+	 * this component.
+	 *
+	 * @return an iterator pointing to the begin of this container.
+	 */
+	AdjacentEdgeIterator adjEdgeBegin() { return Base::container().begin(); }
+
+	/**
+	 * @brief Returns an iterator to the end of the container of this component.
+	 *
+	 * @return an iterator pointing to the end of this container.
+	 */
+	AdjacentEdgeIterator adjEdgeEnd() { return Base::container().end(); }
+
+	/**
+	 * @brief Returns a const iterator to the first adjacent edge in the
+	 * container of this component.
+	 *
+	 * @return an iterator pointing to the begin of this container.
+	 */
+	ConstAdjacentEdgeIterator adjEdgeBegin() const
+	{
+		return Base::container().begin();
+	}
+
+	/**
+	 * @brief Returns a const iterator to the end of the container of this
+	 * component.
+	 *
+	 * @return an iterator pointing to the end of this container.
+	 */
+	ConstAdjacentEdgeIterator adjEdgeEnd() const
+	{
+		return Base::container().end();
+	}
+
+	/**
+	 * @brief Returns a lightweight view object that stores the begin and end
+	 * iterators of the container of adjacent edges of the element. The view
+	 * object exposes the iterators trough the `begin()` and `end()` member
+	 * functions, and therefore the returned object can be used in range-based
+	 * for loops:
+	 *
+	 * @code{.cpp}
+	 * for (auto* adjEdge : el.adjEdges()) {
+	 *     // Do something with adjEdge
+	 * }
+	 * @endcode
+	 *
+	 * @return a lightweight view object that can be used in range-based for
+	 * loops to iterate over adjacent edges.
+	 */
+	View<AdjacentEdgeIterator> adjEdges()
+	{
+		return View(adjEdgeBegin(), adjEdgeEnd());
+	}
+
+	/**
+	 * @brief Returns a lightweight const view object that stores the begin and
+	 * end iterators of the container of adjacent edges of the element. The view
+	 * object exposes the iterators trough the `begin()` and `end()` member
+	 * functions, and therefore the returned object can be used in range-based
+	 * for loops:
+	 *
+	 * @code{.cpp}
+	 * for (const auto* adjEdge : el.adjEdges()) {
+	 *     // Do something read-only with adjEdge
+	 * }
+	 * @endcode
+	 *
+	 * @return a lightweight view object that can be used in range-based for
+	 * loops to iterate over adjacent edges.
+	 */
+	View<ConstAdjacentEdgeIterator> adjEdges() const
+	{
+		return View(adjEdgeBegin(), adjEdgeEnd());
+	}
 
 protected:
 	// Component interface function
-	template <typename Element>
-	void importFrom(const Element& e);
+	template<typename Element>
+	void importFrom(const Element&)
+	{
+	}
 
 	// PointersComponent interface functions
 	template<typename Element, typename ElEType>
-	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase);
+	void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase)
+	{
+		if constexpr (HasAdjacentEdges<Element>) {
+			if (isAdjacentEdgesAvailableOn(e)) {
+				if constexpr (N > 0) {
+					// same static size
+					if constexpr (N == Element::ADJ_EDGE_NUMBER) {
+						importPtrsFrom(e, base, ebase);
+					}
+					// from dynamic to static, but dynamic size == static size
+					else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
+						if (e.adjEdgesNumber() == N) {
+							importPtrsFrom(e, base, ebase);
+						}
+					}
+					else {
+						// do not import in this case: cannot import from dynamic
+						// size != static size
+					}
+				}
+				else {
+					// from static/dynamic to dynamic size: need to resize first,
+					// then import
+					resize(e.adjEdgesNumber());
+					importPtrsFrom(e, base, ebase);
+				}
+			}
+		}
+	}
 
 	// ContainerComponent interface functions
-	void resize(uint n) requires (N < 0);
-	void pushBack(Edge* e = nullptr) requires (N < 0);
-	void insert(uint i, Edge* e = nullptr) requires (N < 0);
-	void erase(uint i) requires (N < 0);
-	void clear() requires (N < 0);
+	void resize(uint n) requires (N < 0) { Base::container().resize(n); }
+
+	void pushBack(Edge* e = nullptr) requires (N < 0)
+	{
+		Base::container().pushBack(e);
+	}
+
+	void insert(uint i, Edge* e = nullptr) requires (N < 0)
+	{
+		Base::container().insert(i, e);
+	}
+
+	void erase(uint i) requires (N < 0) { Base::container().erase(i); }
+
+	void clear() requires (N < 0) { Base::container().clear(); }
 
 private:
 	template<typename Element, typename ElEType>
-	void importPtrsFrom(const Element& e, Edge* base, const ElEType* ebase);
+	void importPtrsFrom(const Element& e, Edge* base, const ElEType* ebase)
+	{
+		if (ebase != nullptr && base != nullptr) {
+			for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
+				if (e.adjEdge(i) != nullptr) {
+					adjEdge(i) = base + (e.adjEdge(i) - ebase);
+				}
+			}
+		}
+	}
 };
 
 /* Detector function to check if a class has AdjacentEdges available */
 
-bool isAdjacentEdgesAvailableOn(const ElementConcept auto& element);
+/**
+ * @brief Checks if the given Element has AdjacentEdges available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that satisfies
+ * the ElementConcept.
+ * @return `true` if the element has AdjacentEdges available, `false` otherwise.
+ */
+bool isAdjacentEdgesAvailableOn(const ElementConcept auto& element)
+{
+	return isComponentAvailableOn<ADJACENT_EDGES>(element);
+}
 
 } // namespace vcl::comp
-
-#include "adjacent_edges.cpp"
 
 #endif // VCL_MESH_COMPONENTS_ADJACENT_EDGES_H

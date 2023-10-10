@@ -136,24 +136,75 @@ protected:
 
 	/* Constructor */
 
-	ContainerComponent();
+	/*
+	 * Create a container of T objects.
+	 * If this Container is a static array, all its element will be initialized
+	 * to T(). If this Container is a dynamic vector, it will be an empty
+	 * container.
+	 */
+	ContainerComponent()
+	{
+		if constexpr (!Base::IS_VERTICAL) {
+			if constexpr (N >= 0) {
+				Base::data().fill(T());
+			}
+		}
+	}
 
-	void init();
+	/*
+	 * Create a container of Objects.
+	 * If this Container is a static array, all its element will be initialized
+	 * to T(). If this Container is a dynamic vector, it will be an empty
+	 * container.
+	 */
+	void init()
+	{
+		if constexpr (N >= 0) {
+			// I'll use the array, N is >= 0.
+			// There will be a static number of objects.
+			container().fill(T());
+		}
+		else {
+			// I'll use the vector, because N is < 0.
+			// There will be a dynamic number of objects.
+			container().clear();
+		}
+	}
 
-	Vector<T, N>& container();
+	Vector<T, N>& container()
+	{
+		if constexpr (HAS_ADDITIONAL_DATA) {
+			return std::get<0>(Base::data());
+		}
+		else {
+			return Base::data();
+		}
+	}
 
-	const Vector<T, N>& container() const;
+	const Vector<T, N>& container() const
+	{
+		if constexpr (HAS_ADDITIONAL_DATA) {
+			return std::get<0>(Base::data());
+		}
+		else {
+			return Base::data();
+		}
+	}
 
 	template<typename AdDt = AdditionalData>
-	AdDt& additionalData() requires (HAS_ADDITIONAL_DATA);
+	AdDt& additionalData() requires (HAS_ADDITIONAL_DATA)
+	{
+		return std::get<1>(Base::data());
+	}
 
 	template<typename AdDt = AdditionalData>
 	const AdDt& additionalData() const
-		requires (HAS_ADDITIONAL_DATA);
+		requires (HAS_ADDITIONAL_DATA)
+	{
+		return std::get<1>(Base::data());
+	}
 };
 
 } // namespace vcl::comp
-
-#include "container_component.cpp"
 
 #endif // VCL_MESH_COMPONENTS_BASES_CONTAINER_COMPONENT_H

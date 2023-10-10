@@ -5,14 +5,6 @@
 namespace vcl::mesh {
 
 /**
- * @brief Empty constructor that creates an empty container of %EL_UC%s.
- */
-template<%EL_UC%Concept T>
-%EL_UC%Container<T>::%EL_UC%Container()
-{
-}
-
-/**
  * @brief Returns a const reference of the %EL_UC% at the i-th position
  * in the %EL_UC% Container of the Mesh, which will be the %EL_UC% having
  * index = i.
@@ -165,7 +157,7 @@ void %EL_UC%Container<T>::clear%EL_UC%s()
  * resize%EL_UC%s(5) will not cause a reallocation of the container, but will
  * mark as deleted the least 5 non-deleted %EL_UC%s of the container. In the
  * same scenario, calling resize%EL_UC%s(15) will result in a %EL_UC%
- * container having 15 new %EL_UC%s and %EL_C%ContainerSize() == 25.
+ * container having 15 %EL_UC%s and %EL_C%ContainerSize() == 25.
  * The latest 5 %EL_UC%s will be the newly added.
  *
  * @warning Any pointer to deleted %EL_UC%s in the Mesh will be left

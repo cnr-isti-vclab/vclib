@@ -24,35 +24,119 @@
 #ifndef VCL_IO_INTERNAL_IO_WRITE_H
 #define VCL_IO_INTERNAL_IO_WRITE_H
 
+#include <typeindex>
+
 #include "io_utils.h"
 
 namespace vcl::io::internal {
 
-// write/bin
+template<typename T>
+void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+{
+	if (isColor && !std::is_integral<T>::value)
+		p *= 255;
+	char tmp = p;
+	if (bin)
+		file.write((const char*) &tmp, 1);
+	else
+		file << (int) p << " "; // cast necessary to not print the ascii char
+}
 
 template<typename T>
-void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+void writeUChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+{
+	if (isColor && !std::is_integral<T>::value)
+		p *= 255;
+	unsigned char tmp = p;
+	if (bin)
+		file.write((const char*) &tmp, 1);
+	else
+		file << (uint) p << " "; // cast necessary to not print the ascii char
+}
 
 template<typename T>
-void writeUChar(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+void writeShort(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+{
+	if (isColor && !std::is_integral<T>::value)
+		p *= 255;
+	short tmp = p;
+	if (bin)
+		file.write((const char*) &tmp, 2);
+	else
+		file << tmp << " ";
+}
 
 template<typename T>
-void writeShort(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+void writeUShort(
+	std::ofstream& file,
+	T              p,
+	bool           bin     = true,
+	bool           isColor = false)
+{
+	if (isColor && !std::is_integral<T>::value)
+		p *= 255;
+	unsigned short tmp = p;
+	if (bin)
+		file.write((const char*) &tmp, 2);
+	else
+		file << tmp << " ";
+}
 
 template<typename T>
-void writeUShort(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+void writeInt(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+{
+	if (isColor && !std::is_integral<T>::value)
+		p *= 255;
+	int tmp = p;
+	if (bin)
+		file.write((const char*) &tmp, 4);
+	else
+		file << tmp << " ";
+}
 
 template<typename T>
-void writeInt(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+void writeUInt(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+{
+	if (isColor && !std::is_integral<T>::value)
+		p *= 255;
+	uint tmp = p;
+	if (bin)
+		file.write((const char*) &tmp, 4);
+	else
+		file << tmp << " ";
+}
 
 template<typename T>
-void writeUInt(std::ofstream& file, T p, bool bin = true, bool isColor = false);
+void writeFloat(
+	std::ofstream& file,
+	const T&       p,
+	bool           bin     = true,
+	bool           isColor = false)
+{
+	float tmp = p;
+	if (isColor && std::is_integral<T>::value)
+		tmp /= 255;
+	if (bin)
+		file.write((const char*) &tmp, 4);
+	else
+		file << tmp << " ";
+}
 
 template<typename T>
-void writeFloat(std::ofstream& file, const T& p, bool bin = true, bool isColor = false);
-
-template<typename T>
-void writeDouble(std::ofstream& file, const T& p, bool bin = true, bool isColor = false);
+void writeDouble(
+	std::ofstream& file,
+	const T&       p,
+	bool           bin     = true,
+	bool           isColor = false)
+{
+	double tmp = p;
+	if (isColor && std::is_integral<T>::value)
+		tmp /= 255;
+	if (bin)
+		file.write((const char*) &tmp, 8);
+	else
+		file << tmp << " ";
+}
 
 template<typename T>
 void writeProperty(
@@ -60,7 +144,20 @@ void writeProperty(
 	const T&       p,
 	PropertyType   type,
 	bool           bin     = true,
-	bool           isColor = false);
+	bool           isColor = false)
+{
+	switch (type) {
+	case CHAR: writeChar(file, p, bin, isColor); break;
+	case UCHAR: writeUChar(file, p, bin, isColor); break;
+	case SHORT: writeShort(file, p, bin, isColor); break;
+	case USHORT: writeUShort(file, p, bin, isColor); break;
+	case INT: writeInt(file, p, bin, isColor); break;
+	case UINT: writeUInt(file, p, bin, isColor); break;
+	case FLOAT: writeFloat(file, p, bin, isColor); break;
+	case DOUBLE: writeDouble(file, p, bin, isColor); break;
+	default: assert(0);
+	}
+}
 
 template<ElementConcept El>
 void writeCustomComponent(
@@ -68,10 +165,43 @@ void writeCustomComponent(
 	const El&          elem,
 	const std::string& cName,
 	PropertyType       type,
-	bool               bin = true);
+	bool               bin = true)
+{
+	std::type_index ti = elem.customComponentType(cName);
+	if (ti == typeid(char))
+		writeProperty(
+			file, elem.template customComponent<char>(cName), type, bin);
+	else if (ti == typeid(unsigned char))
+		writeProperty(
+			file,
+			elem.template customComponent<unsigned char>(cName),
+			type,
+			bin);
+	else if (ti == typeid(short))
+		writeProperty(
+			file, elem.template customComponent<short>(cName), type, bin);
+	else if (ti == typeid(unsigned short))
+		writeProperty(
+			file,
+			elem.template customComponent<unsigned short>(cName),
+			type,
+			bin);
+	else if (ti == typeid(int))
+		writeProperty(
+			file, elem.template customComponent<int>(cName), type, bin);
+	else if (ti == typeid(unsigned int))
+		writeProperty(
+			file, elem.template customComponent<uint>(cName), type, bin);
+	else if (ti == typeid(float))
+		writeProperty(
+			file, elem.template customComponent<float>(cName), type, bin);
+	else if (ti == typeid(double))
+		writeProperty(
+			file, elem.template customComponent<double>(cName), type, bin);
+	else
+		assert(0);
+}
 
 } // namespace vcl::io::internal
-
-#include "io_write.cpp"
 
 #endif // VCL_IO_INTERNAL_IO_WRITE_H

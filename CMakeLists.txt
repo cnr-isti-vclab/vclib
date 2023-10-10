@@ -261,7 +261,6 @@ set(HEADERS
 	include/vclib/misc/file_info.h
 	include/vclib/misc/hash.h
 	include/vclib/misc/logger.h
-	include/vclib/misc/mark.h
 	include/vclib/misc/mesh_info.h
 	include/vclib/misc/nested_initializer_lists.h
 	include/vclib/misc/pair.h
@@ -274,8 +273,6 @@ set(HEADERS
 	include/vclib/misc/logger/console_logger.h
 	include/vclib/misc/logger/logger.h
 	include/vclib/misc/logger/null_logger.h
-	include/vclib/misc/mark/markable.h
-	include/vclib/misc/mark/markable_vector.h
 	include/vclib/render/drawable_object.h
 	include/vclib/render/drawable_object_vector.h
 	include/vclib/render/generic_drawable_mesh.h
@@ -342,169 +339,13 @@ set(HEADERS
 	include/vclib/views/mesh/elements/vertex.h
 )
 
-set(SOURCES
-	include/vclib/algorithms/bounding_box.cpp
-	include/vclib/algorithms/clean.cpp
-	include/vclib/algorithms/filter.cpp
-	include/vclib/algorithms/fitting.cpp
-	include/vclib/algorithms/point_sampling.cpp
-	include/vclib/algorithms/shuffle.cpp
-	include/vclib/algorithms/smooth.cpp
-	include/vclib/algorithms/sort.cpp
-	include/vclib/algorithms/stat.cpp
-	include/vclib/algorithms/create/dodecahedron.cpp
-	include/vclib/algorithms/create/hexahedron.cpp
-	include/vclib/algorithms/create/icosahedron.cpp
-	include/vclib/algorithms/create/sphere.cpp
-	include/vclib/algorithms/create/tetrahedron.cpp
-	include/vclib/algorithms/distance/element.cpp
-	include/vclib/algorithms/distance/mesh.cpp
-	include/vclib/algorithms/distance/misc.cpp
-	include/vclib/algorithms/export/matrix.cpp
-	include/vclib/algorithms/import/matrix.cpp
-	include/vclib/algorithms/intersection/element.cpp
-	include/vclib/algorithms/intersection/mesh.cpp
-	include/vclib/algorithms/intersection/misc.cpp
-	include/vclib/algorithms/polygon/geometry.cpp
-	include/vclib/algorithms/polygon/topology.cpp
-	include/vclib/algorithms/stat/quality.cpp
-	include/vclib/algorithms/stat/selection.cpp
-	include/vclib/algorithms/update/bounding_box.cpp
-	include/vclib/algorithms/update/color.cpp
-	include/vclib/algorithms/update/curvature.cpp
-	include/vclib/algorithms/update/flag.cpp
-	include/vclib/algorithms/update/normal.cpp
-	include/vclib/algorithms/update/quality.cpp
-	include/vclib/algorithms/update/selection.cpp
-	include/vclib/algorithms/update/topology.cpp
-	include/vclib/algorithms/update/transform.cpp
-	include/vclib/io/load.cpp
-	include/vclib/io/save.cpp
-	include/vclib/io/internal/io_read.cpp
-	include/vclib/io/internal/io_utils.cpp
-	include/vclib/io/internal/io_write.cpp
-	include/vclib/io/obj/load.cpp
-	include/vclib/io/obj/material.cpp
-	include/vclib/io/obj/save.cpp
-	include/vclib/io/off/load.cpp
-	include/vclib/io/off/save.cpp
-	include/vclib/io/off/utils.cpp
-	include/vclib/io/ply/load.cpp
-	include/vclib/io/ply/ply_edge.cpp
-	include/vclib/io/ply/ply_extra.cpp
-	include/vclib/io/ply/ply_face.cpp
-	include/vclib/io/ply/ply_header.cpp
-	include/vclib/io/ply/ply_tristrip.cpp
-	include/vclib/io/ply/ply_vertex.cpp
-	include/vclib/io/ply/save.cpp
-	include/vclib/io/stl/load.cpp
-	include/vclib/io/stl/save.cpp
-	include/vclib/iterators/mesh/element_container_iterator.cpp
-	include/vclib/iterators/mesh/face/edge_adj_face_iterator.cpp
-	include/vclib/iterators/space/grid/cell_iterator.cpp
-	include/vclib/iterators/space/grid/static_grid_iterator.cpp
-	include/vclib/math/distribution.cpp
-	include/vclib/math/fibonacci.cpp
-	include/vclib/math/histogram.cpp
-	include/vclib/math/min_max.cpp
-	include/vclib/math/perlin_noise.cpp
-	include/vclib/math/base.cpp
-	include/vclib/math/random.cpp
-	include/vclib/math/transform.cpp
-	include/vclib/mesh/mesh.cpp
-	include/vclib/mesh/components/adjacent_edges.cpp
-	include/vclib/mesh/components/adjacent_faces.cpp
-	include/vclib/mesh/components/adjacent_vertices.cpp
-	include/vclib/mesh/components/bit_flags.cpp
-	include/vclib/mesh/components/bounding_box.cpp
-	include/vclib/mesh/components/color.cpp
-	include/vclib/mesh/components/coordinate.cpp
-	include/vclib/mesh/components/custom_components.cpp
-	include/vclib/mesh/components/mark.cpp
-	include/vclib/mesh/components/name.cpp
-	include/vclib/mesh/components/normal.cpp
-	include/vclib/mesh/components/parent_mesh_pointer.cpp
-	include/vclib/mesh/components/polygon_bit_flags.cpp
-	include/vclib/mesh/components/principal_curvature.cpp
-	include/vclib/mesh/components/quality.cpp
-	include/vclib/mesh/components/tex_coord.cpp
-	include/vclib/mesh/components/texture_paths.cpp
-	include/vclib/mesh/components/transform_matrix.cpp
-	include/vclib/mesh/components/triangle_bit_flags.cpp
-	include/vclib/mesh/components/vertex_pointers.cpp
-	include/vclib/mesh/components/wedge_colors.cpp
-	include/vclib/mesh/components/wedge_tex_coords.cpp
-	include/vclib/mesh/components/bases/container_component.cpp
-	include/vclib/mesh/components/bases/pointers_container_component.cpp
-	include/vclib/mesh/containers/custom_component_vector_handle.cpp
-	include/vclib/mesh/containers/custom_components_vector_map.cpp
-	include/vclib/mesh/containers/edge_container.cpp
-	include/vclib/mesh/containers/element_container.cpp
-	include/vclib/mesh/containers/face_container.cpp
-	include/vclib/mesh/containers/vertex_container.cpp
-	include/vclib/mesh/containers/vertical_components_vector_tuple.cpp
-	include/vclib/mesh/elements/element.cpp
-	include/vclib/mesh/elements/face.cpp
-	include/vclib/mesh/requirements/edge_requirements.cpp
-	include/vclib/mesh/requirements/element_requirements.cpp
-	include/vclib/mesh/requirements/face_requirements.cpp
-	include/vclib/mesh/requirements/mesh_requirements.cpp
-	include/vclib/mesh/requirements/vertex_requirements.cpp
-	include/vclib/mesh/utils/mesh_inertia.cpp
-	include/vclib/mesh/utils/mesh_pos.cpp
-	include/vclib/mesh/utils/tri_poly_index_bimap.cpp
-	include/vclib/misc/compactness.cpp
-	include/vclib/misc/file_info.cpp
-	include/vclib/misc/mesh_info.cpp
-	include/vclib/misc/nested_initializer_lists.cpp
-	include/vclib/misc/parallel.cpp
-	include/vclib/misc/string.cpp
-	include/vclib/misc/timer.cpp
-	include/vclib/misc/tokenizer.cpp
-	include/vclib/misc/logger/console_logger.cpp
-	include/vclib/misc/logger/logger.cpp
-	include/vclib/misc/mark/markable_vector.cpp
-	include/vclib/render/drawable_object_vector.cpp
-	include/vclib/render/generic_drawable_mesh.cpp
-	include/vclib/render/mesh_render_buffers.cpp
-	include/vclib/render/mesh_render_settings.cpp
-	include/vclib/space/array.cpp
-	include/vclib/space/bit_set.cpp
-	include/vclib/space/box.cpp
-	include/vclib/space/color.cpp
-	include/vclib/space/matrix.cpp
-	include/vclib/space/kd_tree.cpp
-	include/vclib/space/image.cpp
-	include/vclib/space/plane.cpp
-	include/vclib/space/principal_curvature.cpp
-	include/vclib/space/point.cpp
-	include/vclib/space/polygon.cpp
-	include/vclib/space/segment.cpp
-	include/vclib/space/sphere.cpp
-	include/vclib/space/tex_coord.cpp
-	include/vclib/space/triangle.cpp
-	include/vclib/space/triangle_wrapper.cpp
-	include/vclib/space/vector.cpp
-	include/vclib/space/bit_set/bit_proxy.cpp
-	include/vclib/space/graph/undirected_node.cpp
-	include/vclib/space/graph/bipartite/bipartite_graph.cpp
-	include/vclib/space/graph/bipartite/iterator/adjacent_node_iterator.cpp
-	include/vclib/space/grid/abstract_grid.cpp
-	include/vclib/space/grid/hash_table_grid.cpp
-	include/vclib/space/grid/regular_grid.cpp
-	include/vclib/space/grid/static_grid.cpp
-	include/vclib/space/sampler/mesh_sampler.cpp
-	include/vclib/space/sampler/point_sampler.cpp
-	include/vclib/space/sampler/vertex_sampler.cpp
-)
-
 set(HEADERS_LIB
 	)
 
 set(SOURCES_LIB
 	)
 
-set (FORMS_LIB
+set(FORMS_LIB
 	)
 
 # headers and sources to include only if using OpenGL
@@ -513,20 +354,12 @@ if (TARGET vclib-external-opengl)
 		include/vclib/ext/opengl2/draw_objects2.h
 		include/vclib/ext/opengl2/draw_objects3.h
 		include/vclib/ext/opengl2/drawable_mesh.h)
-
-	list(APPEND SOURCES
-		include/vclib/ext/opengl2/draw_objects2.cpp
-		include/vclib/ext/opengl2/draw_objects3.cpp
-		include/vclib/ext/opengl2/drawable_mesh.cpp)
 endif()
 
 # headers and sources to include only if using qt
 if (TARGET vclib-external-qt)
 	# header only sources
 	list(APPEND HEADERS
-		)
-
-	list(APPEND SOURCES
 		)
 
 	# sources that must be built
@@ -553,9 +386,6 @@ if (TARGET vclib-external-qt)
 		list(APPEND HEADERS
 			include/vclib/ext/qglviewer/gl_area.h)
 
-		list(APPEND SOURCES
-			include/vclib/ext/qglviewer/gl_area.cpp)
-
 		# sources that must be built
 		list(APPEND HEADERS_LIB
 			include/vclib/ext/qglviewer/viewer_main_window.h)
@@ -572,9 +402,6 @@ endif()
 if (TARGET vclib-external-vcg)
 	list(APPEND HEADERS
 		include/vclib/ext/vcg/import.h)
-
-	list(APPEND SOURCES
-		include/vclib/ext/vcg/import.cpp)
 endif()
 
 add_library(vclib INTERFACE)
@@ -592,7 +419,7 @@ endif()
 
 if (VCLIB_IDE)
 	add_custom_target(vclib_ide SOURCES
-		${HEADERS} ${HEADERS_LIB} ${SOURCES} ${SOURCES_LIB} ${FORMS_LIB})
+		${HEADERS} ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
 endif()
 
 if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)

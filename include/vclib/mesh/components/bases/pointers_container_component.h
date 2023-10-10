@@ -24,6 +24,8 @@
 #ifndef VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
 
+#include <algorithm>
+
 #include <vclib/space/vector.h>
 
 #include "container_component.h"
@@ -101,13 +103,70 @@ class PointersContainerComponent :
 protected:
 	using Base::container;
 
-	void updatePointers(const Elem* oldBase, const Elem* newBase);
+	/*
+	 * This member function is called when we need to update the pointers in
+	 * this container after a reallocation (the pointer of the first element of
+	 * the container is changed from oldBase to newBase).
+	 *
+	 * This is necessary when, for example, the original container of Elements
+	 * has been reallocated. When this happens, the all the Elements have been
+	 * moved in another portion of memory, and all the pointers to that Elements
+	 * must be updated. Since in this container are stored pointers to Elements,
+	 * we need to update them.
+	 *
+	 * To update them, we need to know the oldBase (the pointer to the first
+	 * Element of the reallocated Container before the reallocation) and the
+	 * newBase (the pointer to the first Element of the reallocated Container
+	 * after the reallocation. We can then compute, for each pointer, the offset
+	 * w.r.t. the first element of the Container, and update the the pointer
+	 * accordingly using the newBase.
+	 */
+	void updatePointers(const Elem* oldBase, const Elem* newBase)
+	{
 
-	void updatePointers(const Elem* base, const std::vector<uint>& newIndices);
+		auto& baseContainer = Base::container();
+
+		for (uint j = 0; j < baseContainer.size(); ++j)
+		{ // for each pointer in this container
+			if (baseContainer.at(j) != nullptr) {
+				size_t diff =
+					baseContainer.at(j) - oldBase; // offset w.r.t. the old base
+				baseContainer.at(j) =
+					(Elem*) newBase + diff; // update the pointer using newBase
+			}
+		}
+	}
+
+	/*
+	 * This member function is called when we need to update the pointers in
+	 * this containers, usually after a compaction of the container (but not
+	 * always).
+	 *
+	 * In this case, the address of the first element in the container is not
+	 * changed, but may change the position of each element inside the
+	 * container. The function takes the base pointer of the first element of
+	 * the container, and a vector that stores, for each old element position,
+	 * the new position in the container (UINT_NULL if the element has been
+	 * removed and must be left unreferenced).
+	 */
+	void updatePointers(const Elem* base, const std::vector<uint>& newIndices)
+	{
+		auto& baseContainer = Base::container();
+
+		for (uint j = 0; j < baseContainer.size(); ++j) {
+			if (baseContainer.at(j) != nullptr) {
+				size_t diff = baseContainer.at(j) - base;
+				if (newIndices[diff] == UINT_NULL) { // element has been removed
+					baseContainer.at(j) = nullptr;
+				}
+				else { // the new pointer will be base + newIndices[diff]
+					baseContainer.at(j) = (Elem*) base + newIndices[diff];
+				}
+			}
+		}
+	}
 };
 
 } // namespace vcl::comp
-
-#include "pointers_container_component.cpp"
 
 #endif // VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H

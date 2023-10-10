@@ -30,9 +30,11 @@
 namespace vcl {
 
 /**
- * @brief The PairComparator struct is an utility comparator to allow to sort pairs in lexical order
+ * @brief The PairComparator struct is an utility comparator to allow to sort
+ * pairs in lexical order
  *
- * It first compare the first element, and in case they are equal it compares the second element.
+ * It first compare the first element, and in case they are equal it compares
+ * the second element.
  */
 template<typename Pair>
 struct PairComparator
@@ -47,10 +49,10 @@ struct PairComparator
 };
 
 /**
- * @brief The UnorderedPairComparator struct is an utility comparator to allow to sort unordered
- * std::pair<T, T>, that means that it is not important the order of the first and the second
- * element of the pair. This menas that pairs (1, 2) and (2, 1) are considered equal, and
- * (3, 1) < (2, 3).
+ * @brief The UnorderedPairComparator struct is an utility comparator to allow
+ * to sort unordered std::pair<T, T>, that means that it is not important the
+ * order of the first and the second element of the pair. This menas that pairs
+ * (1, 2) and (2, 1) are considered equal, and (3, 1) < (2, 3).
  */
 template<typename T>
 struct UnorderedPairComparator
@@ -70,11 +72,12 @@ struct UnorderedPairComparator
 };
 
 /**
- * @brief The FirstElementPairComparator struct is an utility comparator that allow to sort
- * std::pair (or any type that has a sortable member called 'first') using only its first element.
- * The second element of the Pair type is ignored and won't be considered by the comparator.
- * This means that pairs having equal first elements but different second elements will be
- * considered as equals.
+ * @brief The FirstElementPairComparator struct is an utility comparator that
+ * allow to sort std::pair (or any type that has a sortable member called
+ * 'first') using only its first element. The second element of the Pair type is
+ * ignored and won't be considered by the comparator. This means that pairs
+ * having equal first elements but different second elements will be considered
+ * as equals.
  */
 template<typename Pair>
 struct FirstElementPairComparator

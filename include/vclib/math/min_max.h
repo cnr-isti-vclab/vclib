@@ -29,29 +29,51 @@
 namespace vcl {
 
 template<typename T>
-constexpr auto min(const T& el1, const T& el2);
+constexpr auto min(const T& el1, const T& el2)
+{
+	return std::min(el1, el2);
+}
 
-template <typename Head, typename... Tail>
-constexpr auto min(const Head& head0, const Head& head1, const Tail&... tail) requires(sizeof...(tail) > 0);
+template<typename Head, typename... Tail>
+constexpr auto min(const Head& head0, const Head& head1, const Tail&... tail)
+	requires (sizeof...(tail) > 0)
+{
+	return min(min(head0, head1), tail...);
+}
 
 template<typename T>
-constexpr auto max(const T& el1, const T& el2);
+constexpr auto max(const T& el1, const T& el2)
+{
+	return std::max(el1, el2);
+}
 
-template <typename Head, typename... Tail>
-constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail) requires(sizeof...(tail) > 0);
-
-// min specializations
+template<typename Head, typename... Tail>
+constexpr auto max(const Head& head0, const Head& head1, const Tail&... tail)
+	requires (sizeof...(tail) > 0)
+{
+	return max(max(head0, head1), tail...);
+}
 
 template<PointConcept PointType>
-constexpr auto min(const PointType& p1, const PointType& p2);
-
-// max specializations
+constexpr auto min(const PointType& p1, const PointType& p2)
+{
+	PointType p;
+	for (size_t i = 0; i < p.DIM; i++) {
+		p[i] = std::min(p1[i], p2[i]);
+	}
+	return p;
+}
 
 template<PointConcept PointType>
-constexpr auto max(const PointType& p1, const PointType& p2);
+constexpr auto max(const PointType& p1, const PointType& p2)
+{
+	PointType p;
+	for (size_t i = 0; i < p.DIM; i++) {
+		p[i] = std::max(p1[i], p2[i]);
+	}
+	return p;
+}
 
 } // namespace vcl
-
-#include "min_max.cpp"
 
 #endif // VCL_MATH_MIN_MAX_H

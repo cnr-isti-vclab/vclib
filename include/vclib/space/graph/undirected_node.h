@@ -31,32 +31,48 @@ namespace vcl {
 template<class T>
 class UndirectedNode
 {
-public:
-	using InfoType = T;
-
-	UndirectedNode();
-	UndirectedNode(const T& info);
-
-	const T& info() const;
-	T&       info();
-
-	void addAdjacent(unsigned int node);
-	bool isAdjacent(unsigned int node) const;
-	void deleteAdjacent(unsigned int node);
-	void clearAdjacentNodes();
-
-	std::unordered_set<unsigned int>::const_iterator begin() const;
-	std::unordered_set<unsigned int>::const_iterator end() const;
-
-	unsigned int sizeAdjacentNodes() const;
-
 protected:
 	T                                inf;
 	std::unordered_set<unsigned int> adjacentNodes;
+
+public:
+	using InfoType = T;
+
+	UndirectedNode() {}
+
+	UndirectedNode(const T& info) : inf(info) {}
+
+	const T& info() const { return inf; }
+
+	T& info() { return inf; }
+
+	void addAdjacent(unsigned int node) { adjacentNodes.insert(node); }
+
+	bool isAdjacent(unsigned int node) const
+	{
+		return adjacentNodes.find(node) != adjacentNodes.end();
+	}
+
+	void deleteAdjacent(unsigned int node) { adjacentNodes.erase(node); }
+
+	void clearAdjacentNodes() { adjacentNodes.clear(); }
+
+	std::unordered_set<unsigned int>::const_iterator begin() const
+	{
+		return adjacentNodes.begin();
+	}
+
+	std::unordered_set<unsigned int>::const_iterator end() const
+	{
+		return adjacentNodes.end();
+	}
+
+	unsigned int sizeAdjacentNodes() const
+	{
+		return (unsigned int) adjacentNodes.size();
+	}
 };
 
 } // namespace vcl
-
-#include "undirected_node.cpp"
 
 #endif // VCL_SPACE_GRAPH_UNDIRECTED_NODE_H

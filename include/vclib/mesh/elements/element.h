@@ -72,27 +72,64 @@ public:
 
 	static const uint ELEMENT_ID = ELEM_ID;
 
-	uint index() const;
+	uint index() const
+	{
+		assert(comp::ParentMeshPointer<MeshType>::parentMesh());
+		return comp::ParentMeshPointer<MeshType>::parentMesh()
+			->template elementIndex<ELEM_ID>(this);
+	}
 
 	template<uint COMP_ID>
-	auto& component();
+	auto& component()
+	{
+		using Comp = GetComponentFromID<COMP_ID>::type;
+		return *static_cast<Comp*>(this);
+	}
 
 	template<uint COMP_ID>
-	const auto& component() const;
+	const auto& component() const
+	{
+		using Comp = GetComponentFromID<COMP_ID>::type;
+		return *static_cast<const Comp*>(this);
+	}
 
 	template<typename ElType>
-	void importFrom(const ElType& v);
+	void importFrom(const ElType& v)
+	{
+		(Comps::importFrom(v), ...);
+	}
+
 
 private:
 	// hide init and isAvailable members
 	void init() {}
+
 	bool isAvailable() const { return true; }
 
 	// init to call after set parent mesh
-	void initVerticalComponents();
+	void initVerticalComponents()
+	{
+		(construct<Comps>(), ...);
+	}
 
 	template<typename Comp>
-	void construct();
+	void construct()
+	{
+		if constexpr (
+			comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>)
+		{
+			if constexpr (comp::HasIsAvailableMemberFunction<Comp>) {
+				if (Comp::isAvailable()) {
+					Comp::init();
+				}
+			}
+			// no possibility to check if is available, it means that is always
+			// available
+			else {
+				Comp::init();
+			}
+		}
+	}
 
 	// Predicate structures
 
@@ -136,7 +173,5 @@ private:
 };
 
 } // namespace vcl
-
-#include "element.cpp"
 
 #endif // VCL_MESH_ELEMENTS_ELEMENT_H

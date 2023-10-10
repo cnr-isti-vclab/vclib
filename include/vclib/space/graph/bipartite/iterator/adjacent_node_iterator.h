@@ -29,23 +29,41 @@ namespace vcl::internal {
 template<typename Graph, typename Iterator>
 class AdjacentNodeIterator
 {
-public:
-	AdjacentNodeIterator();
-	AdjacentNodeIterator(const Graph& g, Iterator it);
-
-	bool operator==(const AdjacentNodeIterator& otherIterator) const;
-	bool operator!=(const AdjacentNodeIterator& otherIterator) const;
-
-	AdjacentNodeIterator operator++();
-	AdjacentNodeIterator operator++(int);
-
 protected:
 	const Graph* g = nullptr;
 	Iterator it;
+
+public:
+	AdjacentNodeIterator() {}
+
+	AdjacentNodeIterator(const Graph& g, Iterator it) : g(&g), it(it) {}
+
+	bool operator==(const AdjacentNodeIterator& otherIterator) const
+	{
+		return (g == otherIterator.g && it == otherIterator.it);
+	}
+
+	bool operator!=(const AdjacentNodeIterator& otherIterator) const
+	{
+		return !(*this == otherIterator);
+	}
+
+	AdjacentNodeIterator operator++()
+	{
+		++it;
+		return *this;
+	}
+
+	AdjacentNodeIterator operator++(int)
+	{
+		AdjacentNodeIterator tmp;
+		++it;
+		return tmp;
+	}
+
+
 };
 
 } // namespace vcl::internal
-
-#include "adjacent_node_iterator.cpp"
 
 #endif // VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H

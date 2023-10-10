@@ -24,10 +24,11 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 #define VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H
 
+#include <vclib/concepts/mesh/components/tex_coord.h>
 #include <vclib/concepts/mesh/components/wedge_tex_coords.h>
-#include <vclib/views/view.h>
 #include <vclib/space/tex_coord.h>
 #include <vclib/space/vector.h>
+#include <vclib/views/view.h>
 
 #include "bases/container_component.h"
 
@@ -111,29 +112,192 @@ public:
 
 	/* Member functions */
 
-	vcl::TexCoord<Scalar>&       wedgeTexCoord(uint i);
-	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const;
+	/**
+	 * @brief Returns a reference to the i-th wedge texcoord of the element.
+	 *
+	 * You can use this function to set the i-th texcoord of the element:
+	 *
+	 * @code{.cpp}
+	 * f.wedgeTexCoord(0) = {0.5, 0.5};
+	 * @endcode
+	 *
+	 * @param[in] i: the index of the wedge texcoord to return. The value must
+	 * be between 0 and the number of vertices of the element.
+	 * @return A reference to the i-th wedge texcoord of the element.
+	 */
+	vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) { return texCoords().at(i); }
 
-	vcl::TexCoord<Scalar>&       wedgeTexCoordMod(int i);
-	const vcl::TexCoord<Scalar>& wedgeTexCoordMod(int i) const;
+	/**
+	 * @brief Returns a const reference to the i-th wedge texcoord of the
+	 * element.
+	 *
+	 * @param[in] i: the index of the wedge texcoord to return. The value must
+	 * be between 0 and the number of vertices of the element.
+	 * @return A const reference to the i-th wedge texcoord of the element.
+	 */
+	const vcl::TexCoord<Scalar>& wedgeTexCoord(uint i) const
+	{
+		return texCoords().at(i);
+	}
 
-	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i);
+	/**
+	 * @brief Returns a reference to the i-th wedge texcoord of the element but
+	 * using as index the module between i and the number of vertices of the
+	 * element. You can use this function if you need to get the "next wedge
+	 * texcoord after position k", without check if it is less than the number
+	 * of vertices. Works also for negative numbers:
+	 *
+	 * @code{.cpp}
+	 * f.wedgeTexCoordMod(-1) = {0.1, 0.2}; // the wedge texcoord in position
+	 *                                      // vertexNumber() - 1
+	 * @endcode
+	 *
+	 * @param[in] i: the position of the required wedge texcoord in the
+	 * container, w.r.t. the position 0; value is modularized on vertexNumber().
+	 * @return A reference to the required wedge texcoord of the element.
+	 */
+	vcl::TexCoord<Scalar>& wedgeTexCoordMod(int i)
+	{
+		return texCoords().atMod(i);
+	}
 
+	/**
+	 * @brief Same of wedgeTexCoordMod(int) but returns a const reference.
+	 * @param[in] i: the position of the required wedge texcoord in the
+	 * container, w.r.t. the position 0; value is modularized on vertexNumber().
+	 * @return A const reference to the required wedge texcoord of the element.
+	 */
+	const vcl::TexCoord<Scalar>& wedgeTexCoordMod(int i) const
+	{
+		return texCoords().atMod(i);
+	}
+
+	/**
+	 * @brief Sets the i-th wedge texcoord of the element.
+	 * @param[in] t: the new wedge texcoord.
+	 * @param[in] i: the position in the container on which set the wedge
+	 * texcoord; the value must be between 0 and the number of vertices of the
+	 * element.
+	 */
+	void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i)
+	{
+		texCoords().set(t, i);
+	}
+
+	/**
+	 * @brief Sets all the wedge texcoords of the element.
+	 *
+	 * If the size of the container is static, the size of the input range must
+	 * be the same one of the container.
+	 *
+	 * @tparam Rng: The type of the range of wedge texcoords to set. The value
+	 * type of the range must be convertible to a vcl::TexCoord<Scalar>.
+	 *
+	 * @param[in] r: range of texcoords to set.
+	 */
 	template<Range Rng>
 	void setWedgeTexCoords(Rng&& r)
-		requires RangeOfConvertibleTo<Rng, vcl::TexCoord<Scalar>>;
+		requires RangeOfConvertibleTo<Rng, vcl::TexCoord<Scalar>>
+	{
+		texCoords().set(r);
+	}
 
-	short& textureIndex();
-	short textureIndex() const;
+	/**
+	 * @brief Returns a reference to the texture index used to identify the
+	 * texture on which the wedge texture coordinates are mapped.
+	 *
+	 * @return A reference to the texture index.
+	 */
+	short& textureIndex() { return Base::additionalData(); }
+
+	/**
+	 * @brief Returns the texture index used to identify the texture on which
+	 * the wedge texture coordinates are mapped.
+	 *
+	 * @return The texture index.
+	 */
+	short textureIndex() const { return Base::additionalData(); }
 
 	/* Iterator Member functions */
 
-	WedgeTexCoordsIterator            wedgeTexCoordBegin();
-	WedgeTexCoordsIterator            wedgeTexCoordEnd();
-	ConstWedgeTexCoordsIterator       wedgeTexCoordBegin() const;
-	ConstWedgeTexCoordsIterator       wedgeTexCoordEnd() const;
-	View<WedgeTexCoordsIterator>      wedgeTexCoords();
-	View<ConstWedgeTexCoordsIterator> wedgeTexCoords() const;
+	/**
+	 * @brief Returns an iterator to the first wedge texcoord in the container
+	 * of this component.
+	 *
+	 * @return an iterator pointing to the begin of this container.
+	 */
+	WedgeTexCoordsIterator wedgeTexCoordBegin() { return texCoords().begin(); }
+
+	/**
+	 * @brief Returns an iterator to the end of the container of this component.
+	 *
+	 * @return an iterator pointing to the end of this container.
+	 */
+	WedgeTexCoordsIterator wedgeTexCoordEnd() { return texCoords().end(); }
+
+	/**
+	 * @brief Returns a const iterator to the first wedge texcoord in the
+	 * container of this component.
+	 *
+	 * @return a const iterator pointing to the begin of this container.
+	 */
+	ConstWedgeTexCoordsIterator wedgeTexCoordBegin() const
+	{
+		return texCoords().begin();
+	}
+
+	/**
+	 * @brief Returns a const iterator to the end of the container of this
+	 * component.
+	 *
+	 * @return a const iterator pointing to the end of this container.
+	 */
+	ConstWedgeTexCoordsIterator wedgeTexCoordEnd() const
+	{
+		return texCoords().end();
+	}
+
+	/**
+	 * @brief Returns a lightweight view object that stores the begin and end
+	 * iterators of the container of wedge texcoords of the element. The view
+	 * object exposes the iterators trough the `begin()` and `end()` member
+	 * functions, and therefore the returned object can be used in range-based
+	 * for loops:
+	 *
+	 * @code{.cpp}
+	 * for (auto& tc : el.wedgeTexCoords()) {
+	 *     // Do something with tc
+	 * }
+	 * @endcode
+	 *
+	 * @return a lightweight view object that can be used in range-based for
+	 * loops to iterate over wedge texcoords.
+	 */
+	View<WedgeTexCoordsIterator> wedgeTexCoords()
+	{
+		return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
+	}
+
+	/**
+	 * @brief Returns a lightweight const view object that stores the begin and
+	 * end iterators of the container of wedge texcoords of the element. The
+	 * view object exposes the iterators trough the `begin()` and `end()` member
+	 * functions, and therefore the returned object can be used in range-based
+	 * for loops:
+	 *
+	 * @code{.cpp}
+	 * for (const auto& tc : el.wedgeTexCoords()) {
+	 *     // Do something read-only with tc
+	 * }
+	 * @endcode
+	 *
+	 * @return a lightweight const view object that can be used in range-based
+	 * for loops to iterate over wedge texcoords.
+	 */
+	View<ConstWedgeTexCoordsIterator> wedgeTexCoords() const
+	{
+		return View(wedgeTexCoordBegin(), wedgeTexCoordEnd());
+	}
 
 	// dummy member to discriminate between WedgeTexCoords and
 	// FaceHalfEdgePointers
@@ -144,32 +308,93 @@ protected:
 
 	// Component interface function
 	template <typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr (HasWedgeTexCoords<Element>) {
+			if (isWedgeTexCoordsAvailableOn(e)) {
+				if constexpr(N > 0) {
+					// same static size
+					if constexpr (N == Element::WEDGE_TEX_COORD_NUMBER) {
+						importWedgeTexCoordsFrom(e);
+					}
+					// from dynamic to static, but dynamic size == static size
+					else if constexpr (Element::WEDGE_TEX_COORD_NUMBER < 0){
+						if (e.vertexNumber() == N){
+							importWedgeTexCoordsFrom(e);
+						}
+					}
+					else {
+						// do not import in this case: cannot import from
+						// dynamic size != static size
+					}
+				}
+				else {
+					// from static/dynamic to dynamic size: need to resize
+					// first, then import
+					resize(e.vertexNumber());
+					importWedgeTexCoordsFrom(e);
+				}
+			}
+		}
+	}
 
 	// ContainerComponent interface functions
-	void resize(uint n) requires (N < 0);
+	void resize(uint n) requires (N < 0) { texCoords().resize(n); }
+
 	void pushBack(const vcl::TexCoord<Scalar>& t = vcl::TexCoord<Scalar>())
-		requires (N < 0);
+		requires (N < 0)
+	{
+		texCoords().pushBack(t);
+	}
+
 	void
 	insert(uint i, const vcl::TexCoord<Scalar>& t = vcl::TexCoord<Scalar>())
-		requires (N < 0);
-	void erase(uint i) requires (N < 0);
-	void clear() requires (N < 0);
+		requires (N < 0)
+	{
+		texCoords().insert(i, t);
+	}
+
+	void erase(uint i) requires (N < 0) { texCoords().erase(i); }
+
+	void clear() requires (N < 0) { texCoords().clear(); }
 
 private:
 	template<typename Element>
-	void importWedgeTexCoordsFrom(const Element& e);
+	void importWedgeTexCoordsFrom(const Element& e)
+	{
+		for (uint i = 0; i < e.vertexNumber(); ++i){
+			wedgeTexCoord(i) = e.wedgeTexCoord(i).template cast<Scalar>();
+		}
+		textureIndex() = e.textureIndex();
+	}
 
-	Vector<vcl::TexCoord<Scalar>, N>& texCoords();
-	const Vector<vcl::TexCoord<Scalar>, N>& texCoords() const;
+	Vector<vcl::TexCoord<Scalar>, N>& texCoords() { return Base::container(); }
+
+	const Vector<vcl::TexCoord<Scalar>, N>& texCoords() const
+	{
+		return Base::container();
+	}
 };
 
 /* Detector function to check if a class has WedgeTexCoords available */
 
-bool isWedgeTexCoordsAvailableOn(const ElementConcept auto& element);
+/**
+ * @brief Checks if the given Element has WedgeTexCoords available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that satisfies
+ * the ElementConcept.
+ * @return `true` if the element has WedgeTexCoords available, `false`
+ * otherwise.
+ */
+bool isWedgeTexCoordsAvailableOn(const ElementConcept auto& element)
+{
+	return isComponentAvailableOn<WEDGE_TEX_COORDS>(element);
+}
 
 } // namespace vcl::comp
-
-#include "wedge_tex_coords.cpp"
 
 #endif // VCL_MESH_COMPONENTS_WEDGE_TEX_COORDS_H

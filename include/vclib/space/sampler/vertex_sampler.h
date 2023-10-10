@@ -15,29 +15,35 @@ class VertexSampler
 	using VP = std::conditional_t<CNST, const VertexType*, VertexType*>;
 	using VPar = std::conditional_t<CNST, const VertexType&, VertexType&>;
 
+	std::vector<VP> samplesVec;
+
 public:
 	using PointType = VertexType::CoordType;
 
-	VertexSampler();
+	VertexSampler() {}
 
-	const std::vector<VP> samples() const;
+	const std::vector<VP> samples() const { return samplesVec; }
 
-	const typename VertexType::CoordType& sample(uint i) const;
+	const typename VertexType::CoordType& sample(uint i) const
+	{
+		return samplesVec[i]->coord();
+	}
 
-	std::size_t size() const;
+	std::size_t size() const { return samplesVec.size(); }
 
-	void clear();
-	void reserve(uint n);
-	void resize(uint n);
+	void clear() { samplesVec.clear(); }
 
-	void add(VPar v);
-	void set(uint i, VPar v);
+	void reserve(uint n) { samplesVec.reserve(n); }
 
-	auto begin() const;
-	auto end() const;
+	void resize(uint n) { samplesVec.resize(n); }
 
-private:
-	std::vector<VP> samplesVec;
+	void add(VPar v) { samplesVec.push_back(&v); }
+
+	void set(uint i, VPar v) { samplesVec[i] = &v; }
+
+	auto begin() const { return std::begin(samplesVec | views::coords); }
+
+	auto end() const { return std::end(samplesVec | views::coords); }
 };
 
 } // namespace vcl::internal
@@ -49,7 +55,5 @@ template<VertexConcept VertexType>
 using ConstVertexSampler = internal::VertexSampler<VertexType, true>;
 
 } // namespace vcl
-
-#include "vertex_sampler.cpp"
 
 #endif // VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H

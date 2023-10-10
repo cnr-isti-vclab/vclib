@@ -24,6 +24,7 @@
 #ifndef VCL_SPACE_SAMPLER_POINT_SAMPLER_H
 #define VCL_SPACE_SAMPLER_POINT_SAMPLER_H
 
+#include <vclib/algorithms/polygon.h>
 #include <vclib/concepts/space/sampler.h>
 #include <vclib/mesh/requirements.h>
 
@@ -32,6 +33,8 @@ namespace vcl {
 template<PointConcept PointT = vcl::Point3d>
 class PointSampler
 {
+	std::vector<PointT> samplesVec;
+
 public:
 	using PointType = PointT;
 	using ScalarType = PointT::ScalarType;
@@ -39,58 +42,116 @@ public:
 
 	PointSampler() = default;
 
-	const std::vector<PointT>& samples() const;
+	const std::vector<PointT>& samples() const { return samplesVec; }
 
-	const PointT& sample(uint i) const;
+	const PointT& sample(uint i) const { return samplesVec[i]; }
 
-	std::size_t size() const;
+	std::size_t size() const { return samplesVec.size(); }
 
-	void clear();
-	void reserve(uint n);
-	void resize(uint n);
+	void clear() { samplesVec.clear(); }
 
-	void add(const PointT& p);
-	void set(uint i, const PointT& p);
+	void reserve(uint n) { samplesVec.reserve(n); }
+
+	void resize(uint n) { samplesVec.resize(n); }
+
+	void add(const PointT& p) { samplesVec.push_back(p); }
+
+	void set(uint i, const PointT& p) { samplesVec[i] = p; }
 
 	template<VertexConcept VertexType>
-	void add(const VertexType& v);
+	void add(const VertexType& v)
+	{
+		samplesVec.push_back(v.coord());
+	}
 
 	template<VertexConcept VertexType>
-	void set(uint i, const VertexType& v);
+	void set(uint i, const VertexType& v)
+	{
+		samplesVec[i] = v.coord();
+	}
 
 	template<EdgeConcept EdgeType>
-	void add(const EdgeType& e, double u = 0.5);
+	void add(const EdgeType& e, double u = 0.5)
+	{
+		samplesVec.push_back(
+			(e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u));
+	}
 
 	template<EdgeConcept EdgeType>
-	void set(uint i, const EdgeType& e, double u = 0.5);
+	void set(uint i, const EdgeType& e, double u = 0.5)
+	{
+		samplesVec[i] =
+			(e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u);
+	}
 
 	template<FaceConcept FaceType>
-	void add(const FaceType& f);
+	void add(const FaceType& f)
+	{
+		samplesVec.push_back(vcl::faceBarycenter(f));
+	}
 
 	template<FaceConcept FaceType>
-	void set(uint i, const FaceType& f);
+	void set(uint i, const FaceType& f)
+	{
+		samplesVec[i] = vcl::faceBarycenter(f);
+	}
 
 	template<FaceConcept FaceType>
-	void add(const FaceType& f, const std::vector<ScalarType>& barCoords);
+	void add(const FaceType& f, const std::vector<ScalarType>& barCoords)
+	{
+		assert(f.vertexNumber() <= barCoords.size());
+
+		PointT p;
+		for (uint i = 0; i < f.vertexNumber(); i++)
+			p += f.vertex(i)->coord() * barCoords[i];
+
+		samplesVec.push_back(p);
+	}
 
 	template<FaceConcept FaceType>
-	void set(uint i, const FaceType& f, const std::vector<ScalarType>& barCoords);
+	void
+	set(uint i, const FaceType& f, const std::vector<ScalarType>& barCoords)
+	{
+		assert(f.vertexNumber() <= barCoords.size());
+
+		PointT p;
+		for (uint i = 0; i < f.vertexNumber(); i++)
+			p += f.vertex(i)->coord() * barCoords[i];
+
+		samplesVec[i] = p;
+	}
 
 	template<FaceConcept FaceType>
-	void add(const FaceType& f, const PointT& barCoords);
+	void add(const FaceType& f, const PointT& barCoords)
+	{
+		static_assert(FaceType::NV == 3 || FaceType::NV == -1);
+		if constexpr(FaceType::NV == -1) {
+			assert(f.vertexNumber() == 3);
+		}
+
+		PointT p = triangleBarycentricCoordinatePoint(f, barCoords);
+
+		samplesVec.push_back(p);
+	}
 
 	template<FaceConcept FaceType>
-	void set(uint i, const FaceType& f, const PointT& barCoords);
+	void set(uint i, const FaceType& f, const PointT& barCoords)
+	{
+		static_assert(FaceType::NV == 3 || FaceType::NV == -1);
+		if constexpr(FaceType::NV == -1) {
+			assert(f.vertexNumber() == 3);
+		}
 
-	ConstIterator begin() const;
-	ConstIterator end() const;
+		PointT p = triangleBarycentricCoordinatePoint(f, barCoords);
 
-private:
-	std::vector<PointT> samplesVec;
+		samplesVec[i] = p;
+	}
+
+	ConstIterator begin() const { return samplesVec.begin(); }
+
+	ConstIterator end() const { return samplesVec.end(); }
 };
 
 } // namespace vcl
-
-#include "point_sampler.cpp"
 
 #endif // VCL_SPACE_SAMPLER_POINT_SAMPLER_H

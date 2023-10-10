@@ -29,7 +29,8 @@
 #if __has_include(<stb/stb_image.h>)
 #include <stb/stb_image.h>
 #else
-// inclusion for usage of vclib without CMake - not ideal but necessary for header-only
+// inclusion for usage of vclib without CMake - not ideal but necessary for
+// header-only
 #define STB_IMAGE_STATIC // make stb usable in header-only libraries
 #include "../../../external/stb-master/stb/stb_image.h"
 #endif
@@ -44,30 +45,68 @@ namespace vcl {
  */
 class Image
 {
-public:
-	Image();
-	Image(const std::string& filename);
-
-	bool isNull() const;
-
-	int height() const;
-	int width() const;
-	std::size_t sizeInBytes() const;
-
-	vcl::Color pixel(uint i, uint j) const;
-
-	const unsigned char* data() const;
-
-	bool load(const std::string& filename);
-
-	void mirror(bool horizontal = false, bool vertical = true);
-
-private:
 	vcl::Array2<uint32_t> img;
+
+public:
+	Image() {}
+
+	Image(const std::string& filename) { load(filename); }
+
+	bool isNull() const { return img.empty(); }
+
+	int height() const { return img.rows(); }
+
+	int width() const { return img.cols(); }
+
+	std::size_t sizeInBytes() const { return img.rows() * img.cols() * 4; }
+
+	vcl::Color pixel(uint i, uint j) const
+	{
+		return vcl::Color((vcl::Color::ColorRGBA)img(i,j));
+	}
+
+	const unsigned char* data() const
+	{
+		return reinterpret_cast<const unsigned char*>(img.data());
+	}
+
+	bool load(const std::string& filename)
+	{
+		int w, h;
+		// we first load the data, then we copy it into our array2d, and then we
+		// free it.
+		unsigned char* tmp =
+			stbi_load(filename.c_str(), &w, &h, nullptr, 4); // force 4 channels
+		if (tmp) {
+			std::size_t size = w * h * 4;
+
+			img.resize(w, h);
+			std::copy(tmp, tmp + size, (unsigned char*)img.data());
+			stbi_image_free(tmp);
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	void mirror(bool horizontal = false, bool vertical = true)
+	{
+		if (horizontal) {
+			for (uint i = 0; i < img.rows(); i++) {
+				std::reverse(img.data(i), img.data(i) + img.cols());
+			}
+		}
+		if (vertical) {
+			for (uint i = 0; i < img.rows() / 2; i++) {
+				uint mir = img.rows() - i - 1;
+				std::swap_ranges(
+					img.data(i), img.data(i) + img.cols(), img.data(mir));
+			}
+		}
+	}
 };
 
 } // namespace vcl
-
-#include "image.cpp"
 
 #endif // VCL_SPACE_IMAGE_H

@@ -35,15 +35,14 @@
 namespace vcl::comp::internal {
 
 /*
- * The CustomComponentData is the data structure that manages the access to the custom 
- * components from an Element. If the custom components are horizontal, they need to be
- * stored in the Element memory frame, if they are vertical they need to be stored by the 
- * Container of elements.
- * 
+ * The CustomComponentData is the data structure that manages the access to the
+ * custom components from an Element. If the custom components are horizontal,
+ * they need to be stored in the Element memory frame, if they are vertical they
+ * need to be stored by the Container of elements.
+ *
  * The CustomComponentData stores the data horizontally
- * The CustomComponentData<El, true> (specialized on the boolean template) stores the
- * data vertically.
- * 
+ * The CustomComponentData<El, true> (specialized on the boolean template)
+ * stores the data vertically.
  */
 
 // horizontal, not specialized. Store the custom component in this struct
@@ -56,13 +55,16 @@ struct CustomComponentsData
 	}
 
 	template<typename CompType>
-	bool isComponentOfType(const std::string& compName, const ElementType*) const
+	bool isComponentOfType(
+		const std::string& compName, const ElementType*) const
 	{
 		std::type_index t(typeid(CompType));
 		return t == compType.at(compName);
 	}
 	
-	std::type_index componentType(const std::string& compName, const ElementType*) const
+	std::type_index componentType(
+		const std::string& compName,
+		const ElementType*) const
 	{
 		return compType.at(compName);
 	}
@@ -92,7 +94,9 @@ struct CustomComponentsData
 	}
 
 	template<typename CompType>
-	void addCustomComponent(const std::string& compName, const CompType c = CompType())
+	void addCustomComponent(
+		const std::string& compName,
+		const CompType     c = CompType())
 	{
 		map[compName] = c;
 		compType.emplace(compName, typeid(CompType));
@@ -116,18 +120,24 @@ private:
 template<typename ElementType>
 struct CustomComponentsData<ElementType, true>
 {
-	bool componentExists(const std::string& compName, const ElementType* elem) const
+	bool componentExists(
+		const std::string& compName,
+		const ElementType* elem) const
 	{
 		return ccVec(elem).componentExists(compName);
 	}
 
 	template<typename CompType>
-	bool isComponentOfType(const std::string& compName, const ElementType* elem) const
+	bool isComponentOfType(
+		const std::string& compName,
+		const ElementType* elem) const
 	{
 		return ccVec(elem).template isComponentOfType<CompType>(compName);
 	}
 	
-	std::type_index componentType(const std::string& compName, const ElementType* elem) const
+	std::type_index componentType(
+		const std::string& compName,
+		const ElementType* elem) const
 	{
 		return ccVec(elem).componentType(compName);
 	}
@@ -139,17 +149,21 @@ struct CustomComponentsData<ElementType, true>
 	}
 
 	template<typename CompType>
-	const CompType& get(const std::string& compName, const ElementType* elem) const
+	const CompType& get(
+		const std::string& compName,
+		const ElementType* elem) const
 	{
 		return std::any_cast<const CompType&>(
-			ccVec(elem).template componentVector<CompType>(compName)[thisId(elem)]);
+			ccVec(elem).template componentVector<CompType>(
+				compName)[thisId(elem)]);
 	}
 
 	template<typename CompType>
 	CompType& get(const std::string& compName, ElementType* elem)
 	{
 		return std::any_cast<CompType&>(
-			ccVec(elem).template componentVector<CompType>(compName)[thisId(elem)]);
+			ccVec(elem).template componentVector<CompType>(
+				compName)[thisId(elem)]);
 	}
 
 private:

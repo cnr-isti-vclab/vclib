@@ -84,38 +84,109 @@ class Mark :
 	using Base = Component<Mark<ElementType, OPT>, MARK, int, ElementType, OPT>;
 
 public:
-	/* Constructor and isAvailable */
+	/* Constructors */
 
-	Mark();
+	/**
+	 * @brief Constructor that initializes the mark to 0.
+	 */
+	Mark()
+	{
+		if constexpr (!Base::IS_VERTICAL) {
+			init();
+		}
+	}
 
-	void init();
+	/**
+	 * @private
+	 * @brief Initializes the mark to 0.
+	 *
+	 * It is made in the init function since the component could be not
+	 * available during construction (e.g. if the component is optional and not
+	 * enabled).
+	 *
+	 * This member function is hidden by the element that inherits this class.
+	 */
+	void init()
+	{
+		mark() = 0;
+	}
 
 	/* Member functions */
 
-	int  mark() const;
-	void resetMark();
+	/**
+	 * @brief Returns the value of the mark.
+	 * @return the value of the mark.
+	 */
+	int mark() const { return Base::data(); }
 
+	/**
+	 * @brief Resets the mark to 0.
+	 */
+	void resetMark() { mark() = 0; }
+
+	/**
+	 * @brief Checks if the current element/mesh has the same mark of the given
+	 * input element/mesh `e`.
+	 *
+	 * @tparam E: the type of the input element/mesh.
+	 * @param e: the input element/mesh.
+	 */
 	template<typename E>
-	bool hasSameMark(const E& e) const;
+	bool hasSameMark(const E& e) const
+	{
+		if constexpr (std::is_pointer<E>::value) {
+			return e->mark() == mark();
+		}
+		else {
+			return e.mark() == mark();
+		}
+	}
 
-	void incrementMark();
-	void decrementMark();
+	/**
+	 * @brief Increments the mark of the current element/mesh by 1.
+	 */
+	void incrementMark() { mark()++; }
+
+	/**
+	 * @brief Decrements the mark of the current element/mesh by 1.
+	 */
+	void decrementMark() { mark()--; }
 
 protected:
 	// Component interface function
 	template<typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr (HasMark<Element>) {
+			if (isMarkAvailableOn(e)) {
+				mark() = e.mark();
+			}
+		}
+	}
 
 private:
-	int& mark();
+	int& mark() { return Base::data(); }
 };
 
 /* Detector function to check if a class has Mark available */
 
-bool isMarkAvailableOn(const ElementOrMeshConcept auto& element);
+/**
+ * @brief Checks if the given Element/Mesh has the Mark component available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element/mesh to check. Must be of a type that
+ * satisfies the ElementOrMeshConcept.
+ * @return `true` if the element/mesh has the Mark component available, `false`
+ * otherwise.
+ */
+bool isMarkAvailableOn(const ElementOrMeshConcept auto& element)
+{
+	return isComponentAvailableOn<MARK>(element);
+}
 
 } // namespace vcl::comp
-
-#include "mark.cpp"
 
 #endif // VCL_MESH_COMPONENTS_MARK_H

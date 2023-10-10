@@ -24,9 +24,10 @@
 #ifndef VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 #define VCL_MESH_COMPONENTS_WEDGE_COLORS_H
 
+#include <vclib/concepts/mesh/components/color.h>
 #include <vclib/concepts/mesh/components/wedge_colors.h>
-#include <vclib/views/view.h>
 #include <vclib/space/vector.h>
+#include <vclib/views/view.h>
 
 #include "bases/container_component.h"
 
@@ -100,26 +101,158 @@ public:
 
 	/* Member functions */
 
-	vcl::Color&       wedgeColor(uint i);
-	const vcl::Color& wedgeColor(uint i) const;
+	/**
+	 * @brief Returns a reference to the i-th wedge color of the element.
+	 *
+	 * You can use this function to set the i-th color of the element:
+	 *
+	 * @code{.cpp}
+	 * f.wedgeColor(0) = vcl::Color::Red;
+	 * @endcode
+	 *
+	 * @param[in] i: the index of the wedge color to return. The value must be
+	 * between 0 and the number of vertices of the element.
+	 * @return A reference to the i-th wedge color of the element.
+	 */
+	vcl::Color& wedgeColor(uint i) { return colors().at(i); }
 
-	vcl::Color&       wedgeColorMod(int i);
-	const vcl::Color& wedgeColorMod(int i) const;
+	/**
+	 * @brief Returns a const reference to the i-th wedge color of the element.
+	 *
+	 * @param[in] i: the index of the wedge color to return. The value must be
+	 * between 0 and the number of vertices of the element.
+	 * @return A const reference to the i-th wedge color of the element.
+	 */
+	const vcl::Color& wedgeColor(uint i) const { return colors().at(i); }
 
-	void setWedgeColor(const vcl::Color& c, uint i);
+	/**
+	 * @brief Returns a reference to the i-th wedge color of the element but
+	 * using as index the module between i and the number of vertices of the
+	 * element. You can use this function if you need to get the "next wedge
+	 * color after position k", without check if it is less than the number of
+	 * vertices. Works also for negative numbers:
+	 *
+	 * @code{.cpp}
+	 * f.wedgeColorMod(-1) = vcl::Color::Red; // the wedge color in position
+	 *                                        // vertexNumber() - 1
+	 * @endcode
+	 *
+	 * @param[in] i: the position of the required wedge color in the container,
+	 * w.r.t. the position 0; value is modularized on vertexNumber().
+	 * @return A reference to the required wedge color of the element.
+	 */
+	vcl::Color& wedgeColorMod(int i) { return colors().atMod(i); }
 
+	/**
+	 * @brief Same of wedgeColorMod(int) but returns a const reference.
+	 * @param[in] i: the position of the required wedge color in the container,
+	 * w.r.t. the position 0; value is modularized on vertexNumber().
+	 * @return A const reference to the required wedge color of the element.
+	 */
+	const vcl::Color& wedgeColorMod(int i) const { return colors().atMod(i); }
+
+	/**
+	 * @brief Sets the i-th wedge color of the element.
+	 * @param[in] c: the new wedge color.
+	 * @param[in] i: the position in the container on which set the wedge color;
+	 * the value must be between 0 and the number of vertices of the element.
+	 */
+	void setWedgeColor(const vcl::Color& c, uint i) { colors().set(c, i); }
+
+	/**
+	 * @brief Sets all the wedge colors of the element.
+	 *
+	 * If the size of the container is static, the size of the input range must
+	 * be the same one of the container.
+	 *
+	 * @tparam Rng: The type of the range of wedge colors to set. The value type
+	 * of the range must be convertible to a vcl::Color.
+	 *
+	 * @param[in] r: range of colors to set.
+	 */
 	template<Range Rng>
-	void setWedgeColors(Rng&& r)
-		requires RangeOfConvertibleTo<Rng, vcl::Color>;
+	void setWedgeColors(Rng&& r) requires RangeOfConvertibleTo<Rng, vcl::Color>
+	{
+		colors().set(r);
+	}
 
 	/* Iterator Member functions */
 
-	WedgeColorsIterator            wedgeColorBegin();
-	WedgeColorsIterator            wedgeColorEnd();
-	ConstWedgeColorsIterator       wedgeColorBegin() const;
-	ConstWedgeColorsIterator       wedgeColorEnd() const;
-	View<WedgeColorsIterator>      wedgeColors();
-	View<ConstWedgeColorsIterator> wedgeColors() const;
+	/**
+	 * @brief Returns an iterator to the first wedge color in the container of
+	 * this component.
+	 *
+	 * @return an iterator pointing to the begin of this container.
+	 */
+	WedgeColorsIterator wedgeColorBegin() { return colors().begin(); }
+
+	/**
+	 * @brief Returns an iterator to the end of the container of this component.
+	 *
+	 * @return an iterator pointing to the end of this container.
+	 */
+	WedgeColorsIterator wedgeColorEnd() { return colors().end(); }
+
+	/**
+	 * @brief Returns a const iterator to the first wedge color in the container
+	 * of this component.
+	 *
+	 * @return a const iterator pointing to the begin of this container.
+	 */
+	ConstWedgeColorsIterator wedgeColorBegin() const
+	{
+		return colors().begin();
+	}
+
+	/**
+	 * @brief Returns a const iterator to the end of the container of this
+	 * component.
+	 *
+	 * @return an iterator pointing to the end of this container.
+	 */
+	ConstWedgeColorsIterator wedgeColorEnd() const { return colors().end(); }
+
+	/**
+	 * @brief Returns a lightweight view object that stores the begin and end
+	 * iterators of the container of wedge colors of the element. The view
+	 * object exposes the iterators trough the `begin()` and `end()` member
+	 * functions, and therefore the returned object can be used in range-based
+	 * for loops:
+	 *
+	 * @code{.cpp}
+	 * for (auto& wc : el.wedgeColors()) {
+	 *     // Do something with wc
+	 * }
+	 * @endcode
+	 *
+	 * @return a lightweight view object that can be used in range-based for
+	 * loops to iterate over wedge colors.
+	 */
+	View<WedgeColorsIterator> wedgeColors()
+	{
+		return View(wedgeColorBegin(), wedgeColorEnd());
+	}
+
+	/**
+	 * @brief Returns a lightweight const view object that stores the begin and
+	 * end iterators of the container of wedge colors of the element. The view
+	 * object exposes the iterators trough the `begin()` and `end()` member
+	 * functions, and therefore the returned object can be used in range-based
+	 * for loops:
+	 *
+	 * @code{.cpp}
+	 * for (const auto& wc : el.wedgeColors()) {
+	 *     // Do something read-only with wc
+	 * }
+	 * @endcode
+	 *
+	 * @return a lightweight view object that can be used in range-based for
+	 * loops to iterate over wedge colors.
+	 */
+	View<ConstWedgeColorsIterator> wedgeColors() const
+	{
+		return View(wedgeColorBegin(), wedgeColorEnd());
+	}
 
 	// dummy member to discriminate between WedgeColors and FaceHalfEdgePointers
 	void __wedgeColors() const {}
@@ -127,29 +260,85 @@ public:
 protected:
 	// Component interface function
 	template <typename Element>
-	void importFrom(const Element& e);
+	void importFrom(const Element& e)
+	{
+		if constexpr (HasWedgeColors<Element>) {
+			if (isWedgeColorsAvailableOn(e)) {
+				if constexpr(N > 0) {
+					// same static size
+					if constexpr (N == Element::WEDGE_COLOR_NUMBER) {
+						importWedgeColorsFrom(e);
+					}
+					// from dynamic to static, but dynamic size == static size
+					else if constexpr (Element::WEDGE_COLOR_NUMBER < 0){
+						if (e.vertexNumber() == N){
+							importWedgeColorsFrom(e);
+						}
+					}
+					else {
+						// do not import in this case: cannot import from
+						// dynamic size != static size
+					}
+				}
+				else {
+					// from static/dynamic to dynamic size: need to resize
+					// first, then import
+					resize(e.vertexNumber());
+					importWedgeColorsFrom(e);
+				}
+			}
+		}
+	}
 
 	// ContainerComponent interface functions
-	void resize(uint n) requires (N < 0);
-	void pushBack(const vcl::Color& c = vcl::Color()) requires (N < 0);
-	void insert(uint i, const vcl::Color& c = vcl::Color()) requires (N < 0);
-	void erase(uint i) requires (N < 0);
-	void clear() requires (N < 0);
+	void resize(uint n) requires (N < 0) { colors().resize(n); }
+
+	void pushBack(const vcl::Color& c = vcl::Color()) requires (N < 0)
+	{
+		colors().pushBack(c);
+	}
+
+	void insert(uint i, const vcl::Color& c = vcl::Color()) requires (N < 0)
+	{
+		colors().insert(i, c);
+	}
+
+	void erase(uint i) requires (N < 0) { colors().erase(i); }
+
+	void clear() requires (N < 0) { colors().clear(); }
 
 private:
 	template<typename Element>
-	void importWedgeColorsFrom(const Element& e);
+	void importWedgeColorsFrom(const Element& e)
+	{
+		for (uint i = 0; i < e.vertexNumber(); ++i){
+			wedgeColor(i) = e.wedgeColor(i);
+		}
+	}
 
-	Vector<vcl::Color, N>& colors();
-	const Vector<vcl::Color, N>& colors() const;
+	Vector<vcl::Color, N>&       colors() { return Base::container(); }
+
+	const Vector<vcl::Color, N>& colors() const { return Base::container(); }
 };
 
 /* Detector function to check if a class has WedgeColors available */
 
-bool isWedgeColorsAvailableOn(const ElementConcept auto& element);
+/**
+ * @brief Checks if the given Element has WedgeColors available.
+ *
+ * This function returns `true` also if the component is horizontal and always
+ * available in the element. The runtime check is performed only when the
+ * component is optional.
+ *
+ * @param[in] element: The element to check. Must be of a type that satisfies
+ * the ElementConcept.
+ * @return `true` if the element has WedgeColors available, `false` otherwise.
+ */
+bool isWedgeColorsAvailableOn(const ElementConcept auto& element)
+{
+	return isComponentAvailableOn<WEDGE_COLORS>(element);
+}
 
 } // namespace vcl::comp
-
-#include "wedge_colors.cpp"
 
 #endif // VCL_MESH_COMPONENTS_WEDGE_COLORS_H
