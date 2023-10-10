@@ -34,6 +34,7 @@
   - [ ] Implement importer/exporter from matrix
   - [ ] Implement importer/exporter from buffer
   - [ ] Shuffle algorithms should be all made using views
+  - [ ] Smooth algorithms should be made using loggers
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range

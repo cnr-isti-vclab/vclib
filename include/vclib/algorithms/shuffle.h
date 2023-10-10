@@ -31,41 +31,11 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
-
-template<MeshConcept MeshType>
-std::vector<typename MeshType::VertexType*>
-fillAndShuffleVertexPointerVector(MeshType& m, bool deterministic = false);
-
-template<MeshConcept MeshType>
-std::vector<const typename MeshType::VertexType*>
-fillAndShuffleVertexPointerVector(const MeshType& m, bool deterministic = false);
-
-template<MeshConcept MeshType>
-std::vector<uint>
-fillAndShuffleVertexIndexVector(const MeshType& m, bool deterministic = false);
-
-template<FaceMeshConcept MeshType>
-std::vector<typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(MeshType& m, bool deterministic = false);
-
-template<FaceMeshConcept MeshType>
-std::vector<const typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(const MeshType& m, bool deterministic = false);
-
-template<FaceMeshConcept MeshType>
-std::vector<uint> fillAndShuffleFaceIndexVector(const MeshType& m, bool deterministic = false);
-
-/***************
- * Definitions *
- ***************/
-
 namespace internal {
 
 /*
- * Generic implementation of fillAndShuffleVertexPointerVector, to avoid code duplication.
+ * Generic implementation of fillAndShuffleVertexPointerVector, to avoid code
+ * duplication.
  *
  * Templates M and V can be both const and non-const MeshType and VertexType
  */
@@ -88,7 +58,8 @@ std::vector<V*> genericFASVPV(M m, bool deterministic)
 }
 
 /*
- * Generic implementation of fillAndShuffleFacePointerVector, to avoid code duplication.
+ * Generic implementation of fillAndShuffleFacePointerVector, to avoid code
+ * duplication.
  *
  * Templates M and F can be both const and non-const MeshType and FaceType
  */
@@ -113,9 +84,8 @@ std::vector<F*> genericFASFPV(M m, bool deterministic)
 } // namespace internal
 
 template<MeshConcept MeshType>
-std::vector<typename MeshType::VertexType*>fillAndShuffleVertexPointerVector(
-	MeshType& m,
-	bool deterministic)
+std::vector<typename MeshType::VertexType*>
+fillAndShuffleVertexPointerVector(MeshType& m, bool deterministic = false)
 {
 	using VertexType = MeshType::VertexType;
 
@@ -123,17 +93,17 @@ std::vector<typename MeshType::VertexType*>fillAndShuffleVertexPointerVector(
 }
 
 template<MeshConcept MeshType>
-std::vector<const typename MeshType::VertexType*> fillAndShuffleVertexPointerVector(
-	const MeshType& m,
-	bool deterministic)
+std::vector<const typename MeshType::VertexType*>
+fillAndShuffleVertexPointerVector(const MeshType& m, bool deterministic = false)
 {
 	using VertexType = MeshType::VertexType;
-	return internal::genericFASVPV<const MeshType&, const VertexType>(m, deterministic);
+	return internal::genericFASVPV<const MeshType&, const VertexType>(
+		m, deterministic);
 }
 
 template<MeshConcept MeshType>
 std::vector<uint>
-fillAndShuffleVertexIndexVector(const MeshType& m, bool deterministic)
+fillAndShuffleVertexIndexVector(const MeshType& m, bool deterministic = false)
 {
 	using VertexType = MeshType::VertexType;
 
@@ -154,7 +124,7 @@ fillAndShuffleVertexIndexVector(const MeshType& m, bool deterministic)
 
 template<FaceMeshConcept MeshType>
 std::vector<typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(MeshType& m, bool deterministic)
+fillAndShuffleFacePointerVector(MeshType& m, bool deterministic = false)
 {
 	using FaceType = MeshType::FaceType;
 
@@ -163,16 +133,17 @@ fillAndShuffleFacePointerVector(MeshType& m, bool deterministic)
 
 template<FaceMeshConcept MeshType>
 std::vector<const typename MeshType::FaceType*>
-fillAndShuffleFacePointerVector(const MeshType& m, bool deterministic)
+fillAndShuffleFacePointerVector(const MeshType& m, bool deterministic = false)
 {
 	using FaceType = MeshType::FaceType;
 
-	return internal::genericFASFPV<const MeshType&, const FaceType>(m, deterministic);
+	return internal::genericFASFPV<const MeshType&, const FaceType>(
+		m, deterministic);
 }
 
 template<FaceMeshConcept MeshType>
 std::vector<uint>
-fillAndShuffleFaceIndexVector(const MeshType& m, bool deterministic)
+fillAndShuffleFaceIndexVector(const MeshType& m, bool deterministic = false)
 {
 	using FaceType = MeshType::FaceType;
 

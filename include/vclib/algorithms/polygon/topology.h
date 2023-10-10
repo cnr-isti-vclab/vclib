@@ -36,47 +36,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceConcept FaceType>
-bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
-	requires comp::HasAdjacentFaces<FaceType>;
-
-template<FaceConcept FaceType>
-bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
-	requires comp::HasAdjacentFaces<FaceType>;
-
-template<FaceConcept FaceType>
-bool checkFlipEdge(const FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
-
-template<FaceConcept FaceType>
-uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
-	requires comp::HasAdjacentFaces<FaceType>;
-
-template <FaceConcept FaceType>
-uint faceEdgesOnBorderNumber(const FaceType& f) requires comp::HasAdjacentFaces<FaceType>;
-
-template <FaceConcept FaceType>
-void detachAdjacentFacesOnEdge(FaceType& f, uint edge) requires comp::HasAdjacentFaces<FaceType>;
-
-template <FaceConcept FaceType>
-void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>;
-
-template<FaceConcept Face>
-std::vector<uint> earCut(const Face& polygon);
-
-template<FaceMeshConcept MeshType, FaceConcept FaceType>
-void addTriangleFacesFromPolygon(MeshType& m, FaceType& f, const std::vector<uint>& polygon);
-
-template<FaceMeshConcept MeshType>
-uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Check if an edge in the given face is manifold.
  *
@@ -377,7 +336,8 @@ template <FaceConcept FaceType>
 void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 {
 	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+		throw vcl::MissingComponentException(
+			"Face has no Adjacent Faces component.");
 	}
 
 	using VertexType = FaceType::VertexType;
@@ -479,9 +439,9 @@ void addTriangleFacesFromPolygon(
 	std::vector<uint> tris =
 		Polygon<CoordType>::earCut(polCoords.begin(), polCoords.end());
 
-		   // faux edges management: create a set of unordered edges of the polygon
-		   // note: we use indices from 0 to polygon.size() because that are the output
-		   // indices given by the earcut algorithm
+	// faux edges management: create a set of unordered edges of the polygon
+	// note: we use indices from 0 to polygon.size() because that are the output
+	// indices given by the earcut algorithm
 	std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>>
 		unorderedEdges;
 	for (uint i = 0; i < polygon.size(); ++i)
@@ -510,7 +470,7 @@ void addTriangleFacesFromPolygon(
 			f.edgeFaux(2) = true;
 	}
 
-		   // remaining triangles, need to create more faces in the mesh
+	// remaining triangles, need to create more faces in the mesh
 	for (uint i = 3; i < tris.size(); i += 3) {
 		uint ff              = m.addFace();
 

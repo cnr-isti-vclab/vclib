@@ -30,35 +30,10 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceConcept FaceType>
-typename FaceType::VertexType::CoordType faceNormal(const FaceType& f);
-
-template<FaceConcept FaceType>
-typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f);
-
-template<FaceConcept FaceType>
-auto faceArea(const FaceType& f);
-
-template<FaceConcept FaceType>
-auto facePerimeter(const FaceType& f);
-
-template<FaceConcept FaceType>
-auto faceAngleOnVertexRad(const FaceType& f, uint v);
-
-template<FaceConcept FaceType>
-auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjacentFaces<FaceType>;
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
- * @brief Computes the normal of a face, without modifying the face. Works both for triangle and
- * polygonal faces, and it is optimized in case of triangle faces.
+ * @brief Computes the normal of a face, without modifying the face. Works both
+ * for triangle and polygonal faces, and it is optimized in case of triangle
+ * faces.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
@@ -76,7 +51,9 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 	else {
 		if (f.vertexNumber() == 3) {
 			return Triangle<CoordType>::normal(
-				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+				f.vertex(0)->coord(),
+				f.vertex(1)->coord(),
+				f.vertex(2)->coord());
 		}
 		else {
 			return Polygon<CoordType>::normal(f.vertices() | views::coords);
@@ -85,8 +62,8 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 }
 
 /**
- * @brief Computes the barycenter of a face. Works both for triangle and polygonal faces, and it is
- * optimized in case of triangle faces.
+ * @brief Computes the barycenter of a face. Works both for triangle and
+ * polygonal faces, and it is optimized in case of triangle faces.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
@@ -107,8 +84,8 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 }
 
 /**
- * @brief Computes the area of a face. Works both for triangle and polygonal faces, and it is
- * optimized in case of triangle faces.
+ * @brief Computes the area of a face. Works both for triangle and polygonal
+ * faces, and it is optimized in case of triangle faces.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
@@ -135,8 +112,8 @@ auto faceArea(const FaceType& f)
 }
 
 /**
- * @brief Computes the perimeter of a face. Works both for triangle and polygonal faces, and it is
- * optimized in case of triangle faces.
+ * @brief Computes the perimeter of a face. Works both for triangle and
+ * polygonal faces, and it is optimized in case of triangle faces.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
@@ -154,7 +131,9 @@ auto facePerimeter(const FaceType& f)
 	else {
 		if (f.vertexNumber() == 3) {
 			return Triangle<CoordType>::perimeter(
-				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+				f.vertex(0)->coord(),
+				f.vertex(1)->coord(),
+				f.vertex(2)->coord());
 		}
 		else {
 			return Polygon<CoordType>::perimeter(f.vertices() | views::coords);
@@ -163,12 +142,14 @@ auto facePerimeter(const FaceType& f)
 }
 
 /**
- * @brief Returns the internal angle (in radians) of the vi-th vertex of the face.
+ * @brief Returns the internal angle (in radians) of the vi-th vertex of the
+ * face.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] f: the input face.
- * @param[in] vi: the index of the vertex in the face on which calculate the angle
+ * @param[in] vi: the index of the vertex in the face on which calculate the
+ * angle
  * @return the angle in radians at the vi-th vertex.
  */
 template<FaceConcept FaceType>
@@ -181,28 +162,31 @@ auto faceAngleOnVertexRad(const FaceType& f, uint vi)
 }
 
 /**
- * * @brief Compute the signed dihedral angle between the normals of the given face and its adjacent
- * face on the edge \p e.
+ * * @brief Compute the signed dihedral angle between the normals of the given
+ * face and its adjacent face on the edge \p e.
  *
- * The angle between the normal is signed according to the concavity/convexity of the
- * dihedral angle: negative if the edge shared between the two faces is concave, positive otherwise.
- * The surface it is assumend to be oriented.
- * It simply use the projection of  the opposite vertex onto the plane of the other one.
- * It does not assume anything on face normals.
+ * The angle between the normal is signed according to the concavity/convexity
+ * of the dihedral angle: negative if the edge shared between the two faces is
+ * concave, positive otherwise. The surface it is assumend to be oriented. It
+ * simply use the projection of  the opposite vertex onto the plane of the other
+ * one. It does not assume anything on face normals.
  *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  *
  * @param[in] f The face for which to compute the dihedral angle on an edge.
  * @param[in] e The index of the edge shared between the two faces.
- * @return The signed dihedral angle between the normals of the given face and its adjacent face
- * on the edge e.
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is not available on \p f.
+ * @return The signed dihedral angle between the normals of the given face and
+ * its adjacent face on the edge e.
+ * @throws vcl::MissingComponentException If the "AdjacentFaces" component is
+ * not available on \p f.
  */
 template<FaceConcept FaceType>
-auto faceDihedralAngleOnEdge(const FaceType& f, uint e) requires comp::HasAdjacentFaces<FaceType>
+auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
+	requires comp::HasAdjacentFaces<FaceType>
 {
 	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException("Face has no Adjacent Faces component.");
+		throw vcl::MissingComponentException(
+			"Face has no Adjacent Faces component.");
 	}
 
 	/*

@@ -32,42 +32,6 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
-
-template<PointConcept PointType>
-class KDTree;
-
-template<FaceMeshConcept MeshType>
-void laplacianSmoothing(
-	MeshType& m,
-	uint      step,
-	bool      smoothSelected  = false,
-	bool      cotangentWeight = false /*, vcl::CallBackPos *cb = 0*/);
-
-template<FaceMeshConcept MeshType>
-void taubinSmoothing(
-	MeshType& m,
-	uint      step,
-	float     lambda,
-	float     mu,
-	bool      smoothSelected  = false/*, vcl::CallBackPos *cb = 0*/);
-
-template<MeshConcept MeshType>
-void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNum);
-
-template<MeshConcept MeshType, PointConcept PointType>
-void smoothPerVertexNormalsPointCloud(
-	MeshType&                m,
-	const KDTree<PointType>& tree,
-	uint                     neighborNum,
-	uint                     iterNum);
-
-/***************
- * Definitions *
- ***************/
-
 namespace internal {
 
 template<typename CoordType>
@@ -127,7 +91,7 @@ void accumulateLaplacianInfo(
 		}
 	}
 
-		   // se l'edge j e' di bordo si deve mediare solo con gli adiacenti
+	// se l'edge j e' di bordo si deve mediare solo con gli adiacenti
 	for (const FaceType& f : m.faces()) {
 		for (uint j = 0; j < f.vertexNumber(); ++j) {
 			if (f.edgeOnBorder(j)) {
@@ -147,8 +111,8 @@ void accumulateLaplacianInfo(
 } // namespace internal
 
 /**
- * @brief vertexCoordLaplacianSmoothing the classical Laplacian smoothing. Each vertex is moved onto
- * the average of the adjacent vertices.
+ * @brief vertexCoordLaplacianSmoothing the classical Laplacian smoothing. Each
+ * vertex is moved onto the average of the adjacent vertices.
  *
  * Requirements:
  * - Mesh:
@@ -162,10 +126,10 @@ void accumulateLaplacianInfo(
  */
 template<FaceMeshConcept MeshType>
 void laplacianSmoothing(
-	MeshType&    m,
-	uint step,
-	bool         smoothSelected,
-	bool         cotangentWeight /*, vcl::CallBackPos *cb*/)
+	MeshType& m,
+	uint      step,
+	bool      smoothSelected  = false,
+	bool      cotangentWeight = false /*, vcl::CallBackPos *cb*/)
 {
 	using VertexType = MeshType::VertexType;
 	using CoordType  = VertexType::CoordType;
@@ -173,13 +137,14 @@ void laplacianSmoothing(
 	const internal::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
 
 	for (uint i = 0; i < step; ++i) {
-		std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize(), lpz);
+		std::vector<internal::LaplacianInfo<CoordType>> laplData(
+			m.vertexContainerSize(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData, cotangentWeight);
 		for (VertexType& v : m.vertices()) {
 			if (laplData[m.index(v)].cnt > 0) {
 				if (!smoothSelected || v.selected()) {
-					v.coord() =
-						(v.coord() + laplData[m.index(v)].sum) / (laplData[m.index(v)].cnt + 1);
+					v.coord() = (v.coord() + laplData[m.index(v)].sum) /
+								(laplData[m.index(v)].cnt + 1);
 				}
 			}
 		}
@@ -192,7 +157,7 @@ void taubinSmoothing(
 	uint      step,
 	float     lambda,
 	float     mu,
-	bool      smoothSelected /*, vcl::CallBackPos *cb*/)
+	bool      smoothSelected = false /*, vcl::CallBackPos *cb*/)
 {
 	using VertexType = MeshType::VertexType;
 	using CoordType  = VertexType::CoordType;
@@ -201,12 +166,15 @@ void taubinSmoothing(
 
 
 	for (uint i = 0; i < step; ++i) {
-		std::vector<internal::LaplacianInfo<CoordType>> laplData(m.vertexContainerSize(), lpz);
+		std::vector<internal::LaplacianInfo<CoordType>> laplData(
+			m.vertexContainerSize(), lpz);
 		internal::accumulateLaplacianInfo(m, laplData);
 		for (VertexType& v : m.vertices()) {
 			if (laplData[m.index(v)].cnt > 0) {
 				if (!smoothSelected || v.selected()) {
-					CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
+					CoordType delta =
+						laplData[m.index(v)].sum / laplData[m.index(v)].cnt -
+						v.coord();
 					v.coord() = v.coord() + delta * lambda;
 				}
 			}
@@ -216,7 +184,9 @@ void taubinSmoothing(
 		for (VertexType& v : m.vertices()) {
 			if (laplData[m.index(v)].cnt > 0) {
 				if (!smoothSelected || v.selected()) {
-					CoordType delta = laplData[m.index(v)].sum / laplData[m.index(v)].cnt - v.coord();
+					CoordType delta =
+						laplData[m.index(v)].sum / laplData[m.index(v)].cnt -
+						v.coord();
 					v.coord() = v.coord() + delta * mu;
 				}
 			}
@@ -237,10 +207,14 @@ void taubinSmoothing(
  * @param iterNum
  */
 template<MeshConcept MeshType>
-void smoothPerVertexNormalsPointCloud(MeshType& m, uint neighborNum, uint iterNum)
+void smoothPerVertexNormalsPointCloud(
+	MeshType& m,
+	uint      neighborNum,
+	uint      iterNum)
 {
 	using Scalar = MeshType::VertexType::CoordType::ScalarType;
 	KDTree<Scalar> tree(m);
+	//TODO
 	updatePerVertexNormalsPointCloud(m, tree, neighborNum, iterNum);
 }
 
@@ -276,8 +250,8 @@ void smoothPerVertexNormalsPointCloud(
 		for (const VertexType& v : m.vertices()) {
 			std::vector<Scalar> distances;
 
-			std::vector<uint>   neighbors =
-				tree.kNearestNeighborsIndices(v.coord(), neighborNum, distances);
+			std::vector<uint> neighbors = tree.kNearestNeighborsIndices(
+				v.coord(), neighborNum, distances);
 
 			for (uint nid : neighbors){
 				if (m.vertex(nid).normal() * v.normal() > 0) {
