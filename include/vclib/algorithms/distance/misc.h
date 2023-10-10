@@ -29,27 +29,11 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 template<Point3Concept PointType, PlaneConcept PlaneType>
-auto pointPlaneDistance(const PointType& p, const PlaneType& plane, bool signedDist = false);
-
-template<PointConcept PointType, SegmentConcept SegmentType>
-auto pointSegmentDistance(const PointType& p, const SegmentType& s, PointType& closest)
-	requires (PointType::DIM == SegmentType::DIM);
-
-template<PointConcept PointType, SegmentConcept SegmentType>
-auto pointSegmentDistance(const PointType& p, const SegmentType& s)
-	requires (PointType::DIM == SegmentType::DIM);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
-template<Point3Concept PointType, PlaneConcept PlaneType>
-auto pointPlaneDistance(const PointType& p, const PlaneType& plane, bool signedDist)
+auto pointPlaneDistance(
+	const PointType& p,
+	const PlaneType& plane,
+	bool             signedDist = false)
 {
 	auto dist = plane.direction().dot(p) - plane.offset();
 	if (!signedDist)
@@ -58,8 +42,10 @@ auto pointPlaneDistance(const PointType& p, const PlaneType& plane, bool signedD
 }
 
 template<PointConcept PointType, SegmentConcept SegmentType>
-auto pointSegmentDistance(const PointType& p, const SegmentType& s, PointType& closest)
-	requires (PointType::DIM == SegmentType::DIM)
+auto pointSegmentDistance(
+	const PointType&   p,
+	const SegmentType& s,
+	PointType&         closest) requires (PointType::DIM == SegmentType::DIM)
 {
 	using ScalarType = PointType::ScalarType;
 
