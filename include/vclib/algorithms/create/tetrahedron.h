@@ -28,24 +28,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceMeshConcept MeshType>
-MeshType createTetrahedron();
-
-template<FaceMeshConcept MeshType, Point3Concept CoordType>
-MeshType createTetrahedron(
-	const CoordType& p0,
-	const CoordType& p1,
-	const CoordType& p2,
-	const CoordType& p3);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Creates a simple tetrahedron mesh with the following point
  * coordinates:

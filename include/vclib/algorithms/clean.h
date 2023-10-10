@@ -46,49 +46,6 @@
 
 namespace vcl {
 
-/****************
- * Declarations *
- ****************/
-
-template <MeshConcept MeshType>
-uint numberUnreferencedVertices(const MeshType& m);
-
-template <MeshConcept MeshType>
-uint removeUnreferencedVertices(MeshType& m);
-
-template <MeshConcept MeshType>
-uint removeDuplicatedVertices(MeshType& m);
-
-template <FaceMeshConcept MeshType>
-uint removeDuplicatedFaces(MeshType& m);
-
-template <MeshConcept MeshType>
-uint removeDegeneratedVertices(MeshType& m,  bool deleteAlsoFaces = true);
-
-template <FaceMeshConcept MeshType>
-uint removeDegenerateFaces(MeshType& m);
-
-template <FaceMeshConcept MeshType>
-uint numberNonManifoldVertices(const MeshType& m);
-
-template <FaceMeshConcept MeshType>
-bool isWaterTight(const MeshType& m);
-
-template <FaceMeshConcept MeshType>
-uint numberHoles(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
-
-template <FaceMeshConcept MeshType>
-std::vector<std::set<uint>> connectedComponents(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>;
-
-template <FaceMeshConcept MeshType>
-uint numberConnectedComponents(const MeshType& m);
-
-/***************
- * Definitions *
- ***************/
-
 namespace internal {
 
 /* classe di confronto per l'algoritmo di eliminazione vertici duplicati*/
@@ -103,7 +60,10 @@ public:
 };
 
 template<typename Cont, typename MeshType>
-void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, uint& nRefs)
+void setReferencedVerticesOnVector(
+	const MeshType&    m,
+	std::vector<bool>& refs,
+	uint&              nRefs)
 {
 	// check if the Cont container of the Mesh has vertex pointers
 	if constexpr (comp::HasVertexPointers<typename Cont::ElementType>) {
@@ -111,9 +71,9 @@ void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, u
 		if (nRefs < m.vertexNumber()) {
 			constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
 			// for eache element of the Cont container
-			for (const typename Cont::ElementType& el : m.template elements<ELEM_ID>()) {
+			for (const auto& el : m.template elements<ELEM_ID>()) {
 				// for each vertex pointer of the element
-				for (const typename Cont::ElementType::VertexType* v : el.vertices()) {
+				for (const auto* v : el.vertices()) {
 					if (! refs[m.index(v)]) {
 						// set the vertex as referenced
 						refs[m.index(v)] = true;
@@ -125,47 +85,56 @@ void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, u
 	}
 }
 
-
 template<typename MeshType, typename... Cont>
-void setReferencedVerticesOnVector(const MeshType& m, std::vector<bool>& refs, uint& nRefs, TypeWrapper<Cont...>)
+void setReferencedVerticesOnVector(
+	const MeshType&    m,
+	std::vector<bool>& refs,
+	uint&              nRefs,
+	TypeWrapper<Cont...>)
 {
-	// call the setReferencedVerticesOnVector function for each container of the mesh
+	// call the setReferencedVerticesOnVector function for each container of the
+	// mesh
 	(setReferencedVerticesOnVector<Cont>(m, refs, nRefs), ...);
 }
 
 /**
- * @brief unreferencedVerticesVectorBool returns a vector of boolean telling, for each vertex of the
- * Mesh m, if it is referenced by any other Element of the Mesh.
+ * @brief unreferencedVerticesVectorBool returns a vector of boolean telling,
+ * for each vertex of the Mesh m, if it is referenced by any other Element of
+ * the Mesh.
  *
- * The size of the vector will be == to the vertexContainerSize of m, and all the deleted vertices
- * are marked as unreferenced by default.
+ * The size of the vector will be == to the vertexContainerSize of m, and all
+ * the deleted vertices are marked as unreferenced by default.
  *
  * @param m
  * @return
  */
 template<typename MeshType>
-std::vector<bool> unreferencedVerticesVectorBool(const MeshType& m, uint& nUnref)
+std::vector<bool>
+unreferencedVerticesVectorBool(const MeshType& m, uint& nUnref)
 {
 	using VertexType = MeshType::VertexType;
 
 	uint nRefs = 0;
 	std::vector<bool> referredVertices(m.vertexContainerSize(), false);
 
-	setReferencedVerticesOnVector(m, referredVertices, nRefs, typename MeshType::Containers());
+	setReferencedVerticesOnVector(
+		m, referredVertices, nRefs, typename MeshType::Containers());
 	nUnref = m.vertexNumber() - nRefs;
 
 	return referredVertices;
 }
 
 /**
- * @brief The SortedIndexContainer class stores a sorted container of indices of type IndexType,
- * plus a Sentinel value.
+ * @brief The SortedIndexContainer class stores a sorted container of indices of
+ * type IndexType, plus a Sentinel value.
  *
- * The size of the container can be specified at compile time, or left unspecified with the -1 value
- * (in this case, the container is dynamically allocated).
+ * The size of the container can be specified at compile time, or left
+ * unspecified with the -1 value (in this case, the container is dynamically
+ * allocated).
  *
- * The container provides the operator < and ==, that allow to sort and compare two containers.
- * Two containers with same indices but different Sentinel values are considered equal.
+ * The container provides the operator < and ==, that allow to sort and compare
+ * two containers. Two containers with same indices but different Sentinel
+ * values are considered equal.
  */
 template<typename IndexType, typename SentinelType, int N>
 class SortedIndexContainer
@@ -236,8 +205,8 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 
 	std::vector<uint> TD(m.vertexContainerSize(), 0);
 	std::vector<bool> nonManifoldInc(m.vertexContainerSize(), false);
-	// First Loop, count how many faces are incident on a vertex and store it in TD,
-	// and flag how many vertices are incident on non manifold edges.
+	// First Loop, count how many faces are incident on a vertex and store it in
+	// TD, and flag how many vertices are incident on non manifold edges.
 	for (const FaceType& f : m.faces()) {
 		for (uint i = 0; i < f.vertexNumber(); ++i) {
 			TD[m.index(f.vertex(i))]++;
@@ -265,9 +234,13 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
 }
 
 template<FaceMeshConcept MeshType>
-uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifoldEdges)
+uint numberEdges(
+	const MeshType& m,
+	uint&           numBoundaryEdges,
+	uint&           numNonManifoldEdges)
 {
-	std::vector<ConstMeshEdgeUtil<MeshType>> edgeVec = fillAndSortMeshEdgeUtilVector(m);
+	std::vector<ConstMeshEdgeUtil<MeshType>> edgeVec =
+		fillAndSortMeshEdgeUtilVector(m);
 
 	uint numEdges = 0;
 	numBoundaryEdges = 0;
@@ -295,12 +268,14 @@ uint numberEdges(const MeshType& m, uint& numBoundaryEdges, uint& numNonManifold
 /**
  * @brief Returns the number of non-deleted unreferenced vertices of the mesh.
  *
- * This function calculates the number of vertices that are not referenced by any of the
- * elements of the mesh, and which have not been marked as deleted.
+ * This function calculates the number of vertices that are not referenced by
+ * any of the elements of the mesh, and which have not been marked as deleted.
  *
- * @tparam MeshType: the type of the input Mesh. It must satisfy the MeshConcept.
+ * @tparam MeshType: the type of the input Mesh. It must satisfy the
+ * MeshConcept.
  *
- * @param[in] m: The input mesh for which to calculate the number of unreferenced vertices.
+ * @param[in] m: The input mesh for which to calculate the number of
+ * unreferenced vertices.
  * @return The number of non-deleted unreferenced vertices in the mesh.
  *
  * @ingroup clean
@@ -309,23 +284,27 @@ template<MeshConcept MeshType>
 uint numberUnreferencedVertices(const MeshType& m)
 {
 	uint nV = 0;
-	// Generate a vector of boolean flags indicating whether each vertex is referenced by any of the
-	// mesh's elements.
-	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m, nV);
+	// Generate a vector of boolean flags indicating whether each vertex is
+	// referenced by any of the mesh's elements.
+	std::vector<bool> referredVertices =
+		internal::unreferencedVerticesVectorBool(m, nV);
 
 	return nV;
 }
 
 /**
- * @brief Marks as deleted all the non-deleted unreferenced vertices of the mesh.
+ * @brief Marks as deleted all the non-deleted unreferenced vertices of the
+ * mesh.
  *
- * This function marks as deleted all vertices in the input mesh that are not referenced by any of
- * the mesh's elements, and which have not already been marked as deleted.
+ * This function marks as deleted all vertices in the input mesh that are not
+ * referenced by any of the mesh's elements, and which have not already been
+ * marked as deleted.
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the MeshConcept.
  *
- * @param[in,out] m: The input mesh for which to remove the unreferenced vertices. This mesh will be
- * modified in place, with all unreferenced vertices being marked as deleted.
+ * @param[in,out] m: The input mesh for which to remove the unreferenced
+ * vertices. This mesh will be modified in place, with all unreferenced vertices
+ * being marked as deleted.
  *
  * @return The number of non-deleted vertices that were marked as deleted.
  *
@@ -336,17 +315,20 @@ uint removeUnreferencedVertices(MeshType& m)
 {
 	using VertexType = MeshType::VertexType;
 
-		   // Generate a vector of boolean flags indicating whether each vertex is referenced by any of the
-		   // mesh's elements.
+	// Generate a vector of boolean flags indicating whether each vertex is
+	// referenced by any of the mesh's elements.
 
 	uint n = 0;
-	std::vector<bool> referredVertices = internal::unreferencedVerticesVectorBool(m, n);
+	std::vector<bool> referredVertices =
+		internal::unreferencedVerticesVectorBool(m, n);
 
-		   // need to mark as deleted vertices only if the number of unreferenced is less than vn
+	// need to mark as deleted vertices only if the number of unreferenced is
+	// less than vn
 	if (n < m.vertexNumber()) {
 		// will store on this vector only the indices of the referenced vertices
 		std::vector<uint> refVertIndices(m.vertexContainerSize(), UINT_NULL);
-		// Iterate over all vertices in the mesh, and mark any unreferenced vertex as deleted.
+		// Iterate over all vertices in the mesh, and mark any unreferenced
+		// vertex as deleted.
 		for (const VertexType& v : m.vertices()) {
 			if (!referredVertices[m.index(v)]) {
 				m.deleteVertex(m.index(v));
@@ -356,8 +338,9 @@ uint removeUnreferencedVertices(MeshType& m)
 			}
 		}
 
-			   // update the vertex indices of the mesh, setting to null the indices of the
-			   // unreferenced vertices (it may happen on adjacent vertices of some container).
+		// update the vertex indices of the mesh, setting to null the indices of
+		// the unreferenced vertices (it may happen on adjacent vertices of some
+		// container).
 		m.updateVertexIndices(refVertIndices);
 	}
 
@@ -365,17 +348,19 @@ uint removeUnreferencedVertices(MeshType& m)
 }
 
 /**
- * @brief Marks as deleted the duplicate vertices of the mesh, by looking only at their spatial
- * positions.
+ * @brief Marks as deleted the duplicate vertices of the mesh, by looking only
+ * at their spatial positions.
  *
- * This function marks as deleted all vertices in the input mesh that have the same spatial position
- * as another vertex in the mesh. The comparison of vertex positions is based on the `coord()`
- * function of the vertex type, which must return a 3D point representing the vertex coordinates.
+ * This function marks as deleted all vertices in the input mesh that have the
+ * same spatial position as another vertex in the mesh. The comparison of vertex
+ * positions is based on the `coord()` function of the vertex type, which must
+ * return a 3D point representing the vertex coordinates.
  *
  * @tparam MeshType The type of the input Mesh. It must satisfy the MeshConcept.
  *
- * @param[in,out] m: The input mesh for which to remove duplicate vertices. This mesh will be
- * modified in place, with all duplicate vertices being marked as deleted.
+ * @param[in,out] m: The input mesh for which to remove duplicate vertices. This
+ * mesh will be modified in place, with all duplicate vertices being marked as
+ * deleted.
  * @return The number of duplicated vertices that were marked as deleted.
  *
  * @ingroup clean
@@ -389,20 +374,22 @@ uint removeDuplicatedVertices(MeshType& m)
 	if (m.vertexNumber() == 0)
 		return 0;
 
-		   // a map that will be used to keep track of deleted vertices and their corresponding pointers.
+	// a map that will be used to keep track of deleted vertices and their
+	// corresponding pointers.
 	std::vector<uint> newVertexIndices(m.vertexNumber());
-	std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0); // assigning each vertex index to itself.
+	// assigning each vertex index to itself.
+	std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0);
 
 	uint deleted = 0;
 
 	std::vector<VertexPointer> perm(m.vertexNumber());
 
-		   // put all the vertices into a vector for sorting.
+	// put all the vertices into a vector for sorting.
 	uint k = 0;
 	for (VertexType& v : m.vertices())
 		perm[k++] = &v;
 
-		   // sort the vector based on the vertices' spatial positions.
+	// sort the vector based on the vertices' spatial positions.
 	std::sort(
 		std::execution::par_unseq,
 		perm.begin(),
@@ -411,21 +398,25 @@ uint removeDuplicatedVertices(MeshType& m)
 
 	uint i = 0;
 
-		   // compare the i-th position with the next ones while they are equal to the i-th.
+	// compare the i-th position with the next ones while they are equal to the
+	// i-th.
 	while (i < perm.size() - 1) {
 		uint j = i + 1;
 		while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
-			// j will be deleted, so we map its pointer to the i-th vertex's pointer.
-			newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j into i
+			// j will be deleted, so we map its pointer to the i-th vertex's
+			// pointer.
+			newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j -> i
 			m.deleteVertex(m.index(perm[j]));
 			j++;
 			deleted++;
 		}
-		// here perm[i] != perm[j], so we need to check perm[j] with the next vertex.
+		// here perm[i] != perm[j], so we need to check perm[j] with the next
+		// vertex.
 		i = j;
 	}
 
-		   // update the vertex pointers to point to the correct vertices, in every container of the mesh
+	// update the vertex pointers to point to the correct vertices, in every
+	// container of the mesh
 	m.updateVertexIndices(newVertexIndices);
 
 		   // todo:
@@ -434,23 +425,27 @@ uint removeDuplicatedVertices(MeshType& m)
 }
 
 /**
- * @brief Removes all duplicate faces of the mesh by looking only at their vertex references.
+ * @brief Removes all duplicate faces of the mesh by looking only at their
+ * vertex references.
  *
- * This function removes all faces in the input mesh that have the same vertex references as another
- * face in the mesh. The comparison of face vertex references is based on the indices of the face
- * vertices, so it assumes that the mesh's vertices have already been unified.
+ * This function removes all faces in the input mesh that have the same vertex
+ * references as another face in the mesh. The comparison of face vertex
+ * references is based on the indices of the face vertices, so it assumes that
+ * the mesh's vertices have already been unified.
  *
- * @note This function currently only works for triangle meshes. It should be made more general to
- * work for polygonal meshes as well.
+ * @note This function currently only works for triangle meshes. It should be
+ * made more general to work for polygonal meshes as well.
  *
- * @note This function does not update any topology relation that could be affected by the removal
- * of duplicate faces, such as the VF or FF relation. Therefore, it is usually performed before
- * building any topology information.
+ * @note This function does not update any topology relation that could be
+ * affected by the removal of duplicate faces, such as the VF or FF relation.
+ * Therefore, it is usually performed before building any topology information.
  *
- * @tparam MeshType: The type of the input Mesh. It must satisfy the TriangleMeshConcept.
+ * @tparam MeshType: The type of the input Mesh. It must satisfy the
+ * TriangleMeshConcept.
  *
- * @param[in,out] m: The input mesh for which to remove duplicate faces. This mesh will be modified
- * in place, with all duplicate faces being marked as deleted.
+ * @param[in,out] m: The input mesh for which to remove duplicate faces. This
+ * mesh will be modified in place, with all duplicate faces being marked as
+ * deleted.
  * @return The number of duplicated faces that were marked as deleted.
  *
  * @ingroup clean
@@ -461,19 +456,23 @@ uint removeDuplicatedFaces(MeshType& m)
 	using VertexType = MeshType::VertexType;
 	using FaceType = MeshType::FaceType;
 
-		   // create a vector of sorted tuples of indices, where each tuple represents a face's vertices and a
-		   // pointer to the face.
-	std::vector<internal::SortedIndexContainer<VertexType*, FaceType*, FaceType::VERTEX_NUMBER>> fvec;
+	// create a vector of sorted tuples of indices, where each tuple represents
+	// a face's vertices and a pointer to the face.
+	std::vector<internal::SortedIndexContainer<
+		VertexType*,
+		FaceType*,
+		FaceType::VERTEX_NUMBER>>
+		fvec;
 
 	for (FaceType& f : m.faces()) {
 		fvec.emplace_back(&f, f.vertices());
 	}
 
-		   // sort the vector based on the face vertex indices.
+	// sort the vector based on the face vertex indices.
 	std::sort(std::execution::par_unseq, fvec.begin(), fvec.end());
 	uint total = 0;
 
-		   // iterate over the sorted vector, and mark any duplicate faces as deleted.
+	// iterate over the sorted vector, and mark any duplicate faces as deleted.
 	for (uint i = 0; i < fvec.size() - 1; ++i) {
 		if (fvec[i] == fvec[i + 1]) {
 			total++;
@@ -484,19 +483,23 @@ uint removeDuplicatedFaces(MeshType& m)
 }
 
 /**
- * @brief Removes all vertices that have coordinates with invalid floating point values (NaN or
- * inf).
+ * @brief Removes all vertices that have coordinates with invalid floating point
+ * values (NaN or inf).
  *
- * This function removes all vertices in the input mesh that have coordinates with invalid floating
- * point values, such as NaN or inf. If the input mesh has faces, and if the flag `deleteAlsoFaces`
- * is set to true, all faces incident on deleted vertices are also deleted.
+ * This function removes all vertices in the input mesh that have coordinates
+ * with invalid floating point values, such as NaN or inf. If the input mesh has
+ * faces, and if the flag `deleteAlsoFaces` is set to true, all faces incident
+ * on deleted vertices are also deleted.
  *
- * @tparam MeshType: The type of the input Mesh. It must satisfy the MeshConcept.
+ * @tparam MeshType: The type of the input Mesh. It must satisfy the
+ * MeshConcept.
  *
- * @param[in,out] m: The input mesh for which to remove degenerated vertices. This mesh will be
- * modified in place, with all degenerated vertices being marked as deleted.
+ * @param[in,out] m: The input mesh for which to remove degenerated vertices.
+ * This mesh will be modified in place, with all degenerated vertices being
+ * marked as deleted.
  *
- * @param[in] deleteAlsoFaces: If true, all faces incident on deleted vertices will also be deleted.
+ * @param[in] deleteAlsoFaces: If true, all faces incident on deleted vertices
+ * will also be deleted.
  *
  * @return The number of degenerated vertices that were marked as deleted.
  *
@@ -509,8 +512,8 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 
 	int count_vd = 0;
 
-		   // iterate over all vertices in the mesh, and mark any with invalid floating point values as
-		   // deleted.
+	// iterate over all vertices in the mesh, and mark any with invalid floating
+	// point values as deleted.
 	for (VertexType& v : m.vertices()) {
 		if (v.coord().isDegenerate()) {
 			count_vd++;
@@ -518,8 +521,8 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 		}
 	}
 
-		   // If the mesh has faces and the `deleteAlsoFaces` flag is true, delete all faces incident on
-		   // deleted vertices.
+	// If the mesh has faces and the `deleteAlsoFaces` flag is true, delete all
+	// faces incident on deleted vertices.
 	if constexpr (HasFaces<MeshType>) {
 		using FaceType = MeshType::FaceType;
 		if (deleteAlsoFaces) {
@@ -543,17 +546,20 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 /**
  * @brief Removes all degenerate faces from the input mesh.
  *
- * This function removes all faces in the input mesh that are topologically degenerate, meaning that
- * they have two or more vertex references that link the same vertex. All degenerate faces are zero
- * area faces, but not all zero area faces are degenerate (for example, a face with three different
- * vertex references, but two of them have the same coordinates). Therefore, if you also want to
- * remove these kinds of faces, you should call `removeDuplicatedVertices(m)` first. This function
- * does not adjust topology.
+ * This function removes all faces in the input mesh that are topologically
+ * degenerate, meaning that they have two or more vertex references that link
+ * the same vertex. All degenerate faces are zero area faces, but not all zero
+ * area faces are degenerate (for example, a face with three different vertex
+ * references, but two of them have the same coordinates). Therefore, if you
+ * also want to remove these kinds of faces, you should call
+ * `removeDuplicatedVertices(m)` first. This function does not adjust topology.
  *
- * @tparam MeshType The type of the input Mesh. It must satisfy the FaceMeshConcept.
+ * @tparam MeshType The type of the input Mesh. It must satisfy the
+ * FaceMeshConcept.
  *
- * @param[in,out] m: The input mesh for which to remove degenerate faces. This mesh will be modified
- * in place, with all degenerate faces being marked as deleted.
+ * @param[in,out] m: The input mesh for which to remove degenerate faces. This
+ * mesh will be modified in place, with all degenerate faces being marked as
+ * deleted.
  *
  * @return The number of degenerate faces that were marked as deleted.
  *
@@ -565,7 +571,8 @@ uint removeDegenerateFaces(MeshType& m)
 	uint count = 0;
 	using FaceType = MeshType::FaceType;
 
-		   // iterate over all faces in the mesh, and mark any that are degenerate as deleted.
+	// iterate over all faces in the mesh, and mark any that are degenerate as
+	// deleted.
 	for (FaceType& f : m.faces()){
 		bool deg = false; // flag to check if a face is degenerate
 		for (uint i = 0; i < f.vertexNumber() && !deg; ++i){
@@ -582,14 +589,16 @@ uint removeDegenerateFaces(MeshType& m)
 /**
  * @brief Counts the number of non-manifold vertices in the input mesh.
  *
- * This function counts the number of vertices in the input mesh that are non-manifold, meaning that
- * they are connected to more than two faces. A non-manifold vertex is one that belongs to two or
- * more different edges that are not part of the same face.
+ * This function counts the number of vertices in the input mesh that are
+ * non-manifold, meaning that they are connected to more than two faces. A
+ * non-manifold vertex is one that belongs to two or more different edges that
+ * are not part of the same face.
  *
- * @tparam MeshType The type of the input Mesh. It must satisfy the FaceMeshConcept.
+ * @tparam MeshType The type of the input Mesh. It must satisfy the
+ * FaceMeshConcept.
  *
- * @param[in] m: The input mesh for which to count the number of non-manifold vertices. This mesh
- * will not be modified by the function.
+ * @param[in] m: The input mesh for which to count the number of non-manifold
+ * vertices. This mesh will not be modified by the function.
  *
  * @return The number of non-manifold vertices in the input mesh.
  *
@@ -598,23 +607,28 @@ uint removeDegenerateFaces(MeshType& m)
 template<FaceMeshConcept MeshType>
 uint numberNonManifoldVertices(const MeshType& m)
 {
-	std::vector<bool> nonManifoldVertices = internal::nonManifoldVerticesVectorBool(m);
-	return std::count(nonManifoldVertices.begin(), nonManifoldVertices.end(), true);
+	std::vector<bool> nonManifoldVertices =
+		internal::nonManifoldVerticesVectorBool(m);
+	return std::count(
+		nonManifoldVertices.begin(), nonManifoldVertices.end(), true);
 }
 
 /**
  * @brief Determines whether the input mesh is water tight.
  *
- * This function performs a simple test of water tightness on the input mesh, checking that there
- * are no boundary and no non-manifold edges, assuming that the mesh is orientable. It could be
- * debated whether a closed non-orientable surface is water tight or not, but this function does not
- * take orientability into account.
+ * This function performs a simple test of water tightness on the input mesh,
+ * checking that there are no boundary and no non-manifold edges, assuming that
+ * the mesh is orientable. It could be debated whether a closed non-orientable
+ * surface is water tight or not, but this function does not take orientability
+ * into account.
  *
- * @tparam MeshType: The type of the input Mesh. It must satisfy the FaceMeshConcept.
+ * @tparam MeshType: The type of the input Mesh. It must satisfy the
+ * FaceMeshConcept.
  *
  * @param[in] m The input mesh to check for water tightness.
  *
- * @return `true` if the input mesh is water tight (i.e., closed and manifold), `false` otherwise.
+ * @return `true` if the input mesh is water tight (i.e., closed and manifold),
+ * `false` otherwise.
  *
  * @ingroup clean
  */
@@ -629,13 +643,14 @@ bool isWaterTight(const MeshType& m)
 /**
  * @brief Counts the number of holes in the input mesh.
  *
- * This function counts the number of holes in the input mesh, where a hole is defined as a closed
- * loop of border edges. The function uses a depth-first search algorithm to traverse the mesh and
- * find all the holes. The function requires the input MeshType to have per-face adjacent faces, and
- * uses the `vcl::requirePerFaceAdjacentFaces` function to enforce this requirement.
+ * This function counts the number of holes in the input mesh, where a hole is
+ * defined as a closed loop of border edges. The function uses a depth-first
+ * search algorithm to traverse the mesh and find all the holes. The function
+ * requires the input MeshType to have per-face adjacent faces, and uses the
+ * `vcl::requirePerFaceAdjacentFaces` function to enforce this requirement.
  *
- * @tparam MeshType: The type of the input Mesh. It must satisfy the FaceMeshConcept and have
- * per-face adjacent faces.
+ * @tparam MeshType: The type of the input Mesh. It must satisfy the
+ * FaceMeshConcept and have per-face adjacent faces.
  *
  * @param[in] m: The input mesh for which to count the number of holes.
  *
@@ -654,10 +669,11 @@ uint numberHoles(const MeshType& m)
 
 	uint loopNum=0;
 
-		   // create a vector of bools to keep track of visited faces.
+	// create a vector of bools to keep track of visited faces.
 	std::vector<bool> visitedFaces(m.faceContainerSize(), false);
 
-		   // Traverse the mesh using a depth-first search algorithm to find all the holes.
+	// Traverse the mesh using a depth-first search algorithm to find all the
+	// holes.
 	for(const FaceType& f : m.faces()) {
 		uint e = 0;
 		for(const VertexType* v : f.vertices()) {
@@ -679,21 +695,24 @@ uint numberHoles(const MeshType& m)
 }
 
 /**
- * @brief Computes the connected components of the input mesh based on its topology.
+ * @brief Computes the connected components of the input mesh based on its
+ * topology.
  *
- * This function computes the connected components of the input mesh based on its topology, and
- * returns a vector of sets, where each set represents a connected component and contains the face
- * indices of the mesh that compose it. The function uses a depth-first search algorithm to traverse
- * the mesh and find the connected components. The function requires the input MeshType to have
- * per-face adjacent faces, and uses the `vcl::requirePerFaceAdjacentFaces` function to enforce this
- * requirement.
+ * This function computes the connected components of the input mesh based on
+ * its topology, and returns a vector of sets, where each set represents a
+ * connected component and contains the face indices of the mesh that compose
+ * it. The function uses a depth-first search algorithm to traverse the mesh and
+ * find the connected components. The function requires the input MeshType to
+ * have per-face adjacent faces, and uses the `vcl::requirePerFaceAdjacentFaces`
+ * function to enforce this requirement.
  *
- * @tparam MeshType: The type of the input Mesh. It must satisfy the FaceMeshConcept and have
- * per-face adjacent faces.
+ * @tparam MeshType: The type of the input Mesh. It must satisfy the
+ * FaceMeshConcept and have per-face adjacent faces.
  *
  * @param[in] m: The input mesh for which to compute the connected components.
- * @return A vector of sets representing the connected components of the input mesh. Each set
- * contains the face indices of the mesh that compose a connected component.
+ * @return A vector of sets representing the connected components of the input
+ * mesh. Each set contains the face indices of the mesh that compose a connected
+ * component.
  *
  * @ingroup clean
  */
@@ -707,30 +726,34 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 
 	std::vector<std::set<uint>> cc;
 
-		   // create a vector of bools to keep track of visited faces.
+	// create a vector of bools to keep track of visited faces.
 	std::vector<bool> visitedFaces(m.faceContainerSize(), false);
 
-		   // create a stack to hold the faces that need to be visited during the depth-first search.
+	// create a stack to hold the faces that need to be visited during the
+	// depth-first search.
 	std::stack<const FaceType*> sf;
 
-		   // traverse the mesh using a depth-first search algorithm to find the connected components.
+	// traverse the mesh using a depth-first search algorithm to find the
+	// connected components.
 	for (const FaceType& f : m.faces()){
 		if (!visitedFaces[m.index(f)]) { // first time I see this face
 			visitedFaces[m.index(f)] = true;
 
-				   // new connected component
+			// new connected component
 			cc.emplace_back();
 			std::set<uint>& ccf = cc[cc.size()-1];
 			ccf.insert(m.index(f));
 
-				   // while the stack is empty, visit the adjacent faces of the top face of the stack
+			// while the stack is empty, visit the adjacent faces of the top
+			// face of the stack
 			sf.push(&f);
 			while(!sf.empty()){
 				const FaceType* fpt = sf.top();
-				sf.pop(); // remove the top face and add it to the connected component
+				// remove the top face and add it to the connected component
+				sf.pop();
 				ccf.insert(m.index(fpt));
 
-					   // add the adjacent faces of the current visited in the stack
+				// add the adjacent faces of the current visited in the stack
 				for (uint j = 0; j < fpt->vertexNumber(); ++j){
 					const FaceType* adjf = fpt->adjFace(j);
 					// if there is an adj face and it has not been visited
@@ -746,17 +769,19 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 }
 
 /**
- * @brief Computes the number of connected components of the input mesh based on its topology.
+ * @brief Computes the number of connected components of the input mesh based on
+ * its topology.
  *
- * This function computes the number of connected components of the input mesh based on its
- * topology, and returns the result as an unsigned integer. The function simply calls the
- * `connectedComponents` function to compute the connected components and then returns the size of
- * the resulting vector.
+ * This function computes the number of connected components of the input mesh
+ * based on its topology, and returns the result as an unsigned integer. The
+ * function simply calls the `connectedComponents` function to compute the
+ * connected components and then returns the size of the resulting vector.
  *
- * @tparam MeshType The type of the input Mesh. It must satisfy the FaceMeshConcept and have
- * per-face adjacent faces.
+ * @tparam MeshType The type of the input Mesh. It must satisfy the
+ * FaceMeshConcept and have per-face adjacent faces.
  *
- * @param[in] m: The input mesh for which to compute the number of connected components.
+ * @param[in] m: The input mesh for which to compute the number of connected
+ * components.
  * @return The number of connected components of the input mesh.
  *
  * @ingroup clean

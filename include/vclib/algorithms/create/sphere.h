@@ -33,10 +33,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
 /**
  * @brief The CreateSphereArgs structs contains a series of parameters to
  * generate a sphere.
@@ -79,29 +75,6 @@ MeshType createSphereUV(
 	const SphereConcept auto& sp,
 	uint                      parallels = 10,
 	uint                      meridians = 20);
-
-template<FaceMeshConcept MeshType>
-MeshType
-createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions);
-
-template<FaceMeshConcept MeshType>
-MeshType
-createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions);
-
-template<FaceMeshConcept MeshType>
-MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions);
-
-template<FaceMeshConcept MeshType>
-MeshType createSphere(
-	const SphereConcept auto& sp,
-	const CreateSphereArgs&   args = CreateSphereArgs());
-
-template<FaceMeshConcept MeshType>
-MeshType createSphere();
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
 
 namespace internal {
 
@@ -454,8 +427,9 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
  * @ingroup create
  */
 template<FaceMeshConcept MeshType>
-MeshType
-createSphere(const SphereConcept auto& sp, const CreateSphereArgs& args)
+MeshType createSphere(
+	const SphereConcept auto& sp,
+	const CreateSphereArgs&   args = CreateSphereArgs())
 {
 	MeshType m;
 	switch (args.mode) {

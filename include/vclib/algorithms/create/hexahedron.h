@@ -28,23 +28,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceMeshConcept MeshType>
-MeshType createHexahedron();
-
-template<FaceMeshConcept MeshType, Point3Concept CoordType>
-MeshType createHexahedron(const CoordType& min, const CoordType& max);
-
-template<FaceMeshConcept MeshType, Point3Concept CoordType>
-MeshType createCube(const CoordType& min, double edgeLength);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 namespace internal {
 
 template<FaceMeshConcept MeshType>

@@ -31,20 +31,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<PolygonMeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType createDodecahedron(LogType& log = nullLogger);
-
-template<TriangleMeshConcept MeshType, LoggerConcept LogType = NullLogger>
-MeshType createDodecahedron(LogType& log = nullLogger);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Creates and returns a Polygon Mesh containing a Dodecahedron.
  *
@@ -54,8 +40,8 @@ MeshType createDodecahedron(LogType& log = nullLogger);
  *
  * @ingroup create
  */
-template<PolygonMeshConcept MeshType, LoggerConcept LogType>
-MeshType createDodecahedron(LogType& log)
+template<PolygonMeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType createDodecahedron(LogType& log = nullLogger)
 {
 	using VertexType = MeshType::VertexType;
 	using CoordType  = VertexType::CoordType;
@@ -133,8 +119,8 @@ MeshType createDodecahedron(LogType& log)
  *
  * @ingroup create
  */
-template<TriangleMeshConcept MeshType, LoggerConcept LogType>
-MeshType createDodecahedron(LogType& log)
+template<TriangleMeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType createDodecahedron(LogType& log = nullLogger)
 {
 	if constexpr (isLoggerValid<LogType>()) {
 		log.startNewTask(0, 75, "Create Polygonal Dodecahedron.");

@@ -28,17 +28,6 @@
 
 namespace vcl {
 
-/******************************************************************************
- *                                Declarations                                *
- ******************************************************************************/
-
-template<FaceMeshConcept MeshType>
-MeshType createIcosahedron(bool normalizeVertices = false);
-
-/******************************************************************************
- *                                Definitions                                 *
- ******************************************************************************/
-
 /**
  * @brief Creates and returns an icosahedron mesh.
  *
@@ -51,7 +40,7 @@ MeshType createIcosahedron(bool normalizeVertices = false);
  * @ingroup create
  */
 template<FaceMeshConcept MeshType>
-MeshType createIcosahedron(bool normalizeVertices)
+MeshType createIcosahedron(bool normalizeVertices = false)
 {
 	using VertexType = MeshType::VertexType;
 	using CoordType  = VertexType::CoordType;
@@ -60,7 +49,7 @@ MeshType createIcosahedron(bool normalizeVertices)
 
 	const double t = (1.0 + std::sqrt(5.0)) / 2.0;
 
-		   // Vertices
+	// Vertices
 	mesh.addVertex(CoordType(-1.0, t, 0.0));
 	mesh.addVertex(CoordType(1.0, t, 0.0));
 	mesh.addVertex(CoordType(-1.0, -t, 0.0));
@@ -79,7 +68,7 @@ MeshType createIcosahedron(bool normalizeVertices)
 			v.coord().normalize();
 	}
 
-		   // Faces
+	// Faces
 	mesh.addFace(0, 11, 5);
 	mesh.addFace(0, 5, 1);
 	mesh.addFace(0, 1, 7);
