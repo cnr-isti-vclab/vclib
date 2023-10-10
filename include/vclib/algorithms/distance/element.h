@@ -58,7 +58,7 @@ auto pointFaceDistance(
 
 	ScalarType dist;
 
-		   // Extract the coordinates of the vertices of the face.
+	// Extract the coordinates of the vertices of the face.
 	const FPointType& fp0 = f.vertex(0)->coord();
 	const FPointType& fp1 = f.vertex(1)->coord();
 	const FPointType& fp2 = f.vertex(2)->coord();
@@ -95,7 +95,7 @@ auto pointFaceDistance(
 		// point on the triangle.
 		closest = p - fPlane.direction() * dist;
 
-			   // Calculate the three edges of the triangle.
+		// Calculate the three edges of the triangle.
 		Point3<ScalarType> fEdge[3];
 		fEdge[0] = fp1 - fp0;
 		fEdge[1] = fp2 - fp1;

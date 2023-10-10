@@ -122,7 +122,7 @@ public:
 
 		VPtrs::setVertices(r);
 
-			   // if polygonal, I need to resize all the TTVN components
+		// if polygonal, I need to resize all the TTVN components
 		if constexpr (NV < 0) {
 			(resizeTTVNComponent<Comps>(std::ranges::size(r)), ...);
 		}

@@ -100,7 +100,7 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
 {
 	MeshType m;
 
-		   // fill vertices...
+	// fill vertices...
 	m.addVertices(
 		CoordType(min(0), min(1), min(2)),
 		CoordType(max(0), min(1), min(2)),
@@ -111,7 +111,7 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
 		CoordType(min(0), max(1), max(2)),
 		CoordType(max(0), max(1), max(2)));
 
-		   // fill faces
+	// fill faces
 	if constexpr (HasTriangles<MeshType>) {
 		internal::fillHexahedronTriangles(m);
 	}

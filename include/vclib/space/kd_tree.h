@@ -446,12 +446,12 @@ private:
 		Node&          node = nodes[nodeId];
 		Box<PointType> aabb;
 
-			   // putting all the points in the bounding box
+		// putting all the points in the bounding box
 		aabb.add(points[start]);
 		for (uint i = start + 1; i < end; ++i)
 			aabb.add(points[i]);
 
-			   // bounding box diagonal
+		// bounding box diagonal
 		PointType diag = aabb.max() - aabb.min();
 
 		// the split "dim" is the dimension of the box with the biggest value

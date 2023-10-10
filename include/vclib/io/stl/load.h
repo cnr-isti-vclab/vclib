@@ -206,10 +206,10 @@ void loadStlAscii(
 				++token; // skip the "facet" word
 				++token; // skip the "normal" word
 
-					   // add 3 vertices for the face
+				// add 3 vertices for the face
 				uint vi = m.addVertices(3);
 
-					   // read the normal of the face
+				// read the normal of the face
 				Point3f normal;
 
 				normal.x() = io::internal::readFloat<float>(token);

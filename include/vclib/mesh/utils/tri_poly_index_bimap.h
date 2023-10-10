@@ -157,8 +157,8 @@ public:
 		}
 		triToPoly[triangleIndex] = polygonIndex;
 
-			   // add the index of the triangle associated to the polygon,
-			   // but only if it is the first triangle index of the polygon!
+		// add the index of the triangle associated to the polygon,
+		// but only if it is the first triangle index of the polygon!
 		if (polygonIndex >= polyToTri.size()) {
 			polyToTri.resize(polygonIndex + 1, UINT_NULL);
 		}

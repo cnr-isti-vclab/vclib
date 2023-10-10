@@ -234,7 +234,7 @@ public:
 		if (H.size() == 0)
 			return 0;
 
-			   // check percentile range
+		// check percentile range
 		assert(frac >= 0 && frac <= 1);
 
 		ScalarType sum     = cnt * frac;

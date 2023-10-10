@@ -107,7 +107,7 @@ OutMeshType perVertexMeshFilter(
 	OutMeshType res;
 	res.enableSameOptionalComponentsOf(m);
 
-		   // enable the custom component birthVertex
+	// enable the custom component birthVertex
 	if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
 		if (saveBirthIndicesInCustomComponent) {
 			res.template addPerVertexCustomComponent<uint>("birthVertex");

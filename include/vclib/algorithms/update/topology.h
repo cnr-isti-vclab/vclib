@@ -133,7 +133,7 @@ void updatePerVertexAdjacentVertices(MeshType& m)
 	// >= 2
 	std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
 
-		   // store the last pair of vertices
+	// store the last pair of vertices
 	VertexType* v1 = nullptr;
 	VertexType* v2 = nullptr;
 	for (uint i = 0; i < vec.size(); ++i){

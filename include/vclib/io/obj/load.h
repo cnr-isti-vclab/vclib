@@ -208,7 +208,7 @@ void loadVertexNormal(
 {
 	using NormalType = MeshType::VertexType::NormalType;
 
-		   // first, need to check if I can store normals in the mesh
+	// first, need to check if I can store normals in the mesh
 	if (vn == 0) {
 		if (enableOptionalComponents) {
 			enableIfPerVertexNormalOptional(m);
@@ -418,13 +418,13 @@ void loadObj(
 	// faces or into vertices as a fallback)
 	std::vector<vcl::TexCoordd> texCoords;
 
-		   // map of materials loaded
+	// map of materials loaded
 	std::map<std::string, obj::Material> materialMap;
 	obj::Material currentMaterial; // the current material, set by 'usemtl'
 
-		   // some obj files do not declare the material file name with mtllib, but
-		   // they assume that material file has the same name of the obj file.
-		   // Therefore, we first load this file if it exists.
+	// some obj files do not declare the material file name with mtllib, but
+	// they assume that material file has the same name of the obj file.
+	// Therefore, we first load this file if it exists.
 	std::string stdmtlfile = FileInfo::pathWithoutFileName(filename) +
 							 FileInfo::fileNameWithoutExtension(filename) +
 							 ".mtl";
@@ -444,7 +444,7 @@ void loadObj(
 		m.name() = FileInfo::fileNameWithoutExtension(filename);
 	}
 
-		   // cycle that reads line by line
+	// cycle that reads line by line
 	do {
 		vcl::Tokenizer tokens =
 			internal::nextNonEmptyTokenizedLineNoThrow(file);

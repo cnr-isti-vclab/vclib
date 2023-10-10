@@ -62,7 +62,7 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
 			"Face has no Adjacent Faces component.");
 	}
 
-		   // Check if the edge is a boundary edge.
+	// Check if the edge is a boundary edge.
 	if (f.adjFace(edge) == nullptr) {
 		return true;
 	}
@@ -157,13 +157,13 @@ bool checkFlipEdge(const FaceType& f, uint edge)
 	uint oe = of->indexOfAdjFace(&f);
 	assert(oe != UINT_NULL);
 
-		   // check if the vertices of the edge are the same
-		   // e.g. the mesh has to be well oriented
+	// check if the vertices of the edge are the same
+	// e.g. the mesh has to be well oriented
 	if (of->vertex(oe) != v1 || of->vertexMod(oe+1) != v0)
 		return false;
 
-		   // check if the flipped edge is already present in the mesh
-		   // f_v2 and of_v2 are the vertices of the new edge
+	// check if the flipped edge is already present in the mesh
+	// f_v2 and of_v2 are the vertices of the new edge
 	const VertexType* f_v2 = f.vertexMod(edge+2);
 	const VertexType* of_v2 = of->vertexMod(oe+2);
 
@@ -285,8 +285,8 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
 
 	FaceType* nextFace = f.adjFace(edge);
 
-		   // if nextFace == nullptr there is nothing to do
-		   // the face is already detached on the edge
+	// if nextFace == nullptr there is nothing to do
+	// the face is already detached on the edge
 	if (nextFace != nullptr) {
 
 		FaceType* prevFace;
@@ -345,13 +345,13 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 	for (uint e = 0; e < f.vertexNumber(); ++e) {
 		detachAdjacentFacesOnEdge(f, e);
 
-			   // if the vertices have adjacent faces
+		// if the vertices have adjacent faces
 		if constexpr (comp::HasAdjacentFaces<VertexType>) {
 			if (comp::isAdjacentFacesAvailableOn(f.vertex(e))) {
 				VertexType* v = f.vertex(e);
 				uint vpos = v->indexOfAdjFace(&f);
 				if (vpos != UINT_NULL) {   // may happen if vertex adj faces are
-										 // not initialized / updated
+										   // not initialized / updated
 					v->eraseAdjFace(vpos); // the vertex v has not anymore the
 										   // adjacent face f
 				}
@@ -435,7 +435,7 @@ void addTriangleFacesFromPolygon(
 		polCoords[i] = m.vertex(polygon[i]).coord();
 	}
 
-		   // compute earcut of the polygons
+	// compute earcut of the polygons
 	std::vector<uint> tris =
 		Polygon<CoordType>::earCut(polCoords.begin(), polCoords.end());
 
@@ -451,7 +451,7 @@ void addTriangleFacesFromPolygon(
 		f.resizeVertices(3);
 	}
 
-		   // set the first triangle of the loaded polygon
+	// set the first triangle of the loaded polygon
 	uint i = 0; // from 0 to 2, vertices indices of the triangle
 	for (auto& v : f.vertices()) {
 		v = &m.vertex(polygon[tris[i]]);

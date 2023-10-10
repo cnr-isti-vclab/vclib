@@ -60,7 +60,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 	using ScalarType = CoordType::ScalarType;
 	using FaceType   = MeshType::FaceType;
 
-		   // Auxiliary data structure
+	// Auxiliary data structure
 	struct AdjVertex {
 		const VertexType* vert;
 		double doubleArea;
@@ -156,13 +156,13 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 		tempMatrix = w.outerProduct(w);
 		Q -= tempMatrix * 2.0f;
 
-			   // compute matrix Q^t M Q
+		// compute matrix Q^t M Q
 		Matrix33<ScalarType> QtMQ = (Q.transpose() * M * Q);
 
 		Eigen::Matrix<ScalarType, 1, 3> T1 = Q.col(1);
 		Eigen::Matrix<ScalarType, 1, 3> T2 = Q.col(2);
 
-			   // find sin and cos for the Givens rotation
+		// find sin and cos for the Givens rotation
 		ScalarType s, c;
 		// Gabriel Taubin hint and Valentino Fiorin impementation
 		ScalarType alpha = QtMQ(1, 1) - QtMQ(2, 2);

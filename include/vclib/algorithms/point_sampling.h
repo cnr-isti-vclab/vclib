@@ -345,7 +345,7 @@ SamplerType faceUniformPointSampling(
 
 	SamplerType ps;
 
-		   // Reserve space in the sampler and birthFaces vectors
+	// Reserve space in the sampler and birthFaces vectors
 	ps.reserve(fn);
 	birthFaces.reserve(fn);
 	birthFaces.clear();
@@ -1003,7 +1003,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
 		floatSampleNum += weightedArea(f, m, radius) * samplePerAreaUnit;
 		uint faceSampleNum = (uint) floatSampleNum;
 
-			   // for every sample p_i in T...
+		// for every sample p_i in T...
 		for (uint i = 0; i < faceSampleNum; i++)
 			ps.add(
 				f,

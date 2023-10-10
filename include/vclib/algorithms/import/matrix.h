@@ -450,7 +450,7 @@ void importFacesFromMatrix(
 		for (auto& f : mesh.faces()) {
 			uint vertexNumber = 0;
 
-				   // count the number of vertices of the face
+			// count the number of vertices of the face
 			while (vertexNumber < faces.cols() &&
 				   faces(i, vertexNumber) != -1 &&
 				   faces(i, vertexNumber) != UINT_NULL)

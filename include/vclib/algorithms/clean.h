@@ -419,8 +419,8 @@ uint removeDuplicatedVertices(MeshType& m)
 	// container of the mesh
 	m.updateVertexIndices(newVertexIndices);
 
-		   // todo:
-		   // - add a flag that removes degenerate elements after
+	// todo:
+	// - add a flag that removes degenerate elements after
 	return deleted;
 }
 
