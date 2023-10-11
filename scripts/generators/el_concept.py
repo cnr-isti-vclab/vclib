@@ -22,4 +22,4 @@ def generate_elem_concept(element):
     with open("../" + target_file, 'w') as file:
         file.write(element_concept)
 
-    return [target_file],[]
+    return target_file

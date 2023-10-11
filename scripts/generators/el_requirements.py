@@ -36,4 +36,4 @@ def generate_elem_requirements(element):
 
     common.insert_include_in_file("include/vclib/mesh/requirements.h", include_file)
 
-    return [target_file_h],[]
+    return target_file_h

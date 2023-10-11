@@ -30,7 +30,6 @@ def main():
     element = Element(args.elem_name, args.namespace, args.components, args.vertical_components, args.optional_components)
 
     headers_list = []
-    sources_list = []
 
     gen_function_list = [
         generate_per_elem_concepts,
@@ -52,26 +51,20 @@ def main():
     for f in gen_function_list:
         if f == generate_elem_components:
             if args.define_components:
-                h, s = f(element)
-                headers_list += h
-                sources_list += s
+                h = f(element)
+                headers_list += [h]
         else:
-            h, s = f(element)
-            headers_list += h
-            sources_list += s
+            h = f(element)
+            headers_list += [h]
 
     for f in update_function_list:
         f(element)
 
-    update_cmake_file(headers_list, sources_list)
+    update_cmake_file(headers_list)
 
     print("Generated Headers:")
     for h in headers_list:
         print('\t' + h)
-
-    print("Generated Sources:")
-    for s in sources_list:
-        print('\t' + s)
     
 
 if __name__ == "__main__":

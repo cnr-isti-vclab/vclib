@@ -78,7 +78,7 @@ def simple_string_replacement(target_file_name, template_file_name, element):
     with open("../" + target_file_name, 'w') as file:
         file.write(file_string)
 
-    return [target_file_name],[]
+    return target_file_name
 
 
 def insert_include_in_file(target_file_name, include_string):

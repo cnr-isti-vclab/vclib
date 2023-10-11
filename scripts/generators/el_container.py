@@ -38,4 +38,4 @@ def generate_elem_container(element):
 
     common.insert_include_in_file("include/vclib/mesh/mesh_containers.h", include_file)
 
-    return [target_file_h],[]
+    return target_file_h

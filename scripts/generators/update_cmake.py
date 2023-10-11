@@ -1,7 +1,8 @@
 from . import common
 import bisect
 
-def replace(cmake_file_string, start, list):
+def replace(cmake_file_string, list):
+    start = 'set(HEADERS\n'
     end = ')'
 
     start_index = cmake_file_string.index(start)
@@ -22,20 +23,14 @@ def replace(cmake_file_string, start, list):
     
     return cmake_file_string
 
-def update_cmake_file(headers_list = None, sources_list = None):
+def update_cmake_file(headers_list = None):
     target_file = "../CMakeLists.txt"
 
     # Read in the file
     with open(target_file, 'r') as file :
         cmake_file = file.read()
 
-    start = 'set(HEADERS\n'
-    
-    cmake_file = replace(cmake_file, start, headers_list)
-
-    start = 'set(SOURCES\n'
-
-    cmake_file = replace(cmake_file, start, sources_list)
+    cmake_file = replace(cmake_file, headers_list)
 
     with open(target_file, 'w') as file:
         file.write(cmake_file)

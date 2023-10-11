@@ -30,4 +30,4 @@ def generate_elem_components(element):
     with open("../" + target_file, 'w') as file:
         file.write(element_components)
 
-    return [target_file],[]
+    return target_file
