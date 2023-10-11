@@ -38,12 +38,12 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasBoundingBox = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	typename T::BoundingBoxType;
-	{ o.boundingBox() } -> std::same_as<typename T::BoundingBoxType&>;
-	{ co.boundingBox() } -> std::same_as<const typename T::BoundingBoxType&>;
+    typename T::BoundingBoxType;
+    { o.boundingBox() } -> std::same_as<typename T::BoundingBoxType&>;
+    { co.boundingBox() } -> std::same_as<const typename T::BoundingBoxType&>;
 };
 
 } // namespace vcl::comp

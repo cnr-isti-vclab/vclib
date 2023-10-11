@@ -59,57 +59,57 @@ namespace vcl::comp {
  */
 template<PointConcept PointType, typename ElementType = void, bool OPT = false>
 class BoundingBox :
-		public Component<
-			BoundingBox<PointType, ElementType, OPT>,
-			BOUNDING_BOX,
-			Box<PointType>,
-			ElementType,
-			OPT>
+        public Component<
+            BoundingBox<PointType, ElementType, OPT>,
+            BOUNDING_BOX,
+            Box<PointType>,
+            ElementType,
+            OPT>
 {
-	using Base = Component<
-		BoundingBox<PointType, ElementType, OPT>,
-		BOUNDING_BOX,
-		Box<PointType>,
-		ElementType,
-		OPT>;
+    using Base = Component<
+        BoundingBox<PointType, ElementType, OPT>,
+        BOUNDING_BOX,
+        Box<PointType>,
+        ElementType,
+        OPT>;
 
 public:
-	/**
-	 * @brief Expose the type of the bounding box.
-	 */
-	using BoundingBoxType = Box<PointType>;
+    /**
+     * @brief Expose the type of the bounding box.
+     */
+    using BoundingBoxType = Box<PointType>;
 
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes the bounding box to an invalid bounding box.
-	 */
-	BoundingBox() = default;
+    /**
+     * @brief Initilizes the bounding box to an invalid bounding box.
+     */
+    BoundingBox() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns a const reference to the bounding box of this object.
-	 * @return A const reference to the bounding box of this object.
-	 */
-	const BoundingBoxType& boundingBox() const { return Base::data(); }
+    /**
+     * @brief Returns a const reference to the bounding box of this object.
+     * @return A const reference to the bounding box of this object.
+     */
+    const BoundingBoxType& boundingBox() const { return Base::data(); }
 
-	/**
-	 * @brief Returns a reference to the bounding box of this object.
-	 * @return A reference to the bounding box of this object.
-	 */
-	BoundingBoxType& boundingBox() { return Base::data(); }
+    /**
+     * @brief Returns a reference to the bounding box of this object.
+     * @return A reference to the bounding box of this object.
+     */
+    BoundingBoxType& boundingBox() { return Base::data(); }
 
 protected:
-	// Component interface function
-	template<typename Element>
-	void importFrom(const Element& e)
-	{
-		if constexpr(HasBoundingBox<Element>) {
-			using ScalarType = PointType::ScalarType;
-			boundingBox() = e.boundingBox().template cast<ScalarType>();
-		}
-	}
+    // Component interface function
+    template<typename Element>
+    void importFrom(const Element& e)
+    {
+        if constexpr(HasBoundingBox<Element>) {
+            using ScalarType = PointType::ScalarType;
+            boundingBox() = e.boundingBox().template cast<ScalarType>();
+        }
+    }
 };
 
 /* Detector function to check if a class has BoundingBox available */
@@ -128,7 +128,7 @@ protected:
  */
 bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentAvailableOn<BOUNDING_BOX>(element);
+    return isComponentAvailableOn<BOUNDING_BOX>(element);
 }
 
 /* Specializations */

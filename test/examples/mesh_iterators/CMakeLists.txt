@@ -12,7 +12,7 @@
 project(vclib-mesh-iterators)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-iterators ${SOURCES})
 

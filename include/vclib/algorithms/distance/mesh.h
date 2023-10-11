@@ -37,274 +37,274 @@
 namespace vcl {
 
 struct HausdorffDistResult {
-	double minDist  = std::numeric_limits<double>::max();
-	double maxDist  = std::numeric_limits<double>::lowest();
-	double meanDist = 0;
-	double RMSDist  = 0;
-	Histogram<double> histogram;
+    double minDist  = std::numeric_limits<double>::max();
+    double maxDist  = std::numeric_limits<double>::lowest();
+    double meanDist = 0;
+    double RMSDist  = 0;
+    Histogram<double> histogram;
 };
 
 enum HausdorffSamplingMethod {
-	HAUSDORFF_VERTEX_UNIFORM = 0,
-	HAUSDORFF_EDGE_UNIFORM,
-	HAUSDORFF_MONTECARLO
+    HAUSDORFF_VERTEX_UNIFORM = 0,
+    HAUSDORFF_EDGE_UNIFORM,
+    HAUSDORFF_MONTECARLO
 };
 
 namespace internal {
 
 template<
-	MeshConcept    MeshType,
-	SamplerConcept SamplerType,
-	typename GridType,
-	LoggerConcept LogType>
+    MeshConcept    MeshType,
+    SamplerConcept SamplerType,
+    typename GridType,
+    LoggerConcept LogType>
 HausdorffDistResult hausdorffDist(
-	const MeshType&    m,
-	const SamplerType& s,
-	const GridType&    g,
-	LogType&           log)
+    const MeshType&    m,
+    const SamplerType& s,
+    const GridType&    g,
+    LogType&           log)
 {
-	using PointSampleType = SamplerType::PointType;
-	using ScalarType = PointSampleType::ScalarType;
+    using PointSampleType = SamplerType::PointType;
+    using ScalarType = PointSampleType::ScalarType;
 
-	HausdorffDistResult res;
-	res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
+    HausdorffDistResult res;
+    res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
 
-	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.log(
-			5,
-			"Computing distances for " + std::to_string(s.size()) +
-				" samples...");
-	}
+    if constexpr (vcl::isLoggerValid<LogType>()) {
+        log.log(
+            5,
+            "Computing distances for " + std::to_string(s.size()) +
+                " samples...");
+    }
 
-	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.startProgress("", s.size());
-	}
+    if constexpr (vcl::isLoggerValid<LogType>()) {
+        log.startProgress("", s.size());
+    }
 
-	std::mutex mutex;
+    std::mutex mutex;
 
-	uint ns = 0;
-	uint i = 0;
-	vcl::parallelFor(s, [&](const PointSampleType& sample){
-		//	for (const PointSampleType& sample : s) {
-		ScalarType dist = std::numeric_limits<ScalarType>::max();
-		const auto iter = g.closestValue(sample, dist);
+    uint ns = 0;
+    uint i = 0;
+    vcl::parallelFor(s, [&](const PointSampleType& sample){
+        //    for (const PointSampleType& sample : s) {
+        ScalarType dist = std::numeric_limits<ScalarType>::max();
+        const auto iter = g.closestValue(sample, dist);
 
-		if (iter != g.end()) {
-			mutex.lock();
-			ns++;
-			if (dist > res.maxDist)
-				res.maxDist = dist;
-			if (dist < res.minDist)
-				res.minDist = dist;
-			res.meanDist += dist;
-			res.RMSDist += dist*dist;
-			res.histogram.addValue(dist);
-			mutex.unlock();
-		}
+        if (iter != g.end()) {
+            mutex.lock();
+            ns++;
+            if (dist > res.maxDist)
+                res.maxDist = dist;
+            if (dist < res.minDist)
+                res.minDist = dist;
+            res.meanDist += dist;
+            res.RMSDist += dist*dist;
+            res.histogram.addValue(dist);
+            mutex.unlock();
+        }
 
-		if constexpr (vcl::isLoggerValid<LogType>()) {
-			mutex.lock();
-			++i;
-			log.progress(i);
-			mutex.unlock();
-		}
-		//	}
-	});
+        if constexpr (vcl::isLoggerValid<LogType>()) {
+            mutex.lock();
+            ++i;
+            log.progress(i);
+            mutex.unlock();
+        }
+        //    }
+    });
 
-	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.endProgress();
-		log.log(100, "Computed " + std::to_string(ns) + " distances.");
-		if (ns != s.size()) {
-			log.log(
-				100,
-				LogType::WARNING,
-				std::to_string(s.size() - ns) +
-					" samples were not counted because no closest vertex/face "
-					"was found.");
-		}
-	}
+    if constexpr (vcl::isLoggerValid<LogType>()) {
+        log.endProgress();
+        log.log(100, "Computed " + std::to_string(ns) + " distances.");
+        if (ns != s.size()) {
+            log.log(
+                100,
+                LogType::WARNING,
+                std::to_string(s.size() - ns) +
+                    " samples were not counted because no closest vertex/face "
+                    "was found.");
+        }
+    }
 
-	res.meanDist /= ns;
-	res.RMSDist = std::sqrt(res.RMSDist / ns);
+    res.meanDist /= ns;
+    res.RMSDist = std::sqrt(res.RMSDist / ns);
 
-	return res;
+    return res;
 }
 
 template<
-	MeshConcept    MeshType,
-	SamplerConcept SamplerType,
-	LoggerConcept  LogType>
+    MeshConcept    MeshType,
+    SamplerConcept SamplerType,
+    LoggerConcept  LogType>
 HausdorffDistResult
 samplerMeshHausdorff(const MeshType& m, const SamplerType& s, LogType& log)
-	requires (!HasFaces<MeshType>)
+    requires (!HasFaces<MeshType>)
 {
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	std::string meshName = "first mesh";
-	if constexpr (HasName<MeshType>){
-		meshName = m.name();
-	}
-	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.log(0, "Building Grid on " + meshName + " vertices...");
-	}
+    std::string meshName = "first mesh";
+    if constexpr (HasName<MeshType>){
+        meshName = m.name();
+    }
+    if constexpr (vcl::isLoggerValid<LogType>()) {
+        log.log(0, "Building Grid on " + meshName + " vertices...");
+    }
 
-	vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::addrOf);
-	grid.build();
+    vcl::StaticGrid3<const VertexType*> grid(m.vertices() | views::addrOf);
+    grid.build();
 
-	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.log(5, "Grid built.");
-	}
+    if constexpr (vcl::isLoggerValid<LogType>()) {
+        log.log(5, "Grid built.");
+    }
 
-	return hausdorffDist(m, s, grid, log);
+    return hausdorffDist(m, s, grid, log);
 }
 
 template<
-	FaceMeshConcept MeshType,
-	SamplerConcept  SamplerType,
-	LoggerConcept   LogType>
+    FaceMeshConcept MeshType,
+    SamplerConcept  SamplerType,
+    LoggerConcept   LogType>
 HausdorffDistResult
 samplerMeshHausdorff(const MeshType& m, const SamplerType& s, LogType& log)
 {
-	using VertexType = MeshType::VertexType;
-	using FaceType   = MeshType::FaceType;
-	using ScalarType = VertexType::CoordType::ScalarType;
+    using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
+    using ScalarType = VertexType::CoordType::ScalarType;
 
-	std::string meshName = "first mesh";
-	if constexpr (HasName<MeshType>){
-		meshName = m.name();
-	}
-	if (m.faceNumber() == 0) {
-		if constexpr (vcl::isLoggerValid<LogType>()) {
-			log.log(0, "Building Grid on " + meshName + " vertices...");
-		}
+    std::string meshName = "first mesh";
+    if constexpr (HasName<MeshType>){
+        meshName = m.name();
+    }
+    if (m.faceNumber() == 0) {
+        if constexpr (vcl::isLoggerValid<LogType>()) {
+            log.log(0, "Building Grid on " + meshName + " vertices...");
+        }
 
-		vcl::StaticGrid3<const VertexType*, ScalarType> grid(
-			m.vertices() | views::addrOf);
-		grid.build();
+        vcl::StaticGrid3<const VertexType*, ScalarType> grid(
+            m.vertices() | views::addrOf);
+        grid.build();
 
-		if constexpr (vcl::isLoggerValid<LogType>()) {
-			log.log(5, "Grid built.");
-		}
+        if constexpr (vcl::isLoggerValid<LogType>()) {
+            log.log(5, "Grid built.");
+        }
 
-		return hausdorffDist(m, s, grid, log);
-	}
-	else {
-		if constexpr (vcl::isLoggerValid<LogType>()) {
-			log.log(0, "Building Grid on " + meshName + " faces...");
-		}
-		vcl::StaticGrid3<const FaceType*, ScalarType> grid(
-			m.faces() | views::addrOf);
-		grid.build();
+        return hausdorffDist(m, s, grid, log);
+    }
+    else {
+        if constexpr (vcl::isLoggerValid<LogType>()) {
+            log.log(0, "Building Grid on " + meshName + " faces...");
+        }
+        vcl::StaticGrid3<const FaceType*, ScalarType> grid(
+            m.faces() | views::addrOf);
+        grid.build();
 
-		if constexpr (vcl::isLoggerValid<LogType>()) {
-			log.log(5, "Grid built.");
-		}
+        if constexpr (vcl::isLoggerValid<LogType>()) {
+            log.log(5, "Grid built.");
+        }
 
-		return hausdorffDist(m, s, grid, log);
-	}
+        return hausdorffDist(m, s, grid, log);
+    }
 }
 
 template<
-	uint METHOD,
-	MeshConcept    MeshType1,
-	MeshConcept    MeshType2,
-	SamplerConcept SamplerType,
-	LoggerConcept  LogType>
+    uint METHOD,
+    MeshConcept    MeshType1,
+    MeshConcept    MeshType2,
+    SamplerConcept SamplerType,
+    LoggerConcept  LogType>
 HausdorffDistResult hausdorffDistance(
-	const MeshType1&   m1,
-	const MeshType2&   m2,
-	uint               nSamples,
-	bool               deterministic,
-	SamplerType&       sampler,
-	std::vector<uint>& birth,
-	LogType& log)
+    const MeshType1&   m1,
+    const MeshType2&   m2,
+    uint               nSamples,
+    bool               deterministic,
+    SamplerType&       sampler,
+    std::vector<uint>& birth,
+    LogType& log)
 {
-	std::string meshName1 = "first mesh";
-	std::string meshName2 = "second mesh";
-	if constexpr (HasName<MeshType1>) {
-		meshName1 = m1.name();
-	}
-	if constexpr (HasName<MeshType2>) {
-		meshName2 = m2.name();
-	}
+    std::string meshName1 = "first mesh";
+    std::string meshName2 = "second mesh";
+    if constexpr (HasName<MeshType1>) {
+        meshName1 = m1.name();
+    }
+    if constexpr (HasName<MeshType2>) {
+        meshName2 = m2.name();
+    }
 
-	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.log(
-			0,
-			"Sampling " + meshName2 + " with " + std::to_string(nSamples) +
-				" samples...");
-	}
+    if constexpr (vcl::isLoggerValid<LogType>()) {
+        log.log(
+            0,
+            "Sampling " + meshName2 + " with " + std::to_string(nSamples) +
+                " samples...");
+    }
 
-	if constexpr (METHOD == HAUSDORFF_VERTEX_UNIFORM) {
-		sampler = vcl::vertexUniformPointSampling<SamplerType>(
-			m2, nSamples, birth, false, deterministic);
-	}
-	else if constexpr (METHOD == HAUSDORFF_EDGE_UNIFORM) {
-		// todo
-	}
-	else {
-		sampler = vcl::montecarloPointSampling<SamplerType>(
-			m2, nSamples, birth, deterministic);
-	}
+    if constexpr (METHOD == HAUSDORFF_VERTEX_UNIFORM) {
+        sampler = vcl::vertexUniformPointSampling<SamplerType>(
+            m2, nSamples, birth, false, deterministic);
+    }
+    else if constexpr (METHOD == HAUSDORFF_EDGE_UNIFORM) {
+        // todo
+    }
+    else {
+        sampler = vcl::montecarloPointSampling<SamplerType>(
+            m2, nSamples, birth, deterministic);
+    }
 
-	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.log(5, meshName2 + " sampled.");
-		log.startNewTask(
-			5,
-			100,
-			"Computing distance between samples and " + meshName1 + "...");
-	}
+    if constexpr (vcl::isLoggerValid<LogType>()) {
+        log.log(5, meshName2 + " sampled.");
+        log.startNewTask(
+            5,
+            100,
+            "Computing distance between samples and " + meshName1 + "...");
+    }
 
-	auto res = samplerMeshHausdorff(m1, sampler, log);
+    auto res = samplerMeshHausdorff(m1, sampler, log);
 
-	if constexpr (vcl::isLoggerValid<LogType>()) {
-		log.endTask("Distance between samples and " + meshName1 + " computed.");
-	}
+    if constexpr (vcl::isLoggerValid<LogType>()) {
+        log.endTask("Distance between samples and " + meshName1 + " computed.");
+    }
 
-	return res;
+    return res;
 }
 
 } // namespace vcl::internal
 
 template<
-	MeshConcept   MeshType1,
-	MeshConcept   MeshType2,
-	LoggerConcept LogType = NullLogger>
+    MeshConcept   MeshType1,
+    MeshConcept   MeshType2,
+    LoggerConcept LogType = NullLogger>
 HausdorffDistResult hausdorffDistance(
-	const MeshType1&        m1,
-	const MeshType2&        m2,
-	LogType&                log           = nullLogger,
-	HausdorffSamplingMethod sampMethod    = HAUSDORFF_VERTEX_UNIFORM,
-	uint                    nSamples      = 0,
-	bool                    deterministic = false)
+    const MeshType1&        m1,
+    const MeshType2&        m2,
+    LogType&                log           = nullLogger,
+    HausdorffSamplingMethod sampMethod    = HAUSDORFF_VERTEX_UNIFORM,
+    uint                    nSamples      = 0,
+    bool                    deterministic = false)
 {
-	if (nSamples == 0)
-		nSamples = m2.vertexNumber();
+    if (nSamples == 0)
+        nSamples = m2.vertexNumber();
 
-	std::vector<uint> birth;
+    std::vector<uint> birth;
 
-	switch (sampMethod) {
-	case HAUSDORFF_VERTEX_UNIFORM: {
-		ConstVertexSampler<typename MeshType2::VertexType> sampler;
+    switch (sampMethod) {
+    case HAUSDORFF_VERTEX_UNIFORM: {
+        ConstVertexSampler<typename MeshType2::VertexType> sampler;
 
-		return internal::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
-			m1, m2, nSamples, deterministic, sampler, birth, log);
-	}
+        return internal::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
+            m1, m2, nSamples, deterministic, sampler, birth, log);
+    }
 
-	case HAUSDORFF_EDGE_UNIFORM: {
-		// todo
-		return HausdorffDistResult();
-	}
-	case HAUSDORFF_MONTECARLO: {
-		PointSampler<typename MeshType2::VertexType::CoordType> sampler;
+    case HAUSDORFF_EDGE_UNIFORM: {
+        // todo
+        return HausdorffDistResult();
+    }
+    case HAUSDORFF_MONTECARLO: {
+        PointSampler<typename MeshType2::VertexType::CoordType> sampler;
 
-		return internal::hausdorffDistance<HAUSDORFF_MONTECARLO>(
-			m1, m2, nSamples, deterministic, sampler, birth, log);
-	}
-	default:
-		assert(0);
-		return HausdorffDistResult();
-	}
+        return internal::hausdorffDistance<HAUSDORFF_MONTECARLO>(
+            m1, m2, nSamples, deterministic, sampler, birth, log);
+    }
+    default:
+        assert(0);
+        return HausdorffDistResult();
+    }
 }
 
 } // namespace vcl

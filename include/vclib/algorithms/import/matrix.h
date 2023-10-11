@@ -36,97 +36,97 @@ namespace internal {
 template<MatrixConcept FMatrix>
 std::vector<uint> faceVertIndices(const FMatrix& faces, uint f)
 {
-	std::vector<uint> fVerts;
+    std::vector<uint> fVerts;
 
-	uint j = 0;
-	while (j < faces.cols() && faces(f, j) != -1 && faces(f, j) != UINT_NULL)
-		fVerts.push_back(faces(f, j));
+    uint j = 0;
+    while (j < faces.cols() && faces(f, j) != -1 && faces(f, j) != UINT_NULL)
+        fVerts.push_back(faces(f, j));
 
-	return fVerts;
+    return fVerts;
 }
 
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
 void importElementNormalsFromMatrix(
-	MeshType&      mesh,
-	const NMatrix& normals)
+    MeshType&      mesh,
+    const NMatrix& normals)
 {
-	// The type of the normal of the element
-	using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
+    // The type of the normal of the element
+    using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
 
-	if (normals.cols() != 3)
-		throw WrongSizeException(
-			"The input " + std::string(elementEnumString<ELEM_ID>()) +
-			" normal matrix must have 3 columns");
+    if (normals.cols() != 3)
+        throw WrongSizeException(
+            "The input " + std::string(elementEnumString<ELEM_ID>()) +
+            " normal matrix must have 3 columns");
 
-	// matrix rows must be equal to the number of elements of the given type
-	if (normals.rows() != mesh.template number<ELEM_ID>())
-		throw WrongSizeException(
-			"The input normal matrix must have the same number of rows "
-			"as the number of " +
-			std::string(elementEnumString<ELEM_ID>()) + " element in the mesh");
+    // matrix rows must be equal to the number of elements of the given type
+    if (normals.rows() != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input normal matrix must have the same number of rows "
+            "as the number of " +
+            std::string(elementEnumString<ELEM_ID>()) + " element in the mesh");
 
-	enableIfPerElementComponentOptional<ELEM_ID, NORMAL>(mesh);
-	requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    enableIfPerElementComponentOptional<ELEM_ID, NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
-	uint i = 0;
-	for (auto& e : mesh.template elements<ELEM_ID>()) {
-		e.normal() = NormalType(
-			normals(i, 0), normals(i, 1), normals(i, 2));
-		i++;
-	}
+    uint i = 0;
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        e.normal() = NormalType(
+            normals(i, 0), normals(i, 1), normals(i, 2));
+        i++;
+    }
 }
 
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
 void importElementColorsFromMatrix(
-	MeshType&      mesh,
-	const CMatrix& colors)
+    MeshType&      mesh,
+    const CMatrix& colors)
 {
-	using MatrixScalar = CMatrix::Scalar;
+    using MatrixScalar = CMatrix::Scalar;
 
-	if (colors.cols() != 3 && colors.cols() != 4)
-		throw WrongSizeException(
-			"The input " + std::string(elementEnumString<ELEM_ID>()) +
-			" color matrix must have 3 or 4 columns");
+    if (colors.cols() != 3 && colors.cols() != 4)
+        throw WrongSizeException(
+            "The input " + std::string(elementEnumString<ELEM_ID>()) +
+            " color matrix must have 3 or 4 columns");
 
-	// matrix rows must be equal to the number of elements of the given type
-	if (colors.rows() != mesh.template number<ELEM_ID>())
-		throw WrongSizeException(
-			"The input color matrix must have the same number of rows "
-			"as the number of " +
-			std::string(elementEnumString<ELEM_ID>()) + " element in the mesh");
+    // matrix rows must be equal to the number of elements of the given type
+    if (colors.rows() != mesh.template number<ELEM_ID>())
+        throw WrongSizeException(
+            "The input color matrix must have the same number of rows "
+            "as the number of " +
+            std::string(elementEnumString<ELEM_ID>()) + " element in the mesh");
 
-	enableIfPerElementComponentOptional<ELEM_ID, COLOR>(mesh);
-	requirePerElementComponent<ELEM_ID, COLOR>(mesh);
+    enableIfPerElementComponentOptional<ELEM_ID, COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, COLOR>(mesh);
 
-	uint i = 0;
-	for (auto& e : mesh.template elements<ELEM_ID>()) {
-		// Matrix has colors in range 0-255
-		if constexpr (std::integral<MatrixScalar>) {
-			if (colors.cols() == 3) {
-				e.color() =
-					vcl::Color(colors(i, 0), colors(i, 1), colors(i, 2));
-			}
-			else {
-				e.color() = vcl::Color(
-					colors(i, 0), colors(i, 1), colors(i, 2), colors(i, 3));
-			}
-		}
-		else { // Matrix has colors in range 0-1
-			if (colors.cols() == 3) {
-				e.color() = vcl::Color(
-					colors(i, 0) * 255, colors(i, 1) * 255, colors(i, 2) * 255);
-			}
-			else {
-				e.color() = vcl::Color(
-					colors(i, 0) * 255,
-					colors(i, 1) * 255,
-					colors(i, 2) * 255,
-					colors(i, 3) * 255);
-			}
-		}
+    uint i = 0;
+    for (auto& e : mesh.template elements<ELEM_ID>()) {
+        // Matrix has colors in range 0-255
+        if constexpr (std::integral<MatrixScalar>) {
+            if (colors.cols() == 3) {
+                e.color() =
+                    vcl::Color(colors(i, 0), colors(i, 1), colors(i, 2));
+            }
+            else {
+                e.color() = vcl::Color(
+                    colors(i, 0), colors(i, 1), colors(i, 2), colors(i, 3));
+            }
+        }
+        else { // Matrix has colors in range 0-1
+            if (colors.cols() == 3) {
+                e.color() = vcl::Color(
+                    colors(i, 0) * 255, colors(i, 1) * 255, colors(i, 2) * 255);
+            }
+            else {
+                e.color() = vcl::Color(
+                    colors(i, 0) * 255,
+                    colors(i, 1) * 255,
+                    colors(i, 2) * 255,
+                    colors(i, 3) * 255);
+            }
+        }
 
-		i++;
-	}
+        i++;
+    }
 }
 
 } // namespace vcl::internal
@@ -167,24 +167,24 @@ void importElementColorsFromMatrix(
  * @return a new point cloud mesh containing the data passed as argument.
  */
 template<
-	MeshConcept MeshType,
-	MatrixConcept VMatrix,
-	MatrixConcept VNMatrix = Eigen::MatrixX3d>
+    MeshConcept MeshType,
+    MatrixConcept VMatrix,
+    MatrixConcept VNMatrix = Eigen::MatrixX3d>
 MeshType pointCloudMeshFromMatrices(
-	const VMatrix& vertices,
-	const VNMatrix& vertexNormals = VNMatrix())
+    const VMatrix& vertices,
+    const VNMatrix& vertexNormals = VNMatrix())
 {
-	MeshType mesh;
+    MeshType mesh;
 
-	importMeshFromMatrices(
-		mesh,
-		vertices,
-		Eigen::MatrixX3i(),
-		Eigen::MatrixX2i(),
-		vertexNormals,
-		Eigen::MatrixX3d());
+    importMeshFromMatrices(
+        mesh,
+        vertices,
+        Eigen::MatrixX3i(),
+        Eigen::MatrixX2i(),
+        vertexNormals,
+        Eigen::MatrixX3d());
 
-	return mesh;
+    return mesh;
 }
 
 /**
@@ -233,28 +233,28 @@ MeshType pointCloudMeshFromMatrices(
  * @return a new mesh containing the data passed as argument.
  */
 template<
-	MeshConcept   MeshType,
-	MatrixConcept VMatrix,
-	MatrixConcept FMatrix  = Eigen::MatrixX3i,
-	MatrixConcept VNMatrix = Eigen::MatrixX3d,
-	MatrixConcept FNMatrix = Eigen::MatrixX3d>
+    MeshConcept   MeshType,
+    MatrixConcept VMatrix,
+    MatrixConcept FMatrix  = Eigen::MatrixX3i,
+    MatrixConcept VNMatrix = Eigen::MatrixX3d,
+    MatrixConcept FNMatrix = Eigen::MatrixX3d>
 MeshType meshFromMatrices(
-	const VMatrix&  vertices,
-	const FMatrix&  faces         = FMatrix(),
-	const VNMatrix& vertexNormals = VNMatrix(),
-	const FNMatrix& faceNormals   = FNMatrix())
+    const VMatrix&  vertices,
+    const FMatrix&  faces         = FMatrix(),
+    const VNMatrix& vertexNormals = VNMatrix(),
+    const FNMatrix& faceNormals   = FNMatrix())
 {
-	MeshType mesh;
+    MeshType mesh;
 
-	importMeshFromMatrices(
-		mesh,
-		vertices,
-		faces,
-		Eigen::MatrixX2i(),
-		vertexNormals,
-		faceNormals);
+    importMeshFromMatrices(
+        mesh,
+        vertices,
+        faces,
+        Eigen::MatrixX2i(),
+        vertexNormals,
+        faceNormals);
 
-	return mesh;
+    return mesh;
 }
 
 /**
@@ -316,46 +316,46 @@ MeshType meshFromMatrices(
  * add face normals to the mesh.
  */
 template<
-	MeshConcept   MeshType,
-	MatrixConcept VMatrix,
-	MatrixConcept FMatrix  = Eigen::MatrixX3i,
-	MatrixConcept EMatrix  = Eigen::MatrixX2i,
-	MatrixConcept VNMatrix = Eigen::MatrixX3d,
-	MatrixConcept FNMatrix = Eigen::MatrixX3d>
+    MeshConcept   MeshType,
+    MatrixConcept VMatrix,
+    MatrixConcept FMatrix  = Eigen::MatrixX3i,
+    MatrixConcept EMatrix  = Eigen::MatrixX2i,
+    MatrixConcept VNMatrix = Eigen::MatrixX3d,
+    MatrixConcept FNMatrix = Eigen::MatrixX3d>
 void importMeshFromMatrices(
-	MeshType&       mesh,
-	const VMatrix&  vertices,
-	const FMatrix&  faces         = FMatrix(),
-	const EMatrix&  edges         = EMatrix(),
-	const VNMatrix& vertexNormals = VNMatrix(),
-	const FNMatrix& faceNormals   = FNMatrix())
+    MeshType&       mesh,
+    const VMatrix&  vertices,
+    const FMatrix&  faces         = FMatrix(),
+    const EMatrix&  edges         = EMatrix(),
+    const VNMatrix& vertexNormals = VNMatrix(),
+    const FNMatrix& faceNormals   = FNMatrix())
 {
-	mesh.clear();
-	mesh.disableAllOptionalComponents();
+    mesh.clear();
+    mesh.disableAllOptionalComponents();
 
-	importVerticesFromMatrix(mesh, vertices);
+    importVerticesFromMatrix(mesh, vertices);
 
-	if constexpr (HasPerVertexNormal<MeshType>) {
-		if (vertexNormals.rows() > 0) {
-			importVertexNormalsFromMatrix(mesh, vertexNormals);
-		}
-	}
+    if constexpr (HasPerVertexNormal<MeshType>) {
+        if (vertexNormals.rows() > 0) {
+            importVertexNormalsFromMatrix(mesh, vertexNormals);
+        }
+    }
 
-	if constexpr (HasFaces<MeshType>) {
-		if (faces.rows() > 0)
-			importFacesFromMatrix(mesh, faces);
+    if constexpr (HasFaces<MeshType>) {
+        if (faces.rows() > 0)
+            importFacesFromMatrix(mesh, faces);
 
-		if constexpr (HasPerFaceNormal<MeshType>) {
-			if (faceNormals.rows() > 0) {
-				importFaceNormalsFromMatrix(mesh, faceNormals);
-			}
-		}
-	}
+        if constexpr (HasPerFaceNormal<MeshType>) {
+            if (faceNormals.rows() > 0) {
+                importFaceNormalsFromMatrix(mesh, faceNormals);
+            }
+        }
+    }
 
-	if constexpr (HasEdges<MeshType>) {
-		if (edges.rows() > 0)
-			importEdgesFromMatrix(mesh, edges);
-	}
+    if constexpr (HasEdges<MeshType>) {
+        if (edges.rows() > 0)
+            importEdgesFromMatrix(mesh, edges);
+    }
 }
 
 /**
@@ -398,173 +398,173 @@ void importMeshFromMatrices(
  */
 template<MeshConcept MeshType, MatrixConcept VMatrix>
 void importVerticesFromMatrix(
-	MeshType&      mesh,
-	const VMatrix& vertices,
-	bool           clearBeforeSet = true)
+    MeshType&      mesh,
+    const VMatrix& vertices,
+    bool           clearBeforeSet = true)
 {
-	using CoordType = MeshType::VertexType::CoordType;
+    using CoordType = MeshType::VertexType::CoordType;
 
-	if (vertices.cols() != 3)
-		throw WrongSizeException("The input vertex matrix must have 3 columns");
+    if (vertices.cols() != 3)
+        throw WrongSizeException("The input vertex matrix must have 3 columns");
 
-	if (clearBeforeSet) {
-		mesh.clearVertices();
-		mesh.resizeVertices(vertices.rows());
-	}
-	else {
-		if (vertices.rows() != mesh.vertexNumber()) {
-			throw WrongSizeException(
-				"The input vertex matrix has a different number of rows than "
-				"the number of vertices of the mesh");
-		}
-	}
+    if (clearBeforeSet) {
+        mesh.clearVertices();
+        mesh.resizeVertices(vertices.rows());
+    }
+    else {
+        if (vertices.rows() != mesh.vertexNumber()) {
+            throw WrongSizeException(
+                "The input vertex matrix has a different number of rows than "
+                "the number of vertices of the mesh");
+        }
+    }
 
 
-	uint i = 0;
-	for (auto& v : mesh.vertices()) {
-		v.coord() = CoordType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
-		i++;
-	}
+    uint i = 0;
+    for (auto& v : mesh.vertices()) {
+        v.coord() = CoordType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
+        i++;
+    }
 }
 
 template<FaceMeshConcept MeshType, MatrixConcept FMatrix>
 void importFacesFromMatrix(
-	MeshType&      mesh,
-	const FMatrix& faces,
-	bool           clearBeforeSet = true)
+    MeshType&      mesh,
+    const FMatrix& faces,
+    bool           clearBeforeSet = true)
 {
-	if (clearBeforeSet) {
-		mesh.clearFaces();
-		mesh.resizeFaces(faces.rows());
-	}
-	else {
-		if (faces.rows() != mesh.faceNumber()) {
-			throw WrongSizeException(
-				"The input face matrix has a different number of rows "
-				"than the number of faces of the mesh.");
-		}
-	}
+    if (clearBeforeSet) {
+        mesh.clearFaces();
+        mesh.resizeFaces(faces.rows());
+    }
+    else {
+        if (faces.rows() != mesh.faceNumber()) {
+            throw WrongSizeException(
+                "The input face matrix has a different number of rows "
+                "than the number of faces of the mesh.");
+        }
+    }
 
-	if constexpr (HasPolygons<MeshType>) {
-		uint i = 0;
-		for (auto& f : mesh.faces()) {
-			uint vertexNumber = 0;
+    if constexpr (HasPolygons<MeshType>) {
+        uint i = 0;
+        for (auto& f : mesh.faces()) {
+            uint vertexNumber = 0;
 
-			// count the number of vertices of the face
-			while (vertexNumber < faces.cols() &&
-				   faces(i, vertexNumber) != -1 &&
-				   faces(i, vertexNumber) != UINT_NULL)
-				vertexNumber++;
+            // count the number of vertices of the face
+            while (vertexNumber < faces.cols() &&
+                   faces(i, vertexNumber) != -1 &&
+                   faces(i, vertexNumber) != UINT_NULL)
+                vertexNumber++;
 
-			f.resizeVertices(vertexNumber);
+            f.resizeVertices(vertexNumber);
 
-			for (uint j = 0; j < vertexNumber; ++j)
-				f.vertex(j) = &mesh.vertex(faces(i, j));
-		}
-	}
-	else { // the vertex number of mesh faces is fixed
-		using FaceType = MeshType::FaceType;
+            for (uint j = 0; j < vertexNumber; ++j)
+                f.vertex(j) = &mesh.vertex(faces(i, j));
+        }
+    }
+    else { // the vertex number of mesh faces is fixed
+        using FaceType = MeshType::FaceType;
 
-		constexpr int VN = FaceType::VERTEX_NUMBER;
-		if (faces.cols() == VN) { // faces of matrix and mesh have same size
+        constexpr int VN = FaceType::VERTEX_NUMBER;
+        if (faces.cols() == VN) { // faces of matrix and mesh have same size
 
-			uint i = 0;
-			for (auto& f : mesh.faces()) {
-				for (uint j = 0; j < VN; ++j)
-					f.vertex(j) = &mesh.vertex(faces(i, j));
-			}
-		}
-		else { // faces of matrix and mesh have different sizes
-			// matrix cols is higher than 3 (polygons), but we have a triangle
-			// mesh and we can triangulate the faces
-			if constexpr (VN == 3) {
-				if (!clearBeforeSet) {
-					throw WrongSizeException(
-						"Cannot import the input face matrix into the mesh "
-						"without clearing the face container first "
-						"(need to perform a triangulation to import polygons "
-						"in a triangle mesh, and this operation that does not "
-						"guarantee a predefined number of faces is required).");
-				}
-				mesh.reserveFaces(faces.rows());
-				for (uint i = 0; i < faces.rows(); ++i) {
-					std::vector<uint> fVertIndices =
-						internal::faceVertIndices(faces, i);
+            uint i = 0;
+            for (auto& f : mesh.faces()) {
+                for (uint j = 0; j < VN; ++j)
+                    f.vertex(j) = &mesh.vertex(faces(i, j));
+            }
+        }
+        else { // faces of matrix and mesh have different sizes
+            // matrix cols is higher than 3 (polygons), but we have a triangle
+            // mesh and we can triangulate the faces
+            if constexpr (VN == 3) {
+                if (!clearBeforeSet) {
+                    throw WrongSizeException(
+                        "Cannot import the input face matrix into the mesh "
+                        "without clearing the face container first "
+                        "(need to perform a triangulation to import polygons "
+                        "in a triangle mesh, and this operation that does not "
+                        "guarantee a predefined number of faces is required).");
+                }
+                mesh.reserveFaces(faces.rows());
+                for (uint i = 0; i < faces.rows(); ++i) {
+                    std::vector<uint> fVertIndices =
+                        internal::faceVertIndices(faces, i);
 
-					addTriangleFacesFromPolygon(mesh, fVertIndices);
-				}
-			}
-			else {
-				// no triangulation available because VN != 3, we don't
-				// know how to import the faces and we throw an exception
-				throw WrongSizeException(
-					"The input face matrix has a different number of columns "
-					"than the number of vertices of the mesh faces.");
-			}
-		}
-	}
+                    addTriangleFacesFromPolygon(mesh, fVertIndices);
+                }
+            }
+            else {
+                // no triangulation available because VN != 3, we don't
+                // know how to import the faces and we throw an exception
+                throw WrongSizeException(
+                    "The input face matrix has a different number of columns "
+                    "than the number of vertices of the mesh faces.");
+            }
+        }
+    }
 }
 
 template<EdgeMeshConcept MeshType, MatrixConcept EMatrix>
 void importEdgesFromMatrix(
-	MeshType&      mesh,
-	const EMatrix& edges,
-	bool           clearBeforeSet = true)
+    MeshType&      mesh,
+    const EMatrix& edges,
+    bool           clearBeforeSet = true)
 {
-	if (edges.cols() != 2)
-		throw WrongSizeException(
-			"The input edge matrix must have 2 columns");
+    if (edges.cols() != 2)
+        throw WrongSizeException(
+            "The input edge matrix must have 2 columns");
 
-	if (clearBeforeSet) {
-		mesh.clearEdges();
-		mesh.resizeEdges(edges.rows());
-	}
-	else {
-		if (edges.rows() != mesh.edgeNumber()) {
-			throw WrongSizeException(
-				"The input edge matrix has a different number of rows than "
-				"the number of edges of the mesh");
-		}
-	}
+    if (clearBeforeSet) {
+        mesh.clearEdges();
+        mesh.resizeEdges(edges.rows());
+    }
+    else {
+        if (edges.rows() != mesh.edgeNumber()) {
+            throw WrongSizeException(
+                "The input edge matrix has a different number of rows than "
+                "the number of edges of the mesh");
+        }
+    }
 
-	uint i = 0;
-	for (auto& e : mesh.edges()) {
-		e.vertex(0) = &mesh.vertex(edges(i, 0));
-		e.vertex(1) = &mesh.vertex(edges(i, 1));
-		i++;
-	}
+    uint i = 0;
+    for (auto& e : mesh.edges()) {
+        e.vertex(0) = &mesh.vertex(edges(i, 0));
+        e.vertex(1) = &mesh.vertex(edges(i, 1));
+        i++;
+    }
 }
 
 template<MeshConcept MeshType, MatrixConcept VNMatrix>
 void importVertexNormalsFromMatrix(
-	MeshType&       mesh,
-	const VNMatrix& vertexNormals)
+    MeshType&       mesh,
+    const VNMatrix& vertexNormals)
 {
-	internal::importElementNormalsFromMatrix<VERTEX>(mesh, vertexNormals);
+    internal::importElementNormalsFromMatrix<VERTEX>(mesh, vertexNormals);
 }
 
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 {
-	internal::importElementNormalsFromMatrix<FACE>(mesh, faceNormals);
+    internal::importElementNormalsFromMatrix<FACE>(mesh, faceNormals);
 }
 
 template<MeshConcept MeshType, MatrixConcept VCMatrix>
 void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
 {
-	internal::importElementColorsFromMatrix<VERTEX>(mesh, vertexColors);
+    internal::importElementColorsFromMatrix<VERTEX>(mesh, vertexColors);
 }
 
 template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
 void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
 {
-	internal::importElementColorsFromMatrix<FACE>(mesh, faceColors);
+    internal::importElementColorsFromMatrix<FACE>(mesh, faceColors);
 }
 
 template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
 void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
 {
-	internal::importElementColorsFromMatrix<EDGE>(mesh, edgeColors);
+    internal::importElementColorsFromMatrix<EDGE>(mesh, edgeColors);
 }
 
 } // namespace vcl

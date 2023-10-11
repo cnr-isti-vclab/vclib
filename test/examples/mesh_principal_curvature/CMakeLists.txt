@@ -12,7 +12,7 @@
 project(vclib-mesh-principal-curvature)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-principal-curvature ${SOURCES})
 

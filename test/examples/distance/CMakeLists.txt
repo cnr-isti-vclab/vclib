@@ -12,7 +12,7 @@
 project(vclib-distance-example)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-distance-example ${SOURCES})
 

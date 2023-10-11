@@ -43,22 +43,22 @@ namespace vcl {
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 {
-	using CoordType = FaceType::VertexType::CoordType;
-	if constexpr (TriangleFaceConcept<FaceType>) {
-		return Triangle<CoordType>::normal(
-			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
-	}
-	else {
-		if (f.vertexNumber() == 3) {
-			return Triangle<CoordType>::normal(
-				f.vertex(0)->coord(),
-				f.vertex(1)->coord(),
-				f.vertex(2)->coord());
-		}
-		else {
-			return Polygon<CoordType>::normal(f.vertices() | views::coords);
-		}
-	}
+    using CoordType = FaceType::VertexType::CoordType;
+    if constexpr (TriangleFaceConcept<FaceType>) {
+        return Triangle<CoordType>::normal(
+            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+    }
+    else {
+        if (f.vertexNumber() == 3) {
+            return Triangle<CoordType>::normal(
+                f.vertex(0)->coord(),
+                f.vertex(1)->coord(),
+                f.vertex(2)->coord());
+        }
+        else {
+            return Polygon<CoordType>::normal(f.vertices() | views::coords);
+        }
+    }
 }
 
 /**
@@ -73,14 +73,14 @@ typename FaceType::VertexType::CoordType faceNormal(const FaceType& f)
 template<FaceConcept FaceType>
 typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 {
-	using CoordType = FaceType::VertexType::CoordType;
-	if constexpr (TriangleFaceConcept<FaceType>) {
-		return Triangle<CoordType>::barycenter(
-			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
-	}
-	else {
-		return Polygon<CoordType>::barycenter(f.vertices() | views::coords);
-	}
+    using CoordType = FaceType::VertexType::CoordType;
+    if constexpr (TriangleFaceConcept<FaceType>) {
+        return Triangle<CoordType>::barycenter(
+            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+    }
+    else {
+        return Polygon<CoordType>::barycenter(f.vertices() | views::coords);
+    }
 }
 
 /**
@@ -95,20 +95,20 @@ typename FaceType::VertexType::CoordType faceBarycenter(const FaceType& f)
 template<FaceConcept FaceType>
 auto faceArea(const FaceType& f)
 {
-	using CoordType = FaceType::VertexType::CoordType;
-	if constexpr (TriangleFaceConcept<FaceType>) {
-		return Triangle<CoordType>::area(
-			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
-	}
-	else {
-		if (f.vertexNumber() == 3) {
-			return Triangle<CoordType>::area(
-				f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
-		}
-		else {
-			return Polygon<CoordType>::area(f.vertices() | views::coords);
-		}
-	}
+    using CoordType = FaceType::VertexType::CoordType;
+    if constexpr (TriangleFaceConcept<FaceType>) {
+        return Triangle<CoordType>::area(
+            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+    }
+    else {
+        if (f.vertexNumber() == 3) {
+            return Triangle<CoordType>::area(
+                f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+        }
+        else {
+            return Polygon<CoordType>::area(f.vertices() | views::coords);
+        }
+    }
 }
 
 /**
@@ -123,22 +123,22 @@ auto faceArea(const FaceType& f)
 template<FaceConcept FaceType>
 auto facePerimeter(const FaceType& f)
 {
-	using CoordType = FaceType::VertexType::CoordType;
-	if constexpr (TriangleFaceConcept<FaceType>) {
-		return Triangle<CoordType>::perimeter(
-			f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
-	}
-	else {
-		if (f.vertexNumber() == 3) {
-			return Triangle<CoordType>::perimeter(
-				f.vertex(0)->coord(),
-				f.vertex(1)->coord(),
-				f.vertex(2)->coord());
-		}
-		else {
-			return Polygon<CoordType>::perimeter(f.vertices() | views::coords);
-		}
-	}
+    using CoordType = FaceType::VertexType::CoordType;
+    if constexpr (TriangleFaceConcept<FaceType>) {
+        return Triangle<CoordType>::perimeter(
+            f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+    }
+    else {
+        if (f.vertexNumber() == 3) {
+            return Triangle<CoordType>::perimeter(
+                f.vertex(0)->coord(),
+                f.vertex(1)->coord(),
+                f.vertex(2)->coord());
+        }
+        else {
+            return Polygon<CoordType>::perimeter(f.vertices() | views::coords);
+        }
+    }
 }
 
 /**
@@ -155,10 +155,10 @@ auto facePerimeter(const FaceType& f)
 template<FaceConcept FaceType>
 auto faceAngleOnVertexRad(const FaceType& f, uint vi)
 {
-	const auto& p0 = f.vertex(vi)->coord();
-	const auto& p1 = f.vertexMod((int)vi+1)->coord();
-	const auto& p2 = f.vertexMod((int)vi-1)->coord();
-	return (p2 - p0).angle(p1 - p0);
+    const auto& p0 = f.vertex(vi)->coord();
+    const auto& p1 = f.vertexMod((int)vi+1)->coord();
+    const auto& p2 = f.vertexMod((int)vi-1)->coord();
+    return (p2 - p0).angle(p1 - p0);
 }
 
 /**
@@ -182,46 +182,46 @@ auto faceAngleOnVertexRad(const FaceType& f, uint vi)
  */
 template<FaceConcept FaceType>
 auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
-	requires comp::HasAdjacentFaces<FaceType>
+    requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException(
-			"Face has no Adjacent Faces component.");
-	}
+    if (! comp::isAdjacentFacesAvailableOn(f)) {
+        throw vcl::MissingComponentException(
+            "Face has no Adjacent Faces component.");
+    }
 
-	/*
-	 *     v0 ___________ vf1
-	 *       |\          |
-	 *       | e\     f1 |
-	 *       |    \e1    |
-	 *       |f     \    |
-	 *       |        \  |
-	 *       |__________\|
-	 *    vf0             v1
-	 */
+    /*
+     *     v0 ___________ vf1
+     *       |\          |
+     *       | e\     f1 |
+     *       |    \e1    |
+     *       |f     \    |
+     *       |        \  |
+     *       |__________\|
+     *    vf0             v1
+     */
 
-	assert(f.adjFace(e) != nullptr);
-	const FaceType& f1 = *(f.adjFace(e));
+    assert(f.adjFace(e) != nullptr);
+    const FaceType& f1 = *(f.adjFace(e));
 
-	uint e1 = f1.indexOfAdjFace(&f);
-	assert(e1 != UINT_NULL);
+    uint e1 = f1.indexOfAdjFace(&f);
+    assert(e1 != UINT_NULL);
 
-	const auto& vf0 = *(f.vertexMod((int) e - 1));
-	const auto& vf1 = *(f1.vertexMod(e1 - 1));
+    const auto& vf0 = *(f.vertexMod((int) e - 1));
+    const auto& vf1 = *(f1.vertexMod(e1 - 1));
 
-	auto n0 = faceNormal(f);
-	auto n1 = faceNormal(f1);
+    auto n0 = faceNormal(f);
+    auto n1 = faceNormal(f1);
 
-	auto off0 = n0 * vf0.coord();
-	auto off1 = n1 * vf1.coord();
+    auto off0 = n0 * vf0.coord();
+    auto off1 = n1 * vf1.coord();
 
-	auto dist01 = off0 - n0 * vf1.coord();
-	auto dist10 = off1 - n1 * vf0.coord();
+    auto dist01 = off0 - n0 * vf1.coord();
+    auto dist10 = off1 - n1 * vf0.coord();
 
-	auto sign = std::abs(dist01) > std::abs(dist10) ? dist01 : dist10;
+    auto sign = std::abs(dist01) > std::abs(dist10) ? dist01 : dist10;
 
-	auto angleRad = n0.angle(n1);
-	return sign > 0 ? angleRad : -angleRad;
+    auto angleRad = n0.angle(n1);
+    return sign > 0 ? angleRad : -angleRad;
 }
 
 } // namespace vcl

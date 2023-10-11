@@ -35,33 +35,33 @@ namespace internal {
 
 struct QualityView
 {
-	constexpr QualityView() = default;
+    constexpr QualityView() = default;
 
-	inline static constexpr auto constQuality = [](const auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->quality();
-		else
-			return p.quality();
-	};
+    inline static constexpr auto constQuality = [](const auto& p) -> decltype(auto)
+    {
+        if constexpr(IsPointer<decltype(p)>)
+            return p->quality();
+        else
+            return p.quality();
+    };
 
-	inline static constexpr auto quality = [](auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->quality();
-		else
-			return p.quality();
-	};
+    inline static constexpr auto quality = [](auto& p) -> decltype(auto)
+    {
+        if constexpr(IsPointer<decltype(p)>)
+            return p->quality();
+        else
+            return p.quality();
+    };
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, QualityView)
-	{
-		using ElemType = std::ranges::range_value_t<R>;
-		if constexpr(IsConst<ElemType>)
-			return std::forward<R>(r) | std::views::transform(constQuality);
-		else
-			return std::forward<R>(r) | std::views::transform(quality);
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, QualityView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        if constexpr(IsConst<ElemType>)
+            return std::forward<R>(r) | std::views::transform(constQuality);
+        else
+            return std::forward<R>(r) | std::views::transform(quality);
+    }
 };
 
 } // namespace vcl::views::internal

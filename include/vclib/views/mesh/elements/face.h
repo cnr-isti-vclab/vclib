@@ -34,13 +34,13 @@ concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_cvref_t<T>>;
 
 struct FacesView
 {
-	constexpr FacesView() = default;
+    constexpr FacesView() = default;
 
-	template <CleanFaceMeshConcept R>
-	friend constexpr auto operator|(R&& r, FacesView)
-	{
-		return r.faces();
-	}
+    template <CleanFaceMeshConcept R>
+    friend constexpr auto operator|(R&& r, FacesView)
+    {
+        return r.faces();
+    }
 };
 
 } // namespace vcl::views::internal

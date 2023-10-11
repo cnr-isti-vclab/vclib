@@ -62,9 +62,9 @@ namespace vcl {
 template<PointConcept PointType>
 auto boundingBox(const PointType &p)
 {
-	vcl::Box<PointType> b;
-	b.add(p);
-	return b;
+    vcl::Box<PointType> b;
+    b.add(p);
+    return b;
 }
 
 /**
@@ -83,13 +83,13 @@ auto boundingBox(const PointType &p)
 template<SegmentConcept SegmentType>
 auto boundingBox(const SegmentType& s)
 {
-	using PointType = SegmentType::PointType;
-	vcl::Box<PointType> b;
+    using PointType = SegmentType::PointType;
+    vcl::Box<PointType> b;
 
-	b.add(s.p0());
-	b.add(s.p1());
+    b.add(s.p0());
+    b.add(s.p1());
 
-	return b;
+    return b;
 }
 
 /**
@@ -109,13 +109,13 @@ auto boundingBox(const SegmentType& s)
 template<SphereConcept SphereType>
 auto boundingBox(const SphereType& s)
 {
-	using ScalarType = SphereType::ScalarType;
-	vcl::Box<Point3<ScalarType>> b;
+    using ScalarType = SphereType::ScalarType;
+    vcl::Box<Point3<ScalarType>> b;
 
-	b.add(s.center() - s.radius());
-	b.add(s.center() + s.radius());
+    b.add(s.center() - s.radius());
+    b.add(s.center() + s.radius());
 
-	return b;
+    return b;
 }
 
 /**
@@ -134,14 +134,14 @@ auto boundingBox(const SphereType& s)
 template<MeshConcept MeshType>
 auto boundingBox(const MeshType& m)
 {
-	using VertexType = MeshType::VertexType;
-	vcl::Box<typename VertexType::CoordType> b;
+    using VertexType = MeshType::VertexType;
+    vcl::Box<typename VertexType::CoordType> b;
 
-	for (const VertexType& v : m.vertices()) {
-		b.add(v.coord());
-	}
+    for (const VertexType& v : m.vertices()) {
+        b.add(v.coord());
+    }
 
-	return b;
+    return b;
 }
 
 /**
@@ -161,9 +161,9 @@ auto boundingBox(const MeshType& m)
 template<VertexConcept VertexType>
 auto boundingBox(const VertexType& v)
 {
-	vcl::Box<typename VertexType::CoordType> b;
-	b.add(v.coord());
-	return b;
+    vcl::Box<typename VertexType::CoordType> b;
+    b.add(v.coord());
+    return b;
 }
 
 /**
@@ -184,9 +184,9 @@ auto boundingBox(const VertexType& v)
 template<VertexConcept VertexType>
 auto boundingBox(const VertexType* v)
 {
-	vcl::Box<typename VertexType::CoordType> b;
-	b.add(v->coord());
-	return b;
+    vcl::Box<typename VertexType::CoordType> b;
+    b.add(v->coord());
+    return b;
 }
 
 /**
@@ -205,12 +205,12 @@ auto boundingBox(const VertexType* v)
 template<FaceConcept FaceType>
 auto boundingBox(const FaceType& f)
 {
-	using VertexType = FaceType::VertexType;
+    using VertexType = FaceType::VertexType;
 
-	vcl::Box<typename VertexType::CoordType> b;
-	for (const VertexType* v : f.vertices())
-		b.add(v->coord());
-	return b;
+    vcl::Box<typename VertexType::CoordType> b;
+    for (const VertexType* v : f.vertices())
+        b.add(v->coord());
+    return b;
 }
 
 /**
@@ -230,12 +230,12 @@ auto boundingBox(const FaceType& f)
 template<FaceConcept FaceType>
 auto boundingBox(const FaceType* f)
 {
-	using VertexType = FaceType::VertexType;
+    using VertexType = FaceType::VertexType;
 
-	vcl::Box<typename VertexType::CoordType> b;
-	for (const VertexType* v : f->vertices())
-		b.add(v->coord());
-	return b;
+    vcl::Box<typename VertexType::CoordType> b;
+    for (const VertexType* v : f->vertices())
+        b.add(v->coord());
+    return b;
 }
 
 /**
@@ -254,12 +254,12 @@ auto boundingBox(const FaceType* f)
 template<EdgeConcept EdgeType>
 auto boundingBox(const EdgeType& e)
 {
-	using VertexType = EdgeType::VertexType;
+    using VertexType = EdgeType::VertexType;
 
-	vcl::Box<typename VertexType::CoordType> b;
-	for (const VertexType* v : e.vertices())
-		b.add(v->coord());
-	return b;
+    vcl::Box<typename VertexType::CoordType> b;
+    for (const VertexType* v : e.vertices())
+        b.add(v->coord());
+    return b;
 }
 
 /**
@@ -279,12 +279,12 @@ auto boundingBox(const EdgeType& e)
 template<EdgeConcept EdgeType>
 auto boundingBox(const EdgeType* e)
 {
-	using VertexType = EdgeType::VertexType;
+    using VertexType = EdgeType::VertexType;
 
-	vcl::Box<typename VertexType::CoordType> b;
-	for (const VertexType* v : e->vertices())
-		b.add(v->coord());
-	return b;
+    vcl::Box<typename VertexType::CoordType> b;
+    for (const VertexType* v : e->vertices())
+        b.add(v->coord());
+    return b;
 }
 
 /**
@@ -311,14 +311,14 @@ auto boundingBox(const EdgeType* e)
 template<IteratorConcept Iterator>
 auto boundingBox(Iterator begin, Iterator end)
 {
-	using BB = decltype(boundingBox(typename Iterator::value_type()));
+    using BB = decltype(boundingBox(typename Iterator::value_type()));
 
-	BB b;
+    BB b;
 
-	for (; begin != end; ++begin)
-		b.add(boundingBox(*begin));
+    for (; begin != end; ++begin)
+        b.add(boundingBox(*begin));
 
-	return b;
+    return b;
 }
 
 /**
@@ -343,7 +343,7 @@ auto boundingBox(Iterator begin, Iterator end)
 template<Range Rng>
 auto boundingBox(Rng&& r)
 {
-	return boundingBox(std::ranges::begin(r), std::ranges::end(r));
+    return boundingBox(std::ranges::begin(r), std::ranges::end(r));
 }
 
 } // namespace vcl

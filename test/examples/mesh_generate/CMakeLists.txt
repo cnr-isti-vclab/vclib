@@ -12,7 +12,7 @@
 project(vclib-mesh-generate)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-generate ${SOURCES})
 

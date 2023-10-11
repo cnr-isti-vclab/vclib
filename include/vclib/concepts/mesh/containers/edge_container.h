@@ -34,37 +34,37 @@ namespace mesh {
 
 template <typename T>
 concept HasEdgeContainer = requires(
-	T o,
-	const T& co,
-	typename T::EdgeType* e)
+    T o,
+    const T& co,
+    typename T::EdgeType* e)
 {
-	typename T::EdgeType;
-	typename T::EdgeIterator;
-	typename T::ConstEdgeIterator;
+    typename T::EdgeType;
+    typename T::EdgeIterator;
+    typename T::ConstEdgeIterator;
 
-	{ o.edge(uint()) } -> std::same_as<typename T::EdgeType&>;
-	{ co.edge(uint()) } -> std::same_as<const typename T::EdgeType&>;
+    { o.edge(uint()) } -> std::same_as<typename T::EdgeType&>;
+    { co.edge(uint()) } -> std::same_as<const typename T::EdgeType&>;
 
-	{ co.edgeNumber() } -> std::same_as<uint>;
-	{ co.edgeContainerSize() } -> std::same_as<uint>;
-	{ co.deletedEdgeNumber() } -> std::same_as<uint>;
-	o.deleteEdge(uint());
-	o.deleteEdge(e);
-	{ o.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
-	{ o.edgeCompactIndices() } -> std::same_as<std::vector<uint>>;
+    { co.edgeNumber() } -> std::same_as<uint>;
+    { co.edgeContainerSize() } -> std::same_as<uint>;
+    { co.deletedEdgeNumber() } -> std::same_as<uint>;
+    o.deleteEdge(uint());
+    o.deleteEdge(e);
+    { o.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
+    { o.edgeCompactIndices() } -> std::same_as<std::vector<uint>>;
 
-	{ o.addEdge() } -> std::same_as<uint>;
-	{ o.addEdges(uint()) } -> std::same_as<uint>;
-	{ o.reserveEdges(uint()) } -> std::same_as<void>;
-	{ o.compactEdges() } -> std::same_as<void>;
+    { o.addEdge() } -> std::same_as<uint>;
+    { o.addEdges(uint()) } -> std::same_as<uint>;
+    { o.reserveEdges(uint()) } -> std::same_as<void>;
+    { o.compactEdges() } -> std::same_as<void>;
 
-	{ o.edgeBegin() } -> std::same_as<typename T::EdgeIterator>;
-	{ co.edgeBegin() } -> std::same_as<typename T::ConstEdgeIterator>;
-	{ o.edgeEnd() } -> std::same_as<typename T::EdgeIterator>;
-	{ co.edgeEnd() } -> std::same_as<typename T::ConstEdgeIterator>;
+    { o.edgeBegin() } -> std::same_as<typename T::EdgeIterator>;
+    { co.edgeBegin() } -> std::same_as<typename T::ConstEdgeIterator>;
+    { o.edgeEnd() } -> std::same_as<typename T::EdgeIterator>;
+    { co.edgeEnd() } -> std::same_as<typename T::ConstEdgeIterator>;
 
-	requires std::ranges::range<decltype(o.edges())>;
-	requires std::ranges::range<decltype(co.edges())>;
+    requires std::ranges::range<decltype(o.edges())>;
+    requires std::ranges::range<decltype(co.edges())>;
 };
 
 } // namespace vcl::mesh

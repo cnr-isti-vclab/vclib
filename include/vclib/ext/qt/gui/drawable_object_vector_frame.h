@@ -38,30 +38,30 @@ class DrawableObjectVectorFrame;
 
 class DrawableObjectVectorFrame : public QFrame
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit DrawableObjectVectorFrame(QWidget *parent = nullptr);
-	explicit DrawableObjectVectorFrame(std::shared_ptr<DrawableObjectVector> v, QWidget *parent = nullptr);
-	~DrawableObjectVectorFrame();
+    explicit DrawableObjectVectorFrame(QWidget *parent = nullptr);
+    explicit DrawableObjectVectorFrame(std::shared_ptr<DrawableObjectVector> v, QWidget *parent = nullptr);
+    ~DrawableObjectVectorFrame();
 
-	void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
+    void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
 
-	uint selectedDrawableObject() const;
+    uint selectedDrawableObject() const;
 
 signals:
-	void drawableObjectVisibilityChanged();
-	void drawableObjectSelectionChanged(uint i);
+    void drawableObjectVisibilityChanged();
+    void drawableObjectSelectionChanged(uint i);
 
 private slots:
-	void on_listWidget_itemSelectionChanged();
+    void on_listWidget_itemSelectionChanged();
 
 private:
-	// this frame does not normally own this drawList
-	std::shared_ptr<DrawableObjectVector> drawList;
-	Ui::DrawableObjectVectorFrame *ui;
+    // this frame does not normally own this drawList
+    std::shared_ptr<DrawableObjectVector> drawList;
+    Ui::DrawableObjectVectorFrame *ui;
 
-	void updateDrawableVectorWidget();
+    void updateDrawableVectorWidget();
 };
 
 } // namespace vcl

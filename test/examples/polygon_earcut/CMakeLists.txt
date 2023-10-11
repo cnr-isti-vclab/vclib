@@ -12,7 +12,7 @@
 project(vclib-polygon-earcut-example)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-polygon-earcut-example ${SOURCES})
 

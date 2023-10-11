@@ -36,39 +36,39 @@
 
 int main(int argc, char **argv)
 {
-	vcl::ConsoleLogger log;
-	vcl::MeshInfo loadedInfo;
+    vcl::ConsoleLogger log;
+    vcl::MeshInfo loadedInfo;
 
-	log.startTimer();
-	vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo, log);
-	vcl::updateBoundingBox(m1);
-	vcl::updatePerVertexNormals(m1);
-	vcl::setPerVertexColor(m1, vcl::Color::DarkMagenta);
+    log.startTimer();
+    vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo, log);
+    vcl::updateBoundingBox(m1);
+    vcl::updatePerVertexNormals(m1);
+    vcl::setPerVertexColor(m1, vcl::Color::DarkMagenta);
 
-	log.startTimer();
-	vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo, log);
-	vcl::updateBoundingBox(m2);
-	vcl::updatePerVertexNormals(m2);
-	vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);
+    log.startTimer();
+    vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo, log);
+    vcl::updateBoundingBox(m2);
+    vcl::updatePerVertexNormals(m2);
+    vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);
 
 #ifdef VCLIB_WITH_QGLVIEWER
-	QApplication application(argc, argv);
+    QApplication application(argc, argv);
 
-	vcl::ViewerMainWindow viewer;
-	vcl::DrawableMesh<vcl::TriMesh> dm1(m1);
-	vcl::DrawableMesh<vcl::TriMesh> dm2(m2);
+    vcl::ViewerMainWindow viewer;
+    vcl::DrawableMesh<vcl::TriMesh> dm1(m1);
+    vcl::DrawableMesh<vcl::TriMesh> dm2(m2);
 
-	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
-	vector->pushBack(dm1);
-	vector->pushBack(dm2);
-	viewer.setDrawableObjectVector(vector);
+    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    vector->pushBack(dm1);
+    vector->pushBack(dm2);
+    viewer.setDrawableObjectVector(vector);
 
-	viewer.show();
+    viewer.show();
 
-	return application.exec();
+    return application.exec();
 #else
-	(void) argc; // unused
-	(void) argv;
-	return 0;
+    (void) argc; // unused
+    (void) argv;
+    return 0;
 #endif
 }

@@ -43,12 +43,12 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasTexCoord = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	typename T::TexCoordType;
-	{ o.texCoord() } -> std::same_as<typename T::TexCoordType&>;
-	{ co.texCoord() } -> std::same_as<const typename T::TexCoordType&>;
+    typename T::TexCoordType;
+    { o.texCoord() } -> std::same_as<typename T::TexCoordType&>;
+    { co.texCoord() } -> std::same_as<const typename T::TexCoordType&>;
 };
 
 /**
@@ -60,7 +60,7 @@ concept HasTexCoord = requires(
  */
 template<typename T>
 concept HasOptionalTexCoord =
-	HasTexCoord<T> && IsOptionalComponent<typename T::TexCoord>;
+    HasTexCoord<T> && IsOptionalComponent<typename T::TexCoord>;
 
 } // namespace vcl::comp
 

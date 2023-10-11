@@ -12,7 +12,7 @@
 project(vclib-mesh-custom-components)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-custom-components ${SOURCES})
 

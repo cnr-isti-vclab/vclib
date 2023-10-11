@@ -29,17 +29,17 @@
 namespace vcl {
 
 enum ElementIDEnum : uint {
-	VERTEX = 0,
-	FACE,
-	EDGE,
+    VERTEX = 0,
+    FACE,
+    EDGE,
 };
 
 inline static constexpr uint ELEMENTS_NUMBER = 3;
 
 inline static constexpr const char* ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {
-	"Vertex",
-	"Face",
-	"Edge",
+    "Vertex",
+    "Face",
+    "Edge",
 };
 
 /**
@@ -53,22 +53,22 @@ inline static constexpr const char* ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {
  */
 template<uint ELEM_ID>
 struct ElemenetString {
-	/**
-	 * @brief The string associated to the ELEM_ID.
-	 */
-	const char* str =
-		ELEM_ID < ELEMENTS_NUMBER ? ELEMENT_ENUM_STRINGS[ELEM_ID] : nullptr;
+    /**
+     * @brief The string associated to the ELEM_ID.
+     */
+    const char* str =
+        ELEM_ID < ELEMENTS_NUMBER ? ELEMENT_ENUM_STRINGS[ELEM_ID] : nullptr;
 };
 
 template<uint ELEM_ID>
 constexpr const char* elementEnumString()
 {
-	static_assert(
-		ElemenetString<ELEM_ID>().str != nullptr,
-		"Invalid ElementIDEnum. You should specialize 'the ElementString' "
-		"struct with your ELEM_ID value.");
+    static_assert(
+        ElemenetString<ELEM_ID>().str != nullptr,
+        "Invalid ElementIDEnum. You should specialize 'the ElementString' "
+        "struct with your ELEM_ID value.");
 
-	return ElemenetString<ELEM_ID>().str;
+    return ElemenetString<ELEM_ID>().str;
 }
 
 } // namespace vcl

@@ -29,7 +29,7 @@
 template<%EL_UC%MeshConcept MeshType>
 bool isPer%EL_UC%%CNUC%Available(const MeshType& m)
 {
-	return isPerElementComponentAvailable<%EL_U%, %CNU%>(m);
+    return isPerElementComponentAvailable<%EL_U%, %CNU%>(m);
 }
 
 /**
@@ -53,6 +53,6 @@ bool isPer%EL_UC%%CNUC%Available(const MeshType& m)
 template<%EL_UC%MeshConcept MeshType>
 bool enableIfPer%EL_UC%%CNUC%Optional(MeshType& m)
 {
-	return enableIfPerElementComponentOptional<%EL_U%, %CNU%>(m);
+    return enableIfPerElementComponentOptional<%EL_U%, %CNU%>(m);
 }
 

@@ -90,7 +90,7 @@ static inline NullLogger nullLogger;
 template <LoggerConcept T>
 constexpr bool isLoggerValid()
 {
-	return !std::is_same_v<T, NullLogger>;
+    return !std::is_same_v<T, NullLogger>;
 }
 
 } // namespace vcl

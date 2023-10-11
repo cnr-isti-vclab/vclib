@@ -40,13 +40,13 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasCustomComponents = requires(
-	T o,
-	const T& co,
-	std::string s)
+    T o,
+    const T& co,
+    std::string s)
 {
-	{ o.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
-	{ o.template customComponent<int>(s) } -> std::same_as<int&>;
-	{ co.template customComponent<int>(s) } -> std::same_as<const int&>;
+    { o.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
+    { o.template customComponent<int>(s) } -> std::same_as<int&>;
+    { co.template customComponent<int>(s) } -> std::same_as<const int&>;
 };
 
 } // namespace vcl::comp

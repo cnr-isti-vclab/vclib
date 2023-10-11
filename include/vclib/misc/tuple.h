@@ -37,7 +37,7 @@ namespace vcl {
 template<typename T, typename U, typename... Us>
 constexpr uint tupleIndexByType(const std::tuple<U, Us...>&)
 {
-	return IndexInTypes<T, U, Us...>::value;
+    return IndexInTypes<T, U, Us...>::value;
 }
 
 } // namespace vcl

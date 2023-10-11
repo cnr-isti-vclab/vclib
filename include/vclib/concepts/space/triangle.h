@@ -30,27 +30,27 @@ namespace vcl {
 
 template<typename T>
 concept ConstTriangleConcept = requires(
-	const T& co)
+    const T& co)
 {
-	typename T::ScalarType;
-	typename T::PointType;
+    typename T::ScalarType;
+    typename T::PointType;
 
-	co.DIM;
-	co.size() == 3;
+    co.DIM;
+    co.size() == 3;
 
-	{ co.point(uint()) } -> std::same_as<const typename T::PointType&>;
-	{ co.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
-	{ co.barycenter() } -> std::same_as<typename T::PointType>;
-	{ co.perimeter() } -> std::same_as<typename T::ScalarType>;
-	{ co.area() } -> std::same_as<typename T::ScalarType>;
+    { co.point(uint()) } -> std::same_as<const typename T::PointType&>;
+    { co.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
+    { co.barycenter() } -> std::same_as<typename T::PointType>;
+    { co.perimeter() } -> std::same_as<typename T::ScalarType>;
+    { co.area() } -> std::same_as<typename T::ScalarType>;
 };
 
 template<typename T>
 concept TriangleConcept = ConstTriangleConcept<T> && requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	{ o.point(uint()) } -> std::same_as<typename T::PointType&>;
+    { o.point(uint()) } -> std::same_as<typename T::PointType&>;
 };
 
 template<typename T>
@@ -61,9 +61,9 @@ concept Triangle2Concept = ConstTriangle2Concept<T> && TriangleConcept<T>;
 
 template<typename T>
 concept ConstTriangle3Concept = ConstTriangleConcept<T> && T::DIM == 3 && requires(
-	const T& co)
+    const T& co)
 {
-	{ co.normal() } -> std::same_as<typename T::PointType>;
+    { co.normal() } -> std::same_as<typename T::PointType>;
 };
 
 template<typename T>

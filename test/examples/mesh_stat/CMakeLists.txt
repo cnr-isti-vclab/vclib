@@ -12,7 +12,7 @@
 project(vclib-mesh-stat)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-stat ${SOURCES})
 

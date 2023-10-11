@@ -39,11 +39,11 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasName = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	{ o.name() } -> std::same_as<std::string&>;
-	{ co.name() } -> std::same_as<const std::string&>;
+    { o.name() } -> std::same_as<std::string&>;
+    { co.name() } -> std::same_as<const std::string&>;
 };
 
 } // namespace vcl::comp

@@ -60,73 +60,73 @@ namespace vcl::comp {
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
 class TransformMatrix :
-		public Component<
-			TransformMatrix<Scalar, ElementType, OPT>,
-			TRANSFORM_MATRIX,
-			Matrix44<Scalar>,
-			ElementType,
-			OPT>
+        public Component<
+            TransformMatrix<Scalar, ElementType, OPT>,
+            TRANSFORM_MATRIX,
+            Matrix44<Scalar>,
+            ElementType,
+            OPT>
 {
-	using Base = Component<
-		TransformMatrix<Scalar, ElementType, OPT>,
-		TRANSFORM_MATRIX,
-		Matrix44<Scalar>,
-		ElementType,
-		OPT>;
+    using Base = Component<
+        TransformMatrix<Scalar, ElementType, OPT>,
+        TRANSFORM_MATRIX,
+        Matrix44<Scalar>,
+        ElementType,
+        OPT>;
 
 public:
-	/**
-	 * @brief Expose the type of the transform matrix.
-	 */
-	using TransformMatrixType = Matrix44<Scalar>;
+    /**
+     * @brief Expose the type of the transform matrix.
+     */
+    using TransformMatrixType = Matrix44<Scalar>;
 
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initializes the transform matrix to identity.
-	 */
-	TransformMatrix()
-	{
-		if constexpr (!Base::IS_VERTICAL) {
-			init();
-		}
-	}
+    /**
+     * @brief Initializes the transform matrix to identity.
+     */
+    TransformMatrix()
+    {
+        if constexpr (!Base::IS_VERTICAL) {
+            init();
+        }
+    }
 
-	/**
-	 * @private
-	 * @brief Initializes transform matrix to identity.
-	 *
-	 * It is made in the init function since the component could be not
-	 * available during construction (e.g. if the component is optional and not
-	 * enabled).
-	 *
-	 * This member function is hidden by the element that inherits this class.
-	 */
-	void init() { transformMatrix().setIdentity(); }
+    /**
+     * @private
+     * @brief Initializes transform matrix to identity.
+     *
+     * It is made in the init function since the component could be not
+     * available during construction (e.g. if the component is optional and not
+     * enabled).
+     *
+     * This member function is hidden by the element that inherits this class.
+     */
+    void init() { transformMatrix().setIdentity(); }
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns a const reference to the transform matrix.
-	 * @return A const reference to the transform matrix.
-	 */
-	const TransformMatrixType& transformMatrix() const { return Base::data(); }
+    /**
+     * @brief Returns a const reference to the transform matrix.
+     * @return A const reference to the transform matrix.
+     */
+    const TransformMatrixType& transformMatrix() const { return Base::data(); }
 
-	/**
-	 * @brief Returns a reference to the transform matrix.
-	 * @return A reference to the transform matrix.
-	 */
-	TransformMatrixType& transformMatrix() { return Base::data(); }
+    /**
+     * @brief Returns a reference to the transform matrix.
+     * @return A reference to the transform matrix.
+     */
+    TransformMatrixType& transformMatrix() { return Base::data(); }
 
 protected:
-	// Component interface functions
-	template<typename Element>
-	void importFrom(const Element& e)
-	{
-		if constexpr(HasTransformMatrix<Element>) {
-			transformMatrix() = e.transformMatrix().template cast<Scalar>();
-		}
-	}
+    // Component interface functions
+    template<typename Element>
+    void importFrom(const Element& e)
+    {
+        if constexpr(HasTransformMatrix<Element>) {
+            transformMatrix() = e.transformMatrix().template cast<Scalar>();
+        }
+    }
 };
 
 /* Detector function to check if a class has TransformMatrix available */
@@ -146,7 +146,7 @@ protected:
  */
 bool isTransformMatrixAvailableOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentAvailableOn<TRANSFORM_MATRIX>(element);
+    return isComponentAvailableOn<TRANSFORM_MATRIX>(element);
 }
 
 /* Specialization Aliases */

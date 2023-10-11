@@ -29,28 +29,28 @@
 
 int main()
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
+    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
 
-	vcl::PolyMesh pm;
+    vcl::PolyMesh pm;
 
-	vcl::Timer t("import");
-	pm.enableSameOptionalComponentsOf(m);
-	pm.importFrom(m);
-	t.stopAndPrint();
+    vcl::Timer t("import");
+    pm.enableSameOptionalComponentsOf(m);
+    pm.importFrom(m);
+    t.stopAndPrint();
 
-	assert(pm.isPerFaceWedgeTexCoordsEnabled());
+    assert(pm.isPerFaceWedgeTexCoordsEnabled());
 
-	vcl::save(pm, VCL_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
+    vcl::save(pm, VCL_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
 
-	pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+    pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
-	m.clear();
-	m.disableAllPerFaceOptionalComponents();
-	m.disableAllPerVertexOptionalComponents();
-	m.enableSameOptionalComponentsOf(pm);
-	m.importFrom(pm);
+    m.clear();
+    m.disableAllPerFaceOptionalComponents();
+    m.disableAllPerVertexOptionalComponents();
+    m.enableSameOptionalComponentsOf(pm);
+    m.importFrom(pm);
 
-	vcl::save(m, VCL_TEST_RESULTS_PATH "/cube_from_poly.ply", false);
+    vcl::save(m, VCL_TEST_RESULTS_PATH "/cube_from_poly.ply", false);
 
-	return 0;
+    return 0;
 }

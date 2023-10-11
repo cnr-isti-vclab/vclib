@@ -59,18 +59,18 @@ template<typename It>
 class View : public std::ranges::view_interface<View<It>>
 {
 public:
-	using iterator = It;
-	using const_iterator = It;
+    using iterator = It;
+    using const_iterator = It;
 
-	View() = default;
-	View(It begin, It end) : b(begin), e(end) {}
+    View() = default;
+    View(It begin, It end) : b(begin), e(end) {}
 
-	auto begin() const { return b; }
+    auto begin() const { return b; }
 
-	auto end() const { return e; }
+    auto end() const { return e; }
 
 protected:
-	It b, e;
+    It b, e;
 };
 
 } // namespace vcl

@@ -12,7 +12,7 @@
 project(vclib-mesh-io-off)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-io-off ${SOURCES})
 

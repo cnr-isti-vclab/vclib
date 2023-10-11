@@ -30,36 +30,36 @@ template<typename Graph, typename Iterator>
 class AdjacentNodeIterator
 {
 protected:
-	const Graph* g = nullptr;
-	Iterator it;
+    const Graph* g = nullptr;
+    Iterator it;
 
 public:
-	AdjacentNodeIterator() {}
+    AdjacentNodeIterator() {}
 
-	AdjacentNodeIterator(const Graph& g, Iterator it) : g(&g), it(it) {}
+    AdjacentNodeIterator(const Graph& g, Iterator it) : g(&g), it(it) {}
 
-	bool operator==(const AdjacentNodeIterator& otherIterator) const
-	{
-		return (g == otherIterator.g && it == otherIterator.it);
-	}
+    bool operator==(const AdjacentNodeIterator& otherIterator) const
+    {
+        return (g == otherIterator.g && it == otherIterator.it);
+    }
 
-	bool operator!=(const AdjacentNodeIterator& otherIterator) const
-	{
-		return !(*this == otherIterator);
-	}
+    bool operator!=(const AdjacentNodeIterator& otherIterator) const
+    {
+        return !(*this == otherIterator);
+    }
 
-	AdjacentNodeIterator operator++()
-	{
-		++it;
-		return *this;
-	}
+    AdjacentNodeIterator operator++()
+    {
+        ++it;
+        return *this;
+    }
 
-	AdjacentNodeIterator operator++(int)
-	{
-		AdjacentNodeIterator tmp;
-		++it;
-		return tmp;
-	}
+    AdjacentNodeIterator operator++(int)
+    {
+        AdjacentNodeIterator tmp;
+        ++it;
+        return tmp;
+    }
 
 
 };

@@ -38,13 +38,13 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasTransformMatrix = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	typename T::TransformMatrixType;
-	{ co.transformMatrix() } ->
-		std::same_as<const typename T::TransformMatrixType&>;
-	{ o.transformMatrix() } -> std::same_as<typename T::TransformMatrixType&>;
+    typename T::TransformMatrixType;
+    { co.transformMatrix() } ->
+        std::same_as<const typename T::TransformMatrixType&>;
+    { o.transformMatrix() } -> std::same_as<typename T::TransformMatrixType&>;
 };
 
 } // namespace vcl::comp

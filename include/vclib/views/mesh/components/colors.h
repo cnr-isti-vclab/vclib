@@ -39,43 +39,43 @@ concept CleanWedgeColorsConcept = comp::HasWedgeColors<std::remove_cvref_t<T>>;
 
 struct ColorsView
 {
-	constexpr ColorsView() = default;
+    constexpr ColorsView() = default;
 
-	inline static constexpr auto constColor = [](const auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->color();
-		else
-			return p.color();
-	};
+    inline static constexpr auto constColor = [](const auto& p) -> decltype(auto)
+    {
+        if constexpr(IsPointer<decltype(p)>)
+            return p->color();
+        else
+            return p.color();
+    };
 
-	inline static constexpr auto color = [](auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->color();
-		else
-			return p.color();
-	};
+    inline static constexpr auto color = [](auto& p) -> decltype(auto)
+    {
+        if constexpr(IsPointer<decltype(p)>)
+            return p->color();
+        else
+            return p.color();
+    };
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, ColorsView)
-	{
-		using ElemType = std::ranges::range_value_t<R>;
-		if constexpr(IsConst<ElemType>)
-			return std::forward<R>(r) | std::views::transform(constColor);
-		else
-			return std::forward<R>(r) | std::views::transform(color);
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, ColorsView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        if constexpr(IsConst<ElemType>)
+            return std::forward<R>(r) | std::views::transform(constColor);
+        else
+            return std::forward<R>(r) | std::views::transform(color);
 
-	}
+    }
 
-	template <CleanWedgeColorsConcept R>
-	friend constexpr auto operator|(R&& r, ColorsView)
-	{
-		if constexpr(IsPointer<R>)
-			return r->wedgeColors();
-		else
-			return r.wedgeColors();
-	}
+    template <CleanWedgeColorsConcept R>
+    friend constexpr auto operator|(R&& r, ColorsView)
+    {
+        if constexpr(IsPointer<R>)
+            return r->wedgeColors();
+        else
+            return r.wedgeColors();
+    }
 };
 
 } // namespace vcl::views::internal

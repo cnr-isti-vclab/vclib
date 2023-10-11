@@ -35,7 +35,7 @@ QClickableLabel::~QClickableLabel()
 
 void QClickableLabel::mousePressEvent(QMouseEvent*)
 {
-	emit clicked();
+    emit clicked();
 }
 
 } // namespace vcl

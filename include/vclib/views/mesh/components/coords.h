@@ -35,34 +35,34 @@ namespace internal {
 
 struct CoordsView
 {
-	constexpr CoordsView() = default;
+    constexpr CoordsView() = default;
 
-	inline static constexpr auto constCoord = [](const auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->coord();
-		else
-			return p.coord();
-	};
+    inline static constexpr auto constCoord = [](const auto& p) -> decltype(auto)
+    {
+        if constexpr(IsPointer<decltype(p)>)
+            return p->coord();
+        else
+            return p.coord();
+    };
 
-	inline static constexpr auto coord = [](auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->coord();
-		else
-			return p.coord();
-	};
+    inline static constexpr auto coord = [](auto& p) -> decltype(auto)
+    {
+        if constexpr(IsPointer<decltype(p)>)
+            return p->coord();
+        else
+            return p.coord();
+    };
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, CoordsView)
-	{
-		using ElemType = std::ranges::range_value_t<R>;
-		if constexpr(IsConst<ElemType>)
-			return std::forward<R>(r) | std::views::transform(constCoord);
-		else
-			
-		return std::forward<R>(r) | std::views::transform(coord);
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, CoordsView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        if constexpr(IsConst<ElemType>)
+            return std::forward<R>(r) | std::views::transform(constCoord);
+        else
+            
+        return std::forward<R>(r) | std::views::transform(coord);
+    }
 };
 
 } // namespace vcl::views::internal

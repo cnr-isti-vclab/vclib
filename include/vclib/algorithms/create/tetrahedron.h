@@ -49,12 +49,12 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 MeshType createTetrahedron()
 {
-	using CoordType = MeshType::Vertex::CoordType;
-	return createTetrahedron<MeshType>(
-		CoordType(1, 1, 1),
-		CoordType(-1, 1, -1),
-		CoordType(-1, -1, 1),
-		CoordType(1, -1, -1));
+    using CoordType = MeshType::Vertex::CoordType;
+    return createTetrahedron<MeshType>(
+        CoordType(1, 1, 1),
+        CoordType(-1, 1, -1),
+        CoordType(-1, -1, 1),
+        CoordType(1, -1, -1));
 }
 
 /**
@@ -79,22 +79,22 @@ MeshType createTetrahedron()
  */
 template<FaceMeshConcept MeshType, Point3Concept CoordType>
 MeshType createTetrahedron(
-	const CoordType& p0,
-	const CoordType& p1,
-	const CoordType& p2,
-	const CoordType& p3)
+    const CoordType& p0,
+    const CoordType& p1,
+    const CoordType& p2,
+    const CoordType& p3)
 {
-	MeshType m;
+    MeshType m;
 
-	m.addVertices(p0, p1, p2, p3);
+    m.addVertices(p0, p1, p2, p3);
 
-	m.reserveFaces(4);
-	m.addFace(0, 1, 2);
-	m.addFace(0, 2, 3);
-	m.addFace(0, 3, 1);
-	m.addFace(3, 2, 1);
+    m.reserveFaces(4);
+    m.addFace(0, 1, 2);
+    m.addFace(0, 2, 3);
+    m.addFace(0, 3, 1);
+    m.addFace(3, 2, 1);
 
-	return m;
+    return m;
 }
 
 } // namespace vcl

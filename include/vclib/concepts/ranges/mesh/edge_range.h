@@ -41,8 +41,8 @@ namespace vcl {
  */
 template<typename Rng>
 concept EdgeRangeConcept =
-	Range<Rng> &&
-	EdgeConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+    Range<Rng> &&
+    EdgeConcept<typename std::ranges::iterator_t<Rng>::value_type>;
 
 /**
  * @brief The EdgePointerRangeConcept evaluates to true if Rng is a valid
@@ -55,11 +55,11 @@ concept EdgeRangeConcept =
  */
 template<typename Rng>
 concept EdgePointerRangeConcept =
-	Range<Rng> &&
-	IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-	EdgeConcept<typename std::decay_t<
-		std::remove_pointer_t<
-			typename std::ranges::iterator_t<Rng>::value_type>>>;
+    Range<Rng> &&
+    IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+    EdgeConcept<typename std::decay_t<
+        std::remove_pointer_t<
+            typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 

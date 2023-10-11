@@ -12,7 +12,7 @@
 project(vclib-mesh-clean-test)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-clean-test ${SOURCES})
 

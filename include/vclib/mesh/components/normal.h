@@ -57,54 +57,54 @@ namespace vcl::comp {
  */
 template<PointConcept P, typename ElementType = void, bool OPT = false>
 class Normal :
-		public Component<
-			Normal<P, ElementType, OPT>,
-			NORMAL,
-			P,
-			ElementType,
-			OPT>
+        public Component<
+            Normal<P, ElementType, OPT>,
+            NORMAL,
+            P,
+            ElementType,
+            OPT>
 {
-	using Base =
-		Component<Normal<P, ElementType, OPT>, NORMAL, P, ElementType, OPT>;
+    using Base =
+        Component<Normal<P, ElementType, OPT>, NORMAL, P, ElementType, OPT>;
 
 public:
-	/**
-	 * @brief Expose the type of the Normal.
-	 */
-	using NormalType = P;
+    /**
+     * @brief Expose the type of the Normal.
+     */
+    using NormalType = P;
 
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes the Normal to (0, 0, 0).
-	 */
-	Normal() = default;
+    /**
+     * @brief Initilizes the Normal to (0, 0, 0).
+     */
+    Normal() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns a const reference of the normal of the element.
-	 * @return a const reference of the normal of the element.
-	 */
-	const P& normal() const { return Base::data(); }
+    /**
+     * @brief Returns a const reference of the normal of the element.
+     * @return a const reference of the normal of the element.
+     */
+    const P& normal() const { return Base::data(); }
 
-	/**
-	 * @brief Returns a reference of the normal of the element.
-	 * @return a reference of the normal of the element.
-	 */
-	P& normal() { return Base::data(); }
+    /**
+     * @brief Returns a reference of the normal of the element.
+     * @return a reference of the normal of the element.
+     */
+    P& normal() { return Base::data(); }
 
 protected:
-	// Component interface function
-	template<typename Element>
-	void importFrom(const Element& e)
-	{
-		if constexpr(HasNormal<Element>) {
-			if (isNormalAvailableOn(e)){
-				normal() = e.normal().template cast<typename NormalType::ScalarType>();
-			}
-		}
-	}
+    // Component interface function
+    template<typename Element>
+    void importFrom(const Element& e)
+    {
+        if constexpr(HasNormal<Element>) {
+            if (isNormalAvailableOn(e)){
+                normal() = e.normal().template cast<typename NormalType::ScalarType>();
+            }
+        }
+    }
 };
 
 /* Detector function to check if a class has Normal available */
@@ -123,7 +123,7 @@ protected:
  */
 bool isNormalAvailableOn(const ElementConcept auto& element)
 {
-	return isComponentAvailableOn<NORMAL>(element);
+    return isComponentAvailableOn<NORMAL>(element);
 }
 
 /* Specialization Aliases */
@@ -142,9 +142,9 @@ bool isNormalAvailableOn(const ElementConcept auto& element)
  * @ingroup components
  */
 template<
-	typename Scalar,
-	typename ElementType = void,
-	bool OPT        = false>
+    typename Scalar,
+    typename ElementType = void,
+    bool OPT        = false>
 using Normal3 = Normal<Point3<Scalar>, ElementType, OPT>;
 
 /**

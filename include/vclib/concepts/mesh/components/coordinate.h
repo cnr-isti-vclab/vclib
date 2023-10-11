@@ -40,12 +40,12 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasCoordinate = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	typename T::CoordType;
-	{ o.coord() } -> std::same_as<typename T::CoordType&>;
-	{ co.coord() } -> std::same_as<const typename T::CoordType&>;
+    typename T::CoordType;
+    { o.coord() } -> std::same_as<typename T::CoordType&>;
+    { co.coord() } -> std::same_as<const typename T::CoordType&>;
 };
 
 } // namespace vcl::comp

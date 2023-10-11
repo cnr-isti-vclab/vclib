@@ -56,49 +56,49 @@ namespace vcl::comp {
  */
 template<typename ElementType = void, bool OPT = false>
 class Color :
-		public Component<
-			Color<ElementType, OPT>,
-			COLOR,
-			vcl::Color,
-			ElementType,
-			OPT>
+        public Component<
+            Color<ElementType, OPT>,
+            COLOR,
+            vcl::Color,
+            ElementType,
+            OPT>
 {
-	using Base =
-		Component<Color<ElementType, OPT>, COLOR, vcl::Color, ElementType, OPT>;
+    using Base =
+        Component<Color<ElementType, OPT>, COLOR, vcl::Color, ElementType, OPT>;
 
 public:
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes the color to black (with alpha 255).
-	 */
-	Color() = default;
+    /**
+     * @brief Initilizes the color to black (with alpha 255).
+     */
+    Color() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns a const reference of the color of the element.
-	 * @return a const reference of the color of the element.
-	 */
-	const vcl::Color& color() const { return Base::data(); }
+    /**
+     * @brief Returns a const reference of the color of the element.
+     * @return a const reference of the color of the element.
+     */
+    const vcl::Color& color() const { return Base::data(); }
 
-	/**
-	 * @brief Returns a reference pf the color of the element.
-	 * @return a reference pf the color of the element.
-	 */
-	vcl::Color& color() { return Base::data(); }
+    /**
+     * @brief Returns a reference pf the color of the element.
+     * @return a reference pf the color of the element.
+     */
+    vcl::Color& color() { return Base::data(); }
 
 protected:
-	// Component interface function
-	template<typename Element>
-	void importFrom(const Element& e)
-	{
-		if constexpr (HasColor<Element>) {
-			if (isColorAvailableOn(e)) {
-				color() = e.color();
-			}
-		}
-	}
+    // Component interface function
+    template<typename Element>
+    void importFrom(const Element& e)
+    {
+        if constexpr (HasColor<Element>) {
+            if (isColorAvailableOn(e)) {
+                color() = e.color();
+            }
+        }
+    }
 };
 
 /* Detector function to check if a class has Color available */
@@ -117,7 +117,7 @@ protected:
  */
 bool isColorAvailableOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentAvailableOn<COLOR>(element);
+    return isComponentAvailableOn<COLOR>(element);
 }
 
 } // namespace vcl::comp

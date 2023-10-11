@@ -29,49 +29,49 @@
 
 int main()
 {
-	vcl::TriMesh m;
+    vcl::TriMesh m;
 
-	vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-	m.enablePerVertexAdjacentFaces();
-	vcl::updatePerVertexAdjacentFaces(m);
+    m.enablePerVertexAdjacentFaces();
+    vcl::updatePerVertexAdjacentFaces(m);
 
-	for (const vcl::TriMesh::Vertex& v : m.vertices()) {
-		std::cerr << "Adj faces to vertex " << m.index(v) << ": \n\t";
-		for (const vcl::TriMesh::Face* f : v.adjFaces()){
-			std::cerr << m.index(f) << "; ";
-		}
-		std::cerr << std::endl;
-	}
+    for (const vcl::TriMesh::Vertex& v : m.vertices()) {
+        std::cerr << "Adj faces to vertex " << m.index(v) << ": \n\t";
+        for (const vcl::TriMesh::Face* f : v.adjFaces()){
+            std::cerr << m.index(f) << "; ";
+        }
+        std::cerr << std::endl;
+    }
 
-	std::cerr << std::endl << std::endl;
+    std::cerr << std::endl << std::endl;
 
-	m.enablePerVertexAdjacentVertices();
-	vcl::updatePerVertexAdjacentVertices(m);
+    m.enablePerVertexAdjacentVertices();
+    vcl::updatePerVertexAdjacentVertices(m);
 
-	for (const vcl::TriMesh::Vertex& v : m.vertices()) {
-		std::cerr << "Adj vertices to vertex " << m.index(v) << ": \n\t";
-		for (const vcl::TriMesh::Vertex* av : v.adjVertices()){
-			std::cerr << m.index(av) << "; ";
-		}
-		std::cerr << std::endl;
-	}
+    for (const vcl::TriMesh::Vertex& v : m.vertices()) {
+        std::cerr << "Adj vertices to vertex " << m.index(v) << ": \n\t";
+        for (const vcl::TriMesh::Vertex* av : v.adjVertices()){
+            std::cerr << m.index(av) << "; ";
+        }
+        std::cerr << std::endl;
+    }
 
-	std::cerr << std::endl << std::endl;
+    std::cerr << std::endl << std::endl;
 
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
+    m.enablePerFaceAdjacentFaces();
+    vcl::updatePerFaceAdjacentFaces(m);
 
-	for (const vcl::TriMesh::Face& f : m.faces()) {
-		std::cerr << "Adj faces to face " << m.index(f) << ": \n\t";
-		for (const vcl::TriMesh::Face* fadj : f.adjFaces()){
-			if (fadj != nullptr)
-				std::cerr << m.index(fadj) << "; ";
-			else
-				std::cerr << "-1; ";
-		}
-		std::cerr << std::endl;
-	}
+    for (const vcl::TriMesh::Face& f : m.faces()) {
+        std::cerr << "Adj faces to face " << m.index(f) << ": \n\t";
+        for (const vcl::TriMesh::Face* fadj : f.adjFaces()){
+            if (fadj != nullptr)
+                std::cerr << m.index(fadj) << "; ";
+            else
+                std::cerr << "-1; ";
+        }
+        std::cerr << std::endl;
+    }
 
-	return 0;
+    return 0;
 }

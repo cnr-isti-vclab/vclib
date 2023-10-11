@@ -37,45 +37,45 @@
 
 int main(int argc, char **argv)
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
-	vcl::updatePerFaceNormals(m);
-	vcl::updatePerVertexNormals(m);
-	vcl::setPerVertexColor(m, vcl::Color::LightBlue);
-	m.enablePerFaceColor();
-	vcl::setPerFaceColor(m, vcl::Color::LightBlue);
+    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+    vcl::updatePerFaceNormals(m);
+    vcl::updatePerVertexNormals(m);
+    vcl::setPerVertexColor(m, vcl::Color::LightBlue);
+    m.enablePerFaceColor();
+    vcl::setPerFaceColor(m, vcl::Color::LightBlue);
 
-	uint nSamples = 50;
+    uint nSamples = 50;
 
-	vcl::MeshSampler<vcl::TriMesh> s =
-		vcl::montecarloPointSampling<vcl::MeshSampler<vcl::TriMesh>>(m, nSamples);
+    vcl::MeshSampler<vcl::TriMesh> s =
+        vcl::montecarloPointSampling<vcl::MeshSampler<vcl::TriMesh>>(m, nSamples);
 
-	vcl::TriMesh samples = s.samples();
+    vcl::TriMesh samples = s.samples();
 
-	for (const vcl::TriMesh::Vertex& v : samples.vertices()) {
-		m.face(v.customComponent<uint>("birthFace")).color() = vcl::Color::LightRed;
-	}
+    for (const vcl::TriMesh::Vertex& v : samples.vertices()) {
+        m.face(v.customComponent<uint>("birthFace")).color() = vcl::Color::LightRed;
+    }
 
 
 #ifdef VCLIB_WITH_QGLVIEWER
-	QApplication application(argc, argv);
+    QApplication application(argc, argv);
 
-	vcl::ViewerMainWindow viewer;
-	vcl::DrawableMesh<vcl::TriMesh> dm(m);
-	vcl::DrawableMesh<vcl::TriMesh> sm(samples);
+    vcl::ViewerMainWindow viewer;
+    vcl::DrawableMesh<vcl::TriMesh> dm(m);
+    vcl::DrawableMesh<vcl::TriMesh> sm(samples);
 
-	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
-	vector->pushBack(dm);
-	vector->pushBack(sm);
-	viewer.setDrawableObjectVector(vector);
+    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    vector->pushBack(dm);
+    vector->pushBack(sm);
+    viewer.setDrawableObjectVector(vector);
 
-	viewer.show();
+    viewer.show();
 
-	return application.exec();
+    return application.exec();
 #else
-	(void) argc; // unused
-	(void) argv;
-	return 0;
+    (void) argc; // unused
+    (void) argv;
+    return 0;
 #endif
 
-	return 0;
+    return 0;
 }

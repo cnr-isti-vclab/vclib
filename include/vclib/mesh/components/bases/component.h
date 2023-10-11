@@ -112,70 +112,70 @@ namespace vcl::comp {
  * happens.
  */
 template<
-	typename DerivedComponent, // CRTP pattern, derived class
-	uint COMP_ID,              // component id
-	typename DataType,         // data stored by the component
-	typename ElementType,      // element type, void if horizontal
-	bool OPT,                  // true if component vertical and optional
-	typename... PointedTypes>  // types of the pointers stored by the component
+    typename DerivedComponent, // CRTP pattern, derived class
+    uint COMP_ID,              // component id
+    typename DataType,         // data stored by the component
+    typename ElementType,      // element type, void if horizontal
+    bool OPT,                  // true if component vertical and optional
+    typename... PointedTypes>  // types of the pointers stored by the component
 class Component : public PointersComponentTriggerer<PointedTypes>...
 {
 public:
-	/**
-	 * @brief The Data that the component will store (e.g. a vcl::Point3d for a
-	 * Normal component).
-	 */
-	using DataValueType = DataType;
+    /**
+     * @brief The Data that the component will store (e.g. a vcl::Point3d for a
+     * Normal component).
+     */
+    using DataValueType = DataType;
 
-	/**
-	 * @brief The ID of the component.
-	 */
-	static const uint COMPONENT_ID = COMP_ID;
+    /**
+     * @brief The ID of the component.
+     */
+    static const uint COMPONENT_ID = COMP_ID;
 
-	/**
-	 * @brief Boolean that tells if this component type stores its data
-	 * vertically (not in the Element frame memory, but in another vector).
-	 */
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+    /**
+     * @brief Boolean that tells if this component type stores its data
+     * vertically (not in the Element frame memory, but in another vector).
+     */
+    static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 
-	/**
-	 * @brief Boolean that tells if this component is optional. Makes sense only
-	 * when the component is vertical.
-	 */
-	static const bool IS_OPTIONAL = OPT;
+    /**
+     * @brief Boolean that tells if this component is optional. Makes sense only
+     * when the component is vertical.
+     */
+    static const bool IS_OPTIONAL = OPT;
 
-	/**
-	 * @private
-	 * @brief Returns `true` if the component is available, `false` otherwise.
-	 *
-	 * This member function can return `false` only if the component is
-	 * optional, and it is not enabled.
-	 *
-	 * This member function is hidden by the element that inherits this class.
-	 *
-	 * @return `true` if the component is available, `false` otherwise.
-	 */
-	bool isAvailable() const
-	{
-		return cdata.template isComponentAvailable<ElementType>(
-			static_cast<const DerivedComponent*>(this));
-	}
+    /**
+     * @private
+     * @brief Returns `true` if the component is available, `false` otherwise.
+     *
+     * This member function can return `false` only if the component is
+     * optional, and it is not enabled.
+     *
+     * This member function is hidden by the element that inherits this class.
+     *
+     * @return `true` if the component is available, `false` otherwise.
+     */
+    bool isAvailable() const
+    {
+        return cdata.template isComponentAvailable<ElementType>(
+            static_cast<const DerivedComponent*>(this));
+    }
 
 protected:
-	DataValueType& data()
-	{
-		return cdata.template get<ElementType>(
-			static_cast<DerivedComponent*>(this));
-	}
+    DataValueType& data()
+    {
+        return cdata.template get<ElementType>(
+            static_cast<DerivedComponent*>(this));
+    }
 
-	const DataValueType& data() const
-	{
-		return cdata.template get<ElementType>(
-			static_cast<const DerivedComponent*>(this));
-	}
+    const DataValueType& data() const
+    {
+        return cdata.template get<ElementType>(
+            static_cast<const DerivedComponent*>(this));
+    }
 
 private:
-	internal::ComponentData<DataValueType, IS_VERTICAL> cdata;
+    internal::ComponentData<DataValueType, IS_VERTICAL> cdata;
 };
 
 /**
@@ -194,14 +194,14 @@ private:
 template<uint COMPONENT_ID, ElementOrMeshConcept T>
 bool isComponentAvailableOn(const T& obj)
 {
-	if constexpr (HasOptionalComponentOfType<T, COMPONENT_ID>) {
-		using ComponentType =
-			ComponentOfType<COMPONENT_ID, typename T::Components>;
-		const ComponentType& c = static_cast<const ComponentType&>(obj);
-		return c.isAvailable();
-	}
-	else
-		return HasComponentOfType<T, COMPONENT_ID>;
+    if constexpr (HasOptionalComponentOfType<T, COMPONENT_ID>) {
+        using ComponentType =
+            ComponentOfType<COMPONENT_ID, typename T::Components>;
+        const ComponentType& c = static_cast<const ComponentType&>(obj);
+        return c.isAvailable();
+    }
+    else
+        return HasComponentOfType<T, COMPONENT_ID>;
 }
 
 } // namespace vcl::comp

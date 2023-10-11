@@ -46,38 +46,38 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasAdjacentFaces = requires(
-	T o,
-	const T& co,
-	typename T::AdjacentFaceType f,
-	std::vector<typename T::AdjacentFaceType*> v)
+    T o,
+    const T& co,
+    typename T::AdjacentFaceType f,
+    std::vector<typename T::AdjacentFaceType*> v)
 {
-	T::ADJ_FACE_NUMBER;
-	typename T::AdjacentFaceType;
-	typename T::AdjacentFaceIterator;
-	typename T::ConstAdjacentFaceIterator;
+    T::ADJ_FACE_NUMBER;
+    typename T::AdjacentFaceType;
+    typename T::AdjacentFaceIterator;
+    typename T::ConstAdjacentFaceIterator;
 
-	{ o.adjFacesNumber() } -> std::same_as<uint>;
-	{ o.adjFace(uint()) } -> std::same_as<typename T::AdjacentFaceType*&>;
-	{ co.adjFace(uint()) } -> std::same_as<const typename T::AdjacentFaceType*>;
-	{ o.adjFaceMod(int()) } -> std::same_as<typename T::AdjacentFaceType*&>;
-	{ co.adjFaceMod(int()) } ->
-		std::same_as<const typename T::AdjacentFaceType*>;
-	{ o.setAdjFace(&f, uint()) } -> std::same_as<void>;
-	{ o.setAdjFaces(v) } -> std::same_as<void>;
-	{ co.containsAdjFace(&f) } -> std::same_as<bool>;
+    { o.adjFacesNumber() } -> std::same_as<uint>;
+    { o.adjFace(uint()) } -> std::same_as<typename T::AdjacentFaceType*&>;
+    { co.adjFace(uint()) } -> std::same_as<const typename T::AdjacentFaceType*>;
+    { o.adjFaceMod(int()) } -> std::same_as<typename T::AdjacentFaceType*&>;
+    { co.adjFaceMod(int()) } ->
+        std::same_as<const typename T::AdjacentFaceType*>;
+    { o.setAdjFace(&f, uint()) } -> std::same_as<void>;
+    { o.setAdjFaces(v) } -> std::same_as<void>;
+    { co.containsAdjFace(&f) } -> std::same_as<bool>;
 
-	{ o.findAdjFace(&f) } -> std::same_as<typename T::AdjacentFaceIterator>;
-	{ co.findAdjFace(&f) } ->
-		std::same_as<typename T::ConstAdjacentFaceIterator>;
-	{ co.indexOfAdjFace(&f) } -> std::same_as<uint>;
+    { o.findAdjFace(&f) } -> std::same_as<typename T::AdjacentFaceIterator>;
+    { co.findAdjFace(&f) } ->
+        std::same_as<typename T::ConstAdjacentFaceIterator>;
+    { co.indexOfAdjFace(&f) } -> std::same_as<uint>;
 
-	{ o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;
-	{ o.adjFaceEnd() } -> std::same_as<typename T::AdjacentFaceIterator>;
-	{ co.adjFaceBegin() } ->
-		std::same_as<typename T::ConstAdjacentFaceIterator>;
-	{ co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
-	o.adjFaces();
-	co.adjFaces();
+    { o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;
+    { o.adjFaceEnd() } -> std::same_as<typename T::AdjacentFaceIterator>;
+    { co.adjFaceBegin() } ->
+        std::same_as<typename T::ConstAdjacentFaceIterator>;
+    { co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
+    o.adjFaces();
+    co.adjFaces();
 };
 
 /**
@@ -89,7 +89,7 @@ concept HasAdjacentFaces = requires(
  */
 template<typename T>
 concept HasOptionalAdjacentFaces =
-	HasAdjacentFaces<T> && IsOptionalComponent<typename T::AdjacentFaces>;
+    HasAdjacentFaces<T> && IsOptionalComponent<typename T::AdjacentFaces>;
 
 /**
  * @private
@@ -118,7 +118,7 @@ concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
  */
 template<typename T>
 concept SanityCheckAdjacentFaces =
-	!HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;
+    !HasAdjacentFaces<T> || HasRightNumberOfAdjacentFaces<T>;
 
 } // namespace vcl::comp
 

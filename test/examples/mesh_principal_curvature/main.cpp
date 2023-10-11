@@ -37,52 +37,52 @@
 
 int main(int argc, char **argv)
 {
-	vcl::ConsoleLogger log;
-	log.setPrintTimer(true);
+    vcl::ConsoleLogger log;
+    log.setPrintTimer(true);
 
-	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
 
-	m.enablePerVertexAdjacentFaces();
-	m.enablePerFaceAdjacentFaces();
-	m.enablePerVertexPrincipalCurvature();
+    m.enablePerVertexAdjacentFaces();
+    m.enablePerFaceAdjacentFaces();
+    m.enablePerVertexPrincipalCurvature();
 
-	vcl::updatePerFaceNormals(m);
-	vcl::updatePerFaceAdjacentFaces(m);
-	vcl::updatePerVertexAdjacentFaces(m);
+    vcl::updatePerFaceNormals(m);
+    vcl::updatePerFaceAdjacentFaces(m);
+    vcl::updatePerVertexAdjacentFaces(m);
 
-	double radius = vcl::boundingBox(m).diagonal() * 0.1;
-	log.startTimer();
-	vcl::updatePrincipalCurvaturePCA(m, radius, true, log);
+    double radius = vcl::boundingBox(m).diagonal() * 0.1;
+    log.startTimer();
+    vcl::updatePrincipalCurvaturePCA(m, radius, true, log);
 
-	vcl::setPerVertexQualityFromPrincipalCurvatureMean(m);
-	vcl::Histogramd h = vcl::vertexQualityHistogram(m);
+    vcl::setPerVertexQualityFromPrincipalCurvatureMean(m);
+    vcl::Histogramd h = vcl::vertexQualityHistogram(m);
 
-	vcl::setPerVertexColorFromQuality(m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
+    vcl::setPerVertexColorFromQuality(m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
 
-	std::cout << "Curvature range: " << h.minRangeValue() << " " << h.maxRangeValue() << "\n";
-	std::cout << "Used 90 percentile: " << h.percentile(0.1) << " " << h.percentile(0.9) << "\n";
+    std::cout << "Curvature range: " << h.minRangeValue() << " " << h.maxRangeValue() << "\n";
+    std::cout << "Used 90 percentile: " << h.percentile(0.1) << " " << h.percentile(0.9) << "\n";
 
-	m.enablePerFaceColor();
-	vcl::setPerFaceColorFromVertexColor(m);
+    m.enablePerFaceColor();
+    vcl::setPerFaceColorFromVertexColor(m);
 
-	vcl::io::saveStl(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.stl");
+    vcl::io::saveStl(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.stl");
 
 #ifdef VCLIB_WITH_QGLVIEWER
-	QApplication application(argc, argv);
+    QApplication application(argc, argv);
 
-	vcl::ViewerMainWindow viewer;
-	vcl::DrawableMesh<vcl::TriMesh> dm(m);
+    vcl::ViewerMainWindow viewer;
+    vcl::DrawableMesh<vcl::TriMesh> dm(m);
 
-	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
-	vector->pushBack(dm);
-	viewer.setDrawableObjectVector(vector);
+    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    vector->pushBack(dm);
+    viewer.setDrawableObjectVector(vector);
 
-	viewer.show();
+    viewer.show();
 
-	return application.exec();
+    return application.exec();
 #else
-	(void) argc; // unused
-	(void) argv;
-	return 0;
+    (void) argc; // unused
+    (void) argv;
+    return 0;
 #endif
 }

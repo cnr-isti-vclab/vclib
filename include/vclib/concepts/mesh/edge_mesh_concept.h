@@ -31,14 +31,14 @@ namespace vcl {
 
 template<typename T>
 concept EdgeMeshConcept =
-	MeshConcept<T> && mesh::HasEdgeContainer<T> &&
-	requires(
-		T o,
-		const T& co,
-		typename T::EdgeType e)
+    MeshConcept<T> && mesh::HasEdgeContainer<T> &&
+    requires(
+        T o,
+        const T& co,
+        typename T::EdgeType e)
 {
-	{ co.index(e) } -> std::same_as<uint>;
-	{ co.index(&e) } -> std::same_as<uint>;
+    { co.index(e) } -> std::same_as<uint>;
+    { co.index(&e) } -> std::same_as<uint>;
 };
 
 } // namespace vcl

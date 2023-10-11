@@ -45,13 +45,13 @@ namespace vcl {
 template<MeshConcept MeshType>
 void clearPerVertexAdjacentFaces(MeshType& m)
 {
-	vcl::requirePerVertexAdjacentFaces(m);
+    vcl::requirePerVertexAdjacentFaces(m);
 
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	for (VertexType& v : m.vertices()) {
-		v.clearAdjFaces();
-	}
+    for (VertexType& v : m.vertices()) {
+        v.clearAdjFaces();
+    }
 }
 
 /**
@@ -68,20 +68,20 @@ void clearPerVertexAdjacentFaces(MeshType& m)
 template<FaceMeshConcept MeshType>
 void updatePerVertexAdjacentFaces(MeshType& m)
 {
-	clearPerVertexAdjacentFaces(m);
+    clearPerVertexAdjacentFaces(m);
 
-	using VertexType = MeshType::VertexType;
-	using FaceType   = MeshType::FaceType;
+    using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
 
-	for (VertexType& v : m.vertices()) {
-		v.clearAdjFaces();
-	}
+    for (VertexType& v : m.vertices()) {
+        v.clearAdjFaces();
+    }
 
-	for (FaceType& f : m.faces()) {
-		for (VertexType* v : f.vertices()) {
-			v->pushAdjFace(&f);
-		}
-	}
+    for (FaceType& f : m.faces()) {
+        for (VertexType* v : f.vertices()) {
+            v->pushAdjFace(&f);
+        }
+    }
 }
 
 /**
@@ -100,13 +100,13 @@ void updatePerVertexAdjacentFaces(MeshType& m)
 template<MeshConcept MeshType>
 void clearPerVertexAdjacentVertices(MeshType& m)
 {
-	vcl::requirePerVertexAdjacentVertices(m);
+    vcl::requirePerVertexAdjacentVertices(m);
 
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	for (VertexType& v : m.vertices()) {
-		v.clearAdjVertices();
-	}
+    for (VertexType& v : m.vertices()) {
+        v.clearAdjVertices();
+    }
 }
 
 /**
@@ -123,29 +123,29 @@ void clearPerVertexAdjacentVertices(MeshType& m)
 template<FaceMeshConcept MeshType>
 void updatePerVertexAdjacentVertices(MeshType& m)
 {
-	clearPerVertexAdjacentVertices(m);
+    clearPerVertexAdjacentVertices(m);
 
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	// vector that contains edges sorted trough unordered vertex pointers
-	// it contains clusters of "same" edges, but each one of them has its face
-	// pointer note that in case on non-manifold mesh, clusters may be of size
-	// >= 2
-	std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
+    // vector that contains edges sorted trough unordered vertex pointers
+    // it contains clusters of "same" edges, but each one of them has its face
+    // pointer note that in case on non-manifold mesh, clusters may be of size
+    // >= 2
+    std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
 
-	// store the last pair of vertices
-	VertexType* v1 = nullptr;
-	VertexType* v2 = nullptr;
-	for (uint i = 0; i < vec.size(); ++i){
-		// if this pair is different from the last pair
-		if (vec[i].v[0] != v1 || vec[i].v[1] != v2) {
-			// update last pair
-			v1 = vec[i].v[0];
-			v2 = vec[i].v[1];
-			v1->pushAdjVertex(v2); // set the pair as adjacent
-			v2->pushAdjVertex(v1);
-		}
-	}
+    // store the last pair of vertices
+    VertexType* v1 = nullptr;
+    VertexType* v2 = nullptr;
+    for (uint i = 0; i < vec.size(); ++i){
+        // if this pair is different from the last pair
+        if (vec[i].v[0] != v1 || vec[i].v[1] != v2) {
+            // update last pair
+            v1 = vec[i].v[0];
+            v2 = vec[i].v[1];
+            v1->pushAdjVertex(v2); // set the pair as adjacent
+            v2->pushAdjVertex(v1);
+        }
+    }
 }
 
 /**
@@ -165,15 +165,15 @@ void updatePerVertexAdjacentVertices(MeshType& m)
 template<FaceMeshConcept MeshType>
 void clearPerFaceAdjacentFaces(MeshType& m)
 {
-	vcl::requirePerFaceAdjacentFaces(m);
+    vcl::requirePerFaceAdjacentFaces(m);
 
-	using FaceType = MeshType::FaceType;
+    using FaceType = MeshType::FaceType;
 
-	for (FaceType& f : m.faces()) {
-		for (FaceType*& adjF : f.adjFaces()) {
-			adjF = nullptr;
-		}
-	}
+    for (FaceType& f : m.faces()) {
+        for (FaceType*& adjF : f.adjFaces()) {
+            adjF = nullptr;
+        }
+    }
 }
 
 /**
@@ -223,46 +223,46 @@ void clearPerFaceAdjacentFaces(MeshType& m)
 template<FaceMeshConcept MeshType>
 void updatePerFaceAdjacentFaces(MeshType& m)
 {
-	vcl::requirePerFaceAdjacentFaces(m);
+    vcl::requirePerFaceAdjacentFaces(m);
 
-	// vector that contains edges sorted trough unordered vertex pointers
-	// it contains clusters of "same" edges, but each one of them has its face
-	// pointer note that in case on non-manifold mesh, clusters may be of size
-	// >= 2
-	std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
+    // vector that contains edges sorted trough unordered vertex pointers
+    // it contains clusters of "same" edges, but each one of them has its face
+    // pointer note that in case on non-manifold mesh, clusters may be of size
+    // >= 2
+    std::vector<MeshEdgeUtil<MeshType>> vec = fillAndSortMeshEdgeUtilVector(m);
 
-	if (vec.size() > 0) {
-		// in this loop, base will point to the first element of a cluster of
-		// edges
-		// increment of clusters into loop
-		for (auto base = vec.begin(); base != vec.end(); ) {
-			auto first = base; // remember the first to set adj to the last
+    if (vec.size() > 0) {
+        // in this loop, base will point to the first element of a cluster of
+        // edges
+        // increment of clusters into loop
+        for (auto base = vec.begin(); base != vec.end(); ) {
+            auto first = base; // remember the first to set adj to the last
 
-			// i and j will increment together, and if i == j, i will be adj to
-			// j, but j will not be adj to i (to manage non manifold edges and
-			// make cyclic adj on the same edge)
-			auto i = base;
-			auto j = i + 1;
-			if (j != vec.end()) {
-				// case of cluster composed of one element. adj of i is nullptr
-				if (*i != *j) {
-					i->f->adjFace(i->e) = nullptr;
-				}
-				else { // at least two edges in the cluster
-					while (j != vec.end() && *i == *j) {
-						i->f->adjFace(i->e) = j->f;
-						++i;
-						++j;
-					}
-					// i now is the last element that was equal to first
-					i->f->adjFace(i->e) = first->f;
-				}
-			}
+            // i and j will increment together, and if i == j, i will be adj to
+            // j, but j will not be adj to i (to manage non manifold edges and
+            // make cyclic adj on the same edge)
+            auto i = base;
+            auto j = i + 1;
+            if (j != vec.end()) {
+                // case of cluster composed of one element. adj of i is nullptr
+                if (*i != *j) {
+                    i->f->adjFace(i->e) = nullptr;
+                }
+                else { // at least two edges in the cluster
+                    while (j != vec.end() && *i == *j) {
+                        i->f->adjFace(i->e) = j->f;
+                        ++i;
+                        ++j;
+                    }
+                    // i now is the last element that was equal to first
+                    i->f->adjFace(i->e) = first->f;
+                }
+            }
 
-			// j is the first different edge from first (or it is vec.end()!)
-			base = j;
-		}
-	}
+            // j is the first different edge from first (or it is vec.end()!)
+            base = j;
+        }
+    }
 }
 
 } // namespace vcl

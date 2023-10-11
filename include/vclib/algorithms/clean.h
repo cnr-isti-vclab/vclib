@@ -53,48 +53,48 @@ template<typename VertexPointer>
 class VertPositionComparator
 {
 public:
-	inline bool operator()(const VertexPointer& a, const VertexPointer& b)
-	{
-		return (a->coord() == b->coord()) ? (a < b) : (a->coord() < b->coord());
-	}
+    inline bool operator()(const VertexPointer& a, const VertexPointer& b)
+    {
+        return (a->coord() == b->coord()) ? (a < b) : (a->coord() < b->coord());
+    }
 };
 
 template<typename Cont, typename MeshType>
 void setReferencedVerticesOnVector(
-	const MeshType&    m,
-	std::vector<bool>& refs,
-	uint&              nRefs)
+    const MeshType&    m,
+    std::vector<bool>& refs,
+    uint&              nRefs)
 {
-	// check if the Cont container of the Mesh has vertex pointers
-	if constexpr (comp::HasVertexPointers<typename Cont::ElementType>) {
-		// if there are still some vertices non-referenced
-		if (nRefs < m.vertexNumber()) {
-			constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
-			// for eache element of the Cont container
-			for (const auto& el : m.template elements<ELEM_ID>()) {
-				// for each vertex pointer of the element
-				for (const auto* v : el.vertices()) {
-					if (! refs[m.index(v)]) {
-						// set the vertex as referenced
-						refs[m.index(v)] = true;
-						nRefs++;
-					}
-				}
-			}
-		}
-	}
+    // check if the Cont container of the Mesh has vertex pointers
+    if constexpr (comp::HasVertexPointers<typename Cont::ElementType>) {
+        // if there are still some vertices non-referenced
+        if (nRefs < m.vertexNumber()) {
+            constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;
+            // for eache element of the Cont container
+            for (const auto& el : m.template elements<ELEM_ID>()) {
+                // for each vertex pointer of the element
+                for (const auto* v : el.vertices()) {
+                    if (! refs[m.index(v)]) {
+                        // set the vertex as referenced
+                        refs[m.index(v)] = true;
+                        nRefs++;
+                    }
+                }
+            }
+        }
+    }
 }
 
 template<typename MeshType, typename... Cont>
 void setReferencedVerticesOnVector(
-	const MeshType&    m,
-	std::vector<bool>& refs,
-	uint&              nRefs,
-	TypeWrapper<Cont...>)
+    const MeshType&    m,
+    std::vector<bool>& refs,
+    uint&              nRefs,
+    TypeWrapper<Cont...>)
 {
-	// call the setReferencedVerticesOnVector function for each container of the
-	// mesh
-	(setReferencedVerticesOnVector<Cont>(m, refs, nRefs), ...);
+    // call the setReferencedVerticesOnVector function for each container of the
+    // mesh
+    (setReferencedVerticesOnVector<Cont>(m, refs, nRefs), ...);
 }
 
 /**
@@ -112,16 +112,16 @@ template<typename MeshType>
 std::vector<bool>
 unreferencedVerticesVectorBool(const MeshType& m, uint& nUnref)
 {
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	uint nRefs = 0;
-	std::vector<bool> referredVertices(m.vertexContainerSize(), false);
+    uint nRefs = 0;
+    std::vector<bool> referredVertices(m.vertexContainerSize(), false);
 
-	setReferencedVerticesOnVector(
-		m, referredVertices, nRefs, typename MeshType::Containers());
-	nUnref = m.vertexNumber() - nRefs;
+    setReferencedVerticesOnVector(
+        m, referredVertices, nRefs, typename MeshType::Containers());
+    nUnref = m.vertexNumber() - nRefs;
 
-	return referredVertices;
+    return referredVertices;
 }
 
 /**
@@ -140,127 +140,127 @@ template<typename IndexType, typename SentinelType, int N>
 class SortedIndexContainer
 {
 public:
-	SortedIndexContainer() {}
+    SortedIndexContainer() {}
 
-	template<Range RangeType>
-	SortedIndexContainer(SentinelType s, RangeType rng) : s(s), v(rng)
-	{
-		std::sort(v.begin(), v.end());
-	}
+    template<Range RangeType>
+    SortedIndexContainer(SentinelType s, RangeType rng) : s(s), v(rng)
+    {
+        std::sort(v.begin(), v.end());
+    }
 
-	bool operator<(const SortedIndexContainer& s) const
-	{
-		if constexpr (N >= 0) {
-			for (uint i = 0; i < N; ++i) {
-				if (v[i] != s.v[i])
-					return v[i] < s.v[i];
-			}
-			return false;
-		}
-		else {
-			for (uint i = 0; i < v.size() && i < s.v.size(); ++i) {
-				if (v[i] != s.v[i])
-					return v[i] < s.v[i];
-			}
-			return v.size() < s.v.size();
-		}
-	}
+    bool operator<(const SortedIndexContainer& s) const
+    {
+        if constexpr (N >= 0) {
+            for (uint i = 0; i < N; ++i) {
+                if (v[i] != s.v[i])
+                    return v[i] < s.v[i];
+            }
+            return false;
+        }
+        else {
+            for (uint i = 0; i < v.size() && i < s.v.size(); ++i) {
+                if (v[i] != s.v[i])
+                    return v[i] < s.v[i];
+            }
+            return v.size() < s.v.size();
+        }
+    }
 
-	bool operator==(const SortedIndexContainer& s) const
-	{
-		if constexpr (N >= 0) {
-			for (uint i = 0; i < N; ++i) {
-				if (v[i] != s.v[i])
-					return false;
-			}
-			return true;
-		}
-		else {
-			if (v.size() != s.v.size())
-				return false;
-			for (uint i = 0; i < v.size(); ++i) {
-				if (v[i] != s.v[i])
-					return false;
-			}
-			return true;
-		}
-	}
+    bool operator==(const SortedIndexContainer& s) const
+    {
+        if constexpr (N >= 0) {
+            for (uint i = 0; i < N; ++i) {
+                if (v[i] != s.v[i])
+                    return false;
+            }
+            return true;
+        }
+        else {
+            if (v.size() != s.v.size())
+                return false;
+            for (uint i = 0; i < v.size(); ++i) {
+                if (v[i] != s.v[i])
+                    return false;
+            }
+            return true;
+        }
+    }
 
-	SentinelType sentinel() const { return s; }
+    SentinelType sentinel() const { return s; }
 
 private:
-	vcl::Vector<IndexType, N> v;
-	SentinelType s;
+    vcl::Vector<IndexType, N> v;
+    SentinelType s;
 };
 
 template<FaceMeshConcept MeshType>
 std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>
+    requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
-	vcl::requirePerFaceAdjacentFaces(m);
+    vcl::requirePerFaceAdjacentFaces(m);
 
-	using FaceType = MeshType::FaceType;
+    using FaceType = MeshType::FaceType;
 
-	std::vector<bool> nonManifoldVertices(m.vertexContainerSize(), false);
+    std::vector<bool> nonManifoldVertices(m.vertexContainerSize(), false);
 
-	std::vector<uint> TD(m.vertexContainerSize(), 0);
-	std::vector<bool> nonManifoldInc(m.vertexContainerSize(), false);
-	// First Loop, count how many faces are incident on a vertex and store it in
-	// TD, and flag how many vertices are incident on non manifold edges.
-	for (const FaceType& f : m.faces()) {
-		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			TD[m.index(f.vertex(i))]++;
-			if (!isFaceManifoldOnEdge(f, i)) {
-				nonManifoldInc[m.index(f.vertex(i))] = true;
-				nonManifoldInc[m.index(f.vertexMod(i+1))] = true;
-			}
-		}
-	}
+    std::vector<uint> TD(m.vertexContainerSize(), 0);
+    std::vector<bool> nonManifoldInc(m.vertexContainerSize(), false);
+    // First Loop, count how many faces are incident on a vertex and store it in
+    // TD, and flag how many vertices are incident on non manifold edges.
+    for (const FaceType& f : m.faces()) {
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
+            TD[m.index(f.vertex(i))]++;
+            if (!isFaceManifoldOnEdge(f, i)) {
+                nonManifoldInc[m.index(f.vertex(i))] = true;
+                nonManifoldInc[m.index(f.vertexMod(i+1))] = true;
+            }
+        }
+    }
 
-	std::vector<bool> visited(m.vertexContainerSize(), false);
-	for (const FaceType& f : m.faces()) {
-		for (uint i = 0; i < f.vertexNumber(); ++i){
-			if (!visited[m.index(f.vertex(i))]) {
-				visited[m.index(f.vertex(i))] = true;
-				MeshPos pos(&f, i);
-				uint starSize = pos.numberOfAdjacentFacesToV();
-				if (starSize != TD[m.index(f.vertex(i))])
-					nonManifoldVertices[m.index(f.vertex(i))] = true;
-			}
-		}
-	}
+    std::vector<bool> visited(m.vertexContainerSize(), false);
+    for (const FaceType& f : m.faces()) {
+        for (uint i = 0; i < f.vertexNumber(); ++i){
+            if (!visited[m.index(f.vertex(i))]) {
+                visited[m.index(f.vertex(i))] = true;
+                MeshPos pos(&f, i);
+                uint starSize = pos.numberOfAdjacentFacesToV();
+                if (starSize != TD[m.index(f.vertex(i))])
+                    nonManifoldVertices[m.index(f.vertex(i))] = true;
+            }
+        }
+    }
 
-	return nonManifoldVertices;
+    return nonManifoldVertices;
 }
 
 template<FaceMeshConcept MeshType>
 uint numberEdges(
-	const MeshType& m,
-	uint&           numBoundaryEdges,
-	uint&           numNonManifoldEdges)
+    const MeshType& m,
+    uint&           numBoundaryEdges,
+    uint&           numNonManifoldEdges)
 {
-	std::vector<ConstMeshEdgeUtil<MeshType>> edgeVec =
-		fillAndSortMeshEdgeUtilVector(m);
+    std::vector<ConstMeshEdgeUtil<MeshType>> edgeVec =
+        fillAndSortMeshEdgeUtilVector(m);
 
-	uint numEdges = 0;
-	numBoundaryEdges = 0;
-	numNonManifoldEdges = 0;
+    uint numEdges = 0;
+    numBoundaryEdges = 0;
+    numNonManifoldEdges = 0;
 
-	size_t f_on_cur_edge =1;
-	for(size_t i=0;i<edgeVec.size();++i) {
-		if(( (i+1) == edgeVec.size()) ||  !(edgeVec[i] == edgeVec[i+1])) {
-			++numEdges;
-			if(f_on_cur_edge==1)
-				++numBoundaryEdges;
-			if(f_on_cur_edge>2)
-				++numNonManifoldEdges;
-			f_on_cur_edge=1;
-		}
-		else {
-			++f_on_cur_edge;
-		}
-	}
-	return numEdges;
+    size_t f_on_cur_edge =1;
+    for(size_t i=0;i<edgeVec.size();++i) {
+        if(( (i+1) == edgeVec.size()) ||  !(edgeVec[i] == edgeVec[i+1])) {
+            ++numEdges;
+            if(f_on_cur_edge==1)
+                ++numBoundaryEdges;
+            if(f_on_cur_edge>2)
+                ++numNonManifoldEdges;
+            f_on_cur_edge=1;
+        }
+        else {
+            ++f_on_cur_edge;
+        }
+    }
+    return numEdges;
 }
 
 } // namespace internal
@@ -283,13 +283,13 @@ uint numberEdges(
 template<MeshConcept MeshType>
 uint numberUnreferencedVertices(const MeshType& m)
 {
-	uint nV = 0;
-	// Generate a vector of boolean flags indicating whether each vertex is
-	// referenced by any of the mesh's elements.
-	std::vector<bool> referredVertices =
-		internal::unreferencedVerticesVectorBool(m, nV);
+    uint nV = 0;
+    // Generate a vector of boolean flags indicating whether each vertex is
+    // referenced by any of the mesh's elements.
+    std::vector<bool> referredVertices =
+        internal::unreferencedVerticesVectorBool(m, nV);
 
-	return nV;
+    return nV;
 }
 
 /**
@@ -313,38 +313,38 @@ uint numberUnreferencedVertices(const MeshType& m)
 template<MeshConcept MeshType>
 uint removeUnreferencedVertices(MeshType& m)
 {
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	// Generate a vector of boolean flags indicating whether each vertex is
-	// referenced by any of the mesh's elements.
+    // Generate a vector of boolean flags indicating whether each vertex is
+    // referenced by any of the mesh's elements.
 
-	uint n = 0;
-	std::vector<bool> referredVertices =
-		internal::unreferencedVerticesVectorBool(m, n);
+    uint n = 0;
+    std::vector<bool> referredVertices =
+        internal::unreferencedVerticesVectorBool(m, n);
 
-	// need to mark as deleted vertices only if the number of unreferenced is
-	// less than vn
-	if (n < m.vertexNumber()) {
-		// will store on this vector only the indices of the referenced vertices
-		std::vector<uint> refVertIndices(m.vertexContainerSize(), UINT_NULL);
-		// Iterate over all vertices in the mesh, and mark any unreferenced
-		// vertex as deleted.
-		for (const VertexType& v : m.vertices()) {
-			if (!referredVertices[m.index(v)]) {
-				m.deleteVertex(m.index(v));
-			}
-			else {
-				refVertIndices[m.index(v)] = m.index(v);
-			}
-		}
+    // need to mark as deleted vertices only if the number of unreferenced is
+    // less than vn
+    if (n < m.vertexNumber()) {
+        // will store on this vector only the indices of the referenced vertices
+        std::vector<uint> refVertIndices(m.vertexContainerSize(), UINT_NULL);
+        // Iterate over all vertices in the mesh, and mark any unreferenced
+        // vertex as deleted.
+        for (const VertexType& v : m.vertices()) {
+            if (!referredVertices[m.index(v)]) {
+                m.deleteVertex(m.index(v));
+            }
+            else {
+                refVertIndices[m.index(v)] = m.index(v);
+            }
+        }
 
-		// update the vertex indices of the mesh, setting to null the indices of
-		// the unreferenced vertices (it may happen on adjacent vertices of some
-		// container).
-		m.updateVertexIndices(refVertIndices);
-	}
+        // update the vertex indices of the mesh, setting to null the indices of
+        // the unreferenced vertices (it may happen on adjacent vertices of some
+        // container).
+        m.updateVertexIndices(refVertIndices);
+    }
 
-	return n;
+    return n;
 }
 
 /**
@@ -368,60 +368,60 @@ uint removeUnreferencedVertices(MeshType& m)
 template<MeshConcept MeshType>
 uint removeDuplicatedVertices(MeshType& m)
 {
-	using VertexType    = MeshType::VertexType;
-	using VertexPointer = MeshType::VertexType*;
+    using VertexType    = MeshType::VertexType;
+    using VertexPointer = MeshType::VertexType*;
 
-	if (m.vertexNumber() == 0)
-		return 0;
+    if (m.vertexNumber() == 0)
+        return 0;
 
-	// a map that will be used to keep track of deleted vertices and their
-	// corresponding pointers.
-	std::vector<uint> newVertexIndices(m.vertexNumber());
-	// assigning each vertex index to itself.
-	std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0);
+    // a map that will be used to keep track of deleted vertices and their
+    // corresponding pointers.
+    std::vector<uint> newVertexIndices(m.vertexNumber());
+    // assigning each vertex index to itself.
+    std::iota(newVertexIndices.begin(), newVertexIndices.end(), 0);
 
-	uint deleted = 0;
+    uint deleted = 0;
 
-	std::vector<VertexPointer> perm(m.vertexNumber());
+    std::vector<VertexPointer> perm(m.vertexNumber());
 
-	// put all the vertices into a vector for sorting.
-	uint k = 0;
-	for (VertexType& v : m.vertices())
-		perm[k++] = &v;
+    // put all the vertices into a vector for sorting.
+    uint k = 0;
+    for (VertexType& v : m.vertices())
+        perm[k++] = &v;
 
-	// sort the vector based on the vertices' spatial positions.
-	std::sort(
-		std::execution::par_unseq,
-		perm.begin(),
-		perm.end(),
-		internal::VertPositionComparator<VertexPointer>());
+    // sort the vector based on the vertices' spatial positions.
+    std::sort(
+        std::execution::par_unseq,
+        perm.begin(),
+        perm.end(),
+        internal::VertPositionComparator<VertexPointer>());
 
-	uint i = 0;
+    uint i = 0;
 
-	// compare the i-th position with the next ones while they are equal to the
-	// i-th.
-	while (i < perm.size() - 1) {
-		uint j = i + 1;
-		while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
-			// j will be deleted, so we map its pointer to the i-th vertex's
-			// pointer.
-			newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j -> i
-			m.deleteVertex(m.index(perm[j]));
-			j++;
-			deleted++;
-		}
-		// here perm[i] != perm[j], so we need to check perm[j] with the next
-		// vertex.
-		i = j;
-	}
+    // compare the i-th position with the next ones while they are equal to the
+    // i-th.
+    while (i < perm.size() - 1) {
+        uint j = i + 1;
+        while (j < perm.size() && perm[i]->coord() == perm[j]->coord()) {
+            // j will be deleted, so we map its pointer to the i-th vertex's
+            // pointer.
+            newVertexIndices[m.index(perm[j])] = m.index(perm[i]); // map j -> i
+            m.deleteVertex(m.index(perm[j]));
+            j++;
+            deleted++;
+        }
+        // here perm[i] != perm[j], so we need to check perm[j] with the next
+        // vertex.
+        i = j;
+    }
 
-	// update the vertex pointers to point to the correct vertices, in every
-	// container of the mesh
-	m.updateVertexIndices(newVertexIndices);
+    // update the vertex pointers to point to the correct vertices, in every
+    // container of the mesh
+    m.updateVertexIndices(newVertexIndices);
 
-	// todo:
-	// - add a flag that removes degenerate elements after
-	return deleted;
+    // todo:
+    // - add a flag that removes degenerate elements after
+    return deleted;
 }
 
 /**
@@ -453,33 +453,33 @@ uint removeDuplicatedVertices(MeshType& m)
 template<FaceMeshConcept MeshType>
 uint removeDuplicatedFaces(MeshType& m)
 {
-	using VertexType = MeshType::VertexType;
-	using FaceType = MeshType::FaceType;
+    using VertexType = MeshType::VertexType;
+    using FaceType = MeshType::FaceType;
 
-	// create a vector of sorted tuples of indices, where each tuple represents
-	// a face's vertices and a pointer to the face.
-	std::vector<internal::SortedIndexContainer<
-		VertexType*,
-		FaceType*,
-		FaceType::VERTEX_NUMBER>>
-		fvec;
+    // create a vector of sorted tuples of indices, where each tuple represents
+    // a face's vertices and a pointer to the face.
+    std::vector<internal::SortedIndexContainer<
+        VertexType*,
+        FaceType*,
+        FaceType::VERTEX_NUMBER>>
+        fvec;
 
-	for (FaceType& f : m.faces()) {
-		fvec.emplace_back(&f, f.vertices());
-	}
+    for (FaceType& f : m.faces()) {
+        fvec.emplace_back(&f, f.vertices());
+    }
 
-	// sort the vector based on the face vertex indices.
-	std::sort(std::execution::par_unseq, fvec.begin(), fvec.end());
-	uint total = 0;
+    // sort the vector based on the face vertex indices.
+    std::sort(std::execution::par_unseq, fvec.begin(), fvec.end());
+    uint total = 0;
 
-	// iterate over the sorted vector, and mark any duplicate faces as deleted.
-	for (uint i = 0; i < fvec.size() - 1; ++i) {
-		if (fvec[i] == fvec[i + 1]) {
-			total++;
-			m.deleteFace(fvec[i].sentinel());
-		}
-	}
-	return total;
+    // iterate over the sorted vector, and mark any duplicate faces as deleted.
+    for (uint i = 0; i < fvec.size() - 1; ++i) {
+        if (fvec[i] == fvec[i + 1]) {
+            total++;
+            m.deleteFace(fvec[i].sentinel());
+        }
+    }
+    return total;
 }
 
 /**
@@ -508,39 +508,39 @@ uint removeDuplicatedFaces(MeshType& m)
 template<MeshConcept MeshType>
 uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 {
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	int count_vd = 0;
+    int count_vd = 0;
 
-	// iterate over all vertices in the mesh, and mark any with invalid floating
-	// point values as deleted.
-	for (VertexType& v : m.vertices()) {
-		if (v.coord().isDegenerate()) {
-			count_vd++;
-			m.deleteVertex(&v);
-		}
-	}
+    // iterate over all vertices in the mesh, and mark any with invalid floating
+    // point values as deleted.
+    for (VertexType& v : m.vertices()) {
+        if (v.coord().isDegenerate()) {
+            count_vd++;
+            m.deleteVertex(&v);
+        }
+    }
 
-	// If the mesh has faces and the `deleteAlsoFaces` flag is true, delete all
-	// faces incident on deleted vertices.
-	if constexpr (HasFaces<MeshType>) {
-		using FaceType = MeshType::FaceType;
-		if (deleteAlsoFaces) {
-			for (FaceType& f : m.faces()) {
-				bool deg = false;
-				for (VertexType* v : f.vertices()) {
-					if (v->deleted()) {
-						deg = true;
-					}
-				}
-				if (deg) {
-					m.deleteFace(&f);
-				}
-			}
-		}
-	}
+    // If the mesh has faces and the `deleteAlsoFaces` flag is true, delete all
+    // faces incident on deleted vertices.
+    if constexpr (HasFaces<MeshType>) {
+        using FaceType = MeshType::FaceType;
+        if (deleteAlsoFaces) {
+            for (FaceType& f : m.faces()) {
+                bool deg = false;
+                for (VertexType* v : f.vertices()) {
+                    if (v->deleted()) {
+                        deg = true;
+                    }
+                }
+                if (deg) {
+                    m.deleteFace(&f);
+                }
+            }
+        }
+    }
 
-	return count_vd;
+    return count_vd;
 }
 
 /**
@@ -568,22 +568,22 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 template<FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m)
 {
-	uint count = 0;
-	using FaceType = MeshType::FaceType;
+    uint count = 0;
+    using FaceType = MeshType::FaceType;
 
-	// iterate over all faces in the mesh, and mark any that are degenerate as
-	// deleted.
-	for (FaceType& f : m.faces()){
-		bool deg = false; // flag to check if a face is degenerate
-		for (uint i = 0; i < f.vertexNumber() && !deg; ++i){
-			if (f.vertex(i) == f.vertexMod(i+1)){
-				deg = true;
-				m.deleteFace(m.index(f));
-				count++;
-			}
-		}
-	}
-	return count;
+    // iterate over all faces in the mesh, and mark any that are degenerate as
+    // deleted.
+    for (FaceType& f : m.faces()){
+        bool deg = false; // flag to check if a face is degenerate
+        for (uint i = 0; i < f.vertexNumber() && !deg; ++i){
+            if (f.vertex(i) == f.vertexMod(i+1)){
+                deg = true;
+                m.deleteFace(m.index(f));
+                count++;
+            }
+        }
+    }
+    return count;
 }
 
 /**
@@ -607,10 +607,10 @@ uint removeDegenerateFaces(MeshType& m)
 template<FaceMeshConcept MeshType>
 uint numberNonManifoldVertices(const MeshType& m)
 {
-	std::vector<bool> nonManifoldVertices =
-		internal::nonManifoldVerticesVectorBool(m);
-	return std::count(
-		nonManifoldVertices.begin(), nonManifoldVertices.end(), true);
+    std::vector<bool> nonManifoldVertices =
+        internal::nonManifoldVerticesVectorBool(m);
+    return std::count(
+        nonManifoldVertices.begin(), nonManifoldVertices.end(), true);
 }
 
 /**
@@ -635,9 +635,9 @@ uint numberNonManifoldVertices(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isWaterTight(const MeshType& m)
 {
-	uint numEdgeBorder, numNonManifoldEdges;
-	internal::numberEdges(m, numEdgeBorder, numNonManifoldEdges);
-	return numEdgeBorder == 0 && numNonManifoldEdges == 0;
+    uint numEdgeBorder, numNonManifoldEdges;
+    internal::numberEdges(m, numEdgeBorder, numNonManifoldEdges);
+    return numEdgeBorder == 0 && numNonManifoldEdges == 0;
 }
 
 /**
@@ -660,38 +660,38 @@ bool isWaterTight(const MeshType& m)
  */
 template<FaceMeshConcept MeshType>
 uint numberHoles(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>
+    requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
-	vcl::requirePerFaceAdjacentFaces(m);
+    vcl::requirePerFaceAdjacentFaces(m);
 
-	using VertexType = MeshType::VertexType;
-	using FaceType = MeshType::FaceType;
+    using VertexType = MeshType::VertexType;
+    using FaceType = MeshType::FaceType;
 
-	uint loopNum=0;
+    uint loopNum=0;
 
-	// create a vector of bools to keep track of visited faces.
-	std::vector<bool> visitedFaces(m.faceContainerSize(), false);
+    // create a vector of bools to keep track of visited faces.
+    std::vector<bool> visitedFaces(m.faceContainerSize(), false);
 
-	// Traverse the mesh using a depth-first search algorithm to find all the
-	// holes.
-	for(const FaceType& f : m.faces()) {
-		uint e = 0;
-		for(const VertexType* v : f.vertices()) {
-			if(!visitedFaces[m.index(f)] && f.adjFace(e) == nullptr) {
-				MeshPos<FaceType> startPos(&f,e);
-				MeshPos<FaceType> curPos=startPos;
-				do {
-					curPos.nextEdgeOnBorderAdjacentToV();
-					curPos.flipVertex();
-					visitedFaces[m.index(curPos.face())] = true;
-				}
-				while(curPos!=startPos);
-				++loopNum;
-			}
-			++e;
-		}
-	}
-	return loopNum;
+    // Traverse the mesh using a depth-first search algorithm to find all the
+    // holes.
+    for(const FaceType& f : m.faces()) {
+        uint e = 0;
+        for(const VertexType* v : f.vertices()) {
+            if(!visitedFaces[m.index(f)] && f.adjFace(e) == nullptr) {
+                MeshPos<FaceType> startPos(&f,e);
+                MeshPos<FaceType> curPos=startPos;
+                do {
+                    curPos.nextEdgeOnBorderAdjacentToV();
+                    curPos.flipVertex();
+                    visitedFaces[m.index(curPos.face())] = true;
+                }
+                while(curPos!=startPos);
+                ++loopNum;
+            }
+            ++e;
+        }
+    }
+    return loopNum;
 }
 
 /**
@@ -718,54 +718,54 @@ uint numberHoles(const MeshType& m)
  */
 template <FaceMeshConcept MeshType>
 std::vector<std::set<uint>> connectedComponents(const MeshType& m)
-	requires vcl::HasPerFaceAdjacentFaces<MeshType>
+    requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
-	vcl::requirePerFaceAdjacentFaces(m);
+    vcl::requirePerFaceAdjacentFaces(m);
 
-	using FaceType = MeshType::FaceType;
+    using FaceType = MeshType::FaceType;
 
-	std::vector<std::set<uint>> cc;
+    std::vector<std::set<uint>> cc;
 
-	// create a vector of bools to keep track of visited faces.
-	std::vector<bool> visitedFaces(m.faceContainerSize(), false);
+    // create a vector of bools to keep track of visited faces.
+    std::vector<bool> visitedFaces(m.faceContainerSize(), false);
 
-	// create a stack to hold the faces that need to be visited during the
-	// depth-first search.
-	std::stack<const FaceType*> sf;
+    // create a stack to hold the faces that need to be visited during the
+    // depth-first search.
+    std::stack<const FaceType*> sf;
 
-	// traverse the mesh using a depth-first search algorithm to find the
-	// connected components.
-	for (const FaceType& f : m.faces()){
-		if (!visitedFaces[m.index(f)]) { // first time I see this face
-			visitedFaces[m.index(f)] = true;
+    // traverse the mesh using a depth-first search algorithm to find the
+    // connected components.
+    for (const FaceType& f : m.faces()){
+        if (!visitedFaces[m.index(f)]) { // first time I see this face
+            visitedFaces[m.index(f)] = true;
 
-			// new connected component
-			cc.emplace_back();
-			std::set<uint>& ccf = cc[cc.size()-1];
-			ccf.insert(m.index(f));
+            // new connected component
+            cc.emplace_back();
+            std::set<uint>& ccf = cc[cc.size()-1];
+            ccf.insert(m.index(f));
 
-			// while the stack is empty, visit the adjacent faces of the top
-			// face of the stack
-			sf.push(&f);
-			while(!sf.empty()){
-				const FaceType* fpt = sf.top();
-				// remove the top face and add it to the connected component
-				sf.pop();
-				ccf.insert(m.index(fpt));
+            // while the stack is empty, visit the adjacent faces of the top
+            // face of the stack
+            sf.push(&f);
+            while(!sf.empty()){
+                const FaceType* fpt = sf.top();
+                // remove the top face and add it to the connected component
+                sf.pop();
+                ccf.insert(m.index(fpt));
 
-				// add the adjacent faces of the current visited in the stack
-				for (uint j = 0; j < fpt->vertexNumber(); ++j){
-					const FaceType* adjf = fpt->adjFace(j);
-					// if there is an adj face and it has not been visited
-					if (adjf != nullptr && !visitedFaces[m.index(adjf)]){
-						sf.push(adjf);
-						visitedFaces[m.index(adjf)] = true;
-					}
-				}
-			}
-		}
-	}
-	return cc;
+                // add the adjacent faces of the current visited in the stack
+                for (uint j = 0; j < fpt->vertexNumber(); ++j){
+                    const FaceType* adjf = fpt->adjFace(j);
+                    // if there is an adj face and it has not been visited
+                    if (adjf != nullptr && !visitedFaces[m.index(adjf)]){
+                        sf.push(adjf);
+                        visitedFaces[m.index(adjf)] = true;
+                    }
+                }
+            }
+        }
+    }
+    return cc;
 }
 
 /**
@@ -789,7 +789,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 template <FaceMeshConcept MeshType>
 uint numberConnectedComponents(const MeshType& m)
 {
-	return connectedComponents(m).size();
+    return connectedComponents(m).size();
 }
 
 } // namespace vcl

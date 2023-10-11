@@ -46,38 +46,38 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasWedgeTexCoords = requires(
-	T o,
-	const T& co,
-	const typename T::WedgeTexCoordType& t,
-	std::vector<typename T::WedgeTexCoordType> v)
+    T o,
+    const T& co,
+    const typename T::WedgeTexCoordType& t,
+    std::vector<typename T::WedgeTexCoordType> v)
 {
-	T::WEDGE_TEX_COORD_NUMBER;
-	typename T::WedgeTexCoordType;
-	typename T::WedgeTexCoordsIterator;
-	typename T::ConstWedgeTexCoordsIterator;
+    T::WEDGE_TEX_COORD_NUMBER;
+    typename T::WedgeTexCoordType;
+    typename T::WedgeTexCoordsIterator;
+    typename T::ConstWedgeTexCoordsIterator;
 
-	{ o.wedgeTexCoord(uint()) } -> std::same_as<typename T::WedgeTexCoordType&>;
-	{ co.wedgeTexCoord(uint()) } ->
-		std::same_as<const typename T::WedgeTexCoordType&>;
-	{ o.wedgeTexCoordMod(int()) } ->
-		std::same_as<typename T::WedgeTexCoordType&>;
-	{ co.wedgeTexCoordMod(int()) } ->
-		std::same_as<const typename T::WedgeTexCoordType&>;
-	{ o.setWedgeTexCoord(t, uint()) } -> std::same_as<void>;
-	{ o.setWedgeTexCoords(v) } -> std::same_as<void>;
-	{ o.textureIndex() } -> std::same_as<short&>;
-	{ co.textureIndex() } -> std::same_as<short>;
+    { o.wedgeTexCoord(uint()) } -> std::same_as<typename T::WedgeTexCoordType&>;
+    { co.wedgeTexCoord(uint()) } ->
+        std::same_as<const typename T::WedgeTexCoordType&>;
+    { o.wedgeTexCoordMod(int()) } ->
+        std::same_as<typename T::WedgeTexCoordType&>;
+    { co.wedgeTexCoordMod(int()) } ->
+        std::same_as<const typename T::WedgeTexCoordType&>;
+    { o.setWedgeTexCoord(t, uint()) } -> std::same_as<void>;
+    { o.setWedgeTexCoords(v) } -> std::same_as<void>;
+    { o.textureIndex() } -> std::same_as<short&>;
+    { co.textureIndex() } -> std::same_as<short>;
 
-	{ o.wedgeTexCoordBegin() } ->
-		std::same_as<typename T::WedgeTexCoordsIterator>;
-	{ o.wedgeTexCoordEnd() } ->
-		std::same_as<typename T::WedgeTexCoordsIterator>;
-	{ co.wedgeTexCoordBegin() } ->
-		std::same_as<typename T::ConstWedgeTexCoordsIterator>;
-	{ co.wedgeTexCoordEnd() } ->
-		std::same_as<typename T::ConstWedgeTexCoordsIterator>;
-	o.wedgeTexCoords();
-	co.wedgeTexCoords();
+    { o.wedgeTexCoordBegin() } ->
+        std::same_as<typename T::WedgeTexCoordsIterator>;
+    { o.wedgeTexCoordEnd() } ->
+        std::same_as<typename T::WedgeTexCoordsIterator>;
+    { co.wedgeTexCoordBegin() } ->
+        std::same_as<typename T::ConstWedgeTexCoordsIterator>;
+    { co.wedgeTexCoordEnd() } ->
+        std::same_as<typename T::ConstWedgeTexCoordsIterator>;
+    o.wedgeTexCoords();
+    co.wedgeTexCoords();
 };
 
 /**
@@ -89,7 +89,7 @@ concept HasWedgeTexCoords = requires(
  */
 template<typename T>
 concept HasOptionalWedgeTexCoords =
-	HasWedgeTexCoords<T> && IsOptionalComponent<typename T::WedgeTexCoords>;
+    HasWedgeTexCoords<T> && IsOptionalComponent<typename T::WedgeTexCoords>;
 
 /**
  * @private
@@ -103,7 +103,7 @@ concept HasOptionalWedgeTexCoords =
  */
 template<typename T>
 concept HasRightNumberOfWedgeTexCoords =
-	T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
+    T::VERTEX_NUMBER == T::WEDGE_TEX_COORD_NUMBER;
 
 /**
  * @private
@@ -119,7 +119,7 @@ concept HasRightNumberOfWedgeTexCoords =
  */
 template<typename T>
 concept SanityCheckWedgeTexCoords =
-	!HasWedgeTexCoords<T> || HasRightNumberOfWedgeTexCoords<T>;
+    !HasWedgeTexCoords<T> || HasRightNumberOfWedgeTexCoords<T>;
 
 } // namespace vcl::comp
 

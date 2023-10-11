@@ -56,47 +56,47 @@ namespace vcl::comp {
  */
 template<typename ElementType = void, bool OPT = false>
 class Name :
-		public Component<
-			Name<ElementType, OPT>,
-			NAME,
-			std::string,
-			ElementType,
-			OPT>
+        public Component<
+            Name<ElementType, OPT>,
+            NAME,
+            std::string,
+            ElementType,
+            OPT>
 {
-	using Base =
-		Component<Name<ElementType, OPT>, NAME, std::string, ElementType, OPT>;
+    using Base =
+        Component<Name<ElementType, OPT>, NAME, std::string, ElementType, OPT>;
 
 public:
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes an empty name.
-	 */
-	Name() = default;
+    /**
+     * @brief Initilizes an empty name.
+     */
+    Name() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns the name of this object.
-	 * @return The name of this object.
-	 */
-	std::string& name() { return Base::data(); }
+    /**
+     * @brief Returns the name of this object.
+     * @return The name of this object.
+     */
+    std::string& name() { return Base::data(); }
 
-	/**
-	 * @brief Returns the name of this object.
-	 * @return The name of this object.
-	 */
-	const std::string& name() const { return Base::data(); }
+    /**
+     * @brief Returns the name of this object.
+     * @return The name of this object.
+     */
+    const std::string& name() const { return Base::data(); }
 
 protected:
-	// Component interface function
-	template<typename Element>
-	void importFrom(const Element& e)
-	{
-		if constexpr(HasName<Element>) {
-			name() = e.name();
-		}
-	}
+    // Component interface function
+    template<typename Element>
+    void importFrom(const Element& e)
+    {
+        if constexpr(HasName<Element>) {
+            name() = e.name();
+        }
+    }
 };
 
 /* Detector function to check if a class has Name available */
@@ -115,7 +115,7 @@ protected:
  */
 bool isNameAvailableOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentAvailableOn<NAME>(element);
+    return isComponentAvailableOn<NAME>(element);
 }
 
 } // namespace vcl::comp

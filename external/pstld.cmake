@@ -12,11 +12,11 @@
 set(VCLIB_PSTLD_DIR ${CMAKE_CURRENT_LIST_DIR}/pstld-master)
 
 if (VCLIB_ALLOW_BUNDLED_PSTLD AND EXISTS ${VCLIB_PSTLD_DIR}/pstld/pstld.h)
-	message(STATUS "- pstld - using bundled source")
+    message(STATUS "- pstld - using bundled source")
 else()
-	message(
-		FATAL_ERROR
-		"pstld is required on Apple Clang- VCLIB_ALLOW_BUNDLED_PSTLD must be enabled and found.")
+    message(
+        FATAL_ERROR
+        "pstld is required on Apple Clang- VCLIB_ALLOW_BUNDLED_PSTLD must be enabled and found.")
 endif()
 
 set(PSTLD_INCLUDE_DIRS ${VCLIB_PSTLD_DIR})

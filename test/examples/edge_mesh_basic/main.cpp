@@ -27,18 +27,18 @@
 
 int main()
 {
-	vcl::EdgeMesh m;
+    vcl::EdgeMesh m;
 
-	m.addVertices(3);
+    m.addVertices(3);
 
-	m.addEdges(2);
+    m.addEdges(2);
 
-	m.number<vcl::EDGE>();
+    m.number<vcl::EDGE>();
 
-	m.edge(0).vertex(0) = &m.vertex(0);
-	m.edge(0).vertex(1) = &m.vertex(1);
-	m.edge(1).vertex(0) = &m.vertex(1);
-	m.edge(1).vertex(1) = &m.vertex(2);
+    m.edge(0).vertex(0) = &m.vertex(0);
+    m.edge(0).vertex(1) = &m.vertex(1);
+    m.edge(1).vertex(0) = &m.vertex(1);
+    m.edge(1).vertex(1) = &m.vertex(2);
 
-	return 0;
+    return 0;
 }

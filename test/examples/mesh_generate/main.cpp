@@ -36,39 +36,39 @@
 
 int main(int argc, char **argv)
 {
-	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
-	using ScalarType = vcl::TriMesh::ScalarType;
+    vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    using ScalarType = vcl::TriMesh::ScalarType;
 
-	vcl::updatePerFaceNormals(m);
-	vcl::updatePerVertexNormals(m);
-	vcl::setPerVertexColor(m, vcl::Color::Gray);
+    vcl::updatePerFaceNormals(m);
+    vcl::updatePerVertexNormals(m);
+    vcl::setPerVertexColor(m, vcl::Color::Gray);
 
-	vcl::Sphere<ScalarType> s({0,0,0}, 0.3);
-	vcl::TriMesh m1 = vcl::meshSphereIntersection(m, s);
+    vcl::Sphere<ScalarType> s({0,0,0}, 0.3);
+    vcl::TriMesh m1 = vcl::meshSphereIntersection(m, s);
 
-	vcl::TriMesh sm = vcl::createSphere<vcl::TriMesh>(s);
-	vcl::updatePerFaceNormals(sm);
-	vcl::updatePerVertexNormals(sm);
-	vcl::setPerVertexColor(sm, vcl::Color::Gray);
+    vcl::TriMesh sm = vcl::createSphere<vcl::TriMesh>(s);
+    vcl::updatePerFaceNormals(sm);
+    vcl::updatePerVertexNormals(sm);
+    vcl::setPerVertexColor(sm, vcl::Color::Gray);
 
 #ifdef VCLIB_WITH_QGLVIEWER
-	QApplication application(argc, argv);
+    QApplication application(argc, argv);
 
-	vcl::ViewerMainWindow viewer;
-	vcl::DrawableMesh<vcl::TriMesh> dm(m1);
-	vcl::DrawableMesh<vcl::TriMesh> sdm(sm);
+    vcl::ViewerMainWindow viewer;
+    vcl::DrawableMesh<vcl::TriMesh> dm(m1);
+    vcl::DrawableMesh<vcl::TriMesh> sdm(sm);
 
-	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
-	vector->pushBack(dm);
-	vector->pushBack(sdm);
-	viewer.setDrawableObjectVector(vector);
+    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    vector->pushBack(dm);
+    vector->pushBack(sdm);
+    viewer.setDrawableObjectVector(vector);
 
-	viewer.show();
+    viewer.show();
 
-	return application.exec();
+    return application.exec();
 #else
-	(void) argc; // unused
-	(void) argv;
-	return 0;
+    (void) argc; // unused
+    (void) argv;
+    return 0;
 #endif
 }

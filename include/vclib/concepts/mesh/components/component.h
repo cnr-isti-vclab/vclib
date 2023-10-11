@@ -43,23 +43,23 @@ template<uint COMP_ID, typename ... Components>
 struct ComponentOfTypePred
 {
 private:
-	template <typename Comp>
-	struct SameCompPred
-	{
-		static constexpr bool value = Comp::COMPONENT_ID == COMP_ID;
-	};
+    template <typename Comp>
+    struct SameCompPred
+    {
+        static constexpr bool value = Comp::COMPONENT_ID == COMP_ID;
+    };
 
 public:
-	// TypeWrapper of the found container, if any
-	using type =
-		typename vcl::FilterTypesByCondition<SameCompPred, Components...>::type;
-	static constexpr bool value = NumberOfTypes<type>::value == 1;
+    // TypeWrapper of the found container, if any
+    using type =
+        typename vcl::FilterTypesByCondition<SameCompPred, Components...>::type;
+    static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 
 // TypeWrapper specialization
 template<uint COMP_ID, typename... Components>
 struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
-		public ComponentOfTypePred<COMP_ID, Components...>
+        public ComponentOfTypePred<COMP_ID, Components...>
 {
 };
 
@@ -73,7 +73,7 @@ struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
  */
 template<typename T>
 concept ComponentConcept = requires {
-	{ T::COMPONENT_ID } -> std::same_as<const uint&>;
+    { T::COMPONENT_ID } -> std::same_as<const uint&>;
 };
 
 /**
@@ -85,23 +85,23 @@ concept ComponentConcept = requires {
 template<typename T>
 struct IsComponentPred
 {
-	static const bool value = ComponentConcept<T>;
+    static const bool value = ComponentConcept<T>;
 };
 
 template<uint COMP_ID, typename... Components>
 using ComponentOfType = typename FirstType<
-	typename internal::ComponentOfTypePred<COMP_ID, Components...>::type>::type;
+    typename internal::ComponentOfTypePred<COMP_ID, Components...>::type>::type;
 
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
 {
-	{ o.init() } -> std::same_as<void>;
+    { o.init() } -> std::same_as<void>;
 };
 
 template<typename T>
 concept HasIsAvailableMemberFunction = requires(T o)
 {
-	{ o.isAvailable() } -> std::same_as<bool>;
+    { o.isAvailable() } -> std::same_as<bool>;
 };
 
 template<typename T>
@@ -110,21 +110,21 @@ concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
 template<typename T>
 concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)
 {
-	typename T::DataValueType;
-	{ o.IS_VERTICAL } -> std::same_as<const bool&>;
+    typename T::DataValueType;
+    { o.IS_VERTICAL } -> std::same_as<const bool&>;
 };
 
 template<typename T>
 struct IsVerticalComponentPred
 {
-	static const bool value = IsVerticalComponent<T>;
+    static const bool value = IsVerticalComponent<T>;
 };
 
 template<typename T>
 concept IsOptionalComponent =
-	IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires(T o)
+    IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires(T o)
 {
-	{ o.IS_OPTIONAL } -> std::same_as<const bool&>;
+    { o.IS_OPTIONAL } -> std::same_as<const bool&>;
 };
 
 template<typename T>
@@ -162,11 +162,11 @@ class PointersComponentTriggerer
  */
 template<typename T, typename R>
 concept HasPointersOfType =
-	std::is_base_of<PointersComponentTriggerer<R>, T>::value;
+    std::is_base_of<PointersComponentTriggerer<R>, T>::value;
 
 template<typename T, typename R>
 concept HasOptionalPointersOfType =
-	HasPointersOfType<T, R> && IsOptionalComponent<T>;
+    HasPointersOfType<T, R> && IsOptionalComponent<T>;
 
 // ======== Has Component Concepts ======== //
 // Concepts that needs to be called on a type T that has the "Components" type
@@ -175,17 +175,17 @@ concept HasOptionalPointersOfType =
 
 template<typename T, uint COMP_ID>
 concept HasComponentOfType =
-	internal::ComponentOfTypePred<COMP_ID, typename T::Components>::value;
+    internal::ComponentOfTypePred<COMP_ID, typename T::Components>::value;
 
 template<typename T, uint COMP_ID>
 concept HasVerticalComponentOfType =
-	HasComponentOfType<T, COMP_ID> &&
-	IsVerticalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
+    HasComponentOfType<T, COMP_ID> &&
+    IsVerticalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
 
 template<typename T, uint COMP_ID>
 concept HasOptionalComponentOfType =
-	HasComponentOfType<T, COMP_ID> &&
-	IsOptionalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
+    HasComponentOfType<T, COMP_ID> &&
+    IsOptionalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
 
 } // namespace vcl::comp
 

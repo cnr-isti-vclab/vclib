@@ -12,7 +12,7 @@
 project(vclib-mesh-transform)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-transform ${SOURCES})
 

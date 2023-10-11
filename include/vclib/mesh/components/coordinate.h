@@ -57,56 +57,56 @@ namespace vcl::comp {
  */
 template<PointConcept P, typename ElementType = void, bool OPT = false>
 class Coordinate :
-		public Component<
-			Coordinate<P, ElementType, OPT>,
-			COORDINATE,
-			P,
-			ElementType,
-			OPT>
+        public Component<
+            Coordinate<P, ElementType, OPT>,
+            COORDINATE,
+            P,
+            ElementType,
+            OPT>
 {
-	using Base = Component<
-		Coordinate<P, ElementType, OPT>,
-		COORDINATE,
-		P,
-		ElementType,
-		OPT>;
+    using Base = Component<
+        Coordinate<P, ElementType, OPT>,
+        COORDINATE,
+        P,
+        ElementType,
+        OPT>;
 
 public:
-	/**
-	 * @brief Expose the type of the Coordinate.
-	 */
-	using CoordType = P;
+    /**
+     * @brief Expose the type of the Coordinate.
+     */
+    using CoordType = P;
 
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes the Coordinate to (0, 0, 0).
-	 */
-	Coordinate() = default;
+    /**
+     * @brief Initilizes the Coordinate to (0, 0, 0).
+     */
+    Coordinate() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns a const reference of the coordinate of the element.
-	 * @return a const reference of the coordinate of the element.
-	 */
-	const P& coord() const { return Base::data(); }
+    /**
+     * @brief Returns a const reference of the coordinate of the element.
+     * @return a const reference of the coordinate of the element.
+     */
+    const P& coord() const { return Base::data(); }
 
-	/**
-	 * @brief Returns a reference of the coordinate of the element.
-	 * @return a reference of the coordinate of the element.
-	 */
-	P& coord() { return Base::data(); }
+    /**
+     * @brief Returns a reference of the coordinate of the element.
+     * @return a reference of the coordinate of the element.
+     */
+    P& coord() { return Base::data(); }
 
 protected:
-	// Component interface function
-	template<typename Element>
-	void importFrom(const Element& v)
-	{
-		if constexpr (HasCoordinate<Element>) {
-			coord() = v.coord().template cast<typename CoordType::ScalarType>();
-		}
-	}
+    // Component interface function
+    template<typename Element>
+    void importFrom(const Element& v)
+    {
+        if constexpr (HasCoordinate<Element>) {
+            coord() = v.coord().template cast<typename CoordType::ScalarType>();
+        }
+    }
 };
 
 /* Detector function to check if a class has Coordinate available */
@@ -125,7 +125,7 @@ protected:
  */
 bool isCoordinateAvailableOn(const ElementConcept auto& element)
 {
-	return isComponentAvailableOn<COORDINATE>(element);
+    return isComponentAvailableOn<COORDINATE>(element);
 }
 
 /* Specialization Aliases */

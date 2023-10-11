@@ -32,27 +32,27 @@ namespace vcl {
 class WrongSizeException : public std::runtime_error
 {
 public:
-	WrongSizeException(const std::string& err) : std::runtime_error(err) {}
+    WrongSizeException(const std::string& err) : std::runtime_error(err) {}
 
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("Wrong Size - ") + std::runtime_error::what();
-		return error.c_str();
-	}
+    virtual const char* what() const throw()
+    {
+        static std::string error;
+        error = std::string("Wrong Size - ") + std::runtime_error::what();
+        return error.c_str();
+    }
 };
 
 class NoIntersectionException : public std::runtime_error
 {
 public:
-	NoIntersectionException(const std::string& err) : std::runtime_error(err) {}
+    NoIntersectionException(const std::string& err) : std::runtime_error(err) {}
 
-	virtual const char* what() const throw()
-	{
-		static std::string error;
-		error = std::string("No Intersection - ") + std::runtime_error::what();
-		return error.c_str();
-	}
+    virtual const char* what() const throw()
+    {
+        static std::string error;
+        error = std::string("No Intersection - ") + std::runtime_error::what();
+        return error.c_str();
+    }
 };
 
 } // namespace vcl

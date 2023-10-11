@@ -20,21 +20,21 @@ option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 
 # MapBox earcut
 option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
-	"Allow use of bundled Mapbox-Eaurcut source" ON)
+    "Allow use of bundled Mapbox-Eaurcut source" ON)
 
 # Zip iterator
 option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
-	"Allow use of bundled ZipViews source" ON)
+    "Allow use of bundled ZipViews source" ON)
 
 if (APPLE)
-	option(VCLIB_ALLOW_BUNDLED_PSTLD "Allow use of bundled pstld source" ON)
+    option(VCLIB_ALLOW_BUNDLED_PSTLD "Allow use of bundled pstld source" ON)
 endif()
 
 # Catch2
 if (VCLIB_BUILD_AND_RUN_TESTS)
-	option(VCLIB_ALLOW_DOWNLOAD_CATCH2
-		"Allow use of downloaded Catch2 source" ON)
-	option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
+    option(VCLIB_ALLOW_DOWNLOAD_CATCH2
+        "Allow use of downloaded Catch2 source" ON)
+    option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 endif()
 
 # OpenGL
@@ -71,7 +71,7 @@ include(zip-views.cmake)
 ### pstld, required on AppleClang
 ### (waiting for c++17 parallel algorithms support)
 if (APPLE)
-	include(pstld.cmake)
+    include(pstld.cmake)
 endif()
 
 # === OPTIONAL === #

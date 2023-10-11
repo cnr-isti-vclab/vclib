@@ -36,48 +36,48 @@ namespace vcl::io::ply {
 template<MeshConcept MeshType>
 void loadTextures(const PlyHeader& header, MeshType& mesh)
 {
-	if constexpr (vcl::HasTexturePaths<MeshType>) {
-		for (const std::string& str : header.textureFileNames()) {
-			mesh.pushTexturePath(str);
-		}
-	}
+    if constexpr (vcl::HasTexturePaths<MeshType>) {
+        for (const std::string& str : header.textureFileNames()) {
+            mesh.pushTexturePath(str);
+        }
+    }
 }
 
 template<MeshConcept MeshType>
 void saveTextures(PlyHeader& header, const MeshType& mesh)
 {
-	if constexpr (vcl::HasTexturePaths<MeshType>) {
-		for (const std::string& str : mesh.texturePaths()) {
-			header.pushTextureFileName(str);
-		}
-	}
+    if constexpr (vcl::HasTexturePaths<MeshType>) {
+        for (const std::string& str : mesh.texturePaths()) {
+            header.pushTextureFileName(str);
+        }
+    }
 }
 
 inline void readUnknownElements(
-	std::ifstream&   file,
-	const PlyHeader& header,
-	ply::Element     el)
+    std::ifstream&   file,
+    const PlyHeader& header,
+    ply::Element     el)
 {
-	if (header.format() == ply::ASCII) {
-		for (uint i = 0; i < el.numberElements; ++i) {
-			io::internal::nextNonEmptyTokenizedLine(file);
-		}
-	}
-	else {
-		for (uint i = 0; i < el.numberElements; ++i) {
-			for (const Property& p : el.properties) {
-				if (p.list) {
-					uint s =
-						io::internal::readProperty<int>(file, p.listSizeType);
-					for (uint i = 0; i < s; ++i)
-						io::internal::readProperty<int>(file, p.type);
-				}
-				else {
-					io::internal::readProperty<int>(file, p.type);
-				}
-			}
-		}
-	}
+    if (header.format() == ply::ASCII) {
+        for (uint i = 0; i < el.numberElements; ++i) {
+            io::internal::nextNonEmptyTokenizedLine(file);
+        }
+    }
+    else {
+        for (uint i = 0; i < el.numberElements; ++i) {
+            for (const Property& p : el.properties) {
+                if (p.list) {
+                    uint s =
+                        io::internal::readProperty<int>(file, p.listSizeType);
+                    for (uint i = 0; i < s; ++i)
+                        io::internal::readProperty<int>(file, p.type);
+                }
+                else {
+                    io::internal::readProperty<int>(file, p.type);
+                }
+            }
+        }
+    }
 }
 
 } // namespace vcl::ply

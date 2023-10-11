@@ -45,66 +45,66 @@ namespace vcl {
  */
 class Image
 {
-	vcl::Array2<uint32_t> img;
+    vcl::Array2<uint32_t> img;
 
 public:
-	Image() {}
+    Image() {}
 
-	Image(const std::string& filename) { load(filename); }
+    Image(const std::string& filename) { load(filename); }
 
-	bool isNull() const { return img.empty(); }
+    bool isNull() const { return img.empty(); }
 
-	int height() const { return img.rows(); }
+    int height() const { return img.rows(); }
 
-	int width() const { return img.cols(); }
+    int width() const { return img.cols(); }
 
-	std::size_t sizeInBytes() const { return img.rows() * img.cols() * 4; }
+    std::size_t sizeInBytes() const { return img.rows() * img.cols() * 4; }
 
-	vcl::Color pixel(uint i, uint j) const
-	{
-		return vcl::Color((vcl::Color::ColorRGBA)img(i,j));
-	}
+    vcl::Color pixel(uint i, uint j) const
+    {
+        return vcl::Color((vcl::Color::ColorRGBA)img(i,j));
+    }
 
-	const unsigned char* data() const
-	{
-		return reinterpret_cast<const unsigned char*>(img.data());
-	}
+    const unsigned char* data() const
+    {
+        return reinterpret_cast<const unsigned char*>(img.data());
+    }
 
-	bool load(const std::string& filename)
-	{
-		int w, h;
-		// we first load the data, then we copy it into our array2d, and then we
-		// free it.
-		unsigned char* tmp =
-			stbi_load(filename.c_str(), &w, &h, nullptr, 4); // force 4 channels
-		if (tmp) {
-			std::size_t size = w * h * 4;
+    bool load(const std::string& filename)
+    {
+        int w, h;
+        // we first load the data, then we copy it into our array2d, and then we
+        // free it.
+        unsigned char* tmp =
+            stbi_load(filename.c_str(), &w, &h, nullptr, 4); // force 4 channels
+        if (tmp) {
+            std::size_t size = w * h * 4;
 
-			img.resize(w, h);
-			std::copy(tmp, tmp + size, (unsigned char*)img.data());
-			stbi_image_free(tmp);
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+            img.resize(w, h);
+            std::copy(tmp, tmp + size, (unsigned char*)img.data());
+            stbi_image_free(tmp);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
-	void mirror(bool horizontal = false, bool vertical = true)
-	{
-		if (horizontal) {
-			for (uint i = 0; i < img.rows(); i++) {
-				std::reverse(img.data(i), img.data(i) + img.cols());
-			}
-		}
-		if (vertical) {
-			for (uint i = 0; i < img.rows() / 2; i++) {
-				uint mir = img.rows() - i - 1;
-				std::swap_ranges(
-					img.data(i), img.data(i) + img.cols(), img.data(mir));
-			}
-		}
-	}
+    void mirror(bool horizontal = false, bool vertical = true)
+    {
+        if (horizontal) {
+            for (uint i = 0; i < img.rows(); i++) {
+                std::reverse(img.data(i), img.data(i) + img.cols());
+            }
+        }
+        if (vertical) {
+            for (uint i = 0; i < img.rows() / 2; i++) {
+                uint mir = img.rows() - i - 1;
+                std::swap_ranges(
+                    img.data(i), img.data(i) + img.cols(), img.data(mir));
+            }
+        }
+    }
 };
 
 } // namespace vcl

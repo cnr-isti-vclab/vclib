@@ -46,9 +46,9 @@ namespace vcl {
 template<uint ELEM_ID, MeshConcept MeshType>
 bool isElementContainerCompact(const MeshType& m)
 {
-	return (
-		m.template number<ELEM_ID>() ==
-		m.template containerSize<ELEM_ID>());
+    return (
+        m.template number<ELEM_ID>() ==
+        m.template containerSize<ELEM_ID>());
 }
 
 /**
@@ -83,19 +83,19 @@ bool isElementContainerCompact(const MeshType& m)
 template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
 bool isPerElementComponentAvailable(const MeshType& m)
 {
-	if constexpr (mesh::HasElementContainer<MeshType, ELEM_ID>) {
-		using Container = mesh::ContainerOfElementType<ELEM_ID, MeshType>;
-		using Element   = Container::ElementType;
-		if constexpr (comp::HasOptionalComponentOfType<Element, COMP_ID>) {
-			return m.template isPerElementComponentEnabled<ELEM_ID, COMP_ID>();
-		}
-		else {
-			return comp::HasComponentOfType<Element, COMP_ID>;
-		}
-	}
-	else {
-		return false;
-	}
+    if constexpr (mesh::HasElementContainer<MeshType, ELEM_ID>) {
+        using Container = mesh::ContainerOfElementType<ELEM_ID, MeshType>;
+        using Element   = Container::ElementType;
+        if constexpr (comp::HasOptionalComponentOfType<Element, COMP_ID>) {
+            return m.template isPerElementComponentEnabled<ELEM_ID, COMP_ID>();
+        }
+        else {
+            return comp::HasComponentOfType<Element, COMP_ID>;
+        }
+    }
+    else {
+        return false;
+    }
 }
 
 /**
@@ -121,20 +121,20 @@ bool isPerElementComponentAvailable(const MeshType& m)
 template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
 bool enableIfPerElementComponentOptional(MeshType& m)
 {
-	if constexpr (mesh::HasElementContainer<MeshType, ELEM_ID>) {
-		using Container = mesh::ContainerOfElementType<ELEM_ID, MeshType>;
-		using Element   = Container::ElementType;
-		if constexpr (comp::HasOptionalComponentOfType<Element, COMP_ID>) {
-			m.template enablePerElementComponent<ELEM_ID, COMP_ID>();
-			return true;
-		}
-		else {
-			return comp::HasComponentOfType<Element, COMP_ID>;
-		}
-	}
-	else {
-		return false;
-	}
+    if constexpr (mesh::HasElementContainer<MeshType, ELEM_ID>) {
+        using Container = mesh::ContainerOfElementType<ELEM_ID, MeshType>;
+        using Element   = Container::ElementType;
+        if constexpr (comp::HasOptionalComponentOfType<Element, COMP_ID>) {
+            m.template enablePerElementComponent<ELEM_ID, COMP_ID>();
+            return true;
+        }
+        else {
+            return comp::HasComponentOfType<Element, COMP_ID>;
+        }
+    }
+    else {
+        return false;
+    }
 }
 
 /**
@@ -159,10 +159,10 @@ bool enableIfPerElementComponentOptional(MeshType& m)
 template<uint ELEM_ID, MeshConcept MeshType>
 void requireElementContainerCompactness(const MeshType& m)
 {
-	if (!isElementContainerCompact<ELEM_ID>(m))
-		throw vcl::MissingCompactnessException(
-			std::string(elementEnumString<ELEM_ID>()) +
-			" Container of the Mesh is not compact.");
+    if (!isElementContainerCompact<ELEM_ID>(m))
+        throw vcl::MissingCompactnessException(
+            std::string(elementEnumString<ELEM_ID>()) +
+            " Container of the Mesh is not compact.");
 }
 
 /**
@@ -195,12 +195,12 @@ void requireElementContainerCompactness(const MeshType& m)
 template<uint ELEM_ID, uint COMP_ID, MeshConcept MeshType>
 void requirePerElementComponent(const MeshType& m)
 {
-	if (!isPerElementComponentAvailable<ELEM_ID, COMP_ID>(m)) {
-		throw vcl::MissingComponentException(
-			"Per " + std::string(elementEnumString<ELEM_ID>()) + " " +
-			std::string(componentEnumString<COMP_ID>()) +
-			" Component is not enabled.");
-	}
+    if (!isPerElementComponentAvailable<ELEM_ID, COMP_ID>(m)) {
+        throw vcl::MissingComponentException(
+            "Per " + std::string(elementEnumString<ELEM_ID>()) + " " +
+            std::string(componentEnumString<COMP_ID>()) +
+            " Component is not enabled.");
+    }
 }
 
 } // namespace vcl

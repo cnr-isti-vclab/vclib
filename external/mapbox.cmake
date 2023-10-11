@@ -12,11 +12,11 @@
 set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
 
 if (VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT AND EXISTS ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox/earcut.hpp)
-	message(STATUS "- Mapbox-Eaurcut - using bundled source")
+    message(STATUS "- Mapbox-Eaurcut - using bundled source")
 else()
-	message(
-		FATAL_ERROR
-		"MapBox earcut is required - VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT must be enabled and found.")
+    message(
+        FATAL_ERROR
+        "MapBox earcut is required - VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT must be enabled and found.")
 endif()
 
 set(MAPBOX_EARCUT_INCLUDE_DIRS ${VCLIB_MAPBOX_EARCUT_DIR}/include)

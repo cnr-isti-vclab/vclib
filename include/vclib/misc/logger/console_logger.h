@@ -32,41 +32,41 @@ namespace vcl {
 
 class ConsoleLogger : public Logger<std::ostream>
 {
-	std::ostream& errStream   = std::cerr;
-	std::ostream& warnStream  = std::cout;
-	std::ostream& progStream  = std::cout;
-	std::ostream& debugStream = std::cerr;
+    std::ostream& errStream   = std::cerr;
+    std::ostream& warnStream  = std::cout;
+    std::ostream& progStream  = std::cout;
+    std::ostream& debugStream = std::cerr;
 
 public:
-	ConsoleLogger() = default;
+    ConsoleLogger() = default;
 
-	ConsoleLogger(
-		std::ostream& errStream,
-		std::ostream& warnStream,
-		std::ostream& progStream,
-		std::ostream& debugStream) :
-			errStream(errStream),
-			warnStream(warnStream),
-			progStream(progStream),
-			debugStream(debugStream)
-	{
-	}
+    ConsoleLogger(
+        std::ostream& errStream,
+        std::ostream& warnStream,
+        std::ostream& progStream,
+        std::ostream& debugStream) :
+            errStream(errStream),
+            warnStream(warnStream),
+            progStream(progStream),
+            debugStream(debugStream)
+    {
+    }
 
 protected:
-	std::ostream* levelStream(LogLevel lvl)
-	{
-		switch (lvl) {
-		case ERROR:
-			return &errStream;
-		case WARNING:
-			return &warnStream;
-		case PROGRESS:
-			return &progStream;
-		case DEBUG:
-			return &debugStream;
-		}
-		return nullptr;
-	}
+    std::ostream* levelStream(LogLevel lvl)
+    {
+        switch (lvl) {
+        case ERROR:
+            return &errStream;
+        case WARNING:
+            return &warnStream;
+        case PROGRESS:
+            return &progStream;
+        case DEBUG:
+            return &debugStream;
+        }
+        return nullptr;
+    }
 };
 
 } // namespace vcl

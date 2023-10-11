@@ -43,17 +43,17 @@ namespace vcl::str {
 std::string::const_iterator
 findCaseInsensitive(const std::string& input, const std::string& substr)
 {
-	// link: https://stackoverflow.com/a/19839371/5851101
+    // link: https://stackoverflow.com/a/19839371/5851101
 
-	std::string::const_iterator it = std::search(
-		input.begin(),
-		input.end(),
-		substr.begin(),
-		substr.end(),
-		[](char ch1, char ch2) {
-			return std::toupper(ch1) == std::toupper(ch2);
-		});
-	return it;
+    std::string::const_iterator it = std::search(
+        input.begin(),
+        input.end(),
+        substr.begin(),
+        substr.end(),
+        [](char ch1, char ch2) {
+            return std::toupper(ch1) == std::toupper(ch2);
+        });
+    return it;
 }
 
 /**
@@ -65,31 +65,31 @@ findCaseInsensitive(const std::string& input, const std::string& substr)
  */
 bool containsCaseInsensitive(const std::string& input, const std::string& substr)
 {
-	return findCaseInsensitive(input, substr) != input.end();
+    return findCaseInsensitive(input, substr) != input.end();
 }
 
 inline std::string toLower(const std::string& s)
 {
-	std::string ret(s);
-	std::transform(s.begin(), s.end(), ret.begin(), [](unsigned char c) {
-		return std::tolower(c);
-	});
-	return ret;
+    std::string ret(s);
+    std::transform(s.begin(), s.end(), ret.begin(), [](unsigned char c) {
+        return std::tolower(c);
+    });
+    return ret;
 }
 
 inline std::string toUpper(const std::string& s)
 {
-	std::string ret(s);
-	std::transform(s.begin(), s.end(), ret.begin(), [](unsigned char c) {
-		return std::toupper(c);
-	});
-	return ret;
+    std::string ret(s);
+    std::transform(s.begin(), s.end(), ret.begin(), [](unsigned char c) {
+        return std::toupper(c);
+    });
+    return ret;
 }
 
 inline void removeWindowsNewLine(std::string& s)
 {
-	if (s.size() > 0 && s[s.size()-1] == '\r')
-		s = s.substr(0, s.size()-1);
+    if (s.size() > 0 && s[s.size()-1] == '\r')
+        s = s.substr(0, s.size()-1);
 }
 
 } // namespace vcl::str

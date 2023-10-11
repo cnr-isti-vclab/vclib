@@ -32,46 +32,46 @@ namespace internal {
 
 struct NotNullView
 {
-	constexpr NotNullView() = default;
+    constexpr NotNullView() = default;
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, NotNullView)
-	{
-		return std::views::filter(r, [](auto* p) { return p != nullptr; });
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, NotNullView)
+    {
+        return std::views::filter(r, [](auto* p) { return p != nullptr; });
+    }
 };
 
 struct DereferenceView
 {
-	constexpr DereferenceView() = default;
+    constexpr DereferenceView() = default;
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, DereferenceView)
-	{
-		return std::views::transform(r, [](auto p) { return *p; });
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, DereferenceView)
+    {
+        return std::views::transform(r, [](auto p) { return *p; });
+    }
 };
 
 struct AddressOfView
 {
-	constexpr AddressOfView() = default;
+    constexpr AddressOfView() = default;
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, AddressOfView)
-	{
-		return std::views::transform(r, [](auto& o) { return &o; });
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, AddressOfView)
+    {
+        return std::views::transform(r, [](auto& o) { return &o; });
+    }
 };
 
 struct ConstAddressOfView
 {
-	constexpr ConstAddressOfView() = default;
+    constexpr ConstAddressOfView() = default;
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, ConstAddressOfView)
-	{
-		return std::views::transform(r, [](const auto& o) { return &o; });
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, ConstAddressOfView)
+    {
+        return std::views::transform(r, [](const auto& o) { return &o; });
+    }
 };
 
 } // namespace vcl::views::internal

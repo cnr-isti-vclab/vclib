@@ -64,21 +64,21 @@ struct IsAMesh<Mesh<Args...>> : std::true_type
  */
 template<typename T>
 concept MeshConcept =
-	(mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
-	mesh::HasVertexContainer<T> &&
-	requires(
-		T o,
-		const T& co,
-		typename T::VertexType v)
+    (mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
+    mesh::HasVertexContainer<T> &&
+    requires(
+        T o,
+        const T& co,
+        typename T::VertexType v)
 {
-	{ co.index(v) } -> std::same_as<uint>;
-	{ co.index(&v) } -> std::same_as<uint>;
-	{ o.clear() } -> std::same_as<void>;
-	{ co.isCompact() } -> std::same_as<bool>;
-	{ o.compact() } -> std::same_as<void>;
-	{ o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
-	{ o.importFrom(T()) } -> std::same_as<void>;
-	{ o.swap(o) } -> std::same_as<void>;
+    { co.index(v) } -> std::same_as<uint>;
+    { co.index(&v) } -> std::same_as<uint>;
+    { o.clear() } -> std::same_as<void>;
+    { co.isCompact() } -> std::same_as<bool>;
+    { o.compact() } -> std::same_as<void>;
+    { o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
+    { o.importFrom(T()) } -> std::same_as<void>;
+    { o.swap(o) } -> std::same_as<void>;
 };
 
 /**
@@ -89,7 +89,7 @@ concept MeshConcept =
  */
 template<typename T>
 concept ElementOrMeshConcept =
-	MeshConcept<T> || ElementConcept<T>;
+    MeshConcept<T> || ElementConcept<T>;
 
 } // namespace vcl
 

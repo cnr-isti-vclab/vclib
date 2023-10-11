@@ -12,12 +12,12 @@
 project(vclib-mesh-new-user-component)
 
 set(HEADERS
-	bar_component.h
-	foo_component.h
-	foo_mesh.h)
+    bar_component.h
+    foo_component.h
+    foo_mesh.h)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-new-user-component ${HEADERS} ${SOURCES})
 

@@ -36,22 +36,22 @@ class ViewerMainWindow;
 
 class ViewerMainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit ViewerMainWindow(QWidget *parent = nullptr);
-	~ViewerMainWindow();
+    explicit ViewerMainWindow(QWidget *parent = nullptr);
+    ~ViewerMainWindow();
 
-	void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
+    void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
 
 public slots:
-	void visibilityDrawableObjectChanged();
-	void selectedDrawableObjectChanged(uint i);
-	void renderSettingsUpdated();
+    void visibilityDrawableObjectChanged();
+    void selectedDrawableObjectChanged(uint i);
+    void renderSettingsUpdated();
 
 private:
-	Ui::ViewerMainWindow *ui;
-	std::shared_ptr<vcl::DrawableObjectVector> drawVector;
+    Ui::ViewerMainWindow *ui;
+    std::shared_ptr<vcl::DrawableObjectVector> drawVector;
 };
 
 } // namespace vcl

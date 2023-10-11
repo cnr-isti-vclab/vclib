@@ -36,9 +36,9 @@ namespace internal {
 template<vcl::Range Rng>
 void clearSelection(Rng&& r)
 {
-	for (auto& e : r) {
-		e.selected() = false;
-	}
+    for (auto& e : r) {
+        e.selected() = false;
+    }
 }
 
 } // namespace vcl::internal
@@ -46,37 +46,37 @@ void clearSelection(Rng&& r)
 template<MeshConcept MeshType>
 void clearVertexSelection(MeshType& m)
 {
-	internal::clearSelection(m.vertices());
+    internal::clearSelection(m.vertices());
 }
 
 template<FaceMeshConcept MeshType>
 void clearFaceSelection(MeshType& m)
 {
-	internal::clearSelection(m.faces());
+    internal::clearSelection(m.faces());
 }
 
 template<EdgeMeshConcept MeshType>
 void clearEdgeSelection(MeshType& m)
 {
-	internal::clearSelection(m.edges());
+    internal::clearSelection(m.edges());
 }
 
 template<FaceMeshConcept MeshType>
 void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
 {
-	std::vector<bool> nonManifoldVertices =
-		internal::nonManifoldVerticesVectorBool(m);
+    std::vector<bool> nonManifoldVertices =
+        internal::nonManifoldVerticesVectorBool(m);
 
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	for (VertexType& v : m.vertices()) {
-		if (nonManifoldVertices[m.index(v)]) {
-			v.selected() = true;
-		}
-		else if (clearSelectionFirst) {
-			v.selected() = false;
-		}
-	}
+    for (VertexType& v : m.vertices()) {
+        if (nonManifoldVertices[m.index(v)]) {
+            v.selected() = true;
+        }
+        else if (clearSelectionFirst) {
+            v.selected() = false;
+        }
+    }
 }
 
 } // namespace vcl

@@ -33,31 +33,31 @@ namespace internal {
 template<FaceMeshConcept MeshType>
 void fillHexahedronTriangles(MeshType& m)
 {
-	m.reserveFaces(12);
-	m.addFace(0, 2, 1);
-	m.addFace(3, 1, 2);
-	m.addFace(0, 4, 2);
-	m.addFace(6, 2, 4);
-	m.addFace(0, 1, 4);
-	m.addFace(5, 4, 1);
-	m.addFace(7, 6, 5);
-	m.addFace(4, 5, 6);
-	m.addFace(7, 3, 6);
-	m.addFace(2, 6, 3);
-	m.addFace(7, 5, 3);
-	m.addFace(1, 3, 5);
+    m.reserveFaces(12);
+    m.addFace(0, 2, 1);
+    m.addFace(3, 1, 2);
+    m.addFace(0, 4, 2);
+    m.addFace(6, 2, 4);
+    m.addFace(0, 1, 4);
+    m.addFace(5, 4, 1);
+    m.addFace(7, 6, 5);
+    m.addFace(4, 5, 6);
+    m.addFace(7, 3, 6);
+    m.addFace(2, 6, 3);
+    m.addFace(7, 5, 3);
+    m.addFace(1, 3, 5);
 }
 
 template<FaceMeshConcept MeshType>
 void fillHexahedronQuads(MeshType& m)
 {
-	m.reserveFaces(6);
-	m.addFace(2, 3, 1, 0);
-	m.addFace(4, 6, 2, 0);
-	m.addFace(1, 5, 4, 0);
-	m.addFace(6, 4, 5, 7);
-	m.addFace(3, 2, 6, 7);
-	m.addFace(5, 1, 3, 7);
+    m.reserveFaces(6);
+    m.addFace(2, 3, 1, 0);
+    m.addFace(4, 6, 2, 0);
+    m.addFace(1, 5, 4, 0);
+    m.addFace(6, 4, 5, 7);
+    m.addFace(3, 2, 6, 7);
+    m.addFace(5, 1, 3, 7);
 }
 
 } // namespace internal
@@ -77,10 +77,10 @@ void fillHexahedronQuads(MeshType& m)
 template<FaceMeshConcept MeshType>
 MeshType createHexahedron()
 {
-	using CoordType = MeshType::Vertex::CoordType;
+    using CoordType = MeshType::Vertex::CoordType;
 
-	return createHexahedron<MeshType>(
-		CoordType(-1, -1, -1), CoordType(1, 1, 1));
+    return createHexahedron<MeshType>(
+        CoordType(-1, -1, -1), CoordType(1, 1, 1));
 }
 
 /**
@@ -98,27 +98,27 @@ MeshType createHexahedron()
 template<FaceMeshConcept MeshType, Point3Concept CoordType>
 MeshType createHexahedron(const CoordType& min, const CoordType& max)
 {
-	MeshType m;
+    MeshType m;
 
-	// fill vertices...
-	m.addVertices(
-		CoordType(min(0), min(1), min(2)),
-		CoordType(max(0), min(1), min(2)),
-		CoordType(min(0), max(1), min(2)),
-		CoordType(max(0), max(1), min(2)),
-		CoordType(min(0), min(1), max(2)),
-		CoordType(max(0), min(1), max(2)),
-		CoordType(min(0), max(1), max(2)),
-		CoordType(max(0), max(1), max(2)));
+    // fill vertices...
+    m.addVertices(
+        CoordType(min(0), min(1), min(2)),
+        CoordType(max(0), min(1), min(2)),
+        CoordType(min(0), max(1), min(2)),
+        CoordType(max(0), max(1), min(2)),
+        CoordType(min(0), min(1), max(2)),
+        CoordType(max(0), min(1), max(2)),
+        CoordType(min(0), max(1), max(2)),
+        CoordType(max(0), max(1), max(2)));
 
-	// fill faces
-	if constexpr (HasTriangles<MeshType>) {
-		internal::fillHexahedronTriangles(m);
-	}
-	else {
-		internal::fillHexahedronQuads(m);
-	}
-	return m;
+    // fill faces
+    if constexpr (HasTriangles<MeshType>) {
+        internal::fillHexahedronTriangles(m);
+    }
+    else {
+        internal::fillHexahedronQuads(m);
+    }
+    return m;
 }
 
 /**
@@ -136,7 +136,7 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
 template<FaceMeshConcept MeshType, Point3Concept CoordType>
 MeshType createCube(const CoordType& min, double edgeLength)
 {
-	return createHexahedron<MeshType>(min, CoordType(min + edgeLength));
+    return createHexahedron<MeshType>(min, CoordType(min + edgeLength));
 }
 
 } // namespace vcl

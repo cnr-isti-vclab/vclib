@@ -56,16 +56,16 @@ namespace vcl {
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexMatrix(const MeshType& mesh)
 {
-	Matrix V(mesh.vertexNumber(), 3);
+    Matrix V(mesh.vertexNumber(), 3);
 
-	uint i = 0;
-	for (const auto& v : mesh.vertices()) {
-		for (uint j = 0; j < 3; ++j) {
-			V(i, j) = v.coord()[j];
-		}
-		++i;
-	}
-	return V;
+    uint i = 0;
+    for (const auto& v : mesh.vertices()) {
+        for (uint j = 0; j < 3; ++j) {
+            V(i, j) = v.coord()[j];
+        }
+        ++i;
+    }
+    return V;
 }
 
 /**
@@ -102,32 +102,32 @@ Matrix vertexMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceMatrix(const MeshType& mesh)
 {
-	vcl::requireVertexContainerCompactness(mesh);
+    vcl::requireVertexContainerCompactness(mesh);
 
-	Matrix F(mesh.faceNumber(), 3);
+    Matrix F(mesh.faceNumber(), 3);
 
-	uint i = 0;
-	for (const auto& f : mesh.faces()){
-		// check if this face is greater than the cols of the matrix
-		if (f.vertexNumber() > F.cols()) { // need to resize
-			uint oldCols = F.cols(); // save old cols number
-			F.conservativeResize(F.rows(), f.vertexNumber());
-			// need to set to -1 all the previous rows that have been resized
-			for (uint k = 0; k < i; ++k){
-				for (uint j = oldCols; j < F.cols(); ++j)
-					F(k, j) = -1;
-			}
-		}
-		uint j = 0;
-		for (const auto* v : f.vertices()){
-			F(i, j) = mesh.index(v);
-			j++;
-		}
-		for (; j < F.cols(); ++j) // remaining vertices set to -1
-			F(i, j ) = -1;
-		++i; // go to next face/row
-	}
-	return F;
+    uint i = 0;
+    for (const auto& f : mesh.faces()){
+        // check if this face is greater than the cols of the matrix
+        if (f.vertexNumber() > F.cols()) { // need to resize
+            uint oldCols = F.cols(); // save old cols number
+            F.conservativeResize(F.rows(), f.vertexNumber());
+            // need to set to -1 all the previous rows that have been resized
+            for (uint k = 0; k < i; ++k){
+                for (uint j = oldCols; j < F.cols(); ++j)
+                    F(k, j) = -1;
+            }
+        }
+        uint j = 0;
+        for (const auto* v : f.vertices()){
+            F(i, j) = mesh.index(v);
+            j++;
+        }
+        for (; j < F.cols(); ++j) // remaining vertices set to -1
+            F(i, j ) = -1;
+        ++i; // go to next face/row
+    }
+    return F;
 }
 
 /**
@@ -163,16 +163,16 @@ Matrix faceMatrix(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceSizesVector(const MeshType& mesh)
 {
-	vcl::requireVertexContainerCompactness(mesh);
+    vcl::requireVertexContainerCompactness(mesh);
 
-	Vect F(mesh.faceNumber());
+    Vect F(mesh.faceNumber());
 
-	uint i = 0;
-	for (const auto& f : mesh.faces()){
-		F(i) = f.vertexNumber();
-		++i;
-	}
-	return F;
+    uint i = 0;
+    for (const auto& f : mesh.faces()){
+        F(i) = f.vertexNumber();
+        ++i;
+    }
+    return F;
 }
 
 /**
@@ -206,17 +206,17 @@ Vect faceSizesVector(const MeshType& mesh)
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix edgeMatrix(const MeshType &mesh)
 {
-	vcl::requireVertexContainerCompactness(mesh);
+    vcl::requireVertexContainerCompactness(mesh);
 
-	Matrix E(mesh.edgeNumber(), 2);
+    Matrix E(mesh.edgeNumber(), 2);
 
-	uint i = 0;
-	for (const auto& e : mesh.edges()){
-		E(i, 0) = mesh.index(e.vertex(0));
-		E(i, 1) = mesh.index(e.vertex(1));
-		++i; // go to next edge/row
-	}
-	return E;
+    uint i = 0;
+    for (const auto& e : mesh.edges()){
+        E(i, 0) = mesh.index(e.vertex(0));
+        E(i, 1) = mesh.index(e.vertex(1));
+        ++i; // go to next edge/row
+    }
+    return E;
 }
 
 /**
@@ -249,12 +249,12 @@ Matrix edgeMatrix(const MeshType &mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementSelectionVector(const MeshType& mesh)
 {
-	Vect S(mesh.template number<ELEM_ID>());
+    Vect S(mesh.template number<ELEM_ID>());
 
-	uint i = 0;
-	for (const auto& e : mesh.template elements<ELEM_ID>())
-		S[i] = e.selected();
-	return S;
+    uint i = 0;
+    for (const auto& e : mesh.template elements<ELEM_ID>())
+        S[i] = e.selected();
+    return S;
 }
 
 /**
@@ -285,7 +285,7 @@ Vect elementSelectionVector(const MeshType& mesh)
 template<typename Vect, MeshConcept MeshType>
 Vect vertexSelectionVector(const MeshType& mesh)
 {
-	return elementSelectionVector<VERTEX, Vect>(mesh);
+    return elementSelectionVector<VERTEX, Vect>(mesh);
 }
 
 /**
@@ -317,7 +317,7 @@ Vect vertexSelectionVector(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceSelectionVector(const MeshType& mesh)
 {
-	return elementSelectionVector<FACE, Vect>(mesh);
+    return elementSelectionVector<FACE, Vect>(mesh);
 }
 
 /**
@@ -350,18 +350,18 @@ Vect faceSelectionVector(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh)
 {
-	requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
-	Matrix EN(mesh.template number<ELEM_ID>(), 3);
+    Matrix EN(mesh.template number<ELEM_ID>(), 3);
 
-	uint i = 0;
-	for (const auto& e : mesh.template elements<ELEM_ID>()) {
-		for (uint j = 0; j < 3; ++j) {
-			EN(i, j) = e.normal()[j];
-		}
-		++i;
-	}
-	return EN;
+    uint i = 0;
+    for (const auto& e : mesh.template elements<ELEM_ID>()) {
+        for (uint j = 0; j < 3; ++j) {
+            EN(i, j) = e.normal()[j];
+        }
+        ++i;
+    }
+    return EN;
 }
 
 /**
@@ -391,7 +391,7 @@ Matrix elementNormalsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexNormalsMatrix(const MeshType& mesh)
 {
-	return elementNormalsMatrix<VERTEX, Matrix>(mesh);
+    return elementNormalsMatrix<VERTEX, Matrix>(mesh);
 }
 
 /**
@@ -421,7 +421,7 @@ Matrix vertexNormalsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceNormalsMatrix(const MeshType& mesh)
 {
-	return elementNormalsMatrix<FACE, Matrix>(mesh);
+    return elementNormalsMatrix<FACE, Matrix>(mesh);
 }
 
 /**
@@ -454,18 +454,18 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh)
 {
-	requirePerElementComponent<ELEM_ID, COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, COLOR>(mesh);
 
-	Matrix EC(mesh.template number<ELEM_ID>(), 4);
+    Matrix EC(mesh.template number<ELEM_ID>(), 4);
 
-	uint i = 0;
-	for (const auto& e : mesh.template elements<ELEM_ID>()) {
-		for (uint j = 0; j < 4; ++j) {
-			EC(i, j) = e.color()[j];
-		}
-		++i;
-	}
-	return EC;
+    uint i = 0;
+    for (const auto& e : mesh.template elements<ELEM_ID>()) {
+        for (uint j = 0; j < 4; ++j) {
+            EC(i, j) = e.color()[j];
+        }
+        ++i;
+    }
+    return EC;
 }
 
 /**
@@ -495,7 +495,7 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexColorsMatrix(const MeshType& mesh)
 {
-	return elementColorsMatrix<VERTEX, Matrix>(mesh);
+    return elementColorsMatrix<VERTEX, Matrix>(mesh);
 }
 
 /**
@@ -525,7 +525,7 @@ Matrix vertexColorsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceColorsMatrix(const MeshType& mesh)
 {
-	return elementColorsMatrix<FACE, Matrix>(mesh);
+    return elementColorsMatrix<FACE, Matrix>(mesh);
 }
 
 /**
@@ -559,17 +559,17 @@ Matrix faceColorsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
 {
-	requirePerElementComponent<ELEM_ID, QUALITY>(mesh);
+    requirePerElementComponent<ELEM_ID, QUALITY>(mesh);
 
-	Vect EQ(mesh.template number<ELEM_ID>(), 3);
+    Vect EQ(mesh.template number<ELEM_ID>(), 3);
 
-	uint i = 0;
-	for (const auto& e : mesh.template elements<ELEM_ID>()) {
-		EQ[i] = e.quality();
-		++i;
-	}
+    uint i = 0;
+    for (const auto& e : mesh.template elements<ELEM_ID>()) {
+        EQ[i] = e.quality();
+        ++i;
+    }
 
-	return EQ;
+    return EQ;
 }
 
 /**
@@ -600,7 +600,7 @@ Vect elementQualityVector(const MeshType& mesh)
 template<typename Vect, MeshConcept MeshType>
 Vect vertexQualityVector(const MeshType& mesh)
 {
-	return elementQualityVector<VERTEX, Vect>(mesh);
+    return elementQualityVector<VERTEX, Vect>(mesh);
 }
 
 /**
@@ -631,7 +631,7 @@ Vect vertexQualityVector(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceQualityVector(const MeshType& mesh)
 {
-	return elementQualityVector<FACE, Vect>(mesh);
+    return elementQualityVector<FACE, Vect>(mesh);
 }
 
 } // namespace vcl

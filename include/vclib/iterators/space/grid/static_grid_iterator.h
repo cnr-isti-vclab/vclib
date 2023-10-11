@@ -32,115 +32,115 @@ namespace vcl {
 template<typename KeyType, typename ValueType, typename GridType>
 class StaticGridIterator
 {
-	using VecIt = std::vector<std::pair<uint, ValueType>>::iterator;
+    using VecIt = std::vector<std::pair<uint, ValueType>>::iterator;
 
-	VecIt vecIt;
-	const GridType* g = nullptr;
+    VecIt vecIt;
+    const GridType* g = nullptr;
 
 public:
-	using T = SecondRefPair<KeyType, ValueType>;
-	using value_type = T;
+    using T = SecondRefPair<KeyType, ValueType>;
+    using value_type = T;
 
-	class ArrowHelper
-	{
-		T value;
+    class ArrowHelper
+    {
+        T value;
 
-	public:
-		ArrowHelper(T value) : value(value) {}
-		const T* operator->() const { return &value; }
-	};
+    public:
+        ArrowHelper(T value) : value(value) {}
+        const T* operator->() const { return &value; }
+    };
 
-	StaticGridIterator() = default;
+    StaticGridIterator() = default;
 
-	StaticGridIterator(VecIt it, const GridType& g) : vecIt(it), g(&g) {}
+    StaticGridIterator(VecIt it, const GridType& g) : vecIt(it), g(&g) {}
 
-	value_type operator*() const
-	{
-		KeyType cell = g->cellOfIndex(vecIt->first);
-		return value_type(cell, vecIt->second);
-	}
+    value_type operator*() const
+    {
+        KeyType cell = g->cellOfIndex(vecIt->first);
+        return value_type(cell, vecIt->second);
+    }
 
-	ArrowHelper operator->() const { return **this; }
+    ArrowHelper operator->() const { return **this; }
 
-	bool operator==(const StaticGridIterator& oi) const
-	{
-		return vecIt == oi.vecIt;
-	}
+    bool operator==(const StaticGridIterator& oi) const
+    {
+        return vecIt == oi.vecIt;
+    }
 
-	bool operator!=(const StaticGridIterator& oi) const
-	{
-		return vecIt != oi.vecIt;
-	}
+    bool operator!=(const StaticGridIterator& oi) const
+    {
+        return vecIt != oi.vecIt;
+    }
 
-	StaticGridIterator operator++()
-	{
-		++vecIt;
-		return *this;
-	}
+    StaticGridIterator operator++()
+    {
+        ++vecIt;
+        return *this;
+    }
 
-	StaticGridIterator operator++(int)
-	{
-		StaticGridIterator old = *this;
-		++vecIt;
-		return old;
-	}
+    StaticGridIterator operator++(int)
+    {
+        StaticGridIterator old = *this;
+        ++vecIt;
+        return old;
+    }
 };
 
 template<typename KeyType, typename ValueType, typename GridType>
 class ConstStaticGridIterator
 {
-	using VecIt = std::vector<std::pair<uint, ValueType>>::const_iterator;
+    using VecIt = std::vector<std::pair<uint, ValueType>>::const_iterator;
 
-	VecIt vecIt;
-	const GridType* g = nullptr;
+    VecIt vecIt;
+    const GridType* g = nullptr;
 
 public:
-	using T = SecondRefPair<KeyType, const ValueType>;
-	using value_type = T;
+    using T = SecondRefPair<KeyType, const ValueType>;
+    using value_type = T;
 
-	class ArrowHelper
-	{
-		T value;
+    class ArrowHelper
+    {
+        T value;
 
-	public:
-		ArrowHelper(T value) : value(value) {}
-		const T* operator->() const { return &value; }
-	};
+    public:
+        ArrowHelper(T value) : value(value) {}
+        const T* operator->() const { return &value; }
+    };
 
-	ConstStaticGridIterator() = default;
+    ConstStaticGridIterator() = default;
 
-	ConstStaticGridIterator(VecIt it, const GridType& g) : vecIt(it), g(&g) {}
+    ConstStaticGridIterator(VecIt it, const GridType& g) : vecIt(it), g(&g) {}
 
-	value_type  operator*() const
-	{
-		KeyType cell = g->cellOfIndex(vecIt->first);
-		return value_type(cell, vecIt->second);
-	}
+    value_type  operator*() const
+    {
+        KeyType cell = g->cellOfIndex(vecIt->first);
+        return value_type(cell, vecIt->second);
+    }
 
-	ArrowHelper operator->() const { return **this; }
+    ArrowHelper operator->() const { return **this; }
 
-	bool operator==(const ConstStaticGridIterator& oi) const
-	{
-		return vecIt == oi.vecIt;
-	}
+    bool operator==(const ConstStaticGridIterator& oi) const
+    {
+        return vecIt == oi.vecIt;
+    }
 
-	bool operator!=(const ConstStaticGridIterator& oi) const
-	{
-		return vecIt != oi.vecIt;
-	}
+    bool operator!=(const ConstStaticGridIterator& oi) const
+    {
+        return vecIt != oi.vecIt;
+    }
 
-	ConstStaticGridIterator operator++()
-	{
-		++vecIt;
-		return *this;
-	}
+    ConstStaticGridIterator operator++()
+    {
+        ++vecIt;
+        return *this;
+    }
 
-	ConstStaticGridIterator operator++(int)
-	{
-		ConstStaticGridIterator old = *this;
-		++vecIt;
-		return old;
-	}
+    ConstStaticGridIterator operator++(int)
+    {
+        ConstStaticGridIterator old = *this;
+        ++vecIt;
+        return old;
+    }
 };
 
 } // namespace vcl

@@ -55,56 +55,56 @@ namespace vcl {
 template<typename T>
 concept PointConcept = requires(T o, const T& co)
 {
-	typename T::ScalarType;
-	o.DIM;
-	o.isDegenerate();
-	{ co.dot(co) } -> std::same_as<typename T::ScalarType>;
-	{ co.angle(co) } -> std::same_as<typename T::ScalarType>;
-	{ co.dist(co) } -> std::same_as<typename T::ScalarType>;
-	{ co.squaredDist(co) } -> std::same_as<typename T::ScalarType>;
-	{ co.norm() } -> std::same_as<typename T::ScalarType>;
-	{ co.squaredNorm() } -> std::same_as<typename T::ScalarType>;
-	{ co.size() } -> std::same_as<uint>;
-	o.setConstant(typename T::ScalarType());
-	o.setZero();
-	o.setOnes();
-	o.normalize();
-	{ co.hash() } -> std::same_as<std::size_t>;
+    typename T::ScalarType;
+    o.DIM;
+    o.isDegenerate();
+    { co.dot(co) } -> std::same_as<typename T::ScalarType>;
+    { co.angle(co) } -> std::same_as<typename T::ScalarType>;
+    { co.dist(co) } -> std::same_as<typename T::ScalarType>;
+    { co.squaredDist(co) } -> std::same_as<typename T::ScalarType>;
+    { co.norm() } -> std::same_as<typename T::ScalarType>;
+    { co.squaredNorm() } -> std::same_as<typename T::ScalarType>;
+    { co.size() } -> std::same_as<uint>;
+    o.setConstant(typename T::ScalarType());
+    o.setZero();
+    o.setOnes();
+    o.normalize();
+    { co.hash() } -> std::same_as<std::size_t>;
 
-	o(uint());
-	co(uint());
-	o[uint()];
-	co[uint()];
+    o(uint());
+    co(uint());
+    o[uint()];
+    co[uint()];
 
-	o = co;
+    o = co;
 
-	{ co == co } -> std::same_as<bool>;
-	co <=> co;
+    { co == co } -> std::same_as<bool>;
+    co <=> co;
 
-	{ co * co } -> std::same_as<typename T::ScalarType>;
+    { co * co } -> std::same_as<typename T::ScalarType>;
 
-	o += typename T::ScalarType();
-	o += co;
+    o += typename T::ScalarType();
+    o += co;
 
-	o -= typename T::ScalarType();
-	o -= co;
+    o -= typename T::ScalarType();
+    o -= co;
 
-	o *= typename T::ScalarType();
-	o /= typename T::ScalarType();
+    o *= typename T::ScalarType();
+    o /= typename T::ScalarType();
 
-	// waiting for apple to support std::convertible_to<> and other concept features...
+    // waiting for apple to support std::convertible_to<> and other concept features...
 #ifndef __APPLE__
-	{ co.normalized() } -> std::convertible_to<T>;
-	{ co + typename T::ScalarType() } -> std::convertible_to<T>;
-	{ co + co } -> std::convertible_to<T>;
+    { co.normalized() } -> std::convertible_to<T>;
+    { co + typename T::ScalarType() } -> std::convertible_to<T>;
+    { co + co } -> std::convertible_to<T>;
 
-	{ -co } -> std::convertible_to<T>;
-	{ co - typename T::ScalarType() } -> std::convertible_to<T>;
-	{ co - co } -> std::convertible_to<T>;
+    { -co } -> std::convertible_to<T>;
+    { co - typename T::ScalarType() } -> std::convertible_to<T>;
+    { co - co } -> std::convertible_to<T>;
 
-	{ co * typename T::ScalarType() } -> std::convertible_to<T>;
+    { co * typename T::ScalarType() } -> std::convertible_to<T>;
 
-	{ co / typename T::ScalarType() } -> std::convertible_to<T>;
+    { co / typename T::ScalarType() } -> std::convertible_to<T>;
 #endif
 };
 

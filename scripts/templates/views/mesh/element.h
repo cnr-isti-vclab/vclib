@@ -13,13 +13,13 @@ concept Clean%EL_UC%MeshConcept = %EL_UC%MeshConcept<std::remove_cvref_t<T>>;
 
 struct %EL_UC%sView
 {
-	constexpr %EL_UC%sView() = default;
+    constexpr %EL_UC%sView() = default;
 
-	template <Clean%EL_UC%MeshConcept R>
-	friend constexpr auto operator|(R&& r, %EL_UC%sView)
-	{
-		return r.%EL_C%s();
-	}
+    template <Clean%EL_UC%MeshConcept R>
+    friend constexpr auto operator|(R&& r, %EL_UC%sView)
+    {
+        return r.%EL_C%s();
+    }
 };
 
 } // namespace vcl::views::internal

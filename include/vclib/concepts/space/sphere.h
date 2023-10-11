@@ -59,28 +59,28 @@ class Box;
  */
 template<typename T>
 concept SphereConcept = requires(
-	T o,
-	const T& co,
-	const typename T::PointType& p,
-	const Box<typename T::PointType>& b)
+    T o,
+    const T& co,
+    const typename T::PointType& p,
+    const Box<typename T::PointType>& b)
 {
-	typename T::ScalarType;
-	typename T::PointType;
+    typename T::ScalarType;
+    typename T::PointType;
 
-	T::PointType::DIM == 3;
+    T::PointType::DIM == 3;
 
-	{ o.center() } -> std::same_as<typename T::PointType&>;
-	{ co.center() } -> std::same_as<const typename T::PointType&>;
-	{ o.radius() } -> std::same_as<typename T::ScalarType&>;
-	{ co.radius() } -> std::same_as<const typename T::ScalarType&>;
+    { o.center() } -> std::same_as<typename T::PointType&>;
+    { co.center() } -> std::same_as<const typename T::PointType&>;
+    { o.radius() } -> std::same_as<typename T::ScalarType&>;
+    { co.radius() } -> std::same_as<const typename T::ScalarType&>;
 
-	{ co.diameter() } -> std::same_as<typename T::ScalarType>;
-	{ co.circumference() } -> std::same_as<typename T::ScalarType>;
-	{ co.surfaceArea() } -> std::same_as<typename T::ScalarType>;
-	{ co.volume() } -> std::same_as<typename T::ScalarType>;
+    { co.diameter() } -> std::same_as<typename T::ScalarType>;
+    { co.circumference() } -> std::same_as<typename T::ScalarType>;
+    { co.surfaceArea() } -> std::same_as<typename T::ScalarType>;
+    { co.volume() } -> std::same_as<typename T::ScalarType>;
 
-	{ co.isInside(p) } -> std::same_as<bool>;
-	{ co.intersects(b) } -> std::same_as<bool>;
+    { co.isInside(p) } -> std::same_as<bool>;
+    { co.intersects(b) } -> std::same_as<bool>;
 };
 
 } // namespace vcl

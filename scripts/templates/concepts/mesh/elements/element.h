@@ -24,18 +24,18 @@ namespace %EL_NS% {
 // checks if a type derives from vcl::%EL_UC%<Args...>
 template<typename Derived>
 using IsDerivedFrom%EL_UC% =
-		IsDerivedFromTemplateSpecialization<Derived, %EL_UC%>;
+        IsDerivedFromTemplateSpecialization<Derived, %EL_UC%>;
 
 // checks if a type is a vcl::%EL_UC%<Args...>
 template<class T>
 struct IsA%EL_UC% : // Default case, no pattern match
-		std::false_type
+        std::false_type
 {
 };
 
 template<class... Args>
 struct IsA%EL_UC%<%EL_UC%<Args...>> : // For types matching the pattern %EL_UC%<Args...>
-		std::true_type
+        std::true_type
 {
 };
 
@@ -64,10 +64,10 @@ struct IsA%EL_UC%<%EL_UC%<Args...>> : // For types matching the pattern %EL_UC%<
  */
 template<typename T>
 concept %EL_UC%Concept =
-	ElementConcept<T> &&
-	T::ELEMENT_TYPE == %EL_U% &&
-	(%EL_NS%::IsDerivedFrom%EL_UC%<T>::value || %EL_NS%::IsA%EL_UC%<T>::value) &&
-	%EL_NS%::HasBitFlags<T>;
+    ElementConcept<T> &&
+    T::ELEMENT_TYPE == %EL_U% &&
+    (%EL_NS%::IsDerivedFrom%EL_UC%<T>::value || %EL_NS%::IsA%EL_UC%<T>::value) &&
+    %EL_NS%::HasBitFlags<T>;
 
 } // namespace vcl
 

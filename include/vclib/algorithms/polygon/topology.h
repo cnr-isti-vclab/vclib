@@ -54,21 +54,21 @@ namespace vcl {
  */
 template<FaceConcept FaceType>
 bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
-	requires comp::HasAdjacentFaces<FaceType>
+    requires comp::HasAdjacentFaces<FaceType>
 {
-	// Check if the AdjacentFaces component is available for the given face.
-	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException(
-			"Face has no Adjacent Faces component.");
-	}
+    // Check if the AdjacentFaces component is available for the given face.
+    if (! comp::isAdjacentFacesAvailableOn(f)) {
+        throw vcl::MissingComponentException(
+            "Face has no Adjacent Faces component.");
+    }
 
-	// Check if the edge is a boundary edge.
-	if (f.adjFace(edge) == nullptr) {
-		return true;
-	}
-	else { // Check if the edge is shared by exactly two faces.
-		return f.adjFace(edge)->indexOfAdjFace(&f) != UINT_NULL;
-	}
+    // Check if the edge is a boundary edge.
+    if (f.adjFace(edge) == nullptr) {
+        return true;
+    }
+    else { // Check if the edge is shared by exactly two faces.
+        return f.adjFace(edge)->indexOfAdjFace(&f) != UINT_NULL;
+    }
 }
 
 /**
@@ -89,14 +89,14 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
  */
 template<FaceConcept FaceType>
 bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
-	requires comp::HasAdjacentFaces<FaceType>
+    requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException(
-			"Face has no Adjacent Faces component.");
-	}
+    if (! comp::isAdjacentFacesAvailableOn(f)) {
+        throw vcl::MissingComponentException(
+            "Face has no Adjacent Faces component.");
+    }
 
-	return f->adjFace(edge) == nullptr;
+    return f->adjFace(edge) == nullptr;
 }
 
 /**
@@ -135,48 +135,48 @@ bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
  */
 template<FaceConcept FaceType>
 bool checkFlipEdge(const FaceType& f, uint edge)
-	requires comp::HasAdjacentFaces<FaceType>
+    requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException(
-			"Face has no Adjacent Faces component.");
-	}
+    if (! comp::isAdjacentFacesAvailableOn(f)) {
+        throw vcl::MissingComponentException(
+            "Face has no Adjacent Faces component.");
+    }
 
-	using VertexType = FaceType::VertexType;
+    using VertexType = FaceType::VertexType;
 
-	if (f.vertexNumber() > 3)
-		return false;
+    if (f.vertexNumber() > 3)
+        return false;
 
-	if (vcl::isFaceEdgeOnBorder(f, edge))
-		return false;
+    if (vcl::isFaceEdgeOnBorder(f, edge))
+        return false;
 
-	const VertexType* v0 = f.vertex(edge);
-	const VertexType* v1 = f.vertexMod(edge+1);
+    const VertexType* v0 = f.vertex(edge);
+    const VertexType* v1 = f.vertexMod(edge+1);
 
-	const FaceType* of = f.adjFace(edge);
-	uint oe = of->indexOfAdjFace(&f);
-	assert(oe != UINT_NULL);
+    const FaceType* of = f.adjFace(edge);
+    uint oe = of->indexOfAdjFace(&f);
+    assert(oe != UINT_NULL);
 
-	// check if the vertices of the edge are the same
-	// e.g. the mesh has to be well oriented
-	if (of->vertex(oe) != v1 || of->vertexMod(oe+1) != v0)
-		return false;
+    // check if the vertices of the edge are the same
+    // e.g. the mesh has to be well oriented
+    if (of->vertex(oe) != v1 || of->vertexMod(oe+1) != v0)
+        return false;
 
-	// check if the flipped edge is already present in the mesh
-	// f_v2 and of_v2 are the vertices of the new edge
-	const VertexType* f_v2 = f.vertexMod(edge+2);
-	const VertexType* of_v2 = of->vertexMod(oe+2);
+    // check if the flipped edge is already present in the mesh
+    // f_v2 and of_v2 are the vertices of the new edge
+    const VertexType* f_v2 = f.vertexMod(edge+2);
+    const VertexType* of_v2 = of->vertexMod(oe+2);
 
-	MeshPos<FaceType> pos(&f, f_v2);
-	MeshPos<FaceType> startPos = pos;
-	// loop in the one ring of f_v2
-	do {
-		pos.nextEdgeAdjacentToV();
-		if (pos.adjVertex() == of_v2)
-			return false;
-	} while(pos != startPos);
+    MeshPos<FaceType> pos(&f, f_v2);
+    MeshPos<FaceType> startPos = pos;
+    // loop in the one ring of f_v2
+    do {
+        pos.nextEdgeAdjacentToV();
+        if (pos.adjVertex() == of_v2)
+            return false;
+    } while(pos != startPos);
 
-	return true;
+    return true;
 }
 
 /**
@@ -201,20 +201,20 @@ bool checkFlipEdge(const FaceType& f, uint edge)
  */
 template<FaceConcept FaceType>
 uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
-	requires comp::HasAdjacentFaces<FaceType>
+    requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException(
-			"Face has no Adjacent Faces component.");
-	}
+    if (! comp::isAdjacentFacesAvailableOn(f)) {
+        throw vcl::MissingComponentException(
+            "Face has no Adjacent Faces component.");
+    }
 
-	ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
-	uint cnt = 0;
-	for (auto it = begin ; it != end; ++it) {
-		++cnt;
-	}
+    ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
+    uint cnt = 0;
+    for (auto it = begin ; it != end; ++it) {
+        ++cnt;
+    }
 
-	return cnt;
+    return cnt;
 }
 
 /**
@@ -234,19 +234,19 @@ uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
  */
 template<FaceConcept FaceType>
 uint faceEdgesOnBorderNumber(const FaceType& f)
-	requires comp::HasAdjacentFaces<FaceType>
+    requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException(
-			"Face has no Adjacent Faces component.");
-	}
+    if (! comp::isAdjacentFacesAvailableOn(f)) {
+        throw vcl::MissingComponentException(
+            "Face has no Adjacent Faces component.");
+    }
 
-	uint cnt = 0;
-	for (uint i = 0; i < f.vertexNumber(); ++i)
-		if (isFaceEdgeOnBorder(f, i))
-			cnt++;
+    uint cnt = 0;
+    for (uint i = 0; i < f.vertexNumber(); ++i)
+        if (isFaceEdgeOnBorder(f, i))
+            cnt++;
 
-	return cnt;
+    return cnt;
 }
 
 /**
@@ -276,39 +276,39 @@ uint faceEdgesOnBorderNumber(const FaceType& f)
  */
 template<FaceConcept FaceType>
 void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
-	requires comp::HasAdjacentFaces<FaceType>
+    requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException(
-			"Face has no Adjacent Faces component.");
-	}
+    if (! comp::isAdjacentFacesAvailableOn(f)) {
+        throw vcl::MissingComponentException(
+            "Face has no Adjacent Faces component.");
+    }
 
-	FaceType* nextFace = f.adjFace(edge);
+    FaceType* nextFace = f.adjFace(edge);
 
-	// if nextFace == nullptr there is nothing to do
-	// the face is already detached on the edge
-	if (nextFace != nullptr) {
+    // if nextFace == nullptr there is nothing to do
+    // the face is already detached on the edge
+    if (nextFace != nullptr) {
 
-		FaceType* prevFace;
-		ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
-		for (auto it = begin ; it != end; ++it) {
-			prevFace = *it;
-		}
+        FaceType* prevFace;
+        ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
+        for (auto it = begin ; it != end; ++it) {
+            prevFace = *it;
+        }
 
-		if (nextFace == prevFace) { // manifold case
-			uint en = nextFace->indexOfAdjFace(&f);
-			assert(en != UINT_NULL);
-			nextFace->adjFace(en) = nullptr;
-		}
-		else { // non manifold case
-			// the prev face does not have to point to f anymore, but to
-			// nextFace
-			uint pn = prevFace->indexOfAdjFace(&f);
-			assert(pn != UINT_NULL);
-			prevFace->adjFace(pn) = nextFace;
-		}
-		f.adjFace(edge) = nullptr;
-	}
+        if (nextFace == prevFace) { // manifold case
+            uint en = nextFace->indexOfAdjFace(&f);
+            assert(en != UINT_NULL);
+            nextFace->adjFace(en) = nullptr;
+        }
+        else { // non manifold case
+            // the prev face does not have to point to f anymore, but to
+            // nextFace
+            uint pn = prevFace->indexOfAdjFace(&f);
+            assert(pn != UINT_NULL);
+            prevFace->adjFace(pn) = nextFace;
+        }
+        f.adjFace(edge) = nullptr;
+    }
 }
 
 /**
@@ -335,29 +335,29 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
 template <FaceConcept FaceType>
 void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 {
-	if (! comp::isAdjacentFacesAvailableOn(f)) {
-		throw vcl::MissingComponentException(
-			"Face has no Adjacent Faces component.");
-	}
+    if (! comp::isAdjacentFacesAvailableOn(f)) {
+        throw vcl::MissingComponentException(
+            "Face has no Adjacent Faces component.");
+    }
 
-	using VertexType = FaceType::VertexType;
+    using VertexType = FaceType::VertexType;
 
-	for (uint e = 0; e < f.vertexNumber(); ++e) {
-		detachAdjacentFacesOnEdge(f, e);
+    for (uint e = 0; e < f.vertexNumber(); ++e) {
+        detachAdjacentFacesOnEdge(f, e);
 
-		// if the vertices have adjacent faces
-		if constexpr (comp::HasAdjacentFaces<VertexType>) {
-			if (comp::isAdjacentFacesAvailableOn(f.vertex(e))) {
-				VertexType* v = f.vertex(e);
-				uint vpos = v->indexOfAdjFace(&f);
-				if (vpos != UINT_NULL) {   // may happen if vertex adj faces are
-										   // not initialized / updated
-					v->eraseAdjFace(vpos); // the vertex v has not anymore the
-										   // adjacent face f
-				}
-			}
-		}
-	}
+        // if the vertices have adjacent faces
+        if constexpr (comp::HasAdjacentFaces<VertexType>) {
+            if (comp::isAdjacentFacesAvailableOn(f.vertex(e))) {
+                VertexType* v = f.vertex(e);
+                uint vpos = v->indexOfAdjFace(&f);
+                if (vpos != UINT_NULL) {   // may happen if vertex adj faces are
+                                           // not initialized / updated
+                    v->eraseAdjFace(vpos); // the vertex v has not anymore the
+                                           // adjacent face f
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -381,8 +381,8 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 template <FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
-	using CoordType = Face::VertexType::CoordType;
-	return Polygon<CoordType>::earCut(polygon.vertices() | views::coords);
+    using CoordType = Face::VertexType::CoordType;
+    return Polygon<CoordType>::earCut(polygon.vertices() | views::coords);
 }
 
 /**
@@ -413,89 +413,89 @@ std::vector<uint> earCut(const Face& polygon)
  */
 template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void addTriangleFacesFromPolygon(
-	MeshType&                m,
-	FaceType&                f,
-	const std::vector<uint>& polygon)
+    MeshType&                m,
+    FaceType&                f,
+    const std::vector<uint>& polygon)
 {
-	using VertexType = MeshType::VertexType;
-	using CoordType = VertexType::CoordType;
+    using VertexType = MeshType::VertexType;
+    using CoordType = VertexType::CoordType;
 
-		   // from the ids, create a polygon of coordinates
-	std::vector<CoordType> polCoords(polygon.size());
-	for (uint i = 0; i < polygon.size(); ++i) {
-		if (polygon[i] >= m.vertexContainerSize()) {
-			throw BadVertexIndexException(
-				"Index " + std::to_string(polygon[i]) + " is out of range in "
-				"Vertex Container.");
-		}
-		if (m.vertex(polygon[i]).deleted()) {
-			throw BadVertexIndexException(
-				"Vertex " + std::to_string(polygon[i]) + " is deleted.");
-		}
-		polCoords[i] = m.vertex(polygon[i]).coord();
-	}
+           // from the ids, create a polygon of coordinates
+    std::vector<CoordType> polCoords(polygon.size());
+    for (uint i = 0; i < polygon.size(); ++i) {
+        if (polygon[i] >= m.vertexContainerSize()) {
+            throw BadVertexIndexException(
+                "Index " + std::to_string(polygon[i]) + " is out of range in "
+                "Vertex Container.");
+        }
+        if (m.vertex(polygon[i]).deleted()) {
+            throw BadVertexIndexException(
+                "Vertex " + std::to_string(polygon[i]) + " is deleted.");
+        }
+        polCoords[i] = m.vertex(polygon[i]).coord();
+    }
 
-	// compute earcut of the polygons
-	std::vector<uint> tris =
-		Polygon<CoordType>::earCut(polCoords.begin(), polCoords.end());
+    // compute earcut of the polygons
+    std::vector<uint> tris =
+        Polygon<CoordType>::earCut(polCoords.begin(), polCoords.end());
 
-	// faux edges management: create a set of unordered edges of the polygon
-	// note: we use indices from 0 to polygon.size() because that are the output
-	// indices given by the earcut algorithm
-	std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>>
-		unorderedEdges;
-	for (uint i = 0; i < polygon.size(); ++i)
-		unorderedEdges.emplace(i, (i+1) % (uint)polygon.size());
+    // faux edges management: create a set of unordered edges of the polygon
+    // note: we use indices from 0 to polygon.size() because that are the output
+    // indices given by the earcut algorithm
+    std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>>
+        unorderedEdges;
+    for (uint i = 0; i < polygon.size(); ++i)
+        unorderedEdges.emplace(i, (i+1) % (uint)polygon.size());
 
-	if constexpr (FaceType::VERTEX_NUMBER < 0) {
-		f.resizeVertices(3);
-	}
+    if constexpr (FaceType::VERTEX_NUMBER < 0) {
+        f.resizeVertices(3);
+    }
 
-	// set the first triangle of the loaded polygon
-	uint i = 0; // from 0 to 2, vertices indices of the triangle
-	for (auto& v : f.vertices()) {
-		v = &m.vertex(polygon[tris[i]]);
-		++i;
-	}
+    // set the first triangle of the loaded polygon
+    uint i = 0; // from 0 to 2, vertices indices of the triangle
+    for (auto& v : f.vertices()) {
+        v = &m.vertex(polygon[tris[i]]);
+        ++i;
+    }
 
-	if constexpr(face::HasFaceBitFlags<FaceType>) {
-		if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) ==
-			unorderedEdges.end())
-			f.edgeFaux(0) = true;
-		if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) ==
-			unorderedEdges.end())
-			f.edgeFaux(1) = true;
-		if (unorderedEdges.find(std::make_pair(tris[2], tris[0])) ==
-			unorderedEdges.end())
-			f.edgeFaux(2) = true;
-	}
+    if constexpr(face::HasFaceBitFlags<FaceType>) {
+        if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) ==
+            unorderedEdges.end())
+            f.edgeFaux(0) = true;
+        if (unorderedEdges.find(std::make_pair(tris[1], tris[2])) ==
+            unorderedEdges.end())
+            f.edgeFaux(1) = true;
+        if (unorderedEdges.find(std::make_pair(tris[2], tris[0])) ==
+            unorderedEdges.end())
+            f.edgeFaux(2) = true;
+    }
 
-	// remaining triangles, need to create more faces in the mesh
-	for (uint i = 3; i < tris.size(); i += 3) {
-		uint ff              = m.addFace();
+    // remaining triangles, need to create more faces in the mesh
+    for (uint i = 3; i < tris.size(); i += 3) {
+        uint ff              = m.addFace();
 
-		if constexpr (FaceType::VERTEX_NUMBER < 0) {
-			m.face(ff).resizeVertices(3);
-		}
+        if constexpr (FaceType::VERTEX_NUMBER < 0) {
+            m.face(ff).resizeVertices(3);
+        }
 
-		uint j = 0; // from 0 to 2, vertices indices of the triangle
-		for (auto& v : m.face(ff).vertices()) {
-			v = &m.vertex(polygon[tris[i + j]]);
-			++j;
-		}
+        uint j = 0; // from 0 to 2, vertices indices of the triangle
+        for (auto& v : m.face(ff).vertices()) {
+            v = &m.vertex(polygon[tris[i + j]]);
+            ++j;
+        }
 
-		if constexpr(face::HasFaceBitFlags<FaceType>) {
-			if (unorderedEdges.find(std::make_pair(tris[i], tris[i + 1])) ==
-				unorderedEdges.end())
-				m.face(ff).edgeFaux(0) = true;
-			if (unorderedEdges.find(std::make_pair(tris[i + 1], tris[i + 2])) ==
-				unorderedEdges.end())
-				m.face(ff).edgeFaux(1) = true;
-			if (unorderedEdges.find(std::make_pair(tris[i + 2], tris[i + 0])) ==
-				unorderedEdges.end())
-				m.face(ff).edgeFaux(2) = true;
-		}
-	}
+        if constexpr(face::HasFaceBitFlags<FaceType>) {
+            if (unorderedEdges.find(std::make_pair(tris[i], tris[i + 1])) ==
+                unorderedEdges.end())
+                m.face(ff).edgeFaux(0) = true;
+            if (unorderedEdges.find(std::make_pair(tris[i + 1], tris[i + 2])) ==
+                unorderedEdges.end())
+                m.face(ff).edgeFaux(1) = true;
+            if (unorderedEdges.find(std::make_pair(tris[i + 2], tris[i + 0])) ==
+                unorderedEdges.end())
+                m.face(ff).edgeFaux(2) = true;
+        }
+    }
 }
 
 /**
@@ -516,9 +516,9 @@ void addTriangleFacesFromPolygon(
 template <FaceMeshConcept MeshType>
 uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon)
 {
-	uint fid = m.addFace();
-	addTriangleFacesFromPolygon(m, m.face(fid), polygon);
-	return fid;
+    uint fid = m.addFace();
+    addTriangleFacesFromPolygon(m, m.face(fid), polygon);
+    return fid;
 }
 
 } // namespace vcl

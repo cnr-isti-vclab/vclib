@@ -41,22 +41,22 @@ namespace vcl {
  */
 template<typename T>
 concept SamplerConcept = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	typename T::PointType;
+    typename T::PointType;
 
-	o.samples();
+    o.samples();
 
-	{ co.size() } -> std::same_as<std::size_t>;
-	co.sample(uint());
+    { co.size() } -> std::same_as<std::size_t>;
+    co.sample(uint());
 
-	o.clear();
-	o.reserve(uint());
-	o.resize(uint());
-	
-	co.begin();
-	co.end();
+    o.clear();
+    o.reserve(uint());
+    o.resize(uint());
+    
+    co.begin();
+    co.end();
 };
 
 } // namespace vcl

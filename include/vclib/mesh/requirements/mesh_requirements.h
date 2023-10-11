@@ -53,20 +53,20 @@ namespace vcl {
 template<MeshConcept MeshType>
 bool isTriangleMesh(const MeshType& m)
 {
-	if constexpr (HasTriangles<MeshType>) {
-		return true;
-	}
-	else if constexpr (HasFaces<MeshType>) {
-		using F = MeshType::FaceType;
-		for (const F& f : m.faces()) {
-			if (f.vertexNumber() != 3)
-				return false;
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+    if constexpr (HasTriangles<MeshType>) {
+        return true;
+    }
+    else if constexpr (HasFaces<MeshType>) {
+        using F = MeshType::FaceType;
+        for (const F& f : m.faces()) {
+            if (f.vertexNumber() != 3)
+                return false;
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 /**
@@ -89,20 +89,20 @@ bool isTriangleMesh(const MeshType& m)
 template<MeshConcept MeshType>
 bool isQuadMesh(const MeshType& m)
 {
-	if constexpr (HasQuads<MeshType>) {
-		return true;
-	}
-	else if constexpr (HasFaces<MeshType>) {
-		using F = MeshType::FaceType;
-		for (const F& f : m.faces()) {
-			if (f.vertexNumber() != 4)
-				return false;
-		}
-		return true;
-	}
-	else {
-		return false;
-	}
+    if constexpr (HasQuads<MeshType>) {
+        return true;
+    }
+    else if constexpr (HasFaces<MeshType>) {
+        using F = MeshType::FaceType;
+        for (const F& f : m.faces()) {
+            if (f.vertexNumber() != 4)
+                return false;
+        }
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 /**
@@ -118,7 +118,7 @@ bool isQuadMesh(const MeshType& m)
 template<MeshConcept MeshType>
 bool isCompact(const MeshType& m)
 {
-	return m.isCompact();
+    return m.isCompact();
 }
 
 /*********************
@@ -148,14 +148,14 @@ bool isCompact(const MeshType& m)
 template<FaceMeshConcept MeshType>
 void requireTriangleMesh(const MeshType& m)
 {
-	if constexpr (!HasTriangles<MeshType>) {
-		for (const auto& f : m.faces()) {
-			if (f.vertexNumber() != 3) {
-				throw MissingTriangularRequirementException(
-					"Triangle Mesh Required.");
-			}
-		}
-	}
+    if constexpr (!HasTriangles<MeshType>) {
+        for (const auto& f : m.faces()) {
+            if (f.vertexNumber() != 3) {
+                throw MissingTriangularRequirementException(
+                    "Triangle Mesh Required.");
+            }
+        }
+    }
 }
 
 /**
@@ -181,13 +181,13 @@ void requireTriangleMesh(const MeshType& m)
 template<FaceMeshConcept MeshType>
 void requireQuadMesh(const MeshType& m)
 {
-	if constexpr (!HasQuads<MeshType>) {
-		for (const auto& f : m.faces()) {
-			if (f.vertexNumber() != 4) {
-				throw MissingQuadRequirementException("Quad Mesh Required.");
-			}
-		}
-	}
+    if constexpr (!HasQuads<MeshType>) {
+        for (const auto& f : m.faces()) {
+            if (f.vertexNumber() != 4) {
+                throw MissingQuadRequirementException("Quad Mesh Required.");
+            }
+        }
+    }
 }
 
 /**
@@ -205,8 +205,8 @@ void requireQuadMesh(const MeshType& m)
 template <MeshConcept MeshType>
 void requireCompactness(const MeshType& m)
 {
-	if (!m.isCompact())
-		throw MissingCompactnessException("Mesh is not compact.");
+    if (!m.isCompact())
+        throw MissingCompactnessException("Mesh is not compact.");
 }
 
 } // namespace vcl

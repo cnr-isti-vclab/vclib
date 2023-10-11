@@ -31,58 +31,58 @@ namespace vcl {
 template<int N>
 class CellIterator
 {
-	vcl::Point<uint, N> it;
-	vcl::Point<uint, N> first, end;
+    vcl::Point<uint, N> it;
+    vcl::Point<uint, N> first, end;
 
 public:
-	using difference_type   = ptrdiff_t;
-	using value_type        = vcl::Point<uint, N>;
-	using reference         = const vcl::Point<uint, N>&;
-	using pointer           = const vcl::Point<uint, N>*;
-	using iterator_category = std::forward_iterator_tag;
+    using difference_type   = ptrdiff_t;
+    using value_type        = vcl::Point<uint, N>;
+    using reference         = const vcl::Point<uint, N>&;
+    using pointer           = const vcl::Point<uint, N>*;
+    using iterator_category = std::forward_iterator_tag;
 
-	CellIterator()
-	{
-		it.setConstant(-1);
-		first = end = it;
-	}
+    CellIterator()
+    {
+        it.setConstant(-1);
+        first = end = it;
+    }
 
-	CellIterator(
-		const vcl::Point<uint, N>& first,
-		const vcl::Point<uint, N>& end) :
-			it(first),
-			first(first), end(end)
-	{
-	}
+    CellIterator(
+        const vcl::Point<uint, N>& first,
+        const vcl::Point<uint, N>& end) :
+            it(first),
+            first(first), end(end)
+    {
+    }
 
-	reference operator*() const { return it; }
+    reference operator*() const { return it; }
 
-	pointer operator->() const { return &it; }
+    pointer operator->() const { return &it; }
 
-	bool operator==(const CellIterator& oi) const { return (it == oi.it); }
+    bool operator==(const CellIterator& oi) const { return (it == oi.it); }
 
-	bool operator!=(const CellIterator& oi) const { return (it != oi.it); }
+    bool operator!=(const CellIterator& oi) const { return (it != oi.it); }
 
-	CellIterator operator++()
-	{
-		uint d = N-1;
-		while (d != -1 && it(d) == end(d) - 1) {
-			it(d) = first(d);
-			d--;
-		}
-		if (d != -1)
-			it(d)++;
-		else
-			it.setConstant(-1);
-		return *this;
-	}
+    CellIterator operator++()
+    {
+        uint d = N-1;
+        while (d != -1 && it(d) == end(d) - 1) {
+            it(d) = first(d);
+            d--;
+        }
+        if (d != -1)
+            it(d)++;
+        else
+            it.setConstant(-1);
+        return *this;
+    }
 
-	CellIterator operator++(int)
-	{
-		CellIterator<N> oit = it;
-		++(*this);
-		return oit;
-	}
+    CellIterator operator++(int)
+    {
+        CellIterator<N> oit = it;
+        ++(*this);
+        return oit;
+    }
 };
 
 } // namespace vcl

@@ -30,22 +30,22 @@ namespace vcl {
 
 template<typename T>
 concept PolygonConcept = requires(
-	T o,
-	const T& co,
-	const typename T::PointType& p)
+    T o,
+    const T& co,
+    const typename T::PointType& p)
 {
-	typename T::ScalarType;
-	typename T::PointType;
+    typename T::ScalarType;
+    typename T::PointType;
 
-	co.DIM;
+    co.DIM;
 
-	{ co.size() } -> std::same_as<uint>;
-	{ o.point(uint()) } -> std::same_as<typename T::PointType&>;
-	{ co.point(uint()) } -> std::same_as<const typename T::PointType&>;
-	{ co.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
-	{ co.barycenter() } -> std::same_as<typename T::PointType>;
-	{ co.perimeter() } -> std::same_as<typename T::ScalarType>;
-	{ co.area() } -> std::same_as<typename T::ScalarType>;
+    { co.size() } -> std::same_as<uint>;
+    { o.point(uint()) } -> std::same_as<typename T::PointType&>;
+    { co.point(uint()) } -> std::same_as<const typename T::PointType&>;
+    { co.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
+    { co.barycenter() } -> std::same_as<typename T::PointType>;
+    { co.perimeter() } -> std::same_as<typename T::ScalarType>;
+    { co.area() } -> std::same_as<typename T::ScalarType>;
 };
 
 template<typename T>
@@ -53,9 +53,9 @@ concept Polygon2Concept = PolygonConcept<T> && T::DIM == 2;
 
 template<typename T>
 concept Polygon3Concept = PolygonConcept<T> && T::DIM == 3 && requires(
-	const T& co)
+    const T& co)
 {
-	{ co.normal() } -> std::same_as<typename T::PointType>;
+    { co.normal() } -> std::same_as<typename T::PointType>;
 };
 
 } // namespace vcl

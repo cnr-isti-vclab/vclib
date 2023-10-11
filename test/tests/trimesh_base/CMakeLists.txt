@@ -12,7 +12,7 @@
 project(vclib-trimesh-base-test)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-trimesh-base-test ${SOURCES})
 

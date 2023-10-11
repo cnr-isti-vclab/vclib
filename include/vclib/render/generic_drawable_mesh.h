@@ -32,32 +32,32 @@ namespace vcl {
 class GenericDrawableMesh : public vcl::DrawableObject
 {
 protected:
-	MeshRenderSettings mrs;
+    MeshRenderSettings mrs;
 
 public:
-	GenericDrawableMesh() = default;
+    GenericDrawableMesh() = default;
 
-	template<MeshConcept MeshType>
-	GenericDrawableMesh(const MeshType& m) : mrs(m)
-	{
-	}
+    template<MeshConcept MeshType>
+    GenericDrawableMesh(const MeshType& m) : mrs(m)
+    {
+    }
 
-	const MeshRenderSettings& renderSettings() const { return mrs; }
+    const MeshRenderSettings& renderSettings() const { return mrs; }
 
-	void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
+    void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
 
-	// DrawableObject implementation
-	void draw() const = 0;
+    // DrawableObject implementation
+    void draw() const = 0;
 
-	vcl::Point3d center() const = 0;
+    vcl::Point3d center() const = 0;
 
-	double radius() const = 0;
+    double radius() const = 0;
 
-	DrawableObject* clone() const = 0;
+    DrawableObject* clone() const = 0;
 
-	inline bool isVisible() const { return mrs.isVisible(); }
+    inline bool isVisible() const { return mrs.isVisible(); }
 
-	inline void setVisibility(bool vis) { mrs.setVisibility(vis); }
+    inline void setVisibility(bool vis) { mrs.setVisibility(vis); }
 };
 
 } // namespace vcl

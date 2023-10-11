@@ -31,39 +31,39 @@ namespace vcl {
 
 template<typename MeshType>
 concept HasTriangles =
-	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
+    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
 
 template<typename MeshType>
 concept HasQuads =
-	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
+    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
 
 template<typename MeshType>
 concept HasPolygons =
-	vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
+    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
 
 template<typename T>
 concept FaceMeshConcept =
-	MeshConcept<T> && mesh::HasFaceContainer<T> &&
-	requires(
-		T o,
-		const T& co,
-		typename T::FaceType f)
+    MeshConcept<T> && mesh::HasFaceContainer<T> &&
+    requires(
+        T o,
+        const T& co,
+        typename T::FaceType f)
 {
-	{ co.index(f) } -> std::same_as<uint>;
-	{ co.index(&f) } -> std::same_as<uint>;
+    { co.index(f) } -> std::same_as<uint>;
+    { co.index(&f) } -> std::same_as<uint>;
 };
 
 template<typename T>
 concept TriangleMeshConcept =
-	FaceMeshConcept<T> && HasTriangles<T>;
+    FaceMeshConcept<T> && HasTriangles<T>;
 
 template<typename T>
 concept QuadMeshConcept =
-	FaceMeshConcept<T> && HasQuads<T>;
+    FaceMeshConcept<T> && HasQuads<T>;
 
 template<typename T>
 concept PolygonMeshConcept =
-	FaceMeshConcept<T> && HasPolygons<T>;
+    FaceMeshConcept<T> && HasPolygons<T>;
 
 } // namespace vcl
 

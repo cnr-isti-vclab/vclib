@@ -30,16 +30,16 @@ template<typename Iterator>
 class NodeIterator
 {
 public:
-	using Iterator::Iterator;
+    using Iterator::Iterator;
 
-	using value_type = Iterator::value_type::InfoType;
-	using reference = const value_type&;
-	using pointer = const value_type*;
+    using value_type = Iterator::value_type::InfoType;
+    using reference = const value_type&;
+    using pointer = const value_type*;
 
-	NodeIterator(Iterator it) : Iterator(it) {}
+    NodeIterator(Iterator it) : Iterator(it) {}
 
-	reference operator*() const { return Iterator::operator*().info(); }
-	pointer   operator->() const { return &Iterator::operator->().info(); }
+    reference operator*() const { return Iterator::operator*().info(); }
+    pointer   operator->() const { return &Iterator::operator->().info(); }
 };
 
 } // namespace vcl

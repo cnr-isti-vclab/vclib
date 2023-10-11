@@ -12,38 +12,38 @@ namespace internal {
 template<VertexConcept VertexType, bool CNST = false>
 class VertexSampler
 {
-	using VP = std::conditional_t<CNST, const VertexType*, VertexType*>;
-	using VPar = std::conditional_t<CNST, const VertexType&, VertexType&>;
+    using VP = std::conditional_t<CNST, const VertexType*, VertexType*>;
+    using VPar = std::conditional_t<CNST, const VertexType&, VertexType&>;
 
-	std::vector<VP> samplesVec;
+    std::vector<VP> samplesVec;
 
 public:
-	using PointType = VertexType::CoordType;
+    using PointType = VertexType::CoordType;
 
-	VertexSampler() {}
+    VertexSampler() {}
 
-	const std::vector<VP> samples() const { return samplesVec; }
+    const std::vector<VP> samples() const { return samplesVec; }
 
-	const typename VertexType::CoordType& sample(uint i) const
-	{
-		return samplesVec[i]->coord();
-	}
+    const typename VertexType::CoordType& sample(uint i) const
+    {
+        return samplesVec[i]->coord();
+    }
 
-	std::size_t size() const { return samplesVec.size(); }
+    std::size_t size() const { return samplesVec.size(); }
 
-	void clear() { samplesVec.clear(); }
+    void clear() { samplesVec.clear(); }
 
-	void reserve(uint n) { samplesVec.reserve(n); }
+    void reserve(uint n) { samplesVec.reserve(n); }
 
-	void resize(uint n) { samplesVec.resize(n); }
+    void resize(uint n) { samplesVec.resize(n); }
 
-	void add(VPar v) { samplesVec.push_back(&v); }
+    void add(VPar v) { samplesVec.push_back(&v); }
 
-	void set(uint i, VPar v) { samplesVec[i] = &v; }
+    void set(uint i, VPar v) { samplesVec[i] = &v; }
 
-	auto begin() const { return std::begin(samplesVec | views::coords); }
+    auto begin() const { return std::begin(samplesVec | views::coords); }
 
-	auto end() const { return std::end(samplesVec | views::coords); }
+    auto end() const { return std::end(samplesVec | views::coords); }
 };
 
 } // namespace vcl::internal

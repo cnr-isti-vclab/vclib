@@ -49,157 +49,157 @@ namespace vcl {
 template<std::integral T>
 class BitSet
 {
-	T bits = static_cast<T>(0);
+    T bits = static_cast<T>(0);
 
 public:
-	/**
-	 * @brief The number of the bits of the BitSet.
-	 */
-	static constexpr std::size_t SIZE = sizeof(T) * 8;
+    /**
+     * @brief The number of the bits of the BitSet.
+     */
+    static constexpr std::size_t SIZE = sizeof(T) * 8;
 
-	/**
-	 * @brief Empty constructor. All the Bits of the BitSet are set to false.
-	 */
-	BitSet() {}
+    /**
+     * @brief Empty constructor. All the Bits of the BitSet are set to false.
+     */
+    BitSet() {}
 
-	/**
-	 * @brief Returns the number of bits of the BitSet.
-	 * @return the number of bits of the BitSet.
-	 */
-	constexpr std::size_t size() const { return SIZE; }
+    /**
+     * @brief Returns the number of bits of the BitSet.
+     * @return the number of bits of the BitSet.
+     */
+    constexpr std::size_t size() const { return SIZE; }
 
-	/**
-	 * @brief Returns the i-th bit value of the BitSet
-	 * @param[in] i: the position of the bit
-	 * @return the boolean value of the bit
-	 */
-	bool operator[](uint i) const
-	{
-		assert(i < SIZE);
-		return bits & (1 << i);
-	}
+    /**
+     * @brief Returns the i-th bit value of the BitSet
+     * @param[in] i: the position of the bit
+     * @return the boolean value of the bit
+     */
+    bool operator[](uint i) const
+    {
+        assert(i < SIZE);
+        return bits & (1 << i);
+    }
 
-	/**
-	 * @brief Returns a reference of the i-th bit value of the BitSet
-	 * @param[in] i: the position of the bit
-	 * @return a reference of the boolean value of the bit
-	 */
-	BitProxy<T> operator[](uint i)
-	{
-		assert(i < SIZE);
-		return BitProxy(bits, i);
-	}
+    /**
+     * @brief Returns a reference of the i-th bit value of the BitSet
+     * @param[in] i: the position of the bit
+     * @return a reference of the boolean value of the bit
+     */
+    BitProxy<T> operator[](uint i)
+    {
+        assert(i < SIZE);
+        return BitProxy(bits, i);
+    }
 
-	/**
-	 * @brief Returns the i-th bit value of the BitSet, with bounds checking.
-	 * @param[in] i: the position of the bit
-	 * @throws std::out_of_range if i is >= BitSet<T>::SIZE
-	 * @return the boolean value of the bit
-	 */
-	bool at(uint i) const
-	{
-		if (i < SIZE)
-			return bits & (1 << i);
-		else
-			throw std::out_of_range(std::to_string(i) + " out of range.");
-	}
+    /**
+     * @brief Returns the i-th bit value of the BitSet, with bounds checking.
+     * @param[in] i: the position of the bit
+     * @throws std::out_of_range if i is >= BitSet<T>::SIZE
+     * @return the boolean value of the bit
+     */
+    bool at(uint i) const
+    {
+        if (i < SIZE)
+            return bits & (1 << i);
+        else
+            throw std::out_of_range(std::to_string(i) + " out of range.");
+    }
 
-	/**
-	 * @brief Returns a reference of the i-th bit value of the BitSet, with
-	 * bounds checking.
-	 * @param[in] i: the position of the bit
-	 * @throws std::out_of_range if i is >= BitSet<T>::SIZE
-	 * @return a reference of the boolean value of the bit
-	 */
-	BitProxy<T> at(uint i)
-	{
-		if (i < SIZE)
-			return BitProxy(bits, i);
-		else
-			throw std::out_of_range(std::to_string(i) + " out of range.");
-	}
+    /**
+     * @brief Returns a reference of the i-th bit value of the BitSet, with
+     * bounds checking.
+     * @param[in] i: the position of the bit
+     * @throws std::out_of_range if i is >= BitSet<T>::SIZE
+     * @return a reference of the boolean value of the bit
+     */
+    BitProxy<T> at(uint i)
+    {
+        if (i < SIZE)
+            return BitProxy(bits, i);
+        else
+            throw std::out_of_range(std::to_string(i) + " out of range.");
+    }
 
-	/**
-	 * @brief Returns true if all the bits of the BitSet are set to true.
-	 * @return true if all the bits of the BitSet are set to true.
-	 */
-	bool all() const { return bits == ~static_cast<T>(0); }
+    /**
+     * @brief Returns true if all the bits of the BitSet are set to true.
+     * @return true if all the bits of the BitSet are set to true.
+     */
+    bool all() const { return bits == ~static_cast<T>(0); }
 
-	/**
-	 * @brief Returns true if any of the bits of the BitSet are set to true.
-	 * @return true if any of the bits of the BitSet are set to true.
-	 */
-	bool any() const { return !none(); }
+    /**
+     * @brief Returns true if any of the bits of the BitSet are set to true.
+     * @return true if any of the bits of the BitSet are set to true.
+     */
+    bool any() const { return !none(); }
 
-	/**
-	 * @brief Returns true if none of the bits of the BitSet is set to true.
-	 * @return true if none of the bits of the BitSet is set to true.
-	 */
-	bool none() const { return bits == static_cast<T>(0); }
+    /**
+     * @brief Returns true if none of the bits of the BitSet is set to true.
+     * @return true if none of the bits of the BitSet is set to true.
+     */
+    bool none() const { return bits == static_cast<T>(0); }
 
-	/**
-	 * @brief Sets all the bits to true
-	 * @return `*this`
-	 */
-	BitSet<T> set()
-	{
-		bits = ~static_cast<T>(0);
-		return *this;
-	}
+    /**
+     * @brief Sets all the bits to true
+     * @return `*this`
+     */
+    BitSet<T> set()
+    {
+        bits = ~static_cast<T>(0);
+        return *this;
+    }
 
-	/**
-	 * @brief Sets the bit at position i to b
-	 * @param[in] i: the position of the bit
-	 * @param[in] b: the boolena value to assign to the bit
-	 * @return `*this`
-	 */
-	BitSet<T> set(uint i, bool b = true)
-	{
-		at(i) = b;
-		return *this;
-	}
+    /**
+     * @brief Sets the bit at position i to b
+     * @param[in] i: the position of the bit
+     * @param[in] b: the boolena value to assign to the bit
+     * @return `*this`
+     */
+    BitSet<T> set(uint i, bool b = true)
+    {
+        at(i) = b;
+        return *this;
+    }
 
-	/**
-	 * @brief Sets all the bits to false
-	 * @return `*this`
-	 */
-	BitSet<T> reset()
-	{
-		bits = 0;
-		return *this;
-	}
+    /**
+     * @brief Sets all the bits to false
+     * @return `*this`
+     */
+    BitSet<T> reset()
+    {
+        bits = 0;
+        return *this;
+    }
 
-	/**
-	 * @brief Sets the bit at position i to false
-	 * @param[in] i: the position of the bit
-	 * @return `*this`
-	 */
-	BitSet<T> reset(uint i)
-	{
-		at(i) = false;
-		return *this;
-	}
+    /**
+     * @brief Sets the bit at position i to false
+     * @param[in] i: the position of the bit
+     * @return `*this`
+     */
+    BitSet<T> reset(uint i)
+    {
+        at(i) = false;
+        return *this;
+    }
 
-	/**
-	 * @brief Flips all the bits of the BitSet
-	 * @return `*this`
-	 */
-	BitSet<T> flip()
-	{
-		bits = ~bits;
-		return *this;
-	}
+    /**
+     * @brief Flips all the bits of the BitSet
+     * @return `*this`
+     */
+    BitSet<T> flip()
+    {
+        bits = ~bits;
+        return *this;
+    }
 
-	/**
-	 * @brief Flips the bit at position i
-	 * @param[in] i: the position of the bit
-	 * @return `*this`
-	 */
-	BitSet<T> flip(uint i)
-	{
-		at(i) = !at(i);
-		return *this;
-	}
+    /**
+     * @brief Flips the bit at position i
+     * @param[in] i: the position of the bit
+     * @return `*this`
+     */
+    BitSet<T> flip(uint i)
+    {
+        at(i) = !at(i);
+        return *this;
+    }
 };
 
 /* Specialization Aliases */

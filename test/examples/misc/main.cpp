@@ -27,26 +27,26 @@
 
 class Bar {
 public:
-	template<typename T>
-	void foo()
-	{
-		std::cout << "foo" << std::endl;
-	}
+    template<typename T>
+    void foo()
+    {
+        std::cout << "foo" << std::endl;
+    }
 
-	template<uint T>
-	void foo()
-	{
-		std::cout << "foo " << T << std::endl;
-	}
+    template<uint T>
+    void foo()
+    {
+        std::cout << "foo " << T << std::endl;
+    }
 
 };
 
 int main()
 {
-	Bar b;
+    Bar b;
 
-	b.foo<int>();
-	b.foo<3>();
+    b.foo<int>();
+    b.foo<3>();
 
-	return 0;
+    return 0;
 }

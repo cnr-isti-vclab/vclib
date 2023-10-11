@@ -44,11 +44,11 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 void normalizePerFaceNormals(MeshType& m)
 {
-	vcl::requirePerFaceNormal(m);
+    vcl::requirePerFaceNormal(m);
 
-	for (auto& n : m.faces() | views::normals) {
-		n.normalize();
-	}
+    for (auto& n : m.faces() | views::normals) {
+        n.normalize();
+    }
 }
 
 /**
@@ -60,16 +60,16 @@ void normalizePerFaceNormals(MeshType& m)
 template<FaceMeshConcept MeshType>
 void updatePerFaceNormals(MeshType& m, bool normalize = true)
 {
-	vcl::requirePerFaceNormal(m);
+    vcl::requirePerFaceNormal(m);
 
-	using FaceType = MeshType::FaceType;
-	for (FaceType& f : m.faces()) {
-		f.normal() = faceNormal(f).
-					 template cast<typename FaceType::NormalType::ScalarType>();
-	}
+    using FaceType = MeshType::FaceType;
+    for (FaceType& f : m.faces()) {
+        f.normal() = faceNormal(f).
+                     template cast<typename FaceType::NormalType::ScalarType>();
+    }
 
-	if (normalize)
-		normalizePerFaceNormals(m);
+    if (normalize)
+        normalizePerFaceNormals(m);
 }
 
 /**
@@ -86,11 +86,11 @@ void updatePerFaceNormals(MeshType& m, bool normalize = true)
 template<MeshConcept MeshType>
 void clearPerVertexNormals(MeshType& m)
 {
-	vcl::requirePerVertexNormal(m);
+    vcl::requirePerVertexNormal(m);
 
-	for (auto& n : m.vertices() | views::normals) {
-		n.setZero();
-	}
+    for (auto& n : m.vertices() | views::normals) {
+        n.setZero();
+    }
 }
 
 /**
@@ -109,16 +109,16 @@ void clearPerVertexNormals(MeshType& m)
 template<FaceMeshConcept MeshType>
 void clearPerReferencedVertexNormals(MeshType& m)
 {
-	vcl::requirePerVertexNormal(m);
+    vcl::requirePerVertexNormal(m);
 
-	using VertexType = MeshType::VertexType;
-	using FaceType   = MeshType::FaceType;
+    using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
 
-	for (FaceType& f : m.faces()) {
-		for (auto& n : f.vertices() | views::normals) {
-			n.setZero();
-		}
-	}
+    for (FaceType& f : m.faces()) {
+        for (auto& n : f.vertices() | views::normals) {
+            n.setZero();
+        }
+    }
 }
 
 /**
@@ -134,11 +134,11 @@ void clearPerReferencedVertexNormals(MeshType& m)
 template<MeshConcept MeshType>
 void normalizePerVertexNormals(MeshType& m)
 {
-	vcl::requirePerVertexNormal(m);
+    vcl::requirePerVertexNormal(m);
 
-	for (auto& n : m.vertices() | views::normals) {
-		n.normalize();
-	}
+    for (auto& n : m.vertices() | views::normals) {
+        n.normalize();
+    }
 }
 
 /**
@@ -160,21 +160,21 @@ void normalizePerVertexNormals(MeshType& m)
 template<FaceMeshConcept MeshType>
 void updatePerVertexNormals(MeshType& m, bool normalize = true)
 {
-	clearPerReferencedVertexNormals(m);
+    clearPerReferencedVertexNormals(m);
 
-	using VertexType = MeshType::VertexType;
-	using FaceType   = MeshType::FaceType;
-	using NormalType = VertexType::NormalType;
+    using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
+    using NormalType = VertexType::NormalType;
 
-	for (FaceType& f : m.faces()) {
-		NormalType n =
-			faceNormal(f).template cast<typename NormalType::ScalarType>();
-		for (VertexType* v : f.vertices()) {
-			v->normal() += n;
-		}
-	}
-	if (normalize)
-		normalizePerVertexNormals(m);
+    for (FaceType& f : m.faces()) {
+        NormalType n =
+            faceNormal(f).template cast<typename NormalType::ScalarType>();
+        for (VertexType* v : f.vertices()) {
+            v->normal() += n;
+        }
+    }
+    if (normalize)
+        normalizePerVertexNormals(m);
 }
 
 /**
@@ -196,20 +196,20 @@ void updatePerVertexNormals(MeshType& m, bool normalize = true)
 template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize = true)
 {
-	vcl::requirePerFaceNormal(m);
+    vcl::requirePerFaceNormal(m);
 
-	clearPerReferencedVertexNormals(m);
+    clearPerReferencedVertexNormals(m);
 
-	using VertexType = MeshType::VertexType;
-	using FaceType   = MeshType::FaceType;
+    using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
 
-	for (FaceType& f : m.faces()) {
-		for (VertexType* v : f.vertices()) {
-			v->normal() += f.normal();
-		}
-	}
-	if (normalize)
-		normalizePerVertexNormals(m);
+    for (FaceType& f : m.faces()) {
+        for (VertexType* v : f.vertices()) {
+            v->normal() += f.normal();
+        }
+    }
+    if (normalize)
+        normalizePerVertexNormals(m);
 }
 
 /**
@@ -241,31 +241,31 @@ void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize = true)
 template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true)
 {
-	clearPerReferencedVertexNormals(m);
+    clearPerReferencedVertexNormals(m);
 
-	using VertexType = MeshType::VertexType;
-	using FaceType   = MeshType::FaceType;
-	using NormalType = VertexType::NormalType;
-	using NScalarType = NormalType::ScalarType;
+    using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
+    using NormalType = VertexType::NormalType;
+    using NScalarType = NormalType::ScalarType;
 
-	for (FaceType& f : m.faces()) {
-		NormalType n = faceNormal(f).template cast<NScalarType>();
+    for (FaceType& f : m.faces()) {
+        NormalType n = faceNormal(f).template cast<NScalarType>();
 
-		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			NormalType vec1 =
-				(f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
-					.normalized()
-					.template cast<NScalarType>();
-			NormalType vec2 =
-				(f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
-					.normalized()
-					.template cast<NScalarType>();
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
+            NormalType vec1 =
+                (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+                    .normalized()
+                    .template cast<NScalarType>();
+            NormalType vec2 =
+                (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+                    .normalized()
+                    .template cast<NScalarType>();
 
-			f.vertex(i)->normal() += n * vec1.angle(vec2);
-		}
-	}
-	if (normalize)
-		normalizePerVertexNormals(m);
+            f.vertex(i)->normal() += n * vec1.angle(vec2);
+        }
+    }
+    if (normalize)
+        normalizePerVertexNormals(m);
 }
 
 /**
@@ -300,29 +300,29 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true)
 template<FaceMeshConcept MeshType>
 void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true)
 {
-	clearPerReferencedVertexNormals(m);
+    clearPerReferencedVertexNormals(m);
 
-	using VertexType = MeshType::VertexType;
-	using FaceType   = MeshType::FaceType;
-	using NormalType = VertexType::NormalType;
-	using NScalarType = NormalType::ScalarType;
+    using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
+    using NormalType = VertexType::NormalType;
+    using NScalarType = NormalType::ScalarType;
 
-	for (FaceType& f : m.faces()) {
-		NormalType n = faceNormal(f).template cast<NScalarType>();
+    for (FaceType& f : m.faces()) {
+        NormalType n = faceNormal(f).template cast<NScalarType>();
 
-		for (uint i = 0; i < f.vertexNumber(); ++i) {
-			NScalarType e1 =
-				(f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
-					.squaredNorm();
-			NScalarType e2 =
-				(f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
-					.squaredNorm();
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
+            NScalarType e1 =
+                (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+                    .squaredNorm();
+            NScalarType e2 =
+                (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+                    .squaredNorm();
 
-			f.vertex(i)->normal() += n / (e1 * e2);
-		}
-	}
-	if (normalize)
-		normalizePerVertexNormals(m);
+            f.vertex(i)->normal() += n / (e1 * e2);
+        }
+    }
+    if (normalize)
+        normalizePerVertexNormals(m);
 }
 
 /**
@@ -341,34 +341,34 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true)
  */
 template<FaceMeshConcept MeshType, typename MScalar>
 void multiplyPerFaceNormalsByMatrix(
-	MeshType&                     mesh,
-	const vcl::Matrix44<MScalar>& mat,
-	bool                          removeScalingFromMatrix = true)
+    MeshType&                     mesh,
+    const vcl::Matrix44<MScalar>& mat,
+    bool                          removeScalingFromMatrix = true)
 {
-	requirePerFaceNormal(mesh);
+    requirePerFaceNormal(mesh);
 
-	using FaceType = MeshType::FaceType;
+    using FaceType = MeshType::FaceType;
 
-	Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
-	if (removeScalingFromMatrix) {
-		MScalar scaleX = std::sqrt(
-			m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) +
-			m33(0, 2) * m33(0, 2));
-		MScalar scaleY = std::sqrt(
-			m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) +
-			m33(1, 2) * m33(1, 2));
-		MScalar scaleZ = std::sqrt(
-			m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) +
-			m33(2, 2) * m33(2, 2));
-		for (int i = 0; i < 3; ++i) {
-			m33(0, i) /= scaleX;
-			m33(1, i) /= scaleY;
-			m33(2, i) /= scaleZ;
-		}
-	}
-	for (FaceType& f : mesh.faces()) {
-		f.normal() *= m33;
-	}
+    Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
+    if (removeScalingFromMatrix) {
+        MScalar scaleX = std::sqrt(
+            m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) +
+            m33(0, 2) * m33(0, 2));
+        MScalar scaleY = std::sqrt(
+            m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) +
+            m33(1, 2) * m33(1, 2));
+        MScalar scaleZ = std::sqrt(
+            m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) +
+            m33(2, 2) * m33(2, 2));
+        for (int i = 0; i < 3; ++i) {
+            m33(0, i) /= scaleX;
+            m33(1, i) /= scaleY;
+            m33(2, i) /= scaleZ;
+        }
+    }
+    for (FaceType& f : mesh.faces()) {
+        f.normal() *= m33;
+    }
 }
 
 /**
@@ -387,34 +387,34 @@ void multiplyPerFaceNormalsByMatrix(
  */
 template<MeshConcept MeshType, typename MScalar>
 void multiplyPerVertexNormalsByMatrix(
-	MeshType&                     mesh,
-	const vcl::Matrix44<MScalar>& mat,
-	bool                          removeScalingFromMatrix = true)
+    MeshType&                     mesh,
+    const vcl::Matrix44<MScalar>& mat,
+    bool                          removeScalingFromMatrix = true)
 {
-	requirePerVertexNormal(mesh);
+    requirePerVertexNormal(mesh);
 
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
-	if (removeScalingFromMatrix) {
-		MScalar scaleX = std::sqrt(
-			m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) +
-			m33(0, 2) * m33(0, 2));
-		MScalar scaleY = std::sqrt(
-			m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) +
-			m33(1, 2) * m33(1, 2));
-		MScalar scaleZ = std::sqrt(
-			m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) +
-			m33(2, 2) * m33(2, 2));
-		for (int i = 0; i < 3; ++i) {
-			m33(0, i) /= scaleX;
-			m33(1, i) /= scaleY;
-			m33(2, i) /= scaleZ;
-		}
-	}
-	for (VertexType& v : mesh.vertices()) {
-		v.normal() *= m33;
-	}
+    Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
+    if (removeScalingFromMatrix) {
+        MScalar scaleX = std::sqrt(
+            m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) +
+            m33(0, 2) * m33(0, 2));
+        MScalar scaleY = std::sqrt(
+            m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) +
+            m33(1, 2) * m33(1, 2));
+        MScalar scaleZ = std::sqrt(
+            m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) +
+            m33(2, 2) * m33(2, 2));
+        for (int i = 0; i < 3; ++i) {
+            m33(0, i) /= scaleX;
+            m33(1, i) /= scaleY;
+            m33(2, i) /= scaleZ;
+        }
+    }
+    for (VertexType& v : mesh.vertices()) {
+        v.normal() *= m33;
+    }
 }
 
 } // namespace vcl

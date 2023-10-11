@@ -20,8 +20,8 @@ namespace vcl {
  */
 template<typename Rng>
 concept %EL_UC%RangeConcept =
-	Range<Rng> &&
-	%EL_UC%Concept<typename std::ranges::iterator_t<Rng>::value_type>;
+    Range<Rng> &&
+    %EL_UC%Concept<typename std::ranges::iterator_t<Rng>::value_type>;
 
 /**
  * @brief The %EL_UC%PointerRangeConcept evaluates to true if Rng is a valid
@@ -34,11 +34,11 @@ concept %EL_UC%RangeConcept =
  */
 template<typename Rng>
 concept %EL_UC%PointerRangeConcept =
-	Range<Rng> &&
-	IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-	%EL_UC%Concept<typename std::decay_t<
-		std::remove_pointer_t<
-			typename std::ranges::iterator_t<Rng>::value_type>>>;
+    Range<Rng> &&
+    IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+    %EL_UC%Concept<typename std::decay_t<
+        std::remove_pointer_t<
+            typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 

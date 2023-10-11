@@ -40,7 +40,7 @@ namespace vcl {
  */
 template<typename Rng>
 concept VertexRangeConcept =
-	Range<Rng> && VertexConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+    Range<Rng> && VertexConcept<typename std::ranges::iterator_t<Rng>::value_type>;
 
 /**
  * @brief The VertexPointerRangeConcept evaluates to true if Rng is a valid Range on Vertex
@@ -52,9 +52,9 @@ concept VertexRangeConcept =
  */
 template<typename Rng>
 concept VertexPointerRangeConcept =
-	Range<Rng> && IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-	VertexConcept<typename std::decay_t<
-		std::remove_pointer_t<typename std::ranges::iterator_t<Rng>::value_type>>>;
+    Range<Rng> && IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+    VertexConcept<typename std::decay_t<
+        std::remove_pointer_t<typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 

@@ -41,44 +41,44 @@ typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
 typedef enum { RGB, RGBA} ColorMode ;
 
 typedef enum {
-	unknown = -1,
-	x,
-	y,
-	z,
-	nx,
-	ny,
-	nz,
-	red,
-	green,
-	blue,
-	alpha,
-	quality,
-	texture_u,
-	texture_v,
-	texnumber,
-	vertex_indices,
-	texcoord,
-	vertex1,
-	vertex2
+    unknown = -1,
+    x,
+    y,
+    z,
+    nx,
+    ny,
+    nz,
+    red,
+    green,
+    blue,
+    alpha,
+    quality,
+    texture_u,
+    texture_v,
+    texnumber,
+    vertex_indices,
+    texcoord,
+    vertex1,
+    vertex2
 } PropertyName;
 
 using PropertyType = vcl::io::internal::PropertyType;
 
 struct Property
 {
-	PropertyName name;
-	PropertyType type;
-	bool         list = false;
-	PropertyType listSizeType;
-	std::string  unknownPropertyName;  // when a property is not recognized
+    PropertyName name;
+    PropertyType type;
+    bool         list = false;
+    PropertyType listSizeType;
+    std::string  unknownPropertyName;  // when a property is not recognized
 };
 
 struct Element
 {
-	ElementType         type;
-	std::list<Property> properties;
-	uint                numberElements;
-	std::string         unknownElementType; // when an element is not recognized
+    ElementType         type;
+    std::list<Property> properties;
+    uint                numberElements;
+    std::string         unknownElementType; // when an element is not recognized
 };
 
 } // namespace vcl::ply

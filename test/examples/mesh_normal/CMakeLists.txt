@@ -12,7 +12,7 @@
 project(vclib-mesh-normal)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-normal ${SOURCES})
 

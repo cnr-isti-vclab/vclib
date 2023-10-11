@@ -33,12 +33,12 @@ namespace internal {
 template< template< typename ...formal > class base >
 struct IsDerivedFromImplementation
 {
-	template< typename ...actual >
-	std::true_type
-	operator () (base< actual... > *) const;
+    template< typename ...actual >
+    std::true_type
+    operator () (base< actual... > *) const;
 
-	std::false_type
-	operator () (void *) const;
+    std::false_type
+    operator () (void *) const;
 };
 
 } // namespace vcl::internal
@@ -61,8 +61,8 @@ struct IsDerivedFromImplementation
  */
 template<typename derived, template<typename...> class base>
 using IsDerivedFromTemplateSpecialization = std::invoke_result<
-	internal::IsDerivedFromImplementation<base>,
-	typename std::remove_cv<derived>::type*>::type;
+    internal::IsDerivedFromImplementation<base>,
+    typename std::remove_cv<derived>::type*>::type;
 
 } // namespace vcl
 

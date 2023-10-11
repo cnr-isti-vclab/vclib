@@ -37,16 +37,16 @@ concept CleanAdjFacesConcept = comp::HasAdjacentFaces<std::remove_cvref_t<T>>;
 
 struct AdjFacesView
 {
-	constexpr AdjFacesView() = default;
+    constexpr AdjFacesView() = default;
 
-	template <CleanAdjFacesConcept R>
-	friend constexpr auto operator|(R&& r, AdjFacesView)
-	{
-		if constexpr(IsPointer<R>)
-			return r->adjFaces();
-		else
-			return r.adjFaces();
-	}
+    template <CleanAdjFacesConcept R>
+    friend constexpr auto operator|(R&& r, AdjFacesView)
+    {
+        if constexpr(IsPointer<R>)
+            return r->adjFaces();
+        else
+            return r.adjFaces();
+    }
 };
 
 } // namespace vcl::views::internal

@@ -47,10 +47,10 @@ namespace vcl {
 template<MeshConcept MeshType>
 auto vertexQualityMinMax(const MeshType& m)
 {
-	vcl::requirePerVertexQuality(m);
+    vcl::requirePerVertexQuality(m);
 
-	auto [min, max] = std::ranges::minmax(m.vertices() | views::quality);
-	return std::make_pair(min, max);;
+    auto [min, max] = std::ranges::minmax(m.vertices() | views::quality);
+    return std::make_pair(min, max);;
 }
 
 /**
@@ -69,11 +69,11 @@ auto vertexQualityMinMax(const MeshType& m)
 template<FaceMeshConcept MeshType>
 auto faceQualityMinMax(const MeshType& m)
 {
-	vcl::requirePerFaceQuality(m);
+    vcl::requirePerFaceQuality(m);
 
-	auto [min, max] = std::ranges::minmax(m.faces() | views::quality);
+    auto [min, max] = std::ranges::minmax(m.faces() | views::quality);
 
-	return std::make_pair(min, max);
+    return std::make_pair(min, max);
 }
 
 /**
@@ -90,17 +90,17 @@ auto faceQualityMinMax(const MeshType& m)
 template<MeshConcept MeshType>
 auto vertexQualityAverage(const MeshType& m)
 {
-	vcl::requirePerVertexQuality(m);
+    vcl::requirePerVertexQuality(m);
 
-	using VertexType = MeshType::VertexType;
-	using QualityType = VertexType::QualityType;
+    using VertexType = MeshType::VertexType;
+    using QualityType = VertexType::QualityType;
 
-	QualityType avg = 0;
+    QualityType avg = 0;
 
-	for (const VertexType& v : m.vertices())
-		avg += v.quality();
+    for (const VertexType& v : m.vertices())
+        avg += v.quality();
 
-	return avg / m.vertexNumber();
+    return avg / m.vertexNumber();
 }
 
 /**
@@ -117,17 +117,17 @@ auto vertexQualityAverage(const MeshType& m)
 template<FaceMeshConcept MeshType>
 auto faceQualityAverage(const MeshType& m)
 {
-	vcl::requirePerFaceQuality(m);
+    vcl::requirePerFaceQuality(m);
 
-	using FaceType   = MeshType::FaceType;
-	using QualityType = FaceType::QualityType;
+    using FaceType   = MeshType::FaceType;
+    using QualityType = FaceType::QualityType;
 
-	QualityType avg = 0;
+    QualityType avg = 0;
 
-	for (const FaceType& f : m.faces())
-		avg += f.quality();
+    for (const FaceType& f : m.faces())
+        avg += f.quality();
 
-	return avg / m.faceNumber();
+    return avg / m.faceNumber();
 }
 
 /**
@@ -145,74 +145,74 @@ auto faceQualityAverage(const MeshType& m)
  */
 template<MeshConcept MeshType>
 std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
-	const MeshType& m,
-	double          diskRadius,
-	double          radiusVariance,
-	bool            invert = false)
+    const MeshType& m,
+    double          diskRadius,
+    double          radiusVariance,
+    bool            invert = false)
 {
-	vcl::requirePerVertexQuality(m);
+    vcl::requirePerVertexQuality(m);
 
-	using VertexType = MeshType::VertexType;
-	using QualityType = VertexType::QualityType;
+    using VertexType = MeshType::VertexType;
+    using QualityType = VertexType::QualityType;
 
-	std::vector<QualityType> radius(m.vertexContainerSize());
-	std::pair<QualityType, QualityType> minmax = vertexQualityMinMax(m);
-	float minRad = diskRadius;
-	float maxRad = diskRadius * radiusVariance;
-	float deltaQ = minmax.second - minmax.first;
-	float deltaRad = maxRad - minRad;
-	for (const VertexType& v : m.vertices()) {
-		radius[m.index(v)] =
-			minRad + deltaRad * ((invert ? minmax.second - v.quality() :
-										   v.quality() - minmax.first) /
-								 deltaQ);
-	}
+    std::vector<QualityType> radius(m.vertexContainerSize());
+    std::pair<QualityType, QualityType> minmax = vertexQualityMinMax(m);
+    float minRad = diskRadius;
+    float maxRad = diskRadius * radiusVariance;
+    float deltaQ = minmax.second - minmax.first;
+    float deltaRad = maxRad - minRad;
+    for (const VertexType& v : m.vertices()) {
+        radius[m.index(v)] =
+            minRad + deltaRad * ((invert ? minmax.second - v.quality() :
+                                           v.quality() - minmax.first) /
+                                 deltaQ);
+    }
 
-	return radius;
+    return radius;
 }
 
 template<MeshConcept MeshType, typename HScalar = double>
 Histogram<HScalar> vertexQualityHistogram(
-	const MeshType& m,
-	bool            selectionOnly = false,
-	uint            histSize      = 10000)
+    const MeshType& m,
+    bool            selectionOnly = false,
+    uint            histSize      = 10000)
 {
-	vcl::requirePerVertexQuality(m);
+    vcl::requirePerVertexQuality(m);
 
-	using VertexType = MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
 
-	auto minmax = vertexQualityMinMax(m);
+    auto minmax = vertexQualityMinMax(m);
 
-	vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
-	for (const VertexType& v : m.vertices()) {
-		if (!selectionOnly || v.selected()) {
-			assert(!isDegenerate(v.quality()));
-			h.addValue(v.quality());
-		}
-	}
-	return h;
+    vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
+    for (const VertexType& v : m.vertices()) {
+        if (!selectionOnly || v.selected()) {
+            assert(!isDegenerate(v.quality()));
+            h.addValue(v.quality());
+        }
+    }
+    return h;
 }
 
 template<FaceMeshConcept MeshType, typename HScalar = double>
 Histogram<HScalar> faceQualityHistogram(
-	const MeshType& m,
-	bool            selectionOnly = false,
-	uint            histSize      = 10000)
+    const MeshType& m,
+    bool            selectionOnly = false,
+    uint            histSize      = 10000)
 {
-	vcl::requirePerFaceQuality(m);
+    vcl::requirePerFaceQuality(m);
 
-	using FaceType = MeshType::FaceType;
+    using FaceType = MeshType::FaceType;
 
-	auto minmax = vertexQualityMinMax(m);
+    auto minmax = vertexQualityMinMax(m);
 
-	vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
-	for (const FaceType& f : m.faces()) {
-		if (!selectionOnly || f.selected()) {
-			assert(!isDegenerate(f.quality()));
-			h.addValue(f.quality());
-		}
-	}
-	return h;
+    vcl::Histogram<HScalar> h(minmax.first, minmax.second, histSize);
+    for (const FaceType& f : m.faces()) {
+        if (!selectionOnly || f.selected()) {
+            assert(!isDegenerate(f.quality()));
+            h.addValue(f.quality());
+        }
+    }
+    return h;
 }
 
 } // namespace vcl

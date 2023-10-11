@@ -44,35 +44,35 @@ class Face;
 
 template<typename Scalar>
 class Vertex :
-		public vcl::Vertex<
-			TriMeshT<Scalar>,
-			vcl::vert::BitFlags,                                            // 4b
-			vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
-			vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
-			vcl::vert::Color,                                               // 4b
-			vcl::vert::Quality<Scalar>,                                     // 4 or 8b
-			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
-			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
-			vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
-			vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
+        public vcl::Vertex<
+            TriMeshT<Scalar>,
+            vcl::vert::BitFlags,                                            // 4b
+            vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
+            vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
+            vcl::vert::Color,                                               // 4b
+            vcl::vert::Quality<Scalar>,                                     // 4 or 8b
+            vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
+            vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+            vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
+            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
+            vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
+            vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
 {
 };
 
 template<typename Scalar>
 class Face :
-		public vcl::Face<
-			TriMeshT<Scalar>,
-			vcl::face::TriangleBitFlags,                                     // 4b
-			vcl::face::TriangleVertexPtrs<Vertex<Scalar>>,                   // 24b
-			vcl::face::Normal3<Scalar>,                                      // 12 or 24b
-			vcl::face::OptionalQuality<Scalar, Face<Scalar>>,                // 0b
-			vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
-			vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
-			vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b
-			vcl::face::OptionalMark<Face<Scalar>>,                           // 0b
-			vcl::face::CustomComponents<Face<Scalar>>>                       // 0b
+        public vcl::Face<
+            TriMeshT<Scalar>,
+            vcl::face::TriangleBitFlags,                                     // 4b
+            vcl::face::TriangleVertexPtrs<Vertex<Scalar>>,                   // 24b
+            vcl::face::Normal3<Scalar>,                                      // 12 or 24b
+            vcl::face::OptionalQuality<Scalar, Face<Scalar>>,                // 0b
+            vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
+            vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
+            vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b
+            vcl::face::OptionalMark<Face<Scalar>>,                           // 0b
+            vcl::face::CustomComponents<Face<Scalar>>>                       // 0b
 {
 };
 
@@ -86,19 +86,19 @@ namespace vcl {
  */
 template<typename Scalar = double>
 class TriMeshT :
-		public vcl::Mesh<
-			mesh::VertexContainer<trimesh::Vertex<Scalar>>,
-			mesh::FaceContainer<trimesh::Face<Scalar>>,
-			mesh::BoundingBox3<Scalar>,
-			mesh::Color,
-			mesh::Mark,
-			mesh::Name,
-			mesh::TexturePaths,
-			mesh::TransformMatrix<Scalar>,
-			mesh::CustomComponents>
+        public vcl::Mesh<
+            mesh::VertexContainer<trimesh::Vertex<Scalar>>,
+            mesh::FaceContainer<trimesh::Face<Scalar>>,
+            mesh::BoundingBox3<Scalar>,
+            mesh::Color,
+            mesh::Mark,
+            mesh::Name,
+            mesh::TexturePaths,
+            mesh::TransformMatrix<Scalar>,
+            mesh::CustomComponents>
 {
 public:
-	using ScalarType = Scalar;
+    using ScalarType = Scalar;
 };
 
 /**

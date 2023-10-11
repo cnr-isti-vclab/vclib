@@ -12,7 +12,7 @@
 project(vclib-mesh-sampling)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-sampling ${SOURCES})
 

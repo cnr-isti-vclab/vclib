@@ -55,58 +55,58 @@ namespace vcl::comp {
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
 class Quality :
-		public Component<
-			Quality<Scalar, ElementType, OPT>,
-			QUALITY,
-			Scalar,
-			ElementType,
-			OPT>
+        public Component<
+            Quality<Scalar, ElementType, OPT>,
+            QUALITY,
+            Scalar,
+            ElementType,
+            OPT>
 {
-	using Base = Component<
-		Quality<Scalar, ElementType, OPT>,
-		QUALITY,
-		Scalar,
-		ElementType,
-		OPT>;
+    using Base = Component<
+        Quality<Scalar, ElementType, OPT>,
+        QUALITY,
+        Scalar,
+        ElementType,
+        OPT>;
 
 public:
-	/**
-	 * @brief Exposes the scalar used as Quality type.
-	 */
-	using QualityType = Scalar;
+    /**
+     * @brief Exposes the scalar used as Quality type.
+     */
+    using QualityType = Scalar;
 
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes the Quality value to 0.
-	 */
-	Quality() = default;
+    /**
+     * @brief Initilizes the Quality value to 0.
+     */
+    Quality() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns a const reference of the quality of the element.
-	 * @return a const reference of the quality of the element.
-	 */
-	const QualityType& quality() const { return Base::data(); }
+    /**
+     * @brief Returns a const reference of the quality of the element.
+     * @return a const reference of the quality of the element.
+     */
+    const QualityType& quality() const { return Base::data(); }
 
-	/**
-	 * @brief Returns a reference of the quality of the element.
-	 * @return a reference of the quality of the element.
-	 */
-	QualityType& quality() { return Base::data(); }
+    /**
+     * @brief Returns a reference of the quality of the element.
+     * @return a reference of the quality of the element.
+     */
+    QualityType& quality() { return Base::data(); }
 
 protected:
-	// Component interface functions
-	template<typename Element>
-	void importFrom(const Element& e)
-	{
-		if constexpr (HasQuality<Element>) {
-			if (isQualityAvailableOn(e)){
-				quality() = e.quality();
-			}
-		}
-	}
+    // Component interface functions
+    template<typename Element>
+    void importFrom(const Element& e)
+    {
+        if constexpr (HasQuality<Element>) {
+            if (isQualityAvailableOn(e)){
+                quality() = e.quality();
+            }
+        }
+    }
 };
 
 /* Detector function to check if a class has Quality available */
@@ -125,7 +125,7 @@ protected:
  */
 bool isQualityAvailableOn(const ElementOrMeshConcept auto& element)
 {
-	return isComponentAvailableOn<QUALITY>(element);
+    return isComponentAvailableOn<QUALITY>(element);
 }
 
 /* Specialization Aliases */

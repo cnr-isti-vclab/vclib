@@ -33,55 +33,55 @@ namespace vcl {
 
 template<MeshConcept MeshType, typename ScalarM>
 void applyTransformMatrix(
-	MeshType&                mesh,
-	const Matrix44<ScalarM>& matrix,
-	bool                     updateNormals = true)
+    MeshType&                mesh,
+    const Matrix44<ScalarM>& matrix,
+    bool                     updateNormals = true)
 {
-	using VertexType = typename MeshType::VertexType;
-	for (VertexType& v : mesh.vertices()) {
-		v.coord() *= matrix;
-	}
-	if (updateNormals) {
-		if constexpr (HasPerVertexNormal<MeshType>) {
-			if (isPerVertexNormalAvailable(mesh)) {
-				multiplyPerVertexNormalsByMatrix(mesh, matrix);
-			}
-		}
-		if constexpr (HasPerFaceNormal<MeshType>) {
-			if (isPerFaceNormalAvailable(mesh)) {
-				multiplyPerFaceNormalsByMatrix(mesh, matrix);
-			}
-		}
-	}
+    using VertexType = typename MeshType::VertexType;
+    for (VertexType& v : mesh.vertices()) {
+        v.coord() *= matrix;
+    }
+    if (updateNormals) {
+        if constexpr (HasPerVertexNormal<MeshType>) {
+            if (isPerVertexNormalAvailable(mesh)) {
+                multiplyPerVertexNormalsByMatrix(mesh, matrix);
+            }
+        }
+        if constexpr (HasPerFaceNormal<MeshType>) {
+            if (isPerFaceNormalAvailable(mesh)) {
+                multiplyPerFaceNormalsByMatrix(mesh, matrix);
+            }
+        }
+    }
 }
 
 template<MeshConcept MeshType, PointConcept PointType>
 void translate(MeshType& mesh, const PointType& t)
 {
-	using VertexType = typename MeshType::VertexType;
-	for (VertexType& v : mesh.vertices()) {
-		v.coord() += t;
-	}
+    using VertexType = typename MeshType::VertexType;
+    for (VertexType& v : mesh.vertices()) {
+        v.coord() += t;
+    }
 }
 
 template<MeshConcept MeshType, PointConcept PointType>
 void scale(MeshType& mesh, const PointType& s)
 {
-	using VertexType = typename MeshType::VertexType;
-	for (VertexType& v : mesh.vertices()) {
-		v.coord()(0) *= s(0);
-		v.coord()(1) *= s(1);
-		v.coord()(2) *= s(2);
-	}
+    using VertexType = typename MeshType::VertexType;
+    for (VertexType& v : mesh.vertices()) {
+        v.coord()(0) *= s(0);
+        v.coord()(1) *= s(1);
+        v.coord()(2) *= s(2);
+    }
 }
 
 template<MeshConcept MeshType, typename Scalar = double>
 void scale(MeshType& mesh, const Scalar& s)
 {
-	using VertexType = typename MeshType::VertexType;
-	for (VertexType& v : mesh.vertices()) {
-		v.coord() *= s;
-	}
+    using VertexType = typename MeshType::VertexType;
+    for (VertexType& v : mesh.vertices()) {
+        v.coord() *= s;
+    }
 }
 
 } // namespace vcl

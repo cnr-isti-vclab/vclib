@@ -32,98 +32,98 @@
 int main()
 {
 #ifdef VCL_USES_RANGES
-	vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
+    m.enablePerFaceAdjacentFaces();
+    vcl::updatePerFaceAdjacentFaces(m);
 
-	// print
+    // print
 
-	const vcl::TriMesh& cm = m;
+    const vcl::TriMesh& cm = m;
 
-	std::cerr << "\n\nCoords per face:\n\n";
+    std::cerr << "\n\nCoords per face:\n\n";
 
-	for (const auto& f : cm | vcl::views::faces) {
-		for (const auto& c : f | vcl::views::vertices | vcl::views::coords) {
-			std::cerr << c << "\t";
-		}
-		std::cerr << "\n";
-	}
+    for (const auto& f : cm | vcl::views::faces) {
+        for (const auto& c : f | vcl::views::vertices | vcl::views::coords) {
+            std::cerr << c << "\t";
+        }
+        std::cerr << "\n";
+    }
 
-	std::cerr << "\n\nAdjFaces per face:\n\n";
+    std::cerr << "\n\nAdjFaces per face:\n\n";
 
-	for (const auto& f : cm | vcl::views::faces) {
-		for (const auto& af : f | vcl::views::adjFaces | vcl::views::notNull) {
-			std::cerr << m.index(af) << "\t";
-		}
-		std::cerr << "\n";
-	}
+    for (const auto& f : cm | vcl::views::faces) {
+        for (const auto& af : f | vcl::views::adjFaces | vcl::views::notNull) {
+            std::cerr << m.index(af) << "\t";
+        }
+        std::cerr << "\n";
+    }
 
-	std::cerr << "\n\nTransform Coords per face:\n\n";
+    std::cerr << "\n\nTransform Coords per face:\n\n";
 
-	for (auto& f : cm | vcl::views::faces) {
-		for (auto& c : f | vcl::views::vertices | vcl::views::coords) {
-			//c*=2;
-			std::cerr << c << "\t";
-		}
-		std::cerr << "\n";
-	}
+    for (auto& f : cm | vcl::views::faces) {
+        for (auto& c : f | vcl::views::vertices | vcl::views::coords) {
+            //c*=2;
+            std::cerr << c << "\t";
+        }
+        std::cerr << "\n";
+    }
 
-	std::cerr << "\n\nPrint Coords per vertex:\n\n";
+    std::cerr << "\n\nPrint Coords per vertex:\n\n";
 
-	for (const auto& c : cm.vertices() | vcl::views::coords) {
-		std::cerr << c << "\n";
-	}
+    for (const auto& c : cm.vertices() | vcl::views::coords) {
+        std::cerr << c << "\n";
+    }
 
-	// transform
-	std::cerr << "\n\nTransform coords per vertex:\n\n";
+    // transform
+    std::cerr << "\n\nTransform coords per vertex:\n\n";
 
-	for (vcl::Point3d& c : m.vertices() | vcl::views::coords) {
-		c *= 2;
-		std::cerr << c << "\n";
-	}
+    for (vcl::Point3d& c : m.vertices() | vcl::views::coords) {
+        c *= 2;
+        std::cerr << c << "\n";
+    }
 
-	std::cerr << "\n\nTransform Selection:\n";
+    std::cerr << "\n\nTransform Selection:\n";
 
-	uint i = 0;
-	for (auto& v : m.vertices()) {
-		v.selected() = i % 2 ? true : false;
-		std::cerr << v.selected() << "\n";
-		++i;
-	}
+    uint i = 0;
+    for (auto& v : m.vertices()) {
+        v.selected() = i % 2 ? true : false;
+        std::cerr << v.selected() << "\n";
+        ++i;
+    }
 
-	std::cerr << "\n\nPrint Selection:\n";
-	for (bool sel : m.vertices() | vcl::views::selection) {
-		std::cerr << sel << "\n";
-	}
+    std::cerr << "\n\nPrint Selection:\n";
+    for (bool sel : m.vertices() | vcl::views::selection) {
+        std::cerr << sel << "\n";
+    }
 
-	std::cerr << "\n\nPrint Selected:\n";
-	for (const auto& v : m.vertices() | vcl::views::selected) {
-		std::cerr << m.index(v) << "\n";
-	}
+    std::cerr << "\n\nPrint Selected:\n";
+    for (const auto& v : m.vertices() | vcl::views::selected) {
+        std::cerr << m.index(v) << "\n";
+    }
 
-	std::cerr << "\n\nPrint Selected for each face:\n";
-	for (const auto& f : cm | vcl::views::faces) {
-		std::cerr << "Face: " << m.index(f) << "\n";
-		for (const auto* v : f.vertices() | vcl::views::selected) {
-			std::cerr << m.index(v) << "\n";
-		}
-	}
+    std::cerr << "\n\nPrint Selected for each face:\n";
+    for (const auto& f : cm | vcl::views::faces) {
+        std::cerr << "Face: " << m.index(f) << "\n";
+        for (const auto* v : f.vertices() | vcl::views::selected) {
+            std::cerr << m.index(v) << "\n";
+        }
+    }
 
 
-	// quality
+    // quality
 
-	i = 0;
-	for (auto& qual : m.vertices() | vcl::views::quality) {
-		qual = ++i;
-	}
+    i = 0;
+    for (auto& qual : m.vertices() | vcl::views::quality) {
+        qual = ++i;
+    }
 
-	std::cerr << "\n\nPrint Vertex Quality:\n";
+    std::cerr << "\n\nPrint Vertex Quality:\n";
 
-	for (const auto& qual : cm.vertices() | vcl::views::quality) {
-		std::cerr << qual << "\n";
-	}
-	return 0;
+    for (const auto& qual : cm.vertices() | vcl::views::quality) {
+        std::cerr << qual << "\n";
+    }
+    return 0;
 
 #endif
 }

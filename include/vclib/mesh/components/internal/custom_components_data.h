@@ -49,68 +49,68 @@ namespace vcl::comp::internal {
 template<typename ElementType, bool VERTICAL>
 struct CustomComponentsData
 {
-	bool componentExists(const std::string& compName, const ElementType*) const
-	{
-		return (map.find(compName) != map.end());
-	}
+    bool componentExists(const std::string& compName, const ElementType*) const
+    {
+        return (map.find(compName) != map.end());
+    }
 
-	template<typename CompType>
-	bool isComponentOfType(
-		const std::string& compName, const ElementType*) const
-	{
-		std::type_index t(typeid(CompType));
-		return t == compType.at(compName);
-	}
-	
-	std::type_index componentType(
-		const std::string& compName,
-		const ElementType*) const
-	{
-		return compType.at(compName);
-	}
+    template<typename CompType>
+    bool isComponentOfType(
+        const std::string& compName, const ElementType*) const
+    {
+        std::type_index t(typeid(CompType));
+        return t == compType.at(compName);
+    }
+    
+    std::type_index componentType(
+        const std::string& compName,
+        const ElementType*) const
+    {
+        return compType.at(compName);
+    }
 
-	template<typename CompType>
-	std::vector<std::string> componentNamesOfType(const ElementType*) const
-	{
-		std::vector<std::string> names;
-		std::type_index t(typeid(CompType));
-		for (const auto& p : compType) {
-			if (p.second == t)
-				names.push_back(p.first);
-		}
-		return names;
-	}
+    template<typename CompType>
+    std::vector<std::string> componentNamesOfType(const ElementType*) const
+    {
+        std::vector<std::string> names;
+        std::type_index t(typeid(CompType));
+        for (const auto& p : compType) {
+            if (p.second == t)
+                names.push_back(p.first);
+        }
+        return names;
+    }
 
-	template<typename CompType>
-	const CompType& get(const std::string& compName, const ElementType*) const
-	{
-		return std::any_cast<const CompType&>(map.at(compName));
-	}
+    template<typename CompType>
+    const CompType& get(const std::string& compName, const ElementType*) const
+    {
+        return std::any_cast<const CompType&>(map.at(compName));
+    }
 
-	template<typename CompType>
-	CompType& get(const std::string& compName, ElementType*)
-	{
-		return std::any_cast<CompType&>(map.at(compName));
-	}
+    template<typename CompType>
+    CompType& get(const std::string& compName, ElementType*)
+    {
+        return std::any_cast<CompType&>(map.at(compName));
+    }
 
-	template<typename CompType>
-	void addCustomComponent(
-		const std::string& compName,
-		const CompType     c = CompType())
-	{
-		map[compName] = c;
-		compType.emplace(compName, typeid(CompType));
-	}
+    template<typename CompType>
+    void addCustomComponent(
+        const std::string& compName,
+        const CompType     c = CompType())
+    {
+        map[compName] = c;
+        compType.emplace(compName, typeid(CompType));
+    }
 
-	void deleteCustomComponent(const std::string& compName)
-	{
-		map.erase(compName);
-		compType.erase(compName);
-	}
+    void deleteCustomComponent(const std::string& compName)
+    {
+        map.erase(compName);
+        compType.erase(compName);
+    }
 
 private:
-	std::unordered_map<std::string, std::any> map;
-	std::unordered_map<std::string, std::type_index> compType;
+    std::unordered_map<std::string, std::any> map;
+    std::unordered_map<std::string, std::type_index> compType;
 };
 
 // vertical, specialized on the boolean.
@@ -120,72 +120,72 @@ private:
 template<typename ElementType>
 struct CustomComponentsData<ElementType, true>
 {
-	bool componentExists(
-		const std::string& compName,
-		const ElementType* elem) const
-	{
-		return ccVec(elem).componentExists(compName);
-	}
+    bool componentExists(
+        const std::string& compName,
+        const ElementType* elem) const
+    {
+        return ccVec(elem).componentExists(compName);
+    }
 
-	template<typename CompType>
-	bool isComponentOfType(
-		const std::string& compName,
-		const ElementType* elem) const
-	{
-		return ccVec(elem).template isComponentOfType<CompType>(compName);
-	}
-	
-	std::type_index componentType(
-		const std::string& compName,
-		const ElementType* elem) const
-	{
-		return ccVec(elem).componentType(compName);
-	}
+    template<typename CompType>
+    bool isComponentOfType(
+        const std::string& compName,
+        const ElementType* elem) const
+    {
+        return ccVec(elem).template isComponentOfType<CompType>(compName);
+    }
+    
+    std::type_index componentType(
+        const std::string& compName,
+        const ElementType* elem) const
+    {
+        return ccVec(elem).componentType(compName);
+    }
 
-	template<typename CompType>
-	std::vector<std::string> componentNamesOfType(const ElementType* elem) const
-	{
-		return ccVec(elem).template allComponentNamesOfType<CompType>();
-	}
+    template<typename CompType>
+    std::vector<std::string> componentNamesOfType(const ElementType* elem) const
+    {
+        return ccVec(elem).template allComponentNamesOfType<CompType>();
+    }
 
-	template<typename CompType>
-	const CompType& get(
-		const std::string& compName,
-		const ElementType* elem) const
-	{
-		return std::any_cast<const CompType&>(
-			ccVec(elem).template componentVector<CompType>(
-				compName)[thisId(elem)]);
-	}
+    template<typename CompType>
+    const CompType& get(
+        const std::string& compName,
+        const ElementType* elem) const
+    {
+        return std::any_cast<const CompType&>(
+            ccVec(elem).template componentVector<CompType>(
+                compName)[thisId(elem)]);
+    }
 
-	template<typename CompType>
-	CompType& get(const std::string& compName, ElementType* elem)
-	{
-		return std::any_cast<CompType&>(
-			ccVec(elem).template componentVector<CompType>(
-				compName)[thisId(elem)]);
-	}
+    template<typename CompType>
+    CompType& get(const std::string& compName, ElementType* elem)
+    {
+        return std::any_cast<CompType&>(
+            ccVec(elem).template componentVector<CompType>(
+                compName)[thisId(elem)]);
+    }
 
 private:
-	uint thisId(const ElementType* elem) const
-	{
-		assert(elem->parentMesh());
-		return elem->index();
-	}
+    uint thisId(const ElementType* elem) const
+    {
+        assert(elem->parentMesh());
+        return elem->index();
+    }
 
-	auto& ccVec(ElementType* elem)
-	{
-		assert(elem->parentMesh());
-		// get the vector of custom components
-		return elem->parentMesh()->template customComponents<ElementType>();
-	}
+    auto& ccVec(ElementType* elem)
+    {
+        assert(elem->parentMesh());
+        // get the vector of custom components
+        return elem->parentMesh()->template customComponents<ElementType>();
+    }
 
-	const auto& ccVec(const ElementType* elem) const
-	{
-		assert(elem->parentMesh());
-		// get the vector of custom components
-		return elem->parentMesh()->template customComponents<ElementType>();
-	}
+    const auto& ccVec(const ElementType* elem) const
+    {
+        assert(elem->parentMesh());
+        // get the vector of custom components
+        return elem->parentMesh()->template customComponents<ElementType>();
+    }
 };
 
 } // namespace vcl::comp::internal

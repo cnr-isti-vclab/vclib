@@ -12,7 +12,7 @@
 project(vclib-polymesh-basic-example)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-polymesh-basic-example ${SOURCES})
 

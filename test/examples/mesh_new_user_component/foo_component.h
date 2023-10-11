@@ -39,11 +39,11 @@
 template<typename T>
 concept HasFooComponent = requires(T t, const T& ct)
 {
-	// accessor to the foo component, returns int&
-	{ t.foo() } -> std::same_as<int&>;
+    // accessor to the foo component, returns int&
+    { t.foo() } -> std::same_as<int&>;
 
-	// const accessor to the foo component
-	{ ct.foo() } -> std::same_as<int>;
+    // const accessor to the foo component
+    { ct.foo() } -> std::same_as<int>;
 };
 
 // class of the Foo component
@@ -53,34 +53,34 @@ concept HasFooComponent = requires(T t, const T& ct)
 class FooComponent
 {
 public:
-	// first requirement: an unique static const uint ID of the component
-	// vcl::COMPONENTS_NUMBER is the number of components that are already
-	// defined in VCLib. You can use it to avoid collisions.
-	static const uint COMPONENT_ID = vcl::COMPONENTS_NUMBER + 0;
+    // first requirement: an unique static const uint ID of the component
+    // vcl::COMPONENTS_NUMBER is the number of components that are already
+    // defined in VCLib. You can use it to avoid collisions.
+    static const uint COMPONENT_ID = vcl::COMPONENTS_NUMBER + 0;
 
-	// any member that you want to add to the component
-	int& foo() { return data; }
-	int foo() const { return data; }
+    // any member that you want to add to the component
+    int& foo() { return data; }
+    int foo() const { return data; }
 
 protected:
-	// second requirement: a protected `importFrom` member function
-	template<typename Element> // another element, maybe from another mesh type
-	void importFrom(const Element& e)
-	{
-		// will import the foo component from the element e only if it also has
-		// the foo component
-		if constexpr (HasFooComponent<Element>) { // compile time check
-			data = e.foo();
-		}
-	}
+    // second requirement: a protected `importFrom` member function
+    template<typename Element> // another element, maybe from another mesh type
+    void importFrom(const Element& e)
+    {
+        // will import the foo component from the element e only if it also has
+        // the foo component
+        if constexpr (HasFooComponent<Element>) { // compile time check
+            data = e.foo();
+        }
+    }
 
 private:
-	// the data that you want to store in a component
-	int data;
+    // the data that you want to store in a component
+    int data;
 };
 
 static_assert(
-	HasFooComponent<FooComponent>,
-	"Make sure that the concept is satisfied with its component.");
+    HasFooComponent<FooComponent>,
+    "Make sure that the concept is satisfied with its component.");
 
 #endif // FOO_COMPONENT_H

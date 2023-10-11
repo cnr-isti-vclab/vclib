@@ -35,9 +35,9 @@ namespace vcl {
 template<typename Obj1, typename Obj2>
 struct IntersFunctionStruct
 {
-	static_assert(
-		sizeof(Obj1) != sizeof(Obj1), // always fail
-		"There is no a IntersFunctionStruct specialization for the given types.");
+    static_assert(
+        sizeof(Obj1) != sizeof(Obj1), // always fail
+        "There is no a IntersFunctionStruct specialization for the given types.");
 };
 
 /**
@@ -68,7 +68,7 @@ struct IntersFunctionStruct
 template<typename Obj1, typename Obj2>
 auto intersectFunction()
 {
-	return IntersFunctionStruct<Obj1, Obj2>::intersFun;
+    return IntersFunctionStruct<Obj1, Obj2>::intersFun;
 }
 
 /********* IntersFunctionStruct Specializations *********/
@@ -86,90 +86,90 @@ auto intersectFunction()
 template<Box3Concept Obj1, FaceConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return faceBoxIntersect(o2, o1);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return faceBoxIntersect(o2, o1);
+    };
 };
 
 // Specialization for intersection between Face and Box
 template<FaceConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return faceBoxIntersect(o1, o2);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return faceBoxIntersect(o1, o2);
+    };
 };
 
 // Specialization for intersection between Sphere and Face
 template<SphereConcept Obj1, FaceConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return faceSphereIntersect(o2, o1);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return faceSphereIntersect(o2, o1);
+    };
 };
 
 // Specialization for intersection between Face and Sphere
 template<FaceConcept Obj1, SphereConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return faceSphereIntersect(o1, o2);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return faceSphereIntersect(o1, o2);
+    };
 };
 
 // Specialization for intersection between Plane and Box3
 template<PlaneConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return planeBoxIntersect(o1, o2);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return planeBoxIntersect(o1, o2);
+    };
 };
 
 // Specialization for intersection between Box3 and Plane
 template<Box3Concept Obj1, PlaneConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return planeBoxIntersect(o2, o1);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return planeBoxIntersect(o2, o1);
+    };
 };
 
 // Specialization for intersection between Plane and Segment3
 template<PlaneConcept Obj1, Segment3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return planeSegmentIntersect(o1, o2);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return planeSegmentIntersect(o1, o2);
+    };
 };
 
 // Specialization for intersection between Segment3 and Plane
 template<Segment3Concept Obj1, PlaneConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return planeSegmentIntersect(o2, o1);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return planeSegmentIntersect(o2, o1);
+    };
 };
 
 // Specialization for intersection between Sphere and Box3
 template<SphereConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return sphereBoxIntersect(o1, o2);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return sphereBoxIntersect(o1, o2);
+    };
 };
 
 // Specialization for intersection between Box3 and Sphere
 template<Box3Concept Obj1, SphereConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
-	static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-		return sphereBoxIntersect(o2, o1);
-	};
+    static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
+        return sphereBoxIntersect(o2, o1);
+    };
 };
 
 } // namespace vcl

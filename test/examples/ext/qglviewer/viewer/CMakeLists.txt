@@ -12,7 +12,7 @@
 project(vclib-ext-qglviewer-viewer)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-ext-qglviewer-viewer ${SOURCES})
 

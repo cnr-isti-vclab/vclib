@@ -45,30 +45,30 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 void updateBorder(MeshType& m)
 {
-	using VertexType = MeshType::VertexType;
-	using FaceType   = MeshType::FaceType;
+    using VertexType = MeshType::VertexType;
+    using FaceType   = MeshType::FaceType;
 
-	for (FaceType& f : m.faces())
-		f.unsetAllEdgesOnBorder();
+    for (FaceType& f : m.faces())
+        f.unsetAllEdgesOnBorder();
 
-	if (m.faceNumber() == 0)
-		return;
+    if (m.faceNumber() == 0)
+        return;
 
-	std::vector<MeshEdgeUtil<MeshType>> e = fillAndSortMeshEdgeUtilVector(m);
+    std::vector<MeshEdgeUtil<MeshType>> e = fillAndSortMeshEdgeUtilVector(m);
 
-	typename std::vector<MeshEdgeUtil<MeshType>>::iterator pe, ps;
-	ps = e.begin();
-	pe = e.begin();
-	do {
-		if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
-			if (pe - ps == 1) {
-				ps->f->edgeOnBorder(ps->e) = true;
-			}
-			ps = pe;
-		}
-		if (pe != e.end())
-			++pe;
-	} while (pe != e.end());
+    typename std::vector<MeshEdgeUtil<MeshType>>::iterator pe, ps;
+    ps = e.begin();
+    pe = e.begin();
+    do {
+        if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
+            if (pe - ps == 1) {
+                ps->f->edgeOnBorder(ps->e) = true;
+            }
+            ps = pe;
+        }
+        if (pe != e.end())
+            ++pe;
+    } while (pe != e.end());
 }
 
 } // namespace vcl

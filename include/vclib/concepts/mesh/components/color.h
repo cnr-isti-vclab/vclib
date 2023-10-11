@@ -46,11 +46,11 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasColor = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	{ o.color() } -> std::same_as<vcl::Color&>;
-	{ co.color() } -> std::same_as<const vcl::Color&>;
+    { o.color() } -> std::same_as<vcl::Color&>;
+    { co.color() } -> std::same_as<const vcl::Color&>;
 };
 
 /**
@@ -61,7 +61,7 @@ concept HasColor = requires(
  */
 template<typename T>
 concept HasOptionalColor =
-	HasColor<T> && IsOptionalComponent<typename T::Color>;
+    HasColor<T> && IsOptionalComponent<typename T::Color>;
 
 } // namespace vcl::comp
 

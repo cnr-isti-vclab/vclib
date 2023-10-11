@@ -54,13 +54,13 @@ namespace vcl {
 template<typename T>
 concept SegmentConcept = requires(T o, const T& co)
 {
-	typename T::PointType;
-	typename T::ScalarType;
-	o.DIM;
-	{ o.p0() } -> std::same_as<typename T::PointType&>;
-	{ co.p0() } -> std::same_as<const typename T::PointType&>;
-	{ o.p1() } -> std::same_as<typename T::PointType&>;
-	{ co.p1() } -> std::same_as<const typename T::PointType&>;
+    typename T::PointType;
+    typename T::ScalarType;
+    o.DIM;
+    { o.p0() } -> std::same_as<typename T::PointType&>;
+    { co.p0() } -> std::same_as<const typename T::PointType&>;
+    { o.p1() } -> std::same_as<typename T::PointType&>;
+    { co.p1() } -> std::same_as<const typename T::PointType&>;
 };
 
 /**

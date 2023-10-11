@@ -35,56 +35,56 @@ template<FaceMeshConcept MeshType>
 std::vector<MeshEdgeUtil<MeshType>>
 fillAndSortMeshEdgeUtilVector(MeshType& m, bool includeFauxEdges = true)
 {
-	using FaceType = MeshType::FaceType;
+    using FaceType = MeshType::FaceType;
 
-	std::vector<MeshEdgeUtil<MeshType>> vec;
+    std::vector<MeshEdgeUtil<MeshType>> vec;
 
-	int n_edges = 0;
-	for (const FaceType& f : m.faces())
-		n_edges += f.vertexNumber();
+    int n_edges = 0;
+    for (const FaceType& f : m.faces())
+        n_edges += f.vertexNumber();
 
-	vec.reserve(n_edges);
+    vec.reserve(n_edges);
 
-	for (FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
-		for (uint j = 0; j < f.vertexNumber(); ++j) {
-			if (includeFauxEdges || !f.edgeFaux(j)) {
-				vec.emplace_back(f, j);
-			}
-		}
-	}
+    for (FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
+        for (uint j = 0; j < f.vertexNumber(); ++j) {
+            if (includeFauxEdges || !f.edgeFaux(j)) {
+                vec.emplace_back(f, j);
+            }
+        }
+    }
 
-	// Lo ordino per vertici
-	std::sort(std::execution::par_unseq, vec.begin(), vec.end());
+    // Lo ordino per vertici
+    std::sort(std::execution::par_unseq, vec.begin(), vec.end());
 
-	return vec;
+    return vec;
 }
 
 template<FaceMeshConcept MeshType>
 std::vector<ConstMeshEdgeUtil<MeshType>>
 fillAndSortMeshEdgeUtilVector(const MeshType& m, bool includeFauxEdges = true)
 {
-	using FaceType = MeshType::FaceType;
+    using FaceType = MeshType::FaceType;
 
-	std::vector<ConstMeshEdgeUtil<MeshType>> vec;
+    std::vector<ConstMeshEdgeUtil<MeshType>> vec;
 
-	int n_edges = 0;
-	for (const FaceType& f : m.faces())
-		n_edges += f.vertexNumber();
+    int n_edges = 0;
+    for (const FaceType& f : m.faces())
+        n_edges += f.vertexNumber();
 
-	vec.reserve(n_edges);
+    vec.reserve(n_edges);
 
-	for (const FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
-		for (uint j = 0; j < f.vertexNumber(); ++j) {
-			if (includeFauxEdges || !f.edgeFaux(j)) {
-				vec.emplace_back(f, j);
-			}
-		}
-	}
+    for (const FaceType& f : m.faces()) { // Lo riempio con i dati delle facce
+        for (uint j = 0; j < f.vertexNumber(); ++j) {
+            if (includeFauxEdges || !f.edgeFaux(j)) {
+                vec.emplace_back(f, j);
+            }
+        }
+    }
 
-	// Lo ordino per vertici
-	std::sort(std::execution::par_unseq, vec.begin(), vec.end());
+    // Lo ordino per vertici
+    std::sort(std::execution::par_unseq, vec.begin(), vec.end());
 
-	return vec;
+    return vec;
 }
 
 } // namespace vcl

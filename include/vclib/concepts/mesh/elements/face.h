@@ -45,18 +45,18 @@ namespace face {
 // checks if a type derives from vcl::Face<Args...>
 template<typename Derived>
 using IsDerivedFromFace =
-		IsDerivedFromTemplateSpecialization<Derived, Face>;
+        IsDerivedFromTemplateSpecialization<Derived, Face>;
 
 // checks if a type is a vcl::Face<Args...>
 template<class T>
 struct IsAFace : // Default case, no pattern match
-		std::false_type
+        std::false_type
 {
 };
 
 template<class... Args>
 struct IsAFace<Face<Args...>> : // For types matching the pattern Face<Args...>
-		std::true_type
+        std::true_type
 {
 };
 
@@ -145,21 +145,21 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
  */
 template<typename T>
 concept FaceConcept =
-	ElementConcept<T> &&
-	T::ELEMENT_ID == FACE &&
-	(face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value) &&
-	face::HasBitFlags<T> &&
-	face::HasVertexPointers<T> &&
-	(T::VERTEX_NUMBER < 0 || T::VERTEX_NUMBER >= 3) &&
-	(!face::HasTriangleBitFlags<T> || T::VERTEX_NUMBER == 3) &&
-	comp::SanityCheckAdjacentEdges<T> &&
-	comp::SanityCheckAdjacentFaces<T> &&
-	comp::SanityCheckWedgeColors<T> &&
-	comp::SanityCheckWedgeTexCoords<T>;
+    ElementConcept<T> &&
+    T::ELEMENT_ID == FACE &&
+    (face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value) &&
+    face::HasBitFlags<T> &&
+    face::HasVertexPointers<T> &&
+    (T::VERTEX_NUMBER < 0 || T::VERTEX_NUMBER >= 3) &&
+    (!face::HasTriangleBitFlags<T> || T::VERTEX_NUMBER == 3) &&
+    comp::SanityCheckAdjacentEdges<T> &&
+    comp::SanityCheckAdjacentFaces<T> &&
+    comp::SanityCheckWedgeColors<T> &&
+    comp::SanityCheckWedgeTexCoords<T>;
 
 template<typename T>
 concept TriangleFaceConcept =
-	T::VERTEX_NUMBER == 3 && FaceConcept<T>;
+    T::VERTEX_NUMBER == 3 && FaceConcept<T>;
 
 /**
  * @brief The PolygonFaceConcept describes how a Face element class should be
@@ -175,7 +175,7 @@ concept TriangleFaceConcept =
  */
 template<typename T>
 concept PolygonFaceConcept =
-	T::VERTEX_NUMBER < 0 && FaceConcept<T>;
+    T::VERTEX_NUMBER < 0 && FaceConcept<T>;
 
 } // namespace vcl
 

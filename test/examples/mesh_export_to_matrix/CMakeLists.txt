@@ -12,7 +12,7 @@
 project(vclib-mesh-export-to-matrix)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-export-to-matrix ${SOURCES})
 

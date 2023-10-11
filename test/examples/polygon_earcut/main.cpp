@@ -27,22 +27,22 @@
 
 int main()
 {
-	std::vector<vcl::Point2d> polygon = {
-		vcl::Point2d(1, 0),
-		vcl::Point2d(1, 1),
-		vcl::Point2d(2, 1),
-		vcl::Point2d(2, 0),
-		vcl::Point2d(3, 0),
-		vcl::Point2d(3, 3),
-		vcl::Point2d(0, 3),
-		vcl::Point2d(0, 0)};
+    std::vector<vcl::Point2d> polygon = {
+        vcl::Point2d(1, 0),
+        vcl::Point2d(1, 1),
+        vcl::Point2d(2, 1),
+        vcl::Point2d(2, 0),
+        vcl::Point2d(3, 0),
+        vcl::Point2d(3, 3),
+        vcl::Point2d(0, 3),
+        vcl::Point2d(0, 0)};
 
-	std::vector<uint> tri = vcl::Polygon<vcl::Point2d>::earCut(polygon.begin(), polygon.end());
+    std::vector<uint> tri = vcl::Polygon<vcl::Point2d>::earCut(polygon.begin(), polygon.end());
 
-	std::cerr << "Triangle indices: \n";
-	for (uint i = 0; i < tri.size(); i+= 3){
-		std::cerr << tri[i] << "; " << tri[i+1] << "; " << tri[i+2] << "\n";
-	}
+    std::cerr << "Triangle indices: \n";
+    for (uint i = 0; i < tri.size(); i+= 3){
+        std::cerr << tri[i] << "; " << tri[i+1] << "; " << tri[i+2] << "\n";
+    }
 
-	return 0;
+    return 0;
 }

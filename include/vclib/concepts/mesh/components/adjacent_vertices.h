@@ -47,40 +47,40 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasAdjacentVertices = requires(
-	T o,
-	const T& co,
-	typename T::AdjacentVertexType v,
-	std::vector<typename T::AdjacentVertexType*> vec)
+    T o,
+    const T& co,
+    typename T::AdjacentVertexType v,
+    std::vector<typename T::AdjacentVertexType*> vec)
 {
-	typename T::AdjacentVertexType;
-	typename T::AdjacentVertexIterator;
-	typename T::ConstAdjacentVertexIterator;
+    typename T::AdjacentVertexType;
+    typename T::AdjacentVertexIterator;
+    typename T::ConstAdjacentVertexIterator;
 
-	{ o.adjVerticesNumber() } -> std::same_as<uint>;
-	{ o.adjVertex(uint()) } ->
-		std::same_as<typename T::AdjacentVertexType*&>;
-	{ co.adjVertex(uint()) } ->
-		std::same_as<const typename T::AdjacentVertexType*>;
-	{ o.adjVertexMod(int()) } -> std::same_as<typename T::AdjacentVertexType*&>;
-	{ co.adjVertexMod(int()) } ->
-		std::same_as<const typename T::AdjacentVertexType*>;
-	{ o.setAdjVertex(&v, uint()) } -> std::same_as<void>;
-	{ o.setAdjVertices(vec) } -> std::same_as<void>;
-	{ co.containsAdjVertex(&v) } -> std::same_as<bool>;
+    { o.adjVerticesNumber() } -> std::same_as<uint>;
+    { o.adjVertex(uint()) } ->
+        std::same_as<typename T::AdjacentVertexType*&>;
+    { co.adjVertex(uint()) } ->
+        std::same_as<const typename T::AdjacentVertexType*>;
+    { o.adjVertexMod(int()) } -> std::same_as<typename T::AdjacentVertexType*&>;
+    { co.adjVertexMod(int()) } ->
+        std::same_as<const typename T::AdjacentVertexType*>;
+    { o.setAdjVertex(&v, uint()) } -> std::same_as<void>;
+    { o.setAdjVertices(vec) } -> std::same_as<void>;
+    { co.containsAdjVertex(&v) } -> std::same_as<bool>;
 
-	{ o.findAdjVertex(&v) } -> std::same_as<typename T::AdjacentVertexIterator>;
-	{ co.findAdjVertex(&v) } ->
-		std::same_as<typename T::ConstAdjacentVertexIterator>;
-	{ co.indexOfAdjVertex(&v) } -> std::same_as<uint>;
+    { o.findAdjVertex(&v) } -> std::same_as<typename T::AdjacentVertexIterator>;
+    { co.findAdjVertex(&v) } ->
+        std::same_as<typename T::ConstAdjacentVertexIterator>;
+    { co.indexOfAdjVertex(&v) } -> std::same_as<uint>;
 
-	{ o.adjVertexBegin() } -> std::same_as<typename T::AdjacentVertexIterator>;
-	{ o.adjVertexEnd() } -> std::same_as<typename T::AdjacentVertexIterator>;
-	{ co.adjVertexBegin() } ->
-		std::same_as<typename T::ConstAdjacentVertexIterator>;
-	{ co.adjVertexEnd() } ->
-		std::same_as<typename T::ConstAdjacentVertexIterator>;
-	o.adjVertices();
-	co.adjVertices();
+    { o.adjVertexBegin() } -> std::same_as<typename T::AdjacentVertexIterator>;
+    { o.adjVertexEnd() } -> std::same_as<typename T::AdjacentVertexIterator>;
+    { co.adjVertexBegin() } ->
+        std::same_as<typename T::ConstAdjacentVertexIterator>;
+    { co.adjVertexEnd() } ->
+        std::same_as<typename T::ConstAdjacentVertexIterator>;
+    o.adjVertices();
+    co.adjVertices();
 };
 
 /**
@@ -92,7 +92,7 @@ concept HasAdjacentVertices = requires(
  */
 template<typename T>
 concept HasOptionalAdjacentVertices =
-	HasAdjacentVertices<T> && IsOptionalComponent<typename T::AdjacentVertices>;
+    HasAdjacentVertices<T> && IsOptionalComponent<typename T::AdjacentVertices>;
 
 } // namespace vcl::comp
 

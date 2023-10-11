@@ -29,19 +29,19 @@
 
 int main()
 {
-	vcl::TriMesh tm;
+    vcl::TriMesh tm;
 
-	vcl::io::loadPly(tm, VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+    vcl::io::loadPly(tm, VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
-	vcl::TriMesh m = tm;
+    vcl::TriMesh m = tm;
 
-	vcl::Matrix44<vcl::TriMesh::ScalarType> m44;
-	m44.setZero();
-	m44.diagonal() << -1, -1, -1, 1;
+    vcl::Matrix44<vcl::TriMesh::ScalarType> m44;
+    m44.setZero();
+    m44.diagonal() << -1, -1, -1, 1;
 
-	vcl::applyTransformMatrix(tm, m44);
+    vcl::applyTransformMatrix(tm, m44);
 
-	vcl::io::savePly(tm, VCL_TEST_RESULTS_PATH "/rotated_bunny.ply");
+    vcl::io::savePly(tm, VCL_TEST_RESULTS_PATH "/rotated_bunny.ply");
 
-	return 0;
+    return 0;
 }

@@ -50,8 +50,8 @@ namespace vcl {
  */
 template<typename MeshType>
 concept HasPerFaceAdjacentEdges =
-	HasFaces<MeshType> &&
-	vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasAdjacentEdges<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face AdjacentFaces
@@ -66,8 +66,8 @@ concept HasPerFaceAdjacentEdges =
  */
 template<typename MeshType>
 concept HasPerFaceAdjacentFaces =
-	HasFaces<MeshType> &&
-	vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasAdjacentFaces<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face BitFlags
@@ -82,8 +82,8 @@ concept HasPerFaceAdjacentFaces =
  */
 template<typename MeshType>
 concept HasPerFaceBitFlags =
-	HasFaces<MeshType> &&
-	vcl::face::HasBitFlags<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasBitFlags<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face Color
@@ -98,8 +98,8 @@ concept HasPerFaceBitFlags =
  */
 template<typename MeshType>
 concept HasPerFaceColor =
-	HasFaces<MeshType> &&
-	vcl::face::HasColor<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasColor<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face CustomComponents
@@ -114,8 +114,8 @@ concept HasPerFaceColor =
  */
 template<typename MeshType>
 concept HasPerFaceCustomComponents =
-	HasFaces<MeshType> &&
-	vcl::face::HasCustomComponents<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasCustomComponents<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face Mark
@@ -130,8 +130,8 @@ concept HasPerFaceCustomComponents =
  */
 template<typename MeshType>
 concept HasPerFaceMark =
-	HasFaces<MeshType> &&
-	vcl::face::HasMark<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasMark<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face Normal
@@ -146,8 +146,8 @@ concept HasPerFaceMark =
  */
 template<typename MeshType>
 concept HasPerFaceNormal =
-	HasFaces<MeshType> &&
-	vcl::face::HasNormal<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasNormal<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face PolygonBitFlags
@@ -162,8 +162,8 @@ concept HasPerFaceNormal =
  */
 template<typename MeshType>
 concept HasPerFacePolygonBitFlags =
-	HasFaces<MeshType> &&
-	vcl::face::HasPolygonBitFlags<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasPolygonBitFlags<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face PrincipalCurvature
@@ -178,8 +178,8 @@ concept HasPerFacePolygonBitFlags =
  */
 template<typename MeshType>
 concept HasPerFacePrincipalCurvature =
-	HasFaces<MeshType> &&
-	vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasPrincipalCurvature<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face Quality
@@ -194,8 +194,8 @@ concept HasPerFacePrincipalCurvature =
  */
 template<typename MeshType>
 concept HasPerFaceQuality =
-	HasFaces<MeshType> &&
-	vcl::face::HasQuality<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasQuality<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face TriangleBitFlags
@@ -210,8 +210,8 @@ concept HasPerFaceQuality =
  */
 template<typename MeshType>
 concept HasPerFaceTriangleBitFlags =
-	HasFaces<MeshType> &&
-	vcl::face::HasTriangleBitFlags<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasTriangleBitFlags<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face VertexPointers
@@ -226,8 +226,8 @@ concept HasPerFaceTriangleBitFlags =
  */
 template<typename MeshType>
 concept HasPerFaceVertexPointers =
-	HasFaces<MeshType> &&
-	vcl::face::HasVertexPointers<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasVertexPointers<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face WedgeColors
@@ -242,8 +242,8 @@ concept HasPerFaceVertexPointers =
  */
 template<typename MeshType>
 concept HasPerFaceWedgeColors =
-	HasFaces<MeshType> &&
-	vcl::face::HasWedgeColors<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasWedgeColors<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face WedgeTexCoords
@@ -258,8 +258,8 @@ concept HasPerFaceWedgeColors =
  */
 template<typename MeshType>
 concept HasPerFaceWedgeTexCoords =
-	HasFaces<MeshType> &&
-	vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
+    HasFaces<MeshType> &&
+    vcl::face::HasWedgeTexCoords<typename MeshType::FaceType>;
 
 
 

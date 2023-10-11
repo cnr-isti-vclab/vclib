@@ -35,41 +35,41 @@
 #include <vclib/ext/qt/gui/mesh_render_settings_frame.h>
 
 int main(int argc, char **argv) {
-	// Read command lines arguments.
-	QApplication application(argc, argv);
+    // Read command lines arguments.
+    QApplication application(argc, argv);
 
-	// Instantiate the viewer.
-	vcl::ViewerMainWindow viewer;
+    // Instantiate the viewer.
+    vcl::ViewerMainWindow viewer;
 
-	vcl::MeshInfo loadedInfo;
+    vcl::MeshInfo loadedInfo;
 
-	vcl::PolyMesh tm = vcl::load<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
-	vcl::updatePerFaceNormals(tm);
-	vcl::updatePerVertexNormals(tm);
-	tm.enablePerFaceColor();
-	vcl::setPerVertexColor(tm, vcl::Color::DarkMagenta);
-	vcl::setPerFaceColor(tm, vcl::Color::LightGreen);
-	vcl::setMeshColor(tm, vcl::Color::Yellow);
+    vcl::PolyMesh tm = vcl::load<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
+    vcl::updatePerFaceNormals(tm);
+    vcl::updatePerVertexNormals(tm);
+    tm.enablePerFaceColor();
+    vcl::setPerVertexColor(tm, vcl::Color::DarkMagenta);
+    vcl::setPerFaceColor(tm, vcl::Color::LightGreen);
+    vcl::setMeshColor(tm, vcl::Color::Yellow);
 
-	vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
-	vcl::updatePerFaceNormals(m);
-	vcl::updatePerVertexNormals(m);
-	vcl::setPerVertexColor(m, vcl::Color::DarkGreen);
+    vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::updatePerFaceNormals(m);
+    vcl::updatePerVertexNormals(m);
+    vcl::setPerVertexColor(m, vcl::Color::DarkGreen);
 
-	vcl::DrawableMesh<vcl::PolyMesh> dtm(tm);
-	vcl::DrawableMesh<vcl::TriMesh> dm(m);
+    vcl::DrawableMesh<vcl::PolyMesh> dtm(tm);
+    vcl::DrawableMesh<vcl::TriMesh> dm(m);
 
-	std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
-	vector->pushBack(dtm);
-	vector->pushBack(dm);
+    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    vector->pushBack(dtm);
+    vector->pushBack(dm);
 
-	viewer.setDrawableObjectVector(vector);
+    viewer.setDrawableObjectVector(vector);
 
-	viewer.setWindowTitle("simpleViewer");
+    viewer.setWindowTitle("simpleViewer");
 
-	// Make the viewer window visible on screen.
-	viewer.show();
+    // Make the viewer window visible on screen.
+    viewer.show();
 
-	// Run main loop.
-	return application.exec();
+    // Run main loop.
+    return application.exec();
 }

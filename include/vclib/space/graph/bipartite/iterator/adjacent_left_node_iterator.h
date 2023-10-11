@@ -31,16 +31,16 @@ namespace vcl::internal {
 template<typename Graph, typename Iterator>
 class AdjacentLeftNodeIterator : public AdjacentNodeIterator<Graph, Iterator>
 {
-	using Base = AdjacentNodeIterator<Graph, Iterator>;
+    using Base = AdjacentNodeIterator<Graph, Iterator>;
 public:
-	using value_type = Graph::RightType;
-	using reference  = const value_type&;
-	using pointer    = const value_type*;
+    using value_type = Graph::RightType;
+    using reference  = const value_type&;
+    using pointer    = const value_type*;
 
-	using AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator;
+    using AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator;
 
-	reference operator*() const { return Base::g->nodesR[Base::it].info(); }
-	pointer operator->() const { return &Base::g->nodesR[Base::it].info(); }
+    reference operator*() const { return Base::g->nodesR[Base::it].info(); }
+    pointer operator->() const { return &Base::g->nodesR[Base::it].info(); }
 };
 
 } // namespace vcl::internal

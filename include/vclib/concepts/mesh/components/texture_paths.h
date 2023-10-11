@@ -40,30 +40,30 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasTexturePaths = requires(
-	T o,
-	const T& co,
-	std::string s)
+    T o,
+    const T& co,
+    std::string s)
 {
-	typename T::TexFileNamesIterator;
-	typename T::ConstTexFileNamesIterator;
+    typename T::TexFileNamesIterator;
+    typename T::ConstTexFileNamesIterator;
 
-	{ co.textureNumber() } -> std::same_as<uint>;
-	{ co.texturePath(uint()) } -> std::same_as<const std::string&>;
-	{ o.texturePath(uint()) } -> std::same_as<std::string&>;
-	{ co.meshBasePath() } -> std::same_as<const std::string&>;
-	{ o.meshBasePath() } -> std::same_as<std::string&>;
+    { co.textureNumber() } -> std::same_as<uint>;
+    { co.texturePath(uint()) } -> std::same_as<const std::string&>;
+    { o.texturePath(uint()) } -> std::same_as<std::string&>;
+    { co.meshBasePath() } -> std::same_as<const std::string&>;
+    { o.meshBasePath() } -> std::same_as<std::string&>;
 
-	{ o.clearTexturePaths() } -> std::same_as<void>;
-	{ o.pushTexturePath(s) } -> std::same_as<void>;
+    { o.clearTexturePaths() } -> std::same_as<void>;
+    { o.pushTexturePath(s) } -> std::same_as<void>;
 
-	{ o.texturePathBegin() } -> std::same_as<typename T::TexFileNamesIterator>;
-	{ o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
-	{ co.texturePathBegin() } ->
-		std::same_as<typename T::ConstTexFileNamesIterator>;
-	{ co.texturePathEnd() } ->
-		std::same_as<typename T::ConstTexFileNamesIterator>;
-	o.texturePaths();
-	co.texturePaths();
+    { o.texturePathBegin() } -> std::same_as<typename T::TexFileNamesIterator>;
+    { o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
+    { co.texturePathBegin() } ->
+        std::same_as<typename T::ConstTexFileNamesIterator>;
+    { co.texturePathEnd() } ->
+        std::same_as<typename T::ConstTexFileNamesIterator>;
+    o.texturePaths();
+    co.texturePaths();
 };
 
 } // namespace vcl::comp

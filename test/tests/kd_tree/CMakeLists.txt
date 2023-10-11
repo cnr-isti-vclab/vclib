@@ -12,7 +12,7 @@
 project(vclib-kd-tree-test)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-kd-tree-test ${SOURCES})
 

@@ -34,23 +34,23 @@ concept CleanMeshConcept = MeshConcept<std::remove_cvref_t<T>>;
 
 template<typename T>
 concept CleanVertexPtrsConcept =
-	comp::HasVertexPointers<std::remove_cvref_t<T>>;
+    comp::HasVertexPointers<std::remove_cvref_t<T>>;
 
 struct VerticesView
 {
-	constexpr VerticesView() = default;
+    constexpr VerticesView() = default;
 
-	template <CleanMeshConcept R>
-	friend constexpr auto operator|(R&& r, VerticesView)
-	{
-		return r.vertices();
-	}
+    template <CleanMeshConcept R>
+    friend constexpr auto operator|(R&& r, VerticesView)
+    {
+        return r.vertices();
+    }
 
-	template <CleanVertexPtrsConcept R>
-	friend constexpr auto operator|(R&& r, VerticesView)
-	{
-		return r.vertices();
-	}
+    template <CleanVertexPtrsConcept R>
+    friend constexpr auto operator|(R&& r, VerticesView)
+    {
+        return r.vertices();
+    }
 };
 
 } // namespace vcl::views::internal

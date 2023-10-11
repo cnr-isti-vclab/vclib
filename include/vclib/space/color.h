@@ -42,503 +42,503 @@ namespace vcl {
 class Color : public Point4<uint8_t>
 {
 public:
-	/**
-	 * @brief RGBA enum with some standard colors.
-	 *
-	 * It can be used to initialize a color with an RGBA integer.
-	 */
-	enum ColorRGBA {
-		Black     = 0x000000ff,
-		DarkGray  = 0x404040ff,
-		Gray      = 0x808080ff,
-		LightGray = 0xc0c0c0ff,
-		White     = 0xffffffff,
+    /**
+     * @brief RGBA enum with some standard colors.
+     *
+     * It can be used to initialize a color with an RGBA integer.
+     */
+    enum ColorRGBA {
+        Black     = 0x000000ff,
+        DarkGray  = 0x404040ff,
+        Gray      = 0x808080ff,
+        LightGray = 0xc0c0c0ff,
+        White     = 0xffffffff,
 
-		Red   = 0xff0000ff,
-		Green = 0x00ff00ff,
-		Blue  = 0x0000ffff,
+        Red   = 0xff0000ff,
+        Green = 0x00ff00ff,
+        Blue  = 0x0000ffff,
 
-		Cyan    = 0x00ffffff,
-		Yellow  = 0xffff00ff,
-		Magenta = 0xff00ffff,
+        Cyan    = 0x00ffffff,
+        Yellow  = 0xffff00ff,
+        Magenta = 0xff00ffff,
 
-		LightRed   = 0xff8080ff,
-		LightGreen = 0x80ff80ff,
-		LightBlue  = 0x8080ffff,
+        LightRed   = 0xff8080ff,
+        LightGreen = 0x80ff80ff,
+        LightBlue  = 0x8080ffff,
 
-		LightCyan    = 0x80ffffff,
-		LightYellow  = 0xffff80ff,
-		LightMagenta = 0xff80ffff,
+        LightCyan    = 0x80ffffff,
+        LightYellow  = 0xffff80ff,
+        LightMagenta = 0xff80ffff,
 
-		DarkRed   = 0x400000ff,
-		DarkGreen = 0x004000ff,
-		DarkBlue  = 0x000040ff,
+        DarkRed   = 0x400000ff,
+        DarkGreen = 0x004000ff,
+        DarkBlue  = 0x000040ff,
 
-		DarkCyan    = 0x004040ff,
-		DarkYellow  = 0x404000ff,
-		DarkMagenta = 0x400040ff
-	};
+        DarkCyan    = 0x004040ff,
+        DarkYellow  = 0x404000ff,
+        DarkMagenta = 0x400040ff
+    };
 
-	/**
-	 * @brief List of Color Maps supported by the vcl::Color
-	 */
-	enum ColorMap {
-		RedBlue,
-		Parula,
-		GreyShade
-	};
+    /**
+     * @brief List of Color Maps supported by the vcl::Color
+     */
+    enum ColorMap {
+        RedBlue,
+        Parula,
+        GreyShade
+    };
 
-	/**
-	 * @brief Default constructor.
-	 * Initializes a black color (with alpha 255).
-	 */
-	Color() : Point(0, 0, 0, 255) {}
+    /**
+     * @brief Default constructor.
+     * Initializes a black color (with alpha 255).
+     */
+    Color() : Point(0, 0, 0, 255) {}
 
-	Color(ColorRGBA cc)
-	{
-		w() = cc % 256;
-		z() = (cc >> 8) % 256;
-		y() = (cc >> 16) % 256;
-		x() = (cc >> 24) % 256;
-	}
+    Color(ColorRGBA cc)
+    {
+        w() = cc % 256;
+        z() = (cc >> 8) % 256;
+        y() = (cc >> 16) % 256;
+        x() = (cc >> 24) % 256;
+    }
 
-	/**
-	 * @brief Color constructor.
-	 * @param[in] red: red component
-	 * @param[in] green: green component
-	 * @param[in] blue: blue component
-	 * @param[in] alpha: alpha component (default 255)
-	 */
-	Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) :
-			Point(red, green, blue, alpha)
-	{
-	}
+    /**
+     * @brief Color constructor.
+     * @param[in] red: red component
+     * @param[in] green: green component
+     * @param[in] blue: blue component
+     * @param[in] alpha: alpha component (default 255)
+     */
+    Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255) :
+            Point(red, green, blue, alpha)
+    {
+    }
 
-	Color(const Point4<uint8_t>& p) : Point4<uint8_t>(p) {}
+    Color(const Point4<uint8_t>& p) : Point4<uint8_t>(p) {}
 
-	/**
-	 * @brief Returns the red component of this color [0-255]
-	 * @return red component of this color
-	 */
-	uint8_t red() const { return x(); }
+    /**
+     * @brief Returns the red component of this color [0-255]
+     * @return red component of this color
+     */
+    uint8_t red() const { return x(); }
 
-	/**
-	 * @brief Returns the green component of this color [0-255]
-	 * @return green component of this color
-	 */
-	uint8_t green() const { return y(); }
+    /**
+     * @brief Returns the green component of this color [0-255]
+     * @return green component of this color
+     */
+    uint8_t green() const { return y(); }
 
-	/**
-	 * @brief Returns the blue component of this color [0-255]
-	 * @return blue component of this color
-	 */
-	uint8_t blue() const { return z(); }
+    /**
+     * @brief Returns the blue component of this color [0-255]
+     * @return blue component of this color
+     */
+    uint8_t blue() const { return z(); }
 
-	/**
-	 * @brief Returns the alpha component of this color [0-255]
-	 * @return alpha component of this color
-	 */
-	uint8_t alpha() const { return w(); }
+    /**
+     * @brief Returns the alpha component of this color [0-255]
+     * @return alpha component of this color
+     */
+    uint8_t alpha() const { return w(); }
 
-	/**
-	 * @brief Returns the red component of this color [0-255]
-	 * @return red component of this color
-	 */
-	uint8_t& red() { return x(); }
+    /**
+     * @brief Returns the red component of this color [0-255]
+     * @return red component of this color
+     */
+    uint8_t& red() { return x(); }
 
-	/**
-	 * @brief Returns the green component of this color [0-255]
-	 * @return green component of this color
-	 */
-	uint8_t& green() { return y(); }
+    /**
+     * @brief Returns the green component of this color [0-255]
+     * @return green component of this color
+     */
+    uint8_t& green() { return y(); }
 
-	/**
-	 * @brief Returns the blue component of this color [0-255]
-	 * @return blue component of this color
-	 */
-	uint8_t& blue() { return z(); }
+    /**
+     * @brief Returns the blue component of this color [0-255]
+     * @return blue component of this color
+     */
+    uint8_t& blue() { return z(); }
 
-	/**
-	 * @brief Returns the alpha component of this color [0-255]
-	 * @return alpha component of this color
-	 */
-	uint8_t& alpha() { return w(); }
+    /**
+     * @brief Returns the alpha component of this color [0-255]
+     * @return alpha component of this color
+     */
+    uint8_t& alpha() { return w(); }
 
-	/**
-	 * @brief Returns the float red component of this color [0-1]
-	 * @return float red component of this color
-	 */
-	float redF() const { return (float) x() / 255; }
+    /**
+     * @brief Returns the float red component of this color [0-1]
+     * @return float red component of this color
+     */
+    float redF() const { return (float) x() / 255; }
 
-	/**
-	 * @brief Returns the float green component of this color [0-1]
-	 * @return float green component of this color
-	 */
-	float greenF() const { return (float) y() / 255; }
+    /**
+     * @brief Returns the float green component of this color [0-1]
+     * @return float green component of this color
+     */
+    float greenF() const { return (float) y() / 255; }
 
-	/**
-	 * @brief Returns the float blue component of this color [0-1]
-	 * @return float blue component of this color
-	 */
-	float blueF() const { return (float) z() / 255; }
+    /**
+     * @brief Returns the float blue component of this color [0-1]
+     * @return float blue component of this color
+     */
+    float blueF() const { return (float) z() / 255; }
 
-	/**
-	 * @brief Returns the float alpha component of this color [0-1]
-	 * @return float alpha component of this color
-	 */
-	float alphaF() const { return (float) w() / 255; }
+    /**
+     * @brief Returns the float alpha component of this color [0-1]
+     * @return float alpha component of this color
+     */
+    float alphaF() const { return (float) w() / 255; }
 
-	/**
-	 * @brief Returns the hue color component of this color [0-359]
-	 * @return hue color component of this color
-	 */
-	uint8_t hsvHue() const
-	{
-		uint8_t rgbMin, rgbMax;
-		uint8_t h;
+    /**
+     * @brief Returns the hue color component of this color [0-359]
+     * @return hue color component of this color
+     */
+    uint8_t hsvHue() const
+    {
+        uint8_t rgbMin, rgbMax;
+        uint8_t h;
 
-		rgbMin = x() < y() ? (x() < z() ? x() : z()) : (y() < z() ? y() : z());
-		rgbMax = x() > y() ? (x() > z() ? x() : z()) : (y() > z() ? y() : z());
+        rgbMin = x() < y() ? (x() < z() ? x() : z()) : (y() < z() ? y() : z());
+        rgbMax = x() > y() ? (x() > z() ? x() : z()) : (y() > z() ? y() : z());
 
-		if (rgbMax == 0) {
-			return 0;
-		}
+        if (rgbMax == 0) {
+            return 0;
+        }
 
-		if (255 * long(rgbMax - rgbMin) / rgbMax == 0) {
-			return 0;
-		}
+        if (255 * long(rgbMax - rgbMin) / rgbMax == 0) {
+            return 0;
+        }
 
-		if (rgbMax == x())
-			h = 0 + 43 * (y() - z()) / (rgbMax - rgbMin);
-		else if (rgbMax == y())
-			h = 85 + 43 * (z() - x()) / (rgbMax - rgbMin);
-		else
-			h = 171 + 43 * (x() - y()) / (rgbMax - rgbMin);
+        if (rgbMax == x())
+            h = 0 + 43 * (y() - z()) / (rgbMax - rgbMin);
+        else if (rgbMax == y())
+            h = 85 + 43 * (z() - x()) / (rgbMax - rgbMin);
+        else
+            h = 171 + 43 * (x() - y()) / (rgbMax - rgbMin);
 
-		return h;
-	}
+        return h;
+    }
 
-	/**
-	 * @brief Returns the saturation color component of this color [0-255]
-	 * @return saturation color component of this color
-	 */
-	uint8_t hsvSaturation() const
-	{
-		uint8_t rgbMin, rgbMax;
+    /**
+     * @brief Returns the saturation color component of this color [0-255]
+     * @return saturation color component of this color
+     */
+    uint8_t hsvSaturation() const
+    {
+        uint8_t rgbMin, rgbMax;
 
-		rgbMin = x() < y() ? (x() < z() ? x() : z()) : (y() < z() ? y() : z());
-		rgbMax = x() > y() ? (x() > z() ? x() : z()) : (y() > z() ? y() : z());
+        rgbMin = x() < y() ? (x() < z() ? x() : z()) : (y() < z() ? y() : z());
+        rgbMax = x() > y() ? (x() > z() ? x() : z()) : (y() > z() ? y() : z());
 
-		if (rgbMax == 0) {
-			return 0;
-		}
+        if (rgbMax == 0) {
+            return 0;
+        }
 
-		return 255 * long(rgbMax - rgbMin) / rgbMax;
-	}
+        return 255 * long(rgbMax - rgbMin) / rgbMax;
+    }
 
-	/**
-	 * @brief Returns the float saturation color component of this color [0-1]
-	 * @return float saturation color component of this color
-	 */
-	float hsvHueF() const { return (float) hsvHue() / 255; }
+    /**
+     * @brief Returns the float saturation color component of this color [0-1]
+     * @return float saturation color component of this color
+     */
+    float hsvHueF() const { return (float) hsvHue() / 255; }
 
-	/**
-	 * @brief Returns the float saturation color component of this color [0-1]
-	 * @return float saturation color component of this color
-	 */
-	float hsvSaturationF() const { return (float) hsvSaturation() / 255; }
+    /**
+     * @brief Returns the float saturation color component of this color [0-1]
+     * @return float saturation color component of this color
+     */
+    float hsvSaturationF() const { return (float) hsvSaturation() / 255; }
 
-	/**
-	 * @brief Converts the color to an unsigned short in R5G5B5 format.
-	 *
-	 * @return an unsigned short containing the converted color.
-	 */
-	unsigned short toUnsignedR5G5B5() const
-	{
-		unsigned short r = x()/8;
-		unsigned short g = y()/8;
-		unsigned short b = z()/8;
-		unsigned short res = r + g*32 + b*1024;
-		return res;
-	}
+    /**
+     * @brief Converts the color to an unsigned short in R5G5B5 format.
+     *
+     * @return an unsigned short containing the converted color.
+     */
+    unsigned short toUnsignedR5G5B5() const
+    {
+        unsigned short r = x()/8;
+        unsigned short g = y()/8;
+        unsigned short b = z()/8;
+        unsigned short res = r + g*32 + b*1024;
+        return res;
+    }
 
-	/**
-	 * @brief Converts the color to an unsigned short in B5G5R5 format.
-	 *
-	 * @return an unsigned short containing the converted color.
-	 */
-	unsigned short toUnsignedB5G5R5() const
-	{
-		unsigned short r = x()/8;
-		unsigned short g = y()/8;
-		unsigned short b = z()/8;
-		unsigned short res = b + g*32 + r*1024;
-		return res;
-	}
+    /**
+     * @brief Converts the color to an unsigned short in B5G5R5 format.
+     *
+     * @return an unsigned short containing the converted color.
+     */
+    unsigned short toUnsignedB5G5R5() const
+    {
+        unsigned short r = x()/8;
+        unsigned short g = y()/8;
+        unsigned short b = z()/8;
+        unsigned short res = b + g*32 + r*1024;
+        return res;
+    }
 
-	/**
-	 * @brief Sets the alpha of this color [0-255]
-	 * @param[in] alpha
-	 */
-	void setAlpha(uint8_t alpha) { w() = alpha; }
+    /**
+     * @brief Sets the alpha of this color [0-255]
+     * @param[in] alpha
+     */
+    void setAlpha(uint8_t alpha) { w() = alpha; }
 
-	/**
-	 * @brief Sets the red of this color [0-255]
-	 * @param[in] red
-	 */
-	void setRed(uint8_t red) { x() = red; }
+    /**
+     * @brief Sets the red of this color [0-255]
+     * @param[in] red
+     */
+    void setRed(uint8_t red) { x() = red; }
 
-	/**
-	 * @brief Sets the green of this color [0-255]
-	 * @param[in] green
-	 */
-	void setGreen(uint8_t green) { y() = green; }
+    /**
+     * @brief Sets the green of this color [0-255]
+     * @param[in] green
+     */
+    void setGreen(uint8_t green) { y() = green; }
 
-	/**
-	 * @brief Sets the blue of this color [0-255]
-	 * @param[in] blue
-	 */
-	void setBlue(uint8_t blue) { z() = blue; }
+    /**
+     * @brief Sets the blue of this color [0-255]
+     * @param[in] blue
+     */
+    void setBlue(uint8_t blue) { z() = blue; }
 
-	/**
-	 * @brief Sets the RGB values of this color.
-	 *
-	 * All the values must be in the range 0-255.
-	 *
-	 * @param[in] red
-	 * @param[in] green
-	 * @param[in] blue
-	 * @param[in] alpha:
-	 */
-	void setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255)
-	{
-		x() = red;
-		y() = green;
-		z() = blue;
-		w() = alpha;
-	}
+    /**
+     * @brief Sets the RGB values of this color.
+     *
+     * All the values must be in the range 0-255.
+     *
+     * @param[in] red
+     * @param[in] green
+     * @param[in] blue
+     * @param[in] alpha:
+     */
+    void setRgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255)
+    {
+        x() = red;
+        y() = green;
+        z() = blue;
+        w() = alpha;
+    }
 
-	/**
-	 * @brief Sets the HSV values of this color.
-	 *
-	 * All the values must be in the range 0-255.
-	 *
-	 * @param[in] h
-	 * @param[in] s
-	 * @param[in] v
-	 * @param[in] alpha:
-	 */
-	void setHsv(uint h, uint8_t s, uint8_t v, uint8_t alpha = 255)
-	{
-		w() = alpha;
-		if (s == 0) {
-			x() = v;
-			y() = v;
-			z() = v;
-		}
-		else {
-			h = (h / 360.0) * 255;
-			uint8_t region, remainder, p, q, t;
-			region    = h / 43;
-			remainder = (h - (region * 43)) * 6;
+    /**
+     * @brief Sets the HSV values of this color.
+     *
+     * All the values must be in the range 0-255.
+     *
+     * @param[in] h
+     * @param[in] s
+     * @param[in] v
+     * @param[in] alpha:
+     */
+    void setHsv(uint h, uint8_t s, uint8_t v, uint8_t alpha = 255)
+    {
+        w() = alpha;
+        if (s == 0) {
+            x() = v;
+            y() = v;
+            z() = v;
+        }
+        else {
+            h = (h / 360.0) * 255;
+            uint8_t region, remainder, p, q, t;
+            region    = h / 43;
+            remainder = (h - (region * 43)) * 6;
 
-			p = (v * (255 - s)) >> 8;
-			q = (v * (255 - ((s * remainder) >> 8))) >> 8;
-			t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
+            p = (v * (255 - s)) >> 8;
+            q = (v * (255 - ((s * remainder) >> 8))) >> 8;
+            t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
 
-			switch (region) {
-			case 0:
-				x() = v;
-				y() = t;
-				z() = p;
-				break;
-			case 1:
-				x() = q;
-				y() = v;
-				z() = p;
-				break;
-			case 2:
-				x() = p;
-				y() = v;
-				z() = t;
-				break;
-			case 3:
-				x() = p;
-				y() = q;
-				z() = v;
-				break;
-			case 4:
-				x() = t;
-				y() = p;
-				z() = v;
-				break;
-			default:
-				x() = v;
-				y() = p;
-				z() = q;
-				break;
-			}
-		}
-	}
+            switch (region) {
+            case 0:
+                x() = v;
+                y() = t;
+                z() = p;
+                break;
+            case 1:
+                x() = q;
+                y() = v;
+                z() = p;
+                break;
+            case 2:
+                x() = p;
+                y() = v;
+                z() = t;
+                break;
+            case 3:
+                x() = p;
+                y() = q;
+                z() = v;
+                break;
+            case 4:
+                x() = t;
+                y() = p;
+                z() = v;
+                break;
+            default:
+                x() = v;
+                y() = p;
+                z() = q;
+                break;
+            }
+        }
+    }
 
-	/**
-	 * @brief Sets the alpha of this color [0-1]
-	 * @param[in] alpha
-	 */
-	void setAlphaF(float alpha) { w() = (uint8_t) (alpha * 255); }
+    /**
+     * @brief Sets the alpha of this color [0-1]
+     * @param[in] alpha
+     */
+    void setAlphaF(float alpha) { w() = (uint8_t) (alpha * 255); }
 
-	/**
-	 * @brief Sets the red of this color [0-1]
-	 * @param[in] red
-	 */
-	void setRedF(float red) { x() = (uint8_t) (red * 255); }
+    /**
+     * @brief Sets the red of this color [0-1]
+     * @param[in] red
+     */
+    void setRedF(float red) { x() = (uint8_t) (red * 255); }
 
-	/**
-	 * @brief Sets the green of this color [0-1]
-	 * @param[in] green
-	 */
-	void setGreenF(float green) { y() = (uint8_t) (green * 255); }
+    /**
+     * @brief Sets the green of this color [0-1]
+     * @param[in] green
+     */
+    void setGreenF(float green) { y() = (uint8_t) (green * 255); }
 
-	/**
-	 * @brief Sets the blue of this color [0-1]
-	 * @param[in] blue
-	 */
-	void setBlueF(float blue) { z() = (uint8_t) (blue * 255); }
+    /**
+     * @brief Sets the blue of this color [0-1]
+     * @param[in] blue
+     */
+    void setBlueF(float blue) { z() = (uint8_t) (blue * 255); }
 
-	/**
-	 * @brief Sets the RGB values of this color.
-	 *
-	 * All the values must be in the range 0-1.
-	 *
-	 * @param[in] red: red component of the color in as a float value between 0
-	 * and 1.
-	 * @param[in] green: green component of the color in as a float value
-	 * between 0 and 1.
-	 * @param[in] blue: blue component of the color in as a float value between
-	 * 0 and 1.
-	 * @param[in] alpha: : alpha component of the color in as a float value
-	 * between 0 and 1.
-	 */
-	void setRgbF(float red, float green, float blue, float alpha = 1.0)
-	{
-		w() = (uint8_t) (alpha * 255);
-		x() = (uint8_t) (red * 255);
-		y() = (uint8_t) (green * 255);
-		z() = (uint8_t) (blue * 255);
-	}
+    /**
+     * @brief Sets the RGB values of this color.
+     *
+     * All the values must be in the range 0-1.
+     *
+     * @param[in] red: red component of the color in as a float value between 0
+     * and 1.
+     * @param[in] green: green component of the color in as a float value
+     * between 0 and 1.
+     * @param[in] blue: blue component of the color in as a float value between
+     * 0 and 1.
+     * @param[in] alpha: : alpha component of the color in as a float value
+     * between 0 and 1.
+     */
+    void setRgbF(float red, float green, float blue, float alpha = 1.0)
+    {
+        w() = (uint8_t) (alpha * 255);
+        x() = (uint8_t) (red * 255);
+        y() = (uint8_t) (green * 255);
+        z() = (uint8_t) (blue * 255);
+    }
 
-	/**
-	 * @brief Sets the HSV values of this color.
-	 *
-	 * All the values must be in the range 0-1.
-	 * The color will be converted in RGBA and then stored in this color.
-	 *
-	 * @param[in] hf
-	 * @param[in] sf
-	 * @param[in] vf
-	 * @param[in] alpha
-	 */
-	void setHsvF(float hf, float sf, float vf, float alpha = 1.0)
-	{
-		setHsv(hf * 255, sf * 255, vf * 255, alpha * 255);
-	}
+    /**
+     * @brief Sets the HSV values of this color.
+     *
+     * All the values must be in the range 0-1.
+     * The color will be converted in RGBA and then stored in this color.
+     *
+     * @param[in] hf
+     * @param[in] sf
+     * @param[in] vf
+     * @param[in] alpha
+     */
+    void setHsvF(float hf, float sf, float vf, float alpha = 1.0)
+    {
+        setHsv(hf * 255, sf * 255, vf * 255, alpha * 255);
+    }
 
-	/**
-	 * Set the color values from an unsigned 5-5-5 RGB value.
-	 *
-	 * The input value is interpreted as follows:
-	 * - The 5 least significant bits represent the red component.
-	 * - The next 5 bits represent the green component.
-	 * - The 5 most significant bits represent the blue component.
-	 *
-	 * Each color component is scaled from 0 to 255 by multiplying the value
-	 * by 8.
-	 *
-	 * @param[in] val: The unsigned 5-5-5 RGB value to set.
-	 */
-	void setFromUnsignedR5G5B5(unsigned short val)
-	{
-		x() = val % 32 * 8;
-		y() = ((val / 32) % 32) * 8;
-		z() = ((val / 1024) % 32) * 8;
-		w() = 255;
-	}
+    /**
+     * Set the color values from an unsigned 5-5-5 RGB value.
+     *
+     * The input value is interpreted as follows:
+     * - The 5 least significant bits represent the red component.
+     * - The next 5 bits represent the green component.
+     * - The 5 most significant bits represent the blue component.
+     *
+     * Each color component is scaled from 0 to 255 by multiplying the value
+     * by 8.
+     *
+     * @param[in] val: The unsigned 5-5-5 RGB value to set.
+     */
+    void setFromUnsignedR5G5B5(unsigned short val)
+    {
+        x() = val % 32 * 8;
+        y() = ((val / 32) % 32) * 8;
+        z() = ((val / 1024) % 32) * 8;
+        w() = 255;
+    }
 
-	/**
-	 * Set the color values from an unsigned 5-5-5 BGR value.
-	 *
-	 * The input value is interpreted as follows:
-	 * - The 5 least significant bits represent the blue component.
-	 * - The next 5 bits represent the green component.
-	 * - The 5 most significant bits represent the red component.
-	 *
-	 * Each color component is scaled from 0 to 255 by multiplying the value
-	 * by 8.
-	 *
-	 * @param[in] val: The unsigned 5-5-5 BGR value to set.
-	 */
-	void setFromUnsignedB5G5R5(unsigned short val)
-	{
-		z() = val % 32 * 8;
-		y() = ((val / 32) % 32) * 8;
-		x() = ((val / 1024) % 32) * 8;
-		w() = 255;
-	}
+    /**
+     * Set the color values from an unsigned 5-5-5 BGR value.
+     *
+     * The input value is interpreted as follows:
+     * - The 5 least significant bits represent the blue component.
+     * - The next 5 bits represent the green component.
+     * - The 5 most significant bits represent the red component.
+     *
+     * Each color component is scaled from 0 to 255 by multiplying the value
+     * by 8.
+     *
+     * @param[in] val: The unsigned 5-5-5 BGR value to set.
+     */
+    void setFromUnsignedB5G5R5(unsigned short val)
+    {
+        z() = val % 32 * 8;
+        y() = ((val / 32) % 32) * 8;
+        x() = ((val / 1024) % 32) * 8;
+        w() = 255;
+    }
 
-	/**
-	 * @brief Returns true if this color has the same RGB and alpha values
-	 * as otherColor; otherwise returns false.
-	 *
-	 * @param otherColor
-	 * @return
-	 */
-	bool operator==(const Color& otherColor) const
-	{
-		return (
-			x() == otherColor.x() && y() == otherColor.y() &&
-			z() == otherColor.z() && w() == otherColor.w());
-	}
+    /**
+     * @brief Returns true if this color has the same RGB and alpha values
+     * as otherColor; otherwise returns false.
+     *
+     * @param otherColor
+     * @return
+     */
+    bool operator==(const Color& otherColor) const
+    {
+        return (
+            x() == otherColor.x() && y() == otherColor.y() &&
+            z() == otherColor.z() && w() == otherColor.w());
+    }
 
-	/**
-	 * @brief Returns false if this color has the same RGB and alpha values as
-	 * otherColor; otherwise returns true.
-	 *
-	 * @param otherColor
-	 * @return
-	 */
-	bool operator!=(const Color& otherColor) const
-	{
-		return !(*this == otherColor);
-	}
+    /**
+     * @brief Returns false if this color has the same RGB and alpha values as
+     * otherColor; otherwise returns true.
+     *
+     * @param otherColor
+     * @return
+     */
+    bool operator!=(const Color& otherColor) const
+    {
+        return !(*this == otherColor);
+    }
 
-	/**
-	 * @brief Returns true if this color is less than otherColor follwing the
-	 * RGBA order; otherwise returns false.
-	 *
-	 * @param otherColor
-	 * @return
-	 */
-	bool operator<(const Color& otherColor) const
-	{
-		if (x() < otherColor.x())
-			return true;
-		if (x() > otherColor.x())
-			return false;
-		if (y() < otherColor.y())
-			return true;
-		if (y() > otherColor.y())
-			return false;
-		if (z() < otherColor.z())
-			return true;
-		if (z() > otherColor.z())
-			return false;
-		if (w() < otherColor.w())
-			return true;
-		return false;
-	}
+    /**
+     * @brief Returns true if this color is less than otherColor follwing the
+     * RGBA order; otherwise returns false.
+     *
+     * @param otherColor
+     * @return
+     */
+    bool operator<(const Color& otherColor) const
+    {
+        if (x() < otherColor.x())
+            return true;
+        if (x() > otherColor.x())
+            return false;
+        if (y() < otherColor.y())
+            return true;
+        if (y() > otherColor.y())
+            return false;
+        if (z() < otherColor.z())
+            return true;
+        if (z() > otherColor.z())
+            return false;
+        if (w() < otherColor.w())
+            return true;
+        return false;
+    }
 
-	/// @private
-	friend std::ostream& operator<<(std::ostream& out, const Color& c);
+    /// @private
+    friend std::ostream& operator<<(std::ostream& out, const Color& c);
 };
 
 /**
@@ -546,8 +546,8 @@ public:
  */
 inline std::ostream& operator<<(std::ostream& out, const Color& c)
 {
-	out << c.p.cast<uint>();
-	return out;
+    out << c.p.cast<uint>();
+    return out;
 }
 
 /**
@@ -565,14 +565,14 @@ inline std::ostream& operator<<(std::ostream& out, const Color& c)
  */
 inline Color colorLerp(const Color& c0, const Color& c1, float value)
 {
-	Color c;
-	if (value < 0) // out of range - left
-		value = 0;
-	else if (value > 1) // out of range - right
-		value = 1;
-	for (uint i = 0; i < 4; i++)
-		c(i) = c1(i)*value + c0(i)*(1-value);
-	return c;
+    Color c;
+    if (value < 0) // out of range - left
+        value = 0;
+    else if (value > 1) // out of range - right
+        value = 1;
+    for (uint i = 0; i < 4; i++)
+        c(i) = c1(i)*value + c0(i)*(1-value);
+    return c;
 }
 
 /**
@@ -588,15 +588,15 @@ inline Color colorLerp(const Color& c0, const Color& c1, float value)
  */
 inline Color colorFromIntervalRedBlue(float value)
 {
-	Color c;
+    Color c;
 
-	if (value < 0) // out of range - left
-		value = 0;
-	else if (value > 1) // out of range - right
-		value = 1;
+    if (value < 0) // out of range - left
+        value = 0;
+    else if (value > 1) // out of range - right
+        value = 1;
 
-	c.setHsv(value * 240, 255, 255);
-	return c;
+    c.setHsv(value * 240, 255, 255);
+    return c;
 }
 
 /**
@@ -618,13 +618,13 @@ inline Color colorFromIntervalRedBlue(float value)
  */
 inline Color colorFromIntervalRedBlue(float min, float max, float value)
 {
-	Color c;
-	if (min == max) { // no range
-		return Color::Gray;
-	}
+    Color c;
+    if (min == max) { // no range
+        return Color::Gray;
+    }
 
-	value = std::abs((value - min) / (max - min));
-	return colorFromIntervalRedBlue(value);
+    value = std::abs((value - min) / (max - min));
+    return colorFromIntervalRedBlue(value);
 }
 
 /**
@@ -641,34 +641,34 @@ inline Color colorFromIntervalRedBlue(float min, float max, float value)
  */
 inline Color colorFromIntervalParula(float value)
 {
-	if (value < 0) // out of range - left
-		value = 0;
-	else if (value > 1) // out of range - right
-		value = 1;
+    if (value < 0) // out of range - left
+        value = 0;
+    else if (value > 1) // out of range - right
+        value = 1;
 
-	static uint paruVal[9] = {
-		0x271680ff,
-		0x0363e1ff,
-		0x1485d4ff,
-		0x06a7c6ff,
-		0x38b99eff,
-		0x92bf73ff,
-		0xd9ba56ff,
-		0xfcce2eff,
-		0xfffa0aff};
+    static uint paruVal[9] = {
+        0x271680ff,
+        0x0363e1ff,
+        0x1485d4ff,
+        0x06a7c6ff,
+        0x38b99eff,
+        0x92bf73ff,
+        0xd9ba56ff,
+        0xfcce2eff,
+        0xfffa0aff};
 
-	int   ind = int(floor(value * 8.0f));
-	float div = (value * 8.0f - ind);
+    int   ind = int(floor(value * 8.0f));
+    float div = (value * 8.0f - ind);
 
-	if (div < 0)
-		div = 0;
-	else if (div > 1)
-		div = 1;
+    if (div < 0)
+        div = 0;
+    else if (div > 1)
+        div = 1;
 
-	return colorLerp(
-		(Color::ColorRGBA) paruVal[ind],
-		(Color::ColorRGBA) paruVal[ind + 1],
-		div);
+    return colorLerp(
+        (Color::ColorRGBA) paruVal[ind],
+        (Color::ColorRGBA) paruVal[ind + 1],
+        div);
 }
 
 /**
@@ -690,13 +690,13 @@ inline Color colorFromIntervalParula(float value)
  */
 inline Color colorFromIntervalParula(float min, float max, float value)
 {
-	Color c;
-	if (min == max) { // no range
-		return Color::Gray;
-	}
+    Color c;
+    if (min == max) { // no range
+        return Color::Gray;
+    }
 
-	value = std::abs((value - min) / (max - min));
-	return colorFromIntervalParula(value);
+    value = std::abs((value - min) / (max - min));
+    return colorFromIntervalParula(value);
 }
 
 /**
@@ -713,11 +713,11 @@ inline Color colorFromIntervalParula(float min, float max, float value)
  */
 inline Color colorFromIntervalGreyShade(float value)
 {
-	if (value < 0) // out of range - left
-		value = 0;
-	else if (value > 1) // out of range - right
-		value = 1;
-	return Color(value * 255, value * 255, value * 255, 255);
+    if (value < 0) // out of range - left
+        value = 0;
+    else if (value > 1) // out of range - right
+        value = 1;
+    return Color(value * 255, value * 255, value * 255, 255);
 }
 
 /**
@@ -739,13 +739,13 @@ inline Color colorFromIntervalGreyShade(float value)
  */
 inline Color colorFromIntervalGreyShade(float min, float max, float value)
 {
-	Color c;
-	if (min == max) { // no range
-		return Color::Gray;
-	}
+    Color c;
+    if (min == max) { // no range
+        return Color::Gray;
+    }
 
-	value = std::abs((value - min) / (max - min));
-	return colorFromIntervalGreyShade(value);
+    value = std::abs((value - min) / (max - min));
+    return colorFromIntervalGreyShade(value);
 }
 
 /**
@@ -759,17 +759,17 @@ inline Color colorFromIntervalGreyShade(float min, float max, float value)
  */
 inline Color colorFromInterval(float value, Color::ColorMap cm)
 {
-	switch (cm) {
-	case Color::RedBlue:
-		return colorFromIntervalRedBlue(value);
-	case Color::Parula:
-		return colorFromIntervalParula(value);
-	case Color::GreyShade:
-		return colorFromIntervalGreyShade(value);
-	default:
-		assert(0);
-		return Color::Gray;
-	}
+    switch (cm) {
+    case Color::RedBlue:
+        return colorFromIntervalRedBlue(value);
+    case Color::Parula:
+        return colorFromIntervalParula(value);
+    case Color::GreyShade:
+        return colorFromIntervalGreyShade(value);
+    default:
+        assert(0);
+        return Color::Gray;
+    }
 }
 
 /**
@@ -794,12 +794,12 @@ inline Color colorFromInterval(float value, Color::ColorMap cm)
 inline Color
 colorFromInterval(float min, float max, float value, Color::ColorMap cm)
 {
-	if (min == max) { // no range
-		return Color::Gray;
-	}
+    if (min == max) { // no range
+        return Color::Gray;
+    }
 
-	value = std::abs((value - min) / (max - min));
-	return colorFromInterval(value, cm);
+    value = std::abs((value - min) / (max - min));
+    return colorFromInterval(value, cm);
 }
 
 /**
@@ -814,29 +814,29 @@ colorFromInterval(float min, float max, float value, Color::ColorMap cm)
 inline std::vector<Color>
 colorScattering(uint n, float sat = 0.3, float val = 0.9)
 {
-	std::vector<Color> scattering;
-	scattering.reserve(n);
+    std::vector<Color> scattering;
+    scattering.reserve(n);
 
-	for (uint v = 0; v < n; ++v) {
-		uint value = v, m = n;
-		uint b = 0;
+    for (uint v = 0; v < n; ++v) {
+        uint value = v, m = n;
+        uint b = 0;
 
-		for (uint k = 1; k < n; k <<= 1) {
-			if (value << 1 >= m) {
-				b += k;
-				value -= (m + 1) >> 1;
-				m >>= 1;
-			}
-			else {
-				m = (m + 1) >> 1;
-			}
-		}
+        for (uint k = 1; k < n; k <<= 1) {
+            if (value << 1 >= m) {
+                b += k;
+                value -= (m + 1) >> 1;
+                m >>= 1;
+            }
+            else {
+                m = (m + 1) >> 1;
+            }
+        }
 
-		Color rc;
-		rc.setHsvF(float(b) / float(n), sat, val);
-		scattering.push_back(rc);
-	}
-	return scattering;
+        Color rc;
+        rc.setHsvF(float(b) / float(n), sat, val);
+        scattering.push_back(rc);
+    }
+    return scattering;
 }
 
 } // namespace vcl

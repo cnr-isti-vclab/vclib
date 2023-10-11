@@ -47,23 +47,23 @@ namespace vcl {
  */
 template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotation(
-	MatrixType&       matrix,
-	PointType         axis,
-	const ScalarType& angleRad)
+    MatrixType&       matrix,
+    PointType         axis,
+    const ScalarType& angleRad)
 {
-	ScalarType c = std::cos(angleRad);
-	ScalarType s = std::sin(angleRad);
-	ScalarType q = 1 - c;
-	axis.normalize();
-	matrix(0, 0) = axis[0] * axis[0] * q + c;
-	matrix(0, 1) = axis[0] * axis[1] * q - axis[2] * s;
-	matrix(0, 2) = axis[0] * axis[2] * q + axis[1] * s;
-	matrix(1, 0) = axis[1] * axis[0] * q + axis[2] * s;
-	matrix(1, 1) = axis[1] * axis[1] * q + c;
-	matrix(1, 2) = axis[1] * axis[2] * q - axis[0] * s;
-	matrix(2, 0) = axis[2] * axis[0] * q - axis[1] * s;
-	matrix(2, 1) = axis[2] * axis[1] * q + axis[0] * s;
-	matrix(2, 2) = axis[2] * axis[2] * q + c;
+    ScalarType c = std::cos(angleRad);
+    ScalarType s = std::sin(angleRad);
+    ScalarType q = 1 - c;
+    axis.normalize();
+    matrix(0, 0) = axis[0] * axis[0] * q + c;
+    matrix(0, 1) = axis[0] * axis[1] * q - axis[2] * s;
+    matrix(0, 2) = axis[0] * axis[2] * q + axis[1] * s;
+    matrix(1, 0) = axis[1] * axis[0] * q + axis[2] * s;
+    matrix(1, 1) = axis[1] * axis[1] * q + c;
+    matrix(1, 2) = axis[1] * axis[2] * q - axis[0] * s;
+    matrix(2, 0) = axis[2] * axis[0] * q - axis[1] * s;
+    matrix(2, 1) = axis[2] * axis[1] * q + axis[0] * s;
+    matrix(2, 2) = axis[2] * axis[2] * q + c;
 }
 
 /**
@@ -82,32 +82,32 @@ void setTransformMatrixRotation(
  */
 template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotationDeg(
-	MatrixType&       matrix,
-	PointType         axis,
-	const ScalarType& angleDeg)
+    MatrixType&       matrix,
+    PointType         axis,
+    const ScalarType& angleDeg)
 {
-	setTransformMatrixRotation(matrix, axis, vcl::toRad(angleDeg));
+    setTransformMatrixRotation(matrix, axis, vcl::toRad(angleDeg));
 }
 
 template<typename ScalarType, PointConcept PointType>
 void setTrasformMatrixTranslation(
-	Matrix44<ScalarType>& matrix,
-	const PointType&      translation)
+    Matrix44<ScalarType>& matrix,
+    const PointType&      translation)
 {
-	matrix(0, 3) = translation[0];
-	matrix(1, 3) = translation[1];
-	matrix(2, 3) = translation[2];
+    matrix(0, 3) = translation[0];
+    matrix(1, 3) = translation[1];
+    matrix(2, 3) = translation[2];
 }
 
 template<typename ScalarType, PointConcept PointType>
 void setTrasformMatrixScale(
-	Matrix44<ScalarType>& matrix,
-	const PointType&      scale)
+    Matrix44<ScalarType>& matrix,
+    const PointType&      scale)
 {
-	matrix(0, 0) = scale[0];
-	matrix(1, 1) = scale[0];
-	matrix(2, 2) = scale[2];
-	matrix(3, 3) = 1;
+    matrix(0, 0) = scale[0];
+    matrix(1, 1) = scale[0];
+    matrix(2, 2) = scale[2];
+    matrix(3, 3) = 1;
 }
 
 /**
@@ -126,10 +126,10 @@ void setTrasformMatrixScale(
 template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
 {
-	MatrixType matrix;
-	matrix.setIdentity();
-	setTransformMatrixRotation(matrix, axis, angleRad);
-	return matrix;
+    MatrixType matrix;
+    matrix.setIdentity();
+    setTransformMatrixRotation(matrix, axis, angleRad);
+    return matrix;
 }
 
 /**
@@ -148,7 +148,7 @@ MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
 template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg)
 {
-	return rotationMatrix<MatrixType>(axis, vcl::toRad(angleDeg));
+    return rotationMatrix<MatrixType>(axis, vcl::toRad(angleDeg));
 }
 
 } // namespace vcl

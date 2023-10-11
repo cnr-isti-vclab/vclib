@@ -37,18 +37,18 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasBitFlags = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	{ co.deleted() } -> std::same_as<bool>;
-	{ co.selected() } -> std::same_as<bool>;
-	{ co.onBorder() } -> std::same_as<bool>;
-	{ co.selected() } -> std::same_as<bool>;
-	{ co.userBit(uint()) } -> std::same_as<bool>;
+    { co.deleted() } -> std::same_as<bool>;
+    { co.selected() } -> std::same_as<bool>;
+    { co.onBorder() } -> std::same_as<bool>;
+    { co.selected() } -> std::same_as<bool>;
+    { co.userBit(uint()) } -> std::same_as<bool>;
 
-	{ o.resetBitFlags() } -> std::same_as<void>;
-	{ o.importFlagsFromVCGFormat(int())} -> std::same_as<void>;
-	{ co.exportFlagsToVCGFormat() } -> std::same_as<int>;
+    { o.resetBitFlags() } -> std::same_as<void>;
+    { o.importFlagsFromVCGFormat(int())} -> std::same_as<void>;
+    { co.exportFlagsToVCGFormat() } -> std::same_as<int>;
 };
 
 namespace internal {
@@ -61,14 +61,14 @@ namespace internal {
  */
 template<typename T>
 concept FaceBitFlagsConcept = HasBitFlags<T> &&
-	requires(
-		T o,
-		const T& co)
+    requires(
+        T o,
+        const T& co)
 {
-	{ co.edgeOnBorder(uint()) } -> std::same_as<bool>;
-	{ co.edgeSelected(uint()) } -> std::same_as<bool>;
-	{ co.edgeVisited(uint()) } -> std::same_as<bool>;
-	{ co.edgeFaux(uint()) } -> std::same_as<bool>;
+    { co.edgeOnBorder(uint()) } -> std::same_as<bool>;
+    { co.edgeSelected(uint()) } -> std::same_as<bool>;
+    { co.edgeVisited(uint()) } -> std::same_as<bool>;
+    { co.edgeFaux(uint()) } -> std::same_as<bool>;
 };
 
 } // namespace internal
@@ -83,9 +83,9 @@ concept FaceBitFlagsConcept = HasBitFlags<T> &&
  */
 template<typename T>
 concept HasPolygonBitFlags = internal::FaceBitFlagsConcept<T> &&
-	requires(T o)
+    requires(T o)
 {
-	{ o.__polygonBitFlags() } -> std::same_as<void>;
+    { o.__polygonBitFlags() } -> std::same_as<void>;
 };
 
 /**
@@ -98,9 +98,9 @@ concept HasPolygonBitFlags = internal::FaceBitFlagsConcept<T> &&
  */
 template<typename T>
 concept HasTriangleBitFlags = internal::FaceBitFlagsConcept<T> &&
-	requires(T o)
+    requires(T o)
 {
-	{ o.__triangleBitFlags() } -> std::same_as<void>;
+    { o.__triangleBitFlags() } -> std::same_as<void>;
 };
 
 /**

@@ -31,49 +31,49 @@ namespace vcl {
 
 template<Point3Concept PointType, PlaneConcept PlaneType>
 auto pointPlaneDistance(
-	const PointType& p,
-	const PlaneType& plane,
-	bool             signedDist = false)
+    const PointType& p,
+    const PlaneType& plane,
+    bool             signedDist = false)
 {
-	auto dist = plane.direction().dot(p) - plane.offset();
-	if (!signedDist)
-		dist = std::abs(dist);
-	return dist;
+    auto dist = plane.direction().dot(p) - plane.offset();
+    if (!signedDist)
+        dist = std::abs(dist);
+    return dist;
 }
 
 template<PointConcept PointType, SegmentConcept SegmentType>
 auto pointSegmentDistance(
-	const PointType&   p,
-	const SegmentType& s,
-	PointType&         closest) requires (PointType::DIM == SegmentType::DIM)
+    const PointType&   p,
+    const SegmentType& s,
+    PointType&         closest) requires (PointType::DIM == SegmentType::DIM)
 {
-	using ScalarType = PointType::ScalarType;
+    using ScalarType = PointType::ScalarType;
 
-	ScalarType dist;
+    ScalarType dist;
 
-	PointType dir = s.direction();
-	ScalarType esn = dir.squaredNorm();
+    PointType dir = s.direction();
+    ScalarType esn = dir.squaredNorm();
 
-	if (esn < std::numeric_limits<ScalarType>::min()) {
-		closest = s.midPoint();
-	}
-	else {
-		ScalarType t = ((p-s.p0())*dir)/esn;
-		if (t < 0) t = 0;
-		else if (t > 1) t = 1;
+    if (esn < std::numeric_limits<ScalarType>::min()) {
+        closest = s.midPoint();
+    }
+    else {
+        ScalarType t = ((p-s.p0())*dir)/esn;
+        if (t < 0) t = 0;
+        else if (t > 1) t = 1;
 
-		closest = s.p0() * (1-t) + s.p1() * t;
-	}
-	dist = p.dist(closest);
-	return dist;
+        closest = s.p0() * (1-t) + s.p1() * t;
+    }
+    dist = p.dist(closest);
+    return dist;
 }
 
 template<PointConcept PointType, SegmentConcept SegmentType>
 auto pointSegmentDistance(const PointType& p, const SegmentType& s)
-	requires (PointType::DIM == SegmentType::DIM)
+    requires (PointType::DIM == SegmentType::DIM)
 {
-	PointType closest;
-	return pointSegmentDistance(p, s, closest);
+    PointType closest;
+    return pointSegmentDistance(p, s, closest);
 }
 
 } // namespace vcl

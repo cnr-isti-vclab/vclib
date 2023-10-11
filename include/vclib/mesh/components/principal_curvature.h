@@ -61,62 +61,62 @@ namespace vcl::comp {
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
 class PrincipalCurvature :
-		public Component<
-			PrincipalCurvature<Scalar, ElementType, OPT>,
-			PRINCIPAL_CURVATURE,
-			vcl::PrincipalCurvature<Scalar>,
-			ElementType,
-			OPT>
+        public Component<
+            PrincipalCurvature<Scalar, ElementType, OPT>,
+            PRINCIPAL_CURVATURE,
+            vcl::PrincipalCurvature<Scalar>,
+            ElementType,
+            OPT>
 {
-	using Base = Component<
-		PrincipalCurvature<Scalar, ElementType, OPT>,
-		PRINCIPAL_CURVATURE,
-		vcl::PrincipalCurvature<Scalar>,
-		ElementType,
-		OPT>;
+    using Base = Component<
+        PrincipalCurvature<Scalar, ElementType, OPT>,
+        PRINCIPAL_CURVATURE,
+        vcl::PrincipalCurvature<Scalar>,
+        ElementType,
+        OPT>;
 
 public:
-	/**
-	 * @brief Expose the type of the principal curvature object.
-	 */
-	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
+    /**
+     * @brief Expose the type of the principal curvature object.
+     */
+    using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes the PrincipalCurvature values to 0.
-	 */
-	PrincipalCurvature() = default;
+    /**
+     * @brief Initilizes the PrincipalCurvature values to 0.
+     */
+    PrincipalCurvature() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns a const reference of the principal curvature of the element.
-	 * @return a const reference of the principal curvature of the element.
-	 */
-	const PrincipalCurvatureType& principalCurvature() const
-	{
-		return Base::data();
-	}
+    /**
+     * @brief Returns a const reference of the principal curvature of the element.
+     * @return a const reference of the principal curvature of the element.
+     */
+    const PrincipalCurvatureType& principalCurvature() const
+    {
+        return Base::data();
+    }
 
-	/**
-	 * @brief Returns a reference of the principal curvature of the element.
-	 * @return a reference of the principal curvature of the element.
-	 */
-	PrincipalCurvatureType& principalCurvature() { return Base::data(); }
+    /**
+     * @brief Returns a reference of the principal curvature of the element.
+     * @return a reference of the principal curvature of the element.
+     */
+    PrincipalCurvatureType& principalCurvature() { return Base::data(); }
 
 protected:
-	// Component interface functions
-	template<typename Element>
-	void importFrom(const Element& e)
-	{
-		if constexpr (HasPrincipalCurvature<Element>) {
-			if (isPrincipalCurvatureAvailableOn(e)) {
-				principalCurvature() =
-					e.principalCurvature().template cast<Scalar>();
-			}
-		}
-	}
+    // Component interface functions
+    template<typename Element>
+    void importFrom(const Element& e)
+    {
+        if constexpr (HasPrincipalCurvature<Element>) {
+            if (isPrincipalCurvatureAvailableOn(e)) {
+                principalCurvature() =
+                    e.principalCurvature().template cast<Scalar>();
+            }
+        }
+    }
 };
 
 /* Detector function to check if a class has PrincipalCurvature available */
@@ -136,7 +136,7 @@ protected:
  */
 bool isPrincipalCurvatureAvailableOn(const ElementConcept auto& element)
 {
-	return isComponentAvailableOn<PRINCIPAL_CURVATURE>(element);
+    return isComponentAvailableOn<PRINCIPAL_CURVATURE>(element);
 }
 
 /* Specialization Aliases */

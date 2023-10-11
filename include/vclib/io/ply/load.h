@@ -53,49 +53,49 @@ namespace vcl::io {
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
-	MeshType&          m,
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true)
+    MeshType&          m,
+    const std::string& filename,
+    MeshInfo&          loadedInfo,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
 {
-	std::ifstream file = internal::loadFileStream(filename);
+    std::ifstream file = internal::loadFileStream(filename);
 
-	ply::PlyHeader header(filename, file);
-	if (header.errorWhileLoading())
-		throw MalformedFileException("Header not valid: " + filename);
+    ply::PlyHeader header(filename, file);
+    if (header.errorWhileLoading())
+        throw MalformedFileException("Header not valid: " + filename);
 
-	m.clear();
+    m.clear();
 
-	loadedInfo = header.getInfo();
+    loadedInfo = header.getInfo();
 
-	if (enableOptionalComponents)
-		internal::enableOptionalComponents(loadedInfo, m);
+    if (enableOptionalComponents)
+        internal::enableOptionalComponents(loadedInfo, m);
 
-	if constexpr (HasName<MeshType>) {
-		m.name() = FileInfo::fileNameWithoutExtension(filename);
-	}
-	if constexpr (HasTexturePaths<MeshType>) {
-		m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
-	}
-	try {
-		for (const ply::Element& el : header) {
-			switch (el.type) {
-			case ply::VERTEX: ply::loadVertices(file, header, m); break;
-			case ply::FACE: ply::loadFaces(file, header, m); break;
-			case ply::TRISTRIP: ply::loadTriStrips(file, header, m); break;
-			default: ply::readUnknownElements(file, header, el); break;
-			}
-		}
-		ply::loadTextures(header, m);
-	}
-	catch(const std::runtime_error& err) {
-		m.clear();
-		file.close();
-		throw err;
-	}
+    if constexpr (HasName<MeshType>) {
+        m.name() = FileInfo::fileNameWithoutExtension(filename);
+    }
+    if constexpr (HasTexturePaths<MeshType>) {
+        m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
+    }
+    try {
+        for (const ply::Element& el : header) {
+            switch (el.type) {
+            case ply::VERTEX: ply::loadVertices(file, header, m); break;
+            case ply::FACE: ply::loadFaces(file, header, m); break;
+            case ply::TRISTRIP: ply::loadTriStrips(file, header, m); break;
+            default: ply::readUnknownElements(file, header, el); break;
+            }
+        }
+        ply::loadTextures(header, m);
+    }
+    catch(const std::runtime_error& err) {
+        m.clear();
+        file.close();
+        throw err;
+    }
 
-	file.close();
+    file.close();
 }
 
 /**
@@ -116,35 +116,35 @@ void loadPly(
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
-	MeshType&          m,
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true)
+    MeshType&          m,
+    const std::string& filename,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
 {
-	MeshInfo loadedInfo;
-	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+    MeshInfo loadedInfo;
+    loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadPly(
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true)
+    const std::string& filename,
+    MeshInfo&          loadedInfo,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
 {
-	MeshType m;
-	loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
-	return m;
+    MeshType m;
+    loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+    return m;
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadPly(
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true)
+    const std::string& filename,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
 {
-	MeshInfo loadedInfo;
-	return loadPly<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
+    MeshInfo loadedInfo;
+    return loadPly<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
 } // namespace vcl::io

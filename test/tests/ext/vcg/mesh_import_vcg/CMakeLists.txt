@@ -12,9 +12,9 @@
 project(vclib-ext-mesh-import-from-vcg-test)
 
 set(SOURCES
-	mesh.h
-	main.cpp
-	${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp)
+    mesh.h
+    main.cpp
+    ${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp)
 
 add_executable(vclib-ext-mesh-import-from-vcg-test ${SOURCES})
 

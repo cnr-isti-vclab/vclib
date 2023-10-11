@@ -29,66 +29,66 @@
 namespace vcl {
 
 DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
-		QFrame(parent),
-		ui(new Ui::DrawableObjectVectorFrame)
+        QFrame(parent),
+        ui(new Ui::DrawableObjectVectorFrame)
 {
-	ui->setupUi(this);
+    ui->setupUi(this);
 }
 
 DrawableObjectVectorFrame::DrawableObjectVectorFrame(
-	std::shared_ptr<DrawableObjectVector> v,
-	QWidget*                              parent) :
-		DrawableObjectVectorFrame(parent)
+    std::shared_ptr<DrawableObjectVector> v,
+    QWidget*                              parent) :
+        DrawableObjectVectorFrame(parent)
 {
-	drawList = v;
-	updateDrawableVectorWidget();
+    drawList = v;
+    updateDrawableVectorWidget();
 
 }
 
 DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
 {
-	delete ui;
+    delete ui;
 }
 
 void DrawableObjectVectorFrame::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
 {
-	drawList = v;
-	updateDrawableVectorWidget();
+    drawList = v;
+    updateDrawableVectorWidget();
 }
 
 uint DrawableObjectVectorFrame::selectedDrawableObject() const
 {
-	auto item = ui->listWidget->selectedItems().first();
-	return ui->listWidget->row(item);
+    auto item = ui->listWidget->selectedItems().first();
+    return ui->listWidget->row(item);
 }
 
 void DrawableObjectVectorFrame::on_listWidget_itemSelectionChanged()
 {
-	if (ui->listWidget->selectedItems().size() > 0) {
-		emit drawableObjectSelectionChanged(selectedDrawableObject());
-	}
-	else {
-		ui->listWidget->item(0)->setSelected(true);
-	}
+    if (ui->listWidget->selectedItems().size() > 0) {
+        emit drawableObjectSelectionChanged(selectedDrawableObject());
+    }
+    else {
+        ui->listWidget->item(0)->setSelected(true);
+    }
 }
 
 void DrawableObjectVectorFrame::updateDrawableVectorWidget()
 {
-	ui->listWidget->clear();
-	for (auto* d : *drawList) {
-		QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
-		DrawableObjectFrame* frame = new DrawableObjectFrame(d, ui->listWidget);
+    ui->listWidget->clear();
+    for (auto* d : *drawList) {
+        QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
+        DrawableObjectFrame* frame = new DrawableObjectFrame(d, ui->listWidget);
 
-		item->setSizeHint(frame->sizeHint());
-		ui->listWidget->addItem(item);
-		ui->listWidget->setItemWidget(item, frame);
-		connect(
-			frame, SIGNAL(visibilityChanged()),
-			this, SIGNAL(drawableObjectVisibilityChanged()));
-	}
-	if (drawList->size() > 0) {
-		ui->listWidget->item(0)->setSelected(true);
-	}
+        item->setSizeHint(frame->sizeHint());
+        ui->listWidget->addItem(item);
+        ui->listWidget->setItemWidget(item, frame);
+        connect(
+            frame, SIGNAL(visibilityChanged()),
+            this, SIGNAL(drawableObjectVisibilityChanged()));
+    }
+    if (drawList->size() > 0) {
+        ui->listWidget->item(0)->setSelected(true);
+    }
 }
 
 } // namespace vcl

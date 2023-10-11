@@ -32,13 +32,13 @@ namespace vcl {
 template<MeshConcept MeshType>
 uint vertexSelectionNumber(const MeshType& m)
 {
-	return std::ranges::distance(m.vertices() | views::selected);
+    return std::ranges::distance(m.vertices() | views::selected);
 }
 
 template<FaceMeshConcept MeshType>
 uint faceSelectionNumber(const MeshType& m)
 {
-	return std::ranges::distance(m.faces() | views::selected);
+    return std::ranges::distance(m.faces() | views::selected);
 }
 
 } // namespace vcl

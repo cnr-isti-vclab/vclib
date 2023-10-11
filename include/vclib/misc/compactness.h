@@ -51,22 +51,22 @@ namespace vcl {
  */
 template<typename T, typename... Args>
 void compactVector(
-	std::vector<T, Args...>& vec,
-	const std::vector<uint>& newIndices)
+    std::vector<T, Args...>& vec,
+    const std::vector<uint>& newIndices)
 {
-	assert(vec.size() == newIndices.size());
-	uint newSize = 0;
-	for (uint i = 0; i < newIndices.size(); ++i) {
-		if (newIndices[i] != UINT_NULL) {
-			++newSize;
-			if (newIndices[i] != i) {
-				// must move the element from position i to position
-				// newIndices[i]
-				vec[newIndices[i]] = std::move(vec[i]);
-			}
-		}
-	}
-	vec.resize(newSize);
+    assert(vec.size() == newIndices.size());
+    uint newSize = 0;
+    for (uint i = 0; i < newIndices.size(); ++i) {
+        if (newIndices[i] != UINT_NULL) {
+            ++newSize;
+            if (newIndices[i] != i) {
+                // must move the element from position i to position
+                // newIndices[i]
+                vec[newIndices[i]] = std::move(vec[i]);
+            }
+        }
+    }
+    vec.resize(newSize);
 }
 
 } // namespace vcl

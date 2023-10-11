@@ -36,16 +36,16 @@ concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<std::remove_cvref_t<T>>;
 
 struct AdjEdgesView
 {
-	constexpr AdjEdgesView() = default;
+    constexpr AdjEdgesView() = default;
 
-	template <CleanAdjEdgesConcept R>
-	friend constexpr auto operator|(R&& r, AdjEdgesView)
-	{
-		if constexpr(IsPointer<R>)
-			return r->adjEdges();
-		else
-			return r.adjEdges();
-	}
+    template <CleanAdjEdgesConcept R>
+    friend constexpr auto operator|(R&& r, AdjEdgesView)
+    {
+        if constexpr(IsPointer<R>)
+            return r->adjEdges();
+        else
+            return r.adjEdges();
+    }
 };
 
 } // namespace vcl::views::internal

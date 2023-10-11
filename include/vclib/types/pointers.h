@@ -36,7 +36,7 @@ namespace vcl {
  */
 template<typename T>
 using RemoveCVRefAndPointer =
-	typename std::remove_cvref_t<std::remove_pointer_t<T>>;
+    typename std::remove_cvref_t<std::remove_pointer_t<T>>;
 
 /*
  * Utility to get a pointer type without the constness.
@@ -45,9 +45,9 @@ using RemoveCVRefAndPointer =
  */
 template<typename T>
 using RemoveConstFromPointer =
-	std::conditional_t<std::is_pointer_v<T>, 
-	std::add_pointer_t<typename std::remove_cv_t<typename std::remove_pointer_t<T>>>,
-	T>;
+    std::conditional_t<std::is_pointer_v<T>, 
+    std::add_pointer_t<typename std::remove_cv_t<typename std::remove_pointer_t<T>>>,
+    T>;
 
 /**
  * @brief Utility function that applies the unary operator '*' to the argument only if
@@ -59,12 +59,12 @@ using RemoveConstFromPointer =
 template<typename T>
 auto dereferencePtr(T&& obj)
 {
-	if constexpr (IsPointer<T>) {
-		return *obj;
-	}
-	else {
-		return std::forward<T>(obj);
-	}
+    if constexpr (IsPointer<T>) {
+        return *obj;
+    }
+    else {
+        return std::forward<T>(obj);
+    }
 }
 
 /**
@@ -77,12 +77,12 @@ auto dereferencePtr(T&& obj)
 template<typename T>
 auto addressOfObj(T& obj)
 {
-	if constexpr (IsPointer<T>) {
-		return obj;
-	}
-	else {
-		return &obj;
-	}
+    if constexpr (IsPointer<T>) {
+        return obj;
+    }
+    else {
+        return &obj;
+    }
 }
 
 } // namespace vcl

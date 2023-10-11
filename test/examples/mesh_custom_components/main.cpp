@@ -29,61 +29,61 @@
 
 int main()
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
-	m.addPerVertexCustomComponent<int>("flag");
+    m.addPerVertexCustomComponent<int>("flag");
 
-	assert(m.hasPerVertexCustomComponent("flag"));
+    assert(m.hasPerVertexCustomComponent("flag"));
 
-	for (vcl::TriMesh::Vertex& v : m.vertices()){
-		v.customComponent<int>("flag") = -4;
-	}
+    for (vcl::TriMesh::Vertex& v : m.vertices()){
+        v.customComponent<int>("flag") = -4;
+    }
 
-	assert(m.vertex(10).customComponent<int>("flag") == -4);
-	
-	vcl::CustomComponentVectorHandle<int> v = m.perVertexCustomComponentVectorHandle<int>("flag");
+    assert(m.vertex(10).customComponent<int>("flag") == -4);
+    
+    vcl::CustomComponentVectorHandle<int> v = m.perVertexCustomComponentVectorHandle<int>("flag");
 
-	for (auto& m : v) {
-		m = 8;
-	}
+    for (auto& m : v) {
+        m = 8;
+    }
 
-	v.front() = 4;
+    v.front() = 4;
 
-	assert(m.vertex(0).customComponent<int>("flag") == 4);
-	assert(m.vertex(9).customComponent<int>("flag") == 8);
+    assert(m.vertex(0).customComponent<int>("flag") == 4);
+    assert(m.vertex(9).customComponent<int>("flag") == 8);
 
-	m.deletePerVertexCustomComponent("flag");
+    m.deletePerVertexCustomComponent("flag");
 
-	assert(!m.hasPerVertexCustomComponent("flag"));
+    assert(!m.hasPerVertexCustomComponent("flag"));
 
-	m.addPerVertexCustomComponent<vcl::Point3f>("oldCoords");
+    m.addPerVertexCustomComponent<vcl::Point3f>("oldCoords");
 
-	assert(m.hasPerVertexCustomComponent("oldCoords"));
-	assert(m.isPerVertexCustomComponentOfType<vcl::Point3f>("oldCoords"));
-	assert(!m.isPerVertexCustomComponentOfType<vcl::Point3d>("oldCoords"));
+    assert(m.hasPerVertexCustomComponent("oldCoords"));
+    assert(m.isPerVertexCustomComponentOfType<vcl::Point3f>("oldCoords"));
+    assert(!m.isPerVertexCustomComponentOfType<vcl::Point3d>("oldCoords"));
 
-	for (vcl::TriMesh::Vertex& v : m.vertices()) {
-		v.customComponent<vcl::Point3f>("oldCoords") = v.coord().cast<float>();
-	}
+    for (vcl::TriMesh::Vertex& v : m.vertices()) {
+        v.customComponent<vcl::Point3f>("oldCoords") = v.coord().cast<float>();
+    }
 
-	vcl::taubinSmoothing(m, 500, 0.7, -0.73);
+    vcl::taubinSmoothing(m, 500, 0.7, -0.73);
 
-	vcl::ConstCustomComponentVectorHandle<vcl::Point3f> oldCoords =
-		m.perVertexCustomComponentVectorHandle<const vcl::Point3f>("oldCoords");
+    vcl::ConstCustomComponentVectorHandle<vcl::Point3f> oldCoords =
+        m.perVertexCustomComponentVectorHandle<const vcl::Point3f>("oldCoords");
 
-	double avgDist = 0;
-	using CT = vcl::TriMesh::Vertex::CoordType;
-	using ST = CT::ScalarType;
-	for (vcl::TriMesh::Vertex& v : m.vertices()) {
-		avgDist += v.coord().dist(oldCoords[m.index(v)].cast<ST>());
-	}
-	avgDist /= m.vertexNumber();
+    double avgDist = 0;
+    using CT = vcl::TriMesh::Vertex::CoordType;
+    using ST = CT::ScalarType;
+    for (vcl::TriMesh::Vertex& v : m.vertices()) {
+        avgDist += v.coord().dist(oldCoords[m.index(v)].cast<ST>());
+    }
+    avgDist /= m.vertexNumber();
 
-	std::cerr << "Avg distance after taubin smoothing: " << avgDist << "\n";
+    std::cerr << "Avg distance after taubin smoothing: " << avgDist << "\n";
 
-	m.addCustomComponent<CT>("barycenter", vcl::barycenter(m));
+    m.addCustomComponent<CT>("barycenter", vcl::barycenter(m));
 
-	std::cerr << "Mesh barycenter: " << m.customComponent<CT>("barycenter") << "\n";
+    std::cerr << "Mesh barycenter: " << m.customComponent<CT>("barycenter") << "\n";
 
-	return 0;
+    return 0;
 }

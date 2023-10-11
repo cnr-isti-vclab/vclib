@@ -12,7 +12,7 @@
 project(vclib-mesh-io-ply)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-io-ply ${SOURCES})
 

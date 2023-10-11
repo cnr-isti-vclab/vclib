@@ -33,71 +33,71 @@ namespace vcl {
 template<typename Scalar>
 class Sphere
 {
-	vcl::Point3<Scalar> c;
-	Scalar r;
+    vcl::Point3<Scalar> c;
+    Scalar r;
 
 public:
-	using ScalarType = Scalar;
-	using PointType = vcl::Point3<Scalar>;
+    using ScalarType = Scalar;
+    using PointType = vcl::Point3<Scalar>;
 
-	Sphere() {}
+    Sphere() {}
 
-	Sphere(const vcl::Point3<Scalar>& center, Scalar radius) :
-			c(center), r(radius)
-	{
-	}
+    Sphere(const vcl::Point3<Scalar>& center, Scalar radius) :
+            c(center), r(radius)
+    {
+    }
 
-	const Point3<Scalar>& center() const { return c; }
+    const Point3<Scalar>& center() const { return c; }
 
-	Point3<Scalar>& center() { return c; }
+    Point3<Scalar>& center() { return c; }
 
-	const Scalar& radius() const { return r; }
+    const Scalar& radius() const { return r; }
 
-	Scalar& radius() { return r; }
+    Scalar& radius() { return r; }
 
-	template<typename S>
-	Sphere<S> cast() const
-	{
-		if constexpr (std::is_same_v<Scalar, S>) {
-			return *this;
-		}
-		else {
-			return Sphere<S>(c.template cast<S>(), r);
-		}
-	}
+    template<typename S>
+    Sphere<S> cast() const
+    {
+        if constexpr (std::is_same_v<Scalar, S>) {
+            return *this;
+        }
+        else {
+            return Sphere<S>(c.template cast<S>(), r);
+        }
+    }
 
-	Scalar diameter() const { return 2 * r; }
+    Scalar diameter() const { return 2 * r; }
 
-	Scalar circumference() const { return 2 * M_PI * r; }
+    Scalar circumference() const { return 2 * M_PI * r; }
 
-	Scalar surfaceArea() const { return 4 * M_PI * std::pow(r, 2); }
+    Scalar surfaceArea() const { return 4 * M_PI * std::pow(r, 2); }
 
-	Scalar volume() const { return (4.0 / 3) * M_PI * std::pow(r, 3); }
+    Scalar volume() const { return (4.0 / 3) * M_PI * std::pow(r, 3); }
 
-	bool isInside(const vcl::Point3<Scalar>& p) const { return c.dist(p) <= r; }
+    bool isInside(const vcl::Point3<Scalar>& p) const { return c.dist(p) <= r; }
 
-	/**
-	 * @brief Checks if a sphere intersects with a Box.
-	 *
-	 * @param b
-	 * @return
-	 */
-	bool intersects(const Box3<Scalar>& b) const
-	{
-		// https://stackoverflow.com/a/4579192/5851101
-		Scalar dmin = 0;
-		for(uint i = 0; i < 3; i++) {
-			if(c[i] < b.min()[i])
-				dmin += std::sqrt(c[i] - b.min()[i]);
-			else
-				if(c[i] > b.max()[i] )
-					dmin += std::sqrt(c[i] - b.max()[i]);
-		}
-		if(dmin <= std::pow(r, 2))
-			return true;
-		else
-			return false;
-	}
+    /**
+     * @brief Checks if a sphere intersects with a Box.
+     *
+     * @param b
+     * @return
+     */
+    bool intersects(const Box3<Scalar>& b) const
+    {
+        // https://stackoverflow.com/a/4579192/5851101
+        Scalar dmin = 0;
+        for(uint i = 0; i < 3; i++) {
+            if(c[i] < b.min()[i])
+                dmin += std::sqrt(c[i] - b.min()[i]);
+            else
+                if(c[i] > b.max()[i] )
+                    dmin += std::sqrt(c[i] - b.max()[i]);
+        }
+        if(dmin <= std::pow(r, 2))
+            return true;
+        else
+            return false;
+    }
 };
 
 /* Specialization Aliases */

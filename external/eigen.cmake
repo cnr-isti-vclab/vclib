@@ -14,15 +14,15 @@ find_package(Eigen3 QUIET)
 set(VCLIB_EIGEN_DIR ${CMAKE_CURRENT_LIST_DIR}/eigen-3.4.0)
 
 if(VCLIB_ALLOW_SYSTEM_EIGEN AND EIGEN3_INCLUDE_DIR)
-	message(STATUS "- Eigen - using system-provided library")
-	set(EIGEN_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+    message(STATUS "- Eigen - using system-provided library")
+    set(EIGEN_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
 elseif(VCLIB_ALLOW_BUNDLED_EIGEN AND EXISTS "${VCLIB_EIGEN_DIR}/Eigen/Eigen")
-	message(STATUS "- Eigen - using bundled source")
-	set(EIGEN_INCLUDE_DIRS ${VCLIB_EIGEN_DIR})
+    message(STATUS "- Eigen - using bundled source")
+    set(EIGEN_INCLUDE_DIRS ${VCLIB_EIGEN_DIR})
 else()
-	message(
-		FATAL_ERROR
-		"Eigen is required - at least one of VCLIB_ALLOW_SYSTEM_EIGEN or VCLIB_ALLOW_BUNDLED_EIGEN must be enabled and found.")
+    message(
+        FATAL_ERROR
+        "Eigen is required - at least one of VCLIB_ALLOW_SYSTEM_EIGEN or VCLIB_ALLOW_BUNDLED_EIGEN must be enabled and found.")
 endif()
 
 add_library(vclib-external-eigen INTERFACE)

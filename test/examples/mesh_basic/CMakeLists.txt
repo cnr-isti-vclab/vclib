@@ -12,7 +12,7 @@
 project(vclib-mesh-basic-example)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-basic-example ${SOURCES})
 

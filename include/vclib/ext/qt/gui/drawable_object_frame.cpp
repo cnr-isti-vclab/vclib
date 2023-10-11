@@ -27,26 +27,26 @@
 namespace vcl {
 
 DrawableObjectFrame::DrawableObjectFrame(DrawableObject *obj, QWidget *parent) :
-		QFrame(parent),
-		ui(new Ui::DrawableObjectFrame),
-		obj(obj)
+        QFrame(parent),
+        ui(new Ui::DrawableObjectFrame),
+        obj(obj)
 {
-	ui->setupUi(this);
-	assert(obj);
-	ui->objNameLabel->setText(QString::fromStdString(obj->name()));
-	ui->visibilityCheckBox->setChecked(obj->isVisible());
+    ui->setupUi(this);
+    assert(obj);
+    ui->objNameLabel->setText(QString::fromStdString(obj->name()));
+    ui->visibilityCheckBox->setChecked(obj->isVisible());
 }
 
 DrawableObjectFrame::~DrawableObjectFrame()
 {
-	delete ui;
+    delete ui;
 }
 
 
 void DrawableObjectFrame::on_visibilityCheckBox_stateChanged(int arg1)
 {
-	obj->setVisibility(arg1 == Qt::Checked);
-	emit visibilityChanged();
+    obj->setVisibility(arg1 == Qt::Checked);
+    emit visibilityChanged();
 }
 
 } // namespace vcl

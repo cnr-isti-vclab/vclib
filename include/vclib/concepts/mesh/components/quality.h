@@ -43,12 +43,12 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasQuality = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	typename T::QualityType;
-	{ o.quality() } -> std::same_as<typename T::QualityType&>;
-	{ co.quality() } -> std::same_as<const typename T::QualityType&>;
+    typename T::QualityType;
+    { o.quality() } -> std::same_as<typename T::QualityType&>;
+    { co.quality() } -> std::same_as<const typename T::QualityType&>;
 };
 
 /**
@@ -60,7 +60,7 @@ concept HasQuality = requires(
  */
 template<typename T>
 concept HasOptionalQuality =
-	HasQuality<T> && IsOptionalComponent<typename T::Quality>;
+    HasQuality<T> && IsOptionalComponent<typename T::Quality>;
 
 } // namespace vcl::comp
 

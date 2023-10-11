@@ -41,16 +41,16 @@ class Vertex;
 
 template<typename Scalar>
 class Vertex :
-		public vcl::Vertex<
-			PointCloudT<Scalar>,
-			vcl::vert::BitFlags,                                 // 4b
-			vcl::vert::Coordinate3<Scalar>,                      // 24b
-			vcl::vert::Normal3<Scalar>,                          // 24b
-			vcl::vert::Color,                                    // 4b
-			vcl::vert::Quality<Scalar>,                          // 8b
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
-			vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
-			vcl::vert::CustomComponents<Vertex<Scalar>>>         // 0b
+        public vcl::Vertex<
+            PointCloudT<Scalar>,
+            vcl::vert::BitFlags,                                 // 4b
+            vcl::vert::Coordinate3<Scalar>,                      // 24b
+            vcl::vert::Normal3<Scalar>,                          // 24b
+            vcl::vert::Color,                                    // 4b
+            vcl::vert::Quality<Scalar>,                          // 8b
+            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
+            vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
+            vcl::vert::CustomComponents<Vertex<Scalar>>>         // 0b
 {
 };
 
@@ -60,17 +60,17 @@ namespace vcl {
 
 template<typename Scalar = double>
 class PointCloudT :
-		public vcl::Mesh<
-			mesh::VertexContainer<pointcloud::Vertex<Scalar>>,
-			mesh::BoundingBox3<Scalar>,
-			mesh::Mark,
-			mesh::Name,
-			mesh::TexturePaths,
-			mesh::TransformMatrix<Scalar>,
-			mesh::CustomComponents>
+        public vcl::Mesh<
+            mesh::VertexContainer<pointcloud::Vertex<Scalar>>,
+            mesh::BoundingBox3<Scalar>,
+            mesh::Mark,
+            mesh::Name,
+            mesh::TexturePaths,
+            mesh::TransformMatrix<Scalar>,
+            mesh::CustomComponents>
 {
 public:
-	using ScalarType = Scalar;
+    using ScalarType = Scalar;
 };
 
 using PointCloudf = PointCloudT<float>;

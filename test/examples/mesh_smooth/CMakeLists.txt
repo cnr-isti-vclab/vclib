@@ -12,7 +12,7 @@
 project(vclib-mesh-smooth)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-smooth ${SOURCES})
 

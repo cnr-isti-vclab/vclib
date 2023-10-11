@@ -92,183 +92,183 @@ namespace vcl::comp {
 template<typename ElementType = void>
 class CustomComponents
 {
-	static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+    static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 
-	internal::CustomComponentsData<ElementType, IS_VERTICAL> data;
+    internal::CustomComponentsData<ElementType, IS_VERTICAL> data;
 
 public:
-	/**
-	 * @brief The ID of component.
-	 */
-	static const uint COMPONENT_ID = CUSTOM_COMPONENTS;
+    /**
+     * @brief The ID of component.
+     */
+    static const uint COMPONENT_ID = CUSTOM_COMPONENTS;
 
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes an empty container of custom components.
-	 */
-	CustomComponents() = default;
+    /**
+     * @brief Initilizes an empty container of custom components.
+     */
+    CustomComponents() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns true if the element has a custom component with the given
-	 * name, false otherwise. The type of the custom component is not checked.
-	 *
-	 * @param[in] compName: the name of the custom component.
-	 * @return true if the element has a custom component with the given name,
-	 * false otherwise.
-	 */
-	bool hasCustomComponent(const std::string& compName) const
-	{
-		return data.componentExists(
-			compName, static_cast<const ElementType*>(this));
-	}
+    /**
+     * @brief Returns true if the element has a custom component with the given
+     * name, false otherwise. The type of the custom component is not checked.
+     *
+     * @param[in] compName: the name of the custom component.
+     * @return true if the element has a custom component with the given name,
+     * false otherwise.
+     */
+    bool hasCustomComponent(const std::string& compName) const
+    {
+        return data.componentExists(
+            compName, static_cast<const ElementType*>(this));
+    }
 
-	/**
-	 * @brief Returns true if the custom component of the given name is of the
-	 * type given as template argument, false otherwise.
-	 *
-	 * @note The element must have a custom component with the given name,
-	 * otherwise a std::out_of_range exception is thrown. If you don't know if
-	 * the element has a custom component with the given name, use the
-	 * CustomComponents::hasCustomComponent() member function.
-	 *
-	 * @throws std::out_of_range if the element does not have a custom component
-	 * with the given name.
-	 *
-	 * @tparam CompType: the type of the custom component to check.
-	 * @param[in] compName: the name of the custom component.
-	 * @return true if the custom component of the given name is of the type
-	 * CompType, false otherwise.
-	 */
-	template<typename CompType>
-	bool isCustomComponentOfType(const std::string& compName) const
-	{
-		return data.template isComponentOfType<CompType>(
-			compName, static_cast<const ElementType*>(this));
-	}
+    /**
+     * @brief Returns true if the custom component of the given name is of the
+     * type given as template argument, false otherwise.
+     *
+     * @note The element must have a custom component with the given name,
+     * otherwise a std::out_of_range exception is thrown. If you don't know if
+     * the element has a custom component with the given name, use the
+     * CustomComponents::hasCustomComponent() member function.
+     *
+     * @throws std::out_of_range if the element does not have a custom component
+     * with the given name.
+     *
+     * @tparam CompType: the type of the custom component to check.
+     * @param[in] compName: the name of the custom component.
+     * @return true if the custom component of the given name is of the type
+     * CompType, false otherwise.
+     */
+    template<typename CompType>
+    bool isCustomComponentOfType(const std::string& compName) const
+    {
+        return data.template isComponentOfType<CompType>(
+            compName, static_cast<const ElementType*>(this));
+    }
 
-	/**
-	 * @brief Returns the `std::type_index` of the custom component of the given
-	 * name.
-	 *
-	 * @note The element must have a custom component with the given name,
-	 * otherwise a std::out_of_range exception is thrown. If you don't know if
-	 * the element has a custom component with the given name, use the
-	 * CustomComponents::hasCustomComponent() member function.
-	 *
-	 * @throws std::out_of_range if the element does not have a custom component
-	 * with the given name.
-	 *
-	 * @param[in] compName: the name of the custom component.
-	 * @return the `std::type_index` of the custom component of the given name.
-	 */
-	std::type_index customComponentType(const std::string& compName) const
-	{
-		return data.componentType(
-			compName, static_cast<const ElementType*>(this));
-	}
+    /**
+     * @brief Returns the `std::type_index` of the custom component of the given
+     * name.
+     *
+     * @note The element must have a custom component with the given name,
+     * otherwise a std::out_of_range exception is thrown. If you don't know if
+     * the element has a custom component with the given name, use the
+     * CustomComponents::hasCustomComponent() member function.
+     *
+     * @throws std::out_of_range if the element does not have a custom component
+     * with the given name.
+     *
+     * @param[in] compName: the name of the custom component.
+     * @return the `std::type_index` of the custom component of the given name.
+     */
+    std::type_index customComponentType(const std::string& compName) const
+    {
+        return data.componentType(
+            compName, static_cast<const ElementType*>(this));
+    }
 
-	/**
-	 * @brief Returns a std::vector of std::strings containing the names of the
-	 * custom components of the type given as template argument.
-	 *
-	 * @tparam CompType: the type of the custom components to retrieve.
-	 * @return a std::vector of std::strings containing the names of the custom
-	 * components of the type given as template argument.
-	 */
-	template<typename CompType>
-	std::vector<std::string> customComponentNamesOfType() const
-	{
-		return data.template componentNamesOfType<CompType>(
-			static_cast<const ElementType*>(this));
-	}
+    /**
+     * @brief Returns a std::vector of std::strings containing the names of the
+     * custom components of the type given as template argument.
+     *
+     * @tparam CompType: the type of the custom components to retrieve.
+     * @return a std::vector of std::strings containing the names of the custom
+     * components of the type given as template argument.
+     */
+    template<typename CompType>
+    std::vector<std::string> customComponentNamesOfType() const
+    {
+        return data.template componentNamesOfType<CompType>(
+            static_cast<const ElementType*>(this));
+    }
 
-	/**
-	 * @brief Returns the const reference to the custom component of the given
-	 * name having the type given as template argument.
-	 *
-	 * @note The element must have a custom component with the given name,
-	 * otherwise a std::out_of_range exception is thrown. If you don't know if
-	 * the element has a custom component with the given name, use the
-	 * CustomComponents::hasCustomComponent() member function.
-	 *
-	 * @note The custom component must be of the type given as template
-	 * argument, otherwise a std::bad_any_cast exception is thrown. The type of
-	 * the custom component must be known at compile time.
-	 *
-	 * @throws std::out_of_range if the element does not have a custom component
-	 * with the given name.
-	 * @throws std::bad_any_cast if the custom component is not of the type
-	 * given as template argument.
-	 *
-	 * @tparam CompType: the type of the custom component to retrieve.
-	 * @param[in] compName: the name of the custom component.
-	 * @return the const reference to the custom component of the given name
-	 * having the type given as template argument.
-	 */
-	template<typename CompType>
-	const CompType& customComponent(const std::string& compName) const
-	{
-		return data.template get<CompType>(
-			compName, static_cast<const ElementType*>(this));
-	}
+    /**
+     * @brief Returns the const reference to the custom component of the given
+     * name having the type given as template argument.
+     *
+     * @note The element must have a custom component with the given name,
+     * otherwise a std::out_of_range exception is thrown. If you don't know if
+     * the element has a custom component with the given name, use the
+     * CustomComponents::hasCustomComponent() member function.
+     *
+     * @note The custom component must be of the type given as template
+     * argument, otherwise a std::bad_any_cast exception is thrown. The type of
+     * the custom component must be known at compile time.
+     *
+     * @throws std::out_of_range if the element does not have a custom component
+     * with the given name.
+     * @throws std::bad_any_cast if the custom component is not of the type
+     * given as template argument.
+     *
+     * @tparam CompType: the type of the custom component to retrieve.
+     * @param[in] compName: the name of the custom component.
+     * @return the const reference to the custom component of the given name
+     * having the type given as template argument.
+     */
+    template<typename CompType>
+    const CompType& customComponent(const std::string& compName) const
+    {
+        return data.template get<CompType>(
+            compName, static_cast<const ElementType*>(this));
+    }
 
-	/**
-	 * @brief Returns the reference to the custom component of the given
-	 * name having the type given as template argument.
-	 *
-	 * @note The element must have a custom component with the given name,
-	 * otherwise a std::out_of_range exception is thrown. If you don't know if
-	 * the element has a custom component with the given name, use the
-	 * CustomComponents::hasCustomComponent() member function.
-	 *
-	 * @note The custom component must be of the type given as template
-	 * argument, otherwise a std::bad_any_cast exception is thrown. The type of
-	 * the custom component must be known at compile time.
-	 *
-	 * @throws std::out_of_range if the element does not have a custom component
-	 * with the given name.
-	 * @throws std::bad_any_cast if the custom component is not of the type
-	 * given as template argument.
-	 *
-	 * @tparam CompType: the type of the custom component to retrieve.
-	 * @param[in] compName: the name of the custom component.
-	 * @return the reference to the custom component of the given name having
-	 * the type given as template argument.
-	 */
-	template<typename CompType>
-	CompType& customComponent(const std::string& compName)
-	{
-		return data.template get<CompType>(
-			compName, static_cast<ElementType*>(this));
-	}
+    /**
+     * @brief Returns the reference to the custom component of the given
+     * name having the type given as template argument.
+     *
+     * @note The element must have a custom component with the given name,
+     * otherwise a std::out_of_range exception is thrown. If you don't know if
+     * the element has a custom component with the given name, use the
+     * CustomComponents::hasCustomComponent() member function.
+     *
+     * @note The custom component must be of the type given as template
+     * argument, otherwise a std::bad_any_cast exception is thrown. The type of
+     * the custom component must be known at compile time.
+     *
+     * @throws std::out_of_range if the element does not have a custom component
+     * with the given name.
+     * @throws std::bad_any_cast if the custom component is not of the type
+     * given as template argument.
+     *
+     * @tparam CompType: the type of the custom component to retrieve.
+     * @param[in] compName: the name of the custom component.
+     * @return the reference to the custom component of the given name having
+     * the type given as template argument.
+     */
+    template<typename CompType>
+    CompType& customComponent(const std::string& compName)
+    {
+        return data.template get<CompType>(
+            compName, static_cast<ElementType*>(this));
+    }
 
-	template<typename CompType>
-	void addCustomComponent(
-		const std::string& compName,
-		const CompType&    value = CompType()) requires (!IS_VERTICAL)
-	{
-		return data.template addCustomComponent<CompType>(compName, value);
-	}
+    template<typename CompType>
+    void addCustomComponent(
+        const std::string& compName,
+        const CompType&    value = CompType()) requires (!IS_VERTICAL)
+    {
+        return data.template addCustomComponent<CompType>(compName, value);
+    }
 
-	void deleteCustomComponent(const std::string& compName)
-		requires (!IS_VERTICAL)
-	{
-		return data.deleteCustomComponent(compName);
-	}
+    void deleteCustomComponent(const std::string& compName)
+        requires (!IS_VERTICAL)
+    {
+        return data.deleteCustomComponent(compName);
+    }
 
 protected:
-	template <typename Element>
-	void importFrom(const Element& e)
-	{
-		// if the component is vertical, the import is managed by the container.
-		// if is horizontal, it must be managed by the component itself.
-		if constexpr (!IS_VERTICAL && HasCustomComponents<Element>) {
-			data = e.CustomComponents::data;
-		}
-	}
+    template <typename Element>
+    void importFrom(const Element& e)
+    {
+        // if the component is vertical, the import is managed by the container.
+        // if is horizontal, it must be managed by the component itself.
+        if constexpr (!IS_VERTICAL && HasCustomComponents<Element>) {
+            data = e.CustomComponents::data;
+        }
+    }
 
 };
 

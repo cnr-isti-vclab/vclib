@@ -46,38 +46,38 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasAdjacentEdges = requires(
-	T o,
-	const T& co,
-	typename T::AdjacentEdgeType e,
-	std::vector<typename T::AdjacentEdgeType*> v)
+    T o,
+    const T& co,
+    typename T::AdjacentEdgeType e,
+    std::vector<typename T::AdjacentEdgeType*> v)
 {
-	T::ADJ_EDGE_NUMBER;
-	typename T::AdjacentEdgeType;
-	typename T::AdjacentEdgeIterator;
-	typename T::ConstAdjacentEdgeIterator;
+    T::ADJ_EDGE_NUMBER;
+    typename T::AdjacentEdgeType;
+    typename T::AdjacentEdgeIterator;
+    typename T::ConstAdjacentEdgeIterator;
 
-	{ o.adjEdgesNumber() } -> std::same_as<uint>;
-	{ o.adjEdge(uint()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
-	{ co.adjEdge(uint()) } -> std::same_as<const typename T::AdjacentEdgeType*>;
-	{ o.adjEdgeMod(int()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
-	{ co.adjEdgeMod(int()) } ->
-		std::same_as<const typename T::AdjacentEdgeType*>;
-	{ o.setAdjEdge(&e, uint()) } -> std::same_as<void>;
-	{ o.setAdjEdges(v) } -> std::same_as<void>;
-	{ co.containsAdjEdge(&e) } -> std::same_as<bool>;
+    { o.adjEdgesNumber() } -> std::same_as<uint>;
+    { o.adjEdge(uint()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
+    { co.adjEdge(uint()) } -> std::same_as<const typename T::AdjacentEdgeType*>;
+    { o.adjEdgeMod(int()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
+    { co.adjEdgeMod(int()) } ->
+        std::same_as<const typename T::AdjacentEdgeType*>;
+    { o.setAdjEdge(&e, uint()) } -> std::same_as<void>;
+    { o.setAdjEdges(v) } -> std::same_as<void>;
+    { co.containsAdjEdge(&e) } -> std::same_as<bool>;
 
-	{ o.findAdjEdge(&e) } -> std::same_as<typename T::AdjacentEdgeIterator>;
-	{ co.findAdjEdge(&e) } ->
-		std::same_as<typename T::ConstAdjacentEdgeIterator>;
-	{ co.indexOfAdjEdge(&e) } -> std::same_as<uint>;
+    { o.findAdjEdge(&e) } -> std::same_as<typename T::AdjacentEdgeIterator>;
+    { co.findAdjEdge(&e) } ->
+        std::same_as<typename T::ConstAdjacentEdgeIterator>;
+    { co.indexOfAdjEdge(&e) } -> std::same_as<uint>;
 
-	{ o.adjEdgeBegin() } -> std::same_as<typename T::AdjacentEdgeIterator>;
-	{ o.adjEdgeEnd() } -> std::same_as<typename T::AdjacentEdgeIterator>;
-	{ co.adjEdgeBegin() } ->
-		std::same_as<typename T::ConstAdjacentEdgeIterator>;
-	{ co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
-	o.adjEdges();
-	co.adjEdges();
+    { o.adjEdgeBegin() } -> std::same_as<typename T::AdjacentEdgeIterator>;
+    { o.adjEdgeEnd() } -> std::same_as<typename T::AdjacentEdgeIterator>;
+    { co.adjEdgeBegin() } ->
+        std::same_as<typename T::ConstAdjacentEdgeIterator>;
+    { co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
+    o.adjEdges();
+    co.adjEdges();
 };
 
 /**
@@ -89,7 +89,7 @@ concept HasAdjacentEdges = requires(
  */
 template<typename T>
 concept HasOptionalAdjacentEdges =
-	HasAdjacentEdges<T> && IsOptionalComponent<typename T::AdjacentEdges>;
+    HasAdjacentEdges<T> && IsOptionalComponent<typename T::AdjacentEdges>;
 
 /**
  * @private
@@ -118,7 +118,7 @@ concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
  */
 template<typename T>
 concept SanityCheckAdjacentEdges =
-	!HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
+    !HasAdjacentEdges<T> || HasRightNumberOfAdjacentEdges<T>;
 
 } // namespace vcl::comp
 

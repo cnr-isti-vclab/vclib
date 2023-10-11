@@ -12,7 +12,7 @@
 project(vclib-mesh-conversions-test)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-conversions-test ${SOURCES})
 

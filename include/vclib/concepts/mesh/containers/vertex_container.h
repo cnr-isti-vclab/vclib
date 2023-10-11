@@ -34,40 +34,40 @@ namespace mesh {
 
 template <typename T>
 concept HasVertexContainer = requires(
-	T o,
-	const T& co,
-	typename T::VertexType* v,
-	typename T::VertexType::CoordType c)
+    T o,
+    const T& co,
+    typename T::VertexType* v,
+    typename T::VertexType::CoordType c)
 {
-	typename T::VertexType;
-	typename T::VertexIterator;
-	typename T::ConstVertexIterator;
+    typename T::VertexType;
+    typename T::VertexIterator;
+    typename T::ConstVertexIterator;
 
-	{ o.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
-	{ co.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
+    { o.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
+    { co.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
 
-	{ co.vertexNumber() } -> std::same_as<uint>;
-	{ co.vertexContainerSize() } -> std::same_as<uint>;
-	{ co.deletedVertexNumber() } -> std::same_as<uint>;
-	o.deleteVertex(uint());
-	o.deleteVertex(v);
-	{ o.vertexIndexIfCompact(uint()) } -> std::same_as<uint>;
-	{ o.vertexCompactIndices() } -> std::same_as<std::vector<uint>>;
+    { co.vertexNumber() } -> std::same_as<uint>;
+    { co.vertexContainerSize() } -> std::same_as<uint>;
+    { co.deletedVertexNumber() } -> std::same_as<uint>;
+    o.deleteVertex(uint());
+    o.deleteVertex(v);
+    { o.vertexIndexIfCompact(uint()) } -> std::same_as<uint>;
+    { o.vertexCompactIndices() } -> std::same_as<std::vector<uint>>;
 
-	{ o.addVertex() } -> std::same_as<uint>;
-	{ o.addVertex(c) } -> std::same_as<uint>;
-	{ o.addVertices(uint()) } -> std::same_as<uint>;
-	{ o.addVertices(c, c, c, c) } -> std::same_as<uint>;
-	{ o.reserveVertices(uint()) } -> std::same_as<void>;
-	{ o.compactVertices() } -> std::same_as<void>;
+    { o.addVertex() } -> std::same_as<uint>;
+    { o.addVertex(c) } -> std::same_as<uint>;
+    { o.addVertices(uint()) } -> std::same_as<uint>;
+    { o.addVertices(c, c, c, c) } -> std::same_as<uint>;
+    { o.reserveVertices(uint()) } -> std::same_as<void>;
+    { o.compactVertices() } -> std::same_as<void>;
 
-	{ o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
-	{ co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
-	{ o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
-	{ co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
+    { o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
+    { co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
+    { o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
+    { co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
 
-	requires std::ranges::range<decltype(o.vertices())>;
-	requires std::ranges::range<decltype(co.vertices())>;
+    requires std::ranges::range<decltype(o.vertices())>;
+    requires std::ranges::range<decltype(co.vertices())>;
 };
 
 } // namespace vcl::mesh

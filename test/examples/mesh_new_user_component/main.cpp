@@ -28,20 +28,20 @@
 int main(int argc, char **argv)
 {
 
-	FooMesh m;
+    FooMesh m;
 
-	m.addVertices(10);
+    m.addVertices(10);
 
-	for (auto& v : m.vertices()) {
-		v.foo() = m.index(v) + 42;
-	}
+    for (auto& v : m.vertices()) {
+        v.foo() = m.index(v) + 42;
+    }
 
-	vcl::TriMesh tm;
+    vcl::TriMesh tm;
 
-	// when importing in a trimesh, the foo component is not copied
-	// because the trimesh does not have the component in its vertices
-	tm.importFrom(m);
+    // when importing in a trimesh, the foo component is not copied
+    // because the trimesh does not have the component in its vertices
+    tm.importFrom(m);
 
-	// reverse importFrom, to assert that everything builds correctly
-	m.importFrom(tm);
+    // reverse importFrom, to assert that everything builds correctly
+    m.importFrom(tm);
 }

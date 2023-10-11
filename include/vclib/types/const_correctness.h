@@ -35,13 +35,13 @@ namespace vcl {
 template<typename T>
 struct MakeConstPointer
 {
-	typedef T type;
+    typedef T type;
 };
 
 template<typename T>
 struct MakeConstPointer<T*>
 {
-	typedef const T* type;
+    typedef const T* type;
 };
 
 /*
@@ -52,18 +52,18 @@ struct MakeConstPointer<T*>
 template<typename T>
 constexpr T& asConst(const T& value) noexcept
 {
-	return const_cast<T&>(value);
+    return const_cast<T&>(value);
 }
 
 template<typename T>
 constexpr T* asConst(const T* value) noexcept
 {
-	return const_cast<T*>(value);
+    return const_cast<T*>(value);
 }
 template<typename T>
 constexpr T* asConst(T* value) noexcept
 {
-	return value;
+    return value;
 }
 
 template<typename T>

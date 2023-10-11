@@ -33,48 +33,48 @@ namespace vcl {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log    = nullLogger,
-	bool               binary = true)
+    const MeshType&    m,
+    const std::string& filename,
+    LogType&           log    = nullLogger,
+    bool               binary = true)
 {
-	MeshInfo info(m);
-	save(m, filename, info, log, binary);
+    MeshInfo info(m);
+    save(m, filename, info, log, binary);
 }
 
 template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, bool binary)
 {
-	MeshInfo info(m);
-	NullLogger log;
-	save(m, filename, info, log, binary);
+    MeshInfo info(m);
+    NullLogger log;
+    save(m, filename, info, log, binary);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
-	const MeshType&    m,
-	const std::string& filename,
-	const MeshInfo&    info,
-	LogType&           log    = nullLogger,
-	bool               binary = true)
+    const MeshType&    m,
+    const std::string& filename,
+    const MeshInfo&    info,
+    LogType&           log    = nullLogger,
+    bool               binary = true)
 {
-	std::string ext = FileInfo::extension(filename);
-	ext = vcl::str::toLower(ext);
-	if (ext == ".obj") {
-		io::saveObj(m, filename, info, log);
-	}
-	else if (ext == ".off") {
-		io::saveOff(m, filename, info, log);
-	}
-	else if (ext == ".ply") {
-		io::savePly(m, filename, info, log, binary);
-	}
-	else if (ext == ".stl") {
-		io::saveStl(m, filename, info, log, binary);
-	}
-	else {
-		throw vcl::UnknownFileFormatException(ext);
-	}
+    std::string ext = FileInfo::extension(filename);
+    ext = vcl::str::toLower(ext);
+    if (ext == ".obj") {
+        io::saveObj(m, filename, info, log);
+    }
+    else if (ext == ".off") {
+        io::saveOff(m, filename, info, log);
+    }
+    else if (ext == ".ply") {
+        io::savePly(m, filename, info, log, binary);
+    }
+    else if (ext == ".stl") {
+        io::saveStl(m, filename, info, log, binary);
+    }
+    else {
+        throw vcl::UnknownFileFormatException(ext);
+    }
 }
 
 } // namespace vcl

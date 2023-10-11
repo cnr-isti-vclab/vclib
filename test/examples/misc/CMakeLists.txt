@@ -12,7 +12,7 @@
 project(vclib-misc-example)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-misc-example ${SOURCES})
 

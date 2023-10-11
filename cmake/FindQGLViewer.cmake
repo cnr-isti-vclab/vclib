@@ -7,67 +7,67 @@
 # QGLVIEWER_ROOT_DIR
 
 find_path(QGLVIEWER_INCLUDE_DIR qglviewer.h
-	/usr/include/QGLViewer
-	/usr/local/include/QGLViewer
-	/opt/local/include/QGLViewer
-	/usr/local/include/QGLViewer
-	/Library/Frameworks/QGLViewer.framework/Headers
-	/sw/include/QGLViewer
-	C:/libs/QGLViewer/include/QGLViewer
-	${QGLVIEWER_ROOT}
-	${QGLVIEWER_ROOT_DIR}
-	ENV QGLVIEWER_ROOT
-	ENV QGLVIEWER_ROOT_DIR)
+    /usr/include/QGLViewer
+    /usr/local/include/QGLViewer
+    /opt/local/include/QGLViewer
+    /usr/local/include/QGLViewer
+    /Library/Frameworks/QGLViewer.framework/Headers
+    /sw/include/QGLViewer
+    C:/libs/QGLViewer/include/QGLViewer
+    ${QGLVIEWER_ROOT}
+    ${QGLVIEWER_ROOT_DIR}
+    ENV QGLVIEWER_ROOT
+    ENV QGLVIEWER_ROOT_DIR)
 
 if (Qt6_FOUND)
-	set(QT_SUFFIX -qt6)
+    set(QT_SUFFIX -qt6)
 else()
-	set(QT_SUFFIX -qt5)
+    set(QT_SUFFIX -qt5)
 endif()
 
 if (WIN32)
-	get_filename_component(QGLVIEWER_INCLUDE_DIR ${QGLVIEWER_INCLUDE_DIR} DIRECTORY)
+    get_filename_component(QGLVIEWER_INCLUDE_DIR ${QGLVIEWER_INCLUDE_DIR} DIRECTORY)
 endif()
 
 find_library(QGLVIEWER_LIBRARY_RELEASE
-	NAMES qglviewer QGLViewer QGLViewer2 qglviewer${QT_SUFFIX} QGLViewer${QT_SUFFIX}
-	PATHS
-		/usr/lib
-		/usr/local/lib
-		/opt/local/lib
-		/sw/lib
-		C:/libs/QGLViewer/lib
-		${QGLVIEWER_ROOT}
-		${QGLVIEWER_ROOT_DIR}
-		ENV QGLVIEWER_ROOT
-		ENV QGLVIEWER_ROOT_DIR
-		ENV LD_LIBRARY_PATH
-		ENV LIBRARY_PATH
-	PATH_SUFFIXES QGLViewer QGLViewer/release)
+    NAMES qglviewer QGLViewer QGLViewer2 qglviewer${QT_SUFFIX} QGLViewer${QT_SUFFIX}
+    PATHS
+        /usr/lib
+        /usr/local/lib
+        /opt/local/lib
+        /sw/lib
+        C:/libs/QGLViewer/lib
+        ${QGLVIEWER_ROOT}
+        ${QGLVIEWER_ROOT_DIR}
+        ENV QGLVIEWER_ROOT
+        ENV QGLVIEWER_ROOT_DIR
+        ENV LD_LIBRARY_PATH
+        ENV LIBRARY_PATH
+    PATH_SUFFIXES QGLViewer QGLViewer/release)
 
 find_library(QGLVIEWER_LIBRARY_DEBUG
-	NAMES dqglviewer dQGLViewer QGLViewerd QGLViewerd2 dqglviewer${QT_SUFFIX} dQGLViewer${QT_SUFFIX}
-	PATHS
-		/usr/lib
-		/usr/local/lib
-		/opt/local/lib
-		/sw/lib
-		C:/libs/QGLViewer/lib
-		${QGLVIEWER_ROOT}
-		${QGLVIEWER_ROOT_DIR}
-		ENV QGLVIEWER_ROOT
-		ENV QGLVIEWER_ROOT_DIR
-		ENV LD_LIBRARY_PATH
-		ENV LIBRARY_PATH
-	PATH_SUFFIXES QGLViewer QGLViewer/debug
+    NAMES dqglviewer dQGLViewer QGLViewerd QGLViewerd2 dqglviewer${QT_SUFFIX} dQGLViewer${QT_SUFFIX}
+    PATHS
+        /usr/lib
+        /usr/local/lib
+        /opt/local/lib
+        /sw/lib
+        C:/libs/QGLViewer/lib
+        ${QGLVIEWER_ROOT}
+        ${QGLVIEWER_ROOT_DIR}
+        ENV QGLVIEWER_ROOT
+        ENV QGLVIEWER_ROOT_DIR
+        ENV LD_LIBRARY_PATH
+        ENV LIBRARY_PATH
+    PATH_SUFFIXES QGLViewer QGLViewer/debug
 )
 
 if(QGLVIEWER_LIBRARY_RELEASE)
-	if(QGLVIEWER_LIBRARY_DEBUG)
-		set(QGLVIEWER_LIBRARY optimized ${QGLVIEWER_LIBRARY_RELEASE} debug ${QGLVIEWER_LIBRARY_DEBUG})
-	else()
-		set(QGLVIEWER_LIBRARY ${QGLVIEWER_LIBRARY_RELEASE})
-	endif()
+    if(QGLVIEWER_LIBRARY_DEBUG)
+        set(QGLVIEWER_LIBRARY optimized ${QGLVIEWER_LIBRARY_RELEASE} debug ${QGLVIEWER_LIBRARY_DEBUG})
+    else()
+        set(QGLVIEWER_LIBRARY ${QGLVIEWER_LIBRARY_RELEASE})
+    endif()
 endif()
 
 include(FindPackageHandleStandardArgs)

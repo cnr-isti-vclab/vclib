@@ -44,33 +44,33 @@ class Face;
 
 template<typename Scalar>
 class Vertex :
-		public vcl::Vertex<
-			PolyMeshT<Scalar>,
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3<Scalar>,
-			vcl::vert::Normal3<Scalar>,
-			vcl::vert::Color,
-			vcl::vert::Quality<Scalar>,
-			vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-			vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
-			vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
-			vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-			vcl::vert::CustomComponents<Vertex<Scalar>>>
+        public vcl::Vertex<
+            PolyMeshT<Scalar>,
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3<Scalar>,
+            vcl::vert::Normal3<Scalar>,
+            vcl::vert::Color,
+            vcl::vert::Quality<Scalar>,
+            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
+            vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
+            vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
+            vcl::vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 
 template<typename Scalar>
 class Face :
-		public vcl::Face<
-			PolyMeshT<Scalar>,
-			vcl::face::PolygonBitFlags, // 4b
-			vcl::face::PolygonVertexPtrs<Vertex<Scalar>>,
-			vcl::face::Normal3<Scalar>,
-			vcl::face::OptionalColor<Face<Scalar>>,
-			vcl::face::OptionalQuality<Scalar, Face<Scalar>>,
-			vcl::face::OptionalAdjacentPolygons<Face<Scalar>>,
-			vcl::face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
-			vcl::face::CustomComponents<Face<Scalar>>>
+        public vcl::Face<
+            PolyMeshT<Scalar>,
+            vcl::face::PolygonBitFlags, // 4b
+            vcl::face::PolygonVertexPtrs<Vertex<Scalar>>,
+            vcl::face::Normal3<Scalar>,
+            vcl::face::OptionalColor<Face<Scalar>>,
+            vcl::face::OptionalQuality<Scalar, Face<Scalar>>,
+            vcl::face::OptionalAdjacentPolygons<Face<Scalar>>,
+            vcl::face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
+            vcl::face::CustomComponents<Face<Scalar>>>
 {
 };
 
@@ -80,19 +80,19 @@ namespace vcl {
 
 template<typename Scalar = double>
 class PolyMeshT :
-		public vcl::Mesh<
-			mesh::VertexContainer<polymesh::Vertex<Scalar>>,
-			mesh::FaceContainer<polymesh::Face<Scalar>>,
-			mesh::BoundingBox3<Scalar>,
-			mesh::Color,
-			mesh::Mark,
-			mesh::Name,
-			mesh::TexturePaths,
-			mesh::TransformMatrix<Scalar>,
-			mesh::CustomComponents>
+        public vcl::Mesh<
+            mesh::VertexContainer<polymesh::Vertex<Scalar>>,
+            mesh::FaceContainer<polymesh::Face<Scalar>>,
+            mesh::BoundingBox3<Scalar>,
+            mesh::Color,
+            mesh::Mark,
+            mesh::Name,
+            mesh::TexturePaths,
+            mesh::TransformMatrix<Scalar>,
+            mesh::CustomComponents>
 {
 public:
-	using ScalarType = Scalar;
+    using ScalarType = Scalar;
 };
 
 using PolyMeshf = PolyMeshT<float>;

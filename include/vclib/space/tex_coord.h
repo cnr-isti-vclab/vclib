@@ -31,69 +31,69 @@ namespace vcl {
 template<typename Scalar>
 class TexCoord
 {
-	template<typename S>
-	friend class TexCoord;
+    template<typename S>
+    friend class TexCoord;
 
-	Point2<Scalar> coord;
+    Point2<Scalar> coord;
 
 public:
-	using ScalarType = Scalar;
+    using ScalarType = Scalar;
 
-	TexCoord() = default;
+    TexCoord() = default;
 
-	TexCoord(const Scalar& s1, const Scalar& s2) : coord(s1, s2) {}
+    TexCoord(const Scalar& s1, const Scalar& s2) : coord(s1, s2) {}
 
-	TexCoord(const Point2<Scalar>& p) : coord(p) {}
+    TexCoord(const Point2<Scalar>& p) : coord(p) {}
 
-	template<typename S>
-	TexCoord<S> cast() const
-	{
-		if constexpr (std::is_same<Scalar, S>::value) {
-			return *this;
-		}
-		else {
-			TexCoord<S> tmp;
-			tmp.coord = coord.template cast<S>();
-			return tmp;
-		}
-	}
+    template<typename S>
+    TexCoord<S> cast() const
+    {
+        if constexpr (std::is_same<Scalar, S>::value) {
+            return *this;
+        }
+        else {
+            TexCoord<S> tmp;
+            tmp.coord = coord.template cast<S>();
+            return tmp;
+        }
+    }
 
-	Scalar u() const { return coord.x(); }
+    Scalar u() const { return coord.x(); }
 
-	Scalar v() const { return coord.y(); }
+    Scalar v() const { return coord.y(); }
 
-	Scalar& u() { return coord.x(); }
+    Scalar& u() { return coord.x(); }
 
-	Scalar& v() { return coord.y(); }
+    Scalar& v() { return coord.y(); }
 
-	void setU(Scalar s)
-	{
-		assert(s >= 0 && s <= 1);
-		coord.x() = s;
-	}
+    void setU(Scalar s)
+    {
+        assert(s >= 0 && s <= 1);
+        coord.x() = s;
+    }
 
-	void setV(Scalar s)
-	{
-		assert(s >= 0 && s <= 1);
-		coord.y() = s;
-	}
+    void setV(Scalar s)
+    {
+        assert(s >= 0 && s <= 1);
+        coord.y() = s;
+    }
 
-	void set(Scalar u, Scalar v)
-	{
-		setU(u);
-		setV(v);
-	}
+    void set(Scalar u, Scalar v)
+    {
+        setU(u);
+        setV(v);
+    }
 
-	// operators
-	Scalar& operator()(uint i) { return coord[i]; }
+    // operators
+    Scalar& operator()(uint i) { return coord[i]; }
 
-	const Scalar& operator()(uint i) const { return coord[i]; }
+    const Scalar& operator()(uint i) const { return coord[i]; }
 
-	Scalar& operator[](uint i) { return coord[i]; }
+    Scalar& operator[](uint i) { return coord[i]; }
 
-	const Scalar& operator[](uint i) const { return coord[i]; }
+    const Scalar& operator[](uint i) const { return coord[i]; }
 
-	bool operator==(const TexCoord& t1) const = default;
+    bool operator==(const TexCoord& t1) const = default;
 };
 
 /* Specialization Aliases */

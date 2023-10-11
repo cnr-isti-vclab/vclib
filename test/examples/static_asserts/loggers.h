@@ -28,14 +28,14 @@
 
 void loggersStaticAsserts()
 {
-	using namespace vcl;
+    using namespace vcl;
 
-	static_assert(
-		LoggerConcept<NullLogger>,
-		"NullLogger does not satisfy the LoggerConcept");
-	static_assert(
-		LoggerConcept<ConsoleLogger>,
-		"ConsoleLogger does not satisfy the LoggerConcept");
+    static_assert(
+        LoggerConcept<NullLogger>,
+        "NullLogger does not satisfy the LoggerConcept");
+    static_assert(
+        LoggerConcept<ConsoleLogger>,
+        "ConsoleLogger does not satisfy the LoggerConcept");
 }
 
 #endif // LOGGERS_H

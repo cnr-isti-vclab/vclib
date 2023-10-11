@@ -36,21 +36,21 @@ class DrawableObjectFrame;
 
 class DrawableObjectFrame : public QFrame
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	explicit DrawableObjectFrame(DrawableObject* obj, QWidget *parent = nullptr);
-	~DrawableObjectFrame();
+    explicit DrawableObjectFrame(DrawableObject* obj, QWidget *parent = nullptr);
+    ~DrawableObjectFrame();
 
 signals:
-	void visibilityChanged();
+    void visibilityChanged();
 
 private slots:
-	void on_visibilityCheckBox_stateChanged(int arg1);
+    void on_visibilityCheckBox_stateChanged(int arg1);
 
 private:
-	Ui::DrawableObjectFrame *ui;
-	DrawableObject* obj;
+    Ui::DrawableObjectFrame *ui;
+    DrawableObject* obj;
 };
 
 } // namespace vcl

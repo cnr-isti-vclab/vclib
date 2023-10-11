@@ -36,56 +36,56 @@ namespace vcl {
  */
 class Tokenizer
 {
-	char separator = '\0';
+    char separator = '\0';
 
-	std::vector<std::string> splitted;
+    std::vector<std::string> splitted;
 
 public:
-	using iterator = std::vector<std::string>::const_iterator;
+    using iterator = std::vector<std::string>::const_iterator;
 
-	Tokenizer() = default;
+    Tokenizer() = default;
 
-	Tokenizer(const char* string, char separator, bool jumpEmptyTokens = true) :
-			separator(separator)
-	{
-		split(string, jumpEmptyTokens);
-	}
+    Tokenizer(const char* string, char separator, bool jumpEmptyTokens = true) :
+            separator(separator)
+    {
+        split(string, jumpEmptyTokens);
+    }
 
-	Tokenizer(
-		const std::string& string,
-		char               separator,
-		bool               jumpEmptyTokens = true) :
-			separator(separator)
-	{
-		split(string.c_str(), jumpEmptyTokens);
-	}
+    Tokenizer(
+        const std::string& string,
+        char               separator,
+        bool               jumpEmptyTokens = true) :
+            separator(separator)
+    {
+        split(string.c_str(), jumpEmptyTokens);
+    }
 
-	iterator begin() const { return splitted.begin(); }
+    iterator begin() const { return splitted.begin(); }
 
-	iterator end() const { return splitted.end(); }
+    iterator end() const { return splitted.end(); }
 
-	unsigned long int size() const { return (unsigned long) splitted.size(); }
+    unsigned long int size() const { return (unsigned long) splitted.size(); }
 
-	const std::string& operator[](uint i) const { return splitted[i]; }
+    const std::string& operator[](uint i) const { return splitted[i]; }
 
 private:
-	void split(const char* str, bool jumpEmptyTokens = true)
-	{
-		// https://stackoverflow.com/questions/53849/
-		splitted.clear();
-		if (*str != '\0') {
-			do {
-				const char* begin = str;
-				while (*str != separator && *str)
-					str++;
-				if (begin != str)
-					splitted.push_back(std::string(begin, str));
-				else if (!jumpEmptyTokens){
-					splitted.push_back(std::string());
-				}
-			} while ('\0' != *str++);
-		}
-	}
+    void split(const char* str, bool jumpEmptyTokens = true)
+    {
+        // https://stackoverflow.com/questions/53849/
+        splitted.clear();
+        if (*str != '\0') {
+            do {
+                const char* begin = str;
+                while (*str != separator && *str)
+                    str++;
+                if (begin != str)
+                    splitted.push_back(std::string(begin, str));
+                else if (!jumpEmptyTokens){
+                    splitted.push_back(std::string());
+                }
+            } while ('\0' != *str++);
+        }
+    }
 };
 
 } // namespace vcl

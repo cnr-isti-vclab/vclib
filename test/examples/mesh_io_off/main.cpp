@@ -28,20 +28,20 @@
 
 int main()
 {
-	vcl::MeshInfo loadedInfo;
-	vcl::TriMesh m = vcl::io::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.off", loadedInfo);
+    vcl::MeshInfo loadedInfo;
+    vcl::TriMesh m = vcl::io::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.off", loadedInfo);
 
-	assert(loadedInfo.hasVertices());
-	assert(m.vertexNumber() == 1872);
-	assert(loadedInfo.hasVertexColors());
-	assert(loadedInfo.hasFaces());
-	assert(m.faceNumber() == 3022);
-	assert(loadedInfo.hasFaceColors());
+    assert(loadedInfo.hasVertices());
+    assert(m.vertexNumber() == 1872);
+    assert(loadedInfo.hasVertexColors());
+    assert(loadedInfo.hasFaces());
+    assert(m.faceNumber() == 3022);
+    assert(loadedInfo.hasFaceColors());
 
-	m = vcl::io::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/trim-star.off", loadedInfo);
+    m = vcl::io::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/trim-star.off", loadedInfo);
 
-	assert(loadedInfo.hasVertices());
-	assert(m.vertexNumber() == 5192);
+    assert(loadedInfo.hasVertices());
+    assert(m.vertexNumber() == 5192);
 
-	return 0;
+    return 0;
 }

@@ -56,7 +56,7 @@ concept RangeOf = Range<R> && std::is_same_v<std::ranges::range_value_t<R>, T>;
  */
 template<typename R, typename T>
 concept RangeOfConvertibleTo =
-	Range<R> && std::convertible_to<std::ranges::range_value_t<R>, T>;
+    Range<R> && std::convertible_to<std::ranges::range_value_t<R>, T>;
 
 } // namespace vcl
 

@@ -80,7 +80,7 @@ namespace vcl {
 template<typename Iterator, typename Lambda>
 void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
 {
-	std::for_each(std::execution::par, begin, end, F);
+    std::for_each(std::execution::par, begin, end, F);
 }
 
 /**
@@ -104,7 +104,7 @@ void parallelFor(Iterator&& begin, Iterator&& end, Lambda&& F)
 template<typename Iterator, typename Lambda>
 void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F)
 {
-	std::for_each(std::execution::par, begin, end, F);
+    std::for_each(std::execution::par, begin, end, F);
 }
 
 /**
@@ -125,7 +125,7 @@ void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F)
 template<vcl::Range Rng, typename Lambda>
 void parallelFor(Rng&& r, Lambda&& F)
 {
-	parallelFor(std::ranges::begin(r), std::ranges::end(r), F);
+    parallelFor(std::ranges::begin(r), std::ranges::end(r), F);
 }
 
 /**
@@ -146,7 +146,7 @@ void parallelFor(Rng&& r, Lambda&& F)
 template<vcl::Range Rng, typename Lambda>
 void parallelFor(const Rng& r, Lambda&& F)
 {
-	parallelFor(std::ranges::begin(r), std::ranges::end(r), F);
+    parallelFor(std::ranges::begin(r), std::ranges::end(r), F);
 }
 
 } // namespace vcl

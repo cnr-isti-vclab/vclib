@@ -32,156 +32,156 @@
 
 int main()
 {
-	vcl::RegularGrid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
+    vcl::RegularGrid3<double> g(vcl::Point3d(0,0,0), vcl::Point3d(1,1,1), vcl::Point3<uint>(10, 10, 10));
 
-	vcl::Point3<uint> first(2,2,2), last(5, 4, 7);
+    vcl::Point3<uint> first(2,2,2), last(5, 4, 7);
 
-	vcl::HashTableGrid3<vcl::Point<double, 3>, double, false> sht(g);
+    vcl::HashTableGrid3<vcl::Point<double, 3>, double, false> sht(g);
 
-	sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
-	sht.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted
-	sht.insert(vcl::Point3d(0.02, 0.12, 0.29));
-	sht.insert(vcl::Point3d(0.12, 0.09, 0.32));
+    sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
+    sht.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted
+    sht.insert(vcl::Point3d(0.02, 0.12, 0.29));
+    sht.insert(vcl::Point3d(0.12, 0.09, 0.32));
 
-	sht.insert(vcl::Point3d(0.24, 0.52, 0.29));
+    sht.insert(vcl::Point3d(0.24, 0.52, 0.29));
 
-	std::cerr << "Non Empty cells in HashTableGrid:\n";
+    std::cerr << "Non Empty cells in HashTableGrid:\n";
 
-	for (const auto& c : sht.nonEmptyCells()) {
-		std::cerr << c << "\n";
-	}
+    for (const auto& c : sht.nonEmptyCells()) {
+        std::cerr << c << "\n";
+    }
 
-	std::cerr << "Values in HashTableGrid: \n";
+    std::cerr << "Values in HashTableGrid: \n";
 
-	for (const auto& p : sht) {
-		std::cerr << p.first << ": " << p.second << "\n";
-	}
+    for (const auto& p : sht) {
+        std::cerr << p.first << ": " << p.second << "\n";
+    }
 
-	std::cerr << "Values in cell 0, 1, 2: \n";
+    std::cerr << "Values in cell 0, 1, 2: \n";
 
-	auto p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto& it = p.first; it != p.second; ++it) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n";
+    auto p = sht.valuesInCell(vcl::Point3<uint>(0,1,2));
+    for (auto& it = p.first; it != p.second; ++it) {
+        std::cerr << it->second << "; ";
+    }
+    std::cerr << "\n";
 
-	auto set  = sht.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
+    auto set  = sht.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
 
-	std::cerr << "Values in sphere: \n";
-	for (auto it : set) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n\n";
+    std::cerr << "Values in sphere: \n";
+    for (auto it : set) {
+        std::cerr << it->second << "; ";
+    }
+    std::cerr << "\n\n";
 
-	auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29));
+    auto it = sht.closestValue(vcl::Point3d(0.09, 0.09, 0.29));
 
-	std::cerr << "Closest is: " << it->second << "\n\n";
+    std::cerr << "Closest is: " << it->second << "\n\n";
 
-	sht.eraseInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
+    sht.eraseInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
 
-	std::cerr << "Values in HashTableGrid: \n";
+    std::cerr << "Values in HashTableGrid: \n";
 
-	for (const auto& p : sht) {
-		std::cerr << p.first << ": " << p.second << "\n";
-	}
+    for (const auto& p : sht) {
+        std::cerr << p.first << ": " << p.second << "\n";
+    }
 
-	std::cerr << "\n==================================\n\n";
+    std::cerr << "\n==================================\n\n";
 
-	vcl::StaticGrid3<vcl::Point<double, 3>> sg(g);
+    vcl::StaticGrid3<vcl::Point<double, 3>> sg(g);
 
-	sg.insert(vcl::Point3d(0.05, 0.15, 0.25));
-	sg.insert(vcl::Point3d(0.05, 0.15, 0.25));
-	sg.insert(vcl::Point3d(0.02, 0.12, 0.29));
-	sg.insert(vcl::Point3d(0.12, 0.09, 0.32));
+    sg.insert(vcl::Point3d(0.05, 0.15, 0.25));
+    sg.insert(vcl::Point3d(0.05, 0.15, 0.25));
+    sg.insert(vcl::Point3d(0.02, 0.12, 0.29));
+    sg.insert(vcl::Point3d(0.12, 0.09, 0.32));
 
-	sg.insert(vcl::Point3d(0.24, 0.52, 0.29));
-	sg.build();
+    sg.insert(vcl::Point3d(0.24, 0.52, 0.29));
+    sg.build();
 
-	std::cerr << "Non Empty cells in StaticGrid:\n";
+    std::cerr << "Non Empty cells in StaticGrid:\n";
 
-	for (const auto& c : sg.nonEmptyCells()) {
-		std::cerr << c << "\n";
-	}
+    for (const auto& c : sg.nonEmptyCells()) {
+        std::cerr << c << "\n";
+    }
 
-	std::cerr << "Values in StaticGrid: \n";
+    std::cerr << "Values in StaticGrid: \n";
 
-	for (const auto& p : sg) {
-		std::cerr << p.first << ": " << p.second << "\n";
-	}
+    for (const auto& p : sg) {
+        std::cerr << p.first << ": " << p.second << "\n";
+    }
 
-	std::cerr << "Values in cell 0, 1, 2: \n";
+    std::cerr << "Values in cell 0, 1, 2: \n";
 
-	auto pp = sg.valuesInCell(vcl::Point3<uint>(0,1,2));
-	for (auto& it = pp.first; it != pp.second; ++it) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n";
+    auto pp = sg.valuesInCell(vcl::Point3<uint>(0,1,2));
+    for (auto& it = pp.first; it != pp.second; ++it) {
+        std::cerr << it->second << "; ";
+    }
+    std::cerr << "\n";
 
-	auto sset  = sg.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
+    auto sset  = sg.valuesInSphere({vcl::Point3d(0.05, 0.15, 0.25), 0.2});
 
-	std::cerr << "Values in sphere: \n";
-	for (auto it : sset) {
-		std::cerr << it->second << "; ";
-	}
-	std::cerr << "\n\n";
+    std::cerr << "Values in sphere: \n";
+    for (auto it : sset) {
+        std::cerr << it->second << "; ";
+    }
+    std::cerr << "\n\n";
 
-	std::cerr << "\n==================================\n\n";
+    std::cerr << "\n==================================\n\n";
 
-	vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
-	using ST = vcl::TriMesh::ScalarType;
+    vcl::TriMesh m = vcl::createHexahedron<vcl::TriMesh>();
+    using ST = vcl::TriMesh::ScalarType;
 
-	auto intersects = vcl::intersectFunction<vcl::Box3<ST>, vcl::TriMesh::Face>();
+    auto intersects = vcl::intersectFunction<vcl::Box3<ST>, vcl::TriMesh::Face>();
 
-	vcl::HashTableGrid3<const vcl::TriMesh::Face*, ST> fsht(m.faces() | vcl::views::constAddrOf, intersects);
+    vcl::HashTableGrid3<const vcl::TriMesh::Face*, ST> fsht(m.faces() | vcl::views::constAddrOf, intersects);
 
-	std::cerr << "Values in HashTableGrid: \n";
+    std::cerr << "Values in HashTableGrid: \n";
 
-	for (const auto& p : fsht) {
-		std::cerr << p.first << ": " << m.index(p.second) << "\n";
-	}
+    for (const auto& p : fsht) {
+        std::cerr << p.first << ": " << m.index(p.second) << "\n";
+    }
 
-	std::cerr << "\nValues in Sphere: \n";
+    std::cerr << "\nValues in Sphere: \n";
 
-	auto sv  = fsht.valuesInSphere({vcl::Point3<ST>(-1, -1, -1), 0.5});
+    auto sv  = fsht.valuesInSphere({vcl::Point3<ST>(-1, -1, -1), 0.5});
 
-	for (const auto& p : sv) {
-		std::cerr << p->first << ": " << m.index(p->second) << "\n";
-	}
+    for (const auto& p : sv) {
+        std::cerr << p->first << ": " << m.index(p->second) << "\n";
+    }
 
-	std::cerr << "\n==================================\n\n";
-	
-	vcl::StaticGrid3<const vcl::TriMesh::Face*, ST> fsg(m.faces() | vcl::views::constAddrOf, intersects);
+    std::cerr << "\n==================================\n\n";
+    
+    vcl::StaticGrid3<const vcl::TriMesh::Face*, ST> fsg(m.faces() | vcl::views::constAddrOf, intersects);
 
-	std::cerr << "Values in Static Grid : \n";
+    std::cerr << "Values in Static Grid : \n";
 
-	for (const auto& p : fsg) {
-		std::cerr << p.first << ": " << m.index(p.second) << "\n";
-	}
+    for (const auto& p : fsg) {
+        std::cerr << p.first << ": " << m.index(p.second) << "\n";
+    }
 
-	std::cerr << "\nValues in Sphere: \n";
+    std::cerr << "\nValues in Sphere: \n";
 
-	auto fsv  = fsg.valuesInSphere({vcl::Point3<ST>(-1, -1, -1), 0.5});
+    auto fsv  = fsg.valuesInSphere({vcl::Point3<ST>(-1, -1, -1), 0.5});
 
-	for (const auto& p : fsv) {
-		std::cerr << p->first << ": " << m.index(p->second) << "\n";
-	}
+    for (const auto& p : fsv) {
+        std::cerr << p->first << ": " << m.index(p->second) << "\n";
+    }
 
-	std::cerr << "\n==================================\n\n";
+    std::cerr << "\n==================================\n\n";
 
-	std::cerr << "\nK closest values: \n";
+    std::cerr << "\nK closest values: \n";
 
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
-	
-	
-	vcl::StaticGrid vmsg(m.vertices() | vcl::views::constAddrOf);
+    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+    
+    
+    vcl::StaticGrid vmsg(m.vertices() | vcl::views::constAddrOf);
 
-	const vcl::Point3<ST> qv(0.5, 0.5, 0.5);
+    const vcl::Point3<ST> qv(0.5, 0.5, 0.5);
 
-	auto vec = vmsg.kClosestValues(qv, 5);
+    auto vec = vmsg.kClosestValues(qv, 5);
 
-	for (const auto& p : vec) {
-		std::cerr << p->first << ": " << m.index(p->second) << "\n";
-	}
+    for (const auto& p : vec) {
+        std::cerr << p->first << ": " << m.index(p->second) << "\n";
+    }
 
-	return 0;
+    return 0;
 }

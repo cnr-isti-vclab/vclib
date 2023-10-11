@@ -45,14 +45,14 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasPrincipalCurvature = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	typename T::PrincipalCurvatureType;
-	{ o.principalCurvature() } ->
-		std::same_as<typename T::PrincipalCurvatureType&>;
-	{ co.principalCurvature() } ->
-		std::same_as<const typename T::PrincipalCurvatureType&>;
+    typename T::PrincipalCurvatureType;
+    { o.principalCurvature() } ->
+        std::same_as<typename T::PrincipalCurvatureType&>;
+    { co.principalCurvature() } ->
+        std::same_as<const typename T::PrincipalCurvatureType&>;
 };
 
 /**
@@ -64,8 +64,8 @@ concept HasPrincipalCurvature = requires(
  */
 template<typename T>
 concept HasOptionalPrincipalCurvature =
-	HasPrincipalCurvature<T> &&
-	IsOptionalComponent<typename T::PrincipalCurvature>;
+    HasPrincipalCurvature<T> &&
+    IsOptionalComponent<typename T::PrincipalCurvature>;
 
 } // namespace vcl::comp
 

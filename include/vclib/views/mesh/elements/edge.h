@@ -34,13 +34,13 @@ concept CleanEdgeMeshConcept = EdgeMeshConcept<std::remove_cvref_t<T>>;
 
 struct EdgesView
 {
-	constexpr EdgesView() = default;
+    constexpr EdgesView() = default;
 
-	template <CleanEdgeMeshConcept R>
-	friend constexpr auto operator|(R&& r, EdgesView)
-	{
-		return r.edges();
-	}
+    template <CleanEdgeMeshConcept R>
+    friend constexpr auto operator|(R&& r, EdgesView)
+    {
+        return r.edges();
+    }
 };
 
 } // namespace vcl::views::internal

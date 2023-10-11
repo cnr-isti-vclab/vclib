@@ -30,69 +30,69 @@
 
 int main()
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
+    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
 
-	bool isWaterTight = vcl::isWaterTight(m);
+    bool isWaterTight = vcl::isWaterTight(m);
 
-	assert(!isWaterTight);
+    assert(!isWaterTight);
 
-	std::cerr << "Is Water Tight: " << isWaterTight << "\n";
+    std::cerr << "Is Water Tight: " << isWaterTight << "\n";
 
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
+    m.enablePerFaceAdjacentFaces();
+    vcl::updatePerFaceAdjacentFaces(m);
 
-	uint nm = vcl::numberNonManifoldVertices(m);
+    uint nm = vcl::numberNonManifoldVertices(m);
 
-	assert(nm == 4);
+    assert(nm == 4);
 
-	std::cerr << "Non Manifold Vertices: " << nm << "\n";
+    std::cerr << "Non Manifold Vertices: " << nm << "\n";
 
-	uint nv = vcl::removeUnreferencedVertices(m);
+    uint nv = vcl::removeUnreferencedVertices(m);
 
-	assert(nv == 0);
+    assert(nv == 0);
 
-	std::cerr << "Removed Unreferenced Vertices: " << nv << "\n";
+    std::cerr << "Removed Unreferenced Vertices: " << nv << "\n";
 
-	nv = vcl::removeDuplicatedVertices(m);
+    nv = vcl::removeDuplicatedVertices(m);
 
-	assert(nv == 453);
+    assert(nv == 453);
 
-	std::cerr << "Removed Duplicated Vertices: " << nv << "\n";
+    std::cerr << "Removed Duplicated Vertices: " << nv << "\n";
 
-	m.compact();
+    m.compact();
 
-	vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
+    vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
 
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
-	uint nHoles = vcl::numberHoles(m);
+    m.enablePerFaceAdjacentFaces();
+    vcl::updatePerFaceAdjacentFaces(m);
+    uint nHoles = vcl::numberHoles(m);
 
-	assert(nHoles == 5);
+    assert(nHoles == 5);
 
-	std::cerr << "Bunny number holes: " << nHoles << "\n";
+    std::cerr << "Bunny number holes: " << nHoles << "\n";
 
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/rangemap.ply");
+    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/rangemap.ply");
 
-	vcl::updateBoundingBox(m);
+    vcl::updateBoundingBox(m);
 
-	m.enablePerFaceAdjacentFaces();
-	vcl::updatePerFaceAdjacentFaces(m);
+    m.enablePerFaceAdjacentFaces();
+    vcl::updatePerFaceAdjacentFaces(m);
 
-	std::vector<std::set<uint>> cc = vcl::connectedComponents(m);
+    std::vector<std::set<uint>> cc = vcl::connectedComponents(m);
 
-	assert(cc.size() == 25);
+    assert(cc.size() == 25);
 
-	m.enablePerFaceColor();
+    m.enablePerFaceColor();
 
-	vcl::setPerFaceColorFromConnectedComponents(m, cc);
+    vcl::setPerFaceColorFromConnectedComponents(m, cc);
 
-	auto d = m.boundingBox().diagonal()/10;
+    auto d = m.boundingBox().diagonal()/10;
 
-	vcl::setPerVertexColorPerlinNoise(m, vcl::Point(d, d, d));
+    vcl::setPerVertexColorPerlinNoise(m, vcl::Point(d, d, d));
 
-	vcl::save(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
+    vcl::save(m, VCL_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
 
-	return 0;
+    return 0;
 }

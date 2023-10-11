@@ -12,7 +12,7 @@
 project(vclib-mesh-filter-test)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-filter-test ${SOURCES})
 

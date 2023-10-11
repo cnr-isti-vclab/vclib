@@ -27,13 +27,13 @@
 
 int main()
 {
-	loggersStaticAsserts();
+    loggersStaticAsserts();
 
-	edgemeshStaticAsserts();
-	pointcloudStaticAsserts();
-	polymeshStaticAsserts();
-	trimeshStaticAsserts();
+    edgemeshStaticAsserts();
+    pointcloudStaticAsserts();
+    polymeshStaticAsserts();
+    trimeshStaticAsserts();
 
-	spaceStaticAsserts();
-	return 0;
+    spaceStaticAsserts();
+    return 0;
 }

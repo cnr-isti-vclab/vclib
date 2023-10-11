@@ -41,7 +41,7 @@ namespace vcl {
 template<HasBoundingBox MeshType>
 void updateBoundingBox(MeshType& m)
 {
-	m.boundingBox() = vcl::boundingBox(m);
+    m.boundingBox() = vcl::boundingBox(m);
 }
 
 } // namespace vcl

@@ -15,19 +15,19 @@ namespace internal {
 // if AD is not void, there is additional data, and the component will have
 // a tuple containing a Vector and the additional data
 template<
-	typename DC,
-	uint CT,
-	typename T,
-	int N,
-	typename AD,
-	typename El,
-	bool o,
-	bool TT,
-	typename... PT>
+    typename DC,
+    uint CT,
+    typename T,
+    int N,
+    typename AD,
+    typename El,
+    bool o,
+    bool TT,
+    typename... PT>
 using ContCompBase = std::conditional_t<
-	std::is_same_v<AD, void>,
-	Component<DC, CT, Vector<T, N>, El, o, PT...>,
-	Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
+    std::is_same_v<AD, void>,
+    Component<DC, CT, Vector<T, N>, El, o, PT...>,
+    Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
 
 } // namespace vcl::comp::internal
 
@@ -78,131 +78,131 @@ using ContCompBase = std::conditional_t<
  * happens.
  */
 template<
-	typename DerivedComponent, // CRTP pattern, derived class
-	uint COMP_ID,              // component id
-	typename T,                // data stored in container
-	int N,                     // container size
-	typename AdditionalData,   // additional data outside container
-	typename ElementType,      // element type, void if horizontal
-	bool OPT,                  // true if component vertical and optional
-	bool TTVN,                 // true if container size tied to vertex number
-	typename... PointedTypes>  // types of pointers stored by the component
+    typename DerivedComponent, // CRTP pattern, derived class
+    uint COMP_ID,              // component id
+    typename T,                // data stored in container
+    int N,                     // container size
+    typename AdditionalData,   // additional data outside container
+    typename ElementType,      // element type, void if horizontal
+    bool OPT,                  // true if component vertical and optional
+    bool TTVN,                 // true if container size tied to vertex number
+    typename... PointedTypes>  // types of pointers stored by the component
 class ContainerComponent :
-		public internal::ContCompBase<
-			DerivedComponent,
-			COMP_ID,
-			T,
-			N,
-			AdditionalData,
-			ElementType,
-			OPT,
-			TTVN,
-			PointedTypes...>
+        public internal::ContCompBase<
+            DerivedComponent,
+            COMP_ID,
+            T,
+            N,
+            AdditionalData,
+            ElementType,
+            OPT,
+            TTVN,
+            PointedTypes...>
 {
-	static constexpr bool HAS_ADDITIONAL_DATA =
-		!std::is_same_v<AdditionalData, void>;
+    static constexpr bool HAS_ADDITIONAL_DATA =
+        !std::is_same_v<AdditionalData, void>;
 
-	using Base = internal::ContCompBase<
-		DerivedComponent,
-		COMP_ID,
-		T,
-		N,
-		AdditionalData,
-		ElementType,
-		OPT,
-		TTVN,
-		PointedTypes...>;
+    using Base = internal::ContCompBase<
+        DerivedComponent,
+        COMP_ID,
+        T,
+        N,
+        AdditionalData,
+        ElementType,
+        OPT,
+        TTVN,
+        PointedTypes...>;
 
 public:
-	/**
-	 * @brief Boolean that tells if this component stores a container having its
-	 * size tied to the number of the vertices of the Element.
-	 *
-	 * E.g. suppose to have a Polygonal Face f (dynamic number of vertices),
-	 * having 5 vertices (and 5 edges). This means that if the Face has the
-	 * AdjacentFaces component, then it should store 5 adjacent faces (the same
-	 * number of the vertices). In this case, the AdjacentFaces component will
-	 * have the boolean TIED_TO_VERTEX_NUMBER set to true.
-	 */
-	static const bool TIED_TO_VERTEX_NUMBER = TTVN;
+    /**
+     * @brief Boolean that tells if this component stores a container having its
+     * size tied to the number of the vertices of the Element.
+     *
+     * E.g. suppose to have a Polygonal Face f (dynamic number of vertices),
+     * having 5 vertices (and 5 edges). This means that if the Face has the
+     * AdjacentFaces component, then it should store 5 adjacent faces (the same
+     * number of the vertices). In this case, the AdjacentFaces component will
+     * have the boolean TIED_TO_VERTEX_NUMBER set to true.
+     */
+    static const bool TIED_TO_VERTEX_NUMBER = TTVN;
 
-	static const int SIZE = N;
+    static const int SIZE = N;
 
 protected:
-	/* Iterator Types declaration */
+    /* Iterator Types declaration */
 
-	using Iterator      = Vector<T, N>::Iterator;
-	using ConstIterator = Vector<T, N>::ConstIterator;
+    using Iterator      = Vector<T, N>::Iterator;
+    using ConstIterator = Vector<T, N>::ConstIterator;
 
-	/* Constructor */
+    /* Constructor */
 
-	/*
-	 * Create a container of T objects.
-	 * If this Container is a static array, all its element will be initialized
-	 * to T(). If this Container is a dynamic vector, it will be an empty
-	 * container.
-	 */
-	ContainerComponent()
-	{
-		if constexpr (!Base::IS_VERTICAL) {
-			if constexpr (N >= 0) {
-				Base::data().fill(T());
-			}
-		}
-	}
+    /*
+     * Create a container of T objects.
+     * If this Container is a static array, all its element will be initialized
+     * to T(). If this Container is a dynamic vector, it will be an empty
+     * container.
+     */
+    ContainerComponent()
+    {
+        if constexpr (!Base::IS_VERTICAL) {
+            if constexpr (N >= 0) {
+                Base::data().fill(T());
+            }
+        }
+    }
 
-	/*
-	 * Create a container of Objects.
-	 * If this Container is a static array, all its element will be initialized
-	 * to T(). If this Container is a dynamic vector, it will be an empty
-	 * container.
-	 */
-	void init()
-	{
-		if constexpr (N >= 0) {
-			// I'll use the array, N is >= 0.
-			// There will be a static number of objects.
-			container().fill(T());
-		}
-		else {
-			// I'll use the vector, because N is < 0.
-			// There will be a dynamic number of objects.
-			container().clear();
-		}
-	}
+    /*
+     * Create a container of Objects.
+     * If this Container is a static array, all its element will be initialized
+     * to T(). If this Container is a dynamic vector, it will be an empty
+     * container.
+     */
+    void init()
+    {
+        if constexpr (N >= 0) {
+            // I'll use the array, N is >= 0.
+            // There will be a static number of objects.
+            container().fill(T());
+        }
+        else {
+            // I'll use the vector, because N is < 0.
+            // There will be a dynamic number of objects.
+            container().clear();
+        }
+    }
 
-	Vector<T, N>& container()
-	{
-		if constexpr (HAS_ADDITIONAL_DATA) {
-			return std::get<0>(Base::data());
-		}
-		else {
-			return Base::data();
-		}
-	}
+    Vector<T, N>& container()
+    {
+        if constexpr (HAS_ADDITIONAL_DATA) {
+            return std::get<0>(Base::data());
+        }
+        else {
+            return Base::data();
+        }
+    }
 
-	const Vector<T, N>& container() const
-	{
-		if constexpr (HAS_ADDITIONAL_DATA) {
-			return std::get<0>(Base::data());
-		}
-		else {
-			return Base::data();
-		}
-	}
+    const Vector<T, N>& container() const
+    {
+        if constexpr (HAS_ADDITIONAL_DATA) {
+            return std::get<0>(Base::data());
+        }
+        else {
+            return Base::data();
+        }
+    }
 
-	template<typename AdDt = AdditionalData>
-	AdDt& additionalData() requires (HAS_ADDITIONAL_DATA)
-	{
-		return std::get<1>(Base::data());
-	}
+    template<typename AdDt = AdditionalData>
+    AdDt& additionalData() requires (HAS_ADDITIONAL_DATA)
+    {
+        return std::get<1>(Base::data());
+    }
 
-	template<typename AdDt = AdditionalData>
-	const AdDt& additionalData() const
-		requires (HAS_ADDITIONAL_DATA)
-	{
-		return std::get<1>(Base::data());
-	}
+    template<typename AdDt = AdditionalData>
+    const AdDt& additionalData() const
+        requires (HAS_ADDITIONAL_DATA)
+    {
+        return std::get<1>(Base::data());
+    }
 };
 
 } // namespace vcl::comp

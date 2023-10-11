@@ -29,50 +29,50 @@
 namespace vcl {
 
 enum ComponentIDEnum : uint {
-	BIT_FLAGS = 0,
-	COORDINATE,
-	NORMAL,
-	COLOR,
-	QUALITY,
-	MARK,
-	PRINCIPAL_CURVATURE,
-	TEX_COORD,
-	VERTEX_PTRS,
-	ADJACENT_EDGES,
-	ADJACENT_FACES,
-	ADJACENT_VERTICES,
-	WEDGE_COLORS,
-	WEDGE_TEX_COORDS,
-	BOUNDING_BOX,
-	NAME,
-	TEXTURE_PATHS,
-	TRANSFORM_MATRIX,
-	CUSTOM_COMPONENTS
+    BIT_FLAGS = 0,
+    COORDINATE,
+    NORMAL,
+    COLOR,
+    QUALITY,
+    MARK,
+    PRINCIPAL_CURVATURE,
+    TEX_COORD,
+    VERTEX_PTRS,
+    ADJACENT_EDGES,
+    ADJACENT_FACES,
+    ADJACENT_VERTICES,
+    WEDGE_COLORS,
+    WEDGE_TEX_COORDS,
+    BOUNDING_BOX,
+    NAME,
+    TEXTURE_PATHS,
+    TRANSFORM_MATRIX,
+    CUSTOM_COMPONENTS
 };
 
 inline static constexpr uint COMPONENTS_NUMBER = 19;
 
 inline static constexpr const char* COMPONENT_ENUM_STRINGS[COMPONENTS_NUMBER] =
-	{
-		"BitFlags",
-		"Coordinate",
-		"Normal",
-		"Color",
-		"Quality",
-		"Mark",
-		"PrincipalCurvature",
-		"TexCoord",
-		"VertexPointers",
-		"AdjacentEdges",
-		"AdjacentFaces",
-		"AdjacentVertices",
-		"WedgeColors",
-		"WedgeTexCoords",
-		"BoundingBox",
-		"Name",
-		"TexturePaths",
-		"TransformMatrix",
-		"CustomComponents",
+    {
+        "BitFlags",
+        "Coordinate",
+        "Normal",
+        "Color",
+        "Quality",
+        "Mark",
+        "PrincipalCurvature",
+        "TexCoord",
+        "VertexPointers",
+        "AdjacentEdges",
+        "AdjacentFaces",
+        "AdjacentVertices",
+        "WedgeColors",
+        "WedgeTexCoords",
+        "BoundingBox",
+        "Name",
+        "TexturePaths",
+        "TransformMatrix",
+        "CustomComponents",
 };
 
 /**
@@ -86,11 +86,11 @@ inline static constexpr const char* COMPONENT_ENUM_STRINGS[COMPONENTS_NUMBER] =
  */
 template<uint COMP_ID>
 struct ComponentString {
-	/**
-	 * @brief The string associated to the COMPONENT_ID.
-	 */
-	const char* str =
-		COMP_ID < COMPONENTS_NUMBER ? COMPONENT_ENUM_STRINGS[COMP_ID] : nullptr;
+    /**
+     * @brief The string associated to the COMPONENT_ID.
+     */
+    const char* str =
+        COMP_ID < COMPONENTS_NUMBER ? COMPONENT_ENUM_STRINGS[COMP_ID] : nullptr;
 };
 
 /**
@@ -102,12 +102,12 @@ struct ComponentString {
 template<uint COMP_ID>
 constexpr const char* componentEnumString()
 {
-	static_assert(
-		ComponentString<COMP_ID>().str != nullptr,
-		"Invalid ComponentIDEnum. You should specialize the 'ComponentString' "
-		"struct with your COMP_ID value.");
+    static_assert(
+        ComponentString<COMP_ID>().str != nullptr,
+        "Invalid ComponentIDEnum. You should specialize the 'ComponentString' "
+        "struct with your COMP_ID value.");
 
-	return ComponentString<COMP_ID>().str;
+    return ComponentString<COMP_ID>().str;
 }
 
 } // namespace vcl

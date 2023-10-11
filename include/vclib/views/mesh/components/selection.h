@@ -35,55 +35,55 @@ namespace internal {
 
 inline constexpr auto isSelected = [](const auto& e)
 {
-	if constexpr(vcl::IsPointer<decltype(e)>) {
-		return e->selected();
-	}
-	else {
-		return e.selected();
-	}
+    if constexpr(vcl::IsPointer<decltype(e)>) {
+        return e->selected();
+    }
+    else {
+        return e.selected();
+    }
 };
 
 inline constexpr auto isNotSelected = [](const auto& e)
 {
-	if constexpr(vcl::IsPointer<decltype(e)>) {
-		return !e->selected();
-	}
-	else {
-		return !e.selected();
-	}
+    if constexpr(vcl::IsPointer<decltype(e)>) {
+        return !e->selected();
+    }
+    else {
+        return !e.selected();
+    }
 };
 
 struct SelectionView
 {
-	constexpr SelectionView() = default;
+    constexpr SelectionView() = default;
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, SelectionView)
-	{
-		return std::forward<R>(r) | std::views::transform(isSelected);
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, SelectionView)
+    {
+        return std::forward<R>(r) | std::views::transform(isSelected);
+    }
 };
 
 struct SelectedView
 {
-	constexpr SelectedView() = default;
+    constexpr SelectedView() = default;
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, SelectedView)
-	{
-		return std::forward<R>(r) | std::views::filter(isSelected);
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, SelectedView)
+    {
+        return std::forward<R>(r) | std::views::filter(isSelected);
+    }
 };
 
 struct NotSelectedView
 {
-	constexpr NotSelectedView() = default;
+    constexpr NotSelectedView() = default;
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, NotSelectedView)
-	{
-		return std::forward<R>(r) | std::views::filter(isNotSelected);
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, NotSelectedView)
+    {
+        return std::forward<R>(r) | std::views::filter(isNotSelected);
+    }
 };
 
 } // namespace vcl::views::internal

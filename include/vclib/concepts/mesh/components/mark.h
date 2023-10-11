@@ -43,13 +43,13 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasMark = requires(
-	T o,
-	const T& co)
+    T o,
+    const T& co)
 {
-	{ co.mark() } -> std::same_as<int>;
-	{ o.resetMark() } -> std::same_as<void>;
-	{ o.incrementMark() } -> std::same_as<void>;
-	{ o.decrementMark() } -> std::same_as<void>;
+    { co.mark() } -> std::same_as<int>;
+    { o.resetMark() } -> std::same_as<void>;
+    { o.incrementMark() } -> std::same_as<void>;
+    { o.decrementMark() } -> std::same_as<void>;
 };
 
 /**

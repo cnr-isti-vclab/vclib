@@ -30,49 +30,49 @@
 
 int main()
 {
-	using PointType = vcl::TriMesh::VertexType::CoordType;
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    using PointType = vcl::TriMesh::VertexType::CoordType;
+    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-	vcl::updatePerFaceNormals(m);
+    vcl::updatePerFaceNormals(m);
 
-	PointType p(2, 1, 0);
-	PointType c;
+    PointType p(2, 1, 0);
+    PointType c;
 
-	for (const auto& f : m.faces()) {
-		double dist = vcl::pointFaceDistance(p, f, c);
+    for (const auto& f : m.faces()) {
+        double dist = vcl::pointFaceDistance(p, f, c);
 
-		std::cerr << "Face " << m.index(f) << ": \n";
-		std::cerr << "\tdist: " << dist << ";\n";
-		std::cerr << "\tclos: " << c << "\n";
-	}
+        std::cerr << "Face " << m.index(f) << ": \n";
+        std::cerr << "\tdist: " << dist << ";\n";
+        std::cerr << "\tclos: " << c << "\n";
+    }
 
-	vcl::ConsoleLogger log;
-	log.setPrintTimer(true);
+    vcl::ConsoleLogger log;
+    log.setPrintTimer(true);
 
-	vcl::TriMesh m1 = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
-	vcl::TriMesh m2 = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny.obj");
+    vcl::TriMesh m1 = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::TriMesh m2 = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny.obj");
 
-	vcl::updateBoundingBox(m1);
-	vcl::updateBoundingBox(m2);
-	vcl::updatePerFaceNormals(m1);
-	vcl::updatePerFaceNormals(m2);
+    vcl::updateBoundingBox(m1);
+    vcl::updateBoundingBox(m2);
+    vcl::updatePerFaceNormals(m1);
+    vcl::updatePerFaceNormals(m2);
 
-	log.startTimer();
-	auto res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
+    log.startTimer();
+    auto res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
 
-	std::cerr << "\n\nmin: " << res.minDist << ";\n";
-	std::cerr << "max: " << res.maxDist << ";\n";
-	std::cerr << "mean: " << res.meanDist << ";\n";
-	std::cerr << "rms: " << res.RMSDist << ";\n";
-	std::cerr << "======================================\n";
+    std::cerr << "\n\nmin: " << res.minDist << ";\n";
+    std::cerr << "max: " << res.maxDist << ";\n";
+    std::cerr << "mean: " << res.meanDist << ";\n";
+    std::cerr << "rms: " << res.RMSDist << ";\n";
+    std::cerr << "======================================\n";
 
-	log.startTimer();
-	res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_MONTECARLO);
+    log.startTimer();
+    res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_MONTECARLO);
 
-	std::cerr << "\n\nmin: " << res.minDist << ";\n";
-	std::cerr << "max: " << res.maxDist << ";\n";
-	std::cerr << "mean: " << res.meanDist << ";\n";
-	std::cerr << "rms: " << res.RMSDist << ";\n";
+    std::cerr << "\n\nmin: " << res.minDist << ";\n";
+    std::cerr << "max: " << res.maxDist << ";\n";
+    std::cerr << "mean: " << res.meanDist << ";\n";
+    std::cerr << "rms: " << res.RMSDist << ";\n";
 
-	return 0;
+    return 0;
 }

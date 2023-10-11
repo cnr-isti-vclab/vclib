@@ -52,15 +52,15 @@ namespace vcl {
  */
 inline void drawPoint2(const Point2d& p, const Color& c, int size = 8)
 {
-	glEnable(GL_POINT_SMOOTH);
-	glPointSize(size);
-	glBegin(GL_POINTS);
+    glEnable(GL_POINT_SMOOTH);
+    glPointSize(size);
+    glBegin(GL_POINTS);
 
-	glColor3f(c.redF(), c.greenF(), c.blueF());
+    glColor3f(c.redF(), c.greenF(), c.blueF());
 
-	glVertex2d(p.x(), p.y());
+    glVertex2d(p.x(), p.y());
 
-	glEnd();
+    glEnd();
 }
 
 /**
@@ -75,101 +75,101 @@ inline void drawPoint2(const Point2d& p, const Color& c, int size = 8)
  * @param width: width of the line (default: 3)
  */
 inline void drawLine2(
-	const Point2d& a,
-	const Point2d& b,
-	const Color&   c,
-	int            width = 3)
+    const Point2d& a,
+    const Point2d& b,
+    const Color&   c,
+    int            width = 3)
 {
-	glLineWidth(width);
+    glLineWidth(width);
 
-	glBegin(GL_LINES);
+    glBegin(GL_LINES);
 
-	glColor3f(c.redF(), c.greenF(), c.blueF());
+    glColor3f(c.redF(), c.greenF(), c.blueF());
 
-	glVertex2d(a.x(), a.y());
-	glVertex2d(b.x(), b.y());
+    glVertex2d(a.x(), a.y());
+    glVertex2d(b.x(), b.y());
 
-	glEnd();
+    glEnd();
 }
 
 inline void drawTriangle2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false)
+    const Point2d& p1,
+    const Point2d& p2,
+    const Point2d& p3,
+    const Color&   c,
+    int            width = 3,
+    bool           fill  = false)
 {
-	if (width != 0) {
-		vcl::drawLine2(p1, p2, c, width);
-		vcl::drawLine2(p2, p3, c, width);
-		vcl::drawLine2(p3, p1, c, width);
-	}
-	if (fill) {
-		glBegin(GL_TRIANGLES); // Begin triangle coordinates
-		glVertex2f(p1.x(), p1.y());
-		glVertex2f(p2.x(), p2.y());
-		glVertex2f(p3.x(), p3.y());
-		glEnd(); // End triangle coordinates
-	}
+    if (width != 0) {
+        vcl::drawLine2(p1, p2, c, width);
+        vcl::drawLine2(p2, p3, c, width);
+        vcl::drawLine2(p3, p1, c, width);
+    }
+    if (fill) {
+        glBegin(GL_TRIANGLES); // Begin triangle coordinates
+        glVertex2f(p1.x(), p1.y());
+        glVertex2f(p2.x(), p2.y());
+        glVertex2f(p3.x(), p3.y());
+        glEnd(); // End triangle coordinates
+    }
 }
 
 inline void drawTriangle2(
-	const std::array<Point2d, 3>& arr,
-	const Color&                  c,
-	int                           width = 3,
-	bool                          fill  = false)
+    const std::array<Point2d, 3>& arr,
+    const Color&                  c,
+    int                           width = 3,
+    bool                          fill  = false)
 {
-	drawTriangle2(arr[0], arr[1], arr[2], c, width, fill);
+    drawTriangle2(arr[0], arr[1], arr[2], c, width, fill);
 }
 
 inline void drawQuad2(
-	const std::array<Point2d, 4>& points,
-	const Color&                  c,
-	int                           width = 3,
-	bool                          fill  = false)
+    const std::array<Point2d, 4>& points,
+    const Color&                  c,
+    int                           width = 3,
+    bool                          fill  = false)
 {
-	for (unsigned int i = 0; i < 4; i++) {
-		vcl::drawLine2(points[i], points[(i + 1) % 4], c, width);
-	}
-	if (fill) {
-		// find angle >=90°
-		int pivot = -1;
-		for (unsigned int i = 0; i < 4; i++) {
-			double angle = (points[(i - 1) % 4] - points[i])
-							   .dot(points[(i + 1) % 4] - points[i]);
-			if (angle <= 0)
-				pivot = i;
-		}
-		assert(pivot >= 0);
-		vcl::drawTriangle2(
-			points[pivot],
-			points[(pivot + 1) % 4],
-			points[(pivot + 2) % 4],
-			c,
-			0,
-			true);
-		vcl::drawTriangle2(
-			points[(pivot + 2) % 4],
-			points[(pivot + 3) % 4],
-			points[pivot],
-			c,
-			0,
-			true);
-	}
+    for (unsigned int i = 0; i < 4; i++) {
+        vcl::drawLine2(points[i], points[(i + 1) % 4], c, width);
+    }
+    if (fill) {
+        // find angle >=90°
+        int pivot = -1;
+        for (unsigned int i = 0; i < 4; i++) {
+            double angle = (points[(i - 1) % 4] - points[i])
+                               .dot(points[(i + 1) % 4] - points[i]);
+            if (angle <= 0)
+                pivot = i;
+        }
+        assert(pivot >= 0);
+        vcl::drawTriangle2(
+            points[pivot],
+            points[(pivot + 1) % 4],
+            points[(pivot + 2) % 4],
+            c,
+            0,
+            true);
+        vcl::drawTriangle2(
+            points[(pivot + 2) % 4],
+            points[(pivot + 3) % 4],
+            points[pivot],
+            c,
+            0,
+            true);
+    }
 }
 
 inline void drawQuad2(
-	const Point2d& p1,
-	const Point2d& p2,
-	const Point2d& p3,
-	const Point2d& p4,
-	const Color&   c,
-	int            width = 3,
-	bool           fill  = false)
+    const Point2d& p1,
+    const Point2d& p2,
+    const Point2d& p3,
+    const Point2d& p4,
+    const Color&   c,
+    int            width = 3,
+    bool           fill  = false)
 {
-	std::array<Point2d, 4> arr = {p1, p2, p3, p4};
-	vcl::drawQuad2(arr, c, width, fill);
+    std::array<Point2d, 4> arr = {p1, p2, p3, p4};
+    vcl::drawQuad2(arr, c, width, fill);
 }
 
 } // namespace vcl

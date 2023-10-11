@@ -35,33 +35,33 @@ namespace internal {
 
 struct NormalsView
 {
-	constexpr NormalsView() = default;
+    constexpr NormalsView() = default;
 
-	inline static constexpr auto constNormal = [](const auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->normal();
-		else
-			return p.normal();
-	};
+    inline static constexpr auto constNormal = [](const auto& p) -> decltype(auto)
+    {
+        if constexpr(IsPointer<decltype(p)>)
+            return p->normal();
+        else
+            return p.normal();
+    };
 
-	inline static constexpr auto normal = [](auto& p) -> decltype(auto)
-	{
-		if constexpr(IsPointer<decltype(p)>)
-			return p->normal();
-		else
-			return p. normal();
-	};
+    inline static constexpr auto normal = [](auto& p) -> decltype(auto)
+    {
+        if constexpr(IsPointer<decltype(p)>)
+            return p->normal();
+        else
+            return p. normal();
+    };
 
-	template <std::ranges::range R>
-	friend constexpr auto operator|(R&& r, NormalsView)
-	{
-		using ElemType = std::ranges::range_value_t<R>;
-		if constexpr(IsConst<ElemType>)
-			return std::forward<R>(r) | std::views::transform(constNormal);
-		else
-			return std::forward<R>(r) | std::views::transform(normal);
-	}
+    template <std::ranges::range R>
+    friend constexpr auto operator|(R&& r, NormalsView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        if constexpr(IsConst<ElemType>)
+            return std::forward<R>(r) | std::views::transform(constNormal);
+        else
+            return std::forward<R>(r) | std::views::transform(normal);
+    }
 };
 
 } // namespace vcl::views::internal

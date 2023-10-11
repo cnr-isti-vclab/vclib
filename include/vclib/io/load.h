@@ -54,12 +54,12 @@ namespace vcl {
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType load(
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true)
+    const std::string& filename,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
 {
-	MeshInfo loadedInfo;
-	return load<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
+    MeshInfo loadedInfo;
+    return load<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
 }
 
 /**
@@ -87,14 +87,14 @@ MeshType load(
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType load(
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true)
+    const std::string& filename,
+    MeshInfo&          loadedInfo,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
 {
-	MeshType m;
-	load(m, filename, loadedInfo, log, enableOptionalComponents);
-	return m;
+    MeshType m;
+    load(m, filename, loadedInfo, log, enableOptionalComponents);
+    return m;
 }
 
 /**
@@ -122,13 +122,13 @@ MeshType load(
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void load(
-	MeshType&          m,
-	const std::string& filename,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true)
+    MeshType&          m,
+    const std::string& filename,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
 {
-	MeshInfo loadedInfo;
-	load(m, filename, loadedInfo, log, enableOptionalComponents);
+    MeshInfo loadedInfo;
+    load(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
 /**
@@ -156,29 +156,29 @@ void load(
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void load(
-	MeshType&          m,
-	const std::string& filename,
-	MeshInfo&          loadedInfo,
-	LogType&           log                      = nullLogger,
-	bool               enableOptionalComponents = true)
+    MeshType&          m,
+    const std::string& filename,
+    MeshInfo&          loadedInfo,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
 {
-	std::string ext = FileInfo::extension(filename);
-	ext = vcl::str::toLower(ext);
-	if (ext == ".obj") {
-		io::loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
-	}
-	else if (ext == ".off") {
-		io::loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
-	}
-	else if (ext == ".ply") {
-		io::loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
-	}
-	else if (ext == ".stl") {
-		io::loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
-	}
-	else {
-		throw vcl::UnknownFileFormatException(ext);
-	}
+    std::string ext = FileInfo::extension(filename);
+    ext = vcl::str::toLower(ext);
+    if (ext == ".obj") {
+        io::loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
+    }
+    else if (ext == ".off") {
+        io::loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
+    }
+    else if (ext == ".ply") {
+        io::loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+    }
+    else if (ext == ".stl") {
+        io::loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
+    }
+    else {
+        throw vcl::UnknownFileFormatException(ext);
+    }
 }
 
 } // namespace vcl

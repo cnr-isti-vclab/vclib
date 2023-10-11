@@ -46,30 +46,30 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasWedgeColors = requires(
-	T o,
-	const T& co,
-	vcl::Color c,
-	std::vector<vcl::Color> v)
+    T o,
+    const T& co,
+    vcl::Color c,
+    std::vector<vcl::Color> v)
 {
-	T::WEDGE_COLOR_NUMBER;
-	typename T::WedgeColorsIterator;
-	typename T::ConstWedgeColorsIterator;
+    T::WEDGE_COLOR_NUMBER;
+    typename T::WedgeColorsIterator;
+    typename T::ConstWedgeColorsIterator;
 
-	{ o.wedgeColor(uint()) } -> std::same_as<vcl::Color&>;
-	{ co.wedgeColor(uint()) } -> std::same_as<const vcl::Color&>;
-	{ o.wedgeColorMod(int()) } -> std::same_as<vcl::Color&>;
-	{ co.wedgeColorMod(int()) } -> std::same_as<const vcl::Color&>;
-	{ o.setWedgeColor(c, uint()) } -> std::same_as<void>;
-	{ o.setWedgeColors(v) } -> std::same_as<void>;
+    { o.wedgeColor(uint()) } -> std::same_as<vcl::Color&>;
+    { co.wedgeColor(uint()) } -> std::same_as<const vcl::Color&>;
+    { o.wedgeColorMod(int()) } -> std::same_as<vcl::Color&>;
+    { co.wedgeColorMod(int()) } -> std::same_as<const vcl::Color&>;
+    { o.setWedgeColor(c, uint()) } -> std::same_as<void>;
+    { o.setWedgeColors(v) } -> std::same_as<void>;
 
-	{ o.wedgeColorBegin() } -> std::same_as<typename T::WedgeColorsIterator>;
-	{ o.wedgeColorEnd() } -> std::same_as<typename T::WedgeColorsIterator>;
-	{ co.wedgeColorBegin() } ->
-		std::same_as<typename T::ConstWedgeColorsIterator>;
-	{ co.wedgeColorEnd() } ->
-		std::same_as<typename T::ConstWedgeColorsIterator>;
-	o.wedgeColors();
-	co.wedgeColors();
+    { o.wedgeColorBegin() } -> std::same_as<typename T::WedgeColorsIterator>;
+    { o.wedgeColorEnd() } -> std::same_as<typename T::WedgeColorsIterator>;
+    { co.wedgeColorBegin() } ->
+        std::same_as<typename T::ConstWedgeColorsIterator>;
+    { co.wedgeColorEnd() } ->
+        std::same_as<typename T::ConstWedgeColorsIterator>;
+    o.wedgeColors();
+    co.wedgeColors();
 };
 
 /**
@@ -81,7 +81,7 @@ concept HasWedgeColors = requires(
  */
 template<typename T>
 concept HasOptionalWedgeColors =
-	HasWedgeColors<T> && IsOptionalComponent<typename T::WedgeColors>;
+    HasWedgeColors<T> && IsOptionalComponent<typename T::WedgeColors>;
 
 /**
  * @private
@@ -110,7 +110,7 @@ concept HasRightNumberOfWedgeColors = T::VERTEX_NUMBER == T::WEDGE_COLOR_NUMBER;
  */
 template<typename T>
 concept SanityCheckWedgeColors =
-	!HasWedgeColors<T> || HasRightNumberOfWedgeColors<T>;
+    !HasWedgeColors<T> || HasRightNumberOfWedgeColors<T>;
 
 } // namespace vcl::comp
 

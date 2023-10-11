@@ -29,37 +29,37 @@
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE( "Test Custom Components and Handles" ) {
-	vcl::TriMesh m;
-	m.addVertices(10);
+    vcl::TriMesh m;
+    m.addVertices(10);
 
-	m.addPerVertexCustomComponent<int>("flag");
+    m.addPerVertexCustomComponent<int>("flag");
 
-	REQUIRE(m.hasPerVertexCustomComponent("flag"));
+    REQUIRE(m.hasPerVertexCustomComponent("flag"));
 
-	for (vcl::TriMesh::Vertex& v : m.vertices()){
-		v.customComponent<int>("flag") = -4;
-	}
+    for (vcl::TriMesh::Vertex& v : m.vertices()){
+        v.customComponent<int>("flag") = -4;
+    }
 
-	REQUIRE(m.vertex(3).customComponent<int>("flag") == -4);
+    REQUIRE(m.vertex(3).customComponent<int>("flag") == -4);
 
-	vcl::CustomComponentVectorHandle<int> v =
-		m.perVertexCustomComponentVectorHandle<int>("flag");
+    vcl::CustomComponentVectorHandle<int> v =
+        m.perVertexCustomComponentVectorHandle<int>("flag");
 
-	int tmp = 8;
-	for (auto& m : v){
-		m = tmp;
-	}
-	int tmp2 = 4;
+    int tmp = 8;
+    for (auto& m : v){
+        m = tmp;
+    }
+    int tmp2 = 4;
 
-	v.front() = tmp2;
+    v.front() = tmp2;
 
-	m.vertex(1).customComponent<int>("flag") = 2;
+    m.vertex(1).customComponent<int>("flag") = 2;
 
-	REQUIRE(m.vertex(0).customComponent<int>("flag") == 4);
-	REQUIRE(tmp == 8);
-	REQUIRE(m.vertex(9).customComponent<int>("flag") == 8);
+    REQUIRE(m.vertex(0).customComponent<int>("flag") == 4);
+    REQUIRE(tmp == 8);
+    REQUIRE(m.vertex(9).customComponent<int>("flag") == 8);
 
-	m.deletePerVertexCustomComponent("flag");
+    m.deletePerVertexCustomComponent("flag");
 
-	REQUIRE(!m.hasPerVertexCustomComponent("flag"));
+    REQUIRE(!m.hasPerVertexCustomComponent("flag"));
 }

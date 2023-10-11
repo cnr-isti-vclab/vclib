@@ -36,16 +36,16 @@ concept CleanAdjVerticesConcept = comp::HasAdjacentVertices<std::remove_cvref_t<
 
 struct AdjVerticesView
 {
-	constexpr AdjVerticesView() = default;
+    constexpr AdjVerticesView() = default;
 
-	template <CleanAdjVerticesConcept R>
-	friend constexpr auto operator|(R&& r, AdjVerticesView)
-	{
-		if constexpr(IsPointer<R>)
-			return r->adjVertices();
-		else
-			return r.adjVertices();
-	}
+    template <CleanAdjVerticesConcept R>
+    friend constexpr auto operator|(R&& r, AdjVerticesView)
+    {
+        if constexpr(IsPointer<R>)
+            return r->adjVertices();
+        else
+            return r.adjVertices();
+    }
 };
 
 } // namespace vcl::views::internal

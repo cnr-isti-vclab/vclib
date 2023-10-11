@@ -47,16 +47,16 @@ namespace vcl {
 template<typename MeshType, typename... Comps>
 class Edge : public Element<EDGE, MeshType, Comps...>
 {
-	// VertexPointers component of the Edge
-	using VPtrs = typename Edge::VertexPointers;
+    // VertexPointers component of the Edge
+    using VPtrs = typename Edge::VertexPointers;
 
 public:
-	using VertexType = VPtrs::VertexType;
+    using VertexType = VPtrs::VertexType;
 };
 
 template<typename MeshType, typename... Comps>
 class Edge<MeshType, TypeWrapper<Comps...>> :
-		public Edge<MeshType, Comps...>
+        public Edge<MeshType, Comps...>
 {
 };
 

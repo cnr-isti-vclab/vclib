@@ -45,23 +45,23 @@ template<uint ELEM_ID, typename ... Containers>
 struct ContainerOfElementPred
 {
 private:
-	template <typename Cont>
-	struct SameElPred
-	{
-		static constexpr bool value = Cont::ELEMENT_ID == ELEM_ID;
-	};
+    template <typename Cont>
+    struct SameElPred
+    {
+        static constexpr bool value = Cont::ELEMENT_ID == ELEM_ID;
+    };
 
 public:
-	// TypeWrapper of the found container, if any
-	using type =
-		typename vcl::FilterTypesByCondition<SameElPred, Containers...>::type;
-	static constexpr bool value = NumberOfTypes<type>::value == 1;
+    // TypeWrapper of the found container, if any
+    using type =
+        typename vcl::FilterTypesByCondition<SameElPred, Containers...>::type;
+    static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 
 // TypeWrapper specialization
 template<uint ELEM_ID, typename... Containers>
 struct ContainerOfElementPred<ELEM_ID, TypeWrapper<Containers...>> :
-		public ContainerOfElementPred<ELEM_ID, Containers...>
+        public ContainerOfElementPred<ELEM_ID, Containers...>
 {
 };
 
@@ -77,7 +77,7 @@ class ElementContainerTriggerer
  */
 template<typename T>
 concept ElementContainerConcept =
-	std::is_base_of<ElementContainerTriggerer, T>::value;
+    std::is_base_of<ElementContainerTriggerer, T>::value;
 
 /**
  * @brief The predicate IsElementContainerPred sets its bool `value` to `true`
@@ -86,7 +86,7 @@ concept ElementContainerConcept =
 template<typename T>
 struct IsElementContainerPred
 {
-	static const bool value = ElementContainerConcept<T>;
+    static const bool value = ElementContainerConcept<T>;
 };
 
 /**
@@ -112,9 +112,9 @@ template<uint ELEM_ID, typename MeshType>
 struct ContainerOfElement
 {
 public:
-	using type = typename FirstType<typename internal::ContainerOfElementPred<
-		ELEM_ID,
-		typename MeshType::Containers>::type>::type;
+    using type = typename FirstType<typename internal::ContainerOfElementPred<
+        ELEM_ID,
+        typename MeshType::Containers>::type>::type;
 };
 
 /**
@@ -137,40 +137,40 @@ public:
  */
 template<uint ELEM_ID, typename MeshType>
 using ContainerOfElementType =
-	typename ContainerOfElement<ELEM_ID, MeshType>::type;
+    typename ContainerOfElement<ELEM_ID, MeshType>::type;
 
 template<ElementConcept El, typename MeshType>
 struct HasContainerOfPred
 {
-	static constexpr bool value = internal::ContainerOfElementPred<
-		El::ELEMENT_ID,
-		typename MeshType::Containers>::value;
+    static constexpr bool value = internal::ContainerOfElementPred<
+        El::ELEMENT_ID,
+        typename MeshType::Containers>::value;
 };
 
 template<uint ELEM_ID, typename MeshType>
 struct HasContainerOfElementPred
 {
-	static constexpr bool value = internal::
-		ContainerOfElementPred<ELEM_ID, typename MeshType::Containers>::value;
+    static constexpr bool value = internal::
+        ContainerOfElementPred<ELEM_ID, typename MeshType::Containers>::value;
 };
 
 template<typename MeshType, uint ELEM_ID>
 concept HasElementContainer =
-	HasContainerOfElementPred<ELEM_ID, MeshType>::value;
+    HasContainerOfElementPred<ELEM_ID, MeshType>::value;
 
 template<typename MeshType, uint ELEM_ID, uint COMP_ID>
 concept HasPerElementComponent =
-	HasElementContainer<MeshType, ELEM_ID> &&
-	comp::HasComponentOfType<
-		typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
-		COMP_ID>;
+    HasElementContainer<MeshType, ELEM_ID> &&
+    comp::HasComponentOfType<
+        typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
+        COMP_ID>;
 
 template<typename MeshType, uint ELEM_ID, uint COMP_ID>
 concept HasPerElementOptionalComponent =
-	HasElementContainer<MeshType, ELEM_ID> &&
-	comp::HasOptionalComponentOfType<
-		typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
-		COMP_ID>;
+    HasElementContainer<MeshType, ELEM_ID> &&
+    comp::HasOptionalComponentOfType<
+        typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
+        COMP_ID>;
 
 } // namespace vcl::mesh
 } // namespace vcl

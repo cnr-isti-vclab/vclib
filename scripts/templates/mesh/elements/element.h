@@ -30,7 +30,7 @@ class %EL_UC% : public Element<%EL_U%, MeshType, Comps...>
 
 template<typename MeshType, typename... Comps>
 class %EL_UC%<MeshType, TypeWrapper<Comps...>> :
-		public %EL_UC%<MeshType, Comps...>
+        public %EL_UC%<MeshType, Comps...>
 {
 };
 

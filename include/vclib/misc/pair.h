@@ -32,45 +32,45 @@ template<typename T1, typename T2>
 class RefPair
 {
 public:
-	RefPair(T1& f, T2& s) : first(f), second(s) {}
-	T1& first;
-	T2& second;
+    RefPair(T1& f, T2& s) : first(f), second(s) {}
+    T1& first;
+    T2& second;
 };
 
 template<typename T1, typename T2>
 class FirstRefPair
 {
 public:
-	FirstRefPair(T1& f, const T2& s) : first(f), second(s) {}
-	T1& first;
-	T2 second;
+    FirstRefPair(T1& f, const T2& s) : first(f), second(s) {}
+    T1& first;
+    T2 second;
 };
 
 template<typename T1, typename T2>
 class SecondRefPair
 {
 public:
-	SecondRefPair(const T1& f, T2& s) : first(f), second(s) {}
-	T1 first;
-	T2& second;
+    SecondRefPair(const T1& f, T2& s) : first(f), second(s) {}
+    T1 first;
+    T2& second;
 };
 
 template<typename T1, typename T2>
 class KeyRefValueRefPair : public RefPair<T1, T2>
 {
 public:
-	KeyRefValueRefPair(T1& f, T2& s) : RefPair<T1, T2>(f, s) {}
-	T1& key = RefPair<T1, T2>::first; // alias
-	T2& value = RefPair<T1, T2>::second; // alias
+    KeyRefValueRefPair(T1& f, T2& s) : RefPair<T1, T2>(f, s) {}
+    T1& key = RefPair<T1, T2>::first; // alias
+    T2& value = RefPair<T1, T2>::second; // alias
 };
 
 template<typename T1, typename T2>
 class KeyValueRefPair : public SecondRefPair<T1, T2>
 {
 public:
-	KeyValueRefPair(const T1& f, T2& s) : SecondRefPair<T1, T2>(f, s) {}
-	T1& key = SecondRefPair<T1, T2>::first; // alias
-	T2& value = SecondRefPair<T1, T2>::second; // alias
+    KeyValueRefPair(const T1& f, T2& s) : SecondRefPair<T1, T2>(f, s) {}
+    T1& key = SecondRefPair<T1, T2>::first; // alias
+    T2& value = SecondRefPair<T1, T2>::second; // alias
 };
 
 } // namespace vcl

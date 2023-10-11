@@ -43,35 +43,35 @@ class Vertex;
 class Face;
 
 class Vertex :
-		public vcl::Vertex<
-			FooMesh,
-			vcl::vert::BitFlags,
-			vcl::vert::Coordinate3d,
-			vcl::vert::Normal3d,
-			vcl::vert::Color,
-			FooComponent>
+        public vcl::Vertex<
+            FooMesh,
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3d,
+            vcl::vert::Normal3d,
+            vcl::vert::Color,
+            FooComponent>
 {
 };
 
 class Face :
-		public vcl::Face<
-			FooMesh,
-			vcl::face::TriangleBitFlags,
-			vcl::face::TriangleVertexPtrs<Vertex>,
-			vcl::face::Normal3d>
+        public vcl::Face<
+            FooMesh,
+            vcl::face::TriangleBitFlags,
+            vcl::face::TriangleVertexPtrs<Vertex>,
+            vcl::face::Normal3d>
 {
 };
 
 } // namespace foomesh
 
 class FooMesh :
-		public vcl::Mesh<
-			vcl::mesh::VertexContainer<foomesh::Vertex>,
-			vcl::mesh::FaceContainer<foomesh::Face>,
-			vcl::mesh::BoundingBox3d>
+        public vcl::Mesh<
+            vcl::mesh::VertexContainer<foomesh::Vertex>,
+            vcl::mesh::FaceContainer<foomesh::Face>,
+            vcl::mesh::BoundingBox3d>
 {
 public:
-	using ScalarType = double;
+    using ScalarType = double;
 };
 
 

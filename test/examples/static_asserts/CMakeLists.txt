@@ -12,18 +12,18 @@
 project(vclib-static-asserts)
 
 set(HEADERS
-	meshes.h
-	loggers.h
-	space.h
-	meshes/edgemesh.h
-	meshes/mesh_views.h
-	meshes/pointcloud.h
-	meshes/polymesh.h
-	meshes/trimesh.h
+    meshes.h
+    loggers.h
+    space.h
+    meshes/edgemesh.h
+    meshes/mesh_views.h
+    meshes/pointcloud.h
+    meshes/polymesh.h
+    meshes/trimesh.h
 )
 
 set(SOURCES
-	main.cpp
+    main.cpp
 )
 
 add_executable(vclib-static-asserts ${HEADERS} ${SOURCES})

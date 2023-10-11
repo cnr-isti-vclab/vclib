@@ -12,7 +12,7 @@
 project(vclib-mesh-topology)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-mesh-topology ${SOURCES})
 

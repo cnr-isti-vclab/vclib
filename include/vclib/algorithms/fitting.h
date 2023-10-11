@@ -37,23 +37,23 @@ namespace vcl {
 template<typename Scalar>
 Plane<Scalar> fitPlaneToPointCloud(const std::vector<Point3<Scalar>>& pointVec)
 {
-	Matrix33<Scalar> covMat = covarianceMatrixOfPointCloud(pointVec);
-	Point3<Scalar>   b = polygonBarycenter(pointVec.begin(), pointVec.end());
+    Matrix33<Scalar> covMat = covarianceMatrixOfPointCloud(pointVec);
+    Point3<Scalar>   b = polygonBarycenter(pointVec.begin(), pointVec.end());
 
-	Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Scalar, 3, 3>> eig(covMat);
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Scalar, 3, 3>> eig(covMat);
 
-	Eigen::Matrix<Scalar, 3, 1> eval = eig.eigenvalues();
-	Eigen::Matrix<Scalar, 3, 3> evec = eig.eigenvectors();
+    Eigen::Matrix<Scalar, 3, 1> eval = eig.eigenvalues();
+    Eigen::Matrix<Scalar, 3, 3> evec = eig.eigenvectors();
 
-	eval = eval.cwiseAbs();
-	int minInd;
-	eval.minCoeff(&minInd);
-	Point3<Scalar> d;
-	d[0] = evec(0, minInd);
-	d[1] = evec(1, minInd);
-	d[2] = evec(2, minInd);
+    eval = eval.cwiseAbs();
+    int minInd;
+    eval.minCoeff(&minInd);
+    Point3<Scalar> d;
+    d[0] = evec(0, minInd);
+    d[1] = evec(1, minInd);
+    d[2] = evec(2, minInd);
 
-	return Plane<Scalar>(b, d);
+    return Plane<Scalar>(b, d);
 }
 
 /**
@@ -64,23 +64,23 @@ template<typename Scalar>
 Plane<Scalar>
 fitPlaneToWeightedPointCloud(const std::vector<Point3<Scalar>>& pointVec)
 {
-	Matrix33<Scalar> covMat = weightedCovarianceMatrixOfPointCloud(pointVec);
-	Point3<Scalar>   b      = polygonWeighedBarycenter(pointVec);
+    Matrix33<Scalar> covMat = weightedCovarianceMatrixOfPointCloud(pointVec);
+    Point3<Scalar>   b      = polygonWeighedBarycenter(pointVec);
 
-	Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Scalar, 3, 3>> eig(covMat);
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Scalar, 3, 3>> eig(covMat);
 
-	Eigen::Matrix<Scalar, 3, 1> eval = eig.eigenvalues();
-	Eigen::Matrix<Scalar, 3, 3> evec = eig.eigenvectors();
+    Eigen::Matrix<Scalar, 3, 1> eval = eig.eigenvalues();
+    Eigen::Matrix<Scalar, 3, 3> evec = eig.eigenvectors();
 
-	eval = eval.cwiseAbs();
-	int minInd;
-	eval.minCoeff(&minInd);
-	Point3<Scalar> d;
-	d[0] = evec(0, minInd);
-	d[1] = evec(1, minInd);
-	d[2] = evec(2, minInd);
+    eval = eval.cwiseAbs();
+    int minInd;
+    eval.minCoeff(&minInd);
+    Point3<Scalar> d;
+    d[0] = evec(0, minInd);
+    d[1] = evec(1, minInd);
+    d[2] = evec(2, minInd);
 
-	return Plane<Scalar>(b, d);
+    return Plane<Scalar>(b, d);
 }
 
 } // namespace vcl

@@ -12,7 +12,7 @@
 project(vclib-grid-example)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-grid-example ${SOURCES})
 

@@ -38,68 +38,68 @@ namespace vcl::io {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	const MeshInfo&    info,
-	LogType&           log    = nullLogger,
-	bool               binary = true)
+    const MeshType&    m,
+    const std::string& filename,
+    const MeshInfo&    info,
+    LogType&           log    = nullLogger,
+    bool               binary = true)
 {
-	MeshInfo meshInfo(m);
+    MeshInfo meshInfo(m);
 
-	// make sure that the given info contains only components that are actually
-	// available in the mesh. meshInfo will contain the intersection between the
-	// components that the user wants to save and the components that are
-	// available in the mesh.
-	meshInfo = info.intersect(meshInfo);
+    // make sure that the given info contains only components that are actually
+    // available in the mesh. meshInfo will contain the intersection between the
+    // components that the user wants to save and the components that are
+    // available in the mesh.
+    meshInfo = info.intersect(meshInfo);
 
-	ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, meshInfo);
-	header.setNumberVertices(m.vertexNumber());
+    ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, meshInfo);
+    header.setNumberVertices(m.vertexNumber());
 
-	if constexpr (vcl::HasFaces<MeshType>) {
-		if (header.hasFaces()) {
-			header.setNumberFaces(m.faceNumber());
-		}
-	}
-	if constexpr (vcl::HasEdges<MeshType>) {
-		if (header.hasEdges()) {
-			header.setNumberEdges(m.edgeNumber());
-		}
-	}
-	ply::saveTextures(header, m);
+    if constexpr (vcl::HasFaces<MeshType>) {
+        if (header.hasFaces()) {
+            header.setNumberFaces(m.faceNumber());
+        }
+    }
+    if constexpr (vcl::HasEdges<MeshType>) {
+        if (header.hasEdges()) {
+            header.setNumberEdges(m.edgeNumber());
+        }
+    }
+    ply::saveTextures(header, m);
 
-	if (!header.isValid())
-		throw std::runtime_error("Ply Header not valid.");
+    if (!header.isValid())
+        throw std::runtime_error("Ply Header not valid.");
 
-	std::ofstream fp = internal::saveFileStream(filename, "ply");
+    std::ofstream fp = internal::saveFileStream(filename, "ply");
 
-	fp << header.toString();
+    fp << header.toString();
 
-	ply::saveVertices(fp, header, m);
+    ply::saveVertices(fp, header, m);
 
-	if constexpr (vcl::HasFaces<MeshType>) {
-		if (header.hasFaces()) {
-			ply::saveFaces(fp, header, m);
-		}
-	}
+    if constexpr (vcl::HasFaces<MeshType>) {
+        if (header.hasFaces()) {
+            ply::saveFaces(fp, header, m);
+        }
+    }
 
-	if constexpr (vcl::HasEdges<MeshType>) {
-		if (header.hasEdges()) {
-			ply::saveEdges(fp, header, m);
-		}
-	}
+    if constexpr (vcl::HasEdges<MeshType>) {
+        if (header.hasEdges()) {
+            ply::saveEdges(fp, header, m);
+        }
+    }
 
-	fp.close();
+    fp.close();
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
-	const MeshType&    m,
-	const std::string& filename,
-	LogType&           log    = nullLogger,
-	bool               binary = true)
+    const MeshType&    m,
+    const std::string& filename,
+    LogType&           log    = nullLogger,
+    bool               binary = true)
 {
-	MeshInfo info(m);
-	savePly(m, filename, info, log, binary);
+    MeshInfo info(m);
+    savePly(m, filename, info, log, binary);
 }
 
 } // namespace vcl::io

@@ -8,26 +8,26 @@ class VCGFace;
 class VCGVertex;
 
 struct VCGUsedTypes :
-		public vcg::UsedTypes<
-			vcg::Use<VCGVertex>::AsVertexType,
-			vcg::Use<VCGFace>::AsFaceType>
+        public vcg::UsedTypes<
+            vcg::Use<VCGVertex>::AsVertexType,
+            vcg::Use<VCGFace>::AsFaceType>
 {
 };
 
 class VCGVertex :
-		public vcg::
-			Vertex<VCGUsedTypes, vcg::vertex::Coord3f, vcg::vertex::Normal3f>
+        public vcg::
+            Vertex<VCGUsedTypes, vcg::vertex::Coord3f, vcg::vertex::Normal3f>
 {
 };
 
 class VCGFace :
-		public vcg::
-			Face<VCGUsedTypes, vcg::face::VertexRef, vcg::face::Normal3f>
+        public vcg::
+            Face<VCGUsedTypes, vcg::face::VertexRef, vcg::face::Normal3f>
 {
 };
 
 class VCGMesh :
-		public vcg::tri::TriMesh<std::vector<VCGVertex>, std::vector<VCGFace>>
+        public vcg::tri::TriMesh<std::vector<VCGVertex>, std::vector<VCGFace>>
 {
 };
 

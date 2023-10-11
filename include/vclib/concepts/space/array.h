@@ -41,36 +41,36 @@ namespace vcl {
 template<typename T>
 concept ArrayConcept = requires(T o, const T& co)
 {
-	typename T::ValueType;
-	typename T::Scalar;
-	typename T::ConstReference;
-	typename T::Reference;
-	typename T::ConstPointer;
-	typename T::Pointer;
-	typename T::ConstIterator;
-	typename T::Iterator;
+    typename T::ValueType;
+    typename T::Scalar;
+    typename T::ConstReference;
+    typename T::Reference;
+    typename T::ConstPointer;
+    typename T::Pointer;
+    typename T::ConstIterator;
+    typename T::Iterator;
 
-	o.DIM;
+    o.DIM;
 
-	{ o.size(std::size_t()) } -> std::convertible_to<std::size_t>;
-	{ o.empty() } -> std::convertible_to<bool>;
+    { o.size(std::size_t()) } -> std::convertible_to<std::size_t>;
+    { o.empty() } -> std::convertible_to<bool>;
 
-	{ o.data() } -> std::same_as<typename T::Pointer>;
-	{ co.data() } -> std::same_as<typename T::ConstPointer>;
+    { o.data() } -> std::same_as<typename T::Pointer>;
+    { co.data() } -> std::same_as<typename T::ConstPointer>;
 
-	{ o.stdVector() } -> std::same_as<std::vector<typename T::ValueType>>;
-	{ co.stdVector() } ->
-		std::same_as<const std::vector<typename T::ValueType>&>;
+    { o.stdVector() } -> std::same_as<std::vector<typename T::ValueType>>;
+    { co.stdVector() } ->
+        std::same_as<const std::vector<typename T::ValueType>&>;
 
-	o.fill(typename T::ValueType());
-	o.clear();
+    o.fill(typename T::ValueType());
+    o.clear();
 
-	co.subArray(uint());
+    co.subArray(uint());
 
-	{ o.begin() } -> std::same_as<typename T::Iterator>;
-	{ o.end() } -> std::same_as<typename T::Iterator>;
-	{ co.begin() } -> std::same_as<typename T::ConstIterator>;
-	{ co.end() } -> std::same_as<typename T::ConstIterator>;
+    { o.begin() } -> std::same_as<typename T::Iterator>;
+    { o.end() } -> std::same_as<typename T::Iterator>;
+    { co.begin() } -> std::same_as<typename T::ConstIterator>;
+    { co.end() } -> std::same_as<typename T::ConstIterator>;
 };
 
 /**
@@ -84,26 +84,26 @@ concept ArrayConcept = requires(T o, const T& co)
 template<typename T>
 concept Array2Concept = ArrayConcept<T> && requires(T o, const T& co)
 {
-	requires T::DIM == 2;
+    requires T::DIM == 2;
 
-	T(std::size_t(), std::size_t());
+    T(std::size_t(), std::size_t());
 
-	{ co.rows() } -> std::convertible_to<std::size_t>;
-	{ co.cols() } -> std::convertible_to<std::size_t>;
-	{ co.sizeX() } -> std::convertible_to<std::size_t>;
-	{ co.sizeY() } -> std::convertible_to<std::size_t>;
+    { co.rows() } -> std::convertible_to<std::size_t>;
+    { co.cols() } -> std::convertible_to<std::size_t>;
+    { co.sizeX() } -> std::convertible_to<std::size_t>;
+    { co.sizeY() } -> std::convertible_to<std::size_t>;
 
-	{ o.operator()(std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::Reference>;
-	{ co.operator()(std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::ConstReference>;
+    { o.operator()(std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::Reference>;
+    { co.operator()(std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::ConstReference>;
 
-	{ o.data(std::size_t()) } -> std::same_as<typename T::Pointer>;
-	{ co.data(std::size_t()) } -> std::same_as<typename T::ConstPointer>;
+    { o.data(std::size_t()) } -> std::same_as<typename T::Pointer>;
+    { co.data(std::size_t()) } -> std::same_as<typename T::ConstPointer>;
 
-	{ o.resize(std::size_t(), std::size_t()) } -> std::same_as<void>;
-	{ o.conservativeResize(std::size_t(), std::size_t()) } ->
-		std::same_as<void>;
+    { o.resize(std::size_t(), std::size_t()) } -> std::same_as<void>;
+    { o.conservativeResize(std::size_t(), std::size_t()) } ->
+        std::same_as<void>;
 };
 
 /**
@@ -117,30 +117,30 @@ concept Array2Concept = ArrayConcept<T> && requires(T o, const T& co)
 template<typename T>
 concept Array3Concept = ArrayConcept<T> && requires(T o, const T& co)
 {
-	requires T::DIM == 3;
+    requires T::DIM == 3;
 
-	T(std::size_t(), std::size_t(), std::size_t());
+    T(std::size_t(), std::size_t(), std::size_t());
 
-	{ co.sizeX() } -> std::convertible_to<std::size_t>;
-	{ co.sizeY() } -> std::convertible_to<std::size_t>;
-	{ co.sizeZ() } -> std::convertible_to<std::size_t>;
+    { co.sizeX() } -> std::convertible_to<std::size_t>;
+    { co.sizeY() } -> std::convertible_to<std::size_t>;
+    { co.sizeZ() } -> std::convertible_to<std::size_t>;
 
-	{ o.operator()(std::size_t(), std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::Reference>;
-	{ co.operator()(std::size_t(), std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::ConstReference>;
+    { o.operator()(std::size_t(), std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::Reference>;
+    { co.operator()(std::size_t(), std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::ConstReference>;
 
-	{ o.data(std::size_t()) } -> std::same_as<typename T::Pointer>;
-	{ co.data(std::size_t()) } -> std::same_as<typename T::ConstPointer>;
-	{ o.data(std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::Pointer>;
-	{ co.data(std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::ConstPointer>;
+    { o.data(std::size_t()) } -> std::same_as<typename T::Pointer>;
+    { co.data(std::size_t()) } -> std::same_as<typename T::ConstPointer>;
+    { o.data(std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::Pointer>;
+    { co.data(std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::ConstPointer>;
 
-	{ o.resize(std::size_t(), std::size_t(), std::size_t()) } ->
-		std::same_as<void>;
-	{ o.conservativeResize(std::size_t(), std::size_t(), std::size_t()) } ->
-		std::same_as<void>;
+    { o.resize(std::size_t(), std::size_t(), std::size_t()) } ->
+        std::same_as<void>;
+    { o.conservativeResize(std::size_t(), std::size_t(), std::size_t()) } ->
+        std::same_as<void>;
 };
 
 /**
@@ -154,40 +154,40 @@ concept Array3Concept = ArrayConcept<T> && requires(T o, const T& co)
 template<typename T>
 concept Array4Concept = ArrayConcept<T> && requires(T o, const T& co)
 {
-	requires T::DIM == 4;
+    requires T::DIM == 4;
 
-	T(std::size_t(), std::size_t(), std::size_t(), std::size_t());
+    T(std::size_t(), std::size_t(), std::size_t(), std::size_t());
 
-	{ co.sizeX() } -> std::convertible_to<std::size_t>;
-	{ co.sizeY() } -> std::convertible_to<std::size_t>;
-	{ co.sizeZ() } -> std::convertible_to<std::size_t>;
-	{ co.sizeW() } -> std::convertible_to<std::size_t>;
+    { co.sizeX() } -> std::convertible_to<std::size_t>;
+    { co.sizeY() } -> std::convertible_to<std::size_t>;
+    { co.sizeZ() } -> std::convertible_to<std::size_t>;
+    { co.sizeW() } -> std::convertible_to<std::size_t>;
 
-	{
-		o.operator()(std::size_t(), std::size_t(), std::size_t(), std::size_t())
-	} -> std::same_as<typename T::Reference>;
-	{
-		co.operator()(
-			std::size_t(), std::size_t(), std::size_t(), std::size_t())
-	} -> std::same_as<typename T::ConstReference>;
+    {
+        o.operator()(std::size_t(), std::size_t(), std::size_t(), std::size_t())
+    } -> std::same_as<typename T::Reference>;
+    {
+        co.operator()(
+            std::size_t(), std::size_t(), std::size_t(), std::size_t())
+    } -> std::same_as<typename T::ConstReference>;
 
-	{ o.data(std::size_t()) } -> std::same_as<typename T::Pointer>;
-	{ co.data(std::size_t()) } -> std::same_as<typename T::ConstPointer>;
-	{ o.data(std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::Pointer>;
-	{ co.data(std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::ConstPointer>;
-	{ o.data(std::size_t(), std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::Pointer>;
-	{ co.data(std::size_t(), std::size_t(), std::size_t()) } ->
-		std::same_as<typename T::ConstPointer>;
+    { o.data(std::size_t()) } -> std::same_as<typename T::Pointer>;
+    { co.data(std::size_t()) } -> std::same_as<typename T::ConstPointer>;
+    { o.data(std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::Pointer>;
+    { co.data(std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::ConstPointer>;
+    { o.data(std::size_t(), std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::Pointer>;
+    { co.data(std::size_t(), std::size_t(), std::size_t()) } ->
+        std::same_as<typename T::ConstPointer>;
 
-	{ o.resize(std::size_t(), std::size_t(), std::size_t(), std::size_t()) } ->
-		std::same_as<void>;
-	{
-		o.conservativeResize(
-			std::size_t(), std::size_t(), std::size_t(), std::size_t())
-	} -> std::same_as<void>;
+    { o.resize(std::size_t(), std::size_t(), std::size_t(), std::size_t()) } ->
+        std::same_as<void>;
+    {
+        o.conservativeResize(
+            std::size_t(), std::size_t(), std::size_t(), std::size_t())
+    } -> std::same_as<void>;
 };
 
 } // namespace vcl

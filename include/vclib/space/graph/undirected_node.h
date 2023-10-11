@@ -32,45 +32,45 @@ template<class T>
 class UndirectedNode
 {
 protected:
-	T                                inf;
-	std::unordered_set<unsigned int> adjacentNodes;
+    T                                inf;
+    std::unordered_set<unsigned int> adjacentNodes;
 
 public:
-	using InfoType = T;
+    using InfoType = T;
 
-	UndirectedNode() {}
+    UndirectedNode() {}
 
-	UndirectedNode(const T& info) : inf(info) {}
+    UndirectedNode(const T& info) : inf(info) {}
 
-	const T& info() const { return inf; }
+    const T& info() const { return inf; }
 
-	T& info() { return inf; }
+    T& info() { return inf; }
 
-	void addAdjacent(unsigned int node) { adjacentNodes.insert(node); }
+    void addAdjacent(unsigned int node) { adjacentNodes.insert(node); }
 
-	bool isAdjacent(unsigned int node) const
-	{
-		return adjacentNodes.find(node) != adjacentNodes.end();
-	}
+    bool isAdjacent(unsigned int node) const
+    {
+        return adjacentNodes.find(node) != adjacentNodes.end();
+    }
 
-	void deleteAdjacent(unsigned int node) { adjacentNodes.erase(node); }
+    void deleteAdjacent(unsigned int node) { adjacentNodes.erase(node); }
 
-	void clearAdjacentNodes() { adjacentNodes.clear(); }
+    void clearAdjacentNodes() { adjacentNodes.clear(); }
 
-	std::unordered_set<unsigned int>::const_iterator begin() const
-	{
-		return adjacentNodes.begin();
-	}
+    std::unordered_set<unsigned int>::const_iterator begin() const
+    {
+        return adjacentNodes.begin();
+    }
 
-	std::unordered_set<unsigned int>::const_iterator end() const
-	{
-		return adjacentNodes.end();
-	}
+    std::unordered_set<unsigned int>::const_iterator end() const
+    {
+        return adjacentNodes.end();
+    }
 
-	unsigned int sizeAdjacentNodes() const
-	{
-		return (unsigned int) adjacentNodes.size();
-	}
+    unsigned int sizeAdjacentNodes() const
+    {
+        return (unsigned int) adjacentNodes.size();
+    }
 };
 
 } // namespace vcl

@@ -11,6 +11,6 @@
  */
 template<typename MeshType>
 concept HasPer%EL_UC%%CNUC% =
-	Has%EL_UC%s<MeshType> &&
-	vcl::%EL_NS%::Has%CNUC%<typename MeshType::%EL_UC%Type>;
+    Has%EL_UC%s<MeshType> &&
+    vcl::%EL_NS%::Has%CNUC%<typename MeshType::%EL_UC%Type>;
 

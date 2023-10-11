@@ -29,25 +29,25 @@
 
 int main()
 {
-	vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
-	auto bar = vcl::barycenter(m);
+    auto bar = vcl::barycenter(m);
 
-	std::cerr << "Barycenter: " << bar << "\n";
+    std::cerr << "Barycenter: " << bar << "\n";
 
-	bar = vcl::shellBarycenter(m);
+    bar = vcl::shellBarycenter(m);
 
-	std::cerr << "Shell Barycenter: " << bar << "\n";
+    std::cerr << "Shell Barycenter: " << bar << "\n";
 
-	m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
-	double vol = vcl::volume(m);
+    double vol = vcl::volume(m);
 
-	std::cerr << "Mesh volume: " << vol << "\n";
+    std::cerr << "Mesh volume: " << vol << "\n";
 
-	double surf = vcl::surfaceArea(m);
+    double surf = vcl::surfaceArea(m);
 
-	std::cerr << "Surface area: " << surf << "\n";
+    std::cerr << "Surface area: " << surf << "\n";
 
-	return 0;
+    return 0;
 }

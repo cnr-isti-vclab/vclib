@@ -36,111 +36,111 @@
 namespace vcl::io::internal {
 
 typedef enum {
-	CHAR,
-	UCHAR,
-	SHORT,
-	USHORT,
-	INT,
-	UINT,
-	FLOAT,
-	DOUBLE,
-	NONE
+    CHAR,
+    UCHAR,
+    SHORT,
+    USHORT,
+    INT,
+    UINT,
+    FLOAT,
+    DOUBLE,
+    NONE
 } PropertyType;
 
 inline std::ofstream
 saveFileStream(const std::string& filename, const std::string& ext)
 {
-	setlocale(LC_ALL, "C");
-	std::string actualfilename = FileInfo::addExtensionToFileName(filename, ext);
+    setlocale(LC_ALL, "C");
+    std::string actualfilename = FileInfo::addExtensionToFileName(filename, ext);
 
-	std::ofstream fp;
-	fp.imbue(std::locale().classic());
+    std::ofstream fp;
+    fp.imbue(std::locale().classic());
 
-	// need to set binary or windows will fail
-	fp.open(actualfilename, std::ofstream::binary);
-	if (!fp) {
-		throw vcl::CannotOpenFileException(actualfilename);
-	}
+    // need to set binary or windows will fail
+    fp.open(actualfilename, std::ofstream::binary);
+    if (!fp) {
+        throw vcl::CannotOpenFileException(actualfilename);
+    }
 
-	return fp;
+    return fp;
 }
 
 inline std::ifstream loadFileStream(const std::string& filename)
 {
-	setlocale(LC_ALL, "C");
-	// need to set binary or windows will fail
-	std::ifstream fp(filename, std::ifstream::binary);
-	fp.imbue(std::locale().classic());
-	if (!fp.is_open()) {
-		throw vcl::CannotOpenFileException(filename);
-	}
-	return fp;
+    setlocale(LC_ALL, "C");
+    // need to set binary or windows will fail
+    std::ifstream fp(filename, std::ifstream::binary);
+    fp.imbue(std::locale().classic());
+    if (!fp.is_open()) {
+        throw vcl::CannotOpenFileException(filename);
+    }
+    return fp;
 }
 
 template<MeshConcept MeshType>
 void addPerVertexCustomComponent(
-	MeshType&                        m,
-	const MeshInfo::CustomComponent& cc)
+    MeshType&                        m,
+    const MeshInfo::CustomComponent& cc)
 {
-	switch (cc.type) {
-	case MeshInfo::CHAR:
-		m.template addPerVertexCustomComponent<char>(cc.name);
-		break;
-	case MeshInfo::UCHAR:
-		m.template addPerVertexCustomComponent<unsigned char>(cc.name);
-		break;
-	case MeshInfo::SHORT:
-		m.template addPerVertexCustomComponent<short>(cc.name);
-		break;
-	case MeshInfo::USHORT:
-		m.template addPerVertexCustomComponent<unsigned short>(cc.name);
-		break;
-	case MeshInfo::INT:
-		m.template addPerVertexCustomComponent<int>(cc.name);
-		break;
-	case MeshInfo::UINT:
-		m.template addPerVertexCustomComponent<uint>(cc.name);
-		break;
-	case MeshInfo::FLOAT:
-		m.template addPerVertexCustomComponent<float>(cc.name);
-		break;
-	case MeshInfo::DOUBLE:
-		m.template addPerVertexCustomComponent<double>(cc.name);
-		break;
-	default: assert(0);
-	}
+    switch (cc.type) {
+    case MeshInfo::CHAR:
+        m.template addPerVertexCustomComponent<char>(cc.name);
+        break;
+    case MeshInfo::UCHAR:
+        m.template addPerVertexCustomComponent<unsigned char>(cc.name);
+        break;
+    case MeshInfo::SHORT:
+        m.template addPerVertexCustomComponent<short>(cc.name);
+        break;
+    case MeshInfo::USHORT:
+        m.template addPerVertexCustomComponent<unsigned short>(cc.name);
+        break;
+    case MeshInfo::INT:
+        m.template addPerVertexCustomComponent<int>(cc.name);
+        break;
+    case MeshInfo::UINT:
+        m.template addPerVertexCustomComponent<uint>(cc.name);
+        break;
+    case MeshInfo::FLOAT:
+        m.template addPerVertexCustomComponent<float>(cc.name);
+        break;
+    case MeshInfo::DOUBLE:
+        m.template addPerVertexCustomComponent<double>(cc.name);
+        break;
+    default: assert(0);
+    }
 }
 
 template<FaceMeshConcept MeshType>
 void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
-	switch (cc.type) {
-	case MeshInfo::CHAR:
-		m.template addPerFaceCustomComponent<char>(cc.name);
-		break;
-	case MeshInfo::UCHAR:
-		m.template addPerFaceCustomComponent<unsigned char>(cc.name);
-		break;
-	case MeshInfo::SHORT:
-		m.template addPerFaceCustomComponent<short>(cc.name);
-		break;
-	case MeshInfo::USHORT:
-		m.template addPerFaceCustomComponent<unsigned short>(cc.name);
-		break;
-	case MeshInfo::INT:
-		m.template addPerFaceCustomComponent<int>(cc.name);
-		break;
-	case MeshInfo::UINT:
-		m.template addPerFaceCustomComponent<uint>(cc.name);
-		break;
-	case MeshInfo::FLOAT:
-		m.template addPerFaceCustomComponent<float>(cc.name);
-		break;
-	case MeshInfo::DOUBLE:
-		m.template addPerFaceCustomComponent<double>(cc.name);
-		break;
-	default: assert(0);
-	}
+    switch (cc.type) {
+    case MeshInfo::CHAR:
+        m.template addPerFaceCustomComponent<char>(cc.name);
+        break;
+    case MeshInfo::UCHAR:
+        m.template addPerFaceCustomComponent<unsigned char>(cc.name);
+        break;
+    case MeshInfo::SHORT:
+        m.template addPerFaceCustomComponent<short>(cc.name);
+        break;
+    case MeshInfo::USHORT:
+        m.template addPerFaceCustomComponent<unsigned short>(cc.name);
+        break;
+    case MeshInfo::INT:
+        m.template addPerFaceCustomComponent<int>(cc.name);
+        break;
+    case MeshInfo::UINT:
+        m.template addPerFaceCustomComponent<uint>(cc.name);
+        break;
+    case MeshInfo::FLOAT:
+        m.template addPerFaceCustomComponent<float>(cc.name);
+        break;
+    case MeshInfo::DOUBLE:
+        m.template addPerFaceCustomComponent<double>(cc.name);
+        break;
+    default: assert(0);
+    }
 }
 
 /**
@@ -159,110 +159,110 @@ void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 template<MeshConcept MeshType>
 void enableOptionalComponents(MeshInfo& info, MeshType& m)
 {
-	if (info.hasVertices()) {
-		if (info.hasVertexColors()) {
-			if (!vcl::enableIfPerVertexColorOptional(m)) {
-				info.setVertexColors(false);
-			}
-		}
-		if (info.hasVertexNormals()) {
-			if (!vcl::enableIfPerVertexNormalOptional(m)) {
-				info.setVertexNormals(false);
-			}
-		}
-		if (info.hasVertexQuality()) {
-			if (!vcl::enableIfPerVertexQualityOptional(m)) {
-				info.setVertexQuality(false);
-			}
-		}
-		if (info.hasVertexTexCoords()) {
-			if (!vcl::enableIfPerVertexTexCoordOptional(m)) {
-				info.setVertexTexCoords(false);
-			}
-		}
-		if (info.hasVertexCustomComponents()) {
-			if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
-				for (const auto& cc : info.vertexCustomComponents()) {
-					addPerVertexCustomComponent(m, cc);
-				}
-			}
-			else {
-				info.clearVertexCustomComponents();
-			}
-		}
-	}
-	else {
-		info.setVertices(false);
-	}
+    if (info.hasVertices()) {
+        if (info.hasVertexColors()) {
+            if (!vcl::enableIfPerVertexColorOptional(m)) {
+                info.setVertexColors(false);
+            }
+        }
+        if (info.hasVertexNormals()) {
+            if (!vcl::enableIfPerVertexNormalOptional(m)) {
+                info.setVertexNormals(false);
+            }
+        }
+        if (info.hasVertexQuality()) {
+            if (!vcl::enableIfPerVertexQualityOptional(m)) {
+                info.setVertexQuality(false);
+            }
+        }
+        if (info.hasVertexTexCoords()) {
+            if (!vcl::enableIfPerVertexTexCoordOptional(m)) {
+                info.setVertexTexCoords(false);
+            }
+        }
+        if (info.hasVertexCustomComponents()) {
+            if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
+                for (const auto& cc : info.vertexCustomComponents()) {
+                    addPerVertexCustomComponent(m, cc);
+                }
+            }
+            else {
+                info.clearVertexCustomComponents();
+            }
+        }
+    }
+    else {
+        info.setVertices(false);
+    }
 
-	if (info.hasFaces()) {
-		if (info.hasFaceColors()) {
-			if (!vcl::enableIfPerFaceColorOptional(m)) {
-				info.setFaceColors(false);
-			}
-		}
-		if (info.hasFaceNormals()) {
-			if (!vcl::enableIfPerFaceNormalOptional(m)) {
-				info.setFaceNormals(false);
-			}
-		}
-		if (info.hasFaceQuality()) {
-			if (!vcl::enableIfPerFaceQualityOptional(m)) {
-				info.setFaceQuality(false);
-			}
-		}
-		if (info.hasFaceWedgeTexCoords()) {
-			if (!vcl::enableIfPerFaceWedgeTexCoordsOptional(m)) {
-				info.setFaceWedgeTexCoords(false);
-			}
-		}
-		if (info.hasFaceCustomComponents()) {
-			if constexpr (vcl::HasPerFaceCustomComponents<MeshType>) {
-				for (const auto& cc : info.faceCustomComponents()) {
-					addPerFaceCustomComponent(m, cc);
-				}
-			}
-			else {
-				info.clearFaceCustomComponents();
-			}
-		}
-	}
-	else {
-		info.setFaces(false);
-	}
+    if (info.hasFaces()) {
+        if (info.hasFaceColors()) {
+            if (!vcl::enableIfPerFaceColorOptional(m)) {
+                info.setFaceColors(false);
+            }
+        }
+        if (info.hasFaceNormals()) {
+            if (!vcl::enableIfPerFaceNormalOptional(m)) {
+                info.setFaceNormals(false);
+            }
+        }
+        if (info.hasFaceQuality()) {
+            if (!vcl::enableIfPerFaceQualityOptional(m)) {
+                info.setFaceQuality(false);
+            }
+        }
+        if (info.hasFaceWedgeTexCoords()) {
+            if (!vcl::enableIfPerFaceWedgeTexCoordsOptional(m)) {
+                info.setFaceWedgeTexCoords(false);
+            }
+        }
+        if (info.hasFaceCustomComponents()) {
+            if constexpr (vcl::HasPerFaceCustomComponents<MeshType>) {
+                for (const auto& cc : info.faceCustomComponents()) {
+                    addPerFaceCustomComponent(m, cc);
+                }
+            }
+            else {
+                info.clearFaceCustomComponents();
+            }
+        }
+    }
+    else {
+        info.setFaces(false);
+    }
 }
 
 vcl::Tokenizer
 nextNonEmptyTokenizedLine(std::ifstream& file, char separator = ' ')
 {
-	std::string line;
-	vcl::Tokenizer tokenizer;
-	do {
-		std::getline(file, line);
-		if (!file) {
-			throw vcl::MalformedFileException("Unexpected end of file.");
-		}
-		if (line.size() > 0) {
-			str::removeWindowsNewLine(line);
-			tokenizer = vcl::Tokenizer(line, separator);
-		}
-	} while (tokenizer.begin() == tokenizer.end());
-	return tokenizer;
+    std::string line;
+    vcl::Tokenizer tokenizer;
+    do {
+        std::getline(file, line);
+        if (!file) {
+            throw vcl::MalformedFileException("Unexpected end of file.");
+        }
+        if (line.size() > 0) {
+            str::removeWindowsNewLine(line);
+            tokenizer = vcl::Tokenizer(line, separator);
+        }
+    } while (tokenizer.begin() == tokenizer.end());
+    return tokenizer;
 }
 
 vcl::Tokenizer
 nextNonEmptyTokenizedLineNoThrow(std::ifstream& file, char separator = ' ')
 {
-	std::string line;
-	vcl::Tokenizer tokenizer;
-	do {
-		std::getline(file, line);
-		if (file && line.size() > 0) {
-			str::removeWindowsNewLine(line);
-			tokenizer = vcl::Tokenizer(line, separator);
-		}
-	} while (file && tokenizer.begin() == tokenizer.end());
-	return tokenizer;
+    std::string line;
+    vcl::Tokenizer tokenizer;
+    do {
+        std::getline(file, line);
+        if (file && line.size() > 0) {
+            str::removeWindowsNewLine(line);
+            tokenizer = vcl::Tokenizer(line, separator);
+        }
+    } while (file && tokenizer.begin() == tokenizer.end());
+    return tokenizer;
 }
 
 } // namespace vcl::io::internal

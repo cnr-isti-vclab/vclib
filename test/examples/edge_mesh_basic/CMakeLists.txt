@@ -12,7 +12,7 @@
 project(vclib-edge-mesh-basic-example)
 
 set(SOURCES
-	main.cpp)
+    main.cpp)
 
 add_executable(vclib-edge-mesh-basic-example ${SOURCES})
 

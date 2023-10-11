@@ -32,26 +32,26 @@ namespace vcl::comp::internal {
 template<typename Data, bool VERTICAL>
 struct ComponentData
 {
-	template<typename, typename Comp>
-	Data& get(Comp*)
-	{
-		return data;
-	}
+    template<typename, typename Comp>
+    Data& get(Comp*)
+    {
+        return data;
+    }
 
-	template<typename, typename Comp>
-	const Data& get(const Comp*) const
-	{
-		return data;
-	}
+    template<typename, typename Comp>
+    const Data& get(const Comp*) const
+    {
+        return data;
+    }
 
-	template<typename, typename Comp>
-	constexpr bool isComponentAvailable(const Comp*) const
-	{
-		return true;
-	}
+    template<typename, typename Comp>
+    constexpr bool isComponentAvailable(const Comp*) const
+    {
+        return true;
+    }
 
 private:
-	Data data;
+    Data data;
 };
 
 // do not store data if vertical; it will be fetched by vertical vectors in the
@@ -59,83 +59,83 @@ private:
 template<typename Data>
 struct ComponentData<Data, true>
 {
-	/*
-	 * These member functions allow to access to the data of a vertical
-	 * component.
-	 *
-	 * We are in the in the scenario where, a vertical component ComponentType
-	 * of an element ElementType wants to access to its data, which is not
-	 * stored in the Component itself, but in the tuple of vectors stored in the
-	 * element container.
-	 *
-	 * To do that, these functions ask for two template parameters:
-	 * - ElementType, the class of the element (Vertex, Face)..
-	 * - ComponentType, the component from which the ElementType is the derived
-	 * class. And a parameter comp, which is the 'this' pointer of the
-	 * ComponentType instance that performs the function call.
-	 *
-	 * These member functions first perform a static cast from the Component to
-	 * the Element (this operation is safe also in case of multiple inheritance
-	 * - see https://stackoverflow.com/questions/65177399/), then access to the
-	 * parent mesh of the Element and asks for access to the tuple of vectors of
-	 * vertical components of the element (they are private, but ComponentData
-	 * is friends of the Mesh). Then, gets the vector of the given component and
-	 * then the component associated to the index of the element.
-	 */
+    /*
+     * These member functions allow to access to the data of a vertical
+     * component.
+     *
+     * We are in the in the scenario where, a vertical component ComponentType
+     * of an element ElementType wants to access to its data, which is not
+     * stored in the Component itself, but in the tuple of vectors stored in the
+     * element container.
+     *
+     * To do that, these functions ask for two template parameters:
+     * - ElementType, the class of the element (Vertex, Face)..
+     * - ComponentType, the component from which the ElementType is the derived
+     * class. And a parameter comp, which is the 'this' pointer of the
+     * ComponentType instance that performs the function call.
+     *
+     * These member functions first perform a static cast from the Component to
+     * the Element (this operation is safe also in case of multiple inheritance
+     * - see https://stackoverflow.com/questions/65177399/), then access to the
+     * parent mesh of the Element and asks for access to the tuple of vectors of
+     * vertical components of the element (they are private, but ComponentData
+     * is friends of the Mesh). Then, gets the vector of the given component and
+     * then the component associated to the index of the element.
+     */
 
-	template <typename ElementType, typename ComponentType>
-	Data& get(ComponentType* comp)
-	{
-		ElementType* elem = static_cast<ElementType*>(comp);
-		assert(elem->parentMesh());
+    template <typename ElementType, typename ComponentType>
+    Data& get(ComponentType* comp)
+    {
+        ElementType* elem = static_cast<ElementType*>(comp);
+        assert(elem->parentMesh());
 
-		// get the tuple of vector of vertical components
-		auto& tvc =
-			elem->parentMesh()->template verticalComponents<ElementType>();
+        // get the tuple of vector of vertical components
+        auto& tvc =
+            elem->parentMesh()->template verticalComponents<ElementType>();
 
-		// get the vector of the required component
-		auto& vc = tvc.template vector<ComponentType>();
+        // get the vector of the required component
+        auto& vc = tvc.template vector<ComponentType>();
 
-		// return the component at the index of this vertex
-		return vc[elem->index()];
-	}
+        // return the component at the index of this vertex
+        return vc[elem->index()];
+    }
 
-	template <typename ElementType, typename ComponentType>
-	const Data& get(const ComponentType* comp) const
-	{
-		const ElementType* elem = static_cast<const ElementType*>(comp);
-		assert(elem->parentMesh());
+    template <typename ElementType, typename ComponentType>
+    const Data& get(const ComponentType* comp) const
+    {
+        const ElementType* elem = static_cast<const ElementType*>(comp);
+        assert(elem->parentMesh());
 
-		// get the tuple of vector of vertical components
-		auto& tvc =
-			elem->parentMesh()->template verticalComponents<ElementType>();
+        // get the tuple of vector of vertical components
+        auto& tvc =
+            elem->parentMesh()->template verticalComponents<ElementType>();
 
-		// get the vector of the required component
-		auto& vc = tvc.template vector<ComponentType>();
+        // get the vector of the required component
+        auto& vc = tvc.template vector<ComponentType>();
 
-		// return the component at the index of this vertex
-		return vc[elem->index()];
-	}
+        // return the component at the index of this vertex
+        return vc[elem->index()];
+    }
 
-	template<typename ElementType, typename ComponentType>
-	bool isComponentAvailable(const ComponentType* comp) const
-	{
-		// just vertical component
-		if constexpr (!IsOptionalComponent<ComponentType>) {
-			return true;
-		}
-		// optional component -> need to check at runtime the vector tuple
-		else {
-			const ElementType* elem = static_cast<const ElementType*>(comp);
-			assert(elem->parentMesh());
+    template<typename ElementType, typename ComponentType>
+    bool isComponentAvailable(const ComponentType* comp) const
+    {
+        // just vertical component
+        if constexpr (!IsOptionalComponent<ComponentType>) {
+            return true;
+        }
+        // optional component -> need to check at runtime the vector tuple
+        else {
+            const ElementType* elem = static_cast<const ElementType*>(comp);
+            assert(elem->parentMesh());
 
-			// get the tuple of vector of vertical components
-			auto& tvc =
-				elem->parentMesh()->template verticalComponents<ElementType>();
+            // get the tuple of vector of vertical components
+            auto& tvc =
+                elem->parentMesh()->template verticalComponents<ElementType>();
 
-			return tvc.template isComponentEnabled<ComponentType>();
-		}
-	}
+            return tvc.template isComponentEnabled<ComponentType>();
+        }
+    }
 };
 
 } // namespace vcl::comp::internal

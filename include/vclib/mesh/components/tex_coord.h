@@ -56,58 +56,58 @@ namespace vcl::comp {
  */
 template<typename Scalar, typename ElementType = void, bool OPT = false>
 class TexCoord :
-		public Component<
-			TexCoord<Scalar, ElementType, OPT>,
-			TEX_COORD,
-			vcl::TexCoord<Scalar>,
-			ElementType,
-			OPT>
+        public Component<
+            TexCoord<Scalar, ElementType, OPT>,
+            TEX_COORD,
+            vcl::TexCoord<Scalar>,
+            ElementType,
+            OPT>
 {
-	using Base = Component<
-		TexCoord<Scalar, ElementType, OPT>,
-		TEX_COORD,
-		vcl::TexCoord<Scalar>,
-		ElementType,
-		OPT>;
+    using Base = Component<
+        TexCoord<Scalar, ElementType, OPT>,
+        TEX_COORD,
+        vcl::TexCoord<Scalar>,
+        ElementType,
+        OPT>;
 
 public:
-	/**
-	 * @brief Expose the type of the TexCoord.
-	 */
-	using TexCoordType = vcl::TexCoord<Scalar>;
+    /**
+     * @brief Expose the type of the TexCoord.
+     */
+    using TexCoordType = vcl::TexCoord<Scalar>;
 
-	/* Constructors */
+    /* Constructors */
 
-	/**
-	 * @brief Initilizes the Texture Coordinate to (0, 0).
-	 */
-	TexCoord() = default;
+    /**
+     * @brief Initilizes the Texture Coordinate to (0, 0).
+     */
+    TexCoord() = default;
 
-	/* Member functions */
+    /* Member functions */
 
-	/**
-	 * @brief Returns a const reference of the tex coord of the element.
-	 * @return a const reference of the tex coord of the element.
-	 */
-	const TexCoordType& texCoord() const { return Base::data(); }
+    /**
+     * @brief Returns a const reference of the tex coord of the element.
+     * @return a const reference of the tex coord of the element.
+     */
+    const TexCoordType& texCoord() const { return Base::data(); }
 
-	/**
-	 * @brief Returns a reference of the tex coord of the element.
-	 * @return a reference of the tex coord of the element.
-	 */
-	TexCoordType& texCoord() { return Base::data(); }
+    /**
+     * @brief Returns a reference of the tex coord of the element.
+     * @return a reference of the tex coord of the element.
+     */
+    TexCoordType& texCoord() { return Base::data(); }
 
 protected:
-	// Component interface functions
-	template<typename Element>
-	void importFrom(const Element& e)
-	{
-		if constexpr(HasTexCoord<Element>) {
-			if (isTexCoordAvailableOn(e)){
-				texCoord() = e.texCoord().template cast<Scalar>();
-			}
-		}
-	}
+    // Component interface functions
+    template<typename Element>
+    void importFrom(const Element& e)
+    {
+        if constexpr(HasTexCoord<Element>) {
+            if (isTexCoordAvailableOn(e)){
+                texCoord() = e.texCoord().template cast<Scalar>();
+            }
+        }
+    }
 };
 
 /* Detector function to check if a class has TexCoord available */
@@ -127,7 +127,7 @@ protected:
  */
 bool isTexCoordAvailableOn(const ElementConcept auto& element)
 {
-	return isComponentAvailableOn<TEX_COORD>(element);
+    return isComponentAvailableOn<TEX_COORD>(element);
 }
 
 /* Specialization Aliases */

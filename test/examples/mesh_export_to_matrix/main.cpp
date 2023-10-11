@@ -30,23 +30,23 @@
 
 int main()
 {
-	vcl::TriMesh tm = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::TriMesh tm = vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-	Eigen::MatrixXd v = vcl::vertexMatrix<Eigen::MatrixXd>(tm);
-	Eigen::MatrixXi f = vcl::faceMatrix<Eigen::MatrixXi>(tm);
+    Eigen::MatrixXd v = vcl::vertexMatrix<Eigen::MatrixXd>(tm);
+    Eigen::MatrixXi f = vcl::faceMatrix<Eigen::MatrixXi>(tm);
 
-	std::cerr << "Vertices:\n" << v << "\n\n";
+    std::cerr << "Vertices:\n" << v << "\n\n";
 
-	std::cerr << "Faces:\n" << f << "\n\n";
+    std::cerr << "Faces:\n" << f << "\n\n";
 
-	vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+    vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
-	vcl::Array2<double> va = vcl::vertexMatrix<vcl::Array2<double>>(pm);
-	vcl::Array2<int> fa = vcl::faceMatrix<vcl::Array2<int>>(pm);
+    vcl::Array2<double> va = vcl::vertexMatrix<vcl::Array2<double>>(pm);
+    vcl::Array2<int> fa = vcl::faceMatrix<vcl::Array2<int>>(pm);
 
-	std::cerr << "Vertices:\n" << va << "\n\n";
+    std::cerr << "Vertices:\n" << va << "\n\n";
 
-	std::cerr << "Faces:\n" << fa << "\n\n";
+    std::cerr << "Faces:\n" << fa << "\n\n";
 
-	return 0;
+    return 0;
 }
