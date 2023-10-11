@@ -1,0 +1,41 @@
+	// %CNUC%
+	
+	/**
+	 * @brief Checks if the %EL_UC% Optional %CNUC% is enabled.
+	 *
+	 * @note This function is available only if the %EL_UC% Element has
+	 * the Optional%CNUC% Component.
+	 *
+	 * @return true if the Optional %CNUC% is enabled, false otherwise.
+	 */
+	bool isPer%EL_UC%%CNUC%Enabled() const 
+		requires %EL_NS%::HasOptional%CNUC%<T>
+	{
+		return Base::template isOptionalComponentEnabled<
+			typename T::%CNUC%>();
+	}
+	
+	/**
+	 * @brief Enable the Optional %CNUC% of the %EL_UC%.
+	 *
+	 * @note This function is available only if the %EL_UC% Element has
+	 * the Optional%CNUC% Component.
+	 */
+	void enablePer%EL_UC%%CNUC%() 
+		requires %EL_NS%::HasOptional%CNUC%<T>
+	{
+		Base::template enableOptionalComponent<typename T::%CNUC%>();
+	}
+	
+	/**
+	 * @brief Disables the Optional %CNUC% of the %EL_UC%.
+	 *
+	 * @note This function is available only if the %EL_UC% Element has
+	 * the Optional%CNUC% Component.
+	 */
+	void disablePer%EL_UC%%CNUC%() 
+		requires %EL_NS%::HasOptional%CNUC%<T>
+	{
+		Base::template disableOptionalComponent<typename T::%CNUC%>();
+	}
+
