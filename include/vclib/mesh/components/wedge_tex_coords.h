@@ -110,6 +110,17 @@ public:
 	using ConstWedgeTexCoordsIterator =
 		Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
 
+	/* Constructors */
+
+	/**
+	 * @brief Empty constructor.
+	 *
+	 * If the Wedge TexCoords container size is static, initializes all the
+	 * Wedge TexCoords to with the vcl::TexCoord empty constructor, otherwise
+	 * the container will be empty.
+	 */
+	WedgeTexCoords() = default;
+
 	/* Member functions */
 
 	/**

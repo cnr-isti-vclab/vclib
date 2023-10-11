@@ -73,6 +73,15 @@ public:
 	 */
 	using NormalType = P;
 
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes the Normal to (0, 0, 0).
+	 */
+	Normal() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns a const reference of the normal of the element.
 	 * @return a const reference of the normal of the element.

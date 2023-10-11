@@ -81,6 +81,15 @@ public:
 	 */
 	using PrincipalCurvatureType = vcl::PrincipalCurvature<Scalar>;
 
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes the PrincipalCurvature values to 0.
+	 */
+	PrincipalCurvature() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns a const reference of the principal curvature of the element.
 	 * @return a const reference of the principal curvature of the element.

@@ -84,11 +84,15 @@ public:
 	using TexFileNamesIterator      = std::vector<std::string>::iterator;
 	using ConstTexFileNamesIterator = std::vector<std::string>::const_iterator;
 
+	/* Constructors */
+
 	/**
-	 * @brief Empty constructor. It initializes the component with an empty
-	 * vector of texture paths, and an empty string as mesh base path.
+	 * @brief Initializes the component with an empty vector of texture paths,
+	 * and an empty string as mesh base path.
 	 */
-	TexturePaths() {};
+	TexturePaths() = default;
+
+	/* Member functions */
 
 	/**
 	 * @brief Returns the number of texture paths of the mesh.

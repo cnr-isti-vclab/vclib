@@ -83,7 +83,7 @@ public:
 	/* Constructors */
 
 	/**
-	 * @brief Constructor that initializes the transform matrix to identity.
+	 * @brief Initializes the transform matrix to identity.
 	 */
 	TransformMatrix()
 	{

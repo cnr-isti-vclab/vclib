@@ -3,35 +3,20 @@
 - Mesh:
   - Concepts:
     - [ ] complete space data structures concepts
-    - [ ] implement per edge concepts
-  - Components:
-    - [ ] Constrain importFrom member function argument with ElementConcept
-    - [ ] Bit Flags member: import/exportFromVCGFlags must be renamed into import/exportFlagsFromVCG
-    - [ ] Make the Component class use the CRTP and remove from all the components the isEnabled member function 
-          (and, in general, all the members that use this)
-    - [ ] the setVertices, setAdj*s that take as input a vector should take as input a range
-    - [ ] write and comment all the empty constructors of the components
-    - [ ] reorganize keywords for optioal and availability checks of components:
-      - [ ] enable/disable keywords should be used only when the component is optional
-      - [ ] available keyword should be used when check the general availability of the component, regardless its optionality
-            (e.g. in the requirements functions and in the component member functions)
   - Elements:
     - [ ] set properly elements concepts
     - [ ] set constructors for Edge element
   - Containers:
-    - [ ] set properly container concepts
-    - [ ] add clear and resize for each container of the mesh, adding warnings about potential undefined behaviours in the docs
+    - Element container should provide fast compact function, that does not preserve elements order
   - Mesh:
-    - [ ] manage clean() for all components of mesh, not only element containers
-    - [ ] compactness should use uint and UINT_NULL instead of int and negative numbers 
+    - [ ] manage clean() for all components of mesh, not only element containers 
 - Exceptions:
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Iterators:
   - [ ] make just one StaticGridIterator class that can be both const and non-const (avoid code duplication)
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
-  - [ ] Implement importer/exporter from VCG
-  - [ ] Implement importer/exporter from matrix
+  - [ ] Implement exporter to VCG
   - [ ] Implement importer/exporter from buffer
   - [ ] Shuffle algorithms should be all made using views
   - [ ] Smooth algorithms should be made using loggers
@@ -40,11 +25,10 @@
     - [ ] weights input argument of all the function should be a range
 - Space:
   - [ ] improve documentation for Grid data structures
-  - [ ] implement ArrayConcept that works also with Eigen matrices in 2D (see export_to_matrix in algorithms)
 - Misc:
   - [ ] implement non-static member functions for FileInfo class
 - External:
   - [ ] make render functions using bgfx
   - [ ] remove zip-iterator library when c++23 zip-view will be supported
 - Documentation:
-  - [ ] Explain appropriately the structure of the library
+  - [ ] How to implement a user component

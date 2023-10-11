@@ -113,6 +113,16 @@ public:
 	 */
 	static const int ADJ_FACE_NUMBER = Base::SIZE;
 
+	/* Constructors */
+
+	/**
+	 * @brief Empty constructor.
+	 *
+	 * If the Adjacent Faces container size is static, initializes all the
+	 * Adjacent Faces to `nullptr`, otherwise the container will be empty.
+	 */
+	AdjacentFaces() = default;
+
 	/* Member functions */
 
 	/**

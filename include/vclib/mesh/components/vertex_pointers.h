@@ -107,6 +107,16 @@ public:
 	using VertexIterator      = Base::Iterator;
 	using ConstVertexIterator = Base::ConstIterator;
 
+	/* Constructors */
+
+	/**
+	 * @brief Empty constructor.
+	 *
+	 * If the Vertex Pointers container size is static, initializes all the
+	 * Vertex Pointers to `nullptr`, otherwise the container will be empty.
+	 */
+	VertexPointers() = default;
+
 	/* Member functions */
 
 	/**

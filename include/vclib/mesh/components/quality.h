@@ -75,6 +75,15 @@ public:
 	 */
 	using QualityType = Scalar;
 
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes the Quality value to 0.
+	 */
+	Quality() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns a const reference of the quality of the element.
 	 * @return a const reference of the quality of the element.

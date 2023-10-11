@@ -79,6 +79,15 @@ public:
 	 */
 	using BoundingBoxType = Box<PointType>;
 
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes the bounding box to an invalid bounding box.
+	 */
+	BoundingBox() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns a const reference to the bounding box of this object.
 	 * @return A const reference to the bounding box of this object.

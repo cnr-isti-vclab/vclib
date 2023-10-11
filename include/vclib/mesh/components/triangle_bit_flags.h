@@ -119,7 +119,7 @@ public:
 	/* Constructors */
 
 	/**
-	 * @brief Constructor that initializes the bits to false.
+	 * @brief Initializes the bits to `false`.
 	 */
 	TriangleBitFlags()
 	{
@@ -306,7 +306,7 @@ public:
 	 * library.
 	 * @param[in] f: bit flags in the format of the VCG library.
 	 */
-	void importFromVCGFlags(int f)
+	void importFlagsFromVCGFormat(int f)
 	{
 		if (f & 0x00000010)
 			visited() = true;
@@ -339,7 +339,7 @@ public:
 	 * @return an integer representing the bit flags of this element in the
 	 * format of the VCG library.
 	 */
-	int exportToVCGFlags() const
+	int exportFlagsToVCGFormat() const
 	{
 		int f = 0;
 		if (visited())

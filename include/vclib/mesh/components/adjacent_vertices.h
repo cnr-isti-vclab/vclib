@@ -98,6 +98,15 @@ public:
 	using AdjacentVertexIterator      = Base::Iterator;
 	using ConstAdjacentVertexIterator = Base::ConstIterator;
 
+	/* Constructors */
+
+	/**
+	 * @brief Empty constructor.
+	 *
+	 * Initializes an empty container of Adjacent Vertices.
+	 */
+	AdjacentVertices() = default;
+
 	/* Member functions */
 
 	/**

@@ -56,7 +56,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 				vcgMesh.vert[i].P()[2]));
 
 			// flags
-			mesh.vertex(vi).importFromVCGFlags(vcgMesh.vert[i].Flags());
+			mesh.vertex(vi).importFlagsFromVCGFormat(vcgMesh.vert[i].Flags());
 
 			// normal
 			if constexpr (HasPerVertexNormal<MeshType>) {
@@ -123,7 +123,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 				}
 
 				// flags
-				mesh.face(fi).importFromVCGFlags(vcgMesh.face[i].Flags());
+				mesh.face(fi).importFlagsFromVCGFormat(vcgMesh.face[i].Flags());
 
 				// normal
 				if constexpr (HasPerFaceNormal<MeshType>) {

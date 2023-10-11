@@ -76,6 +76,15 @@ public:
 	 */
 	using TexCoordType = vcl::TexCoord<Scalar>;
 
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes the Texture Coordinate to (0, 0).
+	 */
+	TexCoord() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns a const reference of the tex coord of the element.
 	 * @return a const reference of the tex coord of the element.

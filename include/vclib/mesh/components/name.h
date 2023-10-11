@@ -67,6 +67,15 @@ class Name :
 		Component<Name<ElementType, OPT>, NAME, std::string, ElementType, OPT>;
 
 public:
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes an empty name.
+	 */
+	Name() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns the name of this object.
 	 * @return The name of this object.

@@ -77,6 +77,15 @@ public:
 	 */
 	using CoordType = P;
 
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes the Coordinate to (0, 0, 0).
+	 */
+	Coordinate() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns a const reference of the coordinate of the element.
 	 * @return a const reference of the coordinate of the element.

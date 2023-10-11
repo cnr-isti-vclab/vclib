@@ -99,6 +99,17 @@ public:
 	using WedgeColorsIterator      = Base::Iterator;
 	using ConstWedgeColorsIterator = Base::ConstIterator;
 
+	/* Constructors */
+
+	/**
+	 * @brief Empty constructor.
+	 *
+	 * If the Wedge Colors container size is static, initializes all the
+	 * Wedge Colors to with the vcl::Color empty constructor, otherwise the
+	 * container will be empty.
+	 */
+	WedgeColors() = default;
+
 	/* Member functions */
 
 	/**

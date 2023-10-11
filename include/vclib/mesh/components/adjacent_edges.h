@@ -113,6 +113,16 @@ public:
 	 */
 	static const int ADJ_EDGE_NUMBER = Base::SIZE;
 
+	/* Constructors */
+
+	/**
+	 * @brief Empty constructor.
+	 *
+	 * If the Adjacent Edges container size is static, initializes all the
+	 * Adjacent Edges to `nullptr`, otherwise the container will be empty.
+	 */
+	AdjacentEdges() = default;
+
 	/* Member functions */
 
 	/**

@@ -67,6 +67,15 @@ class Color :
 		Component<Color<ElementType, OPT>, COLOR, vcl::Color, ElementType, OPT>;
 
 public:
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes the color to black (with alpha 255).
+	 */
+	Color() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns a const reference of the color of the element.
 	 * @return a const reference of the color of the element.

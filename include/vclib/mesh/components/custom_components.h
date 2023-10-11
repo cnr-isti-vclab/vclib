@@ -102,6 +102,15 @@ public:
 	 */
 	static const uint COMPONENT_ID = CUSTOM_COMPONENTS;
 
+	/* Constructors */
+
+	/**
+	 * @brief Initilizes an empty container of custom components.
+	 */
+	CustomComponents() = default;
+
+	/* Member functions */
+
 	/**
 	 * @brief Returns true if the element has a custom component with the given
 	 * name, false otherwise. The type of the custom component is not checked.

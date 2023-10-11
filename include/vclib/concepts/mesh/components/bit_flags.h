@@ -47,8 +47,8 @@ concept HasBitFlags = requires(
 	{ co.userBit(uint()) } -> std::same_as<bool>;
 
 	{ o.resetBitFlags() } -> std::same_as<void>;
-	{ o.importFromVCGFlags(int())} -> std::same_as<void>;
-	{ co.exportToVCGFlags() } -> std::same_as<int>;
+	{ o.importFlagsFromVCGFormat(int())} -> std::same_as<void>;
+	{ co.exportFlagsToVCGFormat() } -> std::same_as<int>;
 };
 
 namespace internal {
