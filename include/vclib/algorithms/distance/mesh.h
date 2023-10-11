@@ -36,11 +36,12 @@
 
 namespace vcl {
 
-struct HausdorffDistResult {
-    double minDist  = std::numeric_limits<double>::max();
-    double maxDist  = std::numeric_limits<double>::lowest();
-    double meanDist = 0;
-    double RMSDist  = 0;
+struct HausdorffDistResult
+{
+    double            minDist  = std::numeric_limits<double>::max();
+    double            maxDist  = std::numeric_limits<double>::lowest();
+    double            meanDist = 0;
+    double            RMSDist  = 0;
     Histogram<double> histogram;
 };
 
@@ -64,7 +65,7 @@ HausdorffDistResult hausdorffDist(
     LogType&           log)
 {
     using PointSampleType = SamplerType::PointType;
-    using ScalarType = PointSampleType::ScalarType;
+    using ScalarType      = PointSampleType::ScalarType;
 
     HausdorffDistResult res;
     res.histogram = Histogramd(0, m.boundingBox().diagonal() / 100, 100);
@@ -83,8 +84,8 @@ HausdorffDistResult hausdorffDist(
     std::mutex mutex;
 
     uint ns = 0;
-    uint i = 0;
-    vcl::parallelFor(s, [&](const PointSampleType& sample){
+    uint i  = 0;
+    vcl::parallelFor(s, [&](const PointSampleType& sample) {
         //    for (const PointSampleType& sample : s) {
         ScalarType dist = std::numeric_limits<ScalarType>::max();
         const auto iter = g.closestValue(sample, dist);
@@ -97,7 +98,7 @@ HausdorffDistResult hausdorffDist(
             if (dist < res.minDist)
                 res.minDist = dist;
             res.meanDist += dist;
-            res.RMSDist += dist*dist;
+            res.RMSDist += dist * dist;
             res.histogram.addValue(dist);
             mutex.unlock();
         }
@@ -134,14 +135,15 @@ template<
     MeshConcept    MeshType,
     SamplerConcept SamplerType,
     LoggerConcept  LogType>
-HausdorffDistResult
-samplerMeshHausdorff(const MeshType& m, const SamplerType& s, LogType& log)
-    requires (!HasFaces<MeshType>)
+HausdorffDistResult samplerMeshHausdorff(
+    const MeshType&    m,
+    const SamplerType& s,
+    LogType&           log) requires (!HasFaces<MeshType>)
 {
     using VertexType = MeshType::VertexType;
 
     std::string meshName = "first mesh";
-    if constexpr (HasName<MeshType>){
+    if constexpr (HasName<MeshType>) {
         meshName = m.name();
     }
     if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -162,15 +164,17 @@ template<
     FaceMeshConcept MeshType,
     SamplerConcept  SamplerType,
     LoggerConcept   LogType>
-HausdorffDistResult
-samplerMeshHausdorff(const MeshType& m, const SamplerType& s, LogType& log)
+HausdorffDistResult samplerMeshHausdorff(
+    const MeshType&    m,
+    const SamplerType& s,
+    LogType&           log)
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
     using ScalarType = VertexType::CoordType::ScalarType;
 
     std::string meshName = "first mesh";
-    if constexpr (HasName<MeshType>){
+    if constexpr (HasName<MeshType>) {
         meshName = m.name();
     }
     if (m.faceNumber() == 0) {
@@ -205,7 +209,7 @@ samplerMeshHausdorff(const MeshType& m, const SamplerType& s, LogType& log)
 }
 
 template<
-    uint METHOD,
+    uint           METHOD,
     MeshConcept    MeshType1,
     MeshConcept    MeshType2,
     SamplerConcept SamplerType,
@@ -217,7 +221,7 @@ HausdorffDistResult hausdorffDistance(
     bool               deterministic,
     SamplerType&       sampler,
     std::vector<uint>& birth,
-    LogType& log)
+    LogType&           log)
 {
     std::string meshName1 = "first mesh";
     std::string meshName2 = "second mesh";
@@ -264,7 +268,7 @@ HausdorffDistResult hausdorffDistance(
     return res;
 }
 
-} // namespace vcl::internal
+} // namespace internal
 
 template<
     MeshConcept   MeshType1,
@@ -301,9 +305,7 @@ HausdorffDistResult hausdorffDistance(
         return internal::hausdorffDistance<HAUSDORFF_MONTECARLO>(
             m1, m2, nSamples, deterministic, sampler, birth, log);
     }
-    default:
-        assert(0);
-        return HausdorffDistResult();
+    default: assert(0); return HausdorffDistResult();
     }
 }
 

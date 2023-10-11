@@ -107,24 +107,24 @@ Matrix faceMatrix(const MeshType& mesh)
     Matrix F(mesh.faceNumber(), 3);
 
     uint i = 0;
-    for (const auto& f : mesh.faces()){
+    for (const auto& f : mesh.faces()) {
         // check if this face is greater than the cols of the matrix
         if (f.vertexNumber() > F.cols()) { // need to resize
-            uint oldCols = F.cols(); // save old cols number
+            uint oldCols = F.cols();       // save old cols number
             F.conservativeResize(F.rows(), f.vertexNumber());
             // need to set to -1 all the previous rows that have been resized
-            for (uint k = 0; k < i; ++k){
+            for (uint k = 0; k < i; ++k) {
                 for (uint j = oldCols; j < F.cols(); ++j)
                     F(k, j) = -1;
             }
         }
         uint j = 0;
-        for (const auto* v : f.vertices()){
+        for (const auto* v : f.vertices()) {
             F(i, j) = mesh.index(v);
             j++;
         }
         for (; j < F.cols(); ++j) // remaining vertices set to -1
-            F(i, j ) = -1;
+            F(i, j) = -1;
         ++i; // go to next face/row
     }
     return F;
@@ -168,7 +168,7 @@ Vect faceSizesVector(const MeshType& mesh)
     Vect F(mesh.faceNumber());
 
     uint i = 0;
-    for (const auto& f : mesh.faces()){
+    for (const auto& f : mesh.faces()) {
         F(i) = f.vertexNumber();
         ++i;
     }
@@ -204,14 +204,14 @@ Vect faceSizesVector(const MeshType& mesh)
  * @return #E*2 matrix of integers (edge indices)
  */
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
-Matrix edgeMatrix(const MeshType &mesh)
+Matrix edgeMatrix(const MeshType& mesh)
 {
     vcl::requireVertexContainerCompactness(mesh);
 
     Matrix E(mesh.edgeNumber(), 2);
 
     uint i = 0;
-    for (const auto& e : mesh.edges()){
+    for (const auto& e : mesh.edges()) {
         E(i, 0) = mesh.index(e.vertex(0));
         E(i, 1) = mesh.index(e.vertex(1));
         ++i; // go to next edge/row

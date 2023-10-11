@@ -31,34 +31,40 @@
 
 namespace vcl {
 
-// generic case - nothing is done here. It will fail because a specialization must exist
+// generic case - nothing is done here. It will fail because a specialization
+// must exist
 template<typename Obj1, typename Obj2>
 struct IntersFunctionStruct
 {
     static_assert(
         sizeof(Obj1) != sizeof(Obj1), // always fail
-        "There is no a IntersFunctionStruct specialization for the given types.");
+        "There is no a IntersFunctionStruct specialization for the given "
+        "types.");
 };
 
 /**
- * @brief Return a proper intersect function between a Obj1 object and an Obj2 object.
+ * @brief Return a proper intersect function between a Obj1 object and an Obj2
+ * object.
  *
- * This function will return a function defined in a specialization of the struct
- * IntersFunctionStruct.
+ * This function will return a function defined in a specialization of the
+ * struct IntersFunctionStruct.
  *
- * The returned function is a std::function that takes in input two const references of the desired
- * types and returns a boolean that tells if the two objects intersect.
+ * The returned function is a std::function that takes in input two const
+ * references of the desired types and returns a boolean that tells if the two
+ * objects intersect.
  *
  * If the intersection function for your types is not defined, you can write
- * your own IntersFunctionStruct specialization that defines a proper `static const inline` object
- * called `intersFun` of `std::function` type.
+ * your own IntersFunctionStruct specialization that defines a proper `static
+ * const inline` object called `intersFun` of `std::function` type.
  *
- * @note The intersectFunction works only for non-pointer types. This means that you cannot ask for the intersect
- * function between a vcl::Box3 and a vcl::Face*. If you are working with template types that you
- * don't know if they are pointers or not, you can do the following:
+ * @note The intersectFunction works only for non-pointer types. This means that
+ * you cannot ask for the intersect function between a vcl::Box3 and a
+ * vcl::Face*. If you are working with template types that you don't know if
+ * they are pointers or not, you can do the following:
  * @code{.cpp}
  * // don't know if T1 and T2 are pointers or non-pointers
- * auto f = intersectFunction<RemoveCVRefAndPointer<T1>, RemoveCVRefAndPointer<T2>>();
+ * auto f = intersectFunction<RemoveCVRefAndPointer<T1>,
+ * RemoveCVRefAndPointer<T2>>();
  * // obj1 is of type T1, obj2 is of type T2 (may be pointers or non-pointers)
  * bool theyIntersect = f(dereferencePtr(obj1), dereferencePtr(obj2));
  * @endcode

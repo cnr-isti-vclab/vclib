@@ -81,12 +81,12 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
         qH[m.index(v)] = pl.dist(v.coord());
 
     for (const FaceType& f : m.faces()) {
-        std::vector<CoordType>  ptVec;
+        std::vector<CoordType> ptVec;
         std::vector<CoordType> nmVec;
         for (uint j = 0; j < f.vertexNumber(); ++j) {
             if (qH[m.index(f.vertex(j))] == 0) {
                 ptVec.push_back(f.vertex(j)->coord());
-                if constexpr(HasPerVertexNormal<MeshType>) {
+                if constexpr (HasPerVertexNormal<MeshType>) {
                     if (isPerVertexNormalAvailable(m)) {
                         nmVec.push_back(f.vertex(j)->normal());
                     }
@@ -96,17 +96,18 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
                 (qH[m.index(f.vertex(j))] * qH[m.index(f.vertexMod(j + 1))]) <
                 0)
             {
-                const CoordType&  p0 = f.vertex(j)->coord();
-                const CoordType&  p1 = f.vertexMod(j + 1)->coord();
-                float             q0 = qH[m.index(f.vertex(j))];
-                float             q1 = qH[m.index(f.vertexMod(j + 1))];
+                const CoordType& p0 = f.vertex(j)->coord();
+                const CoordType& p1 = f.vertexMod(j + 1)->coord();
+
+                float q0 = qH[m.index(f.vertex(j))];
+                float q1 = qH[m.index(f.vertexMod(j + 1))];
 
                 std::pair<CoordType, CoordType> seg(p0, p1);
                 CoordType pp = pl.segmentIntersection(seg);
                 ptVec.push_back(pp);
-                if constexpr(HasPerVertexNormal<MeshType>) {
+                if constexpr (HasPerVertexNormal<MeshType>) {
                     if (isPerVertexNormalAvailable(m)) {
-                        using NormalType = VertexType::NormalType;
+                        using NormalType     = VertexType::NormalType;
                         const NormalType& n0 = f.vertex(j)->normal();
                         const NormalType& n1 = f.vertexMod(j + 1)->normal();
                         CoordType         nn =
@@ -127,7 +128,9 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
             if constexpr (
                 HasPerVertexNormal<MeshType> && HasPerVertexNormal<EdgeMesh>)
             {
-                if (isPerVertexNormalAvailable(m) && isPerVertexNormalAvailable(em)) {
+                if (isPerVertexNormalAvailable(m) &&
+                    isPerVertexNormalAvailable(em))
+                {
                     em.vertex(v0).normal() = nmVec[0];
                     em.vertex(v1).normal() = nmVec[1];
                 }
@@ -176,9 +179,9 @@ MeshType meshSphereIntersection(
     double                      tol)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType = VertexType::CoordType;
+    using CoordType  = VertexType::CoordType;
     using ScalarType = CoordType::ScalarType;
-    using FaceType = MeshType::FaceType;
+    using FaceType   = MeshType::FaceType;
 
     auto ffilter = [&sphere](const FaceType& f) -> bool {
         return faceSphereItersect(f, sphere);
@@ -190,8 +193,8 @@ MeshType meshSphereIntersection(
     while (i < res.faceContainerSize()) {
         FaceType& f = res.face(i);
 
-        CoordType witness;
-        std::pair<ScalarType, ScalarType> ires(0,0);
+        CoordType                         witness;
+        std::pair<ScalarType, ScalarType> ires(0, 0);
 
         bool allIn = true;
         for (const auto* v : f.vertices()) {
@@ -203,6 +206,7 @@ MeshType meshSphereIntersection(
                 uint v1 = v0 + 1;
                 uint v2 = v0 + 2;
                 uint fi = res.addFaces(4);
+
                 FaceType& f = res.face(i);
 
                 res.vertex(v0).importFrom(*f.vertex(0));
@@ -256,8 +260,9 @@ MeshType meshSphereIntersection(
  * @return
  */
 template<FaceMeshConcept MeshType, typename SScalar>
-MeshType
-meshSphereIntersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere)
+MeshType meshSphereIntersection(
+    const MeshType&             m,
+    const vcl::Sphere<SScalar>& sphere)
 {
     double tol = M_PI * sphere.radius() * sphere.radius() / 100000;
     return meshSphereIntersection(m, sphere, tol);

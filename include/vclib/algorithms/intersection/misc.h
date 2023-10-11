@@ -37,11 +37,12 @@ namespace internal {
 // triangle box intersect functions
 template<typename ScalarType>
 inline void findMinMax(
-    ScalarType x0,
-    ScalarType x1,
-    ScalarType x2,
-    ScalarType &min,
-    ScalarType &max) {
+    ScalarType  x0,
+    ScalarType  x1,
+    ScalarType  x2,
+    ScalarType& min,
+    ScalarType& max)
+{
     min = max = x0;
     if (x1 < min)
         min = x1;
@@ -70,7 +71,8 @@ inline bool axisTestX01(
     if (p0 < p2) {
         min = p0;
         max = p2;
-    } else {
+    }
+    else {
         min = p2;
         max = p0;
     }
@@ -96,11 +98,12 @@ inline bool axisTestX2(
     if (p0 < p1) {
         min = p0;
         max = p1;
-    } else {
+    }
+    else {
         min = p1;
         max = p0;
     }
-    ScalarType  rad = fa * bHalfSixe.y() + fb * bHalfSixe.z();
+    ScalarType rad = fa * bHalfSixe.y() + fb * bHalfSixe.z();
     if (min > rad || max < -rad)
         return false;
     return true;
@@ -123,7 +126,8 @@ inline bool axisTestY02(
     if (p0 < p2) {
         min = p0;
         max = p2;
-    } else {
+    }
+    else {
         min = p2;
         max = p0;
     }
@@ -149,7 +153,8 @@ inline bool axisTestY1(
     if (p0 < p1) {
         min = p0;
         max = p1;
-    } else {
+    }
+    else {
         min = p1;
         max = p0;
     }
@@ -176,7 +181,8 @@ inline bool axisTestZ12(
     if (p1 < p2) {
         min = p1;
         max = p2;
-    } else {
+    }
+    else {
         min = p2;
         max = p1;
     }
@@ -202,7 +208,8 @@ inline bool axisTestZ0(
     if (p0 < p1) {
         min = p0;
         max = p1;
-    } else {
+    }
+    else {
         min = p1;
         max = p0;
     }
@@ -212,7 +219,7 @@ inline bool axisTestZ0(
     return true;
 }
 
-} // namespace vcl::internal
+} // namespace internal
 
 /**
  * @brief Checks if a plane intersects with a box.
@@ -231,12 +238,12 @@ inline bool axisTestZ0(
 template<PlaneConcept PlaneType, Box3Concept BoxType>
 bool planeBoxIntersect(const PlaneType& p, const BoxType& box)
 {
-    using PointType = BoxType::PointType;
+    using PointType  = BoxType::PointType;
     using ScalarType = PointType::ScalarType;
 
     // Convert AABB to center-extents representation
     PointType c = (box.max() + box.min()) * 0.5f; // Compute AABB center
-    PointType e = box.max() - c; // Compute positive extents
+    PointType e = box.max() - c;                  // Compute positive extents
 
     PointType n = p.direction();
     // Compute the projection interval radius of b onto L(t) = b.c + t * p.n
@@ -277,20 +284,20 @@ bool planeSegmentIntersect(
 
     // If both endpoints are on the same side of the plane, there is no
     // intersection.
-    if ( (p1_proj>0)-(p0_proj<0))
+    if ((p1_proj > 0) - (p0_proj < 0))
         return false;
 
     // If both endpoints have the same projection onto the plane, there is no
     // intersection.
-    if(p0_proj == p1_proj)
+    if (p0_proj == p1_proj)
         return false;
 
     // check that we perform the computation in a way that is independent with
     // v0 v1 swaps
-    if(p0_proj < p1_proj)
+    if (p0_proj < p1_proj)
         intersection = s.p0() + (s.p1() - s.p0()) *
                                     std::abs(p0_proj / (p1_proj - p0_proj));
-    if(p0_proj > p1_proj)
+    if (p0_proj > p1_proj)
         intersection = s.p1() + (s.p0() - s.p1()) *
                                     std::abs(p1_proj / (p0_proj - p1_proj));
 
@@ -307,9 +314,7 @@ bool planeSegmentIntersect(
  * @return A boolean value indicating whether an intersection was found or not.
  */
 template<PlaneConcept PlaneType, Segment3Concept SegmentType>
-bool planeSegmentIntersect(
-    const PlaneType&                 p,
-    const SegmentType&               s)
+bool planeSegmentIntersect(const PlaneType& p, const SegmentType& s)
 {
     typename SegmentType::PointType intersection;
 
@@ -354,14 +359,14 @@ bool sphereBoxIntersect(const SphereType& s, const BoxType& box)
 template<ConstTriangle2Concept TriangleType, Point2Concept PointType>
 bool trianglePointIntersect(const TriangleType& tr, const PointType& p)
 {
-    using TP = TriangleType::PointType;
+    using TP         = TriangleType::PointType;
     using ScalarType = TP::ScalarType;
 
     const TP& p0 = tr.point(0);
     const TP& p1 = tr.point(1);
     const TP& p2 = tr.point(2);
 
-    ScalarType A = tr.area();
+    ScalarType A    = tr.area();
     ScalarType sign = A < 0 ? -1 : 1;
 
     ScalarType s = (p0.y() * p2.x() - p0.x() * p2.y() +
@@ -402,11 +407,9 @@ bool trianglePointIntersect(const TriangleType& t, const PointType& p)
  * https://gist.github.com/jflipts/fc68d4eeacfcc04fbdb2bf38e0911850
  */
 template<ConstTriangle3Concept TriangleType, Box3Concept BoxType>
-bool triangleBoxIntersect(
-    const TriangleType& t,
-    const BoxType& box)
+bool triangleBoxIntersect(const TriangleType& t, const BoxType& box)
 {
-    using PointType = TriangleType::PointType;
+    using PointType  = TriangleType::PointType;
     using ScalarType = PointType::ScalarType;
 
     PointType boxcenter = box.center();
@@ -421,7 +424,7 @@ bool triangleBoxIntersect(
      *       this gives 3x3=9 more tests
      */
     ScalarType min, max;
-    PointType normal;
+    PointType  normal;
 
     /* This is the fastest branch on Sun */
     /* move everything so that the boxcenter is in (0,0,0) */
@@ -519,18 +522,18 @@ template<
     Point3Concept         PointType,
     typename ScalarType>
 bool triangleSphereItersect(
-    const TriangleType&          t,
-    const SphereType&            sphere,
-    PointType&                   witness,
+    const TriangleType&                t,
+    const SphereType&                  sphere,
+    PointType&                         witness,
     std::pair<ScalarType, ScalarType>& res)
 {
     bool penetrationDetected = false;
 
     ScalarType radius = sphere.radius();
     PointType  center = sphere.center();
-    PointType p0 = t.point0() - center;
-    PointType p1 = t.point1() - center;
-    PointType p2 = t.point2() - center;
+    PointType  p0     = t.point0() - center;
+    PointType  p1     = t.point1() - center;
+    PointType  p2     = t.point2() - center;
 
     PointType p10 = p1 - p0;
     PointType p21 = p2 - p1;
@@ -611,7 +614,7 @@ bool triangleSphereItersect(const TriangleType& t, const SphereType& sphere)
 {
     using SScalar = SphereType::ScalarType;
     typename TriangleType::PointType witness;
-    std::pair<SScalar, SScalar> res;
+    std::pair<SScalar, SScalar>      res;
     return triangleBoxIntersect(t, sphere, witness, res);
 }
 

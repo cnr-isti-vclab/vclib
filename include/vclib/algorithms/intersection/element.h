@@ -37,7 +37,7 @@ namespace vcl {
 template<FaceConcept FaceType, PointConcept PointType>
 bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
 {
-    if constexpr(TriangleFaceConcept<FaceType>) {
+    if constexpr (TriangleFaceConcept<FaceType>) {
         return triangleBoxIntersect(
             TriangleWrapper(
                 f.vertex(0)->coord(),
@@ -47,6 +47,7 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
     }
     else {
         bool b = false;
+
         std::vector<uint> tris = vcl::earCut(f);
         for (uint i = 0; i < tris.size() && !b; i += 3) {
             b |= triangleBoxIntersect(
@@ -85,7 +86,7 @@ bool faceSphereItersect(
     PointType&                   witness,
     std::pair<SScalar, SScalar>& res)
 {
-    if constexpr(TriangleFaceConcept<FaceType>) {
+    if constexpr (TriangleFaceConcept<FaceType>) {
         return triangleSphereItersect(
             TriangleWrapper(
                 f.vertex(0)->coord(),
@@ -108,9 +109,11 @@ bool faceSphereItersect(
         }
         else {
             res.first = std::numeric_limits<SScalar>::max();
-            bool b = false;
-            PointType w;
             std::pair<SScalar, SScalar> r;
+
+            bool      b = false;
+            PointType w;
+
             std::vector<uint> tris = vcl::earCut(f);
             for (uint i = 0; i < tris.size() && !b; i += 3) {
                 b |= triangleSphereItersect(
@@ -123,7 +126,7 @@ bool faceSphereItersect(
                     r);
 
                 if (r.first < res.first) {
-                    res = r;
+                    res     = r;
                     witness = w;
                 }
             }
@@ -148,7 +151,7 @@ bool faceSphereItersect(
 template<FaceConcept FaceType, typename SScalar>
 bool faceSphereItersect(const FaceType& f, const Sphere<SScalar>& sphere)
 {
-    Point3<SScalar> witness;
+    Point3<SScalar>             witness;
     std::pair<SScalar, SScalar> res;
     return faceSphereItersect(f, sphere, witness, res);
 }

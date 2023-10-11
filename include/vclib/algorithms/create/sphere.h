@@ -198,8 +198,9 @@ MeshType createSphereUV(
  * @ingroup create
  */
 template<FaceMeshConcept MeshType>
-MeshType
-createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions)
+MeshType createSphereNormalizedCube(
+    const SphereConcept auto& sp,
+    uint                      divisions)
 {
     using VertexType = MeshType::VertexType;
     using CoordType  = VertexType::CoordType;
@@ -276,8 +277,9 @@ createSphereNormalizedCube(const SphereConcept auto& sp, uint divisions)
  * @ingroup create
  */
 template<FaceMeshConcept MeshType>
-MeshType
-createSphereSpherifiedCube(const SphereConcept auto& sp, uint divisions)
+MeshType createSphereSpherifiedCube(
+    const SphereConcept auto& sp,
+    uint                      divisions)
 {
     using VertexType = MeshType::VertexType;
     using CoordType  = VertexType::CoordType;

@@ -51,18 +51,20 @@ auto pointSegmentDistance(
 
     ScalarType dist;
 
-    PointType dir = s.direction();
+    PointType  dir = s.direction();
     ScalarType esn = dir.squaredNorm();
 
     if (esn < std::numeric_limits<ScalarType>::min()) {
         closest = s.midPoint();
     }
     else {
-        ScalarType t = ((p-s.p0())*dir)/esn;
-        if (t < 0) t = 0;
-        else if (t > 1) t = 1;
+        ScalarType t = ((p - s.p0()) * dir) / esn;
+        if (t < 0)
+            t = 0;
+        else if (t > 1)
+            t = 1;
 
-        closest = s.p0() * (1-t) + s.p1() * t;
+        closest = s.p0() * (1 - t) + s.p1() * t;
     }
     dist = p.dist(closest);
     return dist;

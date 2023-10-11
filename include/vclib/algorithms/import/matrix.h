@@ -46,9 +46,7 @@ std::vector<uint> faceVertIndices(const FMatrix& faces, uint f)
 }
 
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept NMatrix>
-void importElementNormalsFromMatrix(
-    MeshType&      mesh,
-    const NMatrix& normals)
+void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
 {
     // The type of the normal of the element
     using NormalType = MeshType::template ElementType<ELEM_ID>::NormalType;
@@ -70,16 +68,13 @@ void importElementNormalsFromMatrix(
 
     uint i = 0;
     for (auto& e : mesh.template elements<ELEM_ID>()) {
-        e.normal() = NormalType(
-            normals(i, 0), normals(i, 1), normals(i, 2));
+        e.normal() = NormalType(normals(i, 0), normals(i, 1), normals(i, 2));
         i++;
     }
 }
 
 template<uint ELEM_ID, MeshConcept MeshType, MatrixConcept CMatrix>
-void importElementColorsFromMatrix(
-    MeshType&      mesh,
-    const CMatrix& colors)
+void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
 {
     using MatrixScalar = CMatrix::Scalar;
 
@@ -129,7 +124,7 @@ void importElementColorsFromMatrix(
     }
 }
 
-} // namespace vcl::internal
+} // namespace internal
 
 /**
  * @brief Creates and returns a new point cloud mesh from the input vertex
@@ -167,11 +162,11 @@ void importElementColorsFromMatrix(
  * @return a new point cloud mesh containing the data passed as argument.
  */
 template<
-    MeshConcept MeshType,
+    MeshConcept   MeshType,
     MatrixConcept VMatrix,
     MatrixConcept VNMatrix = Eigen::MatrixX3d>
 MeshType pointCloudMeshFromMatrices(
-    const VMatrix& vertices,
+    const VMatrix&  vertices,
     const VNMatrix& vertexNormals = VNMatrix())
 {
     MeshType mesh;
@@ -247,12 +242,7 @@ MeshType meshFromMatrices(
     MeshType mesh;
 
     importMeshFromMatrices(
-        mesh,
-        vertices,
-        faces,
-        Eigen::MatrixX2i(),
-        vertexNormals,
-        faceNormals);
+        mesh, vertices, faces, Eigen::MatrixX2i(), vertexNormals, faceNormals);
 
     return mesh;
 }
@@ -419,7 +409,6 @@ void importVerticesFromMatrix(
         }
     }
 
-
     uint i = 0;
     for (auto& v : mesh.vertices()) {
         v.coord() = CoordType(vertices(i, 0), vertices(i, 1), vertices(i, 2));
@@ -512,8 +501,7 @@ void importEdgesFromMatrix(
     bool           clearBeforeSet = true)
 {
     if (edges.cols() != 2)
-        throw WrongSizeException(
-            "The input edge matrix must have 2 columns");
+        throw WrongSizeException("The input edge matrix must have 2 columns");
 
     if (clearBeforeSet) {
         mesh.clearEdges();

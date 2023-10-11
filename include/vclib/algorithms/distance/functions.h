@@ -124,7 +124,7 @@ auto boundedDistFunction()
 
 // Specialization for distance between two points
 template<PointConcept Obj1, PointConcept Obj2, typename ScalarType>
-requires(Obj1::DIM == Obj2::DIM)
+requires (Obj1::DIM == Obj2::DIM)
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static inline const auto distFun = [](const Obj1& o1, const Obj2& o2) {
@@ -139,7 +139,7 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 
 // Specialization for distance between a point and a segment
 template<PointConcept Obj1, SegmentConcept Obj2, typename ScalarType>
-requires(Obj1::DIM == Obj2::DIM)
+requires (Obj1::DIM == Obj2::DIM)
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static inline const auto distFun = [](const Obj1& o1, const Obj2& o2) {
@@ -154,7 +154,7 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 
 // Specialization for distance between a segment and a point
 template<SegmentConcept Obj1, PointConcept Obj2, typename ScalarType>
-requires(Obj1::DIM == Obj2::DIM)
+requires (Obj1::DIM == Obj2::DIM)
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static inline const auto distFun = [](const Obj1& o1, const Obj2& o2) {
