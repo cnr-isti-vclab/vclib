@@ -70,12 +70,6 @@ struct CreateSphereArgs
 	uint divisions = 20;
 };
 
-template<FaceMeshConcept MeshType>
-MeshType createSphereUV(
-	const SphereConcept auto& sp,
-	uint                      parallels = 10,
-	uint                      meridians = 20);
-
 namespace internal {
 
 namespace cts { // Cube to Sphere
@@ -123,8 +117,10 @@ static const Point3d ups[6] = {
  * @ingroup create
  */
 template<FaceMeshConcept MeshType>
-MeshType
-createSphereUV(const SphereConcept auto& sp, uint parallels, uint meridians)
+MeshType createSphereUV(
+	const SphereConcept auto& sp,
+	uint                      parallels = 10,
+	uint                      meridians = 20)
 {
 	using VertexType = MeshType::VertexType;
 	using CoordType  = VertexType::CoordType;

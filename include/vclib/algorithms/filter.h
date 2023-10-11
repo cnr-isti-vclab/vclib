@@ -275,7 +275,7 @@ OutMeshType perFaceMeshFilter(
 
 			// now all the vertices of the face are in the out mesh, we can add
 			// the actual face
-			uint f = res.addFace(verts.begin(), verts.end());
+			uint f = res.addFace(verts);
 			// import all the components from the input mesh
 			res.face(f).importFrom(birthF);
 			if constexpr (vcl::HasPerFaceCustomComponents<OutMeshType>) {

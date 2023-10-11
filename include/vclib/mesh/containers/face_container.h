@@ -156,10 +156,14 @@ public:
 		return fid;
 	}
 
-	// TODO requires on iterated type - must be Vertex* or int
-	template<typename Iterator>
-	uint addFace(Iterator begin, Iterator end)
+	template<Range Rng>
+	uint addFace(Rng&& r) requires (
+		RangeOfConvertibleTo<Rng, typename Face::VertexType*> ||
+		RangeOfConvertibleTo<Rng, uint>)
 	{
+		auto begin = std::ranges::begin(r);
+		auto end = std::ranges::end(r);
+
 		if (begin == end) return UINT_NULL;
 		uint n = std::distance(begin, end);
 
@@ -182,8 +186,8 @@ public:
 			Face& f = face(fid);
 
 			unsigned int i = 0;
-			for (Iterator it = begin; it != end; ++it) {
-				if constexpr (std::integral<typename Iterator::value_type>)
+			for (auto it = begin; it != end; ++it) {
+				if constexpr (std::integral<std::ranges::range_value_t<Rng>>)
 					f.vertex(i) = &Base::parentMesh->vertex(*it);
 				else
 					f.vertex(i) = *it;
@@ -192,8 +196,6 @@ public:
 		}
 		return fid;
 	}
-
-	// TODO addFace function that takes a range
 
 	/**
 	 * @brief Add an arbitrary number of n Faces, returning the id of the first

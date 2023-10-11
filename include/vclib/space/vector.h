@@ -309,11 +309,14 @@ public:
 	{
 		if constexpr (N >= 0) {
 			uint n = std::min(
-				N, (int) std::distance(std::ranges::begin(r), std::ranges::end(r)));
+				N,
+				(int) std::distance(
+					std::ranges::begin(r), std::ranges::end(r)));
 			std::copy_n(std::ranges::begin(r), n, container.begin());
 		}
 		else {
-			container = std::vector<T>(std::ranges::begin(r), std::ranges::end(r));
+			container =
+				std::vector<T>(std::ranges::begin(r), std::ranges::end(r));
 		}
 	}
 
