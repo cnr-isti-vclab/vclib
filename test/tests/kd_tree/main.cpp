@@ -33,7 +33,7 @@ using PointType = vcl::TriMesh::VertexType::CoordType;
 
 std::vector<uint> getKNearestNeighbors(const PointType& p, uint k, std::string mesh = "bone.ply")
 {
-    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/" + mesh);
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/" + mesh);
 
     vcl::KDTree tree(m);
 

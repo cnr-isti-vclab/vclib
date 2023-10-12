@@ -31,7 +31,7 @@
 int main()
 {
     using PointType = vcl::TriMesh::VertexType::CoordType;
-    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
     vcl::updatePerFaceNormals(m);
 

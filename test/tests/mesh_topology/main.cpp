@@ -27,7 +27,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE( "TriMesh Topology" ) {
-    vcl::TriMesh tm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::TriMesh tm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
     THEN( "The mesh has 8 vertices, 12 triangles" ) {
         REQUIRE( tm.vertexNumber() == 8 );
@@ -277,7 +277,7 @@ TEST_CASE( "TriMesh Topology" ) {
 }
 
 TEST_CASE( "PolyMesh Triangle Mesh Topology" ) {
-    vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::PolyMesh pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
     THEN( "The mesh has 8 vertices, 12 triangles" ) {
         REQUIRE( pm.vertexNumber() == 8 );
@@ -527,7 +527,7 @@ TEST_CASE( "PolyMesh Triangle Mesh Topology" ) {
 }
 
 TEST_CASE( "PolyMesh Polygon Mesh Topology" ) {
-    vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+    vcl::PolyMesh pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
     THEN( "The mesh has 8 vertices, 6 faces" ) {
         REQUIRE( pm.vertexNumber() == 8 );

@@ -174,14 +174,14 @@ set(HEADERS
     include/vclib/io/mesh/off/load.h
     include/vclib/io/mesh/off/save.h
     include/vclib/io/mesh/ply/load.h
-    include/vclib/io/mesh/ply/ply.h
-    include/vclib/io/mesh/ply/ply_edge.h
-    include/vclib/io/mesh/ply/ply_extra.h
-    include/vclib/io/mesh/ply/ply_face.h
-    include/vclib/io/mesh/ply/ply_header.h
-    include/vclib/io/mesh/ply/ply_tristrip.h
-    include/vclib/io/mesh/ply/ply_vertex.h
     include/vclib/io/mesh/ply/save.h
+    include/vclib/io/mesh/ply/detail/ply.h
+    include/vclib/io/mesh/ply/detail/edge.h
+    include/vclib/io/mesh/ply/detail/extra.h
+    include/vclib/io/mesh/ply/detail/face.h
+    include/vclib/io/mesh/ply/detail/header.h
+    include/vclib/io/mesh/ply/detail/tristrip.h
+    include/vclib/io/mesh/ply/detail/vertex.h
     include/vclib/io/mesh/stl/load.h
     include/vclib/io/mesh/stl/save.h
     include/vclib/iterators/mesh.h

@@ -71,7 +71,7 @@ void load(
         loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
     }
     else if (ext == ".ply") {
-        io::loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+        loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
     }
     else if (ext == ".stl") {
         io::loadStl(m, filename, loadedInfo, log, enableOptionalComponents);

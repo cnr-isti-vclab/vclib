@@ -28,13 +28,12 @@
 #include <vclib/io/utils.h>
 #include <vclib/misc/logger.h>
 
-#include "ply.h"
-#include "ply_edge.h"
-#include "ply_extra.h"
-#include "ply_face.h"
-#include "ply_vertex.h"
+#include "detail/edge.h"
+#include "detail/extra.h"
+#include "detail/face.h"
+#include "detail/vertex.h"
 
-namespace vcl::io {
+namespace vcl {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
@@ -44,6 +43,7 @@ void savePly(
     LogType&           log    = nullLogger,
     bool               binary = true)
 {
+    using namespace detail;
     MeshInfo meshInfo(m);
 
     // make sure that the given info contains only components that are actually
@@ -52,7 +52,7 @@ void savePly(
     // available in the mesh.
     meshInfo = info.intersect(meshInfo);
 
-    ply::PlyHeader header(binary ? ply::BINARY : ply::ASCII, meshInfo);
+    PlyHeader header(binary ? ply::BINARY : ply::ASCII, meshInfo);
     header.setNumberVertices(m.vertexNumber());
 
     if constexpr (vcl::HasFaces<MeshType>) {
@@ -65,7 +65,7 @@ void savePly(
             header.setNumberEdges(m.edgeNumber());
         }
     }
-    ply::saveTextures(header, m);
+    writePlyTextures(header, m);
 
     if (!header.isValid())
         throw std::runtime_error("Ply Header not valid.");
@@ -73,18 +73,18 @@ void savePly(
     std::ofstream fp = openOutputFileStream(filename, "ply");
 
     fp << header.toString();
-
-    ply::saveVertices(fp, header, m);
+    
+    writePlyVertices(fp, header, m);
 
     if constexpr (vcl::HasFaces<MeshType>) {
         if (header.hasFaces()) {
-            ply::saveFaces(fp, header, m);
+            writePlyFaces(fp, header, m);
         }
     }
 
     if constexpr (vcl::HasEdges<MeshType>) {
         if (header.hasEdges()) {
-            ply::saveEdges(fp, header, m);
+            writePlyEdges(fp, header, m);
         }
     }
 

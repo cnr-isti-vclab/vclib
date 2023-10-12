@@ -27,7 +27,7 @@
 
 SCENARIO( "Mesh Conversions" ) {
     GIVEN( "The TextureDouble mesh loaded on TriMesh" ) {
-        vcl::TriMesh tm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
+        vcl::TriMesh tm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
 
         tm.addCustomComponent<int>("cust_comp", 4);
         tm.addPerVertexCustomComponent<float>("v_comp");
@@ -93,7 +93,7 @@ SCENARIO( "Mesh Conversions" ) {
     }
 
     GIVEN( "The polygonal cube mesh loaded on TriMesh" ) {
-        vcl::TriMesh tm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+        vcl::TriMesh tm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
         THEN ("The loaded TriMesh has 8 vertices and 12 faces") {
             REQUIRE( tm.vertexNumber() == 8 );
@@ -102,7 +102,7 @@ SCENARIO( "Mesh Conversions" ) {
     }
 
     GIVEN( "The polygonal cube mesh loaded on PolyMesh" ) {
-        vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+        vcl::PolyMesh pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
         THEN ("The loaded PolyMesh has 8 vertices and 6 faces") {
             REQUIRE( pm.vertexNumber() == 8 );

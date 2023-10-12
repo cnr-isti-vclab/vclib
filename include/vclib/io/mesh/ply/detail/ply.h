@@ -31,13 +31,17 @@
 #include <vclib/io/utils.h>
 #include <vclib/misc/tokenizer.h>
 
-namespace vcl::io::ply {
+namespace vcl::detail {
+
+// put all these enumeration names inside a ply namespace, to avoid collisions
+
+namespace ply {
 
 typedef enum { ASCII, BINARY, UNKNOWN } Format;
 
 typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
 
-typedef enum { RGB, RGBA} ColorMode ;
+typedef enum { RGB, RGBA } ColorMode ;
 
 typedef enum {
     unknown = -1,
@@ -63,19 +67,21 @@ typedef enum {
 
 using PropertyType = vcl::PrimitiveType;
 
-struct Property
+} // namespace ply
+
+struct PlyProperty
 {
-    PropertyName name;
-    PropertyType type;
+    ply::PropertyName name;
+    ply::PropertyType type;
     bool         list = false;
-    PropertyType listSizeType;
+    ply::PropertyType listSizeType;
     std::string  unknownPropertyName;  // when a property is not recognized
 };
 
-struct Element
+struct PlyElement
 {
-    ElementType         type;
-    std::list<Property> properties;
+    ply::ElementType         type;
+    std::list<PlyProperty> properties;
     uint                numberElements;
     std::string         unknownElementType; // when an element is not recognized
 };

@@ -29,7 +29,7 @@
 
 int main()
 {
-    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
     auto bar = vcl::barycenter(m);
 
@@ -39,7 +39,7 @@ int main()
 
     std::cerr << "Shell Barycenter: " << bar << "\n";
 
-    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+    m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
     double vol = vcl::volume(m);
 

@@ -30,7 +30,7 @@
 
 int main()
 {
-    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
 
     bool isWaterTight = vcl::isWaterTight(m);
 
@@ -61,9 +61,9 @@ int main()
 
     m.compact();
 
-    vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
+    vcl::savePly(m, VCL_TEST_RESULTS_PATH "/brain_clean.ply");
 
-    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+    m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
 
     m.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(m);
@@ -73,7 +73,7 @@ int main()
 
     std::cerr << "Bunny number holes: " << nHoles << "\n";
 
-    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/rangemap.ply");
+    m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/rangemap.ply");
 
     vcl::updateBoundingBox(m);
 

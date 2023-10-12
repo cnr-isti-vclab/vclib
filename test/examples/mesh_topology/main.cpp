@@ -31,7 +31,7 @@ int main()
 {
     vcl::TriMesh m;
 
-    vcl::io::loadPly(m, VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::loadPly(m, VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
     m.enablePerVertexAdjacentFaces();
     vcl::updatePerVertexAdjacentFaces(m);

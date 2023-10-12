@@ -33,18 +33,16 @@
 #include <vclib/misc/tokenizer.h>
 #include <vclib/mesh/requirements.h>
 
-#include "ply_header.h"
+#include "header.h"
 
-namespace vcl::io::ply {
-
-namespace detail {
+namespace vcl::detail {
 
 template<MeshConcept MeshType, VertexConcept VertexType, typename Stream>
-void loadVertexProperty(
+void readPlyVertexProperty(
     Stream&       file,
     MeshType&     mesh,
     VertexType&   v,
-    ply::Property p)
+    PlyProperty p)
 {
     bool hasBeenRead = false;
     if (p.name >= ply::x && p.name <= ply::z) {
@@ -117,38 +115,36 @@ void loadVertexProperty(
 }
 
 template<VertexConcept VertexType, MeshConcept MeshType>
-void loadVertexTxt(
+void readPlyVertexTxt(
     std::ifstream& file,
     VertexType& v,
     MeshType& mesh,
-    const std::list<ply::Property>& vertexProperties)
+    const std::list<PlyProperty>& vertexProperties)
 {
     vcl::Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
     vcl::Tokenizer::iterator token = spaceTokenizer.begin();
-    for (const ply::Property& p : vertexProperties) {
+    for (const PlyProperty& p : vertexProperties) {
         if (token == spaceTokenizer.end()){
             throw vcl::MalformedFileException("Unexpected end of line.");
         }
-        loadVertexProperty(token, mesh, v, p);
+        readPlyVertexProperty(token, mesh, v, p);
     }
 }
 
 template<VertexConcept VertexType, MeshConcept MeshType>
-void loadVertexBin(
+void readPlyVertexBin(
     std::ifstream& file,
     VertexType& v,
     MeshType& mesh,
-    const std::list<ply::Property>& vertexProperties)
+    const std::list<PlyProperty>& vertexProperties)
 {
-    for (const ply::Property& p : vertexProperties) {
-        loadVertexProperty(file, mesh, v, p);
+    for (const PlyProperty& p : vertexProperties) {
+        readPlyVertexProperty(file, mesh, v, p);
     }
 }
 
-} //namespace vcl::io::ply::detail
-
 template <MeshConcept MeshType>
-void saveVertices(
+void writePlyVertices(
     std::ofstream& file,
     const PlyHeader& header,
     const MeshType& mesh)
@@ -157,7 +153,7 @@ void saveVertices(
 
     bool bin = header.format() == ply::BINARY;
     for(const VertexType& v : mesh.vertices()) {
-        for (const ply::Property& p : header.vertexProperties()) {
+        for (const PlyProperty& p : header.vertexProperties()) {
             bool hasBeenWritten = false;
             if (p.name >= ply::x && p.name <= ply::z) {
                 io::writeProperty(
@@ -214,7 +210,7 @@ void saveVertices(
 }
 
 template <MeshConcept MeshType>
-void loadVertices(
+void readPlyVertices(
     std::ifstream& file,
     const PlyHeader& header,
     MeshType& m)
@@ -224,10 +220,10 @@ void loadVertices(
     for(uint vid = 0; vid < header.numberVertices(); ++vid) {
         auto& v = m.vertex(vid);
         if(header.format() == ply::ASCII) {
-            detail::loadVertexTxt(file, v, m, header.vertexProperties());
+            detail::readPlyVertexTxt(file, v, m, header.vertexProperties());
         }
         else if(header.format() == ply::BINARY) {
-            detail::loadVertexBin(file, v, m, header.vertexProperties());
+            detail::readPlyVertexBin(file, v, m, header.vertexProperties());
         }
     }
 }

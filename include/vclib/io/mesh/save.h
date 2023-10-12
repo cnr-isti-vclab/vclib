@@ -67,7 +67,7 @@ void save(
         saveOff(m, filename, info, log);
     }
     else if (ext == ".ply") {
-        io::savePly(m, filename, info, log, binary);
+        savePly(m, filename, info, log, binary);
     }
     else if (ext == ".stl") {
         io::saveStl(m, filename, info, log, binary);

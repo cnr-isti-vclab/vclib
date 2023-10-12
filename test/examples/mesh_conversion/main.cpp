@@ -29,7 +29,7 @@
 
 int main()
 {
-    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
 
     vcl::PolyMesh pm;
 
@@ -42,7 +42,7 @@ int main()
 
     vcl::save(pm, VCL_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
 
-    pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+    pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
     m.clear();
     m.disableAllPerFaceOptionalComponents();

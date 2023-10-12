@@ -27,13 +27,12 @@
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-#include "ply.h"
-#include "ply_vertex.h"
-#include "ply_face.h"
-#include "ply_tristrip.h"
-#include "ply_extra.h"
+#include "detail/extra.h"
+#include "detail/face.h"
+#include "detail/tristrip.h"
+#include "detail/vertex.h"
 
-namespace vcl::io {
+namespace vcl {
 
 /**
  * @brief Loads the given ply file and puts the content into the mesh m.
@@ -59,9 +58,10 @@ void loadPly(
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
+    using namespace detail;
     std::ifstream file = openInputFileStream(filename);
 
-    ply::PlyHeader header(filename, file);
+    PlyHeader header(filename, file);
     if (header.errorWhileLoading())
         throw MalformedFileException("Header not valid: " + filename);
 
@@ -70,7 +70,7 @@ void loadPly(
     loadedInfo = header.getInfo();
 
     if (enableOptionalComponents)
-        detail::enableOptionalComponents(loadedInfo, m);
+        io::detail::enableOptionalComponents(loadedInfo, m);
 
     if constexpr (HasName<MeshType>) {
         m.name() = FileInfo::fileNameWithoutExtension(filename);
@@ -79,15 +79,15 @@ void loadPly(
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
     try {
-        for (const ply::Element& el : header) {
+        for (const PlyElement& el : header) {
             switch (el.type) {
-            case ply::VERTEX: ply::loadVertices(file, header, m); break;
-            case ply::FACE: ply::loadFaces(file, header, m); break;
-            case ply::TRISTRIP: ply::loadTriStrips(file, header, m); break;
-            default: ply::readUnknownElements(file, header, el); break;
+            case ply::VERTEX: readPlyVertices(file, header, m); break;
+            case ply::FACE: readPlyFaces(file, header, m); break;
+            case ply::TRISTRIP: readPlyTriStrips(file, header, m); break;
+            default: readPlyUnknownElement(file, header, el); break;
             }
         }
-        ply::loadTextures(header, m);
+        readPlyTextures(header, m);
     }
     catch(const std::runtime_error& err) {
         m.clear();

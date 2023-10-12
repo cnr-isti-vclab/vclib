@@ -21,65 +21,52 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_EXTRA_H
-#define VCL_IO_PLY_EXTRA_H
+#ifndef VCL_IO_PLY_EDGE_H
+#define VCL_IO_PLY_EDGE_H
 
 #include <fstream>
 
-#include <vclib/io/read.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/io/write.h>
+#include <vclib/misc/tokenizer.h>
 
-#include "ply_header.h"
+#include "header.h"
 
-namespace vcl::io::ply {
+namespace vcl::detail {
 
-template<MeshConcept MeshType>
-void loadTextures(const PlyHeader& header, MeshType& mesh)
-{
-    if constexpr (vcl::HasTexturePaths<MeshType>) {
-        for (const std::string& str : header.textureFileNames()) {
-            mesh.pushTexturePath(str);
-        }
-    }
-}
-
-template<MeshConcept MeshType>
-void saveTextures(PlyHeader& header, const MeshType& mesh)
-{
-    if constexpr (vcl::HasTexturePaths<MeshType>) {
-        for (const std::string& str : mesh.texturePaths()) {
-            header.pushTextureFileName(str);
-        }
-    }
-}
-
-inline void readUnknownElements(
-    std::ifstream&   file,
+template<EdgeMeshConcept MeshType>
+void writePlyEdges(
+    std::ofstream&   file,
     const PlyHeader& header,
-    ply::Element     el)
+    const MeshType&  mesh)
 {
-    if (header.format() == ply::ASCII) {
-        for (uint i = 0; i < el.numberElements; ++i) {
-            readAndTokenizeNextNonEmptyLine(file);
-        }
-    }
-    else {
-        for (uint i = 0; i < el.numberElements; ++i) {
-            for (const Property& p : el.properties) {
-                if (p.list) {
-                    uint s =
-                        io::readProperty<int>(file, p.listSizeType);
-                    for (uint i = 0; i < s; ++i)
-                        io::readProperty<int>(file, p.type);
-                }
-                else {
-                    io::readProperty<int>(file, p.type);
-                }
+    using EdgeType = MeshType::EdgeType;
+    bool bin = header.format() == ply::BINARY;
+
+    // indices of vertices that do not consider deleted vertices
+    std::vector<int> vIndices = mesh.vertexCompactIndices();
+
+    for (const EdgeType& e : mesh.edges()) {
+        for (const PlyProperty& p : header.edgeProperties()) {
+            bool hasBeenWritten = false;
+            if (p.name == ply::vertex1) {
+                io::writeProperty(
+                    file, vIndices[mesh.index(e.vertex(0))], p.type, bin);
+                hasBeenWritten = true;
+            }
+            if (p.name == ply::vertex2) {
+                io::writeProperty(
+                    file, vIndices[mesh.index(e.vertex(1))], p.type, bin);
+                hasBeenWritten = true;
+            }
+            if (!hasBeenWritten) {
+                // be sure to write something if the header declares some
+                // property that is not in the mesh
+                io::writeProperty(file, 0, p.type, bin);
             }
         }
     }
 }
 
-} // namespace vcl::ply
+} // namespace vcl::detail
 
-#endif // VCL_IO_PLY_EXTRA_H
+#endif // VCL_IO_PLY_EDGE_H

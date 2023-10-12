@@ -39,7 +39,7 @@ int main()
 
     std::cerr << "Faces:\n" << f << "\n\n";
 
-    vcl::PolyMesh pm = vcl::io::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+    vcl::PolyMesh pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
     vcl::Array2<double> va = vcl::vertexMatrix<vcl::Array2<double>>(pm);
     vcl::Array2<int> fa = vcl::faceMatrix<vcl::Array2<int>>(pm);

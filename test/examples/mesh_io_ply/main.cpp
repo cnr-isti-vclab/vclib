@@ -31,7 +31,7 @@
 int main()
 {
     vcl::MeshInfo loadedInfo;
-    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 18844);
@@ -39,7 +39,7 @@ int main()
     assert(loadedInfo.hasFaceVRefs());
     assert(m.faceNumber() == 36752);
 
-    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply", loadedInfo);
+    m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 5051);
@@ -52,7 +52,7 @@ int main()
     assert(vcl::isPerFaceWedgeTexCoordsAvailable(m));
     assert(!vcl::isPerFaceAdjacentFacesAvailable(m));
 
-    m =  vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
+    m =  vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 8);
@@ -63,7 +63,7 @@ int main()
     assert(m.textureNumber() == 2);
 
     // try to load a polygonal mesh into a trimesh
-    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply", loadedInfo);
+    m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply", loadedInfo);
     for (const vcl::TriMesh::Face& f : m.faces()){
         assert(!f.edgeFaux(0));
         assert(!f.edgeFaux(1));
@@ -79,9 +79,9 @@ int main()
     }
 
     // save again the mesh
-    vcl::io::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, false);
+    vcl::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, false);
 
-    vcl::TriMesh mm = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);
+    vcl::TriMesh mm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);
     assert(loadedInfo.hasFaceCustomComponents());
 
     std::cerr << "Loaded custom component areas: \n";

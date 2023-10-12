@@ -170,7 +170,7 @@ int main()
 
     std::cerr << "\nK closest values: \n";
 
-    m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+    m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
     
     
     vcl::StaticGrid vmsg(m.vertices() | vcl::views::constAddrOf);

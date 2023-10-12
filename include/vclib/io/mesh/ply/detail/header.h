@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 
-#include <vclib/io/utils.h>
+#include <vclib/io/read.h>
 #include <vclib/misc/mesh_info.h>
 #include <vclib/misc/file_info.h>
 #include <vclib/misc/string.h>
@@ -37,9 +37,7 @@
 
 #include "ply.h"
 
-namespace vcl {
-
-namespace io::ply {
+namespace vcl::detail {
 
 /**
  * @brief The PlyHeader class allows to manage the header of a ply file.
@@ -49,10 +47,10 @@ namespace io::ply {
 class PlyHeader
 {
     bool valid = false;
-
+    
     ply::Format frmt = ply::UNKNOWN;
-
-    std::vector<ply::Element> elements;
+    
+    std::vector<PlyElement> elements;
     std::vector<std::string> textureFiles;
 
     // id in the elements vector for vertices, faces, edges and triStrips
@@ -64,7 +62,7 @@ class PlyHeader
     int nextElementID = 0;
 
 public:
-    using iterator = std::vector<ply::Element>::const_iterator;
+    using iterator = std::vector<PlyElement>::const_iterator;
 
     PlyHeader() = default;
 
@@ -75,7 +73,7 @@ public:
             valid(true),
             frmt(format)
     {
-        setInfo(info, textureFiles, format == BINARY);
+        setInfo(info, textureFiles, format == ply::BINARY);
     }
 
     PlyHeader(const std::string& filename, std::ifstream& file)
@@ -89,7 +87,7 @@ public:
                 bool error = false;
                 bool firstElement = true;
                 std::string  headerLine;
-                ply::Element element;
+                PlyElement element;
                 do {
                     vcl::Tokenizer spaceTokenizer =
                         readAndTokenizeNextNonEmptyLine(file);
@@ -149,13 +147,13 @@ public:
                                 if (element.type == ply::TRISTRIP)
                                     trisElemPos = (long int) elements.size();
                                 elements.push_back(element);
-                                element = ply::Element();
+                                element = PlyElement();
                             }
                             element = readElement(spaceTokenizer);
                             firstElement   = false;
                         }
                         else if (headerLine == "property") {
-                            ply::Property p = readProperty(spaceTokenizer);
+                            PlyProperty p = readProperty(spaceTokenizer);
                             element.properties.push_back(p);
                         }
                         // save the last element
@@ -200,7 +198,7 @@ public:
 
         if (vertElemPos >= 0) {
             mod.setVertices();
-            for (const Property& p : elements[vertElemPos].properties) {
+            for (const PlyProperty& p : elements[vertElemPos].properties) {
                 switch (p.name) {
                 case ply::x:
                 case ply::y:
@@ -215,7 +213,7 @@ public:
                 case ply::quality: mod.setVertexQuality(); break;
                 case ply::texture_u: mod.setVertexTexCoords(); break;
                 case ply::unknown:
-                    if (p.type <= PropertyType::DOUBLE) {
+                    if (p.type <= ply::PropertyType::DOUBLE) {
                         mod.addVertexCustomComponent(
                             p.unknownPropertyName, (MeshInfo::DataType) p.type);
                     }
@@ -225,7 +223,7 @@ public:
         }
         if (faceElemPos >= 0) {
             mod.setFaces();
-            for (const Property& p : elements[faceElemPos].properties) {
+            for (const PlyProperty& p : elements[faceElemPos].properties) {
                 switch (p.name) {
                 case ply::vertex_indices: mod.setFaceVRefs(); break;
                 case ply::nx:
@@ -238,7 +236,7 @@ public:
                 case ply::quality: mod.setFaceQuality(); break;
                 case ply::texcoord: mod.setFaceWedgeTexCoords(); break;
                 case ply::unknown:
-                    if (p.type <= PropertyType::DOUBLE) {
+                    if (p.type <= ply::PropertyType::DOUBLE) {
                         mod.addFaceCustomComponent(
                             p.unknownPropertyName, (MeshInfo::DataType) p.type);
                     }
@@ -248,7 +246,7 @@ public:
         }
         if (trisElemPos >= 0) {
             mod.setFaces();
-            for (const Property& p : elements[trisElemPos].properties) {
+            for (const PlyProperty& p : elements[trisElemPos].properties) {
                 switch (p.name) {
                 case ply::vertex_indices: mod.setFaceVRefs(); break;
                 case ply::nx:
@@ -305,26 +303,26 @@ public:
     }
 
     uint numberTextureFileNames() const { return textureFiles.size(); }
-
-    const std::list<ply::Property>& vertexProperties() const
+    
+    const std::list<PlyProperty>& vertexProperties() const
     {
         assert(hasVertices());
         return elements[vertElemPos].properties;
     }
-
-    const std::list<ply::Property>& faceProperties() const
+    
+    const std::list<PlyProperty>& faceProperties() const
     {
         assert(hasFaces());
         return elements[faceElemPos].properties;
     }
-
-    const std::list<ply::Property>& edgeProperties() const
+    
+    const std::list<PlyProperty>& edgeProperties() const
     {
         assert(hasEdges());
         return elements[edgeElemPos].properties;
     }
-
-    const std::list<ply::Property>& triStripsProperties() const
+    
+    const std::list<PlyProperty>& triStripsProperties() const
     {
         assert(hasTriStrips());
         return elements[trisElemPos].properties;
@@ -369,65 +367,65 @@ public:
         bool                     binary           = true)
     {
         clear();
-        frmt         = binary ? BINARY : ASCII;
+        frmt         = binary ? ply::BINARY : ply::ASCII;
         valid        = true;
         textureFiles = textureFileNames;
         if (info.hasVertices()) {
             vertElemPos = nextElementID++;
-            ply::Element vElem;
+            PlyElement vElem;
             vElem.type = ply::VERTEX;
             if (info.hasVertexCoords()) {
-                ply::Property px, py, pz;
-                px.name = x;
-                px.type = (PropertyType)info.vertexCoordsType();
-                py.name = y;
-                py.type = (PropertyType)info.vertexCoordsType();
-                pz.name = z;
-                pz.type = (PropertyType)info.vertexCoordsType();
+                PlyProperty px, py, pz;
+                px.name = ply::x;
+                px.type = (ply::PropertyType)info.vertexCoordsType();
+                py.name = ply::y;
+                py.type = (ply::PropertyType)info.vertexCoordsType();
+                pz.name = ply::z;
+                pz.type = (ply::PropertyType)info.vertexCoordsType();
                 vElem.properties.push_back(px);
                 vElem.properties.push_back(py);
                 vElem.properties.push_back(pz);
             }
             if (info.hasVertexNormals()) {
-                ply::Property vnx, vny, vnz;
-                vnx.name = nx;
-                vnx.type = (PropertyType)info.vertexNormalsType();
-                vny.name = ny;
-                vny.type = (PropertyType)info.vertexNormalsType();
-                vnz.name = nz;
-                vnz.type = (PropertyType)info.vertexNormalsType();
+                PlyProperty vnx, vny, vnz;
+                vnx.name = ply::nx;
+                vnx.type = (ply::PropertyType)info.vertexNormalsType();
+                vny.name = ply::ny;
+                vny.type = (ply::PropertyType)info.vertexNormalsType();
+                vnz.name = ply::nz;
+                vnz.type = (ply::PropertyType)info.vertexNormalsType();
                 vElem.properties.push_back(vnx);
                 vElem.properties.push_back(vny);
                 vElem.properties.push_back(vnz);
             }
             if (info.hasVertexColors()) {
-                ply::Property vcr, vcg, vcb, vca;
-                vcr.name = red;
-                vcr.type = (PropertyType)info.vertexColorsType();
-                vcg.name = green;
-                vcg.type = (PropertyType)info.vertexColorsType();
-                vcb.name = blue;
-                vcb.type = (PropertyType)info.vertexColorsType();
-                vca.name = alpha;
-                vca.type = (PropertyType)info.vertexColorsType();
+                PlyProperty vcr, vcg, vcb, vca;
+                vcr.name = ply::red;
+                vcr.type = (ply::PropertyType)info.vertexColorsType();
+                vcg.name = ply::green;
+                vcg.type = (ply::PropertyType)info.vertexColorsType();
+                vcb.name = ply::blue;
+                vcb.type = (ply::PropertyType)info.vertexColorsType();
+                vca.name = ply::alpha;
+                vca.type = (ply::PropertyType)info.vertexColorsType();
                 vElem.properties.push_back(vcr);
                 vElem.properties.push_back(vcg);
                 vElem.properties.push_back(vcb);
                 vElem.properties.push_back(vca);
             }
             if (info.hasVertexQuality()) {
-                ply::Property vs;
-                vs.name = quality;
-                vs.type = (PropertyType)info.vertexQualityType();
+                PlyProperty vs;
+                vs.name = ply::quality;
+                vs.type = (ply::PropertyType)info.vertexQualityType();
                 vElem.properties.push_back(vs);
             }
             if (info.hasVertexTexCoords()) {
-                ply::Property tcu, tcv, tcn;
-                tcu.name = texture_u;
-                tcu.type = (PropertyType)info.vertexTexCoordsType();
-                tcv.name = texture_v;
-                tcv.type = (PropertyType)info.vertexTexCoordsType();
-                tcn.name = texnumber;
+                PlyProperty tcu, tcv, tcn;
+                tcu.name = ply::texture_u;
+                tcu.type = (ply::PropertyType)info.vertexTexCoordsType();
+                tcv.name = ply::texture_v;
+                tcv.type = (ply::PropertyType)info.vertexTexCoordsType();
+                tcn.name = ply::texnumber;
                 tcn.type = USHORT;
                 vElem.properties.push_back(tcu);
                 vElem.properties.push_back(tcv);
@@ -436,10 +434,10 @@ public:
             if (info.hasVertexCustomComponents()) {
                 for (const auto& cc : info.vertexCustomComponents()) {
                     if (cc.type <= MeshInfo::DOUBLE) {
-                        ply::Property pp;
-                        pp.name = unknown;
+                        PlyProperty pp;
+                        pp.name = ply::unknown;
                         pp.unknownPropertyName = cc.name;
-                        pp.type = (PropertyType)cc.type;
+                        pp.type = (ply::PropertyType)cc.type;
                         vElem.properties.push_back(pp);
                     }
                 }
@@ -448,56 +446,56 @@ public:
         }
         if (info.hasFaces()) {
             faceElemPos = nextElementID++;
-            ply::Element fElem;
+            PlyElement fElem;
             fElem.type = ply::FACE;
             if (info.hasFaceVRefs()) {
-                ply::Property vids;
+                PlyProperty vids;
                 vids.list         = true;
-                vids.name         = vertex_indices;
+                vids.name         = ply::vertex_indices;
                 vids.type         = UINT;
                 vids.listSizeType = UCHAR;
                 fElem.properties.push_back(vids);
             }
             if (info.hasFaceNormals()) {
-                ply::Property fnx, fny, fnz;
-                fnx.name = nx;
-                fnx.type = (PropertyType)info.faceNormalsType();
-                fny.name = ny;
-                fny.type = (PropertyType)info.faceNormalsType();
-                fnz.name = nz;
-                fnz.type = (PropertyType)info.faceNormalsType();
+                PlyProperty fnx, fny, fnz;
+                fnx.name = ply::nx;
+                fnx.type = (ply::PropertyType)info.faceNormalsType();
+                fny.name = ply::ny;
+                fny.type = (ply::PropertyType)info.faceNormalsType();
+                fnz.name = ply::nz;
+                fnz.type = (ply::PropertyType)info.faceNormalsType();
                 fElem.properties.push_back(fnx);
                 fElem.properties.push_back(fny);
                 fElem.properties.push_back(fnz);
             }
             if (info.hasFaceColors()) {
-                ply::Property fcr, fcg, fcb, fca;
-                fcr.name = red;
-                fcr.type = (PropertyType)info.faceColorsType();
-                fcg.name = green;
-                fcg.type = (PropertyType)info.faceColorsType();
-                fcb.name = blue;
-                fcb.type = (PropertyType)info.faceColorsType();
-                fca.name = alpha;
-                fca.type = (PropertyType)info.faceColorsType();
+                PlyProperty fcr, fcg, fcb, fca;
+                fcr.name = ply::red;
+                fcr.type = (ply::PropertyType)info.faceColorsType();
+                fcg.name = ply::green;
+                fcg.type = (ply::PropertyType)info.faceColorsType();
+                fcb.name = ply::blue;
+                fcb.type = (ply::PropertyType)info.faceColorsType();
+                fca.name = ply::alpha;
+                fca.type = (ply::PropertyType)info.faceColorsType();
                 fElem.properties.push_back(fcr);
                 fElem.properties.push_back(fcg);
                 fElem.properties.push_back(fcb);
                 fElem.properties.push_back(fca);
             }
             if (info.hasFaceQuality()) {
-                ply::Property fs;
-                fs.name = quality;
-                fs.type = (PropertyType)info.faceQualityType();
+                PlyProperty fs;
+                fs.name = ply::quality;
+                fs.type = (ply::PropertyType)info.faceQualityType();
                 fElem.properties.push_back(fs);
             }
             if (info.hasFaceWedgeTexCoords()) {
-                ply::Property tc, tn;
+                PlyProperty tc, tn;
                 tc.list         = true;
                 tc.listSizeType = UCHAR;
-                tc.name = texcoord;
-                tc.type = (PropertyType)info.faceWedgeTexCoordsType();
-                tn.name = texnumber;
+                tc.name = ply::texcoord;
+                tc.type = (ply::PropertyType)info.faceWedgeTexCoordsType();
+                tn.name = ply::texnumber;
                 tn.type = USHORT;
                 fElem.properties.push_back(tc);
                 fElem.properties.push_back(tn);
@@ -505,10 +503,10 @@ public:
             if (info.hasFaceCustomComponents()) {
                 for (const auto& cc : info.faceCustomComponents()) {
                     if (cc.type <= MeshInfo::DOUBLE) {
-                        ply::Property pp;
-                        pp.name = unknown;
+                        PlyProperty pp;
+                        pp.name = ply::unknown;
                         pp.unknownPropertyName = cc.name;
-                        pp.type = (PropertyType)cc.type;
+                        pp.type = (ply::PropertyType)cc.type;
                         fElem.properties.push_back(pp);
                     }
                 }
@@ -517,15 +515,15 @@ public:
         }
         if (info.hasEdges()) {
             edgeElemPos = nextElementID++;
-            ply::Element eElem;
+            PlyElement eElem;
             eElem.type = ply::EDGE;
             if (info.hasEdgeVRefs()) {
-                ply::Property v1;
-                v1.name = vertex1;
+                PlyProperty v1;
+                v1.name = ply::vertex1;
                 v1.type = UINT;
                 eElem.properties.push_back(v1);
-                ply::Property v2;
-                v2.name = vertex2;
+                PlyProperty v2;
+                v2.name = ply::vertex2;
                 v2.type = UINT;
                 eElem.properties.push_back(v2);
             }
@@ -538,42 +536,42 @@ public:
         std::string s;
 
         s += "ply\nformat ";
-        s += (frmt == ASCII ? "ascii 1.0\n" : "binary_little_endian 1.0\n");
+        s += (frmt == ply::ASCII ? "ascii 1.0\n" : "binary_little_endian 1.0\n");
         s += "comment Generated by vclib\n";
         for (const std::string& str : textureFiles) {
             s += "comment TextureFile " + str + "\n";
         }
-        for (const Element& e : elements) {
+        for (const PlyElement& e : elements) {
             s += "element ";
             switch (e.type) {
-            case VERTEX:
+            case ply::VERTEX:
                 s += "vertex " + std::to_string(e.numberElements) + "\n";
                 break;
-            case FACE:
+            case ply::FACE:
                 s += "face " + std::to_string(e.numberElements) + "\n";
                 break;
-            case EDGE:
+            case ply::EDGE:
                 s += "edge " + std::to_string(e.numberElements) + "\n";
                 break;
-            case TRISTRIP:
+            case ply::TRISTRIP:
                 s += "tristrips " + std::to_string(e.numberElements) + "\n";
                 break;
-            case MATERIAL:
+            case ply::MATERIAL:
                 s += "material " + std::to_string(e.numberElements) + "\n";
                 break;
-            case OTHER:
+            case ply::OTHER:
                 s += e.unknownElementType + " " +
                      std::to_string(e.numberElements) + "\n";
                 break;
             }
-            for (const Property& p : e.properties) {
+            for (const PlyProperty& p : e.properties) {
                 s += "property ";
                 if (p.list) {
                     s += "list ";
                     s += typeToString(p.listSizeType) + " ";
                 }
                 s += typeToString(p.type) + " ";
-                if (p.name == unknown)
+                if (p.name == ply::unknown)
                     s += p.unknownPropertyName + "\n";
                 else
                     s += nameToString(p.name) + "\n";
@@ -591,9 +589,9 @@ public:
     iterator end() const { return elements.end(); }
 
 private:
-    ply::Element readElement(const vcl::Tokenizer& lineTokenizer) const
+    PlyElement readElement(const vcl::Tokenizer& lineTokenizer) const
     {
-        ply::Element             e;
+        PlyElement             e;
         vcl::Tokenizer::iterator token = lineTokenizer.begin();
         std::string              s     = *(++token);
         if (s == "vertex") {
@@ -619,10 +617,10 @@ private:
         }
         return e;
     }
-
-    ply::Property readProperty(const vcl::Tokenizer& lineTokenizer) const
+    
+    PlyProperty readProperty(const vcl::Tokenizer& lineTokenizer) const
     {
-        ply::Property            p;
+        PlyProperty            p;
         vcl::Tokenizer::iterator token = lineTokenizer.begin();
         std::string              type  = *(++token);
         if (type == "list") {
@@ -633,7 +631,7 @@ private:
             p.listSizeType       = stringToType(typeSize);
             p.type               = stringToType(typeData);
             p.name               = stringToName(name);
-            if (p.name == unknown)
+            if (p.name == ply::unknown)
                 p.unknownPropertyName = name;
         }
         else {
@@ -641,7 +639,7 @@ private:
             std::string name = *(++token);
             p.type           = stringToType(type);
             p.name           = stringToName(name);
-            if (p.name == unknown)
+            if (p.name == ply::unknown)
                 p.unknownPropertyName = name;
         }
 
@@ -756,7 +754,6 @@ private:
 
 };
 
-} //namespace vcl::io::ply
-} //namespace vcl
+} //namespace vcl::detail
 
 #endif // VCL_PLY_HEADER_H

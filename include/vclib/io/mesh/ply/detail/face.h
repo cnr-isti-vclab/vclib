@@ -33,16 +33,14 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/tokenizer.h>
 
-#include "ply_header.h"
+#include "header.h"
 
-namespace vcl::io::ply {
-
-namespace detail {
+namespace vcl::detail {
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType>
-void saveFaceIndices(
+void writePlyFaceIndices(
     std::ofstream&           file,
-    Property                 p,
+    PlyProperty                 p,
     const MeshType&          m,
     const std::vector<uint>& vIndices,
     const FaceType&          f,
@@ -58,7 +56,7 @@ void saveFaceIndices(
 }
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType>
-void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
+void setPlyFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 {
     bool splitFace = false;
     // we have a polygonal mesh
@@ -90,7 +88,7 @@ void setFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 }
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Scalar>
-void setFaceWedgeTexCoords(
+void setPlyFaceWedgeTexCoords(
     FaceType&                                     f,
     MeshType&                                     m,
     const std::vector<uint>&                      vids,
@@ -129,7 +127,7 @@ void setFaceWedgeTexCoords(
 }
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Stream>
-void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p)
+void readPlyFaceProperty(Stream& file, MeshType& mesh, FaceType& f, PlyProperty p)
 {
     bool              hasBeenRead = false;
     std::vector<uint> vids; // contains the vertex ids of the actual face
@@ -141,7 +139,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
         }
         hasBeenRead = true;
         // will manage the case of loading a polygon in a triangle mesh
-        setFaceIndices(f, mesh, vids);
+        setPlyFaceIndices(f, mesh, vids);
     }
     if (p.name == ply::texcoord) { // loading wedge texcoords
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
@@ -158,7 +156,7 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
                     wedges[i].second = v;
                 }
                 hasBeenRead = true;
-                setFaceWedgeTexCoords(f, mesh, vids, wedges);
+                setPlyFaceWedgeTexCoords(f, mesh, vids, wedges);
             }
         }
     }
@@ -247,38 +245,36 @@ void loadFaceProperty(Stream& file, MeshType& mesh, FaceType& f, ply::Property p
 }
 
 template<FaceConcept FaceType, MeshConcept MeshType>
-void loadFaceTxt(
+void readPlyFaceTxt(
     std::ifstream& file,
     FaceType& f,
     MeshType& mesh,
-    const std::list<ply::Property>& faceProperties)
+    const std::list<PlyProperty>& faceProperties)
 {
     vcl::Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
     vcl::Tokenizer::iterator token = spaceTokenizer.begin();
-    for (const ply::Property& p : faceProperties) {
+    for (const PlyProperty& p : faceProperties) {
         if (token == spaceTokenizer.end()) {
             throw vcl::MalformedFileException("Unexpected end of line.");
         }
-        loadFaceProperty(token, mesh, f, p);
+        readPlyFaceProperty(token, mesh, f, p);
     }
 }
 
 template<FaceConcept FaceType, MeshConcept MeshType>
-void loadFaceBin(
+void readPlyFaceBin(
     std::ifstream& file,
     FaceType& f,
     MeshType& mesh,
-    const std::list<ply::Property>& faceProperties)
+    const std::list<PlyProperty>& faceProperties)
 {
-    for (const ply::Property& p : faceProperties) {
-        loadFaceProperty(file, mesh, f, p);
+    for (const PlyProperty& p : faceProperties) {
+        readPlyFaceProperty(file, mesh, f, p);
     }
 }
 
-} // namespace vcl::io::ply::detail
-
 template<FaceMeshConcept MeshType>
-void saveFaces(
+void writePlyFaces(
     std::ofstream&   file,
     const PlyHeader& header,
     const MeshType&  mesh)
@@ -291,10 +287,10 @@ void saveFaces(
     std::vector<uint> vIndices = mesh.vertexCompactIndices();
 
     for (const FaceType& f : mesh.faces()) {
-        for (const ply::Property& p : header.faceProperties()) {
+        for (const PlyProperty& p : header.faceProperties()) {
             bool hasBeenWritten = false;
             if (p.name == ply::vertex_indices) {
-                detail::saveFaceIndices(file, p, mesh, vIndices, f, bin);
+                detail::writePlyFaceIndices(file, p, mesh, vIndices, f, bin);
                 hasBeenWritten = true;
             }
             if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -356,7 +352,7 @@ void saveFaces(
 }
 
 template<FaceMeshConcept MeshType>
-void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
+void readPlyFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
 {
     using FaceType = MeshType::FaceType;
     mesh.reserveFaces(header.numberFaces());
@@ -364,10 +360,10 @@ void loadFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
         uint      ffid = mesh.addFace();
         FaceType& f    = mesh.face(ffid);
         if (header.format() == ply::ASCII) {
-            detail::loadFaceTxt(file, f, mesh, header.faceProperties());
+            detail::readPlyFaceTxt(file, f, mesh, header.faceProperties());
         }
         else {
-            detail::loadFaceBin(file, f, mesh, header.faceProperties());
+            detail::readPlyFaceBin(file, f, mesh, header.faceProperties());
         }
     }
 
