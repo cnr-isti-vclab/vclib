@@ -26,7 +26,7 @@
 
 #include <vclib/algorithms/polygon.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/misc/internal/tmp_meshes.h>
+#include <vclib/misc/detail/tmp_meshes.h>
 #include <vclib/misc/logger.h>
 
 namespace vcl {
@@ -126,8 +126,8 @@ MeshType createDodecahedron(LogType& log = nullLogger)
         log.startNewTask(0, 75, "Create Polygonal Dodecahedron.");
     }
 
-    internal::TMPSimplePolyMesh pmesh =
-        createDodecahedron<internal::TMPSimplePolyMesh>(log);
+    detail::TMPSimplePolyMesh pmesh =
+        createDodecahedron<detail::TMPSimplePolyMesh>(log);
 
     if constexpr (isLoggerValid<LogType>()) {
         log.endTask("Create Polygonal Dodecahedron.");

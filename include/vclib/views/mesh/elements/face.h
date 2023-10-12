@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh.h>
 
 namespace vcl::views {
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_cvref_t<T>>;
@@ -43,7 +43,7 @@ struct FacesView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
 /**
  * @brief A view that allows to iterate overt the Face elements of an object.
@@ -53,7 +53,7 @@ struct FacesView
  *
  * @ingroup views
  */
-inline constexpr internal::FacesView faces;
+inline constexpr detail::FacesView faces;
 
 } // namespace vcl::views
 

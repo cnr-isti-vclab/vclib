@@ -36,7 +36,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 struct ColorAvgInfo
 {
@@ -44,7 +44,7 @@ struct ColorAvgInfo
     uint              cnt = 0;
 };
 
-} // namespace internal
+} // namespace detail
 
 /**
  * @brief Sets the color of the vertices. If the `onlySelected` flag is set to
@@ -155,7 +155,7 @@ void setPerVertexColorFromFaceColor(MeshType& m)
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
 
-    std::vector<internal::ColorAvgInfo> csi(m.vertexContainerSize());
+    std::vector<detail::ColorAvgInfo> csi(m.vertexContainerSize());
 
     for (const FaceType& f : m.faces()) {
         for (const VertexType* v : f.vertices()) {

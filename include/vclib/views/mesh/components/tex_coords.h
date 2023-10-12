@@ -32,7 +32,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept CleanWedgeTexCoordsConcept = comp::HasWedgeTexCoords<std::remove_cvref_t<T>>;
@@ -77,9 +77,9 @@ struct TexCoordsView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
-inline constexpr internal::TexCoordsView texCoords;
+inline constexpr detail::TexCoordsView texCoords;
 
 } // namespace vcl::views
 

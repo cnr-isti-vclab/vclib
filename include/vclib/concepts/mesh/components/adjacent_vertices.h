@@ -46,12 +46,12 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasAdjacentVertices = requires(
-    T o,
-    const T& co,
-    typename T::AdjacentVertexType v,
-    std::vector<typename T::AdjacentVertexType*> vec)
-{
+concept HasAdjacentVertices = requires (
+    T                                            o,
+    const T&                                     co,
+    typename T::AdjacentVertexType               v,
+    std::vector<typename T::AdjacentVertexType*> vec) {
+    // clang-format off
     typename T::AdjacentVertexType;
     typename T::AdjacentVertexIterator;
     typename T::ConstAdjacentVertexIterator;
@@ -81,6 +81,7 @@ concept HasAdjacentVertices = requires(
         std::same_as<typename T::ConstAdjacentVertexIterator>;
     o.adjVertices();
     co.adjVertices();
+    // clang-format on
 };
 
 /**

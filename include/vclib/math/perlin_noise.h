@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 inline int perlinNoiseP(int i)
 {
@@ -93,7 +93,7 @@ inline double perlinNoiseFade(double t)
     return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-} // namespace vcl::internal
+} // namespace vcl::detail
 
 /**
  * @brief 3D Perlin noise, returns a value in the [-1,1] range with period 255
@@ -114,46 +114,46 @@ inline double perlinNoise(double x, double y, double z)
     x -= floor(x); // FIND RELATIVE X,Y,Z
     y -= floor(y); // OF POINT IN CUBE.
     z -= floor(z);
-    double u = internal::perlinNoiseFade(x), // COMPUTE FADE CURVES
-        v    = internal::perlinNoiseFade(y), // FOR EACH OF X,Y,Z.
-        w    = internal::perlinNoiseFade(z);
-    int A = internal::perlinNoiseP(X) + Y, AA = internal::perlinNoiseP(A) + Z,
-        AB = internal::perlinNoiseP(A + 1) + Z, // HASH COORDINATES OF
-        B  = internal::perlinNoiseP(X + 1) + Y,
-        BA = internal::perlinNoiseP(B) + Z,
-        BB = internal::perlinNoiseP(B + 1) + Z; // THE 8 CUBE CORNERS,
+    double u = detail::perlinNoiseFade(x), // COMPUTE FADE CURVES
+        v    = detail::perlinNoiseFade(y), // FOR EACH OF X,Y,Z.
+        w    = detail::perlinNoiseFade(z);
+    int A = detail::perlinNoiseP(X) + Y, AA = detail::perlinNoiseP(A) + Z,
+        AB = detail::perlinNoiseP(A + 1) + Z, // HASH COORDINATES OF
+        B  = detail::perlinNoiseP(X + 1) + Y,
+        BA = detail::perlinNoiseP(B) + Z,
+        BB = detail::perlinNoiseP(B + 1) + Z; // THE 8 CUBE CORNERS,
 
-    return internal::perlinNoiseLerp(
+    return detail::perlinNoiseLerp(
         w,
-        internal::perlinNoiseLerp(
+        detail::perlinNoiseLerp(
             v,
-            internal::perlinNoiseLerp(
+            detail::perlinNoiseLerp(
                 u,
-                internal::perlinNoiseGrad(
-                    internal::perlinNoiseP(AA), x, y, z), // AND ADD
-                internal::perlinNoiseGrad(
-                    internal::perlinNoiseP(BA), x - 1, y, z)), // BLENDED
-            internal::perlinNoiseLerp(
+                detail::perlinNoiseGrad(
+                    detail::perlinNoiseP(AA), x, y, z), // AND ADD
+                detail::perlinNoiseGrad(
+                    detail::perlinNoiseP(BA), x - 1, y, z)), // BLENDED
+            detail::perlinNoiseLerp(
                 u,
-                internal::perlinNoiseGrad(
-                    internal::perlinNoiseP(AB), x, y - 1, z), // RESULTS
-                internal::perlinNoiseGrad(
-                    internal::perlinNoiseP(BB), x - 1, y - 1, z))), // FROM  8
-        internal::perlinNoiseLerp(
+                detail::perlinNoiseGrad(
+                    detail::perlinNoiseP(AB), x, y - 1, z), // RESULTS
+                detail::perlinNoiseGrad(
+                    detail::perlinNoiseP(BB), x - 1, y - 1, z))), // FROM  8
+        detail::perlinNoiseLerp(
             v,
-            internal::perlinNoiseLerp(
+            detail::perlinNoiseLerp(
                 u,
-                internal::perlinNoiseGrad(
-                    internal::perlinNoiseP(AA + 1), x, y, z - 1), // CORNERS
-                internal::perlinNoiseGrad(
-                    internal::perlinNoiseP(BA + 1), x - 1, y, z - 1)), // OF
+                detail::perlinNoiseGrad(
+                    detail::perlinNoiseP(AA + 1), x, y, z - 1), // CORNERS
+                detail::perlinNoiseGrad(
+                    detail::perlinNoiseP(BA + 1), x - 1, y, z - 1)), // OF
                                                                        // CUBE
-            internal::perlinNoiseLerp(
+            detail::perlinNoiseLerp(
                 u,
-                internal::perlinNoiseGrad(
-                    internal::perlinNoiseP(AB + 1), x, y - 1, z - 1),
-                internal::perlinNoiseGrad(
-                    internal::perlinNoiseP(BB + 1), x - 1, y - 1, z - 1))));
+                detail::perlinNoiseGrad(
+                    detail::perlinNoiseP(AB + 1), x, y - 1, z - 1),
+                detail::perlinNoiseGrad(
+                    detail::perlinNoiseP(BB + 1), x - 1, y - 1, z - 1))));
 }
 
 } // namespace vcl

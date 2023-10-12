@@ -34,14 +34,14 @@
 
 namespace vcl::comp {
 
-namespace internal {
+namespace detail {
 
 struct TPData {
     std::vector<std::string> texPaths;
     std::string meshPath;
 };
 
-} // namespace vcl::comp::internal
+} // namespace vcl::comp::detail
 
 /**
  * @brief The TexturePaths class represents a component that stores the paths of
@@ -72,12 +72,12 @@ class TexturePaths :
         public Component<
             TexturePaths,
             TEXTURE_PATHS,
-            internal::TPData,
+            detail::TPData,
             void,
             false>
 {
     using Base =
-        Component<TexturePaths, TEXTURE_PATHS, internal::TPData, void, false>;
+        Component<TexturePaths, TEXTURE_PATHS, detail::TPData, void, false>;
 
 public:
     // iterators

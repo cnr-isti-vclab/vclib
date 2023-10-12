@@ -30,7 +30,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept CleanAdjFacesConcept = comp::HasAdjacentFaces<std::remove_cvref_t<T>>;
@@ -49,7 +49,7 @@ struct AdjFacesView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
 /**
  * @brief The adjFaces view allows to obtain a view that access to the adjacent faces of
@@ -65,7 +65,7 @@ struct AdjFacesView
  *
  * @ingroup views
  */
-inline constexpr internal::AdjFacesView adjFaces;
+inline constexpr detail::AdjFacesView adjFaces;
 
 } // namespace vcl::views
 

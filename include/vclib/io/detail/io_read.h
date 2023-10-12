@@ -26,7 +26,7 @@
 
 #include "io_utils.h"
 
-namespace vcl::io::internal {
+namespace vcl::io::detail {
 
 // read/bin
 
@@ -282,6 +282,6 @@ void readCustomComponent(
         assert(0);
 }
 
-} // vcl::io::internal
+} // vcl::io::detail
 
 #endif // VCL_IO_INTERNAL_IO_READ_H

@@ -29,7 +29,7 @@
 #include <vclib/mesh/requirements.h>
 
 #include "ply_header.h"
-#include "../internal/io_read.h"
+#include "../detail/io_read.h"
 
 namespace vcl::io::ply {
 
@@ -60,7 +60,7 @@ inline void readUnknownElements(
 {
     if (header.format() == ply::ASCII) {
         for (uint i = 0; i < el.numberElements; ++i) {
-            io::internal::nextNonEmptyTokenizedLine(file);
+            io::detail::nextNonEmptyTokenizedLine(file);
         }
     }
     else {
@@ -68,12 +68,12 @@ inline void readUnknownElements(
             for (const Property& p : el.properties) {
                 if (p.list) {
                     uint s =
-                        io::internal::readProperty<int>(file, p.listSizeType);
+                        io::detail::readProperty<int>(file, p.listSizeType);
                     for (uint i = 0; i < s; ++i)
-                        io::internal::readProperty<int>(file, p.type);
+                        io::detail::readProperty<int>(file, p.type);
                 }
                 else {
-                    io::internal::readProperty<int>(file, p.type);
+                    io::detail::readProperty<int>(file, p.type);
                 }
             }
         }

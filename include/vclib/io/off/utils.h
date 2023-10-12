@@ -27,7 +27,7 @@
 #include <vclib/misc/mesh_info.h>
 #include <vclib/misc/tokenizer.h>
 
-#include "../internal/io_read.h"
+#include "../detail/io_read.h"
 
 namespace vcl::io::off {
 
@@ -152,7 +152,7 @@ void loadOffHeader(
     uint&          ne)
 {
     fileInfo.reset();
-    vcl::Tokenizer           tokens = internal::nextNonEmptyTokenizedLine(file);
+    vcl::Tokenizer           tokens = detail::nextNonEmptyTokenizedLine(file);
     vcl::Tokenizer::iterator token  = tokens.begin();
     std::string              header = *token;
 
@@ -179,15 +179,15 @@ void loadOffHeader(
     // If the file is slightly malformed and it has nvert and nface AFTER the
     // OFF string instead of in the next line we manage it here...
     if (tokens.size() == 1) {
-        tokens = internal::nextNonEmptyTokenizedLine(file);
+        tokens = detail::nextNonEmptyTokenizedLine(file);
         token = tokens.begin();
     }
     else
         ++token;
 
-    nv = io::internal::readUInt<uint>(token);
-    nf = io::internal::readUInt<uint>(token);
-    ne = io::internal::readUInt<uint>(token);
+    nv = io::detail::readUInt<uint>(token);
+    nf = io::detail::readUInt<uint>(token);
+    ne = io::detail::readUInt<uint>(token);
     if (nv > 0)
         fileInfo.setVertices();
     if (nf > 0)
@@ -202,7 +202,7 @@ loadColor(vcl::Tokenizer::iterator& token, int nColorComponents)
     uint red, green, blue, alpha = 255;
 
     if (nColorComponents == 1) {
-        uint k = io::internal::readUInt<uint>(token);
+        uint k = io::detail::readUInt<uint>(token);
 
         red = GEOMVIEW_COLOR_MAP[k][0]*255;
         green = GEOMVIEW_COLOR_MAP[k][1]*255;
@@ -210,12 +210,12 @@ loadColor(vcl::Tokenizer::iterator& token, int nColorComponents)
         alpha = GEOMVIEW_COLOR_MAP[k][3]*255;
     }
     else {
-        double r = io::internal::readDouble<double>(token);
-        double g = io::internal::readDouble<double>(token);
-        double b = io::internal::readDouble<double>(token);
+        double r = io::detail::readDouble<double>(token);
+        double g = io::detail::readDouble<double>(token);
+        double b = io::detail::readDouble<double>(token);
         double a = -1;
         if (nColorComponents == 4) {
-            a = io::internal::readDouble<double>(token);
+            a = io::detail::readDouble<double>(token);
         }
         if (r > 1 || g > 1 || b > 1){
             red = r;

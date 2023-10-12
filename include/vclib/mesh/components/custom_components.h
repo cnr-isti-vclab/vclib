@@ -30,7 +30,7 @@
 
 #include <vclib/concepts/mesh/components/custom_components.h>
 
-#include "internal/custom_components_data.h"
+#include "detail/custom_components_data.h"
 
 namespace vcl::comp {
 
@@ -94,7 +94,7 @@ class CustomComponents
 {
     static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 
-    internal::CustomComponentsData<ElementType, IS_VERTICAL> data;
+    detail::CustomComponentsData<ElementType, IS_VERTICAL> data;
 
 public:
     /**

@@ -30,7 +30,7 @@
 
 #include <vclib/misc/tokenizer.h>
 
-#include "../internal/io_utils.h"
+#include "../detail/io_utils.h"
 
 namespace vcl::io::ply {
 
@@ -62,7 +62,7 @@ typedef enum {
     vertex2
 } PropertyName;
 
-using PropertyType = vcl::io::internal::PropertyType;
+using PropertyType = vcl::io::detail::PropertyType;
 
 struct Property
 {

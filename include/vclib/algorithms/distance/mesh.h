@@ -51,7 +51,7 @@ enum HausdorffSamplingMethod {
     HAUSDORFF_MONTECARLO
 };
 
-namespace internal {
+namespace detail {
 
 template<
     MeshConcept    MeshType,
@@ -268,7 +268,7 @@ HausdorffDistResult hausdorffDistance(
     return res;
 }
 
-} // namespace internal
+} // namespace detail
 
 template<
     MeshConcept   MeshType1,
@@ -291,7 +291,7 @@ HausdorffDistResult hausdorffDistance(
     case HAUSDORFF_VERTEX_UNIFORM: {
         ConstVertexSampler<typename MeshType2::VertexType> sampler;
 
-        return internal::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
+        return detail::hausdorffDistance<HAUSDORFF_VERTEX_UNIFORM>(
             m1, m2, nSamples, deterministic, sampler, birth, log);
     }
 
@@ -302,7 +302,7 @@ HausdorffDistResult hausdorffDistance(
     case HAUSDORFF_MONTECARLO: {
         PointSampler<typename MeshType2::VertexType::CoordType> sampler;
 
-        return internal::hausdorffDistance<HAUSDORFF_MONTECARLO>(
+        return detail::hausdorffDistance<HAUSDORFF_MONTECARLO>(
             m1, m2, nSamples, deterministic, sampler, birth, log);
     }
     default: assert(0); return HausdorffDistResult();

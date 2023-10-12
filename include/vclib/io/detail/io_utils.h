@@ -33,7 +33,7 @@
 #include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>
 
-namespace vcl::io::internal {
+namespace vcl::io::detail {
 
 typedef enum {
     CHAR,
@@ -265,6 +265,6 @@ nextNonEmptyTokenizedLineNoThrow(std::ifstream& file, char separator = ' ')
     return tokenizer;
 }
 
-} // namespace vcl::io::internal
+} // namespace vcl::io::detail
 
 #endif // VCL_IO_INTERNAL_IO_UTILS_H

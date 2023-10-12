@@ -32,7 +32,7 @@
 
 #include <vclib/types.h>
 
-namespace vcl::comp::internal {
+namespace vcl::comp::detail {
 
 /*
  * The CustomComponentData is the data structure that manages the access to the
@@ -188,6 +188,6 @@ private:
     }
 };
 
-} // namespace vcl::comp::internal
+} // namespace vcl::comp::detail
 
 #endif // VCL_MESH_COMPONENTS_INTERNAL_CUSTOM_COMPONENTS_DATA_H

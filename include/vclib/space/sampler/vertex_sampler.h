@@ -7,7 +7,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 template<VertexConcept VertexType, bool CNST = false>
 class VertexSampler
@@ -46,13 +46,13 @@ public:
     auto end() const { return std::end(samplesVec | views::coords); }
 };
 
-} // namespace vcl::internal
+} // namespace vcl::detail
 
 template<VertexConcept VertexType>
-using VertexSampler = internal::VertexSampler<VertexType, false>;
+using VertexSampler = detail::VertexSampler<VertexType, false>;
 
 template<VertexConcept VertexType>
-using ConstVertexSampler = internal::VertexSampler<VertexType, true>;
+using ConstVertexSampler = detail::VertexSampler<VertexType, true>;
 
 } // namespace vcl
 

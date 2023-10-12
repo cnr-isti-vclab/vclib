@@ -45,12 +45,12 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasAdjacentFaces = requires(
-    T o,
-    const T& co,
-    typename T::AdjacentFaceType f,
-    std::vector<typename T::AdjacentFaceType*> v)
-{
+concept HasAdjacentFaces = requires (
+    T                                          o,
+    const T&                                   co,
+    typename T::AdjacentFaceType               f,
+    std::vector<typename T::AdjacentFaceType*> v) {
+    // clang-format off
     T::ADJ_FACE_NUMBER;
     typename T::AdjacentFaceType;
     typename T::AdjacentFaceIterator;
@@ -78,6 +78,7 @@ concept HasAdjacentFaces = requires(
     { co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
     o.adjFaces();
     co.adjFaces();
+    // clang-format on
 };
 
 /**

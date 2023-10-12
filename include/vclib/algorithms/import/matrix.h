@@ -31,7 +31,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 template<MatrixConcept FMatrix>
 std::vector<uint> faceVertIndices(const FMatrix& faces, uint f)
@@ -124,7 +124,7 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
     }
 }
 
-} // namespace internal
+} // namespace detail
 
 /**
  * @brief Creates and returns a new point cloud mesh from the input vertex
@@ -478,7 +478,7 @@ void importFacesFromMatrix(
                 mesh.reserveFaces(faces.rows());
                 for (uint i = 0; i < faces.rows(); ++i) {
                     std::vector<uint> fVertIndices =
-                        internal::faceVertIndices(faces, i);
+                        detail::faceVertIndices(faces, i);
 
                     addTriangleFacesFromPolygon(mesh, fVertIndices);
                 }
@@ -528,31 +528,31 @@ void importVertexNormalsFromMatrix(
     MeshType&       mesh,
     const VNMatrix& vertexNormals)
 {
-    internal::importElementNormalsFromMatrix<VERTEX>(mesh, vertexNormals);
+    detail::importElementNormalsFromMatrix<VERTEX>(mesh, vertexNormals);
 }
 
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 {
-    internal::importElementNormalsFromMatrix<FACE>(mesh, faceNormals);
+    detail::importElementNormalsFromMatrix<FACE>(mesh, faceNormals);
 }
 
 template<MeshConcept MeshType, MatrixConcept VCMatrix>
 void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
 {
-    internal::importElementColorsFromMatrix<VERTEX>(mesh, vertexColors);
+    detail::importElementColorsFromMatrix<VERTEX>(mesh, vertexColors);
 }
 
 template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
 void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
 {
-    internal::importElementColorsFromMatrix<FACE>(mesh, faceColors);
+    detail::importElementColorsFromMatrix<FACE>(mesh, faceColors);
 }
 
 template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
 void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
 {
-    internal::importElementColorsFromMatrix<EDGE>(mesh, edgeColors);
+    detail::importElementColorsFromMatrix<EDGE>(mesh, edgeColors);
 }
 
 } // namespace vcl

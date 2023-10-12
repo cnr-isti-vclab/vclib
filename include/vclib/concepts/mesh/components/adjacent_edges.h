@@ -45,12 +45,12 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasAdjacentEdges = requires(
-    T o,
-    const T& co,
-    typename T::AdjacentEdgeType e,
-    std::vector<typename T::AdjacentEdgeType*> v)
-{
+concept HasAdjacentEdges = requires (
+    T                                          o,
+    const T&                                   co,
+    typename T::AdjacentEdgeType               e,
+    std::vector<typename T::AdjacentEdgeType*> v) {
+    // clang-format off
     T::ADJ_EDGE_NUMBER;
     typename T::AdjacentEdgeType;
     typename T::AdjacentEdgeIterator;
@@ -78,6 +78,7 @@ concept HasAdjacentEdges = requires(
     { co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
     o.adjEdges();
     co.adjEdges();
+    // clang-format on
 };
 
 /**

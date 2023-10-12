@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh.h>
 
 namespace vcl::views {
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept CleanMeshConcept = MeshConcept<std::remove_cvref_t<T>>;
@@ -53,7 +53,7 @@ struct VerticesView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
 /**
  * @brief A view that allows to iterate over the Vertex elements of an object.
@@ -65,7 +65,7 @@ struct VerticesView
  *
  * @ingroup views
  */
-inline constexpr internal::VerticesView vertices;
+inline constexpr detail::VerticesView vertices;
 
 } // namespace vcl::views
 

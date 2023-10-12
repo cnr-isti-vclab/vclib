@@ -31,7 +31,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 /*
  * Generic implementation of fillAndShuffleVertexPointerVector, to avoid code
@@ -81,7 +81,7 @@ std::vector<F*> genericFASFPV(M m, bool deterministic)
     return vec;
 }
 
-} // namespace internal
+} // namespace detail
 
 template<MeshConcept MeshType>
 std::vector<typename MeshType::VertexType*> fillAndShuffleVertexPointerVector(
@@ -90,7 +90,7 @@ std::vector<typename MeshType::VertexType*> fillAndShuffleVertexPointerVector(
 {
     using VertexType = MeshType::VertexType;
 
-    return internal::genericFASVPV<MeshType&, VertexType>(m, deterministic);
+    return detail::genericFASVPV<MeshType&, VertexType>(m, deterministic);
 }
 
 template<MeshConcept MeshType>
@@ -98,7 +98,7 @@ std::vector<const typename MeshType::VertexType*>
 fillAndShuffleVertexPointerVector(const MeshType& m, bool deterministic = false)
 {
     using VertexType = MeshType::VertexType;
-    return internal::genericFASVPV<const MeshType&, const VertexType>(
+    return detail::genericFASVPV<const MeshType&, const VertexType>(
         m, deterministic);
 }
 
@@ -131,7 +131,7 @@ std::vector<typename MeshType::FaceType*> fillAndShuffleFacePointerVector(
 {
     using FaceType = MeshType::FaceType;
 
-    return internal::genericFASFPV<MeshType&, FaceType>(m, deterministic);
+    return detail::genericFASFPV<MeshType&, FaceType>(m, deterministic);
 }
 
 template<FaceMeshConcept MeshType>
@@ -141,7 +141,7 @@ std::vector<const typename MeshType::FaceType*> fillAndShuffleFacePointerVector(
 {
     using FaceType = MeshType::FaceType;
 
-    return internal::genericFASFPV<const MeshType&, const FaceType>(
+    return detail::genericFASFPV<const MeshType&, const FaceType>(
         m, deterministic);
 }
 

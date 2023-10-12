@@ -24,7 +24,7 @@
 #ifndef VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
 #define VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
 
-namespace vcl::internal {
+namespace vcl::detail {
 
 template<typename Graph, typename Iterator>
 class AdjacentNodeIterator
@@ -64,6 +64,6 @@ public:
 
 };
 
-} // namespace vcl::internal
+} // namespace vcl::detail
 
 #endif // VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H

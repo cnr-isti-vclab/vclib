@@ -66,10 +66,10 @@ public:
     using LeftNodeView  = vcl::View<LeftNodeIterator>;
     using RightNodeView = vcl::View<RightNodeIterator>;
 
-    using AdjacentLeftNodeIterator = internal::AdjacentLeftNodeIterator<
+    using AdjacentLeftNodeIterator = detail::AdjacentLeftNodeIterator<
         BipartiteGraph<T1, T2>,
         std::unordered_set<unsigned int>::const_iterator>;
-    using AdjacentRightNodeIterator = internal::AdjacentRightNodeIterator<
+    using AdjacentRightNodeIterator = detail::AdjacentRightNodeIterator<
         BipartiteGraph<T1, T2>,
         std::unordered_set<unsigned int>::const_iterator>;
     

@@ -1,8 +1,9 @@
 # VCLib ToDo list
 
+- Concepts:
+  - [ ] complete space data structures concepts
+  - [ ] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
 - Mesh:
-  - Concepts:
-    - [ ] complete space data structures concepts
   - Elements:
     - [ ] set properly elements concepts
     - [ ] set constructors for Edge element
@@ -14,6 +15,8 @@
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Iterators:
   - [ ] make just one StaticGridIterator class that can be both const and non-const (avoid code duplication)
+- IO:
+  - [ ] Fix namespaces, remove io namespace
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] Implement exporter to VCG

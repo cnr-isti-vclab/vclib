@@ -26,7 +26,7 @@
 
 #include <vclib/mesh/mesh.h>
 
-namespace vcl::internal {
+namespace vcl::detail {
 
 class TMPSimpleTriMesh;
 class TMPSimplePolyMesh;
@@ -74,6 +74,6 @@ class TMPSimplePolyMesh :
 {
 };
 
-} // namespace vcl::internal
+} // namespace vcl::detail
 
 #endif // VCL_MISC_TMP_MESHES_H

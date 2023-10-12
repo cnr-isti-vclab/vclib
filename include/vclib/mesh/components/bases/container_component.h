@@ -7,7 +7,7 @@
 
 namespace vcl::comp {
 
-namespace internal {
+namespace detail {
 
 // small alias to differentiate between components having only a container or
 // components having a container and an additional data type
@@ -29,7 +29,7 @@ using ContCompBase = std::conditional_t<
     Component<DC, CT, Vector<T, N>, El, o, PT...>,
     Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
 
-} // namespace vcl::comp::internal
+} // namespace vcl::comp::detail
 
 /**
  * @brief The ContainerComponent class is the base class for all the components
@@ -88,7 +88,7 @@ template<
     bool TTVN,                 // true if container size tied to vertex number
     typename... PointedTypes>  // types of pointers stored by the component
 class ContainerComponent :
-        public internal::ContCompBase<
+        public detail::ContCompBase<
             DerivedComponent,
             COMP_ID,
             T,
@@ -102,7 +102,7 @@ class ContainerComponent :
     static constexpr bool HAS_ADDITIONAL_DATA =
         !std::is_same_v<AdditionalData, void>;
 
-    using Base = internal::ContCompBase<
+    using Base = detail::ContCompBase<
         DerivedComponent,
         COMP_ID,
         T,

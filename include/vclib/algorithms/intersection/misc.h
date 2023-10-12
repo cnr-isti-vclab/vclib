@@ -32,7 +32,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 // triangle box intersect functions
 template<typename ScalarType>
@@ -219,7 +219,7 @@ inline bool axisTestZ0(
     return true;
 }
 
-} // namespace internal
+} // namespace detail
 
 /**
  * @brief Checks if a plane intersects with a box.
@@ -443,32 +443,32 @@ bool triangleBoxIntersect(const TriangleType& t, const BoxType& box)
     ScalarType fey = std::abs(e0.y());
     ScalarType fez = std::abs(e0.z());
 
-    if (!internal::axisTestX01(e0.z(), e0.y(), fez, fey, v0, v2, bHalfSixe))
+    if (!detail::axisTestX01(e0.z(), e0.y(), fez, fey, v0, v2, bHalfSixe))
         return false;
-    if (!internal::axisTestY02(e0.z(), e0.x(), fez, fex, v0, v2, bHalfSixe))
+    if (!detail::axisTestY02(e0.z(), e0.x(), fez, fex, v0, v2, bHalfSixe))
         return false;
-    if (!internal::axisTestZ12(e0.y(), e0.x(), fey, fex, v1, v2, bHalfSixe))
+    if (!detail::axisTestZ12(e0.y(), e0.x(), fey, fex, v1, v2, bHalfSixe))
         return false;
 
     fex = std::abs(e1.x());
     fey = std::abs(e1.y());
     fez = std::abs(e1.z());
 
-    if (!internal::axisTestX01(e1.z(), e1.y(), fez, fey, v0, v2, bHalfSixe))
+    if (!detail::axisTestX01(e1.z(), e1.y(), fez, fey, v0, v2, bHalfSixe))
         return false;
-    if (!internal::axisTestY02(e1.z(), e1.x(), fez, fex, v0, v2, bHalfSixe))
+    if (!detail::axisTestY02(e1.z(), e1.x(), fez, fex, v0, v2, bHalfSixe))
         return false;
-    if (!internal::axisTestZ0(e1.y(), e1.x(), fey, fex, v0, v1, bHalfSixe))
+    if (!detail::axisTestZ0(e1.y(), e1.x(), fey, fex, v0, v1, bHalfSixe))
         return false;
 
     fex = std::abs(e2.x());
     fey = std::abs(e2.y());
     fez = std::abs(e2.z());
-    if (!internal::axisTestX2(e2.z(), e2.y(), fez, fey, v0, v1, bHalfSixe))
+    if (!detail::axisTestX2(e2.z(), e2.y(), fez, fey, v0, v1, bHalfSixe))
         return false;
-    if (!internal::axisTestY1(e2.z(), e2.x(), fez, fex, v0, v1, bHalfSixe))
+    if (!detail::axisTestY1(e2.z(), e2.x(), fez, fex, v0, v1, bHalfSixe))
         return false;
-    if (!internal::axisTestZ12(e2.y(), e2.x(), fey, fex, v1, v2, bHalfSixe))
+    if (!detail::axisTestZ12(e2.y(), e2.x(), fey, fex, v1, v2, bHalfSixe))
         return false;
 
     /* Bullet 1:
@@ -479,17 +479,17 @@ bool triangleBoxIntersect(const TriangleType& t, const BoxType& box)
      */
 
     /* test in X-direction */
-    internal::findMinMax(v0.x(), v1.x(), v2.x(), min, max);
+    detail::findMinMax(v0.x(), v1.x(), v2.x(), min, max);
     if (min > bHalfSixe.x() || max < -bHalfSixe.x())
         return false;
 
     /* test in Y-direction */
-    internal::findMinMax(v0.y(), v1.y(), v2.y(), min, max);
+    detail::findMinMax(v0.y(), v1.y(), v2.y(), min, max);
     if (min > bHalfSixe.y() || max < -bHalfSixe.y())
         return false;
 
     /* test in Z-direction */
-    internal::findMinMax(v0.z(), v1.z(), v2.z(), min, max);
+    detail::findMinMax(v0.z(), v1.z(), v2.z(), min, max);
     if (min > bHalfSixe.z() || max < -bHalfSixe.z())
         return false;
 
@@ -583,7 +583,7 @@ bool triangleSphereItersect(
             witness = (p0 * mu0 + p1 * mu1);
         }
         else {
-            // or else can be an point internal to the triangle
+            // or else can be an point detail to the triangle
             ScalarType denominator = delta0_p012 + delta1_p012 + delta2_p012;
             ScalarType lambda0     = delta0_p012 / denominator;
             ScalarType lambda1     = delta1_p012 / denominator;

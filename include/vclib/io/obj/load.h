@@ -31,12 +31,12 @@
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-#include "../internal/io_read.h"
+#include "../detail/io_read.h"
 #include "material.h"
 
 namespace vcl::io {
 
-namespace internal {
+namespace detail {
 
 template<MeshConcept MeshType>
 using NormalsMap =
@@ -161,7 +161,7 @@ void loadVertexCoord(
     }
     uint vid = m.addVertex();
     for (uint i = 0; i < 3; ++i) {
-        m.vertex(vid).coord()[i] = internal::readDouble<double>(token);
+        m.vertex(vid).coord()[i] = detail::readDouble<double>(token);
     }
     if constexpr (HasPerVertexColor<MeshType>){
         if (vid == 0) {
@@ -184,11 +184,11 @@ void loadVertexCoord(
             // the coords...
             if (tokens.size() > 6) {
                 m.vertex(vid).color().setRedF(
-                    internal::readFloat<float>(token));
+                    detail::readFloat<float>(token));
                 m.vertex(vid).color().setGreenF(
-                    internal::readFloat<float>(token));
+                    detail::readFloat<float>(token));
                 m.vertex(vid).color().setBlueF(
-                    internal::readFloat<float>(token));
+                    detail::readFloat<float>(token));
             }
             else if (currentMaterial.hasColor) {
                 m.vertex(vid).color() = currentMaterial.color();
@@ -200,7 +200,7 @@ void loadVertexCoord(
 template<MeshConcept MeshType>
 void loadVertexNormal(
     MeshType&                       m,
-    internal::NormalsMap<MeshType>& mapNormalsCache,
+    detail::NormalsMap<MeshType>& mapNormalsCache,
     uint                            vn,
     vcl::Tokenizer::iterator&       token,
     MeshInfo&                       loadedInfo,
@@ -223,7 +223,7 @@ void loadVertexNormal(
         // read the normal
         NormalType n;
         for (uint i = 0; i < 3; ++i) {
-            n[i] = internal::readDouble<typename NormalType::ScalarType>(token);
+            n[i] = detail::readDouble<typename NormalType::ScalarType>(token);
         }
         // I can store the normal in its vertex
         if (m.vertexNumber() > vn) {
@@ -400,7 +400,7 @@ void loadFace(
     }
 }
 
-} // namespace internal
+} // namespace detail
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadObj(
@@ -410,9 +410,9 @@ void loadObj(
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
-    std::ifstream file = internal::loadFileStream(filename);
+    std::ifstream file = detail::loadFileStream(filename);
     // save normals if they can't be stored directly into vertices
-    internal::NormalsMap<MeshType> mapNormalsCache;
+    detail::NormalsMap<MeshType> mapNormalsCache;
     uint vn = 0; // number of vertex normals read
     // save array of texcoords, that are stored later (into wedges when loading
     // faces or into vertices as a fallback)
@@ -429,7 +429,7 @@ void loadObj(
                              FileInfo::fileNameWithoutExtension(filename) +
                              ".mtl";
     try {
-        internal::loadMaterials(materialMap, m, stdmtlfile);
+        detail::loadMaterials(materialMap, m, stdmtlfile);
     }
     catch(vcl::CannotOpenFileException){
         // nothing to do, this file was missing but was a fallback for some type
@@ -447,14 +447,14 @@ void loadObj(
     // cycle that reads line by line
     do {
         vcl::Tokenizer tokens =
-            internal::nextNonEmptyTokenizedLineNoThrow(file);
+            detail::nextNonEmptyTokenizedLineNoThrow(file);
         if (file) {
             vcl::Tokenizer::iterator token = tokens.begin();
             std::string header = *token++;
             if (header == "mtllib") { // material file
                 std::string mtlfile =
                     FileInfo::pathWithoutFileName(filename) + *token;
-                internal::loadMaterials(materialMap, m, mtlfile);
+                detail::loadMaterials(materialMap, m, mtlfile);
             }
             // use a new material - change currentMaterial
             if (header == "usemtl") {
@@ -467,7 +467,7 @@ void loadObj(
             // read vertex (and for some non-standard obj files, also vertex
             // color)
             if (header == "v") {
-                internal::loadVertexCoord(
+                detail::loadVertexCoord(
                     m,
                     token,
                     loadedInfo,
@@ -478,7 +478,7 @@ void loadObj(
             // read vertex normal (and save in vn how many normals we read)
             if constexpr(HasPerVertexNormal<MeshType>) {
                 if (header == "vn") {
-                    internal::loadVertexNormal(
+                    detail::loadVertexNormal(
                         m,
                         mapNormalsCache,
                         vn,
@@ -498,7 +498,7 @@ void loadObj(
                     // save the texcoord for later
                     TexCoordd tf;
                     for (uint i = 0; i < 2; ++i) {
-                        tf[i] = internal::readDouble<double>(token);
+                        tf[i] = detail::readDouble<double>(token);
                     }
                     texCoords.push_back(tf);
                 }
@@ -509,7 +509,7 @@ void loadObj(
             // - possibility to split polygonal face into several triangles
             if constexpr (HasFaces<MeshType>) {
                 if (header == "f") {
-                    internal::loadFace(
+                    detail::loadFace(
                         m,
                         loadedInfo,
                         tokens,

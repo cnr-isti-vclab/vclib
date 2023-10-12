@@ -32,7 +32,7 @@
 #include "ply_extra.h"
 #include "ply_face.h"
 #include "ply_vertex.h"
-#include "../internal/io_utils.h"
+#include "../detail/io_utils.h"
 
 namespace vcl::io {
 
@@ -70,7 +70,7 @@ void savePly(
     if (!header.isValid())
         throw std::runtime_error("Ply Header not valid.");
 
-    std::ofstream fp = internal::saveFileStream(filename, "ply");
+    std::ofstream fp = detail::saveFileStream(filename, "ply");
 
     fp << header.toString();
 

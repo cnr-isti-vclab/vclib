@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 template<FaceMeshConcept MeshType>
 void fillHexahedronTriangles(MeshType& m)
@@ -60,7 +60,7 @@ void fillHexahedronQuads(MeshType& m)
     m.addFace(5, 1, 3, 7);
 }
 
-} // namespace internal
+} // namespace detail
 
 /**
  * @brief Creates and returns a hexahedron having as extremes the points ``(-1,
@@ -113,10 +113,10 @@ MeshType createHexahedron(const CoordType& min, const CoordType& max)
 
     // fill faces
     if constexpr (HasTriangles<MeshType>) {
-        internal::fillHexahedronTriangles(m);
+        detail::fillHexahedronTriangles(m);
     }
     else {
-        internal::fillHexahedronQuads(m);
+        detail::fillHexahedronQuads(m);
     }
     return m;
 }

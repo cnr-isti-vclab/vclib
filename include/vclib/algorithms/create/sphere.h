@@ -70,7 +70,7 @@ struct CreateSphereArgs
     uint divisions = 20;
 };
 
-namespace internal {
+namespace detail {
 
 namespace cts { // Cube to Sphere
 
@@ -100,7 +100,7 @@ static const Point3d ups[6] = {
 
 } // namespace cts
 
-} // namespace internal
+} // namespace detail
 
 /**
  * @brief Creates and returns a sphere mesh using the UV mode, starting from a
@@ -213,10 +213,9 @@ MeshType createSphereNormalizedCube(
     const CoordType step3(step, step, step);
 
     for (uint face = 0; face < 6; ++face) {
-        const CoordType origin =
-            internal::cts::origins[face].cast<ScalarType>();
-        const CoordType right = internal::cts::rights[face].cast<ScalarType>();
-        const CoordType up    = internal::cts::ups[face].cast<ScalarType>();
+        const CoordType origin = detail::cts::origins[face].cast<ScalarType>();
+        const CoordType right  = detail::cts::rights[face].cast<ScalarType>();
+        const CoordType up     = detail::cts::ups[face].cast<ScalarType>();
         for (uint j = 0; j < divisions + 1; ++j) {
             const CoordType j3(j, j, j);
             for (uint i = 0; i < divisions + 1; ++i) {
@@ -292,10 +291,9 @@ MeshType createSphereSpherifiedCube(
     const CoordType step3(step, step, step);
 
     for (uint face = 0; face < 6; ++face) {
-        const CoordType origin =
-            internal::cts::origins[face].cast<ScalarType>();
-        const CoordType right = internal::cts::rights[face].cast<ScalarType>();
-        const CoordType up    = internal::cts::ups[face].cast<ScalarType>();
+        const CoordType origin = detail::cts::origins[face].cast<ScalarType>();
+        const CoordType right  = detail::cts::rights[face].cast<ScalarType>();
+        const CoordType up     = detail::cts::ups[face].cast<ScalarType>();
         for (uint j = 0; j < divisions + 1; ++j) {
             const CoordType j3(j, j, j);
             for (uint i = 0; i < divisions + 1; ++i) {

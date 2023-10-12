@@ -31,7 +31,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 struct CoordsView
 {
@@ -65,9 +65,9 @@ struct CoordsView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
-inline constexpr internal::CoordsView coords;
+inline constexpr detail::CoordsView coords;
 
 } // namespace vcl::views
 

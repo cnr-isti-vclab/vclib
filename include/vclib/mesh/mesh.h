@@ -70,10 +70,10 @@ class Mesh : public Args...
     static_assert(HasVertices<Args...>, "A Mesh must have a VertexContainer.");
 
     template<typename El, bool b>
-    friend struct comp::internal::CustomComponentsData;
+    friend struct comp::detail::CustomComponentsData;
 
     template<typename El, bool b>
-    friend struct comp::internal::ComponentData;
+    friend struct comp::detail::ComponentData;
 
     template<ElementConcept T>
     friend class mesh::ElementContainer;

@@ -30,7 +30,7 @@
 namespace vcl {
 namespace mesh {
 
-namespace internal {
+namespace detail {
 
 /**
  * @brief Given the ID of an Element and a list of ElementContainers, this
@@ -65,7 +65,7 @@ struct ContainerOfElementPred<ELEM_ID, TypeWrapper<Containers...>> :
 {
 };
 
-} // namespace internal
+} // namespace detail
 
 class ElementContainerTriggerer
 {
@@ -112,7 +112,7 @@ template<uint ELEM_ID, typename MeshType>
 struct ContainerOfElement
 {
 public:
-    using type = typename FirstType<typename internal::ContainerOfElementPred<
+    using type = typename FirstType<typename detail::ContainerOfElementPred<
         ELEM_ID,
         typename MeshType::Containers>::type>::type;
 };
@@ -142,7 +142,7 @@ using ContainerOfElementType =
 template<ElementConcept El, typename MeshType>
 struct HasContainerOfPred
 {
-    static constexpr bool value = internal::ContainerOfElementPred<
+    static constexpr bool value = detail::ContainerOfElementPred<
         El::ELEMENT_ID,
         typename MeshType::Containers>::value;
 };
@@ -150,7 +150,7 @@ struct HasContainerOfPred
 template<uint ELEM_ID, typename MeshType>
 struct HasContainerOfElementPred
 {
-    static constexpr bool value = internal::
+    static constexpr bool value = detail::
         ContainerOfElementPred<ELEM_ID, typename MeshType::Containers>::value;
 };
 

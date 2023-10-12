@@ -31,7 +31,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 struct PrincipalCurvaturesView
 {
@@ -64,9 +64,9 @@ struct PrincipalCurvaturesView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
-inline constexpr internal::PrincipalCurvaturesView principalCurvatures;
+inline constexpr detail::PrincipalCurvaturesView principalCurvatures;
 
 } // namespace vcl::views
 

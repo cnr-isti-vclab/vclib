@@ -35,7 +35,7 @@
 namespace vcl {
 
 // Traits
-namespace internal {
+namespace detail {
 
 // recursive case: a nested list is a list of L-1 levels
 template<typename T, std::size_t L>
@@ -52,7 +52,7 @@ struct NestedInitializerListsTraits<T, 0>
     using type = T;
 };
 
-} // namespace internal
+} // namespace detail
 
 // Processors that allow to automatically iterate through nested initializer
 // lists
@@ -65,7 +65,7 @@ struct NestedInitializerListsTraits<T, 0>
  */
 template<typename T, std::size_t L>
 using NestedInitializerLists =
-    internal::NestedInitializerListsTraits<T, L>::type;
+    detail::NestedInitializerListsTraits<T, L>::type;
 
 // Recursive part.
 

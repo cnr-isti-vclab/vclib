@@ -28,7 +28,7 @@
 
 namespace vcl::comp {
 
-namespace internal {
+namespace detail {
 
 /**
  * @brief Given the ID of a Component and a list of Component types,
@@ -63,7 +63,7 @@ struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
 {
 };
 
-} // namespace vcl::comp::internal
+} // namespace vcl::comp::detail
 
 /**
  * @brief The ComponentConcept is evaluated to true whenever the type T is a
@@ -90,7 +90,7 @@ struct IsComponentPred
 
 template<uint COMP_ID, typename... Components>
 using ComponentOfType = typename FirstType<
-    typename internal::ComponentOfTypePred<COMP_ID, Components...>::type>::type;
+    typename detail::ComponentOfTypePred<COMP_ID, Components...>::type>::type;
 
 template<typename T>
 concept HasInitMemberFunction = requires(T o)
@@ -175,7 +175,7 @@ concept HasOptionalPointersOfType =
 
 template<typename T, uint COMP_ID>
 concept HasComponentOfType =
-    internal::ComponentOfTypePred<COMP_ID, typename T::Components>::value;
+    detail::ComponentOfTypePred<COMP_ID, typename T::Components>::value;
 
 template<typename T, uint COMP_ID>
 concept HasVerticalComponentOfType =

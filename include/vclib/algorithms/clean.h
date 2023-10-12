@@ -47,7 +47,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 /* classe di confronto per l'algoritmo di eliminazione vertici duplicati*/
 template<typename VertexPointer>
@@ -265,7 +265,7 @@ uint numberEdges(
     return numEdges;
 }
 
-} // namespace internal
+} // namespace detail
 
 /**
  * @brief Returns the number of non-deleted unreferenced vertices of the mesh.
@@ -289,7 +289,7 @@ uint numberUnreferencedVertices(const MeshType& m)
     // Generate a vector of boolean flags indicating whether each vertex is
     // referenced by any of the mesh's elements.
     std::vector<bool> referredVertices =
-        internal::unreferencedVerticesVectorBool(m, nV);
+        detail::unreferencedVerticesVectorBool(m, nV);
 
     return nV;
 }
@@ -322,7 +322,7 @@ uint removeUnreferencedVertices(MeshType& m)
 
     uint              n = 0;
     std::vector<bool> referredVertices =
-        internal::unreferencedVerticesVectorBool(m, n);
+        detail::unreferencedVerticesVectorBool(m, n);
 
     // need to mark as deleted vertices only if the number of unreferenced is
     // less than vn
@@ -396,7 +396,7 @@ uint removeDuplicatedVertices(MeshType& m)
         std::execution::par_unseq,
         perm.begin(),
         perm.end(),
-        internal::VertPositionComparator<VertexPointer>());
+        detail::VertPositionComparator<VertexPointer>());
 
     uint i = 0;
 
@@ -460,7 +460,7 @@ uint removeDuplicatedFaces(MeshType& m)
 
     // create a vector of sorted tuples of indices, where each tuple represents
     // a face's vertices and a pointer to the face.
-    std::vector<internal::SortedIndexContainer<
+    std::vector<detail::SortedIndexContainer<
         VertexType*,
         FaceType*,
         FaceType::VERTEX_NUMBER>>
@@ -610,7 +610,7 @@ template<FaceMeshConcept MeshType>
 uint numberNonManifoldVertices(const MeshType& m)
 {
     std::vector<bool> nonManifoldVertices =
-        internal::nonManifoldVerticesVectorBool(m);
+        detail::nonManifoldVerticesVectorBool(m);
     return std::count(
         nonManifoldVertices.begin(), nonManifoldVertices.end(), true);
 }
@@ -638,7 +638,7 @@ template<FaceMeshConcept MeshType>
 bool isWaterTight(const MeshType& m)
 {
     uint numEdgeBorder, numNonManifoldEdges;
-    internal::numberEdges(m, numEdgeBorder, numNonManifoldEdges);
+    detail::numberEdges(m, numEdgeBorder, numNonManifoldEdges);
     return numEdgeBorder == 0 && numNonManifoldEdges == 0;
 }
 

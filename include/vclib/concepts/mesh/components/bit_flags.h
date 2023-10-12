@@ -36,10 +36,8 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasBitFlags = requires(
-    T o,
-    const T& co)
-{
+concept HasBitFlags = requires (T o, const T& co) {
+    // clang-format off
     { co.deleted() } -> std::same_as<bool>;
     { co.selected() } -> std::same_as<bool>;
     { co.onBorder() } -> std::same_as<bool>;
@@ -49,9 +47,10 @@ concept HasBitFlags = requires(
     { o.resetBitFlags() } -> std::same_as<void>;
     { o.importFlagsFromVCGFormat(int())} -> std::same_as<void>;
     { co.exportFlagsToVCGFormat() } -> std::same_as<int>;
+    // clang-format on
 };
 
-namespace internal {
+namespace detail {
 
 /**
  * @private
@@ -60,18 +59,16 @@ namespace internal {
  *
  */
 template<typename T>
-concept FaceBitFlagsConcept = HasBitFlags<T> &&
-    requires(
-        T o,
-        const T& co)
-{
+concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T o, const T& co) {
+    // clang-format off
     { co.edgeOnBorder(uint()) } -> std::same_as<bool>;
     { co.edgeSelected(uint()) } -> std::same_as<bool>;
     { co.edgeVisited(uint()) } -> std::same_as<bool>;
     { co.edgeFaux(uint()) } -> std::same_as<bool>;
+    // clang-format on
 };
 
-} // namespace internal
+} // namespace detail
 
 /**
  * @brief HasPolygonBitFlags concept is satisfied only if a Element class (that
@@ -82,10 +79,10 @@ concept FaceBitFlagsConcept = HasBitFlags<T> &&
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPolygonBitFlags = internal::FaceBitFlagsConcept<T> &&
-    requires(T o)
-{
+concept HasPolygonBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
+    // clang-format off
     { o.__polygonBitFlags() } -> std::same_as<void>;
+    // clang-format on
 };
 
 /**
@@ -97,10 +94,10 @@ concept HasPolygonBitFlags = internal::FaceBitFlagsConcept<T> &&
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTriangleBitFlags = internal::FaceBitFlagsConcept<T> &&
-    requires(T o)
-{
+concept HasTriangleBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
+    // clang-format off
     { o.__triangleBitFlags() } -> std::same_as<void>;
+    // clang-format on
 };
 
 /**

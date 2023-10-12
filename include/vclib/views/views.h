@@ -28,7 +28,7 @@
 
 namespace vcl::views{
 
-namespace internal {
+namespace detail {
 
 struct NotNullView
 {
@@ -74,7 +74,7 @@ struct ConstAddressOfView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
 /**
  * @brief The notNull view allows to filter the pointers of a range. The resulting
@@ -82,7 +82,7 @@ struct ConstAddressOfView
  *
  * @ingroup views
  */
-inline constexpr internal::NotNullView notNull;
+inline constexpr detail::NotNullView notNull;
 
 /**
  * @brief The deref view the dereference operator `*` on the input view.
@@ -99,7 +99,7 @@ inline constexpr internal::NotNullView notNull;
  *
  * @ingroup views
  */
-inline constexpr internal::DereferenceView deref;
+inline constexpr detail::DereferenceView deref;
 
 /**
  * @brief The addrOf view applies the address-of operator `&` on the input view.
@@ -109,7 +109,7 @@ inline constexpr internal::DereferenceView deref;
  *
  * @ingroup views
  */
-inline constexpr internal::AddressOfView addrOf;
+inline constexpr detail::AddressOfView addrOf;
 
 /**
  * @brief The constAddrOf view applies the address-of operator `&` on the input view.
@@ -119,7 +119,7 @@ inline constexpr internal::AddressOfView addrOf;
  *
  * @ingroup views
  */
-inline constexpr internal::ConstAddressOfView constAddrOf;
+inline constexpr detail::ConstAddressOfView constAddrOf;
 
 } // namespace vcl::views
 

@@ -69,7 +69,7 @@ concept HasOptionalColor =
 // COMPONENT_ID in the FooComponent)
 inline static const uint BAR_COMPONENT = vcl::COMPONENTS_NUMBER + 0;
 
-namespace internal {
+namespace detail {
 
 // we wrap all the data stored by the component in a struct.
 // in this case we could use also a std::pair, but it doesn't matter
@@ -80,7 +80,7 @@ struct BarData
     double bar;
 };
 
-} // namespace internal
+} // namespace detail
 
 // We declare here a function that checks at runtime if the component is
 // available. The check is a combination of a compile time check (if the
@@ -116,7 +116,7 @@ class BarComponentT :
 
             // The type of the data that the component stores. It is needed
             // because if vertical, the mesh must know what data to store
-            internal::BarData,
+            detail::BarData,
 
             // Same ElementType argument of the BarComponentT class
             ElementType,
@@ -124,12 +124,12 @@ class BarComponentT :
             // Same OPTIONAL argument of the BarComponentT class
             OPTIONAL>
 {
-    // alias of the base vcl::comp::Component class - just for internal use
+    // alias of the base vcl::comp::Component class - just for detail use
     // to access the member functions of the base class
     using Base = vcl::comp::Component<
         BarComponentT<ElementType, OPTIONAL>,
         BAR_COMPONENT,
-        internal::BarData,
+        detail::BarData,
         ElementType,
         OPTIONAL>;
 
@@ -138,7 +138,7 @@ public:
 
     // we access the data stored by calling Base::data(). The returned type
     // is the same of the third template argument of the vcl::comp::Component
-    // class -- in this case, internal::BarData
+    // class -- in this case, detail::BarData
     int& foo() { return Base::data().foo; }
     int foo() const { return Base::data().foo; }
 

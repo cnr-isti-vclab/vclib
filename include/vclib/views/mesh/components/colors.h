@@ -32,7 +32,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept CleanWedgeColorsConcept = comp::HasWedgeColors<std::remove_cvref_t<T>>;
@@ -78,9 +78,9 @@ struct ColorsView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
-inline constexpr internal::ColorsView colors;
+inline constexpr detail::ColorsView colors;
 
 } // namespace vcl::views
 

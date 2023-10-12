@@ -26,7 +26,7 @@
 
 #include "adjacent_node_iterator.h"
 
-namespace vcl::internal {
+namespace vcl::detail {
 
 template<typename Graph, typename Iterator>
 class AdjacentRightNodeIterator : public AdjacentNodeIterator<Graph, Iterator>
@@ -43,6 +43,6 @@ public:
     pointer operator->() const { return &Base::g->nodesL[Base::it].info(); }
 };
 
-} // namespace vcl::internal
+} // namespace vcl::detail
 
 #endif // VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_RIGHT_NODE_ITERATOR_H

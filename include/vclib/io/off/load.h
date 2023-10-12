@@ -35,7 +35,7 @@
 
 namespace vcl::io {
 
-namespace internal {
+namespace detail {
 
 template<MeshConcept MeshType>
 void loadOffVertices(
@@ -52,13 +52,13 @@ void loadOffVertices(
     for (uint i = 0; i < nv; i++) {
         VertexType& v = mesh.vertex(i);
 
-        vcl::Tokenizer tokens = internal::nextNonEmptyTokenizedLine(file);
+        vcl::Tokenizer tokens = detail::nextNonEmptyTokenizedLine(file);
         vcl::Tokenizer::iterator token  = tokens.begin();
 
         // Read 3 vertex coordinates
         for (unsigned int j = 0; j < 3; j++) {
             // Read vertex coordinate
-            v.coord()[j] = io::internal::readDouble<double>(token);
+            v.coord()[j] = io::detail::readDouble<double>(token);
         }
 
         if constexpr(vcl::HasPerVertexNormal<MeshType>) {
@@ -67,14 +67,14 @@ void loadOffVertices(
             {
                 // Read 3 normal coordinates
                 for (unsigned int j = 0; j < 3; j++) {
-                    v.normal()[j] = io::internal::readDouble<double>(token);
+                    v.normal()[j] = io::detail::readDouble<double>(token);
                 }
             }
         }
         // need to read and throw away data
         else if (fileInfo.hasVertexNormals()){
             for (unsigned int j = 0; j < 3; j++) {
-                io::internal::readDouble<double>(token);
+                io::detail::readDouble<double>(token);
             }
         }
 
@@ -108,14 +108,14 @@ void loadOffVertices(
             {
                 // Read 2 tex coordinates
                 for (unsigned int j = 0; j < 2; j++) {
-                    v.texCoord()[j] = io::internal::readDouble<double>(token);
+                    v.texCoord()[j] = io::detail::readDouble<double>(token);
                 }
             }
         }
         // need to read and throw away data
         else if (fileInfo.hasVertexTexCoords()){
             for (unsigned int j = 0; j < 2; j++) {
-                io::internal::readDouble<double>(token);
+                io::detail::readDouble<double>(token);
             }
         }
     }
@@ -135,18 +135,18 @@ void loadOffFaces(
         mesh.reserveFaces(nf);
         for (uint fid = 0; fid < nf; ++fid) {
             vcl::Tokenizer tokens =
-                vcl::io::internal::nextNonEmptyTokenizedLine(file);
+                vcl::io::detail::nextNonEmptyTokenizedLine(file);
             vcl::Tokenizer::iterator token = tokens.begin();
             mesh.addFace();
             FaceType& f = mesh.face(mesh.faceNumber() - 1);
 
             // read vertex indices
-            uint fSize = io::internal::readUInt<uint>(token);
+            uint fSize = io::detail::readUInt<uint>(token);
             // contains the vertex ids of the actual face
             std::vector<uint> vids;
             vids.resize(fSize);
             for (uint i = 0; i < fSize; ++i) {
-                vids[i] = io::internal::readUInt<uint>(token);
+                vids[i] = io::detail::readUInt<uint>(token);
                 bool splitFace = false;
                 // we have a polygonal mesh
                 if constexpr (FaceType::VERTEX_NUMBER < 0) {
@@ -198,11 +198,11 @@ void loadOffFaces(
     }
     else { // mesh does not have face, read nf lines and throw them away
         for (uint i = 0; i < nf; ++i)
-            vcl::io::internal::nextNonEmptyTokenizedLine(file);
+            vcl::io::detail::nextNonEmptyTokenizedLine(file);
     }
 }
 
-} // namespace internal
+} // namespace detail
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadOff(
@@ -212,7 +212,7 @@ void loadOff(
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
-    std::ifstream file = internal::loadFileStream(filename);
+    std::ifstream file = detail::loadFileStream(filename);
     uint nVertices, nFaces, nEdges;
 
     if constexpr (HasName<MeshType>) {
@@ -224,13 +224,13 @@ void loadOff(
     off::loadOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
     loadedInfo = fileInfo; // data that will be stored in the mesh!
     if (enableOptionalComponents)
-        internal::enableOptionalComponents(loadedInfo, m);
+        detail::enableOptionalComponents(loadedInfo, m);
 
-    internal::loadOffVertices(m, file, fileInfo, nVertices);
-    internal::loadOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
+    detail::loadOffVertices(m, file, fileInfo, nVertices);
+    detail::loadOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
     if (enableOptionalComponents)
         loadedInfo = fileInfo;
-    // internal::loadOffEdges(m, file, loadedInfo, nEdges);
+    // detail::loadOffEdges(m, file, loadedInfo, nEdges);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>

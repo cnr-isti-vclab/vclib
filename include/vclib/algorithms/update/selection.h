@@ -31,7 +31,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 template<vcl::Range Rng>
 void clearSelection(Rng&& r)
@@ -41,31 +41,31 @@ void clearSelection(Rng&& r)
     }
 }
 
-} // namespace internal
+} // namespace detail
 
 template<MeshConcept MeshType>
 void clearVertexSelection(MeshType& m)
 {
-    internal::clearSelection(m.vertices());
+    detail::clearSelection(m.vertices());
 }
 
 template<FaceMeshConcept MeshType>
 void clearFaceSelection(MeshType& m)
 {
-    internal::clearSelection(m.faces());
+    detail::clearSelection(m.faces());
 }
 
 template<EdgeMeshConcept MeshType>
 void clearEdgeSelection(MeshType& m)
 {
-    internal::clearSelection(m.edges());
+    detail::clearSelection(m.edges());
 }
 
 template<FaceMeshConcept MeshType>
 void selectNonManifoldVertices(MeshType& m, bool clearSelectionFirst)
 {
     std::vector<bool> nonManifoldVertices =
-        internal::nonManifoldVerticesVectorBool(m);
+        detail::nonManifoldVerticesVectorBool(m);
 
     using VertexType = MeshType::VertexType;
 

@@ -27,7 +27,7 @@
 #include <vclib/concepts/mesh.h>
 
 namespace vcl::views {
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept CleanEdgeMeshConcept = EdgeMeshConcept<std::remove_cvref_t<T>>;
@@ -43,7 +43,7 @@ struct EdgesView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
 /**
  * @brief A view that allows to iterate overt the Edge elements of an object.
@@ -53,7 +53,7 @@ struct EdgesView
  *
  * @ingroup views
  */
-inline constexpr internal::EdgesView edges;
+inline constexpr detail::EdgesView edges;
 
 } // namespace vcl::views
 

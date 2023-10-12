@@ -6,7 +6,7 @@
 #include <vclib/concepts/mesh.h>
 
 namespace vcl::views {
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept Clean%EL_UC%MeshConcept = %EL_UC%MeshConcept<std::remove_cvref_t<T>>;
@@ -22,7 +22,7 @@ struct %EL_UC%sView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
 /**
  * @brief A view that allows to iterate overt the %EL_UC% elements of an
@@ -33,7 +33,7 @@ struct %EL_UC%sView
  *
  * @ingroup views
  */
-inline constexpr internal::%EL_UC%sView %EL_C%s;
+inline constexpr detail::%EL_UC%sView %EL_C%s;
 
 } // namespace vcl::views
 

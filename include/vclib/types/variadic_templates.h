@@ -126,7 +126,7 @@ struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
 
 /* Remove all types that do not satisfy a condition, and get them as a TypeWrapper. */
 
-namespace internal {
+namespace detail {
 
 template <typename, typename> struct TypeWrapperConstructor;
 
@@ -136,7 +136,7 @@ struct TypeWrapperConstructor<T, TypeWrapper<Args...>>
     using type = TypeWrapper<T, Args...>;
 };
 
-} // namespace vcl::internal
+} // namespace vcl::detail
 
 template <template <class> class, typename ...>
 struct FilterTypesByCondition
@@ -161,7 +161,7 @@ struct FilterTypesByCondition<Pred, Head, Tail...>
 {
     using type = std::conditional<
         Pred<Head>::value,
-        typename internal::TypeWrapperConstructor<
+        typename detail::TypeWrapperConstructor<
             Head,
             typename FilterTypesByCondition<Pred, Tail...>::type>::type,
         typename FilterTypesByCondition<Pred, Tail...>::type>::type;

@@ -29,7 +29,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<std::remove_cvref_t<T>>;
@@ -48,7 +48,7 @@ struct AdjEdgesView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
 /**
  * @brief The adjEdges view allows to obtain a view that access to the adjacent edges of
@@ -64,7 +64,7 @@ struct AdjEdgesView
  *
  * @ingroup views
  */
-inline constexpr internal::AdjEdgesView adjEdges;
+inline constexpr detail::AdjEdgesView adjEdges;
 
 } // namespace vcl::views
 

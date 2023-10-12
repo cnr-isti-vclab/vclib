@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 template<Point3Concept PointType>
 PointType sphericalFibonacciPoint(uint i, uint n)
@@ -43,7 +43,7 @@ PointType sphericalFibonacciPoint(uint i, uint n)
     return PointType(cos(phi) * sinTheta, sin(phi) * sinTheta, cosTheta);
 }
 
-} // namespace vcl::internal
+} // namespace vcl::detail
 
 /**
  * @brief Returns a vector of `n` points distributed in a unit sphere.
@@ -65,7 +65,7 @@ std::vector<PointType> sphericalFibonacciPointSet(uint n)
 
     std::vector<PointType> v(n);
     for (uint i = 0; i < n; ++i)
-        v[i] = internal::sphericalFibonacciPoint<PointType>(i, n);
+        v[i] = detail::sphericalFibonacciPoint<PointType>(i, n);
 
     return v;
 }

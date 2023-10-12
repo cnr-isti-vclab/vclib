@@ -28,12 +28,12 @@
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-#include "../internal/io_utils.h"
-#include "../internal/io_write.h"
+#include "../detail/io_utils.h"
+#include "../detail/io_write.h"
 
 namespace vcl::io {
 
-namespace internal {
+namespace detail {
 
 void writeStlHeader(std::ofstream& fp, bool magicsMode, bool binary)
 {
@@ -66,18 +66,18 @@ void writeTriangle(
 {
     if (binary) {
         for (uint i = 0; i < 3; ++i)
-            internal::writeFloat(fp, n[i]);
+            detail::writeFloat(fp, n[i]);
 
         for (uint i = 0; i < 3; ++i)
-            internal::writeFloat(fp, p0[i]);
+            detail::writeFloat(fp, p0[i]);
 
         for (uint i = 0; i < 3; ++i)
-            internal::writeFloat(fp, p1[i]);
+            detail::writeFloat(fp, p1[i]);
 
         for (uint i = 0; i < 3; ++i)
-            internal::writeFloat(fp, p2[i]);
+            detail::writeFloat(fp, p2[i]);
 
-        internal::writeUShort(fp, attributes);
+        detail::writeUShort(fp, attributes);
     }
     else {
         fp << "  facet normal " << n.x() << " " << n.y() << " " << n.z()
@@ -96,7 +96,7 @@ void writeTriangle(
     }
 }
 
-} // namespace vcl::io::internal
+} // namespace vcl::io::detail
 
 /**
  * @brief saveStl
@@ -126,19 +126,19 @@ void saveStl(
     // available in the mesh.
     meshInfo = info.intersect(meshInfo);
 
-    std::ofstream fp = internal::saveFileStream(filename, "stl");
+    std::ofstream fp = detail::saveFileStream(filename, "stl");
 
     if constexpr (isLoggerValid<LogType>()) {
         log.log(0, "Saving STL file");
     }
 
-    internal::writeStlHeader(fp, magicsMode, binary);
+    detail::writeStlHeader(fp, magicsMode, binary);
 
     if constexpr (HasFaces<MeshType>) {
         using FaceType = MeshType::FaceType;
 
         if (binary) {
-            internal::writeInt(fp, m.faceNumber());
+            detail::writeInt(fp, m.faceNumber());
         }
 
         if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -161,7 +161,7 @@ void saveStl(
             }
 
             if (f.vertexNumber() == 3) {
-                internal::writeTriangle(
+                detail::writeTriangle(
                     fp,
                     f.vertex(0)->coord(),
                     f.vertex(1)->coord(),
@@ -173,7 +173,7 @@ void saveStl(
             else {
                 std::vector<uint> tris = vcl::earCut(f);
                 for (uint i = 0; i < tris.size(); i += 3) {
-                    internal::writeTriangle(
+                    detail::writeTriangle(
                         fp,
                         f.vertex(tris[i])->coord(),
                         f.vertex(tris[i + 1])->coord(),

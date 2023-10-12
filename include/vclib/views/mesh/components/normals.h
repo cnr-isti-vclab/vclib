@@ -31,7 +31,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 struct NormalsView
 {
@@ -64,9 +64,9 @@ struct NormalsView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
-inline constexpr internal::NormalsView normals;
+inline constexpr detail::NormalsView normals;
 
 } // namespace vcl::views
 

@@ -28,7 +28,7 @@
 
 #include "io_utils.h"
 
-namespace vcl::io::internal {
+namespace vcl::io::detail {
 
 template<typename T>
 void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
@@ -202,6 +202,6 @@ void writeCustomComponent(
         assert(0);
 }
 
-} // namespace vcl::io::internal
+} // namespace vcl::io::detail
 
 #endif // VCL_IO_INTERNAL_IO_WRITE_H

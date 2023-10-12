@@ -59,7 +59,7 @@ void loadPly(
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
-    std::ifstream file = internal::loadFileStream(filename);
+    std::ifstream file = detail::loadFileStream(filename);
 
     ply::PlyHeader header(filename, file);
     if (header.errorWhileLoading())
@@ -70,7 +70,7 @@ void loadPly(
     loadedInfo = header.getInfo();
 
     if (enableOptionalComponents)
-        internal::enableOptionalComponents(loadedInfo, m);
+        detail::enableOptionalComponents(loadedInfo, m);
 
     if constexpr (HasName<MeshType>) {
         m.name() = FileInfo::fileNameWithoutExtension(filename);

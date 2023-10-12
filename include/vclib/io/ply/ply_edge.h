@@ -28,7 +28,7 @@
 #include <vclib/misc/tokenizer.h>
 
 #include "ply_header.h"
-#include "../internal/io_write.h"
+#include "../detail/io_write.h"
 
 namespace vcl::io::ply {
 
@@ -48,19 +48,19 @@ void saveEdges(
         for (const ply::Property& p : header.edgeProperties()) {
             bool hasBeenWritten = false;
             if (p.name == ply::vertex1) {
-                io::internal::writeProperty(
+                io::detail::writeProperty(
                     file, vIndices[mesh.index(e.vertex(0))], p.type, bin);
                 hasBeenWritten = true;
             }
             if (p.name == ply::vertex2) {
-                io::internal::writeProperty(
+                io::detail::writeProperty(
                     file, vIndices[mesh.index(e.vertex(1))], p.type, bin);
                 hasBeenWritten = true;
             }
             if (!hasBeenWritten) {
                 // be sure to write something if the header declares some
                 // property that is not in the mesh
-                io::internal::writeProperty(file, 0, p.type, bin);
+                io::detail::writeProperty(file, 0, p.type, bin);
             }
         }
     }

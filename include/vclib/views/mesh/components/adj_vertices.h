@@ -29,7 +29,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 template<typename T>
 concept CleanAdjVerticesConcept = comp::HasAdjacentVertices<std::remove_cvref_t<T>>;
@@ -48,7 +48,7 @@ struct AdjVerticesView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
 /**
  * @brief The adjVertices view allows to obtain a view that access to the adjacent vertices of
@@ -64,7 +64,7 @@ struct AdjVerticesView
  *
  * @ingroup views
  */
-inline constexpr internal::AdjVerticesView adjVertices;
+inline constexpr detail::AdjVerticesView adjVertices;
 
 } // namespace vcl::views
 

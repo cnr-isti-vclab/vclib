@@ -32,7 +32,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 template<typename CoordType>
 struct LaplacianInfo
@@ -108,7 +108,7 @@ void accumulateLaplacianInfo(
     }
 }
 
-} // namespace internal
+} // namespace detail
 
 /**
  * @brief vertexCoordLaplacianSmoothing the classical Laplacian smoothing. Each
@@ -134,12 +134,12 @@ void laplacianSmoothing(
     using VertexType = MeshType::VertexType;
     using CoordType  = VertexType::CoordType;
 
-    const internal::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
+    const detail::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
 
     for (uint i = 0; i < step; ++i) {
-        std::vector<internal::LaplacianInfo<CoordType>> laplData(
+        std::vector<detail::LaplacianInfo<CoordType>> laplData(
             m.vertexContainerSize(), lpz);
-        internal::accumulateLaplacianInfo(m, laplData, cotangentWeight);
+        detail::accumulateLaplacianInfo(m, laplData, cotangentWeight);
         for (VertexType& v : m.vertices()) {
             if (laplData[m.index(v)].cnt > 0) {
                 if (!smoothSelected || v.selected()) {
@@ -162,12 +162,12 @@ void taubinSmoothing(
     using VertexType = MeshType::VertexType;
     using CoordType  = VertexType::CoordType;
 
-    const internal::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
+    const detail::LaplacianInfo<CoordType> lpz = {CoordType(0, 0, 0), 0};
 
     for (uint i = 0; i < step; ++i) {
-        std::vector<internal::LaplacianInfo<CoordType>> laplData(
+        std::vector<detail::LaplacianInfo<CoordType>> laplData(
             m.vertexContainerSize(), lpz);
-        internal::accumulateLaplacianInfo(m, laplData);
+        detail::accumulateLaplacianInfo(m, laplData);
         for (VertexType& v : m.vertices()) {
             if (laplData[m.index(v)].cnt > 0) {
                 if (!smoothSelected || v.selected()) {
@@ -179,7 +179,7 @@ void taubinSmoothing(
             }
         }
         std::fill(laplData.begin(), laplData.end(), lpz);
-        internal::accumulateLaplacianInfo(m, laplData);
+        detail::accumulateLaplacianInfo(m, laplData);
         for (VertexType& v : m.vertices()) {
             if (laplData[m.index(v)].cnt > 0) {
                 if (!smoothSelected || v.selected()) {

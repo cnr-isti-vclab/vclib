@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-namespace internal {
+namespace detail {
 
 template< template< typename ...formal > class base >
 struct IsDerivedFromImplementation
@@ -41,7 +41,7 @@ struct IsDerivedFromImplementation
     operator () (void *) const;
 };
 
-} // namespace vcl::internal
+} // namespace vcl::detail
 
 /*
  * Utility class that allows to check if given class 'Derived' is derived from a
@@ -61,7 +61,7 @@ struct IsDerivedFromImplementation
  */
 template<typename derived, template<typename...> class base>
 using IsDerivedFromTemplateSpecialization = std::invoke_result<
-    internal::IsDerivedFromImplementation<base>,
+    detail::IsDerivedFromImplementation<base>,
     typename std::remove_cv<derived>::type*>::type;
 
 } // namespace vcl

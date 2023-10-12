@@ -164,9 +164,9 @@ set(HEADERS
     include/vclib/exceptions/misc_exceptions.h
     include/vclib/io/load.h
     include/vclib/io/save.h
-    include/vclib/io/internal/io_read.h
-    include/vclib/io/internal/io_utils.h
-    include/vclib/io/internal/io_write.h
+    include/vclib/io/detail/io_read.h
+    include/vclib/io/detail/io_utils.h
+    include/vclib/io/detail/io_write.h
     include/vclib/io/obj/load.h
     include/vclib/io/obj/material.h
     include/vclib/io/obj/save.h
@@ -227,8 +227,8 @@ set(HEADERS
     include/vclib/mesh/components/bases/component.h
     include/vclib/mesh/components/bases/container_component.h
     include/vclib/mesh/components/bases/pointers_container_component.h
-    include/vclib/mesh/components/internal/component_data.h
-    include/vclib/mesh/components/internal/custom_components_data.h
+    include/vclib/mesh/components/detail/component_data.h
+    include/vclib/mesh/components/detail/custom_components_data.h
     include/vclib/mesh/containers/custom_component_vector_handle.h
     include/vclib/mesh/containers/custom_components_vector_map.h
     include/vclib/mesh/containers/edge_container.h
@@ -269,7 +269,7 @@ set(HEADERS
     include/vclib/misc/timer.h
     include/vclib/misc/tokenizer.h
     include/vclib/misc/tuple.h
-    include/vclib/misc/internal/tmp_meshes.h
+    include/vclib/misc/detail/tmp_meshes.h
     include/vclib/misc/logger/console_logger.h
     include/vclib/misc/logger/logger.h
     include/vclib/misc/logger/null_logger.h

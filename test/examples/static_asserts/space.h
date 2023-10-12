@@ -25,7 +25,7 @@
 #define SPACE_H
 
 #include <vclib/space.h>
-#include <vclib/misc/internal/tmp_meshes.h>
+#include <vclib/misc/detail/tmp_meshes.h>
 
 void spaceStaticAsserts()
 {
@@ -128,7 +128,7 @@ void spaceStaticAsserts()
 
     // sampler
     static_assert(
-        SamplerConcept<MeshSampler<internal::TMPSimplePolyMesh>>,
+        SamplerConcept<MeshSampler<detail::TMPSimplePolyMesh>>,
         "MeshSampler does not satisfy the SamplerConcept");
 
     static_assert(
@@ -136,16 +136,16 @@ void spaceStaticAsserts()
         "PointSampler does not satisfy the SamplerConcept");
 
     static_assert(
-        SamplerConcept<VertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
+        SamplerConcept<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
         "VertexSampler does not satisfy the SamplerConcept");
     static_assert(
-        SamplerConcept<ConstVertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
+        SamplerConcept<ConstVertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
         "ConstVertexSampler does not satisfy the SamplerConcept");
 //     static_assert(
-//        std::ranges::range<VertexSampler<internal::TMPSimplePolyMesh::Vertex>>,
+//        std::ranges::range<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
 //        "");
 
-//    VertexSampler<internal::TMPSimplePolyMesh::Vertex> v;
+//    VertexSampler<detail::TMPSimplePolyMesh::Vertex> v;
 //    auto it = std::ranges::begin(v);
 
     static_assert(

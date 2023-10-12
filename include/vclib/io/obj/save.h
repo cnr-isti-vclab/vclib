@@ -30,13 +30,13 @@
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-#include "../internal/io_utils.h"
-#include "../internal/io_write.h"
+#include "../detail/io_utils.h"
+#include "../detail/io_write.h"
 #include "material.h"
 
 namespace vcl::io {
 
-namespace internal {
+namespace detail {
 
 template<VertexConcept VertexType, MeshConcept MeshType>
 obj::Material materialFromVertex(const VertexType& v, const MeshInfo& fi)
@@ -116,7 +116,7 @@ void writeElementMaterial(
     }
 }
 
-} // namespace internal
+} // namespace detail
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveObj(
@@ -140,7 +140,7 @@ void saveObj(
         meshInfo.setVertexTexCoords(false);
     }
 
-    std::ofstream fp = internal::saveFileStream(filename, "obj");
+    std::ofstream fp = detail::saveFileStream(filename, "obj");
 
     std::ofstream                        mtlfp;
     std::map<obj::Material, std::string> materialMap;
@@ -150,7 +150,7 @@ void saveObj(
         (meshInfo.hasTextures() &&
          (meshInfo.hasVertexTexCoords() || meshInfo.hasFaceWedgeTexCoords()));
     if (useMtl) {
-        mtlfp                   = internal::saveFileStream(filename, "mtl");
+        mtlfp                   = detail::saveFileStream(filename, "mtl");
         std::string mtlFileName =
             FileInfo::fileNameWithExtension(filename) + ".mtl";
         fp << "mtllib ./" << mtlFileName << std::endl;
@@ -162,29 +162,29 @@ void saveObj(
     using VertexType = MeshType::VertexType;
     for (const VertexType& v : m.vertices()) {
         if (useMtl) { // mtl management
-            internal::writeElementMaterial<VertexType, MeshType>(
+            detail::writeElementMaterial<VertexType, MeshType>(
                 v, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
         }
         fp << "v ";
-        internal::writeDouble(fp, v.coord().x(), false);
-        internal::writeDouble(fp, v.coord().y(), false);
-        internal::writeDouble(fp, v.coord().z(), false);
+        detail::writeDouble(fp, v.coord().x(), false);
+        detail::writeDouble(fp, v.coord().y(), false);
+        detail::writeDouble(fp, v.coord().z(), false);
         fp << std::endl;
 
         if constexpr (HasPerVertexNormal<MeshType>) {
             if (meshInfo.hasVertexNormals()) {
                 fp << "vn ";
-                internal::writeDouble(fp, v.normal().x(), false);
-                internal::writeDouble(fp, v.normal().y(), false);
-                internal::writeDouble(fp, v.normal().z(), false);
+                detail::writeDouble(fp, v.normal().x(), false);
+                detail::writeDouble(fp, v.normal().y(), false);
+                detail::writeDouble(fp, v.normal().z(), false);
                 fp << std::endl;
             }
         }
         if constexpr (HasPerVertexTexCoord<MeshType>) {
             if (meshInfo.hasVertexTexCoords()) {
                 fp << "vt ";
-                internal::writeFloat(fp, v.texCoord().u(), false);
-                internal::writeFloat(fp, v.texCoord().v(), false);
+                detail::writeFloat(fp, v.texCoord().u(), false);
+                detail::writeFloat(fp, v.texCoord().v(), false);
                 fp << std::endl;
             }
         }
@@ -201,7 +201,7 @@ void saveObj(
         uint wedgeTexCoord = 1;
         for (const FaceType& f : m.faces()) {
             if (useMtl) { // mtl management
-                internal::writeElementMaterial(
+                detail::writeElementMaterial(
                     f, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
             }
             if constexpr(HasPerFaceWedgeTexCoords<MeshType>){
@@ -209,8 +209,8 @@ void saveObj(
                     using WedgeTexCoordType = FaceType::WedgeTexCoordType;
                     for (const WedgeTexCoordType wt : f.wedgeTexCoords()){
                         fp << "vt ";
-                        internal::writeFloat(fp, wt.u(), false);
-                        internal::writeFloat(fp, wt.v(), false);
+                        detail::writeFloat(fp, wt.u(), false);
+                        detail::writeFloat(fp, wt.v(), false);
                         fp << std::endl;
                     }
                 }

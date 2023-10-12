@@ -31,7 +31,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 inline constexpr auto isSelected = [](const auto& e)
 {
@@ -86,11 +86,11 @@ struct NotSelectedView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
-inline constexpr internal::SelectionView selection;
-inline constexpr internal::SelectedView selected;
-inline constexpr internal::NotSelectedView notSelected;
+inline constexpr detail::SelectionView selection;
+inline constexpr detail::SelectedView selected;
+inline constexpr detail::NotSelectedView notSelected;
 
 } // namespace vcl::views
 

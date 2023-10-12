@@ -26,7 +26,7 @@
 
 #include <vclib/concepts/mesh/components/component.h>
 
-namespace vcl::comp::internal {
+namespace vcl::comp::detail {
 
 // store the data if horizontal
 template<typename Data, bool VERTICAL>
@@ -138,6 +138,6 @@ struct ComponentData<Data, true>
     }
 };
 
-} // namespace vcl::comp::internal
+} // namespace vcl::comp::detail
 
 #endif // VCL_MESH_COMPONENTS_INTERNAL_COMPONENT_DATA_H

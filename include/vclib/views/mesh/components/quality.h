@@ -31,7 +31,7 @@
 
 namespace vcl::views {
 
-namespace internal {
+namespace detail {
 
 struct QualityView
 {
@@ -64,9 +64,9 @@ struct QualityView
     }
 };
 
-} // namespace vcl::views::internal
+} // namespace vcl::views::detail
 
-inline constexpr internal::QualityView quality;
+inline constexpr detail::QualityView quality;
 
 } // namespace vcl::views
 
