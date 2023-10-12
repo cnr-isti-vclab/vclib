@@ -32,14 +32,14 @@ namespace vcl {
 
 namespace Ui {
 class ViewerMainWindow;
-}
+} // namespace Ui
 
 class ViewerMainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit ViewerMainWindow(QWidget *parent = nullptr);
+    explicit ViewerMainWindow(QWidget* parent = nullptr);
     ~ViewerMainWindow();
 
     void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
@@ -50,7 +50,7 @@ public slots:
     void renderSettingsUpdated();
 
 private:
-    Ui::ViewerMainWindow *ui;
+    Ui::ViewerMainWindow*                      ui;
     std::shared_ptr<vcl::DrawableObjectVector> drawVector;
 };
 

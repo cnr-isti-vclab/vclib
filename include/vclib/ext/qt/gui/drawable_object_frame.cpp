@@ -26,10 +26,8 @@
 
 namespace vcl {
 
-DrawableObjectFrame::DrawableObjectFrame(DrawableObject *obj, QWidget *parent) :
-        QFrame(parent),
-        ui(new Ui::DrawableObjectFrame),
-        obj(obj)
+DrawableObjectFrame::DrawableObjectFrame(DrawableObject* obj, QWidget* parent) :
+        QFrame(parent), ui(new Ui::DrawableObjectFrame), obj(obj)
 {
     ui->setupUi(this);
     assert(obj);
@@ -41,7 +39,6 @@ DrawableObjectFrame::~DrawableObjectFrame()
 {
     delete ui;
 }
-
 
 void DrawableObjectFrame::on_visibilityCheckBox_stateChanged(int arg1)
 {

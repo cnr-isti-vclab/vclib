@@ -42,8 +42,11 @@ namespace vcl {
 class QClickableLabel : public QLabel
 {
     Q_OBJECT
+
 public:
-    explicit QClickableLabel(QWidget* parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit QClickableLabel(
+        QWidget*        parent = Q_NULLPTR,
+        Qt::WindowFlags f      = Qt::WindowFlags());
     ~QClickableLabel();
 
 signals:

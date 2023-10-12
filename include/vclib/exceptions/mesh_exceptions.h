@@ -32,12 +32,16 @@ namespace vcl {
 class MissingPreconditionException : public std::runtime_error
 {
 public:
-    MissingPreconditionException(const std::string& err) : std::runtime_error(err) {}
+    MissingPreconditionException(const std::string& err) :
+            std::runtime_error(err)
+    {
+    }
 
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Missing Mesh Precondition - ") + std::runtime_error::what();
+        error = std::string("Missing Mesh Precondition - ") +
+                std::runtime_error::what();
         return error.c_str();
     }
 };
@@ -45,11 +49,16 @@ public:
 class MissingCompactnessException : public std::runtime_error
 {
 public:
-    MissingCompactnessException(const std::string& err) : std::runtime_error(err) {}
+    MissingCompactnessException(const std::string& err) :
+            std::runtime_error(err)
+    {
+    }
+
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Lack of Compactness - ") + std::runtime_error::what();
+        error =
+            std::string("Lack of Compactness - ") + std::runtime_error::what();
         return error.c_str();
     }
 };
@@ -57,11 +66,15 @@ public:
 class MissingComponentException : public std::runtime_error
 {
 public:
-    MissingComponentException(const std::string& err) : std::runtime_error(err) {}
+    MissingComponentException(const std::string& err) : std::runtime_error(err)
+    {
+    }
+
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Missing Component - ") + std::runtime_error::what();
+        error =
+            std::string("Missing Component - ") + std::runtime_error::what();
         return error.c_str();
     }
 };
@@ -69,12 +82,16 @@ public:
 class MissingTriangularRequirementException : public std::runtime_error
 {
 public:
-    MissingTriangularRequirementException(const std::string& err) : std::runtime_error(err) {}
+    MissingTriangularRequirementException(const std::string& err) :
+            std::runtime_error(err)
+    {
+    }
 
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Missing Triangular Mesh Requirement - ") + std::runtime_error::what();
+        error = std::string("Missing Triangular Mesh Requirement - ") +
+                std::runtime_error::what();
         return error.c_str();
     }
 };
@@ -82,12 +99,16 @@ public:
 class MissingQuadRequirementException : public std::runtime_error
 {
 public:
-    MissingQuadRequirementException(const std::string& err) : std::runtime_error(err) {}
+    MissingQuadRequirementException(const std::string& err) :
+            std::runtime_error(err)
+    {
+    }
 
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Missing Quad Mesh Requirement - ") + std::runtime_error::what();
+        error = std::string("Missing Quad Mesh Requirement - ") +
+                std::runtime_error::what();
         return error.c_str();
     }
 };
@@ -95,12 +116,16 @@ public:
 class MissingPolygonalRequirementException : public std::runtime_error
 {
 public:
-    MissingPolygonalRequirementException(const std::string& err) : std::runtime_error(err) {}
+    MissingPolygonalRequirementException(const std::string& err) :
+            std::runtime_error(err)
+    {
+    }
 
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Missing Polygonal Mesh Requirement - ") + std::runtime_error::what();
+        error = std::string("Missing Polygonal Mesh Requirement - ") +
+                std::runtime_error::what();
         return error.c_str();
     }
 };
@@ -121,12 +146,16 @@ public:
 class BadCustomComponentTypeException : public std::runtime_error
 {
 public:
-    BadCustomComponentTypeException(const std::string& err) : std::runtime_error(err) {}
+    BadCustomComponentTypeException(const std::string& err) :
+            std::runtime_error(err)
+    {
+    }
 
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Bad Custom Component Type - ") + std::runtime_error::what();
+        error = std::string("Bad Custom Component Type - ") +
+                std::runtime_error::what();
         return error.c_str();
     }
 };

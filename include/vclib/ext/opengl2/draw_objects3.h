@@ -353,8 +353,10 @@ inline void drawBox3(
  * @param c
  * @param width
  */
-inline void
-drawBox3(const std::vector<Point3d>& p, const Color& c, int width = 3)
+inline void drawBox3(
+    const std::vector<Point3d>& p,
+    const Color&                c,
+    int                         width = 3)
 {
     drawBox3(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], c, width);
 }

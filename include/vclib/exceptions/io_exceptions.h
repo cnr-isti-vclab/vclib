@@ -32,12 +32,15 @@ namespace vcl {
 class UnknownFileFormatException : public std::runtime_error
 {
 public:
-    UnknownFileFormatException(const std::string& err) : std::runtime_error(err) {}
+    UnknownFileFormatException(const std::string& err) : std::runtime_error(err)
+    {
+    }
 
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Unknown File Format - ") + std::runtime_error::what();
+        error =
+            std::string("Unknown File Format - ") + std::runtime_error::what();
         return error.c_str();
     }
 };

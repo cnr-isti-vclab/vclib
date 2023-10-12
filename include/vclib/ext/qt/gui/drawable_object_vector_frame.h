@@ -34,15 +34,17 @@ namespace vcl {
 
 namespace Ui {
 class DrawableObjectVectorFrame;
-}
+} // namespace Ui
 
 class DrawableObjectVectorFrame : public QFrame
 {
     Q_OBJECT
 
 public:
-    explicit DrawableObjectVectorFrame(QWidget *parent = nullptr);
-    explicit DrawableObjectVectorFrame(std::shared_ptr<DrawableObjectVector> v, QWidget *parent = nullptr);
+    explicit DrawableObjectVectorFrame(QWidget* parent = nullptr);
+    explicit DrawableObjectVectorFrame(
+        std::shared_ptr<DrawableObjectVector> v,
+        QWidget*                              parent = nullptr);
     ~DrawableObjectVectorFrame();
 
     void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
@@ -59,7 +61,7 @@ private slots:
 private:
     // this frame does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> drawList;
-    Ui::DrawableObjectVectorFrame *ui;
+    Ui::DrawableObjectVectorFrame*        ui;
 
     void updateDrawableVectorWidget();
 };

@@ -25,7 +25,8 @@
 
 namespace vcl {
 
-QClickableLabel::QClickableLabel(QWidget* parent, Qt::WindowFlags) : QLabel(parent)
+QClickableLabel::QClickableLabel(QWidget* parent, Qt::WindowFlags) :
+        QLabel(parent)
 {
 }
 

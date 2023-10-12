@@ -34,7 +34,7 @@ namespace vcl {
 
 namespace Ui {
 class MeshRenderSettingsFrame;
-}
+} // namespace Ui
 
 class MeshRenderSettingsFrame : public QFrame
 {
@@ -68,12 +68,21 @@ private slots:
     void on_wireframeSizelSlider_valueChanged(int value);
 
 private:
-    enum POINT_COLOR {P_VERT = 0, P_MESH, P_USER};
-    enum SURF_COLOR {SC_VERT = 0, SC_FACE, SC_MESH, SC_VERT_TEX, SC_WEDG_TEX, SC_USER};
-    enum WIRE_COLOR {W_MESH = 0, W_USER};
+    enum POINT_COLOR { P_VERT = 0, P_MESH, P_USER };
 
-    Ui::MeshRenderSettingsFrame *ui;
-    MeshRenderSettings mrs;
+    enum SURF_COLOR {
+        SC_VERT = 0,
+        SC_FACE,
+        SC_MESH,
+        SC_VERT_TEX,
+        SC_WEDG_TEX,
+        SC_USER
+    };
+
+    enum WIRE_COLOR { W_MESH = 0, W_USER };
+
+    Ui::MeshRenderSettingsFrame* ui;
+    MeshRenderSettings           mrs;
 
     void updateGuiFromSettings();
     void updatePointsTabFromSettings();
@@ -84,7 +93,7 @@ private:
     void updateWireframeTabFromSettings();
     void updateWireframeComboBoxFromSettings();
 
-    void setButtonBackGround(QPushButton* b, const QColor &c);
+    void   setButtonBackGround(QPushButton* b, const QColor& c);
     QColor getButtonBackGround(QPushButton* b);
 };
 

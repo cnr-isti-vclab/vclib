@@ -29,8 +29,7 @@
 namespace vcl {
 
 DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
-        QFrame(parent),
-        ui(new Ui::DrawableObjectVectorFrame)
+        QFrame(parent), ui(new Ui::DrawableObjectVectorFrame)
 {
     ui->setupUi(this);
 }
@@ -42,7 +41,6 @@ DrawableObjectVectorFrame::DrawableObjectVectorFrame(
 {
     drawList = v;
     updateDrawableVectorWidget();
-
 }
 
 DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
@@ -50,7 +48,8 @@ DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
     delete ui;
 }
 
-void DrawableObjectVectorFrame::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
+void DrawableObjectVectorFrame::setDrawableObjectVector(
+    std::shared_ptr<DrawableObjectVector> v)
 {
     drawList = v;
     updateDrawableVectorWidget();
@@ -76,15 +75,17 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
 {
     ui->listWidget->clear();
     for (auto* d : *drawList) {
-        QListWidgetItem* item = new QListWidgetItem(ui->listWidget);
+        QListWidgetItem*     item  = new QListWidgetItem(ui->listWidget);
         DrawableObjectFrame* frame = new DrawableObjectFrame(d, ui->listWidget);
 
         item->setSizeHint(frame->sizeHint());
         ui->listWidget->addItem(item);
         ui->listWidget->setItemWidget(item, frame);
         connect(
-            frame, SIGNAL(visibilityChanged()),
-            this, SIGNAL(drawableObjectVisibilityChanged()));
+            frame,
+            SIGNAL(visibilityChanged()),
+            this,
+            SIGNAL(drawableObjectVisibilityChanged()));
     }
     if (drawList->size() > 0) {
         ui->listWidget->item(0)->setSelected(true);

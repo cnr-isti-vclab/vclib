@@ -75,7 +75,7 @@ inline void _check_gl_error(const char* file, int line)
 /// [... some opengl calls]
 /// glCheckError();
 ///
-#define check_gl_error() _check_gl_error(__FILE__,__LINE__)
+#define check_gl_error() _check_gl_error(__FILE__, __LINE__)
 
 template<MeshConcept MeshType>
 class DrawableMesh : public GenericDrawableMesh
@@ -198,14 +198,14 @@ private:
         uint nv = mrb.vertexNumber();
         uint nt = mrb.triangleNumber();
 
-        const float* coords = mrb.vertexBufferData();
-        const int*   triangles = mrb.triangleBufferData();
-        const float* vertexNormals = mrb.vertexNormalBufferData();
-        const float* vertexColors = mrb.vertexColorBufferData();
+        const float* coords          = mrb.vertexBufferData();
+        const int*   triangles       = mrb.triangleBufferData();
+        const float* vertexNormals   = mrb.vertexNormalBufferData();
+        const float* vertexColors    = mrb.vertexColorBufferData();
         const float* triangleNormals = mrb.triangleNormalBufferData();
-        const float* triangleColors = mrb.triangleColorBufferData();
-        const float* vertTexCoords = mrb.vertexTexCoordsBufferData();
-        const float* wedgTexCoords = mrb.wedgeTexCoordsBufferData();
+        const float* triangleColors  = mrb.triangleColorBufferData();
+        const float* vertTexCoords   = mrb.vertexTexCoordsBufferData();
+        const float* wedgTexCoords   = mrb.wedgeTexCoordsBufferData();
 
         if (mrs.isPointCloudVisible()) {
             glEnableClientState(GL_VERTEX_ARRAY);
@@ -367,7 +367,7 @@ private:
                 if (mrs.isSurfaceShadingSmooth()) {
                     short texture = textID[0];
                     glBindTexture(GL_TEXTURE_2D, texture);
-                    glColor4f(1,1,1,1);
+                    glColor4f(1, 1, 1, 1);
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glVertexPointer(3, GL_FLOAT, 0, coords);
 
@@ -389,17 +389,17 @@ private:
                     glShadeModel(GL_SMOOTH);
                     int n_tris = nt;
                     for (int tid = 0; tid < n_tris; ++tid) {
-                        int tid_ptr  = 3 * tid;
-                        int vid0     = triangles[tid_ptr + 0];
-                        int vid1     = triangles[tid_ptr + 1];
-                        int vid2     = triangles[tid_ptr + 2];
-                        int vid0_ptr = 3 * vid0;
-                        int vid1_ptr = 3 * vid1;
-                        int vid2_ptr = 3 * vid2;
-                        short texture = textID[0];
+                        int   tid_ptr  = 3 * tid;
+                        int   vid0     = triangles[tid_ptr + 0];
+                        int   vid1     = triangles[tid_ptr + 1];
+                        int   vid2     = triangles[tid_ptr + 2];
+                        int   vid0_ptr = 3 * vid0;
+                        int   vid1_ptr = 3 * vid1;
+                        int   vid2_ptr = 3 * vid2;
+                        short texture  = textID[0];
                         glBindTexture(GL_TEXTURE_2D, texture);
                         glBegin(GL_TRIANGLES);
-                        glColor4f(1,1,1,1);
+                        glColor4f(1, 1, 1, 1);
                         glTexCoord2f(
                             vertTexCoords[vid0 * 2 + 0],
                             vertTexCoords[vid0 * 2 + 1]);
@@ -423,17 +423,18 @@ private:
             else if (mrs.isSurfaceColorPerWedgeTexcoords()) {
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
-                    int tid_ptr  = 3 * tid;
-                    int vid0     = triangles[tid_ptr + 0];
-                    int vid1     = triangles[tid_ptr + 1];
-                    int vid2     = triangles[tid_ptr + 2];
-                    int vid0_ptr = 3 * vid0;
-                    int vid1_ptr = 3 * vid1;
-                    int vid2_ptr = 3 * vid2;
-                    short texture = textID[mrb.wedgeTextureIDsBufferData()[tid]];
+                    int   tid_ptr  = 3 * tid;
+                    int   vid0     = triangles[tid_ptr + 0];
+                    int   vid1     = triangles[tid_ptr + 1];
+                    int   vid2     = triangles[tid_ptr + 2];
+                    int   vid0_ptr = 3 * vid0;
+                    int   vid1_ptr = 3 * vid1;
+                    int   vid2_ptr = 3 * vid2;
+                    short texture =
+                        textID[mrb.wedgeTextureIDsBufferData()[tid]];
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
-                    glColor4f(1,1,1,1);
+                    glColor4f(1, 1, 1, 1);
                     glTexCoord2f(
                         wedgTexCoords[tid * 6 + 0], wedgTexCoords[tid * 6 + 1]);
                     glNormal3fv(&(vertexNormals[vid0_ptr]));
@@ -505,6 +506,6 @@ private:
     }
 };
 
-} //namespace vcl
+} // namespace vcl
 
 #endif // VCL_EXT_OPENGL2_DRAWABLE_MESH_H

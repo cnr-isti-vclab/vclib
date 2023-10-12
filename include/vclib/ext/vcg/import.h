@@ -99,8 +99,7 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
                 if (isPerVertexTexCoordAvailable(mesh)) {
                     if (vcg::tri::HasPerVertexTexCoord(vcgMesh)) {
                         mesh.vertex(vi).texCoord() = TexCoordType(
-                            vcgMesh.vert[i].T().U(),
-                            vcgMesh.vert[i].T().V());
+                            vcgMesh.vert[i].T().U(), vcgMesh.vert[i].T().V());
                     }
                 }
             }
