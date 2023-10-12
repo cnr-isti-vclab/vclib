@@ -42,14 +42,13 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasMark = requires(
-    T o,
-    const T& co)
-{
+concept HasMark = requires (T o, const T& co) {
+    // clang-format off
     { co.mark() } -> std::same_as<int>;
     { o.resetMark() } -> std::same_as<void>;
     { o.incrementMark() } -> std::same_as<void>;
     { o.decrementMark() } -> std::same_as<void>;
+    // clang-format on
 };
 
 /**

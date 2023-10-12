@@ -45,12 +45,9 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasWedgeColors = requires(
-    T o,
-    const T& co,
-    vcl::Color c,
-    std::vector<vcl::Color> v)
-{
+concept HasWedgeColors =
+    requires (T o, const T& co, vcl::Color c, std::vector<vcl::Color> v) {
+        // clang-format off
     T::WEDGE_COLOR_NUMBER;
     typename T::WedgeColorsIterator;
     typename T::ConstWedgeColorsIterator;
@@ -70,7 +67,8 @@ concept HasWedgeColors = requires(
         std::same_as<typename T::ConstWedgeColorsIterator>;
     o.wedgeColors();
     co.wedgeColors();
-};
+        // clang-format on
+    };
 
 /**
  * @brief HasOptionalWedgeColors concept is satisfied only if a class satisfies

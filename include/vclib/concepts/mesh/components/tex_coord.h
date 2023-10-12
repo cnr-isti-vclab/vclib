@@ -42,13 +42,12 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTexCoord = requires(
-    T o,
-    const T& co)
-{
+concept HasTexCoord = requires (T o, const T& co) {
+    // clang-format off
     typename T::TexCoordType;
     { o.texCoord() } -> std::same_as<typename T::TexCoordType&>;
     { co.texCoord() } -> std::same_as<const typename T::TexCoordType&>;
+    // clang-format on
 };
 
 /**

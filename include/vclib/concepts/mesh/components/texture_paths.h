@@ -39,11 +39,8 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTexturePaths = requires(
-    T o,
-    const T& co,
-    std::string s)
-{
+concept HasTexturePaths = requires (T o, const T& co, std::string s) {
+    // clang-format off
     typename T::TexFileNamesIterator;
     typename T::ConstTexFileNamesIterator;
 
@@ -64,6 +61,7 @@ concept HasTexturePaths = requires(
         std::same_as<typename T::ConstTexFileNamesIterator>;
     o.texturePaths();
     co.texturePaths();
+    // clang-format on
 };
 
 } // namespace vcl::comp

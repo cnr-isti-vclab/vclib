@@ -39,12 +39,12 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasVertexPointers = requires(
-    T o,
-    const T& co,
-    typename T::VertexType v,
-    std::vector<typename T::VertexType*> vec)
-{
+concept HasVertexPointers = requires (
+    T                                    o,
+    const T&                             co,
+    typename T::VertexType               v,
+    std::vector<typename T::VertexType*> vec) {
+    // clang-format off
     T::VERTEX_NUMBER;
     typename T::VertexType;
     typename T::VertexIterator;
@@ -72,6 +72,7 @@ concept HasVertexPointers = requires(
     { co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
     o.vertices();
     co.vertices();
+    // clang-format on
 };
 
 } // namespace vcl::comp

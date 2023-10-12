@@ -44,15 +44,14 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPrincipalCurvature = requires(
-    T o,
-    const T& co)
-{
+concept HasPrincipalCurvature = requires (T o, const T& co) {
+    // clang-format off
     typename T::PrincipalCurvatureType;
     { o.principalCurvature() } ->
         std::same_as<typename T::PrincipalCurvatureType&>;
     { co.principalCurvature() } ->
         std::same_as<const typename T::PrincipalCurvatureType&>;
+    // clang-format on
 };
 
 /**

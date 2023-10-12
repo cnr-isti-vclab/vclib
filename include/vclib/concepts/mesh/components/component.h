@@ -39,11 +39,11 @@ namespace detail {
  * If no Component was found, value will be set to `false` and type will contain
  * an empty TypeWrapper.
  */
-template<uint COMP_ID, typename ... Components>
+template<uint COMP_ID, typename... Components>
 struct ComponentOfTypePred
 {
 private:
-    template <typename Comp>
+    template<typename Comp>
     struct SameCompPred
     {
         static constexpr bool value = Comp::COMPONENT_ID == COMP_ID;
@@ -63,7 +63,7 @@ struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
 {
 };
 
-} // namespace vcl::comp::detail
+} // namespace detail
 
 /**
  * @brief The ComponentConcept is evaluated to true whenever the type T is a
@@ -73,7 +73,9 @@ struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
  */
 template<typename T>
 concept ComponentConcept = requires {
+    // clang-format off
     { T::COMPONENT_ID } -> std::same_as<const uint&>;
+    // clang-format on
 };
 
 /**
@@ -93,25 +95,28 @@ using ComponentOfType = typename FirstType<
     typename detail::ComponentOfTypePred<COMP_ID, Components...>::type>::type;
 
 template<typename T>
-concept HasInitMemberFunction = requires(T o)
-{
+concept HasInitMemberFunction = requires (T o) {
+    // clang-format off
     { o.init() } -> std::same_as<void>;
+    // clang-format on
 };
 
 template<typename T>
-concept HasIsAvailableMemberFunction = requires(T o)
-{
+concept HasIsAvailableMemberFunction = requires (T o) {
+    // clang-format off
     { o.isAvailable() } -> std::same_as<bool>;
+    // clang-format on
 };
 
 template<typename T>
 concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
 
 template<typename T>
-concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o)
-{
+concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o) {
+    // clang-format off
     typename T::DataValueType;
     { o.IS_VERTICAL } -> std::same_as<const bool&>;
+    // clang-format on
 };
 
 template<typename T>
@@ -122,10 +127,11 @@ struct IsVerticalComponentPred
 
 template<typename T>
 concept IsOptionalComponent =
-    IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires(T o)
-{
-    { o.IS_OPTIONAL } -> std::same_as<const bool&>;
-};
+    IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires (T o) {
+        // clang-format off
+        { o.IS_OPTIONAL } -> std::same_as<const bool&>;
+        // clang-format on
+    };
 
 template<typename T>
 class PointersComponentTriggerer

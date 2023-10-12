@@ -45,12 +45,12 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasWedgeTexCoords = requires(
-    T o,
-    const T& co,
-    const typename T::WedgeTexCoordType& t,
-    std::vector<typename T::WedgeTexCoordType> v)
-{
+concept HasWedgeTexCoords = requires (
+    T                                          o,
+    const T&                                   co,
+    const typename T::WedgeTexCoordType&       t,
+    std::vector<typename T::WedgeTexCoordType> v) {
+    // clang-format off
     T::WEDGE_TEX_COORD_NUMBER;
     typename T::WedgeTexCoordType;
     typename T::WedgeTexCoordsIterator;
@@ -78,6 +78,7 @@ concept HasWedgeTexCoords = requires(
         std::same_as<typename T::ConstWedgeTexCoordsIterator>;
     o.wedgeTexCoords();
     co.wedgeTexCoords();
+    // clang-format on
 };
 
 /**
