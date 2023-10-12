@@ -136,7 +136,7 @@ void updatePerVertexAdjacentVertices(MeshType& m)
     // store the last pair of vertices
     VertexType* v1 = nullptr;
     VertexType* v2 = nullptr;
-    for (uint i = 0; i < vec.size(); ++i){
+    for (uint i = 0; i < vec.size(); ++i) {
         // if this pair is different from the last pair
         if (vec[i].v[0] != v1 || vec[i].v[1] != v2) {
             // update last pair
@@ -235,7 +235,7 @@ void updatePerFaceAdjacentFaces(MeshType& m)
         // in this loop, base will point to the first element of a cluster of
         // edges
         // increment of clusters into loop
-        for (auto base = vec.begin(); base != vec.end(); ) {
+        for (auto base = vec.begin(); base != vec.end();) {
             auto first = base; // remember the first to set adj to the last
 
             // i and j will increment together, and if i == j, i will be adj to

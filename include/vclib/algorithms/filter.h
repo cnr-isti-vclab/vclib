@@ -58,16 +58,14 @@ namespace vcl {
  */
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
 OutMeshType perVertexMeshFilter(
-    const InMeshType& m,
+    const InMeshType&                                             m,
     std::function<bool(const typename InMeshType::VertexType&)>&& vertexFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
     auto view = m.vertices() | std::views::transform(vertexFilter);
 
     return perVertexMeshFilter<InMeshType, OutMeshType>(
-        m,
-        view,
-        saveBirthIndicesInCustomComponent);
+        m, view, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -101,8 +99,8 @@ OutMeshType perVertexMeshFilter(
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
 OutMeshType perVertexMeshFilter(
     const InMeshType& m,
-    Range auto&& vertexFilterRng,
-    bool saveBirthIndicesInCustomComponent = true)
+    Range auto&&      vertexFilterRng,
+    bool              saveBirthIndicesInCustomComponent = true)
 {
     OutMeshType res;
     res.enableSameOptionalComponentsOf(m);
@@ -166,16 +164,14 @@ OutMeshType perVertexMeshFilter(
  */
 template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
 OutMeshType perFaceMeshFilter(
-    const InMeshType& m,
+    const InMeshType&                                           m,
     std::function<bool(const typename InMeshType::FaceType&)>&& faceFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
     auto view = m.faces() | std::views::transform(faceFilter);
 
     return perFaceMeshFilter<InMeshType, OutMeshType>(
-        m,
-        view,
-        saveBirthIndicesInCustomComponent);
+        m, view, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -211,8 +207,8 @@ OutMeshType perFaceMeshFilter(
 template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
 OutMeshType perFaceMeshFilter(
     const InMeshType& m,
-    Range auto&& faceFilterRng,
-    bool saveBirthIndicesInCustomComponent = true)
+    Range auto&&      faceFilterRng,
+    bool              saveBirthIndicesInCustomComponent = true)
 {
     using InVertexType = InMeshType::VertexType;
 
@@ -240,7 +236,7 @@ OutMeshType perFaceMeshFilter(
     {
         if (filter) {
             std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
-            uint vi = 0; // incremented with vertices of the face
+            uint              vi = 0; // incremented with vertices of the face
             // set all the vertex indices in the verts vector
             // two cases here:
             // - the ith vertex of the face has been already added, we need just
@@ -265,7 +261,7 @@ OutMeshType perFaceMeshFilter(
                         }
                     }
                     vertexMapping[m.index(v)] = ov;
-                    verts[vi] = ov;
+                    verts[vi]                 = ov;
                 }
                 else {
                     verts[vi] = vertexMapping[m.index(v)];

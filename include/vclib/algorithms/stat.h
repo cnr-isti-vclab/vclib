@@ -30,7 +30,6 @@
 #include <vclib/space/matrix.h>
 #include <vclib/space/polygon.h>
 
-
 #include "stat/quality.h"
 #include "stat/selection.h"
 
@@ -47,11 +46,11 @@ namespace vcl {
  * @param[in] m: input mesh on which compute the barycenter.
  * @return The barycenter of the input mesh.
  */
-template <MeshConcept MeshType>
+template<MeshConcept MeshType>
 typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType = VertexType::CoordType;
+    using CoordType  = VertexType::CoordType;
 
     CoordType bar;
 
@@ -78,16 +77,16 @@ typename MeshType::VertexType::CoordType barycenter(const MeshType& m)
  * @return The barycenter weighted on the per vertex quality.
  */
 template<MeshConcept MeshType>
-typename MeshType::VertexType::CoordType
-scalarWeightedBarycenter(const MeshType& m)
+typename MeshType::VertexType::CoordType scalarWeightedBarycenter(
+    const MeshType& m)
 {
     vcl::requirePerVertexQuality(m);
 
-    using VertexType = MeshType::VertexType;
-    using CoordType = VertexType::CoordType;
+    using VertexType  = MeshType::VertexType;
+    using CoordType   = VertexType::CoordType;
     using QualityType = VertexType::QualityType;
 
-    CoordType bar;
+    CoordType   bar;
     QualityType weightedSum = 0;
 
     for (const VertexType& v : m.vertices()) {
@@ -117,8 +116,8 @@ template<FaceMeshConcept MeshType>
 typename MeshType::VertexType::CoordType shellBarycenter(const MeshType& m)
 {
     using VertexType = MeshType::VertexType;
-    using FaceType = MeshType::FaceType;
-    using CoordType = VertexType::CoordType;
+    using FaceType   = MeshType::FaceType;
+    using CoordType  = VertexType::CoordType;
     using ScalarType = CoordType::ScalarType;
 
     CoordType bar;
@@ -180,10 +179,10 @@ double borderLength(const MeshType& m)
     using FaceType = MeshType::FaceType;
 
     double l = 0;
-    for (const FaceType& f : m.faces()){
-        for (uint i = 0; i < f.vertexNumber(); ++i){
-            if (f.adjFace(i) == nullptr){
-                l += f.vertex(i)->coord().dist(f.vertexMod(i+1)->coord());
+    for (const FaceType& f : m.faces()) {
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
+            if (f.adjFace(i) == nullptr) {
+                l += f.vertex(i)->coord().dist(f.vertexMod(i + 1)->coord());
             }
         }
     }
@@ -204,9 +203,9 @@ auto covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
         Polygon<PointType>::barycenter(pointVec.begin(), pointVec.end());
 
     // compute covariance matrix
-    for (const PointType& p : pointVec){
-        auto e = (p-barycenter).eigenVector();
-        m += e.transpose()*e; // outer product
+    for (const PointType& p : pointVec) {
+        auto e = (p - barycenter).eigenVector();
+        m += e.transpose() * e; // outer product
     }
     return m;
 }
@@ -232,9 +231,9 @@ auto covarianceMatrixOfPointCloud(const MeshType& m)
     Matrix33<ScalarType> mm;
     mm.setZero();
     // compute covariance matrix
-    for (const VertexType& v : m.vertices()){
-        auto e = (v.coord()-barycenter).eigenVector();
-        m += e.transpose()*e; // outer product
+    for (const VertexType& v : m.vertices()) {
+        auto e = (v.coord() - barycenter).eigenVector();
+        m += e.transpose() * e; // outer product
     }
     return m;
 }
@@ -247,7 +246,7 @@ auto covarianceMatrixOfPointCloud(const MeshType& m)
  */
 template<PointConcept PointType>
 auto weightedCovarianceMatrixOfPointCloud(
-    const std::vector<PointType>& pointVec,
+    const std::vector<PointType>&                      pointVec,
     const std::vector<typename PointType::ScalarType>& weights)
 {
     Matrix33<typename PointType::ScalarType> m;
@@ -257,9 +256,9 @@ auto weightedCovarianceMatrixOfPointCloud(
 
     // compute covariance matrix
     typename PointType::ScalarType wsum = 0;
-    for (uint i = 0; i < pointVec.size(); ++i){
-        auto e = ((pointVec[i]-barycenter)*weights[i]).eigenVector();
-        m += e.transpose()*e; // outer product
+    for (uint i = 0; i < pointVec.size(); ++i) {
+        auto e = ((pointVec[i] - barycenter) * weights[i]).eigenVector();
+        m += e.transpose() * e; // outer product
         wsum += weights[i];
     }
     return m / wsum;
@@ -277,21 +276,21 @@ template<FaceMeshConcept MeshType>
 auto covarianceMatrixOfMesh(const MeshType& m)
 {
     using VertexType = MeshType::VertexType;
-    using FaceType = MeshType::FaceType;
-    using CoordType = VertexType::CoordType;
+    using FaceType   = MeshType::FaceType;
+    using CoordType  = VertexType::CoordType;
     using ScalarType = CoordType::ScalarType;
 
-    CoordType bar = shellBarycenter(m);
+    CoordType            bar = shellBarycenter(m);
     Matrix33<ScalarType> C;
     C.setZero();
     Matrix33<ScalarType> C0;
     C0.setZero();
-    C0(0,0) = C0(1,1) = 2.0;
-    C0(0,1) = C0(1,0) = 1.0;
-    C0*=1/24.0;
+    C0(0, 0) = C0(1, 1) = 2.0;
+    C0(0, 1) = C0(1, 0) = 1.0;
+    C0 *= 1 / 24.0;
     // integral of (x,y,0) in the same triangle
     Eigen::Vector3<ScalarType> x;
-    x << 1/6.0,1/6.0,0;
+    x << 1 / 6.0, 1 / 6.0, 0;
     Matrix33<ScalarType> A; // matrix that bring the vertices to (v1-v0,v2-v0,n)
     Matrix33<ScalarType> DC;
 
@@ -299,9 +298,9 @@ auto covarianceMatrixOfMesh(const MeshType& m)
         const CoordType& p0 = f.vertex(0)->coord();
         const CoordType& p1 = f.vertex(1)->coord();
         const CoordType& p2 = f.vertex(2)->coord();
-        CoordType n = (p1-p0).cross(p2-p0);
-        double da = n.norm();
-        n /= da*da;
+        CoordType        n  = (p1 - p0).cross(p2 - p0);
+        double           da = n.norm();
+        n /= da * da;
 
         CoordType tmpp = p1 - p0;
         for (uint j = 0; j < 3; j++)
@@ -319,14 +318,14 @@ auto covarianceMatrixOfMesh(const MeshType& m)
         /* DC is calculated as integral of (A*x+delta) * (A*x+delta)^T over the
          * triangle, where delta = v0-bary */
         DC.setZero();
-        DC += A* C0 * A.transpose();
-        Matrix33<ScalarType> tmp = (A*x) * delta.transpose();
+        DC += A * C0 * A.transpose();
+        Matrix33<ScalarType> tmp = (A * x) * delta.transpose();
         DC += tmp + tmp.transpose();
         DC += tmp;
         tmp = delta * delta.transpose();
-        DC+=tmp*0.5;
-        DC*=da;    // the determinant of A is also the double area of f
-        C+=DC;
+        DC += tmp * 0.5;
+        DC *= da; // the determinant of A is also the double area of f
+        C += DC;
     }
     return C;
 }
@@ -358,9 +357,9 @@ std::vector<ScalarType> vertexRadiusFromWeights(
     std::vector<ScalarType> radius(m.vertexContainerSize());
     auto minmax = std::minmax_element(weights.begin(), weights.end());
 
-    float minRad = diskRadius;
-    float maxRad = diskRadius * radiusVariance;
-    float deltaQ = *minmax.second - *minmax.first;
+    float minRad   = diskRadius;
+    float maxRad   = diskRadius * radiusVariance;
+    float deltaQ   = *minmax.second - *minmax.first;
     float deltaRad = maxRad - minRad;
     for (const VertexType& v : m.vertices()) {
         ScalarType w = weights[m.index(v)];

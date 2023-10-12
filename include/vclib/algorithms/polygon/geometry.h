@@ -103,7 +103,9 @@ auto faceArea(const FaceType& f)
     else {
         if (f.vertexNumber() == 3) {
             return Triangle<CoordType>::area(
-                f.vertex(0)->coord(), f.vertex(1)->coord(), f.vertex(2)->coord());
+                f.vertex(0)->coord(),
+                f.vertex(1)->coord(),
+                f.vertex(2)->coord());
         }
         else {
             return Polygon<CoordType>::area(f.vertices() | views::coords);
@@ -156,8 +158,8 @@ template<FaceConcept FaceType>
 auto faceAngleOnVertexRad(const FaceType& f, uint vi)
 {
     const auto& p0 = f.vertex(vi)->coord();
-    const auto& p1 = f.vertexMod((int)vi+1)->coord();
-    const auto& p2 = f.vertexMod((int)vi-1)->coord();
+    const auto& p1 = f.vertexMod((int) vi + 1)->coord();
+    const auto& p2 = f.vertexMod((int) vi - 1)->coord();
     return (p2 - p0).angle(p1 - p0);
 }
 
@@ -184,7 +186,7 @@ template<FaceConcept FaceType>
 auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (! comp::isAdjacentFacesAvailableOn(f)) {
+    if (!comp::isAdjacentFacesAvailableOn(f)) {
         throw vcl::MissingComponentException(
             "Face has no Adjacent Faces component.");
     }

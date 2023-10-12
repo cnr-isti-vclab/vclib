@@ -27,9 +27,9 @@
 #include <mutex>
 
 #include <vclib/algorithms/intersection.h>
-#include <vclib/algorithms/stat.h>
 #include <vclib/algorithms/point_sampling.h>
 #include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/stat.h>
 #include <vclib/algorithms/update/normal.h>
 #include <vclib/math/transform.h>
 #include <vclib/mesh/requirements.h>
@@ -55,16 +55,17 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
     vcl::requirePerFaceAdjacentFaces(m);
 
     using VertexType = MeshType::VertexType;
-    using CoordType = VertexType::CoordType;
+    using CoordType  = VertexType::CoordType;
     using NormalType = VertexType::NormalType;
     using ScalarType = CoordType::ScalarType;
     using FaceType   = MeshType::FaceType;
 
     // Auxiliary data structure
-    struct AdjVertex {
+    struct AdjVertex
+    {
         const VertexType* vert;
-        double doubleArea;
-        bool isBorder;
+        double            doubleArea;
+        bool              isBorder;
     };
 
     if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -82,12 +83,12 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 
     for (VertexType& v : m.vertices()) {
         std::vector<ScalarType> weights;
-        std::vector<AdjVertex> vertices;
+        std::vector<AdjVertex>  vertices;
 
         vcl::MeshPos<FaceType> pos(v.adjFace(0), &v);
-        const VertexType* firstVertex = pos.adjVertex();
-        const VertexType* tmpVertex;
-        float totalDoubleAreaSize = 0;
+        const VertexType*      firstVertex = pos.adjVertex();
+        const VertexType*      tmpVertex;
+        float                  totalDoubleAreaSize = 0;
 
         // compute the area of each triangle around the central vertex as well
         // as their total area
@@ -95,8 +96,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
             pos.nextEdgeAdjacentToV();
             tmpVertex = pos.adjVertex();
             AdjVertex adjV;
-            adjV.isBorder = pos.edgeOnBorder();
-            adjV.vert = tmpVertex;
+            adjV.isBorder   = pos.edgeOnBorder();
+            adjV.vert       = tmpVertex;
             adjV.doubleArea = vcl::faceArea(*pos.face()) * 2;
             totalDoubleAreaSize += adjV.doubleArea;
             vertices.push_back(adjV);
@@ -139,7 +140,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
             CoordType t(Tp * edge.eigenVector().transpose());
             t.normalize();
             tempMatrix = t.outerProduct(t);
-            M += tempMatrix * weights[i] * curvature ;
+            M += tempMatrix * weights[i] * curvature;
         }
 
         // compute vector W for the Householder matrix
@@ -153,7 +154,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 
         // compute the Householder matrix I - 2WW^t
         Matrix33<ScalarType> Q = Matrix33<ScalarType>::Identity();
-        tempMatrix = w.outerProduct(w);
+        tempMatrix             = w.outerProduct(w);
         Q -= tempMatrix * 2.0f;
 
         // compute matrix Q^t M Q
@@ -177,12 +178,12 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
         ScalarType t[2];
         ScalarType bestC, bestS;
         ScalarType minError = std::numeric_limits<ScalarType>::infinity();
-        for (uint i=0; i < 2; i++) {
+        for (uint i = 0; i < 2; i++) {
             delta = std::sqrt(std::pow(h[i], 2) + 4.0f);
             t[0]  = (h[i] + delta) / 2.0f;
             t[1]  = (h[i] - delta) / 2.0f;
 
-            for (uint j=0; j<2; j++) {
+            for (uint j = 0; j < 2; j++) {
                 ScalarType squaredT    = std::pow(t[j], 2);
                 ScalarType denominator = 1.0f + squaredT;
 
@@ -221,8 +222,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
         Eigen::Matrix2f StMS = S.transpose() * minor2x2 * S;
 
         // compute curvatures and curvature directions
-        ScalarType principalCurv1 = (3.0f * StMS(0,0)) - StMS(1,1);
-        ScalarType principalCurv2 = (3.0f * StMS(1,1)) - StMS(0,0);
+        ScalarType principalCurv1 = (3.0f * StMS(0, 0)) - StMS(1, 1);
+        ScalarType principalCurv2 = (3.0f * StMS(1, 1)) - StMS(0, 0);
 
         Eigen::Matrix<ScalarType, 1, 3> principalDir1 = T1 * c - T2 * s;
         Eigen::Matrix<ScalarType, 1, 3> principalDir2 = T1 * s + T2 * c;
@@ -257,21 +258,21 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
  */
 template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvaturePCA(
-    MeshType&  m,
+    MeshType&                                            m,
     typename MeshType::VertexType::CoordType::ScalarType radius,
-    bool       montecarloSampling = true,
-    LogType&   log = nullLogger)
+    bool     montecarloSampling = true,
+    LogType& log                = nullLogger)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType = VertexType::CoordType;
+    using CoordType  = VertexType::CoordType;
     using ScalarType = CoordType::ScalarType;
     using NormalType = VertexType::NormalType;
     using FaceType   = MeshType::FaceType;
 
-    using VGrid = vcl::StaticGrid3<VertexType*, ScalarType>;
+    using VGrid         = vcl::StaticGrid3<VertexType*, ScalarType>;
     using VGridIterator = VGrid::ConstIterator;
 
-    VGrid pGrid;
+    VGrid      pGrid;
     ScalarType area;
 
     if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -287,21 +288,21 @@ void updatePrincipalCurvaturePCA(
     }
 
     if (montecarloSampling) {
-        area = vcl::surfaceArea(m);
+        area  = vcl::surfaceArea(m);
         pGrid = VGrid(m.vertices() | views::addrOf);
         pGrid.build();
     }
 
-    vcl::parallelFor(m.vertices(), [&](VertexType& v){
-        //for (VertexType& v : m.vertices()) {
+    vcl::parallelFor(m.vertices(), [&](VertexType& v) {
+        // for (VertexType& v : m.vertices()) {
         vcl::Matrix33<ScalarType> A, eigenvectors;
-        CoordType bp, eigenvalues;
+        CoordType                 bp, eigenvalues;
         if (montecarloSampling) {
-            vcl::Sphere s(v.coord(), radius);
+            vcl::Sphere                s(v.coord(), radius);
             std::vector<VGridIterator> vec = pGrid.valuesInSphere(s);
-            std::vector<CoordType> points;
+            std::vector<CoordType>     points;
             points.reserve(vec.size());
-            for (const auto& it : vec){
+            for (const auto& it : vec) {
                 points.push_back(it->second->coord());
             }
             A = vcl::covarianceMatrixOfPointCloud(points);
@@ -309,24 +310,25 @@ void updatePrincipalCurvaturePCA(
         }
         else {
             Sphere<ScalarType> sph(v.coord(), radius);
-            MeshType tmpMesh = meshSphereIntersection(m, sph);
+            MeshType           tmpMesh = meshSphereIntersection(m, sph);
+
             A = covarianceMatrixOfMesh(tmpMesh);
         }
         Eigen::SelfAdjointEigenSolver<vcl::Matrix33<ScalarType>> eig(A);
-        eigenvalues = CoordType(eig.eigenvalues());
+        eigenvalues  = CoordType(eig.eigenvalues());
         eigenvectors = eig.eigenvectors(); // eigenvector are stored as columns.
         // get the estimate of curvatures from eigenvalues and eigenvectors
         // find the 2 most tangent eigenvectors (by finding the one closest to
         // the normal)
-        uint best = 0;
+        uint       best  = 0;
         ScalarType bestv = std::abs(
             v.normal().dot(CoordType(eigenvectors.col(0).normalized())));
-        for(uint i  = 1 ; i < 3; ++i){
+        for (uint i = 1; i < 3; ++i) {
             ScalarType prod = std::abs(
                 v.normal().dot(CoordType(eigenvectors.col(i).normalized())));
-            if(prod > bestv){
+            if (prod > bestv) {
                 bestv = prod;
-                best = i;
+                best  = i;
             }
         }
         v.principalCurvature().maxDir() =
@@ -335,7 +337,7 @@ void updatePrincipalCurvaturePCA(
             (eigenvectors.col((best + 2) % 3).normalized());
 
         vcl::Matrix33<ScalarType> rot;
-        ScalarType angle;
+        ScalarType                angle;
         angle = acos(v.principalCurvature().maxDir().dot(v.normal()));
 
         rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(

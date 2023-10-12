@@ -57,7 +57,7 @@ bool isFaceManifoldOnEdge(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
     // Check if the AdjacentFaces component is available for the given face.
-    if (! comp::isAdjacentFacesAvailableOn(f)) {
+    if (!comp::isAdjacentFacesAvailableOn(f)) {
         throw vcl::MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -91,7 +91,7 @@ template<FaceConcept FaceType>
 bool isFaceEdgeOnBorder(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (! comp::isAdjacentFacesAvailableOn(f)) {
+    if (!comp::isAdjacentFacesAvailableOn(f)) {
         throw vcl::MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -137,7 +137,7 @@ template<FaceConcept FaceType>
 bool checkFlipEdge(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (! comp::isAdjacentFacesAvailableOn(f)) {
+    if (!comp::isAdjacentFacesAvailableOn(f)) {
         throw vcl::MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -151,21 +151,21 @@ bool checkFlipEdge(const FaceType& f, uint edge)
         return false;
 
     const VertexType* v0 = f.vertex(edge);
-    const VertexType* v1 = f.vertexMod(edge+1);
+    const VertexType* v1 = f.vertexMod(edge + 1);
 
     const FaceType* of = f.adjFace(edge);
-    uint oe = of->indexOfAdjFace(&f);
+    uint            oe = of->indexOfAdjFace(&f);
     assert(oe != UINT_NULL);
 
     // check if the vertices of the edge are the same
     // e.g. the mesh has to be well oriented
-    if (of->vertex(oe) != v1 || of->vertexMod(oe+1) != v0)
+    if (of->vertex(oe) != v1 || of->vertexMod(oe + 1) != v0)
         return false;
 
     // check if the flipped edge is already present in the mesh
     // f_v2 and of_v2 are the vertices of the new edge
-    const VertexType* f_v2 = f.vertexMod(edge+2);
-    const VertexType* of_v2 = of->vertexMod(oe+2);
+    const VertexType* f_v2  = f.vertexMod(edge + 2);
+    const VertexType* of_v2 = of->vertexMod(oe + 2);
 
     MeshPos<FaceType> pos(&f, f_v2);
     MeshPos<FaceType> startPos = pos;
@@ -174,7 +174,7 @@ bool checkFlipEdge(const FaceType& f, uint edge)
         pos.nextEdgeAdjacentToV();
         if (pos.adjVertex() == of_v2)
             return false;
-    } while(pos != startPos);
+    } while (pos != startPos);
 
     return true;
 }
@@ -203,14 +203,14 @@ template<FaceConcept FaceType>
 uint edgeAdjacentFacesNumber(const FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (! comp::isAdjacentFacesAvailableOn(f)) {
+    if (!comp::isAdjacentFacesAvailableOn(f)) {
         throw vcl::MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
 
     ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
-    uint cnt = 0;
-    for (auto it = begin ; it != end; ++it) {
+    uint                               cnt = 0;
+    for (auto it = begin; it != end; ++it) {
         ++cnt;
     }
 
@@ -236,7 +236,7 @@ template<FaceConcept FaceType>
 uint faceEdgesOnBorderNumber(const FaceType& f)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (! comp::isAdjacentFacesAvailableOn(f)) {
+    if (!comp::isAdjacentFacesAvailableOn(f)) {
         throw vcl::MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -278,7 +278,7 @@ template<FaceConcept FaceType>
 void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
     requires comp::HasAdjacentFaces<FaceType>
 {
-    if (! comp::isAdjacentFacesAvailableOn(f)) {
+    if (!comp::isAdjacentFacesAvailableOn(f)) {
         throw vcl::MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -288,10 +288,9 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
     // if nextFace == nullptr there is nothing to do
     // the face is already detached on the edge
     if (nextFace != nullptr) {
-
-        FaceType* prevFace;
+        FaceType*                          prevFace;
         ConstEdgeAdjFaceIterator<FaceType> begin(f, edge), end;
-        for (auto it = begin ; it != end; ++it) {
+        for (auto it = begin; it != end; ++it) {
             prevFace = *it;
         }
 
@@ -332,10 +331,10 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
  *
  * @param[in] f: The face to detach from its vertices and adjacent faces.
  */
-template <FaceConcept FaceType>
+template<FaceConcept FaceType>
 void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
 {
-    if (! comp::isAdjacentFacesAvailableOn(f)) {
+    if (!comp::isAdjacentFacesAvailableOn(f)) {
         throw vcl::MissingComponentException(
             "Face has no Adjacent Faces component.");
     }
@@ -348,8 +347,8 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
         // if the vertices have adjacent faces
         if constexpr (comp::HasAdjacentFaces<VertexType>) {
             if (comp::isAdjacentFacesAvailableOn(f.vertex(e))) {
-                VertexType* v = f.vertex(e);
-                uint vpos = v->indexOfAdjFace(&f);
+                VertexType* v    = f.vertex(e);
+                uint        vpos = v->indexOfAdjFace(&f);
                 if (vpos != UINT_NULL) {   // may happen if vertex adj faces are
                                            // not initialized / updated
                     v->eraseAdjFace(vpos); // the vertex v has not anymore the
@@ -378,7 +377,7 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
  * @return A vector of indices, representing the triplets of the triangulation
  * of the polygon.
  */
-template <FaceConcept Face>
+template<FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)
 {
     using CoordType = Face::VertexType::CoordType;
@@ -418,14 +417,15 @@ void addTriangleFacesFromPolygon(
     const std::vector<uint>& polygon)
 {
     using VertexType = MeshType::VertexType;
-    using CoordType = VertexType::CoordType;
+    using CoordType  = VertexType::CoordType;
 
-           // from the ids, create a polygon of coordinates
+    // from the ids, create a polygon of coordinates
     std::vector<CoordType> polCoords(polygon.size());
     for (uint i = 0; i < polygon.size(); ++i) {
         if (polygon[i] >= m.vertexContainerSize()) {
             throw BadVertexIndexException(
-                "Index " + std::to_string(polygon[i]) + " is out of range in "
+                "Index " + std::to_string(polygon[i]) +
+                " is out of range in "
                 "Vertex Container.");
         }
         if (m.vertex(polygon[i]).deleted()) {
@@ -445,7 +445,7 @@ void addTriangleFacesFromPolygon(
     std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>>
         unorderedEdges;
     for (uint i = 0; i < polygon.size(); ++i)
-        unorderedEdges.emplace(i, (i+1) % (uint)polygon.size());
+        unorderedEdges.emplace(i, (i + 1) % (uint) polygon.size());
 
     if constexpr (FaceType::VERTEX_NUMBER < 0) {
         f.resizeVertices(3);
@@ -458,7 +458,7 @@ void addTriangleFacesFromPolygon(
         ++i;
     }
 
-    if constexpr(face::HasFaceBitFlags<FaceType>) {
+    if constexpr (face::HasFaceBitFlags<FaceType>) {
         if (unorderedEdges.find(std::make_pair(tris[0], tris[1])) ==
             unorderedEdges.end())
             f.edgeFaux(0) = true;
@@ -472,7 +472,7 @@ void addTriangleFacesFromPolygon(
 
     // remaining triangles, need to create more faces in the mesh
     for (uint i = 3; i < tris.size(); i += 3) {
-        uint ff              = m.addFace();
+        uint ff = m.addFace();
 
         if constexpr (FaceType::VERTEX_NUMBER < 0) {
             m.face(ff).resizeVertices(3);
@@ -484,7 +484,7 @@ void addTriangleFacesFromPolygon(
             ++j;
         }
 
-        if constexpr(face::HasFaceBitFlags<FaceType>) {
+        if constexpr (face::HasFaceBitFlags<FaceType>) {
             if (unorderedEdges.find(std::make_pair(tris[i], tris[i + 1])) ==
                 unorderedEdges.end())
                 m.face(ff).edgeFaux(0) = true;
@@ -513,7 +513,7 @@ void addTriangleFacesFromPolygon(
  * @param[in] polygon: the vertex indices in the mesh representing the polygon.
  * @return The index of the first triangle added to the mesh.
  */
-template <FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 uint addTriangleFacesFromPolygon(MeshType& m, const std::vector<uint>& polygon)
 {
     uint fid = m.addFace();

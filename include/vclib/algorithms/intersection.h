@@ -34,7 +34,8 @@
  *
  * @brief List of intersection algorithms.
  *
- * You can access these algorithms by including `#include <vclib/algorithms/intersection.h>`
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/intersection.h>`
  */
 
 #endif // VCL_ALGORITHMS_INTERSECTION_H

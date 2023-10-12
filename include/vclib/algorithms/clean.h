@@ -41,7 +41,8 @@
  *
  * @brief List of Mesh Cleaning and repairing algorithms.
  *
- * You can access these algorithms by including `#include <vclib/algorithms/clean.h>`
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/clean.h>`
  */
 
 namespace vcl {
@@ -74,7 +75,7 @@ void setReferencedVerticesOnVector(
             for (const auto& el : m.template elements<ELEM_ID>()) {
                 // for each vertex pointer of the element
                 for (const auto* v : el.vertices()) {
-                    if (! refs[m.index(v)]) {
+                    if (!refs[m.index(v)]) {
                         // set the vertex as referenced
                         refs[m.index(v)] = true;
                         nRefs++;
@@ -109,12 +110,13 @@ void setReferencedVerticesOnVector(
  * @return
  */
 template<typename MeshType>
-std::vector<bool>
-unreferencedVerticesVectorBool(const MeshType& m, uint& nUnref)
+std::vector<bool> unreferencedVerticesVectorBool(
+    const MeshType& m,
+    uint&           nUnref)
 {
     using VertexType = MeshType::VertexType;
 
-    uint nRefs = 0;
+    uint              nRefs = 0;
     std::vector<bool> referredVertices(m.vertexContainerSize(), false);
 
     setReferencedVerticesOnVector(
@@ -190,7 +192,7 @@ public:
 
 private:
     vcl::Vector<IndexType, N> v;
-    SentinelType s;
+    SentinelType              s;
 };
 
 template<FaceMeshConcept MeshType>
@@ -211,19 +213,19 @@ std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             TD[m.index(f.vertex(i))]++;
             if (!isFaceManifoldOnEdge(f, i)) {
-                nonManifoldInc[m.index(f.vertex(i))] = true;
-                nonManifoldInc[m.index(f.vertexMod(i+1))] = true;
+                nonManifoldInc[m.index(f.vertex(i))]        = true;
+                nonManifoldInc[m.index(f.vertexMod(i + 1))] = true;
             }
         }
     }
 
     std::vector<bool> visited(m.vertexContainerSize(), false);
     for (const FaceType& f : m.faces()) {
-        for (uint i = 0; i < f.vertexNumber(); ++i){
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
             if (!visited[m.index(f.vertex(i))]) {
                 visited[m.index(f.vertex(i))] = true;
                 MeshPos pos(&f, i);
-                uint starSize = pos.numberOfAdjacentFacesToV();
+                uint    starSize = pos.numberOfAdjacentFacesToV();
                 if (starSize != TD[m.index(f.vertex(i))])
                     nonManifoldVertices[m.index(f.vertex(i))] = true;
             }
@@ -242,19 +244,19 @@ uint numberEdges(
     std::vector<ConstMeshEdgeUtil<MeshType>> edgeVec =
         fillAndSortMeshEdgeUtilVector(m);
 
-    uint numEdges = 0;
-    numBoundaryEdges = 0;
+    uint numEdges       = 0;
+    numBoundaryEdges    = 0;
     numNonManifoldEdges = 0;
 
-    size_t f_on_cur_edge =1;
-    for(size_t i=0;i<edgeVec.size();++i) {
-        if(( (i+1) == edgeVec.size()) ||  !(edgeVec[i] == edgeVec[i+1])) {
+    size_t f_on_cur_edge = 1;
+    for (size_t i = 0; i < edgeVec.size(); ++i) {
+        if (((i + 1) == edgeVec.size()) || !(edgeVec[i] == edgeVec[i + 1])) {
             ++numEdges;
-            if(f_on_cur_edge==1)
+            if (f_on_cur_edge == 1)
                 ++numBoundaryEdges;
-            if(f_on_cur_edge>2)
+            if (f_on_cur_edge > 2)
                 ++numNonManifoldEdges;
-            f_on_cur_edge=1;
+            f_on_cur_edge = 1;
         }
         else {
             ++f_on_cur_edge;
@@ -318,7 +320,7 @@ uint removeUnreferencedVertices(MeshType& m)
     // Generate a vector of boolean flags indicating whether each vertex is
     // referenced by any of the mesh's elements.
 
-    uint n = 0;
+    uint              n = 0;
     std::vector<bool> referredVertices =
         internal::unreferencedVerticesVectorBool(m, n);
 
@@ -454,7 +456,7 @@ template<FaceMeshConcept MeshType>
 uint removeDuplicatedFaces(MeshType& m)
 {
     using VertexType = MeshType::VertexType;
-    using FaceType = MeshType::FaceType;
+    using FaceType   = MeshType::FaceType;
 
     // create a vector of sorted tuples of indices, where each tuple represents
     // a face's vertices and a pointer to the face.
@@ -568,15 +570,15 @@ uint removeDegeneratedVertices(MeshType& m, bool deleteAlsoFaces)
 template<FaceMeshConcept MeshType>
 uint removeDegenerateFaces(MeshType& m)
 {
-    uint count = 0;
+    uint count     = 0;
     using FaceType = MeshType::FaceType;
 
     // iterate over all faces in the mesh, and mark any that are degenerate as
     // deleted.
-    for (FaceType& f : m.faces()){
+    for (FaceType& f : m.faces()) {
         bool deg = false; // flag to check if a face is degenerate
-        for (uint i = 0; i < f.vertexNumber() && !deg; ++i){
-            if (f.vertex(i) == f.vertexMod(i+1)){
+        for (uint i = 0; i < f.vertexNumber() && !deg; ++i) {
+            if (f.vertex(i) == f.vertexMod(i + 1)) {
                 deg = true;
                 m.deleteFace(m.index(f));
                 count++;
@@ -665,27 +667,26 @@ uint numberHoles(const MeshType& m)
     vcl::requirePerFaceAdjacentFaces(m);
 
     using VertexType = MeshType::VertexType;
-    using FaceType = MeshType::FaceType;
+    using FaceType   = MeshType::FaceType;
 
-    uint loopNum=0;
+    uint loopNum = 0;
 
     // create a vector of bools to keep track of visited faces.
     std::vector<bool> visitedFaces(m.faceContainerSize(), false);
 
     // Traverse the mesh using a depth-first search algorithm to find all the
     // holes.
-    for(const FaceType& f : m.faces()) {
+    for (const FaceType& f : m.faces()) {
         uint e = 0;
-        for(const VertexType* v : f.vertices()) {
-            if(!visitedFaces[m.index(f)] && f.adjFace(e) == nullptr) {
-                MeshPos<FaceType> startPos(&f,e);
-                MeshPos<FaceType> curPos=startPos;
+        for (const VertexType* v : f.vertices()) {
+            if (!visitedFaces[m.index(f)] && f.adjFace(e) == nullptr) {
+                MeshPos<FaceType> startPos(&f, e);
+                MeshPos<FaceType> curPos = startPos;
                 do {
                     curPos.nextEdgeOnBorderAdjacentToV();
                     curPos.flipVertex();
                     visitedFaces[m.index(curPos.face())] = true;
-                }
-                while(curPos!=startPos);
+                } while (curPos != startPos);
                 ++loopNum;
             }
             ++e;
@@ -716,7 +717,7 @@ uint numberHoles(const MeshType& m)
  *
  * @ingroup clean
  */
-template <FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 std::vector<std::set<uint>> connectedComponents(const MeshType& m)
     requires vcl::HasPerFaceAdjacentFaces<MeshType>
 {
@@ -735,29 +736,29 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
 
     // traverse the mesh using a depth-first search algorithm to find the
     // connected components.
-    for (const FaceType& f : m.faces()){
+    for (const FaceType& f : m.faces()) {
         if (!visitedFaces[m.index(f)]) { // first time I see this face
             visitedFaces[m.index(f)] = true;
 
             // new connected component
             cc.emplace_back();
-            std::set<uint>& ccf = cc[cc.size()-1];
+            std::set<uint>& ccf = cc[cc.size() - 1];
             ccf.insert(m.index(f));
 
             // while the stack is empty, visit the adjacent faces of the top
             // face of the stack
             sf.push(&f);
-            while(!sf.empty()){
+            while (!sf.empty()) {
                 const FaceType* fpt = sf.top();
                 // remove the top face and add it to the connected component
                 sf.pop();
                 ccf.insert(m.index(fpt));
 
                 // add the adjacent faces of the current visited in the stack
-                for (uint j = 0; j < fpt->vertexNumber(); ++j){
+                for (uint j = 0; j < fpt->vertexNumber(); ++j) {
                     const FaceType* adjf = fpt->adjFace(j);
                     // if there is an adj face and it has not been visited
-                    if (adjf != nullptr && !visitedFaces[m.index(adjf)]){
+                    if (adjf != nullptr && !visitedFaces[m.index(adjf)]) {
                         sf.push(adjf);
                         visitedFaces[m.index(adjf)] = true;
                     }
@@ -786,7 +787,7 @@ std::vector<std::set<uint>> connectedComponents(const MeshType& m)
  *
  * @ingroup clean
  */
-template <FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 uint numberConnectedComponents(const MeshType& m)
 {
     return connectedComponents(m).size();

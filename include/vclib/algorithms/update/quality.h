@@ -67,7 +67,7 @@ void setPerVertexQuality(
  * @param[in,out] m: mesh on which set the face quality
  * @param[in] s: quality value to set
  */
-template <FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType>
 void setPerFaceQuality(MeshType& m, typename MeshType::FaceType::QualityType s)
 {
     vcl::requirePerFaceQuality(m);
@@ -93,7 +93,7 @@ void setPerFaceQuality(MeshType& m, typename MeshType::FaceType::QualityType s)
  */
 template<MeshConcept MeshType>
 void clampPerVertexQuality(
-    MeshType&                                 m,
+    MeshType&                                  m,
     typename MeshType::VertexType::QualityType minS,
     typename MeshType::VertexType::QualityType maxS)
 {
@@ -120,7 +120,7 @@ void clampPerVertexQuality(
  */
 template<FaceMeshConcept MeshType>
 void clampPerFaceQuality(
-    MeshType&                                 m,
+    MeshType&                                m,
     typename MeshType::FaceType::QualityType minS,
     typename MeshType::FaceType::QualityType maxS)
 {
@@ -148,17 +148,17 @@ void clampPerFaceQuality(
  */
 template<MeshConcept MeshType>
 void normalizePerVertexQuality(
-    MeshType&                                 m,
+    MeshType&                                  m,
     typename MeshType::VertexType::QualityType minS = 0,
     typename MeshType::VertexType::QualityType maxS = 1)
 {
     vcl::requirePerVertexQuality(m);
 
-    using VertexType = MeshType::VertexType;
+    using VertexType  = MeshType::VertexType;
     using QualityType = VertexType::QualityType;
 
-    QualityType range = maxS - minS;
-    std::pair<QualityType, QualityType> p = vertexQualityMinMax(m);
+    QualityType                         range = maxS - minS;
+    std::pair<QualityType, QualityType> p     = vertexQualityMinMax(m);
 
     for (VertexType& v : m.vertices()) {
         v.quality() =
@@ -181,17 +181,17 @@ void normalizePerVertexQuality(
  */
 template<FaceMeshConcept MeshType>
 void normalizePerFaceQuality(
-    MeshType&                                 m,
+    MeshType&                                m,
     typename MeshType::FaceType::QualityType minS = 0,
     typename MeshType::FaceType::QualityType maxS = 1)
 {
     vcl::requirePerFaceQuality(m);
 
-    using FaceType = MeshType::FaceType;
+    using FaceType    = MeshType::FaceType;
     using QualityType = FaceType::QualityType;
 
-    QualityType range = maxS - minS;
-    std::pair<QualityType, QualityType> p = faceQualityMinMax(m);
+    QualityType                         range = maxS - minS;
+    std::pair<QualityType, QualityType> p     = faceQualityMinMax(m);
 
     for (FaceType& f : m.faces()) {
         f.quality() =
@@ -251,7 +251,7 @@ void setPerFaceQualityFromFaceArea(MeshType& m)
 }
 
 template<MeshConcept MeshType>
-void setPerVertexQualityFromPrincipalCurvatureGaussian(MeshType &m)
+void setPerVertexQualityFromPrincipalCurvatureGaussian(MeshType& m)
 {
     vcl::requirePerVertexQuality(m);
     vcl::requirePerVertexPrincipalCurvature(m);
@@ -328,7 +328,8 @@ void setPerVertexQualityFromPrincipalCurvatureShapeIndex(MeshType& m)
     for (VertexType& v : m.vertices()) {
         ScalarType k1 = v.principalCurvature().maxValue();
         ScalarType k2 = v.principalCurvature().minValue();
-        if (k1 < k2) std::swap(k1, k2);
+        if (k1 < k2)
+            std::swap(k1, k2);
         v.quality() = (2.0 / M_PI) * std::atan2(k1 + k2, k1 - k2);
     }
 }

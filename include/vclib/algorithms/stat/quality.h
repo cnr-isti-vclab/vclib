@@ -50,7 +50,7 @@ auto vertexQualityMinMax(const MeshType& m)
     vcl::requirePerVertexQuality(m);
 
     auto [min, max] = std::ranges::minmax(m.vertices() | views::quality);
-    return std::make_pair(min, max);;
+    return std::make_pair(min, max);
 }
 
 /**
@@ -92,7 +92,7 @@ auto vertexQualityAverage(const MeshType& m)
 {
     vcl::requirePerVertexQuality(m);
 
-    using VertexType = MeshType::VertexType;
+    using VertexType  = MeshType::VertexType;
     using QualityType = VertexType::QualityType;
 
     QualityType avg = 0;
@@ -119,7 +119,7 @@ auto faceQualityAverage(const MeshType& m)
 {
     vcl::requirePerFaceQuality(m);
 
-    using FaceType   = MeshType::FaceType;
+    using FaceType    = MeshType::FaceType;
     using QualityType = FaceType::QualityType;
 
     QualityType avg = 0;
@@ -152,14 +152,15 @@ std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
 {
     vcl::requirePerVertexQuality(m);
 
-    using VertexType = MeshType::VertexType;
+    using VertexType  = MeshType::VertexType;
     using QualityType = VertexType::QualityType;
 
-    std::vector<QualityType> radius(m.vertexContainerSize());
-    std::pair<QualityType, QualityType> minmax = vertexQualityMinMax(m);
-    float minRad = diskRadius;
-    float maxRad = diskRadius * radiusVariance;
-    float deltaQ = minmax.second - minmax.first;
+    std::vector<QualityType>            radius(m.vertexContainerSize());
+    std::pair<QualityType, QualityType> minmax   = vertexQualityMinMax(m);
+
+    float minRad   = diskRadius;
+    float maxRad   = diskRadius * radiusVariance;
+    float deltaQ   = minmax.second - minmax.first;
     float deltaRad = maxRad - minRad;
     for (const VertexType& v : m.vertices()) {
         radius[m.index(v)] =

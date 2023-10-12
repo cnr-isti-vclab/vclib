@@ -64,8 +64,9 @@ void updatePerFaceNormals(MeshType& m, bool normalize = true)
 
     using FaceType = MeshType::FaceType;
     for (FaceType& f : m.faces()) {
-        f.normal() = faceNormal(f).
-                     template cast<typename FaceType::NormalType::ScalarType>();
+        f.normal() =
+            faceNormal(f)
+                .template cast<typename FaceType::NormalType::ScalarType>();
     }
 
     if (normalize)
@@ -243,9 +244,9 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true)
 {
     clearPerReferencedVertexNormals(m);
 
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-    using NormalType = VertexType::NormalType;
+    using VertexType  = MeshType::VertexType;
+    using FaceType    = MeshType::FaceType;
+    using NormalType  = VertexType::NormalType;
     using NScalarType = NormalType::ScalarType;
 
     for (FaceType& f : m.faces()) {
@@ -302,9 +303,9 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true)
 {
     clearPerReferencedVertexNormals(m);
 
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-    using NormalType = VertexType::NormalType;
+    using VertexType  = MeshType::VertexType;
+    using FaceType    = MeshType::FaceType;
+    using NormalType  = VertexType::NormalType;
     using NScalarType = NormalType::ScalarType;
 
     for (FaceType& f : m.faces()) {

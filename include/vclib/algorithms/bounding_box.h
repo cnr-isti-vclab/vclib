@@ -60,7 +60,7 @@ namespace vcl {
  * @ingroup bounding_box
  */
 template<PointConcept PointType>
-auto boundingBox(const PointType &p)
+auto boundingBox(const PointType& p)
 {
     vcl::Box<PointType> b;
     b.add(p);
@@ -73,7 +73,8 @@ auto boundingBox(const PointType &p)
  * Given a line segment `s`, this function computes and returns the bounding
  * box of the segment. The bounding box is represented by a `vcl::Box` object.
  *
- * @tparam SegmentType: The type of the segment. It must satisfy the SegmentConcept.
+ * @tparam SegmentType: The type of the segment. It must satisfy the
+ * SegmentConcept.
  *
  * @param[in] s: The input line segment to compute the bounding box of
  * @return The bounding box of the input line segment

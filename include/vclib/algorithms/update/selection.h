@@ -41,7 +41,7 @@ void clearSelection(Rng&& r)
     }
 }
 
-} // namespace vcl::internal
+} // namespace internal
 
 template<MeshConcept MeshType>
 void clearVertexSelection(MeshType& m)

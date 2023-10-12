@@ -230,21 +230,21 @@ void setPerFaceColorFromVertexColor(MeshType& m)
  */
 template<MeshConcept MeshType>
 void setPerVertexColorFromQuality(
-    MeshType&                                 m,
-    vcl::Color::ColorMap                      colorMap = vcl::Color::RedBlue,
+    MeshType&                                  m,
+    vcl::Color::ColorMap                       colorMap   = vcl::Color::RedBlue,
     typename MeshType::VertexType::QualityType minQuality = 0,
     typename MeshType::VertexType::QualityType maxQuality = 0)
 {
     vcl::requirePerVertexColor(m);
     vcl::requirePerVertexQuality(m);
 
-    using VertexType = MeshType::VertexType;
+    using VertexType  = MeshType::VertexType;
     using QualityType = VertexType::QualityType;
 
     if (minQuality == maxQuality) {
         std::pair<QualityType, QualityType> pair = vertexQualityMinMax(m);
-        minQuality                              = pair.first;
-        maxQuality                              = pair.second;
+        minQuality                               = pair.first;
+        maxQuality                               = pair.second;
     }
     for (VertexType& v : m.vertices()) {
         v.color() =
@@ -278,21 +278,22 @@ void setPerVertexColorFromQuality(
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromQuality(
-    MeshType&                               m,
-    vcl::Color::ColorMap                    colorMap = vcl::Color::RedBlue,
+    MeshType&                                m,
+    vcl::Color::ColorMap                     colorMap   = vcl::Color::RedBlue,
     typename MeshType::FaceType::QualityType minQuality = 0,
     typename MeshType::FaceType::QualityType maxQuality = 0)
 {
     vcl::requirePerFaceColor(m);
     vcl::requirePerFaceQuality(m);
 
-    using FaceType   = MeshType::FaceType;
+    using FaceType    = MeshType::FaceType;
     using QualityType = FaceType::QualityType;
 
     if (minQuality == maxQuality) {
         std::pair<QualityType, QualityType> pair = faceQualityMinMax(m);
-        minQuality                              = pair.first;
-        maxQuality                              = pair.second;
+
+        minQuality = pair.first;
+        maxQuality = pair.second;
     }
     for (FaceType& f : m.faces()) {
         f.color() =
@@ -328,9 +329,9 @@ void setPerFaceColorFromQuality(
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceBorderFlag(
     MeshType& m,
-    Color     borderColor = vcl::Color::Blue,
+    Color     borderColor   = vcl::Color::Blue,
     Color     internalColor = vcl::Color::White,
-    Color     mixColor = vcl::Color::Cyan)
+    Color     mixColor      = vcl::Color::Cyan)
 {
     vcl::requirePerVertexColor(m);
 
@@ -508,7 +509,7 @@ template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexColorPerlinNoise(
     MeshType& m,
     PointType period,
-    PointType offset = PointType(0, 0, 0),
+    PointType offset     = PointType(0, 0, 0),
     bool      onSelected = false)
 {
     vcl::requirePerVertexColor(m);
@@ -551,12 +552,12 @@ void setPerVertexColorPerlinNoise(
  */
 template<MeshConcept MeshType, PointConcept PointType>
 void setPerVertexPerlinColor(
-    MeshType&      m,
-    double         period,
-    PointType      offset = PointType(0, 0, 0),
-    Color          color1 = Color::Black,
-    Color          color2 = Color::White,
-    bool           onSelected = false)
+    MeshType& m,
+    double    period,
+    PointType offset     = PointType(0, 0, 0),
+    Color     color1     = Color::Black,
+    Color     color2     = Color::White,
+    bool      onSelected = false)
 {
     vcl::requirePerVertexColor(m);
 
