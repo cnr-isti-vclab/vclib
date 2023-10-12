@@ -70,7 +70,7 @@ void save(
         savePly(m, filename, info, log, binary);
     }
     else if (ext == ".stl") {
-        io::saveStl(m, filename, info, log, binary);
+        saveStl(m, filename, info, log, binary);
     }
     else {
         throw vcl::UnknownFileFormatException(ext);

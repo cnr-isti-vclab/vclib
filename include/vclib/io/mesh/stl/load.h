@@ -29,7 +29,7 @@
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-namespace vcl::io {
+namespace vcl {
 
 namespace detail {
 
@@ -93,7 +93,7 @@ bool isStlColored(std::ifstream& fp, bool& magicsMode)
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
-void loadStlBin(
+void readStlBin(
     MeshType&      m,
     std::ifstream& fp,
     MeshInfo&  loadedInfo,
@@ -106,7 +106,7 @@ void loadStlBin(
     if (enableOptionalComponents) {
         if (colored)
             loadedInfo.setFaceColors();
-        detail::enableOptionalComponents(loadedInfo, m);
+        io::detail::enableOptionalComponents(loadedInfo, m);
     }
     else if (colored) {
         if constexpr (HasPerFaceColor<MeshType>) {
@@ -180,7 +180,7 @@ void loadStlBin(
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
-void loadStlAscii(
+void readStlAscii(
     MeshType&      m,
     std::ifstream& fp,
     MeshInfo&      loadedInfo,
@@ -189,7 +189,7 @@ void loadStlAscii(
     bool           enableOptionalComponents)
 {
     if (enableOptionalComponents) {
-        detail::enableOptionalComponents(loadedInfo, m);
+        io::detail::enableOptionalComponents(loadedInfo, m);
     }
 
     if constexpr (vcl::isLoggerValid<LogType>()) {
@@ -262,7 +262,7 @@ void loadStlAscii(
     }
 }
 
-} // namespace vcl::io::detail
+} // namespace detail
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadStl(
@@ -305,9 +305,9 @@ void loadStl(
     }
 
     if (isBinary)
-        detail::loadStlBin(m, fp, loadedInfo, log, enableOptionalComponents);
+        detail::readStlBin(m, fp, loadedInfo, log, enableOptionalComponents);
     else
-        detail::loadStlAscii(
+        detail::readStlAscii(
             m, fp, loadedInfo, log, filesize, enableOptionalComponents);
 
     if constexpr (isLoggerValid<LogType>()) {
@@ -349,6 +349,6 @@ MeshType loadStl(
         filename, loadedInfo, log, enableOptionalComponents);
 }
 
-} // namespace vcl::io
+} // namespace vcl
 
 #endif // VCL_IO_STL_LOAD_H

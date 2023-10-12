@@ -30,7 +30,7 @@
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-namespace vcl::io {
+namespace vcl {
 
 namespace detail {
 
@@ -95,7 +95,7 @@ void writeSTLTriangle(
     }
 }
 
-} // namespace vcl::io::detail
+} // namespace detail
 
 /**
  * @brief saveStl
@@ -221,6 +221,6 @@ void saveStl(
     saveStl(m, filename, info, log, binary, magicsMode);
 }
 
-} // namespace vcl::io
+} // namespace vcl
 
 #endif // VCL_IO_STL_SAVE_H

@@ -74,7 +74,7 @@ void load(
         loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
     }
     else if (ext == ".stl") {
-        io::loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
+        loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
     }
     else {
         throw vcl::UnknownFileFormatException(ext);

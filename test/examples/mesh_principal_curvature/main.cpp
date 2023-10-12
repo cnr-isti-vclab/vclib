@@ -65,7 +65,7 @@ int main(int argc, char **argv)
     m.enablePerFaceColor();
     vcl::setPerFaceColorFromVertexColor(m);
 
-    vcl::io::saveStl(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.stl");
+    vcl::saveStl(m, VCL_TEST_RESULTS_PATH "/bimba_curvature.stl");
 
 #ifdef VCLIB_WITH_QGLVIEWER
     QApplication application(argc, argv);
