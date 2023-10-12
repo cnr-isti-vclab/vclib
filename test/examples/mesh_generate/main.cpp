@@ -36,7 +36,7 @@
 
 int main(int argc, char **argv)
 {
-    vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
     using ScalarType = vcl::TriMesh::ScalarType;
 
     vcl::updatePerFaceNormals(m);

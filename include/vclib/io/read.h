@@ -21,12 +21,86 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_INTERNAL_IO_READ_H
-#define VCL_IO_INTERNAL_IO_READ_H
+#ifndef VCL_IO_READ_H
+#define VCL_IO_READ_H
 
-#include "io_utils.h"
+#include "utils.h"
 
-namespace vcl::io::detail {
+namespace vcl {
+
+inline std::ifstream openInputFileStream(
+    const std::string& filename,
+    const std::string& ext = "")
+{
+    setlocale(LC_ALL, "C");
+
+    std::string actualfilename = filename;
+    if (!ext.empty()){
+        actualfilename = FileInfo::addExtensionToFileName(filename, ext);
+    }
+    // need to set binary or windows will fail
+    std::ifstream fp(actualfilename, std::ifstream::binary);
+    fp.imbue(std::locale().classic());
+
+    if (!fp.is_open()) {
+        throw vcl::CannotOpenFileException(filename);
+    }
+    return fp;
+}
+
+// TODO
+//inline std::string readNextNonEmptyLine(
+//    std::ifstream& file)
+//{
+//    std::string line;
+//    do {
+//        std::getline(file, line);
+//        if (!file) {
+//            throw vcl::MalformedFileException("Unexpected end of file.");
+//        }
+//        if (line.size() > 0) {
+//            str::removeWindowsNewLine(line);
+//        }
+//    } while (line.size() == 0);
+//    return line;
+//}
+
+inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
+    std::ifstream& file,
+    char           separator = ' ')
+{
+    std::string line;
+    vcl::Tokenizer tokenizer;
+    do {
+        std::getline(file, line);
+        if (!file) {
+            throw vcl::MalformedFileException("Unexpected end of file.");
+        }
+        if (line.size() > 0) {
+            str::removeWindowsNewLine(line);
+            tokenizer = vcl::Tokenizer(line, separator);
+        }
+    } while (tokenizer.begin() == tokenizer.end());
+    return tokenizer;
+}
+
+inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
+    std::ifstream& file,
+    char           separator = ' ')
+{
+    std::string line;
+    vcl::Tokenizer tokenizer;
+    do {
+        std::getline(file, line);
+        if (file && line.size() > 0) {
+            str::removeWindowsNewLine(line);
+            tokenizer = vcl::Tokenizer(line, separator);
+        }
+    } while (file && tokenizer.begin() == tokenizer.end());
+    return tokenizer;
+}
+
+namespace io {
 
 // read/bin
 
@@ -98,8 +172,9 @@ T readDouble(std::ifstream& file, bool isColor = false)
     return (T) c;
 }
 
+// TODO - rename to readPrimitiveType
 template<typename T>
-T readProperty(std::ifstream& file, PropertyType type, bool isColor = false)
+T readProperty(std::ifstream& file, PrimitiveType type, bool isColor = false)
 {
     T p;
     switch (type) {
@@ -119,12 +194,13 @@ T readProperty(std::ifstream& file, PropertyType type, bool isColor = false)
     return p;
 }
 
+// TODO - move this to some specific mesh file
 template<ElementConcept El>
 void readCustomComponent(
     std::ifstream&     file,
     El&                elem,
     const std::string& cName,
-    PropertyType       type)
+    PrimitiveType      type)
 {
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))
@@ -215,10 +291,11 @@ T readDouble(vcl::Tokenizer::iterator& token, bool isColor = false)
     }
 }
 
+// TODO - rename to readPrimitiveType
 template<typename T>
 T readProperty(
     vcl::Tokenizer::iterator& token,
-    PropertyType              type,
+    PrimitiveType             type,
     bool                      isColor = false)
 {
     T p;
@@ -246,12 +323,13 @@ T readProperty(
     return p;
 }
 
+// TODO - move this to some specific mesh file
 template<ElementConcept El>
 void readCustomComponent(
     vcl::Tokenizer::iterator& token,
     El&                       elem,
     const std::string&        cName,
-    PropertyType              type)
+    PrimitiveType             type)
 {
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))
@@ -282,6 +360,7 @@ void readCustomComponent(
         assert(0);
 }
 
-} // vcl::io::detail
+} // namespace io
+} // namespace vcl
 
-#endif // VCL_IO_INTERNAL_IO_READ_H
+#endif // VCL_IO_READ_H

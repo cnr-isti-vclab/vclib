@@ -25,6 +25,7 @@
 #define VCL_IO_PLY_SAVE_H
 
 #include <vclib/exceptions/io_exceptions.h>
+#include <vclib/io/utils.h>
 #include <vclib/misc/logger.h>
 
 #include "ply.h"
@@ -32,7 +33,6 @@
 #include "ply_extra.h"
 #include "ply_face.h"
 #include "ply_vertex.h"
-#include "../detail/io_utils.h"
 
 namespace vcl::io {
 
@@ -69,8 +69,8 @@ void savePly(
 
     if (!header.isValid())
         throw std::runtime_error("Ply Header not valid.");
-
-    std::ofstream fp = detail::saveFileStream(filename, "ply");
+    
+    std::ofstream fp = openOutputFileStream(filename, "ply");
 
     fp << header.toString();
 

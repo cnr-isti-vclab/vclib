@@ -29,13 +29,13 @@
 #include <string>
 #include <vector>
 
+#include <vclib/io/utils.h>
 #include <vclib/misc/mesh_info.h>
 #include <vclib/misc/file_info.h>
 #include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>
 
 #include "ply.h"
-#include "../detail/io_utils.h"
 
 namespace vcl {
 
@@ -92,7 +92,7 @@ public:
                 ply::Element element;
                 do {
                     vcl::Tokenizer spaceTokenizer =
-                        vcl::io::detail::nextNonEmptyTokenizedLine(file);
+                        readAndTokenizeNextNonEmptyLine(file);
                     if (!error) {
                         str::removeWindowsNewLine(line);
                         vcl::Tokenizer::iterator token = spaceTokenizer.begin();
@@ -428,7 +428,7 @@ public:
                 tcv.name = texture_v;
                 tcv.type = (PropertyType)info.vertexTexCoordsType();
                 tcn.name = texnumber;
-                tcn.type = io::detail::USHORT;
+                tcn.type = USHORT;
                 vElem.properties.push_back(tcu);
                 vElem.properties.push_back(tcv);
                 vElem.properties.push_back(tcn);
@@ -454,8 +454,8 @@ public:
                 ply::Property vids;
                 vids.list         = true;
                 vids.name         = vertex_indices;
-                vids.type         = io::detail::UINT;
-                vids.listSizeType = io::detail::UCHAR;
+                vids.type         = UINT;
+                vids.listSizeType = UCHAR;
                 fElem.properties.push_back(vids);
             }
             if (info.hasFaceNormals()) {
@@ -494,11 +494,11 @@ public:
             if (info.hasFaceWedgeTexCoords()) {
                 ply::Property tc, tn;
                 tc.list         = true;
-                tc.listSizeType = io::detail::UCHAR;
+                tc.listSizeType = UCHAR;
                 tc.name = texcoord;
                 tc.type = (PropertyType)info.faceWedgeTexCoordsType();
                 tn.name = texnumber;
-                tn.type = io::detail::USHORT;
+                tn.type = USHORT;
                 fElem.properties.push_back(tc);
                 fElem.properties.push_back(tn);
             }
@@ -522,11 +522,11 @@ public:
             if (info.hasEdgeVRefs()) {
                 ply::Property v1;
                 v1.name = vertex1;
-                v1.type = io::detail::UINT;
+                v1.type = UINT;
                 eElem.properties.push_back(v1);
                 ply::Property v2;
                 v2.name = vertex2;
-                v2.type = io::detail::UINT;
+                v2.type = UINT;
                 eElem.properties.push_back(v2);
             }
             elements.push_back(eElem);
@@ -693,23 +693,23 @@ private:
 
     ply::PropertyType stringToType(const std::string &type) const
     {
-        ply::PropertyType pt = io::detail::UCHAR;
+        ply::PropertyType pt = UCHAR;
         if (type == "char")
-            pt = io::detail::CHAR;
+            pt = CHAR;
         if (type == "uchar")
-            pt = io::detail::UCHAR;
+            pt = UCHAR;
         if (type == "short")
-            pt = io::detail::SHORT;
+            pt = SHORT;
         if (type == "ushort")
-            pt = io::detail::USHORT;
+            pt = USHORT;
         if (type == "int")
-            pt = io::detail::INT;
+            pt = INT;
         if (type == "uint")
-            pt = io::detail::UINT;
+            pt = UINT;
         if (type == "float")
-            pt = io::detail::FLOAT;
+            pt = FLOAT;
         if (type == "double")
-            pt = io::detail::DOUBLE;
+            pt = DOUBLE;
         return pt;
     }
 
@@ -741,15 +741,15 @@ private:
     std::string typeToString(ply::PropertyType t) const
     {
         switch (t) {
-        case io::detail::CHAR: return "char";
-        case io::detail::UCHAR: return "uchar";
-        case io::detail::SHORT: return "short";
-        case io::detail::USHORT: return "ushort";
-        case io::detail::INT: return "int";
-        case io::detail::UINT: return "uint";
-        case io::detail::FLOAT: return "float";
-        case io::detail::DOUBLE: return "double";
-        case io::detail::NONE: return "";
+        case CHAR: return "char";
+        case UCHAR: return "uchar";
+        case SHORT: return "short";
+        case USHORT: return "ushort";
+        case INT: return "int";
+        case UINT: return "uint";
+        case FLOAT: return "float";
+        case DOUBLE: return "double";
+        case NONE: return "";
         }
         return "";
     }

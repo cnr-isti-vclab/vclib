@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_INTERNAL_IO_UTILS_H
-#define VCL_IO_INTERNAL_IO_UTILS_H
+#ifndef VCL_IO_UTILS_H
+#define VCL_IO_UTILS_H
 
 #include <algorithm>
 #include <fstream>
@@ -34,48 +34,6 @@
 #include <vclib/misc/tokenizer.h>
 
 namespace vcl::io::detail {
-
-typedef enum {
-    CHAR,
-    UCHAR,
-    SHORT,
-    USHORT,
-    INT,
-    UINT,
-    FLOAT,
-    DOUBLE,
-    NONE
-} PropertyType;
-
-inline std::ofstream
-saveFileStream(const std::string& filename, const std::string& ext)
-{
-    setlocale(LC_ALL, "C");
-    std::string actualfilename = FileInfo::addExtensionToFileName(filename, ext);
-
-    std::ofstream fp;
-    fp.imbue(std::locale().classic());
-
-    // need to set binary or windows will fail
-    fp.open(actualfilename, std::ofstream::binary);
-    if (!fp) {
-        throw vcl::CannotOpenFileException(actualfilename);
-    }
-
-    return fp;
-}
-
-inline std::ifstream loadFileStream(const std::string& filename)
-{
-    setlocale(LC_ALL, "C");
-    // need to set binary or windows will fail
-    std::ifstream fp(filename, std::ifstream::binary);
-    fp.imbue(std::locale().classic());
-    if (!fp.is_open()) {
-        throw vcl::CannotOpenFileException(filename);
-    }
-    return fp;
-}
 
 template<MeshConcept MeshType>
 void addPerVertexCustomComponent(
@@ -232,39 +190,6 @@ void enableOptionalComponents(MeshInfo& info, MeshType& m)
     }
 }
 
-vcl::Tokenizer
-nextNonEmptyTokenizedLine(std::ifstream& file, char separator = ' ')
-{
-    std::string line;
-    vcl::Tokenizer tokenizer;
-    do {
-        std::getline(file, line);
-        if (!file) {
-            throw vcl::MalformedFileException("Unexpected end of file.");
-        }
-        if (line.size() > 0) {
-            str::removeWindowsNewLine(line);
-            tokenizer = vcl::Tokenizer(line, separator);
-        }
-    } while (tokenizer.begin() == tokenizer.end());
-    return tokenizer;
-}
-
-vcl::Tokenizer
-nextNonEmptyTokenizedLineNoThrow(std::ifstream& file, char separator = ' ')
-{
-    std::string line;
-    vcl::Tokenizer tokenizer;
-    do {
-        std::getline(file, line);
-        if (file && line.size() > 0) {
-            str::removeWindowsNewLine(line);
-            tokenizer = vcl::Tokenizer(line, separator);
-        }
-    } while (file && tokenizer.begin() == tokenizer.end());
-    return tokenizer;
-}
-
 } // namespace vcl::io::detail
 
-#endif // VCL_IO_INTERNAL_IO_UTILS_H
+#endif // VCL_IO_UTILS_H

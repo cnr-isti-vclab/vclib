@@ -59,7 +59,7 @@ void loadPly(
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
-    std::ifstream file = detail::loadFileStream(filename);
+    std::ifstream file = openInputFileStream(filename);
 
     ply::PlyHeader header(filename, file);
     if (header.errorWhileLoading())

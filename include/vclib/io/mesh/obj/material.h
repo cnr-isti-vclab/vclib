@@ -27,9 +27,9 @@
 #include <vclib/space/color.h>
 #include <vclib/space/point.h>
 
-namespace vcl::io::obj {
+namespace vcl::detail {
 
-struct Material
+struct ObjMaterial
 {
     Point3f Ka = Point3f(0.2f, 0.2f, 0.2f); // ambient
     Point3f Kd = Point3f(1.0f, 1.0f, 1.0f); // diffuse
@@ -48,9 +48,9 @@ struct Material
     bool hasColor   = false;
     bool hasTexture = false;
 
-    Material() = default;
+    ObjMaterial() = default;
 
-    Material(const vcl::Color& c) : hasColor(true)
+    ObjMaterial(const vcl::Color& c) : hasColor(true)
     {
         Kd.x() = c.redF();
         Kd.y() = c.greenF();
@@ -58,9 +58,9 @@ struct Material
         d = c.alphaF();
     }
 
-    Material(const std::string& txtName) : map_Kd(txtName), hasTexture(true) {}
+    ObjMaterial(const std::string& txtName) : map_Kd(txtName), hasTexture(true) {}
 
-    Material(const vcl::Color& c, const std::string& txtName) :
+    ObjMaterial(const vcl::Color& c, const std::string& txtName) :
             map_Kd(txtName), hasColor(true), hasTexture(true)
     {
         Kd.x() = c.redF();
@@ -89,7 +89,7 @@ struct Material
      * - if a material has no texture, is < than one that has texture
      * - if both materials have texture, order by texture name
      */
-    bool operator<(const Material& m) const
+    bool operator<(const ObjMaterial& m) const
     {
         if (hasColor) {
             if (!m.hasColor) // color > no color
@@ -118,15 +118,15 @@ struct Material
         }
     }
 
-    bool operator==(const Material& m) const
+    bool operator==(const ObjMaterial& m) const
     {
         return !(*this < m) && !(m < *this);
     }
 
-    bool operator!=(const Material& m) const { return !(*this == m); }
+    bool operator!=(const ObjMaterial& m) const { return !(*this == m); }
 };
 
-std::ostream& operator<<(std::ostream& out, const Material& m)
+std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
 {
     if (m.hasColor) {
         out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z()
@@ -139,6 +139,6 @@ std::ostream& operator<<(std::ostream& out, const Material& m)
     return out;
 }
 
-} // namespace vcl::io::obj
+} // namespace vcl::obj
 
 #endif // VCL_IO_OBJ_MATERIAL_H

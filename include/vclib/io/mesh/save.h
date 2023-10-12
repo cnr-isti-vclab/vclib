@@ -61,10 +61,10 @@ void save(
     std::string ext = FileInfo::extension(filename);
     ext = vcl::str::toLower(ext);
     if (ext == ".obj") {
-        io::saveObj(m, filename, info, log);
+        saveObj(m, filename, info, log);
     }
     else if (ext == ".off") {
-        io::saveOff(m, filename, info, log);
+        saveOff(m, filename, info, log);
     }
     else if (ext == ".ply") {
         io::savePly(m, filename, info, log, binary);

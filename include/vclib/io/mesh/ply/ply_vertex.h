@@ -27,13 +27,13 @@
 #include <fstream>
 
 #include <vclib/concepts/mesh/per_vertex.h>
+#include <vclib/exceptions/io_exceptions.h>
+#include <vclib/io/read.h>
+#include <vclib/io/write.h>
 #include <vclib/misc/tokenizer.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/exceptions/io_exceptions.h>
 
 #include "ply_header.h"
-#include "../detail/io_read.h"
-#include "../detail/io_write.h"
 
 namespace vcl::io::ply {
 
@@ -50,7 +50,7 @@ void loadVertexProperty(
     if (p.name >= ply::x && p.name <= ply::z) {
         using Scalar = VertexType::CoordType::ScalarType;
         int a = p.name - ply::x;
-        v.coord()[a] = io::detail::readProperty<Scalar>(file, p.type);
+        v.coord()[a] = io::readProperty<Scalar>(file, p.type);
         hasBeenRead = true;
     }
     if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -59,7 +59,7 @@ void loadVertexProperty(
                 using Scalar = VertexType::NormalType::ScalarType;
                 int a = p.name - ply::nx;
                 v.normal()[a] =
-                    io::detail::readProperty<Scalar>(file, p.type);
+                    io::readProperty<Scalar>(file, p.type);
                 hasBeenRead = true;
             }
         }
@@ -69,7 +69,7 @@ void loadVertexProperty(
             if (vcl::isPerVertexColorAvailable(mesh)) {
                 int a = p.name - ply::red;
                 v.color()[a] =
-                    io::detail::readProperty<unsigned char>(file, p.type);
+                    io::readProperty<unsigned char>(file, p.type);
                 hasBeenRead = true;
             }
         }
@@ -79,7 +79,7 @@ void loadVertexProperty(
             using QualityType = VertexType::QualityType;
             if (vcl::isPerVertexQualityAvailable(mesh)) {
                 v.quality() =
-                    io::detail::readProperty<QualityType>(file, p.type);
+                    io::readProperty<QualityType>(file, p.type);
                 hasBeenRead = true;
             }
         }
@@ -90,7 +90,7 @@ void loadVertexProperty(
             if (vcl::isPerVertexTexCoordAvailable(mesh)) {
                 int a = p.name - ply::texture_u;
                 v.texCoord()[a] =
-                    io::detail::readProperty<Scalar>(file, p.type);
+                    io::readProperty<Scalar>(file, p.type);
                 hasBeenRead = true;
             }
         }
@@ -98,7 +98,7 @@ void loadVertexProperty(
     if (p.name == ply::unknown) {
         if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
             if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName)){
-                io::detail::readCustomComponent(
+                io::readCustomComponent(
                     file, v, p.unknownPropertyName, p.type);
                 hasBeenRead = true;
             }
@@ -106,12 +106,12 @@ void loadVertexProperty(
     }
     if (!hasBeenRead) {
         if (p.list) {
-            uint s = io::detail::readProperty<int>(file, p.listSizeType);
+            uint s = io::readProperty<int>(file, p.listSizeType);
             for (uint i = 0; i < s; ++i)
-                io::detail::readProperty<int>(file, p.type);
+                io::readProperty<int>(file, p.type);
         }
         else {
-            io::detail::readProperty<int>(file, p.type);
+            io::readProperty<int>(file, p.type);
         }
     }
 }
@@ -123,8 +123,7 @@ void loadVertexTxt(
     MeshType& mesh,
     const std::list<ply::Property>& vertexProperties)
 {
-    vcl::Tokenizer spaceTokenizer =
-        io::detail::nextNonEmptyTokenizedLine(file);
+    vcl::Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
     vcl::Tokenizer::iterator token = spaceTokenizer.begin();
     for (const ply::Property& p : vertexProperties) {
         if (token == spaceTokenizer.end()){
@@ -161,34 +160,34 @@ void saveVertices(
         for (const ply::Property& p : header.vertexProperties()) {
             bool hasBeenWritten = false;
             if (p.name >= ply::x && p.name <= ply::z) {
-                io::detail::writeProperty(
+                io::writeProperty(
                     file, v.coord()[p.name - ply::x], p.type, bin);
                 hasBeenWritten = true;
             }
             if (p.name >= ply::nx && p.name <= ply::nz) {
                 if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-                    io::detail::writeProperty(
+                    io::writeProperty(
                         file, v.normal()[p.name - ply::nx], p.type, bin);
                     hasBeenWritten = true;
                 }
             }
             if (p.name >= ply::red && p.name <= ply::alpha) {
                 if constexpr (vcl::HasPerVertexColor<MeshType>) {
-                    io::detail::writeProperty(
+                    io::writeProperty(
                         file, v.color()[p.name - ply::red], p.type, bin);
                     hasBeenWritten = true;
                 }
             }
             if (p.name == ply::quality) {
                 if constexpr (vcl::HasPerVertexQuality<MeshType>) {
-                    io::detail::writeProperty(file, v.quality(), p.type, bin);
+                    io::writeProperty(file, v.quality(), p.type, bin);
                     hasBeenWritten = true;
                 }
             }
             if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
                 if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                     const uint a = p.name - ply::texture_u;
-                    io::detail::writeProperty(
+                    io::writeProperty(
                         file, v.texCoord()[a], p.type, bin);
                     hasBeenWritten = true;
                 }
@@ -197,7 +196,7 @@ void saveVertices(
                 if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
                     if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName))
                     {
-                        io::detail::writeCustomComponent(
+                        io::writeCustomComponent(
                             file, v, p.unknownPropertyName, p.type, bin);
                         hasBeenWritten = true;
                     }
@@ -206,7 +205,7 @@ void saveVertices(
             if (!hasBeenWritten){
                 // be sure to write something if the header declares some
                 // property that is not in the mesh
-                io::detail::writeProperty(file, 0, p.type, bin);
+                io::writeProperty(file, 0, p.type, bin);
             }
         }
         if (!bin)

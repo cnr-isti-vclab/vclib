@@ -21,14 +21,38 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_INTERNAL_IO_WRITE_H
-#define VCL_IO_INTERNAL_IO_WRITE_H
+#ifndef VCL_IO_WRITE_H
+#define VCL_IO_WRITE_H
 
 #include <typeindex>
 
-#include "io_utils.h"
+#include "utils.h"
 
-namespace vcl::io::detail {
+namespace vcl {
+
+inline std::ofstream openOutputFileStream(
+    const std::string& filename,
+    const std::string& ext = "")
+{
+    setlocale(LC_ALL, "C");
+    std::string actualfilename = filename;
+    if (!ext.empty()){
+        actualfilename = FileInfo::addExtensionToFileName(filename, ext);
+    }
+
+    std::ofstream fp;
+    fp.imbue(std::locale().classic());
+
+    // need to set binary or windows will fail
+    fp.open(actualfilename, std::ofstream::binary);
+    if (!fp) {
+        throw vcl::CannotOpenFileException(actualfilename);
+    }
+
+    return fp;
+}
+
+namespace io {
 
 template<typename T>
 void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
@@ -138,11 +162,12 @@ void writeDouble(
         file << tmp << " ";
 }
 
+// TODO - rename to writePrimitiveType
 template<typename T>
 void writeProperty(
     std::ofstream& file,
     const T&       p,
-    PropertyType   type,
+    PrimitiveType   type,
     bool           bin     = true,
     bool           isColor = false)
 {
@@ -159,12 +184,13 @@ void writeProperty(
     }
 }
 
+// TODO - move this to some specific mesh file
 template<ElementConcept El>
 void writeCustomComponent(
     std::ofstream&     file,
     const El&          elem,
     const std::string& cName,
-    PropertyType       type,
+    PrimitiveType       type,
     bool               bin = true)
 {
     std::type_index ti = elem.customComponentType(cName);
@@ -202,6 +228,7 @@ void writeCustomComponent(
         assert(0);
 }
 
-} // namespace vcl::io::detail
+} // namespace io
+} // namespace vcl
 
-#endif // VCL_IO_INTERNAL_IO_WRITE_H
+#endif // VCL_IO_WRITE_H

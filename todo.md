@@ -17,6 +17,7 @@
   - [ ] make just one StaticGridIterator class that can be both const and non-const (avoid code duplication)
 - IO:
   - [ ] Fix namespaces, remove io namespace
+  - [ ] Implement a readNextNonEmptuLine function (also with no throw)
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] Implement exporter to VCG

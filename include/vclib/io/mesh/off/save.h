@@ -25,13 +25,12 @@
 #define VCL_IO_OFF_SAVE_H
 
 #include <vclib/exceptions/io_exceptions.h>
+#include <vclib/io/utils.h>
+#include <vclib/io/write.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-#include "../detail/io_utils.h"
-#include "../detail/io_write.h"
-
-namespace vcl::io {
+namespace vcl {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
@@ -47,7 +46,7 @@ void saveOff(
     // components that the user wants to save and the components that are
     // available in the mesh.
     meshInfo = info.intersect(meshInfo);
-    std::ofstream fp = detail::saveFileStream(filename, "off");
+    std::ofstream fp = openOutputFileStream(filename, "off");
     if (meshInfo.hasVertexNormals())
         fp << "N";
     if (meshInfo.hasVertexColors())
@@ -69,38 +68,38 @@ void saveOff(
         en = m.edgeNumber();
     }
 
-    io::detail::writeInt(fp, vn, false);
-    io::detail::writeInt(fp, fn, false);
-    io::detail::writeInt(fp, en, false);
+    io::writeInt(fp, vn, false);
+    io::writeInt(fp, fn, false);
+    io::writeInt(fp, en, false);
     fp << std::endl;
 
     // vertices
     if constexpr (vcl::HasVertices<MeshType>) {
         using VertexType = MeshType::VertexType;
         for (const VertexType& v : m.vertices()) {
-            io::detail::writeDouble(fp, v.coord().x(), false);
-            io::detail::writeDouble(fp, v.coord().y(), false);
-            io::detail::writeDouble(fp, v.coord().z(), false);
+            io::writeDouble(fp, v.coord().x(), false);
+            io::writeDouble(fp, v.coord().y(), false);
+            io::writeDouble(fp, v.coord().z(), false);
 
             if constexpr(vcl::HasPerVertexColor<MeshType>) {
                 if (meshInfo.hasVertexColors()) {
-                    io::detail::writeInt(fp, v.color().red(), false);
-                    io::detail::writeInt(fp, v.color().green(), false);
-                    io::detail::writeInt(fp, v.color().blue(), false);
-                    io::detail::writeInt(fp, v.color().alpha(), false);
+                    io::writeInt(fp, v.color().red(), false);
+                    io::writeInt(fp, v.color().green(), false);
+                    io::writeInt(fp, v.color().blue(), false);
+                    io::writeInt(fp, v.color().alpha(), false);
                 }
             }
             if constexpr(vcl::HasPerVertexNormal<MeshType>) {
                 if (meshInfo.hasVertexNormals()) {
-                    io::detail::writeDouble(fp, v.normal().x(), false);
-                    io::detail::writeDouble(fp, v.normal().y(), false);
-                    io::detail::writeDouble(fp, v.normal().z(), false);
+                    io::writeDouble(fp, v.normal().x(), false);
+                    io::writeDouble(fp, v.normal().y(), false);
+                    io::writeDouble(fp, v.normal().z(), false);
                 }
             }
             if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
                 if (meshInfo.hasVertexTexCoords()) {
-                    io::detail::writeDouble(fp, v.texCoord().u(), false);
-                    io::detail::writeDouble(fp, v.texCoord().v(), false);
+                    io::writeDouble(fp, v.texCoord().u(), false);
+                    io::writeDouble(fp, v.texCoord().v(), false);
                 }
             }
 
@@ -117,16 +116,16 @@ void saveOff(
         std::vector<uint> vIndices = m.vertexCompactIndices();
 
         for (const FaceType& f : m.faces()) {
-            io::detail::writeInt(fp, f.vertexNumber(), false);
+            io::writeInt(fp, f.vertexNumber(), false);
             for (const VertexType* v : f.vertices()) {
-                io::detail::writeInt(fp, vIndices[m.index(v)], false);
+                io::writeInt(fp, vIndices[m.index(v)], false);
             }
             if constexpr(vcl::HasPerFaceColor<MeshType>) {
                 if (meshInfo.hasFaceColors()) {
-                    io::detail::writeInt(fp, f.color().red(), false);
-                    io::detail::writeInt(fp, f.color().green(), false);
-                    io::detail::writeInt(fp, f.color().blue(), false);
-                    io::detail::writeInt(fp, f.color().alpha(), false);
+                    io::writeInt(fp, f.color().red(), false);
+                    io::writeInt(fp, f.color().green(), false);
+                    io::writeInt(fp, f.color().blue(), false);
+                    io::writeInt(fp, f.color().alpha(), false);
                 }
             }
 
@@ -146,6 +145,6 @@ void saveOff(
     saveOff(m, filename, info, log);
 }
 
-} // namespace vcl::io
+} // namespace vcl
 
 #endif // VCL_IO_OFF_SAVE_H

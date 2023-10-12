@@ -24,27 +24,13 @@
 #ifndef VCL_LOAD_SAVE_H
 #define VCL_LOAD_SAVE_H
 
-#include "io/load.h"
-#include "io/save.h"
+#include "io/mesh.h"
 
 /**
- * @defgroup load_save Load/Save functions
+ * @defgroup io Input/Output functions
+ * @ingroup io
  *
- * @brief List of functions that allow to load from file or save to a file an input Mesh.
- */
-
-/**
- * @defgroup load Load functions
- * @ingroup load_save
- *
- * @brief List of functions that allow to load from file an input Mesh.
- */
-
-/**
- * @defgroup save Save functions
- * @ingroup load_save
- *
- * @brief List of functions that allow to save to file an input Mesh.
+ * @brief List of functions that allow to load and save data from/to files.
  */
 
 #endif // VCL_LOAD_SAVE_H

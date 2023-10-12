@@ -21,67 +21,52 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_H
-#define VCL_IO_PLY_H
+#ifndef VCL_IO_PLY_EDGE_H
+#define VCL_IO_PLY_EDGE_H
 
-#include <assert.h>
 #include <fstream>
-#include <list>
 
+#include <vclib/io/write.h>
 #include <vclib/misc/tokenizer.h>
 
-#include "../detail/io_utils.h"
+#include "ply_header.h"
 
 namespace vcl::io::ply {
 
-typedef enum { ASCII, BINARY, UNKNOWN } Format;
-
-typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
-
-typedef enum { RGB, RGBA} ColorMode ;
-
-typedef enum {
-    unknown = -1,
-    x,
-    y,
-    z,
-    nx,
-    ny,
-    nz,
-    red,
-    green,
-    blue,
-    alpha,
-    quality,
-    texture_u,
-    texture_v,
-    texnumber,
-    vertex_indices,
-    texcoord,
-    vertex1,
-    vertex2
-} PropertyName;
-
-using PropertyType = vcl::io::detail::PropertyType;
-
-struct Property
+template<EdgeMeshConcept MeshType>
+void saveEdges(
+    std::ofstream&   file,
+    const PlyHeader& header,
+    const MeshType&  mesh)
 {
-    PropertyName name;
-    PropertyType type;
-    bool         list = false;
-    PropertyType listSizeType;
-    std::string  unknownPropertyName;  // when a property is not recognized
-};
+    using EdgeType = MeshType::EdgeType;
+    bool bin = header.format() == ply::BINARY;
 
-struct Element
-{
-    ElementType         type;
-    std::list<Property> properties;
-    uint                numberElements;
-    std::string         unknownElementType; // when an element is not recognized
-};
+    // indices of vertices that do not consider deleted vertices
+    std::vector<int> vIndices = mesh.vertexCompactIndices();
+
+    for (const EdgeType& e : mesh.edges()) {
+        for (const ply::Property& p : header.edgeProperties()) {
+            bool hasBeenWritten = false;
+            if (p.name == ply::vertex1) {
+                io::writeProperty(
+                    file, vIndices[mesh.index(e.vertex(0))], p.type, bin);
+                hasBeenWritten = true;
+            }
+            if (p.name == ply::vertex2) {
+                io::writeProperty(
+                    file, vIndices[mesh.index(e.vertex(1))], p.type, bin);
+                hasBeenWritten = true;
+            }
+            if (!hasBeenWritten) {
+                // be sure to write something if the header declares some
+                // property that is not in the mesh
+                io::writeProperty(file, 0, p.type, bin);
+            }
+        }
+    }
+}
 
 } // namespace vcl::ply
 
-
-#endif // VCL_IO_PLY_H
+#endif // VCL_IO_PLY_EDGE_H

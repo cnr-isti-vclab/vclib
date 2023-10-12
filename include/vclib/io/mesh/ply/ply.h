@@ -21,58 +21,66 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef VCL_IO_PLY_H
+#define VCL_IO_PLY_H
 
-#include <typeindex>
-#include <vclib/meshes.h>
-#include <vclib/load_save.h>
-#include <vclib/algorithms.h>
+#include <assert.h>
+#include <fstream>
+#include <list>
 
-int main()
+#include <vclib/io/utils.h>
+#include <vclib/misc/tokenizer.h>
+
+namespace vcl::io::ply {
+
+typedef enum { ASCII, BINARY, UNKNOWN } Format;
+
+typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
+
+typedef enum { RGB, RGBA} ColorMode ;
+
+typedef enum {
+    unknown = -1,
+    x,
+    y,
+    z,
+    nx,
+    ny,
+    nz,
+    red,
+    green,
+    blue,
+    alpha,
+    quality,
+    texture_u,
+    texture_v,
+    texnumber,
+    vertex_indices,
+    texcoord,
+    vertex1,
+    vertex2
+} PropertyName;
+
+using PropertyType = vcl::PrimitiveType;
+
+struct Property
 {
-    using PointType = vcl::TriMesh::VertexType::CoordType;
-    vcl::TriMesh m = vcl::io::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    PropertyName name;
+    PropertyType type;
+    bool         list = false;
+    PropertyType listSizeType;
+    std::string  unknownPropertyName;  // when a property is not recognized
+};
 
-    vcl::updatePerFaceNormals(m);
+struct Element
+{
+    ElementType         type;
+    std::list<Property> properties;
+    uint                numberElements;
+    std::string         unknownElementType; // when an element is not recognized
+};
 
-    PointType p(2, 1, 0);
-    PointType c;
+} // namespace vcl::ply
 
-    for (const auto& f : m.faces()) {
-        double dist = vcl::pointFaceDistance(p, f, c);
 
-        std::cerr << "Face " << m.index(f) << ": \n";
-        std::cerr << "\tdist: " << dist << ";\n";
-        std::cerr << "\tclos: " << c << "\n";
-    }
-
-    vcl::ConsoleLogger log;
-    log.setPrintTimer(true);
-
-    vcl::TriMesh m1 = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
-    vcl::TriMesh m2 = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny.obj");
-
-    vcl::updateBoundingBox(m1);
-    vcl::updateBoundingBox(m2);
-    vcl::updatePerFaceNormals(m1);
-    vcl::updatePerFaceNormals(m2);
-
-    log.startTimer();
-    auto res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
-
-    std::cerr << "\n\nmin: " << res.minDist << ";\n";
-    std::cerr << "max: " << res.maxDist << ";\n";
-    std::cerr << "mean: " << res.meanDist << ";\n";
-    std::cerr << "rms: " << res.RMSDist << ";\n";
-    std::cerr << "======================================\n";
-
-    log.startTimer();
-    res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_MONTECARLO);
-
-    std::cerr << "\n\nmin: " << res.minDist << ";\n";
-    std::cerr << "max: " << res.maxDist << ";\n";
-    std::cerr << "mean: " << res.meanDist << ";\n";
-    std::cerr << "rms: " << res.RMSDist << ";\n";
-
-    return 0;
-}
+#endif // VCL_IO_PLY_H

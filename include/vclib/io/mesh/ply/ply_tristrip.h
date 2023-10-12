@@ -26,10 +26,10 @@
 
 #include <fstream>
 
+#include <vclib/io/read.h>
 #include <vclib/misc/tokenizer.h>
 
 #include "ply_header.h"
-#include "../detail/io_read.h"
 
 namespace vcl::io::ply {
 
@@ -70,8 +70,7 @@ template<FaceMeshConcept MeshType>
 void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
 {
     for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
-        vcl::Tokenizer spaceTokenizer =
-            vcl::io::detail::nextNonEmptyTokenizedLine(file);
+        vcl::Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
         vcl::Tokenizer::iterator token = spaceTokenizer.begin();
         for (const ply::Property& p : header.triStripsProperties()) {
             if (token == spaceTokenizer.end()) {
@@ -80,11 +79,11 @@ void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
             bool hasBeenRead = false;
             if (p.name == ply::vertex_indices) {
                 uint tSize =
-                    io::detail::readProperty<uint>(token, p.listSizeType);
+                    io::readProperty<uint>(token, p.listSizeType);
                 std::vector<int> tristrip(tSize);
                 for (uint i = 0; i < tSize; ++i) {
                     tristrip[i] =
-                        io::detail::readProperty<size_t>(token, p.type);
+                        io::readProperty<size_t>(token, p.type);
                 }
                 hasBeenRead = true;
                 facesFromTriStrip(m, tristrip);
@@ -92,7 +91,7 @@ void loadTriStripsTxt(std::ifstream& file, const PlyHeader& header, MeshType& m)
             if (!hasBeenRead) {
                 if (p.list) {
                     uint s =
-                        io::detail::readProperty<int>(token, p.listSizeType);
+                        io::readProperty<int>(token, p.listSizeType);
                     for (uint i = 0; i < s; ++i) {
                         ++token;
                     }
@@ -113,22 +112,22 @@ void loadTriStripsBin(std::ifstream& file, const PlyHeader& header, MeshType& m)
             bool hasBeenRead = false;
             if (p.name == ply::vertex_indices) {
                 uint tSize =
-                    io::detail::readProperty<uint>(file, p.listSizeType);
+                    io::readProperty<uint>(file, p.listSizeType);
                 std::vector<int> tristrip(tSize);
                 for (uint i = 0; i < tSize; ++i)
-                    tristrip[i] = io::detail::readProperty<int>(file, p.type);
+                    tristrip[i] = io::readProperty<int>(file, p.type);
                 hasBeenRead = true;
                 facesFromTriStrip(m, tristrip);
             }
             if (!hasBeenRead) {
                 if (p.list) {
                     uint s =
-                        io::detail::readProperty<int>(file, p.listSizeType);
+                        io::readProperty<int>(file, p.listSizeType);
                     for (uint i = 0; i < s; ++i)
-                        io::detail::readProperty<int>(file, p.type);
+                        io::readProperty<int>(file, p.type);
                 }
                 else {
-                    io::detail::readProperty<int>(file, p.type);
+                    io::readProperty<int>(file, p.type);
                 }
             }
         }

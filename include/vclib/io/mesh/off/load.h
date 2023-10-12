@@ -26,16 +26,217 @@
 
 #include <vclib/algorithms/polygon.h>
 #include <vclib/exceptions/io_exceptions.h>
+#include <vclib/io/read.h>
 #include <vclib/misc/file_info.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 #include <vclib/misc/tokenizer.h>
 
-#include "utils.h"
-
-namespace vcl::io {
+namespace vcl {
 
 namespace detail {
+
+static const float OFF_GEOMVIEW_COLOR_MAP[148][4] = {
+    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+
+    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.2f,  0.2f,  0.2f,  0.2f },
+
+    {0.9f,  0.9f,  0.9f,  0.9f }, {0.1f,  0.1f,  0.1f,  0.1f },
+    {0.1f,  0.1f,  0.1f,  0.1f }, {0.8f,  0.8f,  0.8f,  0.8f },
+
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.9f,  0.9f,  0.9f,  0.9f },
+
+    {0.2f,  0.2f,  0.2f,  0.2f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f}, {0.8f,  0.8f,  0.8f,  0.8f },
+
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
+
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
+
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.4f,  0.4f,  0.4f,  0.4f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
+
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.9f,  0.9f,  0.9f,  0.9f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f}, {0.8f,  0.8f,  0.8f,  0.8f },
+
+    {0.4f,  0.4f,  0.4f,  0.4f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.4f,  0.4f,  0.4f,  0.4f },
+
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
+
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
+    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+
+    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+
+    {0.05f, 0.05f, 0.05f, 0.05f}, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.2f,  0.2f,  0.2f,  0.2f }, {0.9f,  0.9f,  0.9f,  0.9f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.1f,  0.1f,  0.1f,  0.1f },
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
+
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
+
+    {0.75f, 0.75f, 0.75f, 0.75f}, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.4f,  0.4f,  0.4f,  0.4f },
+
+    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
+
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
+
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.75f, 0.75f, 0.75f, 0.75f}, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.4f,  0.4f,  0.4f,  0.4f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
+
+    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.8f,  0.8f,  0.8f,  0.8f }, {0.4f,  0.4f,  0.4f,  0.4f },
+
+    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f }
+};
+
+void loadOffHeader(
+    std::ifstream& file,
+    MeshInfo&      fileInfo,
+    uint&          nv,
+    uint&          nf,
+    uint&          ne)
+{
+    fileInfo.reset();
+    vcl::Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+    vcl::Tokenizer::iterator token  = tokens.begin();
+    std::string              header = *token;
+
+           // the OFF string is in the header go on parsing it.
+    if (header.rfind("OFF") != std::basic_string<char>::npos) {
+        for (int u = header.rfind("OFF") - 1; u >= 0; u--) {
+            if (header[u] == 'C')
+                fileInfo.setVertexColors();
+            else if (header[u] == 'N')
+                fileInfo.setVertexNormals();
+            else if (u > 0 && header[u - 1] == 'S' && header[u] == 'T')
+                fileInfo.setVertexTexCoords();
+            else if (header[u] == '4')
+                throw vcl::MalformedFileException(
+                    "Unsupported Homogeneus components in OFF.");
+            else if (header[u] == 'n')
+                throw vcl::MalformedFileException(
+                    "Unsupported High Dimension OFF.");
+        }
+    }
+    else
+        throw vcl::MalformedFileException("Missing OFF header in file.");
+
+           // If the file is slightly malformed and it has nvert and nface AFTER the
+           // OFF string instead of in the next line we manage it here...
+    if (tokens.size() == 1) {
+        tokens = readAndTokenizeNextNonEmptyLine(file);
+        token = tokens.begin();
+    }
+    else
+        ++token;
+
+    nv = io::readUInt<uint>(token);
+    nf = io::readUInt<uint>(token);
+    ne = io::readUInt<uint>(token);
+    if (nv > 0)
+        fileInfo.setVertices();
+    if (nf > 0)
+        fileInfo.setFaces();
+    // if (ne > 0)
+    //    loadedInfo.setEdges();
+}
+
+inline vcl::Color
+loadOffColor(vcl::Tokenizer::iterator& token, int nColorComponents)
+{
+    uint red, green, blue, alpha = 255;
+
+    if (nColorComponents == 1) {
+        uint k = io::readUInt<uint>(token);
+
+        red = OFF_GEOMVIEW_COLOR_MAP[k][0]*255;
+        green = OFF_GEOMVIEW_COLOR_MAP[k][1]*255;
+        blue = OFF_GEOMVIEW_COLOR_MAP[k][2]*255;
+        alpha = OFF_GEOMVIEW_COLOR_MAP[k][3]*255;
+    }
+    else {
+        double r = io::readDouble<double>(token);
+        double g = io::readDouble<double>(token);
+        double b = io::readDouble<double>(token);
+        double a = -1;
+        if (nColorComponents == 4) {
+            a = io::readDouble<double>(token);
+        }
+        if (r > 1 || g > 1 || b > 1){
+            red = r;
+            green = g;
+            blue = b;
+            alpha = a != -1 ? a : alpha;
+        }
+        else {
+            red = r * 255;
+            green = g * 255;
+            blue = b * 255;
+            alpha = a != -1 ? a * 255 : alpha;
+        }
+    }
+    return vcl::Color(red, green, blue, alpha);
+}
 
 template<MeshConcept MeshType>
 void loadOffVertices(
@@ -52,13 +253,13 @@ void loadOffVertices(
     for (uint i = 0; i < nv; i++) {
         VertexType& v = mesh.vertex(i);
 
-        vcl::Tokenizer tokens = detail::nextNonEmptyTokenizedLine(file);
+        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLine(file);
         vcl::Tokenizer::iterator token  = tokens.begin();
 
         // Read 3 vertex coordinates
         for (unsigned int j = 0; j < 3; j++) {
             // Read vertex coordinate
-            v.coord()[j] = io::detail::readDouble<double>(token);
+            v.coord()[j] = io::readDouble<double>(token);
         }
 
         if constexpr(vcl::HasPerVertexNormal<MeshType>) {
@@ -67,14 +268,14 @@ void loadOffVertices(
             {
                 // Read 3 normal coordinates
                 for (unsigned int j = 0; j < 3; j++) {
-                    v.normal()[j] = io::detail::readDouble<double>(token);
+                    v.normal()[j] = io::readDouble<double>(token);
                 }
             }
         }
         // need to read and throw away data
         else if (fileInfo.hasVertexNormals()){
             for (unsigned int j = 0; j < 3; j++) {
-                io::detail::readDouble<double>(token);
+                io::readDouble<double>(token);
             }
         }
 
@@ -90,7 +291,7 @@ void loadOffVertices(
                     nColorComponents != 4)
                     throw MalformedFileException(
                         "Wrong number of components in line.");
-                v.color() = off::loadColor(token, nColorComponents);
+                v.color() = loadOffColor(token, nColorComponents);
             }
         }
         // need to read and throw away data
@@ -99,7 +300,7 @@ void loadOffVertices(
                 nColorComponents != 4)
                 throw MalformedFileException(
                     "Wrong number of components in line.");
-            off::loadColor(token, nColorComponents);
+            loadOffColor(token, nColorComponents);
         }
 
         if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
@@ -108,14 +309,14 @@ void loadOffVertices(
             {
                 // Read 2 tex coordinates
                 for (unsigned int j = 0; j < 2; j++) {
-                    v.texCoord()[j] = io::detail::readDouble<double>(token);
+                    v.texCoord()[j] = io::readDouble<double>(token);
                 }
             }
         }
         // need to read and throw away data
         else if (fileInfo.hasVertexTexCoords()){
             for (unsigned int j = 0; j < 2; j++) {
-                io::detail::readDouble<double>(token);
+                io::readDouble<double>(token);
             }
         }
     }
@@ -134,19 +335,18 @@ void loadOffFaces(
 
         mesh.reserveFaces(nf);
         for (uint fid = 0; fid < nf; ++fid) {
-            vcl::Tokenizer tokens =
-                vcl::io::detail::nextNonEmptyTokenizedLine(file);
+            vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLine(file);
             vcl::Tokenizer::iterator token = tokens.begin();
             mesh.addFace();
             FaceType& f = mesh.face(mesh.faceNumber() - 1);
 
             // read vertex indices
-            uint fSize = io::detail::readUInt<uint>(token);
+            uint fSize = io::readUInt<uint>(token);
             // contains the vertex ids of the actual face
             std::vector<uint> vids;
             vids.resize(fSize);
             for (uint i = 0; i < fSize; ++i) {
-                vids[i] = io::detail::readUInt<uint>(token);
+                vids[i] = io::readUInt<uint>(token);
                 bool splitFace = false;
                 // we have a polygonal mesh
                 if constexpr (FaceType::VERTEX_NUMBER < 0) {
@@ -182,7 +382,7 @@ void loadOffFaces(
                          enableIfPerFaceColorOptional(mesh)))
                     {
                         loadedInfo.setFaceColors();
-                        f.color() = off::loadColor(
+                        f.color() = loadOffColor(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in
                         // the last n triangles
@@ -198,7 +398,7 @@ void loadOffFaces(
     }
     else { // mesh does not have face, read nf lines and throw them away
         for (uint i = 0; i < nf; ++i)
-            vcl::io::detail::nextNonEmptyTokenizedLine(file);
+            readAndTokenizeNextNonEmptyLine(file);
     }
 }
 
@@ -212,7 +412,7 @@ void loadOff(
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
-    std::ifstream file = detail::loadFileStream(filename);
+    std::ifstream file = openInputFileStream(filename);
     uint nVertices, nFaces, nEdges;
 
     if constexpr (HasName<MeshType>) {
@@ -221,10 +421,10 @@ void loadOff(
 
     MeshInfo fileInfo; // data that needs to be read from the file
 
-    off::loadOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
+    detail::loadOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
     loadedInfo = fileInfo; // data that will be stored in the mesh!
     if (enableOptionalComponents)
-        detail::enableOptionalComponents(loadedInfo, m);
+        io::detail::enableOptionalComponents(loadedInfo, m);
 
     detail::loadOffVertices(m, file, fileInfo, nVertices);
     detail::loadOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
@@ -267,7 +467,6 @@ MeshType loadOff(
         filename, loadedInfo, log, enableOptionalComponents);
 }
 
-
-} // namespace vcl::io
+} // namespace vcl
 
 #endif // VCL_IO_OFF_LOAD_H

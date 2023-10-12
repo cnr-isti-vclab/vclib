@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     vcl::ConsoleLogger log;
     log.setPrintTimer(true);
 
-    vcl::TriMesh m = vcl::io::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
 
     m.enablePerVertexAdjacentFaces();
     m.enablePerFaceAdjacentFaces();

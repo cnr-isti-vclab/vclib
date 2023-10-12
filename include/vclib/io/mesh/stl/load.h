@@ -24,11 +24,10 @@
 #ifndef VCL_IO_STL_LOAD_H
 #define VCL_IO_STL_LOAD_H
 
+#include <vclib/io/read.h>
+#include <vclib/io/utils.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
-
-#include "../detail/io_utils.h"
-#include "../detail/io_read.h"
 
 namespace vcl::io {
 
@@ -44,9 +43,9 @@ bool isBinStlMalformed(
 
     if (isBinary) {
         // we can check if the size of the file is the expected one
-        std::ifstream fp = detail::loadFileStream(filename);
+        std::ifstream fp = openInputFileStream(filename);
         fp.seekg(80); // size of the header
-        uint fnum = detail::readUInt<uint>(fp);
+        uint fnum = io::readUInt<uint>(fp);
         std::size_t expectedFileSize =
             80 + 4 +                     // header and number of faces
             fnum *                       // for each face
@@ -78,14 +77,14 @@ bool isStlColored(std::ifstream& fp, bool& magicsMode)
         magicsMode = true;
     else
         magicsMode = false;
-    uint fnum = detail::readUInt<uint>(fp);
+    uint fnum = io::readUInt<uint>(fp);
     static const uint fmax = 1000;
     // 3 floats for normal and 9 for vcoords
     static const uint fdataSize = 12 * sizeof(float);
 
     for (uint i = 0; i < std::min(fnum, fmax); ++i) {
         fp.seekg(fdataSize, std::ios::cur);
-        unsigned short attr = detail::readShort<unsigned short>(fp);
+        unsigned short attr = io::readShort<unsigned short>(fp);
         Color c; c.setFromUnsignedR5G5B5(attr);
         if (c != Color::White)
             colored = true;
@@ -117,7 +116,7 @@ void loadStlBin(
     }
 
     fp.seekg(80); // size of the header
-    uint fnum = detail::readUInt<uint>(fp);
+    uint fnum = io::readUInt<uint>(fp);
 
     if constexpr (vcl::isLoggerValid<LogType>()) {
         log.startProgress("Loading STL file", fnum);
@@ -131,17 +130,17 @@ void loadStlBin(
     uint vi = 0;
     for (uint i = 0; i < fnum; ++i) {
         Point3f norm;
-        norm.x() = detail::readFloat<float>(fp);
-        norm.y() = detail::readFloat<float>(fp);
-        norm.z() = detail::readFloat<float>(fp);
+        norm.x() = io::readFloat<float>(fp);
+        norm.y() = io::readFloat<float>(fp);
+        norm.z() = io::readFloat<float>(fp);
 
         for (uint j = 0; j < 3; ++j) {
-            m.vertex(vi + j).coord().x() = detail::readFloat<float>(fp);
-            m.vertex(vi + j).coord().y() = detail::readFloat<float>(fp);
-            m.vertex(vi + j).coord().z() = detail::readFloat<float>(fp);
+            m.vertex(vi + j).coord().x() = io::readFloat<float>(fp);
+            m.vertex(vi + j).coord().y() = io::readFloat<float>(fp);
+            m.vertex(vi + j).coord().z() = io::readFloat<float>(fp);
         }
 
-        unsigned short attr = detail::readShort<unsigned short>(fp);
+        unsigned short attr = io::readShort<unsigned short>(fp);
 
         if constexpr (HasFaces<MeshType>) {
             using FaceType = MeshType::FaceType;
@@ -197,7 +196,7 @@ void loadStlAscii(
         log.startProgress("Loading STL file", fsize);
     }
 
-    vcl::Tokenizer tokens = detail::nextNonEmptyTokenizedLineNoThrow(fp);
+    vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(fp);
     if (fp) {
         // cycle that reads a face starting from the actual tokenized line
         do {
@@ -212,28 +211,28 @@ void loadStlAscii(
                 // read the normal of the face
                 Point3f normal;
 
-                normal.x() = io::detail::readFloat<float>(token);
-                normal.y() = io::detail::readFloat<float>(token);
-                normal.z() = io::detail::readFloat<float>(token);
+                normal.x() = io::readFloat<float>(token);
+                normal.y() = io::readFloat<float>(token);
+                normal.z() = io::readFloat<float>(token);
 
-                detail::nextNonEmptyTokenizedLine(fp); // outer loop
+                readAndTokenizeNextNonEmptyLine(fp); // outer loop
                 // vertex x y z
-                tokens = detail::nextNonEmptyTokenizedLine(fp);
+                tokens = readAndTokenizeNextNonEmptyLine(fp);
 
                 for (uint i = 0; i < 3; i++) { // read the three vertices
                     token = tokens.begin(); ++token; // skip the "vertex" word
 
                     m.vertex(vi + i).coord().x() =
-                        io::detail::readFloat<float>(token);
+                        io::readFloat<float>(token);
                     m.vertex(vi + i).coord().y() =
-                        io::detail::readFloat<float>(token);
+                        io::readFloat<float>(token);
                     m.vertex(vi + i).coord().z() =
-                        io::detail::readFloat<float>(token);
+                        io::readFloat<float>(token);
 
                     // next vertex
-                    tokens = detail::nextNonEmptyTokenizedLine(fp);
+                    tokens = readAndTokenizeNextNonEmptyLine(fp);
                 }
-                detail::nextNonEmptyTokenizedLine(fp); // endfacet
+                readAndTokenizeNextNonEmptyLine(fp); // endfacet
 
                 if constexpr (HasFaces<MeshType>) {
                     using FaceType = MeshType::FaceType;
@@ -250,7 +249,7 @@ void loadStlAscii(
                     }
                 }
             }
-            tokens = detail::nextNonEmptyTokenizedLineNoThrow(fp);
+            tokens = readAndTokenizeNextNonEmptyLineNoThrow(fp);
 
             if constexpr (vcl::isLoggerValid<LogType>()) {
                 log.progress(fp.tellg());
@@ -286,7 +285,7 @@ void loadStl(
         log.log(0, "Opening STL file");
     }
 
-    std::ifstream fp = detail::loadFileStream(filename);
+    std::ifstream fp = openInputFileStream(filename);
 
     loadedInfo = MeshInfo();
     loadedInfo.setVertices();

@@ -162,28 +162,28 @@ set(HEADERS
     include/vclib/exceptions/io_exceptions.h
     include/vclib/exceptions/mesh_exceptions.h
     include/vclib/exceptions/misc_exceptions.h
-    include/vclib/io/load.h
-    include/vclib/io/save.h
-    include/vclib/io/detail/io_read.h
-    include/vclib/io/detail/io_utils.h
-    include/vclib/io/detail/io_write.h
-    include/vclib/io/obj/load.h
-    include/vclib/io/obj/material.h
-    include/vclib/io/obj/save.h
-    include/vclib/io/off/load.h
-    include/vclib/io/off/save.h
-    include/vclib/io/off/utils.h
-    include/vclib/io/ply/load.h
-    include/vclib/io/ply/ply.h
-    include/vclib/io/ply/ply_edge.h
-    include/vclib/io/ply/ply_extra.h
-    include/vclib/io/ply/ply_face.h
-    include/vclib/io/ply/ply_header.h
-    include/vclib/io/ply/ply_tristrip.h
-    include/vclib/io/ply/ply_vertex.h
-    include/vclib/io/ply/save.h
-    include/vclib/io/stl/load.h
-    include/vclib/io/stl/save.h
+    include/vclib/io/mesh.h
+    include/vclib/io/read.h
+    include/vclib/io/utils.h
+    include/vclib/io/write.h
+    include/vclib/io/mesh/load.h
+    include/vclib/io/mesh/save.h
+    include/vclib/io/mesh/obj/load.h
+    include/vclib/io/mesh/obj/material.h
+    include/vclib/io/mesh/obj/save.h
+    include/vclib/io/mesh/off/load.h
+    include/vclib/io/mesh/off/save.h
+    include/vclib/io/mesh/ply/load.h
+    include/vclib/io/mesh/ply/ply.h
+    include/vclib/io/mesh/ply/ply_edge.h
+    include/vclib/io/mesh/ply/ply_extra.h
+    include/vclib/io/mesh/ply/ply_face.h
+    include/vclib/io/mesh/ply/ply_header.h
+    include/vclib/io/mesh/ply/ply_tristrip.h
+    include/vclib/io/mesh/ply/ply_vertex.h
+    include/vclib/io/mesh/ply/save.h
+    include/vclib/io/mesh/stl/load.h
+    include/vclib/io/mesh/stl/save.h
     include/vclib/iterators/mesh.h
     include/vclib/iterators/mesh/face.h
     include/vclib/iterators/mesh/element_container_iterator.h
@@ -420,6 +420,11 @@ endif()
 if (VCLIB_IDE)
     add_custom_target(vclib_ide SOURCES
         ${HEADERS} ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
+
+target_sources(vclib_ide
+  PRIVATE
+    include/vclib/io/mesh.h
+)
 endif()
 
 if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)

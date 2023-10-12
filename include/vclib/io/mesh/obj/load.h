@@ -27,36 +27,36 @@
 #include <map>
 
 #include <vclib/algorithms/polygon.h>
+#include <vclib/io/read.h>
 #include <vclib/misc/file_info.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-#include "../detail/io_read.h"
 #include "material.h"
 
-namespace vcl::io {
+namespace vcl{
 
 namespace detail {
 
 template<MeshConcept MeshType>
-using NormalsMap =
+using ObjNormalsMap =
     std::conditional_t<
         HasPerVertexNormal<MeshType>,
         std::map<uint, typename MeshType::VertexType::NormalType>,
         std::map<uint, vcl::Point3d>>;
 
 template<MeshConcept MeshType>
-void loadMaterials(
-    std::map<std::string, obj::Material>& materialMap,
+void loadObjMaterials(
+    std::map<std::string, ObjMaterial>& materialMap,
     MeshType& mesh,
     const std::string& mtllib)
 {
-    std::ifstream file = loadFileStream(mtllib);
+    std::ifstream file = openInputFileStream(mtllib);
     std::string matName;
-    obj::Material mat;
+    ObjMaterial mat;
 
     do {
-        vcl::Tokenizer tokens = nextNonEmptyTokenizedLineNoThrow(file);
+        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(file);
         if (file) {
             // counter for texture images, used when mesh has no texture files
             uint nt = 0;
@@ -65,24 +65,24 @@ void loadMaterials(
             if (header == "newmtl"){
                 if (!matName.empty())
                     materialMap[matName] = mat;
-                mat = obj::Material();
+                mat = ObjMaterial();
                 matName = *token;
             }
             if (header == "Ka") {
                 if (tokens.size() >= 4) {
                     if (*token != "spectral" && *token != "xyz") {
-                        mat.Ka.x() = readFloat<float>(token);
-                        mat.Ka.y() = readFloat<float>(token);
-                        mat.Ka.z() = readFloat<float>(token);
+                        mat.Ka.x() = io::readFloat<float>(token);
+                        mat.Ka.y() = io::readFloat<float>(token);
+                        mat.Ka.z() = io::readFloat<float>(token);
                     }
                 }
             }
             if (header == "Kd") {
                 if (tokens.size() >= 4) {
                     if (*token != "spectral" && *token != "xyz") {
-                        mat.Kd.x() = readFloat<float>(token);
-                        mat.Kd.y() = readFloat<float>(token);
-                        mat.Kd.z() = readFloat<float>(token);
+                        mat.Kd.x() = io::readFloat<float>(token);
+                        mat.Kd.y() = io::readFloat<float>(token);
+                        mat.Kd.z() = io::readFloat<float>(token);
                         mat.hasColor = true;
                     }
                 }
@@ -90,25 +90,25 @@ void loadMaterials(
             if (header == "Ks") {
                 if (tokens.size() >= 4) {
                     if (*token != "spectral" && *token != "xyz") {
-                        mat.Ks.x() = readFloat<float>(token);
-                        mat.Ks.y() = readFloat<float>(token);
-                        mat.Ks.z() = readFloat<float>(token);
+                        mat.Ks.x() = io::readFloat<float>(token);
+                        mat.Ks.y() = io::readFloat<float>(token);
+                        mat.Ks.z() = io::readFloat<float>(token);
                     }
                 }
             }
             if (header == "d") {
                 if ((*token)[0] == '-') token++;
-                mat.d = readFloat<float>(token);
+                mat.d = io::readFloat<float>(token);
             }
             if (header == "Tr") {
                 if ((*token)[0] == '-') token++;
-                mat.d = 1 - readFloat<float>(token);
+                mat.d = 1 - io::readFloat<float>(token);
             }
             if (header == "Ns") {
-                mat.Ns = readFloat<float>(token);
+                mat.Ns = io::readFloat<float>(token);
             }
             if (header == "illum") {
-                mat.illum = readFloat<int>(token);
+                mat.illum = io::readFloat<int>(token);
             }
             if (header == "map_Kd") {
                 // need to manage args
@@ -146,12 +146,12 @@ void loadMaterials(
 }
 
 template<MeshConcept MeshType>
-void loadVertexCoord(
+void loadObjVertex(
     MeshType&                 m,
     vcl::Tokenizer::iterator& token,
     MeshInfo&                 loadedInfo,
     const vcl::Tokenizer&     tokens,
-    const obj::Material&      currentMaterial,
+    const ObjMaterial&      currentMaterial,
     bool                      enableOptionalComponents)
 {
     // first, need to set that I'm loading vertices
@@ -161,7 +161,7 @@ void loadVertexCoord(
     }
     uint vid = m.addVertex();
     for (uint i = 0; i < 3; ++i) {
-        m.vertex(vid).coord()[i] = detail::readDouble<double>(token);
+        m.vertex(vid).coord()[i] = io::readDouble<double>(token);
     }
     if constexpr (HasPerVertexColor<MeshType>){
         if (vid == 0) {
@@ -184,11 +184,11 @@ void loadVertexCoord(
             // the coords...
             if (tokens.size() > 6) {
                 m.vertex(vid).color().setRedF(
-                    detail::readFloat<float>(token));
+                    io::readFloat<float>(token));
                 m.vertex(vid).color().setGreenF(
-                    detail::readFloat<float>(token));
+                    io::readFloat<float>(token));
                 m.vertex(vid).color().setBlueF(
-                    detail::readFloat<float>(token));
+                    io::readFloat<float>(token));
             }
             else if (currentMaterial.hasColor) {
                 m.vertex(vid).color() = currentMaterial.color();
@@ -198,9 +198,9 @@ void loadVertexCoord(
 }
 
 template<MeshConcept MeshType>
-void loadVertexNormal(
+void loadObjVertexNormal(
     MeshType&                       m,
-    detail::NormalsMap<MeshType>& mapNormalsCache,
+    detail::ObjNormalsMap<MeshType>& mapNormalsCache,
     uint                            vn,
     vcl::Tokenizer::iterator&       token,
     MeshInfo&                       loadedInfo,
@@ -223,7 +223,7 @@ void loadVertexNormal(
         // read the normal
         NormalType n;
         for (uint i = 0; i < 3; ++i) {
-            n[i] = detail::readDouble<typename NormalType::ScalarType>(token);
+            n[i] = io::readDouble<typename NormalType::ScalarType>(token);
         }
         // I can store the normal in its vertex
         if (m.vertexNumber() > vn) {
@@ -238,12 +238,12 @@ void loadVertexNormal(
 }
 
 template<FaceMeshConcept MeshType>
-void loadFace(
+void loadObjFace(
     MeshType&                          m,
     MeshInfo&                          loadedInfo,
     const vcl::Tokenizer&              tokens,
     const std::vector<vcl::TexCoordd>& wedgeTexCoords,
-    const obj::Material&               currentMaterial,
+    const ObjMaterial&               currentMaterial,
     bool                               enableOptionalComponents)
 {
     using FaceType = MeshType::FaceType;
@@ -259,10 +259,10 @@ void loadFace(
     for (uint i = 0; i < tokens.size()-1; ++i) {
         vcl::Tokenizer subt(*token, '/', false);
         auto t = subt.begin();
-        vids[i] = readUInt<uint>(t) - 1;
+        vids[i] = io::readUInt<uint>(t) - 1;
         if (subt.size() > 1) {
             if (!t->empty()) {
-                wids.push_back(readUInt<uint>(t) - 1);
+                wids.push_back(io::readUInt<uint>(t) - 1);
             }
         }
         ++token;
@@ -410,17 +410,18 @@ void loadObj(
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
-    std::ifstream file = detail::loadFileStream(filename);
+    std::ifstream file = openInputFileStream(filename);
     // save normals if they can't be stored directly into vertices
-    detail::NormalsMap<MeshType> mapNormalsCache;
+    detail::ObjNormalsMap<MeshType> mapNormalsCache;
     uint vn = 0; // number of vertex normals read
     // save array of texcoords, that are stored later (into wedges when loading
     // faces or into vertices as a fallback)
     std::vector<vcl::TexCoordd> texCoords;
 
     // map of materials loaded
-    std::map<std::string, obj::Material> materialMap;
-    obj::Material currentMaterial; // the current material, set by 'usemtl'
+    std::map<std::string, detail::ObjMaterial> materialMap;
+    detail::ObjMaterial
+        currentMaterial; // the current material, set by 'usemtl'
 
     // some obj files do not declare the material file name with mtllib, but
     // they assume that material file has the same name of the obj file.
@@ -429,7 +430,7 @@ void loadObj(
                              FileInfo::fileNameWithoutExtension(filename) +
                              ".mtl";
     try {
-        detail::loadMaterials(materialMap, m, stdmtlfile);
+        detail::loadObjMaterials(materialMap, m, stdmtlfile);
     }
     catch(vcl::CannotOpenFileException){
         // nothing to do, this file was missing but was a fallback for some type
@@ -446,15 +447,14 @@ void loadObj(
 
     // cycle that reads line by line
     do {
-        vcl::Tokenizer tokens =
-            detail::nextNonEmptyTokenizedLineNoThrow(file);
+        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(file);
         if (file) {
             vcl::Tokenizer::iterator token = tokens.begin();
             std::string header = *token++;
             if (header == "mtllib") { // material file
                 std::string mtlfile =
                     FileInfo::pathWithoutFileName(filename) + *token;
-                detail::loadMaterials(materialMap, m, mtlfile);
+                detail::loadObjMaterials(materialMap, m, mtlfile);
             }
             // use a new material - change currentMaterial
             if (header == "usemtl") {
@@ -467,7 +467,7 @@ void loadObj(
             // read vertex (and for some non-standard obj files, also vertex
             // color)
             if (header == "v") {
-                detail::loadVertexCoord(
+                detail::loadObjVertex(
                     m,
                     token,
                     loadedInfo,
@@ -478,7 +478,7 @@ void loadObj(
             // read vertex normal (and save in vn how many normals we read)
             if constexpr(HasPerVertexNormal<MeshType>) {
                 if (header == "vn") {
-                    detail::loadVertexNormal(
+                    detail::loadObjVertexNormal(
                         m,
                         mapNormalsCache,
                         vn,
@@ -498,7 +498,7 @@ void loadObj(
                     // save the texcoord for later
                     TexCoordd tf;
                     for (uint i = 0; i < 2; ++i) {
-                        tf[i] = detail::readDouble<double>(token);
+                        tf[i] = io::readDouble<double>(token);
                     }
                     texCoords.push_back(tf);
                 }
@@ -509,7 +509,7 @@ void loadObj(
             // - possibility to split polygonal face into several triangles
             if constexpr (HasFaces<MeshType>) {
                 if (header == "f") {
-                    detail::loadFace(
+                    detail::loadObjFace(
                         m,
                         loadedInfo,
                         tokens,
@@ -593,6 +593,6 @@ MeshType loadObj(
 }
 
 
-} // namespace vcl::io
+} // namespace vcl
 
 #endif // VCL_IO_OBJ_LOAD_H

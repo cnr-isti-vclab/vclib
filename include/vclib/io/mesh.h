@@ -20,66 +20,31 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
  * for more details.                                                         *
  ****************************************************************************/
+#ifndef VCL_IO_MESH_H
+#define VCL_IO_MESH_H
 
-#ifndef VCL_IO_PLY_EXTRA_H
-#define VCL_IO_PLY_EXTRA_H
+#include "mesh/load.h"
+#include "mesh/save.h"
 
-#include <fstream>
+/**
+ * @defgroup load_save Load/Save functions
+ * @ingroup io
+ *
+ * @brief List of functions that allow to load from file or save to a file an input Mesh.
+ */
 
-#include <vclib/mesh/requirements.h>
+/**
+ * @defgroup load Load functions
+ * @ingroup load_save
+ *
+ * @brief List of functions that allow to load from file an input Mesh.
+ */
 
-#include "ply_header.h"
-#include "../detail/io_read.h"
+/**
+ * @defgroup save Save functions
+ * @ingroup load_save
+ *
+ * @brief List of functions that allow to save to file an input Mesh.
+ */
 
-namespace vcl::io::ply {
-
-template<MeshConcept MeshType>
-void loadTextures(const PlyHeader& header, MeshType& mesh)
-{
-    if constexpr (vcl::HasTexturePaths<MeshType>) {
-        for (const std::string& str : header.textureFileNames()) {
-            mesh.pushTexturePath(str);
-        }
-    }
-}
-
-template<MeshConcept MeshType>
-void saveTextures(PlyHeader& header, const MeshType& mesh)
-{
-    if constexpr (vcl::HasTexturePaths<MeshType>) {
-        for (const std::string& str : mesh.texturePaths()) {
-            header.pushTextureFileName(str);
-        }
-    }
-}
-
-inline void readUnknownElements(
-    std::ifstream&   file,
-    const PlyHeader& header,
-    ply::Element     el)
-{
-    if (header.format() == ply::ASCII) {
-        for (uint i = 0; i < el.numberElements; ++i) {
-            io::detail::nextNonEmptyTokenizedLine(file);
-        }
-    }
-    else {
-        for (uint i = 0; i < el.numberElements; ++i) {
-            for (const Property& p : el.properties) {
-                if (p.list) {
-                    uint s =
-                        io::detail::readProperty<int>(file, p.listSizeType);
-                    for (uint i = 0; i < s; ++i)
-                        io::detail::readProperty<int>(file, p.type);
-                }
-                else {
-                    io::detail::readProperty<int>(file, p.type);
-                }
-            }
-        }
-    }
-}
-
-} // namespace vcl::ply
-
-#endif // VCL_IO_PLY_EXTRA_H
+#endif // VCL_IO_MESH_H

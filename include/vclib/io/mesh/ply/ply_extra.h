@@ -21,46 +21,60 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_EDGE_H
-#define VCL_IO_PLY_EDGE_H
+#ifndef VCL_IO_PLY_EXTRA_H
+#define VCL_IO_PLY_EXTRA_H
 
 #include <fstream>
-#include <vclib/misc/tokenizer.h>
+
+#include <vclib/io/read.h>
+#include <vclib/mesh/requirements.h>
 
 #include "ply_header.h"
-#include "../detail/io_write.h"
 
 namespace vcl::io::ply {
 
-template<EdgeMeshConcept MeshType>
-void saveEdges(
-    std::ofstream&   file,
-    const PlyHeader& header,
-    const MeshType&  mesh)
+template<MeshConcept MeshType>
+void loadTextures(const PlyHeader& header, MeshType& mesh)
 {
-    using EdgeType = MeshType::EdgeType;
-    bool bin = header.format() == ply::BINARY;
+    if constexpr (vcl::HasTexturePaths<MeshType>) {
+        for (const std::string& str : header.textureFileNames()) {
+            mesh.pushTexturePath(str);
+        }
+    }
+}
 
-    // indices of vertices that do not consider deleted vertices
-    std::vector<int> vIndices = mesh.vertexCompactIndices();
+template<MeshConcept MeshType>
+void saveTextures(PlyHeader& header, const MeshType& mesh)
+{
+    if constexpr (vcl::HasTexturePaths<MeshType>) {
+        for (const std::string& str : mesh.texturePaths()) {
+            header.pushTextureFileName(str);
+        }
+    }
+}
 
-    for (const EdgeType& e : mesh.edges()) {
-        for (const ply::Property& p : header.edgeProperties()) {
-            bool hasBeenWritten = false;
-            if (p.name == ply::vertex1) {
-                io::detail::writeProperty(
-                    file, vIndices[mesh.index(e.vertex(0))], p.type, bin);
-                hasBeenWritten = true;
-            }
-            if (p.name == ply::vertex2) {
-                io::detail::writeProperty(
-                    file, vIndices[mesh.index(e.vertex(1))], p.type, bin);
-                hasBeenWritten = true;
-            }
-            if (!hasBeenWritten) {
-                // be sure to write something if the header declares some
-                // property that is not in the mesh
-                io::detail::writeProperty(file, 0, p.type, bin);
+inline void readUnknownElements(
+    std::ifstream&   file,
+    const PlyHeader& header,
+    ply::Element     el)
+{
+    if (header.format() == ply::ASCII) {
+        for (uint i = 0; i < el.numberElements; ++i) {
+            readAndTokenizeNextNonEmptyLine(file);
+        }
+    }
+    else {
+        for (uint i = 0; i < el.numberElements; ++i) {
+            for (const Property& p : el.properties) {
+                if (p.list) {
+                    uint s =
+                        io::readProperty<int>(file, p.listSizeType);
+                    for (uint i = 0; i < s; ++i)
+                        io::readProperty<int>(file, p.type);
+                }
+                else {
+                    io::readProperty<int>(file, p.type);
+                }
             }
         }
     }
@@ -68,4 +82,4 @@ void saveEdges(
 
 } // namespace vcl::ply
 
-#endif // VCL_IO_PLY_EDGE_H
+#endif // VCL_IO_PLY_EXTRA_H

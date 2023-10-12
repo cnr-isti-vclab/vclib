@@ -25,23 +25,24 @@
 #define VCL_IO_OBJ_SAVE_H
 
 #include <map>
+
 #include <vclib/exceptions/io_exceptions.h>
+#include <vclib/io/utils.h>
+#include <vclib/io/write.h>
 #include <vclib/misc/file_info.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
-#include "../detail/io_utils.h"
-#include "../detail/io_write.h"
 #include "material.h"
 
-namespace vcl::io {
+namespace vcl {
 
 namespace detail {
 
 template<VertexConcept VertexType, MeshConcept MeshType>
-obj::Material materialFromVertex(const VertexType& v, const MeshInfo& fi)
+ObjMaterial objMaterialFromVertex(const VertexType& v, const MeshInfo& fi)
 {
-    obj::Material mat;
+    ObjMaterial mat;
     if constexpr (HasPerVertexColor<MeshType>) {
         if (fi.hasVertexColors()) {
             mat.hasColor = true;
@@ -54,10 +55,12 @@ obj::Material materialFromVertex(const VertexType& v, const MeshInfo& fi)
 }
 
 template<FaceConcept FaceType, MeshConcept MeshType>
-obj::Material
-materialFromFace(const FaceType& f, const MeshType& m, const MeshInfo& fi)
+ObjMaterial objMaterialFromFace(
+    const FaceType& f,
+    const MeshType& m,
+    const MeshInfo& fi)
 {
-    obj::Material mat;
+    ObjMaterial mat;
     if (fi.hasFaceColors()) {
         mat.hasColor = true;
         mat.Kd.x()   = f.color().redF();
@@ -73,25 +76,25 @@ materialFromFace(const FaceType& f, const MeshType& m, const MeshInfo& fi)
     return mat;
 }
 
-template<typename ElementType, MeshConcept MeshType>
-void writeElementMaterial(
+template<ElementConcept ElementType, MeshConcept MeshType>
+void writeElementObjMaterial(
     const ElementType&                    e,
     const MeshType&                       m,
     const MeshInfo&                       fi,
-    obj::Material&                        lastMaterial,
-    std::map<obj::Material, std::string>& materialMap,
+    ObjMaterial&                        lastMaterial,
+    std::map<ObjMaterial, std::string>& materialMap,
     std::ofstream&                        fp,
     std::ofstream&                        mtlfp)
 {
-    obj::Material mat;
+    ObjMaterial mat;
     if constexpr (std::is_same<ElementType, typename MeshType::VertexType>::
                       value)
         mat =
-            materialFromVertex<typename MeshType::VertexType, MeshType>(e, fi);
+            objMaterialFromVertex<typename MeshType::VertexType, MeshType>(e, fi);
     if constexpr(HasFaces<MeshType>)
         if constexpr (std::is_same<ElementType, typename MeshType::FaceType>::
                           value)
-            mat = materialFromFace(e, m, fi);
+            mat = objMaterialFromFace(e, m, fi);
     if (!mat.isEmpty()) {
         static const std::string MATERIAL_PREFIX = "MATERIAL_";
         std::string mname; // name of the material of the vertex
@@ -140,51 +143,51 @@ void saveObj(
         meshInfo.setVertexTexCoords(false);
     }
 
-    std::ofstream fp = detail::saveFileStream(filename, "obj");
+    std::ofstream fp = openOutputFileStream(filename, "obj");
 
     std::ofstream                        mtlfp;
-    std::map<obj::Material, std::string> materialMap;
+    std::map<detail::ObjMaterial, std::string> materialMap;
 
     bool useMtl =
         meshInfo.hasVertexColors() || meshInfo.hasFaceColors() ||
         (meshInfo.hasTextures() &&
          (meshInfo.hasVertexTexCoords() || meshInfo.hasFaceWedgeTexCoords()));
     if (useMtl) {
-        mtlfp                   = detail::saveFileStream(filename, "mtl");
+        mtlfp                   = openOutputFileStream(filename, "mtl");
         std::string mtlFileName =
             FileInfo::fileNameWithExtension(filename) + ".mtl";
         fp << "mtllib ./" << mtlFileName << std::endl;
     }
-
-    obj::Material lastMaterial;
+    
+    detail::ObjMaterial lastMaterial;
 
     // vertices
     using VertexType = MeshType::VertexType;
     for (const VertexType& v : m.vertices()) {
         if (useMtl) { // mtl management
-            detail::writeElementMaterial<VertexType, MeshType>(
+            detail::writeElementObjMaterial<VertexType, MeshType>(
                 v, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
         }
         fp << "v ";
-        detail::writeDouble(fp, v.coord().x(), false);
-        detail::writeDouble(fp, v.coord().y(), false);
-        detail::writeDouble(fp, v.coord().z(), false);
+        io::writeDouble(fp, v.coord().x(), false);
+        io::writeDouble(fp, v.coord().y(), false);
+        io::writeDouble(fp, v.coord().z(), false);
         fp << std::endl;
 
         if constexpr (HasPerVertexNormal<MeshType>) {
             if (meshInfo.hasVertexNormals()) {
                 fp << "vn ";
-                detail::writeDouble(fp, v.normal().x(), false);
-                detail::writeDouble(fp, v.normal().y(), false);
-                detail::writeDouble(fp, v.normal().z(), false);
+                io::writeDouble(fp, v.normal().x(), false);
+                io::writeDouble(fp, v.normal().y(), false);
+                io::writeDouble(fp, v.normal().z(), false);
                 fp << std::endl;
             }
         }
         if constexpr (HasPerVertexTexCoord<MeshType>) {
             if (meshInfo.hasVertexTexCoords()) {
                 fp << "vt ";
-                detail::writeFloat(fp, v.texCoord().u(), false);
-                detail::writeFloat(fp, v.texCoord().v(), false);
+                io::writeFloat(fp, v.texCoord().u(), false);
+                io::writeFloat(fp, v.texCoord().v(), false);
                 fp << std::endl;
             }
         }
@@ -201,7 +204,7 @@ void saveObj(
         uint wedgeTexCoord = 1;
         for (const FaceType& f : m.faces()) {
             if (useMtl) { // mtl management
-                detail::writeElementMaterial(
+                detail::writeElementObjMaterial(
                     f, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
             }
             if constexpr(HasPerFaceWedgeTexCoords<MeshType>){
@@ -209,8 +212,8 @@ void saveObj(
                     using WedgeTexCoordType = FaceType::WedgeTexCoordType;
                     for (const WedgeTexCoordType wt : f.wedgeTexCoords()){
                         fp << "vt ";
-                        detail::writeFloat(fp, wt.u(), false);
-                        detail::writeFloat(fp, wt.v(), false);
+                        io::writeFloat(fp, wt.u(), false);
+                        io::writeFloat(fp, wt.v(), false);
                         fp << std::endl;
                     }
                 }
@@ -256,6 +259,6 @@ void saveObj(
     saveObj(m, filename, info, log);
 }
 
-} // namespace vcl::io
+} // namespace vcl
 
 #endif // VCL_IO_OBJ_SAVE_H
