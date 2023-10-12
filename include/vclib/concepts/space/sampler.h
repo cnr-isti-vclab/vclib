@@ -40,10 +40,8 @@ namespace vcl {
  * @tparam T: The type to be tested for conformity to the SamplerConcept.
  */
 template<typename T>
-concept SamplerConcept = requires(
-    T o,
-    const T& co)
-{
+concept SamplerConcept = requires (T o, const T& co) {
+    // clang-format off
     typename T::PointType;
 
     o.samples();
@@ -57,6 +55,7 @@ concept SamplerConcept = requires(
     
     co.begin();
     co.end();
+    // clang-format on
 };
 
 } // namespace vcl

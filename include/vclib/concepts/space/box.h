@@ -39,55 +39,54 @@ namespace vcl {
  * @tparam T: The type to be tested for conformity to the BoxConcept.
  */
 template<typename T>
-concept BoxConcept = requires(
-    T o,
-    const T& co,
-    const typename T::PointType& p)
-{
-    typename T::PointType;
-    o.DIM;
+concept BoxConcept =
+    requires (T o, const T& co, const typename T::PointType& p) {
+        // clang-format off
+        typename T::PointType;
+        o.DIM;
 
-    // Accessors for the minimum and maximum corners of the box.
-    { co.min() } -> std::same_as<const typename T::PointType&>;
-    { o.min() } -> std::same_as<typename T::PointType&>;
-    { co.max() } -> std::same_as<const typename T::PointType&>;
-    { o.max() } -> std::same_as<typename T::PointType&>;
+        // Accessors for the minimum and maximum corners of the box.
+        { co.min() } -> std::same_as<const typename T::PointType&>;
+        { o.min() } -> std::same_as<typename T::PointType&>;
+        { co.max() } -> std::same_as<const typename T::PointType&>;
+        { o.max() } -> std::same_as<typename T::PointType&>;
 
-    // Boolean tests for the nullity and emptiness of the box.
-    { co.isNull() } -> std::same_as<bool>;
-    { co.isEmpty() } -> std::same_as<bool>;
+        // Boolean tests for the nullity and emptiness of the box.
+        { co.isNull() } -> std::same_as<bool>;
+        { co.isEmpty() } -> std::same_as<bool>;
 
-    // Boolean tests for whether a point lies inside or outside the box.
-    { co.isInside(p) }  -> std::same_as<bool>;
-    { co.isInsideOpenBox(p) }  -> std::same_as<bool>;
+        // Boolean tests for whether a point lies inside or outside the box.
+        { co.isInside(p) }  -> std::same_as<bool>;
+        { co.isInsideOpenBox(p) }  -> std::same_as<bool>;
 
-    // Boolean tests for whether two boxes overlap with each other.
-    { co.overlap(co) }  -> std::same_as<bool>;
-    { co.collide(co) }  -> std::same_as<bool>;
-    { co.intersects(co) }  -> std::same_as<bool>;
+        // Boolean tests for whether two boxes overlap with each other.
+        { co.overlap(co) }  -> std::same_as<bool>;
+        { co.collide(co) }  -> std::same_as<bool>;
+        { co.intersects(co) }  -> std::same_as<bool>;
 
-    // Accessors for various properties of the box.
-    { co.diagonal() } -> std::same_as<typename T::PointType::ScalarType>;
-    { co.squaredDiagonal() } -> std::same_as<typename T::PointType::ScalarType>;
-    { co.center() } -> std::same_as<typename T::PointType>;
-    { co.size() } -> std::same_as<typename T::PointType>;
-    { co.volume() } -> std::same_as<typename T::PointType::ScalarType>;
-    { co.dim(uint()) } -> std::same_as<typename T::PointType::ScalarType>;
-    { co.minDim() } -> std::same_as<typename T::PointType::ScalarType>;
-    { co.maxDim() } -> std::same_as<typename T::PointType::ScalarType>;
-    { co.intersection(co) } -> std::same_as<T>;
+        // Accessors for various properties of the box.
+        { co.diagonal() } -> std::same_as<typename T::PointType::ScalarType>;
+        { co.squaredDiagonal() } -> std::same_as<typename T::PointType::ScalarType>;
+        { co.center() } -> std::same_as<typename T::PointType>;
+        { co.size() } -> std::same_as<typename T::PointType>;
+        { co.volume() } -> std::same_as<typename T::PointType::ScalarType>;
+        { co.dim(uint()) } -> std::same_as<typename T::PointType::ScalarType>;
+        { co.minDim() } -> std::same_as<typename T::PointType::ScalarType>;
+        { co.maxDim() } -> std::same_as<typename T::PointType::ScalarType>;
+        { co.intersection(co) } -> std::same_as<T>;
 
-    // Mutators for modifying the state of the box.
-    { o.setNull() } -> std::same_as<void>;
-    { o.add(typename T::PointType()) } -> std::same_as<void>;
-    { o.add(typename T::PointType(), double()) } -> std::same_as<void>;
-    { o.add(co) } -> std::same_as<void>;
-    { o.translate(typename T::PointType()) } -> std::same_as<void>;
+        // Mutators for modifying the state of the box.
+        { o.setNull() } -> std::same_as<void>;
+        { o.add(typename T::PointType()) } -> std::same_as<void>;
+        { o.add(typename T::PointType(), double()) } -> std::same_as<void>;
+        { o.add(co) } -> std::same_as<void>;
+        { o.translate(typename T::PointType()) } -> std::same_as<void>;
 
-    // Comparison operators.
-    { co == co } -> std::same_as<bool>;
-    { co != co } -> std::same_as<bool>;
-};
+        // Comparison operators.
+        { co == co } -> std::same_as<bool>;
+        { co != co } -> std::same_as<bool>;
+        // clang-format on
+    };
 
 /**
  * @brief A concept that requires a type to satisfy the BoxConcept and have a

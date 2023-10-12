@@ -37,20 +37,26 @@ class Box;
  * A type `T` models the `SphereConcept` if it provides the following:
  *
  * - `typename T::PointType`: a type that represents a point in Euclidean space.
- * - `typename T::ScalarType`: a type that represents the scalar used for the coordinates of the
- *    sphere's points.
- * - `o.center()`: a member function that returns a mutable reference to the center of the sphere.
- * - `co.center()`: a member function that returns a constant reference to the center of the sphere.
- * - `o.radius()`: a member function that returns a mutable reference to the radius of the sphere.
- * - `co.radius()`: a member function that returns a constant reference to the radius of the sphere.
+ * - `typename T::ScalarType`: a type that represents the scalar used for the
+ * coordinates of the sphere's points.
+ * - `o.center()`: a member function that returns a mutable reference to the
+ * center of the sphere.
+ * - `co.center()`: a member function that returns a constant reference to the
+ * center of the sphere.
+ * - `o.radius()`: a member function that returns a mutable reference to the
+ * radius of the sphere.
+ * - `co.radius()`: a member function that returns a constant reference to the
+ * radius of the sphere.
  * - `co.diameter()`: a member function that returns the diameter of the sphere.
- * - `co.circumference()`: a member function that returns the circumference of the sphere.
- * - `co.surfaceArea()`: a member function that returns the surface area of the sphere.
+ * - `co.circumference()`: a member function that returns the circumference of
+ * the sphere.
+ * - `co.surfaceArea()`: a member function that returns the surface area of the
+ * sphere.
  * - `co.volume()`: a member function that returns the volume of the sphere.
- * - `co.isInside(p)`: a member function that returns `true` if the point `p` is inside the sphere,
- *    `false` otherwise.
- * - `co.intersects(b)`: a member function that returns `true` if the sphere intersects the box `b`,
- *    `false` otherwise.
+ * - `co.isInside(p)`: a member function that returns `true` if the point `p` is
+ * inside the sphere, `false` otherwise.
+ * - `co.intersects(b)`: a member function that returns `true` if the sphere
+ * intersects the box `b`, `false` otherwise.
  *
  * The `PointType` type should be a model of the `PointConcept`.
  * The `Box` type should be a model of the `BoxConcept`.
@@ -58,12 +64,12 @@ class Box;
  * @tparam T The type to be tested for conformity to the SphereConcept.
  */
 template<typename T>
-concept SphereConcept = requires(
-    T o,
-    const T& co,
-    const typename T::PointType& p,
-    const Box<typename T::PointType>& b)
-{
+concept SphereConcept = requires (
+    T                                 o,
+    const T&                          co,
+    const typename T::PointType&      p,
+    const Box<typename T::PointType>& b) {
+    // clang-format off
     typename T::ScalarType;
     typename T::PointType;
 
@@ -81,6 +87,7 @@ concept SphereConcept = requires(
 
     { co.isInside(p) } -> std::same_as<bool>;
     { co.intersects(b) } -> std::same_as<bool>;
+    // clang-format on
 };
 
 } // namespace vcl

@@ -38,22 +38,24 @@ template<typename T>
 concept IteratorConcept = std::input_or_output_iterator<T>;
 
 /**
- * @brief Utility concept that is evaluated true if T is an iterator having its value_type that is a
- * class.
+ * @brief Utility concept that is evaluated true if T is an iterator having its
+ * value_type that is a class.
  *
  * @ingroup uconcepts
  */
 template<typename T>
-concept IteratesOverClass = IteratorConcept<T> && std::is_class_v<typename T::value_type>;
+concept IteratesOverClass =
+    IteratorConcept<T> && std::is_class_v<typename T::value_type>;
 
 /**
- * @brief Utility concept that is evaluated true if T is an iterator having its value_type that is a
- * pointer.
+ * @brief Utility concept that is evaluated true if T is an iterator having its
+ * value_type that is a pointer.
  *
  * @ingroup uconcepts
  */
 template<typename T>
-concept IteratesOverPointer = IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
+concept IteratesOverPointer =
+    IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
 
 } // namespace vcl
 

@@ -29,8 +29,8 @@
 namespace vcl {
 
 /**
- * @brief Utility concept that is evaluated true if T is a Pointer, even if the type is a T
- * is a reference to a pointer.
+ * @brief Utility concept that is evaluated true if T is a Pointer, even if the
+ * type is a T is a reference to a pointer.
  *
  * @ingroup uconcepts
  */
@@ -38,7 +38,8 @@ template<typename T>
 concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
 
 /**
- * @brief Utility concept that is evaluated true if T is a Pointer to a constant object.
+ * @brief Utility concept that is evaluated true if T is a Pointer to a constant
+ * object.
  *
  * @ingroup uconcepts
  */

@@ -38,8 +38,9 @@
  * @defgroup space_concepts Space Concepts
  * @ingroup lconcepts
  *
- * @brief List of concepts for types related to the Spatial data structures of the library. They allow
- * to discriminate between different Data Structures types and their features.
+ * @brief List of concepts for types related to the Spatial data structures of
+ * the library. They allow to discriminate between different Data Structures
+ * types and their features.
  */
 
 #endif // VCL_CONCEPTS_SPACE_H

@@ -29,7 +29,8 @@
 namespace vcl {
 
 /**
- * @brief Utility concept that is evaluated true if T is const or it is a pointer to const
+ * @brief Utility concept that is evaluated true if T is const or it is a
+ * pointer to const
  *
  * @ingroup uconcepts
  */

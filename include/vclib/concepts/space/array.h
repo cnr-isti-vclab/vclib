@@ -39,8 +39,8 @@ namespace vcl {
  * @tparam T: The type to be tested for conformity to the ArrayConcept.
  */
 template<typename T>
-concept ArrayConcept = requires(T o, const T& co)
-{
+concept ArrayConcept = requires (T o, const T& co) {
+    // clang-format off
     typename T::ValueType;
     typename T::Scalar;
     typename T::ConstReference;
@@ -71,6 +71,7 @@ concept ArrayConcept = requires(T o, const T& co)
     { o.end() } -> std::same_as<typename T::Iterator>;
     { co.begin() } -> std::same_as<typename T::ConstIterator>;
     { co.end() } -> std::same_as<typename T::ConstIterator>;
+    // clang-format on
 };
 
 /**
@@ -82,8 +83,8 @@ concept ArrayConcept = requires(T o, const T& co)
  * @tparam T: The type to be tested for conformity to the Array2Concept.
  */
 template<typename T>
-concept Array2Concept = ArrayConcept<T> && requires(T o, const T& co)
-{
+concept Array2Concept = ArrayConcept<T> && requires (T o, const T& co) {
+    // clang-format off
     requires T::DIM == 2;
 
     T(std::size_t(), std::size_t());
@@ -104,6 +105,7 @@ concept Array2Concept = ArrayConcept<T> && requires(T o, const T& co)
     { o.resize(std::size_t(), std::size_t()) } -> std::same_as<void>;
     { o.conservativeResize(std::size_t(), std::size_t()) } ->
         std::same_as<void>;
+    // clang-format on
 };
 
 /**
@@ -115,8 +117,8 @@ concept Array2Concept = ArrayConcept<T> && requires(T o, const T& co)
  * @tparam T: The type to be tested for conformity to the Array3Concept.
  */
 template<typename T>
-concept Array3Concept = ArrayConcept<T> && requires(T o, const T& co)
-{
+concept Array3Concept = ArrayConcept<T> && requires (T o, const T& co) {
+    // clang-format off
     requires T::DIM == 3;
 
     T(std::size_t(), std::size_t(), std::size_t());
@@ -141,6 +143,7 @@ concept Array3Concept = ArrayConcept<T> && requires(T o, const T& co)
         std::same_as<void>;
     { o.conservativeResize(std::size_t(), std::size_t(), std::size_t()) } ->
         std::same_as<void>;
+    // clang-format on
 };
 
 /**
@@ -152,8 +155,8 @@ concept Array3Concept = ArrayConcept<T> && requires(T o, const T& co)
  * @tparam T: The type to be tested for conformity to the Array4Concept.
  */
 template<typename T>
-concept Array4Concept = ArrayConcept<T> && requires(T o, const T& co)
-{
+concept Array4Concept = ArrayConcept<T> && requires (T o, const T& co) {
+    // clang-format off
     requires T::DIM == 4;
 
     T(std::size_t(), std::size_t(), std::size_t(), std::size_t());
@@ -188,6 +191,7 @@ concept Array4Concept = ArrayConcept<T> && requires(T o, const T& co)
         o.conservativeResize(
             std::size_t(), std::size_t(), std::size_t(), std::size_t())
     } -> std::same_as<void>;
+    // clang-format on
 };
 
 } // namespace vcl

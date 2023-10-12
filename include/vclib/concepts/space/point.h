@@ -34,27 +34,41 @@ namespace vcl {
  *
  * A type `T` models the `PointConcept` if it provides the following:
  *
- * - `typename T::ScalarType`: a type that represents the scalar used for the coordinates of the point.
- * - `o.DIM`: a static data member or constant expression that specifies the dimension of the point.
- * - `o.isDegenerate()`: a member function that returns true if the point is degenerate (e.g., the zero vector).
- * - `co.dot(co)`: a member function that returns the dot product of the point with another point `co`.
- * - `co.angle(co)`: a member function that returns the angle between the point and another point `co`.
- * - `co.dist(co)`: a member function that returns the Euclidean distance between the point and another point `co`.
- * - `co.squaredDist(co)`: a member function that returns the squared Euclidean distance between the point and another point `co`.
- * - `co.norm()`: a member function that returns the Euclidean norm (length) of the point.
- * - `co.squaredNorm()`: a member function that returns the squared Euclidean norm (length) of the point.
- * - `co.size()`: a member function that returns the size (number of coordinates) of the point.
- * - `o.setConstant(typename T::ScalarType())`: a member function that sets all coordinates of the point to a constant scalar value.
- * - `o.setZero()`: a member function that sets all coordinates of the point to zero.
- * - `o.setOnes()`: a member function that sets all coordinates of the point to one.
- * - `o.normalize()`: a member function that normalizes the point to have unit length.
+ * - `typename T::ScalarType`: a type that represents the scalar used for the
+ * coordinates of the point.
+ * - `o.DIM`: a static data member or constant expression that specifies the
+ * dimension of the point.
+ * - `o.isDegenerate()`: a member function that returns true if the point is
+ * degenerate (e.g., the zero vector).
+ * - `co.dot(co)`: a member function that returns the dot product of the point
+ * with another point `co`.
+ * - `co.angle(co)`: a member function that returns the angle between the point
+ * and another point `co`.
+ * - `co.dist(co)`: a member function that returns the Euclidean distance
+ * between the point and another point `co`.
+ * - `co.squaredDist(co)`: a member function that returns the squared Euclidean
+ * distance between the point and another point `co`.
+ * - `co.norm()`: a member function that returns the Euclidean norm (length) of
+ * the point.
+ * - `co.squaredNorm()`: a member function that returns the squared Euclidean
+ * norm (length) of the point.
+ * - `co.size()`: a member function that returns the size (number of
+ * coordinates) of the point.
+ * - `o.setConstant(typename T::ScalarType())`: a member function that sets all
+ * coordinates of the point to a constant scalar value.
+ * - `o.setZero()`: a member function that sets all coordinates of the point to
+ * zero.
+ * - `o.setOnes()`: a member function that sets all coordinates of the point to
+ * one.
+ * - `o.normalize()`: a member function that normalizes the point to have unit
+ * length.
  * - `co.hash()`: a member function that returns a hash value for the point.
  *
  * @tparam T: The type to be tested for conformity to the PointConcept.
  */
 template<typename T>
-concept PointConcept = requires(T o, const T& co)
-{
+concept PointConcept = requires (T o, const T& co) {
+    // clang-format off
     typename T::ScalarType;
     o.DIM;
     o.isDegenerate();
@@ -92,8 +106,9 @@ concept PointConcept = requires(T o, const T& co)
     o *= typename T::ScalarType();
     o /= typename T::ScalarType();
 
-    // waiting for apple to support std::convertible_to<> and other concept features...
-#ifndef __APPLE__
+    // waiting for apple to support std::convertible_to<> and other concept
+    // features...
+#ifndef __APPLE__ // TODO
     { co.normalized() } -> std::convertible_to<T>;
     { co + typename T::ScalarType() } -> std::convertible_to<T>;
     { co + co } -> std::convertible_to<T>;
@@ -106,13 +121,14 @@ concept PointConcept = requires(T o, const T& co)
 
     { co / typename T::ScalarType() } -> std::convertible_to<T>;
 #endif
+    // clang-format on
 };
 
 /**
  * @brief A concept for points in two-dimensional space.
  *
- * A type satisfies this concept if it satisfies the `PointConcept` and if the `DIM` value
- * of the point type is 2.
+ * A type satisfies this concept if it satisfies the `PointConcept` and if the
+ * `DIM` value of the point type is 2.
  *
  * @tparam T: The type to be tested for conformity to the Point2Concept.
  */
@@ -122,8 +138,8 @@ concept Point2Concept = PointConcept<T> && T::DIM == 2;
 /**
  * @brief A concept for points in three-dimensional space.
  *
- * A type satisfies this concept if it satisfies the `PointConcept` and if the `DIM` value
- * of the point type is 3.
+ * A type satisfies this concept if it satisfies the `PointConcept` and if the
+ * `DIM` value of the point type is 3.
  *
  * @tparam T: The type to be tested for conformity to the Point3Concept.
  */
@@ -133,8 +149,8 @@ concept Point3Concept = PointConcept<T> && T::DIM == 3;
 /**
  * @brief A concept for points in four-dimensional space.
  *
- * A type satisfies this concept if it satisfies the `PointConcept` and if the `DIM` value
- * of the point type is 4.
+ * A type satisfies this concept if it satisfies the `PointConcept` and if the
+ * `DIM` value of the point type is 4.
  *
  * @tparam T: The type to be tested for conformity to the Point4Concept.
  */
@@ -142,51 +158,59 @@ template<typename T>
 concept Point4Concept = PointConcept<T> && T::DIM == 4;
 
 /**
- * @brief Concept for iterators that iterate over Points (class that satisfies the PointConcept).
+ * @brief Concept for iterators that iterate over Points (class that satisfies
+ * the PointConcept).
  *
- * A type satisfies this concept if it is an iterator having its `value_type` that satisfies the
- * `PointConcpet`.
+ * A type satisfies this concept if it is an iterator having its `value_type`
+ * that satisfies the `PointConcpet`.
  *
  * @tparam It: The type to be tested for conformity to the PointIteratorConcept.
  */
 template<typename It>
-concept PointIteratorConcept = IteratorConcept<It> && PointConcept<typename It::value_type>;
+concept PointIteratorConcept =
+    IteratorConcept<It> && PointConcept<typename It::value_type>;
 
 /**
- * @brief Concept for iterators that iterate over 2D Points (class that satisfies the
- * Point2Concept).
+ * @brief Concept for iterators that iterate over 2D Points (class that
+ * satisfies the Point2Concept).
  *
- * A type satisfies this concept if it is an iterator having its `value_type` that satisfies the
- * `Point2Concpet`.
+ * A type satisfies this concept if it is an iterator having its `value_type`
+ * that satisfies the `Point2Concpet`.
  *
- * @tparam It: The type to be tested for conformity to the Point2IteratorConcept.
+ * @tparam It: The type to be tested for conformity to the
+ * Point2IteratorConcept.
  */
 template<typename It>
-concept Point2IteratorConcept = IteratorConcept<It> && Point2Concept<typename It::value_type>;
+concept Point2IteratorConcept =
+    IteratorConcept<It> && Point2Concept<typename It::value_type>;
 
 /**
- * @brief Concept for iterators that iterate over 3D Points (class that satisfies the
- * Point3Concept).
+ * @brief Concept for iterators that iterate over 3D Points (class that
+ * satisfies the Point3Concept).
  *
- * A type satisfies this concept if it is an iterator having its `value_type` that satisfies the
- * `Point3Concpet`.
+ * A type satisfies this concept if it is an iterator having its `value_type`
+ * that satisfies the `Point3Concpet`.
  *
- * @tparam It: The type to be tested for conformity to the Point3IteratorConcept.
+ * @tparam It: The type to be tested for conformity to the
+ * Point3IteratorConcept.
  */
 template<typename It>
-concept Point3IteratorConcept = IteratorConcept<It> && Point3Concept<typename It::value_type>;
+concept Point3IteratorConcept =
+    IteratorConcept<It> && Point3Concept<typename It::value_type>;
 
 /**
- * @brief Concept for iterators that iterate over 4D Points (class that satisfies the
- * Point4Concept).
+ * @brief Concept for iterators that iterate over 4D Points (class that
+ * satisfies the Point4Concept).
  *
- * A type satisfies this concept if it is an iterator having its `value_type` that satisfies the
- * `Point4Concpet`.
+ * A type satisfies this concept if it is an iterator having its `value_type`
+ * that satisfies the `Point4Concpet`.
  *
- * @tparam It: The type to be tested for conformity to the Point4IteratorConcept.
+ * @tparam It: The type to be tested for conformity to the
+ * Point4IteratorConcept.
  */
 template<typename It>
-concept Point4IteratorConcept = IteratorConcept<It> && Point4Concept<typename It::value_type>;
+concept Point4IteratorConcept =
+    IteratorConcept<It> && Point4Concept<typename It::value_type>;
 
 } // namespace vcl
 

@@ -29,9 +29,8 @@
 namespace vcl {
 
 template<typename T>
-concept ConstTriangleConcept = requires(
-    const T& co)
-{
+concept ConstTriangleConcept = requires (const T& co) {
+    // clang-format off
     typename T::ScalarType;
     typename T::PointType;
 
@@ -43,15 +42,16 @@ concept ConstTriangleConcept = requires(
     { co.barycenter() } -> std::same_as<typename T::PointType>;
     { co.perimeter() } -> std::same_as<typename T::ScalarType>;
     { co.area() } -> std::same_as<typename T::ScalarType>;
+    // clang-format on
 };
 
 template<typename T>
-concept TriangleConcept = ConstTriangleConcept<T> && requires(
-    T o,
-    const T& co)
-{
+concept TriangleConcept =
+    ConstTriangleConcept<T> && requires (T o, const T& co) {
+        // clang-format off
     { o.point(uint()) } -> std::same_as<typename T::PointType&>;
-};
+        // clang-format on
+    };
 
 template<typename T>
 concept ConstTriangle2Concept = ConstTriangleConcept<T> && T::DIM == 2;
@@ -60,11 +60,12 @@ template<typename T>
 concept Triangle2Concept = ConstTriangle2Concept<T> && TriangleConcept<T>;
 
 template<typename T>
-concept ConstTriangle3Concept = ConstTriangleConcept<T> && T::DIM == 3 && requires(
-    const T& co)
-{
+concept ConstTriangle3Concept =
+    ConstTriangleConcept<T> && T::DIM == 3 && requires (const T& co) {
+        // clang-format off
     { co.normal() } -> std::same_as<typename T::PointType>;
-};
+        // clang-format on
+    };
 
 template<typename T>
 concept Triangle3Concept = ConstTriangle3Concept<T> && TriangleConcept<T>;
