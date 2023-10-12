@@ -106,9 +106,6 @@ concept PointConcept = requires (T o, const T& co) {
     o *= typename T::ScalarType();
     o /= typename T::ScalarType();
 
-    // waiting for apple to support std::convertible_to<> and other concept
-    // features...
-#ifndef __APPLE__ // TODO
     { co.normalized() } -> std::convertible_to<T>;
     { co + typename T::ScalarType() } -> std::convertible_to<T>;
     { co + co } -> std::convertible_to<T>;
@@ -120,7 +117,6 @@ concept PointConcept = requires (T o, const T& co) {
     { co * typename T::ScalarType() } -> std::convertible_to<T>;
 
     { co / typename T::ScalarType() } -> std::convertible_to<T>;
-#endif
     // clang-format on
 };
 
