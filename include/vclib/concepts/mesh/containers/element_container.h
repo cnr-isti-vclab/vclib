@@ -41,11 +41,11 @@ namespace detail {
  * If no Container was found, value will be set to `false` and type will contain
  * an empty TypeWrapper.
  */
-template<uint ELEM_ID, typename ... Containers>
+template<uint ELEM_ID, typename... Containers>
 struct ContainerOfElementPred
 {
 private:
-    template <typename Cont>
+    template<typename Cont>
     struct SameElPred
     {
         static constexpr bool value = Cont::ELEMENT_ID == ELEM_ID;
@@ -172,7 +172,7 @@ concept HasPerElementOptionalComponent =
         typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
         COMP_ID>;
 
-} // namespace vcl::mesh
+} // namespace mesh
 } // namespace vcl
 
 #endif // VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H

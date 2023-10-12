@@ -32,13 +32,13 @@
 namespace vcl {
 namespace mesh {
 
-template <typename T>
-concept HasVertexContainer = requires(
-    T o,
-    const T& co,
-    typename T::VertexType* v,
-    typename T::VertexType::CoordType c)
-{
+template<typename T>
+concept HasVertexContainer = requires (
+    T                                 o,
+    const T&                          co,
+    typename T::VertexType*           v,
+    typename T::VertexType::CoordType c) {
+    // clang-format off
     typename T::VertexType;
     typename T::VertexIterator;
     typename T::ConstVertexIterator;
@@ -68,9 +68,10 @@ concept HasVertexContainer = requires(
 
     requires std::ranges::range<decltype(o.vertices())>;
     requires std::ranges::range<decltype(co.vertices())>;
+    // clang-format on
 };
 
-} // namespace vcl::mesh
+} // namespace mesh
 
 /**
  * @brief HasVertices concepts is satisfied when at least one of its types is

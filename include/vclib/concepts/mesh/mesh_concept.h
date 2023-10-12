@@ -65,21 +65,16 @@ struct IsAMesh<Mesh<Args...>> : std::true_type
 template<typename T>
 concept MeshConcept =
     (mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
-    mesh::HasVertexContainer<T> &&
-    requires(
-        T o,
-        const T& co,
-        typename T::VertexType v)
-{
-    { co.index(v) } -> std::same_as<uint>;
-    { co.index(&v) } -> std::same_as<uint>;
-    { o.clear() } -> std::same_as<void>;
-    { co.isCompact() } -> std::same_as<bool>;
-    { o.compact() } -> std::same_as<void>;
-    { o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
-    { o.importFrom(T()) } -> std::same_as<void>;
-    { o.swap(o) } -> std::same_as<void>;
-};
+    mesh::HasVertexContainer<T> && requires (T o, const T& co) {
+        // clang-format off
+        { o.clear() } -> std::same_as<void>;
+        { co.isCompact() } -> std::same_as<bool>;
+        { o.compact() } -> std::same_as<void>;
+        { o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
+        { o.importFrom(T()) } -> std::same_as<void>;
+        { o.swap(o) } -> std::same_as<void>;
+        // clang-format on
+    };
 
 /**
  * @brief the ElementOrMesh Concept is evaluated to true when the type is either
@@ -88,8 +83,7 @@ concept MeshConcept =
  * @ingroup mesh_concepts
  */
 template<typename T>
-concept ElementOrMeshConcept =
-    MeshConcept<T> || ElementConcept<T>;
+concept ElementOrMeshConcept = MeshConcept<T> || ElementConcept<T>;
 
 } // namespace vcl
 

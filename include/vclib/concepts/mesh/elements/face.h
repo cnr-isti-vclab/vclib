@@ -44,8 +44,7 @@ namespace face {
 
 // checks if a type derives from vcl::Face<Args...>
 template<typename Derived>
-using IsDerivedFromFace =
-        IsDerivedFromTemplateSpecialization<Derived, Face>;
+using IsDerivedFromFace = IsDerivedFromTemplateSpecialization<Derived, Face>;
 
 // checks if a type is a vcl::Face<Args...>
 template<class T>
@@ -117,7 +116,7 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 
 /** @} */ // end of group
 
-} // namespace vcl::face
+} // namespace face
 
 /**
  * @brief The FaceConcept describes how a Face element that can be
@@ -145,21 +144,16 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
  */
 template<typename T>
 concept FaceConcept =
-    ElementConcept<T> &&
-    T::ELEMENT_ID == FACE &&
+    ElementConcept<T> && T::ELEMENT_ID == FACE &&
     (face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value) &&
-    face::HasBitFlags<T> &&
-    face::HasVertexPointers<T> &&
+    face::HasBitFlags<T> && face::HasVertexPointers<T> &&
     (T::VERTEX_NUMBER < 0 || T::VERTEX_NUMBER >= 3) &&
     (!face::HasTriangleBitFlags<T> || T::VERTEX_NUMBER == 3) &&
-    comp::SanityCheckAdjacentEdges<T> &&
-    comp::SanityCheckAdjacentFaces<T> &&
-    comp::SanityCheckWedgeColors<T> &&
-    comp::SanityCheckWedgeTexCoords<T>;
+    comp::SanityCheckAdjacentEdges<T> && comp::SanityCheckAdjacentFaces<T> &&
+    comp::SanityCheckWedgeColors<T> && comp::SanityCheckWedgeTexCoords<T>;
 
 template<typename T>
-concept TriangleFaceConcept =
-    T::VERTEX_NUMBER == 3 && FaceConcept<T>;
+concept TriangleFaceConcept = T::VERTEX_NUMBER == 3 && FaceConcept<T>;
 
 /**
  * @brief The PolygonFaceConcept describes how a Face element class should be
@@ -174,8 +168,7 @@ concept TriangleFaceConcept =
  * @ingroup face_concepts
  */
 template<typename T>
-concept PolygonFaceConcept =
-    T::VERTEX_NUMBER < 0 && FaceConcept<T>;
+concept PolygonFaceConcept = T::VERTEX_NUMBER < 0 && FaceConcept<T>;
 
 } // namespace vcl
 

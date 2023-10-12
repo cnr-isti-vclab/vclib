@@ -24,9 +24,9 @@
 #ifndef VCLIB_CONCEPTS_RANGES_MESH_FACE_RANGE_H
 #define VCLIB_CONCEPTS_RANGES_MESH_FACE_RANGE_H
 
+#include <vclib/concepts/mesh/elements/face.h>
 #include <vclib/concepts/pointers.h>
 #include <vclib/concepts/ranges/range.h>
-#include <vclib/concepts/mesh/elements/face.h>
 
 namespace vcl {
 
@@ -57,9 +57,8 @@ template<typename Rng>
 concept FacePointerRangeConcept =
     Range<Rng> &&
     IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-    FaceConcept<typename std::decay_t<
-        std::remove_pointer_t<
-            typename std::ranges::iterator_t<Rng>::value_type>>>;
+    FaceConcept<typename std::decay_t<std::remove_pointer_t<
+        typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 

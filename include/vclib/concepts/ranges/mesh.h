@@ -24,8 +24,8 @@
 #ifndef VCLIB_CONCEPTS_RANGES_MESH_H
 #define VCLIB_CONCEPTS_RANGES_MESH_H
 
-#include "mesh/vertex_range.h"
 #include "mesh/edge_range.h"
 #include "mesh/face_range.h"
+#include "mesh/vertex_range.h"
 
 #endif // VCLIB_CONCEPTS_RANGES_MESH_H

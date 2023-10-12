@@ -112,7 +112,7 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 
 /** @} */ // end of group
 
-} // namespace vcl::vert
+} // namespace vert
 
 /**
  * @brief The VertexConcept describes how a Vertex element that can be used for
@@ -128,11 +128,9 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
  */
 template<typename T>
 concept VertexConcept =
-    ElementConcept<T> &&
-    T::ELEMENT_ID == VERTEX &&
+    ElementConcept<T> && T::ELEMENT_ID == VERTEX &&
     (vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value) &&
-    vert::HasBitFlags<T> &&
-    vert::HasCoordinate<T>;
+    vert::HasBitFlags<T> && vert::HasCoordinate<T>;
 
 } // namespace vcl
 

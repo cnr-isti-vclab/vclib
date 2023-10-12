@@ -24,9 +24,9 @@
 #ifndef VCLIB_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
 #define VCLIB_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
 
+#include <vclib/concepts/mesh/elements/edge.h>
 #include <vclib/concepts/pointers.h>
 #include <vclib/concepts/ranges/range.h>
-#include <vclib/concepts/mesh/elements/edge.h>
 
 namespace vcl {
 
@@ -57,9 +57,8 @@ template<typename Rng>
 concept EdgePointerRangeConcept =
     Range<Rng> &&
     IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-    EdgeConcept<typename std::decay_t<
-        std::remove_pointer_t<
-            typename std::ranges::iterator_t<Rng>::value_type>>>;
+    EdgeConcept<typename std::decay_t<std::remove_pointer_t<
+        typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 

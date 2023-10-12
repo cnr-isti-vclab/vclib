@@ -38,9 +38,11 @@
 namespace vcl {
 
 /**
- * @brief Concept that checks if a Mesh has the per Vertex AdjacentEdges component.
+ * @brief Concept that checks if a Mesh has the per Vertex AdjacentEdges
+ * component.
  *
- * Evaluates to true if AdjacentEdges is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if AdjacentEdges is part of the Vertex element, whether it
+ * is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -48,12 +50,15 @@ namespace vcl {
  */
 template<typename MeshType>
 concept HasPerVertexAdjacentEdges =
-    HasVertices<MeshType> && vcl::vert::HasAdjacentEdges<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vcl::vert::HasAdjacentEdges<typename MeshType::VertexType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Vertex AdjacentFaces component.
+ * @brief Concept that checks if a Mesh has the per Vertex AdjacentFaces
+ * component.
  *
- * Evaluates to true if AdjacentFaces is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if AdjacentFaces is part of the Vertex element, whether it
+ * is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -61,12 +66,15 @@ concept HasPerVertexAdjacentEdges =
  */
 template<typename MeshType>
 concept HasPerVertexAdjacentFaces =
-    HasVertices<MeshType> && vcl::vert::HasAdjacentFaces<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vcl::vert::HasAdjacentFaces<typename MeshType::VertexType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Vertex AdjacentVertices component.
+ * @brief Concept that checks if a Mesh has the per Vertex AdjacentVertices
+ * component.
  *
- * Evaluates to true if AdjacentVertices is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if AdjacentVertices is part of the Vertex element, whether
+ * it is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -74,12 +82,14 @@ concept HasPerVertexAdjacentFaces =
  */
 template<typename MeshType>
 concept HasPerVertexAdjacentVertices =
-    HasVertices<MeshType> && vcl::vert::HasAdjacentVertices<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vcl::vert::HasAdjacentVertices<typename MeshType::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex Color component.
  *
- * Evaluates to true if Color is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if Color is part of the Vertex element, whether it is
+ * horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -92,7 +102,8 @@ concept HasPerVertexColor =
 /**
  * @brief Concept that checks if a Mesh has the per Vertex Mark component.
  *
- * Evaluates to true if Mark is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if Mark is part of the Vertex element, whether it is
+ * horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -105,7 +116,8 @@ concept HasPerVertexMark =
 /**
  * @brief Concept that checks if a Mesh has the per Vertex Normal component.
  *
- * Evaluates to true if Normal is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if Normal is part of the Vertex element, whether it is
+ * horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -113,12 +125,15 @@ concept HasPerVertexMark =
  */
 template<typename MeshType>
 concept HasPerVertexNormal =
-    HasVertices<MeshType> && vcl::vert::HasNormal<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vcl::vert::HasNormal<typename MeshType::VertexType>;
 
 /**
- * @brief Concept that checks if a Mesh has the per Vertex PrincipalCurvature component.
+ * @brief Concept that checks if a Mesh has the per Vertex PrincipalCurvature
+ * component.
  *
- * Evaluates to true if PrincipalCurvature is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if PrincipalCurvature is part of the Vertex element,
+ * whether it is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -126,12 +141,14 @@ concept HasPerVertexNormal =
  */
 template<typename MeshType>
 concept HasPerVertexPrincipalCurvature =
-    HasVertices<MeshType> && vcl::vert::HasPrincipalCurvature<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vcl::vert::HasPrincipalCurvature<typename MeshType::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex Quality component.
  *
- * Evaluates to true if Quality is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if Quality is part of the Vertex element, whether it is
+ * horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -139,12 +156,14 @@ concept HasPerVertexPrincipalCurvature =
  */
 template<typename MeshType>
 concept HasPerVertexQuality =
-    HasVertices<MeshType> && vcl::vert::HasQuality<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vcl::vert::HasQuality<typename MeshType::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex TexCoord component.
  *
- * Evaluates to true if TexCoord is part of the Vertex element, whether it is horizontal, vertical or optional.
+ * Evaluates to true if TexCoord is part of the Vertex element, whether it is
+ * horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
@@ -152,7 +171,8 @@ concept HasPerVertexQuality =
  */
 template<typename MeshType>
 concept HasPerVertexTexCoord =
-    HasVertices<MeshType> && vcl::vert::HasTexCoord<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vcl::vert::HasTexCoord<typename MeshType::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex CustomComponents.
@@ -165,7 +185,8 @@ concept HasPerVertexTexCoord =
  */
 template<typename MeshType>
 concept HasPerVertexCustomComponents =
-    HasVertices<MeshType> && vcl::vert::HasCustomComponents<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vcl::vert::HasCustomComponents<typename MeshType::VertexType>;
 
 } // namespace vcl
 

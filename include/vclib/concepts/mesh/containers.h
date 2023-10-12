@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef  VCL_CONCEPTS_MESH_CONTAINERS_H
-#define  VCL_CONCEPTS_MESH_CONTAINERS_H
+#ifndef VCL_CONCEPTS_MESH_CONTAINERS_H
+#define VCL_CONCEPTS_MESH_CONTAINERS_H
 
 #include "containers/edge_container.h"
 #include "containers/face_container.h"

@@ -42,28 +42,16 @@ concept HasPolygons =
     vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
 
 template<typename T>
-concept FaceMeshConcept =
-    MeshConcept<T> && mesh::HasFaceContainer<T> &&
-    requires(
-        T o,
-        const T& co,
-        typename T::FaceType f)
-{
-    { co.index(f) } -> std::same_as<uint>;
-    { co.index(&f) } -> std::same_as<uint>;
-};
+concept FaceMeshConcept = MeshConcept<T> && mesh::HasFaceContainer<T>;
 
 template<typename T>
-concept TriangleMeshConcept =
-    FaceMeshConcept<T> && HasTriangles<T>;
+concept TriangleMeshConcept = FaceMeshConcept<T> && HasTriangles<T>;
 
 template<typename T>
-concept QuadMeshConcept =
-    FaceMeshConcept<T> && HasQuads<T>;
+concept QuadMeshConcept = FaceMeshConcept<T> && HasQuads<T>;
 
 template<typename T>
-concept PolygonMeshConcept =
-    FaceMeshConcept<T> && HasPolygons<T>;
+concept PolygonMeshConcept = FaceMeshConcept<T> && HasPolygons<T>;
 
 } // namespace vcl
 

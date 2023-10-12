@@ -24,37 +24,41 @@
 #ifndef VCLIB_CONCEPTS_RANGES_MESH_VERTEX_RANGE_H
 #define VCLIB_CONCEPTS_RANGES_MESH_VERTEX_RANGE_H
 
+#include <vclib/concepts/mesh/elements/vertex.h>
 #include <vclib/concepts/pointers.h>
 #include <vclib/concepts/ranges/range.h>
-#include <vclib/concepts/mesh/elements/vertex.h>
 
 namespace vcl {
 
 /**
- * @brief The VertexRangeConcept evaluates to true if Rng is a valid Range on Vertices.
+ * @brief The VertexRangeConcept evaluates to true if Rng is a valid Range on
+ * Vertices.
  *
- * This means that Rng must be a Range of VertexConcept: the iterated type must satisfy the
- * VertexConcept.
+ * This means that Rng must be a Range of VertexConcept: the iterated type must
+ * satisfy the VertexConcept.
  *
  * @ingroup vertex_concepts
  */
 template<typename Rng>
 concept VertexRangeConcept =
-    Range<Rng> && VertexConcept<typename std::ranges::iterator_t<Rng>::value_type>;
+    Range<Rng> &&
+    VertexConcept<typename std::ranges::iterator_t<Rng>::value_type>;
 
 /**
- * @brief The VertexPointerRangeConcept evaluates to true if Rng is a valid Range on Vertex
- * Pointers.
+ * @brief The VertexPointerRangeConcept evaluates to true if Rng is a valid
+ * Range on Vertex Pointers.
  *
- * This means that Rng must be a Range of pointers to a type that satisfy the VertexConcept.
+ * This means that Rng must be a Range of pointers to a type that satisfy the
+ * VertexConcept.
  *
  * @ingroup vertex_concepts
  */
 template<typename Rng>
 concept VertexPointerRangeConcept =
-    Range<Rng> && IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-    VertexConcept<typename std::decay_t<
-        std::remove_pointer_t<typename std::ranges::iterator_t<Rng>::value_type>>>;
+    Range<Rng> &&
+    IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
+    VertexConcept<typename std::decay_t<std::remove_pointer_t<
+        typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 

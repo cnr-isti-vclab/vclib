@@ -45,15 +45,17 @@ concept HasTexturePaths = comp::HasTexturePaths<T>;
 template<typename T>
 concept HasTransformMatrix = comp::HasTransformMatrix<T>;
 
-} // namespace vcl::mesh
+} // namespace mesh
 
 /**
- * @brief Concept that is evaluated true if a Mesh has the BoundingBox component.
+ * @brief Concept that is evaluated true if a Mesh has the BoundingBox
+ * component.
  *
  * @ingroup mesh_concepts
  */
 template<typename MeshType>
-concept HasBoundingBox = MeshConcept<MeshType> && mesh::HasBoundingBox<MeshType>;
+concept HasBoundingBox =
+    MeshConcept<MeshType> && mesh::HasBoundingBox<MeshType>;
 
 /**
  * @brief Concept that is evaluated true if a Mesh has the Color component.
@@ -85,7 +87,8 @@ concept HasName = MeshConcept<MeshType> && mesh::HasName<MeshType>;
  * @ingroup mesh_concepts
  */
 template<typename MeshType>
-concept HasTexturePaths = MeshConcept<MeshType> && mesh::HasTexturePaths<MeshType>;
+concept HasTexturePaths =
+    MeshConcept<MeshType> && mesh::HasTexturePaths<MeshType>;
 
 /**
  * @brief Concept that checks if a Mesh has the TransformMatrix component.
@@ -93,7 +96,8 @@ concept HasTexturePaths = MeshConcept<MeshType> && mesh::HasTexturePaths<MeshTyp
  * @ingroup mesh_concepts
  */
 template<typename MeshType>
-concept HasTransformMatrix = MeshConcept<MeshType> && mesh::HasTransformMatrix<MeshType>;
+concept HasTransformMatrix =
+    MeshConcept<MeshType> && mesh::HasTransformMatrix<MeshType>;
 
 } // namespace vcl
 
