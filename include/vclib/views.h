@@ -24,14 +24,15 @@
 #ifndef VCL_VIEWS_H
 #define VCL_VIEWS_H
 
+#include "views/mesh.h"
 #include "views/view.h"
 #include "views/views.h"
-#include "views/mesh.h"
 
 /**
  * @defgroup views Range Views
  *
- * @brief List of [range views](https://en.cppreference.com/w/cpp/ranges/view) of the library.
+ * @brief List of [range views](https://en.cppreference.com/w/cpp/ranges/view)
+ * of the library.
  */
 
 #endif // VCL_VIEWS_H

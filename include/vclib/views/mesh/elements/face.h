@@ -36,14 +36,14 @@ struct FacesView
 {
     constexpr FacesView() = default;
 
-    template <CleanFaceMeshConcept R>
+    template<CleanFaceMeshConcept R>
     friend constexpr auto operator|(R&& r, FacesView)
     {
         return r.faces();
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 /**
  * @brief A view that allows to iterate overt the Face elements of an object.

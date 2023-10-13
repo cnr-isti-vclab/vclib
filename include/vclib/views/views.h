@@ -26,7 +26,7 @@
 
 #include <ranges>
 
-namespace vcl::views{
+namespace vcl::views {
 
 namespace detail {
 
@@ -34,10 +34,12 @@ struct NotNullView
 {
     constexpr NotNullView() = default;
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, NotNullView)
     {
-        return std::views::filter(r, [](auto* p) { return p != nullptr; });
+        return std::views::filter(r, [](auto* p) {
+            return p != nullptr;
+        });
     }
 };
 
@@ -45,10 +47,12 @@ struct DereferenceView
 {
     constexpr DereferenceView() = default;
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, DereferenceView)
     {
-        return std::views::transform(r, [](auto p) { return *p; });
+        return std::views::transform(r, [](auto p) {
+            return *p;
+        });
     }
 };
 
@@ -56,10 +60,12 @@ struct AddressOfView
 {
     constexpr AddressOfView() = default;
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, AddressOfView)
     {
-        return std::views::transform(r, [](auto& o) { return &o; });
+        return std::views::transform(r, [](auto& o) {
+            return &o;
+        });
     }
 };
 
@@ -67,18 +73,20 @@ struct ConstAddressOfView
 {
     constexpr ConstAddressOfView() = default;
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, ConstAddressOfView)
     {
-        return std::views::transform(r, [](const auto& o) { return &o; });
+        return std::views::transform(r, [](const auto& o) {
+            return &o;
+        });
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 /**
- * @brief The notNull view allows to filter the pointers of a range. The resulting
- * view will iterate only on the pointers that are not `nullptr`.
+ * @brief The notNull view allows to filter the pointers of a range. The
+ * resulting view will iterate only on the pointers that are not `nullptr`.
  *
  * @ingroup views
  */
@@ -87,11 +95,12 @@ inline constexpr detail::NotNullView notNull;
 /**
  * @brief The deref view the dereference operator `*` on the input view.
  *
- * It allows to dereference the pointers of a range. The resulting view will iterate over the
- * objects pointed by the range of pointers.
+ * It allows to dereference the pointers of a range. The resulting view will
+ * iterate over the objects pointed by the range of pointers.
  *
- * @note: no check on the validity of the pointers is performed. If you know that in your range
- * there is the possibility to have `nullptr` pointers, use first the `notNull` view:
+ * @note: no check on the validity of the pointers is performed. If you know
+ * that in your range there is the possibility to have `nullptr` pointers, use
+ * first the `notNull` view:
  *
  * @code{.cpp}
  * auto resView = inputRange | notNull | dereference;
@@ -104,18 +113,20 @@ inline constexpr detail::DereferenceView deref;
 /**
  * @brief The addrOf view applies the address-of operator `&` on the input view.
  *
- * It allows to get the pointers of the objects of a range. The resulting view will iterate over
- * the pointers pointing to the object of the input range.
+ * It allows to get the pointers of the objects of a range. The resulting view
+ * will iterate over the pointers pointing to the object of the input range.
  *
  * @ingroup views
  */
 inline constexpr detail::AddressOfView addrOf;
 
 /**
- * @brief The constAddrOf view applies the address-of operator `&` on the input view.
+ * @brief The constAddrOf view applies the address-of operator `&` on the input
+ * view.
  *
- * It allows to get the const pointers of the objects of a range. The resulting view will iterate
- * over the const pointers pointing to the object of the input range (that may be also not const).
+ * It allows to get the const pointers of the objects of a range. The resulting
+ * view will iterate over the const pointers pointing to the object of the input
+ * range (that may be also not const).
  *
  * @ingroup views
  */

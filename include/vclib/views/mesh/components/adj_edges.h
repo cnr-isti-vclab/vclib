@@ -38,25 +38,26 @@ struct AdjEdgesView
 {
     constexpr AdjEdgesView() = default;
 
-    template <CleanAdjEdgesConcept R>
+    template<CleanAdjEdgesConcept R>
     friend constexpr auto operator|(R&& r, AdjEdgesView)
     {
-        if constexpr(IsPointer<R>)
+        if constexpr (IsPointer<R>)
             return r->adjEdges();
         else
             return r.adjEdges();
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 /**
- * @brief The adjEdges view allows to obtain a view that access to the adjacent edges of
- * the object that has been piped. Every object having type that satisfies the HasAdjacentEdges
- * concept can be applied to this view.
+ * @brief The adjEdges view allows to obtain a view that access to the adjacent
+ * edges of the object that has been piped. Every object having type that
+ * satisfies the HasAdjacentEdges concept can be applied to this view.
  *
  * Resulting adjacent edges will be pointers to Edges, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the `notNull` view:
+ * If you are interested only on the not-null pointers, you can use the
+ * `notNull` view:
  *
  * @code{.cpp}
  * for (auto* ae: f | views::adjEdges | views::notNull) { ... }

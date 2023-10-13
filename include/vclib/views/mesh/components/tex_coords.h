@@ -35,49 +35,49 @@ namespace vcl::views {
 namespace detail {
 
 template<typename T>
-concept CleanWedgeTexCoordsConcept = comp::HasWedgeTexCoords<std::remove_cvref_t<T>>;
+concept CleanWedgeTexCoordsConcept =
+    comp::HasWedgeTexCoords<std::remove_cvref_t<T>>;
 
 struct TexCoordsView
 {
     constexpr TexCoordsView() = default;
 
-    inline static constexpr auto constTexCoord = [](const auto& p) -> decltype(auto)
-    {
-        if constexpr(IsPointer<decltype(p)>)
+    inline static constexpr auto constTexCoord =
+        [](const auto& p) -> decltype(auto) {
+        if constexpr (IsPointer<decltype(p)>)
             return p->texCoord();
         else
             return p.texCoord();
     };
 
-    inline static constexpr auto texCoord = [](auto& p) -> decltype(auto)
-    {
-        if constexpr(IsPointer<decltype(p)>)
+    inline static constexpr auto texCoord = [](auto& p) -> decltype(auto) {
+        if constexpr (IsPointer<decltype(p)>)
             return p->texCoord();
         else
             return p.texCoord();
     };
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, TexCoordsView)
     {
         using ElemType = std::ranges::range_value_t<R>;
-        if constexpr(IsConst<ElemType>)
+        if constexpr (IsConst<ElemType>)
             return std::forward<R>(r) | std::views::transform(constTexCoord);
         else
             return std::forward<R>(r) | std::views::transform(texCoord);
     }
 
-    template <CleanWedgeTexCoordsConcept R>
+    template<CleanWedgeTexCoordsConcept R>
     friend constexpr auto operator|(R&& r, TexCoordsView)
     {
-        if constexpr(IsPointer<R>)
+        if constexpr (IsPointer<R>)
             return r->wedgeTexCoords();
         else
             return r.wedgeTexCoords();
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 inline constexpr detail::TexCoordsView texCoords;
 

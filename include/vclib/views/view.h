@@ -29,7 +29,8 @@
 #if __has_include(<zip_view.hpp>)
 #include <zip_view.hpp>
 #else
-// inclusion for usage of vclib without CMake - not ideal but necessary for header only
+// inclusion for usage of vclib without CMake - not ideal but necessary for
+// header only
 #define ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
 #include "../../../external/zip-views-1.0/zip_view.hpp"
 #endif
@@ -37,11 +38,12 @@
 namespace vcl {
 
 /**
- * @brief The View class is a simple class that stores and exposes two iterators begin and end.
+ * @brief The View class is a simple class that stores and exposes two iterators
+ * begin and end.
  *
- * It is useful for classes that expose multiple containers, and they do not expose the classic
- * member functions begin()/end().
- * In these cases, it is possible to expose the view of a selected container by returning a View
+ * It is useful for classes that expose multiple containers, and they do not
+ * expose the classic member functions begin()/end(). In these cases, it is
+ * possible to expose the view of a selected container by returning a View
  * object initialized with the begin/end iterators.
  *
  * For example, a Mesh can expose Vertex and Face containers.
@@ -50,8 +52,9 @@ namespace vcl {
  * - vertexEnd()
  * - faceBegin()
  * - faceEnd()
- * To allow view iteration over vertices, the Mesh could expose a vertices() member function that
- * returns a View object that is constructed in this way: View(vertexBegin(), vertexEnd());
+ * To allow view iteration over vertices, the Mesh could expose a vertices()
+ * member function that returns a View object that is constructed in this way:
+ * View(vertexBegin(), vertexEnd());
  *
  * @ingroup views
  */
@@ -59,10 +62,11 @@ template<typename It>
 class View : public std::ranges::view_interface<View<It>>
 {
 public:
-    using iterator = It;
+    using iterator       = It;
     using const_iterator = It;
 
     View() = default;
+
     View(It begin, It end) : b(begin), e(end) {}
 
     auto begin() const { return b; }

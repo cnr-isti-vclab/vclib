@@ -40,20 +40,20 @@ struct VerticesView
 {
     constexpr VerticesView() = default;
 
-    template <CleanMeshConcept R>
+    template<CleanMeshConcept R>
     friend constexpr auto operator|(R&& r, VerticesView)
     {
         return r.vertices();
     }
 
-    template <CleanVertexPtrsConcept R>
+    template<CleanVertexPtrsConcept R>
     friend constexpr auto operator|(R&& r, VerticesView)
     {
         return r.vertices();
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 /**
  * @brief A view that allows to iterate over the Vertex elements of an object.
@@ -68,7 +68,5 @@ struct VerticesView
 inline constexpr detail::VerticesView vertices;
 
 } // namespace vcl::views
-
-
 
 #endif // VCL_VIEWS_MESH_ELEMENTS_VERTEX_H

@@ -30,6 +30,7 @@
 #include "space/color.h"
 #include "space/graph.h"
 #include "space/grid.h"
+#include "space/image.h"
 #include "space/kd_tree.h"
 #include "space/matrix.h"
 #include "space/plane.h"
@@ -48,7 +49,8 @@
  *
  * @brief List of Spatial Data Structures of VCLib.
  *
- * You can access all the algorithms of VCLib by including `#include <vclib/space.h>`
+ * You can access all the algorithms of VCLib by including `#include
+ * <vclib/space.h>`
  */
 
 #endif // VCL_SPACE_H

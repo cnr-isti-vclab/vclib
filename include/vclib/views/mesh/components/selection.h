@@ -33,9 +33,8 @@ namespace vcl::views {
 
 namespace detail {
 
-inline constexpr auto isSelected = [](const auto& e)
-{
-    if constexpr(vcl::IsPointer<decltype(e)>) {
+inline constexpr auto isSelected = [](const auto& e) {
+    if constexpr (vcl::IsPointer<decltype(e)>) {
         return e->selected();
     }
     else {
@@ -43,9 +42,8 @@ inline constexpr auto isSelected = [](const auto& e)
     }
 };
 
-inline constexpr auto isNotSelected = [](const auto& e)
-{
-    if constexpr(vcl::IsPointer<decltype(e)>) {
+inline constexpr auto isNotSelected = [](const auto& e) {
+    if constexpr (vcl::IsPointer<decltype(e)>) {
         return !e->selected();
     }
     else {
@@ -57,7 +55,7 @@ struct SelectionView
 {
     constexpr SelectionView() = default;
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, SelectionView)
     {
         return std::forward<R>(r) | std::views::transform(isSelected);
@@ -68,7 +66,7 @@ struct SelectedView
 {
     constexpr SelectedView() = default;
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, SelectedView)
     {
         return std::forward<R>(r) | std::views::filter(isSelected);
@@ -79,17 +77,17 @@ struct NotSelectedView
 {
     constexpr NotSelectedView() = default;
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, NotSelectedView)
     {
         return std::forward<R>(r) | std::views::filter(isNotSelected);
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
-inline constexpr detail::SelectionView selection;
-inline constexpr detail::SelectedView selected;
+inline constexpr detail::SelectionView   selection;
+inline constexpr detail::SelectedView    selected;
 inline constexpr detail::NotSelectedView notSelected;
 
 } // namespace vcl::views

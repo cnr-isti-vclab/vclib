@@ -37,34 +37,36 @@ struct PrincipalCurvaturesView
 {
     constexpr PrincipalCurvaturesView() = default;
 
-    inline static constexpr auto constPrincipalCurvature = [](const auto& p) -> decltype(auto)
-    {
-        if constexpr(IsPointer<decltype(p)>)
+    inline static constexpr auto constPrincipalCurvature =
+        [](const auto& p) -> decltype(auto) {
+        if constexpr (IsPointer<decltype(p)>)
             return p->principalCurvature();
         else
             return p.principalCurvature();
     };
 
-    inline static constexpr auto principalCurvature = [](auto& p) -> decltype(auto)
-    {
-        if constexpr(IsPointer<decltype(p)>)
+    inline static constexpr auto principalCurvature =
+        [](auto& p) -> decltype(auto) {
+        if constexpr (IsPointer<decltype(p)>)
             return p->principalCurvature();
         else
             return p.principalCurvature();
     };
 
-    template <std::ranges::range R>
+    template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, PrincipalCurvaturesView)
     {
         using ElemType = std::ranges::range_value_t<R>;
-        if constexpr(IsConst<ElemType>)
-            return std::forward<R>(r) | std::views::transform(constPrincipalCurvature);
+        if constexpr (IsConst<ElemType>)
+            return std::forward<R>(r) |
+                   std::views::transform(constPrincipalCurvature);
         else
-            return std::forward<R>(r) | std::views::transform(principalCurvature);
+            return std::forward<R>(r) |
+                   std::views::transform(principalCurvature);
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 inline constexpr detail::PrincipalCurvaturesView principalCurvatures;
 

@@ -32,31 +32,33 @@ namespace vcl::views {
 namespace detail {
 
 template<typename T>
-concept CleanAdjVerticesConcept = comp::HasAdjacentVertices<std::remove_cvref_t<T>>;
+concept CleanAdjVerticesConcept =
+    comp::HasAdjacentVertices<std::remove_cvref_t<T>>;
 
 struct AdjVerticesView
 {
     constexpr AdjVerticesView() = default;
 
-    template <CleanAdjVerticesConcept R>
+    template<CleanAdjVerticesConcept R>
     friend constexpr auto operator|(R&& r, AdjVerticesView)
     {
-        if constexpr(IsPointer<R>)
+        if constexpr (IsPointer<R>)
             return r->adjVertices();
         else
             return r.adjVertices();
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 /**
- * @brief The adjVertices view allows to obtain a view that access to the adjacent vertices of
- * the object that has been piped. Every object having type that satisfies the HasAdjacentVertices
- * concept can be applied to this view.
+ * @brief The adjVertices view allows to obtain a view that access to the
+ * adjacent vertices of the object that has been piped. Every object having type
+ * that satisfies the HasAdjacentVertices concept can be applied to this view.
  *
  * Resulting adjacent faces will be pointers to Vertices, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the `notNull` view:
+ * If you are interested only on the not-null pointers, you can use the
+ * `notNull` view:
  *
  * @code{.cpp}
  * for (auto* av: v | views::adjVertices | views::notNull) { ... }

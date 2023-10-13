@@ -39,25 +39,26 @@ struct AdjFacesView
 {
     constexpr AdjFacesView() = default;
 
-    template <CleanAdjFacesConcept R>
+    template<CleanAdjFacesConcept R>
     friend constexpr auto operator|(R&& r, AdjFacesView)
     {
-        if constexpr(IsPointer<R>)
+        if constexpr (IsPointer<R>)
             return r->adjFaces();
         else
             return r.adjFaces();
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 /**
- * @brief The adjFaces view allows to obtain a view that access to the adjacent faces of
- * the object that has been piped. Every object having type that satisfies the HasAdjacentFaces
- * concept can be applied to this view.
+ * @brief The adjFaces view allows to obtain a view that access to the adjacent
+ * faces of the object that has been piped. Every object having type that
+ * satisfies the HasAdjacentFaces concept can be applied to this view.
  *
  * Resulting adjacent faces will be pointers to Faces, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the `notNull` view:
+ * If you are interested only on the not-null pointers, you can use the
+ * `notNull` view:
  *
  * @code{.cpp}
  * for (auto* af: f | views::adjFaces | views::notNull) { ... }

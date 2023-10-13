@@ -48,7 +48,6 @@ set(HEADERS
     include/vclib/algorithms.h
     include/vclib/concepts.h
     include/vclib/exceptions.h
-    include/vclib/image.h
     include/vclib/load_save.h
     include/vclib/math.h
     include/vclib/meshes.h

@@ -36,14 +36,14 @@ struct EdgesView
 {
     constexpr EdgesView() = default;
 
-    template <CleanEdgeMeshConcept R>
+    template<CleanEdgeMeshConcept R>
     friend constexpr auto operator|(R&& r, EdgesView)
     {
         return r.edges();
     }
 };
 
-} // namespace vcl::views::detail
+} // namespace detail
 
 /**
  * @brief A view that allows to iterate overt the Edge elements of an object.
