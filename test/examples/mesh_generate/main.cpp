@@ -38,8 +38,9 @@ int main(int argc, char** argv)
 {
     vcl::TriMesh m =
         vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
-    using ScalarType = vcl::TriMesh::ScalarType;
+    m.enablePerVertexColor();
 
+    using ScalarType = vcl::TriMesh::ScalarType;
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::Gray);
@@ -48,6 +49,7 @@ int main(int argc, char** argv)
     vcl::TriMesh            m1 = vcl::meshSphereIntersection(m, s);
 
     vcl::TriMesh sm = vcl::createSphere<vcl::TriMesh>(s);
+    sm.enablePerVertexColor();
     vcl::updatePerFaceNormals(sm);
     vcl::updatePerVertexNormals(sm);
     vcl::setPerVertexColor(sm, vcl::Color::Gray);

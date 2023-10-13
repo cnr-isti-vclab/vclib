@@ -39,6 +39,7 @@ int main(int argc, char** argv)
 {
     vcl::TriMesh m =
         vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+    m.enablePerVertexColor();
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::LightBlue);

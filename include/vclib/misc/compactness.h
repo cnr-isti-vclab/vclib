@@ -42,7 +42,7 @@ namespace vcl {
  *   - newIndices[i] contains the value UINT_NULL if the element vec[i] must be
  *     deleted
  *
- * Non-null elements of newIndices must unique, and their value must be less
+ * Non-null elements of newIndices must be unique, and their value must be less
  * than the new size of vec after the compactness. The new size of vec will be
  * the number of non-null elements of newIndices.
  *

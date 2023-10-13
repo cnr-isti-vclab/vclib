@@ -31,7 +31,6 @@
 
 int main()
 {
-#ifdef VCL_USES_RANGES
     vcl::TriMesh m =
         vcl::load<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
@@ -112,6 +111,7 @@ int main()
     }
 
     // quality
+    m.enablePerVertexQuality();
 
     i = 0;
     for (auto& qual : m.vertices() | vcl::views::quality) {
@@ -124,6 +124,4 @@ int main()
         std::cerr << qual << "\n";
     }
     return 0;
-
-#endif
 }

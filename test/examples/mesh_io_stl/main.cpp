@@ -42,6 +42,7 @@ int main(int argc, char** argv)
     log.startTimer();
     vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(
         VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo, log);
+    m1.enablePerVertexColor();
     vcl::updateBoundingBox(m1);
     vcl::updatePerVertexNormals(m1);
     vcl::setPerVertexColor(m1, vcl::Color::DarkMagenta);
@@ -49,6 +50,7 @@ int main(int argc, char** argv)
     log.startTimer();
     vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(
         VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo, log);
+    m2.enablePerVertexColor();
     vcl::updateBoundingBox(m2);
     vcl::updatePerVertexNormals(m2);
     vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);

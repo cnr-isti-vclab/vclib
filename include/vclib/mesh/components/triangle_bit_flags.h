@@ -49,12 +49,14 @@ namespace vcl::comp {
  *                             [0, 2]) on border
  * - from 6 to 8: edge selection: if the current Triangle has the i-th edge (i
  *                                in [0, 2]) selected
- * - from 9 to 11: edge faux: if the current Triangle has the i-th edge (i in
+ * - from 9 to 11: edge visited: if the current Triangle has the i-th edge (i
+ *                               in [0, 2]) visited
+ * - from 12 to 14: edge faux: if the current Triangle has the i-th edge (i in
  *                            [0, 2]) marked as faux
- * - from 12 to 15: user bits that can have custom meanings to the user
+ * - 15: user bit that can have custom meanings to the user
  *
- * This class provides 4 user bits, that can be accessed using the member
- * function userBit(uint i) with position in the interval [0, 3].
+ * This class provides 1 user bit, that can be accessed using the member
+ * function userBit(uint i) with position 0.
  *
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component.
@@ -93,7 +95,7 @@ class TriangleBitFlags :
 
     using FT = short; // FlagsType, the integral type used for the flags
 
-    static const uint FIRST_USER_BIT = 12;
+    static const uint FIRST_USER_BIT = 15;
 
     // indices of the bits
     enum {
@@ -104,10 +106,11 @@ class TriangleBitFlags :
         BORDER0 = 3, // bits [3, 5]
         // Edge selection
         EDGESEL0 = 6, // bits [6, 8]
+        EDGEVIS0 = 9, // bits [9, 11]
         // Faux edges: when representing polygonal meshes on triangle meshes,
         // some triangle edges can be marked as "faux", meaning that they are
         // internal on the polygon
-        FAUX0 = 9 // bits [9, 11]
+        FAUX0 = 12 // bits [12, 14]
     };
 
 public:
@@ -235,6 +238,32 @@ public:
     {
         assert(i < 3);
         return flags()[EDGESEL0 + i];
+    }
+
+    /**
+     * @brief Accesses the 'visited' bit of the i-th edge of the triangle,
+     * returning a reference to it.
+     * @param[in] i: the index of the edge, it must be less than 3.
+     * @return a reference to the 'visited' bit of the i-th edge of the
+     * triangle.
+     */
+    BitProxy<FT> edgeVisited(uint i)
+    {
+        assert(i < 3);
+        return flags()[EDGEVIS0 + i];
+    }
+
+    /**
+     * @brief Returns whether the i-th edge of the current triangle is visited
+     * or not.
+     * @param[in] i: the index of the edge, it must be less than 3.
+     * @return true if the i-th edge of the triangle is visited, false
+     * otherwise.
+     */
+    bool edgeVisited(uint i) const
+    {
+        assert(i < 3);
+        return flags()[EDGEVIS0 + i];
     }
 
     /**

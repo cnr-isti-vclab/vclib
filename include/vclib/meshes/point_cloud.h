@@ -46,8 +46,8 @@ class Vertex :
             vcl::vert::BitFlags,
             vcl::vert::Coordinate3<Scalar>,
             vcl::vert::Normal3<Scalar>,
-            vcl::vert::Color,
-            vcl::vert::Quality<Scalar>,
+            vcl::vert::OptionalColor<Vertex<Scalar>>,
+            vcl::vert::OptionalQuality<Scalar, Vertex<Scalar>>,
             vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
             vcl::vert::OptionalMark<Vertex<Scalar>>,
             vcl::vert::CustomComponents<Vertex<Scalar>>>

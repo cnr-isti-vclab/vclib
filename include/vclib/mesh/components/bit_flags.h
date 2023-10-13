@@ -44,7 +44,7 @@ namespace vcl::comp {
  * - 2: border: if the current Element is on border
  * - 3: visited: if the current Element has been visited (useful for some visit
  *               algorithms)
- * - other: user bits that can have custom meanings to the user
+ * - from 4 to 7: user bits that can have custom meanings to the user
  *
  * This class provides 4 user bits, that can be accessed using the member
  * function userBit(uint i) with position in the interval [0, 3].

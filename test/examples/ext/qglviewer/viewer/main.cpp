@@ -48,6 +48,7 @@ int main(int argc, char** argv)
         VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
     vcl::updatePerFaceNormals(tm);
     vcl::updatePerVertexNormals(tm);
+    tm.enablePerVertexColor();
     tm.enablePerFaceColor();
     vcl::setPerVertexColor(tm, vcl::Color::DarkMagenta);
     vcl::setPerFaceColor(tm, vcl::Color::LightGreen);
@@ -55,6 +56,7 @@ int main(int argc, char** argv)
 
     vcl::TriMesh m =
         vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    m.enablePerVertexColor();
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::DarkGreen);

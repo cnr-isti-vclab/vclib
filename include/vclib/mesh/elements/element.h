@@ -96,7 +96,10 @@ public:
     template<typename ElType>
     void importFrom(const ElType& v)
     {
-        (Comps::importFrom(v), ...);
+        // we need to call importFrom for each component of the Element,
+        // but importFrom must be called only on components that are
+        // available (e.g. optional and not enabled)
+        (importComponent<Comps>(v), ...);
     }
 
 private:
@@ -124,6 +127,19 @@ private:
             // available
             else {
                 Comp::init();
+            }
+        }
+    }
+
+    template<typename Comp, typename ElType>
+    void importComponent(const ElType& v)
+    {
+        if constexpr (!comp::IsOptionalComponent<Comp>) {
+            Comp::importFrom(v); // safe to call importFrom
+        }
+        else { // it is optional...
+            if (Comp::isAvailable()) { // check if it is available
+                Comp::importFrom(v);
             }
         }
     }

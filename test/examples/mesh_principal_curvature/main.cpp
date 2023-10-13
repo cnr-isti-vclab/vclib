@@ -46,6 +46,8 @@ int main(int argc, char** argv)
     m.enablePerVertexAdjacentFaces();
     m.enablePerFaceAdjacentFaces();
     m.enablePerVertexPrincipalCurvature();
+    m.enablePerVertexColor();
+    m.enablePerVertexQuality();
 
     vcl::updatePerFaceNormals(m);
     vcl::updatePerFaceAdjacentFaces(m);

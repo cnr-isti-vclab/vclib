@@ -260,7 +260,9 @@ public:
      *
      * @param oth: the mesh from which constructo this Mesh.
      */
-    Mesh(const Mesh& oth)
+    Mesh(const Mesh& oth) :
+            Args(oth)... // call auto copy constructors for all the container
+                         // elements and components
     {
         // Set to all element containers their parent mesh (this)
         updateAllParentMeshPointers();

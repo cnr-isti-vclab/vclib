@@ -85,6 +85,7 @@ int main()
 
     assert(cc.size() == 25);
 
+    m.enablePerVertexColor();
     m.enablePerFaceColor();
 
     vcl::setPerFaceColorFromConnectedComponents(m, cc);

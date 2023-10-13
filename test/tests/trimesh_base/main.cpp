@@ -39,6 +39,8 @@ SCENARIO("TriMesh usage")
 
         THEN("The optional components are all disabled")
         {
+            REQUIRE(m.isPerVertexQualityEnabled() == false);
+            REQUIRE(m.isPerVertexColorEnabled() == false);
             REQUIRE(m.isPerVertexAdjacentFacesEnabled() == false);
             REQUIRE(m.isPerVertexAdjacentVerticesEnabled() == false);
             REQUIRE(m.isPerVertexPrincipalCurvatureEnabled() == false);
@@ -57,6 +59,8 @@ SCENARIO("TriMesh usage")
         {
             m.enableAllPerVertexOptionalComponents();
 
+            REQUIRE(m.isPerVertexQualityEnabled() == true);
+            REQUIRE(m.isPerVertexColorEnabled() == true);
             REQUIRE(m.isPerVertexAdjacentFacesEnabled() == true);
             REQUIRE(m.isPerVertexAdjacentVerticesEnabled() == true);
             REQUIRE(m.isPerVertexPrincipalCurvatureEnabled() == true);
@@ -65,6 +69,8 @@ SCENARIO("TriMesh usage")
 
             m.disableAllPerVertexOptionalComponents();
 
+            REQUIRE(m.isPerVertexQualityEnabled() == false);
+            REQUIRE(m.isPerVertexColorEnabled() == false);
             REQUIRE(m.isPerVertexAdjacentFacesEnabled() == false);
             REQUIRE(m.isPerVertexAdjacentVerticesEnabled() == false);
             REQUIRE(m.isPerVertexPrincipalCurvatureEnabled() == false);

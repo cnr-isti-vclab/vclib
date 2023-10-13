@@ -68,7 +68,9 @@ int main()
     // in this mesh vertex normaks are not optional, I don't need to enable them
     m.vertex(0).normal() = TriMeshPoint(1, 0, 0);
 
-    // setting vertex colors, also colors here are not optional
+    m.enablePerVertexColor();
+
+    // setting vertex colors
     m.vertex(0).color() = vcl::Color(3, 7, 4);
     m.vertex(1).color() = vcl::Color(3, 63, 44);
     m.vertex(2).color() = vcl::Color(3, 9, 2);
