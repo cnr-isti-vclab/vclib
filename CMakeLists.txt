@@ -258,6 +258,7 @@ set(HEADERS
     include/vclib/meshes/point_cloud.h
     include/vclib/meshes/poly_mesh.h
     include/vclib/meshes/tri_mesh.h
+    include/vclib/meshes/detail/tmp_meshes.h
     include/vclib/misc/compactness.h
     include/vclib/misc/comparators.h
     include/vclib/misc/hash.h
@@ -269,7 +270,6 @@ set(HEADERS
     include/vclib/misc/timer.h
     include/vclib/misc/tokenizer.h
     include/vclib/misc/tuple.h
-    include/vclib/misc/detail/tmp_meshes.h
     include/vclib/misc/logger/console_logger.h
     include/vclib/misc/logger/logger.h
     include/vclib/misc/logger/null_logger.h

@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_TMP_MESHES_H
-#define VCL_MISC_TMP_MESHES_H
+#ifndef VCL_MESHES_TMP_MESHES_H
+#define VCL_MESHES_TMP_MESHES_H
 
 #include <vclib/mesh/mesh.h>
 
@@ -33,12 +33,19 @@ class TMPSimplePolyMesh;
 
 namespace tmpMesh {
 
-class TriVertex : public vcl::Vertex<TMPSimpleTriMesh, vcl::vert::BitFlags, vcl::vert::Coordinate3d>
+class TriVertex :
+        public vcl::Vertex<
+            TMPSimpleTriMesh,
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3d>
 {
 };
 
 class PolyVertex :
-        public vcl::Vertex<TMPSimplePolyMesh, vcl::vert::BitFlags, vcl::vert::Coordinate3d>
+        public vcl::Vertex<
+            TMPSimplePolyMesh,
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3d>
 {
 };
 
@@ -76,4 +83,4 @@ class TMPSimplePolyMesh :
 
 } // namespace vcl::detail
 
-#endif // VCL_MISC_TMP_MESHES_H
+#endif // VCL_MESHES_TMP_MESHES_H

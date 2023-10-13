@@ -80,7 +80,7 @@ private:
                     str++;
                 if (begin != str)
                     splitted.push_back(std::string(begin, str));
-                else if (!jumpEmptyTokens){
+                else if (!jumpEmptyTokens) {
                     splitted.push_back(std::string());
                 }
             } while ('\0' != *str++);

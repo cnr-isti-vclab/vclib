@@ -32,7 +32,7 @@ namespace vcl {
 template<typename ScalarType>
 class EdgeMeshT;
 
-}
+} // namespace vcl
 
 namespace vcl::edgemesh {
 
@@ -46,16 +46,16 @@ template<typename Scalar>
 class Vertex :
         public vcl::Vertex<
             EdgeMeshT<Scalar>,
-            vcl::vert::BitFlags,                                            // 4b
-            vcl::vert::Coordinate3<Scalar>,                                 // 24b
-            vcl::vert::Normal3<Scalar>,                                     // 24b
-            vcl::vert::Color,                                               // 4b
-            vcl::vert::Quality<Scalar>,                                     // 8b
-            vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>, // 0b
-            vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
-            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
-            vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
-            vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3<Scalar>,
+            vcl::vert::Normal3<Scalar>,
+            vcl::vert::Color,
+            vcl::vert::Quality<Scalar>,
+            vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>,
+            vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
+            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vcl::vert::OptionalMark<Vertex<Scalar>>,
+            vcl::vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 
@@ -63,17 +63,17 @@ template<typename Scalar>
 class Edge :
         public vcl::Edge<
             EdgeMeshT<Scalar>,
-            vcl::edge::BitFlags,                              // 4b
-            vcl::edge::VertexPointers<Vertex<Scalar>>,        // 24b
-            vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>, // 0b
-            vcl::edge::OptionalColor<Edge<Scalar>>,           // 0b
-            vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,   // 0b
-            vcl::edge::OptionalMark<Edge<Scalar>>,            // 0b
-            vcl::edge::CustomComponents<Edge<Scalar>>>        // 0b
+            vcl::edge::BitFlags,
+            vcl::edge::VertexPointers<Vertex<Scalar>>,
+            vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>,
+            vcl::edge::OptionalColor<Edge<Scalar>>,
+            vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,
+            vcl::edge::OptionalMark<Edge<Scalar>>,
+            vcl::edge::CustomComponents<Edge<Scalar>>>
 {
 };
 
-} // namespace vcl::trimesh
+} // namespace vcl::edgemesh
 
 namespace vcl {
 

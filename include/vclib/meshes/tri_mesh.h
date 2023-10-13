@@ -32,7 +32,7 @@ namespace vcl {
 template<typename ScalarType>
 class TriMeshT;
 
-}
+} // namespace vcl
 
 namespace vcl::trimesh {
 
@@ -46,17 +46,17 @@ template<typename Scalar>
 class Vertex :
         public vcl::Vertex<
             TriMeshT<Scalar>,
-            vcl::vert::BitFlags,                                            // 4b
-            vcl::vert::Coordinate3<Scalar>,                                 // 12 or 24b
-            vcl::vert::Normal3<Scalar>,                                     // 12 or 24b
-            vcl::vert::Color,                                               // 4b
-            vcl::vert::Quality<Scalar>,                                     // 4 or 8b
-            vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>, // 0b
-            vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,            // 0b
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3<Scalar>,
+            vcl::vert::Normal3<Scalar>,
+            vcl::vert::Color,
+            vcl::vert::Quality<Scalar>,
+            vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
+            vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
             vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,            // 0b
-            vcl::vert::OptionalMark<Vertex<Scalar>>,                        // 0b
-            vcl::vert::CustomComponents<Vertex<Scalar>>>                    // 0b
+            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vcl::vert::OptionalMark<Vertex<Scalar>>,
+            vcl::vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 
@@ -64,15 +64,15 @@ template<typename Scalar>
 class Face :
         public vcl::Face<
             TriMeshT<Scalar>,
-            vcl::face::TriangleBitFlags,                                     // 4b
-            vcl::face::TriangleVertexPtrs<Vertex<Scalar>>,                   // 24b
-            vcl::face::Normal3<Scalar>,                                      // 12 or 24b
-            vcl::face::OptionalQuality<Scalar, Face<Scalar>>,                // 0b
-            vcl::face::OptionalColor<Face<Scalar>>,                          // 0b
-            vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,              // 0b
-            vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>, // 0b
-            vcl::face::OptionalMark<Face<Scalar>>,                           // 0b
-            vcl::face::CustomComponents<Face<Scalar>>>                       // 0b
+            vcl::face::TriangleBitFlags,
+            vcl::face::TriangleVertexPtrs<Vertex<Scalar>>,
+            vcl::face::Normal3<Scalar>,
+            vcl::face::OptionalQuality<Scalar, Face<Scalar>>,
+            vcl::face::OptionalColor<Face<Scalar>>,
+            vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,
+            vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>,
+            vcl::face::OptionalMark<Face<Scalar>>,
+            vcl::face::CustomComponents<Face<Scalar>>>
 {
 };
 
@@ -102,16 +102,18 @@ public:
 };
 
 /**
- * @brief The TriMeshf class is a specialization of TriMeshT that uses `float` as scalar.
+ * @brief The TriMeshf class is a specialization of TriMeshT that uses `float`
+ * as scalar.
  * @ingroup meshes
  */
 using TriMeshf = TriMeshT<float>;
 
 /**
- * @brief The TriMesh class is a specialization of TriMeshT that uses `double` as scalar.
+ * @brief The TriMesh class is a specialization of TriMeshT that uses `double`
+ * as scalar.
  * @ingroup meshes
  */
-using TriMesh  = TriMeshT<double>;
+using TriMesh = TriMeshT<double>;
 
 } // namespace vcl
 

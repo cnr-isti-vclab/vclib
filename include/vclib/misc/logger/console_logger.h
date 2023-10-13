@@ -46,8 +46,7 @@ public:
         std::ostream& progStream,
         std::ostream& debugStream) :
             errStream(errStream),
-            warnStream(warnStream),
-            progStream(progStream),
+            warnStream(warnStream), progStream(progStream),
             debugStream(debugStream)
     {
     }
@@ -56,14 +55,10 @@ protected:
     std::ostream* levelStream(LogLevel lvl)
     {
         switch (lvl) {
-        case ERROR:
-            return &errStream;
-        case WARNING:
-            return &warnStream;
-        case PROGRESS:
-            return &progStream;
-        case DEBUG:
-            return &debugStream;
+        case ERROR: return &errStream;
+        case WARNING: return &warnStream;
+        case PROGRESS: return &progStream;
+        case DEBUG: return &debugStream;
         }
         return nullptr;
     }

@@ -26,7 +26,7 @@
 
 #include <vclib/algorithms/polygon.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/misc/detail/tmp_meshes.h>
+#include <vclib/meshes/detail/tmp_meshes.h>
 #include <vclib/misc/logger.h>
 
 namespace vcl {

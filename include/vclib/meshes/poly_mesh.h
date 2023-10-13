@@ -32,7 +32,7 @@ namespace vcl {
 template<typename ScalarType>
 class PolyMeshT;
 
-}
+} // namespace vcl
 
 namespace vcl::polymesh {
 

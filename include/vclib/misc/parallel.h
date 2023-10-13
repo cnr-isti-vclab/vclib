@@ -34,27 +34,27 @@
 // (https://github.com/mikekazakov/pstld) that implements them in the stl
 // namespace
 #if defined(__clang__) && defined(__APPLE__)
-    #if __has_include(<pstld/pstld.h>)
-        #include <pstld/pstld.h>
-    #else
-// inclusion for usage of vclib without cmake
-        #define PSTLD_HEADER_ONLY // no prebuilt library, only the header
-        #define PSTLD_HACK_INTO_STD // hack into std namespace
-        #include "../../../external/pstld-master/pstld/pstld.h"
-    #endif
+#if __has_include(<pstld/pstld.h>)
+#include <pstld/pstld.h>
 #else
-    // tbb and qt conflicts: if both are linked, we need to first undef Qt's
-    // emit - see: https://github.com/oneapi-src/oneTBB/issues/547
-    #ifndef Q_MOC_RUN
-        #if defined(emit)
-            #undef emit
-            #include <execution>
-            #define emit // restore the macro definition of "emit", as it was
-                         // defined in gtmetamacros.h
-        #else
-            #include <execution>
-        #endif
-    #endif
+// inclusion for usage of vclib without cmake
+#define PSTLD_HEADER_ONLY   // no prebuilt library, only the header
+#define PSTLD_HACK_INTO_STD // hack into std namespace
+#include "../../../external/pstld-master/pstld/pstld.h"
+#endif
+#else
+// tbb and qt conflicts: if both are linked, we need to first undef Qt's
+// emit - see: https://github.com/oneapi-src/oneTBB/issues/547
+#ifndef Q_MOC_RUN
+#if defined(emit)
+#undef emit
+#include <execution>
+#define emit // restore the macro definition of "emit", as it was
+             // defined in gtmetamacros.h
+#else
+#include <execution>
+#endif
+#endif
 #endif
 
 namespace vcl {

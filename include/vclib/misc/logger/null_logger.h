@@ -48,7 +48,8 @@ namespace vcl {
  *
  * @ingroup miscellaneous
  */
-class NullLogger {
+class NullLogger
+{
 };
 
 /**
@@ -87,7 +88,7 @@ static inline NullLogger nullLogger;
  *
  * @return true it T is a valid Logger type.
  */
-template <LoggerConcept T>
+template<LoggerConcept T>
 constexpr bool isLoggerValid()
 {
     return !std::is_same_v<T, NullLogger>;

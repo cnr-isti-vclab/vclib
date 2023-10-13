@@ -40,8 +40,9 @@ namespace vcl::str {
  * @return an iterator pointing to the substring, or an iterator pointing to
  * `end()`.
  */
-std::string::const_iterator
-findCaseInsensitive(const std::string& input, const std::string& substr)
+std::string::const_iterator findCaseInsensitive(
+    const std::string& input,
+    const std::string& substr)
 {
     // link: https://stackoverflow.com/a/19839371/5851101
 
@@ -63,7 +64,9 @@ findCaseInsensitive(const std::string& input, const std::string& substr)
  * @param substr: substring to look into `input`.
  * @return `true` if `substr` was found in `input`
  */
-bool containsCaseInsensitive(const std::string& input, const std::string& substr)
+bool containsCaseInsensitive(
+    const std::string& input,
+    const std::string& substr)
 {
     return findCaseInsensitive(input, substr) != input.end();
 }
@@ -88,8 +91,8 @@ inline std::string toUpper(const std::string& s)
 
 inline void removeWindowsNewLine(std::string& s)
 {
-    if (s.size() > 0 && s[s.size()-1] == '\r')
-        s = s.substr(0, s.size()-1);
+    if (s.size() > 0 && s[s.size() - 1] == '\r')
+        s = s.substr(0, s.size() - 1);
 }
 
 } // namespace vcl::str

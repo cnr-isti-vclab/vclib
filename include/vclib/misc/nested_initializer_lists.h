@@ -64,8 +64,7 @@ struct NestedInitializerListsTraits<T, 0>
  * correspond to the number of used levels.
  */
 template<typename T, std::size_t L>
-using NestedInitializerLists =
-    detail::NestedInitializerListsTraits<T, L>::type;
+using NestedInitializerLists = detail::NestedInitializerListsTraits<T, L>::type;
 
 // Recursive part.
 
@@ -102,8 +101,8 @@ public:
      * @return a list of L numbers, where every number is the maximum size of
      * elements for every dimension.
      */
-    static std::list<size_t>
-    maxDimensionsLevels(NestedInitializerLists<T, L> values)
+    static std::list<size_t> maxDimensionsLevels(
+        NestedInitializerLists<T, L> values)
     {
         std::list<size_t> final;
         bool              first = true;
@@ -154,8 +153,9 @@ public:
      * input.
      */
     template<typename T_Function>
-    static void
-    processElements(NestedInitializerLists<T, L> values, T_Function function)
+    static void processElements(
+        NestedInitializerLists<T, L> values,
+        T_Function                   function)
     {
         for (auto nested : values) {
             NestedInitializerListsProcessor<T, L - 1>::processElements(

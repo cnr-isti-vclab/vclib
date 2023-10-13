@@ -20,7 +20,7 @@
  * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
  * for more details.                                                         *
  ****************************************************************************/
- 
+
 #ifndef VCL_MISC_COMPARATORS_H
 #define VCL_MISC_COMPARATORS_H
 
@@ -62,8 +62,10 @@ struct UnorderedPairComparator
         if (std::min(p1.first, p1.second) < std::min(p2.first, p2.second)) {
             return true;
         }
-        else if (std::min(p1.first, p1.second) == std::min(p2.first, p2.second)) {
-            return std::max(p1.first, p1.second) < std::max(p2.first, p2.second);
+        else if (std::min(p1.first, p1.second) == std::min(p2.first, p2.second))
+        {
+            return std::max(p1.first, p1.second) <
+                   std::max(p2.first, p2.second);
         }
         else {
             return false;

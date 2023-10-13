@@ -56,39 +56,33 @@ private:
 
     double step; // the value that corresponds to 1% on the current task
 
-    bool indent = true;
-    uint lineW = 80;
+    bool       indent     = true;
+    uint       lineW      = 80;
     const uint TIMER_SIZE = 12;
 
     vcl::Timer timer;
-    bool printTimer = false;
+    bool       printTimer = false;
 
     // progress status members
-    bool isProgressActive = false;
+    bool        isProgressActive = false;
     std::string progressMessage;
-    uint progressStep;
-    uint progressPerc;
-    uint progressPercStep;
-    uint lastProgress;
+    uint        progressStep;
+    uint        progressPerc;
+    uint        progressPercStep;
+    uint        lastProgress;
 
     std::mutex mutex;
-public:
 
+public:
     Logger()
     {
         stack.push({0, 100});
         updateStep();
     }
 
-    void enableIndentation()
-    {
-        indent = true;
-    }
+    void enableIndentation() { indent = true; }
 
-    void disableIndentation()
-    {
-        indent = false;
-    }
+    void disableIndentation() { indent = false; }
 
     void reset()
     {
@@ -98,20 +92,11 @@ public:
         updateStep();
     }
 
-    void setMaxLineWidth(uint w)
-    {
-        lineW = w;
-    }
+    void setMaxLineWidth(uint w) { lineW = w; }
 
-    void setPrintTimer(bool b)
-    {
-        printTimer = b;
-    }
+    void setPrintTimer(bool b) { printTimer = b; }
 
-    void startTimer()
-    {
-        timer.start();
-    }
+    void startTimer() { timer.start(); }
 
     void startNewTask(double fromPerc, double toPerc, const std::string& action)
     {
@@ -143,13 +128,13 @@ public:
     double percentage() const
     {
         double k = std::pow(10, percPrecision);
-        uint c = globalPercProgress * k;
+        uint   c = globalPercProgress * k;
         return c / k;
     }
 
     virtual void setPercentage(uint newPerc)
     {
-        if(newPerc >= 0 && newPerc <= 100) {
+        if (newPerc >= 0 && newPerc <= 100) {
             globalPercProgress = (stack.top().first) + step * newPerc;
         }
     }
@@ -204,14 +189,14 @@ public:
         const std::string& msg,
         uint               progressSize,
         uint               percPrintProgress = 10,
-        uint               startPerc = 0,
-        uint               endPerc = 100)
+        uint               startPerc         = 0,
+        uint               endPerc           = 100)
     {
         assert(percPrintProgress > 0);
         assert((endPerc - startPerc) > 0);
         isProgressActive = true;
-        progressMessage = msg;
-        progressPerc = startPerc;
+        progressMessage  = msg;
+        progressPerc     = startPerc;
         progressPercStep = percPrintProgress;
         progressStep =
             progressSize / ((endPerc - startPerc) / percPrintProgress - 1);
@@ -298,14 +283,14 @@ private:
     void printLine(const std::string& msg, uint lvl)
     {
         LogLevel l = PROGRESS;
-        if (lvl < DEBUG){
+        if (lvl < DEBUG) {
             l = (LogLevel) lvl;
         }
         std::ostream* stream = levelStream(l);
 
         if (stream) {
             uint s = 0;
-            s = printPercentage(*stream);
+            s      = printPercentage(*stream);
             s += printIndentation(*stream);
             printMessage(*stream, msg, lvl, s);
             printElapsedTime(*stream);
@@ -316,7 +301,7 @@ private:
     uint printPercentage(std::ostream& o) const
     {
         uint size = 3;
-        if (percPrecision > 0 )
+        if (percPrecision > 0)
             size += 1 + percPrecision;
 
         o << "[";

@@ -32,7 +32,7 @@ namespace vcl {
 template<typename ScalarType>
 class PointCloudT;
 
-}
+} // namespace vcl
 
 namespace vcl::pointcloud {
 
@@ -43,14 +43,14 @@ template<typename Scalar>
 class Vertex :
         public vcl::Vertex<
             PointCloudT<Scalar>,
-            vcl::vert::BitFlags,                                 // 4b
-            vcl::vert::Coordinate3<Scalar>,                      // 24b
-            vcl::vert::Normal3<Scalar>,                          // 24b
-            vcl::vert::Color,                                    // 4b
-            vcl::vert::Quality<Scalar>,                          // 8b
-            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>, // 0b
-            vcl::vert::OptionalMark<Vertex<Scalar>>,             // 0b
-            vcl::vert::CustomComponents<Vertex<Scalar>>>         // 0b
+            vcl::vert::BitFlags,
+            vcl::vert::Coordinate3<Scalar>,
+            vcl::vert::Normal3<Scalar>,
+            vcl::vert::Color,
+            vcl::vert::Quality<Scalar>,
+            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vcl::vert::OptionalMark<Vertex<Scalar>>,
+            vcl::vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 
