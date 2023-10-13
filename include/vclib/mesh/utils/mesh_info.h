@@ -32,6 +32,7 @@
 #include <bitset>
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/types.h>
 
 namespace vcl {
 
