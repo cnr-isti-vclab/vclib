@@ -25,7 +25,6 @@
 #define VCL_MISCELLANEOUS_H
 
 #include "misc/comparators.h"
-#include "misc/file_info.h"
 #include "misc/hash.h"
 #include "misc/logger.h"
 #include "misc/parallel.h"

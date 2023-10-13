@@ -29,8 +29,8 @@
 #include <string>
 #include <vector>
 
+#include <vclib/io/file_info.h>
 #include <vclib/io/read.h>
-#include <vclib/misc/file_info.h>
 #include <vclib/misc/mesh_info.h>
 #include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>

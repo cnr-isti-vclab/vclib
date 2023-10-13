@@ -162,6 +162,7 @@ set(HEADERS
     include/vclib/exceptions/io_exceptions.h
     include/vclib/exceptions/mesh_exceptions.h
     include/vclib/exceptions/misc_exceptions.h
+    include/vclib/io/file_info.h
     include/vclib/io/mesh.h
     include/vclib/io/read.h
     include/vclib/io/utils.h
@@ -258,7 +259,6 @@ set(HEADERS
     include/vclib/meshes/tri_mesh.h
     include/vclib/misc/compactness.h
     include/vclib/misc/comparators.h
-    include/vclib/misc/file_info.h
     include/vclib/misc/hash.h
     include/vclib/misc/logger.h
     include/vclib/misc/mesh_info.h

@@ -24,6 +24,7 @@
 #ifndef VCL_IO_READ_H
 #define VCL_IO_READ_H
 
+#include "file_info.h"
 #include "utils.h"
 
 namespace vcl {

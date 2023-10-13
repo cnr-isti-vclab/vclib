@@ -137,7 +137,7 @@ public:
     template<uint ELEM_ID>
     using ElementType = ContainerOfElement<ELEM_ID>::type::ElementType;
 
-    /* constexpr static member functions */
+    /* Constexpr static member functions */
 
     /**
      * @brief Returns true if this Mesh has a container of elements having the
@@ -242,7 +242,7 @@ public:
             HasPerElementOptionalComponent<Mesh<Args...>, ELEM_ID, COMP_ID>;
     }
 
-    /* constructors */
+    /* Constructors */
 
     /**
      * @brief Empty constructor, constructs an empty mesh.
@@ -292,7 +292,7 @@ public:
                    // the input one
     }
 
-    /* member functions */
+    /* Member functions */
 
     /**
      * @brief Returns true if this mesh is compact, meaning that all its

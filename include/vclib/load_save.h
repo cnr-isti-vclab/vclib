@@ -24,6 +24,7 @@
 #ifndef VCL_LOAD_SAVE_H
 #define VCL_LOAD_SAVE_H
 
+#include "io/file_info.h"
 #include "io/mesh.h"
 
 /**

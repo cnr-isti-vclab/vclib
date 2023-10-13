@@ -28,7 +28,6 @@
 #include <fstream>
 
 #include <vclib/exceptions/io_exceptions.h>
-#include <vclib/misc/file_info.h>
 #include <vclib/misc/mesh_info.h>
 #include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>

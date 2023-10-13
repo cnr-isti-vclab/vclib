@@ -21,11 +21,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_FILE_INFO_H
-#define VCL_MISC_FILE_INFO_H
+#ifndef VCL_IO_FILE_INFO_H
+#define VCL_IO_FILE_INFO_H
 
-#include <fstream>
 #include <filesystem>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -42,7 +42,13 @@ public:
 
     FileInfo(const std::string& filename) : filename(filename) {}
 
-    /* Static members */
+    bool exists() const { return exists(filename); }
+
+    std::size_t fileSize() const { return fileSize(filename); }
+
+    bool isFileBinary() const { return isFileBinary(filename); }
+
+    /* Static member functions */
 
     // file stat
 
@@ -85,12 +91,12 @@ public:
         const std::size_t CHECK_BUFF_SIZE = 1000;
 
         std::ifstream file(filename, std::ios::binary | std::ios::ate);
-        std::size_t fsize = file.tellg();
-        std::size_t size = std::min(fsize, CHECK_BUFF_SIZE);
+        std::size_t   fsize = file.tellg();
+        std::size_t   size  = std::min(fsize, CHECK_BUFF_SIZE);
         file.seekg(0, std::ios::beg);
 
         std::vector<unsigned char> buffer(size);
-        if (file.read((char*)buffer.data(), size)) {
+        if (file.read((char*) buffer.data(), size)) {
             for (uint i = 0; i < buffer.size(); ++i) {
                 if (buffer[i] > 127)
                     return true;
@@ -127,14 +133,14 @@ public:
      */
     static void separateExtensionFromFileName(
         const std::string& fullname,
-        std::string& rawname,
-        std::string& extension)
+        std::string&       rawname,
+        std::string&       extension)
     {
         // https://stackoverflow.com/questions/6417817
 
         size_t lastindex = fullname.find_last_of(".");
-        if (lastindex != std::string::npos){
-            rawname = fullname.substr(0, lastindex);
+        if (lastindex != std::string::npos) {
+            rawname   = fullname.substr(0, lastindex);
             extension = fullname.substr(lastindex, fullname.size());
         }
         else {
@@ -162,13 +168,13 @@ public:
      */
     static void separateFileNameFromPath(
         const std::string& fullpath,
-        std::string& path,
-        std::string& filename)
+        std::string&       path,
+        std::string&       filename)
     {
         size_t lastindex = fullpath.find_last_of("/");
-        if (lastindex != std::string::npos){
-            path = fullpath.substr(0, lastindex);
-            filename = fullpath.substr(lastindex+1, fullpath.size());
+        if (lastindex != std::string::npos) {
+            path     = fullpath.substr(0, lastindex);
+            filename = fullpath.substr(lastindex + 1, fullpath.size());
         }
         else {
             filename = fullpath;
@@ -267,9 +273,9 @@ public:
         const std::string& ext)
     {
         std::string actualfilename;
-        size_t lastindex = filename.find_last_of(".");
+        size_t      lastindex = filename.find_last_of(".");
         if (lastindex != std::string::npos) {
-            std::string e = filename.substr(lastindex+1, filename.size());
+            std::string e = filename.substr(lastindex + 1, filename.size());
             if (e == ext)
                 actualfilename = filename;
             else
@@ -283,4 +289,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MISC_FILE_INFO_H
+#endif // VCL_IO_FILE_INFO_H

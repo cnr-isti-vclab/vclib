@@ -27,8 +27,8 @@
 #include <map>
 
 #include <vclib/algorithms/polygon.h>
+#include <vclib/io/file_info.h>
 #include <vclib/io/read.h>
-#include <vclib/misc/file_info.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/mesh_info.h>
 
