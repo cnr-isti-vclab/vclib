@@ -70,7 +70,7 @@ ObjMaterial objMaterialFromFace(
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
         if (fi.hasFaceWedgeTexCoords()) {
             mat.hasTexture = true;
-            mat.map_Kd = m.texturePath(f.textureIndex());
+            mat.map_Kd     = m.texturePath(f.textureIndex());
         }
     }
     return mat;
@@ -78,27 +78,27 @@ ObjMaterial objMaterialFromFace(
 
 template<ElementConcept ElementType, MeshConcept MeshType>
 void writeElementObjMaterial(
-    const ElementType&                    e,
-    const MeshType&                       m,
-    const MeshInfo&                       fi,
+    const ElementType&                  e,
+    const MeshType&                     m,
+    const MeshInfo&                     fi,
     ObjMaterial&                        lastMaterial,
     std::map<ObjMaterial, std::string>& materialMap,
-    std::ofstream&                        fp,
-    std::ofstream&                        mtlfp)
+    std::ofstream&                      fp,
+    std::ofstream&                      mtlfp)
 {
     ObjMaterial mat;
     if constexpr (std::is_same<ElementType, typename MeshType::VertexType>::
                       value)
-        mat =
-            objMaterialFromVertex<typename MeshType::VertexType, MeshType>(e, fi);
-    if constexpr(HasFaces<MeshType>)
+        mat = objMaterialFromVertex<typename MeshType::VertexType, MeshType>(
+            e, fi);
+    if constexpr (HasFaces<MeshType>)
         if constexpr (std::is_same<ElementType, typename MeshType::FaceType>::
                           value)
             mat = objMaterialFromFace(e, m, fi);
     if (!mat.isEmpty()) {
         static const std::string MATERIAL_PREFIX = "MATERIAL_";
-        std::string mname; // name of the material of the vertex
-        auto        it = materialMap.find(mat);
+        std::string              mname; // name of the material of the vertex
+        auto                     it = materialMap.find(mat);
         if (it == materialMap.end()) { // if it is a new material
             // add the new material to the map
             mname = MATERIAL_PREFIX + std::to_string(materialMap.size());
@@ -145,7 +145,7 @@ void saveObj(
 
     std::ofstream fp = openOutputFileStream(filename, "obj");
 
-    std::ofstream                        mtlfp;
+    std::ofstream                              mtlfp;
     std::map<detail::ObjMaterial, std::string> materialMap;
 
     bool useMtl =
@@ -153,12 +153,12 @@ void saveObj(
         (meshInfo.hasTextures() &&
          (meshInfo.hasVertexTexCoords() || meshInfo.hasFaceWedgeTexCoords()));
     if (useMtl) {
-        mtlfp                   = openOutputFileStream(filename, "mtl");
+        mtlfp = openOutputFileStream(filename, "mtl");
         std::string mtlFileName =
             FileInfo::fileNameWithExtension(filename) + ".mtl";
         fp << "mtllib ./" << mtlFileName << std::endl;
     }
-    
+
     detail::ObjMaterial lastMaterial;
 
     // vertices
@@ -196,7 +196,7 @@ void saveObj(
     // faces
     if constexpr (vcl::HasFaces<MeshType>) {
         using VertexType = MeshType::VertexType;
-        using FaceType = MeshType::FaceType;
+        using FaceType   = MeshType::FaceType;
 
         // indices of vertices that do not consider deleted vertices
         std::vector<uint> vIndices = m.vertexCompactIndices();
@@ -207,10 +207,10 @@ void saveObj(
                 detail::writeElementObjMaterial(
                     f, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
             }
-            if constexpr(HasPerFaceWedgeTexCoords<MeshType>){
+            if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                 if (meshInfo.hasFaceWedgeTexCoords()) {
                     using WedgeTexCoordType = FaceType::WedgeTexCoordType;
-                    for (const WedgeTexCoordType wt : f.wedgeTexCoords()){
+                    for (const WedgeTexCoordType wt : f.wedgeTexCoords()) {
                         fp << "vt ";
                         io::writeFloat(fp, wt.u(), false);
                         io::writeFloat(fp, wt.v(), false);
@@ -221,15 +221,15 @@ void saveObj(
 
             fp << "f ";
             for (const VertexType* v : f.vertices()) {
-                fp << vIndices[m.index(v)]+1;
-                if constexpr(HasPerVertexTexCoord<MeshType>){
+                fp << vIndices[m.index(v)] + 1;
+                if constexpr (HasPerVertexTexCoord<MeshType>) {
                     // we wrote texcoords along with vertices, each texcoord has
                     // the same index of its vertex
                     if (meshInfo.hasVertexTexCoords()) {
-                        fp << "/" << vIndices[m.index(v)]+1;
+                        fp << "/" << vIndices[m.index(v)] + 1;
                     }
                 }
-                if constexpr(HasPerFaceWedgeTexCoords<MeshType>){
+                if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                     // we wrote texcoords before the face; indices are
                     // consecutive and wedge coords are the same of the number
                     // of vertices of the face

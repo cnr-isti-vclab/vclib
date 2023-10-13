@@ -38,14 +38,14 @@ bool isBinStlMalformed(
     bool&              isBinary,
     std::size_t&       fsize)
 {
-    fsize = FileInfo::fileSize(filename);
+    fsize    = FileInfo::fileSize(filename);
     isBinary = FileInfo::isFileBinary(filename);
 
     if (isBinary) {
         // we can check if the size of the file is the expected one
         std::ifstream fp = openInputFileStream(filename);
         fp.seekg(80); // size of the header
-        uint fnum = io::readUInt<uint>(fp);
+        uint        fnum = io::readUInt<uint>(fp);
         std::size_t expectedFileSize =
             80 + 4 +                     // header and number of faces
             fnum *                       // for each face
@@ -71,13 +71,13 @@ bool isStlColored(std::ifstream& fp, bool& magicsMode)
     char buf[80];
     fp.read(buf, 80);
     std::string s(buf);
-    size_t cInd = s.rfind("COLOR=");
-    size_t mInd = s.rfind("MATERIAL=");
-    if(cInd!=std::string::npos && mInd!=std::string::npos)
+    size_t      cInd = s.rfind("COLOR=");
+    size_t      mInd = s.rfind("MATERIAL=");
+    if (cInd != std::string::npos && mInd != std::string::npos)
         magicsMode = true;
     else
         magicsMode = false;
-    uint fnum = io::readUInt<uint>(fp);
+    uint              fnum = io::readUInt<uint>(fp);
     static const uint fmax = 1000;
     // 3 floats for normal and 9 for vcoords
     static const uint fdataSize = 12 * sizeof(float);
@@ -85,7 +85,8 @@ bool isStlColored(std::ifstream& fp, bool& magicsMode)
     for (uint i = 0; i < std::min(fnum, fmax); ++i) {
         fp.seekg(fdataSize, std::ios::cur);
         unsigned short attr = io::readShort<unsigned short>(fp);
-        Color c; c.setFromUnsignedR5G5B5(attr);
+        Color          c;
+        c.setFromUnsignedR5G5B5(attr);
         if (c != Color::White)
             colored = true;
     }
@@ -96,7 +97,7 @@ template<MeshConcept MeshType, LoggerConcept LogType>
 void readStlBin(
     MeshType&      m,
     std::ifstream& fp,
-    MeshInfo&  loadedInfo,
+    MeshInfo&      loadedInfo,
     LogType&       log,
     bool           enableOptionalComponents)
 {
@@ -123,7 +124,7 @@ void readStlBin(
     }
 
     m.addVertices(fnum * 3);
-    if constexpr(HasFaces<MeshType>) {
+    if constexpr (HasFaces<MeshType>) {
         m.reserveFaces(fnum);
     }
 
@@ -145,8 +146,8 @@ void readStlBin(
         if constexpr (HasFaces<MeshType>) {
             using FaceType = MeshType::FaceType;
 
-            uint fi = m.addFace();
-            FaceType& f = m.face(fi);
+            uint      fi = m.addFace();
+            FaceType& f  = m.face(fi);
             for (uint j = 0; j < 3; ++j)
                 f.vertex(j) = &m.vertex(vi + j);
             if (HasPerFaceNormal<MeshType>) {
@@ -166,7 +167,6 @@ void readStlBin(
                 }
             }
         }
-
 
         vi += 3;
 
@@ -220,14 +220,12 @@ void readStlAscii(
                 tokens = readAndTokenizeNextNonEmptyLine(fp);
 
                 for (uint i = 0; i < 3; i++) { // read the three vertices
-                    token = tokens.begin(); ++token; // skip the "vertex" word
+                    token = tokens.begin();
+                    ++token; // skip the "vertex" word
 
-                    m.vertex(vi + i).coord().x() =
-                        io::readFloat<float>(token);
-                    m.vertex(vi + i).coord().y() =
-                        io::readFloat<float>(token);
-                    m.vertex(vi + i).coord().z() =
-                        io::readFloat<float>(token);
+                    m.vertex(vi + i).coord().x() = io::readFloat<float>(token);
+                    m.vertex(vi + i).coord().y() = io::readFloat<float>(token);
+                    m.vertex(vi + i).coord().z() = io::readFloat<float>(token);
 
                     // next vertex
                     tokens = readAndTokenizeNextNonEmptyLine(fp);
@@ -236,7 +234,7 @@ void readStlAscii(
 
                 if constexpr (HasFaces<MeshType>) {
                     using FaceType = MeshType::FaceType;
-                    uint fi = m.addFace();
+                    uint fi        = m.addFace();
 
                     FaceType& f = m.face(fi);
                     for (uint j = 0; j < 3; ++j)
@@ -276,7 +274,7 @@ void loadStl(
         log.log(0, "Checking STL file");
     }
 
-    bool isBinary;
+    bool        isBinary;
     std::size_t filesize;
     if (detail::isBinStlMalformed(filename, isBinary, filesize))
         throw MalformedFileException(filename + " is malformed.");
@@ -290,7 +288,7 @@ void loadStl(
     loadedInfo = MeshInfo();
     loadedInfo.setVertices();
     loadedInfo.setVertexCoords();
-    if constexpr(HasFaces<MeshType>) {
+    if constexpr (HasFaces<MeshType>) {
         loadedInfo.setFaces();
         loadedInfo.setFaceVRefs();
         loadedInfo.setFaceNormals();

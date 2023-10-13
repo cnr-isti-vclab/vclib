@@ -35,7 +35,7 @@ struct ObjMaterial
     Point3f Kd = Point3f(1.0f, 1.0f, 1.0f); // diffuse
     Point3f Ks = Point3f(1.0f, 1.0f, 1.0f); // specular
 
-    float d = 1.0f;  // alpha
+    float d = 1.0f; // alpha
 
     int   illum = 2; // specular illumination
     float Ns    = 0.f;
@@ -55,10 +55,12 @@ struct ObjMaterial
         Kd.x() = c.redF();
         Kd.y() = c.greenF();
         Kd.z() = c.blueF();
-        d = c.alphaF();
+        d      = c.alphaF();
     }
 
-    ObjMaterial(const std::string& txtName) : map_Kd(txtName), hasTexture(true) {}
+    ObjMaterial(const std::string& txtName) : map_Kd(txtName), hasTexture(true)
+    {
+    }
 
     ObjMaterial(const vcl::Color& c, const std::string& txtName) :
             map_Kd(txtName), hasColor(true), hasTexture(true)
@@ -66,14 +68,14 @@ struct ObjMaterial
         Kd.x() = c.redF();
         Kd.y() = c.greenF();
         Kd.z() = c.blueF();
-        d = c.alphaF();
+        d      = c.alphaF();
     }
 
     bool isEmpty() const { return !hasColor && !hasTexture; }
 
     vcl::Color color() const
     {
-        return vcl::Color(Kd.x()*255, Kd.y()*255, Kd.z()* 255, d*255);
+        return vcl::Color(Kd.x() * 255, Kd.y() * 255, Kd.z() * 255, d * 255);
     }
 
     const std::string& texture() const { return map_Kd; }
@@ -139,6 +141,6 @@ std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
     return out;
 }
 
-} // namespace vcl::obj
+} // namespace vcl::detail
 
 #endif // VCL_IO_OBJ_MATERIAL_H

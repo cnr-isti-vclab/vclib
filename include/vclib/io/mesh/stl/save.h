@@ -41,7 +41,7 @@ void writeStlHeader(std::ofstream& fp, bool magicsMode, bool binary)
         if (magicsMode) {
             std::string p;
             for (uint i = 0; i < 3; i++)
-                p.push_back((char)0x7f);
+                p.push_back((char) 0x7f);
             header = "COLOR=" + p + " MATERIAL=" + p + " " + p + " " + p;
         }
         while (header.size() < 80)
@@ -55,13 +55,13 @@ void writeStlHeader(std::ofstream& fp, bool magicsMode, bool binary)
 
 template<Point3Concept PointType, Point3Concept NormalType>
 void writeSTLTriangle(
-    std::ofstream& fp,
-    const PointType& p0,
-    const PointType& p1,
-    const PointType& p2,
+    std::ofstream&    fp,
+    const PointType&  p0,
+    const PointType&  p1,
+    const PointType&  p2,
     const NormalType& n,
-    uint attributes,
-    bool binary)
+    uint              attributes,
+    bool              binary)
 {
     if (binary) {
         for (uint i = 0; i < 3; ++i)
@@ -152,7 +152,7 @@ void saveStl(
 
             if constexpr (HasPerFaceColor<MeshType>) {
                 if (meshInfo.hasFaceColors()) {
-                    if(magicsMode)
+                    if (magicsMode)
                         attributes = 32768 | f.color().toUnsignedR5G5B5();
                     else
                         attributes = 32768 | f.color().toUnsignedB5G5R5();

@@ -30,8 +30,8 @@
 #include <vclib/exceptions/io_exceptions.h>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
-#include <vclib/misc/tokenizer.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/tokenizer.h>
 
 #include "header.h"
 
@@ -39,36 +39,34 @@ namespace vcl::detail {
 
 template<MeshConcept MeshType, VertexConcept VertexType, typename Stream>
 void readPlyVertexProperty(
-    Stream&       file,
-    MeshType&     mesh,
-    VertexType&   v,
+    Stream&     file,
+    MeshType&   mesh,
+    VertexType& v,
     PlyProperty p)
 {
     bool hasBeenRead = false;
     if (p.name >= ply::x && p.name <= ply::z) {
         using Scalar = VertexType::CoordType::ScalarType;
-        int a = p.name - ply::x;
+        int a        = p.name - ply::x;
         v.coord()[a] = io::readProperty<Scalar>(file, p.type);
-        hasBeenRead = true;
+        hasBeenRead  = true;
     }
     if (p.name >= ply::nx && p.name <= ply::nz) {
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (vcl::isPerVertexNormalAvailable(mesh)) {
-                using Scalar = VertexType::NormalType::ScalarType;
-                int a = p.name - ply::nx;
-                v.normal()[a] =
-                    io::readProperty<Scalar>(file, p.type);
-                hasBeenRead = true;
+                using Scalar  = VertexType::NormalType::ScalarType;
+                int a         = p.name - ply::nx;
+                v.normal()[a] = io::readProperty<Scalar>(file, p.type);
+                hasBeenRead   = true;
             }
         }
     }
     if (p.name >= ply::red && p.name <= ply::alpha) {
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (vcl::isPerVertexColorAvailable(mesh)) {
-                int a = p.name - ply::red;
-                v.color()[a] =
-                    io::readProperty<unsigned char>(file, p.type);
-                hasBeenRead = true;
+                int a        = p.name - ply::red;
+                v.color()[a] = io::readProperty<unsigned char>(file, p.type);
+                hasBeenRead  = true;
             }
         }
     }
@@ -76,8 +74,7 @@ void readPlyVertexProperty(
         if constexpr (vcl::HasPerVertexQuality<MeshType>) {
             using QualityType = VertexType::QualityType;
             if (vcl::isPerVertexQualityAvailable(mesh)) {
-                v.quality() =
-                    io::readProperty<QualityType>(file, p.type);
+                v.quality() = io::readProperty<QualityType>(file, p.type);
                 hasBeenRead = true;
             }
         }
@@ -86,18 +83,16 @@ void readPlyVertexProperty(
         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             using Scalar = VertexType::TexCoordType::ScalarType;
             if (vcl::isPerVertexTexCoordAvailable(mesh)) {
-                int a = p.name - ply::texture_u;
-                v.texCoord()[a] =
-                    io::readProperty<Scalar>(file, p.type);
-                hasBeenRead = true;
+                int a           = p.name - ply::texture_u;
+                v.texCoord()[a] = io::readProperty<Scalar>(file, p.type);
+                hasBeenRead     = true;
             }
         }
     }
     if (p.name == ply::unknown) {
         if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
-            if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName)){
-                io::readCustomComponent(
-                    file, v, p.unknownPropertyName, p.type);
+            if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName)) {
+                io::readCustomComponent(file, v, p.unknownPropertyName, p.type);
                 hasBeenRead = true;
             }
         }
@@ -116,15 +111,15 @@ void readPlyVertexProperty(
 
 template<VertexConcept VertexType, MeshConcept MeshType>
 void readPlyVertexTxt(
-    std::ifstream& file,
-    VertexType& v,
-    MeshType& mesh,
+    std::ifstream&                file,
+    VertexType&                   v,
+    MeshType&                     mesh,
     const std::list<PlyProperty>& vertexProperties)
 {
     vcl::Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
     vcl::Tokenizer::iterator token = spaceTokenizer.begin();
     for (const PlyProperty& p : vertexProperties) {
-        if (token == spaceTokenizer.end()){
+        if (token == spaceTokenizer.end()) {
             throw vcl::MalformedFileException("Unexpected end of line.");
         }
         readPlyVertexProperty(token, mesh, v, p);
@@ -133,9 +128,9 @@ void readPlyVertexTxt(
 
 template<VertexConcept VertexType, MeshConcept MeshType>
 void readPlyVertexBin(
-    std::ifstream& file,
-    VertexType& v,
-    MeshType& mesh,
+    std::ifstream&                file,
+    VertexType&                   v,
+    MeshType&                     mesh,
     const std::list<PlyProperty>& vertexProperties)
 {
     for (const PlyProperty& p : vertexProperties) {
@@ -143,16 +138,16 @@ void readPlyVertexBin(
     }
 }
 
-template <MeshConcept MeshType>
+template<MeshConcept MeshType>
 void writePlyVertices(
-    std::ofstream& file,
+    std::ofstream&   file,
     const PlyHeader& header,
-    const MeshType& mesh)
+    const MeshType&  mesh)
 {
     using VertexType = MeshType::VertexType;
 
     bool bin = header.format() == ply::BINARY;
-    for(const VertexType& v : mesh.vertices()) {
+    for (const VertexType& v : mesh.vertices()) {
         for (const PlyProperty& p : header.vertexProperties()) {
             bool hasBeenWritten = false;
             if (p.name >= ply::x && p.name <= ply::z) {
@@ -183,8 +178,7 @@ void writePlyVertices(
             if (p.name >= ply::texture_u && p.name <= ply::texture_v) {
                 if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                     const uint a = p.name - ply::texture_u;
-                    io::writeProperty(
-                        file, v.texCoord()[a], p.type, bin);
+                    io::writeProperty(file, v.texCoord()[a], p.type, bin);
                     hasBeenWritten = true;
                 }
             }
@@ -198,7 +192,7 @@ void writePlyVertices(
                     }
                 }
             }
-            if (!hasBeenWritten){
+            if (!hasBeenWritten) {
                 // be sure to write something if the header declares some
                 // property that is not in the mesh
                 io::writeProperty(file, 0, p.type, bin);
@@ -209,25 +203,22 @@ void writePlyVertices(
     }
 }
 
-template <MeshConcept MeshType>
-void readPlyVertices(
-    std::ifstream& file,
-    const PlyHeader& header,
-    MeshType& m)
+template<MeshConcept MeshType>
+void readPlyVertices(std::ifstream& file, const PlyHeader& header, MeshType& m)
 {
     m.addVertices(header.numberVertices());
 
-    for(uint vid = 0; vid < header.numberVertices(); ++vid) {
+    for (uint vid = 0; vid < header.numberVertices(); ++vid) {
         auto& v = m.vertex(vid);
-        if(header.format() == ply::ASCII) {
+        if (header.format() == ply::ASCII) {
             detail::readPlyVertexTxt(file, v, m, header.vertexProperties());
         }
-        else if(header.format() == ply::BINARY) {
+        else if (header.format() == ply::BINARY) {
             detail::readPlyVertexBin(file, v, m, header.vertexProperties());
         }
     }
 }
 
-} // namespace vcl::io::ply
+} // namespace vcl::detail
 
 #endif // VCL_PLY_VERTEX_H

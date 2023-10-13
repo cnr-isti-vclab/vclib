@@ -40,7 +40,7 @@ namespace vcl::detail {
 template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void writePlyFaceIndices(
     std::ofstream&           file,
-    PlyProperty                 p,
+    PlyProperty              p,
     const MeshType&          m,
     const std::vector<uint>& vIndices,
     const FaceType&          f,
@@ -118,7 +118,7 @@ void setPlyFaceWedgeTexCoords(
                         "Bad vertex index for face " + std::to_string(ff));
                 }
                 // p is the position of the vertex in the polygon
-                uint p = it - vids.begin();
+                uint p                          = it - vids.begin();
                 m.face(ff).wedgeTexCoord(i).u() = wedges[p].first;
                 m.face(ff).wedgeTexCoord(i).v() = wedges[p].second;
             }
@@ -127,7 +127,11 @@ void setPlyFaceWedgeTexCoords(
 }
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType, typename Stream>
-void readPlyFaceProperty(Stream& file, MeshType& mesh, FaceType& f, PlyProperty p)
+void readPlyFaceProperty(
+    Stream&     file,
+    MeshType&   mesh,
+    FaceType&   f,
+    PlyProperty p)
 {
     bool              hasBeenRead = false;
     std::vector<uint> vids; // contains the vertex ids of the actual face
@@ -145,13 +149,12 @@ void readPlyFaceProperty(Stream& file, MeshType& mesh, FaceType& f, PlyProperty 
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
                 using Scalar = FaceType::WedgeTexCoordType::ScalarType;
-                uint uvSize =
-                    io::readProperty<uint>(file, p.listSizeType);
+                uint uvSize  = io::readProperty<uint>(file, p.listSizeType);
                 uint fSize   = uvSize / 2;
                 std::vector<std::pair<Scalar, Scalar>> wedges(fSize);
                 for (uint i = 0; i < fSize; ++i) {
-                    Scalar u = io::readProperty<Scalar>(file, p.type);
-                    Scalar v = io::readProperty<Scalar>(file, p.type);
+                    Scalar u         = io::readProperty<Scalar>(file, p.type);
+                    Scalar v         = io::readProperty<Scalar>(file, p.type);
                     wedges[i].first  = u;
                     wedges[i].second = v;
                 }
@@ -195,9 +198,8 @@ void readPlyFaceProperty(Stream& file, MeshType& mesh, FaceType& f, PlyProperty 
         if constexpr (vcl::HasPerFaceColor<MeshType>) {
             if (vcl::isPerFaceColorAvailable(mesh)) {
                 int           a = p.name - ply::red;
-                unsigned char c =
-                    io::readProperty<unsigned char>(file, p.type);
-                hasBeenRead = true;
+                unsigned char c = io::readProperty<unsigned char>(file, p.type);
+                hasBeenRead     = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
                 for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
@@ -210,8 +212,7 @@ void readPlyFaceProperty(Stream& file, MeshType& mesh, FaceType& f, PlyProperty 
         if constexpr (vcl::HasPerFaceQuality<MeshType>) {
             using QualityType = FaceType::QualityType;
             if (vcl::isPerFaceQualityAvailable(mesh)) {
-                QualityType s =
-                    io::readProperty<QualityType>(file, p.type);
+                QualityType s = io::readProperty<QualityType>(file, p.type);
                 hasBeenRead   = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -223,9 +224,8 @@ void readPlyFaceProperty(Stream& file, MeshType& mesh, FaceType& f, PlyProperty 
     }
     if (p.name == ply::unknown) {
         if constexpr (vcl::HasPerFaceCustomComponents<MeshType>) {
-            if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)){
-                io::readCustomComponent(
-                    file, f, p.unknownPropertyName, p.type);
+            if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)) {
+                io::readCustomComponent(file, f, p.unknownPropertyName, p.type);
                 hasBeenRead = true;
             }
         }
@@ -246,9 +246,9 @@ void readPlyFaceProperty(Stream& file, MeshType& mesh, FaceType& f, PlyProperty 
 
 template<FaceConcept FaceType, MeshConcept MeshType>
 void readPlyFaceTxt(
-    std::ifstream& file,
-    FaceType& f,
-    MeshType& mesh,
+    std::ifstream&                file,
+    FaceType&                     f,
+    MeshType&                     mesh,
     const std::list<PlyProperty>& faceProperties)
 {
     vcl::Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
@@ -263,9 +263,9 @@ void readPlyFaceTxt(
 
 template<FaceConcept FaceType, MeshConcept MeshType>
 void readPlyFaceBin(
-    std::ifstream& file,
-    FaceType& f,
-    MeshType& mesh,
+    std::ifstream&                file,
+    FaceType&                     f,
+    MeshType&                     mesh,
     const std::list<PlyProperty>& faceProperties)
 {
     for (const PlyProperty& p : faceProperties) {
@@ -326,8 +326,7 @@ void writePlyFaces(
             }
             if (p.name == ply::texnumber) {
                 if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                    io::writeProperty(
-                        file, f.textureIndex(), p.type, bin);
+                    io::writeProperty(file, f.textureIndex(), p.type, bin);
                     hasBeenWritten = true;
                 }
             }
@@ -366,9 +365,8 @@ void readPlyFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
             detail::readPlyFaceBin(file, f, mesh, header.faceProperties());
         }
     }
-
 }
 
-} // namespace vcl::io::ply
+} // namespace vcl::detail
 
 #endif // VCL_IO_PLY_FACE_H

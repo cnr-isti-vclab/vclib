@@ -89,7 +89,7 @@ void loadPly(
         }
         readPlyTextures(header, m);
     }
-    catch(const std::runtime_error& err) {
+    catch (const std::runtime_error& err) {
         m.clear();
         file.close();
         throw err;
@@ -144,9 +144,10 @@ MeshType loadPly(
     bool               enableOptionalComponents = true)
 {
     MeshInfo loadedInfo;
-    return loadPly<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
+    return loadPly<MeshType>(
+        filename, loadedInfo, log, enableOptionalComponents);
 }
 
-} // namespace vcl::io
+} // namespace vcl
 
 #endif // VCL_IO_PLY_LOAD_H

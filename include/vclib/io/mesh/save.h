@@ -45,7 +45,7 @@ void save(
 template<MeshConcept MeshType>
 void save(const MeshType& m, const std::string& filename, bool binary)
 {
-    MeshInfo info(m);
+    MeshInfo   info(m);
     NullLogger log;
     save(m, filename, info, log, binary);
 }
@@ -59,7 +59,7 @@ void save(
     bool               binary = true)
 {
     std::string ext = FileInfo::extension(filename);
-    ext = vcl::str::toLower(ext);
+    ext             = vcl::str::toLower(ext);
     if (ext == ".obj") {
         saveObj(m, filename, info, log);
     }

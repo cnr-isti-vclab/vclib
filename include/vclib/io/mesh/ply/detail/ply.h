@@ -41,7 +41,7 @@ typedef enum { ASCII, BINARY, UNKNOWN } Format;
 
 typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
 
-typedef enum { RGB, RGBA } ColorMode ;
+typedef enum { RGB, RGBA } ColorMode;
 
 typedef enum {
     unknown = -1,
@@ -73,20 +73,19 @@ struct PlyProperty
 {
     ply::PropertyName name;
     ply::PropertyType type;
-    bool         list = false;
+    bool              list = false;
     ply::PropertyType listSizeType;
-    std::string  unknownPropertyName;  // when a property is not recognized
+    std::string       unknownPropertyName; // when a property is not recognized
 };
 
 struct PlyElement
 {
-    ply::ElementType         type;
+    ply::ElementType       type;
     std::list<PlyProperty> properties;
-    uint                numberElements;
-    std::string         unknownElementType; // when an element is not recognized
+    uint                   numberElements;
+    std::string unknownElementType; // when an element is not recognized
 };
 
-} // namespace vcl::ply
-
+} // namespace vcl::detail
 
 #endif // VCL_IO_PLY_H

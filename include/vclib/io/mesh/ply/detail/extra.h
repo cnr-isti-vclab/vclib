@@ -56,7 +56,7 @@ void writePlyTextures(PlyHeader& header, const MeshType& mesh)
 inline void readPlyUnknownElement(
     std::ifstream&   file,
     const PlyHeader& header,
-    PlyElement     el)
+    PlyElement       el)
 {
     if (header.format() == ply::ASCII) {
         for (uint i = 0; i < el.numberElements; ++i) {
@@ -67,8 +67,7 @@ inline void readPlyUnknownElement(
         for (uint i = 0; i < el.numberElements; ++i) {
             for (const PlyProperty& p : el.properties) {
                 if (p.list) {
-                    uint s =
-                        io::readProperty<int>(file, p.listSizeType);
+                    uint s = io::readProperty<int>(file, p.listSizeType);
                     for (uint i = 0; i < s; ++i)
                         io::readProperty<int>(file, p.type);
                 }

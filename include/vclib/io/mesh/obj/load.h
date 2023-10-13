@@ -34,38 +34,37 @@
 
 #include "material.h"
 
-namespace vcl{
+namespace vcl {
 
 namespace detail {
 
 template<MeshConcept MeshType>
-using ObjNormalsMap =
-    std::conditional_t<
-        HasPerVertexNormal<MeshType>,
-        std::map<uint, typename MeshType::VertexType::NormalType>,
-        std::map<uint, vcl::Point3d>>;
+using ObjNormalsMap = std::conditional_t<
+    HasPerVertexNormal<MeshType>,
+    std::map<uint, typename MeshType::VertexType::NormalType>,
+    std::map<uint, vcl::Point3d>>;
 
 template<MeshConcept MeshType>
 void loadObjMaterials(
     std::map<std::string, ObjMaterial>& materialMap,
-    MeshType& mesh,
-    const std::string& mtllib)
+    MeshType&                           mesh,
+    const std::string&                  mtllib)
 {
     std::ifstream file = openInputFileStream(mtllib);
-    std::string matName;
-    ObjMaterial mat;
+    std::string   matName;
+    ObjMaterial   mat;
 
     do {
         vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(file);
         if (file) {
             // counter for texture images, used when mesh has no texture files
-            uint nt = 0;
-            vcl::Tokenizer::iterator token = tokens.begin();
-            std::string header = *token++;
-            if (header == "newmtl"){
+            uint                     nt     = 0;
+            vcl::Tokenizer::iterator token  = tokens.begin();
+            std::string              header = *token++;
+            if (header == "newmtl") {
                 if (!matName.empty())
                     materialMap[matName] = mat;
-                mat = ObjMaterial();
+                mat     = ObjMaterial();
                 matName = *token;
             }
             if (header == "Ka") {
@@ -80,9 +79,9 @@ void loadObjMaterials(
             if (header == "Kd") {
                 if (tokens.size() >= 4) {
                     if (*token != "spectral" && *token != "xyz") {
-                        mat.Kd.x() = io::readFloat<float>(token);
-                        mat.Kd.y() = io::readFloat<float>(token);
-                        mat.Kd.z() = io::readFloat<float>(token);
+                        mat.Kd.x()   = io::readFloat<float>(token);
+                        mat.Kd.y()   = io::readFloat<float>(token);
+                        mat.Kd.z()   = io::readFloat<float>(token);
                         mat.hasColor = true;
                     }
                 }
@@ -97,11 +96,13 @@ void loadObjMaterials(
                 }
             }
             if (header == "d") {
-                if ((*token)[0] == '-') token++;
+                if ((*token)[0] == '-')
+                    token++;
                 mat.d = io::readFloat<float>(token);
             }
             if (header == "Tr") {
-                if ((*token)[0] == '-') token++;
+                if ((*token)[0] == '-')
+                    token++;
                 mat.d = 1 - io::readFloat<float>(token);
             }
             if (header == "Ns") {
@@ -113,23 +114,29 @@ void loadObjMaterials(
             if (header == "map_Kd") {
                 // need to manage args
                 while ((*token)[0] == '-') {
-                    if (*token == "-o" || *token == "-s" || *token == "-t"){
+                    if (*token == "-o" || *token == "-s" || *token == "-t") {
                         // ignore the argument and the three values
-                        ++token; ++token; ++token; ++token;
+                        ++token;
+                        ++token;
+                        ++token;
+                        ++token;
                     }
-                    if (*token == "-mm"){
+                    if (*token == "-mm") {
                         // ignore the argument and the two values
-                        ++token; ++token; ++token;
+                        ++token;
+                        ++token;
+                        ++token;
                     }
                     if (*token == "-blendu" || *token == "-blendv" ||
                         *token == "-cc" || *token == "-clamp" ||
                         *token == "-texres")
                     {
                         // ignore the argument and the value
-                        ++token; ++token;
+                        ++token;
+                        ++token;
                     }
                 }
-                mat.map_Kd = *token;
+                mat.map_Kd     = *token;
                 mat.hasTexture = true;
                 if constexpr (HasTexturePaths<MeshType>) {
                     mat.mapId = mesh.textureNumber();
@@ -140,18 +147,18 @@ void loadObjMaterials(
                 }
             }
         }
-    } while(file);
+    } while (file);
     if (!matName.empty())
         materialMap[matName] = mat;
 }
 
 template<MeshConcept MeshType>
-void loadObjVertex(
+void readObjVertex(
     MeshType&                 m,
     vcl::Tokenizer::iterator& token,
     MeshInfo&                 loadedInfo,
     const vcl::Tokenizer&     tokens,
-    const ObjMaterial&      currentMaterial,
+    const ObjMaterial&        currentMaterial,
     bool                      enableOptionalComponents)
 {
     // first, need to set that I'm loading vertices
@@ -163,7 +170,7 @@ void loadObjVertex(
     for (uint i = 0; i < 3; ++i) {
         m.vertex(vid).coord()[i] = io::readDouble<double>(token);
     }
-    if constexpr (HasPerVertexColor<MeshType>){
+    if constexpr (HasPerVertexColor<MeshType>) {
         if (vid == 0) {
             // if the current material has a valid color, of the file stores the
             // vertex color in the non-standard way (color values after the
@@ -183,12 +190,9 @@ void loadObjVertex(
             // the file has the nonstandard way to store vertex colors, after
             // the coords...
             if (tokens.size() > 6) {
-                m.vertex(vid).color().setRedF(
-                    io::readFloat<float>(token));
-                m.vertex(vid).color().setGreenF(
-                    io::readFloat<float>(token));
-                m.vertex(vid).color().setBlueF(
-                    io::readFloat<float>(token));
+                m.vertex(vid).color().setRedF(io::readFloat<float>(token));
+                m.vertex(vid).color().setGreenF(io::readFloat<float>(token));
+                m.vertex(vid).color().setBlueF(io::readFloat<float>(token));
             }
             else if (currentMaterial.hasColor) {
                 m.vertex(vid).color() = currentMaterial.color();
@@ -198,13 +202,13 @@ void loadObjVertex(
 }
 
 template<MeshConcept MeshType>
-void loadObjVertexNormal(
-    MeshType&                       m,
+void readObjVertexNormal(
+    MeshType&                        m,
     detail::ObjNormalsMap<MeshType>& mapNormalsCache,
-    uint                            vn,
-    vcl::Tokenizer::iterator&       token,
-    MeshInfo&                       loadedInfo,
-    bool                            enableOptionalComponents)
+    uint                             vn,
+    vcl::Tokenizer::iterator&        token,
+    MeshInfo&                        loadedInfo,
+    bool                             enableOptionalComponents)
 {
     using NormalType = MeshType::VertexType::NormalType;
 
@@ -238,12 +242,12 @@ void loadObjVertexNormal(
 }
 
 template<FaceMeshConcept MeshType>
-void loadObjFace(
+void readObjFace(
     MeshType&                          m,
     MeshInfo&                          loadedInfo,
     const vcl::Tokenizer&              tokens,
     const std::vector<vcl::TexCoordd>& wedgeTexCoords,
-    const ObjMaterial&               currentMaterial,
+    const ObjMaterial&                 currentMaterial,
     bool                               enableOptionalComponents)
 {
     using FaceType = MeshType::FaceType;
@@ -254,12 +258,12 @@ void loadObjFace(
     // actual read - load vertex indices and texcoords indices, if present
     vcl::Tokenizer::iterator token = tokens.begin();
     ++token;
-    vids.resize(tokens.size()-1);
-    wids.reserve(tokens.size()-1);
-    for (uint i = 0; i < tokens.size()-1; ++i) {
+    vids.resize(tokens.size() - 1);
+    wids.reserve(tokens.size() - 1);
+    for (uint i = 0; i < tokens.size() - 1; ++i) {
         vcl::Tokenizer subt(*token, '/', false);
-        auto t = subt.begin();
-        vids[i] = io::readUInt<uint>(t) - 1;
+        auto           t = subt.begin();
+        vids[i]          = io::readUInt<uint>(t) - 1;
         if (subt.size() > 1) {
             if (!t->empty()) {
                 wids.push_back(io::readUInt<uint>(t) - 1);
@@ -269,17 +273,17 @@ void loadObjFace(
     }
 
     // add the face
-    uint fid = m.addFace();
-    FaceType& f = m.face(fid);
+    uint      fid = m.addFace();
+    FaceType& f   = m.face(fid);
 
     // check if we need to split the face we read into triangles
     bool splitFace = false;
     // we have a polygonal mesh, no need to split
     if constexpr (FaceType::VERTEX_NUMBER < 0) {
         // need to resize to the right number of verts
-        f.resizeVertices(tokens.size()-1);
+        f.resizeVertices(tokens.size() - 1);
     }
-    else if (FaceType::VERTEX_NUMBER != tokens.size()-1) {
+    else if (FaceType::VERTEX_NUMBER != tokens.size() - 1) {
         // we have faces with static sizes (triangles), but we are loading faces
         // with number of verts > 3. Need to split the face we are loading in n
         // faces!
@@ -301,7 +305,7 @@ void loadObjFace(
     }
 
     // color
-    if (HasPerFaceColor<MeshType>){
+    if (HasPerFaceColor<MeshType>) {
         // if the first face, we need to check if I can store colors
         if (fid == 0) {
             // if the current material has no color, we assume that the file has
@@ -329,7 +333,7 @@ void loadObjFace(
     }
 
     // wedge coords
-    if constexpr(HasPerFaceWedgeTexCoords<MeshType>) {
+    if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
         // first, need to check if I can store wedge texcoords in the mesh
         if (fid == 0) {
             // if the current face has the right number of wedge texcoords, we
@@ -360,7 +364,7 @@ void loadObjFace(
                             wedgeTexCoords[wids[i]]
                                 .cast<typename FaceType::WedgeTexCoordType::
                                           ScalarType>();
-                        if (currentMaterial.hasTexture){
+                        if (currentMaterial.hasTexture) {
                             f.textureIndex() = currentMaterial.mapId;
                         }
                     }
@@ -371,7 +375,7 @@ void loadObjFace(
                     for (uint ff = fid; ff < m.faceNumber(); ++ff) {
                         FaceType& f = m.face(ff);
                         // for each vertex of the face
-                        for (uint i = 0; i < f.vertexNumber(); ++i){
+                        for (uint i = 0; i < f.vertexNumber(); ++i) {
                             uint vid = m.index(f.vertex(i));
                             // find the position of the vertex in the vids array
                             auto it = std::find(vids.begin(), vids.end(), vid);
@@ -389,7 +393,7 @@ void loadObjFace(
                                 wedgeTexCoords[wids[pos]]
                                     .cast<typename FaceType::WedgeTexCoordType::
                                               ScalarType>();
-                            if (currentMaterial.hasTexture){
+                            if (currentMaterial.hasTexture) {
                                 f.textureIndex() = currentMaterial.mapId;
                             }
                         }
@@ -413,7 +417,7 @@ void loadObj(
     std::ifstream file = openInputFileStream(filename);
     // save normals if they can't be stored directly into vertices
     detail::ObjNormalsMap<MeshType> mapNormalsCache;
-    uint vn = 0; // number of vertex normals read
+    uint                            vn = 0; // number of vertex normals read
     // save array of texcoords, that are stored later (into wedges when loading
     // faces or into vertices as a fallback)
     std::vector<vcl::TexCoordd> texCoords;
@@ -432,7 +436,7 @@ void loadObj(
     try {
         detail::loadObjMaterials(materialMap, m, stdmtlfile);
     }
-    catch(vcl::CannotOpenFileException){
+    catch (vcl::CannotOpenFileException) {
         // nothing to do, this file was missing but was a fallback for some type
         // of files...
     }
@@ -449,8 +453,8 @@ void loadObj(
     do {
         vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(file);
         if (file) {
-            vcl::Tokenizer::iterator token = tokens.begin();
-            std::string header = *token++;
+            vcl::Tokenizer::iterator token  = tokens.begin();
+            std::string              header = *token++;
             if (header == "mtllib") { // material file
                 std::string mtlfile =
                     FileInfo::pathWithoutFileName(filename) + *token;
@@ -459,7 +463,7 @@ void loadObj(
             // use a new material - change currentMaterial
             if (header == "usemtl") {
                 std::string matname = *token;
-                auto it = materialMap.find(matname);
+                auto        it      = materialMap.find(matname);
                 if (it != materialMap.end()) {
                     currentMaterial = it->second;
                 }
@@ -467,7 +471,7 @@ void loadObj(
             // read vertex (and for some non-standard obj files, also vertex
             // color)
             if (header == "v") {
-                detail::loadObjVertex(
+                detail::readObjVertex(
                     m,
                     token,
                     loadedInfo,
@@ -476,9 +480,9 @@ void loadObj(
                     enableOptionalComponents);
             }
             // read vertex normal (and save in vn how many normals we read)
-            if constexpr(HasPerVertexNormal<MeshType>) {
+            if constexpr (HasPerVertexNormal<MeshType>) {
                 if (header == "vn") {
-                    detail::loadObjVertexNormal(
+                    detail::readObjVertexNormal(
                         m,
                         mapNormalsCache,
                         vn,
@@ -509,7 +513,7 @@ void loadObj(
             // - possibility to split polygonal face into several triangles
             if constexpr (HasFaces<MeshType>) {
                 if (header == "f") {
-                    detail::loadObjFace(
+                    detail::readObjFace(
                         m,
                         loadedInfo,
                         tokens,
@@ -549,7 +553,7 @@ void loadObj(
                         v.texCoord() =
                             texCoords[i++]
                                 .cast<typename VertexType::TexCoordType::
-                                      ScalarType>();
+                                          ScalarType>();
                     }
                 }
             }
@@ -567,7 +571,6 @@ void loadObj(
     MeshInfo loadedInfo;
     loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
 }
-
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadObj(
@@ -591,7 +594,6 @@ MeshType loadObj(
     return loadObj<MeshType>(
         filename, loadedInfo, log, enableOptionalComponents);
 }
-
 
 } // namespace vcl
 

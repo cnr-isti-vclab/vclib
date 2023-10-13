@@ -40,7 +40,7 @@ void writePlyEdges(
     const MeshType&  mesh)
 {
     using EdgeType = MeshType::EdgeType;
-    bool bin = header.format() == ply::BINARY;
+    bool bin       = header.format() == ply::BINARY;
 
     // indices of vertices that do not consider deleted vertices
     std::vector<int> vIndices = mesh.vertexCompactIndices();

@@ -45,7 +45,7 @@ void saveOff(
     // available in the mesh. meshInfo will contain the intersection between the
     // components that the user wants to save and the components that are
     // available in the mesh.
-    meshInfo = info.intersect(meshInfo);
+    meshInfo         = info.intersect(meshInfo);
     std::ofstream fp = openOutputFileStream(filename, "off");
     if (meshInfo.hasVertexNormals())
         fp << "N";
@@ -81,7 +81,7 @@ void saveOff(
             io::writeDouble(fp, v.coord().y(), false);
             io::writeDouble(fp, v.coord().z(), false);
 
-            if constexpr(vcl::HasPerVertexColor<MeshType>) {
+            if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (meshInfo.hasVertexColors()) {
                     io::writeInt(fp, v.color().red(), false);
                     io::writeInt(fp, v.color().green(), false);
@@ -89,14 +89,14 @@ void saveOff(
                     io::writeInt(fp, v.color().alpha(), false);
                 }
             }
-            if constexpr(vcl::HasPerVertexNormal<MeshType>) {
+            if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                 if (meshInfo.hasVertexNormals()) {
                     io::writeDouble(fp, v.normal().x(), false);
                     io::writeDouble(fp, v.normal().y(), false);
                     io::writeDouble(fp, v.normal().z(), false);
                 }
             }
-            if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
+            if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                 if (meshInfo.hasVertexTexCoords()) {
                     io::writeDouble(fp, v.texCoord().u(), false);
                     io::writeDouble(fp, v.texCoord().v(), false);
@@ -110,7 +110,7 @@ void saveOff(
     // faces
     if constexpr (vcl::HasFaces<MeshType>) {
         using VertexType = MeshType::VertexType;
-        using FaceType = MeshType::FaceType;
+        using FaceType   = MeshType::FaceType;
 
         // indices of vertices that do not consider deleted vertices
         std::vector<uint> vIndices = m.vertexCompactIndices();
@@ -120,7 +120,7 @@ void saveOff(
             for (const VertexType* v : f.vertices()) {
                 io::writeInt(fp, vIndices[m.index(v)], false);
             }
-            if constexpr(vcl::HasPerFaceColor<MeshType>) {
+            if constexpr (vcl::HasPerFaceColor<MeshType>) {
                 if (meshInfo.hasFaceColors()) {
                     io::writeInt(fp, f.color().red(), false);
                     io::writeInt(fp, f.color().green(), false);

@@ -37,119 +37,193 @@ namespace vcl {
 namespace detail {
 
 static const float OFF_GEOMVIEW_COLOR_MAP[148][4] = {
-    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
-    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
 
-    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.2f,  0.2f,  0.2f,  0.2f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.2f,  0.2f,  0.2f,  0.2f },
 
-    {0.9f,  0.9f,  0.9f,  0.9f }, {0.1f,  0.1f,  0.1f,  0.1f },
-    {0.1f,  0.1f,  0.1f,  0.1f }, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.1f,  0.1f,  0.1f,  0.1f },
+    {0.1f,  0.1f,  0.1f,  0.1f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
 
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
 
-    {0.2f,  0.2f,  0.2f,  0.2f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.75f, 0.75f, 0.75f, 0.75f}, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.2f,  0.2f,  0.2f,  0.2f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.8f,  0.8f,  0.8f,  0.8f },
 
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.4f,  0.4f,  0.4f,  0.4f },
-    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
 
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
 
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
 
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.75f, 0.75f, 0.75f, 0.75f}, {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.8f,  0.8f,  0.8f,  0.8f },
 
-    {0.4f,  0.4f,  0.4f,  0.4f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
 
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
 
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.4f,  0.4f,  0.4f,  0.4f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
-    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
 
-    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
-    {1.0f,  1.0f,  1.0f,  1.0f }, {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
+    {1.0f,  1.0f,  1.0f,  1.0f },
 
-    {0.05f, 0.05f, 0.05f, 0.05f}, {0.7f,  0.7f,  0.7f,  0.7f },
-    {0.2f,  0.2f,  0.2f,  0.2f }, {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.05f, 0.05f, 0.05f, 0.05f},
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.2f,  0.2f,  0.2f,  0.2f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.1f,  0.1f,  0.1f,  0.1f },
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.1f,  0.1f,  0.1f,  0.1f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
 
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.9f,  0.9f,  0.9f,  0.9f },
-    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
 
-    {0.75f, 0.75f, 0.75f, 0.75f}, {0.8f,  0.8f,  0.8f,  0.8f },
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
 
-    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
 
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
 
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.4f,  0.4f,  0.4f,  0.4f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f },
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.9f,  0.9f,  0.9f,  0.9f },
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.75f, 0.75f, 0.75f, 0.75f}, {0.8f,  0.8f,  0.8f,  0.8f },
-    {0.4f,  0.4f,  0.4f,  0.4f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.4f,  0.4f,  0.4f,  0.4f },
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
 
-    {0.7f,  0.7f,  0.7f,  0.7f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.9f,  0.9f,  0.9f,  0.9f }, {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.7f,  0.7f,  0.7f,  0.7f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.9f,  0.9f,  0.9f,  0.9f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.75f, 0.75f, 0.75f, 0.75f},
-    {0.8f,  0.8f,  0.8f,  0.8f }, {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.75f, 0.75f, 0.75f, 0.75f},
+    {0.8f,  0.8f,  0.8f,  0.8f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
 
-    {0.0f,  0.0f,  0.0f,  0.0f }, {0.0f,  0.0f,  0.0f,  0.0f },
-    {0.4f,  0.4f,  0.4f,  0.4f }, {0.8f,  0.8f,  0.8f,  0.8f }
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.0f,  0.0f,  0.0f,  0.0f },
+    {0.4f,  0.4f,  0.4f,  0.4f },
+    {0.8f,  0.8f,  0.8f,  0.8f }
 };
 
-void loadOffHeader(
+void readOffHeader(
     std::ifstream& file,
     MeshInfo&      fileInfo,
     uint&          nv,
@@ -161,7 +235,7 @@ void loadOffHeader(
     vcl::Tokenizer::iterator token  = tokens.begin();
     std::string              header = *token;
 
-           // the OFF string is in the header go on parsing it.
+    // the OFF string is in the header go on parsing it.
     if (header.rfind("OFF") != std::basic_string<char>::npos) {
         for (int u = header.rfind("OFF") - 1; u >= 0; u--) {
             if (header[u] == 'C')
@@ -181,11 +255,11 @@ void loadOffHeader(
     else
         throw vcl::MalformedFileException("Missing OFF header in file.");
 
-           // If the file is slightly malformed and it has nvert and nface AFTER the
-           // OFF string instead of in the next line we manage it here...
+    // If the file is slightly malformed and it has nvert and nface AFTER the
+    // OFF string instead of in the next line we manage it here...
     if (tokens.size() == 1) {
         tokens = readAndTokenizeNextNonEmptyLine(file);
-        token = tokens.begin();
+        token  = tokens.begin();
     }
     else
         ++token;
@@ -201,18 +275,19 @@ void loadOffHeader(
     //    loadedInfo.setEdges();
 }
 
-inline vcl::Color
-loadOffColor(vcl::Tokenizer::iterator& token, int nColorComponents)
+inline vcl::Color readOffColor(
+    vcl::Tokenizer::iterator& token,
+    int                       nColorComponents)
 {
     uint red, green, blue, alpha = 255;
 
     if (nColorComponents == 1) {
         uint k = io::readUInt<uint>(token);
 
-        red = OFF_GEOMVIEW_COLOR_MAP[k][0]*255;
-        green = OFF_GEOMVIEW_COLOR_MAP[k][1]*255;
-        blue = OFF_GEOMVIEW_COLOR_MAP[k][2]*255;
-        alpha = OFF_GEOMVIEW_COLOR_MAP[k][3]*255;
+        red   = OFF_GEOMVIEW_COLOR_MAP[k][0] * 255;
+        green = OFF_GEOMVIEW_COLOR_MAP[k][1] * 255;
+        blue  = OFF_GEOMVIEW_COLOR_MAP[k][2] * 255;
+        alpha = OFF_GEOMVIEW_COLOR_MAP[k][3] * 255;
     }
     else {
         double r = io::readDouble<double>(token);
@@ -222,16 +297,16 @@ loadOffColor(vcl::Tokenizer::iterator& token, int nColorComponents)
         if (nColorComponents == 4) {
             a = io::readDouble<double>(token);
         }
-        if (r > 1 || g > 1 || b > 1){
-            red = r;
+        if (r > 1 || g > 1 || b > 1) {
+            red   = r;
             green = g;
-            blue = b;
+            blue  = b;
             alpha = a != -1 ? a : alpha;
         }
         else {
-            red = r * 255;
+            red   = r * 255;
             green = g * 255;
-            blue = b * 255;
+            blue  = b * 255;
             alpha = a != -1 ? a * 255 : alpha;
         }
     }
@@ -239,7 +314,7 @@ loadOffColor(vcl::Tokenizer::iterator& token, int nColorComponents)
 }
 
 template<MeshConcept MeshType>
-void loadOffVertices(
+void readOffVertices(
     MeshType&       mesh,
     std::ifstream&  file,
     const MeshInfo& fileInfo,
@@ -253,7 +328,7 @@ void loadOffVertices(
     for (uint i = 0; i < nv; i++) {
         VertexType& v = mesh.vertex(i);
 
-        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLine(file);
+        vcl::Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
         vcl::Tokenizer::iterator token  = tokens.begin();
 
         // Read 3 vertex coordinates
@@ -262,7 +337,7 @@ void loadOffVertices(
             v.coord()[j] = io::readDouble<double>(token);
         }
 
-        if constexpr(vcl::HasPerVertexNormal<MeshType>) {
+        if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (vcl::isPerVertexNormalAvailable(mesh) &&
                 fileInfo.hasVertexNormals())
             {
@@ -273,7 +348,7 @@ void loadOffVertices(
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasVertexNormals()){
+        else if (fileInfo.hasVertexNormals()) {
             for (unsigned int j = 0; j < 3; j++) {
                 io::readDouble<double>(token);
             }
@@ -283,7 +358,7 @@ void loadOffVertices(
         const int  nColorComponents =
             (int) tokens.size() - nReadComponents - nTexCoords;
 
-        if constexpr(vcl::HasPerVertexColor<MeshType>) {
+        if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (vcl::isPerVertexColorAvailable(mesh) &&
                 fileInfo.hasVertexColors())
             {
@@ -291,19 +366,19 @@ void loadOffVertices(
                     nColorComponents != 4)
                     throw MalformedFileException(
                         "Wrong number of components in line.");
-                v.color() = loadOffColor(token, nColorComponents);
+                v.color() = readOffColor(token, nColorComponents);
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasVertexColors()){
+        else if (fileInfo.hasVertexColors()) {
             if (nColorComponents != 1 && nColorComponents != 3 &&
                 nColorComponents != 4)
                 throw MalformedFileException(
                     "Wrong number of components in line.");
-            loadOffColor(token, nColorComponents);
+            readOffColor(token, nColorComponents);
         }
 
-        if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
+        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             if (vcl::isPerVertexTexCoordAvailable(mesh) &&
                 fileInfo.hasVertexTexCoords())
             {
@@ -314,7 +389,7 @@ void loadOffVertices(
             }
         }
         // need to read and throw away data
-        else if (fileInfo.hasVertexTexCoords()){
+        else if (fileInfo.hasVertexTexCoords()) {
             for (unsigned int j = 0; j < 2; j++) {
                 io::readDouble<double>(token);
             }
@@ -323,7 +398,7 @@ void loadOffVertices(
 }
 
 template<FaceMeshConcept MeshType>
-void loadOffFaces(
+void readOffFaces(
     MeshType&      mesh,
     std::ifstream& file,
     MeshInfo&      loadedInfo,
@@ -346,7 +421,7 @@ void loadOffFaces(
             std::vector<uint> vids;
             vids.resize(fSize);
             for (uint i = 0; i < fSize; ++i) {
-                vids[i] = io::readUInt<uint>(token);
+                vids[i]        = io::readUInt<uint>(token);
                 bool splitFace = false;
                 // we have a polygonal mesh
                 if constexpr (FaceType::VERTEX_NUMBER < 0) {
@@ -382,7 +457,7 @@ void loadOffFaces(
                          enableIfPerFaceColorOptional(mesh)))
                     {
                         loadedInfo.setFaceColors();
-                        f.color() = loadOffColor(
+                        f.color() = readOffColor(
                             token, tokens.size() - (token - tokens.begin()));
                         // in case the loaded polygon has been triangulated in
                         // the last n triangles
@@ -413,7 +488,7 @@ void loadOff(
     bool               enableOptionalComponents = true)
 {
     std::ifstream file = openInputFileStream(filename);
-    uint nVertices, nFaces, nEdges;
+    uint          nVertices, nFaces, nEdges;
 
     if constexpr (HasName<MeshType>) {
         m.name() = FileInfo::fileNameWithoutExtension(filename);
@@ -421,13 +496,13 @@ void loadOff(
 
     MeshInfo fileInfo; // data that needs to be read from the file
 
-    detail::loadOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
+    detail::readOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
     loadedInfo = fileInfo; // data that will be stored in the mesh!
     if (enableOptionalComponents)
         io::detail::enableOptionalComponents(loadedInfo, m);
 
-    detail::loadOffVertices(m, file, fileInfo, nVertices);
-    detail::loadOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
+    detail::readOffVertices(m, file, fileInfo, nVertices);
+    detail::readOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
     if (enableOptionalComponents)
         loadedInfo = fileInfo;
     // detail::loadOffEdges(m, file, loadedInfo, nEdges);

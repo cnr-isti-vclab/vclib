@@ -69,11 +69,11 @@ void savePly(
 
     if (!header.isValid())
         throw std::runtime_error("Ply Header not valid.");
-    
+
     std::ofstream fp = openOutputFileStream(filename, "ply");
 
     fp << header.toString();
-    
+
     writePlyVertices(fp, header, m);
 
     if constexpr (vcl::HasFaces<MeshType>) {
@@ -102,6 +102,6 @@ void savePly(
     savePly(m, filename, info, log, binary);
 }
 
-} // namespace vcl::io
+} // namespace vcl
 
 #endif // VCL_IO_PLY_SAVE_H
