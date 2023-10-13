@@ -78,8 +78,8 @@ inline double perlinNoiseGrad(int hash, double x, double y, double z)
     int    h = hash & 15;     // CONVERT LO 4 BITS OF HASH CODE
     double u = h < 8 ? x : y, // INTO 12 GRADIENT DIRECTIONS.
         v    = h < 4              ? y :
-                h == 12 || h == 14 ? x :
-                                     z;
+               h == 12 || h == 14 ? x :
+                                    z;
     return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
 }
 
@@ -93,7 +93,7 @@ inline double perlinNoiseFade(double t)
     return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-} // namespace vcl::detail
+} // namespace detail
 
 /**
  * @brief 3D Perlin noise, returns a value in the [-1,1] range with period 255
@@ -119,8 +119,7 @@ inline double perlinNoise(double x, double y, double z)
         w    = detail::perlinNoiseFade(z);
     int A = detail::perlinNoiseP(X) + Y, AA = detail::perlinNoiseP(A) + Z,
         AB = detail::perlinNoiseP(A + 1) + Z, // HASH COORDINATES OF
-        B  = detail::perlinNoiseP(X + 1) + Y,
-        BA = detail::perlinNoiseP(B) + Z,
+        B = detail::perlinNoiseP(X + 1) + Y, BA = detail::perlinNoiseP(B) + Z,
         BB = detail::perlinNoiseP(B + 1) + Z; // THE 8 CUBE CORNERS,
 
     return detail::perlinNoiseLerp(
@@ -147,7 +146,7 @@ inline double perlinNoise(double x, double y, double z)
                     detail::perlinNoiseP(AA + 1), x, y, z - 1), // CORNERS
                 detail::perlinNoiseGrad(
                     detail::perlinNoiseP(BA + 1), x - 1, y, z - 1)), // OF
-                                                                       // CUBE
+                                                                     // CUBE
             detail::perlinNoiseLerp(
                 u,
                 detail::perlinNoiseGrad(

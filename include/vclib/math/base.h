@@ -24,8 +24,8 @@
 #ifndef VCL_MATH_BASE_H
 #define VCL_MATH_BASE_H
 
-#include <cmath>
 #include <assert.h>
+#include <cmath>
 
 #include <vclib/types.h>
 
@@ -49,13 +49,13 @@ bool epsilonCompare(
 template<typename Scalar>
 Scalar toRad(const Scalar& a)
 {
-    return M_PI*a/180.0;
+    return M_PI * a / 180.0;
 }
 
 template<typename Scalar>
 Scalar toDeg(const Scalar& a)
 {
-    return a*180.0/M_PI;
+    return a * 180.0 / M_PI;
 }
 
 /**
@@ -76,9 +76,9 @@ inline double lnOfFactorial(int n)
     // C5 =  1./1260.,                  // use r^5 term if FAK_LEN < 50
     // C7 = -1./1680.;                  // use r^7 term if FAK_LEN < 20
     // static variables
-    static double fac_table[FAK_LEN];  // table of ln(n!):
+    static double fac_table[FAK_LEN]; // table of ln(n!):
     // remember if fac_table has been initialized
-    static bool   initialized = false;
+    static bool initialized = false;
 
     if (n < FAK_LEN) {
         if (n <= 1) {

@@ -76,7 +76,7 @@ public:
 
         R.resize(nBins + 3);
 
-        R[0]              = -std::numeric_limits<ScalarType>::max();
+        R[0]         = -std::numeric_limits<ScalarType>::max();
         R[nBins + 2] = std::numeric_limits<ScalarType>::max();
 
         double delta = (maxRangeVal - minRangeVal);
@@ -165,7 +165,8 @@ public:
     ScalarType maxValue() const { return maxVal; }
 
     /**
-     * @brief Max number of values among all bins (including the two infinity bounded bins)
+     * @brief Max number of values among all bins (including the two infinity
+     * bounded bins)
      * @return
      */
     ScalarType maxBinCount() const
@@ -207,8 +208,8 @@ public:
 
     ScalarType binOfValueWidth(ScalarType value)
     {
-        uint pos=BinIndex(value);
-        return R[pos+1]-R[pos];
+        uint pos = BinIndex(value);
+        return R[pos + 1] - R[pos];
     }
 
     ScalarType rangeCount(ScalarType rangeMin, ScalarType rangeMax) const
@@ -286,7 +287,7 @@ private:
         // that, for every iterator j in [first, i), *j < value. E.g. An
         // iterator pointing to the first element "not less than" val, or end()
         // if every element is less than val.
-        auto it = std::lower_bound(R.begin(),R.end(), elem);
+        auto it = std::lower_bound(R.begin(), R.end(), elem);
 
         assert(it != R.begin());
         assert(it != R.end());
@@ -294,11 +295,10 @@ private:
         uint pos = it - R.begin();
         pos -= 1;
 
-        assert (R[pos] < elem);
-        assert (elem <= R[pos+1] );
+        assert(R[pos] < elem);
+        assert(elem <= R[pos + 1]);
         return pos;
     }
-
 };
 
 /* Specialization Aliases */

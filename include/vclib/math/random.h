@@ -68,7 +68,7 @@ inline int poissonRatioOfUniformsInteger(double L, std::mt19937& gen)
     double pois_g     = std::log(L);
     double pois_f0    = mode * pois_g - lnOfFactorial(mode);  // value at mode
     double pois_h     = std::sqrt(SHAT1 * (L + 0.5)) + SHAT2; // hat width
-    double pois_bound = (int) (pois_a + 6.0 * pois_h);   // safety-bound
+    double pois_bound = (int) (pois_a + 6.0 * pois_h);        // safety-bound
 
     std::uniform_real_distribution<double> unif(0, 1);
 
@@ -94,7 +94,7 @@ inline int poissonRatioOfUniformsInteger(double L, std::mt19937& gen)
 inline int poissonRatioOfUniformsInteger(double L)
 {
     static std::random_device rd;
-    static std::mt19937 gen(rd());
+    static std::mt19937       gen(rd());
     return poissonRatioOfUniformsInteger(L, gen);
 }
 
@@ -113,7 +113,7 @@ inline int poissonRatioOfUniformsInteger(double L)
  */
 inline int poissonRandomNumber(double lambda, std::mt19937& gen)
 {
-    if(lambda>50)
+    if (lambda > 50)
         return poissonRatioOfUniformsInteger(lambda, gen);
 
     std::uniform_real_distribution<double> unif(0, 1);
@@ -132,7 +132,7 @@ inline int poissonRandomNumber(double lambda, std::mt19937& gen)
 inline int poissonRandomNumber(double lambda)
 {
     static std::random_device rd;
-    static std::mt19937 gen(rd());
+    static std::mt19937       gen(rd());
     return poissonRatioOfUniformsInteger(lambda, gen);
 }
 
@@ -147,12 +147,12 @@ inline int poissonRandomNumber(double lambda)
 template<typename ScalarType>
 vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate(std::mt19937& gen)
 {
-    vcl::Point3<ScalarType> interp;
+    vcl::Point3<ScalarType>                    interp;
     std::uniform_real_distribution<ScalarType> unif(0, 1);
 
     interp[1] = unif(gen);
     interp[2] = unif(gen);
-    if(interp[1] + interp[2] > 1.0) {
+    if (interp[1] + interp[2] > 1.0) {
         interp[1] = 1.0 - interp[1];
         interp[2] = 1.0 - interp[2];
     }
@@ -165,16 +165,17 @@ template<typename ScalarType>
 vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate()
 {
     static std::random_device rd;
-    static std::mt19937 gen(rd());
+    static std::mt19937       gen(rd());
     return randomTriangleBarycentricCoordinate<ScalarType>(gen);
 }
 
 template<typename ScalarType>
-std::vector<ScalarType>
-randomPolygonBarycentricCoordinate(uint polySize, std::mt19937& gen)
+std::vector<ScalarType> randomPolygonBarycentricCoordinate(
+    uint          polySize,
+    std::mt19937& gen)
 {
     std::vector<ScalarType> barCoord(polySize);
-    ScalarType sum = 0;
+    ScalarType              sum = 0;
 
     std::uniform_real_distribution<ScalarType> unif(0, 100);
 
@@ -192,7 +193,7 @@ template<typename ScalarType>
 std::vector<ScalarType> randomPolygonBarycentricCoordinate(uint polySize)
 {
     static std::random_device rd;
-    static std::mt19937 gen(rd());
+    static std::mt19937       gen(rd());
     return randomPolygonBarycentricCoordinate<ScalarType>(polySize, gen);
 }
 
