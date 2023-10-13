@@ -23,13 +23,14 @@
 
 #include <iostream>
 
-#include <vclib/meshes.h>
 #include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
 int main()
 {
     vcl::MeshInfo loadedInfo;
-    vcl::TriMesh m = vcl::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.off", loadedInfo);
+    vcl::TriMesh  m = vcl::loadOff<vcl::TriMesh>(
+        VCL_TEST_MODELS_PATH "/bone.off", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 1872);
@@ -38,7 +39,8 @@ int main()
     assert(m.faceNumber() == 3022);
     assert(loadedInfo.hasFaceColors());
 
-    m = vcl::loadOff<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/trim-star.off", loadedInfo);
+    m = vcl::loadOff<vcl::TriMesh>(
+        VCL_TEST_MODELS_PATH "/trim-star.off", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 5192);

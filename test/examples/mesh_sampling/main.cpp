@@ -35,9 +35,10 @@
 #include <vclib/ext/qglviewer/viewer_main_window.h>
 #endif
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
+    vcl::TriMesh m =
+        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply");
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::LightBlue);
@@ -47,23 +48,25 @@ int main(int argc, char **argv)
     uint nSamples = 50;
 
     vcl::MeshSampler<vcl::TriMesh> s =
-        vcl::montecarloPointSampling<vcl::MeshSampler<vcl::TriMesh>>(m, nSamples);
+        vcl::montecarloPointSampling<vcl::MeshSampler<vcl::TriMesh>>(
+            m, nSamples);
 
     vcl::TriMesh samples = s.samples();
 
     for (const vcl::TriMesh::Vertex& v : samples.vertices()) {
-        m.face(v.customComponent<uint>("birthFace")).color() = vcl::Color::LightRed;
+        m.face(v.customComponent<uint>("birthFace")).color() =
+            vcl::Color::LightRed;
     }
-
 
 #ifdef VCLIB_WITH_QGLVIEWER
     QApplication application(argc, argv);
 
-    vcl::ViewerMainWindow viewer;
+    vcl::ViewerMainWindow           viewer;
     vcl::DrawableMesh<vcl::TriMesh> dm(m);
     vcl::DrawableMesh<vcl::TriMesh> sm(samples);
 
-    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    std::shared_ptr<vcl::DrawableObjectVector> vector =
+        std::make_shared<vcl::DrawableObjectVector>();
     vector->pushBack(dm);
     vector->pushBack(sm);
     viewer.setDrawableObjectVector(vector);

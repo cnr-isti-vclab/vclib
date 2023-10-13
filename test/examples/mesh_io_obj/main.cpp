@@ -23,13 +23,14 @@
 
 #include <iostream>
 
-#include <vclib/meshes.h>
 #include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
 int main()
 {
     vcl::MeshInfo loadedInfo;
-    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.obj", loadedInfo);
+    vcl::TriMesh  m = vcl::loadObj<vcl::TriMesh>(
+        VCL_TEST_MODELS_PATH "/TextureDouble.obj", loadedInfo);
 
     return 0;
 }

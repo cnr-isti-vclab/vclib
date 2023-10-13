@@ -8,7 +8,7 @@
 template<typename MeshType>
 void meshViewsStaticAsserts()
 {
-    MeshType m;
+    MeshType        m;
     const MeshType& cm = m;
 
     static_assert(
@@ -21,18 +21,22 @@ void meshViewsStaticAsserts()
 
     static_assert(
         std::ranges::range<decltype(m | vcl::views::vertices)>,
-        "The view returned by pipe operation m | views::vertices is not a valid range.");
+        "The view returned by pipe operation m | views::vertices is not a "
+        "valid range.");
     static_assert(
         std::ranges::range<decltype(cm | vcl::views::vertices)>,
-        "The view returned by pipe operation cm | views::vertices is not a valid range.");
+        "The view returned by pipe operation cm | views::vertices is not a "
+        "valid range.");
 
     static_assert(
-        vcl::VertexPointerRangeConcept<decltype(m.vertices() | vcl::views::addrOf)>,
+        vcl::VertexPointerRangeConcept<
+            decltype(m.vertices() | vcl::views::addrOf)>,
         "The view returned by pipe operation m | views::reference is not a "
         "VertexPointerRangeConcept.");
 
     static_assert(
-        vcl::VertexPointerRangeConcept<decltype(cm.vertices() | vcl::views::addrOf)>,
+        vcl::VertexPointerRangeConcept<
+            decltype(cm.vertices() | vcl::views::addrOf)>,
         "The view returned by pipe operation cm | views::reference is not a "
         "VertexPointerRangeConcept.");
 
@@ -48,9 +52,12 @@ void meshViewsStaticAsserts()
     static_assert(
         std::ranges::range<decltype(m.vertices() | vcl::views::selected)>, "");
     static_assert(
-        std::ranges::range<decltype(m.vertices() | vcl::views::selected | vcl::views::colors)>, "");
+        std::ranges::range<
+            decltype(m.vertices() | vcl::views::selected | vcl::views::colors)>,
+        "");
     static_assert(
-        std::ranges::range<decltype(m.vertices() | vcl::views::notSelected)>, "");
+        std::ranges::range<decltype(m.vertices() | vcl::views::notSelected)>,
+        "");
 
     if constexpr (vcl::HasFaces<MeshType>) {
         static_assert(
@@ -62,10 +69,12 @@ void meshViewsStaticAsserts()
 
         static_assert(
             std::ranges::range<decltype(m | vcl::views::faces)>,
-            "The view returned by pipe operation m | views::faces is not a valid range.");
+            "The view returned by pipe operation m | views::faces is not a "
+            "valid range.");
         static_assert(
             std::ranges::range<decltype(cm | vcl::views::faces)>,
-            "The view returned by pipe operation cm | views::faces is not a valid range.");
+            "The view returned by pipe operation cm | views::faces is not a "
+            "valid range.");
     }
 
     if constexpr (vcl::HasEdges<MeshType>) {
@@ -78,10 +87,12 @@ void meshViewsStaticAsserts()
 
         static_assert(
             std::ranges::range<decltype(m | vcl::views::edges)>,
-            "The view returned by pipe operation m | views::edges is not a valid range.");
+            "The view returned by pipe operation m | views::edges is not a "
+            "valid range.");
         static_assert(
             std::ranges::range<decltype(cm | vcl::views::edges)>,
-            "The view returned by pipe operation cm | views::edges is not a valid range.");
+            "The view returned by pipe operation cm | views::edges is not a "
+            "valid range.");
     }
 }
 

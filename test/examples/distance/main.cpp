@@ -24,14 +24,15 @@
 #include <iostream>
 
 #include <typeindex>
-#include <vclib/meshes.h>
-#include <vclib/load_save.h>
 #include <vclib/algorithms.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
 int main()
 {
     using PointType = vcl::TriMesh::VertexType::CoordType;
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::TriMesh m =
+        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
     vcl::updatePerFaceNormals(m);
 
@@ -49,8 +50,10 @@ int main()
     vcl::ConsoleLogger log;
     log.setPrintTimer(true);
 
-    vcl::TriMesh m1 = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
-    vcl::TriMesh m2 = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny.obj");
+    vcl::TriMesh m1 =
+        vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::TriMesh m2 =
+        vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny.obj");
 
     vcl::updateBoundingBox(m1);
     vcl::updateBoundingBox(m2);
@@ -58,7 +61,8 @@ int main()
     vcl::updatePerFaceNormals(m2);
 
     log.startTimer();
-    auto res = vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
+    auto res =
+        vcl::hausdorffDistance(m1, m2, log, vcl::HAUSDORFF_VERTEX_UNIFORM);
 
     std::cerr << "\n\nmin: " << res.minDist << ";\n";
     std::cerr << "max: " << res.maxDist << ";\n";

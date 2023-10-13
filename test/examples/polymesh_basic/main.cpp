@@ -23,10 +23,10 @@
 
 #include <iostream>
 
-#include <vclib/meshes.h>
-#include <vclib/load_save.h>
-#include <vclib/algorithms/update/flag.h>
 #include <vclib/algorithms/smooth.h>
+#include <vclib/algorithms/update/flag.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
 int main()
 {
@@ -46,7 +46,7 @@ int main()
 
     assert(f.vertexNumber() == 0);
 
-    f.pushVertex(&m.vertex(0));    
+    f.pushVertex(&m.vertex(0));
 
     assert(f.vertexNumber() == 1);
     assert(m.face(0).vertexNumber() == 1);
@@ -55,7 +55,8 @@ int main()
 
     m.enablePerFaceAdjacentFaces();
 
-    //f.resizeAdjFaces(2); <- can't do this: adjFaces number tied to vertex number of the face
+    // f.resizeAdjFaces(2); <- can't do this: adjFaces number tied to vertex
+    // number of the face
 
     assert(vcl::isPerFaceAdjacentFacesAvailable(m));
     assert(m.face(0).adjFacesNumber() == 1);

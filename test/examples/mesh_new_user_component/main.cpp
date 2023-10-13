@@ -25,9 +25,8 @@
 
 #include <vclib/meshes/tri_mesh.h>
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-
     FooMesh m;
 
     m.addVertices(10);

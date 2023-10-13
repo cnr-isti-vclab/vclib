@@ -21,12 +21,13 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
-#include <catch2/catch_test_macros.hpp>
 
-TEST_CASE( "TriMesh Filter" ) {
+TEST_CASE("TriMesh Filter")
+{
     vcl::TriMesh tm =
         vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 

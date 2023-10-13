@@ -23,25 +23,27 @@
 
 #include <iostream>
 
+#include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
-#include <vclib/algorithms.h>
 
 int main()
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
+    vcl::TriMesh m =
+        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bone.ply");
 
     m.addPerVertexCustomComponent<int>("flag");
 
     assert(m.hasPerVertexCustomComponent("flag"));
 
-    for (vcl::TriMesh::Vertex& v : m.vertices()){
+    for (vcl::TriMesh::Vertex& v : m.vertices()) {
         v.customComponent<int>("flag") = -4;
     }
 
     assert(m.vertex(10).customComponent<int>("flag") == -4);
-    
-    vcl::CustomComponentVectorHandle<int> v = m.perVertexCustomComponentVectorHandle<int>("flag");
+
+    vcl::CustomComponentVectorHandle<int> v =
+        m.perVertexCustomComponentVectorHandle<int>("flag");
 
     for (auto& m : v) {
         m = 8;
@@ -72,8 +74,8 @@ int main()
         m.perVertexCustomComponentVectorHandle<const vcl::Point3f>("oldCoords");
 
     double avgDist = 0;
-    using CT = vcl::TriMesh::Vertex::CoordType;
-    using ST = CT::ScalarType;
+    using CT       = vcl::TriMesh::Vertex::CoordType;
+    using ST       = CT::ScalarType;
     for (vcl::TriMesh::Vertex& v : m.vertices()) {
         avgDist += v.coord().dist(oldCoords[m.index(v)].cast<ST>());
     }
@@ -83,7 +85,8 @@ int main()
 
     m.addCustomComponent<CT>("barycenter", vcl::barycenter(m));
 
-    std::cerr << "Mesh barycenter: " << m.customComponent<CT>("barycenter") << "\n";
+    std::cerr << "Mesh barycenter: " << m.customComponent<CT>("barycenter")
+              << "\n";
 
     return 0;
 }

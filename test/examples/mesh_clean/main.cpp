@@ -30,7 +30,8 @@
 
 int main()
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
+    vcl::TriMesh m =
+        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply");
 
     bool isWaterTight = vcl::isWaterTight(m);
 
@@ -88,7 +89,7 @@ int main()
 
     vcl::setPerFaceColorFromConnectedComponents(m, cc);
 
-    auto d = m.boundingBox().diagonal()/10;
+    auto d = m.boundingBox().diagonal() / 10;
 
     vcl::setPerVertexColorPerlinNoise(m, vcl::Point(d, d, d));
 

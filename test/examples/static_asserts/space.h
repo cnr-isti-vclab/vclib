@@ -24,8 +24,8 @@
 #ifndef SPACE_H
 #define SPACE_H
 
-#include <vclib/space.h>
 #include <vclib/meshes/detail/tmp_meshes.h>
+#include <vclib/space.h>
 
 void spaceStaticAsserts()
 {
@@ -141,12 +141,12 @@ void spaceStaticAsserts()
     static_assert(
         SamplerConcept<ConstVertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
         "ConstVertexSampler does not satisfy the SamplerConcept");
-//     static_assert(
-//        std::ranges::range<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
-//        "");
+    //     static_assert(
+    //        std::ranges::range<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
+    //        "");
 
-//    VertexSampler<detail::TMPSimplePolyMesh::Vertex> v;
-//    auto it = std::ranges::begin(v);
+    //    VertexSampler<detail::TMPSimplePolyMesh::Vertex> v;
+    //    auto it = std::ranges::begin(v);
 
     static_assert(
         SphereConcept<Spheref>, "Spheref does not satisfy the SphereConcept");

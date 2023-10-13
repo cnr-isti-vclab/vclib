@@ -43,8 +43,8 @@
 // the concept should just check if the element/mesh has the member functions
 // that are part of the component class.
 template<typename T>
-concept HasBarComponent = requires(T t, const T& ct)
-{
+concept HasBarComponent = requires (T t, const T& ct) {
+    // clang-format off
     // accessor to the int value of the bar component, returns int&
     { t.foo() } -> std::same_as<int&>;
 
@@ -56,6 +56,7 @@ concept HasBarComponent = requires(T t, const T& ct)
 
     // const accessor to the double value of the bar component
     { ct.bar() } -> std::same_as<double>;
+    // clang-format on
 };
 
 // if you want, you can also define a concept that checks if an element has
@@ -76,7 +77,7 @@ namespace detail {
 // the only important thing is to have all the data wrapped in a single type
 struct BarData
 {
-    int foo;
+    int    foo;
     double bar;
 };
 
@@ -140,9 +141,11 @@ public:
     // is the same of the third template argument of the vcl::comp::Component
     // class -- in this case, detail::BarData
     int& foo() { return Base::data().foo; }
+
     int foo() const { return Base::data().foo; }
 
     double& bar() { return Base::data().bar; }
+
     double bar() const { return Base::data().bar; }
 
 protected:
@@ -153,7 +156,7 @@ protected:
         // will import the bar component from the element e only if it also has
         // the bar component
         if constexpr (HasBarComponent<Element>) { // compile time check
-            if (isBarComponentAvailableOn(e)) { // runtime check
+            if (isBarComponentAvailableOn(e)) {   // runtime check
                 foo() = e.foo();
                 bar() = e.bar();
             }

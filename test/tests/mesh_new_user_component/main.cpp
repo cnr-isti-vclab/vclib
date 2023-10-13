@@ -27,8 +27,8 @@
 
 #include <vclib/meshes/tri_mesh.h>
 
-TEST_CASE( "Simple User Component" ) {
-
+TEST_CASE("Simple User Component")
+{
     FooMesh m;
 
     m.addVertices(10);
@@ -38,7 +38,7 @@ TEST_CASE( "Simple User Component" ) {
     }
 
     for (uint i = 0; i < 10; ++i) {
-        REQUIRE (m.vertex(i).foo() == 42 + i);
+        REQUIRE(m.vertex(i).foo() == 42 + i);
     }
 
     vcl::TriMesh tm;

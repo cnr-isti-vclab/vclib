@@ -21,49 +21,56 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
-#include <catch2/catch_test_macros.hpp>
 
-SCENARIO( "Mesh Conversions" ) {
-    GIVEN( "The TextureDouble mesh loaded on TriMesh" ) {
-        vcl::TriMesh tm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
+SCENARIO("Mesh Conversions")
+{
+    GIVEN("The TextureDouble mesh loaded on TriMesh")
+    {
+        vcl::TriMesh tm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH
+                                                     "/TextureDouble.ply");
 
         tm.addCustomComponent<int>("cust_comp", 4);
         tm.addPerVertexCustomComponent<float>("v_comp");
         tm.deleteFace(3);
 
-        THEN( "The mesh has 8 vertices, 4 triangles, per face wedge texcoords" ) {
-            REQUIRE( tm.vertexNumber() == 8 );
-            REQUIRE( tm.faceNumber() == 3 );
-            REQUIRE( tm.isPerFaceWedgeTexCoordsEnabled() );
-            REQUIRE( tm.hasCustomComponent("cust_comp") );
-            REQUIRE( tm.isCustomComponentOfType<int>("cust_comp") );
-            REQUIRE( !tm.isCustomComponentOfType<uint>("cust_comp") );
-            REQUIRE( tm.customComponent<int>("cust_comp") == 4 );
-            REQUIRE( tm.hasPerVertexCustomComponent("v_comp") );
+        THEN("The mesh has 8 vertices, 4 triangles, per face wedge texcoords")
+        {
+            REQUIRE(tm.vertexNumber() == 8);
+            REQUIRE(tm.faceNumber() == 3);
+            REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
+            REQUIRE(tm.hasCustomComponent("cust_comp"));
+            REQUIRE(tm.isCustomComponentOfType<int>("cust_comp"));
+            REQUIRE(!tm.isCustomComponentOfType<uint>("cust_comp"));
+            REQUIRE(tm.customComponent<int>("cust_comp") == 4);
+            REQUIRE(tm.hasPerVertexCustomComponent("v_comp"));
         }
 
         vcl::PolyMesh pm;
-        REQUIRE( !pm.isPerFaceWedgeTexCoordsEnabled() );
+        REQUIRE(!pm.isPerFaceWedgeTexCoordsEnabled());
         pm.enableSameOptionalComponentsOf(tm);
-        REQUIRE( pm.isPerFaceWedgeTexCoordsEnabled() );
+        REQUIRE(pm.isPerFaceWedgeTexCoordsEnabled());
 
         pm.importFrom(tm);
 
-        THEN ("The imported PolyMesh has same vertex and face number") {
-            REQUIRE( pm.vertexNumber() == 8 );
-            REQUIRE( pm.faceNumber() == 3 );
+        THEN("The imported PolyMesh has same vertex and face number")
+        {
+            REQUIRE(pm.vertexNumber() == 8);
+            REQUIRE(pm.faceNumber() == 3);
         }
 
-        THEN ("The imported vetices have same coordinates") {
-            for (const auto& tv: tm.vertices()) {
+        THEN("The imported vetices have same coordinates")
+        {
+            for (const auto& tv : tm.vertices()) {
                 REQUIRE(pm.vertex(tv.index()).coord() == tv.coord());
             }
         }
 
-        THEN ("The imported faces have same vertices") {
-            for (const auto& pf: pm.faces()) {
+        THEN("The imported faces have same vertices")
+        {
+            for (const auto& pf : pm.faces()) {
                 REQUIRE(pf.vertexNumber() == 3);
                 const auto& tf = tm.face(pf.index());
 
@@ -82,39 +89,48 @@ SCENARIO( "Mesh Conversions" ) {
             }
         }
 
-        THEN ("The imported PolyMesh has same custom components") {
-            REQUIRE( pm.hasCustomComponent("cust_comp") );
-            REQUIRE( pm.isCustomComponentOfType<int>("cust_comp") );
-            REQUIRE( !pm.isCustomComponentOfType<uint>("cust_comp") );
-            REQUIRE( pm.customComponent<int>("cust_comp") == 4 );
-            REQUIRE( pm.hasPerVertexCustomComponent("v_comp") );
-            REQUIRE( pm.isPerVertexCustomComponentOfType<float>("v_comp") );
+        THEN("The imported PolyMesh has same custom components")
+        {
+            REQUIRE(pm.hasCustomComponent("cust_comp"));
+            REQUIRE(pm.isCustomComponentOfType<int>("cust_comp"));
+            REQUIRE(!pm.isCustomComponentOfType<uint>("cust_comp"));
+            REQUIRE(pm.customComponent<int>("cust_comp") == 4);
+            REQUIRE(pm.hasPerVertexCustomComponent("v_comp"));
+            REQUIRE(pm.isPerVertexCustomComponentOfType<float>("v_comp"));
         }
     }
 
-    GIVEN( "The polygonal cube mesh loaded on TriMesh" ) {
-        vcl::TriMesh tm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+    GIVEN("The polygonal cube mesh loaded on TriMesh")
+    {
+        vcl::TriMesh tm =
+            vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
-        THEN ("The loaded TriMesh has 8 vertices and 12 faces") {
-            REQUIRE( tm.vertexNumber() == 8 );
-            REQUIRE( tm.faceNumber() == 12 );
+        THEN("The loaded TriMesh has 8 vertices and 12 faces")
+        {
+            REQUIRE(tm.vertexNumber() == 8);
+            REQUIRE(tm.faceNumber() == 12);
         }
     }
 
-    GIVEN( "The polygonal cube mesh loaded on PolyMesh" ) {
-        vcl::PolyMesh pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+    GIVEN("The polygonal cube mesh loaded on PolyMesh")
+    {
+        vcl::PolyMesh pm =
+            vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
-        THEN ("The loaded PolyMesh has 8 vertices and 6 faces") {
-            REQUIRE( pm.vertexNumber() == 8 );
-            REQUIRE( pm.faceNumber() == 6 );
+        THEN("The loaded PolyMesh has 8 vertices and 6 faces")
+        {
+            REQUIRE(pm.vertexNumber() == 8);
+            REQUIRE(pm.faceNumber() == 6);
         }
 
-        GIVEN ( "When importing into TriMesh" ) {
+        GIVEN("When importing into TriMesh")
+        {
             vcl::TriMesh tm;
 
             tm.importFrom(pm);
 
-            THEN ("The imported trimesh has same vertices") {
+            THEN("The imported trimesh has same vertices")
+            {
                 REQUIRE(tm.vertexNumber() == pm.vertexNumber());
 
                 for (uint i = 0; i < tm.vertexNumber(); ++i) {
@@ -122,10 +138,10 @@ SCENARIO( "Mesh Conversions" ) {
                 }
             }
 
-            THEN ("The imported trimesh has 12 faces") {
+            THEN("The imported trimesh has 12 faces")
+            {
                 REQUIRE(tm.faceNumber() == 12);
             }
         }
     }
 }
-

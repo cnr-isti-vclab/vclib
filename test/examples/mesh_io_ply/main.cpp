@@ -25,13 +25,14 @@
 #include "vclib/misc/logger/null_logger.h"
 #include <iostream>
 
-#include <vclib/meshes.h>
 #include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
 int main()
 {
     vcl::MeshInfo loadedInfo;
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
+    vcl::TriMesh  m = vcl::loadPly<vcl::TriMesh>(
+        VCL_TEST_MODELS_PATH "/brain.ply", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 18844);
@@ -39,7 +40,8 @@ int main()
     assert(loadedInfo.hasFaceVRefs());
     assert(m.faceNumber() == 36752);
 
-    m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny_textured.ply", loadedInfo);
+    m = vcl::loadPly<vcl::TriMesh>(
+        VCL_TEST_MODELS_PATH "/bunny_textured.ply", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 5051);
@@ -52,7 +54,8 @@ int main()
     assert(vcl::isPerFaceWedgeTexCoordsAvailable(m));
     assert(!vcl::isPerFaceAdjacentFacesAvailable(m));
 
-    m =  vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
+    m = vcl::loadPly<vcl::TriMesh>(
+        VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 8);
@@ -63,8 +66,9 @@ int main()
     assert(m.textureNumber() == 2);
 
     // try to load a polygonal mesh into a trimesh
-    m = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply", loadedInfo);
-    for (const vcl::TriMesh::Face& f : m.faces()){
+    m = vcl::loadPly<vcl::TriMesh>(
+        VCL_TEST_MODELS_PATH "/cube_poly.ply", loadedInfo);
+    for (const vcl::TriMesh::Face& f : m.faces()) {
         assert(!f.edgeFaux(0));
         assert(!f.edgeFaux(1));
         assert(f.edgeFaux(2));
@@ -73,21 +77,28 @@ int main()
     m.addPerFaceCustomComponent<double>("area");
     auto areaVec = m.perFaceCustomComponentVectorHandle<double>("area");
 
-    for(const auto& f : m.faces()) {
+    for (const auto& f : m.faces()) {
         areaVec[m.index(f)] = vcl::faceArea(f);
-        std::cerr << "area " << m.index(f) << ": " << areaVec[m.index(f)] << "\n";
+        std::cerr << "area " << m.index(f) << ": " << areaVec[m.index(f)]
+                  << "\n";
     }
 
     // save again the mesh
-    vcl::savePly(m, VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, false);
+    vcl::savePly(
+        m,
+        VCL_TEST_RESULTS_PATH "/triangulated_cube.ply",
+        vcl::nullLogger,
+        false);
 
-    vcl::TriMesh mm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);
+    vcl::TriMesh mm = vcl::loadPly<vcl::TriMesh>(
+        VCL_TEST_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);
     assert(loadedInfo.hasFaceCustomComponents());
 
     std::cerr << "Loaded custom component areas: \n";
-    for(const auto& f : mm.faces()) {
+    for (const auto& f : mm.faces()) {
         assert(f.customComponent<double>("area") == 2);
-        std::cerr << "area " << mm.index(f) << ": " << f.customComponent<double>("area") << "\n";
+        std::cerr << "area " << mm.index(f) << ": "
+                  << f.customComponent<double>("area") << "\n";
     }
 
     return 0;

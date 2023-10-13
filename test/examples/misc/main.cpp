@@ -25,7 +25,8 @@
 
 #include <vclib/space.h>
 
-class Bar {
+class Bar
+{
 public:
     template<typename T>
     void foo()
@@ -38,7 +39,6 @@ public:
     {
         std::cout << "foo " << T << std::endl;
     }
-
 };
 
 int main()

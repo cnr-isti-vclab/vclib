@@ -35,12 +35,13 @@
 #include <vclib/ext/qglviewer/viewer_main_window.h>
 #endif
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     vcl::ConsoleLogger log;
     log.setPrintTimer(true);
 
-    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::TriMesh m =
+        vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
 
     m.enablePerVertexAdjacentFaces();
     m.enablePerFaceAdjacentFaces();
@@ -57,10 +58,13 @@ int main(int argc, char **argv)
     vcl::setPerVertexQualityFromPrincipalCurvatureMean(m);
     vcl::Histogramd h = vcl::vertexQualityHistogram(m);
 
-    vcl::setPerVertexColorFromQuality(m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
+    vcl::setPerVertexColorFromQuality(
+        m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
 
-    std::cout << "Curvature range: " << h.minRangeValue() << " " << h.maxRangeValue() << "\n";
-    std::cout << "Used 90 percentile: " << h.percentile(0.1) << " " << h.percentile(0.9) << "\n";
+    std::cout << "Curvature range: " << h.minRangeValue() << " "
+              << h.maxRangeValue() << "\n";
+    std::cout << "Used 90 percentile: " << h.percentile(0.1) << " "
+              << h.percentile(0.9) << "\n";
 
     m.enablePerFaceColor();
     vcl::setPerFaceColorFromVertexColor(m);
@@ -70,10 +74,11 @@ int main(int argc, char **argv)
 #ifdef VCLIB_WITH_QGLVIEWER
     QApplication application(argc, argv);
 
-    vcl::ViewerMainWindow viewer;
+    vcl::ViewerMainWindow           viewer;
     vcl::DrawableMesh<vcl::TriMesh> dm(m);
 
-    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    std::shared_ptr<vcl::DrawableObjectVector> vector =
+        std::make_shared<vcl::DrawableObjectVector>();
     vector->pushBack(dm);
     viewer.setDrawableObjectVector(vector);
 

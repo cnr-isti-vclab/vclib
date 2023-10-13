@@ -34,17 +34,18 @@
 #include <vclib/ext/qglviewer/viewer_main_window.h>
 #endif
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::TriMesh m =
+        vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
     using ScalarType = vcl::TriMesh::ScalarType;
 
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::Gray);
 
-    vcl::Sphere<ScalarType> s({0,0,0}, 0.3);
-    vcl::TriMesh m1 = vcl::meshSphereIntersection(m, s);
+    vcl::Sphere<ScalarType> s({0, 0, 0}, 0.3);
+    vcl::TriMesh            m1 = vcl::meshSphereIntersection(m, s);
 
     vcl::TriMesh sm = vcl::createSphere<vcl::TriMesh>(s);
     vcl::updatePerFaceNormals(sm);
@@ -54,11 +55,12 @@ int main(int argc, char **argv)
 #ifdef VCLIB_WITH_QGLVIEWER
     QApplication application(argc, argv);
 
-    vcl::ViewerMainWindow viewer;
+    vcl::ViewerMainWindow           viewer;
     vcl::DrawableMesh<vcl::TriMesh> dm(m1);
     vcl::DrawableMesh<vcl::TriMesh> sdm(sm);
 
-    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    std::shared_ptr<vcl::DrawableObjectVector> vector =
+        std::make_shared<vcl::DrawableObjectVector>();
     vector->pushBack(dm);
     vector->pushBack(sdm);
     viewer.setDrawableObjectVector(vector);

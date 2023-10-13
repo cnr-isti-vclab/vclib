@@ -28,7 +28,8 @@
 #include <vclib/meshes.h>
 
 template<typename MeshType>
-void updateAndPrintNormals(MeshType& m){
+void updateAndPrintNormals(MeshType& m)
+{
     vcl::updatePerFaceNormals(m);
 
     std::cerr << "Face Normals:\n\n";
@@ -45,7 +46,8 @@ void updateAndPrintNormals(MeshType& m){
     std::cerr << "Vertex Normals:\n\n";
 
     for (const auto& v : m.vertices()) {
-        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal()
+                  << "\n";
         std::cerr << std::endl;
     }
 
@@ -56,7 +58,8 @@ void updateAndPrintNormals(MeshType& m){
     std::cerr << "Vertex Normals from Faces:\n\n";
 
     for (const auto& v : m.vertices()) {
-        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal()
+                  << "\n";
         std::cerr << std::endl;
     }
 
@@ -67,7 +70,8 @@ void updateAndPrintNormals(MeshType& m){
     std::cerr << "Vertex Normals angle weighted:\n\n";
 
     for (const auto& v : m.vertices()) {
-        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal()
+                  << "\n";
         std::cerr << std::endl;
     }
 
@@ -78,7 +82,8 @@ void updateAndPrintNormals(MeshType& m){
     std::cerr << "Vertex Normals Nelson Max weighted:\n\n";
 
     for (const auto& v : m.vertices()) {
-        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal()
+                  << "\n";
         std::cerr << std::endl;
     }
 
@@ -103,7 +108,8 @@ void updateAndPrintNormals(MeshType& m){
     std::cerr << "Multiplied Vertex Normals:\n\n";
 
     for (const auto& v : m.vertices()) {
-        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal() << "\n";
+        std::cerr << "Vertex " << m.index(v) << " normal: " << v.normal()
+                  << "\n";
         std::cerr << std::endl;
     }
 

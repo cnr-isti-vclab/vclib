@@ -25,16 +25,17 @@
 
 #include <QApplication>
 
-#include <vclib/algorithms/update/normal.h>
 #include <vclib/algorithms/update/color.h>
-#include <vclib/meshes.h>
+#include <vclib/algorithms/update/normal.h>
 #include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
 #include <vclib/ext/opengl2/drawable_mesh.h>
 #include <vclib/ext/qglviewer/viewer_main_window.h>
 #include <vclib/ext/qt/gui/mesh_render_settings_frame.h>
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv)
+{
     // Read command lines arguments.
     QApplication application(argc, argv);
 
@@ -43,7 +44,8 @@ int main(int argc, char **argv) {
 
     vcl::MeshInfo loadedInfo;
 
-    vcl::PolyMesh tm = vcl::load<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
+    vcl::PolyMesh tm = vcl::load<vcl::PolyMesh>(
+        VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
     vcl::updatePerFaceNormals(tm);
     vcl::updatePerVertexNormals(tm);
     tm.enablePerFaceColor();
@@ -51,15 +53,17 @@ int main(int argc, char **argv) {
     vcl::setPerFaceColor(tm, vcl::Color::LightGreen);
     vcl::setMeshColor(tm, vcl::Color::Yellow);
 
-    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+    vcl::TriMesh m =
+        vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::DarkGreen);
 
     vcl::DrawableMesh<vcl::PolyMesh> dtm(tm);
-    vcl::DrawableMesh<vcl::TriMesh> dm(m);
+    vcl::DrawableMesh<vcl::TriMesh>  dm(m);
 
-    std::shared_ptr<vcl::DrawableObjectVector> vector = std::make_shared<vcl::DrawableObjectVector>();
+    std::shared_ptr<vcl::DrawableObjectVector> vector =
+        std::make_shared<vcl::DrawableObjectVector>();
     vector->pushBack(dtm);
     vector->pushBack(dm);
 

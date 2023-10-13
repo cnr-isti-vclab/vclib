@@ -62,7 +62,7 @@ int main()
     pm = vcl::createDodecahedron<vcl::PolyMesh>();
     vcl::savePly(pm, VCL_TEST_RESULTS_PATH "/dodecahedron_poly.ply", info);
 
-    pm = vcl::createCube<vcl::PolyMesh>(vcl::Point3d(0,0,0), 4);
+    pm = vcl::createCube<vcl::PolyMesh>(vcl::Point3d(0, 0, 0), 4);
     vcl::savePly(pm, VCL_TEST_RESULTS_PATH "/cube_poly.ply", info);
 
     vcl::Sphere st(vcl::Point3<vcl::TriMesh::ScalarType>(), 1.0);
@@ -70,7 +70,7 @@ int main()
     vcl::savePly(m, VCL_TEST_RESULTS_PATH "/sphere_tri.ply");
 
     vcl::Sphere sp = st.cast<vcl::PolyMesh::ScalarType>();
-    pm = vcl::createSphereSpherifiedCube<vcl::PolyMesh>(sp, 50);
+    pm             = vcl::createSphereSpherifiedCube<vcl::PolyMesh>(sp, 50);
     vcl::savePly(pm, VCL_TEST_RESULTS_PATH "/sphere_poly.ply");
 
     m = vcl::createSphereIcosahedron<vcl::TriMesh>(st, 5);

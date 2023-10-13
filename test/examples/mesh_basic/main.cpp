@@ -23,9 +23,9 @@
 
 #include <iostream>
 
-#include <vclib/meshes.h>
-#include <vclib/load_save.h>
 #include <vclib/algorithms.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
 class MyVertex :
         public vcl::Vertex<
@@ -63,7 +63,7 @@ int main()
 
     m.vertex(0).texCoord().set(0.1, 0.2);
     m.vertex(1).texCoord().set(0.52, 0.35);
-    
+
     // setting vertex normals
     // in this mesh vertex normaks are not optional, I don't need to enable them
     m.vertex(0).normal() = TriMeshPoint(1, 0, 0);
@@ -72,10 +72,10 @@ int main()
     m.vertex(0).color() = vcl::Color(3, 7, 4);
     m.vertex(1).color() = vcl::Color(3, 63, 44);
     m.vertex(2).color() = vcl::Color(3, 9, 2);
-    
+
     // adding a per vertex custom component of chars, called 'prova'
     m.addPerVertexCustomComponent<char>("prova");
-    
+
     // using generic element type alias trough element type index
     // this is just for test - it is possible to just use
     // using VT = vcl::TriMesh::VertexType;
@@ -83,8 +83,9 @@ int main()
     using VT = vcl::TriMesh::ElementType<vcl::VERTEX>;
 
     for (VT& v : m.vertices())
-        v.customComponent<char>("prova") = 'a'; // set the custom component for each vertex
-    
+        v.customComponent<char>("prova") =
+            'a'; // set the custom component for each vertex
+
     // enable per face quality, which is optional
     m.enablePerFaceQuality();
 
@@ -104,8 +105,9 @@ int main()
 
     // setting some colors to all the faces of the mesh
     uint i = 17;
-    for (vcl::TriMesh::Face& f : m.faces()) // iterates over all the non-deleted faces of m
-        f.color() = vcl::Color(4+2*i++, 134, 98);
+    for (vcl::TriMesh::Face& f :
+         m.faces()) // iterates over all the non-deleted faces of m
+        f.color() = vcl::Color(4 + 2 * i++, 134, 98);
 
     // add some other vertices
     m.addVertex();
@@ -118,8 +120,8 @@ int main()
 
     std::cerr << "VN: " << m.vertexNumber() << "\n";
 
-    //iterate over vertices
-    for (const vcl::TriMesh::Vertex& v : m.vertices()){
+    // iterate over vertices
+    for (const vcl::TriMesh::Vertex& v : m.vertices()) {
         std::cerr << "V " << m.index(v) << "\n";
     }
 

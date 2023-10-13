@@ -23,12 +23,13 @@
 
 #include <iostream>
 
+#include <catch2/catch_test_macros.hpp>
+#include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
-#include <vclib/algorithms.h>
-#include <catch2/catch_test_macros.hpp>
 
-TEST_CASE( "Test Custom Components and Handles" ) {
+TEST_CASE("Test Custom Components and Handles")
+{
     vcl::TriMesh m;
     m.addVertices(10);
 
@@ -36,7 +37,7 @@ TEST_CASE( "Test Custom Components and Handles" ) {
 
     REQUIRE(m.hasPerVertexCustomComponent("flag"));
 
-    for (vcl::TriMesh::Vertex& v : m.vertices()){
+    for (vcl::TriMesh::Vertex& v : m.vertices()) {
         v.customComponent<int>("flag") = -4;
     }
 
@@ -46,7 +47,7 @@ TEST_CASE( "Test Custom Components and Handles" ) {
         m.perVertexCustomComponentVectorHandle<int>("flag");
 
     int tmp = 8;
-    for (auto& m : v){
+    for (auto& m : v) {
         m = tmp;
     }
     int tmp2 = 4;

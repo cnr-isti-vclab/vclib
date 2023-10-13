@@ -38,7 +38,7 @@ int main()
 
     for (const vcl::TriMesh::Vertex& v : m.vertices()) {
         std::cerr << "Adj faces to vertex " << m.index(v) << ": \n\t";
-        for (const vcl::TriMesh::Face* f : v.adjFaces()){
+        for (const vcl::TriMesh::Face* f : v.adjFaces()) {
             std::cerr << m.index(f) << "; ";
         }
         std::cerr << std::endl;
@@ -51,7 +51,7 @@ int main()
 
     for (const vcl::TriMesh::Vertex& v : m.vertices()) {
         std::cerr << "Adj vertices to vertex " << m.index(v) << ": \n\t";
-        for (const vcl::TriMesh::Vertex* av : v.adjVertices()){
+        for (const vcl::TriMesh::Vertex* av : v.adjVertices()) {
             std::cerr << m.index(av) << "; ";
         }
         std::cerr << std::endl;
@@ -64,7 +64,7 @@ int main()
 
     for (const vcl::TriMesh::Face& f : m.faces()) {
         std::cerr << "Adj faces to face " << m.index(f) << ": \n\t";
-        for (const vcl::TriMesh::Face* fadj : f.adjFaces()){
+        for (const vcl::TriMesh::Face* fadj : f.adjFaces()) {
             if (fadj != nullptr)
                 std::cerr << m.index(fadj) << "; ";
             else

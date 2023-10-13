@@ -74,5 +74,4 @@ public:
     using ScalarType = double;
 };
 
-
 #endif // FOO_MESH_H

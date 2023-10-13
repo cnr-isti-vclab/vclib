@@ -21,20 +21,24 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
-#include <catch2/catch_test_macros.hpp>
 
-TEST_CASE( "TriMesh Topology" ) {
-    vcl::TriMesh tm = vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+TEST_CASE("TriMesh Topology")
+{
+    vcl::TriMesh tm =
+        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-    THEN( "The mesh has 8 vertices, 12 triangles" ) {
-        REQUIRE( tm.vertexNumber() == 8 );
-        REQUIRE( tm.faceNumber() == 12 );
+    THEN("The mesh has 8 vertices, 12 triangles")
+    {
+        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.faceNumber() == 12);
     }
 
-    THEN ( "Test Face Vertices" ) {
+    THEN("Test Face Vertices")
+    {
         REQUIRE(tm.face(0).vertexNumber() == 3);
         REQUIRE(tm.face(0).vertex(0) == &tm.vertex(2));
         REQUIRE(tm.face(0).vertex(1) == &tm.vertex(1));
@@ -96,7 +100,8 @@ TEST_CASE( "TriMesh Topology" ) {
         REQUIRE(tm.face(11).vertex(2) == &tm.vertex(1));
     }
 
-    THEN( "Test Per Vertex Adjacent Faces" ) {
+    THEN("Test Per Vertex Adjacent Faces")
+    {
         tm.enablePerVertexAdjacentFaces();
         vcl::updatePerVertexAdjacentFaces(tm);
 
@@ -153,7 +158,8 @@ TEST_CASE( "TriMesh Topology" ) {
         REQUIRE(tm.vertex(7).adjFace(2) == &tm.face(10));
     }
 
-    THEN( "Test Per Vertex Adjacent Vertices" ) {
+    THEN("Test Per Vertex Adjacent Vertices")
+    {
         tm.enablePerVertexAdjacentVertices();
         vcl::updatePerVertexAdjacentVertices(tm);
 
@@ -210,7 +216,8 @@ TEST_CASE( "TriMesh Topology" ) {
         REQUIRE(tm.vertex(7).adjVertex(2) == &tm.vertex(6));
     }
 
-    THEN( "Test Per Face Adjacent Faces" ) {
+    THEN("Test Per Face Adjacent Faces")
+    {
         tm.enablePerFaceAdjacentFaces();
         vcl::updatePerFaceAdjacentFaces(tm);
 
@@ -276,15 +283,19 @@ TEST_CASE( "TriMesh Topology" ) {
     }
 }
 
-TEST_CASE( "PolyMesh Triangle Mesh Topology" ) {
-    vcl::PolyMesh pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+TEST_CASE("PolyMesh Triangle Mesh Topology")
+{
+    vcl::PolyMesh pm =
+        vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
 
-    THEN( "The mesh has 8 vertices, 12 triangles" ) {
-        REQUIRE( pm.vertexNumber() == 8 );
-        REQUIRE( pm.faceNumber() == 12 );
+    THEN("The mesh has 8 vertices, 12 triangles")
+    {
+        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.faceNumber() == 12);
     }
 
-    THEN ( "Test Face Vertices" ) {
+    THEN("Test Face Vertices")
+    {
         REQUIRE(pm.face(0).vertexNumber() == 3);
         REQUIRE(pm.face(0).vertex(0) == &pm.vertex(2));
         REQUIRE(pm.face(0).vertex(1) == &pm.vertex(1));
@@ -346,7 +357,8 @@ TEST_CASE( "PolyMesh Triangle Mesh Topology" ) {
         REQUIRE(pm.face(11).vertex(2) == &pm.vertex(1));
     }
 
-    THEN( "Test Per Vertex Adjacent Faces" ) {
+    THEN("Test Per Vertex Adjacent Faces")
+    {
         pm.enablePerVertexAdjacentFaces();
         vcl::updatePerVertexAdjacentFaces(pm);
 
@@ -403,7 +415,8 @@ TEST_CASE( "PolyMesh Triangle Mesh Topology" ) {
         REQUIRE(pm.vertex(7).adjFace(2) == &pm.face(10));
     }
 
-    THEN( "Test Per Vertex Adjacent Vertices" ) {
+    THEN("Test Per Vertex Adjacent Vertices")
+    {
         pm.enablePerVertexAdjacentVertices();
         vcl::updatePerVertexAdjacentVertices(pm);
 
@@ -460,7 +473,8 @@ TEST_CASE( "PolyMesh Triangle Mesh Topology" ) {
         REQUIRE(pm.vertex(7).adjVertex(2) == &pm.vertex(6));
     }
 
-    THEN( "Test Per Face Adjacent Faces" ) {
+    THEN("Test Per Face Adjacent Faces")
+    {
         pm.enablePerFaceAdjacentFaces();
         vcl::updatePerFaceAdjacentFaces(pm);
 
@@ -526,15 +540,19 @@ TEST_CASE( "PolyMesh Triangle Mesh Topology" ) {
     }
 }
 
-TEST_CASE( "PolyMesh Polygon Mesh Topology" ) {
-    vcl::PolyMesh pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+TEST_CASE("PolyMesh Polygon Mesh Topology")
+{
+    vcl::PolyMesh pm =
+        vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
 
-    THEN( "The mesh has 8 vertices, 6 faces" ) {
-        REQUIRE( pm.vertexNumber() == 8 );
-        REQUIRE( pm.faceNumber() == 6 );
+    THEN("The mesh has 8 vertices, 6 faces")
+    {
+        REQUIRE(pm.vertexNumber() == 8);
+        REQUIRE(pm.faceNumber() == 6);
     }
 
-    THEN ( "Test Face Vertices" ) {
+    THEN("Test Face Vertices")
+    {
         REQUIRE(pm.face(0).vertexNumber() == 4);
         REQUIRE(pm.face(0).vertex(0) == &pm.vertex(2));
         REQUIRE(pm.face(0).vertex(1) == &pm.vertex(3));
@@ -572,7 +590,8 @@ TEST_CASE( "PolyMesh Polygon Mesh Topology" ) {
         REQUIRE(pm.face(5).vertex(3) == &pm.vertex(7));
     }
 
-    THEN( "Test Per Vertex Adjacent Faces" ) {
+    THEN("Test Per Vertex Adjacent Faces")
+    {
         pm.enablePerVertexAdjacentFaces();
         vcl::updatePerVertexAdjacentFaces(pm);
 
@@ -617,7 +636,8 @@ TEST_CASE( "PolyMesh Polygon Mesh Topology" ) {
         REQUIRE(pm.vertex(7).adjFace(2) == &pm.face(5));
     }
 
-    THEN( "Test Per Vertex Adjacent Vertices" ) {
+    THEN("Test Per Vertex Adjacent Vertices")
+    {
         pm.enablePerVertexAdjacentVertices();
         vcl::updatePerVertexAdjacentVertices(pm);
 
@@ -662,7 +682,8 @@ TEST_CASE( "PolyMesh Polygon Mesh Topology" ) {
         REQUIRE(pm.vertex(7).adjVertex(2) == &pm.vertex(6));
     }
 
-    THEN( "Test Per Face Adjacent Faces" ) {
+    THEN("Test Per Face Adjacent Faces")
+    {
         pm.enablePerFaceAdjacentFaces();
         vcl::updatePerFaceAdjacentFaces(pm);
 

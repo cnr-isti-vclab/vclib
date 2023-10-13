@@ -30,7 +30,8 @@
 
 #include "mesh.h"
 
-TEST_CASE( "Import TriMesh from VCG" ) {
+TEST_CASE("Import TriMesh from VCG")
+{
     VCGMesh vcgMesh;
 
     vcg::tri::io::ImporterPLY<VCGMesh>::Open(
@@ -45,7 +46,7 @@ TEST_CASE( "Import TriMesh from VCG" ) {
     REQUIRE(tm.faceNumber() == 12);
 
     for (uint fi = 0; fi < tm.faceNumber(); ++fi) {
-        const auto& f = tm.face(fi);
+        const auto& f    = tm.face(fi);
         const auto& vcgf = vcgMesh.face[fi];
         for (uint vi = 0; vi < 3; ++vi) {
             REQUIRE(
@@ -54,7 +55,8 @@ TEST_CASE( "Import TriMesh from VCG" ) {
     }
 }
 
-TEST_CASE( "Import PolyMesh from VCG" ) {
+TEST_CASE("Import PolyMesh from VCG")
+{
     VCGMesh vcgMesh;
 
     vcg::tri::io::ImporterPLY<VCGMesh>::Open(
@@ -69,7 +71,7 @@ TEST_CASE( "Import PolyMesh from VCG" ) {
     REQUIRE(pm.faceNumber() == 12);
 
     for (uint fi = 0; fi < pm.faceNumber(); ++fi) {
-        const auto& f = pm.face(fi);
+        const auto& f    = pm.face(fi);
         const auto& vcgf = vcgMesh.face[fi];
 
         REQUIRE(f.vertexNumber() == 3);
