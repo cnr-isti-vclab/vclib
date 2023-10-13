@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef  VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
-#define  VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
+#ifndef VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
+#define VCL_SPACE_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
 
 namespace vcl {
 
@@ -33,13 +33,14 @@ public:
     using Iterator::Iterator;
 
     using value_type = Iterator::value_type::InfoType;
-    using reference = const value_type&;
-    using pointer = const value_type*;
+    using reference  = const value_type&;
+    using pointer    = const value_type*;
 
     NodeIterator(Iterator it) : Iterator(it) {}
 
     reference operator*() const { return Iterator::operator*().info(); }
-    pointer   operator->() const { return &Iterator::operator->().info(); }
+
+    pointer operator->() const { return &Iterator::operator->().info(); }
 };
 
 } // namespace vcl

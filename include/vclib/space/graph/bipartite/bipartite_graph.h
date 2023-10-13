@@ -29,13 +29,13 @@
 #include <set>
 #include <vector>
 
-#include <vclib/views/view.h>
-#include <vclib/types.h>
 #include <vclib/space/graph/undirected_node.h>
+#include <vclib/types.h>
+#include <vclib/views/view.h>
 
-#include "iterator/node_iterator.h"
 #include "iterator/adjacent_left_node_iterator.h"
 #include "iterator/adjacent_right_node_iterator.h"
+#include "iterator/node_iterator.h"
 
 namespace vcl {
 
@@ -53,8 +53,8 @@ protected:
     std::set<unsigned int> unusedRNodes;
 
 public:
-    using LeftType  = T1;
-    using RightType = T2;
+    using LeftType      = T1;
+    using RightType     = T2;
     using LeftNodeType  = UndirectedNode<T1>;
     using RightNodeType = UndirectedNode<T2>;
 
@@ -62,7 +62,7 @@ public:
         NodeIterator<typename std::vector<UndirectedNode<T1>>::const_iterator>;
     using RightNodeIterator =
         NodeIterator<typename std::vector<UndirectedNode<T2>>::const_iterator>;
-    
+
     using LeftNodeView  = vcl::View<LeftNodeIterator>;
     using RightNodeView = vcl::View<RightNodeIterator>;
 
@@ -72,7 +72,7 @@ public:
     using AdjacentRightNodeIterator = detail::AdjacentRightNodeIterator<
         BipartiteGraph<T1, T2>,
         std::unordered_set<unsigned int>::const_iterator>;
-    
+
     using AdjacentLeftNodeView  = vcl::View<AdjacentLeftNodeIterator>;
     using AdjacentRightNodeView = vcl::View<AdjacentRightNodeIterator>;
 
@@ -405,7 +405,7 @@ public:
         return RightNodeView(rightNodeBegin(), rightNodeEnd());
     }
 
-    AdjacentLeftNodeView  adjacentLeftNodes(const T1& lNode) const
+    AdjacentLeftNodeView adjacentLeftNodes(const T1& lNode) const
     {
         return AdjacentLeftNodeView(
             adjacentLeftNodeBegin(lNode), adjacentLeftNodeEnd(lNode));

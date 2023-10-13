@@ -12,7 +12,7 @@ namespace detail {
 template<VertexConcept VertexType, bool CNST = false>
 class VertexSampler
 {
-    using VP = std::conditional_t<CNST, const VertexType*, VertexType*>;
+    using VP   = std::conditional_t<CNST, const VertexType*, VertexType*>;
     using VPar = std::conditional_t<CNST, const VertexType&, VertexType&>;
 
     std::vector<VP> samplesVec;
@@ -46,7 +46,7 @@ public:
     auto end() const { return std::end(samplesVec | views::coords); }
 };
 
-} // namespace vcl::detail
+} // namespace detail
 
 template<VertexConcept VertexType>
 using VertexSampler = detail::VertexSampler<VertexType, false>;

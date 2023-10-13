@@ -46,15 +46,15 @@ namespace vcl {
  *
  * @ingroup space
  */
-template<typename Scalar, bool NORM=true>
+template<typename Scalar, bool NORM = true>
 class Plane
 {
     Point3<Scalar> dir;
-    Scalar off;
+    Scalar         off;
 
 public:
     using ScalarType = Scalar;
-    using PointType = vcl::Point3<Scalar>;
+    using PointType  = vcl::Point3<Scalar>;
 
     /**
      * @brief Empty constructor. The plane is uninitialized.
@@ -69,7 +69,7 @@ public:
     Plane(const Point3<Scalar>& direction, Scalar offset) :
             dir(direction), off(offset)
     {
-        if constexpr(NORM) {
+        if constexpr (NORM) {
             Scalar n = dir.norm();
             dir /= n;
             off /= n;
@@ -85,7 +85,7 @@ public:
     Plane(const Point3<Scalar>& p0, const Point3<Scalar>& normal)
     {
         dir = normal;
-        if constexpr(NORM) {
+        if constexpr (NORM) {
             dir.normalize();
         }
         off = p0.dot(dir);
@@ -100,7 +100,7 @@ public:
     Plane(
         const Point3<Scalar>& p0,
         const Point3<Scalar>& p1,
-        const Point3<Scalar>& p2):
+        const Point3<Scalar>& p2) :
             Plane<Scalar, NORM>(p0, (p2 - p0).cross(p1 - p0))
     {
     }
@@ -146,8 +146,8 @@ public:
      */
     Point3<Scalar> mirrorPoint(const Point3<Scalar>& p) const
     {
-        Point3<Scalar> mirr=projectPoint(p);
-        mirr += mirr-p;
+        Point3<Scalar> mirr = projectPoint(p);
+        mirr += mirr - p;
         return mirr;
     }
 

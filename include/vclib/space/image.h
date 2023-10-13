@@ -54,7 +54,7 @@ public:
 
     vcl::Color pixel(uint i, uint j) const
     {
-        return vcl::Color((vcl::Color::ColorRGBA)img(i,j));
+        return vcl::Color(static_cast<vcl::Color::ColorRGBA>(img(i, j)));
     }
 
     const unsigned char* data() const
@@ -72,7 +72,10 @@ public:
             std::size_t size = w * h * 4;
 
             img.resize(w, h);
-            std::copy(tmp.get(), tmp.get() + size, (unsigned char*)img.data());
+            std::copy(
+                tmp.get(),
+                tmp.get() + size,
+                reinterpret_cast<unsigned char*>(img.data()));
             return true;
         }
         else {

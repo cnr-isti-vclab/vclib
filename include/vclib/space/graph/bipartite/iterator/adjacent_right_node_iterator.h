@@ -32,6 +32,7 @@ template<typename Graph, typename Iterator>
 class AdjacentRightNodeIterator : public AdjacentNodeIterator<Graph, Iterator>
 {
     using Base = AdjacentNodeIterator<Graph, Iterator>;
+
 public:
     using value_type = Graph::LeftType;
     using reference  = const value_type&;
@@ -40,6 +41,7 @@ public:
     using AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator;
 
     reference operator*() const { return Base::g->nodesL[Base::it].info(); }
+
     pointer operator->() const { return &Base::g->nodesL[Base::it].info(); }
 };
 

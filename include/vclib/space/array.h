@@ -30,8 +30,8 @@
 #include <utility>
 #include <vector>
 
-#include <vclib/concepts/space/array.h>
 #include <vclib/concepts/range.h>
+#include <vclib/concepts/space/array.h>
 #include <vclib/misc/nested_initializer_lists.h>
 #include <vclib/types.h>
 
@@ -70,7 +70,7 @@ class Array
 
 public:
     /** @brief The type of the elements stored in the array. */
-    using ValueType      = std::vector<T>::value_type;
+    using ValueType = std::vector<T>::value_type;
 
     /** @brief Same of ValueType, just for compatibility with Eigen Matrices */
     using Scalar = ValueType;
@@ -81,21 +81,21 @@ public:
     using ConstReference = std::vector<T>::const_reference;
 
     /** @brief A reference to the type of the elements stored in the array. */
-    using Reference      = std::vector<T>::reference;
+    using Reference = std::vector<T>::reference;
 
     /**
      * @brief A const pointer to the type of the elements stored in the array.
      */
-    using ConstPointer   = std::vector<T>::const_pointer;
+    using ConstPointer = std::vector<T>::const_pointer;
 
     /** @brief A pointer to the type of the elements stored in the array. */
-    using Pointer        = std::vector<T>::pointer;
+    using Pointer = std::vector<T>::pointer;
 
     /** @brief An iterator to the elements of the array. */
-    using Iterator       = std::vector<T>::iterator;
+    using Iterator = std::vector<T>::iterator;
 
     /** @brief A const iterator to the elements of the array. */
-    using ConstIterator  = std::vector<T>::const_iterator;
+    using ConstIterator = std::vector<T>::const_iterator;
 
     /** @brief The number of dimensions of the array. */
     static constexpr uint DIM = N;
@@ -121,7 +121,7 @@ public:
      * array.
      */
     template<typename... Sizes>
-    Array(Sizes... s) requires(sizeof...(s) == N)
+    Array(Sizes... s) requires (sizeof...(s) == N)
     {
         std::size_t args[N]   = {static_cast<std::size_t>(s)...};
         std::size_t totalSize = 1;
@@ -467,8 +467,8 @@ public:
         std::vector<T> newVector(newTotalSize);
 
         for (std::size_t i = 0; i < v.size(); i++) {
-            std::array<std::size_t, N> indices  = reverseIndex(i);
-            bool outOfBound = false;
+            std::array<std::size_t, N> indices    = reverseIndex(i);
+            bool                       outOfBound = false;
             for (std::size_t j = 0; j < N; j++)
                 if (indices[j] >= newSizes[j] || indices[j] >= sizes[j])
                     outOfBound = true;
@@ -586,8 +586,9 @@ private:
         return indices;
     }
 
-    static std::size_t
-    getIndex(const std::size_t indices[], const std::size_t sizes[])
+    static std::size_t getIndex(
+        const std::size_t indices[],
+        const std::size_t sizes[])
     {
         std::size_t ind = indices[0];
         assert(indices[0] < sizes[0]);
@@ -614,7 +615,11 @@ private:
 
         typename std::vector<T>::iterator iterator = v.begin();
         NestedInitializerListsProcessor<T, N>::processElements(
-            values, [&iterator](T value) { *(iterator++) = value; }, szs);
+            values,
+            [&iterator](T value) {
+                *(iterator++) = value;
+            },
+            szs);
     }
 };
 

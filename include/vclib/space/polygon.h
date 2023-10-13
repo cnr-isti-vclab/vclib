@@ -35,8 +35,8 @@
 #include "../../../../external/earcut.hpp-2.2.3/include/mapbox/earcut.hpp"
 #endif
 
-#include <vclib/concepts/space/polygon.h>
 #include <vclib/concepts/range.h>
+#include <vclib/concepts/space/polygon.h>
 #include <vclib/space/point.h>
 
 #include "triangle.h"
@@ -50,7 +50,7 @@ class Polygon
 
 public:
     using ScalarType = PointT::ScalarType;
-    using PointType = PointT;
+    using PointType  = PointT;
 
     static const uint DIM = PointT::DIM;
 
@@ -71,7 +71,7 @@ public:
 
     ScalarType sideLength(uint i) const
     {
-        return p[i].dist(p[(i+1)%p.size()]);
+        return p[i].dist(p[(i + 1) % p.size()]);
     }
 
     PointT normal() const requires (PointT::DIM == 3) { return normal(p); }
@@ -116,11 +116,15 @@ public:
         PointT sum;
         sum.setZero();
         for (auto i = begin; i != end; ++i) {
-            auto i1 = i; ++i1;
-            if (i1 == end) i1 = begin;
+            auto i1 = i;
+            ++i1;
+            if (i1 == end)
+                i1 = begin;
 
-            auto i2 = i1; ++i2;
-            if (i2 == end) i2 = begin;
+            auto i2 = i1;
+            ++i2;
+            if (i2 == end)
+                i2 = begin;
 
             sum += (*i1 - *i).cross(*i2 - *i);
         }
@@ -188,8 +192,10 @@ public:
      * @return The weighted barycenter of the polygon.
      */
     template<typename Iterator, typename WIterator>
-    static PointT
-    weightedBarycenter(Iterator begin, Iterator end, WIterator wbegin)
+    static PointT weightedBarycenter(
+        Iterator  begin,
+        Iterator  end,
+        WIterator wbegin)
         requires (std::is_same_v<typename Iterator::value_type, PointT>)
     {
         using ScalarType = WIterator::value_type;
@@ -198,7 +204,7 @@ public:
         bar.setZero();
         ScalarType wsum = 0;
 
-        for (; begin != end; ++begin, ++wbegin){
+        for (; begin != end; ++begin, ++wbegin) {
             bar += *begin * *wbegin;
             wsum += *wbegin;
         }
@@ -241,10 +247,12 @@ public:
         using Scalar = PointType::ScalarType;
 
         Scalar per = 0;
-        for (auto i = begin; i != end; ++i){
+        for (auto i = begin; i != end; ++i) {
             const PointT& p0 = *i;
-            auto i1 = i; ++i;
-            if (i1 == end) i1 = begin;
+            auto          i1 = i;
+            ++i;
+            if (i1 == end)
+                i1 = begin;
             const PointT& p1 = *i1;
             per += p0.dist(p1);
         }
@@ -279,12 +287,14 @@ public:
     {
         using Scalar = PointType::ScalarType;
 
-        PointType bar = barycenter(begin, end);
-        Scalar area = 0;
-        for (auto i = begin; i != end; ++i){
+        PointType bar  = barycenter(begin, end);
+        Scalar    area = 0;
+        for (auto i = begin; i != end; ++i) {
             const PointT& p0 = *i;
-            auto i1 = i; ++i;
-            if (i1 == end) i1 = begin;
+            auto          i1 = i;
+            ++i;
+            if (i1 == end)
+                i1 = begin;
             const PointT& p1 = *i1;
 
             area += Triangle<PointT>::area(p0, p1, bar);
@@ -403,9 +413,9 @@ public:
             poly2D.reserve(std::distance(begin, end));
         }
 
-        for (auto i = begin; i != end; ++i){
+        for (auto i = begin; i != end; ++i) {
             // project i-th polygon in a 2D plane
-            poly2D.emplace_back(*i*u, *i*v);
+            poly2D.emplace_back(*i * u, *i * v);
         }
 
         // Use the ear-cut algorithm to triangulate the polygon in the 2D plane
@@ -445,6 +455,7 @@ struct nth<0, vcl::Point2<Scalar>>
 {
     inline static auto get(const vcl::Point2<Scalar>& t) { return t.x(); };
 };
+
 template<typename Scalar>
 struct nth<1, vcl::Point2<Scalar>>
 {

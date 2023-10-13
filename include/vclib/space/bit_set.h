@@ -209,7 +209,7 @@ public:
  *
  * @ingroup space
  */
-using BitSet8  = BitSet<char>;
+using BitSet8 = BitSet<char>;
 
 /**
  * @brief BitSet16 is a BitSet of 16 bits.

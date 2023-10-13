@@ -58,7 +58,7 @@ class TriangleWrapper
 
 public:
     using ScalarType = PointT::ScalarType;
-    using PointType = PointT;
+    using PointType  = PointT;
 
     /**
      * @brief Dimension of the triangle.
@@ -93,13 +93,10 @@ public:
      */
     const PointT& point(uint i) const
     {
-        switch(i) {
-        case 0:
-            return p0;
-        case 1:
-            return p1;
-        default:
-            return p2;
+        switch (i) {
+        case 0: return p0;
+        case 1: return p1;
+        default: return p2;
         }
     }
 
@@ -128,13 +125,10 @@ public:
      */
     ScalarType sideLength(uint i) const
     {
-        switch(i%3) {
-        case 0:
-            return p0.dist(p1);
-        case 1:
-            return p1.dist(p2);
-        default:
-            return p2.dist(p0);
+        switch (i % 3) {
+        case 0: return p0.dist(p1);
+        case 1: return p1.dist(p2);
+        default: return p2.dist(p0);
         }
     }
 
@@ -294,10 +288,7 @@ public:
      * @note If the three points are collinear or form a degenerate triangle,
      * the function returns 0.
      */
-    ScalarType qualityMeanRatio() const
-    {
-        return qualityMeanRatio(p0, p1, p2);
-    }
+    ScalarType qualityMeanRatio() const { return qualityMeanRatio(p0, p1, p2); }
 
     /* Static member functions */
 
@@ -329,8 +320,10 @@ public:
      * @return The barycenter of the triangle composed by \p p0, \p p1 and \p
      * p2.
      */
-    static PointT
-    barycenter(const PointT& p0, const PointT& p1, const PointT& p2)
+    static PointT barycenter(
+        const PointT& p0,
+        const PointT& p1,
+        const PointT& p2)
     {
         return (p0 + p1 + p2) / 3;
     }
@@ -412,8 +405,10 @@ public:
      * @note The function assumes that the three points are not collinear and
      * form a valid triangle.
      */
-    static PointT
-    circumcenter(const PointT& p0, const PointT& p1, const PointT& p2)
+    static PointT circumcenter(
+        const PointT& p0,
+        const PointT& p1,
+        const PointT& p2)
     {
         ScalarType a2 = p1.squaredDist(p2);
         ScalarType b2 = p2.squaredDist(p0);
@@ -437,8 +432,10 @@ public:
      * @return The perimeter of the triangle composed by \p p0, \p p1, and \p
      * p2.
      */
-    static ScalarType
-    perimeter(const PointT& p0, const PointT& p1, const PointT& p2)
+    static ScalarType perimeter(
+        const PointT& p0,
+        const PointT& p1,
+        const PointT& p2)
     {
         return p0.dist(p1) + p1.dist(p2) + p2.dist(p0);
     }
@@ -456,12 +453,12 @@ public:
      */
     static ScalarType area(const PointT& p0, const PointT& p1, const PointT& p2)
     {
-        if constexpr(DIM == 2) {
+        if constexpr (DIM == 2) {
             return ((p1[0] - p0[0]) * (p2[1] - p0[1]) -
                     (p2[0] - p0[0]) * (p1[1] - p0[1])) /
                    2;
         }
-        if constexpr(DIM == 3) {
+        if constexpr (DIM == 3) {
             return normal(p0, p1, p2).norm() / 2;
         }
         else {
@@ -489,8 +486,10 @@ public:
      * @note If the area of the triangle is zero (i.e., the vertices are
      * collinear), the function returns 0.0.
      */
-    static ScalarType
-    quality(const PointT& p0, const PointT& p1, const PointT& p2)
+    static ScalarType quality(
+        const PointT& p0,
+        const PointT& p1,
+        const PointT& p2)
     {
         ScalarType a = area();
         if (a == 0)
@@ -523,14 +522,16 @@ public:
      * 0.81). A value of 0 is returned when the triangle is degenerate (i.e., it
      * has zero area).
      */
-    static ScalarType
-    qualityRadii(const PointT& p0, const PointT& p1, const PointT& p2)
+    static ScalarType qualityRadii(
+        const PointT& p0,
+        const PointT& p1,
+        const PointT& p2)
     {
         double a = p0.dist(p1);
         double b = p2.dist(p0);
         double c = p1.dist(p2);
 
-        double sum = (a + b + c) * 0.5;
+        double sum   = (a + b + c) * 0.5;
         double area2 = sum * (a + b - sum) * (a + c - sum) * (b + c - sum);
 
         if (area2 <= 0)
@@ -559,8 +560,10 @@ public:
      * form a valid triangle. If the three points are collinear or form a
      * degenerate triangle, the function returns 0.
      */
-    static ScalarType
-    qualityMeanRatio(const PointT& p0, const PointT& p1, const PointT& p2)
+    static ScalarType qualityMeanRatio(
+        const PointT& p0,
+        const PointT& p1,
+        const PointT& p2)
     {
         double a = p0.dist(p1);
         double b = p2.dist(p0);

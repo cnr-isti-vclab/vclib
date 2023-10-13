@@ -62,15 +62,14 @@ using Matrix44d = Matrix44<double>;
  *           MatrixType::ColsAtCompileTime == PointType::DIM
  */
 template<EigenMatrixConcept MatrixType, PointConcept PointType>
-PointType operator*(const MatrixType& m, const PointType& p)
-    requires(
-        MatrixType::RowsAtCompileTime == PointType::DIM &&
-        MatrixType::ColsAtCompileTime == PointType::DIM)
+PointType operator*(const MatrixType& m, const PointType& p) requires (
+    MatrixType::RowsAtCompileTime == PointType::DIM &&
+    MatrixType::ColsAtCompileTime == PointType::DIM)
 {
     PointType res;
     for (uint i = 0; i < PointType::DIM; i++) {
         for (uint j = 0; j < PointType::DIM; j++) {
-            res(i) += m(i,j)* p(i);
+            res(i) += m(i, j) * p(i);
         }
     }
     return res;

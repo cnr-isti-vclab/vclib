@@ -141,7 +141,7 @@ public:
     template<FaceConcept FaceType>
     void add(
         const FaceType& f,
-        bool            copyNormal = false,
+        bool            copyNormal  = false,
         bool            copyQuality = true)
     {
         uint vi = m.addVertex(vcl::faceBarycenter(f));
@@ -167,7 +167,7 @@ public:
     void add(
         const FaceType&                f,
         const std::vector<ScalarType>& barCoords,
-        bool                           copyNormal = false,
+        bool                           copyNormal  = false,
         bool                           copyQuality = true)
     {
         assert(f.vertexNumber() <= barCoords.size());
@@ -206,11 +206,11 @@ public:
     void add(
         const FaceType&  f,
         const PointType& barCoords,
-        bool             copyNormal = false,
+        bool             copyNormal  = false,
         bool             copyQuality = true)
     {
         static_assert(FaceType::NV == 3 || FaceType::NV == -1);
-        if constexpr(FaceType::NV == -1) {
+        if constexpr (FaceType::NV == -1) {
             assert(f.vertexNumber() == 3);
         }
 
@@ -227,11 +227,11 @@ public:
         uint             i,
         const FaceType&  f,
         const PointType& barCoords,
-        bool             copyNormal = false,
+        bool             copyNormal  = false,
         bool             copyQuality = true)
     {
         static_assert(FaceType::NV == 3 || FaceType::NV == -1);
-        if constexpr(FaceType::NV == -1) {
+        if constexpr (FaceType::NV == -1) {
             assert(f.vertexNumber() == 3);
         }
 
@@ -289,7 +289,7 @@ private:
 
     void setBirthElement(uint vi, const std::string& key, uint value)
     {
-        if constexpr(vcl::HasPerVertexCustomComponents<MeshType>) {
+        if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
             if (!m.hasPerVertexCustomComponent(key)) {
                 m.template addPerVertexCustomComponent<uint>(key);
             }

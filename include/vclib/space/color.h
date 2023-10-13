@@ -82,11 +82,7 @@ public:
     /**
      * @brief List of Color Maps supported by the vcl::Color
      */
-    enum ColorMap {
-        RedBlue,
-        Parula,
-        GreyShade
-    };
+    enum ColorMap { RedBlue, Parula, GreyShade };
 
     /**
      * @brief Default constructor.
@@ -255,10 +251,10 @@ public:
      */
     unsigned short toUnsignedR5G5B5() const
     {
-        unsigned short r = x()/8;
-        unsigned short g = y()/8;
-        unsigned short b = z()/8;
-        unsigned short res = r + g*32 + b*1024;
+        unsigned short r   = x() / 8;
+        unsigned short g   = y() / 8;
+        unsigned short b   = z() / 8;
+        unsigned short res = r + g * 32 + b * 1024;
         return res;
     }
 
@@ -269,10 +265,10 @@ public:
      */
     unsigned short toUnsignedB5G5R5() const
     {
-        unsigned short r = x()/8;
-        unsigned short g = y()/8;
-        unsigned short b = z()/8;
-        unsigned short res = b + g*32 + r*1024;
+        unsigned short r   = x() / 8;
+        unsigned short g   = y() / 8;
+        unsigned short b   = z() / 8;
+        unsigned short res = b + g * 32 + r * 1024;
         return res;
     }
 
@@ -571,7 +567,7 @@ inline Color colorLerp(const Color& c0, const Color& c1, float value)
     else if (value > 1) // out of range - right
         value = 1;
     for (uint i = 0; i < 4; i++)
-        c(i) = c1(i)*value + c0(i)*(1-value);
+        c(i) = c1(i) * value + c0(i) * (1 - value);
     return c;
 }
 
@@ -760,15 +756,10 @@ inline Color colorFromIntervalGreyShade(float min, float max, float value)
 inline Color colorFromInterval(float value, Color::ColorMap cm)
 {
     switch (cm) {
-    case Color::RedBlue:
-        return colorFromIntervalRedBlue(value);
-    case Color::Parula:
-        return colorFromIntervalParula(value);
-    case Color::GreyShade:
-        return colorFromIntervalGreyShade(value);
-    default:
-        assert(0);
-        return Color::Gray;
+    case Color::RedBlue: return colorFromIntervalRedBlue(value);
+    case Color::Parula: return colorFromIntervalParula(value);
+    case Color::GreyShade: return colorFromIntervalGreyShade(value);
+    default: assert(0); return Color::Gray;
     }
 }
 
@@ -791,8 +782,11 @@ inline Color colorFromInterval(float value, Color::ColorMap cm)
  * @return A color in the given colormap representing the position of value in
  * the interval [min, max].
  */
-inline Color
-colorFromInterval(float min, float max, float value, Color::ColorMap cm)
+inline Color colorFromInterval(
+    float           min,
+    float           max,
+    float           value,
+    Color::ColorMap cm)
 {
     if (min == max) { // no range
         return Color::Gray;
@@ -811,8 +805,10 @@ colorFromInterval(float min, float max, float value, Color::ColorMap cm)
  * @param val: the value in the returned colors
  * @return a vector of different colors.
  */
-inline std::vector<Color>
-colorScattering(uint n, float sat = 0.3, float val = 0.9)
+inline std::vector<Color> colorScattering(
+    uint  n,
+    float sat = 0.3,
+    float val = 0.9)
 {
     std::vector<Color> scattering;
     scattering.reserve(n);

@@ -72,7 +72,7 @@ public:
     /**
      * @brief DIM: the number of dimensions of the Point
      */
-    static const uint DIM  = N;
+    static const uint DIM = N;
 
     /**
      * @brief Constructs a Point object with all components set to zero.
@@ -95,7 +95,7 @@ public:
     template<typename... Scalars>
     Point(Scalars... scalars) requires (sizeof...(scalars) == N)
     {
-        Scalar args[N]   = {static_cast<Scalar>(scalars)...};
+        Scalar args[N] = {static_cast<Scalar>(scalars)...};
         for (uint i = 0; i < N; i++)
             p(i) = args[i];
     }
@@ -413,8 +413,9 @@ public:
     /**
      * @brief Computes the squared Euclidean norm of the Point object.
      *
-     * This function computes the squared Euclidean norm (magnitude squared) of the Point object, which
-     * is defined as the sum of the squares of its components.
+     * This function computes the squared Euclidean norm (magnitude squared) of
+     * the Point object, which is defined as the sum of the squares of its
+     * components.
      *
      * @return The squared Euclidean norm of the Point object.
      */
@@ -423,7 +424,8 @@ public:
     /**
      * @brief Returns the size of the Point object.
      *
-     * This function returns the size (number of components) of the Point object.
+     * This function returns the size (number of components) of the Point
+     * object.
      *
      * @return The size of the Point object.
      */
@@ -512,7 +514,7 @@ public:
         Eigen::Matrix<ScalarType, DIM, DIM> res;
         for (uint i = 0; i < DIM; i++) {
             for (uint j = 0; j < DIM; j++) {
-                res(i,j) = p(i) * p1(j);
+                res(i, j) = p(i) * p1(j);
             }
         }
         return res;
@@ -1177,8 +1179,8 @@ Point(S, Scalars... scalars) -> Point<S, sizeof...(Scalars) + 1>;
 // inject vcl::Point hash function in std namespace
 namespace std {
 
-template <typename Scalar, uint N>
-struct hash<vcl::Point<Scalar, N> >
+template<typename Scalar, uint N>
+struct hash<vcl::Point<Scalar, N>>
 {
     /**
      * @brief Computes the hash value for a Point object.

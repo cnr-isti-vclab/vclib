@@ -435,7 +435,7 @@ public:
      * @param[in] i: The index at which to insert the element.
      * @param[in] v: The value to insert into the Vector.
      */
-    void insert(uint i, const T& v) requires(N < 0)
+    void insert(uint i, const T& v) requires (N < 0)
     {
         assert(i < size() + 1);
         container.insert(container.begin() + i, v);
@@ -471,7 +471,7 @@ public:
      *
      * @param[in] i: The index of the element to remove from the Vector.
      */
-    void erase(uint i) requires(N < 0)
+    void erase(uint i) requires (N < 0)
     {
         assert(i < size());
         container.erase(container.begin() + i);

@@ -171,14 +171,14 @@ public:
 
 /* Specialization Aliases */
 
-template < typename S>
+template<typename S>
 using Segment2 = Segment<Point2<S>>;
 
 using Segment2i = Segment<Point2i>;
 using Segment2f = Segment<Point2f>;
 using Segment2d = Segment<Point2d>;
 
-template < typename S>
+template<typename S>
 using Segment3 = Segment<Point3<S>>;
 
 using Segment3i = Segment<Point3i>;

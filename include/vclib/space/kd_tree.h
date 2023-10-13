@@ -47,9 +47,10 @@ class KDTree
             {
                 Scalar splitValue;
                 uint   firstChildId : 24;
-                uint   dim : 2;
-                uint   leaf : 1;
+                uint   dim          : 2;
+                uint   leaf         : 1;
             };
+
             // leaf
             struct
             {
@@ -62,7 +63,9 @@ class KDTree
     struct QueryNode
     {
         QueryNode() {}
+
         QueryNode(uint id) : nodeId(id) {}
+
         uint   nodeId; // id of the next node
         Scalar sq;     // squared distance to the next node
     };
@@ -125,9 +128,9 @@ public:
     {
         using VertexType = MeshType::VertexType;
 
-        uint           i = 0;
+        uint i = 0;
         for (const VertexType& v : m.vertices()) {
-            points[i] = v.coord();
+            points[i]  = v.coord();
             indices[i] = m.index(v);
             i++;
         }
@@ -174,7 +177,8 @@ public:
                     }
                 }
                 else {
-                    // replace the stack top by the farthest and push the closest
+                    // replace the stack top by the farthest and push the
+                    // closest
                     Scalar new_off = queryPoint[node.dim] - node.splitValue;
                     if (new_off < 0.) {
                         mNodeStack[count].nodeId = node.firstChildId;
@@ -230,6 +234,7 @@ public:
         struct P
         {
             P(const PointType& p, int i) : p(p), i(i) {}
+
             PointType p;
             uint      i;
         };
@@ -237,7 +242,9 @@ public:
         struct Comparator
         {
             const PointType qp;
+
             Comparator(const PointType& qp) : qp(qp) {}
+
             bool operator()(const P& p1, const P& p2)
             {
                 if (qp.squaredDist(p1.p) > qp.squaredDist(p2.p))
@@ -268,7 +275,8 @@ public:
             // if the distance is less than the top of the max-heap, it could be
             // one of the k-nearest neighbours
             if (neighborQueue.size() < k ||
-                qnode.sq < queryPoint.squaredDist(neighborQueue.top().p)) {
+                qnode.sq < queryPoint.squaredDist(neighborQueue.top().p))
+            {
                 // when we arrive to a leaf
                 if (node.leaf) {
                     --count; // pop of the leaf
@@ -439,8 +447,12 @@ private:
      * this pruning (ball/ABBB intersection) is more expensive than the gain it
      * provides and the memory consumption is x4 higher!
      */
-    uint
-    createTree(uint nodeId, uint start, uint end, uint level, bool balanced)
+    uint createTree(
+        uint nodeId,
+        uint start,
+        uint end,
+        uint level,
+        bool balanced)
     {
         // select the first node
         Node&          node = nodes[nodeId];
@@ -545,7 +557,6 @@ private:
         // returns the index of the first element on the second part
         return (points[l][dim] < splitValue ? l + 1 : l);
     }
-
 };
 
 /* Deduction guides */

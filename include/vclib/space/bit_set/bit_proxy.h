@@ -20,7 +20,7 @@ template<std::integral T>
 class BitProxy
 {
     std::reference_wrapper<T> mask;
-    const uint index;
+    const uint                index;
 
 public:
     /**

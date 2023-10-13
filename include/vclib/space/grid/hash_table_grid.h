@@ -169,7 +169,7 @@ public:
 
     bool eraseAllInCell(const KeyType& k)
     {
-        std::pair<Iterator,Iterator> range = map.equal_range(k);
+        std::pair<Iterator, Iterator> range = map.equal_range(k);
         if (range != map.end()) {
             map.erase(range.first, range.second);
             return true;
@@ -219,7 +219,7 @@ private:
         bool found = false;
 
         std::pair<Iterator, Iterator> range = map.equal_range(k);
-        for(Iterator ci = range.first; ci != range.second; ++ci) {
+        for (Iterator ci = range.first; ci != range.second; ++ci) {
             if (ci->second == v) {
                 found = true;
                 map.erase(ci);

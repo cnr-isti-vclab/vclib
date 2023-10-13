@@ -36,8 +36,8 @@ class PointSampler
     std::vector<PointT> samplesVec;
 
 public:
-    using PointType = PointT;
-    using ScalarType = PointT::ScalarType;
+    using PointType     = PointT;
+    using ScalarType    = PointT::ScalarType;
     using ConstIterator = std::vector<PointT>::const_iterator;
 
     PointSampler() = default;
@@ -109,8 +109,10 @@ public:
     }
 
     template<FaceConcept FaceType>
-    void
-    set(uint i, const FaceType& f, const std::vector<ScalarType>& barCoords)
+    void set(
+        uint                           i,
+        const FaceType&                f,
+        const std::vector<ScalarType>& barCoords)
     {
         assert(f.vertexNumber() <= barCoords.size());
 
@@ -125,7 +127,7 @@ public:
     void add(const FaceType& f, const PointT& barCoords)
     {
         static_assert(FaceType::NV == 3 || FaceType::NV == -1);
-        if constexpr(FaceType::NV == -1) {
+        if constexpr (FaceType::NV == -1) {
             assert(f.vertexNumber() == 3);
         }
 
@@ -138,7 +140,7 @@ public:
     void set(uint i, const FaceType& f, const PointT& barCoords)
     {
         static_assert(FaceType::NV == 3 || FaceType::NV == -1);
-        if constexpr(FaceType::NV == -1) {
+        if constexpr (FaceType::NV == -1) {
             assert(f.vertexNumber() == 3);
         }
 

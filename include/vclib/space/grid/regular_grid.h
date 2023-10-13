@@ -38,17 +38,17 @@ class RegularGrid
         "Number of dimensions of the regular grid must be > 1.");
 
 public:
-    using PointType       = Point<Scalar, N>;
-    using BBoxType        = Box<PointType>;
+    using PointType = Point<Scalar, N>;
+    using BBoxType  = Box<PointType>;
 
 private:
     BBoxType       bbox;
     Point<uint, N> siz;
 
 public:
-    static const int DIM  = N;
-    using ScalarType      = Scalar;
-    using CellCoord       = Point<uint, N>;
+    static const int DIM = N;
+    using ScalarType     = Scalar;
+    using CellCoord      = Point<uint, N>;
 
     using CellIterator = vcl::CellIterator<N>;
     using CellView     = vcl::View<CellIterator>;
@@ -143,10 +143,7 @@ public:
      * @param d
      * @return
      */
-    Scalar cellLength(uint d) const
-    {
-        return length(d)/cellNumber(d);
-    }
+    Scalar cellLength(uint d) const { return length(d) / cellNumber(d); }
 
     /**
      * @brief Returns the lengths of a cell of the grid for each dimension
@@ -160,15 +157,14 @@ public:
         return p;
     }
 
-    Scalar cellDiagonal() const
-    {
-        return cellLengths().norm();
-    }
+    Scalar cellDiagonal() const { return cellLengths().norm(); }
 
     uint cell(uint d, const Scalar& s) const
     {
-        if (s < bbox.min()(d)) return 0;
-        if (s > bbox.max()(d)) return cellNumber(d) - 1;
+        if (s < bbox.min()(d))
+            return 0;
+        if (s > bbox.max()(d))
+            return cellNumber(d) - 1;
         Scalar t = s - bbox.min()(d);
         return uint(t / cellLength(d));
     }
@@ -185,7 +181,7 @@ public:
     {
         Point<Scalar, N> l;
         for (size_t i = 0; i < DIM; ++i)
-            l(i) = min(i) + c(i) * cellLength(i);//cellLowerCorner(i, c(i));
+            l(i) = min(i) + c(i) * cellLength(i); // cellLowerCorner(i, c(i));
         return l;
     }
 
@@ -195,7 +191,7 @@ public:
 
         Point<Scalar, N> p;
         for (size_t i = 0; i < DIM; ++i)
-            p(i) = (Scalar)c(i)*cellLength(i);
+            p(i) = (Scalar) c(i) * cellLength(i);
         p += bbox.min();
         b.min() = p;
         b.max() = (p + cellLengths());
@@ -223,7 +219,7 @@ protected:
     void set(const Box<Point<Scalar, N>>& box, const Point<uint, N>& size)
     {
         bbox = box;
-        siz = size;
+        siz  = size;
     }
 };
 
@@ -253,8 +249,9 @@ RegularGrid(PointType, PointType, D)
  * @return
  */
 template<PointConcept PointType>
-Point<uint, PointType::DIM>
-bestGridSize(const PointType& lengths, uint nElements)
+Point<uint, PointType::DIM> bestGridSize(
+    const PointType& lengths,
+    uint             nElements)
 {
     using Scalar = PointType::ScalarType;
 
@@ -269,8 +266,8 @@ bestGridSize(const PointType& lengths, uint nElements)
     Point<uint, PointType::DIM> sizes;
     sizes.setConstant(mincells);
 
-    bool sanityCheckLengths = true;
-    uint lessEpsDimNumber = 0;
+    bool                  sanityCheckLengths = true;
+    uint                  lessEpsDimNumber   = 0;
     std::array<bool, DIM> isLessEps;
 
     for (uint i = 0; i < DIM; i++) {
@@ -289,7 +286,7 @@ bestGridSize(const PointType& lengths, uint nElements)
             for (uint i = 0; i < DIM; i++)
                 product *= lengths(i);
 
-            Scalar k = std::pow((ncell/product), (1.0/DIM));
+            Scalar k = std::pow((ncell / product), (1.0 / DIM));
 
             for (uint i = 0; i < DIM; i++)
                 sizes(i) = int(lengths(i) * k);
@@ -317,7 +314,7 @@ bestGridSize(const PointType& lengths, uint nElements)
         }
 
         for (uint i = 0; i < DIM; i++)
-            sizes(i) = std::max(sizes(i), (uint)1);
+            sizes(i) = std::max(sizes(i), (uint) 1);
     }
 
     return sizes;

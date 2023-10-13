@@ -32,6 +32,7 @@ template<PointConcept PointT>
 class Triangle : public TriangleWrapper<PointT>
 {
     std::array<PointT, 3> p;
+
 public:
     using ScalarType = PointT::ScalarType;
 

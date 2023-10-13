@@ -31,7 +31,7 @@ class AdjacentNodeIterator
 {
 protected:
     const Graph* g = nullptr;
-    Iterator it;
+    Iterator     it;
 
 public:
     AdjacentNodeIterator() {}
@@ -60,8 +60,6 @@ public:
         ++it;
         return tmp;
     }
-
-
 };
 
 } // namespace vcl::detail

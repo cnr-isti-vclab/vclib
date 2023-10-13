@@ -76,8 +76,8 @@ public:
         }
         else {
             PrincipalCurvature<S> tmp;
-            tmp.maxDir() = dir1.template cast<S>();
-            tmp.minDir() = dir2.template cast<S>();
+            tmp.maxDir()   = dir1.template cast<S>();
+            tmp.minDir()   = dir2.template cast<S>();
             tmp.maxValue() = k1;
             tmp.minValue() = k2;
             return tmp;

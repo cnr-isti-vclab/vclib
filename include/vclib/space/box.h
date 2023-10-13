@@ -278,7 +278,7 @@ public:
     auto dim(uint i) const
     {
         assert(i < PointT::DIM);
-        return maxP[i]-minP[i];
+        return maxP[i] - minP[i];
     }
 
     /**
@@ -467,14 +467,14 @@ public:
 
 /* Specialization Aliases */
 
-template <typename S>
+template<typename S>
 using Box2 = Box<Point2<S>>;
 
 using Box2i = Box<Point2i>;
 using Box2f = Box<Point2f>;
 using Box2d = Box<Point2d>;
 
-template <typename S>
+template<typename S>
 using Box3 = Box<Point3<S>>;
 
 using Box3i = Box<Point3i>;
