@@ -137,7 +137,7 @@ private:
         if constexpr (!comp::IsOptionalComponent<Comp>) {
             Comp::importFrom(v); // safe to call importFrom
         }
-        else { // it is optional...
+        else {                         // it is optional...
             if (Comp::isAvailable()) { // check if it is available
                 Comp::importFrom(v);
             }
