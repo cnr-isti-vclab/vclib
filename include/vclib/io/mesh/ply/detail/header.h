@@ -31,7 +31,7 @@
 
 #include <vclib/io/file_info.h>
 #include <vclib/io/read.h>
-#include <vclib/misc/mesh_info.h>
+#include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>
 
@@ -433,7 +433,7 @@ public:
             }
             if (info.hasVertexCustomComponents()) {
                 for (const auto& cc : info.vertexCustomComponents()) {
-                    if (cc.type <= MeshInfo::DOUBLE) {
+                    if (cc.type <= DOUBLE) {
                         PlyProperty pp;
                         pp.name                = ply::unknown;
                         pp.unknownPropertyName = cc.name;
@@ -502,7 +502,7 @@ public:
             }
             if (info.hasFaceCustomComponents()) {
                 for (const auto& cc : info.faceCustomComponents()) {
-                    if (cc.type <= MeshInfo::DOUBLE) {
+                    if (cc.type <= DOUBLE) {
                         PlyProperty pp;
                         pp.name                = ply::unknown;
                         pp.unknownPropertyName = cc.name;

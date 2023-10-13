@@ -11,6 +11,8 @@
     - Element container should provide fast compact function, that does not preserve elements order
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers 
+  - Utils:
+    - [ ] MeshInfo should not use its own enums for elements and components
 - Exceptions:
   - [ ] MissingTriangularRequirementException and the other ones should be grouped in a single FaceSizeException class
 - Iterators:

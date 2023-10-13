@@ -24,8 +24,8 @@
 #ifndef VCL_IO_PLY_LOAD_H
 #define VCL_IO_PLY_LOAD_H
 
+#include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>
-#include <vclib/misc/mesh_info.h>
 
 #include "detail/extra.h"
 #include "detail/face.h"

@@ -28,7 +28,7 @@
 #include <fstream>
 
 #include <vclib/exceptions/io_exceptions.h>
-#include <vclib/misc/mesh_info.h>
+#include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>
 
@@ -40,28 +40,28 @@ void addPerVertexCustomComponent(
     const MeshInfo::CustomComponent& cc)
 {
     switch (cc.type) {
-    case MeshInfo::CHAR:
+    case CHAR:
         m.template addPerVertexCustomComponent<char>(cc.name);
         break;
-    case MeshInfo::UCHAR:
+    case UCHAR:
         m.template addPerVertexCustomComponent<unsigned char>(cc.name);
         break;
-    case MeshInfo::SHORT:
+    case SHORT:
         m.template addPerVertexCustomComponent<short>(cc.name);
         break;
-    case MeshInfo::USHORT:
+    case USHORT:
         m.template addPerVertexCustomComponent<unsigned short>(cc.name);
         break;
-    case MeshInfo::INT:
+    case INT:
         m.template addPerVertexCustomComponent<int>(cc.name);
         break;
-    case MeshInfo::UINT:
+    case UINT:
         m.template addPerVertexCustomComponent<uint>(cc.name);
         break;
-    case MeshInfo::FLOAT:
+    case FLOAT:
         m.template addPerVertexCustomComponent<float>(cc.name);
         break;
-    case MeshInfo::DOUBLE:
+    case DOUBLE:
         m.template addPerVertexCustomComponent<double>(cc.name);
         break;
     default: assert(0);
@@ -72,28 +72,28 @@ template<FaceMeshConcept MeshType>
 void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
     switch (cc.type) {
-    case MeshInfo::CHAR:
+    case CHAR:
         m.template addPerFaceCustomComponent<char>(cc.name);
         break;
-    case MeshInfo::UCHAR:
+    case UCHAR:
         m.template addPerFaceCustomComponent<unsigned char>(cc.name);
         break;
-    case MeshInfo::SHORT:
+    case SHORT:
         m.template addPerFaceCustomComponent<short>(cc.name);
         break;
-    case MeshInfo::USHORT:
+    case USHORT:
         m.template addPerFaceCustomComponent<unsigned short>(cc.name);
         break;
-    case MeshInfo::INT:
+    case INT:
         m.template addPerFaceCustomComponent<int>(cc.name);
         break;
-    case MeshInfo::UINT:
+    case UINT:
         m.template addPerFaceCustomComponent<uint>(cc.name);
         break;
-    case MeshInfo::FLOAT:
+    case FLOAT:
         m.template addPerFaceCustomComponent<float>(cc.name);
         break;
-    case MeshInfo::DOUBLE:
+    case DOUBLE:
         m.template addPerFaceCustomComponent<double>(cc.name);
         break;
     default: assert(0);

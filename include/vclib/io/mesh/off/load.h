@@ -28,8 +28,8 @@
 #include <vclib/exceptions/io_exceptions.h>
 #include <vclib/io/file_info.h>
 #include <vclib/io/read.h>
+#include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>
-#include <vclib/misc/mesh_info.h>
 #include <vclib/misc/tokenizer.h>
 
 namespace vcl {

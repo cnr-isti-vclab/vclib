@@ -251,6 +251,7 @@ set(HEADERS
     include/vclib/mesh/requirements/vertex_requirements.h
     include/vclib/mesh/utils/mesh_edge_util.h
     include/vclib/mesh/utils/mesh_inertia.h
+    include/vclib/mesh/utils/mesh_info.h
     include/vclib/mesh/utils/mesh_pos.h
     include/vclib/mesh/utils/tri_poly_index_bimap.h
     include/vclib/meshes/edge_mesh.h
@@ -261,7 +262,6 @@ set(HEADERS
     include/vclib/misc/comparators.h
     include/vclib/misc/hash.h
     include/vclib/misc/logger.h
-    include/vclib/misc/mesh_info.h
     include/vclib/misc/nested_initializer_lists.h
     include/vclib/misc/pair.h
     include/vclib/misc/parallel.h

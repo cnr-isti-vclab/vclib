@@ -36,26 +36,4 @@
 #include "types/pointers.h"
 #include "types/variadic_templates.h"
 
-namespace vcl {
-
-/**
- * @brief A simple type that enumerates the main primitive types.
- *
- * It is used mostly for I/O operations, but can be useful in any context where
- * a type must be described in a variable at runtime.
- */
-typedef enum {
-    CHAR,
-    UCHAR,
-    SHORT,
-    USHORT,
-    INT,
-    UINT,
-    FLOAT,
-    DOUBLE,
-    NONE
-} PrimitiveType;
-
-} // namespace vcl
-
 #endif // VCL_TYPES_H

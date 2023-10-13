@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MISC_MESH_INFO_H
-#define VCL_MISC_MESH_INFO_H
+#ifndef VCL_MESH_UTILS_MESH_INFO_H
+#define VCL_MESH_UTILS_MESH_INFO_H
 
 #include <array>
 #include <list>
@@ -111,17 +111,7 @@ public:
     /**
      * @brief Enum used to describe the type of Data stored in a component
      */
-    enum DataType {
-        CHAR,
-        UCHAR,
-        SHORT,
-        USHORT,
-        INT,
-        UINT,
-        FLOAT,
-        DOUBLE,
-        UNKNOWN
-    };
+    using DataType = PrimitiveType;
 
     /**
      * @brief The CustomComponent struct is a simple structure that describes a
@@ -156,9 +146,9 @@ public:
      * @brief Default constructor.
      *
      * All the Elements/Components are disabled, their type is set to
-     * DataType::UNKNOWN and the Mesh Type is set to MeshType::POLYGON_MESH.
+     * DataType::NONE and the Mesh Type is set to MeshType::POLYGON_MESH.
      */
-    MeshInfo() { perElemComponentsType.fill(UNKNOWN); }
+    MeshInfo() { perElemComponentsType.fill(NONE); }
 
     /**
      * @brief Sets the current status of the MeshInfo object from the input
@@ -206,7 +196,7 @@ public:
             auto names = m.perVertexCustomComponentNames();
             for (auto& name : names) {
                 DataType dt = getType(m.perVertexCustomComponentType(name));
-                if (dt != UNKNOWN) {
+                if (dt != NONE) {
                     addVertexCustomComponent(name, dt);
                 }
             }
@@ -255,7 +245,7 @@ public:
                 auto names = m.perFaceCustomComponentNames();
                 for (auto& name : names) {
                     DataType dt = getType(m.perFaceCustomComponentType(name));
-                    if (dt != UNKNOWN) {
+                    if (dt != NONE) {
                         addFaceCustomComponent(name, dt);
                     }
                 }
@@ -468,14 +458,14 @@ public:
 
     void setVertexCustomComponents(bool b = true)
     {
-        setElementComponents(VERTEX, CUSTOM_COMPONENTS, b, UNKNOWN);
+        setElementComponents(VERTEX, CUSTOM_COMPONENTS, b, NONE);
     }
 
     void setFaces(bool b = true) { setElement(FACE, b); }
 
     void setFaceVRefs(bool b = true)
     {
-        setElementComponents(FACE, VREFS, b, UNKNOWN);
+        setElementComponents(FACE, VREFS, b, NONE);
     }
 
     void setFaceNormals(bool b = true, DataType t = FLOAT)
@@ -500,14 +490,14 @@ public:
 
     void setFaceCustomComponents(bool b = true)
     {
-        setElementComponents(FACE, CUSTOM_COMPONENTS, b, UNKNOWN);
+        setElementComponents(FACE, CUSTOM_COMPONENTS, b, NONE);
     }
 
     void setEdges(bool b = true) { setElement(EDGE, b); }
 
     void setEdgeVRefs(bool b = true)
     {
-        setElementComponents(EDGE, VREFS, b, UNKNOWN);
+        setElementComponents(EDGE, VREFS, b, NONE);
     }
 
     void setEdgeColors(bool b = true, DataType t = UCHAR)
@@ -517,19 +507,19 @@ public:
 
     void setTextures(bool b = true)
     {
-        setElementComponents(MESH, TEXTURES, b, UNKNOWN);
+        setElementComponents(MESH, TEXTURES, b, NONE);
     }
 
     void addElementCustomComponent(
         Element el, const std::string& name, DataType t)
     {
-        setElementComponents(el, CUSTOM_COMPONENTS, true, UNKNOWN);
+        setElementComponents(el, CUSTOM_COMPONENTS, true, NONE);
         perElemCustomComponents[el].emplace_back(name, t);
     }
 
     void clearElementCustomComponents(Element el)
     {
-        setElementComponents(el, CUSTOM_COMPONENTS, false, UNKNOWN);
+        setElementComponents(el, CUSTOM_COMPONENTS, false, NONE);
         perElemCustomComponents[el].clear();
     }
 
@@ -657,7 +647,7 @@ public:
         elements.reset();
         for (auto& comp : perElemComponents)
             comp.reset();
-        perElemComponentsType.fill(UNKNOWN);
+        perElemComponentsType.fill(NONE);
 
         for (auto& v : perElemCustomComponents)
             v.clear();
@@ -670,7 +660,7 @@ private:
      * @brief Given the template T, returns the correspoding enum DataType value
      * of T.
      *
-     * Returns DataType::UNKNOWN if the type T was not part of the type
+     * Returns DataType::NONE if the type T was not part of the type
      * sypported by the DataType enum.
      * @return
      */
@@ -688,7 +678,7 @@ private:
         if constexpr (std::is_same_v<T, double>) return DOUBLE;
         if constexpr (std::is_floating_point_v<T>)
             return FLOAT; // fallback to float
-        return UNKNOWN;
+        return NONE;
     }
 
     static DataType getType(std::type_index ti)
@@ -701,10 +691,10 @@ private:
         if (ti == typeid(uint)) return UINT;
         if (ti == typeid(float)) return FLOAT;
         if (ti == typeid(double)) return DOUBLE;
-        return UNKNOWN;
+        return NONE;
     }
 };
 
 } // namespace vcl
 
-#endif // VCL_MISC_MESH_INFO_H
+#endif // VCL_MESH_UTILS_MESH_INFO_H

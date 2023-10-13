@@ -27,8 +27,8 @@
 #include <vclib/algorithms/polygon.h>
 #include <vclib/io/utils.h>
 #include <vclib/io/write.h>
+#include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>
-#include <vclib/misc/mesh_info.h>
 
 namespace vcl {
 

@@ -40,6 +40,24 @@ namespace vcl {
  */
 const uint UINT_NULL = std::numeric_limits<uint>::max();
 
+/**
+ * @brief A simple type that enumerates the main primitive types.
+ *
+ * It is used mostly for I/O operations, but can be useful in any context where
+ * a type must be described in a variable at runtime.
+ */
+typedef enum {
+    CHAR,
+    UCHAR,
+    SHORT,
+    USHORT,
+    INT,
+    UINT,
+    FLOAT,
+    DOUBLE,
+    NONE
+} PrimitiveType;
+
 } // namespace vcl
 
 #endif // VCL_TYPES_BASE_H
