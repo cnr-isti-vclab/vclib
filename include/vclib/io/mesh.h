@@ -30,7 +30,8 @@
  * @defgroup load_save Load/Save functions
  * @ingroup io
  *
- * @brief List of functions that allow to load from file or save to a file an input Mesh.
+ * @brief List of functions that allow to load from file or save to a file an
+ * input Mesh.
  */
 
 /**

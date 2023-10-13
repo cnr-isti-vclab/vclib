@@ -31,8 +31,7 @@
 namespace vcl {
 
 template<typename T>
-concept ElementConcept = requires (T o, const T& co)
-{
+concept ElementConcept = requires (T o, const T& co) {
     // clang-format off
     T::ELEMENT_ID;
     typename T::Components;

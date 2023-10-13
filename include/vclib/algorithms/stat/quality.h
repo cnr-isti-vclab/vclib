@@ -156,7 +156,7 @@ std::vector<typename MeshType::VertexType::QualityType> vertexRadiusFromQuality(
     using QualityType = VertexType::QualityType;
 
     std::vector<QualityType>            radius(m.vertexContainerSize());
-    std::pair<QualityType, QualityType> minmax   = vertexQualityMinMax(m);
+    std::pair<QualityType, QualityType> minmax = vertexQualityMinMax(m);
 
     float minRad   = diskRadius;
     float maxRad   = diskRadius * radiusVariance;

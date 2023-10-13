@@ -37,7 +37,7 @@ inline std::ofstream openOutputFileStream(
 {
     setlocale(LC_ALL, "C");
     std::string actualfilename = filename;
-    if (!ext.empty()){
+    if (!ext.empty()) {
         actualfilename = FileInfo::addExtensionToFileName(filename, ext);
     }
 
@@ -168,7 +168,7 @@ template<typename T>
 void writeProperty(
     std::ofstream& file,
     const T&       p,
-    PrimitiveType   type,
+    PrimitiveType  type,
     bool           bin     = true,
     bool           isColor = false)
 {
@@ -191,7 +191,7 @@ void writeCustomComponent(
     std::ofstream&     file,
     const El&          elem,
     const std::string& cName,
-    PrimitiveType       type,
+    PrimitiveType      type,
     bool               bin = true)
 {
     std::type_index ti = elem.customComponentType(cName);

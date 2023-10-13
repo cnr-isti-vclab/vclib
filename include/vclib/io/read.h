@@ -39,7 +39,7 @@ inline std::ifstream openInputFileStream(
     setlocale(LC_ALL, "C");
 
     std::string actualfilename = filename;
-    if (!ext.empty()){
+    if (!ext.empty()) {
         actualfilename = FileInfo::addExtensionToFileName(filename, ext);
     }
     // need to set binary or windows will fail
@@ -53,7 +53,7 @@ inline std::ifstream openInputFileStream(
 }
 
 // TODO
-//inline std::string readNextNonEmptyLine(
+// inline std::string readNextNonEmptyLine(
 //    std::ifstream& file)
 //{
 //    std::string line;
@@ -73,7 +73,7 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
     std::ifstream& file,
     char           separator = ' ')
 {
-    std::string line;
+    std::string    line;
     vcl::Tokenizer tokenizer;
     do {
         std::getline(file, line);
@@ -92,7 +92,7 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     std::ifstream& file,
     char           separator = ' ')
 {
-    std::string line;
+    std::string    line;
     vcl::Tokenizer tokenizer;
     do {
         std::getline(file, line);
