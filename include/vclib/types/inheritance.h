@@ -30,24 +30,23 @@ namespace vcl {
 
 namespace detail {
 
-template< template< typename ...formal > class base >
+template<template<typename... formal> class base>
 struct IsDerivedFromImplementation
 {
-    template< typename ...actual >
-    std::true_type
-    operator () (base< actual... > *) const;
+    template<typename... actual>
+    std::true_type operator()(base<actual...>*) const;
 
-    std::false_type
-    operator () (void *) const;
+    std::false_type operator()(void*) const;
 };
 
-} // namespace vcl::detail
+} // namespace detail
 
 /*
  * Utility class that allows to check if given class 'Derived' is derived from a
  * specialization of a templated class.
  *
- * Given a class X and a templated class C<template T>, it can be used in the following way:
+ * Given a class X and a templated class C<template T>, it can be used in the
+ * following way:
  *
  * using myCheck = vcl::IsDerivedFromTemplateSpecialization<X, C>::type;
  *
@@ -56,7 +55,7 @@ struct IsDerivedFromImplementation
  * and will return true if X derives from any specialization of C.
  *
  * https://stackoverflow.com/a/25846080/5851101
- * https://stackoverflow.com/questions/25845536/trait-to-check-if-some-specialization-of-template-class-is-base-class-of-specifi#comment40451928_25846080
+ * https://stackoverflow.com/questions/25845536#comment40451928_25846080
  * http://coliru.stacked-crooked.com/a/9feadc62e7594eb2
  */
 template<typename derived, template<typename...> class base>

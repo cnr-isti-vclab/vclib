@@ -60,6 +60,7 @@ constexpr T* asConst(const T* value) noexcept
 {
     return const_cast<T*>(value);
 }
+
 template<typename T>
 constexpr T* asConst(T* value) noexcept
 {

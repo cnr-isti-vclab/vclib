@@ -85,7 +85,8 @@ inline static constexpr const char* COMPONENT_ENUM_STRINGS[COMPONENTS_NUMBER] =
  * @tparam COMP_ID: The COMP_ID value associated to the string.
  */
 template<uint COMP_ID>
-struct ComponentString {
+struct ComponentString
+{
     /**
      * @brief The string associated to the COMPONENT_ID.
      */

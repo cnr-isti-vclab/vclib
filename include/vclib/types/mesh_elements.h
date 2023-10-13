@@ -52,7 +52,8 @@ inline static constexpr const char* ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {
  * @tparam ELEM_ID: The ELEM_ID value associated to the string.
  */
 template<uint ELEM_ID>
-struct ElemenetString {
+struct ElemenetString
+{
     /**
      * @brief The string associated to the ELEM_ID.
      */
