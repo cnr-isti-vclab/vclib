@@ -437,13 +437,13 @@ protected:
                         }
                     }
                     else {
-                        // do not import in this case: cannot import from dynamic
-                        // size != static size
+                        // do not import in this case: cannot import from
+                        // dynamic size != static size
                     }
                 }
                 else {
-                    // from static/dynamic to dynamic size: need to resize first,
-                    // then import
+                    // from static/dynamic to dynamic size: need to resize
+                    // first, then import
                     resize(e.adjEdgesNumber());
                     importPtrsFrom(e, base, ebase);
                 }

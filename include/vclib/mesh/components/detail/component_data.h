@@ -83,7 +83,7 @@ struct ComponentData<Data, true>
      * then the component associated to the index of the element.
      */
 
-    template <typename ElementType, typename ComponentType>
+    template<typename ElementType, typename ComponentType>
     Data& get(ComponentType* comp)
     {
         ElementType* elem = static_cast<ElementType*>(comp);
@@ -100,7 +100,7 @@ struct ComponentData<Data, true>
         return vc[elem->index()];
     }
 
-    template <typename ElementType, typename ComponentType>
+    template<typename ElementType, typename ComponentType>
     const Data& get(const ComponentType* comp) const
     {
         const ElementType* elem = static_cast<const ElementType*>(comp);

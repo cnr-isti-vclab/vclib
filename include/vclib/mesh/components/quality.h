@@ -102,7 +102,7 @@ protected:
     void importFrom(const Element& e)
     {
         if constexpr (HasQuality<Element>) {
-            if (isQualityAvailableOn(e)){
+            if (isQualityAvailableOn(e)) {
                 quality() = e.quality();
             }
         }

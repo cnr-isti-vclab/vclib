@@ -99,9 +99,10 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
-        if constexpr(HasNormal<Element>) {
-            if (isNormalAvailableOn(e)){
-                normal() = e.normal().template cast<typename NormalType::ScalarType>();
+        if constexpr (HasNormal<Element>) {
+            if (isNormalAvailableOn(e)) {
+                normal() =
+                    e.normal().template cast<typename NormalType::ScalarType>();
             }
         }
     }
@@ -141,10 +142,7 @@ bool isNormalAvailableOn(const ElementConcept auto& element)
  *
  * @ingroup components
  */
-template<
-    typename Scalar,
-    typename ElementType = void,
-    bool OPT        = false>
+template<typename Scalar, typename ElementType = void, bool OPT = false>
 using Normal3 = Normal<Point3<Scalar>, ElementType, OPT>;
 
 /**

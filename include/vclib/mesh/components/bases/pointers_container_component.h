@@ -123,7 +123,6 @@ protected:
      */
     void updatePointers(const Elem* oldBase, const Elem* newBase)
     {
-
         auto& baseContainer = Base::container();
 
         for (uint j = 0; j < baseContainer.size(); ++j)

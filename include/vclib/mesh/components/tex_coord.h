@@ -102,8 +102,8 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
-        if constexpr(HasTexCoord<Element>) {
-            if (isTexCoordAvailableOn(e)){
+        if constexpr (HasTexCoord<Element>) {
+            if (isTexCoordAvailableOn(e)) {
                 texCoord() = e.texCoord().template cast<Scalar>();
             }
         }

@@ -260,10 +260,10 @@ protected:
             if constexpr (
                 HasPolygonBitFlags<Element> || HasTriangleBitFlags<Element>)
             {
-                deletedBit() = e.deleted();
-                selected() = e.selected();
-                visited() = e.visited();
-                onBorder() = e.onBorder();
+                deletedBit()  = e.deleted();
+                selected()    = e.selected();
+                visited()     = e.visited();
+                onBorder()    = e.onBorder();
                 const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
                 for (uint i = 0; i < UM; ++i)
                     userBit(i) = e.userBit(i);
@@ -271,22 +271,15 @@ protected:
             else {
                 flags() = e.flags();
             }
-
         }
     }
 
 private:
     // members that allow to access the flags, trough data (horizontal) or
     // trough parent (vertical)
-    BitSet<FT>& flags()
-    {
-        return Base::data();
-    }
+    BitSet<FT>& flags() { return Base::data(); }
 
-    BitSet<FT> flags() const
-    {
-        return Base::data();
-    }
+    BitSet<FT> flags() const { return Base::data(); }
 };
 
 } // namespace vcl::comp

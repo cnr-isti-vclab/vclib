@@ -29,7 +29,7 @@ using ContCompBase = std::conditional_t<
     Component<DC, CT, Vector<T, N>, El, o, PT...>,
     Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
 
-} // namespace vcl::comp::detail
+} // namespace detail
 
 /**
  * @brief The ContainerComponent class is the base class for all the components
@@ -198,8 +198,7 @@ protected:
     }
 
     template<typename AdDt = AdditionalData>
-    const AdDt& additionalData() const
-        requires (HAS_ADDITIONAL_DATA)
+    const AdDt& additionalData() const requires (HAS_ADDITIONAL_DATA)
     {
         return std::get<1>(Base::data());
     }

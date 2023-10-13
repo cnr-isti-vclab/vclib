@@ -215,7 +215,8 @@ public:
      * @brief Accesses the 'selected' bit of the i-th edge of the triangle,
      * returning a reference to it.
      * @param[in] i: the index of the edge, it must be less than 3.
-     * @return a reference to the 'selected' bit of the i-th edge of the triangle.
+     * @return a reference to the 'selected' bit of the i-th edge of the
+     * triangle.
      */
     BitProxy<FT> edgeSelected(uint i)
     {
@@ -366,7 +367,7 @@ public:
             f &= 0x00100000;
         return f;
     }
-    
+
     // dummy member to discriminate between triangle and non-triangle bit flags
     void __triangleBitFlags() const {}
 
@@ -384,9 +385,9 @@ protected:
             }
             else {
                 // BitFlags
-                deletedBit() = e.deleted();
-                selected() = e.selected();
-                visited() = e.visited();
+                deletedBit()  = e.deleted();
+                selected()    = e.selected();
+                visited()     = e.visited();
                 const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
                 for (uint i = 0; i < UM; ++i)
                     userBit(i) = e.userBit(i);
@@ -398,7 +399,6 @@ protected:
                         edgeFaux(i)     = e.edgeFaux(i);
                     }
                 }
-
             }
         }
     }
@@ -406,15 +406,9 @@ protected:
 private:
     // members that allow to access the flags, trough data (horizontal) or
     // trough parent (vertical)
-    BitSet<FT>& flags()
-    {
-        return Base::data();
-    }
+    BitSet<FT>& flags() { return Base::data(); }
 
-    BitSet<FT> flags() const
-    {
-        return Base::data();
-    }
+    BitSet<FT> flags() const { return Base::data(); }
 };
 
 } // namespace vcl::comp

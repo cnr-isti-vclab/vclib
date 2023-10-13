@@ -318,19 +318,19 @@ protected:
     using WedgeTexCoordScalarType = Scalar;
 
     // Component interface function
-    template <typename Element>
+    template<typename Element>
     void importFrom(const Element& e)
     {
         if constexpr (HasWedgeTexCoords<Element>) {
             if (isWedgeTexCoordsAvailableOn(e)) {
-                if constexpr(N > 0) {
+                if constexpr (N > 0) {
                     // same static size
                     if constexpr (N == Element::WEDGE_TEX_COORD_NUMBER) {
                         importWedgeTexCoordsFrom(e);
                     }
                     // from dynamic to static, but dynamic size == static size
-                    else if constexpr (Element::WEDGE_TEX_COORD_NUMBER < 0){
-                        if (e.vertexNumber() == N){
+                    else if constexpr (Element::WEDGE_TEX_COORD_NUMBER < 0) {
+                        if (e.vertexNumber() == N) {
                             importWedgeTexCoordsFrom(e);
                         }
                     }
@@ -358,8 +358,9 @@ protected:
         texCoords().pushBack(t);
     }
 
-    void
-    insert(uint i, const vcl::TexCoord<Scalar>& t = vcl::TexCoord<Scalar>())
+    void insert(
+        uint                         i,
+        const vcl::TexCoord<Scalar>& t = vcl::TexCoord<Scalar>())
         requires (N < 0)
     {
         texCoords().insert(i, t);
@@ -373,7 +374,7 @@ private:
     template<typename Element>
     void importWedgeTexCoordsFrom(const Element& e)
     {
-        for (uint i = 0; i < e.vertexNumber(); ++i){
+        for (uint i = 0; i < e.vertexNumber(); ++i) {
             wedgeTexCoord(i) = e.wedgeTexCoord(i).template cast<Scalar>();
         }
         textureIndex() = e.textureIndex();

@@ -270,19 +270,19 @@ public:
 
 protected:
     // Component interface function
-    template <typename Element>
+    template<typename Element>
     void importFrom(const Element& e)
     {
         if constexpr (HasWedgeColors<Element>) {
             if (isWedgeColorsAvailableOn(e)) {
-                if constexpr(N > 0) {
+                if constexpr (N > 0) {
                     // same static size
                     if constexpr (N == Element::WEDGE_COLOR_NUMBER) {
                         importWedgeColorsFrom(e);
                     }
                     // from dynamic to static, but dynamic size == static size
-                    else if constexpr (Element::WEDGE_COLOR_NUMBER < 0){
-                        if (e.vertexNumber() == N){
+                    else if constexpr (Element::WEDGE_COLOR_NUMBER < 0) {
+                        if (e.vertexNumber() == N) {
                             importWedgeColorsFrom(e);
                         }
                     }
@@ -322,12 +322,12 @@ private:
     template<typename Element>
     void importWedgeColorsFrom(const Element& e)
     {
-        for (uint i = 0; i < e.vertexNumber(); ++i){
+        for (uint i = 0; i < e.vertexNumber(); ++i) {
             wedgeColor(i) = e.wedgeColor(i);
         }
     }
 
-    Vector<vcl::Color, N>&       colors() { return Base::container(); }
+    Vector<vcl::Color, N>& colors() { return Base::container(); }
 
     const Vector<vcl::Color, N>& colors() const { return Base::container(); }
 };

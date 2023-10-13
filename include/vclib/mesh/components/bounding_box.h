@@ -105,9 +105,9 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
-        if constexpr(HasBoundingBox<Element>) {
+        if constexpr (HasBoundingBox<Element>) {
             using ScalarType = PointType::ScalarType;
-            boundingBox() = e.boundingBox().template cast<ScalarType>();
+            boundingBox()    = e.boundingBox().template cast<ScalarType>();
         }
     }
 };
@@ -146,8 +146,8 @@ bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
  *
  * @ingroup components
  */
-template <typename S, typename ElementType = void, bool OPT = false>
-using BoundingBox3  = BoundingBox<Point3<S>, ElementType, OPT>;
+template<typename S, typename ElementType = void, bool OPT = false>
+using BoundingBox3 = BoundingBox<Point3<S>, ElementType, OPT>;
 
 /**
  * @brief The BoundingBox3f component class is an alias of the BoundingBox

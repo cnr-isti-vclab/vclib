@@ -421,24 +421,26 @@ public:
 protected:
     // Component interface function
     template<typename Element>
-    void importFrom(const Element& e) {}
+    void importFrom(const Element& e)
+    {
+    }
 
     // PointersComponent interface functions
     template<typename Element, typename ElVType>
     void importPointersFrom(
         const Element& e,
-        Vertex* base,
+        Vertex*        base,
         const ElVType* ebase)
     {
         if constexpr (HasVertexPointers<Element>) {
-            if constexpr(N > 0) {
+            if constexpr (N > 0) {
                 // same size non-polygonal faces
                 if constexpr (N == Element::VERTEX_NUMBER) {
                     importPtrsFrom(e, base, ebase);
                 }
                 // from polygonal to fixed size, but the polygon size == the
                 // fixed face size
-                else if constexpr (Element::VERTEX_NUMBER < 0){
+                else if constexpr (Element::VERTEX_NUMBER < 0) {
                     if (e.vertexNumber() == N) {
                         importPtrsFrom(e, base, ebase);
                     }
@@ -462,8 +464,8 @@ private:
     void importPtrsFrom(const Element& e, Vertex* base, const ElVType* ebase)
     {
         if (ebase != nullptr && base != nullptr) {
-            for (uint i = 0; i < e.vertexNumber(); ++i){
-                if (e.vertex(i) != nullptr){
+            for (uint i = 0; i < e.vertexNumber(); ++i) {
+                if (e.vertex(i) != nullptr) {
                     vertex(i) = base + (e.vertex(i) - ebase);
                 }
             }

@@ -268,8 +268,8 @@ public:
      * @brief Pushes in the back of the container the given adjacent vertex.
      * @note This function is available only if the container of the Adjacent
      * Vertices component has dynamic size.
-     * @param[in] v: The pointer to the adjacent vertex to push in the back of the
-     * container.
+     * @param[in] v: The pointer to the adjacent vertex to push in the back of
+     * the container.
      */
     void pushAdjVertex(Vertex* v) { Base::container().pushBack(v); }
 
@@ -388,9 +388,7 @@ public:
 
     // dummy member to discriminate between AdjacentVertices and
     // VertexHalfEdgePointers
-    void __adjacentVertices() const
-    {
-    }
+    void __adjacentVertices() const {}
 
 protected:
     // Component interface function

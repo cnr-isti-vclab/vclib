@@ -123,7 +123,7 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
-        if constexpr(HasTransformMatrix<Element>) {
+        if constexpr (HasTransformMatrix<Element>) {
             transformMatrix() = e.transformMatrix().template cast<Scalar>();
         }
     }

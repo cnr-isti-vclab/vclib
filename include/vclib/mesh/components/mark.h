@@ -106,10 +106,7 @@ public:
      *
      * This member function is hidden by the element that inherits this class.
      */
-    void init()
-    {
-        mark() = 0;
-    }
+    void init() { mark() = 0; }
 
     /* Member functions */
 

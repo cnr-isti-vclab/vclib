@@ -93,7 +93,7 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
-        if constexpr(HasName<Element>) {
+        if constexpr (HasName<Element>) {
             name() = e.name();
         }
     }

@@ -260,7 +260,7 @@ public:
     }
 
 protected:
-    template <typename Element>
+    template<typename Element>
     void importFrom(const Element& e)
     {
         // if the component is vertical, the import is managed by the container.
@@ -269,7 +269,6 @@ protected:
             data = e.CustomComponents::data;
         }
     }
-
 };
 
 } // namespace vcl::comp

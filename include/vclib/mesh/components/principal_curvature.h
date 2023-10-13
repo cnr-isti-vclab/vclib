@@ -91,7 +91,8 @@ public:
     /* Member functions */
 
     /**
-     * @brief Returns a const reference of the principal curvature of the element.
+     * @brief Returns a const reference of the principal curvature of the
+     * element.
      * @return a const reference of the principal curvature of the element.
      */
     const PrincipalCurvatureType& principalCurvature() const

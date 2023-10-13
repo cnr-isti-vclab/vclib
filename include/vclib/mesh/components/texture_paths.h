@@ -36,12 +36,13 @@ namespace vcl::comp {
 
 namespace detail {
 
-struct TPData {
+struct TPData
+{
     std::vector<std::string> texPaths;
-    std::string meshPath;
+    std::string              meshPath;
 };
 
-} // namespace vcl::comp::detail
+} // namespace detail
 
 /**
  * @brief The TexturePaths class represents a component that stores the paths of
@@ -217,7 +218,7 @@ protected:
     void importFrom(const Element& e)
     {
         if constexpr (HasTexturePaths<Element>) {
-            texPaths() = e.texPaths();
+            texPaths()     = e.texPaths();
             meshBasePath() = e.meshBasePath();
         }
     }

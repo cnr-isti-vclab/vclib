@@ -118,7 +118,7 @@ class PolygonBitFlags :
         OPT,
         true>;
 
-    static const uint FIRST_USER_BIT = 6;
+    static const uint FIRST_USER_BIT      = 6;
     static const uint FIRST_EDGE_USER_BIT = 3;
 
     // indices of the bits
@@ -131,11 +131,7 @@ class PolygonBitFlags :
     };
 
     // indices of the bits used for each edge of the polygon
-    enum {
-        EDGEBORD = 0,
-        EDGESEL  = 1,
-        EDGEVIS  = 2
-    };
+    enum { EDGEBORD = 0, EDGESEL = 1, EDGEVIS = 2 };
 
 public:
     /**
@@ -220,7 +216,8 @@ public:
     bool onBorder() const
     {
         for (uint i = 0; i < 12; ++i)
-            if (edgeOnBorder(i)) return true;
+            if (edgeOnBorder(i))
+                return true;
         return false;
     }
 
@@ -475,7 +472,7 @@ public:
             f &= 0x00100000;
         return f;
     }
-    
+
     // dummy member to discriminate between triangle and non-triangle bit flags
     void __polygonBitFlags() const {}
 
@@ -489,14 +486,14 @@ protected:
         if constexpr (HasBitFlags<Element>) {
             resetBitFlags();
             if constexpr (HasPolygonBitFlags<Element>) {
-                flags() = e.flags();
+                flags()     = e.flags();
                 edgeFlags() = e.edgeFlags();
             }
             else {
                 // BitFlags
-                deletedBit() = e.deleted();
-                selected() = e.selected();
-                visited() = e.visited();
+                deletedBit()  = e.deleted();
+                selected()    = e.selected();
+                visited()     = e.visited();
                 const uint UM = std::min(USER_BITS_NUMBER, e.USER_BITS_NUMBER);
                 for (uint i = 0; i < UM; ++i)
                     userBit(i) = e.userBit(i);
@@ -531,10 +528,7 @@ protected:
         edgeFlags().erase(edgeFlags().begin() + i);
     }
 
-    void clear() requires (N < 0)
-    {
-        edgeFlags().clear();
-    }
+    void clear() requires (N < 0) { edgeFlags().clear(); }
 
 private:
     // members that allow to access the flags, trough data (horizontal) or

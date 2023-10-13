@@ -26,9 +26,9 @@
 
 #include <any>
 #include <string>
+#include <typeindex>
 #include <unordered_map>
 #include <vector>
-#include <typeindex>
 
 #include <vclib/types.h>
 
@@ -55,13 +55,13 @@ struct CustomComponentsData
     }
 
     template<typename CompType>
-    bool isComponentOfType(
-        const std::string& compName, const ElementType*) const
+    bool isComponentOfType(const std::string& compName, const ElementType*)
+        const
     {
         std::type_index t(typeid(CompType));
         return t == compType.at(compName);
     }
-    
+
     std::type_index componentType(
         const std::string& compName,
         const ElementType*) const
@@ -73,7 +73,7 @@ struct CustomComponentsData
     std::vector<std::string> componentNamesOfType(const ElementType*) const
     {
         std::vector<std::string> names;
-        std::type_index t(typeid(CompType));
+        std::type_index          t(typeid(CompType));
         for (const auto& p : compType) {
             if (p.second == t)
                 names.push_back(p.first);
@@ -109,7 +109,7 @@ struct CustomComponentsData
     }
 
 private:
-    std::unordered_map<std::string, std::any> map;
+    std::unordered_map<std::string, std::any>        map;
     std::unordered_map<std::string, std::type_index> compType;
 };
 
@@ -120,21 +120,19 @@ private:
 template<typename ElementType>
 struct CustomComponentsData<ElementType, true>
 {
-    bool componentExists(
-        const std::string& compName,
-        const ElementType* elem) const
+    bool componentExists(const std::string& compName, const ElementType* elem)
+        const
     {
         return ccVec(elem).componentExists(compName);
     }
 
     template<typename CompType>
-    bool isComponentOfType(
-        const std::string& compName,
-        const ElementType* elem) const
+    bool isComponentOfType(const std::string& compName, const ElementType* elem)
+        const
     {
         return ccVec(elem).template isComponentOfType<CompType>(compName);
     }
-    
+
     std::type_index componentType(
         const std::string& compName,
         const ElementType* elem) const
@@ -149,9 +147,8 @@ struct CustomComponentsData<ElementType, true>
     }
 
     template<typename CompType>
-    const CompType& get(
-        const std::string& compName,
-        const ElementType* elem) const
+    const CompType& get(const std::string& compName, const ElementType* elem)
+        const
     {
         return std::any_cast<const CompType&>(
             ccVec(elem).template componentVector<CompType>(
