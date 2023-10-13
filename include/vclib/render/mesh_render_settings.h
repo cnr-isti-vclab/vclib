@@ -81,7 +81,7 @@ class MeshRenderSettings
         DRAW_SURF_TEX_WEDGE    = 1 << 18, // use per wedge texcoords
 
         // wireframe
-        DRAW_WIREFRAME = 1 << 20, // draw wireframe
+        DRAW_WIREFRAME            = 1 << 20, // draw wireframe
         DRAW_WIREFRAME_COLOR_USER = 1 << 21,
         DRAW_WIREFRAME_COLOR_MESH = 1 << 22,
 
@@ -90,26 +90,26 @@ class MeshRenderSettings
     };
 
     // draw integers controlled using enum
-    int   drawModeCapability = 0;
-    int   drawMode           = 0;
+    int drawModeCapability = 0;
+    int drawMode           = 0;
 
-    int   pWidth             = 3;
-    float pUserColor[4]      = {1, 1, 0, 1};
-    float sUserColor[4]      = {0.8, 0.8, 0.8, 1};
-    int   wWidth             = 1;
-    float wUserColor[4]      = {0, 0, 0, 1};
+    int   pWidth        = 3;
+    float pUserColor[4] = {1, 1, 0, 1};
+    float sUserColor[4] = {0.8, 0.8, 0.8, 1};
+    int   wWidth        = 1;
+    float wUserColor[4] = {0, 0, 0, 1};
 
 public:
     MeshRenderSettings() = default;
 
-    template <MeshConcept MeshType>
+    template<MeshConcept MeshType>
     MeshRenderSettings(const MeshType& m)
     {
         setRenderCapabilityFrom(m);
         setDefaultSettingsFromCapability();
     }
 
-    //rendering options capability of the mesh
+    // rendering options capability of the mesh
 
     bool canBeVisible() const { return drawModeCapability & DRAW_MESH; }
 
@@ -170,7 +170,7 @@ public:
         return drawModeCapability & DRAW_BOUNDINGBOX;
     }
 
-    //rendering options getters
+    // rendering options getters
     bool isVisible() const { return drawMode & DRAW_MESH; }
 
     bool isPointCloudVisible() const { return drawMode & DRAW_POINTS; }
@@ -285,8 +285,10 @@ public:
     bool setVisibility(bool b)
     {
         if (canBeVisible()) {
-            if (b) drawMode |=  DRAW_MESH;
-            else   drawMode &= ~DRAW_MESH;
+            if (b)
+                drawMode |= DRAW_MESH;
+            else
+                drawMode &= ~DRAW_MESH;
             return true;
         }
         else {
@@ -297,8 +299,10 @@ public:
     bool setPointCloudVisibility(bool b)
     {
         if (canPointCloudBeVisible()) {
-            if (b) drawMode |=  DRAW_POINTS;
-            else   drawMode &= ~DRAW_POINTS;
+            if (b)
+                drawMode |= DRAW_POINTS;
+            else
+                drawMode &= ~DRAW_POINTS;
             return true;
         }
         else {
@@ -309,7 +313,7 @@ public:
     bool setPointCloudColorPerVertex()
     {
         if (canSurfaceBeColoredPerVertex()) {
-            drawMode |=  DRAW_POINTS_COLOR_VERTEX;
+            drawMode |= DRAW_POINTS_COLOR_VERTEX;
             drawMode &= ~DRAW_POINTS_COLOR_MESH;
             drawMode &= ~DRAW_POINTS_COLOR_USER;
             return true;
@@ -323,7 +327,7 @@ public:
     {
         if (canSurfaceBeColoredPerMesh()) {
             drawMode &= ~DRAW_POINTS_COLOR_VERTEX;
-            drawMode |=  DRAW_POINTS_COLOR_MESH;
+            drawMode |= DRAW_POINTS_COLOR_MESH;
             drawMode &= ~DRAW_POINTS_COLOR_USER;
             return true;
         }
@@ -337,7 +341,7 @@ public:
         if (canPointCloudBeVisible()) {
             drawMode &= ~DRAW_POINTS_COLOR_VERTEX;
             drawMode &= ~DRAW_POINTS_COLOR_MESH;
-            drawMode |=  DRAW_POINTS_COLOR_USER;
+            drawMode |= DRAW_POINTS_COLOR_USER;
             return true;
         }
         else {
@@ -387,8 +391,10 @@ public:
     bool setSurfaceVisibility(bool b)
     {
         if (canSurfaceBeVisible()) {
-            if (b) drawMode |=  DRAW_SURF;
-            else   drawMode &= ~DRAW_SURF;
+            if (b)
+                drawMode |= DRAW_SURF;
+            else
+                drawMode &= ~DRAW_SURF;
             return true;
         }
         else {
@@ -403,7 +409,7 @@ public:
     bool setSurfaceShadingFlat()
     {
         if (canSurfaceBeVisible()) {
-            drawMode |=  DRAW_SURF_FLAT;
+            drawMode |= DRAW_SURF_FLAT;
             drawMode &= ~DRAW_SURF_SMOOTH;
             return true;
         }
@@ -419,7 +425,7 @@ public:
     bool setSurfaceShadingSmooth()
     {
         if (canSurfaceBeSmooth()) {
-            drawMode |=  DRAW_SURF_SMOOTH;
+            drawMode |= DRAW_SURF_SMOOTH;
             drawMode &= ~DRAW_SURF_FLAT;
             return true;
         }
@@ -440,7 +446,7 @@ public:
     bool setSurfaceColorPerVertex()
     {
         if (canSurfaceBeColoredPerVertex()) {
-            drawMode |=  DRAW_SURF_COLOR_VERTEX;
+            drawMode |= DRAW_SURF_COLOR_VERTEX;
             drawMode &= ~DRAW_SURF_COLOR_FACE;
             drawMode &= ~DRAW_SURF_COLOR_MESH;
             drawMode &= ~DRAW_SURF_COLOR_USER;
@@ -466,7 +472,7 @@ public:
     {
         if (canSurfaceBeColoredPerFace()) {
             drawMode &= ~DRAW_SURF_COLOR_VERTEX;
-            drawMode |=  DRAW_SURF_COLOR_FACE;
+            drawMode |= DRAW_SURF_COLOR_FACE;
             drawMode &= ~DRAW_SURF_COLOR_MESH;
             drawMode &= ~DRAW_SURF_COLOR_USER;
             drawMode &= ~DRAW_SURF_TEX_VERTEX;
@@ -492,7 +498,7 @@ public:
         if (canSurfaceBeColoredPerMesh()) {
             drawMode &= ~DRAW_SURF_COLOR_VERTEX;
             drawMode &= ~DRAW_SURF_COLOR_FACE;
-            drawMode |=  DRAW_SURF_COLOR_MESH;
+            drawMode |= DRAW_SURF_COLOR_MESH;
             drawMode &= ~DRAW_SURF_COLOR_USER;
             drawMode &= ~DRAW_SURF_TEX_VERTEX;
             drawMode &= ~DRAW_SURF_TEX_WEDGE;
@@ -521,7 +527,7 @@ public:
             drawMode &= ~DRAW_SURF_COLOR_VERTEX;
             drawMode &= ~DRAW_SURF_COLOR_FACE;
             drawMode &= ~DRAW_SURF_COLOR_MESH;
-            drawMode |=  DRAW_SURF_COLOR_USER;
+            drawMode |= DRAW_SURF_COLOR_USER;
             drawMode &= ~DRAW_SURF_TEX_VERTEX;
             drawMode &= ~DRAW_SURF_TEX_WEDGE;
             return true;
@@ -547,7 +553,7 @@ public:
             drawMode &= ~DRAW_SURF_COLOR_FACE;
             drawMode &= ~DRAW_SURF_COLOR_MESH;
             drawMode &= ~DRAW_SURF_COLOR_USER;
-            drawMode |=  DRAW_SURF_TEX_VERTEX;
+            drawMode |= DRAW_SURF_TEX_VERTEX;
             drawMode &= ~DRAW_SURF_TEX_WEDGE;
             return true;
         }
@@ -573,7 +579,7 @@ public:
             drawMode &= ~DRAW_SURF_COLOR_MESH;
             drawMode &= ~DRAW_SURF_COLOR_USER;
             drawMode &= ~DRAW_SURF_TEX_VERTEX;
-            drawMode |=  DRAW_SURF_TEX_WEDGE;
+            drawMode |= DRAW_SURF_TEX_WEDGE;
             return true;
         }
         else {
@@ -612,8 +618,10 @@ public:
     bool setWireframeVisibility(bool b)
     {
         if (canSurfaceBeVisible()) {
-            if (b) drawMode |=  DRAW_WIREFRAME;
-            else   drawMode &= ~DRAW_WIREFRAME;
+            if (b)
+                drawMode |= DRAW_WIREFRAME;
+            else
+                drawMode &= ~DRAW_WIREFRAME;
             return true;
         }
         else {
@@ -635,7 +643,7 @@ public:
     bool setWireframeColorPerMesh()
     {
         if (canWireframeBeColoredPerMesh()) {
-            drawMode |=  DRAW_WIREFRAME_COLOR_MESH;
+            drawMode |= DRAW_WIREFRAME_COLOR_MESH;
             drawMode &= ~DRAW_WIREFRAME_COLOR_USER;
             return true;
         }
@@ -648,7 +656,7 @@ public:
     {
         if (canSurfaceBeVisible()) {
             drawMode &= ~DRAW_WIREFRAME_COLOR_MESH;
-            drawMode |=  DRAW_WIREFRAME_COLOR_USER;
+            drawMode |= DRAW_WIREFRAME_COLOR_USER;
             return true;
         }
         else {
@@ -687,8 +695,10 @@ public:
     bool setBoundingBoxVisibility(bool b)
     {
         if (canBoundingBoxBeVisible()) {
-            if (b) drawMode |=  DRAW_BOUNDINGBOX;
-            else   drawMode &= ~DRAW_BOUNDINGBOX;
+            if (b)
+                drawMode |= DRAW_BOUNDINGBOX;
+            else
+                drawMode &= ~DRAW_BOUNDINGBOX;
             return true;
         }
         else {
@@ -696,7 +706,7 @@ public:
         }
     }
 
-    template <MeshConcept MeshType>
+    template<MeshConcept MeshType>
     void setRenderCapabilityFrom(const MeshType& m)
     {
         drawModeCapability = 0;

@@ -33,7 +33,7 @@ class DrawableObjectVector
     std::vector<DrawableObject*> drawVector;
 
 public:
-    using iterator = std::vector<DrawableObject*>::iterator;
+    using iterator       = std::vector<DrawableObject*>::iterator;
     using const_iterator = std::vector<DrawableObject*>::const_iterator;
 
     DrawableObjectVector() = default;
@@ -45,10 +45,7 @@ public:
             drawVector[i] = oth[i].clone();
     }
 
-    DrawableObjectVector(DrawableObjectVector&& oth)
-    {
-        swap(oth);
-    }
+    DrawableObjectVector(DrawableObjectVector&& oth) { swap(oth); }
 
     ~DrawableObjectVector()
     {

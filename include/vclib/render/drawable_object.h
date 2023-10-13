@@ -57,7 +57,7 @@ class DrawableObject
 
 public:
     /**< @brief Empty constructor */
-    DrawableObject()  = default;
+    DrawableObject() = default;
 
     virtual ~DrawableObject() {}
 

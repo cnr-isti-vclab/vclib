@@ -83,55 +83,64 @@ public:
 
     const float* vertexBufferData() const
     {
-        if (verts.empty()) return nullptr;
+        if (verts.empty())
+            return nullptr;
         return verts.data();
     }
 
     const int* triangleBufferData() const
     {
-        if (tris.empty()) return nullptr;
+        if (tris.empty())
+            return nullptr;
         return tris.data();
     }
 
     const float* vertexNormalBufferData() const
     {
-        if (vNormals.empty()) return nullptr;
+        if (vNormals.empty())
+            return nullptr;
         return vNormals.data();
     }
 
     const float* vertexColorBufferData() const
     {
-        if (vColors.empty()) return nullptr;
+        if (vColors.empty())
+            return nullptr;
         return vColors.data();
     }
 
     const float* triangleNormalBufferData() const
     {
-        if (tNormals.empty()) return nullptr;
+        if (tNormals.empty())
+            return nullptr;
         return tNormals.data();
     }
 
     const float* triangleColorBufferData() const
     {
-        if (tColors.empty()) return nullptr;
+        if (tColors.empty())
+            return nullptr;
         return tColors.data();
     }
 
     const float* vertexTexCoordsBufferData() const
     {
-        if (vTexCoords.empty()) return nullptr;
+        if (vTexCoords.empty())
+            return nullptr;
         return vTexCoords.data();
     }
 
     const float* wedgeTexCoordsBufferData() const
     {
-        if (wTexCoords.empty()) return nullptr;
+        if (wTexCoords.empty())
+            return nullptr;
         return wTexCoords.data();
     }
 
     const short* wedgeTextureIDsBufferData() const
     {
-        if (wTexIds.empty()) return nullptr;
+        if (wTexIds.empty())
+            return nullptr;
         return wTexIds.data();
     }
 
@@ -156,7 +165,7 @@ private:
         }
 
         // if mesh has bounding box, I set it anyway from its bb
-        if constexpr(vcl::HasBoundingBox<MeshType>) {
+        if constexpr (vcl::HasBoundingBox<MeshType>) {
             bbmin = m.boundingBox().min().template cast<double>();
             bbmax = m.boundingBox().max().template cast<double>();
         }
@@ -175,19 +184,19 @@ private:
         nv = m.vertexNumber();
         verts.resize(nv * 3);
 
-        if constexpr(vcl::HasPerVertexNormal<MeshType>) {
+        if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (vcl::isPerVertexNormalAvailable(m)) {
                 vNormals.resize(m.vertexNumber() * 3);
             }
         }
 
-        if constexpr(vcl::HasPerVertexColor<MeshType>) {
+        if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (vcl::isPerVertexColorAvailable(m)) {
                 vColors.resize(m.vertexNumber() * 3);
             }
         }
 
-        if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
+        if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             if (vcl::isPerVertexTexCoordAvailable(m)) {
                 vTexCoords.resize(m.vertexNumber() * 2);
             }
@@ -207,7 +216,7 @@ private:
                 bbmax = vcl::max(bbmax, v.coord().template cast<double>());
             }
 
-            if constexpr(vcl::HasPerVertexNormal<MeshType>) {
+            if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                 if (vcl::isPerVertexNormalAvailable(m)) {
                     vNormals[j + 0] = v.normal().x();
                     vNormals[j + 1] = v.normal().y();
@@ -215,7 +224,7 @@ private:
                 }
             }
 
-            if constexpr(vcl::HasPerVertexColor<MeshType>) {
+            if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (vcl::isPerVertexColorAvailable(m)) {
                     vColors[j + 0] = v.color().redF();
                     vColors[j + 1] = v.color().greenF();
@@ -223,7 +232,7 @@ private:
                 }
             }
 
-            if constexpr(vcl::HasPerVertexTexCoord<MeshType>) {
+            if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                 if (vcl::isPerVertexTexCoordAvailable(m)) {
                     vTexCoords[i + 0] = v.texCoord().u();
                     vTexCoords[i + 1] = v.texCoord().v();
@@ -272,7 +281,7 @@ private:
                     }
                     else {
                         std::vector<uint> vind = vcl::earCut(f);
-                        for (uint vi = 0; vi < vind.size(); vi+=3) {
+                        for (uint vi = 0; vi < vind.size(); vi += 3) {
                             triPolyMap.insert(
                                 nt + vi / 3, m.faceIndexIfCompact(m.index(f)));
                             tris.push_back(m.vertexIndexIfCompact(
@@ -290,13 +299,13 @@ private:
 
             tNormals.reserve(m.faceNumber() * 3);
 
-            if constexpr(vcl::HasPerFaceColor<MeshType>) {
+            if constexpr (vcl::HasPerFaceColor<MeshType>) {
                 if (vcl::isPerFaceColorAvailable(m)) {
                     tColors.reserve(m.faceNumber() * 3);
                 }
             }
 
-            if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+            if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                 if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
                     wTexCoords.reserve(m.faceNumber() * 3 * 2);
                     wTexIds.reserve(m.faceNumber());
@@ -304,7 +313,7 @@ private:
             }
 
             for (const auto& f : m.faces()) {
-                if constexpr(vcl::HasPerFaceNormal<MeshType>) {
+                if constexpr (vcl::HasPerFaceNormal<MeshType>) {
                     if (vcl::isPerFaceNormalAvailable(m)) {
                         if constexpr (vcl::HasTriangles<MeshType>) {
                             tNormals.push_back(f.normal().x());
@@ -336,7 +345,7 @@ private:
                         m.faceIndexIfCompact(m.index(f)));
                 }
 
-                if constexpr(vcl::HasPerFaceColor<MeshType>) {
+                if constexpr (vcl::HasPerFaceColor<MeshType>) {
                     if (vcl::isPerFaceColorAvailable(m)) {
                         if constexpr (vcl::HasTriangles<MeshType>) {
                             tColors.push_back(f.color().redF());
@@ -356,7 +365,7 @@ private:
                     }
                 }
 
-                if constexpr(vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+                if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                     if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
                         if constexpr (vcl::HasTriangles<MeshType>) {
                             wTexCoords.push_back(f.wedgeTexCoord(0).u());
@@ -372,7 +381,7 @@ private:
                             // triangulation of f
                             const std::vector<uint>& vind = vinds[fi];
                             // for each triangle of f
-                            for (uint vi = 0; vi < vind.size(); vi+=3) {
+                            for (uint vi = 0; vi < vind.size(); vi += 3) {
                                 wTexCoords.push_back(
                                     f.wedgeTexCoord(vind[vi + 0]).u());
                                 wTexCoords.push_back(
@@ -396,7 +405,7 @@ private:
 
     void fillTextures(const MeshType& m)
     {
-        if constexpr(vcl::HasTexturePaths<MeshType>) {
+        if constexpr (vcl::HasTexturePaths<MeshType>) {
             for (uint i = 0; i < m.textureNumber(); ++i) {
                 vcl::Image txt(m.meshBasePath() + m.texturePath(i));
                 txt.mirror();
@@ -407,7 +416,7 @@ private:
 
     void fillMeshAttribs(const MeshType& m)
     {
-        if constexpr(vcl::HasColor<MeshType>) {
+        if constexpr (vcl::HasColor<MeshType>) {
             mColor[0] = m.color().redF();
             mColor[1] = m.color().greenF();
             mColor[2] = m.color().blueF();
@@ -419,7 +428,7 @@ private:
     void fillFaceNormals(const FaceType& f, bool triangle, uint fi)
     {
         using NormalType = FaceType::VertexType::CoordType;
-        NormalType n = vcl::faceNormal(f);
+        NormalType n     = vcl::faceNormal(f);
         if (triangle) {
             tNormals.push_back(n.x());
             tNormals.push_back(n.y());
