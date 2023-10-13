@@ -50,7 +50,8 @@ public:
     using iterator_category = std::random_access_iterator_tag;
 
 private:
-    ContIt              it;  // the actual iterator
+    ContIt it; // the actual iterator
+
     const Container<T>* vec = nullptr; // needed to check end when jump elements
 
     /* Pointers to functions */

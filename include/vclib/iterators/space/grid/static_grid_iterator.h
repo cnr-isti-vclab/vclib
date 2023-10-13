@@ -34,11 +34,11 @@ class StaticGridIterator
 {
     using VecIt = std::vector<std::pair<uint, ValueType>>::iterator;
 
-    VecIt vecIt;
+    VecIt           vecIt;
     const GridType* g = nullptr;
 
 public:
-    using T = SecondRefPair<KeyType, ValueType>;
+    using T          = SecondRefPair<KeyType, ValueType>;
     using value_type = T;
 
     class ArrowHelper
@@ -47,6 +47,7 @@ public:
 
     public:
         ArrowHelper(T value) : value(value) {}
+
         const T* operator->() const { return &value; }
     };
 
@@ -91,11 +92,11 @@ class ConstStaticGridIterator
 {
     using VecIt = std::vector<std::pair<uint, ValueType>>::const_iterator;
 
-    VecIt vecIt;
+    VecIt           vecIt;
     const GridType* g = nullptr;
 
 public:
-    using T = SecondRefPair<KeyType, const ValueType>;
+    using T          = SecondRefPair<KeyType, const ValueType>;
     using value_type = T;
 
     class ArrowHelper
@@ -104,6 +105,7 @@ public:
 
     public:
         ArrowHelper(T value) : value(value) {}
+
         const T* operator->() const { return &value; }
     };
 
@@ -111,7 +113,7 @@ public:
 
     ConstStaticGridIterator(VecIt it, const GridType& g) : vecIt(it), g(&g) {}
 
-    value_type  operator*() const
+    value_type operator*() const
     {
         KeyType cell = g->cellOfIndex(vecIt->first);
         return value_type(cell, vecIt->second);

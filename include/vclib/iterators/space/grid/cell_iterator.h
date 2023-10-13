@@ -65,7 +65,7 @@ public:
 
     CellIterator operator++()
     {
-        uint d = N-1;
+        uint d = N - 1;
         while (d != -1 && it(d) == end(d) - 1) {
             it(d) = first(d);
             d--;

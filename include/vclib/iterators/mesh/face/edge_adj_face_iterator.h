@@ -35,7 +35,8 @@ class EdgeAdjFaceIterator
 {
     using FT = std::conditional_t<CNST, FaceType, const FaceType>;
 
-    using VT = std::conditional_t<CNST,
+    using VT = std::conditional_t<
+        CNST,
         typename FT::VertexType,
         const typename FT::VertexType>;
 
@@ -76,8 +77,8 @@ public:
         current = current->adjFace(edge);
         if (current == end || current == nullptr) {
             current = nullptr;
-            v0 = nullptr;
-            v1 = nullptr;
+            v0      = nullptr;
+            v1      = nullptr;
         }
         return *this;
     }
