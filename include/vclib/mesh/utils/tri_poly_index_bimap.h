@@ -28,7 +28,7 @@
 
 #include <vclib/types.h>
 
-namespace vcl{
+namespace vcl {
 
 /**
  * @brief The TriPolyIndexBiMap class allows to store a bidirectional mapping
@@ -63,10 +63,7 @@ public:
      * its mapped polygon
      * @return the index of the polygon mapped to the given triangle
      */
-    uint polygon(uint triangleIndex) const
-    {
-        return triToPoly[triangleIndex];
-    }
+    uint polygon(uint triangleIndex) const { return triToPoly[triangleIndex]; }
 
     /**
      * @brief Returns the smallest index of set of triangles mapped to the

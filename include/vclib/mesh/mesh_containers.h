@@ -32,7 +32,8 @@
  * @defgroup containers Containers
  * @ingroup mesh
  *
- * @brief List af all the Element Container classes, along with their concepts and functions.
+ * @brief List af all the Element Container classes, along with their concepts
+ * and functions.
  */
 
 #endif // VCL_MESH_MESH_CONTAINERS_H

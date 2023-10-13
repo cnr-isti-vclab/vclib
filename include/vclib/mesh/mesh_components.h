@@ -52,7 +52,7 @@ namespace vcl::mesh {
 template<typename P>
 using BoundingBox = comp::BoundingBox<P>;
 
-template <typename S>
+template<typename S>
 using BoundingBox3 = comp::BoundingBox3<S>;
 
 using BoundingBox3f = comp::BoundingBox3f<>;
@@ -74,7 +74,7 @@ using Name = comp::Name<>;
 using TexturePaths = comp::TexturePaths;
 
 /** Port TransformMatrix class into mesh namespace **/
-template <typename Scalar>
+template<typename Scalar>
 using TransformMatrix = comp::TransformMatrix<Scalar>;
 
 using TransformMatrixf = comp::TransformMatrixf<>;

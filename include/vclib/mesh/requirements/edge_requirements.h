@@ -27,8 +27,8 @@
 #include <vclib/concepts/mesh.h>
 #include <vclib/exceptions/mesh_exceptions.h>
 
-#include "element_requirements.h"
 #include "../containers/edge_container.h"
+#include "element_requirements.h"
 
 /**
  * @defgroup edge_requirements Edge Requirements
@@ -351,7 +351,6 @@ bool enableIfPerEdgeQualityOptional(MeshType& m)
     return enableIfPerElementComponentOptional<EDGE, QUALITY>(m);
 }
 
-
 /*********************
  * require functions *
  *********************/
@@ -482,8 +481,7 @@ void requirePerEdgeAdjacentFaces(const MeshType& m)
  * @ingroup edge_requirements
  */
 template<EdgeMeshConcept MeshType>
-void requirePerEdgeColor(const MeshType& m)
-    requires HasPerEdgeColor<MeshType>
+void requirePerEdgeColor(const MeshType& m) requires HasPerEdgeColor<MeshType>
 {
     requirePerElementComponent<EDGE, COLOR>(m);
 }
@@ -518,8 +516,7 @@ void requirePerEdgeColor(const MeshType& m)
  * @ingroup edge_requirements
  */
 template<EdgeMeshConcept MeshType>
-void requirePerEdgeMark(const MeshType& m)
-    requires HasPerEdgeMark<MeshType>
+void requirePerEdgeMark(const MeshType& m) requires HasPerEdgeMark<MeshType>
 {
     requirePerElementComponent<EDGE, MARK>(m);
 }

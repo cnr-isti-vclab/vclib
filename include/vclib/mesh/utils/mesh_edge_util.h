@@ -49,6 +49,7 @@ public:
     int         e;    // Index of the edge inside the face
 
     MeshEdgeUtil() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
+
     MeshEdgeUtil(FaceType& pf, uint ne)
     {
         v[0] = pf.vertex(ne);
@@ -71,8 +72,15 @@ public:
             return v[1] < pe.v[1];
     }
 
-    bool operator==(const MeshEdgeUtil& pe) const { return v[0] == pe.v[0] && v[1] == pe.v[1]; }
-    bool operator!=(const MeshEdgeUtil& pe) const { return v[0] != pe.v[0] || v[1] != pe.v[1]; }
+    bool operator==(const MeshEdgeUtil& pe) const
+    {
+        return v[0] == pe.v[0] && v[1] == pe.v[1];
+    }
+
+    bool operator!=(const MeshEdgeUtil& pe) const
+    {
+        return v[0] != pe.v[0] || v[1] != pe.v[1];
+    }
 };
 
 template<FaceMeshConcept MeshType>
@@ -87,6 +95,7 @@ public:
     int               e;    // Index of the edge inside the face
 
     ConstMeshEdgeUtil() : v {nullptr, nullptr}, f(nullptr), e(-1) {}
+
     ConstMeshEdgeUtil(const FaceType& pf, uint ne)
     {
         v[0] = pf.vertex(ne);
@@ -109,8 +118,15 @@ public:
             return v[1] < pe.v[1];
     }
 
-    bool operator==(const ConstMeshEdgeUtil& pe) const { return v[0] == pe.v[0] && v[1] == pe.v[1]; }
-    bool operator!=(const ConstMeshEdgeUtil& pe) const { return v[0] != pe.v[0] || v[1] != pe.v[1]; }
+    bool operator==(const ConstMeshEdgeUtil& pe) const
+    {
+        return v[0] == pe.v[0] && v[1] == pe.v[1];
+    }
+
+    bool operator!=(const ConstMeshEdgeUtil& pe) const
+    {
+        return v[0] != pe.v[0] || v[1] != pe.v[1];
+    }
 };
 
 } // namespace vcl

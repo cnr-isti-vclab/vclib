@@ -27,8 +27,8 @@
 #include <vclib/concepts/mesh.h>
 #include <vclib/exceptions/mesh_exceptions.h>
 
-#include "element_requirements.h"
 #include "../containers/face_container.h"
+#include "element_requirements.h"
 
 /**
  * @defgroup face_requirements Face Requirements
@@ -584,7 +584,6 @@ bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
     return enableIfPerElementComponentOptional<FACE, WEDGE_TEX_COORDS>(m);
 }
 
-
 /*********************
  * require functions *
  *********************/
@@ -715,8 +714,7 @@ void requirePerFaceAdjacentFaces(const MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-void requirePerFaceColor(const MeshType& m)
-    requires HasPerFaceColor<MeshType>
+void requirePerFaceColor(const MeshType& m) requires HasPerFaceColor<MeshType>
 {
     requirePerElementComponent<FACE, COLOR>(m);
 }
@@ -751,8 +749,7 @@ void requirePerFaceColor(const MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-void requirePerFaceMark(const MeshType& m)
-    requires HasPerFaceMark<MeshType>
+void requirePerFaceMark(const MeshType& m) requires HasPerFaceMark<MeshType>
 {
     requirePerElementComponent<FACE, MARK>(m);
 }
@@ -787,8 +784,7 @@ void requirePerFaceMark(const MeshType& m)
  * @ingroup face_requirements
  */
 template<FaceMeshConcept MeshType>
-void requirePerFaceNormal(const MeshType& m)
-    requires HasPerFaceNormal<MeshType>
+void requirePerFaceNormal(const MeshType& m) requires HasPerFaceNormal<MeshType>
 {
     requirePerElementComponent<FACE, NORMAL>(m);
 }

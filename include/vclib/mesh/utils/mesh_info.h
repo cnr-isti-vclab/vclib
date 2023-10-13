@@ -25,11 +25,11 @@
 #define VCL_MESH_UTILS_MESH_INFO_H
 
 #include <array>
+#include <bitset>
 #include <list>
 #include <string>
 #include <typeindex>
 #include <vector>
-#include <bitset>
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/types.h>
@@ -118,9 +118,11 @@ public:
      * @brief The CustomComponent struct is a simple structure that describes a
      * custom component of an Element (or of the Mesh)
      */
-    struct CustomComponent {
+    struct CustomComponent
+    {
         std::string name;
-        DataType type;
+        DataType    type;
+
         CustomComponent(std::string n, DataType t) : name(n), type(t) {}
     };
 
@@ -242,7 +244,7 @@ public:
                                     ScalarType>());
                 }
             }
-            if constexpr(vcl::HasPerFaceCustomComponents<Mesh>) {
+            if constexpr (vcl::HasPerFaceCustomComponents<Mesh>) {
                 auto names = m.perFaceCustomComponentNames();
                 for (auto& name : names) {
                     DataType dt = getType(m.perFaceCustomComponentType(name));
@@ -424,7 +426,7 @@ public:
 
     void setElementComponents(Element el, Component c, bool b, DataType t)
     {
-        elements[el] = b;
+        elements[el]             = b;
         perElemComponents[el][c] = b;
         if (b)
             perElemComponentsType(el, c) = t;
@@ -512,7 +514,9 @@ public:
     }
 
     void addElementCustomComponent(
-        Element el, const std::string& name, DataType t)
+        Element            el,
+        const std::string& name,
+        DataType           t)
     {
         setElementComponents(el, CUSTOM_COMPONENTS, true, NONE);
         perElemCustomComponents[el].emplace_back(name, t);
@@ -628,14 +632,14 @@ public:
                 res.perElemComponents[i][j] =
                     perElemComponents[i][j] && info.perElemComponents[i][j];
 
-                if (res.perElemComponents[i][j]){
+                if (res.perElemComponents[i][j]) {
                     res.perElemComponentsType(i, j) =
                         perElemComponentsType(i, j);
                 }
             }
         }
 
-        if (type == info.type){
+        if (type == info.type) {
             res.type = type;
         }
         res.perElemCustomComponents = perElemCustomComponents;
@@ -668,15 +672,24 @@ private:
     template<typename T>
     static DataType getType()
     {
-        if constexpr (std::is_same_v<T, char>) return CHAR;
-        if constexpr (std::is_same_v<T, unsigned char>) return UCHAR;
-        if constexpr (std::is_same_v<T, short>) return SHORT;
-        if constexpr (std::is_same_v<T, unsigned short>) return USHORT;
-        if constexpr (std::is_same_v<T, int>) return INT;
-        if constexpr (std::is_same_v<T, uint>) return UINT;
-        if constexpr (std::is_integral_v<T>) return INT; // fallback to int
-        if constexpr (std::is_same_v<T, float>) return FLOAT;
-        if constexpr (std::is_same_v<T, double>) return DOUBLE;
+        if constexpr (std::is_same_v<T, char>)
+            return CHAR;
+        if constexpr (std::is_same_v<T, unsigned char>)
+            return UCHAR;
+        if constexpr (std::is_same_v<T, short>)
+            return SHORT;
+        if constexpr (std::is_same_v<T, unsigned short>)
+            return USHORT;
+        if constexpr (std::is_same_v<T, int>)
+            return INT;
+        if constexpr (std::is_same_v<T, uint>)
+            return UINT;
+        if constexpr (std::is_integral_v<T>)
+            return INT; // fallback to int
+        if constexpr (std::is_same_v<T, float>)
+            return FLOAT;
+        if constexpr (std::is_same_v<T, double>)
+            return DOUBLE;
         if constexpr (std::is_floating_point_v<T>)
             return FLOAT; // fallback to float
         return NONE;
@@ -684,14 +697,22 @@ private:
 
     static DataType getType(std::type_index ti)
     {
-        if (ti == typeid(char)) return CHAR;
-        if (ti == typeid(unsigned char)) return UCHAR;
-        if (ti == typeid(short)) return SHORT;
-        if (ti == typeid(unsigned short)) return USHORT;
-        if (ti == typeid(int)) return INT;
-        if (ti == typeid(uint)) return UINT;
-        if (ti == typeid(float)) return FLOAT;
-        if (ti == typeid(double)) return DOUBLE;
+        if (ti == typeid(char))
+            return CHAR;
+        if (ti == typeid(unsigned char))
+            return UCHAR;
+        if (ti == typeid(short))
+            return SHORT;
+        if (ti == typeid(unsigned short))
+            return USHORT;
+        if (ti == typeid(int))
+            return INT;
+        if (ti == typeid(uint))
+            return UINT;
+        if (ti == typeid(float))
+            return FLOAT;
+        if (ti == typeid(double))
+            return DOUBLE;
         return NONE;
     }
 };
@@ -702,30 +723,18 @@ void addPerVertexCustomComponent(
     const MeshInfo::CustomComponent& cc)
 {
     switch (cc.type) {
-    case CHAR:
-        m.template addPerVertexCustomComponent<char>(cc.name);
-        break;
+    case CHAR: m.template addPerVertexCustomComponent<char>(cc.name); break;
     case UCHAR:
         m.template addPerVertexCustomComponent<unsigned char>(cc.name);
         break;
-    case SHORT:
-        m.template addPerVertexCustomComponent<short>(cc.name);
-        break;
+    case SHORT: m.template addPerVertexCustomComponent<short>(cc.name); break;
     case USHORT:
         m.template addPerVertexCustomComponent<unsigned short>(cc.name);
         break;
-    case INT:
-        m.template addPerVertexCustomComponent<int>(cc.name);
-        break;
-    case UINT:
-        m.template addPerVertexCustomComponent<uint>(cc.name);
-        break;
-    case FLOAT:
-        m.template addPerVertexCustomComponent<float>(cc.name);
-        break;
-    case DOUBLE:
-        m.template addPerVertexCustomComponent<double>(cc.name);
-        break;
+    case INT: m.template addPerVertexCustomComponent<int>(cc.name); break;
+    case UINT: m.template addPerVertexCustomComponent<uint>(cc.name); break;
+    case FLOAT: m.template addPerVertexCustomComponent<float>(cc.name); break;
+    case DOUBLE: m.template addPerVertexCustomComponent<double>(cc.name); break;
     default: assert(0);
     }
 }
@@ -734,30 +743,18 @@ template<FaceMeshConcept MeshType>
 void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
     switch (cc.type) {
-    case CHAR:
-        m.template addPerFaceCustomComponent<char>(cc.name);
-        break;
+    case CHAR: m.template addPerFaceCustomComponent<char>(cc.name); break;
     case UCHAR:
         m.template addPerFaceCustomComponent<unsigned char>(cc.name);
         break;
-    case SHORT:
-        m.template addPerFaceCustomComponent<short>(cc.name);
-        break;
+    case SHORT: m.template addPerFaceCustomComponent<short>(cc.name); break;
     case USHORT:
         m.template addPerFaceCustomComponent<unsigned short>(cc.name);
         break;
-    case INT:
-        m.template addPerFaceCustomComponent<int>(cc.name);
-        break;
-    case UINT:
-        m.template addPerFaceCustomComponent<uint>(cc.name);
-        break;
-    case FLOAT:
-        m.template addPerFaceCustomComponent<float>(cc.name);
-        break;
-    case DOUBLE:
-        m.template addPerFaceCustomComponent<double>(cc.name);
-        break;
+    case INT: m.template addPerFaceCustomComponent<int>(cc.name); break;
+    case UINT: m.template addPerFaceCustomComponent<uint>(cc.name); break;
+    case FLOAT: m.template addPerFaceCustomComponent<float>(cc.name); break;
+    case DOUBLE: m.template addPerFaceCustomComponent<double>(cc.name); break;
     default: assert(0);
     }
 }

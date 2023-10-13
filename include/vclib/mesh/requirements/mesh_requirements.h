@@ -202,7 +202,7 @@ void requireQuadMesh(const MeshType& m)
  *
  * @ingroup mesh_requirements
  */
-template <MeshConcept MeshType>
+template<MeshConcept MeshType>
 void requireCompactness(const MeshType& m)
 {
     if (!m.isCompact())

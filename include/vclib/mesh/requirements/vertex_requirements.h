@@ -27,8 +27,8 @@
 #include <vclib/concepts/mesh.h>
 #include <vclib/exceptions/mesh_exceptions.h>
 
-#include "element_requirements.h"
 #include "../containers/vertex_container.h"
+#include "element_requirements.h"
 
 /**
  * @defgroup vertex_requirements Vertex Requirements
@@ -188,8 +188,7 @@ void requirePerVertexColor(const MeshType& m)
 }
 
 template<typename MeshType>
-void requirePerVertexMark(const MeshType& m)
-    requires HasPerVertexMark<MeshType>
+void requirePerVertexMark(const MeshType& m) requires HasPerVertexMark<MeshType>
 {
     requirePerElementComponent<VERTEX, MARK>(m);
 }

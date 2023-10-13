@@ -311,10 +311,7 @@ public:
      * @brief Clears all the Elements contained in the mesh.
      * @todo manage also other components
      */
-    void clear()
-    {
-        (clearContainer<Args>(), ...);
-    }
+    void clear() { (clearContainer<Args>(), ...); }
 
     /**
      * @brief Compacts all the containers of the mesh.
@@ -1243,14 +1240,9 @@ protected:
 
 private:
     // hide init and isAvailable members
-    void init()
-    {
-    };
+    void init() {};
 
-    bool isAvailable() const
-    {
-        return true;
-    }
+    bool isAvailable() const { return true; }
 
     // enable optional components
 
@@ -1264,10 +1256,7 @@ private:
 
     // private parent mesh pointers functions
 
-    void updateAllParentMeshPointers()
-    {
-        (setParentMeshPointers<Args>(), ...);
-    }
+    void updateAllParentMeshPointers() { (setParentMeshPointers<Args>(), ...); }
 
     template<typename Cont>
     void setParentMeshPointers()
@@ -1362,9 +1351,7 @@ private:
      * container.
      */
     template<typename Cont, typename Array, typename... A>
-    static void updatePointersOfContainerType(
-        Mesh<A...>&  m,
-        const Array& bases)
+    static void updatePointersOfContainerType(Mesh<A...>& m, const Array& bases)
     {
         // since this function is called using pack expansion, it means that
         // Cont could be a mesh component and not a cointainer. We check if Cont

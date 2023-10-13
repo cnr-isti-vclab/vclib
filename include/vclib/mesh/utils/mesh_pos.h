@@ -43,7 +43,7 @@ namespace vcl {
  * Face-Vertex-Edge triplet is defined, has per Face Adjacent Faces topology
  * informtion.
  */
-template <face::HasAdjacentFaces FaceType>
+template<face::HasAdjacentFaces FaceType>
 class MeshPos
 {
     const FaceType* f = nullptr;
@@ -62,7 +62,8 @@ public:
 
     MeshPos(const FaceType* f, short e) : f(f), e(e)
     {
-        if (f != nullptr) v = f->vertex(e);
+        if (f != nullptr)
+            v = f->vertex(e);
         assert(isValid(f, v, e));
     }
 
@@ -180,7 +181,7 @@ public:
     bool flipFace()
     {
         const FaceType* nf = f->adjFace(e);
-        if (nf != nullptr){
+        if (nf != nullptr) {
             e = nf->indexOfAdjFace(f);
             f = nf;
             return true;
@@ -197,7 +198,7 @@ public:
     void flipVertex()
     {
         if (f->vertexMod(e) == v) {
-            v = f->vertexMod(e+1);
+            v = f->vertexMod(e + 1);
         }
         else {
             v = f->vertexMod(e);
@@ -210,12 +211,13 @@ public:
      */
     void flipEdge()
     {
-        if (f->vertexMod(e+1) == v) {
-            e = (e + 1) % (short)f->vertexNumber();
+        if (f->vertexMod(e + 1) == v) {
+            e = (e + 1) % (short) f->vertexNumber();
         }
         else {
             short n = f->vertexNumber();
-            e = ((e - 1) % n + n) % n; // be sure to get the right index of the previous edge
+            e       = ((e - 1) % n + n) %
+                n; // be sure to get the right index of the previous edge
         }
     }
 
@@ -264,7 +266,7 @@ public:
     uint numberOfAdjacentFacesToV() const
     {
         bool onBorder = false;
-        uint count = countAdjacentFacesToV(onBorder);
+        uint count    = countAdjacentFacesToV(onBorder);
         // if we visited a border, it means that we visited the all faces
         // adjacent to v twice to reach the same starting MeshPos.
         if (onBorder)
@@ -277,14 +279,11 @@ public:
         return f == op.f && v == op.v && e == op.e;
     }
 
-    bool operator!=(const MeshPos& op) const
-    {
-        return !(*this == op);
-    }
+    bool operator!=(const MeshPos& op) const { return !(*this == op); }
 
     bool operator<(const MeshPos& op) const
     {
-        if (f == op.f){
+        if (f == op.f) {
             if (e == op.e)
                 return v < op.v;
             else
@@ -299,7 +298,7 @@ private:
     uint countAdjacentFacesToV(bool& onBorder) const
     {
         uint count = 0;
-        onBorder = false;
+        onBorder   = false;
         // start from this MeshPos
         MeshPos<FaceType> mp = *this;
         do {
