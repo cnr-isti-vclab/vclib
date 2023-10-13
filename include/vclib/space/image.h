@@ -26,15 +26,7 @@
 
 #include <string>
 
-#if __has_include(<stb/stb_image.h>)
-#include <stb/stb_image.h>
-#else
-// inclusion for usage of vclib without CMake - not ideal but necessary for
-// header-only
-#define STB_IMAGE_STATIC // make stb usable in header-only libraries
-#include "../../../external/stb-master/stb/stb_image.h"
-#endif
-
+#include <vclib/io/image.h>
 #include <vclib/space/array.h>
 #include <vclib/space/color.h>
 
@@ -75,14 +67,12 @@ public:
         int w, h;
         // we first load the data, then we copy it into our array2d, and then we
         // free it.
-        unsigned char* tmp =
-            stbi_load(filename.c_str(), &w, &h, nullptr, 4); // force 4 channels
+        std::shared_ptr<unsigned char> tmp = loadImageData(filename, w, h);
         if (tmp) {
             std::size_t size = w * h * 4;
 
             img.resize(w, h);
-            std::copy(tmp, tmp + size, (unsigned char*)img.data());
-            stbi_image_free(tmp);
+            std::copy(tmp.get(), tmp.get() + size, (unsigned char*)img.data());
             return true;
         }
         else {
