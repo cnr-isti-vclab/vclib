@@ -70,7 +70,7 @@ void loadPly(
     loadedInfo = header.getInfo();
 
     if (enableOptionalComponents)
-        io::detail::enableOptionalComponents(loadedInfo, m);
+        enableOptionalComponentsFromInfo(loadedInfo, m);
 
     if constexpr (HasName<MeshType>) {
         m.name() = FileInfo::fileNameWithoutExtension(filename);

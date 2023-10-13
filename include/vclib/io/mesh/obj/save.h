@@ -28,7 +28,6 @@
 
 #include <vclib/exceptions/io_exceptions.h>
 #include <vclib/io/file_info.h>
-#include <vclib/io/utils.h>
 #include <vclib/io/write.h>
 #include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>

@@ -25,7 +25,6 @@
 #define VCL_IO_STL_LOAD_H
 
 #include <vclib/io/read.h>
-#include <vclib/io/utils.h>
 #include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>
 
@@ -107,7 +106,7 @@ void readStlBin(
     if (enableOptionalComponents) {
         if (colored)
             loadedInfo.setFaceColors();
-        io::detail::enableOptionalComponents(loadedInfo, m);
+        enableOptionalComponentsFromInfo(loadedInfo, m);
     }
     else if (colored) {
         if constexpr (HasPerFaceColor<MeshType>) {
@@ -189,7 +188,7 @@ void readStlAscii(
     bool           enableOptionalComponents)
 {
     if (enableOptionalComponents) {
-        io::detail::enableOptionalComponents(loadedInfo, m);
+        enableOptionalComponentsFromInfo(loadedInfo, m);
     }
 
     if constexpr (vcl::isLoggerValid<LogType>()) {

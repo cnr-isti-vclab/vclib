@@ -499,7 +499,7 @@ void loadOff(
     detail::readOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
     loadedInfo = fileInfo; // data that will be stored in the mesh!
     if (enableOptionalComponents)
-        io::detail::enableOptionalComponents(loadedInfo, m);
+        enableOptionalComponentsFromInfo(loadedInfo, m);
 
     detail::readOffVertices(m, file, fileInfo, nVertices);
     detail::readOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);

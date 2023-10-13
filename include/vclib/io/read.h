@@ -24,8 +24,11 @@
 #ifndef VCL_IO_READ_H
 #define VCL_IO_READ_H
 
+#include <vclib/concepts/mesh/elements/element.h>
+#include <vclib/misc/string.h>
+#include <vclib/misc/tokenizer.h>
+
 #include "file_info.h"
-#include "utils.h"
 
 namespace vcl {
 

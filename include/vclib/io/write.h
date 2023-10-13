@@ -24,9 +24,10 @@
 #ifndef VCL_IO_WRITE_H
 #define VCL_IO_WRITE_H
 
+#include <fstream>
 #include <typeindex>
 
-#include "utils.h"
+#include <vclib/types.h>
 
 namespace vcl {
 

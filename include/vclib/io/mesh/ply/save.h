@@ -25,7 +25,6 @@
 #define VCL_IO_PLY_SAVE_H
 
 #include <vclib/exceptions/io_exceptions.h>
-#include <vclib/io/utils.h>
 #include <vclib/misc/logger.h>
 
 #include "detail/edge.h"

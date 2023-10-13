@@ -28,7 +28,6 @@
 #include <fstream>
 #include <list>
 
-#include <vclib/io/utils.h>
 #include <vclib/misc/tokenizer.h>
 
 namespace vcl::detail {

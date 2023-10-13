@@ -165,7 +165,6 @@ set(HEADERS
     include/vclib/io/file_info.h
     include/vclib/io/mesh.h
     include/vclib/io/read.h
-    include/vclib/io/utils.h
     include/vclib/io/write.h
     include/vclib/io/mesh/load.h
     include/vclib/io/mesh/save.h
