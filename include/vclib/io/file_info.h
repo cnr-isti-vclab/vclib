@@ -30,6 +30,7 @@
 #include <vector>
 
 #include <vclib/exceptions/io_exceptions.h>
+#include <vclib/types.h>
 
 namespace vcl {
 
