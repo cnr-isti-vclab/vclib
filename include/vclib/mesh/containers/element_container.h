@@ -112,12 +112,13 @@ protected:
     const T& element(uint i) const { return vec[i]; }
 
     /**
-     * @brief Returns a reference of the element at the i-th position in the Element
-     * Container of the Mesh, which will be the element having index = i.
+     * @brief Returns a reference of the element at the i-th position in the
+     * Element Container of the Mesh, which will be the element having index =
+     * i.
      *
      * This function does not perform any sanity check: if i is less than
-     * elementContainerSize(), this function will return a valid Element reference
-     * (note that the Element may have been flagged as deleted).
+     * elementContainerSize(), this function will return a valid Element
+     * reference (note that the Element may have been flagged as deleted).
      *
      * @param[in] i: the index of the element that will be returned.
      */
@@ -486,7 +487,8 @@ protected:
      */
     View<ElementIterator> elements(bool jumpDeleted = true)
     {
-        return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+        return vcl::View(
+            elementBegin(jumpDeleted && vec.size() != en), elementEnd());
     }
 
     /**
@@ -513,7 +515,8 @@ protected:
      */
     View<ConstElementIterator> elements(bool jumpDeleted = true) const
     {
-        return vcl::View(elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+        return vcl::View(
+            elementBegin(jumpDeleted && vec.size() != en), elementEnd());
     }
 
     void enableAllOptionalComponents()
@@ -638,7 +641,8 @@ protected:
     ConstCustomComponentVectorHandle<K> customComponentVectorHandle(
         const std::string& name) const requires comp::HasCustomComponents<T>
     {
-        const std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
+        const std::vector<std::any>& cc =
+            ccVecMap.template componentVector<K>(name);
         ConstCustomComponentVectorHandle<K> v(cc);
         return cc;
     }
@@ -667,7 +671,7 @@ protected:
 
     template<typename Element>
     void updatePointers(
-        const Element* base,
+        const Element*           base,
         const std::vector<uint>& newIndices)
     {
         using Comps = T::Components;
@@ -717,7 +721,8 @@ protected:
     void enableOptionalComponentsOf(const OtherMesh& m)
     {
         if constexpr (OtherMesh::template hasContainerOf<T>()) {
-            // get the container type of the other mesh for T - used to upcast othMesh
+            // get the container type of the other mesh for T - used to upcast
+            // othMesh
             using OContainer = OtherMesh::template ContainerOf<T>::type;
 
             const OContainer& c = static_cast<const OContainer&>(m);
@@ -734,7 +739,7 @@ protected:
             // othMesh
             using Container = OtherMesh::template ContainerOf<T>::type;
 
-            const Container& c = (const Container&)m;
+            const Container& c = (const Container&) m;
 
             clearElements();
 
@@ -884,7 +889,7 @@ private:
     {
         if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
             if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-                if(isOptionalComponentEnabled<Comp>()) {
+                if (isOptionalComponentEnabled<Comp>()) {
                     for (T& e : elements()) {
                         e.Comp::updatePointers(oldBase, newBase);
                     }
@@ -905,7 +910,7 @@ private:
     {
         if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
             if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-                if(isOptionalComponentEnabled<Comp>()) {
+                if (isOptionalComponentEnabled<Comp>()) {
                     for (T& e : elements()) {
                         e.Comp::updatePointers(base, newIndices);
                     }
@@ -927,7 +932,7 @@ private:
     {
         if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
             if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-                if(isOptionalComponentEnabled<Comp>()) {
+                if (isOptionalComponentEnabled<Comp>()) {
                     for (uint i = 0; i < elementContainerSize(); ++i) {
                         element(i).Comp::importPointersFrom(
                             c.element(i), base, cbase);

@@ -53,11 +53,11 @@ namespace vcl::mesh {
 template<FaceConcept T>
 class FaceContainer : public ElementContainer<T>
 {
-    template <FaceConcept U>
+    template<FaceConcept U>
     friend class FaceContainer;
 
     using FaceContainerType = FaceContainer<T>;
-    using Base = ElementContainer<T>;
+    using Base              = ElementContainer<T>;
 
 public:
     using Face              = T;
@@ -162,15 +162,17 @@ public:
         RangeOfConvertibleTo<Rng, uint>)
     {
         auto begin = std::ranges::begin(r);
-        auto end = std::ranges::end(r);
+        auto end   = std::ranges::end(r);
 
-        if (begin == end) return UINT_NULL;
+        if (begin == end)
+            return UINT_NULL;
         uint n = std::distance(begin, end);
 
         uint fid = UINT_NULL;
 
         assert(n >= 3);
-        if (n < 3) return UINT_NULL;
+        if (n < 3)
+            return UINT_NULL;
 
         if constexpr (T::VERTEX_NUMBER < 0) {
             fid = addFace();
@@ -1056,9 +1058,8 @@ public:
      * @return a vector handle that allows to access to the custom component.
      */
     template<typename K>
-    CustomComponentVectorHandle<K>
-    perFaceCustomComponentVectorHandle(const std::string& name)
-        requires face::HasCustomComponents<T>
+    CustomComponentVectorHandle<K> perFaceCustomComponentVectorHandle(
+        const std::string& name) requires face::HasCustomComponents<T>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
@@ -1104,9 +1105,8 @@ public:
      * component.
      */
     template<typename K>
-    ConstCustomComponentVectorHandle<K>
-    perFaceCustomComponentVectorHandle(const std::string& name) const
-        requires face::HasCustomComponents<T>
+    ConstCustomComponentVectorHandle<K> perFaceCustomComponentVectorHandle(
+        const std::string& name) const requires face::HasCustomComponents<T>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }
@@ -1122,11 +1122,11 @@ protected:
     void manageImportTriFromPoly(const OthMesh& m)
     {
         if constexpr (HasFaceContainer<OthMesh>) {
-            using ParentMesh = Base::ParentMeshType;
-            using VertexType = ParentMesh::VertexType;
+            using ParentMesh  = Base::ParentMeshType;
+            using VertexType  = ParentMesh::VertexType;
             using MVertexType = OthMesh::VertexType;
-            using MCoordType = MVertexType::CoordType;
-            using MFaceType = OthMesh::FaceType;
+            using MCoordType  = MVertexType::CoordType;
+            using MFaceType   = OthMesh::FaceType;
 
             using VertexContainer = ParentMesh::VertexContainer;
 
@@ -1150,7 +1150,7 @@ protected:
                 FaceType::VERTEX_NUMBER == 3 &&
                 (MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0))
             {
-                VertexType* base = &Base::parentMesh->vertex(0);
+                VertexType*        base   = &Base::parentMesh->vertex(0);
                 const MVertexType* mvbase = &m.vertex(0);
 
                 for (const MFaceType& mf : m.faces()) {
@@ -1170,7 +1170,7 @@ protected:
                         importTriPointersHelper(f, mf, base, mvbase, tris, 0);
 
                         // number of other faces to add
-                        uint nf = tris.size() / 3 - 1;
+                        uint nf  = tris.size() / 3 - 1;
                         uint fid = addFaces(nf);
 
                         uint i = 3; // index that cycles into tris
@@ -1178,7 +1178,7 @@ protected:
                             FaceType& f = face(fid);
                             importTriPointersHelper(
                                 f, mf, base, mvbase, tris, i);
-                            i+=3;
+                            i += 3;
                         }
                     }
                 }
@@ -1187,7 +1187,9 @@ protected:
     }
 
 private:
-    void addFaceHelper(T& f) { /* base case: no need to add vertices */ }
+    void addFaceHelper(T& f)
+    { /* base case: no need to add vertices */
+    }
 
     template<typename... V>
     void addFaceHelper(T& f, typename T::VertexType* v, V... args)
@@ -1219,7 +1221,7 @@ private:
         uint                     basetri)
     {
         f.importFrom(mf); // import all the components from mf
-        for (uint i = basetri, j = 0; i < basetri+3; i++, j++) {
+        for (uint i = basetri, j = 0; i < basetri + 3; i++, j++) {
             f.vertex(j) = base + (mf.vertex(tris[i]) - mvbase);
 
             // wedge colors

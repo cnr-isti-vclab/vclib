@@ -35,10 +35,10 @@ namespace vcl::mesh {
 /**
  * @brief The EdgeContainer class represents a container of Edge
  * elements that can be used in a Mesh class.
- * 
+ *
  * This class adds a container (vector) of Edges to the Mesh, making
  * available the accessors members to them and their components.
- * 
+ *
  * It provides all the add, delete, reserve, compact and other functions to
  * manage the Edges, plus the iterators and views to iterate over them.
  * It also provides the functions to enable and disable the optional components
@@ -52,11 +52,11 @@ namespace vcl::mesh {
 template<EdgeConcept T>
 class EdgeContainer : public ElementContainer<T>
 {
-    template <EdgeConcept U>
+    template<EdgeConcept U>
     friend class EdgeContainer;
 
     using EdgeContainerType = EdgeContainer<T>;
-    using Base = ElementContainer<T>;
+    using Base              = ElementContainer<T>;
 
 public:
     using Edge              = T;
@@ -106,7 +106,6 @@ public:
      */
     uint edgeNumber() const { return Base::elementNumber(); }
 
-
     /**
      * @brief Returns the number of Edges (also deleted) contained in the
      * Edge container of the Mesh.
@@ -151,7 +150,7 @@ public:
      */
     uint addEdge(uint v0, uint v1)
     {
-        uint eid = addEdge();
+        uint eid            = addEdge();
         edge(eid).vertex(0) = &Base::parentMesh->vertex(v0);
         edge(eid).vertex(1) = &Base::parentMesh->vertex(v1);
         return eid;
@@ -171,7 +170,7 @@ public:
      */
     uint addEdge(typename T::VertexType* v0, typename T::VertexType* v1)
     {
-        uint eid = addEdge();
+        uint eid            = addEdge();
         edge(eid).vertex(0) = v0;
         edge(eid).vertex(1) = v1;
         return eid;
@@ -594,7 +593,6 @@ public:
         Base::template disableOptionalComponent<typename T::Color>();
     }
 
-
     // Mark
 
     /**
@@ -906,9 +904,8 @@ public:
      * component.
      */
     template<typename K>
-    ConstCustomComponentVectorHandle<K>
-    perEdgeCustomComponentVectorHandle(const std::string& name) const
-        requires edge::HasCustomComponents<T>
+    ConstCustomComponentVectorHandle<K> perEdgeCustomComponentVectorHandle(
+        const std::string& name) const requires edge::HasCustomComponents<T>
     {
         return Base::template customComponentVectorHandle<K>(name);
     }

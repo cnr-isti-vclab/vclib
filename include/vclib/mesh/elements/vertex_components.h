@@ -42,7 +42,8 @@
  * @defgroup vert_components Vertex Components
  * @ingroup components
  *
- * @brief This group lists all the Components that may be used by the Vertex element.
+ * @brief This group lists all the Components that may be used by the Vertex
+ * element.
  *
  * All these components are listed inside the vcl::vert namespace.
  */
@@ -59,20 +60,24 @@ template<typename Edge>
 using AdjacentEdges = comp::AdjacentEdges<Edge, -1, false>;
 
 template<typename EdgeType, typename VertexType>
-using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, VertexType>;
+using VerticalAdjacentEdges =
+    comp::AdjacentEdges<EdgeType, -1, false, VertexType>;
 
 template<typename EdgeType, typename VertexType>
-using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, VertexType, true>;
+using OptionalAdjacentEdges =
+    comp::AdjacentEdges<EdgeType, -1, false, VertexType, true>;
 
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
 
 template<typename FaceType, typename VertexType>
-using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, VertexType>;
+using VerticalAdjacentFaces =
+    comp::AdjacentFaces<FaceType, -1, false, VertexType>;
 
 template<typename FaceType, typename VertexType>
-using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, VertexType, true>;
+using OptionalAdjacentFaces =
+    comp::AdjacentFaces<FaceType, -1, false, VertexType, true>;
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
@@ -82,7 +87,8 @@ template<typename VertexType>
 using VerticalAdjacentVertices = comp::AdjacentVertices<VertexType, VertexType>;
 
 template<typename VertexType>
-using OptionalAdjacentVertices = comp::AdjacentVertices<VertexType, VertexType, true>;
+using OptionalAdjacentVertices =
+    comp::AdjacentVertices<VertexType, VertexType, true>;
 
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags<>;
@@ -94,7 +100,7 @@ using VerticalBitFlags = comp::BitFlags<VertexType>;
 using Color = comp::Color<>;
 
 template<typename VertexType>
-using VerticalColor = comp::Color<VertexType>; 
+using VerticalColor = comp::Color<VertexType>;
 
 template<typename VertexType>
 using OptionalColor = comp::Color<VertexType, true>;
@@ -180,7 +186,8 @@ using PrincipalCurvaturef = comp::PrincipalCurvaturef<>;
 using PrincipalCurvatured = comp::PrincipalCurvatured<>;
 
 template<typename ScalarType, typename VertexType>
-using VerticalPrincipalCurvature = comp::PrincipalCurvature<ScalarType, VertexType>;
+using VerticalPrincipalCurvature =
+    comp::PrincipalCurvature<ScalarType, VertexType>;
 
 template<typename VertexType>
 using VerticalPrincipalCurvaturef = comp::PrincipalCurvaturef<VertexType>;
@@ -188,7 +195,8 @@ template<typename VertexType>
 using VerticalPrincipalCurvatured = comp::PrincipalCurvatured<VertexType>;
 
 template<typename ScalarType, typename VertexType>
-using OptionalPrincipalCurvature = comp::PrincipalCurvature<ScalarType, VertexType, true>;
+using OptionalPrincipalCurvature =
+    comp::PrincipalCurvature<ScalarType, VertexType, true>;
 
 template<typename VertexType>
 using OptionalPrincipalCurvaturef = comp::PrincipalCurvaturef<VertexType, true>;

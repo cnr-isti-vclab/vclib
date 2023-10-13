@@ -30,7 +30,6 @@
 
 #include "element.h"
 
-
 namespace vcl {
 
 /**

@@ -25,8 +25,8 @@
 #define VCL_MESH_CONTAINER_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
 
 #include <array>
-#include <vector>
 #include <tuple>
+#include <vector>
 
 #include <vclib/concepts/mesh/components/component.h>
 #include <vclib/misc/compactness.h>
@@ -35,7 +35,7 @@
 
 namespace vcl::mesh {
 
-template<typename ...Comp>
+template<typename... Comp>
 class VerticalComponentsVectorTuple
 {
     using ComponentTypes = std::tuple<Comp...>;
@@ -46,12 +46,13 @@ class VerticalComponentsVectorTuple
     std::tuple<std::vector<typename Comp::DataValueType>...> tuple;
 
     std::array<bool, COMP_NUMBER> vecEnabled;
-    std::size_t siz = 0;
+    std::size_t                   siz = 0;
 
 public:
     VerticalComponentsVectorTuple()
     {
-        (setComponentEnabled<Comp, !vcl::comp::IsOptionalComponent<Comp>>(), ...);
+        (setComponentEnabled<Comp, !vcl::comp::IsOptionalComponent<Comp>>(),
+         ...);
     }
 
     static constexpr uint componentsNumber() { return COMP_NUMBER; }
@@ -75,7 +76,7 @@ public:
     void resize(std::size_t size)
     {
         if constexpr (componentsNumber() > 0) {
-            vectorResize<componentsNumber()-1>(size);
+            vectorResize<componentsNumber() - 1>(size);
         }
         siz = size;
     }
@@ -83,22 +84,20 @@ public:
     void reserve(std::size_t size)
     {
         if constexpr (componentsNumber() > 0) {
-            vectorReserve<componentsNumber()-1>(size);
+            vectorReserve<componentsNumber() - 1>(size);
         }
     }
 
     void compact(const std::vector<uint>& newIndices)
     {
         if constexpr (componentsNumber() > 0) {
-            vectorCompact<componentsNumber()-1>(newIndices);
+            vectorCompact<componentsNumber() - 1>(newIndices);
         }
     }
 
     void clear()
     {
-        auto function =
-            [](auto&... args)
-        {
+        auto function = [](auto&... args) {
             ((args.clear()), ...);
         };
 
@@ -134,7 +133,7 @@ public:
     void enableComponent()
     {
         constexpr uint ind = indexOfType<C>();
-        vecEnabled[ind] = true;
+        vecEnabled[ind]    = true;
         vector<C>().resize(siz);
     }
 
@@ -149,7 +148,7 @@ public:
     void disableComponent()
     {
         constexpr uint ind = indexOfType<C>();
-        vecEnabled[ind] = false;
+        vecEnabled[ind]    = false;
         vector<C>().clear();
     }
 
@@ -174,7 +173,7 @@ private:
             std::get<N>(tuple).resize(size);
         }
         if constexpr (N != 0)
-            vectorResize<N-1>(size);
+            vectorResize<N - 1>(size);
     }
 
     template<std::size_t N>
@@ -184,7 +183,7 @@ private:
             std::get<N>(tuple).reserve(size);
         }
         if constexpr (N != 0)
-            vectorReserve<N-1>(size);
+            vectorReserve<N - 1>(size);
     }
 
     template<std::size_t N>
@@ -194,7 +193,7 @@ private:
             vcl::compactVector(std::get<N>(tuple), newIndices);
         }
         if constexpr (N != 0)
-            vectorCompact<N-1>(newIndices);
+            vectorCompact<N - 1>(newIndices);
     }
 
     template<typename C, bool E>
@@ -221,7 +220,7 @@ private:
  * Crucial specialization - allows to catch components that are passed with a
  * TypeWrapper
  */
-template<typename ...Comp>
+template<typename... Comp>
 class VerticalComponentsVectorTuple<TypeWrapper<Comp...>> :
         public VerticalComponentsVectorTuple<Comp...>
 {

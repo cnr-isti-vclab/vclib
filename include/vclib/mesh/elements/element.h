@@ -52,7 +52,7 @@ namespace vcl {
  *
  * @ingroup elements
  */
-template <uint ELEM_ID, typename MeshType, typename... Comps>
+template<uint ELEM_ID, typename MeshType, typename... Comps>
 class Element : public comp::ParentMeshPointer<MeshType>, public Comps...
 {
     template<ElementConcept>
@@ -99,7 +99,6 @@ public:
         (Comps::importFrom(v), ...);
     }
 
-
 private:
     // hide init and isAvailable members
     void init() {}
@@ -107,16 +106,14 @@ private:
     bool isAvailable() const { return true; }
 
     // init to call after set parent mesh
-    void initVerticalComponents()
-    {
-        (construct<Comps>(), ...);
-    }
+    void initVerticalComponents() { (construct<Comps>(), ...); }
 
     template<typename Comp>
     void construct()
     {
         if constexpr (
-            comp::IsVerticalComponent<Comp> && comp::HasInitMemberFunction<Comp>)
+            comp::IsVerticalComponent<Comp> &&
+            comp::HasInitMemberFunction<Comp>)
         {
             if constexpr (comp::HasIsAvailableMemberFunction<Comp>) {
                 if (Comp::isAvailable()) {
@@ -142,7 +139,7 @@ private:
     struct ComponentIDPred
     {
     private:
-        template <typename Cont>
+        template<typename Cont>
         struct SameCmpPred
         {
             static constexpr bool value = Cont::COMPONENT_ID == COMP_ID;
@@ -159,13 +156,16 @@ private:
     {
     private:
         template<typename>
-        struct TypeUnwrapper {};
+        struct TypeUnwrapper
+        {
+        };
 
         template<typename C>
         struct TypeUnwrapper<TypeWrapper<C>>
         {
             using type = C;
         };
+
     public:
         using type =
             TypeUnwrapper<typename ComponentIDPred<COMP_ID>::type>::type;

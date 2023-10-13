@@ -66,8 +66,8 @@ public:
 
     public:
         using value_type = T;
-        using reference = value_type&;
-        using pointer = value_type*;
+        using reference  = value_type&;
+        using pointer    = value_type*;
 
         Iterator(Base it) : Base(it) {}
 
@@ -77,14 +77,14 @@ public:
     };
 
     class ConstIterator :
-        public std::vector<std::reference_wrapper<T>>::const_iterator
+            public std::vector<std::reference_wrapper<T>>::const_iterator
     {
         using Base = std::vector<std::reference_wrapper<T>>::const_iterator;
 
     public:
         using value_type = T;
-        using reference = const value_type&;
-        using pointer = const value_type*;
+        using reference  = const value_type&;
+        using pointer    = const value_type*;
 
         ConstIterator(Base it) : Base(it) {}
 

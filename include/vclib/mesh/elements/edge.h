@@ -55,8 +55,7 @@ public:
 };
 
 template<typename MeshType, typename... Comps>
-class Edge<MeshType, TypeWrapper<Comps...>> :
-        public Edge<MeshType, Comps...>
+class Edge<MeshType, TypeWrapper<Comps...>> : public Edge<MeshType, Comps...>
 {
 };
 

@@ -49,7 +49,7 @@ namespace vcl::mesh {
 template<vcl::VertexConcept T>
 class VertexContainer : public ElementContainer<T>
 {
-    template <VertexConcept U>
+    template<VertexConcept U>
     friend class VertexContainer;
 
     using VertexContainerType = VertexContainer<T>;
@@ -146,7 +146,7 @@ public:
      */
     uint addVertex(const typename T::CoordType& p)
     {
-        uint vid = addVertex();
+        uint vid            = addVertex();
         vertex(vid).coord() = p; // set the coordinate to the vertex
         return vid;
     }
@@ -862,8 +862,8 @@ public:
      * @return `true` if the Vertex Element has a custom component with the
      * given name.
      */
-    bool hasPerVertexCustomComponent(const std::string& name)
-        const requires vert::HasCustomComponents<T>
+    bool hasPerVertexCustomComponent(const std::string& name) const
+        requires vert::HasCustomComponents<T>
     {
         return Base::hasElemCustomComponent(name);
     }
@@ -955,8 +955,8 @@ public:
      * components of a given type.
      */
     template<typename K>
-    std::vector<std::string> perVertexCustomComponentNamesOfType()
-        const requires vert::HasCustomComponents<T>
+    std::vector<std::string> perVertexCustomComponentNamesOfType() const
+        requires vert::HasCustomComponents<T>
     {
         return Base::template elemCustomComponentNamesOfType<K>();
     }

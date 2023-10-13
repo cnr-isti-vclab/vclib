@@ -26,9 +26,9 @@
 
 #include <any>
 #include <string>
-#include <vector>
-#include <unordered_map>
 #include <typeindex>
+#include <unordered_map>
+#include <vector>
 
 #include <vclib/exceptions/mesh_exceptions.h>
 #include <vclib/misc/compactness.h>
@@ -87,7 +87,8 @@ public:
     /**
      * @brief Removes all the custom component vectors stored in the map.
      */
-    void clear(){
+    void clear()
+    {
         map.clear();
         needToInitialize.clear();
         compType.clear();
@@ -255,7 +256,7 @@ public:
     std::vector<std::string> allComponentNamesOfType() const
     {
         std::vector<std::string> names;
-        std::type_index t(typeid(CompType));
+        std::type_index          t(typeid(CompType));
         for (const auto& p : compType) {
             if (p.second == t)
                 names.push_back(p.first);
@@ -276,8 +277,8 @@ public:
      * component with the given name and the given template argument CompType.
      */
     template<typename CompType>
-    const std::vector<std::any>&
-    componentVector(const std::string& compName) const
+    const std::vector<std::any>& componentVector(
+        const std::string& compName) const
     {
         checkComponentType<CompType>(compName);
         std::vector<std::any>& v =
@@ -332,7 +333,8 @@ private:
         if (t != compType.at(compName)) {
             throw BadCustomComponentTypeException(
                 "Expected type " + std::string(compType.at(compName).name()) +
-                " for " + compName + ", but was " + std::string(t.name()) + ".");
+                " for " + compName + ", but was " + std::string(t.name()) +
+                ".");
         }
     }
 };

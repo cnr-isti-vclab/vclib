@@ -38,7 +38,8 @@
  * @defgroup edge_components Edge Components
  * @ingroup components
  *
- * @brief This group lists all the Components that may be used by the Edge element.
+ * @brief This group lists all the Components that may be used by the Edge
+ * element.
  *
  * All these components are listed inside the vcl::edge namespace.
  */
@@ -55,20 +56,24 @@ template<typename EdgeType>
 using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false>;
 
 template<typename EdgeType>
-using VerticalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, EdgeType>;
+using VerticalAdjacentEdges =
+    comp::AdjacentEdges<EdgeType, -1, false, EdgeType>;
 
 template<typename EdgeType>
-using OptionalAdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true>;
+using OptionalAdjacentEdges =
+    comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
 
 template<typename FaceType, typename EdgeType>
-using VerticalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, EdgeType>;
+using VerticalAdjacentFaces =
+    comp::AdjacentFaces<FaceType, -1, false, EdgeType>;
 
 template<typename FaceType, typename EdgeType>
-using OptionalAdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, EdgeType, true>;
+using OptionalAdjacentFaces =
+    comp::AdjacentFaces<FaceType, -1, false, EdgeType, true>;
 
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<>;
@@ -77,7 +82,7 @@ using BitFlags = comp::BitFlags<>;
 using Color = comp::Color<>;
 
 template<typename VertexType>
-using VerticalColor = comp::Color<VertexType>; 
+using VerticalColor = comp::Color<VertexType>;
 
 template<typename EdgeType>
 using OptionalColor = comp::Color<EdgeType, true>;

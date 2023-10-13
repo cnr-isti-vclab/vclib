@@ -33,9 +33,10 @@ namespace vcl {
 /**
  * @brief The Vertex class represents an Vertex element of the vcl::Mesh class.
  *
- * Using the VertexContainer class, it is possible to add a vector of Vertex elements to a mesh, and
- * manage them with the member functions exposed by the VertexContainer. Each Vertex element exposes
- * all the member functions of its Component types.
+ * Using the VertexContainer class, it is possible to add a vector of Vertex
+ * elements to a mesh, and manage them with the member functions exposed by the
+ * VertexContainer. Each Vertex element exposes all the member functions of its
+ * Component types.
  *
  * @tparam MeshType The type of the parent mesh.
  * @tparam Comps The types of the components of the element.
@@ -48,7 +49,8 @@ class Vertex : public Element<VERTEX, MeshType, Comps...>
 };
 
 template<typename MeshType, typename... Comps>
-class Vertex<MeshType, TypeWrapper<Comps...>> : public Vertex<MeshType, Comps...>
+class Vertex<MeshType, TypeWrapper<Comps...>> :
+        public Vertex<MeshType, Comps...>
 {
 };
 
