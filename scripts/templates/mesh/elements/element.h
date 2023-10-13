@@ -32,6 +32,16 @@ template<typename MeshType, typename... Comps>
 class %EL_UC%<MeshType, TypeWrapper<Comps...>> :
         public %EL_UC%<MeshType, Comps...>
 {
+public:
+    /**
+     * @brief Empty constructor.
+     *
+     * Calls automatically all the empty constructors of all the components
+     * available in the %EL_UC% (for all the components non-available,
+     * their empty constructor is called only when they become available).
+     */
+    %EL_UC%() = default;
+}
 };
 
 } // namespace vcl

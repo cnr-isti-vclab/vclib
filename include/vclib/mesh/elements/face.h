@@ -68,41 +68,6 @@ public:
     Face() = default;
 
     /**
-     * @brief Constructs a Face with the given range of vertex pointers.
-     *
-     * Sets a range of Vertex pointers to the face.
-     * If the Face size is static, the number of vertices of the range must be
-     * equal to the size of the Face (the value returned by vertexNumber()). If
-     * the Face size is dynamic, it will take care to update the also the size
-     * of the components tied to the vertex number of the face.
-     *
-     * @param[in] r: a range of vertex pointers in counterclockwise order
-     * that will be set as vertices of the face.
-     */
-    template<Range Rng>
-    Face(Rng&& r) requires RangeOfConvertibleTo<Rng, VertexType*>
-    {
-        setVertices(r);
-    }
-
-    /**
-     * @brief Creates a new Face, setting the Vertex pointer arguments to it.
-     *
-     * If the Face size is static, the number of vertices of the list must be
-     * equal to the size of the Face (the value returned by vertexNumber()). If
-     * the Face size is dynamic, it will take care to update the also the size
-     * of the components tied to the vertex number of the face.
-     *
-     * @param[in] args: a variable number of vertex pointers in counterclockwise
-     * order that will be set as vertices of the face.
-     */
-    template<typename... V>
-    Face(V... args) requires (std::convertible_to<V, VertexType*> && ...)
-    {
-        setVertices(std::list({args...}));
-    }
-
-    /**
      * @brief Sets all the Vertex pointers to the face.
      *
      * If the Face size is static, the number of vertices of the input range

@@ -52,6 +52,28 @@ class Edge : public Element<EDGE, MeshType, Comps...>
 
 public:
     using VertexType = VPtrs::VertexType;
+    using VPtrs::setVertices;
+
+    /**
+     * @brief Empty constructor.
+     *
+     * Calls automatically all the empty constructors of all the components
+     * available in the Edge (for all the components non-available, their empty
+     * constructor is called only when they become available).
+     */
+    Edge() = default;
+
+    /**
+     * @brief Sets the vertices of the edge.
+     *
+     * @param [in] v0: the first vertex of the edge.
+     * @param [in] v1: the second vertex of the edge.
+     */
+    void setVertices(VertexType* v0, VertexType* v1)
+    {
+        VPtrs::vertex(0) = v0;
+        VPtrs::vertex(1) = v1;
+    }
 };
 
 template<typename MeshType, typename... Comps>

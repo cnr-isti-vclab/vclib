@@ -52,6 +52,15 @@ template<typename MeshType, typename... Comps>
 class Vertex<MeshType, TypeWrapper<Comps...>> :
         public Vertex<MeshType, Comps...>
 {
+public:
+    /**
+     * @brief Empty constructor.
+     *
+     * Calls automatically all the empty constructors of all the components
+     * available in the Vertex (for all the components non-available, their
+     * empty constructor is called only when they become available).
+     */
+    Vertex() = default;
 };
 
 } // namespace vcl

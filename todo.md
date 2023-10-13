@@ -6,7 +6,6 @@
 - Mesh:
   - Elements:
     - [ ] set properly elements concepts
-    - [ ] set constructors for Edge element
   - Containers:
     - Element container should provide fast compact function, that does not preserve elements order
   - Mesh:
