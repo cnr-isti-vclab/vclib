@@ -1125,6 +1125,260 @@ public:
         Cont::template disableOptionalComponent<COMP_ID>();
     }
 
+    /**
+     * @brief Returns `true` if the Element having ID `ELEM_ID` has a custom
+     * component with the given name.
+     *
+     * This function does not take into account the type ot the custom
+     * component.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @param[in] name: the name of the custom component.
+     * @return `true` if the Element having ID `ELEM_ID` has a custom component
+     * having the given name.
+     */
+    template<uint ELEM_ID>
+    bool hasPerElementCustomComponent(const std::string& name) const
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::template hasElemCustomComponent(name);
+    }
+
+    /**
+     * @brief Returns a vector containing all the names of the custom components
+     * of any type associated to the Element having ID `ELEM_ID`.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @return A vector of strings representing all the names of the custom
+     * components for the Element having ID `ELEM_ID`.
+     */
+    template<uint ELEM_ID>
+    std::vector<std::string> perElementCustomComponentNames() const
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::template elemCustomComponentNames();
+    }
+
+    /**
+     * @brief Returns `true` if the Element having ID `ELEM_ID` has a custom
+     * component of type `K` with the given name.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @tparam K: the type of the custom component.
+     * @param[in] name: the name of the custom component.
+     * @return `true` if the Element having ID `ELEM_ID` has a custom component
+     * of type `K` having the given name.
+     */
+    template<uint ELEM_ID, typename K>
+    bool isPerElementCustomComponentOfType(const std::string& name) const
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::template isElemCustomComponentOfType<K>(name);
+    }
+
+    /**
+     * @brief Returns the std::type_index of the custom component having the
+     * given name associated to the Element having ID `ELEM_ID`.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @param[in] name: the name of the custom component.
+     * @return The std::type_index of the custom component having the given name
+     * associated to the Element having ID `ELEM_ID`.
+     */
+    template<uint ELEM_ID>
+    std::type_index perElementCustomComponentType(const std::string& name) const
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::template elemCustomComponentType(name);
+    }
+
+    /**
+     * @brief Returns a vector containing all the names of the custom components
+     * of type `K` associated to the Element having ID `ELEM_ID`.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @tparam K: the type of the custom component.
+     * @return A vector of strings representing all the names of the custom
+     * components of type `K` for the Element having ID `ELEM_ID`.
+     */
+    template<uint ELEM_ID, typename K>
+    std::vector<std::string> perElementCustomComponentNamesOfType() const
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::template elemCustomComponentNamesOfType<K>();
+    }
+
+    /**
+     * @brief Adds a custom component of type K having the given name to the
+     * Element having ID `ELEM_ID`.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @tparam K: the type of the custom component.
+     * @param[in] name: the name of the custom component.
+     */
+    template<uint ELEM_ID, typename K>
+    void addPerElementCustomComponent(const std::string& name)
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        Cont::template addElemCustomComponent<K>(name);
+    }
+
+    /**
+     * @brief Deletes the custom component of the given name from the Element
+     * having ID `ELEM_ID`.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @param[in] name: the name of the custom component.
+     */
+    template<uint ELEM_ID>
+    void deletePerElementCustomComponent(const std::string& name)
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        Cont::template deleteElemCustomComponent(name);
+    }
+
+    /**
+     * @brief Returns a vector handle to the custom component of type `K` having
+     * the given name associated to the Element having ID `ELEM_ID`.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * The handle can be used like a normal std::vector, but does not have
+     * access to the modifiers member functions (resize, push_back...). The
+     * handle contains **references** to the custom component, therefore you can
+     * modify the custom component by modifying the element of the handle vector
+     * normally. Since the handle stores references, there are no copies
+     * performed when calling this function.
+     *
+     * For example, assuming that the mesh has a vertex custom component named
+     * "cc" of type int:
+     *
+     * @code{.cpp}
+     * auto handle = m.perElementCustomComponentVectorHandle<VERTEX, int>("cc");
+     * for (Vertex& v : m.vertices() {
+     *    handle[m.index(v)] = 5; // v.customComponent<int>("cc") == 5
+     *    assert(v.customComponent<int>("cc") == 5);
+     * }
+     * @endcode
+     *
+     * Using handles allows to access more efficiently to custom components
+     * rather accessing from an element object. However, note that references
+     * are binded to the container of the mesh.
+     *
+     * @note Since the handle contains references, any operation that changes
+     * the size of the container could be destructive and invalidate the
+     * references contained in the handle.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @tparam K: the type of the custom component.
+     * @param[in] name: the name of the custom component.
+     * @return A handle to the custom component of type `K` having the given
+     * name associated to the Element having ID `ELEM_ID`.
+     */
+    template<uint ELEM_ID, typename K>
+    CustomComponentVectorHandle<K> perElementCustomComponentVectorHandle(
+        const std::string& name)
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::template customComponentVectorHandle<K>(name);
+    }
+
+    /**
+     * @brief Returns a const vector handle to the custom component of type `K`
+     * having the given name associated to the Element having ID `ELEM_ID`.
+     *
+     * The function requires that the Mesh has a Container of Elements having ID
+     * ELEM_ID, and that the Element has CustomComponents.
+     * Otherwise, a compiler error will be triggered.
+     *
+     * The handle can be used like a normal std::vector, but does not have
+     * access to the modifiers member functions (resize, push_back...). The
+     * handle contains **const references** to the custom component, therefore
+     * you can access to the custom component by accessing the element of the
+     * handle vector normally. Since the handle stores references, there are no
+     * copies performed when calling this function.
+     *
+     * For example, assuming that the mesh has a vertex custom component named
+     * "cc" of type int:
+     *
+     * @code{.cpp}
+     * auto handle = m.perElementCustomComponentVectorHandle<VERTEX, int>("cc");
+     * for (const Vertex& v : m.vertices() {
+     *     sum += handle[m.index(v)];
+     *     // handle[m.index(v)] = 5; // not allowed, const handle
+     * }
+     * @endcode
+     *
+     * Using handles allows to access more efficiently to custom components
+     * rather accessing from an element object. However, note that references
+     * are binded to the container of the mesh.
+     *
+     * @note Since the handle contains references, any operation that changes
+     * the size of the container could be destructive and invalidate the
+     * references contained in the handle.
+     *
+     * @tparam ELEM_ID: the ID of the element.
+     * @tparam K: the type of the custom component.
+     * @param[in] name: the name of the custom component.
+     * @return A const handle to the custom component of type `K` having the
+     * given name associated to the Element having ID `ELEM_ID`.
+     */
+    template<uint ELEM_ID, typename K>
+    ConstCustomComponentVectorHandle<K> perElementCustomComponentVectorHandle(
+        const std::string& name) const
+        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+    {
+        using Cont = ContainerOfElement<ELEM_ID>::type;
+
+        return Cont::template customComponentVectorHandle<K>(name);
+    }
+
 protected:
     template<typename Cont>
     bool isContainerCompact() const

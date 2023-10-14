@@ -1019,13 +1019,15 @@ public:
     }
 
     /**
-     * @brief Returns a vector handle to the given custom component. The handle
-     * can be used like a normal std::vector, but does not have access to the
-     * modifiers member functions (resize, push_back...). The handle contains
-     * **references** to the custom component, therefore you can modify the
-     * custom component by modifying the element of the handle vector normally.
-     * Since the handle stores references, there are no copies performed when
-     * calling this function.
+     * @brief Returns a vector handle to the custom component having the type K
+     * and the given name.
+     *
+     * The handle can be used like a normal std::vector, but does not have
+     * access to the modifiers member functions (resize, push_back...). The
+     * handle contains **references** to the custom component, therefore you can
+     * modify the custom component by modifying the element of the handle vector
+     * normally. Since the handle stores references, there are no copies
+     * performed when calling this function.
      *
      * For example, assuming that the mesh has a Face custom component named
      * `cc` of type int:
@@ -1065,14 +1067,15 @@ public:
     }
 
     /**
-     * @brief Returns a const vector handle to the given custom component. The
-     * handle can be used like a normal std::vector, but does not have access to
-     * the modifiers member functions (resize, push_back...). The handle
-     * contains
-     * **const references** to the custom component, therefore you can access to
-     * the custom component by accessing the element of the handle vector
-     * normally. Since the handle stores references, there are no copies
-     * performed when calling this function.
+     * @brief Returns a const vector handle to the custom component having type
+     * K and the given name.
+     *
+     * The handle can be used like a normal std::vector, but does not have
+     * access to the modifiers member functions (resize, push_back...). The
+     * handle contains **const references** to the custom component, therefore
+     * you can access to the custom component by accessing the element of the
+     * handle vector normally. Since the handle stores references, there are no
+     * copies performed when calling this function.
      *
      * For example, assuming that the mesh has a Face custom component named
      * `cc` of type int:
