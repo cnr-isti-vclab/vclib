@@ -32,6 +32,52 @@
 
 namespace vcl {
 
+namespace detail {
+
+/**
+ * @brief Read the next non-empty line from a txt file.
+ *
+ * @throws MalformedFileException if the file ends before a non-empty line is
+ * found and THROW is true.
+ *
+ * @tparam THROW: if true, throw an exception if the file ends before a
+ * non-empty line is found. If false and if it reaches the end of file, returns
+ * an empty string.
+ *
+ * @param[in] file: the file to read from.
+ * @return the next non-empty line read from the file.
+ */
+template<bool THROW = true>
+inline std::string readNextNonEmptyLine(
+    std::ifstream& file)
+{
+    std::string line;
+    do {
+        std::getline(file, line);
+        if constexpr (THROW) {
+            if (!file) {
+                throw vcl::MalformedFileException("Unexpected end of file.");
+            }
+        }
+        if (file && line.size() > 0) {
+            str::removeWindowsNewLine(line);
+        }
+    } while (file && line.size() == 0);
+    return line;
+}
+
+} // namespace detail
+
+/**
+ * @brief Open an input file stream.
+ *
+ * @throws CannotOpenFileException if the file cannot be opened.
+ *
+ * @param[in] filename: the name of the file to open.
+ * @param[in] ext: the extension of the file to open. If empty, the filename is
+ * used as is.
+ * @return the input file stream.
+ */
 inline std::ifstream openInputFileStream(
     const std::string& filename,
     const std::string& ext = "")
@@ -52,55 +98,83 @@ inline std::ifstream openInputFileStream(
     return fp;
 }
 
-// TODO
-// inline std::string readNextNonEmptyLine(
-//    std::ifstream& file)
-//{
-//    std::string line;
-//    do {
-//        std::getline(file, line);
-//        if (!file) {
-//            throw vcl::MalformedFileException("Unexpected end of file.");
-//        }
-//        if (line.size() > 0) {
-//            str::removeWindowsNewLine(line);
-//        }
-//    } while (line.size() == 0);
-//    return line;
-//}
+/**
+ * @brief Reads and returns the next non-empty line from a txt file.
+ *
+ * @throws MalformedFileException if the file ends before a non-empty line is
+ * found.
+ *
+ * @param[in] file: the file to read from.
+ * @return the next non-empty line read from the file.
+ */
+inline std::string readNextNonEmptyLine(
+    std::ifstream& file)
+{
+    return detail::readNextNonEmptyLine<>(file);
+}
 
+/**
+ * @brief Reads and returns the next non-empty line from a txt file.
+ *
+ * @param[in] file: the file to read from.
+ * @return the next non-empty line read from the file. If the file ends before a
+ * non-empty line is found, returns an empty string.
+ */
+inline std::string readNextNonEmptyLineNoThrow(
+    std::ifstream& file)
+{
+    return detail::readNextNonEmptyLine<false>(file);
+}
+
+/**
+ * @brief Reads and returns the next non-empty line from a txt file, tokenized
+ * with the given separator.
+ *
+ * @throws MalformedFileException if the file ends before a non-empty line is
+ * found.
+ *
+ * @param[in] file: the file to read from.
+ * @param[in] separator: the separator to use for tokenization.
+ * @return the next non-empty line read from the file, tokenized with the given
+ * separator.
+ */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
     std::ifstream& file,
     char           separator = ' ')
 {
     std::string    line;
     vcl::Tokenizer tokenizer;
+
     do {
-        std::getline(file, line);
-        if (!file) {
-            throw vcl::MalformedFileException("Unexpected end of file.");
-        }
-        if (line.size() > 0) {
-            str::removeWindowsNewLine(line);
-            tokenizer = vcl::Tokenizer(line, separator);
-        }
+        line = readNextNonEmptyLine(file);
+        tokenizer = vcl::Tokenizer(line, separator);
     } while (tokenizer.begin() == tokenizer.end());
+
     return tokenizer;
 }
 
+/**
+ * @brief Reads and returns the next non-empty line from a txt file, tokenized
+ * with the given separator.
+ *
+ * @param[in] file: the file to read from.
+ * @param[in] separator: the separator to use for tokenization.
+ * @return the next non-empty line read from the file, tokenized with the given
+ * separator. If the file ends before a non-empty line is found, returns an
+ * empty tokenizer.
+ */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     std::ifstream& file,
     char           separator = ' ')
 {
     std::string    line;
     vcl::Tokenizer tokenizer;
+
     do {
-        std::getline(file, line);
-        if (file && line.size() > 0) {
-            str::removeWindowsNewLine(line);
-            tokenizer = vcl::Tokenizer(line, separator);
-        }
-    } while (file && tokenizer.begin() == tokenizer.end());
+        line = readNextNonEmptyLineNoThrow(file);
+        tokenizer = vcl::Tokenizer(line, separator);
+    } while (tokenizer.begin() == tokenizer.end());
+
     return tokenizer;
 }
 
@@ -108,6 +182,17 @@ namespace io {
 
 // read/bin
 
+// TODO: add isColor parameter also in integral read functions - and then
+// divide by 255 if T is not integral
+
+/**
+ * @brief Reads a char (one byte) from a binary file, and returns it as a
+ * type T.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @return A value of type T containing the read char.
+ */
 template<typename T>
 T readChar(std::ifstream& file)
 {
@@ -116,6 +201,14 @@ T readChar(std::ifstream& file)
     return (T) c;
 }
 
+/**
+ * @brief Reads an unsigned char (one byte) from a binary file, and returns it
+ * as a type T.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @return A value of type T containing the read unsigned char.
+ */
 template<typename T>
 T readUChar(std::ifstream& file)
 {
@@ -124,6 +217,14 @@ T readUChar(std::ifstream& file)
     return (T) c;
 }
 
+/**
+ * @brief Reads a short (two bytes) from a binary file, and returns it as a
+ * type T.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @return A value of type T containing the read short.
+ */
 template<typename T>
 T readShort(std::ifstream& file)
 {
@@ -132,6 +233,14 @@ T readShort(std::ifstream& file)
     return (T) c;
 }
 
+/**
+ * @brief Reads an unsigned short (two bytes) from a binary file, and returns
+ * it as a type T.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @return A value of type T containing the read unsigned short.
+ */
 template<typename T>
 T readUShort(std::ifstream& file)
 {
@@ -140,6 +249,14 @@ T readUShort(std::ifstream& file)
     return (T) c;
 }
 
+/**
+ * @brief Reads an int (four bytes) from a binary file, and returns it as a
+ * type T.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @return A value of type T containing the read int.
+ */
 template<typename T>
 T readInt(std::ifstream& file)
 {
@@ -148,6 +265,14 @@ T readInt(std::ifstream& file)
     return (T) c;
 }
 
+/**
+ * @brief Reads an unsigned int (four bytes) from a binary file, and returns
+ * it as a type T.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @return A value of type T containing the read unsigned int.
+ */
 template<typename T>
 T readUInt(std::ifstream& file)
 {
@@ -156,29 +281,75 @@ T readUInt(std::ifstream& file)
     return (T) c;
 }
 
+/**
+ * @brief Reads a float (four bytes) from a binary file, and returns it as a
+ * type T.
+ *
+ * @note If the read primitive is a color, it is converted in a value that
+ * makes sense depending on T. For example, if T is an integral type the value
+ * is multiplied by 255. If T is a float, the value is not modified.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @return A value of type T containing the read float.
+ */
 template<typename T>
 T readFloat(std::ifstream& file, bool isColor = false)
 {
     float c;
     file.read((char*) &c, 4);
-    if (isColor)
-        return (T) (c * 255);
+    if constexpr (std::integral<T>) {
+        if (isColor)
+            return (T) (c * 255);
+    }
     return (T) c;
 }
 
+/**
+ * @brief Reads a double (eight bytes) from a binary file, and returns it as
+ * a type T.
+ *
+ * @note If the read primitive is a color, it is converted in a value that
+ * makes sense depending on T. For example, if T is an integral type the value
+ * is multiplied by 255. If T is a float, the value is not modified.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @return A value of type T containing the read double.
+ */
 template<typename T>
 T readDouble(std::ifstream& file, bool isColor = false)
 {
     double c;
     file.read((char*) &c, 8);
-    if (isColor)
-        return (T) (c * 255);
+    if constexpr (std::integral<T>) {
+        if (isColor)
+            return (T) (c * 255);
+    }
     return (T) c;
 }
 
-// TODO - rename to readPrimitiveType
+/**
+ * @brief Reads a primitive type from a binary file, and returns it as a type
+ * T.
+ *
+ * @note if you are reading from a txt file, use first the function
+ * readAndTokenizeNextNonEmptyLine to read and tokenize a line, and then use the
+ * Tokernizer iterator to read the primitives.
+ *
+ * @note If the read primitive is a color, it is converted in a value that
+ * makes sense depending on T and the primitive. For example, if T is an
+ * integral type, and the primitive is a float, the value is multiplied by 255.
+ *
+ * @tparam T: the type to return.
+ * @param[in] file: the file to read from.
+ * @param[in] type: the type of the primitive to read.
+ * @param[in] isColor: whether the primitive is a color (in which case it is
+ * converted in a value that makes sense depending on T and type).
+ * @return A value of type T containing the read primitive.
+ */
 template<typename T>
-T readProperty(std::ifstream& file, PrimitiveType type, bool isColor = false)
+T readPrimitiveType(std::ifstream& file, PrimitiveType type, bool isColor = false)
 {
     T p;
     switch (type) {
@@ -198,7 +369,6 @@ T readProperty(std::ifstream& file, PrimitiveType type, bool isColor = false)
     return p;
 }
 
-// TODO - move this to some specific mesh file
 template<ElementConcept El>
 void readCustomComponent(
     std::ifstream&     file,
@@ -209,28 +379,28 @@ void readCustomComponent(
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))
         elem.template customComponent<char>(cName) =
-            readProperty<char>(file, type);
+            readPrimitiveType<char>(file, type);
     else if (ti == typeid(unsigned char))
         elem.template customComponent<unsigned char>(cName) =
-            readProperty<unsigned char>(file, type);
+            readPrimitiveType<unsigned char>(file, type);
     else if (ti == typeid(short))
         elem.template customComponent<short>(cName) =
-            readProperty<short>(file, type);
+            readPrimitiveType<short>(file, type);
     else if (ti == typeid(unsigned short))
         elem.template customComponent<unsigned short>(cName) =
-            readProperty<unsigned short>(file, type);
+            readPrimitiveType<unsigned short>(file, type);
     else if (ti == typeid(int))
         elem.template customComponent<int>(cName) =
-            readProperty<int>(file, type);
+            readPrimitiveType<int>(file, type);
     else if (ti == typeid(unsigned int))
         elem.template customComponent<uint>(cName) =
-            readProperty<uint>(file, type);
+            readPrimitiveType<uint>(file, type);
     else if (ti == typeid(float))
         elem.template customComponent<float>(cName) =
-            readProperty<float>(file, type);
+            readPrimitiveType<float>(file, type);
     else if (ti == typeid(double))
         elem.template customComponent<double>(cName) =
-            readProperty<double>(file, type);
+            readPrimitiveType<double>(file, type);
     else
         assert(0);
 }
@@ -295,9 +465,8 @@ T readDouble(vcl::Tokenizer::iterator& token, bool isColor = false)
     }
 }
 
-// TODO - rename to readPrimitiveType
 template<typename T>
-T readProperty(
+T readPrimitiveType(
     vcl::Tokenizer::iterator& token,
     PrimitiveType             type,
     bool                      isColor = false)
@@ -327,7 +496,6 @@ T readProperty(
     return p;
 }
 
-// TODO - move this to some specific mesh file
 template<ElementConcept El>
 void readCustomComponent(
     vcl::Tokenizer::iterator& token,
@@ -338,28 +506,28 @@ void readCustomComponent(
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))
         elem.template customComponent<char>(cName) =
-            readProperty<char>(token, type);
+            readPrimitiveType<char>(token, type);
     else if (ti == typeid(unsigned char))
         elem.template customComponent<unsigned char>(cName) =
-            readProperty<unsigned char>(token, type);
+            readPrimitiveType<unsigned char>(token, type);
     else if (ti == typeid(short))
         elem.template customComponent<short>(cName) =
-            readProperty<short>(token, type);
+            readPrimitiveType<short>(token, type);
     else if (ti == typeid(unsigned short))
         elem.template customComponent<unsigned short>(cName) =
-            readProperty<unsigned short>(token, type);
+            readPrimitiveType<unsigned short>(token, type);
     else if (ti == typeid(int))
         elem.template customComponent<int>(cName) =
-            readProperty<int>(token, type);
+            readPrimitiveType<int>(token, type);
     else if (ti == typeid(unsigned int))
         elem.template customComponent<uint>(cName) =
-            readProperty<uint>(token, type);
+            readPrimitiveType<uint>(token, type);
     else if (ti == typeid(float))
         elem.template customComponent<float>(cName) =
-            readProperty<float>(token, type);
+            readPrimitiveType<float>(token, type);
     else if (ti == typeid(double))
         elem.template customComponent<double>(cName) =
-            readProperty<double>(token, type);
+            readPrimitiveType<double>(token, type);
     else
         assert(0);
 }

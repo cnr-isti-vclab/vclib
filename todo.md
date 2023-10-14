@@ -17,13 +17,7 @@
 - Iterators:
   - [ ] make just one StaticGridIterator class that can be both const and non-const (avoid code duplication)
 - IO:
-  - [ ] Fix namespaces, remove io namespace
-  - [ ] consistent renaming:
-    - [ ] read* -> when some data is read from an already opened stream
-    - [ ] load* -> when some data is read from a file (that is opened and closed)
-    - [ ] write* -> when some data is written to an already opened stream
-    - [ ] save* -> when some data is written to a file (that is opened and closed)
-  - [ ] Implement a readNextNonEmptuLine function (also with no throw)
+  - [ ] Manage read and write colors from integral to non integral types
 - Algorithms:
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] Implement exporter to VCG

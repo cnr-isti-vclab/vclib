@@ -48,7 +48,7 @@ void readPlyVertexProperty(
     if (p.name >= ply::x && p.name <= ply::z) {
         using Scalar = VertexType::CoordType::ScalarType;
         int a        = p.name - ply::x;
-        v.coord()[a] = io::readProperty<Scalar>(file, p.type);
+        v.coord()[a] = io::readPrimitiveType<Scalar>(file, p.type);
         hasBeenRead  = true;
     }
     if (p.name >= ply::nx && p.name <= ply::nz) {
@@ -56,7 +56,7 @@ void readPlyVertexProperty(
             if (vcl::isPerVertexNormalAvailable(mesh)) {
                 using Scalar  = VertexType::NormalType::ScalarType;
                 int a         = p.name - ply::nx;
-                v.normal()[a] = io::readProperty<Scalar>(file, p.type);
+                v.normal()[a] = io::readPrimitiveType<Scalar>(file, p.type);
                 hasBeenRead   = true;
             }
         }
@@ -65,7 +65,7 @@ void readPlyVertexProperty(
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (vcl::isPerVertexColorAvailable(mesh)) {
                 int a        = p.name - ply::red;
-                v.color()[a] = io::readProperty<unsigned char>(file, p.type);
+                v.color()[a] = io::readPrimitiveType<unsigned char>(file, p.type);
                 hasBeenRead  = true;
             }
         }
@@ -74,7 +74,7 @@ void readPlyVertexProperty(
         if constexpr (vcl::HasPerVertexQuality<MeshType>) {
             using QualityType = VertexType::QualityType;
             if (vcl::isPerVertexQualityAvailable(mesh)) {
-                v.quality() = io::readProperty<QualityType>(file, p.type);
+                v.quality() = io::readPrimitiveType<QualityType>(file, p.type);
                 hasBeenRead = true;
             }
         }
@@ -84,7 +84,7 @@ void readPlyVertexProperty(
             using Scalar = VertexType::TexCoordType::ScalarType;
             if (vcl::isPerVertexTexCoordAvailable(mesh)) {
                 int a           = p.name - ply::texture_u;
-                v.texCoord()[a] = io::readProperty<Scalar>(file, p.type);
+                v.texCoord()[a] = io::readPrimitiveType<Scalar>(file, p.type);
                 hasBeenRead     = true;
             }
         }
@@ -99,12 +99,12 @@ void readPlyVertexProperty(
     }
     if (!hasBeenRead) {
         if (p.list) {
-            uint s = io::readProperty<int>(file, p.listSizeType);
+            uint s = io::readPrimitiveType<int>(file, p.listSizeType);
             for (uint i = 0; i < s; ++i)
-                io::readProperty<int>(file, p.type);
+                io::readPrimitiveType<int>(file, p.type);
         }
         else {
-            io::readProperty<int>(file, p.type);
+            io::readPrimitiveType<int>(file, p.type);
         }
     }
 }

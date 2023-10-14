@@ -67,12 +67,12 @@ inline void readPlyUnknownElement(
         for (uint i = 0; i < el.numberElements; ++i) {
             for (const PlyProperty& p : el.properties) {
                 if (p.list) {
-                    uint s = io::readProperty<int>(file, p.listSizeType);
+                    uint s = io::readPrimitiveType<int>(file, p.listSizeType);
                     for (uint i = 0; i < s; ++i)
-                        io::readProperty<int>(file, p.type);
+                        io::readPrimitiveType<int>(file, p.type);
                 }
                 else {
-                    io::readProperty<int>(file, p.type);
+                    io::readPrimitiveType<int>(file, p.type);
                 }
             }
         }

@@ -136,10 +136,10 @@ void readPlyFaceProperty(
     bool              hasBeenRead = false;
     std::vector<uint> vids; // contains the vertex ids of the actual face
     if (p.name == ply::vertex_indices) { // loading vertex indices
-        uint fSize = io::readProperty<uint>(file, p.listSizeType);
+        uint fSize = io::readPrimitiveType<uint>(file, p.listSizeType);
         vids.resize(fSize);
         for (uint i = 0; i < fSize; ++i) {
-            vids[i] = io::readProperty<size_t>(file, p.type);
+            vids[i] = io::readPrimitiveType<size_t>(file, p.type);
         }
         hasBeenRead = true;
         // will manage the case of loading a polygon in a triangle mesh
@@ -149,12 +149,12 @@ void readPlyFaceProperty(
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
                 using Scalar = FaceType::WedgeTexCoordType::ScalarType;
-                uint uvSize  = io::readProperty<uint>(file, p.listSizeType);
+                uint uvSize  = io::readPrimitiveType<uint>(file, p.listSizeType);
                 uint fSize   = uvSize / 2;
                 std::vector<std::pair<Scalar, Scalar>> wedges(fSize);
                 for (uint i = 0; i < fSize; ++i) {
-                    Scalar u         = io::readProperty<Scalar>(file, p.type);
-                    Scalar v         = io::readProperty<Scalar>(file, p.type);
+                    Scalar u         = io::readPrimitiveType<Scalar>(file, p.type);
+                    Scalar v         = io::readPrimitiveType<Scalar>(file, p.type);
                     wedges[i].first  = u;
                     wedges[i].second = v;
                 }
@@ -167,7 +167,7 @@ void readPlyFaceProperty(
     if (p.name == ply::texnumber) {
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                uint n      = io::readProperty<uint>(file, p.type);
+                uint n      = io::readPrimitiveType<uint>(file, p.type);
                 hasBeenRead = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -183,7 +183,7 @@ void readPlyFaceProperty(
             if (vcl::isPerFaceNormalAvailable(mesh)) {
                 using Scalar = FaceType::NormalType::ScalarType;
                 int    a     = p.name - ply::nx;
-                Scalar n     = io::readProperty<Scalar>(file, p.type);
+                Scalar n     = io::readPrimitiveType<Scalar>(file, p.type);
                 hasBeenRead  = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -198,7 +198,7 @@ void readPlyFaceProperty(
         if constexpr (vcl::HasPerFaceColor<MeshType>) {
             if (vcl::isPerFaceColorAvailable(mesh)) {
                 int           a = p.name - ply::red;
-                unsigned char c = io::readProperty<unsigned char>(file, p.type);
+                unsigned char c = io::readPrimitiveType<unsigned char>(file, p.type);
                 hasBeenRead     = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -212,7 +212,7 @@ void readPlyFaceProperty(
         if constexpr (vcl::HasPerFaceQuality<MeshType>) {
             using QualityType = FaceType::QualityType;
             if (vcl::isPerFaceQualityAvailable(mesh)) {
-                QualityType s = io::readProperty<QualityType>(file, p.type);
+                QualityType s = io::readPrimitiveType<QualityType>(file, p.type);
                 hasBeenRead   = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -234,12 +234,12 @@ void readPlyFaceProperty(
     // we still need to read and discard what we read
     if (!hasBeenRead) {
         if (p.list) {
-            uint s = io::readProperty<int>(file, p.listSizeType);
+            uint s = io::readPrimitiveType<int>(file, p.listSizeType);
             for (uint i = 0; i < s; ++i)
-                io::readProperty<int>(file, p.type);
+                io::readPrimitiveType<int>(file, p.type);
         }
         else {
-            io::readProperty<int>(file, p.type);
+            io::readPrimitiveType<int>(file, p.type);
         }
     }
 }
