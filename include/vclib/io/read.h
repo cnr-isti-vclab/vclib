@@ -48,8 +48,7 @@ namespace detail {
  * @return the next non-empty line read from the file.
  */
 template<bool THROW = true>
-inline std::string readNextNonEmptyLine(
-    std::ifstream& file)
+inline std::string readNextNonEmptyLine(std::ifstream& file)
 {
     std::string line;
     do {
@@ -107,8 +106,7 @@ inline std::ifstream openInputFileStream(
  * @param[in] file: the file to read from.
  * @return the next non-empty line read from the file.
  */
-inline std::string readNextNonEmptyLine(
-    std::ifstream& file)
+inline std::string readNextNonEmptyLine(std::ifstream& file)
 {
     return detail::readNextNonEmptyLine<>(file);
 }
@@ -120,8 +118,7 @@ inline std::string readNextNonEmptyLine(
  * @return the next non-empty line read from the file. If the file ends before a
  * non-empty line is found, returns an empty string.
  */
-inline std::string readNextNonEmptyLineNoThrow(
-    std::ifstream& file)
+inline std::string readNextNonEmptyLineNoThrow(std::ifstream& file)
 {
     return detail::readNextNonEmptyLine<false>(file);
 }
@@ -146,7 +143,7 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
     vcl::Tokenizer tokenizer;
 
     do {
-        line = readNextNonEmptyLine(file);
+        line      = readNextNonEmptyLine(file);
         tokenizer = vcl::Tokenizer(line, separator);
     } while (tokenizer.begin() == tokenizer.end());
 
@@ -171,7 +168,7 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     vcl::Tokenizer tokenizer;
 
     do {
-        line = readNextNonEmptyLineNoThrow(file);
+        line      = readNextNonEmptyLineNoThrow(file);
         tokenizer = vcl::Tokenizer(line, separator);
     } while (tokenizer.begin() == tokenizer.end());
 
@@ -349,7 +346,10 @@ T readDouble(std::ifstream& file, bool isColor = false)
  * @return A value of type T containing the read primitive.
  */
 template<typename T>
-T readPrimitiveType(std::ifstream& file, PrimitiveType type, bool isColor = false)
+T readPrimitiveType(
+    std::ifstream& file,
+    PrimitiveType  type,
+    bool           isColor = false)
 {
     T p;
     switch (type) {

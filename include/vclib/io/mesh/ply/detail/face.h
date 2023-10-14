@@ -149,12 +149,12 @@ void readPlyFaceProperty(
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
                 using Scalar = FaceType::WedgeTexCoordType::ScalarType;
-                uint uvSize  = io::readPrimitiveType<uint>(file, p.listSizeType);
-                uint fSize   = uvSize / 2;
+                uint uvSize = io::readPrimitiveType<uint>(file, p.listSizeType);
+                uint fSize  = uvSize / 2;
                 std::vector<std::pair<Scalar, Scalar>> wedges(fSize);
                 for (uint i = 0; i < fSize; ++i) {
-                    Scalar u         = io::readPrimitiveType<Scalar>(file, p.type);
-                    Scalar v         = io::readPrimitiveType<Scalar>(file, p.type);
+                    Scalar u = io::readPrimitiveType<Scalar>(file, p.type);
+                    Scalar v = io::readPrimitiveType<Scalar>(file, p.type);
                     wedges[i].first  = u;
                     wedges[i].second = v;
                 }
@@ -198,8 +198,9 @@ void readPlyFaceProperty(
         if constexpr (vcl::HasPerFaceColor<MeshType>) {
             if (vcl::isPerFaceColorAvailable(mesh)) {
                 int           a = p.name - ply::red;
-                unsigned char c = io::readPrimitiveType<unsigned char>(file, p.type);
-                hasBeenRead     = true;
+                unsigned char c =
+                    io::readPrimitiveType<unsigned char>(file, p.type);
+                hasBeenRead = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
                 for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {
@@ -212,8 +213,9 @@ void readPlyFaceProperty(
         if constexpr (vcl::HasPerFaceQuality<MeshType>) {
             using QualityType = FaceType::QualityType;
             if (vcl::isPerFaceQualityAvailable(mesh)) {
-                QualityType s = io::readPrimitiveType<QualityType>(file, p.type);
-                hasBeenRead   = true;
+                QualityType s =
+                    io::readPrimitiveType<QualityType>(file, p.type);
+                hasBeenRead = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
                 for (uint ff = mesh.index(f); ff < mesh.faceNumber(); ++ff) {

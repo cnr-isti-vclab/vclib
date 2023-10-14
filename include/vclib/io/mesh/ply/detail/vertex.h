@@ -64,9 +64,10 @@ void readPlyVertexProperty(
     if (p.name >= ply::red && p.name <= ply::alpha) {
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (vcl::isPerVertexColorAvailable(mesh)) {
-                int a        = p.name - ply::red;
-                v.color()[a] = io::readPrimitiveType<unsigned char>(file, p.type);
-                hasBeenRead  = true;
+                int a = p.name - ply::red;
+                v.color()[a] =
+                    io::readPrimitiveType<unsigned char>(file, p.type);
+                hasBeenRead = true;
             }
         }
     }
