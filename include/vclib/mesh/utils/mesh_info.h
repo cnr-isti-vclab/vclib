@@ -717,46 +717,54 @@ private:
     }
 };
 
+template<uint ELEM_ID, MeshConcept MeshType>
+void addPerElementCustomComponent(
+    MeshType&                        m,
+    const MeshInfo::CustomComponent& cc)
+{
+    switch (cc.type) {
+    case CHAR:
+        m.template addPerElementCustomComponent<ELEM_ID, char>(cc.name);
+        break;
+    case UCHAR:
+        m.template addPerElementCustomComponent<ELEM_ID, unsigned char>(
+            cc.name);
+        break;
+    case SHORT:
+        m.template addPerElementCustomComponent<ELEM_ID, short>(cc.name);
+        break;
+    case USHORT:
+        m.template addPerElementCustomComponent<ELEM_ID, unsigned short>(
+            cc.name);
+        break;
+    case INT:
+        m.template addPerElementCustomComponent<ELEM_ID, int>(cc.name);
+        break;
+    case UINT:
+        m.template addPerElementCustomComponent<ELEM_ID, uint>(cc.name);
+        break;
+    case FLOAT:
+        m.template addPerElementCustomComponent<ELEM_ID, float>(cc.name);
+        break;
+    case DOUBLE:
+        m.template addPerElementCustomComponent<ELEM_ID, double>(cc.name);
+        break;
+    default: assert(0);
+    }
+}
+
 template<MeshConcept MeshType>
 void addPerVertexCustomComponent(
     MeshType&                        m,
     const MeshInfo::CustomComponent& cc)
 {
-    switch (cc.type) {
-    case CHAR: m.template addPerVertexCustomComponent<char>(cc.name); break;
-    case UCHAR:
-        m.template addPerVertexCustomComponent<unsigned char>(cc.name);
-        break;
-    case SHORT: m.template addPerVertexCustomComponent<short>(cc.name); break;
-    case USHORT:
-        m.template addPerVertexCustomComponent<unsigned short>(cc.name);
-        break;
-    case INT: m.template addPerVertexCustomComponent<int>(cc.name); break;
-    case UINT: m.template addPerVertexCustomComponent<uint>(cc.name); break;
-    case FLOAT: m.template addPerVertexCustomComponent<float>(cc.name); break;
-    case DOUBLE: m.template addPerVertexCustomComponent<double>(cc.name); break;
-    default: assert(0);
-    }
+    addPerElementCustomComponent<VERTEX>(m, cc);
 }
 
 template<FaceMeshConcept MeshType>
 void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
-    switch (cc.type) {
-    case CHAR: m.template addPerFaceCustomComponent<char>(cc.name); break;
-    case UCHAR:
-        m.template addPerFaceCustomComponent<unsigned char>(cc.name);
-        break;
-    case SHORT: m.template addPerFaceCustomComponent<short>(cc.name); break;
-    case USHORT:
-        m.template addPerFaceCustomComponent<unsigned short>(cc.name);
-        break;
-    case INT: m.template addPerFaceCustomComponent<int>(cc.name); break;
-    case UINT: m.template addPerFaceCustomComponent<uint>(cc.name); break;
-    case FLOAT: m.template addPerFaceCustomComponent<float>(cc.name); break;
-    case DOUBLE: m.template addPerFaceCustomComponent<double>(cc.name); break;
-    default: assert(0);
-    }
+    addPerElementCustomComponent<FACE>(m, cc);
 }
 
 /**
