@@ -53,6 +53,7 @@ option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 
 #VCG
+option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
 option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
 
 set(VCLIB_EXTERNAL_LIBRARIES "")

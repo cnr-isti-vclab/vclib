@@ -403,8 +403,12 @@ if (TARGET vclib-external-vcg)
         include/vclib/ext/vcg/import.h)
 endif()
 
-add_library(vclib INTERFACE)
+add_library(vclib-include INTERFACE)
+target_include_directories(vclib-include INTERFACE ${VCLIB_INCLUDE_DIR})
+set_property(TARGET vclib-include PROPERTY COMPILE_WARNING_AS_ERROR ON)
 
+add_library(vclib INTERFACE)
+target_link_libraries(vclib INTERFACE vclib-include)
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
 target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
