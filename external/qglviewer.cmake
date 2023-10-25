@@ -20,7 +20,7 @@
 find_package(QGLViewer QUIET)
 
 if (VCLIB_ALLOW_SYSTEM_QGLVIEWER)
-    if (QT_FOUND AND OpenGL_FOUND)
+    if (VCLIB_ALLOW_SYSTEM_QT AND QT_FOUND AND VCLIB_ALLOW_SYSTEM_OPENGL AND OpenGL_FOUND)
         if (QGLViewer_FOUND)
             message(STATUS "- QGLViewer - using system-provided library")
 
@@ -37,10 +37,10 @@ if (VCLIB_ALLOW_SYSTEM_QGLVIEWER)
     else()
         # message indicating why we jumped QGLViewer
         set (MISSING_LIB)
-        if (NOT OpenGL_FOUND)
+        if (NOT OpenGL_FOUND OR NOT VCLIB_ALLOW_SYSTEM_OPENGL)
             list(APPEND MISSING_LIB OpenGL)
         endif()
-        if (NOT QT_FOUND)
+        if (NOT QT_FOUND OR NOT VCLIB_ALLOW_SYSTEM_QT)
             list(APPEND MISSING_LIB Qt)
         endif()
 
