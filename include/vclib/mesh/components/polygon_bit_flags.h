@@ -137,7 +137,7 @@ public:
     /**
      * @brief Static number of bits that can have custom meanings to the user
      */
-    static const uint USER_BITS_NUMBER = sizeof(FT) * 8 - FIRST_USER_BIT;
+    inline static const uint USER_BITS_NUMBER = sizeof(FT) * 8 - FIRST_USER_BIT;
 
     /**
      * @brief Static number of bits for each edge that can have custom meanings
