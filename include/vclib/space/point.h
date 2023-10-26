@@ -458,8 +458,8 @@ public:
      * @brief Sets all the components of the Point object from a set of scalar
      * values.
      *
-     * The member function takes a variable number of scalar arguments, which are
-     * used to set the components of the Point object. The number of
+     * The member function takes a variable number of scalar arguments, which
+     * are used to set the components of the Point object. The number of
      * arguments must be equal to the dimensionality of the Point object, which
      * is determined by the template parameter N.
      *
