@@ -290,6 +290,7 @@ set(HEADERS
     include/vclib/space/point.h
     include/vclib/space/polygon.h
     include/vclib/space/principal_curvature.h
+    include/vclib/space/quaternion.h
     include/vclib/space/sampler.h
     include/vclib/space/segment.h
     include/vclib/space/sphere.h
@@ -423,11 +424,6 @@ endif()
 if (VCLIB_IDE)
     add_custom_target(vclib_ide SOURCES
         ${HEADERS} ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
-
-target_sources(vclib_ide
-  PRIVATE
-    include/vclib/io/mesh.h
-)
 endif()
 
 if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)

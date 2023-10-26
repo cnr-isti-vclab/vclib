@@ -29,6 +29,7 @@
     - [ ] weights input argument of all the function should be a range
 - Space:
   - [ ] improve documentation for Grid data structures
+  - [ ] add set() member function to Point class
 - Misc:
   - [ ] implement non-static member functions for FileInfo class
 - External:
