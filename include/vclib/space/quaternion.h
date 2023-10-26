@@ -24,8 +24,8 @@
 #ifndef VCL_SPACE_QUATERNION_H
 #define VCL_SPACE_QUATERNION_H
 
-#include "point.h"
 #include "matrix.h"
+#include "point.h"
 
 namespace vcl {
 
@@ -54,15 +54,19 @@ public:
     }
 
     Scalar& w() { return Base::x(); }
+
     const Scalar& w() const { return Base::x(); }
 
     Scalar& x() { return Base::y(); }
+
     const Scalar& x() const { return Base::y(); }
 
     Scalar& y() { return Base::z(); }
+
     const Scalar& y() const { return Base::z(); }
 
     Scalar& z() { return Base::w(); }
+
     const Scalar& z() const { return Base::w(); }
 };
 
