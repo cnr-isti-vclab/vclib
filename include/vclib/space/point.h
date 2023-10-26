@@ -95,9 +95,7 @@ public:
     template<typename... Scalars>
     Point(Scalars... scalars) requires (sizeof...(scalars) == N)
     {
-        Scalar args[N] = {static_cast<Scalar>(scalars)...};
-        for (uint i = 0; i < N; i++)
-            p(i) = args[i];
+        set(scalars...);
     }
 
     /**
@@ -455,6 +453,28 @@ public:
      * This function sets all the components of the Point object to one.
      */
     void setOnes() { p.setOnes(); }
+
+    /**
+     * @brief Sets all the components of the Point object from a set of scalar
+     * values.
+     *
+     * The member function takes a variable number of scalar arguments, which are
+     * used to set the components of the Point object. The number of
+     * arguments must be equal to the dimensionality of the Point object, which
+     * is determined by the template parameter N.
+     *
+     * @tparam Scalars: The types of the scalar arguments.
+     *
+     * @param[in] scalars: The scalar arguments used to set the
+     * components of the Point object.
+     */
+    template<typename... Scalars>
+    void set(Scalars... scalars) requires (sizeof...(scalars) == N)
+    {
+        Scalar args[N] = {static_cast<Scalar>(scalars)...};
+        for (uint i = 0; i < N; i++)
+            p(i) = args[i];
+    }
 
     /**
      * @brief Returns a normalized copy of the Point object.
