@@ -289,7 +289,7 @@ public:
 
         Eigen::Matrix<Scalar, 1, 3> sc = q.vec().cross(s);
 
-        return Point3<Scalar>(v + sc * 2.0 );
+        return Point3<Scalar>(v + sc * 2.0);
     }
 
     Quaternion& operator*=(const Quaternion<Scalar>& q2)
