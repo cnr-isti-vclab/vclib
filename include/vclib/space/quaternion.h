@@ -93,11 +93,14 @@ public:
     {
     }
 
-    Quaternion(const Eigen::Quaternion<Scalar>& qq) { q << qq; }
+    Quaternion(const Eigen::Quaternion<Scalar>& qq) : q(qq) {}
 
     Quaternion(const Matrix33<Scalar>& rotMatrix) : q(rotMatrix) {}
 
-    Quaternion(const Matrix44<Scalar>& rotMatrix) : q(rotMatrix) {}
+    Quaternion(const Matrix44<Scalar>& rotMatrix) :
+            q(Matrix33<Scalar>(rotMatrix.block(0, 0, 3, 3)))
+    {
+    }
 
     /**
      * @brief Constructs the quaternion that will represent the rotation between
@@ -277,8 +280,16 @@ public:
     Point3<Scalar> operator*(const Point3<Scalar>& p)
     {
         const Eigen::Matrix<Scalar, 1, 3>& v = p.eigenVector();
-        return Point3<Scalar>(
-            v + 2.0 * q.vec().cross(q.vec().cross(v) + q.w() * v));
+
+        Eigen::Matrix<Scalar, 1, 3> fc = q.vec().cross(v);
+
+        Eigen::Matrix<Scalar, 1, 3> fd = v * q.w();
+
+        Eigen::Matrix<Scalar, 1, 3> s = fc + fd;
+
+        Eigen::Matrix<Scalar, 1, 3> sc = q.vec().cross(s);
+
+        return Point3<Scalar>(v + sc * 2.0 );
     }
 
     Quaternion& operator*=(const Quaternion<Scalar>& q2)
