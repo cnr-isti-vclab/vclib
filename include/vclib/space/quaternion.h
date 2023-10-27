@@ -88,8 +88,8 @@ public:
     {
     }
 
-    Quaternion(const Scalar& s, const Point3<Scalar>& v) :
-            q(s, v(0), v(1), v(2))
+    Quaternion(const Scalar& angle, const Point3<Scalar>& axis) :
+            q(Eigen::AngleAxis<Scalar>(angle, axis.eigenVector()))
     {
     }
 
@@ -217,6 +217,12 @@ public:
         q.setFromTwoVectors(a.eigenVector(), b.eigenVector());
     }
 
+    void setFromAngleAxis(const Scalar& angle, const Point3<Scalar>& axis)
+    {
+        q = Eigen::Quaternion<Scalar>(
+            Eigen::AngleAxis<Scalar>(angle, axis.eigenVector()));
+    }
+
     Quaternion<Scalar> normalized() const
     {
         return Quaternion<Scalar>(q.normalized());
@@ -257,6 +263,22 @@ public:
     Quaternion<Scalar> operator*(const Quaternion<Scalar>& q2)
     {
         return Quaternion<Scalar>(q * q2.q);
+    }
+
+    /**
+     * @brief Quaternion-Vector multiplication.
+     *
+     * Corresponds to the operation q * v * q^{-1} where q is the quaternion and
+     * v is the vector.
+     *
+     * @param[in] p: The vector to rotate.
+     * @return The rotated vector.
+     */
+    Point3<Scalar> operator*(const Point3<Scalar>& p)
+    {
+        const Eigen::Matrix<Scalar, 1, 3>& v = p.eigenVector();
+        return Point3<Scalar>(
+            v + 2.0 * q.vec().cross(q.vec().cross(v) + q.w() * v));
     }
 
     Quaternion& operator*=(const Quaternion<Scalar>& q2)
