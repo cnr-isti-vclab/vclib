@@ -65,7 +65,7 @@ protected:
 
 public:
     /**
-     * @brief the Scalar type of the Point
+     * @brief The Scalar type of the Point.
      */
     using ScalarType = Scalar;
 

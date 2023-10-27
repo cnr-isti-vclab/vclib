@@ -48,9 +48,18 @@ namespace vcl {
 template<typename Scalar>
 class Quaternion
 {
+    template<typename S>
+    friend class Quaternion;
+
+protected:
     Eigen::Quaternion<Scalar> q = Eigen::Quaternion<Scalar>(1, 0, 0, 0);
 
 public:
+    /**
+     * @brief The Scalar type of the Quaternion.
+     */
+    using ScalarType = Scalar;
+
     /**
      * @brief Constructs a quaternion representing the identity rotation
      * (w = 1, 0, 0, 0).
