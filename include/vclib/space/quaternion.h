@@ -263,7 +263,7 @@ public:
 
     bool operator!=(const Quaternion<Scalar>& q2) const { return q != q2.q; }
 
-    Quaternion<Scalar> operator*(const Quaternion<Scalar>& q2)
+    Quaternion<Scalar> operator*(const Quaternion<Scalar>& q2) const
     {
         return Quaternion<Scalar>(q * q2.q);
     }
@@ -277,7 +277,7 @@ public:
      * @param[in] p: The vector to rotate.
      * @return The rotated vector.
      */
-    Point3<Scalar> operator*(const Point3<Scalar>& p)
+    Point3<Scalar> operator*(const Point3<Scalar>& p) const
     {
         const Eigen::Matrix<Scalar, 1, 3>& v = p.eigenVector();
 
