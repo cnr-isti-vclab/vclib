@@ -75,12 +75,12 @@ public:
         const Scalar& x,
         const Scalar& y,
         const Scalar& z) :
-        q(w, x, y, z)
+            q(w, x, y, z)
     {
     }
 
     Quaternion(const Scalar& s, const Point3<Scalar>& v) :
-        q(s, v(0), v(1), v(2))
+            q(s, v(0), v(1), v(2))
     {
     }
 
@@ -256,10 +256,7 @@ public:
         return *this;
     }
 
-    Matrix33<Scalar> toRotationMatrix() const
-    {
-        return q.toRotationMatrix();
-    }
+    Matrix33<Scalar> toRotationMatrix() const { return q.toRotationMatrix(); }
 };
 
 } // namespace vcl
