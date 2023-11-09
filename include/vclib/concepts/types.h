@@ -34,7 +34,6 @@ namespace vcl {
 template<typename T>
 concept IntegralOrEnum = std::integral<T> || std::is_enum_v<T>;
 
-
 /**
  * @brief Concept for types that can be used as indices, excluding bool.
  */
