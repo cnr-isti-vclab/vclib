@@ -27,6 +27,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <vclib/concepts/types.h>
+
 #include "bit_set/bit_proxy.h"
 
 namespace vcl {
@@ -60,7 +62,46 @@ public:
     /**
      * @brief Empty constructor. All the Bits of the BitSet are set to false.
      */
-    BitSet() {}
+    BitSet() = default;
+
+    /**
+     * @brief Constructor from list of integral (or enum) values that represent
+     * the indices of the true bits, allowing braces initialization.
+     *
+     * Creates a BitSet by setting to true the bits at the indices specified in
+     * the list. All the other bits are set to false. Each value of the list
+     * must be less than the number of bits of the BitSet.
+     *
+     * @param[in] l: the list of bit positions to set to true.
+     */
+    template<NonBoolIntegralOrEnum I>
+    BitSet(std::initializer_list<I> l)
+    {
+        for (const auto& i : l)
+            at(i) = true;
+    }
+
+    /**
+     * @brief Constructor from a list of boolean values, allowing braces
+     * initialization.
+     *
+     * Constructs the bitset from the list of boolean values. The size of the
+     * list must be less or equal to the number of bits of the BitSet.
+     *
+     * @param[in] l: the list of boolean values to assign to the BitSet.
+     */
+    template<typename B>
+    BitSet(std::initializer_list<B> l) requires std::same_as<bool, B>
+    {
+        if (l.size() > SIZE)
+            throw std::invalid_argument(
+                "BitSet: list size is greater than the number of bits of the "
+                "BitSet");
+
+        uint i = 0;
+        for (const auto& b : l)
+            at(i++) = b;
+    }
 
     /**
      * @brief Returns the number of bits of the BitSet.
@@ -200,6 +241,8 @@ public:
         at(i) = !at(i);
         return *this;
     }
+
+    auto operator<=>(const BitSet<T>&) const = default;
 };
 
 /* Specialization Aliases */

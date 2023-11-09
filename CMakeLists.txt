@@ -106,6 +106,7 @@ set(HEADERS
     include/vclib/concepts/pointers.h
     include/vclib/concepts/range.h
     include/vclib/concepts/space.h
+    include/vclib/concepts/types.h
     include/vclib/concepts/mesh/components.h
     include/vclib/concepts/mesh/containers.h
     include/vclib/concepts/mesh/edge_mesh_concept.h
