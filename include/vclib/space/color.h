@@ -96,10 +96,7 @@ public:
      */
     Color() : Point(0, 0, 0, 255) {}
 
-    Color(ColorABGR cc)
-    {
-        *reinterpret_cast<uint32_t*>(Point::p.data()) = cc;
-    }
+    Color(ColorABGR cc) { *reinterpret_cast<uint32_t*>(Point::p.data()) = cc; }
 
     /**
      * @brief Color constructor.
