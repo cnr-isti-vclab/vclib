@@ -244,12 +244,22 @@ public:
      */
     float hsvSaturationF() const { return (float) hsvSaturation() / 255; }
 
+    uint32_t abgr() const
+    {
+        return *reinterpret_cast<const uint32_t*>(Point::p.data());
+    }
+
+    uint32_t rgba() const
+    {
+        return (alpha() << 24) | (blue() << 16) | (green() << 8) | red();
+    }
+
     /**
      * @brief Converts the color to an unsigned short in R5G5B5 format.
      *
      * @return an unsigned short containing the converted color.
      */
-    unsigned short unsignedR5G5B5() const
+    unsigned short r5g5b5() const
     {
         unsigned short r   = x() / 8;
         unsigned short g   = y() / 8;
@@ -263,7 +273,7 @@ public:
      *
      * @return an unsigned short containing the converted color.
      */
-    unsigned short unsignedB5G5R5() const
+    unsigned short b5g5r5() const
     {
         unsigned short r   = x() / 8;
         unsigned short g   = y() / 8;
@@ -312,6 +322,61 @@ public:
         y() = green;
         z() = blue;
         w() = alpha;
+    }
+
+    void setAbgr(uint32_t val)
+    {
+        *reinterpret_cast<uint32_t*>(Point::p.data()) = val;
+    }
+
+    void setRgba(uint32_t val)
+    {
+        w() = val % 256;
+        z() = (val >> 8) % 256;
+        y() = (val >> 16) % 256;
+        x() = (val >> 24) % 256;
+    }
+
+    /**
+     * Set the color values from an unsigned 5-5-5 RGB value.
+     *
+     * The input value is interpreted as follows:
+     * - The 5 least significant bits represent the red component.
+     * - The next 5 bits represent the green component.
+     * - The 5 most significant bits represent the blue component.
+     *
+     * Each color component is scaled from 0 to 255 by multiplying the value
+     * by 8.
+     *
+     * @param[in] val: The unsigned 5-5-5 RGB value to set.
+     */
+    void setR5g5b5(unsigned short val)
+    {
+        x() = val % 32 * 8;
+        y() = ((val / 32) % 32) * 8;
+        z() = ((val / 1024) % 32) * 8;
+        w() = 255;
+    }
+
+    /**
+     * Set the color values from an unsigned 5-5-5 BGR value.
+     *
+     * The input value is interpreted as follows:
+     * - The 5 least significant bits represent the blue component.
+     * - The next 5 bits represent the green component.
+     * - The 5 most significant bits represent the red component.
+     *
+     * Each color component is scaled from 0 to 255 by multiplying the value
+     * by 8.
+     *
+     * @param[in] val: The unsigned 5-5-5 BGR value to set.
+     */
+    void setB5g5r5(unsigned short val)
+    {
+        z() = val % 32 * 8;
+        y() = ((val / 32) % 32) * 8;
+        x() = ((val / 1024) % 32) * 8;
+        w() = 255;
     }
 
     /**
@@ -437,48 +502,6 @@ public:
     void setHsvF(float hf, float sf, float vf, float alpha = 1.0)
     {
         setHsv(hf * 255, sf * 255, vf * 255, alpha * 255);
-    }
-
-    /**
-     * Set the color values from an unsigned 5-5-5 RGB value.
-     *
-     * The input value is interpreted as follows:
-     * - The 5 least significant bits represent the red component.
-     * - The next 5 bits represent the green component.
-     * - The 5 most significant bits represent the blue component.
-     *
-     * Each color component is scaled from 0 to 255 by multiplying the value
-     * by 8.
-     *
-     * @param[in] val: The unsigned 5-5-5 RGB value to set.
-     */
-    void setUnsignedR5G5B5(unsigned short val)
-    {
-        x() = val % 32 * 8;
-        y() = ((val / 32) % 32) * 8;
-        z() = ((val / 1024) % 32) * 8;
-        w() = 255;
-    }
-
-    /**
-     * Set the color values from an unsigned 5-5-5 BGR value.
-     *
-     * The input value is interpreted as follows:
-     * - The 5 least significant bits represent the blue component.
-     * - The next 5 bits represent the green component.
-     * - The 5 most significant bits represent the red component.
-     *
-     * Each color component is scaled from 0 to 255 by multiplying the value
-     * by 8.
-     *
-     * @param[in] val: The unsigned 5-5-5 BGR value to set.
-     */
-    void setUnsignedB5G5R5(unsigned short val)
-    {
-        z() = val % 32 * 8;
-        y() = ((val / 32) % 32) * 8;
-        x() = ((val / 1024) % 32) * 8;
-        w() = 255;
     }
 
     /**
