@@ -31,13 +31,17 @@
 namespace vcl {
 
 /**
- * @brief The Color class represents a RGBA color.
+ * @brief The Color class represents a 32 bit color.
  *
  * The class is a specialization of the Point4 class, where each component is an
  * unsigned char (0, 1, 2, 3 are respectively the red, green, blue and alpha).
  *
- * The class provides some useful methods to convert the color
- * from/to different formats.
+ * Internally, the class stores four unsigned chars (uint8_t), that can be
+ * reinterpreted as a single unsigned integer (uint32_t) that stores a color in
+ * the ABGR format.
+ *
+ * The class provides some useful methods to convert the color from/to different
+ * formats.
  *
  * @ingroup space
  */
@@ -45,40 +49,40 @@ class Color : public Point4<uint8_t>
 {
 public:
     /**
-     * @brief RGBA enum with some standard colors.
+     * @brief ABGR enum with some standard colors.
      *
-     * It can be used to initialize a color with an RGBA integer.
+     * It can be used to initialize a color with an ABGR integer.
      */
-    enum ColorRGBA : uint32_t {
-        Black     = 0x000000ff,
-        DarkGray  = 0x404040ff,
-        Gray      = 0x808080ff,
-        LightGray = 0xc0c0c0ff,
+    enum ColorABGR : uint32_t {
+        Black     = 0xff000000,
+        DarkGray  = 0xff404040,
+        Gray      = 0xff808080,
+        LightGray = 0xffc0c0c0,
         White     = 0xffffffff,
 
         Red   = 0xff0000ff,
-        Green = 0x00ff00ff,
-        Blue  = 0x0000ffff,
+        Green = 0xff00ff00,
+        Blue  = 0xffff0000,
 
-        Cyan    = 0x00ffffff,
-        Yellow  = 0xffff00ff,
-        Magenta = 0xff00ffff,
+        Cyan    = 0xff00ffff,
+        Yellow  = 0xffffff00,
+        Magenta = 0xffff00ff,
 
         LightRed   = 0xff8080ff,
-        LightGreen = 0x80ff80ff,
-        LightBlue  = 0x8080ffff,
+        LightGreen = 0xff80ff80,
+        LightBlue  = 0xffff8080,
 
-        LightCyan    = 0x80ffffff,
-        LightYellow  = 0xffff80ff,
-        LightMagenta = 0xff80ffff,
+        LightCyan    = 0xffffff80,
+        LightYellow  = 0xff80ffff,
+        LightMagenta = 0xffff80ff,
 
-        DarkRed   = 0x400000ff,
-        DarkGreen = 0x004000ff,
-        DarkBlue  = 0x000040ff,
+        DarkRed   = 0xff000040,
+        DarkGreen = 0xff004000,
+        DarkBlue  = 0xff400000,
 
-        DarkCyan    = 0x004040ff,
-        DarkYellow  = 0x404000ff,
-        DarkMagenta = 0x400040ff
+        DarkCyan    = 0xff404000,
+        DarkYellow  = 0xff004040,
+        DarkMagenta = 0xff400040
     };
 
     /**
@@ -92,12 +96,9 @@ public:
      */
     Color() : Point(0, 0, 0, 255) {}
 
-    Color(ColorRGBA cc)
+    Color(ColorABGR cc)
     {
-        w() = cc % 256;
-        z() = (cc >> 8) % 256;
-        y() = (cc >> 16) % 256;
-        x() = (cc >> 24) % 256;
+        *reinterpret_cast<uint32_t*>(Point::p.data()) = cc;
     }
 
     /**
@@ -664,8 +665,8 @@ inline Color colorFromIntervalParula(float value)
         div = 1;
 
     return colorLerp(
-        (Color::ColorRGBA) paruVal[ind],
-        (Color::ColorRGBA) paruVal[ind + 1],
+        (Color::ColorABGR) paruVal[ind],
+        (Color::ColorABGR) paruVal[ind + 1],
         div);
 }
 

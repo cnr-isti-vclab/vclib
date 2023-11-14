@@ -54,7 +54,7 @@ public:
 
     vcl::Color pixel(uint i, uint j) const
     {
-        return vcl::Color(static_cast<vcl::Color::ColorRGBA>(img(i, j)));
+        return vcl::Color(static_cast<vcl::Color::ColorABGR>(img(i, j)));
     }
 
     const unsigned char* data() const
