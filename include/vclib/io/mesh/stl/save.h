@@ -152,9 +152,9 @@ void saveStl(
             if constexpr (HasPerFaceColor<MeshType>) {
                 if (meshInfo.hasFaceColors()) {
                     if (magicsMode)
-                        attributes = 32768 | f.color().toUnsignedR5G5B5();
+                        attributes = 32768 | f.color().unsignedR5G5B5();
                     else
-                        attributes = 32768 | f.color().toUnsignedB5G5R5();
+                        attributes = 32768 | f.color().unsignedB5G5R5();
                 }
             }
 

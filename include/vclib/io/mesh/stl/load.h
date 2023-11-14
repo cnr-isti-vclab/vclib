@@ -85,7 +85,7 @@ bool isStlColored(std::ifstream& fp, bool& magicsMode)
         fp.seekg(fdataSize, std::ios::cur);
         unsigned short attr = io::readShort<unsigned short>(fp);
         Color          c;
-        c.setFromUnsignedR5G5B5(attr);
+        c.setUnsignedR5G5B5(attr);
         if (c != Color::White)
             colored = true;
     }
@@ -159,9 +159,9 @@ void readStlBin(
                 if (isPerFaceColorAvailable(m) && colored) {
                     Color c;
                     if (magicsMode)
-                        c.setFromUnsignedR5G5B5(attr);
+                        c.setUnsignedR5G5B5(attr);
                     else
-                        c.setFromUnsignedB5G5R5(attr);
+                        c.setUnsignedB5G5R5(attr);
                     f.color() = c;
                 }
             }

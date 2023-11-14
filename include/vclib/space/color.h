@@ -34,7 +34,9 @@ namespace vcl {
  * @brief The Color class represents a RGBA color.
  *
  * The class is a specialization of the Point4 class, where each component is an
- * unsigned char. The class provides some useful methods to convert the color
+ * unsigned char (0, 1, 2, 3 are respectively the red, green, blue and alpha).
+ *
+ * The class provides some useful methods to convert the color
  * from/to different formats.
  *
  * @ingroup space
@@ -47,7 +49,7 @@ public:
      *
      * It can be used to initialize a color with an RGBA integer.
      */
-    enum ColorRGBA {
+    enum ColorRGBA : uint32_t {
         Black     = 0x000000ff,
         DarkGray  = 0x404040ff,
         Gray      = 0x808080ff,
@@ -249,7 +251,7 @@ public:
      *
      * @return an unsigned short containing the converted color.
      */
-    unsigned short toUnsignedR5G5B5() const
+    unsigned short unsignedR5G5B5() const
     {
         unsigned short r   = x() / 8;
         unsigned short g   = y() / 8;
@@ -263,7 +265,7 @@ public:
      *
      * @return an unsigned short containing the converted color.
      */
-    unsigned short toUnsignedB5G5R5() const
+    unsigned short unsignedB5G5R5() const
     {
         unsigned short r   = x() / 8;
         unsigned short g   = y() / 8;
@@ -452,7 +454,7 @@ public:
      *
      * @param[in] val: The unsigned 5-5-5 RGB value to set.
      */
-    void setFromUnsignedR5G5B5(unsigned short val)
+    void setUnsignedR5G5B5(unsigned short val)
     {
         x() = val % 32 * 8;
         y() = ((val / 32) % 32) * 8;
@@ -473,7 +475,7 @@ public:
      *
      * @param[in] val: The unsigned 5-5-5 BGR value to set.
      */
-    void setFromUnsignedB5G5R5(unsigned short val)
+    void setUnsignedB5G5R5(unsigned short val)
     {
         z() = val % 32 * 8;
         y() = ((val / 32) % 32) * 8;
