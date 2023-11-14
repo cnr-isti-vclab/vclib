@@ -170,7 +170,7 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     do {
         line      = readNextNonEmptyLineNoThrow(file);
         tokenizer = vcl::Tokenizer(line, separator);
-    } while (tokenizer.begin() == tokenizer.end());
+    } while (file && tokenizer.begin() == tokenizer.end());
 
     return tokenizer;
 }
