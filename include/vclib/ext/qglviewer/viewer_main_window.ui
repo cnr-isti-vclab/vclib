@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>vcl::qglviewer::ViewerMainWindow</class>
- <widget class="QMainWindow" name="vcl::qglviewer::ViewerMainWindow">
+ <class>vcl::qgl::ViewerMainWindow</class>
+ <widget class="QMainWindow" name="vcl::qgl::ViewerMainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="vcl::qglviewer::Viewer" name="glArea" native="true">
+     <widget class="vcl::qgl::Viewer" name="glArea" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -91,7 +91,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>vcl::qglviewer::Viewer</class>
+   <class>vcl::qgl::Viewer</class>
    <extends>QWidget</extends>
    <header>vclib/ext/qglviewer/viewer.h</header>
    <container>1</container>

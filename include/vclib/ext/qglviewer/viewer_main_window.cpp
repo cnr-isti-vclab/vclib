@@ -26,7 +26,7 @@
 
 #include <vclib/render/generic_drawable_mesh.h>
 
-namespace vcl::qglviewer {
+namespace vcl::qgl {
 
 /**
  * @brief ViewerMainWindow constructor.

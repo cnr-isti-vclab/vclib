@@ -41,7 +41,7 @@
 
 #include "draw_objects3.h"
 
-namespace vcl::opengl2 {
+namespace vcl::gl2 {
 
 // From:
 // https://blog.nobel-joergensen.com/2013/01/29/debugging-opengl-using-glgeterror/
@@ -506,6 +506,6 @@ private:
     }
 };
 
-} // namespace vcl::opengl2
+} // namespace vcl::gl2
 
 #endif // VCL_EXT_OPENGL2_DRAWABLE_MESH_H

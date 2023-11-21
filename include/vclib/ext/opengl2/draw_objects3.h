@@ -38,7 +38,7 @@
 
 #include <vclib/space/color.h>
 
-namespace vcl::opengl2 {
+namespace vcl::gl2 {
 
 /**
  * @brief Draws a point on the plane (coord z = 0 if 3D).
@@ -361,6 +361,6 @@ inline void drawBox3(
     drawBox3(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], c, width);
 }
 
-} // namespace vcl::opengl2
+} // namespace vcl::gl2
 
 #endif // VCL_EXT_OPENGL2_DRAW_OBJECTS3_H

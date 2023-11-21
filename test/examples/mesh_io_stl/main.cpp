@@ -58,9 +58,9 @@ int main(int argc, char** argv)
 #ifdef VCLIB_WITH_QGLVIEWER
     QApplication application(argc, argv);
 
-    vcl::qglviewer::ViewerMainWindow         viewer;
-    vcl::opengl2::DrawableMesh<vcl::TriMesh> dm1(m1);
-    vcl::opengl2::DrawableMesh<vcl::TriMesh> dm2(m2);
+    vcl::qgl::ViewerMainWindow         viewer;
+    vcl::gl2::DrawableMesh<vcl::TriMesh> dm1(m1);
+    vcl::gl2::DrawableMesh<vcl::TriMesh> dm2(m2);
 
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();

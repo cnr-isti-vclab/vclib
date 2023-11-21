@@ -28,7 +28,7 @@
 
 #include <vclib/render/drawable_object_vector.h>
 
-namespace vcl::qglviewer {
+namespace vcl::qgl {
 
 namespace Ui {
 class ViewerMainWindow;
@@ -54,6 +54,6 @@ private:
     std::shared_ptr<vcl::DrawableObjectVector> drawVector;
 };
 
-} // namespace vcl::qglviewer
+} // namespace vcl::qgl
 
 #endif // VCL_EXT_QGLVIEWER_VIEWER_MAIN_WINDOW_H

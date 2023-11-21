@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     QApplication application(argc, argv);
 
     // Instantiate the viewer.
-    vcl::qglviewer::ViewerMainWindow viewer;
+    vcl::qgl::ViewerMainWindow viewer;
 
     vcl::MeshInfo loadedInfo;
 
@@ -61,8 +61,8 @@ int main(int argc, char** argv)
     vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::DarkGreen);
 
-    vcl::opengl2::DrawableMesh<vcl::PolyMesh> dtm(tm);
-    vcl::opengl2::DrawableMesh<vcl::TriMesh>  dm(m);
+    vcl::gl2::DrawableMesh<vcl::PolyMesh> dtm(tm);
+    vcl::gl2::DrawableMesh<vcl::TriMesh>  dm(m);
 
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();

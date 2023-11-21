@@ -32,7 +32,7 @@
 #include <vclib/render/drawable_object_vector.h>
 #include <vclib/space/box.h>
 
-namespace vcl::qglviewer {
+namespace vcl::qgl {
 
 class Viewer : public QGLViewer
 {
@@ -78,7 +78,7 @@ public:
         Point3d sceneCenter = bb.center();
         double  sceneRadius = bb.diagonal() / 2;
 
-        setSceneCenter(::qglviewer::Vec(
+        setSceneCenter(qglviewer::Vec(
             sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
         setSceneRadius(sceneRadius);
         showEntireScene();
@@ -127,6 +127,6 @@ private:
     }
 };
 
-} // namespace vcl::qglviewer
+} // namespace vcl::qgl
 
 #endif // VCL_EXT_QGLVIEWER_VIEWER_H

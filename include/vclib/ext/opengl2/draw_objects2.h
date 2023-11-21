@@ -39,7 +39,7 @@
 #include <vclib/space/color.h>
 #include <vclib/space/point.h>
 
-namespace vcl::opengl2 {
+namespace vcl::gl2 {
 
 /**
  * @brief drawPoint2
@@ -172,6 +172,6 @@ inline void drawQuad2(
     vcl::drawQuad2(arr, c, width, fill);
 }
 
-} // namespace vcl::opengl2
+} // namespace vcl::gl2
 
 #endif // VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
