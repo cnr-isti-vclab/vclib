@@ -23,7 +23,7 @@
 
 #include "q_clickable_label.h"
 
-namespace vcl {
+namespace vcl::qt {
 
 QClickableLabel::QClickableLabel(QWidget* parent, Qt::WindowFlags) :
         QLabel(parent)
@@ -39,4 +39,4 @@ void QClickableLabel::mousePressEvent(QMouseEvent*)
     emit clicked();
 }
 
-} // namespace vcl
+} // namespace vcl::qt

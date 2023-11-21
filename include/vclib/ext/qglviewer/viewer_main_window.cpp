@@ -26,7 +26,7 @@
 
 #include <vclib/render/generic_drawable_mesh.h>
 
-namespace vcl {
+namespace vcl::qglviewer {
 
 /**
  * @brief ViewerMainWindow constructor.
@@ -185,4 +185,4 @@ void ViewerMainWindow::renderSettingsUpdated()
     }
 }
 
-} // namespace vcl
+} // namespace vcl::qglviewer

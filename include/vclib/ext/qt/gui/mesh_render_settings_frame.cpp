@@ -27,7 +27,7 @@
 #include <QColorDialog>
 #include <QStandardItemModel>
 
-namespace vcl {
+namespace vcl::qt {
 
 MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
         QFrame(parent), ui(new Ui::MeshRenderSettingsFrame)
@@ -385,4 +385,4 @@ QColor MeshRenderSettingsFrame::getButtonBackGround(QPushButton* b)
     return px.color(QPalette::Button);
 }
 
-} // namespace vcl
+} // namespace vcl::qt

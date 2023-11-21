@@ -26,7 +26,7 @@
 
 #include <QStandardItemModel>
 
-namespace vcl {
+namespace vcl::qt {
 
 DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
         QFrame(parent), ui(new Ui::DrawableObjectVectorFrame)
@@ -92,4 +92,4 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
     }
 }
 
-} // namespace vcl
+} // namespace vcl::qt

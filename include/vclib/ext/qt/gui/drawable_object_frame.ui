@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>vcl::DrawableObjectFrame</class>
- <widget class="QFrame" name="vcl::DrawableObjectFrame">
+ <class>vcl::qt::DrawableObjectFrame</class>
+ <widget class="QFrame" name="vcl::qt::DrawableObjectFrame">
   <property name="geometry">
    <rect>
     <x>0</x>

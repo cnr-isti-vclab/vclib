@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>vcl::ViewerMainWindow</class>
- <widget class="QMainWindow" name="vcl::ViewerMainWindow">
+ <class>vcl::qglviewer::ViewerMainWindow</class>
+ <widget class="QMainWindow" name="vcl::qglviewer::ViewerMainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="vcl::GLArea" name="glArea" native="true">
+     <widget class="vcl::qglviewer::Viewer" name="glArea" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -41,7 +41,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="vcl::DrawableObjectVectorFrame" name="drawVectorFrame">
+        <widget class="vcl::qt::DrawableObjectVectorFrame" name="drawVectorFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -57,7 +57,7 @@
         </widget>
        </item>
        <item>
-        <widget class="vcl::MeshRenderSettingsFrame" name="renderSettingsFrame">
+        <widget class="vcl::qt::MeshRenderSettingsFrame" name="renderSettingsFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -91,19 +91,19 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>vcl::GLArea</class>
+   <class>vcl::qglviewer::Viewer</class>
    <extends>QWidget</extends>
-   <header>vclib/ext/qglviewer/gl_area.h</header>
+   <header>vclib/ext/qglviewer/viewer.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>vcl::MeshRenderSettingsFrame</class>
+   <class>vcl::qt::MeshRenderSettingsFrame</class>
    <extends>QFrame</extends>
    <header>vclib/ext/qt/gui/mesh_render_settings_frame.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>vcl::DrawableObjectVectorFrame</class>
+   <class>vcl::qt::DrawableObjectVectorFrame</class>
    <extends>QFrame</extends>
    <header>vclib/ext/qt/gui/drawable_object_vector_frame.h</header>
    <container>1</container>

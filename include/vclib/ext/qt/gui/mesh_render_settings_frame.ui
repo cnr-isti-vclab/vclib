@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>vcl::MeshRenderSettingsFrame</class>
- <widget class="QFrame" name="vcl::MeshRenderSettingsFrame">
+ <class>vcl::qt::MeshRenderSettingsFrame</class>
+ <widget class="QFrame" name="vcl::qt::MeshRenderSettingsFrame">
   <property name="geometry">
    <rect>
     <x>0</x>

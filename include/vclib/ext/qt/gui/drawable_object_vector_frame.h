@@ -30,7 +30,7 @@
 
 #include "drawable_object_frame.h"
 
-namespace vcl {
+namespace vcl::qt {
 
 namespace Ui {
 class DrawableObjectVectorFrame;
@@ -66,6 +66,6 @@ private:
     void updateDrawableVectorWidget();
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
 #endif // VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H

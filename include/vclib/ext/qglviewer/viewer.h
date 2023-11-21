@@ -21,8 +21,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QGLVIEWER_GL_AREA_H
-#define VCL_EXT_QGLVIEWER_GL_AREA_H
+#ifndef VCL_EXT_QGLVIEWER_VIEWER_H
+#define VCL_EXT_QGLVIEWER_VIEWER_H
 
 #include <memory>
 
@@ -32,20 +32,20 @@
 #include <vclib/render/drawable_object_vector.h>
 #include <vclib/space/box.h>
 
-namespace vcl {
+namespace vcl::qglviewer {
 
-class GLArea : public QGLViewer
+class Viewer : public QGLViewer
 {
     // this GLArea does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> drawList;
 
 public:
-    GLArea(QWidget* parent = nullptr) : QGLViewer(parent)
+    Viewer(QWidget* parent = nullptr) : QGLViewer(parent)
     {
         drawList = std::make_shared<DrawableObjectVector>();
     }
 
-    GLArea(std::shared_ptr<DrawableObjectVector> v, QWidget* parent = nullptr) :
+    Viewer(std::shared_ptr<DrawableObjectVector> v, QWidget* parent = nullptr) :
             QGLViewer(parent), drawList(v)
     {
     }
@@ -78,8 +78,8 @@ public:
         Point3d sceneCenter = bb.center();
         double  sceneRadius = bb.diagonal() / 2;
 
-        setSceneCenter(
-            qglviewer::Vec(sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
+        setSceneCenter(::qglviewer::Vec(
+            sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
         setSceneRadius(sceneRadius);
         showEntireScene();
     }
@@ -127,6 +127,6 @@ private:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::qglviewer
 
-#endif // VCL_EXT_QGLVIEWER_GL_AREA_H
+#endif // VCL_EXT_QGLVIEWER_VIEWER_H

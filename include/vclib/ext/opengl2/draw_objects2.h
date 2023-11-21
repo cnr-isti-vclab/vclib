@@ -39,7 +39,7 @@
 #include <vclib/space/color.h>
 #include <vclib/space/point.h>
 
-namespace vcl {
+namespace vcl::opengl2 {
 
 /**
  * @brief drawPoint2
@@ -130,7 +130,7 @@ inline void drawQuad2(
     bool                          fill  = false)
 {
     for (unsigned int i = 0; i < 4; i++) {
-        vcl::drawLine2(points[i], points[(i + 1) % 4], c, width);
+        drawLine2(points[i], points[(i + 1) % 4], c, width);
     }
     if (fill) {
         // find angle >=90°
@@ -142,14 +142,14 @@ inline void drawQuad2(
                 pivot = i;
         }
         assert(pivot >= 0);
-        vcl::drawTriangle2(
+        drawTriangle2(
             points[pivot],
             points[(pivot + 1) % 4],
             points[(pivot + 2) % 4],
             c,
             0,
             true);
-        vcl::drawTriangle2(
+        drawTriangle2(
             points[(pivot + 2) % 4],
             points[(pivot + 3) % 4],
             points[pivot],
@@ -172,6 +172,6 @@ inline void drawQuad2(
     vcl::drawQuad2(arr, c, width, fill);
 }
 
-} // namespace vcl
+} // namespace vcl::opengl2
 
 #endif // VCL_EXT_OPENGL2_DRAW_OBJECTS2_H

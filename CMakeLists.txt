@@ -385,7 +385,7 @@ if (TARGET vclib-external-qt)
     if (TARGET vclib-external-qglviewer)
         # header only sources
         list(APPEND HEADERS
-            include/vclib/ext/qglviewer/gl_area.h)
+            include/vclib/ext/qglviewer/viewer.h)
 
         # sources that must be built
         list(APPEND HEADERS_LIB

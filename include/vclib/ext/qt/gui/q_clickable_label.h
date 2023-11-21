@@ -28,7 +28,7 @@
 #include <QWidget>
 #include <Qt>
 
-namespace vcl {
+namespace vcl::qt {
 
 /**
  * @brief The QClickableLabel class
@@ -56,6 +56,6 @@ protected:
     void mousePressEvent(QMouseEvent* event);
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
 #endif // VCL_EXT_QT_GUI_Q_CLICKABLE_LABEL_H

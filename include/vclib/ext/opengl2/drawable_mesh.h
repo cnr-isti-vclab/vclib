@@ -41,7 +41,7 @@
 
 #include "draw_objects3.h"
 
-namespace vcl {
+namespace vcl::opengl2 {
 
 // From:
 // https://blog.nobel-joergensen.com/2013/01/29/debugging-opengl-using-glgeterror/
@@ -181,7 +181,7 @@ public:
                 }
             }
             if (mrs.isBboxEnabled()) {
-                vcl::drawBox3(mrb.bbMin(), mrb.bbMax(), vcl::Color(0, 0, 0));
+                drawBox3(mrb.bbMin(), mrb.bbMax(), vcl::Color(0, 0, 0));
             }
         }
     }
@@ -506,6 +506,6 @@ private:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::opengl2
 
 #endif // VCL_EXT_OPENGL2_DRAWABLE_MESH_H

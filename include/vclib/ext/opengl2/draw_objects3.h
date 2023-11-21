@@ -38,7 +38,7 @@
 
 #include <vclib/space/color.h>
 
-namespace vcl {
+namespace vcl::opengl2 {
 
 /**
  * @brief Draws a point on the plane (coord z = 0 if 3D).
@@ -234,9 +234,9 @@ inline void drawTriangle(
     bool           fill  = false)
 {
     if (width != 0) {
-        vcl::drawLine3(p1, p2, c, width);
-        vcl::drawLine3(p2, p3, c, width);
-        vcl::drawLine3(p3, p1, c, width);
+        drawLine3(p1, p2, c, width);
+        drawLine3(p2, p3, c, width);
+        drawLine3(p3, p1, c, width);
     }
     if (fill) {
         glBegin(GL_TRIANGLES); // Begin triangle coordinates
@@ -361,6 +361,6 @@ inline void drawBox3(
     drawBox3(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], c, width);
 }
 
-} // namespace vcl
+} // namespace vcl::opengl2
 
 #endif // VCL_EXT_OPENGL2_DRAW_OBJECTS3_H

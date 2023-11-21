@@ -24,7 +24,7 @@
 #include "drawable_object_frame.h"
 #include "ui_drawable_object_frame.h"
 
-namespace vcl {
+namespace vcl::qt {
 
 DrawableObjectFrame::DrawableObjectFrame(DrawableObject* obj, QWidget* parent) :
         QFrame(parent), ui(new Ui::DrawableObjectFrame), obj(obj)
@@ -46,4 +46,4 @@ void DrawableObjectFrame::on_visibilityCheckBox_stateChanged(int arg1)
     emit visibilityChanged();
 }
 
-} // namespace vcl
+} // namespace vcl::qt

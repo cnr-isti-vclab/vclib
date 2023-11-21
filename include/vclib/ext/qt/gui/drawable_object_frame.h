@@ -28,7 +28,7 @@
 
 #include <vclib/render/drawable_object.h>
 
-namespace vcl {
+namespace vcl::qt {
 
 namespace Ui {
 class DrawableObjectFrame;
@@ -55,6 +55,6 @@ private:
     DrawableObject*          obj;
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
 #endif // VCL_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H

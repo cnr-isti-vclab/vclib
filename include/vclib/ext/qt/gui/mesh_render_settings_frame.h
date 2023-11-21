@@ -30,7 +30,7 @@
 
 class QPushButton;
 
-namespace vcl {
+namespace vcl::qt {
 
 namespace Ui {
 class MeshRenderSettingsFrame;
@@ -97,6 +97,6 @@ private:
     QColor getButtonBackGround(QPushButton* b);
 };
 
-} // namespace vcl
+} // namespace vcl::qt
 
 #endif // VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
