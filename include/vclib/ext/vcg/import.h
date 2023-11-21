@@ -28,7 +28,7 @@
 
 #include <vcg/complex/complex.h>
 
-namespace vcl {
+namespace vcl::vc {
 
 template<MeshConcept MeshType, typename VCGMeshType>
 MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh)
@@ -179,6 +179,6 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
     }
 }
 
-} // namespace vcl
+} // namespace vcl::vc
 
 #endif // VCL_EXT_VCG_IMPORT_H

@@ -40,7 +40,7 @@ TEST_CASE("Import TriMesh from VCG")
     REQUIRE(vcgMesh.VN() == 8);
     REQUIRE(vcgMesh.FN() == 12);
 
-    vcl::TriMesh tm = vcl::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+    vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
 
     REQUIRE(tm.vertexNumber() == 8);
     REQUIRE(tm.faceNumber() == 12);
@@ -65,7 +65,7 @@ TEST_CASE("Import PolyMesh from VCG")
     REQUIRE(vcgMesh.VN() == 8);
     REQUIRE(vcgMesh.FN() == 12);
 
-    vcl::PolyMesh pm = vcl::meshFromVCGMesh<vcl::PolyMesh>(vcgMesh);
+    vcl::PolyMesh pm = vcl::vc::meshFromVCGMesh<vcl::PolyMesh>(vcgMesh);
 
     REQUIRE(pm.vertexNumber() == 8);
     REQUIRE(pm.faceNumber() == 12);
