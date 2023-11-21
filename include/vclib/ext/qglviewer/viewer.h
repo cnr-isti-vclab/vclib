@@ -78,8 +78,8 @@ public:
         Point3d sceneCenter = bb.center();
         double  sceneRadius = bb.diagonal() / 2;
 
-        setSceneCenter(qglviewer::Vec(
-            sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
+        setSceneCenter(
+            qglviewer::Vec(sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
         setSceneRadius(sceneRadius);
         showEntireScene();
     }
