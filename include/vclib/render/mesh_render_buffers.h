@@ -40,16 +40,16 @@ class MeshRenderBuffers
     uint nv = 0;
     uint nt = 0;
 
-    std::vector<float>   verts;
-    std::vector<int>     tris;
-    std::vector<float>   vNormals;
-    std::vector<float>   vColors;
-    std::vector<float>   tNormals;
-    std::vector<float>   tColors;
-    std::vector<float>   vTexCoords;
-    std::vector<float>   wTexCoords;
-    std::vector<short>   wTexIds;
-    std::array<float, 4> mColor;
+    std::vector<float>    verts;
+    std::vector<uint32_t> tris;
+    std::vector<float>    vNormals;
+    std::vector<float>    vColors;
+    std::vector<float>    tNormals;
+    std::vector<float>    tColors;
+    std::vector<float>    vTexCoords;
+    std::vector<float>    wTexCoords;
+    std::vector<short>    wTexIds;
+    std::array<float, 4>  mColor;
 
     vcl::Point3d            bbmin, bbmax;
     vcl::TriPolyIndexBiMap  triPolyMap;
@@ -88,7 +88,7 @@ public:
         return verts.data();
     }
 
-    const int* triangleBufferData() const
+    const uint32_t* triangleBufferData() const
     {
         if (tris.empty())
             return nullptr;

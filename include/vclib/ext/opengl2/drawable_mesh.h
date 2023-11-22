@@ -198,14 +198,14 @@ private:
         uint nv = mrb.vertexNumber();
         uint nt = mrb.triangleNumber();
 
-        const float* coords          = mrb.vertexBufferData();
-        const int*   triangles       = mrb.triangleBufferData();
-        const float* vertexNormals   = mrb.vertexNormalBufferData();
-        const float* vertexColors    = mrb.vertexColorBufferData();
-        const float* triangleNormals = mrb.triangleNormalBufferData();
-        const float* triangleColors  = mrb.triangleColorBufferData();
-        const float* vertTexCoords   = mrb.vertexTexCoordsBufferData();
-        const float* wedgTexCoords   = mrb.wedgeTexCoordsBufferData();
+        const float*    coords          = mrb.vertexBufferData();
+        const uint32_t* triangles       = mrb.triangleBufferData();
+        const float*    vertexNormals   = mrb.vertexNormalBufferData();
+        const float*    vertexColors    = mrb.vertexColorBufferData();
+        const float*    triangleNormals = mrb.triangleNormalBufferData();
+        const float*    triangleColors  = mrb.triangleColorBufferData();
+        const float*    vertTexCoords   = mrb.vertexTexCoordsBufferData();
+        const float*    wedgTexCoords   = mrb.wedgeTexCoordsBufferData();
 
         if (mrs.isPointCloudVisible()) {
             glEnableClientState(GL_VERTEX_ARRAY);
