@@ -103,7 +103,7 @@ template<typename MatrixType, PointConcept PointType>
 void setTrasformMatrixScale(MatrixType& matrix, const PointType& scale)
 {
     matrix(0, 0) = scale[0];
-    matrix(1, 1) = scale[0];
+    matrix(1, 1) = scale[1];
     matrix(2, 2) = scale[2];
     matrix(3, 3) = 1;
 }
