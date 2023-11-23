@@ -31,12 +31,12 @@ namespace vcl {
 
 template<FaceMeshConcept MeshType>
 MeshType createCone(
-    auto radiusBottom,
-    auto radiusTop,
-    auto height,
+    auto       radiusBottom,
+    auto       radiusTop,
+    auto       height,
     const uint subdivisions = 36)
 {
-    using CoordType = MeshType::VertexType::CoordType;
+    using CoordType  = MeshType::VertexType::CoordType;
     using ScalarType = CoordType::ScalarType;
 
     uint vn, fn;
@@ -54,8 +54,8 @@ MeshType createCone(
     mesh.reserveVertices(vn);
     mesh.reserveFaces(fn);
 
-    mesh.addVertex(CoordType(0, -height/2.0, 0));
-    mesh.addVertex(CoordType(0, height/2.0, 0));
+    mesh.addVertex(CoordType(0, -height / 2.0, 0));
+    mesh.addVertex(CoordType(0, height / 2.0, 0));
 
     uint b1 = 2;
     uint b2 = 2;
@@ -65,7 +65,7 @@ MeshType createCone(
             ScalarType a = vcl::toRad(i * 360.0 / subdivisions);
             mesh.addVertex(CoordType(
                 radiusBottom * std::cos(a),
-                -height/2.0,
+                -height / 2.0,
                 radiusBottom * std::sin(a)));
         }
 
@@ -77,7 +77,7 @@ MeshType createCone(
             ScalarType a = vcl::toRad(i * 360.0 / subdivisions);
             mesh.addVertex(CoordType(
                 radiusTop * std::cos(a),
-                height/2.0,
+                height / 2.0,
                 radiusTop * std::sin(a)));
         }
     }
@@ -119,10 +119,7 @@ MeshType createCone(
 }
 
 template<FaceMeshConcept MeshType>
-MeshType createCylinder(
-    auto radius,
-    auto height,
-    const uint subdivisions = 36)
+MeshType createCylinder(auto radius, auto height, const uint subdivisions = 36)
 {
     return createCone<MeshType>(radius, radius, height, subdivisions);
 }
