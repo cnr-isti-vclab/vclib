@@ -85,10 +85,7 @@ public:
         return verts.data();
     }
 
-    const uint vertexBufferSize() const
-    {
-        return verts.size();
-    }
+    const uint vertexBufferSize() const { return verts.size(); }
 
     const uint32_t* triangleBufferData() const
     {
@@ -97,10 +94,7 @@ public:
         return tris.data();
     }
 
-    const uint triangleBufferSize() const
-    {
-        return tris.size();
-    }
+    const uint triangleBufferSize() const { return tris.size(); }
 
     const float* vertexNormalBufferData() const
     {
