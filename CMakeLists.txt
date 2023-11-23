@@ -71,6 +71,7 @@ set(HEADERS
     include/vclib/algorithms/sort.h
     include/vclib/algorithms/stat.h
     include/vclib/algorithms/update.h
+    include/vclib/algorithms/create/cone.h
     include/vclib/algorithms/create/dodecahedron.h
     include/vclib/algorithms/create/hexahedron.h
     include/vclib/algorithms/create/icosahedron.h

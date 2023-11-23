@@ -24,6 +24,7 @@
 #ifndef VCL_ALGORITHMS_CREATE_H
 #define VCL_ALGORITHMS_CREATE_H
 
+#include "create/cone.h"
 #include "create/dodecahedron.h"
 #include "create/hexahedron.h"
 #include "create/icosahedron.h"
