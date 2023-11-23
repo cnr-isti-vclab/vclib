@@ -37,9 +37,6 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshRenderBuffers
 {
-    uint nv = 0;
-    uint nt = 0;
-
     std::vector<float>    verts;
     std::vector<uint32_t> tris;
     std::vector<float>    vNormals;
@@ -66,9 +63,9 @@ public:
         fillMeshAttribs(m);
     }
 
-    uint vertexNumber() const { return nv; }
+    uint vertexNumber() const { return verts.size() / 3; }
 
-    uint triangleNumber() const { return nt; }
+    uint triangleNumber() const { return tris.size() / 3; }
 
     uint textureNumber() const { return textures.size(); }
 
@@ -88,11 +85,21 @@ public:
         return verts.data();
     }
 
+    const uint vertexBufferSize() const
+    {
+        return verts.size();
+    }
+
     const uint32_t* triangleBufferData() const
     {
         if (tris.empty())
             return nullptr;
         return tris.data();
+    }
+
+    const uint triangleBufferSize() const
+    {
+        return tris.size();
     }
 
     const float* vertexNormalBufferData() const
@@ -181,8 +188,7 @@ private:
                 std::numeric_limits<double>::lowest());
         }
 
-        nv = m.vertexNumber();
-        verts.resize(nv * 3);
+        verts.resize(m.vertexNumber() * 3);
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (vcl::isPerVertexNormalAvailable(m)) {
@@ -249,9 +255,7 @@ private:
             std::vector<std::vector<uint>> vinds; // necessary for wedge attribs
 
             if constexpr (vcl::HasTriangles<MeshType>) {
-                nt = m.faceNumber();
-
-                tris.resize(nt * 3);
+                tris.resize(m.faceNumber() * 3);
 
                 uint i = 0;
                 for (const auto& f : m.faces()) {
@@ -266,7 +270,7 @@ private:
                 triPolyMap.reserve(m.faceNumber(), m.faceNumber());
                 tris.reserve(m.faceNumber());
 
-                nt = 0;
+                uint nt = 0;
                 for (const auto& f : m.faces()) {
                     if (f.vertexNumber() == 3) {
                         triPolyMap.insert(nt, m.faceIndexIfCompact(m.index(f)));

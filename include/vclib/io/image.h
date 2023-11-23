@@ -38,7 +38,7 @@
 
 namespace vcl {
 
-std::shared_ptr<unsigned char> loadImageData(
+inline std::shared_ptr<unsigned char> loadImageData(
     const std::string& filename,
     int&               w,
     int&               h)
