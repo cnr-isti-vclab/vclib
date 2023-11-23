@@ -89,20 +89,18 @@ void setTransformMatrixRotationDeg(
     setTransformMatrixRotation(matrix, axis, vcl::toRad(angleDeg));
 }
 
-template<typename ScalarType, PointConcept PointType>
+template<typename MatrixType, PointConcept PointType>
 void setTrasformMatrixTranslation(
-    Matrix44<ScalarType>& matrix,
-    const PointType&      translation)
+    MatrixType&      matrix,
+    const PointType& translation)
 {
     matrix(0, 3) = translation[0];
     matrix(1, 3) = translation[1];
     matrix(2, 3) = translation[2];
 }
 
-template<typename ScalarType, PointConcept PointType>
-void setTrasformMatrixScale(
-    Matrix44<ScalarType>& matrix,
-    const PointType&      scale)
+template<typename MatrixType, PointConcept PointType>
+void setTrasformMatrixScale(MatrixType& matrix, const PointType& scale)
 {
     matrix(0, 0) = scale[0];
     matrix(1, 1) = scale[0];
