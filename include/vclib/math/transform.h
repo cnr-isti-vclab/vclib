@@ -90,7 +90,7 @@ void setTransformMatrixRotationDeg(
 }
 
 template<typename MatrixType, PointConcept PointType>
-void setTrasformMatrixTranslation(
+void setTransformMatrixTranslation(
     MatrixType&      matrix,
     const PointType& translation)
 {
@@ -100,7 +100,7 @@ void setTrasformMatrixTranslation(
 }
 
 template<typename MatrixType, PointConcept PointType>
-void setTrasformMatrixScale(MatrixType& matrix, const PointType& scale)
+void setTransformMatrixScale(MatrixType& matrix, const PointType& scale)
 {
     matrix(0, 0) = scale[0];
     matrix(1, 1) = scale[1];
