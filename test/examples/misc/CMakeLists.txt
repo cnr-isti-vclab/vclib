@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-misc-example ${SOURCES})
 
-target_link_libraries(vclib-misc-example PUBLIC vclib)
+target_link_libraries(vclib-misc-example PUBLIC vclib vclib-test-common)

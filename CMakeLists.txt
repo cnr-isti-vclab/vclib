@@ -19,14 +19,13 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 ### Options
 option(VCLIB_BUILD_EXAMPLES "Build VCLib examples" ON)
-option(VCLIB_BUILD_AND_RUN_TESTS "Build and Run VCLib tests" ON)
-option(VCLIB_IDE "Create an utility target to show the library tree on IDEs" ON)
+option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
 
 # In case of building shared libraries, on windows we need to export all symbols
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-# Add the cmake folder for find_package scripts
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+# Flag that tells whether VCLIB has a parent scope
+get_directory_property(VCLIB_HAS_PARENT_SCOPE PARENT_DIRECTORY)
 
 # external libraries
 message(STATUS "VCLib: external libraries")
@@ -42,7 +41,9 @@ if (WIN32)
 endif()
 
 set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(VCLIB_SRC_DIR ${VCLIB_INCLUDE_DIR}/vclib)
+if (VCLIB_HAS_PARENT_SCOPE)
+    set(VCLIB_INCLUDE_DIR ${VCLIB_INCLUDE_DIR} PARENT_SCOPE)
+endif()
 
 set(HEADERS
     include/vclib/algorithms.h
@@ -274,11 +275,6 @@ set(HEADERS
     include/vclib/misc/logger/console_logger.h
     include/vclib/misc/logger/logger.h
     include/vclib/misc/logger/null_logger.h
-    include/vclib/render/drawable_object.h
-    include/vclib/render/drawable_object_vector.h
-    include/vclib/render/generic_drawable_mesh.h
-    include/vclib/render/mesh_render_buffers.h
-    include/vclib/render/mesh_render_settings.h
     include/vclib/space/array.h
     include/vclib/space/bit_set.h
     include/vclib/space/box.h
@@ -341,92 +337,18 @@ set(HEADERS
     include/vclib/views/mesh/elements/vertex.h
 )
 
-set(HEADERS_LIB
-    )
-
-set(SOURCES_LIB
-    )
-
-set(FORMS_LIB
-    )
-
-# headers and sources to include only if using OpenGL
-if (TARGET vclib-external-opengl)
-    list(APPEND HEADERS
-        include/vclib/ext/opengl2/draw_objects2.h
-        include/vclib/ext/opengl2/draw_objects3.h
-        include/vclib/ext/opengl2/drawable_mesh.h)
-endif()
-
-# headers and sources to include only if using qt
-if (TARGET vclib-external-qt)
-    # header only sources
-    list(APPEND HEADERS
-        )
-
-    # sources that must be built
-    list(APPEND HEADERS_LIB
-        include/vclib/ext/qt/gui/drawable_object_frame.h
-        include/vclib/ext/qt/gui/drawable_object_vector_frame.h
-        include/vclib/ext/qt/gui/mesh_render_settings_frame.h
-        include/vclib/ext/qt/gui/q_clickable_label.h)
-
-    list(APPEND SOURCES_LIB
-        include/vclib/ext/qt/gui/drawable_object_frame.cpp
-        include/vclib/ext/qt/gui/drawable_object_vector_frame.cpp
-        include/vclib/ext/qt/gui/mesh_render_settings_frame.cpp
-        include/vclib/ext/qt/gui/q_clickable_label.cpp)
-
-    list(APPEND FORMS_LIB
-        include/vclib/ext/qt/gui/drawable_object_frame.ui
-        include/vclib/ext/qt/gui/drawable_object_vector_frame.ui
-        include/vclib/ext/qt/gui/mesh_render_settings_frame.ui)
-
-    # headers and sources to include only if using QGLViewer
-    if (TARGET vclib-external-qglviewer)
-        # header only sources
-        list(APPEND HEADERS
-            include/vclib/ext/qglviewer/viewer.h)
-
-        # sources that must be built
-        list(APPEND HEADERS_LIB
-            include/vclib/ext/qglviewer/viewer_main_window.h)
-
-        list(APPEND SOURCES_LIB
-            include/vclib/ext/qglviewer/viewer_main_window.cpp)
-
-        list(APPEND FORMS_LIB
-            include/vclib/ext/qglviewer/viewer_main_window.ui)
-    endif()
-endif()
-
 # headers and sources to include only if using VCG
 if (TARGET vclib-external-vcg)
     list(APPEND HEADERS
         include/vclib/ext/vcg/import.h)
 endif()
 
-add_library(vclib-include INTERFACE)
-target_include_directories(vclib-include INTERFACE ${VCLIB_INCLUDE_DIR})
-set_property(TARGET vclib-include PROPERTY COMPILE_WARNING_AS_ERROR ON)
-
 add_library(vclib INTERFACE)
-target_link_libraries(vclib INTERFACE vclib-include)
 target_include_directories(vclib INTERFACE ${VCLIB_INCLUDE_DIR})
+set_property(TARGET vclib PROPERTY COMPILE_WARNING_AS_ERROR ON)
 target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
-if (TARGET vclib-external-qt)
-    add_library(vclib-qt SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
-    target_include_directories(vclib-qt PRIVATE ${VCLIB_INCLUDE_DIR})
-    target_link_libraries(vclib-qt PRIVATE ${VCLIB_EXTERNAL_LIBRARIES})
-
-    target_link_libraries(vclib INTERFACE vclib-qt)
-endif()
-
-if (VCLIB_IDE)
-    add_custom_target(vclib_ide SOURCES
-        ${HEADERS} ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
-endif()
+target_sources(vclib PRIVATE ${HEADERS})
 
 if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)
     message(STATUS "VCLib: using parallel algorithms")
@@ -434,9 +356,14 @@ else()
     message(STATUS "VCLib: not using parallel algorithms")
 endif()
 
-if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_AND_RUN_TESTS)
+if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_TESTS)
     include(CTest)
 
-add_subdirectory(test)
+    set(VCLIB_TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
+    if (VCLIB_HAS_PARENT_SCOPE)
+        set(VCLIB_TEST_DIR ${VCLIB_TEST_DIR} PARENT_SCOPE)
+    endif()
+
+    add_subdirectory(test)
 endif()
 

@@ -30,7 +30,7 @@
 int main()
 {
     vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/TextureDouble.ply");
+        vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/TextureDouble.ply");
 
     vcl::PolyMesh pm;
 
@@ -41,9 +41,9 @@ int main()
 
     assert(pm.isPerFaceWedgeTexCoordsEnabled());
 
-    vcl::save(pm, VCL_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
+    vcl::save(pm, VCLIB_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
 
-    pm = vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+    pm = vcl::loadPly<vcl::PolyMesh>(VCLIB_TEST_MODELS_PATH "/cube_poly.ply");
 
     m.clear();
     m.disableAllPerFaceOptionalComponents();
@@ -51,7 +51,7 @@ int main()
     m.enableSameOptionalComponentsOf(pm);
     m.importFrom(pm);
 
-    vcl::save(m, VCL_TEST_RESULTS_PATH "/cube_from_poly.ply", false);
+    vcl::save(m, VCLIB_TEST_RESULTS_PATH "/cube_from_poly.ply", false);
 
     return 0;
 }

@@ -29,7 +29,7 @@
 TEST_CASE("TriMesh Topology")
 {
     vcl::TriMesh tm =
-        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+        vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
@@ -286,7 +286,7 @@ TEST_CASE("TriMesh Topology")
 TEST_CASE("PolyMesh Triangle Mesh Topology")
 {
     vcl::PolyMesh pm =
-        vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+        vcl::loadPly<vcl::PolyMesh>(VCLIB_TEST_MODELS_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
@@ -543,7 +543,7 @@ TEST_CASE("PolyMesh Triangle Mesh Topology")
 TEST_CASE("PolyMesh Polygon Mesh Topology")
 {
     vcl::PolyMesh pm =
-        vcl::loadPly<vcl::PolyMesh>(VCL_TEST_MODELS_PATH "/cube_poly.ply");
+        vcl::loadPly<vcl::PolyMesh>(VCLIB_TEST_MODELS_PATH "/cube_poly.ply");
 
     THEN("The mesh has 8 vertices, 6 faces")
     {

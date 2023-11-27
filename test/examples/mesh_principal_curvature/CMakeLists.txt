@@ -11,9 +11,12 @@
 
 project(vclib-mesh-principal-curvature)
 
+set(HEADERS
+    mesh_curvature.h)
+
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-principal-curvature ${SOURCES})
+add_executable(vclib-mesh-principal-curvature ${HEADERS} ${SOURCES})
 
-target_link_libraries(vclib-mesh-principal-curvature PUBLIC vclib)
+target_link_libraries(vclib-mesh-principal-curvature PUBLIC vclib vclib-test-common)

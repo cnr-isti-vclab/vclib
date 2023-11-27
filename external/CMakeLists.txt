@@ -37,15 +37,6 @@ if (VCLIB_BUILD_AND_RUN_TESTS)
     option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 endif()
 
-# OpenGL
-option(VCLIB_ALLOW_SYSTEM_OPENGL "Allow use of system-provided OpenGL" ON)
-
-# Qt
-option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
-
-# QGLViewer
-option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
-
 # STB
 option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
 
@@ -79,15 +70,6 @@ endif()
 
 ### Catch2
 include(catch2.cmake)
-
-### OpenGL
-include(opengl.cmake)
-
-### Qt
-include(qt.cmake)
-
-### QGLViewer
-include(qglviewer.cmake)
 
 ### STB
 include(stb.cmake)

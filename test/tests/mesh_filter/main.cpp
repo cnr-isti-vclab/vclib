@@ -29,7 +29,7 @@
 TEST_CASE("TriMesh Filter")
 {
     vcl::TriMesh tm =
-        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+        vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {

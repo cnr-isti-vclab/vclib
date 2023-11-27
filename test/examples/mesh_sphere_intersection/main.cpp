@@ -21,51 +21,13 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
-#define VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
+#include "bimba_sphere_intersection.h"
 
-#include <QFrame>
-
-#include <vclib/render/drawable_object_vector.h>
-
-#include "drawable_object_frame.h"
-
-namespace vcl::qt {
-
-namespace Ui {
-class DrawableObjectVectorFrame;
-} // namespace Ui
-
-class DrawableObjectVectorFrame : public QFrame
+int main()
 {
-    Q_OBJECT
+    vcl::TriMesh m1 = bimbaSphereIntersection();
 
-public:
-    explicit DrawableObjectVectorFrame(QWidget* parent = nullptr);
-    explicit DrawableObjectVectorFrame(
-        std::shared_ptr<DrawableObjectVector> v,
-        QWidget*                              parent = nullptr);
-    ~DrawableObjectVectorFrame();
+    vcl::save(m1, VCLIB_TEST_RESULTS_PATH "/bimba_sphere_intersection.ply");
 
-    void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
-
-    uint selectedDrawableObject() const;
-
-signals:
-    void drawableObjectVisibilityChanged();
-    void drawableObjectSelectionChanged(uint i);
-
-private slots:
-    void on_listWidget_itemSelectionChanged();
-
-private:
-    // this frame does not normally own this drawList
-    std::shared_ptr<DrawableObjectVector> drawList;
-    Ui::DrawableObjectVectorFrame*        ui;
-
-    void updateDrawableVectorWidget();
-};
-
-} // namespace vcl::qt
-
-#endif // VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
+    return 0;
+}

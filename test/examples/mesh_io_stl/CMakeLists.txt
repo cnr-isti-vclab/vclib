@@ -11,9 +11,12 @@
 
 project(vclib-mesh-io-stl)
 
+set(HEADERS
+    load_bimba_and_bunny.h)
+
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-io-stl ${SOURCES})
+add_executable(vclib-mesh-io-stl ${HEADERS} ${SOURCES})
 
-target_link_libraries(vclib-mesh-io-stl PUBLIC vclib)
+target_link_libraries(vclib-mesh-io-stl PUBLIC vclib vclib-test-common)

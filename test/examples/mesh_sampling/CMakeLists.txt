@@ -11,9 +11,12 @@
 
 project(vclib-mesh-sampling)
 
+set(HEADERS
+    montecarlo_sampling.h)
+
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-sampling ${SOURCES})
+add_executable(vclib-mesh-sampling ${HEADERS} ${SOURCES})
 
-target_link_libraries(vclib-mesh-sampling PUBLIC vclib)
+target_link_libraries(vclib-mesh-sampling PUBLIC vclib vclib-test-common)

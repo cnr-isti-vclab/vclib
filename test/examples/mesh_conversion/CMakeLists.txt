@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-conversion ${SOURCES})
 
-target_link_libraries(vclib-mesh-conversion PUBLIC vclib)
+target_link_libraries(vclib-mesh-conversion PUBLIC vclib vclib-test-common)

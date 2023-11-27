@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-io-off ${SOURCES})
 
-target_link_libraries(vclib-mesh-io-off PUBLIC vclib)
+target_link_libraries(vclib-mesh-io-off PUBLIC vclib vclib-test-common)

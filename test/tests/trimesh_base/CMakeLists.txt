@@ -16,7 +16,7 @@ set(SOURCES
 
 add_executable(vclib-trimesh-base-test ${SOURCES})
 
-target_link_libraries(vclib-trimesh-base-test PUBLIC vclib)
+target_link_libraries(vclib-trimesh-base-test PUBLIC vclib vclib-test-common)
 
 enable_testing()
 add_test(NAME trimesh-base COMMAND vclib-trimesh-base-test)

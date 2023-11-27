@@ -21,61 +21,19 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <iostream>
+#ifndef BIMBA_SPHERE_INTERSECTION_H
+#define BIMBA_SPHERE_INTERSECTION_H
 
-#include <QApplication>
-
-#include <vclib/algorithms/update/color.h>
-#include <vclib/algorithms/update/normal.h>
+#include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
-#include <vclib/ext/opengl2/drawable_mesh.h>
-#include <vclib/ext/qglviewer/viewer_main_window.h>
-#include <vclib/ext/qt/gui/mesh_render_settings_frame.h>
-
-int main(int argc, char** argv)
+vcl::TriMesh bimbaSphereIntersection(vcl::Sphere<vcl::TriMesh::ScalarType> s = {{0, 0, 0}, 0.3})
 {
-    // Read command lines arguments.
-    QApplication application(argc, argv);
-
-    // Instantiate the viewer.
-    vcl::qgl::ViewerMainWindow viewer;
-
-    vcl::MeshInfo loadedInfo;
-
-    vcl::PolyMesh tm = vcl::load<vcl::PolyMesh>(
-        VCL_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
-    vcl::updatePerFaceNormals(tm);
-    vcl::updatePerVertexNormals(tm);
-    tm.enablePerVertexColor();
-    tm.enablePerFaceColor();
-    vcl::setPerVertexColor(tm, vcl::Color::DarkMagenta);
-    vcl::setPerFaceColor(tm, vcl::Color::LightGreen);
-    vcl::setMeshColor(tm, vcl::Color::Yellow);
-
     vcl::TriMesh m =
-        vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
-    m.enablePerVertexColor();
-    vcl::updatePerFaceNormals(m);
-    vcl::updatePerVertexNormals(m);
-    vcl::setPerVertexColor(m, vcl::Color::DarkGreen);
+        vcl::loadObj<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bimba.obj");
 
-    vcl::gl2::DrawableMesh<vcl::PolyMesh> dtm(tm);
-    vcl::gl2::DrawableMesh<vcl::TriMesh>  dm(m);
-
-    std::shared_ptr<vcl::DrawableObjectVector> vector =
-        std::make_shared<vcl::DrawableObjectVector>();
-    vector->pushBack(dtm);
-    vector->pushBack(dm);
-
-    viewer.setDrawableObjectVector(vector);
-
-    viewer.setWindowTitle("simpleViewer");
-
-    // Make the viewer window visible on screen.
-    viewer.show();
-
-    // Run main loop.
-    return application.exec();
+    return vcl::meshSphereIntersection(m, s);
 }
+
+#endif // BIMBA_SPHERE_INTERSECTION_H

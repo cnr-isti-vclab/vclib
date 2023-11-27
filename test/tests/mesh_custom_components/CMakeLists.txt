@@ -16,7 +16,7 @@ set(SOURCES
 
 add_executable(vclib-mesh-custom-components-test ${SOURCES})
 
-target_link_libraries(vclib-mesh-custom-components-test PUBLIC vclib)
+target_link_libraries(vclib-mesh-custom-components-test PUBLIC vclib vclib-test-common)
 
 enable_testing()
 add_test(NAME mesh-custom-components COMMAND vclib-mesh-custom-components-test)

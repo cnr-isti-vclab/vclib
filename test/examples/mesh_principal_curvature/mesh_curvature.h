@@ -21,40 +21,49 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H
-#define VCL_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H
+#ifndef MESH_CURVATURE_H
+#define MESH_CURVATURE_H
 
-#include <QFrame>
+#include <iostream>
 
-#include <vclib/render/drawable_object.h>
+#include <vclib/algorithms.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes.h>
+#include <vclib/misc/timer.h>
 
-namespace vcl::qt {
 
-namespace Ui {
-class DrawableObjectFrame;
-} // namespace Ui
-
-class DrawableObjectFrame : public QFrame
+void updateCurvature(vcl::TriMesh& m)
 {
-    Q_OBJECT
+    vcl::ConsoleLogger log;
+    log.setPrintTimer(true);
 
-public:
-    explicit DrawableObjectFrame(
-        DrawableObject* obj,
-        QWidget*        parent = nullptr);
-    ~DrawableObjectFrame();
+    m.enablePerVertexAdjacentFaces();
+    m.enablePerFaceAdjacentFaces();
+    m.enablePerVertexPrincipalCurvature();
+    m.enablePerVertexColor();
+    m.enablePerVertexQuality();
 
-signals:
-    void visibilityChanged();
+    vcl::updatePerFaceNormals(m);
+    vcl::updatePerFaceAdjacentFaces(m);
+    vcl::updatePerVertexAdjacentFaces(m);
 
-private slots:
-    void on_visibilityCheckBox_stateChanged(int arg1);
+    double radius = vcl::boundingBox(m).diagonal() * 0.1;
+    log.startTimer();
+    vcl::updatePrincipalCurvaturePCA(m, radius, true, log);
 
-private:
-    Ui::DrawableObjectFrame* ui;
-    DrawableObject*          obj;
-};
+    vcl::setPerVertexQualityFromPrincipalCurvatureMean(m);
+    vcl::Histogramd h = vcl::vertexQualityHistogram(m);
 
-} // namespace vcl::qt
+    vcl::setPerVertexColorFromQuality(
+        m, vcl::Color::RedBlue, h.percentile(0.1), h.percentile(0.9));
 
-#endif // VCL_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H
+    std::cout << "Curvature range: " << h.minRangeValue() << " "
+              << h.maxRangeValue() << "\n";
+    std::cout << "Used 90 percentile: " << h.percentile(0.1) << " "
+              << h.percentile(0.9) << "\n";
+
+    m.enablePerFaceColor();
+    vcl::setPerFaceColorFromVertexColor(m);
+}
+
+#endif // MESH_CURVATURE_H

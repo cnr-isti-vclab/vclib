@@ -32,7 +32,7 @@ int main()
 {
     using PointType = vcl::TriMesh::VertexType::CoordType;
     vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/cube_tri.ply");
+        vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/cube_tri.ply");
 
     vcl::updatePerFaceNormals(m);
 
@@ -51,9 +51,9 @@ int main()
     log.setPrintTimer(true);
 
     vcl::TriMesh m1 =
-        vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bimba.obj");
+        vcl::loadObj<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bimba.obj");
     vcl::TriMesh m2 =
-        vcl::loadObj<vcl::TriMesh>(VCL_TEST_MODELS_PATH "/bunny.obj");
+        vcl::loadObj<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bunny.obj");
 
     vcl::updateBoundingBox(m1);
     vcl::updateBoundingBox(m2);

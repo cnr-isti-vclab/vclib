@@ -16,7 +16,7 @@ set(SOURCES
 
 add_executable(vclib-mesh-clean-test ${SOURCES})
 
-target_link_libraries(vclib-mesh-clean-test PUBLIC vclib)
+target_link_libraries(vclib-mesh-clean-test PUBLIC vclib vclib-test-common)
 
 enable_testing()
 add_test(NAME mesh-clean COMMAND vclib-mesh-clean-test)

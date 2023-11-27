@@ -16,7 +16,7 @@ set(SOURCES
 
 add_executable(vclib-mesh-conversions-test ${SOURCES})
 
-target_link_libraries(vclib-mesh-conversions-test PUBLIC vclib)
+target_link_libraries(vclib-mesh-conversions-test PUBLIC vclib vclib-test-common)
 
 enable_testing()
 add_test(NAME mesh-conversions COMMAND vclib-mesh-conversions-test)

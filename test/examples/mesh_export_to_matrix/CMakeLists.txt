@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-export-to-matrix ${SOURCES})
 
-target_link_libraries(vclib-mesh-export-to-matrix PUBLIC vclib)
+target_link_libraries(vclib-mesh-export-to-matrix PUBLIC vclib vclib-test-common)

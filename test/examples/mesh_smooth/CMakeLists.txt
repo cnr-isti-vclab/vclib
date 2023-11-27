@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-smooth ${SOURCES})
 
-target_link_libraries(vclib-mesh-smooth PUBLIC vclib)
+target_link_libraries(vclib-mesh-smooth PUBLIC vclib vclib-test-common)

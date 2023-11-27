@@ -18,7 +18,7 @@ set(SOURCES
 
 add_executable(vclib-ext-mesh-import-from-vcg-test ${SOURCES})
 
-target_link_libraries(vclib-ext-mesh-import-from-vcg-test PUBLIC vclib)
+target_link_libraries(vclib-ext-mesh-import-from-vcg-test PUBLIC vclib vclib-test-common)
 
 enable_testing()
 add_test(NAME mesh-import-from-vcg COMMAND vclib-ext-mesh-import-from-vcg-test)

@@ -28,4 +28,4 @@ set(SOURCES
 
 add_executable(vclib-static-asserts ${HEADERS} ${SOURCES})
 
-target_link_libraries(vclib-static-asserts PUBLIC vclib)
+target_link_libraries(vclib-static-asserts PUBLIC vclib vclib-test-common)

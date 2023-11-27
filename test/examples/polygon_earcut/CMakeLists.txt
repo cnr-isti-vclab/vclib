@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-polygon-earcut-example ${SOURCES})
 
-target_link_libraries(vclib-polygon-earcut-example PUBLIC vclib)
+target_link_libraries(vclib-polygon-earcut-example PUBLIC vclib vclib-test-common)

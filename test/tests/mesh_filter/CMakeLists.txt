@@ -16,7 +16,7 @@ set(SOURCES
 
 add_executable(vclib-mesh-filter-test ${SOURCES})
 
-target_link_libraries(vclib-mesh-filter-test PUBLIC vclib)
+target_link_libraries(vclib-mesh-filter-test PUBLIC vclib vclib-test-common)
 
 enable_testing()
 add_test(NAME mesh-filter COMMAND vclib-mesh-filter-test)

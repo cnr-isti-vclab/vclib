@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-edge-mesh-basic-example ${SOURCES})
 
-target_link_libraries(vclib-edge-mesh-basic-example PUBLIC vclib)
+target_link_libraries(vclib-edge-mesh-basic-example PUBLIC vclib vclib-test-common)

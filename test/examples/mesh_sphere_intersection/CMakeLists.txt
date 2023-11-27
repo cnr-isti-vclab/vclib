@@ -2,28 +2,21 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2022                                                    *
+#* Copyright(C) 2021-2023                                                    *
 #* Alessandro Muntoni                                                        *
 #* VCLab - ISTI - Italian National Research Council                          *
 #*                                                                           *
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-find_package(OpenGL QUIET)
+project(vclib-mesh-sphere-intersection)
 
-if (VCLIB_ALLOW_SYSTEM_OPENGL)
-    if (OpenGL_FOUND)
-        message(STATUS "- OpenGL - using system-provided library")
+set(HEADERS
+    bimba_sphere_intersection.h)
 
-        add_library(vclib-external-opengl INTERFACE)
-        target_link_libraries(vclib-external-opengl INTERFACE OpenGL::GL)
+set(SOURCES
+    main.cpp)
 
-        if(APPLE)
-            target_compile_definitions(vclib-external-opengl INTERFACE GL_SILENCE_DEPRECATION)
-        endif()
+add_executable(vclib-mesh-sphere-intersection ${HEADERS} ${SOURCES})
 
-        list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-opengl)
-    else()
-        message(STATUS "- OpenGL - not found, skipping")
-    endif()
-endif()
+target_link_libraries(vclib-mesh-sphere-intersection PUBLIC vclib vclib-test-common)

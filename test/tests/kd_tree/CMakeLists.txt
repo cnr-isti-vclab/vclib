@@ -16,7 +16,7 @@ set(SOURCES
 
 add_executable(vclib-kd-tree-test ${SOURCES})
 
-target_link_libraries(vclib-kd-tree-test PUBLIC vclib)
+target_link_libraries(vclib-kd-tree-test PUBLIC vclib vclib-test-common)
 
 enable_testing()
 add_test(NAME kd-tree COMMAND vclib-kd-tree-test)

@@ -16,7 +16,7 @@ set(SOURCES
 
 add_executable(vclib-mesh-new-user-component-test ${SOURCES})
 
-target_link_libraries(vclib-mesh-new-user-component-test PUBLIC vclib)
+target_link_libraries(vclib-mesh-new-user-component-test PUBLIC vclib vclib-test-common)
 target_include_directories(vclib-mesh-new-user-component-test
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/mesh_new_user_component)

@@ -21,4 +21,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-new-user-component ${HEADERS} ${SOURCES})
 
-target_link_libraries(vclib-mesh-new-user-component PUBLIC vclib)
+target_link_libraries(vclib-mesh-new-user-component PUBLIC vclib vclib-test-common)

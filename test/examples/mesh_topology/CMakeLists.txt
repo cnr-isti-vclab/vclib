@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-topology ${SOURCES})
 
-target_link_libraries(vclib-mesh-topology PUBLIC vclib)
+target_link_libraries(vclib-mesh-topology PUBLIC vclib vclib-test-common)

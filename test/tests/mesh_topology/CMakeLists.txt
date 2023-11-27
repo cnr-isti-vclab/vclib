@@ -16,7 +16,7 @@ set(SOURCES
 
 add_executable(vclib-mesh-topology-test ${SOURCES})
 
-target_link_libraries(vclib-mesh-topology-test PUBLIC vclib)
+target_link_libraries(vclib-mesh-topology-test PUBLIC vclib vclib-test-common)
 
 enable_testing()
 add_test(NAME mesh-topology COMMAND vclib-mesh-topology-test)

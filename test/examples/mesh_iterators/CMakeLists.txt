@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-iterators ${SOURCES})
 
-target_link_libraries(vclib-mesh-iterators PUBLIC vclib)
+target_link_libraries(vclib-mesh-iterators PUBLIC vclib vclib-test-common)

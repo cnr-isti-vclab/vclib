@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-grid-example ${SOURCES})
 
-target_link_libraries(vclib-grid-example PUBLIC vclib)
+target_link_libraries(vclib-grid-example PUBLIC vclib vclib-test-common)

@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-stat ${SOURCES})
 
-target_link_libraries(vclib-mesh-stat PUBLIC vclib)
+target_link_libraries(vclib-mesh-stat PUBLIC vclib vclib-test-common)

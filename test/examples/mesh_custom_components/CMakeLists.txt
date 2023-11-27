@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-custom-components ${SOURCES})
 
-target_link_libraries(vclib-mesh-custom-components PUBLIC vclib)
+target_link_libraries(vclib-mesh-custom-components PUBLIC vclib vclib-test-common)

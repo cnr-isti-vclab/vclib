@@ -16,4 +16,4 @@ set(SOURCES
 
 add_executable(vclib-mesh-clean ${SOURCES})
 
-target_link_libraries(vclib-mesh-clean PUBLIC vclib)
+target_link_libraries(vclib-mesh-clean PUBLIC vclib vclib-test-common)

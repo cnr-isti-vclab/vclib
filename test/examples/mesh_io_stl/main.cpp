@@ -23,57 +23,14 @@
 
 #include <iostream>
 
-#include <vclib/algorithms/update.h>
-#include <vclib/load_save.h>
-#include <vclib/meshes.h>
+#include "load_bimba_and_bunny.h"
 
-#ifdef VCLIB_WITH_QGLVIEWER
-#include <QApplication>
-
-#include <vclib/ext/opengl2/drawable_mesh.h>
-#include <vclib/ext/qglviewer/viewer_main_window.h>
-#endif
-
-int main(int argc, char** argv)
+int main()
 {
-    vcl::ConsoleLogger log;
-    vcl::MeshInfo      loadedInfo;
+    vcl::TriMesh m1, m2;
 
-    log.startTimer();
-    vcl::TriMesh m1 = vcl::load<vcl::TriMesh>(
-        VCL_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo, log);
-    m1.enablePerVertexColor();
-    vcl::updateBoundingBox(m1);
-    vcl::updatePerVertexNormals(m1);
-    vcl::setPerVertexColor(m1, vcl::Color::DarkMagenta);
+    loadBimbaAndBunnyMeshes(m1, m2);
 
-    log.startTimer();
-    vcl::TriMesh m2 = vcl::load<vcl::TriMesh>(
-        VCL_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo, log);
-    m2.enablePerVertexColor();
-    vcl::updateBoundingBox(m2);
-    vcl::updatePerVertexNormals(m2);
-    vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);
-
-#ifdef VCLIB_WITH_QGLVIEWER
-    QApplication application(argc, argv);
-
-    vcl::qgl::ViewerMainWindow           viewer;
-    vcl::gl2::DrawableMesh<vcl::TriMesh> dm1(m1);
-    vcl::gl2::DrawableMesh<vcl::TriMesh> dm2(m2);
-
-    std::shared_ptr<vcl::DrawableObjectVector> vector =
-        std::make_shared<vcl::DrawableObjectVector>();
-    vector->pushBack(dm1);
-    vector->pushBack(dm2);
-    viewer.setDrawableObjectVector(vector);
-
-    viewer.show();
-
-    return application.exec();
-#else
-    (void) argc; // unused
-    (void) argv;
     return 0;
-#endif
+
 }
