@@ -30,8 +30,8 @@
 
 int main()
 {
-    vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bunny_textured.ply");
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH
+                                                "/bunny_textured.ply");
 
     vcl::TriMesh mSmooth(m);
 

@@ -64,7 +64,8 @@ int main()
 
     vcl::savePly(m, VCLIB_TEST_RESULTS_PATH "/brain_clean.ply");
 
-    m = vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bunny_textured.ply");
+    m = vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH
+                                   "/bunny_textured.ply");
 
     m.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(m);

@@ -203,7 +203,8 @@ TEST_CASE("Unreferenced Vertices")
 
 TEST_CASE("Duplicated Vertices brain.ply")
 {
-    vcl::TriMesh t = vcl::load<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/brain.ply");
+    vcl::TriMesh t =
+        vcl::load<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/brain.ply");
 
     uint nv = vcl::removeDuplicatedVertices(t);
 

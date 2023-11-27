@@ -41,7 +41,8 @@ int main()
 
     assert(pm.isPerFaceWedgeTexCoordsEnabled());
 
-    vcl::save(pm, VCLIB_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
+    vcl::save(
+        pm, VCLIB_TEST_RESULTS_PATH "/TextureDouble_converted.ply", false);
 
     pm = vcl::loadPly<vcl::PolyMesh>(VCLIB_TEST_MODELS_PATH "/cube_poly.ply");
 

@@ -28,7 +28,11 @@
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
-vcl::TriMesh bimbaSphereIntersection(vcl::Sphere<vcl::TriMesh::ScalarType> s = {{0, 0, 0}, 0.3})
+vcl::TriMesh bimbaSphereIntersection(
+    vcl::Sphere<vcl::TriMesh::ScalarType> s = {
+        {0, 0, 0},
+        0.3
+})
 {
     vcl::TriMesh m =
         vcl::loadObj<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bimba.obj");

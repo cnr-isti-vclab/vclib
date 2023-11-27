@@ -31,7 +31,6 @@
 #include <vclib/meshes.h>
 #include <vclib/misc/timer.h>
 
-
 void updateCurvature(vcl::TriMesh& m)
 {
     vcl::ConsoleLogger log;

@@ -114,8 +114,8 @@ SCENARIO("Mesh Conversions")
 
     GIVEN("The polygonal cube mesh loaded on PolyMesh")
     {
-        vcl::PolyMesh pm =
-            vcl::loadPly<vcl::PolyMesh>(VCLIB_TEST_MODELS_PATH "/cube_poly.ply");
+        vcl::PolyMesh pm = vcl::loadPly<vcl::PolyMesh>(VCLIB_TEST_MODELS_PATH
+                                                       "/cube_poly.ply");
 
         THEN("The loaded PolyMesh has 8 vertices and 6 faces")
         {

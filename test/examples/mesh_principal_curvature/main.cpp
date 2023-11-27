@@ -33,5 +33,4 @@ int main()
     vcl::saveStl(m, VCLIB_TEST_RESULTS_PATH "/bimba_curvature.stl");
 
     return 0;
-
 }
