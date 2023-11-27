@@ -1,0 +1,117 @@
+#*****************************************************************************
+#* VCLib                                                                     *
+#* Visual Computing Library                                                  *
+#*                                                                           *
+#* Copyright(C) 2021-2023                                                    *
+#* Alessandro Muntoni                                                        *
+#* VCLab - ISTI - Italian National Research Council                          *
+#*                                                                           *
+#* All rights reserved.                                                      *
+#****************************************************************************/
+
+cmake_minimum_required(VERSION 3.24)
+project(vclib-render)
+
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
+
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+
+# In case of building shared libraries, on windows we need to export all symbols
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+# Flag that tells whether VCLIB has a parent scope
+get_directory_property(VCLIB_RENDER_HAS_PARENT_SCOPE PARENT_DIRECTORY)
+
+# Add the cmake folder for find_package scripts
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+add_subdirectory(vclib)
+
+# external libraries
+message(STATUS "VCLib-Render: external libraries")
+add_subdirectory(external)
+
+set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+if (VCLIB_RENDER_HAS_PARENT_SCOPE)
+    set(VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR} PARENT_SCOPE)
+endif()
+
+set(HEADERS
+    include/vclib/render/drawable_object.h
+    include/vclib/render/drawable_object_vector.h
+    include/vclib/render/generic_drawable_mesh.h
+    include/vclib/render/mesh_render_buffers.h
+    include/vclib/render/mesh_render_settings.h
+)
+
+# headers to include only if using OpenGL2
+if (TARGET vclib-external-opengl)
+    list(APPEND HEADERS
+        include/vclib/ext/opengl2/draw_objects2.h
+        include/vclib/ext/opengl2/draw_objects3.h
+        include/vclib/ext/opengl2/drawable_mesh.h)
+endif()
+
+# headers and sources to include only if using qt
+if (TARGET vclib-external-qt)
+    # header only sources
+    list(APPEND HEADERS
+        )
+
+    # sources that must be built
+    list(APPEND HEADERS_LIB
+        include/vclib/ext/qt/gui/drawable_object_frame.h
+        include/vclib/ext/qt/gui/drawable_object_vector_frame.h
+        include/vclib/ext/qt/gui/mesh_render_settings_frame.h
+        include/vclib/ext/qt/gui/q_clickable_label.h)
+
+    list(APPEND SOURCES_LIB
+        include/vclib/ext/qt/gui/drawable_object_frame.cpp
+        include/vclib/ext/qt/gui/drawable_object_vector_frame.cpp
+        include/vclib/ext/qt/gui/mesh_render_settings_frame.cpp
+        include/vclib/ext/qt/gui/q_clickable_label.cpp)
+
+    list(APPEND FORMS_LIB
+        include/vclib/ext/qt/gui/drawable_object_frame.ui
+        include/vclib/ext/qt/gui/drawable_object_vector_frame.ui
+        include/vclib/ext/qt/gui/mesh_render_settings_frame.ui)
+
+    # headers and sources to include only if using QGLViewer
+    if (TARGET vclib-external-qglviewer)
+        # header only sources
+        list(APPEND HEADERS
+            include/vclib/ext/qglviewer/viewer.h)
+
+        # sources that must be built
+        list(APPEND HEADERS_LIB
+            include/vclib/ext/qglviewer/viewer_main_window.h)
+
+        list(APPEND SOURCES_LIB
+            include/vclib/ext/qglviewer/viewer_main_window.cpp)
+
+        list(APPEND FORMS_LIB
+            include/vclib/ext/qglviewer/viewer_main_window.ui)
+    endif()
+endif()
+
+source_group("Forms Files" FILES ${FORMS_LIB})
+
+# vclib-render target - will be used by external projects
+# will show all the headers in the IDE
+add_library(vclib-render INTERFACE)
+target_link_libraries(vclib-render INTERFACE ${VCLIB_RENDER_EXTERNAL_LIBRARIES})
+target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
+
+target_sources(vclib-render PRIVATE ${HEADERS})
+
+# vclib-render-lib target - creates a shared library
+add_library(vclib-render-lib SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
+target_link_libraries(vclib-render-lib PRIVATE ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib)
+target_include_directories(vclib-render-lib PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})
+
+target_link_libraries(vclib-render INTERFACE vclib vclib-render-lib)
+
+if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_TESTS)
+    add_subdirectory(test)
+endif()

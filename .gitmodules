@@ -1,0 +1,4 @@
+[submodule "vclib"]
+	path = vclib
+	url = https://github.com/cnr-isti-vclab/vclib
+	branch = main
