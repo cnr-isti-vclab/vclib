@@ -26,11 +26,17 @@ get_directory_property(VCLIB_RENDER_HAS_PARENT_SCOPE PARENT_DIRECTORY)
 # Add the cmake folder for find_package scripts
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+# vclib
 add_subdirectory(vclib)
 
 # external libraries
 message(STATUS "VCLib-Render: external libraries")
 add_subdirectory(external)
+
+if (TARGET vclib-external-bgfx)
+    get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
+endif()
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 if (VCLIB_RENDER_HAS_PARENT_SCOPE)
@@ -38,11 +44,16 @@ if (VCLIB_RENDER_HAS_PARENT_SCOPE)
 endif()
 
 set(HEADERS
+    include/vclib/gui/desktop_trackball.h
+    include/vclib/gui/input.h
+    include/vclib/render/camera.h
     include/vclib/render/drawable_object.h
     include/vclib/render/drawable_object_vector.h
     include/vclib/render/generic_drawable_mesh.h
+    include/vclib/render/matrix.h
     include/vclib/render/mesh_render_buffers.h
     include/vclib/render/mesh_render_settings.h
+    include/vclib/render/trackball.h
 )
 
 # headers to include only if using OpenGL2
@@ -53,11 +64,24 @@ if (TARGET vclib-external-opengl)
         include/vclib/ext/opengl2/drawable_mesh.h)
 endif()
 
+# headers to include only if using bgfx
+if (TARGET vclib-external-bgfx)
+    list(APPEND HEADERS
+        include/vclib/ext/bgfx/canvas.h
+        include/vclib/ext/bgfx/drawable_mesh.h
+        include/vclib/ext/bgfx/load_program.h)
+
+    set(SHADERS
+        include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh.sc
+        include/vclib/ext/bgfx/drawable_mesh/shaders/fs_mesh.sc
+        include/vclib/ext/bgfx/drawable_mesh/shaders/varying.def.sc)
+endif()
+
 # headers and sources to include only if using qt
 if (TARGET vclib-external-qt)
     # header only sources
     list(APPEND HEADERS
-        )
+        include/vclib/ext/qt/gui/input.h)
 
     # sources that must be built
     list(APPEND HEADERS_LIB
@@ -93,6 +117,17 @@ if (TARGET vclib-external-qt)
         list(APPEND FORMS_LIB
             include/vclib/ext/qglviewer/viewer_main_window.ui)
     endif()
+
+    # headers and sources to include only if using bgfx
+    if (TARGET vclib-external-bgfx)
+        list(APPEND HEADERS_LIB
+            include/vclib/ext/qt/bgfx/canvas_window.h
+            include/vclib/ext/qt/bgfx/viewer.h)
+
+        list(APPEND SOURCES_LIB
+            include/vclib/ext/qt/bgfx/canvas_window.cpp
+            include/vclib/ext/qt/bgfx/viewer.cpp)
+    endif()
 endif()
 
 source_group("Forms Files" FILES ${FORMS_LIB})
@@ -102,6 +137,10 @@ source_group("Forms Files" FILES ${FORMS_LIB})
 add_library(vclib-render INTERFACE)
 target_link_libraries(vclib-render INTERFACE ${VCLIB_RENDER_EXTERNAL_LIBRARIES})
 target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
+
+if (TARGET vclib-external-bgfx)
+    target_add_bgfx_shaders(vclib-render ${SHADERS})
+endif()
 
 target_sources(vclib-render PRIVATE ${HEADERS})
 

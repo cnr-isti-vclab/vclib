@@ -14,11 +14,14 @@ project(vclib-render-external)
 
 include(FetchContent)
 
-# OpenGL
-option(VCLIB_ALLOW_SYSTEM_OPENGL "Allow use of system-provided OpenGL" ON)
+# external libraries may have warnings
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 
 # Qt
 option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
+
+# bgfx
+option(VCLIB_ALLOW_BUNDLED_BGFX "Allow use of bundled bgfx source" ON)
 
 # QGLViewer
 option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
@@ -32,6 +35,9 @@ include(opengl.cmake)
 
 ### Qt
 include(qt.cmake)
+
+### bgfx
+include(bgfx.cmake)
 
 ### QGLViewer
 include(qglviewer.cmake)

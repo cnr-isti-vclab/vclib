@@ -9,19 +9,22 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-find_package(OpenGL QUIET)
+set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx.cmake-master)
 
-if (OpenGL_FOUND)
-    message(STATUS "- OpenGL - using system-provided library")
+if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
+    message(STATUS "- bgfx - using bundled source")
+    add_subdirectory(bgfx.cmake-master)
 
-    add_library(vclib-external-opengl INTERFACE)
-    target_link_libraries(vclib-external-opengl INTERFACE OpenGL::GL)
+    add_library(vclib-external-bgfx INTERFACE)
 
-    if(APPLE)
-        target_compile_definitions(vclib-external-opengl INTERFACE GL_SILENCE_DEPRECATION)
-    endif()
+    # there are three warnings on gcc that we need to ignore
+    set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
 
-    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-opengl)
-else()
-    message(STATUS "- OpenGL - not found, skipping")
+    target_link_libraries(vclib-external-bgfx INTERFACE bx bgfx bimg)
+
+    set_target_properties(vclib-external-bgfx PROPERTIES BGFX_DIR ${VCLIB_BGFX_DIR})
+
+    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-bgfx)
+elseif(VCLIB_ALLOW_BUNDLED_BGFX)
+    message(STATUS "- bgfx - not found, skipping")
 endif()
