@@ -37,9 +37,6 @@ int main(int argc, char** argv)
     vcl::TriMesh m = bimbaSphereIntersection(s);
 
     m.enablePerVertexColor();
-
-    vcl::updatePerFaceNormals(m);
-    vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::Gray);
 
 #ifdef VCLIB_WITH_QGLVIEWER

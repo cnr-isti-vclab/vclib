@@ -9,16 +9,12 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-render-mesh-principal-curvature)
+cmake_minimum_required(VERSION 3.24)
 
-set(VCLIB_INCLUDE_TEST_DIR ${VCLIB_TEST_DIR}/examples/mesh_principal_curvature)
+set(EXAMPLE_NAME mesh-principal-curvature)
+project(vclib-render-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-render-mesh-principal-curvature ${SOURCES})
-target_include_directories(
-    vclib-render-mesh-principal-curvature PUBLIC
-        ${VCLIB_INCLUDE_TEST_DIR})
-
-target_link_libraries(vclib-render-mesh-principal-curvature PUBLIC vclib-render vclib-test-common)
+vclib_render_add_example(${EXAMPLE_NAME} TRUE ${SOURCES})

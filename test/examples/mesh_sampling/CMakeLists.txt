@@ -9,16 +9,12 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-render-mesh-sampling)
+cmake_minimum_required(VERSION 3.24)
 
-set(VCLIB_INCLUDE_TEST_DIR ${VCLIB_TEST_DIR}/examples/mesh_sampling)
+set(EXAMPLE_NAME mesh-sampling)
+project(vclib-render-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-render-mesh-sampling ${SOURCES})
-target_include_directories(
-    vclib-render-mesh-sampling PUBLIC
-        ${VCLIB_INCLUDE_TEST_DIR})
-
-target_link_libraries(vclib-render-mesh-sampling PUBLIC vclib-render vclib-test-common)
+vclib_render_add_example(${EXAMPLE_NAME} TRUE ${SOURCES})

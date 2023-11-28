@@ -9,16 +9,12 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-render-mesh-sphere-intersection)
+cmake_minimum_required(VERSION 3.24)
 
-set(VCLIB_INCLUDE_TEST_DIR ${VCLIB_TEST_DIR}/examples/mesh_sphere_intersection)
+set(EXAMPLE_NAME mesh-sphere-intersection)
+project(vclib-render-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-render-mesh-sphere-intersection ${SOURCES})
-target_include_directories(
-    vclib-render-mesh-sphere-intersection PUBLIC
-        ${VCLIB_INCLUDE_TEST_DIR})
-
-target_link_libraries(vclib-render-mesh-sphere-intersection PUBLIC vclib-render vclib-test-common)
+vclib_render_add_example(${EXAMPLE_NAME} TRUE ${SOURCES})

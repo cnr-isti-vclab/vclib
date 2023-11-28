@@ -9,11 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-ext-qglviewer-viewer)
+cmake_minimum_required(VERSION 3.24)
+
+set(EXAMPLE_NAME qglviewer)
+project(vclib-render-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-ext-qglviewer-viewer ${SOURCES})
+set(SOURCES
+    main.cpp)
 
-target_link_libraries(vclib-ext-qglviewer-viewer PUBLIC vclib vclib-render vclib-test-common)
+vclib_render_add_example(${EXAMPLE_NAME} FALSE ${SOURCES})

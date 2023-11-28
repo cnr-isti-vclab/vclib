@@ -9,7 +9,7 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.24)
 project(vclib-render-external)
 
 include(FetchContent)

@@ -9,18 +9,12 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-render-mesh-io-stl)
+cmake_minimum_required(VERSION 3.24)
 
-message(${VCLIB_TEST_DIR})
-
-set(VCLIB_INCLUDE_TEST_DIR ${VCLIB_TEST_DIR}/examples/mesh_io_stl)
+set(EXAMPLE_NAME mesh-io-stl)
+project(vclib-render-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-render-mesh-io-stl ${SOURCES})
-target_include_directories(
-    vclib-render-mesh-io-stl PUBLIC
-        ${VCLIB_INCLUDE_TEST_DIR})
-
-target_link_libraries(vclib-render-mesh-io-stl PUBLIC vclib-render vclib-test-common)
+vclib_render_add_example(${EXAMPLE_NAME} TRUE ${SOURCES})

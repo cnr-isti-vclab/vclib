@@ -9,8 +9,10 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.24)
 project(vclib-test)
+
+include(cmake/cmake_functions.cmake)
 
 # examples
 if (VCLIB_BUILD_EXAMPLES)
@@ -18,13 +20,14 @@ if (VCLIB_BUILD_EXAMPLES)
     add_subdirectory(examples/mesh_principal_curvature)
     add_subdirectory(examples/mesh_sampling)
     add_subdirectory(examples/mesh_sphere_intersection)
+
     if (TARGET vclib-external-qglviewer)
-        add_subdirectory(examples/ext/qglviewer/viewer)
+        add_subdirectory(examples/qglviewer)
     endif()
 endif()
 
 # tests
-if (VCLIB_BUILD_AND_RUN_TESTS)
+if (VCLIB_BUILD_TESTS)
 
 endif()
 
