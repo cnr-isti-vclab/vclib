@@ -9,7 +9,10 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-static-asserts)
+cmake_minimum_required(VERSION 3.24)
+
+set(EXAMPLE_NAME static-asserts)
+project(vclib-${EXAMPLE_NAME}-example)
 
 set(HEADERS
     meshes.h
@@ -26,6 +29,7 @@ set(SOURCES
     main.cpp
 )
 
-add_executable(vclib-static-asserts ${HEADERS} ${SOURCES})
-
-target_link_libraries(vclib-static-asserts PUBLIC vclib vclib-test-common)
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${HEADERS} ${SOURCES})

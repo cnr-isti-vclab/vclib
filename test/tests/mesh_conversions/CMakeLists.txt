@@ -9,14 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-conversions-test)
+cmake_minimum_required(VERSION 3.24)
+
+set(TEST_NAME mesh-conversions)
+project(vclib-${TEST_NAME}-test)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-conversions-test ${SOURCES})
-
-target_link_libraries(vclib-mesh-conversions-test PUBLIC vclib vclib-test-common)
-
-enable_testing()
-add_test(NAME mesh-conversions COMMAND vclib-mesh-conversions-test)
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

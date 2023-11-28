@@ -9,7 +9,10 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-sampling)
+cmake_minimum_required(VERSION 3.24)
+
+set(EXAMPLE_NAME mesh-sampling)
+project(vclib-${EXAMPLE_NAME}-example)
 
 set(HEADERS
     montecarlo_sampling.h)
@@ -17,6 +20,7 @@ set(HEADERS
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-sampling ${HEADERS} ${SOURCES})
-
-target_link_libraries(vclib-mesh-sampling PUBLIC vclib vclib-test-common)
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

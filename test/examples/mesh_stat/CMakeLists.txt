@@ -9,11 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-stat)
+cmake_minimum_required(VERSION 3.24)
+
+set(EXAMPLE_NAME mesh-stat)
+project(vclib-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-stat ${SOURCES})
-
-target_link_libraries(vclib-mesh-stat PUBLIC vclib vclib-test-common)
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

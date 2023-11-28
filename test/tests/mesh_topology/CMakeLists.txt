@@ -9,14 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-topology-test)
+cmake_minimum_required(VERSION 3.24)
+
+set(TEST_NAME mesh-topology)
+project(vclib-${TEST_NAME}-test)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-topology-test ${SOURCES})
-
-target_link_libraries(vclib-mesh-topology-test PUBLIC vclib vclib-test-common)
-
-enable_testing()
-add_test(NAME mesh-topology COMMAND vclib-mesh-topology-test)
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

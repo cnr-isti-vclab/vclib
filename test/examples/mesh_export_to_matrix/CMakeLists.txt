@@ -9,11 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-export-to-matrix)
+cmake_minimum_required(VERSION 3.24)
+
+set(EXAMPLE_NAME mesh-export-to-matrix)
+project(vclib-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-export-to-matrix ${SOURCES})
-
-target_link_libraries(vclib-mesh-export-to-matrix PUBLIC vclib vclib-test-common)
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

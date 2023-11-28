@@ -9,7 +9,10 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-new-user-component)
+cmake_minimum_required(VERSION 3.24)
+
+set(EXAMPLE_NAME mesh-new-user-component)
+project(vclib-${EXAMPLE_NAME}-example)
 
 set(HEADERS
     bar_component.h
@@ -19,6 +22,7 @@ set(HEADERS
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-new-user-component ${HEADERS} ${SOURCES})
-
-target_link_libraries(vclib-mesh-new-user-component PUBLIC vclib vclib-test-common)
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

@@ -9,14 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-custom-components-test)
+cmake_minimum_required(VERSION 3.24)
+
+set(TEST_NAME mesh-custom-components)
+project(vclib-${TEST_NAME}-test)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-custom-components-test ${SOURCES})
-
-target_link_libraries(vclib-mesh-custom-components-test PUBLIC vclib vclib-test-common)
-
-enable_testing()
-add_test(NAME mesh-custom-components COMMAND vclib-mesh-custom-components-test)
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

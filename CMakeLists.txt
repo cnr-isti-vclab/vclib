@@ -20,6 +20,9 @@ set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 ### Options
 option(VCLIB_BUILD_EXAMPLES "Build VCLib examples" ON)
 option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
+option(VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY
+    "If true, the examples and tests of VCLib will be built just setting the
+    INCLUDE_PATH of the library (no cmake targets)." OFF)
 
 # In case of building shared libraries, on windows we need to export all symbols
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)

@@ -9,14 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-kd-tree-test)
+cmake_minimum_required(VERSION 3.24)
+
+set(TEST_NAME kd-tree)
+project(vclib-${TEST_NAME}-test)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-kd-tree-test ${SOURCES})
-
-target_link_libraries(vclib-kd-tree-test PUBLIC vclib vclib-test-common)
-
-enable_testing()
-add_test(NAME kd-tree COMMAND vclib-kd-tree-test)
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

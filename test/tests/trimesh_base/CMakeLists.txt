@@ -9,14 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-trimesh-base-test)
+cmake_minimum_required(VERSION 3.24)
+
+set(TEST_NAME trimesh-base)
+project(vclib-${TEST_NAME}-test)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-trimesh-base-test ${SOURCES})
-
-target_link_libraries(vclib-trimesh-base-test PUBLIC vclib vclib-test-common)
-
-enable_testing()
-add_test(NAME trimesh-base COMMAND vclib-trimesh-base-test)
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

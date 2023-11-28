@@ -9,7 +9,7 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-if (VCLIB_BUILD_AND_RUN_TESTS)
+if (VCLIB_BUILD_TESTS)
     find_package(Catch2 3 QUIET)
 
     if(VCLIB_ALLOW_SYSTEM_CATCH2 AND TARGET Catch2::Catch2WithMain)

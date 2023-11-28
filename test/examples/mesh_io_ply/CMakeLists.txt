@@ -9,11 +9,15 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-io-ply)
+cmake_minimum_required(VERSION 3.24)
+
+set(EXAMPLE_NAME mesh-io-ply)
+project(vclib-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-io-ply ${SOURCES})
-
-target_link_libraries(vclib-mesh-io-ply PUBLIC vclib vclib-test-common)
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})

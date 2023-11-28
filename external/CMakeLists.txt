@@ -9,7 +9,7 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.24)
 project(vclib-external)
 
 include(FetchContent)
@@ -31,7 +31,7 @@ if (APPLE)
 endif()
 
 # Catch2
-if (VCLIB_BUILD_AND_RUN_TESTS)
+if (VCLIB_BUILD_TESTS)
     option(VCLIB_ALLOW_DOWNLOAD_CATCH2
         "Allow use of downloaded Catch2 source" ON)
     option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)

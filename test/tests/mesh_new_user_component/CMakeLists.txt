@@ -9,18 +9,19 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-new-user-component-test)
+cmake_minimum_required(VERSION 3.24)
+
+set(TEST_NAME mesh-new-user-component)
+project(vclib-${TEST_NAME}-test)
 
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-new-user-component-test ${SOURCES})
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})
 
-target_link_libraries(vclib-mesh-new-user-component-test PUBLIC vclib vclib-test-common)
-target_include_directories(vclib-mesh-new-user-component-test
+target_include_directories(vclib-${TEST_NAME}-test
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/../../examples/mesh_new_user_component)
-
-enable_testing()
-add_test(NAME mesh-new-user-component-test
-    COMMAND vclib-mesh-new-user-component-test)

@@ -9,8 +9,10 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.24)
 project(vclib-test)
+
+include(cmake/cmake_functions.cmake)
 
 add_library(vclib-test-common INTERFACE)
 target_compile_definitions(vclib-test-common INTERFACE
@@ -52,7 +54,7 @@ if (VCLIB_BUILD_EXAMPLES)
 endif()
 
 # tests
-if (VCLIB_BUILD_AND_RUN_TESTS)
+if (VCLIB_BUILD_TESTS)
     add_subdirectory(tests/kd_tree)
     add_subdirectory(tests/mesh_conversions)
     add_subdirectory(tests/mesh_clean)

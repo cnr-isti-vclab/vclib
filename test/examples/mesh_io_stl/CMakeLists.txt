@@ -9,7 +9,10 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-project(vclib-mesh-io-stl)
+cmake_minimum_required(VERSION 3.24)
+
+set(EXAMPLE_NAME mesh-io-stl)
+project(vclib-${EXAMPLE_NAME}-example)
 
 set(HEADERS
     load_bimba_and_bunny.h)
@@ -17,6 +20,7 @@ set(HEADERS
 set(SOURCES
     main.cpp)
 
-add_executable(vclib-mesh-io-stl ${HEADERS} ${SOURCES})
-
-target_link_libraries(vclib-mesh-io-stl PUBLIC vclib vclib-test-common)
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})
