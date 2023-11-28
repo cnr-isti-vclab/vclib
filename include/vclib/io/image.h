@@ -29,7 +29,8 @@
 #else
 // inclusion for usage of vclib without CMake - not ideal but necessary for
 // header-only
-#define STB_IMAGE_STATIC // make stb usable in header-only libraries
+#define STB_IMAGE_STATIC // make stb static
+#define STB_IMAGE_IMPLEMENTATION // and then include the implementation
 #include "../../../external/stb-master/stb/stb_image.h"
 #endif
 
