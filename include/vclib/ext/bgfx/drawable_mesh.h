@@ -29,7 +29,7 @@
 #include <vclib/render/generic_drawable_mesh.h>
 #include <vclib/render/mesh_render_buffers.h>
 
-#include "load_program.h"
+#include "drawable_mesh_program.h"
 
 namespace vcl::bgf {
 
@@ -43,14 +43,14 @@ class DrawableMesh : public GenericDrawableMesh
     bgfx::VertexBufferHandle meshVBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle meshIBH = BGFX_INVALID_HANDLE;
 
-    bgfx::UniformHandle meshColorUniform = BGFX_INVALID_HANDLE;
+    bgfx::UniformHandle meshColorUH = BGFX_INVALID_HANDLE;
 
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
 public:
     DrawableMesh()
     {
-        setupHowToDraw();
+        setupUniforms();
     };
 
     DrawableMesh(const MeshType& mesh)
@@ -61,19 +61,14 @@ public:
         updateBuffers(mesh);
         mrs.setDefaultSettingsFromCapability();
 
-        setupWhatToDraw();
-        setupHowToDraw();
+        setupBuffers();
+        setupUniforms();
     }
 
     ~DrawableMesh()
     {
         destroyBuffers();
-
-        bgfx::destroy(meshColorUniform);
-
-        if (bgfx::isValid(program)) {
-            bgfx::destroy(program);
-        }
+        destroyUniforms();
     }
 
     void updateBuffers(const MeshType& m)
@@ -87,7 +82,12 @@ public:
         bindTextures();
 
         destroyBuffers();
-        setupWhatToDraw();
+        setupBuffers();
+    }
+
+    void setProgram(const DrawableMeshProgram& p)
+    {
+        program = p.program();
     }
 
     // DrawableObject implementation
@@ -111,7 +111,7 @@ public:
 
             bgfx::setState(state);
 
-            bgfx::setUniform(meshColorUniform, mrb.meshColorBufferData());
+            bgfx::setUniform(meshColorUH, mrb.meshColorBufferData());
 
             bgfx::submit(0, program);
         }
@@ -124,7 +124,7 @@ public:
     DrawableMesh* clone() const { return new DrawableMesh(*this); }
 
 private:
-    void setupWhatToDraw()
+    void setupBuffers()
     {
         bgfx::VertexLayout layout;
         layout.begin()
@@ -138,17 +138,9 @@ private:
             bgfx::makeRef(mrb.triangleBufferData(), mrb.triangleBufferSize() * sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
     }
 
-    void setupHowToDraw()
+    void setupUniforms()
     {
-        if (!bgfx::isValid(program)) {
-            program = vcl::bgf::loadProgram(
-                "include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh",
-                "include/vclib/ext/bgfx/drawable_mesh/shaders/fs_mesh",
-                VCLIB_RELATIVE_SHADERS_PATH);
-            assert(bgfx::isValid(program));
-        }
-
-        meshColorUniform = bgfx::createUniform("meshColor", bgfx::UniformType::Vec4);
+        meshColorUH = bgfx::createUniform("meshColor", bgfx::UniformType::Vec4);
     }
 
     void destroyBuffers()
@@ -158,6 +150,12 @@ private:
 
         if (bgfx::isValid(meshIBH))
             bgfx::destroy(meshIBH);
+    }
+
+    void destroyUniforms()
+    {
+        if (bgfx::isValid(meshColorUH))
+            bgfx::destroy(meshColorUH);
     }
 
     void bindTextures()
