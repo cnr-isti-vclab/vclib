@@ -142,8 +142,8 @@ private:
     {
         if (!bgfx::isValid(program)) {
             program = vcl::bgf::loadProgram(
-                "vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh",
-                "vclib/ext/bgfx/drawable_mesh/shaders/fs_mesh",
+                "include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh",
+                "include/vclib/ext/bgfx/drawable_mesh/shaders/fs_mesh",
                 VCLIB_RELATIVE_SHADERS_PATH);
             assert(bgfx::isValid(program));
         }

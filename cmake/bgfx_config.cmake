@@ -144,14 +144,13 @@ endfunction()
 function(target_expose_vclib_bgfx_shaders target_name)
     get_property(TARGET_BIN_DIR TARGET ${target_name} PROPERTY BINARY_DIR)
 
-    # TODO - rename testlib to vclib-ext-bgfx
-    get_property(VCLIB_BIN_DIR TARGET testlib PROPERTY BINARY_DIR)
+    get_property(VCLIB_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
 
     # set VCLIB_RELATIVE_SHADERS_PATH to be the relative path from
     # TARGET_BIN_DIR to VCLIB_BIN_DIR
     file(RELATIVE_PATH
         VCLIB_RELATIVE_SHADERS_PATH ${TARGET_BIN_DIR} ${VCLIB_BIN_DIR})
 
-    target_compile_definitions(testlib INTERFACE
+    target_compile_definitions(vclib-render INTERFACE
         VCLIB_RELATIVE_SHADERS_PATH="${VCLIB_RELATIVE_SHADERS_PATH}/")
 endfunction()
