@@ -147,7 +147,7 @@ target_sources(vclib-render PRIVATE ${HEADERS})
 
 # vclib-render-lib target - creates a shared library
 add_library(vclib-render-lib SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
-target_link_libraries(vclib-render-lib PRIVATE ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib)
+target_link_libraries(vclib-render-lib PUBLIC ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib)
 target_include_directories(vclib-render-lib PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})
 
 target_link_libraries(vclib-render INTERFACE vclib vclib-render-lib)
