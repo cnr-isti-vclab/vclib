@@ -28,6 +28,8 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 
+#include <vclib/types.h>
+
 namespace vcl::bgf {
 
 class Canvas

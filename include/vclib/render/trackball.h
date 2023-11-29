@@ -199,6 +199,7 @@ public:
             case PAN:
                 translate(args.axis, args.scalar);
                 break;
+            default: break;
             }
         }
     }
