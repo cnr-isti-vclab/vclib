@@ -139,9 +139,20 @@ endif()
 
 target_sources(vclib-render PRIVATE ${HEADERS})
 
-# vclib-render-lib target - creates a shared library
-add_library(vclib-render-lib SHARED ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
-target_link_libraries(vclib-render-lib PUBLIC ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib)
+# vclib-render-lib target
+if (WIN32)
+    # on windows vclib-render-lib must be static - needed for bgfx
+    # TODO - try to make it work also on windows with SHARED...
+    set(VLIB_RENDER_LIB_TYPE STATIC)
+else()
+    set(VLIB_RENDER_LIB_TYPE SHARED)
+endif()
+
+add_library(vclib-render-lib ${VLIB_RENDER_LIB_TYPE}
+    ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
+
+target_link_libraries(vclib-render-lib PUBLIC
+    ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib)
 target_include_directories(vclib-render-lib PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})
 
 target_link_libraries(vclib-render INTERFACE vclib vclib-render-lib)
