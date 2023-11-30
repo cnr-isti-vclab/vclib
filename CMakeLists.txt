@@ -14,14 +14,16 @@ project(vclib-render)
 
 include(vclib/cmake/vclib_common_settings.cmake)
 
-# Flag that tells whether VCLIB has a parent scope
-get_directory_property(VCLIB_RENDER_HAS_PARENT_SCOPE PARENT_DIRECTORY)
-
 # Add the cmake folder for find_package scripts
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # vclib
 add_subdirectory(vclib)
+
+# set the VCLIB_TEST_DIR variable to be used by the examples and tests
+if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_TESTS)
+    get_target_property(VCLIB_TEST_DIR vclib VCLIB_TEST_DIR)
+endif()
 
 # external libraries
 message(STATUS "VCLib-Render: external libraries")
@@ -33,9 +35,6 @@ if (TARGET vclib-external-bgfx)
 endif()
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-if (VCLIB_RENDER_HAS_PARENT_SCOPE)
-    set(VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR} PARENT_SCOPE)
-endif()
 
 set(HEADERS
     include/vclib/gui/desktop_trackball.h
@@ -132,6 +131,8 @@ source_group("Forms Files" FILES ${FORMS_LIB})
 add_library(vclib-render INTERFACE)
 target_link_libraries(vclib-render INTERFACE ${VCLIB_RENDER_EXTERNAL_LIBRARIES})
 target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
+set_target_properties(vclib-render PROPERTIES
+    VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
 
 if (TARGET vclib-external-bgfx)
     target_add_bgfx_shaders(vclib-render ${SHADERS})
