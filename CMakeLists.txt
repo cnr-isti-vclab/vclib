@@ -12,10 +12,8 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib)
 
-### Build settings
-set(CMAKE_CXX_STANDARD 20)
-
-set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+### Common settings
+include(cmake/vclib_common_settings.cmake)
 
 ### Options
 option(VCLIB_BUILD_EXAMPLES "Build VCLib examples" ON)
@@ -24,24 +22,12 @@ option(VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY
     "If true, the examples and tests of VCLib will be built just setting the
     INCLUDE_PATH of the library (no cmake targets)." OFF)
 
-# In case of building shared libraries, on windows we need to export all symbols
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 # Flag that tells whether VCLIB has a parent scope
 get_directory_property(VCLIB_HAS_PARENT_SCOPE PARENT_DIRECTORY)
 
 # external libraries
 message(STATUS "VCLib: external libraries")
 add_subdirectory(external)
-
-if (WIN32)
-    add_compile_definitions(NOMINMAX)
-    add_compile_definitions(_USE_MATH_DEFINES)
-    if (MSVC)
-        # remove possible loss of data warnings in msvc, leave the others
-        add_compile_options(/w44244 /w44267 /w44305)
-    endif()
-endif()
 
 set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 if (VCLIB_HAS_PARENT_SCOPE)

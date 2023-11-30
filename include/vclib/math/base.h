@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <cmath>
+#include <limits>
 
 #include <vclib/types.h>
 
