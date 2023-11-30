@@ -9,14 +9,14 @@
 #* All rights reserved.                                                      *
 #****************************************************************************/
 
-set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx.cmake-master)
+set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
 
 if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
     message(STATUS "- bgfx - using bundled source")
 
     set(BGFX_BUILD_EXAMPLES OFF)
     set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-    add_subdirectory(bgfx.cmake-master)
+    add_subdirectory(${VCLIB_BGFX_DIR})
 
     add_library(vclib-external-bgfx INTERFACE)
 

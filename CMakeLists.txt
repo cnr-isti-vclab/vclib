@@ -12,13 +12,7 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-render)
 
-### Build settings
-set(CMAKE_CXX_STANDARD 20)
-
-set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
-
-# In case of building shared libraries, on windows we need to export all symbols
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+include(vclib/cmake/vclib_common_settings.cmake)
 
 # Flag that tells whether VCLIB has a parent scope
 get_directory_property(VCLIB_RENDER_HAS_PARENT_SCOPE PARENT_DIRECTORY)

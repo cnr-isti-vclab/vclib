@@ -95,7 +95,7 @@ class MeshRenderSettings
 
     int   pWidth        = 3;
     float pUserColor[4] = {1, 1, 0, 1};
-    float sUserColor[4] = {0.8, 0.8, 0.8, 1};
+    float sUserColor[4] = {0.8f, 0.8f, 0.8f, 1.f};
     int   wWidth        = 1;
     float wUserColor[4] = {0, 0, 0, 1};
 
