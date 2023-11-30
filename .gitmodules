@@ -2,6 +2,3 @@
 	path = vclib
 	url = https://github.com/cnr-isti-vclab/vclib
 	branch = main
-[submodule "external/bgfx.cmake-master"]
-	path = external/bgfx.cmake-master
-	url = https://github.com/bkaradzic/bgfx.cmake
