@@ -224,7 +224,7 @@ static const float OFF_GEOMVIEW_COLOR_MAP[148][4] = {
 };
 
 void readOffHeader(
-    std::ifstream& file,
+    std::istream& file,
     MeshInfo&      fileInfo,
     uint&          nv,
     uint&          nf,
@@ -316,7 +316,7 @@ inline vcl::Color readOffColor(
 template<MeshConcept MeshType>
 void readOffVertices(
     MeshType&       mesh,
-    std::ifstream&  file,
+    std::istream&   file,
     const MeshInfo& fileInfo,
     uint            nv)
 {
@@ -400,7 +400,7 @@ void readOffVertices(
 template<FaceMeshConcept MeshType>
 void readOffFaces(
     MeshType&      mesh,
-    std::ifstream& file,
+    std::istream&  file,
     MeshInfo&      loadedInfo,
     uint           nf,
     bool           enableOptionalComponents)
@@ -420,33 +420,36 @@ void readOffFaces(
             // contains the vertex ids of the actual face
             std::vector<uint> vids;
             vids.resize(fSize);
+            // read vertex indices
             for (uint i = 0; i < fSize; ++i) {
                 vids[i]        = io::readUInt<uint>(token);
-                bool splitFace = false;
-                // we have a polygonal mesh
-                if constexpr (FaceType::VERTEX_NUMBER < 0) {
-                    // need to resize to the right number of verts
-                    f.resizeVertices(vids.size());
-                }
-                else if (FaceType::VERTEX_NUMBER != vids.size()) {
-                    // we have faces with static sizes (triangles), but we are
-                    // loading faces with number of verts > 3. Need to split the
-                    // face we are loading in n faces!
-                    splitFace = true;
-                }
-                if (!splitFace) { // classic load, no split needed
-                    for (uint i = 0; i < vids.size(); ++i) {
-                        if (vids[i] >= mesh.vertexNumber()) {
-                            throw vcl::MalformedFileException(
-                                "Bad vertex index for face " +
-                                std::to_string(i));
-                        }
-                        f.vertex(i) = &mesh.vertex(vids[i]);
+            }
+
+            // load vertex indices into face
+            bool splitFace = false;
+            // we have a polygonal mesh
+            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+                // need to resize to the right number of verts
+                f.resizeVertices(vids.size());
+            }
+            else if (FaceType::VERTEX_NUMBER != vids.size()) {
+                // we have faces with static sizes (triangles), but we are
+                // loading faces with number of verts > 3. Need to split the
+                // face we are loading in n faces!
+                splitFace = true;
+            }
+            if (!splitFace) { // classic load, no split needed
+                for (uint i = 0; i < vids.size(); ++i) {
+                    if (vids[i] >= mesh.vertexNumber()) {
+                        throw vcl::MalformedFileException(
+                            "Bad vertex index for face " +
+                            std::to_string(i));
                     }
+                    f.vertex(i) = &mesh.vertex(vids[i]);
                 }
-                else { // split needed
-                    addTriangleFacesFromPolygon(mesh, f, vids);
-                }
+            }
+            else { // split needed
+                addTriangleFacesFromPolygon(mesh, f, vids);
             }
 
             // read face color
@@ -481,6 +484,64 @@ void readOffFaces(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadOff(
+    MeshType&     m,
+    std::istream& inputOffStream,
+    MeshInfo&     loadedInfo,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    uint          nVertices, nFaces, nEdges;
+
+    MeshInfo fileInfo; // data that needs to be read from the file
+
+    detail::readOffHeader(inputOffStream, fileInfo, nVertices, nFaces, nEdges);
+    loadedInfo = fileInfo; // data that will be stored in the mesh!
+    if (enableOptionalComponents)
+        enableOptionalComponentsFromInfo(loadedInfo, m);
+
+    detail::readOffVertices(m, inputOffStream, fileInfo, nVertices);
+    detail::readOffFaces(m, inputOffStream, fileInfo, nFaces, enableOptionalComponents);
+    if (enableOptionalComponents)
+        loadedInfo = fileInfo;
+    // detail::loadOffEdges(m, inputOffStream, loadedInfo, nEdges);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadOff(
+    MeshType&     m,
+    std::istream& inputOffStream,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    MeshInfo loadedInfo;
+    loadOff(m, inputOffStream, loadedInfo, log, enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadOff(
+    std::istream& inputOffStream,
+    MeshInfo&          loadedInfo,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
+{
+    MeshType m;
+    loadOff(m, inputOffStream, loadedInfo, log, enableOptionalComponents);
+    return m;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadOff(
+    std::istream& inputOffStream,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
+{
+    MeshInfo loadedInfo;
+    return loadOff<MeshType>(
+        inputOffStream, loadedInfo, log, enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadOff(
     MeshType&          m,
     const std::string& filename,
     MeshInfo&          loadedInfo,
@@ -488,24 +549,12 @@ void loadOff(
     bool               enableOptionalComponents = true)
 {
     std::ifstream file = openInputFileStream(filename);
-    uint          nVertices, nFaces, nEdges;
 
     if constexpr (HasName<MeshType>) {
         m.name() = FileInfo::fileNameWithoutExtension(filename);
     }
 
-    MeshInfo fileInfo; // data that needs to be read from the file
-
-    detail::readOffHeader(file, fileInfo, nVertices, nFaces, nEdges);
-    loadedInfo = fileInfo; // data that will be stored in the mesh!
-    if (enableOptionalComponents)
-        enableOptionalComponentsFromInfo(loadedInfo, m);
-
-    detail::readOffVertices(m, file, fileInfo, nVertices);
-    detail::readOffFaces(m, file, fileInfo, nFaces, enableOptionalComponents);
-    if (enableOptionalComponents)
-        loadedInfo = fileInfo;
-    // detail::loadOffEdges(m, file, loadedInfo, nEdges);
+    loadOff(m, file, loadedInfo, log, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>

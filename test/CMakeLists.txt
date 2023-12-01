@@ -56,6 +56,7 @@ endif()
 # tests
 if (VCLIB_BUILD_TESTS)
     add_subdirectory(tests/kd_tree)
+    add_subdirectory(tests/load_mesh_off)
     add_subdirectory(tests/mesh_conversions)
     add_subdirectory(tests/mesh_clean)
     add_subdirectory(tests/mesh_custom_components)

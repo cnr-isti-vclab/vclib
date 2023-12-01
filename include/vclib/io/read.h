@@ -35,20 +35,20 @@ namespace vcl {
 namespace detail {
 
 /**
- * @brief Read the next non-empty line from a txt file.
+ * @brief Read the next non-empty line from an input stream.
  *
- * @throws MalformedFileException if the file ends before a non-empty line is
+ * @throws MalformedFileException if the stream ends before a non-empty line is
  * found and THROW is true.
  *
- * @tparam THROW: if true, throw an exception if the file ends before a
+ * @tparam THROW: if true, throw an exception if the stream ends before a
  * non-empty line is found. If false and if it reaches the end of file, returns
  * an empty string.
  *
- * @param[in] file: the file to read from.
- * @return the next non-empty line read from the file.
+ * @param[in] file: the stream to read from.
+ * @return the next non-empty line read from the stream.
  */
 template<bool THROW = true>
-inline std::string readNextNonEmptyLine(std::ifstream& file)
+inline std::string readNextNonEmptyLine(std::istream& file)
 {
     std::string line;
     do {
@@ -68,14 +68,14 @@ inline std::string readNextNonEmptyLine(std::ifstream& file)
 } // namespace detail
 
 /**
- * @brief Open an input file stream.
+ * @brief Open an input stream from a file.
  *
  * @throws CannotOpenFileException if the file cannot be opened.
  *
  * @param[in] filename: the name of the file to open.
  * @param[in] ext: the extension of the file to open. If empty, the filename is
  * used as is.
- * @return the input file stream.
+ * @return the input stream.
  */
 inline std::ifstream openInputFileStream(
     const std::string& filename,
@@ -98,45 +98,45 @@ inline std::ifstream openInputFileStream(
 }
 
 /**
- * @brief Reads and returns the next non-empty line from a txt file.
+ * @brief Reads and returns the next non-empty line from a txt stream.
  *
- * @throws MalformedFileException if the file ends before a non-empty line is
+ * @throws MalformedFileException if the stream ends before a non-empty line is
  * found.
  *
- * @param[in] file: the file to read from.
+ * @param file: the stream to read from.
  * @return the next non-empty line read from the file.
  */
-inline std::string readNextNonEmptyLine(std::ifstream& file)
+inline std::string readNextNonEmptyLine(std::istream& file)
 {
     return detail::readNextNonEmptyLine<>(file);
 }
 
 /**
- * @brief Reads and returns the next non-empty line from a txt file.
+ * @brief Reads and returns the next non-empty line from a txt stream.
  *
- * @param[in] file: the file to read from.
- * @return the next non-empty line read from the file. If the file ends before a
- * non-empty line is found, returns an empty string.
+ * @param[in] file: the stream to read from.
+ * @return the next non-empty line read from the stream. If the stream ends
+ * before a non-empty line is found, returns an empty string.
  */
-inline std::string readNextNonEmptyLineNoThrow(std::ifstream& file)
+inline std::string readNextNonEmptyLineNoThrow(std::istream& file)
 {
     return detail::readNextNonEmptyLine<false>(file);
 }
 
 /**
- * @brief Reads and returns the next non-empty line from a txt file, tokenized
+ * @brief Reads and returns the next non-empty line from a txt stream, tokenized
  * with the given separator.
  *
- * @throws MalformedFileException if the file ends before a non-empty line is
+ * @throws MalformedFileException if the stream ends before a non-empty line is
  * found.
  *
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @param[in] separator: the separator to use for tokenization.
- * @return the next non-empty line read from the file, tokenized with the given
- * separator.
+ * @return the next non-empty line read from the stream, tokenized with the
+ * given separator.
  */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
-    std::ifstream& file,
+    std::istream& file,
     char           separator = ' ')
 {
     std::string    line;
@@ -151,14 +151,14 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
 }
 
 /**
- * @brief Reads and returns the next non-empty line from a txt file, tokenized
+ * @brief Reads and returns the next non-empty line from a txt stream, tokenized
  * with the given separator.
  *
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @param[in] separator: the separator to use for tokenization.
- * @return the next non-empty line read from the file, tokenized with the given
- * separator. If the file ends before a non-empty line is found, returns an
- * empty tokenizer.
+ * @return the next non-empty line read from the stream, tokenized with the
+ * given separator. If the stream ends before a non-empty line is found, returns
+ * an empty tokenizer.
  */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     std::ifstream& file,
@@ -183,103 +183,103 @@ namespace io {
 // divide by 255 if T is not integral
 
 /**
- * @brief Reads a char (one byte) from a binary file, and returns it as a
+ * @brief Reads a char (one byte) from a binary stream, and returns it as a
  * type T.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @return A value of type T containing the read char.
  */
 template<typename T>
-T readChar(std::ifstream& file)
+T readChar(std::istream& file)
 {
     char c;
     file.read(&c, 1);
-    return (T) c;
+    return static_cast<T>(c);
 }
 
 /**
- * @brief Reads an unsigned char (one byte) from a binary file, and returns it
+ * @brief Reads an unsigned char (one byte) from a binary stream, and returns it
  * as a type T.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @return A value of type T containing the read unsigned char.
  */
 template<typename T>
-T readUChar(std::ifstream& file)
+T readUChar(std::istream& file)
 {
     unsigned char c;
     file.read((char*) &c, 1);
-    return (T) c;
+    return static_cast<T>(c);
 }
 
 /**
- * @brief Reads a short (two bytes) from a binary file, and returns it as a
+ * @brief Reads a short (two bytes) from a binary stream, and returns it as a
  * type T.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @return A value of type T containing the read short.
  */
 template<typename T>
-T readShort(std::ifstream& file)
+T readShort(std::istream& file)
 {
     short c;
     file.read((char*) &c, 2);
-    return (T) c;
+    return static_cast<T>(c);
 }
 
 /**
- * @brief Reads an unsigned short (two bytes) from a binary file, and returns
+ * @brief Reads an unsigned short (two bytes) from a binary stream, and returns
  * it as a type T.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @return A value of type T containing the read unsigned short.
  */
 template<typename T>
-T readUShort(std::ifstream& file)
+T readUShort(std::istream& file)
 {
     unsigned short c;
     file.read((char*) &c, 2);
-    return (T) c;
+    return static_cast<T>(c);
 }
 
 /**
- * @brief Reads an int (four bytes) from a binary file, and returns it as a
+ * @brief Reads an int (four bytes) from a binary stream, and returns it as a
  * type T.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @return A value of type T containing the read int.
  */
 template<typename T>
-T readInt(std::ifstream& file)
+T readInt(std::istream& file)
 {
     int c;
     file.read((char*) &c, 4);
-    return (T) c;
+    return static_cast<T>(c);
 }
 
 /**
- * @brief Reads an unsigned int (four bytes) from a binary file, and returns
+ * @brief Reads an unsigned int (four bytes) from a binary stream, and returns
  * it as a type T.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @return A value of type T containing the read unsigned int.
  */
 template<typename T>
-T readUInt(std::ifstream& file)
+T readUInt(std::istream& file)
 {
     uint c;
     file.read((char*) &c, 4);
-    return (T) c;
+    return static_cast<T>(c);
 }
 
 /**
- * @brief Reads a float (four bytes) from a binary file, and returns it as a
+ * @brief Reads a float (four bytes) from a binary stream, and returns it as a
  * type T.
  *
  * @note If the read primitive is a color, it is converted in a value that
@@ -287,23 +287,23 @@ T readUInt(std::ifstream& file)
  * is multiplied by 255. If T is a float, the value is not modified.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @return A value of type T containing the read float.
  */
 template<typename T>
-T readFloat(std::ifstream& file, bool isColor = false)
+T readFloat(std::istream& file, bool isColor = false)
 {
     float c;
     file.read((char*) &c, 4);
     if constexpr (std::integral<T>) {
         if (isColor)
-            return (T) (c * 255);
+            return static_cast<T>(c * 255);
     }
-    return (T) c;
+    return static_cast<T>(c);
 }
 
 /**
- * @brief Reads a double (eight bytes) from a binary file, and returns it as
+ * @brief Reads a double (eight bytes) from a binary stream, and returns it as
  * a type T.
  *
  * @note If the read primitive is a color, it is converted in a value that
@@ -311,26 +311,26 @@ T readFloat(std::ifstream& file, bool isColor = false)
  * is multiplied by 255. If T is a float, the value is not modified.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @return A value of type T containing the read double.
  */
 template<typename T>
-T readDouble(std::ifstream& file, bool isColor = false)
+T readDouble(std::istream& file, bool isColor = false)
 {
     double c;
     file.read((char*) &c, 8);
     if constexpr (std::integral<T>) {
         if (isColor)
-            return (T) (c * 255);
+            return static_cast<T>(c * 255);
     }
-    return (T) c;
+    return static_cast<T>(c);
 }
 
 /**
- * @brief Reads a primitive type from a binary file, and returns it as a type
+ * @brief Reads a primitive type from a binary stream, and returns it as a type
  * T.
  *
- * @note if you are reading from a txt file, use first the function
+ * @note if you are reading from a txt stream, use first the function
  * readAndTokenizeNextNonEmptyLine to read and tokenize a line, and then use the
  * Tokernizer iterator to read the primitives.
  *
@@ -339,7 +339,7 @@ T readDouble(std::ifstream& file, bool isColor = false)
  * integral type, and the primitive is a float, the value is multiplied by 255.
  *
  * @tparam T: the type to return.
- * @param[in] file: the file to read from.
+ * @param[in] file: the stream to read from.
  * @param[in] type: the type of the primitive to read.
  * @param[in] isColor: whether the primitive is a color (in which case it is
  * converted in a value that makes sense depending on T and type).
@@ -347,7 +347,7 @@ T readDouble(std::ifstream& file, bool isColor = false)
  */
 template<typename T>
 T readPrimitiveType(
-    std::ifstream& file,
+    std::istream& file,
     PrimitiveType  type,
     bool           isColor = false)
 {
@@ -365,13 +365,13 @@ T readPrimitiveType(
     }
     // if I read a color that must be returned as a float or double
     if (isColor && !std::is_integral<T>::value)
-        p = (float) p / 255.0;
+        p /= 255.0;
     return p;
 }
 
 template<ElementConcept El>
 void readCustomComponent(
-    std::ifstream&     file,
+    std::istream&     file,
     El&                elem,
     const std::string& cName,
     PrimitiveType      type)
@@ -492,7 +492,7 @@ T readPrimitiveType(
     }
     // if I read a color that must be returned as a float or double
     if (isColor && !std::is_integral<T>::value)
-        p = (float) p / 255.0;
+        p /= 255.0;
     return p;
 }
 
