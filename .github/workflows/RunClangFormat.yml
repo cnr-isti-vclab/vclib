@@ -1,6 +1,10 @@
 name: Run clang-format Linter
 
-on: [push]
+# run it every day at midnight, or manually
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
