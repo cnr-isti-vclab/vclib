@@ -225,10 +225,10 @@ static const float OFF_GEOMVIEW_COLOR_MAP[148][4] = {
 
 void readOffHeader(
     std::istream& file,
-    MeshInfo&      fileInfo,
-    uint&          nv,
-    uint&          nf,
-    uint&          ne)
+    MeshInfo&     fileInfo,
+    uint&         nv,
+    uint&         nf,
+    uint&         ne)
 {
     fileInfo.reset();
     vcl::Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
@@ -399,11 +399,11 @@ void readOffVertices(
 
 template<FaceMeshConcept MeshType>
 void readOffFaces(
-    MeshType&      mesh,
-    std::istream&  file,
-    MeshInfo&      loadedInfo,
-    uint           nf,
-    bool           enableOptionalComponents)
+    MeshType&     mesh,
+    std::istream& file,
+    MeshInfo&     loadedInfo,
+    uint          nf,
+    bool          enableOptionalComponents)
 {
     if constexpr (HasFaces<MeshType>) {
         using FaceType = MeshType::FaceType;
@@ -422,7 +422,7 @@ void readOffFaces(
             vids.resize(fSize);
             // read vertex indices
             for (uint i = 0; i < fSize; ++i) {
-                vids[i]        = io::readUInt<uint>(token);
+                vids[i] = io::readUInt<uint>(token);
             }
 
             // load vertex indices into face
@@ -442,8 +442,7 @@ void readOffFaces(
                 for (uint i = 0; i < vids.size(); ++i) {
                     if (vids[i] >= mesh.vertexNumber()) {
                         throw vcl::MalformedFileException(
-                            "Bad vertex index for face " +
-                            std::to_string(i));
+                            "Bad vertex index for face " + std::to_string(i));
                     }
                     f.vertex(i) = &mesh.vertex(vids[i]);
                 }
@@ -490,7 +489,7 @@ void loadOff(
     LogType&      log                      = nullLogger,
     bool          enableOptionalComponents = true)
 {
-    uint          nVertices, nFaces, nEdges;
+    uint nVertices, nFaces, nEdges;
 
     MeshInfo fileInfo; // data that needs to be read from the file
 
@@ -500,7 +499,8 @@ void loadOff(
         enableOptionalComponentsFromInfo(loadedInfo, m);
 
     detail::readOffVertices(m, inputOffStream, fileInfo, nVertices);
-    detail::readOffFaces(m, inputOffStream, fileInfo, nFaces, enableOptionalComponents);
+    detail::readOffFaces(
+        m, inputOffStream, fileInfo, nFaces, enableOptionalComponents);
     if (enableOptionalComponents)
         loadedInfo = fileInfo;
     // detail::loadOffEdges(m, inputOffStream, loadedInfo, nEdges);
@@ -520,9 +520,9 @@ void loadOff(
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadOff(
     std::istream& inputOffStream,
-    MeshInfo&          loadedInfo,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    MeshInfo&     loadedInfo,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
 {
     MeshType m;
     loadOff(m, inputOffStream, loadedInfo, log, enableOptionalComponents);
@@ -532,8 +532,8 @@ MeshType loadOff(
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadOff(
     std::istream& inputOffStream,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
 {
     MeshInfo loadedInfo;
     return loadOff<MeshType>(

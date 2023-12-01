@@ -137,7 +137,7 @@ inline std::string readNextNonEmptyLineNoThrow(std::istream& file)
  */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
     std::istream& file,
-    char           separator = ' ')
+    char          separator = ' ')
 {
     std::string    line;
     vcl::Tokenizer tokenizer;
@@ -348,8 +348,8 @@ T readDouble(std::istream& file, bool isColor = false)
 template<typename T>
 T readPrimitiveType(
     std::istream& file,
-    PrimitiveType  type,
-    bool           isColor = false)
+    PrimitiveType type,
+    bool          isColor = false)
 {
     T p;
     switch (type) {
@@ -371,7 +371,7 @@ T readPrimitiveType(
 
 template<ElementConcept El>
 void readCustomComponent(
-    std::istream&     file,
+    std::istream&      file,
     El&                elem,
     const std::string& cName,
     PrimitiveType      type)

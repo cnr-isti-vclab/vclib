@@ -51,16 +51,15 @@ std::istringstream offPolyCube()
     return ss;
 }
 
-//Test to load off from a istringstream
+// Test to load off from a istringstream
 TEST_CASE("Load OFF cube from istringstream")
 {
     SECTION("TriMesh")
     {
         vcl::TriMesh tm;
-        auto ss = offPolyCube();
+        auto         ss = offPolyCube();
         vcl::loadOff(tm, ss);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
     }
-
 }
