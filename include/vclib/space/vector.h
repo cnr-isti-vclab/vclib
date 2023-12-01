@@ -201,7 +201,7 @@ public:
      *
      * @return The size of the container.
      */
-    uint size() const
+    std::size_t size() const
     {
         if constexpr (N >= 0) {
             return N;
