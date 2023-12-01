@@ -162,7 +162,7 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
  */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     std::istream& file,
-    char           separator = ' ')
+    char          separator = ' ')
 {
     std::string    line;
     vcl::Tokenizer tokenizer;

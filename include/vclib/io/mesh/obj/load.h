@@ -50,8 +50,8 @@ void loadObjMaterials(
     MeshType&                           mesh,
     std::istream&                       stream)
 {
-    std::string   matName;
-    ObjMaterial   mat;
+    std::string matName;
+    ObjMaterial mat;
 
     do {
         vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(stream);
@@ -415,14 +415,14 @@ void readObjFace(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadObj(
-    MeshType&                        m,
-    std::istream&                    inputObjStream,
+    MeshType&                         m,
+    std::istream&                     inputObjStream,
     const std::vector<std::istream*>& inputMtlStreams,
-    MeshInfo&                        loadedInfo,
-    const std::string&               filename                 = "",
-    bool                             ignoreMtlLib             = false,
-    LogType&                         log                      = nullLogger,
-    bool                             enableOptionalComponents = true)
+    MeshInfo&                         loadedInfo,
+    const std::string&                filename                 = "",
+    bool                              ignoreMtlLib             = false,
+    LogType&                          log                      = nullLogger,
+    bool                              enableOptionalComponents = true)
 {
     // save normals if they can't be stored directly into vertices
     detail::ObjNormalsMap<MeshType> mapNormalsCache;
@@ -451,7 +451,8 @@ void loadObj(
 
     // cycle that reads line by line
     do {
-        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(inputObjStream);
+        vcl::Tokenizer tokens =
+            readAndTokenizeNextNonEmptyLineNoThrow(inputObjStream);
         if (inputObjStream) {
             vcl::Tokenizer::iterator token  = tokens.begin();
             std::string              header = *token++;
@@ -462,9 +463,10 @@ void loadObj(
                     detail::loadObjMaterials(materialMap, m, mtlfile);
                 }
                 catch (vcl::CannotOpenFileException) {
-                    if constexpr(isLoggerValid<LogType>()) {
-                        log.log(LogType::WARNING,
-                                "Cannot open material file " + mtlfile);
+                    if constexpr (isLoggerValid<LogType>()) {
+                        log.log(
+                            LogType::WARNING,
+                            "Cannot open material file " + mtlfile);
                     }
                 }
             }
@@ -561,7 +563,7 @@ void loadObj(
                         v.texCoord() =
                             texCoords[i++]
                                 .cast<typename VertexType::TexCoordType::
-                                      ScalarType>();
+                                          ScalarType>();
                     }
                 }
             }
@@ -600,7 +602,7 @@ void loadObj(
     detail::loadObj(
         m,
         file,
-        { &f },
+        {&f},
         loadedInfo,
         filename,
         false,
