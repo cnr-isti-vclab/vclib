@@ -107,7 +107,7 @@ TEST_CASE("Load OFF cube from istringstream")
     SECTION("PolyMesh - PolyCube")
     {
         vcl::PolyMesh pm;
-        auto         ss = offPolyCube();
+        auto          ss = offPolyCube();
         vcl::loadOff(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 6);
@@ -116,7 +116,7 @@ TEST_CASE("Load OFF cube from istringstream")
     SECTION("PolyMesh - TriCube")
     {
         vcl::PolyMesh pm;
-        auto         ss = offTriCube();
+        auto          ss = offTriCube();
         vcl::loadOff(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 12);
