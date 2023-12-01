@@ -28,7 +28,6 @@
 #include <iomanip>
 #include <iostream>
 #include <mutex>
-#include <sstream>
 #include <stack>
 
 #include <vclib/misc/timer.h>

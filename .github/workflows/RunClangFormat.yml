@@ -4,6 +4,8 @@ on: [push]
 
 jobs:
   build:
+    if: github.repository == 'cnr-isti-vclab/vclib'
+    name: Run clang-format Linter
     runs-on: ubuntu-latest
 
     steps:

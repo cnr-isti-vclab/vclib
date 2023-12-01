@@ -48,15 +48,14 @@ template<MeshConcept MeshType>
 void loadObjMaterials(
     std::map<std::string, ObjMaterial>& materialMap,
     MeshType&                           mesh,
-    const std::string&                  mtllib)
+    std::istream&                       stream)
 {
-    std::ifstream file = openInputFileStream(mtllib);
     std::string   matName;
     ObjMaterial   mat;
 
     do {
-        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(file);
-        if (file) {
+        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(stream);
+        if (stream) {
             // counter for texture images, used when mesh has no texture files
             uint                     nt     = 0;
             vcl::Tokenizer::iterator token  = tokens.begin();
@@ -147,9 +146,19 @@ void loadObjMaterials(
                 }
             }
         }
-    } while (file);
+    } while (stream);
     if (!matName.empty())
         materialMap[matName] = mat;
+}
+
+template<MeshConcept MeshType>
+void loadObjMaterials(
+    std::map<std::string, ObjMaterial>& materialMap,
+    MeshType&                           mesh,
+    const std::string&                  mtllib)
+{
+    std::ifstream file = openInputFileStream(mtllib);
+    loadObjMaterials(materialMap, mesh, file);
 }
 
 template<MeshConcept MeshType>
@@ -404,17 +413,17 @@ void readObjFace(
     }
 }
 
-} // namespace detail
-
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadObj(
-    MeshType&          m,
-    const std::string& filename,
-    MeshInfo&          loadedInfo,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    MeshType&                        m,
+    std::istream&                    inputObjStream,
+    const std::vector<std::istream*>& inputMtlStreams,
+    MeshInfo&                        loadedInfo,
+    const std::string&               filename                 = "",
+    bool                             ignoreMtlLib             = false,
+    LogType&                         log                      = nullLogger,
+    bool                             enableOptionalComponents = true)
 {
-    std::ifstream file = openInputFileStream(filename);
     // save normals if they can't be stored directly into vertices
     detail::ObjNormalsMap<MeshType> mapNormalsCache;
     uint                            vn = 0; // number of vertex normals read
@@ -424,22 +433,13 @@ void loadObj(
 
     // map of materials loaded
     std::map<std::string, detail::ObjMaterial> materialMap;
+
+    for (auto* stream : inputMtlStreams) {
+        detail::loadObjMaterials(materialMap, m, *stream);
+    }
+
     detail::ObjMaterial
         currentMaterial; // the current material, set by 'usemtl'
-
-    // some obj files do not declare the material file name with mtllib, but
-    // they assume that material file has the same name of the obj file.
-    // Therefore, we first load this file if it exists.
-    std::string stdmtlfile = FileInfo::pathWithoutFileName(filename) +
-                             FileInfo::fileNameWithoutExtension(filename) +
-                             ".mtl";
-    try {
-        detail::loadObjMaterials(materialMap, m, stdmtlfile);
-    }
-    catch (vcl::CannotOpenFileException) {
-        // nothing to do, this file was missing but was a fallback for some type
-        // of files...
-    }
 
     if constexpr (HasTexturePaths<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
@@ -451,14 +451,22 @@ void loadObj(
 
     // cycle that reads line by line
     do {
-        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(file);
-        if (file) {
+        vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(inputObjStream);
+        if (inputObjStream) {
             vcl::Tokenizer::iterator token  = tokens.begin();
             std::string              header = *token++;
-            if (header == "mtllib") { // material file
+            if (header == "mtllib" && !ignoreMtlLib) { // material file
                 std::string mtlfile =
                     FileInfo::pathWithoutFileName(filename) + *token;
-                detail::loadObjMaterials(materialMap, m, mtlfile);
+                try {
+                    detail::loadObjMaterials(materialMap, m, mtlfile);
+                }
+                catch (vcl::CannotOpenFileException) {
+                    if constexpr(isLoggerValid<LogType>()) {
+                        log.log(LogType::WARNING,
+                                "Cannot open material file " + mtlfile);
+                    }
+                }
             }
             // use a new material - change currentMaterial
             if (header == "usemtl") {
@@ -523,7 +531,7 @@ void loadObj(
                 }
             }
         }
-    } while (file);
+    } while (inputObjStream);
 
     if constexpr (HasPerVertexNormal<MeshType>) {
         // set all vertex normals that have not been stored in vertices
@@ -553,12 +561,51 @@ void loadObj(
                         v.texCoord() =
                             texCoords[i++]
                                 .cast<typename VertexType::TexCoordType::
-                                          ScalarType>();
+                                      ScalarType>();
                     }
                 }
             }
         }
     }
+}
+
+} // namespace detail
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadObj(
+    MeshType&          m,
+    const std::string& filename,
+    MeshInfo&          loadedInfo,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
+{
+    std::ifstream file = openInputFileStream(filename);
+
+    // some obj files do not declare the material file name with mtllib, but
+    // they assume that material file has the same name of the obj file.
+    // Therefore, we first load this file if it exists.
+    std::string stdmtlfile = FileInfo::pathWithoutFileName(filename) +
+                             FileInfo::fileNameWithoutExtension(filename) +
+                             ".mtl";
+
+    std::ifstream f;
+    try {
+        f = openInputFileStream(stdmtlfile);
+    }
+    catch (vcl::CannotOpenFileException) {
+        // nothing to do, this file was missing, but this was a fallback for
+        // some type of files...
+    }
+
+    detail::loadObj(
+        m,
+        file,
+        { &f },
+        loadedInfo,
+        filename,
+        false,
+        log,
+        enableOptionalComponents);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>

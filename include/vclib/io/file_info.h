@@ -158,7 +158,7 @@ public:
      * std::string fullname = "/usr/bin/foo.sh";
      * std::string path, filename;
      * FileInfo::separateExtensionFromFileName(fullname, path, filename);
-     * //path = "/usr/bin"
+     * //path = "/usr/bin/"
      * //filename = "foo.sh"
      * @endcode
      *
@@ -174,7 +174,7 @@ public:
     {
         size_t lastindex = fullpath.find_last_of("/");
         if (lastindex != std::string::npos) {
-            path     = fullpath.substr(0, lastindex);
+            path     = fullpath.substr(0, lastindex + 1);
             filename = fullpath.substr(lastindex + 1, fullpath.size());
         }
         else {
@@ -199,7 +199,7 @@ public:
     {
         std::string path, filename;
         separateFileNameFromPath(fullpath, path, filename);
-        return path + "/";
+        return path;
     }
 
     /**
