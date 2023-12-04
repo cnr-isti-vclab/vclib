@@ -82,8 +82,8 @@ void writeElementObjMaterial(
     const MeshInfo&                     fi,
     ObjMaterial&                        lastMaterial,
     std::map<ObjMaterial, std::string>& materialMap,
-    std::ofstream&                      fp,
-    std::ofstream&                      mtlfp)
+    std::ostream&                       fp,
+    std::ostream&                       mtlfp)
 {
     ObjMaterial mat;
     if constexpr (std::is_same<ElementType, typename MeshType::VertexType>::
@@ -118,12 +118,13 @@ void writeElementObjMaterial(
     }
 }
 
-} // namespace detail
-
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveObj(
     const MeshType&    m,
     const std::string& filename,
+    std::ostream&      fp,
+    std::ostream*      mtlfp,
+    bool               saveMtlFile,
     const MeshInfo&    info,
     LogType&           log = nullLogger)
 {
@@ -135,16 +136,14 @@ void saveObj(
     // available in the mesh.
     meshInfo = info.intersect(meshInfo);
 
-    // if the mesh has both vertex and wedge texcords, will be save just wedges
+    // if the mesh has both vertex and wedge texcords, will be saved just wedges
     // because obj does not allow to save them both. In any case, also vertex
     // texcoords will result saved as wedge texcoords in the final file.
     if (meshInfo.hasVertexTexCoords() && meshInfo.hasFaceWedgeTexCoords()) {
         meshInfo.setVertexTexCoords(false);
     }
 
-    std::ofstream fp = openOutputFileStream(filename, "obj");
-
-    std::ofstream                              mtlfp;
+    std::ofstream mtlftmp;
     std::map<detail::ObjMaterial, std::string> materialMap;
 
     bool useMtl =
@@ -152,10 +151,17 @@ void saveObj(
         (meshInfo.hasTextures() &&
          (meshInfo.hasVertexTexCoords() || meshInfo.hasFaceWedgeTexCoords()));
     if (useMtl) {
-        mtlfp = openOutputFileStream(filename, "mtl");
-        std::string mtlFileName =
-            FileInfo::fileNameWithExtension(filename) + ".mtl";
-        fp << "mtllib ./" << mtlFileName << std::endl;
+        if (saveMtlFile) {
+            mtlftmp = std::ofstream(
+                FileInfo::fileNameWithExtension(filename) + ".mtl");
+            mtlfp = &mtlftmp;
+            std::string mtlFileName =
+                FileInfo::fileNameWithExtension(filename) + ".mtl";
+            fp << "mtllib ./" << mtlFileName << std::endl;
+        }
+        else if (mtlfp == nullptr) {
+            useMtl = false;
+        }
     }
 
     detail::ObjMaterial lastMaterial;
@@ -165,7 +171,7 @@ void saveObj(
     for (const VertexType& v : m.vertices()) {
         if (useMtl) { // mtl management
             detail::writeElementObjMaterial<VertexType, MeshType>(
-                v, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
+                v, m, meshInfo, lastMaterial, materialMap, fp, *mtlfp);
         }
         fp << "v ";
         io::writeDouble(fp, v.coord().x(), false);
@@ -204,7 +210,7 @@ void saveObj(
         for (const FaceType& f : m.faces()) {
             if (useMtl) { // mtl management
                 detail::writeElementObjMaterial(
-                    f, m, meshInfo, lastMaterial, materialMap, fp, mtlfp);
+                    f, m, meshInfo, lastMaterial, materialMap, fp, *mtlfp);
             }
             if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                 if (meshInfo.hasFaceWedgeTexCoords()) {
@@ -241,11 +247,62 @@ void saveObj(
             fp << std::endl;
         }
     }
+}
 
-    fp.close();
-    if (useMtl) {
-        mtlfp.close();
-    }
+} // namespace detail
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+    const MeshType& m,
+    std::ostream&   fp,
+    std::ostream&   mtlfp,
+    const MeshInfo& info,
+    LogType&        log = nullLogger)
+{
+    detail::saveObj(m, "materials", fp, &mtlfp, false, info, log);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+    const MeshType& m,
+    std::ostream&   fp,
+    const MeshInfo& info,
+    LogType&        log = nullLogger)
+{
+    detail::saveObj(m, "", fp, nullptr, false, info, log);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+    const MeshType& m,
+    std::ostream&   fp,
+    std::ostream&   mtlfp,
+    LogType&        log = nullLogger)
+{
+    MeshInfo info(m);
+    saveObj(m, fp, mtlfp, info, log);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+    const MeshType& m,
+    std::ostream&   fp,
+    LogType&        log = nullLogger)
+{
+    MeshInfo info(m);
+    saveObj(m, fp, info, log);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+    const MeshType&    m,
+    const std::string& filename,
+    const MeshInfo&    info,
+    LogType&           log = nullLogger)
+{
+    std::ofstream fp = openOutputFileStream(filename, "obj");
+
+    detail::saveObj(m, filename, fp, nullptr, true, info, log);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
