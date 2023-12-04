@@ -477,6 +477,13 @@ void loadObj(
                 if (it != materialMap.end()) {
                     currentMaterial = it->second;
                 }
+                else {
+                    if constexpr (isLoggerValid<LogType>()) {
+                        log.log(
+                            LogType::WARNING,
+                            "Material " + matname + " not found.");
+                    }
+                }
             }
             // read vertex (and for some non-standard obj files, also vertex
             // color)
@@ -575,6 +582,82 @@ void loadObj(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadObj(
+    MeshType&                         m,
+    std::istream&                     inputObjStream,
+    const std::vector<std::istream*>& inputMtlStreams,
+    MeshInfo&                         loadedInfo,
+    LogType&                          log                      = nullLogger,
+    bool                              enableOptionalComponents = true)
+{
+    detail::loadObj(
+        m,
+        inputObjStream,
+        inputMtlStreams,
+        loadedInfo,
+        "",
+        true,
+        log,
+        enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadObj(
+    MeshType&                         m,
+    std::istream&                     inputObjStream,
+    const std::vector<std::istream*>& inputMtlStreams,
+    LogType&                          log                      = nullLogger,
+    bool                              enableOptionalComponents = true)
+{
+    MeshInfo loadedInfo;
+    detail::loadObj(
+        m,
+        inputObjStream,
+        inputMtlStreams,
+        loadedInfo,
+        "",
+        true,
+        log,
+        enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadObj(
+    std::istream&                     inputObjStream,
+    const std::vector<std::istream*>& inputMtlStreams,
+    MeshInfo&                         loadedInfo,
+    LogType&                          log                      = nullLogger,
+    bool                              enableOptionalComponents = true)
+{
+    MeshType m;
+    loadObj(
+        m,
+        inputObjStream,
+        inputMtlStreams,
+        loadedInfo,
+        log,
+        enableOptionalComponents);
+    return m;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadObj(
+    std::istream&                     inputObjStream,
+    const std::vector<std::istream*>& inputMtlStreams,
+    LogType&                          log                      = nullLogger,
+    bool                              enableOptionalComponents = true)
+{
+    MeshType m;
+    loadObj(
+        m,
+        inputObjStream,
+        inputMtlStreams,
+        log,
+        enableOptionalComponents);
+    return m;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadObj(
     MeshType&          m,
     const std::string& filename,
     MeshInfo&          loadedInfo,
@@ -591,8 +674,10 @@ void loadObj(
                              ".mtl";
 
     std::ifstream f;
+    std::vector<std::istream*> mtlStreams;
     try {
         f = openInputFileStream(stdmtlfile);
+        mtlStreams.push_back(&f);
     }
     catch (vcl::CannotOpenFileException) {
         // nothing to do, this file was missing, but this was a fallback for
@@ -602,7 +687,7 @@ void loadObj(
     detail::loadObj(
         m,
         file,
-        {&f},
+        mtlStreams,
         loadedInfo,
         filename,
         false,
