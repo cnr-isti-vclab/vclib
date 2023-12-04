@@ -11,7 +11,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME load-mesh-obj)
+set(TEST_NAME load-save-mesh-obj)
 project(vclib-${TEST_NAME}-test)
 
 set(SOURCES

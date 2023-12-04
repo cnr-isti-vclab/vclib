@@ -269,7 +269,7 @@ public:
      * @param[in] ext: The extension to add to the file name.
      * @return The file name with the extension added.
      */
-    static std::string addExtensionToFileName(
+    static std::string addExtensionIfNeeded(
         const std::string& filename,
         const std::string& ext)
     {

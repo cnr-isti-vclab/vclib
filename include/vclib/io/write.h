@@ -27,7 +27,10 @@
 #include <fstream>
 #include <typeindex>
 
+#include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/types.h>
+
+#include "file_info.h"
 
 namespace vcl {
 
@@ -38,7 +41,7 @@ inline std::ofstream openOutputFileStream(
     setlocale(LC_ALL, "C");
     std::string actualfilename = filename;
     if (!ext.empty()) {
-        actualfilename = FileInfo::addExtensionToFileName(filename, ext);
+        actualfilename = FileInfo::addExtensionIfNeeded(filename, ext);
     }
 
     std::ofstream fp;
@@ -56,7 +59,7 @@ inline std::ofstream openOutputFileStream(
 namespace io {
 
 template<typename T>
-void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+void writeChar(std::ostream& file, T p, bool bin = true, bool isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
@@ -68,7 +71,7 @@ void writeChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 }
 
 template<typename T>
-void writeUChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+void writeUChar(std::ostream& file, T p, bool bin = true, bool isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
@@ -80,7 +83,7 @@ void writeUChar(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 }
 
 template<typename T>
-void writeShort(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+void writeShort(std::ostream& file, T p, bool bin = true, bool isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
@@ -92,11 +95,7 @@ void writeShort(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 }
 
 template<typename T>
-void writeUShort(
-    std::ofstream& file,
-    T              p,
-    bool           bin     = true,
-    bool           isColor = false)
+void writeUShort(std::ostream& file, T p, bool bin = true, bool isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
@@ -108,7 +107,7 @@ void writeUShort(
 }
 
 template<typename T>
-void writeInt(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+void writeInt(std::ostream& file, T p, bool bin = true, bool isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
@@ -120,7 +119,7 @@ void writeInt(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 }
 
 template<typename T>
-void writeUInt(std::ofstream& file, T p, bool bin = true, bool isColor = false)
+void writeUInt(std::ostream& file, T p, bool bin = true, bool isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
@@ -133,10 +132,10 @@ void writeUInt(std::ofstream& file, T p, bool bin = true, bool isColor = false)
 
 template<typename T>
 void writeFloat(
-    std::ofstream& file,
-    const T&       p,
-    bool           bin     = true,
-    bool           isColor = false)
+    std::ostream& file,
+    const T&      p,
+    bool          bin     = true,
+    bool          isColor = false)
 {
     float tmp = p;
     if (isColor && std::is_integral<T>::value)
@@ -149,10 +148,10 @@ void writeFloat(
 
 template<typename T>
 void writeDouble(
-    std::ofstream& file,
-    const T&       p,
-    bool           bin     = true,
-    bool           isColor = false)
+    std::ostream& file,
+    const T&      p,
+    bool          bin     = true,
+    bool          isColor = false)
 {
     double tmp = p;
     if (isColor && std::is_integral<T>::value)
@@ -166,11 +165,11 @@ void writeDouble(
 // TODO - rename to writePrimitiveType
 template<typename T>
 void writeProperty(
-    std::ofstream& file,
-    const T&       p,
-    PrimitiveType  type,
-    bool           bin     = true,
-    bool           isColor = false)
+    std::ostream& file,
+    const T&      p,
+    PrimitiveType type,
+    bool          bin     = true,
+    bool          isColor = false)
 {
     switch (type) {
     case CHAR: writeChar(file, p, bin, isColor); break;
@@ -188,7 +187,7 @@ void writeProperty(
 // TODO - move this to some specific mesh file
 template<ElementConcept El>
 void writeCustomComponent(
-    std::ofstream&     file,
+    std::ostream&      file,
     const El&          elem,
     const std::string& cName,
     PrimitiveType      type,

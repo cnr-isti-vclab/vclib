@@ -22,6 +22,8 @@
  ****************************************************************************/
 
 #include <catch2/catch_test_macros.hpp>
+#include <vclib/algorithms/create.h>
+#include <vclib/algorithms/update.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
@@ -120,5 +122,76 @@ TEST_CASE("Load OFF cube from istringstream")
         vcl::loadOff(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 12);
+    }
+}
+
+TEST_CASE("Save OFF to a ostringstream")
+{
+    SECTION("TriMesh - Cube (No Normals)")
+    {
+        vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
+
+        std::ostringstream oss;
+        vcl::MeshInfo i(tm);
+        i.setVertexNormals(false);
+        vcl::saveOff(tm, oss, i);
+
+        // read some lines from oss and check them
+        std::istringstream iss(oss.str());
+        std::string        line;
+        std::getline(iss, line);
+        REQUIRE(line == "OFF");
+        std::getline(iss, line);
+        REQUIRE(line == "8 12 0 ");
+        std::getline(iss, line);
+        REQUIRE(line == "-0.5 -0.5 -0.5 ");
+        for (uint i = 0; i < 8; i++) std::getline(iss, line); // go to face 0
+        REQUIRE(line == "3 0 2 1 ");
+    }
+
+    SECTION("TriMesh - Cube (Normals)")
+    {
+        vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
+        vcl::updatePerVertexNormals(tm);
+
+        std::ostringstream oss;
+        vcl::saveOff(tm, oss);
+
+        // read first two lines from oss and check them
+        std::istringstream iss(oss.str());
+        std::string        line;
+        std::getline(iss, line);
+        REQUIRE(line == "NOFF");
+        std::getline(iss, line);
+        REQUIRE(line == "8 12 0 ");
+        std::getline(iss, line);
+        REQUIRE(line == "-0.5 -0.5 -0.5 -0.57735 -0.57735 -0.57735 ");
+        for (uint i = 0; i < 8; i++) std::getline(iss, line); // go to face 0
+        REQUIRE(line == "3 0 2 1 ");
+    }
+
+    SECTION("PolyMesh - Cube (Normals and Colors)")
+    {
+        vcl::PolyMesh pm = vcl::createCube<vcl::PolyMesh>();
+        vcl::updatePerVertexNormals(pm);
+
+        pm.enablePerVertexColor();
+        vcl::setPerVertexColor(pm, vcl::Color::Blue);
+
+        std::ostringstream oss;
+        vcl::saveOff(pm, oss);
+
+        //read first two lines from oss and check them
+        std::istringstream iss(oss.str());
+        std::string        line;
+        std::getline(iss, line);
+        REQUIRE(line == "NCOFF");
+        std::getline(iss, line);
+        REQUIRE(line == "8 6 0 ");
+        std::getline(iss, line);
+        REQUIRE(
+            line == "-0.5 -0.5 -0.5 0 0 255 255 -0.57735 -0.57735 -0.57735 ");
+        for (uint i = 0; i < 8; i++) std::getline(iss, line); // go to face 0
+        REQUIRE(line == "4 2 3 1 0 ");
     }
 }

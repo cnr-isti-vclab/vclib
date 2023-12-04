@@ -139,6 +139,25 @@ MeshType createCube(const CoordType& min, double edgeLength)
     return createHexahedron<MeshType>(min, CoordType(min + edgeLength));
 }
 
+/**
+ * @brief Creates and returns a Cube having ``(-0.5, -0.5, -0.5)`` as minimum
+ * extreme and 1 length.
+ *
+ * If the mesh is composed of triangles, the the returned mesh is already
+ * triangulated. If the mesh is composed of quads or polygons, a mesh containing
+ * 6 quads will be returned.
+ *
+ * @return A Cube centered in ``(0, 0, 0)`` and with edge length 1.
+ *
+ * @ingroup create
+ */
+template<FaceMeshConcept MeshType>
+MeshType createCube()
+{
+    using CoordType = MeshType::Vertex::CoordType;
+    return createCube<MeshType>(CoordType(-0.5, -0.5, -0.5), 1);
+}
+
 } // namespace vcl
 
 #endif // VCL_ALGORITHMS_CREATE_HEXAHEDRON_H

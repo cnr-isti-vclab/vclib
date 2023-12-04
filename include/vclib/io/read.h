@@ -85,7 +85,7 @@ inline std::ifstream openInputFileStream(
 
     std::string actualfilename = filename;
     if (!ext.empty()) {
-        actualfilename = FileInfo::addExtensionToFileName(filename, ext);
+        actualfilename = FileInfo::addExtensionIfNeeded(filename, ext);
     }
     // need to set binary or windows will fail
     std::ifstream fp(actualfilename, std::ifstream::binary);

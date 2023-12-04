@@ -33,10 +33,10 @@ namespace vcl {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
-    const MeshType&    m,
-    const std::string& filename,
-    const MeshInfo&    info,
-    LogType&           log = nullLogger)
+    const MeshType& m,
+    std::ostream&   fp,
+    const MeshInfo& info,
+    LogType&        log = nullLogger)
 {
     MeshInfo meshInfo(m);
 
@@ -45,7 +45,7 @@ void saveOff(
     // components that the user wants to save and the components that are
     // available in the mesh.
     meshInfo         = info.intersect(meshInfo);
-    std::ofstream fp = openOutputFileStream(filename, "off");
+
     if (meshInfo.hasVertexNormals())
         fp << "N";
     if (meshInfo.hasVertexColors())
@@ -70,7 +70,7 @@ void saveOff(
     io::writeInt(fp, vn, false);
     io::writeInt(fp, fn, false);
     io::writeInt(fp, en, false);
-    fp << std::endl;
+    fp <<std::endl; // remove last char (a space) and add a newline
 
     // vertices
     if constexpr (vcl::HasVertices<MeshType>) {
@@ -131,6 +131,25 @@ void saveOff(
             fp << std::endl;
         }
     }
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveOff(const MeshType& m, std::ostream& fp, LogType& log = nullLogger)
+{
+    MeshInfo info(m);
+    saveOff(m, fp, info, log);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveOff(
+    const MeshType&    m,
+    const std::string& filename,
+    const MeshInfo&    info,
+    LogType&           log = nullLogger)
+{
+
+    std::ofstream fp = openOutputFileStream(filename, "off");
+    saveOff(m, fp, info, log);
     fp.close();
 }
 
