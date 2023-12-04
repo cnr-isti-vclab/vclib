@@ -248,7 +248,7 @@ void readPlyFaceProperty(
 
 template<FaceConcept FaceType, MeshConcept MeshType>
 void readPlyFaceTxt(
-    std::ifstream&                file,
+    std::istream&                 file,
     FaceType&                     f,
     MeshType&                     mesh,
     const std::list<PlyProperty>& faceProperties)
@@ -265,7 +265,7 @@ void readPlyFaceTxt(
 
 template<FaceConcept FaceType, MeshConcept MeshType>
 void readPlyFaceBin(
-    std::ifstream&                file,
+    std::istream&                 file,
     FaceType&                     f,
     MeshType&                     mesh,
     const std::list<PlyProperty>& faceProperties)
@@ -353,7 +353,7 @@ void writePlyFaces(
 }
 
 template<FaceMeshConcept MeshType>
-void readPlyFaces(std::ifstream& file, const PlyHeader& header, MeshType& mesh)
+void readPlyFaces(std::istream& file, const PlyHeader& header, MeshType& mesh)
 {
     using FaceType = MeshType::FaceType;
     mesh.reserveFaces(header.numberFaces());

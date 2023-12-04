@@ -76,88 +76,66 @@ public:
         setInfo(info, textureFiles, format == ply::BINARY);
     }
 
-    PlyHeader(const std::string& filename, std::ifstream& file)
+    PlyHeader(std::istream& file, const std::string& filename = "")
     {
         clear();
-        if (file.is_open()) {
-            std::string line;
-            std::getline(file, line);
-            str::removeWindowsNewLine(line);
-            if (line.compare(0, 3, "ply") == 0) {
-                bool        error        = false;
-                bool        firstElement = true;
-                std::string headerLine;
-                PlyElement  element;
-                do {
-                    vcl::Tokenizer spaceTokenizer =
-                        readAndTokenizeNextNonEmptyLine(file);
-                    if (!error) {
-                        str::removeWindowsNewLine(line);
-                        vcl::Tokenizer::iterator token = spaceTokenizer.begin();
-                        headerLine                     = *token;
-                        if (headerLine == "format") {
-                            token++;
-                            if (*token == "ascii")
-                                frmt = ply::ASCII;
-                            else if (
-                                *token == "binary_big_endian" ||
-                                *token == "binary_little_endian" ||
-                                *token == "binary")
-                                frmt = ply::BINARY;
-                        }
-                        // reading a comment, may be a texture file...
-                        else if (headerLine == "comment") {
-                            token++;
-                            if (token != spaceTokenizer.end()) {
-                                if (vcl::str::containsCaseInsensitive(
-                                        *token, "texture"))
-                                {
-                                    ++token;
-                                    if (token != spaceTokenizer.end()) {
-                                        std::string textName = *token;
-                                        auto it = vcl::str::findCaseInsensitive(
-                                            textName, "<this>");
-                                        if (it != textName.end()) {
-                                            uint pos = it - textName.begin();
-                                            std::string fn = vcl::FileInfo::
-                                                fileNameWithoutExtension(
-                                                    filename);
-                                            textName =
-                                                textName.substr(0, pos) + fn +
-                                                textName.substr(
-                                                    pos + 6, textName.size());
-                                        }
-                                        textureFiles.push_back(textName);
+
+        std::string line;
+        std::getline(file, line);
+        str::removeWindowsNewLine(line);
+        if (line.compare(0, 3, "ply") == 0) {
+            bool        error        = false;
+            bool        firstElement = true;
+            std::string headerLine;
+            PlyElement  element;
+            do {
+                vcl::Tokenizer spaceTokenizer =
+                    readAndTokenizeNextNonEmptyLine(file);
+                if (!error) {
+                    vcl::Tokenizer::iterator token = spaceTokenizer.begin();
+                    headerLine                     = *token;
+                    if (headerLine == "format") {
+                        token++;
+                        if (*token == "ascii")
+                            frmt = ply::ASCII;
+                        else if (
+                            *token == "binary_big_endian" ||
+                            *token == "binary_little_endian" ||
+                            *token == "binary")
+                            frmt = ply::BINARY;
+                    }
+                    // reading a comment, may be a texture file...
+                    else if (headerLine == "comment") {
+                        token++;
+                        if (token != spaceTokenizer.end()) {
+                            if (vcl::str::containsCaseInsensitive(
+                                    *token, "texture"))
+                            {
+                                ++token;
+                                if (token != spaceTokenizer.end()) {
+                                    std::string textName = *token;
+                                    auto it = vcl::str::findCaseInsensitive(
+                                        textName, "<this>");
+                                    if (it != textName.end()) {
+                                        uint        pos = it - textName.begin();
+                                        std::string fn  = vcl::FileInfo::
+                                            fileNameWithoutExtension(filename);
+                                        textName =
+                                            textName.substr(0, pos) + fn +
+                                            textName.substr(
+                                                pos + 6, textName.size());
                                     }
+                                    textureFiles.push_back(textName);
                                 }
                             }
                         }
-                        // I am reading a new element
-                        else if (headerLine == "element") {
-                            // if it is not the first element to read, it means
-                            // that the previous one needs to be saved
-                            if (!firstElement) {
-                                // index of each element type in elements vector
-                                if (element.type == ply::VERTEX)
-                                    vertElemPos = (long int) elements.size();
-                                if (element.type == ply::FACE)
-                                    faceElemPos = (long int) elements.size();
-                                if (element.type == ply::EDGE)
-                                    edgeElemPos = (long int) elements.size();
-                                if (element.type == ply::TRISTRIP)
-                                    trisElemPos = (long int) elements.size();
-                                elements.push_back(element);
-                                element = PlyElement();
-                            }
-                            element      = readElement(spaceTokenizer);
-                            firstElement = false;
-                        }
-                        else if (headerLine == "property") {
-                            PlyProperty p = readProperty(spaceTokenizer);
-                            element.properties.push_back(p);
-                        }
-                        // save the last element
-                        else if (headerLine == "end_header") {
+                    }
+                    // I am reading a new element
+                    else if (headerLine == "element") {
+                        // if it is not the first element to read, it means that
+                        // the previous one needs to be saved
+                        if (!firstElement) {
+                            // index of each element type in elements vector
                             if (element.type == ply::VERTEX)
                                 vertElemPos = (long int) elements.size();
                             if (element.type == ply::FACE)
@@ -167,11 +145,30 @@ public:
                             if (element.type == ply::TRISTRIP)
                                 trisElemPos = (long int) elements.size();
                             elements.push_back(element);
+                            element = PlyElement();
                         }
+                        element      = readElement(spaceTokenizer);
+                        firstElement = false;
                     }
-                } while (!error && headerLine != "end_header");
-                valid = !error && hasVertices();
-            }
+                    else if (headerLine == "property") {
+                        PlyProperty p = readProperty(spaceTokenizer);
+                        element.properties.push_back(p);
+                    }
+                    // save the last element
+                    else if (headerLine == "end_header") {
+                        if (element.type == ply::VERTEX)
+                            vertElemPos = (long int) elements.size();
+                        if (element.type == ply::FACE)
+                            faceElemPos = (long int) elements.size();
+                        if (element.type == ply::EDGE)
+                            edgeElemPos = (long int) elements.size();
+                        if (element.type == ply::TRISTRIP)
+                            trisElemPos = (long int) elements.size();
+                        elements.push_back(element);
+                    }
+                }
+            } while (!error && headerLine != "end_header");
+            valid = !error && hasVertices();
         }
     }
 

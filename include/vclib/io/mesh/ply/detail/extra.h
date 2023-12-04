@@ -54,7 +54,7 @@ void writePlyTextures(PlyHeader& header, const MeshType& mesh)
 }
 
 inline void readPlyUnknownElement(
-    std::ifstream&   file,
+    std::istream&    file,
     const PlyHeader& header,
     PlyElement       el)
 {

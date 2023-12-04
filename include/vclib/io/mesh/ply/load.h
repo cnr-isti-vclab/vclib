@@ -34,34 +34,18 @@
 
 namespace vcl {
 
-/**
- * @brief Loads the given ply file and puts the content into the mesh m.
- *
- * The function will fill all the components read into the file that can be
- * filled into the mesh. If the enableOprionalComponents argument is enabled,
- * some eventual optional components of the mesh that were not enabled and that
- * can be loaded from the file, will be enabled before loading the file.
- *
- * The info about what elements and components have been loaded from the file
- * will be stored into the loadedInfo argument.
- *
- * @param m
- * @param filename
- * @param loadedInfo
- * @param enableOptionalComponents
- */
+namespace detail {
+
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
     MeshType&          m,
+    std::istream&      file,
     const std::string& filename,
     MeshInfo&          loadedInfo,
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
-    using namespace detail;
-    std::ifstream file = openInputFileStream(filename);
-
-    PlyHeader header(filename, file);
+    PlyHeader header(file, filename);
     if (header.errorWhileLoading())
         throw MalformedFileException("Header not valid: " + filename);
 
@@ -91,11 +75,118 @@ void loadPly(
     }
     catch (const std::runtime_error& err) {
         m.clear();
-        file.close();
         throw err;
     }
+}
 
-    file.close();
+} // namespace detail
+
+/**
+ * @brief Loads from the given input ply stream and puts the content into the
+ * mesh m.
+ *
+ * The function will fill all the components read into the stream that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the stream, will be enabled before loading the stream.
+ *
+ * The info about what elements and components have been loaded from the stream
+ * will be stored into the loadedInfo argument.
+ *
+ * @param m
+ * @param file
+ * @param loadedInfo
+ * @param enableOptionalComponents
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadPly(
+    MeshType&     m,
+    std::istream& file,
+    MeshInfo&     loadedInfo,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    detail::loadPly(m, file, "", loadedInfo, log, enableOptionalComponents);
+}
+
+/**
+ * @brief Loads from the given input ply stream and puts the content into the
+ * mesh m.
+ *
+ * The function will fill all the components read into the stream that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the stream, will be enabled before loading the stream.
+ *
+ * If you need to know what elements and components have been loaded after the
+ * loading of the stream, please see the overload of the function with the
+ * additional 'loadedInfo' argument.
+ *
+ * @param m
+ * @param file
+ * @param enableOptionalComponents
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadPly(
+    MeshType&     m,
+    std::istream& file,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    MeshInfo loadedInfo;
+    loadPly(m, file, loadedInfo, log, enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadPly(
+    std::istream& file,
+    MeshInfo&     loadedInfo,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    MeshType m;
+    loadPly(m, file, loadedInfo, log, enableOptionalComponents);
+    return m;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadPly(
+    std::istream& file,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    MeshInfo loadedInfo;
+    return loadPly<MeshType>(file, loadedInfo, log, enableOptionalComponents);
+}
+
+/**
+ * @brief Loads the given ply file and puts the content into the mesh m.
+ *
+ * The function will fill all the components read into the file that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the file, will be enabled before loading the file.
+ *
+ * The info about what elements and components have been loaded from the file
+ * will be stored into the loadedInfo argument.
+ *
+ * @param m
+ * @param filename
+ * @param loadedInfo
+ * @param enableOptionalComponents
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadPly(
+    MeshType&          m,
+    const std::string& filename,
+    MeshInfo&          loadedInfo,
+    LogType&           log                      = nullLogger,
+    bool               enableOptionalComponents = true)
+{
+    std::ifstream file = openInputFileStream(filename);
+
+    detail::loadPly(
+        m, file, filename, loadedInfo, log, enableOptionalComponents);
 }
 
 /**

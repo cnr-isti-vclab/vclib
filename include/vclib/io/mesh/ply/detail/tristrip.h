@@ -66,7 +66,7 @@ void facesFromPlyTriStrip(MeshType& m, const std::vector<int>& tristrip)
 
 template<FaceMeshConcept MeshType>
 void readPlyTriStripsTxt(
-    std::ifstream&   file,
+    std::istream&    file,
     const PlyHeader& header,
     MeshType&        m)
 {
@@ -104,7 +104,7 @@ void readPlyTriStripsTxt(
 
 template<FaceMeshConcept MeshType>
 void readPlyTriStripsBin(
-    std::ifstream&   file,
+    std::istream&    file,
     const PlyHeader& header,
     MeshType&        m)
 {
@@ -135,7 +135,7 @@ void readPlyTriStripsBin(
 
 template<FaceMeshConcept MeshType>
 void readPlyTriStrips(
-    std::ifstream&   file,
+    std::istream&    file,
     const PlyHeader& header,
     MeshType&        mesh)
 {

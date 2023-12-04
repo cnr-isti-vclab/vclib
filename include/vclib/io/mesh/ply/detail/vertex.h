@@ -112,7 +112,7 @@ void readPlyVertexProperty(
 
 template<VertexConcept VertexType, MeshConcept MeshType>
 void readPlyVertexTxt(
-    std::ifstream&                file,
+    std::istream&                 file,
     VertexType&                   v,
     MeshType&                     mesh,
     const std::list<PlyProperty>& vertexProperties)
@@ -129,7 +129,7 @@ void readPlyVertexTxt(
 
 template<VertexConcept VertexType, MeshConcept MeshType>
 void readPlyVertexBin(
-    std::ifstream&                file,
+    std::istream&                 file,
     VertexType&                   v,
     MeshType&                     mesh,
     const std::list<PlyProperty>& vertexProperties)
@@ -205,7 +205,7 @@ void writePlyVertices(
 }
 
 template<MeshConcept MeshType>
-void readPlyVertices(std::ifstream& file, const PlyHeader& header, MeshType& m)
+void readPlyVertices(std::istream& file, const PlyHeader& header, MeshType& m)
 {
     m.addVertices(header.numberVertices());
 
