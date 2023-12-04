@@ -63,7 +63,7 @@ bool isBinStlMalformed(
     return false;
 }
 
-bool isStlColored(std::ifstream& fp, bool& magicsMode)
+bool isStlColored(std::istream& fp, bool& magicsMode)
 {
     bool colored = false;
 
@@ -94,11 +94,11 @@ bool isStlColored(std::ifstream& fp, bool& magicsMode)
 
 template<MeshConcept MeshType, LoggerConcept LogType>
 void readStlBin(
-    MeshType&      m,
-    std::ifstream& fp,
-    MeshInfo&      loadedInfo,
-    LogType&       log,
-    bool           enableOptionalComponents)
+    MeshType&     m,
+    std::istream& fp,
+    MeshInfo&     loadedInfo,
+    LogType&      log,
+    bool          enableOptionalComponents)
 {
     bool magicsMode, colored;
     colored = isStlColored(fp, magicsMode);
@@ -180,18 +180,20 @@ void readStlBin(
 
 template<MeshConcept MeshType, LoggerConcept LogType>
 void readStlAscii(
-    MeshType&      m,
-    std::ifstream& fp,
-    MeshInfo&      loadedInfo,
-    LogType&       log,
-    std::size_t    fsize,
-    bool           enableOptionalComponents)
+    MeshType&     m,
+    std::istream& fp,
+    MeshInfo&     loadedInfo,
+    LogType&      log,
+    bool          enableOptionalComponents)
 {
     if (enableOptionalComponents) {
         enableOptionalComponentsFromInfo(loadedInfo, m);
     }
 
     if constexpr (vcl::isLoggerValid<LogType>()) {
+        fp.seekg(0, fp.end);
+        std::size_t fsize = fp.tellg();
+        fp.seekg(0, fp.beg);
         log.startProgress("Loading STL file", fsize);
     }
 
@@ -261,6 +263,101 @@ void readStlAscii(
 
 } // namespace detail
 
+/**
+ * @brief Loads a mesh from a STL stream.
+ *
+ * @param[in] m: The mesh to load the data into.
+ * @param[in] file: The stream of the file to load.
+ * @param[in/out] loadedInfo The info of the loaded mesh.
+ * @param[in] isBinary: True if the stream contains a binary STL, false if it
+ * contains a ASCII STL.
+ * @param[in/out] log: The logger to use.
+ * @param[in] enableOptionalComponents: If true, the optional components of the
+ * mesh (e.g. colors, normals, etc.) are enabled if they can be loaded from the
+ * stream.
+ */
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadStl(
+    MeshType&     m,
+    std::istream& file,
+    MeshInfo&     loadedInfo,
+    bool          isBinary                 = false,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    loadedInfo = MeshInfo();
+    loadedInfo.setVertices();
+    loadedInfo.setVertexCoords();
+    if constexpr (HasFaces<MeshType>) {
+        loadedInfo.setFaces();
+        loadedInfo.setFaceVRefs();
+        loadedInfo.setFaceNormals();
+    }
+
+    if constexpr (isLoggerValid<LogType>()) {
+        log.log(0, "Loading STL file");
+    }
+
+    if (isBinary)
+        detail::readStlBin(m, file, loadedInfo, log, enableOptionalComponents);
+    else
+        detail::readStlAscii(
+            m, file, loadedInfo, log, enableOptionalComponents);
+
+    if constexpr (isLoggerValid<LogType>()) {
+        log.log(100, "STL file loaded");
+    }
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void loadStl(
+    MeshType&     m,
+    std::istream& file,
+    bool          isBinary                 = false,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    MeshInfo loadedInfo;
+    loadStl(m, file, loadedInfo, isBinary, log, enableOptionalComponents);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadStl(
+    std::istream& file,
+    MeshInfo&     loadedInfo,
+    bool          isBinary                 = false,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    MeshType m;
+    loadStl(m, file, loadedInfo, isBinary, log, enableOptionalComponents);
+    return m;
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+MeshType loadStl(
+    std::istream& file,
+    bool          isBinary                 = false,
+    LogType&      log                      = nullLogger,
+    bool          enableOptionalComponents = true)
+{
+    MeshInfo loadedInfo;
+    return loadStl<MeshType>(
+        file, loadedInfo, isBinary, log, enableOptionalComponents);
+}
+
+/**
+ * @brief Loads a mesh from an STL file.
+ *
+ * @param[in] m: The mesh to load into.
+ * @param[in] filename: The name of the file to load.
+ * @param[out] loadedInfo: The MeshInfo object to be filled with information
+ * about the loaded mesh.
+ * @param[in/out] log: The logger to use.
+ * @param[in] enableOptionalComponents: If true, the optional components of the
+ * mesh (e.g. colors, normals, etc.) are enabled if they can be loaded from the
+ * file.
+ */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadStl(
     MeshType&          m,
@@ -284,32 +381,7 @@ void loadStl(
 
     std::ifstream fp = openInputFileStream(filename);
 
-    loadedInfo = MeshInfo();
-    loadedInfo.setVertices();
-    loadedInfo.setVertexCoords();
-    if constexpr (HasFaces<MeshType>) {
-        loadedInfo.setFaces();
-        loadedInfo.setFaceVRefs();
-        loadedInfo.setFaceNormals();
-    }
-
-    if constexpr (HasName<MeshType>) {
-        m.name() = FileInfo::fileNameWithoutExtension(filename);
-    }
-
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(0, "Loading STL file");
-    }
-
-    if (isBinary)
-        detail::readStlBin(m, fp, loadedInfo, log, enableOptionalComponents);
-    else
-        detail::readStlAscii(
-            m, fp, loadedInfo, log, filesize, enableOptionalComponents);
-
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(100, "STL file loaded");
-    }
+    loadStl(m, fp, loadedInfo, isBinary, log, enableOptionalComponents);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
