@@ -35,25 +35,6 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
     const MeshType&    m,
     const std::string& filename,
-    LogType&           log    = nullLogger,
-    bool               binary = true)
-{
-    MeshInfo info(m);
-    save(m, filename, info, log, binary);
-}
-
-template<MeshConcept MeshType>
-void save(const MeshType& m, const std::string& filename, bool binary)
-{
-    MeshInfo   info(m);
-    NullLogger log;
-    save(m, filename, info, log, binary);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
-    const MeshType&    m,
-    const std::string& filename,
     const MeshInfo&    info,
     LogType&           log    = nullLogger,
     bool               binary = true)
@@ -76,6 +57,41 @@ void save(
         throw vcl::UnknownFileFormatException(ext);
     }
 }
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void save(
+    const MeshType&    m,
+    const std::string& filename,
+    const MeshInfo&    info,
+    bool               binary,
+    LogType&           log    = nullLogger)
+{
+    save(m, filename, info, log, binary);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void save(
+    const MeshType&    m,
+    const std::string& filename,
+    bool               binary,
+    LogType&           log = nullLogger)
+{
+    MeshInfo   info(m);
+    save(m, filename, info, log, binary);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void save(
+    const MeshType&    m,
+    const std::string& filename,
+    LogType&           log    = nullLogger,
+    bool               binary = true)
+{
+    MeshInfo info(m);
+    save(m, filename, info, log, binary);
+}
+
+
 
 } // namespace vcl
 

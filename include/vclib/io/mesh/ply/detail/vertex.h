@@ -141,7 +141,7 @@ void readPlyVertexBin(
 
 template<MeshConcept MeshType>
 void writePlyVertices(
-    std::ofstream&   file,
+    std::ostream&    file,
     const PlyHeader& header,
     const MeshType&  mesh)
 {

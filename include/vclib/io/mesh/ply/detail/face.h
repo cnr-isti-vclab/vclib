@@ -24,8 +24,6 @@
 #ifndef VCL_IO_PLY_FACE_H
 #define VCL_IO_PLY_FACE_H
 
-#include <fstream>
-
 #include <vclib/algorithms/polygon.h>
 #include <vclib/exceptions/io_exceptions.h>
 #include <vclib/io/read.h>
@@ -39,7 +37,7 @@ namespace vcl::detail {
 
 template<FaceMeshConcept MeshType, FaceConcept FaceType>
 void writePlyFaceIndices(
-    std::ofstream&           file,
+    std::ostream&            file,
     PlyProperty              p,
     const MeshType&          m,
     const std::vector<uint>& vIndices,
@@ -277,7 +275,7 @@ void readPlyFaceBin(
 
 template<FaceMeshConcept MeshType>
 void writePlyFaces(
-    std::ofstream&   file,
+    std::ostream&    file,
     const PlyHeader& header,
     const MeshType&  mesh)
 {

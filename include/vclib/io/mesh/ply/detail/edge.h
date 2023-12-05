@@ -35,7 +35,7 @@ namespace vcl::detail {
 
 template<EdgeMeshConcept MeshType>
 void writePlyEdges(
-    std::ofstream&   file,
+    std::ostream&    file,
     const PlyHeader& header,
     const MeshType&  mesh)
 {
