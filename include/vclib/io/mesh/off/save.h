@@ -44,7 +44,7 @@ void saveOff(
     // available in the mesh. meshInfo will contain the intersection between the
     // components that the user wants to save and the components that are
     // available in the mesh.
-    meshInfo         = info.intersect(meshInfo);
+    meshInfo = info.intersect(meshInfo);
 
     if (meshInfo.hasVertexNormals())
         fp << "N";
@@ -70,7 +70,7 @@ void saveOff(
     io::writeInt(fp, vn, false);
     io::writeInt(fp, fn, false);
     io::writeInt(fp, en, false);
-    fp <<std::endl; // remove last char (a space) and add a newline
+    fp << std::endl; // remove last char (a space) and add a newline
 
     // vertices
     if constexpr (vcl::HasVertices<MeshType>) {
@@ -147,7 +147,6 @@ void saveOff(
     const MeshInfo&    info,
     LogType&           log = nullLogger)
 {
-
     std::ofstream fp = openOutputFileStream(filename, "off");
     saveOff(m, fp, info, log);
     fp.close();

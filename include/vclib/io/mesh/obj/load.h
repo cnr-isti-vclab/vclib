@@ -647,12 +647,7 @@ MeshType loadObj(
     bool                              enableOptionalComponents = true)
 {
     MeshType m;
-    loadObj(
-        m,
-        inputObjStream,
-        inputMtlStreams,
-        log,
-        enableOptionalComponents);
+    loadObj(m, inputObjStream, inputMtlStreams, log, enableOptionalComponents);
     return m;
 }
 
@@ -673,7 +668,7 @@ void loadObj(
                              FileInfo::fileNameWithoutExtension(filename) +
                              ".mtl";
 
-    std::ifstream f;
+    std::ifstream              f;
     std::vector<std::istream*> mtlStreams;
     try {
         f = openInputFileStream(stdmtlfile);

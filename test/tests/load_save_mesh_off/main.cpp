@@ -132,7 +132,7 @@ TEST_CASE("Save OFF to a ostringstream")
         vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
 
         std::ostringstream oss;
-        vcl::MeshInfo i(tm);
+        vcl::MeshInfo      i(tm);
         i.setVertexNormals(false);
         vcl::saveOff(tm, oss, i);
 
@@ -145,7 +145,8 @@ TEST_CASE("Save OFF to a ostringstream")
         REQUIRE(line == "8 12 0 ");
         std::getline(iss, line);
         REQUIRE(line == "-0.5 -0.5 -0.5 ");
-        for (uint i = 0; i < 8; i++) std::getline(iss, line); // go to face 0
+        for (uint i = 0; i < 8; i++)
+            std::getline(iss, line); // go to face 0
         REQUIRE(line == "3 0 2 1 ");
     }
 
@@ -166,7 +167,8 @@ TEST_CASE("Save OFF to a ostringstream")
         REQUIRE(line == "8 12 0 ");
         std::getline(iss, line);
         REQUIRE(line == "-0.5 -0.5 -0.5 -0.57735 -0.57735 -0.57735 ");
-        for (uint i = 0; i < 8; i++) std::getline(iss, line); // go to face 0
+        for (uint i = 0; i < 8; i++)
+            std::getline(iss, line); // go to face 0
         REQUIRE(line == "3 0 2 1 ");
     }
 
@@ -181,7 +183,7 @@ TEST_CASE("Save OFF to a ostringstream")
         std::ostringstream oss;
         vcl::saveOff(pm, oss);
 
-        //read first two lines from oss and check them
+        // read first two lines from oss and check them
         std::istringstream iss(oss.str());
         std::string        line;
         std::getline(iss, line);
@@ -191,7 +193,8 @@ TEST_CASE("Save OFF to a ostringstream")
         std::getline(iss, line);
         REQUIRE(
             line == "-0.5 -0.5 -0.5 0 0 255 255 -0.57735 -0.57735 -0.57735 ");
-        for (uint i = 0; i < 8; i++) std::getline(iss, line); // go to face 0
+        for (uint i = 0; i < 8; i++)
+            std::getline(iss, line); // go to face 0
         REQUIRE(line == "4 2 3 1 0 ");
     }
 }

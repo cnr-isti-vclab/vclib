@@ -143,7 +143,7 @@ void saveObj(
         meshInfo.setVertexTexCoords(false);
     }
 
-    std::ofstream mtlftmp;
+    std::ofstream                              mtlftmp;
     std::map<detail::ObjMaterial, std::string> materialMap;
 
     bool useMtl =
@@ -284,10 +284,7 @@ void saveObj(
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveObj(
-    const MeshType& m,
-    std::ostream&   fp,
-    LogType&        log = nullLogger)
+void saveObj(const MeshType& m, std::ostream& fp, LogType& log = nullLogger)
 {
     MeshInfo info(m);
     saveObj(m, fp, info, log);
