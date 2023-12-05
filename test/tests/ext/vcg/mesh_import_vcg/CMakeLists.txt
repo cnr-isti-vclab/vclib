@@ -13,6 +13,9 @@ project(vclib-ext-mesh-import-from-vcg-test)
 
 get_target_property(VCG_INCLUDE_DIRS vclib-external-vcg VCG_INCLUDE_DIRS)
 
+# vcg generates a lot of warnings
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+
 set(SOURCES
     mesh.h
     main.cpp
