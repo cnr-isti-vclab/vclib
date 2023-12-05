@@ -131,6 +131,36 @@ struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
 {
 };
 
+/**
+ * @brief Allows to apply a function to each type in a variadic template pack.
+ *
+ * Usage:
+ * @code{.cpp}
+ * // declare the function as a lambda - will do something with T
+ * auto f = []<typename T>()
+ * {
+ *     std::cout << typeid(T).name() << std::endl;
+ * };
+ *
+ * // call a function for each type in a parameter pack
+ * vcl::ForEachType<int, float, double>::apply(f);
+ * @endcode
+ */
+template<typename ...T>
+struct ForEachType
+{
+    template<typename F>
+    static void apply(F&& f)
+    {
+        (f.template operator()<T>(), ...);
+    }
+};
+
+template<typename ...T>
+struct ForEachType<TypeWrapper<T...>> : public ForEachType<T...>
+{
+};
+
 /* Remove all types that do not satisfy a condition, and get them as a
  * TypeWrapper. */
 

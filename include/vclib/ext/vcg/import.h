@@ -167,6 +167,12 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
             }
         }
     }
+
+    if constexpr (HasTexturePaths<MeshType>) {
+        for (const auto& s : vcgMesh.textures) {
+            mesh.pushTexturePath(s);
+        }
+    }
 }
 
 template<MeshConcept MeshType, typename VCGMeshType>

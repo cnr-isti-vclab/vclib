@@ -25,28 +25,13 @@
 
 #include <vclib/space.h>
 
-class Bar
-{
-public:
-    template<typename T>
-    void foo()
-    {
-        std::cout << "foo" << std::endl;
-    }
-
-    template<uint T>
-    void foo()
-    {
-        std::cout << "foo " << T << std::endl;
-    }
-};
-
 int main()
 {
-    Bar b;
+    auto f = []<typename T>()
+    {
+        std::cout << typeid(T).name() << std::endl;
+    };
 
-    b.foo<int>();
-    b.foo<3>();
-
-    return 0;
+    // call a function for each type in a parameter pack
+    vcl::ForEachType<int, float, double>::apply(f);
 }
