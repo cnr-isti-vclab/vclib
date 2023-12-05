@@ -31,16 +31,6 @@
 namespace vcl::vc {
 
 template<MeshConcept MeshType, typename VCGMeshType>
-MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh)
-{
-    MeshType mesh;
-
-    importMeshFromVCGMesh(mesh, vcgMesh);
-
-    return mesh;
-}
-
-template<MeshConcept MeshType, typename VCGMeshType>
 void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 {
     using CoordType = MeshType::VertexType::CoordType;
@@ -177,6 +167,16 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
             }
         }
     }
+}
+
+template<MeshConcept MeshType, typename VCGMeshType>
+MeshType meshFromVCGMesh(const VCGMeshType& vcgMesh)
+{
+    MeshType mesh;
+
+    importMeshFromVCGMesh(mesh, vcgMesh);
+
+    return mesh;
 }
 
 } // namespace vcl::vc

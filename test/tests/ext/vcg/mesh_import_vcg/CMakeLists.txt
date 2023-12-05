@@ -11,6 +11,8 @@
 
 project(vclib-ext-mesh-import-from-vcg-test)
 
+get_target_property(VCG_INCLUDE_DIRS vclib-external-vcg VCG_INCLUDE_DIRS)
+
 set(SOURCES
     mesh.h
     main.cpp
