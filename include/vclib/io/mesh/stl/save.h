@@ -102,7 +102,7 @@ void saveStl(
     std::ostream&   fp,
     const MeshInfo& info,
     LogType&        log        = nullLogger,
-    bool            binary     = true,
+    bool            binary     = false,
     bool            magicsMode = false)
 {
     MeshInfo meshInfo(m);
@@ -188,7 +188,7 @@ void saveStl(
     const MeshType& m,
     std::ostream&   fp,
     LogType&        log        = nullLogger,
-    bool            binary     = true,
+    bool            binary     = false,
     bool            magicsMode = false)
 {
     MeshInfo info(m);

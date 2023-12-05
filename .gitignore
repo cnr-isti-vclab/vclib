@@ -217,6 +217,7 @@ _deps
 build/*
 
 # VSCode
+.vscode/*
 */.vscode/*
 
 # Local History for Visual Studio Code

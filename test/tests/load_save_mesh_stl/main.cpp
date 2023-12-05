@@ -22,6 +22,7 @@
  ****************************************************************************/
 
 #include <catch2/catch_test_macros.hpp>
+#include <vclib/algorithms/create/hexahedron.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
@@ -131,5 +132,28 @@ TEST_CASE("Load STL cube from istringstream")
         vcl::loadStl(tm, ss);
         REQUIRE(tm.vertexNumber() == 36);
         REQUIRE(tm.faceNumber() == 12);
+    }
+}
+
+TEST_CASE("Save STL cube in a ostringstream")
+{
+    SECTION("TriMesh - Cube")
+    {
+        vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
+
+        std::ostringstream ss;
+        vcl::saveStl(tm, ss);
+
+        const uint expectedStlSize = 7 * tm.faceNumber() + 2;
+
+        // verify that ss contains 86 lines
+        std::istringstream iss(ss.str());
+
+        std::string line;
+        int         count = 0;
+        while (std::getline(iss, line)) {
+            count++;
+        }
+        REQUIRE(count == expectedStlSize);
     }
 }
