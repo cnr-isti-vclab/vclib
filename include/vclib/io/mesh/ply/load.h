@@ -93,20 +93,30 @@ void loadPly(
  * The info about what elements and components have been loaded from the stream
  * will be stored into the loadedInfo argument.
  *
- * @param m
- * @param file
- * @param loadedInfo
- * @param enableOptionalComponents
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] m: the mesh to fill
+ * @param[in] inputPlyStream: the stream to read from
+ * @param[out] loadedInfo: the info about what elements and components have been
+ * loaded from the stream
+ * @param[in] log: the logger to use
+ * @param[in] enableOptionalComponents: if true, some eventual optional
+ * components of the mesh that were not enabled and that can be loaded from the
+ * stream, will be enabled before loading the stream.
+ *
+ * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
     MeshType&     m,
-    std::istream& file,
+    std::istream& inputPlyStream,
     MeshInfo&     loadedInfo,
     LogType&      log                      = nullLogger,
     bool          enableOptionalComponents = true)
 {
-    detail::loadPly(m, file, "", loadedInfo, log, enableOptionalComponents);
+    detail::loadPly(
+        m, inputPlyStream, "", loadedInfo, log, enableOptionalComponents);
 }
 
 /**
@@ -118,45 +128,97 @@ void loadPly(
  * some eventual optional components of the mesh that were not enabled and that
  * can be loaded from the stream, will be enabled before loading the stream.
  *
- * If you need to know what elements and components have been loaded after the
- * loading of the stream, please see the overload of the function with the
- * additional 'loadedInfo' argument.
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
  *
- * @param m
- * @param file
- * @param enableOptionalComponents
+ * @param[in] m: the mesh to fill
+ * @param[in] inputPlyStream: the stream to read from
+ * @param[in] log: the logger to use
+ * @param[in] enableOptionalComponents: if true, some eventual optional
+ * components of the mesh that were not enabled and that can be loaded from the
+ * stream, will be enabled before loading the stream.
+ *
+ * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
     MeshType&     m,
-    std::istream& file,
+    std::istream& inputPlyStream,
     LogType&      log                      = nullLogger,
     bool          enableOptionalComponents = true)
 {
     MeshInfo loadedInfo;
-    loadPly(m, file, loadedInfo, log, enableOptionalComponents);
+    loadPly(m, inputPlyStream, loadedInfo, log, enableOptionalComponents);
 }
 
+/**
+ * @brief Loads from the given input ply stream and puts the content into the
+ * returned mesh m.
+ *
+ * The function will fill all the components read into the stream that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the stream, will be enabled before loading the stream.
+ *
+ * The info about what elements and components have been loaded from the stream
+ * will be stored into the loadedInfo argument.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] inputPlyStream: the stream to read from
+ * @param[out] loadedInfo: the info about what elements and components have been
+ * loaded from the stream
+ * @param[in] log: the logger to use
+ * @param[in] enableOptionalComponents: if true, some eventual optional
+ * components of the mesh that were not enabled and that can be loaded from the
+ * stream, will be enabled before loading the stream.
+ * @returns the mesh loaded from the stream.
+ *
+ * @ingroup load
+ */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadPly(
-    std::istream& file,
+    std::istream& inputPlyStream,
     MeshInfo&     loadedInfo,
     LogType&      log                      = nullLogger,
     bool          enableOptionalComponents = true)
 {
     MeshType m;
-    loadPly(m, file, loadedInfo, log, enableOptionalComponents);
+    loadPly(m, inputPlyStream, loadedInfo, log, enableOptionalComponents);
     return m;
 }
 
+/**
+ * @brief Loads from the given input ply stream and puts the content into the
+ * returned mesh m.
+ *
+ * The function will fill all the components read into the stream that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the stream, will be enabled before loading the stream.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] inputPlyStream: the stream to read from
+ * @param[in] log: the logger to use
+ * @param[in] enableOptionalComponents: if true, some eventual optional
+ * components of the mesh that were not enabled and that can be loaded from the
+ * stream, will be enabled before loading the stream.
+ * @returns the mesh loaded from the stream.
+ *
+ * @ingroup load
+ */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadPly(
-    std::istream& file,
+    std::istream& inputPlyStream,
     LogType&      log                      = nullLogger,
     bool          enableOptionalComponents = true)
 {
     MeshInfo loadedInfo;
-    return loadPly<MeshType>(file, loadedInfo, log, enableOptionalComponents);
+    return loadPly<MeshType>(
+        inputPlyStream, loadedInfo, log, enableOptionalComponents);
 }
 
 /**
@@ -170,10 +232,19 @@ MeshType loadPly(
  * The info about what elements and components have been loaded from the file
  * will be stored into the loadedInfo argument.
  *
- * @param m
- * @param filename
- * @param loadedInfo
- * @param enableOptionalComponents
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] m: the mesh to fill
+ * @param[in] filename: the name of the file to read from
+ * @param[out] loadedInfo: the info about what elements and components have been
+ * loaded from the file
+ * @param[in] log: the logger to use
+ * @param[in] enableOptionalComponents: if true, some eventual optional
+ * components of the mesh that were not enabled and that can be loaded from the
+ * file, will be enabled before loading the file.
+ *
+ * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
@@ -197,13 +268,17 @@ void loadPly(
  * some eventual optional components of the mesh that were not enabled and that
  * can be loaded from the file, will be enabled before loading the file.
  *
- * If you need to know what elements and components have been loaded after the
- * loading of the file, please see the overload of the function with the
- * additional 'loadedInfo' argument.
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
  *
- * @param m
- * @param filename
- * @param enableOptionalComponents
+ * @param[in] m: the mesh to fill
+ * @param[in] filename: the name of the file to read from
+ * @param[in] log: the logger to use
+ * @param[in] enableOptionalComponents: if true, some eventual optional
+ * components of the mesh that were not enabled and that can be loaded from the
+ * file, will be enabled before loading the file.
+ *
+ * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadPly(
@@ -216,6 +291,32 @@ void loadPly(
     loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
 }
 
+/**
+ * @brief Loads the given ply file and puts the content into the returned mesh
+ * m.
+ *
+ * The function will fill all the components read into the file that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the file, will be enabled before loading the file.
+ *
+ * The info about what elements and components have been loaded from the file
+ * will be stored into the loadedInfo argument.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] filename: the name of the file to read from
+ * @param[out] loadedInfo: the info about what elements and components have been
+ * loaded from the file
+ * @param[in] log: the logger to use
+ * @param[in] enableOptionalComponents: if true, some eventual optional
+ * components of the mesh that were not enabled and that can be loaded from the
+ * file, will be enabled before loading the file.
+ * @returns the mesh loaded from the file.
+ *
+ * @ingroup load
+ */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadPly(
     const std::string& filename,
@@ -228,6 +329,27 @@ MeshType loadPly(
     return m;
 }
 
+/**
+ * @brief Loads the given ply file and puts the content into the returned mesh
+ * m.
+ *
+ * The function will fill all the components read into the file that can be
+ * filled into the mesh. If the enableOprionalComponents argument is enabled,
+ * some eventual optional components of the mesh that were not enabled and that
+ * can be loaded from the file, will be enabled before loading the file.
+ *
+ * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
+ * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
+ *
+ * @param[in] filename: the name of the file to read from
+ * @param[in] log: the logger to use
+ * @param[in] enableOptionalComponents: if true, some eventual optional
+ * components of the mesh that were not enabled and that can be loaded from the
+ * file, will be enabled before loading the file.
+ * @returns the mesh loaded from the file.
+ *
+ * @ingroup load
+ */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadPly(
     const std::string& filename,
