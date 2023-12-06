@@ -324,6 +324,7 @@ set(HEADERS
 if (TARGET vclib-external-vcg)
     list(APPEND HEADERS
         include/vclib/ext/vcg/concepts.h
+        include/vclib/ext/vcg/export.h
         include/vclib/ext/vcg/import.h
         include/vclib/ext/vcg/type_mapping.h)
 endif()

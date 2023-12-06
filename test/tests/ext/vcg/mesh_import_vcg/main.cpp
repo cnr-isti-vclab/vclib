@@ -21,8 +21,10 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include <vclib/algorithms/create.h>
 #include <vclib/algorithms/polygon.h>
 #include <vclib/ext/vcg/import.h>
+#include <vclib/ext/vcg/export.h>
 #include <vclib/meshes.h>
 
 #include <catch2/catch_test_macros.hpp>
@@ -206,6 +208,29 @@ TEST_CASE("Import PolyMesh from VCG")
         for (uint vi = 0; vi < 3; ++vi) {
             REQUIRE(
                 pm.index(f.vertex(vi)) == vcg::tri::Index(vcgMesh, vcgf.V(vi)));
+        }
+    }
+}
+
+TEST_CASE("Export TriMesh to VCG")
+{
+    vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
+
+    SECTION("Test Vertices and Faces") {
+        VCGMesh vcgMesh;
+        vcl::vc::exportMeshToVCGMesh(tm, vcgMesh);
+
+        REQUIRE(vcgMesh.VN() == tm.vertexNumber());
+        REQUIRE(vcgMesh.FN() == tm.faceNumber());
+
+        for (uint fi = 0; fi < tm.faceNumber(); ++fi) {
+            const auto& f    = tm.face(fi);
+            const auto& vcgf = vcgMesh.face[fi];
+            for (uint vi = 0; vi < 3; ++vi) {
+                REQUIRE(
+                    tm.index(f.vertex(vi)) ==
+                    vcg::tri::Index(vcgMesh, vcgf.V(vi)));
+            }
         }
     }
 }
