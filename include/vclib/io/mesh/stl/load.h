@@ -3,7 +3,6 @@
  * Visual Computing Library                                                  *
  *                                                                           *
  * Copyright(C) 2021-2023                                                    *
- * Alessandro Muntoni                                                        *
  * Visual Computing Lab                                                      *
  * ISTI - Italian National Research Council                                  *
  *                                                                           *
