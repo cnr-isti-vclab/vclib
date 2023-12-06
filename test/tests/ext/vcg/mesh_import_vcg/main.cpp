@@ -40,17 +40,88 @@ TEST_CASE("Import TriMesh from VCG")
     REQUIRE(vcgMesh.VN() == 8);
     REQUIRE(vcgMesh.FN() == 12);
 
-    vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+    SECTION("Test Vertices and Faces") {
+        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
 
-    REQUIRE(tm.vertexNumber() == 8);
-    REQUIRE(tm.faceNumber() == 12);
+        REQUIRE(tm.vertexNumber() == 8);
+        REQUIRE(tm.faceNumber() == 12);
 
-    for (uint fi = 0; fi < tm.faceNumber(); ++fi) {
-        const auto& f    = tm.face(fi);
-        const auto& vcgf = vcgMesh.face[fi];
-        for (uint vi = 0; vi < 3; ++vi) {
+        for (uint fi = 0; fi < tm.faceNumber(); ++fi) {
+            const auto& f    = tm.face(fi);
+            const auto& vcgf = vcgMesh.face[fi];
+            for (uint vi = 0; vi < 3; ++vi) {
+                REQUIRE(
+                    tm.index(f.vertex(vi)) ==
+                    vcg::tri::Index(vcgMesh, vcgf.V(vi)));
+            }
+        }
+    }
+
+    SECTION("Test Per Vertex Normals") {
+
+        vcg::tri::UpdateNormal<VCGMesh>::PerVertexNormalizedPerFaceNormalized(
+            vcgMesh);
+
+        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+
+        for (const auto& v : tm.vertices()) {
+            REQUIRE(v.normal().x() == vcgMesh.vert[v.index()].N().X());
+            REQUIRE(v.normal().y() == vcgMesh.vert[v.index()].N().Y());
+            REQUIRE(v.normal().z() == vcgMesh.vert[v.index()].N().Z());
+        }
+    }
+
+    SECTION("Test Per Vertex Custom Components") {
+        auto h = vcg::tri::Allocator<VCGMesh>::AddPerVertexAttribute<float>(
+            vcgMesh, "perVertex");
+
+        for (uint vi = 0; vi < vcgMesh.VN(); ++vi) {
+            h[vcgMesh.vert[vi]] = (float) vi / vcgMesh.VN();
+        }
+
+        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+
+        REQUIRE(tm.hasPerVertexCustomComponent("perVertex"));
+        REQUIRE(tm.isPerVertexCustomComponentOfType<float>("perVertex"));
+
+        for (const auto& v : tm.vertices()) {
             REQUIRE(
-                tm.index(f.vertex(vi)) == vcg::tri::Index(vcgMesh, vcgf.V(vi)));
+                v.customComponent<float>("perVertex") ==
+                (float) v.index() / tm.vertexNumber());
+        }
+    }
+
+    SECTION("Test Per Face Normals") {
+
+        vcg::tri::UpdateNormal<VCGMesh>::PerVertexNormalizedPerFaceNormalized(
+            vcgMesh);
+
+        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+
+        for (const auto& f : tm.faces()) {
+            REQUIRE(f.normal().x() == vcgMesh.face[f.index()].N().X());
+            REQUIRE(f.normal().y() == vcgMesh.face[f.index()].N().Y());
+            REQUIRE(f.normal().z() == vcgMesh.face[f.index()].N().Z());
+        }
+    }
+
+    SECTION("Test Per Face Custom Components") {
+        auto h = vcg::tri::Allocator<VCGMesh>::AddPerFaceAttribute<double>(
+            vcgMesh, "perFace");
+
+        for (uint fi = 0; fi < vcgMesh.FN(); ++fi) {
+            h[vcgMesh.face[fi]] = (double) fi / vcgMesh.FN();
+        }
+
+        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+
+        REQUIRE(tm.hasPerFaceCustomComponent("perFace"));
+        REQUIRE(tm.isPerFaceCustomComponentOfType<double>("perFace"));
+
+        for (const auto& f : tm.faces()) {
+            REQUIRE(
+                f.customComponent<double>("perFace") ==
+                (double) f.index() / tm.faceNumber());
         }
     }
 }

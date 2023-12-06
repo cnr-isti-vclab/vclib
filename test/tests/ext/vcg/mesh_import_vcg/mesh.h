@@ -15,14 +15,20 @@ struct VCGUsedTypes :
 };
 
 class VCGVertex :
-        public vcg::
-            Vertex<VCGUsedTypes, vcg::vertex::Coord3f, vcg::vertex::Normal3f>
+        public vcg::Vertex<
+            VCGUsedTypes,
+            vcg::vertex::BitFlags,
+            vcg::vertex::Coord3f,
+            vcg::vertex::Normal3f>
 {
 };
 
 class VCGFace :
-        public vcg::
-            Face<VCGUsedTypes, vcg::face::VertexRef, vcg::face::Normal3f>
+        public vcg::Face<
+            VCGUsedTypes,
+            vcg::face::BitFlags,
+            vcg::face::VertexRef,
+            vcg::face::Normal3f>
 {
 };
 
