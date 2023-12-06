@@ -21,8 +21,11 @@ def replace_header(file_path, header_string):
         file.write(file_string)
 
 def replace_headers_in_dir(folder_path):
+    # get the path where this script is located
+    path = os.path.dirname(os.path.abspath(__file__))
+
     # Read in the file
-    with open('templates/header.txt', 'r') as file :
+    with open(path + '/templates/header.txt', 'r') as file :
         header_string = file.read()
 
     for file_path in glob.glob(os.path.join(folder_path, '*')):
