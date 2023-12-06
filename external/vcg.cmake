@@ -23,7 +23,7 @@ else()
         FetchContent_Declare(
             vcglib
             GIT_REPOSITORY https://github.com/cnr-isti-vclab/vcglib.git
-            GIT_TAG        2022.02)
+            GIT_TAG        origin/devel) # TODO: change to next version of vcg
 
         FetchContent_MakeAvailable(vcglib)
         set(VCG_INCLUDE_DIRS ${vcglib_SOURCE_DIR})

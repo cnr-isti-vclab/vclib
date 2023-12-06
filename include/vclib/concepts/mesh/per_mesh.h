@@ -37,6 +37,8 @@ concept HasBoundingBox = comp::HasBoundingBox<T>;
 template<typename T>
 concept HasColor = comp::HasColor<T>;
 template<typename T>
+concept HasCustomComponents = comp::HasCustomComponents<T>;
+template<typename T>
 concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasName = comp::HasName<T>;
@@ -64,6 +66,15 @@ concept HasBoundingBox =
  */
 template<typename MeshType>
 concept HasColor = MeshConcept<MeshType> && mesh::HasColor<MeshType>;
+
+/**
+ * @brief Concept that is evaluated true if a Mesh has the CustomComponents
+ * component.
+ *
+ * @ingroup mesh_concepts
+ */
+template<typename MeshType>
+concept HasCustomComponents = MeshConcept<MeshType> && mesh::HasCustomComponents<MeshType>;
 
 /**
  * @brief Concept that is evaluated true if a Mesh has the Mark component.

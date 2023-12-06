@@ -48,9 +48,15 @@ template<uint ELEM_ID, typename T, MeshConcept MeshType>
 void addCustomComponentsIfTypeMatches(MeshType& mesh, auto& p)
 {
     if (p._type == std::type_index(typeid(T))) {
-        mesh.template addPerElementCustomComponent<
-            ELEM_ID,
-            typename TypeMapping<T>::type>(p._name);
+        if constexpr(ELEM_ID < ELEMENTS_NUMBER) {
+            mesh.template addPerElementCustomComponent<
+                ELEM_ID,
+                typename TypeMapping<T>::type>(p._name);
+        }
+        else {
+            mesh.template addCustomComponent<typename TypeMapping<T>::type>(
+                p._name);
+        }
     }
 }
 
@@ -70,6 +76,8 @@ void addCustomComponentsOfTypeFromVCGMesh(
         case FACE:
             ps = &vcgMesh.face_attr;
             break;
+        case ELEMENTS_NUMBER:
+            ps = &vcgMesh.mesh_attr;
         default:
             break;
     }
@@ -81,7 +89,7 @@ void addCustomComponentsOfTypeFromVCGMesh(
     }
 }
 
-template<typename T, ElementConcept ElementType>
+template<typename T, ElementOrMeshConcept ElementType>
 void importCustomComponent(
     ElementType&       el,
     auto&              h,
@@ -95,7 +103,7 @@ void importCustomComponent(
 template<
     uint ELEM_ID,
     typename T,
-    ElementConcept ElementType,
+    ElementOrMeshConcept ElementType,
     typename VCGMeshType>
 void importCustomComponentsOfTypeFromVCGMesh(
     ElementType&       el,
@@ -119,6 +127,19 @@ void importCustomComponentsOfTypeFromVCGMesh(
                 const auto& h = vcg::tri::Allocator<VCGMeshType>::
                     template FindPerFaceAttribute<T>(vcgMesh, p._name);
                 importCustomComponent<T>(el, h, elemIndex, p._name);
+            }
+        }
+    }
+
+    // Here el is the mesh!
+    if constexpr (ELEM_ID == ELEMENTS_NUMBER) {
+        for (auto& p : vcgMesh.mesh_attr) {
+            if (p._type == std::type_index(typeid(T))) {
+                const auto& h = vcg::tri::Allocator<VCGMeshType>::
+                    template FindPerMeshAttribute<T>(vcgMesh, p._name);
+
+                el.template customComponent<typename TypeMapping<T>::type>(
+                    p._name) = fromVCG(h());
             }
         }
     }
@@ -342,10 +363,37 @@ void importMeshFromVCGMesh(
         }
     }
 
+    if constexpr (HasBoundingBox<MeshType>) {
+        using BoundingBoxType = MeshType::BoundingBoxType;
+        using PointType = typename BoundingBoxType::PointType;
+
+        mesh.boundingBox().min() = PointType(
+            vcgMesh.bbox.min.X(), vcgMesh.bbox.min.Y(), vcgMesh.bbox.min.Z());
+        mesh.boundingBox().max() = PointType(
+            vcgMesh.bbox.max.X(), vcgMesh.bbox.max.Y(), vcgMesh.bbox.max.Z());
+    }
+
     if constexpr (HasTexturePaths<MeshType>) {
         for (const auto& s : vcgMesh.textures) {
             mesh.pushTexturePath(s);
         }
+    }
+
+    if constexpr (HasCustomComponents<MeshType>) {
+        // for each supported type, apply the lampda function that adds the
+        // custom components of the type T that are in the vcgMesh
+        vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
+            [&mesh, &vcgMesh]<typename T>() {
+                // ELEMENTS_NUMBER is used here to indicate the custom
+                // components of the mesh
+                detail::
+                    addCustomComponentsOfTypeFromVCGMesh<ELEMENTS_NUMBER, T>(
+                        mesh, vcgMesh);
+
+                detail::importCustomComponentsOfTypeFromVCGMesh<
+                    ELEMENTS_NUMBER,
+                    T>(mesh, vcgMesh, 0);
+            });
     }
 }
 

@@ -166,6 +166,21 @@ TEST_CASE("Import TriMesh from VCG")
                 vcl::faceBarycenter(f).cast<float>());
         }
     }
+
+    SECTION("Test Per Mesh point Custom Component") {
+        auto h = vcg::tri::Allocator<VCGMesh>::AddPerMeshAttribute<vcg::Point3f>(
+            vcgMesh, "perMesh");
+
+        h() = vcg::Point3f(1, 2, 3);
+
+        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+
+        REQUIRE(tm.hasCustomComponent("perMesh"));
+        REQUIRE(tm.isCustomComponentOfType<vcl::Point3f>("perMesh"));
+        REQUIRE(
+            tm.customComponent<vcl::Point3f>("perMesh") ==
+            vcl::Point3f(1, 2, 3));
+    }
 }
 
 TEST_CASE("Import PolyMesh from VCG")
