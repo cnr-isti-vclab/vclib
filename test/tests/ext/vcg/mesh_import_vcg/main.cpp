@@ -21,6 +21,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include <vclib/algorithms/polygon.h>
 #include <vclib/ext/vcg/import.h>
 #include <vclib/meshes.h>
 
@@ -71,7 +72,7 @@ TEST_CASE("Import TriMesh from VCG")
         }
     }
 
-    SECTION("Test Per Vertex Custom Components") {
+    SECTION("Test Per Vertex scalar Custom Components") {
         auto h = vcg::tri::Allocator<VCGMesh>::AddPerVertexAttribute<float>(
             vcgMesh, "perVertex");
 
@@ -91,6 +92,26 @@ TEST_CASE("Import TriMesh from VCG")
         }
     }
 
+    SECTION("Test Per Vertex point Custom Components") {
+        auto h = vcg::tri::Allocator<VCGMesh>::AddPerVertexAttribute<vcg::Point3f>(
+            vcgMesh, "perVertex");
+
+        for (uint vi = 0; vi < vcgMesh.VN(); ++vi) {
+            h[vcgMesh.vert[vi]] = vcgMesh.vert[vi].P();
+        }
+
+        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+
+        REQUIRE(tm.hasPerVertexCustomComponent("perVertex"));
+        REQUIRE(tm.isPerVertexCustomComponentOfType<vcl::Point3f>("perVertex"));
+
+        for (const auto& v : tm.vertices()) {
+            REQUIRE(
+                v.customComponent<vcl::Point3f>("perVertex") ==
+                v.coord().cast<float>());
+        }
+    }
+
     SECTION("Test Per Face Normals") {
 
         vcg::tri::UpdateNormal<VCGMesh>::PerVertexNormalizedPerFaceNormalized(
@@ -105,7 +126,7 @@ TEST_CASE("Import TriMesh from VCG")
         }
     }
 
-    SECTION("Test Per Face Custom Components") {
+    SECTION("Test Per Face scalar Custom Components") {
         auto h = vcg::tri::Allocator<VCGMesh>::AddPerFaceAttribute<double>(
             vcgMesh, "perFace");
 
@@ -122,6 +143,27 @@ TEST_CASE("Import TriMesh from VCG")
             REQUIRE(
                 f.customComponent<double>("perFace") ==
                 (double) f.index() / tm.faceNumber());
+        }
+    }
+
+    SECTION("Test Per Face point Custom Components") {
+        auto h = vcg::tri::Allocator<VCGMesh>::AddPerFaceAttribute<vcg::Point3f>(
+            vcgMesh, "perFace");
+
+        for (uint fi = 0; fi < vcgMesh.FN(); ++fi) {
+            // assign barycener of face fi
+            h[vcgMesh.face[fi]] = vcg::Barycenter(vcgMesh.face[fi]);
+        }
+
+        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+
+        REQUIRE(tm.hasPerFaceCustomComponent("perFace"));
+        REQUIRE(tm.isPerFaceCustomComponentOfType<vcl::Point3f>("perFace"));
+
+        for (const auto& f : tm.faces()) {
+            REQUIRE(
+                f.customComponent<vcl::Point3f>("perFace") ==
+                vcl::faceBarycenter(f).cast<float>());
         }
     }
 }

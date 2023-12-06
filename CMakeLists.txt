@@ -323,7 +323,9 @@ set(HEADERS
 # headers and sources to include only if using VCG
 if (TARGET vclib-external-vcg)
     list(APPEND HEADERS
-        include/vclib/ext/vcg/import.h)
+        include/vclib/ext/vcg/concepts.h
+        include/vclib/ext/vcg/import.h
+        include/vclib/ext/vcg/type_mapping.h)
 endif()
 
 add_library(vclib INTERFACE ${HEADERS})

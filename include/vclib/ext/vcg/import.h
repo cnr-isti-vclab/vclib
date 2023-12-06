@@ -28,23 +28,44 @@
 
 #include <vcg/complex/complex.h>
 
+#include "type_mapping.h"
+
 namespace vcl::vc {
 
 namespace detail {
 
+// all the custom components of these types will be imported
 using SupportedCustomComponentTypes =
-    TypeWrapper<int, float, double>;
+    // clang-format off
+    TypeWrapper<
+        int, float, double,
+        vcg::Point2i, vcg::Point2f, vcg::Point2d,
+        vcg::Point3i, vcg::Point3f, vcg::Point3d,
+        vcg::Point4i, vcg::Point4f, vcg::Point4d>;
+    // clang-format on
+
+// if the type T has a mapping from vcg to vcl, CCType will be the vcl
+// type, otherwise it will be T
+template<typename T>
+using CCType = std::conditional_t<
+    IsConvertibleFromVCG<T>,
+    std::enable_if<IsConvertibleFromVCG<T>, typename TypeMapping<T>::type>,
+    T>;
 
 template<uint ELEM_ID, typename T, MeshConcept MeshType>
 void addCustomComponentsIfTypeMatches(MeshType& mesh, auto& p)
 {
     if (p._type == std::type_index(typeid(T))) {
-        mesh.template addPerElementCustomComponent<ELEM_ID, T>(p._name);
+        mesh.template addPerElementCustomComponent<
+            ELEM_ID,
+            typename TypeMapping<T>::type>(p._name);
     }
 }
 
 template<uint ELEM_ID, typename T, MeshConcept MeshType, typename VCGMeshType>
-void addCustomComponentsOfTypeFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
+void addCustomComponentsOfTypeFromVCGMesh(
+    MeshType&          mesh,
+    const VCGMeshType& vcgMesh)
 {
     using CustomAttrSet = std::set<typename VCGMeshType::PointerToAttribute>;
 
@@ -68,6 +89,17 @@ void addCustomComponentsOfTypeFromVCGMesh(MeshType& mesh, const VCGMeshType& vcg
     }
 }
 
+template<typename T, ElementConcept ElementType>
+void importCustomComponent(
+    ElementType&       el,
+    auto&              h,
+    uint               elemIndex,
+    const std::string& name)
+{
+    el.template customComponent<typename TypeMapping<T>::type>(name) =
+        fromVCG(h[elemIndex]);
+}
+
 template<
     uint ELEM_ID,
     typename T,
@@ -83,7 +115,8 @@ void importCustomComponentsOfTypeFromVCGMesh(
             if (p._type == std::type_index(typeid(T))) {
                 const auto& h = vcg::tri::Allocator<VCGMeshType>::
                     template FindPerVertexAttribute<T>(vcgMesh, p._name);
-                el.template customComponent<T>(p._name) = h[elemIndex];
+
+                importCustomComponent<T>(el, h, elemIndex, p._name);
             }
         }
     }
@@ -93,7 +126,7 @@ void importCustomComponentsOfTypeFromVCGMesh(
             if (p._type == std::type_index(typeid(T))) {
                 const auto& h = vcg::tri::Allocator<VCGMeshType>::
                     template FindPerFaceAttribute<T>(vcgMesh, p._name);
-                el.template customComponent<T>(p._name) = h[elemIndex];
+                importCustomComponent<T>(el, h, elemIndex, p._name);
             }
         }
     }
