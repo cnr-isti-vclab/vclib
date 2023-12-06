@@ -102,7 +102,10 @@ void importCustomComponentsOfTypeFromVCGMesh(
 } // namespace detail
 
 template<MeshConcept MeshType, typename VCGMeshType>
-void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
+void importMeshFromVCGMesh(
+    MeshType&          mesh,
+    const VCGMeshType& vcgMesh,
+    bool               enableOptionalComponents = true)
 {
     using CoordType = MeshType::VertexType::CoordType;
 
@@ -135,8 +138,11 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
             // normal
             if constexpr (HasPerVertexNormal<MeshType>) {
                 using NormalType = MeshType::VertexType::NormalType;
-                if (isPerVertexNormalAvailable(mesh)) {
-                    if (vcg::tri::HasPerVertexNormal(vcgMesh)) {
+                if (vcg::tri::HasPerVertexNormal(vcgMesh)) {
+                    if (enableOptionalComponents) {
+                        vcl::enableIfPerVertexNormalOptional(mesh);
+                    }
+                    if (isPerVertexNormalAvailable(mesh)) {
                         vertex.normal() = NormalType(
                             vcgMesh.vert[i].N()[0],
                             vcgMesh.vert[i].N()[1],
@@ -147,8 +153,11 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
             // color
             if constexpr (HasPerVertexColor<MeshType>) {
-                if (isPerVertexColorAvailable(mesh)) {
-                    if (vcg::tri::HasPerVertexColor(vcgMesh)) {
+                if (vcg::tri::HasPerVertexColor(vcgMesh)) {
+                    if (enableOptionalComponents) {
+                        vcl::enableIfPerVertexColorOptional(mesh);
+                    }
+                    if (isPerVertexColorAvailable(mesh)) {
                         vertex.color() = Color(
                             vcgMesh.vert[i].C()[0],
                             vcgMesh.vert[i].C()[1],
@@ -160,8 +169,11 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
             // quality
             if constexpr (HasPerVertexQuality<MeshType>) {
-                if (isPerVertexQualityAvailable(mesh)) {
-                    if (vcg::tri::HasPerVertexQuality(vcgMesh)) {
+                if (vcg::tri::HasPerVertexQuality(vcgMesh)) {
+                    if (enableOptionalComponents) {
+                        vcl::enableIfPerVertexQualityOptional(mesh);
+                    }
+                    if (isPerVertexQualityAvailable(mesh)) {
                         vertex.quality() = vcgMesh.vert[i].Q();
                     }
                 }
@@ -170,8 +182,11 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
             // texcoord
             if constexpr (HasPerVertexTexCoord<MeshType>) {
                 using TexCoordType = MeshType::VertexType::TexCoordType;
-                if (isPerVertexTexCoordAvailable(mesh)) {
-                    if (vcg::tri::HasPerVertexTexCoord(vcgMesh)) {
+                if (vcg::tri::HasPerVertexTexCoord(vcgMesh)) {
+                    if (enableOptionalComponents) {
+                        vcl::enableIfPerVertexTexCoordOptional(mesh);
+                    }
+                    if (isPerVertexTexCoordAvailable(mesh)) {
                         vertex.texCoord() = TexCoordType(
                             vcgMesh.vert[i].T().U(), vcgMesh.vert[i].T().V());
                     }
@@ -226,8 +241,11 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
                 // normal
                 if constexpr (HasPerFaceNormal<MeshType>) {
                     using NormalType = MeshType::FaceType::NormalType;
-                    if (isPerFaceNormalAvailable(mesh)) {
-                        if (vcg::tri::HasPerFaceNormal(vcgMesh)) {
+                    if (vcg::tri::HasPerFaceNormal(vcgMesh)) {
+                        if (enableOptionalComponents) {
+                            vcl::enableIfPerFaceNormalOptional(mesh);
+                        }
+                        if (isPerFaceNormalAvailable(mesh)) {
                             face.normal() = NormalType(
                                 vcgMesh.face[i].N()[0],
                                 vcgMesh.face[i].N()[1],
@@ -238,8 +256,11 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
                 // color
                 if constexpr (HasPerFaceColor<MeshType>) {
-                    if (isPerFaceColorAvailable(mesh)) {
-                        if (vcg::tri::HasPerFaceColor(vcgMesh)) {
+                    if (vcg::tri::HasPerFaceColor(vcgMesh)) {
+                        if (enableOptionalComponents) {
+                            vcl::enableIfPerFaceColorOptional(mesh);
+                        }
+                        if (isPerFaceColorAvailable(mesh)) {
                             face.color() = Color(
                                 vcgMesh.face[i].C()[0],
                                 vcgMesh.face[i].C()[1],
@@ -251,8 +272,11 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
                 // quality
                 if constexpr (HasPerFaceQuality<MeshType>) {
-                    if (isPerFaceQualityAvailable(mesh)) {
-                        if (vcg::tri::HasPerFaceQuality(vcgMesh)) {
+                    if (vcg::tri::HasPerFaceQuality(vcgMesh)) {
+                        if (enableOptionalComponents) {
+                            vcl::enableIfPerFaceQualityOptional(mesh);
+                        }
+                        if (isPerFaceQualityAvailable(mesh)) {
                             face.quality() = vcgMesh.face[i].Q();
                         }
                     }
@@ -261,8 +285,11 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
                 // wedge texcoords
                 if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
                     using WTType = MeshType::FaceType::WedgeTexCoordType;
-                    if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                        if (vcg::tri::HasPerWedgeTexCoord(vcgMesh)) {
+                    if (vcg::tri::HasPerWedgeTexCoord(vcgMesh)) {
+                        if (enableOptionalComponents) {
+                            vcl::enableIfPerFaceWedgeTexCoordsOptional(mesh);
+                        }
+                        if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
                             face.textureIndex() =
                                 vcgMesh.face[i].WT(0).N();
                             for (uint j = 0; j < 3; ++j) {
@@ -276,12 +303,14 @@ void importMeshFromVCGMesh(MeshType& mesh, const VCGMeshType& vcgMesh)
 
                 // custom components
                 if constexpr (HasPerVertexCustomComponents<MeshType>) {
-                    // for each supported type, apply the lampda function that adds
-                    // the custom components of the type T that are in the vcgMesh
-                    vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
-                        [&face, &vcgMesh, fi]<typename T>() {
+                    // for each supported type, apply the lampda function that
+                    // adds the custom components of the type T that are in the
+                    // vcgMesh
+                    vcl::ForEachType<detail::SupportedCustomComponentTypes>::
+                        apply([&face, &vcgMesh, fi]<typename T>() {
                             detail::importCustomComponentsOfTypeFromVCGMesh<
-                                FACE, T>(face, vcgMesh, fi);
+                                FACE,
+                                T>(face, vcgMesh, fi);
                         });
                 }
             }
