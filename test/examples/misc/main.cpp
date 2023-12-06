@@ -27,8 +27,7 @@
 
 int main()
 {
-    auto f = []<typename T>()
-    {
+    auto f = []<typename T>() {
         std::cout << typeid(T).name() << std::endl;
     };
 

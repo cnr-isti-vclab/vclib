@@ -146,7 +146,7 @@ struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
  * vcl::ForEachType<int, float, double>::apply(f);
  * @endcode
  */
-template<typename ...T>
+template<typename... T>
 struct ForEachType
 {
     template<typename F>
@@ -156,7 +156,7 @@ struct ForEachType
     }
 };
 
-template<typename ...T>
+template<typename... T>
 struct ForEachType<TypeWrapper<T...>> : public ForEachType<T...>
 {
 };

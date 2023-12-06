@@ -64,7 +64,7 @@ void save(
     const std::string& filename,
     const MeshInfo&    info,
     bool               binary,
-    LogType&           log    = nullLogger)
+    LogType&           log = nullLogger)
 {
     save(m, filename, info, log, binary);
 }
@@ -76,7 +76,7 @@ void save(
     bool               binary,
     LogType&           log = nullLogger)
 {
-    MeshInfo   info(m);
+    MeshInfo info(m);
     save(m, filename, info, log, binary);
 }
 
@@ -90,8 +90,6 @@ void save(
     MeshInfo info(m);
     save(m, filename, info, log, binary);
 }
-
-
 
 } // namespace vcl
 

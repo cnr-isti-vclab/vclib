@@ -318,7 +318,8 @@ void loadStl(
     }
 
     if (isBinary)
-        detail::readStlBin(m, inputStlStream, loadedInfo, log, enableOptionalComponents);
+        detail::readStlBin(
+            m, inputStlStream, loadedInfo, log, enableOptionalComponents);
     else
         detail::readStlAscii(
             m, inputStlStream, loadedInfo, log, enableOptionalComponents);
@@ -364,7 +365,8 @@ void loadStl(
     bool          enableOptionalComponents = true)
 {
     MeshInfo loadedInfo;
-    loadStl(m, inputStlStream, loadedInfo, isBinary, log, enableOptionalComponents);
+    loadStl(
+        m, inputStlStream, loadedInfo, isBinary, log, enableOptionalComponents);
 }
 
 /**
@@ -408,7 +410,8 @@ MeshType loadStl(
     bool          enableOptionalComponents = true)
 {
     MeshType m;
-    loadStl(m, inputStlStream, loadedInfo, isBinary, log, enableOptionalComponents);
+    loadStl(
+        m, inputStlStream, loadedInfo, isBinary, log, enableOptionalComponents);
     return m;
 }
 
