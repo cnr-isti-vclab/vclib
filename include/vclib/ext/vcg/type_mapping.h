@@ -34,14 +34,6 @@
 
 namespace vcl::vc {
 
-template<typename T>
-concept IsConvertibleFromVCG =
-    vc::Point2Concept<T> || vc::Point3Concept<T> || vc::Point4Concept<T>;
-
-template<typename T>
-concept IsConvertibleToVCG =
-    vcl::Point2Concept<T> || vcl::Point3Concept<T> || vcl::Point4Concept<T>;
-
 // default mapping: identity
 template<typename T>
 struct TypeMapping

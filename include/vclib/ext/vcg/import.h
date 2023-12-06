@@ -44,14 +44,6 @@ using SupportedCustomComponentTypes =
         vcg::Point4i, vcg::Point4f, vcg::Point4d>;
     // clang-format on
 
-// if the type T has a mapping from vcg to vcl, CCType will be the vcl
-// type, otherwise it will be T
-template<typename T>
-using CCType = std::conditional_t<
-    IsConvertibleFromVCG<T>,
-    std::enable_if<IsConvertibleFromVCG<T>, typename TypeMapping<T>::type>,
-    T>;
-
 template<uint ELEM_ID, typename T, MeshConcept MeshType>
 void addCustomComponentsIfTypeMatches(MeshType& mesh, auto& p)
 {
