@@ -73,7 +73,8 @@ concept HasColor = MeshConcept<MeshType> && mesh::HasColor<MeshType>;
  * @ingroup mesh_concepts
  */
 template<typename MeshType>
-concept HasCustomComponents = MeshConcept<MeshType> && mesh::HasCustomComponents<MeshType>;
+concept HasCustomComponents =
+    MeshConcept<MeshType> && mesh::HasCustomComponents<MeshType>;
 
 /**
  * @brief Concept that is evaluated true if a Mesh has the Mark component.

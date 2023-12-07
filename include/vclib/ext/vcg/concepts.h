@@ -32,7 +32,7 @@
 namespace vcl::vc {
 
 template<typename T>
-concept Point2Concept = T::Dimension == 2 && requires(T a) {
+concept Point2Concept = T::Dimension == 2 && requires (T a) {
     // clang-format off
     { a.X() } -> std::convertible_to<float>;
     { a.Y() } -> std::convertible_to<float>;
@@ -40,7 +40,7 @@ concept Point2Concept = T::Dimension == 2 && requires(T a) {
 };
 
 template<typename T>
-concept Point3Concept = T::Dimension == 3 && requires(T a) {
+concept Point3Concept = T::Dimension == 3 && requires (T a) {
     // clang-format off
     { a.X() } -> std::convertible_to<float>;
     { a.Y() } -> std::convertible_to<float>;
@@ -49,7 +49,7 @@ concept Point3Concept = T::Dimension == 3 && requires(T a) {
 };
 
 template<typename T>
-concept Point4Concept = T::Dimension == 4 && requires(T a) {
+concept Point4Concept = T::Dimension == 4 && requires (T a) {
     // clang-format off
     { a.X() } -> std::convertible_to<float>;
     { a.Y() } -> std::convertible_to<float>;

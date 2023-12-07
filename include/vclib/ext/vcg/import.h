@@ -41,13 +41,14 @@ using SupportedCustomComponentTypes =
         vcg::Point2i, vcg::Point2f, vcg::Point2d,
         vcg::Point3i, vcg::Point3f, vcg::Point3d,
         vcg::Point4i, vcg::Point4f, vcg::Point4d>;
-    // clang-format on
+
+// clang-format on
 
 template<uint ELEM_ID, typename T, MeshConcept MeshType>
 void addCustomComponentsIfTypeMatches(MeshType& mesh, auto& p)
 {
     if (p._type == std::type_index(typeid(T))) {
-        if constexpr(ELEM_ID < ELEMENTS_NUMBER) {
+        if constexpr (ELEM_ID < ELEMENTS_NUMBER) {
             mesh.template addPerElementCustomComponent<
                 ELEM_ID,
                 typename TypeMapping<T>::type>(p._name);
@@ -69,16 +70,10 @@ void addCustomComponentsOfTypeFromVCGMesh(
     const CustomAttrSet* ps = nullptr;
 
     switch (ELEM_ID) {
-        case VERTEX:
-            ps = &vcgMesh.vert_attr;
-            break;
-        case FACE:
-            ps = &vcgMesh.face_attr;
-            break;
-        case ELEMENTS_NUMBER:
-            ps = &vcgMesh.mesh_attr;
-        default:
-            break;
+    case VERTEX: ps = &vcgMesh.vert_attr; break;
+    case FACE: ps = &vcgMesh.face_attr; break;
+    case ELEMENTS_NUMBER: ps = &vcgMesh.mesh_attr;
+    default: break;
     }
 
     if (ps) {
@@ -244,8 +239,9 @@ void importMeshFromVCGMesh(
                 // the custom components of the type T that are in the vcgMesh
                 vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
                     [&vertex, &vcgMesh, vi]<typename T>() {
-                        detail::importCustomComponentsOfTypeFromVCGMesh<
-                            VERTEX, T>(vertex, vcgMesh, vi);
+                        detail::
+                            importCustomComponentsOfTypeFromVCGMesh<VERTEX, T>(
+                                vertex, vcgMesh, vi);
                     });
             }
         }
@@ -335,8 +331,7 @@ void importMeshFromVCGMesh(
                             vcl::enableIfPerFaceWedgeTexCoordsOptional(mesh);
                         }
                         if (isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                            face.textureIndex() =
-                                vcgMesh.face[i].WT(0).N();
+                            face.textureIndex() = vcgMesh.face[i].WT(0).N();
                             for (uint j = 0; j < 3; ++j) {
                                 face.wedgeTexCoord(j) = WTType(
                                     vcgMesh.face[i].WT(j).U(),
@@ -364,7 +359,7 @@ void importMeshFromVCGMesh(
 
     if constexpr (HasBoundingBox<MeshType>) {
         using BoundingBoxType = MeshType::BoundingBoxType;
-        using PointType = typename BoundingBoxType::PointType;
+        using PointType       = typename BoundingBoxType::PointType;
 
         mesh.boundingBox().min() = PointType(
             vcgMesh.bbox.min.X(), vcgMesh.bbox.min.Y(), vcgMesh.bbox.min.Z());
@@ -381,18 +376,18 @@ void importMeshFromVCGMesh(
     if constexpr (HasCustomComponents<MeshType>) {
         // for each supported type, apply the lampda function that adds the
         // custom components of the type T that are in the vcgMesh
-        vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
-            [&mesh, &vcgMesh]<typename T>() {
-                // ELEMENTS_NUMBER is used here to indicate the custom
-                // components of the mesh
-                detail::
-                    addCustomComponentsOfTypeFromVCGMesh<ELEMENTS_NUMBER, T>(
-                        mesh, vcgMesh);
+        vcl::ForEachType<
+            detail::SupportedCustomComponentTypes>::apply([&mesh,
+                                                           &vcgMesh]<
+                                                              typename T>() {
+            // ELEMENTS_NUMBER is used here to indicate the custom
+            // components of the mesh
+            detail::addCustomComponentsOfTypeFromVCGMesh<ELEMENTS_NUMBER, T>(
+                mesh, vcgMesh);
 
-                detail::importCustomComponentsOfTypeFromVCGMesh<
-                    ELEMENTS_NUMBER,
-                    T>(mesh, vcgMesh, 0);
-            });
+            detail::importCustomComponentsOfTypeFromVCGMesh<ELEMENTS_NUMBER, T>(
+                mesh, vcgMesh, 0);
+        });
     }
 }
 

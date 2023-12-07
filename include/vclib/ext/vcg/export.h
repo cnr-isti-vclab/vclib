@@ -55,7 +55,6 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
             vcgMesh.face[fi].V(1) = &vcgMesh.vert[mesh.index(f.vertex(1))];
             vcgMesh.face[fi].V(2) = &vcgMesh.vert[mesh.index(f.vertex(2))];
 
-
             // manage here other components
 
             fi++;
