@@ -41,8 +41,27 @@ using SupportedCustomComponentTypes =
         vcg::Point2i, vcg::Point2f, vcg::Point2d,
         vcg::Point3i, vcg::Point3f, vcg::Point3d,
         vcg::Point4i, vcg::Point4f, vcg::Point4d>;
+    // clang-format on
 
-// clang-format on
+template<ElementConcept VCLElem, typename VCGElem>
+void importNormal(VCLElem& vclElem, const VCGElem& vcgElem)
+{
+    using NormalType = VCLElem::NormalType;
+    vclElem.normal() = NormalType(
+        vcgElem.N()[0],
+        vcgElem.N()[1],
+        vcgElem.N()[2]);
+}
+
+template<ElementConcept VCLElem, typename VCGElem>
+void importColor(VCLElem& vclElem, const VCGElem& vcgElem)
+{
+    vclElem.color() = vcl::Color(
+        vcgElem.C()[0],
+        vcgElem.C()[1],
+        vcgElem.C()[2],
+        vcgElem.C()[3]);
+}
 
 template<uint ELEM_ID, typename T, MeshConcept MeshType>
 void addCustomComponentsIfTypeMatches(MeshType& mesh, auto& p)
@@ -183,10 +202,7 @@ void importMeshFromVCGMesh(
                         vcl::enableIfPerVertexNormalOptional(mesh);
                     }
                     if (isPerVertexNormalAvailable(mesh)) {
-                        vertex.normal() = NormalType(
-                            vcgMesh.vert[i].N()[0],
-                            vcgMesh.vert[i].N()[1],
-                            vcgMesh.vert[i].N()[2]);
+                        detail::importNormal(vertex, vcgMesh.vert[i]);
                     }
                 }
             }
@@ -198,11 +214,7 @@ void importMeshFromVCGMesh(
                         vcl::enableIfPerVertexColorOptional(mesh);
                     }
                     if (isPerVertexColorAvailable(mesh)) {
-                        vertex.color() = Color(
-                            vcgMesh.vert[i].C()[0],
-                            vcgMesh.vert[i].C()[1],
-                            vcgMesh.vert[i].C()[2],
-                            vcgMesh.vert[i].C()[3]);
+                        detail::importColor(vertex, vcgMesh.vert[i]);
                     }
                 }
             }
@@ -287,10 +299,7 @@ void importMeshFromVCGMesh(
                             vcl::enableIfPerFaceNormalOptional(mesh);
                         }
                         if (isPerFaceNormalAvailable(mesh)) {
-                            face.normal() = NormalType(
-                                vcgMesh.face[i].N()[0],
-                                vcgMesh.face[i].N()[1],
-                                vcgMesh.face[i].N()[2]);
+                            detail::importNormal(face, vcgMesh.face[i]);
                         }
                     }
                 }
@@ -302,11 +311,7 @@ void importMeshFromVCGMesh(
                             vcl::enableIfPerFaceColorOptional(mesh);
                         }
                         if (isPerFaceColorAvailable(mesh)) {
-                            face.color() = Color(
-                                vcgMesh.face[i].C()[0],
-                                vcgMesh.face[i].C()[1],
-                                vcgMesh.face[i].C()[2],
-                                vcgMesh.face[i].C()[3]);
+                            detail::importColor(face, vcgMesh.face[i]);
                         }
                     }
                 }
