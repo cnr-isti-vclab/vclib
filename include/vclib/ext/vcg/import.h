@@ -41,26 +41,22 @@ using SupportedCustomComponentTypes =
         vcg::Point2i, vcg::Point2f, vcg::Point2d,
         vcg::Point3i, vcg::Point3f, vcg::Point3d,
         vcg::Point4i, vcg::Point4f, vcg::Point4d>;
-    // clang-format on
+
+// clang-format on
 
 template<ElementConcept VCLElem, typename VCGElem>
 void importNormal(VCLElem& vclElem, const VCGElem& vcgElem)
 {
     using NormalType = VCLElem::NormalType;
-    vclElem.normal() = NormalType(
-        vcgElem.N()[0],
-        vcgElem.N()[1],
-        vcgElem.N()[2]);
+    vclElem.normal() =
+        NormalType(vcgElem.N()[0], vcgElem.N()[1], vcgElem.N()[2]);
 }
 
 template<ElementConcept VCLElem, typename VCGElem>
 void importColor(VCLElem& vclElem, const VCGElem& vcgElem)
 {
     vclElem.color() = vcl::Color(
-        vcgElem.C()[0],
-        vcgElem.C()[1],
-        vcgElem.C()[2],
-        vcgElem.C()[3]);
+        vcgElem.C()[0], vcgElem.C()[1], vcgElem.C()[2], vcgElem.C()[3]);
 }
 
 template<uint ELEM_ID, typename T, MeshConcept MeshType>

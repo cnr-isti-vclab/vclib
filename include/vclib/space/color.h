@@ -83,9 +83,9 @@ public:
         DarkYellow  = 0xff004040,
         DarkMagenta = 0xff400040,
 
-        LightBrown  = 0xff4080b0,
-        DarkBrown   = 0xff002040,
-        Brown       = 0xff004080,
+        LightBrown = 0xff4080b0,
+        DarkBrown  = 0xff002040,
+        Brown      = 0xff004080,
     };
 
     /**
