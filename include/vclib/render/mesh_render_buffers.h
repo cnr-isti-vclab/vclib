@@ -39,7 +39,7 @@ class MeshRenderBuffers
     std::vector<float>    verts;
     std::vector<uint32_t> tris;
     std::vector<float>    vNormals;
-    std::vector<float>    vColors;
+    std::vector<uint32_t> vColors;
     std::vector<float>    tNormals;
     std::vector<float>    tColors;
     std::vector<float>    vTexCoords;
@@ -102,7 +102,7 @@ public:
         return vNormals.data();
     }
 
-    const float* vertexColorBufferData() const
+    const uint32_t* vertexColorBufferData() const
     {
         if (vColors.empty())
             return nullptr;
@@ -191,7 +191,7 @@ private:
 
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (vcl::isPerVertexColorAvailable(m)) {
-                vColors.resize(m.vertexNumber() * 3);
+                vColors.resize(m.vertexNumber());
             }
         }
 
@@ -225,9 +225,7 @@ private:
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (vcl::isPerVertexColorAvailable(m)) {
-                    vColors[j + 0] = v.color().redF();
-                    vColors[j + 1] = v.color().greenF();
-                    vColors[j + 2] = v.color().blueF();
+                    vColors[vi] = v.color().abgr();
                 }
             }
 

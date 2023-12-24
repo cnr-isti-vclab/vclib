@@ -41,6 +41,7 @@ class DrawableMesh : public GenericDrawableMesh
 
     bgfx::VertexBufferHandle meshVBH = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle meshVNBH = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle meshVCBH = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle meshIBH = BGFX_INVALID_HANDLE;
 
@@ -99,11 +100,14 @@ public:
     {
         if (bgfx::isValid(program)) {
             bgfx::setVertexBuffer(0, meshVBH);
-            bgfx::setVertexBuffer(1, meshVNBH);
 
-            //if (bgfx::isValid(meshVNBH)) {
-            //    bgfx::setVertexBuffer(1, meshVNBH);
-            //}
+            if (bgfx::isValid(meshVNBH)) { // normals
+               bgfx::setVertexBuffer(1, meshVNBH);
+            }
+
+            if (bgfx::isValid(meshVCBH)) { // colors
+               bgfx::setVertexBuffer(2, meshVCBH);
+            }
 
             bgfx::setIndexBuffer(meshIBH);
 
@@ -155,6 +159,20 @@ private:
                     mrb.vertexNormalBufferData(),
                     mrb.vertexBufferSize() * sizeof(float)),
                 vnlayout);
+        }
+
+        // vertex buffer (colors)
+        if (mrb.vertexColorBufferData()) {
+            bgfx::VertexLayout vclayout;
+            vclayout.begin()
+                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+                .end();
+
+            meshVCBH = bgfx::createVertexBuffer(
+                bgfx::makeRef(
+                    mrb.vertexColorBufferData(),
+                    mrb.vertexBufferSize() * sizeof(uint32_t)),
+                vclayout);
         }
 
         meshIBH = bgfx::createIndexBuffer(
