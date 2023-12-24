@@ -273,6 +273,18 @@ public:
     }
 
     /**
+     * @brief Returns a const pointer to the underlying array serving as element
+     * storage. The pointer is such that range [data(), data() + size()) is
+     * always a valid range, even if the container is empty (data() is not
+     * dereferenceable in that case).
+     *
+     * @return A const pointer to the underlying element storage. For non-empty
+     * containers, the returned pointer compares equal to the address of the
+     * first element.
+     */
+    ConstPointer data() const { return container.data(); }
+
+    /**
      * @brief Set the value of the element at the specified position.
      *
      * Sets the value of the element at position `i` in the Vector to the

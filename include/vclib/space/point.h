@@ -219,6 +219,13 @@ public:
     }
 
     /**
+     * @brief Returns the pointer to the underlying scalar storage.
+     *
+     * @return The pointer to the underlying scalar storage.
+     */
+    const ScalarType* data() const { return p.data(); }
+
+    /**
      * @brief Returns true if at least one of its components is NaN or inf.
      *
      * The function checks whether at least one of the scalar components of the
