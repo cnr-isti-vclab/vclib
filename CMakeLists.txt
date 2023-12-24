@@ -54,10 +54,12 @@ set(HEADERS
     include/vclib/render/drawable_object.h
     include/vclib/render/drawable_object_vector.h
     include/vclib/render/generic_drawable_mesh.h
+    include/vclib/render/lights.h
     include/vclib/render/matrix.h
     include/vclib/render/mesh_render_buffers.h
     include/vclib/render/mesh_render_settings.h
     include/vclib/render/trackball.h
+    include/vclib/render/lights/directional_light.h
 )
 
 # headers to include only if using OpenGL2

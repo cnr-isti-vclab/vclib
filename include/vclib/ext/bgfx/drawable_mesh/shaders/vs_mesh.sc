@@ -1,4 +1,5 @@
 $input a_position
+$input a_normal
 
 #include <bgfx_shader.sh>
 

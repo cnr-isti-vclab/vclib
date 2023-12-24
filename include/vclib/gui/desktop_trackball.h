@@ -24,6 +24,8 @@
 #define VCL_GUI_DESKTOP_TRACKBALL_H
 
 #include "input.h"
+
+#include <vclib/render/lights/directional_light.h>
 #include "vclib/render/trackball.h"
 
 #include <vclib/space/bit_set.h>
@@ -52,7 +54,14 @@ private:
     Scalar far = 100.0;
 
     vcl::Matrix44<Scalar> projMatrix =
-        vcl::projectionMatrix<vcl::Matrix44<Scalar>>(fov, aspect, near, far, false);
+        vcl::projectionMatrix<vcl::Matrix44<Scalar>>(
+            fov,
+            aspect,
+            near,
+            far,
+            false);
+
+    vcl::DirectionalLight<Scalar> dl;
 
     vcl::TrackBall<Scalar> trackball;
     float defaultTrackBallRadius = 1.0;
@@ -95,6 +104,8 @@ private:
 
 public:
     DesktopTrackBall() = default;
+
+    const DirectionalLight<Scalar>& light() const { return dl; }
 
     const Camera<Scalar>& camera() const { return trackball.camera(); }
 

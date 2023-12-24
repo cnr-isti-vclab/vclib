@@ -40,6 +40,8 @@ class DrawableMesh : public GenericDrawableMesh
     std::vector<uint> textID;
 
     bgfx::VertexBufferHandle meshVBH = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle meshVNBH = BGFX_INVALID_HANDLE;
+
     bgfx::IndexBufferHandle meshIBH = BGFX_INVALID_HANDLE;
 
     bgfx::UniformHandle meshColorUH = BGFX_INVALID_HANDLE;
@@ -57,11 +59,11 @@ public:
         if constexpr (HasName<MeshType>) {
             name() = mesh.name();
         }
-        updateBuffers(mesh);
-        mrs.setDefaultSettingsFromCapability();
 
-        setupBuffers();
+        updateBuffers(mesh);
         setupUniforms();
+
+        mrs.setDefaultSettingsFromCapability();
     }
 
     ~DrawableMesh()
@@ -97,6 +99,11 @@ public:
     {
         if (bgfx::isValid(program)) {
             bgfx::setVertexBuffer(0, meshVBH);
+            bgfx::setVertexBuffer(1, meshVNBH);
+
+            //if (bgfx::isValid(meshVNBH)) {
+            //    bgfx::setVertexBuffer(1, meshVNBH);
+            //}
 
             bgfx::setIndexBuffer(meshIBH);
 
@@ -125,16 +132,36 @@ public:
 private:
     void setupBuffers()
     {
+        // vertex buffer (positions)
         bgfx::VertexLayout layout;
         layout.begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .end();
 
         meshVBH = bgfx::createVertexBuffer(
-            bgfx::makeRef(mrb.vertexBufferData(), mrb.vertexBufferSize() * sizeof(float)), layout);
+            bgfx::makeRef(
+                mrb.vertexBufferData(), mrb.vertexBufferSize() * sizeof(float)),
+            layout);
+
+        // vertex buffer (normals)
+        if (mrb.vertexNormalBufferData()) {
+            bgfx::VertexLayout vnlayout;
+            vnlayout.begin()
+                .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+                .end();
+
+            meshVNBH = bgfx::createVertexBuffer(
+                bgfx::makeRef(
+                    mrb.vertexNormalBufferData(),
+                    mrb.vertexBufferSize() * sizeof(float)),
+                vnlayout);
+        }
 
         meshIBH = bgfx::createIndexBuffer(
-            bgfx::makeRef(mrb.triangleBufferData(), mrb.triangleBufferSize() * sizeof(uint32_t)), BGFX_BUFFER_INDEX32);
+            bgfx::makeRef(
+                mrb.triangleBufferData(),
+                mrb.triangleBufferSize() * sizeof(uint32_t)),
+            BGFX_BUFFER_INDEX32);
     }
 
     void setupUniforms()
@@ -146,6 +173,9 @@ private:
     {
         if (bgfx::isValid(meshVBH))
             bgfx::destroy(meshVBH);
+
+        if (bgfx::isValid(meshVNBH))
+            bgfx::destroy(meshVNBH);
 
         if (bgfx::isValid(meshIBH))
             bgfx::destroy(meshIBH);
