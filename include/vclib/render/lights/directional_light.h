@@ -47,6 +47,8 @@ public:
 
     vcl::Color& color() { return c; }
     const vcl::Color& color() const { return c; }
+
+    void reset() { *this = {}; }
 };
 
 } // namespace vcl

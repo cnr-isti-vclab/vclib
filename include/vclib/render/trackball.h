@@ -130,6 +130,7 @@ public:
 
     void reset(Scalar radius = 1.0)
     {
+        dl.reset();
         cam.reset();
         arcRotationSum = Quaternion<Scalar>();
         eyeCenterDist = radius * RADIUS_RATIO;
