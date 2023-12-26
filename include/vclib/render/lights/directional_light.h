@@ -31,7 +31,7 @@ namespace vcl {
 template<typename ScalarType>
 class DirectionalLight
 {
-    vcl::Point3<ScalarType> d = vcl::Point3<ScalarType>(0.0f, 0.0f, -1.0f);
+    vcl::Point3<ScalarType> d = vcl::Point3<ScalarType>(0.0f, 0.0f, 1.0f);
     vcl::Color c = vcl::Color::White;
 
 public:
