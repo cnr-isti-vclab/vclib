@@ -61,8 +61,6 @@ private:
             far,
             false);
 
-    vcl::DirectionalLight<Scalar> dl;
-
     vcl::TrackBall<Scalar> trackball;
     float defaultTrackBallRadius = 1.0;
 
@@ -105,7 +103,7 @@ private:
 public:
     DesktopTrackBall() = default;
 
-    const DirectionalLight<Scalar>& light() const { return dl; }
+    const DirectionalLight<Scalar>& light() const { return trackball.light(); }
 
     const Camera<Scalar>& camera() const { return trackball.camera(); }
 

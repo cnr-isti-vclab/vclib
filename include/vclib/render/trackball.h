@@ -28,6 +28,7 @@
 #include <vclib/space/quaternion.h>
 
 #include "camera.h"
+#include "lights/directional_light.h"
 
 namespace vcl {
 
@@ -83,6 +84,8 @@ private:
         LOWER_RIGHT
     };
 
+    vcl::DirectionalLight<Scalar> dl;
+
     Camera<Scalar> cam;
 
     Point2<Scalar> currMousePosition;
@@ -116,6 +119,8 @@ public:
     TrackBall() = default;
 
     const Camera<Scalar>& camera() const { return cam; }
+
+    const DirectionalLight<Scalar>& light() const { return dl; }
 
     const Matrix44<Scalar>& viewMatrix() const { return cam.viewMatrix(); }
 
