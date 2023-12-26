@@ -99,7 +99,7 @@ MeshType createCone(
     }
     else {
         for (uint i = 0; i < subdivisions; ++i) {
-            mesh.addFace(1, b1 + i, b1 + (i + 1) % subdivisions);
+            mesh.addFace(1, b1 + (i + 1) % subdivisions, b1 + i);
         }
     }
 
