@@ -29,19 +29,6 @@ function(_add_bgfx_shader FILE DIR TARGET)
 		set(OUTPUTS_PRETTY "")
 
 		if(WIN32)
-			# dx9
-			if(NOT "${TYPE}" STREQUAL "COMPUTE")
-				set(DX9_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/dx9/${DIR}/${FILENAME}.bin)
-				_bgfx_shaderc_parse(
-					DX9 ${COMMON} WINDOWS
-					PROFILE s_3_0
-					O 3
-					OUTPUT ${DX9_OUTPUT}
-				)
-				list(APPEND OUTPUTS "DX9")
-				set(OUTPUTS_PRETTY "${OUTPUTS_PRETTY}DX9, ")
-			endif()
-
 			# dx11
 			set(DX11_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/dx11/${DIR}/${FILENAME}.bin)
 			if(NOT "${TYPE}" STREQUAL "COMPUTE")
@@ -74,7 +61,7 @@ function(_add_bgfx_shader FILE DIR TARGET)
 		# essl
 		if(NOT "${TYPE}" STREQUAL "COMPUTE")
 			set(ESSL_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/essl/${DIR}/${FILENAME}.bin)
-			_bgfx_shaderc_parse(ESSL ${COMMON} ANDROID PROFILE 100_es OUTPUT ${ESSL_OUTPUT})
+			_bgfx_shaderc_parse(ESSL ${COMMON} ANDROID PROFILE 300_es OUTPUT ${ESSL_OUTPUT})
 			list(APPEND OUTPUTS "ESSL")
 			set(OUTPUTS_PRETTY "${OUTPUTS_PRETTY}ESSL, ")
 		endif()
