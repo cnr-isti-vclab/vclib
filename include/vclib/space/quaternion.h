@@ -298,7 +298,28 @@ public:
     }
 
     Matrix33<Scalar> toRotationMatrix() const { return q.toRotationMatrix(); }
+
+    /// @private
+    template<typename S>
+    friend std::ostream& operator<<(std::ostream& out, const Quaternion<S>& p);
 };
+
+/**
+ * @brief Writes this point to an output stream.
+ *
+ * This operator writes this point to an output stream and returns the output
+ * stream. The point is written as a column vector of its coordinates.
+ *
+ * @param[in,out] out: The output stream to write to.
+ * @param[in] p1 The point to write.
+ * @return The output stream after the point is written.
+ */
+template<typename Scalar>
+std::ostream& operator<<(std::ostream& out, const Quaternion<Scalar>& p1)
+{
+    out << p1.q;
+    return out;
+}
 
 } // namespace vcl
 
