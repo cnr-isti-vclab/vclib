@@ -51,8 +51,8 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 
 void Viewer::mousePressEvent(QMouseEvent* event)
 {
-    DTB::pressMouse(vcl::qt::fromQt(event->button()));
     DTB::moveMouse(event->pos().x(), event->pos().y());
+    DTB::pressMouse(vcl::qt::fromQt(event->button()));
 
     CanvasWindow::mousePressEvent(event);
 }
