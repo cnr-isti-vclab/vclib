@@ -63,8 +63,8 @@ public:
         Green = 0xff00ff00,
         Blue  = 0xffff0000,
 
-        Cyan    = 0xff00ffff,
-        Yellow  = 0xffffff00,
+        Yellow  = 0xff00ffff,
+        Cyan    = 0xffffff00,
         Magenta = 0xffff00ff,
 
         LightRed   = 0xff8080ff,
