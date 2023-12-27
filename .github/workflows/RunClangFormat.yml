@@ -1,0 +1,30 @@
+name: Run clang-format Linter
+
+# run it every day at midnight, or manually
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.repository == 'alemuntoni/vclib-render'
+    name: Run clang-format Linter
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: DoozyX/clang-format-lint-action@v0.16.2
+      with:
+        source: '.'
+        exclude: './external ./vclib'
+        extensions: 'h,cpp'
+        clangFormatVersion: 16
+        inplace: True
+    - uses: EndBug/add-and-commit@v9
+      with:
+        committer_name: GitHub Actions
+        committer_email: actions@github.com
+        message: 'Committing clang-format changes'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

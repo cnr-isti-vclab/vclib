@@ -42,10 +42,7 @@ class Camera
 public:
     Camera() = default;
 
-    void reset()
-    {
-        *this = {};
-    }
+    void reset() { *this = {}; }
 
     void updateMatrix() { mat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir); }
 

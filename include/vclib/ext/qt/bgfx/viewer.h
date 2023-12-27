@@ -33,20 +33,24 @@
 
 namespace vcl::qbgf {
 
-class Viewer : public vcl::qbgf::CanvasWindow, public vcl::DesktopTrackBall<float>
+class Viewer :
+        public vcl::qbgf::CanvasWindow,
+        public vcl::DesktopTrackBall<float>
 {
 protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
-    Viewer(bgfx::RendererType::Enum renderType = bgfx::RendererType::Count, QWindow* parent = nullptr);
+    Viewer(
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWindow*                 parent     = nullptr);
 
     virtual ~Viewer() {};
 
     using CanvasWindow::width;
     using CanvasWindow::height;
 
-    virtual void onResize(unsigned int width, unsigned int height) override;
+    void onResize(unsigned int width, unsigned int height) override;
 
     void mouseMoveEvent(QMouseEvent* event) override;
 

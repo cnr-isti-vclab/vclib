@@ -51,7 +51,7 @@ CanvasWindow::CanvasWindow(bgfx::RendererType::Enum renderType, QWindow* parent)
 
 CanvasWindow::~CanvasWindow() {}
 
-void CanvasWindow::draw() const {}
+void CanvasWindow::draw() {}
 
 void CanvasWindow::onResize(unsigned int w, unsigned int h) {}
 

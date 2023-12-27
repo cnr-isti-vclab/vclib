@@ -61,11 +61,6 @@ public:
         drawList = v;
     }
 
-    std::shared_ptr<DrawableObjectVector> drawableObjectVector()
-    {
-        return drawList;
-    }
-
     std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const
     {
         return drawList;

@@ -40,7 +40,7 @@ public:
 
     virtual ~CanvasWindow();
 
-    virtual void draw() const;
+    virtual void draw();
 
     virtual void onResize(unsigned int w, unsigned int h);
 
