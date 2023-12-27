@@ -305,14 +305,14 @@ public:
 };
 
 /**
- * @brief Writes this point to an output stream.
+ * @brief Writes this quaternion to an output stream.
  *
- * This operator writes this point to an output stream and returns the output
- * stream. The point is written as a column vector of its coordinates.
+ * This operator writes this quaternion to an output stream and returns the
+ * output stream.
  *
  * @param[in,out] out: The output stream to write to.
- * @param[in] p1 The point to write.
- * @return The output stream after the point is written.
+ * @param[in] p1 The quaternion to write.
+ * @return The output stream after the quaternion is written.
  */
 template<typename Scalar>
 std::ostream& operator<<(std::ostream& out, const Quaternion<Scalar>& p1)
