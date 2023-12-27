@@ -195,6 +195,9 @@ private:
         if (bgfx::isValid(meshVNBH))
             bgfx::destroy(meshVNBH);
 
+        if (bgfx::isValid(meshVCBH))
+            bgfx::destroy(meshVCBH);
+
         if (bgfx::isValid(meshIBH))
             bgfx::destroy(meshIBH);
     }
