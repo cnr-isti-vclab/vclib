@@ -25,6 +25,8 @@
 
 #include "drawable_object.h"
 
+#include <vclib/space/box.h>
+
 namespace vcl {
 
 class DrawableObjectVector
@@ -105,6 +107,29 @@ public:
 
     std::size_t size() const { return drawVector.size(); }
 
+    vcl::Box3d boundingBox(bool onlyVisible = true) const
+    {
+        Box3d bb;
+        if (drawVector.size() > 0) {
+            uint i = onlyVisible ? firstVisibleObject() : 0;
+
+            if (i < drawVector.size()) {
+                Point3d sc = drawVector.at(i)->center();
+                bb.add(sc - drawVector.at(i)->radius());
+                bb.add(sc + drawVector.at(i)->radius());
+
+                for (i = i + 1; i < drawVector.size(); i++) { // rest of the list
+                    if (!onlyVisible || drawVector.at(i)->isVisible()) {
+                        Point3d sc  = drawVector.at(i)->center();
+                        bb.add(sc - drawVector.at(i)->radius());
+                        bb.add(sc + drawVector.at(i)->radius());
+                    }
+                }
+            }
+        }
+        return bb;
+    }
+
     void swap(DrawableObjectVector& oth)
     {
         using std::swap;
@@ -124,6 +149,15 @@ public:
     const_iterator begin() const { return drawVector.begin(); }
 
     const_iterator end() const { return drawVector.end(); }
+
+private:
+    uint firstVisibleObject() const
+    {
+        for (uint i = 0; i < drawVector.size(); i++)
+            if (drawVector[i]->isVisible())
+                return i;
+        return UINT_NULL;
+    }
 };
 
 } // namespace vcl

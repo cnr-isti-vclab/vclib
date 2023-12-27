@@ -68,7 +68,7 @@ public:
 
     void fitScene()
     {
-        Box3d   bb          = fullBB();
+        Box3d   bb          = drawList->boundingBox();
         Point3d sceneCenter = bb.center();
         double  sceneRadius = bb.diagonal() / 2;
 
@@ -83,41 +83,6 @@ protected:
     {
         for (const DrawableObject* obj : *drawList)
             obj->draw();
-    }
-
-private:
-    uint firstVisibleObject() const
-    {
-        uint i = 0;
-
-        // if the current object i is not visible, check the next one
-        while (i < drawList->size() && !drawList->at(i).isVisible())
-            i++;
-
-        return i;
-    }
-
-    vcl::Box3d fullBB() const
-    {
-        Box3d bb(Point3d(-1, -1, -1), Point3d(1, 1, 1));
-        if (drawList->size() > 0) {
-            uint i = firstVisibleObject();
-
-            if (i < drawList->size()) {
-                Point3d sc = drawList->at(i).center();
-                bb.min()   = sc - drawList->at(i).radius();
-                bb.max()   = sc + drawList->at(i).radius();
-
-                for (i = i + 1; i < drawList->size(); i++) { // rest of the list
-                    Point3d sc  = drawList->at(i).center();
-                    Point3d tmp = sc - drawList->at(i).radius();
-                    bb.min()    = vcl::min(bb.min(), tmp);
-                    tmp         = sc + drawList->at(i).radius();
-                    bb.max()    = vcl::max(bb.max(), tmp);
-                }
-            }
-        }
-        return bb;
     }
 };
 
