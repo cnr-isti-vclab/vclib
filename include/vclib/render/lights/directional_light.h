@@ -23,8 +23,8 @@
 #ifndef VCL_RENDER_LIGHTS_DIRECTIONAL_LIGHT_H
 #define VCL_RENDER_LIGHTS_DIRECTIONAL_LIGHT_H
 
-#include <vclib/space/point.h>
 #include <vclib/space/color.h>
+#include <vclib/space/point.h>
 
 namespace vcl {
 
@@ -32,7 +32,7 @@ template<typename ScalarType>
 class DirectionalLight
 {
     vcl::Point3<ScalarType> d = vcl::Point3<ScalarType>(0.0f, 0.0f, 1.0f);
-    vcl::Color c = vcl::Color::White;
+    vcl::Color              c = vcl::Color::White;
 
 public:
     DirectionalLight() = default;
@@ -43,9 +43,11 @@ public:
     }
 
     vcl::Point3<ScalarType>& direction() { return d; }
+
     const vcl::Point3<ScalarType>& direction() const { return d; }
 
     vcl::Color& color() { return c; }
+
     const vcl::Color& color() const { return c; }
 
     void reset() { *this = {}; }

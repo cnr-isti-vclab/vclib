@@ -214,20 +214,14 @@ public:
 
     bool isSurfaceShadingSmooth() const { return dMode & DRAW_SURF_SMOOTH; }
 
-    bool isSurfaceColorPerFace() const
-    {
-        return dMode & DRAW_SURF_COLOR_FACE;
-    }
+    bool isSurfaceColorPerFace() const { return dMode & DRAW_SURF_COLOR_FACE; }
 
     bool isSurfaceColorPerVertex() const
     {
         return dMode & DRAW_SURF_COLOR_VERTEX;
     }
 
-    bool isSurfaceColorPerMesh() const
-    {
-        return dMode & DRAW_SURF_COLOR_MESH;
-    }
+    bool isSurfaceColorPerMesh() const { return dMode & DRAW_SURF_COLOR_MESH; }
 
     bool isSurfaceColorUserDefined() const
     {

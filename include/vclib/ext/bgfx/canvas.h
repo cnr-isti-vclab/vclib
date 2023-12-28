@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_BGFX_CANVAS_H
 #define VCL_EXT_BGFX_CANVAS_H
 
-#include <bx/bx.h>
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
+#include <bx/bx.h>
 
 #include <vclib/types.h>
 
@@ -36,39 +36,34 @@ class Canvas
     const bgfx::ViewId viewID = 0;
 
 public:
-    Canvas()
-    {
-    }
+    Canvas() {}
 
     Canvas(
-        void* winID,
-        uint width,
-        uint height,
-        void* displayID = nullptr,
+        void*                    winID,
+        uint                     width,
+        uint                     height,
+        void*                    displayID  = nullptr,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
         init(winID, width, height, displayID, renderType);
     }
 
     Canvas(
-        void* winID,
-        uint width,
-        uint height,
+        void*                    winID,
+        uint                     width,
+        uint                     height,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
         init(winID, width, height, nullptr, renderType);
     }
 
-    ~Canvas()
-    {
-        bgfx::shutdown();
-    }
+    ~Canvas() { bgfx::shutdown(); }
 
     void init(
-        void* winID,
-        uint width,
-        uint height,
-        void* displayID = nullptr,
+        void*                    winID,
+        uint                     width,
+        uint                     height,
+        void*                    displayID  = nullptr,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
 #ifdef __APPLE__
@@ -76,26 +71,27 @@ public:
 #endif
         bgfx::Init init;
         init.platformData.nwh = winID;
-        init.type = renderType;
+        init.type             = renderType;
 
 #ifdef __linux__
         init.platformData.ndt = displayID;
 #endif
 
-        init.resolution.width = width;
+        init.resolution.width  = width;
         init.resolution.height = height;
-        init.resolution.reset = BGFX_RESET_VSYNC;
+        init.resolution.reset  = BGFX_RESET_VSYNC;
         bgfx::init(init);
 
-        bgfx::setViewClear(0, BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+        bgfx::setViewClear(
+            0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
         bgfx::setViewRect(viewID, 0, 0, bgfx::BackbufferRatio::Equal);
         bgfx::touch(viewID);
     }
 
     void init(
-        void* winID,
-        uint width,
-        uint height,
+        void*                    winID,
+        uint                     width,
+        uint                     height,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
         init(winID, width, height, nullptr, renderType);
@@ -113,7 +109,6 @@ public:
         bgfx::setViewRect(viewID, 0, 0, bgfx::BackbufferRatio::Equal);
         bgfx::touch(viewID);
     }
-
 };
 
 } // namespace vcl::bgf

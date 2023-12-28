@@ -51,25 +51,16 @@ template<typename Scalar>
 class TrackBall
 {
 public:
-    enum MotionType {
-        ARC,
-        PAN,
-        ROLL,
-        ZOOM,
-        MOTION_NUMBER
-    };
+    enum MotionType { ARC, PAN, ROLL, ZOOM, MOTION_NUMBER };
 
-    enum ViewAxis {
-        HORIZONTAL,
-        VERTICAL,
-        AXIAL
-    };
+    enum ViewAxis { HORIZONTAL, VERTICAL, AXIAL };
 
     struct TransformArgs
     {
         ViewAxis axis;
-        Scalar scalar; // could be an angle or a distance
-        TransformArgs(ViewAxis a , Scalar s) : axis(a), scalar(s) {}
+        Scalar   scalar; // could be an angle or a distance
+
+        TransformArgs(ViewAxis a, Scalar s) : axis(a), scalar(s) {}
     };
 
     using AtomicMotionArg = std::variant<bool, TransformArgs, std::monostate>;
@@ -77,12 +68,7 @@ public:
 private:
     static constexpr Scalar RADIUS_RATIO = 1.75;
 
-    enum Quadrant {
-        UPPER_RIGHT,
-        UPPER_LEFT,
-        LOWER_LEFT,
-        LOWER_RIGHT
-    };
+    enum Quadrant { UPPER_RIGHT, UPPER_LEFT, LOWER_LEFT, LOWER_RIGHT };
 
     vcl::DirectionalLight<Scalar> dl;
 
@@ -94,12 +80,12 @@ private:
     Scalar h = 1; // width
     Scalar w = 1; // heigth
 
-    bool dragging = false;
+    bool       dragging       = false;
     MotionType currDragMotion = MOTION_NUMBER;
 
     // arc motion state
-    Point3<Scalar> startVector;
-    Point3<Scalar> stopVector;
+    Point3<Scalar>     startVector;
+    Point3<Scalar>     stopVector;
     Quaternion<Scalar> arcRotationSum;
 
     Scalar panScale = 0.005;
@@ -115,7 +101,6 @@ private:
     inline static const Point3<Scalar> Z = Point3<Scalar>(0, 0, 1);
 
 public:
-
     TrackBall() = default;
 
     const Camera<Scalar>& camera() const { return cam; }
@@ -133,7 +118,7 @@ public:
         dl.reset();
         cam.reset();
         arcRotationSum = Quaternion<Scalar>();
-        eyeCenterDist = radius * RADIUS_RATIO;
+        eyeCenterDist  = radius * RADIUS_RATIO;
 
         dragging = false;
 
@@ -143,7 +128,7 @@ public:
         prevMousePosition = Point2<Scalar>();
 
         startVector = Point3<Scalar>();
-        stopVector = Point3<Scalar>();
+        stopVector  = Point3<Scalar>();
 
         updateCameraEye();
         cam.updateMatrix();
@@ -153,7 +138,7 @@ public:
 
     void setScreenSize(Scalar width, Scalar height)
     {
-        if (width > 1 || height > 1){
+        if (width > 1 || height > 1) {
             w = width;
             h = height;
         }
@@ -181,43 +166,32 @@ public:
      * @param motion
      * @param step
      */
-    void applyAtomicMotion(MotionType motion, AtomicMotionArg step = std::monostate())
+    void applyAtomicMotion(
+        MotionType      motion,
+        AtomicMotionArg step = std::monostate())
     {
         if (std::holds_alternative<bool>(step)) {
             Scalar inc = std::get<bool>(step) ? 1 : -1;
 
             switch (motion) {
-            case ROLL:
-                performRoll(inc);
-                break;
-            case ZOOM:
-                performZoom(inc);
-                break;
+            case ROLL: performRoll(inc); break;
+            case ZOOM: performZoom(inc); break;
             default: break;
             }
-        } else if (std::holds_alternative<TransformArgs>(step)) {
+        }
+        else if (std::holds_alternative<TransformArgs>(step)) {
             const TransformArgs& args = std::get<TransformArgs>(step);
-            switch(motion) {
-            case ARC:
-                rotate(args.axis, args.scalar);
-                break;
-            case PAN:
-                translate(args.axis, args.scalar);
-                break;
+            switch (motion) {
+            case ARC: rotate(args.axis, args.scalar); break;
+            case PAN: translate(args.axis, args.scalar); break;
             default: break;
             }
         }
     }
 
-    void applyZoom(bool up)
-    {
-        applyAtomicMotion(ZOOM, up);
-    }
+    void applyZoom(bool up) { applyAtomicMotion(ZOOM, up); }
 
-    void applyRoll(bool clockwise)
-    {
-        applyAtomicMotion(ROLL, clockwise);
-    }
+    void applyRoll(bool clockwise) { applyAtomicMotion(ROLL, clockwise); }
 
     void applyPan(ViewAxis axis, Scalar distance)
     {
@@ -231,7 +205,10 @@ public:
 
     // Drag motions
 
-    void beginDragMotion(MotionType motion) { setDragMotionValue(motion, true); }
+    void beginDragMotion(MotionType motion)
+    {
+        setDragMotionValue(motion, true);
+    }
 
     void endDragMotion(MotionType motion) { setDragMotionValue(motion, false); }
 
@@ -253,7 +230,7 @@ public:
 
     void setMousePosition(Scalar x, Scalar y)
     {
-        prevMousePosition = currMousePosition;
+        prevMousePosition     = currMousePosition;
         currMousePosition.x() = x;
         currMousePosition.y() = h - y;
     }
@@ -280,7 +257,7 @@ public:
             if (!dragging && clicking) {
                 resetState();
                 startVector = pointOnSphere(currMousePosition);
-                dragging = true;
+                dragging    = true;
             }
             // update when a motion is in progress
             else if (dragging && clicking) {
@@ -300,18 +277,15 @@ private:
     void updateCameraEye()
     {
         Point3<Scalar> orientation = arcRotationSum * Z;
-        cam.eye() = orientation * eyeCenterDist + cam.center();
+        cam.eye()                  = orientation * eyeCenterDist + cam.center();
     }
 
-    void updateCameraUp()
-    {
-        cam.up() = (arcRotationSum * Y).normalized();
-    }
+    void updateCameraUp() { cam.up() = (arcRotationSum * Y).normalized(); }
 
     void resetState()
     {
         arcRotationSum = Quaternion<Scalar>(cam.matrix()).inverse();
-        eyeCenterDist = cam.eye().dist(cam.center());
+        eyeCenterDist  = cam.eye().dist(cam.center());
     }
 
     void setDragMotionValue(MotionType motion, bool value)
@@ -321,22 +295,12 @@ private:
 
     void drag(MotionType motion)
     {
-
-        switch(motion) {
-        case ARC:
-            dragArc();
-            break;
-        case PAN:
-            dragPan();
-            break;
-        case ROLL:
-            dragRoll();
-            break;
-        case ZOOM:
-            dragZoom();
-            break;
-        default:
-            break;
+        switch (motion) {
+        case ARC: dragArc(); break;
+        case PAN: dragPan(); break;
+        case ROLL: dragRoll(); break;
+        case ZOOM: dragZoom(); break;
+        default: break;
         }
 
         prevMousePosition = currMousePosition;
@@ -354,18 +318,12 @@ private:
 
     // atomic
 
-    void rotate(ViewAxis rot, Scalar angle = M_PI/6)
+    void rotate(ViewAxis rot, Scalar angle = M_PI / 6)
     {
-        switch (rot)  {
-        case HORIZONTAL:
-            performArc(Quaternion<Scalar>(-angle, Y));
-            break;
-        case VERTICAL:
-            performArc(Quaternion<Scalar>(angle, X));
-            break;
-        case AXIAL:
-            performArc(Quaternion<Scalar>(angle, Z));
-            break;
+        switch (rot) {
+        case HORIZONTAL: performArc(Quaternion<Scalar>(-angle, Y)); break;
+        case VERTICAL: performArc(Quaternion<Scalar>(angle, X)); break;
+        case AXIAL: performArc(Quaternion<Scalar>(angle, Z)); break;
         }
     }
 
@@ -378,11 +336,12 @@ private:
         Scalar x = (2.f * point.x() - w) / w;
         Scalar y = (2.f * point.y() - h) / h;
 
-        Scalar length2 = x*x + y*y;
+        Scalar length2 = x * x + y * y;
 
         if (length2 <= .5) {
             result.z() = std::sqrt(1.0 - length2);
-        } else {
+        }
+        else {
             result.z() = 0.5 / std::sqrt(length2);
         }
 
@@ -407,8 +366,8 @@ private:
 
     void performRoll(Scalar delta)
     {
-        Point3<Scalar> axis = (cam.center() - cam.eye()).normalized();
-        Scalar angle = rollScale * delta;
+        Point3<Scalar> axis  = (cam.center() - cam.eye()).normalized();
+        Scalar         angle = rollScale * delta;
 
         Quaternion<Scalar> rotation(angle, axis);
 
@@ -442,20 +401,13 @@ private:
 
     void dragRoll()
     {
-        auto deltaP = prevMousePosition - currMousePosition;
+        auto     deltaP = prevMousePosition - currMousePosition;
         Quadrant quad = quadrant(currMousePosition.x(), currMousePosition.y());
         switch (quad) {
-        case UPPER_RIGHT:
-            deltaP *= -1;
-            break;
-        case UPPER_LEFT:
-            deltaP.x() *= -1;
-            break;
-        case LOWER_RIGHT:
-            deltaP.y() *= -1;
-            break;
-        default:
-            break;
+        case UPPER_RIGHT: deltaP *= -1; break;
+        case UPPER_LEFT: deltaP.x() *= -1; break;
+        case LOWER_RIGHT: deltaP.y() *= -1; break;
+        default: break;
         }
 
         Scalar delta = deltaP.x() + deltaP.y();
@@ -467,10 +419,11 @@ private:
 
     void performPan(const Point2<Scalar>& diff)
     {
-        Scalar l = cam.eye().dist(cam.center());
+        Scalar         l = cam.eye().dist(cam.center());
         Point3<Scalar> r = (arcRotationSum * X).normalized();
 
-        Point3<Scalar> pan = -(cam.up() * diff.y() + r * diff.x()) * l * panScale;
+        Point3<Scalar> pan =
+            -(cam.up() * diff.y() + r * diff.x()) * l * panScale;
         cam.center() += pan;
         cam.eye() += pan;
         cam.updateMatrix();
@@ -480,20 +433,16 @@ private:
 
     void translate(ViewAxis axis, Scalar dist)
     {
-        switch (axis)  {
+        switch (axis) {
         case HORIZONTAL: {
             Point2<Scalar> diff(dist, 0);
             performPan(diff);
-        }
-            break;
+        } break;
         case VERTICAL: {
             Point2<Scalar> diff(0, dist);
             performPan(diff);
-        }
-            break;
-        case AXIAL:
-            performZoom(dist);
-            break;
+        } break;
+        case AXIAL: performZoom(dist); break;
         }
     }
 
@@ -526,12 +475,12 @@ private:
         if (ax > ay) {
             up = diff.x() < 0;
         }
-        else if (ay > ax){
+        else if (ay > ax) {
             up = diff.y() < 0;
         }
 
         Scalar dist = currMousePosition.dist(prevMousePosition);
-        Scalar inc = up ? dist : -dist;
+        Scalar inc  = up ? dist : -dist;
 
         performZoom(inc);
     }

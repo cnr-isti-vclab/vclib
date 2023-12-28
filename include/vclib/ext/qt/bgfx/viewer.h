@@ -47,8 +47,8 @@ public:
 
     virtual ~Viewer() {};
 
-    using CanvasWindow::width;
     using CanvasWindow::height;
+    using CanvasWindow::width;
 
     void onResize(unsigned int width, unsigned int height) override;
 

@@ -23,8 +23,8 @@
 #ifndef VCL_EXT_BGFX_LOAD_PROGRAM_H
 #define VCL_EXT_BGFX_LOAD_PROGRAM_H
 
-#include <bx/bx.h>
 #include <bgfx/bgfx.h>
+#include <bx/bx.h>
 #include <bx/file.h>
 #include <bx/readerwriter.h>
 
@@ -41,28 +41,26 @@ namespace detail {
 class BXFileReader
 {
     bx::DefaultAllocator allocator;
-    bx::FileReaderI* fileReader = BX_NEW(&allocator, bx::FileReader);
+    bx::FileReaderI*     fileReader = BX_NEW(&allocator, bx::FileReader);
 
 public:
     BXFileReader() = default;
 
-    ~BXFileReader() {
-        bx::deleteObject(&allocator, fileReader);
-    }
+    ~BXFileReader() { bx::deleteObject(&allocator, fileReader); }
 
-    bx::FileReaderI* get() {  return fileReader; }
+    bx::FileReaderI* get() { return fileReader; }
 };
 
 inline const bgfx::Memory* loadMem(
-    bx::FileReaderI* reader,
+    bx::FileReaderI*   reader,
     const std::string& filePath)
 {
     if (bx::open(reader, filePath.c_str())) {
-        uint32_t size = (uint32_t)bx::getSize(reader);
-        const bgfx::Memory* mem = bgfx::alloc(size+1);
-        bx::read(reader, mem->data, size, bx::ErrorAssert{});
+        uint32_t            size = (uint32_t) bx::getSize(reader);
+        const bgfx::Memory* mem  = bgfx::alloc(size + 1);
+        bx::read(reader, mem->data, size, bx::ErrorAssert {});
         bx::close(reader);
-        mem->data[mem->size-1] = '\0';
+        mem->data[mem->size - 1] = '\0';
         return mem;
     }
 
@@ -71,26 +69,25 @@ inline const bgfx::Memory* loadMem(
 }
 
 inline bgfx::ShaderHandle loadShader(
-    bx::FileReaderI* reader,
+    bx::FileReaderI*   reader,
     const std::string& name,
     const std::string& basePath)
 {
     std::string shaderPath = "???";
 
-    switch (bgfx::getRendererType())
-    {
+    switch (bgfx::getRendererType()) {
     case bgfx::RendererType::Noop:
-    case bgfx::RendererType::Direct3D9:  shaderPath = "shaders/dx9/";   break;
+    case bgfx::RendererType::Direct3D9: shaderPath = "shaders/dx9/"; break;
     case bgfx::RendererType::Direct3D11:
-    case bgfx::RendererType::Direct3D12: shaderPath = "shaders/dx11/";  break;
+    case bgfx::RendererType::Direct3D12: shaderPath = "shaders/dx11/"; break;
     case bgfx::RendererType::Agc:
-    case bgfx::RendererType::Gnm:        shaderPath = "shaders/pssl/";  break;
-    case bgfx::RendererType::Metal:      shaderPath = "shaders/metal/"; break;
-    case bgfx::RendererType::Nvn:        shaderPath = "shaders/nvn/";   break;
-    case bgfx::RendererType::OpenGL:     shaderPath = "shaders/glsl/";  break;
-    case bgfx::RendererType::OpenGLES:   shaderPath = "shaders/essl/";  break;
-    case bgfx::RendererType::Vulkan:     shaderPath = "shaders/spirv/"; break;
-    case bgfx::RendererType::WebGPU:     shaderPath = "shaders/spirv/"; break;
+    case bgfx::RendererType::Gnm: shaderPath = "shaders/pssl/"; break;
+    case bgfx::RendererType::Metal: shaderPath = "shaders/metal/"; break;
+    case bgfx::RendererType::Nvn: shaderPath = "shaders/nvn/"; break;
+    case bgfx::RendererType::OpenGL: shaderPath = "shaders/glsl/"; break;
+    case bgfx::RendererType::OpenGLES: shaderPath = "shaders/essl/"; break;
+    case bgfx::RendererType::Vulkan: shaderPath = "shaders/spirv/"; break;
+    case bgfx::RendererType::WebGPU: shaderPath = "shaders/spirv/"; break;
 
     case bgfx::RendererType::Count:
         BX_ASSERT(false, "You should not be here!");
@@ -106,7 +103,7 @@ inline bgfx::ShaderHandle loadShader(
 }
 
 inline bgfx::ProgramHandle loadProgram(
-    bx::FileReaderI* reader,
+    bx::FileReaderI*   reader,
     const std::string& vsName,
     const std::string& fsName,
     const std::string& basePath)
@@ -120,7 +117,7 @@ inline bgfx::ProgramHandle loadProgram(
     return bgfx::createProgram(vsh, fsh, true);
 }
 
-} // namespace vcl::bgf::detail
+} // namespace detail
 
 inline bgfx::ShaderHandle loadShader(
     const std::string& name,

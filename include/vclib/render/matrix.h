@@ -28,32 +28,32 @@
 
 namespace vcl {
 
-enum Handedness {LEFT_HAND, RIGHT_HAND};
+enum Handedness { LEFT_HAND, RIGHT_HAND };
 
 namespace detail {
 
 template<typename Scalar>
 void projectionMatrixXYWH(
-    auto *res,
-    Scalar x,
-    Scalar y,
-    Scalar width,
-    Scalar height,
-    Scalar near,
-    Scalar far,
-    bool homogeneousNDC,
+    auto*      res,
+    Scalar     x,
+    Scalar     y,
+    Scalar     width,
+    Scalar     height,
+    Scalar     near,
+    Scalar     far,
+    bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
     Scalar diff = far - near;
-    Scalar a = homogeneousNDC ? (far + near) / diff : far / diff;
-    Scalar b = homogeneousNDC ? (2.0 * far * near) / diff : near * a;
+    Scalar a    = homogeneousNDC ? (far + near) / diff : far / diff;
+    Scalar b    = homogeneousNDC ? (2.0 * far * near) / diff : near * a;
 
     std::fill(res, res + 16, 0);
 
-    res[0] = width;
-    res[5] = height;
-    res[8] = handedness == RIGHT_HAND ? x : -x;
-    res[9] = handedness == RIGHT_HAND ? y : -y;
+    res[0]  = width;
+    res[5]  = height;
+    res[8]  = handedness == RIGHT_HAND ? x : -x;
+    res[9]  = handedness == RIGHT_HAND ? y : -y;
     res[10] = handedness == RIGHT_HAND ? -a : a;
     res[11] = handedness == RIGHT_HAND ? -1.0 : 1.0;
     res[14] = -b;
@@ -77,16 +77,22 @@ void projectionMatrixXYWH(
  */
 template<Point3Concept PointType>
 void lookAtMatrix(
-    auto* res, const PointType& eye, const PointType& center, const PointType& up, Handedness handedness = RIGHT_HAND)
+    auto*            res,
+    const PointType& eye,
+    const PointType& center,
+    const PointType& up,
+    Handedness       handedness = RIGHT_HAND)
 {
     if (center != eye) {
-        PointType zaxis =
-            handedness == RIGHT_HAND ? (eye - center).normalized() : (center - eye).normalized();
+        PointType zaxis = handedness == RIGHT_HAND ?
+                              (eye - center).normalized() :
+                              (center - eye).normalized();
 
         PointType xaxis = up.cross(zaxis);
 
         if (xaxis.dot(xaxis) == 0) {
-            xaxis = handedness == RIGHT_HAND ? PointType(1, 0, 0) : PointType(-1, 0, 0);
+            xaxis = handedness == RIGHT_HAND ? PointType(1, 0, 0) :
+                                               PointType(-1, 0, 0);
         }
         else {
             xaxis = xaxis.normalized();
@@ -94,18 +100,18 @@ void lookAtMatrix(
 
         PointType yaxis = zaxis.cross(xaxis);
 
-        res[ 0] = xaxis.x();
-        res[ 1] = yaxis.x();
-        res[ 2] = zaxis.x();
-        res[ 3] = 0.0f;
+        res[0] = xaxis.x();
+        res[1] = yaxis.x();
+        res[2] = zaxis.x();
+        res[3] = 0.0f;
 
-        res[ 4] = xaxis.y();
-        res[ 5] = yaxis.y();
-        res[ 6] = zaxis.y();
-        res[ 7] = 0.0f;
+        res[4] = xaxis.y();
+        res[5] = yaxis.y();
+        res[6] = zaxis.y();
+        res[7] = 0.0f;
 
-        res[ 8] = xaxis.z();
-        res[ 9] = yaxis.z();
+        res[8]  = xaxis.z();
+        res[9]  = yaxis.z();
         res[10] = zaxis.z();
         res[11] = 0.0f;
 
@@ -130,9 +136,13 @@ void lookAtMatrix(
  * @requires PointType::DIM == 3
  */
 template<MatrixConcept Matrix44, Point3Concept PointType>
-Matrix44 lookAtMatrix(const PointType& eye, const PointType& center, const PointType& up, Handedness handedness = RIGHT_HAND)
+Matrix44 lookAtMatrix(
+    const PointType& eye,
+    const PointType& center,
+    const PointType& up,
+    Handedness       handedness = RIGHT_HAND)
 {
-    Matrix44 res(4,4);
+    Matrix44 res(4, 4);
     lookAtMatrix(res.data(), eye, center, up, handedness);
     return res;
 }
@@ -151,7 +161,11 @@ Matrix44 lookAtMatrix(const PointType& eye, const PointType& center, const Point
  * @requires PointType::DIM == 3
  */
 template<Point3Concept PointType>
-void lookAtMatrixLeftHanded(auto* res, const PointType& eye, const PointType& center, const PointType& up)
+void lookAtMatrixLeftHanded(
+    auto*            res,
+    const PointType& eye,
+    const PointType& center,
+    const PointType& up)
 {
     lookAtMatrix(res, eye, center, up, LEFT_HAND);
 }
@@ -169,52 +183,65 @@ void lookAtMatrixLeftHanded(auto* res, const PointType& eye, const PointType& ce
  * @requires PointType::DIM == 3
  */
 template<MatrixConcept Matrix44, Point3Concept PointType>
-Matrix44 lookAtMatrixLeftHanded(const PointType& eye, const PointType& center, const PointType& up)
+Matrix44 lookAtMatrixLeftHanded(
+    const PointType& eye,
+    const PointType& center,
+    const PointType& up)
 {
-    Matrix44 res(4,4);
+    Matrix44 res(4, 4);
     lookAtMatrix(res.data(), eye, center, up, LEFT_HAND);
     return res;
 }
 
 template<typename Scalar>
 void projectionMatrix(
-    auto *res,
-    Scalar fov,
-    Scalar aspect,
-    Scalar near,
-    Scalar far,
-    bool homogeneousNDC,
+    auto*      res,
+    Scalar     fov,
+    Scalar     aspect,
+    Scalar     near,
+    Scalar     far,
+    bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
-    Scalar h = 1.0 / std::tan(vcl::toRad(fov)*0.5);
+    Scalar h = 1.0 / std::tan(vcl::toRad(fov) * 0.5);
     Scalar w = h * 1.0 / aspect;
-    detail::projectionMatrixXYWH(res, (Scalar)0, (Scalar)0, w, h, near, far, homogeneousNDC, handedness);
+    detail::projectionMatrixXYWH(
+        res,
+        (Scalar) 0,
+        (Scalar) 0,
+        w,
+        h,
+        near,
+        far,
+        homogeneousNDC,
+        handedness);
 }
 
 template<MatrixConcept Matrix44, typename Scalar>
 Matrix44 projectionMatrix(
-    Scalar fov,
-    Scalar aspect,
-    Scalar near,
-    Scalar far,
-    bool homogeneousNDC,
+    Scalar     fov,
+    Scalar     aspect,
+    Scalar     near,
+    Scalar     far,
+    bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
-    Matrix44 res(4,4);
-    projectionMatrix(res.data(), fov, aspect, near, far, homogeneousNDC, handedness);
+    Matrix44 res(4, 4);
+    projectionMatrix(
+        res.data(), fov, aspect, near, far, homogeneousNDC, handedness);
     return res;
 }
 
 template<typename Scalar>
 void projectionMatrixLeftHanded(
-    auto *res,
+    auto*  res,
     Scalar fov,
     Scalar aspect,
     Scalar near,
     Scalar far,
-    bool homogeneousNDC)
+    bool   homogeneousNDC)
 {
-    Scalar h = 1.0 / std::tan(vcl::toRad(fov)*0.5);
+    Scalar h = 1.0 / std::tan(vcl::toRad(fov) * 0.5);
     Scalar w = h * 1.0 / aspect;
     projectionMatrix(res, fov, aspect, near, far, homogeneousNDC, LEFT_HAND);
 }
@@ -225,10 +252,11 @@ Matrix44 projectionMatrixLeftHanded(
     Scalar aspect,
     Scalar near,
     Scalar far,
-    bool homogeneousNDC)
+    bool   homogeneousNDC)
 {
-    Matrix44 res(4,4);
-    projectionMatrix(res.data(), fov, aspect, near, far, homogeneousNDC, LEFT_HAND);
+    Matrix44 res(4, 4);
+    projectionMatrix(
+        res.data(), fov, aspect, near, far, homogeneousNDC, LEFT_HAND);
     return res;
 }
 

@@ -34,28 +34,20 @@ namespace vcl::qt {
 inline MouseButton fromQt(Qt::MouseButton button)
 {
     switch (button) {
-    case Qt::LeftButton:
-        return LEFT;
-    case Qt::RightButton:
-        return RIGHT;
-    case Qt::MiddleButton:
-        return MIDDLE;
-    default:
-        return NO_BUTTON;
+    case Qt::LeftButton: return LEFT;
+    case Qt::RightButton: return RIGHT;
+    case Qt::MiddleButton: return MIDDLE;
+    default: return NO_BUTTON;
     }
 }
 
 inline KeyModifier fromQt(Qt::KeyboardModifier modifier)
 {
     switch (modifier) {
-    case Qt::ShiftModifier:
-        return SHIFT;
-    case Qt::ControlModifier:
-        return CONTROL;
-    case Qt::AltModifier:
-        return ALT;
-    default:
-        return NO_MODIFIER;
+    case Qt::ShiftModifier: return SHIFT;
+    case Qt::ControlModifier: return CONTROL;
+    case Qt::AltModifier: return ALT;
+    default: return NO_MODIFIER;
     }
 }
 

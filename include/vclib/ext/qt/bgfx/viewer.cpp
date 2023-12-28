@@ -24,25 +24,28 @@
 
 namespace vcl::qbgf {
 
-Viewer::Viewer(bgfx::RendererType::Enum renderType, QWindow* parent):
-    CanvasWindow(renderType, parent)
+Viewer::Viewer(bgfx::RendererType::Enum renderType, QWindow* parent) :
+        CanvasWindow(renderType, parent)
 {
     DTB::resetTrackBall(1);
 
-    bgfx::setViewTransform(0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+    bgfx::setViewTransform(
+        0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 }
 
 void Viewer::onResize(unsigned int width, unsigned int height)
 {
     DTB::resizeViewer(width, height);
-    bgfx::setViewTransform(0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+    bgfx::setViewTransform(
+        0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 }
 
 void Viewer::mouseMoveEvent(QMouseEvent* event)
 {
     DTB::moveMouse(event->pos().x(), event->pos().y());
 
-    bgfx::setViewTransform(0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+    bgfx::setViewTransform(
+        0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 
     update();
 
@@ -68,11 +71,12 @@ void Viewer::mouseReleaseEvent(QMouseEvent* event)
 void Viewer::wheelEvent(QWheelEvent* event)
 {
     const int WHEEL_STEP = 120;
-    float notchY = event->angleDelta().y()/ float(WHEEL_STEP);
+    float     notchY     = event->angleDelta().y() / float(WHEEL_STEP);
 
     DTB::wheelMouse(notchY > 0);
 
-    bgfx::setViewTransform(0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+    bgfx::setViewTransform(
+        0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 
     update();
 
@@ -83,21 +87,19 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 {
     DTB::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
 
-    switch (event->key())
-    {
+    switch (event->key()) {
     case Qt::Key_C:
-        std::cerr <<
-            "(" << DTB::camera().eye() << ") " <<
-            "(" << DTB::camera().center() << ") " <<
-            "(" << DTB::camera().up() << ")\n";
+        std::cerr << "(" << DTB::camera().eye() << ") "
+                  << "(" << DTB::camera().center() << ") "
+                  << "(" << DTB::camera().up() << ")\n";
         break;
 
     default:
-        DTB::keyPress(vcl::qt::fromQt((Qt::Key)event->key()));
-        bgfx::setViewTransform(0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+        DTB::keyPress(vcl::qt::fromQt((Qt::Key) event->key()));
+        bgfx::setViewTransform(
+            0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
         break;
     }
-
 
     update();
     CanvasWindow::keyPressEvent(event);

@@ -25,8 +25,8 @@
 
 #include "input.h"
 
-#include <vclib/render/lights/directional_light.h>
 #include "vclib/render/trackball.h"
+#include <vclib/render/lights/directional_light.h>
 
 #include <vclib/space/bit_set.h>
 
@@ -38,20 +38,20 @@ template<typename Scalar>
 class DesktopTrackBall
 {
 public:
-    using ScalarType = Scalar;
-    using MatrixType = vcl::Matrix44<Scalar>;
+    using ScalarType    = Scalar;
+    using MatrixType    = vcl::Matrix44<Scalar>;
     using TrackBallType = vcl::TrackBall<Scalar>;
 
 private:
     using MotionType = vcl::TrackBall<Scalar>::MotionType;
 
-    uint width = 0;
+    uint width  = 0;
     uint height = 0;
 
-    Scalar fov = 60.0;
+    Scalar fov    = 60.0;
     Scalar aspect = 1.0;
-    Scalar near = 0.1;
-    Scalar far = 100.0;
+    Scalar near   = 0.1;
+    Scalar far    = 100.0;
 
     vcl::Matrix44<Scalar> projMatrix =
         vcl::projectionMatrix<vcl::Matrix44<Scalar>>(
@@ -62,42 +62,72 @@ private:
             false);
 
     vcl::TrackBall<Scalar> trackball;
-    float defaultTrackBallRadius = 1.0;
+    float                  defaultTrackBallRadius = 1.0;
 
     KeyModifiers currentKeyModifiers = {NO_MODIFIER};
 
-    std::map<std::pair<MouseButton, KeyModifiers>, MotionType> dragMotionMap =
-    {
-        {{LEFT, {NO_MODIFIER}}, TrackBallType::ARC},
-        {{LEFT, {CONTROL}}, TrackBallType::PAN},
-        {{LEFT, {SHIFT}}, TrackBallType::ZOOM},
-        {{MIDDLE, {NO_MODIFIER}}, TrackBallType::PAN},
-        {{MIDDLE, {CONTROL}}, TrackBallType::ROLL},
+    std::map<std::pair<MouseButton, KeyModifiers>, MotionType> dragMotionMap = {
+        {{LEFT, {NO_MODIFIER}},   TrackBallType::ARC },
+        {{LEFT, {CONTROL}},       TrackBallType::PAN },
+        {{LEFT, {SHIFT}},         TrackBallType::ZOOM},
+        {{MIDDLE, {NO_MODIFIER}}, TrackBallType::PAN },
+        {{MIDDLE, {CONTROL}},     TrackBallType::ROLL},
     };
 
-    std::map<KeyModifiers, MotionType> wheelAtomicMap =
-    {
+    std::map<KeyModifiers, MotionType> wheelAtomicMap = {
         {{NO_MODIFIER}, TrackBallType::ZOOM},
-        {{CONTROL}, TrackBallType::ROLL},
+        {{CONTROL},     TrackBallType::ROLL},
     };
 
-    std::map<Key, std::function<void(TrackBallType& t)>> keyAtomicMap =
-    {
-        {KEY_R, [&](TrackBallType& t) { t.reset(defaultTrackBallRadius); }},
+    std::map<Key, std::function<void(TrackBallType& t)>> keyAtomicMap = {
+        {KEY_R,
+         [&](TrackBallType& t) {
+             t.reset(defaultTrackBallRadius);
+         }},
 
-        // rotate
-        {KEY_1, [](TrackBallType& t) { rotate(t, TrackBallType::AXIAL); }},
-        {KEY_2, [](TrackBallType& t) { rotate(t, TrackBallType::VERTICAL); }},
-        {KEY_4, [](TrackBallType& t) { rotate(t, TrackBallType::HORIZONTAL, -M_PI/6);}},
-        {KEY_6, [](TrackBallType& t) { rotate(t, TrackBallType::HORIZONTAL); }},
-        {KEY_8, [](TrackBallType& t) { rotate(t, TrackBallType::VERTICAL, -M_PI/6); }},
-        {KEY_9, [](TrackBallType& t) { rotate(t, TrackBallType::AXIAL, -M_PI/6); }},
+ // rotate
+        {KEY_1,
+         [](TrackBallType& t) {
+             rotate(t, TrackBallType::AXIAL);
+         }},
+        {KEY_2,
+         [](TrackBallType& t) {
+             rotate(t, TrackBallType::VERTICAL);
+         }},
+        {KEY_4,
+         [](TrackBallType& t) {
+             rotate(t, TrackBallType::HORIZONTAL, -M_PI / 6);
+         }},
+        {KEY_6,
+         [](TrackBallType& t) {
+             rotate(t, TrackBallType::HORIZONTAL);
+         }},
+        {KEY_8,
+         [](TrackBallType& t) {
+             rotate(t, TrackBallType::VERTICAL, -M_PI / 6);
+         }},
+        {KEY_9,
+         [](TrackBallType& t) {
+             rotate(t, TrackBallType::AXIAL, -M_PI / 6);
+         }},
 
-        // translate
-        {KEY_W , [](TrackBallType& t) { translate(t, TrackBallType::VERTICAL, 1); }},
-        {KEY_S , [](TrackBallType& t) { translate(t, TrackBallType::VERTICAL, -1); }},
-        {KEY_A , [](TrackBallType& t) { translate(t, TrackBallType::HORIZONTAL, -1); }},
-        {KEY_D , [](TrackBallType& t) { translate(t, TrackBallType::HORIZONTAL, 1); }},
+ // translate
+        {KEY_W,
+         [](TrackBallType& t) {
+             translate(t, TrackBallType::VERTICAL, 1);
+         }},
+        {KEY_S,
+         [](TrackBallType& t) {
+             translate(t, TrackBallType::VERTICAL, -1);
+         }},
+        {KEY_A,
+         [](TrackBallType& t) {
+             translate(t, TrackBallType::HORIZONTAL, -1);
+         }},
+        {KEY_D,
+         [](TrackBallType& t) {
+             translate(t, TrackBallType::HORIZONTAL, 1);
+         }},
     };
 
 public:
@@ -107,7 +137,10 @@ public:
 
     const Camera<Scalar>& camera() const { return trackball.camera(); }
 
-    const Matrix44<Scalar>& viewMatrix() const { return trackball.camera().matrix(); }
+    const Matrix44<Scalar>& viewMatrix() const
+    {
+        return trackball.camera().matrix();
+    }
 
     const Matrix44<Scalar>& projectionMatrix() const { return projMatrix; }
 
@@ -120,17 +153,14 @@ public:
 
     void resizeViewer(uint w, uint h)
     {
-        width = w;
+        width  = w;
         height = h;
         trackball.setScreenSize(w, h);
         aspect = static_cast<Scalar>(w) / static_cast<Scalar>(h);
         updateProjMatrix();
     }
 
-    void setKeyModifiers(KeyModifiers keys)
-    {
-        currentKeyModifiers = keys;
-    }
+    void setKeyModifiers(KeyModifiers keys) { currentKeyModifiers = keys; }
 
     void moveMouse(int x, int y)
     {
@@ -140,7 +170,8 @@ public:
 
     void pressMouse(MouseButton button)
     {
-        auto it = dragMotionMap.find(std::make_pair(button, currentKeyModifiers));
+        auto it =
+            dragMotionMap.find(std::make_pair(button, currentKeyModifiers));
         if (it != dragMotionMap.end()) {
             trackball.beginDragMotion(it->second);
             trackball.update();
@@ -149,7 +180,8 @@ public:
 
     void releaseMouse(MouseButton button)
     {
-        auto it = dragMotionMap.find(std::make_pair(button, currentKeyModifiers));
+        auto it =
+            dragMotionMap.find(std::make_pair(button, currentKeyModifiers));
         if (it != dragMotionMap.end()) {
             trackball.endDragMotion(it->second);
             trackball.update();
@@ -180,14 +212,19 @@ public:
     }
 
 private:
-
-    static void rotate(TrackBallType& t, TrackBallType::ViewAxis axis, Scalar angle = M_PI/6)
+    static void rotate(
+        TrackBallType&          t,
+        TrackBallType::ViewAxis axis,
+        Scalar                  angle = M_PI / 6)
     {
         using Args = typename TrackBallType::TransformArgs;
         t.applyAtomicMotion(TrackBallType::ARC, Args(axis, angle));
     }
 
-    static void translate(TrackBallType& t, TrackBallType::ViewAxis axis, Scalar distance)
+    static void translate(
+        TrackBallType&          t,
+        TrackBallType::ViewAxis axis,
+        Scalar                  distance)
     {
         using Args = typename TrackBallType::TransformArgs;
         t.applyAtomicMotion(TrackBallType::PAN, Args(axis, distance));
@@ -195,8 +232,8 @@ private:
 
     void updateProjMatrix()
     {
-        projMatrix =
-            vcl::projectionMatrix<vcl::Matrix44<Scalar>>(fov, aspect, near, far, false);
+        projMatrix = vcl::projectionMatrix<vcl::Matrix44<Scalar>>(
+            fov, aspect, near, far, false);
     }
 };
 

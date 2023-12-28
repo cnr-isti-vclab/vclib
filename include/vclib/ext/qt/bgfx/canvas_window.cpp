@@ -24,19 +24,24 @@
 
 namespace vcl::qbgf {
 
-CanvasWindow::CanvasWindow(bgfx::RendererType::Enum renderType, QWindow* parent) : QWindow(parent)
+CanvasWindow::CanvasWindow(
+    bgfx::RendererType::Enum renderType,
+    QWindow*                 parent) :
+        QWindow(parent)
 {
     setGeometry(100, 100, 1024, 768);
 
     void* displayID = nullptr;
 #ifdef Q_OS_LINUX
     /// THIS WORKS ONLY IF QT_QPA_PLATFORM = xcb
-    QNativeInterface::QX11Application* x11AppInfo = qApp->nativeInterface<QNativeInterface::QX11Application>();
+    QNativeInterface::QX11Application* x11AppInfo =
+        qApp->nativeInterface<QNativeInterface::QX11Application>();
     if (x11AppInfo) {
         displayID = x11AppInfo->display();
     }
     else {
-        QNativeInterface::QWaylandApplication* wayAppInfo = qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+        QNativeInterface::QWaylandApplication* wayAppInfo =
+            qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
         if (wayAppInfo) {
             displayID = wayAppInfo->display();
         }
@@ -46,16 +51,26 @@ CanvasWindow::CanvasWindow(bgfx::RendererType::Enum renderType, QWindow* parent)
     }
 #endif
 
-    vcl::bgf::Canvas::init((void*)winId(), width(), height(), displayID, renderType);
+    vcl::bgf::Canvas::init(
+        (void*) winId(), width(), height(), displayID, renderType);
 }
 
-CanvasWindow::~CanvasWindow() {}
+CanvasWindow::~CanvasWindow()
+{
+}
 
-void CanvasWindow::draw() {}
+void CanvasWindow::draw()
+{
+}
 
-void CanvasWindow::onResize(unsigned int w, unsigned int h) {}
+void CanvasWindow::onResize(unsigned int w, unsigned int h)
+{
+}
 
-void CanvasWindow::update() { QWindow::requestUpdate(); }
+void CanvasWindow::update()
+{
+    QWindow::requestUpdate();
+}
 
 bool CanvasWindow::event(QEvent* event)
 {

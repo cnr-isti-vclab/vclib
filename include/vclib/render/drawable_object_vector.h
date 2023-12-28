@@ -118,9 +118,10 @@ public:
                 bb.add(sc - drawVector.at(i)->radius());
                 bb.add(sc + drawVector.at(i)->radius());
 
-                for (i = i + 1; i < drawVector.size(); i++) { // rest of the list
+                for (i = i + 1; i < drawVector.size(); i++)
+                { // rest of the list
                     if (!onlyVisible || drawVector.at(i)->isVisible()) {
-                        Point3d sc  = drawVector.at(i)->center();
+                        Point3d sc = drawVector.at(i)->center();
                         bb.add(sc - drawVector.at(i)->radius());
                         bb.add(sc + drawVector.at(i)->radius());
                     }

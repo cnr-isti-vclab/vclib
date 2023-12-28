@@ -35,9 +35,9 @@ public:
     DrawableMeshProgram()
     {
         p = vcl::bgf::loadProgram(
-                "include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh",
-                "include/vclib/ext/bgfx/drawable_mesh/shaders/fs_mesh",
-                VCLIB_RELATIVE_SHADERS_PATH);
+            "include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh",
+            "include/vclib/ext/bgfx/drawable_mesh/shaders/fs_mesh",
+            VCLIB_RELATIVE_SHADERS_PATH);
     }
 
     DrawableMeshProgram(
@@ -59,10 +59,7 @@ public:
 
     DrawableMeshProgram& operator=(const DrawableMeshProgram&) = delete;
 
-    bgfx::ProgramHandle program() const
-    {
-        return p;
-    };
+    bgfx::ProgramHandle program() const { return p; };
 };
 
 } // namespace vcl::bgf

@@ -39,7 +39,7 @@ class DrawableMesh : public GenericDrawableMesh
 
     std::vector<uint> textID;
 
-    bgfx::VertexBufferHandle meshVBH = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle meshVBH  = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle meshVNBH = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle meshVCBH = BGFX_INVALID_HANDLE;
 
@@ -50,10 +50,7 @@ class DrawableMesh : public GenericDrawableMesh
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
 public:
-    DrawableMesh()
-    {
-        setupUniforms();
-    };
+    DrawableMesh() { setupUniforms(); };
 
     DrawableMesh(const MeshType& mesh)
     {
@@ -87,10 +84,7 @@ public:
         setupBuffers();
     }
 
-    void setProgram(const DrawableMeshProgram& p)
-    {
-        program = p.program();
-    }
+    void setProgram(const DrawableMeshProgram& p) { program = p.program(); }
 
     // DrawableObject implementation
 
@@ -102,22 +96,18 @@ public:
             bgfx::setVertexBuffer(0, meshVBH);
 
             if (bgfx::isValid(meshVNBH)) { // normals
-               bgfx::setVertexBuffer(1, meshVNBH);
+                bgfx::setVertexBuffer(1, meshVNBH);
             }
 
             if (bgfx::isValid(meshVCBH)) { // colors
-               bgfx::setVertexBuffer(2, meshVCBH);
+                bgfx::setVertexBuffer(2, meshVCBH);
             }
 
             bgfx::setIndexBuffer(meshIBH);
 
-            uint64_t state = 0
-                | BGFX_STATE_WRITE_RGB
-                | BGFX_STATE_WRITE_A
-                | BGFX_STATE_WRITE_Z
-                | BGFX_STATE_DEPTH_TEST_LESS
-                | BGFX_STATE_CULL_CW
-                | BGFX_STATE_MSAA;
+            uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                             BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
+                             BGFX_STATE_CULL_CW | BGFX_STATE_MSAA;
 
             bgfx::setState(state);
 

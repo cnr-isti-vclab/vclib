@@ -31,7 +31,10 @@
 
 int main(int argc, char** argv)
 {
-    vcl::Sphere<vcl::TriMesh::ScalarType> s = {{0, 0, 0}, 0.3};
+    vcl::Sphere<vcl::TriMesh::ScalarType> s = {
+        {0, 0, 0},
+        0.3
+    };
 
     vcl::TriMesh m = bimbaSphereIntersection(s);
 

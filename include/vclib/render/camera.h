@@ -30,12 +30,12 @@ namespace vcl {
 template<typename ScalarType>
 class Camera
 {
-    using PointType = vcl::Point3<ScalarType>;
+    using PointType  = vcl::Point3<ScalarType>;
     using MatrixType = vcl::Matrix44<ScalarType>;
 
     PointType centerPos;
     PointType eyePos = PointType(0.0f, 0.0f, 1.0f);
-    PointType upDir = PointType(0.0f, 1.0f, 0.0f);
+    PointType upDir  = PointType(0.0f, 1.0f, 0.0f);
 
     MatrixType mat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
 
@@ -44,18 +44,25 @@ public:
 
     void reset() { *this = {}; }
 
-    void updateMatrix() { mat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir); }
+    void updateMatrix()
+    {
+        mat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
+    }
 
     PointType& center() { return centerPos; }
+
     const PointType& center() const { return centerPos; }
 
     PointType& eye() { return eyePos; }
+
     const PointType& eye() const { return eyePos; }
 
     PointType& up() { return upDir; }
+
     const PointType& up() const { return upDir; }
 
     MatrixType& matrix() { return mat; }
+
     const MatrixType& matrix() const { return mat; }
 };
 
