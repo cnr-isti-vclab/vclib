@@ -2,7 +2,7 @@
 #* VCLib                                                                     *
 #* Visual Computing Library                                                  *
 #*                                                                           *
-#* Copyright(C) 2021-2023                                                    *
+#* Copyright(C) 2021-2024                                                    *
 #* Visual Computing Lab                                                      *
 #* ISTI - Italian National Research Council                                  *
 #*                                                                           *
