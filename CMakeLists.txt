@@ -128,6 +128,7 @@ if (TARGET vclib-external-qt)
     # headers and sources to include only if using bgfx
     if (TARGET vclib-external-bgfx)
         list(APPEND HEADERS_LIB
+            include/vclib/ext/qt/bgfx/canvas_widget.h
             include/vclib/ext/qt/bgfx/canvas_window.h
             include/vclib/ext/qt/bgfx/viewer.h)
 
