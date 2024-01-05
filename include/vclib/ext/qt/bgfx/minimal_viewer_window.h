@@ -25,11 +25,14 @@
 
 #include <QMouseEvent>
 
+#include <vclib/math/min_max.h>
+#include <vclib/space/box.h>
+
+#include <vclib/gui/desktop_trackball.h>
+#include <vclib/render/drawable_object_vector.h>
+
 #include <vclib/ext/qt/bgfx/canvas_window.h>
 #include <vclib/ext/qt/gui/input.h>
-#include <vclib/gui/desktop_trackball.h>
-
-#include <iostream>
 
 namespace vcl::qbgf {
 
@@ -37,6 +40,9 @@ class MinimalViewerWindow :
         public vcl::qbgf::CanvasWindow,
         public vcl::DesktopTrackBall<float>
 {
+    // this Viewer does not normally own this drawList
+    std::shared_ptr<DrawableObjectVector> drawList;
+
 protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
@@ -45,7 +51,20 @@ public:
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
         QWindow*                 parent     = nullptr);
 
+    MinimalViewerWindow(
+        std::shared_ptr<DrawableObjectVector> v,
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWindow*                 parent     = nullptr);
+
     virtual ~MinimalViewerWindow() {};
+
+    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
+
+    std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const;
+
+    void fitScene();
+
+    void draw() override;
 
     using CanvasWindow::height;
     using CanvasWindow::width;

@@ -22,15 +22,62 @@
 
 #include "minimal_viewer_window.h"
 
+#include <iostream>
+
 namespace vcl::qbgf {
 
 MinimalViewerWindow::MinimalViewerWindow(bgfx::RendererType::Enum renderType, QWindow* parent) :
-        CanvasWindow(renderType, parent)
+        MinimalViewerWindow(std::make_shared<DrawableObjectVector>(), renderType, parent)
 {
-    DTB::resetTrackBall(1);
+}
 
+
+MinimalViewerWindow::MinimalViewerWindow(
+    std::shared_ptr<DrawableObjectVector> v,
+    bgfx::RendererType::Enum              renderType,
+    QWindow*                              parent) :
+        CanvasWindow(renderType, parent), drawList(v)
+{
     bgfx::setViewTransform(
         0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+
+    for (DrawableObject* d : *drawList) {
+        d->init();
+    }
+}
+
+void MinimalViewerWindow::setDrawableObjectVector(
+    std::shared_ptr<DrawableObjectVector> v)
+{
+    drawList = v;
+}
+
+
+std::shared_ptr<const DrawableObjectVector> MinimalViewerWindow::
+    drawableObjectVector() const
+{
+    return drawList;
+}
+
+
+void MinimalViewerWindow::fitScene()
+{
+    Box3d   bb          = drawList->boundingBox();
+    Point3f sceneCenter = bb.center().cast<float>();
+    float   sceneRadius = bb.diagonal() / 2;
+
+    DTB::setTrackBall(sceneCenter, sceneRadius);
+}
+
+
+void MinimalViewerWindow::draw()
+{
+    // This dummy draw call is here to make sure that view 0 is cleared
+    // if no other draw calls are submitted to view 0.
+    bgfx::touch(0);
+
+    for (const DrawableObject* obj : *drawList)
+        obj->draw();
 }
 
 void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)

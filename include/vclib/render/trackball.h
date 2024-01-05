@@ -113,10 +113,12 @@ public:
 
     const Scalar radius() const { return eyeCenterDist / RADIUS_RATIO; }
 
-    void reset(Scalar radius = 1.0)
+    void reset(const Point3<Scalar>& center, Scalar radius = 1.0)
     {
         dl.reset();
         cam.reset();
+        cam.center() = center;
+
         arcRotationSum = Quaternion<Scalar>();
         eyeCenterDist  = radius * RADIUS_RATIO;
 

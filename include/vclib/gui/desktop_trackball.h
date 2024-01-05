@@ -62,7 +62,9 @@ private:
             false);
 
     vcl::TrackBall<Scalar> trackball;
-    float                  defaultTrackBallRadius = 1.0;
+
+    Point3<Scalar> defaultTrackBallCenter;
+    float defaultTrackBallRadius = 1.0;
 
     KeyModifiers currentKeyModifiers = {NO_MODIFIER};
 
@@ -82,7 +84,7 @@ private:
     std::map<Key, std::function<void(TrackBallType& t)>> keyAtomicMap = {
         {KEY_R,
          [&](TrackBallType& t) {
-             t.reset(defaultTrackBallRadius);
+             t.reset(defaultTrackBallCenter, defaultTrackBallRadius);
          }},
 
  // rotate
@@ -144,11 +146,17 @@ public:
 
     const Matrix44<Scalar>& projectionMatrix() const { return projMatrix; }
 
-    void resetTrackBall(Scalar radius = -1)
+    void resetTrackBall()
     {
-        if (radius > 0.0)
-            defaultTrackBallRadius = radius;
-        trackball.reset(defaultTrackBallRadius);
+        trackball.reset(defaultTrackBallCenter, defaultTrackBallRadius);
+    }
+
+    void setTrackBall(const Point3<Scalar>& center, Scalar radius)
+    {
+        defaultTrackBallCenter = center;
+        defaultTrackBallRadius = radius;
+
+        resetTrackBall();
     }
 
     void resizeViewer(uint w, uint h)

@@ -73,6 +73,10 @@ public:
 
     ~CanvasWidget() {}
 
+    CanvasWindow* window() { return canvasWindow; }
+
+    const CanvasWindow* window() const { return canvasWindow; }
+
     virtual void draw() { canvasWindow->draw(); }
 
     void keyPressEvent(QKeyEvent* event) override
@@ -87,7 +91,7 @@ public:
         canvasWindow->keyReleaseEvent(event);
     }
 
-private:
+protected:
     CanvasWindow* canvasWindow = nullptr;
 };
 
