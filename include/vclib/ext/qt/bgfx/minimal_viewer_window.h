@@ -31,6 +31,7 @@
 #include <vclib/gui/desktop_trackball.h>
 #include <vclib/render/drawable_object_vector.h>
 
+#include <vclib/ext/bgfx/drawable_mesh.h>
 #include <vclib/ext/qt/bgfx/canvas_window.h>
 #include <vclib/ext/qt/gui/input.h>
 
@@ -43,18 +44,38 @@ class MinimalViewerWindow :
     // this Viewer does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> drawList;
 
+    // the program must be created after the uniforms - bgfx issue on OpenGL
+    vcl::bgf::DrawableMeshProgram program;
+
 protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
+    using CanvasWindow::height;
+    using CanvasWindow::width;
+
+    // TODO: adjust shaders and move these constuctors definitions in cpp file
     MinimalViewerWindow(
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr);
+        QWindow*                 parent     = nullptr) :
+            MinimalViewerWindow(
+                std::make_shared<DrawableObjectVector>(),
+                renderType,
+                parent)
+    {
+    }
 
     MinimalViewerWindow(
         std::shared_ptr<DrawableObjectVector> v,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr);
+        QWindow*                 parent     = nullptr) :
+            CanvasWindow(renderType, parent)
+    {
+        bgfx::setViewTransform(
+            0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+
+        setDrawableObjectVector(v);
+    }
 
     virtual ~MinimalViewerWindow() {};
 
@@ -65,9 +86,6 @@ public:
     void fitScene();
 
     void draw() override;
-
-    using CanvasWindow::height;
-    using CanvasWindow::width;
 
     void onResize(unsigned int width, unsigned int height) override;
 

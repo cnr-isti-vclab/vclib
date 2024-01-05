@@ -26,30 +26,20 @@
 
 namespace vcl::qbgf {
 
-MinimalViewerWindow::MinimalViewerWindow(bgfx::RendererType::Enum renderType, QWindow* parent) :
-        MinimalViewerWindow(std::make_shared<DrawableObjectVector>(), renderType, parent)
-{
-}
-
-
-MinimalViewerWindow::MinimalViewerWindow(
-    std::shared_ptr<DrawableObjectVector> v,
-    bgfx::RendererType::Enum              renderType,
-    QWindow*                              parent) :
-        CanvasWindow(renderType, parent), drawList(v)
-{
-    bgfx::setViewTransform(
-        0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
-
-    for (DrawableObject* d : *drawList) {
-        d->init();
-    }
-}
-
 void MinimalViewerWindow::setDrawableObjectVector(
     std::shared_ptr<DrawableObjectVector> v)
 {
     drawList = v;
+
+    for (DrawableObject* obj : *drawList) {
+        obj->init();
+
+        if (dynamic_cast<bgf::GenericBGFXDrawableMesh*>(obj)) {
+            bgf::GenericBGFXDrawableMesh* mesh =
+                dynamic_cast<bgf::GenericBGFXDrawableMesh*>(obj);
+            mesh->setProgram(program);
+        }
+    }
 }
 
 

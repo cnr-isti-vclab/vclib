@@ -32,8 +32,17 @@
 
 namespace vcl::bgf {
 
+class GenericBGFXDrawableMesh : public GenericDrawableMesh
+{
+protected:
+    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+
+public:
+    void setProgram(const DrawableMeshProgram& p) { program = p.program(); }
+};
+
 template<MeshConcept MeshType>
-class DrawableMesh : public GenericDrawableMesh
+class DrawableMesh : public GenericBGFXDrawableMesh
 {
     MeshRenderBuffers<MeshType> mrb;
 
@@ -46,8 +55,6 @@ class DrawableMesh : public GenericDrawableMesh
     bgfx::IndexBufferHandle meshIBH = BGFX_INVALID_HANDLE;
 
     bgfx::UniformHandle meshColorUH = BGFX_INVALID_HANDLE;
-
-    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
 public:
     DrawableMesh() { setupUniforms(); };
@@ -84,11 +91,9 @@ public:
         setupBuffers();
     }
 
-    void setProgram(const DrawableMeshProgram& p) { program = p.program(); }
-
     // DrawableObject implementation
 
-    void init() { bindTextures(); }
+    void init() { }
 
     void draw() const
     {

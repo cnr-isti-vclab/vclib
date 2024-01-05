@@ -138,6 +138,6 @@ function(target_expose_vclib_bgfx_shaders target_name)
     file(RELATIVE_PATH
         VCLIB_RELATIVE_SHADERS_PATH ${TARGET_BIN_DIR} ${VCLIB_BIN_DIR})
 
-    target_compile_definitions(vclib-render INTERFACE
+    target_compile_definitions(${target_name} PRIVATE
         VCLIB_RELATIVE_SHADERS_PATH="${VCLIB_RELATIVE_SHADERS_PATH}/")
 endfunction()
