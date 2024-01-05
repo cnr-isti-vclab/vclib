@@ -131,6 +131,12 @@ public:
      * @param[in] name: The name of the object.
      */
     std::string& name() { return n; }
+
+protected:
+    void swap(DrawableObject& other) noexcept
+    {
+        std::swap(n, other.n);
+    }
 };
 
 } // namespace vcl

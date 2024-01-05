@@ -39,14 +39,19 @@ protected:
 
 public:
     void setProgram(const DrawableMeshProgram& p) { program = p.program(); }
+
+protected:
+    void swap(GenericBGFXDrawableMesh& oth)
+    {
+        GenericDrawableMesh::swap(oth);
+        std::swap(program, oth.program);
+    }
 };
 
 template<MeshConcept MeshType>
 class DrawableMesh : public GenericBGFXDrawableMesh
 {
     MeshRenderBuffers<MeshType> mrb;
-
-    std::vector<uint> textID;
 
     bgfx::VertexBufferHandle meshVBH  = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle meshVNBH = BGFX_INVALID_HANDLE;
@@ -57,7 +62,20 @@ class DrawableMesh : public GenericBGFXDrawableMesh
     bgfx::UniformHandle meshColorUH = BGFX_INVALID_HANDLE;
 
 public:
-    DrawableMesh() { setupUniforms(); };
+    DrawableMesh() { createBGFXUniforms(); };
+
+    DrawableMesh(const DrawableMesh& oth) :
+            GenericBGFXDrawableMesh(oth), mrb(oth.mrb)
+    {
+        // each drawable object has its own bgfx buffers
+        createBGFXBuffers();
+        createBGFXUniforms();
+    }
+
+    DrawableMesh(DrawableMesh&& oth)
+    {
+        swap(oth);
+    }
 
     DrawableMesh(const MeshType& mesh)
     {
@@ -66,15 +84,21 @@ public:
         }
 
         updateBuffers(mesh);
-        setupUniforms();
+        createBGFXUniforms();
 
         mrs.setDefaultSettingsFromCapability();
     }
 
+    DrawableMesh& operator=(DrawableMesh oth)
+    {
+        swap(oth);
+        return *this;
+    }
+
     ~DrawableMesh()
     {
-        destroyBuffers();
-        destroyUniforms();
+        destroyBGFXBuffers();
+        destroyBGFXUniforms();
     }
 
     void updateBuffers(const MeshType& m)
@@ -82,13 +106,12 @@ public:
         if constexpr (HasName<MeshType>) {
             name() = m.name();
         }
-        unbindTextures();
+
         mrb = MeshRenderBuffers<MeshType>(m);
         mrs.setRenderCapabilityFrom(m);
-        bindTextures();
 
-        destroyBuffers();
-        setupBuffers();
+        destroyBGFXBuffers();
+        createBGFXBuffers();
     }
 
     // DrawableObject implementation
@@ -128,8 +151,19 @@ public:
 
     DrawableMesh* clone() const { return new DrawableMesh(*this); }
 
+    void swap(DrawableMesh& oth)
+    {
+        GenericBGFXDrawableMesh::swap(oth);
+        std::swap(mrb, oth.mrb);
+        std::swap(meshVBH, oth.meshVBH);
+        std::swap(meshVNBH, oth.meshVNBH);
+        std::swap(meshVCBH, oth.meshVCBH);
+        std::swap(meshIBH, oth.meshIBH);
+        std::swap(meshColorUH, oth.meshColorUH);
+    }
+
 private:
-    void setupBuffers()
+    void createBGFXBuffers()
     {
         // vertex buffer (positions)
         bgfx::VertexLayout layout;
@@ -177,12 +211,12 @@ private:
             BGFX_BUFFER_INDEX32);
     }
 
-    void setupUniforms()
+    void createBGFXUniforms()
     {
         meshColorUH = bgfx::createUniform("meshColor", bgfx::UniformType::Vec4);
     }
 
-    void destroyBuffers()
+    void destroyBGFXBuffers()
     {
         if (bgfx::isValid(meshVBH))
             bgfx::destroy(meshVBH);
@@ -197,20 +231,10 @@ private:
             bgfx::destroy(meshIBH);
     }
 
-    void destroyUniforms()
+    void destroyBGFXUniforms()
     {
         if (bgfx::isValid(meshColorUH))
             bgfx::destroy(meshColorUH);
-    }
-
-    void bindTextures()
-    {
-        // todo
-    }
-
-    void unbindTextures()
-    {
-        // todo
     }
 };
 
