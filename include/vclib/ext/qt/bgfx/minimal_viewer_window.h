@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_VIEWER_H
-#define VCL_EXT_QT_BGFX_VIEWER_H
+#ifndef VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WINDOW_H
+#define VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WINDOW_H
 
 #include <QMouseEvent>
 
@@ -33,7 +33,7 @@
 
 namespace vcl::qbgf {
 
-class Viewer :
+class MinimalViewerWindow :
         public vcl::qbgf::CanvasWindow,
         public vcl::DesktopTrackBall<float>
 {
@@ -41,11 +41,11 @@ protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
-    Viewer(
+    MinimalViewerWindow(
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
         QWindow*                 parent     = nullptr);
 
-    virtual ~Viewer() {};
+    virtual ~MinimalViewerWindow() {};
 
     using CanvasWindow::height;
     using CanvasWindow::width;
@@ -67,4 +67,4 @@ public:
 
 } // namespace vcl::qbgf
 
-#endif // VCL_EXT_QT_BGFX_VIEWER_H
+#endif // VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WINDOW_H

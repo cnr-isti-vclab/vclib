@@ -130,11 +130,12 @@ if (TARGET vclib-external-qt)
         list(APPEND HEADERS_LIB
             include/vclib/ext/qt/bgfx/canvas_widget.h
             include/vclib/ext/qt/bgfx/canvas_window.h
-            include/vclib/ext/qt/bgfx/viewer.h)
+            include/vclib/ext/qt/bgfx/minimal_viewer_widget.h
+            include/vclib/ext/qt/bgfx/minimal_viewer_window.h)
 
         list(APPEND SOURCES_LIB
             include/vclib/ext/qt/bgfx/canvas_window.cpp
-            include/vclib/ext/qt/bgfx/viewer.cpp)
+            include/vclib/ext/qt/bgfx/minimal_viewer_window.cpp)
     endif()
 endif()
 

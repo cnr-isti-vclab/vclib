@@ -20,11 +20,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "viewer.h"
+#include "minimal_viewer_window.h"
 
 namespace vcl::qbgf {
 
-Viewer::Viewer(bgfx::RendererType::Enum renderType, QWindow* parent) :
+MinimalViewerWindow::MinimalViewerWindow(bgfx::RendererType::Enum renderType, QWindow* parent) :
         CanvasWindow(renderType, parent)
 {
     DTB::resetTrackBall(1);
@@ -33,14 +33,14 @@ Viewer::Viewer(bgfx::RendererType::Enum renderType, QWindow* parent) :
         0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 }
 
-void Viewer::onResize(unsigned int width, unsigned int height)
+void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
 {
     DTB::resizeViewer(width, height);
     bgfx::setViewTransform(
         0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 }
 
-void Viewer::mouseMoveEvent(QMouseEvent* event)
+void MinimalViewerWindow::mouseMoveEvent(QMouseEvent* event)
 {
     DTB::moveMouse(event->pos().x(), event->pos().y());
 
@@ -52,7 +52,7 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
     CanvasWindow::mouseMoveEvent(event);
 }
 
-void Viewer::mousePressEvent(QMouseEvent* event)
+void MinimalViewerWindow::mousePressEvent(QMouseEvent* event)
 {
     DTB::moveMouse(event->pos().x(), event->pos().y());
     DTB::pressMouse(vcl::qt::fromQt(event->button()));
@@ -60,7 +60,7 @@ void Viewer::mousePressEvent(QMouseEvent* event)
     CanvasWindow::mousePressEvent(event);
 }
 
-void Viewer::mouseReleaseEvent(QMouseEvent* event)
+void MinimalViewerWindow::mouseReleaseEvent(QMouseEvent* event)
 {
     DTB::moveMouse(event->pos().x(), event->pos().y());
     DTB::releaseMouse(vcl::qt::fromQt(event->button()));
@@ -68,7 +68,7 @@ void Viewer::mouseReleaseEvent(QMouseEvent* event)
     CanvasWindow::mouseReleaseEvent(event);
 }
 
-void Viewer::wheelEvent(QWheelEvent* event)
+void MinimalViewerWindow::wheelEvent(QWheelEvent* event)
 {
     const int WHEEL_STEP = 120;
     float     notchY     = event->angleDelta().y() / float(WHEEL_STEP);
@@ -83,7 +83,7 @@ void Viewer::wheelEvent(QWheelEvent* event)
     CanvasWindow::wheelEvent(event);
 }
 
-void Viewer::keyPressEvent(QKeyEvent* event)
+void MinimalViewerWindow::keyPressEvent(QKeyEvent* event)
 {
     DTB::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
 
@@ -105,7 +105,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
     CanvasWindow::keyPressEvent(event);
 }
 
-void Viewer::keyReleaseEvent(QKeyEvent* event)
+void MinimalViewerWindow::keyReleaseEvent(QKeyEvent* event)
 {
     DTB::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
 
