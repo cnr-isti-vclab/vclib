@@ -64,7 +64,7 @@ private:
     vcl::TrackBall<Scalar> trackball;
 
     Point3<Scalar> defaultTrackBallCenter;
-    float defaultTrackBallRadius = 1.0;
+    float          defaultTrackBallRadius = 1.0;
 
     KeyModifiers currentKeyModifiers = {NO_MODIFIER};
 

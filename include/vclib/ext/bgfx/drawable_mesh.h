@@ -72,10 +72,7 @@ public:
         createBGFXUniforms();
     }
 
-    DrawableMesh(DrawableMesh&& oth)
-    {
-        swap(oth);
-    }
+    DrawableMesh(DrawableMesh&& oth) { swap(oth); }
 
     DrawableMesh(const MeshType& mesh)
     {
@@ -116,7 +113,7 @@ public:
 
     // DrawableObject implementation
 
-    void init() { }
+    void init() {}
 
     void draw() const
     {

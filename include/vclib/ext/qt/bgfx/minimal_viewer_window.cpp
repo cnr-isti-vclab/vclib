@@ -42,13 +42,11 @@ void MinimalViewerWindow::setDrawableObjectVector(
     }
 }
 
-
 std::shared_ptr<const DrawableObjectVector> MinimalViewerWindow::
     drawableObjectVector() const
 {
     return drawList;
 }
-
 
 void MinimalViewerWindow::fitScene()
 {
@@ -58,7 +56,6 @@ void MinimalViewerWindow::fitScene()
 
     DTB::setTrackBall(sceneCenter, sceneRadius);
 }
-
 
 void MinimalViewerWindow::draw()
 {
