@@ -197,7 +197,7 @@ private:
             meshVCBH = bgfx::createVertexBuffer(
                 bgfx::makeRef(
                     mrb.vertexColorBufferData(),
-                    mrb.vertexBufferSize() * sizeof(uint32_t)),
+                    mrb.vertexBufferSize() / 4 * sizeof(uint32_t)),
                 vclayout);
         }
 

@@ -76,12 +76,14 @@ void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
 
 void MinimalViewerWindow::mouseMoveEvent(QMouseEvent* event)
 {
-    DTB::moveMouse(event->pos().x(), event->pos().y());
+    if (event->buttons() == Qt::LeftButton) {
+        DTB::moveMouse(event->pos().x(), event->pos().y());
 
-    bgfx::setViewTransform(
-        0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+        bgfx::setViewTransform(
+            0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
 
-    update();
+        update();
+    }
 
     CanvasWindow::mouseMoveEvent(event);
 }
