@@ -31,6 +31,26 @@
 
 namespace vcl::bgf {
 
+/**
+ * @brief The Canvas class describes a canvas on which bgfx can draw.
+ *
+ * Its usage requires to have a window object that can be used to initialize
+ * the canvas. The window object is not managed by the Canvas class, and can be
+ * managed by any of the windowing systems or libraries that allow to retrieve
+ * the native window handle.
+ *
+ * You can create your custom bgfx canvas class by inheriting from this class
+ * and passing to the constructor the native window handle and the window size.
+ * Alternatively to the constructor, you can also use the init() method to
+ * initialize the canvas (if the required parameters are not available at
+ * construction time).
+ *
+ * The class provides two important member functions:
+ * - frame(): this function must be called at the end of each frame, after all
+ * the bgfx rendering commands have been issued;
+ * - resize(width, height): this function must be called whenever the window is
+ * resized.
+ */
 class Canvas
 {
     const bgfx::ViewId viewID = 0;

@@ -25,13 +25,7 @@
 
 #include <QMouseEvent>
 
-#include <vclib/math/min_max.h>
-#include <vclib/space/box.h>
-
-#include <vclib/gui/desktop_trackball.h>
-#include <vclib/render/drawable_object_vector.h>
-
-#include <vclib/ext/bgfx/drawable_mesh.h>
+#include <vclib/ext/bgfx/minimal_viewer.h>
 #include <vclib/ext/qt/bgfx/canvas_window.h>
 #include <vclib/ext/qt/gui/input.h>
 
@@ -39,16 +33,10 @@ namespace vcl::qbgf {
 
 class MinimalViewerWindow :
         public vcl::qbgf::CanvasWindow,
-        public vcl::DesktopTrackBall<float>
+        public vcl::bgf::MinimalViewer
 {
-    // this Viewer does not normally own this drawList
-    std::shared_ptr<DrawableObjectVector> drawList;
-
-    // the program must be created after the uniforms - bgfx issue on OpenGL
-    vcl::bgf::DrawableMeshProgram program;
-
 protected:
-    using DTB = vcl::DesktopTrackBall<float>;
+    using MV = vcl::bgf::MinimalViewer;
 
 public:
     using CanvasWindow::height;
@@ -69,21 +57,12 @@ public:
         std::shared_ptr<DrawableObjectVector> v,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
         QWindow*                 parent     = nullptr) :
-            CanvasWindow(renderType, parent)
+            CanvasWindow(renderType, parent),
+            vcl::bgf::MinimalViewer(v)
     {
-        bgfx::setViewTransform(
-            0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
-
-        setDrawableObjectVector(v);
     }
 
     virtual ~MinimalViewerWindow() {};
-
-    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
-
-    std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const;
-
-    void fitScene();
 
     void draw() override;
 

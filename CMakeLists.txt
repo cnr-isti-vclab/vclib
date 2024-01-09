@@ -76,7 +76,8 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/canvas.h
         include/vclib/ext/bgfx/drawable_mesh.h
         include/vclib/ext/bgfx/drawable_mesh_program.h
-        include/vclib/ext/bgfx/load_program.h)
+        include/vclib/ext/bgfx/load_program.h
+        include/vclib/ext/bgfx/minimal_viewer.h)
 
     set(SHADERS
         include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh.sc
@@ -131,16 +132,11 @@ if (TARGET vclib-external-qt)
             include/vclib/ext/qt/bgfx/canvas_widget.h
             include/vclib/ext/qt/bgfx/canvas_window.h
             include/vclib/ext/qt/bgfx/minimal_viewer_widget.h
-            include/vclib/ext/qt/bgfx/minimal_viewer_window.h
-            include/vclib/ext/qt/bgfx/viewer_widget.h)
+            include/vclib/ext/qt/bgfx/minimal_viewer_window.h)
 
         list(APPEND SOURCES_LIB
             include/vclib/ext/qt/bgfx/canvas_window.cpp
-            include/vclib/ext/qt/bgfx/minimal_viewer_window.cpp
-            include/vclib/ext/qt/bgfx/viewer_widget.cpp)
-
-        list(APPEND FORMS_LIB
-            include/vclib/ext/qt/bgfx/viewer_widget.ui)
+            include/vclib/ext/qt/bgfx/minimal_viewer_window.cpp)
     endif()
 endif()
 

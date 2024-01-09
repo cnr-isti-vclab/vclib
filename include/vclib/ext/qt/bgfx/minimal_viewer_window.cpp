@@ -26,61 +26,25 @@
 
 namespace vcl::qbgf {
 
-void MinimalViewerWindow::setDrawableObjectVector(
-    std::shared_ptr<DrawableObjectVector> v)
-{
-    drawList = v;
-
-    for (DrawableObject* obj : *drawList) {
-        obj->init();
-
-        if (dynamic_cast<bgf::GenericBGFXDrawableMesh*>(obj)) {
-            bgf::GenericBGFXDrawableMesh* mesh =
-                dynamic_cast<bgf::GenericBGFXDrawableMesh*>(obj);
-            mesh->setProgram(program);
-        }
-    }
-}
-
-std::shared_ptr<const DrawableObjectVector> MinimalViewerWindow::
-    drawableObjectVector() const
-{
-    return drawList;
-}
-
-void MinimalViewerWindow::fitScene()
-{
-    Box3d   bb          = drawList->boundingBox();
-    Point3f sceneCenter = bb.center().cast<float>();
-    float   sceneRadius = bb.diagonal() / 2;
-
-    DTB::setTrackBall(sceneCenter, sceneRadius);
-}
-
 void MinimalViewerWindow::draw()
 {
-    // This dummy draw call is here to make sure that view 0 is cleared
-    // if no other draw calls are submitted to view 0.
-    bgfx::touch(0);
-
-    for (const DrawableObject* obj : *drawList)
-        obj->draw();
+    MV::draw();
 }
 
 void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
 {
-    DTB::resizeViewer(width, height);
+    MV::resizeViewer(width, height);
     bgfx::setViewTransform(
-        0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+        0, MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
 void MinimalViewerWindow::mouseMoveEvent(QMouseEvent* event)
 {
     if (event->buttons() == Qt::LeftButton) {
-        DTB::moveMouse(event->pos().x(), event->pos().y());
+        MV::moveMouse(event->pos().x(), event->pos().y());
 
         bgfx::setViewTransform(
-            0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+            0, MV::viewMatrix().data(), MV::projectionMatrix().data());
 
         update();
     }
@@ -90,16 +54,16 @@ void MinimalViewerWindow::mouseMoveEvent(QMouseEvent* event)
 
 void MinimalViewerWindow::mousePressEvent(QMouseEvent* event)
 {
-    DTB::moveMouse(event->pos().x(), event->pos().y());
-    DTB::pressMouse(vcl::qt::fromQt(event->button()));
+    MV::moveMouse(event->pos().x(), event->pos().y());
+    MV::pressMouse(vcl::qt::fromQt(event->button()));
 
     CanvasWindow::mousePressEvent(event);
 }
 
 void MinimalViewerWindow::mouseReleaseEvent(QMouseEvent* event)
 {
-    DTB::moveMouse(event->pos().x(), event->pos().y());
-    DTB::releaseMouse(vcl::qt::fromQt(event->button()));
+    MV::moveMouse(event->pos().x(), event->pos().y());
+    MV::releaseMouse(vcl::qt::fromQt(event->button()));
 
     CanvasWindow::mouseReleaseEvent(event);
 }
@@ -109,10 +73,10 @@ void MinimalViewerWindow::wheelEvent(QWheelEvent* event)
     const int WHEEL_STEP = 120;
     float     notchY     = event->angleDelta().y() / float(WHEEL_STEP);
 
-    DTB::wheelMouse(notchY > 0);
+    MV::wheelMouse(notchY > 0);
 
     bgfx::setViewTransform(
-        0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+        0, MV::viewMatrix().data(), MV::projectionMatrix().data());
 
     update();
 
@@ -121,19 +85,19 @@ void MinimalViewerWindow::wheelEvent(QWheelEvent* event)
 
 void MinimalViewerWindow::keyPressEvent(QKeyEvent* event)
 {
-    DTB::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
+    MV::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
 
     switch (event->key()) {
     case Qt::Key_C:
-        std::cerr << "(" << DTB::camera().eye() << ") "
-                  << "(" << DTB::camera().center() << ") "
-                  << "(" << DTB::camera().up() << ")\n";
+        std::cerr << "(" << MV::camera().eye() << ") "
+                  << "(" << MV::camera().center() << ") "
+                  << "(" << MV::camera().up() << ")\n";
         break;
 
     default:
-        DTB::keyPress(vcl::qt::fromQt((Qt::Key) event->key()));
+        MV::keyPress(vcl::qt::fromQt((Qt::Key) event->key()));
         bgfx::setViewTransform(
-            0, DTB::viewMatrix().data(), DTB::projectionMatrix().data());
+            0, MV::viewMatrix().data(), MV::projectionMatrix().data());
         break;
     }
 
@@ -143,7 +107,7 @@ void MinimalViewerWindow::keyPressEvent(QKeyEvent* event)
 
 void MinimalViewerWindow::keyReleaseEvent(QKeyEvent* event)
 {
-    DTB::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
+    MV::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
 
     update();
     CanvasWindow::keyReleaseEvent(event);
