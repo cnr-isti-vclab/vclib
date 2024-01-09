@@ -54,6 +54,7 @@ set(HEADERS
     include/vclib/render/drawable_object.h
     include/vclib/render/drawable_object_vector.h
     include/vclib/render/generic_drawable_mesh.h
+    include/vclib/render/generic_drawable_mesh_shader_program.h
     include/vclib/render/lights.h
     include/vclib/render/matrix.h
     include/vclib/render/mesh_render_buffers.h

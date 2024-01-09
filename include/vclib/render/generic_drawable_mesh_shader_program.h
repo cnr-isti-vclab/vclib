@@ -20,55 +20,17 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_GENERIC_DRAWABLE_MESH_H
-#define VCL_RENDER_GENERIC_DRAWABLE_MESH_H
-
-#include "generic_drawable_mesh_shader_program.h"
-#include "drawable_object.h"
-#include "mesh_render_settings.h"
+#ifndef VCL_RENDER_GENERIC_DRAWABLE_MESH_SHADER_PROGRAM_H
+#define VCL_RENDER_GENERIC_DRAWABLE_MESH_SHADER_PROGRAM_H
 
 namespace vcl {
 
-class GenericDrawableMesh : public vcl::DrawableObject
+class GenericDrawableMeshShaderProgram
 {
-protected:
-    MeshRenderSettings mrs;
-
 public:
-    GenericDrawableMesh() = default;
-
-    template<MeshConcept MeshType>
-    GenericDrawableMesh(const MeshType& m) : mrs(m)
-    {
-    }
-
-    const MeshRenderSettings& renderSettings() const { return mrs; }
-
-    void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
-    
-    virtual void setShaderProgram(const GenericDrawableMeshShaderProgram& ) {};
-
-    // DrawableObject implementation
-    void draw() const = 0;
-
-    vcl::Point3d center() const = 0;
-
-    double radius() const = 0;
-
-    DrawableObject* clone() const = 0;
-
-    inline bool isVisible() const { return mrs.isVisible(); }
-
-    inline void setVisibility(bool vis) { mrs.setVisibility(vis); }
-
-protected:
-    void swap(GenericDrawableMesh& other)
-    {
-        DrawableObject::swap(other);
-        std::swap(mrs, other.mrs);
-    }
+    virtual ~GenericDrawableMeshShaderProgram() = default;
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_GENERIC_DRAWABLE_MESH_H
+#endif // VCL_RENDER_GENERIC_DRAWABLE_MESH_SHADER_PROGRAM_H

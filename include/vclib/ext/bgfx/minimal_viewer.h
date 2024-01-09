@@ -76,10 +76,10 @@ public:
         for (DrawableObject* obj : *drawList) {
             obj->init();
 
-            if (dynamic_cast<bgf::GenericBGFXDrawableMesh*>(obj)) {
-                bgf::GenericBGFXDrawableMesh* mesh =
-                    dynamic_cast<bgf::GenericBGFXDrawableMesh*>(obj);
-                mesh->setProgram(program);
+            GenericDrawableMesh* mesh =
+                dynamic_cast<GenericDrawableMesh*>(obj);
+            if (mesh) {
+                mesh->setShaderProgram(program);
             }
         }
     }

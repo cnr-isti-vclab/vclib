@@ -33,28 +33,14 @@
 
 namespace vcl::bgf {
 
-class GenericBGFXDrawableMesh : public GenericDrawableMesh
-{
-protected:
-    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
-
-public:
-    void setProgram(const DrawableMeshProgram& p) { program = p.program(); }
-
-protected:
-    void swap(GenericBGFXDrawableMesh& oth)
-    {
-        GenericDrawableMesh::swap(oth);
-        std::swap(program, oth.program);
-    }
-};
-
 template<MeshConcept MeshType>
-class DrawableMesh : public GenericBGFXDrawableMesh
+class DrawableMesh : public GenericDrawableMesh
 {
-    using Base = GenericBGFXDrawableMesh;
+    using Base = GenericDrawableMesh;
 
     MeshRenderBuffers<MeshType> mrb;
+
+    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
     bgfx::VertexBufferHandle meshVBH  = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle meshVNBH = BGFX_INVALID_HANDLE;
@@ -69,7 +55,7 @@ public:
     DrawableMesh() { createBGFXUniforms(); };
 
     DrawableMesh(const DrawableMesh& oth) :
-            GenericBGFXDrawableMesh(oth), mrb(oth.mrb),
+            GenericDrawableMesh(oth), mrb(oth.mrb),
             meshRenderSettingsUniforms(oth.meshRenderSettingsUniforms)
     {
         // each drawable object has its own bgfx buffers
@@ -106,7 +92,8 @@ public:
 
     void swap(DrawableMesh& oth)
     {
-        GenericBGFXDrawableMesh::swap(oth);
+        GenericDrawableMesh::swap(oth);
+        std::swap(program, oth.program);
         std::swap(mrb, oth.mrb);
         std::swap(meshVBH, oth.meshVBH);
         std::swap(meshVNBH, oth.meshVNBH);
@@ -129,6 +116,17 @@ public:
         destroyBGFXBuffers();
         createBGFXBuffers();
     }
+
+    // GenericDrawableMesh implementation
+
+    virtual void setShaderProgram(const GenericDrawableMeshShaderProgram& p)
+    {
+        const DrawableMeshProgram* ptr =
+            dynamic_cast<const DrawableMeshProgram*>(&p);
+        if (ptr) {
+            program = ptr->program();
+        }
+    };
 
     // DrawableObject implementation
 
