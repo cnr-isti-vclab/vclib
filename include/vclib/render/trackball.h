@@ -460,7 +460,7 @@ private:
 
     void performZoom(Scalar inc)
     {
-        eyeCenterDist += zoomScale * inc;
+        eyeCenterDist += (zoomScale * radius()) * inc;
         updateCameraEye();
         cam.updateMatrix();
     }

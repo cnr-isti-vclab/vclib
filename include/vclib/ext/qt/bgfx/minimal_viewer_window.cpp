@@ -40,7 +40,7 @@ void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
 
 void MinimalViewerWindow::mouseMoveEvent(QMouseEvent* event)
 {
-    if (event->buttons() == Qt::LeftButton) {
+    if (event->buttons() != Qt::NoButton) {
         MV::moveMouse(event->pos().x(), event->pos().y());
 
         bgfx::setViewTransform(

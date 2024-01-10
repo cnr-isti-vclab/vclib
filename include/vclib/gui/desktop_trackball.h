@@ -94,7 +94,7 @@ private:
          }},
         {KEY_2,
          [](TrackBallType& t) {
-             rotate(t, TrackBallType::VERTICAL);
+             rotate(t, TrackBallType::VERTICAL, -M_PI / 6);
          }},
         {KEY_4,
          [](TrackBallType& t) {
@@ -106,7 +106,7 @@ private:
          }},
         {KEY_8,
          [](TrackBallType& t) {
-             rotate(t, TrackBallType::VERTICAL, -M_PI / 6);
+             rotate(t, TrackBallType::VERTICAL);
          }},
         {KEY_9,
          [](TrackBallType& t) {
