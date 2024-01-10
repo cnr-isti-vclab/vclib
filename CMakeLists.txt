@@ -76,7 +76,7 @@ if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
         include/vclib/ext/bgfx/canvas.h
         include/vclib/ext/bgfx/drawable_mesh.h
-        include/vclib/ext/bgfx/drawable_mesh_program.h
+        include/vclib/ext/bgfx/drawable_mesh_shader_program.h
         include/vclib/ext/bgfx/load_program.h
         include/vclib/ext/bgfx/minimal_viewer.h
         include/vclib/ext/bgfx/uniforms/camera_uniforms.h

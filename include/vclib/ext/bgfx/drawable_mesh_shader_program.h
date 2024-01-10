@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_DRAWABLE_MESH_PROGRAM_H
-#define VCL_EXT_BGFX_DRAWABLE_MESH_PROGRAM_H
+#ifndef VCL_EXT_BGFX_DRAWABLE_MESH_SHADER_PROGRAM_H
+#define VCL_EXT_BGFX_DRAWABLE_MESH_SHADER_PROGRAM_H
 
 #include <vclib/render/generic_drawable_mesh_shader_program.h>
 
@@ -29,12 +29,12 @@
 
 namespace vcl::bgf {
 
-class DrawableMeshProgram : public GenericDrawableMeshShaderProgram
+class DrawableMeshShaderProgram : public GenericDrawableMeshShaderProgram
 {
     bgfx::ProgramHandle p = BGFX_INVALID_HANDLE;
 
 public:
-    DrawableMeshProgram()
+    DrawableMeshShaderProgram()
     {
         p = vcl::bgf::loadProgram(
             "include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh",
@@ -42,7 +42,7 @@ public:
             VCLIB_RELATIVE_SHADERS_PATH);
     }
 
-    DrawableMeshProgram(
+    DrawableMeshShaderProgram(
         const std::string& vs,
         const std::string& fs,
         const std::string& basePath = "")
@@ -50,20 +50,20 @@ public:
         p = loadProgram(vs, fs, basePath);
     };
 
-    ~DrawableMeshProgram()
+    ~DrawableMeshShaderProgram()
     {
         if (bgfx::isValid(p)) {
             bgfx::destroy(p);
         }
     };
 
-    DrawableMeshProgram(const DrawableMeshProgram&) = delete;
+    DrawableMeshShaderProgram(const DrawableMeshShaderProgram&) = delete;
 
-    DrawableMeshProgram& operator=(const DrawableMeshProgram&) = delete;
+    DrawableMeshShaderProgram& operator=(const DrawableMeshShaderProgram&) = delete;
 
     bgfx::ProgramHandle program() const { return p; };
 };
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_DRAWABLE_MESH_PROGRAM_H
+#endif // VCL_EXT_BGFX_DRAWABLE_MESH_SHADER_PROGRAM_H

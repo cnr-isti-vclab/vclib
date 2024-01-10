@@ -51,7 +51,7 @@ private:
     Scalar fov    = 60.0;
     Scalar aspect = 1.0;
     Scalar near   = 0.1;
-    Scalar far    = 100.0;
+    Scalar far    = 10000.0;
 
     vcl::Matrix44<Scalar> projMatrix =
         vcl::projectionMatrix<vcl::Matrix44<Scalar>>(

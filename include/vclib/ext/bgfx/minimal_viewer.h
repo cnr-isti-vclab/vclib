@@ -46,7 +46,7 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
     // the program must be created after the uniforms - bgfx issue on OpenGL
-    vcl::bgf::DrawableMeshProgram program;
+    vcl::bgf::DrawableMeshShaderProgram program;
 
 protected:
     using DTB = vcl::DesktopTrackBall<float>;
