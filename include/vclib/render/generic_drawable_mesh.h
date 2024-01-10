@@ -23,8 +23,8 @@
 #ifndef VCL_RENDER_GENERIC_DRAWABLE_MESH_H
 #define VCL_RENDER_GENERIC_DRAWABLE_MESH_H
 
-#include "generic_drawable_mesh_shader_program.h"
 #include "drawable_object.h"
+#include "generic_drawable_mesh_shader_program.h"
 #include "mesh_render_settings.h"
 
 namespace vcl {
@@ -45,8 +45,8 @@ public:
     const MeshRenderSettings& renderSettings() const { return mrs; }
 
     void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
-    
-    virtual void setShaderProgram(const GenericDrawableMeshShaderProgram& ) {};
+
+    virtual void setShaderProgram(const GenericDrawableMeshShaderProgram&) {};
 
     // DrawableObject implementation
     void draw() const = 0;

@@ -41,8 +41,8 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
     // this Viewer does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> drawList;
 
-    CameraUniforms cameraUniforms;
-    DirectionalLightUniforms directionalLightUniforms;
+    CameraUniforms             cameraUniforms;
+    DirectionalLightUniforms   directionalLightUniforms;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
     // the program must be created after the uniforms - bgfx issue on OpenGL
@@ -52,7 +52,6 @@ protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
-
     MinimalViewer()
     {
         cameraUniforms.updateCamera(DTB::camera());
@@ -76,8 +75,7 @@ public:
         for (DrawableObject* obj : *drawList) {
             obj->init();
 
-            GenericDrawableMesh* mesh =
-                dynamic_cast<GenericDrawableMesh*>(obj);
+            GenericDrawableMesh* mesh = dynamic_cast<GenericDrawableMesh*>(obj);
             if (mesh) {
                 mesh->setShaderProgram(program);
             }

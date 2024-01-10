@@ -35,7 +35,8 @@ class CameraUniforms
 {
     float eye[4] = {0.0, 0.0, 0.0, 0.0};
 
-    ShaderUniform cameraEyeUH = ShaderUniform("cameraEyePos", bgfx::UniformType::Vec4);
+    ShaderUniform cameraEyeUH =
+        ShaderUniform("cameraEyePos", bgfx::UniformType::Vec4);
 
 public:
     CameraUniforms() {}
@@ -48,10 +49,7 @@ public:
         eye[2] = camera.eye().z();
     }
 
-    void setUniforms() const
-    {
-        bgfx::setUniform(cameraEyeUH.handle(), eye);
-    }
+    void setUniforms() const { bgfx::setUniform(cameraEyeUH.handle(), eye); }
 };
 
 } // namespace vcl::bgf
