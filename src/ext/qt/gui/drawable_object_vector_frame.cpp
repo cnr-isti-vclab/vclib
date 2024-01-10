@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "drawable_object_vector_frame.h"
+#include <vclib/ext/qt/gui/drawable_object_vector_frame.h>
 #include "ui_drawable_object_vector_frame.h"
 
 #include <QStandardItemModel>

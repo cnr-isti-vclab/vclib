@@ -108,6 +108,10 @@ function(_add_bgfx_shader FILE DIR TARGET)
 endfunction()
 
 
+function(ide_add_bgfx_shaders)
+    source_group("Shader Files" FILES ${ARGV})
+endfunction()
+
 # Function to add a list of shaders to a target
 # When building tha target, the shaders will be compiled and placed in the
 # following directory:
@@ -123,7 +127,7 @@ function(target_add_bgfx_shaders target_name)
 
         _add_bgfx_shader("${ABSOLUTE_PATH_SHADER}" "${DIR_PATH}" ${target_name})
     endforeach()
-    source_group("Shader Files" FILES ${ARGV})
+    ide_add_bgfx_shaders(${ARGV})
 endfunction()
 
 # Function to make available the bgfx shaders defined by vclib to the given

@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "q_clickable_label.h"
+#include <vclib/ext/qt/gui/q_clickable_label.h>
 
 namespace vcl::qt {
 

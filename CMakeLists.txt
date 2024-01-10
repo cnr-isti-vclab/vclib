@@ -85,9 +85,9 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
 
     set(SHADERS
-        include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh.sc
-        include/vclib/ext/bgfx/drawable_mesh/shaders/fs_mesh.sc
-        include/vclib/ext/bgfx/drawable_mesh/shaders/varying.def.sc)
+        shaders/ext/bgfx/drawable_mesh/vs_mesh.sc
+        shaders/ext/bgfx/drawable_mesh/fs_mesh.sc
+        shaders/ext/bgfx/drawable_mesh/varying.def.sc)
 endif()
 
 # headers and sources to include only if using qt
@@ -104,15 +104,15 @@ if (TARGET vclib-external-qt)
         include/vclib/ext/qt/gui/q_clickable_label.h)
 
     list(APPEND SOURCES_LIB
-        include/vclib/ext/qt/gui/drawable_object_frame.cpp
-        include/vclib/ext/qt/gui/drawable_object_vector_frame.cpp
-        include/vclib/ext/qt/gui/mesh_render_settings_frame.cpp
-        include/vclib/ext/qt/gui/q_clickable_label.cpp)
+        src/ext/qt/gui/drawable_object_frame.cpp
+        src/ext/qt/gui/drawable_object_vector_frame.cpp
+        src/ext/qt/gui/mesh_render_settings_frame.cpp
+        src/ext/qt/gui/q_clickable_label.cpp)
 
     list(APPEND FORMS_LIB
-        include/vclib/ext/qt/gui/drawable_object_frame.ui
-        include/vclib/ext/qt/gui/drawable_object_vector_frame.ui
-        include/vclib/ext/qt/gui/mesh_render_settings_frame.ui)
+        src/ext/qt/gui/drawable_object_frame.ui
+        src/ext/qt/gui/drawable_object_vector_frame.ui
+        src/ext/qt/gui/mesh_render_settings_frame.ui)
 
     # headers and sources to include only if using QGLViewer
     if (TARGET vclib-external-qglviewer)
@@ -125,10 +125,10 @@ if (TARGET vclib-external-qt)
             include/vclib/ext/qglviewer/viewer_main_window.h)
 
         list(APPEND SOURCES_LIB
-            include/vclib/ext/qglviewer/viewer_main_window.cpp)
+            src/ext/qglviewer/viewer_main_window.cpp)
 
         list(APPEND FORMS_LIB
-            include/vclib/ext/qglviewer/viewer_main_window.ui)
+            src/ext/qglviewer/viewer_main_window.ui)
     endif()
 
     # headers and sources to include only if using bgfx
@@ -140,8 +140,8 @@ if (TARGET vclib-external-qt)
             include/vclib/ext/qt/bgfx/minimal_viewer_window.h)
 
         list(APPEND SOURCES_LIB
-            include/vclib/ext/qt/bgfx/canvas_window.cpp
-            include/vclib/ext/qt/bgfx/minimal_viewer_window.cpp)
+            src/ext/qt/bgfx/canvas_window.cpp
+            src/ext/qt/bgfx/minimal_viewer_window.cpp)
     endif()
 endif()
 

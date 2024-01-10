@@ -20,84 +20,29 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "canvas_window.h"
+#include <vclib/ext/qt/gui/drawable_object_frame.h>
+#include "ui_drawable_object_frame.h"
 
-namespace vcl::qbgf {
+namespace vcl::qt {
 
-CanvasWindow::CanvasWindow(
-    bgfx::RendererType::Enum renderType,
-    QWindow*                 parent) :
-        QWindow(parent)
+DrawableObjectFrame::DrawableObjectFrame(DrawableObject* obj, QWidget* parent) :
+        QFrame(parent), ui(new Ui::DrawableObjectFrame), obj(obj)
 {
-    setGeometry(100, 100, 1024, 768);
-
-    void* displayID = nullptr;
-#ifdef Q_OS_LINUX
-    /// THIS WORKS ONLY IF QT_QPA_PLATFORM = xcb
-    QNativeInterface::QX11Application* x11AppInfo =
-        qApp->nativeInterface<QNativeInterface::QX11Application>();
-    if (x11AppInfo) {
-        displayID = x11AppInfo->display();
-    }
-    else {
-        QNativeInterface::QWaylandApplication* wayAppInfo =
-            qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-        if (wayAppInfo) {
-            displayID = wayAppInfo->display();
-        }
-        else {
-            exit(-1);
-        }
-    }
-#endif
-
-    vcl::bgf::Canvas::init(
-        (void*) winId(), width(), height(), displayID, renderType);
+    ui->setupUi(this);
+    assert(obj);
+    ui->objNameLabel->setText(QString::fromStdString(obj->name()));
+    ui->visibilityCheckBox->setChecked(obj->isVisible());
 }
 
-CanvasWindow::~CanvasWindow()
+DrawableObjectFrame::~DrawableObjectFrame()
 {
+    delete ui;
 }
 
-void CanvasWindow::draw()
+void DrawableObjectFrame::on_visibilityCheckBox_stateChanged(int arg1)
 {
+    obj->setVisibility(arg1 == Qt::Checked);
+    emit visibilityChanged();
 }
 
-void CanvasWindow::onResize(unsigned int w, unsigned int h)
-{
-}
-
-void CanvasWindow::update()
-{
-    QWindow::requestUpdate();
-}
-
-bool CanvasWindow::event(QEvent* event)
-{
-    if (event->type() == QEvent::UpdateRequest) {
-        paint();
-        return true;
-    }
-    return QWindow::event(event);
-}
-
-void CanvasWindow::paintEvent(QPaintEvent* event)
-{
-    paint();
-    QWindow::paintEvent(event);
-}
-
-void CanvasWindow::resizeEvent(QResizeEvent* event)
-{
-    vcl::bgf::Canvas::resize(width(), height());
-    QWindow::resizeEvent(event);
-    onResize(width(), height());
-}
-
-void CanvasWindow::paint()
-{
-    draw();
-    vcl::bgf::Canvas::frame();
-}
-
-} // namespace vcl::qbgf
+} // namespace vcl::qt

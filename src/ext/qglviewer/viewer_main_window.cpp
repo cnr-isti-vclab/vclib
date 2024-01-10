@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "viewer_main_window.h"
+#include <vclib/ext/qglviewer/viewer_main_window.h>
 #include "ui_viewer_main_window.h"
 
 #include <vclib/render/generic_drawable_mesh.h>

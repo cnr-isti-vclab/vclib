@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "minimal_viewer_window.h"
+#include <vclib/ext/qt/bgfx/minimal_viewer_window.h>
 
 #include <iostream>
 

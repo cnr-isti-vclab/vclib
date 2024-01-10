@@ -37,8 +37,8 @@ public:
     DrawableMeshShaderProgram()
     {
         p = vcl::bgf::loadProgram(
-            "include/vclib/ext/bgfx/drawable_mesh/shaders/vs_mesh",
-            "include/vclib/ext/bgfx/drawable_mesh/shaders/fs_mesh",
+            "shaders/ext/bgfx/drawable_mesh/vs_mesh",
+            "shaders/ext/bgfx/drawable_mesh/fs_mesh",
             VCLIB_RELATIVE_SHADERS_PATH);
     }
 
