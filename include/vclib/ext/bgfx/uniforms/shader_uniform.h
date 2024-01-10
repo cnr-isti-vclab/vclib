@@ -31,31 +31,26 @@ namespace vcl::bgf {
 
 class ShaderUniform
 {
-    bgfx::UniformHandle uniformHandle = BGFX_INVALID_HANDLE;
-    std::string uniformName;
+    bgfx::UniformHandle     uniformHandle = BGFX_INVALID_HANDLE;
+    std::string             uniformName;
     bgfx::UniformType::Enum uniformType = bgfx::UniformType::Count;
 
 public:
     ShaderUniform() = default;
 
     ShaderUniform(const std::string& name, bgfx::UniformType::Enum type) :
-        uniformName(name),
-        uniformType(type)
+            uniformName(name), uniformType(type)
     {
         uniformHandle = bgfx::createUniform(name.c_str(), type);
     }
 
     ShaderUniform(const ShaderUniform& oth) :
-        uniformName(oth.uniformName),
-        uniformType(oth.uniformType)
+            uniformName(oth.uniformName), uniformType(oth.uniformType)
     {
         uniformHandle = bgfx::createUniform(uniformName.c_str(), uniformType);
     }
 
-    ShaderUniform(ShaderUniform&& oth)
-    {
-        swap(oth);
-    }
+    ShaderUniform(ShaderUniform&& oth) { swap(oth); }
 
     ~ShaderUniform()
     {

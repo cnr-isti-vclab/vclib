@@ -48,7 +48,7 @@ class DrawableMesh : public GenericDrawableMesh
 
     bgfx::IndexBufferHandle meshIBH = BGFX_INVALID_HANDLE;
 
-    bgfx::UniformHandle meshColorUH = BGFX_INVALID_HANDLE;
+    bgfx::UniformHandle        meshColorUH = BGFX_INVALID_HANDLE;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
 public:

@@ -36,13 +36,13 @@ class DirectionalLightUniforms
     float dir[4] = {0.0, 0.0, 1.0, 0.0};
     float col[4] = {1.0, 1.0, 1.0, 1.0};
 
-    ShaderUniform lightDirUH = ShaderUniform("lightDir", bgfx::UniformType::Vec4);
-    ShaderUniform lightColorUH = ShaderUniform("lightColor", bgfx::UniformType::Vec4);
+    ShaderUniform lightDirUH =
+        ShaderUniform("lightDir", bgfx::UniformType::Vec4);
+    ShaderUniform lightColorUH =
+        ShaderUniform("lightColor", bgfx::UniformType::Vec4);
 
 public:
-    DirectionalLightUniforms()
-    {
-    }
+    DirectionalLightUniforms() {}
 
     template<typename S>
     void updateLight(const vcl::DirectionalLight<S>& light)

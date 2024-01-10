@@ -35,12 +35,11 @@ class MeshRenderSettingsUniforms
 {
     float uniform[4] = {0.0, 0.0, 0.0, 0.0};
 
-    ShaderUniform drawModeUH = ShaderUniform("drawMode", bgfx::UniformType::Vec4);
+    ShaderUniform drawModeUH =
+        ShaderUniform("drawMode", bgfx::UniformType::Vec4);
 
 public:
-    MeshRenderSettingsUniforms()
-    {
-    }
+    MeshRenderSettingsUniforms() {}
 
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
@@ -49,19 +48,17 @@ public:
         uniform[0] = intBitsToFloat(drawMode);
     }
 
-    void setUniforms() const
-    {
-        bgfx::setUniform(drawModeUH.handle(), uniform);
-    }
+    void setUniforms() const { bgfx::setUniform(drawModeUH.handle(), uniform); }
 
 private:
     static float intBitsToFloat(int bits)
     {
         union
         {
-            int i;
+            int   i;
             float f;
         } u;
+
         u.i = bits;
         return u.f;
     }
