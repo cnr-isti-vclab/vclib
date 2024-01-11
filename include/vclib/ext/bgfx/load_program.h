@@ -30,10 +30,6 @@
 
 #include <iostream>
 
-#ifndef VCLIB_RELATIVE_SHADERS_PATH
-#define VCLIB_RELATIVE_SHADERS_PATH ""
-#endif
-
 namespace vcl::bgf {
 
 namespace detail {
@@ -68,10 +64,7 @@ inline const bgfx::Memory* loadMem(
     return nullptr;
 }
 
-inline bgfx::ShaderHandle loadShader(
-    bx::FileReaderI*   reader,
-    const std::string& name,
-    const std::string& basePath)
+inline bgfx::ShaderHandle loadShader(bx::FileReaderI* reader, std::string name)
 {
     std::string shaderPath = "???";
 
@@ -92,7 +85,12 @@ inline bgfx::ShaderHandle loadShader(
         break;
     }
 
-    std::string filePath = basePath + shaderPath + name + ".bin";
+    // if name starts with "shaders/", remove it
+    if (name.find("shaders/") == 0) {
+        name = name.substr(8);
+    }
+
+    std::string filePath = shaderPath + name + ".bin";
 
     bgfx::ShaderHandle handle = bgfx::createShader(loadMem(reader, filePath));
     bgfx::setName(handle, name.c_str());
@@ -103,13 +101,12 @@ inline bgfx::ShaderHandle loadShader(
 inline bgfx::ProgramHandle loadProgram(
     bx::FileReaderI*   reader,
     const std::string& vsName,
-    const std::string& fsName,
-    const std::string& basePath)
+    const std::string& fsName)
 {
-    bgfx::ShaderHandle vsh = loadShader(reader, vsName, basePath);
+    bgfx::ShaderHandle vsh = loadShader(reader, vsName);
     bgfx::ShaderHandle fsh = BGFX_INVALID_HANDLE;
     if (!fsName.empty()) {
-        fsh = loadShader(reader, fsName, basePath);
+        fsh = loadShader(reader, fsName);
     }
 
     return bgfx::createProgram(vsh, fsh, true);
@@ -118,20 +115,18 @@ inline bgfx::ProgramHandle loadProgram(
 } // namespace detail
 
 inline bgfx::ShaderHandle loadShader(
-    const std::string& name,
-    const std::string& basePath = "")
+    const std::string& name)
 {
     detail::BXFileReader fr;
-    return detail::loadShader(fr.get(), name, basePath);
+    return detail::loadShader(fr.get(), name);
 }
 
 inline bgfx::ProgramHandle loadProgram(
     const std::string& vsName,
-    const std::string& fsName,
-    const std::string& basePath = "")
+    const std::string& fsName)
 {
     detail::BXFileReader fr;
-    return detail::loadProgram(fr.get(), vsName, fsName, basePath);
+    return detail::loadProgram(fr.get(), vsName, fsName);
 }
 
 } // namespace vcl::bgf

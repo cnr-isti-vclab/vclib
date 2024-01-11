@@ -42,25 +42,14 @@ public:
     using CanvasWindow::height;
     using CanvasWindow::width;
 
-    // TODO: adjust shaders and move these constuctors definitions in cpp file
     MinimalViewerWindow(
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr) :
-            MinimalViewerWindow(
-                std::make_shared<DrawableObjectVector>(),
-                renderType,
-                parent)
-    {
-    }
+        QWindow*                 parent     = nullptr);
 
     MinimalViewerWindow(
         std::shared_ptr<DrawableObjectVector> v,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr) :
-            CanvasWindow(renderType, parent),
-            vcl::bgf::MinimalViewer(v)
-    {
-    }
+        QWindow*                 parent     = nullptr);
 
     virtual ~MinimalViewerWindow() {};
 

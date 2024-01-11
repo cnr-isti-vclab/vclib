@@ -85,9 +85,9 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
 
     set(SHADERS
-        shaders/ext/bgfx/drawable_mesh/vs_mesh.sc
-        shaders/ext/bgfx/drawable_mesh/fs_mesh.sc
-        shaders/ext/bgfx/drawable_mesh/varying.def.sc)
+        shaders/vclib/ext/bgfx/drawable_mesh/vs_mesh.sc
+        shaders/vclib/ext/bgfx/drawable_mesh/fs_mesh.sc
+        shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc)
 endif()
 
 # headers and sources to include only if using qt
@@ -154,6 +154,8 @@ target_link_libraries(vclib-render INTERFACE ${VCLIB_RENDER_EXTERNAL_LIBRARIES})
 target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
 set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
+set_target_properties(vclib-render PROPERTIES
+    VCLIB_RENDER_BGFX_SHADERS "${SHADERS}")
 
 if (TARGET vclib-external-bgfx)
     target_add_bgfx_shaders(vclib-render ${SHADERS})

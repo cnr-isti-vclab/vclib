@@ -37,17 +37,15 @@ public:
     DrawableMeshShaderProgram()
     {
         p = vcl::bgf::loadProgram(
-            "shaders/ext/bgfx/drawable_mesh/vs_mesh",
-            "shaders/ext/bgfx/drawable_mesh/fs_mesh",
-            VCLIB_RELATIVE_SHADERS_PATH);
+            "vclib/ext/bgfx/drawable_mesh/vs_mesh",
+            "vclib/ext/bgfx/drawable_mesh/fs_mesh");
     }
 
     DrawableMeshShaderProgram(
         const std::string& vs,
-        const std::string& fs,
-        const std::string& basePath = "")
+        const std::string& fs)
     {
-        p = loadProgram(vs, fs, basePath);
+        p = loadProgram(vs, fs);
     };
 
     ~DrawableMeshShaderProgram()

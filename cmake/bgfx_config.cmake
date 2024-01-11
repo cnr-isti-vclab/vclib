@@ -1,8 +1,9 @@
 include(${VCLIB_BGFX_DIR}/cmake/bgfxToolUtils.cmake)
 
 # FILE: the absolute path of the shader file
-# DIR: the relative path of the shader file w.r.t the CMakeLists file of the
-#      current project
+# DIR: the portion of path where the binary output shader will be placed
+#      the final output will be
+#      <BINARY_DIR>/shaders/<platform>/<DIR>/<FILE_NAME>.bin
 # TARGET: the target to add the shader to
 #
 # The compiled shader will be placed in the following directory:
@@ -116,6 +117,8 @@ endfunction()
 # When building tha target, the shaders will be compiled and placed in the
 # following directory:
 # <BINARY_DIR>/shaders/<platform>/<PATH_TO_/FILE_NAME>.bin
+# Note: if the path to the shader begins with "shaders/", it will be removed
+# (the same is done in the "bgf::loadProgram" function)
 function(target_add_bgfx_shaders target_name)
     list(GET ARGV 0 target_name)
 
@@ -125,6 +128,15 @@ function(target_add_bgfx_shaders target_name)
         get_filename_component(ABSOLUTE_PATH_SHADER ${SHADER} ABSOLUTE)
         get_filename_component(DIR_PATH ${SHADER} DIRECTORY)
 
+        # if DIR_PATH begins with "shaders/", remove it
+        if (DIR_PATH MATCHES "^shaders/")
+            string(SUBSTRING ${DIR_PATH} 8 -1 DIR_PATH)
+        endif()
+        # if DIR_PATH is "shaders", replace it with "./"
+        if (DIR_PATH STREQUAL "shaders")
+            set(DIR_PATH "./")
+        endif()
+
         _add_bgfx_shader("${ABSOLUTE_PATH_SHADER}" "${DIR_PATH}" ${target_name})
     endforeach()
     ide_add_bgfx_shaders(${ARGV})
@@ -133,15 +145,16 @@ endfunction()
 # Function to make available the bgfx shaders defined by vclib to the given
 # target
 function(target_expose_vclib_bgfx_shaders target_name)
-    get_property(TARGET_BIN_DIR TARGET ${target_name} PROPERTY BINARY_DIR)
+    get_property(VCLIB_SHADERS TARGET vclib-render PROPERTY VCLIB_RENDER_BGFX_SHADERS)
+    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
 
-    get_property(VCLIB_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
+    foreach(SHADER ${VCLIB_SHADERS})
+        get_filename_component(DIR_PATH ${SHADER} DIRECTORY)
 
-    # set VCLIB_RELATIVE_SHADERS_PATH to be the relative path from
-    # TARGET_BIN_DIR to VCLIB_BIN_DIR
-    file(RELATIVE_PATH
-        VCLIB_RELATIVE_SHADERS_PATH ${TARGET_BIN_DIR} ${VCLIB_BIN_DIR})
+        # remove "shaders/" characters from DIR_PATH
+        string(SUBSTRING ${DIR_PATH} 8 -1 DIR_PATH)
 
-    target_compile_definitions(${target_name} PRIVATE
-        VCLIB_RELATIVE_SHADERS_PATH="${VCLIB_RELATIVE_SHADERS_PATH}/")
+        _add_bgfx_shader("${VCLIB_RENDER_DIR}/../${SHADER}" "${DIR_PATH}" ${target_name})
+    endforeach()
+    ide_add_bgfx_shaders(${ARGV})
 endfunction()

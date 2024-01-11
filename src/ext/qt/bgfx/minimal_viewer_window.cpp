@@ -26,6 +26,25 @@
 
 namespace vcl::qbgf {
 
+MinimalViewerWindow::MinimalViewerWindow(
+    bgfx::RendererType::Enum renderType,
+    QWindow*                 parent) :
+        MinimalViewerWindow(
+            std::make_shared<DrawableObjectVector>(),
+            renderType,
+            parent)
+{
+}
+
+MinimalViewerWindow::MinimalViewerWindow(
+    std::shared_ptr<DrawableObjectVector> v,
+    bgfx::RendererType::Enum              renderType,
+    QWindow*                              parent) :
+        CanvasWindow(renderType, parent),
+        vcl::bgf::MinimalViewer(v)
+{
+}
+
 void MinimalViewerWindow::draw()
 {
     MV::draw();
