@@ -48,7 +48,9 @@ class DrawableMesh : public GenericDrawableMesh
 
     bgfx::IndexBufferHandle meshIBH = BGFX_INVALID_HANDLE;
 
-    bgfx::UniformHandle        meshColorUH = BGFX_INVALID_HANDLE;
+    bgfx::UniformHandle meshColorUH = BGFX_INVALID_HANDLE;
+    bgfx::UniformHandle userColorUH = BGFX_INVALID_HANDLE;
+
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
 public:
@@ -100,6 +102,7 @@ public:
         std::swap(meshVCBH, oth.meshVCBH);
         std::swap(meshIBH, oth.meshIBH);
         std::swap(meshColorUH, oth.meshColorUH);
+        std::swap(userColorUH, oth.userColorUH);
         std::swap(meshRenderSettingsUniforms, oth.meshRenderSettingsUniforms);
     }
 
@@ -154,6 +157,7 @@ public:
             bgfx::setState(state);
 
             bgfx::setUniform(meshColorUH, mrb.meshColorBufferData());
+            bgfx::setUniform(userColorUH, mrs.surfaceUserColorData());
 
             meshRenderSettingsUniforms.setUniforms();
 
@@ -225,6 +229,7 @@ private:
     void createBGFXUniforms()
     {
         meshColorUH = bgfx::createUniform("meshColor", bgfx::UniformType::Vec4);
+        userColorUH = bgfx::createUniform("userColor", bgfx::UniformType::Vec4);
     }
 
     void destroyBGFXBuffers()
@@ -246,6 +251,8 @@ private:
     {
         if (bgfx::isValid(meshColorUH))
             bgfx::destroy(meshColorUH);
+        if (bgfx::isValid(userColorUH))
+            bgfx::destroy(userColorUH);
     }
 };
 

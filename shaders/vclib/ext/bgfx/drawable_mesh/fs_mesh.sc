@@ -9,6 +9,7 @@ uniform vec4 lightDir;
 uniform vec4 lightColor;
 
 uniform vec4 meshColor;
+uniform vec4 userColor;
 uniform vec4 drawMode;
 
 void main()
@@ -40,5 +41,5 @@ void main()
         return;
     }
 
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = light * userColor + vec4(specular, 0);
 }
