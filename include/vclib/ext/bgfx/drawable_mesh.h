@@ -238,7 +238,7 @@ private:
                 bgfx::makeRef(
                     mrb.triangleColorBufferData(),
                     mrb.triangleBufferSize() / 3 * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32);
+                BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
         }
     }
 
