@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <vclib/ext/qt/gui/drawable_object_frame.h>
 #include "ui_drawable_object_frame.h"
+#include <vclib/ext/qt/gui/drawable_object_frame.h>
 
 namespace vcl::qt {
 

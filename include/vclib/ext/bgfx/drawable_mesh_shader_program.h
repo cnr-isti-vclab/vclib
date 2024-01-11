@@ -57,7 +57,8 @@ public:
 
     DrawableMeshShaderProgram(const DrawableMeshShaderProgram&) = delete;
 
-    DrawableMeshShaderProgram& operator=(const DrawableMeshShaderProgram&) = delete;
+    DrawableMeshShaderProgram& operator=(const DrawableMeshShaderProgram&) =
+        delete;
 
     bgfx::ProgramHandle program() const { return p; };
 };
