@@ -41,7 +41,7 @@ class MeshRenderBuffers
     std::vector<float>    vNormals;
     std::vector<uint32_t> vColors;
     std::vector<float>    tNormals;
-    std::vector<float>    tColors;
+    std::vector<uint32_t> tColors;
     std::vector<float>    vTexCoords;
     std::vector<float>    wTexCoords;
     std::vector<short>    wTexIds;
@@ -116,7 +116,7 @@ public:
         return tNormals.data();
     }
 
-    const float* triangleColorBufferData() const
+    const uint32_t* triangleColorBufferData() const
     {
         if (tColors.empty())
             return nullptr;
@@ -296,7 +296,7 @@ private:
 
             if constexpr (vcl::HasPerFaceColor<MeshType>) {
                 if (vcl::isPerFaceColorAvailable(m)) {
-                    tColors.reserve(m.faceNumber() * 3);
+                    tColors.reserve(m.faceNumber());
                 }
             }
 
@@ -343,18 +343,14 @@ private:
                 if constexpr (vcl::HasPerFaceColor<MeshType>) {
                     if (vcl::isPerFaceColorAvailable(m)) {
                         if constexpr (vcl::HasTriangles<MeshType>) {
-                            tColors.push_back(f.color().redF());
-                            tColors.push_back(f.color().greenF());
-                            tColors.push_back(f.color().blueF());
+                            tColors.push_back(f.color().abgr());
                         }
                         else {
                             const uint fi = m.faceIndexIfCompact(m.index(f));
                             for (uint i = 0; i < triPolyMap.triangleNumber(fi);
                                  i++)
                             {
-                                tColors.push_back(f.color().redF());
-                                tColors.push_back(f.color().greenF());
-                                tColors.push_back(f.color().blueF());
+                                tColors.push_back(f.color().abgr());
                             }
                         }
                     }

@@ -202,7 +202,7 @@ private:
         const float*    vertexNormals   = mrb.vertexNormalBufferData();
         const uint32_t* vertexColors    = mrb.vertexColorBufferData();
         const float*    triangleNormals = mrb.triangleNormalBufferData();
-        const float*    triangleColors  = mrb.triangleColorBufferData();
+        const uint32_t* triangleColors  = mrb.triangleColorBufferData();
         const float*    vertTexCoords   = mrb.vertexTexCoordsBufferData();
         const float*    wedgTexCoords   = mrb.wedgeTexCoordsBufferData();
 
@@ -244,7 +244,7 @@ private:
 
                     if (mrs.isSurfaceShadingSmooth()) {
                         glBegin(GL_TRIANGLES);
-                        glColor3fv(&(triangleColors[tid_ptr]));
+                        glColor4ubv((GLubyte*)&(triangleColors[tid]));
                         glNormal3fv(&(vertexNormals[vid0_ptr]));
                         glVertex3fv(&(coords[vid0_ptr]));
                         glNormal3fv(&(vertexNormals[vid1_ptr]));
@@ -255,7 +255,7 @@ private:
                     }
                     else {
                         glBegin(GL_TRIANGLES);
-                        glColor3fv(&(triangleColors[tid_ptr]));
+                        glColor4ubv((GLubyte*)&(triangleColors[tid]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
                         glVertex3fv(&(coords[vid0_ptr]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
@@ -297,13 +297,13 @@ private:
                         int vid2_ptr = 3 * vid2;
 
                         glBegin(GL_TRIANGLES);
-                        glColor4uiv(&(vertexColors[vid0_ptr]));
+                        glColor4ubv((GLubyte*)&(vertexColors[vid0]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
                         glVertex3fv(&(coords[vid0_ptr]));
-                        glColor4uiv(&(vertexColors[vid1_ptr]));
+                        glColor4ubv((GLubyte*)&(vertexColors[vid1]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
                         glVertex3fv(&(coords[vid1_ptr]));
-                        glColor4uiv(&(vertexColors[vid2_ptr]));
+                        glColor4ubv((GLubyte*)&(vertexColors[vid2]));
                         glNormal3fv(&(triangleNormals[tid_ptr]));
                         glVertex3fv(&(coords[vid2_ptr]));
                         glEnd();
