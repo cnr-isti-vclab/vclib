@@ -47,6 +47,7 @@ class DrawableMesh : public GenericDrawableMesh
     bgfx::VertexBufferHandle vertexColorBH = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle triangleIndexBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle triangleColorBH = BGFX_INVALID_HANDLE;
 
     bgfx::UniformHandle meshColorUH = BGFX_INVALID_HANDLE;
     bgfx::UniformHandle userColorUH = BGFX_INVALID_HANDLE;
@@ -101,6 +102,7 @@ public:
         std::swap(vertexNormalBH, oth.vertexNormalBH);
         std::swap(vertexColorBH, oth.vertexColorBH);
         std::swap(triangleIndexBH, oth.triangleIndexBH);
+        std::swap(triangleColorBH, oth.triangleColorBH);
         std::swap(meshColorUH, oth.meshColorUH);
         std::swap(userColorUH, oth.userColorUH);
         std::swap(meshRenderSettingsUniforms, oth.meshRenderSettingsUniforms);
@@ -140,15 +142,19 @@ public:
         if (bgfx::isValid(program)) {
             bgfx::setVertexBuffer(0, vertexCoordBH);
 
-            if (bgfx::isValid(vertexNormalBH)) { // normals
+            if (bgfx::isValid(vertexNormalBH)) { // vertex normals
                 bgfx::setVertexBuffer(1, vertexNormalBH);
             }
 
-            if (bgfx::isValid(vertexColorBH)) { // colors
+            if (bgfx::isValid(vertexColorBH)) { // vertex colors
                 bgfx::setVertexBuffer(2, vertexColorBH);
             }
 
             bgfx::setIndexBuffer(triangleIndexBH);
+
+            if (bgfx::isValid(triangleColorBH)) { // triangle colors
+                bgfx::setBuffer(3, triangleColorBH, bgfx::Access::Read);
+            }
 
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
@@ -219,11 +225,21 @@ private:
                 vclayout);
         }
 
+        // triangle index buffer
         triangleIndexBH = bgfx::createIndexBuffer(
             bgfx::makeRef(
                 mrb.triangleBufferData(),
                 mrb.triangleBufferSize() * sizeof(uint32_t)),
             BGFX_BUFFER_INDEX32);
+
+        // triangle color buffer
+        if (mrb.triangleColorBufferData()) {
+            triangleColorBH = bgfx::createIndexBuffer(
+                bgfx::makeRef(
+                    mrb.triangleColorBufferData(),
+                    mrb.triangleBufferSize() / 3 * sizeof(uint32_t)),
+                BGFX_BUFFER_INDEX32);
+        }
     }
 
     void createBGFXUniforms()
@@ -245,6 +261,9 @@ private:
 
         if (bgfx::isValid(triangleIndexBH))
             bgfx::destroy(triangleIndexBH);
+
+        if (bgfx::isValid(triangleColorBH))
+            bgfx::destroy(triangleColorBH);
     }
 
     void destroyBGFXUniforms()
