@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <vclib/ext/qt/gui/mesh_render_settings_frame.h>
 #include "ui_mesh_render_settings_frame.h"
+#include <vclib/ext/qt/gui/mesh_render_settings_frame.h>
 
 #include <QColorDialog>
 #include <QStandardItemModel>
