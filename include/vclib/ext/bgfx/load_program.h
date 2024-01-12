@@ -114,8 +114,7 @@ inline bgfx::ProgramHandle loadProgram(
 
 } // namespace detail
 
-inline bgfx::ShaderHandle loadShader(
-    const std::string& name)
+inline bgfx::ShaderHandle loadShader(const std::string& name)
 {
     detail::BXFileReader fr;
     return detail::loadShader(fr.get(), name);

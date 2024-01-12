@@ -44,7 +44,7 @@ class DrawableMesh : public GenericDrawableMesh
 
     bgfx::VertexBufferHandle vertexCoordBH  = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle vertexNormalBH = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle vertexColorBH = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle vertexColorBH  = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle triangleIndexBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle triangleColorBH = BGFX_INVALID_HANDLE;
