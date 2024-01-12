@@ -27,7 +27,7 @@ vec4 unpackColor(uint color) {
 
 void main()
 {
-    int drawModeInt = floatBitsToInt(drawMode.x);
+    uint drawModeInt = floatBitsToUint(drawMode.x);
 
     // compute light
     float ambientStrength = 0.2;

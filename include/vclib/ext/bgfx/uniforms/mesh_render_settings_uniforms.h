@@ -43,7 +43,7 @@ public:
 
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
-        int drawMode = settings.drawMode();
+        uint drawMode = settings.drawMode();
 
         uniform[0] = intBitsToFloat(drawMode);
     }
