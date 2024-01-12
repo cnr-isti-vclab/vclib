@@ -59,6 +59,7 @@ set(HEADERS
     include/vclib/render/matrix.h
     include/vclib/render/mesh_render_buffers.h
     include/vclib/render/mesh_render_settings.h
+    include/vclib/render/mesh_render_settings_macros.h
     include/vclib/render/trackball.h
     include/vclib/render/lights/directional_light.h
 )

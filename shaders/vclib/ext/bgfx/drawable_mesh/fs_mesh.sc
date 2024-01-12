@@ -4,6 +4,7 @@ $input v_color
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
+#include <vclib/render/mesh_render_settings_macros.h>
 
 uniform vec4 cameraEyePos;
 uniform vec4 lightDir;
@@ -44,15 +45,15 @@ void main()
 
     vec4 light = vec4(ambient + diffuse, 1.0);
 
-    if (bool(drawModeInt & (1 << 14))) {
+    if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_VERTEX))) {
         gl_FragColor = light * v_color + vec4(specular, 0);
         return;
     }
-    if (bool(drawModeInt & (1 << 15))) {
+    if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_MESH))) {
         gl_FragColor = light * meshColor + vec4(specular, 0);
         return;
     }
-    if (bool(drawModeInt & (1 << 13))) {
+    if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_FACE))) {
         gl_FragColor = light * unpackColor(triangleColors[gl_PrimitiveID]) + vec4(specular, 0);
         return;
     }

@@ -25,7 +25,8 @@ function(_add_bgfx_shader FILE DIR TARGET)
 	endif()
 
 	if(NOT "${TYPE}" STREQUAL "")
-		set(COMMON FILE ${FILE} ${TYPE} INCLUDES ${BGFX_DIR}/src)
+		get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+		set(COMMON FILE ${FILE} ${TYPE} INCLUDES "${BGFX_DIR}/src;${VCLIB_RENDER_DIR}")
 		set(OUTPUTS "")
 		set(OUTPUTS_PRETTY "")
 
@@ -95,6 +96,8 @@ function(_add_bgfx_shader FILE DIR TARGET)
 		endforeach()
 
 		file(RELATIVE_PATH PRINT_NAME ${CMAKE_CURRENT_SOURCE_DIR} ${FILE})
+
+		message("COMMANDS: " ${COMMANDS})
 
 		add_custom_command(
 			MAIN_DEPENDENCY ${FILE}

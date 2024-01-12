@@ -26,6 +26,8 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/color.h>
 
+#include "mesh_render_settings_macros.h"
+
 namespace vcl {
 
 /**
@@ -58,18 +60,9 @@ namespace vcl {
 class MeshRenderSettings
 {
     enum {
-        DRAW_MESH = 1 << 0, // mesh visibility
-
         // points
-        DRAW_POINTS              = 1 << 1, // point visibility
-        DRAW_POINTS_PIXEL        = 1 << 2, // draw points as pixels
-        DRAW_POINTS_CIRCLE       = 1 << 3, // draw points as circles
-        DRAW_POINTS_COLOR_VERTEX = 1 << 4, // use vertex colors for points
-        DRAW_POINTS_COLOR_MESH   = 1 << 5, // use mesh color for points
-        DRAW_POINTS_COLOR_USER   = 1 << 6, // use user color for points
 
         // surface
-        DRAW_SURF              = 1 << 10, // surface visibility
         DRAW_SURF_FLAT         = 1 << 11, // flat shading
         DRAW_SURF_SMOOTH       = 1 << 12, // smooth shading
         DRAW_SURF_COLOR_FACE   = 1 << 13, // use face color for surface
@@ -110,24 +103,24 @@ public:
 
     // rendering options capability of the mesh
 
-    bool canBeVisible() const { return dModeCapability & DRAW_MESH; }
+    bool canBeVisible() const { return dModeCapability & VCL_MRS_DRAW_MESH; }
 
     bool canPointCloudBeVisible() const
     {
-        return dModeCapability & DRAW_POINTS;
+        return dModeCapability & VCL_MRS_DRAW_POINTS;
     }
 
     bool canPointCloudBeColoredPerVertex() const
     {
-        return dModeCapability & DRAW_POINTS_COLOR_VERTEX;
+        return dModeCapability & VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
     }
 
     bool canPointCloudBeColoredPerMesh() const
     {
-        return dModeCapability & DRAW_POINTS_COLOR_MESH;
+        return dModeCapability & VCL_MRS_DRAW_POINTS_COLOR_MESH;
     }
 
-    bool canSurfaceBeVisible() const { return dModeCapability & DRAW_SURF; }
+    bool canSurfaceBeVisible() const { return dModeCapability & VCL_MRS_DRAW_SURF; }
 
     bool canSurfaceBeSmooth() const
     {
@@ -175,23 +168,23 @@ public:
 
     int drawModeCapability() const { return dModeCapability; }
 
-    bool isVisible() const { return dMode & DRAW_MESH; }
+    bool isVisible() const { return dMode & VCL_MRS_DRAW_MESH; }
 
-    bool isPointCloudVisible() const { return dMode & DRAW_POINTS; }
+    bool isPointCloudVisible() const { return dMode & VCL_MRS_DRAW_POINTS; }
 
     bool isPointCloudColorPerVertex() const
     {
-        return dMode & DRAW_POINTS_COLOR_VERTEX;
+        return dMode & VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
     }
 
     bool isPointCloudColorPerMesh() const
     {
-        return dMode & DRAW_POINTS_COLOR_MESH;
+        return dMode & VCL_MRS_DRAW_POINTS_COLOR_MESH;
     }
 
     bool isPointCloudColorUserDefined() const
     {
-        return dMode & DRAW_POINTS_COLOR_USER;
+        return dMode & VCL_MRS_DRAW_POINTS_COLOR_USER;
     }
 
     int pointWidth() const { return pWidth; }
@@ -208,7 +201,7 @@ public:
 
     const float* pointCloudUserColorData() const { return pUserColor; }
 
-    bool isSurfaceVisible() const { return dMode & DRAW_SURF; }
+    bool isSurfaceVisible() const { return dMode & VCL_MRS_DRAW_SURF; }
 
     bool isSurfaceShadingFlat() const { return dMode & DRAW_SURF_FLAT; }
 
@@ -284,9 +277,9 @@ public:
     {
         if (canBeVisible()) {
             if (b)
-                dMode |= DRAW_MESH;
+                dMode |= VCL_MRS_DRAW_MESH;
             else
-                dMode &= ~DRAW_MESH;
+                dMode &= ~VCL_MRS_DRAW_MESH;
             return true;
         }
         else {
@@ -298,9 +291,9 @@ public:
     {
         if (canPointCloudBeVisible()) {
             if (b)
-                dMode |= DRAW_POINTS;
+                dMode |= VCL_MRS_DRAW_POINTS;
             else
-                dMode &= ~DRAW_POINTS;
+                dMode &= ~VCL_MRS_DRAW_POINTS;
             return true;
         }
         else {
@@ -311,9 +304,9 @@ public:
     bool setPointCloudColorPerVertex()
     {
         if (canSurfaceBeColoredPerVertex()) {
-            dMode |= DRAW_POINTS_COLOR_VERTEX;
-            dMode &= ~DRAW_POINTS_COLOR_MESH;
-            dMode &= ~DRAW_POINTS_COLOR_USER;
+            dMode |= VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_MESH;
+            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_USER;
             return true;
         }
         else {
@@ -324,9 +317,9 @@ public:
     bool setPointCloudColorPerMesh()
     {
         if (canSurfaceBeColoredPerMesh()) {
-            dMode &= ~DRAW_POINTS_COLOR_VERTEX;
-            dMode |= DRAW_POINTS_COLOR_MESH;
-            dMode &= ~DRAW_POINTS_COLOR_USER;
+            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
+            dMode |= VCL_MRS_DRAW_POINTS_COLOR_MESH;
+            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_USER;
             return true;
         }
         else {
@@ -337,9 +330,9 @@ public:
     bool setPointCloudColorUserDefined()
     {
         if (canPointCloudBeVisible()) {
-            dMode &= ~DRAW_POINTS_COLOR_VERTEX;
-            dMode &= ~DRAW_POINTS_COLOR_MESH;
-            dMode |= DRAW_POINTS_COLOR_USER;
+            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_MESH;
+            dMode |= VCL_MRS_DRAW_POINTS_COLOR_USER;
             return true;
         }
         else {
@@ -390,9 +383,9 @@ public:
     {
         if (canSurfaceBeVisible()) {
             if (b)
-                dMode |= DRAW_SURF;
+                dMode |= VCL_MRS_DRAW_SURF;
             else
-                dMode &= ~DRAW_SURF;
+                dMode &= ~VCL_MRS_DRAW_SURF;
             return true;
         }
         else {
@@ -710,28 +703,28 @@ public:
         dModeCapability = 0;
 
         if (m.vertexNumber() > 0) {
-            dModeCapability |= DRAW_MESH;
+            dModeCapability |= VCL_MRS_DRAW_MESH;
 
             // -- Points --
-            dModeCapability |= DRAW_POINTS;
-            dModeCapability |= DRAW_POINTS_PIXEL;
-            dModeCapability |= DRAW_POINTS_CIRCLE;
-            dModeCapability |= DRAW_POINTS_COLOR_USER;
+            dModeCapability |= VCL_MRS_DRAW_POINTS;
+            dModeCapability |= VCL_MRS_DRAW_POINTS_PIXEL;
+            dModeCapability |= VCL_MRS_DRAW_POINTS_CIRCLE;
+            dModeCapability |= VCL_MRS_DRAW_POINTS_COLOR_USER;
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (vcl::isPerVertexColorAvailable(m)) {
-                    dModeCapability |= DRAW_POINTS_COLOR_VERTEX;
+                    dModeCapability |= VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
                 }
             }
 
             if constexpr (vcl::HasColor<MeshType>) {
-                dModeCapability |= DRAW_POINTS_COLOR_MESH;
+                dModeCapability |= VCL_MRS_DRAW_POINTS_COLOR_MESH;
             }
 
             // -- Surface and Wireframe --
             if constexpr (vcl::HasFaces<MeshType>) {
                 if (m.faceNumber() > 0) {
-                    dModeCapability |= DRAW_SURF;
+                    dModeCapability |= VCL_MRS_DRAW_SURF;
                     dModeCapability |= DRAW_SURF_FLAT;
                     dModeCapability |= DRAW_SURF_COLOR_USER;
                     dModeCapability |= DRAW_WIREFRAME;
