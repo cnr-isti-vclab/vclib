@@ -41,9 +41,7 @@ public:
             "vclib/ext/bgfx/drawable_mesh/fs_mesh");
     }
 
-    DrawableMeshShaderProgram(
-        const std::string& vs,
-        const std::string& fs)
+    DrawableMeshShaderProgram(const std::string& vs, const std::string& fs)
     {
         p = loadProgram(vs, fs);
     };
