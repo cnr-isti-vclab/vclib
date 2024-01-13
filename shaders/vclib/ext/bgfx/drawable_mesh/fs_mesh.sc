@@ -59,18 +59,29 @@ void main()
 
     vec4 light = vec4(ambient + diffuse, 1.0);
 
+    vec4 color = userSurfaceColor;
+
     if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_VERTEX))) {
-        gl_FragColor = light * v_color + vec4(specular, 0);
-        return;
+        color = v_color;
     }
     if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_MESH))) {
-        gl_FragColor = light * meshColor + vec4(specular, 0);
-        return;
+        color = meshColor;
     }
     if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_FACE))) {
-        gl_FragColor = light * unpackColor(triangleColors[gl_PrimitiveID]) + vec4(specular, 0);
-        return;
+        color = unpackColor(triangleColors[gl_PrimitiveID]);
     }
 
-    gl_FragColor = light * userSurfaceColor + vec4(specular, 0);
+    if (bool(drawModeInt & (VCL_MRS_DRAW_WIREFRAME))) {
+        float wfThickness = 1;
+        vec3 wfColor = vec3(1.0, 1.0, 1.0);
+
+       vec3 fw = abs(dFdx(color)) + abs(dFdy(color));
+       vec3 val = smoothstep(vec3_splat(0.0), fw*wfThickness, color);
+       float edge = min(min(val.x, val.y), val.z); // Gets to 0.0 when close to edges.
+
+       vec3 edgeCol = mix(color.xyz, wfColor, 1.0);
+       color.xyz = mix(wfColor, color.xyz, edge);
+    }
+
+    gl_FragColor = light * color + vec4(specular, 0);
 }
