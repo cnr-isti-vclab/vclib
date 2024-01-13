@@ -99,7 +99,7 @@ public:
 
         init.resolution.width  = width;
         init.resolution.height = height;
-        init.resolution.reset  = BGFX_RESET_VSYNC;
+        init.resolution.reset  = BGFX_RESET_NONE;
         bgfx::init(init);
 
         bgfx::setViewClear(
@@ -125,7 +125,7 @@ public:
 
     void resize(uint width, uint height)
     {
-        bgfx::reset(width, height, BGFX_RESET_VSYNC);
+        bgfx::reset(width, height, BGFX_RESET_NONE);
         bgfx::setViewRect(viewID, 0, 0, bgfx::BackbufferRatio::Equal);
         bgfx::touch(viewID);
     }
