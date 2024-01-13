@@ -98,7 +98,10 @@ public:
         return dModeCapability & VCL_MRS_DRAW_POINTS_COLOR_MESH;
     }
 
-    bool canSurfaceBeVisible() const { return dModeCapability & VCL_MRS_DRAW_SURF; }
+    bool canSurfaceBeVisible() const
+    {
+        return dModeCapability & VCL_MRS_DRAW_SURF;
+    }
 
     bool canSurfaceBeSmooth() const
     {
@@ -183,16 +186,25 @@ public:
 
     bool isSurfaceShadingFlat() const { return dMode & VCL_MRS_DRAW_SURF_FLAT; }
 
-    bool isSurfaceShadingSmooth() const { return dMode & VCL_MRS_DRAW_SURF_SMOOTH; }
+    bool isSurfaceShadingSmooth() const
+    {
+        return dMode & VCL_MRS_DRAW_SURF_SMOOTH;
+    }
 
-    bool isSurfaceColorPerFace() const { return dMode & VCL_MRS_DRAW_SURF_COLOR_FACE; }
+    bool isSurfaceColorPerFace() const
+    {
+        return dMode & VCL_MRS_DRAW_SURF_COLOR_FACE;
+    }
 
     bool isSurfaceColorPerVertex() const
     {
         return dMode & VCL_MRS_DRAW_SURF_COLOR_VERTEX;
     }
 
-    bool isSurfaceColorPerMesh() const { return dMode & VCL_MRS_DRAW_SURF_COLOR_MESH; }
+    bool isSurfaceColorPerMesh() const
+    {
+        return dMode & VCL_MRS_DRAW_SURF_COLOR_MESH;
+    }
 
     bool isSurfaceColorUserDefined() const
     {
