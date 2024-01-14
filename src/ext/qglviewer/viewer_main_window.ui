@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="vcl::qgl::Viewer" name="glArea" native="true">
+     <widget class="vcl::qgl::MinimalViewerWidget" name="glArea" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -91,9 +91,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>vcl::qgl::Viewer</class>
+   <class>vcl::qgl::MinimalViewerWidget</class>
    <extends>QWidget</extends>
-   <header>vclib/ext/qglviewer/viewer.h</header>
+   <header>vclib/ext/qglviewer/minimal_viewer_widget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

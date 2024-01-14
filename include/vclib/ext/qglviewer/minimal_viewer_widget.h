@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QGLVIEWER_VIEWER_H
-#define VCL_EXT_QGLVIEWER_VIEWER_H
+#ifndef VCL_EXT_QGLVIEWER_MINIMAL_VIEWER_WIDGET_H
+#define VCL_EXT_QGLVIEWER_MINIMAL_VIEWER_WIDGET_H
 
 #include <memory>
 
@@ -33,19 +33,22 @@
 
 namespace vcl::qgl {
 
-class Viewer : public QGLViewer
+class MinimalViewerWidget : public QGLViewer
 {
     // this GLArea does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> drawList;
 
 public:
-    Viewer(QWidget* parent = nullptr) : QGLViewer(parent)
+    MinimalViewerWidget(QWidget* parent = nullptr) : QGLViewer(parent)
     {
         drawList = std::make_shared<DrawableObjectVector>();
     }
 
-    Viewer(std::shared_ptr<DrawableObjectVector> v, QWidget* parent = nullptr) :
-            QGLViewer(parent), drawList(v)
+    MinimalViewerWidget(
+        std::shared_ptr<DrawableObjectVector> v,
+        QWidget*                              parent = nullptr) :
+            QGLViewer(parent),
+            drawList(v)
     {
     }
 
@@ -88,4 +91,4 @@ protected:
 
 } // namespace vcl::qgl
 
-#endif // VCL_EXT_QGLVIEWER_VIEWER_H
+#endif // VCL_EXT_QGLVIEWER_MINIMAL_VIEWER_WIDGET_H
