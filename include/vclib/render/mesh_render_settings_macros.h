@@ -38,15 +38,16 @@
 #define VCL_MRS_DRAW_POINTS_COLOR_USER   uint(1 << 6) // user color for points
 
 // surface
-#define VCL_MRS_DRAW_SURF              uint(1 << 10) // surface visibility
-#define VCL_MRS_DRAW_SURF_FLAT         uint(1 << 11) // flat shading
-#define VCL_MRS_DRAW_SURF_SMOOTH       uint(1 << 12) // smooth shading
-#define VCL_MRS_DRAW_SURF_COLOR_FACE   uint(1 << 13) // face color for surface
-#define VCL_MRS_DRAW_SURF_COLOR_VERTEX uint(1 << 14) // vertex color for surface
-#define VCL_MRS_DRAW_SURF_COLOR_MESH   uint(1 << 15) // mesh color for surface
-#define VCL_MRS_DRAW_SURF_COLOR_USER   uint(1 << 16) // user color for surface
-#define VCL_MRS_DRAW_SURF_TEX_VERTEX   uint(1 << 17) // per vertex texcoords
-#define VCL_MRS_DRAW_SURF_TEX_WEDGE    uint(1 << 18) // per wedge texcoords
+#define VCL_MRS_DRAW_SURF                uint(1 << 10) // surface visibility
+#define VCL_MRS_DRAW_SURF_SHADING_NONE   uint(1 << 11) // no shading
+#define VCL_MRS_DRAW_SURF_SHADING_FLAT   uint(1 << 12) // flat shading
+#define VCL_MRS_DRAW_SURF_SHADING_SMOOTH uint(1 << 13) // smooth shading
+#define VCL_MRS_DRAW_SURF_COLOR_FACE     uint(1 << 14) // face color for surface
+#define VCL_MRS_DRAW_SURF_COLOR_VERTEX   uint(1 << 15) // vert color for surface
+#define VCL_MRS_DRAW_SURF_COLOR_MESH     uint(1 << 16) // mesh color for surface
+#define VCL_MRS_DRAW_SURF_COLOR_USER     uint(1 << 17) // user color for surface
+#define VCL_MRS_DRAW_SURF_TEX_VERTEX     uint(1 << 18) // per vertex texcoords
+#define VCL_MRS_DRAW_SURF_TEX_WEDGE      uint(1 << 19) // per wedge texcoords
 
 // wireframe
 #define VCL_MRS_DRAW_WIREFRAME            uint(1 << 20) // draw wireframe

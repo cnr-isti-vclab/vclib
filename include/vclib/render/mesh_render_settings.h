@@ -103,9 +103,14 @@ public:
         return dModeCapability & VCL_MRS_DRAW_SURF;
     }
 
+    bool canSurfaceBeFlat() const
+    {
+        return dModeCapability & VCL_MRS_DRAW_SURF_SHADING_FLAT;
+    }
+
     bool canSurfaceBeSmooth() const
     {
-        return dModeCapability & VCL_MRS_DRAW_SURF_SMOOTH;
+        return dModeCapability & VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
     }
 
     bool canSurfaceBeColoredPerFace() const
@@ -184,11 +189,11 @@ public:
 
     bool isSurfaceVisible() const { return dMode & VCL_MRS_DRAW_SURF; }
 
-    bool isSurfaceShadingFlat() const { return dMode & VCL_MRS_DRAW_SURF_FLAT; }
+    bool isSurfaceShadingFlat() const { return dMode & VCL_MRS_DRAW_SURF_SHADING_FLAT; }
 
     bool isSurfaceShadingSmooth() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_SMOOTH;
+        return dMode & VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
     }
 
     bool isSurfaceColorPerFace() const
@@ -384,14 +389,15 @@ public:
     }
 
     /**
-     * @brief Sets the visibility of the surface flat (using triangle normals).
-     * Unsets automatically the smooth shading.
+     * @brief Unsets the shading of the surface (no light).
+     * Unsets automatically the smooth and flat shadings.
      */
-    bool setSurfaceShadingFlat()
+    bool setSurfaceShadingNone()
     {
         if (canSurfaceBeVisible()) {
-            dMode |= VCL_MRS_DRAW_SURF_FLAT;
-            dMode &= ~VCL_MRS_DRAW_SURF_SMOOTH;
+            dMode |= VCL_MRS_DRAW_SURF_SHADING_NONE;
+            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_FLAT;
+            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
             return true;
         }
         else {
@@ -400,14 +406,32 @@ public:
     }
 
     /**
-     * @brief Sets the visibility of the surface smooth (using vertex normals).
-     * Unsets automatically the flat shading.
+     * @brief Sets the shading of the surface flat (using triangle normals).
+     * Unsets automatically the none and smooth shading.
+     */
+    bool setSurfaceShadingFlat()
+    {
+        if (canSurfaceBeFlat()) {
+            dMode |= VCL_MRS_DRAW_SURF_SHADING_FLAT;
+            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_NONE;
+            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * @brief Sets the shading of the surface smooth (using vertex normals).
+     * Unsets automatically the none and flat shading.
      */
     bool setSurfaceShadingSmooth()
     {
         if (canSurfaceBeSmooth()) {
-            dMode |= VCL_MRS_DRAW_SURF_SMOOTH;
-            dMode &= ~VCL_MRS_DRAW_SURF_FLAT;
+            dMode |= VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
+            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_NONE;
+            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_FLAT;
             return true;
         }
         else {
@@ -715,7 +739,7 @@ public:
             if constexpr (vcl::HasFaces<MeshType>) {
                 if (m.faceNumber() > 0) {
                     dModeCapability |= VCL_MRS_DRAW_SURF;
-                    dModeCapability |= VCL_MRS_DRAW_SURF_FLAT;
+                    dModeCapability |= VCL_MRS_DRAW_SURF_SHADING_NONE;
                     dModeCapability |= VCL_MRS_DRAW_SURF_COLOR_USER;
                     dModeCapability |= VCL_MRS_DRAW_WIREFRAME;
                     dModeCapability |= VCL_MRS_DRAW_WIREFRAME_COLOR_USER;
@@ -725,9 +749,15 @@ public:
                         dModeCapability |= VCL_MRS_DRAW_WIREFRAME_COLOR_MESH;
                     }
 
+                    if constexpr (vcl::HasPerFaceNormal<MeshType>) {
+                        if (vcl::isPerFaceNormalAvailable(m)) {
+                            dModeCapability |= VCL_MRS_DRAW_SURF_SHADING_FLAT;
+                        }
+                    }
+
                     if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                         if (vcl::isPerVertexNormalAvailable(m))
-                            dModeCapability |= VCL_MRS_DRAW_SURF_SMOOTH;
+                            dModeCapability |= VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
                     }
 
                     if constexpr (vcl::HasPerFaceColor<MeshType>) {
@@ -770,20 +800,23 @@ public:
         dMode = 0;
 
         // default settings - ignored if not available
-        setPointCloudColorUserDefined();
-        setSurfaceColorUserDefined();
         setWireframeColorUserDefined();
 
         if (canBeVisible()) {
             setVisibility(true);
             if (canSurfaceBeVisible()) {
                 setSurfaceVisibility(true);
+                // shading
                 if (canSurfaceBeSmooth()) {
                     setSurfaceShadingSmooth();
                 }
-                else {
+                else if (canSurfaceBeFlat()) {
                     setSurfaceShadingFlat();
                 }
+                else {
+                    setSurfaceShadingNone();
+                }
+                // color
                 if (canSurfaceBeColoredPerVertex()) {
                     setSurfaceColorPerVertex();
                 }
@@ -798,6 +831,8 @@ public:
                 }
                 else if (canSurfaceBeColoredPerMesh()) {
                     setSurfaceColorPerMesh();
+                } else {
+                    setSurfaceColorUserDefined();
                 }
             }
             else {
@@ -808,6 +843,9 @@ public:
                     }
                     else if (canPointCloudBeColoredPerMesh()) {
                         setPointCloudColorPerMesh();
+                    }
+                    else {
+                        setPointCloudColorUserDefined();
                     }
                 }
             }
