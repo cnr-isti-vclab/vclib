@@ -36,6 +36,15 @@ MinimalViewerWindow::MinimalViewerWindow(
 {
 }
 
+
+MinimalViewerWindow::MinimalViewerWindow(QWindow* parent) :
+        MinimalViewerWindow(
+            std::make_shared<DrawableObjectVector>(),
+            bgfx::RendererType::Count,
+            parent)
+{
+}
+
 MinimalViewerWindow::MinimalViewerWindow(
     std::shared_ptr<DrawableObjectVector> v,
     bgfx::RendererType::Enum              renderType,

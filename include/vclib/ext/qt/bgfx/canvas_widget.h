@@ -51,24 +51,25 @@ template<typename CanvasWindow>
 class CanvasWidget : public QWidget
 {
 public:
-    explicit CanvasWidget(QWidget* parent = nullptr) : QWidget(parent)
+    explicit CanvasWidget(
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWidget*                 parent     = nullptr) :
+            QWidget(parent)
     {
         setGeometry(100, 100, 1024, 768);
 
         // Set layout
         QVBoxLayout* layout = new QVBoxLayout;
 
-#ifdef Q_OS_LINUX
-        const auto rt = bgfx::RendererType::Count;
-        // const auto rt = bgfx::RendererType::OpenGL;
-#else
-        const auto rt = bgfx::RendererType::Count; // default
-#endif
-
-        canvasWindow = new CanvasWindow(rt);
+        canvasWindow = new CanvasWindow(renderType);
         layout->addWidget(QWidget::createWindowContainer(canvasWindow, this));
 
         setLayout(layout);
+    }
+
+    explicit CanvasWidget(QWidget* parent) :
+            CanvasWidget(bgfx::RendererType::Count, parent)
+    {
     }
 
     ~CanvasWidget() {}

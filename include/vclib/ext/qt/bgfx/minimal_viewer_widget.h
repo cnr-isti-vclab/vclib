@@ -28,7 +28,39 @@
 
 namespace vcl::qbgf {
 
-using MinimalViewerWidget = CanvasWidget<MinimalViewerWindow>;
+class MinimalViewerWidget : public CanvasWidget<MinimalViewerWindow>
+{
+public:
+    MinimalViewerWidget(
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWidget*                 parent     = nullptr) :
+            CanvasWidget<MinimalViewerWindow>(renderType, parent)
+    {
+    }
+
+    MinimalViewerWidget(QWidget* parent) :
+            CanvasWidget<MinimalViewerWindow>(parent)
+    {
+    }
+
+    MinimalViewerWidget(
+        std::shared_ptr<DrawableObjectVector> v,
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWidget*                 parent     = nullptr) :
+            CanvasWidget<MinimalViewerWindow>(renderType, parent)
+    {
+        setDrawableObjectVector(v);
+    }
+
+    virtual ~MinimalViewerWidget() = default;
+
+    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
+    {
+        canvasWindow->setDrawableObjectVector(v);
+    }
+
+    void fitScene() { canvasWindow->fitScene(); }
+};
 
 } // namespace vcl::qbgf
 

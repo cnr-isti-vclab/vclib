@@ -46,6 +46,8 @@ public:
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
         QWindow*                 parent     = nullptr);
 
+    MinimalViewerWindow(QWindow* parent);
+
     MinimalViewerWindow(
         std::shared_ptr<DrawableObjectVector> v,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
