@@ -177,6 +177,12 @@ public:
 
     DrawableMesh* clone() const { return new DrawableMesh(*this); }
 
+    void setVisibility(bool vis)
+    {
+        GenericDrawableMesh::setVisibility(vis);
+        meshRenderSettingsUniforms.updateSettings(mrs);
+    }
+
     void setRenderSettings(const MeshRenderSettings& rs)
     {
         GenericDrawableMesh::setRenderSettings(rs);

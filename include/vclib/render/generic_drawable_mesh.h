@@ -44,7 +44,7 @@ public:
 
     const MeshRenderSettings& renderSettings() const { return mrs; }
 
-    void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
+    virtual void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
 
     virtual void setShaderProgram(const GenericDrawableMeshShaderProgram&) {};
 

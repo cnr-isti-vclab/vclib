@@ -78,6 +78,11 @@ public:
 
     const CanvasWindow* window() const { return canvasWindow; }
 
+    void update() {
+        canvasWindow->update();
+        QWidget::update();
+    }
+
     virtual void draw() { canvasWindow->draw(); }
 
     void keyPressEvent(QKeyEvent* event) override
