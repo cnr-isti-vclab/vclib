@@ -189,7 +189,10 @@ public:
 
     bool isSurfaceVisible() const { return dMode & VCL_MRS_DRAW_SURF; }
 
-    bool isSurfaceShadingFlat() const { return dMode & VCL_MRS_DRAW_SURF_SHADING_FLAT; }
+    bool isSurfaceShadingFlat() const
+    {
+        return dMode & VCL_MRS_DRAW_SURF_SHADING_FLAT;
+    }
 
     bool isSurfaceShadingSmooth() const
     {
@@ -831,7 +834,8 @@ public:
                 }
                 else if (canSurfaceBeColoredPerMesh()) {
                     setSurfaceColorPerMesh();
-                } else {
+                }
+                else {
                     setSurfaceColorUserDefined();
                 }
             }

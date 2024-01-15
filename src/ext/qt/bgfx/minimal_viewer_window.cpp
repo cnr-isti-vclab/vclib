@@ -36,7 +36,6 @@ MinimalViewerWindow::MinimalViewerWindow(
 {
 }
 
-
 MinimalViewerWindow::MinimalViewerWindow(QWindow* parent) :
         MinimalViewerWindow(
             std::make_shared<DrawableObjectVector>(),
