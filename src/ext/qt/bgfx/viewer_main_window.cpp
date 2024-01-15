@@ -20,12 +20,12 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "ext/qglviewer/ui_viewer_main_window.h"
-#include <vclib/ext/qglviewer/viewer_main_window.h>
+#include "ext/qt/bgfx/ui_viewer_main_window.h"
+#include <vclib/ext/qt/bgfx/viewer_main_window.h>
 
 #include <vclib/render/generic_drawable_mesh.h>
 
-namespace vcl::qgl {
+namespace vcl::qbgf {
 
 /**
  * @brief ViewerMainWindow constructor.
@@ -78,6 +78,7 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
 
 ViewerMainWindow::~ViewerMainWindow()
 {
+    drawVector->clear();
     delete ui;
 }
 

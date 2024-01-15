@@ -107,6 +107,15 @@ public:
 
     std::size_t size() const { return drawVector.size(); }
 
+    void clear()
+    {
+        // delete all the DrawableObjects
+        for (DrawableObject* obj : drawVector) {
+            delete obj;
+        }
+        drawVector.clear();
+    }
+
     vcl::Box3d boundingBox(bool onlyVisible = true) const
     {
         Box3d bb;

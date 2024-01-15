@@ -138,11 +138,16 @@ if (TARGET vclib-external-qt)
             include/vclib/ext/qt/bgfx/canvas_widget.h
             include/vclib/ext/qt/bgfx/canvas_window.h
             include/vclib/ext/qt/bgfx/minimal_viewer_widget.h
-            include/vclib/ext/qt/bgfx/minimal_viewer_window.h)
+            include/vclib/ext/qt/bgfx/minimal_viewer_window.h
+            include/vclib/ext/qt/bgfx/viewer_main_window.h)
 
         list(APPEND SOURCES_LIB
             src/ext/qt/bgfx/canvas_window.cpp
-            src/ext/qt/bgfx/minimal_viewer_window.cpp)
+            src/ext/qt/bgfx/minimal_viewer_window.cpp
+            src/ext/qt/bgfx/viewer_main_window.cpp)
+
+        list(APPEND FORMS_LIB
+            src/ext/qt/bgfx/viewer_main_window.ui)
     endif()
 endif()
 
