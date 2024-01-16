@@ -140,7 +140,7 @@ public:
 
     void init() {}
 
-    void draw() const
+    void draw()
     {
         if (bgfx::isValid(program)) {
             bgfx::setVertexBuffer(0, vertexCoordBH);

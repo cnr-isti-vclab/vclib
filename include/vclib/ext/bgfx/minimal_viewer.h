@@ -103,7 +103,7 @@ public:
 
         directionalLightUniforms.setUniforms();
 
-        for (const DrawableObject* obj : *drawList)
+        for (DrawableObject* obj : *drawList)
             obj->draw();
     }
 };

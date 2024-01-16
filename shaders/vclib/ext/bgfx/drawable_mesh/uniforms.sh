@@ -5,8 +5,7 @@
 
 #include <uniforms/camera_uniforms.sh>
 #include <uniforms/directional_light_uniforms.sh>
-
-uniform vec4 drawMode;
+#include <uniforms/mesh_render_settings_uniforms.sh>
 
 uniform vec4 meshColor;
 uniform vec4 userSurfaceColor;

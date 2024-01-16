@@ -10,10 +10,10 @@ BUFFER_RO(triangleColors, uint, 1);
 
 void main()
 {
-    uint drawModeInt = floatBitsToUint(drawMode.x);
+    uint drawMode = floatBitsToUint(u_drawModeFloat);
 
     // if not drawing mesh, discard
-    if (!bool(drawModeInt & VCL_MRS_DRAW_MESH)) {
+    if (!bool(drawMode & VCL_MRS_DRAW_MESH)) {
         discard;
     }
 
@@ -25,14 +25,14 @@ void main()
     vec3 normal = v_normal;
 
     // if flat shading, compute normal of face
-    if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_SHADING_FLAT))) {
+    if (bool(drawMode & (VCL_MRS_DRAW_SURF_SHADING_FLAT))) {
         vec3 X = dFdx(v_pos);
         vec3 Y = dFdy(v_pos);
         normal = normalize(cross(X,Y));
     }
 
     // if flat or smooth shading, compute light
-    if (!bool(drawModeInt & (VCL_MRS_DRAW_SURF_SHADING_NONE))) {
+    if (!bool(drawMode & (VCL_MRS_DRAW_SURF_SHADING_NONE))) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
 
@@ -47,18 +47,18 @@ void main()
     /***** compute color ******/
     vec4 color = userSurfaceColor;
 
-    if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_VERTEX))) {
+    if (bool(drawMode & (VCL_MRS_DRAW_SURF_COLOR_VERTEX))) {
         color = v_color;
     }
-    if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_MESH))) {
+    if (bool(drawMode & (VCL_MRS_DRAW_SURF_COLOR_MESH))) {
         color = meshColor;
     }
-    if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_FACE))) {
+    if (bool(drawMode & (VCL_MRS_DRAW_SURF_COLOR_FACE))) {
         color = uintToVec4Color(triangleColors[gl_PrimitiveID]);
     }
 
     /***** compute wireframe ******/
-    if (bool(drawModeInt & (VCL_MRS_DRAW_WIREFRAME))) {
+    if (bool(drawMode & (VCL_MRS_DRAW_WIREFRAME))) {
         float wfThickness = 1;
         vec3 wfColor = vec3(1.0, 1.0, 1.0);
 

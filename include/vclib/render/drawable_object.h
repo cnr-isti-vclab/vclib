@@ -71,7 +71,7 @@ public:
      * @brief This member function must draw the object.
      * It will be called at every frame.
      */
-    virtual void draw() const = 0;
+    virtual void draw() = 0;
 
     /**
      * @brief This member function is used to find a good camera position

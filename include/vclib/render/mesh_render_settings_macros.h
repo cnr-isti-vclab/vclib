@@ -27,6 +27,10 @@
  * These macros are used both on the library and on the shader side.
  */
 
+#define VCL_MRS_PRIMITIVE_POINTS uint(0)
+#define VCL_MRS_PRIMITIVE_LINES uint(1)
+#define VCL_MRS_PRIMITIVE_TRIANGLES uint(2)
+
 #define VCL_MRS_DRAW_MESH uint(1 << 0) // mesh visibility
 
 // points
@@ -54,7 +58,7 @@
 #define VCL_MRS_DRAW_WIREFRAME_COLOR_USER uint(1 << 21) // user color for wrfrm
 #define VCL_MRS_DRAW_WIREFRAME_COLOR_MESH uint(1 << 22) // mesh color for wrfrm
 
-// bounding box
+// bounding box - TODO: remove this
 #define VCL_MRS_DRAW_BOUNDINGBOX uint(1 << 25) // bounding box visibility
 
 #endif // VCL_RENDER_MESH_RENDER_SETTINGS_MACROS_H

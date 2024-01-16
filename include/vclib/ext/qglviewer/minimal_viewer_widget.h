@@ -84,7 +84,7 @@ public:
 protected:
     virtual void draw()
     {
-        for (const DrawableObject* obj : *drawList)
+        for (DrawableObject* obj : *drawList)
             obj->draw();
     }
 };
