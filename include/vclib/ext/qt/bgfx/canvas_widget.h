@@ -78,7 +78,8 @@ public:
 
     const CanvasWindow* window() const { return canvasWindow; }
 
-    void update() {
+    void update()
+    {
         canvasWindow->update();
         QWidget::update();
     }
