@@ -15,7 +15,7 @@ uniform vec4 meshColor;
 uniform vec4 userSurfaceColor;
 uniform vec4 drawMode;
 
-BUFFER_RO(triangleColors, uint, 3);
+BUFFER_RO(triangleColors, uint, 1);
 
 vec4 unpackColor(uint color)
 {
