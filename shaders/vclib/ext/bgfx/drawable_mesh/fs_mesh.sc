@@ -3,8 +3,7 @@ $input v_normal
 $input v_color
 $input v_bc
 
-#include <bgfx_shader.sh>
-#include <bgfx_compute.sh>
+#include <common.sh>
 #include <vclib/render/mesh_render_settings_macros.h>
 
 uniform vec4 cameraEyePos;
@@ -16,16 +15,6 @@ uniform vec4 userSurfaceColor;
 uniform vec4 drawMode;
 
 BUFFER_RO(triangleColors, uint, 1);
-
-vec4 unpackColor(uint color)
-{
-    return vec4(
-        float(color & uint(0x000000FF)) / 255.0,
-        float((color & uint(0x0000FF00)) >> uint(8)) / 255.0,
-        float((color & uint(0x00FF0000)) >> uint(16)) / 255.0,
-        float((color & uint(0xFF000000)) >> uint(24)) / 255.0
-        );
-}
 
 vec4 computeLight(vec3 lightDir, vec3 lightColor, vec3 normal)
 {
@@ -99,7 +88,7 @@ void main()
         color = meshColor;
     }
     if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_COLOR_FACE))) {
-        color = unpackColor(triangleColors[gl_PrimitiveID]);
+        color = uintToVec4Color(triangleColors[gl_PrimitiveID]);
     }
 
     /***** compute wireframe ******/

@@ -86,6 +86,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
 
     set(SHADERS
+        shaders/vclib/ext/bgfx/common.sh
         shaders/vclib/ext/bgfx/drawable_mesh/vs_mesh.sc
         shaders/vclib/ext/bgfx/drawable_mesh/fs_mesh.sc
         shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc)
@@ -164,6 +165,9 @@ set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_BGFX_SHADERS "${SHADERS}")
 
 if (TARGET vclib-external-bgfx)
+    set_target_properties(vclib-render PROPERTIES
+        VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders/vclib/ext/bgfx")
     target_add_bgfx_shaders(vclib-render ${SHADERS})
 endif()
 
