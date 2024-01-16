@@ -185,4 +185,4 @@ void ViewerMainWindow::renderSettingsUpdated()
     }
 }
 
-} // namespace vcl::qgl
+} // namespace vcl::qbgf
