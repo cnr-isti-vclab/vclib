@@ -1,6 +1,7 @@
 $input v_pos
 $input v_normal
 $input v_color
+$input v_bc
 
 #include <bgfx_shader.sh>
 #include <bgfx_compute.sh>
@@ -106,8 +107,8 @@ void main()
         float wfThickness = 1;
         vec3 wfColor = vec3(1.0, 1.0, 1.0);
 
-       vec3 fw = abs(dFdx(color)) + abs(dFdy(color));
-       vec3 val = smoothstep(vec3_splat(0.0), fw*wfThickness, color);
+       vec3 fw = abs(dFdx(v_bc)) + abs(dFdy(v_bc));
+       vec3 val = smoothstep(vec3_splat(0.0), fw*wfThickness, v_bc);
        float edge = min(min(val.x, val.y), val.z);
 
        vec3 edgeCol = mix(color.xyz, wfColor, 1.0);

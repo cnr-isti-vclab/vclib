@@ -1,8 +1,5 @@
-$input a_position
-$input a_normal
-$input a_color0
-
-$output v_pos, v_normal, v_color
+$input a_position, a_normal, a_color0
+$output v_pos, v_normal, v_color, v_bc
 
 #include <bgfx_shader.sh>
 
@@ -16,4 +13,5 @@ void main()
     v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
 
     v_color = a_color0;
+    v_bc = a_color0.xyz;
 }

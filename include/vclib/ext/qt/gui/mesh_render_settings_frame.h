@@ -66,6 +66,8 @@ private slots:
     void on_wireframeColorDialogPushButton_clicked();
     void on_wireframeSizelSlider_valueChanged(int value);
 
+    void on_surfaceShadingNoneRadioButton_toggled(bool checked);
+
 private:
     enum POINT_COLOR { P_VERT = 0, P_MESH, P_USER };
 

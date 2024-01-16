@@ -189,6 +189,11 @@ public:
 
     bool isSurfaceVisible() const { return dMode & VCL_MRS_DRAW_SURF; }
 
+    bool isSurfaceShadingNone() const
+    {
+        return dMode & VCL_MRS_DRAW_SURF_SHADING_NONE;
+    }
+
     bool isSurfaceShadingFlat() const
     {
         return dMode & VCL_MRS_DRAW_SURF_SHADING_FLAT;

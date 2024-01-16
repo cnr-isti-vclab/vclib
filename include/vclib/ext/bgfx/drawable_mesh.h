@@ -158,7 +158,7 @@ public:
 
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
-                             BGFX_STATE_CULL_CW | BGFX_STATE_MSAA;
+                             BGFX_STATE_MSAA;
 
             bgfx::setState(state);
 
@@ -227,7 +227,7 @@ private:
             vertexColorBH = bgfx::createVertexBuffer(
                 bgfx::makeRef(
                     mrb.vertexColorBufferData(),
-                    mrb.vertexBufferSize() / 3 * sizeof(uint32_t)),
+                    mrb.vertexNumber() * sizeof(uint32_t)),
                 vclayout);
         }
 
@@ -243,7 +243,7 @@ private:
             triangleColorBH = bgfx::createIndexBuffer(
                 bgfx::makeRef(
                     mrb.triangleColorBufferData(),
-                    mrb.triangleBufferSize() / 3 * sizeof(uint32_t)),
+                    mrb.triangleNumber() * sizeof(uint32_t)),
                 BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
         }
     }

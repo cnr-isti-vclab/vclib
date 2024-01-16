@@ -95,6 +95,15 @@ void MeshRenderSettingsFrame::on_surfaceVisibilityCheckBox_stateChanged(
     emit settingsUpdated();
 }
 
+void MeshRenderSettingsFrame::on_surfaceShadingNoneRadioButton_toggled(
+    bool checked)
+{
+    if (checked) {
+        mrs.setSurfaceShadingNone();
+        emit settingsUpdated();
+    }
+}
+
 void MeshRenderSettingsFrame::on_surfaceShadingSmoothRadioButton_toggled(
     bool checked)
 {
@@ -262,12 +271,14 @@ void MeshRenderSettingsFrame::updateSurfaceTabFromSettings()
 
 void MeshRenderSettingsFrame::uptateSurfaceShadingRadioButtonsFromSettings()
 {
-    if (mrs.canSurfaceBeSmooth()) {
-        ui->surfaceShadingSmoothRadioButton->setEnabled(true);
-    }
-    else {
+    if (!mrs.canSurfaceBeSmooth()) {
         ui->surfaceShadingSmoothRadioButton->setEnabled(false);
     }
+    if (!mrs.canSurfaceBeFlat()) {
+        ui->surfaceShadingFlatRadioButton->setEnabled(false);
+    }
+    ui->surfaceShadingNoneRadioButton->setChecked(
+        mrs.isSurfaceShadingNone());
     ui->surfaceShadingFlatRadioButton->setChecked(mrs.isSurfaceShadingFlat());
     ui->surfaceShadingSmoothRadioButton->setChecked(
         mrs.isSurfaceShadingSmooth());
