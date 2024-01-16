@@ -38,6 +38,7 @@ class MeshRenderBuffers
 {
     std::vector<float>    verts;
     std::vector<uint32_t> tris;
+    std::vector<uint32_t> edges;
     std::vector<float>    vNormals;
     std::vector<uint32_t> vColors;
     std::vector<float>    tNormals;
@@ -58,6 +59,7 @@ public:
     {
         fillVertices(m);
         fillTriangles(m);
+        fillEdges(m);
         fillTextures(m);
         fillMeshAttribs(m);
     }
@@ -65,6 +67,8 @@ public:
     uint vertexNumber() const { return verts.size() / 3; }
 
     uint triangleNumber() const { return tris.size() / 3; }
+
+    uint edgeNumber() const { return edges.size() / 2; }
 
     uint textureNumber() const { return textures.size(); }
 
@@ -94,6 +98,15 @@ public:
     }
 
     const uint triangleBufferSize() const { return tris.size(); }
+
+    const uint32_t* edgeBufferData() const
+    {
+        if (edges.empty())
+            return nullptr;
+        return edges.data();
+    }
+
+    const uint edgeBufferSize() const { return edges.size(); }
 
     const float* vertexNormalBufferData() const
     {
@@ -390,6 +403,34 @@ private:
                         }
                     }
                 }
+            }
+        }
+    }
+
+    void fillEdges(const MeshType& m)
+    {
+        if constexpr (vcl::HasFaces<MeshType>) {
+            using FaceType = MeshType::FaceType;
+            if constexpr (FaceType::VERTEX_NUMBER < 0) {
+                // assuming faces are triangles
+                edges.reserve(6 * m.faceNumber()); // 2 indices * 3 edges
+            }
+            else {
+                edges.reserve(2 * FaceType::VERTEX_NUMBER * m.faceNumber());
+            }
+
+            for (const auto& f : m.faces()) {
+                for (uint i = 0; i < f.vertexNumber(); ++i) {
+                    edges.push_back(m.vertexIndexIfCompact(m.index(f.vertex(i))));
+                    edges.push_back(m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1)))));
+                }
+            }
+        }
+        if constexpr (vcl::HasEdges<MeshType>) {
+            edges.reserve(edges.size() + 2 * m.edgeNumber());
+            for (const auto& e : m.edges()) {
+                edges.push_back(m.vertexIndexIfCompact(m.index(e.vertex(0))));
+                edges.push_back(m.vertexIndexIfCompact(m.index(e.vertex(1))));
             }
         }
     }
