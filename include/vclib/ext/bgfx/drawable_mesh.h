@@ -143,34 +143,41 @@ public:
     void draw()
     {
         if (bgfx::isValid(program)) {
-            bgfx::setVertexBuffer(0, vertexCoordBH);
-
-            if (bgfx::isValid(vertexNormalBH)) { // vertex normals
-                bgfx::setVertexBuffer(1, vertexNormalBH);
-            }
-
-            if (bgfx::isValid(vertexColorBH)) { // vertex colors
-                bgfx::setVertexBuffer(2, vertexColorBH);
-            }
-
-            bgfx::setIndexBuffer(triangleIndexBH);
-
-            if (bgfx::isValid(triangleColorBH)) { // triangle colors
-                bgfx::setBuffer(1, triangleColorBH, bgfx::Access::Read);
-            }
 
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
                              BGFX_STATE_MSAA;
 
-            bgfx::setState(state);
+            if (mrs.isPointCloudVisible()) {
+                bindVertexBuffers();
+                bindUniforms(VCL_MRS_PRIMITIVE_POINTS);
 
-            bgfx::setUniform(meshColorUH, mrb.meshColorBufferData());
-            bgfx::setUniform(userSurfaceColorUH, mrs.surfaceUserColorData());
+                bgfx::setState(
+                    state | BGFX_STATE_PT_POINTS |
+                    BGFX_STATE_POINT_SIZE(mrs.pointWidth()));
 
-            meshRenderSettingsUniforms.setUniforms();
+                bgfx::submit(0, program);
+            }
 
-            bgfx::submit(0, program);
+            if (mrs.isSurfaceVisible()) {
+                bindVertexBuffers();
+                bindIndexBuffers();
+                bindUniforms(VCL_MRS_PRIMITIVE_TRIANGLES);
+
+                bgfx::setState(state);
+
+                bgfx::submit(0, program);
+            }
+
+            if (mrs.isWireframeVisible()) {
+                bindVertexBuffers();
+                bindIndexBuffers(false);
+                bindUniforms(VCL_MRS_PRIMITIVE_LINES);;
+
+                bgfx::setState(state | BGFX_STATE_PT_LINES);
+
+                bgfx::submit(0, program);
+            }
         }
     }
 
@@ -267,6 +274,41 @@ private:
         meshColorUH = bgfx::createUniform("meshColor", bgfx::UniformType::Vec4);
         userSurfaceColorUH =
             bgfx::createUniform("userSurfaceColor", bgfx::UniformType::Vec4);
+    }
+
+    void bindVertexBuffers()
+    {
+        bgfx::setVertexBuffer(0, vertexCoordBH);
+
+        if (bgfx::isValid(vertexNormalBH)) { // vertex normals
+            bgfx::setVertexBuffer(1, vertexNormalBH);
+        }
+
+        if (bgfx::isValid(vertexColorBH)) { // vertex colors
+            bgfx::setVertexBuffer(2, vertexColorBH);
+        }
+    }
+
+    void bindIndexBuffers(bool triangles = true)
+    {
+        if (triangles) {
+            bgfx::setIndexBuffer(triangleIndexBH);
+
+            if (bgfx::isValid(triangleColorBH)) { // triangle colors
+                bgfx::setBuffer(1, triangleColorBH, bgfx::Access::Read);
+            }
+        }
+        else {
+
+        }
+    }
+
+    void bindUniforms(uint primitive)
+    {
+        bgfx::setUniform(meshColorUH, mrb.meshColorBufferData());
+        bgfx::setUniform(userSurfaceColorUH, mrs.surfaceUserColorData());
+        meshRenderSettingsUniforms.updatePrimitive(primitive);
+        meshRenderSettingsUniforms.setUniforms();
     }
 
     void destroyBGFXBuffers()
