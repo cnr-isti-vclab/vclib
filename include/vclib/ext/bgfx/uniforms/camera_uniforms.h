@@ -36,7 +36,7 @@ class CameraUniforms
     float eye[4] = {0.0, 0.0, 0.0, 0.0};
 
     ShaderUniform cameraEyeUH =
-        ShaderUniform("cameraEyePos", bgfx::UniformType::Vec4);
+        ShaderUniform("u_cameraEyePosPack", bgfx::UniformType::Vec4);
 
 public:
     CameraUniforms() {}

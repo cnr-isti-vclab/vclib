@@ -1,11 +1,8 @@
 $input a_position, a_normal, a_color0
 $output v_pos, v_normal, v_color, v_bc
 
-#include <common.sh>
+#include <drawable_mesh/uniforms.sh>
 #include <vclib/render/mesh_render_settings_macros.h>
-
-uniform vec4 lightDir;
-uniform vec4 lightColor;
 
 void main()
 {

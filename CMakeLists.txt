@@ -86,10 +86,14 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
 
     set(SHADERS
-        shaders/vclib/ext/bgfx/common.sh
-        shaders/vclib/ext/bgfx/drawable_mesh/vs_mesh.sc
+        shaders/vclib/ext/bgfx/shaders_common.sh
         shaders/vclib/ext/bgfx/drawable_mesh/fs_mesh.sc
-        shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc)
+        shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc
+        shaders/vclib/ext/bgfx/drawable_mesh/vs_mesh.sc
+        shaders/vclib/ext/bgfx/drawable_mesh/uniforms.sh
+        shaders/vclib/ext/bgfx/uniforms/camera_uniforms.sh
+        shaders/vclib/ext/bgfx/uniforms/directional_light_uniforms.sh
+        )
 endif()
 
 # headers and sources to include only if using qt

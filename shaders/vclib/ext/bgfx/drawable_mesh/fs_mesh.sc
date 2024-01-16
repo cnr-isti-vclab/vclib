@@ -3,44 +3,10 @@ $input v_normal
 $input v_color
 $input v_bc
 
-#include <common.sh>
+#include <drawable_mesh/uniforms.sh>
 #include <vclib/render/mesh_render_settings_macros.h>
 
-uniform vec4 cameraEyePos;
-uniform vec4 lightDir;
-uniform vec4 lightColor;
-
-uniform vec4 meshColor;
-uniform vec4 userSurfaceColor;
-uniform vec4 drawMode;
-
 BUFFER_RO(triangleColors, uint, 1);
-
-vec4 computeLight(vec3 lightDir, vec3 lightColor, vec3 normal)
-{
-    float ambientStrength = 0.2;
-    // ambient
-    vec3 ambient = ambientStrength * lightColor;
-    // diffuse
-    float diff = max(dot(normal, lightDir), 0);
-    vec3 diffuse = diff * lightColor;
-
-    return vec4(ambient + diffuse, 1.0);
-}
-
-vec3 computeSpecular(
-    vec3 vPos,
-    vec3 cameraEyePos,
-    vec3 lightDir,
-    vec3 lightColor,
-    vec3 normal)
-{
-    float specularStrength = 0.3;
-    vec3 viewDir = normalize(cameraEyePos - vPos);
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    return specularStrength * spec * lightColor;
-}
 
 void main()
 {
@@ -62,19 +28,19 @@ void main()
     if (bool(drawModeInt & (VCL_MRS_DRAW_SURF_SHADING_FLAT))) {
         vec3 X = dFdx(v_pos);
         vec3 Y = dFdy(v_pos);
-        normal=normalize(cross(X,Y));
+        normal = normalize(cross(X,Y));
     }
 
     // if flat or smooth shading, compute light
     if (!bool(drawModeInt & (VCL_MRS_DRAW_SURF_SHADING_NONE))) {
-        light = computeLight(lightDir.xyz, lightColor.xyz, normal);
+        light = computeLight(u_lightDir, u_lightColor, normal);
 
 
         specular = computeSpecular(
             v_pos,
-            cameraEyePos.xyz,
-            lightDir.xyz,
-            lightColor.xyz,
+            u_cameraEyePos,
+            u_lightDir,
+            u_lightColor,
             normal);
     }
 
