@@ -17,7 +17,7 @@ vec4 computeLight(
     vec3 lightDir,
     vec3 lightColor,
     vec3 normal,
-    float ambientStrength = 0.2)
+    float ambientStrength)
 {
     // ambient
     vec3 ambient = ambientStrength * lightColor;
@@ -28,18 +28,37 @@ vec4 computeLight(
     return vec4(ambient + diffuse, 1.0);
 }
 
+vec4 computeLight(
+    vec3 lightDir,
+    vec3 lightColor,
+    vec3 normal)
+{
+    return computeLight(lightDir, lightColor, normal, 0.2);
+}
+
 vec3 computeSpecular(
     vec3 vPos,
     vec3 cameraEyePos,
     vec3 lightDir,
     vec3 lightColor,
     vec3 normal,
-    float specularStrength = 0.3)
+    float specularStrength)
 {
     vec3 viewDir = normalize(cameraEyePos - vPos);
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     return specularStrength * spec * lightColor;
+}
+
+vec3 computeSpecular(
+    vec3 vPos,
+    vec3 cameraEyePos,
+    vec3 lightDir,
+    vec3 lightColor,
+    vec3 normal)
+{
+    return computeSpecular(
+        vPos, cameraEyePos, lightDir, lightColor, normal, 0.3);
 }
 
 #endif // VCL_EXT_BGFX_SHADERS_COMMON_SH
