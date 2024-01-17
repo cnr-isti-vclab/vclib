@@ -33,7 +33,9 @@ namespace vcl::bgf {
 
 class MeshRenderSettingsUniforms
 {
-    float uniform[4] = {0.0, 0.0, 0.0, 0.0};
+    // drawPack[0] -> primitive used
+    // drawPack[1] -> draw mode
+    float drawPack[4] = {0.0, 0.0, 0.0, 0.0};
 
     ShaderUniform drawModeUH =
         ShaderUniform("u_mrsPack", bgfx::UniformType::Vec4);
@@ -43,17 +45,17 @@ public:
 
     void updatePrimitive(uint primitive)
     {
-        uniform[0] = intBitsToFloat(primitive);
+        drawPack[0] = intBitsToFloat(primitive);
     }
 
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
         uint drawMode = settings.drawMode();
 
-        uniform[1] = intBitsToFloat(drawMode);
+        drawPack[1] = intBitsToFloat(drawMode);
     }
 
-    void setUniforms() const { bgfx::setUniform(drawModeUH.handle(), uniform); }
+    void bind() const { bgfx::setUniform(drawModeUH.handle(), drawPack); }
 
 private:
     static float intBitsToFloat(int bits)

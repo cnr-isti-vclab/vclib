@@ -33,8 +33,8 @@ namespace vcl::bgf {
 
 class DirectionalLightUniforms
 {
-    float dir[4] = {0.0, 0.0, 1.0, 0.0};
-    float col[4] = {1.0, 1.0, 1.0, 1.0};
+    float dir[4] = {0.0, 0.0, 1.0, 0.0}; // dir[3]
+    float col[4] = {1.0, 1.0, 1.0, 1.0}; // col[3]
 
     ShaderUniform lightDirUH =
         ShaderUniform("u_lightDirPack", bgfx::UniformType::Vec4);
@@ -57,7 +57,7 @@ public:
         // light color alpha is not used
     }
 
-    void setUniforms() const
+    void bind() const
     {
         bgfx::setUniform(lightDirUH.handle(), dir);
         bgfx::setUniform(lightColorUH.handle(), col);

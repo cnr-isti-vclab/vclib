@@ -308,7 +308,7 @@ private:
         bgfx::setUniform(meshColorUH, mrb.meshColorBufferData());
         bgfx::setUniform(userSurfaceColorUH, mrs.surfaceUserColorData());
         meshRenderSettingsUniforms.updatePrimitive(primitive);
-        meshRenderSettingsUniforms.setUniforms();
+        meshRenderSettingsUniforms.bind();
     }
 
     void destroyBGFXBuffers()

@@ -99,9 +99,9 @@ public:
         bgfx::touch(0);
 
         cameraUniforms.updateCamera(DTB::camera());
-        cameraUniforms.setUniforms();
+        cameraUniforms.bind();
 
-        directionalLightUniforms.setUniforms();
+        directionalLightUniforms.bind();
 
         for (DrawableObject* obj : *drawList)
             obj->draw();
