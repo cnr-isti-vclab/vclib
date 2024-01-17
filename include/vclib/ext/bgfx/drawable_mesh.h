@@ -143,7 +143,6 @@ public:
     void draw()
     {
         if (bgfx::isValid(program)) {
-
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
                              BGFX_STATE_MSAA;
@@ -172,7 +171,8 @@ public:
             if (mrs.isWireframeVisible()) {
                 bindVertexBuffers();
                 bindIndexBuffers(false);
-                bindUniforms(VCL_MRS_PRIMITIVE_LINES);;
+                bindUniforms(VCL_MRS_PRIMITIVE_LINES);
+                ;
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
@@ -299,7 +299,6 @@ private:
             }
         }
         else {
-
         }
     }
 
