@@ -229,14 +229,14 @@ void MeshRenderSettingsFrame::updatePointsColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(ui->pointColorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(P_VERT);
-    if (mrs.canPointCloudBeColoredPerVertex()) {
+    if (mrs.canPointCloudColorBePerVertex()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(P_MESH);
-    if (mrs.canPointCloudBeColoredPerMesh()) {
+    if (mrs.canPointCloudColorBePerMesh()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -289,35 +289,35 @@ void MeshRenderSettingsFrame::updateSurfaceColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(ui->surfaceColorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(SC_VERT);
-    if (mrs.canSurfaceBeColoredPerVertex()) {
+    if (mrs.canSurfaceColorBePerVertex()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_FACE);
-    if (mrs.canSurfaceBeColoredPerFace()) {
+    if (mrs.canSurfaceColorBePerFace()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_MESH);
-    if (mrs.canSurfaceBeColoredPerMesh()) {
+    if (mrs.canSurfaceColorBePerMesh()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_VERT_TEX);
-    if (mrs.canSurfaceBeColoredPerVertexTexcoords()) {
+    if (mrs.canSurfaceColorBePerVertexTexcoords()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
     item = model->item(SC_WEDG_TEX);
-    if (mrs.canSurfaceBeColoredPerWedgeTexcoords()) {
+    if (mrs.canSurfaceColorBePerWedgeTexcoords()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
@@ -362,7 +362,7 @@ void MeshRenderSettingsFrame::updateWireframeComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(ui->wireframeColorComboBox->model());
     assert(model != nullptr);
     QStandardItem* item = model->item(W_MESH);
-    if (mrs.canWireframeBeColoredPerMesh()) {
+    if (mrs.canWireframeColorBePerMesh()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {

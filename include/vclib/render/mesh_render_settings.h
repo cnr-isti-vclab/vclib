@@ -90,17 +90,17 @@ public:
 
     bool canPointCloudShadingBePerVertex() const
     {
-        return dModeCapability & VCL_MRS_DRAW_POINTS_SHADING_VERT;
+        return dModeCapability & VCL_MRS_POINTS_SHADING_VERT;
     }
 
-    bool canPointCloudBeColoredPerVertex() const
+    bool canPointCloudColorBePerVertex() const
     {
-        return dModeCapability & VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
+        return dModeCapability & VCL_MRS_POINTS_COLOR_VERTEX;
     }
 
-    bool canPointCloudBeColoredPerMesh() const
+    bool canPointCloudColorBePerMesh() const
     {
-        return dModeCapability & VCL_MRS_DRAW_POINTS_COLOR_MESH;
+        return dModeCapability & VCL_MRS_POINTS_COLOR_MESH;
     }
 
     bool canSurfaceBeVisible() const
@@ -110,42 +110,42 @@ public:
 
     bool canSurfaceShadingBeFlat() const
     {
-        return dModeCapability & VCL_MRS_DRAW_SURF_SHADING_FLAT;
+        return dModeCapability & VCL_MRS_SURF_SHADING_FLAT;
     }
 
     bool canSurfaceShadingBeSmooth() const
     {
-        return dModeCapability & VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
+        return dModeCapability & VCL_MRS_SURF_SHADING_SMOOTH;
     }
 
-    bool canSurfaceBeColoredPerFace() const
+    bool canSurfaceColorBePerFace() const
     {
-        return dModeCapability & VCL_MRS_DRAW_SURF_COLOR_FACE;
+        return dModeCapability & VCL_MRS_SURF_COLOR_FACE;
     }
 
-    bool canSurfaceBeColoredPerVertex() const
+    bool canSurfaceColorBePerVertex() const
     {
-        return dModeCapability & VCL_MRS_DRAW_SURF_COLOR_VERTEX;
+        return dModeCapability & VCL_MRS_SURF_COLOR_VERTEX;
     }
 
-    bool canSurfaceBeColoredPerMesh() const
+    bool canSurfaceColorBePerMesh() const
     {
-        return dModeCapability & VCL_MRS_DRAW_SURF_COLOR_MESH;
+        return dModeCapability & VCL_MRS_SURF_COLOR_MESH;
     }
 
-    bool canSurfaceBeColoredPerVertexTexcoords() const
+    bool canSurfaceColorBePerVertexTexcoords() const
     {
-        return dModeCapability & VCL_MRS_DRAW_SURF_TEX_VERTEX;
+        return dModeCapability & VCL_MRS_SURF_TEX_VERTEX;
     }
 
-    bool canSurfaceBeColoredPerWedgeTexcoords() const
+    bool canSurfaceColorBePerWedgeTexcoords() const
     {
-        return dModeCapability & VCL_MRS_DRAW_SURF_TEX_WEDGE;
+        return dModeCapability & VCL_MRS_SURF_TEX_WEDGE;
     }
 
-    bool canWireframeBeColoredPerMesh() const
+    bool canWireframeColorBePerMesh() const
     {
-        return dModeCapability & VCL_MRS_DRAW_WIREFRAME_COLOR_MESH;
+        return dModeCapability & VCL_MRS_WIREFRAME_COLOR_MESH;
     }
 
     bool canBoundingBoxBeVisible() const
@@ -165,27 +165,27 @@ public:
 
     bool isPointCloudShadingNone() const
     {
-        return dMode & VCL_MRS_DRAW_POINTS_SHADING_NONE;
+        return dMode & VCL_MRS_POINTS_SHADING_NONE;
     }
 
     bool isPointCloudShadingPerVertex() const
     {
-        return dMode & VCL_MRS_DRAW_POINTS_SHADING_VERT;
+        return dMode & VCL_MRS_POINTS_SHADING_VERT;
     }
 
     bool isPointCloudColorPerVertex() const
     {
-        return dMode & VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
+        return dMode & VCL_MRS_POINTS_COLOR_VERTEX;
     }
 
     bool isPointCloudColorPerMesh() const
     {
-        return dMode & VCL_MRS_DRAW_POINTS_COLOR_MESH;
+        return dMode & VCL_MRS_POINTS_COLOR_MESH;
     }
 
     bool isPointCloudColorUserDefined() const
     {
-        return dMode & VCL_MRS_DRAW_POINTS_COLOR_USER;
+        return dMode & VCL_MRS_POINTS_COLOR_USER;
     }
 
     float pointWidth() const { return pWidth; }
@@ -206,47 +206,47 @@ public:
 
     bool isSurfaceShadingNone() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_SHADING_NONE;
+        return dMode & VCL_MRS_SURF_SHADING_NONE;
     }
 
     bool isSurfaceShadingFlat() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_SHADING_FLAT;
+        return dMode & VCL_MRS_SURF_SHADING_FLAT;
     }
 
     bool isSurfaceShadingSmooth() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
+        return dMode & VCL_MRS_SURF_SHADING_SMOOTH;
     }
 
     bool isSurfaceColorPerFace() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_COLOR_FACE;
+        return dMode & VCL_MRS_SURF_COLOR_FACE;
     }
 
     bool isSurfaceColorPerVertex() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_COLOR_VERTEX;
+        return dMode & VCL_MRS_SURF_COLOR_VERTEX;
     }
 
     bool isSurfaceColorPerMesh() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_COLOR_MESH;
+        return dMode & VCL_MRS_SURF_COLOR_MESH;
     }
 
     bool isSurfaceColorUserDefined() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_COLOR_USER;
+        return dMode & VCL_MRS_SURF_COLOR_USER;
     }
 
     bool isSurfaceColorPerVertexTexcoords() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_TEX_VERTEX;
+        return dMode & VCL_MRS_SURF_TEX_VERTEX;
     }
 
     bool isSurfaceColorPerWedgeTexcoords() const
     {
-        return dMode & VCL_MRS_DRAW_SURF_TEX_WEDGE;
+        return dMode & VCL_MRS_SURF_TEX_WEDGE;
     }
 
     vcl::Color surfaceUserColor() const
@@ -262,12 +262,12 @@ public:
 
     bool isWireframeColorPerMesh() const
     {
-        return dMode & VCL_MRS_DRAW_WIREFRAME_COLOR_MESH;
+        return dMode & VCL_MRS_WIREFRAME_COLOR_MESH;
     }
 
     bool isWireframeColorUserDefined() const
     {
-        return dMode & VCL_MRS_DRAW_WIREFRAME_COLOR_USER;
+        return dMode & VCL_MRS_WIREFRAME_COLOR_USER;
     }
 
     int wireframeWidth() const { return wWidth; }
@@ -319,8 +319,8 @@ public:
     bool setPointCloudShadingNone()
     {
         if (canPointCloudBeVisible()) {
-            dMode |= VCL_MRS_DRAW_POINTS_SHADING_NONE;
-            dMode &= ~VCL_MRS_DRAW_POINTS_SHADING_VERT;
+            dMode |= VCL_MRS_POINTS_SHADING_NONE;
+            dMode &= ~VCL_MRS_POINTS_SHADING_VERT;
             return true;
         }
         else {
@@ -331,8 +331,8 @@ public:
     bool setPointCloudShadingPerVertex()
     {
         if (canPointCloudBeVisible()) {
-            dMode &= ~VCL_MRS_DRAW_POINTS_SHADING_NONE;
-            dMode |= VCL_MRS_DRAW_POINTS_SHADING_VERT;
+            dMode &= ~VCL_MRS_POINTS_SHADING_NONE;
+            dMode |= VCL_MRS_POINTS_SHADING_VERT;
             return true;
         }
         else {
@@ -342,10 +342,10 @@ public:
 
     bool setPointCloudColorPerVertex()
     {
-        if (canSurfaceBeColoredPerVertex()) {
-            dMode |= VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_MESH;
-            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_USER;
+        if (canSurfaceColorBePerVertex()) {
+            dMode |= VCL_MRS_POINTS_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_POINTS_COLOR_MESH;
+            dMode &= ~VCL_MRS_POINTS_COLOR_USER;
             return true;
         }
         else {
@@ -355,10 +355,10 @@ public:
 
     bool setPointCloudColorPerMesh()
     {
-        if (canSurfaceBeColoredPerMesh()) {
-            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
-            dMode |= VCL_MRS_DRAW_POINTS_COLOR_MESH;
-            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_USER;
+        if (canSurfaceColorBePerMesh()) {
+            dMode &= ~VCL_MRS_POINTS_COLOR_VERTEX;
+            dMode |= VCL_MRS_POINTS_COLOR_MESH;
+            dMode &= ~VCL_MRS_POINTS_COLOR_USER;
             return true;
         }
         else {
@@ -369,9 +369,9 @@ public:
     bool setPointCloudColorUserDefined()
     {
         if (canPointCloudBeVisible()) {
-            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_POINTS_COLOR_MESH;
-            dMode |= VCL_MRS_DRAW_POINTS_COLOR_USER;
+            dMode &= ~VCL_MRS_POINTS_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_POINTS_COLOR_MESH;
+            dMode |= VCL_MRS_POINTS_COLOR_USER;
             return true;
         }
         else {
@@ -439,9 +439,9 @@ public:
     bool setSurfaceShadingNone()
     {
         if (canSurfaceBeVisible()) {
-            dMode |= VCL_MRS_DRAW_SURF_SHADING_NONE;
-            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_FLAT;
-            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
+            dMode |= VCL_MRS_SURF_SHADING_NONE;
+            dMode &= ~VCL_MRS_SURF_SHADING_FLAT;
+            dMode &= ~VCL_MRS_SURF_SHADING_SMOOTH;
             return true;
         }
         else {
@@ -456,9 +456,9 @@ public:
     bool setSurfaceShadingFlat()
     {
         if (canSurfaceShadingBeFlat()) {
-            dMode |= VCL_MRS_DRAW_SURF_SHADING_FLAT;
-            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_NONE;
-            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
+            dMode |= VCL_MRS_SURF_SHADING_FLAT;
+            dMode &= ~VCL_MRS_SURF_SHADING_NONE;
+            dMode &= ~VCL_MRS_SURF_SHADING_SMOOTH;
             return true;
         }
         else {
@@ -473,9 +473,9 @@ public:
     bool setSurfaceShadingSmooth()
     {
         if (canSurfaceShadingBeSmooth()) {
-            dMode |= VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
-            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_NONE;
-            dMode &= ~VCL_MRS_DRAW_SURF_SHADING_FLAT;
+            dMode |= VCL_MRS_SURF_SHADING_SMOOTH;
+            dMode &= ~VCL_MRS_SURF_SHADING_NONE;
+            dMode &= ~VCL_MRS_SURF_SHADING_FLAT;
             return true;
         }
         else {
@@ -494,13 +494,13 @@ public:
      */
     bool setSurfaceColorPerVertex()
     {
-        if (canSurfaceBeColoredPerVertex()) {
-            dMode |= VCL_MRS_DRAW_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_WEDGE;
+        if (canSurfaceColorBePerVertex()) {
+            dMode |= VCL_MRS_SURF_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
+            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
+            dMode &= ~VCL_MRS_SURF_COLOR_USER;
+            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
             return true;
         }
         else {
@@ -519,13 +519,13 @@ public:
      */
     bool setSurfaceColorPerFace()
     {
-        if (canSurfaceBeColoredPerFace()) {
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_VERTEX;
-            dMode |= VCL_MRS_DRAW_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_WEDGE;
+        if (canSurfaceColorBePerFace()) {
+            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+            dMode |= VCL_MRS_SURF_COLOR_FACE;
+            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
+            dMode &= ~VCL_MRS_SURF_COLOR_USER;
+            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
             return true;
         }
         else {
@@ -544,13 +544,13 @@ public:
      */
     bool setSurfaceColorPerMesh()
     {
-        if (canSurfaceBeColoredPerMesh()) {
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_FACE;
-            dMode |= VCL_MRS_DRAW_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_WEDGE;
+        if (canSurfaceColorBePerMesh()) {
+            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
+            dMode |= VCL_MRS_SURF_COLOR_MESH;
+            dMode &= ~VCL_MRS_SURF_COLOR_USER;
+            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
             return true;
         }
         else {
@@ -573,12 +573,12 @@ public:
     bool setSurfaceColorUserDefined()
     {
         if (canSurfaceBeVisible()) {
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_MESH;
-            dMode |= VCL_MRS_DRAW_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_WEDGE;
+            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
+            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
+            dMode |= VCL_MRS_SURF_COLOR_USER;
+            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
             return true;
         }
         else {
@@ -597,13 +597,13 @@ public:
      */
     bool setSurfaceColorPerVertexTexcoords()
     {
-        if (canSurfaceBeColoredPerVertexTexcoords()) {
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_USER;
-            dMode |= VCL_MRS_DRAW_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_WEDGE;
+        if (canSurfaceColorBePerVertexTexcoords()) {
+            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
+            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
+            dMode &= ~VCL_MRS_SURF_COLOR_USER;
+            dMode |= VCL_MRS_SURF_TEX_VERTEX;
+            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
             return true;
         }
         else {
@@ -622,13 +622,13 @@ public:
      */
     bool setSurfaceColorPerWedgeTexcoords()
     {
-        if (canSurfaceBeColoredPerWedgeTexcoords()) {
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_DRAW_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_DRAW_SURF_TEX_VERTEX;
-            dMode |= VCL_MRS_DRAW_SURF_TEX_WEDGE;
+        if (canSurfaceColorBePerWedgeTexcoords()) {
+            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
+            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
+            dMode &= ~VCL_MRS_SURF_COLOR_USER;
+            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+            dMode |= VCL_MRS_SURF_TEX_WEDGE;
             return true;
         }
         else {
@@ -690,9 +690,9 @@ public:
 
     bool setWireframeColorPerMesh()
     {
-        if (canWireframeBeColoredPerMesh()) {
-            dMode |= VCL_MRS_DRAW_WIREFRAME_COLOR_MESH;
-            dMode &= ~VCL_MRS_DRAW_WIREFRAME_COLOR_USER;
+        if (canWireframeColorBePerMesh()) {
+            dMode |= VCL_MRS_WIREFRAME_COLOR_MESH;
+            dMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
             return true;
         }
         else {
@@ -703,8 +703,8 @@ public:
     bool setWireframeColorUserDefined()
     {
         if (canSurfaceBeVisible()) {
-            dMode &= ~VCL_MRS_DRAW_WIREFRAME_COLOR_MESH;
-            dMode |= VCL_MRS_DRAW_WIREFRAME_COLOR_USER;
+            dMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
+            dMode |= VCL_MRS_WIREFRAME_COLOR_USER;
             return true;
         }
         else {
@@ -764,72 +764,72 @@ public:
 
             // -- Points --
             dModeCapability |= VCL_MRS_DRAW_POINTS;
-            dModeCapability |= VCL_MRS_DRAW_POINTS_SHADING_NONE;
-            dModeCapability |= VCL_MRS_DRAW_POINTS_PIXEL;
-            dModeCapability |= VCL_MRS_DRAW_POINTS_CIRCLE;
-            dModeCapability |= VCL_MRS_DRAW_POINTS_COLOR_USER;
+            dModeCapability |= VCL_MRS_POINTS_SHADING_NONE;
+            dModeCapability |= VCL_MRS_POINTS_PIXEL;
+            dModeCapability |= VCL_MRS_POINTS_CIRCLE;
+            dModeCapability |= VCL_MRS_POINTS_COLOR_USER;
 
             if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                 if (vcl::isPerVertexNormalAvailable(m)) {
-                    dModeCapability |= VCL_MRS_DRAW_POINTS_SHADING_VERT;
+                    dModeCapability |= VCL_MRS_POINTS_SHADING_VERT;
                 }
             }
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (vcl::isPerVertexColorAvailable(m)) {
-                    dModeCapability |= VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
+                    dModeCapability |= VCL_MRS_POINTS_COLOR_VERTEX;
                 }
             }
 
             if constexpr (vcl::HasColor<MeshType>) {
-                dModeCapability |= VCL_MRS_DRAW_POINTS_COLOR_MESH;
+                dModeCapability |= VCL_MRS_POINTS_COLOR_MESH;
             }
 
             // -- Surface and Wireframe --
             if constexpr (vcl::HasFaces<MeshType>) {
                 if (m.faceNumber() > 0) {
                     dModeCapability |= VCL_MRS_DRAW_SURF;
-                    dModeCapability |= VCL_MRS_DRAW_SURF_SHADING_NONE;
-                    dModeCapability |= VCL_MRS_DRAW_SURF_COLOR_USER;
+                    dModeCapability |= VCL_MRS_SURF_SHADING_NONE;
+                    dModeCapability |= VCL_MRS_SURF_COLOR_USER;
                     dModeCapability |= VCL_MRS_DRAW_WIREFRAME;
-                    dModeCapability |= VCL_MRS_DRAW_WIREFRAME_COLOR_USER;
+                    dModeCapability |= VCL_MRS_WIREFRAME_COLOR_USER;
 
                     if constexpr (vcl::HasColor<MeshType>) {
-                        dModeCapability |= VCL_MRS_DRAW_SURF_COLOR_MESH;
-                        dModeCapability |= VCL_MRS_DRAW_WIREFRAME_COLOR_MESH;
+                        dModeCapability |= VCL_MRS_SURF_COLOR_MESH;
+                        dModeCapability |= VCL_MRS_WIREFRAME_COLOR_MESH;
                     }
 
                     if constexpr (vcl::HasPerFaceNormal<MeshType>) {
                         if (vcl::isPerFaceNormalAvailable(m)) {
-                            dModeCapability |= VCL_MRS_DRAW_SURF_SHADING_FLAT;
+                            dModeCapability |= VCL_MRS_SURF_SHADING_FLAT;
                         }
                     }
 
                     if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                         if (vcl::isPerVertexNormalAvailable(m))
-                            dModeCapability |= VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
+                            dModeCapability |= VCL_MRS_SURF_SHADING_SMOOTH;
                     }
 
                     if constexpr (vcl::HasPerFaceColor<MeshType>) {
                         if (vcl::isPerFaceColorAvailable(m))
-                            dModeCapability |= VCL_MRS_DRAW_SURF_COLOR_FACE;
+                            dModeCapability |= VCL_MRS_SURF_COLOR_FACE;
                     }
 
                     if constexpr (vcl::HasPerVertexColor<MeshType>) {
                         if (vcl::isPerVertexColorAvailable(m)) {
-                            dModeCapability |= VCL_MRS_DRAW_SURF_COLOR_VERTEX;
+                            dModeCapability |= VCL_MRS_SURF_COLOR_VERTEX;
                         }
                     }
 
                     if constexpr (vcl::HasTexturePaths<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m))
-                                dModeCapability |= VCL_MRS_DRAW_SURF_TEX_VERTEX;
+                                dModeCapability |= VCL_MRS_SURF_TEX_VERTEX;
                         }
 
                         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                             if (vcl::isPerFaceWedgeTexCoordsAvailable(m))
-                                dModeCapability |= VCL_MRS_DRAW_SURF_TEX_WEDGE;
+                                dModeCapability |= VCL_MRS_SURF_TEX_WEDGE;
                         }
                     }
                 }
@@ -867,19 +867,19 @@ public:
                     setSurfaceShadingNone();
                 }
                 // color
-                if (canSurfaceBeColoredPerVertex()) {
+                if (canSurfaceColorBePerVertex()) {
                     setSurfaceColorPerVertex();
                 }
-                else if (canSurfaceBeColoredPerFace()) {
+                else if (canSurfaceColorBePerFace()) {
                     setSurfaceColorPerFace();
                 }
-                else if (canSurfaceBeColoredPerWedgeTexcoords()) {
+                else if (canSurfaceColorBePerWedgeTexcoords()) {
                     setSurfaceColorPerWedgeTexcoords();
                 }
-                else if (canSurfaceBeColoredPerVertexTexcoords()) {
+                else if (canSurfaceColorBePerVertexTexcoords()) {
                     setSurfaceColorPerVertexTexcoords();
                 }
-                else if (canSurfaceBeColoredPerMesh()) {
+                else if (canSurfaceColorBePerMesh()) {
                     setSurfaceColorPerMesh();
                 }
                 else {
@@ -893,10 +893,10 @@ public:
                     if (canPointCloudShadingBePerVertex()) {
                         setPointCloudShadingPerVertex();
                     }
-                    if (canPointCloudBeColoredPerVertex()) {
+                    if (canPointCloudColorBePerVertex()) {
                         setPointCloudColorPerVertex();
                     }
-                    else if (canPointCloudBeColoredPerMesh()) {
+                    else if (canPointCloudColorBePerMesh()) {
                         setPointCloudColorPerMesh();
                     }
                     else {
