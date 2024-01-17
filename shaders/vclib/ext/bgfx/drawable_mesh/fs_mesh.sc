@@ -23,7 +23,6 @@
 $input v_pos
 $input v_normal
 $input v_color
-$input v_bc
 
 #include <drawable_mesh/uniforms.sh>
 #include <vclib/render/mesh_render_settings_macros.h>
@@ -77,19 +76,6 @@ void main()
     }
     if (bool(drawMode & (VCL_MRS_DRAW_SURF_COLOR_FACE))) {
         color = uintToVec4Color(triangleColors[gl_PrimitiveID]);
-    }
-
-    /***** compute wireframe ******/
-    if (bool(drawMode & (VCL_MRS_DRAW_WIREFRAME))) {
-        float wfThickness = 1;
-        vec3 wfColor = vec3(1.0, 1.0, 1.0);
-
-       vec3 fw = abs(dFdx(v_bc)) + abs(dFdy(v_bc));
-       vec3 val = smoothstep(vec3_splat(0.0), fw*wfThickness, v_bc);
-       float edge = min(min(val.x, val.y), val.z);
-
-       vec3 edgeCol = mix(color.xyz, wfColor, 1.0);
-       color.xyz = mix(wfColor, color.xyz, edge);
     }
 
     gl_FragColor = light * color + vec4(specular, 0);

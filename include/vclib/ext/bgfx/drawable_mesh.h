@@ -142,9 +142,7 @@ public:
                 bindVertexBuffers();
                 bindUniforms(VCL_MRS_PRIMITIVE_POINTS);
 
-                bgfx::setState(
-                    state | BGFX_STATE_PT_POINTS |
-                    BGFX_STATE_POINT_SIZE(mrs.pointWidth()));
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
                 bgfx::submit(0, program);
             }

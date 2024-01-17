@@ -35,6 +35,7 @@ class MeshRenderSettingsUniforms
 {
     // drawPack[0] -> primitive used
     // drawPack[1] -> draw mode
+    // drawPack[1] -> point width
     float drawPack[4] = {0.0, 0.0, 0.0, 0.0};
 
     // colorPack[0] -> point user color
@@ -58,10 +59,10 @@ public:
 
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
-        uint drawMode = settings.drawMode();
+        drawPack[1] = uintBitsToFloat(settings.drawMode());
+        drawPack[2] = settings.pointWidth();
 
-        drawPack[1] = uintBitsToFloat(drawMode);
-
+        colorPack[0] = uintBitsToFloat(settings.pointCloudUserColor().abgr());
         colorPack[1] = uintBitsToFloat(settings.surfaceUserColor().abgr());
     }
 

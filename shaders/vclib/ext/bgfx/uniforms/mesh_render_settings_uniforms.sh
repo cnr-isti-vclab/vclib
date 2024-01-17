@@ -28,7 +28,9 @@ uniform vec4 u_mrsColorPack;
 
 #define u_primitiveFloat u_mrsDrawPack.x
 #define u_drawModeFloat u_mrsDrawPack.y
+#define u_pointWidth u_mrsDrawPack.z
 
+#define u_userPointColorFloat u_mrsColorPack.x
 #define u_userSurfaceColorFloat u_mrsColorPack.y
 
 #endif // VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH

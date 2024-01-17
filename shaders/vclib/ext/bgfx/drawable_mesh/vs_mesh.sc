@@ -21,17 +21,30 @@
  ****************************************************************************/
 
 $input a_position, a_normal, a_color0
-$output v_pos, v_normal, v_color, v_bc
+$output v_pos, v_normal, v_color
 
 #include <drawable_mesh/uniforms.sh>
 #include <vclib/render/mesh_render_settings_macros.h>
 
 void main()
 {
+    uint primitive = floatBitsToUint(u_primitiveFloat);
+    uint drawMode = floatBitsToUint(u_drawModeFloat);
+
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
     v_pos = mul(u_modelView, vec4(a_position, 1.0)).xyz;
     v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
 
+    // default case - color is taken from buffer
     v_color = a_color0;
-    v_bc = a_color0.xyz;
+
+    // if (primitive == VCL_MRS_PRIMITIVE_POINTS) {
+    //     v_pos += v_normal;
+    //     if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_MESH))) {
+    //         v_color = u_meshColor;
+    //     }
+    //     else if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_USER))) {
+    //         v_color = uintToVec4Color(floatBitsToUint(u_userPointColorFloat));
+    //     }
+    // }
 }
