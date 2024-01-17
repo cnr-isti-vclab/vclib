@@ -43,13 +43,6 @@ void main()
             vec3 n = normalize(mul(u_modelViewProj, vec4(a_normal, 0.0) ).xyz);
             gl_Position += vec4(n * 0.0002, 0.0);
         }
-
-        if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_MESH))) {
-            v_color = u_meshColor;
-        }
-        else if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_USER))) {
-            v_color = uintToVec4Color(floatBitsToUint(u_userPointColorFloat));
-        }
     }
 
     v_pos = gl_Position.xyz;
