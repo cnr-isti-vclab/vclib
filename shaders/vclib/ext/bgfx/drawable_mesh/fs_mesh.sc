@@ -31,6 +31,7 @@ BUFFER_RO(triangleColors, uint, 1);
 
 void main()
 {
+    uint primitive = floatBitsToUint(u_primitiveFloat);
     uint drawMode = floatBitsToUint(u_drawModeFloat);
 
     // if not drawing mesh, discard

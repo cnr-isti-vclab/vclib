@@ -271,10 +271,10 @@ void MeshRenderSettingsFrame::updateSurfaceTabFromSettings()
 
 void MeshRenderSettingsFrame::uptateSurfaceShadingRadioButtonsFromSettings()
 {
-    if (!mrs.canSurfaceBeSmooth()) {
+    if (!mrs.canSurfaceShadingBeSmooth()) {
         ui->surfaceShadingSmoothRadioButton->setEnabled(false);
     }
-    if (!mrs.canSurfaceBeFlat()) {
+    if (!mrs.canSurfaceShadingBeFlat()) {
         ui->surfaceShadingFlatRadioButton->setEnabled(false);
     }
     ui->surfaceShadingNoneRadioButton->setChecked(mrs.isSurfaceShadingNone());

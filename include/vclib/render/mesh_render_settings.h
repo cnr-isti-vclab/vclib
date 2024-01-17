@@ -88,6 +88,11 @@ public:
         return dModeCapability & VCL_MRS_DRAW_POINTS;
     }
 
+    bool canPointCloudShadingBePerVertex() const
+    {
+        return dModeCapability & VCL_MRS_DRAW_POINTS_SHADING_VERT;
+    }
+
     bool canPointCloudBeColoredPerVertex() const
     {
         return dModeCapability & VCL_MRS_DRAW_POINTS_COLOR_VERTEX;
@@ -103,12 +108,12 @@ public:
         return dModeCapability & VCL_MRS_DRAW_SURF;
     }
 
-    bool canSurfaceBeFlat() const
+    bool canSurfaceShadingBeFlat() const
     {
         return dModeCapability & VCL_MRS_DRAW_SURF_SHADING_FLAT;
     }
 
-    bool canSurfaceBeSmooth() const
+    bool canSurfaceShadingBeSmooth() const
     {
         return dModeCapability & VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
     }
@@ -157,6 +162,16 @@ public:
     bool isVisible() const { return dMode & VCL_MRS_DRAW_MESH; }
 
     bool isPointCloudVisible() const { return dMode & VCL_MRS_DRAW_POINTS; }
+
+    bool isPointCloudShadingNone() const
+    {
+        return dMode & VCL_MRS_DRAW_POINTS_SHADING_NONE;
+    }
+
+    bool isPointCloudShadingPerVertex() const
+    {
+        return dMode & VCL_MRS_DRAW_POINTS_SHADING_VERT;
+    }
 
     bool isPointCloudColorPerVertex() const
     {
@@ -301,6 +316,30 @@ public:
         }
     }
 
+    bool setPointCloudShadingNone()
+    {
+        if (canPointCloudBeVisible()) {
+            dMode |= VCL_MRS_DRAW_POINTS_SHADING_NONE;
+            dMode &= ~VCL_MRS_DRAW_POINTS_SHADING_VERT;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    bool setPointCloudShadingPerVertex()
+    {
+        if (canPointCloudBeVisible()) {
+            dMode &= ~VCL_MRS_DRAW_POINTS_SHADING_NONE;
+            dMode |= VCL_MRS_DRAW_POINTS_SHADING_VERT;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     bool setPointCloudColorPerVertex()
     {
         if (canSurfaceBeColoredPerVertex()) {
@@ -416,7 +455,7 @@ public:
      */
     bool setSurfaceShadingFlat()
     {
-        if (canSurfaceBeFlat()) {
+        if (canSurfaceShadingBeFlat()) {
             dMode |= VCL_MRS_DRAW_SURF_SHADING_FLAT;
             dMode &= ~VCL_MRS_DRAW_SURF_SHADING_NONE;
             dMode &= ~VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
@@ -433,7 +472,7 @@ public:
      */
     bool setSurfaceShadingSmooth()
     {
-        if (canSurfaceBeSmooth()) {
+        if (canSurfaceShadingBeSmooth()) {
             dMode |= VCL_MRS_DRAW_SURF_SHADING_SMOOTH;
             dMode &= ~VCL_MRS_DRAW_SURF_SHADING_NONE;
             dMode &= ~VCL_MRS_DRAW_SURF_SHADING_FLAT;
@@ -725,9 +764,16 @@ public:
 
             // -- Points --
             dModeCapability |= VCL_MRS_DRAW_POINTS;
+            dModeCapability |= VCL_MRS_DRAW_POINTS_SHADING_NONE;
             dModeCapability |= VCL_MRS_DRAW_POINTS_PIXEL;
             dModeCapability |= VCL_MRS_DRAW_POINTS_CIRCLE;
             dModeCapability |= VCL_MRS_DRAW_POINTS_COLOR_USER;
+
+            if constexpr (vcl::HasPerVertexNormal<MeshType>) {
+                if (vcl::isPerVertexNormalAvailable(m)) {
+                    dModeCapability |= VCL_MRS_DRAW_POINTS_SHADING_VERT;
+                }
+            }
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (vcl::isPerVertexColorAvailable(m)) {
@@ -811,10 +857,10 @@ public:
             if (canSurfaceBeVisible()) {
                 setSurfaceVisibility(true);
                 // shading
-                if (canSurfaceBeSmooth()) {
+                if (canSurfaceShadingBeSmooth()) {
                     setSurfaceShadingSmooth();
                 }
-                else if (canSurfaceBeFlat()) {
+                else if (canSurfaceShadingBeFlat()) {
                     setSurfaceShadingFlat();
                 }
                 else {
@@ -843,6 +889,10 @@ public:
             else {
                 if (canPointCloudBeVisible()) {
                     setPointCloudVisibility(true);
+                    setPointCloudShadingNone();
+                    if (canPointCloudShadingBePerVertex()) {
+                        setPointCloudShadingPerVertex();
+                    }
                     if (canPointCloudBeColoredPerVertex()) {
                         setPointCloudColorPerVertex();
                     }

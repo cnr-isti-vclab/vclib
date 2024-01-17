@@ -38,13 +38,13 @@ void main()
     // default case - color is taken from buffer
     v_color = a_color0;
 
-    // if (primitive == VCL_MRS_PRIMITIVE_POINTS) {
-    //     v_pos += v_normal;
-    //     if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_MESH))) {
-    //         v_color = u_meshColor;
-    //     }
-    //     else if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_USER))) {
-    //         v_color = uintToVec4Color(floatBitsToUint(u_userPointColorFloat));
-    //     }
-    // }
+    if (primitive == VCL_MRS_PRIMITIVE_POINTS) {
+        v_pos += v_normal;
+        if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_MESH))) {
+            v_color = u_meshColor;
+        }
+        else if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_USER))) {
+            v_color = uintToVec4Color(floatBitsToUint(u_userPointColorFloat));
+        }
+    }
 }
