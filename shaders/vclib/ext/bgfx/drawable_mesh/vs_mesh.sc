@@ -32,14 +32,18 @@ void main()
     uint drawMode = floatBitsToUint(u_drawModeFloat);
 
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
-    v_pos = mul(u_modelView, vec4(a_position, 1.0)).xyz;
     v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
 
     // default case - color is taken from buffer
     v_color = a_color0;
 
-    if (primitive == VCL_MRS_PRIMITIVE_POINTS) {
-        v_pos += v_normal;
+    if (bool(primitive & VCL_MRS_PRIMITIVE_POINTS)) {
+        // offset - do it only if we will draw also surface
+        if (bool(drawMode & VCL_MRS_DRAW_SURF)) {
+            vec3 n = normalize(mul(u_modelViewProj, vec4(a_normal, 0.0) ).xyz);
+            gl_Position += vec4(n * 0.0002, 0.0);
+        }
+
         if (bool(drawMode & (VCL_MRS_DRAW_POINTS_COLOR_MESH))) {
             v_color = u_meshColor;
         }
@@ -47,4 +51,6 @@ void main()
             v_color = uintToVec4Color(floatBitsToUint(u_userPointColorFloat));
         }
     }
+
+    v_pos = gl_Position.xyz;
 }

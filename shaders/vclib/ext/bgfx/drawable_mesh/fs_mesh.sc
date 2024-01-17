@@ -47,14 +47,14 @@ void main()
     vec3 normal = v_normal;
 
     // if flat shading, compute normal of face
-    if (bool(drawMode & (VCL_MRS_DRAW_SURF_SHADING_FLAT))) {
+    if (bool(drawMode & VCL_MRS_DRAW_SURF_SHADING_FLAT)) {
         vec3 X = dFdx(v_pos);
         vec3 Y = dFdy(v_pos);
         normal = normalize(cross(X,Y));
     }
 
     // if flat or smooth shading, compute light
-    if (!bool(drawMode & (VCL_MRS_DRAW_SURF_SHADING_NONE))) {
+    if (!bool(drawMode & VCL_MRS_DRAW_SURF_SHADING_NONE)) {
         light = computeLight(u_lightDir, u_lightColor, normal);
 
 
@@ -69,13 +69,13 @@ void main()
     /***** compute color ******/
     vec4 color = uintToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
 
-    if (bool(drawMode & (VCL_MRS_DRAW_SURF_COLOR_VERTEX))) {
+    if (bool(drawMode & VCL_MRS_DRAW_SURF_COLOR_VERTEX)) {
         color = v_color;
     }
-    if (bool(drawMode & (VCL_MRS_DRAW_SURF_COLOR_MESH))) {
+    if (bool(drawMode & VCL_MRS_DRAW_SURF_COLOR_MESH)) {
         color = u_meshColor;
     }
-    if (bool(drawMode & (VCL_MRS_DRAW_SURF_COLOR_FACE))) {
+    if (bool(drawMode & VCL_MRS_DRAW_SURF_COLOR_FACE)) {
         color = uintToVec4Color(triangleColors[gl_PrimitiveID]);
     }
 
