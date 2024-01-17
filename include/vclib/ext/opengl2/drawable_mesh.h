@@ -324,7 +324,7 @@ private:
                         glColor4fv(mrb.meshColorBufferData());
                     }
                     else {
-                        glColor4fv(mrs.surfaceUserColorData());
+                        glColor4ubv((GLubyte*) mrs.surfaceUserColorData());
                     }
 
                     glDrawElements(
@@ -339,7 +339,7 @@ private:
                         glColor4fv(mrb.meshColorBufferData());
                     }
                     else {
-                        glColor4fv(mrs.surfaceUserColorData());
+                        glColor4ubv((GLubyte*) mrs.surfaceUserColorData());
                     }
                     int n_tris = nt;
                     for (int tid = 0; tid < n_tris; ++tid) {

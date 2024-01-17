@@ -63,9 +63,9 @@ class MeshRenderSettings
     uint dModeCapability = 0;
     uint dMode           = 0;
 
-    int   pWidth        = 3;
+    float pWidth        = 3;
     float pUserColor[4] = {1, 1, 0, 1};
-    float sUserColor[4] = {0.8f, 0.8f, 0.8f, 1.f};
+    uint sUserColor = 0xFF808080; // abgr
     int   wWidth        = 1;
     float wUserColor[4] = {0, 0, 0, 1};
 
@@ -173,7 +173,7 @@ public:
         return dMode & VCL_MRS_DRAW_POINTS_COLOR_USER;
     }
 
-    int pointWidth() const { return pWidth; }
+    float pointWidth() const { return pWidth; }
 
     vcl::Color pointCloudUserColor() const
     {
@@ -237,14 +237,11 @@ public:
     vcl::Color surfaceUserColor() const
     {
         vcl::Color c;
-        c.setRedF(sUserColor[0]);
-        c.setGreenF(sUserColor[1]);
-        c.setBlueF(sUserColor[2]);
-        c.setAlphaF(sUserColor[3]);
+        c.setAbgr(sUserColor);
         return c;
     }
 
-    const float* surfaceUserColorData() const { return sUserColor; }
+    const uint* surfaceUserColorData() const { return &sUserColor; }
 
     bool isWireframeVisible() const { return dMode & VCL_MRS_DRAW_WIREFRAME; }
 
@@ -343,7 +340,7 @@ public:
         }
     }
 
-    bool setPointWidth(int width)
+    bool setPointWidth(float width)
     {
         if (canPointCloudBeVisible()) {
             pWidth = width;
@@ -603,10 +600,12 @@ public:
     bool setSurfaceUserColor(float r, float g, float b, float a = 1)
     {
         if (canSurfaceBeVisible()) {
-            sUserColor[0] = r;
-            sUserColor[1] = g;
-            sUserColor[2] = b;
-            sUserColor[3] = a;
+            vcl::Color c;
+            c.setRedF(r);
+            c.setGreenF(g);
+            c.setBlueF(b);
+            c.setAlphaF(a);
+            sUserColor = c.abgr();
             return true;
         }
         else {
@@ -617,10 +616,7 @@ public:
     bool setSurfaceUserColor(const vcl::Color& c)
     {
         if (canSurfaceBeVisible()) {
-            sUserColor[0] = c.redF();
-            sUserColor[1] = c.greenF();
-            sUserColor[2] = c.blueF();
-            sUserColor[3] = c.alphaF();
+            sUserColor = c.abgr();
             return true;
         }
         else {

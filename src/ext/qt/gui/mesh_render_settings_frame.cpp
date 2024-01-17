@@ -215,7 +215,7 @@ void MeshRenderSettingsFrame::updatePointsTabFromSettings()
         ui->pointShadingCircleRadioButton->setEnabled(false);
 
         updatePointsColorComboBoxFromSettings();
-        ui->pointSizeSlider->setValue(mrs.pointWidth());
+        ui->pointSizeSlider->setValue((uint) mrs.pointWidth());
     }
     else {
         ui->pointsTab->setEnabled(false);
