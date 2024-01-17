@@ -20,11 +20,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
+#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
+#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH
 
-uniform vec4 u_cameraEyePosPack;
+uniform vec4 u_meshColor;
 
-#define u_cameraEyePos u_cameraEyePosPack.xyz
-
-#endif // VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
+#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_SH

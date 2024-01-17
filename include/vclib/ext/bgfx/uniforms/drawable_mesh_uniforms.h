@@ -20,11 +20,63 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
-#define VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
+#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
+#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 
-uniform vec4 u_cameraEyePosPack;
+#include <bgfx/bgfx.h>
+#include <vclib/render/mesh_render_buffers.h>
 
-#define u_cameraEyePos u_cameraEyePosPack.xyz
+#include "shader_uniform.h"
 
-#endif // VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
+namespace vcl::bgf {
+
+class DrawableMeshUniforms
+{
+    float meshColor[4] = {0.5, 0.5, 0.5, 1.0};
+
+    float model[16] = { // identity matrix
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0};
+
+    ShaderUniform meshColorUH =
+        ShaderUniform("u_meshColor", bgfx::UniformType::Vec4);
+
+    // ShaderUniform modelUH =
+    //     ShaderUniform("u_model", bgfx::UniformType::Mat4);
+
+public:
+    DrawableMeshUniforms() {}
+
+    template<MeshConcept MeshType>
+    void update(const MeshRenderBuffers<MeshType>& mrb)
+    {
+        std::copy(
+            mrb.meshColorBufferData(),
+            mrb.meshColorBufferData() + 4,
+            meshColor);
+    }
+
+    void bind() const
+    {
+        bgfx::setUniform(meshColorUH.handle(), meshColor);
+        //bgfx::setUniform(modelUH.handle(), model);
+    }
+};
+
+} // namespace vcl::bgf
+
+#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H

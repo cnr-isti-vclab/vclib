@@ -46,7 +46,7 @@ class MeshRenderBuffers
     std::vector<float>    vTexCoords;
     std::vector<float>    wTexCoords;
     std::vector<short>    wTexIds;
-    std::array<float, 4>  mColor;
+    std::array<float, 4>  mColor = {0.5, 0.5, 0.5, 1};
 
     vcl::Point3d            bbmin, bbmax;
     vcl::TriPolyIndexBiMap  triPolyMap;

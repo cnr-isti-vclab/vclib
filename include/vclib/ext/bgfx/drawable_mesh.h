@@ -29,6 +29,7 @@
 #include <vclib/render/mesh_render_buffers.h>
 
 #include "drawable_mesh_shader_program.h"
+#include "uniforms/drawable_mesh_uniforms.h"
 #include "uniforms/mesh_render_settings_uniforms.h"
 
 namespace vcl::bgf {
@@ -51,36 +52,27 @@ class DrawableMesh : public GenericDrawableMesh
 
     bgfx::IndexBufferHandle edgeIndexBH = BGFX_INVALID_HANDLE;
 
-    bgfx::UniformHandle meshColorUH        = BGFX_INVALID_HANDLE;
-    bgfx::UniformHandle userSurfaceColorUH = BGFX_INVALID_HANDLE;
-
+    DrawableMeshUniforms meshUniforms;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
 public:
-    DrawableMesh() { createBGFXUniforms(); };
+    DrawableMesh() = default;
 
     DrawableMesh(const DrawableMesh& oth) :
             GenericDrawableMesh(oth), mrb(oth.mrb),
-            meshRenderSettingsUniforms(oth.meshRenderSettingsUniforms)
+            meshRenderSettingsUniforms(oth.meshRenderSettingsUniforms),
+            meshUniforms(oth.meshUniforms)
     {
         // each drawable object has its own bgfx buffers
         createBGFXBuffers();
-        createBGFXUniforms();
     }
 
     DrawableMesh(DrawableMesh&& oth) { swap(oth); }
 
     DrawableMesh(const MeshType& mesh)
     {
-        if constexpr (HasName<MeshType>) {
-            name() = mesh.name();
-        }
-
         updateBuffers(mesh);
-        createBGFXUniforms();
-
         mrs.setDefaultSettingsFromCapability();
-        meshRenderSettingsUniforms.updateSettings(mrs);
     }
 
     DrawableMesh& operator=(DrawableMesh oth)
@@ -92,7 +84,6 @@ public:
     ~DrawableMesh()
     {
         destroyBGFXBuffers();
-        destroyBGFXUniforms();
     }
 
     void swap(DrawableMesh& oth)
@@ -106,8 +97,7 @@ public:
         std::swap(triangleIndexBH, oth.triangleIndexBH);
         std::swap(triangleColorBH, oth.triangleColorBH);
         std::swap(edgeIndexBH, oth.edgeIndexBH);
-        std::swap(meshColorUH, oth.meshColorUH);
-        std::swap(userSurfaceColorUH, oth.userSurfaceColorUH);
+        std::swap(meshUniforms, oth.meshUniforms);
         std::swap(meshRenderSettingsUniforms, oth.meshRenderSettingsUniforms);
     }
 
@@ -120,6 +110,7 @@ public:
         mrb = MeshRenderBuffers<MeshType>(m);
         mrs.setRenderCapabilityFrom(m);
         meshRenderSettingsUniforms.updateSettings(mrs);
+        meshUniforms.update(mrb);
 
         destroyBGFXBuffers();
         createBGFXBuffers();
@@ -172,7 +163,6 @@ public:
                 bindVertexBuffers();
                 bindIndexBuffers(false);
                 bindUniforms(VCL_MRS_PRIMITIVE_LINES);
-                ;
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
@@ -269,13 +259,6 @@ private:
         }
     }
 
-    void createBGFXUniforms()
-    {
-        meshColorUH = bgfx::createUniform("meshColor", bgfx::UniformType::Vec4);
-        userSurfaceColorUH =
-            bgfx::createUniform("userSurfaceColor", bgfx::UniformType::Vec4);
-    }
-
     void bindVertexBuffers()
     {
         bgfx::setVertexBuffer(0, vertexCoordBH);
@@ -304,10 +287,9 @@ private:
 
     void bindUniforms(uint primitive)
     {
-        bgfx::setUniform(meshColorUH, mrb.meshColorBufferData());
-        bgfx::setUniform(userSurfaceColorUH, mrs.surfaceUserColorData());
         meshRenderSettingsUniforms.updatePrimitive(primitive);
         meshRenderSettingsUniforms.bind();
+        meshUniforms.bind();
     }
 
     void destroyBGFXBuffers()
@@ -329,14 +311,6 @@ private:
 
         if (bgfx::isValid(edgeIndexBH))
             bgfx::destroy(edgeIndexBH);
-    }
-
-    void destroyBGFXUniforms()
-    {
-        if (bgfx::isValid(meshColorUH))
-            bgfx::destroy(meshColorUH);
-        if (bgfx::isValid(userSurfaceColorUH))
-            bgfx::destroy(userSurfaceColorUH);
     }
 };
 

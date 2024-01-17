@@ -37,32 +37,46 @@ class MeshRenderSettingsUniforms
     // drawPack[1] -> draw mode
     float drawPack[4] = {0.0, 0.0, 0.0, 0.0};
 
+    // colorPack[0] -> point user color
+    // colorPack[1] -> surface user color
+    // colorPack[2] -> wireframe user color
+    float colorPack[4] = {0.0, 0.0, 0.0, 0.0};
+
     ShaderUniform drawModeUH =
-        ShaderUniform("u_mrsPack", bgfx::UniformType::Vec4);
+        ShaderUniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
+
+    ShaderUniform colorUH =
+        ShaderUniform("u_mrsColorPack", bgfx::UniformType::Vec4);
 
 public:
     MeshRenderSettingsUniforms() {}
 
     void updatePrimitive(uint primitive)
     {
-        drawPack[0] = intBitsToFloat(primitive);
+        drawPack[0] = uintBitsToFloat(primitive);
     }
 
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
         uint drawMode = settings.drawMode();
 
-        drawPack[1] = intBitsToFloat(drawMode);
+        drawPack[1] = uintBitsToFloat(drawMode);
+
+        colorPack[1] = uintBitsToFloat(settings.surfaceUserColor().abgr());
     }
 
-    void bind() const { bgfx::setUniform(drawModeUH.handle(), drawPack); }
+    void bind() const
+    {
+        bgfx::setUniform(drawModeUH.handle(), drawPack);
+        bgfx::setUniform(colorUH.handle(), colorPack);
+    }
 
 private:
-    static float intBitsToFloat(int bits)
+    static float uintBitsToFloat(uint bits)
     {
         union
         {
-            int   i;
+            uint   i;
             float f;
         } u;
 
