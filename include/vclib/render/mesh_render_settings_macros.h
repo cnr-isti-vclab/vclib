@@ -27,8 +27,8 @@
  * These macros are used both on the library and on the shader side.
  */
 
-#define VCL_MRS_PRIMITIVE_POINTS uint(0)
-#define VCL_MRS_PRIMITIVE_LINES uint(1)
+#define VCL_MRS_PRIMITIVE_POINTS    uint(0)
+#define VCL_MRS_PRIMITIVE_LINES     uint(1)
 #define VCL_MRS_PRIMITIVE_TRIANGLES uint(2)
 
 #define VCL_MRS_DRAW_MESH uint(1 << 0) // mesh visibility

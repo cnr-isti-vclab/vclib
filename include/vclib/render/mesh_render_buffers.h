@@ -421,8 +421,10 @@ private:
 
             for (const auto& f : m.faces()) {
                 for (uint i = 0; i < f.vertexNumber(); ++i) {
-                    edges.push_back(m.vertexIndexIfCompact(m.index(f.vertex(i))));
-                    edges.push_back(m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1)))));
+                    edges.push_back(
+                        m.vertexIndexIfCompact(m.index(f.vertex(i))));
+                    edges.push_back(
+                        m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1)))));
                 }
             }
         }
