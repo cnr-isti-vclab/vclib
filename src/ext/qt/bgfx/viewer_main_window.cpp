@@ -117,6 +117,18 @@ void ViewerMainWindow::setDrawableObjectVector(
     ui->glArea->fitScene();
 }
 
+void ViewerMainWindow::keyPressEvent(QKeyEvent* event)
+{
+    // sometimes, the viewer does not automatically get key events
+    ui->glArea->keyPressEvent(event);
+}
+
+void ViewerMainWindow::keyReleaseEvent(QKeyEvent* event)
+{
+    // sometimes, the viewer does not automatically get key events
+    ui->glArea->keyReleaseEvent(event);
+}
+
 /**
  * @brief Slot called when the user changed the visibility of an object in the
  * DrawableObjectVectorFrame

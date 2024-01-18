@@ -88,13 +88,13 @@ public:
 
     void keyPressEvent(QKeyEvent* event) override
     {
-        // sometimes, the viewer does not automatically gets key events
+        // sometimes, the viewer does not automatically get key events
         canvasWindow->keyPressEvent(event);
     }
 
     void keyReleaseEvent(QKeyEvent* event) override
     {
-        // sometimes, the viewer does not automatically gets key events
+        // sometimes, the viewer does not automatically get key events
         canvasWindow->keyReleaseEvent(event);
     }
 

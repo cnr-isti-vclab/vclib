@@ -43,6 +43,9 @@ public:
 
     void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
 
+    void keyPressEvent(QKeyEvent* event) override;
+    void keyReleaseEvent(QKeyEvent* event) override;
+
 public slots:
     void visibilityDrawableObjectChanged();
     void selectedDrawableObjectChanged(uint i);
