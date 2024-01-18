@@ -37,7 +37,7 @@ void main()
     // default case - color is taken from buffer
     v_color = a_color0;
 
-    if (bool(primitive & VCL_MRS_PRIMITIVE_POINTS)) {
+    if (!bool(primitive & VCL_MRS_PRIMITIVE_TRIANGLES)) {
         // offset - do it only if we will draw also surface
         if (bool(drawMode & VCL_MRS_DRAW_SURF)) {
             vec3 n = normalize(mul(u_modelViewProj, vec4(a_normal, 0.0) ).xyz);

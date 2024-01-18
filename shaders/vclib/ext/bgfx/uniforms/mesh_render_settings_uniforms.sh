@@ -32,5 +32,6 @@ uniform vec4 u_mrsColorPack;
 
 #define u_userPointColorFloat u_mrsColorPack.x
 #define u_userSurfaceColorFloat u_mrsColorPack.y
+#define u_userWireframeColorFloat u_mrsColorPack.z
 
 #endif // VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH

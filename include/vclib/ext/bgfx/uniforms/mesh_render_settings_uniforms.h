@@ -64,6 +64,7 @@ public:
 
         colorPack[0] = uintBitsToFloat(settings.pointCloudUserColor().abgr());
         colorPack[1] = uintBitsToFloat(settings.surfaceUserColor().abgr());
+        colorPack[2] = uintBitsToFloat(settings.wireframeUserColor().abgr());
     }
 
     void bind() const

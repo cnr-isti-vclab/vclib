@@ -99,7 +99,14 @@ void main()
         }
     }
     else { // wireframe
-        color = u_meshColor;
+        color = uintToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
+
+        if (bool(drawMode & VCL_MRS_WIREFRAME_COLOR_VERT)) {
+            color = v_color;
+        }
+        if (bool(drawMode & VCL_MRS_WIREFRAME_COLOR_MESH)) {
+            color = u_meshColor;
+        }
     }
 
     gl_FragColor = light * color + vec4(specular, 0);

@@ -277,6 +277,7 @@ private:
             }
         }
         else {
+            bgfx::setIndexBuffer(edgeIndexBH);
         }
     }
 
