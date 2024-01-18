@@ -31,6 +31,21 @@
 
 namespace vcl::bgf {
 
+/**
+ * @brief The DirectionalLightUniforms class manages the uniforms which describe
+ * a directional light that can be used by bgfx shaders.
+ *
+ * The uniforms of this class can be used by including the shader header
+ * "uniforms/uniforms/directional_light_uniforms.sh" in the shader.
+ *
+ * The uniforms are:
+ * - u_lightDirPack (vec4): the light direction packed in a vec4
+ * - u_lightColorPack (vec4): the light color packed in a vec4
+ *
+ * The shader header makes available the following uniforms:
+ * - u_lightDir (vec3): the light direction
+ * - u_lightColor (vec3): the light color
+ */
 class DirectionalLightUniforms
 {
     float dir[4] = {0.0, 0.0, 1.0, 0.0}; // dir[3]
@@ -44,6 +59,10 @@ class DirectionalLightUniforms
 public:
     DirectionalLightUniforms() {}
 
+    /**
+     * @brief updateLight
+     * @param light
+     */
     template<typename S>
     void updateLight(const vcl::DirectionalLight<S>& light)
     {
