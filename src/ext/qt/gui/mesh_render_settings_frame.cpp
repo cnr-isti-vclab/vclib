@@ -212,8 +212,8 @@ void MeshRenderSettingsFrame::updatePointsTabFromSettings()
         ui->pointVisibilityCheckBox->setChecked(mrs.isPointCloudVisible());
 
         // todo
-        ui->pointShadingPixelRadioButton->setChecked(true);
-        ui->pointShadingCircleRadioButton->setEnabled(false);
+        ui->pointShapePixelRadioButton->setChecked(true);
+        ui->pointShapeCircleRadioButton->setEnabled(false);
 
         updatePointsColorComboBoxFromSettings();
         ui->pointSizeSlider->setValue((uint) mrs.pointWidth());
