@@ -57,6 +57,35 @@ void MeshRenderSettingsFrame::on_pointVisibilityCheckBox_stateChanged(int arg1)
     emit settingsUpdated();
 }
 
+void MeshRenderSettingsFrame::on_pointShapeCircleRadioButton_toggled(bool)
+{
+    // todo
+}
+
+
+void MeshRenderSettingsFrame::on_pointShapePixelRadioButton_toggled(bool)
+{
+    // todo
+}
+
+void MeshRenderSettingsFrame::on_pointShadingVertexRadioButton_toggled(
+    bool checked)
+{
+    if (checked) {
+        mrs.setPointCloudShadingPerVertex();
+        emit settingsUpdated();
+    }
+}
+
+void MeshRenderSettingsFrame::on_pointShadingNoneRadioButton_toggled(
+    bool checked)
+{
+    if (checked) {
+        mrs.setPointCloudShadingNone();
+        emit settingsUpdated();
+    }
+}
+
 void MeshRenderSettingsFrame::on_pointColorComboBox_currentIndexChanged(
     int index)
 {
@@ -211,6 +240,13 @@ void MeshRenderSettingsFrame::updatePointsTabFromSettings()
         ui->pointVisibilityCheckBox->setEnabled(true);
         ui->pointVisibilityCheckBox->setChecked(mrs.isPointCloudVisible());
 
+        ui->pointShadingVertexRadioButton->setEnabled(
+            mrs.canPointCloudShadingBePerVertex());
+        ui->pointShadingVertexRadioButton->setChecked(
+            mrs.isPointCloudShadingPerVertex());
+        ui->pointShadingNoneRadioButton->setChecked(
+            mrs.isPointCloudShadingNone());
+
         // todo
         ui->pointShapePixelRadioButton->setChecked(true);
         ui->pointShapeCircleRadioButton->setEnabled(false);
@@ -229,6 +265,8 @@ void MeshRenderSettingsFrame::updatePointsColorComboBoxFromSettings()
     QStandardItemModel* model =
         qobject_cast<QStandardItemModel*>(ui->pointColorComboBox->model());
     assert(model != nullptr);
+
+    // color per vertex
     QStandardItem* item = model->item(P_VERT);
     if (mrs.canPointCloudColorBePerVertex()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
@@ -236,6 +274,8 @@ void MeshRenderSettingsFrame::updatePointsColorComboBoxFromSettings()
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
+
+    // color per mesh
     item = model->item(P_MESH);
     if (mrs.canPointCloudColorBePerMesh()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
@@ -243,12 +283,14 @@ void MeshRenderSettingsFrame::updatePointsColorComboBoxFromSettings()
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
+
     if (mrs.isPointCloudColorPerVertex())
         ui->pointColorComboBox->setCurrentIndex(P_VERT);
     if (mrs.isPointCloudColorPerMesh())
         ui->pointColorComboBox->setCurrentIndex(P_MESH);
     if (mrs.isPointCloudColorUserDefined())
         ui->pointColorComboBox->setCurrentIndex(P_USER);
+
     ui->pointUserColorFrame->setVisible(mrs.isPointCloudColorUserDefined());
     vcl::Color vc = mrs.pointCloudUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());

@@ -51,11 +51,16 @@ signals:
 
 private slots:
     void on_pointVisibilityCheckBox_stateChanged(int arg1);
+    void on_pointShapeCircleRadioButton_toggled(bool checked);
+    void on_pointShapePixelRadioButton_toggled(bool checked);
+    void on_pointShadingVertexRadioButton_toggled(bool checked);
+    void on_pointShadingNoneRadioButton_toggled(bool checked);
     void on_pointColorComboBox_currentIndexChanged(int index);
     void on_pointColorDialogPushButton_clicked();
     void on_pointSizeSlider_valueChanged(int value);
 
     void on_surfaceVisibilityCheckBox_stateChanged(int arg1);
+    void on_surfaceShadingNoneRadioButton_toggled(bool checked);
     void on_surfaceShadingSmoothRadioButton_toggled(bool checked);
     void on_surfaceShadingFlatRadioButton_toggled(bool checked);
     void on_surfaceColorComboBox_currentIndexChanged(int index);
@@ -65,8 +70,6 @@ private slots:
     void on_wireframeColorComboBox_currentIndexChanged(int index);
     void on_wireframeColorDialogPushButton_clicked();
     void on_wireframeSizelSlider_valueChanged(int value);
-
-    void on_surfaceShadingNoneRadioButton_toggled(bool checked);
 
 private:
     enum POINT_COLOR { P_VERT = 0, P_MESH, P_USER };

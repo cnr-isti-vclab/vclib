@@ -29,7 +29,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pointsTab">
       <attribute name="title">
@@ -230,9 +230,9 @@
         </widget>
        </item>
        <item row="3" column="2">
-        <widget class="QRadioButton" name="pointShadingFlatRadioButton">
+        <widget class="QRadioButton" name="pointShadingNoneRadioButton">
          <property name="text">
-          <string>Flat</string>
+          <string>None</string>
          </property>
          <property name="checked">
           <bool>true</bool>
