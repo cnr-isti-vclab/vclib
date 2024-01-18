@@ -143,6 +143,11 @@ public:
         return dModeCapability & VCL_MRS_SURF_TEX_WEDGE;
     }
 
+    bool canWireframeColorBePerVertex() const
+    {
+        return dModeCapability & VCL_MRS_WIREFRAME_COLOR_VERT;
+    }
+
     bool canWireframeColorBePerMesh() const
     {
         return dModeCapability & VCL_MRS_WIREFRAME_COLOR_MESH;
@@ -259,6 +264,11 @@ public:
     const uint* surfaceUserColorData() const { return &sUserColor; }
 
     bool isWireframeVisible() const { return dMode & VCL_MRS_DRAW_WIREFRAME; }
+
+    bool isWireframeColorPerVertex() const
+    {
+        return dMode & VCL_MRS_WIREFRAME_COLOR_VERT;
+    }
 
     bool isWireframeColorPerMesh() const
     {
@@ -688,9 +698,23 @@ public:
         }
     }
 
+    bool setWireframeColorPerVertex()
+    {
+        if (canWireframeColorBePerVertex()) {
+            dMode |= VCL_MRS_WIREFRAME_COLOR_VERT;
+            dMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
+            dMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     bool setWireframeColorPerMesh()
     {
         if (canWireframeColorBePerMesh()) {
+            dMode &= ~VCL_MRS_WIREFRAME_COLOR_VERT;
             dMode |= VCL_MRS_WIREFRAME_COLOR_MESH;
             dMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
             return true;
@@ -703,6 +727,7 @@ public:
     bool setWireframeColorUserDefined()
     {
         if (canSurfaceBeVisible()) {
+            dMode &= ~VCL_MRS_WIREFRAME_COLOR_VERT;
             dMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
             dMode |= VCL_MRS_WIREFRAME_COLOR_USER;
             return true;
@@ -818,6 +843,7 @@ public:
                     if constexpr (vcl::HasPerVertexColor<MeshType>) {
                         if (vcl::isPerVertexColorAvailable(m)) {
                             dModeCapability |= VCL_MRS_SURF_COLOR_VERTEX;
+                            dModeCapability |= VCL_MRS_WIREFRAME_COLOR_VERT;
                         }
                     }
 

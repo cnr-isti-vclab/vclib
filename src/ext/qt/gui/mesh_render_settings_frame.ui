@@ -29,7 +29,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="pointsTab">
       <attribute name="title">
@@ -452,8 +452,13 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
+         <item>
+          <property name="text">
+           <string>Vertex</string>
+          </property>
+         </item>
          <item>
           <property name="text">
            <string>Mesh</string>

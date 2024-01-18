@@ -35,16 +35,23 @@ namespace vcl::qbgf {
  *
  * @param parent
  */
-ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
+ViewerMainWindow::ViewerMainWindow(bgfx::RendererType::Enum renderType, QWidget* parent) :
         QMainWindow(parent), ui(new Ui::ViewerMainWindow)
 {
     ui->setupUi(this);
+
+    // create the viewer inside the viewer container
+    viewer = new MinimalViewerWidget(renderType, ui->viewerContainer);
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->addWidget(viewer);
+    layout->setContentsMargins(0, 0, 0, 0);
+    ui->viewerContainer->setLayout(layout);
 
     // create the vector of DrawableObjects
     drawVector = std::make_shared<vcl::DrawableObjectVector>();
 
     // give the vector pointer to the contained widgets
-    ui->glArea->setDrawableObjectVector(drawVector);
+    viewer->setDrawableObjectVector(drawVector);
     ui->drawVectorFrame->setDrawableObjectVector(drawVector);
 
     // each time that the RenderSettingsFrame updates its settings, we call the
@@ -76,6 +83,12 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
     ui->rightArea->setVisible(false);
 }
 
+
+ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
+        ViewerMainWindow(bgfx::RendererType::Count, parent)
+{
+}
+
 ViewerMainWindow::~ViewerMainWindow()
 {
     drawVector->clear();
@@ -94,7 +107,7 @@ void ViewerMainWindow::setDrawableObjectVector(
 
     // order here is important: drawVectorFrame must have the drawVector before
     // the renderSettingsFrame!
-    ui->glArea->setDrawableObjectVector(drawVector);
+    viewer->setDrawableObjectVector(drawVector);
     ui->drawVectorFrame->setDrawableObjectVector(drawVector);
     if (drawVector->size() > 0) {
         try {
@@ -114,19 +127,19 @@ void ViewerMainWindow::setDrawableObjectVector(
     else {
         ui->rightArea->setVisible(false);
     }
-    ui->glArea->fitScene();
+    viewer->fitScene();
 }
 
 void ViewerMainWindow::keyPressEvent(QKeyEvent* event)
 {
     // sometimes, the viewer does not automatically get key events
-    ui->glArea->keyPressEvent(event);
+    viewer->keyPressEvent(event);
 }
 
 void ViewerMainWindow::keyReleaseEvent(QKeyEvent* event)
 {
     // sometimes, the viewer does not automatically get key events
-    ui->glArea->keyReleaseEvent(event);
+    viewer->keyReleaseEvent(event);
 }
 
 /**
@@ -146,7 +159,7 @@ void ViewerMainWindow::visibilityDrawableObjectChanged()
     }
     catch (std::bad_cast exp) {
     }
-    ui->glArea->update();
+    viewer->update();
 }
 
 /**
@@ -193,7 +206,7 @@ void ViewerMainWindow::renderSettingsUpdated()
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // GenericDrawableMesh
         m.setRenderSettings(ui->renderSettingsFrame->meshRenderSettings());
-        ui->glArea->update();
+        viewer->update();
     }
 }
 

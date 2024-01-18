@@ -80,7 +80,7 @@ private:
         SC_USER
     };
 
-    enum WIRE_COLOR { W_MESH = 0, W_USER };
+    enum WIRE_COLOR { W_VERTEX = 0, W_MESH, W_USER };
 
     Ui::MeshRenderSettingsFrame* ui;
     MeshRenderSettings           mrs;

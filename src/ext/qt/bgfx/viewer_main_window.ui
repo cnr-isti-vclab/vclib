@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="vcl::qbgf::MinimalViewerWidget" name="glArea" native="true">
+     <widget class="QWidget" name="viewerContainer" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -90,12 +90,6 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>vcl::qbgf::MinimalViewerWidget</class>
-   <extends>QWidget</extends>
-   <header>vclib/ext/qt/bgfx/minimal_viewer_widget.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>vcl::qt::MeshRenderSettingsFrame</class>
    <extends>QFrame</extends>

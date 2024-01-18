@@ -161,6 +161,7 @@ void MeshRenderSettingsFrame::on_wireframeColorComboBox_currentIndexChanged(
     int index)
 {
     switch (index) {
+    case W_VERTEX: mrs.setWireframeColorPerVertex(); break;
     case W_MESH: mrs.setWireframeColorPerMesh(); break;
     case W_USER: mrs.setWireframeColorUserDefined(); break;
     }
@@ -361,17 +362,28 @@ void MeshRenderSettingsFrame::updateWireframeComboBoxFromSettings()
     QStandardItemModel* model =
         qobject_cast<QStandardItemModel*>(ui->wireframeColorComboBox->model());
     assert(model != nullptr);
-    QStandardItem* item = model->item(W_MESH);
+    QStandardItem* item = model->item(W_VERTEX);
+    if (mrs.canWireframeColorBePerVertex()) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+
+    item = model->item(W_MESH);
     if (mrs.canWireframeColorBePerMesh()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
+    if (mrs.isWireframeColorPerVertex())
+        ui->wireframeColorComboBox->setCurrentIndex(W_VERTEX);
     if (mrs.isWireframeColorPerMesh())
         ui->wireframeColorComboBox->setCurrentIndex(W_MESH);
     if (mrs.isWireframeColorUserDefined())
         ui->wireframeColorComboBox->setCurrentIndex(W_USER);
+
     ui->wireframeUserColorFrame->setVisible(mrs.isWireframeColorUserDefined());
     vcl::Color vc = mrs.wireframeUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());

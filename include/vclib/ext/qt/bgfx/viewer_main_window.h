@@ -27,6 +27,8 @@
 
 #include <vclib/render/drawable_object_vector.h>
 
+#include "minimal_viewer_widget.h"
+
 namespace vcl::qbgf {
 
 namespace Ui {
@@ -38,7 +40,12 @@ class ViewerMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ViewerMainWindow(QWidget* parent = nullptr);
+    explicit ViewerMainWindow(
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWidget*                 parent     = nullptr);
+
+    explicit ViewerMainWindow(QWidget* parent);
+
     ~ViewerMainWindow();
 
     void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
@@ -52,6 +59,7 @@ public slots:
     void renderSettingsUpdated();
 
 private:
+    MinimalViewerWidget*                       viewer = nullptr;
     Ui::ViewerMainWindow*                      ui;
     std::shared_ptr<vcl::DrawableObjectVector> drawVector;
 };
