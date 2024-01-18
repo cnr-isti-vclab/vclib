@@ -912,22 +912,22 @@ public:
                     setSurfaceColorUserDefined();
                 }
             }
-            else {
-                if (canPointCloudBeVisible()) {
+
+            if (canPointCloudBeVisible()) {
+                if (!canSurfaceBeVisible())
                     setPointCloudVisibility(true);
-                    setPointCloudShadingNone();
-                    if (canPointCloudShadingBePerVertex()) {
-                        setPointCloudShadingPerVertex();
-                    }
-                    if (canPointCloudColorBePerVertex()) {
-                        setPointCloudColorPerVertex();
-                    }
-                    else if (canPointCloudColorBePerMesh()) {
-                        setPointCloudColorPerMesh();
-                    }
-                    else {
-                        setPointCloudColorUserDefined();
-                    }
+                setPointCloudShadingNone();
+                if (canPointCloudShadingBePerVertex()) {
+                    setPointCloudShadingPerVertex();
+                }
+                if (canPointCloudColorBePerVertex()) {
+                    setPointCloudColorPerVertex();
+                }
+                else if (canPointCloudColorBePerMesh()) {
+                    setPointCloudColorPerMesh();
+                }
+                else {
+                    setPointCloudColorUserDefined();
                 }
             }
         }
