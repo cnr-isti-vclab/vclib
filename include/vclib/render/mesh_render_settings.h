@@ -65,7 +65,7 @@ class MeshRenderSettings
 
     float pWidth        = 3;
     float pUserColor[4] = {1, 1, 0, 1};
-    uint  sUserColor = 0xFF808080; // abgr
+    uint  sUserColor    = 0xFF808080; // abgr
     int   wWidth        = 1;
     float wUserColor[4] = {0, 0, 0, 1};
 

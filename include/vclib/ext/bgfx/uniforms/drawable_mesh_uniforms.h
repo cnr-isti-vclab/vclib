@@ -73,7 +73,7 @@ public:
     void bind() const
     {
         bgfx::setUniform(meshColorUH.handle(), meshColor);
-        //bgfx::setUniform(modelUH.handle(), model);
+        // bgfx::setUniform(modelUH.handle(), model);
     }
 };
 

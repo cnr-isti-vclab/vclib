@@ -77,7 +77,7 @@ private:
     {
         union
         {
-            uint   i;
+            uint  i;
             float f;
         } u;
 

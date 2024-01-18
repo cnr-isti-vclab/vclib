@@ -52,7 +52,7 @@ class DrawableMesh : public GenericDrawableMesh
 
     bgfx::IndexBufferHandle edgeIndexBH = BGFX_INVALID_HANDLE;
 
-    DrawableMeshUniforms meshUniforms;
+    DrawableMeshUniforms       meshUniforms;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
 public:
@@ -81,10 +81,7 @@ public:
         return *this;
     }
 
-    ~DrawableMesh()
-    {
-        destroyBGFXBuffers();
-    }
+    ~DrawableMesh() { destroyBGFXBuffers(); }
 
     void swap(DrawableMesh& oth)
     {
