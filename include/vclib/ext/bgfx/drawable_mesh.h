@@ -47,8 +47,9 @@ class DrawableMesh : public GenericDrawableMesh
     bgfx::VertexBufferHandle vertexNormalBH = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle vertexColorBH  = BGFX_INVALID_HANDLE;
 
-    bgfx::IndexBufferHandle triangleIndexBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle triangleColorBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle triangleIndexBH  = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle triangleNormalBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle triangleColorBH  = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle edgeIndexBH = BGFX_INVALID_HANDLE;
 
@@ -92,6 +93,7 @@ public:
         std::swap(vertexNormalBH, oth.vertexNormalBH);
         std::swap(vertexColorBH, oth.vertexColorBH);
         std::swap(triangleIndexBH, oth.triangleIndexBH);
+        std::swap(triangleNormalBH, oth.triangleNormalBH);
         std::swap(triangleColorBH, oth.triangleColorBH);
         std::swap(edgeIndexBH, oth.edgeIndexBH);
         std::swap(meshUniforms, oth.meshUniforms);
@@ -235,13 +237,22 @@ private:
                 BGFX_BUFFER_INDEX32);
         }
 
+        // triangle normal buffer
+        if (mrb.triangleNormalBufferData()) {
+            triangleNormalBH = bgfx::createIndexBuffer(
+                bgfx::makeRef(
+                    mrb.triangleNormalBufferData(),
+                    mrb.triangleNumber() * 3 * sizeof(float)),
+                BGFX_BUFFER_COMPUTE_READ);
+        }
+
         // triangle color buffer
         if (mrb.triangleColorBufferData()) {
             triangleColorBH = bgfx::createIndexBuffer(
                 bgfx::makeRef(
                     mrb.triangleColorBufferData(),
                     mrb.triangleNumber() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
+                BGFX_BUFFER_COMPUTE_READ);
         }
 
         // edge index buffer
@@ -275,6 +286,10 @@ private:
             if (bgfx::isValid(triangleColorBH)) { // triangle colors
                 bgfx::setBuffer(1, triangleColorBH, bgfx::Access::Read);
             }
+
+            if (bgfx::isValid(triangleNormalBH)) { // triangle normals
+                bgfx::setBuffer(2, triangleNormalBH, bgfx::Access::Read);
+            }
         }
         else {
             bgfx::setIndexBuffer(edgeIndexBH);
@@ -301,6 +316,9 @@ private:
 
         if (bgfx::isValid(triangleIndexBH))
             bgfx::destroy(triangleIndexBH);
+
+        if (bgfx::isValid(triangleNormalBH))
+            bgfx::destroy(triangleNormalBH);
 
         if (bgfx::isValid(triangleColorBH))
             bgfx::destroy(triangleColorBH);

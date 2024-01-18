@@ -28,6 +28,7 @@ $input v_color
 #include <vclib/render/mesh_render_settings_macros.h>
 
 BUFFER_RO(triangleColors, uint, 1);
+BUFFER_RO(triangleNormals, float, 2);
 
 void main()
 {
@@ -67,9 +68,11 @@ void main()
     else if (bool(primitive & VCL_MRS_PRIMITIVE_TRIANGLES)) {
         // if flat shading, compute normal of face
         if (bool(drawMode & VCL_MRS_SURF_SHADING_FLAT)) {
-            vec3 X = dFdx(v_pos);
-            vec3 Y = dFdy(v_pos);
-            normal = normalize(cross(X,Y));
+            normal = vec3(
+                triangleNormals[gl_PrimitiveID * 3],
+                triangleNormals[gl_PrimitiveID * 3 + 1],
+                triangleNormals[gl_PrimitiveID * 3 + 2]);
+            normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
         }
 
         // if flat or smooth shading, compute light
