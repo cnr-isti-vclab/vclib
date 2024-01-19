@@ -143,6 +143,11 @@ public:
         return dModeCapability & VCL_MRS_SURF_TEX_WEDGE;
     }
 
+    bool canWireframeShadingBePerVertex() const
+    {
+        return dModeCapability & VCL_MRS_WIREFRAME_SHADING_VERT;
+    }
+
     bool canWireframeColorBePerVertex() const
     {
         return dModeCapability & VCL_MRS_WIREFRAME_COLOR_VERT;
@@ -264,6 +269,16 @@ public:
     const uint* surfaceUserColorData() const { return &sUserColor; }
 
     bool isWireframeVisible() const { return dMode & VCL_MRS_DRAW_WIREFRAME; }
+
+    bool isWireframeShadingNone() const
+    {
+        return dMode & VCL_MRS_WIREFRAME_SHADING_NONE;
+    }
+
+    bool isWireframeShadingPerVertex() const
+    {
+        return dMode & VCL_MRS_WIREFRAME_SHADING_VERT;
+    }
 
     bool isWireframeColorPerVertex() const
     {
@@ -687,10 +702,23 @@ public:
         }
     }
 
-    bool setWireframeWidth(int width)
+    bool setWireframeShadingNone()
     {
         if (canSurfaceBeVisible()) {
-            wWidth = width;
+            dMode |= VCL_MRS_WIREFRAME_SHADING_NONE;
+            dMode &= ~VCL_MRS_WIREFRAME_SHADING_VERT;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    bool setWireframeShadingPerVertex()
+    {
+        if (canSurfaceBeVisible()) {
+            dMode &= ~VCL_MRS_WIREFRAME_SHADING_NONE;
+            dMode |= VCL_MRS_WIREFRAME_SHADING_VERT;
             return true;
         }
         else {
@@ -744,6 +772,17 @@ public:
             wUserColor[1] = g;
             wUserColor[2] = b;
             wUserColor[3] = a;
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    bool setWireframeWidth(int width)
+    {
+        if (canSurfaceBeVisible()) {
+            wWidth = width;
             return true;
         }
         else {
@@ -817,6 +856,7 @@ public:
                     dModeCapability |= VCL_MRS_SURF_SHADING_NONE;
                     dModeCapability |= VCL_MRS_SURF_COLOR_USER;
                     dModeCapability |= VCL_MRS_DRAW_WIREFRAME;
+                    dModeCapability |= VCL_MRS_WIREFRAME_SHADING_NONE;
                     dModeCapability |= VCL_MRS_WIREFRAME_COLOR_USER;
 
                     if constexpr (vcl::HasColor<MeshType>) {
@@ -831,8 +871,10 @@ public:
                     }
 
                     if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-                        if (vcl::isPerVertexNormalAvailable(m))
+                        if (vcl::isPerVertexNormalAvailable(m)) {
                             dModeCapability |= VCL_MRS_SURF_SHADING_SMOOTH;
+                            dModeCapability |= VCL_MRS_WIREFRAME_SHADING_VERT;
+                        }
                     }
 
                     if constexpr (vcl::HasPerFaceColor<MeshType>) {

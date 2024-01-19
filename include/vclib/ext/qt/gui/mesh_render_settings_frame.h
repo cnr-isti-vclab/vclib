@@ -67,6 +67,8 @@ private slots:
     void on_surfaceColorDialogPushButton_clicked();
 
     void on_wireframeVisibilityCheckBox_stateChanged(int arg1);
+    void on_wireframeShadingNoneRadioButton_toggled(bool checked);
+    void on_wireframeShadingVertexRadioButton_toggled(bool checked);
     void on_wireframeColorComboBox_currentIndexChanged(int index);
     void on_wireframeColorDialogPushButton_clicked();
     void on_wireframeSizelSlider_valueChanged(int value);

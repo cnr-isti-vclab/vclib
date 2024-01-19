@@ -106,6 +106,11 @@ void main()
         }
     }
     else { // wireframe
+        // shading
+        if (bool(drawMode & VCL_MRS_WIREFRAME_SHADING_VERT)) {
+            light = computeLight(u_lightDir, u_lightColor, normal);
+        }
+
         color = uintToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
 
         if (bool(drawMode & VCL_MRS_WIREFRAME_COLOR_VERT)) {

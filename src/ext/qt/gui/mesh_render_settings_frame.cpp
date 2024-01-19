@@ -185,6 +185,24 @@ void MeshRenderSettingsFrame::on_wireframeVisibilityCheckBox_stateChanged(
     emit settingsUpdated();
 }
 
+void MeshRenderSettingsFrame::on_wireframeShadingNoneRadioButton_toggled(
+    bool checked)
+{
+    if (checked) {
+        mrs.setWireframeShadingNone();
+        emit settingsUpdated();
+    }
+}
+
+void MeshRenderSettingsFrame::on_wireframeShadingVertexRadioButton_toggled(
+    bool checked)
+{
+    if (checked) {
+        mrs.setWireframeShadingPerVertex();
+        emit settingsUpdated();
+    }
+}
+
 void MeshRenderSettingsFrame::on_wireframeColorComboBox_currentIndexChanged(
     int index)
 {
@@ -390,6 +408,13 @@ void MeshRenderSettingsFrame::updateWireframeTabFromSettings()
         ui->wireframeTab->setEnabled(true);
         ui->wireframeVisibilityCheckBox->setEnabled(true);
         ui->wireframeVisibilityCheckBox->setChecked(mrs.isWireframeVisible());
+        ui->wireframeShadingVertexRadioButton->setEnabled(
+            mrs.canWireframeShadingBePerVertex());
+        ui->wireframeShadingVertexRadioButton->setChecked(
+            mrs.isWireframeShadingPerVertex());
+        ui->wireframeShadingNoneRadioButton->setChecked(
+            mrs.isWireframeShadingNone());
+
         updateWireframeComboBoxFromSettings();
         ui->wireframeSizelSlider->setValue(mrs.wireframeWidth());
     }
