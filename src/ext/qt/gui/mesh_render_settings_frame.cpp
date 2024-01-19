@@ -62,7 +62,6 @@ void MeshRenderSettingsFrame::on_pointShapeCircleRadioButton_toggled(bool)
     // todo
 }
 
-
 void MeshRenderSettingsFrame::on_pointShapePixelRadioButton_toggled(bool)
 {
     // todo
