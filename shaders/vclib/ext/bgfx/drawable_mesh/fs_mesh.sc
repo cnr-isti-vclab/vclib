@@ -35,6 +35,9 @@ void main()
     uint primitive = floatBitsToUint(u_primitiveFloat);
     uint drawMode = floatBitsToUint(u_drawModeFloat);
 
+    // depth offset - avoid z-fighting
+    float depthOffset = 0.0;
+
     // if not drawing mesh, discard
     if (!bool(drawMode & VCL_MRS_DRAW_MESH)) {
         discard;
@@ -64,6 +67,7 @@ void main()
         else if (bool(drawMode & VCL_MRS_POINTS_COLOR_MESH)) {
             color = u_meshColor;
         }
+        depthOffset = (1.0 / (exp2(8.0) - 1.0));
     }
     else if (bool(primitive & VCL_MRS_PRIMITIVE_TRIANGLES)) {
         // if flat shading, compute normal of face
@@ -110,7 +114,9 @@ void main()
         if (bool(drawMode & VCL_MRS_WIREFRAME_COLOR_MESH)) {
             color = u_meshColor;
         }
+        depthOffset = (1.0 / (exp2(12.0) - 1.0));
     }
 
     gl_FragColor = light * color + vec4(specular, 0);
+    gl_FragDepth = gl_FragCoord.z - depthOffset;
 }
