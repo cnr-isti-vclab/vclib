@@ -36,7 +36,7 @@ void applyTransformMatrix(
     const Matrix44<ScalarM>& matrix,
     bool                     updateNormals = true)
 {
-    using VertexType = typename MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
     for (VertexType& v : mesh.vertices()) {
         v.coord() *= matrix;
     }
@@ -57,7 +57,7 @@ void applyTransformMatrix(
 template<MeshConcept MeshType, PointConcept PointType>
 void translate(MeshType& mesh, const PointType& t)
 {
-    using VertexType = typename MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
     for (VertexType& v : mesh.vertices()) {
         v.coord() += t;
     }
@@ -66,7 +66,7 @@ void translate(MeshType& mesh, const PointType& t)
 template<MeshConcept MeshType, PointConcept PointType>
 void scale(MeshType& mesh, const PointType& s)
 {
-    using VertexType = typename MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
     for (VertexType& v : mesh.vertices()) {
         v.coord()(0) *= s(0);
         v.coord()(1) *= s(1);
@@ -77,10 +77,64 @@ void scale(MeshType& mesh, const PointType& s)
 template<MeshConcept MeshType, typename Scalar = double>
 void scale(MeshType& mesh, const Scalar& s)
 {
-    using VertexType = typename MeshType::VertexType;
+    using VertexType = MeshType::VertexType;
     for (VertexType& v : mesh.vertices()) {
         v.coord() *= s;
     }
+}
+
+template<MeshConcept MeshType, typename Scalar>
+void rotate(
+    MeshType&               mesh,
+    const Matrix33<Scalar>& m,
+    bool                    updateNormals = true)
+{
+    for (auto& v : mesh.vertices()) {
+        v.coord() *= m;
+    }
+
+    if (updateNormals) {
+        if constexpr (HasPerVertexNormal<MeshType>) {
+            if (isPerVertexNormalAvailable(mesh)) {
+                for (auto& v : mesh.vertices()) {
+                    v.normal() *= m;
+                }
+            }
+        }
+
+        if constexpr (HasPerFaceNormal<MeshType>) {
+            if (isPerFaceNormalAvailable(mesh)) {
+                for (auto& f : mesh.faces()) {
+                    f.normal() *= m;
+                }
+            }
+        }
+    }
+}
+
+template<MeshConcept MeshType, PointConcept PointType, typename Scalar = double>
+void rotate(
+    MeshType&        mesh,
+    const PointType& axis,
+    const Scalar&    angleRad,
+    bool             updateNormals = true)
+{
+    using ScalarType = MeshType::VertexType::CoordType::ScalarType;
+
+    vcl::Matrix33<ScalarType> m;
+    vcl::setTransformMatrixRotation(m, axis, angleRad);
+
+    rotate(mesh, m, updateNormals);
+}
+
+template<MeshConcept MeshType, PointConcept PointType, typename Scalar = double>
+void rotateDeg(
+    MeshType&        mesh,
+    const PointType& axis,
+    const Scalar&    angleDeg,
+    bool             updateNormals = true)
+{
+    rotate(mesh, axis, vcl::toRad(angleDeg), updateNormals);
 }
 
 } // namespace vcl
