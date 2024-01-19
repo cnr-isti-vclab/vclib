@@ -67,7 +67,7 @@ void main()
         else if (bool(drawMode & VCL_MRS_POINTS_COLOR_MESH)) {
             color = u_meshColor;
         }
-        depthOffset = (1.0 / (exp2(8.0) - 1.0));
+        depthOffset = (1.0 / (exp2(10.0) - 1.0));
     }
     else if (bool(primitive & VCL_MRS_PRIMITIVE_TRIANGLES)) {
         // if flat shading, compute normal of face
