@@ -114,19 +114,19 @@ private:
          }},
 
  // translate
-        {KEY_W,
+        {KEY_UP,
          [](TrackBallType& t) {
              translate(t, TrackBallType::VERTICAL, 1);
          }},
-        {KEY_S,
+        {KEY_DOWN,
          [](TrackBallType& t) {
              translate(t, TrackBallType::VERTICAL, -1);
          }},
-        {KEY_A,
+        {KEY_LEFT,
          [](TrackBallType& t) {
              translate(t, TrackBallType::HORIZONTAL, -1);
          }},
-        {KEY_D,
+        {KEY_RIGHT,
          [](TrackBallType& t) {
              translate(t, TrackBallType::HORIZONTAL, 1);
          }},

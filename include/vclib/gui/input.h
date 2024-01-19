@@ -84,6 +84,11 @@ enum Key {
     KEY_Y = 0x59,
     KEY_Z = 0x5a,
 
+    KEY_LEFT  = 0x01000012,
+    KEY_UP    = 0x01000013,
+    KEY_RIGHT = 0x01000014,
+    KEY_DOWN  = 0x01000015,
+
     KEY_F1  = 0x01000030,
     KEY_F2  = 0x01000031,
     KEY_F3  = 0x01000032,
