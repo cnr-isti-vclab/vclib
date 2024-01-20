@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_DRAWABLE_MESH_DRAWABLE_MESH_H
-#define VCL_EXT_BGFX_DRAWABLE_MESH_DRAWABLE_MESH_H
+#ifndef VCL_EXT_BGFX_DRAWABLE_MESH_H
+#define VCL_EXT_BGFX_DRAWABLE_MESH_H
 
 #include <bgfx/bgfx.h>
 
@@ -331,4 +331,4 @@ private:
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_DRAWABLE_MESH_DRAWABLE_MESH_H
+#endif // VCL_EXT_BGFX_DRAWABLE_MESH_H
