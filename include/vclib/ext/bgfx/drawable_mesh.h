@@ -243,8 +243,8 @@ private:
                 bgfx::makeRef(
                     mrb.triangleNormalBufferData(),
                     mrb.triangleNumber() * 3 * sizeof(float)),
-                BGFX_BUFFER_COMPUTE_FORMAT_32X1 |
-                    BGFX_BUFFER_COMPUTE_READ | BGFX_BUFFER_COMPUTE_TYPE_FLOAT);
+                BGFX_BUFFER_COMPUTE_FORMAT_32X1 | BGFX_BUFFER_COMPUTE_READ |
+                    BGFX_BUFFER_COMPUTE_TYPE_FLOAT);
         }
 
         // triangle color buffer
