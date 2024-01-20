@@ -20,47 +20,21 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_DRAWABLE_MESH_SHADER_PROGRAM_H
-#define VCL_EXT_BGFX_DRAWABLE_MESH_SHADER_PROGRAM_H
+$input a_position, a_normal, a_color0
+$output v_pos, v_normal, v_color
 
-#include <vclib/render/generic_drawable_mesh_shader_program.h>
+#include <drawable_mesh/uniforms.sh>
+#include <vclib/render/mesh_render_settings_macros.h>
 
-#include "load_program.h"
-
-namespace vcl::bgf {
-
-class DrawableMeshShaderProgram : public GenericDrawableMeshShaderProgram
+void main()
 {
-    bgfx::ProgramHandle p = BGFX_INVALID_HANDLE;
+    uint primitive = floatBitsToUint(u_primitiveFloat);
+    uint drawMode = floatBitsToUint(u_drawModeFloat);
 
-public:
-    DrawableMeshShaderProgram()
-    {
-        p = vcl::bgf::loadProgram(
-            "vclib/ext/bgfx/drawable_mesh/vs_mesh",
-            "vclib/ext/bgfx/drawable_mesh/fs_mesh");
-    }
+    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    v_pos = mul(u_modelView, vec4(a_position, 1.0)).xyz;
+    v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
 
-    DrawableMeshShaderProgram(const std::string& vs, const std::string& fs)
-    {
-        p = loadProgram(vs, fs);
-    };
-
-    ~DrawableMeshShaderProgram()
-    {
-        if (bgfx::isValid(p)) {
-            bgfx::destroy(p);
-        }
-    };
-
-    DrawableMeshShaderProgram(const DrawableMeshShaderProgram&) = delete;
-
-    DrawableMeshShaderProgram& operator=(const DrawableMeshShaderProgram&) =
-        delete;
-
-    bgfx::ProgramHandle program() const { return p; };
-};
-
-} // namespace vcl::bgf
-
-#endif // VCL_EXT_BGFX_DRAWABLE_MESH_SHADER_PROGRAM_H
+    // default case - color is taken from buffer
+    v_color = a_color0;
+}

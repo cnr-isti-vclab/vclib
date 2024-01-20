@@ -28,7 +28,7 @@
 #include <vclib/render/generic_drawable_mesh.h>
 #include <vclib/render/mesh_render_buffers.h>
 
-#include "drawable_mesh_shader_program.h"
+#include "shader_programs/drawable_mesh_shader_program.h"
 #include "uniforms/drawable_mesh_uniforms.h"
 #include "uniforms/mesh_render_settings_uniforms.h"
 

@@ -30,7 +30,7 @@
 #include <vclib/render/drawable_object_vector.h>
 #include <vclib/render/generic_drawable_mesh.h>
 
-#include "drawable_mesh_shader_program.h"
+#include "shader_programs/drawable_mesh_shader_program.h"
 #include "uniforms/camera_uniforms.h"
 #include "uniforms/directional_light_uniforms.h"
 #include "uniforms/mesh_render_settings_uniforms.h"

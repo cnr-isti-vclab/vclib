@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_LOAD_PROGRAM_H
-#define VCL_EXT_BGFX_LOAD_PROGRAM_H
+#ifndef VCL_EXT_BGFX_SHADER_PROGRAMS_LOAD_PROGRAM_H
+#define VCL_EXT_BGFX_SHADER_PROGRAMS_LOAD_PROGRAM_H
 
 #include <bgfx/bgfx.h>
 #include <bx/bx.h>
@@ -130,4 +130,4 @@ inline bgfx::ProgramHandle loadProgram(
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_LOAD_PROGRAM_H
+#endif // VCL_EXT_BGFX_SHADER_PROGRAMS_LOAD_PROGRAM_H

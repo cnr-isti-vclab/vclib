@@ -77,9 +77,10 @@ if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
         include/vclib/ext/bgfx/canvas.h
         include/vclib/ext/bgfx/drawable_mesh.h
-        include/vclib/ext/bgfx/drawable_mesh_shader_program.h
-        include/vclib/ext/bgfx/load_program.h
         include/vclib/ext/bgfx/minimal_viewer.h
+        include/vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h
+        include/vclib/ext/bgfx/shader_programs/drawable_mesh_shader_program.h
+        include/vclib/ext/bgfx/shader_programs/load_program.h
         include/vclib/ext/bgfx/uniforms/camera_uniforms.h
         include/vclib/ext/bgfx/uniforms/directional_light_uniforms.h
         include/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.h
@@ -88,9 +89,13 @@ if (TARGET vclib-external-bgfx)
 
     set(SHADERS
         shaders/vclib/ext/bgfx/shaders_common.sh
-        shaders/vclib/ext/bgfx/drawable_mesh/fs_mesh.sc
+        shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc
+        shaders/vclib/ext/bgfx/drawable_axis/varying.def.sc
+        shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc
+        shaders/vclib/ext/bgfx/drawable_axis/uniforms.sh
+        shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc
         shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc
-        shaders/vclib/ext/bgfx/drawable_mesh/vs_mesh.sc
+        shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc
         shaders/vclib/ext/bgfx/drawable_mesh/uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/camera_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/directional_light_uniforms.sh
