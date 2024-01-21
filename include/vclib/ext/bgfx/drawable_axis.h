@@ -57,7 +57,7 @@ public:
         vcl::translate(cone, vcl::Point3d(0, 1, 0));
 
         mrbCylinder = MeshRenderBuffers<vcl::TriMesh>(cylinder);
-        mrbCone = MeshRenderBuffers<vcl::TriMesh>(cone);
+        mrbCone     = MeshRenderBuffers<vcl::TriMesh>(cone);
     }
 
     ~DrawableAxis() = default;
@@ -80,7 +80,6 @@ public:
                                  BGFX_STATE_DEPTH_TEST_LEQUAL | BGFX_STATE_MSAA;
 
                 bgfx::submit(0, program);
-
             }
         }
     }
