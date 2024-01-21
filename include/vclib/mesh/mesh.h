@@ -275,7 +275,7 @@ public:
 
         // update all the pointers contained on each container
         // use the base pointer of each container of oth to update all the
-        // pointers in this mesh each pointer of oth that was copied in this
+        // pointers in this mesh. Each pointer of oth that was copied in this
         // mesh, will be updated computing its offset wrt the base of oth, and
         // then adding that offset to the new base pointer of this mesh
         (updatePointersOfContainerType<Args>(*this, othBases), ...);
@@ -376,6 +376,41 @@ public:
         // available in the OtherMeshType
 
         (enableSameOptionalComponentsOf<Args>(m), ...);
+    }
+
+    /**
+     * @brief Appends all the elements contained in the mesh m to this mesh.
+     *
+     * @note This function does not enable the optional components that are
+     * disabled in this mesh, but are available in m. Enabling the components
+     * that are available in m, but not in this mesh, is up to the user.
+     *
+     * @warning This function is applied only to the containers of the meshes.
+     * It does not import all the other components of the mesh m (e.g
+     * BoundingBox, TransformMatrix, ...).
+     *
+     * @param m
+     */
+    void append(const Mesh& m)
+    {
+        // for each container of this mesh, save its size
+        // will need it to update all the pointers of this mesh
+        constexpr uint N_CONTAINERS =
+            NumberOfTypes<typename Mesh<Args...>::Containers>::value;
+        std::array<std::size_t, N_CONTAINERS> sizes =
+            Mesh<Args...>::getContainerSizes(*this);
+
+        // for each containe rof the other mesh m, save its bases
+        // will need it to update all the pointers of this mesh
+        std::array<const void*, N_CONTAINERS> bases =
+            Mesh<Args...>::getContainerBases(m);
+
+        // call the append function for each container
+        (appendContainer<Args>(m), ...);
+
+        // update all the pointers contained on each container
+        (updatePointersOfContainerTypeAfterAppend<Args>(*this, bases, sizes),
+         ...);
     }
 
     /**
@@ -1468,10 +1503,28 @@ protected:
     }
 
     template<typename Cont, typename Element>
-    void updatePointers(const Element* oldBase, const Element* newBase)
+    void updatePointers(
+        const Element* oldBase,
+        const Element* newBase,
+        uint           firstElementToProcess = 0)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            Cont::updatePointers(oldBase, newBase);
+            Cont::updatePointers(oldBase, newBase, firstElementToProcess);
+        }
+    }
+
+    template<typename Cont, typename Element, typename ArrayS>
+    void updatePointers(
+        const Element* oldBase,
+        const Element* newBase,
+        const ArrayS&  sizes,
+        uint           offset)
+    {
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            using Containers = Mesh<Args...>::Containers;
+            constexpr uint I = IndexInTypes<Cont, Containers>::value;
+            static_assert(I >= 0 && I != UINT_NULL);
+            Cont::updatePointers(oldBase, newBase, sizes[I], offset);
         }
     }
 
@@ -1518,6 +1571,14 @@ private:
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
             Cont::setParentMeshPointers(this);
+        }
+    }
+
+    template<typename Cont>
+    void appendContainer(const Mesh& m)
+    {
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            Cont::append((const Cont&)m);
         }
     }
 
@@ -1590,6 +1651,44 @@ private:
     }
 
     /**
+     * This function sets the Ith position of the array sizes, where I is an
+     * index of a container in a TypeWrapper of containers
+     *
+     * In the Ith position will be placed the size of the vector of the
+     * elements contained in the container Cont.
+     */
+    template<uint I, typename Cont, typename Array, typename... A>
+    static void setContainerSize(const Mesh<A...>& m, Array& sizes)
+    {
+        // since this function is called using pack expansion, it means that
+        // Cont could be a mesh component and not a cointainer. We check if Cont
+        // is a container
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            static_assert(I >= 0 && I != UINT_NULL);
+            sizes[I] = m.Cont::vec.size();
+        }
+    }
+
+    template<typename... A>
+    static auto getContainerSizes(const Mesh<A...>& m)
+    {
+        using Containers = Mesh<A...>::Containers;
+
+        // the number of containers in Mesh<A...>
+        constexpr uint N_CONTAINERS = NumberOfTypes<Containers>::value;
+        // each element of this array will contain the size of the
+        // vector of elements contained in each container of Mesh<A...>
+        std::array<std::size_t, N_CONTAINERS> sizes;
+
+        // for each container/component of Mesh<A...>, we set call the function
+        // that sets the size of the container in its index
+        (setContainerSize<IndexInTypes<A, Containers>::value, A>(m, sizes),
+         ...);
+
+        return sizes;
+    }
+
+    /**
      * This function *is static*, and is generally called for each container of
      * the mesh, that is the template argument Cont.
      *
@@ -1626,6 +1725,37 @@ private:
             // base of the container
             (m.template updatePointers<A>(
                  (const ElType*) bases[I], m.Cont::vec.data()),
+             ...);
+        }
+    }
+
+    template<typename Cont, typename ArrayB, typename ArrayS, typename... A>
+    static void updatePointersOfContainerTypeAfterAppend(
+        Mesh<A...>& m,
+        const ArrayB& bases,
+        const ArrayS& sizes)
+    {
+        // since this function is called using pack expansion, it means that
+        // Cont could be a mesh component and not a cointainer. We check if Cont
+        // is a container
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            // The element type contained in the container
+            // We need it to get back the actual type of the element from the
+            // old bases
+            using ElType = Cont::ElementType;
+
+            using Containers = Mesh<A...>::Containers;
+            constexpr uint I = IndexInTypes<Cont, Containers>::value;
+            static_assert(I >= 0 && I != UINT_NULL);
+
+            // for each Container A in m, we update the pointers of ElType.
+            // old base is contained in the array bases, the new base is the
+            // base of the container
+            (m.template updatePointers<A>(
+                 (const ElType*) bases[I],
+                 m.Cont::vec.data(),
+                 sizes,
+                 sizes[I]),
              ...);
         }
     }

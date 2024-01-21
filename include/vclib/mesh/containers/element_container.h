@@ -398,6 +398,34 @@ protected:
     }
 
     /**
+     * @brief Appends the elements of the given container to this one.
+     *
+     * This function does not update the pointers contained in the element
+     * container: it only creates new elements and copies the data from the
+     * given container. It imports also all the data contained in the
+     * vertical/optional components.
+     *
+     * The parent mesh will take care of updating the pointers, after calling
+     * this function.
+     *
+     * @param[in] other: the container from which the elements will be copied
+     * and appended.
+     */
+    void append(const ElementContainer<T>& other)
+    {
+        uint on = other.elementNumber();
+        uint n  = elementNumber();
+        addElements(on);
+        for (uint i = 0; i < on; ++i) {
+            // copy everything from the other elements, also the pointers:
+            element(n + i) = other.element(i);
+            // importing also optional, vertical and custom components:
+            element(n + i).importFrom(other.element(i));
+            element(n + i).setParentMesh(parentMesh);
+        }
+    }
+
+    /**
      * @brief Returns an iterator to the beginning of the container.
      *
      * The iterator is automatically initialized to jump deleted elements of the
@@ -661,11 +689,16 @@ protected:
     }
 
     template<typename Element>
-    void updatePointers(const Element* oldBase, const Element* newBase)
+    void updatePointers(
+        const Element* oldBase,
+        const Element* newBase,
+        uint firstElementToProcess = 0,
+        uint offset = 0)
     {
         using Comps = T::Components;
 
-        updatePointersOnComponents(oldBase, newBase, Comps());
+        updatePointersOnComponents(
+            oldBase, newBase, Comps(), firstElementToProcess, offset);
     }
 
     template<typename Element>
@@ -814,9 +847,13 @@ private:
     void updatePointersOnComponents(
         const ElPtr* oldBase,
         const ElPtr* newBase,
-        TypeWrapper<Comps...>)
+        TypeWrapper<Comps...>,
+        uint firstElementToProcess = 0,
+        uint offset = 0)
     {
-        (updatePointersOnComponent<Comps>(oldBase, newBase), ...);
+        (updatePointersOnComponent<Comps>(
+             oldBase, newBase, firstElementToProcess, offset),
+         ...);
     }
 
     template<typename ElPtr, typename... Comps>
@@ -881,22 +918,45 @@ private:
      * This function is called for each component of the element.
      *
      * Only if a component has references of the type ElPtr, then the
-     * updatePointers on each element will be executed
+     * updatePointers on each element will be executed.
+     *
+     * firstElementToProcess and offset are used only when an append operation
+     * has been executed. In this case, the firstElementToProcess is the index
+     * of the first element that has been appended, and offset is the number of
+     * ElPtr elements that have been appended (the offset that must be added
+     * to the newBase w.r.t. the oldBase that was the other container from which
+     * the elements have been copied).
      */
     template<typename Comp, typename ElPtr>
-    void updatePointersOnComponent(const ElPtr* oldBase, const ElPtr* newBase)
+    void updatePointersOnComponent(
+        const ElPtr* oldBase,
+        const ElPtr* newBase,
+        uint firstElementToProcess = 0,
+        uint offset                = 0)
     {
         if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
             if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
-                    for (T& e : elements()) {
-                        e.Comp::updatePointers(oldBase, newBase);
+                    for (uint i = firstElementToProcess; i < elementNumber();
+                         i++)
+                    {
+                        T& e = element(i);
+                        if (!e.deleted()) {
+                            e.Comp::updatePointers(
+                                oldBase, newBase, firstElementToProcess);
+                        }
                     }
                 }
             }
             else {
-                for (T& e : elements()) {
-                    e.Comp::updatePointers(oldBase, newBase);
+                for (uint i = firstElementToProcess; i < elementNumber();
+                     i++)
+                {
+                    T& e = element(i);
+                    if (!e.deleted()) {
+                        e.Comp::updatePointers(
+                            oldBase, newBase, offset);
+                    }
                 }
             }
         }

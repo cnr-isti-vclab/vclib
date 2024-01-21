@@ -116,11 +116,21 @@ protected:
      * To update them, we need to know the oldBase (the pointer to the first
      * Element of the reallocated Container before the reallocation) and the
      * newBase (the pointer to the first Element of the reallocated Container
-     * after the reallocation. We can then compute, for each pointer, the offset
-     * w.r.t. the first element of the Container, and update the the pointer
-     * accordingly using the newBase.
+     * after the reallocation. We can then compute, for each pointer, the
+     * difference w.r.t. the first element of the Container, and update the the
+     * pointer accordingly using the newBase.
+     *
+     * When we perform an append operation, we need to update the pointers
+     * taking into account also the offset: when we append a new element in a
+     * container, only its pointers must be updated. To update from the old
+     * pointers to the new ones, we need to know how many elements were in the
+     * container BEFORE the append operation, and this becomes the offset to
+     * be applied to the pointers of the newly appended elements.
      */
-    void updatePointers(const Elem* oldBase, const Elem* newBase)
+    void updatePointers(
+        const Elem* oldBase,
+        const Elem* newBase,
+        std::size_t offset = 0)
     {
         auto& baseContainer = Base::container();
 
@@ -130,7 +140,8 @@ protected:
                 size_t diff =
                     baseContainer.at(j) - oldBase; // offset w.r.t. the old base
                 baseContainer.at(j) =
-                    (Elem*) newBase + diff; // update the pointer using newBase
+                    (Elem*) newBase + diff +
+                    offset; // update the pointer using newBase
             }
         }
     }
