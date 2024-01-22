@@ -1578,7 +1578,7 @@ private:
     void appendContainer(const Mesh& m)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            Cont::append((const Cont&)m);
+            Cont::append((const Cont&) m);
         }
     }
 
@@ -1731,7 +1731,7 @@ private:
 
     template<typename Cont, typename ArrayB, typename ArrayS, typename... A>
     static void updatePointersOfContainerTypeAfterAppend(
-        Mesh<A...>& m,
+        Mesh<A...>&   m,
         const ArrayB& bases,
         const ArrayS& sizes)
     {
@@ -1752,10 +1752,7 @@ private:
             // old base is contained in the array bases, the new base is the
             // base of the container
             (m.template updatePointers<A>(
-                 (const ElType*) bases[I],
-                 m.Cont::vec.data(),
-                 sizes,
-                 sizes[I]),
+                 (const ElType*) bases[I], m.Cont::vec.data(), sizes, sizes[I]),
              ...);
         }
     }

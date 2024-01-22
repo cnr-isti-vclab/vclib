@@ -692,8 +692,8 @@ protected:
     void updatePointers(
         const Element* oldBase,
         const Element* newBase,
-        uint firstElementToProcess = 0,
-        uint offset = 0)
+        uint           firstElementToProcess = 0,
+        uint           offset                = 0)
     {
         using Comps = T::Components;
 
@@ -849,7 +849,7 @@ private:
         const ElPtr* newBase,
         TypeWrapper<Comps...>,
         uint firstElementToProcess = 0,
-        uint offset = 0)
+        uint offset                = 0)
     {
         (updatePointersOnComponent<Comps>(
              oldBase, newBase, firstElementToProcess, offset),
@@ -931,8 +931,8 @@ private:
     void updatePointersOnComponent(
         const ElPtr* oldBase,
         const ElPtr* newBase,
-        uint firstElementToProcess = 0,
-        uint offset                = 0)
+        uint         firstElementToProcess = 0,
+        uint         offset                = 0)
     {
         if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
             if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
@@ -949,13 +949,10 @@ private:
                 }
             }
             else {
-                for (uint i = firstElementToProcess; i < elementNumber();
-                     i++)
-                {
+                for (uint i = firstElementToProcess; i < elementNumber(); i++) {
                     T& e = element(i);
                     if (!e.deleted()) {
-                        e.Comp::updatePointers(
-                            oldBase, newBase, offset);
+                        e.Comp::updatePointers(oldBase, newBase, offset);
                     }
                 }
             }
