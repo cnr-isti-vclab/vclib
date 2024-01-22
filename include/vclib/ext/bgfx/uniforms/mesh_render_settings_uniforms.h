@@ -43,10 +43,10 @@ class MeshRenderSettingsUniforms
     // colorPack[2] -> wireframe user color
     float colorPack[4] = {0.0, 0.0, 0.0, 0.0};
 
-    ShaderUniform drawModeUH =
+    ShaderUniform drawModeUniform =
         ShaderUniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
 
-    ShaderUniform colorUH =
+    ShaderUniform colorUniform =
         ShaderUniform("u_mrsColorPack", bgfx::UniformType::Vec4);
 
 public:
@@ -69,8 +69,8 @@ public:
 
     void bind() const
     {
-        bgfx::setUniform(drawModeUH.handle(), drawPack);
-        bgfx::setUniform(colorUH.handle(), colorPack);
+        drawModeUniform.bind(drawPack);
+        colorUniform.bind(colorPack);
     }
 
 private:

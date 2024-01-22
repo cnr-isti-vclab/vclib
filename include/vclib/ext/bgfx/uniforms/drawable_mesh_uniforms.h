@@ -23,7 +23,6 @@
 #ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 #define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 
-#include <bgfx/bgfx.h>
 #include <vclib/render/mesh_render_buffers.h>
 
 #include "shader_uniform.h"
@@ -52,14 +51,14 @@ class DrawableMeshUniforms
         0.0,
         1.0};
 
-    ShaderUniform meshColorUH =
+    ShaderUniform meshColorUniform =
         ShaderUniform("u_meshColor", bgfx::UniformType::Vec4);
 
     // ShaderUniform modelUH =
     //     ShaderUniform("u_model", bgfx::UniformType::Mat4);
 
 public:
-    DrawableMeshUniforms() {}
+    DrawableMeshUniforms() = default;
 
     template<MeshConcept MeshType>
     void update(const MeshRenderBuffers<MeshType>& mrb)
@@ -72,8 +71,8 @@ public:
 
     void bind() const
     {
-        bgfx::setUniform(meshColorUH.handle(), meshColor);
-        // bgfx::setUniform(modelUH.handle(), model);
+        meshColorUniform.bind(meshColor);
+        //modelUH.bind(model);
     }
 };
 

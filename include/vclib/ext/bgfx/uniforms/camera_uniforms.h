@@ -35,7 +35,7 @@ class CameraUniforms
 {
     float eye[4] = {0.0, 0.0, 0.0, 0.0}; // eye[3] not used
 
-    ShaderUniform cameraEyeUH =
+    ShaderUniform cameraEyeUniform =
         ShaderUniform("u_cameraEyePosPack", bgfx::UniformType::Vec4);
 
 public:
@@ -49,7 +49,7 @@ public:
         eye[2] = camera.eye().z();
     }
 
-    void bind() const { bgfx::setUniform(cameraEyeUH.handle(), eye); }
+    void bind() const { cameraEyeUniform.bind(eye); }
 };
 
 } // namespace vcl::bgf

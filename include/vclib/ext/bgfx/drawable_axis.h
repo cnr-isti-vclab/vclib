@@ -39,25 +39,22 @@ class DrawableAxis : public DrawableObject
 {
     bool visible = false;
 
-    // TODO: add a 'append' member function to vcl::Mesh
-    // and use a single mesh render buffer
-    MeshRenderBuffers<vcl::TriMesh> mrbCylinder;
-    MeshRenderBuffers<vcl::TriMesh> mrbCone;
+    MeshRenderBuffers<vcl::TriMesh> mrbArrow;
 
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
 public:
     DrawableAxis()
     {
-        vcl::TriMesh cylinder = vcl::createCylinder<vcl::TriMesh>(0.02, 2);
-        vcl::updatePerVertexNormals(cylinder);
+        vcl::TriMesh arrow = vcl::createCylinder<vcl::TriMesh>(0.02, 2);
+        vcl::updatePerVertexNormals(arrow);
 
         vcl::TriMesh cone = vcl::createCone<vcl::TriMesh>(0.05, 0, 0.2);
         vcl::updatePerVertexNormals(cone);
         vcl::translate(cone, vcl::Point3d(0, 1, 0));
+        arrow.append(cone);
 
-        mrbCylinder = MeshRenderBuffers<vcl::TriMesh>(cylinder);
-        mrbCone     = MeshRenderBuffers<vcl::TriMesh>(cone);
+        mrbArrow = MeshRenderBuffers<vcl::TriMesh>(arrow);
     }
 
     ~DrawableAxis() = default;

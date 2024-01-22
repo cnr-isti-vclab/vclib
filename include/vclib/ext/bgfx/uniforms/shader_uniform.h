@@ -64,6 +64,11 @@ public:
 
     bgfx::UniformType::Enum type() const { return uniformType; }
 
+    void bind(const void* data) const
+    {
+        bgfx::setUniform(uniformHandle, data);
+    }
+
     void swap(ShaderUniform& oth)
     {
         std::swap(uniformHandle, oth.uniformHandle);
