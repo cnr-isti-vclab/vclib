@@ -42,13 +42,13 @@ class MeshRenderBuffers : public vcl::MeshRenderBuffers<MeshType>
     bgfx::IndexBufferHandle triangleNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle triangleColorBH  = BGFX_INVALID_HANDLE;
 
-    bgfx::IndexBufferHandle edgeIndexBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle wireframeIndexBH = BGFX_INVALID_HANDLE;
 
 public:
     MeshRenderBuffers() = default;
 
-    MeshRenderBuffers(const MeshType& mesh) :
-        Base(mesh)
+    MeshRenderBuffers(const MeshType& mesh, uint buffersToFill = Base::ALL) :
+        Base(mesh, buffersToFill)
     {
         createBGFXBuffers();
     }
@@ -82,7 +82,7 @@ public:
         std::swap(triangleIndexBH, other.triangleIndexBH);
         std::swap(triangleNormalBH, other.triangleNormalBH);
         std::swap(triangleColorBH, other.triangleColorBH);
-        std::swap(edgeIndexBH, other.edgeIndexBH);
+        std::swap(wireframeIndexBH, other.wireframeIndexBH);
     }
 
     void update(const MeshType& mesh)
@@ -119,7 +119,7 @@ public:
             }
         }
         else {
-            bgfx::setIndexBuffer(edgeIndexBH);
+            bgfx::setIndexBuffer(wireframeIndexBH);
         }
     }
 
@@ -194,11 +194,11 @@ private:
         }
 
         // edge index buffer
-        if (Base::edgeBufferData()) {
-            edgeIndexBH = bgfx::createIndexBuffer(
+        if (Base::wireframeBufferData()) {
+            wireframeIndexBH = bgfx::createIndexBuffer(
                 bgfx::makeRef(
-                    Base::edgeBufferData(),
-                    Base::edgeBufferSize() * sizeof(uint32_t)),
+                    Base::wireframeBufferData(),
+                    Base::wireframeBufferSize() * sizeof(uint32_t)),
                 BGFX_BUFFER_INDEX32);
         }
     }
@@ -223,8 +223,8 @@ private:
         if (bgfx::isValid(triangleColorBH))
             bgfx::destroy(triangleColorBH);
 
-        if (bgfx::isValid(edgeIndexBH))
-            bgfx::destroy(edgeIndexBH);
+        if (bgfx::isValid(wireframeIndexBH))
+            bgfx::destroy(wireframeIndexBH);
     }
 };
 

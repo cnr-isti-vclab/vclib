@@ -38,14 +38,17 @@ class MeshRenderBuffers
 {
     std::vector<float>    verts;
     std::vector<uint32_t> tris;
-    std::vector<uint32_t> edges;
+    std::vector<uint32_t> wireframe;
+
     std::vector<float>    vNormals;
     std::vector<uint32_t> vColors;
+    std::vector<float>    vTexCoords;
+
     std::vector<float>    tNormals;
     std::vector<uint32_t> tColors;
-    std::vector<float>    vTexCoords;
     std::vector<float>    wTexCoords;
     std::vector<short>    wTexIds;
+
     std::array<float, 4>  mColor = {0.5, 0.5, 0.5, 1};
 
     vcl::Point3d            bbmin, bbmax;
@@ -53,20 +56,45 @@ class MeshRenderBuffers
     std::vector<vcl::Image> textures;
 
 public:
+    enum {
+        VERT_NORMALS    = 1 << 0,
+        VERT_COLORS     = 1 << 1,
+        VERT_TEXCOORDS  = 1 << 2,
+
+        TRIANGLES       = 1 << 3,
+        TRI_NORMALS     = 1 << 4,
+        TRI_COLORS      = 1 << 5,
+        WEDGE_TEXCOORDS = 1 << 6,
+        WIREFRAME       = 1 << 7,
+
+        EDGES           = 1 << 8,
+
+        TEXTURES        = 1 << 9,
+
+        ALL = 0xFFFFFFFF,
+    };
+
     MeshRenderBuffers() = default;
 
-    MeshRenderBuffers(const MeshType& m)
+    MeshRenderBuffers(const MeshType& m, uint buffersToFill = ALL)
     {
-        update(m);
+        update(m, buffersToFill);
     }
 
-    void update(const MeshType& m)
+    void update(const MeshType& m, uint buffersToFill = ALL)
     {
         clear();
-        fillVertices(m);
-        fillTriangles(m);
-        fillEdges(m);
-        fillTextures(m);
+        fillVertices(m, buffersToFill);
+
+        if (buffersToFill & TRIANGLES)
+            fillTriangles(m, buffersToFill);
+
+        if (buffersToFill & WIREFRAME)
+            fillWireframe(m);
+
+        if (buffersToFill & TEXTURES)
+            fillTextures(m);
+
         fillMeshAttribs(m);
     }
 
@@ -74,7 +102,7 @@ public:
     {
         verts.clear();
         tris.clear();
-        edges.clear();
+        wireframe.clear();
         vNormals.clear();
         vColors.clear();
         tNormals.clear();
@@ -92,7 +120,7 @@ public:
 
     uint triangleNumber() const { return tris.size() / 3; }
 
-    uint edgeNumber() const { return edges.size() / 2; }
+    uint edgeNumber() const { return wireframe.size() / 2; }
 
     uint textureNumber() const { return textures.size(); }
 
@@ -123,14 +151,14 @@ public:
 
     const uint triangleBufferSize() const { return tris.size(); }
 
-    const uint32_t* edgeBufferData() const
+    const uint32_t* wireframeBufferData() const
     {
-        if (edges.empty())
+        if (wireframe.empty())
             return nullptr;
-        return edges.data();
+        return wireframe.data();
     }
 
-    const uint edgeBufferSize() const { return edges.size(); }
+    const uint wireframeBufferSize() const { return wireframe.size(); }
 
     const float* vertexNormalBufferData() const
     {
@@ -201,7 +229,7 @@ private:
             std::numeric_limits<double>::lowest());
     }
 
-    void fillVertices(const MeshType& m)
+    void fillVertices(const MeshType& m, uint buffersToFill)
     {
         // not using Mesh's bounding box if:
         // - it has not bounding box, or
@@ -226,20 +254,26 @@ private:
         verts.resize(m.vertexNumber() * 3);
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-            if (vcl::isPerVertexNormalAvailable(m)) {
-                vNormals.resize(m.vertexNumber() * 3);
+            if (buffersToFill & VERT_NORMALS) {
+                if (vcl::isPerVertexNormalAvailable(m)) {
+                    vNormals.resize(m.vertexNumber() * 3);
+                }
             }
         }
 
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
-            if (vcl::isPerVertexColorAvailable(m)) {
-                vColors.resize(m.vertexNumber());
+            if (buffersToFill & VERT_COLORS) {
+                if (vcl::isPerVertexColorAvailable(m)) {
+                    vColors.resize(m.vertexNumber());
+                }
             }
         }
 
         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-            if (vcl::isPerVertexTexCoordAvailable(m)) {
-                vTexCoords.resize(m.vertexNumber() * 2);
+            if (buffersToFill & VERT_TEXCOORDS) {
+                if (vcl::isPerVertexTexCoordAvailable(m)) {
+                    vTexCoords.resize(m.vertexNumber() * 2);
+                }
             }
         }
 
@@ -258,23 +292,29 @@ private:
             }
 
             if constexpr (vcl::HasPerVertexNormal<MeshType>) {
-                if (vcl::isPerVertexNormalAvailable(m)) {
-                    vNormals[j + 0] = v.normal().x();
-                    vNormals[j + 1] = v.normal().y();
-                    vNormals[j + 2] = v.normal().z();
+                if (buffersToFill & VERT_NORMALS) {
+                    if (vcl::isPerVertexNormalAvailable(m)) {
+                        vNormals[j + 0] = v.normal().x();
+                        vNormals[j + 1] = v.normal().y();
+                        vNormals[j + 2] = v.normal().z();
+                    }
                 }
             }
 
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
-                if (vcl::isPerVertexColorAvailable(m)) {
-                    vColors[vi] = v.color().abgr();
+                if (buffersToFill & VERT_COLORS) {
+                    if (vcl::isPerVertexColorAvailable(m)) {
+                        vColors[vi] = v.color().abgr();
+                    }
                 }
             }
 
             if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
-                if (vcl::isPerVertexTexCoordAvailable(m)) {
-                    vTexCoords[i + 0] = v.texCoord().u();
-                    vTexCoords[i + 1] = v.texCoord().v();
+                if (buffersToFill & VERT_TEXCOORDS) {
+                    if (vcl::isPerVertexTexCoordAvailable(m)) {
+                        vTexCoords[i + 0] = v.texCoord().u();
+                        vTexCoords[i + 1] = v.texCoord().v();
+                    }
                 }
             }
 
@@ -282,7 +322,7 @@ private:
         }
     }
 
-    void fillTriangles(const MeshType& m)
+    void fillTriangles(const MeshType& m, uint buffersToFill)
     {
         if constexpr (vcl::HasFaces<MeshType>) {
             std::vector<std::vector<uint>> vinds; // necessary for wedge attribs
@@ -334,100 +374,104 @@ private:
                 }
             }
 
-            tNormals.reserve(m.faceNumber() * 3);
+            if constexpr (vcl::HasPerFaceNormal<MeshType>) {
+                if (buffersToFill & TRI_NORMALS) {
+                    if (vcl::isPerFaceNormalAvailable(m)) {
+                        tNormals.reserve(m.faceNumber() * 3);
+                    }
+                }
+            }
 
             if constexpr (vcl::HasPerFaceColor<MeshType>) {
-                if (vcl::isPerFaceColorAvailable(m)) {
-                    tColors.reserve(m.faceNumber());
+                if (buffersToFill & TRI_COLORS) {
+                    if (vcl::isPerFaceColorAvailable(m)) {
+                        tColors.reserve(m.faceNumber());
+                    }
                 }
             }
 
             if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
-                    wTexCoords.reserve(m.faceNumber() * 3 * 2);
-                    wTexIds.reserve(m.faceNumber());
+                if (buffersToFill & WEDGE_TEXCOORDS) {
+                    if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
+                        wTexCoords.reserve(m.faceNumber() * 3 * 2);
+                        wTexIds.reserve(m.faceNumber());
+                    }
                 }
             }
 
             for (const auto& f : m.faces()) {
                 if constexpr (vcl::HasPerFaceNormal<MeshType>) {
-                    if (vcl::isPerFaceNormalAvailable(m)) {
-                        if constexpr (vcl::HasTriangles<MeshType>) {
-                            tNormals.push_back(f.normal().x());
-                            tNormals.push_back(f.normal().y());
-                            tNormals.push_back(f.normal().z());
-                        }
-                        else {
-                            const uint fi = m.faceIndexIfCompact(m.index(f));
-                            for (uint i = 0; i < triPolyMap.triangleNumber(fi);
-                                 i++)
-                            {
+                    if (buffersToFill & TRI_NORMALS) {
+                        if (vcl::isPerFaceNormalAvailable(m)) {
+                            if constexpr (vcl::HasTriangles<MeshType>) {
                                 tNormals.push_back(f.normal().x());
                                 tNormals.push_back(f.normal().y());
                                 tNormals.push_back(f.normal().z());
                             }
+                            else {
+                                const uint fi = m.faceIndexIfCompact(m.index(f));
+                                for (uint i = 0; i < triPolyMap.triangleNumber(fi);
+                                     i++)
+                                {
+                                    tNormals.push_back(f.normal().x());
+                                    tNormals.push_back(f.normal().y());
+                                    tNormals.push_back(f.normal().z());
+                                }
+                            }
                         }
                     }
-                    else {
-                        fillFaceNormals(
-                            f,
-                            vcl::HasTriangles<MeshType>,
-                            m.faceIndexIfCompact(m.index(f)));
-                    }
-                }
-                else {
-                    fillFaceNormals(
-                        f,
-                        vcl::HasTriangles<MeshType>,
-                        m.faceIndexIfCompact(m.index(f)));
                 }
 
                 if constexpr (vcl::HasPerFaceColor<MeshType>) {
-                    if (vcl::isPerFaceColorAvailable(m)) {
-                        if constexpr (vcl::HasTriangles<MeshType>) {
-                            tColors.push_back(f.color().abgr());
-                        }
-                        else {
-                            const uint fi = m.faceIndexIfCompact(m.index(f));
-                            for (uint i = 0; i < triPolyMap.triangleNumber(fi);
-                                 i++)
-                            {
+                    if (buffersToFill & TRI_COLORS) {
+                        if (vcl::isPerFaceColorAvailable(m)) {
+                            if constexpr (vcl::HasTriangles<MeshType>) {
                                 tColors.push_back(f.color().abgr());
+                            }
+                            else {
+                                const uint fi = m.faceIndexIfCompact(m.index(f));
+                                for (uint i = 0; i < triPolyMap.triangleNumber(fi);
+                                     i++)
+                                {
+                                    tColors.push_back(f.color().abgr());
+                                }
                             }
                         }
                     }
                 }
 
                 if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                    if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
-                        if constexpr (vcl::HasTriangles<MeshType>) {
-                            wTexCoords.push_back(f.wedgeTexCoord(0).u());
-                            wTexCoords.push_back(f.wedgeTexCoord(0).v());
-                            wTexCoords.push_back(f.wedgeTexCoord(1).u());
-                            wTexCoords.push_back(f.wedgeTexCoord(1).v());
-                            wTexCoords.push_back(f.wedgeTexCoord(2).u());
-                            wTexCoords.push_back(f.wedgeTexCoord(2).v());
-                            wTexIds.push_back(f.textureIndex());
-                        }
-                        else {
-                            const uint fi = m.faceIndexIfCompact(m.index(f));
-                            // triangulation of f
-                            const std::vector<uint>& vind = vinds[fi];
-                            // for each triangle of f
-                            for (uint vi = 0; vi < vind.size(); vi += 3) {
-                                wTexCoords.push_back(
-                                    f.wedgeTexCoord(vind[vi + 0]).u());
-                                wTexCoords.push_back(
-                                    f.wedgeTexCoord(vind[vi + 0]).v());
-                                wTexCoords.push_back(
-                                    f.wedgeTexCoord(vind[vi + 1]).u());
-                                wTexCoords.push_back(
-                                    f.wedgeTexCoord(vind[vi + 1]).v());
-                                wTexCoords.push_back(
-                                    f.wedgeTexCoord(vind[vi + 2]).u());
-                                wTexCoords.push_back(
-                                    f.wedgeTexCoord(vind[vi + 2]).v());
+                    if (buffersToFill & WEDGE_TEXCOORDS) {
+                        if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
+                            if constexpr (vcl::HasTriangles<MeshType>) {
+                                wTexCoords.push_back(f.wedgeTexCoord(0).u());
+                                wTexCoords.push_back(f.wedgeTexCoord(0).v());
+                                wTexCoords.push_back(f.wedgeTexCoord(1).u());
+                                wTexCoords.push_back(f.wedgeTexCoord(1).v());
+                                wTexCoords.push_back(f.wedgeTexCoord(2).u());
+                                wTexCoords.push_back(f.wedgeTexCoord(2).v());
                                 wTexIds.push_back(f.textureIndex());
+                            }
+                            else {
+                                const uint fi = m.faceIndexIfCompact(m.index(f));
+                                // triangulation of f
+                                const std::vector<uint>& vind = vinds[fi];
+                                // for each triangle of f
+                                for (uint vi = 0; vi < vind.size(); vi += 3) {
+                                    wTexCoords.push_back(
+                                        f.wedgeTexCoord(vind[vi + 0]).u());
+                                    wTexCoords.push_back(
+                                        f.wedgeTexCoord(vind[vi + 0]).v());
+                                    wTexCoords.push_back(
+                                        f.wedgeTexCoord(vind[vi + 1]).u());
+                                    wTexCoords.push_back(
+                                        f.wedgeTexCoord(vind[vi + 1]).v());
+                                    wTexCoords.push_back(
+                                        f.wedgeTexCoord(vind[vi + 2]).u());
+                                    wTexCoords.push_back(
+                                        f.wedgeTexCoord(vind[vi + 2]).v());
+                                    wTexIds.push_back(f.textureIndex());
+                                }
                             }
                         }
                     }
@@ -436,32 +480,26 @@ private:
         }
     }
 
-    void fillEdges(const MeshType& m)
+    void fillWireframe(const MeshType& m)
     {
         if constexpr (vcl::HasFaces<MeshType>) {
             using FaceType = MeshType::FaceType;
             if constexpr (FaceType::VERTEX_NUMBER < 0) {
-                // assuming faces are triangles
-                edges.reserve(6 * m.faceNumber()); // 2 indices * 3 edges
+                // assuming faces are triangles; if they are not, reallocation
+                // during push_back will be possible
+                wireframe.reserve(6 * m.faceNumber()); // 2 indices * 3 edges
             }
             else {
-                edges.reserve(2 * FaceType::VERTEX_NUMBER * m.faceNumber());
+                wireframe.reserve(2 * FaceType::VERTEX_NUMBER * m.faceNumber());
             }
 
             for (const auto& f : m.faces()) {
                 for (uint i = 0; i < f.vertexNumber(); ++i) {
-                    edges.push_back(
+                    wireframe.push_back(
                         m.vertexIndexIfCompact(m.index(f.vertex(i))));
-                    edges.push_back(
+                    wireframe.push_back(
                         m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1)))));
                 }
-            }
-        }
-        if constexpr (vcl::HasEdges<MeshType>) {
-            edges.reserve(edges.size() + 2 * m.edgeNumber());
-            for (const auto& e : m.edges()) {
-                edges.push_back(m.vertexIndexIfCompact(m.index(e.vertex(0))));
-                edges.push_back(m.vertexIndexIfCompact(m.index(e.vertex(1))));
             }
         }
     }
@@ -484,25 +522,6 @@ private:
             mColor[1] = m.color().greenF();
             mColor[2] = m.color().blueF();
             mColor[3] = m.color().alphaF();
-        }
-    }
-
-    template<typename FaceType>
-    void fillFaceNormals(const FaceType& f, bool triangle, uint fi)
-    {
-        using NormalType = FaceType::VertexType::CoordType;
-        NormalType n     = vcl::faceNormal(f);
-        if (triangle) {
-            tNormals.push_back(n.x());
-            tNormals.push_back(n.y());
-            tNormals.push_back(n.z());
-        }
-        else {
-            for (uint i = 0; i < triPolyMap.triangleNumber(fi); i++) {
-                tNormals.push_back(n.x());
-                tNormals.push_back(n.y());
-                tNormals.push_back(n.z());
-            }
         }
     }
 };
