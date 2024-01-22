@@ -78,6 +78,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/canvas.h
         include/vclib/ext/bgfx/drawable_axis.h
         include/vclib/ext/bgfx/drawable_mesh.h
+        include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
         include/vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_mesh_shader_program.h

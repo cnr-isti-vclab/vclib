@@ -26,8 +26,8 @@
 #include <bgfx/bgfx.h>
 
 #include <vclib/render/generic_drawable_mesh.h>
-#include <vclib/render/mesh_render_buffers.h>
 
+#include "mesh_render_buffers.h"
 #include "shader_programs/drawable_mesh_shader_program.h"
 #include "uniforms/drawable_mesh_uniforms.h"
 #include "uniforms/mesh_render_settings_uniforms.h"
@@ -43,32 +43,11 @@ class DrawableMesh : public GenericDrawableMesh
 
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
-    bgfx::VertexBufferHandle vertexCoordBH  = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle vertexNormalBH = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle vertexColorBH  = BGFX_INVALID_HANDLE;
-
-    bgfx::IndexBufferHandle triangleIndexBH  = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle triangleNormalBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle triangleColorBH  = BGFX_INVALID_HANDLE;
-
-    bgfx::IndexBufferHandle edgeIndexBH = BGFX_INVALID_HANDLE;
-
     DrawableMeshUniforms       meshUniforms;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
 public:
     DrawableMesh() = default;
-
-    DrawableMesh(const DrawableMesh& oth) :
-            GenericDrawableMesh(oth), mrb(oth.mrb),
-            meshRenderSettingsUniforms(oth.meshRenderSettingsUniforms),
-            meshUniforms(oth.meshUniforms)
-    {
-        // each drawable object has its own bgfx buffers
-        createBGFXBuffers();
-    }
-
-    DrawableMesh(DrawableMesh&& oth) { swap(oth); }
 
     DrawableMesh(const MeshType& mesh)
     {
@@ -76,29 +55,7 @@ public:
         mrs.setDefaultSettingsFromCapability();
     }
 
-    DrawableMesh& operator=(DrawableMesh oth)
-    {
-        swap(oth);
-        return *this;
-    }
-
-    ~DrawableMesh() { destroyBGFXBuffers(); }
-
-    void swap(DrawableMesh& oth)
-    {
-        GenericDrawableMesh::swap(oth);
-        std::swap(program, oth.program);
-        std::swap(mrb, oth.mrb);
-        std::swap(vertexCoordBH, oth.vertexCoordBH);
-        std::swap(vertexNormalBH, oth.vertexNormalBH);
-        std::swap(vertexColorBH, oth.vertexColorBH);
-        std::swap(triangleIndexBH, oth.triangleIndexBH);
-        std::swap(triangleNormalBH, oth.triangleNormalBH);
-        std::swap(triangleColorBH, oth.triangleColorBH);
-        std::swap(edgeIndexBH, oth.edgeIndexBH);
-        std::swap(meshUniforms, oth.meshUniforms);
-        std::swap(meshRenderSettingsUniforms, oth.meshRenderSettingsUniforms);
-    }
+    ~DrawableMesh() = default;
 
     void updateBuffers(const MeshType& m)
     {
@@ -110,9 +67,6 @@ public:
         mrs.setRenderCapabilityFrom(m);
         meshRenderSettingsUniforms.updateSettings(mrs);
         meshUniforms.update(mrb);
-
-        destroyBGFXBuffers();
-        createBGFXBuffers();
     }
 
     // GenericDrawableMesh implementation
@@ -138,7 +92,7 @@ public:
                              BGFX_STATE_MSAA;
 
             if (mrs.isPointCloudVisible()) {
-                bindVertexBuffers();
+                mrb.bindVertexBuffers();
                 bindUniforms(VCL_MRS_PRIMITIVE_POINTS);
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
@@ -147,8 +101,8 @@ public:
             }
 
             if (mrs.isSurfaceVisible()) {
-                bindVertexBuffers();
-                bindIndexBuffers();
+                mrb.bindVertexBuffers();
+                mrb.bindIndexBuffers();
                 bindUniforms(VCL_MRS_PRIMITIVE_TRIANGLES);
 
                 bgfx::setState(state);
@@ -157,8 +111,8 @@ public:
             }
 
             if (mrs.isWireframeVisible()) {
-                bindVertexBuffers();
-                bindIndexBuffers(false);
+                mrb.bindVertexBuffers();
+                mrb.bindIndexBuffers(false);
                 bindUniforms(VCL_MRS_PRIMITIVE_LINES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
@@ -187,145 +141,11 @@ public:
     }
 
 private:
-    void createBGFXBuffers()
-    {
-        // vertex buffer (positions)
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-            .end();
-
-        vertexCoordBH = bgfx::createVertexBuffer(
-            bgfx::makeRef(
-                mrb.vertexBufferData(), mrb.vertexBufferSize() * sizeof(float)),
-            layout);
-
-        // vertex buffer (normals)
-        if (mrb.vertexNormalBufferData()) {
-            bgfx::VertexLayout vnlayout;
-            vnlayout.begin()
-                .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-                .end();
-
-            vertexNormalBH = bgfx::createVertexBuffer(
-                bgfx::makeRef(
-                    mrb.vertexNormalBufferData(),
-                    mrb.vertexBufferSize() * sizeof(float)),
-                vnlayout);
-        }
-
-        // vertex buffer (colors)
-        if (mrb.vertexColorBufferData()) {
-            bgfx::VertexLayout vclayout;
-            vclayout.begin()
-                .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-                .end();
-
-            vertexColorBH = bgfx::createVertexBuffer(
-                bgfx::makeRef(
-                    mrb.vertexColorBufferData(),
-                    mrb.vertexNumber() * sizeof(uint32_t)),
-                vclayout);
-        }
-
-        // triangle index buffer
-        if (mrb.triangleBufferData()) {
-            triangleIndexBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    mrb.triangleBufferData(),
-                    mrb.triangleBufferSize() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32);
-        }
-
-        // triangle normal buffer
-        if (mrb.triangleNormalBufferData()) {
-            triangleNormalBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    mrb.triangleNormalBufferData(),
-                    mrb.triangleNumber() * 3 * sizeof(float)),
-                BGFX_BUFFER_COMPUTE_FORMAT_32X1 | BGFX_BUFFER_COMPUTE_READ |
-                    BGFX_BUFFER_COMPUTE_TYPE_FLOAT);
-        }
-
-        // triangle color buffer
-        if (mrb.triangleColorBufferData()) {
-            triangleColorBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    mrb.triangleColorBufferData(),
-                    mrb.triangleNumber() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
-        }
-
-        // edge index buffer
-        if (mrb.edgeBufferData()) {
-            edgeIndexBH = bgfx::createIndexBuffer(
-                bgfx::makeRef(
-                    mrb.edgeBufferData(),
-                    mrb.edgeBufferSize() * sizeof(uint32_t)),
-                BGFX_BUFFER_INDEX32);
-        }
-    }
-
-    void bindVertexBuffers()
-    {
-        bgfx::setVertexBuffer(0, vertexCoordBH);
-
-        if (bgfx::isValid(vertexNormalBH)) { // vertex normals
-            bgfx::setVertexBuffer(1, vertexNormalBH);
-        }
-
-        if (bgfx::isValid(vertexColorBH)) { // vertex colors
-            bgfx::setVertexBuffer(2, vertexColorBH);
-        }
-    }
-
-    void bindIndexBuffers(bool triangles = true)
-    {
-        if (triangles) {
-            bgfx::setIndexBuffer(triangleIndexBH);
-
-            if (bgfx::isValid(triangleColorBH)) { // triangle colors
-                bgfx::setBuffer(1, triangleColorBH, bgfx::Access::Read);
-            }
-
-            if (bgfx::isValid(triangleNormalBH)) { // triangle normals
-                bgfx::setBuffer(2, triangleNormalBH, bgfx::Access::Read);
-            }
-        }
-        else {
-            bgfx::setIndexBuffer(edgeIndexBH);
-        }
-    }
-
     void bindUniforms(uint primitive)
     {
         meshRenderSettingsUniforms.updatePrimitive(primitive);
         meshRenderSettingsUniforms.bind();
         meshUniforms.bind();
-    }
-
-    void destroyBGFXBuffers()
-    {
-        if (bgfx::isValid(vertexCoordBH))
-            bgfx::destroy(vertexCoordBH);
-
-        if (bgfx::isValid(vertexNormalBH))
-            bgfx::destroy(vertexNormalBH);
-
-        if (bgfx::isValid(vertexColorBH))
-            bgfx::destroy(vertexColorBH);
-
-        if (bgfx::isValid(triangleIndexBH))
-            bgfx::destroy(triangleIndexBH);
-
-        if (bgfx::isValid(triangleNormalBH))
-            bgfx::destroy(triangleNormalBH);
-
-        if (bgfx::isValid(triangleColorBH))
-            bgfx::destroy(triangleColorBH);
-
-        if (bgfx::isValid(edgeIndexBH))
-            bgfx::destroy(edgeIndexBH);
     }
 };
 

@@ -57,11 +57,35 @@ public:
 
     MeshRenderBuffers(const MeshType& m)
     {
+        update(m);
+    }
+
+    void update(const MeshType& m)
+    {
+        clear();
         fillVertices(m);
         fillTriangles(m);
         fillEdges(m);
         fillTextures(m);
         fillMeshAttribs(m);
+    }
+
+    void clear()
+    {
+        verts.clear();
+        tris.clear();
+        edges.clear();
+        vNormals.clear();
+        vColors.clear();
+        tNormals.clear();
+        tColors.clear();
+        vTexCoords.clear();
+        wTexCoords.clear();
+        wTexIds.clear();
+        mColor = {0.5, 0.5, 0.5, 1};
+        triPolyMap.clear();
+        textures.clear();
+        clearBB();
     }
 
     uint vertexNumber() const { return verts.size() / 3; }
@@ -165,6 +189,18 @@ public:
     }
 
 private:
+    void clearBB()
+    {
+        bbmin = Point3d(
+            std::numeric_limits<double>::max(),
+            std::numeric_limits<double>::max(),
+            std::numeric_limits<double>::max());
+        bbmax = Point3d(
+            std::numeric_limits<double>::lowest(),
+            std::numeric_limits<double>::lowest(),
+            std::numeric_limits<double>::lowest());
+    }
+
     void fillVertices(const MeshType& m)
     {
         // not using Mesh's bounding box if:
@@ -184,14 +220,7 @@ private:
         }
         // if I need to compute bb, I initialize to invalid numbers
         if (bbToInitialize) {
-            bbmin = Point3d(
-                std::numeric_limits<double>::max(),
-                std::numeric_limits<double>::max(),
-                std::numeric_limits<double>::max());
-            bbmax = Point3d(
-                std::numeric_limits<double>::lowest(),
-                std::numeric_limits<double>::lowest(),
-                std::numeric_limits<double>::lowest());
+            clearBB();
         }
 
         verts.resize(m.vertexNumber() * 3);
