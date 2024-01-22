@@ -20,14 +20,40 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-$input a_position, a_normal
-$output v_pos, v_normal
+#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
+#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
 
-#include <drawable_axis/uniforms.sh>
+#include "shader_uniform.h"
 
-void main()
+#include <vclib/space/color.h>
+
+namespace vcl::bgf {
+
+class DrawableAxisUniforms
 {
-    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
-    v_pos = mul(u_modelView, vec4(a_position, 1.0)).xyz;
-    v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
-}
+    float axisColor[4] = {1.0, 0.0, 0.0, 1.0};
+
+    ShaderUniform axisColorUniform =
+        ShaderUniform("u_axisColor", bgfx::UniformType::Vec4);
+
+public:
+    DrawableAxisUniforms() = default;
+
+    void setColor(const vcl::Color& color)
+    {
+        axisColor[0] = color.redF();
+        axisColor[1] = color.greenF();
+        axisColor[2] = color.blueF();
+        axisColor[3] = color.alphaF();
+    }
+
+    void bind()
+    {
+        axisColorUniform.bind(axisColor);
+    }
+
+};
+
+} // namespace vcl::bgf
+
+#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H

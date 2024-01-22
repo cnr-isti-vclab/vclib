@@ -32,6 +32,7 @@
 #include <vclib/render/mesh_render_buffers.h>
 
 #include "shader_programs/drawable_axis_shader_program.h"
+#include "uniforms/drawable_axis_uniforms.h"
 
 namespace vcl::bgf {
 
@@ -39,9 +40,25 @@ class DrawableAxis : public DrawableObject
 {
     bool visible = false;
 
+    vcl::Color colors[3] = {
+        vcl::Color::Red,
+        vcl::Color::Green,
+        vcl::Color::Blue};
+
+    vcl::Matrix44f matrices[3] = {
+        vcl::Matrix44f::Identity(),
+        vcl::Matrix44f::Identity(),
+        vcl::Matrix44f::Identity()};
+
     MeshRenderBuffers<vcl::TriMesh> mrbArrow;
 
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+
+    bgfx::VertexBufferHandle vertexCoordBH  = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle vertexNormalBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle triangleIndexBH  = BGFX_INVALID_HANDLE;
+
+    DrawableAxisUniforms uniforms;
 
 public:
     DrawableAxis()
@@ -55,9 +72,15 @@ public:
         arrow.append(cone);
 
         mrbArrow = MeshRenderBuffers<vcl::TriMesh>(arrow);
+
+        createBuffers();
+        updateMatrices();
     }
 
-    ~DrawableAxis() = default;
+    ~DrawableAxis()
+    {
+        destroyBuffers();
+    };
 
     void setShaderProgram(const DrawableAxisShaderProgram& sp)
     {
@@ -70,13 +93,20 @@ public:
     {
         if (isVisible()) {
             if (bgfx::isValid(program)) {
-                // todo
+                for (uint i = 0; i < 3; i++) {
+                    bindBuffers();
+                    uniforms.setColor(colors[i]);
+                    uniforms.bind();
 
-                uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                                 BGFX_STATE_WRITE_Z |
-                                 BGFX_STATE_DEPTH_TEST_LEQUAL | BGFX_STATE_MSAA;
+                    bgfx::setTransform(matrices[i].data());
 
-                bgfx::submit(0, program);
+                    uint64_t state = 0 | BGFX_STATE_WRITE_RGB |
+                                     BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+                                     BGFX_STATE_DEPTH_TEST_LEQUAL |
+                                     BGFX_STATE_MSAA;
+
+                    bgfx::submit(0, program);
+                }
             }
         }
     }
@@ -90,6 +120,71 @@ public:
     bool isVisible() const { return visible; }
 
     void setVisibility(bool vis) { visible = vis; }
+
+private:
+    void createBuffers()
+    {
+        // vertex buffer (positions)
+        bgfx::VertexLayout layout;
+        layout.begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .end();
+
+        vertexCoordBH = bgfx::createVertexBuffer(
+            bgfx::makeRef(
+                mrbArrow.vertexBufferData(),
+                mrbArrow.vertexBufferSize() * sizeof(float)),
+            layout);
+
+        bgfx::VertexLayout vnlayout;
+        vnlayout.begin()
+            .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+            .end();
+
+        vertexNormalBH = bgfx::createVertexBuffer(
+            bgfx::makeRef(
+                mrbArrow.vertexNormalBufferData(),
+                mrbArrow.vertexBufferSize() * sizeof(float)),
+            vnlayout);
+
+        triangleIndexBH = bgfx::createIndexBuffer(
+            bgfx::makeRef(
+                mrbArrow.triangleBufferData(),
+                mrbArrow.triangleBufferSize() * sizeof(uint32_t)),
+            BGFX_BUFFER_INDEX32);
+    }
+
+    void updateMatrices()
+    {
+        matrices[0](0,0) = 0;
+        matrices[0](0,1) = 1;
+        matrices[0](1,0) = -1;
+        matrices[0](1,1) = 0;
+
+        matrices[2](1,1) = 0;
+        matrices[2](1,2) = -1;
+        matrices[2](2,1) = 1;
+        matrices[2](2,2) = 0;
+    }
+
+    void bindBuffers()
+    {
+        bgfx::setVertexBuffer(0, vertexCoordBH);
+        bgfx::setVertexBuffer(1, vertexNormalBH);
+        bgfx::setIndexBuffer(triangleIndexBH);
+    }
+
+    void destroyBuffers()
+    {
+        if (bgfx::isValid(vertexCoordBH))
+            bgfx::destroy(vertexCoordBH);
+
+        if (bgfx::isValid(vertexNormalBH))
+            bgfx::destroy(vertexNormalBH);
+
+        if (bgfx::isValid(triangleIndexBH))
+            bgfx::destroy(triangleIndexBH);
+    }
 };
 
 } // namespace vcl::bgf

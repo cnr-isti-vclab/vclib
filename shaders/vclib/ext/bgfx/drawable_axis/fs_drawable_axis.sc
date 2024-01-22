@@ -22,106 +22,29 @@
 
 $input v_pos
 $input v_normal
-$input v_color
 
-#include <drawable_mesh/uniforms.sh>
-#include <vclib/render/mesh_render_settings_macros.h>
-
-BUFFER_RO(triangleColors, uint, 1);
-BUFFER_RO(triangleNormals, float, 2);
+#include <drawable_axis/uniforms.sh>
 
 void main()
 {
-    uint primitive = floatBitsToUint(u_primitiveFloat);
-    uint drawMode = floatBitsToUint(u_drawModeFloat);
-
-    // depth offset - avoid z-fighting
-    float depthOffset = 0.0;
-
-    // if not drawing mesh, discard
-    if (!bool(drawMode & VCL_MRS_DRAW_MESH)) {
-        discard;
-    }
-
     // color
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 color = u_axisColor;
 
     /***** compute light ******/
     // default values - no shading
     vec3 specular = vec3(0.0, 0.0, 0.0);
     vec4 light = vec4(1, 1, 1, 1);
 
-    vec3 normal = v_normal;
+    // compute light
+    light = computeLight(u_lightDir, u_lightColor, v_normal);
+    vec3 camEyePos = mul(u_modelView, vec4(u_cameraEyePos, 1.0)).xyz;
 
-    if (bool(primitive & VCL_MRS_PRIMITIVE_POINTS)) {
-        // if per vert shading
-        if (bool(drawMode & VCL_MRS_POINTS_SHADING_VERT)) {
-            light = computeLight(u_lightDir, u_lightColor, normal);
-        }
+    specular = computeSpecular(
+        v_pos,
+        camEyePos,
+        u_lightDir,
+        u_lightColor,
+        v_normal);
 
-        color = uintToVec4Color(floatBitsToUint(u_userPointColorFloat));
-
-        if (bool(drawMode & VCL_MRS_POINTS_COLOR_VERTEX)) {
-            color = v_color;
-        }
-        else if (bool(drawMode & VCL_MRS_POINTS_COLOR_MESH)) {
-            color = u_meshColor;
-        }
-        depthOffset = (1.0 / (exp2(10.0) - 1.0));
-    }
-    else if (bool(primitive & VCL_MRS_PRIMITIVE_TRIANGLES)) {
-        // if flat shading, compute normal of face
-        if (bool(drawMode & VCL_MRS_SURF_SHADING_FLAT)) {
-            normal = vec3(
-                triangleNormals[gl_PrimitiveID * 3],
-                triangleNormals[gl_PrimitiveID * 3 + 1],
-                triangleNormals[gl_PrimitiveID * 3 + 2]);
-            normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
-        }
-
-        // if flat or smooth shading, compute light
-        if (!bool(drawMode & VCL_MRS_SURF_SHADING_NONE)) {
-            light = computeLight(u_lightDir, u_lightColor, normal);
-            vec3 camEyePos = mul(u_modelView, vec4(u_cameraEyePos, 1.0)).xyz;
-
-            specular = computeSpecular(
-                v_pos,
-                camEyePos,
-                u_lightDir,
-                u_lightColor,
-                normal);
-        }
-
-        /***** compute color ******/
-        color = uintToVec4Color(floatBitsToUint(u_userSurfaceColorFloat));
-
-        if (bool(drawMode & VCL_MRS_SURF_COLOR_VERTEX)) {
-            color = v_color;
-        }
-        if (bool(drawMode & VCL_MRS_SURF_COLOR_MESH)) {
-            color = u_meshColor;
-        }
-        if (bool(drawMode & VCL_MRS_SURF_COLOR_FACE)) {
-            color = uintToVec4Color(triangleColors[gl_PrimitiveID]);
-        }
-    }
-    else { // wireframe
-        // shading
-        if (bool(drawMode & VCL_MRS_WIREFRAME_SHADING_VERT)) {
-            light = computeLight(u_lightDir, u_lightColor, normal);
-        }
-
-        color = uintToVec4Color(floatBitsToUint(u_userWireframeColorFloat));
-
-        if (bool(drawMode & VCL_MRS_WIREFRAME_COLOR_VERT)) {
-            color = v_color;
-        }
-        if (bool(drawMode & VCL_MRS_WIREFRAME_COLOR_MESH)) {
-            color = u_meshColor;
-        }
-        depthOffset = (1.0 / (exp2(12.0) - 1.0));
-    }
-
-    gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = gl_FragCoord.z - depthOffset;
+    gl_FragColor = light * u_axisColor + vec4(specular, 0);
 }

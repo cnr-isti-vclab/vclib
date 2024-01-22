@@ -84,6 +84,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/shader_programs/load_program.h
         include/vclib/ext/bgfx/uniforms/camera_uniforms.h
         include/vclib/ext/bgfx/uniforms/directional_light_uniforms.h
+        include/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.h
         include/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.h
         include/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.h
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
@@ -100,6 +101,7 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/drawable_mesh/uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/camera_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/directional_light_uniforms.sh
+        shaders/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.sh
         )

@@ -31,6 +31,7 @@
 #include <vclib/render/generic_drawable_mesh.h>
 
 #include "drawable_axis.h"
+#include "shader_programs/drawable_axis_shader_program.h"
 #include "shader_programs/drawable_mesh_shader_program.h"
 #include "uniforms/camera_uniforms.h"
 #include "uniforms/directional_light_uniforms.h"
@@ -42,13 +43,15 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
 {
     // this Viewer does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> drawList;
+    DrawableAxis axis;
 
     CameraUniforms             cameraUniforms;
     DirectionalLightUniforms   directionalLightUniforms;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
-    // the program must be created after the uniforms - bgfx issue on OpenGL
-    vcl::bgf::DrawableMeshShaderProgram program;
+    // the programs must be created after the uniforms - bgfx issue on OpenGL
+    vcl::bgf::DrawableMeshShaderProgram meshProgram;
+    vcl::bgf::DrawableAxisShaderProgram axisProgram;
 
 protected:
     using DTB = vcl::DesktopTrackBall<float>;
@@ -58,6 +61,7 @@ public:
     {
         cameraUniforms.updateCamera(DTB::camera());
         directionalLightUniforms.updateLight(DTB::light());
+        axis.setShaderProgram(axisProgram);
     }
 
     MinimalViewer(std::shared_ptr<DrawableObjectVector> v) : MinimalViewer()
@@ -79,7 +83,7 @@ public:
 
             GenericDrawableMesh* mesh = dynamic_cast<GenericDrawableMesh*>(obj);
             if (mesh) {
-                mesh->setShaderProgram(program);
+                mesh->setShaderProgram(meshProgram);
             }
         }
     }
@@ -106,6 +110,25 @@ public:
 
         for (DrawableObject* obj : *drawList)
             obj->draw();
+
+        if (axis.isVisible()) {
+            axis.draw();
+        }
+    }
+
+    void toggleAxisVisibility()
+    {
+        axis.setVisibility(!axis.isVisible());
+    }
+
+    void keyPress(Key key)
+    {
+        if (key == KEY_A) {
+            toggleAxisVisibility();
+        }
+        else {
+            DTB::keyPress(key);
+        }
     }
 };
 

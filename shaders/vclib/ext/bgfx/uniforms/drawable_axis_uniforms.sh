@@ -20,14 +20,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-$input a_position, a_normal
-$output v_pos, v_normal
+#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_SH
+#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_SH
 
-#include <drawable_axis/uniforms.sh>
+uniform vec4 u_axisColor;
 
-void main()
-{
-    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
-    v_pos = mul(u_modelView, vec4(a_position, 1.0)).xyz;
-    v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
-}
+#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_SH

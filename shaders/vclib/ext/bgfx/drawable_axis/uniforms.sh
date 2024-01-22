@@ -20,14 +20,13 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_DRAWABLE_MESH_UNIFORMS_SH
-#define VCL_EXT_BGFX_DRAWABLE_MESH_UNIFORMS_SH
+#ifndef VCL_EXT_BGFX_DRAWABLE_AXIS_UNIFORMS_SH
+#define VCL_EXT_BGFX_DRAWABLE_AXIS_UNIFORMS_SH
 
 #include <shaders_common.sh>
 
 #include <uniforms/camera_uniforms.sh>
 #include <uniforms/directional_light_uniforms.sh>
-#include <uniforms/drawable_mesh_uniforms.sh>
-#include <uniforms/mesh_render_settings_uniforms.sh>
+#include <uniforms/drawable_axis_uniforms.sh>
 
-#endif // VCL_EXT_BGFX_DRAWABLE_MESH_UNIFORMS_SH
+#endif // VCL_EXT_BGFX_DRAWABLE_AXIS_UNIFORMS_SH
