@@ -29,8 +29,8 @@
 #include <vclib/meshes/tri_mesh.h>
 
 #include <vclib/render/drawable_object.h>
-#include <vclib/render/mesh_render_buffers.h>
 
+#include "mesh_render_buffers.h"
 #include "shader_programs/drawable_axis_shader_program.h"
 #include "uniforms/drawable_axis_uniforms.h"
 
@@ -71,16 +71,15 @@ public:
         vcl::translate(cone, vcl::Point3d(0, 1, 0));
         arrow.append(cone);
 
-        mrbArrow = MeshRenderBuffers<vcl::TriMesh>(arrow);
+        mrbArrow = MeshRenderBuffers<vcl::TriMesh>(
+            arrow,
+            MeshRenderBuffers<vcl::TriMesh>::VERT_NORMALS |
+                MeshRenderBuffers<vcl::TriMesh>::TRIANGLES);
 
-        createBuffers();
         updateMatrices();
     }
 
-    ~DrawableAxis()
-    {
-        destroyBuffers();
-    };
+    ~DrawableAxis() = default;
 
     void setShaderProgram(const DrawableAxisShaderProgram& sp)
     {
@@ -94,9 +93,11 @@ public:
         if (isVisible()) {
             if (bgfx::isValid(program)) {
                 for (uint i = 0; i < 3; i++) {
-                    bindBuffers();
                     uniforms.setColor(colors[i]);
                     uniforms.bind();
+
+                    mrbArrow.bindVertexBuffers();
+                    mrbArrow.bindIndexBuffers();
 
                     bgfx::setTransform(matrices[i].data());
 
@@ -122,38 +123,6 @@ public:
     void setVisibility(bool vis) { visible = vis; }
 
 private:
-    void createBuffers()
-    {
-        // vertex buffer (positions)
-        bgfx::VertexLayout layout;
-        layout.begin()
-            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-            .end();
-
-        vertexCoordBH = bgfx::createVertexBuffer(
-            bgfx::makeRef(
-                mrbArrow.vertexBufferData(),
-                mrbArrow.vertexBufferSize() * sizeof(float)),
-            layout);
-
-        bgfx::VertexLayout vnlayout;
-        vnlayout.begin()
-            .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-            .end();
-
-        vertexNormalBH = bgfx::createVertexBuffer(
-            bgfx::makeRef(
-                mrbArrow.vertexNormalBufferData(),
-                mrbArrow.vertexBufferSize() * sizeof(float)),
-            vnlayout);
-
-        triangleIndexBH = bgfx::createIndexBuffer(
-            bgfx::makeRef(
-                mrbArrow.triangleBufferData(),
-                mrbArrow.triangleBufferSize() * sizeof(uint32_t)),
-            BGFX_BUFFER_INDEX32);
-    }
-
     void updateMatrices()
     {
         matrices[0](0,0) = 0;
@@ -165,25 +134,6 @@ private:
         matrices[2](1,2) = -1;
         matrices[2](2,1) = 1;
         matrices[2](2,2) = 0;
-    }
-
-    void bindBuffers()
-    {
-        bgfx::setVertexBuffer(0, vertexCoordBH);
-        bgfx::setVertexBuffer(1, vertexNormalBH);
-        bgfx::setIndexBuffer(triangleIndexBH);
-    }
-
-    void destroyBuffers()
-    {
-        if (bgfx::isValid(vertexCoordBH))
-            bgfx::destroy(vertexCoordBH);
-
-        if (bgfx::isValid(vertexNormalBH))
-            bgfx::destroy(vertexNormalBH);
-
-        if (bgfx::isValid(triangleIndexBH))
-            bgfx::destroy(triangleIndexBH);
     }
 };
 
