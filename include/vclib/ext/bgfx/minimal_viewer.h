@@ -116,6 +116,14 @@ public:
         }
     }
 
+    void screenShot(const std::string& path)
+    {
+        draw();
+        bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
+        bgfx::requestScreenShot(fbh, path.c_str());
+        bgfx::frame();
+    }
+
     void toggleAxisVisibility()
     {
         axis.setVisibility(!axis.isVisible());
