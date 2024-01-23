@@ -1525,6 +1525,20 @@ protected:
         }
     }
 
+    // this additional function is necessary because otherwise msvc jumps
+    // totally the pack expansion if called directly in the function
+    // updatePointersOfContainerTypeAfterAppend
+    template<typename Element, typename ArrayS, typename ...A>
+    void updatePointers(
+        const Element* oldBase,
+        const Element* newBase,
+        const ArrayS&  sizes,
+        uint           offset,
+        TypeWrapper<A...>)
+    {
+        (updatePointers<A>(oldBase, newBase, sizes, offset), ...);
+    }
+
     template<typename Cont, typename Element, typename ArrayS>
     void updatePointers(
         const Element* oldBase,
@@ -1763,12 +1777,17 @@ private:
             constexpr uint I = IndexInTypes<Cont, Containers>::value;
             static_assert(I >= 0 && I != UINT_NULL);
 
+            using ContainerWrapper = TypeWrapper<A...>;
+
             // for each Container A in m, we update the pointers of ElType.
             // old base is contained in the array bases, the new base is the
             // base of the container
-            (m.template updatePointers<A>(
-                 (const ElType*) bases[I], m.Cont::vec.data(), sizes, sizes[I]),
-             ...);
+            m.updatePointers(
+                reinterpret_cast<const ElType *>(bases[I]),
+                m.Cont::vec.data(),
+                sizes,
+                sizes[I],
+                ContainerWrapper());
         }
     }
 

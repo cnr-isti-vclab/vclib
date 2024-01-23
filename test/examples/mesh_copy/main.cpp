@@ -38,4 +38,9 @@ int main()
 
 	vcl::savePly(yCyl, VCLIB_TEST_RESULTS_PATH "/yasis.ply");
 	vcl::savePly(xCyl, VCLIB_TEST_RESULTS_PATH "/xasis.ply");
+
+	vcl::TriMesh mesh = xCyl;
+	mesh.append(yCyl);
+
+	vcl::savePly(mesh, VCLIB_TEST_RESULTS_PATH "/axis.ply");
 }
