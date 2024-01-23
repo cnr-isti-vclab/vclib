@@ -43,7 +43,7 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
 {
     // this Viewer does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> drawList;
-    DrawableAxis axis;
+    DrawableAxis                          axis;
 
     CameraUniforms             cameraUniforms;
     DirectionalLightUniforms   directionalLightUniforms;
@@ -124,10 +124,7 @@ public:
         bgfx::frame();
     }
 
-    void toggleAxisVisibility()
-    {
-        axis.setVisibility(!axis.isVisible());
-    }
+    void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }
 
     void keyPress(Key key)
     {

@@ -48,13 +48,12 @@ public:
     MeshRenderBuffers() = default;
 
     MeshRenderBuffers(const MeshType& mesh, uint buffersToFill = Base::ALL) :
-        Base(mesh, buffersToFill)
+            Base(mesh, buffersToFill)
     {
         createBGFXBuffers();
     }
 
-    MeshRenderBuffers(const MeshRenderBuffers& other) :
-        Base(other)
+    MeshRenderBuffers(const MeshRenderBuffers& other) : Base(other)
     {
         // each object has its own bgfx buffers
         createBGFXBuffers();
@@ -62,10 +61,7 @@ public:
 
     MeshRenderBuffers(MeshRenderBuffers&& other) { swap(other); }
 
-    ~MeshRenderBuffers()
-    {
-        destroyBGFXBuffers();
-    }
+    ~MeshRenderBuffers() { destroyBGFXBuffers(); }
 
     MeshRenderBuffers& operator=(MeshRenderBuffers other)
     {
@@ -134,7 +130,8 @@ private:
 
         vertexCoordBH = bgfx::createVertexBuffer(
             bgfx::makeRef(
-                Base::vertexBufferData(), Base::vertexBufferSize() * sizeof(float)),
+                Base::vertexBufferData(),
+                Base::vertexBufferSize() * sizeof(float)),
             layout);
 
         // vertex buffer (normals)

@@ -47,11 +47,7 @@ public:
         axisColor[3] = color.alphaF();
     }
 
-    void bind()
-    {
-        axisColorUniform.bind(axisColor);
-    }
-
+    void bind() { axisColorUniform.bind(axisColor); }
 };
 
 } // namespace vcl::bgf

@@ -72,7 +72,7 @@ public:
     void bind() const
     {
         meshColorUniform.bind(meshColor);
-        //modelUH.bind(model);
+        // modelUH.bind(model);
     }
 };
 

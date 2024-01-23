@@ -54,9 +54,9 @@ class DrawableAxis : public DrawableObject
 
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
-    bgfx::VertexBufferHandle vertexCoordBH  = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle vertexNormalBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle triangleIndexBH  = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle vertexCoordBH   = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle vertexNormalBH  = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle  triangleIndexBH = BGFX_INVALID_HANDLE;
 
     DrawableAxisUniforms uniforms;
 
@@ -70,10 +70,7 @@ public:
 
     ~DrawableAxis() = default;
 
-    void setSize(double size)
-    {
-        updateMatrices(size);
-    }
+    void setSize(double size) { updateMatrices(size); }
 
     void setShaderProgram(const DrawableAxisShaderProgram& sp)
     {
@@ -86,10 +83,9 @@ public:
     {
         if (isVisible()) {
             if (bgfx::isValid(program)) {
-                uint64_t state = 0 | BGFX_STATE_WRITE_RGB |
-                                 BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-                                 BGFX_STATE_DEPTH_TEST_LEQUAL |
-                                 BGFX_STATE_MSAA;
+                uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                                 BGFX_STATE_WRITE_Z |
+                                 BGFX_STATE_DEPTH_TEST_LEQUAL | BGFX_STATE_MSAA;
                 for (uint i = 0; i < 3; i++) {
                     for (uint j = 0; j < 2; j++) {
                         if (j == 0) // cylinders
@@ -149,7 +145,7 @@ private:
         const double coneRadius = cylRadius * 10;
         const double coneLength = cylLength * 0.1;
 
-        const double firstSphereRadius = unitLength * 0.02;
+        const double firstSphereRadius  = unitLength * 0.02;
         const double commonSphereRadius = unitLength * 0.008;
 
         vcl::TriMesh cylinder =
@@ -173,20 +169,20 @@ private:
 
         for (uint i = 0; i < 9; ++i) {
             const double step = unitLength * 0.1;
-            const double x = step + i * step;
+            const double x    = step + i * step;
             vcl::Sphered s(vcl::Point3d(0, x, 0), commonSphereRadius);
             vcl::TriMesh sp = vcl::createSphere<vcl::TriMesh>(s);
             rest.append(sp);
             if (!fromOrigin) {
                 s.center().y() = -x;
-                sp = vcl::createSphere<vcl::TriMesh>(s);
+                sp             = vcl::createSphere<vcl::TriMesh>(s);
                 rest.append(sp);
             }
         }
 
         const double rad = fromOrigin ? firstSphereRadius : commonSphereRadius;
-        vcl::Sphered s = vcl::Sphered(vcl::Point3d(0, 0, 0), rad);
-        vcl::TriMesh sp = vcl::createSphere<vcl::TriMesh>(s);
+        vcl::Sphered s   = vcl::Sphered(vcl::Point3d(0, 0, 0), rad);
+        vcl::TriMesh sp  = vcl::createSphere<vcl::TriMesh>(s);
         rest.append(sp);
 
         vcl::updatePerVertexNormals(rest);

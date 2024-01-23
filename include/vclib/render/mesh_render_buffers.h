@@ -49,7 +49,7 @@ class MeshRenderBuffers
     std::vector<float>    wTexCoords;
     std::vector<short>    wTexIds;
 
-    std::array<float, 4>  mColor = {0.5, 0.5, 0.5, 1};
+    std::array<float, 4> mColor = {0.5, 0.5, 0.5, 1};
 
     vcl::Point3d            bbmin, bbmax;
     vcl::TriPolyIndexBiMap  triPolyMap;
@@ -57,9 +57,9 @@ class MeshRenderBuffers
 
 public:
     enum {
-        VERT_NORMALS    = 1 << 0,
-        VERT_COLORS     = 1 << 1,
-        VERT_TEXCOORDS  = 1 << 2,
+        VERT_NORMALS   = 1 << 0,
+        VERT_COLORS    = 1 << 1,
+        VERT_TEXCOORDS = 1 << 2,
 
         TRIANGLES       = 1 << 3,
         TRI_NORMALS     = 1 << 4,
@@ -67,9 +67,9 @@ public:
         WEDGE_TEXCOORDS = 1 << 6,
         WIREFRAME       = 1 << 7,
 
-        EDGES           = 1 << 8,
+        EDGES = 1 << 8,
 
-        TEXTURES        = 1 << 9,
+        TEXTURES = 1 << 9,
 
         ALL = 0xFFFFFFFF,
     };
@@ -409,8 +409,10 @@ private:
                                 tNormals.push_back(f.normal().z());
                             }
                             else {
-                                const uint fi = m.faceIndexIfCompact(m.index(f));
-                                for (uint i = 0; i < triPolyMap.triangleNumber(fi);
+                                const uint fi =
+                                    m.faceIndexIfCompact(m.index(f));
+                                for (uint i = 0;
+                                     i < triPolyMap.triangleNumber(fi);
                                      i++)
                                 {
                                     tNormals.push_back(f.normal().x());
@@ -429,8 +431,10 @@ private:
                                 tColors.push_back(f.color().abgr());
                             }
                             else {
-                                const uint fi = m.faceIndexIfCompact(m.index(f));
-                                for (uint i = 0; i < triPolyMap.triangleNumber(fi);
+                                const uint fi =
+                                    m.faceIndexIfCompact(m.index(f));
+                                for (uint i = 0;
+                                     i < triPolyMap.triangleNumber(fi);
                                      i++)
                                 {
                                     tColors.push_back(f.color().abgr());
@@ -453,7 +457,8 @@ private:
                                 wTexIds.push_back(f.textureIndex());
                             }
                             else {
-                                const uint fi = m.faceIndexIfCompact(m.index(f));
+                                const uint fi =
+                                    m.faceIndexIfCompact(m.index(f));
                                 // triangulation of f
                                 const std::vector<uint>& vind = vinds[fi];
                                 // for each triangle of f
