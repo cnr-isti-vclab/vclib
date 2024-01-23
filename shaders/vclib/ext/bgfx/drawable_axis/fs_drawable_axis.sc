@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-$input v_pos
+$input v_position
 $input v_normal
 
 #include <drawable_axis/uniforms.sh>
@@ -40,7 +40,7 @@ void main()
     vec3 camEyePos = mul(u_modelView, vec4(u_cameraEyePos, 1.0)).xyz;
 
     specular = computeSpecular(
-        v_pos,
+        v_position,
         camEyePos,
         u_lightDir,
         u_lightColor,
