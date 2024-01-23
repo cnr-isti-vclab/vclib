@@ -24,11 +24,148 @@
 #define VCL_ALGORITHMS_UPDATE_NORMAL_H
 
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/logger.h>
 #include <vclib/space/matrix.h>
 
 #include "../polygon.h"
 
 namespace vcl {
+
+template<uint ELEM_ID, MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void normalizePerElementNormals(
+    MeshType& mesh,
+    bool      noThrow = true,
+    LogType&  log     = nullLogger)
+{
+    vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+
+    if constexpr (isLoggerValid<LogType>()) {
+        log.log(
+            0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals");
+    }
+
+    for (auto& elem : mesh.template elements<ELEM_ID>()) {
+        try {
+            elem.normal().normalize();
+        }
+        catch (const std::exception& e) {
+            if (noThrow) {
+                if constexpr (isLoggerValid<LogType>()) {
+                    log.log(LogType::WARNING, e.what());
+                }
+            }
+            else {
+                throw e;
+            }
+        }
+    }
+
+    if constexpr (isLoggerValid<LogType>()) {
+        log.log(
+            100, "Per-" + elementEnumString<ELEM_ID>() + " normals normalized.");
+    }
+}
+
+template<uint ELEM_ID, MeshConcept MeshType>
+void clearPerElementNormals(MeshType& mesh)
+{
+    vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+
+    for (auto& elem : mesh.template elements<ELEM_ID>()) {
+        elem.normal().setZero();
+    }
+}
+
+template<uint ELEM_ID, MeshConcept MeshType, typename MScalar>
+void multiplyPerElementNormalsByMatrix(
+    MeshType&                     mesh,
+    vcl::Matrix33<MScalar>        mat,
+    bool                          removeScalingFromMatrix = true)
+{
+    vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+
+    if (removeScalingFromMatrix) {
+        MScalar scaleX = std::sqrt(
+            mat(0, 0) * mat(0, 0) + mat(0, 1) * mat(0, 1) +
+            mat(0, 2) * mat(0, 2));
+        MScalar scaleY = std::sqrt(
+            mat(1, 0) * mat(1, 0) + mat(1, 1) * mat(1, 1) +
+            mat(1, 2) * mat(1, 2));
+        MScalar scaleZ = std::sqrt(
+            mat(2, 0) * mat(2, 0) + mat(2, 1) * mat(2, 1) +
+            mat(2, 2) * mat(2, 2));
+        for (int i = 0; i < 3; ++i) {
+            mat(0, i) /= scaleX;
+            mat(1, i) /= scaleY;
+            mat(2, i) /= scaleZ;
+        }
+    }
+    for (auto& elem : mesh.template elements<ELEM_ID>()) {
+        elem.normal() *= mat;
+    }
+}
+
+template<uint ELEM_ID, MeshConcept MeshType, typename MScalar>
+void multiplyPerElementNormalsByMatrix(
+    MeshType&                     mesh,
+    const vcl::Matrix44<MScalar>& mat,
+    bool                          removeScalingFromMatrix = true)
+{
+    vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+
+    Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
+    multiplyPerElementNormalsByMatrix<ELEM_ID>(
+        mesh, m33, removeScalingFromMatrix);
+}
+
+/**
+ * @brief Sets to zero the normals of all the vertices of the mesh, including
+ * the unreferenced ones.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Normal
+ *
+ * @param[in,out] m: The mesh on which clear the vertex normals.
+ */
+template<MeshConcept MeshType>
+void clearPerVertexNormals(MeshType& m)
+{
+    clearPerElementNormals<VERTEX>(m);
+}
+
+/**
+ * @brief Sets to zero the normals of all the faces of the mesh.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces:
+ *     - Normal
+ *
+ * @param[in,out] m: The mesh on which clear the face normals.
+ */
+template<FaceMeshConcept MeshType>
+void clearPerFaceNormals(MeshType& m)
+{
+    clearPerElementNormals<FACE>(m);
+}
+
+/**
+ * @brief Normalizes the length of the vertex normals.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Normal
+ *
+ * @param[in,out] m: the mesh on which normalize the vertex normals.
+ */
+template<MeshConcept MeshType>
+void normalizePerVertexNormals(MeshType& m)
+{
+    normalizePerElementNormals<VERTEX>(m);
+}
 
 /**
  * @brief Normalizes the length of the face normals.
@@ -43,11 +180,54 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 void normalizePerFaceNormals(MeshType& m)
 {
-    vcl::requirePerFaceNormal(m);
+    normalizePerElementNormals<FACE>(m);
+}
 
-    for (auto& n : m.faces() | views::normals) {
-        n.normalize();
-    }
+/**
+ * @brief Multiplies the Vertex Normals by the given TRS 4x4 Matrix.
+ * By default, the scale component is removed from the matrix.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Normal
+ *
+ * @param[in,out] mesh: the mesh on which multiply the vertex normals.
+ * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
+ * @param[in] removeScalingFromMatrix: if true (default), the scale component is
+ * removed from the matrix.
+ */
+template<MeshConcept MeshType, typename MScalar>
+void multiplyPerVertexNormalsByMatrix(
+    MeshType&                     mesh,
+    const vcl::Matrix44<MScalar>& mat,
+    bool                          removeScalingFromMatrix = true)
+{
+    multiplyPerElementNormalsByMatrix<VERTEX>(
+        mesh, mat, removeScalingFromMatrix);
+}
+
+/**
+ * @brief Multiplies the Face Normals by the given TRS 4x4 Matrix.
+ * By default, the scale component is removed from the matrix.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Faces
+ *     - Normal
+ *
+ * @param[in,out] mesh: the mesh on which multiply the face normals.
+ * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
+ * @param[in] removeScalingFromMatrix: if true (default), the scale component is
+ * removed from the matrix.
+ */
+template<FaceMeshConcept MeshType, typename MScalar>
+void multiplyPerFaceNormalsByMatrix(
+    MeshType&                     mesh,
+    const vcl::Matrix44<MScalar>& mat,
+    bool                          removeScalingFromMatrix = true)
+{
+    multiplyPerElementNormalsByMatrix<FACE>(mesh, mat, removeScalingFromMatrix);
 }
 
 /**
@@ -72,26 +252,7 @@ void updatePerFaceNormals(MeshType& m, bool normalize = true)
         normalizePerFaceNormals(m);
 }
 
-/**
- * @brief Sets to zero the normals of all the vertices of the mesh, including
- * the unreferenced ones.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Normal
- *
- * @param[in,out] m: The mesh on which clear the vertex normals.
- */
-template<MeshConcept MeshType>
-void clearPerVertexNormals(MeshType& m)
-{
-    vcl::requirePerVertexNormal(m);
 
-    for (auto& n : m.vertices() | views::normals) {
-        n.setZero();
-    }
-}
 
 /**
  * @brief Sets to zero all the normals of vertices that are referenced by at
@@ -121,25 +282,7 @@ void clearPerReferencedVertexNormals(MeshType& m)
     }
 }
 
-/**
- * @brief Normalizes the length of the vertex normals.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Normal
- *
- * @param[in,out] m: the mesh on which normalize the vertex normals.
- */
-template<MeshConcept MeshType>
-void normalizePerVertexNormals(MeshType& m)
-{
-    vcl::requirePerVertexNormal(m);
 
-    for (auto& n : m.vertices() | views::normals) {
-        n.normalize();
-    }
-}
 
 /**
  * @brief Computes the vertex normal as the classic area weighted average.
@@ -323,98 +466,6 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true)
     }
     if (normalize)
         normalizePerVertexNormals(m);
-}
-
-/**
- * @brief Multiplies the Face Normals by the given TRS 4x4 Matrix.
- * By default, the scale component is removed from the matrix.
- *
- * Requirements:
- * - Mesh:
- *   - Faces
- *     - Normal
- *
- * @param[in,out] mesh: the mesh on which multiply the face normals.
- * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
- * @param[in] removeScalingFromMatrix: if true (default), the scale component is
- * removed from the matrix.
- */
-template<FaceMeshConcept MeshType, typename MScalar>
-void multiplyPerFaceNormalsByMatrix(
-    MeshType&                     mesh,
-    const vcl::Matrix44<MScalar>& mat,
-    bool                          removeScalingFromMatrix = true)
-{
-    requirePerFaceNormal(mesh);
-
-    using FaceType = MeshType::FaceType;
-
-    Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
-    if (removeScalingFromMatrix) {
-        MScalar scaleX = std::sqrt(
-            m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) +
-            m33(0, 2) * m33(0, 2));
-        MScalar scaleY = std::sqrt(
-            m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) +
-            m33(1, 2) * m33(1, 2));
-        MScalar scaleZ = std::sqrt(
-            m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) +
-            m33(2, 2) * m33(2, 2));
-        for (int i = 0; i < 3; ++i) {
-            m33(0, i) /= scaleX;
-            m33(1, i) /= scaleY;
-            m33(2, i) /= scaleZ;
-        }
-    }
-    for (FaceType& f : mesh.faces()) {
-        f.normal() *= m33;
-    }
-}
-
-/**
- * @brief Multiplies the Vertex Normals by the given TRS 4x4 Matrix.
- * By default, the scale component is removed from the matrix.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Normal
- *
- * @param[in,out] mesh: the mesh on which multiply the vertex normals.
- * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
- * @param[in] removeScalingFromMatrix: if true (default), the scale component is
- * removed from the matrix.
- */
-template<MeshConcept MeshType, typename MScalar>
-void multiplyPerVertexNormalsByMatrix(
-    MeshType&                     mesh,
-    const vcl::Matrix44<MScalar>& mat,
-    bool                          removeScalingFromMatrix = true)
-{
-    requirePerVertexNormal(mesh);
-
-    using VertexType = MeshType::VertexType;
-
-    Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
-    if (removeScalingFromMatrix) {
-        MScalar scaleX = std::sqrt(
-            m33(0, 0) * m33(0, 0) + m33(0, 1) * m33(0, 1) +
-            m33(0, 2) * m33(0, 2));
-        MScalar scaleY = std::sqrt(
-            m33(1, 0) * m33(1, 0) + m33(1, 1) * m33(1, 1) +
-            m33(1, 2) * m33(1, 2));
-        MScalar scaleZ = std::sqrt(
-            m33(2, 0) * m33(2, 0) + m33(2, 1) * m33(2, 1) +
-            m33(2, 2) * m33(2, 2));
-        for (int i = 0; i < 3; ++i) {
-            m33(0, i) /= scaleX;
-            m33(1, i) /= scaleY;
-            m33(2, i) /= scaleZ;
-        }
-    }
-    for (VertexType& v : mesh.vertices()) {
-        v.normal() *= m33;
-    }
 }
 
 } // namespace vcl
