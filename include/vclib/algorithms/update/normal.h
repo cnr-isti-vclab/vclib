@@ -25,35 +25,46 @@
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/logger.h>
+#include <vclib/misc/parallel.h>
 #include <vclib/space/matrix.h>
 
 #include "../polygon.h"
 
 namespace vcl {
 
+namespace detail {
+
+template<uint ELEM_ID, LoggerConcept LogType>
+void normalizeNoThrow(auto& elem, LogType& log)
+{
+    try {
+        elem.normal().normalize();
+    }
+    catch (const std::exception& e) {
+        log.log(
+            LogType::WARNING,
+            elementEnumString<ELEM_ID>() + " " +
+                std::to_string(elem.index()) + ": " + e.what());
+    }
+}
+
+} // namespace vcl::detail
+
 template<uint ELEM_ID, MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void normalizePerElementNormals(
     MeshType& mesh,
-    bool      noThrow = true,
     LogType&  log     = nullLogger)
 {
     vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
-    log.log(0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals");
+    log.log(0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals.");
 
-    for (auto& elem : mesh.template elements<ELEM_ID>()) {
-        try {
-            elem.normal().normalize();
-        }
-        catch (const std::exception& e) {
-            if (noThrow) {
-                log.log(LogType::WARNING, e.what());
-            }
-            else {
-                throw e;
-            }
-        }
-    }
+    // define a lambda that, for each element, normalizes the normal
+    auto normalize = [&](auto& elem) {
+        detail::normalizeNoThrow<ELEM_ID>(elem, log);
+    };
+
+    vcl::parallelFor(mesh.template elements<ELEM_ID>(), normalize);
 
     log.log(
         100, "Per-" + elementEnumString<ELEM_ID>() + " normals normalized.");
@@ -158,6 +169,22 @@ template<MeshConcept MeshType>
 void normalizePerVertexNormals(MeshType& m)
 {
     normalizePerElementNormals<VERTEX>(m);
+}
+
+/**
+ * @brief Normalizes the length of normals the referenced vertices.
+ *
+ * @param m
+ * @param log
+ */
+template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void normalizePerReferencedVertexNormals(MeshType& m, LogType& log = nullLogger)
+{
+    for (auto& f : m.faces()) {
+        for (auto* v : f.vertices()) {
+            detail::normalizeNoThrow<VERTEX>(*v, log);
+        }
+    }
 }
 
 /**
@@ -289,24 +316,22 @@ void clearPerReferencedVertexNormals(MeshType& m)
  * @param[in] normalize: if true (default), normals are normalized after
  * computation.
  */
-template<FaceMeshConcept MeshType>
-void updatePerVertexNormals(MeshType& m, bool normalize = true)
+void updatePerVertexNormals(FaceMeshConcept auto& m, bool normalize = true)
 {
     clearPerReferencedVertexNormals(m);
 
+    using MeshType   = std::remove_reference_t<decltype(m)>;
     using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
     using NormalType = VertexType::NormalType;
+    using NScalar    = NormalType::ScalarType;
 
-    for (FaceType& f : m.faces()) {
-        NormalType n =
-            faceNormal(f).template cast<typename NormalType::ScalarType>();
+    for (auto& f : m.faces()) {
         for (VertexType* v : f.vertices()) {
-            v->normal() += n;
+            v->normal() += faceNormal(f).template cast<NScalar>();
         }
     }
     if (normalize)
-        normalizePerVertexNormals(m);
+        normalizePerReferencedVertexNormals(m);
 }
 
 /**

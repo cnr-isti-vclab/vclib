@@ -45,7 +45,7 @@ public:
     TexCoord(const Point2<Scalar>& p) : coord(p) {}
 
     template<typename S>
-    TexCoord<S> cast() const
+    auto cast() const
     {
         if constexpr (std::is_same<Scalar, S>::value) {
             return *this;

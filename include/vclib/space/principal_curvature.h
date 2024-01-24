@@ -68,7 +68,7 @@ public:
      * a different type.
      */
     template<typename S>
-    PrincipalCurvature<S> cast() const
+    auto cast() const
     {
         if constexpr (std::is_same<Scalar, S>::value) {
             return *this;

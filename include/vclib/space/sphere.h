@@ -55,7 +55,7 @@ public:
     Scalar& radius() { return r; }
 
     template<typename S>
-    Sphere<S> cast() const
+    auto cast() const
     {
         if constexpr (std::is_same_v<Scalar, S>) {
             return *this;

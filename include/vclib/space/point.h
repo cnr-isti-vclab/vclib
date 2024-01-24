@@ -208,7 +208,7 @@ public:
      * object, but with each scalar value casted to a different type.
      */
     template<typename S>
-    Point<S, N> cast() const
+    auto cast() const
     {
         if constexpr (std::is_same_v<Scalar, S>) {
             return *this;

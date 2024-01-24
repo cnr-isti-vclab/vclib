@@ -145,7 +145,7 @@ public:
      * different type.
      */
     template<typename S>
-    const Quaternion<S> cast() const
+    auto cast() const
     {
         if constexpr (std::is_same_v<Scalar, S>) {
             return *this;

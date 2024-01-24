@@ -105,7 +105,7 @@ public:
     }
 
     template<typename S>
-    Plane<S, NORM> cast() const
+    auto cast() const
     {
         if constexpr (std::is_same<Scalar, S>::value) {
             return *this;
