@@ -67,18 +67,14 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
         bool              isBorder;
     };
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.log(0, "Updating per vertex normals...");
-    }
+    log.log(0, "Updating per vertex normals...");
 
     vcl::updatePerVertexNormalsAngleWeighted(m);
     vcl::normalizePerVertexNormals(m);
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.log(5, "Computing per vertex curvature...");
-        // log every 5%, starting from 5% to 100%
-        log.startProgress("", m.vertexNumber(), 5, 5, 100);
-    }
+    log.log(5, "Computing per vertex curvature...");
+    // log every 5%, starting from 5% to 100%
+    log.startProgress("", m.vertexNumber(), 5, 5, 100);
 
     for (VertexType& v : m.vertices()) {
         std::vector<ScalarType> weights;
@@ -232,15 +228,11 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
         v.principalCurvature().maxValue() = principalCurv1;
         v.principalCurvature().minValue() = principalCurv2;
 
-        if constexpr (vcl::isLoggerValid<LogType>()) {
-            log.progress(m.index(v));
-        }
+        log.progress(m.index(v));
     }
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.endProgress();
-        log.log(100, "Per vertex curvature computed.");
-    }
+    log.endProgress();
+    log.log(100, "Per vertex curvature computed.");
 }
 
 /**
@@ -274,17 +266,13 @@ void updatePrincipalCurvaturePCA(
     VGrid      pGrid;
     ScalarType area;
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.log(0, "Updating per vertex normals...");
-    }
+    log.log(0, "Updating per vertex normals...");
 
     vcl::updatePerVertexNormalsAngleWeighted(m);
     vcl::normalizePerVertexNormals(m);
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.log(0, "Computing per vertex curvature...");
-        log.startProgress("", m.vertexNumber());
-    }
+    log.log(0, "Computing per vertex curvature...");
+    log.startProgress("", m.vertexNumber());
 
     if (montecarloSampling) {
         area  = vcl::surfaceArea(m);
@@ -377,16 +365,12 @@ void updatePrincipalCurvaturePCA(
                 v.principalCurvature().maxDir());
         }
 
-        if constexpr (vcl::isLoggerValid<LogType>()) {
-            log.progress(m.index(v));
-        }
+        log.progress(m.index(v));
         //}
     });
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.endProgress();
-        log.log(100, "Per vertex curvature computed.");
-    }
+    log.endProgress();
+    log.log(100, "Per vertex curvature computed.");
 }
 
 template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>

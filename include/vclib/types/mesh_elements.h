@@ -23,6 +23,8 @@
 #ifndef VCL_TYPES_MESH_ELEMENTS_H
 #define VCL_TYPES_MESH_ELEMENTS_H
 
+#include <string>
+
 #include "base.h"
 
 namespace vcl {
@@ -61,7 +63,7 @@ struct ElemenetString
 };
 
 template<uint ELEM_ID>
-constexpr const char* elementEnumString()
+constexpr const char* elementEnumCString()
 {
     static_assert(
         ElemenetString<ELEM_ID>().str != nullptr,
@@ -69,6 +71,15 @@ constexpr const char* elementEnumString()
         "struct with your ELEM_ID value.");
 
     return ElemenetString<ELEM_ID>().str;
+}
+
+// Todo: make this function constexpr when upgrading to C++23.
+template<uint ELEM_ID>
+const std::string& elementEnumString()
+{
+    static const std::string str = elementEnumCString<ELEM_ID>();
+
+    return str;
 }
 
 } // namespace vcl

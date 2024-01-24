@@ -159,7 +159,7 @@ void requireElementContainerCompactness(const MeshType& m)
 {
     if (!isElementContainerCompact<ELEM_ID>(m))
         throw vcl::MissingCompactnessException(
-            std::string(elementEnumString<ELEM_ID>()) +
+            elementEnumString<ELEM_ID>() +
             " Container of the Mesh is not compact.");
 }
 

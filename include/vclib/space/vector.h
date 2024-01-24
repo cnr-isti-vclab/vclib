@@ -25,7 +25,7 @@
 
 #include <algorithm>
 #include <array>
-#include <assert.h>
+#include <cassert>
 #include <stdexcept>
 #include <string>
 #include <utility>

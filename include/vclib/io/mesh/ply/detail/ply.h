@@ -23,8 +23,6 @@
 #ifndef VCL_IO_PLY_H
 #define VCL_IO_PLY_H
 
-#include <assert.h>
-#include <fstream>
 #include <list>
 
 #include <vclib/misc/tokenizer.h>

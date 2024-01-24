@@ -112,9 +112,7 @@ void saveStl(
     // available in the mesh.
     meshInfo = info.intersect(meshInfo);
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(0, "Saving STL file");
-    }
+    log.log(0, "Saving STL file");
 
     detail::writeStlHeader(fp, magicsMode, binary);
 
@@ -125,9 +123,7 @@ void saveStl(
             io::writeInt(fp, m.faceNumber());
         }
 
-        if constexpr (vcl::isLoggerValid<LogType>()) {
-            log.startProgress("Loading STL file", m.faces());
-        }
+        log.startProgress("Loading STL file", m.faceNumber());
 
         for (const FaceType& f : m.faces()) {
             // For each triangle write the normal, the three coords and a short
@@ -168,13 +164,10 @@ void saveStl(
                 }
             }
 
-            if constexpr (vcl::isLoggerValid<LogType>()) {
-                log.progress(m.index(f));
-            }
+            log.progress(m.index(f));
         }
-        if constexpr (vcl::isLoggerValid<LogType>()) {
-            log.endProgress();
-        }
+
+        log.endProgress();
     }
 
     if (!binary) {

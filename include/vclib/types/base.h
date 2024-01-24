@@ -23,7 +23,7 @@
 #ifndef VCL_TYPES_BASE_H
 #define VCL_TYPES_BASE_H
 
-#include <assert.h>
+#include <cassert>
 #include <concepts>
 #include <numeric>
 

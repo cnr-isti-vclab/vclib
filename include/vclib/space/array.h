@@ -24,7 +24,7 @@
 #define VCL_SPACE_ARRAY_H
 
 #include <array>
-#include <assert.h>
+#include <cassert>
 #include <iomanip>
 #include <utility>
 #include <vector>

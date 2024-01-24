@@ -39,10 +39,7 @@ void normalizePerElementNormals(
 {
     vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(
-            0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals");
-    }
+    log.log(0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals");
 
     for (auto& elem : mesh.template elements<ELEM_ID>()) {
         try {
@@ -50,9 +47,7 @@ void normalizePerElementNormals(
         }
         catch (const std::exception& e) {
             if (noThrow) {
-                if constexpr (isLoggerValid<LogType>()) {
-                    log.log(LogType::WARNING, e.what());
-                }
+                log.log(LogType::WARNING, e.what());
             }
             else {
                 throw e;
@@ -60,11 +55,8 @@ void normalizePerElementNormals(
         }
     }
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(
-            100,
-            "Per-" + elementEnumString<ELEM_ID>() + " normals normalized.");
-    }
+    log.log(
+        100, "Per-" + elementEnumString<ELEM_ID>() + " normals normalized.");
 }
 
 template<uint ELEM_ID, MeshConcept MeshType>
