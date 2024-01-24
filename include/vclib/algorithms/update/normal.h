@@ -62,7 +62,8 @@ void normalizePerElementNormals(
 
     if constexpr (isLoggerValid<LogType>()) {
         log.log(
-            100, "Per-" + elementEnumString<ELEM_ID>() + " normals normalized.");
+            100,
+            "Per-" + elementEnumString<ELEM_ID>() + " normals normalized.");
     }
 }
 
@@ -78,9 +79,9 @@ void clearPerElementNormals(MeshType& mesh)
 
 template<uint ELEM_ID, MeshConcept MeshType, typename MScalar>
 void multiplyPerElementNormalsByMatrix(
-    MeshType&                     mesh,
-    vcl::Matrix33<MScalar>        mat,
-    bool                          removeScalingFromMatrix = true)
+    MeshType&              mesh,
+    vcl::Matrix33<MScalar> mat,
+    bool                   removeScalingFromMatrix = true)
 {
     vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
@@ -252,8 +253,6 @@ void updatePerFaceNormals(MeshType& m, bool normalize = true)
         normalizePerFaceNormals(m);
 }
 
-
-
 /**
  * @brief Sets to zero all the normals of vertices that are referenced by at
  * least one face, leaving unchanged all the normals of the unreferenced
@@ -281,8 +280,6 @@ void clearPerReferencedVertexNormals(MeshType& m)
         }
     }
 }
-
-
 
 /**
  * @brief Computes the vertex normal as the classic area weighted average.

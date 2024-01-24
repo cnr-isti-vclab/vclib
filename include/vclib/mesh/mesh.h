@@ -1503,7 +1503,7 @@ protected:
     }
 
     // this function is required in order to get msvc compile
-    template<typename Element, typename ...A>
+    template<typename Element, typename... A>
     void updatePointers(
         const Element* oldBase,
         const Element* newBase,
@@ -1519,9 +1519,7 @@ protected:
 
     // this function is required in order to get msvc compile
     template<typename Cont, typename Element>
-    void updatePointers(
-        const Element* oldBase,
-        const Element* newBase)
+    void updatePointers(const Element* oldBase, const Element* newBase)
     {
         updatePointers<Cont>(oldBase, newBase, std::array<std::size_t, 0>(), 0);
     }
@@ -1529,26 +1527,26 @@ protected:
     // this additional function is necessary because otherwise msvc jumps
     // totally the pack expansion if called directly in the function
     // updatePointersOfContainerTypeAfterAppend
-    template<typename Element, std::size_t N, typename ...A>
+    template<typename Element, std::size_t N, typename... A>
     void updatePointers(
         const Element* oldBase,
         const Element* newBase,
         TypeWrapper<A...>,
-        const std::array<std::size_t, N>& sizes = std::array<std::size_t, 0>(),
-        uint offset = 0)
+        const std::array<std::size_t, N>& sizes  = std::array<std::size_t, 0>(),
+        uint                              offset = 0)
     {
         (updatePointers<A>(oldBase, newBase, sizes, offset), ...);
     }
 
     template<typename Cont, typename Element, std::size_t N>
     void updatePointers(
-        const Element* oldBase,
-        const Element* newBase,
-        const std::array<std::size_t, N>& sizes = std::array<std::size_t, 0>(),
-        uint           offset = 0)
+        const Element*                    oldBase,
+        const Element*                    newBase,
+        const std::array<std::size_t, N>& sizes  = std::array<std::size_t, 0>(),
+        uint                              offset = 0)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            if constexpr(N > 0) {
+            if constexpr (N > 0) {
                 using Containers = Mesh<Args...>::Containers;
                 constexpr uint I = IndexInTypes<Cont, Containers>::value;
                 static_assert(I >= 0 && I != UINT_NULL);
@@ -1758,7 +1756,7 @@ private:
             // old base is contained in the array bases, the new base is the
             // base of the container
             m.updatePointers(
-                reinterpret_cast<const ElType *>(bases[I]),
+                reinterpret_cast<const ElType*>(bases[I]),
                 m.Cont::vec.data(),
                 ContainerWrapper());
         }
@@ -1789,7 +1787,7 @@ private:
             // old base is contained in the array bases, the new base is the
             // base of the container
             m.updatePointers(
-                reinterpret_cast<const ElType *>(bases[I]),
+                reinterpret_cast<const ElType*>(bases[I]),
                 m.Cont::vec.data(),
                 ContainerWrapper(),
                 sizes,

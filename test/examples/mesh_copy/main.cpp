@@ -28,19 +28,19 @@
 
 int main()
 {
-	vcl::TriMesh yCyl = vcl::createCylinder<vcl::TriMesh>(0.02, 2);
-	yCyl.enablePerVertexColor();
-	vcl::setPerVertexColor(yCyl, vcl::Color::Green);
+    vcl::TriMesh yCyl = vcl::createCylinder<vcl::TriMesh>(0.02, 2);
+    yCyl.enablePerVertexColor();
+    vcl::setPerVertexColor(yCyl, vcl::Color::Green);
 
-	vcl::TriMesh xCyl = yCyl;
-	vcl::setPerVertexColor(xCyl, vcl::Color::Red);
-	vcl::rotateDeg(xCyl, vcl::Point3d(0, 0, 1), 90.f);
+    vcl::TriMesh xCyl = yCyl;
+    vcl::setPerVertexColor(xCyl, vcl::Color::Red);
+    vcl::rotateDeg(xCyl, vcl::Point3d(0, 0, 1), 90.f);
 
-	vcl::savePly(yCyl, VCLIB_TEST_RESULTS_PATH "/yasis.ply");
-	vcl::savePly(xCyl, VCLIB_TEST_RESULTS_PATH "/xasis.ply");
+    vcl::savePly(yCyl, VCLIB_TEST_RESULTS_PATH "/yasis.ply");
+    vcl::savePly(xCyl, VCLIB_TEST_RESULTS_PATH "/xasis.ply");
 
-	vcl::TriMesh mesh = xCyl;
-	mesh.append(yCyl);
+    vcl::TriMesh mesh = xCyl;
+    mesh.append(yCyl);
 
-	vcl::savePly(mesh, VCLIB_TEST_RESULTS_PATH "/axis.ply");
+    vcl::savePly(mesh, VCLIB_TEST_RESULTS_PATH "/axis.ply");
 }
