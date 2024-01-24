@@ -484,11 +484,9 @@ void loadObj(
                     detail::loadObjMaterials(materialMap, m, mtlfile);
                 }
                 catch (vcl::CannotOpenFileException) {
-                    if constexpr (isLoggerValid<LogType>()) {
-                        log.log(
-                            LogType::WARNING,
-                            "Cannot open material file " + mtlfile);
-                    }
+                    log.log(
+                        LogType::WARNING,
+                        "Cannot open material file " + mtlfile);
                 }
             }
             // use a new material - change currentMaterial
@@ -499,11 +497,9 @@ void loadObj(
                     currentMaterial = it->second;
                 }
                 else { // material not found - warning
-                    if constexpr (isLoggerValid<LogType>()) {
-                        log.log(
-                            LogType::WARNING,
-                            "Material " + matname + " not found.");
-                    }
+                    log.log(
+                        LogType::WARNING,
+                        "Material " + matname + " not found.");
                 }
             }
             // read vertex (and for some non-standard obj files, also vertex

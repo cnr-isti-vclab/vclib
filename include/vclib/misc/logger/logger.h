@@ -23,6 +23,7 @@
 #ifndef VCL_MISC_LOGGER_LOGGER_H
 #define VCL_MISC_LOGGER_LOGGER_H
 
+#include <cassert>
 #include <cmath>
 #include <iomanip>
 #include <iostream>

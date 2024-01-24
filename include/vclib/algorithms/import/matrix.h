@@ -52,7 +52,7 @@ void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
 
     if (normals.cols() != 3)
         throw WrongSizeException(
-            "The input " + std::string(elementEnumString<ELEM_ID>()) +
+            "The input " + elementEnumString<ELEM_ID>() +
             " normal matrix must have 3 columns");
 
     // matrix rows must be equal to the number of elements of the given type
@@ -60,7 +60,7 @@ void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
         throw WrongSizeException(
             "The input normal matrix must have the same number of rows "
             "as the number of " +
-            std::string(elementEnumString<ELEM_ID>()) + " element in the mesh");
+            elementEnumString<ELEM_ID>() + " element in the mesh");
 
     enableIfPerElementComponentOptional<ELEM_ID, NORMAL>(mesh);
     requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
@@ -79,7 +79,7 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
 
     if (colors.cols() != 3 && colors.cols() != 4)
         throw WrongSizeException(
-            "The input " + std::string(elementEnumString<ELEM_ID>()) +
+            "The input " + elementEnumString<ELEM_ID>() +
             " color matrix must have 3 or 4 columns");
 
     // matrix rows must be equal to the number of elements of the given type
@@ -87,7 +87,7 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
         throw WrongSizeException(
             "The input color matrix must have the same number of rows "
             "as the number of " +
-            std::string(elementEnumString<ELEM_ID>()) + " element in the mesh");
+            elementEnumString<ELEM_ID>() + " element in the mesh");
 
     enableIfPerElementComponentOptional<ELEM_ID, COLOR>(mesh);
     requirePerElementComponent<ELEM_ID, COLOR>(mesh);

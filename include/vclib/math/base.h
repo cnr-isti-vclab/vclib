@@ -23,7 +23,7 @@
 #ifndef VCL_MATH_BASE_H
 #define VCL_MATH_BASE_H
 
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 #include <limits>
 

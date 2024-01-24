@@ -26,7 +26,7 @@
 /* @link https://zcrou.com/blog/dev/nested-initializers */
 
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include <cstddef>
 #include <initializer_list>
 #include <list>

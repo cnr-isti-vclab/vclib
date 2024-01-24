@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_GRAPH_BIPARTITE_BIPARTITE_GRAPH_H
 #define VCL_SPACE_GRAPH_BIPARTITE_BIPARTITE_GRAPH_H
 
-#include <assert.h>
+#include <cassert>
 #include <map>
 #include <set>
 #include <vector>

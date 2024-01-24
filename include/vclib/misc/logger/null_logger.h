@@ -28,27 +28,45 @@
 namespace vcl {
 
 /**
- * @brief The NullLogger class is an empty class that is used as default type in
- * all the library functions that take as input a logger type.
+ * @brief The NullLogger class is used as default type in all the library
+ * functions that take as input a logger type.
  *
- * This class satisfies the LoggerConcept.
- *
- * Before using a logger object, you should check if the type of the logger is
- * valid in the following way:
- *
- * @code{.cpp}
- * if constexpr (vcl::isLoggerValid<LoggerType>()) {
- *     // use here the log object
- * }
- * @endcode
- *
- * This allows to compile the log code only when the user gives a proper Logger
- * object that satisfies the LoggerConcept.
+ * This class satisfies the LoggerConcept, and just does nothing in all its
+ * member functions.
  *
  * @ingroup miscellaneous
  */
 class NullLogger
 {
+public:
+    enum LogLevel { ERROR = 0, WARNING, PROGRESS, DEBUG };
+
+    NullLogger() = default;
+
+    void enableIndentation() {}
+    void disableIndentation() {}
+
+    void reset() {}
+
+    void setMaxLineWidth(uint) {}
+    void setPrintTimer(bool) {}
+    void startTimer() {}
+
+    void startNewTask(double, double, std::string) {}
+    void endTask(std::string) {}
+
+    double percentage() const { return 0; }
+    void setPercentage(uint) {}
+
+    void log(std::string) {}
+    void log(LogLevel, std::string) {}
+    void log(uint, std::string) {}
+    void log(uint, LogLevel, std::string) {}
+
+    void startProgress(std::string, uint, uint = 0, uint = 0, uint = 0) {}
+    void endProgress() {}
+    void progress(uint) {}
+
 };
 
 /**
@@ -63,24 +81,26 @@ class NullLogger
  * {
  *    // code of the function...
  *
- *    if constexpr (vcl::isLoggerValid<LoggerType>()) {
- *       log.log("log!");
- *    }
+ *    // empty function will be called if the user does not give a logger
+ *    log.log("log!");
  *
  * }
  * @endcode
  *
  * In this way, when the user does not give a logger argument, the default will
- * be an object of NullLogger type that allows to check at compile time if the
- * logger object is valid.
+ * be an object of NullLogger.
  *
  * @ingroup miscellaneous
  */
 static inline NullLogger nullLogger;
 
 /**
- * @brief The isLoggerValid() function returns true if the type T is not the
- * NullLogger type.
+ * @brief The isLoggerValid() function returns true at compile time if the type
+ * T is not the NullLogger type.
+ *
+ * It is useful when you need to perform some operation explicitely for logging
+ * that should not be done if the user does not give a logger. In this case the
+ * code will not be compiled.
  *
  * @tparam T: the type to test if is a valid Logger. It must satisfy the
  * LoggerConcept.

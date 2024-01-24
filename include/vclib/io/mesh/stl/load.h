@@ -117,9 +117,7 @@ void readStlBin(
     fp.seekg(80); // size of the header
     uint fnum = io::readUInt<uint>(fp);
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.startProgress("Loading STL file", fnum);
-    }
+    log.startProgress("Loading STL file", fnum);
 
     m.addVertices(fnum * 3);
     if constexpr (HasFaces<MeshType>) {
@@ -168,13 +166,9 @@ void readStlBin(
 
         vi += 3;
 
-        if constexpr (vcl::isLoggerValid<LogType>()) {
-            log.progress(i);
-        }
+        log.progress(i);
     }
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.endProgress();
-    }
+    log.endProgress();
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType>
@@ -249,15 +243,11 @@ void readStlAscii(
             }
             tokens = readAndTokenizeNextNonEmptyLineNoThrow(fp);
 
-            if constexpr (vcl::isLoggerValid<LogType>()) {
-                log.progress(fp.tellg());
-            }
+            log.progress(fp.tellg());
         } while (fp);
     }
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        log.endProgress();
-    }
+    log.endProgress();
 }
 
 } // namespace detail
@@ -312,9 +302,7 @@ void loadStl(
         loadedInfo.setFaceNormals();
     }
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(0, "Loading STL file");
-    }
+    log.log(0, "Loading STL file");
 
     if (isBinary)
         detail::readStlBin(
@@ -323,9 +311,7 @@ void loadStl(
         detail::readStlAscii(
             m, inputStlStream, loadedInfo, log, enableOptionalComponents);
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(100, "STL file loaded");
-    }
+    log.log(100, "STL file loaded");
 }
 
 /**
@@ -487,18 +473,14 @@ void loadStl(
     LogType&           log                      = nullLogger,
     bool               enableOptionalComponents = true)
 {
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(0, "Checking STL file");
-    }
+    log.log(0, "Checking STL file");
 
     bool        isBinary;
     std::size_t filesize;
     if (detail::isBinStlMalformed(filename, isBinary, filesize))
         throw MalformedFileException(filename + " is malformed.");
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(0, "Opening STL file");
-    }
+    log.log(0, "Opening STL file");
 
     std::ifstream fp = openInputFileStream(filename);
 

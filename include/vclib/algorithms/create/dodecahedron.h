@@ -54,9 +54,7 @@ MeshType createDodecahedron(LogType& log = nullLogger)
     const ScalarType s2 = std::pow(fi, 2);
     const ScalarType s3 = 1;
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(0, "Adding vertices to PolyMesh...");
-    }
+    log.log(0, "Adding vertices to PolyMesh...");
 
     mesh.addVertices(
         CoordType(-s1, -s1, s1),
@@ -80,10 +78,8 @@ MeshType createDodecahedron(LogType& log = nullLogger)
         CoordType(s1, -s1, s1),
         CoordType(-s1, -s1, -s1));
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(50, "Vertices added to PolyMesh.");
-        log.log(50, "Adding faces to PolyMesh...");
-    }
+    log.log(50, "Vertices added to PolyMesh.");
+    log.log(50, "Adding faces to PolyMesh...");
 
     mesh.reserveFaces(12);
     mesh.addFace(14, 11, 18, 2, 1);
@@ -99,9 +95,7 @@ MeshType createDodecahedron(LogType& log = nullLogger)
     mesh.addFace(16, 12, 11, 14, 5);
     mesh.addFace(18, 11, 12, 0, 10);
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(100, "Faces added to PolyMesh.");
-    }
+    log.log(100, "Faces added to PolyMesh.");
 
     return mesh;
 }
@@ -121,17 +115,13 @@ MeshType createDodecahedron(LogType& log = nullLogger)
 template<TriangleMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType createDodecahedron(LogType& log = nullLogger)
 {
-    if constexpr (isLoggerValid<LogType>()) {
-        log.startNewTask(0, 75, "Create Polygonal Dodecahedron.");
-    }
+    log.startNewTask(0, 75, "Create Polygonal Dodecahedron.");
 
     detail::TMPSimplePolyMesh pmesh =
         createDodecahedron<detail::TMPSimplePolyMesh>(log);
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.endTask("Create Polygonal Dodecahedron.");
-        log.log(75, "Copying vertices into TriMesh...");
-    }
+    log.endTask("Create Polygonal Dodecahedron.");
+    log.log(75, "Copying vertices into TriMesh...");
 
     MeshType mesh;
     using ST = MeshType::VertexType::CoordType::ScalarType;
@@ -140,10 +130,8 @@ MeshType createDodecahedron(LogType& log = nullLogger)
         mesh.addVertex(v.coord().cast<ST>());
     }
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(80, "Vertices copied into TriMesh.");
-        log.log(80, "Triangularize and copy Faces into TriMesh...");
-    }
+    log.log(80, "Vertices copied into TriMesh.");
+    log.log(80, "Triangularize and copy Faces into TriMesh...");
 
     for (const auto& f : pmesh.faces()) {
         std::vector<uint> ind = earCut(f);
@@ -155,9 +143,7 @@ MeshType createDodecahedron(LogType& log = nullLogger)
         }
     }
 
-    if constexpr (isLoggerValid<LogType>()) {
-        log.log(100, "Faces triangularized and copied into TriMesh.");
-    }
+    log.log(100, "Faces triangularized and copied into TriMesh.");
 
     return mesh;
 }
