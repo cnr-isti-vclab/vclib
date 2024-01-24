@@ -34,15 +34,15 @@ namespace vcl {
 
 namespace detail {
 
-template<uint ELEM_ID, LoggerConcept LogType>
-void normalizeNoThrow(auto& elem, LogType& log)
+template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
+void normalizeNoThrow(auto& elem, LogType& log = nullLogger)
 {
     try {
         elem.normal().normalize();
     }
     catch (const std::exception& e) {
         log.log(
-            LogType::WARNING,
+            log.WARNING,
             elementEnumString<ELEM_ID>() + " " +
                 std::to_string(elem.index()) + ": " + e.what());
     }
@@ -50,43 +50,95 @@ void normalizeNoThrow(auto& elem, LogType& log)
 
 } // namespace vcl::detail
 
-template<uint ELEM_ID, MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void normalizePerElementNormals(
-    MeshType& mesh,
-    LogType&  log     = nullLogger)
+/**
+ * @brief Sets to zero the normals of all the <ELEM_ID> elements of the mesh,
+ * including the unreferenced ones.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - <ELEM_ID>:
+ *     - Normal
+ *
+ * @tparam ELEM_ID: The ID of an Element, that is a value in the ElementIDEnum.
+ *
+ * @param[in,out] mesh: The mesh on which clear the <ELEM_ID> normals.
+ * @param[in,out] log: The logger used to log the performed operations.
+ */
+template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
+void clearPerElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
-    log.log(0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals.");
+    log.log(0, "Clearing per-" + elementEnumString<ELEM_ID>() + " normals...");
+
+    parallelFor(mesh.template elements<ELEM_ID>(), [](auto& e) {
+        e.normal().setZero();
+    });
+
+    log.log(
+        100, "Per-" + elementEnumString<ELEM_ID>() + " normals cleared.");
+}
+
+/**
+ * @brief Normalizes the length of the normals of all the <ELEM_ID> elements.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - <ELEM_ID>:
+ *     - Normal
+ *
+ * @tparam ELEM_ID: The ID of an Element, that is a value in the ElementIDEnum.
+ *
+ * @param[in,out] mesh: the mesh on which normalize the <ELEM_ID> normals.
+ * @param[in,out] log: The logger used to log the performed operations.
+ */
+template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
+void normalizePerElementNormals(
+    MeshConcept auto& mesh,
+    LogType&          log = nullLogger)
+{
+    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+
+    log.log(
+        0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals...");
 
     // define a lambda that, for each element, normalizes the normal
     auto normalize = [&](auto& elem) {
         detail::normalizeNoThrow<ELEM_ID>(elem, log);
     };
 
-    vcl::parallelFor(mesh.template elements<ELEM_ID>(), normalize);
+    parallelFor(mesh.template elements<ELEM_ID>(), normalize);
 
     log.log(
         100, "Per-" + elementEnumString<ELEM_ID>() + " normals normalized.");
 }
 
-template<uint ELEM_ID, MeshConcept MeshType>
-void clearPerElementNormals(MeshType& mesh)
-{
-    vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
-
-    for (auto& elem : mesh.template elements<ELEM_ID>()) {
-        elem.normal().setZero();
-    }
-}
-
-template<uint ELEM_ID, MeshConcept MeshType, typename MScalar>
+/**
+ * @brief Multiplies the normals of all the <ELEM_ID> elements by the given 3x3
+ * Matrix.
+ *
+ * If removeScalingFromMatrix is true (default), the scale component is
+ * removed from the matrix.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - <ELEM_ID>:
+ *     - Normal
+ *
+ * @param[in,out] mesh: the mesh on which multiply the element normals.
+ * @param[in] mat: the 3x3 matrix that is multiplied to the normals.
+ * @param[in] removeScalingFromMatrix: if true (default), the scale component is
+ * removed from the matrix.
+ * @param[in,out] log: The logger used to log the performed operations.
+ */
+template<uint ELEM_ID, typename MScalar, LoggerConcept LogType = NullLogger>
 void multiplyPerElementNormalsByMatrix(
-    MeshType&              mesh,
-    vcl::Matrix33<MScalar> mat,
-    bool                   removeScalingFromMatrix = true)
+    MeshConcept auto& mesh,
+    Matrix33<MScalar> mat,
+    bool              removeScalingFromMatrix = true,
+    LogType&          log                     = nullLogger)
 {
-    vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
     if (removeScalingFromMatrix) {
         MScalar scaleX = std::sqrt(
@@ -104,172 +156,62 @@ void multiplyPerElementNormalsByMatrix(
             mat(2, i) /= scaleZ;
         }
     }
-    for (auto& elem : mesh.template elements<ELEM_ID>()) {
-        elem.normal() *= mat;
-    }
+
+    log.log(
+        0,
+        "Multiplying per-" + elementEnumString<ELEM_ID>() +
+            " normals by matrix...");
+
+    parallelFor(mesh.template elements<ELEM_ID>(), [&](auto& e) {
+        e.normal() *= mat;
+    });
+
+    log.log(
+        100, "Per-" + elementEnumString<ELEM_ID>() + " normals multiplied.");
 }
 
-template<uint ELEM_ID, MeshConcept MeshType, typename MScalar>
+/**
+ * @brief Multiplies the normals of all the <ELEM_ID> elements by the given TRS
+ * 4x4 Matrix.
+ *
+ * The normals are multiplied by the 3x3 rotation matrix of the given TRS
+ * matrix. If removeScalingFromMatrix is true (default), the scale component is
+ * removed from the matrix.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - <ELEM_ID>:
+ *     - Normal
+ *
+ * @param[in,out] mesh: the mesh on which multiply the element normals.
+ * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
+ * @param[in] removeScalingFromMatrix: if true (default), the scale component is
+ * removed from the matrix.
+ * @param[in,out] log: The logger used to log the performed operations.
+ */
+template<uint ELEM_ID, typename MScalar, LoggerConcept LogType = NullLogger>
 void multiplyPerElementNormalsByMatrix(
-    MeshType&                     mesh,
-    const vcl::Matrix44<MScalar>& mat,
-    bool                          removeScalingFromMatrix = true)
+    MeshConcept auto&        mesh,
+    const Matrix44<MScalar>& mat,
+    bool                     removeScalingFromMatrix = true,
+    LogType&                 log                     = nullLogger)
 {
     vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
 
     Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
     multiplyPerElementNormalsByMatrix<ELEM_ID>(
-        mesh, m33, removeScalingFromMatrix);
+        mesh, m33, removeScalingFromMatrix, log);
 }
 
 /**
- * @brief Sets to zero the normals of all the vertices of the mesh, including
- * the unreferenced ones.
+ * @brief Same as clearPerElementNormals, but for the vertex normals.
  *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Normal
- *
- * @param[in,out] m: The mesh on which clear the vertex normals.
+ * @see clearPerElementNormals
  */
-template<MeshConcept MeshType>
-void clearPerVertexNormals(MeshType& m)
+template<LoggerConcept LogType = NullLogger>
+void clearPerVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    clearPerElementNormals<VERTEX>(m);
-}
-
-/**
- * @brief Sets to zero the normals of all the faces of the mesh.
- *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - Normal
- *
- * @param[in,out] m: The mesh on which clear the face normals.
- */
-template<FaceMeshConcept MeshType>
-void clearPerFaceNormals(MeshType& m)
-{
-    clearPerElementNormals<FACE>(m);
-}
-
-/**
- * @brief Normalizes the length of the vertex normals.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Normal
- *
- * @param[in,out] m: the mesh on which normalize the vertex normals.
- */
-template<MeshConcept MeshType>
-void normalizePerVertexNormals(MeshType& m)
-{
-    normalizePerElementNormals<VERTEX>(m);
-}
-
-/**
- * @brief Normalizes the length of normals the referenced vertices.
- *
- * @param m
- * @param log
- */
-template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void normalizePerReferencedVertexNormals(MeshType& m, LogType& log = nullLogger)
-{
-    for (auto& f : m.faces()) {
-        for (auto* v : f.vertices()) {
-            detail::normalizeNoThrow<VERTEX>(*v, log);
-        }
-    }
-}
-
-/**
- * @brief Normalizes the length of the face normals.
- *
- * Requirements:
- * - Mesh:
- *   - Faces:
- *     - Normal
- *
- * @param[in,out] m: the mesh on which normalize the face normals.
- */
-template<FaceMeshConcept MeshType>
-void normalizePerFaceNormals(MeshType& m)
-{
-    normalizePerElementNormals<FACE>(m);
-}
-
-/**
- * @brief Multiplies the Vertex Normals by the given TRS 4x4 Matrix.
- * By default, the scale component is removed from the matrix.
- *
- * Requirements:
- * - Mesh:
- *   - Vertices:
- *     - Normal
- *
- * @param[in,out] mesh: the mesh on which multiply the vertex normals.
- * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
- * @param[in] removeScalingFromMatrix: if true (default), the scale component is
- * removed from the matrix.
- */
-template<MeshConcept MeshType, typename MScalar>
-void multiplyPerVertexNormalsByMatrix(
-    MeshType&                     mesh,
-    const vcl::Matrix44<MScalar>& mat,
-    bool                          removeScalingFromMatrix = true)
-{
-    multiplyPerElementNormalsByMatrix<VERTEX>(
-        mesh, mat, removeScalingFromMatrix);
-}
-
-/**
- * @brief Multiplies the Face Normals by the given TRS 4x4 Matrix.
- * By default, the scale component is removed from the matrix.
- *
- * Requirements:
- * - Mesh:
- *   - Faces
- *     - Normal
- *
- * @param[in,out] mesh: the mesh on which multiply the face normals.
- * @param[in] mat: the 4x4 TRS matrix that is multiplied to the normals.
- * @param[in] removeScalingFromMatrix: if true (default), the scale component is
- * removed from the matrix.
- */
-template<FaceMeshConcept MeshType, typename MScalar>
-void multiplyPerFaceNormalsByMatrix(
-    MeshType&                     mesh,
-    const vcl::Matrix44<MScalar>& mat,
-    bool                          removeScalingFromMatrix = true)
-{
-    multiplyPerElementNormalsByMatrix<FACE>(mesh, mat, removeScalingFromMatrix);
-}
-
-/**
- * @brief updatePerFaceNormals
- * @param m
- * @param[in] normalize: if true (default), normals are normalized after
- * computation.
- */
-template<FaceMeshConcept MeshType>
-void updatePerFaceNormals(MeshType& m, bool normalize = true)
-{
-    vcl::requirePerFaceNormal(m);
-
-    using FaceType = MeshType::FaceType;
-    for (FaceType& f : m.faces()) {
-        f.normal() =
-            faceNormal(f)
-                .template cast<typename FaceType::NormalType::ScalarType>();
-    }
-
-    if (normalize)
-        normalizePerFaceNormals(m);
+    clearPerElementNormals<VERTEX>(mesh, log);
 }
 
 /**
@@ -284,20 +226,176 @@ void updatePerFaceNormals(MeshType& m, bool normalize = true)
  *   - Faces
  *
  * @param[in,out] m: The mesh on which clear the referenced vertex normals.
+ * @param[in,out] log: The logger used to log the performed operations.
  */
-template<FaceMeshConcept MeshType>
-void clearPerReferencedVertexNormals(MeshType& m)
+template<LoggerConcept LogType = NullLogger>
+void clearPerReferencedVertexNormals(
+    FaceMeshConcept auto& mesh,
+    LogType&              log = nullLogger)
 {
-    vcl::requirePerVertexNormal(m);
+    vcl::requirePerVertexNormal(mesh);
 
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
+    // TODO: make this function more general:
+    // for each container of the mesh, look if its element has vertex references
+    // and if it has, normalize the normals of the referenced vertices.
 
-    for (FaceType& f : m.faces()) {
-        for (auto& n : f.vertices() | views::normals) {
-            n.setZero();
+    log.log(0, "Clearing per-Vertex normals...");
+
+    for (auto& f : mesh.faces()) {
+        for (auto* v : f.vertices()) {
+            v->normal().setZero();
         }
     }
+
+    log.log(100, "Per-Vertex normals cleared.");
+}
+
+/**
+ * @brief Same as clearPerElementNormals, but for the face normals.
+ *
+ * @see clearPerElementNormals
+ */
+template<LoggerConcept LogType = NullLogger>
+void clearPerFaceNormals(FaceMeshConcept auto& mesh, LogType& log = nullLogger)
+{
+    clearPerElementNormals<FACE>(mesh, log);
+}
+
+/**
+ * @brief Same as normalizePerElementNormals, but for the vertex normals.
+ *
+ * @see normalizePerElementNormals
+ */
+template<LoggerConcept LogType = NullLogger>
+void normalizePerVertexNormals(
+    MeshConcept auto& mesh,
+    LogType&          log = nullLogger)
+{
+    normalizePerElementNormals<VERTEX>(mesh, log);
+}
+
+/**
+ * @brief Normalizes the length of normals the referenced vertices.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertex:
+ *     - Normal
+ *   - Face
+ *
+ * @param[in,out] mesh: the mesh on which normalize the vertex normals.
+ * @param[in,out] log: The logger used to log the performed operations.
+ */
+template<LoggerConcept LogType = NullLogger>
+void normalizePerReferencedVertexNormals(
+    MeshConcept auto& mesh,
+    LogType&          log = nullLogger)
+{
+    vcl::requirePerVertexNormal(mesh);
+
+    // TODO: make this function more general:
+    // for each container of the mesh, look if its element has vertex references
+    // and if it has, normalize the normals of the referenced vertices.
+    log.log(0, "Normalizing per-Vertex normals...");
+
+    for (auto& f : mesh.faces()) {
+        for (auto* v : f.vertices()) {
+            detail::normalizeNoThrow<VERTEX>(*v, log);
+        }
+    }
+
+    log.log(100, "Per-Vertex normals normalized.");
+}
+
+/**
+ * @brief Same as normalizePerElementNormals, but for the face normals.
+ *
+ * @see normalizePerElementNormals
+ */
+template<LoggerConcept LogType = NullLogger>
+void normalizePerFaceNormals(
+    FaceMeshConcept auto& mesh,
+    LogType&              log = nullLogger)
+{
+    normalizePerElementNormals<FACE>(mesh, log);
+}
+
+/**
+ * @brief Same as multiplyPerElementNormalsByMatrix, but for the vertex
+ * normals.
+ *
+ * Accepts both 3x3 and 4x4 matrices.
+ *
+ * @see multiplyPerElementNormalsByMatrix
+ */
+template<typename Matrix, LoggerConcept LogType = NullLogger>
+void multiplyPerVertexNormalsByMatrix(
+    MeshConcept auto& mesh,
+    const Matrix&     mat,
+    bool              removeScalingFromMatrix = true,
+    LogType&          log                     = nullLogger)
+{
+    multiplyPerElementNormalsByMatrix<VERTEX>(
+        mesh, mat, removeScalingFromMatrix, log);
+}
+
+/**
+ * @brief Same as multiplyPerElementNormalsByMatrix, but for the face normals.
+ *
+ * Accepts both 3x3 and 4x4 matrices.
+ *
+ * @see multiplyPerElementNormalsByMatrix
+ */
+template<typename Matrix, LoggerConcept LogType = NullLogger>
+void multiplyPerFaceNormalsByMatrix(
+    FaceMeshConcept auto& mesh,
+    const Matrix&         mat,
+    bool                  removeScalingFromMatrix = true,
+    LogType&              log                     = nullLogger)
+{
+    multiplyPerElementNormalsByMatrix<FACE>(
+        mesh, mat, removeScalingFromMatrix, log);
+}
+
+/**
+ * @brief Computes and sets the face normal.
+ *
+ * The function works both for Triangle and Polygonal faces.
+ *
+ * For polygonal faces, the normal is computed as the normalized sum of the
+ * cross products of each triplet of consecutive vertices of the face.
+ *
+ * @see vcl::Polygon::normal()
+ *
+ * @param[in,out] mesh: the mesh on which compute the face normals.
+ * @param[in] normalize: if true (default), normals are normalized after
+ * computation.
+ * @param[in,out] log: The logger used to log the performed operations.
+ */
+template<LoggerConcept LogType = NullLogger>
+void updatePerFaceNormals(
+    FaceMeshConcept auto& mesh,
+    bool                  normalize = true,
+    LogType&              log       = nullLogger)
+{
+    vcl::requirePerFaceNormal(mesh);
+
+    using FaceType = std::remove_reference_t<decltype(mesh)>::FaceType;
+    using ScalarType = FaceType::NormalType::ScalarType;
+
+    log.log(0, "Updating per-Face normals...");
+
+    parallelFor(mesh.faces(), [](auto& f){
+        f.normal() = faceNormal(f).template cast<ScalarType>();
+    });
+
+    if (normalize) {
+        log.startNewTask(50, 100, "Normalizing per-Face normals...");
+        normalizePerFaceNormals(mesh, log);
+        log.endTask("Normalizing per-Face normals...");
+    }
+
+    log.log(100, "Per-Face normals updated.");
 }
 
 /**
@@ -312,26 +410,41 @@ void clearPerReferencedVertexNormals(MeshType& m)
  *     - Normal
  *   - Faces
  *
- * @param[in,out] m: the mesh on which compute the vertex normals.
+ * @param[in,out] mesh: the mesh on which compute the vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after
  * computation.
+ * @param[in,out] log: The logger used to log the performed operations.
  */
-void updatePerVertexNormals(FaceMeshConcept auto& m, bool normalize = true)
+template<LoggerConcept LogType = NullLogger>
+void updatePerVertexNormals(
+    FaceMeshConcept auto& mesh,
+    bool                  normalize = true,
+    LogType&              log       = nullLogger)
 {
-    clearPerReferencedVertexNormals(m);
+    using VertexType   = std::remove_reference_t<decltype(mesh)>::VertexType;
+    using NScalar    = VertexType::NormalType::ScalarType;
 
-    using MeshType   = std::remove_reference_t<decltype(m)>;
-    using VertexType = MeshType::VertexType;
-    using NormalType = VertexType::NormalType;
-    using NScalar    = NormalType::ScalarType;
+    log.log(0, "Updating per-Vertex normals...");
 
-    for (auto& f : m.faces()) {
-        for (VertexType* v : f.vertices()) {
+    log.startNewTask(0, 20, "Clearing per-Vertex normals...");
+    clearPerReferencedVertexNormals(mesh, log);
+    log.endTask("Clearing per-Vertex normals...");
+
+    log.log(20, "Updating per-Vertex normals...");
+
+    for (auto& f : mesh.faces()) {
+        for (auto* v : f.vertices()) {
             v->normal() += faceNormal(f).template cast<NScalar>();
         }
     }
-    if (normalize)
-        normalizePerReferencedVertexNormals(m);
+
+    if (normalize) {
+        log.startNewTask(80, 100, "Normalizing per-Vertex normals...");
+        normalizePerReferencedVertexNormals(mesh, log);
+        log.endTask("Normalizing per-Vertex normals...");
+    }
+
+    log.log(100, "Per-Vertex normals updated.");
 }
 
 /**
@@ -346,27 +459,88 @@ void updatePerVertexNormals(FaceMeshConcept auto& m, bool normalize = true)
  *   - Faces
  *     - Normal
  *
- * @param[in,out] m: the mesh on which compute the vertex normals.
+ * @param[in,out] mesh: the mesh on which compute the vertex normals.
  * @param[in] normalize: if true (default), normals are normalized after
  * computation.
+ * @param[in,out] log: The logger used to log the performed operations.
  */
-template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize = true)
+template<LoggerConcept LogType = NullLogger>
+void updatePerVertexNormalsFromFaceNormals(
+    FaceMeshConcept auto& mesh,
+    bool                  normalize = true,
+    LogType&              log       = nullLogger)
 {
-    vcl::requirePerFaceNormal(m);
+    vcl::requirePerFaceNormal(mesh);
 
-    clearPerReferencedVertexNormals(m);
+    using VertexType = std::remove_reference_t<decltype(mesh)>::VertexType;
+    using ScalarType = VertexType::NormalType::ScalarType;
 
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
+    log.log(0, "Updating per-Vertex normals...");
 
-    for (FaceType& f : m.faces()) {
-        for (VertexType* v : f.vertices()) {
-            v->normal() += f.normal();
+    log.startNewTask(0, 20, "Clearing per-Vertex normals...");
+    clearPerReferencedVertexNormals(mesh, log);
+    log.endTask("Clearing per-Vertex normals...");
+
+    log.log(20, "Updating per-Vertex normals...");
+
+    for (auto& f : mesh.faces()) {
+        for (auto* v : f.vertices()) {
+            v->normal() += f.normal().template cast<ScalarType>();
         }
     }
-    if (normalize)
-        normalizePerVertexNormals(m);
+
+    if (normalize) {
+        log.startNewTask(80, 100, "Normalizing per-Vertex normals...");
+        normalizePerReferencedVertexNormals(mesh, log);
+        log.endTask("Normalizing per-Vertex normals...");
+    }
+
+    log.log(100, "Per-Vertex normals updated.");
+}
+
+/**
+ * @brief Computes the face normals and then vertex normal as the angle weighted
+ * average.
+ *
+ * The result is the same as calling updatePerFaceNormals() and then
+ * updatePerVertexNormals(), but it is more efficient because it exploits the
+ * (not yet normalized) face normals to compute the vertex normals.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Normal
+ *   - Faces
+ *     - Normal
+ *
+ * @param[in,out] mesh: the mesh on which compute the normals.
+ * @param[in] normalize: if true (default), normals are normalized after
+ * computation.
+ * @param[in,out] log: The logger used to log the performed operations.
+ */
+template<LoggerConcept LogType = NullLogger>
+void updatePerVertexAndFaceNormals(
+    FaceMeshConcept auto& mesh,
+    bool                  normalize = true,
+    LogType&              log       = nullLogger)
+{
+    log.log(0, "Updating per-Vertex and per-Face normals...");
+
+    log.startNewTask(0, 40, "Updating per-Face normals...");
+    updatePerFaceNormals(mesh, false, log); // normals are not normalized here
+    log.endTask("");
+
+    log.startNewTask(40, 80, "Updating per-Vertex normals...");
+    updatePerVertexNormalsFromFaceNormals(mesh, normalize, log);
+    log.endTask("");
+
+    if (normalize) {
+        log.startNewTask(80, 100, "Normalizing per-Face normals...");
+        normalizePerFaceNormals(mesh, log);
+        log.endTask("");
+    }
+
+    log.log(100, "Per-Vertex normals updated.");
 }
 
 /**
@@ -390,39 +564,51 @@ void updatePerVertexNormalsFromFaceNormals(MeshType& m, bool normalize = true)
  *     - Normal
  *   - Faces
  *
- * @param[in,out] m: the mesh on which compute the angle weighted vertex
+ * @param[in,out] mesh: the mesh on which compute the angle weighted vertex
  * normals.
  * @param[in] normalize: if true (default), normals are normalized after
  * computation.
+ * @param[in,out] log: The logger used to log the performed operations.
  */
-template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true)
+template<LoggerConcept LogType = NullLogger>
+void updatePerVertexNormalsAngleWeighted(
+    FaceMeshConcept auto& mesh,
+    bool                  normalize = true,
+    LogType&              log       = nullLogger)
 {
-    clearPerReferencedVertexNormals(m);
+    using VertexType  = std::remove_reference_t<decltype(mesh)>::VertexType;
+    using NScalarType = VertexType::NormalType::ScalarType;
 
-    using VertexType  = MeshType::VertexType;
-    using FaceType    = MeshType::FaceType;
-    using NormalType  = VertexType::NormalType;
-    using NScalarType = NormalType::ScalarType;
+    log.log(0, "Updating per-Vertex normals...");
 
-    for (FaceType& f : m.faces()) {
-        NormalType n = faceNormal(f).template cast<NScalarType>();
+    log.startNewTask(0, 5, "Clearing per-Vertex normals...");
+    clearPerReferencedVertexNormals(mesh, log);
+    log.endTask("Clearing per-Vertex normals...");
+
+    log.log(5, "Updating per-Vertex normals...");
+
+    for (auto& f : mesh.faces()) {
+        auto n = faceNormal(f).template cast<NScalarType>();
 
         for (uint i = 0; i < f.vertexNumber(); ++i) {
-            NormalType vec1 =
-                (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
-                    .normalized()
-                    .template cast<NScalarType>();
-            NormalType vec2 =
-                (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
-                    .normalized()
-                    .template cast<NScalarType>();
+            auto vec1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+                            .normalized()
+                            .template cast<NScalarType>();
+            auto vec2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+                            .normalized()
+                            .template cast<NScalarType>();
 
             f.vertex(i)->normal() += n * vec1.angle(vec2);
         }
     }
-    if (normalize)
-        normalizePerVertexNormals(m);
+
+    if (normalize) {
+        log.startNewTask(95, 100, "Normalizing per-Vertex normals...");
+        normalizePerReferencedVertexNormals(mesh, log);
+        log.endTask("Normalizing per-Vertex normals...");
+    }
+
+    log.log(100, "Per-Vertex normals updated.");
 }
 
 /**
@@ -449,23 +635,31 @@ void updatePerVertexNormalsAngleWeighted(MeshType& m, bool normalize = true)
  *     - Normal
  *   - Faces
  *
- * @param[in,out] m: the mesh on which compute the Max et al. weighted vertex
+ * @param[in,out] mesh: the mesh on which compute the Max et al. weighted vertex
  * normals.
  * @param[in] normalize: if true (default), normals are normalized after
  * computation.
+ * @param[in,out] log: The logger used to log the performed operations.
  */
-template<FaceMeshConcept MeshType>
-void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true)
+template<LoggerConcept LogType = NullLogger>
+void updatePerVertexNormalsNelsonMaxWeighted(
+    FaceMeshConcept auto& mesh,
+    bool                  normalize = true,
+    LogType&              log       = nullLogger)
 {
-    clearPerReferencedVertexNormals(m);
+    using VertexType  = std::remove_reference_t<decltype(mesh)>::VertexType;
+    using NScalarType = VertexType::NormalType::ScalarType;
 
-    using VertexType  = MeshType::VertexType;
-    using FaceType    = MeshType::FaceType;
-    using NormalType  = VertexType::NormalType;
-    using NScalarType = NormalType::ScalarType;
+    log.log(0, "Updating per-Vertex normals...");
 
-    for (FaceType& f : m.faces()) {
-        NormalType n = faceNormal(f).template cast<NScalarType>();
+    log.startNewTask(0, 5, "Clearing per-Vertex normals...");
+    clearPerReferencedVertexNormals(mesh, log);
+    log.endTask("Clearing per-Vertex normals...");
+
+    log.log(5, "Updating per-Vertex normals...");
+
+    for (auto& f : mesh.faces()) {
+        auto n = faceNormal(f).template cast<NScalarType>();
 
         for (uint i = 0; i < f.vertexNumber(); ++i) {
             NScalarType e1 =
@@ -478,8 +672,14 @@ void updatePerVertexNormalsNelsonMaxWeighted(MeshType& m, bool normalize = true)
             f.vertex(i)->normal() += n / (e1 * e2);
         }
     }
-    if (normalize)
-        normalizePerVertexNormals(m);
+
+    if (normalize) {
+        log.startNewTask(95, 100, "Normalizing per-Vertex normals...");
+        normalizePerReferencedVertexNormals(mesh, log);
+        log.endTask("Normalizing per-Vertex normals...");
+    }
+
+    log.log(100, "Per-Vertex normals updated.");
 }
 
 } // namespace vcl

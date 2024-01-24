@@ -100,6 +100,9 @@ public:
      * the iterators begin and end, listed in counterclockwise order,
      * representing a polygon.
      *
+     * The normal is computed as the normalized sum of the cross products of
+     * each triplet of consecutive points.
+     *
      * @tparam Iterator: an iterator which points to a type that satiesfies the
      * PointConcept.
      * @param[in] begin: iterator pointing to the first point of the polygon.
