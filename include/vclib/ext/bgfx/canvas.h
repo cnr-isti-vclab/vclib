@@ -113,7 +113,7 @@ public:
         bgfx::init(init);
 
         bgfx::setViewClear(
-            0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+            0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
         bgfx::setViewRect(viewID, 0, 0, bgfx::BackbufferRatio::Equal);
         bgfx::touch(viewID);
     }
