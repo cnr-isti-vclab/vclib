@@ -44,29 +44,38 @@ public:
     NullLogger() = default;
 
     void enableIndentation() {}
+
     void disableIndentation() {}
 
     void reset() {}
 
     void setMaxLineWidth(uint) {}
+
     void setPrintTimer(bool) {}
+
     void startTimer() {}
 
     void startNewTask(double, double, std::string) {}
+
     void endTask(std::string) {}
 
     double percentage() const { return 0; }
+
     void setPercentage(uint) {}
 
     void log(std::string) {}
+
     void log(LogLevel, std::string) {}
+
     void log(uint, std::string) {}
+
     void log(uint, LogLevel, std::string) {}
 
     void startProgress(std::string, uint, uint = 0, uint = 0, uint = 0) {}
-    void endProgress() {}
-    void progress(uint) {}
 
+    void endProgress() {}
+
+    void progress(uint) {}
 };
 
 /**

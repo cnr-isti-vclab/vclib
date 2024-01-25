@@ -43,12 +43,12 @@ void normalizeNoThrow(auto& elem, LogType& log = nullLogger)
     catch (const std::exception& e) {
         log.log(
             log.WARNING,
-            elementEnumString<ELEM_ID>() + " " +
-                std::to_string(elem.index()) + ": " + e.what());
+            elementEnumString<ELEM_ID>() + " " + std::to_string(elem.index()) +
+                ": " + e.what());
     }
 }
 
-} // namespace vcl::detail
+} // namespace detail
 
 /**
  * @brief Sets to zero the normals of all the <ELEM_ID> elements of the mesh,
@@ -75,8 +75,7 @@ void clearPerElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
         e.normal().setZero();
     });
 
-    log.log(
-        100, "Per-" + elementEnumString<ELEM_ID>() + " normals cleared.");
+    log.log(100, "Per-" + elementEnumString<ELEM_ID>() + " normals cleared.");
 }
 
 /**
@@ -380,12 +379,12 @@ void updatePerFaceNormals(
 {
     vcl::requirePerFaceNormal(mesh);
 
-    using FaceType = std::remove_reference_t<decltype(mesh)>::FaceType;
+    using FaceType   = std::remove_reference_t<decltype(mesh)>::FaceType;
     using ScalarType = FaceType::NormalType::ScalarType;
 
     log.log(0, "Updating per-Face normals...");
 
-    parallelFor(mesh.faces(), [](auto& f){
+    parallelFor(mesh.faces(), [](auto& f) {
         f.normal() = faceNormal(f).template cast<ScalarType>();
     });
 
@@ -421,7 +420,7 @@ void updatePerVertexNormals(
     bool                  normalize = true,
     LogType&              log       = nullLogger)
 {
-    using VertexType   = std::remove_reference_t<decltype(mesh)>::VertexType;
+    using VertexType = std::remove_reference_t<decltype(mesh)>::VertexType;
     using NScalar    = VertexType::NormalType::ScalarType;
 
     log.log(0, "Updating per-Vertex normals...");
