@@ -84,7 +84,7 @@ public:
         QWidget::update();
     }
 
-    virtual void draw() { canvasWindow->draw(); }
+    virtual void draw(uint viewID) { canvasWindow->draw(viewID); }
 
     void keyPressEvent(QKeyEvent* event) override
     {

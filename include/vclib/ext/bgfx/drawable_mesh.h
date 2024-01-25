@@ -84,7 +84,7 @@ public:
 
     void init() {}
 
-    void draw()
+    void draw(uint viewID)
     {
         if (bgfx::isValid(program)) {
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
@@ -97,7 +97,7 @@ public:
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
-                bgfx::submit(0, program);
+                bgfx::submit(viewID, program);
             }
 
             if (mrs.isSurfaceVisible()) {
@@ -107,7 +107,7 @@ public:
 
                 bgfx::setState(state);
 
-                bgfx::submit(0, program);
+                bgfx::submit(viewID, program);
             }
 
             if (mrs.isWireframeVisible()) {
@@ -117,7 +117,7 @@ public:
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(0, program);
+                bgfx::submit(viewID, program);
             }
         }
     }

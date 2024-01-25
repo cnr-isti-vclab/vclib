@@ -36,7 +36,7 @@ namespace vcl {
  *
  * A class that inherits from DrawableObject must implement the following member
  * functions:
- * - draw();
+ * - draw(uint viewID);
  * - center();
  * - radius();
  * - clone();
@@ -70,8 +70,11 @@ public:
     /**
      * @brief This member function must draw the object.
      * It will be called at every frame.
+     *
+     * @param viewID The ID of the view to draw. It may be used depending on the
+     * rendering engine.
      */
-    virtual void draw() = 0;
+    virtual void draw(uint viewID = 0) = 0;
 
     /**
      * @brief This member function is used to find a good camera position

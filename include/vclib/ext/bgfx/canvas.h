@@ -45,6 +45,16 @@ namespace vcl::bgf {
  * initialize the canvas (if the required parameters are not available at
  * construction time).
  *
+ * This class does not provide a render loop, that must be implemented in one of
+ * the derived classes. The render loop must call the frame() member function at
+ * the end of each frame, after all the bgfx rendering commands have been
+ * issued.
+ *
+ * The bgfx rendering code should be implemented in the virtual member function
+ * draw(uint viewID), that can be reimplemented in the derived classes. This
+ * method is called by the frame() method (that must be called in the render
+ * loop), and its argument is the bgfx view ID.
+ *
  * The class provides two important member functions:
  * - frame(): this function must be called at the end of each frame, after all
  * the bgfx rendering commands have been issued;
@@ -117,9 +127,12 @@ public:
         init(winID, width, height, nullptr, renderType);
     }
 
-    void frame() const
+    virtual void draw(uint viewID) = 0;
+
+    void frame()
     {
         bgfx::touch(viewID);
+        draw(viewID);
         bgfx::frame();
     }
 

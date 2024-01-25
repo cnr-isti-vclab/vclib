@@ -53,9 +53,9 @@ MinimalViewerWindow::MinimalViewerWindow(
 {
 }
 
-void MinimalViewerWindow::draw()
+void MinimalViewerWindow::draw(uint viewID)
 {
-    MV::draw();
+    MV::draw(viewID);
 }
 
 void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)

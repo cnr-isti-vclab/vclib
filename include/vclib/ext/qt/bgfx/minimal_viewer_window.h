@@ -55,7 +55,7 @@ public:
 
     virtual ~MinimalViewerWindow() {};
 
-    void draw() override;
+    void draw(uint viewID) override;
 
     void onResize(unsigned int width, unsigned int height) override;
 

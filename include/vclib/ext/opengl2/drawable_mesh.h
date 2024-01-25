@@ -110,7 +110,7 @@ public:
 
     void init() { bindTextures(); }
 
-    void draw()
+    void draw(uint)
     {
         if (mrs.isVisible()) {
             if (mrs.isWireframeVisible()) {

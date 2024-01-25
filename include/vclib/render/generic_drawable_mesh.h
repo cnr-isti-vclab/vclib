@@ -49,7 +49,7 @@ public:
     virtual void setShaderProgram(const GenericDrawableMeshShaderProgram&) {};
 
     // DrawableObject implementation
-    void draw() = 0;
+    void draw(uint viewID) = 0;
 
     vcl::Point3d center() const = 0;
 

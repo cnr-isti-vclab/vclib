@@ -97,31 +97,19 @@ public:
         DTB::setTrackBall(sceneCenter, sceneRadius);
     }
 
-    void draw()
+    void draw(uint viewID)
     {
-        // This dummy draw call is here to make sure that view 0 is cleared
-        // if no other draw calls are submitted to view 0.
-        bgfx::touch(0);
-
         cameraUniforms.updateCamera(DTB::camera());
         cameraUniforms.bind();
 
         directionalLightUniforms.bind();
 
         for (DrawableObject* obj : *drawList)
-            obj->draw();
+            obj->draw(viewID);
 
         if (axis.isVisible()) {
-            axis.draw();
+            axis.draw(viewID);
         }
-    }
-
-    void screenShot(const std::string& path)
-    {
-        draw();
-        bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
-        bgfx::requestScreenShot(fbh, path.c_str());
-        bgfx::frame();
     }
 
     void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }

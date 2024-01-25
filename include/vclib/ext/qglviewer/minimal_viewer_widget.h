@@ -82,10 +82,11 @@ public:
     }
 
 protected:
+    // QGLViever function, does not require a viewID
     virtual void draw()
     {
         for (DrawableObject* obj : *drawList)
-            obj->draw();
+            obj->draw(0);
     }
 };
 

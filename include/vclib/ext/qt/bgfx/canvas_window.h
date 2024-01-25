@@ -34,6 +34,8 @@ class CanvasWindow : public QWindow, vcl::bgf::Canvas
 {
     Q_OBJECT
 
+    using Canvas = vcl::bgf::Canvas;
+
 public:
     explicit CanvasWindow(
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
@@ -41,7 +43,7 @@ public:
 
     virtual ~CanvasWindow();
 
-    virtual void draw();
+    virtual void draw(uint viewID) override;
 
     virtual void onResize(unsigned int w, unsigned int h);
 

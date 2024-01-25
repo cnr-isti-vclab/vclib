@@ -79,7 +79,7 @@ public:
 
     // DrawableObject interface
 
-    void draw()
+    void draw(uint viewID) override
     {
         if (isVisible()) {
             if (bgfx::isValid(program)) {
@@ -99,22 +99,22 @@ public:
 
                         bgfx::setTransform(matrices[i].data());
 
-                        bgfx::submit(0, program);
+                        bgfx::submit(viewID, program);
                     }
                 }
             }
         }
     }
 
-    Point3d center() const { return Point3d(); };
+    Point3d center() const override { return Point3d(); };
 
-    double radius() const { return 1.0; }
+    double radius() const override { return 1.0; }
 
-    DrawableObject* clone() const { return new DrawableAxis(*this); }
+    DrawableObject* clone() const override { return new DrawableAxis(*this); }
 
-    bool isVisible() const { return visible; }
+    bool isVisible() const override { return visible; }
 
-    void setVisibility(bool vis) { visible = vis; }
+    void setVisibility(bool vis) override { visible = vis; }
 
 private:
     void updateMatrices(double size)

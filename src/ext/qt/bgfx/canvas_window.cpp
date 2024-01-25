@@ -59,7 +59,7 @@ CanvasWindow::~CanvasWindow()
 {
 }
 
-void CanvasWindow::draw()
+void CanvasWindow::draw(uint viewID)
 {
 }
 
@@ -96,8 +96,7 @@ void CanvasWindow::resizeEvent(QResizeEvent* event)
 
 void CanvasWindow::paint()
 {
-    draw();
-    vcl::bgf::Canvas::frame();
+    Canvas::frame();
 }
 
 } // namespace vcl::qbgf
