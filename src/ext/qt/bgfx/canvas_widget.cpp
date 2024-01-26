@@ -26,7 +26,7 @@
 
 namespace vcl::qbgf {
 
-#ifndef __APPLE
+#ifndef __APPLE__
 
 CanvasWidget::CanvasWidget(bgfx::RendererType::Enum renderType, QWidget* parent)
 {
@@ -105,6 +105,6 @@ void CanvasWidget::paint()
     Canvas::frame();
 }
 
-#endif
+#endif // __APPLE__
 
 } // namespace vcl::qbgf

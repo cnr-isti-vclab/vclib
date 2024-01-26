@@ -28,6 +28,8 @@
 
 #include <vclib/ext/bgfx/canvas.h>
 
+#include "canvas_window.h"
+
 namespace vcl::qbgf {
 
 #ifndef __APPLE__
@@ -79,7 +81,7 @@ private:
  *
  * @tparam CanvasWindow the type of the CanvasWindow to use.
  */
-template<typename CanvasWindow>
+template<typename CanvasWindow = vcl::qbgf::CanvasWindow>
 class CanvasWidget : public QWidget
 {
 public:
