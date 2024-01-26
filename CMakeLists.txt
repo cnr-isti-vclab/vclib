@@ -159,7 +159,9 @@ if (TARGET vclib-external-qt)
             include/vclib/ext/qt/bgfx/viewer_main_window.h)
 
         list(APPEND SOURCES_LIB
+            src/ext/qt/bgfx/canvas_widget.cpp
             src/ext/qt/bgfx/canvas_window.cpp
+            src/ext/qt/bgfx/minimal_viewer_widget.cpp
             src/ext/qt/bgfx/minimal_viewer_window.cpp
             src/ext/qt/bgfx/viewer_main_window.cpp)
 

@@ -58,8 +58,6 @@ protected:
 
 private:
     void paint();
-
-    const bgfx::ViewId viewID = 0;
 };
 
 } // namespace vcl::qbgf

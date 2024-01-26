@@ -20,58 +20,91 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WINDOW_H
-#define VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WINDOW_H
+#include <QApplication>
 
-#include <QMouseEvent>
-
-#include <vclib/ext/bgfx/minimal_viewer.h>
-#include <vclib/ext/qt/bgfx/canvas_window.h>
-#include <vclib/ext/qt/gui/input.h>
+#include <vclib/ext/qt/bgfx/canvas_widget.h>
 
 namespace vcl::qbgf {
 
-class MinimalViewerWindow :
-        public vcl::qbgf::CanvasWindow,
-        public vcl::bgf::MinimalViewer
+#ifndef __APPLE
+
+CanvasWidget::CanvasWidget(bgfx::RendererType::Enum renderType, QWidget* parent)
 {
-protected:
-    using MV = vcl::bgf::MinimalViewer;
+    setGeometry(100, 100, 1024, 768);
 
-public:
-    using CanvasWindow::height;
-    using CanvasWindow::width;
+    void* displayID = nullptr;
+#ifdef Q_OS_LINUX
+    /// THIS WORKS ONLY IF QT_QPA_PLATFORM = xcb
+    QNativeInterface::QX11Application* x11AppInfo =
+        qApp->nativeInterface<QNativeInterface::QX11Application>();
+    if (x11AppInfo) {
+        displayID = x11AppInfo->display();
+    }
+    else {
+        QNativeInterface::QWaylandApplication* wayAppInfo =
+            qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+        if (wayAppInfo) {
+            displayID = wayAppInfo->display();
+        }
+        else {
+            exit(-1);
+        }
+    }
+#endif // Q_OS_LINUX
 
-    MinimalViewerWindow(
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr);
+    vcl::bgf::Canvas::init(
+        (void*) winId(), width(), height(), displayID, renderType);
+}
 
-    MinimalViewerWindow(QWindow* parent);
 
-    MinimalViewerWindow(
-        std::shared_ptr<DrawableObjectVector> v,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr);
+CanvasWidget::~CanvasWidget()
+{
+}
 
-    virtual ~MinimalViewerWindow() = default;
 
-    void draw(uint viewID) override;
+void CanvasWidget::draw(uint viewID)
+{
+}
 
-    void onResize(unsigned int width, unsigned int height) override;
+void CanvasWidget::onResize(unsigned int w, unsigned int h)
+{
+}
 
-    void mouseMoveEvent(QMouseEvent* event) override;
+void CanvasWidget::update()
+{
+    paint();
+    QWidget::update();
+}
 
-    void mousePressEvent(QMouseEvent* event) override;
+bool CanvasWidget::event(QEvent* event)
+{
+    if (event->type() == QEvent::UpdateRequest) {
+        paint();
+        return true;
+    }
+    return QWidget::event(event);
+}
 
-    void mouseReleaseEvent(QMouseEvent* event) override;
 
-    void wheelEvent(QWheelEvent* event) override;
+void CanvasWidget::paintEvent(QPaintEvent* event)
+{
+    paint();
+    QWidget::paintEvent(event);
+}
 
-    void keyPressEvent(QKeyEvent* event) override;
 
-    void keyReleaseEvent(QKeyEvent* event) override;
-};
+void CanvasWidget::resizeEvent(QResizeEvent* event)
+{
+    vcl::bgf::Canvas::resize(width(), height());
+    QWidget::resizeEvent(event);
+    onResize(width(), height());
+}
+
+void CanvasWidget::paint()
+{
+    Canvas::frame();
+}
+
+#endif
 
 } // namespace vcl::qbgf
-
-#endif // VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WINDOW_H

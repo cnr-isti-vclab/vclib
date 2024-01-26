@@ -28,6 +28,49 @@
 
 namespace vcl::qbgf {
 
+#ifndef __APPLE__
+
+class MinimalViewerWidget : public CanvasWidget, public vcl::bgf::MinimalViewer
+{
+protected:
+    using MV = vcl::bgf::MinimalViewer;
+
+public:
+    using CanvasWidget::height;
+    using CanvasWidget::width;
+
+    MinimalViewerWidget(
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWidget*                 parent     = nullptr);
+
+    MinimalViewerWidget(QWidget* parent);
+
+    MinimalViewerWidget(
+        std::shared_ptr<DrawableObjectVector> v,
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWidget*                 parent     = nullptr);
+
+    virtual ~MinimalViewerWidget() = default;
+
+    void draw(uint viewID) override;
+
+    void onResize(unsigned int width, unsigned int height) override;
+
+    void mouseMoveEvent(QMouseEvent* event) override;
+
+    void mousePressEvent(QMouseEvent* event) override;
+
+    void mouseReleaseEvent(QMouseEvent* event) override;
+
+    void wheelEvent(QWheelEvent* event) override;
+
+    void keyPressEvent(QKeyEvent* event) override;
+
+    void keyReleaseEvent(QKeyEvent* event) override;
+};
+
+#else // __APPLE__
+
 class MinimalViewerWidget : public CanvasWidget<MinimalViewerWindow>
 {
 public:
@@ -61,6 +104,8 @@ public:
 
     void fitScene() { canvasWindow->fitScene(); }
 };
+
+#endif // __APPLE__
 
 } // namespace vcl::qbgf
 

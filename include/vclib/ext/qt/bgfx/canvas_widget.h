@@ -23,13 +23,45 @@
 #ifndef VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
 #define VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
 
-#include <bgfx/bgfx.h>
-
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <vclib/ext/bgfx/canvas.h>
+
 namespace vcl::qbgf {
 
+#ifndef __APPLE__
+
+class CanvasWidget : public QWidget, vcl::bgf::Canvas
+{
+
+    using Canvas = vcl::bgf::Canvas;
+
+public:
+    explicit CanvasWidget(
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
+        QWidget*                 parent     = nullptr);
+
+    virtual ~CanvasWidget();
+
+    virtual void draw(uint viewID) override;
+
+    virtual void onResize(unsigned int w, unsigned int h);
+
+    void update();
+
+protected:
+    bool event(QEvent* event) override;
+
+    void paintEvent(QPaintEvent* event) override;
+
+    void resizeEvent(QResizeEvent* event) override;
+
+private:
+    void paint();
+};
+
+#else // __APPLE__
 /**
  * @brief The CanvasWidget class allows to use bgfx in a QWidget.
  *
@@ -74,17 +106,13 @@ public:
 
     ~CanvasWidget() {}
 
-    CanvasWindow* window() { return canvasWindow; }
-
-    const CanvasWindow* window() const { return canvasWindow; }
+    virtual void draw(uint viewID) { canvasWindow->draw(viewID); }
 
     void update()
     {
         canvasWindow->update();
         QWidget::update();
     }
-
-    virtual void draw(uint viewID) { canvasWindow->draw(viewID); }
 
     void keyPressEvent(QKeyEvent* event) override
     {
@@ -101,6 +129,7 @@ public:
 protected:
     CanvasWindow* canvasWindow = nullptr;
 };
+#endif // __APPLE__
 
 } // namespace vcl::qbgf
 
