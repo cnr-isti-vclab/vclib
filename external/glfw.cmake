@@ -20,44 +20,19 @@
 #* for more details.                                                         *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-render-external)
+find_package(glfw3 QUIET)
 
-include(FetchContent)
+if (VCLIB_ALLOW_SYSTEM_GLFW)
+    if(glfw3_FOUND)
+        message(STATUS "- GLFW - using system-provided library")
 
-# external libraries may have warnings
-set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+        add_library(vclib-external-glfw INTERFACE)
+        target_include_directories(vclib-external-glfw INTERFACE ${GLFW3_INCLUDE_DIRS})
+        target_link_libraries(vclib-external-glfw INTERFACE ${GLFW3_LIBRARIES})
+        target_compile_definitions(vclib-external-glfw INTERFACE ${GLFW3_DEFINITIONS})
 
-# Qt
-option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
-
-# GLFW
-option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
-
-# bgfx
-option(VCLIB_ALLOW_BUNDLED_BGFX "Allow use of bundled bgfx source" ON)
-
-# QGLViewer
-option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
-
-set(VCLIB_RENDER_EXTERNAL_LIBRARIES "")
-
-# === OPTIONAL === #
-
-### OpenGL
-include(opengl.cmake)
-
-### Qt
-include(qt.cmake)
-
-### GLFW
-include(glfw.cmake)
-
-### bgfx
-include(bgfx.cmake)
-
-### QGLViewer
-include(qglviewer.cmake)
-
-set(VCLIB_RENDER_EXTERNAL_LIBRARIES
-    ${VCLIB_RENDER_EXTERNAL_LIBRARIES} PARENT_SCOPE)
+        list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
+    else()
+        message(STATUS "- GLFW - not found, skipping")
+    endif()
+endif()

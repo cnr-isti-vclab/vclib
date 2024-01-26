@@ -98,8 +98,6 @@ function(_add_bgfx_shader FILE DIR TARGET)
 
 		file(RELATIVE_PATH PRINT_NAME ${CMAKE_CURRENT_SOURCE_DIR} ${FILE})
 
-		message("COMMANDS: " ${COMMANDS})
-
 		add_custom_command(
 			MAIN_DEPENDENCY ${FILE}
 			OUTPUT ${OUTPUT_FILES}

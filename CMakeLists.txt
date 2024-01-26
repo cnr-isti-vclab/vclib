@@ -108,6 +108,16 @@ if (TARGET vclib-external-bgfx)
         )
 endif()
 
+# headers to include only if using glfw
+if (TARGET vclib-external-glfw)
+
+    if (TARGET vclib-external-bgfx)
+        list(APPEND HEADERS
+            include/vclib/ext/glfw/bgfx/canvas_window.h)
+    endif()
+
+endif()
+
 # headers and sources to include only if using qt
 if (TARGET vclib-external-qt)
     # header only sources
