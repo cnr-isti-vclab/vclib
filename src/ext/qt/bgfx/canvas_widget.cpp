@@ -56,11 +56,9 @@ CanvasWidget::CanvasWidget(bgfx::RendererType::Enum renderType, QWidget* parent)
         (void*) winId(), width(), height(), displayID, renderType);
 }
 
-
 CanvasWidget::~CanvasWidget()
 {
 }
-
 
 void CanvasWidget::draw(uint viewID)
 {
@@ -85,13 +83,11 @@ bool CanvasWidget::event(QEvent* event)
     return QWidget::event(event);
 }
 
-
 void CanvasWidget::paintEvent(QPaintEvent* event)
 {
     paint();
     QWidget::paintEvent(event);
 }
-
 
 void CanvasWidget::resizeEvent(QResizeEvent* event)
 {

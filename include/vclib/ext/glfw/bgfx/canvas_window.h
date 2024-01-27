@@ -32,7 +32,6 @@ namespace vcl::bglfwx {
 class CanvasWindow : public vcl::bgf::Canvas
 {
     using Canvas = vcl::bgf::Canvas;
-
 };
 
 } // namespace vcl::bglfwx

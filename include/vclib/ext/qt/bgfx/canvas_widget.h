@@ -36,7 +36,6 @@ namespace vcl::qbgf {
 
 class CanvasWidget : public QWidget, vcl::bgf::Canvas
 {
-
     using Canvas = vcl::bgf::Canvas;
 
 public:
@@ -63,7 +62,7 @@ private:
     void paint();
 };
 
-#else // __APPLE__
+#else  // __APPLE__
 /**
  * @brief The CanvasWidget class allows to use bgfx in a QWidget.
  *

@@ -51,7 +51,6 @@ MinimalViewerWidget::MinimalViewerWidget(
         CanvasWidget(renderType, parent),
         vcl::bgf::MinimalViewer(v)
 {
-
 }
 
 void MinimalViewerWidget::draw(uint viewID)
@@ -80,7 +79,6 @@ void MinimalViewerWidget::mouseMoveEvent(QMouseEvent* event)
     CanvasWidget::mouseMoveEvent(event);
 }
 
-
 void MinimalViewerWidget::mousePressEvent(QMouseEvent* event)
 {
     MV::moveMouse(event->pos().x(), event->pos().y());
@@ -89,7 +87,6 @@ void MinimalViewerWidget::mousePressEvent(QMouseEvent* event)
     CanvasWidget::mousePressEvent(event);
 }
 
-
 void MinimalViewerWidget::mouseReleaseEvent(QMouseEvent* event)
 {
     MV::moveMouse(event->pos().x(), event->pos().y());
@@ -97,7 +94,6 @@ void MinimalViewerWidget::mouseReleaseEvent(QMouseEvent* event)
 
     CanvasWidget::mouseReleaseEvent(event);
 }
-
 
 void MinimalViewerWidget::wheelEvent(QWheelEvent* event)
 {
@@ -113,7 +109,6 @@ void MinimalViewerWidget::wheelEvent(QWheelEvent* event)
 
     CanvasWidget::wheelEvent(event);
 }
-
 
 void MinimalViewerWidget::keyPressEvent(QKeyEvent* event)
 {
@@ -136,7 +131,6 @@ void MinimalViewerWidget::keyPressEvent(QKeyEvent* event)
     update();
     CanvasWidget::keyPressEvent(event);
 }
-
 
 void MinimalViewerWidget::keyReleaseEvent(QKeyEvent* event)
 {
