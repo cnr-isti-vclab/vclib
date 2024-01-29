@@ -111,6 +111,9 @@ endif()
 # headers to include only if using glfw
 if (TARGET vclib-external-glfw)
 
+    list(APPEND HEADERS
+        include/vclib/ext/glfw/gui/input.h)
+
     if (TARGET vclib-external-bgfx)
         list(APPEND HEADERS
             include/vclib/ext/glfw/bgfx/canvas_window.h

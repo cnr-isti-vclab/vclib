@@ -25,6 +25,8 @@
 
 #include <vclib/ext/bgfx/minimal_viewer.h>
 
+#include <vclib/ext/glfw/gui/input.h>
+
 #include "canvas_window.h"
 
 namespace vcl::bglfwx {
@@ -49,6 +51,11 @@ public:
             CanvasWindow(width, height, renderType),
             MinimalViewer(v, width, height)
     {
+        // register callbacks
+        glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+            auto* self = static_cast<MinimalViewerWindow*>(glfwGetWindowUserPointer(window));
+            self->glfwKeyCallback(window, key, scancode, action, mods);
+        });
     }
 
     MinimalViewerWindow(
@@ -83,6 +90,15 @@ public:
     void onResize(unsigned int width, unsigned int height) override
     {
         MV::resizeViewer(width, height);
+    }
+
+private:
+    // callbacks
+    void glfwKeyCallback(GLFWwindow*, int key, int scancode, int action, int mods)
+    {
+        if (action == GLFW_PRESS) {
+            MV::keyPress(glfw::fromKeyGLFW(key));
+        }
     }
 };
 

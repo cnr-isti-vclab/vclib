@@ -101,6 +101,8 @@ enum Key {
     KEY_F10 = 0x01000039,
     KEY_F11 = 0x0100003a,
     KEY_F12 = 0x0100003b,
+
+    KEY_UNKNOWN = 0x01ffffff
 };
 
 } // namespace vcl

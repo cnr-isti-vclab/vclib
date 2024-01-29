@@ -52,6 +52,7 @@ class CanvasWindow : public vcl::bgf::Canvas
 {
     using Canvas = vcl::bgf::Canvas;
 
+protected:
     GLFWwindow* window = nullptr;
 
 public:
@@ -95,8 +96,6 @@ public:
             auto* self = static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwWindowSizeCallback(window, width, height);
         });
-
-        glfwSetWindowSize(window, width, height);
     }
 
     virtual ~CanvasWindow()
@@ -133,7 +132,7 @@ public:
 
 private:
     // callbacks
-    void glfwWindowSizeCallback(GLFWwindow* window, int width, int height)
+    void glfwWindowSizeCallback(GLFWwindow*, int width, int height)
     {
         Canvas::resize(width, height);
         this->onResize(width, height);
