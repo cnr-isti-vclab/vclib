@@ -40,9 +40,9 @@ namespace vcl::bglfwx {
 
 namespace detail {
 
-static void glfwErrorCallback(int error, const char *description)
+static void glfwErrorCallback(int error, const char* description)
 {
-    std::cerr<< "GLFW error: "  << error << ": "  << description<< std::endl;
+    std::cerr << "GLFW error: " << error << ": " << description << std::endl;
 }
 
 } // namespace detail
@@ -56,7 +56,8 @@ class CanvasWindow : public vcl::bgf::Canvas
     uint w = 1024, h = 768;
 
 public:
-    explicit CanvasWindow(bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
+    explicit CanvasWindow(
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
         glfwSetErrorCallback(detail::glfwErrorCallback);
         if (!glfwInit()) {
@@ -79,7 +80,7 @@ public:
 
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         ndt = glfwGetX11Display();
-        nwh = (void*)(uintptr_t)glfwGetX11Window(window);
+        nwh = (void*) (uintptr_t) glfwGetX11Window(window);
 #elif BX_PLATFORM_OSX
         nwh = glfwGetCocoaWindow(window);
 #elif BX_PLATFORM_WINDOWS
