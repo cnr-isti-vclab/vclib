@@ -35,14 +35,15 @@
 #define GLFW_EXPOSE_NATIVE_COCOA
 #endif
 #include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
 
 namespace vcl::bglfwx {
 
 namespace detail {
 
-static void glfwErrorCallback(int error, const char* description)
+inline void glfwErrorCallback(int error, const char *description)
 {
-    std::cerr << "GLFW error: " << error << ": " << description << std::endl;
+    std::cerr << "GLFW error: " << error << ": " << description<< std::endl;
 }
 
 } // namespace detail
@@ -80,13 +81,37 @@ public:
 
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         ndt = glfwGetX11Display();
-        nwh = (void*) (uintptr_t) glfwGetX11Window(window);
+        nwh = (void*)(uintptr_t)glfwGetX11Window(window);
 #elif BX_PLATFORM_OSX
         nwh = glfwGetCocoaWindow(window);
 #elif BX_PLATFORM_WINDOWS
         nwh = glfwGetWin32Window(window);
 #endif
         Canvas::init(nwh, w, h, ndt, renderType);
+    }
+
+    virtual ~CanvasWindow()
+    {
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
+
+    void show()
+    {
+        run();
+    }
+
+    virtual void draw(uint viewID) override {}
+
+    virtual void onResize(unsigned int w, unsigned int h) {}
+
+private:
+    void run()
+    {
+        while (!glfwWindowShouldClose(window)) {
+            glfwPollEvents();
+            frame();
+        }
     }
 };
 

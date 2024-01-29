@@ -27,9 +27,7 @@ if (VCLIB_ALLOW_SYSTEM_GLFW)
         message(STATUS "- GLFW - using system-provided library")
 
         add_library(vclib-external-glfw INTERFACE)
-        target_include_directories(vclib-external-glfw INTERFACE ${GLFW3_INCLUDE_DIRS})
-        target_link_libraries(vclib-external-glfw INTERFACE ${GLFW3_LIBRARIES})
-        target_compile_definitions(vclib-external-glfw INTERFACE ${GLFW3_DEFINITIONS})
+        target_link_libraries(vclib-external-glfw INTERFACE glfw)
 
         list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
     else()
