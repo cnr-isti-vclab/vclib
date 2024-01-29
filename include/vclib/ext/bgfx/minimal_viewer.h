@@ -57,14 +57,18 @@ protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
-    MinimalViewer()
+    MinimalViewer(uint width = 1024, uint height = 768) : DTB(width, height)
     {
         cameraUniforms.updateCamera(DTB::camera());
         directionalLightUniforms.updateLight(DTB::light());
         axis.setShaderProgram(axisProgram);
     }
 
-    MinimalViewer(std::shared_ptr<DrawableObjectVector> v) : MinimalViewer()
+    MinimalViewer(
+        std::shared_ptr<DrawableObjectVector> v,
+        uint                                  width  = 1024,
+        uint                                  height = 768) :
+            MinimalViewer(width, height)
     {
         setDrawableObjectVector(v);
     }
@@ -99,6 +103,9 @@ public:
 
     void draw(uint viewID)
     {
+        bgfx::setViewTransform(
+            viewID, viewMatrix().data(), projectionMatrix().data());
+
         cameraUniforms.updateCamera(DTB::camera());
         cameraUniforms.bind();
 

@@ -27,10 +27,37 @@
 namespace vcl::qbgf {
 
 MinimalViewerWindow::MinimalViewerWindow(
+    std::shared_ptr<DrawableObjectVector> v,
+    uint                                  width,
+    uint                                  height,
+    bgfx::RendererType::Enum              renderType,
+    QWindow*                              parent) :
+        CanvasWindow(width, height, renderType, parent),
+        vcl::bgf::MinimalViewer(v, width, height)
+{
+}
+
+MinimalViewerWindow::MinimalViewerWindow(
+    uint                     width,
+    uint                     height,
     bgfx::RendererType::Enum renderType,
     QWindow*                 parent) :
         MinimalViewerWindow(
             std::make_shared<DrawableObjectVector>(),
+            width,
+            height,
+            renderType,
+            parent)
+{
+}
+
+MinimalViewerWindow::MinimalViewerWindow(
+    bgfx::RendererType::Enum renderType,
+    QWindow*                 parent) :
+        MinimalViewerWindow(
+            std::make_shared<DrawableObjectVector>(),
+            1024,
+            768,
             renderType,
             parent)
 {
@@ -39,17 +66,10 @@ MinimalViewerWindow::MinimalViewerWindow(
 MinimalViewerWindow::MinimalViewerWindow(QWindow* parent) :
         MinimalViewerWindow(
             std::make_shared<DrawableObjectVector>(),
+            1024,
+            768,
             bgfx::RendererType::Count,
             parent)
-{
-}
-
-MinimalViewerWindow::MinimalViewerWindow(
-    std::shared_ptr<DrawableObjectVector> v,
-    bgfx::RendererType::Enum              renderType,
-    QWindow*                              parent) :
-        CanvasWindow(renderType, parent),
-        vcl::bgf::MinimalViewer(v)
 {
 }
 
@@ -61,18 +81,13 @@ void MinimalViewerWindow::draw(uint viewID)
 void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
 {
     MV::resizeViewer(width, height);
-    bgfx::setViewTransform(
-        0, MV::viewMatrix().data(), MV::projectionMatrix().data());
+    update();
 }
 
 void MinimalViewerWindow::mouseMoveEvent(QMouseEvent* event)
 {
     if (event->buttons() != Qt::NoButton) {
         MV::moveMouse(event->pos().x(), event->pos().y());
-
-        bgfx::setViewTransform(
-            0, MV::viewMatrix().data(), MV::projectionMatrix().data());
-
         update();
     }
 
@@ -102,9 +117,6 @@ void MinimalViewerWindow::wheelEvent(QWheelEvent* event)
 
     MV::wheelMouse(notchY > 0);
 
-    bgfx::setViewTransform(
-        0, MV::viewMatrix().data(), MV::projectionMatrix().data());
-
     update();
 
     CanvasWindow::wheelEvent(event);
@@ -123,8 +135,6 @@ void MinimalViewerWindow::keyPressEvent(QKeyEvent* event)
 
     default:
         MV::keyPress(vcl::qt::fromQt((Qt::Key) event->key()));
-        bgfx::setViewTransform(
-            0, MV::viewMatrix().data(), MV::projectionMatrix().data());
         break;
     }
 

@@ -56,10 +56,10 @@ class CanvasWindow : public vcl::bgf::Canvas
 
 public:
     explicit CanvasWindow(
+        uint                     width      = 1024,
+        uint                     height     = 768,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
-        const uint width = 1024, height = 768;
-
         glfwSetErrorCallback(detail::glfwErrorCallback);
         if (!glfwInit()) {
             std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -95,12 +95,28 @@ public:
             auto* self = static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwWindowSizeCallback(window, width, height);
         });
+
+        glfwSetWindowSize(window, width, height);
     }
 
     virtual ~CanvasWindow()
     {
         glfwDestroyWindow(window);
         glfwTerminate();
+    }
+
+    uint width() const
+    {
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        return width;
+    }
+
+    uint height() const
+    {
+        int width, height;
+        glfwGetWindowSize(window, &width, &height);
+        return height;
     }
 
     void show()

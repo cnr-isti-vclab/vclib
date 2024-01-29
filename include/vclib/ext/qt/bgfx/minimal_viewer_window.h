@@ -26,8 +26,9 @@
 #include <QMouseEvent>
 
 #include <vclib/ext/bgfx/minimal_viewer.h>
-#include <vclib/ext/qt/bgfx/canvas_window.h>
 #include <vclib/ext/qt/gui/input.h>
+
+#include "canvas_window.h"
 
 namespace vcl::qbgf {
 
@@ -43,15 +44,23 @@ public:
     using CanvasWindow::width;
 
     MinimalViewerWindow(
+        std::shared_ptr<DrawableObjectVector> v,
+        uint                     width      = 1024,
+        uint                     height     = 768,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
         QWindow*                 parent     = nullptr);
-
-    MinimalViewerWindow(QWindow* parent);
 
     MinimalViewerWindow(
-        std::shared_ptr<DrawableObjectVector> v,
+        uint                     width      = 1024,
+        uint                     height     = 768,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
         QWindow*                 parent     = nullptr);
+
+    MinimalViewerWindow(
+        bgfx::RendererType::Enum renderType,
+        QWindow*                 parent = nullptr);
+
+    MinimalViewerWindow(QWindow* parent);
 
     virtual ~MinimalViewerWindow() = default;
 

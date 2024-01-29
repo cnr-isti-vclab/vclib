@@ -20,48 +20,72 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_CANVAS_WINDOW_H
-#define VCL_EXT_QT_BGFX_CANVAS_WINDOW_H
+#ifndef VCL_EXT_GLFW_BGFX_MINIMAL_VIEWER_WINDOW_H
+#define VCL_EXT_GLFW_BGFX_MINIMAL_VIEWER_WINDOW_H
 
-#include <QApplication>
-#include <QWindow>
+#include <vclib/ext/bgfx/minimal_viewer.h>
 
-#include <vclib/ext/bgfx/canvas.h>
+#include "canvas_window.h"
 
-namespace vcl::qbgf {
+namespace vcl::bglfwx {
 
-class CanvasWindow : public QWindow, vcl::bgf::Canvas
+class MinimalViewerWindow :
+        public vcl::bglfwx::CanvasWindow,
+        public vcl::bgf::MinimalViewer
+
 {
-    Q_OBJECT
-
-    using Canvas = vcl::bgf::Canvas;
+protected:
+    using MV = vcl::bgf::MinimalViewer;
 
 public:
-    explicit CanvasWindow(
+    using CanvasWindow::height;
+    using CanvasWindow::width;
+
+    MinimalViewerWindow(
+        std::shared_ptr<DrawableObjectVector> v,
+        uint                                  width  = 1024,
+        uint                                  height = 768,
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count) :
+            CanvasWindow(width, height, renderType),
+            MinimalViewer(v, width, height)
+    {
+    }
+
+    MinimalViewerWindow(
         uint                     width      = 1024,
         uint                     height     = 768,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr);
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count) :
+            MinimalViewerWindow(
+                std::make_shared<DrawableObjectVector>(),
+                width,
+                height,
+                renderType)
+    {
+    }
 
-    virtual ~CanvasWindow();
+    MinimalViewerWindow(
+        bgfx::RendererType::Enum renderType) :
+            MinimalViewerWindow(
+                std::make_shared<DrawableObjectVector>(),
+                1024,
+                768,
+                renderType)
+    {
+    }
 
-    virtual void draw(uint viewID) override;
+    ~MinimalViewerWindow() override = default;
 
-    virtual void onResize(unsigned int w, unsigned int h);
+    void draw(uint viewID) override
+    {
+        MV::draw(viewID);
+    }
 
-    void update();
-
-protected:
-    bool event(QEvent* event) override;
-
-    void paintEvent(QPaintEvent* event) override;
-
-    void resizeEvent(QResizeEvent* event) override;
-
-private:
-    void paint();
+    void onResize(unsigned int width, unsigned int height) override
+    {
+        MV::resizeViewer(width, height);
+    }
 };
 
-} // namespace vcl::qbgf
+} // namespace vcl::bglfwx
 
-#endif // VCL_EXT_QT_BGFX_CANVAS_WINDOW_H
+#endif // VCL_EXT_GLFW_BGFX_MINIMAL_VIEWER_WINDOW_H

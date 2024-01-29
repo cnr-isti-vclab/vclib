@@ -45,8 +45,8 @@ public:
 private:
     using MotionType = vcl::TrackBall<Scalar>::MotionType;
 
-    uint width  = 0;
-    uint height = 0;
+    uint width  = 1024;
+    uint height = 768;
 
     Scalar fov    = 60.0;
     Scalar aspect = 1.0;
@@ -133,7 +133,10 @@ private:
     };
 
 public:
-    DesktopTrackBall() = default;
+    DesktopTrackBall(uint width = 1024, uint height = 768)
+    {
+        resizeViewer(width, height);
+    }
 
     const DirectionalLight<Scalar>& light() const { return trackball.light(); }
 

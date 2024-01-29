@@ -113,7 +113,8 @@ if (TARGET vclib-external-glfw)
 
     if (TARGET vclib-external-bgfx)
         list(APPEND HEADERS
-            include/vclib/ext/glfw/bgfx/canvas_window.h)
+            include/vclib/ext/glfw/bgfx/canvas_window.h
+            include/vclib/ext/glfw/bgfx/minimal_viewer_window.h)
     endif()
 
 endif()
