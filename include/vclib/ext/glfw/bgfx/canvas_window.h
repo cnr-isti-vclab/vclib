@@ -54,12 +54,12 @@ class CanvasWindow : public vcl::bgf::Canvas
 
     GLFWwindow* window = nullptr;
 
-    uint w = 1024, h = 768;
-
 public:
     explicit CanvasWindow(
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
+        const uint width = 1024, height = 768;
+
         glfwSetErrorCallback(detail::glfwErrorCallback);
         if (!glfwInit()) {
             std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -69,7 +69,7 @@ public:
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-        window = glfwCreateWindow(w, h, "VCL", nullptr, nullptr);
+        window = glfwCreateWindow(width, height, "VCL", nullptr, nullptr);
         if (!window) {
             std::cerr << "Failed to create GLFW window" << std::endl;
             glfwTerminate();
@@ -87,7 +87,14 @@ public:
 #elif BX_PLATFORM_WINDOWS
         nwh = glfwGetWin32Window(window);
 #endif
-        Canvas::init(nwh, w, h, ndt, renderType);
+        Canvas::init(nwh, width, height, ndt, renderType);
+
+        glfwSetWindowUserPointer(window, this);
+
+        glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height) {
+            auto* self = static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
+            self->glfwWindowSizeCallback(window, width, height);
+        });
     }
 
     virtual ~CanvasWindow()
@@ -98,7 +105,10 @@ public:
 
     void show()
     {
-        run();
+        while (!glfwWindowShouldClose(window)) {
+            glfwPollEvents();
+            frame();
+        }
     }
 
     virtual void draw(uint viewID) override {}
@@ -106,12 +116,11 @@ public:
     virtual void onResize(unsigned int w, unsigned int h) {}
 
 private:
-    void run()
+    // callbacks
+    void glfwWindowSizeCallback(GLFWwindow* window, int width, int height)
     {
-        while (!glfwWindowShouldClose(window)) {
-            glfwPollEvents();
-            frame();
-        }
+        Canvas::resize(width, height);
+        this->onResize(width, height);
     }
 };
 
