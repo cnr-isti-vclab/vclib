@@ -29,7 +29,22 @@
 
 namespace vcl::glfw {
 
-inline Key fromKeyGLFW(int key)
+enum MouseButton : uint {};
+enum Key : uint {};
+enum KeyboardModifier : uint {};
+enum KeyboardModifiers : uint {};
+
+inline vcl::MouseButton fromGLFW(MouseButton button)
+{
+    switch (button) {
+    case GLFW_MOUSE_BUTTON_LEFT: return LEFT;
+    case GLFW_MOUSE_BUTTON_RIGHT: return RIGHT;
+    case GLFW_MOUSE_BUTTON_MIDDLE: return MIDDLE;
+    default: return NO_BUTTON;
+    }
+}
+
+inline vcl::Key fromGLFW(Key key)
 {
     switch (key) {
     case GLFW_KEY_SPACE: return KEY_SPACE;
@@ -92,6 +107,38 @@ inline Key fromKeyGLFW(int key)
 
     default: return KEY_UNKNOWN;
     }
+}
+
+inline KeyModifier fromGLFW(KeyboardModifier key)
+{
+    switch (key) {
+    case GLFW_KEY_LEFT_SHIFT: return SHIFT;
+    case GLFW_KEY_RIGHT_SHIFT: return SHIFT;
+    case GLFW_KEY_LEFT_CONTROL: return CONTROL;
+    case GLFW_KEY_RIGHT_CONTROL: return CONTROL;
+    case GLFW_KEY_LEFT_ALT: return ALT;
+    case GLFW_KEY_RIGHT_ALT: return ALT;
+    default: return NO_MODIFIER;
+    }
+}
+
+template<std::integral T = char>
+BitSet<T> fromGLFW(KeyboardModifiers mods)
+{
+    BitSet<T> res;
+
+    if (mods & GLFW_MOD_SHIFT)
+        res[SHIFT] = true;
+    if (mods & GLFW_MOD_CONTROL)
+        res[CONTROL] = true;
+    if (mods & GLFW_MOD_ALT)
+        res[ALT] = true;
+
+    // no modifier must be enabled only when no other modifier is enabled
+    if (res.none())
+        res[NO_MODIFIER] = true;
+
+    return res;
 }
 
 } // namespace vcl::glfw

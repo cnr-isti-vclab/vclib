@@ -51,11 +51,7 @@ public:
             CanvasWindow(width, height, renderType),
             MinimalViewer(v, width, height)
     {
-        // register callbacks
-        glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-            auto* self = static_cast<MinimalViewerWindow*>(glfwGetWindowUserPointer(window));
-            self->glfwKeyCallback(window, key, scancode, action, mods);
-        });
+        setCallbacks();
     }
 
     MinimalViewerWindow(
@@ -93,12 +89,84 @@ public:
     }
 
 private:
-    // callbacks
-    void glfwKeyCallback(GLFWwindow*, int key, int scancode, int action, int mods)
+    void setCallbacks()
     {
+        // key callback lambda
+        auto keyCB = [](GLFWwindow* window,
+                        int         key,
+                        int         scancode,
+                        int         action,
+                        int         mods) {
+            auto* self = static_cast<MinimalViewerWindow*>(
+                glfwGetWindowUserPointer(window));
+            self->glfwKeyCallback(window, key, scancode, action, mods);
+        };
+
+        glfwSetKeyCallback(window, keyCB);
+
+        // mouse position callback
+        glfwSetCursorPosCallback(
+            window, [](GLFWwindow* window, double xpos, double ypos) {
+                auto* self = static_cast<MinimalViewerWindow*>(
+                    glfwGetWindowUserPointer(window));
+                self->glfwCursorPosCallback(window, xpos, ypos);
+            });
+
+        // mouse button callback
+        glfwSetMouseButtonCallback(
+            window, [](GLFWwindow* window, int button, int action, int mods) {
+                auto* self = static_cast<MinimalViewerWindow*>(
+                    glfwGetWindowUserPointer(window));
+                self->glfwMouseButtonCallback(window, button, action, mods);
+            });
+
+        // scroll callback
+        glfwSetScrollCallback(
+            window, [](GLFWwindow* window, double xoffset, double yoffset) {
+                auto* self = static_cast<MinimalViewerWindow*>(
+                    glfwGetWindowUserPointer(window));
+                self->glfwScrollCallback(window, xoffset, yoffset);
+            });
+    }
+
+    // callbacks
+    void glfwKeyCallback(GLFWwindow*, int key, int, int action, int mods)
+    {
+        KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
+        MV::setKeyModifiers(modifiers);
+
         if (action == GLFW_PRESS) {
-            MV::keyPress(glfw::fromKeyGLFW(key));
+            MV::keyPress(glfw::fromGLFW((glfw::Key) key));
         }
+    }
+
+    void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods)
+    {
+        glfw::MouseButton btn = (glfw::MouseButton)button;
+
+        KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
+        MV::setKeyModifiers(modifiers);
+
+        if (action == GLFW_PRESS) {
+            MV::pressMouse(glfw::fromGLFW(btn));
+        }
+        if (action == GLFW_RELEASE) {
+            MV::releaseMouse(glfw::fromGLFW(btn));
+        }
+    }
+
+    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
+    {
+        MV::moveMouse(xpos, ypos);
+    }
+
+    void glfwScrollCallback(GLFWwindow*, double, double yoffset)
+    {
+        const int WHEEL_STEP = 120;
+
+        float notchY = yoffset / float(WHEEL_STEP);
+
+        MV::wheelMouse(notchY > 0);
     }
 };
 

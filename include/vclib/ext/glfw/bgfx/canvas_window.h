@@ -41,9 +41,9 @@ namespace vcl::bglfwx {
 
 namespace detail {
 
-inline void glfwErrorCallback(int error, const char *description)
+inline void glfwErrorCallback(int error, const char* description)
 {
-    std::cerr << "GLFW error: " << error << ": " << description<< std::endl;
+    std::cerr << "GLFW error: " << error << ": " << description << std::endl;
 }
 
 } // namespace detail
@@ -92,10 +92,12 @@ public:
 
         glfwSetWindowUserPointer(window, this);
 
-        glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height) {
-            auto* self = static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
-            self->glfwWindowSizeCallback(window, width, height);
-        });
+        glfwSetWindowSizeCallback(
+            window, [](GLFWwindow* window, int width, int height) {
+                auto* self = static_cast<CanvasWindow*>(
+                    glfwGetWindowUserPointer(window));
+                self->glfwWindowSizeCallback(window, width, height);
+            });
     }
 
     virtual ~CanvasWindow()
