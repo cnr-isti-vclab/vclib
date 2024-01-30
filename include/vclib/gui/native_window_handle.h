@@ -20,80 +20,24 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_CONTEXT_H
-#define VCL_EXT_BGFX_CONTEXT_H
+#ifndef VCL_GUI_NATIVE_WINDOW_HANDLE_H
+#define VCL_GUI_NATIVE_WINDOW_HANDLE_H
 
-#include <stack>
+namespace vcl {
 
-#include <bgfx/bgfx.h>
-#include <bgfx/platform.h>
+void* createWindow(
+    const char* title,
+    int         width,
+    int         height,
+    void*&      display,
+    bool        hidden = false);
 
-#include <vclib/gui/native_window_handle.h>
+void* createWindow(
+    const char* title,
+    int         width,
+    int         height,
+    bool        hidden = false);
 
-namespace vcl::bgf {
+} // namespace vcl
 
-class Context
-{
-    void* windowHandle = nullptr;
-    void* displayHandle = nullptr;
-
-    std::stack<bgfx::ViewId> viewStack;
-
-public:
-    static Context& instance()
-    {
-        static Context ctx;
-        return ctx;
-    }
-
-    static bgfx::ViewId requestViewId()
-    {
-        bgfx::ViewId viewId = instance().viewStack.top();
-        instance().viewStack.pop();
-        return viewId;
-    }
-
-    static void releaseViewId(bgfx::ViewId viewId)
-    {
-        instance().viewStack.push(viewId);
-    }
-
-private:
-    Context()
-    {
-        windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
-#ifdef __APPLE__
-        bgfx::renderFrame(); // needed for macos
-#endif // __APPLE__
-
-        bgfx::Init init;
-        init.platformData.nwh = windowHandle;
-        init.type             = bgfx::RendererType::Count;
-        init.platformData.ndt = displayHandle;
-        init.resolution.width  = 1;
-        init.resolution.height = 1;
-        init.resolution.reset  = BGFX_RESET_NONE;
-        bgfx::init(init);
-
-        uint mv = bgfx::getCaps()->limits.maxViews;
-
-        while (mv != 0) {
-            viewStack.push((bgfx::ViewId) mv--);
-        }
-    };
-
-    ~Context()
-    {
-        bgfx::shutdown();
-    };
-
-public:
-    Context(const Context&) = delete;
-    Context& operator=(const Context&) = delete;
-    Context(Context&&) = delete;
-    Context& operator=(Context&&) = delete;
-};
-
-} // namespace vcl::bgf
-
-#endif // VCL_EXT_BGFX_CONTEXT_H
+#endif // VCL_GUI_NATIVE_WINDOW_HANDLE_H

@@ -64,6 +64,13 @@ set(HEADERS
     include/vclib/render/lights/directional_light.h
 )
 
+set(HEADERS_LIB
+    include/vclib/gui/native_window_handle.h
+)
+
+set(SOURCES_LIB
+    src/gui/native_window_handle.cpp)
+
 # headers to include only if using OpenGL2
 if (TARGET vclib-external-opengl)
     list(APPEND HEADERS
