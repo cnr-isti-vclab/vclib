@@ -82,7 +82,7 @@ public:
 
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
         ndt = glfwGetX11Display();
-        nwh = (void*)(uintptr_t)glfwGetX11Window(window);
+        nwh = (void*) (uintptr_t) glfwGetX11Window(window);
 #elif BX_PLATFORM_OSX
         nwh = glfwGetCocoaWindow(window);
 #elif BX_PLATFORM_WINDOWS

@@ -30,8 +30,11 @@
 namespace vcl::glfw {
 
 enum MouseButton : uint {};
+
 enum Key : uint {};
+
 enum KeyboardModifier : uint {};
+
 enum KeyboardModifiers : uint {};
 
 inline vcl::MouseButton fromGLFW(MouseButton button)

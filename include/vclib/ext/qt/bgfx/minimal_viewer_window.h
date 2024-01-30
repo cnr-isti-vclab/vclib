@@ -45,8 +45,8 @@ public:
 
     MinimalViewerWindow(
         std::shared_ptr<DrawableObjectVector> v,
-        uint                     width      = 1024,
-        uint                     height     = 768,
+        uint                                  width  = 1024,
+        uint                                  height = 768,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
         QWindow*                 parent     = nullptr);
 
