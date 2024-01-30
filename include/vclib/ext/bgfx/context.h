@@ -26,6 +26,7 @@
 #include <stack>
 
 #include <bgfx/bgfx.h>
+#include <bgfx/platform.h>
 
 #ifdef QT_WIDGETS_LIB
 #include <QApplication>
@@ -94,6 +95,10 @@ private:
         static_assert(
             0, "No available library that allows to create a window.");
 #endif // QT_WIDGETS_LIB
+
+#ifdef __APPLE__
+        bgfx::renderFrame(); // needed for macos
+#endif // __APPLE__
 
         bgfx::Init init;
         init.platformData.nwh = windowHandle;

@@ -104,22 +104,6 @@ public:
     {
          this->winID = winID;
 
-// #ifdef __APPLE__
-//         bgfx::renderFrame(); // needed for macos
-// #endif
-//         bgfx::Init init;
-//         init.platformData.nwh = winID;
-//         init.type             = renderType;
-
-// #ifdef __linux__
-//         init.platformData.ndt = displayID;
-// #endif
-
-//         init.resolution.width  = width;
-//         init.resolution.height = height;
-//         init.resolution.reset  = BGFX_RESET_NONE;
-//         bgfx::init(init);
-
         viewID = Context::requestViewId();
 
         fbh = bgfx::createFrameBuffer(winID, width, height);
