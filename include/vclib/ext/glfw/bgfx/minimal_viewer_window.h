@@ -66,8 +66,7 @@ public:
     {
     }
 
-    MinimalViewerWindow(
-        bgfx::RendererType::Enum renderType) :
+    MinimalViewerWindow(bgfx::RendererType::Enum renderType) :
             MinimalViewerWindow(
                 std::make_shared<DrawableObjectVector>(),
                 1024,
@@ -78,10 +77,7 @@ public:
 
     ~MinimalViewerWindow() override = default;
 
-    void draw(uint viewID) override
-    {
-        MV::draw(viewID);
-    }
+    void draw(uint viewID) override { MV::draw(viewID); }
 
     void onResize(unsigned int width, unsigned int height) override
     {
@@ -142,7 +138,7 @@ private:
 
     void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods)
     {
-        glfw::MouseButton btn = (glfw::MouseButton)button;
+        glfw::MouseButton btn = (glfw::MouseButton) button;
 
         KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
         MV::setKeyModifiers(modifiers);

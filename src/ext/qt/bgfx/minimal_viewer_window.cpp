@@ -133,9 +133,7 @@ void MinimalViewerWindow::keyPressEvent(QKeyEvent* event)
                   << "(" << MV::camera().up() << ")\n";
         break;
 
-    default:
-        MV::keyPress(vcl::qt::fromQt((Qt::Key) event->key()));
-        break;
+    default: MV::keyPress(vcl::qt::fromQt((Qt::Key) event->key())); break;
     }
 
     update();
