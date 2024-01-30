@@ -76,6 +76,7 @@ endif()
 if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
         include/vclib/ext/bgfx/canvas.h
+        include/vclib/ext/bgfx/context.h
         include/vclib/ext/bgfx/drawable_axis.h
         include/vclib/ext/bgfx/drawable_mesh.h
         include/vclib/ext/bgfx/mesh_render_buffers.h

@@ -23,9 +23,7 @@
 #ifndef VCL_EXT_BGFX_CANVAS_H
 #define VCL_EXT_BGFX_CANVAS_H
 
-#include <bgfx/bgfx.h>
-#include <bgfx/platform.h>
-#include <bx/bx.h>
+#include "context.h"
 
 #include <vclib/types.h>
 
@@ -63,7 +61,9 @@ namespace vcl::bgf {
  */
 class Canvas
 {
-    const bgfx::ViewId viewID = 0;
+    void* winID = nullptr;
+    bgfx::ViewId viewID = 0;
+    bgfx::FrameBufferHandle fbh;
 
 public:
     Canvas() {}
@@ -87,7 +87,13 @@ public:
         init(winID, width, height, nullptr, renderType);
     }
 
-    ~Canvas() { bgfx::shutdown(); }
+    ~Canvas()
+    {
+        if (bgfx::isValid(fbh))
+            bgfx::destroy(fbh);
+        Context::releaseViewId(viewID);
+        //bgfx::shutdown();
+    }
 
     void init(
         void*                    winID,
@@ -96,25 +102,32 @@ public:
         void*                    displayID  = nullptr,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
-#ifdef __APPLE__
-        bgfx::renderFrame(); // needed for macos
-#endif
-        bgfx::Init init;
-        init.platformData.nwh = winID;
-        init.type             = renderType;
+         this->winID = winID;
 
-#ifdef __linux__
-        init.platformData.ndt = displayID;
-#endif
+// #ifdef __APPLE__
+//         bgfx::renderFrame(); // needed for macos
+// #endif
+//         bgfx::Init init;
+//         init.platformData.nwh = winID;
+//         init.type             = renderType;
 
-        init.resolution.width  = width;
-        init.resolution.height = height;
-        init.resolution.reset  = BGFX_RESET_NONE;
-        bgfx::init(init);
+// #ifdef __linux__
+//         init.platformData.ndt = displayID;
+// #endif
 
+//         init.resolution.width  = width;
+//         init.resolution.height = height;
+//         init.resolution.reset  = BGFX_RESET_NONE;
+//         bgfx::init(init);
+
+        viewID = Context::requestViewId();
+
+        fbh = bgfx::createFrameBuffer(winID, width, height);
+
+        bgfx::setViewFrameBuffer(viewID, fbh);
         bgfx::setViewClear(
-            0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
-        bgfx::setViewRect(viewID, 0, 0, bgfx::BackbufferRatio::Equal);
+            viewID, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
+        bgfx::setViewRect(viewID, 0, 0, width, height);
         bgfx::touch(viewID);
     }
 
@@ -131,15 +144,20 @@ public:
 
     void frame()
     {
-        bgfx::touch(viewID);
+        bgfx::setViewFrameBuffer(viewID, fbh);
+        //bgfx::touch(viewID);
         draw(viewID);
         bgfx::frame();
     }
 
     void resize(uint width, uint height)
     {
-        bgfx::reset(width, height, BGFX_RESET_NONE);
-        bgfx::setViewRect(viewID, 0, 0, bgfx::BackbufferRatio::Equal);
+        if (bgfx::isValid(fbh))
+            bgfx::destroy(fbh);
+
+        fbh = bgfx::createFrameBuffer(winID, width, height);
+        bgfx::setViewFrameBuffer(viewID, fbh);
+        bgfx::setViewRect(viewID, 0, 0, width, height);
         bgfx::touch(viewID);
     }
 };
