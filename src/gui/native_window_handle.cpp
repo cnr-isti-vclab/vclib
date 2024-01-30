@@ -42,6 +42,11 @@ void* createWindow(const char* title, int width, int height, void*& display, boo
 #ifdef _WIN32
     (void) display;
 
+    wchar_t wtext[256];
+    size_t sz;
+    mbstowcs_s(&sz, wtext, title, strlen(title)+1);//Plus null
+    LPWSTR ptr = wtext;
+
     WNDCLASS wc = {};
     wc.lpfnWndProc = DefWindowProc;
     wc.hInstance = GetModuleHandle(NULL);
@@ -52,7 +57,7 @@ void* createWindow(const char* title, int width, int height, void*& display, boo
     HWND hWnd = CreateWindowEx(
         0,
         L"MyWindowClass",
-        title,
+        ptr,
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, width, height,
         NULL,
