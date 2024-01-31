@@ -34,7 +34,7 @@ namespace vcl::bgf {
 
 class Context
 {
-    void* windowHandle = nullptr;
+    void* windowHandle  = nullptr;
     void* displayHandle = nullptr;
 
     std::stack<bgfx::ViewId> viewStack;
@@ -64,12 +64,12 @@ private:
         windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
 #ifdef __APPLE__
         bgfx::renderFrame(); // needed for macos
-#endif // __APPLE__
+#endif                       // __APPLE__
 
         bgfx::Init init;
-        init.platformData.nwh = windowHandle;
-        init.type             = bgfx::RendererType::Count;
-        init.platformData.ndt = displayHandle;
+        init.platformData.nwh  = windowHandle;
+        init.type              = bgfx::RendererType::Count;
+        init.platformData.ndt  = displayHandle;
         init.resolution.width  = 1;
         init.resolution.height = 1;
         init.resolution.reset  = BGFX_RESET_NONE;
@@ -82,16 +82,13 @@ private:
         }
     };
 
-    ~Context()
-    {
-        bgfx::shutdown();
-    };
+    ~Context() { bgfx::shutdown(); };
 
 public:
-    Context(const Context&) = delete;
+    Context(const Context&)            = delete;
     Context& operator=(const Context&) = delete;
-    Context(Context&&) = delete;
-    Context& operator=(Context&&) = delete;
+    Context(Context&&)                 = delete;
+    Context& operator=(Context&&)      = delete;
 };
 
 } // namespace vcl::bgf

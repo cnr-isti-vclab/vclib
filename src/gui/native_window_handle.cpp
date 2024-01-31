@@ -25,31 +25,35 @@
 #ifdef _WIN32
 #include <windows.h>
 #elif __APPLE__
-#include <objc/objc.h>
-#include <objc/message.h>
-#include <objc/NSObjCRuntime.h>
-#include <objc/NSObjCRuntime.h>
-#include <objc/objc-runtime.h>
 #include <AppKit/AppKit.h>
+#include <objc/NSObjCRuntime.h>
+#include <objc/message.h>
+#include <objc/objc-runtime.h>
+#include <objc/objc.h>
 #else
 #include <X11/Xlib.h>
 #endif
 
 namespace vcl {
 
-void* createWindow(const char* title, int width, int height, void*& display, bool hidden)
+void* createWindow(
+    const char* title,
+    int         width,
+    int         height,
+    void*&      display,
+    bool        hidden)
 {
 #ifdef _WIN32
     (void) display;
 
     wchar_t wtext[256];
-    size_t sz;
-    mbstowcs_s(&sz, wtext, title, strlen(title)+1);//Plus null
+    size_t  sz;
+    mbstowcs_s(&sz, wtext, title, strlen(title) + 1); // Plus null
     LPWSTR ptr = wtext;
 
-    WNDCLASS wc = {};
-    wc.lpfnWndProc = DefWindowProc;
-    wc.hInstance = GetModuleHandle(NULL);
+    WNDCLASS wc      = {};
+    wc.lpfnWndProc   = DefWindowProc;
+    wc.hInstance     = GetModuleHandle(NULL);
     wc.lpszClassName = L"MyWindowClass";
 
     RegisterClass(&wc);
@@ -59,12 +63,14 @@ void* createWindow(const char* title, int width, int height, void*& display, boo
         L"MyWindowClass",
         ptr,
         WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, CW_USEDEFAULT, width, height,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        width,
+        height,
         NULL,
         NULL,
         GetModuleHandle(NULL),
-        NULL
-        );
+        NULL);
 
     if (hidden)
         ShowWindow(hWnd, SW_HIDE);
@@ -118,11 +124,13 @@ void* createWindow(const char* title, int width, int height, void*& display, boo
     Window window = XCreateSimpleWindow(
         dspl,
         RootWindow(dspl, screen),
-        0, 0, width, height,
+        0,
+        0,
+        width,
+        height,
         0,
         BlackPixel(dspl, screen),
-        WhitePixel(dspl, screen)
-        );
+        WhitePixel(dspl, screen));
 
     XStoreName(dspl, window, title);
 

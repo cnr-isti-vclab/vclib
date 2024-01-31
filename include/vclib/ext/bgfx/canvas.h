@@ -61,8 +61,8 @@ namespace vcl::bgf {
  */
 class Canvas
 {
-    void* winID = nullptr;
-    bgfx::ViewId viewID = 0;
+    void*                   winID  = nullptr;
+    bgfx::ViewId            viewID = 0;
     bgfx::FrameBufferHandle fbh;
 
 public:
@@ -92,7 +92,7 @@ public:
         if (bgfx::isValid(fbh))
             bgfx::destroy(fbh);
         Context::releaseViewId(viewID);
-        //bgfx::shutdown();
+        // bgfx::shutdown();
     }
 
     void init(
@@ -102,7 +102,7 @@ public:
         void*                    displayID  = nullptr,
         bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
     {
-         this->winID = winID;
+        this->winID = winID;
 
         viewID = Context::requestViewId();
 
@@ -129,7 +129,7 @@ public:
     void frame()
     {
         bgfx::setViewFrameBuffer(viewID, fbh);
-        //bgfx::touch(viewID);
+        // bgfx::touch(viewID);
         draw(viewID);
         bgfx::frame();
     }
