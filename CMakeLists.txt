@@ -69,8 +69,12 @@ set(HEADERS_LIB
 )
 
 set(SOURCES_LIB
-    src/gui/native_window_handle.cpp
-    src/gui/native_window_handle.mm)
+    src/gui/native_window_handle.cpp)
+
+if (APPLE)
+    list (APPEND SOURCES_LIB
+        src/gui/native_window_handle.mm)
+endif()
 
 # headers to include only if using OpenGL2
 if (TARGET vclib-external-opengl)
@@ -195,42 +199,36 @@ endif()
 
 source_group("Forms Files" FILES ${FORMS_LIB})
 
-# vclib-render target - will be used by external projects
-# will show all the headers in the IDE
-add_library(vclib-render INTERFACE)
-target_link_libraries(vclib-render INTERFACE ${VCLIB_RENDER_EXTERNAL_LIBRARIES})
-target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
-set_target_properties(vclib-render PROPERTIES
-    VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
-set_target_properties(vclib-render PROPERTIES
-    VCLIB_RENDER_BGFX_SHADERS "${SHADERS}")
-
-if (TARGET vclib-external-bgfx)
-    set_target_properties(vclib-render PROPERTIES
-        VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
-        "${CMAKE_CURRENT_SOURCE_DIR}/shaders/vclib/ext/bgfx")
-    target_add_bgfx_shaders(vclib-render ${SHADERS})
-endif()
-
-target_sources(vclib-render PRIVATE ${HEADERS})
-
-# vclib-render-lib target
+# vclib-render target
 if (WIN32)
-    # on windows vclib-render-lib must be static - needed for bgfx
+    # on windows vclib-render must be static - needed for bgfx
     # TODO - try to make it work also on windows with SHARED...
     set(VLIB_RENDER_LIB_TYPE STATIC)
 else()
     set(VLIB_RENDER_LIB_TYPE SHARED)
 endif()
 
-add_library(vclib-render-lib ${VLIB_RENDER_LIB_TYPE}
-    ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
+add_library(vclib-render ${VLIB_RENDER_LIB_TYPE}
+    ${HEADERS} ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
 
-target_link_libraries(vclib-render-lib PUBLIC
+target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
+set_target_properties(vclib-render PROPERTIES
+    VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
+
+if (TARGET vclib-external-bgfx)
+    set_target_properties(vclib-render PROPERTIES
+        VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders/vclib/ext/bgfx")
+
+    set_target_properties(vclib-render PROPERTIES
+        VCLIB_RENDER_BGFX_SHADERS "${SHADERS}")
+
+    target_add_bgfx_shaders(vclib-render ${SHADERS})
+endif()
+
+target_link_libraries(vclib-render PUBLIC
     ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib)
-target_include_directories(vclib-render-lib PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})
-
-target_link_libraries(vclib-render INTERFACE vclib vclib-render-lib)
+target_include_directories(vclib-render PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})
 
 if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_TESTS)
     add_subdirectory(test)

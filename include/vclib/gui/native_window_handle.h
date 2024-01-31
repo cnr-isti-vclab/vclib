@@ -25,6 +25,7 @@
 
 namespace vcl {
 
+#ifdef __APPLE__
 namespace detail {
 
 void* cretateCocoaWindow(
@@ -34,6 +35,7 @@ void* cretateCocoaWindow(
     bool        hidden = false);
 
 } // namespace vcl::detail
+#endif // __APPLE__
 
 void* createWindow(
     const char* title,
