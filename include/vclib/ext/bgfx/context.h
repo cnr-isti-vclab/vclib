@@ -40,6 +40,8 @@ class Context
     std::stack<bgfx::ViewId> viewStack;
 
 public:
+    inline static bgfx::RendererType::Enum renderType = bgfx::RendererType::Count;
+
     static Context& instance()
     {
         static Context ctx;
@@ -68,12 +70,14 @@ private:
 
         bgfx::Init init;
         init.platformData.nwh  = windowHandle;
-        init.type              = bgfx::RendererType::Count;
+        init.type              = renderType;
         init.platformData.ndt  = displayHandle;
         init.resolution.width  = 1;
         init.resolution.height = 1;
         init.resolution.reset  = BGFX_RESET_NONE;
         bgfx::init(init);
+
+        vcl::closeWindow(windowHandle, displayHandle);
 
         uint mv = bgfx::getCaps()->limits.maxViews;
 

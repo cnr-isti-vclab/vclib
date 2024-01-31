@@ -45,4 +45,9 @@ void* cretateCocoaWindow(
     return (void*) window;
 }
 
+void closeCocoaWindow(void* window)
+{
+    [(NSWindow*) window close];
+}
+
 } // namespace vcl::detail

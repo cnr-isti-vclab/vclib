@@ -113,4 +113,15 @@ void* createWindow(const char* title, int width, int height, bool hidden)
     return createWindow(title, width, height, display, hidden);
 }
 
+void closeWindow(void* window, void* display)
+{
+#ifdef _WIN32
+    DestroyWindow((HWND) window);
+#elif __APPLE__
+    detail::closeCocoaWindow(window);
+#else
+    XDestroyWindow((Display*) display, (Window) window);
+#endif
+}
+
 } // namespace vcl
