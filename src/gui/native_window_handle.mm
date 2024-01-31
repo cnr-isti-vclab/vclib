@@ -20,97 +20,29 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <vclib/gui/native_window_handle.h>
+#include "vclib/gui/native_window_handle.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#elif __linux__
-#include <X11/Xlib.h>
-#endif
+#import <Cocoa/Cocoa.h>
 
-namespace vcl {
+namespace vcl::detail {
 
-void* createWindow(
+void* cretateCocoaWindow(
     const char* title,
     int         width,
     int         height,
-    void*&      display,
     bool        hidden)
 {
-#ifdef _WIN32
-    (void) display;
-
-    wchar_t wtext[256];
-    size_t  sz;
-    mbstowcs_s(&sz, wtext, title, strlen(title) + 1); // Plus null
-    LPWSTR ptr = wtext;
-
-    WNDCLASS wc      = {};
-    wc.lpfnWndProc   = DefWindowProc;
-    wc.hInstance     = GetModuleHandle(NULL);
-    wc.lpszClassName = L"MyWindowClass";
-
-    RegisterClass(&wc);
-
-    HWND hWnd = CreateWindowEx(
-        0,
-        L"MyWindowClass",
-        ptr,
-        WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT,
-        CW_USEDEFAULT,
-        width,
-        height,
-        NULL,
-        NULL,
-        GetModuleHandle(NULL),
-        NULL);
-
-    if (hidden)
-        ShowWindow(hWnd, SW_HIDE);
-
-    return (void*) hWnd;
-#elif __APPLE__
-    (void) display;
-
-    return detail::cretateCocoaWindow(title, width, height, hidden);
-
-#else
-    Display* dspl = XOpenDisplay(NULL);
-    if (!dspl) {
-        return nullptr;
-    }
-
-    int screen = DefaultScreen(dspl);
-
-    Window window = XCreateSimpleWindow(
-        dspl,
-        RootWindow(dspl, screen),
-        0,
-        0,
-        width,
-        height,
-        0,
-        BlackPixel(dspl, screen),
-        WhitePixel(dspl, screen));
-
-    XStoreName(dspl, window, title);
-
-    if (!hidden)
-        XMapWindow(dspl, window);
-
-    XSync(dspl, False);
-
-    display = (void*) dspl;
-
+    NSRect rect = NSMakeRect(0, 0, width, height);
+    NSWindow* window = [
+        [NSWindow alloc]
+        initWithContentRect:rect
+                  styleMask:0
+                    backing:NSBackingStoreBuffered defer:NO
+    ];
+    NSString* appName = [NSString stringWithUTF8String: title];
+    [window setTitle:appName];
+    [window setBackgroundColor:[NSColor blackColor]];
     return (void*) window;
-#endif
 }
 
-void* createWindow(const char* title, int width, int height, bool hidden)
-{
-    void* display = nullptr;
-    return createWindow(title, width, height, display, hidden);
-}
-
-} // namespace vcl
+} // namespace vcl::detail

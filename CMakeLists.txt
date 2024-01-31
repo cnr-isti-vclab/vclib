@@ -69,7 +69,8 @@ set(HEADERS_LIB
 )
 
 set(SOURCES_LIB
-    src/gui/native_window_handle.cpp)
+    src/gui/native_window_handle.cpp
+    src/gui/native_window_handle.mm)
 
 # headers to include only if using OpenGL2
 if (TARGET vclib-external-opengl)

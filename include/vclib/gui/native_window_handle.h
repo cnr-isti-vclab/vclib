@@ -25,6 +25,16 @@
 
 namespace vcl {
 
+namespace detail {
+
+void* cretateCocoaWindow(
+    const char* title,
+    int         width,
+    int         height,
+    bool        hidden = false);
+
+} // namespace vcl::detail
+
 void* createWindow(
     const char* title,
     int         width,
