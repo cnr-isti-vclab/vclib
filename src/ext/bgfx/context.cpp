@@ -20,45 +20,58 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_CONTEXT_H
-#define VCL_EXT_BGFX_CONTEXT_H
+#include <vclib/ext/bgfx/context.h>
 
-#include <stack>
-
-#include <bgfx/bgfx.h>
-#include <bgfx/platform.h>
+#include <vclib/gui/native_window_handle.h>
 
 namespace vcl::bgf {
 
-class Context
+Context& Context::instance()
 {
-    void* windowHandle  = nullptr;
-    void* displayHandle = nullptr;
+    static Context ctx;
+    return ctx;
+}
 
-    std::stack<bgfx::ViewId> viewStack;
+bgfx::ViewId Context::requestViewId()
+{
+    bgfx::ViewId viewId = instance().viewStack.top();
+    instance().viewStack.pop();
+    return viewId;
+}
 
-public:
-    inline static bgfx::RendererType::Enum renderType =
-        bgfx::RendererType::Count;
+void Context::releaseViewId(bgfx::ViewId viewId)
+{
+    instance().viewStack.push(viewId);
+}
 
-    static Context& instance();
+Context::Context()
+{
+    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
+#ifdef __APPLE__
+    bgfx::renderFrame(); // needed for macos
+#endif // __APPLE__
 
-    static bgfx::ViewId requestViewId();
+    bgfx::Init init;
+    init.platformData.nwh  = windowHandle;
+    init.type              = renderType;
+    init.platformData.ndt  = displayHandle;
+    init.resolution.width  = 1;
+    init.resolution.height = 1;
+    init.resolution.reset  = BGFX_RESET_NONE;
+    bgfx::init(init);
 
-    static void releaseViewId(bgfx::ViewId viewId);
+    vcl::closeWindow(windowHandle, displayHandle);
 
-private:
-    Context();
+    uint mv = bgfx::getCaps()->limits.maxViews;
 
-    ~Context();
+    while (mv != 0) {
+        viewStack.push((bgfx::ViewId) mv--);
+    }
+}
 
-public:
-    Context(const Context&)            = delete;
-    Context& operator=(const Context&) = delete;
-    Context(Context&&)                 = delete;
-    Context& operator=(Context&&)      = delete;
-};
+Context::~Context()
+{
+    bgfx::shutdown();
+}
 
 } // namespace vcl::bgf
-
-#endif // VCL_EXT_BGFX_CONTEXT_H

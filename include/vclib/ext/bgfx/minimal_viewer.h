@@ -23,12 +23,8 @@
 #ifndef VCL_EXT_BGFX_MINIMAL_VIEWER_H
 #define VCL_EXT_BGFX_MINIMAL_VIEWER_H
 
-#include <vclib/math/min_max.h>
-#include <vclib/space/box.h>
-
 #include <vclib/gui/desktop_trackball.h>
 #include <vclib/render/drawable_object_vector.h>
-#include <vclib/render/generic_drawable_mesh.h>
 
 #include "drawable_axis.h"
 #include "shader_programs/drawable_axis_shader_program.h"
@@ -57,79 +53,24 @@ protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
-    MinimalViewer(uint width = 1024, uint height = 768) : DTB(width, height)
-    {
-        cameraUniforms.updateCamera(DTB::camera());
-        directionalLightUniforms.updateLight(DTB::light());
-        axis.setShaderProgram(axisProgram);
-    }
+    MinimalViewer(uint width = 1024, uint height = 768);
 
     MinimalViewer(
         std::shared_ptr<DrawableObjectVector> v,
         uint                                  width  = 1024,
-        uint                                  height = 768) :
-            MinimalViewer(width, height)
-    {
-        setDrawableObjectVector(v);
-    }
+        uint                                  height = 768);
 
-    std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const
-    {
-        return drawList;
-    }
+    std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const;
 
-    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
-    {
-        drawList = v;
+    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
 
-        for (DrawableObject* obj : *drawList) {
-            obj->init();
+    void fitScene();
 
-            GenericDrawableMesh* mesh = dynamic_cast<GenericDrawableMesh*>(obj);
-            if (mesh) {
-                mesh->setShaderProgram(meshProgram);
-            }
-        }
-    }
-
-    void fitScene()
-    {
-        Box3d   bb          = drawList->boundingBox();
-        Point3f sceneCenter = bb.center().cast<float>();
-        float   sceneRadius = bb.diagonal() / 2;
-
-        DTB::setTrackBall(sceneCenter, sceneRadius);
-    }
-
-    void draw(uint viewID)
-    {
-        bgfx::setViewTransform(
-            viewID, viewMatrix().data(), projectionMatrix().data());
-
-        cameraUniforms.updateCamera(DTB::camera());
-        cameraUniforms.bind();
-
-        directionalLightUniforms.bind();
-
-        for (DrawableObject* obj : *drawList)
-            obj->draw(viewID);
-
-        if (axis.isVisible()) {
-            axis.draw(viewID);
-        }
-    }
+    void draw(uint viewID);
 
     void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }
 
-    void keyPress(Key key)
-    {
-        if (key == KEY_A) {
-            toggleAxisVisibility();
-        }
-        else {
-            DTB::keyPress(key);
-        }
-    }
+    void keyPress(Key key);
 };
 
 } // namespace vcl::bgf

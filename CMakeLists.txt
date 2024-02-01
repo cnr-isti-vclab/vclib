@@ -50,6 +50,7 @@ set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(HEADERS
     include/vclib/gui/desktop_trackball.h
     include/vclib/gui/input.h
+    include/vclib/gui/native_window_handle.h
     include/vclib/render/camera.h
     include/vclib/render/drawable_object.h
     include/vclib/render/drawable_object_vector.h
@@ -61,22 +62,16 @@ set(HEADERS
     include/vclib/render/mesh_render_settings.h
     include/vclib/render/mesh_render_settings_macros.h
     include/vclib/render/trackball.h
-    include/vclib/render/lights/directional_light.h
-)
+    include/vclib/render/lights/directional_light.h)
 
-set(HEADERS_LIB
-    include/vclib/gui/native_window_handle.h
-)
-
-set(SOURCES_LIB
+set(SOURCES
     src/gui/native_window_handle.cpp)
 
 if (APPLE)
-    list (APPEND SOURCES_LIB
+    list (APPEND SOURCES
         src/gui/native_window_handle.mm)
 endif()
 
-# headers to include only if using OpenGL2
 if (TARGET vclib-external-opengl)
     list(APPEND HEADERS
         include/vclib/ext/opengl2/draw_objects2.h
@@ -84,7 +79,6 @@ if (TARGET vclib-external-opengl)
         include/vclib/ext/opengl2/drawable_mesh.h)
 endif()
 
-# headers to include only if using bgfx
 if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
         include/vclib/ext/bgfx/canvas.h
@@ -103,6 +97,12 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.h
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
 
+    list(APPEND SOURCES
+        src/ext/bgfx/canvas.cpp
+        src/ext/bgfx/context.cpp
+        src/ext/bgfx/drawable_axis.cpp
+        src/ext/bgfx/minimal_viewer.cpp)
+
     set(SHADERS
         shaders/vclib/ext/bgfx/shaders_common.sh
         shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc
@@ -117,13 +117,10 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/uniforms/directional_light_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.sh
-        shaders/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.sh
-        )
+        shaders/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.sh)
 endif()
 
-# headers to include only if using glfw
 if (TARGET vclib-external-glfw)
-
     list(APPEND HEADERS
         include/vclib/ext/glfw/gui/input.h)
 
@@ -135,69 +132,59 @@ if (TARGET vclib-external-glfw)
 
 endif()
 
-# headers and sources to include only if using qt
 if (TARGET vclib-external-qt)
-    # header only sources
     list(APPEND HEADERS
-        include/vclib/ext/qt/gui/input.h)
-
-    # sources that must be built
-    list(APPEND HEADERS_LIB
         include/vclib/ext/qt/gui/drawable_object_frame.h
         include/vclib/ext/qt/gui/drawable_object_vector_frame.h
+        include/vclib/ext/qt/gui/input.h
         include/vclib/ext/qt/gui/mesh_render_settings_frame.h
         include/vclib/ext/qt/gui/q_clickable_label.h)
 
-    list(APPEND SOURCES_LIB
+    list(APPEND SOURCES
         src/ext/qt/gui/drawable_object_frame.cpp
         src/ext/qt/gui/drawable_object_vector_frame.cpp
         src/ext/qt/gui/mesh_render_settings_frame.cpp
         src/ext/qt/gui/q_clickable_label.cpp)
 
-    list(APPEND FORMS_LIB
+    list(APPEND FORMS
         src/ext/qt/gui/drawable_object_frame.ui
         src/ext/qt/gui/drawable_object_vector_frame.ui
         src/ext/qt/gui/mesh_render_settings_frame.ui)
 
-    # headers and sources to include only if using QGLViewer
     if (TARGET vclib-external-qglviewer)
-        # header only sources
         list(APPEND HEADERS
-            include/vclib/ext/qglviewer/minimal_viewer_widget.h)
+            include/vclib/ext/qglviewer/minimal_viewer_widget.h
+            include/vclib/ext/qglviewer/viewer_main_window.h
+        )
 
-        # sources that must be built
-        list(APPEND HEADERS_LIB
-            include/vclib/ext/qglviewer/viewer_main_window.h)
-
-        list(APPEND SOURCES_LIB
+        list(APPEND SOURCES
             src/ext/qglviewer/viewer_main_window.cpp)
 
-        list(APPEND FORMS_LIB
+        list(APPEND FORMS
             src/ext/qglviewer/viewer_main_window.ui)
     endif()
 
-    # headers and sources to include only if using bgfx
     if (TARGET vclib-external-bgfx)
-        list(APPEND HEADERS_LIB
+        list(APPEND HEADERS
             include/vclib/ext/qt/bgfx/canvas_widget.h
             include/vclib/ext/qt/bgfx/canvas_window.h
             include/vclib/ext/qt/bgfx/minimal_viewer_widget.h
             include/vclib/ext/qt/bgfx/minimal_viewer_window.h
             include/vclib/ext/qt/bgfx/viewer_main_window.h)
 
-        list(APPEND SOURCES_LIB
+        list(APPEND SOURCES
             src/ext/qt/bgfx/canvas_widget.cpp
             src/ext/qt/bgfx/canvas_window.cpp
             src/ext/qt/bgfx/minimal_viewer_widget.cpp
             src/ext/qt/bgfx/minimal_viewer_window.cpp
             src/ext/qt/bgfx/viewer_main_window.cpp)
 
-        list(APPEND FORMS_LIB
+        list(APPEND FORMS
             src/ext/qt/bgfx/viewer_main_window.ui)
     endif()
 endif()
 
-source_group("Forms Files" FILES ${FORMS_LIB})
+source_group("Forms Files" FILES ${FORMS})
 
 # vclib-render target
 if (WIN32)
@@ -209,7 +196,7 @@ else()
 endif()
 
 add_library(vclib-render ${VLIB_RENDER_LIB_TYPE}
-    ${HEADERS} ${HEADERS_LIB} ${SOURCES_LIB} ${FORMS_LIB})
+    ${HEADERS} ${SOURCES} ${FORMS})
 
 target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
 set_target_properties(vclib-render PROPERTIES

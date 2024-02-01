@@ -66,84 +66,41 @@ class Canvas
     bgfx::FrameBufferHandle fbh;
 
 public:
-    Canvas() {}
+    Canvas();
 
     Canvas(
         void*                    winID,
         uint                     width,
         uint                     height,
         void*                    displayID  = nullptr,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
-    {
-        init(winID, width, height, displayID, renderType);
-    }
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count);
 
     Canvas(
         void*                    winID,
         uint                     width,
         uint                     height,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
-    {
-        init(winID, width, height, nullptr, renderType);
-    }
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count);
 
-    ~Canvas()
-    {
-        if (bgfx::isValid(fbh))
-            bgfx::destroy(fbh);
-        Context::releaseViewId(viewID);
-        // bgfx::shutdown();
-    }
+    ~Canvas();
 
     void init(
         void*                    winID,
         uint                     width,
         uint                     height,
         void*                    displayID  = nullptr,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
-    {
-        this->winID = winID;
-
-        viewID = Context::requestViewId();
-
-        fbh = bgfx::createFrameBuffer(winID, width, height);
-
-        bgfx::setViewFrameBuffer(viewID, fbh);
-        bgfx::setViewClear(
-            viewID, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
-        bgfx::setViewRect(viewID, 0, 0, width, height);
-        bgfx::touch(viewID);
-    }
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count);
 
     void init(
         void*                    winID,
         uint                     width,
         uint                     height,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
-    {
-        init(winID, width, height, nullptr, renderType);
-    }
+        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count);
 
     virtual void draw(uint viewID) = 0;
 
-    void frame()
-    {
-        bgfx::setViewFrameBuffer(viewID, fbh);
-        // bgfx::touch(viewID);
-        draw(viewID);
-        bgfx::frame();
-    }
+    void frame();
 
-    void resize(uint width, uint height)
-    {
-        if (bgfx::isValid(fbh))
-            bgfx::destroy(fbh);
-
-        fbh = bgfx::createFrameBuffer(winID, width, height);
-        bgfx::setViewFrameBuffer(viewID, fbh);
-        bgfx::setViewRect(viewID, 0, 0, width, height);
-        bgfx::touch(viewID);
-    }
+    void resize(uint width, uint height);
 };
 
 } // namespace vcl::bgf
