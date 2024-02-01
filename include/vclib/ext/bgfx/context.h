@@ -40,7 +40,8 @@ class Context
     std::stack<bgfx::ViewId> viewStack;
 
 public:
-    inline static bgfx::RendererType::Enum renderType = bgfx::RendererType::Count;
+    inline static bgfx::RendererType::Enum renderType =
+        bgfx::RendererType::Count;
 
     static Context& instance()
     {

@@ -36,7 +36,7 @@ void* cretateCocoaWindow(
 
 void closeCocoaWindow(void* window);
 
-} // namespace vcl::detail
+} // namespace detail
 #endif // __APPLE__
 
 void* createWindow(
