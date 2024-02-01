@@ -101,7 +101,8 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/canvas.cpp
         src/ext/bgfx/context.cpp
         src/ext/bgfx/drawable_axis.cpp
-        src/ext/bgfx/minimal_viewer.cpp)
+        src/ext/bgfx/minimal_viewer.cpp
+        src/ext/bgfx/shader_programs/load_program.cpp)
 
     set(SHADERS
         shaders/vclib/ext/bgfx/shaders_common.sh
@@ -128,6 +129,10 @@ if (TARGET vclib-external-glfw)
         list(APPEND HEADERS
             include/vclib/ext/glfw/bgfx/canvas_window.h
             include/vclib/ext/glfw/bgfx/minimal_viewer_window.h)
+
+        list(APPEND SOURCES
+            src/ext/glfw/bgfx/canvas_window.cpp
+            src/ext/glfw/bgfx/minimal_viewer_window.cpp)
     endif()
 
 endif()

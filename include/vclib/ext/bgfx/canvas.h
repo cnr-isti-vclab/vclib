@@ -54,10 +54,10 @@ namespace vcl::bgf {
  * loop), and its argument is the bgfx view ID.
  *
  * The class provides two important member functions:
- * - frame(): this function must be called at the end of each frame, after all
- * the bgfx rendering commands have been issued;
- * - resize(width, height): this function must be called whenever the window is
- * resized.
+ * - frame(): this function must be called by the derived classes at the end of
+ * each frame, after all the bgfx rendering commands have been issued;
+ * - resize(width, height): this function must be called by the derived classes
+ * whenever the window is resized.
  */
 class Canvas
 {
@@ -98,6 +98,7 @@ public:
 
     virtual void draw(uint viewID) = 0;
 
+protected:
     void frame();
 
     void resize(uint width, uint height);

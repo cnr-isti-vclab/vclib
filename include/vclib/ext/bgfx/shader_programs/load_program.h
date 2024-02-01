@@ -24,109 +24,16 @@
 #define VCL_EXT_BGFX_SHADER_PROGRAMS_LOAD_PROGRAM_H
 
 #include <bgfx/bgfx.h>
-#include <bx/bx.h>
-#include <bx/file.h>
-#include <bx/readerwriter.h>
 
-#include <iostream>
+#include <string>
 
 namespace vcl::bgf {
 
-namespace detail {
+bgfx::ShaderHandle loadShader(const std::string& name);
 
-class BXFileReader
-{
-    bx::DefaultAllocator allocator;
-    bx::FileReaderI*     fileReader = BX_NEW(&allocator, bx::FileReader);
-
-public:
-    BXFileReader() = default;
-
-    ~BXFileReader() { bx::deleteObject(&allocator, fileReader); }
-
-    bx::FileReaderI* get() { return fileReader; }
-};
-
-inline const bgfx::Memory* loadMem(
-    bx::FileReaderI*   reader,
-    const std::string& filePath)
-{
-    if (bx::open(reader, filePath.c_str())) {
-        uint32_t            size = (uint32_t) bx::getSize(reader);
-        const bgfx::Memory* mem  = bgfx::alloc(size + 1);
-        bx::read(reader, mem->data, size, bx::ErrorAssert {});
-        bx::close(reader);
-        mem->data[mem->size - 1] = '\0';
-        return mem;
-    }
-
-    std::cerr << "Failed to load " << filePath << "\n";
-    return nullptr;
-}
-
-inline bgfx::ShaderHandle loadShader(bx::FileReaderI* reader, std::string name)
-{
-    std::string shaderPath = "???";
-
-    switch (bgfx::getRendererType()) {
-    case bgfx::RendererType::Noop:
-    case bgfx::RendererType::Direct3D11:
-    case bgfx::RendererType::Direct3D12: shaderPath = "shaders/dx11/"; break;
-    case bgfx::RendererType::Agc:
-    case bgfx::RendererType::Gnm: shaderPath = "shaders/pssl/"; break;
-    case bgfx::RendererType::Metal: shaderPath = "shaders/metal/"; break;
-    case bgfx::RendererType::Nvn: shaderPath = "shaders/nvn/"; break;
-    case bgfx::RendererType::OpenGL: shaderPath = "shaders/glsl/"; break;
-    case bgfx::RendererType::OpenGLES: shaderPath = "shaders/essl/"; break;
-    case bgfx::RendererType::Vulkan: shaderPath = "shaders/spirv/"; break;
-
-    case bgfx::RendererType::Count:
-        BX_ASSERT(false, "You should not be here!");
-        break;
-    }
-
-    // if name starts with "shaders/", remove it
-    if (name.find("shaders/") == 0) {
-        name = name.substr(8);
-    }
-
-    std::string filePath = shaderPath + name + ".bin";
-
-    bgfx::ShaderHandle handle = bgfx::createShader(loadMem(reader, filePath));
-    bgfx::setName(handle, name.c_str());
-
-    return handle;
-}
-
-inline bgfx::ProgramHandle loadProgram(
-    bx::FileReaderI*   reader,
+bgfx::ProgramHandle loadProgram(
     const std::string& vsName,
-    const std::string& fsName)
-{
-    bgfx::ShaderHandle vsh = loadShader(reader, vsName);
-    bgfx::ShaderHandle fsh = BGFX_INVALID_HANDLE;
-    if (!fsName.empty()) {
-        fsh = loadShader(reader, fsName);
-    }
-
-    return bgfx::createProgram(vsh, fsh, true);
-}
-
-} // namespace detail
-
-inline bgfx::ShaderHandle loadShader(const std::string& name)
-{
-    detail::BXFileReader fr;
-    return detail::loadShader(fr.get(), name);
-}
-
-inline bgfx::ProgramHandle loadProgram(
-    const std::string& vsName,
-    const std::string& fsName)
-{
-    detail::BXFileReader fr;
-    return detail::loadProgram(fr.get(), vsName, fsName);
-}
+    const std::string& fsName);
 
 } // namespace vcl::bgf
 

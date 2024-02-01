@@ -25,8 +25,6 @@
 
 #include <vclib/ext/bgfx/minimal_viewer.h>
 
-#include <vclib/ext/glfw/gui/input.h>
-
 #include "canvas_window.h"
 
 namespace vcl::bglfwx {
@@ -46,124 +44,27 @@ public:
     MinimalViewerWindow(
         std::shared_ptr<DrawableObjectVector> v,
         uint                                  width  = 1024,
-        uint                                  height = 768,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count) :
-            CanvasWindow(width, height, renderType),
-            MinimalViewer(v, width, height)
-    {
-        setCallbacks();
-    }
+        uint                                  height = 768);
 
-    MinimalViewerWindow(
-        uint                     width      = 1024,
-        uint                     height     = 768,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count) :
-            MinimalViewerWindow(
-                std::make_shared<DrawableObjectVector>(),
-                width,
-                height,
-                renderType)
-    {
-    }
-
-    MinimalViewerWindow(bgfx::RendererType::Enum renderType) :
-            MinimalViewerWindow(
-                std::make_shared<DrawableObjectVector>(),
-                1024,
-                768,
-                renderType)
-    {
-    }
+    MinimalViewerWindow(uint width = 1024, uint height = 768);
 
     ~MinimalViewerWindow() override = default;
 
-    void draw(uint viewID) override { MV::draw(viewID); }
+    void draw(uint viewID) override;
 
-    void onResize(unsigned int width, unsigned int height) override
-    {
-        MV::resizeViewer(width, height);
-    }
+    void onResize(unsigned int width, unsigned int height) override;
 
 private:
-    void setCallbacks()
-    {
-        // key callback lambda
-        auto keyCB = [](GLFWwindow* window,
-                        int         key,
-                        int         scancode,
-                        int         action,
-                        int         mods) {
-            auto* self = static_cast<MinimalViewerWindow*>(
-                glfwGetWindowUserPointer(window));
-            self->glfwKeyCallback(window, key, scancode, action, mods);
-        };
-
-        glfwSetKeyCallback(window, keyCB);
-
-        // mouse position callback
-        glfwSetCursorPosCallback(
-            window, [](GLFWwindow* window, double xpos, double ypos) {
-                auto* self = static_cast<MinimalViewerWindow*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwCursorPosCallback(window, xpos, ypos);
-            });
-
-        // mouse button callback
-        glfwSetMouseButtonCallback(
-            window, [](GLFWwindow* window, int button, int action, int mods) {
-                auto* self = static_cast<MinimalViewerWindow*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwMouseButtonCallback(window, button, action, mods);
-            });
-
-        // scroll callback
-        glfwSetScrollCallback(
-            window, [](GLFWwindow* window, double xoffset, double yoffset) {
-                auto* self = static_cast<MinimalViewerWindow*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwScrollCallback(window, xoffset, yoffset);
-            });
-    }
+    void setCallbacks();
 
     // callbacks
-    void glfwKeyCallback(GLFWwindow*, int key, int, int action, int mods)
-    {
-        KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
-        MV::setKeyModifiers(modifiers);
+    void glfwKeyCallback(GLFWwindow*, int key, int, int action, int mods);
 
-        if (action == GLFW_PRESS) {
-            MV::keyPress(glfw::fromGLFW((glfw::Key) key));
-        }
-    }
+    void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods);
 
-    void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods)
-    {
-        glfw::MouseButton btn = (glfw::MouseButton) button;
+    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos);
 
-        KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
-        MV::setKeyModifiers(modifiers);
-
-        if (action == GLFW_PRESS) {
-            MV::pressMouse(glfw::fromGLFW(btn));
-        }
-        if (action == GLFW_RELEASE) {
-            MV::releaseMouse(glfw::fromGLFW(btn));
-        }
-    }
-
-    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
-    {
-        MV::moveMouse(xpos, ypos);
-    }
-
-    void glfwScrollCallback(GLFWwindow*, double, double yoffset)
-    {
-        const int WHEEL_STEP = 120;
-
-        float notchY = yoffset / float(WHEEL_STEP);
-
-        MV::wheelMouse(notchY > 0);
-    }
+    void glfwScrollCallback(GLFWwindow*, double, double yoffset);
 };
 
 } // namespace vcl::bglfwx

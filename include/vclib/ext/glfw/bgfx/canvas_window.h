@@ -23,30 +23,11 @@
 #ifndef VCL_EXT_GLFW_BGFX_CANVAS_WINDOW_H
 #define VCL_EXT_GLFW_BGFX_CANVAS_WINDOW_H
 
-#include <iostream>
-
 #include <vclib/ext/bgfx/canvas.h>
 
-#if BX_PLATFORM_LINUX
-#define GLFW_EXPOSE_NATIVE_X11
-#elif BX_PLATFORM_WINDOWS
-#define GLFW_EXPOSE_NATIVE_WIN32
-#elif BX_PLATFORM_OSX
-#define GLFW_EXPOSE_NATIVE_COCOA
-#endif
 #include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
 
 namespace vcl::bglfwx {
-
-namespace detail {
-
-inline void glfwErrorCallback(int error, const char* description)
-{
-    std::cerr << "GLFW error: " << error << ": " << description << std::endl;
-}
-
-} // namespace detail
 
 class CanvasWindow : public vcl::bgf::Canvas
 {
@@ -56,77 +37,15 @@ protected:
     GLFWwindow* window = nullptr;
 
 public:
-    explicit CanvasWindow(
-        uint                     width      = 1024,
-        uint                     height     = 768,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count)
-    {
-        glfwSetErrorCallback(detail::glfwErrorCallback);
-        if (!glfwInit()) {
-            std::cerr << "Failed to initialize GLFW" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+    explicit CanvasWindow(uint width = 1024, uint height = 768);
 
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    virtual ~CanvasWindow();
 
-        window = glfwCreateWindow(width, height, "VCL", nullptr, nullptr);
-        if (!window) {
-            std::cerr << "Failed to create GLFW window" << std::endl;
-            glfwTerminate();
-            exit(EXIT_FAILURE);
-        }
+    uint width() const;
 
-        void* ndt = nullptr;
-        void* nwh = nullptr;
+    uint height() const;
 
-#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
-        ndt = glfwGetX11Display();
-        nwh = (void*) (uintptr_t) glfwGetX11Window(window);
-#elif BX_PLATFORM_OSX
-        nwh = glfwGetCocoaWindow(window);
-#elif BX_PLATFORM_WINDOWS
-        nwh = glfwGetWin32Window(window);
-#endif
-        Canvas::init(nwh, width, height, ndt, renderType);
-
-        glfwSetWindowUserPointer(window, this);
-
-        glfwSetWindowSizeCallback(
-            window, [](GLFWwindow* window, int width, int height) {
-                auto* self = static_cast<CanvasWindow*>(
-                    glfwGetWindowUserPointer(window));
-                self->glfwWindowSizeCallback(window, width, height);
-            });
-    }
-
-    virtual ~CanvasWindow()
-    {
-        glfwDestroyWindow(window);
-        glfwTerminate();
-    }
-
-    uint width() const
-    {
-        int width, height;
-        glfwGetWindowSize(window, &width, &height);
-        return width;
-    }
-
-    uint height() const
-    {
-        int width, height;
-        glfwGetWindowSize(window, &width, &height);
-        return height;
-    }
-
-    void show()
-    {
-        while (!glfwWindowShouldClose(window)) {
-            glfwPollEvents();
-            frame();
-        }
-    }
+    void show();
 
     virtual void draw(uint viewID) override {}
 
@@ -134,11 +53,7 @@ public:
 
 private:
     // callbacks
-    void glfwWindowSizeCallback(GLFWwindow*, int width, int height)
-    {
-        Canvas::resize(width, height);
-        this->onResize(width, height);
-    }
+    void glfwWindowSizeCallback(GLFWwindow*, int width, int height);
 };
 
 } // namespace vcl::bglfwx
