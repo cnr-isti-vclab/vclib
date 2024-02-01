@@ -40,11 +40,7 @@ class ViewerMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ViewerMainWindow(
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWidget*                 parent     = nullptr);
-
-    explicit ViewerMainWindow(QWidget* parent);
+    explicit ViewerMainWindow(QWidget* parent = nullptr);
 
     ~ViewerMainWindow();
 

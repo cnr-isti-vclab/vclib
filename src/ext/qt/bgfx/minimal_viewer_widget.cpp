@@ -26,29 +26,15 @@ namespace vcl::qbgf {
 
 #ifndef __APPLE__
 
-MinimalViewerWidget::MinimalViewerWidget(
-    bgfx::RendererType::Enum renderType,
-    QWidget*                 parent) :
-        MinimalViewerWidget(
-            std::make_shared<DrawableObjectVector>(),
-            renderType,
-            parent)
-{
-}
-
 MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) :
-        MinimalViewerWidget(
-            std::make_shared<DrawableObjectVector>(),
-            bgfx::RendererType::Count,
-            parent)
+        MinimalViewerWidget(std::make_shared<DrawableObjectVector>(), parent)
 {
 }
 
 MinimalViewerWidget::MinimalViewerWidget(
     std::shared_ptr<DrawableObjectVector> v,
-    bgfx::RendererType::Enum              renderType,
     QWidget*                              parent) :
-        CanvasWidget(renderType, parent),
+        CanvasWidget(parent),
         vcl::bgf::MinimalViewer(v)
 {
 }

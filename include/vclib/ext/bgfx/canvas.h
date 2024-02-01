@@ -68,33 +68,15 @@ class Canvas
 public:
     Canvas();
 
-    Canvas(
-        void*                    winID,
-        uint                     width,
-        uint                     height,
-        void*                    displayID  = nullptr,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count);
+    Canvas(void* winID, uint width, uint height, void* displayID = nullptr);
 
-    Canvas(
-        void*                    winID,
-        uint                     width,
-        uint                     height,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count);
+    Canvas(void* winID, uint width, uint height);
 
     ~Canvas();
 
-    void init(
-        void*                    winID,
-        uint                     width,
-        uint                     height,
-        void*                    displayID  = nullptr,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count);
+    void init(void* winID, uint width, uint height, void* displayID = nullptr);
 
-    void init(
-        void*                    winID,
-        uint                     width,
-        uint                     height,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count);
+    void init(void* winID, uint width, uint height);
 
     virtual void draw(uint viewID) = 0;
 

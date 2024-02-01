@@ -30,35 +30,20 @@ MinimalViewerWindow::MinimalViewerWindow(
     std::shared_ptr<DrawableObjectVector> v,
     uint                                  width,
     uint                                  height,
-    bgfx::RendererType::Enum              renderType,
     QWindow*                              parent) :
-        CanvasWindow(width, height, renderType, parent),
+        CanvasWindow(width, height, parent),
         vcl::bgf::MinimalViewer(v, width, height)
 {
 }
 
 MinimalViewerWindow::MinimalViewerWindow(
-    uint                     width,
-    uint                     height,
-    bgfx::RendererType::Enum renderType,
-    QWindow*                 parent) :
+    uint     width,
+    uint     height,
+    QWindow* parent) :
         MinimalViewerWindow(
             std::make_shared<DrawableObjectVector>(),
             width,
             height,
-            renderType,
-            parent)
-{
-}
-
-MinimalViewerWindow::MinimalViewerWindow(
-    bgfx::RendererType::Enum renderType,
-    QWindow*                 parent) :
-        MinimalViewerWindow(
-            std::make_shared<DrawableObjectVector>(),
-            1024,
-            768,
-            renderType,
             parent)
 {
 }
@@ -68,7 +53,6 @@ MinimalViewerWindow::MinimalViewerWindow(QWindow* parent) :
             std::make_shared<DrawableObjectVector>(),
             1024,
             768,
-            bgfx::RendererType::Count,
             parent)
 {
 }

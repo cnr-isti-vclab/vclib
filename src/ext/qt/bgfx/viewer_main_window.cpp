@@ -35,16 +35,13 @@ namespace vcl::qbgf {
  *
  * @param parent
  */
-ViewerMainWindow::ViewerMainWindow(
-    bgfx::RendererType::Enum renderType,
-    QWidget*                 parent) :
-        QMainWindow(parent),
-        ui(new Ui::ViewerMainWindow)
+ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
+        QMainWindow(parent), ui(new Ui::ViewerMainWindow)
 {
     ui->setupUi(this);
 
     // create the viewer inside the viewer container
-    viewer = new MinimalViewerWidget(renderType, ui->viewerContainer);
+    viewer = new MinimalViewerWidget(ui->viewerContainer);
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(viewer);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -84,11 +81,6 @@ ViewerMainWindow::ViewerMainWindow(
         SLOT(selectedDrawableObjectChanged(uint)));
 
     ui->rightArea->setVisible(false);
-}
-
-ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
-        ViewerMainWindow(bgfx::RendererType::Count, parent)
-{
 }
 
 ViewerMainWindow::~ViewerMainWindow()

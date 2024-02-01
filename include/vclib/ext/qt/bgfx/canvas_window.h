@@ -38,10 +38,9 @@ class CanvasWindow : public QWindow, vcl::bgf::Canvas
 
 public:
     explicit CanvasWindow(
-        uint                     width      = 1024,
-        uint                     height     = 768,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr);
+        uint     width  = 1024,
+        uint     height = 768,
+        QWindow* parent = nullptr);
 
     virtual ~CanvasWindow();
 

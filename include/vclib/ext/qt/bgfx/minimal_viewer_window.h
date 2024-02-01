@@ -47,18 +47,12 @@ public:
         std::shared_ptr<DrawableObjectVector> v,
         uint                                  width  = 1024,
         uint                                  height = 768,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr);
+        QWindow*                              parent = nullptr);
 
     MinimalViewerWindow(
-        uint                     width      = 1024,
-        uint                     height     = 768,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWindow*                 parent     = nullptr);
-
-    MinimalViewerWindow(
-        bgfx::RendererType::Enum renderType,
-        QWindow*                 parent = nullptr);
+        uint     width  = 1024,
+        uint     height = 768,
+        QWindow* parent = nullptr);
 
     MinimalViewerWindow(QWindow* parent);
 

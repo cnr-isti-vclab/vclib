@@ -39,16 +39,11 @@ public:
     using CanvasWidget::height;
     using CanvasWidget::width;
 
-    MinimalViewerWidget(
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWidget*                 parent     = nullptr);
-
-    MinimalViewerWidget(QWidget* parent);
+    MinimalViewerWidget(QWidget* parent = nullptr);
 
     MinimalViewerWidget(
         std::shared_ptr<DrawableObjectVector> v,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWidget*                 parent     = nullptr);
+        QWidget*                              parent = nullptr);
 
     virtual ~MinimalViewerWidget() = default;
 
@@ -74,22 +69,14 @@ public:
 class MinimalViewerWidget : public CanvasWidget<MinimalViewerWindow>
 {
 public:
-    MinimalViewerWidget(
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWidget*                 parent     = nullptr) :
+    MinimalViewerWidget(QWidget* parent = nullptr) :
             CanvasWidget<MinimalViewerWindow>(renderType, parent)
-    {
-    }
-
-    MinimalViewerWidget(QWidget* parent) :
-            CanvasWidget<MinimalViewerWindow>(parent)
     {
     }
 
     MinimalViewerWidget(
         std::shared_ptr<DrawableObjectVector> v,
-        bgfx::RendererType::Enum renderType = bgfx::RendererType::Count,
-        QWidget*                 parent     = nullptr) :
+        QWidget*                              parent = nullptr) :
             CanvasWidget<MinimalViewerWindow>(renderType, parent)
     {
         setDrawableObjectVector(v);

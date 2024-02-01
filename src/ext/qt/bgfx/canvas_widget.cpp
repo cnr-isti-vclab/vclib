@@ -28,7 +28,7 @@ namespace vcl::qbgf {
 
 #ifndef __APPLE__
 
-CanvasWidget::CanvasWidget(bgfx::RendererType::Enum renderType, QWidget* parent)
+CanvasWidget::CanvasWidget(QWidget* parent)
 {
     setGeometry(100, 100, 1024, 768);
 
@@ -52,8 +52,7 @@ CanvasWidget::CanvasWidget(bgfx::RendererType::Enum renderType, QWidget* parent)
     }
 #endif // Q_OS_LINUX
 
-    vcl::bgf::Canvas::init(
-        (void*) winId(), width(), height(), displayID, renderType);
+    vcl::bgf::Canvas::init((void*) winId(), width(), height(), displayID);
 }
 
 CanvasWidget::~CanvasWidget()

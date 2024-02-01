@@ -27,7 +27,6 @@ namespace vcl::qbgf {
 CanvasWindow::CanvasWindow(
     uint                     width,
     uint                     height,
-    bgfx::RendererType::Enum renderType,
     QWindow*                 parent) :
         QWindow(parent)
 {
@@ -53,8 +52,7 @@ CanvasWindow::CanvasWindow(
     }
 #endif
 
-    vcl::bgf::Canvas::init(
-        (void*) winId(), width, height, displayID, renderType);
+    vcl::bgf::Canvas::init((void*) winId(), width, height, displayID);
 }
 
 CanvasWindow::~CanvasWindow()

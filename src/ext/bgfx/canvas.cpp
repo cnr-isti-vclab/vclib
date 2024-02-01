@@ -28,23 +28,14 @@ Canvas::Canvas()
 {
 }
 
-Canvas::Canvas(
-    void*                    winID,
-    uint                     width,
-    uint                     height,
-    void*                    displayID,
-    bgfx::RendererType::Enum renderType)
+Canvas::Canvas(void* winID, uint width, uint height, void* displayID)
 {
-    init(winID, width, height, displayID, renderType);
+    init(winID, width, height, displayID);
 }
 
-Canvas::Canvas(
-    void*                    winID,
-    uint                     width,
-    uint                     height,
-    bgfx::RendererType::Enum renderType)
+Canvas::Canvas(void* winID, uint width, uint height)
 {
-    init(winID, width, height, nullptr, renderType);
+    init(winID, width, height, nullptr);
 }
 
 Canvas::~Canvas()
@@ -54,12 +45,7 @@ Canvas::~Canvas()
     Context::releaseViewId(viewID);
 }
 
-void Canvas::init(
-    void*                    winID,
-    uint                     width,
-    uint                     height,
-    void*                    displayID,
-    bgfx::RendererType::Enum renderType)
+void Canvas::init(void* winID, uint width, uint height, void* displayID)
 {
     this->winID = winID;
 
@@ -74,13 +60,9 @@ void Canvas::init(
     bgfx::touch(viewID);
 }
 
-void Canvas::init(
-    void*                    winID,
-    uint                     width,
-    uint                     height,
-    bgfx::RendererType::Enum renderType)
+void Canvas::init(void* winID, uint width, uint height)
 {
-    init(winID, width, height, nullptr, renderType);
+    init(winID, width, height, nullptr);
 }
 
 void Canvas::frame()
