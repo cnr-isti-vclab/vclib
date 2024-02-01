@@ -20,23 +20,51 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_INPUT_H
-#define VCL_EXT_QT_GUI_INPUT_H
-
-#include <vclib/gui/input.h>
-
-#include <QMouseEvent>
+#include <vclib/ext/qt/gui/input.h>
 
 namespace vcl::qt {
 
-MouseButton fromQt(Qt::MouseButton button);
+vcl::MouseButton fromQt(Qt::MouseButton button)
+{
+    switch (button) {
+    case Qt::LeftButton: return LEFT;
+    case Qt::RightButton: return RIGHT;
+    case Qt::MiddleButton: return MIDDLE;
+    default: return NO_BUTTON;
+    }
+}
 
-KeyModifier fromQt(Qt::KeyboardModifier modifier);
+KeyModifier fromQt(Qt::KeyboardModifier modifier)
+{
+    switch (modifier) {
+    case Qt::ShiftModifier: return SHIFT;
+    case Qt::ControlModifier: return CONTROL;
+    case Qt::AltModifier: return ALT;
+    default: return NO_MODIFIER;
+    }
+}
 
-Key fromQt(Qt::Key key);
+Key fromQt(Qt::Key key)
+{
+    return static_cast<Key>(key);
+}
 
-KeyModifiers fromQt(Qt::KeyboardModifiers modifiers);
+KeyModifiers fromQt(Qt::KeyboardModifiers modifiers)
+{
+    KeyModifiers res;
+
+    if (modifiers & Qt::ShiftModifier)
+        res[SHIFT] = true;
+    if (modifiers & Qt::ControlModifier)
+        res[CONTROL] = true;
+    if (modifiers & Qt::AltModifier)
+        res[ALT] = true;
+
+           // no modifier must be enabled only when no other modifier is enabled
+    if (res.none())
+        res[NO_MODIFIER] = true;
+
+    return res;
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_EXT_QT_GUI_INPUT_H

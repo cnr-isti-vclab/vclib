@@ -23,13 +23,9 @@
 #ifndef VCL_EXT_QGLVIEWER_MINIMAL_VIEWER_WIDGET_H
 #define VCL_EXT_QGLVIEWER_MINIMAL_VIEWER_WIDGET_H
 
-#include <memory>
-
 #include <QGLViewer/qglviewer.h>
 
-#include <vclib/math/min_max.h>
 #include <vclib/render/drawable_object_vector.h>
-#include <vclib/space/box.h>
 
 namespace vcl::qgl {
 
@@ -39,55 +35,23 @@ class MinimalViewerWidget : public QGLViewer
     std::shared_ptr<DrawableObjectVector> drawList;
 
 public:
-    MinimalViewerWidget(QWidget* parent = nullptr) : QGLViewer(parent)
-    {
-        drawList = std::make_shared<DrawableObjectVector>();
-    }
+    MinimalViewerWidget(QWidget* parent = nullptr);
 
     MinimalViewerWidget(
         std::shared_ptr<DrawableObjectVector> v,
-        QWidget*                              parent = nullptr) :
-            QGLViewer(parent),
-            drawList(v)
-    {
-    }
+        QWidget*                              parent = nullptr);
 
-    void init()
-    {
-        for (DrawableObject* d : *drawList) {
-            d->init();
-        }
-    }
+    void init();
 
-    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
-    {
-        drawList = v;
-    }
+    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
 
-    std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const
-    {
-        return drawList;
-    }
+    std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const;
 
-    void fitScene()
-    {
-        Box3d   bb          = drawList->boundingBox();
-        Point3d sceneCenter = bb.center();
-        double  sceneRadius = bb.diagonal() / 2;
-
-        setSceneCenter(
-            qglviewer::Vec(sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
-        setSceneRadius(sceneRadius);
-        showEntireScene();
-    }
+    void fitScene();
 
 protected:
     // QGLViever function, does not require a viewID
-    virtual void draw()
-    {
-        for (DrawableObject* obj : *drawList)
-            obj->draw(0);
-    }
+    virtual void draw();
 };
 
 } // namespace vcl::qgl

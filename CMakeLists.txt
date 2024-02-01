@@ -72,13 +72,6 @@ if (APPLE)
         src/gui/native_window_handle.mm)
 endif()
 
-if (TARGET vclib-external-opengl)
-    list(APPEND HEADERS
-        include/vclib/ext/opengl2/draw_objects2.h
-        include/vclib/ext/opengl2/draw_objects3.h
-        include/vclib/ext/opengl2/drawable_mesh.h)
-endif()
-
 if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
         include/vclib/ext/bgfx/canvas.h
@@ -125,6 +118,9 @@ if (TARGET vclib-external-glfw)
     list(APPEND HEADERS
         include/vclib/ext/glfw/gui/input.h)
 
+    list(APPEND SOURCES
+        src/ext/glfw/gui/input.cpp)
+
     if (TARGET vclib-external-bgfx)
         list(APPEND HEADERS
             include/vclib/ext/glfw/bgfx/canvas_window.h
@@ -134,7 +130,17 @@ if (TARGET vclib-external-glfw)
             src/ext/glfw/bgfx/canvas_window.cpp
             src/ext/glfw/bgfx/minimal_viewer_window.cpp)
     endif()
+endif()
 
+if (TARGET vclib-external-opengl)
+    list(APPEND HEADERS
+        include/vclib/ext/opengl2/draw_objects2.h
+        include/vclib/ext/opengl2/draw_objects3.h
+        include/vclib/ext/opengl2/drawable_mesh.h)
+
+    list(APPEND SOURCES
+        src/ext/opengl2/draw_objects2.cpp
+        src/ext/opengl2/draw_objects3.cpp)
 endif()
 
 if (TARGET vclib-external-qt)
@@ -148,6 +154,7 @@ if (TARGET vclib-external-qt)
     list(APPEND SOURCES
         src/ext/qt/gui/drawable_object_frame.cpp
         src/ext/qt/gui/drawable_object_vector_frame.cpp
+        src/ext/qt/gui/input.cpp
         src/ext/qt/gui/mesh_render_settings_frame.cpp
         src/ext/qt/gui/q_clickable_label.cpp)
 
@@ -159,10 +166,10 @@ if (TARGET vclib-external-qt)
     if (TARGET vclib-external-qglviewer)
         list(APPEND HEADERS
             include/vclib/ext/qglviewer/minimal_viewer_widget.h
-            include/vclib/ext/qglviewer/viewer_main_window.h
-        )
+            include/vclib/ext/qglviewer/viewer_main_window.h)
 
         list(APPEND SOURCES
+            src/ext/qglviewer/minimal_viewer_widget.cpp
             src/ext/qglviewer/viewer_main_window.cpp)
 
         list(APPEND FORMS

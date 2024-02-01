@@ -20,23 +20,61 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_INPUT_H
-#define VCL_EXT_QT_GUI_INPUT_H
+#include <vclib/ext/qglviewer/minimal_viewer_widget.h>
 
-#include <vclib/gui/input.h>
+#include <vclib/math/min_max.h>
+#include <vclib/space/box.h>
 
-#include <QMouseEvent>
+namespace vcl::qgl {
 
-namespace vcl::qt {
+MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) : QGLViewer(parent)
+{
+    drawList = std::make_shared<DrawableObjectVector>();
+}
 
-MouseButton fromQt(Qt::MouseButton button);
+MinimalViewerWidget::MinimalViewerWidget(
+    std::shared_ptr<DrawableObjectVector> v,
+    QWidget*                              parent) :
+        QGLViewer(parent),
+        drawList(v)
+{
+}
 
-KeyModifier fromQt(Qt::KeyboardModifier modifier);
+void MinimalViewerWidget::init()
+{
+    for (DrawableObject* d : *drawList) {
+        d->init();
+    }
+}
 
-Key fromQt(Qt::Key key);
+void MinimalViewerWidget::setDrawableObjectVector(
+    std::shared_ptr<DrawableObjectVector> v)
+{
+    drawList = v;
+}
 
-KeyModifiers fromQt(Qt::KeyboardModifiers modifiers);
+std::shared_ptr<const DrawableObjectVector> MinimalViewerWidget::
+    drawableObjectVector() const
+{
+    return drawList;
+}
 
-} // namespace vcl::qt
+void MinimalViewerWidget::fitScene()
+{
+    Box3d   bb          = drawList->boundingBox();
+    Point3d sceneCenter = bb.center();
+    double  sceneRadius = bb.diagonal() / 2;
 
-#endif // VCL_EXT_QT_GUI_INPUT_H
+    setSceneCenter(
+        qglviewer::Vec(sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
+    setSceneRadius(sceneRadius);
+    showEntireScene();
+}
+
+void MinimalViewerWidget::draw()
+{
+    for (DrawableObject* obj : *drawList)
+        obj->draw(0);
+}
+
+} // namespace vcl::qgl
