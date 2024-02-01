@@ -65,7 +65,9 @@ set(HEADERS
     include/vclib/render/lights/directional_light.h)
 
 set(SOURCES
-    src/gui/native_window_handle.cpp)
+    src/gui/native_window_handle.cpp
+    src/render/drawable_object_vector.cpp
+    src/render/mesh_render_settings.cpp)
 
 if (APPLE)
     list (APPEND SOURCES

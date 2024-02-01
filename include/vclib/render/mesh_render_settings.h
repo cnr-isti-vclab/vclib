@@ -200,15 +200,7 @@ public:
 
     float pointWidth() const { return pWidth; }
 
-    vcl::Color pointCloudUserColor() const
-    {
-        vcl::Color c;
-        c.setRedF(pUserColor[0]);
-        c.setGreenF(pUserColor[1]);
-        c.setBlueF(pUserColor[2]);
-        c.setAlphaF(pUserColor[3]);
-        return c;
-    }
+    vcl::Color pointCloudUserColor() const;
 
     const float* pointCloudUserColorData() const { return pUserColor; }
 
@@ -259,12 +251,7 @@ public:
         return dMode & VCL_MRS_SURF_TEX_WEDGE;
     }
 
-    vcl::Color surfaceUserColor() const
-    {
-        vcl::Color c;
-        c.setAbgr(sUserColor);
-        return c;
-    }
+    vcl::Color surfaceUserColor() const;
 
     const uint* surfaceUserColorData() const { return &sUserColor; }
 
@@ -297,15 +284,7 @@ public:
 
     int wireframeWidth() const { return wWidth; }
 
-    vcl::Color wireframeUserColor() const
-    {
-        vcl::Color c;
-        c.setRedF(wUserColor[0]);
-        c.setGreenF(wUserColor[1]);
-        c.setBlueF(wUserColor[2]);
-        c.setAlphaF(wUserColor[3]);
-        return c;
-    }
+    vcl::Color wireframeUserColor() const;
 
     const float* wireframeUserColorData() const { return wUserColor; }
 
@@ -313,510 +292,69 @@ public:
 
     // rendering options setters
 
-    bool setVisibility(bool b)
-    {
-        if (canBeVisible()) {
-            if (b)
-                dMode |= VCL_MRS_DRAW_MESH;
-            else
-                dMode &= ~VCL_MRS_DRAW_MESH;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setVisibility(bool b);
 
-    bool setPointCloudVisibility(bool b)
-    {
-        if (canPointCloudBeVisible()) {
-            if (b)
-                dMode |= VCL_MRS_DRAW_POINTS;
-            else
-                dMode &= ~VCL_MRS_DRAW_POINTS;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointCloudVisibility(bool b);
 
-    bool setPointCloudShadingNone()
-    {
-        if (canPointCloudBeVisible()) {
-            dMode |= VCL_MRS_POINTS_SHADING_NONE;
-            dMode &= ~VCL_MRS_POINTS_SHADING_VERT;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointCloudShadingNone();
 
-    bool setPointCloudShadingPerVertex()
-    {
-        if (canPointCloudBeVisible()) {
-            dMode &= ~VCL_MRS_POINTS_SHADING_NONE;
-            dMode |= VCL_MRS_POINTS_SHADING_VERT;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointCloudShadingPerVertex();
 
-    bool setPointCloudColorPerVertex()
-    {
-        if (canSurfaceColorBePerVertex()) {
-            dMode |= VCL_MRS_POINTS_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_POINTS_COLOR_MESH;
-            dMode &= ~VCL_MRS_POINTS_COLOR_USER;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointCloudColorPerVertex();
 
-    bool setPointCloudColorPerMesh()
-    {
-        if (canSurfaceColorBePerMesh()) {
-            dMode &= ~VCL_MRS_POINTS_COLOR_VERTEX;
-            dMode |= VCL_MRS_POINTS_COLOR_MESH;
-            dMode &= ~VCL_MRS_POINTS_COLOR_USER;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointCloudColorPerMesh();
 
-    bool setPointCloudColorUserDefined()
-    {
-        if (canPointCloudBeVisible()) {
-            dMode &= ~VCL_MRS_POINTS_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_POINTS_COLOR_MESH;
-            dMode |= VCL_MRS_POINTS_COLOR_USER;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointCloudColorUserDefined();
 
-    bool setPointWidth(float width)
-    {
-        if (canPointCloudBeVisible()) {
-            pWidth = width;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointWidth(float width);
 
-    bool setPointCloudUserColor(float r, float g, float b, float a = 1)
-    {
-        if (canPointCloudBeVisible()) {
-            pUserColor[0] = r;
-            pUserColor[1] = g;
-            pUserColor[2] = b;
-            pUserColor[3] = a;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointCloudUserColor(float r, float g, float b, float a = 1);
 
-    bool setPointCloudUserColor(const vcl::Color& c)
-    {
-        if (canPointCloudBeVisible()) {
-            pUserColor[0] = c.redF();
-            pUserColor[1] = c.greenF();
-            pUserColor[2] = c.blueF();
-            pUserColor[3] = c.alphaF();
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setPointCloudUserColor(const vcl::Color& c);
 
-    bool setSurfaceVisibility(bool b)
-    {
-        if (canSurfaceBeVisible()) {
-            if (b)
-                dMode |= VCL_MRS_DRAW_SURF;
-            else
-                dMode &= ~VCL_MRS_DRAW_SURF;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceVisibility(bool b);
 
-    /**
-     * @brief Unsets the shading of the surface (no light).
-     * Unsets automatically the smooth and flat shadings.
-     */
-    bool setSurfaceShadingNone()
-    {
-        if (canSurfaceBeVisible()) {
-            dMode |= VCL_MRS_SURF_SHADING_NONE;
-            dMode &= ~VCL_MRS_SURF_SHADING_FLAT;
-            dMode &= ~VCL_MRS_SURF_SHADING_SMOOTH;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceShadingNone();
 
-    /**
-     * @brief Sets the shading of the surface flat (using triangle normals).
-     * Unsets automatically the none and smooth shading.
-     */
-    bool setSurfaceShadingFlat()
-    {
-        if (canSurfaceShadingBeFlat()) {
-            dMode |= VCL_MRS_SURF_SHADING_FLAT;
-            dMode &= ~VCL_MRS_SURF_SHADING_NONE;
-            dMode &= ~VCL_MRS_SURF_SHADING_SMOOTH;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceShadingFlat();
 
-    /**
-     * @brief Sets the shading of the surface smooth (using vertex normals).
-     * Unsets automatically the none and flat shading.
-     */
-    bool setSurfaceShadingSmooth()
-    {
-        if (canSurfaceShadingBeSmooth()) {
-            dMode |= VCL_MRS_SURF_SHADING_SMOOTH;
-            dMode &= ~VCL_MRS_SURF_SHADING_NONE;
-            dMode &= ~VCL_MRS_SURF_SHADING_FLAT;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceShadingSmooth();
 
-    /**
-     * @brief Set the surface coloring per vertex (using the vertex colors).
-     * Unsets automatically the other possible surface colorizations:
-     * - color per face
-     * - color per mesh
-     * - color user defined
-     * - per vertex texture
-     * - per wedge texture
-     */
-    bool setSurfaceColorPerVertex()
-    {
-        if (canSurfaceColorBePerVertex()) {
-            dMode |= VCL_MRS_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceColorPerVertex();
 
-    /**
-     * @brief Set the surface coloring per face (using the face colors).
-     * Unsets automatically the other possible surface colorizations:
-     * - color per vertex
-     * - color per mesh
-     * - color user defined
-     * - per vertex texture
-     * - per wedge texture
-     */
-    bool setSurfaceColorPerFace()
-    {
-        if (canSurfaceColorBePerFace()) {
-            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-            dMode |= VCL_MRS_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceColorPerFace();
 
-    /**
-     * @brief Set the surface coloring per mesh (using the mesh color).
-     * Unsets automatically the other possible surface colorizations:
-     * - color per vertex
-     * - color per face
-     * - color user defined
-     * - per vertex texture
-     * - per wedge texture
-     */
-    bool setSurfaceColorPerMesh()
-    {
-        if (canSurfaceColorBePerMesh()) {
-            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-            dMode |= VCL_MRS_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceColorPerMesh();
 
-    /**
-     * @brief Set the surface coloring by the user defined color.
-     * To set the user defined color, you can use the
-     * setSurfaceColorUserDefined() function.
-     *
-     * Unsets automatically the other possible surface colorizations:
-     * - color per vertex
-     * - color per face
-     * - color per mesh
-     * - per vertex texture
-     * - per wedge texture
-     */
-    bool setSurfaceColorUserDefined()
-    {
-        if (canSurfaceBeVisible()) {
-            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-            dMode |= VCL_MRS_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceColorUserDefined();
 
-    /**
-     * @brief Set the surface texture per vertex texcoords.
-     * Unsets automatically the other possible surface colorizations:
-     * - color per vertex
-     * - color per face
-     * - color per mesh
-     * - color user defined
-     * - per wedge texture
-     */
-    bool setSurfaceColorPerVertexTexcoords()
-    {
-        if (canSurfaceColorBePerVertexTexcoords()) {
-            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_SURF_COLOR_USER;
-            dMode |= VCL_MRS_SURF_TEX_VERTEX;
-            dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceColorPerVertexTexcoords();
 
-    /**
-     * @brief Set the surface texture per wedge texcoords.
-     * Unsets automatically the other possible surface colorizations:
-     * - color per vertex
-     * - color per face
-     * - color per mesh
-     * - color user defined
-     * - per vertex texture
-     */
-    bool setSurfaceColorPerWedgeTexcoords()
-    {
-        if (canSurfaceColorBePerWedgeTexcoords()) {
-            dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-            dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-            dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-            dMode &= ~VCL_MRS_SURF_COLOR_USER;
-            dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-            dMode |= VCL_MRS_SURF_TEX_WEDGE;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceColorPerWedgeTexcoords();
 
-    bool setSurfaceUserColor(float r, float g, float b, float a = 1)
-    {
-        if (canSurfaceBeVisible()) {
-            vcl::Color c;
-            c.setRedF(r);
-            c.setGreenF(g);
-            c.setBlueF(b);
-            c.setAlphaF(a);
-            sUserColor = c.abgr();
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceUserColor(float r, float g, float b, float a = 1);
 
-    bool setSurfaceUserColor(const vcl::Color& c)
-    {
-        if (canSurfaceBeVisible()) {
-            sUserColor = c.abgr();
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setSurfaceUserColor(const vcl::Color& c);
 
-    bool setWireframeVisibility(bool b)
-    {
-        if (canSurfaceBeVisible()) {
-            if (b)
-                dMode |= VCL_MRS_DRAW_WIREFRAME;
-            else
-                dMode &= ~VCL_MRS_DRAW_WIREFRAME;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeVisibility(bool b);
 
-    bool setWireframeShadingNone()
-    {
-        if (canSurfaceBeVisible()) {
-            dMode |= VCL_MRS_WIREFRAME_SHADING_NONE;
-            dMode &= ~VCL_MRS_WIREFRAME_SHADING_VERT;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeShadingNone();
 
-    bool setWireframeShadingPerVertex()
-    {
-        if (canSurfaceBeVisible()) {
-            dMode &= ~VCL_MRS_WIREFRAME_SHADING_NONE;
-            dMode |= VCL_MRS_WIREFRAME_SHADING_VERT;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeShadingPerVertex();
 
-    bool setWireframeColorPerVertex()
-    {
-        if (canWireframeColorBePerVertex()) {
-            dMode |= VCL_MRS_WIREFRAME_COLOR_VERT;
-            dMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
-            dMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeColorPerVertex();
 
-    bool setWireframeColorPerMesh()
-    {
-        if (canWireframeColorBePerMesh()) {
-            dMode &= ~VCL_MRS_WIREFRAME_COLOR_VERT;
-            dMode |= VCL_MRS_WIREFRAME_COLOR_MESH;
-            dMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeColorPerMesh();
 
-    bool setWireframeColorUserDefined()
-    {
-        if (canSurfaceBeVisible()) {
-            dMode &= ~VCL_MRS_WIREFRAME_COLOR_VERT;
-            dMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
-            dMode |= VCL_MRS_WIREFRAME_COLOR_USER;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeColorUserDefined();
 
-    bool setWireframeUserColor(float r, float g, float b, float a = 1)
-    {
-        if (canSurfaceBeVisible()) {
-            wUserColor[0] = r;
-            wUserColor[1] = g;
-            wUserColor[2] = b;
-            wUserColor[3] = a;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeUserColor(float r, float g, float b, float a = 1);
 
-    bool setWireframeWidth(int width)
-    {
-        if (canSurfaceBeVisible()) {
-            wWidth = width;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeWidth(int width);
 
-    bool setWireframeUserColor(const vcl::Color& c)
-    {
-        if (canSurfaceBeVisible()) {
-            wUserColor[0] = c.redF();
-            wUserColor[1] = c.greenF();
-            wUserColor[2] = c.blueF();
-            wUserColor[3] = c.alphaF();
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setWireframeUserColor(const vcl::Color& c);
 
-    bool setBoundingBoxVisibility(bool b)
-    {
-        if (canBoundingBoxBeVisible()) {
-            if (b)
-                dMode |= VCL_MRS_DRAW_BOUNDINGBOX;
-            else
-                dMode &= ~VCL_MRS_DRAW_BOUNDINGBOX;
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+    bool setBoundingBoxVisibility(bool b);
 
     template<MeshConcept MeshType>
     void setRenderCapabilityFrom(const MeshType& m)
@@ -913,67 +451,7 @@ public:
         dMode &= dModeCapability;
     }
 
-    void setDefaultSettingsFromCapability()
-    {
-        dMode = 0;
-
-        // default settings - ignored if not available
-        setWireframeColorUserDefined();
-
-        if (canBeVisible()) {
-            setVisibility(true);
-            if (canSurfaceBeVisible()) {
-                setSurfaceVisibility(true);
-                // shading
-                if (canSurfaceShadingBeSmooth()) {
-                    setSurfaceShadingSmooth();
-                }
-                else if (canSurfaceShadingBeFlat()) {
-                    setSurfaceShadingFlat();
-                }
-                else {
-                    setSurfaceShadingNone();
-                }
-                // color
-                if (canSurfaceColorBePerVertex()) {
-                    setSurfaceColorPerVertex();
-                }
-                else if (canSurfaceColorBePerFace()) {
-                    setSurfaceColorPerFace();
-                }
-                else if (canSurfaceColorBePerWedgeTexcoords()) {
-                    setSurfaceColorPerWedgeTexcoords();
-                }
-                else if (canSurfaceColorBePerVertexTexcoords()) {
-                    setSurfaceColorPerVertexTexcoords();
-                }
-                else if (canSurfaceColorBePerMesh()) {
-                    setSurfaceColorPerMesh();
-                }
-                else {
-                    setSurfaceColorUserDefined();
-                }
-            }
-
-            if (canPointCloudBeVisible()) {
-                if (!canSurfaceBeVisible())
-                    setPointCloudVisibility(true);
-                setPointCloudShadingNone();
-                if (canPointCloudShadingBePerVertex()) {
-                    setPointCloudShadingPerVertex();
-                }
-                if (canPointCloudColorBePerVertex()) {
-                    setPointCloudColorPerVertex();
-                }
-                else if (canPointCloudColorBePerMesh()) {
-                    setPointCloudColorPerMesh();
-                }
-                else {
-                    setPointCloudColorUserDefined();
-                }
-            }
-        }
-    }
+    void setDefaultSettingsFromCapability();
 };
 
 } // namespace vcl

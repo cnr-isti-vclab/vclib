@@ -39,135 +39,44 @@ public:
 
     DrawableObjectVector() = default;
 
-    DrawableObjectVector(const DrawableObjectVector& oth)
-    {
-        drawVector.resize(oth.size());
-        for (uint i = 0; i < oth.size(); i++)
-            drawVector[i] = oth[i].clone();
-    }
+    DrawableObjectVector(const DrawableObjectVector& oth);
 
-    DrawableObjectVector(DrawableObjectVector&& oth) { swap(oth); }
+    DrawableObjectVector(DrawableObjectVector&& oth);
 
-    ~DrawableObjectVector()
-    {
-        // delete all the DrawableObjects
-        for (DrawableObject* obj : drawVector) {
-            delete obj;
-        }
-    }
+    ~DrawableObjectVector();
 
-    /**
-     * @brief Pushes a copy of the DrawableObject to the vector.
-     *
-     * This function creates a **copy** of the given argument and inserts it
-     * into the back of the vector.
-     *
-     * @param obj
-     * @return
-     */
-    uint pushBack(const DrawableObject& obj)
-    {
-        drawVector.push_back(obj.clone());
-        return drawVector.size();
-    }
+    uint pushBack(const DrawableObject& obj);
 
-    /**
-     * @brief Pushes a copy of the DrawableObject to the vector.
-     *
-     * This function creates a **copy** of the given argument and inserts it
-     * into the back of the vector. If the given argument is a nullptr, the
-     * function returns UINT_NULL.
-     *
-     * @param obj
-     * @return
-     */
-    uint pushBack(const DrawableObject* obj)
-    {
-        if (obj == nullptr)
-            return UINT_NULL;
-        drawVector.push_back(obj->clone());
-        return drawVector.size();
-    }
+    uint pushBack(const DrawableObject* obj);
 
-    DrawableObject& at(uint i)
-    {
-        assert(i < drawVector.size());
-        return *drawVector.at(i);
-    }
+    DrawableObject& at(uint i);
 
-    const DrawableObject& at(uint i) const
-    {
-        assert(i < drawVector.size());
-        return *drawVector.at(i);
-    }
+    const DrawableObject& at(uint i) const;
 
-    DrawableObject& operator[](uint i) { return *drawVector[i]; }
+    DrawableObject& operator[](uint i);
 
-    const DrawableObject& operator[](uint i) const { return *drawVector[i]; }
+    const DrawableObject& operator[](uint i) const;
 
-    std::size_t size() const { return drawVector.size(); }
+    std::size_t size() const;
 
-    void clear()
-    {
-        // delete all the DrawableObjects
-        for (DrawableObject* obj : drawVector) {
-            delete obj;
-        }
-        drawVector.clear();
-    }
+    void clear();
 
-    vcl::Box3d boundingBox(bool onlyVisible = true) const
-    {
-        Box3d bb;
-        if (drawVector.size() > 0) {
-            uint i = onlyVisible ? firstVisibleObject() : 0;
+    vcl::Box3d boundingBox(bool onlyVisible = true) const;
 
-            if (i < drawVector.size()) {
-                Point3d sc = drawVector.at(i)->center();
-                bb.add(sc - drawVector.at(i)->radius());
-                bb.add(sc + drawVector.at(i)->radius());
+    void swap(DrawableObjectVector& oth);
 
-                for (i = i + 1; i < drawVector.size(); i++)
-                { // rest of the list
-                    if (!onlyVisible || drawVector.at(i)->isVisible()) {
-                        Point3d sc = drawVector.at(i)->center();
-                        bb.add(sc - drawVector.at(i)->radius());
-                        bb.add(sc + drawVector.at(i)->radius());
-                    }
-                }
-            }
-        }
-        return bb;
-    }
+    DrawableObjectVector& operator=(DrawableObjectVector oth);
 
-    void swap(DrawableObjectVector& oth)
-    {
-        using std::swap;
-        swap(drawVector, oth.drawVector);
-    }
+    iterator begin();
 
-    DrawableObjectVector& operator=(DrawableObjectVector oth)
-    {
-        swap(oth);
-        return *this;
-    }
+    iterator end();
 
-    iterator begin() { return drawVector.begin(); }
+    const_iterator begin() const;
 
-    iterator end() { return drawVector.end(); }
-
-    const_iterator begin() const { return drawVector.begin(); }
-
-    const_iterator end() const { return drawVector.end(); }
+    const_iterator end() const;
 
 private:
-    uint firstVisibleObject() const
-    {
-        for (uint i = 0; i < drawVector.size(); i++)
-            if (drawVector[i]->isVisible())
-                return i;
-        return UINT_NULL;
-    }
+    uint firstVisibleObject() const;
 };
 
 } // namespace vcl
