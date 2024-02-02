@@ -41,7 +41,7 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
     ui->setupUi(this);
 
     // create the viewer inside the viewer container
-    viewer = new MinimalViewerWidget(ui->viewerContainer);
+    viewer              = new MinimalViewerWidget(ui->viewerContainer);
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(viewer);
     layout->setContentsMargins(0, 0, 0, 0);

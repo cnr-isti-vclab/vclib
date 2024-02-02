@@ -60,7 +60,7 @@ KeyModifiers fromQt(Qt::KeyboardModifiers modifiers)
     if (modifiers & Qt::AltModifier)
         res[ALT] = true;
 
-           // no modifier must be enabled only when no other modifier is enabled
+    // no modifier must be enabled only when no other modifier is enabled
     if (res.none())
         res[NO_MODIFIER] = true;
 

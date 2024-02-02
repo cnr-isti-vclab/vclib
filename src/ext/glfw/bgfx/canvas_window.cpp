@@ -34,7 +34,6 @@
 
 #include <GLFW/glfw3native.h>
 
-
 namespace vcl::bglfwx {
 
 namespace detail {
@@ -93,7 +92,6 @@ CanvasWindow::~CanvasWindow()
     glfwTerminate();
 }
 
-
 uint CanvasWindow::width() const
 {
     int width, height;
@@ -101,14 +99,12 @@ uint CanvasWindow::width() const
     return width;
 }
 
-
 uint CanvasWindow::height() const
 {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
     return height;
 }
-
 
 void CanvasWindow::show()
 {

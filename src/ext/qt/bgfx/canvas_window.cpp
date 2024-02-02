@@ -24,10 +24,7 @@
 
 namespace vcl::qbgf {
 
-CanvasWindow::CanvasWindow(
-    uint                     width,
-    uint                     height,
-    QWindow*                 parent) :
+CanvasWindow::CanvasWindow(uint width, uint height, QWindow* parent) :
         QWindow(parent)
 {
     setGeometry(100, 100, width, height);

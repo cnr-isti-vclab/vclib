@@ -125,7 +125,7 @@ KeyModifiers fromGLFW(KeyboardModifiers mods)
     if (mods & GLFW_MOD_ALT)
         res[ALT] = true;
 
-           // no modifier must be enabled only when no other modifier is enabled
+    // no modifier must be enabled only when no other modifier is enabled
     if (res.none())
         res[NO_MODIFIER] = true;
 

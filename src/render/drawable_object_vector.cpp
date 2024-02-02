@@ -104,7 +104,6 @@ void DrawableObjectVector::clear()
     drawVector.clear();
 }
 
-
 Box3d DrawableObjectVector::boundingBox(bool onlyVisible) const
 {
     Box3d bb;

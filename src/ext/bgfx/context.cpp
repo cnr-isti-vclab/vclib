@@ -49,7 +49,7 @@ Context::Context()
     windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
 #ifdef __APPLE__
     bgfx::renderFrame(); // needed for macos
-#endif // __APPLE__
+#endif                   // __APPLE__
 
     bgfx::Init init;
     init.platformData.nwh  = windowHandle;

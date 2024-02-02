@@ -83,7 +83,7 @@ bgfx::ShaderHandle loadShader(bx::FileReaderI* reader, std::string name)
         break;
     }
 
-           // if name starts with "shaders/", remove it
+    // if name starts with "shaders/", remove it
     if (name.find("shaders/") == 0) {
         name = name.substr(8);
     }
