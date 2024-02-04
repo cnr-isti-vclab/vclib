@@ -24,11 +24,11 @@
 
 #include <iostream>
 
-#if BX_PLATFORM_LINUX
+#if defined(__linux__)
 #define GLFW_EXPOSE_NATIVE_X11
-#elif BX_PLATFORM_WINDOWS
+#elif defined(_WIN32)
 #define GLFW_EXPOSE_NATIVE_WIN32
-#elif BX_PLATFORM_OSX
+#elif defined(__APPLE__)
 #define GLFW_EXPOSE_NATIVE_COCOA
 #endif
 
@@ -38,7 +38,7 @@ namespace vcl::bglfwx {
 
 namespace detail {
 
-inline void glfwErrorCallback(int error, const char* description)
+void glfwErrorCallback(int error, const char* description)
 {
     std::cerr << "GLFW error: " << error << ": " << description << std::endl;
 }
@@ -66,13 +66,13 @@ CanvasWindow::CanvasWindow(uint width, uint height)
     void* ndt = nullptr;
     void* nwh = nullptr;
 
-#if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
+#if defined(__linux__)
     ndt = glfwGetX11Display();
     nwh = (void*) (uintptr_t) glfwGetX11Window(window);
-#elif BX_PLATFORM_OSX
-    nwh = glfwGetCocoaWindow(window);
-#elif BX_PLATFORM_WINDOWS
+#elif defined(_WIN32)
     nwh = glfwGetWin32Window(window);
+#elif defined(__APPLE__)
+    nwh = glfwGetCocoaWindow(window);
 #endif
     Canvas::init(nwh, width, height, ndt);
 
@@ -88,8 +88,6 @@ CanvasWindow::CanvasWindow(uint width, uint height)
 
 CanvasWindow::~CanvasWindow()
 {
-    glfwDestroyWindow(window);
-    glfwTerminate();
 }
 
 uint CanvasWindow::width() const
