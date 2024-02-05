@@ -20,60 +20,70 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/context.h>
+#ifndef VCL_EXT_BGFX_CALLBACK_H
+#define VCL_EXT_BGFX_CALLBACK_H
 
-#include <vclib/gui/native_window_handle.h>
+#include <bgfx/bgfx.h>
 
 namespace vcl::bgf {
 
-Context& Context::instance()
+class Callback : public bgfx::CallbackI
 {
-    static Context ctx;
-    return ctx;
-}
+public:
+    // CallbackI interface
+    void fatal(
+        const char*       filePath,
+        uint16_t          line,
+        bgfx::Fatal::Enum code,
+        const char*       str);
 
-bgfx::ViewId Context::requestViewId()
-{
-    bgfx::ViewId viewId = instance().viewStack.top();
-    instance().viewStack.pop();
-    return viewId;
-}
+    void traceVargs(
+        const char* filePath,
+        uint16_t    line,
+        const char* format,
+        va_list     argList);
 
-void Context::releaseViewId(bgfx::ViewId viewId)
-{
-    instance().viewStack.push(viewId);
-}
+    void profilerBegin(
+        const char* name,
+        uint32_t    abgr,
+        const char* filePath,
+        uint16_t    line);
 
-Context::Context()
-{
-    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
-#ifdef __APPLE__
-    bgfx::renderFrame(); // needed for macos
-#endif                   // __APPLE__
+    void profilerBeginLiteral(
+        const char* name,
+        uint32_t    abgr,
+        const char* filePath,
+        uint16_t    line);
 
-    bgfx::Init init;
-    init.platformData.nwh  = windowHandle;
-    init.type              = renderType;
-    init.platformData.ndt  = displayHandle;
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_NONE;
-    init.callback          = &cb;
-    bgfx::init(init);
+    void profilerEnd();
 
-    vcl::closeWindow(windowHandle, displayHandle);
+    uint32_t cacheReadSize(uint64_t id);
 
-    uint mv = bgfx::getCaps()->limits.maxViews;
+    bool cacheRead(uint64_t id, void* data, uint32_t size);
 
-    while (mv != 0) {
-        viewStack.push((bgfx::ViewId) mv--);
-    }
-    viewStack.push((bgfx::ViewId) 0);
-}
+    void cacheWrite(uint64_t id, const void* data, uint32_t size);
 
-Context::~Context()
-{
-    bgfx::shutdown();
-}
+    void screenShot(
+        const char* filePath,
+        uint32_t    width,
+        uint32_t    height,
+        uint32_t    pitch,
+        const void* data,
+        uint32_t    size,
+        bool        yflip);
+
+    void captureBegin(
+        uint32_t                  width,
+        uint32_t                  height,
+        uint32_t                  pitch,
+        bgfx::TextureFormat::Enum format,
+        bool                      yflip);
+
+    void captureEnd();
+
+    void captureFrame(const void* data, uint32_t size);
+};
 
 } // namespace vcl::bgf
+
+#endif // VCL_EXT_BGFX_CALLBACK_H

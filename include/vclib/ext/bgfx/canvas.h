@@ -80,6 +80,8 @@ public:
 
     virtual void draw(uint viewID) = 0;
 
+    void screenShot(const std::string& filename);
+
 protected:
     void frame();
 

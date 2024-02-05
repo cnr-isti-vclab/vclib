@@ -28,6 +28,8 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 
+#include "callback.h"
+
 namespace vcl::bgf {
 
 class Context
@@ -37,11 +39,11 @@ class Context
 
     std::stack<bgfx::ViewId> viewStack;
 
+    Callback cb;
+
 public:
     inline static bgfx::RendererType::Enum renderType =
         bgfx::RendererType::Count;
-
-    static Context& instance();
 
     static bgfx::ViewId requestViewId();
 
@@ -51,6 +53,8 @@ private:
     Context();
 
     ~Context();
+
+    static Context& instance();
 
 public:
     Context(const Context&)            = delete;

@@ -65,6 +65,14 @@ void Canvas::init(void* winID, uint width, uint height)
     init(winID, width, height, nullptr);
 }
 
+
+void Canvas::screenShot(const std::string& filename)
+{
+    draw(viewID);
+    bgfx::requestScreenShot(fbh, filename.c_str());
+    bgfx::frame();
+}
+
 void Canvas::frame()
 {
     bgfx::setViewFrameBuffer(viewID, fbh);

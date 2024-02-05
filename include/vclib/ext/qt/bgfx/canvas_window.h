@@ -30,7 +30,7 @@
 
 namespace vcl::qbgf {
 
-class CanvasWindow : public QWindow, vcl::bgf::Canvas
+class CanvasWindow : public QWindow, public vcl::bgf::Canvas
 {
     Q_OBJECT
 

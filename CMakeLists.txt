@@ -76,6 +76,7 @@ endif()
 
 if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
+        include/vclib/ext/bgfx/callback.h
         include/vclib/ext/bgfx/canvas.h
         include/vclib/ext/bgfx/context.h
         include/vclib/ext/bgfx/drawable_axis.h
@@ -93,6 +94,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
 
     list(APPEND SOURCES
+        src/ext/bgfx/callback.cpp
         src/ext/bgfx/canvas.cpp
         src/ext/bgfx/context.cpp
         src/ext/bgfx/drawable_axis.cpp
