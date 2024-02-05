@@ -134,9 +134,9 @@ void saveStl(
             if constexpr (HasPerFaceColor<MeshType>) {
                 if (meshInfo.hasFaceColors()) {
                     if (magicsMode)
-                        attributes = 32768 | f.color().r5g5b5();
+                        attributes = 32768 | f.color().bgr5();
                     else
-                        attributes = 32768 | f.color().b5g5r5();
+                        attributes = 32768 | f.color().rgb5();
                 }
             }
 

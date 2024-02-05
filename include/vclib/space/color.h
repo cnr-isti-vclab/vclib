@@ -48,6 +48,26 @@ class Color : public Point4<uint8_t>
 {
 public:
     /**
+     * @brief Color format enumeration.
+     *
+     * The color format enumeration is used to convert the color from/to
+     * different 32 bit formats. The notation used tells the order of the
+     * components in the integer representation of the color.
+     *
+     * For example, the ABGR format means that the first byte of the integer
+     * represents the alpha, the second byte represents the blue, the third byte
+     * represents the green and the fourth byte represents the red.
+     */
+    struct Format {
+        enum Enum {
+            ABGR,
+            ARGB,
+            RGBA,
+            BGRA
+        };
+    };
+
+    /**
      * @brief ABGR enum with some standard colors.
      *
      * It can be used to initialize a color with an ABGR integer.
@@ -100,6 +120,8 @@ public:
     Color() : Point(0, 0, 0, 255) {}
 
     Color(ColorABGR cc) { *reinterpret_cast<uint32_t*>(Point::p.data()) = cc; }
+
+    Color(uint32_t cc, Format::Enum format) { set(cc, format); }
 
     /**
      * @brief Color constructor.
@@ -254,15 +276,23 @@ public:
 
     uint32_t rgba() const
     {
-        return (alpha() << 24) | (blue() << 16) | (green() << 8) | red();
+        return (red() << 24) | (green() << 16) | (blue() << 8) | alpha();
+    }
+
+    uint32_t bgra() const
+    {
+        return (blue() << 24) | (green() << 16) | (red() << 8) | alpha();
     }
 
     /**
-     * @brief Converts the color to an unsigned short in R5G5B5 format.
+     * @brief Converts the color to an unsigned short in bgr5 format.
+     *
+     * The first (most significant) 5 bits are for blue, the next 5 bits are for
+     * green, and the last 5 bits are for red.
      *
      * @return an unsigned short containing the converted color.
      */
-    unsigned short r5g5b5() const
+    unsigned short bgr5() const
     {
         unsigned short r   = x() / 8;
         unsigned short g   = y() / 8;
@@ -272,11 +302,14 @@ public:
     }
 
     /**
-     * @brief Converts the color to an unsigned short in B5G5R5 format.
+     * @brief Converts the color to an unsigned short in rgb5 format.
+     *
+     * The first (most significant) 5 bits are for red, the next 5 bits are for
+     * green, and the last 5 bits are for blue.
      *
      * @return an unsigned short containing the converted color.
      */
-    unsigned short b5g5r5() const
+    unsigned short rgb5() const
     {
         unsigned short r   = x() / 8;
         unsigned short g   = y() / 8;
@@ -327,21 +360,55 @@ public:
         w() = alpha;
     }
 
+    void set(uint32_t cc, Format::Enum fmt = Format::ABGR)
+    {
+        switch(fmt) {
+        case Format::ARGB:
+                setArgb(cc);
+                break;
+        case Format::ABGR:
+                setAbgr(cc);
+                break;
+        case Format::RGBA:
+                setRgba(cc);
+                break;
+        case Format::BGRA:
+                setBgra(cc);
+                break;
+        }
+    }
+
     void setAbgr(uint32_t val)
     {
         *reinterpret_cast<uint32_t*>(Point::p.data()) = val;
     }
 
+    void setArgb(uint32_t val)
+    {
+        x() = (val >> 16) % 256;
+        y() = (val >> 8) % 256;
+        z() = val % 256;
+        w() = (val >> 24) % 256;
+    }
+
     void setRgba(uint32_t val)
     {
-        w() = val % 256;
-        z() = (val >> 8) % 256;
-        y() = (val >> 16) % 256;
         x() = (val >> 24) % 256;
+        y() = (val >> 16) % 256;
+        z() = (val >> 8) % 256;
+        w() = val % 256;
+    }
+
+    void setBgra(uint32_t val)
+    {
+        x() = (val >> 8) % 256;
+        y() = (val >> 16) % 256;
+        z() = (val >> 24) % 256;
+        w() = val % 256;
     }
 
     /**
-     * Set the color values from an unsigned 5-5-5 RGB value.
+     * Set the color values from an unsigned 5-5-5 BGR value.
      *
      * The input value is interpreted as follows:
      * - The 5 least significant bits represent the red component.
@@ -351,9 +418,9 @@ public:
      * Each color component is scaled from 0 to 255 by multiplying the value
      * by 8.
      *
-     * @param[in] val: The unsigned 5-5-5 RGB value to set.
+     * @param[in] val: The unsigned 5-5-5 BGR value to set.
      */
-    void setR5g5b5(unsigned short val)
+    void setBgr5(unsigned short val)
     {
         x() = val % 32 * 8;
         y() = ((val / 32) % 32) * 8;
@@ -362,7 +429,7 @@ public:
     }
 
     /**
-     * Set the color values from an unsigned 5-5-5 BGR value.
+     * Set the color values from an unsigned 5-5-5 RGB value.
      *
      * The input value is interpreted as follows:
      * - The 5 least significant bits represent the blue component.
@@ -372,9 +439,9 @@ public:
      * Each color component is scaled from 0 to 255 by multiplying the value
      * by 8.
      *
-     * @param[in] val: The unsigned 5-5-5 BGR value to set.
+     * @param[in] val: The unsigned 5-5-5 RGB value to set.
      */
-    void setB5g5r5(unsigned short val)
+    void setRgb5(unsigned short val)
     {
         z() = val % 32 * 8;
         y() = ((val / 32) % 32) * 8;

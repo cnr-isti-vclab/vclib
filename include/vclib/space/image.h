@@ -53,25 +53,39 @@ public:
 
     /**
      * @brief Construct an Image from a raw buffer, which is assumed to be in
-     * 4 byte per pixel format (RGBA).
+     * the given format (default: ABGR).
      *
      * @param[in] data: the raw buffer.
      * @param[in] w: the width of the image.
      * @param[in] h: the height of the image.
      * @param[in] yFlip: if true, the image is flipped along the y axis.
+     * @param[in] format: the format of the buffer, that is the way each pixel
+     * (4 bytes) is stored.
      */
-    Image(const void* data, uint w, uint h, bool yFlip = false)
+    Image(
+        const void*         data,
+        uint                w,
+        uint                h,
+        bool                yFlip  = false,
+        Color::Format::Enum format = Color::Format::ABGR)
     {
         if (data) {
             img.resize(h, w);
-            std::size_t size = w * h * 4;
+            std::size_t size = w * h;
 
-            auto* cdata = reinterpret_cast<const unsigned char*>(data);
+            auto* cdata = reinterpret_cast<const uint32_t*>(data);
 
-            std::copy(
-                cdata,
-                cdata + size,
-                reinterpret_cast<unsigned char*>(img.data()));
+            if (format == Color::Format::ABGR) {
+                std::copy(cdata, cdata + size, img.data());
+            }
+            else {
+                for (uint i = 0; i < h; i++) {
+                    for (uint j = 0; j < w; j++) {
+                        vcl::Color c(cdata[i * w + j], format);
+                        img(i, j) = c.abgr();
+                    }
+                }
+            }
 
             if (yFlip) {
                 mirror();
