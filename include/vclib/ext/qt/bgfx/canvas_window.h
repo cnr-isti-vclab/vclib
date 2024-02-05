@@ -37,12 +37,25 @@ class CanvasWindow : public QWindow, vcl::bgf::Canvas
     using Canvas = vcl::bgf::Canvas;
 
 public:
-    explicit CanvasWindow(
+    CanvasWindow(
+        const std::string& windowTitle,
         uint     width  = 1024,
         uint     height = 768,
         QWindow* parent = nullptr);
 
+    CanvasWindow(
+        uint     width  = 1024,
+        uint     height = 768,
+        QWindow* parent = nullptr);
+
+    CanvasWindow(
+        QWindow* parent);
+
     virtual ~CanvasWindow();
+
+    const std::string windowTitle() const;
+
+    void setWindowTitle(const std::string& title);
 
     virtual void draw(uint viewID) override;
 

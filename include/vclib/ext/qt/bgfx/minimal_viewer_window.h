@@ -45,14 +45,21 @@ public:
 
     MinimalViewerWindow(
         std::shared_ptr<DrawableObjectVector> v,
-        uint                                  width  = 1024,
-        uint                                  height = 768,
-        QWindow*                              parent = nullptr);
+        const std::string&                    windowTitle = "Minimal Viewer",
+        uint                                  width       = 1024,
+        uint                                  height      = 768,
+        QWindow*                              parent      = nullptr);
 
     MinimalViewerWindow(
-        uint     width  = 1024,
-        uint     height = 768,
-        QWindow* parent = nullptr);
+        const std::string& windowTitle,
+        uint               width       = 1024,
+        uint               height      = 768,
+        QWindow*           parent      = nullptr);
+
+    MinimalViewerWindow(
+        uint               width       = 1024,
+        uint               height      = 768,
+        QWindow*           parent      = nullptr);
 
     MinimalViewerWindow(QWindow* parent);
 

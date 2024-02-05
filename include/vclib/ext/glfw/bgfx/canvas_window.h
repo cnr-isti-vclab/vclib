@@ -33,13 +33,21 @@ class CanvasWindow : public vcl::bgf::Canvas
 {
     using Canvas = vcl::bgf::Canvas;
 
+    std::string title;
+
 protected:
     GLFWwindow* window = nullptr;
 
 public:
-    explicit CanvasWindow(uint width = 1024, uint height = 768);
+    CanvasWindow(const std::string& windowTitle, uint width = 1024, uint height = 768);
+
+    CanvasWindow(uint width = 1024, uint height = 768);
 
     virtual ~CanvasWindow();
+
+    const std::string& windowTitle() const;
+
+    void setWindowTitle(const std::string& title);
 
     uint width() const;
 

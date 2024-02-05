@@ -45,7 +45,11 @@ void glfwErrorCallback(int error, const char* description)
 
 } // namespace detail
 
-CanvasWindow::CanvasWindow(uint width, uint height)
+CanvasWindow::CanvasWindow(
+    const std::string& windowTitle,
+    uint               width,
+    uint               height) :
+        title(windowTitle)
 {
     glfwSetErrorCallback(detail::glfwErrorCallback);
     if (!glfwInit()) {
@@ -56,7 +60,7 @@ CanvasWindow::CanvasWindow(uint width, uint height)
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-    window = glfwCreateWindow(width, height, "VCL", nullptr, nullptr);
+    window = glfwCreateWindow(width, height, windowTitle.c_str(), nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -86,8 +90,25 @@ CanvasWindow::CanvasWindow(uint width, uint height)
         });
 }
 
+
+CanvasWindow::CanvasWindow(uint width, uint height) :
+        vcl::bglfwx::CanvasWindow("GLFW Canvas", width, height)
+{
+}
+
 CanvasWindow::~CanvasWindow()
 {
+}
+
+const std::string& CanvasWindow::windowTitle() const
+{
+    return title;
+}
+
+void CanvasWindow::setWindowTitle(const std::string& wTitle)
+{
+    title = wTitle;
+    glfwSetWindowTitle(window, title.c_str());
 }
 
 uint CanvasWindow::width() const

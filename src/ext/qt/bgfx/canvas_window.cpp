@@ -24,9 +24,14 @@
 
 namespace vcl::qbgf {
 
-CanvasWindow::CanvasWindow(uint width, uint height, QWindow* parent) :
+CanvasWindow::CanvasWindow(
+    const std::string& windowTitle,
+    uint               width,
+    uint               height,
+    QWindow*           parent) :
         QWindow(parent)
 {
+    setTitle(QString::fromStdString(windowTitle));
     setGeometry(100, 100, width, height);
 
     void* displayID = nullptr;
@@ -52,8 +57,28 @@ CanvasWindow::CanvasWindow(uint width, uint height, QWindow* parent) :
     vcl::bgf::Canvas::init((void*) winId(), width, height, displayID);
 }
 
+CanvasWindow::CanvasWindow(uint width, uint height, QWindow* parent) :
+        CanvasWindow("QWindow Canvas", width, height, parent)
+{
+}
+
+CanvasWindow::CanvasWindow(QWindow* parent) :
+        CanvasWindow(1024, 768, parent)
+{
+}
+
 CanvasWindow::~CanvasWindow()
 {
+}
+
+const std::string CanvasWindow::windowTitle() const
+{
+    return QWindow::title().toStdString();
+}
+
+void CanvasWindow::setWindowTitle(const std::string& title)
+{
+    QWindow::setTitle(QString::fromStdString(title));
 }
 
 void CanvasWindow::draw(uint viewID)

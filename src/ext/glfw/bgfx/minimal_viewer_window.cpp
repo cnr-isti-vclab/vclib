@@ -28,6 +28,7 @@ namespace vcl::bglfwx {
 
 MinimalViewerWindow::MinimalViewerWindow(
     std::shared_ptr<DrawableObjectVector> v,
+    const std::string&                    windowTitle,
     uint                                  width,
     uint                                  height) :
         CanvasWindow(width, height),
@@ -36,9 +37,22 @@ MinimalViewerWindow::MinimalViewerWindow(
     setCallbacks();
 }
 
+MinimalViewerWindow::MinimalViewerWindow(
+    std::string& windowTitle,
+    uint         width,
+    uint         height) :
+        MinimalViewerWindow(
+            std::make_shared<DrawableObjectVector>(),
+            windowTitle,
+            width,
+            height)
+{
+}
+
 MinimalViewerWindow::MinimalViewerWindow(uint width, uint height) :
         MinimalViewerWindow(
             std::make_shared<DrawableObjectVector>(),
+            "Minimal Viewer",
             width,
             height)
 {
