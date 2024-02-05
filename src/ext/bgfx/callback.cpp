@@ -27,10 +27,6 @@
 #include <iostream>
 
 #include <bx/debug.h>
-#include <bx/allocator.h>
-#include <bx/file.h>
-#include <bx/string.h>
-#include <bimg/bimg.h>
 
 namespace vcl::bgf {
 
@@ -115,7 +111,7 @@ void Callback::screenShot(
     uint32_t    size,
     bool        yflip)
 {
-    vcl::Image img(data, width, height, yflip);
+    vcl::Image img(data, width, height, yflip, vcl::Color::Format::ARGB);
     img.save(filePath);
 }
 
