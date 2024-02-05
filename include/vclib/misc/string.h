@@ -39,7 +39,7 @@ namespace vcl::str {
  * @return an iterator pointing to the substring, or an iterator pointing to
  * `end()`.
  */
-std::string::const_iterator findCaseInsensitive(
+inline std::string::const_iterator findCaseInsensitive(
     const std::string& input,
     const std::string& substr)
 {
@@ -63,7 +63,7 @@ std::string::const_iterator findCaseInsensitive(
  * @param substr: substring to look into `input`.
  * @return `true` if `substr` was found in `input`
  */
-bool containsCaseInsensitive(
+inline bool containsCaseInsensitive(
     const std::string& input,
     const std::string& substr)
 {

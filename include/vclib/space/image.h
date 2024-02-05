@@ -32,7 +32,10 @@
 namespace vcl {
 
 /**
- * @brief The Image class stores an Image in 8 bit RGBA format.
+ * @brief The Image class stores an Image in 4 bytes RGBA format.
+ *
+ * Each pixel is stored as 4 bytes, with the first byte representing RGBA in
+ * a `uint32_t`.
  */
 class Image
 {
@@ -41,7 +44,40 @@ class Image
 public:
     Image() {}
 
+    /**
+     * @brief Load an image from a file.
+     *
+     * @param[in] filename: the name of the file.
+     */
     Image(const std::string& filename) { load(filename); }
+
+    /**
+     * @brief Construct an Image from a raw buffer, which is assumed to be in
+     * 4 byte per pixel format (RGBA).
+     *
+     * @param[in] data: the raw buffer.
+     * @param[in] w: the width of the image.
+     * @param[in] h: the height of the image.
+     * @param[in] yFlip: if true, the image is flipped along the y axis.
+     */
+    Image(const void* data, uint w, uint h, bool yFlip = false)
+    {
+        if (data) {
+            img.resize(h, w);
+            std::size_t size = w * h * 4;
+
+            auto* cdata = reinterpret_cast<const unsigned char*>(data);
+
+            std::copy(
+                cdata,
+                cdata + size,
+                reinterpret_cast<unsigned char*>(img.data()));
+
+            if (yFlip) {
+                mirror();
+            }
+        }
+    }
 
     bool isNull() const { return img.empty(); }
 
@@ -80,6 +116,12 @@ public:
         else {
             return false;
         }
+    }
+
+    void save(const std::string& filename, uint quality = 90) const
+    {
+        auto* data = reinterpret_cast<const unsigned char*>(img.data());
+        saveImageData(filename, img.cols(), img.rows(), data, quality);
     }
 
     void mirror(bool horizontal = false, bool vertical = true)
