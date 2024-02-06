@@ -62,8 +62,9 @@ namespace vcl::bgf {
 class Canvas
 {
     void*                   winID  = nullptr;
-    bgfx::ViewId            viewID = 0;
     bgfx::FrameBufferHandle fbh;
+
+    bgfx::ViewId view = 0;
 
 public:
     Canvas();
@@ -78,9 +79,14 @@ public:
 
     void init(void* winID, uint width, uint height);
 
-    virtual void draw(uint viewID) = 0;
+    bgfx::ViewId viewID() const { return view; }
 
-    void screenShot(const std::string& filename, uint width = 0, uint height = 0);
+    virtual void draw() = 0;
+
+    void screenShot(
+        const std::string& filename,
+        uint               width  = 0,
+        uint               height = 0);
 
 protected:
     void frame();

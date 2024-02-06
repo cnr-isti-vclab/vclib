@@ -56,7 +56,7 @@ public:
 
     void setWindowTitle(const std::string& title);
 
-    virtual void draw(uint viewID) override;
+    virtual void draw() override;
 
     virtual void onResize(unsigned int w, unsigned int h);
 

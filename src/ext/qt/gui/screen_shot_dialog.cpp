@@ -6,7 +6,11 @@
 namespace vcl::qt {
 
 ScreenShotDialog::ScreenShotDialog(QWidget* parent) :
-        QFileDialog(parent, "Save Screen Shot", "", "Image Files (*.png *.jpg *.jpeg *.bmp)")
+        QFileDialog(
+            parent,
+            "Save Screen Shot",
+            "",
+            "Image Files (*.png *.jpg *.jpeg *.bmp)")
 {
     setOption(QFileDialog::DontUseNativeDialog);
     setAcceptMode(QFileDialog::AcceptSave);

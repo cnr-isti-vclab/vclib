@@ -44,22 +44,22 @@ Canvas::~Canvas()
 {
     if (bgfx::isValid(fbh))
         bgfx::destroy(fbh);
-    Context::releaseViewId(viewID);
+    Context::releaseViewId(view);
 }
 
 void Canvas::init(void* winID, uint width, uint height, void* displayID)
 {
     this->winID = winID;
 
-    viewID = Context::requestViewId();
+    view = Context::requestViewId();
 
     fbh = bgfx::createFrameBuffer(winID, width, height);
 
-    bgfx::setViewFrameBuffer(viewID, fbh);
+    bgfx::setViewFrameBuffer(view, fbh);
     bgfx::setViewClear(
-        viewID, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
-    bgfx::setViewRect(viewID, 0, 0, width, height);
-    bgfx::touch(viewID);
+        view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
+    bgfx::setViewRect(view, 0, 0, width, height);
+    bgfx::touch(view);
 }
 
 void Canvas::init(void* winID, uint width, uint height)
@@ -70,13 +70,15 @@ void Canvas::init(void* winID, uint width, uint height)
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
 {
     if (width == 0 || height == 0) {
-        draw(viewID);
+        draw();
         bgfx::requestScreenShot(fbh, filename.c_str());
         bgfx::frame();
     }
     else {
         void* d;
         void* w = vcl::createWindow("", width, height, d, true);
+
+        // setup view and frame buffer
         bgfx::ViewId v = Context::requestViewId();
         bgfx::FrameBufferHandle fbh = bgfx::createFrameBuffer(w, width, height);
         bgfx::setViewFrameBuffer(v, fbh);
@@ -84,10 +86,16 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
             v, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
         bgfx::setViewRect(v, 0, 0, width, height);
         bgfx::touch(v);
-        draw(v);
+
+        // replace the current view with the new one
+        bgfx::ViewId tmpView = view;
+        view = v;
+        draw();
         bgfx::requestScreenShot(fbh, filename.c_str());
         bgfx::frame();
 
+        // restore the previous view and release the resources
+        view = tmpView;
         bgfx::destroy(fbh);
         Context::releaseViewId(v);
         vcl::closeWindow(w, d);
@@ -96,9 +104,9 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 
 void Canvas::frame()
 {
-    bgfx::setViewFrameBuffer(viewID, fbh);
+    bgfx::setViewFrameBuffer(view, fbh);
     // bgfx::touch(viewID);
-    draw(viewID);
+    draw();
     bgfx::frame();
 }
 
@@ -108,9 +116,9 @@ void Canvas::resize(uint width, uint height)
         bgfx::destroy(fbh);
 
     fbh = bgfx::createFrameBuffer(winID, width, height);
-    bgfx::setViewFrameBuffer(viewID, fbh);
-    bgfx::setViewRect(viewID, 0, 0, width, height);
-    bgfx::touch(viewID);
+    bgfx::setViewFrameBuffer(view, fbh);
+    bgfx::setViewRect(view, 0, 0, width, height);
+    bgfx::touch(view);
 }
 
 } // namespace vcl::bgf

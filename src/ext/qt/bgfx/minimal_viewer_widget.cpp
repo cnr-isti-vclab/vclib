@@ -39,16 +39,16 @@ MinimalViewerWidget::MinimalViewerWidget(
 {
 }
 
-void MinimalViewerWidget::draw(uint viewID)
+void MinimalViewerWidget::draw()
 {
-    MV::draw(viewID);
+    MV::draw(viewID());
 }
 
 void MinimalViewerWidget::onResize(unsigned int width, unsigned int height)
 {
     MV::resizeViewer(width, height);
     bgfx::setViewTransform(
-        0, MV::viewMatrix().data(), MV::projectionMatrix().data());
+        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
 void MinimalViewerWidget::mouseMoveEvent(QMouseEvent* event)
@@ -57,7 +57,7 @@ void MinimalViewerWidget::mouseMoveEvent(QMouseEvent* event)
         MV::moveMouse(event->pos().x(), event->pos().y());
 
         bgfx::setViewTransform(
-            0, MV::viewMatrix().data(), MV::projectionMatrix().data());
+            viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 
         update();
     }
@@ -89,7 +89,7 @@ void MinimalViewerWidget::wheelEvent(QWheelEvent* event)
     MV::wheelMouse(notchY > 0);
 
     bgfx::setViewTransform(
-        0, MV::viewMatrix().data(), MV::projectionMatrix().data());
+        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 
     update();
 
@@ -110,7 +110,7 @@ void MinimalViewerWidget::keyPressEvent(QKeyEvent* event)
     default:
         MV::keyPress(vcl::qt::fromQt((Qt::Key) event->key()));
         bgfx::setViewTransform(
-            0, MV::viewMatrix().data(), MV::projectionMatrix().data());
+            viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
         break;
     }
 

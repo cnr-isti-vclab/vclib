@@ -34,7 +34,7 @@ namespace vcl::qbgf {
 
 #ifndef __APPLE__
 
-class CanvasWidget : public QWidget, vcl::bgf::Canvas
+class CanvasWidget : public QWidget, public vcl::bgf::Canvas
 {
     using Canvas = vcl::bgf::Canvas;
 
@@ -43,7 +43,7 @@ public:
 
     virtual ~CanvasWidget();
 
-    virtual void draw(uint viewID) override;
+    virtual void draw() override;
 
     virtual void onResize(unsigned int w, unsigned int h);
 
@@ -97,7 +97,7 @@ public:
 
     ~CanvasWidget() {}
 
-    virtual void draw(uint viewID) { canvasWindow->draw(viewID); }
+    virtual void draw() { canvasWindow->draw(canvasWindow->viewID()); }
 
     void update()
     {

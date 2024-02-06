@@ -76,9 +76,9 @@ MinimalViewerWindow::MinimalViewerWindow(QWindow* parent) :
 {
 }
 
-void MinimalViewerWindow::draw(uint viewID)
+void MinimalViewerWindow::draw()
 {
-    MV::draw(viewID);
+    MV::draw(viewID());
 }
 
 void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)

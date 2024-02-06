@@ -59,7 +59,7 @@ CanvasWidget::~CanvasWidget()
 {
 }
 
-void CanvasWidget::draw(uint viewID)
+void CanvasWidget::draw()
 {
 }
 

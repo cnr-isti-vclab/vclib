@@ -58,7 +58,7 @@ public:
 
     void show();
 
-    virtual void draw(uint viewID) override {}
+    virtual void draw() override {}
 
     virtual void onResize(unsigned int w, unsigned int h) {}
 

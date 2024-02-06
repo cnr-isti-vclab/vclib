@@ -80,7 +80,7 @@ void CanvasWindow::setWindowTitle(const std::string& title)
     QWindow::setTitle(QString::fromStdString(title));
 }
 
-void CanvasWindow::draw(uint viewID)
+void CanvasWindow::draw()
 {
 }
 
