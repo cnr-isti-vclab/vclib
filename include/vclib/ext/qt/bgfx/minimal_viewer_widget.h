@@ -24,7 +24,8 @@
 #define VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WIDGET_H
 
 #include "canvas_widget.h"
-#include "minimal_viewer_window.h"
+
+#include <vclib/ext/bgfx/minimal_viewer.h>
 
 namespace vcl::qbgf {
 

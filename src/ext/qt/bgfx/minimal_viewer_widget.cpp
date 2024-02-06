@@ -22,6 +22,10 @@
 
 #include <vclib/ext/qt/bgfx/minimal_viewer_widget.h>
 
+#include <QMouseEvent>
+
+#include <vclib/ext/qt/gui/input.h>
+
 namespace vcl::qbgf {
 
 MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) :
