@@ -149,6 +149,7 @@ endif()
 
 if (TARGET vclib-external-qt)
     list(APPEND HEADERS
+        include/vclib/ext/qt/message_hider.h
         include/vclib/ext/qt/gui/drawable_object_frame.h
         include/vclib/ext/qt/gui/drawable_object_vector_frame.h
         include/vclib/ext/qt/gui/input.h

@@ -24,12 +24,21 @@
 
 #include <vclib/ext/qt/bgfx/canvas_widget.h>
 
+#ifdef __APPLE__
+#include <vclib/ext/qt/message_hider.h>
+#endif // __APPLE__
+
 namespace vcl::qbgf {
 
-CanvasWidget::CanvasWidget(QWidget* parent)
+CanvasWidget::CanvasWidget(QWidget* parent) : QWidget(parent)
 {
     setGeometry(100, 100, 1024, 768);
+#ifdef __APPLE__
     setAttribute(Qt::WA_PaintOnScreen); // needed on macOS - do not remove
+    // however this is bugged - prints unuseful warning messages
+    // we will hide it:
+    vcl::qt::MessageHider::activate();
+#endif // __APPLE__
 
     void* displayID = nullptr;
 #ifdef Q_OS_LINUX
@@ -62,7 +71,7 @@ void CanvasWidget::draw()
 {
 }
 
-void CanvasWidget::onResize(unsigned int w, unsigned int h)
+void CanvasWidget::onResize(unsigned int, unsigned int)
 {
 }
 
