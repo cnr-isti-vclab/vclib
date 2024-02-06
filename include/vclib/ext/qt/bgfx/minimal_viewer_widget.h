@@ -28,8 +28,6 @@
 
 namespace vcl::qbgf {
 
-#ifndef __APPLE__
-
 class MinimalViewerWidget : public CanvasWidget, public vcl::bgf::MinimalViewer
 {
 protected:
@@ -63,36 +61,6 @@ public:
 
     void keyReleaseEvent(QKeyEvent* event) override;
 };
-
-#else // __APPLE__
-
-class MinimalViewerWidget : public CanvasWidget<MinimalViewerWindow>
-{
-public:
-    MinimalViewerWidget(QWidget* parent = nullptr) :
-            CanvasWidget<MinimalViewerWindow>(parent)
-    {
-    }
-
-    MinimalViewerWidget(
-        std::shared_ptr<DrawableObjectVector> v,
-        QWidget*                              parent = nullptr) :
-            CanvasWidget<MinimalViewerWindow>(parent)
-    {
-        setDrawableObjectVector(v);
-    }
-
-    virtual ~MinimalViewerWidget() = default;
-
-    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
-    {
-        canvasWindow->setDrawableObjectVector(v);
-    }
-
-    void fitScene() { canvasWindow->fitScene(); }
-};
-
-#endif // __APPLE__
 
 } // namespace vcl::qbgf
 

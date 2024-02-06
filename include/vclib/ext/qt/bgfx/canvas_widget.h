@@ -32,8 +32,6 @@
 
 namespace vcl::qbgf {
 
-#ifndef __APPLE__
-
 class CanvasWidget : public QWidget, public vcl::bgf::Canvas
 {
     using Canvas = vcl::bgf::Canvas;
@@ -59,70 +57,6 @@ protected:
 private:
     void paint();
 };
-
-#else  // __APPLE__
-/**
- * @brief The CanvasWidget class allows to use bgfx in a QWidget.
- *
- * Normally, this class would be a native QWidget that allows to render using
- * the bgfx library. However, QWidgets and bgfx, at the time of writing (2024),
- * are not compatible on all platforms (MacOS).
- *
- * This class is a workaround that uses a CanvasWindow to render the bgfx
- * content. The CanvasWindow is then embedded in a QWidget.
- *
- * To create a QWidget that embeds a class that draws using bgfx:
- * - Create a class that inherits from CanvasWindow (e.g. MyViewerWindow);
- * - Use this class by instantiating a CanvasWidget with your CanvasWindow
- * class (e.g. CanvasWidget<MyViewerWindow>).
- *
- * @tparam CanvasWindow the type of the CanvasWindow to use.
- */
-template<typename CanvasWindow = vcl::qbgf::CanvasWindow>
-class CanvasWidget : public QWidget
-{
-public:
-    explicit CanvasWidget(QWidget* parent = nullptr) : QWidget(parent)
-    {
-        setGeometry(100, 100, 1024, 768);
-
-        // Set layout
-        QVBoxLayout* layout = new QVBoxLayout;
-
-        canvasWindow = new CanvasWindow();
-        layout->addWidget(QWidget::createWindowContainer(canvasWindow, this));
-
-        setLayout(layout);
-    }
-
-    ~CanvasWidget() {}
-
-    bgfx::ViewId viewID() const { return canvasWindow->viewID(); }
-
-    virtual void draw() { canvasWindow->draw(); }
-
-    void update()
-    {
-        canvasWindow->update();
-        QWidget::update();
-    }
-
-    void keyPressEvent(QKeyEvent* event) override
-    {
-        // sometimes, the viewer does not automatically get key events
-        canvasWindow->keyPressEvent(event);
-    }
-
-    void keyReleaseEvent(QKeyEvent* event) override
-    {
-        // sometimes, the viewer does not automatically get key events
-        canvasWindow->keyReleaseEvent(event);
-    }
-
-protected:
-    CanvasWindow* canvasWindow = nullptr;
-};
-#endif // __APPLE__
 
 } // namespace vcl::qbgf
 

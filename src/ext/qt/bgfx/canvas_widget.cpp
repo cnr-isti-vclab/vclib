@@ -26,11 +26,10 @@
 
 namespace vcl::qbgf {
 
-#ifndef __APPLE__
-
 CanvasWidget::CanvasWidget(QWidget* parent)
 {
     setGeometry(100, 100, 1024, 768);
+    setAttribute(Qt::WA_PaintOnScreen); // needed on macOS - do not remove
 
     void* displayID = nullptr;
 #ifdef Q_OS_LINUX
@@ -99,7 +98,5 @@ void CanvasWidget::paint()
 {
     Canvas::frame();
 }
-
-#endif // __APPLE__
 
 } // namespace vcl::qbgf

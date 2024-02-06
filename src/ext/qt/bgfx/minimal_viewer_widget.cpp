@@ -24,8 +24,6 @@
 
 namespace vcl::qbgf {
 
-#ifndef __APPLE__
-
 MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) :
         MinimalViewerWidget(std::make_shared<DrawableObjectVector>(), parent)
 {
@@ -125,7 +123,5 @@ void MinimalViewerWidget::keyReleaseEvent(QKeyEvent* event)
     update();
     CanvasWidget::keyReleaseEvent(event);
 }
-
-#endif // __APPLE__
 
 } // namespace vcl::qbgf
