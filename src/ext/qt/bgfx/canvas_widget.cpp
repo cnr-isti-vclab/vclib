@@ -30,9 +30,16 @@
 
 namespace vcl::qbgf {
 
-CanvasWidget::CanvasWidget(QWidget* parent) : QWidget(parent)
+CanvasWidget::CanvasWidget(
+    const std::string& windowTitle,
+    uint               width,
+    uint               height,
+    QWidget*           parent) :
+        QWidget(parent)
 {
-    setGeometry(100, 100, 1024, 768);
+    setGeometry(100, 100, width, height);
+    setWindowTitle(windowTitle.c_str());
+
 #ifdef __APPLE__
     setAttribute(Qt::WA_PaintOnScreen); // needed on macOS - do not remove
     // however this is bugged - prints unuseful warning messages
@@ -41,7 +48,7 @@ CanvasWidget::CanvasWidget(QWidget* parent) : QWidget(parent)
 #endif // __APPLE__
 
     void* displayID = nullptr;
-#ifdef Q_OS_LINUX
+#ifdef __linux__
     /// THIS WORKS ONLY IF QT_QPA_PLATFORM = xcb
     QNativeInterface::QX11Application* x11AppInfo =
         qApp->nativeInterface<QNativeInterface::QX11Application>();
@@ -58,9 +65,19 @@ CanvasWidget::CanvasWidget(QWidget* parent) : QWidget(parent)
             exit(-1);
         }
     }
-#endif // Q_OS_LINUX
+#endif // __linux__
 
-    vcl::bgf::Canvas::init((void*) winId(), width(), height(), displayID);
+    vcl::bgf::Canvas::init((void*) winId(), width, height, displayID);
+}
+
+CanvasWidget::CanvasWidget(uint width, uint height, QWidget* parent) :
+        CanvasWidget("Canvas Widget", width, height, parent)
+{
+}
+
+CanvasWidget::CanvasWidget(QWidget* parent) :
+        CanvasWidget("Canvas Widget", 1024, 768, parent)
+{
 }
 
 CanvasWidget::~CanvasWidget()
@@ -98,7 +115,7 @@ void CanvasWidget::paintEvent(QPaintEvent* event)
 
 void CanvasWidget::resizeEvent(QResizeEvent* event)
 {
-    vcl::bgf::Canvas::resize(width(), height());
+    Canvas::resize(width(), height());
     QWidget::resizeEvent(event);
     onResize(width(), height());
 }

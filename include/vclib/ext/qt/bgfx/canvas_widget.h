@@ -35,7 +35,18 @@ class CanvasWidget : public QWidget, public vcl::bgf::Canvas
     using Canvas = vcl::bgf::Canvas;
 
 public:
-    explicit CanvasWidget(QWidget* parent = nullptr);
+    explicit CanvasWidget(
+        const std::string& windowTitle,
+        uint               width  = 1024,
+        uint               height = 768,
+        QWidget*           parent = nullptr);
+
+    explicit CanvasWidget(
+        uint     width  = 1024,
+        uint     height = 768,
+        QWidget* parent = nullptr);
+
+    explicit CanvasWidget(QWidget* parent);
 
     virtual ~CanvasWidget();
 

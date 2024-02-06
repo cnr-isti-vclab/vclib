@@ -25,19 +25,37 @@
 #include <QMouseEvent>
 
 #include <vclib/ext/qt/gui/input.h>
+#include <vclib/ext/qt/gui/screen_shot_dialog.h>
 
 namespace vcl::qbgf {
 
-MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) :
-        MinimalViewerWidget(std::make_shared<DrawableObjectVector>(), parent)
+MinimalViewerWidget::MinimalViewerWidget(
+    const std::string& windowTitle,
+    uint               width,
+    uint               height,
+    QWidget*           parent) :
+        MinimalViewerWidget(
+            std::make_shared<DrawableObjectVector>(),
+            width,
+            height,
+            windowTitle,
+            parent)
 {
 }
 
 MinimalViewerWidget::MinimalViewerWidget(
     std::shared_ptr<DrawableObjectVector> v,
+    uint                                  width,
+    uint                                  height,
+    const std::string&                    windowTitle,
     QWidget*                              parent) :
-        CanvasWidget(parent),
+        CanvasWidget(windowTitle, width, height, parent),
         vcl::bgf::MinimalViewer(v)
+{
+}
+
+MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) :
+    MinimalViewerWidget("Minimal Viewer", 1024, 768, parent)
 {
 }
 
@@ -100,6 +118,7 @@ void MinimalViewerWidget::wheelEvent(QWheelEvent* event)
 
 void MinimalViewerWidget::keyPressEvent(QKeyEvent* event)
 {
+    qt::ScreenShotDialog dialog(this);
     MV::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
 
     switch (event->key()) {
@@ -107,6 +126,19 @@ void MinimalViewerWidget::keyPressEvent(QKeyEvent* event)
         std::cerr << "(" << MV::camera().eye() << ") "
                   << "(" << MV::camera().center() << ") "
                   << "(" << MV::camera().up() << ")\n";
+        break;
+
+    case Qt::Key_S:
+        if (event->modifiers() & Qt::ControlModifier) {
+            if (dialog.exec() == QDialog::Accepted) {
+                auto fs = dialog.selectedFiles();
+                CanvasWidget::screenShot(fs.first().toStdString());
+            }
+            // the dialog stealed the focus, so we need to release the modifiers
+            KeyModifiers md;
+            md[NO_MODIFIER] = true;
+            MV::setKeyModifiers(md);
+        }
         break;
 
     default:
