@@ -23,6 +23,10 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-test)
 
+option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+
+set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+
 include(cmake/cmake_functions.cmake)
 
 add_library(vclib-test-common INTERFACE)
