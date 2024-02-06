@@ -20,22 +20,21 @@
 #* for more details.                                                         *
 #****************************************************************************/
 
-set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
+set(VCLIB_NLOHMANN_JSON_DIR ${CMAKE_CURRENT_LIST_DIR}/nlohmann-json-3.11.2)
 
-if (VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT AND
-        EXISTS ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox/earcut.hpp)
-    message(STATUS "- Mapbox-Eaurcut - using bundled source")
+if (VCLIB_ALLOW_BUNDLED_NLOHMANN_JSON AND
+        EXISTS ${VCLIB_NLOHMANN_JSON_DIR}/include/nlohmann/json.hpp)
+    message(STATUS "- Nlohmann-json - using bundled source")
 else()
-    message(FATAL_ERROR
-        "MapBox earcut is required - VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT"
-        "must be enabled and found.")
+    message(FATAL_ERROR "Nlohmann-json is required -"
+        "VCLIB_ALLOW_BUNDLED_NLOHMANN_JSON must be enabled and found.")
 endif()
 
-set(MAPBOX_EARCUT_INCLUDE_DIRS ${VCLIB_MAPBOX_EARCUT_DIR}/include)
+set(NLOHMANN_JSON_INCLUDE_DIRS ${VCLIB_NLOHMANN_JSON_DIR}/include)
 
-add_library(vclib-external-mapbox-earcut INTERFACE)
+add_library(vclib-external-nlohmann-json INTERFACE)
 
-target_include_directories(vclib-external-mapbox-earcut
-    INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
+target_include_directories(vclib-external-nlohmann-json
+    INTERFACE ${NLOHMANN_JSON_INCLUDE_DIRS})
 
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-mapbox-earcut)
+list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-nlohmann-json)

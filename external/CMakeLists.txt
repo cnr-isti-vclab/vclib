@@ -25,7 +25,7 @@ project(vclib-external)
 
 include(FetchContent)
 
-# Eigen options
+# Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 
@@ -33,10 +33,14 @@ option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
     "Allow use of bundled Mapbox-Eaurcut source" ON)
 
+# Nlohmann-json
+option(VCLIB_ALLOW_BUNDLED_NLOHMANN_JSON "Allow use of bundled Nlohmann-json source" ON)
+
 # Zip iterator
 option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
     "Allow use of bundled ZipViews source" ON)
 
+# pstld
 if (APPLE)
     option(VCLIB_ALLOW_BUNDLED_PSTLD "Allow use of bundled pstld source" ON)
 endif()
@@ -67,6 +71,9 @@ include(eigen.cmake)
 
 ### Mapbox-Earcut
 include(mapbox.cmake)
+
+### Jeayeson
+include(nlohmann-json.cmake)
 
 ### Zip iterator
 include(zip-views.cmake)

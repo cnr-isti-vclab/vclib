@@ -159,6 +159,7 @@ set(HEADERS
     include/vclib/exceptions/mesh_exceptions.h
     include/vclib/exceptions/misc_exceptions.h
     include/vclib/io/file_info.h
+	include/vclib/io/file_settings.h
     include/vclib/io/image.h
     include/vclib/io/mesh.h
     include/vclib/io/read.h
