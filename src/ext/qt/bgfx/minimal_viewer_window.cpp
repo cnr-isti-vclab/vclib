@@ -22,6 +22,8 @@
 
 #include <vclib/ext/qt/bgfx/minimal_viewer_window.h>
 
+#include <vclib/ext/qt/gui/screen_shot_dialog.h>
+
 #include <iostream>
 
 namespace vcl::qbgf {
@@ -125,6 +127,9 @@ void MinimalViewerWindow::wheelEvent(QWheelEvent* event)
 
 void MinimalViewerWindow::keyPressEvent(QKeyEvent* event)
 {
+    int res = 0;
+    float screenMultiplier = 1.0f;
+    qt::ScreenShotDialog dialog;
     MV::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
 
     switch (event->key()) {
@@ -133,8 +138,22 @@ void MinimalViewerWindow::keyPressEvent(QKeyEvent* event)
                   << "(" << MV::camera().center() << ") "
                   << "(" << MV::camera().up() << ")\n";
         break;
+    case Qt::Key_S:
+        // screenshot
+        res = dialog.exec();
+        break;
 
-    default: MV::keyPress(vcl::qt::fromQt((Qt::Key) event->key())); break;
+    default:
+        MV::keyPress(vcl::qt::fromQt((Qt::Key) event->key())); break;
+    }
+
+    if (res == QDialog::Accepted) {
+        auto sf = dialog.selectedFiles();
+        if (!sf.empty()) {
+            std::string fn = sf.first().toStdString();
+            screenMultiplier = dialog.screenMultiplierValue();
+            screenShot(fn, width() * screenMultiplier, height() * screenMultiplier);
+        }
     }
 
     update();

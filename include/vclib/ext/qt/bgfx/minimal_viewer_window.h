@@ -40,6 +40,9 @@ protected:
     using MV = vcl::bgf::MinimalViewer;
 
 public:
+    using CanvasWindow::height;
+    using CanvasWindow::width;
+
     MinimalViewerWindow(
         std::shared_ptr<DrawableObjectVector> v,
         const std::string&                    windowTitle = "Minimal Viewer",

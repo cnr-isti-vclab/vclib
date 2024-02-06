@@ -153,14 +153,16 @@ if (TARGET vclib-external-qt)
         include/vclib/ext/qt/gui/drawable_object_vector_frame.h
         include/vclib/ext/qt/gui/input.h
         include/vclib/ext/qt/gui/mesh_render_settings_frame.h
-        include/vclib/ext/qt/gui/q_clickable_label.h)
+        include/vclib/ext/qt/gui/q_clickable_label.h
+        include/vclib/ext/qt/gui/screen_shot_dialog.h)
 
     list(APPEND SOURCES
         src/ext/qt/gui/drawable_object_frame.cpp
         src/ext/qt/gui/drawable_object_vector_frame.cpp
         src/ext/qt/gui/input.cpp
         src/ext/qt/gui/mesh_render_settings_frame.cpp
-        src/ext/qt/gui/q_clickable_label.cpp)
+        src/ext/qt/gui/q_clickable_label.cpp
+        src/ext/qt/gui/screen_shot_dialog.cpp)
 
     list(APPEND FORMS
         src/ext/qt/gui/drawable_object_frame.ui
