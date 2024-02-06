@@ -64,7 +64,7 @@ inline void saveImageData(
 {
     std::string ext = FileInfo::extension(filename);
     ext             = vcl::str::toLower(ext);
-    int ret = 0;
+    int ret         = 0;
     if (ext == ".png") {
         ret = stbi_write_png(filename.c_str(), w, h, 4, data, 0);
     }

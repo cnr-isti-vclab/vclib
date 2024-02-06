@@ -58,13 +58,9 @@ public:
      * represents the alpha, the second byte represents the blue, the third byte
      * represents the green and the fourth byte represents the red.
      */
-    struct Format {
-        enum Enum {
-            ABGR,
-            ARGB,
-            RGBA,
-            BGRA
-        };
+    struct Format
+    {
+        enum Enum { ABGR, ARGB, RGBA, BGRA };
     };
 
     /**
@@ -362,19 +358,11 @@ public:
 
     void set(uint32_t cc, Format::Enum fmt = Format::ABGR)
     {
-        switch(fmt) {
-        case Format::ARGB:
-                setArgb(cc);
-                break;
-        case Format::ABGR:
-                setAbgr(cc);
-                break;
-        case Format::RGBA:
-                setRgba(cc);
-                break;
-        case Format::BGRA:
-                setBgra(cc);
-                break;
+        switch (fmt) {
+        case Format::ARGB: setArgb(cc); break;
+        case Format::ABGR: setAbgr(cc); break;
+        case Format::RGBA: setRgba(cc); break;
+        case Format::BGRA: setBgra(cc); break;
         }
     }
 
