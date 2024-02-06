@@ -49,14 +49,14 @@ public:
 
     MinimalViewerWindow(
         const std::string& windowTitle,
-        uint               width       = 1024,
-        uint               height      = 768,
-        QWindow*           parent      = nullptr);
+        uint               width  = 1024,
+        uint               height = 768,
+        QWindow*           parent = nullptr);
 
     MinimalViewerWindow(
-        uint               width       = 1024,
-        uint               height      = 768,
-        QWindow*           parent      = nullptr);
+        uint     width  = 1024,
+        uint     height = 768,
+        QWindow* parent = nullptr);
 
     MinimalViewerWindow(QWindow* parent);
 

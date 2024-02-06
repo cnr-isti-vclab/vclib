@@ -62,8 +62,7 @@ CanvasWindow::CanvasWindow(uint width, uint height, QWindow* parent) :
 {
 }
 
-CanvasWindow::CanvasWindow(QWindow* parent) :
-        CanvasWindow(1024, 768, parent)
+CanvasWindow::CanvasWindow(QWindow* parent) : CanvasWindow(1024, 768, parent)
 {
 }
 

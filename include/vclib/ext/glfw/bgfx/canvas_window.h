@@ -39,7 +39,10 @@ protected:
     GLFWwindow* window = nullptr;
 
 public:
-    CanvasWindow(const std::string& windowTitle, uint width = 1024, uint height = 768);
+    CanvasWindow(
+        const std::string& windowTitle,
+        uint               width  = 1024,
+        uint               height = 768);
 
     CanvasWindow(uint width = 1024, uint height = 768);
 

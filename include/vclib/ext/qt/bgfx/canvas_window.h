@@ -39,17 +39,16 @@ class CanvasWindow : public QWindow, public vcl::bgf::Canvas
 public:
     CanvasWindow(
         const std::string& windowTitle,
-        uint     width  = 1024,
-        uint     height = 768,
-        QWindow* parent = nullptr);
+        uint               width  = 1024,
+        uint               height = 768,
+        QWindow*           parent = nullptr);
 
     CanvasWindow(
         uint     width  = 1024,
         uint     height = 768,
         QWindow* parent = nullptr);
 
-    CanvasWindow(
-        QWindow* parent);
+    CanvasWindow(QWindow* parent);
 
     virtual ~CanvasWindow();
 
