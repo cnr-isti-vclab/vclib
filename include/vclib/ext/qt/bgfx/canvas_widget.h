@@ -97,7 +97,9 @@ public:
 
     ~CanvasWidget() {}
 
-    virtual void draw() { canvasWindow->draw(canvasWindow->viewID()); }
+    bgfx::ViewId viewID() const { return canvasWindow->viewID(); }
+
+    virtual void draw() { canvasWindow->draw(); }
 
     void update()
     {
