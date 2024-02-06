@@ -45,7 +45,7 @@ std::string fatalErrorString(bgfx::Fatal::Enum code)
     }
 }
 
-} // namespace internal
+} // namespace detail
 
 void Callback::fatal(
     const char*       filePath,
@@ -130,7 +130,6 @@ void Callback::captureEnd()
 
 void Callback::captureFrame(const void* data, uint32_t size)
 {
-
 }
 
 } // namespace vcl::bgf

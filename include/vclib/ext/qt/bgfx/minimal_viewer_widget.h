@@ -70,14 +70,14 @@ class MinimalViewerWidget : public CanvasWidget<MinimalViewerWindow>
 {
 public:
     MinimalViewerWidget(QWidget* parent = nullptr) :
-            CanvasWidget<MinimalViewerWindow>(renderType, parent)
+            CanvasWidget<MinimalViewerWindow>(parent)
     {
     }
 
     MinimalViewerWidget(
         std::shared_ptr<DrawableObjectVector> v,
         QWidget*                              parent = nullptr) :
-            CanvasWidget<MinimalViewerWindow>(renderType, parent)
+            CanvasWidget<MinimalViewerWindow>(parent)
     {
         setDrawableObjectVector(v);
     }

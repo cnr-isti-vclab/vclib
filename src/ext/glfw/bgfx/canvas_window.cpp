@@ -60,7 +60,8 @@ CanvasWindow::CanvasWindow(
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-    window = glfwCreateWindow(width, height, windowTitle.c_str(), nullptr, nullptr);
+    window =
+        glfwCreateWindow(width, height, windowTitle.c_str(), nullptr, nullptr);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -89,7 +90,6 @@ CanvasWindow::CanvasWindow(
             self->glfwWindowSizeCallback(window, width, height);
         });
 }
-
 
 CanvasWindow::CanvasWindow(uint width, uint height) :
         vcl::bglfwx::CanvasWindow("GLFW Canvas", width, height)

@@ -22,6 +22,7 @@
 
 #include <vclib/ext/bgfx/context.h>
 
+#include <vclib/types/base.h>
 #include <vclib/gui/native_window_handle.h>
 
 namespace vcl::bgf {

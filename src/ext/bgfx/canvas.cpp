@@ -67,7 +67,6 @@ void Canvas::init(void* winID, uint width, uint height)
     init(winID, width, height, nullptr);
 }
 
-
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
 {
     if (width == 0 || height == 0) {
