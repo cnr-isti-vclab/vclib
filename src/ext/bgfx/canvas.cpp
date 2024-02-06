@@ -22,6 +22,8 @@
 
 #include <vclib/ext/bgfx/canvas.h>
 
+#include <vclib/gui/native_window_handle.h>
+
 namespace vcl::bgf {
 
 Canvas::Canvas()
@@ -66,11 +68,31 @@ void Canvas::init(void* winID, uint width, uint height)
 }
 
 
-void Canvas::screenShot(const std::string& filename)
+void Canvas::screenShot(const std::string& filename, uint width, uint height)
 {
-    draw(viewID);
-    bgfx::requestScreenShot(fbh, filename.c_str());
-    bgfx::frame();
+    if (width == 0 || height == 0) {
+        draw(viewID);
+        bgfx::requestScreenShot(fbh, filename.c_str());
+        bgfx::frame();
+    }
+    else {
+        void* d;
+        void* w = vcl::createWindow("", width, height, d, true);
+        bgfx::ViewId v = Context::requestViewId();
+        bgfx::FrameBufferHandle fbh = bgfx::createFrameBuffer(w, width, height);
+        bgfx::setViewFrameBuffer(v, fbh);
+        bgfx::setViewClear(
+            v, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
+        bgfx::setViewRect(v, 0, 0, width, height);
+        bgfx::touch(v);
+        draw(v);
+        bgfx::requestScreenShot(fbh, filename.c_str());
+        bgfx::frame();
+
+        bgfx::destroy(fbh);
+        Context::releaseViewId(v);
+        vcl::closeWindow(w, d);
+    }
 }
 
 void Canvas::frame()
