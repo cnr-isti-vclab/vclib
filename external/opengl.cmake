@@ -26,7 +26,8 @@ if (OpenGL_FOUND)
     message(STATUS "- OpenGL - using system-provided library")
 
     add_library(vclib-external-opengl INTERFACE)
-    target_link_libraries(vclib-external-opengl INTERFACE OpenGL::GL)
+    target_link_libraries(vclib-external-opengl INTERFACE
+        OpenGL::GL OpenGL::GLU)
 
     if(APPLE)
         target_compile_definitions(vclib-external-opengl INTERFACE GL_SILENCE_DEPRECATION)
