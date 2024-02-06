@@ -28,8 +28,6 @@
 
 #include <vclib/ext/bgfx/canvas.h>
 
-#include "canvas_window.h"
-
 namespace vcl::qbgf {
 
 class CanvasWidget : public QWidget, public vcl::bgf::Canvas
