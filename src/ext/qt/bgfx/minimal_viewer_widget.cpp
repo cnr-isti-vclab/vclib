@@ -55,7 +55,7 @@ MinimalViewerWidget::MinimalViewerWidget(
 }
 
 MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) :
-    MinimalViewerWidget("Minimal Viewer", 1024, 768, parent)
+        MinimalViewerWidget("Minimal Viewer", 1024, 768, parent)
 {
 }
 

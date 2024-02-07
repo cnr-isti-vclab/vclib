@@ -79,7 +79,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
         void* w = vcl::createWindow("", width, height, d, true);
 
         // setup view and frame buffer
-        bgfx::ViewId v = Context::requestViewId();
+        bgfx::ViewId            v   = Context::requestViewId();
         bgfx::FrameBufferHandle fbh = bgfx::createFrameBuffer(w, width, height);
         bgfx::setViewFrameBuffer(v, fbh);
         bgfx::setViewClear(
@@ -89,7 +89,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 
         // replace the current view with the new one
         bgfx::ViewId tmpView = view;
-        view = v;
+        view                 = v;
         draw();
         bgfx::requestScreenShot(fbh, filename.c_str());
         bgfx::frame();

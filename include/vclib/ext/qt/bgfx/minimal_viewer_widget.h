@@ -40,9 +40,9 @@ public:
 
     MinimalViewerWidget(
         const std::string& windowTitle = "Minimal Viewer",
-        uint               width  = 1024,
-        uint               height = 768,
-        QWidget*           parent = nullptr);
+        uint               width       = 1024,
+        uint               height      = 768,
+        QWidget*           parent      = nullptr);
 
     MinimalViewerWidget(
         std::shared_ptr<DrawableObjectVector> v,

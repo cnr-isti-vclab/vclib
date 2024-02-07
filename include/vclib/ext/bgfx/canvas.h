@@ -61,7 +61,7 @@ namespace vcl::bgf {
  */
 class Canvas
 {
-    void*                   winID  = nullptr;
+    void*                   winID = nullptr;
     bgfx::FrameBufferHandle fbh;
 
     bgfx::ViewId view = 0;
