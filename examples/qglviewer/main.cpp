@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     vcl::MeshInfo loadedInfo;
 
     vcl::PolyMesh tm = vcl::load<vcl::PolyMesh>(
-        VCLIB_TEST_MODELS_PATH "/TextureDouble.ply", loadedInfo);
+        VCLIB_ASSETS_PATH "/TextureDouble.ply", loadedInfo);
     vcl::updatePerFaceNormals(tm);
     vcl::updatePerVertexNormals(tm);
     tm.enablePerVertexColor();
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     vcl::setMeshColor(tm, vcl::Color::Yellow);
 
     vcl::TriMesh m =
-        vcl::loadObj<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bimba.obj");
+        vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
     m.enablePerVertexColor();
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);

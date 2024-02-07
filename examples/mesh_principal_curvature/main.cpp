@@ -32,7 +32,7 @@
 int main(int argc, char** argv)
 {
     vcl::TriMesh m =
-        vcl::loadObj<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bimba.obj");
+        vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
 
     updateCurvature(m);
 
