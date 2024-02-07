@@ -29,7 +29,7 @@
 
 int main()
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH
                                                 "/bunny_textured.ply");
 
     vcl::TriMesh mSmooth(m);
@@ -39,14 +39,14 @@ int main()
     vcl::laplacianSmoothing(mSmooth, 30);
     t1.stopAndPrint();
 
-    vcl::savePly(mSmooth, VCLIB_TEST_RESULTS_PATH "/bunny_lapl_smooth.ply");
+    vcl::savePly(mSmooth, VCLIB_RESULTS_PATH "/bunny_lapl_smooth.ply");
 
     vcl::Timer t2("Taubin Smoothing");
 
     vcl::taubinSmoothing(m, 300, 0.5, -0.53);
     t2.stopAndPrint();
 
-    vcl::savePly(m, VCLIB_TEST_RESULTS_PATH "/bunny_taub_smooth.ply");
+    vcl::savePly(m, VCLIB_RESULTS_PATH "/bunny_taub_smooth.ply");
 
     return 0;
 }

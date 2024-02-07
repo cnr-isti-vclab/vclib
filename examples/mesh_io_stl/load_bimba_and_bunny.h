@@ -12,11 +12,11 @@ void loadBimbaAndBunnyMeshes(vcl::TriMesh& m1, vcl::TriMesh& m2)
 
     log.startTimer();
     m1 = vcl::load<vcl::TriMesh>(
-        VCLIB_TEST_MODELS_PATH "/bimba_bin.stl", loadedInfo, log);
+        VCLIB_ASSETS_PATH "/bimba_bin.stl", loadedInfo, log);
 
     log.startTimer();
     m2 = vcl::load<vcl::TriMesh>(
-        VCLIB_TEST_MODELS_PATH "/bunny_simplified.stl", loadedInfo, log);
+        VCLIB_ASSETS_PATH "/bunny_simplified.stl", loadedInfo, log);
 }
 
 #endif // LOAD_BIMBA_AND_BUNNY_H

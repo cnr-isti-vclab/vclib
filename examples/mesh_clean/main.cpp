@@ -30,7 +30,7 @@
 int main()
 {
     vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/brain.ply");
+        vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/brain.ply");
 
     bool isWaterTight = vcl::isWaterTight(m);
 
@@ -61,9 +61,9 @@ int main()
 
     m.compact();
 
-    vcl::savePly(m, VCLIB_TEST_RESULTS_PATH "/brain_clean.ply");
+    vcl::savePly(m, VCLIB_RESULTS_PATH "/brain_clean.ply");
 
-    m = vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH
+    m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH
                                    "/bunny_textured.ply");
 
     m.enablePerFaceAdjacentFaces();
@@ -74,7 +74,7 @@ int main()
 
     std::cerr << "Bunny number holes: " << nHoles << "\n";
 
-    m = vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/rangemap.ply");
+    m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/rangemap.ply");
 
     vcl::updateBoundingBox(m);
 
@@ -94,7 +94,7 @@ int main()
 
     vcl::setPerVertexColorPerlinNoise(m, vcl::Point(d, d, d));
 
-    vcl::save(m, VCLIB_TEST_RESULTS_PATH "/rangemap_cc_colored.ply", false);
+    vcl::save(m, VCLIB_RESULTS_PATH "/rangemap_cc_colored.ply", false);
 
     return 0;
 }

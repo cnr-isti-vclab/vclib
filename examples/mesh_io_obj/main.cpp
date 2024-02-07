@@ -29,7 +29,7 @@ int main()
 {
     vcl::MeshInfo loadedInfo;
     vcl::TriMesh  m = vcl::loadObj<vcl::TriMesh>(
-        VCLIB_TEST_MODELS_PATH "/TextureDouble.obj", loadedInfo);
+        VCLIB_ASSETS_PATH "/TextureDouble.obj", loadedInfo);
 
     return 0;
 }

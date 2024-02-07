@@ -29,7 +29,7 @@
 int main()
 {
     vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bone.ply");
+        vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bone.ply");
 
     m.addPerVertexCustomComponent<int>("flag");
 

@@ -30,7 +30,7 @@
 int main()
 {
     vcl::TriMesh tm =
-        vcl::load<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/cube_tri.ply");
+        vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
 
     Eigen::MatrixXd v = vcl::vertexMatrix<Eigen::MatrixXd>(tm);
     Eigen::MatrixXi f = vcl::faceMatrix<Eigen::MatrixXi>(tm);
@@ -40,7 +40,7 @@ int main()
     std::cerr << "Faces:\n" << f << "\n\n";
 
     vcl::PolyMesh pm =
-        vcl::loadPly<vcl::PolyMesh>(VCLIB_TEST_MODELS_PATH "/cube_poly.ply");
+        vcl::loadPly<vcl::PolyMesh>(VCLIB_ASSETS_PATH "/cube_poly.ply");
 
     vcl::Array2<double> va = vcl::vertexMatrix<vcl::Array2<double>>(pm);
     vcl::Array2<int>    fa = vcl::faceMatrix<vcl::Array2<int>>(pm);

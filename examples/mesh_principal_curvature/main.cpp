@@ -25,11 +25,11 @@
 int main()
 {
     vcl::TriMesh m =
-        vcl::loadObj<vcl::TriMesh>(VCLIB_TEST_MODELS_PATH "/bimba.obj");
+        vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
 
     updateCurvature(m);
 
-    vcl::saveStl(m, VCLIB_TEST_RESULTS_PATH "/bimba_curvature.stl");
+    vcl::saveStl(m, VCLIB_RESULTS_PATH "/bimba_curvature.stl");
 
     return 0;
 }

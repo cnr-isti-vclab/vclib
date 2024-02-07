@@ -119,7 +119,7 @@ int main()
 {
     vcl::TriMesh tm;
 
-    vcl::loadPly(tm, VCLIB_TEST_MODELS_PATH "/cube_tri.ply");
+    vcl::loadPly(tm, VCLIB_ASSETS_PATH "/cube_tri.ply");
 
     std::cerr << "========= TriMesh =========\n\n";
 
@@ -127,7 +127,7 @@ int main()
 
     vcl::PolyMesh pm;
 
-    vcl::loadPly(pm, VCLIB_TEST_MODELS_PATH "/cube_poly.ply");
+    vcl::loadPly(pm, VCLIB_ASSETS_PATH "/cube_poly.ply");
 
     std::cerr << "========= PolyMesh =========\n\n";
 

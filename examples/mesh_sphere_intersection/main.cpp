@@ -26,7 +26,7 @@ int main()
 {
     vcl::TriMesh m1 = bimbaSphereIntersection();
 
-    vcl::save(m1, VCLIB_TEST_RESULTS_PATH "/bimba_sphere_intersection.ply");
+    vcl::save(m1, VCLIB_RESULTS_PATH "/bimba_sphere_intersection.ply");
 
     return 0;
 }

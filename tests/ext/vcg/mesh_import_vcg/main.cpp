@@ -37,7 +37,7 @@ TEST_CASE("Import TriMesh from VCG")
     VCGMesh vcgMesh;
 
     vcg::tri::io::ImporterPLY<VCGMesh>::Open(
-        vcgMesh, VCLIB_TEST_MODELS_PATH "/cube_tri.ply");
+        vcgMesh, VCLIB_ASSETS_PATH "/cube_tri.ply");
 
     REQUIRE(vcgMesh.VN() == 8);
     REQUIRE(vcgMesh.FN() == 12);
@@ -198,7 +198,7 @@ TEST_CASE("Import PolyMesh from VCG")
     VCGMesh vcgMesh;
 
     vcg::tri::io::ImporterPLY<VCGMesh>::Open(
-        vcgMesh, VCLIB_TEST_MODELS_PATH "/cube_tri.ply");
+        vcgMesh, VCLIB_ASSETS_PATH "/cube_tri.ply");
 
     REQUIRE(vcgMesh.VN() == 8);
     REQUIRE(vcgMesh.FN() == 12);

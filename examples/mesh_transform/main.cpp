@@ -30,7 +30,7 @@ int main()
 {
     vcl::TriMesh tm;
 
-    vcl::loadPly(tm, VCLIB_TEST_MODELS_PATH "/bunny_textured.ply");
+    vcl::loadPly(tm, VCLIB_ASSETS_PATH "/bunny_textured.ply");
 
     vcl::TriMesh m = tm;
 
@@ -40,7 +40,7 @@ int main()
 
     vcl::applyTransformMatrix(tm, m44);
 
-    vcl::savePly(tm, VCLIB_TEST_RESULTS_PATH "/rotated_bunny.ply");
+    vcl::savePly(tm, VCLIB_RESULTS_PATH "/rotated_bunny.ply");
 
     return 0;
 }

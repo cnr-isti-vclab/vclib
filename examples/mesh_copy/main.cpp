@@ -36,11 +36,11 @@ int main()
     vcl::setPerVertexColor(xCyl, vcl::Color::Red);
     vcl::rotateDeg(xCyl, vcl::Point3d(0, 0, 1), 90.f);
 
-    vcl::savePly(yCyl, VCLIB_TEST_RESULTS_PATH "/yasis.ply");
-    vcl::savePly(xCyl, VCLIB_TEST_RESULTS_PATH "/xasis.ply");
+    vcl::savePly(yCyl, VCLIB_RESULTS_PATH "/yasis.ply");
+    vcl::savePly(xCyl, VCLIB_RESULTS_PATH "/xasis.ply");
 
     vcl::TriMesh mesh = xCyl;
     mesh.append(yCyl);
 
-    vcl::savePly(mesh, VCLIB_TEST_RESULTS_PATH "/axis.ply");
+    vcl::savePly(mesh, VCLIB_RESULTS_PATH "/axis.ply");
 }

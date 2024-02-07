@@ -57,6 +57,6 @@ set(VCLIB_ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/examples/assets")
 
 add_library(vclib-examples-common INTERFACE)
 target_compile_definitions(vclib-examples-common INTERFACE
-    VCLIB_TEST_MODELS_PATH="${VCLIB_ASSETS_PATH}")
+    VCLIB_ASSETS_PATH="${VCLIB_ASSETS_PATH}")
 target_compile_definitions(vclib-examples-common INTERFACE
-    VCLIB_TEST_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results")
+    VCLIB_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results")
