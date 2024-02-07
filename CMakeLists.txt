@@ -31,11 +31,6 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 # vclib
 add_subdirectory(vclib)
 
-# set the VCLIB_TEST_DIR variable to be used by the examples and tests
-if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_TESTS)
-    get_target_property(VCLIB_TEST_DIR vclib VCLIB_TEST_DIR)
-endif()
-
 # external libraries
 message(STATUS "VCLib-Render: external libraries")
 add_subdirectory(external)
@@ -232,6 +227,14 @@ target_link_libraries(vclib-render PUBLIC
     ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib)
 target_include_directories(vclib-render PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})
 
-if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_TESTS)
-    add_subdirectory(test)
+### Examples
+
+include(cmake/examples.cmake)
+
+if (VCLIB_BUILD_EXAMPLES)
+    get_target_property(VCLIB_EXAMPLES_DIR vclib VCLIB_EXAMPLES_DIR)
+endif()
+
+if (VCLIB_BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()

@@ -4,14 +4,15 @@ function(vclib_render_add_example name include_vclib_example_dir)
     set(TARGET_NAME "vclib-render-${name}-example")
 
     add_executable(${TARGET_NAME} ${ARG_UNPARSED_ARGUMENTS})
-    target_link_libraries(${TARGET_NAME} PRIVATE vclib-render vclib-test-common)
+    target_link_libraries(${TARGET_NAME} PRIVATE
+        vclib-render vclib-examples-common)
 
     if (${include_vclib_example_dir})
         string(REPLACE "-" "_" out_name ${name})
-        set(VCLIB_INCLUDE_TEST_DIR ${VCLIB_TEST_DIR}/examples/${out_name})
+        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/${out_name})
 
         target_include_directories(${TARGET_NAME} PUBLIC
-                ${VCLIB_INCLUDE_TEST_DIR})
+                ${VCLIB_INCLUDE_EXAMPLES_DIR})
     endif()
 
     set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "examples")

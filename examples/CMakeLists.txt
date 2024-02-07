@@ -21,28 +21,21 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-render-test)
+project(vclib-render-examples)
 
 option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
 
-include(cmake/cmake_functions.cmake)
-
 # examples
 if (VCLIB_BUILD_EXAMPLES)
-    add_subdirectory(examples/mesh_io_stl)
-    add_subdirectory(examples/mesh_principal_curvature)
-    add_subdirectory(examples/mesh_sampling)
-    add_subdirectory(examples/mesh_sphere_intersection)
+    add_subdirectory(mesh_io_stl)
+    add_subdirectory(mesh_principal_curvature)
+    add_subdirectory(mesh_sampling)
+    add_subdirectory(mesh_sphere_intersection)
 
     if (TARGET vclib-external-qglviewer)
-        add_subdirectory(examples/qglviewer)
+        add_subdirectory(qglviewer)
     endif()
-endif()
-
-# tests
-if (VCLIB_BUILD_TESTS)
-
 endif()
 
