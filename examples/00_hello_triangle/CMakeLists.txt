@@ -21,23 +21,33 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-render-examples)
 
-option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+set(EXAMPLE_NAME 00-hello-triangle)
+project(vclib-render-${EXAMPLE_NAME}-example)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-# examples
-if (VCLIB_BUILD_EXAMPLES)
+set(SOURCES
+    main.cpp
+    hello_triangle.h
+    hello_triangle.cpp)
 
-    add_subdirectory(00_hello_triangle)
+set(SHADERS
+    shaders/vs_vertex_shader.sc
+    shaders/fs_fragment_shader.sc
+    shaders/varying.def.sc)
 
-    if (TARGET vclib-external-qglviewer)
-        add_subdirectory(qglviewer)
-    endif()
+vclib_render_add_example(${EXAMPLE_NAME} TRUE ${SOURCES})
 
-    # the following examples are the same of the ones in the vclib library,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(vclib)
-endif()
+target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})
 
+# target_link_libraries(
+# 	${PROJECT_NAME}
+# 	PUBLIC vclib-render
+# 	)
+
+# target_include_directories(
+# 	${PROJECT_NAME}
+# 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+# 	)
