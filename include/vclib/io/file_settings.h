@@ -45,6 +45,7 @@ class FileSettings
 
 public:
     FileSettings() = default;
+
     FileSettings(const std::string& filename)
     {
         std::ifstream file(filename);
