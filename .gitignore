@@ -162,9 +162,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# CMake FetchContent
-external/downloads/*
-
 # C++ gitignore
 
 # Prerequisites
@@ -175,7 +172,7 @@ external/downloads/*
 *.lo
 *.o
 *.obj
-!test/data/models/*.obj
+!examples/assets/*.obj
 
 # Precompiled Headers
 *.gch

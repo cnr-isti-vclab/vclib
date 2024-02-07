@@ -29,6 +29,9 @@ include(cmake/vclib_common_settings.cmake)
 ### Options
 option(VCLIB_BUILD_EXAMPLES "Build VCLib examples" ON)
 option(VCLIB_BUILD_TESTS "Build VCLib tests" ON)
+
+option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+
 option(VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY
     "If true, the examples and tests of VCLib will be built just setting the
     INCLUDE_PATH of the library (no cmake targets)." OFF)
@@ -37,6 +40,13 @@ option(VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY
 message(STATUS "VCLib: external libraries")
 add_subdirectory(external)
 
+if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)
+    message(STATUS "VCLib: using parallel algorithms")
+else()
+    message(STATUS "VCLib: not using parallel algorithms")
+endif()
+
+### vclib target
 set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(HEADERS
@@ -329,8 +339,7 @@ set(HEADERS
     include/vclib/views/mesh/components/tex_coords.h
     include/vclib/views/mesh/elements/edge.h
     include/vclib/views/mesh/elements/face.h
-    include/vclib/views/mesh/elements/vertex.h
-)
+    include/vclib/views/mesh/elements/vertex.h)
 
 # headers and sources to include only if using VCG
 if (TARGET vclib-external-vcg)
@@ -351,19 +360,24 @@ target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
 target_sources(vclib PRIVATE ${HEADERS})
 
-if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)
-    message(STATUS "VCLib: using parallel algorithms")
-else()
-    message(STATUS "VCLib: not using parallel algorithms")
+### Examples and Tests
+include(cmake/examples_and_tests.cmake)
+
+set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
+set(VCLIB_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
+if (VCLIB_BUILD_EXAMPLES)
+    set_target_properties(vclib PROPERTIES
+        VCLIB_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR})
+
+    add_subdirectory(${VCLIB_EXAMPLES_DIR})
 endif()
 
-if (VCLIB_BUILD_EXAMPLES OR VCLIB_BUILD_TESTS)
+if (VCLIB_BUILD_TESTS)
     include(CTest)
-
-    set(VCLIB_TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
     set_target_properties(vclib PROPERTIES
-        VCLIB_TEST_DIR ${VCLIB_TEST_DIR})
+        VCLIB_TESTS_DIR ${VCLIB_TESTS_DIR})
 
-    add_subdirectory(test)
+    add_subdirectory(${VCLIB_TESTS_DIR})
 endif()
 

@@ -20,21 +20,39 @@
 #* for more details.                                                         *
 #****************************************************************************/
 
-project(vclib-ext-mesh-import-from-vcg-test)
+cmake_minimum_required(VERSION 3.24)
+project(vclib-examples)
 
-get_target_property(VCG_INCLUDE_DIRS vclib-external-vcg VCG_INCLUDE_DIRS)
+set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-# vcg generates a lot of warnings
-set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+# examples
+if (VCLIB_BUILD_EXAMPLES)
+    add_subdirectory(distance)
+    add_subdirectory(edge_mesh_basic)
+    add_subdirectory(grid)
+    add_subdirectory(misc)
+    add_subdirectory(mesh_basic)
+    add_subdirectory(mesh_clean)
+    add_subdirectory(mesh_conversion)
+    add_subdirectory(mesh_copy)
+    add_subdirectory(mesh_create)
+    add_subdirectory(mesh_custom_components)
+    add_subdirectory(mesh_export_to_matrix)
+    add_subdirectory(mesh_iterators)
+    add_subdirectory(mesh_io_obj)
+    add_subdirectory(mesh_io_off)
+    add_subdirectory(mesh_io_ply)
+    add_subdirectory(mesh_io_stl)
+    add_subdirectory(mesh_new_user_component)
+    add_subdirectory(mesh_normal)
+    add_subdirectory(mesh_principal_curvature)
+    add_subdirectory(mesh_sampling)
+    add_subdirectory(mesh_smooth)
+    add_subdirectory(mesh_sphere_intersection)
+    add_subdirectory(mesh_stat)
+    add_subdirectory(mesh_topology)
+    add_subdirectory(mesh_transform)
+    add_subdirectory(polygon_earcut)
+    add_subdirectory(polymesh_basic)
+endif()
 
-set(SOURCES
-    mesh.h
-    main.cpp
-    ${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp)
-
-add_executable(vclib-ext-mesh-import-from-vcg-test ${SOURCES})
-
-target_link_libraries(vclib-ext-mesh-import-from-vcg-test PUBLIC vclib vclib-test-common)
-
-enable_testing()
-add_test(NAME mesh-import-from-vcg COMMAND vclib-ext-mesh-import-from-vcg-test)

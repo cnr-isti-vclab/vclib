@@ -21,26 +21,28 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
+project(vclib-tests)
 
-set(EXAMPLE_NAME static-asserts)
-project(vclib-${EXAMPLE_NAME}-example)
+set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-set(HEADERS
-    meshes.h
-    loggers.h
-    space.h
-    meshes/edgemesh.h
-    meshes/mesh_views.h
-    meshes/pointcloud.h
-    meshes/polymesh.h
-    meshes/trimesh.h
-)
+# tests
+if (VCLIB_BUILD_TESTS)
+    add_subdirectory(kd_tree)
+    add_subdirectory(load_save_mesh_obj)
+    add_subdirectory(load_save_mesh_off)
+    add_subdirectory(load_save_mesh_ply)
+    add_subdirectory(load_save_mesh_stl)
+    add_subdirectory(mesh_conversions)
+    add_subdirectory(mesh_clean)
+    add_subdirectory(mesh_custom_components)
+    add_subdirectory(mesh_filter)
+    add_subdirectory(mesh_new_user_component)
+    add_subdirectory(mesh_topology)
+    add_subdirectory(static_asserts)
+    add_subdirectory(trimesh_base)
 
-set(SOURCES
-    main.cpp
-)
+    if (TARGET vclib-external-vcg)
+        add_subdirectory(ext/vcg/mesh_import_vcg)
+    endif()
+endif()
 
-vclib_add_example(
-    ${EXAMPLE_NAME}
-    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
-    ${HEADERS} ${SOURCES})

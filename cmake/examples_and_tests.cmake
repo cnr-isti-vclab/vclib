@@ -8,7 +8,7 @@ function(_vclib_add_test_example name header_only test)
     endif()
 
     add_executable(${TARGET_NAME} ${ARG_UNPARSED_ARGUMENTS})
-    target_link_libraries(${TARGET_NAME} PRIVATE vclib-test-common)
+    target_link_libraries(${TARGET_NAME} PRIVATE vclib-examples-common)
     if (NOT ${header_only})
         target_link_libraries(${TARGET_NAME} PRIVATE vclib)
     else()
@@ -52,3 +52,11 @@ function(vclib_add_test name header_only)
 
     _vclib_add_test_example(${name} ${header_only} TRUE ${ARG_UNPARSED_ARGUMENTS})
 endfunction()
+
+set(VCLIB_ASSETS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/examples/assets")
+
+add_library(vclib-examples-common INTERFACE)
+target_compile_definitions(vclib-examples-common INTERFACE
+    VCLIB_TEST_MODELS_PATH="${VCLIB_ASSETS_PATH}")
+target_compile_definitions(vclib-examples-common INTERFACE
+    VCLIB_TEST_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results")
