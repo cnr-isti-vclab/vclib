@@ -414,7 +414,7 @@ protected:
     void append(const ElementContainer<T>& other)
     {
         uint on = other.elementNumber();
-        uint n  = elementNumber();
+        uint n  = elementContainerSize();
         addElements(on);
         for (uint i = 0; i < on; ++i) {
             // copy everything from the other elements, also the pointers:
@@ -937,7 +937,7 @@ private:
         if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
             if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
-                    for (uint i = firstElementToProcess; i < elementNumber();
+                    for (uint i = firstElementToProcess; i < elementContainerSize();
                          i++)
                     {
                         T& e = element(i);
@@ -949,7 +949,7 @@ private:
                 }
             }
             else {
-                for (uint i = firstElementToProcess; i < elementNumber(); i++) {
+                for (uint i = firstElementToProcess; i < elementContainerSize(); i++) {
                     T& e = element(i);
                     if (!e.deleted()) {
                         e.Comp::updatePointers(oldBase, newBase, offset);
