@@ -935,26 +935,27 @@ private:
         uint         offset                = 0)
     {
         if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
+
+            // lambda to avoid code duplication
+            auto loop= [&]() {
+                for (uint i = firstElementToProcess; i < elementContainerSize();
+                     i++)
+                {
+                    T& e = element(i);
+                    if (!e.deleted()) {
+                        e.Comp::updatePointers(
+                            oldBase, newBase, firstElementToProcess);
+                    }
+                }
+            };
+
             if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
-                    for (uint i = firstElementToProcess; i < elementContainerSize();
-                         i++)
-                    {
-                        T& e = element(i);
-                        if (!e.deleted()) {
-                            e.Comp::updatePointers(
-                                oldBase, newBase, firstElementToProcess);
-                        }
-                    }
+                    loop();
                 }
             }
             else {
-                for (uint i = firstElementToProcess; i < elementContainerSize(); i++) {
-                    T& e = element(i);
-                    if (!e.deleted()) {
-                        e.Comp::updatePointers(oldBase, newBase, offset);
-                    }
-                }
+                loop();
             }
         }
     }
