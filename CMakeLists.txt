@@ -256,6 +256,7 @@ set(HEADERS
     include/vclib/mesh/requirements/face_requirements.h
     include/vclib/mesh/requirements/mesh_requirements.h
     include/vclib/mesh/requirements/vertex_requirements.h
+    include/vclib/mesh/utils/mesh_check.h
     include/vclib/mesh/utils/mesh_edge_util.h
     include/vclib/mesh/utils/mesh_inertia.h
     include/vclib/mesh/utils/mesh_info.h
