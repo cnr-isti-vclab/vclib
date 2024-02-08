@@ -30,8 +30,7 @@
 
 int main()
 {
-    vcl::TriMesh m =
-        vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
+    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
 
     m.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(m);

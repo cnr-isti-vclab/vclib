@@ -33,8 +33,7 @@ vcl::TriMesh bimbaSphereIntersection(
         0.3
 })
 {
-    vcl::TriMesh m =
-        vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
+    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
 
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);

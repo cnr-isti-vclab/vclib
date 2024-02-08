@@ -28,8 +28,7 @@
 
 int main()
 {
-    vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bone.ply");
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bone.ply");
 
     m.addPerVertexCustomComponent<int>("flag");
 

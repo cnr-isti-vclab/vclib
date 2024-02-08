@@ -28,8 +28,8 @@
 
 int main(int argc, char** argv)
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH
-                                                "/bunny_textured.ply");
+    vcl::TriMesh m =
+        vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bunny_textured.ply");
 
     vcl::TriMesh samples;
 

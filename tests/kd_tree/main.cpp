@@ -35,8 +35,7 @@ std::vector<uint> getKNearestNeighbors(
     uint             k,
     std::string      mesh = "bone.ply")
 {
-    vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/" + mesh);
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/" + mesh);
 
     vcl::KDTree tree(m);
 

@@ -29,8 +29,7 @@
 
 int main()
 {
-    vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/brain.ply");
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/brain.ply");
 
     bool isWaterTight = vcl::isWaterTight(m);
 
@@ -63,8 +62,7 @@ int main()
 
     vcl::savePly(m, VCLIB_RESULTS_PATH "/brain_clean.ply");
 
-    m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH
-                                   "/bunny_textured.ply");
+    m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bunny_textured.ply");
 
     m.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(m);

@@ -24,8 +24,7 @@
 
 int main()
 {
-    vcl::TriMesh m =
-        vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
+    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
 
     updateCurvature(m);
 

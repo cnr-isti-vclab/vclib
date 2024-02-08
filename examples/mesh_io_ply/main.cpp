@@ -30,8 +30,8 @@
 int main()
 {
     vcl::MeshInfo loadedInfo;
-    vcl::TriMesh  m = vcl::loadPly<vcl::TriMesh>(
-        VCLIB_ASSETS_PATH "/brain.ply", loadedInfo);
+    vcl::TriMesh  m =
+        vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/brain.ply", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 18844);
@@ -84,10 +84,7 @@ int main()
 
     // save again the mesh
     vcl::savePly(
-        m,
-        VCLIB_RESULTS_PATH "/triangulated_cube.ply",
-        vcl::nullLogger,
-        false);
+        m, VCLIB_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, false);
 
     vcl::TriMesh mm = vcl::loadPly<vcl::TriMesh>(
         VCLIB_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);

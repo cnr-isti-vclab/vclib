@@ -28,8 +28,8 @@
 int main()
 {
     vcl::MeshInfo loadedInfo;
-    vcl::TriMesh  m = vcl::loadOff<vcl::TriMesh>(
-        VCLIB_ASSETS_PATH "/bone.off", loadedInfo);
+    vcl::TriMesh  m =
+        vcl::loadOff<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bone.off", loadedInfo);
 
     assert(loadedInfo.hasVertices());
     assert(m.vertexNumber() == 1872);
