@@ -4,7 +4,8 @@
 
 HelloTriangle::HelloTriangle() : vcl::qbgf::CanvasWidget()
 {
-    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xff0000ff, 1.0f, 0);
+    bgfx::setViewClear(
+        0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xff0000ff, 1.0f, 0);
 
     setupWhatToDraw();
     setupHowToDraw();
@@ -30,7 +31,8 @@ void HelloTriangle::setupWhatToDraw()
 
 void HelloTriangle::setupHowToDraw()
 {
-    program = vcl::bgf::loadProgram("shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
+    program = vcl::bgf::loadProgram(
+        "shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
 }
 
 void HelloTriangle::draw()

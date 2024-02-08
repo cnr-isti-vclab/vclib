@@ -17,11 +17,7 @@ public:
     void draw() override;
 
 private:
-    float positions[6] = {
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        0.0f, 1.0f
-    };
+    float positions[6] = {0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};
 
     bgfx::VertexBufferHandle vbh;
 
