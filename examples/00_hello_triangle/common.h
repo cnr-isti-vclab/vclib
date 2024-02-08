@@ -20,30 +20,63 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifdef USE_QT
-#include <QApplication>
-#include "hello_triangle_qt.h"
-#elif USE_GLFW
-#include "hello_triangle_glfw.h"
-#endif
+#ifndef COMMON_H
+#define COMMON_H
 
-int main(int argc, char **argv)
+#include <bgfx/bgfx.h>
+
+#include <vclib/ext/bgfx/shader_programs/load_program.h>
+#include <vclib/space/color.h>
+
+struct Vertex {
+    float pos[2];
+    uint32_t abgr;
+};
+
+static const Vertex vertices[] {
+    {{-1.0f, -1.0f}, vcl::Color(vcl::Color::Red).abgr()},
+    {{1.0f, -1.0f}, vcl::Color(vcl::Color::Green).abgr()},
+    {{0.0f, 1.0f}, vcl::Color(vcl::Color::Blue).abgr()},
+};
+
+inline void setUpBGFX(
+    bgfx::ViewId              viewId,
+    bgfx::VertexBufferHandle& vbh,
+    bgfx::ProgramHandle&      program)
 {
-#ifdef USE_QT
-    QApplication app(argc, argv);
-    
-    HelloTriangleQt tw;
+    vcl::Color backgroundColor = vcl::Color::Black;
 
-    tw.show();
+    bgfx::setViewClear(
+        viewId,
+        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+        backgroundColor.rgba(),
+        1.0f,
+        0);
 
-    return app.exec();
-#elif USE_GLFW
-    HelloTriangleGLFW tw;
+    bgfx::VertexLayout layout;
 
-    tw.show();
+    layout.begin()
+        .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+        .end();
 
-    return 0;
-#else
-    return 0;
-#endif
+    vbh = bgfx::createVertexBuffer(
+        bgfx::makeRef(vertices, sizeof(vertices)), layout);
+
+    program = vcl::bgf::loadProgram(
+        "shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
+
+    bgfx::touch(viewId);
 }
+
+inline void drawOnView(
+    bgfx::ViewId                    viewId,
+    const bgfx::VertexBufferHandle& vbh,
+    const bgfx::ProgramHandle&      program)
+{
+    bgfx::setVertexBuffer(0, vbh);
+
+    bgfx::submit(viewId, program);
+}
+
+#endif // COMMON_H

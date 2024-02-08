@@ -28,26 +28,27 @@ project(vclib-render-${EXAMPLE_NAME}-example)
 ### Build settings
 set(CMAKE_CXX_STANDARD 20)
 
+set(HEADERS
+    common.h)
+
 set(SOURCES
-    main.cpp
-    hello_triangle.h
-    hello_triangle.cpp)
+    main.cpp)
 
 set(SHADERS
     shaders/vs_vertex_shader.sc
     shaders/fs_fragment_shader.sc
     shaders/varying.def.sc)
 
-vclib_render_add_example(${EXAMPLE_NAME} TRUE ${SOURCES})
+if (TARGET vclib-external-qt)
+    add_compile_definitions(USE_QT)
+    list(APPEND HEADERS hello_triangle_qt.h)
+    list(APPEND SOURCES hello_triangle_qt.cpp)
+elseif (TARGET vclib-external-glfw)
+    add_compile_definitions(USE_GLFW)
+    list(APPEND HEADERS hello_triangle_glfw.h)
+    list(APPEND SOURCES hello_triangle_glfw.cpp)
+endif()
+
+vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
 
 target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})
-
-# target_link_libraries(
-# 	${PROJECT_NAME}
-# 	PUBLIC vclib-render
-# 	)
-
-# target_include_directories(
-# 	${PROJECT_NAME}
-# 	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-# 	)

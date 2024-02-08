@@ -20,30 +20,24 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifdef USE_QT
-#include <QApplication>
-#include "hello_triangle_qt.h"
-#elif USE_GLFW
-#include "hello_triangle_glfw.h"
-#endif
+#ifndef HELLO_TRIANGLE_GLFW_H
+#define HELLO_TRIANGLE_GLFW_H
 
-int main(int argc, char **argv)
+#include <vclib/ext/glfw/bgfx/canvas_window.h>
+
+class HelloTriangleGLFW : public vcl::bglfwx::CanvasWindow
 {
-#ifdef USE_QT
-    QApplication app(argc, argv);
-    
-    HelloTriangleQt tw;
+public:
+    HelloTriangleGLFW();
 
-    tw.show();
+    ~HelloTriangleGLFW();
 
-    return app.exec();
-#elif USE_GLFW
-    HelloTriangleGLFW tw;
+    void draw() override;
 
-    tw.show();
+private:
+    bgfx::VertexBufferHandle vbh;
 
-    return 0;
-#else
-    return 0;
-#endif
-}
+    bgfx::ProgramHandle program;
+};
+
+#endif // HELLO_TRIANGLE_GLFW_H
