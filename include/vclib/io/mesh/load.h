@@ -62,7 +62,7 @@ void load(
     bool               enableOptionalComponents = true)
 {
     std::string ext = FileInfo::extension(filename);
-    ext             = vcl::str::toLower(ext);
+    ext             = vcl::toLower(ext);
     if (ext == ".obj") {
         loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
     }

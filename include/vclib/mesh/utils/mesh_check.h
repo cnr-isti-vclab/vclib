@@ -24,13 +24,43 @@
 #define VCL_MESH_UTILS_MESH_CHECK_H
 
 #include <vclib/concepts/mesh.h>
+#include <vclib/exceptions/mesh_exceptions.h>
+#include <vclib/misc/string.h>
 
 namespace vcl {
+
+namespace detail {
+
+// check parent mesh pointers
+
+template<uint ELEM_ID, MeshConcept MeshType>
+void checkParentMeshPointers(const MeshType& mesh)
+{
+    for (const auto& el : mesh.template elements<ELEM_ID>()) {
+        if (el.parentMesh() != &mesh) {
+            throw InconsistentMeshException(
+                "The " + vcl::elementEnumString<ELEM_ID>() + " n. " +
+                vcl::toString(el.index()) + " has a wrong Parent Mesh.\n" +
+                "Expected: " + vcl::toString(&mesh) + "; " +
+                "Found: " + vcl::toString(el.parentMesh()));
+        }
+    }
+}
+
+template<MeshConcept MeshType, typename ...Containers>
+void checkParentMeshPointers(const MeshType& mesh, TypeWrapper<Containers...>)
+{
+    (checkParentMeshPointers<Containers::ElementType::ELEMENT_ID>(mesh), ...);
+}
+
+} // namespace detail
 
 template<MeshConcept MeshType>
 void checkMeshPointers(const MeshType& mesh)
 {
+    detail::checkParentMeshPointers(mesh, typename MeshType::Containers());
 
+    // todo: check all the pointers in the containers
 }
 
 } // namespace vcl

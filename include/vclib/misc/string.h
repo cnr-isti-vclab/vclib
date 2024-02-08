@@ -26,8 +26,9 @@
 #include <algorithm>
 #include <cctype>
 #include <string>
+#include <sstream>
 
-namespace vcl::str {
+namespace vcl {
 
 /**
  * @brief Looks into `input` if there is a substring equal to `substr`, without
@@ -54,6 +55,29 @@ inline std::string::const_iterator findCaseInsensitive(
             return std::toupper(ch1) == std::toupper(ch2);
         });
     return it;
+}
+
+/**
+ * @brief Converts a value of type `T` to a string.
+ *
+ * With respect to `std::to_string`, this function also works with pointers.
+ *
+ * @param val: value to convert.
+ * @return string representation of `val`.
+ */
+template<typename T>
+std::string toString(T val)
+{
+    // if T is a pointer
+    if constexpr (std::is_pointer_v<T>) {
+        const void * address = static_cast<const void*>(val);
+        std::stringstream ss;
+        ss << address;
+        return ss.str();
+    }
+    else {
+        return std::to_string(val);
+    }
 }
 
 /**
@@ -88,12 +112,21 @@ inline std::string toUpper(const std::string& s)
     return ret;
 }
 
-inline void removeWindowsNewLine(std::string& s)
+/**
+ * @brief Removes the carriage return character ('\r') from the end of the
+ * string.
+ *
+ * This is useful when reading text files in Windows, where the end of line is
+ * represented by the sequence "\r\n".
+ *
+ * @param[in/out] s: input string.
+ */
+inline void removeCarriageReturn(std::string& s)
 {
     if (s.size() > 0 && s[s.size() - 1] == '\r')
         s = s.substr(0, s.size() - 1);
 }
 
-} // namespace vcl::str
+} // namespace vcl
 
 #endif // VCL_MISC_STRING_H

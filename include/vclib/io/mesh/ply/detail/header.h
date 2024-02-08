@@ -81,7 +81,7 @@ public:
 
         std::string line;
         std::getline(file, line);
-        str::removeWindowsNewLine(line);
+        vcl::removeCarriageReturn(line);
         if (line.compare(0, 3, "ply") == 0) {
             bool        error        = false;
             bool        firstElement = true;
@@ -107,13 +107,12 @@ public:
                     else if (headerLine == "comment") {
                         token++;
                         if (token != spaceTokenizer.end()) {
-                            if (vcl::str::containsCaseInsensitive(
-                                    *token, "texture"))
+                            if (vcl::containsCaseInsensitive(*token, "texture"))
                             {
                                 ++token;
                                 if (token != spaceTokenizer.end()) {
                                     std::string textName = *token;
-                                    auto it = vcl::str::findCaseInsensitive(
+                                    auto it = vcl::findCaseInsensitive(
                                         textName, "<this>");
                                     if (it != textName.end()) {
                                         uint        pos = it - textName.begin();

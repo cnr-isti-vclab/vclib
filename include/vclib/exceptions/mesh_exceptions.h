@@ -28,6 +28,22 @@
 
 namespace vcl {
 
+class InconsistentMeshException : public std::runtime_error
+{
+public:
+    InconsistentMeshException(const std::string& err) : std::runtime_error(err)
+    {
+    }
+
+    virtual const char* what() const throw()
+    {
+        static std::string error;
+        error =
+            std::string("Inconsistent Mesh - ") + std::runtime_error::what();
+        return error.c_str();
+    }
+};
+
 class MissingPreconditionException : public std::runtime_error
 {
 public:

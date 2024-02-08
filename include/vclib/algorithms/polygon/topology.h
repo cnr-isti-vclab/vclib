@@ -424,8 +424,7 @@ void addTriangleFacesFromPolygon(
         if (polygon[i] >= m.vertexContainerSize()) {
             throw BadVertexIndexException(
                 "Index " + std::to_string(polygon[i]) +
-                " is out of range in "
-                "Vertex Container.");
+                " is out of range in Vertex Container.");
         }
         if (m.vertex(polygon[i]).deleted()) {
             throw BadVertexIndexException(

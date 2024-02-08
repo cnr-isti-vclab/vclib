@@ -58,7 +58,7 @@ inline std::string readNextNonEmptyLine(std::istream& file)
             }
         }
         if (file && line.size() > 0) {
-            str::removeWindowsNewLine(line);
+            vcl::removeCarriageReturn(line);
         }
     } while (file && line.size() == 0);
     return line;
