@@ -27,7 +27,7 @@
 #include "hello_triangle_glfw.h"
 #endif
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 #ifdef USE_QT
     QApplication app(argc, argv);

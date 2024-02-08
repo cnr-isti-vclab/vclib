@@ -53,8 +53,7 @@ int main(int argc, char** argv)
     vcl::setPerFaceColor(tm, vcl::Color::LightGreen);
     vcl::setMeshColor(tm, vcl::Color::Yellow);
 
-    vcl::TriMesh m =
-        vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
+    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
     m.enablePerVertexColor();
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);
