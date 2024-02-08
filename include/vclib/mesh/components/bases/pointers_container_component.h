@@ -174,6 +174,9 @@ protected:
             }
         }
     }
+
+public:
+    const Vector<Elem*, N>& pointers() const { return container(); }
 };
 
 } // namespace vcl::comp
