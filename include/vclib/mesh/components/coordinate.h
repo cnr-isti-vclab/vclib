@@ -58,14 +58,14 @@ template<PointConcept P, typename ElementType = void, bool OPT = false>
 class Coordinate :
         public Component<
             Coordinate<P, ElementType, OPT>,
-            COORDINATE,
+            CompId::COORDINATE,
             P,
             ElementType,
             OPT>
 {
     using Base = Component<
         Coordinate<P, ElementType, OPT>,
-        COORDINATE,
+        CompId::COORDINATE,
         P,
         ElementType,
         OPT>;
@@ -124,7 +124,7 @@ protected:
  */
 bool isCoordinateAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<COORDINATE>(element);
+    return isComponentAvailableOn<CompId::COORDINATE>(element);
 }
 
 /* Specialization Aliases */

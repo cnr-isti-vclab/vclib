@@ -67,7 +67,7 @@ void normalizeNoThrow(auto& elem, LogType& log = nullLogger)
 template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
 void clearPerElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     log.log(0, "Clearing per-" + elementEnumString<ELEM_ID>() + " normals...");
 
@@ -96,7 +96,7 @@ void normalizePerElementNormals(
     MeshConcept auto& mesh,
     LogType&          log = nullLogger)
 {
-    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     log.log(
         0, "Normalizing per-" + elementEnumString<ELEM_ID>() + " normals...");
@@ -137,7 +137,7 @@ void multiplyPerElementNormalsByMatrix(
     bool              removeScalingFromMatrix = true,
     LogType&          log                     = nullLogger)
 {
-    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     if (removeScalingFromMatrix) {
         MScalar scaleX = std::sqrt(
@@ -195,7 +195,7 @@ void multiplyPerElementNormalsByMatrix(
     bool                     removeScalingFromMatrix = true,
     LogType&                 log                     = nullLogger)
 {
-    vcl::requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    vcl::requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
     multiplyPerElementNormalsByMatrix<ELEM_ID>(

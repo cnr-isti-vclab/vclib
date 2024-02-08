@@ -71,13 +71,17 @@ struct TPData
 class TexturePaths :
         public Component<
             TexturePaths,
-            TEXTURE_PATHS,
+            CompId::TEXTURE_PATHS,
             detail::TPData,
             void,
             false>
 {
-    using Base =
-        Component<TexturePaths, TEXTURE_PATHS, detail::TPData, void, false>;
+    using Base = Component<
+        TexturePaths,
+        CompId::TEXTURE_PATHS,
+        detail::TPData,
+        void,
+        false>;
 
 public:
     // iterators

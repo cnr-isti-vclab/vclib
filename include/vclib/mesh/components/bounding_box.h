@@ -60,14 +60,14 @@ template<PointConcept PointType, typename ElementType = void, bool OPT = false>
 class BoundingBox :
         public Component<
             BoundingBox<PointType, ElementType, OPT>,
-            BOUNDING_BOX,
+            CompId::BOUNDING_BOX,
             Box<PointType>,
             ElementType,
             OPT>
 {
     using Base = Component<
         BoundingBox<PointType, ElementType, OPT>,
-        BOUNDING_BOX,
+        CompId::BOUNDING_BOX,
         Box<PointType>,
         ElementType,
         OPT>;
@@ -127,7 +127,7 @@ protected:
  */
 bool isBoundingBoxAvailableOn(const ElementOrMeshConcept auto& element)
 {
-    return isComponentAvailableOn<BOUNDING_BOX>(element);
+    return isComponentAvailableOn<CompId::BOUNDING_BOX>(element);
 }
 
 /* Specializations */

@@ -91,7 +91,8 @@ bool isEdgeContainerCompact(const MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeAdjacentEdgesAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::EDGE, ADJACENT_EDGES>(m);
+    return isPerElementComponentAvailable<ElemId::EDGE, CompId::ADJACENT_EDGES>(
+        m);
 }
 
 /**
@@ -115,7 +116,9 @@ bool isPerEdgeAdjacentEdgesAvailable(const MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeAdjacentEdgesOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::EDGE, ADJACENT_EDGES>(m);
+    return enableIfPerElementComponentOptional<
+        ElemId::EDGE,
+        CompId::ADJACENT_EDGES>(m);
 }
 
 // Edge AdjacentFaces
@@ -149,7 +152,8 @@ bool enableIfPerEdgeAdjacentEdgesOptional(MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeAdjacentFacesAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::EDGE, ADJACENT_FACES>(m);
+    return isPerElementComponentAvailable<ElemId::EDGE, CompId::ADJACENT_FACES>(
+        m);
 }
 
 /**
@@ -173,7 +177,9 @@ bool isPerEdgeAdjacentFacesAvailable(const MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeAdjacentFacesOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::EDGE, ADJACENT_FACES>(m);
+    return enableIfPerElementComponentOptional<
+        ElemId::EDGE,
+        CompId::ADJACENT_FACES>(m);
 }
 
 // Edge Color
@@ -207,7 +213,7 @@ bool enableIfPerEdgeAdjacentFacesOptional(MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeColorAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::EDGE, COLOR>(m);
+    return isPerElementComponentAvailable<ElemId::EDGE, CompId::COLOR>(m);
 }
 
 /**
@@ -231,7 +237,7 @@ bool isPerEdgeColorAvailable(const MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeColorOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::EDGE, COLOR>(m);
+    return enableIfPerElementComponentOptional<ElemId::EDGE, CompId::COLOR>(m);
 }
 
 // Edge Mark
@@ -265,7 +271,7 @@ bool enableIfPerEdgeColorOptional(MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeMarkAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::EDGE, MARK>(m);
+    return isPerElementComponentAvailable<ElemId::EDGE, CompId::MARK>(m);
 }
 
 /**
@@ -289,7 +295,7 @@ bool isPerEdgeMarkAvailable(const MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeMarkOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::EDGE, MARK>(m);
+    return enableIfPerElementComponentOptional<ElemId::EDGE, CompId::MARK>(m);
 }
 
 // Edge Quality
@@ -323,7 +329,7 @@ bool enableIfPerEdgeMarkOptional(MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool isPerEdgeQualityAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::EDGE, QUALITY>(m);
+    return isPerElementComponentAvailable<ElemId::EDGE, CompId::QUALITY>(m);
 }
 
 /**
@@ -347,7 +353,7 @@ bool isPerEdgeQualityAvailable(const MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeQualityOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::EDGE, QUALITY>(m);
+    return enableIfPerElementComponentOptional<ElemId::EDGE, CompId::QUALITY>(m);
 }
 
 /*********************
@@ -411,7 +417,7 @@ template<EdgeMeshConcept MeshType>
 void requirePerEdgeAdjacentEdges(const MeshType& m)
     requires HasPerEdgeAdjacentEdges<MeshType>
 {
-    requirePerElementComponent<ElemId::EDGE, ADJACENT_EDGES>(m);
+    requirePerElementComponent<ElemId::EDGE, CompId::ADJACENT_EDGES>(m);
 }
 
 // Edge AdjacentFaces
@@ -447,7 +453,7 @@ template<EdgeMeshConcept MeshType>
 void requirePerEdgeAdjacentFaces(const MeshType& m)
     requires HasPerEdgeAdjacentFaces<MeshType>
 {
-    requirePerElementComponent<ElemId::EDGE, ADJACENT_FACES>(m);
+    requirePerElementComponent<ElemId::EDGE, CompId::ADJACENT_FACES>(m);
 }
 
 // Edge Color
@@ -482,7 +488,7 @@ void requirePerEdgeAdjacentFaces(const MeshType& m)
 template<EdgeMeshConcept MeshType>
 void requirePerEdgeColor(const MeshType& m) requires HasPerEdgeColor<MeshType>
 {
-    requirePerElementComponent<ElemId::EDGE, COLOR>(m);
+    requirePerElementComponent<ElemId::EDGE, CompId::COLOR>(m);
 }
 
 // Edge Mark
@@ -517,7 +523,7 @@ void requirePerEdgeColor(const MeshType& m) requires HasPerEdgeColor<MeshType>
 template<EdgeMeshConcept MeshType>
 void requirePerEdgeMark(const MeshType& m) requires HasPerEdgeMark<MeshType>
 {
-    requirePerElementComponent<ElemId::EDGE, MARK>(m);
+    requirePerElementComponent<ElemId::EDGE, CompId::MARK>(m);
 }
 
 // Edge Quality
@@ -553,7 +559,7 @@ template<EdgeMeshConcept MeshType>
 void requirePerEdgeQuality(const MeshType& m)
     requires HasPerEdgeQuality<MeshType>
 {
-    requirePerElementComponent<ElemId::EDGE, QUALITY>(m);
+    requirePerElementComponent<ElemId::EDGE, CompId::QUALITY>(m);
 }
 
 } // namespace vcl

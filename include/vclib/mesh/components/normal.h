@@ -58,13 +58,17 @@ template<PointConcept P, typename ElementType = void, bool OPT = false>
 class Normal :
         public Component<
             Normal<P, ElementType, OPT>,
-            NORMAL,
+            CompId::NORMAL,
             P,
             ElementType,
             OPT>
 {
-    using Base =
-        Component<Normal<P, ElementType, OPT>, NORMAL, P, ElementType, OPT>;
+    using Base = Component<
+        Normal<P, ElementType, OPT>,
+        CompId::NORMAL,
+        P,
+        ElementType,
+        OPT>;
 
 public:
     /**
@@ -123,7 +127,7 @@ protected:
  */
 bool isNormalAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<NORMAL>(element);
+    return isComponentAvailableOn<CompId::NORMAL>(element);
 }
 
 /* Specialization Aliases */

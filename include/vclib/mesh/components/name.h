@@ -57,13 +57,17 @@ template<typename ElementType = void, bool OPT = false>
 class Name :
         public Component<
             Name<ElementType, OPT>,
-            NAME,
+            CompId::NAME,
             std::string,
             ElementType,
             OPT>
 {
-    using Base =
-        Component<Name<ElementType, OPT>, NAME, std::string, ElementType, OPT>;
+    using Base = Component<
+        Name<ElementType, OPT>,
+        CompId::NAME,
+        std::string,
+        ElementType,
+        OPT>;
 
 public:
     /* Constructors */
@@ -114,7 +118,7 @@ protected:
  */
 bool isNameAvailableOn(const ElementOrMeshConcept auto& element)
 {
-    return isComponentAvailableOn<NAME>(element);
+    return isComponentAvailableOn<CompId::NAME>(element);
 }
 
 } // namespace vcl::comp

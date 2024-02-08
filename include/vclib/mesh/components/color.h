@@ -57,13 +57,17 @@ template<typename ElementType = void, bool OPT = false>
 class Color :
         public Component<
             Color<ElementType, OPT>,
-            COLOR,
+            CompId::COLOR,
             vcl::Color,
             ElementType,
             OPT>
 {
-    using Base =
-        Component<Color<ElementType, OPT>, COLOR, vcl::Color, ElementType, OPT>;
+    using Base = Component<
+        Color<ElementType, OPT>,
+        CompId::COLOR,
+        vcl::Color,
+        ElementType,
+        OPT>;
 
 public:
     /* Constructors */
@@ -116,7 +120,7 @@ protected:
  */
 bool isColorAvailableOn(const ElementOrMeshConcept auto& element)
 {
-    return isComponentAvailableOn<COLOR>(element);
+    return isComponentAvailableOn<CompId::COLOR>(element);
 }
 
 } // namespace vcl::comp

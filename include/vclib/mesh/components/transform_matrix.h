@@ -61,14 +61,14 @@ template<typename Scalar, typename ElementType = void, bool OPT = false>
 class TransformMatrix :
         public Component<
             TransformMatrix<Scalar, ElementType, OPT>,
-            TRANSFORM_MATRIX,
+            CompId::TRANSFORM_MATRIX,
             Matrix44<Scalar>,
             ElementType,
             OPT>
 {
     using Base = Component<
         TransformMatrix<Scalar, ElementType, OPT>,
-        TRANSFORM_MATRIX,
+        CompId::TRANSFORM_MATRIX,
         Matrix44<Scalar>,
         ElementType,
         OPT>;
@@ -145,7 +145,7 @@ protected:
  */
 bool isTransformMatrixAvailableOn(const ElementOrMeshConcept auto& element)
 {
-    return isComponentAvailableOn<TRANSFORM_MATRIX>(element);
+    return isComponentAvailableOn<CompId::TRANSFORM_MATRIX>(element);
 }
 
 /* Specialization Aliases */

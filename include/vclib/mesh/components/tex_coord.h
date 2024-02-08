@@ -57,14 +57,14 @@ template<typename Scalar, typename ElementType = void, bool OPT = false>
 class TexCoord :
         public Component<
             TexCoord<Scalar, ElementType, OPT>,
-            TEX_COORD,
+            CompId::TEX_COORD,
             vcl::TexCoord<Scalar>,
             ElementType,
             OPT>
 {
     using Base = Component<
         TexCoord<Scalar, ElementType, OPT>,
-        TEX_COORD,
+        CompId::TEX_COORD,
         vcl::TexCoord<Scalar>,
         ElementType,
         OPT>;
@@ -126,7 +126,7 @@ protected:
  */
 bool isTexCoordAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<TEX_COORD>(element);
+    return isComponentAvailableOn<CompId::TEX_COORD>(element);
 }
 
 /* Specialization Aliases */

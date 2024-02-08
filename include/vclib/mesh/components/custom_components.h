@@ -99,7 +99,7 @@ public:
     /**
      * @brief The ID of component.
      */
-    static const uint COMPONENT_ID = CUSTOM_COMPONENTS;
+    static const uint COMPONENT_ID = CompId::CUSTOM_COMPONENTS;
 
     /* Constructors */
 

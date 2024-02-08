@@ -78,7 +78,7 @@ template<
 class AdjacentEdges :
         public PointersContainerComponent<
             AdjacentEdges<Edge, N, TTVN, ElementType, OPT>,
-            ADJACENT_EDGES,
+            CompId::ADJACENT_EDGES,
             Edge,
             N,
             ElementType,
@@ -87,7 +87,7 @@ class AdjacentEdges :
 {
     using Base = PointersContainerComponent<
         AdjacentEdges<Edge, N, TTVN, ElementType, OPT>,
-        ADJACENT_EDGES,
+        CompId::ADJACENT_EDGES,
         Edge,
         N,
         ElementType,
@@ -496,7 +496,7 @@ private:
  */
 bool isAdjacentEdgesAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<ADJACENT_EDGES>(element);
+    return isComponentAvailableOn<CompId::ADJACENT_EDGES>(element);
 }
 
 } // namespace vcl::comp

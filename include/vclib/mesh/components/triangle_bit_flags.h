@@ -80,14 +80,14 @@ template<typename ElementType = void, bool OPT = false>
 class TriangleBitFlags :
         public Component<
             TriangleBitFlags<ElementType, OPT>,
-            BIT_FLAGS,
+            CompId::BIT_FLAGS,
             BitSet<short>,
             ElementType,
             OPT>
 {
     using Base = Component<
         TriangleBitFlags<ElementType, OPT>,
-        BIT_FLAGS,
+        CompId::BIT_FLAGS,
         BitSet<short>,
         ElementType,
         OPT>;

@@ -1177,7 +1177,7 @@ public:
      */
     template<uint ELEM_ID>
     bool hasPerElementCustomComponent(const std::string& name) const
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
@@ -1198,7 +1198,7 @@ public:
      */
     template<uint ELEM_ID>
     std::vector<std::string> perElementCustomComponentNames() const
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
@@ -1221,7 +1221,7 @@ public:
      */
     template<uint ELEM_ID, typename K>
     bool isPerElementCustomComponentOfType(const std::string& name) const
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
@@ -1243,7 +1243,7 @@ public:
      */
     template<uint ELEM_ID>
     std::type_index perElementCustomComponentType(const std::string& name) const
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
@@ -1265,7 +1265,7 @@ public:
      */
     template<uint ELEM_ID, typename K>
     std::vector<std::string> perElementCustomComponentNamesOfType() const
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
@@ -1286,7 +1286,7 @@ public:
      */
     template<uint ELEM_ID, typename K>
     void addPerElementCustomComponent(const std::string& name)
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
@@ -1306,7 +1306,7 @@ public:
      */
     template<uint ELEM_ID>
     void deletePerElementCustomComponent(const std::string& name)
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
@@ -1357,7 +1357,7 @@ public:
     template<uint ELEM_ID, typename K>
     CustomComponentVectorHandle<K> perElementCustomComponentVectorHandle(
         const std::string& name)
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
@@ -1408,7 +1408,7 @@ public:
     template<uint ELEM_ID, typename K>
     ConstCustomComponentVectorHandle<K> perElementCustomComponentVectorHandle(
         const std::string& name) const
-        requires (hasPerElementComponent<ELEM_ID, CUSTOM_COMPONENTS>())
+        requires (hasPerElementComponent<ELEM_ID, CompId::CUSTOM_COMPONENTS>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 

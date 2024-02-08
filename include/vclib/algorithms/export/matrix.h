@@ -349,7 +349,7 @@ Vect faceSelectionVector(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementNormalsMatrix(const MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     Matrix EN(mesh.template number<ELEM_ID>(), 3);
 
@@ -453,7 +453,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, MatrixConcept Matrix, MeshConcept MeshType>
 Matrix elementColorsMatrix(const MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
     Matrix EC(mesh.template number<ELEM_ID>(), 4);
 
@@ -558,7 +558,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
 template<uint ELEM_ID, typename Vect, MeshConcept MeshType>
 Vect elementQualityVector(const MeshType& mesh)
 {
-    requirePerElementComponent<ELEM_ID, QUALITY>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::QUALITY>(mesh);
 
     Vect EQ(mesh.template number<ELEM_ID>(), 3);
 

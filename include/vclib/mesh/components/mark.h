@@ -78,9 +78,15 @@ namespace vcl::comp {
  */
 template<typename ElementType = void, bool OPT = false>
 class Mark :
-        public Component<Mark<ElementType, OPT>, MARK, int, ElementType, OPT>
+        public Component<
+            Mark<ElementType, OPT>,
+            CompId::MARK,
+            int,
+            ElementType,
+            OPT>
 {
-    using Base = Component<Mark<ElementType, OPT>, MARK, int, ElementType, OPT>;
+    using Base =
+        Component<Mark<ElementType, OPT>, CompId::MARK, int, ElementType, OPT>;
 
 public:
     /* Constructors */
@@ -180,7 +186,7 @@ private:
  */
 bool isMarkAvailableOn(const ElementOrMeshConcept auto& element)
 {
-    return isComponentAvailableOn<MARK>(element);
+    return isComponentAvailableOn<CompId::MARK>(element);
 }
 
 } // namespace vcl::comp

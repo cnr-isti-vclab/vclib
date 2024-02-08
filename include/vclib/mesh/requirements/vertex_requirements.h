@@ -62,97 +62,113 @@ bool isVertexContainerCompact(const MeshType& m)
 template<MeshConcept MeshType>
 bool isPerVertexAdjacentFacesAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::VERTEX, ADJACENT_FACES>(m);
+    return isPerElementComponentAvailable<
+        ElemId::VERTEX,
+        CompId::ADJACENT_FACES>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentFacesOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, ADJACENT_FACES>(m);
+    return enableIfPerElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::ADJACENT_FACES>(m);
 }
 
 template<MeshConcept MeshType>
 bool isPerVertexAdjacentVerticesAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::VERTEX, ADJACENT_VERTICES>(m);
+    return isPerElementComponentAvailable<
+        ElemId::VERTEX,
+        CompId::ADJACENT_VERTICES>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexAdjacentVerticesOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, ADJACENT_VERTICES>(m);
+    return enableIfPerElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::ADJACENT_VERTICES>(m);
 }
 
 template<MeshConcept MeshType>
 bool isPerVertexColorAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::VERTEX, COLOR>(m);
+    return isPerElementComponentAvailable<ElemId::VERTEX, CompId::COLOR>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexColorOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, COLOR>(m);
+    return enableIfPerElementComponentOptional<ElemId::VERTEX, CompId::COLOR>(m);
 }
 
 template<MeshConcept MeshType>
 bool isPerVertexMarkAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::VERTEX, MARK>(m);
+    return isPerElementComponentAvailable<ElemId::VERTEX, CompId::MARK>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexMarkOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, MARK>(m);
+    return enableIfPerElementComponentOptional<ElemId::VERTEX, CompId::MARK>(m);
 }
 
 template<MeshConcept MeshType>
 bool isPerVertexNormalAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::VERTEX, NORMAL>(m);
+    return isPerElementComponentAvailable<ElemId::VERTEX, CompId::NORMAL>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexNormalOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, NORMAL>(m);
+    return enableIfPerElementComponentOptional<ElemId::VERTEX, CompId::NORMAL>(
+        m);
 }
 
 template<MeshConcept MeshType>
 bool isPerVertexPrincipalCurvatureAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::VERTEX, PRINCIPAL_CURVATURE>(m);
+    return isPerElementComponentAvailable<
+        ElemId::VERTEX,
+        CompId::PRINCIPAL_CURVATURE>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexPrincipalCurvatureOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, PRINCIPAL_CURVATURE>(m);
+    return enableIfPerElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::PRINCIPAL_CURVATURE>(m);
 }
 
 template<MeshConcept MeshType>
 bool isPerVertexQualityAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::VERTEX, QUALITY>(m);
+    return isPerElementComponentAvailable<ElemId::VERTEX, CompId::QUALITY>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexQualityOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, QUALITY>(m);
+    return enableIfPerElementComponentOptional<ElemId::VERTEX, CompId::QUALITY>(
+        m);
 }
 
 template<MeshConcept MeshType>
 bool isPerVertexTexCoordAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<ElemId::VERTEX, TEX_COORD>(m);
+    return isPerElementComponentAvailable<ElemId::VERTEX, CompId::TEX_COORD>(m);
 }
 
 template<MeshConcept MeshType>
 bool enableIfPerVertexTexCoordOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, TEX_COORD>(m);
+    return enableIfPerElementComponentOptional<
+        ElemId::VERTEX,
+        CompId::TEX_COORD>(m);
 }
 
 /*********************
@@ -169,55 +185,55 @@ template<typename MeshType>
 void requirePerVertexAdjacentFaces(const MeshType& m)
     requires HasPerVertexAdjacentFaces<MeshType>
 {
-    requirePerElementComponent<ElemId::VERTEX, ADJACENT_FACES>(m);
+    requirePerElementComponent<ElemId::VERTEX, CompId::ADJACENT_FACES>(m);
 }
 
 template<typename MeshType>
 void requirePerVertexAdjacentVertices(const MeshType& m)
     requires HasPerVertexAdjacentVertices<MeshType>
 {
-    requirePerElementComponent<ElemId::VERTEX, ADJACENT_VERTICES>(m);
+    requirePerElementComponent<ElemId::VERTEX, CompId::ADJACENT_VERTICES>(m);
 }
 
 template<typename MeshType>
 void requirePerVertexColor(const MeshType& m)
     requires HasPerVertexColor<MeshType>
 {
-    requirePerElementComponent<ElemId::VERTEX, COLOR>(m);
+    requirePerElementComponent<ElemId::VERTEX, CompId::COLOR>(m);
 }
 
 template<typename MeshType>
 void requirePerVertexMark(const MeshType& m) requires HasPerVertexMark<MeshType>
 {
-    requirePerElementComponent<ElemId::VERTEX, MARK>(m);
+    requirePerElementComponent<ElemId::VERTEX, CompId::MARK>(m);
 }
 
 template<typename MeshType>
 void requirePerVertexNormal(const MeshType& m)
     requires HasPerVertexNormal<MeshType>
 {
-    requirePerElementComponent<ElemId::VERTEX, NORMAL>(m);
+    requirePerElementComponent<ElemId::VERTEX, CompId::NORMAL>(m);
 }
 
 template<typename MeshType>
 void requirePerVertexPrincipalCurvature(const MeshType& m)
     requires HasPerVertexPrincipalCurvature<MeshType>
 {
-    requirePerElementComponent<ElemId::VERTEX, PRINCIPAL_CURVATURE>(m);
+    requirePerElementComponent<ElemId::VERTEX, CompId::PRINCIPAL_CURVATURE>(m);
 }
 
 template<typename MeshType>
 void requirePerVertexQuality(const MeshType& m)
     requires HasPerVertexQuality<MeshType>
 {
-    requirePerElementComponent<ElemId::VERTEX, QUALITY>(m);
+    requirePerElementComponent<ElemId::VERTEX, CompId::QUALITY>(m);
 }
 
 template<typename MeshType>
 void requirePerVertexTexCoord(const MeshType& m)
     requires HasPerVertexTexCoord<MeshType>
 {
-    requirePerElementComponent<ElemId::VERTEX, TEX_COORD>(m);
+    requirePerElementComponent<ElemId::VERTEX, CompId::TEX_COORD>(m);
 }
 
 } // namespace vcl

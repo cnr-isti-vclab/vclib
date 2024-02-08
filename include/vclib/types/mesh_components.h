@@ -27,31 +27,36 @@
 
 namespace vcl {
 
-enum ComponentIDEnum : uint {
-    BIT_FLAGS = 0,
-    COORDINATE,
-    NORMAL,
-    COLOR,
-    QUALITY,
-    MARK,
-    PRINCIPAL_CURVATURE,
-    TEX_COORD,
-    VERTEX_PTRS,
-    ADJACENT_EDGES,
-    ADJACENT_FACES,
-    ADJACENT_VERTICES,
-    WEDGE_COLORS,
-    WEDGE_TEX_COORDS,
-    BOUNDING_BOX,
-    NAME,
-    TEXTURE_PATHS,
-    TRANSFORM_MATRIX,
-    CUSTOM_COMPONENTS
+struct CompId {
+    enum Enum {
+        BIT_FLAGS = 0,
+        COORDINATE,
+        NORMAL,
+        COLOR,
+        QUALITY,
+        MARK,
+        PRINCIPAL_CURVATURE,
+        TEX_COORD,
+        VERTEX_PTRS,
+        ADJACENT_EDGES,
+        ADJACENT_FACES,
+        ADJACENT_VERTICES,
+        WEDGE_COLORS,
+        WEDGE_TEX_COORDS,
+        BOUNDING_BOX,
+        NAME,
+        TEXTURE_PATHS,
+        TRANSFORM_MATRIX,
+        CUSTOM_COMPONENTS,
+        // Additonal components here
+
+        COMPONENTS_NUMBER,
+    };
 };
 
 inline static constexpr uint COMPONENTS_NUMBER = 19;
 
-inline static constexpr const char* COMPONENT_ENUM_STRINGS[COMPONENTS_NUMBER] =
+inline static constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] =
     {
         "BitFlags",
         "Coordinate",

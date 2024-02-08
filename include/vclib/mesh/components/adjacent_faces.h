@@ -78,7 +78,7 @@ template<
 class AdjacentFaces :
         public PointersContainerComponent<
             AdjacentFaces<Face, N, TTVN, ElementType, OPT>,
-            ADJACENT_FACES,
+            CompId::ADJACENT_FACES,
             Face,
             N,
             ElementType,
@@ -87,7 +87,7 @@ class AdjacentFaces :
 {
     using Base = PointersContainerComponent<
         AdjacentFaces<Face, N, TTVN, ElementType, OPT>,
-        ADJACENT_FACES,
+        CompId::ADJACENT_FACES,
         Face,
         N,
         ElementType,
@@ -502,7 +502,7 @@ private:
  */
 bool isAdjacentFacesAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<ADJACENT_FACES>(element);
+    return isComponentAvailableOn<CompId::ADJACENT_FACES>(element);
 }
 
 } // namespace vcl::comp

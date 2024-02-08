@@ -62,14 +62,14 @@ template<typename Scalar, typename ElementType = void, bool OPT = false>
 class PrincipalCurvature :
         public Component<
             PrincipalCurvature<Scalar, ElementType, OPT>,
-            PRINCIPAL_CURVATURE,
+            CompId::PRINCIPAL_CURVATURE,
             vcl::PrincipalCurvature<Scalar>,
             ElementType,
             OPT>
 {
     using Base = Component<
         PrincipalCurvature<Scalar, ElementType, OPT>,
-        PRINCIPAL_CURVATURE,
+        CompId::PRINCIPAL_CURVATURE,
         vcl::PrincipalCurvature<Scalar>,
         ElementType,
         OPT>;
@@ -136,7 +136,7 @@ protected:
  */
 bool isPrincipalCurvatureAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<PRINCIPAL_CURVATURE>(element);
+    return isComponentAvailableOn<CompId::PRINCIPAL_CURVATURE>(element);
 }
 
 /* Specialization Aliases */

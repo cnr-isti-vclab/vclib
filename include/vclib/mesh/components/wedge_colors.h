@@ -72,7 +72,7 @@ template<int N, typename ElementType = void, bool OPT = false>
 class WedgeColors :
         public ContainerComponent<
             WedgeColors<N, ElementType, OPT>,
-            WEDGE_COLORS,
+            CompId::WEDGE_COLORS,
             vcl::Color,
             N,
             void,
@@ -82,7 +82,7 @@ class WedgeColors :
 {
     using Base = ContainerComponent<
         WedgeColors<N, ElementType, OPT>,
-        WEDGE_COLORS,
+        CompId::WEDGE_COLORS,
         vcl::Color,
         N,
         void,
@@ -346,7 +346,7 @@ private:
  */
 bool isWedgeColorsAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<WEDGE_COLORS>(element);
+    return isComponentAvailableOn<CompId::WEDGE_COLORS>(element);
 }
 
 } // namespace vcl::comp

@@ -97,7 +97,7 @@ template<int N, typename ElementType = void, bool OPT = false>
 class PolygonBitFlags :
         public ContainerComponent<
             PolygonBitFlags<N, ElementType, OPT>,
-            BIT_FLAGS,
+            CompId::BIT_FLAGS,
             BitSet<char>,
             N,
             BitSet<char>,
@@ -109,7 +109,7 @@ class PolygonBitFlags :
 
     using Base = ContainerComponent<
         PolygonBitFlags<N, ElementType, OPT>,
-        BIT_FLAGS,
+        CompId::BIT_FLAGS,
         BitSet<FT>,
         N,
         BitSet<FT>,

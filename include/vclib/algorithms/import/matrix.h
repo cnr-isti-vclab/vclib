@@ -62,8 +62,8 @@ void importElementNormalsFromMatrix(MeshType& mesh, const NMatrix& normals)
             "as the number of " +
             elementEnumString<ELEM_ID>() + " element in the mesh");
 
-    enableIfPerElementComponentOptional<ELEM_ID, NORMAL>(mesh);
-    requirePerElementComponent<ELEM_ID, NORMAL>(mesh);
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     uint i = 0;
     for (auto& e : mesh.template elements<ELEM_ID>()) {
@@ -89,8 +89,8 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
             "as the number of " +
             elementEnumString<ELEM_ID>() + " element in the mesh");
 
-    enableIfPerElementComponentOptional<ELEM_ID, COLOR>(mesh);
-    requirePerElementComponent<ELEM_ID, COLOR>(mesh);
+    enableIfPerElementComponentOptional<ELEM_ID, CompId::COLOR>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(mesh);
 
     uint i = 0;
     for (auto& e : mesh.template elements<ELEM_ID>()) {

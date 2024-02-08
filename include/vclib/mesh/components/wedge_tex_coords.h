@@ -77,7 +77,7 @@ template<typename Scalar, int N, typename ElementType = void, bool OPT = false>
 class WedgeTexCoords :
         public ContainerComponent<
             WedgeTexCoords<Scalar, N, ElementType, OPT>,
-            WEDGE_TEX_COORDS,
+            CompId::WEDGE_TEX_COORDS,
             vcl::TexCoord<Scalar>,
             N,
             short,
@@ -87,7 +87,7 @@ class WedgeTexCoords :
 {
     using Base = ContainerComponent<
         WedgeTexCoords<Scalar, N, ElementType, OPT>,
-        WEDGE_TEX_COORDS,
+        CompId::WEDGE_TEX_COORDS,
         vcl::TexCoord<Scalar>,
         N,
         short,
@@ -403,7 +403,7 @@ private:
  */
 bool isWedgeTexCoordsAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<WEDGE_TEX_COORDS>(element);
+    return isComponentAvailableOn<CompId::WEDGE_TEX_COORDS>(element);
 }
 
 } // namespace vcl::comp

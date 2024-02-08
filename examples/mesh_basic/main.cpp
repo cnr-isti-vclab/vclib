@@ -51,7 +51,8 @@ int main()
     m.vertex(1).coord() = TriMeshPoint(0, 1, 0);
     m.vertex(2).coord() = TriMeshPoint(1, 0, 0);
 
-    m.vertex(0).component<vcl::COORDINATE>().coord() = TriMeshPoint(2, 0, 0);
+    m.vertex(0).component<vcl::CompId::COORDINATE>().coord() =
+        TriMeshPoint(2, 0, 0);
 
     vcl::TriMesh::Vertex myv;
     myv.coord() = TriMeshPoint(3, 1, 2);

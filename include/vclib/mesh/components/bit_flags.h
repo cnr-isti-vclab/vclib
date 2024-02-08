@@ -70,14 +70,14 @@ template<typename ElementType = void, bool OPT = false>
 class BitFlags :
         public Component<
             BitFlags<ElementType, OPT>,
-            BIT_FLAGS,
+            CompId::BIT_FLAGS,
             BitSet<char>,
             ElementType,
             OPT>
 {
     using Base = Component<
         BitFlags<ElementType, OPT>,
-        BIT_FLAGS,
+        CompId::BIT_FLAGS,
         BitSet<char>,
         ElementType,
         OPT>;

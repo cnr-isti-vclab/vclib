@@ -27,7 +27,7 @@
 
 /*
  * This is an example of a simple plain component class.
- * The component can be used only as a horizontal component, for vertices and
+ * The component can be used only as a horizontal component, for elements and
  * meshes.
  */
 
@@ -54,9 +54,9 @@ class FooComponent
 {
 public:
     // first requirement: an unique static const uint ID of the component
-    // vcl::COMPONENTS_NUMBER is the number of components that are already
-    // defined in VCLib. You can use it to avoid collisions.
-    static const uint COMPONENT_ID = vcl::COMPONENTS_NUMBER + 0;
+    // vcl::CompId::COMPONENTS_NUMBER is the number of components that are
+    // already defined in VCLib. You can use it to avoid collisions.
+    static const uint COMPONENT_ID = vcl::CompId::COMPONENTS_NUMBER + 0;
 
     // any member that you want to add to the component
     int& foo() { return data; }

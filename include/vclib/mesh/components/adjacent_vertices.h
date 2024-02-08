@@ -70,7 +70,7 @@ template<typename Vertex, typename ElementType = void, bool OPT = false>
 class AdjacentVertices :
         public PointersContainerComponent<
             AdjacentVertices<Vertex, ElementType, OPT>,
-            ADJACENT_VERTICES,
+            CompId::ADJACENT_VERTICES,
             Vertex,
             -1,
             ElementType,
@@ -79,7 +79,7 @@ class AdjacentVertices :
 {
     using Base = PointersContainerComponent<
         AdjacentVertices<Vertex, ElementType, OPT>,
-        ADJACENT_VERTICES,
+        CompId::ADJACENT_VERTICES,
         Vertex,
         -1,
         ElementType,
@@ -444,7 +444,7 @@ private:
  */
 bool isAdjacentVerticesAvailableOn(const ElementConcept auto& element)
 {
-    return isComponentAvailableOn<ADJACENT_VERTICES>(element);
+    return isComponentAvailableOn<CompId::ADJACENT_VERTICES>(element);
 }
 
 } // namespace vcl::comp

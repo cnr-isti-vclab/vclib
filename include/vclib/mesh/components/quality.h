@@ -56,14 +56,14 @@ template<typename Scalar, typename ElementType = void, bool OPT = false>
 class Quality :
         public Component<
             Quality<Scalar, ElementType, OPT>,
-            QUALITY,
+            CompId::QUALITY,
             Scalar,
             ElementType,
             OPT>
 {
     using Base = Component<
         Quality<Scalar, ElementType, OPT>,
-        QUALITY,
+        CompId::QUALITY,
         Scalar,
         ElementType,
         OPT>;
@@ -124,7 +124,7 @@ protected:
  */
 bool isQualityAvailableOn(const ElementOrMeshConcept auto& element)
 {
-    return isComponentAvailableOn<QUALITY>(element);
+    return isComponentAvailableOn<CompId::QUALITY>(element);
 }
 
 /* Specialization Aliases */
