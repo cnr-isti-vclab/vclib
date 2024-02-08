@@ -102,7 +102,7 @@ struct IsElementContainerPred
  * Usage:
  * @code{.cpp}
  *
- * using VertexContainer = typename mesh::ContainerOfElement<VERTEX,
+ * using VertexContainer = typename mesh::ContainerOfElement<ElemId::VERTEX,
  *                                                           MyMesh>::type;
  *
  * @endcode
@@ -130,7 +130,7 @@ public:
  * Usage:
  * @code{.cpp}
  *
- * using VertexContainer = mesh::ContainerOfElementType<VERTEX, MyMesh>;
+ * using VertexContainer = mesh::ContainerOfElementType<ElemId::VERTEX, MyMesh>;
  *
  * @endcode
  */

@@ -81,7 +81,7 @@ int main()
     // this is just for test - it is possible to just use
     // using VT = vcl::TriMesh::VertexType;
     // or just use `auto` in range for
-    using VT = vcl::TriMesh::ElementType<vcl::VERTEX>;
+    using VT = vcl::TriMesh::ElementType<vcl::ElemId::VERTEX>;
 
     for (VT& v : m.vertices())
         v.customComponent<char>("prova") =

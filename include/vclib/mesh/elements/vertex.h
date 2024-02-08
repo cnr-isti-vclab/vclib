@@ -43,7 +43,7 @@ namespace vcl {
  * @ingroup elements
  */
 template<typename MeshType, typename... Comps>
-class Vertex : public Element<VERTEX, MeshType, Comps...>
+class Vertex : public Element<ElemId::VERTEX, MeshType, Comps...>
 {
 };
 

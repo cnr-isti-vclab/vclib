@@ -210,7 +210,7 @@ void multiplyPerElementNormalsByMatrix(
 template<LoggerConcept LogType = NullLogger>
 void clearPerVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    clearPerElementNormals<VERTEX>(mesh, log);
+    clearPerElementNormals<ElemId::VERTEX>(mesh, log);
 }
 
 /**
@@ -257,7 +257,7 @@ void clearPerReferencedVertexNormals(
 template<LoggerConcept LogType = NullLogger>
 void clearPerFaceNormals(FaceMeshConcept auto& mesh, LogType& log = nullLogger)
 {
-    clearPerElementNormals<FACE>(mesh, log);
+    clearPerElementNormals<ElemId::FACE>(mesh, log);
 }
 
 /**
@@ -270,7 +270,7 @@ void normalizePerVertexNormals(
     MeshConcept auto& mesh,
     LogType&          log = nullLogger)
 {
-    normalizePerElementNormals<VERTEX>(mesh, log);
+    normalizePerElementNormals<ElemId::VERTEX>(mesh, log);
 }
 
 /**
@@ -299,7 +299,7 @@ void normalizePerReferencedVertexNormals(
 
     for (auto& f : mesh.faces()) {
         for (auto* v : f.vertices()) {
-            detail::normalizeNoThrow<VERTEX>(*v, log);
+            detail::normalizeNoThrow<ElemId::VERTEX>(*v, log);
         }
     }
 
@@ -316,7 +316,7 @@ void normalizePerFaceNormals(
     FaceMeshConcept auto& mesh,
     LogType&              log = nullLogger)
 {
-    normalizePerElementNormals<FACE>(mesh, log);
+    normalizePerElementNormals<ElemId::FACE>(mesh, log);
 }
 
 /**
@@ -334,7 +334,7 @@ void multiplyPerVertexNormalsByMatrix(
     bool              removeScalingFromMatrix = true,
     LogType&          log                     = nullLogger)
 {
-    multiplyPerElementNormalsByMatrix<VERTEX>(
+    multiplyPerElementNormalsByMatrix<ElemId::VERTEX>(
         mesh, mat, removeScalingFromMatrix, log);
 }
 
@@ -352,7 +352,7 @@ void multiplyPerFaceNormalsByMatrix(
     bool                  removeScalingFromMatrix = true,
     LogType&              log                     = nullLogger)
 {
-    multiplyPerElementNormalsByMatrix<FACE>(
+    multiplyPerElementNormalsByMatrix<ElemId::FACE>(
         mesh, mat, removeScalingFromMatrix, log);
 }
 

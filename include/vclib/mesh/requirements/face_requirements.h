@@ -57,7 +57,7 @@ namespace vcl {
 template<FaceMeshConcept MeshType>
 bool isFaceContainerCompact(const MeshType& m)
 {
-    return isElementContainerCompact<FACE>(m);
+    return isElementContainerCompact<ElemId::FACE>(m);
 }
 
 // Face AdjacentEdges
@@ -91,7 +91,7 @@ bool isFaceContainerCompact(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceAdjacentEdgesAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, ADJACENT_EDGES>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, ADJACENT_EDGES>(m);
 }
 
 /**
@@ -115,7 +115,7 @@ bool isPerFaceAdjacentEdgesAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceAdjacentEdgesOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, ADJACENT_EDGES>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, ADJACENT_EDGES>(m);
 }
 
 // Face AdjacentFaces
@@ -149,7 +149,7 @@ bool enableIfPerFaceAdjacentEdgesOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceAdjacentFacesAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, ADJACENT_FACES>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, ADJACENT_FACES>(m);
 }
 
 /**
@@ -173,7 +173,7 @@ bool isPerFaceAdjacentFacesAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, ADJACENT_FACES>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, ADJACENT_FACES>(m);
 }
 
 // Face Color
@@ -207,7 +207,7 @@ bool enableIfPerFaceAdjacentFacesOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceColorAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, COLOR>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, COLOR>(m);
 }
 
 /**
@@ -231,7 +231,7 @@ bool isPerFaceColorAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceColorOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, COLOR>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, COLOR>(m);
 }
 
 // Face Mark
@@ -265,7 +265,7 @@ bool enableIfPerFaceColorOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceMarkAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, MARK>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, MARK>(m);
 }
 
 /**
@@ -289,7 +289,7 @@ bool isPerFaceMarkAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceMarkOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, MARK>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, MARK>(m);
 }
 
 // Face Normal
@@ -323,7 +323,7 @@ bool enableIfPerFaceMarkOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceNormalAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, NORMAL>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, NORMAL>(m);
 }
 
 /**
@@ -347,7 +347,7 @@ bool isPerFaceNormalAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceNormalOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, NORMAL>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, NORMAL>(m);
 }
 
 // Face PrincipalCurvature
@@ -382,7 +382,7 @@ bool enableIfPerFaceNormalOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFacePrincipalCurvatureAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, PRINCIPAL_CURVATURE>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, PRINCIPAL_CURVATURE>(m);
 }
 
 /**
@@ -406,7 +406,7 @@ bool isPerFacePrincipalCurvatureAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, PRINCIPAL_CURVATURE>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, PRINCIPAL_CURVATURE>(m);
 }
 
 // Face Quality
@@ -440,7 +440,7 @@ bool enableIfPerFacePrincipalCurvatureOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceQualityAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, QUALITY>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, QUALITY>(m);
 }
 
 /**
@@ -464,7 +464,7 @@ bool isPerFaceQualityAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceQualityOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, QUALITY>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, QUALITY>(m);
 }
 
 // Face WedgeColors
@@ -498,7 +498,7 @@ bool enableIfPerFaceQualityOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeColorsAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, WEDGE_COLORS>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, WEDGE_COLORS>(m);
 }
 
 /**
@@ -522,7 +522,7 @@ bool isPerFaceWedgeColorsAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, WEDGE_COLORS>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, WEDGE_COLORS>(m);
 }
 
 // Face WedgeTexCoords
@@ -556,7 +556,7 @@ bool enableIfPerFaceWedgeColorsOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 bool isPerFaceWedgeTexCoordsAvailable(const MeshType& m)
 {
-    return isPerElementComponentAvailable<FACE, WEDGE_TEX_COORDS>(m);
+    return isPerElementComponentAvailable<ElemId::FACE, WEDGE_TEX_COORDS>(m);
 }
 
 /**
@@ -580,7 +580,7 @@ bool isPerFaceWedgeTexCoordsAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<FACE, WEDGE_TEX_COORDS>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, WEDGE_TEX_COORDS>(m);
 }
 
 /*********************
@@ -608,7 +608,7 @@ bool enableIfPerFaceWedgeTexCoordsOptional(MeshType& m)
 template<FaceMeshConcept MeshType>
 void requireFaceContainerCompactness(const MeshType& m)
 {
-    requireElementContainerCompactness<FACE>(m);
+    requireElementContainerCompactness<ElemId::FACE>(m);
 }
 
 // Face AdjacentEdges
@@ -644,7 +644,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceAdjacentEdges(const MeshType& m)
     requires HasPerFaceAdjacentEdges<MeshType>
 {
-    requirePerElementComponent<FACE, ADJACENT_EDGES>(m);
+    requirePerElementComponent<ElemId::FACE, ADJACENT_EDGES>(m);
 }
 
 // Face AdjacentFaces
@@ -680,7 +680,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceAdjacentFaces(const MeshType& m)
     requires HasPerFaceAdjacentFaces<MeshType>
 {
-    requirePerElementComponent<FACE, ADJACENT_FACES>(m);
+    requirePerElementComponent<ElemId::FACE, ADJACENT_FACES>(m);
 }
 
 // Face Color
@@ -715,7 +715,7 @@ void requirePerFaceAdjacentFaces(const MeshType& m)
 template<FaceMeshConcept MeshType>
 void requirePerFaceColor(const MeshType& m) requires HasPerFaceColor<MeshType>
 {
-    requirePerElementComponent<FACE, COLOR>(m);
+    requirePerElementComponent<ElemId::FACE, COLOR>(m);
 }
 
 // Face Mark
@@ -750,7 +750,7 @@ void requirePerFaceColor(const MeshType& m) requires HasPerFaceColor<MeshType>
 template<FaceMeshConcept MeshType>
 void requirePerFaceMark(const MeshType& m) requires HasPerFaceMark<MeshType>
 {
-    requirePerElementComponent<FACE, MARK>(m);
+    requirePerElementComponent<ElemId::FACE, MARK>(m);
 }
 
 // Face Normal
@@ -785,7 +785,7 @@ void requirePerFaceMark(const MeshType& m) requires HasPerFaceMark<MeshType>
 template<FaceMeshConcept MeshType>
 void requirePerFaceNormal(const MeshType& m) requires HasPerFaceNormal<MeshType>
 {
-    requirePerElementComponent<FACE, NORMAL>(m);
+    requirePerElementComponent<ElemId::FACE, NORMAL>(m);
 }
 
 // Face PrincipalCurvature
@@ -821,7 +821,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFacePrincipalCurvature(const MeshType& m)
     requires HasPerFacePrincipalCurvature<MeshType>
 {
-    requirePerElementComponent<FACE, PRINCIPAL_CURVATURE>(m);
+    requirePerElementComponent<ElemId::FACE, PRINCIPAL_CURVATURE>(m);
 }
 
 // Face Quality
@@ -857,7 +857,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceQuality(const MeshType& m)
     requires HasPerFaceQuality<MeshType>
 {
-    requirePerElementComponent<FACE, QUALITY>(m);
+    requirePerElementComponent<ElemId::FACE, QUALITY>(m);
 }
 
 // Face WedgeColors
@@ -893,7 +893,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeColors(const MeshType& m)
     requires HasPerFaceWedgeColors<MeshType>
 {
-    requirePerElementComponent<FACE, WEDGE_COLORS>(m);
+    requirePerElementComponent<ElemId::FACE, WEDGE_COLORS>(m);
 }
 
 // Face WedgeTexCoords
@@ -929,7 +929,7 @@ template<FaceMeshConcept MeshType>
 void requirePerFaceWedgeTexCoords(const MeshType& m)
     requires HasPerFaceWedgeTexCoords<MeshType>
 {
-    requirePerElementComponent<FACE, WEDGE_TEX_COORDS>(m);
+    requirePerElementComponent<ElemId::FACE, WEDGE_TEX_COORDS>(m);
 }
 
 } // namespace vcl

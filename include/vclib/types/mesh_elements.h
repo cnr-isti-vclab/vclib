@@ -29,18 +29,22 @@
 
 namespace vcl {
 
-enum ElementIDEnum : uint {
-    VERTEX = 0,
-    FACE,
-    EDGE,
+struct ElemId {
+    enum Enum : uint {
+        VERTEX = 0,
+        FACE,
+        EDGE,
+        // Additional elements here
+
+        ELEMENTS_NUMBER,
+    };
 };
 
-inline static constexpr uint ELEMENTS_NUMBER = 3;
-
-inline static constexpr const char* ELEMENT_ENUM_STRINGS[ELEMENTS_NUMBER] = {
-    "Vertex",
-    "Face",
-    "Edge",
+inline static constexpr const char*
+    ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
+        "Vertex",
+        "Face",
+        "Edge",
 };
 
 /**
@@ -58,8 +62,9 @@ struct ElemenetString
     /**
      * @brief The string associated to the ELEM_ID.
      */
-    const char* str =
-        ELEM_ID < ELEMENTS_NUMBER ? ELEMENT_ENUM_STRINGS[ELEM_ID] : nullptr;
+    const char* str = ELEM_ID < ElemId::ELEMENTS_NUMBER ?
+                          ELEMENT_ENUM_STRINGS[ELEM_ID] :
+                          nullptr;
 };
 
 template<uint ELEM_ID>

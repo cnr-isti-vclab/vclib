@@ -110,7 +110,7 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
  */
 template<typename T>
 concept EdgeConcept =
-    ElementConcept<T> && T::ELEMENT_ID == EDGE &&
+    ElementConcept<T> && T::ELEMENT_ID == ElemId::EDGE &&
     (edge::IsDerivedFromEdge<T>::value || edge::IsAEdge<T>::value) &&
     edge::HasBitFlags<T> && edge::HasVertexPointers<T> && T::VERTEX_NUMBER == 2;
 

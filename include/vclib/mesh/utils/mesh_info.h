@@ -757,13 +757,13 @@ void addPerVertexCustomComponent(
     MeshType&                        m,
     const MeshInfo::CustomComponent& cc)
 {
-    addPerElementCustomComponent<VERTEX>(m, cc);
+    addPerElementCustomComponent<ElemId::VERTEX>(m, cc);
 }
 
 template<FaceMeshConcept MeshType>
 void addPerFaceCustomComponent(MeshType& m, const MeshInfo::CustomComponent& cc)
 {
-    addPerElementCustomComponent<FACE>(m, cc);
+    addPerElementCustomComponent<ElemId::FACE>(m, cc);
 }
 
 /**

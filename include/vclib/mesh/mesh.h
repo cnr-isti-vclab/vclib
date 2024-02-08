@@ -130,7 +130,7 @@ public:
      *
      * Usage:
      * ```cpp
-     * using VertexType = MeshType::template ElementType<VERTEX>;
+     * using VertexType = MeshType::template ElementType<ElemId::VERTEX>;
      * ```
      */
     template<uint ELEM_ID>
@@ -175,9 +175,9 @@ public:
      * Example of usage (Note: EdgeMesh has Vertices, but not Faces):
      *
      * @code{.cpp}
-     * static_assert(vcl::EdgeMesh::hasContainerOf<vcl::VERTEX>(),
+     * static_assert(vcl::EdgeMesh::hasContainerOf<vcl::ElemId::VERTEX>(),
      *                    "EdgeMesh does not have Vertices");
-     * static_assert(!vcl::EdgeMesh::hasContainerOf<vcl::FACE>(),
+     * static_assert(!vcl::EdgeMesh::hasContainerOf<vcl::ElemId::FACE>(),
      *                    "EdgeMesh has Faces");
      * @endcode
      *
@@ -201,11 +201,11 @@ public:
      *
      * @code{.cpp}
      * static_assert(vcl::TriMesh::hasPerElementComponent<
-     *         vcl::VERTEX, vcl::TEX_COORDS>(),
+     *         vcl::ElemId::VERTEX, vcl::TEX_COORDS>(),
      *         "TriMesh does not have per Vertex TexCoords");
      *
      * static_assert(!vcl::TriMesh::hasPerElementComponent<
-     *        vcl::VERTEX, vcl::ADJ_EDGES>(),
+     *        vcl::ElemId::VERTEX, vcl::ADJ_EDGES>(),
      *        "TriMesh has per Vertex Adjacent Edges");
      * @endcode
      */
@@ -226,11 +226,11 @@ public:
      *
      * @code{.cpp}
      * static_assert(vcl::TriMesh::hasPerElementOptionalComponent<
-     *         vcl::VERTEX, vcl::TEX_COORDS>(),
+     *         vcl::ElemId::VERTEX, vcl::TEX_COORDS>(),
      *         "TriMesh does not have per Vertex Optional TexCoords");
      *
      * static_assert(!vcl::TriMesh::hasPerElementOptionalComponent<
-     *        vcl::VERTEX, vcl::NORMALS>(),
+     *        vcl::ElemId::VERTEX, vcl::NORMALS>(),
      *        "TriMesh has per Vertex Optional Normals");
      * @endcode
      */
@@ -763,11 +763,11 @@ public:
      * @warning The given size `n` is relative to the number of non-deleted
      * Elements, not to the size of the Element container. For example, if you
      * have a mesh with 10 Faces and faceContainerSize() == 20, calling
-     * resize<FACE>(5) will not cause a reallocation of the container, but will
-     * mark as deleted the least 5 non-deleted Faces of the container. In the
-     * same scenario, calling resize<FACE>(15) will result in a Face
-     * container having 15 new Faces and faceContainerSize() == 25.
-     * The latest 5 Faces will be the newly added.
+     * resize<ElemId::FACE>(5) will not cause a reallocation of the container,
+     * but will mark as deleted the least 5 non-deleted Faces of the container.
+     * In the same scenario, calling resize<ElemId::FACE>(15) will result in a
+     * Face container having 15 new Faces and faceContainerSize() == 25. The
+     * latest 5 Faces will be the newly added.
      *
      * @warning Any pointer to deleted Elements in the Mesh will be left
      * unchanged, and therefore will point to invalid Elements. This means that
@@ -1044,7 +1044,7 @@ public:
      * for loops:
      *
      * @code{.cpp}
-     * for (auto& el : mesh.elements<VERTEX>()) {
+     * for (auto& el : mesh.elements<ElemId::VERTEX>()) {
      *     // Do something with el
      * }
      * @endcode
@@ -1074,7 +1074,7 @@ public:
      * in range-based for loops:
      *
      * @code{.cpp}
-     * for (const auto& el : mesh.elements<VERTEX>()) {
+     * for (const auto& el : mesh.elements<ElemId::VERTEX>()) {
      *     // Do something read-only with el
      * }
      * @endcode
@@ -1332,7 +1332,8 @@ public:
      * "cc" of type int:
      *
      * @code{.cpp}
-     * auto handle = m.perElementCustomComponentVectorHandle<VERTEX, int>("cc");
+     * auto handle = m.perElementCustomComponentVectorHandle<
+     *      ElemId::VERTEX, int>("cc");
      * for (Vertex& v : m.vertices() {
      *    handle[m.index(v)] = 5; // v.customComponent<int>("cc") == 5
      *    assert(v.customComponent<int>("cc") == 5);
@@ -1382,7 +1383,8 @@ public:
      * "cc" of type int:
      *
      * @code{.cpp}
-     * auto handle = m.perElementCustomComponentVectorHandle<VERTEX, int>("cc");
+     * auto handle = m.perElementCustomComponentVectorHandle<
+     *      ElemId::VERTEX, int>("cc");
      * for (const Vertex& v : m.vertices() {
      *     sum += handle[m.index(v)];
      *     // handle[m.index(v)] = 5; // not allowed, const handle

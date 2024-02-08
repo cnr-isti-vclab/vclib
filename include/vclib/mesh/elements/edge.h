@@ -44,7 +44,7 @@ namespace vcl {
  * @ingroup elements
  */
 template<typename MeshType, typename... Comps>
-class Edge : public Element<EDGE, MeshType, Comps...>
+class Edge : public Element<ElemId::EDGE, MeshType, Comps...>
 {
     // VertexPointers component of the Edge
     using VPtrs = typename Edge::VertexPointers;

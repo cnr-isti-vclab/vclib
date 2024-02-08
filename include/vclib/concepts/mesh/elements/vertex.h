@@ -127,7 +127,7 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
  */
 template<typename T>
 concept VertexConcept =
-    ElementConcept<T> && T::ELEMENT_ID == VERTEX &&
+    ElementConcept<T> && T::ELEMENT_ID == ElemId::VERTEX &&
     (vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value) &&
     vert::HasBitFlags<T> && vert::HasCoordinate<T>;
 

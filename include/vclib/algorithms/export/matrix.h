@@ -230,7 +230,7 @@ Matrix edgeMatrix(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::VectorXi S =
- *     vcl::elementSelectionVector<VERTEX, Eigen::VectorXi>(myMesh);
+ *     vcl::elementSelectionVector<ElemId::VERTEX, Eigen::VectorXi>(myMesh);
  * @endif
  *
  * @note This function does not guarantee that the rows of the vector
@@ -284,7 +284,7 @@ Vect elementSelectionVector(const MeshType& mesh)
 template<typename Vect, MeshConcept MeshType>
 Vect vertexSelectionVector(const MeshType& mesh)
 {
-    return elementSelectionVector<VERTEX, Vect>(mesh);
+    return elementSelectionVector<ElemId::VERTEX, Vect>(mesh);
 }
 
 /**
@@ -316,7 +316,7 @@ Vect vertexSelectionVector(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceSelectionVector(const MeshType& mesh)
 {
-    return elementSelectionVector<FACE, Vect>(mesh);
+    return elementSelectionVector<ElemId::FACE, Vect>(mesh);
 }
 
 /**
@@ -331,7 +331,7 @@ Vect faceSelectionVector(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::MatrixX3d VN =
- *     vcl::elementNormalsMatrix<VERTEX, Eigen::MatrixX3d>(myMesh);
+ *     vcl::elementNormalsMatrix<ElemId::VERTEX, Eigen::MatrixX3d>(myMesh);
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-element
@@ -390,7 +390,7 @@ Matrix elementNormalsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexNormalsMatrix(const MeshType& mesh)
 {
-    return elementNormalsMatrix<VERTEX, Matrix>(mesh);
+    return elementNormalsMatrix<ElemId::VERTEX, Matrix>(mesh);
 }
 
 /**
@@ -420,7 +420,7 @@ Matrix vertexNormalsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceNormalsMatrix(const MeshType& mesh)
 {
-    return elementNormalsMatrix<FACE, Matrix>(mesh);
+    return elementNormalsMatrix<ElemId::FACE, Matrix>(mesh);
 }
 
 /**
@@ -435,7 +435,7 @@ Matrix faceNormalsMatrix(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::MatrixX4i EC =
- *     vcl::elementColorsMatrix<VERTEX, Eigen::MatrixX4i>(myMesh);
+ *     vcl::elementColorsMatrix<ElemId::VERTEX, Eigen::MatrixX4i>(myMesh);
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-element
@@ -494,7 +494,7 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, MeshConcept MeshType>
 Matrix vertexColorsMatrix(const MeshType& mesh)
 {
-    return elementColorsMatrix<VERTEX, Matrix>(mesh);
+    return elementColorsMatrix<ElemId::VERTEX, Matrix>(mesh);
 }
 
 /**
@@ -524,7 +524,7 @@ Matrix vertexColorsMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceColorsMatrix(const MeshType& mesh)
 {
-    return elementColorsMatrix<FACE, Matrix>(mesh);
+    return elementColorsMatrix<ElemId::FACE, Matrix>(mesh);
 }
 
 /**
@@ -540,7 +540,7 @@ Matrix faceColorsMatrix(const MeshType& mesh)
  *
  * @code{.cpp}
  * Eigen::VectorXd EQ =
- *     vcl::elementQualityVector<VERTEX, Eigen::VectorXd>(myMesh);
+ *     vcl::elementQualityVector<ElemId::VERTEX, Eigen::VectorXd>(myMesh);
  * @endcode
  *
  * @throws vcl::MissingComponentException if the mesh does not have per-element
@@ -599,7 +599,7 @@ Vect elementQualityVector(const MeshType& mesh)
 template<typename Vect, MeshConcept MeshType>
 Vect vertexQualityVector(const MeshType& mesh)
 {
-    return elementQualityVector<VERTEX, Vect>(mesh);
+    return elementQualityVector<ElemId::VERTEX, Vect>(mesh);
 }
 
 /**
@@ -630,7 +630,7 @@ Vect vertexQualityVector(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceQualityVector(const MeshType& mesh)
 {
-    return elementQualityVector<FACE, Vect>(mesh);
+    return elementQualityVector<ElemId::FACE, Vect>(mesh);
 }
 
 } // namespace vcl

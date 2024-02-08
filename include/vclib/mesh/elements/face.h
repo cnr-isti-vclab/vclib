@@ -45,9 +45,9 @@ namespace vcl {
  * @ingroup elements
  */
 template<typename MeshType, typename... Comps>
-class Face : public Element<FACE, MeshType, Comps...>
+class Face : public Element<ElemId::FACE, MeshType, Comps...>
 {
-    using Base = Element<FACE, MeshType, Comps...>;
+    using Base = Element<ElemId::FACE, MeshType, Comps...>;
 
     // VertexPointers component of the Face
     using VPtrs = typename Face::VertexPointers;

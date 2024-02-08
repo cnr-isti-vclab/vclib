@@ -527,31 +527,31 @@ void importVertexNormalsFromMatrix(
     MeshType&       mesh,
     const VNMatrix& vertexNormals)
 {
-    detail::importElementNormalsFromMatrix<VERTEX>(mesh, vertexNormals);
+    detail::importElementNormalsFromMatrix<ElemId::VERTEX>(mesh, vertexNormals);
 }
 
 template<FaceMeshConcept MeshType, MatrixConcept FNMatrix>
 void importFaceNormalsFromMatrix(MeshType& mesh, const FNMatrix& faceNormals)
 {
-    detail::importElementNormalsFromMatrix<FACE>(mesh, faceNormals);
+    detail::importElementNormalsFromMatrix<ElemId::FACE>(mesh, faceNormals);
 }
 
 template<MeshConcept MeshType, MatrixConcept VCMatrix>
 void importVertexColorsFromMatrix(MeshType& mesh, const VCMatrix& vertexColors)
 {
-    detail::importElementColorsFromMatrix<VERTEX>(mesh, vertexColors);
+    detail::importElementColorsFromMatrix<ElemId::VERTEX>(mesh, vertexColors);
 }
 
 template<FaceMeshConcept MeshType, MatrixConcept FCMatrix>
 void importFaceColorsFromMatrix(MeshType& mesh, const FCMatrix& faceColors)
 {
-    detail::importElementColorsFromMatrix<FACE>(mesh, faceColors);
+    detail::importElementColorsFromMatrix<ElemId::FACE>(mesh, faceColors);
 }
 
 template<EdgeMeshConcept MeshType, MatrixConcept ECMatrix>
 void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
 {
-    detail::importElementColorsFromMatrix<EDGE>(mesh, edgeColors);
+    detail::importElementColorsFromMatrix<ElemId::EDGE>(mesh, edgeColors);
 }
 
 } // namespace vcl
