@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_MESH_MESH_COMPONENTS_H
+#define VCL_MESH_MESH_COMPONENTS_H
 
 #include "components/bounding_box.h"
 #include "components/color.h"
@@ -83,4 +83,4 @@ using TransformMatrixd = comp::TransformMatrixd<>;
 
 } // namespace vcl::mesh
 
-#endif // VCL_MESH_COMPONENTS_H
+#endif // VCL_MESH_MESH_COMPONENTS_H
