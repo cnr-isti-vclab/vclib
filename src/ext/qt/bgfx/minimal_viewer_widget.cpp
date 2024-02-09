@@ -71,65 +71,20 @@ void MinimalViewerWidget::onResize(unsigned int width, unsigned int height)
         viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
-void MinimalViewerWidget::mouseMoveEvent(QMouseEvent* event)
-{
-    if (event->buttons() != Qt::NoButton) {
-        MV::moveMouse(event->pos().x(), event->pos().y());
-
-        bgfx::setViewTransform(
-            viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
-
-        update();
-    }
-
-    CanvasWidget::mouseMoveEvent(event);
-}
-
-void MinimalViewerWidget::mousePressEvent(QMouseEvent* event)
-{
-    MV::moveMouse(event->pos().x(), event->pos().y());
-    MV::pressMouse(vcl::qt::fromQt(event->button()));
-
-    CanvasWidget::mousePressEvent(event);
-}
-
-void MinimalViewerWidget::mouseReleaseEvent(QMouseEvent* event)
-{
-    MV::moveMouse(event->pos().x(), event->pos().y());
-    MV::releaseMouse(vcl::qt::fromQt(event->button()));
-
-    CanvasWidget::mouseReleaseEvent(event);
-}
-
-void MinimalViewerWidget::wheelEvent(QWheelEvent* event)
-{
-    const int WHEEL_STEP = 120;
-    float     notchY     = event->angleDelta().y() / float(WHEEL_STEP);
-
-    MV::wheelMouse(notchY > 0);
-
-    bgfx::setViewTransform(
-        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
-
-    update();
-
-    CanvasWidget::wheelEvent(event);
-}
-
-void MinimalViewerWidget::keyPressEvent(QKeyEvent* event)
+void MinimalViewerWidget::onKeyPress(Key key, KeyModifiers modifiers)
 {
     qt::ScreenShotDialog dialog(this);
-    MV::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
+    MV::setKeyModifiers(modifiers);
 
-    switch (event->key()) {
-    case Qt::Key_C:
+    switch (key) {
+    case KEY_C:
         std::cerr << "(" << MV::camera().eye() << ") "
                   << "(" << MV::camera().center() << ") "
                   << "(" << MV::camera().up() << ")\n";
         break;
 
-    case Qt::Key_S:
-        if (event->modifiers() & Qt::ControlModifier) {
+    case KEY_S:
+        if (modifiers[CONTROL]) {
             if (dialog.exec() == QDialog::Accepted) {
                 auto fs = dialog.selectedFiles();
                 CanvasWidget::screenShot(fs.first().toStdString());
@@ -142,22 +97,57 @@ void MinimalViewerWidget::keyPressEvent(QKeyEvent* event)
         break;
 
     default:
-        MV::keyPress(vcl::qt::fromQt((Qt::Key) event->key()));
+        MV::keyPress(key);
         bgfx::setViewTransform(
             viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
         break;
     }
 
     update();
-    CanvasWidget::keyPressEvent(event);
 }
 
-void MinimalViewerWidget::keyReleaseEvent(QKeyEvent* event)
+void MinimalViewerWidget::onKeyRelease(Key key, KeyModifiers modifiers)
 {
-    MV::setKeyModifiers(vcl::qt::fromQt(event->modifiers()));
+    MV::setKeyModifiers(modifiers);
+    update();
+}
+
+void MinimalViewerWidget::onMouseMove(double x, double y)
+{
+    MV::moveMouse(x, y);
+
+    bgfx::setViewTransform(
+        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 
     update();
-    CanvasWidget::keyReleaseEvent(event);
+}
+
+void MinimalViewerWidget::onMousePress(MouseButton button, double x, double y)
+{
+    MV::moveMouse(x, y);
+    MV::pressMouse(button);
+}
+
+
+void MinimalViewerWidget::onMouseRelease(MouseButton button, double x, double y)
+{
+    MV::moveMouse(x, y);
+    MV::releaseMouse(button);
+}
+
+
+void MinimalViewerWidget::onMouseScroll(double dx, double dy)
+{
+    const int WHEEL_STEP = 120;
+    float     notchY     = dy / float(WHEEL_STEP);
+
+    MV::wheelMouse(notchY > 0);
+
+    bgfx::setViewTransform(
+        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+
+    update();
+
 }
 
 } // namespace vcl::qbgf

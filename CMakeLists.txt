@@ -44,6 +44,7 @@ set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(HEADERS
     include/vclib/gui/desktop_trackball.h
+    include/vclib/gui/event_manager_interface.h
     include/vclib/gui/input.h
     include/vclib/gui/native_window_handle.h
     include/vclib/render/camera.h

@@ -59,17 +59,17 @@ public:
 
     void onResize(unsigned int width, unsigned int height) override;
 
-    void mouseMoveEvent(QMouseEvent* event) override;
+    void onKeyPress(Key key, KeyModifiers modifiers) override;
 
-    void mousePressEvent(QMouseEvent* event) override;
+    void onKeyRelease(Key key, KeyModifiers modifiers) override;
 
-    void mouseReleaseEvent(QMouseEvent* event) override;
+    void onMouseMove(double x, double y) override;
 
-    void wheelEvent(QWheelEvent* event) override;
+    void onMousePress(MouseButton button, double x, double y) override;
 
-    void keyPressEvent(QKeyEvent* event) override;
+    void onMouseRelease(MouseButton button, double x, double y) override;
 
-    void keyReleaseEvent(QKeyEvent* event) override;
+    void onMouseScroll(double dx, double dy) override;
 };
 
 } // namespace vcl::qbgf

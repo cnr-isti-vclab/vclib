@@ -21,8 +21,10 @@
  ****************************************************************************/
 
 #include <QApplication>
+#include <QMouseEvent>
 
 #include <vclib/ext/qt/bgfx/canvas_widget.h>
+#include <vclib/ext/qt/gui/input.h>
 
 #ifdef __APPLE__
 #include <vclib/ext/qt/message_hider.h>
@@ -98,6 +100,22 @@ void CanvasWidget::update()
     QWidget::update();
 }
 
+void CanvasWidget::keyPressEvent(QKeyEvent* event)
+{
+    onKeyPress(
+        vcl::qt::fromQt((Qt::Key) event->key()),
+        vcl::qt::fromQt(event->modifiers()));
+    QWidget::keyPressEvent(event);
+}
+
+void CanvasWidget::keyReleaseEvent(QKeyEvent* event)
+{
+    onKeyRelease(
+        vcl::qt::fromQt((Qt::Key) event->key()),
+        vcl::qt::fromQt(event->modifiers()));
+    QWidget::keyReleaseEvent(event);
+}
+
 bool CanvasWidget::event(QEvent* event)
 {
     if (event->type() == QEvent::UpdateRequest) {
@@ -118,6 +136,33 @@ void CanvasWidget::resizeEvent(QResizeEvent* event)
     Canvas::resize(width(), height());
     QWidget::resizeEvent(event);
     onResize(width(), height());
+}
+
+void CanvasWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    onMouseMove(event->pos().x(), event->pos().y());
+    QWidget::mouseMoveEvent(event);
+}
+
+void CanvasWidget::mousePressEvent(QMouseEvent* event)
+{
+    onMousePress(
+        vcl::qt::fromQt(event->button()), event->pos().x(), event->pos().y());
+    QWidget::mousePressEvent(event);
+}
+
+void CanvasWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+    onMouseRelease(
+        vcl::qt::fromQt(event->button()), event->pos().x(), event->pos().y());
+    QWidget::mouseReleaseEvent(event);
+}
+
+
+void CanvasWidget::wheelEvent(QWheelEvent* event)
+{
+    onMouseScroll(event->angleDelta().x(), event->angleDelta().y());
+    QWidget::wheelEvent(event);
 }
 
 void CanvasWidget::paint()

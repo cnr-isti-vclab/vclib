@@ -27,10 +27,14 @@
 #include <QWidget>
 
 #include <vclib/ext/bgfx/canvas.h>
+#include <vclib/gui/event_manager_interface.h>
 
 namespace vcl::qbgf {
 
-class CanvasWidget : public QWidget, public vcl::bgf::Canvas
+class CanvasWidget :
+        public QWidget,
+        public vcl::bgf::Canvas,
+        public vcl::EventManagerInterface
 {
     using Canvas = vcl::bgf::Canvas;
 
@@ -52,18 +56,31 @@ public:
 
     void update();
 
+    // todo - these should be private - fix mainwindow
+    void keyPressEvent(QKeyEvent* event) override;
+
+    void keyReleaseEvent(QKeyEvent* event) override;
+
 protected:
     virtual void draw() override;
 
     virtual void onResize(unsigned int w, unsigned int h);
 
+private:
     bool event(QEvent* event) override;
 
     void paintEvent(QPaintEvent* event) override;
 
     void resizeEvent(QResizeEvent* event) override;
 
-private:
+    void mouseMoveEvent(QMouseEvent* event) override;
+
+    void mousePressEvent(QMouseEvent* event) override;
+
+    void mouseReleaseEvent(QMouseEvent* event) override;
+
+    void wheelEvent(QWheelEvent* event) override;
+
     void paint();
 };
 
