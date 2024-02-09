@@ -92,29 +92,29 @@ private:
          }},
 
  // rotate
-        {Key::_1,
+        {Key::NP_1,
          [](TrackBallType& t) {
-             rotate(t, TrackBallType::AXIAL);
+             rotate(t, TrackBallType::AXIAL, -M_PI / 6);
          }},
-        {Key::_2,
+        {Key::NP_2,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::VERTICAL, -M_PI / 6);
          }},
-        {Key::_4,
+        {Key::NP_4,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::HORIZONTAL, -M_PI / 6);
          }},
-        {Key::_6,
+        {Key::NP_6,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::HORIZONTAL);
          }},
-        {Key::_8,
+        {Key::NP_8,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::VERTICAL);
          }},
-        {Key::_9,
+        {Key::NP_9,
          [](TrackBallType& t) {
-             rotate(t, TrackBallType::AXIAL, -M_PI / 6);
+             rotate(t, TrackBallType::AXIAL);
          }},
 
  // translate

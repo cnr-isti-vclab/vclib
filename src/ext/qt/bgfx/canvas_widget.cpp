@@ -103,7 +103,7 @@ void CanvasWidget::update()
 void CanvasWidget::keyPressEvent(QKeyEvent* event)
 {
     onKeyPress(
-        vcl::qt::fromQt((Qt::Key) event->key()),
+        vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()),
         vcl::qt::fromQt(event->modifiers()));
     QWidget::keyPressEvent(event);
 }
@@ -111,7 +111,7 @@ void CanvasWidget::keyPressEvent(QKeyEvent* event)
 void CanvasWidget::keyReleaseEvent(QKeyEvent* event)
 {
     onKeyRelease(
-        vcl::qt::fromQt((Qt::Key) event->key()),
+        vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()),
         vcl::qt::fromQt(event->modifiers()));
     QWidget::keyReleaseEvent(event);
 }

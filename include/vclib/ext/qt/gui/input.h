@@ -33,7 +33,7 @@ MouseButton::Enum fromQt(Qt::MouseButton button);
 
 KeyModifier::Enum fromQt(Qt::KeyboardModifier modifier);
 
-Key::Enum fromQt(Qt::Key key);
+Key::Enum fromQt(Qt::Key key, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
 
 KeyModifiers fromQt(Qt::KeyboardModifiers modifiers);
 

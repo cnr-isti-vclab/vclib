@@ -44,8 +44,14 @@ KeyModifier::Enum fromQt(Qt::KeyboardModifier modifier)
     }
 }
 
-Key::Enum fromQt(Qt::Key key)
+Key::Enum fromQt(Qt::Key key, Qt::KeyboardModifiers modifiers)
 {
+    if (modifiers & Qt::KeypadModifier) {
+        if (key >= Qt::Key_0 && key <= Qt::Key_9) {
+            uint diff = key - Qt::Key_0;
+            return static_cast<Key::Enum>(Key::NP_0 + diff);
+        }
+    }
     return static_cast<Key::Enum>(key);
 }
 

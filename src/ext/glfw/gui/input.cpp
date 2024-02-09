@@ -97,6 +97,17 @@ vcl::Key::Enum fromGLFW(Key key)
     case GLFW_KEY_F11: return vcl::Key::F11;
     case GLFW_KEY_F12: return vcl::Key::F12;
 
+    case GLFW_KEY_KP_0: return vcl::Key::NP_0;
+    case GLFW_KEY_KP_1: return vcl::Key::NP_1;
+    case GLFW_KEY_KP_2: return vcl::Key::NP_2;
+    case GLFW_KEY_KP_3: return vcl::Key::NP_3;
+    case GLFW_KEY_KP_4: return vcl::Key::NP_4;
+    case GLFW_KEY_KP_5: return vcl::Key::NP_5;
+    case GLFW_KEY_KP_6: return vcl::Key::NP_6;
+    case GLFW_KEY_KP_7: return vcl::Key::NP_7;
+    case GLFW_KEY_KP_8: return vcl::Key::NP_8;
+    case GLFW_KEY_KP_9: return vcl::Key::NP_9;
+
     default: return vcl::Key::UNKNOWN;
     }
 }

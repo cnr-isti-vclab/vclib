@@ -90,9 +90,7 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key, KeyModifiers modifiers)
                 CanvasWidget::screenShot(fs.first().toStdString());
             }
             // the dialog stealed the focus, so we need to release the modifiers
-            KeyModifiers md;
-            md[KeyModifier::NO_MODIFIER] = true;
-            MV::setKeyModifiers(md);
+            MV::setKeyModifiers({KeyModifier::NO_MODIFIER});
         }
         break;
 
