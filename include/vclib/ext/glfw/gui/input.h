@@ -37,11 +37,11 @@ enum KeyboardModifier : uint {};
 
 enum KeyboardModifiers : uint {};
 
-vcl::MouseButton fromGLFW(glfw::MouseButton button);
+vcl::MouseButton::Enum fromGLFW(glfw::MouseButton button);
 
-vcl::Key fromGLFW(glfw::Key key);
+vcl::Key::Enum fromGLFW(glfw::Key key);
 
-KeyModifier fromGLFW(glfw::KeyboardModifier key);
+KeyModifier::Enum fromGLFW(glfw::KeyboardModifier key);
 
 KeyModifiers fromGLFW(glfw::KeyboardModifiers mods);
 

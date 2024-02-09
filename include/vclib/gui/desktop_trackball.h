@@ -66,67 +66,71 @@ private:
     Point3<Scalar> defaultTrackBallCenter;
     float          defaultTrackBallRadius = 1.0;
 
-    KeyModifiers currentKeyModifiers = {NO_MODIFIER};
+    KeyModifiers currentKeyModifiers = {KeyModifier::NO_MODIFIER};
 
-    std::map<std::pair<MouseButton, KeyModifiers>, MotionType> dragMotionMap = {
-        {{LEFT, {NO_MODIFIER}},   TrackBallType::ARC },
-        {{LEFT, {CONTROL}},       TrackBallType::PAN },
-        {{LEFT, {SHIFT}},         TrackBallType::ZOOM},
-        {{MIDDLE, {NO_MODIFIER}}, TrackBallType::PAN },
-        {{MIDDLE, {CONTROL}},     TrackBallType::ROLL},
+    std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
+        dragMotionMap = {
+            {{MouseButton::LEFT, {KeyModifier::NO_MODIFIER}},
+             TrackBallType::ARC                                                    },
+            {{MouseButton::LEFT, {KeyModifier::CONTROL}},       TrackBallType::PAN },
+            {{MouseButton::LEFT, {KeyModifier::SHIFT}},         TrackBallType::ZOOM},
+            {{MouseButton::MIDDLE, {KeyModifier::NO_MODIFIER}},
+             TrackBallType::PAN                                                    },
+            {{MouseButton::MIDDLE, {KeyModifier::CONTROL}},
+             TrackBallType::ROLL                                                   },
     };
 
     std::map<KeyModifiers, MotionType> wheelAtomicMap = {
-        {{NO_MODIFIER}, TrackBallType::ZOOM},
-        {{CONTROL},     TrackBallType::ROLL},
+        {{KeyModifier::NO_MODIFIER}, TrackBallType::ZOOM},
+        {{KeyModifier::CONTROL},     TrackBallType::ROLL},
     };
 
-    std::map<Key, std::function<void(TrackBallType& t)>> keyAtomicMap = {
-        {KEY_R,
+    std::map<Key::Enum, std::function<void(TrackBallType& t)>> keyAtomicMap = {
+        {Key::R,
          [&](TrackBallType& t) {
              t.reset(defaultTrackBallCenter, defaultTrackBallRadius);
          }},
 
  // rotate
-        {KEY_1,
+        {Key::_1,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::AXIAL);
          }},
-        {KEY_2,
+        {Key::_2,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::VERTICAL, -M_PI / 6);
          }},
-        {KEY_4,
+        {Key::_4,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::HORIZONTAL, -M_PI / 6);
          }},
-        {KEY_6,
+        {Key::_6,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::HORIZONTAL);
          }},
-        {KEY_8,
+        {Key::_8,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::VERTICAL);
          }},
-        {KEY_9,
+        {Key::_9,
          [](TrackBallType& t) {
              rotate(t, TrackBallType::AXIAL, -M_PI / 6);
          }},
 
  // translate
-        {KEY_UP,
+        {Key::UP,
          [](TrackBallType& t) {
              translate(t, TrackBallType::VERTICAL, 1);
          }},
-        {KEY_DOWN,
+        {Key::DOWN,
          [](TrackBallType& t) {
              translate(t, TrackBallType::VERTICAL, -1);
          }},
-        {KEY_LEFT,
+        {Key::LEFT,
          [](TrackBallType& t) {
              translate(t, TrackBallType::HORIZONTAL, -1);
          }},
-        {KEY_RIGHT,
+        {Key::RIGHT,
          [](TrackBallType& t) {
              translate(t, TrackBallType::HORIZONTAL, 1);
          }},
@@ -179,7 +183,7 @@ public:
         trackball.update();
     }
 
-    void pressMouse(MouseButton button)
+    void pressMouse(MouseButton::Enum button)
     {
         auto it =
             dragMotionMap.find(std::make_pair(button, currentKeyModifiers));
@@ -189,7 +193,7 @@ public:
         }
     }
 
-    void releaseMouse(MouseButton button)
+    void releaseMouse(MouseButton::Enum button)
     {
         auto it =
             dragMotionMap.find(std::make_pair(button, currentKeyModifiers));
@@ -208,7 +212,7 @@ public:
         }
     }
 
-    void keyPress(Key key)
+    void keyPress(Key::Enum key)
     {
         auto it = keyAtomicMap.find(key);
         if (it != keyAtomicMap.end()) {

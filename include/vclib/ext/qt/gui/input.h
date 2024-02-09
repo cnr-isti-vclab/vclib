@@ -29,11 +29,11 @@
 
 namespace vcl::qt {
 
-MouseButton fromQt(Qt::MouseButton button);
+MouseButton::Enum fromQt(Qt::MouseButton button);
 
-KeyModifier fromQt(Qt::KeyboardModifier modifier);
+KeyModifier::Enum fromQt(Qt::KeyboardModifier modifier);
 
-Key fromQt(Qt::Key key);
+Key::Enum fromQt(Qt::Key key);
 
 KeyModifiers fromQt(Qt::KeyboardModifiers modifiers);
 

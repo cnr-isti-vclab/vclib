@@ -92,9 +92,9 @@ void MinimalViewer::draw(uint viewID)
     }
 }
 
-void MinimalViewer::keyPress(Key key)
+void MinimalViewer::keyPress(Key::Enum key)
 {
-    if (key == KEY_A) {
+    if (key == Key::A) {
         toggleAxisVisibility();
     }
     else {

@@ -71,27 +71,27 @@ void MinimalViewerWidget::onResize(unsigned int width, unsigned int height)
         viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
-void MinimalViewerWidget::onKeyPress(Key key, KeyModifiers modifiers)
+void MinimalViewerWidget::onKeyPress(Key::Enum key, KeyModifiers modifiers)
 {
     qt::ScreenShotDialog dialog(this);
     MV::setKeyModifiers(modifiers);
 
     switch (key) {
-    case KEY_C:
+    case Key::C:
         std::cerr << "(" << MV::camera().eye() << ") "
                   << "(" << MV::camera().center() << ") "
                   << "(" << MV::camera().up() << ")\n";
         break;
 
-    case KEY_S:
-        if (modifiers[CONTROL]) {
+    case Key::S:
+        if (modifiers[KeyModifier::CONTROL]) {
             if (dialog.exec() == QDialog::Accepted) {
                 auto fs = dialog.selectedFiles();
                 CanvasWidget::screenShot(fs.first().toStdString());
             }
             // the dialog stealed the focus, so we need to release the modifiers
             KeyModifiers md;
-            md[NO_MODIFIER] = true;
+            md[KeyModifier::NO_MODIFIER] = true;
             MV::setKeyModifiers(md);
         }
         break;
@@ -106,7 +106,7 @@ void MinimalViewerWidget::onKeyPress(Key key, KeyModifiers modifiers)
     update();
 }
 
-void MinimalViewerWidget::onKeyRelease(Key key, KeyModifiers modifiers)
+void MinimalViewerWidget::onKeyRelease(Key::Enum key, KeyModifiers modifiers)
 {
     MV::setKeyModifiers(modifiers);
     update();
@@ -122,12 +122,12 @@ void MinimalViewerWidget::onMouseMove(double x, double y)
     update();
 }
 
-void MinimalViewerWidget::onMousePress(MouseButton button)
+void MinimalViewerWidget::onMousePress(MouseButton::Enum button)
 {
     MV::pressMouse(button);
 }
 
-void MinimalViewerWidget::onMouseRelease(MouseButton button)
+void MinimalViewerWidget::onMouseRelease(MouseButton::Enum button)
 {
     MV::releaseMouse(button);
 }

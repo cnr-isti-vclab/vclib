@@ -68,12 +68,12 @@ void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
     MV::resizeViewer(width, height);
 }
 
-void MinimalViewerWindow::onKeyPress(Key key, KeyModifiers modifiers)
+void MinimalViewerWindow::onKeyPress(Key::Enum key, KeyModifiers modifiers)
 {
     MV::setKeyModifiers(modifiers);
 
     switch (key) {
-    case KEY_C:
+    case Key::C:
         std::cerr << "(" << MV::camera().eye() << ") "
                   << "(" << MV::camera().center() << ") "
                   << "(" << MV::camera().up() << ")\n";
@@ -87,7 +87,7 @@ void MinimalViewerWindow::onKeyPress(Key key, KeyModifiers modifiers)
     }
 }
 
-void MinimalViewerWindow::onKeyRelease(Key key, KeyModifiers modifiers)
+void MinimalViewerWindow::onKeyRelease(Key::Enum key, KeyModifiers modifiers)
 {
     MV::setKeyModifiers(modifiers);
 }
@@ -100,13 +100,12 @@ void MinimalViewerWindow::onMouseMove(double x, double y)
         viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
-void MinimalViewerWindow::onMousePress(MouseButton button)
+void MinimalViewerWindow::onMousePress(MouseButton::Enum button)
 {
     MV::pressMouse(button);
 }
 
-
-void MinimalViewerWindow::onMouseRelease(MouseButton button)
+void MinimalViewerWindow::onMouseRelease(MouseButton::Enum button)
 {
     MV::releaseMouse(button);
 }

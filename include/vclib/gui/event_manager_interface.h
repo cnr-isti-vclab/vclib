@@ -50,7 +50,7 @@ public:
      * @param[in] modifiers: The key modifiers that were active when the key was
      * pressed.
      */
-    virtual void onKeyPress(Key key, KeyModifiers modifiers) {};
+    virtual void onKeyPress(Key::Enum key, KeyModifiers modifiers) {};
 
     /**
      * @brief Called when a key is released.
@@ -58,7 +58,7 @@ public:
      * @param[in] modifiers: The key modifiers that were active when the key was
      * released.
      */
-    virtual void onKeyRelease(Key key, KeyModifiers modifiers) {};
+    virtual void onKeyRelease(Key::Enum key, KeyModifiers modifiers) {};
 
     /**
      * @brief Called when the mouse moves.
@@ -71,13 +71,13 @@ public:
      * @brief Called when a mouse button is pressed.
      * @param[in] button: The button that was pressed.
      */
-    virtual void onMousePress(MouseButton button) {};
+    virtual void onMousePress(MouseButton::Enum button) {};
 
     /**
      * @brief Called when a mouse button is released.
      * @param[in] button: The button that was released.
      */
-    virtual void onMouseRelease(MouseButton button) {};
+    virtual void onMouseRelease(MouseButton::Enum button) {};
 
     /**
      * @brief Called when the mouse wheel is scrolled.

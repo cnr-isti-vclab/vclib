@@ -188,7 +188,7 @@ void CanvasWindow::glfwKeyCallback(
     int mods)
 {
     KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
-    Key k = glfw::fromGLFW((glfw::Key) key);
+    Key::Enum k = glfw::fromGLFW((glfw::Key) key);
     if (action == GLFW_PRESS) {
         onKeyPress(k, modifiers);
     } else if (action == GLFW_RELEASE) {
@@ -203,8 +203,6 @@ void CanvasWindow::glfwMouseButtonCallback(
     int mods)
 {
     glfw::MouseButton btn = (glfw::MouseButton) button;
-
-    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
 
     if (action == GLFW_PRESS) {
         onMousePress(glfw::fromGLFW(btn));

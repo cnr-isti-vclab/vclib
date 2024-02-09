@@ -27,82 +27,88 @@
 
 namespace vcl {
 
-enum MouseButton {
-    LEFT      = 0,
-    RIGHT     = 1,
-    MIDDLE    = 2,
-    NO_BUTTON = 3,
+struct MouseButton {
+     enum Enum {
+        LEFT      = 0,
+        RIGHT     = 1,
+        MIDDLE    = 2,
+        NO_BUTTON = 3,
+     };
 };
 
-enum KeyModifier {
-    SHIFT       = 0,
-    CONTROL     = 1,
-    ALT         = 2,
-    NO_MODIFIER = 3,
+struct KeyModifier {
+    enum Enum {
+        SHIFT       = 0,
+        CONTROL     = 1,
+        ALT         = 2,
+        NO_MODIFIER = 3,
+    };
 };
 
 using KeyModifiers = BitSet<char>;
 
-enum Key {
-    KEY_SPACE = 0x20,
+struct Key {
+    enum Enum {
+        SPACE = 0x20,
 
-    KEY_0 = 0x30,
-    KEY_1 = 0x31,
-    KEY_2 = 0x32,
-    KEY_3 = 0x33,
-    KEY_4 = 0x34,
-    KEY_5 = 0x35,
-    KEY_6 = 0x36,
-    KEY_7 = 0x37,
-    KEY_8 = 0x38,
-    KEY_9 = 0x39,
+        _0 = 0x30,
+        _1 = 0x31,
+        _2 = 0x32,
+        _3 = 0x33,
+        _4 = 0x34,
+        _5 = 0x35,
+        _6 = 0x36,
+        _7 = 0x37,
+        _8 = 0x38,
+        _9 = 0x39,
 
-    KEY_A = 0x41,
-    KEY_B = 0x42,
-    KEY_C = 0x43,
-    KEY_D = 0x44,
-    KEY_E = 0x45,
-    KEY_F = 0x46,
-    KEY_G = 0x47,
-    KEY_H = 0x48,
-    KEY_I = 0x49,
-    KEY_J = 0x4a,
-    KEY_K = 0x4b,
-    KEY_L = 0x4c,
-    KEY_M = 0x4d,
-    KEY_N = 0x4e,
-    KEY_O = 0x4f,
-    KEY_P = 0x50,
-    KEY_Q = 0x51,
-    KEY_R = 0x52,
-    KEY_S = 0x53,
-    KEY_T = 0x54,
-    KEY_U = 0x55,
-    KEY_V = 0x56,
-    KEY_W = 0x57,
-    KEY_X = 0x58,
-    KEY_Y = 0x59,
-    KEY_Z = 0x5a,
+        A = 0x41,
+        B = 0x42,
+        C = 0x43,
+        D = 0x44,
+        E = 0x45,
+        F = 0x46,
+        G = 0x47,
+        H = 0x48,
+        I = 0x49,
+        J = 0x4a,
+        K = 0x4b,
+        L = 0x4c,
+        M = 0x4d,
+        N = 0x4e,
+        O = 0x4f,
+        P = 0x50,
+        Q = 0x51,
+        R = 0x52,
+        S = 0x53,
+        T = 0x54,
+        U = 0x55,
+        V = 0x56,
+        W = 0x57,
+        X = 0x58,
+        Y = 0x59,
+        Z = 0x5a,
 
-    KEY_LEFT  = 0x01000012,
-    KEY_UP    = 0x01000013,
-    KEY_RIGHT = 0x01000014,
-    KEY_DOWN  = 0x01000015,
+        LEFT  = 0x01000012,
+        UP    = 0x01000013,
+        RIGHT = 0x01000014,
+        DOWN  = 0x01000015,
 
-    KEY_F1  = 0x01000030,
-    KEY_F2  = 0x01000031,
-    KEY_F3  = 0x01000032,
-    KEY_F4  = 0x01000033,
-    KEY_F5  = 0x01000034,
-    KEY_F6  = 0x01000035,
-    KEY_F7  = 0x01000036,
-    KEY_F8  = 0x01000037,
-    KEY_F9  = 0x01000038,
-    KEY_F10 = 0x01000039,
-    KEY_F11 = 0x0100003a,
-    KEY_F12 = 0x0100003b,
+        F1  = 0x01000030,
+        F2  = 0x01000031,
+        F3  = 0x01000032,
+        F4  = 0x01000033,
+        F5  = 0x01000034,
+        F6  = 0x01000035,
+        F7  = 0x01000036,
+        F8  = 0x01000037,
+        F9  = 0x01000038,
+        F10 = 0x01000039,
+        F11 = 0x0100003a,
+        F12 = 0x0100003b,
 
-    KEY_UNKNOWN = 0x01ffffff
+        UNKNOWN = 0x01ffffff
+    };
 };
 
 } // namespace vcl

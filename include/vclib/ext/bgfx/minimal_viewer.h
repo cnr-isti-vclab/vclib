@@ -70,7 +70,7 @@ public:
 
     void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }
 
-    void keyPress(Key key);
+    void keyPress(Key::Enum key);
 };
 
 } // namespace vcl::bgf

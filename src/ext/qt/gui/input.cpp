@@ -24,29 +24,29 @@
 
 namespace vcl::qt {
 
-vcl::MouseButton fromQt(Qt::MouseButton button)
+vcl::MouseButton::Enum fromQt(Qt::MouseButton button)
 {
     switch (button) {
-    case Qt::LeftButton: return LEFT;
-    case Qt::RightButton: return RIGHT;
-    case Qt::MiddleButton: return MIDDLE;
-    default: return NO_BUTTON;
+    case Qt::LeftButton: return MouseButton::LEFT;
+    case Qt::RightButton: return MouseButton::RIGHT;
+    case Qt::MiddleButton: return MouseButton::MIDDLE;
+    default: return MouseButton::NO_BUTTON;
     }
 }
 
-KeyModifier fromQt(Qt::KeyboardModifier modifier)
+KeyModifier::Enum fromQt(Qt::KeyboardModifier modifier)
 {
     switch (modifier) {
-    case Qt::ShiftModifier: return SHIFT;
-    case Qt::ControlModifier: return CONTROL;
-    case Qt::AltModifier: return ALT;
-    default: return NO_MODIFIER;
+    case Qt::ShiftModifier: return KeyModifier::SHIFT;
+    case Qt::ControlModifier: return KeyModifier::CONTROL;
+    case Qt::AltModifier: return KeyModifier::ALT;
+    default: return KeyModifier::NO_MODIFIER;
     }
 }
 
-Key fromQt(Qt::Key key)
+Key::Enum fromQt(Qt::Key key)
 {
-    return static_cast<Key>(key);
+    return static_cast<Key::Enum>(key);
 }
 
 KeyModifiers fromQt(Qt::KeyboardModifiers modifiers)
@@ -54,15 +54,15 @@ KeyModifiers fromQt(Qt::KeyboardModifiers modifiers)
     KeyModifiers res;
 
     if (modifiers & Qt::ShiftModifier)
-        res[SHIFT] = true;
+        res[KeyModifier::SHIFT] = true;
     if (modifiers & Qt::ControlModifier)
-        res[CONTROL] = true;
+        res[KeyModifier::CONTROL] = true;
     if (modifiers & Qt::AltModifier)
-        res[ALT] = true;
+        res[KeyModifier::ALT] = true;
 
     // no modifier must be enabled only when no other modifier is enabled
     if (res.none())
-        res[NO_MODIFIER] = true;
+        res[KeyModifier::NO_MODIFIER] = true;
 
     return res;
 }
