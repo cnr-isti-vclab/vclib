@@ -65,9 +65,9 @@ public:
 
     void onMouseMove(double x, double y) override;
 
-    void onMousePress(MouseButton button, double x, double y) override;
+    void onMousePress(MouseButton button) override;
 
-    void onMouseRelease(MouseButton button, double x, double y) override;
+    void onMouseRelease(MouseButton button) override;
 
     void onMouseScroll(double dx, double dy) override;
 };

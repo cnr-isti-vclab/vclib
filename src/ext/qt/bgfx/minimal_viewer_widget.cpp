@@ -122,19 +122,15 @@ void MinimalViewerWidget::onMouseMove(double x, double y)
     update();
 }
 
-void MinimalViewerWidget::onMousePress(MouseButton button, double x, double y)
+void MinimalViewerWidget::onMousePress(MouseButton button)
 {
-    MV::moveMouse(x, y);
     MV::pressMouse(button);
 }
 
-
-void MinimalViewerWidget::onMouseRelease(MouseButton button, double x, double y)
+void MinimalViewerWidget::onMouseRelease(MouseButton button)
 {
-    MV::moveMouse(x, y);
     MV::releaseMouse(button);
 }
-
 
 void MinimalViewerWidget::onMouseScroll(double dx, double dy)
 {

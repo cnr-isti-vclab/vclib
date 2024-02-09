@@ -46,43 +46,43 @@ public:
 
     /**
      * @brief Called when a key is pressed.
-     * @param key The key that was pressed.
+     * @param[in] key: The key that was pressed.
+     * @param[in] modifiers: The key modifiers that were active when the key was
+     * pressed.
      */
     virtual void onKeyPress(Key key, KeyModifiers modifiers) {};
 
     /**
      * @brief Called when a key is released.
-     * @param key The key that was released.
+     * @param[in] key: The key that was released.
+     * @param[in] modifiers: The key modifiers that were active when the key was
+     * released.
      */
     virtual void onKeyRelease(Key key, KeyModifiers modifiers) {};
 
     /**
      * @brief Called when the mouse moves.
-     * @param x The x coordinate of the mouse.
-     * @param y The y coordinate of the mouse.
+     * @param[in] x: The x coordinate of the mouse.
+     * @param[in] y: The y coordinate of the mouse.
      */
     virtual void onMouseMove(double x, double y) {};
 
     /**
      * @brief Called when a mouse button is pressed.
-     * @param button The button that was pressed.
-     * @param x The x coordinate of the mouse.
-     * @param y The y coordinate of the mouse.
+     * @param[in] button: The button that was pressed.
      */
-    virtual void onMousePress(MouseButton button, double x, double y) {};
+    virtual void onMousePress(MouseButton button) {};
 
     /**
      * @brief Called when a mouse button is released.
-     * @param button The button that was released.
-     * @param x The x coordinate of the mouse.
-     * @param y The y coordinate of the mouse.
+     * @param[in] button: The button that was released.
      */
-    virtual void onMouseRelease(MouseButton button, double x, double y) {};
+    virtual void onMouseRelease(MouseButton button) {};
 
     /**
      * @brief Called when the mouse wheel is scrolled.
-     * @param dx The horizontal scroll amount.
-     * @param dy The vertical scroll amount.
+     * @param[in] dx: The horizontal scroll amount.
+     * @param[in] dy: The vertical scroll amount.
      */
     virtual void onMouseScroll(double dx, double dy) {};
 };

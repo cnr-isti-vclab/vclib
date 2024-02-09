@@ -146,18 +146,17 @@ void CanvasWidget::mouseMoveEvent(QMouseEvent* event)
 
 void CanvasWidget::mousePressEvent(QMouseEvent* event)
 {
-    onMousePress(
-        vcl::qt::fromQt(event->button()), event->pos().x(), event->pos().y());
+    onMouseMove(event->pos().x(), event->pos().y());
+    onMousePress(vcl::qt::fromQt(event->button()));
     QWidget::mousePressEvent(event);
 }
 
 void CanvasWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    onMouseRelease(
-        vcl::qt::fromQt(event->button()), event->pos().x(), event->pos().y());
+    onMouseMove(event->pos().x(), event->pos().y());
+    onMouseRelease(vcl::qt::fromQt(event->button()));
     QWidget::mouseReleaseEvent(event);
 }
-
 
 void CanvasWidget::wheelEvent(QWheelEvent* event)
 {

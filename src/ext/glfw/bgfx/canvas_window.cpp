@@ -34,6 +34,8 @@
 
 #include <GLFW/glfw3native.h>
 
+#include <vclib/ext/glfw/gui/input.h>
+
 namespace vcl::bglfwx {
 
 namespace detail {
@@ -83,12 +85,7 @@ CanvasWindow::CanvasWindow(
 
     glfwSetWindowUserPointer(window, this);
 
-    glfwSetWindowSizeCallback(
-        window, [](GLFWwindow* window, int width, int height) {
-            auto* self =
-                static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
-            self->glfwWindowSizeCallback(window, width, height);
-        });
+    setCallbacks();
 }
 
 CanvasWindow::CanvasWindow(uint width, uint height) :
@@ -133,10 +130,97 @@ void CanvasWindow::show()
     }
 }
 
+void CanvasWindow::setCallbacks()
+{
+    glfwSetWindowSizeCallback(
+        window, [](GLFWwindow* window, int width, int height) {
+            auto* self =
+                static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
+            self->glfwWindowSizeCallback(window, width, height);
+        });
+
+    // key callback lambda
+    auto keyCB =
+        [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+            auto* self = static_cast<CanvasWindow*>(
+                glfwGetWindowUserPointer(window));
+            self->glfwKeyCallback(window, key, scancode, action, mods);
+        };
+
+    glfwSetKeyCallback(window, keyCB);
+
+           // mouse position callback
+    glfwSetCursorPosCallback(
+        window, [](GLFWwindow* window, double xpos, double ypos) {
+            auto* self = static_cast<CanvasWindow*>(
+                glfwGetWindowUserPointer(window));
+            self->glfwCursorPosCallback(window, xpos, ypos);
+        });
+
+           // mouse button callback
+    glfwSetMouseButtonCallback(
+        window, [](GLFWwindow* window, int button, int action, int mods) {
+            auto* self = static_cast<CanvasWindow*>(
+                glfwGetWindowUserPointer(window));
+            self->glfwMouseButtonCallback(window, button, action, mods);
+        });
+
+           // scroll callback
+    glfwSetScrollCallback(
+        window, [](GLFWwindow* window, double xoffset, double yoffset) {
+            auto* self = static_cast<CanvasWindow*>(
+                glfwGetWindowUserPointer(window));
+            self->glfwScrollCallback(window, xoffset, yoffset);
+        });
+}
+
 void CanvasWindow::glfwWindowSizeCallback(GLFWwindow*, int width, int height)
 {
     Canvas::resize(width, height);
-    this->onResize(width, height);
+    onResize(width, height);
+}
+
+void CanvasWindow::glfwKeyCallback(
+    GLFWwindow*,
+    int key,
+    int,
+    int action,
+    int mods)
+{
+    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
+    Key k = glfw::fromGLFW((glfw::Key) key);
+    if (action == GLFW_PRESS) {
+        onKeyPress(k, modifiers);
+    } else if (action == GLFW_RELEASE) {
+        onKeyRelease(k, modifiers);
+    }
+}
+
+void CanvasWindow::glfwMouseButtonCallback(
+    GLFWwindow*,
+    int button,
+    int action,
+    int mods)
+{
+    glfw::MouseButton btn = (glfw::MouseButton) button;
+
+    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
+
+    if (action == GLFW_PRESS) {
+        onMousePress(glfw::fromGLFW(btn));
+    } else if (action == GLFW_RELEASE) {
+        onMouseRelease(glfw::fromGLFW(btn));
+    }
+}
+
+void CanvasWindow::glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
+{
+    onMouseMove(xpos, ypos);
+}
+
+void CanvasWindow::glfwScrollCallback(GLFWwindow*, double xoffset, double yoffset)
+{
+    onMouseScroll(xoffset, yoffset);
 }
 
 // namespace detail

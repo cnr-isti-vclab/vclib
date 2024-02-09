@@ -68,6 +68,60 @@ void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
     MV::resizeViewer(width, height);
 }
 
+void MinimalViewerWindow::onKeyPress(Key key, KeyModifiers modifiers)
+{
+    MV::setKeyModifiers(modifiers);
+
+    switch (key) {
+    case KEY_C:
+        std::cerr << "(" << MV::camera().eye() << ") "
+                  << "(" << MV::camera().center() << ") "
+                  << "(" << MV::camera().up() << ")\n";
+        break;
+
+    default:
+        MV::keyPress(key);
+        bgfx::setViewTransform(
+            viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+        break;
+    }
+}
+
+void MinimalViewerWindow::onKeyRelease(Key key, KeyModifiers modifiers)
+{
+    MV::setKeyModifiers(modifiers);
+}
+
+void MinimalViewerWindow::onMouseMove(double x, double y)
+{
+    MV::moveMouse(x, y);
+
+    bgfx::setViewTransform(
+        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+}
+
+void MinimalViewerWindow::onMousePress(MouseButton button)
+{
+    MV::pressMouse(button);
+}
+
+
+void MinimalViewerWindow::onMouseRelease(MouseButton button)
+{
+    MV::releaseMouse(button);
+}
+
+void MinimalViewerWindow::onMouseScroll(double dx, double dy)
+{
+    const int WHEEL_STEP = 120;
+    float     notchY     = dy / float(WHEEL_STEP);
+
+    MV::wheelMouse(notchY > 0);
+
+    bgfx::setViewTransform(
+        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+}
+
 void MinimalViewerWindow::setCallbacks()
 {
     // key callback lambda

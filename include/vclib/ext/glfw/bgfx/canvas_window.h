@@ -25,11 +25,13 @@
 
 #include <vclib/ext/bgfx/canvas.h>
 
+#include <vclib/gui/event_manager_interface.h>
+
 #include <GLFW/glfw3.h>
 
 namespace vcl::bglfwx {
 
-class CanvasWindow : public vcl::bgf::Canvas
+class CanvasWindow : public vcl::bgf::Canvas, public vcl::EventManagerInterface
 {
     using Canvas = vcl::bgf::Canvas;
 
@@ -64,8 +66,19 @@ protected:
     virtual void onResize(unsigned int w, unsigned int h) {}
 
 private:
+    void setCallbacks();
+
     // callbacks
     void glfwWindowSizeCallback(GLFWwindow*, int width, int height);
+
+    // callbacks
+    void glfwKeyCallback(GLFWwindow*, int key, int, int action, int mods);
+
+    void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods);
+
+    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos);
+
+    void glfwScrollCallback(GLFWwindow*, double xoffset, double yoffset);
 };
 
 } // namespace vcl::bglfwx
