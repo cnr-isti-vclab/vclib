@@ -20,53 +20,63 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
-#define VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
+#ifndef COMMON_H
+#define COMMON_H
 
-#include <QVBoxLayout>
-#include <QWidget>
+#include <bgfx/bgfx.h>
 
-#include <vclib/ext/bgfx/canvas.h>
+#include <vclib/ext/bgfx/shader_programs/load_program.h>
+#include <vclib/space/color.h>
 
-namespace vcl::qbgf {
-
-class CanvasWidget : public QWidget, public vcl::bgf::Canvas
-{
-    using Canvas = vcl::bgf::Canvas;
-
-public:
-    explicit CanvasWidget(
-        const std::string& windowTitle,
-        uint               width  = 1024,
-        uint               height = 768,
-        QWidget*           parent = nullptr);
-
-    explicit CanvasWidget(
-        uint     width  = 1024,
-        uint     height = 768,
-        QWidget* parent = nullptr);
-
-    explicit CanvasWidget(QWidget* parent);
-
-    virtual ~CanvasWidget();
-
-    void update();
-
-protected:
-    virtual void draw() override;
-
-    virtual void onResize(unsigned int w, unsigned int h);
-
-    bool event(QEvent* event) override;
-
-    void paintEvent(QPaintEvent* event) override;
-
-    void resizeEvent(QResizeEvent* event) override;
-
-private:
-    void paint();
+struct Vertex {
+    float pos[2];
+    uint32_t abgr;
 };
 
-} // namespace vcl::qbgf
+static const Vertex vertices[] {
+    {{-1.0f, -1.0f}, vcl::Color(vcl::Color::Red).abgr()},
+    {{1.0f, -1.0f}, vcl::Color(vcl::Color::Green).abgr()},
+    {{0.0f, 1.0f}, vcl::Color(vcl::Color::Blue).abgr()},
+};
 
-#endif // VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
+inline void setUpBGFX(
+    bgfx::ViewId              viewId,
+    bgfx::VertexBufferHandle& vbh,
+    bgfx::ProgramHandle&      program)
+{
+    vcl::Color backgroundColor = vcl::Color::Black;
+
+    bgfx::setViewClear(
+        viewId,
+        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+        backgroundColor.rgba(),
+        1.0f,
+        0);
+
+    bgfx::VertexLayout layout;
+
+    layout.begin()
+        .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+        .end();
+
+    vbh = bgfx::createVertexBuffer(
+        bgfx::makeRef(vertices, sizeof(vertices)), layout);
+
+    program = vcl::bgf::loadProgram(
+        "shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
+
+    bgfx::touch(viewId);
+}
+
+inline void drawOnView(
+    bgfx::ViewId                    viewId,
+    const bgfx::VertexBufferHandle& vbh,
+    const bgfx::ProgramHandle&      program)
+{
+    bgfx::setVertexBuffer(0, vbh);
+
+    bgfx::submit(viewId, program);
+}
+
+#endif // COMMON_H

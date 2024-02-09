@@ -20,53 +20,23 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
-#define VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
+#include "minimal_viewer_qt.h"
 
-#include <QVBoxLayout>
-#include <QWidget>
+#include "common.h"
 
-#include <vclib/ext/bgfx/canvas.h>
-
-namespace vcl::qbgf {
-
-class CanvasWidget : public QWidget, public vcl::bgf::Canvas
+MinimalViewerQt::MinimalViewerQt() :
+        vcl::qbgf::CanvasWidget("Hello Triangle Qt")
 {
-    using Canvas = vcl::bgf::Canvas;
+    setUpBGFX(viewID(), vbh, program);
+}
 
-public:
-    explicit CanvasWidget(
-        const std::string& windowTitle,
-        uint               width  = 1024,
-        uint               height = 768,
-        QWidget*           parent = nullptr);
+MinimalViewerQt::~MinimalViewerQt()
+{
+    bgfx::destroy(vbh);
+    bgfx::destroy(program);
+}
 
-    explicit CanvasWidget(
-        uint     width  = 1024,
-        uint     height = 768,
-        QWidget* parent = nullptr);
-
-    explicit CanvasWidget(QWidget* parent);
-
-    virtual ~CanvasWidget();
-
-    void update();
-
-protected:
-    virtual void draw() override;
-
-    virtual void onResize(unsigned int w, unsigned int h);
-
-    bool event(QEvent* event) override;
-
-    void paintEvent(QPaintEvent* event) override;
-
-    void resizeEvent(QResizeEvent* event) override;
-
-private:
-    void paint();
-};
-
-} // namespace vcl::qbgf
-
-#endif // VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
+void MinimalViewerQt::draw()
+{
+    drawOnView(viewID(), vbh, program);
+}

@@ -21,24 +21,27 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-render-examples)
 
-option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+set(EXAMPLE_NAME 01-minimal-viewer)
+project(vclib-render-${EXAMPLE_NAME}-example)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-# examples
-if (VCLIB_BUILD_EXAMPLES)
+set(HEADERS
+    common.h)
 
-    add_subdirectory(00_hello_triangle)
-    add_subdirectory(01_minimal_viewer)
+set(SOURCES
+    main.cpp)
 
-    if (TARGET vclib-external-qglviewer)
-        add_subdirectory(qglviewer)
-    endif()
-
-    # the following examples are the same of the ones in the vclib library,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(vclib)
+if (TARGET vclib-external-qt)
+    add_compile_definitions(USE_QT)
+    list(APPEND HEADERS minimal_viewer_qt.h)
+    list(APPEND SOURCES minimal_viewer_qt.cpp)
+elseif (TARGET vclib-external-glfw)
+    add_compile_definitions(USE_GLFW)
+    list(APPEND HEADERS minimal_viewer_glfw.h)
+    list(APPEND SOURCES minimal_viewer_glfw.cpp)
 endif()
 
+vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})

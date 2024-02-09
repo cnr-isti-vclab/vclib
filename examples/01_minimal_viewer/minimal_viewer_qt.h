@@ -20,53 +20,24 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
-#define VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
+#ifndef MINIMAL_VIEWER_QT_H
+#define MINIMAL_VIEWER_QT_H
 
-#include <QVBoxLayout>
-#include <QWidget>
+#include <vclib/ext/qt/bgfx/canvas_widget.h>
 
-#include <vclib/ext/bgfx/canvas.h>
-
-namespace vcl::qbgf {
-
-class CanvasWidget : public QWidget, public vcl::bgf::Canvas
+class MinimalViewerQt : public vcl::qbgf::CanvasWidget
 {
-    using Canvas = vcl::bgf::Canvas;
-
 public:
-    explicit CanvasWidget(
-        const std::string& windowTitle,
-        uint               width  = 1024,
-        uint               height = 768,
-        QWidget*           parent = nullptr);
+    MinimalViewerQt();
 
-    explicit CanvasWidget(
-        uint     width  = 1024,
-        uint     height = 768,
-        QWidget* parent = nullptr);
+    ~MinimalViewerQt();
 
-    explicit CanvasWidget(QWidget* parent);
-
-    virtual ~CanvasWidget();
-
-    void update();
-
-protected:
-    virtual void draw() override;
-
-    virtual void onResize(unsigned int w, unsigned int h);
-
-    bool event(QEvent* event) override;
-
-    void paintEvent(QPaintEvent* event) override;
-
-    void resizeEvent(QResizeEvent* event) override;
+    void draw() override;
 
 private:
-    void paint();
+    bgfx::VertexBufferHandle vbh;
+
+    bgfx::ProgramHandle program;
 };
 
-} // namespace vcl::qbgf
-
-#endif // VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
+#endif // MINIMAL_VIEWER_QT_H

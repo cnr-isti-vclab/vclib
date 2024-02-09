@@ -49,7 +49,7 @@ namespace vcl::bgf {
  * issued.
  *
  * The bgfx rendering code should be implemented in the virtual member function
- * draw(uint viewID), that can be reimplemented in the derived classes. This
+ * draw(uint viewID), that must be reimplemented in the derived classes. This
  * method is called by the frame() method (that must be called in the render
  * loop), and its argument is the bgfx view ID.
  *
@@ -81,14 +81,14 @@ public:
 
     bgfx::ViewId viewID() const { return view; }
 
-    virtual void draw() = 0;
-
     void screenShot(
         const std::string& filename,
         uint               width  = 0,
         uint               height = 0);
 
 protected:
+    virtual void draw() = 0;
+
     void frame();
 
     void resize(uint width, uint height);
