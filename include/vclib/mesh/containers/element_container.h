@@ -942,8 +942,7 @@ private:
                 {
                     T& e = element(i);
                     if (!e.deleted()) {
-                        e.Comp::updatePointers(
-                            oldBase, newBase, firstElementToProcess);
+                        e.Comp::updatePointers(oldBase, newBase, offset);
                     }
                 }
             };
