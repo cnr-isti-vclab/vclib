@@ -28,15 +28,16 @@
 #include <vclib/ext/bgfx/shader_programs/load_program.h>
 #include <vclib/space/color.h>
 
-struct Vertex {
-    float pos[2];
+struct Vertex
+{
+    float    pos[2];
     uint32_t abgr;
 };
 
 static const Vertex vertices[] {
-    {{-1.0f, -1.0f}, vcl::Color(vcl::Color::Red).abgr()},
-    {{1.0f, -1.0f}, vcl::Color(vcl::Color::Green).abgr()},
-    {{0.0f, 1.0f}, vcl::Color(vcl::Color::Blue).abgr()},
+    {{-1.0f, -1.0f}, vcl::Color(vcl::Color::Red).abgr()  },
+    {{1.0f, -1.0f},  vcl::Color(vcl::Color::Green).abgr()},
+    {{0.0f, 1.0f},   vcl::Color(vcl::Color::Blue).abgr() },
 };
 
 inline void setUpBGFX(

@@ -21,8 +21,8 @@
  ****************************************************************************/
 
 #ifdef USE_QT
-#include <QApplication>
 #include "hello_triangle_qt.h"
+#include <QApplication>
 #elif USE_GLFW
 #include "hello_triangle_glfw.h"
 #endif
@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 {
 #ifdef USE_QT
     QApplication app(argc, argv);
-    
+
     HelloTriangleQt tw;
 
     tw.show();
