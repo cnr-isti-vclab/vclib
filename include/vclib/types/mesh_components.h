@@ -27,7 +27,8 @@
 
 namespace vcl {
 
-struct CompId {
+struct CompId
+{
     enum Enum {
         BIT_FLAGS = 0,
         COORDINATE,
@@ -56,8 +57,8 @@ struct CompId {
 
 inline static constexpr uint COMPONENTS_NUMBER = 19;
 
-inline static constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] =
-    {
+inline static constexpr const char*
+    COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
         "BitFlags",
         "Coordinate",
         "Normal",

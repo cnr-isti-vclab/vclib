@@ -247,9 +247,9 @@ void importMeshFromVCGMesh(
                 // the custom components of the type T that are in the vcgMesh
                 vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
                     [&vertex, &vcgMesh, vi]<typename T>() {
-                        detail::
-                            importCustomComponentsOfTypeFromVCGMesh<ElemId::VERTEX, T>(
-                                vertex, vcgMesh, vi);
+                        detail::importCustomComponentsOfTypeFromVCGMesh<
+                            ElemId::VERTEX,
+                            T>(vertex, vcgMesh, vi);
                     });
             }
         }
@@ -265,8 +265,9 @@ void importMeshFromVCGMesh(
             // custom components of the type T that are in the vcgMesh
             vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
                 [&mesh, &vcgMesh]<typename T>() {
-                    detail::addCustomComponentsOfTypeFromVCGMesh<ElemId::FACE, T>(
-                        mesh, vcgMesh);
+                    detail::
+                        addCustomComponentsOfTypeFromVCGMesh<ElemId::FACE, T>(
+                            mesh, vcgMesh);
                 });
         }
 
@@ -377,20 +378,18 @@ void importMeshFromVCGMesh(
     if constexpr (HasCustomComponents<MeshType>) {
         // for each supported type, apply the lampda function that adds the
         // custom components of the type T that are in the vcgMesh
-        vcl::ForEachType<
-            detail::SupportedCustomComponentTypes>::apply([&mesh,
-                                                           &vcgMesh]<
-                                                              typename T>() {
-            // ELEMENTS_NUMBER is used here to indicate the custom
-            // components of the mesh
-            detail::addCustomComponentsOfTypeFromVCGMesh<
-                ElemId::ELEMENTS_NUMBER,
-                T>(mesh, vcgMesh);
+        vcl::ForEachType<detail::SupportedCustomComponentTypes>::apply(
+            [&mesh, &vcgMesh]<typename T>() {
+                // ELEMENTS_NUMBER is used here to indicate the custom
+                // components of the mesh
+                detail::addCustomComponentsOfTypeFromVCGMesh<
+                    ElemId::ELEMENTS_NUMBER,
+                    T>(mesh, vcgMesh);
 
-            detail::importCustomComponentsOfTypeFromVCGMesh<
-                ElemId::ELEMENTS_NUMBER,
-                T>(mesh, vcgMesh, 0);
-        });
+                detail::importCustomComponentsOfTypeFromVCGMesh<
+                    ElemId::ELEMENTS_NUMBER,
+                    T>(mesh, vcgMesh, 0);
+            });
     }
 }
 

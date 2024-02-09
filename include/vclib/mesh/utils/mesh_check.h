@@ -47,7 +47,7 @@ void checkParentMeshPointers(const MeshType& mesh)
     }
 }
 
-template<MeshConcept MeshType, typename ...Containers>
+template<MeshConcept MeshType, typename... Containers>
 void checkParentMeshPointers(const MeshType& mesh, TypeWrapper<Containers...>)
 {
     (checkParentMeshPointers<Containers::ElementType::ELEMENT_ID>(mesh), ...);
@@ -113,7 +113,11 @@ void checkElementPointersInElementContainerOnComponent(
     }
 }
 
-template<uint ELEM_ID, MeshConcept MeshType, typename ElemType, typename... Comps>
+template<
+    uint        ELEM_ID,
+    MeshConcept MeshType,
+    typename ElemType,
+    typename... Comps>
 void checkElementPointersInElementContainerOnComponents(
     const MeshType& mesh,
     const ElemType* first,
@@ -133,7 +137,7 @@ void checkElementPointersInElementContainer(
     const ElemType* first,
     const ElemType* last)
 {
-    using ThisElemType = MeshType::template ElementType<ELEM_ID>;
+    using ThisElemType       = MeshType::template ElementType<ELEM_ID>;
     using ThisElemComponents = ThisElemType::Components;
 
     // for the ELEM_ID container, check the pointers of the ElemType
@@ -150,17 +154,17 @@ void checkElementPointers(const MeshType& mesh, TypeWrapper<Containers...>)
     using ElemType = MeshType::template ElementType<ELEM_ID>;
 
     const ElemType* first = &mesh.template element<ELEM_ID>(0);
-    uint size = mesh.template containerSize<ELEM_ID>();
-    const ElemType* last = first + size;
+    uint            size  = mesh.template containerSize<ELEM_ID>();
+    const ElemType* last  = first + size;
 
     // now, for each Container, I need to check whether the pointers to
     // ElemType* are in the right range
-    (checkElementPointersInElementContainer<Containers::ElementType::ELEMENT_ID>(
-         mesh, first, last),
+    (checkElementPointersInElementContainer<
+         Containers::ElementType::ELEMENT_ID>(mesh, first, last),
      ...);
 }
 
-template<MeshConcept MeshType, typename ...Containers>
+template<MeshConcept MeshType, typename... Containers>
 void checkMeshPointers(const MeshType& mesh, TypeWrapper<Containers...>)
 {
     (checkElementPointers<Containers::ElementType::ELEMENT_ID>(

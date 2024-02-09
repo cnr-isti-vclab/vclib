@@ -29,7 +29,8 @@
 
 namespace vcl {
 
-struct ElemId {
+struct ElemId
+{
     enum Enum : uint {
         VERTEX = 0,
         FACE,

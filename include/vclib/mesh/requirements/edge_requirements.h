@@ -353,7 +353,8 @@ bool isPerEdgeQualityAvailable(const MeshType& m)
 template<EdgeMeshConcept MeshType>
 bool enableIfPerEdgeQualityOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::EDGE, CompId::QUALITY>(m);
+    return enableIfPerElementComponentOptional<ElemId::EDGE, CompId::QUALITY>(
+        m);
 }
 
 /*********************

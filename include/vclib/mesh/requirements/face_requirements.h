@@ -474,7 +474,8 @@ bool isPerFaceQualityAvailable(const MeshType& m)
 template<FaceMeshConcept MeshType>
 bool enableIfPerFaceQualityOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::FACE, CompId::QUALITY>(m);
+    return enableIfPerElementComponentOptional<ElemId::FACE, CompId::QUALITY>(
+        m);
 }
 
 // Face WedgeColors

@@ -100,7 +100,8 @@ bool isPerVertexColorAvailable(const MeshType& m)
 template<MeshConcept MeshType>
 bool enableIfPerVertexColorOptional(MeshType& m)
 {
-    return enableIfPerElementComponentOptional<ElemId::VERTEX, CompId::COLOR>(m);
+    return enableIfPerElementComponentOptional<ElemId::VERTEX, CompId::COLOR>(
+        m);
 }
 
 template<MeshConcept MeshType>

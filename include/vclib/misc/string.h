@@ -25,8 +25,8 @@
 
 #include <algorithm>
 #include <cctype>
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace vcl {
 
@@ -70,7 +70,7 @@ std::string toString(T val)
 {
     // if T is a pointer
     if constexpr (std::is_pointer_v<T>) {
-        const void * address = static_cast<const void*>(val);
+        const void*       address = static_cast<const void*>(val);
         std::stringstream ss;
         ss << address;
         return ss.str();

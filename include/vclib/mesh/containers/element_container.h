@@ -935,9 +935,8 @@ private:
         uint         offset                = 0)
     {
         if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
-
             // lambda to avoid code duplication
-            auto loop= [&]() {
+            auto loop = [&]() {
                 for (uint i = firstElementToProcess; i < elementContainerSize();
                      i++)
                 {

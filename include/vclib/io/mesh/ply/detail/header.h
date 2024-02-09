@@ -112,7 +112,7 @@ public:
                                 ++token;
                                 if (token != spaceTokenizer.end()) {
                                     std::string textName = *token;
-                                    auto it = vcl::findCaseInsensitive(
+                                    auto        it = vcl::findCaseInsensitive(
                                         textName, "<this>");
                                     if (it != textName.end()) {
                                         uint        pos = it - textName.begin();
