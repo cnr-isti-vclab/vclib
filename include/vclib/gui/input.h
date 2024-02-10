@@ -27,16 +27,18 @@
 
 namespace vcl {
 
-struct MouseButton {
-     enum Enum {
+struct MouseButton
+{
+    enum Enum {
         LEFT      = 0,
         RIGHT     = 1,
         MIDDLE    = 2,
         NO_BUTTON = 3,
-     };
+    };
 };
 
-struct KeyModifier {
+struct KeyModifier
+{
     enum Enum {
         SHIFT       = 0,
         CONTROL     = 1,
@@ -47,7 +49,8 @@ struct KeyModifier {
 
 using KeyModifiers = BitSet<char>;
 
-struct Key {
+struct Key
+{
     enum Enum {
         SPACE = 0x20,
 
@@ -107,16 +110,16 @@ struct Key {
         F11 = 0x0100003a,
         F12 = 0x0100003b,
 
-        NP_0  = 0x010000a2,
-        NP_1  = 0x010000a3,
-        NP_2  = 0x010000a4,
-        NP_3  = 0x010000a5,
-        NP_4  = 0x010000a6,
-        NP_5  = 0x010000a7,
-        NP_6  = 0x010000a8,
-        NP_7  = 0x010000a9,
-        NP_8  = 0x010000aa,
-        NP_9  = 0x010000ab,
+        NP_0 = 0x010000a2,
+        NP_1 = 0x010000a3,
+        NP_2 = 0x010000a4,
+        NP_3 = 0x010000a5,
+        NP_4 = 0x010000a6,
+        NP_5 = 0x010000a7,
+        NP_6 = 0x010000a8,
+        NP_7 = 0x010000a9,
+        NP_8 = 0x010000aa,
+        NP_9 = 0x010000ab,
 
         UNKNOWN = 0x01ffffff
     };

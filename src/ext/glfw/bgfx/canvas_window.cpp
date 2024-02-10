@@ -142,34 +142,34 @@ void CanvasWindow::setCallbacks()
     // key callback lambda
     auto keyCB =
         [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-            auto* self = static_cast<CanvasWindow*>(
-                glfwGetWindowUserPointer(window));
+            auto* self =
+                static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwKeyCallback(window, key, scancode, action, mods);
         };
 
     glfwSetKeyCallback(window, keyCB);
 
-           // mouse position callback
+    // mouse position callback
     glfwSetCursorPosCallback(
         window, [](GLFWwindow* window, double xpos, double ypos) {
-            auto* self = static_cast<CanvasWindow*>(
-                glfwGetWindowUserPointer(window));
+            auto* self =
+                static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwCursorPosCallback(window, xpos, ypos);
         });
 
-           // mouse button callback
+    // mouse button callback
     glfwSetMouseButtonCallback(
         window, [](GLFWwindow* window, int button, int action, int mods) {
-            auto* self = static_cast<CanvasWindow*>(
-                glfwGetWindowUserPointer(window));
+            auto* self =
+                static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwMouseButtonCallback(window, button, action, mods);
         });
 
-           // scroll callback
+    // scroll callback
     glfwSetScrollCallback(
         window, [](GLFWwindow* window, double xoffset, double yoffset) {
-            auto* self = static_cast<CanvasWindow*>(
-                glfwGetWindowUserPointer(window));
+            auto* self =
+                static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwScrollCallback(window, xoffset, yoffset);
         });
 }
@@ -188,10 +188,11 @@ void CanvasWindow::glfwKeyCallback(
     int mods)
 {
     KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
-    Key::Enum k = glfw::fromGLFW((glfw::Key) key);
+    Key::Enum    k         = glfw::fromGLFW((glfw::Key) key);
     if (action == GLFW_PRESS) {
         onKeyPress(k, modifiers);
-    } else if (action == GLFW_RELEASE) {
+    }
+    else if (action == GLFW_RELEASE) {
         onKeyRelease(k, modifiers);
     }
 }
@@ -206,7 +207,8 @@ void CanvasWindow::glfwMouseButtonCallback(
 
     if (action == GLFW_PRESS) {
         onMousePress(glfw::fromGLFW(btn));
-    } else if (action == GLFW_RELEASE) {
+    }
+    else if (action == GLFW_RELEASE) {
         onMouseRelease(glfw::fromGLFW(btn));
     }
 }
@@ -216,7 +218,10 @@ void CanvasWindow::glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
     onMouseMove(xpos, ypos);
 }
 
-void CanvasWindow::glfwScrollCallback(GLFWwindow*, double xoffset, double yoffset)
+void CanvasWindow::glfwScrollCallback(
+    GLFWwindow*,
+    double xoffset,
+    double yoffset)
 {
     onMouseScroll(xoffset, yoffset);
 }

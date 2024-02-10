@@ -21,8 +21,8 @@
  ****************************************************************************/
 
 #ifdef USE_QT
-#include <QApplication>
 #include "minimal_viewer_qt.h"
+#include <QApplication>
 #elif USE_GLFW
 #include "minimal_viewer_glfw.h"
 #endif
@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 {
 #ifdef USE_QT
     QApplication app(argc, argv);
-    
+
     MinimalViewerQt tw;
 
     tw.show();
