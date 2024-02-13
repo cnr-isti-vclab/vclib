@@ -27,7 +27,7 @@
 MinimalViewerGLFW::MinimalViewerGLFW() :
         vcl::bglfwx::CanvasWindow("Minimal Viewer GLFW")
 {
-    setUpBGFX(viewID(), vbh, program);
+    setUpBGFX(viewId(), vbh, program);
 }
 
 MinimalViewerGLFW::~MinimalViewerGLFW()
@@ -38,5 +38,5 @@ MinimalViewerGLFW::~MinimalViewerGLFW()
 
 void MinimalViewerGLFW::draw()
 {
-    drawOnView(viewID(), vbh, program);
+    drawOnView(viewId(), vbh, program);
 }

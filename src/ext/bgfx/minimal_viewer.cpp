@@ -23,7 +23,7 @@
 #include <vclib/ext/bgfx/minimal_viewer.h>
 
 #include <vclib/math/min_max.h>
-#include <vclib/render/generic_drawable_mesh.h>
+#include <vclib/render/interfaces/drawable_mesh_i.h>
 #include <vclib/space/box.h>
 
 namespace vcl::bgf {
@@ -58,7 +58,7 @@ void MinimalViewer::setDrawableObjectVector(
     for (DrawableObjectI* obj : *drawList) {
         obj->init();
 
-        GenericDrawableMesh* mesh = dynamic_cast<GenericDrawableMesh*>(obj);
+        DrawableMeshI* mesh = dynamic_cast<DrawableMeshI*>(obj);
         if (mesh) {
             mesh->setShaderProgram(meshProgram);
         }
@@ -74,10 +74,10 @@ void MinimalViewer::fitScene()
     DTB::setTrackBall(sceneCenter, sceneRadius);
 }
 
-void MinimalViewer::draw(uint viewID)
+void MinimalViewer::draw(uint viewId)
 {
     bgfx::setViewTransform(
-        viewID, viewMatrix().data(), projectionMatrix().data());
+        viewId, viewMatrix().data(), projectionMatrix().data());
 
     cameraUniforms.updateCamera(DTB::camera());
     cameraUniforms.bind();
@@ -85,10 +85,10 @@ void MinimalViewer::draw(uint viewID)
     directionalLightUniforms.bind();
 
     for (DrawableObjectI* obj : *drawList)
-        obj->draw(viewID);
+        obj->draw(viewId);
 
     if (axis.isVisible()) {
-        axis.draw(viewID);
+        axis.draw(viewId);
     }
 }
 

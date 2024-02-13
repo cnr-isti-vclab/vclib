@@ -70,7 +70,7 @@ public:
 
     // DrawableObject interface
 
-    void draw(uint viewID) override;
+    void draw(uint viewId) override;
 
     Point3d center() const override { return Point3d(); };
 

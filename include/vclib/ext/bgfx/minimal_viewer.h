@@ -66,7 +66,7 @@ public:
 
     void fitScene();
 
-    void draw(uint viewID);
+    void draw(uint viewId);
 
     void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }
 

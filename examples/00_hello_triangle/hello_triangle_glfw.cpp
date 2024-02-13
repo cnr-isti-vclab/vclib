@@ -27,7 +27,7 @@
 HelloTriangleGLFW::HelloTriangleGLFW() :
         vcl::bglfwx::CanvasWindow("Hello Triangle GLFW")
 {
-    setUpBGFX(viewID(), vbh, program);
+    setUpBGFX(viewId(), vbh, program);
 }
 
 HelloTriangleGLFW::~HelloTriangleGLFW()
@@ -38,5 +38,5 @@ HelloTriangleGLFW::~HelloTriangleGLFW()
 
 void HelloTriangleGLFW::draw()
 {
-    drawOnView(viewID(), vbh, program);
+    drawOnView(viewId(), vbh, program);
 }

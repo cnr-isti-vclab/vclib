@@ -30,9 +30,9 @@ Canvas::Canvas()
 {
 }
 
-Canvas::Canvas(void* winID, uint width, uint height, void* displayID)
+Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
 {
-    init(winID, width, height, displayID);
+    init(winId, width, height, displayId);
 }
 
 Canvas::Canvas(void* winID, uint width, uint height)
@@ -47,13 +47,13 @@ Canvas::~Canvas()
     Context::releaseViewId(view);
 }
 
-void Canvas::init(void* winID, uint width, uint height, void* displayID)
+void Canvas::init(void* winId, uint width, uint height, void* displayId)
 {
-    this->winID = winID;
+    this->winID = winId;
 
     view = Context::requestViewId();
 
-    fbh = bgfx::createFrameBuffer(winID, width, height);
+    fbh = bgfx::createFrameBuffer(winId, width, height);
 
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::setViewClear(
@@ -62,9 +62,9 @@ void Canvas::init(void* winID, uint width, uint height, void* displayID)
     bgfx::touch(view);
 }
 
-void Canvas::init(void* winID, uint width, uint height)
+void Canvas::init(void* winId, uint width, uint height)
 {
-    init(winID, width, height, nullptr);
+    init(winId, width, height, nullptr);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -105,7 +105,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 void Canvas::frame()
 {
     bgfx::setViewFrameBuffer(view, fbh);
-    // bgfx::touch(viewID);
+    // bgfx::touch(view);
     draw();
     bgfx::frame();
 }

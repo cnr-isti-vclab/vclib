@@ -60,7 +60,7 @@ MinimalViewerWindow::MinimalViewerWindow(uint width, uint height) :
 
 void MinimalViewerWindow::draw()
 {
-    MV::draw(viewID());
+    MV::draw(viewId());
 }
 
 void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
@@ -82,7 +82,7 @@ void MinimalViewerWindow::onKeyPress(Key::Enum key, KeyModifiers modifiers)
     default:
         MV::keyPress(key);
         bgfx::setViewTransform(
-            viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+            viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
         break;
     }
 }
@@ -97,7 +97,7 @@ void MinimalViewerWindow::onMouseMove(double x, double y)
     MV::moveMouse(x, y);
 
     bgfx::setViewTransform(
-        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
 void MinimalViewerWindow::onMousePress(MouseButton::Enum button)
@@ -118,7 +118,7 @@ void MinimalViewerWindow::onMouseScroll(double dx, double dy)
     MV::wheelMouse(notchY > 0);
 
     bgfx::setViewTransform(
-        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
 void MinimalViewerWindow::setCallbacks()

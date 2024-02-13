@@ -27,7 +27,7 @@
 MinimalViewerQt::MinimalViewerQt() :
         vcl::qbgf::CanvasWidget("Hello Triangle Qt")
 {
-    setUpBGFX(viewID(), vbh, program);
+    setUpBGFX(viewId(), vbh, program);
 }
 
 MinimalViewerQt::~MinimalViewerQt()
@@ -38,5 +38,5 @@ MinimalViewerQt::~MinimalViewerQt()
 
 void MinimalViewerQt::draw()
 {
-    drawOnView(viewID(), vbh, program);
+    drawOnView(viewId(), vbh, program);
 }

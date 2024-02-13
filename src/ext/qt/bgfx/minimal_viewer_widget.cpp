@@ -61,14 +61,14 @@ MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) :
 
 void MinimalViewerWidget::draw()
 {
-    MV::draw(viewID());
+    MV::draw(viewId());
 }
 
 void MinimalViewerWidget::onResize(unsigned int width, unsigned int height)
 {
     MV::resizeViewer(width, height);
     bgfx::setViewTransform(
-        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
 void MinimalViewerWidget::onKeyPress(Key::Enum key, KeyModifiers modifiers)
@@ -97,7 +97,7 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key, KeyModifiers modifiers)
     default:
         MV::keyPress(key);
         bgfx::setViewTransform(
-            viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+            viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
         break;
     }
 
@@ -115,7 +115,7 @@ void MinimalViewerWidget::onMouseMove(double x, double y)
     MV::moveMouse(x, y);
 
     bgfx::setViewTransform(
-        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 
     update();
 }
@@ -138,7 +138,7 @@ void MinimalViewerWidget::onMouseScroll(double dx, double dy)
     MV::wheelMouse(notchY > 0);
 
     bgfx::setViewTransform(
-        viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 
     update();
 }

@@ -23,13 +23,13 @@
 #ifndef VCL_EXT_BGFX_SHADER_PROGRAMS_DRAWABLE_MESH_SHADER_PROGRAM_H
 #define VCL_EXT_BGFX_SHADER_PROGRAMS_DRAWABLE_MESH_SHADER_PROGRAM_H
 
-#include <vclib/render/generic_drawable_mesh_shader_program.h>
+#include <vclib/render/interfaces/shader_program_i.h>
 
 #include "load_program.h"
 
 namespace vcl::bgf {
 
-class DrawableMeshShaderProgram : public GenericDrawableMeshShaderProgram
+class DrawableMeshShaderProgram : public ShaderProgramI
 {
     bgfx::ProgramHandle p = BGFX_INVALID_HANDLE;
 

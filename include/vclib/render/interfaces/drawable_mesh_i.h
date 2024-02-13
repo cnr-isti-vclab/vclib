@@ -20,17 +20,38 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_GENERIC_DRAWABLE_MESH_SHADER_PROGRAM_H
-#define VCL_RENDER_GENERIC_DRAWABLE_MESH_SHADER_PROGRAM_H
+#ifndef VCL_RENDER_INTERFACES_DRAWABLE_MESH_I_H
+#define VCL_RENDER_INTERFACES_DRAWABLE_MESH_I_H
+
+#include "drawable_object_i.h"
+#include "../mesh_render_settings.h"
 
 namespace vcl {
 
-class GenericDrawableMeshShaderProgram
+class DrawableMeshI : public vcl::DrawableObjectI
 {
+protected:
+    MeshRenderSettings mrs;
+
 public:
-    virtual ~GenericDrawableMeshShaderProgram() = default;
+    DrawableMeshI() = default;
+
+    template<MeshConcept MeshType>
+    DrawableMeshI(const MeshType& m) : mrs(m)
+    {
+    }
+
+    const MeshRenderSettings& renderSettings() const { return mrs; }
+
+    virtual void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
+
+    // DrawableObject implementation
+
+    inline bool isVisible() const { return mrs.isVisible(); }
+
+    inline void setVisibility(bool vis) { mrs.setVisibility(vis); }
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_GENERIC_DRAWABLE_MESH_SHADER_PROGRAM_H
+#endif // VCL_RENDER_INTERFACES_DRAWABLE_MESH_I_H

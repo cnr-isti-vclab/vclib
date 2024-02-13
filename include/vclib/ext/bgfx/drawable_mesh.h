@@ -25,7 +25,7 @@
 
 #include <bgfx/bgfx.h>
 
-#include <vclib/render/generic_drawable_mesh.h>
+#include <vclib/render/interfaces/drawable_mesh_i.h>
 
 #include "mesh_render_buffers.h"
 #include "shader_programs/drawable_mesh_shader_program.h"
@@ -35,9 +35,9 @@
 namespace vcl::bgf {
 
 template<MeshConcept MeshType>
-class DrawableMesh : public GenericDrawableMesh
+class DrawableMesh : public DrawableMeshI
 {
-    using Base = GenericDrawableMesh;
+    using Base = DrawableMeshI;
 
     MeshRenderBuffers<MeshType> mrb;
 
@@ -69,9 +69,11 @@ public:
         meshUniforms.update(mrb);
     }
 
-    // GenericDrawableMesh implementation
+    // DrawableObject implementation
 
-    virtual void setShaderProgram(const GenericDrawableMeshShaderProgram& p)
+    void init() {}
+
+    virtual void setShaderProgram(const ShaderProgramI& p)
     {
         const DrawableMeshShaderProgram* ptr =
             dynamic_cast<const DrawableMeshShaderProgram*>(&p);
@@ -80,11 +82,7 @@ public:
         }
     };
 
-    // DrawableObject implementation
-
-    void init() {}
-
-    void draw(uint viewID)
+    void draw(uint viewId)
     {
         if (bgfx::isValid(program)) {
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
@@ -96,7 +94,7 @@ public:
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
-                bgfx::submit(viewID, program);
+                bgfx::submit(viewId, program);
             }
 
             if (mrs.isSurfaceVisible()) {
@@ -106,7 +104,7 @@ public:
 
                 bgfx::setState(state);
 
-                bgfx::submit(viewID, program);
+                bgfx::submit(viewId, program);
             }
 
             if (mrs.isWireframeVisible()) {
@@ -116,7 +114,7 @@ public:
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(viewID, program);
+                bgfx::submit(viewId, program);
             }
         }
     }
@@ -129,13 +127,13 @@ public:
 
     void setVisibility(bool vis)
     {
-        GenericDrawableMesh::setVisibility(vis);
+        DrawableMeshI::setVisibility(vis);
         meshRenderSettingsUniforms.updateSettings(mrs);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs)
     {
-        GenericDrawableMesh::setRenderSettings(rs);
+        DrawableMeshI::setRenderSettings(rs);
         meshRenderSettingsUniforms.updateSettings(rs);
     }
 

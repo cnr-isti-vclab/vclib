@@ -50,7 +50,7 @@ public:
     void fitScene();
 
 protected:
-    // QGLViever function, does not require a viewID
+    // QGLViever function, does not require a viewId
     virtual void draw();
 };
 

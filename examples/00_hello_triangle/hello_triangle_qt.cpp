@@ -27,7 +27,7 @@
 HelloTriangleQt::HelloTriangleQt() :
         vcl::qbgf::CanvasWidget("Hello Triangle Qt")
 {
-    setUpBGFX(viewID(), vbh, program);
+    setUpBGFX(viewId(), vbh, program);
 }
 
 HelloTriangleQt::~HelloTriangleQt()
@@ -38,5 +38,5 @@ HelloTriangleQt::~HelloTriangleQt()
 
 void HelloTriangleQt::draw()
 {
-    drawOnView(viewID(), vbh, program);
+    drawOnView(viewId(), vbh, program);
 }

@@ -23,7 +23,15 @@
 #ifndef VCL_RENDER_INTERFACES_SHADER_PROGRAM_I_H
 #define VCL_RENDER_INTERFACES_SHADER_PROGRAM_I_H
 
+#include <vclib/types/base.h>
+
 namespace vcl {
+
+class ShaderProgramI
+{
+public:
+    virtual ~ShaderProgramI() = default;
+};
 
 } // namespace vcl
 

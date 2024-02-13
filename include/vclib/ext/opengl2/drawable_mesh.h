@@ -35,7 +35,7 @@
 
 #include <iostream>
 
-#include <vclib/render/generic_drawable_mesh.h>
+#include <vclib/render/interfaces/drawable_mesh_i.h>
 #include <vclib/render/mesh_render_buffers.h>
 
 #include "draw_objects3.h"
@@ -77,7 +77,7 @@ inline void _check_gl_error(const char* file, int line)
 #define check_gl_error() _check_gl_error(__FILE__, __LINE__)
 
 template<MeshConcept MeshType>
-class DrawableMesh : public GenericDrawableMesh
+class DrawableMesh : public DrawableMeshI
 {
     MeshRenderBuffers<MeshType> mrb;
 

@@ -49,14 +49,13 @@ set(HEADERS
     include/vclib/gui/native_window_handle.h
     include/vclib/render/camera.h
     include/vclib/render/drawable_object_vector.h
-    include/vclib/render/generic_drawable_mesh.h
-    include/vclib/render/generic_drawable_mesh_shader_program.h
     include/vclib/render/lights.h
     include/vclib/render/matrix.h
     include/vclib/render/mesh_render_buffers.h
     include/vclib/render/mesh_render_settings.h
     include/vclib/render/mesh_render_settings_macros.h
     include/vclib/render/trackball.h
+    include/vclib/render/interfaces/drawable_mesh_i.h
     include/vclib/render/interfaces/drawable_object_i.h
     include/vclib/render/interfaces/shader_program_i.h
     include/vclib/render/lights/directional_light.h)

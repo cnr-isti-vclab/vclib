@@ -43,7 +43,7 @@ void DrawableAxis::setShaderProgram(const DrawableAxisShaderProgram& sp)
     program = sp.getProgram();
 }
 
-void DrawableAxis::draw(uint viewID)
+void DrawableAxis::draw(uint viewId)
 {
     if (isVisible()) {
         if (bgfx::isValid(program)) {
@@ -63,7 +63,7 @@ void DrawableAxis::draw(uint viewID)
 
                     bgfx::setTransform(matrices[i].data());
 
-                    bgfx::submit(viewID, program);
+                    bgfx::submit(viewId, program);
                 }
             }
         }

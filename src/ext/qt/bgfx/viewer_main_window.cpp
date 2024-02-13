@@ -23,7 +23,7 @@
 #include "ext/qt/bgfx/ui_viewer_main_window.h"
 #include <vclib/ext/qt/bgfx/viewer_main_window.h>
 
-#include <vclib/render/generic_drawable_mesh.h>
+#include <vclib/render/interfaces/drawable_mesh_i.h>
 
 namespace vcl::qbgf {
 
@@ -105,8 +105,8 @@ void ViewerMainWindow::setDrawableObjectVector(
     ui->drawVectorFrame->setDrawableObjectVector(drawVector);
     if (drawVector->size() > 0) {
         try {
-            GenericDrawableMesh& m =
-                dynamic_cast<GenericDrawableMesh&>(drawVector->at(0));
+            DrawableMeshI& m =
+                dynamic_cast<DrawableMeshI&>(drawVector->at(0));
             ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
             ui->renderSettingsFrame->setVisible(true);
         }
@@ -145,10 +145,10 @@ void ViewerMainWindow::visibilityDrawableObjectChanged()
     // get the selected drawable object
     uint i = ui->drawVectorFrame->selectedDrawableObject();
     try {
-        // if it is a GenericDrawableMesh, we must be sure that its render
+        // if it is a DrawableMeshI, we must be sure that its render
         // settings are updated accordingly.
-        GenericDrawableMesh& m =
-            dynamic_cast<GenericDrawableMesh&>(drawVector->at(i));
+        DrawableMeshI& m =
+            dynamic_cast<DrawableMeshI&>(drawVector->at(i));
         ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
     }
     catch (std::bad_cast exp) {
@@ -165,9 +165,9 @@ void ViewerMainWindow::selectedDrawableObjectChanged(uint i)
 {
     try {
         // take the newly selected DrawableObject and check whether it is a
-        // GenericDrawableMesh
-        GenericDrawableMesh& m =
-            dynamic_cast<GenericDrawableMesh&>(drawVector->at(i));
+        // DrawableMeshI
+        DrawableMeshI& m =
+            dynamic_cast<DrawableMeshI&>(drawVector->at(i));
         // if it is a GenericDrawableMesh, update the RenderSettingsFrame, and
         // set it visible
         ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
@@ -192,11 +192,11 @@ void ViewerMainWindow::renderSettingsUpdated()
     // The user changed the RenderSettings of the ith object.
     uint i = ui->drawVectorFrame->selectedDrawableObject();
     if (drawVector->size() > 0) {
-        // The selected object must always be a GenericDrawableMesh, because the
+        // The selected object must always be a DrawableMeshI, because the
         // RenderSettingsFrame (which called this member function) is visible
-        // only when the selected Object is a GenericDrawableMesh
-        GenericDrawableMesh& m =
-            dynamic_cast<GenericDrawableMesh&>(drawVector->at(i));
+        // only when the selected Object is a DrawableMeshI
+        DrawableMeshI& m =
+            dynamic_cast<DrawableMeshI&>(drawVector->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // GenericDrawableMesh
         m.setRenderSettings(ui->renderSettingsFrame->meshRenderSettings());

@@ -25,6 +25,8 @@
 
 #include <vclib/space/point.h>
 
+#include "shader_program_i.h"
+
 namespace vcl {
 
 /**
@@ -36,7 +38,7 @@ namespace vcl {
  *
  * A class that inherits from DrawableObject must implement the following member
  * functions:
- * - draw(uint viewID);
+ * - draw(uint viewId);
  * - center();
  * - radius();
  * - clone();
@@ -67,14 +69,16 @@ public:
      */
     virtual void init() {};
 
+    virtual void setShaderProgram(const ShaderProgramI&) {}
+
     /**
      * @brief This member function must draw the object.
      * It will be called at every frame.
      *
-     * @param viewID The ID of the view to draw. It may be used depending on the
+     * @param viewId The ID of the view to draw. It may be used depending on the
      * rendering engine.
      */
-    virtual void draw(uint viewID = 0) = 0;
+    virtual void draw(uint viewId = 0) = 0;
 
     /**
      * @brief This member function is used to find a good camera position
