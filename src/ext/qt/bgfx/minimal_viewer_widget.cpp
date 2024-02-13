@@ -141,7 +141,6 @@ void MinimalViewerWidget::onMouseScroll(double dx, double dy)
         viewID(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 
     update();
-
 }
 
 } // namespace vcl::qbgf
