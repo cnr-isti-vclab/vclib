@@ -55,7 +55,7 @@ void MinimalViewer::setDrawableObjectVector(
 {
     drawList = v;
 
-    for (DrawableObject* obj : *drawList) {
+    for (DrawableObjectI* obj : *drawList) {
         obj->init();
 
         GenericDrawableMesh* mesh = dynamic_cast<GenericDrawableMesh*>(obj);
@@ -84,7 +84,7 @@ void MinimalViewer::draw(uint viewID)
 
     directionalLightUniforms.bind();
 
-    for (DrawableObject* obj : *drawList)
+    for (DrawableObjectI* obj : *drawList)
         obj->draw(viewID);
 
     if (axis.isVisible()) {

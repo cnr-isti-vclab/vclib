@@ -39,7 +39,7 @@ DrawableObjectVector::DrawableObjectVector(DrawableObjectVector&& oth)
 DrawableObjectVector::~DrawableObjectVector()
 {
     // delete all the DrawableObjects
-    for (DrawableObject* obj : drawVector) {
+    for (DrawableObjectI* obj : drawVector) {
         delete obj;
     }
 }
@@ -51,7 +51,7 @@ DrawableObjectVector::~DrawableObjectVector()
  * @param obj
  * @return
  */
-uint DrawableObjectVector::pushBack(const DrawableObject& obj)
+uint DrawableObjectVector::pushBack(const DrawableObjectI& obj)
 {
     drawVector.push_back(obj.clone());
     return drawVector.size();
@@ -65,7 +65,7 @@ uint DrawableObjectVector::pushBack(const DrawableObject& obj)
  * @param obj
  * @return
  */
-uint DrawableObjectVector::pushBack(const DrawableObject* obj)
+uint DrawableObjectVector::pushBack(const DrawableObjectI* obj)
 {
     if (obj == nullptr)
         return UINT_NULL;
@@ -73,19 +73,19 @@ uint DrawableObjectVector::pushBack(const DrawableObject* obj)
     return drawVector.size();
 }
 
-DrawableObject& DrawableObjectVector::at(uint i)
+DrawableObjectI& DrawableObjectVector::at(uint i)
 {
     assert(i < drawVector.size());
     return *drawVector.at(i);
 }
 
-const DrawableObject& DrawableObjectVector::at(uint i) const
+const DrawableObjectI& DrawableObjectVector::at(uint i) const
 {
     assert(i < drawVector.size());
     return *drawVector.at(i);
 }
 
-const DrawableObject& DrawableObjectVector::operator[](uint i) const
+const DrawableObjectI& DrawableObjectVector::operator[](uint i) const
 {
     return *drawVector[i];
 }
@@ -98,7 +98,7 @@ std::size_t DrawableObjectVector::size() const
 void DrawableObjectVector::clear()
 {
     // delete all the DrawableObjects
-    for (DrawableObject* obj : drawVector) {
+    for (DrawableObjectI* obj : drawVector) {
         delete obj;
     }
     drawVector.clear();
@@ -167,7 +167,7 @@ uint DrawableObjectVector::firstVisibleObject() const
     return UINT_NULL;
 }
 
-DrawableObject& DrawableObjectVector::operator[](uint i)
+DrawableObjectI& DrawableObjectVector::operator[](uint i)
 {
     return *drawVector[i];
 }

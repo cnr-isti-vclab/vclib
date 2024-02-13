@@ -50,15 +50,15 @@ namespace vcl {
  * For more details about these member functions, check the documentation of
  * each one.
  */
-class DrawableObject
+class DrawableObjectI
 {
     std::string n; /**< @brief Name of the object */
 
 public:
     /**< @brief Empty constructor */
-    DrawableObject() = default;
+    DrawableObjectI() = default;
 
-    virtual ~DrawableObject() {}
+    virtual ~DrawableObjectI() {}
 
     /**
      * @brief This member function is called after the initialization of the
@@ -96,18 +96,18 @@ public:
 
     /**
      * @brief This member function is used to create a new copy of the
-     * DrawableObject. Each derived class must implement this member function,
-     * that returns a new dynamically allocated DrawableObject that is a copy of
+     * DrawableObjectI. Each derived class must implement this member function,
+     * that returns a new dynamically allocated DrawableObjectI that is a copy of
      * the current one. for more details about this paradigm, check polimorphism
      * clone in modern c++:
      * https://www.fluentcpp.com/2017/09/08/make-polymorphic-copy-modern-cpp/
      *
-     * @return A new dynamically allocated DrawableObject that is a copy of the
+     * @return A new dynamically allocated DrawableObjectI that is a copy of the
      * current one.
      */
     [[nodiscard(
         "You should assign and manage the pointer to the newly created "
-        "object")]] virtual DrawableObject*
+        "object")]] virtual DrawableObjectI*
     clone() const = 0;
 
     /**

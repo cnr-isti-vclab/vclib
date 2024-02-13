@@ -20,61 +20,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <vclib/ext/qglviewer/minimal_viewer_widget.h>
+#ifndef VCL_RENDER_INTERFACES_SHADER_PROGRAM_I_H
+#define VCL_RENDER_INTERFACES_SHADER_PROGRAM_I_H
 
-#include <vclib/math/min_max.h>
-#include <vclib/space/box.h>
+namespace vcl {
 
-namespace vcl::qgl {
+} // namespace vcl
 
-MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) : QGLViewer(parent)
-{
-    drawList = std::make_shared<DrawableObjectVector>();
-}
-
-MinimalViewerWidget::MinimalViewerWidget(
-    std::shared_ptr<DrawableObjectVector> v,
-    QWidget*                              parent) :
-        QGLViewer(parent),
-        drawList(v)
-{
-}
-
-void MinimalViewerWidget::init()
-{
-    for (DrawableObjectI* d : *drawList) {
-        d->init();
-    }
-}
-
-void MinimalViewerWidget::setDrawableObjectVector(
-    std::shared_ptr<DrawableObjectVector> v)
-{
-    drawList = v;
-}
-
-std::shared_ptr<const DrawableObjectVector> MinimalViewerWidget::
-    drawableObjectVector() const
-{
-    return drawList;
-}
-
-void MinimalViewerWidget::fitScene()
-{
-    Box3d   bb          = drawList->boundingBox();
-    Point3d sceneCenter = bb.center();
-    double  sceneRadius = bb.diagonal() / 2;
-
-    setSceneCenter(
-        qglviewer::Vec(sceneCenter.x(), sceneCenter.y(), sceneCenter.z()));
-    setSceneRadius(sceneRadius);
-    showEntireScene();
-}
-
-void MinimalViewerWidget::draw()
-{
-    for (DrawableObjectI* obj : *drawList)
-        obj->draw(0);
-}
-
-} // namespace vcl::qgl
+#endif // VCL_RENDER_INTERFACES_SHADER_PROGRAM_I_H

@@ -58,6 +58,7 @@ set(HEADERS
     include/vclib/render/mesh_render_settings.h
     include/vclib/render/mesh_render_settings_macros.h
     include/vclib/render/trackball.h
+    include/vclib/render/interfaces/shader_program_i.h
     include/vclib/render/lights/directional_light.h)
 
 set(SOURCES

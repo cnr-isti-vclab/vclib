@@ -29,7 +29,7 @@
 
 namespace vcl {
 
-class GenericDrawableMesh : public vcl::DrawableObject
+class GenericDrawableMesh : public vcl::DrawableObjectI
 {
 protected:
     MeshRenderSettings mrs;
@@ -55,7 +55,7 @@ public:
 
     double radius() const = 0;
 
-    DrawableObject* clone() const = 0;
+    DrawableObjectI* clone() const = 0;
 
     inline bool isVisible() const { return mrs.isVisible(); }
 

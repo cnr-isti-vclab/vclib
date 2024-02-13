@@ -31,11 +31,11 @@ namespace vcl {
 
 class DrawableObjectVector
 {
-    std::vector<DrawableObject*> drawVector;
+    std::vector<DrawableObjectI*> drawVector;
 
 public:
-    using iterator       = std::vector<DrawableObject*>::iterator;
-    using const_iterator = std::vector<DrawableObject*>::const_iterator;
+    using iterator       = std::vector<DrawableObjectI*>::iterator;
+    using const_iterator = std::vector<DrawableObjectI*>::const_iterator;
 
     DrawableObjectVector() = default;
 
@@ -45,17 +45,17 @@ public:
 
     ~DrawableObjectVector();
 
-    uint pushBack(const DrawableObject& obj);
+    uint pushBack(const DrawableObjectI& obj);
 
-    uint pushBack(const DrawableObject* obj);
+    uint pushBack(const DrawableObjectI* obj);
 
-    DrawableObject& at(uint i);
+    DrawableObjectI& at(uint i);
 
-    const DrawableObject& at(uint i) const;
+    const DrawableObjectI& at(uint i) const;
 
-    DrawableObject& operator[](uint i);
+    DrawableObjectI& operator[](uint i);
 
-    const DrawableObject& operator[](uint i) const;
+    const DrawableObjectI& operator[](uint i) const;
 
     std::size_t size() const;
 

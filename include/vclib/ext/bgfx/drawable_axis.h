@@ -35,7 +35,7 @@
 
 namespace vcl::bgf {
 
-class DrawableAxis : public DrawableObject
+class DrawableAxis : public DrawableObjectI
 {
     bool visible = false;
 
@@ -75,8 +75,8 @@ public:
     Point3d center() const override { return Point3d(); };
 
     double radius() const override { return 1.0; }
-
-    DrawableObject* clone() const override { return new DrawableAxis(*this); }
+    
+    DrawableObjectI* clone() const override { return new DrawableAxis(*this); }
 
     bool isVisible() const override { return visible; }
 
