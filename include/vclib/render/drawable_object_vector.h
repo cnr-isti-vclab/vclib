@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_DRAWABLE_OBJECT_VECTOR_H
 #define VCL_RENDER_DRAWABLE_OBJECT_VECTOR_H
 
-#include "drawable_object.h"
+#include "interfaces/drawable_object_i.h"
 
 #include <vclib/space/box.h>
 

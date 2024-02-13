@@ -25,7 +25,7 @@
 
 #include <QFrame>
 
-#include <vclib/render/drawable_object.h>
+#include <vclib/render/interfaces/drawable_object_i.h>
 
 namespace vcl::qt {
 

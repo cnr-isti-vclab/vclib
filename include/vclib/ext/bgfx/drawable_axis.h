@@ -26,7 +26,7 @@
 #include <bgfx/bgfx.h>
 
 #include <vclib/meshes/tri_mesh.h>
-#include <vclib/render/drawable_object.h>
+#include <vclib/render/interfaces/drawable_object_i.h>
 #include <vclib/space/matrix.h>
 
 #include "mesh_render_buffers.h"

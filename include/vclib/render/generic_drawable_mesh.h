@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_GENERIC_DRAWABLE_MESH_H
 #define VCL_RENDER_GENERIC_DRAWABLE_MESH_H
 
-#include "drawable_object.h"
+#include "interfaces/drawable_object_i.h"
 #include "generic_drawable_mesh_shader_program.h"
 #include "mesh_render_settings.h"
 
