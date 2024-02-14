@@ -101,9 +101,9 @@ public:
     /**
      * @brief This member function is used to create a new copy of the
      * DrawableObjectI. Each derived class must implement this member function,
-     * that returns a new dynamically allocated DrawableObjectI that is a copy of
-     * the current one. for more details about this paradigm, check polimorphism
-     * clone in modern c++:
+     * that returns a new dynamically allocated DrawableObjectI that is a copy
+     * of the current one. for more details about this paradigm, check
+     * polimorphism clone in modern c++:
      * https://www.fluentcpp.com/2017/09/08/make-polymorphic-copy-modern-cpp/
      *
      * @return A new dynamically allocated DrawableObjectI that is a copy of the

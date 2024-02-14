@@ -40,7 +40,7 @@ class DrawableObjectFrame : public QFrame
 public:
     explicit DrawableObjectFrame(
         DrawableObjectI* obj,
-        QWidget*        parent = nullptr);
+        QWidget*         parent = nullptr);
     ~DrawableObjectFrame();
 
 signals:
@@ -51,7 +51,7 @@ private slots:
 
 private:
     Ui::DrawableObjectFrame* ui;
-    DrawableObjectI*          obj;
+    DrawableObjectI*         obj;
 };
 
 } // namespace vcl::qt

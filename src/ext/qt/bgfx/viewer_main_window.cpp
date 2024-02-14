@@ -105,8 +105,7 @@ void ViewerMainWindow::setDrawableObjectVector(
     ui->drawVectorFrame->setDrawableObjectVector(drawVector);
     if (drawVector->size() > 0) {
         try {
-            DrawableMeshI& m =
-                dynamic_cast<DrawableMeshI&>(drawVector->at(0));
+            DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(drawVector->at(0));
             ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
             ui->renderSettingsFrame->setVisible(true);
         }
@@ -147,8 +146,7 @@ void ViewerMainWindow::visibilityDrawableObjectChanged()
     try {
         // if it is a DrawableMeshI, we must be sure that its render
         // settings are updated accordingly.
-        DrawableMeshI& m =
-            dynamic_cast<DrawableMeshI&>(drawVector->at(i));
+        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(drawVector->at(i));
         ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
     }
     catch (std::bad_cast exp) {
@@ -166,8 +164,7 @@ void ViewerMainWindow::selectedDrawableObjectChanged(uint i)
     try {
         // take the newly selected DrawableObject and check whether it is a
         // DrawableMeshI
-        DrawableMeshI& m =
-            dynamic_cast<DrawableMeshI&>(drawVector->at(i));
+        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(drawVector->at(i));
         // if it is a GenericDrawableMesh, update the RenderSettingsFrame, and
         // set it visible
         ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
@@ -195,8 +192,7 @@ void ViewerMainWindow::renderSettingsUpdated()
         // The selected object must always be a DrawableMeshI, because the
         // RenderSettingsFrame (which called this member function) is visible
         // only when the selected Object is a DrawableMeshI
-        DrawableMeshI& m =
-            dynamic_cast<DrawableMeshI&>(drawVector->at(i));
+        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(drawVector->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // GenericDrawableMesh
         m.setRenderSettings(ui->renderSettingsFrame->meshRenderSettings());

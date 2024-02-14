@@ -25,8 +25,11 @@
 
 namespace vcl::qt {
 
-DrawableObjectFrame::DrawableObjectFrame(DrawableObjectI* obj, QWidget* parent) :
-        QFrame(parent), ui(new Ui::DrawableObjectFrame), obj(obj)
+DrawableObjectFrame::DrawableObjectFrame(
+    DrawableObjectI* obj,
+    QWidget*         parent) :
+        QFrame(parent),
+        ui(new Ui::DrawableObjectFrame), obj(obj)
 {
     ui->setupUi(this);
     assert(obj);
