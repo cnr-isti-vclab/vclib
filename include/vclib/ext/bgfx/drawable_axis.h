@@ -75,7 +75,7 @@ public:
     Point3d center() const override { return Point3d(); };
 
     double radius() const override { return 1.0; }
-    
+
     DrawableObjectI* clone() const override { return new DrawableAxis(*this); }
 
     bool isVisible() const override { return visible; }
