@@ -49,27 +49,7 @@ CanvasWidget::CanvasWidget(
     vcl::qt::MessageHider::activate();
 #endif // __APPLE__
 
-    void* displayID = nullptr;
-#ifdef __linux__
-    /// THIS WORKS ONLY IF QT_QPA_PLATFORM = xcb
-    QNativeInterface::QX11Application* x11AppInfo =
-        qApp->nativeInterface<QNativeInterface::QX11Application>();
-    if (x11AppInfo) {
-        displayID = x11AppInfo->display();
-    }
-    else {
-        QNativeInterface::QWaylandApplication* wayAppInfo =
-            qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
-        if (wayAppInfo) {
-            displayID = wayAppInfo->display();
-        }
-        else {
-            exit(-1);
-        }
-    }
-#endif // __linux__
-
-    vcl::bgf::Canvas::init((void*) winId(), width, height, displayID);
+    vcl::bgf::Canvas::init((void*) winId(), width, height);
 }
 
 CanvasWidget::CanvasWidget(uint width, uint height, QWidget* parent) :

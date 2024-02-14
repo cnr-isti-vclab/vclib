@@ -69,13 +69,9 @@ class Canvas
 public:
     Canvas();
 
-    Canvas(void* winId, uint width, uint height, void* displayId = nullptr);
-
     Canvas(void* winID, uint width, uint height);
 
     ~Canvas();
-
-    void init(void* winId, uint width, uint height, void* displayId = nullptr);
 
     void init(void* winId, uint width, uint height);
 

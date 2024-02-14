@@ -70,18 +70,16 @@ CanvasWindow::CanvasWindow(
         exit(EXIT_FAILURE);
     }
 
-    void* ndt = nullptr;
     void* nwh = nullptr;
 
 #if defined(__linux__)
-    ndt = glfwGetX11Display();
     nwh = (void*) (uintptr_t) glfwGetX11Window(window);
 #elif defined(_WIN32)
     nwh = glfwGetWin32Window(window);
 #elif defined(__APPLE__)
     nwh = glfwGetCocoaWindow(window);
 #endif
-    Canvas::init(nwh, width, height, ndt);
+    Canvas::init(nwh, width, height);
 
     glfwSetWindowUserPointer(window, this);
 
