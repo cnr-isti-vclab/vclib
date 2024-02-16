@@ -60,4 +60,4 @@ The output will be placed in the `docs/_doxygen/html` directory.
 
 ## License
 
-The library is under the [GPL3 license](LICENSE).
+The library is under the [MPL2 license](LICENSE).
