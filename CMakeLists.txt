@@ -76,6 +76,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/canvas.h
         include/vclib/ext/bgfx/context.h
         include/vclib/ext/bgfx/drawable_axis.h
+        include/vclib/ext/bgfx/drawable_directional_light.h
         include/vclib/ext/bgfx/drawable_mesh.h
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
@@ -94,6 +95,7 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/canvas.cpp
         src/ext/bgfx/context.cpp
         src/ext/bgfx/drawable_axis.cpp
+        src/ext/bgfx/drawable_directional_light.cpp
         src/ext/bgfx/minimal_viewer.cpp
         src/ext/bgfx/shader_programs/load_program.cpp)
 

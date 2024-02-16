@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <vclib/ext/bgfx/drawable_axis.h>
+#include <vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h>
 
 #include <vclib/algorithms/create.h>
 
@@ -38,9 +39,14 @@ void DrawableAxis::setSize(double size)
     updateMatrices(size);
 }
 
-void DrawableAxis::setShaderProgram(const DrawableAxisShaderProgram& sp)
+void DrawableAxis::setShaderProgram(const ShaderProgramI& sp)
 {
-    program = sp.getProgram();
+    const DrawableAxisShaderProgram* ptr =
+        dynamic_cast<const DrawableAxisShaderProgram*>(&sp);
+
+    if (ptr) {
+        program = ptr->program();
+    }
 }
 
 void DrawableAxis::draw(uint viewId)

@@ -20,73 +20,59 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_DRAWABLE_AXIS_H
-#define VCL_EXT_BGFX_DRAWABLE_AXIS_H
+#ifndef VCL_EXT_BGFX_DRAWABLE_DIRECTIONAL_LIGHT_H
+#define VCL_EXT_BGFX_DRAWABLE_DIRECTIONAL_LIGHT_H
 
 #include <bgfx/bgfx.h>
 
-#include <vclib/meshes/tri_mesh.h>
 #include <vclib/render/interfaces/drawable_object_i.h>
+#include <vclib/render/lights/directional_light.h>
 #include <vclib/space/matrix.h>
-
-#include "mesh_render_buffers.h"
-#include "uniforms/drawable_axis_uniforms.h"
 
 namespace vcl::bgf {
 
-class DrawableAxis : public DrawableObjectI
+class DrawableDirectionalLight : public DrawableObjectI
 {
-    bool visible = false;
+    bool visible;
 
-    const vcl::Color colors[3] = {
-        vcl::Color::Red,
-        vcl::Color::Green,
-        vcl::Color::Blue};
+    DirectionalLight<float> light;
+    vcl::Matrix44f transform = vcl::Matrix44f::Identity();
+    std::vector<float> vertices;
+    vcl::Color lColor = vcl::Color::Yellow;
 
-    vcl::Matrix44f matrices[3] = {
-        vcl::Matrix44f::Zero(),
-        vcl::Matrix44f::Zero(),
-        vcl::Matrix44f::Zero()};
-
-    MeshRenderBuffers<vcl::TriMesh> mrbArrow[2];
+    bgfx::VertexBufferHandle vertexCoordBH   = BGFX_INVALID_HANDLE;
 
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
-    bgfx::VertexBufferHandle vertexCoordBH   = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle vertexNormalBH  = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  triangleIndexBH = BGFX_INVALID_HANDLE;
-
-    DrawableAxisUniforms uniforms;
-
 public:
-    DrawableAxis(double size = 1, bool fromOrigin = false);
+    DrawableDirectionalLight();
 
-    ~DrawableAxis() = default;
+    void update(const DirectionalLight<float>& l);
 
-    void setSize(double size);
+    const vcl::Color& linesColor() const { return lColor; }
 
-    // DrawableObject interface
+    vcl::Color& linesColor() { return lColor; }
 
-    void setShaderProgram(const ShaderProgramI& sp) override;
+    // DrawableObjectI interface
 
-    void draw(uint viewId) override;
+    void             setShaderProgram(const ShaderProgramI&);
 
-    Point3d center() const override { return Point3d(); };
+    void             draw(uint viewId);
 
-    double radius() const override { return 1.0; }
+    Point3d          center() const;
 
-    DrawableObjectI* clone() const override { return new DrawableAxis(*this); }
+    double           radius() const;
 
-    bool isVisible() const override { return visible; }
+    DrawableObjectI* clone() const;
 
-    void setVisibility(bool vis) override { visible = vis; }
+    bool             isVisible() const { return visible;}
+
+    void             setVisibility(bool vis) { visible = vis;}
 
 private:
-    void updateMatrices(double size);
-
-    void createAxis(bool fromOrigin);
+    void updateVertexBuffer();
 };
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_DRAWABLE_AXIS_H
+#endif // VCL_EXT_BGFX_DRAWABLE_DIRECTIONAL_LIGHT_H

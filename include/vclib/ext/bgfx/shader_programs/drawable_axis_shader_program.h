@@ -25,9 +25,11 @@
 
 #include "load_program.h"
 
+#include <vclib/render/interfaces/shader_program_i.h>
+
 namespace vcl::bgf {
 
-class DrawableAxisShaderProgram
+class DrawableAxisShaderProgram : public ShaderProgramI
 {
     bgfx::ProgramHandle p = BGFX_INVALID_HANDLE;
 
@@ -51,7 +53,7 @@ public:
     DrawableAxisShaderProgram& operator=(const DrawableAxisShaderProgram&) =
         delete;
 
-    bgfx::ProgramHandle getProgram() const { return p; }
+    bgfx::ProgramHandle program() const { return p; }
 };
 
 } // namespace vcl::bgf

@@ -26,7 +26,6 @@
 #include "input.h"
 
 #include "vclib/render/trackball.h"
-#include <vclib/render/lights/directional_light.h>
 
 #include <vclib/space/bit_set.h>
 
