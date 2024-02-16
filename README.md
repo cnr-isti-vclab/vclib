@@ -8,4 +8,4 @@ This module is a work in progress, and therefore the documentation is not up-to-
 
 ## License
 
-The library is under the [GPL3 license](LICENSE).
+The library is under the [MPL2 license](LICENSE).
