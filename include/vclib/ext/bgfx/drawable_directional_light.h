@@ -29,6 +29,8 @@
 #include <vclib/render/lights/directional_light.h>
 #include <vclib/space/matrix.h>
 
+#include "uniforms/drawable_directional_light_uniforms.h"
+
 namespace vcl::bgf {
 
 class DrawableDirectionalLight : public DrawableObjectI
@@ -42,6 +44,8 @@ class DrawableDirectionalLight : public DrawableObjectI
 
     bgfx::VertexBufferHandle vertexCoordBH   = BGFX_INVALID_HANDLE;
 
+    DrawableDirectionalLightUniforms dlUniforms;
+
     bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
 
 public:
@@ -51,7 +55,7 @@ public:
 
     const vcl::Color& linesColor() const { return lColor; }
 
-    vcl::Color& linesColor() { return lColor; }
+    void setLinesColor(const vcl::Color& c);
 
     // DrawableObjectI interface
 

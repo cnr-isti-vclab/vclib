@@ -20,36 +20,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
+#ifndef VCL_EXT_BGFX_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_SH
+#define VCL_EXT_BGFX_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_SH
 
-#include "shader_uniform.h"
+#include <shaders_common.sh>
 
-#include <vclib/space/color.h>
+#include <uniforms/drawable_directional_light_uniforms.sh>
 
-namespace vcl::bgf {
-
-class DrawableAxisUniforms
-{
-    float lightColor[4] = {1.0, 0.0, 0.0, 1.0};
-
-    ShaderUniform lightColorUniform =
-        ShaderUniform("u_axisColor", bgfx::UniformType::Vec4);
-
-public:
-    DrawableAxisUniforms() = default;
-
-    void setColor(const vcl::Color& color)
-    {
-        lightColor[0] = color.redF();
-        lightColor[1] = color.greenF();
-        lightColor[2] = color.blueF();
-        lightColor[3] = color.alphaF();
-    }
-
-    void bind() { lightColorUniform.bind(lightColor); }
-};
-
-} // namespace vcl::bgf
-
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
+#endif // VCL_EXT_BGFX_DRAWABLE_DIRECTIONAL_LIGHT_UNIFORMS_SH

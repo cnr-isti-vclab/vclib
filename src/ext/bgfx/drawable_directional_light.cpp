@@ -22,6 +22,7 @@
 
 #include <vclib/ext/bgfx/drawable_directional_light.h>
 
+#include <vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h>
 #include <vclib/math/transform.h>
 #include <vclib/render/matrix.h>
 
@@ -55,7 +56,6 @@ DrawableDirectionalLight::DrawableDirectionalLight()
     updateVertexBuffer();
 }
 
-
 void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
 {
     light = l;
@@ -66,18 +66,41 @@ void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
         vcl::Point3f(0, 0, 0), light.direction(), vcl::Point3f(0, 0, 1));
 }
 
-
-void DrawableDirectionalLight::setShaderProgram(const ShaderProgramI&)
+void DrawableDirectionalLight::setLinesColor(const Color& c)
 {
-  // todo
+    lColor = c;
+    dlUniforms.setColor(lColor);
 }
 
+void DrawableDirectionalLight::setShaderProgram(const ShaderProgramI& sp)
+{
+    const DrawableDirectionalLightShaderProgram* ptr =
+        dynamic_cast<const DrawableDirectionalLightShaderProgram*>(&sp);
+
+    if (ptr) {
+        program = ptr->program();
+    }
+}
 
 void DrawableDirectionalLight::draw(uint viewId)
 {
-  // todo
-}
+    if (isVisible()) {
+        if (bgfx::isValid(program)) {
+            bgfx::setState(
+                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
+                BGFX_STATE_PT_LINES);
 
+            bgfx::setTransform(transform.data());
+
+            dlUniforms.bind();
+
+            bgfx::setVertexBuffer(0, vertexCoordBH);
+
+            bgfx::submit(viewId, program);
+        }
+    }
+}
 
 Point3d DrawableDirectionalLight::center() const
 {
@@ -89,7 +112,6 @@ double DrawableDirectionalLight::radius() const
 {
     return 1.0;
 }
-
 
 DrawableObjectI* DrawableDirectionalLight::clone() const
 {

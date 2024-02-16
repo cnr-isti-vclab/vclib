@@ -20,36 +20,45 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
-#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
+#ifndef VCL_EXT_BGFX_SHADER_PROGRAMS_DRAWABLE_DIRECTIONAL_LIGHT_SHADER_PROGRAM_H
+#define VCL_EXT_BGFX_SHADER_PROGRAMS_DRAWABLE_DIRECTIONAL_LIGHT_SHADER_PROGRAM_H
 
-#include "shader_uniform.h"
+#include "load_program.h"
 
-#include <vclib/space/color.h>
+#include <vclib/render/interfaces/shader_program_i.h>
 
 namespace vcl::bgf {
 
-class DrawableAxisUniforms
+class DrawableDirectionalLightShaderProgram : public ShaderProgramI
 {
-    float lightColor[4] = {1.0, 0.0, 0.0, 1.0};
-
-    ShaderUniform lightColorUniform =
-        ShaderUniform("u_axisColor", bgfx::UniformType::Vec4);
+    bgfx::ProgramHandle p = BGFX_INVALID_HANDLE;
 
 public:
-    DrawableAxisUniforms() = default;
-
-    void setColor(const vcl::Color& color)
+    DrawableDirectionalLightShaderProgram()
     {
-        lightColor[0] = color.redF();
-        lightColor[1] = color.greenF();
-        lightColor[2] = color.blueF();
-        lightColor[3] = color.alphaF();
+        p = vcl::bgf::loadProgram(
+            "vclib/ext/bgfx/drawable_directional_light/"
+            "vs_drawable_directional_light",
+            "vclib/ext/bgfx/drawable_directional_light/"
+            "fs_drawable_directional_light");
     }
 
-    void bind() { lightColorUniform.bind(lightColor); }
+    ~DrawableDirectionalLightShaderProgram()
+    {
+        if (bgfx::isValid(p)) {
+            bgfx::destroy(p);
+        }
+    };
+
+    DrawableDirectionalLightShaderProgram(
+        const DrawableDirectionalLightShaderProgram&) = delete;
+
+    DrawableDirectionalLightShaderProgram& operator=(
+        const DrawableDirectionalLightShaderProgram&) = delete;
+
+    bgfx::ProgramHandle program() const { return p; }
 };
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_AXIS_UNIFORMS_H
+#endif // VCL_EXT_BGFX_SHADER_PROGRAMS_DRAWABLE_DIRECTIONAL_LIGHT_SHADER_PROGRAM_H

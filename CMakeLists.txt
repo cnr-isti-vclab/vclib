@@ -81,11 +81,13 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
         include/vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h
+        include/vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_mesh_shader_program.h
         include/vclib/ext/bgfx/shader_programs/load_program.h
         include/vclib/ext/bgfx/uniforms/camera_uniforms.h
         include/vclib/ext/bgfx/uniforms/directional_light_uniforms.h
         include/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.h
+        include/vclib/ext/bgfx/uniforms/drawable_directional_light_uniforms.h
         include/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.h
         include/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.h
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
@@ -105,6 +107,10 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/drawable_axis/varying.def.sc
         shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc
         shaders/vclib/ext/bgfx/drawable_axis/uniforms.sh
+        shaders/vclib/ext/bgfx/drawable_directional_light/fs_drawable_directional_light.sc
+        shaders/vclib/ext/bgfx/drawable_directional_light/varying.def.sc
+        shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc
+        shaders/vclib/ext/bgfx/drawable_directional_light/uniforms.sh
         shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc
         shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc
         shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc
@@ -112,6 +118,7 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/uniforms/camera_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/directional_light_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.sh
+        shaders/vclib/ext/bgfx/uniforms/drawable_directional_light_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.sh)
 endif()
