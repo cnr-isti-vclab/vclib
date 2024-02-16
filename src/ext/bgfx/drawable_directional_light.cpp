@@ -20,6 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include "vclib/algorithms/update/transform.h"
 #include <vclib/ext/bgfx/drawable_directional_light.h>
 
 #include <vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h>
@@ -38,22 +39,37 @@ DrawableDirectionalLight::DrawableDirectionalLight()
 
     const float low = -0.75f;
     const float high = 0.75f;
+
+    const float zlow = -1.5;
+    const float zhigh = -5;
     const uint n = 4;
-    const float step = (high - low) / n;
+    const float step = (high - low) / (n - 1);
 
     for (uint i = 0; i < n; ++i) {
         for (uint j = 0; j < n; ++j) {
             vertices.push_back(low + i * step);
             vertices.push_back(low + j * step);
-            vertices.push_back(low);
+            vertices.push_back(zlow);
 
             vertices.push_back(low + i * step);
             vertices.push_back(low + j * step);
-            vertices.push_back(high);
+            vertices.push_back(zhigh);
         }
     }
 
+    //vcl::setTransformMatrixRotationDeg(transform, vcl::Point3f(0, 1, 0), 90.0f);
+    //transform = transform.transpose().eval();
+
     updateVertexBuffer();
+    setLinesColor(lColor);
+}
+
+
+DrawableDirectionalLight::~DrawableDirectionalLight()
+{
+    if (bgfx::isValid(vertexCoordBH)) {
+        bgfx::destroy(vertexCoordBH);
+    }
 }
 
 void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
@@ -62,8 +78,8 @@ void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
 
     // make the transform matrix such that the lines will be drawn in the
     // direction of the light
-    transform = vcl::lookAtMatrix<vcl::Matrix44f>(
-        vcl::Point3f(0, 0, 0), light.direction(), vcl::Point3f(0, 0, 1));
+    // transform = vcl::lookAtMatrix<vcl::Matrix44f>(
+    //     vcl::Point3f(0, 0, 0), light.direction(), vcl::Point3f(0, 0, 1));
 }
 
 void DrawableDirectionalLight::setLinesColor(const Color& c)

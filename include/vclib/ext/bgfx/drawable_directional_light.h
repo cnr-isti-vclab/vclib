@@ -35,12 +35,12 @@ namespace vcl::bgf {
 
 class DrawableDirectionalLight : public DrawableObjectI
 {
-    bool visible;
+    bool visible = false;
 
     DirectionalLight<float> light;
     vcl::Matrix44f transform = vcl::Matrix44f::Identity();
     std::vector<float> vertices;
-    vcl::Color lColor = vcl::Color::Yellow;
+    vcl::Color lColor = vcl::Color::Red;
 
     bgfx::VertexBufferHandle vertexCoordBH   = BGFX_INVALID_HANDLE;
 
@@ -50,6 +50,8 @@ class DrawableDirectionalLight : public DrawableObjectI
 
 public:
     DrawableDirectionalLight();
+
+    ~DrawableDirectionalLight();
 
     void update(const DirectionalLight<float>& l);
 
