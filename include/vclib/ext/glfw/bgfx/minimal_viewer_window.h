@@ -60,9 +60,9 @@ public:
 
     void onResize(unsigned int width, unsigned int height) override;
 
-    void onKeyPress(Key::Enum key, KeyModifiers modifiers) override;
+    void onKeyPress(Key::Enum key) override;
 
-    void onKeyRelease(Key::Enum key, KeyModifiers modifiers) override;
+    void onKeyRelease(Key::Enum key) override;
 
     void onMouseMove(double x, double y) override;
 
@@ -71,18 +71,6 @@ public:
     void onMouseRelease(MouseButton::Enum button) override;
 
     void onMouseScroll(double dx, double dy) override;
-
-private:
-    void setCallbacks();
-
-    // callbacks
-    void glfwKeyCallback(GLFWwindow*, int key, int, int action, int mods);
-
-    void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods);
-
-    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos);
-
-    void glfwScrollCallback(GLFWwindow*, double, double yoffset);
 };
 
 } // namespace vcl::bglfwx

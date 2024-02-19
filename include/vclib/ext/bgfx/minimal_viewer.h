@@ -74,9 +74,14 @@ public:
 
     void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }
 
-    void toggleDirectionalLightVisibility()
+    bool isDirectionalLightVisible() const
     {
-        directionalLight.setVisibility(!directionalLight.isVisible());
+        return directionalLight.isVisible();
+    }
+
+    void setDirectionalLightVisibility(bool b)
+    {
+        directionalLight.setVisibility(b);
     }
 };
 

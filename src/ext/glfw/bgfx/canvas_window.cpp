@@ -137,15 +137,14 @@ void CanvasWindow::setCallbacks()
             self->glfwWindowSizeCallback(window, width, height);
         });
 
-    // key callback lambda
-    auto keyCB =
+    // key callback
+    glfwSetKeyCallback(
+        window,
         [](GLFWwindow* window, int key, int scancode, int action, int mods) {
             auto* self =
                 static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwKeyCallback(window, key, scancode, action, mods);
-        };
-
-    glfwSetKeyCallback(window, keyCB);
+        });
 
     // mouse position callback
     glfwSetCursorPosCallback(
@@ -185,13 +184,14 @@ void CanvasWindow::glfwKeyCallback(
     int action,
     int mods)
 {
-    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
     Key::Enum    k         = glfw::fromGLFW((glfw::Key) key);
+    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
+    setModifiers(modifiers);
     if (action == GLFW_PRESS) {
-        onKeyPress(k, modifiers);
+        onKeyPress(k);
     }
     else if (action == GLFW_RELEASE) {
-        onKeyRelease(k, modifiers);
+        onKeyRelease(k);
     }
 }
 
@@ -202,6 +202,9 @@ void CanvasWindow::glfwMouseButtonCallback(
     int mods)
 {
     glfw::MouseButton btn = (glfw::MouseButton) button;
+
+    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
+    setModifiers(modifiers);
 
     if (action == GLFW_PRESS) {
         onMousePress(glfw::fromGLFW(btn));

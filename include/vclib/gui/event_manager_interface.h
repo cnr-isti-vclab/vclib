@@ -41,24 +41,26 @@ namespace vcl {
  */
 class EventManagerInterface
 {
+    KeyModifiers mods;
+
 public:
     virtual ~EventManagerInterface() = default;
+
+    void setModifiers(KeyModifiers modifiers) { mods = modifiers; }
+
+    const KeyModifiers& modifiers() const { return mods; }
 
     /**
      * @brief Called when a key is pressed.
      * @param[in] key: The key that was pressed.
-     * @param[in] modifiers: The key modifiers that were active when the key was
-     * pressed.
      */
-    virtual void onKeyPress(Key::Enum key, KeyModifiers modifiers) {};
+    virtual void onKeyPress(Key::Enum key) {};
 
     /**
      * @brief Called when a key is released.
      * @param[in] key: The key that was released.
-     * @param[in] modifiers: The key modifiers that were active when the key was
-     * released.
      */
-    virtual void onKeyRelease(Key::Enum key, KeyModifiers modifiers) {};
+    virtual void onKeyRelease(Key::Enum key) {};
 
     /**
      * @brief Called when the mouse moves.

@@ -59,9 +59,9 @@ public:
 
     void onResize(unsigned int width, unsigned int height) override;
 
-    void onKeyPress(Key::Enum key, KeyModifiers modifiers) override;
+    void onKeyPress(Key::Enum key) override;
 
-    void onKeyRelease(Key::Enum key, KeyModifiers modifiers) override;
+    void onKeyRelease(Key::Enum key) override;
 
     void onMouseMove(double x, double y) override;
 

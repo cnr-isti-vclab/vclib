@@ -34,7 +34,6 @@ MinimalViewerWindow::MinimalViewerWindow(
         CanvasWindow(width, height),
         MinimalViewer(v, width, height)
 {
-    setCallbacks();
 }
 
 MinimalViewerWindow::MinimalViewerWindow(
@@ -68,9 +67,9 @@ void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
     MV::resizeViewer(width, height);
 }
 
-void MinimalViewerWindow::onKeyPress(Key::Enum key, KeyModifiers modifiers)
+void MinimalViewerWindow::onKeyPress(Key::Enum key)
 {
-    MV::setKeyModifiers(modifiers);
+    MV::setKeyModifiers(modifiers());
 
     switch (key) {
     case Key::C:
@@ -91,9 +90,17 @@ void MinimalViewerWindow::onKeyPress(Key::Enum key, KeyModifiers modifiers)
     }
 }
 
-void MinimalViewerWindow::onKeyRelease(Key::Enum key, KeyModifiers modifiers)
+void MinimalViewerWindow::onKeyRelease(Key::Enum key)
 {
-    MV::setKeyModifiers(modifiers);
+    if (isDirectionalLightVisible()) {
+        if (!modifiers()[KeyModifier::CONTROL] ||
+            !modifiers()[KeyModifier::SHIFT])
+        {
+            MV::setDirectionalLightVisibility(false);
+        }
+    }
+
+    MV::setKeyModifiers(modifiers());
 }
 
 void MinimalViewerWindow::onMouseMove(double x, double y)
@@ -106,11 +113,21 @@ void MinimalViewerWindow::onMouseMove(double x, double y)
 
 void MinimalViewerWindow::onMousePress(MouseButton::Enum button)
 {
+    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT] &&
+        button == MouseButton::LEFT)
+    {
+        MV::setDirectionalLightVisibility(true);
+    }
+
     MV::pressMouse(button);
 }
 
 void MinimalViewerWindow::onMouseRelease(MouseButton::Enum button)
 {
+    if (isDirectionalLightVisible() && button == MouseButton::LEFT) {
+        MV::setDirectionalLightVisibility(false);
+    }
+
     MV::releaseMouse(button);
 }
 
@@ -123,97 +140,6 @@ void MinimalViewerWindow::onMouseScroll(double dx, double dy)
 
     bgfx::setViewTransform(
         viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
-}
-
-void MinimalViewerWindow::setCallbacks()
-{
-    // key callback lambda
-    auto keyCB =
-        [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-            auto* self = static_cast<MinimalViewerWindow*>(
-                glfwGetWindowUserPointer(window));
-            self->glfwKeyCallback(window, key, scancode, action, mods);
-        };
-
-    glfwSetKeyCallback(window, keyCB);
-
-    // mouse position callback
-    glfwSetCursorPosCallback(
-        window, [](GLFWwindow* window, double xpos, double ypos) {
-            auto* self = static_cast<MinimalViewerWindow*>(
-                glfwGetWindowUserPointer(window));
-            self->glfwCursorPosCallback(window, xpos, ypos);
-        });
-
-    // mouse button callback
-    glfwSetMouseButtonCallback(
-        window, [](GLFWwindow* window, int button, int action, int mods) {
-            auto* self = static_cast<MinimalViewerWindow*>(
-                glfwGetWindowUserPointer(window));
-            self->glfwMouseButtonCallback(window, button, action, mods);
-        });
-
-    // scroll callback
-    glfwSetScrollCallback(
-        window, [](GLFWwindow* window, double xoffset, double yoffset) {
-            auto* self = static_cast<MinimalViewerWindow*>(
-                glfwGetWindowUserPointer(window));
-            self->glfwScrollCallback(window, xoffset, yoffset);
-        });
-}
-
-void MinimalViewerWindow::glfwKeyCallback(
-    GLFWwindow*,
-    int key,
-    int,
-    int action,
-    int mods)
-{
-    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
-    MV::setKeyModifiers(modifiers);
-
-    if (action == GLFW_PRESS) {
-        MV::keyPress(glfw::fromGLFW((glfw::Key) key));
-    }
-}
-
-void MinimalViewerWindow::glfwMouseButtonCallback(
-    GLFWwindow*,
-    int button,
-    int action,
-    int mods)
-{
-    glfw::MouseButton btn = (glfw::MouseButton) button;
-
-    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
-    MV::setKeyModifiers(modifiers);
-
-    if (action == GLFW_PRESS) {
-        MV::pressMouse(glfw::fromGLFW(btn));
-    }
-    if (action == GLFW_RELEASE) {
-        MV::releaseMouse(glfw::fromGLFW(btn));
-    }
-}
-
-void MinimalViewerWindow::glfwCursorPosCallback(
-    GLFWwindow*,
-    double xpos,
-    double ypos)
-{
-    MV::moveMouse(xpos, ypos);
-}
-
-void MinimalViewerWindow::glfwScrollCallback(
-    GLFWwindow*,
-    double,
-    double yoffset)
-{
-    const int WHEEL_STEP = 120;
-
-    float notchY = yoffset / float(WHEEL_STEP);
-
-    MV::wheelMouse(notchY > 0);
 }
 
 } // namespace vcl::bglfwx

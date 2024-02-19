@@ -71,10 +71,10 @@ void MinimalViewerWidget::onResize(unsigned int width, unsigned int height)
         viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
 }
 
-void MinimalViewerWidget::onKeyPress(Key::Enum key, KeyModifiers modifiers)
+void MinimalViewerWidget::onKeyPress(Key::Enum key)
 {
     qt::ScreenShotDialog dialog(this);
-    MV::setKeyModifiers(modifiers);
+    MV::setKeyModifiers(modifiers());
 
     switch (key) {
     case Key::C:
@@ -84,13 +84,14 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key, KeyModifiers modifiers)
         break;
 
     case Key::S:
-        if (modifiers[KeyModifier::CONTROL]) {
+        if (modifiers()[KeyModifier::CONTROL]) {
             if (dialog.exec() == QDialog::Accepted) {
                 auto fs = dialog.selectedFiles();
                 CanvasWidget::screenShot(fs.first().toStdString());
             }
             // the dialog stealed the focus, so we need to release the modifiers
             MV::setKeyModifiers({KeyModifier::NO_MODIFIER});
+            setModifiers({KeyModifier::NO_MODIFIER});
         }
         break;
 
@@ -108,9 +109,17 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key, KeyModifiers modifiers)
     update();
 }
 
-void MinimalViewerWidget::onKeyRelease(Key::Enum key, KeyModifiers modifiers)
+void MinimalViewerWidget::onKeyRelease(Key::Enum key)
 {
-    MV::setKeyModifiers(modifiers);
+    if (isDirectionalLightVisible()) {
+        if (!modifiers()[KeyModifier::CONTROL] ||
+            !modifiers()[KeyModifier::SHIFT])
+        {
+            MV::setDirectionalLightVisibility(false);
+        }
+    }
+
+    MV::setKeyModifiers(modifiers());
     update();
 }
 
@@ -126,12 +135,24 @@ void MinimalViewerWidget::onMouseMove(double x, double y)
 
 void MinimalViewerWidget::onMousePress(MouseButton::Enum button)
 {
+    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT] &&
+        button == MouseButton::LEFT)
+    {
+        MV::setDirectionalLightVisibility(true);
+    }
+
     MV::pressMouse(button);
+    update();
 }
 
 void MinimalViewerWidget::onMouseRelease(MouseButton::Enum button)
 {
+    if (isDirectionalLightVisible() && button == MouseButton::LEFT) {
+        MV::setDirectionalLightVisibility(false);
+    }
+
     MV::releaseMouse(button);
+    update();
 }
 
 void MinimalViewerWidget::onMouseScroll(double dx, double dy)
