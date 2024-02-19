@@ -40,9 +40,9 @@ class DrawableDirectionalLight : public DrawableObjectI
     DirectionalLight<float> light;
     float transform[32]; // two 4x4 matrices, first rotate, second translate
     std::vector<float> vertices;
-    vcl::Color lColor = vcl::Color::Red;
+    vcl::Color         lColor = vcl::Color::Red;
 
-    bgfx::VertexBufferHandle vertexCoordBH   = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle vertexCoordBH = BGFX_INVALID_HANDLE;
 
     DrawableDirectionalLightUniforms dlUniforms;
 
@@ -61,19 +61,19 @@ public:
 
     // DrawableObjectI interface
 
-    void             setShaderProgram(const ShaderProgramI&);
+    void setShaderProgram(const ShaderProgramI&);
 
-    void             draw(uint viewId);
+    void draw(uint viewId);
 
-    Point3d          center() const;
+    Point3d center() const;
 
-    double           radius() const;
+    double radius() const;
 
     DrawableObjectI* clone() const;
 
-    bool             isVisible() const { return visible;}
+    bool isVisible() const { return visible; }
 
-    void             setVisibility(bool vis) { visible = vis;}
+    void setVisibility(bool vis) { visible = vis; }
 
 private:
     void updateVertexBuffer();

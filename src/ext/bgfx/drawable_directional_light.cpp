@@ -36,13 +36,13 @@ DrawableDirectionalLight::DrawableDirectionalLight()
 
     vertices.reserve(16 * 2 * 3);
 
-    const float low = -0.75f;
+    const float low  = -0.75f;
     const float high = 0.75f;
 
-    const float zlow = -1.75f;
+    const float zlow  = -1.75f;
     const float zhigh = 1.75f;
-    const uint n = 4;
-    const float step = (high - low) / (n - 1);
+    const uint  n     = 4;
+    const float step  = (high - low) / (n - 1);
 
     for (uint i = 0; i < n; ++i) {
         for (uint j = 0; j < n; ++j) {
@@ -127,7 +127,7 @@ void DrawableDirectionalLight::draw(uint viewId)
 Point3d DrawableDirectionalLight::center() const
 {
     // should not used because this center is in view space
-    return Point3d(0,0,0);
+    return Point3d(0, 0, 0);
 }
 
 double DrawableDirectionalLight::radius() const
@@ -163,4 +163,3 @@ void DrawableDirectionalLight::updateTransform(uint i, const Matrix44f& matrix)
 }
 
 } // namespace vcl::bgf
-

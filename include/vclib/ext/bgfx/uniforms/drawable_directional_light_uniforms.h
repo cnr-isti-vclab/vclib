@@ -33,8 +33,9 @@ class DrawableDirectionalLightUniforms
 {
     float lightColor[4] = {1.0, 0.0, 0.0, 1.0};
 
-    ShaderUniform lightColorUniform =
-        ShaderUniform("u_drawableDirectionalLightColor", bgfx::UniformType::Vec4);
+    ShaderUniform lightColorUniform = ShaderUniform(
+        "u_drawableDirectionalLightColor",
+        bgfx::UniformType::Vec4);
 
 public:
     DrawableDirectionalLightUniforms() = default;
