@@ -38,7 +38,7 @@ class DrawableDirectionalLight : public DrawableObjectI
     bool visible = false;
 
     DirectionalLight<float> light;
-    vcl::Matrix44f transform = vcl::Matrix44f::Identity();
+    float transform[32]; // two 4x4 matrices, first rotate, second translate
     std::vector<float> vertices;
     vcl::Color lColor = vcl::Color::Red;
 
@@ -77,6 +77,8 @@ public:
 
 private:
     void updateVertexBuffer();
+
+    void updateTransform(uint i, const vcl::Matrix44f& matrix);
 };
 
 } // namespace vcl::bgf

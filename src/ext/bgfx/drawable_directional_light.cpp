@@ -20,7 +20,6 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "vclib/algorithms/update/transform.h"
 #include <vclib/ext/bgfx/drawable_directional_light.h>
 
 #include <vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h>
@@ -40,8 +39,8 @@ DrawableDirectionalLight::DrawableDirectionalLight()
     const float low = -0.75f;
     const float high = 0.75f;
 
-    const float zlow = -1.5;
-    const float zhigh = -5;
+    const float zlow = -1.75f;
+    const float zhigh = 1.75f;
     const uint n = 4;
     const float step = (high - low) / (n - 1);
 
@@ -57,13 +56,19 @@ DrawableDirectionalLight::DrawableDirectionalLight()
         }
     }
 
-    //vcl::setTransformMatrixRotationDeg(transform, vcl::Point3f(0, 1, 0), 90.0f);
-    //transform = transform.transpose().eval();
+    // rotate matrix is identity - will change in update
+    updateTransform(0, vcl::Matrix44f::Identity());
+
+    // translation matrix stays fixed, in order to have the lines visible
+    // in the viewport
+    Point3f center(0, 0, -3.25);
+    vcl::Matrix44f t = vcl::Matrix44f::Identity();
+    vcl::setTransformMatrixTranslation(t, center);
+    updateTransform(1, t);
 
     updateVertexBuffer();
     setLinesColor(lColor);
 }
-
 
 DrawableDirectionalLight::~DrawableDirectionalLight()
 {
@@ -78,8 +83,9 @@ void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
 
     // make the transform matrix such that the lines will be drawn in the
     // direction of the light
-    // transform = vcl::lookAtMatrix<vcl::Matrix44f>(
-    //     vcl::Point3f(0, 0, 0), light.direction(), vcl::Point3f(0, 0, 1));
+    vcl::Matrix44f t = vcl::lookAtMatrix<vcl::Matrix44f>(
+         vcl::Point3f(0, 0, 0), light.direction(), vcl::Point3f(0, 0, 1));
+    updateTransform(0, t);
 }
 
 void DrawableDirectionalLight::setLinesColor(const Color& c)
@@ -107,7 +113,7 @@ void DrawableDirectionalLight::draw(uint viewId)
                 BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                 BGFX_STATE_PT_LINES);
 
-            bgfx::setTransform(transform.data());
+            bgfx::setTransform(transform, 2);
 
             dlUniforms.bind();
 
@@ -149,6 +155,11 @@ void DrawableDirectionalLight::updateVertexBuffer()
     vertexCoordBH = bgfx::createVertexBuffer(
         bgfx::makeRef(vertices.data(), vertices.size() * sizeof(float)),
         layout);
+}
+
+void DrawableDirectionalLight::updateTransform(uint i, const Matrix44f& matrix)
+{
+    std::copy(matrix.data(), matrix.data() + 16, &transform[i * 16]);
 }
 
 } // namespace vcl::bgf
