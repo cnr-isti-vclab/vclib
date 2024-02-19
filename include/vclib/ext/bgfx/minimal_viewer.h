@@ -74,7 +74,10 @@ public:
 
     void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }
 
-    void keyPress(Key::Enum key);
+    void toggleDirectionalLightVisibility()
+    {
+        directionalLight.setVisibility(!directionalLight.isVisible());
+    }
 };
 
 } // namespace vcl::bgf

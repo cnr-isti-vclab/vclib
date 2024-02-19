@@ -97,14 +97,4 @@ void MinimalViewer::draw(uint viewId)
     }
 }
 
-void MinimalViewer::keyPress(Key::Enum key)
-{
-    if (key == Key::A) {
-        toggleAxisVisibility();
-    }
-    else {
-        DTB::keyPress(key);
-    }
-}
-
 } // namespace vcl::bgf

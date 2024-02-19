@@ -79,6 +79,10 @@ void MinimalViewerWindow::onKeyPress(Key::Enum key, KeyModifiers modifiers)
                   << "(" << MV::camera().up() << ")\n";
         break;
 
+    case Key::A:
+        MV::toggleAxisVisibility();
+        break;
+
     default:
         MV::keyPress(key);
         bgfx::setViewTransform(
