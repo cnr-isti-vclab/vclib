@@ -86,55 +86,58 @@ private:
         {{KeyModifier::CONTROL},     TrackBallType::ROLL},
     };
 
-    std::map<Key::Enum, std::function<void(TrackBallType& t)>> keyAtomicMap = {
-        {Key::R,
-         [&](TrackBallType& t) {
-             t.reset(defaultTrackBallCenter, defaultTrackBallRadius);
-         }},
+    std::map<
+        std::pair<Key::Enum, KeyModifiers>,
+        std::function<void(TrackBallType& t)>>
+        keyAtomicMap = {
+            {{Key::R, {KeyModifier::NO_MODIFIER}},
+             [&](TrackBallType& t) {
+                 t.reset(defaultTrackBallCenter, defaultTrackBallRadius);
+             }},
 
  // rotate
-        {Key::NP_1,
-         [](TrackBallType& t) {
-             rotate(t, TrackBallType::AXIAL, -M_PI / 6);
-         }},
-        {Key::NP_2,
-         [](TrackBallType& t) {
-             rotate(t, TrackBallType::VERTICAL, -M_PI / 6);
-         }},
-        {Key::NP_4,
-         [](TrackBallType& t) {
-             rotate(t, TrackBallType::HORIZONTAL, -M_PI / 6);
-         }},
-        {Key::NP_6,
-         [](TrackBallType& t) {
-             rotate(t, TrackBallType::HORIZONTAL);
-         }},
-        {Key::NP_8,
-         [](TrackBallType& t) {
-             rotate(t, TrackBallType::VERTICAL);
-         }},
-        {Key::NP_9,
-         [](TrackBallType& t) {
-             rotate(t, TrackBallType::AXIAL);
-         }},
+            {{Key::NP_1, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 rotate(t, TrackBallType::AXIAL, -M_PI / 6);
+             }},
+            {{Key::NP_2, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 rotate(t, TrackBallType::VERTICAL, -M_PI / 6);
+             }},
+            {{Key::NP_4, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 rotate(t, TrackBallType::HORIZONTAL, -M_PI / 6);
+             }},
+            {{Key::NP_6, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 rotate(t, TrackBallType::HORIZONTAL);
+             }},
+            {{Key::NP_8, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 rotate(t, TrackBallType::VERTICAL);
+             }},
+            {{Key::NP_9, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 rotate(t, TrackBallType::AXIAL);
+             }},
 
  // translate
-        {Key::UP,
-         [](TrackBallType& t) {
-             translate(t, TrackBallType::VERTICAL, 1);
-         }},
-        {Key::DOWN,
-         [](TrackBallType& t) {
-             translate(t, TrackBallType::VERTICAL, -1);
-         }},
-        {Key::LEFT,
-         [](TrackBallType& t) {
-             translate(t, TrackBallType::HORIZONTAL, -1);
-         }},
-        {Key::RIGHT,
-         [](TrackBallType& t) {
-             translate(t, TrackBallType::HORIZONTAL, 1);
-         }},
+            {{Key::UP, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 translate(t, TrackBallType::VERTICAL, 1);
+             }},
+            {{Key::DOWN, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 translate(t, TrackBallType::VERTICAL, -1);
+             }},
+            {{Key::LEFT, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 translate(t, TrackBallType::HORIZONTAL, -1);
+             }},
+            {{Key::RIGHT, {KeyModifier::NO_MODIFIER}},
+             [](TrackBallType& t) {
+                 translate(t, TrackBallType::HORIZONTAL, 1);
+             }},
     };
 
 public:
@@ -215,7 +218,7 @@ public:
 
     void keyPress(Key::Enum key)
     {
-        auto it = keyAtomicMap.find(key);
+        auto it = keyAtomicMap.find({key, currentKeyModifiers});
         if (it != keyAtomicMap.end()) {
             it->second(trackball);
         }
