@@ -37,8 +37,11 @@ class DirectionalLight
 public:
     DirectionalLight() = default;
 
-    DirectionalLight(const vcl::Point3<ScalarType>& d, const vcl::Color& c) :
-            d(d), c(c)
+    DirectionalLight(
+        const vcl::Point3<ScalarType>& d,
+        const vcl::Color&              c = vcl::Color::White) :
+            d(d),
+            c(c)
     {
     }
 

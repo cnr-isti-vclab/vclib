@@ -71,6 +71,10 @@ void MinimalViewerWindow::onKeyPress(Key::Enum key)
 {
     MV::setKeyModifiers(modifiers());
 
+    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT]) {
+        MV::setDirectionalLightVisibility(true);
+    }
+
     switch (key) {
     case Key::C:
         std::cerr << "(" << MV::camera().eye() << ") "
@@ -112,21 +116,11 @@ void MinimalViewerWindow::onMouseMove(double x, double y)
 
 void MinimalViewerWindow::onMousePress(MouseButton::Enum button)
 {
-    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT] &&
-        button == MouseButton::LEFT)
-    {
-        MV::setDirectionalLightVisibility(true);
-    }
-
     MV::pressMouse(button);
 }
 
 void MinimalViewerWindow::onMouseRelease(MouseButton::Enum button)
 {
-    if (isDirectionalLightVisible() && button == MouseButton::LEFT) {
-        MV::setDirectionalLightVisibility(false);
-    }
-
     MV::releaseMouse(button);
 }
 

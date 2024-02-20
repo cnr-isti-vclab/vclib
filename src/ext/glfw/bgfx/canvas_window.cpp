@@ -197,7 +197,6 @@ void CanvasWindow::glfwKeyCallback(
         onKeyPress(k);
     }
     else if (action == GLFW_RELEASE) {
-        std::cerr << "key released: " << k << std::endl;
         if (isModifierKey(k)) {
             KeyModifiers mods = modifiers();
             mods[keyToModifier(k)] = false;

@@ -237,6 +237,15 @@ private:
         t.applyAtomicMotion(TrackBallType::ARC, Args(axis, angle));
     }
 
+    static void rotateLight(
+        TrackBallType&          t,
+        TrackBallType::ViewAxis axis,
+        Scalar                  angle = M_PI / 6)
+    {
+        using Args = typename TrackBallType::TransformArgs;
+        t.applyAtomicMotion(TrackBallType::DIR_LIGHT_ARC, Args(axis, angle));
+    }
+
     static void translate(
         TrackBallType&          t,
         TrackBallType::ViewAxis axis,

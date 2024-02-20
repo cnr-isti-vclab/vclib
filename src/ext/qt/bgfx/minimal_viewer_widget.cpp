@@ -76,6 +76,10 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key)
     qt::ScreenShotDialog dialog(this);
     MV::setKeyModifiers(modifiers());
 
+    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT]) {
+        MV::setDirectionalLightVisibility(true);
+    }
+
     switch (key) {
     case Key::C:
         std::cerr << "(" << MV::camera().eye() << ") "
@@ -134,12 +138,6 @@ void MinimalViewerWidget::onMouseMove(double x, double y)
 
 void MinimalViewerWidget::onMousePress(MouseButton::Enum button)
 {
-    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT] &&
-        button == MouseButton::LEFT)
-    {
-        MV::setDirectionalLightVisibility(true);
-    }
-
     MV::pressMouse(button);
     update();
 }

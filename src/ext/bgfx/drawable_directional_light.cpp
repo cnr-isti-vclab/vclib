@@ -83,8 +83,9 @@ void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
 
     // make the transform matrix such that the lines will be drawn in the
     // direction of the light
-    vcl::Matrix44f t = vcl::lookAtMatrix<vcl::Matrix44f>(
-        vcl::Point3f(0, 0, 0), light.direction(), vcl::Point3f(0, 0, 1));
+    vcl::Matrix44f t = vcl::rotationMatrix<vcl::Matrix44f>(
+        vcl::Point3f(0, 0, 1), l.direction());
+
     updateTransform(0, t);
 }
 
