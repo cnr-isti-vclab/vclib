@@ -95,9 +95,7 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key)
         }
         break;
 
-    case Key::A:
-        MV::toggleAxisVisibility();
-        break;
+    case Key::A: MV::toggleAxisVisibility(); break;
 
     default:
         MV::keyPress(key);
