@@ -70,13 +70,15 @@ private:
     std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
         dragMotionMap = {
             {{MouseButton::LEFT, {KeyModifier::NO_MODIFIER}},
-             TrackBallType::ARC                                                    },
-            {{MouseButton::LEFT, {KeyModifier::CONTROL}},       TrackBallType::PAN },
-            {{MouseButton::LEFT, {KeyModifier::SHIFT}},         TrackBallType::ZOOM},
+             TrackBallType::ARC                                                                   },
+            {{MouseButton::LEFT, {KeyModifier::CONTROL}},                      TrackBallType::PAN },
+            {{MouseButton::LEFT, {KeyModifier::SHIFT}},                        TrackBallType::ZOOM},
             {{MouseButton::MIDDLE, {KeyModifier::NO_MODIFIER}},
-             TrackBallType::PAN                                                    },
+             TrackBallType::PAN                                                                   },
             {{MouseButton::MIDDLE, {KeyModifier::CONTROL}},
-             TrackBallType::ROLL                                                   },
+             TrackBallType::ROLL                                                                  },
+            {{MouseButton::LEFT, {KeyModifier::SHIFT, KeyModifier::CONTROL}},
+             TrackBallType::DIR_LIGHT_ARC                                                         },
     };
 
     std::map<KeyModifiers, MotionType> wheelAtomicMap = {

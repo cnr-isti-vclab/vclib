@@ -30,6 +30,8 @@
 #include "camera.h"
 #include "lights/directional_light.h"
 
+#include <iostream>
+
 namespace vcl {
 
 /**
@@ -51,7 +53,7 @@ template<typename Scalar>
 class TrackBall
 {
 public:
-    enum MotionType { ARC, PAN, ROLL, ZOOM, MOTION_NUMBER };
+    enum MotionType { ARC, PAN, ROLL, ZOOM, DIR_LIGHT_ARC, MOTION_NUMBER };
 
     enum ViewAxis { HORIZONTAL, VERTICAL, AXIAL };
 
@@ -230,6 +232,10 @@ public:
 
     void endZoom() { setDragMotionValue(ZOOM, false); }
 
+    void beginDirectionalLightArc() { setDragMotionValue(DIR_LIGHT_ARC, true); }
+
+    void endDirectionalLightArc() { setDragMotionValue(DIR_LIGHT_ARC, false); }
+
     void setMousePosition(Scalar x, Scalar y)
     {
         prevMousePosition     = currMousePosition;
@@ -302,6 +308,7 @@ private:
         case PAN: dragPan(); break;
         case ROLL: dragRoll(); break;
         case ZOOM: dragZoom(); break;
+        case DIR_LIGHT_ARC: dragDirLightArc(); break;
         default: break;
         }
 
@@ -485,6 +492,35 @@ private:
         Scalar inc  = up ? dist : -dist;
 
         performZoom(inc);
+    }
+
+    /**-------------- Directional Light Arc --------------**/
+
+    void performDirLightArc(const Quaternion<Scalar>& rotation)
+    {
+        arcRotationSum *= rotation;
+        dl.direction() = arcRotationSum * dl.direction();
+    }
+
+    // atomic
+
+    void rotateDirLight(ViewAxis rot, Scalar angle = M_PI / 6)
+    {
+        switch (rot) {
+        case HORIZONTAL: performDirLightArc(Quaternion<Scalar>(-angle, Y)); break;
+        case VERTICAL: performDirLightArc(Quaternion<Scalar>(angle, X)); break;
+        case AXIAL: performDirLightArc(Quaternion<Scalar>(angle, Z)); break;
+        }
+    }
+
+    // drag
+
+    void dragDirLightArc()
+    {
+        stopVector = pointOnSphere(currMousePosition);
+        Quaternion<Scalar> rotation(startVector, stopVector);
+        performDirLightArc(rotation.conjugate());
+        startVector = stopVector;
     }
 };
 

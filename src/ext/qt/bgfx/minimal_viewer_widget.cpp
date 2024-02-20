@@ -124,6 +124,7 @@ void MinimalViewerWidget::onKeyRelease(Key::Enum key)
 void MinimalViewerWidget::onMouseMove(double x, double y)
 {
     MV::moveMouse(x, y);
+    MV::updateDirectionalLight();
 
     bgfx::setViewTransform(
         viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());

@@ -83,6 +83,11 @@ public:
     {
         directionalLight.setVisibility(b);
     }
+
+    void updateDirectionalLight()
+    {
+        directionalLight.update(light());
+    }
 };
 
 } // namespace vcl::bgf
