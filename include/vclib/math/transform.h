@@ -204,7 +204,7 @@ MatrixType rotationMatrix(
     const PointType& toVector)
 {
     MatrixType matrix;
-    matrix.setIdekntity();
+    matrix.setIdentity();
     setTransformMatrixRotation(matrix, fromVector, toVector);
     return matrix;
 }
