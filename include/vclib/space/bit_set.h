@@ -25,6 +25,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <ostream>
 
 #include <vclib/concepts/types.h>
 
@@ -242,7 +243,27 @@ public:
     }
 
     auto operator<=>(const BitSet<T>&) const = default;
+
+    /// @private
+    template<typename U>
+    friend std::ostream& operator<<(std::ostream& os, const BitSet<U>& bs);
 };
+
+/**
+ * @brief Output stream operator for BitSet
+ * @param[in] os: the output stream
+ * @param[in] bs: the BitSet to output
+ * @return the output stream
+ */
+template<typename T>
+std::ostream& operator<<(std::ostream& os, const BitSet<T>& bs)
+{
+    os << "BitSet<" << typeid(T).name() << ">(";
+    for (uint i = 0; i < bs.size(); i++)
+        os << bs[i];
+    os << ")";
+    return os;
+}
 
 /* Specialization Aliases */
 
