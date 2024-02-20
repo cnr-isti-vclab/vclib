@@ -94,6 +94,10 @@ private:
              [&](TrackBallType& t) {
                  t.reset(defaultTrackBallCenter, defaultTrackBallRadius);
              }},
+            {{Key::R, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+             [&](TrackBallType& t) {
+                 t.resetDirectionalLight();
+             }},
 
  // rotate
             {{Key::NP_1, {KeyModifier::NO_MODIFIER}},
@@ -137,6 +141,24 @@ private:
             {{Key::RIGHT, {KeyModifier::NO_MODIFIER}},
              [](TrackBallType& t) {
                  translate(t, TrackBallType::HORIZONTAL, 1);
+             }},
+
+ // rotate light
+            {{Key::NP_2, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+             [](TrackBallType& t) {
+                 rotateLight(t, TrackBallType::VERTICAL, -M_PI / 6);
+             }},
+            {{Key::NP_4, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+             [](TrackBallType& t) {
+                 rotateLight(t, TrackBallType::HORIZONTAL, -M_PI / 6);
+             }},
+            {{Key::NP_6, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+             [](TrackBallType& t) {
+                 rotateLight(t, TrackBallType::HORIZONTAL);
+             }},
+            {{Key::NP_8, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
+             [](TrackBallType& t) {
+                 rotateLight(t, TrackBallType::VERTICAL);
              }},
     };
 

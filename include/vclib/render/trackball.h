@@ -117,7 +117,6 @@ public:
 
     void reset(const Point3<Scalar>& center, Scalar radius = 1.0)
     {
-        dl.reset();
         cam.reset();
         cam.center() = center;
 
@@ -136,6 +135,11 @@ public:
 
         updateCameraEye();
         cam.updateMatrix();
+    }
+
+    void resetDirectionalLight()
+    {
+        dl.reset();
     }
 
     // Settings member functions
@@ -188,6 +192,7 @@ public:
             switch (motion) {
             case ARC: rotate(args.axis, args.scalar); break;
             case PAN: translate(args.axis, args.scalar); break;
+            case DIR_LIGHT_ARC: rotateDirLight(args.axis, args.scalar); break;
             default: break;
             }
         }
@@ -498,8 +503,8 @@ private:
 
     void performDirLightArc(const Quaternion<Scalar>& rotation)
     {
-        arcRotationSum *= rotation;
-        dl.direction() = arcRotationSum * dl.direction();
+        dl.direction() = rotation.conjugate() * dl.direction();
+        dl.direction().normalize();
     }
 
     // atomic

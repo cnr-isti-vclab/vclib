@@ -51,6 +51,26 @@ Key::Enum fromQt(Qt::Key key, Qt::KeyboardModifiers modifiers)
             uint diff = key - Qt::Key_0;
             return static_cast<Key::Enum>(Key::NP_0 + diff);
         }
+        // if shift is pressed, Qt changes the numpad keys to the corresponding
+        // arrow keys
+        if (modifiers & Qt::ShiftModifier) {
+            if (key == Qt::Key_Left)
+                return Key::NP_4;
+            if (key == Qt::Key_Right)
+                return Key::NP_6;
+            if (key == Qt::Key_Up)
+                return Key::NP_8;
+            if (key == Qt::Key_Down)
+                return Key::NP_2;
+            if (key == Qt::Key_PageUp)
+                return Key::NP_9;
+            if (key == Qt::Key_PageDown)
+                return Key::NP_3;
+            if (key == Qt::Key_Home)
+                return Key::NP_7;
+            if (key == Qt::Key_End)
+                return Key::NP_1;
+        }
     }
     return static_cast<Key::Enum>(key);
 }

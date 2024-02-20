@@ -87,6 +87,7 @@ public:
     void updateDirectionalLight()
     {
         directionalLight.update(light());
+        directionalLightUniforms.updateLight(light());
     }
 };
 

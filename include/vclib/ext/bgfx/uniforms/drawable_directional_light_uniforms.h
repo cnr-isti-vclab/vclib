@@ -31,7 +31,7 @@ namespace vcl::bgf {
 
 class DrawableDirectionalLightUniforms
 {
-    float lightColor[4] = {1.0, 0.0, 0.0, 1.0};
+    float lightColor[4] = {1.0, 1.0, 0.0, 1.0};
 
     ShaderUniform lightColorUniform = ShaderUniform(
         "u_drawableDirectionalLightColor",

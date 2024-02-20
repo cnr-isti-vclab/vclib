@@ -40,7 +40,7 @@ class DrawableDirectionalLight : public DrawableObjectI
     DirectionalLight<float> light;
     float transform[32]; // two 4x4 matrices, first rotate, second translate
     std::vector<float> vertices;
-    vcl::Color         lColor = vcl::Color::Red;
+    vcl::Color         lColor = vcl::Color::Yellow;
 
     bgfx::VertexBufferHandle vertexCoordBH = BGFX_INVALID_HANDLE;
 

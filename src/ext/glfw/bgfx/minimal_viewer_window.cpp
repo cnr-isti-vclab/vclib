@@ -90,6 +90,8 @@ void MinimalViewerWindow::onKeyPress(Key::Enum key)
             viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
         break;
     }
+
+    MV::updateDirectionalLight();
 }
 
 void MinimalViewerWindow::onKeyRelease(Key::Enum key)

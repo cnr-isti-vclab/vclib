@@ -108,6 +108,7 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key)
         break;
     }
 
+    MV::updateDirectionalLight();
     update();
 }
 
@@ -144,10 +145,6 @@ void MinimalViewerWidget::onMousePress(MouseButton::Enum button)
 
 void MinimalViewerWidget::onMouseRelease(MouseButton::Enum button)
 {
-    if (isDirectionalLightVisible() && button == MouseButton::LEFT) {
-        MV::setDirectionalLightVisibility(false);
-    }
-
     MV::releaseMouse(button);
     update();
 }
