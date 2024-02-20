@@ -97,6 +97,15 @@ struct Key
         RIGHT = 0x01000014,
         DOWN  = 0x01000015,
 
+        SHIFT       = 0x01000020, // modifiers
+        CONTROL     = 0x01000021,
+        SUPER       = 0x01000022,
+        ALT         = 0x01000023,
+
+        CAPS_LOCK   = 0x01000024,
+        NUM_LOCK    = 0x01000025,
+        SCROLL_LOCK = 0x01000026,
+
         F1  = 0x01000030,
         F2  = 0x01000031,
         F3  = 0x01000032,
@@ -124,6 +133,40 @@ struct Key
         UNKNOWN = 0x01ffffff
     };
 };
+
+inline bool isModifierKey(Key::Enum key)
+{
+    return key == Key::SHIFT || key == Key::CONTROL || key == Key::SUPER ||
+           key == Key::ALT;
+}
+
+inline Key::Enum modifierToKey(KeyModifier::Enum modifier)
+{
+    switch (modifier) {
+    case KeyModifier::SHIFT:
+        return Key::SHIFT;
+    case KeyModifier::CONTROL:
+        return Key::CONTROL;
+    case KeyModifier::ALT:
+        return Key::ALT;
+    default:
+        return Key::UNKNOWN;
+    }
+}
+
+inline KeyModifier::Enum keyToModifier(Key::Enum key)
+{
+    switch (key) {
+    case Key::SHIFT:
+        return KeyModifier::SHIFT;
+    case Key::CONTROL:
+        return KeyModifier::CONTROL;
+    case Key::ALT:
+        return KeyModifier::ALT;
+    default:
+        return KeyModifier::NO_MODIFIER;
+    }
+}
 
 } // namespace vcl
 

@@ -84,6 +84,18 @@ vcl::Key::Enum fromGLFW(Key key)
     case GLFW_KEY_UP: return vcl::Key::UP;
     case GLFW_KEY_DOWN: return vcl::Key::DOWN;
 
+    case GLFW_KEY_LEFT_SHIFT: return vcl::Key::SHIFT;
+    case GLFW_KEY_RIGHT_SHIFT: return vcl::Key::SHIFT;
+    case GLFW_KEY_LEFT_CONTROL: return vcl::Key::CONTROL;
+    case GLFW_KEY_RIGHT_CONTROL: return vcl::Key::CONTROL;
+    case GLFW_KEY_LEFT_SUPER: return vcl::Key::SUPER;
+    case GLFW_KEY_RIGHT_SUPER: return vcl::Key::SUPER;
+    case GLFW_KEY_LEFT_ALT: return vcl::Key::ALT;
+    case GLFW_KEY_RIGHT_ALT: return vcl::Key::ALT;
+    case GLFW_KEY_CAPS_LOCK: return vcl::Key::CAPS_LOCK;
+    case GLFW_KEY_NUM_LOCK: return vcl::Key::NUM_LOCK;
+    case GLFW_KEY_SCROLL_LOCK: return vcl::Key::SCROLL_LOCK;
+
     case GLFW_KEY_F1: return vcl::Key::F1;
     case GLFW_KEY_F2: return vcl::Key::F2;
     case GLFW_KEY_F3: return vcl::Key::F3;

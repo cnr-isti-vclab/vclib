@@ -182,15 +182,29 @@ void CanvasWindow::glfwKeyCallback(
     int key,
     int,
     int action,
-    int mods)
+    int)
 {
-    Key::Enum    k         = glfw::fromGLFW((glfw::Key) key);
-    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
-    setModifiers(modifiers);
+    Key::Enum k = glfw::fromGLFW((glfw::Key) key);
+    // GLFW modifier does not work as expected: modifiers are not updated
+    // when a key modifier is released. We have to handle this manually.
     if (action == GLFW_PRESS) {
+        if (isModifierKey(k)) {
+            KeyModifiers mods = modifiers();
+            mods.at(KeyModifier::NO_MODIFIER) = false;
+            mods.at(keyToModifier(k)) = true;
+            setModifiers(mods);
+        }
         onKeyPress(k);
     }
     else if (action == GLFW_RELEASE) {
+        std::cerr << "key released: " << k << std::endl;
+        if (isModifierKey(k)) {
+            KeyModifiers mods = modifiers();
+            mods[keyToModifier(k)] = false;
+            if (mods.none())
+                mods[KeyModifier::NO_MODIFIER] = true;
+            setModifiers(mods);
+        }
         onKeyRelease(k);
     }
 }
@@ -199,12 +213,9 @@ void CanvasWindow::glfwMouseButtonCallback(
     GLFWwindow*,
     int button,
     int action,
-    int mods)
+    int)
 {
     glfw::MouseButton btn = (glfw::MouseButton) button;
-
-    KeyModifiers modifiers = glfw::fromGLFW((glfw::KeyboardModifiers) mods);
-    setModifiers(modifiers);
 
     if (action == GLFW_PRESS) {
         onMousePress(glfw::fromGLFW(btn));

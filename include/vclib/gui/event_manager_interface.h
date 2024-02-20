@@ -41,7 +41,7 @@ namespace vcl {
  */
 class EventManagerInterface
 {
-    KeyModifiers mods;
+    KeyModifiers mods = {KeyModifier::NO_MODIFIER};
 
 public:
     virtual ~EventManagerInterface() = default;
