@@ -56,7 +56,7 @@ public:
 
     void operator=(bool bit)
     {
-        mask.get() = (mask.get() ^ (1 << index)) | (bit << index);
+        mask.get() = (mask.get() & ~(1 << index)) | (bit << index);
     }
 
     BitProxy& operator|=(bool bit)
