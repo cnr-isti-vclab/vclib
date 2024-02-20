@@ -61,7 +61,7 @@ DrawableDirectionalLight::DrawableDirectionalLight()
 
     // translation matrix stays fixed, in order to have the lines visible
     // in the viewport
-    Point3f center(0, 0, -3.25);
+    Point3f        center(0, 0, -3.25);
     vcl::Matrix44f t = vcl::Matrix44f::Identity();
     vcl::setTransformMatrixTranslation(t, center);
     updateTransform(1, t);
@@ -84,7 +84,7 @@ void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
     // make the transform matrix such that the lines will be drawn in the
     // direction of the light
     vcl::Matrix44f t = vcl::lookAtMatrix<vcl::Matrix44f>(
-         vcl::Point3f(0, 0, 0), light.direction(), vcl::Point3f(0, 0, 1));
+        vcl::Point3f(0, 0, 0), light.direction(), vcl::Point3f(0, 0, 1));
     updateTransform(0, t);
 }
 

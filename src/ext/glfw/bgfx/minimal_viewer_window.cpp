@@ -78,9 +78,7 @@ void MinimalViewerWindow::onKeyPress(Key::Enum key)
                   << "(" << MV::camera().up() << ")\n";
         break;
 
-    case Key::A:
-        MV::toggleAxisVisibility();
-        break;
+    case Key::A: MV::toggleAxisVisibility(); break;
 
     default:
         MV::keyPress(key);
