@@ -42,7 +42,6 @@ namespace vcl {
  * @param matrix
  * @param axis
  * @param angleRad
- * @return
  */
 template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotation(
@@ -77,7 +76,6 @@ void setTransformMatrixRotation(
  * @param matrix
  * @param axis
  * @param angleDeg
- * @return
  */
 template<typename MatrixType, PointConcept PointType, typename ScalarType>
 void setTransformMatrixRotationDeg(
@@ -86,6 +84,35 @@ void setTransformMatrixRotationDeg(
     const ScalarType& angleDeg)
 {
     setTransformMatrixRotation(matrix, axis, vcl::toRad(angleDeg));
+}
+
+/**
+ * @brief Given two 3D vectors, fills the given matrix with a transform matrix
+ * that represents the rotation matrix from the first vector to the second
+ * vector.
+ *
+ * The given matrix must be at least a 3x3 matrix. If the matrix is a higher
+ * than 3x3 (e.g. 4x4), only the 3x3 submatrix will be set, leaving unchanged
+ * the other values.
+ *
+ * @param matrix
+ * @param fromVector
+ * @param toVector
+ */
+template<typename MatrixType, PointConcept PointType>
+void setTransformMatrixRotation(
+    MatrixType& matrix,
+    const PointType& fromVector,
+    const PointType& toVector)
+{
+    if (fromVector == toVector) {
+        matrix.setIdentity();
+        return;
+    }
+    PointType axis = fromVector.cross(toVector);
+    auto      angle = std::acos(
+        fromVector.dot(toVector) / (fromVector.norm() * toVector.norm()));
+    setTransformMatrixRotation(matrix, axis, angle);
 }
 
 template<typename MatrixType, PointConcept PointType>
@@ -143,9 +170,10 @@ MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
  * matrix with a transform matrix that represents the rotation matrix of the
  * given axis/angle.
  *
- * The given matrix must be at least a 3x3 matrix. If the matrix is a higher
- * than 3x3 (e.g. 4x4), only the 3x3 submatrix will be set, leaving unchanged
- * the other values.
+ * The MatrixType must be at least a 3x3 matrix having the setIdentity() member
+ * function. If the matrix is a higher than 3x3 (e.g. 4x4), only the 3x3
+ * submatrix will be set, leaving the identity values in the other cells of the
+ * matrix.
  *
  * @param axis
  * @param angleDeg
@@ -155,6 +183,30 @@ template<typename MatrixType, PointConcept PointType, typename ScalarType>
 MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg)
 {
     return rotationMatrix<MatrixType>(axis, vcl::toRad(angleDeg));
+}
+
+/**
+ * @brief Given two 3D vectors, returns a transform matrix that represents the
+ * rotation matrix from the first vector to the second vector.
+ *
+ * The MatrixType must be at least a 3x3 matrix having the setIdentity() member
+ * function. If the matrix is a higher than 3x3 (e.g. 4x4), only the 3x3
+ * submatrix will be set, leaving the identity values in the other cells of the
+ * matrix.
+ *
+ * @param fromVector
+ * @param toVector
+ * @return
+ */
+template<typename MatrixType, PointConcept PointType>
+MatrixType rotationMatrix(
+    const PointType& fromVector,
+    const PointType& toVector)
+{
+    MatrixType matrix;
+    matrix.setIdekntity();
+    setTransformMatrixRotation(matrix, fromVector, toVector);
+    return matrix;
 }
 
 } // namespace vcl
