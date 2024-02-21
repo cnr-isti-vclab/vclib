@@ -137,10 +137,7 @@ public:
         cam.updateMatrix();
     }
 
-    void resetDirectionalLight()
-    {
-        dl.reset();
-    }
+    void resetDirectionalLight() { dl.reset(); }
 
     // Settings member functions
 
@@ -512,7 +509,9 @@ private:
     void rotateDirLight(ViewAxis rot, Scalar angle = M_PI / 6)
     {
         switch (rot) {
-        case HORIZONTAL: performDirLightArc(Quaternion<Scalar>(-angle, Y)); break;
+        case HORIZONTAL:
+            performDirLightArc(Quaternion<Scalar>(-angle, Y));
+            break;
         case VERTICAL: performDirLightArc(Quaternion<Scalar>(angle, X)); break;
         case AXIAL: performDirLightArc(Quaternion<Scalar>(angle, Z)); break;
         }

@@ -177,28 +177,23 @@ void CanvasWindow::glfwWindowSizeCallback(GLFWwindow*, int width, int height)
     onResize(width, height);
 }
 
-void CanvasWindow::glfwKeyCallback(
-    GLFWwindow*,
-    int key,
-    int,
-    int action,
-    int)
+void CanvasWindow::glfwKeyCallback(GLFWwindow*, int key, int, int action, int)
 {
     Key::Enum k = glfw::fromGLFW((glfw::Key) key);
     // GLFW modifier does not work as expected: modifiers are not updated
     // when a key modifier is released. We have to handle this manually.
     if (action == GLFW_PRESS) {
         if (isModifierKey(k)) {
-            KeyModifiers mods = modifiers();
+            KeyModifiers mods                 = modifiers();
             mods.at(KeyModifier::NO_MODIFIER) = false;
-            mods.at(keyToModifier(k)) = true;
+            mods.at(keyToModifier(k))         = true;
             setModifiers(mods);
         }
         onKeyPress(k);
     }
     else if (action == GLFW_RELEASE) {
         if (isModifierKey(k)) {
-            KeyModifiers mods = modifiers();
+            KeyModifiers mods      = modifiers();
             mods[keyToModifier(k)] = false;
             if (mods.none())
                 mods[KeyModifier::NO_MODIFIER] = true;

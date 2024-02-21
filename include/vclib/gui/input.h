@@ -97,10 +97,10 @@ struct Key
         RIGHT = 0x01000014,
         DOWN  = 0x01000015,
 
-        SHIFT       = 0x01000020, // modifiers
-        CONTROL     = 0x01000021,
-        SUPER       = 0x01000022,
-        ALT         = 0x01000023,
+        SHIFT   = 0x01000020, // modifiers
+        CONTROL = 0x01000021,
+        SUPER   = 0x01000022,
+        ALT     = 0x01000023,
 
         CAPS_LOCK   = 0x01000024,
         NUM_LOCK    = 0x01000025,
@@ -143,28 +143,20 @@ inline bool isModifierKey(Key::Enum key)
 inline Key::Enum modifierToKey(KeyModifier::Enum modifier)
 {
     switch (modifier) {
-    case KeyModifier::SHIFT:
-        return Key::SHIFT;
-    case KeyModifier::CONTROL:
-        return Key::CONTROL;
-    case KeyModifier::ALT:
-        return Key::ALT;
-    default:
-        return Key::UNKNOWN;
+    case KeyModifier::SHIFT: return Key::SHIFT;
+    case KeyModifier::CONTROL: return Key::CONTROL;
+    case KeyModifier::ALT: return Key::ALT;
+    default: return Key::UNKNOWN;
     }
 }
 
 inline KeyModifier::Enum keyToModifier(Key::Enum key)
 {
     switch (key) {
-    case Key::SHIFT:
-        return KeyModifier::SHIFT;
-    case Key::CONTROL:
-        return KeyModifier::CONTROL;
-    case Key::ALT:
-        return KeyModifier::ALT;
-    default:
-        return KeyModifier::NO_MODIFIER;
+    case Key::SHIFT: return KeyModifier::SHIFT;
+    case Key::CONTROL: return KeyModifier::CONTROL;
+    case Key::ALT: return KeyModifier::ALT;
+    default: return KeyModifier::NO_MODIFIER;
     }
 }
 
