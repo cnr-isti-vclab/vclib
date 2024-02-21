@@ -23,61 +23,36 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <bgfx/bgfx.h>
+#include <vclib/algorithms/update/color.h>
+#include <vclib/algorithms/update/normal.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes/tri_mesh.h>
 
-#include <vclib/ext/bgfx/shader_programs/load_program.h>
-#include <vclib/space/color.h>
+#include <vclib/ext/bgfx/drawable_mesh.h>
 
-struct Vertex
+vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh()
 {
-    float    pos[2];
-    uint32_t abgr;
-};
+    // load a mesh:
+    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
+    vcl::updatePerVertexAndFaceNormals(m);
 
-static const Vertex vertices[] {
-    {{-1.0f, -1.0f}, vcl::Color(vcl::Color::Red).abgr()  },
-    {{1.0f, -1.0f},  vcl::Color(vcl::Color::Green).abgr()},
-    {{0.0f, 1.0f},   vcl::Color(vcl::Color::Blue).abgr() },
-};
+    // enable the vertex color of the mesh and set it to gray
+    m.enablePerVertexColor();
+    vcl::setPerVertexColor(m, vcl::Color::Gray);
 
-inline void setUpBGFX(
-    bgfx::ViewId              viewId,
-    bgfx::VertexBufferHandle& vbh,
-    bgfx::ProgramHandle&      program)
-{
-    vcl::Color backgroundColor = vcl::Color::Black;
+    // create a MeshRenderSettings object, that allows to set the rendering
+    // options of the mesh
+    // default is what we want: color per vertex, smooth shading, no wireframe
+    vcl::MeshRenderSettings settings(m);
 
-    bgfx::setViewClear(
-        viewId,
-        BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-        backgroundColor.rgba(),
-        1.0f,
-        0);
+    // create a DrawableMesh object from the mesh
+    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable(m);
 
-    bgfx::VertexLayout layout;
+    // set the settings to the drawable mesh
+    drawable.setRenderSettings(settings);
 
-    layout.begin()
-        .add(bgfx::Attrib::Position, 2, bgfx::AttribType::Float)
-        .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-        .end();
-
-    vbh = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertices, sizeof(vertices)), layout);
-
-    program = vcl::bgf::loadProgram(
-        "shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
-
-    bgfx::touch(viewId);
+    return drawable;
 }
 
-inline void drawOnView(
-    bgfx::ViewId                    viewId,
-    const bgfx::VertexBufferHandle& vbh,
-    const bgfx::ProgramHandle&      program)
-{
-    bgfx::setVertexBuffer(0, vbh);
-
-    bgfx::submit(viewId, program);
-}
 
 #endif // COMMON_H

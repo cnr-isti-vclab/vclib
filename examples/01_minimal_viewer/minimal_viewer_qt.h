@@ -23,21 +23,12 @@
 #ifndef MINIMAL_VIEWER_QT_H
 #define MINIMAL_VIEWER_QT_H
 
-#include <vclib/ext/qt/bgfx/canvas_widget.h>
+#include <vclib/ext/qt/bgfx/minimal_viewer_widget.h>
 
-class MinimalViewerQt : public vcl::qbgf::CanvasWidget
+class MinimalViewerQt : public vcl::qbgf::MinimalViewerWidget
 {
 public:
     MinimalViewerQt();
-
-    ~MinimalViewerQt();
-
-    void draw() override;
-
-private:
-    bgfx::VertexBufferHandle vbh;
-
-    bgfx::ProgramHandle program;
 };
 
 #endif // MINIMAL_VIEWER_QT_H

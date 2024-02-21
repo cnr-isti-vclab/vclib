@@ -45,10 +45,10 @@ MinimalViewer::MinimalViewer(
     setDrawableObjectVector(v);
 }
 
-std::shared_ptr<const DrawableObjectVector> MinimalViewer::
+const DrawableObjectVector& MinimalViewer::
     drawableObjectVector() const
 {
-    return drawList;
+    return *drawList;
 }
 
 void MinimalViewer::setDrawableObjectVector(
@@ -57,13 +57,15 @@ void MinimalViewer::setDrawableObjectVector(
     drawList = v;
 
     for (DrawableObjectI* obj : *drawList) {
-        obj->init();
-
-        DrawableMeshI* mesh = dynamic_cast<DrawableMeshI*>(obj);
-        if (mesh) {
-            mesh->setShaderProgram(meshProgram);
-        }
+        initDrawableObject(*obj);
     }
+}
+
+uint MinimalViewer::pushDrawableObject(const DrawableObjectI& obj)
+{
+    drawList->pushBack(obj);
+    initDrawableObject(drawList->back());
+    return drawList->size() - 1;
 }
 
 void MinimalViewer::fitScene()
@@ -94,6 +96,17 @@ void MinimalViewer::draw(uint viewId)
 
     if (directionalLight.isVisible()) {
         directionalLight.draw(viewId);
+    }
+}
+
+
+void MinimalViewer::initDrawableObject(DrawableObjectI& obj)
+{
+    obj.init();
+
+    DrawableMeshI* mesh = dynamic_cast<DrawableMeshI*>(&obj);
+    if (mesh) {
+        mesh->setShaderProgram(meshProgram);
     }
 }
 

@@ -95,7 +95,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 void Canvas::frame()
 {
     bgfx::setViewFrameBuffer(view, fbh);
-    // bgfx::touch(view);
+    bgfx::touch(view);
     draw();
     bgfx::frame();
 }

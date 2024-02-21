@@ -23,21 +23,12 @@
 #ifndef MINIMAL_VIEWER_GLFW_H
 #define MINIMAL_VIEWER_GLFW_H
 
-#include <vclib/ext/glfw/bgfx/canvas_window.h>
+#include <vclib/ext/glfw/bgfx/minimal_viewer_window.h>
 
-class MinimalViewerGLFW : public vcl::bglfwx::CanvasWindow
+class MinimalViewerGLFW : public vcl::bglfwx::MinimalViewerWindow
 {
 public:
     MinimalViewerGLFW();
-
-    ~MinimalViewerGLFW();
-
-    void draw() override;
-
-private:
-    bgfx::VertexBufferHandle vbh;
-
-    bgfx::ProgramHandle program;
 };
 
 #endif // MINIMAL_VIEWER_GLFW_H

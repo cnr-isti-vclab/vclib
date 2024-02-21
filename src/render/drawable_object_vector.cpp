@@ -95,6 +95,26 @@ std::size_t DrawableObjectVector::size() const
     return drawVector.size();
 }
 
+DrawableObjectI& DrawableObjectVector::front()
+{
+    return *drawVector.front();
+}
+
+const DrawableObjectI& DrawableObjectVector::front() const
+{
+    return *drawVector.front();
+}
+
+DrawableObjectI& DrawableObjectVector::back()
+{
+    return *drawVector.back();
+}
+
+const DrawableObjectI& DrawableObjectVector::back() const
+{
+    return *drawVector.back();
+}
+
 void DrawableObjectVector::clear()
 {
     // delete all the DrawableObjects

@@ -25,18 +25,14 @@
 #include "common.h"
 
 MinimalViewerQt::MinimalViewerQt() :
-        vcl::qbgf::CanvasWidget("Hello Triangle Qt")
+        vcl::qbgf::MinimalViewerWidget("Minimal Viewer Qt")
 {
-    setUpBGFX(viewId(), vbh, program);
-}
+    // load and set up a drawable mesh
+    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
 
-MinimalViewerQt::~MinimalViewerQt()
-{
-    bgfx::destroy(vbh);
-    bgfx::destroy(program);
-}
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    vcl::qbgf::MinimalViewerWidget::pushDrawableObject(drawable);
 
-void MinimalViewerQt::draw()
-{
-    drawOnView(viewId(), vbh, program);
+    vcl::qbgf::MinimalViewerWidget::fitScene();
 }

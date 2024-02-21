@@ -31,15 +31,15 @@ MinimalViewerWindow::MinimalViewerWindow(
     const std::string&                    windowTitle,
     uint                                  width,
     uint                                  height) :
-        CanvasWindow(width, height),
+        CanvasWindow(windowTitle, width, height),
         MinimalViewer(v, width, height)
 {
 }
 
 MinimalViewerWindow::MinimalViewerWindow(
-    std::string& windowTitle,
-    uint         width,
-    uint         height) :
+    const std::string& windowTitle,
+    uint               width,
+    uint               height) :
         MinimalViewerWindow(
             std::make_shared<DrawableObjectVector>(),
             windowTitle,

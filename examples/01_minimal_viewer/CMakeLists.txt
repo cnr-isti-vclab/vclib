@@ -44,4 +44,9 @@ elseif (TARGET vclib-external-glfw)
     list(APPEND SOURCES minimal_viewer_glfw.cpp)
 endif()
 
+# will create a target called 'vclib-render-${EXAMPLE_NAME}-example'
 vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
+
+# this target will use the vclib_render bgfx shaders, therefore we need to
+# expose them to the target
+target_expose_vclib_bgfx_shaders(${PROJECT_NAME})

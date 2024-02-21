@@ -64,9 +64,11 @@ public:
         uint                                  width  = 1024,
         uint                                  height = 768);
 
-    std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const;
+    const DrawableObjectVector& drawableObjectVector() const;
 
     void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
+
+    uint pushDrawableObject(const DrawableObjectI& obj);
 
     void fitScene();
 
@@ -89,6 +91,9 @@ public:
         directionalLight.update(light());
         directionalLightUniforms.updateLight(light());
     }
+
+private:
+    void initDrawableObject(DrawableObjectI& obj);
 };
 
 } // namespace vcl::bgf

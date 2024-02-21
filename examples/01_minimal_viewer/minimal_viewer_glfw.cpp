@@ -25,18 +25,14 @@
 #include "common.h"
 
 MinimalViewerGLFW::MinimalViewerGLFW() :
-        vcl::bglfwx::CanvasWindow("Minimal Viewer GLFW")
+        vcl::bglfwx::MinimalViewerWindow("Minimal Viewer GLFW")
 {
-    setUpBGFX(viewId(), vbh, program);
-}
+    // load and set up a drawable mesh
+    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
 
-MinimalViewerGLFW::~MinimalViewerGLFW()
-{
-    bgfx::destroy(vbh);
-    bgfx::destroy(program);
-}
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    vcl::bglfwx::MinimalViewerWindow::pushDrawableObject(drawable);
 
-void MinimalViewerGLFW::draw()
-{
-    drawOnView(viewId(), vbh, program);
+    vcl::bglfwx::MinimalViewerWindow::fitScene();
 }

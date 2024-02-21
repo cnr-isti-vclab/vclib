@@ -59,6 +59,14 @@ public:
 
     std::size_t size() const;
 
+    DrawableObjectI& front();
+
+    const DrawableObjectI& front() const;
+
+    DrawableObjectI& back();
+
+    const DrawableObjectI& back() const;
+
     void clear();
 
     vcl::Box3d boundingBox(bool onlyVisible = true) const;
