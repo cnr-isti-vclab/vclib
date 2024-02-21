@@ -101,7 +101,7 @@ void setTransformMatrixRotationDeg(
  */
 template<typename MatrixType, PointConcept PointType>
 void setTransformMatrixRotation(
-    MatrixType& matrix,
+    MatrixType&      matrix,
     const PointType& fromVector,
     const PointType& toVector)
 {
@@ -109,7 +109,7 @@ void setTransformMatrixRotation(
         matrix.setIdentity();
         return;
     }
-    PointType axis = fromVector.cross(toVector);
+    PointType axis  = fromVector.cross(toVector);
     auto      angle = std::acos(
         fromVector.dot(toVector) / (fromVector.norm() * toVector.norm()));
     setTransformMatrixRotation(matrix, axis, angle);
