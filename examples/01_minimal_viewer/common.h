@@ -54,5 +54,4 @@ vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh()
     return drawable;
 }
 
-
 #endif // COMMON_H
