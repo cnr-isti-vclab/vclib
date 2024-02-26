@@ -80,6 +80,30 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/drawable_mesh.h
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
+        include/vclib/ext/bgfx/font/cube_atlas.h
+        include/vclib/ext/bgfx/font/font_manager.h
+        include/vclib/ext/bgfx/font/text_buffer_manager.h
+        include/vclib/ext/bgfx/font/text_metrics.h
+        include/vclib/ext/bgfx/font/utf8.h
+
+        # remove these
+        include/vclib/ext/bgfx/font/shaders/fs_font_basic.bin.h
+        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field.bin.h
+        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_drop_shadow.bin.h
+        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_drop_shadow_image.bin.h
+        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline.bin.h
+        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline_drop_shadow_image.bin.h
+        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline_image.bin.h
+        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_subpixel.bin.h
+        include/vclib/ext/bgfx/font/shaders/vs_font_basic.bin.h
+        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field.bin.h
+        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_drop_shadow.bin.h
+        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_drop_shadow_image.bin.h
+        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline.bin.h
+        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline_drop_shadow_image.bin.h
+        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline_image.bin.h
+        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_subpixel.bin.h
+
         include/vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_mesh_shader_program.h
@@ -99,6 +123,11 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/drawable_axis.cpp
         src/ext/bgfx/drawable_directional_light.cpp
         src/ext/bgfx/minimal_viewer.cpp
+        src/ext/bgfx/font/cube_atlas.cpp
+        src/ext/bgfx/font/font_manager.cpp
+        src/ext/bgfx/font/text_buffer_manager.cpp
+        src/ext/bgfx/font/text_metrics.cpp
+        src/ext/bgfx/font/utf8.cpp
         src/ext/bgfx/shader_programs/load_program.cpp)
 
     set(SHADERS

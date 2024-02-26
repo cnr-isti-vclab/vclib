@@ -37,6 +37,8 @@ if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
     set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
 
     target_link_libraries(vclib-external-bgfx INTERFACE bx bgfx bimg)
+    target_include_directories(vclib-external-bgfx
+        INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
 
     set_target_properties(vclib-external-bgfx PROPERTIES BGFX_DIR ${VCLIB_BGFX_DIR})
 
