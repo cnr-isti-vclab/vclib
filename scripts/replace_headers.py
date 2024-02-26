@@ -50,6 +50,20 @@ def replace_cmake_headers_in_dir(folder_path, recursive=True):
         elif file_path.endswith(('CMakeLists.txt', '.cmake')):
             replace_header(file_path, header_string, start='#*')
 
+def replace_shader_headers_in_dir(folder_path):
+    # get the path where this script is located
+    path = os.path.dirname(os.path.abspath(__file__))
+
+    # Read in the file
+    with open(path + '/templates/header.txt', 'r') as file :
+        header_string = file.read()
+
+    for file_path in glob.glob(os.path.join(folder_path, '*')):
+        if os.path.isdir(file_path):
+            replace_shader_headers_in_dir(file_path)
+        elif file_path.endswith(('.sc', '.sh')):
+            replace_header(file_path, header_string)
+
 if __name__ == "__main__":
     replace_headers_in_dir('../include/vclib/')
     replace_headers_in_dir('../test/')
@@ -58,3 +72,10 @@ if __name__ == "__main__":
     replace_cmake_headers_in_dir('../external/', recursive=False)
     replace_cmake_headers_in_dir('../cmake/')
     replace_cmake_headers_in_dir('../test/')
+
+    # for vclib-render module, that has sources and shaders in different folders
+    if os.path.exists('../src/'):
+        replace_headers_in_dir('../src/')
+    
+    if os.path.exists('../shaders/'):
+        replace_shader_headers_in_dir('../shaders/')
