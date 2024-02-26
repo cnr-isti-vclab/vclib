@@ -23,9 +23,9 @@
 #ifndef VCL_SPACE_BIT_SET_H
 #define VCL_SPACE_BIT_SET_H
 
+#include <ostream>
 #include <stdexcept>
 #include <string>
-#include <ostream>
 
 #include <vclib/concepts/types.h>
 
