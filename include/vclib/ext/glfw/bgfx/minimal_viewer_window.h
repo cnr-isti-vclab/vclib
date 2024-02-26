@@ -49,8 +49,8 @@ public:
 
     MinimalViewerWindow(
         const std::string& windowTitle,
-        uint         width  = 1024,
-        uint         height = 768);
+        uint               width  = 1024,
+        uint               height = 768);
 
     MinimalViewerWindow(uint width = 1024, uint height = 768);
 

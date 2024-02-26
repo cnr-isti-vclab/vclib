@@ -45,8 +45,7 @@ MinimalViewer::MinimalViewer(
     setDrawableObjectVector(v);
 }
 
-const DrawableObjectVector& MinimalViewer::
-    drawableObjectVector() const
+const DrawableObjectVector& MinimalViewer::drawableObjectVector() const
 {
     return *drawList;
 }
@@ -98,7 +97,6 @@ void MinimalViewer::draw(uint viewId)
         directionalLight.draw(viewId);
     }
 }
-
 
 void MinimalViewer::initDrawableObject(DrawableObjectI& obj)
 {
