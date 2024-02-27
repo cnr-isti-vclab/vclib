@@ -73,7 +73,7 @@ void Canvas::init(void* winId, uint width, uint height)
     m_fontManager = new FontManager(512);
     m_textBufferManager = new TextBufferManager(m_fontManager);
 
-    m_visitorTtf = loadTtf(*m_fontManager, "font/droidsans.ttf");
+    m_visitorTtf = loadTtf(*m_fontManager, "assets/fonts/droidsans.ttf");
     m_visitor10 = m_fontManager->createFontByPixelSize(m_visitorTtf, 0, 10);
 
     m_fontManager->preloadGlyph(m_visitor10, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");

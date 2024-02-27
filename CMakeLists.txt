@@ -37,8 +37,9 @@ add_subdirectory(external)
 
 if (TARGET vclib-external-bgfx)
     get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 endif()
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/functions.cmake)
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -69,6 +70,9 @@ if (APPLE)
     list (APPEND SOURCES
         src/gui/native_window_handle.mm)
 endif()
+
+set(ASSETS
+    assets/fonts/droidsans.ttf)
 
 if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
@@ -111,7 +115,7 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/font/utf8.cpp
         src/ext/bgfx/shader_programs/load_program.cpp)
 
-    set(SHADERS
+    list(APPEND SHADERS
         shaders/vclib/ext/bgfx/shaders_common.sh
         shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc
         shaders/vclib/ext/bgfx/drawable_axis/varying.def.sc
@@ -248,6 +252,11 @@ add_library(vclib-render ${VLIB_RENDER_LIB_TYPE}
 target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
 set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
+
+set_target_properties(vclib-render PROPERTIES
+    VCLIB_RENDER_ASSETS "${ASSETS}")
+
+target_add_assets(vclib-render ${ASSETS})
 
 if (TARGET vclib-external-qt)
     set_property(TARGET vclib-render PROPERTY AUTOMOC ON)

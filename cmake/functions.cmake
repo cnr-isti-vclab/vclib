@@ -20,33 +20,40 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-
-set(EXAMPLE_NAME 01-minimal-viewer)
-project(vclib-render-${EXAMPLE_NAME}-example)
-
-### Build settings
-set(CMAKE_CXX_STANDARD 20)
-
-set(HEADERS
-    common.h)
-
-set(SOURCES
-    main.cpp)
-
-if (TARGET vclib-external-qt)
-    add_compile_definitions(USE_QT)
-    list(APPEND HEADERS minimal_viewer_qt.h)
-    list(APPEND SOURCES minimal_viewer_qt.cpp)
-elseif (TARGET vclib-external-glfw)
-    add_compile_definitions(USE_GLFW)
-    list(APPEND HEADERS minimal_viewer_glfw.h)
-    list(APPEND SOURCES minimal_viewer_glfw.cpp)
+if (TARGET vclib-external-bgfx)
+    include(${CMAKE_CURRENT_LIST_DIR}/bgfx_config.cmake)
 endif()
 
-# will create a target called 'vclib-render-${EXAMPLE_NAME}-example'
-vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
+# Function to add a list of assets to a target
+function(target_add_assets target_name)
+    list(REMOVE_AT ARGV 0)
 
-# this target will use the vclib_render assets and bgfx shaders, therefore we
-# need to expose them to the target
-target_expose_vclib_assets_and_shaders(${PROJECT_NAME})
+    source_group("Asset Files" FILES ${ARGV})
+    target_sources(${target_name} PRIVATE ${ARGV})
+endfunction()
+
+# Function to make available the assets defined by vclib to the given target
+function(target_expose_vclib_assets target_name)
+    get_property(VCLIB_ASSETS TARGET vclib-render PROPERTY VCLIB_RENDER_ASSETS)
+    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+
+    foreach(ASSET ${VCLIB_ASSETS})
+        get_filename_component(DIR_PATH ${ASSET} DIRECTORY)
+        get_property(TARGET_BIN_DIR TARGET ${target_name} PROPERTY BINARY_DIR)
+
+        # copy file from "${VCLIB_RENDER_DIR}/../${ASSET}" to "${TARGET_BIN_DIR}/${ASSET}"
+        add_custom_command(
+            TARGET ${target_name}
+            PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "${VCLIB_RENDER_DIR}/../${ASSET}" "${TARGET_BIN_DIR}/${ASSET}"
+            COMMENT "Copying asset ${ASSET}"
+        )
+    endforeach()
+endfunction()
+
+function (target_expose_vclib_assets_and_shaders target_name)
+    target_expose_vclib_assets(${target_name})
+    if (TARGET vclib-external-bgfx)
+        target_expose_vclib_bgfx_shaders(${target_name})
+    endif()
+endfunction()
