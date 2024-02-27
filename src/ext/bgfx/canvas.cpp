@@ -24,6 +24,9 @@
 
 #include <vclib/gui/native_window_handle.h>
 
+#include <vector>
+#include <fstream>
+
 namespace vcl::bgf {
 
 Canvas::Canvas()
@@ -40,6 +43,16 @@ Canvas::~Canvas()
     if (bgfx::isValid(fbh))
         bgfx::destroy(fbh);
     Context::releaseViewId(view);
+
+    // text
+
+    m_fontManager->destroyFont(m_visitor10);
+    m_fontManager->destroyTtf(m_visitorTtf);
+
+    m_textBufferManager->destroyTextBuffer(m_transientText);
+
+    delete m_fontManager;
+    delete m_textBufferManager;
 }
 
 void Canvas::init(void* winId, uint width, uint height)
@@ -55,6 +68,20 @@ void Canvas::init(void* winId, uint width, uint height)
         view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::touch(view);
+
+    // text
+    m_fontManager = new FontManager(512);
+    m_textBufferManager = new TextBufferManager(m_fontManager);
+
+    m_visitorTtf = loadTtf(*m_fontManager, "font/droidsans.ttf");
+    m_visitor10 = m_fontManager->createFontByPixelSize(m_visitorTtf, 0, 10);
+
+    m_fontManager->preloadGlyph(m_visitor10, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
+
+    m_transientText = m_textBufferManager->createTextBuffer(
+        FONT_TYPE_ALPHA, BufferType::Transient);
+
+    // end text
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -97,6 +124,18 @@ void Canvas::frame()
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::touch(view);
     draw();
+
+    m_textBufferManager->clearTextBuffer(m_transientText);
+
+    // text will be black
+    m_textBufferManager->setTextColor(m_transientText, 0x000000ff);
+
+    m_textBufferManager->setPenPosition(m_transientText, 10.f, 10.0f);
+    m_textBufferManager->appendText(m_transientText, m_visitor10, "Transient\n");
+    m_textBufferManager->appendText(m_transientText, m_visitor10, "text buffer\n");
+
+    m_textBufferManager->submitTextBuffer(m_transientText, view);
+
     bgfx::frame();
 }
 
@@ -109,6 +148,29 @@ void Canvas::resize(uint width, uint height)
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::touch(view);
+}
+
+
+TrueTypeHandle Canvas::loadTtf(FontManager& fontManager, const char* filePath)
+{
+    std::vector<uint8_t> data;
+
+    // create ifstream from filePath
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file.is_open())
+        throw std::runtime_error("Could not open file");
+
+    // get the size of the file
+    file.seekg(0, std::ios::end);
+    size_t size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    // read the file and place it into the vector data
+    data.resize(size);
+    file.read((char*)data.data(), size);
+
+    TrueTypeHandle handle = fontManager.createTtf(data.data(), size);
+    return handle;
 }
 
 } // namespace vcl::bgf

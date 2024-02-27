@@ -85,25 +85,6 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/font/text_buffer_manager.h
         include/vclib/ext/bgfx/font/text_metrics.h
         include/vclib/ext/bgfx/font/utf8.h
-
-        # remove these
-        include/vclib/ext/bgfx/font/shaders/fs_font_basic.bin.h
-        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field.bin.h
-        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_drop_shadow.bin.h
-        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_drop_shadow_image.bin.h
-        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline.bin.h
-        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline_drop_shadow_image.bin.h
-        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline_image.bin.h
-        include/vclib/ext/bgfx/font/shaders/fs_font_distance_field_subpixel.bin.h
-        include/vclib/ext/bgfx/font/shaders/vs_font_basic.bin.h
-        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field.bin.h
-        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_drop_shadow.bin.h
-        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_drop_shadow_image.bin.h
-        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline.bin.h
-        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline_drop_shadow_image.bin.h
-        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline_image.bin.h
-        include/vclib/ext/bgfx/font/shaders/vs_font_distance_field_subpixel.bin.h
-
         include/vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_mesh_shader_program.h
@@ -144,6 +125,23 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc
         shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc
         shaders/vclib/ext/bgfx/drawable_mesh/uniforms.sh
+        shaders/vclib/ext/bgfx/font/fs_font_basic.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow_image.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline_drop_shadow_image.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline_image.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_subpixel.sc
+        shaders/vclib/ext/bgfx/font/varying.def.sc
+        shaders/vclib/ext/bgfx/font/vs_font_basic.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow_image.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline_drop_shadow_image.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline_image.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_subpixel.sc
         shaders/vclib/ext/bgfx/uniforms/camera_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/directional_light_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.sh

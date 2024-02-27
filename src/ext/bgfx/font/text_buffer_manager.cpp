@@ -26,7 +26,6 @@
  */
 
 #include <bgfx/bgfx.h>
-#include <bgfx/embedded_shader.h>
 
 #include <stddef.h> // offsetof
 #include <wchar.h>  // wcslen
@@ -35,44 +34,7 @@
 #include <vclib/ext/bgfx/font/utf8.h>
 #include <vclib/ext/bgfx/font/cube_atlas.h>
 
-#include <vclib/ext/bgfx/font/shaders/vs_font_basic.bin.h>
-#include <vclib/ext/bgfx/font/shaders/fs_font_basic.bin.h>
-#include <vclib/ext/bgfx/font/shaders/vs_font_distance_field.bin.h>
-#include <vclib/ext/bgfx/font/shaders/fs_font_distance_field.bin.h>
-#include <vclib/ext/bgfx/font/shaders/vs_font_distance_field_subpixel.bin.h>
-#include <vclib/ext/bgfx/font/shaders/fs_font_distance_field_subpixel.bin.h>
-#include <vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline.bin.h>
-#include <vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline.bin.h>
-#include <vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline_image.bin.h>
-#include <vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline_image.bin.h>
-#include <vclib/ext/bgfx/font/shaders/vs_font_distance_field_drop_shadow.bin.h>
-#include <vclib/ext/bgfx/font/shaders/fs_font_distance_field_drop_shadow.bin.h>
-#include <vclib/ext/bgfx/font/shaders/vs_font_distance_field_drop_shadow_image.bin.h>
-#include <vclib/ext/bgfx/font/shaders/fs_font_distance_field_drop_shadow_image.bin.h>
-#include <vclib/ext/bgfx/font/shaders/vs_font_distance_field_outline_drop_shadow_image.bin.h>
-#include <vclib/ext/bgfx/font/shaders/fs_font_distance_field_outline_drop_shadow_image.bin.h>
-
-static const bgfx::EmbeddedShader s_embeddedShaders[] =
-{
-	BGFX_EMBEDDED_SHADER(vs_font_basic),
-	BGFX_EMBEDDED_SHADER(fs_font_basic),
-	BGFX_EMBEDDED_SHADER(vs_font_distance_field),
-	BGFX_EMBEDDED_SHADER(fs_font_distance_field),
-	BGFX_EMBEDDED_SHADER(vs_font_distance_field_subpixel),
-	BGFX_EMBEDDED_SHADER(fs_font_distance_field_subpixel),
-	BGFX_EMBEDDED_SHADER(vs_font_distance_field_outline),
-	BGFX_EMBEDDED_SHADER(fs_font_distance_field_outline),
-	BGFX_EMBEDDED_SHADER(vs_font_distance_field_outline_image),
-	BGFX_EMBEDDED_SHADER(fs_font_distance_field_outline_image),
-	BGFX_EMBEDDED_SHADER(vs_font_distance_field_drop_shadow),
-	BGFX_EMBEDDED_SHADER(fs_font_distance_field_drop_shadow),
-	BGFX_EMBEDDED_SHADER(vs_font_distance_field_drop_shadow_image),
-	BGFX_EMBEDDED_SHADER(fs_font_distance_field_drop_shadow_image),
-	BGFX_EMBEDDED_SHADER(vs_font_distance_field_outline_drop_shadow_image),
-	BGFX_EMBEDDED_SHADER(fs_font_distance_field_outline_drop_shadow_image),
-
-	BGFX_EMBEDDED_SHADER_END()
-};
+#include <vclib/ext/bgfx/shader_programs/load_program.h>
 
 #define MAX_BUFFERED_CHARACTERS (8192 - 5)
 
@@ -847,53 +809,37 @@ TextBufferManager::TextBufferManager(FontManager* _fontManager)
 
 	bgfx::RendererType::Enum type = bgfx::getRendererType();
 
-	m_basicProgram = bgfx::createProgram(
-		  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_font_basic")
-		, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_font_basic")
-		, true
-		);
+	m_basicProgram = vcl::bgf::loadProgram(
+		"vclib/ext/bgfx/font/vs_font_basic",
+		"vclib/ext/bgfx/font/fs_font_basic");
 
-	m_distanceProgram = bgfx::createProgram(
-		  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_font_distance_field")
-		, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_font_distance_field")
-		, true
-		);
+	m_distanceProgram = vcl::bgf::loadProgram(
+		"vclib/ext/bgfx/font/vs_font_distance_field",
+		"vclib/ext/bgfx/font/fs_font_distance_field");
 
-	m_distanceSubpixelProgram = bgfx::createProgram(
-		  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_font_distance_field_subpixel")
-		, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_font_distance_field_subpixel")
-		, true
-		);
+	m_distanceSubpixelProgram = vcl::bgf::loadProgram(
+		"vclib/ext/bgfx/font/vs_font_distance_field_subpixel",
+		"vclib/ext/bgfx/font/fs_font_distance_field_subpixel");
 
-	m_distanceDropShadowProgram = bgfx::createProgram(
-		  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_font_distance_field_drop_shadow")
-		, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_font_distance_field_drop_shadow")
-		, true
-		);
+	m_distanceDropShadowProgram = vcl::bgf::loadProgram(
+		"vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow",
+		"vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow");
 
-	m_distanceDropShadowImageProgram = bgfx::createProgram(
-		  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_font_distance_field_drop_shadow_image")
-		, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_font_distance_field_drop_shadow_image")
-		, true
-		);
+	m_distanceDropShadowImageProgram = vcl::bgf::loadProgram(
+		"vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow_image",
+		"vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow_image");
 
-	m_distanceOutlineProgram = bgfx::createProgram(
-		  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_font_distance_field_outline")
-		, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_font_distance_field_outline")
-		, true
-		);
+	m_distanceOutlineProgram = vcl::bgf::loadProgram(
+		"vclib/ext/bgfx/font/vs_font_distance_field_outline",
+		"vclib/ext/bgfx/font/fs_font_distance_field_outline");
 
-	m_distanceOutlineImageProgram = bgfx::createProgram(
-		  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_font_distance_field_outline_image")
-		, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_font_distance_field_outline_image")
-		, true
-		);
+	m_distanceOutlineImageProgram = vcl::bgf::loadProgram(
+		"vclib/ext/bgfx/font/vs_font_distance_field_outline_image",
+		"vclib/ext/bgfx/font/fs_font_distance_field_outline_image");
 
-	m_distanceOutlineDropShadowImageProgram = bgfx::createProgram(
-		  bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_font_distance_field_outline_drop_shadow_image")
-		, bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_font_distance_field_outline_drop_shadow_image")
-		, true
-		);
+	m_distanceOutlineDropShadowImageProgram = vcl::bgf::loadProgram(
+		"vclib/ext/bgfx/font/vs_font_distance_field_outline_drop_shadow_image",
+		"vclib/ext/bgfx/font/fs_font_distance_field_outline_drop_shadow_image");
 
 	m_vertexLayout
 		.begin()

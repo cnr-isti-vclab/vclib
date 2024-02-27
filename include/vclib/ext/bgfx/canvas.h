@@ -27,6 +27,8 @@
 
 #include <vclib/types.h>
 
+#include <vclib/ext/bgfx/font/text_buffer_manager.h>
+
 namespace vcl::bgf {
 
 /**
@@ -64,6 +66,15 @@ class Canvas
     void*                   winID = nullptr;
     bgfx::FrameBufferHandle fbh;
 
+    // FontManager m_fontManager = FontManager(512);
+    // TextBufferManager m_textBufferManager = TextBufferManager(&m_fontManager);
+    FontManager* m_fontManager = nullptr;
+    TextBufferManager* m_textBufferManager = nullptr;
+    TextBufferHandle m_transientText;
+
+    FontHandle m_visitor10;
+    TrueTypeHandle m_visitorTtf;
+
     bgfx::ViewId view = 0;
 
 public:
@@ -88,6 +99,9 @@ protected:
     void frame();
 
     void resize(uint width, uint height);
+
+private:
+    static TrueTypeHandle loadTtf(FontManager& fontManager, const char* filePath);
 };
 
 } // namespace vcl::bgf
