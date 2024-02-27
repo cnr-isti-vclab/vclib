@@ -57,10 +57,6 @@ if (VCLIB_ALLOW_SYSTEM_QT)
             endif()
         endif()
 
-        set(CMAKE_AUTOMOC ON PARENT_SCOPE)
-        set(CMAKE_AUTORCC ON PARENT_SCOPE)
-        set(CMAKE_AUTOUIC ON PARENT_SCOPE)
-
         list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-qt)
     else()
         message(STATUS "- Qt - not found, skipping")
