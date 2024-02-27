@@ -222,6 +222,12 @@ target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
 set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
 
+if (TARGET vclib-external-qt)
+    set_property(TARGET vclib-render PROPERTY AUTOMOC ON)
+    set_property(TARGET vclib-render PROPERTY AUTORCC ON)
+    set_property(TARGET vclib-render PROPERTY AUTOUIC ON)
+endif()
+
 if (TARGET vclib-external-bgfx)
     set_target_properties(vclib-render PROPERTIES
         VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
