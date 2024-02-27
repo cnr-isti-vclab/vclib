@@ -127,6 +127,9 @@ function(_add_bgfx_shader FILE DIR TARGET)
 			COMMENT "Compiling shader ${PRINT_NAME} for ${OUTPUTS_PRETTY}"
 		)
 	endif()
+
+	target_sources(
+			${TARGET} PRIVATE ${FILE})
 endfunction()
 
 function(ide_add_bgfx_shaders target_name)
