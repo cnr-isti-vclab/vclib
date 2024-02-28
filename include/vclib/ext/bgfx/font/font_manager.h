@@ -32,6 +32,8 @@
 #include <bx/string.h>
 #include <bgfx/bgfx.h>
 
+namespace vcl::bgf {
+
 class Atlas;
 
 #define MAX_OPENED_FILES 64
@@ -240,5 +242,7 @@ private:
 	//temporary buffer to raster glyph
 	uint8_t* m_buffer;
 };
+
+} // namespace vcl::bgf
 
 #endif // FONT_MANAGER_H_HEADER_GUARD

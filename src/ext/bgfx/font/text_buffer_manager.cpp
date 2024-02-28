@@ -38,6 +38,8 @@
 
 #define MAX_BUFFERED_CHARACTERS (8192 - 5)
 
+namespace vcl::bgf {
+
 class TextBuffer
 {
 public:
@@ -1274,3 +1276,5 @@ TextRectangle TextBufferManager::getRectangle(TextBufferHandle _handle) const
 	BufferCache& bc = m_textBuffers[_handle.idx];
 	return bc.textBuffer->getRectangle();
 }
+
+} // namespace vcl::bgf

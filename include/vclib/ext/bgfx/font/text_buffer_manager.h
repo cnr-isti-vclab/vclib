@@ -30,6 +30,8 @@
 
 #include "font_manager.h"
 
+namespace vcl::bgf {
+
 BGFX_HANDLE(TextBufferHandle)
 
 #define MAX_TEXT_BUFFER_COUNT 64
@@ -129,5 +131,7 @@ private:
 	bgfx::ProgramHandle m_distanceDropShadowImageProgram;
 	bgfx::ProgramHandle m_distanceOutlineDropShadowImageProgram;
 };
+
+} // namespace vcl::bgf
 
 #endif // TEXT_BUFFER_MANAGER_H_HEADER_GUARD

@@ -47,6 +47,7 @@ namespace stl = tinystl;
 #include <vclib/ext/bgfx/font/font_manager.h>
 #include <vclib/ext/bgfx/font/cube_atlas.h>
 
+namespace vcl::bgf {
 
 class TrueTypeFont
 {
@@ -584,3 +585,5 @@ bool FontManager::addBitmap(GlyphInfo& _glyphInfo, const uint8_t* _data)
 		);
 	return true;
 }
+
+} // namespace vcl::bgf

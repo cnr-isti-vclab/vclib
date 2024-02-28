@@ -43,6 +43,8 @@
 
 #include <vclib/ext/bgfx/font/utf8.h>
 
+namespace vcl::bgf {
+
 static const uint8_t s_utf8d[364] =
 {
 	// The first part of the table maps bytes to character classes that
@@ -77,3 +79,5 @@ uint32_t utf8_decode(uint32_t* _state, uint32_t* _codep, uint8_t _ch)
 	*_state = s_utf8d[256 + *_state + type];
 	return *_state;
 }
+
+} // namespace vcl::bgf

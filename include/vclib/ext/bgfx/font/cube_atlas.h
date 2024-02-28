@@ -39,6 +39,8 @@
 
 #include <bgfx/bgfx.h>
 
+namespace vcl::bgf {
+
 struct AtlasRegion
 {
 	enum Type
@@ -172,5 +174,7 @@ private:
 	uint16_t m_regionCount;
 	uint16_t m_maxRegionCount;
 };
+
+} // namespace vcl::bgf
 
 #endif // CUBE_ATLAS_H_HEADER_GUARD
