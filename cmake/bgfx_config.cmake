@@ -127,9 +127,6 @@ function(_add_bgfx_shader FILE DIR TARGET)
 			COMMENT "Compiling shader ${PRINT_NAME} for ${OUTPUTS_PRETTY}"
 		)
 	endif()
-
-	target_sources(
-			${TARGET} PRIVATE ${FILE})
 endfunction()
 
 function(ide_add_bgfx_shaders target_name)
@@ -178,5 +175,6 @@ function(target_expose_vclib_bgfx_shaders target_name)
         string(SUBSTRING ${DIR_PATH} 8 -1 DIR_PATH)
 
         _add_bgfx_shader("${VCLIB_RENDER_DIR}/../${SHADER}" "${DIR_PATH}" ${target_name})
+        ide_add_bgfx_shaders(${target_name} "${VCLIB_RENDER_DIR}/../${SHADER}")
     endforeach()
 endfunction()
