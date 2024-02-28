@@ -27,6 +27,8 @@
 #include <vector>
 #include <fstream>
 
+#include <bx/math.h>
+
 namespace vcl::bgf {
 
 Canvas::Canvas()
@@ -76,12 +78,28 @@ void Canvas::init(void* winId, uint width, uint height)
     bgfx::touch(textView);
 
     // text
+    const bx::Vec3 at  = { 0.0f, 0.0f,  0.0f };
+    const bx::Vec3 eye = { 0.0f, 0.0f, -1.0f };
+
+    bx::mtxLookAt(textViewMatrix, eye, at);
+
+    const bgfx::Caps* caps = bgfx::getCaps();
+    bx::mtxOrtho(
+        textProjMatrix,
+        0.0f,
+        float(width),
+        float(height),
+        0.0f,
+        0.0f,
+        100.0f,
+        0.0f,
+        caps->homogeneousDepth);
+
     m_fontManager = new FontManager(512);
     m_textBufferManager = new TextBufferManager(m_fontManager);
 
     m_visitorTtf = loadTtf(*m_fontManager, "assets/fonts/droidsans.ttf");
-    m_visitor10 = m_fontManager->createFontByPixelSize(m_visitorTtf, 0, 100);
-    m_visitor10 = m_fontManager->createScaledFontToPixelSize(m_visitor10, 1);
+    m_visitor10 = m_fontManager->createFontByPixelSize(m_visitorTtf, 0, 20);
 
     m_fontManager->preloadGlyph(m_visitor10, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
 
@@ -134,12 +152,14 @@ void Canvas::frame()
     bgfx::touch(textView);
     draw();
 
+    bgfx::setViewTransform(textView, textViewMatrix, textProjMatrix);
+
     m_textBufferManager->clearTextBuffer(m_transientText);
 
     // text will be black
     m_textBufferManager->setTextColor(m_transientText, 0x000000ff);
 
-    m_textBufferManager->setPenPosition(m_transientText, 0, 0);
+    m_textBufferManager->setPenPosition(m_transientText, 10, 10);
     m_textBufferManager->appendText(m_transientText, m_visitor10, "Transient\n");
     m_textBufferManager->appendText(m_transientText, m_visitor10, "text buffer\n");
 
@@ -159,6 +179,18 @@ void Canvas::resize(uint width, uint height)
     bgfx::setViewRect(textView, 0, 0, width, height);
     bgfx::touch(view);
     bgfx::touch(textView);
+
+    const bgfx::Caps* caps = bgfx::getCaps();
+    bx::mtxOrtho(
+        textProjMatrix,
+        0.0f,
+        float(width),
+        float(height),
+        0.0f,
+        0.0f,
+        100.0f,
+        0.0f,
+        caps->homogeneousDepth);
 }
 
 

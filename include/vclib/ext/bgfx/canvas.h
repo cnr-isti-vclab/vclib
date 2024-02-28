@@ -79,6 +79,8 @@ class Canvas
     bgfx::ViewId view = 0;
 
     bgfx::ViewId textView = 1;
+    float textViewMatrix[16];
+    float textProjMatrix[16];
 
 public:
     Canvas();
