@@ -74,7 +74,8 @@ void Canvas::init(void* winId, uint width, uint height)
     m_textBufferManager = new TextBufferManager(m_fontManager);
 
     m_visitorTtf = loadTtf(*m_fontManager, "assets/fonts/droidsans.ttf");
-    m_visitor10 = m_fontManager->createFontByPixelSize(m_visitorTtf, 0, 10);
+    m_visitor10 = m_fontManager->createFontByPixelSize(m_visitorTtf, 0, 100);
+    m_visitor10 = m_fontManager->createScaledFontToPixelSize(m_visitor10, 1);
 
     m_fontManager->preloadGlyph(m_visitor10, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
 
@@ -130,7 +131,7 @@ void Canvas::frame()
     // text will be black
     m_textBufferManager->setTextColor(m_transientText, 0x000000ff);
 
-    m_textBufferManager->setPenPosition(m_transientText, 10.f, 10.0f);
+    m_textBufferManager->setPenPosition(m_transientText, 0, 0);
     m_textBufferManager->appendText(m_transientText, m_visitor10, "Transient\n");
     m_textBufferManager->appendText(m_transientText, m_visitor10, "text buffer\n");
 
