@@ -66,6 +66,7 @@ class Canvas
     void*                   winID = nullptr;
     bgfx::FrameBufferHandle fbh;
 
+
     // FontManager m_fontManager = FontManager(512);
     // TextBufferManager m_textBufferManager = TextBufferManager(&m_fontManager);
     FontManager* m_fontManager = nullptr;
@@ -76,6 +77,8 @@ class Canvas
     TrueTypeHandle m_visitorTtf;
 
     bgfx::ViewId view = 0;
+
+    bgfx::ViewId textView = 1;
 
 public:
     Canvas();

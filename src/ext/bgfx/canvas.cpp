@@ -42,7 +42,9 @@ Canvas::~Canvas()
 {
     if (bgfx::isValid(fbh))
         bgfx::destroy(fbh);
+
     Context::releaseViewId(view);
+    Context::releaseViewId(textView);
 
     // text
 
@@ -60,14 +62,18 @@ void Canvas::init(void* winId, uint width, uint height)
     this->winID = winId;
 
     view = Context::requestViewId();
+    textView = Context::requestViewId();
 
     fbh = bgfx::createFrameBuffer(winId, width, height);
 
     bgfx::setViewFrameBuffer(view, fbh);
+    bgfx::setViewFrameBuffer(textView, fbh);
     bgfx::setViewClear(
         view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
     bgfx::setViewRect(view, 0, 0, width, height);
+    bgfx::setViewRect(textView, 0, 0, width, height);
     bgfx::touch(view);
+    bgfx::touch(textView);
 
     // text
     m_fontManager = new FontManager(512);
@@ -124,6 +130,8 @@ void Canvas::frame()
 {
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::touch(view);
+    bgfx::setViewFrameBuffer(textView, fbh);
+    bgfx::touch(textView);
     draw();
 
     m_textBufferManager->clearTextBuffer(m_transientText);
@@ -135,7 +143,7 @@ void Canvas::frame()
     m_textBufferManager->appendText(m_transientText, m_visitor10, "Transient\n");
     m_textBufferManager->appendText(m_transientText, m_visitor10, "text buffer\n");
 
-    m_textBufferManager->submitTextBuffer(m_transientText, view);
+    m_textBufferManager->submitTextBuffer(m_transientText, textView);
 
     bgfx::frame();
 }
@@ -148,7 +156,9 @@ void Canvas::resize(uint width, uint height)
     fbh = bgfx::createFrameBuffer(winID, width, height);
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::setViewRect(view, 0, 0, width, height);
+    bgfx::setViewRect(textView, 0, 0, width, height);
     bgfx::touch(view);
+    bgfx::touch(textView);
 }
 
 
