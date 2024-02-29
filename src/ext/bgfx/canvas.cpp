@@ -95,8 +95,8 @@ void Canvas::init(void* winId, uint width, uint height)
         0.0f,
         caps->homogeneousDepth);
 
-    m_fontManager = new FontManager(512);
-    m_textBufferManager = new TextBufferManager(m_fontManager);
+    m_fontManager = new bgfx::FontManager(512);
+    m_textBufferManager = new bgfx::TextBufferManager(m_fontManager);
 
     m_visitorTtf = loadTtf(*m_fontManager, "assets/fonts/droidsans.ttf");
     m_visitor10 = m_fontManager->createFontByPixelSize(m_visitorTtf, 0, 20);
@@ -104,7 +104,7 @@ void Canvas::init(void* winId, uint width, uint height)
     m_fontManager->preloadGlyph(m_visitor10, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
 
     m_transientText = m_textBufferManager->createTextBuffer(
-        FONT_TYPE_ALPHA, BufferType::Transient);
+        FONT_TYPE_ALPHA, bgfx::BufferType::Transient);
 
     // end text
 }
@@ -193,8 +193,9 @@ void Canvas::resize(uint width, uint height)
         caps->homogeneousDepth);
 }
 
-
-TrueTypeHandle Canvas::loadTtf(FontManager& fontManager, const char* filePath)
+bgfx::TrueTypeHandle Canvas::loadTtf(
+    bgfx::FontManager& fontManager,
+    const char*        filePath)
 {
     std::vector<uint8_t> data;
 
@@ -212,7 +213,7 @@ TrueTypeHandle Canvas::loadTtf(FontManager& fontManager, const char* filePath)
     data.resize(size);
     file.read((char*)data.data(), size);
 
-    TrueTypeHandle handle = fontManager.createTtf(data.data(), size);
+    bgfx::TrueTypeHandle handle = fontManager.createTtf(data.data(), size);
     return handle;
 }
 

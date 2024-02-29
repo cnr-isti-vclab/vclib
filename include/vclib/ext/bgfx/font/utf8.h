@@ -31,10 +31,10 @@
 #define UTF8_ACCEPT 0
 #define UTF8_REJECT 1
 
-namespace vcl::bgf {
+namespace bgfx {
 
 uint32_t utf8_decode(uint32_t* _state, uint32_t* _codep, uint8_t _ch);
 
-} // namespace vcl::bgf
+} // namespace bgfx
 
 #endif // UTF8_H_HEADER_GUARD

@@ -28,7 +28,7 @@
 #include <vclib/ext/bgfx/font/text_metrics.h>
 #include <vclib/ext/bgfx/font/utf8.h>
 
-namespace vcl::bgf {
+namespace bgfx {
 
 TextMetrics::TextMetrics(FontManager* _fontManager)
 	: m_fontManager(_fontManager)
@@ -166,4 +166,4 @@ void TextLineMetrics::getSubText(const bx::StringView& _str, uint32_t _firstLine
 	_end = ptr;
 }
 
-} // namespace vcl::bgf
+} // namespace bgfx

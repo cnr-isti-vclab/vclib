@@ -33,7 +33,7 @@
 
 #include <vclib/ext/bgfx/font/cube_atlas.h>
 
-namespace vcl::bgf {
+namespace bgfx {
 
 class RectanglePacker
 {
@@ -536,4 +536,4 @@ void Atlas::packUV(const AtlasRegion& _region, uint8_t* _vertexBuffer, uint32_t 
 	}
 }
 
-} // namespace vcl::bgf
+} // namespace bgfx

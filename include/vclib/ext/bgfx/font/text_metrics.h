@@ -30,7 +30,7 @@
 
 #include "font_manager.h"
 
-namespace vcl::bgf {
+namespace bgfx {
 
 class TextMetrics
 {
@@ -80,6 +80,6 @@ private:
 	float m_lineHeight;
 };
 
-} // namespace vcl::bgf
+} // namespace bgfx
 
 #endif // TEXT_METRICS_H_HEADER_GUARD

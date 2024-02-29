@@ -32,7 +32,7 @@
 #include <bx/string.h>
 #include <bgfx/bgfx.h>
 
-namespace vcl::bgf {
+namespace bgfx {
 
 class Atlas;
 
@@ -243,6 +243,6 @@ private:
 	uint8_t* m_buffer;
 };
 
-} // namespace vcl::bgf
+} // namespace bgfx
 
 #endif // FONT_MANAGER_H_HEADER_GUARD

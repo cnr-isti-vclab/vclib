@@ -43,7 +43,7 @@
 
 #include <vclib/ext/bgfx/font/utf8.h>
 
-namespace vcl::bgf {
+namespace bgfx {
 
 static const uint8_t s_utf8d[364] =
 {
@@ -80,4 +80,4 @@ uint32_t utf8_decode(uint32_t* _state, uint32_t* _codep, uint8_t _ch)
 	return *_state;
 }
 
-} // namespace vcl::bgf
+} // namespace bgfx

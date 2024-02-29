@@ -69,12 +69,12 @@ class Canvas
 
     // FontManager m_fontManager = FontManager(512);
     // TextBufferManager m_textBufferManager = TextBufferManager(&m_fontManager);
-    FontManager* m_fontManager = nullptr;
-    TextBufferManager* m_textBufferManager = nullptr;
-    TextBufferHandle m_transientText;
+    bgfx::FontManager* m_fontManager = nullptr;
+    bgfx::TextBufferManager* m_textBufferManager = nullptr;
+    bgfx::TextBufferHandle m_transientText;
 
-    FontHandle m_visitor10;
-    TrueTypeHandle m_visitorTtf;
+    bgfx::FontHandle m_visitor10;
+    bgfx::TrueTypeHandle m_visitorTtf;
 
     bgfx::ViewId view = 0;
 
@@ -106,7 +106,9 @@ protected:
     void resize(uint width, uint height);
 
 private:
-    static TrueTypeHandle loadTtf(FontManager& fontManager, const char* filePath);
+    static bgfx::TrueTypeHandle loadTtf(
+        bgfx::FontManager& fontManager,
+        const char*        filePath);
 };
 
 } // namespace vcl::bgf

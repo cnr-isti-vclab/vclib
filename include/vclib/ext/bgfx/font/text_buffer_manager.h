@@ -30,7 +30,7 @@
 
 #include "font_manager.h"
 
-namespace vcl::bgf {
+namespace bgfx {
 
 BGFX_HANDLE(TextBufferHandle)
 
@@ -132,6 +132,6 @@ private:
 	bgfx::ProgramHandle m_distanceOutlineDropShadowImageProgram;
 };
 
-} // namespace vcl::bgf
+} // namespace bgfx
 
 #endif // TEXT_BUFFER_MANAGER_H_HEADER_GUARD
