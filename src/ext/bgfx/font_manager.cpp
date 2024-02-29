@@ -20,70 +20,76 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/context.h>
+#include <vclib/ext/bgfx/font_manager.h>
 
-#include <vclib/gui/native_window_handle.h>
-#include <vclib/types/base.h>
+#include <vector>
+#include <fstream>
 
 namespace vcl::bgf {
 
-Context& Context::instance()
+FontManager::FontManager()
 {
-    static Context ctx;
-    return ctx;
 }
 
-bgfx::ViewId Context::requestViewId()
+FontManager::~FontManager()
 {
-    bgfx::ViewId viewId = instance().viewStack.top();
-    instance().viewStack.pop();
-    return viewId;
-}
-
-void Context::releaseViewId(bgfx::ViewId viewId)
-{
-    instance().viewStack.push(viewId);
-}
-
-FontManager& Context::fontManager()
-{
-    return *instance().fm;
-}
-
-Context::Context()
-{
-    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
-#ifdef __APPLE__
-    bgfx::renderFrame(); // needed for macos
-#endif                   // __APPLE__
-
-    bgfx::Init init;
-    init.platformData.nwh  = windowHandle;
-    init.type              = renderType;
-    init.platformData.ndt  = displayHandle;
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_NONE;
-    init.callback          = &cb;
-    bgfx::init(init);
-
-    vcl::closeWindow(windowHandle, displayHandle);
-
-    uint mv = bgfx::getCaps()->limits.maxViews;
-
-    while (mv != 0) {
-        viewStack.push((bgfx::ViewId) mv--);
+    for (auto& [fontName, handle] : fontMap) {
+        fontManager.destroyFont(handle);
     }
-    viewStack.push((bgfx::ViewId) 0);
-
-    // font manager must be created after bgfx::init
-    fm = new FontManager();
+    for (auto& [pair, handle] : ttMap) {
+        fontManager.destroyTtf(handle);
+    }
 }
 
-Context::~Context()
+void FontManager::loadFont(
+    const std::string& filePath,
+    const std::string& fontName)
 {
-    delete fm;
-    bgfx::shutdown();
+    if (ttMap.find(fontName) == ttMap.end()) {
+        bgfx::TrueTypeHandle handle = loadTtf(fontManager, filePath.c_str());
+        ttMap[fontName] = handle;
+    }
+}
+
+bgfx::FontHandle FontManager::getFontHandle(
+    const std::string& fontName,
+    uint16_t           fontSize)
+{
+    auto it = fontMap.find({fontName, fontSize});
+    if (it != fontMap.end()) {
+        return it->second;
+    }
+    else {
+        bgfx::TrueTypeHandle ttHandle = ttMap.at(fontName);
+        bgfx::FontHandle font =
+            fontManager.createFontByPixelSize(ttHandle, 0, fontSize);
+        fontMap[{fontName, fontSize}] = font;
+        return font;
+    }
+}
+
+bgfx::TrueTypeHandle FontManager::loadTtf(
+    bgfx::FontManager& fontManager,
+    const char*        filePath)
+{
+    std::vector<uint8_t> data;
+
+           // create ifstream from filePath
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file.is_open())
+        throw std::runtime_error("Could not open file");
+
+           // get the size of the file
+    file.seekg(0, std::ios::end);
+    size_t size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+           // read the file and place it into the vector data
+    data.resize(size);
+    file.read((char*)data.data(), size);
+
+    bgfx::TrueTypeHandle handle = fontManager.createTtf(data.data(), size);
+    return handle;
 }
 
 } // namespace vcl::bgf

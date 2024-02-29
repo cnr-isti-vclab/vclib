@@ -29,6 +29,7 @@
 #include <bgfx/platform.h>
 
 #include "callback.h"
+#include "font_manager.h"
 
 namespace vcl::bgf {
 
@@ -40,6 +41,7 @@ class Context
     std::stack<bgfx::ViewId> viewStack;
 
     Callback cb;
+    FontManager* fm = nullptr;
 
 public:
     inline static bgfx::RendererType::Enum renderType =
@@ -48,6 +50,8 @@ public:
     static bgfx::ViewId requestViewId();
 
     static void releaseViewId(bgfx::ViewId viewId);
+
+    static FontManager& fontManager();
 
 private:
     Context();
