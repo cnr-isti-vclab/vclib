@@ -41,6 +41,11 @@ FontManager::~FontManager()
     }
 }
 
+bgfx::FontManager& FontManager::getFontManager()
+{
+    return fontManager;
+}
+
 void FontManager::loadFont(
     const std::string& filePath,
     const std::string& fontName)

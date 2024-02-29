@@ -50,12 +50,8 @@ Canvas::~Canvas()
 
     // text
 
-    m_fontManager->destroyFont(m_visitor10);
-    m_fontManager->destroyTtf(m_visitorTtf);
-
     m_textBufferManager->destroyTextBuffer(m_transientText);
 
-    delete m_fontManager;
     delete m_textBufferManager;
 }
 
@@ -95,13 +91,11 @@ void Canvas::init(void* winId, uint width, uint height)
         0.0f,
         caps->homogeneousDepth);
 
-    m_fontManager = new bgfx::FontManager(512);
-    m_textBufferManager = new bgfx::TextBufferManager(m_fontManager);
+    m_textBufferManager = new bgfx::TextBufferManager(&Context::fontManager().getFontManager());
 
-    m_visitorTtf = loadTtf(*m_fontManager, "assets/fonts/droidsans.ttf");
-    m_visitor10 = m_fontManager->createFontByPixelSize(m_visitorTtf, 0, 20);
+    Context::fontManager().loadFont("assets/fonts/droidsans.ttf", "DroidSans");
 
-    m_fontManager->preloadGlyph(m_visitor10, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
+    m_visitor10 = Context::fontManager().getFontHandle("DroidSans", 20);
 
     m_transientText = m_textBufferManager->createTextBuffer(
         FONT_TYPE_ALPHA, bgfx::BufferType::Transient);

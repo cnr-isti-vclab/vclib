@@ -40,6 +40,8 @@ public:
     FontManager();
     ~FontManager();
 
+    bgfx::FontManager& getFontManager();
+
     void loadFont(const std::string& filePath, const std::string& fontName);
 
     bgfx::FontHandle getFontHandle(
