@@ -89,6 +89,8 @@ void Canvas::init(void* winId, uint width, uint height)
     textManager.loadFont("assets/fonts/droidsans.ttf", "DroidSans");
     textManager.setCurrentFont("DroidSans", 20);
 
+    textManager.appendStaticText({10, height - 50}, "Static Text");
+
     // end text
 }
 
@@ -129,6 +131,8 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 
 void Canvas::frame()
 {
+    static uint cnt = 0;
+
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::touch(view);
     bgfx::setViewFrameBuffer(textView, fbh);
@@ -137,9 +141,8 @@ void Canvas::frame()
 
     bgfx::setViewTransform(textView, textViewMatrix, textProjMatrix);
 
-    textManager.clear();
-
-    textManager.appendText({10, 10}, "Hello\nWorld\n");
+    std::string s = "Frame " + std::to_string(cnt++);
+    textManager.appendTransientText({10, 10}, s + "\nTransient\nHello World\n");
     textManager.submit(textView);
 
     bgfx::frame();

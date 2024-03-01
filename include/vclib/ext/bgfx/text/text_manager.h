@@ -34,6 +34,7 @@ namespace vcl::bgf {
 class TextManager
 {
     bgfx::TextBufferManager* textBufferManager = nullptr;
+    bgfx::TextBufferHandle staticText;
     bgfx::TextBufferHandle transientText;
 
     bgfx::FontHandle currentFont;
@@ -50,7 +51,12 @@ public:
 
     void setCurrentFont(const std::string& fontName, uint16_t fontSize);
 
-    void appendText(
+    void appendTransientText(
+        const vcl::Point2f& pos,
+        const std::string&  text,
+        const vcl::Color&   color = vcl::Color::Black);
+
+    void appendStaticText(
         const vcl::Point2f& pos,
         const std::string&  text,
         const vcl::Color&   color = vcl::Color::Black);
