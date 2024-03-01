@@ -25,8 +25,8 @@
 * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
 */
 
-#include <vclib/ext/bgfx/font/text_metrics.h>
-#include <vclib/ext/bgfx/font/utf8.h>
+#include <vclib/ext/bgfx/text/font/text_metrics.h>
+#include <vclib/ext/bgfx/text/font/utf8.h>
 
 namespace bgfx {
 

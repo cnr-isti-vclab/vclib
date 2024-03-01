@@ -82,14 +82,14 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/drawable_axis.h
         include/vclib/ext/bgfx/drawable_directional_light.h
         include/vclib/ext/bgfx/drawable_mesh.h
-        include/vclib/ext/bgfx/font_map.h
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
-        include/vclib/ext/bgfx/font/cube_atlas.h
-        include/vclib/ext/bgfx/font/font_manager.h
-        include/vclib/ext/bgfx/font/text_buffer_manager.h
-        include/vclib/ext/bgfx/font/text_metrics.h
-        include/vclib/ext/bgfx/font/utf8.h
+        include/vclib/ext/bgfx/text/font_map.h
+        include/vclib/ext/bgfx/text/font/cube_atlas.h
+        include/vclib/ext/bgfx/text/font/font_manager.h
+        include/vclib/ext/bgfx/text/font/text_buffer_manager.h
+        include/vclib/ext/bgfx/text/font/text_metrics.h
+        include/vclib/ext/bgfx/text/font/utf8.h
         include/vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_mesh_shader_program.h
@@ -108,13 +108,13 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/context.cpp
         src/ext/bgfx/drawable_axis.cpp
         src/ext/bgfx/drawable_directional_light.cpp
-        src/ext/bgfx/font_map.cpp
         src/ext/bgfx/minimal_viewer.cpp
-        src/ext/bgfx/font/cube_atlas.cpp
-        src/ext/bgfx/font/font_manager.cpp
-        src/ext/bgfx/font/text_buffer_manager.cpp
-        src/ext/bgfx/font/text_metrics.cpp
-        src/ext/bgfx/font/utf8.cpp
+        src/ext/bgfx/text/font_map.cpp
+        src/ext/bgfx/text/font/cube_atlas.cpp
+        src/ext/bgfx/text/font/font_manager.cpp
+        src/ext/bgfx/text/font/text_buffer_manager.cpp
+        src/ext/bgfx/text/font/text_metrics.cpp
+        src/ext/bgfx/text/font/utf8.cpp
         src/ext/bgfx/shader_programs/load_program.cpp)
 
     list(APPEND SHADERS

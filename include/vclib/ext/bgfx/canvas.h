@@ -27,7 +27,7 @@
 
 #include <vclib/types.h>
 
-#include <vclib/ext/bgfx/font/text_buffer_manager.h>
+#include <vclib/ext/bgfx/text/font/text_buffer_manager.h>
 
 namespace vcl::bgf {
 

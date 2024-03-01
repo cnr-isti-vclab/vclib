@@ -41,7 +41,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-#include <vclib/ext/bgfx/font/utf8.h>
+#include <vclib/ext/bgfx/text/font/utf8.h>
 
 namespace bgfx {
 

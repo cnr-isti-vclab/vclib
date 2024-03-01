@@ -31,7 +31,7 @@
 #include <limits.h> // INT_MAX
 #include <vector>
 
-#include <vclib/ext/bgfx/font/cube_atlas.h>
+#include <vclib/ext/bgfx/text/font/cube_atlas.h>
 
 namespace bgfx {
 

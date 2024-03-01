@@ -29,7 +29,7 @@
 #include <bgfx/platform.h>
 
 #include "callback.h"
-#include "font_map.h"
+#include "text/font_map.h"
 
 namespace vcl::bgf {
 

@@ -44,8 +44,8 @@ BX_PRAGMA_DIAGNOSTIC_POP()
 #include <tinystl/unordered_map.h>
 namespace stl = tinystl;
 
-#include <vclib/ext/bgfx/font/font_manager.h>
-#include <vclib/ext/bgfx/font/cube_atlas.h>
+#include <vclib/ext/bgfx/text/font/font_manager.h>
+#include <vclib/ext/bgfx/text/font/cube_atlas.h>
 
 namespace bgfx {
 

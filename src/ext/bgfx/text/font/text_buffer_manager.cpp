@@ -30,9 +30,9 @@
 #include <stddef.h> // offsetof
 #include <wchar.h>  // wcslen
 
-#include <vclib/ext/bgfx/font/text_buffer_manager.h>
-#include <vclib/ext/bgfx/font/utf8.h>
-#include <vclib/ext/bgfx/font/cube_atlas.h>
+#include <vclib/ext/bgfx/text/font/text_buffer_manager.h>
+#include <vclib/ext/bgfx/text/font/utf8.h>
+#include <vclib/ext/bgfx/text/font/cube_atlas.h>
 
 #include <vclib/ext/bgfx/shader_programs/load_program.h>
 
