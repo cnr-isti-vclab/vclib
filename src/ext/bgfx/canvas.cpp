@@ -47,12 +47,6 @@ Canvas::~Canvas()
 
     Context::releaseViewId(view);
     Context::releaseViewId(textView);
-
-    // text
-
-    m_textBufferManager->destroyTextBuffer(m_transientText);
-
-    delete m_textBufferManager;
 }
 
 void Canvas::init(void* winId, uint width, uint height)
@@ -91,14 +85,9 @@ void Canvas::init(void* winId, uint width, uint height)
         0.0f,
         caps->homogeneousDepth);
 
-    m_textBufferManager = new bgfx::TextBufferManager(&Context::fontMap().getFontManager());
-
-    Context::fontMap().loadFont("assets/fonts/droidsans.ttf", "DroidSans");
-
-    m_visitor10 = Context::fontMap().getFontHandle("DroidSans", 20);
-
-    m_transientText = m_textBufferManager->createTextBuffer(
-        FONT_TYPE_ALPHA, bgfx::BufferType::Transient);
+    textManager.init();
+    textManager.loadFont("assets/fonts/droidsans.ttf", "DroidSans");
+    textManager.setCurrentFont("DroidSans", 20);
 
     // end text
 }
@@ -148,16 +137,10 @@ void Canvas::frame()
 
     bgfx::setViewTransform(textView, textViewMatrix, textProjMatrix);
 
-    m_textBufferManager->clearTextBuffer(m_transientText);
+    textManager.clear();
 
-    // text will be black
-    m_textBufferManager->setTextColor(m_transientText, 0x000000ff);
-
-    m_textBufferManager->setPenPosition(m_transientText, 10, 10);
-    m_textBufferManager->appendText(m_transientText, m_visitor10, "Transient\n");
-    m_textBufferManager->appendText(m_transientText, m_visitor10, "text buffer\n");
-
-    m_textBufferManager->submitTextBuffer(m_transientText, textView);
+    textManager.appendText({10, 10}, "Hello\nWorld\n");
+    textManager.submit(textView);
 
     bgfx::frame();
 }

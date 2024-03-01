@@ -66,10 +66,8 @@ class Canvas
     void*                   winID = nullptr;
     bgfx::FrameBufferHandle fbh;
 
-    bgfx::TextBufferManager* m_textBufferManager = nullptr;
-    bgfx::TextBufferHandle m_transientText;
 
-    bgfx::FontHandle m_visitor10;
+    TextManager textManager;
 
     bgfx::ViewId view = 0;
 
