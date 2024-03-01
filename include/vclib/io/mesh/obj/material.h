@@ -127,7 +127,7 @@ struct ObjMaterial
     bool operator!=(const ObjMaterial& m) const { return !(*this == m); }
 };
 
-std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
+inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
 {
     if (m.hasColor) {
         out << "Kd " << m.Kd.x() << " " << m.Kd.y() << " " << m.Kd.z()

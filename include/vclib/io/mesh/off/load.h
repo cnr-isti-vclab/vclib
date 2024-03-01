@@ -222,7 +222,7 @@ static const float OFF_GEOMVIEW_COLOR_MAP[148][4] = {
     {0.8f,  0.8f,  0.8f,  0.8f }
 };
 
-void readOffHeader(
+inline void readOffHeader(
     std::istream& file,
     MeshInfo&     fileInfo,
     uint&         nv,

@@ -31,7 +31,7 @@ namespace vcl {
 
 namespace detail {
 
-bool isBinStlMalformed(
+inline bool isBinStlMalformed(
     const std::string& filename,
     bool&              isBinary,
     std::size_t&       fsize)
@@ -62,7 +62,7 @@ bool isBinStlMalformed(
     return false;
 }
 
-bool isStlColored(std::istream& fp, bool& magicsMode)
+inline bool isStlColored(std::istream& fp, bool& magicsMode)
 {
     bool colored = false;
 
