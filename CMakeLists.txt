@@ -82,7 +82,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/drawable_axis.h
         include/vclib/ext/bgfx/drawable_directional_light.h
         include/vclib/ext/bgfx/drawable_mesh.h
-        include/vclib/ext/bgfx/font_manager.h
+        include/vclib/ext/bgfx/font_map.h
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
         include/vclib/ext/bgfx/font/cube_atlas.h
@@ -108,7 +108,7 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/context.cpp
         src/ext/bgfx/drawable_axis.cpp
         src/ext/bgfx/drawable_directional_light.cpp
-        src/ext/bgfx/font_manager.cpp
+        src/ext/bgfx/font_map.cpp
         src/ext/bgfx/minimal_viewer.cpp
         src/ext/bgfx/font/cube_atlas.cpp
         src/ext/bgfx/font/font_manager.cpp

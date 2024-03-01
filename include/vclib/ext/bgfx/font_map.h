@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_FONT_MANAGER_H
-#define VCL_EXT_BGFX_FONT_MANAGER_H
+#ifndef VCL_EXT_BGFX_FONT_MAP_H
+#define VCL_EXT_BGFX_FONT_MAP_H
 
 #include "font/font_manager.h"
 
@@ -30,15 +30,15 @@
 
 namespace vcl::bgf {
 
-class FontManager
+class FontMap
 {
     bgfx::FontManager fontManager;
     std::map<std::string, bgfx::TrueTypeHandle> ttMap;
     std::map<std::pair<std::string, uint16_t>, bgfx::FontHandle> fontMap;
 
 public:
-    FontManager();
-    ~FontManager();
+    FontMap();
+    ~FontMap();
 
     bgfx::FontManager& getFontManager();
 
@@ -56,4 +56,4 @@ private:
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_FONT_MANAGER_H
+#endif // VCL_EXT_BGFX_FONT_MAP_H

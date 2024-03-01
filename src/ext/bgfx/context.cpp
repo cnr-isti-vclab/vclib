@@ -45,7 +45,7 @@ void Context::releaseViewId(bgfx::ViewId viewId)
     instance().viewStack.push(viewId);
 }
 
-FontManager& Context::fontManager()
+FontMap& Context::fontManager()
 {
     return *instance().fm;
 }
@@ -77,7 +77,7 @@ Context::Context()
     viewStack.push((bgfx::ViewId) 0);
 
     // font manager must be created after bgfx::init
-    fm = new FontManager();
+    fm = new FontMap();
 }
 
 Context::~Context()

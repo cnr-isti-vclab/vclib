@@ -20,18 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/font_manager.h>
+#include <vclib/ext/bgfx/font_map.h>
 
 #include <vector>
 #include <fstream>
 
 namespace vcl::bgf {
 
-FontManager::FontManager()
+FontMap::FontMap()
 {
 }
 
-FontManager::~FontManager()
+FontMap::~FontMap()
 {
     for (auto& [fontName, handle] : fontMap) {
         fontManager.destroyFont(handle);
@@ -41,12 +41,12 @@ FontManager::~FontManager()
     }
 }
 
-bgfx::FontManager& FontManager::getFontManager()
+bgfx::FontManager& FontMap::getFontManager()
 {
     return fontManager;
 }
 
-void FontManager::loadFont(
+void FontMap::loadFont(
     const std::string& filePath,
     const std::string& fontName)
 {
@@ -56,7 +56,7 @@ void FontManager::loadFont(
     }
 }
 
-bgfx::FontHandle FontManager::getFontHandle(
+bgfx::FontHandle FontMap::getFontHandle(
     const std::string& fontName,
     uint16_t           fontSize)
 {
@@ -73,7 +73,7 @@ bgfx::FontHandle FontManager::getFontHandle(
     }
 }
 
-bgfx::TrueTypeHandle FontManager::loadTtf(
+bgfx::TrueTypeHandle FontMap::loadTtf(
     bgfx::FontManager& fontManager,
     const char*        filePath)
 {
