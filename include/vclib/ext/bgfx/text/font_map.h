@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_FONT_MAP_H
-#define VCL_EXT_BGFX_FONT_MAP_H
+#ifndef VCL_EXT_BGFX_TEXT_FONT_MAP_H
+#define VCL_EXT_BGFX_TEXT_FONT_MAP_H
 
 #include "font/font_manager.h"
 
@@ -56,4 +56,4 @@ private:
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_FONT_MAP_H
+#endif // VCL_EXT_BGFX_TEXT_FONT_MAP_H

@@ -91,11 +91,11 @@ void Canvas::init(void* winId, uint width, uint height)
         0.0f,
         caps->homogeneousDepth);
 
-    m_textBufferManager = new bgfx::TextBufferManager(&Context::fontManager().getFontManager());
+    m_textBufferManager = new bgfx::TextBufferManager(&Context::fontMap().getFontManager());
 
-    Context::fontManager().loadFont("assets/fonts/droidsans.ttf", "DroidSans");
+    Context::fontMap().loadFont("assets/fonts/droidsans.ttf", "DroidSans");
 
-    m_visitor10 = Context::fontManager().getFontHandle("DroidSans", 20);
+    m_visitor10 = Context::fontMap().getFontHandle("DroidSans", 20);
 
     m_transientText = m_textBufferManager->createTextBuffer(
         FONT_TYPE_ALPHA, bgfx::BufferType::Transient);
@@ -185,30 +185,6 @@ void Canvas::resize(uint width, uint height)
         100.0f,
         0.0f,
         caps->homogeneousDepth);
-}
-
-bgfx::TrueTypeHandle Canvas::loadTtf(
-    bgfx::FontManager& fontManager,
-    const char*        filePath)
-{
-    std::vector<uint8_t> data;
-
-    // create ifstream from filePath
-    std::ifstream file(filePath, std::ios::binary);
-    if (!file.is_open())
-        throw std::runtime_error("Could not open file");
-
-    // get the size of the file
-    file.seekg(0, std::ios::end);
-    size_t size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    // read the file and place it into the vector data
-    data.resize(size);
-    file.read((char*)data.data(), size);
-
-    bgfx::TrueTypeHandle handle = fontManager.createTtf(data.data(), size);
-    return handle;
 }
 
 } // namespace vcl::bgf

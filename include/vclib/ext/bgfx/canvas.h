@@ -27,7 +27,7 @@
 
 #include <vclib/types.h>
 
-#include <vclib/ext/bgfx/text/font/text_buffer_manager.h>
+#include <vclib/ext/bgfx/text/text_manager.h>
 
 namespace vcl::bgf {
 
@@ -99,11 +99,6 @@ protected:
     void frame();
 
     void resize(uint width, uint height);
-
-private:
-    static bgfx::TrueTypeHandle loadTtf(
-        bgfx::FontManager& fontManager,
-        const char*        filePath);
 };
 
 } // namespace vcl::bgf

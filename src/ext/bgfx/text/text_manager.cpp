@@ -20,70 +20,63 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/context.h>
+#include <vclib/ext/bgfx/text/text_manager.h>
 
-#include <vclib/gui/native_window_handle.h>
-#include <vclib/types/base.h>
+#include <vclib/ext/bgfx/context.h>
 
 namespace vcl::bgf {
 
-Context& Context::instance()
+TextManager::TextManager()
 {
-    static Context ctx;
-    return ctx;
 }
 
-bgfx::ViewId Context::requestViewId()
+TextManager::~TextManager()
 {
-    bgfx::ViewId viewId = instance().viewStack.top();
-    instance().viewStack.pop();
-    return viewId;
+    textBufferManager->destroyTextBuffer(transientText);
+    delete textBufferManager;
 }
 
-void Context::releaseViewId(bgfx::ViewId viewId)
+void TextManager::init()
 {
-    instance().viewStack.push(viewId);
+    textBufferManager =
+        new bgfx::TextBufferManager(&Context::fontMap().getFontManager());
+
+    transientText = textBufferManager->createTextBuffer(
+        FONT_TYPE_ALPHA, bgfx::BufferType::Transient);
 }
 
-FontMap& Context::fontMap()
+void TextManager::loadFont(
+    const std::string& filePath,
+    const std::string& fontName)
 {
-    return *instance().fm;
+    Context::fontMap().loadFont(filePath, fontName);
 }
 
-Context::Context()
+
+void TextManager::clear()
 {
-    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
-#ifdef __APPLE__
-    bgfx::renderFrame(); // needed for macos
-#endif                   // __APPLE__
-
-    bgfx::Init init;
-    init.platformData.nwh  = windowHandle;
-    init.type              = renderType;
-    init.platformData.ndt  = displayHandle;
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_NONE;
-    init.callback          = &cb;
-    bgfx::init(init);
-
-    vcl::closeWindow(windowHandle, displayHandle);
-
-    uint mv = bgfx::getCaps()->limits.maxViews;
-
-    while (mv != 0) {
-        viewStack.push((bgfx::ViewId) mv--);
-    }
-    viewStack.push((bgfx::ViewId) 0);
-
-    // font manager must be created after bgfx::init
-    fm = new FontMap();
+    textBufferManager->clearTextBuffer(transientText);
 }
 
-Context::~Context()
+void TextManager::setCurrentFont(const std::string& fontName, uint16_t fontSize)
 {
-    delete fm;
-    bgfx::shutdown();
+    currentFont = Context::fontMap().getFontHandle(fontName, fontSize);
+}
+
+void TextManager::appendText(
+    const Point2f&     pos,
+    const std::string& text,
+    const Color&       color)
+{
+    textBufferManager->setTextColor(transientText, color.rgba());
+
+    textBufferManager->setPenPosition(transientText, pos.x(), pos.y());
+    textBufferManager->appendText(transientText, currentFont, text.c_str());
+}
+
+void TextManager::submit(uint viewId)
+{
+    textBufferManager->submitTextBuffer(transientText, viewId);
 }
 
 } // namespace vcl::bgf

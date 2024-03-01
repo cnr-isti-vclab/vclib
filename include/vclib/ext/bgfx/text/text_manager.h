@@ -20,70 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/context.h>
+#ifndef VCL_EXT_BGFX_TEXT_TEXT_MANAGER_H
+#define VCL_EXT_BGFX_TEXT_TEXT_MANAGER_H
 
-#include <vclib/gui/native_window_handle.h>
-#include <vclib/types/base.h>
+#include <string>
+
+#include <vclib/space/color.h>
+
+#include "font/text_buffer_manager.h"
 
 namespace vcl::bgf {
 
-Context& Context::instance()
+class TextManager
 {
-    static Context ctx;
-    return ctx;
-}
+    bgfx::TextBufferManager* textBufferManager = nullptr;
+    bgfx::TextBufferHandle transientText;
 
-bgfx::ViewId Context::requestViewId()
-{
-    bgfx::ViewId viewId = instance().viewStack.top();
-    instance().viewStack.pop();
-    return viewId;
-}
+    bgfx::FontHandle currentFont;
 
-void Context::releaseViewId(bgfx::ViewId viewId)
-{
-    instance().viewStack.push(viewId);
-}
+public:
+    TextManager();
+    ~TextManager();
 
-FontMap& Context::fontMap()
-{
-    return *instance().fm;
-}
+    void init();
 
-Context::Context()
-{
-    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
-#ifdef __APPLE__
-    bgfx::renderFrame(); // needed for macos
-#endif                   // __APPLE__
+    void loadFont(const std::string& filePath, const std::string& fontName);
 
-    bgfx::Init init;
-    init.platformData.nwh  = windowHandle;
-    init.type              = renderType;
-    init.platformData.ndt  = displayHandle;
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_NONE;
-    init.callback          = &cb;
-    bgfx::init(init);
+    void clear();
 
-    vcl::closeWindow(windowHandle, displayHandle);
+    void setCurrentFont(const std::string& fontName, uint16_t fontSize);
 
-    uint mv = bgfx::getCaps()->limits.maxViews;
+    void appendText(
+        const vcl::Point2f& pos,
+        const std::string&  text,
+        const vcl::Color&   color = vcl::Color::Black);
 
-    while (mv != 0) {
-        viewStack.push((bgfx::ViewId) mv--);
-    }
-    viewStack.push((bgfx::ViewId) 0);
-
-    // font manager must be created after bgfx::init
-    fm = new FontMap();
-}
-
-Context::~Context()
-{
-    delete fm;
-    bgfx::shutdown();
-}
+    void submit(uint viewId);
+};
 
 } // namespace vcl::bgf
+
+#endif // VCL_EXT_BGFX_TEXT_TEXT_MANAGER_H

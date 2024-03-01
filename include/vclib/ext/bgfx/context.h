@@ -51,7 +51,7 @@ public:
 
     static void releaseViewId(bgfx::ViewId viewId);
 
-    static FontMap& fontManager();
+    static FontMap& fontMap();
 
 private:
     Context();
