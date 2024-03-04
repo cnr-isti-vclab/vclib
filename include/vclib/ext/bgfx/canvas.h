@@ -27,7 +27,7 @@
 
 #include <vclib/types.h>
 
-#include <vclib/ext/bgfx/text/text_manager.h>
+#include <vclib/ext/bgfx/text/text_view.h>
 
 namespace vcl::bgf {
 
@@ -61,19 +61,12 @@ namespace vcl::bgf {
  * - resize(width, height): this function must be called by the derived classes
  * whenever the window is resized.
  */
-class Canvas
+class Canvas : public TextView
 {
     void*                   winID = nullptr;
     bgfx::FrameBufferHandle fbh;
 
-
-    TextManager textManager;
-
     bgfx::ViewId view = 0;
-
-    bgfx::ViewId textView = 1;
-    float textViewMatrix[16];
-    float textProjMatrix[16];
 
 public:
     Canvas();

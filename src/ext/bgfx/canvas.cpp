@@ -46,7 +46,6 @@ Canvas::~Canvas()
         bgfx::destroy(fbh);
 
     Context::releaseViewId(view);
-    Context::releaseViewId(textView);
 }
 
 void Canvas::init(void* winId, uint width, uint height)
@@ -54,44 +53,16 @@ void Canvas::init(void* winId, uint width, uint height)
     this->winID = winId;
 
     view = Context::requestViewId();
-    textView = Context::requestViewId();
 
     fbh = bgfx::createFrameBuffer(winId, width, height);
 
     bgfx::setViewFrameBuffer(view, fbh);
-    bgfx::setViewFrameBuffer(textView, fbh);
     bgfx::setViewClear(
         view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
     bgfx::setViewRect(view, 0, 0, width, height);
-    bgfx::setViewRect(textView, 0, 0, width, height);
     bgfx::touch(view);
-    bgfx::touch(textView);
 
-    // text
-    const bx::Vec3 at  = { 0.0f, 0.0f,  0.0f };
-    const bx::Vec3 eye = { 0.0f, 0.0f, -1.0f };
-
-    bx::mtxLookAt(textViewMatrix, eye, at);
-
-    const bgfx::Caps* caps = bgfx::getCaps();
-    bx::mtxOrtho(
-        textProjMatrix,
-        0.0f,
-        float(width),
-        float(height),
-        0.0f,
-        0.0f,
-        100.0f,
-        0.0f,
-        caps->homogeneousDepth);
-
-    textManager.init();
-    textManager.loadFont("assets/fonts/droidsans.ttf", "DroidSans");
-    textManager.setCurrentFont("DroidSans", 20);
-
-    textManager.appendStaticText({10, height - 50}, "Static Text");
-
-    // end text
+    TextView::init(width, height);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -135,15 +106,9 @@ void Canvas::frame()
 
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::touch(view);
-    bgfx::setViewFrameBuffer(textView, fbh);
-    bgfx::touch(textView);
     draw();
 
-    bgfx::setViewTransform(textView, textViewMatrix, textProjMatrix);
-
-    std::string s = "Frame " + std::to_string(cnt++);
-    textManager.appendTransientText({10, 10}, s + "\nTransient\nHello World\n");
-    textManager.submit(textView);
+    TextView::frame(fbh);
 
     bgfx::frame();
 }
@@ -156,21 +121,9 @@ void Canvas::resize(uint width, uint height)
     fbh = bgfx::createFrameBuffer(winID, width, height);
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::setViewRect(view, 0, 0, width, height);
-    bgfx::setViewRect(textView, 0, 0, width, height);
     bgfx::touch(view);
-    bgfx::touch(textView);
 
-    const bgfx::Caps* caps = bgfx::getCaps();
-    bx::mtxOrtho(
-        textProjMatrix,
-        0.0f,
-        float(width),
-        float(height),
-        0.0f,
-        0.0f,
-        100.0f,
-        0.0f,
-        caps->homogeneousDepth);
+    TextView::resize(width, height);
 }
 
 } // namespace vcl::bgf

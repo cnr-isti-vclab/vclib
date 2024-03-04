@@ -38,6 +38,7 @@ public:
     TextView();
     ~TextView();
 
+protected:
     void init(uint width, uint height);
 
     void frame(bgfx::FrameBufferHandle fbh);
