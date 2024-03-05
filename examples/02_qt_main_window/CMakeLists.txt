@@ -21,25 +21,29 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-render-examples)
 
-option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+if (TARGET vclib-external-qt)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
+    set(EXAMPLE_NAME 02-qt-main-window)
+    project(vclib-render-${EXAMPLE_NAME}-example)
 
-# examples
-if (VCLIB_BUILD_EXAMPLES)
+    ### Build settings
+    set(CMAKE_CXX_STANDARD 20)
 
-    add_subdirectory(00_hello_triangle)
-    add_subdirectory(01_minimal_viewer)
-    add_subdirectory(02_qt_main_window)
+    set(HEADERS
+        common.h
+        main_window_qt.h)
 
-    if (TARGET vclib-external-qglviewer)
-        add_subdirectory(qglviewer)
-    endif()
+    set(SOURCES
+        main_window_qt.cpp
+        main.cpp)
 
-    # the following examples are the same of the ones in the vclib library,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(vclib)
+    # will create a target called 'vclib-render-${EXAMPLE_NAME}-example'
+    vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
+
+    # this target will use the vclib_render assets and bgfx shaders, therefore we
+    # need to expose them to the target
+    target_expose_vclib_assets_and_shaders(${PROJECT_NAME})
 endif()
+
 
