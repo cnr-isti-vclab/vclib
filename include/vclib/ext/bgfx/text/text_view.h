@@ -23,6 +23,7 @@
 #ifndef VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
 #define VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
 
+#include "../context.h"
 #include "text_manager.h"
 
 namespace vcl::bgf {
@@ -30,13 +31,18 @@ namespace vcl::bgf {
 class TextView
 {
     TextManager textManager;
-    bgfx::ViewId view;
+    bgfx::ViewId view = BGFX_INVALID_VIEW;
     float textViewMatrix[16];
     float textProjMatrix[16];
+    uint w = 0;
+    uint h = 0;
 
 public:
     TextView();
     ~TextView();
+
+    void enableText(bool b = true);
+    bool isTextEnabled() const;
 
 protected:
     void init(uint width, uint height);
@@ -44,6 +50,9 @@ protected:
     void frame(bgfx::FrameBufferHandle fbh);
 
     void resize(uint width, uint height);
+
+private:
+    void updateProjMatrix();
 };
 
 } // namespace vcl::bgf

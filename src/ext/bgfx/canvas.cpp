@@ -63,6 +63,7 @@ void Canvas::init(void* winId, uint width, uint height)
     bgfx::touch(view);
 
     TextView::init(width, height);
+    TextView::enableText(true);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)

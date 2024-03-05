@@ -86,4 +86,9 @@ Context::~Context()
     bgfx::shutdown();
 }
 
+bool isViewValid(bgfx::ViewId viewId)
+{
+    return viewId <= bgfx::getCaps()->limits.maxViews;
+}
+
 } // namespace vcl::bgf

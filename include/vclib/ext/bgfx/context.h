@@ -31,6 +31,8 @@
 #include "callback.h"
 #include "text/font_map.h"
 
+#define BGFX_INVALID_VIEW 65535
+
 namespace vcl::bgf {
 
 class Context
@@ -66,6 +68,8 @@ public:
     Context(Context&&)                 = delete;
     Context& operator=(Context&&)      = delete;
 };
+
+bool isViewValid(bgfx::ViewId viewId);
 
 } // namespace vcl::bgf
 

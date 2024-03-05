@@ -34,28 +34,42 @@ TextView::TextView()
 
 TextView::~TextView()
 {
-    Context::releaseViewId(view);
+    if (isTextEnabled())
+        Context::releaseViewId(view);
+}
+
+void TextView::enableText(bool b)
+{
+    if (isViewValid(view)) {
+        if (!b) {
+            Context::releaseViewId(view);
+            view = BGFX_INVALID_HANDLE;
+        }
+    }
+    else {
+        if (b) {
+            view = Context::requestViewId();
+            updateProjMatrix();
+            bgfx::setViewRect(view, 0, 0, w, h);
+            bgfx::touch(view);
+        }
+    }
+}
+
+bool TextView::isTextEnabled() const
+{
+    return isViewValid(view);
 }
 
 void TextView::init(uint width, uint height)
 {
-    view = Context::requestViewId();
+    w = width;
+    h = height;
+
     const bx::Vec3 at  = { 0.0f, 0.0f,  0.0f };
     const bx::Vec3 eye = { 0.0f, 0.0f, -1.0f };
 
     bx::mtxLookAt(textViewMatrix, eye, at);
-
-    const bgfx::Caps* caps = bgfx::getCaps();
-    bx::mtxOrtho(
-        textProjMatrix,
-        0.0f,
-        float(width),
-        float(height),
-        0.0f,
-        0.0f,
-        100.0f,
-        0.0f,
-        caps->homogeneousDepth);
 
     textManager.init();
     textManager.loadFont("assets/fonts/droidsans.ttf", "DroidSans");
@@ -67,28 +81,38 @@ void TextView::init(uint width, uint height)
 void TextView::frame(bgfx::FrameBufferHandle fbh)
 {
     static uint cnt = 0;
+    if (isTextEnabled()) {
+        bgfx::setViewFrameBuffer(view, fbh);
+        bgfx::touch(view);
 
-    bgfx::setViewFrameBuffer(view, fbh);
-    bgfx::touch(view);
+        bgfx::setViewTransform(view, textViewMatrix, textProjMatrix);
 
-    bgfx::setViewTransform(view, textViewMatrix, textProjMatrix);
-
-    std::string s = "Frame " + std::to_string(cnt++);
-    textManager.appendTransientText({10, 10}, s + "\nTransient\nHello World\n");
-    textManager.submit(view);
+        std::string s = "Frame " + std::to_string(cnt++);
+        textManager.appendTransientText({10, 10}, s + "\nTransient\nHello World\n");
+        textManager.submit(view);
+    }
 }
 
 void TextView::resize(uint width, uint height)
 {
-    bgfx::setViewRect(view, 0, 0, width, height);
-    bgfx::touch(view);
+    w = width;
+    h = height;
 
+    if (isTextEnabled()) {
+        updateProjMatrix();
+        bgfx::setViewRect(view, 0, 0, w, h);
+        bgfx::touch(view);
+    }
+}
+
+void TextView::updateProjMatrix()
+{
     const bgfx::Caps* caps = bgfx::getCaps();
     bx::mtxOrtho(
         textProjMatrix,
         0.0f,
-        float(width),
-        float(height),
+        float(w),
+        float(h),
         0.0f,
         0.0f,
         100.0f,
