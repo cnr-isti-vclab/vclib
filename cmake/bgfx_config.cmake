@@ -78,7 +78,7 @@ function(_add_bgfx_shader FILE DIR TARGET)
 		if(APPLE)
 			# metal
 			set(METAL_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/metal/${DIR}/${FILENAME}.bin)
-			_bgfx_shaderc_parse(METAL ${COMMON} OSX PROFILE metal OUTPUT ${METAL_OUTPUT})
+			_bgfx_shaderc_parse(METAL ${COMMON} OSX PROFILE metal22-11 OUTPUT ${METAL_OUTPUT})
 			list(APPEND OUTPUTS "METAL")
 			set(OUTPUTS_PRETTY "${OUTPUTS_PRETTY}Metal, ")
 		endif()
