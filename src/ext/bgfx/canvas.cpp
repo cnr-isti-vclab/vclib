@@ -58,9 +58,6 @@ void Canvas::init(void* winId, uint width, uint height)
     bgfx::touch(view);
 
     TextView::init(width, height);
-    TextView::enableText(true);
-
-    TextView::appendStaticText({10, height - 50}, "Static Text");
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -101,15 +98,9 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 
 void Canvas::frame()
 {
-    static uint cnt = 0;
-
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::touch(view);
     draw();
-
-    std::string s = "Frame " + std::to_string(cnt++);
-    appendTransientText({10, 10}, s + "\nTransient\nHello World\n");
-
     TextView::frame(fbh);
 
     bgfx::frame();
