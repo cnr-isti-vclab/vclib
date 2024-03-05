@@ -29,6 +29,9 @@
 #include <bgfx/platform.h>
 
 #include "callback.h"
+#include "text/font_map.h"
+
+#define BGFX_INVALID_VIEW 65535
 
 namespace vcl::bgf {
 
@@ -40,6 +43,7 @@ class Context
     std::stack<bgfx::ViewId> viewStack;
 
     Callback cb;
+    FontMap* fm = nullptr;
 
 public:
     inline static bgfx::RendererType::Enum renderType =
@@ -48,6 +52,8 @@ public:
     static bgfx::ViewId requestViewId();
 
     static void releaseViewId(bgfx::ViewId viewId);
+
+    static FontMap& fontMap();
 
 private:
     Context();
@@ -62,6 +68,8 @@ public:
     Context(Context&&)                 = delete;
     Context& operator=(Context&&)      = delete;
 };
+
+bool isViewValid(bgfx::ViewId viewId);
 
 } // namespace vcl::bgf
 

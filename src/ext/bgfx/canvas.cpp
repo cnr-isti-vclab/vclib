@@ -39,6 +39,7 @@ Canvas::~Canvas()
 {
     if (bgfx::isValid(fbh))
         bgfx::destroy(fbh);
+
     Context::releaseViewId(view);
 }
 
@@ -55,6 +56,8 @@ void Canvas::init(void* winId, uint width, uint height)
         view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::touch(view);
+
+    TextView::init(width, height);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -81,6 +84,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
         bgfx::ViewId tmpView = view;
         view                 = v;
         draw();
+        TextView::frame(fbh);
         bgfx::requestScreenShot(fbh, filename.c_str());
         bgfx::frame();
 
@@ -97,6 +101,8 @@ void Canvas::frame()
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::touch(view);
     draw();
+    TextView::frame(fbh);
+
     bgfx::frame();
 }
 
@@ -109,6 +115,8 @@ void Canvas::resize(uint width, uint height)
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::touch(view);
+
+    TextView::resize(width, height);
 }
 
 } // namespace vcl::bgf

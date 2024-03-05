@@ -20,75 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/context.h>
+/*
+* Copyright 2013 Jeremie Roy. All rights reserved.
+* License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
+*/
 
-#include <vclib/gui/native_window_handle.h>
-#include <vclib/types/base.h>
+#ifndef TEXT_METRICS_H_HEADER_GUARD
+#define TEXT_METRICS_H_HEADER_GUARD
 
-namespace vcl::bgf {
+#include "font_manager.h"
 
-Context& Context::instance()
+namespace bgfx {
+
+class TextMetrics
 {
-    static Context ctx;
-    return ctx;
-}
+public:
+	TextMetrics(FontManager* _fontManager);
 
-bgfx::ViewId Context::requestViewId()
+	/// Append an ASCII/utf-8 string to the metrics helper.
+	void appendText(FontHandle _fontHandle, const char* _string);
+
+	/// Append a wide char string to the metrics helper.
+	void appendText(FontHandle _fontHandle, const wchar_t* _string);
+
+	/// Return the width of the measured text.
+	float getWidth() const { return m_width; }
+
+	/// Return the height of the measured text.
+	float getHeight() const { return m_height; }
+
+	/// Clear the width and height of the measured text.
+	void clearText();
+
+private:
+	FontManager* m_fontManager;
+	float m_width;
+	float m_height;
+	float m_x;
+	float m_lineHeight;
+	float m_lineGap;
+};
+
+/// Compute text crop area for text using a single font.
+class TextLineMetrics
 {
-    bgfx::ViewId viewId = instance().viewStack.top();
-    instance().viewStack.pop();
-    return viewId;
-}
+public:
+	TextLineMetrics(const FontInfo& _fontInfo);
 
-void Context::releaseViewId(bgfx::ViewId viewId)
-{
-    instance().viewStack.push(viewId);
-}
+	/// Return the height of a line of text using the given font.
+	float getLineHeight() const { return m_lineHeight; }
 
-FontMap& Context::fontMap()
-{
-    return *instance().fm;
-}
+	/// Return the number of text line in the given text.
+	uint32_t getLineCount(const bx::StringView& _string) const;
 
-Context::Context()
-{
-    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
-#ifdef __APPLE__
-    bgfx::renderFrame(); // needed for macos
-#endif                   // __APPLE__
+	/// Return the first and last character visible in the [_firstLine, _lastLine] range.
+	void getSubText(const bx::StringView& _str, uint32_t _firstLine, uint32_t _lastLine, const char*& _begin, const char*& _end);
 
-    bgfx::Init init;
-    init.platformData.nwh  = windowHandle;
-    init.type              = renderType;
-    init.platformData.ndt  = displayHandle;
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_NONE;
-    init.callback          = &cb;
-    bgfx::init(init);
+private:
+	float m_lineHeight;
+};
 
-    vcl::closeWindow(windowHandle, displayHandle);
+} // namespace bgfx
 
-    uint mv = bgfx::getCaps()->limits.maxViews;
-
-    while (mv != 0) {
-        viewStack.push((bgfx::ViewId) mv--);
-    }
-    viewStack.push((bgfx::ViewId) 0);
-
-    // font manager must be created after bgfx::init
-    fm = new FontMap();
-}
-
-Context::~Context()
-{
-    delete fm;
-    bgfx::shutdown();
-}
-
-bool isViewValid(bgfx::ViewId viewId)
-{
-    return viewId <= bgfx::getCaps()->limits.maxViews;
-}
-
-} // namespace vcl::bgf
+#endif // TEXT_METRICS_H_HEADER_GUARD

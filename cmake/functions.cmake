@@ -20,29 +20,40 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
-
-if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
-    message(STATUS "- bgfx - using bundled source")
-
-    # leave the option to build bgfx examples, but set it to OFF by default
-    option(BGFX_BUILD_EXAMPLES "Build bgfx examples" OFF)
-    set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-    set(BGFX_OPENGL_VERSION 44)
-    add_subdirectory(${VCLIB_BGFX_DIR})
-
-    add_library(vclib-external-bgfx INTERFACE)
-
-    # there are three warnings on gcc that we need to ignore
-    set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
-
-    target_link_libraries(vclib-external-bgfx INTERFACE bx bgfx bimg)
-    target_include_directories(vclib-external-bgfx
-        INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
-
-    set_target_properties(vclib-external-bgfx PROPERTIES BGFX_DIR ${VCLIB_BGFX_DIR})
-
-    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-bgfx)
-elseif(VCLIB_ALLOW_BUNDLED_BGFX)
-    message(STATUS "- bgfx - not found, skipping")
+if (TARGET vclib-external-bgfx)
+    include(${CMAKE_CURRENT_LIST_DIR}/bgfx_config.cmake)
 endif()
+
+# Function to add a list of assets to a target
+function(target_add_assets target_name)
+    list(REMOVE_AT ARGV 0)
+
+    source_group("Asset Files" FILES ${ARGV})
+    target_sources(${target_name} PRIVATE ${ARGV})
+endfunction()
+
+# Function to make available the assets defined by vclib to the given target
+function(target_expose_vclib_assets target_name)
+    get_property(VCLIB_ASSETS TARGET vclib-render PROPERTY VCLIB_RENDER_ASSETS)
+    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+
+    foreach(ASSET ${VCLIB_ASSETS})
+        get_filename_component(DIR_PATH ${ASSET} DIRECTORY)
+        get_property(TARGET_BIN_DIR TARGET ${target_name} PROPERTY BINARY_DIR)
+
+        # copy file from "${VCLIB_RENDER_DIR}/../${ASSET}" to "${TARGET_BIN_DIR}/${ASSET}"
+        add_custom_command(
+            TARGET ${target_name}
+            PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "${VCLIB_RENDER_DIR}/../${ASSET}" "${TARGET_BIN_DIR}/${ASSET}"
+            COMMENT "Copying asset ${ASSET}"
+        )
+    endforeach()
+endfunction()
+
+function (target_expose_vclib_assets_and_shaders target_name)
+    target_expose_vclib_assets(${target_name})
+    if (TARGET vclib-external-bgfx)
+        target_expose_vclib_bgfx_shaders(${target_name})
+    endif()
+endfunction()

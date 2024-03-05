@@ -20,75 +20,55 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/context.h>
+#ifndef VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
+#define VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
 
-#include <vclib/gui/native_window_handle.h>
-#include <vclib/types/base.h>
+#include "../context.h"
+#include "text_manager.h"
 
 namespace vcl::bgf {
 
-Context& Context::instance()
+class TextView
 {
-    static Context ctx;
-    return ctx;
-}
+    TextManager textManager;
+    bgfx::ViewId view = BGFX_INVALID_VIEW;
+    float textViewMatrix[16];
+    float textProjMatrix[16];
+    uint w = 0;
+    uint h = 0;
 
-bgfx::ViewId Context::requestViewId()
-{
-    bgfx::ViewId viewId = instance().viewStack.top();
-    instance().viewStack.pop();
-    return viewId;
-}
+public:
+    TextView();
+    ~TextView();
 
-void Context::releaseViewId(bgfx::ViewId viewId)
-{
-    instance().viewStack.push(viewId);
-}
+    void enableText(bool b = true);
+    bool isTextEnabled() const;
 
-FontMap& Context::fontMap()
-{
-    return *instance().fm;
-}
+    void setTextFont(const std::string& fontName, uint fontSize);
 
-Context::Context()
-{
-    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
-#ifdef __APPLE__
-    bgfx::renderFrame(); // needed for macos
-#endif                   // __APPLE__
+    void clearText();
 
-    bgfx::Init init;
-    init.platformData.nwh  = windowHandle;
-    init.type              = renderType;
-    init.platformData.ndt  = displayHandle;
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_NONE;
-    init.callback          = &cb;
-    bgfx::init(init);
+    void appendStaticText(
+        const vcl::Point2f& pos,
+        const std::string&  text,
+        const vcl::Color&   color = vcl::Color::Black);
 
-    vcl::closeWindow(windowHandle, displayHandle);
+    void appendTransientText(
+        const vcl::Point2f& pos,
+        const std::string&  text,
+        const vcl::Color&   color = vcl::Color::Black);
 
-    uint mv = bgfx::getCaps()->limits.maxViews;
+protected:
+    void init(uint width, uint height);
 
-    while (mv != 0) {
-        viewStack.push((bgfx::ViewId) mv--);
-    }
-    viewStack.push((bgfx::ViewId) 0);
+    void frame(bgfx::FrameBufferHandle fbh);
 
-    // font manager must be created after bgfx::init
-    fm = new FontMap();
-}
+    void resize(uint width, uint height);
 
-Context::~Context()
-{
-    delete fm;
-    bgfx::shutdown();
-}
-
-bool isViewValid(bgfx::ViewId viewId)
-{
-    return viewId <= bgfx::getCaps()->limits.maxViews;
-}
+private:
+    void updateProjMatrix();
+};
 
 } // namespace vcl::bgf
+
+#endif // VCL_EXT_BGFX_TEXT_TEXT_VIEW_H

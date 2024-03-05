@@ -37,8 +37,9 @@ add_subdirectory(external)
 
 if (TARGET vclib-external-bgfx)
     get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 endif()
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/functions.cmake)
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -70,6 +71,9 @@ if (APPLE)
         src/gui/native_window_handle.mm)
 endif()
 
+set(ASSETS
+    assets/fonts/droidsans.ttf)
+
 if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
         include/vclib/ext/bgfx/callback.h
@@ -80,6 +84,14 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/drawable_mesh.h
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
+        include/vclib/ext/bgfx/text/font_map.h
+        include/vclib/ext/bgfx/text/text_manager.h
+        include/vclib/ext/bgfx/text/text_view.h
+        include/vclib/ext/bgfx/text/font/cube_atlas.h
+        include/vclib/ext/bgfx/text/font/font_manager.h
+        include/vclib/ext/bgfx/text/font/text_buffer_manager.h
+        include/vclib/ext/bgfx/text/font/text_metrics.h
+        include/vclib/ext/bgfx/text/font/utf8.h
         include/vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_mesh_shader_program.h
@@ -99,9 +111,17 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/drawable_axis.cpp
         src/ext/bgfx/drawable_directional_light.cpp
         src/ext/bgfx/minimal_viewer.cpp
+        src/ext/bgfx/text/font_map.cpp
+        src/ext/bgfx/text/text_manager.cpp
+        src/ext/bgfx/text/text_view.cpp
+        src/ext/bgfx/text/font/cube_atlas.cpp
+        src/ext/bgfx/text/font/font_manager.cpp
+        src/ext/bgfx/text/font/text_buffer_manager.cpp
+        src/ext/bgfx/text/font/text_metrics.cpp
+        src/ext/bgfx/text/font/utf8.cpp
         src/ext/bgfx/shader_programs/load_program.cpp)
 
-    set(SHADERS
+    list(APPEND SHADERS
         shaders/vclib/ext/bgfx/shaders_common.sh
         shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc
         shaders/vclib/ext/bgfx/drawable_axis/varying.def.sc
@@ -115,6 +135,23 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc
         shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc
         shaders/vclib/ext/bgfx/drawable_mesh/uniforms.sh
+        shaders/vclib/ext/bgfx/font/fs_font_basic.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow_image.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline_drop_shadow_image.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline_image.sc
+        shaders/vclib/ext/bgfx/font/fs_font_distance_field_subpixel.sc
+        shaders/vclib/ext/bgfx/font/varying.def.sc
+        shaders/vclib/ext/bgfx/font/vs_font_basic.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow_image.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline_drop_shadow_image.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline_image.sc
+        shaders/vclib/ext/bgfx/font/vs_font_distance_field_subpixel.sc
         shaders/vclib/ext/bgfx/uniforms/camera_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/directional_light_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.sh
@@ -221,6 +258,11 @@ add_library(vclib-render ${VLIB_RENDER_LIB_TYPE}
 target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
 set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
+
+set_target_properties(vclib-render PROPERTIES
+    VCLIB_RENDER_ASSETS "${ASSETS}")
+
+target_add_assets(vclib-render ${ASSETS})
 
 if (TARGET vclib-external-qt)
     set_property(TARGET vclib-render PROPERTY AUTOMOC ON)

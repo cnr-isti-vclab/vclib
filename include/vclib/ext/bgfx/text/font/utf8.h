@@ -20,75 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/context.h>
+// Copyright (c) 2008-2009 Bjoern Hoehrmann <bjoern@hoehrmann.de>
+// See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
 
-#include <vclib/gui/native_window_handle.h>
-#include <vclib/types/base.h>
+#ifndef UTF8_H_HEADER_GUARD
+#define UTF8_H_HEADER_GUARD
 
-namespace vcl::bgf {
+#include <stdint.h>
 
-Context& Context::instance()
-{
-    static Context ctx;
-    return ctx;
-}
+#define UTF8_ACCEPT 0
+#define UTF8_REJECT 1
 
-bgfx::ViewId Context::requestViewId()
-{
-    bgfx::ViewId viewId = instance().viewStack.top();
-    instance().viewStack.pop();
-    return viewId;
-}
+namespace bgfx {
 
-void Context::releaseViewId(bgfx::ViewId viewId)
-{
-    instance().viewStack.push(viewId);
-}
+uint32_t utf8_decode(uint32_t* _state, uint32_t* _codep, uint8_t _ch);
 
-FontMap& Context::fontMap()
-{
-    return *instance().fm;
-}
+} // namespace bgfx
 
-Context::Context()
-{
-    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
-#ifdef __APPLE__
-    bgfx::renderFrame(); // needed for macos
-#endif                   // __APPLE__
-
-    bgfx::Init init;
-    init.platformData.nwh  = windowHandle;
-    init.type              = renderType;
-    init.platformData.ndt  = displayHandle;
-    init.resolution.width  = 1;
-    init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_NONE;
-    init.callback          = &cb;
-    bgfx::init(init);
-
-    vcl::closeWindow(windowHandle, displayHandle);
-
-    uint mv = bgfx::getCaps()->limits.maxViews;
-
-    while (mv != 0) {
-        viewStack.push((bgfx::ViewId) mv--);
-    }
-    viewStack.push((bgfx::ViewId) 0);
-
-    // font manager must be created after bgfx::init
-    fm = new FontMap();
-}
-
-Context::~Context()
-{
-    delete fm;
-    bgfx::shutdown();
-}
-
-bool isViewValid(bgfx::ViewId viewId)
-{
-    return viewId <= bgfx::getCaps()->limits.maxViews;
-}
-
-} // namespace vcl::bgf
+#endif // UTF8_H_HEADER_GUARD
