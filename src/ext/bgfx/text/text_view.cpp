@@ -61,6 +61,36 @@ bool TextView::isTextEnabled() const
     return isViewValid(view);
 }
 
+
+void TextView::setTextFont(const std::string& fontName, uint fontSize)
+{
+    textManager.setCurrentFont(fontName, fontSize);
+}
+
+
+void TextView::clearText()
+{
+    textManager.clear();
+}
+
+
+void TextView::appendStaticText(
+    const Point2f&     pos,
+    const std::string& text,
+    const Color&       color)
+{
+    textManager.appendStaticText(pos, text, color);
+}
+
+
+void TextView::appendTransientText(
+    const Point2f&     pos,
+    const std::string& text,
+    const Color&       color)
+{
+    textManager.appendTransientText(pos, text, color);
+}
+
 void TextView::init(uint width, uint height)
 {
     w = width;
@@ -72,10 +102,9 @@ void TextView::init(uint width, uint height)
     bx::mtxLookAt(textViewMatrix, eye, at);
 
     textManager.init();
+
     textManager.loadFont("assets/fonts/droidsans.ttf", "DroidSans");
     textManager.setCurrentFont("DroidSans", 20);
-
-    textManager.appendStaticText({10, height - 50}, "Static Text");
 }
 
 void TextView::frame(bgfx::FrameBufferHandle fbh)
@@ -87,8 +116,6 @@ void TextView::frame(bgfx::FrameBufferHandle fbh)
 
         bgfx::setViewTransform(view, textViewMatrix, textProjMatrix);
 
-        std::string s = "Frame " + std::to_string(cnt++);
-        textManager.appendTransientText({10, 10}, s + "\nTransient\nHello World\n");
         textManager.submit(view);
     }
 }

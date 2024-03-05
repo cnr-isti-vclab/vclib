@@ -44,6 +44,20 @@ public:
     void enableText(bool b = true);
     bool isTextEnabled() const;
 
+    void setTextFont(const std::string& fontName, uint fontSize);
+
+    void clearText();
+
+    void appendStaticText(
+        const vcl::Point2f& pos,
+        const std::string&  text,
+        const vcl::Color&   color = vcl::Color::Black);
+
+    void appendTransientText(
+        const vcl::Point2f& pos,
+        const std::string&  text,
+        const vcl::Color&   color = vcl::Color::Black);
+
 protected:
     void init(uint width, uint height);
 

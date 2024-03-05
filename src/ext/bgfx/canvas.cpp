@@ -24,11 +24,6 @@
 
 #include <vclib/gui/native_window_handle.h>
 
-#include <vector>
-#include <fstream>
-
-#include <bx/math.h>
-
 namespace vcl::bgf {
 
 Canvas::Canvas()
@@ -64,6 +59,8 @@ void Canvas::init(void* winId, uint width, uint height)
 
     TextView::init(width, height);
     TextView::enableText(true);
+
+    TextView::appendStaticText({10, height - 50}, "Static Text");
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -90,6 +87,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
         bgfx::ViewId tmpView = view;
         view                 = v;
         draw();
+        TextView::frame(fbh);
         bgfx::requestScreenShot(fbh, filename.c_str());
         bgfx::frame();
 
@@ -108,6 +106,9 @@ void Canvas::frame()
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::touch(view);
     draw();
+
+    std::string s = "Frame " + std::to_string(cnt++);
+    appendTransientText({10, 10}, s + "\nTransient\nHello World\n");
 
     TextView::frame(fbh);
 
