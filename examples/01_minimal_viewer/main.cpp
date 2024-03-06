@@ -20,9 +20,11 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include "common.h"
+
 #ifdef USE_QT
-#include "minimal_viewer_qt.h"
 #include <QApplication>
+#include <vclib/ext/qt/bgfx/minimal_viewer_widget.h>
 #elif USE_GLFW
 #include "minimal_viewer_glfw.h"
 #endif
@@ -32,18 +34,24 @@ int main(int argc, char** argv)
 #ifdef USE_QT
     QApplication app(argc, argv);
 
-    MinimalViewerQt tw;
+    vcl::qbgf::MinimalViewerWidget tw("Minimal Viewer Qt");
+#elif USE_GLFW
+    MinimalViewerGLFW tw("Minimal Viewer GLFW");
+#endif
+    // load and set up a drawable mesh
+    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(drawable);
+
+    tw.fitScene();
 
     tw.show();
 
+#ifdef USE_QT
     return app.exec();
 #elif USE_GLFW
-    MinimalViewerGLFW tw;
-
-    tw.show();
-
-    return 0;
-#else
     return 0;
 #endif
 }

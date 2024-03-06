@@ -30,7 +30,7 @@
 
 #include <vclib/ext/bgfx/drawable_mesh.h>
 
-vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh()
+inline vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh()
 {
     // load a mesh:
     vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");

@@ -22,31 +22,29 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 01-minimal-viewer)
-project(vclib-render-${EXAMPLE_NAME}-example)
+if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
+    set(EXAMPLE_NAME 01-minimal-viewer)
+    project(vclib-render-${EXAMPLE_NAME}-example)
 
-### Build settings
-set(CMAKE_CXX_STANDARD 20)
+    ### Build settings
+    set(CMAKE_CXX_STANDARD 20)
 
-set(HEADERS
-    common.h)
+    set(HEADERS
+        common.h)
 
-set(SOURCES
-    main.cpp)
+    set(SOURCES
+        main.cpp)
 
-if (TARGET vclib-external-qt)
-    add_compile_definitions(USE_QT)
-    list(APPEND HEADERS minimal_viewer_qt.h)
-    list(APPEND SOURCES minimal_viewer_qt.cpp)
-elseif (TARGET vclib-external-glfw)
-    add_compile_definitions(USE_GLFW)
-    list(APPEND HEADERS minimal_viewer_glfw.h)
-    list(APPEND SOURCES minimal_viewer_glfw.cpp)
+    if (TARGET vclib-external-qt)
+        add_compile_definitions(USE_QT)
+    elseif (TARGET vclib-external-glfw)
+        add_compile_definitions(USE_GLFW)
+    endif()
+
+    # will create a target called 'vclib-render-${EXAMPLE_NAME}-example'
+    vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
+
+    # this target will use the vclib_render assets and bgfx shaders, therefore we
+    # need to expose them to the target
+    target_expose_vclib_assets_and_shaders(${PROJECT_NAME})
 endif()
-
-# will create a target called 'vclib-render-${EXAMPLE_NAME}-example'
-vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
-
-# this target will use the vclib_render assets and bgfx shaders, therefore we
-# need to expose them to the target
-target_expose_vclib_assets_and_shaders(${PROJECT_NAME})
