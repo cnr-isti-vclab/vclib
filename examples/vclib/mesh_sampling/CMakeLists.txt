@@ -22,10 +22,14 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME mesh-sampling)
+set(EXAMPLE_NAME 903-mesh-sampling)
 project(vclib-render-${EXAMPLE_NAME}-example)
 
 set(SOURCES
     main.cpp)
 
 vclib_render_add_example(${EXAMPLE_NAME} TRUE ${SOURCES})
+
+if (TARGET vclib-external-bgfx)
+    target_expose_vclib_assets_and_shaders(${PROJECT_NAME})
+endif()

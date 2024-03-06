@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME mesh-io-stl)
+set(EXAMPLE_NAME 901-mesh-io-stl)
 project(vclib-render-${EXAMPLE_NAME}-example)
 
 set(SOURCES

@@ -20,6 +20,10 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
+# todo: include_vclib_example_dir parameter should not be a bool, but an
+# optional parameter that represent the associated example name of the vclib
+# library (used to include relative example directory)
+
 function(vclib_render_add_example name include_vclib_example_dir)
     cmake_parse_arguments(ARG "" "" "" ${ARGN})
 
@@ -29,8 +33,11 @@ function(vclib_render_add_example name include_vclib_example_dir)
     target_link_libraries(${TARGET_NAME} PRIVATE
         vclib-render vclib-examples-common)
 
-    if (${include_vclib_example_dir})
+    if (${include_vclib_example_dir}) # todo: change this, see above
         string(REPLACE "-" "_" out_name ${name})
+        #remove first 4 chrs from out_name
+        string(SUBSTRING ${out_name} 4 -1 out_name)
+
         set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/${out_name})
 
         target_include_directories(${TARGET_NAME} PUBLIC
