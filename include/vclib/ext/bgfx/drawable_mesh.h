@@ -49,7 +49,7 @@ class DrawableMesh : public DrawableMeshI
 public:
     DrawableMesh() = default;
 
-    DrawableMesh(const MeshType& mesh)
+    DrawableMesh(const MeshType& mesh) : Base(mesh)
     {
         updateBuffers(mesh);
         mrs.setDefaultSettingsFromCapability();

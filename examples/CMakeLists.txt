@@ -27,19 +27,47 @@ option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
 
-# examples
-if (VCLIB_BUILD_EXAMPLES)
+set(CAN_BUILD_EXAMPLES false)
 
-    add_subdirectory(00_hello_triangle)
-    add_subdirectory(01_minimal_viewer)
-    add_subdirectory(02_qt_main_window)
+option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT_AND_BGFX "Force building examples using qt and bgfx libraries" ON)
+option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW_AND_BGFX "Force building examples using glfw and bgfx libraries" ON)
+option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_QGLVIEWER "Force building examples using qglviewer library" ON)
 
-    if (TARGET vclib-external-qglviewer)
-        add_subdirectory(qglviewer)
+if (TARGET vclib-external-qt)
+    if (TARGET vclib-external-bgfx)
+        if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT_AND_BGFX)
+            add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
+            add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX)
+            set(CAN_BUILD_EXAMPLES true)
+        endif()
+    elseif(TARGET vclib-external-qglviewer)
+        if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QGLVIEWER)
+            add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
+            add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER)
+            set(CAN_BUILD_EXAMPLES true)
+        endif()
     endif()
-
-    # the following examples are the same of the ones in the vclib library,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(vclib)
+endif()
+if(TARGET vclib-external-glfw AND TARGET vclib-external-bgfx)
+    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW_AND_BGFX)
+        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX)
+        set(CAN_BUILD_EXAMPLES true)
+    endif()
 endif()
 
+if (CAN_BUILD_EXAMPLES)
+    # examples
+    if (VCLIB_BUILD_EXAMPLES)
+        add_subdirectory(00_hello_triangle)
+        add_subdirectory(01_minimal_viewer)
+        add_subdirectory(02_qt_main_window)
+
+        if (TARGET vclib-external-qglviewer)
+            add_subdirectory(qglviewer)
+        endif()
+
+        # the following examples are the same of the ones in the vclib library,
+        # but they add a viewer at the end in order to visualize the results
+        add_subdirectory(vclib)
+    endif()
+endif()

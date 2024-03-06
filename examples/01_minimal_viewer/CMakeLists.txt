@@ -36,7 +36,7 @@ if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
         main.cpp)
 
     if (TARGET vclib-external-qt)
-        add_compile_definitions(USE_QT)
+        add_compile_definitions(USE_GLFW)
     elseif (TARGET vclib-external-glfw)
         add_compile_definitions(USE_GLFW)
     endif()

@@ -26,7 +26,7 @@
 #include <QApplication>
 #include <vclib/ext/qt/bgfx/minimal_viewer_widget.h>
 #elif USE_GLFW
-#include "minimal_viewer_glfw.h"
+#include <vclib/ext/glfw/bgfx/minimal_viewer_window.h>
 #endif
 
 int main(int argc, char** argv)
@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 
     vcl::qbgf::MinimalViewerWidget tw("Minimal Viewer Qt");
 #elif USE_GLFW
-    MinimalViewerGLFW tw("Minimal Viewer GLFW");
+    vcl::bglfwx::MinimalViewerWindow tw("Minimal Viewer GLFW");
 #endif
     // load and set up a drawable mesh
     vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();

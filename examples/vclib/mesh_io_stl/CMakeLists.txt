@@ -29,3 +29,7 @@ set(SOURCES
     main.cpp)
 
 vclib_render_add_example(${EXAMPLE_NAME} TRUE ${SOURCES})
+
+if (TARGET vclib-external-bgfx)
+    target_expose_vclib_assets_and_shaders(${PROJECT_NAME})
+endif()
