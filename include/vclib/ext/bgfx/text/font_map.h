@@ -32,8 +32,8 @@ namespace vcl::bgf {
 
 class FontMap
 {
-    bgfx::FontManager fontManager;
-    std::map<std::string, bgfx::TrueTypeHandle> ttMap;
+    bgfx::FontManager                                            fontManager;
+    std::map<std::string, bgfx::TrueTypeHandle>                  ttMap;
     std::map<std::pair<std::string, uint16_t>, bgfx::FontHandle> fontMap;
 
 public:

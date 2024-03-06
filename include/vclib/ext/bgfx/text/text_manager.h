@@ -34,8 +34,8 @@ namespace vcl::bgf {
 class TextManager
 {
     bgfx::TextBufferManager* textBufferManager = nullptr;
-    bgfx::TextBufferHandle staticText;
-    bgfx::TextBufferHandle transientText;
+    bgfx::TextBufferHandle   staticText;
+    bgfx::TextBufferHandle   transientText;
 
     bgfx::FontHandle currentFont;
 

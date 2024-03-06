@@ -22,8 +22,8 @@
 
 #include <vclib/ext/bgfx/text/font_map.h>
 
-#include <vector>
 #include <fstream>
+#include <vector>
 
 namespace vcl::bgf {
 
@@ -46,13 +46,11 @@ bgfx::FontManager& FontMap::getFontManager()
     return fontManager;
 }
 
-void FontMap::loadFont(
-    const std::string& filePath,
-    const std::string& fontName)
+void FontMap::loadFont(const std::string& filePath, const std::string& fontName)
 {
     if (ttMap.find(fontName) == ttMap.end()) {
         bgfx::TrueTypeHandle handle = loadTtf(fontManager, filePath.c_str());
-        ttMap[fontName] = handle;
+        ttMap[fontName]             = handle;
     }
 }
 
@@ -66,7 +64,7 @@ bgfx::FontHandle FontMap::getFontHandle(
     }
     else {
         bgfx::TrueTypeHandle ttHandle = ttMap.at(fontName);
-        bgfx::FontHandle font =
+        bgfx::FontHandle     font =
             fontManager.createFontByPixelSize(ttHandle, 0, fontSize);
         fontMap[{fontName, fontSize}] = font;
         return font;
@@ -79,19 +77,19 @@ bgfx::TrueTypeHandle FontMap::loadTtf(
 {
     std::vector<uint8_t> data;
 
-           // create ifstream from filePath
+    // create ifstream from filePath
     std::ifstream file(filePath, std::ios::binary);
     if (!file.is_open())
         throw std::runtime_error("Could not open file");
 
-           // get the size of the file
+    // get the size of the file
     file.seekg(0, std::ios::end);
     size_t size = file.tellg();
     file.seekg(0, std::ios::beg);
 
-           // read the file and place it into the vector data
+    // read the file and place it into the vector data
     data.resize(size);
-    file.read((char*)data.data(), size);
+    file.read((char*) data.data(), size);
 
     bgfx::TrueTypeHandle handle = fontManager.createTtf(data.data(), size);
     return handle;

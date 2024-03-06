@@ -24,8 +24,7 @@
 
 #include "common.h"
 
-MainWindowQt::MainWindowQt() :
-        vcl::qbgf::ViewerMainWindow()
+MainWindowQt::MainWindowQt() : vcl::qbgf::ViewerMainWindow()
 {
     // load and set up a drawable mesh
     vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
