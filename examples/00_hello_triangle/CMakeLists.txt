@@ -49,6 +49,8 @@ elseif (TARGET vclib-external-glfw)
     list(APPEND SOURCES hello_triangle_glfw.cpp)
 endif()
 
-vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
+
+target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})
 
 target_expose_vclib_assets_and_shaders(${PROJECT_NAME})

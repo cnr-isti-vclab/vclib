@@ -42,7 +42,7 @@ if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
     endif()
 
     # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
-    vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
+    vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
 
     # this target will use the vclib_render assets and bgfx shaders, therefore we
     # need to expose them to the target

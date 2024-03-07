@@ -23,9 +23,9 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-examples)
 
-add_subdirectory(901_mesh_io_stl)
-add_subdirectory(902_mesh_principal_curvature)
-add_subdirectory(903_mesh_sampling)
-add_subdirectory(904_mesh_sphere_intersection)
+add_subdirectory(9015-mesh-io-stl)
+add_subdirectory(9018-mesh-principal-curvature)
+add_subdirectory(9019-mesh-sampling)
+add_subdirectory(9021-mesh-sphere-intersection)
 
 
