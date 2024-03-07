@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME mesh-filter)
+set(TEST_NAME 002-mesh-topology)
 project(vclib-test-${TEST_NAME})
 
 set(SOURCES

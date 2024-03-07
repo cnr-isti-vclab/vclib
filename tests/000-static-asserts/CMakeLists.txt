@@ -22,17 +22,25 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME mesh-new-user-component)
-project(vclib-test-${TEST_NAME})
+set(EXAMPLE_NAME 000-static-asserts)
+project(vclib-${EXAMPLE_NAME}-test)
+
+set(HEADERS
+    meshes.h
+    loggers.h
+    space.h
+    meshes/edgemesh.h
+    meshes/mesh_views.h
+    meshes/pointcloud.h
+    meshes/polymesh.h
+    meshes/trimesh.h
+)
 
 set(SOURCES
-    main.cpp)
+    main.cpp
+)
 
 vclib_add_test(
-    ${TEST_NAME}
+    ${EXAMPLE_NAME}
     ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
-    ${SOURCES})
-
-target_include_directories(vclib-test-${TEST_NAME}
-    PUBLIC
-        ${VCLIB_EXAMPLES_DIR}/mesh_new_user_component)
+    ${HEADERS} ${SOURCES})

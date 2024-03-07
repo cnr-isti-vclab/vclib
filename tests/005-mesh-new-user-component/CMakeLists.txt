@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME mesh-topology)
+set(TEST_NAME 005-mesh-new-user-component)
 project(vclib-test-${TEST_NAME})
 
 set(SOURCES
@@ -32,3 +32,7 @@ vclib_add_test(
     ${TEST_NAME}
     ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
     ${SOURCES})
+
+target_include_directories(vclib-test-${TEST_NAME}
+    PUBLIC
+        ${VCLIB_EXAMPLES_DIR}/010-mesh-new-user-component)

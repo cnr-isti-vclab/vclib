@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME load-save-mesh-ply)
+set(TEST_NAME 011-mesh-filter)
 project(vclib-test-${TEST_NAME})
 
 set(SOURCES

@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME mesh-custom-components)
+set(TEST_NAME 001-trimesh-base)
 project(vclib-test-${TEST_NAME})
 
 set(SOURCES

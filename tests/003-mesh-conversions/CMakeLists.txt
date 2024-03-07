@@ -22,25 +22,13 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME ext-mesh-import-from-vcg)
+set(TEST_NAME 003-mesh-conversions)
 project(vclib-test-${TEST_NAME})
 
-# vcg generates a lot of warnings
-set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
-
 set(SOURCES
-    mesh.h
     main.cpp)
 
 vclib_add_test(
     ${TEST_NAME}
     ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
     ${SOURCES})
-
-get_property(VCG_INCLUDE_DIRS
-    TARGET vclib-external-vcg
-    PROPERTY VCG_INCLUDE_DIRS)
-
-# add plylib.cpp source from vcg
-target_sources(vclib-test-${TEST_NAME} PRIVATE
-    ${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp)

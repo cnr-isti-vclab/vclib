@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME kd-tree)
+set(TEST_NAME 012-kd-tree)
 project(vclib-test-${TEST_NAME})
 
 set(SOURCES

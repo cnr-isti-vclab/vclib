@@ -22,25 +22,13 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME static-asserts)
-project(vclib-${EXAMPLE_NAME}-test)
-
-set(HEADERS
-    meshes.h
-    loggers.h
-    space.h
-    meshes/edgemesh.h
-    meshes/mesh_views.h
-    meshes/pointcloud.h
-    meshes/polymesh.h
-    meshes/trimesh.h
-)
+set(TEST_NAME 006-load-save-mesh-obj)
+project(vclib-test-${TEST_NAME})
 
 set(SOURCES
-    main.cpp
-)
+    main.cpp)
 
 vclib_add_test(
-    ${EXAMPLE_NAME}
+    ${TEST_NAME}
     ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
-    ${HEADERS} ${SOURCES})
+    ${SOURCES})

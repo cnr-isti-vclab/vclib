@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME mesh-clean)
+set(TEST_NAME 009-load-save-mesh-stl)
 project(vclib-test-${TEST_NAME})
 
 set(SOURCES

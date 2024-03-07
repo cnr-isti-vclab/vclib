@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME mesh-conversions)
+set(TEST_NAME 007-load-save-mesh-off)
 project(vclib-test-${TEST_NAME})
 
 set(SOURCES
