@@ -20,59 +20,15 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include <default_viewer.h>
+
 #include "mesh_curvature.h"
-
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <QApplication>
-#endif
-
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX
-#include <vclib/ext/bgfx/drawable_mesh.h>
-#include <vclib/ext/qt/bgfx/viewer_main_window.h>
-#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
-#include <vclib/ext/bgfx/drawable_mesh.h>
-#include <vclib/ext/glfw/bgfx/minimal_viewer_window.h>
-#elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
-#include <vclib/ext/opengl2/drawable_mesh.h>
-#include <vclib/ext/qglviewer/viewer_main_window.h>
-#endif
 
 int main(int argc, char** argv)
 {
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    QApplication application(argc, argv);
-#endif
-
     vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
 
     updateCurvature(m);
 
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX
-    vcl::qbgf::ViewerMainWindow          viewer;
-    vcl::bgf::DrawableMesh<vcl::TriMesh> dm(m);
-#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
-    vcl::bglfwx::MinimalViewerWindow     viewer;
-    vcl::bgf::DrawableMesh<vcl::TriMesh> dm(m);
-#elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
-    vcl::qgl::ViewerMainWindow           viewer;
-    vcl::gl2::DrawableMesh<vcl::TriMesh> dm(m);
-#endif
-
-    std::shared_ptr<vcl::DrawableObjectVector> vector =
-        std::make_shared<vcl::DrawableObjectVector>();
-    vector->pushBack(dm);
-    viewer.setDrawableObjectVector(vector);
-#if VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
-    viewer.fitScene();
-#endif
-
-    viewer.show();
-
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
-    return application.exec();
-#else
-    (void) argc; // unused
-    (void) argv;
-    return 0;
-#endif
+    return showMeshesOnDefaultViewer(argc, argv, m);
 }

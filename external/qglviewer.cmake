@@ -39,7 +39,6 @@ if (VCLIB_ALLOW_SYSTEM_QGLVIEWER)
 
             target_include_directories(vclib-external-qglviewer INTERFACE ${QGLVIEWER_INCLUDE_DIR})
             target_link_libraries(vclib-external-qglviewer INTERFACE ${QGLVIEWER_LIBRARY})
-            target_compile_definitions(vclib-external-qglviewer INTERFACE VCLIB_WITH_QGLVIEWER)
 
             list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-qglviewer)
         else()

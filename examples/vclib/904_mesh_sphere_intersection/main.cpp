@@ -20,14 +20,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include <default_viewer.h>
+
 #include "bimba_sphere_intersection.h"
-
-#ifdef VCLIB_WITH_QGLVIEWER
-#include <QApplication>
-
-#include <vclib/ext/opengl2/drawable_mesh.h>
-#include <vclib/ext/qglviewer/viewer_main_window.h>
-#endif
 
 int main(int argc, char** argv)
 {
@@ -41,31 +36,11 @@ int main(int argc, char** argv)
     m.enablePerVertexColor();
     vcl::setPerVertexColor(m, vcl::Color::Gray);
 
-#ifdef VCLIB_WITH_QGLVIEWER
     vcl::TriMesh sm = vcl::createSphere<vcl::TriMesh>(s);
     sm.enablePerVertexColor();
     vcl::updatePerFaceNormals(sm);
     vcl::updatePerVertexNormals(sm);
     vcl::setPerVertexColor(sm, vcl::Color::Gray);
 
-    QApplication application(argc, argv);
-
-    vcl::qgl::ViewerMainWindow           viewer;
-    vcl::gl2::DrawableMesh<vcl::TriMesh> dm(m);
-    vcl::gl2::DrawableMesh<vcl::TriMesh> sdm(sm);
-
-    std::shared_ptr<vcl::DrawableObjectVector> vector =
-        std::make_shared<vcl::DrawableObjectVector>();
-    vector->pushBack(dm);
-    vector->pushBack(sdm);
-    viewer.setDrawableObjectVector(vector);
-
-    viewer.show();
-
-    return application.exec();
-#else
-    (void) argc; // unused
-    (void) argv;
-    return 0;
-#endif
+    return showMeshesOnDefaultViewer(argc, argv, m, sm);
 }

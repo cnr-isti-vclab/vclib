@@ -20,29 +20,16 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-# todo: include_vclib_example_dir parameter should not be a bool, but an
-# optional parameter that represent the associated example name of the vclib
-# library (used to include relative example directory)
+cmake_minimum_required(VERSION 3.24)
+project(common)
 
-function(vclib_render_add_example name include_vclib_example_dir)
-    cmake_parse_arguments(ARG "" "" "" ${ARGN})
+set(HEADERS
+    default_viewer.h)
 
-    set(TARGET_NAME "vclib-render-${name}-example")
+add_library(vclib-render-examples-common INTERFACE)
 
-    add_executable(${TARGET_NAME} ${ARG_UNPARSED_ARGUMENTS})
-    target_link_libraries(${TARGET_NAME} PRIVATE
-        vclib-render vclib-examples-common vclib-render-examples-common)
+target_include_directories(vclib-render-examples-common INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
-    if (${include_vclib_example_dir}) # todo: change this, see above
-        string(REPLACE "-" "_" out_name ${name})
-        #remove first 4 chrs from out_name
-        string(SUBSTRING ${out_name} 4 -1 out_name)
+target_sources(vclib-render-examples-common PRIVATE ${HEADERS})
 
-        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/${out_name})
 
-        target_include_directories(${TARGET_NAME} PUBLIC
-                ${VCLIB_INCLUDE_EXAMPLES_DIR})
-    endif()
-
-    set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "examples")
-endfunction()
