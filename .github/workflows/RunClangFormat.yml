@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  run_clang_format_linter:
     if: github.repository == 'cnr-isti-vclab/vclib'
     name: Run clang-format Linter
     runs-on: ubuntu-latest

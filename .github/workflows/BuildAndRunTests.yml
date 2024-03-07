@@ -4,7 +4,7 @@ on:
   [push, pull_request]
 
 jobs:
-  meshlab_build:
+  build_and_run_tests:
     name: Build and run Tests
     runs-on: ${{ matrix.os }}
     strategy:
