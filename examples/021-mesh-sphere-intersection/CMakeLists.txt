@@ -22,13 +22,16 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME trimesh-base)
-project(vclib-test-${TEST_NAME})
+set(EXAMPLE_NAME 021-mesh-sphere-intersection)
+project(vclib-example-${EXAMPLE_NAME})
+
+set(HEADERS
+    bimba_sphere_intersection.h)
 
 set(SOURCES
     main.cpp)
 
-vclib_add_test(
-    ${TEST_NAME}
+vclib_add_example(
+    ${EXAMPLE_NAME}
     ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
     ${SOURCES})

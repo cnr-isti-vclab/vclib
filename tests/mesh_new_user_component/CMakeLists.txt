@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 set(TEST_NAME mesh-new-user-component)
-project(vclib-${TEST_NAME}-test)
+project(vclib-test-${TEST_NAME})
 
 set(SOURCES
     main.cpp)
@@ -33,6 +33,6 @@ vclib_add_test(
     ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
     ${SOURCES})
 
-target_include_directories(vclib-${TEST_NAME}-test
+target_include_directories(vclib-test-${TEST_NAME}
     PUBLIC
         ${VCLIB_EXAMPLES_DIR}/mesh_new_user_component)

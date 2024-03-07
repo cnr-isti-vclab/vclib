@@ -2,9 +2,9 @@ function(_vclib_add_test_example name header_only test)
     cmake_parse_arguments(ARG "" "" "" ${ARGN})
 
     if (${test})
-        set(TARGET_NAME "vclib-${name}-test")
+        set(TARGET_NAME "vclib-test-${name}")
     else()
-        set(TARGET_NAME "vclib-${name}-example")
+        set(TARGET_NAME "vclib-example-${name}")
     endif()
 
     add_executable(${TARGET_NAME} ${ARG_UNPARSED_ARGUMENTS})
