@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 set(EXAMPLE_NAME 00-hello-triangle)
-project(vclib-render-${EXAMPLE_NAME}-example)
+project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings
 set(CMAKE_CXX_STANDARD 20)
@@ -51,4 +51,4 @@ endif()
 
 vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
 
-target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})
+target_expose_vclib_assets_and_shaders(${PROJECT_NAME})

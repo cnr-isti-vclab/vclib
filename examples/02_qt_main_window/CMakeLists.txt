@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.24)
 if (TARGET vclib-external-qt)
 
     set(EXAMPLE_NAME 02-qt-main-window)
-    project(vclib-render-${EXAMPLE_NAME}-example)
+    project(vclib-render-example-${EXAMPLE_NAME})
 
     ### Build settings
     set(CMAKE_CXX_STANDARD 20)
@@ -38,7 +38,7 @@ if (TARGET vclib-external-qt)
         main_window_qt.cpp
         main.cpp)
 
-    # will create a target called 'vclib-render-${EXAMPLE_NAME}-example'
+    # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
     vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
 
     # this target will use the vclib_render assets and bgfx shaders, therefore we

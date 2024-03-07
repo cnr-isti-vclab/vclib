@@ -22,11 +22,8 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME qglviewer)
-project(vclib-render-${EXAMPLE_NAME}-example)
-
-set(SOURCES
-    main.cpp)
+set(EXAMPLE_NAME 899-qglviewer)
+project(vclib-render-example-${EXAMPLE_NAME})
 
 set(SOURCES
     main.cpp)

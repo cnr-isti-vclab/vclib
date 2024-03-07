@@ -61,12 +61,19 @@ if (CAN_BUILD_EXAMPLES)
     if (VCLIB_BUILD_EXAMPLES)
         add_subdirectory(common)
 
-        add_subdirectory(00_hello_triangle)
-        add_subdirectory(01_minimal_viewer)
-        add_subdirectory(02_qt_main_window)
+        # examples with bgfx and a window manager (qt or glfw)
+        if ((TARGET vclib-external-bgfx) AND
+                (TARGET vclib-external-qt OR TARGET vclib-external-glfw))
+            add_subdirectory(00_hello_triangle)
+            add_subdirectory(01_minimal_viewer)
+
+            if (TARGET vclib-external-qt)
+                add_subdirectory(02_qt_main_window)
+            endif()
+        endif()
 
         if (TARGET vclib-external-qglviewer)
-            add_subdirectory(qglviewer)
+            add_subdirectory(899_qglviewer)
         endif()
 
         # the following examples are the same of the ones in the vclib library,

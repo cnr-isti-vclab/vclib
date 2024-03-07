@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 set(EXAMPLE_NAME 904-mesh-sphere-intersection)
-project(vclib-render-${EXAMPLE_NAME}-example)
+project(vclib-render-example-${EXAMPLE_NAME})
 
 set(SOURCES
     main.cpp)

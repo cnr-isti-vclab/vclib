@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.24)
 
 if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
     set(EXAMPLE_NAME 01-minimal-viewer)
-    project(vclib-render-${EXAMPLE_NAME}-example)
+    project(vclib-render-example-${EXAMPLE_NAME})
 
     ### Build settings
     set(CMAKE_CXX_STANDARD 20)
@@ -36,12 +36,12 @@ if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
         main.cpp)
 
     if (TARGET vclib-external-qt)
-        add_compile_definitions(USE_GLFW)
+        add_compile_definitions(USE_QT)
     elseif (TARGET vclib-external-glfw)
         add_compile_definitions(USE_GLFW)
     endif()
 
-    # will create a target called 'vclib-render-${EXAMPLE_NAME}-example'
+    # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
     vclib_render_add_example(${EXAMPLE_NAME} TRUE ${HEADERS} ${SOURCES})
 
     # this target will use the vclib_render assets and bgfx shaders, therefore we

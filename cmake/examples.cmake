@@ -27,7 +27,7 @@
 function(vclib_render_add_example name include_vclib_example_dir)
     cmake_parse_arguments(ARG "" "" "" ${ARGN})
 
-    set(TARGET_NAME "vclib-render-${name}-example")
+    set(TARGET_NAME "vclib-render-example-${name}")
 
     add_executable(${TARGET_NAME} ${ARG_UNPARSED_ARGUMENTS})
     target_link_libraries(${TARGET_NAME} PRIVATE
