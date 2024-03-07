@@ -58,11 +58,11 @@ int main(int argc, char** argv)
     vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);
 
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX
-    vcl::qbgf::ViewerMainWindow           viewer;
+    vcl::qbgf::ViewerMainWindow          viewer;
     vcl::bgf::DrawableMesh<vcl::TriMesh> dm1(m1);
     vcl::bgf::DrawableMesh<vcl::TriMesh> dm2(m2);
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
-    vcl::bglfwx::MinimalViewerWindow viewer;
+    vcl::bglfwx::MinimalViewerWindow     viewer;
     vcl::bgf::DrawableMesh<vcl::TriMesh> dm1(m1);
     vcl::bgf::DrawableMesh<vcl::TriMesh> dm2(m2);
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER

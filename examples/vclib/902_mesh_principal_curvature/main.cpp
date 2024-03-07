@@ -48,10 +48,10 @@ int main(int argc, char** argv)
     updateCurvature(m);
 
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX
-    vcl::qbgf::ViewerMainWindow           viewer;
+    vcl::qbgf::ViewerMainWindow          viewer;
     vcl::bgf::DrawableMesh<vcl::TriMesh> dm(m);
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
-    vcl::bglfwx::MinimalViewerWindow viewer;
+    vcl::bglfwx::MinimalViewerWindow     viewer;
     vcl::bgf::DrawableMesh<vcl::TriMesh> dm(m);
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
     vcl::qgl::ViewerMainWindow           viewer;
