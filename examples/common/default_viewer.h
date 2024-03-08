@@ -38,19 +38,19 @@
 #include <vclib/ext/qglviewer/viewer_main_window.h>
 #endif
 
-template<vcl::MeshConcept ...MeshTypes>
-int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes& ... meshes)
+template<vcl::MeshConcept... MeshTypes>
+int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
 {
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
     QApplication application(argc, argv);
 #endif
 
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX
-    vcl::qbgf::ViewerMainWindow           viewer;
+    vcl::qbgf::ViewerMainWindow viewer;
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
     vcl::bglfwx::MinimalViewerWindow viewer;
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
-    vcl::qgl::ViewerMainWindow           viewer;
+    vcl::qgl::ViewerMainWindow viewer;
 #endif
 
     std::shared_ptr<vcl::DrawableObjectVector> vector =
