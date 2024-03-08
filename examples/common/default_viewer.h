@@ -70,6 +70,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
     viewer.show();
 
 #if VCLIB_RENDER_EXAMPLES_WITH_QT
+    viewer.showMaximized();
     return application.exec();
 #else
     (void) argc; // unused
