@@ -21,7 +21,7 @@
  ****************************************************************************/
 
 $input a_position, a_normal, a_color0
-$output v_position, v_normal, v_color
+$output v_position, v_normal, v_color, v_depth
 
 #include <drawable_mesh/uniforms.sh>
 #include <vclib/render/mesh_render_settings_macros.h>
@@ -37,4 +37,5 @@ void main()
 
     // default case - color is taken from buffer
     v_color = a_color0;
+    v_depth = gl_Position.z;
 }

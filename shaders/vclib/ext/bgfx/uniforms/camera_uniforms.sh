@@ -24,7 +24,10 @@
 #define VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH
 
 uniform vec4 u_cameraEyePosPack;
+uniform mat4 u_cameraNearFarPack;
 
 #define u_cameraEyePos u_cameraEyePosPack.xyz
+#define u_cameraNear u_cameraNearFarPack[0]
+#define u_cameraFar u_cameraNearFarPack[1]
 
 #endif // VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_SH

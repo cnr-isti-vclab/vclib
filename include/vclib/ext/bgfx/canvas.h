@@ -90,6 +90,10 @@ protected:
     void frame();
 
     void resize(uint width, uint height);
+
+private:
+    static bgfx::FrameBufferHandle createFrameBufferD32(
+        void* winId, uint width, uint height);
 };
 
 } // namespace vcl::bgf

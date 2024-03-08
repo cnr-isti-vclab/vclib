@@ -49,7 +49,7 @@ void Canvas::init(void* winId, uint width, uint height)
 
     view = Context::requestViewId();
 
-    fbh = bgfx::createFrameBuffer(winId, width, height);
+    fbh = createFrameBufferD32(winId, width, height);
 
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::setViewClear(
@@ -111,12 +111,26 @@ void Canvas::resize(uint width, uint height)
     if (bgfx::isValid(fbh))
         bgfx::destroy(fbh);
 
-    fbh = bgfx::createFrameBuffer(winID, width, height);
+    fbh = createFrameBufferD32(winID, width, height);
     bgfx::setViewFrameBuffer(view, fbh);
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::touch(view);
 
     TextView::resize(width, height);
+}
+
+
+bgfx::FrameBufferHandle Canvas::createFrameBufferD32(
+    void* winId,
+    uint  width,
+    uint  height)
+{
+    return bgfx::createFrameBuffer(
+        winId,
+        width,
+        height,
+        bgfx::TextureFormat::BGRA8,
+        bgfx::TextureFormat::D32F);
 }
 
 } // namespace vcl::bgf

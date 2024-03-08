@@ -31,6 +31,7 @@ namespace vcl::bgf {
 MinimalViewer::MinimalViewer(uint width, uint height) : DTB(width, height)
 {
     cameraUniforms.updateCamera(DTB::camera());
+    cameraUniforms.updateNearFar(nearPlane(), farPlane());
     directionalLightUniforms.updateLight(DTB::light());
     axis.setShaderProgram(axisProgram);
     directionalLight.setShaderProgram(directionalLightProgram);
@@ -82,6 +83,7 @@ void MinimalViewer::draw(uint viewId)
         viewId, viewMatrix().data(), projectionMatrix().data());
 
     cameraUniforms.updateCamera(DTB::camera());
+    cameraUniforms.updateNearFar(nearPlane(), farPlane());
     cameraUniforms.bind();
 
     directionalLightUniforms.bind();

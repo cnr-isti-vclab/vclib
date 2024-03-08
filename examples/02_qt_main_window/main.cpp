@@ -30,6 +30,7 @@ int main(int argc, char** argv)
     MainWindowQt tw;
 
     tw.show();
+    tw.showMaximized();
 
     return app.exec();
 }

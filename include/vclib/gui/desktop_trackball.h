@@ -172,6 +172,10 @@ public:
 
     const Camera<Scalar>& camera() const { return trackball.camera(); }
 
+    float nearPlane() const { return near; }
+
+    float farPlane() const { return far; }
+
     const Matrix44<Scalar>& viewMatrix() const
     {
         return trackball.camera().matrix();
