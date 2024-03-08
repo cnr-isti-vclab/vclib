@@ -27,26 +27,47 @@
 
 namespace vcl {
 
-template<typename ScalarType>
+template<typename Scalar>
 class Camera
 {
-    using PointType  = vcl::Point3<ScalarType>;
-    using MatrixType = vcl::Matrix44<ScalarType>;
+    using PointType  = vcl::Point3<Scalar>;
+    using MatrixType = vcl::Matrix44<Scalar>;
 
-    PointType centerPos;
-    PointType eyePos = PointType(0.0f, 0.0f, 1.0f);
-    PointType upDir  = PointType(0.0f, 1.0f, 0.0f);
+    // extrinsic parameters
+    PointType centerPos = PointType(0.0f, 0.0f, 0.0f);
+    PointType eyePos    = PointType(0.0f, 0.0f, 1.0f);
+    PointType upDir     = PointType(0.0f, 1.0f, 0.0f);
 
-    MatrixType mat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
+    MatrixType viewMat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
+
+    // intrinsic parameters
+    Scalar fov    = 60.0;
+    Scalar aspect = 1.0;
+    Scalar near   = 0.1;
+    Scalar far    = 500.0;
+
+    MatrixType projMat =
+        projectionMatrix<MatrixType>(fov, aspect, near, far, false);
 
 public:
     Camera() = default;
 
     void reset() { *this = {}; }
 
-    void updateMatrix()
+    void updateViewMatrix()
     {
-        mat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
+        viewMat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
+    }
+
+    void updateProjMatrix()
+    {
+        projMat = projectionMatrix<MatrixType>(fov, aspect, near, far, false);
+    }
+
+    void updateMatrices()
+    {
+        updateViewMatrix();
+        updateProjMatrix();
     }
 
     PointType& center() { return centerPos; }
@@ -61,9 +82,29 @@ public:
 
     const PointType& up() const { return upDir; }
 
-    MatrixType& matrix() { return mat; }
+    MatrixType& viewMatrix() { return viewMat; }
 
-    const MatrixType& matrix() const { return mat; }
+    const MatrixType& viewMatrix() const { return viewMat; }
+
+    Scalar& fieldOfView() { return fov; }
+
+    const Scalar& fieldOfView() const { return fov; }
+
+    Scalar& aspectRatio() { return aspect; }
+
+    const Scalar& aspectRatio() const { return aspect; }
+
+    Scalar& nearPlane() { return near; }
+
+    const Scalar& nearPlane() const { return near; }
+
+    Scalar& farPlane() { return far; }
+
+    const Scalar& farPlane() const { return far; }
+
+    MatrixType& projMatrix() { return projMat; }
+
+    const MatrixType& projMatrix() const { return projMat; }
 };
 
 } // namespace vcl

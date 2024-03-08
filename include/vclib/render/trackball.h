@@ -134,7 +134,7 @@ public:
         stopVector  = Point3<Scalar>();
 
         updateCameraEye();
-        cam.updateMatrix();
+        cam.updateViewMatrix();
     }
 
     void resetDirectionalLight() { dl.reset(); }
@@ -146,6 +146,8 @@ public:
         if (width > 1 || height > 1) {
             w = width;
             h = height;
+            cam.aspectRatio() = w / h;
+            cam.updateProjMatrix();
         }
     }
 
@@ -294,7 +296,7 @@ private:
 
     void resetState()
     {
-        arcRotationSum = Quaternion<Scalar>(cam.matrix()).inverse();
+        arcRotationSum = Quaternion<Scalar>(cam.viewMatrix()).inverse();
         eyeCenterDist  = cam.eye().dist(cam.center());
     }
 
@@ -324,7 +326,7 @@ private:
         arcRotationSum *= rotation;
         updateCameraEye();
         updateCameraUp();
-        cam.updateMatrix();
+        cam.updateMatrices();
     }
 
     // atomic
@@ -383,7 +385,7 @@ private:
         Quaternion<Scalar> rotation(angle, axis);
 
         cam.up() = rotation * cam.up();
-        cam.updateMatrix();
+        cam.updateMatrices();
     }
 
     Quadrant quadrant(Scalar x, Scalar y) const
@@ -437,7 +439,7 @@ private:
             -(cam.up() * diff.y() + r * diff.x()) * l * panScale;
         cam.center() += pan;
         cam.eye() += pan;
-        cam.updateMatrix();
+        cam.updateMatrices();
     }
 
     // atomic
@@ -471,7 +473,7 @@ private:
     {
         eyeCenterDist += (zoomScale * radius()) * inc;
         updateCameraEye();
-        cam.updateMatrix();
+        cam.updateMatrices();
     }
 
     void dragZoom()

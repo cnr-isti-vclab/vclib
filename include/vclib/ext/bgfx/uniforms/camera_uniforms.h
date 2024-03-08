@@ -51,12 +51,9 @@ public:
         eye[0] = camera.eye().x();
         eye[1] = camera.eye().y();
         eye[2] = camera.eye().z();
-    }
 
-    void updateNearFar(float near, float far)
-    {
-        nearFar[0] = near;
-        nearFar[1] = far;
+        nearFar[0] = camera.nearPlane();
+        nearFar[1] = camera.farPlane();
     }
 
     void bind() const

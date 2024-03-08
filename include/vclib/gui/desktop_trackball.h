@@ -47,19 +47,6 @@ private:
     uint width  = 1024;
     uint height = 768;
 
-    Scalar fov    = 60.0;
-    Scalar aspect = 1.0;
-    Scalar near   = 0.1;
-    Scalar far    = 500.0;
-
-    vcl::Matrix44<Scalar> projMatrix =
-        vcl::projectionMatrix<vcl::Matrix44<Scalar>>(
-            fov,
-            aspect,
-            near,
-            far,
-            false);
-
     vcl::TrackBall<Scalar> trackball;
 
     Point3<Scalar> defaultTrackBallCenter;
@@ -172,16 +159,15 @@ public:
 
     const Camera<Scalar>& camera() const { return trackball.camera(); }
 
-    float nearPlane() const { return near; }
-
-    float farPlane() const { return far; }
-
     const Matrix44<Scalar>& viewMatrix() const
     {
-        return trackball.camera().matrix();
+        return trackball.camera().viewMatrix();
     }
 
-    const Matrix44<Scalar>& projectionMatrix() const { return projMatrix; }
+    const Matrix44<Scalar>& projectionMatrix() const
+    {
+        return trackball.camera().projMatrix();
+    }
 
     void resetTrackBall()
     {
@@ -201,8 +187,6 @@ public:
         width  = w;
         height = h;
         trackball.setScreenSize(w, h);
-        aspect = static_cast<Scalar>(w) / static_cast<Scalar>(h);
-        updateProjMatrix();
     }
 
     void setKeyModifiers(KeyModifiers keys) { currentKeyModifiers = keys; }
@@ -250,12 +234,6 @@ public:
         }
     }
 
-    void setFov(Scalar fov)
-    {
-        this->fov = fov;
-        updateProjMatrix();
-    }
-
 private:
     static void rotate(
         TrackBallType&          t,
@@ -282,12 +260,6 @@ private:
     {
         using Args = typename TrackBallType::TransformArgs;
         t.applyAtomicMotion(TrackBallType::PAN, Args(axis, distance));
-    }
-
-    void updateProjMatrix()
-    {
-        projMatrix = vcl::projectionMatrix<vcl::Matrix44<Scalar>>(
-            fov, aspect, near, far, false);
     }
 };
 
