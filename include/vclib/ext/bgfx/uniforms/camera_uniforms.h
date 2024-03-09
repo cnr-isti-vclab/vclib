@@ -33,7 +33,7 @@ namespace vcl::bgf {
 
 class CameraUniforms
 {
-    float eye[4] = {0.0, 0.0, 0.0, 0.0}; // eye[3] not used
+    float eye[4]     = {0.0, 0.0, 0.0, 0.0}; // eye[3] not used
     float nearFar[4] = {0.0, 0.0, 0.0, 0.0}; // nearFar[2] and [3] not used
 
     ShaderUniform cameraEyeUniform =

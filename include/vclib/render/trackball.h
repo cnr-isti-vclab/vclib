@@ -144,8 +144,8 @@ public:
     void setScreenSize(Scalar width, Scalar height)
     {
         if (width > 1 || height > 1) {
-            w = width;
-            h = height;
+            w                 = width;
+            h                 = height;
             cam.aspectRatio() = w / h;
             cam.updateProjMatrix();
         }

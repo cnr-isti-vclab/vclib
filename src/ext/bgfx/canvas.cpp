@@ -119,7 +119,6 @@ void Canvas::resize(uint width, uint height)
     TextView::resize(width, height);
 }
 
-
 bgfx::FrameBufferHandle Canvas::createFrameBufferD32(
     void* winId,
     uint  width,

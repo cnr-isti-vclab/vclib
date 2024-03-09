@@ -219,12 +219,12 @@ void projectionMatrix(
 
 template<MatrixConcept Matrix44, typename Scalar>
 Matrix44 projectionMatrix(
-    Scalar fov,
-    Scalar aspect,
-    Scalar near,
-    Scalar far,
-    bool         homogeneousNDC,
-    Handedness   handedness = RIGHT_HAND)
+    Scalar     fov,
+    Scalar     aspect,
+    Scalar     near,
+    Scalar     far,
+    bool       homogeneousNDC,
+    Handedness handedness = RIGHT_HAND)
 {
     Matrix44 res(4, 4);
     projectionMatrix(
