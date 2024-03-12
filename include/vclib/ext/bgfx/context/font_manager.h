@@ -20,70 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_CALLBACK_H
-#define VCL_EXT_BGFX_CALLBACK_H
+#ifndef VCL_EXT_BGFX_TEXT_CONTEXT_FONT_MANAGER_H
+#define VCL_EXT_BGFX_TEXT_CONTEXT_FONT_MANAGER_H
 
-#include <bgfx/bgfx.h>
+#include <map>
+#include <string>
+
+#include <vclib/ext/bgfx/text/font/font_manager.h>
 
 namespace vcl::bgf {
 
-class Callback : public bgfx::CallbackI
+class FontManager
 {
+    friend class TextManager;
+
+    bgfx::FontManager                                            fontManager;
+    std::map<std::string, bgfx::TrueTypeHandle>                  ttMap;
+    std::map<std::pair<std::string, uint16_t>, bgfx::FontHandle> fontMap;
+
 public:
-    // CallbackI interface
-    void fatal(
-        const char*       filePath,
-        uint16_t          line,
-        bgfx::Fatal::Enum code,
-        const char*       str);
+    FontManager();
+    ~FontManager();
 
-    void traceVargs(
-        const char* filePath,
-        uint16_t    line,
-        const char* format,
-        va_list     argList);
+    FontManager(const FontManager&)            = delete;
+    FontManager& operator=(const FontManager&) = delete;
+    FontManager(FontManager&&)                 = delete;
+    FontManager& operator=(FontManager&&)      = delete;
 
-    void profilerBegin(
-        const char* name,
-        uint32_t    abgr,
-        const char* filePath,
-        uint16_t    line);
+    void loadFont(const std::string& filePath, const std::string& fontName);
 
-    void profilerBeginLiteral(
-        const char* name,
-        uint32_t    abgr,
-        const char* filePath,
-        uint16_t    line);
+    bgfx::FontHandle getFontHandle(
+        const std::string& fontName,
+        uint16_t           fontSize);
 
-    void profilerEnd();
+private:
+    bgfx::FontManager& getBGFXFontManager();
 
-    uint32_t cacheReadSize(uint64_t id);
-
-    bool cacheRead(uint64_t id, void* data, uint32_t size);
-
-    void cacheWrite(uint64_t id, const void* data, uint32_t size);
-
-    void screenShot(
-        const char* filePath,
-        uint32_t    width,
-        uint32_t    height,
-        uint32_t    pitch,
-        const void* data,
-        uint32_t    size,
-        bool        yflip);
-
-    void captureBegin(
-        uint32_t                  width,
-        uint32_t                  height,
-        uint32_t                  pitch,
-        bgfx::TextureFormat::Enum format,
-        bool                      yflip);
-
-    void captureEnd();
-
-    void captureFrame(const void* data, uint32_t size);
+    static bgfx::TrueTypeHandle loadTtf(
+        bgfx::FontManager& fontManager,
+        const char*        filePath);
 };
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_CALLBACK_H
+#endif // VCL_EXT_BGFX_TEXT_CONTEXT_FONT_MANAGER_H

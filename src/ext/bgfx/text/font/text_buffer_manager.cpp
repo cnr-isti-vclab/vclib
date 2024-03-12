@@ -809,8 +809,6 @@ TextBufferManager::TextBufferManager(FontManager* _fontManager)
 {
 	m_textBuffers = new BufferCache[MAX_TEXT_BUFFER_COUNT];
 
-	bgfx::RendererType::Enum type = bgfx::getRendererType();
-
 	m_basicProgram = vcl::bgf::loadProgram(
 		"vclib/ext/bgfx/font/vs_font_basic",
 		"vclib/ext/bgfx/font/fs_font_basic");

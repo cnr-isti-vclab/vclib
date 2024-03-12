@@ -20,18 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/text/font_map.h>
+#include <vclib/ext/bgfx/context/font_manager.h>
 
 #include <fstream>
 #include <vector>
 
 namespace vcl::bgf {
 
-FontMap::FontMap()
+FontManager::FontManager()
 {
 }
 
-FontMap::~FontMap()
+FontManager::~FontManager()
 {
     for (auto& [fontName, handle] : fontMap) {
         fontManager.destroyFont(handle);
@@ -41,12 +41,7 @@ FontMap::~FontMap()
     }
 }
 
-bgfx::FontManager& FontMap::getFontManager()
-{
-    return fontManager;
-}
-
-void FontMap::loadFont(const std::string& filePath, const std::string& fontName)
+void FontManager::loadFont(const std::string& filePath, const std::string& fontName)
 {
     if (ttMap.find(fontName) == ttMap.end()) {
         bgfx::TrueTypeHandle handle = loadTtf(fontManager, filePath.c_str());
@@ -54,7 +49,7 @@ void FontMap::loadFont(const std::string& filePath, const std::string& fontName)
     }
 }
 
-bgfx::FontHandle FontMap::getFontHandle(
+bgfx::FontHandle FontManager::getFontHandle(
     const std::string& fontName,
     uint16_t           fontSize)
 {
@@ -71,7 +66,12 @@ bgfx::FontHandle FontMap::getFontHandle(
     }
 }
 
-bgfx::TrueTypeHandle FontMap::loadTtf(
+bgfx::FontManager& FontManager::getBGFXFontManager()
+{
+    return fontManager;
+}
+
+bgfx::TrueTypeHandle FontManager::loadTtf(
     bgfx::FontManager& fontManager,
     const char*        filePath)
 {

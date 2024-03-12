@@ -20,61 +20,77 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_CONTEXT_H
-#define VCL_EXT_BGFX_CONTEXT_H
-
-#include <stack>
+#ifndef VCL_EXT_BGFX_CONTEXT_CALLBACK_H
+#define VCL_EXT_BGFX_CONTEXT_CALLBACK_H
 
 #include <bgfx/bgfx.h>
-#include <bgfx/platform.h>
-
-#include "context/callback.h"
-#include "context/font_manager.h"
-#include "context/program_manger.h"
-
-#define BGFX_INVALID_VIEW 65535
 
 namespace vcl::bgf {
 
-class Context
+class Callback : public bgfx::CallbackI
 {
-    void* windowHandle  = nullptr;
-    void* displayHandle = nullptr;
-
-    std::stack<bgfx::ViewId> viewStack;
-
-    Callback cb;
-    FontManager* fm = nullptr;
-    ProgramManager pm;
-
 public:
-    inline static bgfx::RendererType::Enum renderType =
-        bgfx::RendererType::Count;
+    Callback() = default;
 
-    static bgfx::ViewId requestViewId();
+    Callback(const Callback&)            = delete;
+    Callback& operator=(const Callback&) = delete;
+    Callback(Callback&&)                 = delete;
+    Callback& operator=(Callback&&)      = delete;
 
-    static void releaseViewId(bgfx::ViewId viewId);
+    // CallbackI interface
+    void fatal(
+        const char*       filePath,
+        uint16_t          line,
+        bgfx::Fatal::Enum code,
+        const char*       str);
 
-    static FontManager& fontManager();
+    void traceVargs(
+        const char* filePath,
+        uint16_t    line,
+        const char* format,
+        va_list     argList);
 
-    static ProgramManager& programManager();
+    void profilerBegin(
+        const char* name,
+        uint32_t    abgr,
+        const char* filePath,
+        uint16_t    line);
 
-private:
-    Context();
+    void profilerBeginLiteral(
+        const char* name,
+        uint32_t    abgr,
+        const char* filePath,
+        uint16_t    line);
 
-    ~Context();
+    void profilerEnd();
 
-    static Context& instance();
+    uint32_t cacheReadSize(uint64_t id);
 
-public:
-    Context(const Context&)            = delete;
-    Context& operator=(const Context&) = delete;
-    Context(Context&&)                 = delete;
-    Context& operator=(Context&&)      = delete;
+    bool cacheRead(uint64_t id, void* data, uint32_t size);
+
+    void cacheWrite(uint64_t id, const void* data, uint32_t size);
+
+    void screenShot(
+        const char* filePath,
+        uint32_t    width,
+        uint32_t    height,
+        uint32_t    pitch,
+        const void* data,
+        uint32_t    size,
+        bool        yflip);
+
+    void captureBegin(
+        uint32_t                  width,
+        uint32_t                  height,
+        uint32_t                  pitch,
+        bgfx::TextureFormat::Enum format,
+        bool                      yflip);
+
+    void captureEnd();
+
+    void captureFrame(const void* data, uint32_t size);
 };
-
-bool isViewValid(bgfx::ViewId viewId);
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_CONTEXT_H
+#endif // VCL_EXT_BGFX_CONTEXT_CALLBACK_H

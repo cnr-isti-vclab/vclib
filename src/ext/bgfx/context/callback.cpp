@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/callback.h>
+#include <vclib/ext/bgfx/context/callback.h>
 
 #include <vclib/space/image.h>
 

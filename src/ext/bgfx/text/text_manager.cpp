@@ -40,7 +40,7 @@ TextManager::~TextManager()
 void TextManager::init()
 {
     textBufferManager =
-        new bgfx::TextBufferManager(&Context::fontMap().getFontManager());
+        new bgfx::TextBufferManager(&Context::fontManager().getBGFXFontManager());
 
     transientText = textBufferManager->createTextBuffer(
         FONT_TYPE_ALPHA, bgfx::BufferType::Transient);
@@ -53,7 +53,7 @@ void TextManager::loadFont(
     const std::string& filePath,
     const std::string& fontName)
 {
-    Context::fontMap().loadFont(filePath, fontName);
+    Context::fontManager().loadFont(filePath, fontName);
 }
 
 void TextManager::clear()
@@ -64,7 +64,7 @@ void TextManager::clear()
 
 void TextManager::setCurrentFont(const std::string& fontName, uint16_t fontSize)
 {
-    currentFont = Context::fontMap().getFontHandle(fontName, fontSize);
+    currentFont = Context::fontManager().getFontHandle(fontName, fontSize);
 }
 
 void TextManager::appendTransientText(

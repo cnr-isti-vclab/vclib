@@ -76,7 +76,6 @@ set(ASSETS
 
 if (TARGET vclib-external-bgfx)
     list(APPEND HEADERS
-        include/vclib/ext/bgfx/callback.h
         include/vclib/ext/bgfx/canvas.h
         include/vclib/ext/bgfx/context.h
         include/vclib/ext/bgfx/drawable_axis.h
@@ -84,7 +83,9 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/drawable_mesh.h
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
-        include/vclib/ext/bgfx/text/font_map.h
+        include/vclib/ext/bgfx/context/callback.h
+        include/vclib/ext/bgfx/context/font_manager.h
+        include/vclib/ext/bgfx/context/program_manger.h
         include/vclib/ext/bgfx/text/text_manager.h
         include/vclib/ext/bgfx/text/text_view.h
         include/vclib/ext/bgfx/text/font/cube_atlas.h
@@ -105,13 +106,14 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
 
     list(APPEND SOURCES
-        src/ext/bgfx/callback.cpp
         src/ext/bgfx/canvas.cpp
         src/ext/bgfx/context.cpp
         src/ext/bgfx/drawable_axis.cpp
         src/ext/bgfx/drawable_directional_light.cpp
         src/ext/bgfx/minimal_viewer.cpp
-        src/ext/bgfx/text/font_map.cpp
+        src/ext/bgfx/context/callback.cpp
+        src/ext/bgfx/context/font_manager.cpp
+        src/ext/bgfx/context/program_manager.cpp
         src/ext/bgfx/text/text_manager.cpp
         src/ext/bgfx/text/text_view.cpp
         src/ext/bgfx/text/font/cube_atlas.cpp

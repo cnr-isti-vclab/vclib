@@ -20,40 +20,71 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_TEXT_FONT_MAP_H
-#define VCL_EXT_BGFX_TEXT_FONT_MAP_H
-
-#include "font/font_manager.h"
+#ifndef VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
+#define VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
 
 #include <map>
 #include <string>
 
+#include <vclib/ext/bgfx/shader_programs/load_program.h>
+
 namespace vcl::bgf {
 
-class FontMap
+struct VclProgram {
+    enum Enum {
+        DRAWABLE_MESH,
+        DRAWABLE_AXIS,
+        DRAWABLE_DIRECTIONAL_LIGHT,
+        FONT_BASIC,
+        FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
+        FONT_DISTANCE_FIELD_DROP_SHADOW,
+        FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE,
+        FONT_DISTANCE_FIELD_OUTLINE_IMAGE,
+        FONT_DISTANCE_FIELD_OUTLINE,
+        FONT_DISTANCE_FIELD_SUBPIXEL,
+        FONT_DISTANCE_FIELD,
+
+        COUNT
+    };
+};
+
+class ProgramManager
 {
-    bgfx::FontManager                                            fontManager;
-    std::map<std::string, bgfx::TrueTypeHandle>                  ttMap;
-    std::map<std::pair<std::string, uint16_t>, bgfx::FontHandle> fontMap;
+    std::map<std::string, bgfx::ProgramHandle> programs;
+
+    static inline const std::array<std::string, VclProgram::COUNT>
+        programNames = {
+            "DrawableMesh",
+            "DrawableAxis",
+            "DrawableDirectionalLight",
+            "FontBasic",
+            "FontDistanceFieldDropShadowImage",
+            "FontDistanceFieldDropShadow",
+            "FontDistanceFieldOutlineDropShadowImage",
+            "FontDistanceFieldOutlineImage",
+            "FontDistanceFieldOutline",
+            "FontDistanceFieldSubpixel",
+            "FontDistanceField",
+    };
 
 public:
-    FontMap();
-    ~FontMap();
+    ProgramManager() = default;
 
-    bgfx::FontManager& getFontManager();
+    ~ProgramManager();
 
-    void loadFont(const std::string& filePath, const std::string& fontName);
+    bgfx::ProgramHandle getProgram(VclProgram::Enum program);
 
-    bgfx::FontHandle getFontHandle(
-        const std::string& fontName,
-        uint16_t           fontSize);
+    bgfx::ProgramHandle getProgram(const std::string& name) const;
+
+    bgfx::ProgramHandle loadProgram(
+        const std::string& name,
+        const std::string& vs,
+        const std::string& fs);
 
 private:
-    static bgfx::TrueTypeHandle loadTtf(
-        bgfx::FontManager& fontManager,
-        const char*        filePath);
+    static bgfx::ProgramHandle loadProgram(VclProgram::Enum program);
 };
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_TEXT_FONT_MAP_H
+#endif // VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
