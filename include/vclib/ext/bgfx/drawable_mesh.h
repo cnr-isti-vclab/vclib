@@ -42,7 +42,8 @@ class DrawableMesh : public DrawableMeshI
 
     MeshRenderBuffers<MeshType> mrb;
 
-    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+    bgfx::ProgramHandle program =
+        Context::programManager().getProgram(VclProgram::DRAWABLE_MESH);
 
     DrawableMeshUniforms       meshUniforms;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
@@ -54,7 +55,6 @@ public:
     {
         updateBuffers(mesh);
         mrs.setDefaultSettingsFromCapability();
-        program = Context::programManager().getProgram(VclProgram::DRAWABLE_MESH);
     }
 
     ~DrawableMesh() = default;

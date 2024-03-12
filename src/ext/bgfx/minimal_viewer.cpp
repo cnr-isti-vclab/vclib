@@ -32,7 +32,6 @@ MinimalViewer::MinimalViewer(uint width, uint height) : DTB(width, height)
 {
     cameraUniforms.updateCamera(DTB::camera());
     directionalLightUniforms.updateLight(DTB::light());
-    axis.setShaderProgram(axisProgram);
     directionalLight.setShaderProgram(directionalLightProgram);
 }
 

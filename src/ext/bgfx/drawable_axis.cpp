@@ -21,7 +21,6 @@
  ****************************************************************************/
 
 #include <vclib/ext/bgfx/drawable_axis.h>
-#include <vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h>
 
 #include <vclib/algorithms/create.h>
 
@@ -41,12 +40,7 @@ void DrawableAxis::setSize(double size)
 
 void DrawableAxis::setShaderProgram(const ShaderProgramI& sp)
 {
-    const DrawableAxisShaderProgram* ptr =
-        dynamic_cast<const DrawableAxisShaderProgram*>(&sp);
-
-    if (ptr) {
-        program = ptr->program();
-    }
+    // todo
 }
 
 void DrawableAxis::draw(uint viewId)

@@ -28,7 +28,6 @@
 
 #include "drawable_axis.h"
 #include "drawable_directional_light.h"
-#include "shader_programs/drawable_axis_shader_program.h"
 #include "shader_programs/drawable_directional_light_shader_program.h"
 #include "uniforms/camera_uniforms.h"
 #include "uniforms/directional_light_uniforms.h"
@@ -40,15 +39,15 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
 {
     // this Viewer does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> drawList;
-    DrawableAxis                          axis;
-    DrawableDirectionalLight              directionalLight;
 
     CameraUniforms             cameraUniforms;
     DirectionalLightUniforms   directionalLightUniforms;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
+    DrawableAxis                          axis;
+    DrawableDirectionalLight              directionalLight;
+
     // the programs must be created after the uniforms - bgfx issue on OpenGL
-    vcl::bgf::DrawableAxisShaderProgram             axisProgram;
     vcl::bgf::DrawableDirectionalLightShaderProgram directionalLightProgram;
 
 protected:

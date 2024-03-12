@@ -29,6 +29,8 @@
 #include <vclib/render/interfaces/drawable_object_i.h>
 #include <vclib/space/matrix.h>
 
+#include <vclib/ext/bgfx/context.h>
+
 #include "mesh_render_buffers.h"
 #include "uniforms/drawable_axis_uniforms.h"
 
@@ -50,7 +52,9 @@ class DrawableAxis : public DrawableObjectI
 
     MeshRenderBuffers<vcl::TriMesh> mrbArrow[2];
 
-    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+    bgfx::ProgramHandle program =
+        Context::programManager().getProgram(VclProgram::DRAWABLE_AXIS);
+    ;
 
     bgfx::VertexBufferHandle vertexCoordBH   = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle vertexNormalBH  = BGFX_INVALID_HANDLE;
