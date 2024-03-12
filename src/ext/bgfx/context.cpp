@@ -52,7 +52,7 @@ FontManager& Context::fontManager()
 
 ProgramManager& Context::programManager()
 {
-    return instance().pm;
+    return *instance().pm;
 }
 
 Context::Context()
@@ -83,11 +83,13 @@ Context::Context()
 
     // font manager must be created after bgfx::init
     fm = new FontManager();
+    pm = new ProgramManager();
 }
 
 Context::~Context()
 {
     delete fm;
+    delete pm;
     bgfx::shutdown();
 }
 

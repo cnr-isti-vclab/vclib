@@ -45,7 +45,7 @@ class Context
 
     Callback cb;
     FontManager* fm = nullptr;
-    ProgramManager pm;
+    ProgramManager* pm = nullptr;
 
 public:
     inline static bgfx::RendererType::Enum renderType =
