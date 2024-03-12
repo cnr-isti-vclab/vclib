@@ -95,7 +95,6 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/text/font/utf8.h
         include/vclib/ext/bgfx/shader_programs/drawable_axis_shader_program.h
         include/vclib/ext/bgfx/shader_programs/drawable_directional_light_shader_program.h
-        include/vclib/ext/bgfx/shader_programs/drawable_mesh_shader_program.h
         include/vclib/ext/bgfx/shader_programs/load_program.h
         include/vclib/ext/bgfx/uniforms/camera_uniforms.h
         include/vclib/ext/bgfx/uniforms/directional_light_uniforms.h

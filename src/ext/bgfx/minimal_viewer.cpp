@@ -101,11 +101,6 @@ void MinimalViewer::draw(uint viewId)
 void MinimalViewer::initDrawableObject(DrawableObjectI& obj)
 {
     obj.init();
-
-    DrawableMeshI* mesh = dynamic_cast<DrawableMeshI*>(&obj);
-    if (mesh) {
-        mesh->setShaderProgram(meshProgram);
-    }
 }
 
 } // namespace vcl::bgf

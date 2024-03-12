@@ -27,8 +27,9 @@
 
 #include <vclib/render/interfaces/drawable_mesh_i.h>
 
+#include <vclib/ext/bgfx/context.h>
+
 #include "mesh_render_buffers.h"
-#include "shader_programs/drawable_mesh_shader_program.h"
 #include "uniforms/drawable_mesh_uniforms.h"
 #include "uniforms/mesh_render_settings_uniforms.h"
 
@@ -53,6 +54,7 @@ public:
     {
         updateBuffers(mesh);
         mrs.setDefaultSettingsFromCapability();
+        program = Context::programManager().getProgram(VclProgram::DRAWABLE_MESH);
     }
 
     ~DrawableMesh() = default;
@@ -75,11 +77,7 @@ public:
 
     virtual void setShaderProgram(const ShaderProgramI& p)
     {
-        const DrawableMeshShaderProgram* ptr =
-            dynamic_cast<const DrawableMeshShaderProgram*>(&p);
-        if (ptr) {
-            program = ptr->program();
-        }
+        // todo
     };
 
     void draw(uint viewId)
