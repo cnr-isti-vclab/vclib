@@ -28,7 +28,6 @@
 
 #include "drawable_axis.h"
 #include "drawable_directional_light.h"
-#include "shader_programs/drawable_directional_light_shader_program.h"
 #include "uniforms/camera_uniforms.h"
 #include "uniforms/directional_light_uniforms.h"
 #include "uniforms/mesh_render_settings_uniforms.h"
@@ -46,9 +45,6 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
 
     DrawableAxis             axis;
     DrawableDirectionalLight directionalLight;
-
-    // the programs must be created after the uniforms - bgfx issue on OpenGL
-    vcl::bgf::DrawableDirectionalLightShaderProgram directionalLightProgram;
 
 protected:
     using DTB = vcl::DesktopTrackBall<float>;

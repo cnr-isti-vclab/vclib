@@ -29,6 +29,8 @@
 #include <vclib/render/lights/directional_light.h>
 #include <vclib/space/matrix.h>
 
+#include <vclib/ext/bgfx/context.h>
+
 #include "uniforms/drawable_directional_light_uniforms.h"
 
 namespace vcl::bgf {
@@ -46,7 +48,8 @@ class DrawableDirectionalLight : public DrawableObjectI
 
     DrawableDirectionalLightUniforms dlUniforms;
 
-    bgfx::ProgramHandle program = BGFX_INVALID_HANDLE;
+    bgfx::ProgramHandle program = Context::programManager().getProgram(
+        VclProgram::DRAWABLE_DIRECTIONAL_LIGHT);
 
 public:
     DrawableDirectionalLight();
