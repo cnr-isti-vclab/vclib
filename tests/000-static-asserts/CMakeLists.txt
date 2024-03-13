@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 set(EXAMPLE_NAME 000-static-asserts)
-project(vclib-${EXAMPLE_NAME}-test)
+project(vclib-test-${EXAMPLE_NAME})
 
 set(HEADERS
     meshes.h
