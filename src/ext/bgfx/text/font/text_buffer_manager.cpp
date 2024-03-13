@@ -35,7 +35,6 @@
 #include <vclib/ext/bgfx/text/font/cube_atlas.h>
 
 #include <vclib/ext/bgfx/context.h>
-#include <vclib/ext/bgfx/shader_programs/load_program.h>
 
 #define MAX_BUFFERED_CHARACTERS (8192 - 5)
 

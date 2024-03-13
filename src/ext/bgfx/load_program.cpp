@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/bgfx/shader_programs/load_program.h>
+#include <vclib/ext/bgfx/load_program.h>
 
 #include <vclib/exceptions/io_exceptions.h>
 

@@ -81,6 +81,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/drawable_axis.h
         include/vclib/ext/bgfx/drawable_directional_light.h
         include/vclib/ext/bgfx/drawable_mesh.h
+        include/vclib/ext/bgfx/load_program.h
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
         include/vclib/ext/bgfx/context/callback.h
@@ -93,7 +94,6 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/text/font/text_buffer_manager.h
         include/vclib/ext/bgfx/text/font/text_metrics.h
         include/vclib/ext/bgfx/text/font/utf8.h
-        include/vclib/ext/bgfx/shader_programs/load_program.h
         include/vclib/ext/bgfx/uniforms/camera_uniforms.h
         include/vclib/ext/bgfx/uniforms/directional_light_uniforms.h
         include/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.h
@@ -107,6 +107,7 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/context.cpp
         src/ext/bgfx/drawable_axis.cpp
         src/ext/bgfx/drawable_directional_light.cpp
+        src/ext/bgfx/load_program.cpp
         src/ext/bgfx/minimal_viewer.cpp
         src/ext/bgfx/context/callback.cpp
         src/ext/bgfx/context/font_manager.cpp
@@ -117,8 +118,7 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/text/font/font_manager.cpp
         src/ext/bgfx/text/font/text_buffer_manager.cpp
         src/ext/bgfx/text/font/text_metrics.cpp
-        src/ext/bgfx/text/font/utf8.cpp
-        src/ext/bgfx/shader_programs/load_program.cpp)
+        src/ext/bgfx/text/font/utf8.cpp)
 
     list(APPEND SHADERS
         shaders/vclib/ext/bgfx/shaders_common.sh

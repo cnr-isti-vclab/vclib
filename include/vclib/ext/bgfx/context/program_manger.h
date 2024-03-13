@@ -26,7 +26,7 @@
 #include <map>
 #include <string>
 
-#include <vclib/ext/bgfx/shader_programs/load_program.h>
+#include <vclib/ext/bgfx/load_program.h>
 
 namespace vcl::bgf {
 

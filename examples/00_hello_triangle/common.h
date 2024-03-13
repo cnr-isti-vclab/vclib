@@ -25,7 +25,7 @@
 
 #include <bgfx/bgfx.h>
 
-#include <vclib/ext/bgfx/shader_programs/load_program.h>
+#include <vclib/ext/bgfx/load_program.h>
 #include <vclib/space/color.h>
 
 struct Vertex
