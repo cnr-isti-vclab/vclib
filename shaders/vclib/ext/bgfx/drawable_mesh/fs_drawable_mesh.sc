@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color, v_depth
+$input v_position, v_normal, v_color
 
 #include <drawable_mesh/uniforms.sh>
 #include <vclib/render/mesh_render_settings_macros.h>
@@ -65,7 +65,7 @@ void main()
         else if (bool(drawMode & VCL_MRS_POINTS_COLOR_MESH)) {
             color = u_meshColor;
         }
-        depthOffset = 0.00002;
+        depthOffset = 0.0001;
     }
     else if (bool(primitive & VCL_MRS_PRIMITIVE_TRIANGLES)) {
         // if flat shading, compute normal of face
@@ -117,12 +117,9 @@ void main()
         if (bool(drawMode & VCL_MRS_WIREFRAME_COLOR_MESH)) {
             color = u_meshColor;
         }
-        depthOffset = 0.00001;
+        depthOffset = 0.00005;
     }
 
-    // linear depth
-    float z = (v_depth - u_cameraNear) / (u_cameraFar - u_cameraNear) + 0.5;
-
     gl_FragColor = light * color + vec4(specular, 0);
-    gl_FragDepth = z - depthOffset;
+    gl_FragDepth = gl_FragCoord.z - depthOffset;
 }

@@ -129,7 +129,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferD32(
         width,
         height,
         bgfx::TextureFormat::BGRA8,
-        bgfx::TextureFormat::D32F);
+        bgfx::TextureFormat::D32);
 }
 
 } // namespace vcl::bgf

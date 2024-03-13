@@ -81,15 +81,6 @@ public:
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
 
-            if (mrs.isPointCloudVisible()) {
-                mrb.bindVertexBuffers();
-                bindUniforms(VCL_MRS_PRIMITIVE_POINTS);
-
-                bgfx::setState(state | BGFX_STATE_PT_POINTS);
-
-                bgfx::submit(viewId, program);
-            }
-
             if (mrs.isSurfaceVisible()) {
                 mrb.bindVertexBuffers();
                 mrb.bindIndexBuffers();
@@ -106,6 +97,15 @@ public:
                 bindUniforms(VCL_MRS_PRIMITIVE_LINES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
+
+                bgfx::submit(viewId, program);
+            }
+
+            if (mrs.isPointCloudVisible()) {
+                mrb.bindVertexBuffers();
+                bindUniforms(VCL_MRS_PRIMITIVE_POINTS);
+
+                bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
                 bgfx::submit(viewId, program);
             }
