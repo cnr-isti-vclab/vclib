@@ -34,6 +34,7 @@
 #include <vclib/ext/bgfx/text/font/utf8.h>
 #include <vclib/ext/bgfx/text/font/cube_atlas.h>
 
+#include <vclib/ext/bgfx/context.h>
 #include <vclib/ext/bgfx/shader_programs/load_program.h>
 
 #define MAX_BUFFERED_CHARACTERS (8192 - 5)
@@ -809,38 +810,6 @@ TextBufferManager::TextBufferManager(FontManager* _fontManager)
 {
 	m_textBuffers = new BufferCache[MAX_TEXT_BUFFER_COUNT];
 
-	m_basicProgram = vcl::bgf::loadProgram(
-		"vclib/ext/bgfx/font/vs_font_basic",
-		"vclib/ext/bgfx/font/fs_font_basic");
-
-	m_distanceProgram = vcl::bgf::loadProgram(
-		"vclib/ext/bgfx/font/vs_font_distance_field",
-		"vclib/ext/bgfx/font/fs_font_distance_field");
-
-	m_distanceSubpixelProgram = vcl::bgf::loadProgram(
-		"vclib/ext/bgfx/font/vs_font_distance_field_subpixel",
-		"vclib/ext/bgfx/font/fs_font_distance_field_subpixel");
-
-	m_distanceDropShadowProgram = vcl::bgf::loadProgram(
-		"vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow",
-		"vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow");
-
-	m_distanceDropShadowImageProgram = vcl::bgf::loadProgram(
-		"vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow_image",
-		"vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow_image");
-
-	m_distanceOutlineProgram = vcl::bgf::loadProgram(
-		"vclib/ext/bgfx/font/vs_font_distance_field_outline",
-		"vclib/ext/bgfx/font/fs_font_distance_field_outline");
-
-	m_distanceOutlineImageProgram = vcl::bgf::loadProgram(
-		"vclib/ext/bgfx/font/vs_font_distance_field_outline_image",
-		"vclib/ext/bgfx/font/fs_font_distance_field_outline_image");
-
-	m_distanceOutlineDropShadowImageProgram = vcl::bgf::loadProgram(
-		"vclib/ext/bgfx/font/vs_font_distance_field_outline_drop_shadow_image",
-		"vclib/ext/bgfx/font/fs_font_distance_field_outline_drop_shadow_image");
-
 	m_vertexLayout
 		.begin()
 		.add(bgfx::Attrib::Position,  2, bgfx::AttribType::Float)
@@ -868,15 +837,6 @@ TextBufferManager::~TextBufferManager()
 
 	bgfx::destroy(u_dropShadowColor);
 	bgfx::destroy(s_texColor);
-
-	bgfx::destroy(m_basicProgram);
-	bgfx::destroy(m_distanceProgram);
-	bgfx::destroy(m_distanceSubpixelProgram);
-	bgfx::destroy(m_distanceOutlineProgram);
-	bgfx::destroy(m_distanceOutlineImageProgram);
-	bgfx::destroy(m_distanceDropShadowProgram);
-	bgfx::destroy(m_distanceDropShadowImageProgram);
-	bgfx::destroy(m_distanceOutlineDropShadowImageProgram);
 }
 
 TextBufferHandle TextBufferManager::createTextBuffer(uint32_t _type, BufferType::Enum _bufferType)
@@ -957,7 +917,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 	switch (bc.fontType)
 	{
 	case FONT_TYPE_ALPHA:
-		program = m_basicProgram;
+		program = vcl::bgf::Context::programManager().getProgram(vcl::bgf::VclProgram::FONT_BASIC);
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -966,7 +926,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE:
 	{
-		program = m_distanceProgram;
+		program = vcl::bgf::Context::programManager().getProgram(vcl::bgf::VclProgram::FONT_DISTANCE_FIELD);
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -978,7 +938,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 	}
 
 	case FONT_TYPE_DISTANCE_SUBPIXEL:
-		program = m_distanceSubpixelProgram;
+		program = vcl::bgf::Context::programManager().getProgram(vcl::bgf::VclProgram::FONT_DISTANCE_FIELD_SUBPIXEL);
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_FACTOR, BGFX_STATE_BLEND_INV_SRC_COLOR)
@@ -988,7 +948,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_OUTLINE:
 	{
-		program = m_distanceOutlineProgram;
+		program = vcl::bgf::Context::programManager().getProgram(vcl::bgf::VclProgram::FONT_DISTANCE_FIELD_OUTLINE);
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -1001,7 +961,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_OUTLINE_IMAGE:
 	{
-		program = m_distanceOutlineImageProgram;
+		program = vcl::bgf::Context::programManager().getProgram(vcl::bgf::VclProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE);
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -1014,7 +974,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_DROP_SHADOW:
 	{
-		program = m_distanceDropShadowProgram;
+		program = vcl::bgf::Context::programManager().getProgram(vcl::bgf::VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW);
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -1031,7 +991,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_DROP_SHADOW_IMAGE:
 	{
-		program = m_distanceDropShadowImageProgram;
+		program = vcl::bgf::Context::programManager().getProgram(vcl::bgf::VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE);
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)
@@ -1048,7 +1008,7 @@ void TextBufferManager::submitTextBuffer(TextBufferHandle _handle, bgfx::ViewId 
 
 	case FONT_TYPE_DISTANCE_OUTLINE_DROP_SHADOW_IMAGE:
 	{
-		program = m_distanceOutlineDropShadowImageProgram;
+		program = vcl::bgf::Context::programManager().getProgram(vcl::bgf::VclProgram::FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE);
 		bgfx::setState(0
 			| BGFX_STATE_WRITE_RGB
 			| BGFX_STATE_BLEND_FUNC(BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA)

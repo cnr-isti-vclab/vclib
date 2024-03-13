@@ -37,7 +37,7 @@ class TextManager
     bgfx::TextBufferHandle   staticText;
     bgfx::TextBufferHandle   transientText;
 
-    bgfx::FontHandle currentFont;
+    bgfx::FontHandle currentFont = BGFX_INVALID_HANDLE;
 
 public:
     TextManager();
