@@ -296,6 +296,7 @@ void loadStl(
     loadedInfo = MeshInfo();
     loadedInfo.setVertices();
     loadedInfo.setVertexCoords();
+
     if constexpr (HasFaces<MeshType>) {
         loadedInfo.setFaces();
         loadedInfo.setFaceVRefs();
@@ -483,6 +484,10 @@ void loadStl(
     log.log(0, "Opening STL file");
 
     std::ifstream fp = openInputFileStream(filename);
+
+    if constexpr (HasName<MeshType>) {
+        m.name() = FileInfo::fileNameWithoutExtension(filename);
+    }
 
     loadStl(m, fp, loadedInfo, isBinary, log, enableOptionalComponents);
 }
