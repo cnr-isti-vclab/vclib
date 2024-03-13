@@ -16,12 +16,15 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QWidget" name="viewerContainer" native="true">
+     <widget class="vcl::qbgf::MinimalViewerWidget" name="viewer" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::ClickFocus</enum>
       </property>
      </widget>
     </item>
@@ -100,6 +103,12 @@
    <class>vcl::qt::DrawableObjectVectorFrame</class>
    <extends>QFrame</extends>
    <header>vclib/ext/qt/gui/drawable_object_vector_frame.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>vcl::qbgf::MinimalViewerWidget</class>
+   <extends>QWidget</extends>
+   <header>vclib/ext/qt/bgfx/minimal_viewer_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

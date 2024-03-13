@@ -56,11 +56,6 @@ public:
 
     void update();
 
-    // todo - these should be private - fix mainwindow
-    void keyPressEvent(QKeyEvent* event) override;
-
-    void keyReleaseEvent(QKeyEvent* event) override;
-
 protected:
     virtual void draw() override;
 
@@ -72,6 +67,10 @@ private:
     void paintEvent(QPaintEvent* event) override;
 
     void resizeEvent(QResizeEvent* event) override;
+
+    void keyPressEvent(QKeyEvent* event) override;
+
+    void keyReleaseEvent(QKeyEvent* event) override;
 
     void mouseMoveEvent(QMouseEvent* event) override;
 

@@ -37,20 +37,22 @@ class ViewerMainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    Ui::ViewerMainWindow*                      ui;
+    std::shared_ptr<vcl::DrawableObjectVector> drawVector;
+
 public:
     explicit ViewerMainWindow(QWidget* parent = nullptr);
+
     ~ViewerMainWindow();
 
     void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
 
 public slots:
     void visibilityDrawableObjectChanged();
-    void selectedDrawableObjectChanged(uint i);
-    void renderSettingsUpdated();
 
-private:
-    Ui::ViewerMainWindow*                      ui;
-    std::shared_ptr<vcl::DrawableObjectVector> drawVector;
+    void selectedDrawableObjectChanged(uint i);
+
+    void renderSettingsUpdated();
 };
 
 } // namespace vcl::qgl

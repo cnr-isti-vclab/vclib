@@ -40,18 +40,11 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
 {
     ui->setupUi(this);
 
-    // create the viewer inside the viewer container
-    viewer              = new MinimalViewerWidget(ui->viewerContainer);
-    QVBoxLayout* layout = new QVBoxLayout;
-    layout->addWidget(viewer);
-    layout->setContentsMargins(0, 0, 0, 0);
-    ui->viewerContainer->setLayout(layout);
-
     // create the vector of DrawableObjects
     drawVector = std::make_shared<vcl::DrawableObjectVector>();
 
     // give the vector pointer to the contained widgets
-    viewer->setDrawableObjectVector(drawVector);
+    ui->viewer->setDrawableObjectVector(drawVector);
     ui->drawVectorFrame->setDrawableObjectVector(drawVector);
 
     // each time that the RenderSettingsFrame updates its settings, we call the
@@ -80,6 +73,7 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
 
+    ui->viewer->setFocus();
     ui->rightArea->setVisible(false);
 }
 
@@ -101,7 +95,7 @@ void ViewerMainWindow::setDrawableObjectVector(
 
     // order here is important: drawVectorFrame must have the drawVector before
     // the renderSettingsFrame!
-    viewer->setDrawableObjectVector(drawVector);
+    ui->viewer->setDrawableObjectVector(drawVector);
     ui->drawVectorFrame->setDrawableObjectVector(drawVector);
     if (drawVector->size() > 0) {
         try {
@@ -120,19 +114,7 @@ void ViewerMainWindow::setDrawableObjectVector(
     else {
         ui->rightArea->setVisible(false);
     }
-    viewer->fitScene();
-}
-
-void ViewerMainWindow::keyPressEvent(QKeyEvent* event)
-{
-    // sometimes, the viewer does not automatically get key events
-    viewer->keyPressEvent(event);
-}
-
-void ViewerMainWindow::keyReleaseEvent(QKeyEvent* event)
-{
-    // sometimes, the viewer does not automatically get key events
-    viewer->keyReleaseEvent(event);
+    ui->viewer->fitScene();
 }
 
 /**
@@ -151,7 +133,7 @@ void ViewerMainWindow::visibilityDrawableObjectChanged()
     }
     catch (std::bad_cast exp) {
     }
-    viewer->update();
+    ui->viewer->update();
 }
 
 /**
@@ -196,7 +178,7 @@ void ViewerMainWindow::renderSettingsUpdated()
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // GenericDrawableMesh
         m.setRenderSettings(ui->renderSettingsFrame->meshRenderSettings());
-        viewer->update();
+        ui->viewer->update();
     }
 }
 

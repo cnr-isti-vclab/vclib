@@ -80,22 +80,6 @@ void CanvasWidget::update()
     QWidget::update();
 }
 
-void CanvasWidget::keyPressEvent(QKeyEvent* event)
-{
-    setModifiers(vcl::qt::fromQt(event->modifiers()));
-
-    onKeyPress(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
-    QWidget::keyPressEvent(event);
-}
-
-void CanvasWidget::keyReleaseEvent(QKeyEvent* event)
-{
-    setModifiers(vcl::qt::fromQt(event->modifiers()));
-
-    onKeyRelease(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
-    QWidget::keyReleaseEvent(event);
-}
-
 bool CanvasWidget::event(QEvent* event)
 {
     if (event->type() == QEvent::UpdateRequest) {
@@ -116,6 +100,22 @@ void CanvasWidget::resizeEvent(QResizeEvent* event)
     Canvas::resize(width(), height());
     QWidget::resizeEvent(event);
     onResize(width(), height());
+}
+
+void CanvasWidget::keyPressEvent(QKeyEvent* event)
+{
+    setModifiers(vcl::qt::fromQt(event->modifiers()));
+
+    onKeyPress(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
+    QWidget::keyPressEvent(event);
+}
+
+void CanvasWidget::keyReleaseEvent(QKeyEvent* event)
+{
+    setModifiers(vcl::qt::fromQt(event->modifiers()));
+
+    onKeyRelease(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
+    QWidget::keyReleaseEvent(event);
 }
 
 void CanvasWidget::mouseMoveEvent(QMouseEvent* event)

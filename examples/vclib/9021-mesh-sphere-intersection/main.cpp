@@ -33,10 +33,13 @@ int main(int argc, char** argv)
 
     vcl::TriMesh m = bimbaSphereIntersection(s);
 
+    m.name() = "bimba";
     m.enablePerVertexColor();
     vcl::setPerVertexColor(m, vcl::Color::Gray);
 
     vcl::TriMesh sm = vcl::createSphere<vcl::TriMesh>(s);
+
+    sm.name() = "sphere";
     sm.enablePerVertexColor();
     vcl::updatePerFaceNormals(sm);
     vcl::updatePerVertexNormals(sm);
