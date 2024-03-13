@@ -30,7 +30,8 @@
 
 namespace vcl::bgf {
 
-struct VclProgram {
+struct VclProgram
+{
     enum Enum {
         DRAWABLE_MESH,
         DRAWABLE_AXIS,

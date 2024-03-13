@@ -43,8 +43,8 @@ class Context
 
     std::stack<bgfx::ViewId> viewStack;
 
-    Callback cb;
-    FontManager* fm = nullptr;
+    Callback        cb;
+    FontManager*    fm = nullptr;
     ProgramManager* pm = nullptr;
 
 public:

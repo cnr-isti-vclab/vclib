@@ -75,8 +75,7 @@ public:
 
     void init() {}
 
-    virtual void setShaderProgram(const ShaderProgramI& p)
-    {
+    virtual void setShaderProgram(const ShaderProgramI& p) {
         // todo
     };
 

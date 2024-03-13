@@ -44,8 +44,8 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
     DirectionalLightUniforms   directionalLightUniforms;
     MeshRenderSettingsUniforms meshRenderSettingsUniforms;
 
-    DrawableAxis                          axis;
-    DrawableDirectionalLight              directionalLight;
+    DrawableAxis             axis;
+    DrawableDirectionalLight directionalLight;
 
     // the programs must be created after the uniforms - bgfx issue on OpenGL
     vcl::bgf::DrawableDirectionalLightShaderProgram directionalLightProgram;

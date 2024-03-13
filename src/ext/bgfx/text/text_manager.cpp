@@ -39,8 +39,8 @@ TextManager::~TextManager()
 
 void TextManager::init()
 {
-    textBufferManager =
-        new bgfx::TextBufferManager(&Context::fontManager().getBGFXFontManager());
+    textBufferManager = new bgfx::TextBufferManager(
+        &Context::fontManager().getBGFXFontManager());
 
     transientText = textBufferManager->createTextBuffer(
         FONT_TYPE_ALPHA, bgfx::BufferType::Transient);

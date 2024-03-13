@@ -41,7 +41,9 @@ FontManager::~FontManager()
     }
 }
 
-void FontManager::loadFont(const std::string& filePath, const std::string& fontName)
+void FontManager::loadFont(
+    const std::string& filePath,
+    const std::string& fontName)
 {
     if (ttMap.find(fontName) == ttMap.end()) {
         bgfx::TrueTypeHandle handle = loadTtf(fontManager, filePath.c_str());
