@@ -94,11 +94,6 @@ void DrawableDirectionalLight::setLinesColor(const Color& c)
     dlUniforms.setColor(lColor);
 }
 
-void DrawableDirectionalLight::setShaderProgram(const ShaderProgramI& sp)
-{
-    // todo
-}
-
 void DrawableDirectionalLight::draw(uint viewId)
 {
     if (isVisible()) {

@@ -71,8 +71,6 @@ public:
 
     // DrawableObject interface
 
-    void setShaderProgram(const ShaderProgramI& sp) override;
-
     void draw(uint viewId) override;
 
     Point3d center() const override { return Point3d(); };

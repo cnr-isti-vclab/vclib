@@ -58,7 +58,6 @@ set(HEADERS
     include/vclib/render/trackball.h
     include/vclib/render/interfaces/drawable_mesh_i.h
     include/vclib/render/interfaces/drawable_object_i.h
-    include/vclib/render/interfaces/shader_program_i.h
     include/vclib/render/lights/directional_light.h)
 
 set(SOURCES

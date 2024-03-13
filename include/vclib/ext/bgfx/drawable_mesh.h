@@ -75,10 +75,6 @@ public:
 
     void init() {}
 
-    virtual void setShaderProgram(const ShaderProgramI& p) {
-        // todo
-    };
-
     void draw(uint viewId)
     {
         if (bgfx::isValid(program)) {

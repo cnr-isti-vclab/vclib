@@ -25,8 +25,6 @@
 
 #include <vclib/space/point.h>
 
-#include "shader_program_i.h"
-
 namespace vcl {
 
 /**
@@ -68,8 +66,6 @@ public:
      * textures.
      */
     virtual void init() {};
-
-    virtual void setShaderProgram(const ShaderProgramI&) {}
 
     /**
      * @brief This member function must draw the object.

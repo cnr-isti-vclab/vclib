@@ -64,8 +64,6 @@ public:
 
     // DrawableObjectI interface
 
-    void setShaderProgram(const ShaderProgramI&);
-
     void draw(uint viewId);
 
     Point3d center() const;

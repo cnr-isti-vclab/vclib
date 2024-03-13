@@ -38,11 +38,6 @@ void DrawableAxis::setSize(double size)
     updateMatrices(size);
 }
 
-void DrawableAxis::setShaderProgram(const ShaderProgramI& sp)
-{
-    // todo
-}
-
 void DrawableAxis::draw(uint viewId)
 {
     if (isVisible()) {
