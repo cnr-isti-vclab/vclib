@@ -104,6 +104,7 @@ void Canvas::frame()
     TextView::frame(fbh);
 
     bgfx::frame();
+    bgfx::frame();
 }
 
 void Canvas::resize(uint width, uint height)
