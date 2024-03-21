@@ -26,9 +26,7 @@
 #include <vclib/ext/qt/bgfx/canvas_widget.h>
 #include <vclib/ext/qt/gui/input.h>
 
-#ifdef __APPLE__
 #include <vclib/ext/qt/message_hider.h>
-#endif // __APPLE__
 
 namespace vcl::qbgf {
 
@@ -42,14 +40,13 @@ CanvasWidget::CanvasWidget(
     setGeometry(100, 100, width, height);
     setWindowTitle(windowTitle.c_str());
 
-#ifdef __APPLE__
-    setAttribute(Qt::WA_PaintOnScreen); // needed on macOS - do not remove
-    // however this is bugged - prints unuseful warning messages
+    setAttribute(Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
+    // PaintOnScreen is bugged - prints unuseful warning messages
     // we will hide it:
     vcl::qt::MessageHider::activate();
-#endif // __APPLE__
 
-    vcl::bgf::Canvas::init((void*) winId(), width, height);
+    vcl::bgf::Canvas::init(
+        (void*) winId(), width * pixelRatio(), height * pixelRatio());
 }
 
 CanvasWidget::CanvasWidget(uint width, uint height, QWidget* parent) :
@@ -97,9 +94,9 @@ void CanvasWidget::paintEvent(QPaintEvent* event)
 
 void CanvasWidget::resizeEvent(QResizeEvent* event)
 {
-    Canvas::resize(width(), height());
+    Canvas::resize(width() * pixelRatio(), height() * pixelRatio());
     QWidget::resizeEvent(event);
-    onResize(width(), height());
+    onResize(width() * pixelRatio(), height() * pixelRatio());
 }
 
 void CanvasWidget::keyPressEvent(QKeyEvent* event)
@@ -120,20 +117,20 @@ void CanvasWidget::keyReleaseEvent(QKeyEvent* event)
 
 void CanvasWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    onMouseMove(event->pos().x(), event->pos().y());
+    onMouseMove(event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
     QWidget::mouseMoveEvent(event);
 }
 
 void CanvasWidget::mousePressEvent(QMouseEvent* event)
 {
-    onMouseMove(event->pos().x(), event->pos().y());
+    onMouseMove(event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
     onMousePress(vcl::qt::fromQt(event->button()));
     QWidget::mousePressEvent(event);
 }
 
 void CanvasWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    onMouseMove(event->pos().x(), event->pos().y());
+    onMouseMove(event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
     onMouseRelease(vcl::qt::fromQt(event->button()));
     QWidget::mouseReleaseEvent(event);
 }
@@ -147,6 +144,12 @@ void CanvasWidget::wheelEvent(QWheelEvent* event)
 void CanvasWidget::paint()
 {
     Canvas::frame();
+}
+
+double CanvasWidget::pixelRatio()
+{
+    auto app = qobject_cast<QGuiApplication*>(QCoreApplication::instance());
+    return app->devicePixelRatio();
 }
 
 } // namespace vcl::qbgf

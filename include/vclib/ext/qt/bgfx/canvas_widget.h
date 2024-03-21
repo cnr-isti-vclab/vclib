@@ -81,6 +81,8 @@ private:
     void wheelEvent(QWheelEvent* event) override;
 
     void paint();
+
+    static double pixelRatio();
 };
 
 } // namespace vcl::qbgf
