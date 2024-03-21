@@ -22,10 +22,17 @@
 
 #include <vclib/gui/native_window_handle.h>
 
+#include <cassert>
+#include <iostream>
+
 #ifdef _WIN32
 #include <windows.h>
 #elif __linux__
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+#include <wayland-client.h>
+#else
 #include <X11/Xlib.h>
+#endif
 #endif
 
 namespace vcl {
@@ -76,8 +83,34 @@ void* createWindow(
     return detail::cretateCocoaWindow(title, width, height, hidden);
 
 #else
+
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+    wl_display* dspl = wl_display_connect(NULL);
+    if (!dspl) {
+        std::cerr << "Failed to connect to Wayland display." << std::endl;
+        assert(0);
+        return nullptr;
+    }
+    display = dspl;
+    // create wayland surface
+    wl_surface* surface = wl_compositor_create_surface(
+        static_cast<wl_compositor*>(wl_registry_bind(
+            wl_display_get_registry(dspl), 1, &wl_compositor_interface, 1)));
+    if (!surface) {
+        std::cerr << "Failed to create Wayland surface." << std::endl;
+        assert(0);
+        return nullptr;
+    }
+    if (!hidden) {
+        wl_surface_commit(surface);
+        wl_display_roundtrip(dspl);
+    }
+    return (void*) surface;
+#else // X11
     Display* dspl = XOpenDisplay(NULL);
     if (!dspl) {
+        std::cerr << "Failed to Open X display." << std::endl;
+        assert(0);
         return nullptr;
     }
 
@@ -94,6 +127,12 @@ void* createWindow(
         BlackPixel(dspl, screen),
         WhitePixel(dspl, screen));
 
+    if (!window) {
+        std::cerr << "Failed to create X window." << std::endl;
+        assert(0);
+        return nullptr;
+    }
+
     XStoreName(dspl, window, title);
 
     if (!hidden)
@@ -104,7 +143,8 @@ void* createWindow(
     display = (void*) dspl;
 
     return (void*) window;
-#endif
+#endif // VCLIB_RENDER_WITH_WAYLAND
+#endif // _WIN32
 }
 
 void* createWindow(const char* title, int width, int height, bool hidden)
@@ -119,8 +159,13 @@ void closeWindow(void* window, void* display)
     DestroyWindow((HWND) window);
 #elif __APPLE__
     detail::closeCocoaWindow(window);
-#else
+#else // linux
+
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+    wl_display_disconnect((wl_display*)display);
+#else // X11
     XDestroyWindow((Display*) display, (Window) window);
+#endif // VCLIB_RENDER_WITH_WAYLAND
 #endif
 }
 

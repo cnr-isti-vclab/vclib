@@ -20,49 +20,19 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-render-external)
+find_package(Wayland QUIET)
 
-include(FetchContent)
+if (LINUX AND VCLIB_RENDER_WITH_WAYLAND)
+    if (Wayland_FOUND)
+        message(STATUS "- Wayland - using system-provided library")
 
-# external libraries may have warnings
-set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+        add_library(vclib-external-wayland INTERFACE)
 
-option(VCLIB_RENDER_WITH_WAYLAND "Linux only - build vclib-render for wayland" OFF)
+        target_link_libraries(vclib-external-wayland INTERFACE Wayland::Wayland)
+        target_compile_definitions(vclib-external-wayland INTERFACE VCLIB_RENDER_WITH_WAYLAND)
 
-# Qt
-option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
-
-# GLFW
-option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
-
-# bgfx
-option(VCLIB_ALLOW_BUNDLED_BGFX "Allow use of bundled bgfx source" ON)
-
-# QGLViewer
-option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
-
-set(VCLIB_RENDER_EXTERNAL_LIBRARIES "")
-
-# === OPTIONAL === #
-
-### Wayland
-include(wayland.cmake)
-
-### OpenGL
-include(opengl.cmake)
-
-### Qt
-include(qt.cmake)
-
-### GLFW
-include(glfw.cmake)
-
-### bgfx
-include(bgfx.cmake)
-
-### QGLViewer
-include(qglviewer.cmake)
-
-set(VCLIB_RENDER_EXTERNAL_LIBRARIES
-    ${VCLIB_RENDER_EXTERNAL_LIBRARIES} PARENT_SCOPE)
+        list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-wayland)
+    else()
+        message(STATUS "- Wayland - not found, skipping")
+    endif()
+endif()
