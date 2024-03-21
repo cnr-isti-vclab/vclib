@@ -37,7 +37,7 @@ namespace vcl::bgf {
  * Its usage requires to have a window object that can be used to initialize
  * the canvas. The window object is not managed by the Canvas class, and can be
  * managed by any of the windowing systems or libraries that allow to retrieve
- * the native window handle (e.g. Qt, Imgui, GLFW...).
+ * the native window handle (e.g. Qt, GLFW...).
  *
  * You can create your custom bgfx canvas class by inheriting from this class
  * and passing to the constructor the native window handle and the window size.
@@ -92,10 +92,13 @@ protected:
     void resize(uint width, uint height);
 
 private:
-    static bgfx::FrameBufferHandle createFrameBufferD32(
+    static bgfx::FrameBufferHandle createFrameBufferAndInitView(
         void* winId,
+        bgfx::ViewId view,
         uint  width,
-        uint  height);
+        uint  height,
+        bool clear = false,
+        bool depth32bit = true);
 };
 
 } // namespace vcl::bgf

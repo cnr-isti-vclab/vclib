@@ -49,13 +49,7 @@ void Canvas::init(void* winId, uint width, uint height)
 
     view = Context::requestViewId();
 
-    fbh = createFrameBufferD32(winId, width, height);
-
-    bgfx::setViewFrameBuffer(view, fbh);
-    bgfx::setViewClear(
-        view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
-    bgfx::setViewRect(view, 0, 0, width, height);
-    bgfx::touch(view);
+    fbh = createFrameBufferAndInitView(winId, view, width, height, true);
 
     TextView::init(width, height);
 }
@@ -73,12 +67,8 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 
         // setup view and frame buffer
         bgfx::ViewId            v   = Context::requestViewId();
-        bgfx::FrameBufferHandle fbh = bgfx::createFrameBuffer(w, width, height);
-        bgfx::setViewFrameBuffer(v, fbh);
-        bgfx::setViewClear(
-            v, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
-        bgfx::setViewRect(v, 0, 0, width, height);
-        bgfx::touch(v);
+        bgfx::FrameBufferHandle fbh =
+            createFrameBufferAndInitView(w, v, width, height, true);
 
         // replace the current view with the new one
         bgfx::ViewId tmpView = view;
@@ -104,7 +94,9 @@ void Canvas::frame()
     TextView::frame(fbh);
 
     bgfx::frame();
+#ifdef __APPLE__ // workaround for forcing bgfx refresh buffer on MacOS
     bgfx::frame();
+#endif // __APPLE__
 }
 
 void Canvas::resize(uint width, uint height)
@@ -112,25 +104,41 @@ void Canvas::resize(uint width, uint height)
     if (bgfx::isValid(fbh))
         bgfx::destroy(fbh);
 
-    fbh = createFrameBufferD32(winID, width, height);
-    bgfx::setViewFrameBuffer(view, fbh);
-    bgfx::setViewRect(view, 0, 0, width, height);
-    bgfx::touch(view);
+    fbh = createFrameBufferAndInitView(winID, view, width, height);
 
     TextView::resize(width, height);
 }
 
-bgfx::FrameBufferHandle Canvas::createFrameBufferD32(
-    void* winId,
-    uint  width,
-    uint  height)
+
+bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
+    void*        winId,
+    bgfx::ViewId view,
+    uint         width,
+    uint         height,
+    bool clear,
+    bool depth32bit)
 {
-    return bgfx::createFrameBuffer(
+    bgfx::TextureFormat::Enum colorFormat = bgfx::TextureFormat::Count;
+    bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::Count;
+
+    if (depth32bit) {
+        depthFormat = bgfx::TextureFormat::D32;
+    }
+
+    bgfx::FrameBufferHandle fbh = bgfx::createFrameBuffer(
         winId,
         width,
         height,
-        bgfx::TextureFormat::BGRA8,
-        bgfx::TextureFormat::D32);
+        colorFormat,
+        depthFormat);
+    bgfx::setViewFrameBuffer(view, fbh);
+    if (clear) {
+        bgfx::setViewClear(
+            view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
+    }
+    bgfx::setViewRect(view, 0, 0, width, height);
+    bgfx::touch(view);
+    return fbh;
 }
 
 } // namespace vcl::bgf
