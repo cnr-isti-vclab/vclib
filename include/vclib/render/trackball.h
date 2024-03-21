@@ -119,6 +119,7 @@ public:
     {
         cam.reset();
         cam.center() = center;
+        cam.aspectRatio() = w / h;
 
         arcRotationSum = Quaternion<Scalar>();
         eyeCenterDist  = radius * RADIUS_RATIO;
@@ -135,6 +136,7 @@ public:
 
         updateCameraEye();
         cam.updateViewMatrix();
+        cam.updateProjMatrix();
     }
 
     void resetDirectionalLight() { dl.reset(); }
