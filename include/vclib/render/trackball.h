@@ -118,7 +118,7 @@ public:
     void reset(const Point3<Scalar>& center, Scalar radius = 1.0)
     {
         cam.reset();
-        cam.center() = center;
+        cam.center()      = center;
         cam.aspectRatio() = w / h;
 
         arcRotationSum = Quaternion<Scalar>();

@@ -93,12 +93,12 @@ protected:
 
 private:
     static bgfx::FrameBufferHandle createFrameBufferAndInitView(
-        void* winId,
+        void*        winId,
         bgfx::ViewId view,
-        uint  width,
-        uint  height,
-        bool clear = false,
-        bool depth32bit = true);
+        uint         width,
+        uint         height,
+        bool         clear      = false,
+        bool         depth32bit = true);
 };
 
 } // namespace vcl::bgf

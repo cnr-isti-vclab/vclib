@@ -66,7 +66,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
         void* w = vcl::createWindow("", width, height, d, true);
 
         // setup view and frame buffer
-        bgfx::ViewId            v   = Context::requestViewId();
+        bgfx::ViewId            v = Context::requestViewId();
         bgfx::FrameBufferHandle fbh =
             createFrameBufferAndInitView(w, v, width, height, true);
 
@@ -109,14 +109,13 @@ void Canvas::resize(uint width, uint height)
     TextView::resize(width, height);
 }
 
-
 bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     void*        winId,
     bgfx::ViewId view,
     uint         width,
     uint         height,
-    bool clear,
-    bool depth32bit)
+    bool         clear,
+    bool         depth32bit)
 {
     bgfx::TextureFormat::Enum colorFormat = bgfx::TextureFormat::Count;
     bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::Count;
@@ -125,12 +124,8 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
         depthFormat = bgfx::TextureFormat::D32;
     }
 
-    bgfx::FrameBufferHandle fbh = bgfx::createFrameBuffer(
-        winId,
-        width,
-        height,
-        colorFormat,
-        depthFormat);
+    bgfx::FrameBufferHandle fbh =
+        bgfx::createFrameBuffer(winId, width, height, colorFormat, depthFormat);
     bgfx::setViewFrameBuffer(view, fbh);
     if (clear) {
         bgfx::setViewClear(

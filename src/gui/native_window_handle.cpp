@@ -106,7 +106,7 @@ void* createWindow(
         wl_display_roundtrip(dspl);
     }
     return (void*) surface;
-#else // X11
+#else  // X11
     Display* dspl = XOpenDisplay(NULL);
     if (!dspl) {
         std::cerr << "Failed to Open X display." << std::endl;
@@ -162,8 +162,8 @@ void closeWindow(void* window, void* display)
 #else // linux
 
 #ifdef VCLIB_RENDER_WITH_WAYLAND
-    wl_display_disconnect((wl_display*)display);
-#else // X11
+    wl_display_disconnect((wl_display*) display);
+#else  // X11
     XDestroyWindow((Display*) display, (Window) window);
 #endif // VCLIB_RENDER_WITH_WAYLAND
 #endif

@@ -117,20 +117,23 @@ void CanvasWidget::keyReleaseEvent(QKeyEvent* event)
 
 void CanvasWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    onMouseMove(event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
+    onMouseMove(
+        event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
     QWidget::mouseMoveEvent(event);
 }
 
 void CanvasWidget::mousePressEvent(QMouseEvent* event)
 {
-    onMouseMove(event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
+    onMouseMove(
+        event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
     onMousePress(vcl::qt::fromQt(event->button()));
     QWidget::mousePressEvent(event);
 }
 
 void CanvasWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    onMouseMove(event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
+    onMouseMove(
+        event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
     onMouseRelease(vcl::qt::fromQt(event->button()));
     QWidget::mouseReleaseEvent(event);
 }
