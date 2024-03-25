@@ -30,8 +30,6 @@
 #include "camera.h"
 #include "lights/directional_light.h"
 
-#include <iostream>
-
 namespace vcl {
 
 /**

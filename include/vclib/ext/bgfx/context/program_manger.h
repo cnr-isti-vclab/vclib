@@ -23,6 +23,7 @@
 #ifndef VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
 #define VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
 
+#include <array>
 #include <map>
 #include <string>
 
