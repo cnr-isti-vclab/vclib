@@ -92,6 +92,7 @@ set(HEADERS
     include/vclib/algorithms/intersection/functions.h
     include/vclib/algorithms/intersection/mesh.h
     include/vclib/algorithms/intersection/misc.h
+    include/vclib/algorithms/polygon/create.h
     include/vclib/algorithms/polygon/geometry.h
     include/vclib/algorithms/polygon/topology.h
     include/vclib/algorithms/stat/quality.h

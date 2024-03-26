@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_POLYGON_H
 #define VCL_ALGORITHMS_POLYGON_H
 
+#include "polygon/create.h"
 #include "polygon/geometry.h"
 #include "polygon/topology.h"
 

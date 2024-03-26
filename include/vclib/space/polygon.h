@@ -64,13 +64,21 @@ public:
 
     uint size() const { return p.size(); }
 
-    PointT& point(uint i) { return p[i]; }
+    void resize(uint n) { p.resize(n); }
 
-    const PointT& point(uint i) const { return p[i]; }
+    void reserve(uint n) { p.reserve(n); }
+
+    void clear() { p.clear(); }
+
+    void pushBack(const PointT& point) { p.push_back(point); }
+
+    PointT& point(uint i) { return p.at(i); }
+
+    const PointT& point(uint i) const { return p.at(i); }
 
     ScalarType sideLength(uint i) const
     {
-        return p[i].dist(p[(i + 1) % p.size()]);
+        return p.at(i).dist(p[(i + 1) % p.size()]);
     }
 
     PointT normal() const requires (PointT::DIM == 3) { return normal(p); }

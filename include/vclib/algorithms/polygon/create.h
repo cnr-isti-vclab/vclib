@@ -20,47 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SPACE_POLYGON_H
-#define VCL_CONCEPTS_SPACE_POLYGON_H
+#ifndef VCL_ALGORITHMS_POLYGON_CREATE_H
+#define VCL_ALGORITHMS_POLYGON_CREATE_H
 
-#include <vclib/types.h>
+#include <vclib/space/polygon.h>
 
 namespace vcl {
 
-template<typename T>
-concept PolygonConcept =
-    requires (T o, const T& co, const typename T::PointType& p) {
-        // clang-format off
-        typename T::ScalarType;
-        typename T::PointType;
+/**
+ * @brief Create a 2D circle polygon with n vertices and the given radius.
+ * @tparam PolygonType: The polygon type.
+ * @param[in] n: The number of vertices.
+ * @param[in] radius: The radius of the circle.
+ * @return The circle polygon.
+ */
+template<Polygon2Concept PolygonType>
+PolygonType createCircle(uint n, typename PolygonType::ScalarType radius = 1.0)
+{
+    using ScalarType = typename PolygonType::ScalarType;
+    using PointType = typename PolygonType::PointType;
 
-        co.DIM;
+    PolygonType poly;
+    poly.reserve(n);
 
-        { co.size() } -> std::same_as<uint>;
-        { o.resize(uint()) } -> std::same_as<void>;
-        { o.reserve(uint()) } -> std::same_as<void>;
-        { o.clear() } -> std::same_as<void>;
-        { o.pushBack(p) } -> std::same_as<void>;
-        { o.point(uint()) } -> std::same_as<typename T::PointType&>;
-        { co.point(uint()) } -> std::same_as<const typename T::PointType&>;
-        { co.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
-        { co.barycenter() } -> std::same_as<typename T::PointType>;
-        { co.perimeter() } -> std::same_as<typename T::ScalarType>;
-        { co.area() } -> std::same_as<typename T::ScalarType>;
-        // clang-format on
-    };
+    const ScalarType angleStep = 2 * M_PI / n;
+    for (uint i = 0; i < n; ++i) {
+        const ScalarType angle = i * angleStep;
+        const PointType  p =
+            PointType(std::cos(angle), std::sin(angle)) * radius;
+        poly.pushBack(p);
+    }
 
-template<typename T>
-concept Polygon2Concept = PolygonConcept<T> && T::DIM == 2;
-
-template<typename T>
-concept Polygon3Concept =
-    PolygonConcept<T> && T::DIM == 3 && requires (const T& co) {
-        // clang-format off
-        { co.normal() } -> std::same_as<typename T::PointType>;
-        // clang-format on
-    };
+    return poly;
+}
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_SPACE_POLYGON_H
+#endif // VCL_ALGORITHMS_POLYGON_CREATE_H
