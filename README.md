@@ -45,7 +45,7 @@ avoiding whenever is possible the usage of `#include`.
 
 Right now, the library is a work in progress, and therefore is a work in progress also the documentation.
 
-The best way to learn how the library works is to look at the code in the [tests](test), which is built at every commit and therefore it is guaranteed to work.
+The best way to learn how the library works is to look at the code in the [examples](examples), which is built at every commit and therefore it is guaranteed to work.
 
 A first draft of the (not up-to-date) documentation of the library can be found [here](https://alemuntoni.github.io/vclib/).
 
