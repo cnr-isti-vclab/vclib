@@ -38,7 +38,7 @@ template<Polygon2Concept PolygonType>
 PolygonType createCircle(uint n, typename PolygonType::ScalarType radius = 1.0)
 {
     using ScalarType = typename PolygonType::ScalarType;
-    using PointType = typename PolygonType::PointType;
+    using PointType  = typename PolygonType::PointType;
 
     PolygonType poly;
     poly.reserve(n);

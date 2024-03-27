@@ -240,7 +240,10 @@ public:
      * @note If the three points are collinear or form a degenerate triangle,
      * the function returns 0.
      */
-    ScalarType qualityMeanRatio() const { return qualityMeanRatio(p[0], p[1], p[2]); }
+    ScalarType qualityMeanRatio() const
+    {
+        return qualityMeanRatio(p[0], p[1], p[2]);
+    }
 
     /* Static member functions */
 
