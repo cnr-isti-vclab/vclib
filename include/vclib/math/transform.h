@@ -106,7 +106,7 @@ void setTransformMatrixRotation(
     const PointType& toVector)
 {
     if (fromVector == toVector) {
-        matrix.setIdentity();
+        matrix.block(0, 0, 3, 3).setIdentity();
         return;
     }
     PointType axis  = fromVector.cross(toVector);
