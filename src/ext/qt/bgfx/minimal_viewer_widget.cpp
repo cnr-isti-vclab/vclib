@@ -101,6 +101,8 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key)
 
     case Key::A: MV::toggleAxisVisibility(); break;
 
+    case Key::T: MV::toggleTrackballVisibility(); break;
+
     default:
         MV::keyPress(key);
         bgfx::setViewTransform(
@@ -109,6 +111,7 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key)
     }
 
     MV::updateDirectionalLight();
+    MV::updateDrawableTrackball();
     update();
 }
 
@@ -130,6 +133,7 @@ void MinimalViewerWidget::onMouseMove(double x, double y)
 {
     MV::moveMouse(x, y);
     MV::updateDirectionalLight();
+    MV::updateDrawableTrackball();
 
     bgfx::setViewTransform(
         viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());

@@ -72,6 +72,11 @@ public:
 
     void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }
 
+    void toggleTrackballVisibility()
+    {
+        trackball.setVisibility(!trackball.isVisible());
+    }
+
     bool isDirectionalLightVisible() const
     {
         return directionalLight.isVisible();
@@ -86,6 +91,12 @@ public:
     {
         directionalLight.update(light());
         directionalLightUniforms.updateLight(light());
+    }
+
+    void updateDrawableTrackball()
+    {
+        auto v = DTB::camera().viewMatrix();
+        trackball.updateRotation(v);
     }
 
 private:

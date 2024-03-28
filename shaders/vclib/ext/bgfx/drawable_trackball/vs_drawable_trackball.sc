@@ -28,7 +28,7 @@ $output v_color
 
 void main()
 {
-    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    gl_Position = mul(u_model[0] * u_proj, vec4(a_position, 1.0));
 
     // Compute the color
     if (gl_VertexID < 64) // x

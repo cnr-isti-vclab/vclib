@@ -28,6 +28,8 @@
 
 #include <vclib/render/interfaces/drawable_object_i.h>
 
+#include <vclib/space/matrix.h>
+
 namespace vcl::bgf {
 
 class DrawableTrackball : public DrawableObjectI
@@ -36,6 +38,8 @@ class DrawableTrackball : public DrawableObjectI
 
     std::vector<vcl::Point3f> vertices;
     std::vector<uint16_t> edges;
+
+    vcl::Matrix44f transform = vcl::Matrix44f::Identity();
 
     bgfx::ProgramHandle program =
         Context::programManager().getProgram(VclProgram::DRAWABLE_TRACKBALL);
@@ -47,6 +51,8 @@ public:
     DrawableTrackball();
 
     ~DrawableTrackball();
+
+    void updateRotation(const vcl::Matrix44f& rot);
 
     // DrawableObject interface
 

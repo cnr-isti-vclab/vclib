@@ -24,13 +24,15 @@
 
 #include <vclib/algorithms/polygon/create.h>
 
+#include <vclib/math/transform.h>
+
 namespace vcl::bgf {
 
 DrawableTrackball::DrawableTrackball()
 {
     const uint cSize = 64;
 
-    vcl::Polygon2f circle = vcl::createCircle<vcl::Polygon2f>(cSize, 1.0f);
+    vcl::Polygon2f circle = vcl::createCircle<vcl::Polygon2f>(cSize, 0.15f);
 
     vertices.reserve(cSize * 3);
 
@@ -73,6 +75,8 @@ DrawableTrackball::DrawableTrackball()
 
     edgeIndexBH = bgfx::createIndexBuffer(
         bgfx::makeRef(edges.data(), edges.size() * sizeof(uint16_t)));
+
+    vcl::setTransformMatrixTranslation(transform, vcl::Point3f(0, 0, -0.5));
 }
 
 DrawableTrackball::~DrawableTrackball()
@@ -82,17 +86,25 @@ DrawableTrackball::~DrawableTrackball()
     }
 }
 
+
+void DrawableTrackball::updateRotation(const vcl::Matrix44f& rot)
+{
+    transform.block(0, 0, 3, 3) = rot.block(0, 0, 3, 3);
+}
+
 void DrawableTrackball::draw(uint viewId)
 {
     if (isVisible()) {
         if (bgfx::isValid(program)) {
             bgfx::setState(
                 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
+                BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
                 BGFX_STATE_PT_LINES);
 
             bgfx::setVertexBuffer(0, vertexCoordBH);
             bgfx::setIndexBuffer(edgeIndexBH);
+
+            bgfx::setTransform(transform.data());
 
             bgfx::submit(viewId, program);
         }
