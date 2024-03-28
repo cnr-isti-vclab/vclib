@@ -94,6 +94,10 @@ void MinimalViewer::draw(uint viewId)
     if (directionalLight.isVisible()) {
         directionalLight.draw(viewId);
     }
+
+    if (trackball.isVisible()) {
+        trackball.draw(viewId);
+    }
 }
 
 void MinimalViewer::initDrawableObject(DrawableObjectI& obj)

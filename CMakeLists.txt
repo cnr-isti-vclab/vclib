@@ -80,6 +80,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/drawable_axis.h
         include/vclib/ext/bgfx/drawable_directional_light.h
         include/vclib/ext/bgfx/drawable_mesh.h
+        include/vclib/ext/bgfx/drawable_trackball.h
         include/vclib/ext/bgfx/load_program.h
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
@@ -106,6 +107,7 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/context.cpp
         src/ext/bgfx/drawable_axis.cpp
         src/ext/bgfx/drawable_directional_light.cpp
+        src/ext/bgfx/drawable_trackball.cpp
         src/ext/bgfx/load_program.cpp
         src/ext/bgfx/minimal_viewer.cpp
         src/ext/bgfx/context/callback.cpp
@@ -133,6 +135,9 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc
         shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc
         shaders/vclib/ext/bgfx/drawable_mesh/uniforms.sh
+        shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc
+        shaders/vclib/ext/bgfx/drawable_trackball/varying.def.sc
+        shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc
         shaders/vclib/ext/bgfx/font/fs_font_basic.sc
         shaders/vclib/ext/bgfx/font/fs_font_distance_field.sc
         shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow.sc

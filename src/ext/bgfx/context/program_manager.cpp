@@ -86,6 +86,11 @@ bgfx::ProgramHandle ProgramManager::loadProgram(VclProgram::Enum program)
             "vclib/ext/bgfx/drawable_directional_light/"
             "fs_drawable_directional_light");
 
+    case VclProgram::DRAWABLE_TRACKBALL:
+        return bgf::loadProgram(
+            "vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball",
+            "vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball");
+
     case VclProgram::FONT_BASIC:
         return bgf::loadProgram(
             "vclib/ext/bgfx/font/vs_font_basic",

@@ -28,6 +28,7 @@
 
 #include "drawable_axis.h"
 #include "drawable_directional_light.h"
+#include "drawable_trackball.h"
 #include "uniforms/camera_uniforms.h"
 #include "uniforms/directional_light_uniforms.h"
 #include "uniforms/mesh_render_settings_uniforms.h"
@@ -45,6 +46,8 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
 
     DrawableAxis             axis;
     DrawableDirectionalLight directionalLight;
+    DrawableTrackball        trackball;
+
 
 protected:
     using DTB = vcl::DesktopTrackBall<float>;

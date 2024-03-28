@@ -37,6 +37,7 @@ struct VclProgram
         DRAWABLE_MESH,
         DRAWABLE_AXIS,
         DRAWABLE_DIRECTIONAL_LIGHT,
+        DRAWABLE_TRACKBALL,
         FONT_BASIC,
         FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE,
         FONT_DISTANCE_FIELD_DROP_SHADOW,
@@ -59,6 +60,7 @@ class ProgramManager
             "DrawableMesh",
             "DrawableAxis",
             "DrawableDirectionalLight",
+            "DrawableTrackball"
             "FontBasic",
             "FontDistanceFieldDropShadowImage",
             "FontDistanceFieldDropShadow",
