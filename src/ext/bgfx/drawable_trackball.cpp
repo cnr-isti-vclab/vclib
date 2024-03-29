@@ -86,7 +86,6 @@ DrawableTrackball::~DrawableTrackball()
     }
 }
 
-
 void DrawableTrackball::updateRotation(const vcl::Matrix44f& rot)
 {
     transform.block(0, 0, 3, 3) = rot.block(0, 0, 3, 3);

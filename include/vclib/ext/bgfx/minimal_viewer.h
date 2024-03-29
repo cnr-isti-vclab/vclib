@@ -48,7 +48,6 @@ class MinimalViewer : public vcl::DesktopTrackBall<float>
     DrawableDirectionalLight directionalLight;
     DrawableTrackball        trackball;
 
-
 protected:
     using DTB = vcl::DesktopTrackBall<float>;
 

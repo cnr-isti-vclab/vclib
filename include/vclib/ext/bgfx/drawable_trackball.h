@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-
 #ifndef VCL_EXT_BGFX_DRAWABLE_TRACKBALL_H
 #define VCL_EXT_BGFX_DRAWABLE_TRACKBALL_H
 
@@ -37,7 +36,7 @@ class DrawableTrackball : public DrawableObjectI
     bool visible = false;
 
     std::vector<vcl::Point3f> vertices;
-    std::vector<uint16_t> edges;
+    std::vector<uint16_t>     edges;
 
     vcl::Matrix44f transform = vcl::Matrix44f::Identity();
 
@@ -45,7 +44,7 @@ class DrawableTrackball : public DrawableObjectI
         Context::programManager().getProgram(VclProgram::DRAWABLE_TRACKBALL);
 
     bgfx::VertexBufferHandle vertexCoordBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle edgeIndexBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle  edgeIndexBH   = BGFX_INVALID_HANDLE;
 
 public:
     DrawableTrackball();
@@ -62,7 +61,10 @@ public:
 
     double radius() const override { return 1.0; }
 
-    DrawableObjectI* clone() const override { return new DrawableTrackball(*this); }
+    DrawableObjectI* clone() const override
+    {
+        return new DrawableTrackball(*this);
+    }
 
     bool isVisible() const override { return visible; }
 
