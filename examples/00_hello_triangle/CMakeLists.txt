@@ -39,11 +39,11 @@ set(SHADERS
     shaders/fs_fragment_shader.sc
     shaders/varying.def.sc)
 
-if (TARGET vclib-external-qt)
+if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT_AND_BGFX)
     add_compile_definitions(USE_QT)
     list(APPEND HEADERS hello_triangle_qt.h)
     list(APPEND SOURCES hello_triangle_qt.cpp)
-elseif (TARGET vclib-external-glfw)
+elseif (VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW_AND_BGFX)
     add_compile_definitions(USE_GLFW)
     list(APPEND HEADERS hello_triangle_glfw.h)
     list(APPEND SOURCES hello_triangle_glfw.cpp)

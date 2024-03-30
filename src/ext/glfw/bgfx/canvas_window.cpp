@@ -25,7 +25,11 @@
 #include <iostream>
 
 #if defined(__linux__)
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+#define GLFW_EXPOSE_NATIVE_WAYLAND
+#else
 #define GLFW_EXPOSE_NATIVE_X11
+#endif
 #elif defined(_WIN32)
 #define GLFW_EXPOSE_NATIVE_WIN32
 #elif defined(__APPLE__)
@@ -73,7 +77,11 @@ CanvasWindow::CanvasWindow(
     void* nwh = nullptr;
 
 #if defined(__linux__)
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+    nwh = (void*) (uintptr_t) glfwGetWaylandWindow(window);
+#else
     nwh = (void*) (uintptr_t) glfwGetX11Window(window);
+#endif
 #elif defined(_WIN32)
     nwh = glfwGetWin32Window(window);
 #elif defined(__APPLE__)

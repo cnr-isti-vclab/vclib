@@ -35,9 +35,9 @@ if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
     set(SOURCES
         main.cpp)
 
-    if (TARGET vclib-external-qt)
+    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT_AND_BGFX)
         add_compile_definitions(USE_QT)
-    elseif (TARGET vclib-external-glfw)
+    elseif (VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW_AND_BGFX)
         add_compile_definitions(USE_GLFW)
     endif()
 

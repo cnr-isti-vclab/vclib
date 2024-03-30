@@ -62,12 +62,13 @@ if (CAN_BUILD_EXAMPLES)
         add_subdirectory(common)
 
         # examples with bgfx and a window manager (qt or glfw)
-        if ((TARGET vclib-external-bgfx) AND
+        if ((VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT_AND_BGFX OR VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW_AND_BGFX) AND
+                (TARGET vclib-external-bgfx) AND
                 (TARGET vclib-external-qt OR TARGET vclib-external-glfw))
             add_subdirectory(00_hello_triangle)
             add_subdirectory(01_minimal_viewer)
 
-            if (TARGET vclib-external-qt)
+            if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT_AND_BGFX AND TARGET vclib-external-qt)
                 add_subdirectory(02_qt_main_window)
             endif()
         endif()
