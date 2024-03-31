@@ -32,8 +32,13 @@ if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
     set(BGFX_OPENGL_VERSION 44)
     if (TARGET vclib-external-wayland)
         add_definitions(-DWL_EGL_PLATFORM=1)
+        add_definitions(-DENTRY_CONFIG_USE_NATIVE=0)
+        add_definitions(-DENTRY_CONFIG_USE_GLFW=1)
+        add_definitions(-DENTRY_CONFIG_USE_WAYLAND=1)
+        set(BGFX_WITH_GLFW ON)
     endif()
     add_subdirectory(${VCLIB_BGFX_DIR})
+    target_link_libraries(example-common PRIVATE Wayland::Wayland)
 
     add_library(vclib-external-bgfx INTERFACE)
 

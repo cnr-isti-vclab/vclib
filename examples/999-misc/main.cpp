@@ -51,13 +51,13 @@ static void glfw_errorCallback(int error, const char *description)
     fprintf(stderr, "GLFW error %d: %s\n", error, description);
 }
 
-static void glfw_keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+static void glfw_keyCallback(GLFWwindow *, int key, int , int action, int )
 {
     if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
         s_showStats = !s_showStats;
 }
 
-int main(int argc, char **argv)
+int main(int , char **)
 {
     // Create a GLFW window without an OpenGL context.
     glfwSetErrorCallback(glfw_errorCallback);
@@ -76,19 +76,15 @@ int main(int argc, char **argv)
 #if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
 #ifdef VCLIB_RENDER_WITH_WAYLAND
     // Get Native Window Handle - For Wayland
-    wl_egl_window* winImpl = (wl_egl_window*)glfwGetWindowUserPointer(window);
-    if(!winImpl) {
-        struct wl_surface* surface = (struct wl_surface*)glfwGetWaylandWindow(window);
-        if(!surface) {
-            glfwTerminate();
-            return EXIT_FAILURE;
-        }
-
-        winImpl = wl_egl_window_create(surface, 1024, 768);
-        glfwSetWindowUserPointer(window, (void*)(uintptr_t)winImpl);
+    struct wl_surface* surface = (struct wl_surface*)glfwGetWaylandWindow(window);
+    if(!surface) {
+        glfwTerminate();
+        return EXIT_FAILURE;
     }
+    wl_egl_window* winImpl = wl_egl_window_create(surface, 1024, 768);
+    glfwSetWindowUserPointer(window, (void*)(uintptr_t)winImpl);
     init.platformData.ndt = glfwGetWaylandDisplay();
-    init.platformData.nwh = (void*)(uintptr_t) window;
+    init.platformData.nwh = (void*)(uintptr_t) winImpl;
 #else
     init.platformData.ndt = glfwGetX11Display();
     init.platformData.nwh = (void*)(uintptr_t)glfwGetX11Window(window);
@@ -100,6 +96,9 @@ int main(int argc, char **argv)
 #endif
     int width, height;
     glfwGetWindowSize(window, &width, &height);
+    width *= 2;
+    height *= 2;
+    wl_egl_window_resize(winImpl, width, height, 0, 0);
     init.resolution.width = (uint32_t)width;
     init.resolution.height = (uint32_t)height;
     init.resolution.reset = BGFX_RESET_VSYNC;
@@ -114,7 +113,10 @@ int main(int argc, char **argv)
         // Handle window resize.
         int oldWidth = width, oldHeight = height;
         glfwGetWindowSize(window, &width, &height);
+        width *= 2;
+        height *= 2;
         if (width != oldWidth || height != oldHeight) {
+            wl_egl_window_resize(winImpl, width, height, 0, 0);
             bgfx::reset((uint32_t)width, (uint32_t)height, BGFX_RESET_VSYNC);
             bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
         }
