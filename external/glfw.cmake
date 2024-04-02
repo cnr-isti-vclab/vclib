@@ -20,17 +20,30 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(glfw3 QUIET)
+find_package(glfw3 3.4 QUIET)
 
-if (VCLIB_ALLOW_SYSTEM_GLFW)
-    if(glfw3_FOUND)
-        message(STATUS "- GLFW - using system-provided library")
+if (VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
+    message(STATUS "- GLFW - using system-provided library")
 
-        add_library(vclib-external-glfw INTERFACE)
-        target_link_libraries(vclib-external-glfw INTERFACE glfw)
+    add_library(vclib-external-glfw INTERFACE)
+    target_link_libraries(vclib-external-glfw INTERFACE glfw)
 
-        list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
-    else()
-        message(STATUS "- GLFW - not found, skipping")
-    endif()
+    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
+
+elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
+    message(STATUS "- GLFW - using downloaded source")
+
+    FetchContent_Declare(glfw3
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG        3.4)
+
+    FetchContent_MakeAvailable(glfw3)
+
+    add_library(vclib-external-glfw INTERFACE)
+    target_link_libraries(vclib-external-glfw INTERFACE glfw)
+
+    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
+
+else()
+    message(STATUS "- GLFW - not found, skipping")
 endif()

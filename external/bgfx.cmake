@@ -30,15 +30,10 @@ if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
 
     set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
     set(BGFX_OPENGL_VERSION 44)
-    if (TARGET vclib-external-wayland)
+    if (TARGET vclib-external-wayland AND VCLIB_RENDER_WITH_WAYLAND)
         add_definitions(-DWL_EGL_PLATFORM=1)
-        add_definitions(-DENTRY_CONFIG_USE_NATIVE=0)
-        add_definitions(-DENTRY_CONFIG_USE_GLFW=1)
-        add_definitions(-DENTRY_CONFIG_USE_WAYLAND=1)
-        set(BGFX_WITH_GLFW ON)
     endif()
     add_subdirectory(${VCLIB_BGFX_DIR})
-    target_link_libraries(example-common PRIVATE Wayland::Wayland)
 
     add_library(vclib-external-bgfx INTERFACE)
 

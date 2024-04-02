@@ -35,6 +35,7 @@ option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
 
 # GLFW
 option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
+option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
 
 # bgfx
 option(VCLIB_ALLOW_BUNDLED_BGFX "Allow use of bundled bgfx source" ON)
