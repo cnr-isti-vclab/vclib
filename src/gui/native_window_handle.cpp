@@ -30,6 +30,7 @@
 #elif __linux__
 #ifdef VCLIB_RENDER_WITH_WAYLAND
 #include <wayland-client.h>
+#include <wayland-egl.h>
 #else
 #include <X11/Xlib.h>
 #endif
@@ -101,11 +102,12 @@ void* createWindow(
         assert(0);
         return nullptr;
     }
+    wl_egl_window* winImpl = wl_egl_window_create(surface, 1, 1);
     if (!hidden) {
         wl_surface_commit(surface);
         wl_display_roundtrip(dspl);
     }
-    return (void*) surface;
+    return (void*) winImpl;
 #else  // X11
     Display* dspl = XOpenDisplay(NULL);
     if (!dspl) {
