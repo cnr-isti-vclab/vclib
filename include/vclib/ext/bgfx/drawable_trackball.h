@@ -47,6 +47,7 @@ class DrawableTrackball : public DrawableObjectI
     bgfx::IndexBufferHandle  edgeIndexBH   = BGFX_INVALID_HANDLE;
 
 public:
+    // TODO: manage copy and swap
     DrawableTrackball();
 
     ~DrawableTrackball();

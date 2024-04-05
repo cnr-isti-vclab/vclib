@@ -52,6 +52,7 @@ class DrawableDirectionalLight : public DrawableObjectI
         VclProgram::DRAWABLE_DIRECTIONAL_LIGHT);
 
 public:
+    // TODO: manage copy and swap
     DrawableDirectionalLight();
 
     ~DrawableDirectionalLight();

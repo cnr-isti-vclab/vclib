@@ -260,6 +260,57 @@ Matrix44 projectionMatrixLeftHanded(
     return res;
 }
 
+template<typename Scalar>
+void orthoProjectionMatrix(
+    auto*      res,
+    Scalar     left,
+    Scalar     right,
+    Scalar     top,
+    Scalar     bottom,
+    Scalar     near,
+    Scalar     far,
+    bool       homogeneousNDC,
+    Handedness handedness = RIGHT_HAND)
+{
+
+    Scalar c = homogeneousNDC ? 2.0 / (far - near) : 1.0 / (far - near);
+    Scalar f = homogeneousNDC ? (far + near) / (near - far) : near / (near - far);
+
+    std::fill(res, res + 16, 0);
+    res[0] = 2.0 / (right - left);
+    res[5] = 2.0 / (top - bottom);
+    res[10] = c;
+    res[12] = (right + left) / (left - right);
+    res[13] = (bottom + top) / (bottom - top);
+    res[14] = f;
+    res[15] = 1.0;
+}
+
+template<MatrixConcept Matrix44, typename Scalar>
+Matrix44 orthoProjectionMatrix(
+    Scalar     left,
+    Scalar     right,
+    Scalar     top,
+    Scalar     bottom,
+    Scalar     near,
+    Scalar     far,
+    bool       homogeneousNDC,
+    Handedness handedness = RIGHT_HAND)
+{
+    Matrix44 res(4, 4);
+    orthoProjectionMatrix(
+        res.data(),
+        left,
+        right,
+        top,
+        bottom,
+        near,
+        far,
+        homogeneousNDC,
+        handedness);
+    return res;
+}
+
 } // namespace vcl
 
 #endif // VCL_RENDER_MATRIX_H

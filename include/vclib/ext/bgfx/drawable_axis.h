@@ -63,6 +63,7 @@ class DrawableAxis : public DrawableObjectI
     DrawableAxisUniforms uniforms;
 
 public:
+    // TODO: manage copy and swap
     DrawableAxis(double size = 1, bool fromOrigin = false);
 
     ~DrawableAxis() = default;
