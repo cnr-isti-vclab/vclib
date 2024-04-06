@@ -39,9 +39,15 @@ public:
 
     using AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator;
 
-    reference operator*() const { return Base::g->nodesR[Base::it].info(); }
+    reference operator*() const
+    {
+        return Base::mGraph->nodesR[Base::mIt].info();
+    }
 
-    pointer operator->() const { return &Base::g->nodesR[Base::it].info(); }
+    pointer operator->() const
+    {
+        return &Base::mGraph->nodesR[Base::mIt].info();
+    }
 };
 
 } // namespace vcl::detail

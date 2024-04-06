@@ -42,14 +42,14 @@ template<class T1, class T2>
 class BipartiteGraph
 {
 protected:
-    std::map<T1, unsigned int> mapL;
-    std::map<T2, unsigned int> mapR;
+    std::map<T1, unsigned int> mMapL;
+    std::map<T2, unsigned int> mMapR;
 
-    std::vector<UndirectedNode<T1>> nodesL;
-    std::vector<UndirectedNode<T2>> nodesR;
+    std::vector<UndirectedNode<T1>> mNodesL;
+    std::vector<UndirectedNode<T2>> mNodesR;
 
-    std::set<unsigned int> unusedLNodes;
-    std::set<unsigned int> unusedRNodes;
+    std::set<unsigned int> mUnusedLNodes;
+    std::set<unsigned int> mUnusedRNodes;
 
 public:
     using LeftType      = T1;
@@ -87,7 +87,7 @@ public:
      */
     bool leftNodeExists(const T1& lNode) const
     {
-        return mapL.find(lNode) != mapL.end();
+        return mMapL.find(lNode) != mMapL.end();
     }
 
     /**
@@ -97,7 +97,7 @@ public:
      */
     bool rightNodeExists(const T2& rNode) const
     {
-        return mapR.find(rNode) != mapR.end();
+        return mMapR.find(rNode) != mMapR.end();
     }
 
     /**
@@ -106,7 +106,7 @@ public:
      */
     uint leftNodesNumber() const
     {
-        return (unsigned int) (nodesL.size() - unusedLNodes.size());
+        return (unsigned int) (mNodesL.size() - mUnusedLNodes.size());
     }
 
     /**
@@ -115,7 +115,7 @@ public:
      */
     uint rightNodesNumber() const
     {
-        return (unsigned int) (nodesR.size() - unusedRNodes.size());
+        return (unsigned int) (mNodesR.size() - mUnusedRNodes.size());
     }
 
     /**
@@ -126,7 +126,7 @@ public:
     uint adjacentLeftNodeNumber(const T1& lNode) const
     {
         int uid = getIdLeftNode(lNode);
-        return nodesL[uid].sizeAdjacentNodes();
+        return mNodesL[uid].sizeAdjacentNodes();
     }
 
     /**
@@ -137,7 +137,7 @@ public:
     uint adjacentRightNodeNumber(const T2& rNode) const
     {
         int vid = getIdRightNode(rNode);
-        return nodesR[vid].sizeAdjacentNodes();
+        return mNodesR[vid].sizeAdjacentNodes();
     }
 
     /**
@@ -148,16 +148,16 @@ public:
      */
     bool addLeftNode(const T1& info)
     {
-        if (mapL.find(info) == mapL.end()) {
-            if (unusedLNodes.size() == 0) {
-                mapL[info] = (unsigned int) nodesL.size();
-                nodesL.emplace_back(info);
+        if (mMapL.find(info) == mMapL.end()) {
+            if (mUnusedLNodes.size() == 0) {
+                mMapL[info] = (unsigned int) mNodesL.size();
+                mNodesL.emplace_back(info);
             }
             else {
-                unsigned int id = *(unusedLNodes.begin());
-                unusedLNodes.erase(unusedLNodes.begin());
-                mapL[info] = id;
-                nodesL[id] = UndirectedNode<T1>(info);
+                unsigned int id = *(mUnusedLNodes.begin());
+                mUnusedLNodes.erase(mUnusedLNodes.begin());
+                mMapL[info] = id;
+                mNodesL[id] = UndirectedNode<T1>(info);
             }
             return true;
         }
@@ -173,16 +173,16 @@ public:
      */
     bool addRightNode(const T2& info)
     {
-        if (mapR.find(info) == mapR.end()) {
-            if (unusedRNodes.size() == 0) {
-                mapR[info] = (unsigned int) nodesR.size();
-                nodesR.emplace_back(info);
+        if (mMapR.find(info) == mMapR.end()) {
+            if (mUnusedRNodes.size() == 0) {
+                mMapR[info] = (unsigned int) mNodesR.size();
+                mNodesR.emplace_back(info);
             }
             else {
-                unsigned int id = *(unusedRNodes.begin());
-                unusedRNodes.erase(unusedRNodes.begin());
-                mapR[info] = id;
-                nodesR[id] = UndirectedNode<T2>(info);
+                unsigned int id = *(mUnusedRNodes.begin());
+                mUnusedRNodes.erase(mUnusedRNodes.begin());
+                mMapR[info] = id;
+                mNodesR[id] = UndirectedNode<T2>(info);
             }
             return true;
         }
@@ -198,8 +198,8 @@ public:
     bool deleteLeftNode(const T1& lNode)
     {
         if (clearAdjacencesLeftNode(lNode)) {
-            unusedLNodes.insert(mapL[lNode]);
-            mapL.erase(lNode);
+            mUnusedLNodes.insert(mMapL[lNode]);
+            mMapL.erase(lNode);
             return true;
         }
         else
@@ -214,8 +214,8 @@ public:
     bool deleteRightNode(const T2& rNode)
     {
         if (clearAdjacencesRightNode(rNode)) {
-            unusedRNodes.insert(mapR[rNode]);
-            mapR.erase(rNode);
+            mUnusedRNodes.insert(mMapR[rNode]);
+            mMapR.erase(rNode);
             return true;
         }
         else
@@ -234,10 +234,10 @@ public:
         try {
             int uid = getIdLeftNode(lNode);
             int vid = getIdRightNode(rNode);
-            assert((unsigned int) uid < nodesL.size());
-            assert((unsigned int) vid < nodesR.size());
-            nodesL[uid].addAdjacent(vid);
-            nodesR[vid].addAdjacent(uid);
+            assert((unsigned int) uid < mNodesL.size());
+            assert((unsigned int) vid < mNodesR.size());
+            mNodesL[uid].addAdjacent(vid);
+            mNodesR[vid].addAdjacent(uid);
             return true;
         }
         catch (...) {
@@ -257,10 +257,10 @@ public:
         try {
             int uid = getIdLeftNode(lNode);
             int vid = getIdRightNode(rNode);
-            assert((unsigned int) uid < nodesL.size());
-            assert((unsigned int) vid < nodesR.size());
-            nodesL[uid].deleteAdjacent(vid);
-            nodesR[vid].deleteAdjacent(uid);
+            assert((unsigned int) uid < mNodesL.size());
+            assert((unsigned int) vid < mNodesR.size());
+            mNodesL[uid].deleteAdjacent(vid);
+            mNodesR[vid].deleteAdjacent(uid);
             return true;
         }
         catch (...) {
@@ -278,10 +278,10 @@ public:
     {
         try {
             int uid = getIdLeftNode(lNode);
-            for (unsigned int adj : nodesL[uid]) {
-                nodesR[adj].deleteAdjacent(uid);
+            for (unsigned int adj : mNodesL[uid]) {
+                mNodesR[adj].deleteAdjacent(uid);
             }
-            nodesL[uid].clearAdjacentNodes();
+            mNodesL[uid].clearAdjacentNodes();
             return true;
         }
         catch (...) {
@@ -299,10 +299,10 @@ public:
     {
         try {
             int vid = getIdRightNode(rNode);
-            for (unsigned int adj : nodesR[vid]) {
-                nodesL[adj].deleteAdjacent(vid);
+            for (unsigned int adj : mNodesR[vid]) {
+                mNodesL[adj].deleteAdjacent(vid);
             }
-            nodesR[vid].clearAdjacentNodes();
+            mNodesR[vid].clearAdjacentNodes();
             return true;
         }
         catch (...) {
@@ -320,9 +320,9 @@ public:
     {
         try {
             int uid     = getIdLeftNode(old);
-            nodesL[uid] = UndirectedNode<T1>(newInfo);
-            mapL.erase(old);
-            mapL[newInfo] = uid;
+            mNodesL[uid] = UndirectedNode<T1>(newInfo);
+            mMapL.erase(old);
+            mMapL[newInfo] = uid;
             return true;
         }
         catch (...) {
@@ -340,9 +340,9 @@ public:
     {
         try {
             int vid     = getIdRightNode(old);
-            nodesR[vid] = UndirectedNode<T2>(newInfo);
-            mapR.erase(old);
-            mapR[newInfo] = vid;
+            mNodesR[vid] = UndirectedNode<T2>(newInfo);
+            mMapR.erase(old);
+            mMapR[newInfo] = vid;
             return true;
         }
         catch (...) {
@@ -353,45 +353,45 @@ public:
     AdjacentLeftNodeIterator adjacentLeftNodeBegin(const T1& lNode) const
     {
         int uid = getIdLeftNode(lNode);
-        return AdjacentLeftNodeIterator(*this, nodesL[uid].begin());
+        return AdjacentLeftNodeIterator(*this, mNodesL[uid].begin());
     }
 
     AdjacentLeftNodeIterator adjacentLeftNodeEnd(const T1& lNode) const
     {
         int uid = getIdLeftNode(lNode);
-        return AdjacentLeftNodeIterator(*this, nodesL[uid].end());
+        return AdjacentLeftNodeIterator(*this, mNodesL[uid].end());
     }
 
     AdjacentRightNodeIterator adjacentRightNodeBegin(const T2& rNode) const
     {
         int vid = getIdRightNode(rNode);
-        return AdjacentRightNodeIterator(*this, nodesR[vid].begin());
+        return AdjacentRightNodeIterator(*this, mNodesR[vid].begin());
     }
 
     AdjacentRightNodeIterator adjacentRightNodeEnd(const T2& rNode) const
     {
         int vid = getIdRightNode(rNode);
-        return AdjacentRightNodeIterator(*this, nodesR[vid].end());
+        return AdjacentRightNodeIterator(*this, mNodesR[vid].end());
     }
 
     LeftNodeIterator leftNodeBegin() const
     {
-        return LeftNodeIterator(nodesL.begin());
+        return LeftNodeIterator(mNodesL.begin());
     }
 
     LeftNodeIterator leftNodeEnd() const
     {
-        return LeftNodeIterator(nodesL.end());
+        return LeftNodeIterator(mNodesL.end());
     }
 
     RightNodeIterator rightNodeBegin() const
     {
-        return RightNodeIterator(nodesR.begin());
+        return RightNodeIterator(mNodesR.begin());
     }
 
     RightNodeIterator rightNodeEnd() const
     {
-        return RightNodeIterator(nodesR.end());
+        return RightNodeIterator(mNodesR.end());
     }
 
     LeftNodeView leftNodes() const
@@ -417,9 +417,9 @@ public:
     }
 
 protected:
-    int getIdLeftNode(const T1& uNode) const { return mapL.at(uNode); }
+    int getIdLeftNode(const T1& uNode) const { return mMapL.at(uNode); }
 
-    int getIdRightNode(const T2& vNode) const { return mapR.at(vNode); }
+    int getIdRightNode(const T2& vNode) const { return mMapR.at(vNode); }
 };
 
 } // namespace vcl
