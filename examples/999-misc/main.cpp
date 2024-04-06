@@ -101,7 +101,9 @@ int main(int, char**)
     glfwGetWindowSize(window, &width, &height);
     width *= 2;
     height *= 2;
+#ifdef VCLIB_RENDER_WITH_WAYLAND
     wl_egl_window_resize(winImpl, width, height, 0, 0);
+#endif
     init.resolution.width  = (uint32_t) width;
     init.resolution.height = (uint32_t) height;
     init.resolution.reset  = BGFX_RESET_VSYNC;
@@ -120,7 +122,9 @@ int main(int, char**)
         width *= 2;
         height *= 2;
         if (width != oldWidth || height != oldHeight) {
+#ifdef VCLIB_RENDER_WITH_WAYLAND
             wl_egl_window_resize(winImpl, width, height, 0, 0);
+#endif
             bgfx::reset((uint32_t) width, (uint32_t) height, BGFX_RESET_VSYNC);
             bgfx::setViewRect(kClearView, 0, 0, bgfx::BackbufferRatio::Equal);
         }
