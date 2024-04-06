@@ -272,13 +272,13 @@ void orthoProjectionMatrix(
     bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
-
     Scalar c = homogeneousNDC ? 2.0 / (far - near) : 1.0 / (far - near);
-    Scalar f = homogeneousNDC ? (far + near) / (near - far) : near / (near - far);
+    Scalar f =
+        homogeneousNDC ? (far + near) / (near - far) : near / (near - far);
 
     std::fill(res, res + 16, 0);
-    res[0] = 2.0 / (right - left);
-    res[5] = 2.0 / (top - bottom);
+    res[0]  = 2.0 / (right - left);
+    res[5]  = 2.0 / (top - bottom);
     res[10] = c;
     res[12] = (right + left) / (left - right);
     res[13] = (bottom + top) / (bottom - top);
