@@ -31,44 +31,44 @@ template<class T>
 class UndirectedNode
 {
 protected:
-    T                                inf;
-    std::unordered_set<unsigned int> adjacentNodes;
+    T                                mInfo;
+    std::unordered_set<unsigned int> mAdjacentNodes;
 
 public:
     using InfoType = T;
 
     UndirectedNode() {}
 
-    UndirectedNode(const T& info) : inf(info) {}
+    UndirectedNode(const T& info) : mInfo(info) {}
 
-    const T& info() const { return inf; }
+    const T& info() const { return mInfo; }
 
-    T& info() { return inf; }
+    T& info() { return mInfo; }
 
-    void addAdjacent(unsigned int node) { adjacentNodes.insert(node); }
+    void addAdjacent(unsigned int node) { mAdjacentNodes.insert(node); }
 
     bool isAdjacent(unsigned int node) const
     {
-        return adjacentNodes.find(node) != adjacentNodes.end();
+        return mAdjacentNodes.find(node) != mAdjacentNodes.end();
     }
 
-    void deleteAdjacent(unsigned int node) { adjacentNodes.erase(node); }
+    void deleteAdjacent(unsigned int node) { mAdjacentNodes.erase(node); }
 
-    void clearAdjacentNodes() { adjacentNodes.clear(); }
+    void clearAdjacentNodes() { mAdjacentNodes.clear(); }
 
     std::unordered_set<unsigned int>::const_iterator begin() const
     {
-        return adjacentNodes.begin();
+        return mAdjacentNodes.begin();
     }
 
     std::unordered_set<unsigned int>::const_iterator end() const
     {
-        return adjacentNodes.end();
+        return mAdjacentNodes.end();
     }
 
     unsigned int sizeAdjacentNodes() const
     {
-        return (unsigned int) adjacentNodes.size();
+        return (unsigned int) mAdjacentNodes.size();
     }
 };
 

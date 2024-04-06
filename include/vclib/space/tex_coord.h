@@ -33,16 +33,16 @@ class TexCoord
     template<typename S>
     friend class TexCoord;
 
-    Point2<Scalar> coord;
+    Point2<Scalar> mCoord;
 
 public:
     using ScalarType = Scalar;
 
     TexCoord() = default;
 
-    TexCoord(const Scalar& s1, const Scalar& s2) : coord(s1, s2) {}
+    TexCoord(const Scalar& s1, const Scalar& s2) : mCoord(s1, s2) {}
 
-    TexCoord(const Point2<Scalar>& p) : coord(p) {}
+    TexCoord(const Point2<Scalar>& p) : mCoord(p) {}
 
     template<typename S>
     auto cast() const
@@ -52,29 +52,29 @@ public:
         }
         else {
             TexCoord<S> tmp;
-            tmp.coord = coord.template cast<S>();
+            tmp.mCoord = mCoord.template cast<S>();
             return tmp;
         }
     }
 
-    Scalar u() const { return coord.x(); }
+    Scalar u() const { return mCoord.x(); }
 
-    Scalar v() const { return coord.y(); }
+    Scalar v() const { return mCoord.y(); }
 
-    Scalar& u() { return coord.x(); }
+    Scalar& u() { return mCoord.x(); }
 
-    Scalar& v() { return coord.y(); }
+    Scalar& v() { return mCoord.y(); }
 
     void setU(Scalar s)
     {
         assert(s >= 0 && s <= 1);
-        coord.x() = s;
+        mCoord.x() = s;
     }
 
     void setV(Scalar s)
     {
         assert(s >= 0 && s <= 1);
-        coord.y() = s;
+        mCoord.y() = s;
     }
 
     void set(Scalar u, Scalar v)
@@ -84,13 +84,13 @@ public:
     }
 
     // operators
-    Scalar& operator()(uint i) { return coord[i]; }
+    Scalar& operator()(uint i) { return mCoord[i]; }
 
-    const Scalar& operator()(uint i) const { return coord[i]; }
+    const Scalar& operator()(uint i) const { return mCoord[i]; }
 
-    Scalar& operator[](uint i) { return coord[i]; }
+    Scalar& operator[](uint i) { return mCoord[i]; }
 
-    const Scalar& operator[](uint i) const { return coord[i]; }
+    const Scalar& operator[](uint i) const { return mCoord[i]; }
 
     bool operator==(const TexCoord& t1) const = default;
 };

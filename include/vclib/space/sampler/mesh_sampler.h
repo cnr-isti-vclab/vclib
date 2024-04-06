@@ -37,7 +37,7 @@ class MeshSampler
     using CoordView =
         decltype(vcl::View<typename MeshType::VertexIterator>() | views::coords);
 
-    MeshType m;
+    MeshType mMesh;
 
 public:
     using PointType     = MeshType::VertexType::CoordType;
@@ -46,40 +46,40 @@ public:
 
     MeshSampler()
     {
-        vcl::enableIfPerVertexNormalOptional(m);
-        vcl::enableIfPerVertexQualityOptional(m);
+        vcl::enableIfPerVertexNormalOptional(mMesh);
+        vcl::enableIfPerVertexQualityOptional(mMesh);
         if constexpr (vcl::HasName<MeshType>) {
-            m.name() = "Sampling";
+            mMesh.name() = "Sampling";
         }
     }
 
-    const MeshType& samples() const { return m; }
+    const MeshType& samples() const { return mMesh; }
 
-    const PointType& sample(uint i) const { return m.vertex(i).coord(); }
+    const PointType& sample(uint i) const { return mMesh.vertex(i).coord(); }
 
-    std::size_t size() const { return m.vertexNumber(); }
+    std::size_t size() const { return mMesh.vertexNumber(); }
 
-    void clear() { m.clear(); }
+    void clear() { mMesh.clear(); }
 
     void resize(uint n)
     {
-        if (n > m.vertexNumber()) {
-            uint k = n - m.vertexNumber();
-            m.addVertices(k);
+        if (n > mMesh.vertexNumber()) {
+            uint k = n - mMesh.vertexNumber();
+            mMesh.addVertices(k);
         }
     }
 
-    void reserve(uint n) { m.reserveVertices(n); }
+    void reserve(uint n) { mMesh.reserveVertices(n); }
 
-    void add(const PointType& p) { m.addVertex(p); }
+    void add(const PointType& p) { mMesh.addVertex(p); }
 
-    void set(uint i, const PointType& p) { m.vertex(i).coord() = p; }
+    void set(uint i, const PointType& p) { mMesh.vertex(i).coord() = p; }
 
     template<VertexConcept VertexType>
     void add(const VertexType& v)
     {
-        uint vi = m.addVertex(v.coord());
-        m.vertex(vi).importFrom(v);
+        uint vi = mMesh.addVertex(v.coord());
+        mMesh.vertex(vi).importFrom(v);
 
         setBirthElement(vi, "birthVertex", v.index());
     }
@@ -87,8 +87,8 @@ public:
     template<VertexConcept VertexType>
     void set(uint i, const VertexType& v)
     {
-        m.vertex(i).coord() = v.coord();
-        m.vertex(i).importFrom(v);
+        mMesh.vertex(i).coord() = v.coord();
+        mMesh.vertex(i).importFrom(v);
 
         setBirthElement(i, "birthVertex", v.index());
     }
@@ -96,7 +96,7 @@ public:
     template<EdgeConcept EdgeType>
     void add(const EdgeType& e, double u, bool copyQuality = true)
     {
-        uint vi = m.addVertex(
+        uint vi = mMesh.addVertex(
             (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u));
 
         if constexpr (
@@ -104,10 +104,10 @@ public:
             vcl::edge::HasQuality<EdgeType>)
         {
             if (copyQuality) {
-                if (vcl::isPerVertexQualityAvailable(m) &&
+                if (vcl::isPerVertexQualityAvailable(mMesh) &&
                     comp::isQualityAvailableOn(e))
                 {
-                    m.vertex(vi).quality() = e.quality();
+                    mMesh.vertex(vi).quality() = e.quality();
                 }
             }
         }
@@ -118,7 +118,7 @@ public:
     template<EdgeConcept EdgeType>
     void set(uint i, const EdgeType& e, double u, bool copyQuality = true)
     {
-        m.vertex(i).coord() =
+        mMesh.vertex(i).coord() =
             (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u);
 
         if constexpr (
@@ -126,10 +126,10 @@ public:
             vcl::edge::HasQuality<EdgeType>)
         {
             if (copyQuality) {
-                if (vcl::isPerVertexQualityAvailable(m) &&
+                if (vcl::isPerVertexQualityAvailable(mMesh) &&
                     comp::isQualityAvailableOn(e))
                 {
-                    m.vertex(i).quality() = e.quality();
+                    mMesh.vertex(i).quality() = e.quality();
                 }
             }
         }
@@ -143,7 +143,7 @@ public:
         bool            copyNormal  = false,
         bool            copyQuality = true)
     {
-        uint vi = m.addVertex(vcl::faceBarycenter(f));
+        uint vi = mMesh.addVertex(vcl::faceBarycenter(f));
 
         copyComponents(vi, f, copyNormal, copyQuality);
         setBirthElement(vi, "birthFace", f.index());
@@ -156,7 +156,7 @@ public:
         bool            copyNormal  = false,
         bool            copyQuality = true)
     {
-        m.vertex(i).coord() = vcl::faceBarycenter(f);
+        mMesh.vertex(i).coord() = vcl::faceBarycenter(f);
 
         copyComponents(i, f, copyNormal, copyQuality);
         setBirthElement(i, "birthFace", f.index());
@@ -175,7 +175,7 @@ public:
         for (uint i = 0; i < f.vertexNumber(); i++)
             p += f.vertex(i)->coord() * barCoords[i];
 
-        uint vi = m.addVertex(p);
+        uint vi = mMesh.addVertex(p);
 
         copyComponents(vi, f, copyNormal, copyQuality);
         setBirthElement(vi, "birthFace", f.index());
@@ -195,7 +195,7 @@ public:
         for (uint i = 0; i < f.vertexNumber(); i++)
             p += f.vertex(i)->coord() * barCoords[i];
 
-        m.vertex(i).coord() = p;
+        mMesh.vertex(i).coord() = p;
 
         copyComponents(i, f, copyNormal, copyQuality);
         setBirthElement(i, "birthFace", f.index());
@@ -215,7 +215,7 @@ public:
 
         PointType p = triangleBarycentricCoordinatePoint(f, barCoords);
 
-        uint vi = m.addVertex(p);
+        uint vi = mMesh.addVertex(p);
 
         copyComponents(vi, f, copyNormal, copyQuality);
         setBirthElement(vi, "birthFace", f.index());
@@ -236,7 +236,7 @@ public:
 
         PointType p = triangleBarycentricCoordinatePoint(f, barCoords);
 
-        m.vertex(i).coord() = p;
+        mMesh.vertex(i).coord() = p;
 
         copyComponents(i, f, copyNormal, copyQuality);
         setBirthElement(i, "birthFace", f.index());
@@ -244,12 +244,12 @@ public:
 
     ConstIterator begin() const
     {
-        return std::ranges::begin(m.vertices() | views::coords);
+        return std::ranges::begin(mMesh.vertices() | views::coords);
     }
 
     ConstIterator end() const
     {
-        return std::ranges::end(m.vertices() | views::coords);
+        return std::ranges::end(mMesh.vertices() | views::coords);
     }
 
 private:
@@ -264,10 +264,10 @@ private:
             vcl::HasPerVertexNormal<MeshType> && vcl::face::HasNormal<FaceType>)
         {
             if (copyNormal) {
-                if (vcl::isPerVertexNormalAvailable(m) &&
+                if (vcl::isPerVertexNormalAvailable(mMesh) &&
                     comp::isNormalAvailableOn(f))
                 {
-                    m.vertex(vi).normal() = f.normal();
+                    mMesh.vertex(vi).normal() = f.normal();
                 }
             }
         }
@@ -277,10 +277,10 @@ private:
             vcl::face::HasQuality<FaceType>)
         {
             if (copyQuality) {
-                if (vcl::isPerVertexQualityAvailable(m) &&
+                if (vcl::isPerVertexQualityAvailable(mMesh) &&
                     comp::isQualityAvailableOn(f))
                 {
-                    m.vertex(vi).quality() = f.quality();
+                    mMesh.vertex(vi).quality() = f.quality();
                 }
             }
         }
@@ -289,10 +289,10 @@ private:
     void setBirthElement(uint vi, const std::string& key, uint value)
     {
         if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
-            if (!m.hasPerVertexCustomComponent(key)) {
-                m.template addPerVertexCustomComponent<uint>(key);
+            if (!mMesh.hasPerVertexCustomComponent(key)) {
+                mMesh.template addPerVertexCustomComponent<uint>(key);
             }
-            m.vertex(vi).template customComponent<uint>(key) = value;
+            mMesh.vertex(vi).template customComponent<uint>(key) = value;
         }
     }
 };

@@ -50,9 +50,9 @@ namespace vcl {
 template<PointConcept PointT>
 class TriangleWrapper
 {
-    const PointT& p0;
-    const PointT& p1;
-    const PointT& p2;
+    const PointT& mPoint0;
+    const PointT& mPoint1;
+    const PointT& mPoint2;
 
 public:
     using ScalarType = PointT::ScalarType;
@@ -74,7 +74,7 @@ public:
      * @param[in] p2: third point of the triangle.
      */
     TriangleWrapper(const PointT& p0, const PointT& p1, const PointT& p2) :
-            p0(p0), p1(p1), p2(p2)
+            mPoint0(p0), mPoint1(p1), mPoint2(p2)
     {
     }
 
@@ -89,9 +89,9 @@ public:
     const PointT& point(uint i) const
     {
         switch (i) {
-        case 0: return p0;
-        case 1: return p1;
-        case 2: return p2;
+        case 0: return mPoint0;
+        case 1: return mPoint1;
+        case 2: return mPoint2;
         default:
             throw std::out_of_range(
                 "TriangleWrapper::point: index out of range");
@@ -101,47 +101,47 @@ public:
     /**
      * @copydoc Triangle::point0()
      */
-    const PointT& point0() const { return p0; }
+    const PointT& point0() const { return mPoint0; }
 
     /**
      * @copydoc Triangle::point1()
      */
-    const PointT& point1() const { return p1; }
+    const PointT& point1() const { return mPoint1; }
 
     /**
      * @copydoc Triangle::point2()
      */
-    const PointT& point2() const { return p2; }
+    const PointT& point2() const { return mPoint2; }
 
     /**
      * @copydoc Triangle::sideLength(uint)
      */
     ScalarType sideLength(uint i) const
     {
-        return Triangle<PointT>::sideLength(p0, p1, p2, i);
+        return Triangle<PointT>::sideLength(mPoint0, mPoint1, mPoint2, i);
     }
 
     /**
      * @copydoc Triangle::sideLength0()
      */
-    ScalarType sideLength0() const { return p0.dist(p1); }
+    ScalarType sideLength0() const { return mPoint0.dist(mPoint1); }
 
     /**
      * @copydoc Triangle::sideLength1()
      */
-    ScalarType sideLength1() const { return p1.dist(p2); }
+    ScalarType sideLength1() const { return mPoint1.dist(mPoint2); }
 
     /**
      * @copydoc Triangle::sideLength2()
      */
-    ScalarType sideLength2() const { return p2.dist(p0); }
+    ScalarType sideLength2() const { return mPoint2.dist(mPoint0); }
 
     /**
      * @copydoc Triangle::normal()
      */
     PointT normal() const requires (PointT::DIM == 3)
     {
-        return Triangle<PointT>::normal(p0, p1, p2);
+        return Triangle<PointT>::normal(mPoint0, mPoint1, mPoint2);
     }
 
     /**
@@ -149,7 +149,7 @@ public:
      */
     PointT barycenter() const
     {
-        return Triangle<PointT>::barycenter(p0, p1, p2);
+        return Triangle<PointT>::barycenter(mPoint0, mPoint1, mPoint2);
     }
 
     /**
@@ -157,7 +157,8 @@ public:
      */
     PointT weightedBarycenter(ScalarType w0, ScalarType w1, ScalarType w2) const
     {
-        return Triangle<PointT>::weightedBarycenter(p0, p1, p2, w0, w1, w2);
+        return Triangle<PointT>::weightedBarycenter(
+            mPoint0, mPoint1, mPoint2, w0, w1, w2);
     }
 
     /**
@@ -166,7 +167,7 @@ public:
     PointT weightedBarycenter(const Point3<ScalarType>& w) const
     {
         return Triangle<PointT>::weightedBarycenter(
-            p0, p1, p2, w(0), w(1), w(2));
+            mPoint0, mPoint1, mPoint2, w(0), w(1), w(2));
     }
 
     /**
@@ -179,7 +180,7 @@ public:
         ScalarType b2) const
     {
         return Triangle<PointT>::barycentricCoordinatePoint(
-            p0, p1, p2, b0, b1, b2);
+            mPoint0, mPoint1, mPoint2, b0, b1, b2);
     }
 
     /**
@@ -188,7 +189,7 @@ public:
     PointT barycentricCoordinatePoint(const Point3<ScalarType>& b) const
     {
         return Triangle<PointT>::barycentricCoordinatePoint(
-            p0, p1, p2, b(0), b(1), b(2));
+            mPoint0, mPoint1, mPoint2, b(0), b(1), b(2));
     }
 
     /**
@@ -196,7 +197,7 @@ public:
      */
     PointT circumcenter() const
     {
-        return Triangle<PointT>::circumcenter(p0, p1, p2);
+        return Triangle<PointT>::circumcenter(mPoint0, mPoint1, mPoint2);
     }
 
     /**
@@ -204,25 +205,31 @@ public:
      */
     ScalarType perimeter() const
     {
-        return Triangle<PointT>::perimeter(p0, p1, p2);
+        return Triangle<PointT>::perimeter(mPoint0, mPoint1, mPoint2);
     }
 
     /**
      * @copydoc Triangle::area()
      */
-    ScalarType area() const { return Triangle<PointT>::area(p0, p1, p2); }
+    ScalarType area() const
+    {
+        return Triangle<PointT>::area(mPoint0, mPoint1, mPoint2);
+    }
 
     /**
      * @copydoc Triangle::quality()
      */
-    ScalarType quality() const { return Triangle<PointT>::quality(p0, p1, p2); }
+    ScalarType quality() const
+    {
+        return Triangle<PointT>::quality(mPoint0, mPoint1, mPoint2);
+    }
 
     /**
      * @copydoc Triangle::qualityRadii()
      */
     ScalarType qualityRadii() const
     {
-        return Triangle<PointT>::qualityRadii(p0, p1, p2);
+        return Triangle<PointT>::qualityRadii(mPoint0, mPoint1, mPoint2);
     }
 
     /**
@@ -230,7 +237,7 @@ public:
      */
     ScalarType qualityMeanRatio() const
     {
-        return Triangle<PointT>::qualityMeanRatio(p0, p1, p2);
+        return Triangle<PointT>::qualityMeanRatio(mPoint0, mPoint1, mPoint2);
     }
 };
 

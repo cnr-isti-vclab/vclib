@@ -76,7 +76,7 @@ class Vector
         typename std::vector<T>>;
 
 protected:
-    Container container;
+    Container mContainer;
 
 public:
     /** @brief The type of the elements stored in the Vector. */
@@ -145,7 +145,7 @@ public:
             fill(value);
         }
         else {
-            container.resize(size, value);
+            mContainer.resize(size, value);
         }
     }
 
@@ -206,7 +206,7 @@ public:
             return N;
         }
         else {
-            return container.size();
+            return mContainer.size();
         }
     }
 
@@ -223,7 +223,7 @@ public:
      * @throws std::out_of_range If `i` is not within the range of valid indices
      * for the Vector.
      */
-    Reference at(uint i) { return container.at(i); }
+    Reference at(uint i) { return mContainer.at(i); }
 
     /**
      * @brief Access the specified element with bounds checking.
@@ -238,7 +238,7 @@ public:
      * @throws std::out_of_range If `i` is not within the range of valid indices
      * for the Vector.
      */
-    ConstReference at(uint i) const { return container.at(i); }
+    ConstReference at(uint i) const { return mContainer.at(i); }
 
     /**
      * @brief Access the specified element, computing first the module of the
@@ -253,7 +253,7 @@ public:
     Reference atMod(int i)
     {
         int n = size(); // need to save n as int to avoid unwanted casts
-        return container[(i % n + n) % n];
+        return mContainer[(i % n + n) % n];
     }
 
     /**
@@ -269,7 +269,7 @@ public:
     ConstReference atMod(int i) const
     {
         int n = size(); // need to save n as int to avoid unwanted casts
-        return container[(i % n + n) % n];
+        return mContainer[(i % n + n) % n];
     }
 
     /**
@@ -282,7 +282,7 @@ public:
      * containers, the returned pointer compares equal to the address of the
      * first element.
      */
-    ConstPointer data() const { return container.data(); }
+    ConstPointer data() const { return mContainer.data(); }
 
     /**
      * @brief Set the value of the element at the specified position.
@@ -296,7 +296,7 @@ public:
     void set(const T& e, uint i)
     {
         assert(i < size());
-        container[i] = e;
+        mContainer[i] = e;
     }
 
     /**
@@ -323,10 +323,10 @@ public:
                 N,
                 (int) std::distance(
                     std::ranges::begin(r), std::ranges::end(r)));
-            std::copy_n(std::ranges::begin(r), n, container.begin());
+            std::copy_n(std::ranges::begin(r), n, mContainer.begin());
         }
         else {
-            container =
+            mContainer =
                 std::vector<T>(std::ranges::begin(r), std::ranges::end(r));
         }
     }
@@ -339,7 +339,10 @@ public:
      *
      * @param[in] e: The value to fill the Vector with.
      */
-    void fill(const T& e) { std::fill(container.begin(), container.end(), e); }
+    void fill(const T& e)
+    {
+        std::fill(mContainer.begin(), mContainer.end(), e);
+    }
 
     /**
      * @brief Check if the Vector contains the specified element.
@@ -352,8 +355,8 @@ public:
      */
     bool contains(const typename MakeConstPointer<T>::type& e) const
     {
-        return std::find(container.begin(), container.end(), e) !=
-               container.end();
+        return std::find(mContainer.begin(), mContainer.end(), e) !=
+               mContainer.end();
     }
 
     /**
@@ -368,7 +371,7 @@ public:
      */
     Iterator find(const typename MakeConstPointer<T>::type& e)
     {
-        return std::find(container.begin(), container.end(), e);
+        return std::find(mContainer.begin(), mContainer.end(), e);
     }
 
     /**
@@ -383,7 +386,7 @@ public:
      */
     ConstIterator find(const typename MakeConstPointer<T>::type& e) const
     {
-        return std::find(container.begin(), container.end(), e);
+        return std::find(mContainer.begin(), mContainer.end(), e);
     }
 
     /**
@@ -419,7 +422,7 @@ public:
      *
      * @param[in] n: The new size of the Vector.
      */
-    void resize(uint n) requires (N < 0) { container.resize(n); }
+    void resize(uint n) requires (N < 0) { mContainer.resize(n); }
 
     /**
      * @brief Add an element to the end of the Vector.
@@ -432,7 +435,7 @@ public:
      *
      * @param[in] v: The value to add to the end of the Vector.
      */
-    void pushBack(const T& v) requires (N < 0) { container.push_back(v); }
+    void pushBack(const T& v) requires (N < 0) { mContainer.push_back(v); }
 
     /**
      * @brief Insert an element at the specified position in the Vector.
@@ -449,7 +452,7 @@ public:
     void insert(uint i, const T& v) requires (N < 0)
     {
         assert(i < size() + 1);
-        container.insert(container.begin() + i, v);
+        mContainer.insert(mContainer.begin() + i, v);
     }
 
     /**
@@ -468,7 +471,7 @@ public:
     void emplace(uint i, Args&&... args) requires (N < 0)
     {
         assert(i < size() + 1);
-        container.emplace(container.begin() + i, std::forward<Args>(args)...);
+        mContainer.emplace(mContainer.begin() + i, std::forward<Args>(args)...);
     }
 
     /**
@@ -485,7 +488,7 @@ public:
     void erase(uint i) requires (N < 0)
     {
         assert(i < size());
-        container.erase(container.begin() + i);
+        mContainer.erase(mContainer.begin() + i);
     }
 
     /**
@@ -496,7 +499,7 @@ public:
      * available if the size of the Vector is not known at compile-time, as
      * specified by the concept requirement `requires (N < 0)`.
      */
-    void clear() requires (N < 0) { container.clear(); }
+    void clear() requires (N < 0) { mContainer.clear(); }
 
     /* Operators */
 
@@ -506,7 +509,7 @@ public:
      * @param[in] i: Position of the element to return
      * @return A reference to the requested element.
      */
-    Reference operator[](uint i) { return container[i]; }
+    Reference operator[](uint i) { return mContainer[i]; }
 
     /**
      * @brief Returns a const reference to the element at specified location i.
@@ -514,7 +517,7 @@ public:
      * @param[in] i: Position of the element to return
      * @return A const reference to the requested element.
      */
-    ConstReference operator[](uint i) const { return container[i]; }
+    ConstReference operator[](uint i) const { return mContainer[i]; }
 
     /**
      * @brief Returns a reference to the element at specified location i. No
@@ -522,7 +525,7 @@ public:
      * @param[in] i: Position of the element to return
      * @return A reference to the requested element.
      */
-    Reference operator()(uint i) { return container[i]; }
+    Reference operator()(uint i) { return mContainer[i]; }
 
     /**
      * @brief Returns a const reference to the element at specified location i.
@@ -530,7 +533,7 @@ public:
      * @param[in] i: Position of the element to return
      * @return A const reference to the requested element.
      */
-    ConstReference operator()(uint i) const { return container[i]; }
+    ConstReference operator()(uint i) const { return mContainer[i]; }
 
     /* Iterator member functions */
 
@@ -539,28 +542,28 @@ public:
      *
      * @return An iterator pointing to the beginning of the Vector.
      */
-    Iterator begin() { return container.begin(); }
+    Iterator begin() { return mContainer.begin(); }
 
     /**
      * @brief Return an iterator pointing to the end of the Vector.
      *
      * @return An iterator pointing to the end of the Vector.
      */
-    Iterator end() { return container.end(); }
+    Iterator end() { return mContainer.end(); }
 
     /**
      * @brief Return a const iterator pointing to the beginning of the Vector.
      *
      * @return A const iterator pointing to the beginning of the Vector.
      */
-    ConstIterator begin() const { return container.begin(); }
+    ConstIterator begin() const { return mContainer.begin(); }
 
     /**
      * @brief Return a const iterator pointing to the end of the Vector.
      *
      * @return A const iterator pointing to the end of the Vector.
      */
-    ConstIterator end() const { return container.end(); }
+    ConstIterator end() const { return mContainer.end(); }
 };
 
 } // namespace vcl

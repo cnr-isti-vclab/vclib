@@ -73,13 +73,13 @@ class KDTree
     inline static Scalar              dummyScalar;
     inline static std::vector<Scalar> dummyScalars;
 
-    std::vector<PointType> points;
-    std::vector<uint>      indices;
-    std::vector<Node>      nodes;
+    std::vector<PointType> mPoints;
+    std::vector<uint>      mIndices;
+    std::vector<Node>      mNodes;
 
-    uint pointsPerCell = 16; // min number of point in a leaf
-    uint maxDepth      = 64; // max tree depth
-    uint depth         = 0;  // actual tree depth
+    uint mPointsPerCell = 16; // min number of point in a leaf
+    uint mMaxDepth      = 64; // max tree depth
+    uint mDepth         = 0;  // actual tree depth
 
 public:
     KDTree() {}
@@ -89,15 +89,15 @@ public:
         uint                          pointsPerCell = 16,
         uint                          maxDepth      = 64,
         bool                          balanced      = false) :
-            points(points),
-            indices(points.size()), pointsPerCell(pointsPerCell),
-            maxDepth(maxDepth)
+            mPoints(points),
+            mIndices(points.size()), mPointsPerCell(pointsPerCell),
+            mMaxDepth(maxDepth)
     {
-        std::iota(std::begin(indices), std::end(indices), 0);
-        nodes.resize(1);
-        nodes.back().leaf = 0;
+        std::iota(std::begin(mIndices), std::end(mIndices), 0);
+        mNodes.resize(1);
+        mNodes.back().leaf = 0;
 
-        depth = createTree(0, 0, points.size(), 1, balanced);
+        mDepth = createTree(0, 0, points.size(), 1, balanced);
     }
 
     /**
@@ -122,21 +122,21 @@ public:
                      typename MeshType::VertexType::CoordType,
                      PointType>)
             :
-            points(m.vertexNumber()), indices(m.vertexNumber()),
-            pointsPerCell(pointsPerCell), maxDepth(maxDepth)
+            mPoints(m.vertexNumber()), mIndices(m.vertexNumber()),
+            mPointsPerCell(pointsPerCell), mMaxDepth(maxDepth)
     {
         using VertexType = MeshType::VertexType;
 
         uint i = 0;
         for (const VertexType& v : m.vertices()) {
-            points[i]  = v.coord();
-            indices[i] = m.index(v);
+            mPoints[i]  = v.coord();
+            mIndices[i] = m.index(v);
             i++;
         }
-        nodes.resize(1);
-        nodes.back().leaf = 0;
+        mNodes.resize(1);
+        mNodes.back().leaf = 0;
 
-        depth = createTree(0, 0, points.size(), 1, balanced);
+        mDepth = createTree(0, 0, mPoints.size(), 1, balanced);
     }
 
     /**
@@ -149,18 +149,18 @@ public:
         const PointType& queryPoint,
         Scalar&          dist = dummyScalar) const
     {
-        std::vector<QueryNode> mNodeStack(depth + 1);
+        std::vector<QueryNode> mNodeStack(mDepth + 1);
         mNodeStack[0].nodeId = 0;
         mNodeStack[0].sq     = 0.;
         unsigned int count   = 1;
 
-        int    minIndex = indices.size() / 2;
-        Scalar minDist  = queryPoint.squaredDist(points[minIndex]);
-        minIndex        = indices[minIndex];
+        int    minIndex = mIndices.size() / 2;
+        Scalar minDist  = queryPoint.squaredDist(mPoints[minIndex]);
+        minIndex        = mIndices[minIndex];
 
         while (count) {
             QueryNode&  qnode = mNodeStack[count - 1];
-            const Node& node  = nodes[qnode.nodeId];
+            const Node& node  = mNodes[qnode.nodeId];
 
             if (qnode.sq < minDist) {
                 if (node.leaf) {
@@ -168,10 +168,10 @@ public:
                     uint end = node.start + node.size;
                     for (uint i = node.start; i < end; ++i) {
                         Scalar pointSquareDist =
-                            queryPoint.squaredDist(points[i]);
+                            queryPoint.squaredDist(mPoints[i]);
                         if (pointSquareDist < minDist) {
                             minDist  = pointSquareDist;
-                            minIndex = indices[i];
+                            minIndex = mIndices[i];
                         }
                     }
                 }
@@ -205,7 +205,7 @@ public:
         const PointType& queryPoint,
         Scalar&          dist = dummyScalar) const
     {
-        return points[nearestNeighborIndex(queryPoint, dist)];
+        return mPoints[nearestNeighborIndex(queryPoint, dist)];
     }
 
     /**
@@ -256,7 +256,7 @@ public:
 
         std::priority_queue<P, std::vector<P>, Comparator> neighborQueue(cmp);
 
-        std::vector<QueryNode> mNodeStack(depth + 1);
+        std::vector<QueryNode> mNodeStack(mDepth + 1);
         mNodeStack[0].nodeId = 0;
         mNodeStack[0].sq     = 0.;
         unsigned int count   = 1;
@@ -269,7 +269,7 @@ public:
             // otherwise, in backtracking, qnode.nodeId is the other sub-tree
             // that will be visited iff the actual nearest node is further than
             // the split distance.
-            const Node& node = nodes[qnode.nodeId];
+            const Node& node = mNodes[qnode.nodeId];
 
             // if the distance is less than the top of the max-heap, it could be
             // one of the k-nearest neighbours
@@ -285,7 +285,7 @@ public:
                     unsigned int end = node.start + node.size;
                     // adding the element of the leaf to the heap
                     for (unsigned int i = node.start; i < end; ++i)
-                        neighborQueue.push(P(points[i], indices[i]));
+                        neighborQueue.push(P(mPoints[i], mIndices[i]));
                 }
                 // otherwise, if we're not on a leaf
                 else {
@@ -342,7 +342,7 @@ public:
         std::vector<PointType> res;
         res.reserve(dists.size());
         for (uint k : dists) {
-            res.push_back(points[k]);
+            res.push_back(mPoints[k]);
         }
         return res;
     }
@@ -361,7 +361,7 @@ public:
     {
         std::vector<uint> queryPoints;
         distances.clear();
-        std::vector<QueryNode> mNodeStack(depth + 1);
+        std::vector<QueryNode> mNodeStack(mDepth + 1);
         mNodeStack[0].nodeId = 0;
         mNodeStack[0].sq     = 0.;
         unsigned int count   = 1;
@@ -369,7 +369,7 @@ public:
         Scalar squareDist = dist * dist;
         while (count) {
             QueryNode&  qnode = mNodeStack[count - 1];
-            const Node& node  = nodes[qnode.nodeId];
+            const Node& node  = mNodes[qnode.nodeId];
 
             if (qnode.sq < squareDist) {
                 if (node.leaf) {
@@ -377,10 +377,10 @@ public:
                     unsigned int end = node.start + node.size;
                     for (unsigned int i = node.start; i < end; ++i) {
                         Scalar pointSquareDist =
-                            queryPoint.squareDist(points[i]);
+                            queryPoint.squareDist(mPoints[i]);
                         if (pointSquareDist < squareDist) {
-                            queryPoints.push_back(indices[i]);
-                            distances.push_back(queryPoint.dist(points[i]));
+                            queryPoints.push_back(mIndices[i]);
+                            distances.push_back(queryPoint.dist(mPoints[i]));
                         }
                     }
                 }
@@ -419,7 +419,7 @@ public:
         std::vector<PointType> res;
         res.reserve(dists.size());
         for (uint k : dists) {
-            res.push_back(points[k]);
+            res.push_back(mPoints[k]);
         }
         return res;
     }
@@ -454,13 +454,13 @@ private:
         bool balanced)
     {
         // select the first node
-        Node&          node = nodes[nodeId];
+        Node&          node = mNodes[nodeId];
         Box<PointType> aabb;
 
         // putting all the points in the bounding box
-        aabb.add(points[start]);
+        aabb.add(mPoints[start]);
         for (uint i = start + 1; i < end; ++i)
-            aabb.add(points[i]);
+            aabb.add(mPoints[i]);
 
         // bounding box diagonal
         PointType diag = aabb.max() - aabb.min();
@@ -480,7 +480,7 @@ private:
         if (balanced) {
             std::vector<Scalar> tempVector;
             for (uint i = start + 1; i < end; ++i)
-                tempVector.push_back(points[i][dim]);
+                tempVector.push_back(mPoints[i][dim]);
             std::sort(tempVector.begin(), tempVector.end());
             node.splitValue = (tempVector[tempVector.size() / 2.0] +
                                tempVector[tempVector.size() / 2.0 + 1]) /
@@ -495,15 +495,15 @@ private:
         // midId is the index of the first element in the second partition
         unsigned int midId = split(start, end, dim, node.splitValue);
 
-        node.firstChildId = nodes.size();
-        nodes.resize(nodes.size() + 2);
+        node.firstChildId = mNodes.size();
+        mNodes.resize(mNodes.size() + 2);
         bool flag = (midId == start) || (midId == end);
         int  leftLevel, rightLevel;
 
         // left child
-        unsigned int childId = nodes[nodeId].firstChildId;
-        Node&        childL  = nodes[childId];
-        if (flag || (midId - start) <= pointsPerCell || level >= maxDepth) {
+        unsigned int childId = mNodes[nodeId].firstChildId;
+        Node&        childL  = mNodes[childId];
+        if (flag || (midId - start) <= mPointsPerCell || level >= mMaxDepth) {
             childL.leaf  = 1;
             childL.start = start;
             childL.size  = midId - start;
@@ -515,9 +515,9 @@ private:
         }
 
         // right child
-        childId      = nodes[nodeId].firstChildId + 1;
-        Node& childR = nodes[childId];
-        if (flag || (end - midId) <= pointsPerCell || level >= maxDepth) {
+        childId      = mNodes[nodeId].firstChildId + 1;
+        Node& childR = mNodes[childId];
+        if (flag || (end - midId) <= mPointsPerCell || level >= mMaxDepth) {
             childR.leaf  = 1;
             childR.start = midId;
             childR.size  = end - midId;
@@ -543,18 +543,18 @@ private:
     {
         uint l, r;
         for (l = start, r = end - 1; l < r; ++l, --r) {
-            while (l < end && points[l][dim] < splitValue)
+            while (l < end && mPoints[l][dim] < splitValue)
                 l++;
-            while (r >= start && points[r][dim] >= splitValue)
+            while (r >= start && mPoints[r][dim] >= splitValue)
                 r--;
             if (l > r)
                 break;
-            std::swap(points[l], points[r]);
-            std::swap(indices[l], indices[r]);
+            std::swap(mPoints[l], mPoints[r]);
+            std::swap(mIndices[l], mIndices[r]);
         }
 
         // returns the index of the first element on the second part
-        return (points[l][dim] < splitValue ? l + 1 : l);
+        return (mPoints[l][dim] < splitValue ? l + 1 : l);
     }
 };
 

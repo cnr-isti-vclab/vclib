@@ -49,8 +49,8 @@ namespace vcl {
 template<PointConcept PointT>
 class Box
 {
-    PointT minP;
-    PointT maxP;
+    PointT mMin;
+    PointT mMax;
 
 public:
     /**
@@ -75,7 +75,7 @@ public:
      *
      * @param p The point to initialize the box with.
      */
-    Box(const PointT& p) : minP(p), maxP(p) {}
+    Box(const PointT& p) : mMin(p), mMax(p) {}
 
     /**
      * @brief Initializes the box with the given minimum and maximum points.
@@ -85,35 +85,35 @@ public:
      * @param[in] min: The minimum point of the box.
      * @param[in] max: The maximum point of the box.
      */
-    Box(const PointT& min, const PointT& max) : minP(min), maxP(max) {}
+    Box(const PointT& min, const PointT& max) : mMin(min), mMax(max) {}
 
     /**
      * @brief Returns a reference to the minimum point of the box.
      *
      * @return A reference to the minimum point of the box.
      */
-    PointT& min() { return minP; }
+    PointT& min() { return mMin; }
 
     /**
      * @brief Returns a const reference to the minimum point of the box.
      *
      * @return A const reference to the minimum point of the box.
      */
-    const PointT& min() const { return minP; }
+    const PointT& min() const { return mMin; }
 
     /**
      * @brief Returns a reference to the maximum point of the box.
      *
      * @return A reference to the maximum point of the box.
      */
-    PointT& max() { return maxP; }
+    PointT& max() { return mMax; }
 
     /**
      * @brief Returns a const reference to the maximum point of the box.
      *
      * @return A const reference to the maximum point of the box.
      */
-    const PointT& max() const { return maxP; }
+    const PointT& max() const { return mMax; }
 
     template<typename Scalar>
     auto cast() const
@@ -123,7 +123,7 @@ public:
         }
         else {
             return Box<Point<Scalar, PointT::DIM>>(
-                minP.template cast<Scalar>(), maxP.template cast<Scalar>());
+                mMin.template cast<Scalar>(), mMax.template cast<Scalar>());
         }
     }
 
@@ -138,7 +138,7 @@ public:
     bool isNull() const
     {
         for (uint i = 0; i < PointT::DIM; ++i) {
-            if (minP[i] > maxP[i])
+            if (mMin[i] > mMax[i])
                 return true;
         }
         return false;
@@ -152,7 +152,7 @@ public:
      *
      * @return True if the box is empty, false otherwise.
      */
-    bool isEmpty() const { return minP == maxP; }
+    bool isEmpty() const { return mMin == mMax; }
 
     /**
      * @brief Checks whether a given point is inside the box or not, bounds
@@ -168,7 +168,7 @@ public:
     bool isInside(const PointT& p) const
     {
         for (uint i = 0; i < PointT::DIM; ++i) {
-            if (p[i] < minP[i] || p[i] > maxP[i])
+            if (p[i] < mMin[i] || p[i] > mMax[i])
                 return false;
         }
         return true;
@@ -184,7 +184,7 @@ public:
     bool isInsideOpenBox(const PointT& p) const
     {
         for (uint i = 0; i < PointT::DIM; ++i) {
-            if (p[i] < minP[i] || p[i] >= maxP[i])
+            if (p[i] < mMin[i] || p[i] >= mMax[i])
                 return false;
         }
         return true;
@@ -200,7 +200,7 @@ public:
     {
         // Check if any dimension of the boxes does not overlap.
         for (uint i = 0; i < PointT::DIM; ++i) {
-            if (b.minP[i] >= maxP[i] || b.maxP[i] <= minP[i])
+            if (b.mMin[i] >= mMax[i] || b.mMax[i] <= mMin[i])
                 return false;
         }
         // All dimensions overlap, the boxes collide.
@@ -228,28 +228,28 @@ public:
      *
      * @return The diagonal length of the box.
      */
-    auto diagonal() const { return minP.dist(maxP); }
+    auto diagonal() const { return mMin.dist(mMax); }
 
     /**
      * @brief Calculates the squared length of the diagonal of the box.
      * @return The squared length of the diagonal of the box.
      */
-    auto squaredDiagonal() const { return minP.squaredDist(maxP); }
+    auto squaredDiagonal() const { return mMin.squaredDist(mMax); }
 
     /**
      * @brief Calculates the center point of the box.
      *
      * @return The center point of the box.
      */
-    PointT center() const { return (maxP + minP) / 2; }
+    PointT center() const { return (mMax + mMin) / 2; }
 
     /**
      * @brief Computes the size of the box.
      *
-     * @return The size of the box as a point, i.e., the difference between maxP
-     * and minP.
+     * @return The size of the box as a point, i.e., the difference between the
+     * bounding box max and min.
      */
-    PointT size() const { return maxP - minP; }
+    PointT size() const { return mMax - mMin; }
 
     /**
      * @brief Computes the volume of the box.
@@ -259,10 +259,10 @@ public:
     auto volume() const
     {
         // Initialize volume as the width of the first dimension.
-        auto vol = maxP[0] - minP[0];
+        auto vol = mMax[0] - mMin[0];
         // Multiply by the width of each dimension.
         for (uint i = 1; i < PointT::DIM; ++i) {
-            vol *= maxP[i] - minP[i];
+            vol *= mMax[i] - mMin[i];
         }
         return vol;
     }
@@ -277,7 +277,7 @@ public:
     auto dim(uint i) const
     {
         assert(i < PointT::DIM);
-        return maxP[i] - minP[i];
+        return mMax[i] - mMin[i];
     }
 
     /**
@@ -289,10 +289,10 @@ public:
      */
     auto minDim() const
     {
-        auto m = maxP[0] - minP[0];
+        auto m = mMax[0] - mMin[0];
         for (uint i = 1; i < PointT::DIM; ++i) {
-            if (maxP[i] - minP[i] < m)
-                m = maxP[i] - minP[i];
+            if (mMax[i] - mMin[i] < m)
+                m = mMax[i] - mMin[i];
         }
         return m;
     }
@@ -306,10 +306,10 @@ public:
      */
     auto maxDim() const
     {
-        auto m = maxP[0] - minP[0];
+        auto m = mMax[0] - mMin[0];
         for (uint i = 1; i < PointT::DIM; ++i) {
-            if (maxP[i] - minP[i] > m)
-                m = maxP[i] - minP[i];
+            if (mMax[i] - mMin[i] > m)
+                m = mMax[i] - mMin[i];
         }
         return m;
     }
@@ -325,15 +325,15 @@ public:
     {
         Box<PointT> res = *this;
         for (uint i = 0; i < PointT::DIM; ++i) {
-            if (minP[i] < b.minP[i]) {
+            if (mMin[i] < b.mMin[i]) {
                 // set the minimum point to the larger value
-                res.minP[i] = b.minP[i];
+                res.mMin[i] = b.mMin[i];
             }
-            if (maxP[i] > b.maxP[i]) {
+            if (mMax[i] > b.mMax[i]) {
                 // set the maximum point to the smaller value
-                res.maxP[i] = b.maxP[i];
+                res.mMax[i] = b.mMax[i];
             }
-            if (res.minP[i] > res.maxP[i]) {
+            if (res.mMin[i] > res.mMax[i]) {
                 // if the minimum point is larger than the maximum point, the
                 // box is null
                 res.setNull();
@@ -352,9 +352,9 @@ public:
      */
     void setNull()
     {
-        minP.setConstant(
+        mMin.setConstant(
             std::numeric_limits<typename PointT::ScalarType>::max());
-        maxP.setConstant(
+        mMax.setConstant(
             std::numeric_limits<typename PointT::ScalarType>::lowest());
     }
 
@@ -376,8 +376,8 @@ public:
         }
         else {
             // Expand the current box to include the added point
-            minP = vcl::min(minP, p);
-            maxP = vcl::max(maxP, p);
+            mMin = vcl::min(mMin, p);
+            mMax = vcl::max(mMax, p);
         }
     }
 
@@ -405,8 +405,8 @@ public:
         else {
             // Expand the current box to include the added point and all points
             // within the radius around it
-            minP = vcl::min(minP, p - radius);
-            maxP = vcl::max(maxP, p + radius);
+            mMin = vcl::min(mMin, p - radius);
+            mMax = vcl::max(mMax, p + radius);
         }
     }
 
@@ -427,8 +427,8 @@ public:
             }
             else {
                 // expand this box to contain the minimum and maximum point of b
-                add(b.minP);
-                add(b.maxP);
+                add(b.mMin);
+                add(b.mMax);
             }
         }
     }
@@ -440,8 +440,8 @@ public:
      */
     void translate(const PointT& p)
     {
-        minP += p; // translate the minimum point by p
-        maxP += p; // translate the maximum point by p
+        mMin += p; // translate the minimum point by p
+        mMax += p; // translate the maximum point by p
     }
 
     /**
@@ -452,7 +452,7 @@ public:
      */
     bool operator==(const Box<PointT>& b) const
     {
-        return minP == b.minP && maxP == b.maxP;
+        return mMin == b.mMin && mMax == b.mMax;
     }
 
     /**

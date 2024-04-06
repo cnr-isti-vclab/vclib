@@ -60,7 +60,7 @@ class Point
     friend class Point;
 
 protected:
-    Eigen::Matrix<Scalar, 1, N> p = Eigen::Matrix<Scalar, 1, N>::Zero();
+    Eigen::Matrix<Scalar, 1, N> mP = Eigen::Matrix<Scalar, 1, N>::Zero();
 
 public:
     /**
@@ -106,7 +106,7 @@ public:
      * @param[in] v: An Eigen row vector with the same dimensionality as the
      * Point object.
      */
-    Point(const Eigen::Matrix<Scalar, 1, N>& v) { p << v; }
+    Point(const Eigen::Matrix<Scalar, 1, N>& v) { mP << v; }
 
     /**
      * @brief Returns a reference to the x-component of the Point object.
@@ -117,7 +117,7 @@ public:
      *
      * @return A reference to the x-component of the Point object.
      */
-    ScalarType& x() requires (N >= 1) { return p(0); }
+    ScalarType& x() requires (N >= 1) { return mP(0); }
 
     /**
      * @brief Returns a const reference to the x-component of the Point object.
@@ -128,7 +128,7 @@ public:
      *
      * @return A const reference to the x-component of the Point object.
      */
-    const ScalarType& x() const requires (N >= 1) { return p(0); }
+    const ScalarType& x() const requires (N >= 1) { return mP(0); }
 
     /**
      * @brief Returns a reference to the y-component of the Point object.
@@ -139,7 +139,7 @@ public:
      *
      * @return A reference to the y-component of the Point object.
      */
-    ScalarType& y() requires (N >= 2) { return p(1); }
+    ScalarType& y() requires (N >= 2) { return mP(1); }
 
     /**
      * @brief Returns a const reference to the y-component of the Point object.
@@ -150,7 +150,7 @@ public:
      *
      * @return A const reference to the y-component of the Point object.
      */
-    const ScalarType& y() const requires (N >= 2) { return p(1); }
+    const ScalarType& y() const requires (N >= 2) { return mP(1); }
 
     /**
      * @brief Returns a reference to the z-component of the Point object.
@@ -161,7 +161,7 @@ public:
      *
      * @return A reference to the z-component of the Point object.
      */
-    ScalarType& z() requires (N >= 3) { return p(2); }
+    ScalarType& z() requires (N >= 3) { return mP(2); }
 
     /**
      * @brief Returns a const reference to the z-component of the Point object.
@@ -172,7 +172,7 @@ public:
      *
      * @return A const reference to the z-component of the Point object.
      */
-    const ScalarType& z() const requires (N >= 3) { return p(2); }
+    const ScalarType& z() const requires (N >= 3) { return mP(2); }
 
     /**
      * @brief Returns a reference to the w-component of the Point object.
@@ -183,7 +183,7 @@ public:
      *
      * @return A reference to the w-component of the Point object.
      */
-    ScalarType& w() requires (N >= 4) { return p(3); }
+    ScalarType& w() requires (N >= 4) { return mP(3); }
 
     /**
      * @brief Returns a const reference to the w-component of the Point object.
@@ -194,7 +194,7 @@ public:
      *
      * @return A const reference to the w-component of the Point object.
      */
-    const ScalarType& w() const requires (N >= 4) { return p(3); }
+    const ScalarType& w() const requires (N >= 4) { return mP(3); }
 
     /**
      * @brief Casts the Point object to a different scalar type.
@@ -214,7 +214,7 @@ public:
             return *this;
         }
         else {
-            return Point<S, N>(p.template cast<S>());
+            return Point<S, N>(mP.template cast<S>());
         }
     }
 
@@ -223,7 +223,7 @@ public:
      *
      * @return The pointer to the underlying scalar storage.
      */
-    const ScalarType* data() const { return p.data(); }
+    const ScalarType* data() const { return mP.data(); }
 
     /**
      * @brief Returns true if at least one of its components is NaN or inf.
@@ -239,7 +239,7 @@ public:
     bool isDegenerate() const
     {
         for (size_t i = 0; i < DIM; ++i)
-            if (isDegenerate(p(i)))
+            if (isDegenerate(mP(i)))
                 return true;
         return false;
     }
@@ -263,7 +263,7 @@ public:
     {
         bool b = true;
         for (size_t i = 0; i < DIM; ++i)
-            b = b && vcl::epsilonCompare(p(i), p1(i), epsilon);
+            b = b && vcl::epsilonCompare(mP(i), p1(i), epsilon);
         return b;
     }
 
@@ -278,7 +278,7 @@ public:
      *
      * @return The dot product of the two Point objects.
      */
-    Scalar dot(const Point& p1) const { return p.dot(p1.p); }
+    Scalar dot(const Point& p1) const { return mP.dot(p1.mP); }
 
     /**
      * @brief Computes the angle between two Point objects.
@@ -295,7 +295,7 @@ public:
      */
     Scalar angle(const Point& p1) const
     {
-        Scalar w = p.norm() * p1.p.norm();
+        Scalar w = mP.norm() * p1.mP.norm();
         if (w == 0)
             return -1;
         Scalar t = dot(p1) / w;
@@ -318,7 +318,7 @@ public:
      *
      * @return The Euclidean distance between the two Point objects.
      */
-    Scalar dist(const Point& p1) const { return (p - p1.p).norm(); }
+    Scalar dist(const Point& p1) const { return (mP - p1.mP).norm(); }
 
     /**
      * @brief Computes the squared Euclidean distance between two Point objects.
@@ -334,7 +334,7 @@ public:
      */
     Scalar squaredDist(const Point& p1) const
     {
-        return (p - p1.p).squaredNorm();
+        return (mP - p1.mP).squaredNorm();
     }
 
     /**
@@ -352,7 +352,7 @@ public:
      */
     Point cross(const Point& p1) const requires (N == 3)
     {
-        return p.cross(p1.p);
+        return mP.cross(p1.mP);
     }
 
     /**
@@ -371,7 +371,7 @@ public:
     {
         Point<Scalar, N> tmp;
         for (size_t i = 0; i < DIM; ++i)
-            tmp[i] = p[i] * p1.p[i];
+            tmp[i] = mP[i] * p1.mP[i];
         return tmp;
     }
 
@@ -395,10 +395,10 @@ public:
     {
         Point<Scalar, N> tmp;
         for (size_t i = 0; i < DIM; ++i) {
-            if (p1.p[i] == 0)
+            if (p1.mP[i] == 0)
                 throw std::runtime_error(
                     "Math error: Attempted to divide by Zero\n");
-            tmp[i] = p[i] / p1.p[i];
+            tmp[i] = mP[i] / p1.mP[i];
         }
         return tmp;
     }
@@ -412,7 +412,7 @@ public:
      *
      * @return The Euclidean norm of the Point object.
      */
-    Scalar norm() const { return p.norm(); }
+    Scalar norm() const { return mP.norm(); }
 
     /**
      * @brief Computes the squared Euclidean norm of the Point object.
@@ -423,7 +423,7 @@ public:
      *
      * @return The squared Euclidean norm of the Point object.
      */
-    Scalar squaredNorm() const { return p.squaredNorm(); }
+    Scalar squaredNorm() const { return mP.squaredNorm(); }
 
     /**
      * @brief Returns the size of the Point object.
@@ -444,21 +444,21 @@ public:
      * @param s The constant value to set all the components of the Point object
      * to.
      */
-    void setConstant(Scalar s) { p.setConstant(s); }
+    void setConstant(Scalar s) { mP.setConstant(s); }
 
     /**
      * @brief Sets all the components of the Point object to zero.
      *
      * This function sets all the components of the Point object to zero.
      */
-    void setZero() { p.setZero(); }
+    void setZero() { mP.setZero(); }
 
     /**
      * @brief Sets all the components of the Point object to one.
      *
      * This function sets all the components of the Point object to one.
      */
-    void setOnes() { p.setOnes(); }
+    void setOnes() { mP.setOnes(); }
 
     /**
      * @brief Sets all the components of the Point object from a set of scalar
@@ -479,7 +479,7 @@ public:
     {
         Scalar args[N] = {static_cast<Scalar>(scalars)...};
         for (uint i = 0; i < N; i++)
-            p(i) = args[i];
+            mP(i) = args[i];
     }
 
     /**
@@ -500,7 +500,7 @@ public:
             throw std::runtime_error(
                 "Math error: Attempted to divide by Zero\n");
 
-        return Point<Scalar, N>(p.array() / norm());
+        return Point<Scalar, N>(mP.array() / norm());
     }
 
     /**
@@ -520,11 +520,11 @@ public:
             throw std::runtime_error(
                 "Math error: Attempted to divide by Zero\n");
 
-        p /= norm();
+        mP /= norm();
     }
 
     /**
-     * @brief Returns the outer product between this point p and p1, which is p
+     * @brief Returns the outer product between this point mP and p1, which is mP
      * * p1^T
      *
      * The returned type is a DIM*DIM Eigen Matrix, where DIM is the number of
@@ -533,14 +533,14 @@ public:
      * @param p1 The Point object to compute the outer product with.
      *
      * @return A DIM*DIM Eigen Matrix representing the outer product between
-     * this point p and p1.
+     * this point mP and p1.
      */
     auto outerProduct(const Point& p1) const
     {
         Eigen::Matrix<ScalarType, DIM, DIM> res;
         for (uint i = 0; i < DIM; i++) {
             for (uint j = 0; j < DIM; j++) {
-                res(i, j) = p(i) * p1(j);
+                res(i, j) = mP(i) * p1(j);
             }
         }
         return res;
@@ -575,14 +575,14 @@ public:
 
         double len = u.norm();
         if (len < locEps) {
-            if (std::abs(p[0]) < std::abs(p[1])) {
-                if (std::abs(p[0]) < std::abs(p[2]))
+            if (std::abs(mP[0]) < std::abs(mP[1])) {
+                if (std::abs(mP[0]) < std::abs(mP[2]))
                     up = Point<Scalar, 3>(1, 0, 0); // x is the min
                 else
                     up = Point<Scalar, 3>(0, 0, 1); // z is the min
             }
             else {
-                if (std::abs(p[1]) < std::abs(p[2]))
+                if (std::abs(mP[1]) < std::abs(mP[2]))
                     up = Point<Scalar, 3>(0, 1, 0); // y is the min
                 else
                     up = Point<Scalar, 3>(0, 0, 1); // z is the min
@@ -600,7 +600,7 @@ public:
      *
      * @return An Eigen Vector representation of the point.
      */
-    const Eigen::Matrix<Scalar, 1, N>& eigenVector() const { return p; }
+    const Eigen::Matrix<Scalar, 1, N>& eigenVector() const { return mP; }
 
     /**
      * @brief Computes the hash value of the point.
@@ -614,7 +614,7 @@ public:
     {
         std::size_t h = 0;
         for (size_t i = 0; i < DIM; ++i)
-            vcl::hashCombine(h, p(i));
+            vcl::hashCombine(h, mP(i));
         return h;
     }
 
@@ -631,7 +631,7 @@ public:
      * @note The behavior of this operator is undefined if i is greater than or
      * equal to the dimension of the point.
      */
-    Scalar& operator()(uint i) { return p(i); }
+    Scalar& operator()(uint i) { return mP(i); }
 
     /**
      * @brief Provides read-only access to the i-th coordinate of the point.
@@ -646,7 +646,7 @@ public:
      * @note The behavior of this operator is undefined if i is greater than or
      * equal to the dimension of the point.
      */
-    const Scalar& operator()(uint i) const { return p(i); }
+    const Scalar& operator()(uint i) const { return mP(i); }
 
     /**
      * @brief Provides access to the i-th coordinate of the point.
@@ -661,7 +661,7 @@ public:
      * @note The behavior of this operator is undefined if i is greater than or
      * equal to the dimension of the point.
      */
-    Scalar& operator[](uint i) { return p(i); }
+    Scalar& operator[](uint i) { return mP(i); }
 
     /**
      * @brief Provides read-only access to the i-th coordinate of the point.
@@ -676,7 +676,7 @@ public:
      * @note The behavior of this operator is undefined if i is greater than or
      * equal to the dimension of the point.
      */
-    const Scalar& operator[](uint i) const { return p(i); }
+    const Scalar& operator[](uint i) const { return mP(i); }
 
     bool operator==(const Point& p1) const = default;
 
@@ -697,10 +697,10 @@ public:
     auto operator<=>(const Point& p1) const
     {
         uint i = 0;
-        while (i < DIM && p[i] == p1.p[i]) {
+        while (i < DIM && mP[i] == p1.mP[i]) {
             ++i;
         }
-        return i == DIM ? std::strong_ordering::equal : p[i] <=> p1.p[i];
+        return i == DIM ? std::strong_ordering::equal : mP[i] <=> p1.mP[i];
     }
 
     /**
@@ -716,7 +716,7 @@ public:
      */
     Point operator+(const Scalar& s) const
     {
-        return Point<Scalar, N>(p.array() + s);
+        return Point<Scalar, N>(mP.array() + s);
     }
 
     /**
@@ -731,7 +731,7 @@ public:
      */
     Point operator+(const Point& p1) const
     {
-        return Point<Scalar, N>(p + p1.p);
+        return Point<Scalar, N>(mP + p1.mP);
     }
 
     /**
@@ -743,7 +743,7 @@ public:
      *
      * @return The point obtained by negating each coordinate of the point.
      */
-    Point operator-() const { return Point<Scalar, N>(-p); }
+    Point operator-() const { return Point<Scalar, N>(-mP); }
 
     /**
      * @brief Subtracts a scalar value from each coordinate of the point.
@@ -758,7 +758,7 @@ public:
      */
     Point operator-(const Scalar& s) const
     {
-        return Point<Scalar, N>(p.array() - s);
+        return Point<Scalar, N>(mP.array() - s);
     }
 
     /**
@@ -774,7 +774,7 @@ public:
      */
     Point operator-(const Point& p1) const
     {
-        return Point<Scalar, N>(p - p1.p);
+        return Point<Scalar, N>(mP - p1.mP);
     }
 
     /**
@@ -788,7 +788,7 @@ public:
      * @return The point obtained by multiplying each coordinate of the point by
      * the scalar value.
      */
-    Point operator*(const Scalar& s) const { return Point<Scalar, N>(p * s); }
+    Point operator*(const Scalar& s) const { return Point<Scalar, N>(mP * s); }
 
     /**
      * @brief Computes the dot product of this point with another point.
@@ -816,7 +816,7 @@ public:
      */
     Point operator*(const Eigen::Matrix<Scalar, N, N>& m) const
     {
-        return Point<Scalar, N>(p * m);
+        return Point<Scalar, N>(mP * m);
     }
 
     /**
@@ -839,11 +839,11 @@ public:
     {
         Eigen::Matrix<Scalar, 1, N> s;
 
-        s(0) = m(0, 0) * p(0) + m(0, 1) * p(1) + m(0, 2) * p(2) + m(0, 3);
-        s(1) = m(1, 0) * p(0) + m(1, 1) * p(1) + m(1, 2) * p(2) + m(1, 3);
-        s(2) = m(2, 0) * p(0) + m(2, 1) * p(1) + m(2, 2) * p(2) + m(2, 3);
+        s(0) = m(0, 0) * mP(0) + m(0, 1) * mP(1) + m(0, 2) * mP(2) + m(0, 3);
+        s(1) = m(1, 0) * mP(0) + m(1, 1) * mP(1) + m(1, 2) * mP(2) + m(1, 3);
+        s(2) = m(2, 0) * mP(0) + m(2, 1) * mP(1) + m(2, 2) * mP(2) + m(2, 3);
 
-        Scalar w = p(0) * m(3, 0) + p(1) * m(3, 1) + p(2) * m(3, 2) + m(3, 3);
+        Scalar w = mP(0) * m(3, 0) + mP(1) * m(3, 1) + mP(2) * m(3, 2) + m(3, 3);
         if (w != 0)
             s = s / w;
         return Point(s);
@@ -866,7 +866,7 @@ public:
         if (s == 0)
             throw std::runtime_error(
                 "Math error: Attempted to divide by Zero\n");
-        return Point<Scalar, N>(p / s);
+        return Point<Scalar, N>(mP / s);
     }
 
     /**
@@ -881,7 +881,7 @@ public:
      */
     Point& operator+=(const Scalar& s)
     {
-        p = p.array() + s;
+        mP = mP.array() + s;
         return *this;
     }
 
@@ -898,7 +898,7 @@ public:
      */
     Point& operator+=(const Point& p1)
     {
-        p += p1.p;
+        mP += p1.mP;
         return *this;
     }
 
@@ -914,7 +914,7 @@ public:
      */
     Point& operator-=(const Scalar& s)
     {
-        p = p.array() - s;
+        mP = mP.array() - s;
         return *this;
     }
 
@@ -931,7 +931,7 @@ public:
      */
     Point& operator-=(const Point& p1)
     {
-        p -= p1.p;
+        mP -= p1.mP;
         return *this;
     }
 
@@ -947,7 +947,7 @@ public:
      */
     Point& operator*=(const Scalar& s)
     {
-        p *= s;
+        mP *= s;
         return *this;
     }
 
@@ -963,7 +963,7 @@ public:
      */
     Point& operator*=(const Eigen::Matrix<Scalar, N, N>& m)
     {
-        p *= m;
+        mP *= m;
         return *this;
     }
 
@@ -1004,7 +1004,7 @@ public:
         if (s == 0)
             throw std::runtime_error(
                 "Math error: Attempted to divide by Zero\n");
-        p /= s;
+        mP /= s;
         return *this;
     }
 
@@ -1020,7 +1020,7 @@ public:
      */
     Point& operator=(const Eigen::Matrix<Scalar, 1, N>& v)
     {
-        p << v;
+        mP << v;
         return *this;
     }
 
@@ -1042,7 +1042,7 @@ public:
 template<typename Scalar, uint N>
 std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 {
-    out << p1.p;
+    out << p1.mP;
     return out;
 }
 

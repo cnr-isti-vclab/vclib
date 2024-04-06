@@ -32,7 +32,7 @@ namespace vcl {
 template<PointConcept PointT = vcl::Point3d>
 class PointSampler
 {
-    std::vector<PointT> samplesVec;
+    std::vector<PointT> mSamples;
 
 public:
     using PointType     = PointT;
@@ -41,58 +41,58 @@ public:
 
     PointSampler() = default;
 
-    const std::vector<PointT>& samples() const { return samplesVec; }
+    const std::vector<PointT>& samples() const { return mSamples; }
 
-    const PointT& sample(uint i) const { return samplesVec[i]; }
+    const PointT& sample(uint i) const { return mSamples[i]; }
 
-    std::size_t size() const { return samplesVec.size(); }
+    std::size_t size() const { return mSamples.size(); }
 
-    void clear() { samplesVec.clear(); }
+    void clear() { mSamples.clear(); }
 
-    void reserve(uint n) { samplesVec.reserve(n); }
+    void reserve(uint n) { mSamples.reserve(n); }
 
-    void resize(uint n) { samplesVec.resize(n); }
+    void resize(uint n) { mSamples.resize(n); }
 
-    void add(const PointT& p) { samplesVec.push_back(p); }
+    void add(const PointT& p) { mSamples.push_back(p); }
 
-    void set(uint i, const PointT& p) { samplesVec[i] = p; }
+    void set(uint i, const PointT& p) { mSamples[i] = p; }
 
     template<VertexConcept VertexType>
     void add(const VertexType& v)
     {
-        samplesVec.push_back(v.coord());
+        mSamples.push_back(v.coord());
     }
 
     template<VertexConcept VertexType>
     void set(uint i, const VertexType& v)
     {
-        samplesVec[i] = v.coord();
+        mSamples[i] = v.coord();
     }
 
     template<EdgeConcept EdgeType>
     void add(const EdgeType& e, double u = 0.5)
     {
-        samplesVec.push_back(
+        mSamples.push_back(
             (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u));
     }
 
     template<EdgeConcept EdgeType>
     void set(uint i, const EdgeType& e, double u = 0.5)
     {
-        samplesVec[i] =
+        mSamples[i] =
             (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u);
     }
 
     template<FaceConcept FaceType>
     void add(const FaceType& f)
     {
-        samplesVec.push_back(vcl::faceBarycenter(f));
+        mSamples.push_back(vcl::faceBarycenter(f));
     }
 
     template<FaceConcept FaceType>
     void set(uint i, const FaceType& f)
     {
-        samplesVec[i] = vcl::faceBarycenter(f);
+        mSamples[i] = vcl::faceBarycenter(f);
     }
 
     template<FaceConcept FaceType>
@@ -104,7 +104,7 @@ public:
         for (uint i = 0; i < f.vertexNumber(); i++)
             p += f.vertex(i)->coord() * barCoords[i];
 
-        samplesVec.push_back(p);
+        mSamples.push_back(p);
     }
 
     template<FaceConcept FaceType>
@@ -119,7 +119,7 @@ public:
         for (uint i = 0; i < f.vertexNumber(); i++)
             p += f.vertex(i)->coord() * barCoords[i];
 
-        samplesVec[i] = p;
+        mSamples[i] = p;
     }
 
     template<FaceConcept FaceType>
@@ -132,7 +132,7 @@ public:
 
         PointT p = triangleBarycentricCoordinatePoint(f, barCoords);
 
-        samplesVec.push_back(p);
+        mSamples.push_back(p);
     }
 
     template<FaceConcept FaceType>
@@ -145,12 +145,12 @@ public:
 
         PointT p = triangleBarycentricCoordinatePoint(f, barCoords);
 
-        samplesVec[i] = p;
+        mSamples[i] = p;
     }
 
-    ConstIterator begin() const { return samplesVec.begin(); }
+    ConstIterator begin() const { return mSamples.begin(); }
 
-    ConstIterator end() const { return samplesVec.end(); }
+    ConstIterator end() const { return mSamples.end(); }
 };
 
 } // namespace vcl

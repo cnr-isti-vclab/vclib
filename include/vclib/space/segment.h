@@ -41,8 +41,8 @@ namespace vcl {
 template<PointConcept PointT>
 class Segment
 {
-    PointT point0;
-    PointT point1;
+    PointT mPoint0;
+    PointT mPoint1;
 
 public:
     /**
@@ -73,47 +73,47 @@ public:
      * @param[in] p0: The first endpoint of the segment.
      * @param[in] p1: The second endpoint of the segment.
      */
-    Segment(const PointT& p0, const PointT& p1) : point0(p0), point1(p1) {}
+    Segment(const PointT& p0, const PointT& p1) : mPoint0(p0), mPoint1(p1) {}
 
     /**
      * @brief Returns the first endpoint of the segment.
      *
      * @return A reference to the first endpoint of the segment.
      */
-    PointT& p0() { return point0; }
+    PointT& p0() { return mPoint0; }
 
     /**
      * @brief Returns the first endpoint of the segment.
      *
      * @return A const reference to the first endpoint of the segment.
      */
-    const PointT& p0() const { return point0; }
+    const PointT& p0() const { return mPoint0; }
 
     /**
      * @brief Returns the second endpoint of the segment.
      *
      * @return A reference to the second endpoint of the segment.
      */
-    PointT& p1() { return point1; }
+    PointT& p1() { return mPoint1; }
 
     /**
      * @brief Returns the second endpoint of the segment.
      *
      * @return A reference to the second endpoint of the segment.
      */
-    const PointT& p1() const { return point1; }
+    const PointT& p1() const { return mPoint1; }
 
-    PointT midPoint() const { return (point0 + point1) / 2.0; }
+    PointT midPoint() const { return (mPoint0 + mPoint1) / 2.0; }
 
-    PointT direction() const { return point1 - point0; }
+    PointT direction() const { return mPoint1 - mPoint0; }
 
-    PointT normalizedDirection() const { return (point1 - point0).normalize(); }
+    PointT normalizedDirection() const { return (mPoint1 - mPoint0).normalize(); }
 
-    ScalarType length() const { (point0 - point1).norm(); }
+    ScalarType length() const { (mPoint0 - mPoint1).norm(); }
 
-    ScalarType squaredLength() const { (point0 - point1).squaredNorm(); }
+    ScalarType squaredLength() const { (mPoint0 - mPoint1).squaredNorm(); }
 
-    void flip() { std::swap(point0, point1); }
+    void flip() { std::swap(mPoint0, mPoint1); }
 
     bool operator==(const Segment<PointT>& s) const = default;
 
@@ -121,49 +121,49 @@ public:
 
     Segment<PointT> operator+(const Segment<PointT>& s) const
     {
-        return Segment<PointT>(point0 + s.point0, point1 + s.point1);
+        return Segment<PointT>(mPoint0 + s.mPoint0, mPoint1 + s.mPoint1);
     }
 
     Segment<PointT> operator-(const Segment<PointT>& s) const
     {
-        return Segment<PointT>(point0 - s.point0, point1 - s.point1);
+        return Segment<PointT>(mPoint0 - s.mPoint0, mPoint1 - s.mPoint1);
     }
 
     Segment<PointT> operator*(const ScalarType& s) const
     {
-        return Segment<PointT>(point0 * s, point1 * s);
+        return Segment<PointT>(mPoint0 * s, mPoint1 * s);
     }
 
     Segment<PointT> operator/(const ScalarType& s) const
     {
-        return Segment<PointT>(point0 / s, point1 / s);
+        return Segment<PointT>(mPoint0 / s, mPoint1 / s);
     }
 
     Segment<PointT>& operator+=(const Segment<PointT>& s) const
     {
-        point0 += s.point0;
-        point1 += s.point1;
+        mPoint0 += s.mPoint0;
+        mPoint1 += s.mPoint1;
         return *this;
     }
 
     Segment<PointT>& operator-=(const Segment<PointT>& s) const
     {
-        point0 -= s.point0;
-        point1 -= s.point1;
+        mPoint0 -= s.mPoint0;
+        mPoint1 -= s.mPoint1;
         return *this;
     }
 
     Segment<PointT>& operator*=(const ScalarType& s) const
     {
-        point0 *= s;
-        point1 *= s;
+        mPoint0 *= s;
+        mPoint1 *= s;
         return *this;
     }
 
     Segment<PointT>& operator/=(const ScalarType& s) const
     {
-        point0 /= s;
-        point1 /= s;
+        mPoint0 /= s;
+        mPoint1 /= s;
         return *this;
     }
 };

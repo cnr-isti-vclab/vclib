@@ -15,35 +15,35 @@ class VertexSampler
     using VP   = std::conditional_t<CNST, const VertexType*, VertexType*>;
     using VPar = std::conditional_t<CNST, const VertexType&, VertexType&>;
 
-    std::vector<VP> samplesVec;
+    std::vector<VP> mSamples;
 
 public:
     using PointType = VertexType::CoordType;
 
     VertexSampler() {}
 
-    const std::vector<VP> samples() const { return samplesVec; }
+    const std::vector<VP> samples() const { return mSamples; }
 
     const typename VertexType::CoordType& sample(uint i) const
     {
-        return samplesVec[i]->coord();
+        return mSamples[i]->coord();
     }
 
-    std::size_t size() const { return samplesVec.size(); }
+    std::size_t size() const { return mSamples.size(); }
 
-    void clear() { samplesVec.clear(); }
+    void clear() { mSamples.clear(); }
 
-    void reserve(uint n) { samplesVec.reserve(n); }
+    void reserve(uint n) { mSamples.reserve(n); }
 
-    void resize(uint n) { samplesVec.resize(n); }
+    void resize(uint n) { mSamples.resize(n); }
 
-    void add(VPar v) { samplesVec.push_back(&v); }
+    void add(VPar v) { mSamples.push_back(&v); }
 
-    void set(uint i, VPar v) { samplesVec[i] = &v; }
+    void set(uint i, VPar v) { mSamples[i] = &v; }
 
-    auto begin() const { return std::begin(samplesVec | views::coords); }
+    auto begin() const { return std::begin(mSamples | views::coords); }
 
-    auto end() const { return std::end(samplesVec | views::coords); }
+    auto end() const { return std::end(mSamples | views::coords); }
 };
 
 } // namespace detail

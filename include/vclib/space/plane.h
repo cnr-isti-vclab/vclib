@@ -48,8 +48,8 @@ namespace vcl {
 template<typename Scalar, bool NORM = true>
 class Plane
 {
-    Point3<Scalar> dir;
-    Scalar         off;
+    Point3<Scalar> mDir;
+    Scalar         mOffset;
 
 public:
     using ScalarType = Scalar;
@@ -66,12 +66,12 @@ public:
      * @param offset
      */
     Plane(const Point3<Scalar>& direction, Scalar offset) :
-            dir(direction), off(offset)
+            mDir(direction), mOffset(offset)
     {
         if constexpr (NORM) {
-            Scalar n = dir.norm();
-            dir /= n;
-            off /= n;
+            Scalar n = mDir.norm();
+            mDir /= n;
+            mOffset /= n;
         }
     }
 
@@ -83,11 +83,11 @@ public:
      */
     Plane(const Point3<Scalar>& p0, const Point3<Scalar>& normal)
     {
-        dir = normal;
+        mDir = normal;
         if constexpr (NORM) {
-            dir.normalize();
+            mDir.normalize();
         }
-        off = p0.dot(dir);
+        mOffset = p0.dot(mDir);
     }
 
     /**
@@ -111,7 +111,7 @@ public:
             return *this;
         }
         else {
-            return Plane<S, NORM>(dir.template cast<S>(), off);
+            return Plane<S, NORM>(mDir.template cast<S>(), mOffset);
         }
     }
 
@@ -119,13 +119,13 @@ public:
      * @brief Returns the direction component of the plane.
      * @return
      */
-    const Point3<Scalar>& direction() const { return dir; }
+    const Point3<Scalar>& direction() const { return mDir; }
 
     /**
      * @brief Returns the offset component of the plane.
      * @return
      */
-    Scalar offset() const { return off; }
+    Scalar offset() const { return mOffset; }
 
     /**
      * @brief Given a point, returns the point projected to this plane.
@@ -134,8 +134,8 @@ public:
      */
     Point3<Scalar> projectPoint(const Point3<Scalar>& p) const
     {
-        Scalar k = p.dot(dir) - off;
-        return p - dir * k;
+        Scalar k = p.dot(mDir) - mOffset;
+        return p - mDir * k;
     }
 
     /**
@@ -152,7 +152,7 @@ public:
 
     bool operator==(const Plane& p) const
     {
-        return off == p.off && dir == p.dir;
+        return mOffset == p.mOffset && mDir == p.mDir;
     }
 
     bool operator!=(const Plane& p) const { return !(*this == p); }

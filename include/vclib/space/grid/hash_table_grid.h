@@ -74,10 +74,10 @@ private:
     using MapType      = std::unordered_multimap<KeyType, ValueType>;
     using MapValueType = MapType::value_type;
 
-    MapType map;
+    MapType mMap;
 
 public:
-    using IsInCellFunction = AbsGrid::IsInCellFunction;
+    using IntersectsCellFunction = AbsGrid::IntersectsCellFunction;
 
     using Iterator = std::unordered_multimap<KeyType, ValueType>::iterator;
     using ConstIterator =
@@ -103,14 +103,14 @@ public:
     HashTableGrid(
         ObjIterator             begin,
         ObjIterator             end,
-        const IsInCellFunction& intersects = nullptr) :
+        const IntersectsCellFunction& intersects = nullptr) :
             AbsGrid(begin, end, intersects)
     {
         AbsGrid::insert(begin, end);
     }
 
     template<vcl::Range Rng>
-    HashTableGrid(Rng&& r, const IsInCellFunction& intersects = nullptr) :
+    HashTableGrid(Rng&& r, const IntersectsCellFunction& intersects = nullptr) :
             HashTableGrid(
                 std::ranges::begin(r),
                 std::ranges::end(r),
@@ -122,7 +122,7 @@ public:
      * @brief Returns true if the HashTableGrid is empty (no elements in it).
      * @return
      */
-    bool empty() const { return map.empty(); }
+    bool empty() const { return mMap.empty(); }
 
     /**
      * @brief Returns true if the given cell coordinate does not contain
@@ -130,7 +130,7 @@ public:
      * @param k
      * @return
      */
-    bool cellEmpty(const KeyType& k) const { return map.find(k) == map.end(); }
+    bool cellEmpty(const KeyType& k) const { return mMap.find(k) == mMap.end(); }
 
     /**
      * @brief Returns an std::set containing the cell coordinates of all the
@@ -140,7 +140,7 @@ public:
     std::set<KeyType> nonEmptyCells() const
     {
         std::set<KeyType> keys;
-        for (const auto& p : map)
+        for (const auto& p : mMap)
             keys.insert(p.first);
         return keys;
     }
@@ -150,27 +150,27 @@ public:
      * @param k
      * @return
      */
-    std::size_t countInCell(const KeyType& k) const { return map.count(k); }
+    std::size_t countInCell(const KeyType& k) const { return mMap.count(k); }
 
     std::pair<Iterator, Iterator> valuesInCell(const KeyType& k)
     {
-        auto p = map.equal_range(k);
+        auto p = mMap.equal_range(k);
         return std::make_pair(Iterator(p.first), Iterator(p.second));
     }
 
     std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const
     {
-        auto p = map.equal_range(k);
+        auto p = mMap.equal_range(k);
         return std::make_pair(ConstIterator(p.first), ConstIterator(p.second));
     }
 
-    void clear() { map.clear(); }
+    void clear() { mMap.clear(); }
 
     bool eraseAllInCell(const KeyType& k)
     {
-        std::pair<Iterator, Iterator> range = map.equal_range(k);
-        if (range != map.end()) {
-            map.erase(range.first, range.second);
+        std::pair<Iterator, Iterator> range = mMap.equal_range(k);
+        if (range != mMap.end()) {
+            mMap.erase(range.first, range.second);
             return true;
         }
         return false;
@@ -180,26 +180,26 @@ public:
     {
         std::vector<ConstIterator> toDel = AbsGrid::valuesInSphere(s);
         for (auto& it : toDel)
-            map.erase(it);
+            mMap.erase(it);
     }
 
-    Iterator begin() { return map.begin(); }
+    Iterator begin() { return mMap.begin(); }
 
-    ConstIterator begin() const { return map.begin(); }
+    ConstIterator begin() const { return mMap.begin(); }
 
-    Iterator end() { return map.end(); }
+    Iterator end() { return mMap.end(); }
 
-    ConstIterator end() const { return map.end(); }
+    ConstIterator end() const { return mMap.end(); }
 
 private:
     bool insertInCell(const KeyType& k, const ValueType& v)
     {
         if constexpr (AllowDuplicates) {
-            map.emplace(k, v);
+            mMap.emplace(k, v);
             return true;
         }
         else {
-            auto range = map.equal_range(k);
+            auto range = mMap.equal_range(k);
             bool found = false;
             for (Iterator ci = range.first; ci != range.second && !found; ++ci)
             {
@@ -208,7 +208,7 @@ private:
                 }
             }
             if (!found)
-                map.emplace(k, v);
+                mMap.emplace(k, v);
             return !found;
         }
     }
@@ -217,11 +217,11 @@ private:
     {
         bool found = false;
 
-        std::pair<Iterator, Iterator> range = map.equal_range(k);
+        std::pair<Iterator, Iterator> range = mMap.equal_range(k);
         for (Iterator ci = range.first; ci != range.second; ++ci) {
             if (ci->second == v) {
                 found = true;
-                map.erase(ci);
+                mMap.erase(ci);
                 if constexpr (!AllowDuplicates) {
                     return true;
                 }

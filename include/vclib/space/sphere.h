@@ -32,8 +32,8 @@ namespace vcl {
 template<typename Scalar>
 class Sphere
 {
-    vcl::Point3<Scalar> c;
-    Scalar              r;
+    vcl::Point3<Scalar> mCenter;
+    Scalar              mRadius;
 
 public:
     using ScalarType = Scalar;
@@ -42,17 +42,17 @@ public:
     Sphere() {}
 
     Sphere(const vcl::Point3<Scalar>& center, Scalar radius) :
-            c(center), r(radius)
+            mCenter(center), mRadius(radius)
     {
     }
 
-    const Point3<Scalar>& center() const { return c; }
+    const Point3<Scalar>& center() const { return mCenter; }
 
-    Point3<Scalar>& center() { return c; }
+    Point3<Scalar>& center() { return mCenter; }
 
-    const Scalar& radius() const { return r; }
+    const Scalar& radius() const { return mRadius; }
 
-    Scalar& radius() { return r; }
+    Scalar& radius() { return mRadius; }
 
     template<typename S>
     auto cast() const
@@ -61,19 +61,22 @@ public:
             return *this;
         }
         else {
-            return Sphere<S>(c.template cast<S>(), r);
+            return Sphere<S>(mCenter.template cast<S>(), mRadius);
         }
     }
 
-    Scalar diameter() const { return 2 * r; }
+    Scalar diameter() const { return 2 * mRadius; }
 
-    Scalar circumference() const { return 2 * M_PI * r; }
+    Scalar circumference() const { return 2 * M_PI * mRadius; }
 
-    Scalar surfaceArea() const { return 4 * M_PI * std::pow(r, 2); }
+    Scalar surfaceArea() const { return 4 * M_PI * std::pow(mRadius, 2); }
 
-    Scalar volume() const { return (4.0 / 3) * M_PI * std::pow(r, 3); }
+    Scalar volume() const { return (4.0 / 3) * M_PI * std::pow(mRadius, 3); }
 
-    bool isInside(const vcl::Point3<Scalar>& p) const { return c.dist(p) <= r; }
+    bool isInside(const vcl::Point3<Scalar>& p) const
+    {
+        return mCenter.dist(p) <= mRadius;
+    }
 
     /**
      * @brief Checks if a sphere intersects with a Box.
@@ -86,12 +89,12 @@ public:
         // https://stackoverflow.com/a/4579192/5851101
         Scalar dmin = 0;
         for (uint i = 0; i < 3; i++) {
-            if (c[i] < b.min()[i])
-                dmin += std::sqrt(c[i] - b.min()[i]);
-            else if (c[i] > b.max()[i])
-                dmin += std::sqrt(c[i] - b.max()[i]);
+            if (mCenter[i] < b.min()[i])
+                dmin += std::sqrt(mCenter[i] - b.min()[i]);
+            else if (mCenter[i] > b.max()[i])
+                dmin += std::sqrt(mCenter[i] - b.max()[i]);
         }
-        if (dmin <= std::pow(r, 2))
+        if (dmin <= std::pow(mRadius, 2))
             return true;
         else
             return false;

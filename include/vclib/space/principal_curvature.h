@@ -42,8 +42,8 @@ namespace vcl {
 template<typename Scalar>
 class PrincipalCurvature
 {
-    Point3<Scalar> dir1, dir2;
-    Scalar         k1 = 0, k2 = 0;
+    Point3<Scalar> mDir1, mDir2;
+    Scalar         mK1 = 0, mK2 = 0;
 
 public:
     /**
@@ -75,10 +75,10 @@ public:
         }
         else {
             PrincipalCurvature<S> tmp;
-            tmp.maxDir()   = dir1.template cast<S>();
-            tmp.minDir()   = dir2.template cast<S>();
-            tmp.maxValue() = k1;
-            tmp.minValue() = k2;
+            tmp.maxDir()   = mDir1.template cast<S>();
+            tmp.minDir()   = mDir2.template cast<S>();
+            tmp.maxValue() = mK1;
+            tmp.minValue() = mK2;
             return tmp;
         }
     }
@@ -87,49 +87,49 @@ public:
      * @brief Returns a const reference to the maximum curvature direction.
      * @return A const reference to the maximum curvature direction.
      */
-    const Point3<Scalar>& maxDir() const { return dir1; }
+    const Point3<Scalar>& maxDir() const { return mDir1; }
 
     /**
      * @brief Returns a reference to the maximum curvature direction.
      * @return A reference to the maximum curvature direction.
      */
-    Point3<Scalar>& maxDir() { return dir1; }
+    Point3<Scalar>& maxDir() { return mDir1; }
 
     /**
      * @brief Returns a const reference to the minimum curvature direction.
      * @return A const reference to the minimum curvature direction.
      */
-    const Point3<Scalar>& minDir() const { return dir2; }
+    const Point3<Scalar>& minDir() const { return mDir2; }
 
     /**
      * @brief Returns a reference to the minimum curvature direction.
      * @return A reference to the minimum curvature direction.
      */
-    Point3<Scalar>& minDir() { return dir2; }
+    Point3<Scalar>& minDir() { return mDir2; }
 
     /**
      * @brief Returns a const reference to the maximum curvature value.
      * @return A const reference to the maximum curvature value.
      */
-    const Scalar& maxValue() const { return k1; }
+    const Scalar& maxValue() const { return mK1; }
 
     /**
      * @brief Returns a reference to the maximum curvature value.
      * @return A reference to the maximum curvature value.
      */
-    Scalar& maxValue() { return k1; }
+    Scalar& maxValue() { return mK1; }
 
     /**
      * @brief Returns a const reference to the minimum curvature value.
      * @return A const reference to the minimum curvature value.
      */
-    const Scalar& minValue() const { return k2; }
+    const Scalar& minValue() const { return mK2; }
 
     /**
      * @brief Returns a reference to the minimum curvature value.
      * @return A reference to the minimum curvature value.
      */
-    Scalar& minValue() { return k2; }
+    Scalar& minValue() { return mK2; }
 };
 
 } // namespace vcl

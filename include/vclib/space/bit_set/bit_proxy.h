@@ -41,8 +41,8 @@ namespace vcl {
 template<std::integral T>
 class BitProxy
 {
-    std::reference_wrapper<T> mask;
-    const uint                index;
+    std::reference_wrapper<T> mMask;
+    const uint                mIndex;
 
 public:
     /**
@@ -50,30 +50,30 @@ public:
      * @param[in] mask: the mask containing the bit to access.
      * @param[in] index: the index of the bit to access.
      */
-    BitProxy(T& mask, uint index) : mask(mask), index(index) {}
+    BitProxy(T& mask, uint index) : mMask(mask), mIndex(index) {}
 
-    operator bool() const { return mask.get() & (1 << index); }
+    operator bool() const { return mMask.get() & (1 << mIndex); }
 
     void operator=(bool bit)
     {
-        mask.get() = (mask.get() & ~(1 << index)) | (bit << index);
+        mMask.get() = (mMask.get() & ~(1 << mIndex)) | (bit << mIndex);
     }
 
     BitProxy& operator|=(bool bit)
     {
-        mask.get() |= (bit << index);
+        mMask.get() |= (bit << mIndex);
         return *this;
     }
 
     BitProxy& operator&=(bool bit)
     {
-        mask.get() &= ~(bit << index);
+        mMask.get() &= ~(bit << mIndex);
         return *this;
     }
 
     BitProxy& operator/=(bool bit)
     {
-        mask.get() ^= (bit << index);
+        mMask.get() ^= (bit << mIndex);
         return *this;
     }
 };

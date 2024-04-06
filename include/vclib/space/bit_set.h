@@ -51,7 +51,7 @@ namespace vcl {
 template<std::integral T>
 class BitSet
 {
-    T bits = static_cast<T>(0);
+    T mBits = static_cast<T>(0);
 
 public:
     /**
@@ -117,7 +117,7 @@ public:
     bool operator[](uint i) const
     {
         assert(i < SIZE);
-        return bits & (1 << i);
+        return mBits & (1 << i);
     }
 
     /**
@@ -128,7 +128,7 @@ public:
     BitProxy<T> operator[](uint i)
     {
         assert(i < SIZE);
-        return BitProxy(bits, i);
+        return BitProxy(mBits, i);
     }
 
     /**
@@ -140,7 +140,7 @@ public:
     bool at(uint i) const
     {
         if (i < SIZE)
-            return bits & (1 << i);
+            return mBits & (1 << i);
         else
             throw std::out_of_range(std::to_string(i) + " out of range.");
     }
@@ -155,7 +155,7 @@ public:
     BitProxy<T> at(uint i)
     {
         if (i < SIZE)
-            return BitProxy(bits, i);
+            return BitProxy(mBits, i);
         else
             throw std::out_of_range(std::to_string(i) + " out of range.");
     }
@@ -164,7 +164,7 @@ public:
      * @brief Returns true if all the bits of the BitSet are set to true.
      * @return true if all the bits of the BitSet are set to true.
      */
-    bool all() const { return bits == ~static_cast<T>(0); }
+    bool all() const { return mBits == ~static_cast<T>(0); }
 
     /**
      * @brief Returns true if any of the bits of the BitSet are set to true.
@@ -176,7 +176,7 @@ public:
      * @brief Returns true if none of the bits of the BitSet is set to true.
      * @return true if none of the bits of the BitSet is set to true.
      */
-    bool none() const { return bits == static_cast<T>(0); }
+    bool none() const { return mBits == static_cast<T>(0); }
 
     /**
      * @brief Sets all the bits to true
@@ -184,7 +184,7 @@ public:
      */
     BitSet<T> set()
     {
-        bits = ~static_cast<T>(0);
+        mBits = ~static_cast<T>(0);
         return *this;
     }
 
@@ -206,7 +206,7 @@ public:
      */
     BitSet<T> reset()
     {
-        bits = 0;
+        mBits = 0;
         return *this;
     }
 
@@ -227,7 +227,7 @@ public:
      */
     BitSet<T> flip()
     {
-        bits = ~bits;
+        mBits = ~mBits;
         return *this;
     }
 

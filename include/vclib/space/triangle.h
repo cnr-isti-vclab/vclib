@@ -31,7 +31,7 @@ namespace vcl {
 template<PointConcept PointT>
 class Triangle
 {
-    std::array<PointT, 3> p;
+    std::array<PointT, 3> mPoints;
 
 public:
     using ScalarType = PointT::ScalarType;
@@ -43,7 +43,7 @@ public:
     Triangle() = default;
 
     Triangle(const PointT& p0, const PointT& p1, const PointT& p2) :
-            p(p0, p1, p2)
+            mPoints(p0, p1, p2)
     {
     }
 
@@ -58,21 +58,21 @@ public:
      * @param[in] i: Index of the point to return.
      * @return The i-th point of the triangle.
      */
-    const PointT& point(uint i) const { return p.at(i); }
+    const PointT& point(uint i) const { return mPoints.at(i); }
 
-    PointT& point(uint i) { return p.at(i); }
+    PointT& point(uint i) { return mPoints.at(i); }
 
-    PointT& point0() { return p[0]; }
+    PointT& point0() { return mPoints[0]; }
 
-    const PointT& point0() const { return p[0]; }
+    const PointT& point0() const { return mPoints[0]; }
 
-    PointT& point1() { return p[1]; }
+    PointT& point1() { return mPoints[1]; }
 
-    const PointT& point1() const { return p[1]; }
+    const PointT& point1() const { return mPoints[1]; }
 
-    PointT& point2() { return p[2]; }
+    PointT& point2() { return mPoints[2]; }
 
-    const PointT& point2() const { return p[2]; }
+    const PointT& point2() const { return mPoints[2]; }
 
     /**
      * @brief Returns the length of the i-th side of the triangle.
@@ -81,7 +81,7 @@ public:
      */
     ScalarType sideLength(uint i) const
     {
-        return sideLength(p[0], p[1], p[2], i);
+        return sideLength(mPoints[0], mPoints[1], mPoints[2], i);
     }
 
     /**
@@ -110,7 +110,7 @@ public:
      */
     PointT normal() const requires (PointT::DIM == 3)
     {
-        return normal(p[0], p[1], p[2]);
+        return normal(mPoints[0], mPoints[1], mPoints[2]);
     }
 
     /**
@@ -118,7 +118,10 @@ public:
      *
      * @return The barycenter of the triangle.
      */
-    PointT barycenter() const { return barycenter(p[0], p[1], p[2]); }
+    PointT barycenter() const
+    {
+        return barycenter(mPoints[0], mPoints[1], mPoints[2]);
+    }
 
     /**
      * @brief Computes the weighted barycenter of the triangle.
@@ -133,7 +136,8 @@ public:
      */
     PointT weightedBarycenter(ScalarType w0, ScalarType w1, ScalarType w2) const
     {
-        return weightedBarycenter(p[0], p[1], p[2], w0, w1, w2);
+        return weightedBarycenter(
+            mPoints[0], mPoints[1], mPoints[2], w0, w1, w2);
     }
 
     PointT weightedBarycenter(const Point3<ScalarType>& w) const
@@ -146,14 +150,15 @@ public:
         ScalarType b1,
         ScalarType b2) const
     {
-        return barycentricCoordinatePoint(p[0], p[1], p[2], b0, b1, b2);
+        return barycentricCoordinatePoint(
+            mPoints[0], mPoints[1], mPoints[2], b0, b1, b2);
     }
 
     /**
      * @brief Computes the point in the triangle with the given barycentric
      * coordinates.
      *
-     * Given a set of barycentric coordinates \p b, this function computes the
+     * Given a set of barycentric coordinates \mPoints b, this function computes the
      * point in the triangle corresponding to those barycentric coordinates.
      *
      * @param[in] b: The barycentric coordinates of the point in the triangle of
@@ -164,7 +169,8 @@ public:
      */
     PointT barycentricCoordinatePoint(const Point3<ScalarType>& b) const
     {
-        return barycentricCoordinatePoint(p[0], p[1], p[2], b(0), b(1), b(2));
+        return barycentricCoordinatePoint(
+            mPoints[0], mPoints[1], mPoints[2], b(0), b(1), b(2));
     }
 
     /**
@@ -180,21 +186,27 @@ public:
      * @note The function assumes that the three points are not collinear and
      * form a valid triangle.
      */
-    PointT circumcenter() const { return circumcenter(p[0], p[1], p[2]); }
+    PointT circumcenter() const
+    {
+        return circumcenter(mPoints[0], mPoints[1], mPoints[2]);
+    }
 
     /**
      * @brief Computes the perimeter of the triangle.
      *
      * @return The perimeter of the triangle.
      */
-    ScalarType perimeter() const { return perimeter(p[0], p[1], p[2]); }
+    ScalarType perimeter() const
+    {
+        return perimeter(mPoints[0], mPoints[1], mPoints[2]);
+    }
 
     /**
      * @brief Computes the area of the triangle.
      *
      * @return The area of the triangle.
      */
-    ScalarType area() const { return area(p[0], p[1], p[2]); }
+    ScalarType area() const { return area(mPoints[0], mPoints[1], mPoints[2]); }
 
     /**
      * @brief Calculates the quality measure of the triangle.
@@ -209,7 +221,10 @@ public:
      * @note If the area of the triangle is zero (i.e., the vertices are
      * collinear), the function returns 0.0.
      */
-    ScalarType quality() const { return quality(p[0], p[1], p[2]); }
+    ScalarType quality() const
+    {
+        return quality(mPoints[0], mPoints[1], mPoints[2]);
+    }
 
     /**
      * @brief Compute a shape quality measure of the triangle.
@@ -223,7 +238,10 @@ public:
      * 0.81). A value of 0 is returned when the triangle is degenerate (i.e., it
      * has zero area).
      */
-    ScalarType qualityRadii() const { return qualityRadii(p[0], p[1], p[2]); }
+    ScalarType qualityRadii() const
+    {
+        return qualityRadii(mPoints[0], mPoints[1], mPoints[2]);
+    }
 
     /**
      * @brief Compute the mean ratio of the triangle shape quality measure.
@@ -242,7 +260,7 @@ public:
      */
     ScalarType qualityMeanRatio() const
     {
-        return qualityMeanRatio(p[0], p[1], p[2]);
+        return qualityMeanRatio(mPoints[0], mPoints[1], mPoints[2]);
     }
 
     /* Static member functions */

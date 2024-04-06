@@ -23,7 +23,6 @@
 #ifndef VCL_SPACE_GRID_ABSTRACT_GRID_H
 #define VCL_SPACE_GRID_ABSTRACT_GRID_H
 
-#include <deque>
 #include <set>
 
 #include <vclib/algorithms/bounding_box.h>
@@ -110,13 +109,13 @@ class AbstractGrid : public GridType
 {
 public:
     /**
-     * @brief The IsInCellFunction type is a std::function that takes as input
+     * @brief The IntersectsCellFunction type is a std::function that takes as input
      * a bounding box and a value, and returns true if the value intersects the
      * bounding box.
      *
      * It is used to customize the behavior of the grid when inserting values.
      */
-    using IsInCellFunction = std::function<bool(
+    using IntersectsCellFunction = std::function<bool(
         const typename GridType::BBoxType&,
         const RemoveCVRefAndPointer<ValueType>&)>;
 
@@ -124,7 +123,7 @@ protected:
     /* custom function that checks if a value intersects with a cell (a box)
        if not initialized, bounding box of value will be used to check if it is
        in cell */
-    IsInCellFunction intersects;
+    IntersectsCellFunction mIntersectsFun;
 
 public:
     using KeyType = GridType::CellCoord;
@@ -212,9 +211,9 @@ public:
             bool ins = false;
 
             // custom intersection function between cell and value
-            if (intersects) {
+            if (mIntersectsFun) {
                 for (const auto& cell : GridType::cells(bmin, bmax)) {
-                    if (intersects(GridType::cellBox(cell), dereferencePtr(v)))
+                    if (mIntersectsFun(GridType::cellBox(cell), dereferencePtr(v)))
                     {
                         ins |= static_cast<DerivedGrid*>(this)->insertInCell(
                             cell, v);
@@ -605,8 +604,8 @@ protected:
      * inserted value intersects (lies in) a cell. If nullptr, the default
      * intersects function will be used.
      */
-    AbstractGrid(const GridType& grid, IsInCellFunction intersects = nullptr) :
-            GridType(grid), intersects(intersects)
+    AbstractGrid(const GridType& grid, IntersectsCellFunction intersects = nullptr) :
+            GridType(grid), mIntersectsFun(intersects)
     {
     }
 
@@ -628,9 +627,9 @@ protected:
         const PointType& min,
         const PointType& max,
         const KeyType&   sizes,
-        IsInCellFunction intersects = nullptr) :
+        IntersectsCellFunction intersects = nullptr) :
             GridType(min, max, sizes),
-            intersects(intersects)
+            mIntersectsFun(intersects)
     {
     }
 
@@ -649,9 +648,9 @@ protected:
     AbstractGrid(
         const BoxType&   bbox,
         const KeyType&   sizes,
-        IsInCellFunction intersects = nullptr) :
+        IntersectsCellFunction intersects = nullptr) :
             GridType(bbox, sizes),
-            intersects(intersects)
+            mIntersectsFun(intersects)
     {
     }
 
@@ -679,8 +678,8 @@ protected:
     AbstractGrid(
         ObjIterator      begin,
         ObjIterator      end,
-        IsInCellFunction intersects = nullptr) :
-            intersects(intersects)
+        IntersectsCellFunction intersects = nullptr) :
+            mIntersectsFun(intersects)
     {
         using ScalarType = GridType::ScalarType;
         using BBoxType   = GridType::BBoxType;
@@ -721,7 +720,7 @@ protected:
      * intersects function will be used.
      */
     template<vcl::Range Rng>
-    AbstractGrid(Rng&& r, IsInCellFunction intersects = nullptr) :
+    AbstractGrid(Rng&& r, IntersectsCellFunction intersects = nullptr) :
             AbstractGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
     {
     }

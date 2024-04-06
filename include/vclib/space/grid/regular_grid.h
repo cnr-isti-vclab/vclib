@@ -41,8 +41,8 @@ public:
     using BBoxType  = Box<PointType>;
 
 private:
-    BBoxType       bbox;
-    Point<uint, N> siz;
+    BBoxType       mBBox;
+    Point<uint, N> mSize;
 
 public:
     static const int DIM = N;
@@ -58,26 +58,26 @@ public:
         const Point<Scalar, N>& min,
         const Point<Scalar, N>& max,
         const Point<uint, N>&   size) :
-            bbox(min, max),
-            siz(size)
+            mBBox(min, max),
+            mSize(size)
     {
     }
 
     RegularGrid(const Box<Point<Scalar, N>>& bbox, const Point<uint, N>& size) :
-            bbox(bbox), siz(size)
+            mBBox(bbox), mSize(size)
     {
     }
 
-    Point<Scalar, N> min() const { return bbox.min(); }
+    Point<Scalar, N> min() const { return mBBox.min(); }
 
-    Point<Scalar, N> max() const { return bbox.max(); }
+    Point<Scalar, N> max() const { return mBBox.max(); }
 
     /**
      * @brief Returns the edge legth of the bounding box of the grid in the d-th
      * dimension
      * @return
      */
-    Scalar length(uint d) const { return bbox.dim(d); }
+    Scalar length(uint d) const { return mBBox.dim(d); }
 
     /**
      * @brief Returns the edge legths of the bounding box of the grid
@@ -96,13 +96,13 @@ public:
      * @param d
      * @return
      */
-    uint cellNumber(uint d) const { return siz(d); }
+    uint cellNumber(uint d) const { return mSize(d); }
 
     /**
      * @brief Returns the number of cells for each dimension of the grid
      * @return
      */
-    Point<uint, N> cellNumbers() const { return siz; }
+    Point<uint, N> cellNumbers() const { return mSize; }
 
     /**
      * @brief Return an unique index that can be associated to the given cell
@@ -113,10 +113,10 @@ public:
     uint indexOfCell(const CellCoord& c) const
     {
         unsigned long int ind = c[0];
-        assert(c[0] < siz[0]);
+        assert(c[0] < mSize[0]);
         for (unsigned int i = 1; i < N; i++) {
-            assert(c[i] < siz[i]);
-            ind *= siz[i];
+            assert(c[i] < mSize[i]);
+            ind *= mSize[i];
             ind += c[i];
         }
         return ind;
@@ -131,8 +131,8 @@ public:
     {
         typename RegularGrid<Scalar, N>::CellCoord c;
         for (long int i = N - 1; i >= 0; i--) {
-            c[i] = index % siz[i];
-            index /= siz[i];
+            c[i] = index % mSize[i];
+            index /= mSize[i];
         }
         return c;
     }
@@ -160,11 +160,11 @@ public:
 
     uint cell(uint d, const Scalar& s) const
     {
-        if (s < bbox.min()(d))
+        if (s < mBBox.min()(d))
             return 0;
-        if (s > bbox.max()(d))
+        if (s > mBBox.max()(d))
             return cellNumber(d) - 1;
-        Scalar t = s - bbox.min()(d);
+        Scalar t = s - mBBox.min()(d);
         return uint(t / cellLength(d));
     }
 
@@ -191,14 +191,14 @@ public:
         Point<Scalar, N> p;
         for (size_t i = 0; i < DIM; ++i)
             p(i) = (Scalar) c(i) * cellLength(i);
-        p += bbox.min();
+        p += mBBox.min();
         b.min() = p;
         b.max() = (p + cellLengths());
 
         return b;
     }
 
-    CellIterator cellBegin() const { return CellIterator(CellCoord(), siz); }
+    CellIterator cellBegin() const { return CellIterator(CellCoord(), mSize); }
 
     CellIterator cellBegin(const CellCoord& first, const CellCoord& last) const
     {
@@ -217,8 +217,8 @@ public:
 protected:
     void set(const Box<Point<Scalar, N>>& box, const Point<uint, N>& size)
     {
-        bbox = box;
-        siz  = size;
+        mBBox = box;
+        mSize  = size;
     }
 };
 

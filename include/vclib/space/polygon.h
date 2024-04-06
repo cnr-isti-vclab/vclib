@@ -45,7 +45,7 @@ namespace vcl {
 template<PointConcept PointT>
 class Polygon
 {
-    std::vector<PointT> p;
+    std::vector<PointT> mPoints;
 
 public:
     using ScalarType = PointT::ScalarType;
@@ -58,47 +58,50 @@ public:
     template<typename Iterator>
     Polygon(Iterator begin, Iterator end)
         requires (std::is_same_v<typename Iterator::value_type, PointT>)
-            : p(begin, end)
+            : mPoints(begin, end)
     {
     }
 
-    uint size() const { return p.size(); }
+    uint size() const { return mPoints.size(); }
 
-    void resize(uint n) { p.resize(n); }
+    void resize(uint n) { mPoints.resize(n); }
 
-    void reserve(uint n) { p.reserve(n); }
+    void reserve(uint n) { mPoints.reserve(n); }
 
-    void clear() { p.clear(); }
+    void clear() { mPoints.clear(); }
 
-    void pushBack(const PointT& point) { p.push_back(point); }
+    void pushBack(const PointT& point) { mPoints.push_back(point); }
 
-    PointT& point(uint i) { return p.at(i); }
+    PointT& point(uint i) { return mPoints.at(i); }
 
-    const PointT& point(uint i) const { return p.at(i); }
+    const PointT& point(uint i) const { return mPoints.at(i); }
 
     ScalarType sideLength(uint i) const
     {
-        return p.at(i).dist(p[(i + 1) % p.size()]);
+        return mPoints.at(i).dist(mPoints[(i + 1) % mPoints.size()]);
     }
 
-    PointT normal() const requires (PointT::DIM == 3) { return normal(p); }
+    PointT normal() const requires (PointT::DIM == 3)
+    {
+        return normal(mPoints);
+    }
 
-    PointT barycenter() const { return barycenter(p); }
+    PointT barycenter() const { return barycenter(mPoints); }
 
     template<typename WIterator>
     PointT weightedBarycenter(WIterator wbegin) const
     {
-        return weightedBarycenter(p.begin(), p.end(), wbegin);
+        return weightedBarycenter(mPoints.begin(), mPoints.end(), wbegin);
     }
 
-    ScalarType perimeter() const { return perimeter(p); }
+    ScalarType perimeter() const { return perimeter(mPoints); }
 
-    ScalarType area() const { return area(p); }
+    ScalarType area() const { return area(mPoints); }
 
     std::vector<uint> earCut() const
         requires (PointT::DIM == 2 || PointT::DIM == 3)
     {
-        return earCut(p);
+        return earCut(mPoints);
     }
 
     // static member functions

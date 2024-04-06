@@ -51,7 +51,7 @@ class Quaternion
     friend class Quaternion;
 
 protected:
-    Eigen::Quaternion<Scalar> q = Eigen::Quaternion<Scalar>(1, 0, 0, 0);
+    Eigen::Quaternion<Scalar> mQ = Eigen::Quaternion<Scalar>(1, 0, 0, 0);
 
 public:
     /**
@@ -83,21 +83,21 @@ public:
         const Scalar& x,
         const Scalar& y,
         const Scalar& z) :
-            q(w, x, y, z)
+            mQ(w, x, y, z)
     {
     }
 
     Quaternion(const Scalar& angle, const Point3<Scalar>& axis) :
-            q(Eigen::AngleAxis<Scalar>(angle, axis.eigenVector()))
+            mQ(Eigen::AngleAxis<Scalar>(angle, axis.eigenVector()))
     {
     }
 
-    Quaternion(const Eigen::Quaternion<Scalar>& qq) : q(qq) {}
+    Quaternion(const Eigen::Quaternion<Scalar>& qq) : mQ(qq) {}
 
-    Quaternion(const Matrix33<Scalar>& rotMatrix) : q(rotMatrix) {}
+    Quaternion(const Matrix33<Scalar>& rotMatrix) : mQ(rotMatrix) {}
 
     Quaternion(const Matrix44<Scalar>& rotMatrix) :
-            q(Matrix33<Scalar>(rotMatrix.block(0, 0, 3, 3)))
+            mQ(Matrix33<Scalar>(rotMatrix.block(0, 0, 3, 3)))
     {
     }
 
@@ -114,24 +114,24 @@ public:
      */
     Quaternion(const Point3<Scalar>& a, const Point3<Scalar>& b)
     {
-        q.setFromTwoVectors(a.eigenVector(), b.eigenVector());
+        mQ.setFromTwoVectors(a.eigenVector(), b.eigenVector());
     }
 
-    Scalar& w() { return q.w(); }
+    Scalar& w() { return mQ.w(); }
 
-    const Scalar& w() const { return q.w(); }
+    const Scalar& w() const { return mQ.w(); }
 
-    Scalar& x() { return q.x(); }
+    Scalar& x() { return mQ.x(); }
 
-    const Scalar& x() const { return q.x(); }
+    const Scalar& x() const { return mQ.x(); }
 
-    Scalar& y() { return q.y(); }
+    Scalar& y() { return mQ.y(); }
 
-    const Scalar& y() const { return q.y(); }
+    const Scalar& y() const { return mQ.y(); }
 
-    Scalar& z() { return q.z(); }
+    Scalar& z() { return mQ.z(); }
 
-    const Scalar& z() const { return q.z(); }
+    const Scalar& z() const { return mQ.z(); }
 
     /**
      * @brief Casts the Quaternion object to a different scalar type.
@@ -151,7 +151,7 @@ public:
             return *this;
         }
         else {
-            return Quaternion<S>(q.template cast<S>());
+            return Quaternion<S>(mQ.template cast<S>());
         }
     }
 
@@ -166,7 +166,7 @@ public:
      */
     Quaternion<Scalar> conjugate() const
     {
-        return Quaternion<Scalar>(q.conjugate());
+        return Quaternion<Scalar>(mQ.conjugate());
     }
 
     /**
@@ -179,7 +179,7 @@ public:
      * @param[in] q2: the quaternion to compute the dot product with.
      * @return The dot product between this quaternion and the given quaternion.
      */
-    Scalar dot(const Quaternion<Scalar>& q2) const { return q.dot(q2.q); }
+    Scalar dot(const Quaternion<Scalar>& q2) const { return mQ.dot(q2.mQ); }
 
     /**
      * @brief Returns the inverse of the quaternion, which represents the
@@ -195,44 +195,44 @@ public:
      */
     Quaternion<Scalar> inverse() const
     {
-        return Quaternion<Scalar>(q.inverse());
+        return Quaternion<Scalar>(mQ.inverse());
     }
 
-    Scalar norm() const { return q.norm(); }
+    Scalar norm() const { return mQ.norm(); }
 
-    Scalar squaredNorm() const { return q.squaredNorm(); }
+    Scalar squaredNorm() const { return mQ.squaredNorm(); }
 
     constexpr uint size() const { return 4; }
 
-    void setIdentity() { q.setIdentity(); }
+    void setIdentity() { mQ.setIdentity(); }
 
     void set(const Scalar& w, const Scalar& x, const Scalar& y, const Scalar& z)
     {
-        q.w() = w;
-        q.x() = x;
-        q.y() = y;
-        q.z() = z;
+        mQ.w() = w;
+        mQ.x() = x;
+        mQ.y() = y;
+        mQ.z() = z;
     }
 
     void setFromTwoVectors(const Point3<Scalar>& a, const Point3<Scalar>& b)
     {
-        q.setFromTwoVectors(a.eigenVector(), b.eigenVector());
+        mQ.setFromTwoVectors(a.eigenVector(), b.eigenVector());
     }
 
     void setFromAngleAxis(const Scalar& angle, const Point3<Scalar>& axis)
     {
-        q = Eigen::Quaternion<Scalar>(
+        mQ = Eigen::Quaternion<Scalar>(
             Eigen::AngleAxis<Scalar>(angle, axis.eigenVector()));
     }
 
     Quaternion<Scalar> normalized() const
     {
-        return Quaternion<Scalar>(q.normalized());
+        return Quaternion<Scalar>(mQ.normalized());
     }
 
-    void normalize() { q.normalize(); }
+    void normalize() { mQ.normalize(); }
 
-    const Eigen::Quaternion<Scalar>& eigenQuaternion() const { return q; }
+    const Eigen::Quaternion<Scalar>& eigenQuaternion() const { return mQ; }
 
     /**
      * @brief Computes the hash value of the quaternion.
@@ -246,25 +246,25 @@ public:
     {
         std::size_t h = 0;
         for (size_t i = 0; i < 4; ++i)
-            vcl::hashCombine(h, q(i));
+            vcl::hashCombine(h, mQ(i));
         return h;
     }
 
-    Scalar& operator()(uint i) { return q.coeffs()[i]; }
+    Scalar& operator()(uint i) { return mQ.coeffs()[i]; }
 
-    const Scalar& operator()(uint i) const { return q.coeffs()[i]; }
+    const Scalar& operator()(uint i) const { return mQ.coeffs()[i]; }
 
-    Scalar& operator[](uint i) { return q.coeffs()[i]; }
+    Scalar& operator[](uint i) { return mQ.coeffs()[i]; }
 
-    const Scalar& operator[](uint i) const { return q.coeffs()[i]; }
+    const Scalar& operator[](uint i) const { return mQ.coeffs()[i]; }
 
-    bool operator==(const Quaternion<Scalar>& q2) const { return q == q2.q; }
+    bool operator==(const Quaternion<Scalar>& q2) const { return mQ == q2.mQ; }
 
-    bool operator!=(const Quaternion<Scalar>& q2) const { return q != q2.q; }
+    bool operator!=(const Quaternion<Scalar>& q2) const { return mQ != q2.mQ; }
 
     Quaternion<Scalar> operator*(const Quaternion<Scalar>& q2) const
     {
-        return Quaternion<Scalar>(q * q2.q);
+        return Quaternion<Scalar>(mQ * q2.mQ);
     }
 
     /**
@@ -280,24 +280,24 @@ public:
     {
         const Eigen::Matrix<Scalar, 1, 3>& v = p.eigenVector();
 
-        Eigen::Matrix<Scalar, 1, 3> fc = q.vec().cross(v);
+        Eigen::Matrix<Scalar, 1, 3> fc = mQ.vec().cross(v);
 
-        Eigen::Matrix<Scalar, 1, 3> fd = v * q.w();
+        Eigen::Matrix<Scalar, 1, 3> fd = v * mQ.w();
 
         Eigen::Matrix<Scalar, 1, 3> s = fc + fd;
 
-        Eigen::Matrix<Scalar, 1, 3> sc = q.vec().cross(s);
+        Eigen::Matrix<Scalar, 1, 3> sc = mQ.vec().cross(s);
 
         return Point3<Scalar>(v + sc * 2.0);
     }
 
     Quaternion& operator*=(const Quaternion<Scalar>& q2)
     {
-        q *= q2.q;
+        mQ *= q2.mQ;
         return *this;
     }
 
-    Matrix33<Scalar> toRotationMatrix() const { return q.toRotationMatrix(); }
+    Matrix33<Scalar> toRotationMatrix() const { return mQ.toRotationMatrix(); }
 
     /// @private
     template<typename S>
@@ -317,7 +317,7 @@ public:
 template<typename Scalar>
 std::ostream& operator<<(std::ostream& out, const Quaternion<Scalar>& p1)
 {
-    out << p1.q;
+    out << p1.mQ;
     return out;
 }
 

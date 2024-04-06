@@ -64,8 +64,8 @@ class Array
     static_assert(N > 0, "Array dimension must be > 0.");
     friend class Array<T, N + 1>;
 
-    std::array<std::size_t, N> sizes;
-    std::vector<T>             v;
+    std::array<std::size_t, N> mSizes;
+    std::vector<T>             mVec;
 
 public:
     /** @brief The type of the elements stored in the array. */
@@ -104,7 +104,7 @@ public:
      *
      * Creates an N-dimensional array with size 0 for every dimension.
      */
-    Array() : v(0) { sizes.fill(0); }
+    Array() : mVec(0) { mSizes.fill(0); }
 
     /**
      * @brief Constructor for the Array class that creates an N-dimensional
@@ -125,10 +125,10 @@ public:
         std::size_t args[N]   = {static_cast<std::size_t>(s)...};
         std::size_t totalSize = 1;
         for (uint i = 0; i < N; i++) {
-            sizes[i] = args[i];
+            mSizes[i] = args[i];
             totalSize *= args[i];
         }
-        v.resize(totalSize);
+        mVec.resize(totalSize);
     }
 
     /**
@@ -163,7 +163,7 @@ public:
      *
      * @return `true` if the array is empty, `false` otherwise.
      */
-    bool empty() const { return v.empty(); }
+    bool empty() const { return mVec.empty(); }
 
     /**
      * @brief Returns the size of the given dimension.
@@ -175,7 +175,7 @@ public:
     std::size_t size(std::size_t dim) const
     {
         assert(dim < N);
-        return sizes[dim];
+        return mSizes[dim];
     }
 
     /**
@@ -185,7 +185,7 @@ public:
      *
      * @note This function can only be called for 2-dimensional arrays.
      */
-    std::size_t rows() const requires (N == 2) { return sizes[0]; }
+    std::size_t rows() const requires (N == 2) { return mSizes[0]; }
 
     /**
      * @brief Returns the number of columns of a 2-dimensional array.
@@ -194,7 +194,7 @@ public:
      *
      * @note This function can only be called for 2-dimensional arrays.
      */
-    std::size_t cols() const requires (N == 2) { return sizes[1]; }
+    std::size_t cols() const requires (N == 2) { return mSizes[1]; }
 
     /**
      * @brief Returns the size of the X dimension of the array.
@@ -204,7 +204,7 @@ public:
      * @note This function can only be called for arrays with at least one
      * dimension.
      */
-    std::size_t sizeX() const requires (N >= 1) { return sizes[0]; }
+    std::size_t sizeX() const requires (N >= 1) { return mSizes[0]; }
 
     /**
      * @brief Returns the size of the Y dimension of the array.
@@ -214,7 +214,7 @@ public:
      * @note This function can only be called for arrays with at least two
      * dimensions.
      */
-    std::size_t sizeY() const requires (N >= 2) { return sizes[1]; }
+    std::size_t sizeY() const requires (N >= 2) { return mSizes[1]; }
 
     /**
      * @brief Returns the size of the Z dimension of the array.
@@ -224,7 +224,7 @@ public:
      * @note This function can only be called for arrays with at least three
      * dimensions.
      */
-    std::size_t sizeZ() const requires (N >= 3) { return sizes[2]; }
+    std::size_t sizeZ() const requires (N >= 3) { return mSizes[2]; }
 
     /**
      * @brief Returns the size of the W dimension of the array.
@@ -234,7 +234,7 @@ public:
      * @note This function can only be called for arrays with at least four
      * dimensions.
      */
-    std::size_t sizeW() const requires (N >= 4) { return sizes[3]; }
+    std::size_t sizeW() const requires (N >= 4) { return mSizes[3]; }
 
     /**
      * @brief Operator () that allows to access one element of the array. It can
@@ -252,7 +252,7 @@ public:
     Reference operator()(I... indices) requires (sizeof...(indices) == N)
     {
         std::size_t args[N] = {static_cast<std::size_t>(indices)...};
-        return v[getIndex(args)];
+        return mVec[getIndex(args)];
     }
 
     /**
@@ -272,7 +272,7 @@ public:
         requires (sizeof...(indices) == N)
     {
         std::size_t args[N] = {static_cast<std::size_t>(indices)...};
-        return v[getIndex(args)];
+        return mVec[getIndex(args)];
     }
 
     /**
@@ -342,22 +342,22 @@ public:
     {
         constexpr std::size_t n = sizeof...(indices);
         if constexpr (n == 0) {
-            return v.data();
+            return mVec.data();
         }
         else {
             std::size_t args[] = {static_cast<std::size_t>(indices)...};
             std::size_t ind    = args[0];
-            assert(args[0] < sizes[0]);
+            assert(args[0] < mSizes[0]);
             uint i;
             for (i = 1; i < n; i++) {
-                assert(args[i] < sizes[i]);
-                ind *= sizes[i];
+                assert(args[i] < mSizes[i]);
+                ind *= mSizes[i];
                 ind += args[i];
             }
             for (; i < N; i++) {
-                ind *= sizes[i];
+                ind *= mSizes[i];
             }
-            return &v[ind];
+            return &mVec[ind];
         }
     }
 
@@ -368,7 +368,7 @@ public:
      * @return A std::vector containing the elements of the array in row-major
      * order.
      */
-    std::vector<T> stdVector() & { return v; }
+    std::vector<T> stdVector() & { return mVec; }
 
     /**
      * @brief Returns a std::vector containing the elements of the array in
@@ -377,7 +377,7 @@ public:
      * @return A std::vector containing the elements of the array in row-major
      * order.
      */
-    std::vector<T>&& stdVector() && { return std::move(v); }
+    std::vector<T>&& stdVector() && { return std::move(mVec); }
 
     /**
      * @brief Returns a std::vector containing the elements of the array in
@@ -386,14 +386,14 @@ public:
      * @return A const reference to a std::vector containing the elements of the
      * array in row-major order.
      */
-    const std::vector<T>& stdVector() const& { return v; }
+    const std::vector<T>& stdVector() const& { return mVec; }
 
     /**
      * @brief Fills the entire Array with the value t.
      *
      * @param[in] t: The value to fill the array with.
      */
-    void fill(const T& t) { std::fill(v.begin(), v.end(), t); }
+    void fill(const T& t) { std::fill(mVec.begin(), mVec.end(), t); }
 
     /**
      * @brief Fills the entire Array with the values contained in the range r,
@@ -415,10 +415,10 @@ public:
     {
         uint i = 0;
         for (auto it = std::ranges::begin(r);
-             it != std::ranges::end(r) && i < v.size();
+             it != std::ranges::end(r) && i < mVec.size();
              ++i, ++it)
         {
-            v[i] = *it;
+            mVec[i] = *it;
         }
     }
 
@@ -437,10 +437,10 @@ public:
         std::size_t args[N]   = {static_cast<std::size_t>(s)...};
         std::size_t totalSize = 1;
         for (uint i = 0; i < N; i++) {
-            sizes[i] = args[i];
+            mSizes[i] = args[i];
             totalSize *= args[i];
         }
-        v.resize(totalSize);
+        mVec.resize(totalSize);
     }
 
     /**
@@ -465,22 +465,22 @@ public:
             newTotalSize *= newSizes[i];
         std::vector<T> newVector(newTotalSize);
 
-        for (std::size_t i = 0; i < v.size(); i++) {
+        for (std::size_t i = 0; i < mVec.size(); i++) {
             std::array<std::size_t, N> indices    = reverseIndex(i);
             bool                       outOfBound = false;
             for (std::size_t j = 0; j < N; j++)
-                if (indices[j] >= newSizes[j] || indices[j] >= sizes[j])
+                if (indices[j] >= newSizes[j] || indices[j] >= mSizes[j])
                     outOfBound = true;
             if (!outOfBound) {
-                newVector[getIndex(indices.data(), newSizes)] = v[i];
+                newVector[getIndex(indices.data(), newSizes)] = mVec[i];
             }
         }
 
-        for (uint i = 0; i < sizes.size(); i++) {
-            sizes[i] = newSizes[i];
+        for (uint i = 0; i < mSizes.size(); i++) {
+            mSizes[i] = newSizes[i];
         }
 
-        v = std::move(newVector);
+        mVec = std::move(newVector);
     }
 
     /**
@@ -488,9 +488,9 @@ public:
      */
     void clear()
     {
-        v.clear();
+        mVec.clear();
         for (uint i = 0; i < N; i++)
-            sizes[i] = 0;
+            mSizes[i] = 0;
     }
 
     /**
@@ -518,15 +518,15 @@ public:
      */
     Array<T, N - 1> subArray(uint r) const requires (N > 1)
     {
-        assert(r < sizes[0]);
+        assert(r < mSizes[0]);
         Array<T, N - 1> sub;
         size_t          size = 1;
-        for (uint i = 0; i < sizes.size() - 1; i++) {
-            sub.sizes[i] = sizes[i + 1];
-            size *= sub.sizes[i];
+        for (uint i = 0; i < mSizes.size() - 1; i++) {
+            sub.mSizes[i] = mSizes[i + 1];
+            size *= sub.mSizes[i];
         }
-        sub.v =
-            std::vector<T>(v.begin() + r * size, v.begin() + (r + 1) * size);
+        sub.mVec =
+            std::vector<T>(mVec.begin() + r * size, mVec.begin() + (r + 1) * size);
         return sub;
     }
 
@@ -535,28 +535,28 @@ public:
      *
      * @return Iterator to the beginning of the array.
      */
-    Iterator begin() { return v.begin(); }
+    Iterator begin() { return mVec.begin(); }
 
     /**
      * @brief Returns an iterator to the end of the array.
      *
      * @return Iterator to the end of the array.
      */
-    Iterator end() { return v.end(); }
+    Iterator end() { return mVec.end(); }
 
     /**
      * @brief Returns a const iterator to the beginning of the array.
      *
      * @return Const iterator to the beginning of the array.
      */
-    ConstIterator begin() const { return v.begin(); }
+    ConstIterator begin() const { return mVec.begin(); }
 
     /**
      * @brief Returns a const iterator to the end of the array.
      *
      * @return Const iterator to the end of the array.
      */
-    ConstIterator end() const { return v.end(); }
+    ConstIterator end() const { return mVec.end(); }
 
     /// @private
     template<typename S>
@@ -566,10 +566,10 @@ private:
     std::size_t getIndex(const std::size_t indices[]) const
     {
         std::size_t ind = indices[0];
-        assert(indices[0] < sizes[0]);
+        assert(indices[0] < mSizes[0]);
         for (uint i = 1; i < N; i++) {
-            assert(indices[i] < sizes[i]);
-            ind *= sizes[i];
+            assert(indices[i] < mSizes[i]);
+            ind *= mSizes[i];
             ind += indices[i];
         }
         return ind;
@@ -579,8 +579,8 @@ private:
     {
         std::array<std::size_t, N> indices;
         for (long int i = N - 1; i >= 0; i--) {
-            indices[i] = index % sizes[i];
-            index /= sizes[i];
+            indices[i] = index % mSizes[i];
+            index /= mSizes[i];
         }
         return indices;
     }
@@ -608,11 +608,11 @@ private:
         size_t totalSize = 1;
         for (std::size_t s : szs) {
             totalSize *= s;
-            sizes[i++] = s;
+            mSizes[i++] = s;
         }
-        v.resize(totalSize);
+        mVec.resize(totalSize);
 
-        typename std::vector<T>::iterator iterator = v.begin();
+        typename std::vector<T>::iterator iterator = mVec.begin();
         NestedInitializerListsProcessor<T, N>::processElements(
             values,
             [&iterator](T value) {

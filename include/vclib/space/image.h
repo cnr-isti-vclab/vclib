@@ -39,7 +39,7 @@ namespace vcl {
  */
 class Image
 {
-    vcl::Array2<uint32_t> img;
+    vcl::Array2<uint32_t> mImg;
 
 public:
     Image() {}
@@ -70,19 +70,19 @@ public:
         Color::Format::Enum format = Color::Format::ABGR)
     {
         if (data) {
-            img.resize(h, w);
+            mImg.resize(h, w);
             std::size_t size = w * h;
 
             auto* cdata = reinterpret_cast<const uint32_t*>(data);
 
             if (format == Color::Format::ABGR) {
-                std::copy(cdata, cdata + size, img.data());
+                std::copy(cdata, cdata + size, mImg.data());
             }
             else {
                 for (uint i = 0; i < h; i++) {
                     for (uint j = 0; j < w; j++) {
                         vcl::Color c(cdata[i * w + j], format);
-                        img(i, j) = c.abgr();
+                        mImg(i, j) = c.abgr();
                     }
                 }
             }
@@ -93,22 +93,22 @@ public:
         }
     }
 
-    bool isNull() const { return img.empty(); }
+    bool isNull() const { return mImg.empty(); }
 
-    int height() const { return img.rows(); }
+    int height() const { return mImg.rows(); }
 
-    int width() const { return img.cols(); }
+    int width() const { return mImg.cols(); }
 
-    std::size_t sizeInBytes() const { return img.rows() * img.cols() * 4; }
+    std::size_t sizeInBytes() const { return mImg.rows() * mImg.cols() * 4; }
 
     vcl::Color pixel(uint i, uint j) const
     {
-        return vcl::Color(static_cast<vcl::Color::ColorABGR>(img(i, j)));
+        return vcl::Color(static_cast<vcl::Color::ColorABGR>(mImg(i, j)));
     }
 
     const unsigned char* data() const
     {
-        return reinterpret_cast<const unsigned char*>(img.data());
+        return reinterpret_cast<const unsigned char*>(mImg.data());
     }
 
     bool load(const std::string& filename)
@@ -120,11 +120,11 @@ public:
         if (tmp) {
             std::size_t size = w * h * 4;
 
-            img.resize(w, h);
+            mImg.resize(w, h);
             std::copy(
                 tmp.get(),
                 tmp.get() + size,
-                reinterpret_cast<unsigned char*>(img.data()));
+                reinterpret_cast<unsigned char*>(mImg.data()));
             return true;
         }
         else {
@@ -134,22 +134,22 @@ public:
 
     void save(const std::string& filename, uint quality = 90) const
     {
-        auto* data = reinterpret_cast<const unsigned char*>(img.data());
-        saveImageData(filename, img.cols(), img.rows(), data, quality);
+        auto* data = reinterpret_cast<const unsigned char*>(mImg.data());
+        saveImageData(filename, mImg.cols(), mImg.rows(), data, quality);
     }
 
     void mirror(bool horizontal = false, bool vertical = true)
     {
         if (horizontal) {
-            for (uint i = 0; i < img.rows(); i++) {
-                std::reverse(img.data(i), img.data(i) + img.cols());
+            for (uint i = 0; i < mImg.rows(); i++) {
+                std::reverse(mImg.data(i), mImg.data(i) + mImg.cols());
             }
         }
         if (vertical) {
-            for (uint i = 0; i < img.rows() / 2; i++) {
-                uint mir = img.rows() - i - 1;
+            for (uint i = 0; i < mImg.rows() / 2; i++) {
+                uint mir = mImg.rows() - i - 1;
                 std::swap_ranges(
-                    img.data(i), img.data(i) + img.cols(), img.data(mir));
+                    mImg.data(i), mImg.data(i) + mImg.cols(), mImg.data(mir));
             }
         }
     }

@@ -49,20 +49,20 @@ class StaticGrid :
 
     friend AbsGrid;
 
-    PairComparator comparator = PairComparator();
+    PairComparator mComparator = PairComparator();
 
     // each value is stored as a pair: [cell index of the grid - value]
     // when the grid is built, this vector is sorted by the cell indices
-    std::vector<PairType> values;
+    std::vector<PairType> mValues;
 
     // for each cell of the grid, we store the index (in the values vector ) of
     // the first ValueType object contained in the cell, or values.size() if the
     // cell is empty
-    std::vector<uint> grid;
+    std::vector<uint> mGrid;
 
 public:
     using KeyType          = AbsGrid::KeyType;
-    using IsInCellFunction = AbsGrid::IsInCellFunction;
+    using IntersectsCellFunction = AbsGrid::IntersectsCellFunction;
 
     using Iterator      = StaticGridIterator<KeyType, ValueType, GridType>;
     using ConstIterator = ConstStaticGridIterator<KeyType, ValueType, GridType>;
@@ -75,7 +75,7 @@ public:
     StaticGrid(
         ObjIterator             begin,
         ObjIterator             end,
-        const IsInCellFunction& intersects = nullptr) :
+        const IntersectsCellFunction& intersects = nullptr) :
             AbsGrid(begin, end, intersects)
     {
         AbsGrid::insert(begin, end);
@@ -83,7 +83,7 @@ public:
     }
 
     template<vcl::Range Rng>
-    StaticGrid(Rng&& r, const IsInCellFunction& intersects = nullptr) :
+    StaticGrid(Rng&& r, const IntersectsCellFunction& intersects = nullptr) :
             StaticGrid(std::ranges::begin(r), std::ranges::end(r), intersects)
     {
     }
@@ -95,46 +95,46 @@ public:
             totCellNumber *= GridType::cellNumber(i);
         }
 
-        grid.resize(totCellNumber);
+        mGrid.resize(totCellNumber);
 
-        std::sort(values.begin(), values.end(), comparator);
+        std::sort(mValues.begin(), mValues.end(), mComparator);
 
         // values[vi].first points to the next non empty cell in the grid
         uint vi = 0;
 
         // for each cell
-        for (uint ci = 0; ci < grid.size(); ++ci) {
+        for (uint ci = 0; ci < mGrid.size(); ++ci) {
             // values[vi] is in the cell ci
-            if (vi < values.size() && values[vi].first == ci)
-                grid[ci] = vi;
+            if (vi < mValues.size() && mValues[vi].first == ci)
+                mGrid[ci] = vi;
             else { // there are no values in this grid cell
-                grid[ci] = values.size(); // set the sentinel value
+                mGrid[ci] = mValues.size(); // set the sentinel value
             }
 
             // move vi to the next non-empty cell
             // skip all the values that are in the current cell ci
             // won't increment vi if the values[vi].first is not equal to ci
-            while (vi < values.size() && values[vi].first == ci) {
+            while (vi < mValues.size() && mValues[vi].first == ci) {
                 vi++;
             }
         }
     }
 
-    bool empty() const { return values.empty(); }
+    bool empty() const { return mValues.empty(); }
 
     bool cellEmpty(const KeyType& k) const
     {
         uint ind = GridType::indexOfCell(k);
-        return grid[ind] == values.size();
+        return mGrid[ind] == mValues.size();
     }
 
     std::set<KeyType> nonEmptyCells() const
     {
         std::set<KeyType> keys;
-        uint              actualInd = values.size();
-        for (uint i = 0; i < values.size(); ++i) {
-            if (values[i].first != actualInd) {
-                actualInd = values[i].first;
+        uint              actualInd = mValues.size();
+        for (uint i = 0; i < mValues.size(); ++i) {
+            if (mValues[i].first != actualInd) {
+                actualInd = mValues[i].first;
                 keys.insert(GridType::cellOfIndex(actualInd));
             }
         }
@@ -144,10 +144,10 @@ public:
     std::size_t countInCell(const KeyType& k) const
     {
         uint ind = GridType::indexOfCell(k);
-        uint i   = grid[ind];
+        uint i   = mGrid[ind];
         uint cnt = 0;
 
-        while (i < values.size() && values[i].first == ind) {
+        while (i < mValues.size() && mValues[i].first == ind) {
             i++;
             cnt++;
         }
@@ -157,14 +157,14 @@ public:
     std::pair<Iterator, Iterator> valuesInCell(const KeyType& k)
     {
         uint ind = GridType::indexOfCell(k);
-        uint i   = grid[ind];
-        if (i < values.size()) {
+        uint i   = mGrid[ind];
+        if (i < mValues.size()) {
             std::pair<Iterator, Iterator> p;
-            p.first = Iterator(values.begin() + i, (const GridType&) *this);
-            while (i < values.size() && values[i].first == ind) {
+            p.first = Iterator(mValues.begin() + i, (const GridType&) *this);
+            while (i < mValues.size() && mValues[i].first == ind) {
                 i++;
             }
-            auto it  = i < values.size() ? values.begin() + i : values.end();
+            auto it  = i < mValues.size() ? mValues.begin() + i : mValues.end();
             p.second = Iterator(it, (const GridType&) *this);
             return p;
         }
@@ -176,15 +176,15 @@ public:
     std::pair<ConstIterator, ConstIterator> valuesInCell(const KeyType& k) const
     {
         uint ind = GridType::indexOfCell(k);
-        uint i   = grid[ind];
-        if (i < values.size()) {
+        uint i   = mGrid[ind];
+        if (i < mValues.size()) {
             std::pair<ConstIterator, ConstIterator> p;
             p.first =
-                ConstIterator(values.begin() + i, (const GridType&) *this);
-            while (i < values.size() && values[i].first == ind) {
+                ConstIterator(mValues.begin() + i, (const GridType&) *this);
+            while (i < mValues.size() && mValues[i].first == ind) {
                 i++;
             }
-            auto it  = i < values.size() ? values.begin() + i : values.end();
+            auto it  = i < mValues.size() ? mValues.begin() + i : mValues.end();
             p.second = ConstIterator(it, (const GridType&) *this);
             return p;
         }
@@ -195,19 +195,19 @@ public:
 
     Iterator begin()
     {
-        return Iterator(values.begin(), (const GridType&) *this);
+        return Iterator(mValues.begin(), (const GridType&) *this);
     }
 
     ConstIterator begin() const
     {
-        return ConstIterator(values.begin(), (const GridType&) *this);
+        return ConstIterator(mValues.begin(), (const GridType&) *this);
     }
 
-    Iterator end() { return Iterator(values.end(), (const GridType&) *this); }
+    Iterator end() { return Iterator(mValues.end(), (const GridType&) *this); }
 
     ConstIterator end() const
     {
-        return ConstIterator(values.end(), (const GridType&) *this);
+        return ConstIterator(mValues.end(), (const GridType&) *this);
     }
 
 private:
@@ -219,7 +219,7 @@ private:
     bool insertInCell(const KeyType& cell, const ValueType& v)
     {
         uint cellIndex = GridType::indexOfCell(cell);
-        values.emplace_back(cellIndex, v);
+        mValues.emplace_back(cellIndex, v);
         return true;
     }
 
