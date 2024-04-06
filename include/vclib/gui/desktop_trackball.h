@@ -159,12 +159,12 @@ public:
 
     const Camera<Scalar>& camera() const { return trackball.camera(); }
 
-    const Matrix44<Scalar>& viewMatrix() const
+    Matrix44<Scalar> viewMatrix() const
     {
         return trackball.camera().viewMatrix();
     }
 
-    const Matrix44<Scalar>& projectionMatrix() const
+    Matrix44<Scalar> projectionMatrix() const
     {
         return trackball.camera().projMatrix();
     }

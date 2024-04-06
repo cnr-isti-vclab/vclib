@@ -30,6 +30,13 @@ namespace vcl {
 template<typename Scalar>
 class Camera
 {
+public:
+    enum ProjectionMode {
+        Ortho,
+        Perspective
+    };
+
+private:
     using PointType  = vcl::Point3<Scalar>;
     using MatrixType = vcl::Matrix44<Scalar>;
 
@@ -38,37 +45,16 @@ class Camera
     PointType eyePos    = PointType(0.0f, 0.0f, 1.0f);
     PointType upDir     = PointType(0.0f, 1.0f, 0.0f);
 
-    MatrixType viewMat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
-
     // intrinsic parameters
     Scalar fov    = 60.0;
     Scalar aspect = 1.0;
     Scalar near   = 0.1;
     Scalar far    = 500.0;
 
-    MatrixType projMat =
-        projectionMatrix<MatrixType>(fov, aspect, near, far, false);
-
 public:
     Camera() = default;
 
     void reset() { *this = {}; }
-
-    void updateViewMatrix()
-    {
-        viewMat = lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
-    }
-
-    void updateProjMatrix()
-    {
-        projMat = projectionMatrix<MatrixType>(fov, aspect, near, far, false);
-    }
-
-    void updateMatrices()
-    {
-        updateViewMatrix();
-        updateProjMatrix();
-    }
 
     PointType& center() { return centerPos; }
 
@@ -81,10 +67,6 @@ public:
     PointType& up() { return upDir; }
 
     const PointType& up() const { return upDir; }
-
-    MatrixType& viewMatrix() { return viewMat; }
-
-    const MatrixType& viewMatrix() const { return viewMat; }
 
     Scalar& fieldOfView() { return fov; }
 
@@ -102,9 +84,15 @@ public:
 
     const Scalar& farPlane() const { return far; }
 
-    MatrixType& projMatrix() { return projMat; }
+    MatrixType viewMatrix() const
+    {
+        return lookAtMatrix<MatrixType>(eyePos, centerPos, upDir);
+    }
 
-    const MatrixType& projMatrix() const { return projMat; }
+    MatrixType projMatrix() const
+    {
+        return projectionMatrix<MatrixType>(fov, aspect, near, far, false);
+    }
 };
 
 } // namespace vcl
