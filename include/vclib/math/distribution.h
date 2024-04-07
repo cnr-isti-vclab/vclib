@@ -39,16 +39,16 @@ namespace vcl {
 template<typename Scalar>
 class Distribution
 {
-    std::set<Scalar> set;
+    std::set<Scalar> mSet;
 
-    Scalar minValue = std::numeric_limits<Scalar>::max();
-    Scalar maxValue = std::numeric_limits<Scalar>::lowest();
+    Scalar mMin = std::numeric_limits<Scalar>::max();
+    Scalar mMax = std::numeric_limits<Scalar>::lowest();
 
-    Scalar valSum     = 0;
-    Scalar sqrdValSum = 0;
-    Scalar valAvg     = 0;
-    Scalar sqrdValAvg = 0;
-    Scalar valRMS     = 0;
+    Scalar mSum     = 0;
+    Scalar mSqrdSum = 0;
+    Scalar mAvg     = 0;
+    Scalar mSqrdAvg = 0;
+    Scalar mRMS     = 0;
 
 public:
     /**
@@ -61,14 +61,14 @@ public:
      */
     void clear()
     {
-        set.clear();
-        minValue   = std::numeric_limits<Scalar>::max();
-        maxValue   = std::numeric_limits<Scalar>::lowest();
-        valSum     = 0;
-        sqrdValSum = 0;
-        valAvg     = 0;
-        sqrdValAvg = 0;
-        valRMS     = 0;
+        mSet.clear();
+        mMin   = std::numeric_limits<Scalar>::max();
+        mMax   = std::numeric_limits<Scalar>::lowest();
+        mSum     = 0;
+        mSqrdSum = 0;
+        mAvg     = 0;
+        mSqrdAvg = 0;
+        mRMS     = 0;
     }
 
     /**
@@ -77,16 +77,16 @@ public:
      */
     void add(Scalar v)
     {
-        set.insert(v);
-        if (v < minValue)
-            minValue = v;
-        if (v > maxValue)
-            maxValue = v;
-        valSum += v;
-        sqrdValSum += v * v;
-        valAvg     = valSum / set.size();
-        sqrdValAvg = sqrdValSum / set.size();
-        valRMS     = std::sqrt(sqrdValAvg);
+        mSet.insert(v);
+        if (v < mMin)
+            mMin = v;
+        if (v > mMax)
+            mMax = v;
+        mSum += v;
+        mSqrdSum += v * v;
+        mAvg     = mSum / mSet.size();
+        mSqrdAvg = mSqrdSum / mSet.size();
+        mRMS     = std::sqrt(mSqrdAvg);
     }
 
     /**
@@ -95,7 +95,7 @@ public:
      * If the distribution is empty, returns std::numeric_limits::max().
      * @return The minimum of the distribution values.
      */
-    Scalar min() const { return minValue; }
+    Scalar min() const { return mMin; }
 
     /**
      * @brief Returns the maximum value of the distribution.
@@ -103,37 +103,37 @@ public:
      * If the distribution is empty, returns std::numeric_limits::lowest().
      * @return The maximum of the distribution values.
      */
-    Scalar max() const { return maxValue; }
+    Scalar max() const { return mMax; }
 
     /**
      * @brief Returns the number of values of the distribution.
      * @return The size of the distribution.
      */
-    uint size() const { return set.size(); }
+    uint size() const { return mSet.size(); }
 
     /**
      * @brief Returns the sum of the values of the distribution.
      * @return The sum of the distribution values.
      */
-    Scalar sum() const { return valSum; }
+    Scalar sum() const { return mSum; }
 
     /**
      * @brief Returns the average of the values of the distribution.
      * @return The average of the distribution values.
      */
-    Scalar average() const { return valAvg; }
+    Scalar average() const { return mAvg; }
 
     /**
      * @brief Returns the root mean square of the values of the distribution.
      * @return The root mean square of the distribution values.
      */
-    Scalar rootMeanSquare() const { return valRMS; }
+    Scalar rootMeanSquare() const { return mRMS; }
 
     /**
      * @brief Returns the variance of the values of the distribution.
      * @return The variance of the distribution values.
      */
-    Scalar variance() const { return sqrdValAvg - valAvg * valAvg; }
+    Scalar variance() const { return mSqrdAvg - mAvg * mAvg; }
 
     /**
      * @brief Returns the standard deviation of the values of the distribution.
@@ -149,13 +149,13 @@ public:
      */
     Scalar percentile(Scalar perc) const
     {
-        assert(!set.empty());
+        assert(!mSet.empty());
         assert(perc >= 0 && perc <= 1);
 
-        int index = set.size() * perc - 1;
+        int index = mSet.size() * perc - 1;
         if (index < 0)
             index = 0;
-        auto it = set.begin();
+        auto it = mSet.begin();
         std::advance(it, index);
         return *it;
     }

@@ -34,21 +34,21 @@ namespace vcl {
 template<typename ScalarType>
 class Histogram
 {
-    std::vector<ScalarType> H; // Counters for bins
-    std::vector<ScalarType> R; // Range for bins
+    std::vector<ScalarType> mHist; // Counters for bins
+    std::vector<ScalarType> mRanges; // Range for bins
 
-    ScalarType minRangeVal = 0; // Minimum range value
-    ScalarType maxRangeVal = 1; // Maximum range value
+    ScalarType mMinRange = 0; // Minimum range value
+    ScalarType mMaxRange = 1; // Maximum range value
 
-    ScalarType minVal = std::numeric_limits<ScalarType>::max();
-    ScalarType maxVal = std::numeric_limits<ScalarType>::lowest();
+    ScalarType mMin = std::numeric_limits<ScalarType>::max();
+    ScalarType mMax = std::numeric_limits<ScalarType>::lowest();
 
     // Number of valid bins stored between minRangeValue and maxRangeValue
-    uint nBins = 0;
+    uint mBinNumber = 0;
 
-    ScalarType cnt = 0; // Number of accumulated values
-    ScalarType sum = 0; // Sum of values
-    ScalarType rms = 0; // Root mean square
+    ScalarType mCnt = 0; // Number of accumulated values
+    ScalarType mSum = 0; // Sum of values
+    ScalarType mRMS = 0; // Root mean square
 
 public:
     Histogram() = default;
@@ -68,24 +68,24 @@ public:
         ScalarType maxRangeValue,
         uint       nBins,
         ScalarType gamma = 1.0) :
-            minRangeVal(minRangeValue),
-            maxRangeVal(maxRangeValue), nBins(nBins)
+            mMinRange(minRangeValue),
+            mMaxRange(maxRangeValue), mBinNumber(nBins)
     {
-        H.resize(nBins + 2, 0);
+        mHist.resize(nBins + 2, 0);
 
-        R.resize(nBins + 3);
+        mRanges.resize(nBins + 3);
 
-        R[0]         = -std::numeric_limits<ScalarType>::max();
-        R[nBins + 2] = std::numeric_limits<ScalarType>::max();
+        mRanges[0]         = -std::numeric_limits<ScalarType>::max();
+        mRanges[nBins + 2] = std::numeric_limits<ScalarType>::max();
 
-        double delta = (maxRangeVal - minRangeVal);
+        double delta = (mMaxRange - mMinRange);
         if (gamma == 1) {
             for (uint i = 0; i <= nBins; ++i)
-                R[i + 1] = minRangeVal + delta * ScalarType(i) / nBins;
+                mRanges[i + 1] = mMinRange + delta * ScalarType(i) / nBins;
         }
         else {
             for (uint i = 0; i <= nBins; ++i)
-                R[i + 1] = minRangeVal +
+                mRanges[i + 1] = mMinRange +
                            delta * std::pow(ScalarType(i) / nBins, gamma);
         }
     }
@@ -95,16 +95,16 @@ public:
      */
     void clear()
     {
-        H.clear();
-        R.clear();
-        cnt         = 0;
-        sum         = 0;
-        rms         = 0;
-        nBins       = 0;
-        minRangeVal = 0;
-        maxRangeVal = 1;
-        minVal      = std::numeric_limits<ScalarType>::max();
-        maxVal      = std::numeric_limits<ScalarType>::lowest();
+        mHist.clear();
+        mRanges.clear();
+        mCnt         = 0;
+        mSum         = 0;
+        mRMS         = 0;
+        mBinNumber       = 0;
+        mMinRange = 0;
+        mMaxRange = 1;
+        mMin      = std::numeric_limits<ScalarType>::max();
+        mMax      = std::numeric_limits<ScalarType>::lowest();
     }
 
     /**
@@ -116,52 +116,52 @@ public:
     void addValue(ScalarType value, ScalarType increment = 1.0)
     {
         uint pos = binIndex(value);
-        if (value < minVal)
-            minVal = value;
-        if (value > maxVal)
-            maxVal = value;
-        assert((pos >= 0) && (pos <= nBins + 1));
-        H[pos] += increment;
-        cnt += increment;
-        sum += value * increment;
-        rms += (value * value) * increment;
+        if (value < mMin)
+            mMin = value;
+        if (value > mMax)
+            mMax = value;
+        assert((pos >= 0) && (pos <= mBinNumber + 1));
+        mHist[pos] += increment;
+        mCnt += increment;
+        mSum += value * increment;
+        mRMS += (value * value) * increment;
     }
 
     /**
      * @brief Minimum value of the range where the histogram is defined.
      * @return
      */
-    ScalarType minRangeValue() const { return minRangeVal; }
+    ScalarType minRangeValue() const { return mMinRange; }
 
     /**
      * @brief Maximum value of the range where the histogram is defined.
      * @return
      */
-    ScalarType maxRangeValue() const { return maxRangeVal; }
+    ScalarType maxRangeValue() const { return mMaxRange; }
 
     /**
      * @brief Total sum of inserted values.
      * @return
      */
-    ScalarType sumValues() const { return sum; }
+    ScalarType sumValues() const { return mSum; }
 
     /**
      * @brief Number of values inserted in the histogram.
      * @return
      */
-    ScalarType numberValues() const { return cnt; }
+    ScalarType numberValues() const { return mCnt; }
 
     /**
      * @brief Minimum value that has been added to the histogram.
      * @return
      */
-    ScalarType minValue() const { return minVal; }
+    ScalarType minValue() const { return mMin; }
 
     /**
      * @brief Maximum value that has been added to the histogram.
      * @return
      */
-    ScalarType maxValue() const { return maxVal; }
+    ScalarType maxValue() const { return mMax; }
 
     /**
      * @brief Max number of values among all bins (including the two infinity
@@ -170,7 +170,7 @@ public:
      */
     ScalarType maxBinCount() const
     {
-        return *(std::max_element(H.begin(), H.end()));
+        return *(std::max_element(mHist.begin(), mHist.end()));
     }
 
     /**
@@ -180,24 +180,24 @@ public:
      */
     ScalarType maxBinCountInRange() const
     {
-        return *(std::max_element(H.begin() + 1, H.end() - 1));
+        return *(std::max_element(mHist.begin() + 1, mHist.end() - 1));
     }
 
     /**
      * @brief Number of intervals in the histogram
      * @return
      */
-    uint binsNumber() const { return nBins; }
+    uint binsNumber() const { return mBinNumber; }
 
-    ScalarType binCount(uint ind) const { return H[ind]; }
+    ScalarType binCount(uint ind) const { return mHist[ind]; }
 
-    ScalarType binLowerBound(uint ind) const { return R[ind]; }
+    ScalarType binLowerBound(uint ind) const { return mRanges[ind]; }
 
-    ScalarType binUpperBound(uint ind) const { return R[ind + 1]; }
+    ScalarType binUpperBound(uint ind) const { return mRanges[ind + 1]; }
 
     ScalarType binOfValueCount(ScalarType value) const
     {
-        return H[binIndex(value)];
+        return mHist[binIndex(value)];
     }
 
     ScalarType binOfValueCount(ScalarType value, ScalarType width) const
@@ -208,7 +208,7 @@ public:
     ScalarType binOfValueWidth(ScalarType value)
     {
         uint pos = BinIndex(value);
-        return R[pos + 1] - R[pos];
+        return mRanges[pos + 1] - mRanges[pos];
     }
 
     ScalarType rangeCount(ScalarType rangeMin, ScalarType rangeMax) const
@@ -218,7 +218,7 @@ public:
 
         ScalarType sum = 0;
         for (uint i = firstBin; i <= lastBin; ++i)
-            sum += H[i];
+            sum += mHist[i];
         return sum;
     }
 
@@ -231,35 +231,35 @@ public:
      */
     ScalarType percentile(ScalarType frac) const
     {
-        if (H.size() == 0)
+        if (mHist.size() == 0)
             return 0;
 
         // check percentile range
         assert(frac >= 0 && frac <= 1);
 
-        ScalarType sum     = cnt * frac;
+        ScalarType sum     = mCnt * frac;
         ScalarType partsum = 0;
 
         uint i = 0;
         while (partsum < sum) {
-            partsum += H[i];
+            partsum += mHist[i];
             ++i;
         }
 
-        return R[i + 1];
+        return mRanges[i + 1];
     }
 
     /**
      * @brief Returns the average of the data.
      * @return
      */
-    ScalarType average() const { return sum / cnt; }
+    ScalarType average() const { return mSum / mCnt; }
 
     /**
      * @brief Returns the Root Mean Square of the data.
      * @return
      */
-    ScalarType rootMeanSquare() const { return std::sqrt(rms / cnt); }
+    ScalarType rootMeanSquare() const { return std::sqrt(mRMS / mCnt); }
 
     /**
      * @brief Returns the variance of the data.
@@ -267,7 +267,7 @@ public:
      */
     ScalarType variance() const
     {
-        return std::abs(rms / cnt - average() * average());
+        return std::abs(mRMS / mCnt - average() * average());
     }
 
     /**
@@ -286,16 +286,16 @@ private:
         // that, for every iterator j in [first, i), *j < value. E.g. An
         // iterator pointing to the first element "not less than" val, or end()
         // if every element is less than val.
-        auto it = std::lower_bound(R.begin(), R.end(), elem);
+        auto it = std::lower_bound(mRanges.begin(), mRanges.end(), elem);
 
-        assert(it != R.begin());
-        assert(it != R.end());
+        assert(it != mRanges.begin());
+        assert(it != mRanges.end());
 
-        uint pos = it - R.begin();
+        uint pos = it - mRanges.begin();
         pos -= 1;
 
-        assert(R[pos] < elem);
-        assert(elem <= R[pos + 1]);
+        assert(mRanges[pos] < elem);
+        assert(elem <= mRanges[pos + 1]);
         return pos;
     }
 };
