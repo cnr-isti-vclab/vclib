@@ -96,11 +96,10 @@ public:
 
     void setFieldOfViewAdaptingEyeDistance(const Scalar& fov)
     {
-        m_fovDeg = fov;
+        m_fovDeg              = fov;
         PointType targetToEye = (m_eye - m_center).normalized();
-        m_eye =
-            m_center + targetToEye * ((m_verticalHeight / 2.0) /
-                                       std::tan((fov / 2.0) / 180.0 * M_PI));
+        m_eye = m_center + targetToEye * ((m_verticalHeight / 2.0) /
+                                          std::tan((fov / 2.0) / 180.0 * M_PI));
     }
 
     ProjectionMode::Enum& projectionMode() { return m_projectionMode; }
@@ -131,20 +130,18 @@ public:
     MatrixType projMatrix() const
     {
         switch (m_projectionMode) {
-        case ProjectionMode::PERSPECTIVE : {
+        case ProjectionMode::PERSPECTIVE: {
             return projectionMatrix<MatrixType>(
                 m_fovDeg, m_aspect, m_near, m_far, false);
         }
-        case ProjectionMode::ORTHO : {
+        case ProjectionMode::ORTHO: {
             const Scalar h = m_verticalHeight / 2.0;
             const Scalar w = h * m_aspect;
             return orthoProjectionMatrix<MatrixType>(
                 -w, w, -h, h, m_near, m_far, false);
             break;
         }
-        default:
-            assert(false);
-            return MatrixType::Identity();
+        default: assert(false); return MatrixType::Identity();
         }
     }
 };
