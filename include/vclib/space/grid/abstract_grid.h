@@ -109,9 +109,9 @@ class AbstractGrid : public GridType
 {
 public:
     /**
-     * @brief The IntersectsCellFunction type is a std::function that takes as input
-     * a bounding box and a value, and returns true if the value intersects the
-     * bounding box.
+     * @brief The IntersectsCellFunction type is a std::function that takes as
+     * input a bounding box and a value, and returns true if the value
+     * intersects the bounding box.
      *
      * It is used to customize the behavior of the grid when inserting values.
      */
@@ -213,7 +213,8 @@ public:
             // custom intersection function between cell and value
             if (mIntersectsFun) {
                 for (const auto& cell : GridType::cells(bmin, bmax)) {
-                    if (mIntersectsFun(GridType::cellBox(cell), dereferencePtr(v)))
+                    if (mIntersectsFun(
+                            GridType::cellBox(cell), dereferencePtr(v)))
                     {
                         ins |= static_cast<DerivedGrid*>(this)->insertInCell(
                             cell, v);
@@ -604,8 +605,11 @@ protected:
      * inserted value intersects (lies in) a cell. If nullptr, the default
      * intersects function will be used.
      */
-    AbstractGrid(const GridType& grid, IntersectsCellFunction intersects = nullptr) :
-            GridType(grid), mIntersectsFun(intersects)
+    AbstractGrid(
+        const GridType&        grid,
+        IntersectsCellFunction intersects = nullptr) :
+            GridType(grid),
+            mIntersectsFun(intersects)
     {
     }
 
@@ -624,9 +628,9 @@ protected:
      */
     template<PointConcept PointType>
     AbstractGrid(
-        const PointType& min,
-        const PointType& max,
-        const KeyType&   sizes,
+        const PointType&       min,
+        const PointType&       max,
+        const KeyType&         sizes,
         IntersectsCellFunction intersects = nullptr) :
             GridType(min, max, sizes),
             mIntersectsFun(intersects)
@@ -646,8 +650,8 @@ protected:
      */
     template<typename BoxType>
     AbstractGrid(
-        const BoxType&   bbox,
-        const KeyType&   sizes,
+        const BoxType&         bbox,
+        const KeyType&         sizes,
         IntersectsCellFunction intersects = nullptr) :
             GridType(bbox, sizes),
             mIntersectsFun(intersects)
@@ -676,8 +680,8 @@ protected:
      */
     template<typename ObjIterator>
     AbstractGrid(
-        ObjIterator      begin,
-        ObjIterator      end,
+        ObjIterator            begin,
+        ObjIterator            end,
         IntersectsCellFunction intersects = nullptr) :
             mIntersectsFun(intersects)
     {

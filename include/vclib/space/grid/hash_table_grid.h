@@ -101,8 +101,8 @@ public:
      */
     template<typename ObjIterator>
     HashTableGrid(
-        ObjIterator             begin,
-        ObjIterator             end,
+        ObjIterator                   begin,
+        ObjIterator                   end,
         const IntersectsCellFunction& intersects = nullptr) :
             AbsGrid(begin, end, intersects)
     {
@@ -130,7 +130,10 @@ public:
      * @param k
      * @return
      */
-    bool cellEmpty(const KeyType& k) const { return mMap.find(k) == mMap.end(); }
+    bool cellEmpty(const KeyType& k) const
+    {
+        return mMap.find(k) == mMap.end();
+    }
 
     /**
      * @brief Returns an std::set containing the cell coordinates of all the

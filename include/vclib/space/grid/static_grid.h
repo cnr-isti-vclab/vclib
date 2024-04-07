@@ -61,7 +61,7 @@ class StaticGrid :
     std::vector<uint> mGrid;
 
 public:
-    using KeyType          = AbsGrid::KeyType;
+    using KeyType                = AbsGrid::KeyType;
     using IntersectsCellFunction = AbsGrid::IntersectsCellFunction;
 
     using Iterator      = StaticGridIterator<KeyType, ValueType, GridType>;
@@ -73,8 +73,8 @@ public:
 
     template<typename ObjIterator>
     StaticGrid(
-        ObjIterator             begin,
-        ObjIterator             end,
+        ObjIterator                   begin,
+        ObjIterator                   end,
         const IntersectsCellFunction& intersects = nullptr) :
             AbsGrid(begin, end, intersects)
     {

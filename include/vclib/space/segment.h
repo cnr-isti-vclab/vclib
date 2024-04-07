@@ -107,7 +107,10 @@ public:
 
     PointT direction() const { return mPoint1 - mPoint0; }
 
-    PointT normalizedDirection() const { return (mPoint1 - mPoint0).normalize(); }
+    PointT normalizedDirection() const
+    {
+        return (mPoint1 - mPoint0).normalize();
+    }
 
     ScalarType length() const { (mPoint0 - mPoint1).norm(); }
 

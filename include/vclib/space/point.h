@@ -524,7 +524,8 @@ public:
     }
 
     /**
-     * @brief Returns the outer product between this point mP and p1, which is mP
+     * @brief Returns the outer product between this point mP and p1, which is
+     * mP
      * * p1^T
      *
      * The returned type is a DIM*DIM Eigen Matrix, where DIM is the number of
@@ -843,7 +844,8 @@ public:
         s(1) = m(1, 0) * mP(0) + m(1, 1) * mP(1) + m(1, 2) * mP(2) + m(1, 3);
         s(2) = m(2, 0) * mP(0) + m(2, 1) * mP(1) + m(2, 2) * mP(2) + m(2, 3);
 
-        Scalar w = mP(0) * m(3, 0) + mP(1) * m(3, 1) + mP(2) * m(3, 2) + m(3, 3);
+        Scalar w =
+            mP(0) * m(3, 0) + mP(1) * m(3, 1) + mP(2) * m(3, 2) + m(3, 3);
         if (w != 0)
             s = s / w;
         return Point(s);

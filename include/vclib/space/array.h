@@ -525,8 +525,8 @@ public:
             sub.mSizes[i] = mSizes[i + 1];
             size *= sub.mSizes[i];
         }
-        sub.mVec =
-            std::vector<T>(mVec.begin() + r * size, mVec.begin() + (r + 1) * size);
+        sub.mVec = std::vector<T>(
+            mVec.begin() + r * size, mVec.begin() + (r + 1) * size);
         return sub;
     }
 

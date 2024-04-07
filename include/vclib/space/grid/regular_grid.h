@@ -218,7 +218,7 @@ protected:
     void set(const Box<Point<Scalar, N>>& box, const Point<uint, N>& size)
     {
         mBBox = box;
-        mSize  = size;
+        mSize = size;
     }
 };
 

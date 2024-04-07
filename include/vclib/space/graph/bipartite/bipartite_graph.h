@@ -319,7 +319,7 @@ public:
     bool setLeftNode(const T1& old, const T1& newInfo)
     {
         try {
-            int uid     = getIdLeftNode(old);
+            int uid      = getIdLeftNode(old);
             mNodesL[uid] = UndirectedNode<T1>(newInfo);
             mMapL.erase(old);
             mMapL[newInfo] = uid;
@@ -339,7 +339,7 @@ public:
     bool setRightNode(const T2& old, const T2& newInfo)
     {
         try {
-            int vid     = getIdRightNode(old);
+            int vid      = getIdRightNode(old);
             mNodesR[vid] = UndirectedNode<T2>(newInfo);
             mMapR.erase(old);
             mMapR[newInfo] = vid;
