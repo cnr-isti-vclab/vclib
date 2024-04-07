@@ -39,10 +39,10 @@ class EdgeAdjFaceIterator
         typename FT::VertexType,
         const typename FT::VertexType>;
 
-    FT* current = nullptr;
-    FT* end     = nullptr;
-    VT* v0      = nullptr;
-    VT* v1      = nullptr;
+    FT* mCurrent = nullptr;
+    FT* mEnd     = nullptr;
+    VT* mV0      = nullptr;
+    VT* mV1      = nullptr;
 
 public:
     using difference_type   = ptrdiff_t;
@@ -54,13 +54,14 @@ public:
     EdgeAdjFaceIterator() = default;
 
     EdgeAdjFaceIterator(FT& f, uint edge) :
-            current(&f), end(&f), v0(f.vertex(edge)), v1(f.vertexMod(edge + 1))
+            mCurrent(&f), mEnd(&f), mV0(f.vertex(edge)),
+            mV1(f.vertexMod(edge + 1))
     {
     }
 
     bool operator==(const EdgeAdjFaceIterator& oi) const
     {
-        return current == oi.current && v0 == oi.v0 && v1 == oi.v1;
+        return mCurrent == oi.mCurrent && mV0 == oi.mV0 && mV1 == oi.mV1;
     }
 
     bool operator!=(const EdgeAdjFaceIterator& oi) const
@@ -70,14 +71,14 @@ public:
 
     EdgeAdjFaceIterator& operator++()
     {
-        assert(current);
-        uint edge = current->indexOfEdge(v0, v1);
+        assert(mCurrent);
+        uint edge = mCurrent->indexOfEdge(mV0, mV1);
         assert(edge != UINT_NULL);
-        current = current->adjFace(edge);
-        if (current == end || current == nullptr) {
-            current = nullptr;
-            v0      = nullptr;
-            v1      = nullptr;
+        mCurrent = mCurrent->adjFace(edge);
+        if (mCurrent == mEnd || mCurrent == nullptr) {
+            mCurrent = nullptr;
+            mV0      = nullptr;
+            mV1      = nullptr;
         }
         return *this;
     }
@@ -89,9 +90,9 @@ public:
         return it;
     }
 
-    reference operator*() const { return current; }
+    reference operator*() const { return mCurrent; }
 
-    pointer operator->() const { return &current; }
+    pointer operator->() const { return &mCurrent; }
 };
 
 template<typename FaceType>

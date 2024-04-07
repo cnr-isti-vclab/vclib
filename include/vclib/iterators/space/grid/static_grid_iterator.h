@@ -33,8 +33,8 @@ class StaticGridIterator
 {
     using VecIt = std::vector<std::pair<uint, ValueType>>::iterator;
 
-    VecIt           vecIt;
-    const GridType* g = nullptr;
+    VecIt           mVecIt;
+    const GridType* mGrid = nullptr;
 
 public:
     using T          = SecondRefPair<KeyType, ValueType>;
@@ -42,46 +42,46 @@ public:
 
     class ArrowHelper
     {
-        T value;
+        T mValue;
 
     public:
-        ArrowHelper(T value) : value(value) {}
+        ArrowHelper(T value) : mValue(value) {}
 
-        const T* operator->() const { return &value; }
+        const T* operator->() const { return &mValue; }
     };
 
     StaticGridIterator() = default;
 
-    StaticGridIterator(VecIt it, const GridType& g) : vecIt(it), g(&g) {}
+    StaticGridIterator(VecIt it, const GridType& g) : mVecIt(it), mGrid(&g) {}
 
     value_type operator*() const
     {
-        KeyType cell = g->cellOfIndex(vecIt->first);
-        return value_type(cell, vecIt->second);
+        KeyType cell = mGrid->cellOfIndex(mVecIt->first);
+        return value_type(cell, mVecIt->second);
     }
 
     ArrowHelper operator->() const { return **this; }
 
     bool operator==(const StaticGridIterator& oi) const
     {
-        return vecIt == oi.vecIt;
+        return mVecIt == oi.mVecIt;
     }
 
     bool operator!=(const StaticGridIterator& oi) const
     {
-        return vecIt != oi.vecIt;
+        return mVecIt != oi.mVecIt;
     }
 
     StaticGridIterator operator++()
     {
-        ++vecIt;
+        ++mVecIt;
         return *this;
     }
 
     StaticGridIterator operator++(int)
     {
         StaticGridIterator old = *this;
-        ++vecIt;
+        ++mVecIt;
         return old;
     }
 };
@@ -91,8 +91,8 @@ class ConstStaticGridIterator
 {
     using VecIt = std::vector<std::pair<uint, ValueType>>::const_iterator;
 
-    VecIt           vecIt;
-    const GridType* g = nullptr;
+    VecIt           mVecIt;
+    const GridType* mGrid = nullptr;
 
 public:
     using T          = SecondRefPair<KeyType, const ValueType>;
@@ -100,46 +100,46 @@ public:
 
     class ArrowHelper
     {
-        T value;
+        T mValue;
 
     public:
-        ArrowHelper(T value) : value(value) {}
+        ArrowHelper(T value) : mValue(value) {}
 
-        const T* operator->() const { return &value; }
+        const T* operator->() const { return &mValue; }
     };
 
     ConstStaticGridIterator() = default;
 
-    ConstStaticGridIterator(VecIt it, const GridType& g) : vecIt(it), g(&g) {}
+    ConstStaticGridIterator(VecIt it, const GridType& g) : mVecIt(it), mGrid(&g) {}
 
     value_type operator*() const
     {
-        KeyType cell = g->cellOfIndex(vecIt->first);
-        return value_type(cell, vecIt->second);
+        KeyType cell = mGrid->cellOfIndex(mVecIt->first);
+        return value_type(cell, mVecIt->second);
     }
 
     ArrowHelper operator->() const { return **this; }
 
     bool operator==(const ConstStaticGridIterator& oi) const
     {
-        return vecIt == oi.vecIt;
+        return mVecIt == oi.mVecIt;
     }
 
     bool operator!=(const ConstStaticGridIterator& oi) const
     {
-        return vecIt != oi.vecIt;
+        return mVecIt != oi.mVecIt;
     }
 
     ConstStaticGridIterator operator++()
     {
-        ++vecIt;
+        ++mVecIt;
         return *this;
     }
 
     ConstStaticGridIterator operator++(int)
     {
         ConstStaticGridIterator old = *this;
-        ++vecIt;
+        ++mVecIt;
         return old;
     }
 };

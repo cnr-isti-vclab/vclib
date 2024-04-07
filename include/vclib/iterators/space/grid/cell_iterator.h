@@ -30,8 +30,8 @@ namespace vcl {
 template<int N>
 class CellIterator
 {
-    vcl::Point<uint, N> it;
-    vcl::Point<uint, N> first, end;
+    vcl::Point<uint, N> mIt;
+    vcl::Point<uint, N> mFirst, mEnd;
 
 public:
     using difference_type   = ptrdiff_t;
@@ -42,43 +42,43 @@ public:
 
     CellIterator()
     {
-        it.setConstant(-1);
-        first = end = it;
+        mIt.setConstant(-1);
+        mFirst = mEnd = mIt;
     }
 
     CellIterator(
         const vcl::Point<uint, N>& first,
         const vcl::Point<uint, N>& end) :
-            it(first),
-            first(first), end(end)
+            mIt(first),
+            mFirst(first), mEnd(end)
     {
     }
 
-    reference operator*() const { return it; }
+    reference operator*() const { return mIt; }
 
-    pointer operator->() const { return &it; }
+    pointer operator->() const { return &mIt; }
 
-    bool operator==(const CellIterator& oi) const { return (it == oi.it); }
+    bool operator==(const CellIterator& oi) const { return (mIt == oi.mIt); }
 
-    bool operator!=(const CellIterator& oi) const { return (it != oi.it); }
+    bool operator!=(const CellIterator& oi) const { return (mIt != oi.mIt); }
 
     CellIterator operator++()
     {
         uint d = N - 1;
-        while (d != -1 && it(d) == end(d) - 1) {
-            it(d) = first(d);
+        while (d != -1 && mIt(d) == mEnd(d) - 1) {
+            mIt(d) = mFirst(d);
             d--;
         }
         if (d != -1)
-            it(d)++;
+            mIt(d)++;
         else
-            it.setConstant(-1);
+            mIt.setConstant(-1);
         return *this;
     }
 
     CellIterator operator++(int)
     {
-        CellIterator<N> oit = it;
+        CellIterator<N> oit = mIt;
         ++(*this);
         return oit;
     }

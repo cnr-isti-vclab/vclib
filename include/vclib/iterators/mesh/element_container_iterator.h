@@ -23,9 +23,8 @@
 #ifndef VCL_ITERATORS_MESH_ELEMENT_CONTAINER_ITERATOR_H
 #define VCL_ITERATORS_MESH_ELEMENT_CONTAINER_ITERATOR_H
 
-#include <cstddef>
-#include <utility>
-#include <vector>
+#include <iterator>
+#include <type_traits>
 
 namespace vcl {
 
@@ -49,97 +48,93 @@ public:
     using iterator_category = std::random_access_iterator_tag;
 
 private:
-    ContIt it; // the actual iterator
+    ContIt mIt; // the actual iterator
 
-    const Container<T>* vec = nullptr; // needed to check end when jump elements
+    const Container<T>* mVec = nullptr; // need to check end when jump elements
 
     /* Pointers to functions */
 
-    // pointer to increment function, assigned in the constructor
-    ElementContainerIterator& (ElementContainerIterator::*increment)();
-    // pointer to post increment function, assigned in the constructor
-    ElementContainerIterator (ElementContainerIterator::*postIncrement)();
-    // pointer to decrement function, assigned in the constructor
-    ElementContainerIterator& (ElementContainerIterator::*decrement)();
-    // pointer to post decrement function, assigned in the constructor
-    ElementContainerIterator (ElementContainerIterator::*postDecrement)();
-    // pointer to assignment sum function, assigned in the constructor
-    ElementContainerIterator& (ElementContainerIterator::*assignSum)(
-        difference_type);
-    // pointer to diff between iterators function, assigned in the constructor
-    difference_type (ElementContainerIterator::*diff)(
-        const ElementContainerIterator& oi) const;
+    // pointer to mIncrementFun function
+    ElementContainerIterator& (ElementContainerIterator::*mIncrementFun)() =
+        &ElementContainerIterator::incrementJump;
+
+    // pointer to post increment function
+    ElementContainerIterator (ElementContainerIterator::*mPostIncrementFun)() =
+        &ElementContainerIterator::postIncrementJump;
+
+    // pointer to decrement function
+    ElementContainerIterator& (ElementContainerIterator::*mDecrementFun)() =
+        &ElementContainerIterator::decrementJump;
+
+    // pointer to post decrement function
+    ElementContainerIterator (ElementContainerIterator::*mPostDecrementFun)() =
+        &ElementContainerIterator::postDecrementJump;
+
+    // pointer to assignment sum function
+    ElementContainerIterator& (ElementContainerIterator::*mAssignSumFun)(
+        difference_type) = &ElementContainerIterator::assignSumJump;
+
+    // pointer to diff between iterators function
+    difference_type (ElementContainerIterator::*mDiffFun)(
+        const ElementContainerIterator& oi) const =
+        &ElementContainerIterator::diffJump;
 
 public:
-    ElementContainerIterator()
-    {
-        increment     = &ElementContainerIterator::incrementFast;
-        postIncrement = &ElementContainerIterator::postIncrementFast;
-        decrement     = &ElementContainerIterator::decrementFast;
-        postDecrement = &ElementContainerIterator::postDecrementFast;
-    }
+    ElementContainerIterator() = default;
 
     ElementContainerIterator(
         ContIt              it,
         const Container<T>& vec,
         bool                jumpDeleted = true) :
-            it(it),
-            vec(&vec)
+            mIt(it),
+            mVec(&vec)
     {
-        if (jumpDeleted) {
-            increment     = &ElementContainerIterator::incrementJump;
-            postIncrement = &ElementContainerIterator::postIncrementJump;
-            decrement     = &ElementContainerIterator::decrementJump;
-            postDecrement = &ElementContainerIterator::postDecrementJump;
-            assignSum     = &ElementContainerIterator::assignSumJump;
-            diff          = &ElementContainerIterator::diffJump;
-        }
-        else {
-            increment     = &ElementContainerIterator::incrementFast;
-            postIncrement = &ElementContainerIterator::postIncrementFast;
-            decrement     = &ElementContainerIterator::decrementFast;
-            postDecrement = &ElementContainerIterator::postDecrementFast;
-            assignSum     = &ElementContainerIterator::assignSumFast;
-            diff          = &ElementContainerIterator::diffFast;
+        if (!jumpDeleted) [[unlikely]] {
+            mIncrementFun     = &ElementContainerIterator::incrementFast;
+            mPostIncrementFun = &ElementContainerIterator::postIncrementFast;
+            mDecrementFun     = &ElementContainerIterator::decrementFast;
+            mPostDecrementFun = &ElementContainerIterator::postDecrementFast;
+            mAssignSumFun     = &ElementContainerIterator::assignSumFast;
+            mDiffFun          = &ElementContainerIterator::diffFast;
         }
     }
 
-    reference operator*() const { return *it; }
+    reference operator*() const { return *mIt; }
 
-    pointer operator->() const { return &*it; }
+    pointer operator->() const { return &*mIt; }
 
     bool operator==(const ElementContainerIterator& oi) const
     {
-        return it == oi.it;
+        return mIt == oi.mIt;
     }
 
     bool operator!=(const ElementContainerIterator& oi) const
     {
-        return it != oi.it;
+        return mIt != oi.mIt;
     }
 
-    ElementContainerIterator& operator++() { return (this->*increment)(); }
+    ElementContainerIterator& operator++() { return (this->*mIncrementFun)(); }
 
     ElementContainerIterator operator++(int)
     {
-        return (this->*postIncrement)();
+        return (this->*mPostIncrementFun)();
     }
 
-    ElementContainerIterator& operator--() { return (this->*decrement)(); }
+    ElementContainerIterator& operator--() { return (this->*mDecrementFun)(); }
 
     ElementContainerIterator operator--(int)
     {
-        return (this->*postDecrement)();
+        return (this->*mPostDecrementFun)();
     }
 
     ElementContainerIterator& operator+=(difference_type n)
     {
-        return (this->*assignSum)(n);
+        return (this->*mAssignSumFun)(n);
     }
 
     ElementContainerIterator& operator-=(difference_type n)
     {
-        return (this->*assignSum)(-n);
+        return (this->*mAssignSumFun)(-n);
     }
 
     ElementContainerIterator operator+(difference_type n) const
@@ -156,29 +151,29 @@ public:
 
     difference_type operator-(const ElementContainerIterator& oi) const
     {
-        return (this->*diff)(oi);
+        return (this->*mDiffFun)(oi);
     }
 
     reference operator[](difference_type i) { return *(*this + i); }
 
     bool operator<(const ElementContainerIterator& oi) const
     {
-        return it < oi.it;
+        return mIt < oi.mIt;
     }
 
     bool operator>(const ElementContainerIterator& oi) const
     {
-        return it > oi.it;
+        return mIt > oi.mIt;
     }
 
     bool operator<=(const ElementContainerIterator& oi) const
     {
-        return it <= oi.it;
+        return mIt <= oi.mIt;
     }
 
     bool operator>=(const ElementContainerIterator& oi) const
     {
-        return it >= oi.it;
+        return mIt >= oi.mIt;
     }
 
 private:
@@ -189,8 +184,8 @@ private:
     ElementContainerIterator& incrementJump()
     {
         do {
-            ++it;
-        } while (it != vec->end() && it->deleted());
+            ++mIt;
+        } while (mIt != mVec->end() && mIt->deleted());
         return *this;
     }
 
@@ -202,8 +197,8 @@ private:
     {
         ElementContainerIterator old = *this;
         do {
-            ++it;
-        } while (it != vec->end() && it->deleted());
+            ++mIt;
+        } while (mIt != mVec->end() && mIt->deleted());
         return old;
     }
 
@@ -213,7 +208,7 @@ private:
      */
     ElementContainerIterator& incrementFast()
     {
-        ++it;
+        ++mIt;
         return *this;
     }
 
@@ -224,7 +219,7 @@ private:
     ElementContainerIterator postIncrementFast()
     {
         ElementContainerIterator old = *this;
-        ++it;
+        ++mIt;
         return old;
     }
 
@@ -235,8 +230,8 @@ private:
     ElementContainerIterator& decrementJump()
     {
         do {
-            --it;
-        } while (it != vec->begin() && it->deleted());
+            --mIt;
+        } while (mIt != mVec->begin() && mIt->deleted());
         return *this;
     }
 
@@ -248,8 +243,8 @@ private:
     {
         ElementContainerIterator old = *this;
         do {
-            --it;
-        } while (it != vec->begin() && it->deleted());
+            --mIt;
+        } while (mIt != mVec->begin() && mIt->deleted());
         return old;
     }
 
@@ -259,7 +254,7 @@ private:
      */
     ElementContainerIterator& decrementFast()
     {
-        --it;
+        --mIt;
         return *this;
     }
 
@@ -270,7 +265,7 @@ private:
     ElementContainerIterator postDecrementFast()
     {
         ElementContainerIterator old = *this;
-        --it;
+        --mIt;
         return old;
     }
 
@@ -289,7 +284,7 @@ private:
 
     ElementContainerIterator& assignSumFast(difference_type n)
     {
-        it += n;
+        mIt += n;
         return *this;
     }
 
@@ -306,7 +301,7 @@ private:
 
     difference_type diffFast(const ElementContainerIterator& oi) const
     {
-        return this->it - oi.it;
+        return this->mIt - oi.mIt;
     }
 };
 
