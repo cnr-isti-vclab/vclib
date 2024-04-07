@@ -524,9 +524,8 @@ public:
     }
 
     /**
-     * @brief Returns the outer product between this point mP and p1, which is
-     * mP
-     * * p1^T
+     * @brief Returns the outer product between this point p and p1, which is
+     * p * p1^T
      *
      * The returned type is a DIM*DIM Eigen Matrix, where DIM is the number of
      * dimensions of the two points.
@@ -534,7 +533,7 @@ public:
      * @param p1 The Point object to compute the outer product with.
      *
      * @return A DIM*DIM Eigen Matrix representing the outer product between
-     * this point mP and p1.
+     * this point p and p1.
      */
     auto outerProduct(const Point& p1) const
     {

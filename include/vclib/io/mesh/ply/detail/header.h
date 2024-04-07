@@ -45,20 +45,18 @@ namespace vcl::detail {
  */
 class PlyHeader
 {
-    bool valid = false;
+    bool mValid = false;
 
-    ply::Format frmt = ply::UNKNOWN;
+    ply::Format mFormat = ply::UNKNOWN;
 
-    std::vector<PlyElement>  elements;
-    std::vector<std::string> textureFiles;
+    std::vector<PlyElement>  mElements;
+    std::vector<std::string> mTextureFiles;
 
-    // id in the elements vector for vertices, faces, edges and triStrips
-    int vertElemPos = -1;
-    int faceElemPos = -1;
-    int edgeElemPos = -1;
-    int trisElemPos = -1;
-
-    int nextElementID = 0;
+    // for each element, its position in the mElements vector
+    uint mVertElemPos     = UINT_NULL;
+    uint mFaceElemPos     = UINT_NULL;
+    uint mEdgeElemPos     = UINT_NULL;
+    uint mTriStripElemPos = UINT_NULL;
 
 public:
     using iterator = std::vector<PlyElement>::const_iterator;
@@ -69,8 +67,8 @@ public:
         ply::Format              format,
         const MeshInfo&          info,
         std::vector<std::string> textureFiles = std::vector<std::string>()) :
-            valid(true),
-            frmt(format)
+            mValid(true),
+            mFormat(format)
     {
         setInfo(info, textureFiles, format == ply::BINARY);
     }
@@ -96,12 +94,12 @@ public:
                     if (headerLine == "format") {
                         token++;
                         if (*token == "ascii")
-                            frmt = ply::ASCII;
+                            mFormat = ply::ASCII;
                         else if (
                             *token == "binary_big_endian" ||
                             *token == "binary_little_endian" ||
                             *token == "binary")
-                            frmt = ply::BINARY;
+                            mFormat = ply::BINARY;
                     }
                     // reading a comment, may be a texture file...
                     else if (headerLine == "comment") {
@@ -123,7 +121,7 @@ public:
                                             textName.substr(
                                                 pos + 6, textName.size());
                                     }
-                                    textureFiles.push_back(textName);
+                                    mTextureFiles.push_back(textName);
                                 }
                             }
                         }
@@ -135,14 +133,14 @@ public:
                         if (!firstElement) {
                             // index of each element type in elements vector
                             if (element.type == ply::VERTEX)
-                                vertElemPos = (long int) elements.size();
+                                mVertElemPos = mElements.size();
                             if (element.type == ply::FACE)
-                                faceElemPos = (long int) elements.size();
+                                mFaceElemPos = mElements.size();
                             if (element.type == ply::EDGE)
-                                edgeElemPos = (long int) elements.size();
+                                mEdgeElemPos = mElements.size();
                             if (element.type == ply::TRISTRIP)
-                                trisElemPos = (long int) elements.size();
-                            elements.push_back(element);
+                                mTriStripElemPos = mElements.size();
+                            mElements.push_back(element);
                             element = PlyElement();
                         }
                         element      = readElement(spaceTokenizer);
@@ -155,45 +153,46 @@ public:
                     // save the last element
                     else if (headerLine == "end_header") {
                         if (element.type == ply::VERTEX)
-                            vertElemPos = (long int) elements.size();
+                            mVertElemPos = mElements.size();
                         if (element.type == ply::FACE)
-                            faceElemPos = (long int) elements.size();
+                            mFaceElemPos = mElements.size();
                         if (element.type == ply::EDGE)
-                            edgeElemPos = (long int) elements.size();
+                            mEdgeElemPos = mElements.size();
                         if (element.type == ply::TRISTRIP)
-                            trisElemPos = (long int) elements.size();
-                        elements.push_back(element);
+                            mTriStripElemPos = mElements.size();
+                        mElements.push_back(element);
                     }
                 }
             } while (!error && headerLine != "end_header");
-            valid = !error && hasVertices();
+            mValid = !error && hasVertices();
         }
     }
 
     void clear()
     {
-        frmt = ply::UNKNOWN;
-        elements.clear();
-        textureFiles.clear();
-        valid       = false;
-        vertElemPos = -1;
-        faceElemPos = -1;
-        edgeElemPos = -1;
-        trisElemPos = -1;
+        mFormat = ply::UNKNOWN;
+        mElements.clear();
+        mTextureFiles.clear();
+        mValid       = false;
+
+        mVertElemPos     = UINT_NULL;
+        mFaceElemPos     = UINT_NULL;
+        mEdgeElemPos     = UINT_NULL;
+        mTriStripElemPos = UINT_NULL;
     }
 
-    bool isValid() const { return valid; }
+    bool isValid() const { return mValid; }
 
-    ply::Format format() const { return frmt; }
+    ply::Format format() const { return mFormat; }
 
     MeshInfo getInfo() const
     {
         MeshInfo mod;
         // x, y, z, nx, ny, nz, red, green, blue, alpha, vertex_indices
 
-        if (vertElemPos >= 0) {
+        if (mVertElemPos != UINT_NULL) {
             mod.setVertices();
-            for (const PlyProperty& p : elements[vertElemPos].properties) {
+            for (const PlyProperty& p : mElements[mVertElemPos].properties) {
                 switch (p.name) {
                 case ply::x:
                 case ply::y:
@@ -216,9 +215,9 @@ public:
                 }
             }
         }
-        if (faceElemPos >= 0) {
+        if (mFaceElemPos != UINT_NULL) {
             mod.setFaces();
-            for (const PlyProperty& p : elements[faceElemPos].properties) {
+            for (const PlyProperty& p : mElements[mFaceElemPos].properties) {
                 switch (p.name) {
                 case ply::vertex_indices: mod.setFaceVRefs(); break;
                 case ply::nx:
@@ -239,9 +238,9 @@ public:
                 }
             }
         }
-        if (trisElemPos >= 0) {
+        if (mTriStripElemPos != UINT_NULL) {
             mod.setFaces();
-            for (const PlyProperty& p : elements[trisElemPos].properties) {
+            for (const PlyProperty& p : mElements[mTriStripElemPos].properties) {
                 switch (p.name) {
                 case ply::vertex_indices: mod.setFaceVRefs(); break;
                 case ply::nx:
@@ -257,103 +256,100 @@ public:
                 }
             }
         }
-        if (textureFiles.size() > 0) {
+        if (mTextureFiles.size() > 0) {
             mod.setTextures(true);
         }
         return mod;
     }
 
-    bool hasVertices() const { return vertElemPos >= 0; }
+    bool hasVertices() const { return mVertElemPos != UINT_NULL; }
 
-    bool hasFaces() const { return faceElemPos >= 0; }
+    bool hasFaces() const { return mFaceElemPos != UINT_NULL; }
 
-    bool hasEdges() const { return edgeElemPos >= 0; }
+    bool hasEdges() const { return mEdgeElemPos != UINT_NULL; }
 
-    bool hasTriStrips() const { return trisElemPos >= 0; }
+    bool hasTriStrips() const { return mTriStripElemPos != UINT_NULL; }
 
-    bool hasTextureFileNames() const { return textureFiles.size() > 0; }
+    bool hasTextureFileNames() const { return mTextureFiles.size() > 0; }
 
     uint numberVertices() const
     {
         assert(hasVertices());
-        return elements[vertElemPos].numberElements;
+        return mElements[mVertElemPos].numberElements;
     }
 
     uint numberFaces() const
     {
         assert(hasFaces());
-        return elements[faceElemPos].numberElements;
+        return mElements[mFaceElemPos].numberElements;
     }
 
     uint numberEdges() const
     {
         assert(hasEdges());
-        return elements[edgeElemPos].numberElements;
+        return mElements[mEdgeElemPos].numberElements;
     }
 
     uint numberTriStrips() const
     {
         assert(hasTriStrips());
-        return elements[trisElemPos].numberElements;
+        return mElements[mTriStripElemPos].numberElements;
     }
 
-    uint numberTextureFileNames() const { return textureFiles.size(); }
+    uint numberTextureFileNames() const { return mTextureFiles.size(); }
 
     const std::list<PlyProperty>& vertexProperties() const
     {
         assert(hasVertices());
-        return elements[vertElemPos].properties;
+        return mElements[mVertElemPos].properties;
     }
 
     const std::list<PlyProperty>& faceProperties() const
     {
         assert(hasFaces());
-        return elements[faceElemPos].properties;
+        return mElements[mFaceElemPos].properties;
     }
 
     const std::list<PlyProperty>& edgeProperties() const
     {
         assert(hasEdges());
-        return elements[edgeElemPos].properties;
+        return mElements[mEdgeElemPos].properties;
     }
 
     const std::list<PlyProperty>& triStripsProperties() const
     {
         assert(hasTriStrips());
-        return elements[trisElemPos].properties;
+        return mElements[mTriStripElemPos].properties;
     }
 
     const std::vector<std::string>& textureFileNames() const
     {
-        return textureFiles;
+        return mTextureFiles;
     }
 
-    bool errorWhileLoading() const { return !valid; }
+    bool errorWhileLoading() const { return !mValid; }
 
     void setNumberVertices(unsigned long int nV)
     {
-        if (vertElemPos < 0)
-            vertElemPos = nextElementID++;
-        elements[vertElemPos].numberElements = nV;
+        assert(hasVertices());
+        mElements[mVertElemPos].numberElements = nV;
     }
 
     void setNumberFaces(unsigned long int nF)
     {
-        if (faceElemPos < 0)
-            faceElemPos = nextElementID++;
-        elements[faceElemPos].numberElements = nF;
+        assert(hasFaces());
+        mElements[mFaceElemPos].numberElements = nF;
     }
 
     void setNumberEdges(unsigned long int nE)
     {
-        if (edgeElemPos < 0)
-            edgeElemPos = nextElementID++;
-        elements[edgeElemPos].numberElements = nE;
+        assert(hasEdges());
+        mElements[mEdgeElemPos].numberElements = nE;
     }
 
     void pushTextureFileName(const std::string& tn)
     {
-        textureFiles.push_back(tn);
+        mTextureFiles.push_back(tn);
     }
 
     void setInfo(
@@ -362,11 +358,11 @@ public:
         bool                     binary           = true)
     {
         clear();
-        frmt         = binary ? ply::BINARY : ply::ASCII;
-        valid        = true;
-        textureFiles = textureFileNames;
+        mFormat         = binary ? ply::BINARY : ply::ASCII;
+        mValid        = true;
+        mTextureFiles = textureFileNames;
         if (info.hasVertices()) {
-            vertElemPos = nextElementID++;
+            mVertElemPos = mElements.size();
             PlyElement vElem;
             vElem.type = ply::VERTEX;
             if (info.hasVertexCoords()) {
@@ -437,10 +433,10 @@ public:
                     }
                 }
             }
-            elements.push_back(vElem);
+            mElements.push_back(vElem);
         }
         if (info.hasFaces()) {
-            faceElemPos = nextElementID++;
+            mFaceElemPos = mElements.size();
             PlyElement fElem;
             fElem.type = ply::FACE;
             if (info.hasFaceVRefs()) {
@@ -506,10 +502,10 @@ public:
                     }
                 }
             }
-            elements.push_back(fElem);
+            mElements.push_back(fElem);
         }
         if (info.hasEdges()) {
-            edgeElemPos = nextElementID++;
+            mEdgeElemPos = mElements.size();
             PlyElement eElem;
             eElem.type = ply::EDGE;
             if (info.hasEdgeVRefs()) {
@@ -522,7 +518,7 @@ public:
                 v2.type = UINT;
                 eElem.properties.push_back(v2);
             }
-            elements.push_back(eElem);
+            mElements.push_back(eElem);
         }
     }
 
@@ -532,12 +528,12 @@ public:
 
         s += "ply\nformat ";
         s +=
-            (frmt == ply::ASCII ? "ascii 1.0\n" : "binary_little_endian 1.0\n");
+            (mFormat == ply::ASCII ? "ascii 1.0\n" : "binary_little_endian 1.0\n");
         s += "comment Generated by vclib\n";
-        for (const std::string& str : textureFiles) {
+        for (const std::string& str : mTextureFiles) {
             s += "comment TextureFile " + str + "\n";
         }
-        for (const PlyElement& e : elements) {
+        for (const PlyElement& e : mElements) {
             s += "element ";
             switch (e.type) {
             case ply::VERTEX:
@@ -578,11 +574,11 @@ public:
         return s;
     }
 
-    void setFormat(ply::Format f) { frmt = f; }
+    void setFormat(ply::Format f) { mFormat = f; }
 
-    iterator begin() const { return elements.begin(); }
+    iterator begin() const { return mElements.begin(); }
 
-    iterator end() const { return elements.end(); }
+    iterator end() const { return mElements.end(); }
 
 private:
     PlyElement readElement(const vcl::Tokenizer& lineTokenizer) const

@@ -19,7 +19,7 @@ VCLib uses the following coding style rules:
 - Class names and type names start with an upper case letter;
 - Functions, member functions, non-const variables and namespaces start with a lower case letter;
 - The private member attribute name in class should be prepended with the character ‘m’;
-- Class member attributes should be listed before the member functions;
+- Class member attributes should be declared before the member functions;
 - The global or class constants and enumeration values should be all capital letters separated with ‘_’;
 
 TODO

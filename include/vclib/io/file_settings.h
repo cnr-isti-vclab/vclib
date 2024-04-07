@@ -41,7 +41,7 @@ class FileSettings
 {
     using json = nlohmann::json;
 
-    json settings;
+    json mSettings;
 
 public:
     FileSettings() = default;
@@ -51,7 +51,7 @@ public:
         std::ifstream file(filename);
         if (!file.is_open())
             throw vcl::CannotOpenFileException(filename);
-        settings = json::parse(file);
+        mSettings = json::parse(file);
     }
 
     void save(const std::string& filename)
@@ -59,7 +59,7 @@ public:
         std::ofstream file(filename);
         if (!file.is_open())
             throw vcl::CannotOpenFileException(filename);
-        file << settings.dump();
+        file << mSettings.dump();
     }
 };
 

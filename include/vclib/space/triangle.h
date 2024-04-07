@@ -158,7 +158,7 @@ public:
      * @brief Computes the point in the triangle with the given barycentric
      * coordinates.
      *
-     * Given a set of barycentric coordinates \mPoints b, this function computes
+     * Given a set of barycentric coordinates \p b, this function computes
      * the point in the triangle corresponding to those barycentric coordinates.
      *
      * @param[in] b: The barycentric coordinates of the point in the triangle of

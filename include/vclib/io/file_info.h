@@ -35,18 +35,18 @@ namespace vcl {
 
 class FileInfo
 {
-    std::string filename;
+    std::string mFilename;
 
 public:
     FileInfo() = default;
 
-    FileInfo(const std::string& filename) : filename(filename) {}
+    FileInfo(const std::string& filename) : mFilename(filename) {}
 
-    bool exists() const { return exists(filename); }
+    bool exists() const { return exists(mFilename); }
 
-    std::size_t fileSize() const { return fileSize(filename); }
+    std::size_t fileSize() const { return fileSize(mFilename); }
 
-    bool isFileBinary() const { return isFileBinary(filename); }
+    bool isFileBinary() const { return isFileBinary(mFilename); }
 
     /* Static member functions */
 
