@@ -41,10 +41,10 @@ namespace vcl {
  */
 class Timer
 {
-    std::string caption;
-    bool        isStopped;
+    std::string mCaption;
+    bool        mIsStopped;
 
-    std::chrono::high_resolution_clock::time_point begin, end;
+    std::chrono::high_resolution_clock::time_point mBegin, mEnd;
 
 public:
     /**
@@ -54,7 +54,7 @@ public:
      * @param[in] _start: if true, the timer will start when the object is
      * created.
      */
-    Timer(bool _start = true) : caption("Timer"), isStopped(false)
+    Timer(bool _start = true) : mCaption("Timer"), mIsStopped(false)
     {
         if (_start)
             start();
@@ -91,7 +91,7 @@ public:
     /**
      * @brief Starts the timer.
      */
-    void start() { begin = std::chrono::high_resolution_clock::now(); }
+    void start() { mBegin = std::chrono::high_resolution_clock::now(); }
 
     /**
      * @brief Stops the timer and prints the time passed between the call of
@@ -108,8 +108,8 @@ public:
      */
     void stop()
     {
-        end       = std::chrono::high_resolution_clock::now();
-        isStopped = true;
+        mEnd       = std::chrono::high_resolution_clock::now();
+        mIsStopped = true;
     }
 
     /**
@@ -122,17 +122,17 @@ public:
         double secs = delay();
         int    mins = (int) secs / 60;
         if (mins == 0)
-            std::cout << "[" << secs << " secs]\t" << caption << std::endl;
+            std::cout << "[" << secs << " secs]\t" << mCaption << std::endl;
         else {
             secs      = secs - mins * 60;
             int hours = mins / 60;
             if (hours == 0)
                 std::cout << "[" << mins << " mins; " << secs << " secs]\t"
-                          << caption << std::endl;
+                          << mCaption << std::endl;
             else {
                 mins = mins - hours * 60;
                 std::cout << "[" << hours << " hours; " << mins << " mins; "
-                          << secs << " secs]\t" << caption << std::endl;
+                          << secs << " secs]\t" << mCaption << std::endl;
             }
         }
     }
@@ -145,10 +145,10 @@ public:
     double delay() const
     {
         double secs;
-        if (isStopped) {
+        if (mIsStopped) {
             secs =
                 (double) (std::chrono::duration_cast<std::chrono::microseconds>(
-                              end - begin)
+                              mEnd - mBegin)
                               .count()) /
                 1000000;
         }
@@ -157,7 +157,7 @@ public:
                 std::chrono::high_resolution_clock::now();
             secs =
                 (double) (std::chrono::duration_cast<std::chrono::microseconds>(
-                              s - begin)
+                              s - mBegin)
                               .count()) /
                 1000000;
         }

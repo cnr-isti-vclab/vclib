@@ -31,10 +31,10 @@ namespace vcl {
 
 class ConsoleLogger : public Logger<std::ostream>
 {
-    std::ostream& errStream   = std::cerr;
-    std::ostream& warnStream  = std::cout;
-    std::ostream& progStream  = std::cout;
-    std::ostream& debugStream = std::cerr;
+    std::ostream& mErrStream   = std::cerr;
+    std::ostream& mWarnStream  = std::cout;
+    std::ostream& mProgStream  = std::cout;
+    std::ostream& mDebugStream = std::cerr;
 
 public:
     ConsoleLogger() = default;
@@ -44,9 +44,9 @@ public:
         std::ostream& warnStream,
         std::ostream& progStream,
         std::ostream& debugStream) :
-            errStream(errStream),
-            warnStream(warnStream), progStream(progStream),
-            debugStream(debugStream)
+            mErrStream(errStream),
+            mWarnStream(warnStream), mProgStream(progStream),
+            mDebugStream(debugStream)
     {
     }
 
@@ -54,10 +54,10 @@ protected:
     std::ostream* levelStream(LogLevel lvl)
     {
         switch (lvl) {
-        case ERROR: return &errStream;
-        case WARNING: return &warnStream;
-        case PROGRESS: return &progStream;
-        case DEBUG: return &debugStream;
+        case ERROR: return &mErrStream;
+        case WARNING: return &mWarnStream;
+        case PROGRESS: return &mProgStream;
+        case DEBUG: return &mDebugStream;
         }
         return nullptr;
     }

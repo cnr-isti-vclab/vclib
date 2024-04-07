@@ -44,58 +44,59 @@ public:
 private:
     enum InternalLogLevel { START = DEBUG + 1, END };
 
-    uint percPrecision = 0;
+    static const uint TIMER_MAX_CHAR_NUMBER = 12;
+
+    uint mPercPrecision = 0;
 
     // on top of the stack, we save the interval percentages of the current task
     // values are between 0 and 100
-    std::stack<std::pair<double, double>> stack;
+    std::stack<std::pair<double, double>> mIntervals;
 
     // actual percentage (0 - 100), that is in the interval in top of the stack
-    double globalPercProgress;
+    double mGlobalPercProgress = 0;
 
-    double step; // the value that corresponds to 1% on the current task
+    double mStep = 1; // the value that corresponds to 1% on the current task
 
-    bool       indent     = true;
-    uint       lineW      = 80;
-    const uint TIMER_SIZE = 12;
+    bool mIndent    = true;
+    uint mLineWidth = 80;
 
-    vcl::Timer timer;
-    bool       printTimer = false;
+    vcl::Timer mTimer;
+    bool       mPrintTimer = false;
 
     // progress status members
-    bool        isProgressActive = false;
-    std::string progressMessage;
-    uint        progressStep;
-    uint        progressPerc;
-    uint        progressPercStep;
-    uint        lastProgress;
+    bool        mIsProgressActive = false;
+    std::string mProgressMessage;
+    uint        mProgressStep;
+    uint        mProgressPerc;
+    uint        mProgressPercStep;
+    uint        mLastProgress;
 
-    std::mutex mutex;
+    std::mutex mMutex;
 
 public:
     Logger()
     {
-        stack.push({0, 100});
+        mIntervals.push({0, 100});
         updateStep();
     }
 
-    void enableIndentation() { indent = true; }
+    void enableIndentation() { mIndent = true; }
 
-    void disableIndentation() { indent = false; }
+    void disableIndentation() { mIndent = false; }
 
     void reset()
     {
-        while (!stack.empty())
-            stack.pop();
-        stack.push({0, 100});
+        while (!mIntervals.empty())
+            mIntervals.pop();
+        mIntervals.push({0, 100});
         updateStep();
     }
 
-    void setMaxLineWidth(uint w) { lineW = w; }
+    void setMaxLineWidth(uint w) { mLineWidth = w; }
 
-    void setPrintTimer(bool b) { printTimer = b; }
+    void setPrintTimer(bool b) { mPrintTimer = b; }
 
-    void startTimer() { timer.start(); }
+    void startTimer() { mTimer.start(); }
 
     void startNewTask(double fromPerc, double toPerc, const std::string& action)
     {
@@ -104,20 +105,21 @@ public:
         assert(fromPerc >= 0);
         assert(toPerc <= 100);
         std::pair<double, double> newP;
-        newP.first =
-            stack.top().first +
-            (stack.top().second - stack.top().first) * (fromPerc / 100);
-        newP.second = (stack.top().second - stack.top().first) * (toPerc / 100);
-        globalPercProgress = newP.first;
-        stack.push(newP);
+        newP.first = mIntervals.top().first +
+                     (mIntervals.top().second - mIntervals.top().first) *
+                         (fromPerc / 100);
+        newP.second =
+            (mIntervals.top().second - mIntervals.top().first) * (toPerc / 100);
+        mGlobalPercProgress = newP.first;
+        mIntervals.push(newP);
         updateStep();
     }
 
     void endTask(const std::string& action)
     {
-        globalPercProgress = stack.top().second;
-        if (stack.size() > 1) {
-            stack.pop();
+        mGlobalPercProgress = mIntervals.top().second;
+        if (mIntervals.size() > 1) {
+            mIntervals.pop();
             updateStep();
 
             printLine(action, END);
@@ -126,15 +128,15 @@ public:
 
     double percentage() const
     {
-        double k = std::pow(10, percPrecision);
-        uint   c = globalPercProgress * k;
+        double k = std::pow(10, mPercPrecision);
+        uint   c = mGlobalPercProgress * k;
         return c / k;
     }
 
     virtual void setPercentage(uint newPerc)
     {
         if (newPerc >= 0 && newPerc <= 100) {
-            globalPercProgress = (stack.top().first) + step * newPerc;
+            mGlobalPercProgress = (mIntervals.top().first) + mStep * newPerc;
         }
     }
 
@@ -193,15 +195,15 @@ public:
     {
         assert(percPrintProgress > 0);
         assert((endPerc - startPerc) > 0);
-        isProgressActive = true;
-        progressMessage  = msg;
-        progressPerc     = startPerc;
-        progressPercStep = percPrintProgress;
-        progressStep =
+        mIsProgressActive = true;
+        mProgressMessage  = msg;
+        mProgressPerc     = startPerc;
+        mProgressPercStep = percPrintProgress;
+        mProgressStep =
             progressSize / ((endPerc - startPerc) / percPrintProgress - 1);
-        if (progressStep == 0)
-            progressStep = progressSize;
-        lastProgress = 0;
+        if (mProgressStep == 0)
+            mProgressStep = progressSize;
+        mLastProgress = 0;
     }
 
     /**
@@ -227,7 +229,7 @@ public:
      *
      * @endcode
      */
-    void endProgress() { isProgressActive = false; }
+    void endProgress() { mIsProgressActive = false; }
 
     /**
      * @brief Allows to easily manage progresses with the logger, along with the
@@ -260,24 +262,33 @@ public:
      */
     void progress(uint n)
     {
-        mutex.lock();
-        assert(isProgressActive);
-        uint progress = n / progressStep;
-        if (lastProgress < progress) {
-            progressPerc = progress * progressPercStep;
-            log(progressPerc, progressMessage);
-            lastProgress = progress;
+        mMutex.lock();
+        assert(mIsProgressActive);
+        uint progress = n / mProgressStep;
+        if (mLastProgress < progress) {
+            mProgressPerc = progress * mProgressPercStep;
+            log(mProgressPerc, mProgressMessage);
+            mLastProgress = progress;
         }
-        mutex.unlock();
+        mMutex.unlock();
     }
 
 protected:
-    // you should override this member function if you want to use a different
-    // stream that are not std::cout and std::cerr
+    /**
+     * @brief Returns the stream corresponding to the given LogLevel.
+     *
+     * It should be implemented by the derived classes.
+     *
+     * @param[in] lvl: the LogLevel for which the stream is requested.
+     * @return the stream corresponding to the given LogLevel.
+     */
     virtual Stream* levelStream(LogLevel lvl) = 0;
 
 private:
-    void updateStep() { step = (stack.top().second - stack.top().first) / 100; }
+    void updateStep()
+    {
+        mStep = (mIntervals.top().second - mIntervals.top().first) / 100;
+    }
 
     void printLine(const std::string& msg, uint lvl)
     {
@@ -285,7 +296,7 @@ private:
         if (lvl < DEBUG) {
             l = (LogLevel) lvl;
         }
-        std::ostream* stream = levelStream(l);
+        Stream* stream = levelStream(l);
 
         if (stream) {
             uint s = 0;
@@ -297,22 +308,22 @@ private:
         }
     }
 
-    uint printPercentage(std::ostream& o) const
+    uint printPercentage(Stream& o) const
     {
         uint size = 3;
-        if (percPrecision > 0)
-            size += 1 + percPrecision;
+        if (mPercPrecision > 0)
+            size += 1 + mPercPrecision;
 
         o << "[";
         o << std::right << std::setw(size) << percentage() << "%]";
         return size + 3;
     }
 
-    uint printIndentation(std::ostream& o) const
+    uint printIndentation(Stream& o) const
     {
         uint s = 0;
-        if (indent) {
-            uint n = stack.size() - 1;
+        if (mIndent) {
+            uint n = mIntervals.size() - 1;
             for (uint i = 0; i < n; i++) {
                 o << "  ";
                 s += 2;
@@ -321,11 +332,11 @@ private:
         return s;
     }
 
-    void printMessage(std::ostream& o, const std::string& msg, uint lvl, uint n)
+    void printMessage(Stream& o, const std::string& msg, uint lvl, uint n)
     {
-        uint maxMsgSize = lineW - n;
-        if (printTimer)
-            maxMsgSize -= TIMER_SIZE;
+        uint maxMsgSize = mLineWidth - n;
+        if (mPrintTimer)
+            maxMsgSize -= TIMER_MAX_CHAR_NUMBER;
         switch (lvl) {
         case ERROR:
             maxMsgSize -= 8;
@@ -355,11 +366,11 @@ private:
         o << std::setw(maxMsgSize) << std::left << msg;
     }
 
-    void printElapsedTime(std::ostream& o) const
+    void printElapsedTime(Stream& o) const
     {
-        if (printTimer) {
-            o << "[" << std::setw(TIMER_SIZE - 3) << std::right << timer.delay()
-              << "s]";
+        if (mPrintTimer) {
+            o << "[" << std::setw(TIMER_MAX_CHAR_NUMBER - 3) << std::right
+              << mTimer.delay() << "s]";
         }
     }
 };

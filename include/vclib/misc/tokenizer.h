@@ -35,9 +35,9 @@ namespace vcl {
  */
 class Tokenizer
 {
-    char separator = '\0';
+    char mSeparator = '\0';
 
-    std::vector<std::string> splitted;
+    std::vector<std::string> mSplitted;
 
 public:
     using iterator = std::vector<std::string>::const_iterator;
@@ -45,7 +45,7 @@ public:
     Tokenizer() = default;
 
     Tokenizer(const char* string, char separator, bool jumpEmptyTokens = true) :
-            separator(separator)
+            mSeparator(separator)
     {
         split(string, jumpEmptyTokens);
     }
@@ -54,33 +54,33 @@ public:
         const std::string& string,
         char               separator,
         bool               jumpEmptyTokens = true) :
-            separator(separator)
+            mSeparator(separator)
     {
         split(string.c_str(), jumpEmptyTokens);
     }
 
-    iterator begin() const { return splitted.begin(); }
+    iterator begin() const { return mSplitted.begin(); }
 
-    iterator end() const { return splitted.end(); }
+    iterator end() const { return mSplitted.end(); }
 
-    unsigned long int size() const { return (unsigned long) splitted.size(); }
+    unsigned long int size() const { return (unsigned long) mSplitted.size(); }
 
-    const std::string& operator[](uint i) const { return splitted[i]; }
+    const std::string& operator[](uint i) const { return mSplitted[i]; }
 
 private:
     void split(const char* str, bool jumpEmptyTokens = true)
     {
         // https://stackoverflow.com/questions/53849/
-        splitted.clear();
+        mSplitted.clear();
         if (*str != '\0') {
             do {
                 const char* begin = str;
-                while (*str != separator && *str)
+                while (*str != mSeparator && *str)
                     str++;
                 if (begin != str)
-                    splitted.push_back(std::string(begin, str));
+                    mSplitted.push_back(std::string(begin, str));
                 else if (!jumpEmptyTokens) {
-                    splitted.push_back(std::string());
+                    mSplitted.push_back(std::string());
                 }
             } while ('\0' != *str++);
         }
