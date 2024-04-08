@@ -62,8 +62,8 @@ public:
     void clear()
     {
         mSet.clear();
-        mMin   = std::numeric_limits<Scalar>::max();
-        mMax   = std::numeric_limits<Scalar>::lowest();
+        mMin     = std::numeric_limits<Scalar>::max();
+        mMax     = std::numeric_limits<Scalar>::lowest();
         mSum     = 0;
         mSqrdSum = 0;
         mAvg     = 0;

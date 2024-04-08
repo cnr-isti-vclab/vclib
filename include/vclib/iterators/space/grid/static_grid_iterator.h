@@ -110,7 +110,9 @@ public:
 
     ConstStaticGridIterator() = default;
 
-    ConstStaticGridIterator(VecIt it, const GridType& g) : mVecIt(it), mGrid(&g) {}
+    ConstStaticGridIterator(VecIt it, const GridType& g) : mVecIt(it), mGrid(&g)
+    {
+    }
 
     value_type operator*() const
     {

@@ -34,7 +34,7 @@ namespace vcl {
 template<typename ScalarType>
 class Histogram
 {
-    std::vector<ScalarType> mHist; // Counters for bins
+    std::vector<ScalarType> mHist;   // Counters for bins
     std::vector<ScalarType> mRanges; // Range for bins
 
     ScalarType mMinRange = 0; // Minimum range value
@@ -85,8 +85,8 @@ public:
         }
         else {
             for (uint i = 0; i <= nBins; ++i)
-                mRanges[i + 1] = mMinRange +
-                           delta * std::pow(ScalarType(i) / nBins, gamma);
+                mRanges[i + 1] =
+                    mMinRange + delta * std::pow(ScalarType(i) / nBins, gamma);
         }
     }
 
@@ -97,14 +97,14 @@ public:
     {
         mHist.clear();
         mRanges.clear();
-        mCnt         = 0;
-        mSum         = 0;
-        mRMS         = 0;
-        mBinNumber       = 0;
-        mMinRange = 0;
-        mMaxRange = 1;
-        mMin      = std::numeric_limits<ScalarType>::max();
-        mMax      = std::numeric_limits<ScalarType>::lowest();
+        mCnt       = 0;
+        mSum       = 0;
+        mRMS       = 0;
+        mBinNumber = 0;
+        mMinRange  = 0;
+        mMaxRange  = 1;
+        mMin       = std::numeric_limits<ScalarType>::max();
+        mMax       = std::numeric_limits<ScalarType>::lowest();
     }
 
     /**
