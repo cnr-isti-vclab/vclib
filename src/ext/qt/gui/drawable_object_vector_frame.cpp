@@ -28,9 +28,9 @@
 namespace vcl::qt {
 
 DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
-        QFrame(parent), ui(new Ui::DrawableObjectVectorFrame)
+        QFrame(parent), mUI(new Ui::DrawableObjectVectorFrame)
 {
-    ui->setupUi(this);
+    mUI->setupUi(this);
 }
 
 DrawableObjectVectorFrame::DrawableObjectVectorFrame(
@@ -38,56 +38,56 @@ DrawableObjectVectorFrame::DrawableObjectVectorFrame(
     QWidget*                              parent) :
         DrawableObjectVectorFrame(parent)
 {
-    drawList = v;
+    mDrawList = v;
     updateDrawableVectorWidget();
 }
 
 DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
 {
-    delete ui;
+    delete mUI;
 }
 
 void DrawableObjectVectorFrame::setDrawableObjectVector(
     std::shared_ptr<DrawableObjectVector> v)
 {
-    drawList = v;
+    mDrawList = v;
     updateDrawableVectorWidget();
 }
 
 uint DrawableObjectVectorFrame::selectedDrawableObject() const
 {
-    auto item = ui->listWidget->selectedItems().first();
-    return ui->listWidget->row(item);
+    auto item = mUI->listWidget->selectedItems().first();
+    return mUI->listWidget->row(item);
 }
 
 void DrawableObjectVectorFrame::on_listWidget_itemSelectionChanged()
 {
-    if (ui->listWidget->selectedItems().size() > 0) {
+    if (mUI->listWidget->selectedItems().size() > 0) {
         emit drawableObjectSelectionChanged(selectedDrawableObject());
     }
     else {
-        ui->listWidget->item(0)->setSelected(true);
+        mUI->listWidget->item(0)->setSelected(true);
     }
 }
 
 void DrawableObjectVectorFrame::updateDrawableVectorWidget()
 {
-    ui->listWidget->clear();
-    for (auto* d : *drawList) {
-        QListWidgetItem*     item  = new QListWidgetItem(ui->listWidget);
-        DrawableObjectFrame* frame = new DrawableObjectFrame(d, ui->listWidget);
+    mUI->listWidget->clear();
+    for (auto* d : *mDrawList) {
+        QListWidgetItem*     item  = new QListWidgetItem(mUI->listWidget);
+        DrawableObjectFrame* frame = new DrawableObjectFrame(d, mUI->listWidget);
 
         item->setSizeHint(frame->sizeHint());
-        ui->listWidget->addItem(item);
-        ui->listWidget->setItemWidget(item, frame);
+        mUI->listWidget->addItem(item);
+        mUI->listWidget->setItemWidget(item, frame);
         connect(
             frame,
             SIGNAL(visibilityChanged()),
             this,
             SIGNAL(drawableObjectVisibilityChanged()));
     }
-    if (drawList->size() > 0) {
-        ui->listWidget->item(0)->setSelected(true);
+    if (mDrawList->size() > 0) {
+        mUI->listWidget->item(0)->setSelected(true);
     }
 }
 

@@ -39,6 +39,10 @@ class DrawableObjectVectorFrame : public QFrame
 {
     Q_OBJECT
 
+    // this frame does not normally own this drawList
+    std::shared_ptr<DrawableObjectVector> mDrawList;
+    Ui::DrawableObjectVectorFrame*        mUI;
+
 public:
     explicit DrawableObjectVectorFrame(QWidget* parent = nullptr);
     explicit DrawableObjectVectorFrame(
@@ -58,10 +62,6 @@ private slots:
     void on_listWidget_itemSelectionChanged();
 
 private:
-    // this frame does not normally own this drawList
-    std::shared_ptr<DrawableObjectVector> drawList;
-    Ui::DrawableObjectVectorFrame*        ui;
-
     void updateDrawableVectorWidget();
 };
 

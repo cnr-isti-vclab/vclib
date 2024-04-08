@@ -32,7 +32,7 @@ namespace vcl::qgl {
 class MinimalViewerWidget : public QGLViewer
 {
     // this GLArea does not normally own this drawList
-    std::shared_ptr<DrawableObjectVector> drawList;
+    std::shared_ptr<DrawableObjectVector> mDrawList;
 
 public:
     MinimalViewerWidget(QWidget* parent = nullptr);

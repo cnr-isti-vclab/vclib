@@ -11,7 +11,7 @@ class ScreenShotDialog : public QFileDialog
 {
     Q_OBJECT
 
-    QDoubleSpinBox* multiplierSpinBox = nullptr;
+    QDoubleSpinBox* mMultiplierSpinBox = nullptr;
 
 public:
     explicit ScreenShotDialog(QWidget* parent = nullptr);

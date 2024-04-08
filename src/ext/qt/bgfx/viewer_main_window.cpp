@@ -36,21 +36,21 @@ namespace vcl::qbgf {
  * @param parent
  */
 ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
-        QMainWindow(parent), ui(new Ui::ViewerMainWindow)
+        QMainWindow(parent), mUI(new Ui::ViewerMainWindow)
 {
-    ui->setupUi(this);
+    mUI->setupUi(this);
 
     // create the vector of DrawableObjects
-    drawVector = std::make_shared<vcl::DrawableObjectVector>();
+    mDrawVector = std::make_shared<vcl::DrawableObjectVector>();
 
     // give the vector pointer to the contained widgets
-    ui->viewer->setDrawableObjectVector(drawVector);
-    ui->drawVectorFrame->setDrawableObjectVector(drawVector);
+    mUI->viewer->setDrawableObjectVector(mDrawVector);
+    mUI->drawVectorFrame->setDrawableObjectVector(mDrawVector);
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function
     connect(
-        ui->renderSettingsFrame,
+        mUI->renderSettingsFrame,
         SIGNAL(settingsUpdated()),
         this,
         SLOT(renderSettingsUpdated()));
@@ -59,7 +59,7 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
     // we update the current settings of the RenderSettingsFrame, and we update
     // the glArea
     connect(
-        ui->drawVectorFrame,
+        mUI->drawVectorFrame,
         SIGNAL(drawableObjectVisibilityChanged()),
         this,
         SLOT(visibilityDrawableObjectChanged()));
@@ -68,19 +68,19 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
     // update the RenderSettingsFrame, updating its settings to the object
     // render settings
     connect(
-        ui->drawVectorFrame,
+        mUI->drawVectorFrame,
         SIGNAL(drawableObjectSelectionChanged(uint)),
         this,
         SLOT(selectedDrawableObjectChanged(uint)));
 
-    ui->viewer->setFocus();
-    ui->rightArea->setVisible(false);
+    mUI->viewer->setFocus();
+    mUI->rightArea->setVisible(false);
 }
 
 ViewerMainWindow::~ViewerMainWindow()
 {
-    drawVector->clear();
-    delete ui;
+    mDrawVector->clear();
+    delete mUI;
 }
 
 /**
@@ -91,30 +91,30 @@ ViewerMainWindow::~ViewerMainWindow()
 void ViewerMainWindow::setDrawableObjectVector(
     std::shared_ptr<vcl::DrawableObjectVector> v)
 {
-    drawVector = v;
+    mDrawVector = v;
 
     // order here is important: drawVectorFrame must have the drawVector before
     // the renderSettingsFrame!
-    ui->viewer->setDrawableObjectVector(drawVector);
-    ui->drawVectorFrame->setDrawableObjectVector(drawVector);
-    if (drawVector->size() > 0) {
+    mUI->viewer->setDrawableObjectVector(mDrawVector);
+    mUI->drawVectorFrame->setDrawableObjectVector(mDrawVector);
+    if (mDrawVector->size() > 0) {
         try {
-            DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(drawVector->at(0));
-            ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
-            ui->renderSettingsFrame->setVisible(true);
+            DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(0));
+            mUI->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
+            mUI->renderSettingsFrame->setVisible(true);
         }
         catch (std::bad_cast exp) {
             // the current object (the first one) is not a GenericDrawableMesh
             // we hide the RenderSettingsFrame
-            ui->renderSettingsFrame->setVisible(false);
+            mUI->renderSettingsFrame->setVisible(false);
         }
         // right area is visible if there is at least one DrawableObject
-        ui->rightArea->setVisible(true);
+        mUI->rightArea->setVisible(true);
     }
     else {
-        ui->rightArea->setVisible(false);
+        mUI->rightArea->setVisible(false);
     }
-    ui->viewer->fitScene();
+    mUI->viewer->fitScene();
 }
 
 /**
@@ -124,16 +124,16 @@ void ViewerMainWindow::setDrawableObjectVector(
 void ViewerMainWindow::visibilityDrawableObjectChanged()
 {
     // get the selected drawable object
-    uint i = ui->drawVectorFrame->selectedDrawableObject();
+    uint i = mUI->drawVectorFrame->selectedDrawableObject();
     try {
         // if it is a DrawableMeshI, we must be sure that its render
         // settings are updated accordingly.
-        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(drawVector->at(i));
-        ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
+        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(i));
+        mUI->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
     }
     catch (std::bad_cast exp) {
     }
-    ui->viewer->update();
+    mUI->viewer->update();
 }
 
 /**
@@ -146,15 +146,15 @@ void ViewerMainWindow::selectedDrawableObjectChanged(uint i)
     try {
         // take the newly selected DrawableObject and check whether it is a
         // DrawableMeshI
-        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(drawVector->at(i));
+        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(i));
         // if it is a GenericDrawableMesh, update the RenderSettingsFrame, and
         // set it visible
-        ui->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
-        ui->renderSettingsFrame->setVisible(true);
+        mUI->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
+        mUI->renderSettingsFrame->setVisible(true);
     }
     catch (std::bad_cast exp) {
         // it is not a GenericDrawableMesh, RenderSettingsFrame must be hidden
-        ui->renderSettingsFrame->setVisible(false);
+        mUI->renderSettingsFrame->setVisible(false);
     }
 }
 
@@ -169,16 +169,16 @@ void ViewerMainWindow::selectedDrawableObjectChanged(uint i)
 void ViewerMainWindow::renderSettingsUpdated()
 {
     // The user changed the RenderSettings of the ith object.
-    uint i = ui->drawVectorFrame->selectedDrawableObject();
-    if (drawVector->size() > 0) {
+    uint i = mUI->drawVectorFrame->selectedDrawableObject();
+    if (mDrawVector->size() > 0) {
         // The selected object must always be a DrawableMeshI, because the
         // RenderSettingsFrame (which called this member function) is visible
         // only when the selected Object is a DrawableMeshI
-        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(drawVector->at(i));
+        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // GenericDrawableMesh
-        m.setRenderSettings(ui->renderSettingsFrame->meshRenderSettings());
-        ui->viewer->update();
+        m.setRenderSettings(mUI->renderSettingsFrame->meshRenderSettings());
+        mUI->viewer->update();
     }
 }
 

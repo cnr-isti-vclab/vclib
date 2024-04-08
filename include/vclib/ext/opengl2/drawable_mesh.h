@@ -79,9 +79,9 @@ inline void _check_gl_error(const char* file, int line)
 template<MeshConcept MeshType>
 class DrawableMesh : public DrawableMeshI
 {
-    MeshRenderBuffers<MeshType> mrb;
+    MeshRenderBuffers<MeshType> mMRB;
 
-    std::vector<uint> textID;
+    std::vector<uint> mTextID;
 
 public:
     DrawableMesh() = default;
@@ -101,7 +101,7 @@ public:
             name() = m.name();
         }
         unbindTextures();
-        mrb = MeshRenderBuffers<MeshType>(m);
+        mMRB = MeshRenderBuffers<MeshType>(m);
         mrs.setRenderCapabilityFrom(m);
         bindTextures();
     }
@@ -180,31 +180,31 @@ public:
                 }
             }
             if (mrs.isBboxEnabled()) {
-                drawBox3(mrb.bbMin(), mrb.bbMax(), vcl::Color(0, 0, 0));
+                drawBox3(mMRB.bbMin(), mMRB.bbMax(), vcl::Color(0, 0, 0));
             }
         }
     }
 
-    vcl::Point3d center() const { return (mrb.bbMin() + mrb.bbMax()) / 2; }
+    vcl::Point3d center() const { return (mMRB.bbMin() + mMRB.bbMax()) / 2; }
 
-    double radius() const { return (mrb.bbMax() - mrb.bbMin()).norm() / 2; }
+    double radius() const { return (mMRB.bbMax() - mMRB.bbMin()).norm() / 2; }
 
     DrawableMesh* clone() const { return new DrawableMesh(*this); }
 
 private:
     void renderPass() const
     {
-        uint nv = mrb.vertexNumber();
-        uint nt = mrb.triangleNumber();
+        uint nv = mMRB.vertexNumber();
+        uint nt = mMRB.triangleNumber();
 
-        const float*    coords          = mrb.vertexBufferData();
-        const uint32_t* triangles       = mrb.triangleBufferData();
-        const float*    vertexNormals   = mrb.vertexNormalBufferData();
-        const uint32_t* vertexColors    = mrb.vertexColorBufferData();
-        const float*    triangleNormals = mrb.triangleNormalBufferData();
-        const uint32_t* triangleColors  = mrb.triangleColorBufferData();
-        const float*    vertTexCoords   = mrb.vertexTexCoordsBufferData();
-        const float*    wedgTexCoords   = mrb.wedgeTexCoordsBufferData();
+        const float*    coords          = mMRB.vertexBufferData();
+        const uint32_t* triangles       = mMRB.triangleBufferData();
+        const float*    vertexNormals   = mMRB.vertexNormalBufferData();
+        const uint32_t* vertexColors    = mMRB.vertexColorBufferData();
+        const float*    triangleNormals = mMRB.triangleNormalBufferData();
+        const uint32_t* triangleColors  = mMRB.triangleColorBufferData();
+        const float*    vertTexCoords   = mMRB.vertexTexCoordsBufferData();
+        const float*    wedgTexCoords   = mMRB.wedgeTexCoordsBufferData();
 
         if (mrs.isPointCloudVisible()) {
             glEnableClientState(GL_VERTEX_ARRAY);
@@ -215,7 +215,7 @@ private:
                 glColorPointer(4, GL_UNSIGNED_BYTE, 0, vertexColors);
             }
             else if (mrs.isPointCloudColorPerMesh()) {
-                glColor4fv(mrb.meshColorBufferData());
+                glColor4fv(mMRB.meshColorBufferData());
             }
             else if (mrs.isPointCloudColorUserDefined()) {
                 glColor4fv(mrs.pointCloudUserColorData());
@@ -321,7 +321,7 @@ private:
                     glNormalPointer(GL_FLOAT, 0, vertexNormals);
 
                     if (mrs.isSurfaceColorPerMesh()) {
-                        glColor4fv(mrb.meshColorBufferData());
+                        glColor4fv(mMRB.meshColorBufferData());
                     }
                     else {
                         glColor4ubv((GLubyte*) mrs.surfaceUserColorData());
@@ -336,7 +336,7 @@ private:
                 }
                 else {
                     if (mrs.isSurfaceColorPerMesh()) {
-                        glColor4fv(mrb.meshColorBufferData());
+                        glColor4fv(mMRB.meshColorBufferData());
                     }
                     else {
                         glColor4ubv((GLubyte*) mrs.surfaceUserColorData());
@@ -364,7 +364,7 @@ private:
             }
             else if (mrs.isSurfaceColorPerVertexTexcoords()) {
                 if (mrs.isSurfaceShadingSmooth()) {
-                    short texture = textID[0];
+                    short texture = mTextID[0];
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glColor4f(1, 1, 1, 1);
                     glEnableClientState(GL_VERTEX_ARRAY);
@@ -395,7 +395,7 @@ private:
                         int   vid0_ptr = 3 * vid0;
                         int   vid1_ptr = 3 * vid1;
                         int   vid2_ptr = 3 * vid2;
-                        short texture  = textID[0];
+                        short texture  = mTextID[0];
                         glBindTexture(GL_TEXTURE_2D, texture);
                         glBegin(GL_TRIANGLES);
                         glColor4f(1, 1, 1, 1);
@@ -430,7 +430,7 @@ private:
                     int   vid1_ptr = 3 * vid1;
                     int   vid2_ptr = 3 * vid2;
                     short texture =
-                        textID[mrb.wedgeTextureIDsBufferData()[tid]];
+                        mTextID[mMRB.wedgeTextureIDsBufferData()[tid]];
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
@@ -459,7 +459,7 @@ private:
             glLineWidth(mrs.wireframeWidth());
 
             if (mrs.isWireframeColorPerMesh()) {
-                glColor4fv(mrb.meshColorBufferData());
+                glColor4fv(mMRB.meshColorBufferData());
             }
             else {
                 glColor4fv(mrs.wireframeUserColorData());
@@ -473,22 +473,22 @@ private:
 
     void bindTextures()
     {
-        textID.resize(mrb.textureNumber());
+        mTextID.resize(mMRB.textureNumber());
         glEnable(GL_TEXTURE_2D);
-        glGenTextures(mrb.textureNumber(), textID.data());
+        glGenTextures(mMRB.textureNumber(), mTextID.data());
 
-        for (uint i = 0; i < mrb.textureNumber(); i++) {
-            glBindTexture(GL_TEXTURE_2D, textID[i]);
+        for (uint i = 0; i < mMRB.textureNumber(); i++) {
+            glBindTexture(GL_TEXTURE_2D, mTextID[i]);
             glTexImage2D(
                 GL_TEXTURE_2D,
                 0,
                 GL_RGB,
-                mrb.textureSize(i).x(),
-                mrb.textureSize(i).y(),
+                mMRB.textureSize(i).x(),
+                mMRB.textureSize(i).y(),
                 0,
                 GL_RGBA,
                 GL_UNSIGNED_BYTE,
-                mrb.textureBufferData(i));
+                mMRB.textureBufferData(i));
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -498,9 +498,9 @@ private:
 
     void unbindTextures()
     {
-        if (textID.size() > 0) {
-            glDeleteTextures(textID.size(), textID.data());
-            textID.clear();
+        if (mTextID.size() > 0) {
+            glDeleteTextures(mTextID.size(), mTextID.data());
+            mTextID.clear();
         }
     }
 };

@@ -29,20 +29,20 @@ namespace vcl::qgl {
 
 MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) : QGLViewer(parent)
 {
-    drawList = std::make_shared<DrawableObjectVector>();
+    mDrawList = std::make_shared<DrawableObjectVector>();
 }
 
 MinimalViewerWidget::MinimalViewerWidget(
     std::shared_ptr<DrawableObjectVector> v,
     QWidget*                              parent) :
         QGLViewer(parent),
-        drawList(v)
+        mDrawList(v)
 {
 }
 
 void MinimalViewerWidget::init()
 {
-    for (DrawableObjectI* d : *drawList) {
+    for (DrawableObjectI* d : *mDrawList) {
         d->init();
     }
 }
@@ -50,18 +50,18 @@ void MinimalViewerWidget::init()
 void MinimalViewerWidget::setDrawableObjectVector(
     std::shared_ptr<DrawableObjectVector> v)
 {
-    drawList = v;
+    mDrawList = v;
 }
 
 std::shared_ptr<const DrawableObjectVector> MinimalViewerWidget::
     drawableObjectVector() const
 {
-    return drawList;
+    return mDrawList;
 }
 
 void MinimalViewerWidget::fitScene()
 {
-    Box3d   bb          = drawList->boundingBox();
+    Box3d   bb          = mDrawList->boundingBox();
     Point3d sceneCenter = bb.center();
     double  sceneRadius = bb.diagonal() / 2;
 
@@ -73,7 +73,7 @@ void MinimalViewerWidget::fitScene()
 
 void MinimalViewerWidget::draw()
 {
-    for (DrawableObjectI* obj : *drawList)
+    for (DrawableObjectI* obj : *mDrawList)
         obj->draw(0);
 }
 

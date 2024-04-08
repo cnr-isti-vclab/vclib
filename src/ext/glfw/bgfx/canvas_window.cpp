@@ -55,7 +55,7 @@ CanvasWindow::CanvasWindow(
     const std::string& windowTitle,
     uint               width,
     uint               height) :
-        title(windowTitle)
+        mTitle(windowTitle)
 {
     glfwSetErrorCallback(detail::glfwErrorCallback);
     if (!glfwInit()) {
@@ -66,9 +66,9 @@ CanvasWindow::CanvasWindow(
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-    window =
+    mWindow =
         glfwCreateWindow(width, height, windowTitle.c_str(), nullptr, nullptr);
-    if (!window) {
+    if (!mWindow) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -80,7 +80,7 @@ CanvasWindow::CanvasWindow(
 #ifdef VCLIB_RENDER_WITH_WAYLAND
     nwh = (void*) (uintptr_t) glfwGetWaylandWindow(window);
 #else
-    nwh = (void*) (uintptr_t) glfwGetX11Window(window);
+    nwh = (void*) (uintptr_t) glfwGetX11Window(mWindow);
 #endif
 #elif defined(_WIN32)
     nwh = glfwGetWin32Window(window);
@@ -89,7 +89,7 @@ CanvasWindow::CanvasWindow(
 #endif
     Canvas::init(nwh, width, height);
 
-    glfwSetWindowUserPointer(window, this);
+    glfwSetWindowUserPointer(mWindow, this);
 
     setCallbacks();
 }
@@ -105,32 +105,32 @@ CanvasWindow::~CanvasWindow()
 
 const std::string& CanvasWindow::windowTitle() const
 {
-    return title;
+    return mTitle;
 }
 
 void CanvasWindow::setWindowTitle(const std::string& wTitle)
 {
-    title = wTitle;
-    glfwSetWindowTitle(window, title.c_str());
+    mTitle = wTitle;
+    glfwSetWindowTitle(mWindow, mTitle.c_str());
 }
 
 uint CanvasWindow::width() const
 {
     int width, height;
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetWindowSize(mWindow, &width, &height);
     return width;
 }
 
 uint CanvasWindow::height() const
 {
     int width, height;
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetWindowSize(mWindow, &width, &height);
     return height;
 }
 
 void CanvasWindow::show()
 {
-    while (!glfwWindowShouldClose(window)) {
+    while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
         frame();
     }
@@ -139,7 +139,7 @@ void CanvasWindow::show()
 void CanvasWindow::setCallbacks()
 {
     glfwSetWindowSizeCallback(
-        window, [](GLFWwindow* window, int width, int height) {
+        mWindow, [](GLFWwindow* window, int width, int height) {
             auto* self =
                 static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwWindowSizeCallback(window, width, height);
@@ -147,7 +147,7 @@ void CanvasWindow::setCallbacks()
 
     // key callback
     glfwSetKeyCallback(
-        window,
+        mWindow,
         [](GLFWwindow* window, int key, int scancode, int action, int mods) {
             auto* self =
                 static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
@@ -156,7 +156,7 @@ void CanvasWindow::setCallbacks()
 
     // mouse position callback
     glfwSetCursorPosCallback(
-        window, [](GLFWwindow* window, double xpos, double ypos) {
+        mWindow, [](GLFWwindow* window, double xpos, double ypos) {
             auto* self =
                 static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwCursorPosCallback(window, xpos, ypos);
@@ -164,7 +164,7 @@ void CanvasWindow::setCallbacks()
 
     // mouse button callback
     glfwSetMouseButtonCallback(
-        window, [](GLFWwindow* window, int button, int action, int mods) {
+        mWindow, [](GLFWwindow* window, int button, int action, int mods) {
             auto* self =
                 static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwMouseButtonCallback(window, button, action, mods);
@@ -172,7 +172,7 @@ void CanvasWindow::setCallbacks()
 
     // scroll callback
     glfwSetScrollCallback(
-        window, [](GLFWwindow* window, double xoffset, double yoffset) {
+        mWindow, [](GLFWwindow* window, double xoffset, double yoffset) {
             auto* self =
                 static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
             self->glfwScrollCallback(window, xoffset, yoffset);

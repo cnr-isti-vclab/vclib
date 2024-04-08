@@ -29,22 +29,22 @@ DrawableObjectFrame::DrawableObjectFrame(
     DrawableObjectI* obj,
     QWidget*         parent) :
         QFrame(parent),
-        ui(new Ui::DrawableObjectFrame), obj(obj)
+        mUI(new Ui::DrawableObjectFrame), mObj(obj)
 {
-    ui->setupUi(this);
+    mUI->setupUi(this);
     assert(obj);
-    ui->objNameLabel->setText(QString::fromStdString(obj->name()));
-    ui->visibilityCheckBox->setChecked(obj->isVisible());
+    mUI->objNameLabel->setText(QString::fromStdString(obj->name()));
+    mUI->visibilityCheckBox->setChecked(obj->isVisible());
 }
 
 DrawableObjectFrame::~DrawableObjectFrame()
 {
-    delete ui;
+    delete mUI;
 }
 
 void DrawableObjectFrame::on_visibilityCheckBox_stateChanged(int arg1)
 {
-    obj->setVisibility(arg1 == Qt::Checked);
+    mObj->setVisibility(arg1 == Qt::Checked);
     emit visibilityChanged();
 }
 

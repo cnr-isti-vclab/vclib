@@ -35,10 +35,10 @@ class CanvasWindow : public vcl::bgf::Canvas, public vcl::EventManagerInterface
 {
     using Canvas = vcl::bgf::Canvas;
 
-    std::string title;
+    std::string mTitle;
 
 protected:
-    GLFWwindow* window = nullptr;
+    GLFWwindow* mWindow = nullptr;
 
 public:
     CanvasWindow(

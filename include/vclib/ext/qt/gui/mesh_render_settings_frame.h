@@ -39,6 +39,9 @@ class MeshRenderSettingsFrame : public QFrame
 {
     Q_OBJECT
 
+    Ui::MeshRenderSettingsFrame* mUI;
+    MeshRenderSettings           mMRS;
+
 public:
     explicit MeshRenderSettingsFrame(QWidget* parent = nullptr);
     ~MeshRenderSettingsFrame();
@@ -86,9 +89,6 @@ private:
     };
 
     enum WIRE_COLOR { W_VERTEX = 0, W_MESH, W_USER };
-
-    Ui::MeshRenderSettingsFrame* ui;
-    MeshRenderSettings           mrs;
 
     void updateGuiFromSettings();
     void updatePointsTabFromSettings();

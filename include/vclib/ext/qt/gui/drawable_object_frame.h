@@ -37,6 +37,9 @@ class DrawableObjectFrame : public QFrame
 {
     Q_OBJECT
 
+    Ui::DrawableObjectFrame* mUI;
+    DrawableObjectI*         mObj;
+
 public:
     explicit DrawableObjectFrame(
         DrawableObjectI* obj,
@@ -48,10 +51,6 @@ signals:
 
 private slots:
     void on_visibilityCheckBox_stateChanged(int arg1);
-
-private:
-    Ui::DrawableObjectFrame* ui;
-    DrawableObjectI*         obj;
 };
 
 } // namespace vcl::qt

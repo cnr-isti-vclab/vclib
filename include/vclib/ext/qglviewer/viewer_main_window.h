@@ -37,8 +37,8 @@ class ViewerMainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    Ui::ViewerMainWindow*                      ui;
-    std::shared_ptr<vcl::DrawableObjectVector> drawVector;
+    Ui::ViewerMainWindow*                      mUI;
+    std::shared_ptr<vcl::DrawableObjectVector> mDrawVector;
 
 public:
     explicit ViewerMainWindow(QWidget* parent = nullptr);

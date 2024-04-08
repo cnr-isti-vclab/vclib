@@ -18,13 +18,13 @@ ScreenShotDialog::ScreenShotDialog(QWidget* parent) :
 
     // Screen multiplier spin box
     layout->addWidget(new QLabel("Screen Multiplier:"), 4, 0);
-    multiplierSpinBox = new QDoubleSpinBox();
-    multiplierSpinBox->setMinimum(1);
-    multiplierSpinBox->setMaximum(10);
-    multiplierSpinBox->setValue(1);
-    multiplierSpinBox->setSingleStep(0.5);
+    mMultiplierSpinBox = new QDoubleSpinBox();
+    mMultiplierSpinBox->setMinimum(1);
+    mMultiplierSpinBox->setMaximum(10);
+    mMultiplierSpinBox->setValue(1);
+    mMultiplierSpinBox->setSingleStep(0.5);
 
-    layout->addWidget(multiplierSpinBox, 4, 1);
+    layout->addWidget(mMultiplierSpinBox, 4, 1);
 }
 
 ScreenShotDialog::~ScreenShotDialog()
@@ -33,7 +33,7 @@ ScreenShotDialog::~ScreenShotDialog()
 
 float ScreenShotDialog::screenMultiplierValue() const
 {
-    return multiplierSpinBox->value();
+    return mMultiplierSpinBox->value();
 }
 
 } // namespace vcl::qt
