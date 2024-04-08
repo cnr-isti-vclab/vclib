@@ -66,14 +66,14 @@ public:
 
     View() = default;
 
-    View(It begin, It end) : b(begin), e(end) {}
+    View(It begin, It end) : mBegin(begin), mEnd(end) {}
 
-    auto begin() const { return b; }
+    auto begin() const { return mBegin; }
 
-    auto end() const { return e; }
+    auto end() const { return mEnd; }
 
 protected:
-    It b, e;
+    It mBegin, mEnd;
 };
 
 } // namespace vcl
