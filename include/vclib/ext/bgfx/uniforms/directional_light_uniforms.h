@@ -48,12 +48,12 @@ namespace vcl::bgf {
  */
 class DirectionalLightUniforms
 {
-    float dir[4] = {0.0, 0.0, 1.0, 0.0}; // dir[3]
-    float col[4] = {1.0, 1.0, 1.0, 1.0}; // col[3]
+    float mDir[4] = {0.0, 0.0, 1.0, 0.0}; // just first 3 components are used
+    float mCol[4] = {1.0, 1.0, 1.0, 1.0}; // just first 3 components are used
 
-    ShaderUniform lightDirUniform =
+    ShaderUniform mLightDirUniform =
         ShaderUniform("u_lightDirPack", bgfx::UniformType::Vec4);
-    ShaderUniform lightColorUniform =
+    ShaderUniform mLightColorUniform =
         ShaderUniform("u_lightColorPack", bgfx::UniformType::Vec4);
 
 public:
@@ -66,20 +66,20 @@ public:
     template<typename S>
     void updateLight(const vcl::DirectionalLight<S>& light)
     {
-        dir[0] = light.direction().x();
-        dir[1] = light.direction().y();
-        dir[2] = light.direction().z();
+        mDir[0] = light.direction().x();
+        mDir[1] = light.direction().y();
+        mDir[2] = light.direction().z();
 
-        col[0] = light.color().redF();
-        col[1] = light.color().greenF();
-        col[2] = light.color().blueF();
+        mCol[0] = light.color().redF();
+        mCol[1] = light.color().greenF();
+        mCol[2] = light.color().blueF();
         // light color alpha is not used
     }
 
     void bind() const
     {
-        lightDirUniform.bind(dir);
-        lightColorUniform.bind(col);
+        mLightDirUniform.bind(mDir);
+        mLightColorUniform.bind(mCol);
     }
 };
 

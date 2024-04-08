@@ -31,9 +31,9 @@ namespace vcl::bgf {
 
 class DrawableDirectionalLightUniforms
 {
-    float lightColor[4] = {1.0, 1.0, 0.0, 1.0};
+    float mLightColor[4] = {1.0, 1.0, 0.0, 1.0};
 
-    ShaderUniform lightColorUniform = ShaderUniform(
+    ShaderUniform mLightColorUniform = ShaderUniform(
         "u_drawableDirectionalLightColor",
         bgfx::UniformType::Vec4);
 
@@ -42,13 +42,13 @@ public:
 
     void setColor(const vcl::Color& color)
     {
-        lightColor[0] = color.redF();
-        lightColor[1] = color.greenF();
-        lightColor[2] = color.blueF();
-        lightColor[3] = color.alphaF();
+        mLightColor[0] = color.redF();
+        mLightColor[1] = color.greenF();
+        mLightColor[2] = color.blueF();
+        mLightColor[3] = color.alphaF();
     }
 
-    void bind() { lightColorUniform.bind(lightColor); }
+    void bind() { mLightColorUniform.bind(mLightColor); }
 };
 
 } // namespace vcl::bgf

@@ -33,13 +33,13 @@ namespace vcl::bgf {
 
 class CameraUniforms
 {
-    float eye[4]     = {0.0, 0.0, 0.0, 0.0}; // eye[3] not used
-    float nearFar[4] = {0.0, 0.0, 0.0, 0.0}; // nearFar[2] and [3] not used
+    float mEye[4]     = {0.0, 0.0, 0.0, 0.0}; // eye[3] not used
+    float mNearFar[4] = {0.0, 0.0, 0.0, 0.0}; // nearFar[2] and [3] not used
 
-    ShaderUniform cameraEyeUniform =
+    ShaderUniform mCameraEyeUniform =
         ShaderUniform("u_cameraEyePosPack", bgfx::UniformType::Vec4);
 
-    ShaderUniform cameraNearFarUniform =
+    ShaderUniform mCameraNearFarUniform =
         ShaderUniform("u_cameraNearFarPack", bgfx::UniformType::Vec4);
 
 public:
@@ -48,18 +48,18 @@ public:
     template<typename S>
     void updateCamera(const vcl::Camera<S>& camera)
     {
-        eye[0] = camera.eye().x();
-        eye[1] = camera.eye().y();
-        eye[2] = camera.eye().z();
+        mEye[0] = camera.eye().x();
+        mEye[1] = camera.eye().y();
+        mEye[2] = camera.eye().z();
 
-        nearFar[0] = camera.nearPlane();
-        nearFar[1] = camera.farPlane();
+        mNearFar[0] = camera.nearPlane();
+        mNearFar[1] = camera.farPlane();
     }
 
     void bind() const
     {
-        cameraEyeUniform.bind(eye);
-        cameraNearFarUniform.bind(nearFar);
+        mCameraEyeUniform.bind(mEye);
+        mCameraNearFarUniform.bind(mNearFar);
     }
 };
 

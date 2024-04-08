@@ -31,46 +31,46 @@ namespace vcl::bgf {
 
 class ShaderUniform
 {
-    bgfx::UniformHandle     uniformHandle = BGFX_INVALID_HANDLE;
-    std::string             uniformName;
-    bgfx::UniformType::Enum uniformType = bgfx::UniformType::Count;
+    bgfx::UniformHandle     mUniformHandle = BGFX_INVALID_HANDLE;
+    std::string             mUniformName;
+    bgfx::UniformType::Enum mUniformType = bgfx::UniformType::Count;
 
 public:
     ShaderUniform() = default;
 
     ShaderUniform(const std::string& name, bgfx::UniformType::Enum type) :
-            uniformName(name), uniformType(type)
+            mUniformName(name), mUniformType(type)
     {
-        uniformHandle = bgfx::createUniform(name.c_str(), type);
+        mUniformHandle = bgfx::createUniform(name.c_str(), type);
     }
 
     ShaderUniform(const ShaderUniform& oth) :
-            uniformName(oth.uniformName), uniformType(oth.uniformType)
+            mUniformName(oth.mUniformName), mUniformType(oth.mUniformType)
     {
-        uniformHandle = bgfx::createUniform(uniformName.c_str(), uniformType);
+        mUniformHandle = bgfx::createUniform(mUniformName.c_str(), mUniformType);
     }
 
     ShaderUniform(ShaderUniform&& oth) { swap(oth); }
 
     ~ShaderUniform()
     {
-        if (bgfx::isValid(uniformHandle))
-            bgfx::destroy(uniformHandle);
+        if (bgfx::isValid(mUniformHandle))
+            bgfx::destroy(mUniformHandle);
     }
 
-    bgfx::UniformHandle handle() const { return uniformHandle; }
+    bgfx::UniformHandle handle() const { return mUniformHandle; }
 
-    const std::string& name() const { return uniformName; }
+    const std::string& name() const { return mUniformName; }
 
-    bgfx::UniformType::Enum type() const { return uniformType; }
+    bgfx::UniformType::Enum type() const { return mUniformType; }
 
-    void bind(const void* data) const { bgfx::setUniform(uniformHandle, data); }
+    void bind(const void* data) const { bgfx::setUniform(mUniformHandle, data); }
 
     void swap(ShaderUniform& oth)
     {
-        std::swap(uniformHandle, oth.uniformHandle);
-        std::swap(uniformName, oth.uniformName);
-        std::swap(uniformType, oth.uniformType);
+        std::swap(mUniformHandle, oth.mUniformHandle);
+        std::swap(mUniformName, oth.mUniformName);
+        std::swap(mUniformType, oth.mUniformType);
     }
 
     ShaderUniform& operator=(ShaderUniform oth)

@@ -33,20 +33,20 @@ namespace vcl::bgf {
 
 class MeshRenderSettingsUniforms
 {
-    // drawPack[0] -> primitive used
-    // drawPack[1] -> draw mode
-    // drawPack[1] -> point width
-    float drawPack[4] = {0.0, 0.0, 0.0, 0.0};
+    // mDrawPack[0] -> primitive used
+    // mDrawPack[1] -> draw mode
+    // mDrawPack[1] -> point width
+    float mDrawPack[4] = {0.0, 0.0, 0.0, 0.0};
 
-    // colorPack[0] -> point user color
-    // colorPack[1] -> surface user color
-    // colorPack[2] -> wireframe user color
-    float colorPack[4] = {0.0, 0.0, 0.0, 0.0};
+    // mColorPack[0] -> point user color
+    // mColorPack[1] -> surface user color
+    // mColorPack[2] -> wireframe user color
+    float mColorPack[4] = {0.0, 0.0, 0.0, 0.0};
 
-    ShaderUniform drawModeUniform =
+    ShaderUniform mDrawModeUniform =
         ShaderUniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
 
-    ShaderUniform colorUniform =
+    ShaderUniform mColorUniform =
         ShaderUniform("u_mrsColorPack", bgfx::UniformType::Vec4);
 
 public:
@@ -54,23 +54,23 @@ public:
 
     void updatePrimitive(uint primitive)
     {
-        drawPack[0] = uintBitsToFloat(primitive);
+        mDrawPack[0] = uintBitsToFloat(primitive);
     }
 
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
-        drawPack[1] = uintBitsToFloat(settings.drawMode());
-        drawPack[2] = settings.pointWidth();
+        mDrawPack[1] = uintBitsToFloat(settings.drawMode());
+        mDrawPack[2] = settings.pointWidth();
 
-        colorPack[0] = uintBitsToFloat(settings.pointCloudUserColor().abgr());
-        colorPack[1] = uintBitsToFloat(settings.surfaceUserColor().abgr());
-        colorPack[2] = uintBitsToFloat(settings.wireframeUserColor().abgr());
+        mColorPack[0] = uintBitsToFloat(settings.pointCloudUserColor().abgr());
+        mColorPack[1] = uintBitsToFloat(settings.surfaceUserColor().abgr());
+        mColorPack[2] = uintBitsToFloat(settings.wireframeUserColor().abgr());
     }
 
     void bind() const
     {
-        drawModeUniform.bind(drawPack);
-        colorUniform.bind(colorPack);
+        mDrawModeUniform.bind(mDrawPack);
+        mColorUniform.bind(mColorPack);
     }
 
 private:

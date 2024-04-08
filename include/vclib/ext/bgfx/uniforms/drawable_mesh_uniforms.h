@@ -31,9 +31,9 @@ namespace vcl::bgf {
 
 class DrawableMeshUniforms
 {
-    float meshColor[4] = {0.5, 0.5, 0.5, 1.0};
+    float mMeshColor[4] = {0.5, 0.5, 0.5, 1.0};
 
-    float model[16] = { // identity matrix
+    float mModelMatrix[16] = { // identity matrix
         1.0,
         0.0,
         0.0,
@@ -51,7 +51,7 @@ class DrawableMeshUniforms
         0.0,
         1.0};
 
-    ShaderUniform meshColorUniform =
+    ShaderUniform mMeshColorUniform =
         ShaderUniform("u_meshColor", bgfx::UniformType::Vec4);
 
     // ShaderUniform modelUH =
@@ -66,13 +66,13 @@ public:
         std::copy(
             mrb.meshColorBufferData(),
             mrb.meshColorBufferData() + 4,
-            meshColor);
+            mMeshColor);
     }
 
     void bind() const
     {
-        meshColorUniform.bind(meshColor);
-        // modelUH.bind(model);
+        mMeshColorUniform.bind(mMeshColor);
+        // modelUH.bind(mModelMatrix);
     }
 };
 

@@ -31,9 +31,9 @@ namespace vcl::bgf {
 
 class DrawableAxisUniforms
 {
-    float lightColor[4] = {1.0, 0.0, 0.0, 1.0};
+    float mAxisColor[4] = {1.0, 0.0, 0.0, 1.0};
 
-    ShaderUniform lightColorUniform =
+    ShaderUniform mAxisColorUniform =
         ShaderUniform("u_axisColor", bgfx::UniformType::Vec4);
 
 public:
@@ -41,13 +41,13 @@ public:
 
     void setColor(const vcl::Color& color)
     {
-        lightColor[0] = color.redF();
-        lightColor[1] = color.greenF();
-        lightColor[2] = color.blueF();
-        lightColor[3] = color.alphaF();
+        mAxisColor[0] = color.redF();
+        mAxisColor[1] = color.greenF();
+        mAxisColor[2] = color.blueF();
+        mAxisColor[3] = color.alphaF();
     }
 
-    void bind() { lightColorUniform.bind(lightColor); }
+    void bind() { mAxisColorUniform.bind(mAxisColor); }
 };
 
 } // namespace vcl::bgf
