@@ -59,26 +59,26 @@ class MeshInertia
     using FaceType   = MeshType::FaceType;
     using ScalarType = VertexType::CoordType::ScalarType;
 
-    int A; // alpha
-    int B; // beta
-    int C; // gamma
+    enum { X = 0, Y = 1, Z = 2 };
+
+    int mA; // alpha
+    int mB; // beta
+    int mC; // gamma
 
     /* projection integrals */
-    double P1, Pa, Pb, Paa, Pab, Pbb, Paaa, Paab, Pabb, Pbbb;
+    double mP1, mPa, mPb, mPaa, mPab, mPbb, mPaaa, mPaab, mPabb, mPbbb;
 
     /* face integrals */
-    double Fa, Fb, Fc, Faa, Fbb, Fcc, Faaa, Fbbb, Fccc, Faab, Fbbc, Fcca;
+    double mFa, mFb, mFc, mFaa, mFbb, mFcc;
+    double mFaaa, mFbbb, mFccc, mFaab, mFbbc, mFcca;
 
     /* volume integrals */
-    double T0, T1[3], T2[3], TP[3];
+    double mT0 = 0, mT1[3] = {0, 0, 0}, mT2[3] = {0, 0, 0}, mTP[3] = {0, 0, 0};
 
 public:
     MeshInertia(const MeshType& m)
     {
         double nx, ny, nz;
-
-        T0 = T1[X] = T1[Y] = T1[Z] = T2[X] = T2[Y] = T2[Z] = TP[X] = TP[Y] =
-            TP[Z]                                                  = 0;
 
         for (const FaceType& f : m.faces()) {
             if (vcl::faceArea(f) > std::numeric_limits<float>::min()) {
@@ -89,37 +89,37 @@ public:
                 ny = std::abs(fn[1]);
                 nz = std::abs(fn[2]);
                 if (nx > ny && nx > nz)
-                    C = X;
+                    mC = X;
                 else
-                    C = (ny > nz) ? Y : Z;
-                A = (C + 1) % 3;
-                B = (A + 1) % 3;
+                    mC = (ny > nz) ? Y : Z;
+                mA = (mC + 1) % 3;
+                mB = (mA + 1) % 3;
 
                 faceIntegrals(f, fn);
 
-                T0 += fn[X] * ((A == X) ? Fa : ((B == X) ? Fb : Fc));
+                mT0 += fn[X] * ((mA == X) ? mFa : ((mB == X) ? mFb : mFc));
 
-                T1[A] += fn[A] * Faa;
-                T1[B] += fn[B] * Fbb;
-                T1[C] += fn[C] * Fcc;
-                T2[A] += fn[A] * Faaa;
-                T2[B] += fn[B] * Fbbb;
-                T2[C] += fn[C] * Fccc;
-                TP[A] += fn[A] * Faab;
-                TP[B] += fn[B] * Fbbc;
-                TP[C] += fn[C] * Fcca;
+                mT1[mA] += fn[mA] * mFaa;
+                mT1[mB] += fn[mB] * mFbb;
+                mT1[mC] += fn[mC] * mFcc;
+                mT2[mA] += fn[mA] * mFaaa;
+                mT2[mB] += fn[mB] * mFbbb;
+                mT2[mC] += fn[mC] * mFccc;
+                mTP[mA] += fn[mA] * mFaab;
+                mTP[mB] += fn[mB] * mFbbc;
+                mTP[mC] += fn[mC] * mFcca;
             }
         }
 
-        T1[X] /= 2;
-        T1[Y] /= 2;
-        T1[Z] /= 2;
-        T2[X] /= 3;
-        T2[Y] /= 3;
-        T2[Z] /= 3;
-        TP[X] /= 2;
-        TP[Y] /= 2;
-        TP[Z] /= 2;
+        mT1[X] /= 2;
+        mT1[Y] /= 2;
+        mT1[Z] /= 2;
+        mT2[X] /= 3;
+        mT2[Y] /= 3;
+        mT2[Z] /= 3;
+        mTP[X] /= 2;
+        mTP[Y] /= 2;
+        mTP[Z] /= 2;
     }
 
     /**
@@ -127,14 +127,14 @@ public:
      * Meaningful only if the mesh is watertight.
      * @return
      */
-    ScalarType volume() const { return T0; }
+    ScalarType volume() const { return mT0; }
 
     Point3<ScalarType> centerOfMass() const
     {
         Point3<ScalarType> r;
-        r[X] = T1[X] / T0;
-        r[Y] = T1[Y] / T0;
-        r[Z] = T1[Z] / T0;
+        r[X] = mT1[X] / mT0;
+        r[Y] = mT1[Y] / mT0;
+        r[Z] = mT1[Z] / mT0;
         return r;
     }
 
@@ -143,23 +143,23 @@ public:
     {
         Matrix33 J;
         Point3d  r;
-        r[X] = T1[X] / T0;
-        r[Y] = T1[Y] / T0;
-        r[Z] = T1[Z] / T0;
+        r[X] = mT1[X] / mT0;
+        r[Y] = mT1[Y] / mT0;
+        r[Z] = mT1[Z] / mT0;
         /* compute inertia tensor */
-        J(X, X) = (T2[Y] + T2[Z]);
-        J(Y, Y) = (T2[Z] + T2[X]);
-        J(Z, Z) = (T2[X] + T2[Y]);
-        J(X, Y) = J(Y, X) = -TP[X];
-        J(Y, Z) = J(Z, Y) = -TP[Y];
-        J(Z, X) = J(X, Z) = -TP[Z];
+        J(X, X) = (mT2[Y] + mT2[Z]);
+        J(Y, Y) = (mT2[Z] + mT2[X]);
+        J(Z, Z) = (mT2[X] + mT2[Y]);
+        J(X, Y) = J(Y, X) = -mTP[X];
+        J(Y, Z) = J(Z, Y) = -mTP[Y];
+        J(Z, X) = J(X, Z) = -mTP[Z];
 
-        J(X, X) -= T0 * (r[Y] * r[Y] + r[Z] * r[Z]);
-        J(Y, Y) -= T0 * (r[Z] * r[Z] + r[X] * r[X]);
-        J(Z, Z) -= T0 * (r[X] * r[X] + r[Y] * r[Y]);
-        J(X, Y) = J(Y, X) += T0 * r[X] * r[Y];
-        J(Y, Z) = J(Z, Y) += T0 * r[Y] * r[Z];
-        J(Z, X) = J(X, Z) += T0 * r[Z] * r[X];
+        J(X, X) -= mT0 * (r[Y] * r[Y] + r[Z] * r[Z]);
+        J(Y, Y) -= mT0 * (r[Z] * r[Z] + r[X] * r[X]);
+        J(Z, Z) -= mT0 * (r[X] * r[X] + r[Y] * r[Y]);
+        J(X, Y) = J(Y, X) += mT0 * r[X] * r[Y];
+        J(Y, Z) = J(Z, Y) += mT0 * r[Y] * r[Z];
+        J(Z, X) = J(X, Z) += mT0 * r[Z] * r[X];
         return J;
     }
 
@@ -189,8 +189,6 @@ public:
     }
 
 private:
-    enum { X = 0, Y = 1, Z = 2 };
-
     static ScalarType sqr(const ScalarType& x) { return x * x; }
 
     static ScalarType cube(const ScalarType& x) { return x * x * x; }
@@ -203,35 +201,35 @@ private:
         projectionIntegrals(f);
 
         w  = -f.vertex(0)->coord() * n;
-        k1 = 1 / n[C];
+        k1 = 1 / n[mC];
         k2 = k1 * k1;
         k3 = k2 * k1;
         k4 = k3 * k1;
 
-        Fa = k1 * Pa;
-        Fb = k1 * Pb;
-        Fc = -k2 * (n[A] * Pa + n[B] * Pb + w * P1);
+        mFa = k1 * mPa;
+        mFb = k1 * mPb;
+        mFc = -k2 * (n[mA] * mPa + n[mB] * mPb + w * mP1);
 
-        Faa = k1 * Paa;
-        Fbb = k1 * Pbb;
-        Fcc = k3 * (sqr(n[A]) * Paa + 2 * n[A] * n[B] * Pab + sqr(n[B]) * Pbb +
-                    w * (2 * (n[A] * Pa + n[B] * Pb) + w * P1));
+        mFaa = k1 * mPaa;
+        mFbb = k1 * mPbb;
+        mFcc = k3 * (sqr(n[mA]) * mPaa + 2 * n[mA] * n[mB] * mPab +
+                     sqr(n[mB]) * mPbb +
+                     w * (2 * (n[mA] * mPa + n[mB] * mPb) + w * mP1));
 
-        Faaa = k1 * Paaa;
-        Fbbb = k1 * Pbbb;
-        Fccc =
-            -k4 *
-            (cube(n[A]) * Paaa + 3 * sqr(n[A]) * n[B] * Paab +
-             3 * n[A] * sqr(n[B]) * Pabb + cube(n[B]) * Pbbb +
-             3 * w *
-                 (sqr(n[A]) * Paa + 2 * n[A] * n[B] * Pab + sqr(n[B]) * Pbb) +
-             w * w * (3 * (n[A] * Pa + n[B] * Pb) + w * P1));
+        mFaaa = k1 * mPaaa;
+        mFbbb = k1 * mPbbb;
+        mFccc = -k4 * (cube(n[mA]) * mPaaa + 3 * sqr(n[mA]) * n[mB] * mPaab +
+                       3 * n[mA] * sqr(n[mB]) * mPabb + cube(n[mB]) * mPbbb +
+                       3 * w *
+                           (sqr(n[mA]) * mPaa + 2 * n[mA] * n[mB] * mPab +
+                            sqr(n[mB]) * mPbb) +
+                       w * w * (3 * (n[mA] * mPa + n[mB] * mPb) + w * mP1));
 
-        Faab = k1 * Paab;
-        Fbbc = -k2 * (n[A] * Pabb + n[B] * Pbbb + w * Pbb);
-        Fcca =
-            k3 * (sqr(n[A]) * Paaa + 2 * n[A] * n[B] * Paab + sqr(n[B]) * Pabb +
-                  w * (2 * (n[A] * Paa + n[B] * Pab) + w * Pa));
+        mFaab = k1 * mPaab;
+        mFbbc = -k2 * (n[mA] * mPabb + n[mB] * mPbbb + w * mPbb);
+        mFcca = k3 * (sqr(n[mA]) * mPaaa + 2 * n[mA] * n[mB] * mPaab +
+                      sqr(n[mB]) * mPabb +
+                      w * (2 * (n[mA] * mPaa + n[mB] * mPab) + w * mPa));
     }
 
     /**
@@ -247,13 +245,14 @@ private:
         double C1, Ca, Caa, Caaa, Cb, Cbb, Cbbb;
         double Cab, Kab, Caab, Kaab, Cabb, Kabb;
 
-        P1 = Pa = Pb = Paa = Pab = Pbb = Paaa = Paab = Pabb = Pbbb = 0.0;
+        mP1 = mPa = mPb = mPaa = mPab = mPbb = mPaaa = mPaab = mPabb = mPbbb =
+            0.0;
 
         for (uint i = 0; i < f.vertexNumber(); i++) {
-            a0   = f.vertex(i)->coord()[A];
-            b0   = f.vertex(i)->coord()[B];
-            a1   = f.vertexMod(i + 1)->coord()[A];
-            b1   = f.vertexMod(i + 1)->coord()[B];
+            a0   = f.vertex(i)->coord()[mA];
+            b0   = f.vertex(i)->coord()[mB];
+            a1   = f.vertexMod(i + 1)->coord()[mA];
+            b1   = f.vertexMod(i + 1)->coord()[mB];
             da   = a1 - a0;
             db   = b1 - b0;
             a0_2 = a0 * a0;
@@ -281,28 +280,28 @@ private:
             Cabb = 4 * b1_3 + 3 * b1_2 * b0 + 2 * b1 * b0_2 + b0_3;
             Kabb = b1_3 + 2 * b1_2 * b0 + 3 * b1 * b0_2 + 4 * b0_3;
 
-            P1 += db * C1;
-            Pa += db * Ca;
-            Paa += db * Caa;
-            Paaa += db * Caaa;
-            Pb += da * Cb;
-            Pbb += da * Cbb;
-            Pbbb += da * Cbbb;
-            Pab += db * (b1 * Cab + b0 * Kab);
-            Paab += db * (b1 * Caab + b0 * Kaab);
-            Pabb += da * (a1 * Cabb + a0 * Kabb);
+            mP1 += db * C1;
+            mPa += db * Ca;
+            mPaa += db * Caa;
+            mPaaa += db * Caaa;
+            mPb += da * Cb;
+            mPbb += da * Cbb;
+            mPbbb += da * Cbbb;
+            mPab += db * (b1 * Cab + b0 * Kab);
+            mPaab += db * (b1 * Caab + b0 * Kaab);
+            mPabb += da * (a1 * Cabb + a0 * Kabb);
         }
 
-        P1 /= 2.0;
-        Pa /= 6.0;
-        Paa /= 12.0;
-        Paaa /= 20.0;
-        Pb /= -6.0;
-        Pbb /= -12.0;
-        Pbbb /= -20.0;
-        Pab /= 24.0;
-        Paab /= 60.0;
-        Pabb /= -60.0;
+        mP1 /= 2.0;
+        mPa /= 6.0;
+        mPaa /= 12.0;
+        mPaaa /= 20.0;
+        mPb /= -6.0;
+        mPbb /= -12.0;
+        mPbbb /= -20.0;
+        mPab /= 24.0;
+        mPaab /= 60.0;
+        mPabb /= -60.0;
     }
 };
 

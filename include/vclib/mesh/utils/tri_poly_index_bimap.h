@@ -46,8 +46,8 @@ namespace vcl {
  */
 class TriPolyIndexBiMap
 {
-    std::vector<uint> triToPoly;
-    std::vector<uint> polyToTri;
+    std::vector<uint> mTriToPoly;
+    std::vector<uint> mPolyToTri;
 
 public:
     /**
@@ -62,7 +62,7 @@ public:
      * its mapped polygon
      * @return the index of the polygon mapped to the given triangle
      */
-    uint polygon(uint triangleIndex) const { return triToPoly[triangleIndex]; }
+    uint polygon(uint triangleIndex) const { return mTriToPoly[triangleIndex]; }
 
     /**
      * @brief Returns the smallest index of set of triangles mapped to the
@@ -74,7 +74,7 @@ public:
      * @return the smallest index of the set of triangles mapped to the given
      * polygon
      */
-    uint triangle(uint polygonIndex) const { return polyToTri[polygonIndex]; }
+    uint triangle(uint polygonIndex) const { return mPolyToTri[polygonIndex]; }
 
     /**
      * @brief Returns the number of (consecutive index) triangles mapped to a
@@ -101,11 +101,11 @@ public:
      */
     uint triangleNumber(uint polygonIndex) const
     {
-        if (polygonIndex < polyToTri.size() - 1) {
-            return polyToTri[polygonIndex + 1] - polyToTri[polygonIndex];
+        if (polygonIndex < mPolyToTri.size() - 1) {
+            return mPolyToTri[polygonIndex + 1] - mPolyToTri[polygonIndex];
         }
         else {
-            return triToPoly.size() - polyToTri[polygonIndex];
+            return mTriToPoly.size() - mPolyToTri[polygonIndex];
         }
     }
 
@@ -114,8 +114,8 @@ public:
      */
     void clear()
     {
-        triToPoly.clear();
-        polyToTri.clear();
+        mTriToPoly.clear();
+        mPolyToTri.clear();
     }
 
     /**
@@ -127,8 +127,8 @@ public:
      */
     void reserve(uint nTriangles, uint nPolygons)
     {
-        triToPoly.reserve(nTriangles);
-        polyToTri.reserve(nPolygons);
+        mTriToPoly.reserve(nTriangles);
+        mPolyToTri.reserve(nPolygons);
     }
 
     /**
@@ -148,19 +148,19 @@ public:
     void insert(uint triangleIndex, uint polygonIndex)
     {
         // add the index of the polygon associated to the triangle
-        if (triangleIndex >= triToPoly.size()) {
-            triToPoly.resize(triangleIndex + 1, UINT_NULL);
+        if (triangleIndex >= mTriToPoly.size()) {
+            mTriToPoly.resize(triangleIndex + 1, UINT_NULL);
         }
-        triToPoly[triangleIndex] = polygonIndex;
+        mTriToPoly[triangleIndex] = polygonIndex;
 
         // add the index of the triangle associated to the polygon,
         // but only if it is the first triangle index of the polygon!
-        if (polygonIndex >= polyToTri.size()) {
-            polyToTri.resize(polygonIndex + 1, UINT_NULL);
+        if (polygonIndex >= mPolyToTri.size()) {
+            mPolyToTri.resize(polygonIndex + 1, UINT_NULL);
         }
-        if (polyToTri[polygonIndex] == UINT_NULL ||
-            triangleIndex < polyToTri[polygonIndex])
-            polyToTri[polygonIndex] = triangleIndex;
+        if (mPolyToTri[polygonIndex] == UINT_NULL ||
+            triangleIndex < mPolyToTri[polygonIndex])
+            mPolyToTri[polygonIndex] = triangleIndex;
     }
 };
 

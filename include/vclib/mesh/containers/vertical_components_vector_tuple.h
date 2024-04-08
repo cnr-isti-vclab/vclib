@@ -42,10 +42,10 @@ class VerticalComponentsVectorTuple
     static constexpr uint COMP_NUMBER =
         std::tuple_size_v<std::tuple<std::vector<Comp>...>>;
 
-    std::tuple<std::vector<typename Comp::DataValueType>...> tuple;
+    std::tuple<std::vector<typename Comp::DataValueType>...> mVecTuple;
 
-    std::array<bool, COMP_NUMBER> vecEnabled;
-    std::size_t                   siz = 0;
+    std::array<bool, COMP_NUMBER> mVecEnabled;
+    std::size_t                   mSize = 0;
 
 public:
     VerticalComponentsVectorTuple()
@@ -60,24 +60,24 @@ public:
     constexpr std::vector<typename C::DataValueType>& vector()
     {
         constexpr uint ind = indexOfType<C>();
-        return std::get<ind>(tuple);
+        return std::get<ind>(mVecTuple);
     }
 
     template<typename C>
     constexpr const std::vector<typename C::DataValueType>& vector() const
     {
         constexpr uint ind = indexOfType<C>();
-        return std::get<ind>(tuple);
+        return std::get<ind>(mVecTuple);
     }
 
-    std::size_t size() const { return siz; }
+    std::size_t size() const { return mSize; }
 
     void resize(std::size_t size)
     {
         if constexpr (componentsNumber() > 0) {
             vectorResize<componentsNumber() - 1>(size);
         }
-        siz = size;
+        mSize = size;
     }
 
     void reserve(std::size_t size)
@@ -100,8 +100,8 @@ public:
             ((args.clear()), ...);
         };
 
-        std::apply(function, tuple);
-        siz = 0;
+        std::apply(function, mVecTuple);
+        mSize = 0;
     }
 
     void enableAllOptionalComponents()
@@ -118,7 +118,7 @@ public:
     bool isComponentEnabled() const
     {
         constexpr uint ind = indexOfType<C>();
-        return vecEnabled[ind];
+        return mVecEnabled[ind];
     }
 
     template<uint COMP_ID>
@@ -132,8 +132,8 @@ public:
     void enableComponent()
     {
         constexpr uint ind = indexOfType<C>();
-        vecEnabled[ind]    = true;
-        vector<C>().resize(siz);
+        mVecEnabled[ind]    = true;
+        vector<C>().resize(mSize);
     }
 
     template<uint COMP_ID>
@@ -147,7 +147,7 @@ public:
     void disableComponent()
     {
         constexpr uint ind = indexOfType<C>();
-        vecEnabled[ind]    = false;
+        mVecEnabled[ind]    = false;
         vector<C>().clear();
     }
 
@@ -168,8 +168,8 @@ private:
     template<std::size_t N>
     void vectorResize(std::size_t size)
     {
-        if (vecEnabled[N]) {
-            std::get<N>(tuple).resize(size);
+        if (mVecEnabled[N]) {
+            std::get<N>(mVecTuple).resize(size);
         }
         if constexpr (N != 0)
             vectorResize<N - 1>(size);
@@ -178,8 +178,8 @@ private:
     template<std::size_t N>
     void vectorReserve(std::size_t size)
     {
-        if (vecEnabled[N]) {
-            std::get<N>(tuple).reserve(size);
+        if (mVecEnabled[N]) {
+            std::get<N>(mVecTuple).reserve(size);
         }
         if constexpr (N != 0)
             vectorReserve<N - 1>(size);
@@ -188,8 +188,8 @@ private:
     template<std::size_t N>
     void vectorCompact(const std::vector<uint>& newIndices)
     {
-        if (vecEnabled[N]) {
-            vcl::compactVector(std::get<N>(tuple), newIndices);
+        if (mVecEnabled[N]) {
+            vcl::compactVector(std::get<N>(mVecTuple), newIndices);
         }
         if constexpr (N != 0)
             vectorCompact<N - 1>(newIndices);

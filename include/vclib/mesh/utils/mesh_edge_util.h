@@ -35,6 +35,8 @@ namespace vcl {
  * - the pointers of the vertices of the edge
  *
  * edges can be sorted using this class
+ *
+ * TODO: unify these two classes with a template parameter for constness
  */
 template<FaceMeshConcept MeshType>
 class MeshEdgeUtil

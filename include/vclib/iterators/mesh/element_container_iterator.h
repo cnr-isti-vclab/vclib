@@ -89,7 +89,7 @@ public:
             mIt(it),
             mVec(&vec)
     {
-        if (!jumpDeleted) [[unlikely]] {
+        if (!jumpDeleted) {
             mIncrementFun     = &ElementContainerIterator::incrementFast;
             mPostIncrementFun = &ElementContainerIterator::postIncrementFast;
             mDecrementFun     = &ElementContainerIterator::decrementFast;

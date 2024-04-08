@@ -1638,7 +1638,7 @@ private:
             mesh::ElementContainerConcept<ElemCont>)
         {
             // import in Cont the ElemCont pointers from m
-            Cont::importPointersFrom(m, ElemCont::vec.data());
+            Cont::importPointersFrom(m, ElemCont::mElemVec.data());
         }
     }
 
@@ -1659,7 +1659,7 @@ private:
         // is a container
         if constexpr (mesh::ElementContainerConcept<Cont>) {
             static_assert(I >= 0 && I != UINT_NULL);
-            bases[I] = m.Cont::vec.data();
+            bases[I] = m.Cont::mElemVec.data();
         }
     }
 
@@ -1697,7 +1697,7 @@ private:
         // is a container
         if constexpr (mesh::ElementContainerConcept<Cont>) {
             static_assert(I >= 0 && I != UINT_NULL);
-            sizes[I] = m.Cont::vec.size();
+            sizes[I] = m.Cont::mElemVec.size();
         }
     }
 
@@ -1759,7 +1759,7 @@ private:
             // base of the container
             m.updatePointers(
                 reinterpret_cast<const ElType*>(bases[I]),
-                m.Cont::vec.data(),
+                m.Cont::mElemVec.data(),
                 ContainerWrapper());
         }
     }
@@ -1790,7 +1790,7 @@ private:
             // base of the container
             m.updatePointers(
                 reinterpret_cast<const ElType*>(bases[I]),
-                m.Cont::vec.data(),
+                m.Cont::mElemVec.data(),
                 ContainerWrapper(),
                 sizes,
                 sizes[I]);
@@ -1812,7 +1812,7 @@ private:
     {
         using ElCont = ContainerOf<El>::type;
 
-        return ElCont::ccVecMap;
+        return ElCont::mCustomCompVecMap;
     }
 
     template<typename El>
@@ -1820,7 +1820,7 @@ private:
     {
         using ElCont = ContainerOf<El>::type;
 
-        return ElCont::ccVecMap;
+        return ElCont::mCustomCompVecMap;
     }
 
     template<typename El>
@@ -1828,7 +1828,7 @@ private:
     {
         using ElCont = ContainerOf<El>::type;
 
-        return ElCont::vcVecTuple;
+        return ElCont::mVerticalCompVecTuple;
     }
 
     template<typename El>
@@ -1836,7 +1836,7 @@ private:
     {
         using ElCont = ContainerOf<El>::type;
 
-        return ElCont::vcVecTuple;
+        return ElCont::mVerticalCompVecTuple;
     }
 };
 

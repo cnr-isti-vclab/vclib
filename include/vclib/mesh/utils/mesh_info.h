@@ -127,21 +127,22 @@ public:
 
 private:
     // Tell if elements are present in the file
-    std::bitset<NUM_ELEMENTS> elements = {false};
+    std::bitset<NUM_ELEMENTS> mElements = {false};
 
     // Tell if per element components are present in the file
-    std::array<std::bitset<NUM_COMPONENTS>, NUM_ELEMENTS> perElemComponents = {
+    std::array<std::bitset<NUM_COMPONENTS>, NUM_ELEMENTS> mPerElemComponents = {
         false};
 
     // Tell the data type for each component of each element
-    Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS> perElemComponentsType;
+    Eigen::Matrix<DataType, NUM_ELEMENTS, NUM_COMPONENTS>
+        mPerElemComponentsType;
 
     // Store name and type of per element custom components
     std::array<std::vector<CustomComponent>, NUM_ELEMENTS>
-        perElemCustomComponents;
+        mPerElemCustomComponents;
 
     // Mesh Type
-    MeshType type = POLYGON_MESH;
+    MeshType mType = POLYGON_MESH;
 
 public:
     /**
@@ -150,7 +151,7 @@ public:
      * All the Elements/Components are disabled, their type is set to
      * DataType::NONE and the Mesh Type is set to MeshType::POLYGON_MESH.
      */
-    MeshInfo() { perElemComponentsType.fill(NONE); }
+    MeshInfo() { mPerElemComponentsType.fill(NONE); }
 
     /**
      * @brief Sets the current status of the MeshInfo object from the input
@@ -274,21 +275,21 @@ public:
      * MeshType::TRIANGLE_MESH.
      * @return true if the current Mesh type is set to MeshType::TRIANGLE_MESH.
      */
-    bool isTriangleMesh() const { return type == TRIANGLE_MESH; }
+    bool isTriangleMesh() const { return mType == TRIANGLE_MESH; }
 
     /**
      * @brief Returns true if the current object has Mesh type set to
      * MeshType::QUAD_MESH.
      * @return true if the current Mesh type is set to MeshType::QUAD_MESH.
      */
-    bool isQuadMesh() const { return type == QUAD_MESH; }
+    bool isQuadMesh() const { return mType == QUAD_MESH; }
 
     /**
      * @brief Returns true if the current object has Mesh type set to
      * MeshType::POLYGON_MESH.
      * @return true if the current Mesh type is set to MeshType::POLYGON_MESH.
      */
-    bool isPolygonMesh() const { return type == POLYGON_MESH; }
+    bool isPolygonMesh() const { return mType == POLYGON_MESH; }
 
     /*
      * Getter Elements/Components functions: they are used mostly after the
@@ -296,11 +297,11 @@ public:
      * loaded.
      */
 
-    bool hasElement(Element el) const { return elements[el]; }
+    bool hasElement(Element el) const { return mElements[el]; }
 
     bool hasPerElementComponent(Element el, Component comp) const
     {
-        return perElemComponents[el][comp];
+        return mPerElemComponents[el][comp];
     }
 
     /**
@@ -413,22 +414,22 @@ public:
      * Elements/Components of a Mesh.
      */
 
-    void setTriangleMesh() { type = TRIANGLE_MESH; }
+    void setTriangleMesh() { mType = TRIANGLE_MESH; }
 
-    void setQuadMesh() { type = QUAD_MESH; }
+    void setQuadMesh() { mType = QUAD_MESH; }
 
-    void setPolygonMesh() { type = POLYGON_MESH; }
+    void setPolygonMesh() { mType = POLYGON_MESH; }
 
-    void setMeshType(MeshType t) { type = t; }
+    void setMeshType(MeshType t) { mType = t; }
 
-    void setElement(Element el, bool b = true) { elements[el] = b; }
+    void setElement(Element el, bool b = true) { mElements[el] = b; }
 
     void setElementComponents(Element el, Component c, bool b, DataType t)
     {
-        elements[el]             = b;
-        perElemComponents[el][c] = b;
+        mElements[el]             = b;
+        mPerElemComponents[el][c] = b;
         if (b)
-            perElemComponentsType(el, c) = t;
+            mPerElemComponentsType(el, c) = t;
     }
 
     void setVertices(bool b = true) { setElement(VERTEX, b); }
@@ -518,13 +519,13 @@ public:
         DataType           t)
     {
         setElementComponents(el, CUSTOM_COMPONENTS, true, NONE);
-        perElemCustomComponents[el].emplace_back(name, t);
+        mPerElemCustomComponents[el].emplace_back(name, t);
     }
 
     void clearElementCustomComponents(Element el)
     {
         setElementComponents(el, CUSTOM_COMPONENTS, false, NONE);
-        perElemCustomComponents[el].clear();
+        mPerElemCustomComponents[el].clear();
     }
 
     void addVertexCustomComponent(const std::string& name, DataType t)
@@ -548,7 +549,7 @@ public:
 
     DataType elementComponentType(Element el, Component comp) const
     {
-        return perElemComponentsType(el, comp);
+        return mPerElemComponentsType(el, comp);
     }
 
     DataType vertexCoordsType() const
@@ -603,12 +604,12 @@ public:
 
     const std::vector<CustomComponent>& vertexCustomComponents() const
     {
-        return perElemCustomComponents[VERTEX];
+        return mPerElemCustomComponents[VERTEX];
     }
 
     const std::vector<CustomComponent>& faceCustomComponents() const
     {
-        return perElemCustomComponents[FACE];
+        return mPerElemCustomComponents[FACE];
     }
 
     /**
@@ -626,37 +627,37 @@ public:
     {
         MeshInfo res;
         for (uint i = 0; i < NUM_ELEMENTS; ++i) {
-            res.elements[i] = elements[i] && info.elements[i];
+            res.mElements[i] = mElements[i] && info.mElements[i];
             for (uint j = 0; j < NUM_COMPONENTS; ++j) {
-                res.perElemComponents[i][j] =
-                    perElemComponents[i][j] && info.perElemComponents[i][j];
+                res.mPerElemComponents[i][j] =
+                    mPerElemComponents[i][j] && info.mPerElemComponents[i][j];
 
-                if (res.perElemComponents[i][j]) {
-                    res.perElemComponentsType(i, j) =
-                        perElemComponentsType(i, j);
+                if (res.mPerElemComponents[i][j]) {
+                    res.mPerElemComponentsType(i, j) =
+                        mPerElemComponentsType(i, j);
                 }
             }
         }
 
-        if (type == info.type) {
-            res.type = type;
+        if (mType == info.mType) {
+            res.mType = mType;
         }
-        res.perElemCustomComponents = perElemCustomComponents;
+        res.mPerElemCustomComponents = mPerElemCustomComponents;
 
         return res;
     }
 
     void reset()
     {
-        elements.reset();
-        for (auto& comp : perElemComponents)
+        mElements.reset();
+        for (auto& comp : mPerElemComponents)
             comp.reset();
-        perElemComponentsType.fill(NONE);
+        mPerElemComponentsType.fill(NONE);
 
-        for (auto& v : perElemCustomComponents)
+        for (auto& v : mPerElemCustomComponents)
             v.clear();
 
-        type = TRIANGLE_MESH;
+        mType = TRIANGLE_MESH;
     }
 
 private:

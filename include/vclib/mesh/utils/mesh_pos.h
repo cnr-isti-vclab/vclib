@@ -45,11 +45,11 @@ namespace vcl {
 template<face::HasAdjacentFaces FaceType>
 class MeshPos
 {
-    const FaceType* f = nullptr;
+    const FaceType* mFace = nullptr;
 
-    const typename FaceType::VertexType* v = nullptr;
+    const typename FaceType::VertexType* mVertex = nullptr;
 
-    short e = -1;
+    short mEdge = -1;
 
 public:
     using VertexType = FaceType::VertexType;
@@ -59,18 +59,18 @@ public:
      */
     MeshPos() = default;
 
-    MeshPos(const FaceType* f, short e) : f(f), e(e)
+    MeshPos(const FaceType* f, short e) : mFace(f), mEdge(e)
     {
         if (f != nullptr)
-            v = f->vertex(e);
+            mVertex = f->vertex(e);
         assert(isValid(f, v, e));
     }
 
-    MeshPos(const FaceType* f, const VertexType* v) : f(f), v(v)
+    MeshPos(const FaceType* f, const VertexType* v) : mFace(f), mVertex(v)
     {
         for (uint i = 0; i < f->vertexNumber(); i++)
             if (f->vertex(i) == v)
-                e = i;
+                mEdge = i;
         assert(isValid(f, v, e));
     }
 
@@ -84,7 +84,8 @@ public:
      * @param[in] e: the Edge (an positive index < f.vertexNumber() on which
      * place the MeshPos.
      */
-    MeshPos(const FaceType* f, const VertexType* v, short e) : f(f), v(v), e(e)
+    MeshPos(const FaceType* f, const VertexType* v, short e) :
+            mFace(f), mVertex(v), mEdge(e)
     {
         assert(isValid(f, v, e));
     }
@@ -112,13 +113,13 @@ public:
                (v == f->vertex(e) || v == f->vertexMod(e + 1));
     }
 
-    const FaceType* face() const { return f; }
+    const FaceType* face() const { return mFace; }
 
-    const VertexType* vertex() const { return v; }
+    const VertexType* vertex() const { return mVertex; }
 
-    short edge() const { return e; }
+    short edge() const { return mEdge; }
 
-    const FaceType* adjFace() const { return f->adjFace(e); }
+    const FaceType* adjFace() const { return mFace->adjFace(mEdge); }
 
     const VertexType* adjVertex() const
     {
@@ -138,14 +139,17 @@ public:
      * @brief Returns `true` if this MeshPos is valid.
      * @return `true` if this MeshPos is valid.
      */
-    bool isValid() const { return isValid(f, v, e); }
+    bool isValid() const { return isValid(mFace, mVertex, mEdge); }
 
     /**
      * @brief Returns `true` if this is null, non initialized, MeshPos. The
      * result of this function is different from calling !isValid().
      * @return `true` if this MeshPos is null.
      */
-    bool isNull() const { return f == nullptr || v == nullptr || e < 0; }
+    bool isNull() const
+    {
+        return mFace == nullptr || mVertex == nullptr || mEdge < 0;
+    }
 
     /**
      * @brief Returns `true` if the current edge of this MeshPos is on a border.
@@ -154,7 +158,7 @@ public:
      * not use border flags.
      * @return `true` if the current edge in the current face is on a border.
      */
-    bool isEdgeOnBorder() const { return f->adjFace(e) == nullptr; }
+    bool isEdgeOnBorder() const { return mFace->adjFace(mEdge) == nullptr; }
 
     /**
      * @brief Returns `true` if the current vertex of the MeshPos corresponts to
@@ -164,7 +168,7 @@ public:
      *
      * @return
      */
-    bool isCCWOriented() const { return f->vertex(e) == v; }
+    bool isCCWOriented() const { return mFace->vertex(mEdge) == mVertex; }
 
     /**
      * @brief Moves this MeshPos to the face adjacent to the current face that
@@ -179,10 +183,10 @@ public:
      */
     bool flipFace()
     {
-        const FaceType* nf = f->adjFace(e);
+        const FaceType* nf = mFace->adjFace(mEdge);
         if (nf != nullptr) {
-            e = nf->indexOfAdjFace(f);
-            f = nf;
+            mEdge = nf->indexOfAdjFace(mFace);
+            mFace = nf;
             return true;
         }
         else {
@@ -196,11 +200,11 @@ public:
      */
     void flipVertex()
     {
-        if (f->vertexMod(e) == v) {
-            v = f->vertexMod(e + 1);
+        if (mFace->vertexMod(mEdge) == mVertex) {
+            mVertex = mFace->vertexMod(mEdge + 1);
         }
         else {
-            v = f->vertexMod(e);
+            mVertex = mFace->vertexMod(mEdge);
         }
     }
 
@@ -210,12 +214,12 @@ public:
      */
     void flipEdge()
     {
-        if (f->vertexMod(e + 1) == v) {
-            e = (e + 1) % (short) f->vertexNumber();
+        if (mFace->vertexMod(mEdge + 1) == mVertex) {
+            mEdge = (mEdge + 1) % (short) mFace->vertexNumber();
         }
         else {
-            short n = f->vertexNumber();
-            e       = ((e - 1) % n + n) %
+            short n = mFace->vertexNumber();
+            mEdge       = ((mEdge - 1) % n + n) %
                 n; // be sure to get the right index of the previous edge
         }
     }
@@ -275,21 +279,21 @@ public:
 
     bool operator==(const MeshPos& op) const
     {
-        return f == op.f && v == op.v && e == op.e;
+        return mFace == op.mFace && mVertex == op.mVertex && mEdge == op.mEdge;
     }
 
     bool operator!=(const MeshPos& op) const { return !(*this == op); }
 
     bool operator<(const MeshPos& op) const
     {
-        if (f == op.f) {
-            if (e == op.e)
-                return v < op.v;
+        if (mFace == op.mFace) {
+            if (mEdge == op.mEdge)
+                return mVertex < op.mVertex;
             else
-                return e < op.e;
+                return mEdge < op.mEdge;
         }
         else {
-            return f < op.f;
+            return mFace < op.mFace;
         }
     }
 

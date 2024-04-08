@@ -58,31 +58,31 @@ protected:
     ParentMeshType* mParentMesh = nullptr;
 
     /**
-     * @brief en: the number of elements in the container. Could be different
+     * @brief The number of elements in the container. Could be different
      * from elements.size() due to elements marked as deleted into the
      * container.
      */
-    uint en = 0;
+    uint mElemNumber = 0;
 
     /**
-     * @brief vec: the vector of elements: will contain the set of elements,
+     * @brief The vector of elements: will contain the set of elements,
      * each one of these will contain the data of the horizontal components and
      * a pointer to the parent mesh
      */
-    std::vector<T> vec;
+    std::vector<T> mElemVec;
 
     /**
-     * @brief vcVecTuple the tuple of vectors of all the vertical components of
+     * @brief The tuple of vectors of all the vertical components of
      * the element. Contains both the optional and the persistent vertical
      * components
      */
-    VerticalComponentsVectorTuple<vComps> vcVecTuple;
+    VerticalComponentsVectorTuple<vComps> mVerticalCompVecTuple;
 
     /**
-     * @brief ccVecMap the map that associates a string to a vector of custom
+     * @brief The map that associates a string to a vector of custom
      * components
      */
-    CustomComponentsVectorMap<comp::HasCustomComponents<T>> ccVecMap;
+    CustomComponentsVectorMap<comp::HasCustomComponents<T>> mCustomCompVecMap;
 
 public:
     static const uint ELEMENT_ID = T::ELEMENT_ID;
@@ -108,7 +108,7 @@ protected:
      *
      * @param[in] i: the index of the element that will be returned.
      */
-    const T& element(uint i) const { return vec[i]; }
+    const T& element(uint i) const { return mElemVec[i]; }
 
     /**
      * @brief Returns a reference of the element at the i-th position in the
@@ -121,7 +121,7 @@ protected:
      *
      * @param[in] i: the index of the element that will be returned.
      */
-    T& element(uint i) { return vec[i]; }
+    T& element(uint i) { return mElemVec[i]; }
 
     /**
      * @brief Returns the number of **non-deleted** elements contained in the
@@ -132,7 +132,7 @@ protected:
      *
      * @return The number of non-deleted elements of the Mesh.
      */
-    uint elementNumber() const { return en; }
+    uint elementNumber() const { return mElemNumber; }
 
     /**
      * @brief Returns the number of elements (also deleted) contained in the
@@ -143,7 +143,7 @@ protected:
      *
      * @return The number of all the elements contained in the Mesh.
      */
-    uint elementContainerSize() const { return vec.size(); }
+    uint elementContainerSize() const { return mElemVec.size(); }
 
     /**
      * @brief Returns the number of deleted elements in the Element container,
@@ -158,24 +158,24 @@ protected:
 
     uint addElement()
     {
-        vcVecTuple.resize(vec.size() + 1);
+        mVerticalCompVecTuple.resize(mElemVec.size() + 1);
         if constexpr (comp::HasCustomComponents<T>)
-            ccVecMap.resize(vec.size() + 1);
+            mCustomCompVecMap.resize(mElemVec.size() + 1);
 
-        T* oldB = vec.data();
-        vec.emplace_back();
-        T* newB = vec.data();
-        en++;
+        T* oldB = mElemVec.data();
+        mElemVec.emplace_back();
+        T* newB = mElemVec.data();
+        mElemNumber++;
 
-        vec.back().setParentMesh(mParentMesh);
-        vec.back().initVerticalComponents();
+        mElemVec.back().setParentMesh(mParentMesh);
+        mElemVec.back().initVerticalComponents();
 
         if (oldB != newB) {
             setParentMeshPointers(mParentMesh);
             mParentMesh->updateAllPointers(oldB, newB);
         }
 
-        return vec.size() - 1;
+        return mElemVec.size() - 1;
     }
 
     /**
@@ -188,19 +188,19 @@ protected:
      */
     uint addElements(uint size)
     {
-        vcVecTuple.resize(vec.size() + size);
+        mVerticalCompVecTuple.resize(mElemVec.size() + size);
         if constexpr (comp::HasCustomComponents<T>)
-            ccVecMap.resize(vec.size() + size);
+            mCustomCompVecMap.resize(mElemVec.size() + size);
 
-        uint baseId = vec.size();
-        T*   oldB   = vec.data();
-        vec.resize(vec.size() + size);
-        T* newB = vec.data();
-        en += size;
+        uint baseId = mElemVec.size();
+        T*   oldB   = mElemVec.data();
+        mElemVec.resize(mElemVec.size() + size);
+        T* newB = mElemVec.data();
+        mElemNumber += size;
 
-        for (uint i = baseId; i < vec.size(); ++i) {
-            vec[i].setParentMesh(mParentMesh);
-            vec[i].initVerticalComponents();
+        for (uint i = baseId; i < mElemVec.size(); ++i) {
+            mElemVec[i].setParentMesh(mParentMesh);
+            mElemVec[i].initVerticalComponents();
         }
 
         if (oldB != newB) {
@@ -213,14 +213,14 @@ protected:
 
     void clearElements()
     {
-        vec.clear();
-        en = 0;
+        mElemVec.clear();
+        mElemNumber = 0;
 
         // clear vertical and custom components
 
-        vcVecTuple.clear();
+        mVerticalCompVecTuple.clear();
         if constexpr (comp::HasCustomComponents<T>)
-            ccVecMap.clear();
+            mCustomCompVecMap.clear();
     }
 
     /**
@@ -253,13 +253,13 @@ protected:
      */
     void resizeElements(uint size)
     {
-        if (size > en) {
-            addElements(size - en);
+        if (size > mElemNumber) {
+            addElements(size - mElemNumber);
         }
-        else if (size < en) {
-            uint nToDelete = en - size;
-            for (uint i = vec.size() - 1; nToDelete > 0; --i) {
-                if (!vec[i].isDeleted()) {
+        else if (size < mElemNumber) {
+            uint nToDelete = mElemNumber - size;
+            for (uint i = mElemVec.size() - 1; nToDelete > 0; --i) {
+                if (!mElemVec[i].isDeleted()) {
                     deleteElement(i);
                 }
             }
@@ -268,13 +268,13 @@ protected:
 
     void reserveElements(uint size)
     {
-        T* oldB = vec.data();
-        vec.reserve(size);
-        T* newB = vec.data();
+        T* oldB = mElemVec.data();
+        mElemVec.reserve(size);
+        T* newB = mElemVec.data();
 
-        vcVecTuple.reserve(size);
+        mVerticalCompVecTuple.reserve(size);
         if constexpr (comp::HasCustomComponents<T>)
-            ccVecMap.reserve(size);
+            mCustomCompVecMap.reserve(size);
 
         if (oldB != newB) {
             setParentMeshPointers(mParentMesh);
@@ -293,11 +293,11 @@ protected:
     {
         std::vector<uint> newIndices = elementCompactIndices();
         if (elementNumber() != elementContainerSize()) {
-            compactVector(vec, newIndices);
+            compactVector(mElemVec, newIndices);
 
-            vcVecTuple.compact(newIndices);
+            mVerticalCompVecTuple.compact(newIndices);
             if constexpr (comp::HasCustomComponents<T>)
-                ccVecMap.compact(newIndices);
+                mCustomCompVecMap.compact(newIndices);
 
             updateElementIndices(newIndices);
         }
@@ -321,8 +321,8 @@ protected:
      */
     void deleteElement(uint i)
     {
-        vec[i].deletedBit() = true;
-        --en;
+        mElemVec[i].deletedBit() = true;
+        --mElemNumber;
     }
 
     /**
@@ -358,12 +358,12 @@ protected:
      */
     uint elementIndexIfCompact(uint i) const
     {
-        if (vec.size() == en)
+        if (mElemVec.size() == mElemNumber)
             return i;
         else {
             uint cnt = 0;
             for (uint ii = 0; ii < i; ii++) {
-                if (!vec[ii].deleted())
+                if (!mElemVec[ii].deleted())
                     ++cnt;
             }
             return cnt;
@@ -383,10 +383,10 @@ protected:
      */
     std::vector<uint> elementCompactIndices() const
     {
-        std::vector<uint> newIndices(vec.size());
+        std::vector<uint> newIndices(mElemVec.size());
         uint              k = 0;
-        for (uint i = 0; i < vec.size(); ++i) {
-            if (!vec[i].deleted()) {
+        for (uint i = 0; i < mElemVec.size(); ++i) {
+            if (!mElemVec[i].deleted()) {
                 newIndices[i] = k;
                 k++;
             }
@@ -438,23 +438,27 @@ protected:
      */
     ElementIterator elementBegin(bool jumpDeleted = true)
     {
-        auto it = vec.begin();
+        auto it = mElemVec.begin();
         if (jumpDeleted) {
             // if the user asked to jump the deleted elements, and the first
             // element is deleted, we need to move forward until we find the
             // first non-deleted element
-            while (it != vec.end() && it->deleted()) {
+            while (it != mElemVec.end() && it->deleted()) {
                 ++it;
             }
         }
-        return ElementIterator(it, vec, jumpDeleted && vec.size() != en);
+        return ElementIterator(
+            it, mElemVec, jumpDeleted && mElemVec.size() != mElemNumber);
     }
 
     /**
      * @brief Returns an iterator to the end of the container.
      * @return An iterator to the end of the container.
      */
-    ElementIterator elementEnd() { return ElementIterator(vec.end(), vec); }
+    ElementIterator elementEnd()
+    {
+        return ElementIterator(mElemVec.end(), mElemVec);
+    }
 
     /**
      * @brief Returns a const iterator to the beginning of the container.
@@ -469,16 +473,17 @@ protected:
      */
     ConstElementIterator elementBegin(bool jumpDeleted = true) const
     {
-        auto it = vec.begin();
+        auto it = mElemVec.begin();
         if (jumpDeleted) {
             // if the user asked to jump the deleted elements, and the first
             // element is deleted, we need to move forward until we find the
             // first non-deleted element
-            while (it != vec.end() && it->deleted()) {
+            while (it != mElemVec.end() && it->deleted()) {
                 ++it;
             }
         }
-        return ConstElementIterator(it, vec, jumpDeleted && vec.size() != en);
+        return ConstElementIterator(
+            it, mElemVec, jumpDeleted && mElemVec.size() != mElemNumber);
     }
 
     /**
@@ -487,7 +492,7 @@ protected:
      */
     ConstElementIterator elementEnd() const
     {
-        return ConstElementIterator(vec.end(), vec);
+        return ConstElementIterator(mElemVec.end(), mElemVec);
     }
 
     /**
@@ -515,7 +520,8 @@ protected:
     View<ElementIterator> elements(bool jumpDeleted = true)
     {
         return vcl::View(
-            elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+            elementBegin(jumpDeleted && mElemVec.size() != mElemNumber),
+            elementEnd());
     }
 
     /**
@@ -543,35 +549,36 @@ protected:
     View<ConstElementIterator> elements(bool jumpDeleted = true) const
     {
         return vcl::View(
-            elementBegin(jumpDeleted && vec.size() != en), elementEnd());
+            elementBegin(jumpDeleted && mElemVec.size() != mElemNumber),
+            elementEnd());
     }
 
     void enableAllOptionalComponents()
     {
-        vcVecTuple.enableAllOptionalComponents();
+        mVerticalCompVecTuple.enableAllOptionalComponents();
     }
 
     void disableAllOptionalComponents()
     {
-        vcVecTuple.disableAllOptionalComponents();
+        mVerticalCompVecTuple.disableAllOptionalComponents();
     }
 
     template<typename C>
     bool isOptionalComponentEnabled() const
     {
-        return vcVecTuple.template isComponentEnabled<C>();
+        return mVerticalCompVecTuple.template isComponentEnabled<C>();
     }
 
     template<uint COMP_ID>
     bool isOptionalComponentEnabled() const
     {
-        return vcVecTuple.template isComponentEnabled<COMP_ID>();
+        return mVerticalCompVecTuple.template isComponentEnabled<COMP_ID>();
     }
 
     template<typename C>
     void enableOptionalComponent()
     {
-        vcVecTuple.template enableComponent<C>();
+        mVerticalCompVecTuple.template enableComponent<C>();
         // first call init on all the just enabled components
         if constexpr (comp::HasInitMemberFunction<C>) {
             for (auto& e : elements()) {
@@ -599,13 +606,13 @@ protected:
     template<typename C>
     void disableOptionalComponent()
     {
-        vcVecTuple.template disableComponent<C>();
+        mVerticalCompVecTuple.template disableComponent<C>();
     }
 
     template<uint COMP_ID>
     void disableOptionalComponent()
     {
-        vcVecTuple.template disableComponent<COMP_ID>();
+        mVerticalCompVecTuple.template disableComponent<COMP_ID>();
     }
 
     // Custom Components
@@ -613,53 +620,55 @@ protected:
     bool hasElemCustomComponent(const std::string& name) const
         requires comp::HasCustomComponents<T>
     {
-        return ccVecMap.componentExists(name);
+        return mCustomCompVecMap.componentExists(name);
     }
 
     std::vector<std::string> elemCustomComponentNames() const
         requires comp::HasCustomComponents<T>
     {
-        return ccVecMap.allComponentNames();
+        return mCustomCompVecMap.allComponentNames();
     }
 
     template<typename K>
     bool isElemCustomComponentOfType(const std::string& name) const
         requires comp::HasCustomComponents<T>
     {
-        return ccVecMap.template isComponentOfType<K>(name);
+        return mCustomCompVecMap.template isComponentOfType<K>(name);
     }
 
     std::type_index elemComponentType(const std::string& name) const
         requires comp::HasCustomComponents<T>
     {
-        return ccVecMap.componentType(name);
+        return mCustomCompVecMap.componentType(name);
     }
 
     template<typename K>
     std::vector<std::string> elemCustomComponentNamesOfType() const
         requires comp::HasCustomComponents<T>
     {
-        return ccVecMap.template allComponentNamesOfType<K>();
+        return mCustomCompVecMap.template allComponentNamesOfType<K>();
     }
 
     template<typename K>
     void addElemCustomComponent(const std::string& name)
         requires comp::HasCustomComponents<T>
     {
-        ccVecMap.template addNewComponent<K>(name, elementContainerSize());
+        mCustomCompVecMap.template addNewComponent<K>(
+            name, elementContainerSize());
     }
 
     void deleteElemCustomComponent(const std::string& name)
         requires comp::HasCustomComponents<T>
     {
-        ccVecMap.deleteComponent(name);
+        mCustomCompVecMap.deleteComponent(name);
     }
 
     template<typename K>
     CustomComponentVectorHandle<K> customComponentVectorHandle(
         const std::string& name) requires comp::HasCustomComponents<T>
     {
-        std::vector<std::any>& cc = ccVecMap.template componentVector<K>(name);
+        std::vector<std::any>& cc =
+            mCustomCompVecMap.template componentVector<K>(name);
         CustomComponentVectorHandle<K> v(cc);
         return v;
     }
@@ -669,7 +678,7 @@ protected:
         const std::string& name) const requires comp::HasCustomComponents<T>
     {
         const std::vector<std::any>& cc =
-            ccVecMap.template componentVector<K>(name);
+            mCustomCompVecMap.template componentVector<K>(name);
         ConstCustomComponentVectorHandle<K> v(cc);
         return cc;
     }
@@ -677,7 +686,7 @@ protected:
     uint index(const T* e) const
     {
         assert(!vec.empty() && e >= vec.data() && e <= &vec.back());
-        return e - vec.data();
+        return e - mElemVec.data();
     }
 
     void setParentMeshPointers(void* pm)
@@ -744,7 +753,7 @@ protected:
      */
     void updateElementIndices(const std::vector<uint>& newIndices)
     {
-        T* base = vec.data();
+        T* base = mElemVec.data();
 
         mParentMesh->updateAllPointers(base, newIndices);
     }
@@ -788,12 +797,12 @@ protected:
                 ++eid;
             }
             // set the number of elements (different from the container size)
-            en = c.en;
+            mElemNumber = c.mElemNumber;
             if constexpr (
                 comp::HasCustomComponents<T> &&
                 comp::HasCustomComponents<typename Container::ElementType>)
             {
-                ccVecMap = c.ccVecMap;
+                mCustomCompVecMap = c.mCustomCompVecMap;
             }
         }
     }
@@ -833,7 +842,7 @@ protected:
 
             // get the container base of the other mesh, that we use to import
             // pointers
-            const auto* cbase = othMesh.OthBaseContainer::vec.data();
+            const auto* cbase = othMesh.OthBaseContainer::mElemVec.data();
 
             // upcast the other mesh to the container and import the pointers
             // from the OthTContainer
