@@ -30,8 +30,8 @@ namespace vcl::bgf {
 
 MinimalViewer::MinimalViewer(uint width, uint height) : DTB(width, height)
 {
-    cameraUniforms.updateCamera(DTB::camera());
-    directionalLightUniforms.updateLight(DTB::light());
+    mCameraUniforms.updateCamera(DTB::camera());
+    mDirectionalLightUniforms.updateLight(DTB::light());
 }
 
 MinimalViewer::MinimalViewer(
@@ -45,29 +45,29 @@ MinimalViewer::MinimalViewer(
 
 const DrawableObjectVector& MinimalViewer::drawableObjectVector() const
 {
-    return *drawList;
+    return *mDrawList;
 }
 
 void MinimalViewer::setDrawableObjectVector(
     std::shared_ptr<DrawableObjectVector> v)
 {
-    drawList = v;
+    mDrawList = v;
 
-    for (DrawableObjectI* obj : *drawList) {
+    for (DrawableObjectI* obj : *mDrawList) {
         initDrawableObject(*obj);
     }
 }
 
 uint MinimalViewer::pushDrawableObject(const DrawableObjectI& obj)
 {
-    drawList->pushBack(obj);
-    initDrawableObject(drawList->back());
-    return drawList->size() - 1;
+    mDrawList->pushBack(obj);
+    initDrawableObject(mDrawList->back());
+    return mDrawList->size() - 1;
 }
 
 void MinimalViewer::fitScene()
 {
-    Box3d   bb          = drawList->boundingBox();
+    Box3d   bb          = mDrawList->boundingBox();
     Point3f sceneCenter = bb.center().cast<float>();
     float   sceneRadius = bb.diagonal() / 2;
 
@@ -79,24 +79,24 @@ void MinimalViewer::draw(uint viewId)
     bgfx::setViewTransform(
         viewId, viewMatrix().data(), projectionMatrix().data());
 
-    cameraUniforms.updateCamera(DTB::camera());
-    cameraUniforms.bind();
+    mCameraUniforms.updateCamera(DTB::camera());
+    mCameraUniforms.bind();
 
-    directionalLightUniforms.bind();
+    mDirectionalLightUniforms.bind();
 
-    for (DrawableObjectI* obj : *drawList)
+    for (DrawableObjectI* obj : *mDrawList)
         obj->draw(viewId);
 
-    if (axis.isVisible()) {
-        axis.draw(viewId);
+    if (mAxis.isVisible()) {
+        mAxis.draw(viewId);
     }
 
-    if (directionalLight.isVisible()) {
-        directionalLight.draw(viewId);
+    if (mDirectionalLight.isVisible()) {
+        mDirectionalLight.draw(viewId);
     }
 
-    if (trackball.isVisible()) {
-        trackball.draw(viewId);
+    if (mTrackBall.isVisible()) {
+        mTrackBall.draw(viewId);
     }
 }
 

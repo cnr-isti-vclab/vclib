@@ -37,18 +37,18 @@ namespace vcl::bgf {
 
 class DrawableDirectionalLight : public DrawableObjectI
 {
-    bool visible = false;
+    bool mVisible = false;
 
-    DirectionalLight<float> light;
-    float transform[32]; // two 4x4 matrices, first rotate, second translate
-    std::vector<float> vertices;
-    vcl::Color         lColor = vcl::Color::Yellow;
+    float mTransform[32]; // two 4x4 matrices, first rotate, second translate
 
-    bgfx::VertexBufferHandle vertexCoordBH = BGFX_INVALID_HANDLE;
+    std::vector<float> mVertices; // vertices of the drawn lines
+    vcl::Color         mColor = vcl::Color::Yellow; // color of the lines
 
-    DrawableDirectionalLightUniforms dlUniforms;
+    bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
 
-    bgfx::ProgramHandle program = Context::programManager().getProgram(
+    DrawableDirectionalLightUniforms mUniform;
+
+    bgfx::ProgramHandle mProgram = Context::programManager().getProgram(
         VclProgram::DRAWABLE_DIRECTIONAL_LIGHT);
 
 public:
@@ -59,7 +59,7 @@ public:
 
     void update(const DirectionalLight<float>& l);
 
-    const vcl::Color& linesColor() const { return lColor; }
+    const vcl::Color& linesColor() const { return mColor; }
 
     void setLinesColor(const vcl::Color& c);
 
@@ -73,9 +73,9 @@ public:
 
     DrawableObjectI* clone() const;
 
-    bool isVisible() const { return visible; }
+    bool isVisible() const { return mVisible; }
 
-    void setVisibility(bool vis) { visible = vis; }
+    void setVisibility(bool vis) { mVisible = vis; }
 
 private:
     void updateVertexBuffer();

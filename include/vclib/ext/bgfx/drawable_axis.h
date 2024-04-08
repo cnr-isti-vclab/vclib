@@ -38,32 +38,26 @@ namespace vcl::bgf {
 
 class DrawableAxis : public DrawableObjectI
 {
-    bool visible = false;
+    bool mVisible = false;
 
-    const vcl::Color colors[3] = {
+    const vcl::Color mColors[3] = {
         vcl::Color::Red,
         vcl::Color::Green,
         vcl::Color::Blue};
 
-    vcl::Matrix44f matrices[3] = {
+    vcl::Matrix44f mMatrices[3] = {
         vcl::Matrix44f::Zero(),
         vcl::Matrix44f::Zero(),
         vcl::Matrix44f::Zero()};
 
-    MeshRenderBuffers<vcl::TriMesh> mrbArrow[2];
+    MeshRenderBuffers<vcl::TriMesh> mArrowBuffers[2]; // 0: cylinder, 1: cone
 
-    bgfx::ProgramHandle program =
+    bgfx::ProgramHandle mProgram =
         Context::programManager().getProgram(VclProgram::DRAWABLE_AXIS);
-    ;
 
-    bgfx::VertexBufferHandle vertexCoordBH   = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle vertexNormalBH  = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  triangleIndexBH = BGFX_INVALID_HANDLE;
-
-    DrawableAxisUniforms uniforms;
+    DrawableAxisUniforms mUniforms;
 
 public:
-    // TODO: manage copy and swap
     DrawableAxis(double size = 1, bool fromOrigin = false);
 
     ~DrawableAxis() = default;
@@ -80,9 +74,9 @@ public:
 
     DrawableObjectI* clone() const override { return new DrawableAxis(*this); }
 
-    bool isVisible() const override { return visible; }
+    bool isVisible() const override { return mVisible; }
 
-    void setVisibility(bool vis) override { visible = vis; }
+    void setVisibility(bool vis) override { mVisible = vis; }
 
 private:
     void updateMatrices(double size);

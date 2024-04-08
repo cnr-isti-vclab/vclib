@@ -63,10 +63,9 @@ namespace vcl::bgf {
  */
 class Canvas : public TextView
 {
-    void*                   winID = nullptr;
-    bgfx::FrameBufferHandle fbh;
-
-    bgfx::ViewId view = 0;
+    void*                   mWinId  = nullptr;
+    bgfx::FrameBufferHandle mFbh    = BGFX_INVALID_HANDLE;
+    bgfx::ViewId            mViewId = 0;
 
 public:
     Canvas();
@@ -77,7 +76,7 @@ public:
 
     void init(void* winId, uint width, uint height);
 
-    bgfx::ViewId viewId() const { return view; }
+    bgfx::ViewId viewId() const { return mViewId; }
 
     void screenShot(
         const std::string& filename,

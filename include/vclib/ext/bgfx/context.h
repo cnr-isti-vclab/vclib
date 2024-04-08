@@ -38,14 +38,14 @@ namespace vcl::bgf {
 
 class Context
 {
-    void* windowHandle  = nullptr;
-    void* displayHandle = nullptr;
+    void* mWindowHandle  = nullptr;
+    void* mDisplayHandle = nullptr;
 
-    std::stack<bgfx::ViewId> viewStack;
+    std::stack<bgfx::ViewId> mViewStack;
 
-    Callback        cb;
-    FontManager*    fm = nullptr;
-    ProgramManager* pm = nullptr;
+    Callback        mCallBack;
+    FontManager*    mFontManager = nullptr;
+    ProgramManager* mProgramManager = nullptr;
 
 public:
     inline static bgfx::RendererType::Enum renderType =

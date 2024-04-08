@@ -33,7 +33,7 @@ DrawableDirectionalLight::DrawableDirectionalLight()
     // describe the light
     // there are 4 x 4 lines having Z direction in the [-0.75, 0.75] viewport
 
-    vertices.reserve(16 * 2 * 3);
+    mVertices.reserve(16 * 2 * 3);
 
     const float low  = -0.75f;
     const float high = 0.75f;
@@ -45,13 +45,13 @@ DrawableDirectionalLight::DrawableDirectionalLight()
 
     for (uint i = 0; i < n; ++i) {
         for (uint j = 0; j < n; ++j) {
-            vertices.push_back(low + i * step);
-            vertices.push_back(low + j * step);
-            vertices.push_back(zlow);
+            mVertices.push_back(low + i * step);
+            mVertices.push_back(low + j * step);
+            mVertices.push_back(zlow);
 
-            vertices.push_back(low + i * step);
-            vertices.push_back(low + j * step);
-            vertices.push_back(zhigh);
+            mVertices.push_back(low + i * step);
+            mVertices.push_back(low + j * step);
+            mVertices.push_back(zhigh);
         }
     }
 
@@ -66,20 +66,18 @@ DrawableDirectionalLight::DrawableDirectionalLight()
     updateTransform(1, t);
 
     updateVertexBuffer();
-    setLinesColor(lColor);
+    setLinesColor(mColor);
 }
 
 DrawableDirectionalLight::~DrawableDirectionalLight()
 {
-    if (bgfx::isValid(vertexCoordBH)) {
-        bgfx::destroy(vertexCoordBH);
+    if (bgfx::isValid(mVertexCoordBH)) {
+        bgfx::destroy(mVertexCoordBH);
     }
 }
 
 void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
 {
-    light = l;
-
     // make the transform matrix such that the lines will be drawn in the
     // direction of the light
     vcl::Matrix44f t = vcl::rotationMatrix<vcl::Matrix44f>(
@@ -90,26 +88,26 @@ void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
 
 void DrawableDirectionalLight::setLinesColor(const Color& c)
 {
-    lColor = c;
-    dlUniforms.setColor(lColor);
+    mColor = c;
+    mUniform.setColor(mColor);
 }
 
 void DrawableDirectionalLight::draw(uint viewId)
 {
     if (isVisible()) {
-        if (bgfx::isValid(program)) {
+        if (bgfx::isValid(mProgram)) {
             bgfx::setState(
                 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                 BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                 BGFX_STATE_PT_LINES);
 
-            bgfx::setTransform(transform, 2);
+            bgfx::setTransform(mTransform, 2);
 
-            dlUniforms.bind();
+            mUniform.bind();
 
-            bgfx::setVertexBuffer(0, vertexCoordBH);
+            bgfx::setVertexBuffer(0, mVertexCoordBH);
 
-            bgfx::submit(viewId, program);
+            bgfx::submit(viewId, mProgram);
         }
     }
 }
@@ -132,8 +130,8 @@ DrawableObjectI* DrawableDirectionalLight::clone() const
 
 void DrawableDirectionalLight::updateVertexBuffer()
 {
-    if (bgfx::isValid(vertexCoordBH)) {
-        bgfx::destroy(vertexCoordBH);
+    if (bgfx::isValid(mVertexCoordBH)) {
+        bgfx::destroy(mVertexCoordBH);
     }
 
     // vertex buffer (positions)
@@ -142,14 +140,14 @@ void DrawableDirectionalLight::updateVertexBuffer()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
         .end();
 
-    vertexCoordBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertices.data(), vertices.size() * sizeof(float)),
+    mVertexCoordBH = bgfx::createVertexBuffer(
+        bgfx::makeRef(mVertices.data(), mVertices.size() * sizeof(float)),
         layout);
 }
 
 void DrawableDirectionalLight::updateTransform(uint i, const Matrix44f& matrix)
 {
-    std::copy(matrix.data(), matrix.data() + 16, &transform[i * 16]);
+    std::copy(matrix.data(), matrix.data() + 16, &mTransform[i * 16]);
 }
 
 } // namespace vcl::bgf

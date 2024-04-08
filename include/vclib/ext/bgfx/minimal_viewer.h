@@ -38,15 +38,15 @@ namespace vcl::bgf {
 class MinimalViewer : public vcl::DesktopTrackBall<float>
 {
     // this Viewer does not normally own this drawList
-    std::shared_ptr<DrawableObjectVector> drawList;
+    std::shared_ptr<DrawableObjectVector> mDrawList;
 
-    CameraUniforms             cameraUniforms;
-    DirectionalLightUniforms   directionalLightUniforms;
-    MeshRenderSettingsUniforms meshRenderSettingsUniforms;
+    CameraUniforms             mCameraUniforms;
+    DirectionalLightUniforms   mDirectionalLightUniforms;
+    MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
-    DrawableAxis             axis;
-    DrawableDirectionalLight directionalLight;
-    DrawableTrackball        trackball;
+    DrawableAxis             mAxis;
+    DrawableDirectionalLight mDirectionalLight;
+    DrawableTrackBall        mTrackBall;
 
 protected:
     using DTB = vcl::DesktopTrackBall<float>;
@@ -69,33 +69,33 @@ public:
 
     void draw(uint viewId);
 
-    void toggleAxisVisibility() { axis.setVisibility(!axis.isVisible()); }
+    void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
 
     void toggleTrackballVisibility()
     {
-        trackball.setVisibility(!trackball.isVisible());
+        mTrackBall.setVisibility(!mTrackBall.isVisible());
     }
 
     bool isDirectionalLightVisible() const
     {
-        return directionalLight.isVisible();
+        return mDirectionalLight.isVisible();
     }
 
     void setDirectionalLightVisibility(bool b)
     {
-        directionalLight.setVisibility(b);
+        mDirectionalLight.setVisibility(b);
     }
 
     void updateDirectionalLight()
     {
-        directionalLight.update(light());
-        directionalLightUniforms.updateLight(light());
+        mDirectionalLight.update(light());
+        mDirectionalLightUniforms.updateLight(light());
     }
 
     void updateDrawableTrackball()
     {
         auto v = DTB::camera().viewMatrix();
-        trackball.updateRotation(v);
+        mTrackBall.updateRotation(v);
     }
 
 private:

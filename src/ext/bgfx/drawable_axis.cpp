@@ -41,24 +41,24 @@ void DrawableAxis::setSize(double size)
 void DrawableAxis::draw(uint viewId)
 {
     if (isVisible()) {
-        if (bgfx::isValid(program)) {
+        if (bgfx::isValid(mProgram)) {
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                              BGFX_STATE_MSAA;
             for (uint i = 0; i < 3; i++) {
                 for (uint j = 0; j < 2; j++) {
                     if (j == 0) // cylinders
-                        uniforms.setColor(colors[i]);
+                        mUniforms.setColor(mColors[i]);
                     else // rest (cone, spheres...)
-                        uniforms.setColor(vcl::Color::White);
-                    uniforms.bind();
+                        mUniforms.setColor(vcl::Color::White);
+                    mUniforms.bind();
 
-                    mrbArrow[j].bindVertexBuffers();
-                    mrbArrow[j].bindIndexBuffers();
+                    mArrowBuffers[j].bindVertexBuffers();
+                    mArrowBuffers[j].bindIndexBuffers();
 
-                    bgfx::setTransform(matrices[i].data());
+                    bgfx::setTransform(mMatrices[i].data());
 
-                    bgfx::submit(viewId, program);
+                    bgfx::submit(viewId, mProgram);
                 }
             }
         }
@@ -67,20 +67,20 @@ void DrawableAxis::draw(uint viewId)
 
 void DrawableAxis::updateMatrices(double size)
 {
-    matrices[0](0, 1) = size;
-    matrices[0](1, 0) = -size;
-    matrices[0](2, 2) = size;
-    matrices[0](3, 3) = 1;
+    mMatrices[0](0, 1) = size;
+    mMatrices[0](1, 0) = -size;
+    mMatrices[0](2, 2) = size;
+    mMatrices[0](3, 3) = 1;
 
-    matrices[1](0, 0) = size;
-    matrices[1](1, 1) = size;
-    matrices[1](2, 2) = size;
-    matrices[1](3, 3) = 1;
+    mMatrices[1](0, 0) = size;
+    mMatrices[1](1, 1) = size;
+    mMatrices[1](2, 2) = size;
+    mMatrices[1](3, 3) = 1;
 
-    matrices[2](0, 0) = size;
-    matrices[2](1, 2) = -size;
-    matrices[2](2, 1) = size;
-    matrices[2](3, 3) = 1;
+    mMatrices[2](0, 0) = size;
+    mMatrices[2](1, 2) = -size;
+    mMatrices[2](2, 1) = size;
+    mMatrices[2](3, 3) = 1;
 }
 
 void DrawableAxis::createAxis(bool fromOrigin)
@@ -135,12 +135,12 @@ void DrawableAxis::createAxis(bool fromOrigin)
 
     vcl::updatePerVertexNormals(rest);
 
-    mrbArrow[0] = MeshRenderBuffers<vcl::TriMesh>(
+    mArrowBuffers[0] = MeshRenderBuffers<vcl::TriMesh>(
         cylinder,
         MeshRenderBuffers<vcl::TriMesh>::VERT_NORMALS |
             MeshRenderBuffers<vcl::TriMesh>::TRIANGLES);
 
-    mrbArrow[1] = MeshRenderBuffers<vcl::TriMesh>(
+    mArrowBuffers[1] = MeshRenderBuffers<vcl::TriMesh>(
         rest,
         MeshRenderBuffers<vcl::TriMesh>::VERT_NORMALS |
             MeshRenderBuffers<vcl::TriMesh>::TRIANGLES);

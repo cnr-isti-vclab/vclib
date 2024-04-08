@@ -35,61 +35,61 @@ Context& Context::instance()
 
 bgfx::ViewId Context::requestViewId()
 {
-    bgfx::ViewId viewId = instance().viewStack.top();
-    instance().viewStack.pop();
+    bgfx::ViewId viewId = instance().mViewStack.top();
+    instance().mViewStack.pop();
     return viewId;
 }
 
 void Context::releaseViewId(bgfx::ViewId viewId)
 {
-    instance().viewStack.push(viewId);
+    instance().mViewStack.push(viewId);
 }
 
 FontManager& Context::fontManager()
 {
-    return *instance().fm;
+    return *instance().mFontManager;
 }
 
 ProgramManager& Context::programManager()
 {
-    return *instance().pm;
+    return *instance().mProgramManager;
 }
 
 Context::Context()
 {
-    windowHandle = vcl::createWindow("", 1, 1, displayHandle, true);
+    mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
 #ifdef __APPLE__
     bgfx::renderFrame(); // needed for macos
 #endif                   // __APPLE__
 
     bgfx::Init init;
-    init.platformData.nwh  = windowHandle;
+    init.platformData.nwh  = mWindowHandle;
     init.type              = renderType;
-    init.platformData.ndt  = displayHandle;
+    init.platformData.ndt  = mDisplayHandle;
     init.resolution.width  = 1;
     init.resolution.height = 1;
     init.resolution.reset  = BGFX_RESET_NONE;
-    init.callback          = &cb;
+    init.callback          = &mCallBack;
     bgfx::init(init);
 
-    vcl::closeWindow(windowHandle, displayHandle);
+    vcl::closeWindow(mWindowHandle, mDisplayHandle);
 
     uint mv = bgfx::getCaps()->limits.maxViews;
 
     while (mv != 0) {
-        viewStack.push((bgfx::ViewId) mv--);
+        mViewStack.push((bgfx::ViewId) mv--);
     }
-    viewStack.push((bgfx::ViewId) 0);
+    mViewStack.push((bgfx::ViewId) 0);
 
     // font manager must be created after bgfx::init
-    fm = new FontManager();
-    pm = new ProgramManager();
+    mFontManager = new FontManager();
+    mProgramManager = new ProgramManager();
 }
 
 Context::~Context()
 {
-    delete fm;
-    delete pm;
+    delete mFontManager;
+    delete mProgramManager;
     bgfx::shutdown();
 }
 

@@ -37,19 +37,19 @@ Canvas::Canvas(void* winID, uint width, uint height)
 
 Canvas::~Canvas()
 {
-    if (bgfx::isValid(fbh))
-        bgfx::destroy(fbh);
+    if (bgfx::isValid(mFbh))
+        bgfx::destroy(mFbh);
 
-    Context::releaseViewId(view);
+    Context::releaseViewId(mViewId);
 }
 
 void Canvas::init(void* winId, uint width, uint height)
 {
-    this->winID = winId;
+    mWinId = winId;
 
-    view = Context::requestViewId();
+    mViewId = Context::requestViewId();
 
-    fbh = createFrameBufferAndInitView(winId, view, width, height, true);
+    mFbh = createFrameBufferAndInitView(winId, mViewId, width, height, true);
 
     TextView::init(width, height);
 }
@@ -58,7 +58,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 {
     if (width == 0 || height == 0) {
         draw();
-        bgfx::requestScreenShot(fbh, filename.c_str());
+        bgfx::requestScreenShot(mFbh, filename.c_str());
         bgfx::frame();
     }
     else {
@@ -71,15 +71,15 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
             createFrameBufferAndInitView(w, v, width, height, true);
 
         // replace the current view with the new one
-        bgfx::ViewId tmpView = view;
-        view                 = v;
+        bgfx::ViewId tmpView = mViewId;
+        mViewId                 = v;
         draw();
         TextView::frame(fbh);
         bgfx::requestScreenShot(fbh, filename.c_str());
         bgfx::frame();
 
         // restore the previous view and release the resources
-        view = tmpView;
+        mViewId = tmpView;
         bgfx::destroy(fbh);
         Context::releaseViewId(v);
         vcl::closeWindow(w, d);
@@ -88,10 +88,10 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 
 void Canvas::frame()
 {
-    bgfx::setViewFrameBuffer(view, fbh);
-    bgfx::touch(view);
+    bgfx::setViewFrameBuffer(mViewId, mFbh);
+    bgfx::touch(mViewId);
     draw();
-    TextView::frame(fbh);
+    TextView::frame(mFbh);
 
     bgfx::frame();
 #ifdef __APPLE__ // workaround for forcing bgfx refresh buffer on MacOS
@@ -101,10 +101,10 @@ void Canvas::frame()
 
 void Canvas::resize(uint width, uint height)
 {
-    if (bgfx::isValid(fbh))
-        bgfx::destroy(fbh);
+    if (bgfx::isValid(mFbh))
+        bgfx::destroy(mFbh);
 
-    fbh = createFrameBufferAndInitView(winID, view, width, height);
+    mFbh = createFrameBufferAndInitView(mWinId, mViewId, width, height);
 
     TextView::resize(width, height);
 }

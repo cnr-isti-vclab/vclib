@@ -31,26 +31,26 @@
 
 namespace vcl::bgf {
 
-class DrawableTrackball : public DrawableObjectI
+class DrawableTrackBall : public DrawableObjectI
 {
-    bool visible = false;
+    bool mVisible = false;
 
-    std::vector<vcl::Point3f> vertices;
-    std::vector<uint16_t>     edges;
+    std::vector<vcl::Point3f> mVertices;
+    std::vector<uint16_t>     mEdges;
 
-    vcl::Matrix44f transform = vcl::Matrix44f::Identity();
+    vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
 
-    bgfx::ProgramHandle program =
+    bgfx::ProgramHandle mProgram =
         Context::programManager().getProgram(VclProgram::DRAWABLE_TRACKBALL);
 
-    bgfx::VertexBufferHandle vertexCoordBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  edgeIndexBH   = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle  mEdgeIndexBH   = BGFX_INVALID_HANDLE;
 
 public:
     // TODO: manage copy and swap
-    DrawableTrackball();
+    DrawableTrackBall();
 
-    ~DrawableTrackball();
+    ~DrawableTrackBall();
 
     void updateRotation(const vcl::Matrix44f& rot);
 
@@ -64,12 +64,12 @@ public:
 
     DrawableObjectI* clone() const override
     {
-        return new DrawableTrackball(*this);
+        return new DrawableTrackBall(*this);
     }
 
-    bool isVisible() const override { return visible; }
+    bool isVisible() const override { return mVisible; }
 
-    void setVisibility(bool vis) override { visible = vis; }
+    void setVisibility(bool vis) override { mVisible = vis; }
 };
 
 } // namespace vcl::bgf

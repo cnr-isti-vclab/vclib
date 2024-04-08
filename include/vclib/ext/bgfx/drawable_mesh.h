@@ -40,13 +40,13 @@ class DrawableMesh : public DrawableMeshI
 {
     using Base = DrawableMeshI;
 
-    MeshRenderBuffers<MeshType> mrb;
+    MeshRenderBuffers<MeshType> mMRB;
 
-    bgfx::ProgramHandle program =
+    bgfx::ProgramHandle mProgram =
         Context::programManager().getProgram(VclProgram::DRAWABLE_MESH);
 
-    DrawableMeshUniforms       meshUniforms;
-    MeshRenderSettingsUniforms meshRenderSettingsUniforms;
+    DrawableMeshUniforms       mMeshUniforms;
+    MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
     DrawableMesh() = default;
@@ -65,10 +65,10 @@ public:
             name() = m.name();
         }
 
-        mrb = MeshRenderBuffers<MeshType>(m);
+        mMRB = MeshRenderBuffers<MeshType>(m);
         mrs.setRenderCapabilityFrom(m);
-        meshRenderSettingsUniforms.updateSettings(mrs);
-        meshUniforms.update(mrb);
+        mMeshRenderSettingsUniforms.updateSettings(mrs);
+        mMeshUniforms.update(mMRB);
     }
 
     // DrawableObject implementation
@@ -77,65 +77,65 @@ public:
 
     void draw(uint viewId)
     {
-        if (bgfx::isValid(program)) {
+        if (bgfx::isValid(mProgram)) {
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
 
             if (mrs.isSurfaceVisible()) {
-                mrb.bindVertexBuffers();
-                mrb.bindIndexBuffers();
+                mMRB.bindVertexBuffers();
+                mMRB.bindIndexBuffers();
                 bindUniforms(VCL_MRS_PRIMITIVE_TRIANGLES);
 
                 bgfx::setState(state);
 
-                bgfx::submit(viewId, program);
+                bgfx::submit(viewId, mProgram);
             }
 
             if (mrs.isWireframeVisible()) {
-                mrb.bindVertexBuffers();
-                mrb.bindIndexBuffers(false);
+                mMRB.bindVertexBuffers();
+                mMRB.bindIndexBuffers(false);
                 bindUniforms(VCL_MRS_PRIMITIVE_LINES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
-                bgfx::submit(viewId, program);
+                bgfx::submit(viewId, mProgram);
             }
 
             if (mrs.isPointCloudVisible()) {
-                mrb.bindVertexBuffers();
+                mMRB.bindVertexBuffers();
                 bindUniforms(VCL_MRS_PRIMITIVE_POINTS);
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
-                bgfx::submit(viewId, program);
+                bgfx::submit(viewId, mProgram);
             }
         }
     }
 
-    vcl::Point3d center() const { return (mrb.bbMin() + mrb.bbMax()) / 2; }
+    vcl::Point3d center() const { return (mMRB.bbMin() + mMRB.bbMax()) / 2; }
 
-    double radius() const { return (mrb.bbMax() - mrb.bbMin()).norm() / 2; }
+    double radius() const { return (mMRB.bbMax() - mMRB.bbMin()).norm() / 2; }
 
     DrawableMesh* clone() const { return new DrawableMesh(*this); }
 
     void setVisibility(bool vis)
     {
         DrawableMeshI::setVisibility(vis);
-        meshRenderSettingsUniforms.updateSettings(mrs);
+        mMeshRenderSettingsUniforms.updateSettings(mrs);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs)
     {
         DrawableMeshI::setRenderSettings(rs);
-        meshRenderSettingsUniforms.updateSettings(rs);
+        mMeshRenderSettingsUniforms.updateSettings(rs);
     }
 
 private:
     void bindUniforms(uint primitive)
     {
-        meshRenderSettingsUniforms.updatePrimitive(primitive);
-        meshRenderSettingsUniforms.bind();
-        meshUniforms.bind();
+        mMeshRenderSettingsUniforms.updatePrimitive(primitive);
+        mMeshRenderSettingsUniforms.bind();
+        mMeshUniforms.bind();
     }
 };
 

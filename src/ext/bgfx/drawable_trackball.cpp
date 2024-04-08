@@ -28,39 +28,39 @@
 
 namespace vcl::bgf {
 
-DrawableTrackball::DrawableTrackball()
+DrawableTrackBall::DrawableTrackBall()
 {
     const uint cSize = 64;
 
     vcl::Polygon2f circle = vcl::createCircle<vcl::Polygon2f>(cSize, 0.15f);
 
-    vertices.reserve(cSize * 3);
+    mVertices.reserve(cSize * 3);
 
     // x
     uint first = 0;
     for (uint i = 0; i < circle.size(); ++i) {
         const auto& p = circle.point(i);
-        vertices.push_back(vcl::Point3f(0, p.x(), p.y()));
-        edges.push_back(i + first);
-        edges.push_back((i + 1) % circle.size() + first);
+        mVertices.push_back(vcl::Point3f(0, p.x(), p.y()));
+        mEdges.push_back(i + first);
+        mEdges.push_back((i + 1) % circle.size() + first);
     }
 
     // y
     first = circle.size();
     for (uint i = 0; i < circle.size(); ++i) {
         const auto& p = circle.point(i);
-        vertices.push_back(vcl::Point3f(p.x(), 0, p.y()));
-        edges.push_back(i + first);
-        edges.push_back((i + 1) % circle.size() + first);
+        mVertices.push_back(vcl::Point3f(p.x(), 0, p.y()));
+        mEdges.push_back(i + first);
+        mEdges.push_back((i + 1) % circle.size() + first);
     }
 
     // z
     first = 2 * circle.size();
     for (uint i = 0; i < circle.size(); ++i) {
         const auto& p = circle.point(i);
-        vertices.push_back(vcl::Point3f(p.x(), p.y(), 0));
-        edges.push_back(i + first);
-        edges.push_back((i + 1) % circle.size() + first);
+        mVertices.push_back(vcl::Point3f(p.x(), p.y(), 0));
+        mEdges.push_back(i + first);
+        mEdges.push_back((i + 1) % circle.size() + first);
     }
 
     // vertex buffer
@@ -69,43 +69,43 @@ DrawableTrackball::DrawableTrackball()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
         .end();
 
-    vertexCoordBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertices.data(), vertices.size() * 3 * sizeof(float)),
+    mVertexCoordBH = bgfx::createVertexBuffer(
+        bgfx::makeRef(mVertices.data(), mVertices.size() * 3 * sizeof(float)),
         layout);
 
-    edgeIndexBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(edges.data(), edges.size() * sizeof(uint16_t)));
+    mEdgeIndexBH = bgfx::createIndexBuffer(
+        bgfx::makeRef(mEdges.data(), mEdges.size() * sizeof(uint16_t)));
 
-    vcl::setTransformMatrixTranslation(transform, vcl::Point3f(0, 0, -0.5));
+    vcl::setTransformMatrixTranslation(mTransform, vcl::Point3f(0, 0, -0.5));
 }
 
-DrawableTrackball::~DrawableTrackball()
+DrawableTrackBall::~DrawableTrackBall()
 {
-    if (bgfx::isValid(vertexCoordBH)) {
-        bgfx::destroy(vertexCoordBH);
+    if (bgfx::isValid(mVertexCoordBH)) {
+        bgfx::destroy(mVertexCoordBH);
     }
 }
 
-void DrawableTrackball::updateRotation(const vcl::Matrix44f& rot)
+void DrawableTrackBall::updateRotation(const vcl::Matrix44f& rot)
 {
-    transform.block(0, 0, 3, 3) = rot.block(0, 0, 3, 3);
+    mTransform.block(0, 0, 3, 3) = rot.block(0, 0, 3, 3);
 }
 
-void DrawableTrackball::draw(uint viewId)
+void DrawableTrackBall::draw(uint viewId)
 {
     if (isVisible()) {
-        if (bgfx::isValid(program)) {
+        if (bgfx::isValid(mProgram)) {
             bgfx::setState(
                 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                 BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
                 BGFX_STATE_PT_LINES);
 
-            bgfx::setVertexBuffer(0, vertexCoordBH);
-            bgfx::setIndexBuffer(edgeIndexBH);
+            bgfx::setVertexBuffer(0, mVertexCoordBH);
+            bgfx::setIndexBuffer(mEdgeIndexBH);
 
-            bgfx::setTransform(transform.data());
+            bgfx::setTransform(mTransform.data());
 
-            bgfx::submit(viewId, program);
+            bgfx::submit(viewId, mProgram);
         }
     }
 }
