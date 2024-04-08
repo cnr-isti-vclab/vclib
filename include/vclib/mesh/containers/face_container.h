@@ -189,7 +189,7 @@ public:
             unsigned int i = 0;
             for (auto it = begin; it != end; ++it) {
                 if constexpr (std::integral<std::ranges::range_value_t<Rng>>)
-                    f.vertex(i) = &Base::parentMesh->vertex(*it);
+                    f.vertex(i) = &Base::mParentMesh->vertex(*it);
                 else
                     f.vertex(i) = *it;
                 ++i;
@@ -1152,7 +1152,7 @@ protected:
                 FaceType::VERTEX_NUMBER == 3 &&
                 (MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0))
             {
-                VertexType*        base   = &Base::parentMesh->vertex(0);
+                VertexType*        base   = &Base::mParentMesh->vertex(0);
                 const MVertexType* mvbase = &m.vertex(0);
 
                 for (const MFaceType& mf : m.faces()) {
@@ -1208,7 +1208,7 @@ private:
     {
         // position on which add the vertex
         const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-        f.vertex(n)         = &Base::parentMesh->vertex(vid); // set the vertex
+        f.vertex(n)         = &Base::mParentMesh->vertex(vid); // set the vertex
         // set the remanining vertices, recursive variadics
         addFaceHelper(f, args...);
     }

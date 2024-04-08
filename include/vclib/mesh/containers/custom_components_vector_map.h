@@ -71,26 +71,26 @@ class CustomComponentsVectorMap<true>
 {
     // the actual map containing, for each name of a custom component, the
     // vector of values (a value for each element(vertex/face...) of the mesh)
-    std::unordered_map<std::string, std::vector<std::any>> map;
-    // map that stores if some custom components need to be initialized
+    std::unordered_map<std::string, std::vector<std::any>> mMap;
+    // map that stores if some custom components need to be initialized.
     // this happens when we resize the container of an element: we need to
     // resize also the vectors of the custom components, but we cannot
     // initialize them with the right type (because we don't know it in resize
     // phase). The initialization will be made when the type is known (get of
     // the custom component vector).
-    mutable std::unordered_map<std::string, bool> needToInitialize;
+    mutable std::unordered_map<std::string, bool> mNeedToInitialize;
     // types used for each custom component
-    std::unordered_map<std::string, std::type_index> compType;
+    std::unordered_map<std::string, std::type_index> mCompType;
 
 public:
     /**
-     * @brief Removes all the custom component vectors stored in the map.
+     * @brief Removes all the custom component vectors stored in the mMap.
      */
     void clear()
     {
-        map.clear();
-        needToInitialize.clear();
-        compType.clear();
+        mMap.clear();
+        mNeedToInitialize.clear();
+        mCompType.clear();
     }
 
     /**
@@ -99,7 +99,7 @@ public:
      */
     void reserve(uint size)
     {
-        for (auto& p : map) {
+        for (auto& p : mMap) {
             p.second.reserve(size);
         }
     }
@@ -111,7 +111,7 @@ public:
      */
     void resize(uint size)
     {
-        for (auto& p : map) {
+        for (auto& p : mMap) {
             // At this call, we don't know statically the types of each custom
             // component, therefore we cannot initialize them (std::any of each
             // vector will be in an invalid state). Therefore, we mark all the
@@ -119,7 +119,7 @@ public:
             // will be made just on the uninitialized values of the vectors at
             // the first access of each custom component.
             if (p.second.size() < size)
-                needToInitialize.at(p.first) = true;
+                mNeedToInitialize.at(p.first) = true;
             p.second.resize(size);
         }
     }
@@ -138,7 +138,7 @@ public:
      */
     void compact(const std::vector<uint>& newIndices)
     {
-        for (auto& p : map) {
+        for (auto& p : mMap) {
             vcl::compactVector(p.second, newIndices);
         }
     }
@@ -159,10 +159,10 @@ public:
     template<typename CompType>
     void addNewComponent(const std::string& name, uint size)
     {
-        std::vector<std::any>& v = map[name];
+        std::vector<std::any>& v = mMap[name];
         v.resize(size, CompType());
-        needToInitialize[name] = false;
-        compType.emplace(name, typeid(CompType));
+        mNeedToInitialize[name] = false;
+        mCompType.emplace(name, typeid(CompType));
     }
 
     /**
@@ -172,9 +172,9 @@ public:
      */
     void deleteComponent(const std::string& name)
     {
-        map.erase(name);
-        needToInitialize.erase(name);
-        compType.erase(name);
+        mMap.erase(name);
+        mNeedToInitialize.erase(name);
+        mCompType.erase(name);
     }
 
     /**
@@ -195,7 +195,7 @@ public:
      */
     bool componentExists(const std::string& compName) const
     {
-        return (map.find(compName) != map.end());
+        return (mMap.find(compName) != mMap.end());
     }
 
     /**
@@ -206,8 +206,8 @@ public:
     std::vector<std::string> allComponentNames() const
     {
         std::vector<std::string> names;
-        names.reserve(map.size());
-        for (const auto& p : map)
+        names.reserve(mMap.size());
+        for (const auto& p : mMap)
             names.push_back(p.first);
         return names;
     }
@@ -226,7 +226,7 @@ public:
     {
         std::type_index t(typeid(CompType));
 
-        return t == compType.at(compName);
+        return t == mCompType.at(compName);
     }
 
     /**
@@ -240,7 +240,7 @@ public:
      */
     std::type_index componentType(const std::string& compName) const
     {
-        return compType.at(compName);
+        return mCompType.at(compName);
     }
 
     /**
@@ -256,7 +256,7 @@ public:
     {
         std::vector<std::string> names;
         std::type_index          t(typeid(CompType));
-        for (const auto& p : compType) {
+        for (const auto& p : mCompType) {
             if (p.second == t)
                 names.push_back(p.first);
         }
@@ -281,14 +281,14 @@ public:
     {
         checkComponentType<CompType>(compName);
         std::vector<std::any>& v =
-            const_cast<std::vector<std::any>&>(map.at(compName));
+            const_cast<std::vector<std::any>&>(mMap.at(compName));
         // if the component needs to be initialized (e.g. we made a resize)
-        if (needToInitialize.at(compName)) {
+        if (mNeedToInitialize.at(compName)) {
             for (std::any& a : v) {
                 if (!a.has_value())
                     a = CompType();
             }
-            needToInitialize.at(compName) = false;
+            mNeedToInitialize.at(compName) = false;
         }
         return v;
     }
@@ -312,14 +312,14 @@ public:
     std::vector<std::any>& componentVector(const std::string& compName)
     {
         checkComponentType<CompType>(compName);
-        std::vector<std::any>& v = map.at(compName);
+        std::vector<std::any>& v = mMap.at(compName);
         // if the component needs to be initialized (e.g. we made a resize)
-        if (needToInitialize.at(compName)) {
+        if (mNeedToInitialize.at(compName)) {
             for (std::any& a : v) {
                 if (!a.has_value())
                     a = CompType();
             }
-            needToInitialize.at(compName) = false;
+            mNeedToInitialize.at(compName) = false;
         }
         return v;
     }
@@ -329,9 +329,9 @@ private:
     void checkComponentType(const std::string& compName) const
     {
         std::type_index t(typeid(CompType));
-        if (t != compType.at(compName)) {
+        if (t != mCompType.at(compName)) {
             throw BadCustomComponentTypeException(
-                "Expected type " + std::string(compType.at(compName).name()) +
+                "Expected type " + std::string(mCompType.at(compName).name()) +
                 " for " + compName + ", but was " + std::string(t.name()) +
                 ".");
         }

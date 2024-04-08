@@ -55,7 +55,7 @@ public:
     using ParentMeshType = T::ParentMeshType;
 
 protected:
-    ParentMeshType* parentMesh = nullptr;
+    ParentMeshType* mParentMesh = nullptr;
 
     /**
      * @brief en: the number of elements in the container. Could be different
@@ -167,12 +167,12 @@ protected:
         T* newB = vec.data();
         en++;
 
-        vec.back().setParentMesh(parentMesh);
+        vec.back().setParentMesh(mParentMesh);
         vec.back().initVerticalComponents();
 
         if (oldB != newB) {
-            setParentMeshPointers(parentMesh);
-            parentMesh->updateAllPointers(oldB, newB);
+            setParentMeshPointers(mParentMesh);
+            mParentMesh->updateAllPointers(oldB, newB);
         }
 
         return vec.size() - 1;
@@ -199,13 +199,13 @@ protected:
         en += size;
 
         for (uint i = baseId; i < vec.size(); ++i) {
-            vec[i].setParentMesh(parentMesh);
+            vec[i].setParentMesh(mParentMesh);
             vec[i].initVerticalComponents();
         }
 
         if (oldB != newB) {
-            setParentMeshPointers(parentMesh);
-            parentMesh->updateAllPointers(oldB, newB);
+            setParentMeshPointers(mParentMesh);
+            mParentMesh->updateAllPointers(oldB, newB);
         }
 
         return baseId;
@@ -277,8 +277,8 @@ protected:
             ccVecMap.reserve(size);
 
         if (oldB != newB) {
-            setParentMeshPointers(parentMesh);
-            parentMesh->updateAllPointers(oldB, newB);
+            setParentMeshPointers(mParentMesh);
+            mParentMesh->updateAllPointers(oldB, newB);
         }
     }
 
@@ -421,7 +421,7 @@ protected:
             element(n + i) = other.element(i);
             // importing also optional, vertical and custom components:
             element(n + i).importFrom(other.element(i));
-            element(n + i).setParentMesh(parentMesh);
+            element(n + i).setParentMesh(mParentMesh);
         }
     }
 
@@ -682,7 +682,7 @@ protected:
 
     void setParentMeshPointers(void* pm)
     {
-        parentMesh = static_cast<ParentMeshType*>(pm);
+        mParentMesh = static_cast<ParentMeshType*>(pm);
         for (auto& e : elements(false)) {
             e.setParentMesh(pm);
         }
@@ -746,7 +746,7 @@ protected:
     {
         T* base = vec.data();
 
-        parentMesh->updateAllPointers(base, newIndices);
+        mParentMesh->updateAllPointers(base, newIndices);
     }
 
     template<typename OtherMesh>

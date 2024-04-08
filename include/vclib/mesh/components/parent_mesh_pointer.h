@@ -32,7 +32,7 @@ namespace vcl::comp {
 template<typename MeshType>
 class ParentMeshPointer
 {
-    MeshType* parent = nullptr;
+    MeshType* mParent = nullptr;
 
 public:
     using ParentMeshType = MeshType;
@@ -51,14 +51,14 @@ public:
         return *this;
     }
 
-    constexpr MeshType* parentMesh() { return parent; }
+    constexpr MeshType* parentMesh() { return mParent; }
 
-    constexpr const MeshType* parentMesh() const { return parent; }
+    constexpr const MeshType* parentMesh() const { return mParent; }
 
 protected:
     void setParentMesh(void* parentMesh)
     {
-        parent = static_cast<MeshType*>(parentMesh);
+        mParent = static_cast<MeshType*>(parentMesh);
     }
 };
 

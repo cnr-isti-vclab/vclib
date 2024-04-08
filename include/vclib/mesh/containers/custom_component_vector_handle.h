@@ -56,7 +56,7 @@ namespace vcl {
 template<typename T>
 class CustomComponentVectorHandle
 {
-    std::vector<std::reference_wrapper<T>> v;
+    std::vector<std::reference_wrapper<T>> mVec;
 
 public:
     class Iterator : public std::vector<std::reference_wrapper<T>>::iterator
@@ -96,37 +96,37 @@ public:
 
     CustomComponentVectorHandle(std::vector<std::any>& cc)
     {
-        v.reserve(cc.size());
+        mVec.reserve(cc.size());
         for (uint i = 0; i < cc.size(); ++i) {
-            v.push_back(std::any_cast<T&>(cc[i]));
+            mVec.push_back(std::any_cast<T&>(cc[i]));
         }
     }
 
-    T& at(uint i) { return v[i].get(); }
+    T& at(uint i) { return mVec[i].get(); }
 
-    const T& at(uint i) const { return v[i].get(); }
+    const T& at(uint i) const { return mVec[i].get(); }
 
-    T& front() { return v.begin()->get(); }
+    T& front() { return mVec.begin()->get(); }
 
-    const T& front() const { return v.begin()->get(); }
+    const T& front() const { return mVec.begin()->get(); }
 
-    T& back() { return std::prev(v.end())->get(); }
+    T& back() { return std::prev(mVec.end())->get(); }
 
-    const T& back() const { return std::prev(v.end())->get(); }
+    const T& back() const { return std::prev(mVec.end())->get(); }
 
-    uint size() const { return v.size(); }
+    uint size() const { return mVec.size(); }
 
-    T& operator[](uint i) { return v[i].get(); }
+    T& operator[](uint i) { return mVec[i].get(); }
 
-    const T& operator[](uint i) const { return v[i].get(); }
+    const T& operator[](uint i) const { return mVec[i].get(); }
 
-    Iterator begin() { return Iterator(v.begin()); }
+    Iterator begin() { return Iterator(mVec.begin()); }
 
-    Iterator end() { return Iterator(v.end()); }
+    Iterator end() { return Iterator(mVec.end()); }
 
-    ConstIterator begin() const { return ConstIterator(v.begin()); }
+    ConstIterator begin() const { return ConstIterator(mVec.begin()); }
 
-    ConstIterator end() const { return ConstIterator(v.end()); }
+    ConstIterator end() const { return ConstIterator(mVec.end()); }
 };
 
 template<typename T>

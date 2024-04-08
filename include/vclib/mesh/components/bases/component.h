@@ -128,15 +128,15 @@ public:
     using DataValueType = DataType;
 
     /**
-     * @brief The ID of the component.
-     */
-    static const uint COMPONENT_ID = COMP_ID;
-
-    /**
      * @brief Boolean that tells if this component type stores its data
      * vertically (not in the Element frame memory, but in another vector).
      */
     static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+
+    /**
+     * @brief The ID of the component.
+     */
+    static const uint COMPONENT_ID = COMP_ID;
 
     /**
      * @brief Boolean that tells if this component is optional. Makes sense only
@@ -144,6 +144,10 @@ public:
      */
     static const bool IS_OPTIONAL = OPT;
 
+private:
+    detail::ComponentData<DataValueType, IS_VERTICAL> mData;
+
+public:
     /**
      * @private
      * @brief Returns `true` if the component is available, `false` otherwise.
@@ -157,25 +161,22 @@ public:
      */
     bool isAvailable() const
     {
-        return cdata.template isComponentAvailable<ElementType>(
+        return mData.template isComponentAvailable<ElementType>(
             static_cast<const DerivedComponent*>(this));
     }
 
 protected:
     DataValueType& data()
     {
-        return cdata.template get<ElementType>(
+        return mData.template get<ElementType>(
             static_cast<DerivedComponent*>(this));
     }
 
     const DataValueType& data() const
     {
-        return cdata.template get<ElementType>(
+        return mData.template get<ElementType>(
             static_cast<const DerivedComponent*>(this));
     }
-
-private:
-    detail::ComponentData<DataValueType, IS_VERTICAL> cdata;
 };
 
 /**

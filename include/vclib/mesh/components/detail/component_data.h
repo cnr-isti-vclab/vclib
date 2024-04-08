@@ -29,18 +29,21 @@ namespace vcl::comp::detail {
 
 // store the data if horizontal
 template<typename Data, bool VERTICAL>
-struct ComponentData
+class ComponentData
 {
+    Data mData;
+
+public:
     template<typename, typename Comp>
     Data& get(Comp*)
     {
-        return data;
+        return mData;
     }
 
     template<typename, typename Comp>
     const Data& get(const Comp*) const
     {
-        return data;
+        return mData;
     }
 
     template<typename, typename Comp>
@@ -48,16 +51,14 @@ struct ComponentData
     {
         return true;
     }
-
-private:
-    Data data;
 };
 
 // do not store data if vertical; it will be fetched by vertical vectors in the
 // element container
 template<typename Data>
-struct ComponentData<Data, true>
+class ComponentData<Data, true>
 {
+public:
     /*
      * These member functions allow to access to the data of a vertical
      * component.

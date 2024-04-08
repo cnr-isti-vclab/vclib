@@ -32,10 +32,10 @@ namespace vcl::comp {
 namespace detail {
 
 // small alias to differentiate between components having only a container or
-// components having a container and an additional data type
-// if AD is void, no additional data and the component will have only a Vector
-// if AD is not void, there is additional data, and the component will have
-// a tuple containing a Vector and the additional data
+// components having a container and an additional data type:
+// - if AD is void, no additional data and the component will have only a Vector
+// - if AD is not void, there is additional data, and the component will have
+//   a tuple containing a Vector and the additional data
 template<
     typename DC,
     uint CT,

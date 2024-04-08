@@ -93,7 +93,7 @@ class CustomComponents
 {
     static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
 
-    detail::CustomComponentsData<ElementType, IS_VERTICAL> data;
+    detail::CustomComponentsData<ElementType, IS_VERTICAL> mData;
 
 public:
     /**
@@ -120,7 +120,7 @@ public:
      */
     bool hasCustomComponent(const std::string& compName) const
     {
-        return data.componentExists(
+        return mData.componentExists(
             compName, static_cast<const ElementType*>(this));
     }
 
@@ -144,7 +144,7 @@ public:
     template<typename CompType>
     bool isCustomComponentOfType(const std::string& compName) const
     {
-        return data.template isComponentOfType<CompType>(
+        return mData.template isComponentOfType<CompType>(
             compName, static_cast<const ElementType*>(this));
     }
 
@@ -165,7 +165,7 @@ public:
      */
     std::type_index customComponentType(const std::string& compName) const
     {
-        return data.componentType(
+        return mData.componentType(
             compName, static_cast<const ElementType*>(this));
     }
 
@@ -180,7 +180,7 @@ public:
     template<typename CompType>
     std::vector<std::string> customComponentNamesOfType() const
     {
-        return data.template componentNamesOfType<CompType>(
+        return mData.template componentNamesOfType<CompType>(
             static_cast<const ElementType*>(this));
     }
 
@@ -210,7 +210,7 @@ public:
     template<typename CompType>
     const CompType& customComponent(const std::string& compName) const
     {
-        return data.template get<CompType>(
+        return mData.template get<CompType>(
             compName, static_cast<const ElementType*>(this));
     }
 
@@ -240,7 +240,7 @@ public:
     template<typename CompType>
     CompType& customComponent(const std::string& compName)
     {
-        return data.template get<CompType>(
+        return mData.template get<CompType>(
             compName, static_cast<ElementType*>(this));
     }
 
@@ -249,13 +249,13 @@ public:
         const std::string& compName,
         const CompType&    value = CompType()) requires (!IS_VERTICAL)
     {
-        return data.template addCustomComponent<CompType>(compName, value);
+        return mData.template addCustomComponent<CompType>(compName, value);
     }
 
     void deleteCustomComponent(const std::string& compName)
         requires (!IS_VERTICAL)
     {
-        return data.deleteCustomComponent(compName);
+        return mData.deleteCustomComponent(compName);
     }
 
 protected:
@@ -265,7 +265,7 @@ protected:
         // if the component is vertical, the import is managed by the container.
         // if is horizontal, it must be managed by the component itself.
         if constexpr (!IS_VERTICAL && HasCustomComponents<Element>) {
-            data = e.CustomComponents::data;
+            mData = e.CustomComponents::mData;
         }
     }
 };
