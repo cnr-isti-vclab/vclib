@@ -33,11 +33,11 @@ FontManager::FontManager()
 
 FontManager::~FontManager()
 {
-    for (auto& [fontName, handle] : fontMap) {
-        fontManager.destroyFont(handle);
+    for (auto& [fontName, handle] : mFontMap) {
+        mFontManager.destroyFont(handle);
     }
-    for (auto& [pair, handle] : ttMap) {
-        fontManager.destroyTtf(handle);
+    for (auto& [pair, handle] : mTTMap) {
+        mFontManager.destroyTtf(handle);
     }
 }
 
@@ -45,9 +45,9 @@ void FontManager::loadFont(
     const std::string& filePath,
     const std::string& fontName)
 {
-    if (ttMap.find(fontName) == ttMap.end()) {
-        bgfx::TrueTypeHandle handle = loadTtf(fontManager, filePath.c_str());
-        ttMap[fontName]             = handle;
+    if (mTTMap.find(fontName) == mTTMap.end()) {
+        bgfx::TrueTypeHandle handle = loadTtf(mFontManager, filePath.c_str());
+        mTTMap[fontName]             = handle;
     }
 }
 
@@ -55,22 +55,22 @@ bgfx::FontHandle FontManager::getFontHandle(
     const std::string& fontName,
     uint16_t           fontSize)
 {
-    auto it = fontMap.find({fontName, fontSize});
-    if (it != fontMap.end()) {
+    auto it = mFontMap.find({fontName, fontSize});
+    if (it != mFontMap.end()) {
         return it->second;
     }
     else {
-        bgfx::TrueTypeHandle ttHandle = ttMap.at(fontName);
+        bgfx::TrueTypeHandle ttHandle = mTTMap.at(fontName);
         bgfx::FontHandle     font =
-            fontManager.createFontByPixelSize(ttHandle, 0, fontSize);
-        fontMap[{fontName, fontSize}] = font;
+            mFontManager.createFontByPixelSize(ttHandle, 0, fontSize);
+        mFontMap[{fontName, fontSize}] = font;
         return font;
     }
 }
 
 bgfx::FontManager& FontManager::getBGFXFontManager()
 {
-    return fontManager;
+    return mFontManager;
 }
 
 bgfx::TrueTypeHandle FontManager::loadTtf(

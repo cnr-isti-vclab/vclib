@@ -30,12 +30,12 @@ namespace vcl::bgf {
 
 class TextView
 {
-    TextManager  textManager;
-    bgfx::ViewId view = BGFX_INVALID_VIEW;
-    float        textViewMatrix[16];
-    float        textProjMatrix[16];
-    uint         w = 0;
-    uint         h = 0;
+    TextManager  mTextManager;
+    bgfx::ViewId mView = BGFX_INVALID_VIEW;
+    float        mTextViewMatrix[16];
+    float        mTextProjMatrix[16];
+    uint         mWidth  = 0;
+    uint         mHeight = 0;
 
 public:
     TextView();

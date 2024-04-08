@@ -28,7 +28,7 @@ namespace vcl::bgf {
 
 ProgramManager::~ProgramManager()
 {
-    for (const auto& [name, program] : programs) {
+    for (const auto& [name, program] : mPrograms) {
         if (bgfx::isValid(program)) {
             bgfx::destroy(program);
         }
@@ -37,20 +37,20 @@ ProgramManager::~ProgramManager()
 
 bgfx::ProgramHandle ProgramManager::getProgram(VclProgram::Enum program)
 {
-    auto it = programs.find(programNames[program]);
-    if (it != programs.end()) [[likely]] {
+    auto it = mPrograms.find(programNames[program]);
+    if (it != mPrograms.end()) [[likely]] {
         return it->second;
     }
     else [[unlikely]] {
         bgfx::ProgramHandle p           = loadProgram(program);
-        programs[programNames[program]] = p;
+        mPrograms[programNames[program]] = p;
         return p;
     }
 }
 
 bgfx::ProgramHandle ProgramManager::getProgram(const std::string& name) const
 {
-    return programs.at(name);
+    return mPrograms.at(name);
 }
 
 bgfx::ProgramHandle ProgramManager::loadProgram(
@@ -58,11 +58,11 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
     const std::string& vs,
     const std::string& fs)
 {
-    if (programs.find(name) != programs.end()) [[unlikely]] {
+    if (mPrograms.find(name) != mPrograms.end()) [[unlikely]] {
         throw std::runtime_error("A program named " + name + " already exists");
     }
     bgfx::ProgramHandle p = bgf::loadProgram(vs, fs);
-    programs[name]        = p;
+    mPrograms[name]        = p;
     return p;
 }
 

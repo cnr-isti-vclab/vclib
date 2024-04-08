@@ -32,20 +32,20 @@ TextManager::TextManager()
 
 TextManager::~TextManager()
 {
-    textBufferManager->destroyTextBuffer(transientText);
-    textBufferManager->destroyTextBuffer(staticText);
-    delete textBufferManager;
+    mTextBufferManager->destroyTextBuffer(mTransientText);
+    mTextBufferManager->destroyTextBuffer(mStaticText);
+    delete mTextBufferManager;
 }
 
 void TextManager::init()
 {
-    textBufferManager = new bgfx::TextBufferManager(
+    mTextBufferManager = new bgfx::TextBufferManager(
         &Context::fontManager().getBGFXFontManager());
 
-    transientText = textBufferManager->createTextBuffer(
+    mTransientText = mTextBufferManager->createTextBuffer(
         FONT_TYPE_ALPHA, bgfx::BufferType::Transient);
 
-    staticText = textBufferManager->createTextBuffer(
+    mStaticText = mTextBufferManager->createTextBuffer(
         FONT_TYPE_ALPHA, bgfx::BufferType::Static);
 }
 
@@ -58,13 +58,13 @@ void TextManager::loadFont(
 
 void TextManager::clear()
 {
-    textBufferManager->clearTextBuffer(transientText);
-    textBufferManager->clearTextBuffer(staticText);
+    mTextBufferManager->clearTextBuffer(mTransientText);
+    mTextBufferManager->clearTextBuffer(mStaticText);
 }
 
 void TextManager::setCurrentFont(const std::string& fontName, uint16_t fontSize)
 {
-    currentFont = Context::fontManager().getFontHandle(fontName, fontSize);
+    mCurrentFont = Context::fontManager().getFontHandle(fontName, fontSize);
 }
 
 void TextManager::appendTransientText(
@@ -72,10 +72,10 @@ void TextManager::appendTransientText(
     const std::string& text,
     const Color&       color)
 {
-    textBufferManager->setTextColor(transientText, color.rgba());
+    mTextBufferManager->setTextColor(mTransientText, color.rgba());
 
-    textBufferManager->setPenPosition(transientText, pos.x(), pos.y());
-    textBufferManager->appendText(transientText, currentFont, text.c_str());
+    mTextBufferManager->setPenPosition(mTransientText, pos.x(), pos.y());
+    mTextBufferManager->appendText(mTransientText, mCurrentFont, text.c_str());
 }
 
 void TextManager::appendStaticText(
@@ -83,17 +83,17 @@ void TextManager::appendStaticText(
     const std::string& text,
     const Color&       color)
 {
-    textBufferManager->setTextColor(staticText, color.rgba());
+    mTextBufferManager->setTextColor(mStaticText, color.rgba());
 
-    textBufferManager->setPenPosition(staticText, pos.x(), pos.y());
-    textBufferManager->appendText(staticText, currentFont, text.c_str());
+    mTextBufferManager->setPenPosition(mStaticText, pos.x(), pos.y());
+    mTextBufferManager->appendText(mStaticText, mCurrentFont, text.c_str());
 }
 
 void TextManager::submit(uint viewId)
 {
-    textBufferManager->submitTextBuffer(transientText, viewId);
-    textBufferManager->submitTextBuffer(staticText, viewId);
-    textBufferManager->clearTextBuffer(transientText);
+    mTextBufferManager->submitTextBuffer(mTransientText, viewId);
+    mTextBufferManager->submitTextBuffer(mStaticText, viewId);
+    mTextBufferManager->clearTextBuffer(mTransientText);
 }
 
 } // namespace vcl::bgf

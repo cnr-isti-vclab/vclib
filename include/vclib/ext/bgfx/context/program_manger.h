@@ -53,7 +53,7 @@ struct VclProgram
 
 class ProgramManager
 {
-    std::map<std::string, bgfx::ProgramHandle> programs;
+    std::map<std::string, bgfx::ProgramHandle> mPrograms;
 
     static inline const std::array<std::string, VclProgram::COUNT>
         programNames = {

@@ -34,9 +34,9 @@ class FontManager
 {
     friend class TextManager;
 
-    bgfx::FontManager                                            fontManager;
-    std::map<std::string, bgfx::TrueTypeHandle>                  ttMap;
-    std::map<std::pair<std::string, uint16_t>, bgfx::FontHandle> fontMap;
+    bgfx::FontManager                                            mFontManager;
+    std::map<std::string, bgfx::TrueTypeHandle>                  mTTMap;
+    std::map<std::pair<std::string, uint16_t>, bgfx::FontHandle> mFontMap;
 
 public:
     FontManager();

@@ -35,40 +35,40 @@ TextView::TextView()
 TextView::~TextView()
 {
     if (isTextEnabled())
-        Context::releaseViewId(view);
+        Context::releaseViewId(mView);
 }
 
 void TextView::enableText(bool b)
 {
-    if (isViewValid(view)) {
+    if (isViewValid(mView)) {
         if (!b) {
-            Context::releaseViewId(view);
-            view = BGFX_INVALID_HANDLE;
+            Context::releaseViewId(mView);
+            mView = BGFX_INVALID_HANDLE;
         }
     }
     else {
         if (b) {
-            view = Context::requestViewId();
+            mView = Context::requestViewId();
             updateProjMatrix();
-            bgfx::setViewRect(view, 0, 0, w, h);
-            bgfx::touch(view);
+            bgfx::setViewRect(mView, 0, 0, mWidth, mHeight);
+            bgfx::touch(mView);
         }
     }
 }
 
 bool TextView::isTextEnabled() const
 {
-    return isViewValid(view);
+    return isViewValid(mView);
 }
 
 void TextView::setTextFont(const std::string& fontName, uint fontSize)
 {
-    textManager.setCurrentFont(fontName, fontSize);
+    mTextManager.setCurrentFont(fontName, fontSize);
 }
 
 void TextView::clearText()
 {
-    textManager.clear();
+    mTextManager.clear();
 }
 
 void TextView::appendStaticText(
@@ -76,7 +76,7 @@ void TextView::appendStaticText(
     const std::string& text,
     const Color&       color)
 {
-    textManager.appendStaticText(pos, text, color);
+    mTextManager.appendStaticText(pos, text, color);
 }
 
 void TextView::appendTransientText(
@@ -84,47 +84,47 @@ void TextView::appendTransientText(
     const std::string& text,
     const Color&       color)
 {
-    textManager.appendTransientText(pos, text, color);
+    mTextManager.appendTransientText(pos, text, color);
 }
 
 void TextView::init(uint width, uint height)
 {
-    w = width;
-    h = height;
+    mWidth = width;
+    mHeight = height;
 
     const bx::Vec3 at  = {0.0f, 0.0f, 0.0f};
     const bx::Vec3 eye = {0.0f, 0.0f, -1.0f};
 
-    bx::mtxLookAt(textViewMatrix, eye, at);
+    bx::mtxLookAt(mTextViewMatrix, eye, at);
 
-    textManager.init();
+    mTextManager.init();
 
-    textManager.loadFont("assets/fonts/droidsans.ttf", "DroidSans");
-    textManager.setCurrentFont("DroidSans", 20);
+    mTextManager.loadFont("assets/fonts/droidsans.ttf", "DroidSans");
+    mTextManager.setCurrentFont("DroidSans", 20);
 }
 
 void TextView::frame(bgfx::FrameBufferHandle fbh)
 {
     static uint cnt = 0;
     if (isTextEnabled()) {
-        bgfx::setViewFrameBuffer(view, fbh);
-        bgfx::touch(view);
+        bgfx::setViewFrameBuffer(mView, fbh);
+        bgfx::touch(mView);
 
-        bgfx::setViewTransform(view, textViewMatrix, textProjMatrix);
+        bgfx::setViewTransform(mView, mTextViewMatrix, mTextProjMatrix);
 
-        textManager.submit(view);
+        mTextManager.submit(mView);
     }
 }
 
 void TextView::resize(uint width, uint height)
 {
-    w = width;
-    h = height;
+    mWidth = width;
+    mHeight = height;
 
     if (isTextEnabled()) {
         updateProjMatrix();
-        bgfx::setViewRect(view, 0, 0, w, h);
-        bgfx::touch(view);
+        bgfx::setViewRect(mView, 0, 0, mWidth, mHeight);
+        bgfx::touch(mView);
     }
 }
 
@@ -132,10 +132,10 @@ void TextView::updateProjMatrix()
 {
     const bgfx::Caps* caps = bgfx::getCaps();
     bx::mtxOrtho(
-        textProjMatrix,
+        mTextProjMatrix,
         0.0f,
-        float(w),
-        float(h),
+        float(mWidth),
+        float(mHeight),
         0.0f,
         0.0f,
         100.0f,
