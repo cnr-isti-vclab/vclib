@@ -41,14 +41,14 @@ namespace vcl {
  */
 class EventManagerInterface
 {
-    KeyModifiers mods = {KeyModifier::NO_MODIFIER};
+    KeyModifiers mMods = {KeyModifier::NO_MODIFIER};
 
 public:
     virtual ~EventManagerInterface() = default;
 
-    void setModifiers(KeyModifiers modifiers) { mods = modifiers; }
+    void setModifiers(KeyModifiers modifiers) { mMods = modifiers; }
 
-    const KeyModifiers& modifiers() const { return mods; }
+    const KeyModifiers& modifiers() const { return mMods; }
 
     /**
      * @brief Called when a key is pressed.

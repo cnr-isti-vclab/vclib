@@ -31,8 +31,8 @@ namespace vcl {
 template<typename ScalarType>
 class DirectionalLight
 {
-    vcl::Point3<ScalarType> d = vcl::Point3<ScalarType>(0.0f, 0.0f, 1.0f);
-    vcl::Color              c = vcl::Color::White;
+    vcl::Point3<ScalarType> mDir   = vcl::Point3<ScalarType>(0.0f, 0.0f, 1.0f);
+    vcl::Color              mColor = vcl::Color::White;
 
 public:
     DirectionalLight() = default;
@@ -40,18 +40,18 @@ public:
     DirectionalLight(
         const vcl::Point3<ScalarType>& d,
         const vcl::Color&              c = vcl::Color::White) :
-            d(d),
-            c(c)
+            mDir(d),
+            mColor(c)
     {
     }
 
-    vcl::Point3<ScalarType>& direction() { return d; }
+    vcl::Point3<ScalarType>& direction() { return mDir; }
 
-    const vcl::Point3<ScalarType>& direction() const { return d; }
+    const vcl::Point3<ScalarType>& direction() const { return mDir; }
 
-    vcl::Color& color() { return c; }
+    vcl::Color& color() { return mColor; }
 
-    const vcl::Color& color() const { return c; }
+    const vcl::Color& color() const { return mColor; }
 
     void reset() { *this = {}; }
 };

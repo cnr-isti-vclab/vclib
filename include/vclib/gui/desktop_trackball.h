@@ -44,18 +44,18 @@ public:
 private:
     using MotionType = vcl::TrackBall<Scalar>::MotionType;
 
-    uint width  = 1024;
-    uint height = 768;
+    uint mWidth  = 1024;
+    uint mHeight = 768;
 
-    vcl::TrackBall<Scalar> trackball;
+    vcl::TrackBall<Scalar> mTrackball;
 
-    Point3<Scalar> defaultTrackBallCenter;
-    float          defaultTrackBallRadius = 1.0;
+    Point3<Scalar> mDefaultTrackBallCenter;
+    float          mDefaultTrackBallRadius = 1.0;
 
-    KeyModifiers currentKeyModifiers = {KeyModifier::NO_MODIFIER};
+    KeyModifiers mCurrentKeyModifiers = {KeyModifier::NO_MODIFIER};
 
     std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
-        dragMotionMap = {
+        mDragMotionMap = {
             {{MouseButton::LEFT, {KeyModifier::NO_MODIFIER}},
              TrackBallType::ARC                                                                  },
             {{MouseButton::LEFT, {KeyModifier::CONTROL}},                     TrackBallType::PAN },
@@ -68,7 +68,7 @@ private:
              TrackBallType::DIR_LIGHT_ARC                                                        },
     };
 
-    std::map<KeyModifiers, MotionType> wheelAtomicMap = {
+    std::map<KeyModifiers, MotionType> mWheelAtomicMap = {
         {{KeyModifier::NO_MODIFIER}, TrackBallType::ZOOM},
         {{KeyModifier::CONTROL},     TrackBallType::ROLL},
     };
@@ -76,10 +76,10 @@ private:
     std::map<
         std::pair<Key::Enum, KeyModifiers>,
         std::function<void(TrackBallType& t)>>
-        keyAtomicMap = {
+        mKeyAtomicMap = {
             {{Key::R, {KeyModifier::NO_MODIFIER}},
              [&](TrackBallType& t) {
-                 t.reset(defaultTrackBallCenter, defaultTrackBallRadius);
+                 t.reset(mDefaultTrackBallCenter, mDefaultTrackBallRadius);
              }},
             {{Key::R, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
              [&](TrackBallType& t) {
@@ -155,82 +155,82 @@ public:
         resizeViewer(width, height);
     }
 
-    const DirectionalLight<Scalar>& light() const { return trackball.light(); }
+    const DirectionalLight<Scalar>& light() const { return mTrackball.light(); }
 
-    const Camera<Scalar>& camera() const { return trackball.camera(); }
+    const Camera<Scalar>& camera() const { return mTrackball.camera(); }
 
     Matrix44<Scalar> viewMatrix() const
     {
-        return trackball.camera().viewMatrix();
+        return mTrackball.camera().viewMatrix();
     }
 
     Matrix44<Scalar> projectionMatrix() const
     {
-        return trackball.camera().projMatrix();
+        return mTrackball.camera().projMatrix();
     }
 
     void resetTrackBall()
     {
-        trackball.reset(defaultTrackBallCenter, defaultTrackBallRadius);
+        mTrackball.reset(mDefaultTrackBallCenter, mDefaultTrackBallRadius);
     }
 
     void setTrackBall(const Point3<Scalar>& center, Scalar radius)
     {
-        defaultTrackBallCenter = center;
-        defaultTrackBallRadius = radius;
+        mDefaultTrackBallCenter = center;
+        mDefaultTrackBallRadius = radius;
 
         resetTrackBall();
     }
 
     void resizeViewer(uint w, uint h)
     {
-        width  = w;
-        height = h;
-        trackball.setScreenSize(w, h);
+        mWidth  = w;
+        mHeight = h;
+        mTrackball.setScreenSize(w, h);
     }
 
-    void setKeyModifiers(KeyModifiers keys) { currentKeyModifiers = keys; }
+    void setKeyModifiers(KeyModifiers keys) { mCurrentKeyModifiers = keys; }
 
     void moveMouse(int x, int y)
     {
-        trackball.setMousePosition(x, y);
-        trackball.update();
+        mTrackball.setMousePosition(x, y);
+        mTrackball.update();
     }
 
     void pressMouse(MouseButton::Enum button)
     {
         auto it =
-            dragMotionMap.find(std::make_pair(button, currentKeyModifiers));
-        if (it != dragMotionMap.end()) {
-            trackball.beginDragMotion(it->second);
-            trackball.update();
+            mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
+        if (it != mDragMotionMap.end()) {
+            mTrackball.beginDragMotion(it->second);
+            mTrackball.update();
         }
     }
 
     void releaseMouse(MouseButton::Enum button)
     {
         auto it =
-            dragMotionMap.find(std::make_pair(button, currentKeyModifiers));
-        if (it != dragMotionMap.end()) {
-            trackball.endDragMotion(it->second);
-            trackball.update();
+            mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
+        if (it != mDragMotionMap.end()) {
+            mTrackball.endDragMotion(it->second);
+            mTrackball.update();
         }
     }
 
     void wheelMouse(bool up)
     {
-        auto it = wheelAtomicMap.find(currentKeyModifiers);
-        if (it != wheelAtomicMap.end()) {
-            trackball.applyAtomicMotion(it->second, up);
-            trackball.update();
+        auto it = mWheelAtomicMap.find(mCurrentKeyModifiers);
+        if (it != mWheelAtomicMap.end()) {
+            mTrackball.applyAtomicMotion(it->second, up);
+            mTrackball.update();
         }
     }
 
     void keyPress(Key::Enum key)
     {
-        auto it = keyAtomicMap.find({key, currentKeyModifiers});
-        if (it != keyAtomicMap.end()) {
-            it->second(trackball);
+        auto it = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
+        if (it != mKeyAtomicMap.end()) {
+            it->second(mTrackball);
         }
     }
 

@@ -54,7 +54,7 @@ public:
     DrawableMesh(const MeshType& mesh) : Base(mesh)
     {
         updateBuffers(mesh);
-        mrs.setDefaultSettingsFromCapability();
+        mMRS.setDefaultSettingsFromCapability();
     }
 
     ~DrawableMesh() = default;
@@ -66,8 +66,8 @@ public:
         }
 
         mMRB = MeshRenderBuffers<MeshType>(m);
-        mrs.setRenderCapabilityFrom(m);
-        mMeshRenderSettingsUniforms.updateSettings(mrs);
+        mMRS.setRenderCapabilityFrom(m);
+        mMeshRenderSettingsUniforms.updateSettings(mMRS);
         mMeshUniforms.update(mMRB);
     }
 
@@ -81,7 +81,7 @@ public:
             uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                              BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL;
 
-            if (mrs.isSurfaceVisible()) {
+            if (mMRS.isSurfaceVisible()) {
                 mMRB.bindVertexBuffers();
                 mMRB.bindIndexBuffers();
                 bindUniforms(VCL_MRS_PRIMITIVE_TRIANGLES);
@@ -91,7 +91,7 @@ public:
                 bgfx::submit(viewId, mProgram);
             }
 
-            if (mrs.isWireframeVisible()) {
+            if (mMRS.isWireframeVisible()) {
                 mMRB.bindVertexBuffers();
                 mMRB.bindIndexBuffers(false);
                 bindUniforms(VCL_MRS_PRIMITIVE_LINES);
@@ -101,7 +101,7 @@ public:
                 bgfx::submit(viewId, mProgram);
             }
 
-            if (mrs.isPointCloudVisible()) {
+            if (mMRS.isPointCloudVisible()) {
                 mMRB.bindVertexBuffers();
                 bindUniforms(VCL_MRS_PRIMITIVE_POINTS);
 
@@ -121,7 +121,7 @@ public:
     void setVisibility(bool vis)
     {
         DrawableMeshI::setVisibility(vis);
-        mMeshRenderSettingsUniforms.updateSettings(mrs);
+        mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
     void setRenderSettings(const MeshRenderSettings& rs)

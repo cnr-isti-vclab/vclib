@@ -52,7 +52,7 @@ namespace vcl {
  */
 class DrawableObjectI
 {
-    std::string n; /**< @brief Name of the object */
+    std::string mName; /**< @brief Name of the object */
 
 public:
     /**< @brief Empty constructor */
@@ -126,14 +126,14 @@ public:
      * @brief Returns the name of the object.
      * @return The name of the object.
      */
-    const std::string& name() const { return n; }
+    const std::string& name() const { return mName; }
 
     /**
      * @brief Returns a reference of the name of the object, that allows to
      * modify it.
      * @param[in] name: The name of the object.
      */
-    std::string& name() { return n; }
+    std::string& name() { return mName; }
 };
 
 } // namespace vcl

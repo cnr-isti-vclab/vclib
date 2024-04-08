@@ -31,25 +31,25 @@ namespace vcl {
 class DrawableMeshI : public vcl::DrawableObjectI
 {
 protected:
-    MeshRenderSettings mrs;
+    MeshRenderSettings mMRS;
 
 public:
     DrawableMeshI() = default;
 
     template<MeshConcept MeshType>
-    DrawableMeshI(const MeshType& m) : mrs(m)
+    DrawableMeshI(const MeshType& m) : mMRS(m)
     {
     }
 
-    const MeshRenderSettings& renderSettings() const { return mrs; }
+    const MeshRenderSettings& renderSettings() const { return mMRS; }
 
-    virtual void setRenderSettings(const MeshRenderSettings& rs) { mrs = rs; }
+    virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
 
     // DrawableObject implementation
 
-    inline bool isVisible() const { return mrs.isVisible(); }
+    inline bool isVisible() const { return mMRS.isVisible(); }
 
-    inline void setVisibility(bool vis) { mrs.setVisibility(vis); }
+    inline void setVisibility(bool vis) { mMRS.setVisibility(vis); }
 };
 
 } // namespace vcl

@@ -43,102 +43,102 @@ private:
     /* Extrinsics */
 
     /// @brief Position where the camera is looking at
-    PointType m_center = PointType(0.0f, 0.0f, 0.0f);
+    PointType mCenter = PointType(0.0f, 0.0f, 0.0f);
 
     /// @brief Position of (eye of) the camera
-    PointType m_eye = PointType(0.0f, 0.0f, 1.0f);
+    PointType mEye = PointType(0.0f, 0.0f, 1.0f);
 
     /// @brief Up direction of the camera
-    PointType m_up = PointType(0.0f, 1.0f, 0.0f);
+    PointType mUp = PointType(0.0f, 1.0f, 0.0f);
 
     /* Intrinsics */
 
     /// @brief Field of view in degrees
-    Scalar m_fovDeg = 60.0;
+    Scalar mFovDeg = 60.0;
 
     /// @brief Projection mode
-    ProjectionMode::Enum m_projectionMode = ProjectionMode::PERSPECTIVE;
+    ProjectionMode::Enum mProjectionMode = ProjectionMode::PERSPECTIVE;
 
     /// @brief Height of the target in world space
     /// (used for ortho projection, and adapting the eye distance for
     /// perspective projection)
-    Scalar m_verticalHeight = 1.0;
+    Scalar mVerticalHeight = 1.0;
 
     /// @brief Aspect ratio
-    Scalar m_aspect = 1.0;
+    Scalar mAspect = 1.0;
 
-    /// @brief Z position of the m_near plane
-    Scalar m_near = 0.1;
+    /// @brief Z position of the mNear plane
+    Scalar mNear = 0.1;
 
-    /// @brief Z position of the m_far plane
-    Scalar m_far = 500.0;
+    /// @brief Z position of the mFar plane
+    Scalar mFar = 500.0;
 
 public:
-    Camera() { setFieldOfViewAdaptingEyeDistance(m_fovDeg); };
+    Camera() { setFieldOfViewAdaptingEyeDistance(mFovDeg); };
 
     void reset() { *this = {}; }
 
-    PointType& center() { return m_center; }
+    PointType& center() { return mCenter; }
 
-    const PointType& center() const { return m_center; }
+    const PointType& center() const { return mCenter; }
 
-    PointType& eye() { return m_eye; }
+    PointType& eye() { return mEye; }
 
-    const PointType& eye() const { return m_eye; }
+    const PointType& eye() const { return mEye; }
 
-    PointType& up() { return m_up; }
+    PointType& up() { return mUp; }
 
-    const PointType& up() const { return m_up; }
+    const PointType& up() const { return mUp; }
 
-    Scalar& fieldOfView() { return m_fovDeg; }
+    Scalar& fieldOfView() { return mFovDeg; }
 
-    const Scalar& fieldOfView() const { return m_fovDeg; }
+    const Scalar& fieldOfView() const { return mFovDeg; }
 
     void setFieldOfViewAdaptingEyeDistance(const Scalar& fov)
     {
-        m_fovDeg              = fov;
-        PointType targetToEye = (m_eye - m_center).normalized();
-        m_eye = m_center + targetToEye * ((m_verticalHeight / 2.0) /
+        mFovDeg              = fov;
+        PointType targetToEye = (mEye - mCenter).normalized();
+        mEye = mCenter + targetToEye * ((mVerticalHeight / 2.0) /
                                           std::tan((fov / 2.0) / 180.0 * M_PI));
     }
 
-    ProjectionMode::Enum& projectionMode() { return m_projectionMode; }
+    ProjectionMode::Enum& projectionMode() { return mProjectionMode; }
 
-    ProjectionMode::Enum projectionMode() const { return m_projectionMode; }
+    ProjectionMode::Enum projectionMode() const { return mProjectionMode; }
 
-    Scalar& verticalHeight() { return m_verticalHeight; }
+    Scalar& verticalHeight() { return mVerticalHeight; }
 
-    const Scalar& verticalHeight() const { return m_verticalHeight; }
+    const Scalar& verticalHeight() const { return mVerticalHeight; }
 
-    Scalar& aspectRatio() { return m_aspect; }
+    Scalar& aspectRatio() { return mAspect; }
 
-    const Scalar& aspectRatio() const { return m_aspect; }
+    const Scalar& aspectRatio() const { return mAspect; }
 
-    Scalar& nearPlane() { return m_near; }
+    Scalar& nearPlane() { return mNear; }
 
-    const Scalar& nearPlane() const { return m_near; }
+    const Scalar& nearPlane() const { return mNear; }
 
-    Scalar& farPlane() { return m_far; }
+    Scalar& farPlane() { return mFar; }
 
-    const Scalar& farPlane() const { return m_far; }
+    const Scalar& farPlane() const { return mFar; }
 
     MatrixType viewMatrix() const
     {
-        return lookAtMatrix<MatrixType>(m_eye, m_center, m_up);
+        return lookAtMatrix<MatrixType>(mEye, mCenter, mUp);
     }
 
     MatrixType projMatrix() const
     {
-        switch (m_projectionMode) {
+        switch (mProjectionMode) {
         case ProjectionMode::PERSPECTIVE: {
             return projectionMatrix<MatrixType>(
-                m_fovDeg, m_aspect, m_near, m_far, false);
+                mFovDeg, mAspect, mNear, mFar, false);
         }
         case ProjectionMode::ORTHO: {
-            const Scalar h = m_verticalHeight / 2.0;
-            const Scalar w = h * m_aspect;
+            const Scalar h = mVerticalHeight / 2.0;
+            const Scalar w = h * mAspect;
             return orthoProjectionMatrix<MatrixType>(
-                -w, w, -h, h, m_near, m_far, false);
+                -w, w, -h, h, mNear, mFar, false);
             break;
         }
         default: assert(false); return MatrixType::Identity();

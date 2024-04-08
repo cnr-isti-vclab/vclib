@@ -26,9 +26,9 @@ namespace vcl {
 
 DrawableObjectVector::DrawableObjectVector(const DrawableObjectVector& oth)
 {
-    drawVector.resize(oth.size());
+    mDrawVector.resize(oth.size());
     for (uint i = 0; i < oth.size(); i++)
-        drawVector[i] = oth[i].clone();
+        mDrawVector[i] = oth[i].clone();
 }
 
 DrawableObjectVector::DrawableObjectVector(DrawableObjectVector&& oth)
@@ -39,7 +39,7 @@ DrawableObjectVector::DrawableObjectVector(DrawableObjectVector&& oth)
 DrawableObjectVector::~DrawableObjectVector()
 {
     // delete all the DrawableObjects
-    for (DrawableObjectI* obj : drawVector) {
+    for (DrawableObjectI* obj : mDrawVector) {
         delete obj;
     }
 }
@@ -53,8 +53,8 @@ DrawableObjectVector::~DrawableObjectVector()
  */
 uint DrawableObjectVector::pushBack(const DrawableObjectI& obj)
 {
-    drawVector.push_back(obj.clone());
-    return drawVector.size();
+    mDrawVector.push_back(obj.clone());
+    return mDrawVector.size();
 }
 
 /**
@@ -69,77 +69,77 @@ uint DrawableObjectVector::pushBack(const DrawableObjectI* obj)
 {
     if (obj == nullptr)
         return UINT_NULL;
-    drawVector.push_back(obj->clone());
-    return drawVector.size();
+    mDrawVector.push_back(obj->clone());
+    return mDrawVector.size();
 }
 
 DrawableObjectI& DrawableObjectVector::at(uint i)
 {
     assert(i < drawVector.size());
-    return *drawVector.at(i);
+    return *mDrawVector.at(i);
 }
 
 const DrawableObjectI& DrawableObjectVector::at(uint i) const
 {
     assert(i < drawVector.size());
-    return *drawVector.at(i);
+    return *mDrawVector.at(i);
 }
 
 const DrawableObjectI& DrawableObjectVector::operator[](uint i) const
 {
-    return *drawVector[i];
+    return *mDrawVector[i];
 }
 
 std::size_t DrawableObjectVector::size() const
 {
-    return drawVector.size();
+    return mDrawVector.size();
 }
 
 DrawableObjectI& DrawableObjectVector::front()
 {
-    return *drawVector.front();
+    return *mDrawVector.front();
 }
 
 const DrawableObjectI& DrawableObjectVector::front() const
 {
-    return *drawVector.front();
+    return *mDrawVector.front();
 }
 
 DrawableObjectI& DrawableObjectVector::back()
 {
-    return *drawVector.back();
+    return *mDrawVector.back();
 }
 
 const DrawableObjectI& DrawableObjectVector::back() const
 {
-    return *drawVector.back();
+    return *mDrawVector.back();
 }
 
 void DrawableObjectVector::clear()
 {
     // delete all the DrawableObjects
-    for (DrawableObjectI* obj : drawVector) {
+    for (DrawableObjectI* obj : mDrawVector) {
         delete obj;
     }
-    drawVector.clear();
+    mDrawVector.clear();
 }
 
 Box3d DrawableObjectVector::boundingBox(bool onlyVisible) const
 {
     Box3d bb;
-    if (drawVector.size() > 0) {
+    if (mDrawVector.size() > 0) {
         uint i = onlyVisible ? firstVisibleObject() : 0;
 
-        if (i < drawVector.size()) {
-            Point3d sc = drawVector.at(i)->center();
-            bb.add(sc - drawVector.at(i)->radius());
-            bb.add(sc + drawVector.at(i)->radius());
+        if (i < mDrawVector.size()) {
+            Point3d sc = mDrawVector.at(i)->center();
+            bb.add(sc - mDrawVector.at(i)->radius());
+            bb.add(sc + mDrawVector.at(i)->radius());
 
-            for (i = i + 1; i < drawVector.size(); i++) { // rest of the list
-                if (!onlyVisible || drawVector.at(i)->isVisible()) {
-                    Point3d sc = drawVector.at(i)->center();
-                    bb.add(sc - drawVector.at(i)->radius());
-                    bb.add(sc + drawVector.at(i)->radius());
+            for (i = i + 1; i < mDrawVector.size(); i++) { // rest of the list
+                if (!onlyVisible || mDrawVector.at(i)->isVisible()) {
+                    Point3d sc = mDrawVector.at(i)->center();
+                    bb.add(sc - mDrawVector.at(i)->radius());
+                    bb.add(sc + mDrawVector.at(i)->radius());
                 }
             }
         }
@@ -150,7 +150,7 @@ Box3d DrawableObjectVector::boundingBox(bool onlyVisible) const
 void DrawableObjectVector::swap(DrawableObjectVector& oth)
 {
     using std::swap;
-    swap(drawVector, oth.drawVector);
+    swap(mDrawVector, oth.mDrawVector);
 }
 
 DrawableObjectVector& DrawableObjectVector::operator=(DrawableObjectVector oth)
@@ -161,35 +161,35 @@ DrawableObjectVector& DrawableObjectVector::operator=(DrawableObjectVector oth)
 
 DrawableObjectVector::iterator DrawableObjectVector::begin()
 {
-    return drawVector.begin();
+    return mDrawVector.begin();
 }
 
 DrawableObjectVector::iterator DrawableObjectVector::end()
 {
-    return drawVector.end();
+    return mDrawVector.end();
 }
 
 DrawableObjectVector::const_iterator DrawableObjectVector::begin() const
 {
-    return drawVector.begin();
+    return mDrawVector.begin();
 }
 
 DrawableObjectVector::const_iterator DrawableObjectVector::end() const
 {
-    return drawVector.end();
+    return mDrawVector.end();
 }
 
 uint DrawableObjectVector::firstVisibleObject() const
 {
-    for (uint i = 0; i < drawVector.size(); i++)
-        if (drawVector[i]->isVisible())
+    for (uint i = 0; i < mDrawVector.size(); i++)
+        if (mDrawVector[i]->isVisible())
             return i;
     return UINT_NULL;
 }
 
 DrawableObjectI& DrawableObjectVector::operator[](uint i)
 {
-    return *drawVector[i];
+    return *mDrawVector[i];
 }
 
 } // namespace vcl

@@ -92,7 +92,7 @@ public:
             name() = m.name();
         }
         updateBuffers(m);
-        mrs.setDefaultSettingsFromCapability();
+        mMRS.setDefaultSettingsFromCapability();
     }
 
     void updateBuffers(const MeshType& m)
@@ -102,7 +102,7 @@ public:
         }
         unbindTextures();
         mMRB = MeshRenderBuffers<MeshType>(m);
-        mrs.setRenderCapabilityFrom(m);
+        mMRS.setRenderCapabilityFrom(m);
         bindTextures();
     }
 
@@ -112,9 +112,9 @@ public:
 
     void draw(uint)
     {
-        if (mrs.isVisible()) {
-            if (mrs.isWireframeVisible()) {
-                if (mrs.isPointCloudVisible()) {
+        if (mMRS.isVisible()) {
+            if (mMRS.isWireframeVisible()) {
+                if (mMRS.isPointCloudVisible()) {
                     glDisable(GL_LIGHTING);
                     glShadeModel(GL_FLAT);
                     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -122,8 +122,8 @@ public:
                     renderPass();
                     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                 }
-                if (mrs.isSurfaceVisible()) {
-                    if (mrs.isSurfaceShadingFlat()) {
+                if (mMRS.isSurfaceVisible()) {
+                    if (mMRS.isSurfaceShadingFlat()) {
                         glEnable(GL_LIGHTING);
                         glShadeModel(GL_FLAT);
                         glDepthRange(0.01, 1.0);
@@ -137,7 +137,7 @@ public:
                         glDepthFunc(GL_LESS);
                         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
                     }
-                    else if (mrs.isSurfaceShadingSmooth()) {
+                    else if (mMRS.isSurfaceShadingSmooth()) {
                         glEnable(GL_LIGHTING);
                         glShadeModel(GL_SMOOTH);
                         glDepthRange(0.01, 1.0);
@@ -162,24 +162,24 @@ public:
                 }
             }
             else { // no wireframe
-                if (mrs.isPointCloudVisible()) {
+                if (mMRS.isPointCloudVisible()) {
                     glDisable(GL_LIGHTING);
                     renderPass();
                 }
-                if (mrs.isSurfaceVisible()) {
-                    if (mrs.isSurfaceShadingFlat()) {
+                if (mMRS.isSurfaceVisible()) {
+                    if (mMRS.isSurfaceShadingFlat()) {
                         glEnable(GL_LIGHTING);
                         glShadeModel(GL_FLAT);
                         renderPass();
                     }
-                    else if (mrs.isSurfaceShadingSmooth()) {
+                    else if (mMRS.isSurfaceShadingSmooth()) {
                         glEnable(GL_LIGHTING);
                         glShadeModel(GL_SMOOTH);
                         renderPass();
                     }
                 }
             }
-            if (mrs.isBboxEnabled()) {
+            if (mMRS.isBboxEnabled()) {
                 drawBox3(mMRB.bbMin(), mMRB.bbMax(), vcl::Color(0, 0, 0));
             }
         }
@@ -206,22 +206,22 @@ private:
         const float*    vertTexCoords   = mMRB.vertexTexCoordsBufferData();
         const float*    wedgTexCoords   = mMRB.wedgeTexCoordsBufferData();
 
-        if (mrs.isPointCloudVisible()) {
+        if (mMRS.isPointCloudVisible()) {
             glEnableClientState(GL_VERTEX_ARRAY);
             glVertexPointer(3, GL_FLOAT, 0, coords);
 
-            if (mrs.isPointCloudColorPerVertex()) {
+            if (mMRS.isPointCloudColorPerVertex()) {
                 glEnableClientState(GL_COLOR_ARRAY);
                 glColorPointer(4, GL_UNSIGNED_BYTE, 0, vertexColors);
             }
-            else if (mrs.isPointCloudColorPerMesh()) {
+            else if (mMRS.isPointCloudColorPerMesh()) {
                 glColor4fv(mMRB.meshColorBufferData());
             }
-            else if (mrs.isPointCloudColorUserDefined()) {
-                glColor4fv(mrs.pointCloudUserColorData());
+            else if (mMRS.isPointCloudColorUserDefined()) {
+                glColor4fv(mMRS.pointCloudUserColorData());
             }
 
-            glPointSize(mrs.pointWidth());
+            glPointSize(mMRS.pointWidth());
 
             glDrawArrays(GL_POINTS, 0, nv);
 
@@ -229,9 +229,9 @@ private:
             glDisableClientState(GL_VERTEX_ARRAY);
         }
 
-        if (mrs.isSurfaceVisible()) {
+        if (mMRS.isSurfaceVisible()) {
             // Old fashioned, verbose and slow rendering.
-            if (mrs.isSurfaceColorPerFace()) {
+            if (mMRS.isSurfaceColorPerFace()) {
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
                     int tid_ptr  = 3 * tid;
@@ -242,7 +242,7 @@ private:
                     int vid1_ptr = 3 * vid1;
                     int vid2_ptr = 3 * vid2;
 
-                    if (mrs.isSurfaceShadingSmooth()) {
+                    if (mMRS.isSurfaceShadingSmooth()) {
                         glBegin(GL_TRIANGLES);
                         glColor4ubv((GLubyte*) &(triangleColors[tid]));
                         glNormal3fv(&(vertexNormals[vid0_ptr]));
@@ -266,8 +266,8 @@ private:
                     }
                 }
             }
-            else if (mrs.isSurfaceColorPerVertex()) {
-                if (mrs.isSurfaceShadingSmooth()) {
+            else if (mMRS.isSurfaceColorPerVertex()) {
+                if (mMRS.isSurfaceShadingSmooth()) {
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glVertexPointer(3, GL_FLOAT, 0, coords);
 
@@ -311,20 +311,20 @@ private:
                 }
             }
             else if (
-                mrs.isSurfaceColorPerMesh() || mrs.isSurfaceColorUserDefined())
+                mMRS.isSurfaceColorPerMesh() || mMRS.isSurfaceColorUserDefined())
             {
-                if (mrs.isSurfaceShadingSmooth()) {
+                if (mMRS.isSurfaceShadingSmooth()) {
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glVertexPointer(3, GL_FLOAT, 0, coords);
 
                     glEnableClientState(GL_NORMAL_ARRAY);
                     glNormalPointer(GL_FLOAT, 0, vertexNormals);
 
-                    if (mrs.isSurfaceColorPerMesh()) {
+                    if (mMRS.isSurfaceColorPerMesh()) {
                         glColor4fv(mMRB.meshColorBufferData());
                     }
                     else {
-                        glColor4ubv((GLubyte*) mrs.surfaceUserColorData());
+                        glColor4ubv((GLubyte*) mMRS.surfaceUserColorData());
                     }
 
                     glDrawElements(
@@ -335,11 +335,11 @@ private:
                     glDisableClientState(GL_VERTEX_ARRAY);
                 }
                 else {
-                    if (mrs.isSurfaceColorPerMesh()) {
+                    if (mMRS.isSurfaceColorPerMesh()) {
                         glColor4fv(mMRB.meshColorBufferData());
                     }
                     else {
-                        glColor4ubv((GLubyte*) mrs.surfaceUserColorData());
+                        glColor4ubv((GLubyte*) mMRS.surfaceUserColorData());
                     }
                     int n_tris = nt;
                     for (int tid = 0; tid < n_tris; ++tid) {
@@ -362,8 +362,8 @@ private:
                     }
                 }
             }
-            else if (mrs.isSurfaceColorPerVertexTexcoords()) {
-                if (mrs.isSurfaceShadingSmooth()) {
+            else if (mMRS.isSurfaceColorPerVertexTexcoords()) {
+                if (mMRS.isSurfaceShadingSmooth()) {
                     short texture = mTextID[0];
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glColor4f(1, 1, 1, 1);
@@ -419,7 +419,7 @@ private:
                     }
                 }
             }
-            else if (mrs.isSurfaceColorPerWedgeTexcoords()) {
+            else if (mMRS.isSurfaceColorPerWedgeTexcoords()) {
                 int n_tris = nt;
                 for (int tid = 0; tid < n_tris; ++tid) {
                     int   tid_ptr  = 3 * tid;
@@ -452,17 +452,17 @@ private:
             }
         }
 
-        if (mrs.isWireframeVisible()) {
+        if (mMRS.isWireframeVisible()) {
             glEnableClientState(GL_VERTEX_ARRAY);
             glVertexPointer(3, GL_FLOAT, 0, coords);
 
-            glLineWidth(mrs.wireframeWidth());
+            glLineWidth(mMRS.wireframeWidth());
 
-            if (mrs.isWireframeColorPerMesh()) {
+            if (mMRS.isWireframeColorPerMesh()) {
                 glColor4fv(mMRB.meshColorBufferData());
             }
             else {
-                glColor4fv(mrs.wireframeUserColorData());
+                glColor4fv(mMRS.wireframeUserColorData());
             }
 
             glDrawElements(GL_TRIANGLES, nt * 3, GL_UNSIGNED_INT, triangles);

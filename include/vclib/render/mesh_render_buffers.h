@@ -36,24 +36,24 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshRenderBuffers
 {
-    std::vector<float>    verts;
-    std::vector<uint32_t> tris;
-    std::vector<uint32_t> wireframe;
+    std::vector<float>    mVerts;
+    std::vector<uint32_t> mTris;
+    std::vector<uint32_t> mWireframe;
 
-    std::vector<float>    vNormals;
-    std::vector<uint32_t> vColors;
-    std::vector<float>    vTexCoords;
+    std::vector<float>    mVNormals;
+    std::vector<uint32_t> mVColors;
+    std::vector<float>    mVTexCoords;
 
-    std::vector<float>    tNormals;
-    std::vector<uint32_t> tColors;
-    std::vector<float>    wTexCoords;
-    std::vector<short>    wTexIds;
+    std::vector<float>    mTNormals;
+    std::vector<uint32_t> mTColors;
+    std::vector<float>    mWTexCoords;
+    std::vector<short>    mWTexIds;
 
-    std::array<float, 4> mColor = {0.5, 0.5, 0.5, 1};
+    std::array<float, 4> mMeshColor = {0.5, 0.5, 0.5, 1};
 
-    vcl::Point3d            bbmin, bbmax;
-    vcl::TriPolyIndexBiMap  triPolyMap;
-    std::vector<vcl::Image> textures;
+    vcl::Point3d            mBBMin, mBBMax;
+    vcl::TriPolyIndexBiMap  mTriPolyMap;
+    std::vector<vcl::Image> mTextures;
 
 public:
     enum {
@@ -100,130 +100,130 @@ public:
 
     void clear()
     {
-        verts.clear();
-        tris.clear();
-        wireframe.clear();
-        vNormals.clear();
-        vColors.clear();
-        tNormals.clear();
-        tColors.clear();
-        vTexCoords.clear();
-        wTexCoords.clear();
-        wTexIds.clear();
-        mColor = {0.5, 0.5, 0.5, 1};
-        triPolyMap.clear();
-        textures.clear();
+        mVerts.clear();
+        mTris.clear();
+        mWireframe.clear();
+        mVNormals.clear();
+        mVColors.clear();
+        mTNormals.clear();
+        mTColors.clear();
+        mVTexCoords.clear();
+        mWTexCoords.clear();
+        mWTexIds.clear();
+        mMeshColor = {0.5, 0.5, 0.5, 1};
+        mTriPolyMap.clear();
+        mTextures.clear();
         clearBB();
     }
 
-    uint vertexNumber() const { return verts.size() / 3; }
+    uint vertexNumber() const { return mVerts.size() / 3; }
 
-    uint triangleNumber() const { return tris.size() / 3; }
+    uint triangleNumber() const { return mTris.size() / 3; }
 
-    uint edgeNumber() const { return wireframe.size() / 2; }
+    uint edgeNumber() const { return mWireframe.size() / 2; }
 
-    uint textureNumber() const { return textures.size(); }
+    uint textureNumber() const { return mTextures.size(); }
 
     vcl::Point2i textureSize(uint ti) const
     {
-        return vcl::Point2i(textures[ti].width(), textures[ti].height());
+        return vcl::Point2i(mTextures[ti].width(), mTextures[ti].height());
     }
 
-    const vcl::Point3d& bbMin() const { return bbmin; }
+    const vcl::Point3d& bbMin() const { return mBBMin; }
 
-    const vcl::Point3d& bbMax() const { return bbmax; }
+    const vcl::Point3d& bbMax() const { return mBBMax; }
 
     const float* vertexBufferData() const
     {
-        if (verts.empty())
+        if (mVerts.empty())
             return nullptr;
-        return verts.data();
+        return mVerts.data();
     }
 
-    const uint vertexBufferSize() const { return verts.size(); }
+    const uint vertexBufferSize() const { return mVerts.size(); }
 
     const uint32_t* triangleBufferData() const
     {
-        if (tris.empty())
+        if (mTris.empty())
             return nullptr;
-        return tris.data();
+        return mTris.data();
     }
 
-    const uint triangleBufferSize() const { return tris.size(); }
+    const uint triangleBufferSize() const { return mTris.size(); }
 
     const uint32_t* wireframeBufferData() const
     {
-        if (wireframe.empty())
+        if (mWireframe.empty())
             return nullptr;
-        return wireframe.data();
+        return mWireframe.data();
     }
 
-    const uint wireframeBufferSize() const { return wireframe.size(); }
+    const uint wireframeBufferSize() const { return mWireframe.size(); }
 
     const float* vertexNormalBufferData() const
     {
-        if (vNormals.empty())
+        if (mVNormals.empty())
             return nullptr;
-        return vNormals.data();
+        return mVNormals.data();
     }
 
     const uint32_t* vertexColorBufferData() const
     {
-        if (vColors.empty())
+        if (mVColors.empty())
             return nullptr;
-        return vColors.data();
+        return mVColors.data();
     }
 
     const float* triangleNormalBufferData() const
     {
-        if (tNormals.empty())
+        if (mTNormals.empty())
             return nullptr;
-        return tNormals.data();
+        return mTNormals.data();
     }
 
     const uint32_t* triangleColorBufferData() const
     {
-        if (tColors.empty())
+        if (mTColors.empty())
             return nullptr;
-        return tColors.data();
+        return mTColors.data();
     }
 
     const float* vertexTexCoordsBufferData() const
     {
-        if (vTexCoords.empty())
+        if (mVTexCoords.empty())
             return nullptr;
-        return vTexCoords.data();
+        return mVTexCoords.data();
     }
 
     const float* wedgeTexCoordsBufferData() const
     {
-        if (wTexCoords.empty())
+        if (mWTexCoords.empty())
             return nullptr;
-        return wTexCoords.data();
+        return mWTexCoords.data();
     }
 
     const short* wedgeTextureIDsBufferData() const
     {
-        if (wTexIds.empty())
+        if (mWTexIds.empty())
             return nullptr;
-        return wTexIds.data();
+        return mWTexIds.data();
     }
 
-    const float* meshColorBufferData() const { return mColor.data(); }
+    const float* meshColorBufferData() const { return mMeshColor.data(); }
 
     const unsigned char* textureBufferData(uint ti) const
     {
-        return textures[ti].data();
+        return mTextures[ti].data();
     }
 
 private:
     void clearBB()
     {
-        bbmin = Point3d(
+        mBBMin = Point3d(
             std::numeric_limits<double>::max(),
             std::numeric_limits<double>::max(),
             std::numeric_limits<double>::max());
-        bbmax = Point3d(
+        mBBMax = Point3d(
             std::numeric_limits<double>::lowest(),
             std::numeric_limits<double>::lowest(),
             std::numeric_limits<double>::lowest());
@@ -243,20 +243,20 @@ private:
 
         // if mesh has bounding box, I set it anyway from its bb
         if constexpr (vcl::HasBoundingBox<MeshType>) {
-            bbmin = m.boundingBox().min().template cast<double>();
-            bbmax = m.boundingBox().max().template cast<double>();
+            mBBMin = m.boundingBox().min().template cast<double>();
+            mBBMax = m.boundingBox().max().template cast<double>();
         }
         // if I need to compute bb, I initialize to invalid numbers
         if (bbToInitialize) {
             clearBB();
         }
 
-        verts.resize(m.vertexNumber() * 3);
+        mVerts.resize(m.vertexNumber() * 3);
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (buffersToFill & VERT_NORMALS) {
                 if (vcl::isPerVertexNormalAvailable(m)) {
-                    vNormals.resize(m.vertexNumber() * 3);
+                    mVNormals.resize(m.vertexNumber() * 3);
                 }
             }
         }
@@ -264,7 +264,7 @@ private:
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (buffersToFill & VERT_COLORS) {
                 if (vcl::isPerVertexColorAvailable(m)) {
-                    vColors.resize(m.vertexNumber());
+                    mVColors.resize(m.vertexNumber());
                 }
             }
         }
@@ -272,7 +272,7 @@ private:
         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             if (buffersToFill & VERT_TEXCOORDS) {
                 if (vcl::isPerVertexTexCoordAvailable(m)) {
-                    vTexCoords.resize(m.vertexNumber() * 2);
+                    mVTexCoords.resize(m.vertexNumber() * 2);
                 }
             }
         }
@@ -282,21 +282,21 @@ private:
             uint i = vi * 2; // use i for size 2, like texcoords
             uint j = vi * 3; // use j for size 3, like coords and normals
 
-            verts[j + 0] = v.coord().x();
-            verts[j + 1] = v.coord().y();
-            verts[j + 2] = v.coord().z();
+            mVerts[j + 0] = v.coord().x();
+            mVerts[j + 1] = v.coord().y();
+            mVerts[j + 2] = v.coord().z();
 
             if (bbToInitialize) {
-                bbmin = vcl::min(bbmin, v.coord().template cast<double>());
-                bbmax = vcl::max(bbmax, v.coord().template cast<double>());
+                mBBMin = vcl::min(mBBMin, v.coord().template cast<double>());
+                mBBMax = vcl::max(mBBMax, v.coord().template cast<double>());
             }
 
             if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                 if (buffersToFill & VERT_NORMALS) {
                     if (vcl::isPerVertexNormalAvailable(m)) {
-                        vNormals[j + 0] = v.normal().x();
-                        vNormals[j + 1] = v.normal().y();
-                        vNormals[j + 2] = v.normal().z();
+                        mVNormals[j + 0] = v.normal().x();
+                        mVNormals[j + 1] = v.normal().y();
+                        mVNormals[j + 2] = v.normal().z();
                     }
                 }
             }
@@ -304,7 +304,7 @@ private:
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (buffersToFill & VERT_COLORS) {
                     if (vcl::isPerVertexColorAvailable(m)) {
-                        vColors[vi] = v.color().abgr();
+                        mVColors[vi] = v.color().abgr();
                     }
                 }
             }
@@ -312,8 +312,8 @@ private:
             if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                 if (buffersToFill & VERT_TEXCOORDS) {
                     if (vcl::isPerVertexTexCoordAvailable(m)) {
-                        vTexCoords[i + 0] = v.texCoord().u();
-                        vTexCoords[i + 1] = v.texCoord().v();
+                        mVTexCoords[i + 0] = v.texCoord().u();
+                        mVTexCoords[i + 1] = v.texCoord().v();
                     }
                 }
             }
@@ -328,30 +328,31 @@ private:
             std::vector<std::vector<uint>> vinds; // necessary for wedge attribs
 
             if constexpr (vcl::HasTriangles<MeshType>) {
-                tris.resize(m.faceNumber() * 3);
+                mTris.resize(m.faceNumber() * 3);
 
                 uint i = 0;
                 for (const auto& f : m.faces()) {
-                    tris[i + 0] = m.vertexIndexIfCompact(m.index(f.vertex(0)));
-                    tris[i + 1] = m.vertexIndexIfCompact(m.index(f.vertex(1)));
-                    tris[i + 2] = m.vertexIndexIfCompact(m.index(f.vertex(2)));
+                    mTris[i + 0] = m.vertexIndexIfCompact(m.index(f.vertex(0)));
+                    mTris[i + 1] = m.vertexIndexIfCompact(m.index(f.vertex(1)));
+                    mTris[i + 2] = m.vertexIndexIfCompact(m.index(f.vertex(2)));
                     i += 3;
                 }
             }
             else {
                 vinds.reserve(m.faceNumber());
-                triPolyMap.reserve(m.faceNumber(), m.faceNumber());
-                tris.reserve(m.faceNumber());
+                mTriPolyMap.reserve(m.faceNumber(), m.faceNumber());
+                mTris.reserve(m.faceNumber());
 
                 uint nt = 0;
                 for (const auto& f : m.faces()) {
                     if (f.vertexNumber() == 3) {
-                        triPolyMap.insert(nt, m.faceIndexIfCompact(m.index(f)));
-                        tris.push_back(
+                        mTriPolyMap.insert(
+                            nt, m.faceIndexIfCompact(m.index(f)));
+                        mTris.push_back(
                             m.vertexIndexIfCompact(m.index(f.vertex(0))));
-                        tris.push_back(
+                        mTris.push_back(
                             m.vertexIndexIfCompact(m.index(f.vertex(1))));
-                        tris.push_back(
+                        mTris.push_back(
                             m.vertexIndexIfCompact(m.index(f.vertex(2))));
                         nt += 1;
                         vinds.push_back({0, 1, 2});
@@ -359,13 +360,13 @@ private:
                     else {
                         std::vector<uint> vind = vcl::earCut(f);
                         for (uint vi = 0; vi < vind.size(); vi += 3) {
-                            triPolyMap.insert(
+                            mTriPolyMap.insert(
                                 nt + vi / 3, m.faceIndexIfCompact(m.index(f)));
-                            tris.push_back(m.vertexIndexIfCompact(
+                            mTris.push_back(m.vertexIndexIfCompact(
                                 m.index(f.vertex(vind[vi + 0]))));
-                            tris.push_back(m.vertexIndexIfCompact(
+                            mTris.push_back(m.vertexIndexIfCompact(
                                 m.index(f.vertex(vind[vi + 1]))));
-                            tris.push_back(m.vertexIndexIfCompact(
+                            mTris.push_back(m.vertexIndexIfCompact(
                                 m.index(f.vertex(vind[vi + 2]))));
                         }
                         nt += vind.size() / 3;
@@ -377,7 +378,7 @@ private:
             if constexpr (vcl::HasPerFaceNormal<MeshType>) {
                 if (buffersToFill & TRI_NORMALS) {
                     if (vcl::isPerFaceNormalAvailable(m)) {
-                        tNormals.reserve(m.faceNumber() * 3);
+                        mTNormals.reserve(m.faceNumber() * 3);
                     }
                 }
             }
@@ -385,7 +386,7 @@ private:
             if constexpr (vcl::HasPerFaceColor<MeshType>) {
                 if (buffersToFill & TRI_COLORS) {
                     if (vcl::isPerFaceColorAvailable(m)) {
-                        tColors.reserve(m.faceNumber());
+                        mTColors.reserve(m.faceNumber());
                     }
                 }
             }
@@ -393,8 +394,8 @@ private:
             if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                 if (buffersToFill & WEDGE_TEXCOORDS) {
                     if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
-                        wTexCoords.reserve(m.faceNumber() * 3 * 2);
-                        wTexIds.reserve(m.faceNumber());
+                        mWTexCoords.reserve(m.faceNumber() * 3 * 2);
+                        mWTexIds.reserve(m.faceNumber());
                     }
                 }
             }
@@ -404,20 +405,20 @@ private:
                     if (buffersToFill & TRI_NORMALS) {
                         if (vcl::isPerFaceNormalAvailable(m)) {
                             if constexpr (vcl::HasTriangles<MeshType>) {
-                                tNormals.push_back(f.normal().x());
-                                tNormals.push_back(f.normal().y());
-                                tNormals.push_back(f.normal().z());
+                                mTNormals.push_back(f.normal().x());
+                                mTNormals.push_back(f.normal().y());
+                                mTNormals.push_back(f.normal().z());
                             }
                             else {
                                 const uint fi =
                                     m.faceIndexIfCompact(m.index(f));
                                 for (uint i = 0;
-                                     i < triPolyMap.triangleNumber(fi);
+                                     i < mTriPolyMap.triangleNumber(fi);
                                      i++)
                                 {
-                                    tNormals.push_back(f.normal().x());
-                                    tNormals.push_back(f.normal().y());
-                                    tNormals.push_back(f.normal().z());
+                                    mTNormals.push_back(f.normal().x());
+                                    mTNormals.push_back(f.normal().y());
+                                    mTNormals.push_back(f.normal().z());
                                 }
                             }
                         }
@@ -428,16 +429,16 @@ private:
                     if (buffersToFill & TRI_COLORS) {
                         if (vcl::isPerFaceColorAvailable(m)) {
                             if constexpr (vcl::HasTriangles<MeshType>) {
-                                tColors.push_back(f.color().abgr());
+                                mTColors.push_back(f.color().abgr());
                             }
                             else {
                                 const uint fi =
                                     m.faceIndexIfCompact(m.index(f));
                                 for (uint i = 0;
-                                     i < triPolyMap.triangleNumber(fi);
+                                     i < mTriPolyMap.triangleNumber(fi);
                                      i++)
                                 {
-                                    tColors.push_back(f.color().abgr());
+                                    mTColors.push_back(f.color().abgr());
                                 }
                             }
                         }
@@ -448,13 +449,13 @@ private:
                     if (buffersToFill & WEDGE_TEXCOORDS) {
                         if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
                             if constexpr (vcl::HasTriangles<MeshType>) {
-                                wTexCoords.push_back(f.wedgeTexCoord(0).u());
-                                wTexCoords.push_back(f.wedgeTexCoord(0).v());
-                                wTexCoords.push_back(f.wedgeTexCoord(1).u());
-                                wTexCoords.push_back(f.wedgeTexCoord(1).v());
-                                wTexCoords.push_back(f.wedgeTexCoord(2).u());
-                                wTexCoords.push_back(f.wedgeTexCoord(2).v());
-                                wTexIds.push_back(f.textureIndex());
+                                mWTexCoords.push_back(f.wedgeTexCoord(0).u());
+                                mWTexCoords.push_back(f.wedgeTexCoord(0).v());
+                                mWTexCoords.push_back(f.wedgeTexCoord(1).u());
+                                mWTexCoords.push_back(f.wedgeTexCoord(1).v());
+                                mWTexCoords.push_back(f.wedgeTexCoord(2).u());
+                                mWTexCoords.push_back(f.wedgeTexCoord(2).v());
+                                mWTexIds.push_back(f.textureIndex());
                             }
                             else {
                                 const uint fi =
@@ -463,19 +464,19 @@ private:
                                 const std::vector<uint>& vind = vinds[fi];
                                 // for each triangle of f
                                 for (uint vi = 0; vi < vind.size(); vi += 3) {
-                                    wTexCoords.push_back(
+                                    mWTexCoords.push_back(
                                         f.wedgeTexCoord(vind[vi + 0]).u());
-                                    wTexCoords.push_back(
+                                    mWTexCoords.push_back(
                                         f.wedgeTexCoord(vind[vi + 0]).v());
-                                    wTexCoords.push_back(
+                                    mWTexCoords.push_back(
                                         f.wedgeTexCoord(vind[vi + 1]).u());
-                                    wTexCoords.push_back(
+                                    mWTexCoords.push_back(
                                         f.wedgeTexCoord(vind[vi + 1]).v());
-                                    wTexCoords.push_back(
+                                    mWTexCoords.push_back(
                                         f.wedgeTexCoord(vind[vi + 2]).u());
-                                    wTexCoords.push_back(
+                                    mWTexCoords.push_back(
                                         f.wedgeTexCoord(vind[vi + 2]).v());
-                                    wTexIds.push_back(f.textureIndex());
+                                    mWTexIds.push_back(f.textureIndex());
                                 }
                             }
                         }
@@ -492,17 +493,18 @@ private:
             if constexpr (FaceType::VERTEX_NUMBER < 0) {
                 // assuming faces are triangles; if they are not, reallocation
                 // during push_back will be possible
-                wireframe.reserve(6 * m.faceNumber()); // 2 indices * 3 edges
+                mWireframe.reserve(6 * m.faceNumber()); // 2 indices * 3 edges
             }
             else {
-                wireframe.reserve(2 * FaceType::VERTEX_NUMBER * m.faceNumber());
+                mWireframe.reserve(
+                    2 * FaceType::VERTEX_NUMBER * m.faceNumber());
             }
 
             for (const auto& f : m.faces()) {
                 for (uint i = 0; i < f.vertexNumber(); ++i) {
-                    wireframe.push_back(
+                    mWireframe.push_back(
                         m.vertexIndexIfCompact(m.index(f.vertex(i))));
-                    wireframe.push_back(
+                    mWireframe.push_back(
                         m.vertexIndexIfCompact(m.index(f.vertexMod((i + 1)))));
                 }
             }
@@ -515,7 +517,7 @@ private:
             for (uint i = 0; i < m.textureNumber(); ++i) {
                 vcl::Image txt(m.meshBasePath() + m.texturePath(i));
                 txt.mirror();
-                textures.push_back(txt);
+                mTextures.push_back(txt);
             }
         }
     }
@@ -523,10 +525,10 @@ private:
     void fillMeshAttribs(const MeshType& m)
     {
         if constexpr (vcl::HasColor<MeshType>) {
-            mColor[0] = m.color().redF();
-            mColor[1] = m.color().greenF();
-            mColor[2] = m.color().blueF();
-            mColor[3] = m.color().alphaF();
+            mMeshColor[0] = m.color().redF();
+            mMeshColor[1] = m.color().greenF();
+            mMeshColor[2] = m.color().blueF();
+            mMeshColor[3] = m.color().alphaF();
         }
     }
 };

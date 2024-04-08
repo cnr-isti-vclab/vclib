@@ -70,31 +70,31 @@ private:
 
     enum Quadrant { UPPER_RIGHT, UPPER_LEFT, LOWER_LEFT, LOWER_RIGHT };
 
-    vcl::DirectionalLight<Scalar> dl;
+    vcl::DirectionalLight<Scalar> mDirLight;
 
-    Camera<Scalar> cam;
+    Camera<Scalar> mCamera;
 
-    Point2<Scalar> currMousePosition;
-    Point2<Scalar> prevMousePosition;
+    Point2<Scalar> mCurrMousePosition;
+    Point2<Scalar> mPrevMousePosition;
 
-    Scalar h = 1; // width
-    Scalar w = 1; // heigth
+    Scalar mHeight = 1; // heigth
+    Scalar mWidth = 1; // width
 
-    bool       dragging       = false;
-    MotionType currDragMotion = MOTION_NUMBER;
+    bool       mDragging       = false;
+    MotionType mCurrDragMotion = MOTION_NUMBER;
 
     // arc motion state
-    Point3<Scalar>     startVector;
-    Point3<Scalar>     stopVector;
-    Quaternion<Scalar> arcRotationSum;
+    Point3<Scalar>     mStartVector;
+    Point3<Scalar>     mStopVector;
+    Quaternion<Scalar> mArcRotationSum;
 
-    Scalar panScale = 0.005;
+    Scalar mPanScale = 0.005;
 
-    Scalar rollScale = 0.005;
+    Scalar mRollScale = 0.005;
 
-    Scalar zoomScale = 0.05;
+    Scalar mZoomScale = 0.05;
 
-    Scalar eyeCenterDist = cam.eye().dist(cam.center());
+    Scalar mEyeCenterDist = mCamera.eye().dist(mCamera.center());
 
     inline static const Point3<Scalar> X = Point3<Scalar>(1, 0, 0);
     inline static const Point3<Scalar> Y = Point3<Scalar>(0, 1, 0);
@@ -103,48 +103,48 @@ private:
 public:
     TrackBall() = default;
 
-    const Camera<Scalar>& camera() const { return cam; }
+    const Camera<Scalar>& camera() const { return mCamera; }
 
-    const DirectionalLight<Scalar>& light() const { return dl; }
+    const DirectionalLight<Scalar>& light() const { return mDirLight; }
 
-    Matrix44<Scalar> viewMatrix() const { return cam.viewMatrix(); }
+    Matrix44<Scalar> viewMatrix() const { return mCamera.viewMatrix(); }
 
-    const Point3<Scalar>& center() const { return cam.center(); }
+    const Point3<Scalar>& center() const { return mCamera.center(); }
 
-    const Scalar radius() const { return eyeCenterDist / RADIUS_RATIO; }
+    const Scalar radius() const { return mEyeCenterDist / RADIUS_RATIO; }
 
     void reset(const Point3<Scalar>& center, Scalar radius = 1.0)
     {
-        cam.reset();
-        cam.center()      = center;
-        cam.aspectRatio() = w / h;
+        mCamera.reset();
+        mCamera.center()      = center;
+        mCamera.aspectRatio() = mWidth / mHeight;
 
-        arcRotationSum = Quaternion<Scalar>();
-        eyeCenterDist  = radius * RADIUS_RATIO;
+        mArcRotationSum = Quaternion<Scalar>();
+        mEyeCenterDist  = radius * RADIUS_RATIO;
 
-        dragging = false;
+        mDragging = false;
 
-        currDragMotion = MOTION_NUMBER;
+        mCurrDragMotion = MOTION_NUMBER;
 
-        currMousePosition = Point2<Scalar>();
-        prevMousePosition = Point2<Scalar>();
+        mCurrMousePosition = Point2<Scalar>();
+        mPrevMousePosition = Point2<Scalar>();
 
-        startVector = Point3<Scalar>();
-        stopVector  = Point3<Scalar>();
+        mStartVector = Point3<Scalar>();
+        mStopVector  = Point3<Scalar>();
 
         updateCameraEye();
     }
 
-    void resetDirectionalLight() { dl.reset(); }
+    void resetDirectionalLight() { mDirLight.reset(); }
 
     // Settings member functions
 
     void setScreenSize(Scalar width, Scalar height)
     {
         if (width > 1 || height > 1) {
-            w                 = width;
-            h                 = height;
-            cam.aspectRatio() = w / h;
+            mWidth                 = width;
+            mHeight                 = height;
+            mCamera.aspectRatio() = mWidth / mHeight;
         }
     }
 
@@ -239,9 +239,9 @@ public:
 
     void setMousePosition(Scalar x, Scalar y)
     {
-        prevMousePosition     = currMousePosition;
-        currMousePosition.x() = x;
-        currMousePosition.y() = h - y;
+        mPrevMousePosition     = mCurrMousePosition;
+        mCurrMousePosition.x() = x;
+        mCurrMousePosition.y() = mHeight - y;
     }
 
     void setMousePosition(const Point2<Scalar>& point)
@@ -254,27 +254,27 @@ public:
      *
      * @note: this member function must be called only when a drag motion:
      * - begins (e.g. when the mouse is pressed)
-     * - is in progress (e.g. when the mouse is dragging);
+     * - is in progress (e.g. when the mouse is mDragging);
      * - ends (e.g. when the mouse is released).
      */
     void update()
     {
-        if (currMousePosition != prevMousePosition) {
-            bool clicking = currDragMotion != MOTION_NUMBER;
+        if (mCurrMousePosition != mPrevMousePosition) {
+            bool clicking = mCurrDragMotion != MOTION_NUMBER;
 
             // first update when a drag begins
-            if (!dragging && clicking) {
+            if (!mDragging && clicking) {
                 resetState();
-                startVector = pointOnSphere(currMousePosition);
-                dragging    = true;
+                mStartVector = pointOnSphere(mCurrMousePosition);
+                mDragging    = true;
             }
             // update when a motion is in progress
-            else if (dragging && clicking) {
-                drag(currDragMotion);
+            else if (mDragging && clicking) {
+                drag(mCurrDragMotion);
             }
             // update when a motion ends
-            else if (dragging && !clicking) {
-                dragging = false;
+            else if (mDragging && !clicking) {
+                mDragging = false;
                 resetState();
             }
         }
@@ -285,21 +285,21 @@ private:
 
     void updateCameraEye()
     {
-        Point3<Scalar> orientation = arcRotationSum * Z;
-        cam.eye()                  = orientation * eyeCenterDist + cam.center();
+        Point3<Scalar> orientation = mArcRotationSum * Z;
+        mCamera.eye() = orientation * mEyeCenterDist + mCamera.center();
     }
 
-    void updateCameraUp() { cam.up() = (arcRotationSum * Y).normalized(); }
+    void updateCameraUp() { mCamera.up() = (mArcRotationSum * Y).normalized(); }
 
     void resetState()
     {
-        arcRotationSum = Quaternion<Scalar>(cam.viewMatrix()).inverse();
-        eyeCenterDist  = cam.eye().dist(cam.center());
+        mArcRotationSum = Quaternion<Scalar>(mCamera.viewMatrix()).inverse();
+        mEyeCenterDist  = mCamera.eye().dist(mCamera.center());
     }
 
     void setDragMotionValue(MotionType motion, bool value)
     {
-        currDragMotion = value ? motion : MOTION_NUMBER;
+        mCurrDragMotion = value ? motion : MOTION_NUMBER;
     }
 
     void drag(MotionType motion)
@@ -313,14 +313,14 @@ private:
         default: break;
         }
 
-        prevMousePosition = currMousePosition;
+        mPrevMousePosition = mCurrMousePosition;
     }
 
     /**-------------- Arc --------------**/
 
     void performArc(const Quaternion<Scalar>& rotation)
     {
-        arcRotationSum *= rotation;
+        mArcRotationSum *= rotation;
         updateCameraEye();
         updateCameraUp();
     }
@@ -342,8 +342,8 @@ private:
     {
         vcl::Point3<Scalar> result;
 
-        Scalar x = (2.f * point.x() - w) / w;
-        Scalar y = (2.f * point.y() - h) / h;
+        Scalar x = (2.f * point.x() - mWidth) / mWidth;
+        Scalar y = (2.f * point.y() - mHeight) / mHeight;
 
         Scalar length2 = x * x + y * y;
 
@@ -365,28 +365,28 @@ private:
 
     void dragArc()
     {
-        stopVector = pointOnSphere(currMousePosition);
-        Quaternion<Scalar> rotation(startVector, stopVector);
+        mStopVector = pointOnSphere(mCurrMousePosition);
+        Quaternion<Scalar> rotation(mStartVector, mStopVector);
         performArc(rotation.conjugate());
-        startVector = stopVector;
+        mStartVector = mStopVector;
     }
 
     /**-------------- Roll --------------**/
 
     void performRoll(Scalar delta)
     {
-        Point3<Scalar> axis  = (cam.center() - cam.eye()).normalized();
-        Scalar         angle = rollScale * delta;
+        Point3<Scalar> axis  = (mCamera.center() - mCamera.eye()).normalized();
+        Scalar         angle = mRollScale * delta;
 
         Quaternion<Scalar> rotation(angle, axis);
 
-        cam.up() = rotation * cam.up();
+        mCamera.up() = rotation * mCamera.up();
     }
 
     Quadrant quadrant(Scalar x, Scalar y) const
     {
-        Scalar halfw = w / 2.0;
-        Scalar halfh = h / 2.0;
+        Scalar halfw = mWidth / 2.0;
+        Scalar halfh = mHeight / 2.0;
 
         // image coordinates origin is upperleft.
         if (x < halfw) {
@@ -409,8 +409,9 @@ private:
 
     void dragRoll()
     {
-        auto     deltaP = prevMousePosition - currMousePosition;
-        Quadrant quad = quadrant(currMousePosition.x(), currMousePosition.y());
+        auto     deltaP = mPrevMousePosition - mCurrMousePosition;
+        Quadrant quad =
+            quadrant(mCurrMousePosition.x(), mCurrMousePosition.y());
         switch (quad) {
         case UPPER_RIGHT: deltaP *= -1; break;
         case UPPER_LEFT: deltaP.x() *= -1; break;
@@ -427,13 +428,13 @@ private:
 
     void performPan(const Point2<Scalar>& diff)
     {
-        Scalar         l = cam.eye().dist(cam.center());
-        Point3<Scalar> r = (arcRotationSum * X).normalized();
+        Scalar         l = mCamera.eye().dist(mCamera.center());
+        Point3<Scalar> r = (mArcRotationSum * X).normalized();
 
         Point3<Scalar> pan =
-            -(cam.up() * diff.y() + r * diff.x()) * l * panScale;
-        cam.center() += pan;
-        cam.eye() += pan;
+            -(mCamera.up() * diff.y() + r * diff.x()) * l * mPanScale;
+        mCamera.center() += pan;
+        mCamera.eye() += pan;
     }
 
     // atomic
@@ -457,7 +458,7 @@ private:
 
     void dragPan()
     {
-        Point2<Scalar> diff = currMousePosition - prevMousePosition;
+        Point2<Scalar> diff = mCurrMousePosition - mPrevMousePosition;
         performPan(diff);
     }
 
@@ -465,13 +466,13 @@ private:
 
     void performZoom(Scalar inc)
     {
-        eyeCenterDist += (zoomScale * radius()) * inc;
+        mEyeCenterDist += (mZoomScale * radius()) * inc;
         updateCameraEye();
     }
 
     void dragZoom()
     {
-        Point2<Scalar> diff = currMousePosition - prevMousePosition;
+        Point2<Scalar> diff = mCurrMousePosition - mPrevMousePosition;
 
         Scalar ax = std::abs(diff.x());
         Scalar ay = std::abs(diff.y());
@@ -485,7 +486,7 @@ private:
             up = diff.y() < 0;
         }
 
-        Scalar dist = currMousePosition.dist(prevMousePosition);
+        Scalar dist = mCurrMousePosition.dist(mPrevMousePosition);
         Scalar inc  = up ? dist : -dist;
 
         performZoom(inc);
@@ -495,8 +496,8 @@ private:
 
     void performDirLightArc(const Quaternion<Scalar>& rotation)
     {
-        dl.direction() = rotation.conjugate() * dl.direction();
-        dl.direction().normalize();
+        mDirLight.direction() = rotation.conjugate() * mDirLight.direction();
+        mDirLight.direction().normalize();
     }
 
     // atomic
@@ -516,10 +517,10 @@ private:
 
     void dragDirLightArc()
     {
-        stopVector = pointOnSphere(currMousePosition);
-        Quaternion<Scalar> rotation(startVector, stopVector);
+        mStopVector = pointOnSphere(mCurrMousePosition);
+        Quaternion<Scalar> rotation(mStartVector, mStopVector);
         performDirLightArc(rotation.conjugate());
-        startVector = stopVector;
+        mStartVector = mStopVector;
     }
 };
 

@@ -31,7 +31,7 @@ namespace vcl {
 
 class DrawableObjectVector
 {
-    std::vector<DrawableObjectI*> drawVector;
+    std::vector<DrawableObjectI*> mDrawVector;
 
 public:
     using iterator       = std::vector<DrawableObjectI*>::iterator;

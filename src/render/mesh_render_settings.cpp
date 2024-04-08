@@ -27,27 +27,27 @@ namespace vcl {
 Color MeshRenderSettings::pointCloudUserColor() const
 {
     vcl::Color c;
-    c.setRedF(pUserColor[0]);
-    c.setGreenF(pUserColor[1]);
-    c.setBlueF(pUserColor[2]);
-    c.setAlphaF(pUserColor[3]);
+    c.setRedF(mPointUserColor[0]);
+    c.setGreenF(mPointUserColor[1]);
+    c.setBlueF(mPointUserColor[2]);
+    c.setAlphaF(mPointUserColor[3]);
     return c;
 }
 
 Color MeshRenderSettings::surfaceUserColor() const
 {
     vcl::Color c;
-    c.setAbgr(sUserColor);
+    c.setAbgr(mSurfUserColor);
     return c;
 }
 
 Color MeshRenderSettings::wireframeUserColor() const
 {
     vcl::Color c;
-    c.setRedF(wUserColor[0]);
-    c.setGreenF(wUserColor[1]);
-    c.setBlueF(wUserColor[2]);
-    c.setAlphaF(wUserColor[3]);
+    c.setRedF(mWrfUserColor[0]);
+    c.setGreenF(mWrfUserColor[1]);
+    c.setBlueF(mWrfUserColor[2]);
+    c.setAlphaF(mWrfUserColor[3]);
     return c;
 }
 
@@ -55,9 +55,9 @@ bool MeshRenderSettings::setVisibility(bool b)
 {
     if (canBeVisible()) {
         if (b)
-            dMode |= VCL_MRS_DRAW_MESH;
+            mDrawMode |= VCL_MRS_DRAW_MESH;
         else
-            dMode &= ~VCL_MRS_DRAW_MESH;
+            mDrawMode &= ~VCL_MRS_DRAW_MESH;
         return true;
     }
     else {
@@ -69,9 +69,9 @@ bool MeshRenderSettings::setPointCloudVisibility(bool b)
 {
     if (canPointCloudBeVisible()) {
         if (b)
-            dMode |= VCL_MRS_DRAW_POINTS;
+            mDrawMode |= VCL_MRS_DRAW_POINTS;
         else
-            dMode &= ~VCL_MRS_DRAW_POINTS;
+            mDrawMode &= ~VCL_MRS_DRAW_POINTS;
         return true;
     }
     else {
@@ -82,8 +82,8 @@ bool MeshRenderSettings::setPointCloudVisibility(bool b)
 bool MeshRenderSettings::setPointCloudShadingNone()
 {
     if (canPointCloudBeVisible()) {
-        dMode |= VCL_MRS_POINTS_SHADING_NONE;
-        dMode &= ~VCL_MRS_POINTS_SHADING_VERT;
+        mDrawMode |= VCL_MRS_POINTS_SHADING_NONE;
+        mDrawMode &= ~VCL_MRS_POINTS_SHADING_VERT;
         return true;
     }
     else {
@@ -94,8 +94,8 @@ bool MeshRenderSettings::setPointCloudShadingNone()
 bool MeshRenderSettings::setPointCloudShadingPerVertex()
 {
     if (canPointCloudBeVisible()) {
-        dMode &= ~VCL_MRS_POINTS_SHADING_NONE;
-        dMode |= VCL_MRS_POINTS_SHADING_VERT;
+        mDrawMode &= ~VCL_MRS_POINTS_SHADING_NONE;
+        mDrawMode |= VCL_MRS_POINTS_SHADING_VERT;
         return true;
     }
     else {
@@ -106,9 +106,9 @@ bool MeshRenderSettings::setPointCloudShadingPerVertex()
 bool MeshRenderSettings::setPointCloudColorPerVertex()
 {
     if (canSurfaceColorBePerVertex()) {
-        dMode |= VCL_MRS_POINTS_COLOR_VERTEX;
-        dMode &= ~VCL_MRS_POINTS_COLOR_MESH;
-        dMode &= ~VCL_MRS_POINTS_COLOR_USER;
+        mDrawMode |= VCL_MRS_POINTS_COLOR_VERTEX;
+        mDrawMode &= ~VCL_MRS_POINTS_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_POINTS_COLOR_USER;
         return true;
     }
     else {
@@ -119,9 +119,9 @@ bool MeshRenderSettings::setPointCloudColorPerVertex()
 bool MeshRenderSettings::setPointCloudColorPerMesh()
 {
     if (canSurfaceColorBePerMesh()) {
-        dMode &= ~VCL_MRS_POINTS_COLOR_VERTEX;
-        dMode |= VCL_MRS_POINTS_COLOR_MESH;
-        dMode &= ~VCL_MRS_POINTS_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_POINTS_COLOR_VERTEX;
+        mDrawMode |= VCL_MRS_POINTS_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_POINTS_COLOR_USER;
         return true;
     }
     else {
@@ -132,9 +132,9 @@ bool MeshRenderSettings::setPointCloudColorPerMesh()
 bool MeshRenderSettings::setPointCloudColorUserDefined()
 {
     if (canPointCloudBeVisible()) {
-        dMode &= ~VCL_MRS_POINTS_COLOR_VERTEX;
-        dMode &= ~VCL_MRS_POINTS_COLOR_MESH;
-        dMode |= VCL_MRS_POINTS_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_POINTS_COLOR_VERTEX;
+        mDrawMode &= ~VCL_MRS_POINTS_COLOR_MESH;
+        mDrawMode |= VCL_MRS_POINTS_COLOR_USER;
         return true;
     }
     else {
@@ -145,7 +145,7 @@ bool MeshRenderSettings::setPointCloudColorUserDefined()
 bool MeshRenderSettings::setPointWidth(float width)
 {
     if (canPointCloudBeVisible()) {
-        pWidth = width;
+        mPointWidth = width;
         return true;
     }
     else {
@@ -160,10 +160,10 @@ bool MeshRenderSettings::setPointCloudUserColor(
     float a)
 {
     if (canPointCloudBeVisible()) {
-        pUserColor[0] = r;
-        pUserColor[1] = g;
-        pUserColor[2] = b;
-        pUserColor[3] = a;
+        mPointUserColor[0] = r;
+        mPointUserColor[1] = g;
+        mPointUserColor[2] = b;
+        mPointUserColor[3] = a;
         return true;
     }
     else {
@@ -174,10 +174,10 @@ bool MeshRenderSettings::setPointCloudUserColor(
 bool MeshRenderSettings::setPointCloudUserColor(const Color& c)
 {
     if (canPointCloudBeVisible()) {
-        pUserColor[0] = c.redF();
-        pUserColor[1] = c.greenF();
-        pUserColor[2] = c.blueF();
-        pUserColor[3] = c.alphaF();
+        mPointUserColor[0] = c.redF();
+        mPointUserColor[1] = c.greenF();
+        mPointUserColor[2] = c.blueF();
+        mPointUserColor[3] = c.alphaF();
         return true;
     }
     else {
@@ -189,9 +189,9 @@ bool MeshRenderSettings::setSurfaceVisibility(bool b)
 {
     if (canSurfaceBeVisible()) {
         if (b)
-            dMode |= VCL_MRS_DRAW_SURF;
+            mDrawMode |= VCL_MRS_DRAW_SURF;
         else
-            dMode &= ~VCL_MRS_DRAW_SURF;
+            mDrawMode &= ~VCL_MRS_DRAW_SURF;
         return true;
     }
     else {
@@ -206,9 +206,9 @@ bool MeshRenderSettings::setSurfaceVisibility(bool b)
 bool MeshRenderSettings::setSurfaceShadingNone()
 {
     if (canSurfaceBeVisible()) {
-        dMode |= VCL_MRS_SURF_SHADING_NONE;
-        dMode &= ~VCL_MRS_SURF_SHADING_FLAT;
-        dMode &= ~VCL_MRS_SURF_SHADING_SMOOTH;
+        mDrawMode |= VCL_MRS_SURF_SHADING_NONE;
+        mDrawMode &= ~VCL_MRS_SURF_SHADING_FLAT;
+        mDrawMode &= ~VCL_MRS_SURF_SHADING_SMOOTH;
         return true;
     }
     else {
@@ -223,9 +223,9 @@ bool MeshRenderSettings::setSurfaceShadingNone()
 bool MeshRenderSettings::setSurfaceShadingFlat()
 {
     if (canSurfaceShadingBeFlat()) {
-        dMode |= VCL_MRS_SURF_SHADING_FLAT;
-        dMode &= ~VCL_MRS_SURF_SHADING_NONE;
-        dMode &= ~VCL_MRS_SURF_SHADING_SMOOTH;
+        mDrawMode |= VCL_MRS_SURF_SHADING_FLAT;
+        mDrawMode &= ~VCL_MRS_SURF_SHADING_NONE;
+        mDrawMode &= ~VCL_MRS_SURF_SHADING_SMOOTH;
         return true;
     }
     else {
@@ -240,9 +240,9 @@ bool MeshRenderSettings::setSurfaceShadingFlat()
 bool MeshRenderSettings::setSurfaceShadingSmooth()
 {
     if (canSurfaceShadingBeSmooth()) {
-        dMode |= VCL_MRS_SURF_SHADING_SMOOTH;
-        dMode &= ~VCL_MRS_SURF_SHADING_NONE;
-        dMode &= ~VCL_MRS_SURF_SHADING_FLAT;
+        mDrawMode |= VCL_MRS_SURF_SHADING_SMOOTH;
+        mDrawMode &= ~VCL_MRS_SURF_SHADING_NONE;
+        mDrawMode &= ~VCL_MRS_SURF_SHADING_FLAT;
         return true;
     }
     else {
@@ -262,12 +262,12 @@ bool MeshRenderSettings::setSurfaceShadingSmooth()
 bool MeshRenderSettings::setSurfaceColorPerVertex()
 {
     if (canSurfaceColorBePerVertex()) {
-        dMode |= VCL_MRS_SURF_COLOR_VERTEX;
-        dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-        dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-        dMode &= ~VCL_MRS_SURF_COLOR_USER;
-        dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-        dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
+        mDrawMode |= VCL_MRS_SURF_COLOR_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_FACE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_WEDGE;
         return true;
     }
     else {
@@ -287,12 +287,12 @@ bool MeshRenderSettings::setSurfaceColorPerVertex()
 bool MeshRenderSettings::setSurfaceColorPerFace()
 {
     if (canSurfaceColorBePerFace()) {
-        dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-        dMode |= VCL_MRS_SURF_COLOR_FACE;
-        dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-        dMode &= ~VCL_MRS_SURF_COLOR_USER;
-        dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-        dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+        mDrawMode |= VCL_MRS_SURF_COLOR_FACE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_WEDGE;
         return true;
     }
     else {
@@ -312,12 +312,12 @@ bool MeshRenderSettings::setSurfaceColorPerFace()
 bool MeshRenderSettings::setSurfaceColorPerMesh()
 {
     if (canSurfaceColorBePerMesh()) {
-        dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-        dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-        dMode |= VCL_MRS_SURF_COLOR_MESH;
-        dMode &= ~VCL_MRS_SURF_COLOR_USER;
-        dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-        dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_FACE;
+        mDrawMode |= VCL_MRS_SURF_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_WEDGE;
         return true;
     }
     else {
@@ -339,12 +339,12 @@ bool MeshRenderSettings::setSurfaceColorPerMesh()
 bool MeshRenderSettings::setSurfaceColorUserDefined()
 {
     if (canSurfaceBeVisible()) {
-        dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-        dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-        dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-        dMode |= VCL_MRS_SURF_COLOR_USER;
-        dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-        dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_FACE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_MESH;
+        mDrawMode |= VCL_MRS_SURF_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_WEDGE;
         return true;
     }
     else {
@@ -364,12 +364,12 @@ bool MeshRenderSettings::setSurfaceColorUserDefined()
 bool MeshRenderSettings::setSurfaceColorPerVertexTexcoords()
 {
     if (canSurfaceColorBePerVertexTexcoords()) {
-        dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-        dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-        dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-        dMode &= ~VCL_MRS_SURF_COLOR_USER;
-        dMode |= VCL_MRS_SURF_TEX_VERTEX;
-        dMode &= ~VCL_MRS_SURF_TEX_WEDGE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_FACE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_USER;
+        mDrawMode |= VCL_MRS_SURF_TEX_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_WEDGE;
         return true;
     }
     else {
@@ -389,12 +389,12 @@ bool MeshRenderSettings::setSurfaceColorPerVertexTexcoords()
 bool MeshRenderSettings::setSurfaceColorPerWedgeTexcoords()
 {
     if (canSurfaceColorBePerWedgeTexcoords()) {
-        dMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
-        dMode &= ~VCL_MRS_SURF_COLOR_FACE;
-        dMode &= ~VCL_MRS_SURF_COLOR_MESH;
-        dMode &= ~VCL_MRS_SURF_COLOR_USER;
-        dMode &= ~VCL_MRS_SURF_TEX_VERTEX;
-        dMode |= VCL_MRS_SURF_TEX_WEDGE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_VERTEX;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_FACE;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_SURF_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_SURF_TEX_VERTEX;
+        mDrawMode |= VCL_MRS_SURF_TEX_WEDGE;
         return true;
     }
     else {
@@ -410,7 +410,7 @@ bool MeshRenderSettings::setSurfaceUserColor(float r, float g, float b, float a)
         c.setGreenF(g);
         c.setBlueF(b);
         c.setAlphaF(a);
-        sUserColor = c.abgr();
+        mSurfUserColor = c.abgr();
         return true;
     }
     else {
@@ -421,7 +421,7 @@ bool MeshRenderSettings::setSurfaceUserColor(float r, float g, float b, float a)
 bool MeshRenderSettings::setSurfaceUserColor(const Color& c)
 {
     if (canSurfaceBeVisible()) {
-        sUserColor = c.abgr();
+        mSurfUserColor = c.abgr();
         return true;
     }
     else {
@@ -433,9 +433,9 @@ bool MeshRenderSettings::setWireframeVisibility(bool b)
 {
     if (canSurfaceBeVisible()) {
         if (b)
-            dMode |= VCL_MRS_DRAW_WIREFRAME;
+            mDrawMode |= VCL_MRS_DRAW_WIREFRAME;
         else
-            dMode &= ~VCL_MRS_DRAW_WIREFRAME;
+            mDrawMode &= ~VCL_MRS_DRAW_WIREFRAME;
         return true;
     }
     else {
@@ -446,8 +446,8 @@ bool MeshRenderSettings::setWireframeVisibility(bool b)
 bool MeshRenderSettings::setWireframeShadingNone()
 {
     if (canSurfaceBeVisible()) {
-        dMode |= VCL_MRS_WIREFRAME_SHADING_NONE;
-        dMode &= ~VCL_MRS_WIREFRAME_SHADING_VERT;
+        mDrawMode |= VCL_MRS_WIREFRAME_SHADING_NONE;
+        mDrawMode &= ~VCL_MRS_WIREFRAME_SHADING_VERT;
         return true;
     }
     else {
@@ -458,8 +458,8 @@ bool MeshRenderSettings::setWireframeShadingNone()
 bool MeshRenderSettings::setWireframeShadingPerVertex()
 {
     if (canSurfaceBeVisible()) {
-        dMode &= ~VCL_MRS_WIREFRAME_SHADING_NONE;
-        dMode |= VCL_MRS_WIREFRAME_SHADING_VERT;
+        mDrawMode &= ~VCL_MRS_WIREFRAME_SHADING_NONE;
+        mDrawMode |= VCL_MRS_WIREFRAME_SHADING_VERT;
         return true;
     }
     else {
@@ -470,9 +470,9 @@ bool MeshRenderSettings::setWireframeShadingPerVertex()
 bool MeshRenderSettings::setWireframeColorPerVertex()
 {
     if (canWireframeColorBePerVertex()) {
-        dMode |= VCL_MRS_WIREFRAME_COLOR_VERT;
-        dMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
-        dMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
+        mDrawMode |= VCL_MRS_WIREFRAME_COLOR_VERT;
+        mDrawMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
         return true;
     }
     else {
@@ -483,9 +483,9 @@ bool MeshRenderSettings::setWireframeColorPerVertex()
 bool MeshRenderSettings::setWireframeColorPerMesh()
 {
     if (canWireframeColorBePerMesh()) {
-        dMode &= ~VCL_MRS_WIREFRAME_COLOR_VERT;
-        dMode |= VCL_MRS_WIREFRAME_COLOR_MESH;
-        dMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_WIREFRAME_COLOR_VERT;
+        mDrawMode |= VCL_MRS_WIREFRAME_COLOR_MESH;
+        mDrawMode &= ~VCL_MRS_WIREFRAME_COLOR_USER;
         return true;
     }
     else {
@@ -496,9 +496,9 @@ bool MeshRenderSettings::setWireframeColorPerMesh()
 bool MeshRenderSettings::setWireframeColorUserDefined()
 {
     if (canSurfaceBeVisible()) {
-        dMode &= ~VCL_MRS_WIREFRAME_COLOR_VERT;
-        dMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
-        dMode |= VCL_MRS_WIREFRAME_COLOR_USER;
+        mDrawMode &= ~VCL_MRS_WIREFRAME_COLOR_VERT;
+        mDrawMode &= ~VCL_MRS_WIREFRAME_COLOR_MESH;
+        mDrawMode |= VCL_MRS_WIREFRAME_COLOR_USER;
         return true;
     }
     else {
@@ -513,10 +513,10 @@ bool MeshRenderSettings::setWireframeUserColor(
     float a)
 {
     if (canSurfaceBeVisible()) {
-        wUserColor[0] = r;
-        wUserColor[1] = g;
-        wUserColor[2] = b;
-        wUserColor[3] = a;
+        mWrfUserColor[0] = r;
+        mWrfUserColor[1] = g;
+        mWrfUserColor[2] = b;
+        mWrfUserColor[3] = a;
         return true;
     }
     else {
@@ -527,7 +527,7 @@ bool MeshRenderSettings::setWireframeUserColor(
 bool MeshRenderSettings::setWireframeWidth(int width)
 {
     if (canSurfaceBeVisible()) {
-        wWidth = width;
+        mWrfWidth = width;
         return true;
     }
     else {
@@ -538,10 +538,10 @@ bool MeshRenderSettings::setWireframeWidth(int width)
 bool MeshRenderSettings::setWireframeUserColor(const Color& c)
 {
     if (canSurfaceBeVisible()) {
-        wUserColor[0] = c.redF();
-        wUserColor[1] = c.greenF();
-        wUserColor[2] = c.blueF();
-        wUserColor[3] = c.alphaF();
+        mWrfUserColor[0] = c.redF();
+        mWrfUserColor[1] = c.greenF();
+        mWrfUserColor[2] = c.blueF();
+        mWrfUserColor[3] = c.alphaF();
         return true;
     }
     else {
@@ -553,9 +553,9 @@ bool MeshRenderSettings::setBoundingBoxVisibility(bool b)
 {
     if (canBoundingBoxBeVisible()) {
         if (b)
-            dMode |= VCL_MRS_DRAW_BOUNDINGBOX;
+            mDrawMode |= VCL_MRS_DRAW_BOUNDINGBOX;
         else
-            dMode &= ~VCL_MRS_DRAW_BOUNDINGBOX;
+            mDrawMode &= ~VCL_MRS_DRAW_BOUNDINGBOX;
         return true;
     }
     else {
@@ -565,7 +565,7 @@ bool MeshRenderSettings::setBoundingBoxVisibility(bool b)
 
 void MeshRenderSettings::setDefaultSettingsFromCapability()
 {
-    dMode = 0;
+    mDrawMode = 0;
 
     // default settings - ignored if not available
     setWireframeColorUserDefined();
