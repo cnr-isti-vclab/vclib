@@ -219,8 +219,8 @@ public:
         }
         else {
             short n = mFace->vertexNumber();
-            mEdge       = ((mEdge - 1) % n + n) %
-                n; // be sure to get the right index of the previous edge
+            mEdge   = ((mEdge - 1) % n + n) %
+                    n; // be sure to get the right index of the previous edge
         }
     }
 

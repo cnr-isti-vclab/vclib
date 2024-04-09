@@ -132,7 +132,7 @@ public:
     void enableComponent()
     {
         constexpr uint ind = indexOfType<C>();
-        mVecEnabled[ind]    = true;
+        mVecEnabled[ind]   = true;
         vector<C>().resize(mSize);
     }
 
@@ -147,7 +147,7 @@ public:
     void disableComponent()
     {
         constexpr uint ind = indexOfType<C>();
-        mVecEnabled[ind]    = false;
+        mVecEnabled[ind]   = false;
         vector<C>().clear();
     }
 
