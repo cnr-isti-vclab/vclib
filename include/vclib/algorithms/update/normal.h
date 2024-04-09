@@ -227,10 +227,8 @@ void clearPerVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
  * @param[in,out] m: The mesh on which clear the referenced vertex normals.
  * @param[in,out] log: The logger used to log the performed operations.
  */
-template<LoggerConcept LogType = NullLogger>
-void clearPerReferencedVertexNormals(
-    FaceMeshConcept auto& mesh,
-    LogType&              log = nullLogger)
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void clearPerReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
 {
     vcl::requirePerVertexNormal(mesh);
 
@@ -238,13 +236,20 @@ void clearPerReferencedVertexNormals(
     // for each container of the mesh, look if its element has vertex references
     // and if it has, normalize the normals of the referenced vertices.
 
+    auto f = [&]<mesh::ElementContainerConcept Cont>() {
+        using Elem = typename Cont::ElementType;
+        if constexpr (comp::HasVertexPointers<Elem>) {
+            for (auto& e : mesh.template elements<Elem::ELEMENT_ID>()) {
+                for (auto* v : e.vertices()) {
+                    v->normal().setZero();
+                }
+            }
+        }
+    };
+
     log.log(0, "Clearing per-Vertex normals...");
 
-    for (auto& f : mesh.faces()) {
-        for (auto* v : f.vertices()) {
-            v->normal().setZero();
-        }
-    }
+    vcl::ForEachType<typename MeshType::Containers>::apply(f);
 
     log.log(100, "Per-Vertex normals cleared.");
 }
