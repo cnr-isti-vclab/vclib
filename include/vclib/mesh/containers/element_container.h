@@ -685,7 +685,8 @@ protected:
 
     uint index(const T* e) const
     {
-        assert(!vec.empty() && e >= vec.data() && e <= &vec.back());
+        assert(
+            !mElemVec.empty() && e >= mElemVec.data() && e <= &mElemVec.back());
         return e - mElemVec.data();
     }
 

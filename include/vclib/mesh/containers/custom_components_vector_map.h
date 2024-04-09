@@ -185,7 +185,7 @@ public:
     void assertComponentExists(const std::string& compName) const
     {
         (void) (compName);
-        assert(map.find(compName) != map.end());
+        assert(mMap.find(compName) != mMap.end());
     }
 
     /**

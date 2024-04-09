@@ -63,7 +63,7 @@ public:
     {
         if (f != nullptr)
             mVertex = f->vertex(e);
-        assert(isValid(f, v, e));
+        assert(isValid(mFace, mVertex, mEdge));
     }
 
     MeshPos(const FaceType* f, const VertexType* v) : mFace(f), mVertex(v)
@@ -71,7 +71,7 @@ public:
         for (uint i = 0; i < f->vertexNumber(); i++)
             if (f->vertex(i) == v)
                 mEdge = i;
-        assert(isValid(f, v, e));
+        assert(isValid(mFace, mVertex, mEdge));
     }
 
     /**
@@ -87,7 +87,7 @@ public:
     MeshPos(const FaceType* f, const VertexType* v, short e) :
             mFace(f), mVertex(v), mEdge(e)
     {
-        assert(isValid(f, v, e));
+        assert(isValid(mFace, mVertex, mEdge));
     }
 
     /**
