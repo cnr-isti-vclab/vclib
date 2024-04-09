@@ -65,9 +65,9 @@ class MeshRenderSettings
 
     float mPointWidth        = 3;
     float mPointUserColor[4] = {1, 1, 0, 1};
-    uint  mSurfUserColor    = 0xFF808080; // abgr
-    int   mWrfWidth        = 1;
-    float mWrfUserColor[4] = {0, 0, 0, 1};
+    uint  mSurfUserColor     = 0xFF808080; // abgr
+    int   mWrfWidth          = 1;
+    float mWrfUserColor[4]   = {0, 0, 0, 1};
 
 public:
     MeshRenderSettings() = default;
@@ -81,7 +81,10 @@ public:
 
     // rendering options capability of the mesh
 
-    bool canBeVisible() const { return mDrawModeCapability & VCL_MRS_DRAW_MESH; }
+    bool canBeVisible() const
+    {
+        return mDrawModeCapability & VCL_MRS_DRAW_MESH;
+    }
 
     bool canPointCloudBeVisible() const
     {

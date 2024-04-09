@@ -82,7 +82,7 @@ Context::Context()
     mViewStack.push((bgfx::ViewId) 0);
 
     // font manager must be created after bgfx::init
-    mFontManager = new FontManager();
+    mFontManager    = new FontManager();
     mProgramManager = new ProgramManager();
 }
 

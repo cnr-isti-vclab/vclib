@@ -450,7 +450,8 @@ void MeshRenderSettingsFrame::updateWireframeComboBoxFromSettings()
     if (mMRS.isWireframeColorUserDefined())
         mUI->wireframeColorComboBox->setCurrentIndex(W_USER);
 
-    mUI->wireframeUserColorFrame->setVisible(mMRS.isWireframeColorUserDefined());
+    mUI->wireframeUserColorFrame->setVisible(
+        mMRS.isWireframeColorUserDefined());
     vcl::Color vc = mMRS.wireframeUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->wireframeColorDialogPushButton, c);

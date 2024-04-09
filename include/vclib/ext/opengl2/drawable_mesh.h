@@ -311,7 +311,8 @@ private:
                 }
             }
             else if (
-                mMRS.isSurfaceColorPerMesh() || mMRS.isSurfaceColorUserDefined())
+                mMRS.isSurfaceColorPerMesh() ||
+                mMRS.isSurfaceColorUserDefined())
             {
                 if (mMRS.isSurfaceShadingSmooth()) {
                     glEnableClientState(GL_VERTEX_ARRAY);

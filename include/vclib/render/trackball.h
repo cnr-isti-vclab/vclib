@@ -78,7 +78,7 @@ private:
     Point2<Scalar> mPrevMousePosition;
 
     Scalar mHeight = 1; // heigth
-    Scalar mWidth = 1; // width
+    Scalar mWidth  = 1; // width
 
     bool       mDragging       = false;
     MotionType mCurrDragMotion = MOTION_NUMBER;
@@ -142,8 +142,8 @@ public:
     void setScreenSize(Scalar width, Scalar height)
     {
         if (width > 1 || height > 1) {
-            mWidth                 = width;
-            mHeight                 = height;
+            mWidth                = width;
+            mHeight               = height;
             mCamera.aspectRatio() = mWidth / mHeight;
         }
     }

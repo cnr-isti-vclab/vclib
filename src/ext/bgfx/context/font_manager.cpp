@@ -47,7 +47,7 @@ void FontManager::loadFont(
 {
     if (mTTMap.find(fontName) == mTTMap.end()) {
         bgfx::TrueTypeHandle handle = loadTtf(mFontManager, filePath.c_str());
-        mTTMap[fontName]             = handle;
+        mTTMap[fontName]            = handle;
     }
 }
 

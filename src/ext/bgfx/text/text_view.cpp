@@ -89,7 +89,7 @@ void TextView::appendTransientText(
 
 void TextView::init(uint width, uint height)
 {
-    mWidth = width;
+    mWidth  = width;
     mHeight = height;
 
     const bx::Vec3 at  = {0.0f, 0.0f, 0.0f};
@@ -118,7 +118,7 @@ void TextView::frame(bgfx::FrameBufferHandle fbh)
 
 void TextView::resize(uint width, uint height)
 {
-    mWidth = width;
+    mWidth  = width;
     mHeight = height;
 
     if (isTextEnabled()) {

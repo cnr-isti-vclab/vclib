@@ -74,8 +74,9 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
 {
     mUI->listWidget->clear();
     for (auto* d : *mDrawList) {
-        QListWidgetItem*     item  = new QListWidgetItem(mUI->listWidget);
-        DrawableObjectFrame* frame = new DrawableObjectFrame(d, mUI->listWidget);
+        QListWidgetItem*     item = new QListWidgetItem(mUI->listWidget);
+        DrawableObjectFrame* frame =
+            new DrawableObjectFrame(d, mUI->listWidget);
 
         item->setSizeHint(frame->sizeHint());
         mUI->listWidget->addItem(item);

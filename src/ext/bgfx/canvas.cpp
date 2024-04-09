@@ -72,7 +72,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 
         // replace the current view with the new one
         bgfx::ViewId tmpView = mViewId;
-        mViewId                 = v;
+        mViewId              = v;
         draw();
         TextView::frame(fbh);
         bgfx::requestScreenShot(fbh, filename.c_str());

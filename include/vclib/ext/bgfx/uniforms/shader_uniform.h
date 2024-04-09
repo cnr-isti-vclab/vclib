@@ -47,7 +47,8 @@ public:
     ShaderUniform(const ShaderUniform& oth) :
             mUniformName(oth.mUniformName), mUniformType(oth.mUniformType)
     {
-        mUniformHandle = bgfx::createUniform(mUniformName.c_str(), mUniformType);
+        mUniformHandle =
+            bgfx::createUniform(mUniformName.c_str(), mUniformType);
     }
 
     ShaderUniform(ShaderUniform&& oth) { swap(oth); }
@@ -64,7 +65,10 @@ public:
 
     bgfx::UniformType::Enum type() const { return mUniformType; }
 
-    void bind(const void* data) const { bgfx::setUniform(mUniformHandle, data); }
+    void bind(const void* data) const
+    {
+        bgfx::setUniform(mUniformHandle, data);
+    }
 
     void swap(ShaderUniform& oth)
     {

@@ -42,7 +42,7 @@ bgfx::ProgramHandle ProgramManager::getProgram(VclProgram::Enum program)
         return it->second;
     }
     else [[unlikely]] {
-        bgfx::ProgramHandle p           = loadProgram(program);
+        bgfx::ProgramHandle p            = loadProgram(program);
         mPrograms[programNames[program]] = p;
         return p;
     }
@@ -62,7 +62,7 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
         throw std::runtime_error("A program named " + name + " already exists");
     }
     bgfx::ProgramHandle p = bgf::loadProgram(vs, fs);
-    mPrograms[name]        = p;
+    mPrograms[name]       = p;
     return p;
 }
 

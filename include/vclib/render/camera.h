@@ -96,10 +96,10 @@ public:
 
     void setFieldOfViewAdaptingEyeDistance(const Scalar& fov)
     {
-        mFovDeg              = fov;
+        mFovDeg               = fov;
         PointType targetToEye = (mEye - mCenter).normalized();
         mEye = mCenter + targetToEye * ((mVerticalHeight / 2.0) /
-                                          std::tan((fov / 2.0) / 180.0 * M_PI));
+                                        std::tan((fov / 2.0) / 180.0 * M_PI));
     }
 
     ProjectionMode::Enum& projectionMode() { return mProjectionMode; }
