@@ -155,10 +155,10 @@ void MinimalViewerWidget::onMouseRelease(MouseButton::Enum button)
 
 void MinimalViewerWidget::onMouseScroll(double dx, double dy)
 {
-    const int WHEEL_STEP = 120;
-    float     notchY     = dy / float(WHEEL_STEP);
+    // const int WHEEL_STEP = 120;
+    // float     notchY     = dy / float(WHEEL_STEP);
 
-    MV::wheelMouse(notchY > 0);
+    MV::scroll(dx, dy);
 
     bgfx::setViewTransform(
         viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());

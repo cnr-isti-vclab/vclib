@@ -62,7 +62,7 @@ private:
     /// @brief Height of the target in world space
     /// (used for ortho projection, and adapting the eye distance for
     /// perspective projection)
-    Scalar mVerticalHeight = 1.0;
+    Scalar mVerticalHeight = 2.0;
 
     /// @brief Aspect ratio
     Scalar mAspect = 1.0;

@@ -51,93 +51,190 @@ template<typename Scalar>
 class TrackBall
 {
 public:
-    enum MotionType { ARC, PAN, ROLL, ZOOM, DIR_LIGHT_ARC, MOTION_NUMBER };
-
-    enum ViewAxis { HORIZONTAL, VERTICAL, AXIAL };
+    enum MotionType {
+        ARC,
+        PAN,
+        ZMOVE,
+        ROLL,
+        SCALE,
+        FOV,
+        FOCUS,
+        DIR_LIGHT_ARC,
+        MOTION_NUMBER
+    };
 
     struct TransformArgs
     {
-        ViewAxis axis;
-        Scalar   scalar; // could be an angle or a distance
+        Point3<Scalar> axis;
+        Scalar         scalar; // could be an angle or a distance
 
-        TransformArgs(ViewAxis a, Scalar s) : axis(a), scalar(s) {}
+        TransformArgs(const Point3<Scalar>& a, Scalar s) : axis(a), scalar(s) {}
     };
 
-    using AtomicMotionArg = std::variant<bool, TransformArgs, std::monostate>;
+    using AtomicMotionArg =
+        std::variant<TransformArgs, Scalar, Point3<Scalar>, std::monostate>;
 
 private:
-    static constexpr Scalar RADIUS_RATIO = 1.75;
+    // arcball radius ratio wrt minimum screen dimension
+    // set as the inverse of the golden ratio
+    static constexpr Scalar ARC_BALL_RADIUS_RATIO = 1.0 / 1.61803398875;
 
-    enum Quadrant { UPPER_RIGHT, UPPER_LEFT, LOWER_LEFT, LOWER_RIGHT };
-
-    vcl::DirectionalLight<Scalar> mDirLight;
+    static constexpr Scalar FOCUS_SCALE_FACTOR = 1.15;
 
     Camera<Scalar> mCamera;
+
+    // Similarity holding the manipulator transformation.
+    // The convention is that the transformation is expressed as
+    // TRANSLATION * ROTATION * SCALE
+    // to avoid error accumulation we should split the transformation
+    // into the three components (Point3, Quaternion, Scalar)
+    Affine3<Scalar> mTransform = Affine3<Scalar>::Identity();
+
+    Quaternion<Scalar> mDirectionalLightTransform;
+
+    // screen size
+    Scalar mHeight = 1;
+    Scalar mWidth  = 1;
+
+    // trackball radius in camera space
+    // this value affects the interaction and the visualization of the trackball
+    Scalar mRadius = ARC_BALL_RADIUS_RATIO;
+
+    // trackball interaction state
+    bool       mDragging       = false;
+    MotionType mCurrDragMotion = MOTION_NUMBER;
+
+    Point3<Scalar>   mInitialPoint;       // initial arcaball hit point
+    Affine3<Scalar>  mInitialTransform;   // initial transformation
+    Quaternion<Scalar>
+        mInitialDirRotation; // initial directional light rotation
 
     Point2<Scalar> mCurrMousePosition;
     Point2<Scalar> mPrevMousePosition;
 
-    Scalar mHeight = 1; // heigth
-    Scalar mWidth  = 1; // width
+    // static constexpr Scalar RADIUS_RATIO = 1.75;
 
-    bool       mDragging       = false;
-    MotionType mCurrDragMotion = MOTION_NUMBER;
+    // enum Quadrant { UPPER_RIGHT, UPPER_LEFT, LOWER_LEFT, LOWER_RIGHT };
 
-    // arc motion state
-    Point3<Scalar>     mStartVector;
-    Point3<Scalar>     mStopVector;
-    Quaternion<Scalar> mArcRotationSum;
+    // vcl::DirectionalLight<Scalar> mDirLight;
 
-    Scalar mPanScale = 0.005;
+    // Point2<Scalar> mCurrMousePosition;
+    // Point2<Scalar> mPrevMousePosition;
 
-    Scalar mRollScale = 0.005;
+    // // arc motion state
+    // Point3<Scalar>     mStartVector;
+    // Point3<Scalar>     mStopVector;
+    // Quaternion<Scalar> mArcRotationSum;
 
-    Scalar mZoomScale = 0.05;
+    // Scalar mPanScale = 0.005;
 
-    Scalar mEyeCenterDist = mCamera.eye().dist(mCamera.center());
+    // Scalar mRollScale = 0.005;
 
-    inline static const Point3<Scalar> X = Point3<Scalar>(1, 0, 0);
-    inline static const Point3<Scalar> Y = Point3<Scalar>(0, 1, 0);
-    inline static const Point3<Scalar> Z = Point3<Scalar>(0, 0, 1);
+    // Scalar mZoomScale = 0.05;
+
+    // Scalar mEyeCenterDist = mCamera.eye().dist(mCamera.center());
+
+    // inline static const Point3<Scalar> X = Point3<Scalar>(1, 0, 0);
+    // inline static const Point3<Scalar> Y = Point3<Scalar>(0, 1, 0);
+    // inline static const Point3<Scalar> Z = Point3<Scalar>(0, 0, 1);
 
 public:
-    TrackBall() = default;
-
-    const Camera<Scalar>& camera() const { return mCamera; }
-
-    const DirectionalLight<Scalar>& light() const { return mDirLight; }
-
-    Matrix44<Scalar> viewMatrix() const { return mCamera.viewMatrix(); }
-
-    const Point3<Scalar>& center() const { return mCamera.center(); }
-
-    const Scalar radius() const { return mEyeCenterDist / RADIUS_RATIO; }
-
-    void reset(const Point3<Scalar>& center, Scalar radius = 1.0)
+    TrackBall()
     {
-        mCamera.reset();
-        mCamera.center()      = center;
-        mCamera.aspectRatio() = mWidth / mHeight;
-
-        mArcRotationSum = Quaternion<Scalar>();
-        mEyeCenterDist  = radius * RADIUS_RATIO;
-
-        mDragging = false;
-
-        mCurrDragMotion = MOTION_NUMBER;
-
-        mCurrMousePosition = Point2<Scalar>();
-        mPrevMousePosition = Point2<Scalar>();
-
-        mStartVector = Point3<Scalar>();
-        mStopVector  = Point3<Scalar>();
-
-        updateCameraEye();
+        mCamera.setFieldOfViewAdaptingEyeDistance(45.0);
     }
 
-    void resetDirectionalLight() { mDirLight.reset(); }
+    void reset()
+    {
+        *this = TrackBall();
+    }
 
-    // Settings member functions
+    /**
+     * @brief Reset the manipulator to a given center and scale.
+     * @param center
+     * @param scale
+     */
+    void reset(const Point3<Scalar>& center, Scalar scale)
+    {
+        reset();
+        mTransform.scale(scale);
+        mTransform.translate(-center.eigenVector().transpose().eval());
+    }
+
+    void resetDirectionalLight()
+    {
+        mDirectionalLightTransform = Quaternion<Scalar>();
+    }
+
+    Point3<Scalar> center() const
+    {
+        // obtain the point in world space that maps to zero when transformed
+        return mTransform.inverse().translation();
+    }
+
+    void setCenter(const Point3<Scalar> & center)
+    {
+        // transform the center (world space) using the current transformation
+        // then translate it to the origin
+        mTransform.pretranslate(
+            -(mTransform * center.eigenVector().transpose()).eval());
+    }
+
+    Scalar scale() const
+    {
+        // return the average of the norm of linear part vectors
+        return mTransform.linear().colwise().norm().mean();
+    }
+
+    void setScale(Scalar scale)
+    {
+        // scale the linear part of the transformation
+        // so the manipulator will be scaled around the origin
+        mTransform.prescale(scale);
+        //TODO scale also near/far?
+    }
+
+    void changeScale(Scalar factor) { mTransform.prescale(factor); }
+
+    void setRotation(const Quaternion<Scalar>& rotation)
+    {
+        Affine3<Scalar> tx = Affine3<Scalar>::Identity();
+        tx.rotate(rotation).scale(scale());
+        mTransform.linear() = tx.linear();
+    }
+
+    void setRotation(const Point3<Scalar>& axis, Scalar angle)
+    {
+        setRotation(Quaternion<Scalar>(angle, axis));
+    }
+
+    /**
+     * @brief Get the vertical field of view.
+     */
+    Scalar fovDeg() const
+    {
+        return mCamera.fieldOfView();
+    }
+
+    /**
+     * @brief Set the vertical field of view adapting the eye distance.
+     * @param[in] fov: the field of view in degrees.
+     */
+    void setFovDeg(Scalar fov)
+    {
+        mCamera.setFieldOfViewAdaptingEyeDistance(fov);
+    }
+
+    Camera<Scalar>::ProjectionMode::Enum projectionMode() const
+    {
+        return mCamera.projectionMode();
+    }
+
+    void setProjectionMode(Camera<Scalar>::ProjectionMode::Enum mode)
+    {
+        mCamera.projectionMode() = mode;
+        mCamera.setFieldOfViewAdaptingEyeDistance(mCamera.fieldOfView());
+    }
 
     void setScreenSize(Scalar width, Scalar height)
     {
@@ -145,41 +242,85 @@ public:
             mWidth                = width;
             mHeight               = height;
             mCamera.aspectRatio() = mWidth / mHeight;
+            mRadius = ARC_BALL_RADIUS_RATIO * mCamera.verticalHeight();
+            if (width < height)
+                mRadius *= mCamera.aspectRatio();
         }
     }
+
+    DirectionalLight<Scalar> light() const {
+        // TODO: return a light direction stored in this class,
+        // in order to store also the light color
+        return DirectionalLight<Scalar>(
+            mDirectionalLightTransform * Point3<Scalar>(0, 0, 1));
+    }
+
+    const vcl::Camera<Scalar>& camera() const { return mCamera; }
+
+    Matrix44<Scalar> viewMatrix() const
+    {
+        return mCamera.viewMatrix() * mTransform.matrix();
+    }
+
+    Matrix44<Scalar> projectionMatrix() const
+    {
+        return mCamera.projMatrix();
+    }
+
+    Matrix44<Scalar> gizmoMatrix() const
+    {
+        Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
+        rot_radius.rotate(mTransform.rotation()).scale(mRadius);
+        return mCamera.viewMatrix() * rot_radius.matrix();
+    }
+
+    Matrix44<Scalar> lightGizmoMatrix() const
+    {
+        Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
+        rot_radius.rotate(mDirectionalLightTransform).scale(mRadius);
+        return mCamera.viewMatrix() * rot_radius.matrix();
+    }
+
+    bool isDragging() const { return mDragging; }
+
+    MotionType currentMotion() const { return mCurrDragMotion; }
 
     // Atomic motions
 
     /**
      * @brief Applies an atomic motion to the trackball.
-     *
      * Atomic motions are motions that are applied atomically to the camera.
      * The step parameter is a std::variant that can store different values
      * depending on the motion type.
      *
      * Possible motion types and supported step values are:
      * - ROLL:
-     *   - bool (true if roll clockwise, false if roll counter-clockwise)
-     * - ZOOM:
-     *   - bool (true if zoom out, false if zoom in)
+     *   - Scalar (positive counter-clockwise roll, negative otherwise)
+     * - SCALE:
+     *   - Scalar (positive zoom in, negative zoom out)
      * - ARC:
      *   - TransformArgs (axis, angle) rotation along axis by angle
      * - PAN:
-     *   - TransformArgs (axis, distance) translation along axis by distance
-     *
-     * @param motion
+     *   - Point3 translation in trackball camera space
+     * - ZMOVE:
+     *   - Scalar z translation in trackball camera space
+     * - FOCUS:
+     *   - Point3 set center in world space
+     *@param motion
      * @param step
      */
     void applyAtomicMotion(
         MotionType      motion,
         AtomicMotionArg step = std::monostate())
     {
-        if (std::holds_alternative<bool>(step)) {
-            Scalar inc = std::get<bool>(step) ? 1 : -1;
+        if (std::holds_alternative<Scalar>(step)) {
+            Scalar inc = std::get<Scalar>(step);
 
             switch (motion) {
-            case ROLL: performRoll(inc); break;
-            case ZOOM: performZoom(inc); break;
+            case ROLL: roll(inc); break;
+            case SCALE: performScale(inc); break;
+            case FOV: performFov(inc); break;
+            case ZMOVE: performZmove(inc); break;
             default: break;
             }
         }
@@ -187,55 +328,37 @@ public:
             const TransformArgs& args = std::get<TransformArgs>(step);
             switch (motion) {
             case ARC: rotate(args.axis, args.scalar); break;
-            case PAN: translate(args.axis, args.scalar); break;
             case DIR_LIGHT_ARC: rotateDirLight(args.axis, args.scalar); break;
+            default: break;
+            }
+        }
+        else if (std::holds_alternative<Point3<Scalar>>(step)) {
+            Point3<Scalar> val = std::get<Point3<Scalar>>(step);
+            switch (motion) {
+            case PAN: translate(val); break;
+            case FOCUS:
+                setCenter(val);
+                changeScale(FOCUS_SCALE_FACTOR);
             default: break;
             }
         }
     }
 
-    void applyZoom(bool up) { applyAtomicMotion(ZOOM, up); }
+    void applyScale(Scalar value) { applyAtomicMotion(SCALE, value); }
 
-    void applyRoll(bool clockwise) { applyAtomicMotion(ROLL, clockwise); }
+    void applyRoll(Scalar angleRad) { applyAtomicMotion(ROLL, angleRad); }
 
-    void applyPan(ViewAxis axis, Scalar distance)
+    void applyPan(const Point3<Scalar>& translation)
     {
-        applyAtomicMotion(PAN, TransformArgs(axis, distance));
+        applyAtomicMotion(PAN, translation);
     }
 
-    void applyArc(ViewAxis axis, Scalar angle)
+    void applyArc(const Point3<Scalar>& axis, Scalar angle)
     {
         applyAtomicMotion(ARC, TransformArgs(axis, angle));
     }
 
     // Drag motions
-
-    void beginDragMotion(MotionType motion)
-    {
-        setDragMotionValue(motion, true);
-    }
-
-    void endDragMotion(MotionType motion) { setDragMotionValue(motion, false); }
-
-    void beginArc() { setDragMotionValue(ARC, true); }
-
-    void endArc() { setDragMotionValue(ARC, false); }
-
-    void beginPan() { setDragMotionValue(PAN, true); }
-
-    void endPan() { setDragMotionValue(PAN, false); }
-
-    void beginRoll() { setDragMotionValue(ROLL, true); }
-
-    void endRoll() { setDragMotionValue(ROLL, false); }
-
-    void beginZoom() { setDragMotionValue(ZOOM, true); }
-
-    void endZoom() { setDragMotionValue(ZOOM, false); }
-
-    void beginDirectionalLightArc() { setDragMotionValue(DIR_LIGHT_ARC, true); }
-
-    void endDirectionalLightArc() { setDragMotionValue(DIR_LIGHT_ARC, false); }
 
     void setMousePosition(Scalar x, Scalar y)
     {
@@ -250,52 +373,68 @@ public:
     }
 
     /**
+     * @brief Starts a drag motion.
+     * @param[in] motion: the motion type
+     * @note this function should be called when the drag motion begins
+     * (e.g., the mouse is pressed) or the motion type changes.
+     */
+    void beginDragMotion(MotionType motion)
+    {
+        assert(motion != MOTION_NUMBER && "Invalid motion type");
+
+               // no need to restart?
+        if (mCurrDragMotion == motion)
+            return;
+
+               // end previous motion
+        if (mCurrDragMotion != motion)
+            endDragMotion(mCurrDragMotion);
+
+        setDragMotionValue(motion, true);
+        mInitialPoint = pointOnArcball(mCurrMousePosition);
+        mInitialTransform = mTransform;
+        mInitialDirRotation = mDirectionalLightTransform;
+        mDragging = true;
+    }
+
+    /**
+     * @brief Ends a drag motion
+     * @param[in] motion: the motion type
+     * @note this function should be called when the drag motion ends
+     * (e.g., the mouse is released)
+     */
+    void endDragMotion(MotionType motion)
+    {
+        setDragMotionValue(motion, false);
+        mDragging = false;
+    }
+
+    /**
      * @brief Updates the state of the trackball during a drag motion.
-     *
-     * @note: this member function must be called only when a drag motion:
-     * - begins (e.g. when the mouse is pressed)
-     * - is in progress (e.g. when the mouse is mDragging);
-     * - ends (e.g. when the mouse is released).
+     * @note: this member function must be called only when a drag motion
+     * is in progress (e.g., when the mouse is dragging);
      */
     void update()
     {
-        if (mCurrMousePosition != mPrevMousePosition) {
-            bool clicking = mCurrDragMotion != MOTION_NUMBER;
-
-            // first update when a drag begins
-            if (!mDragging && clicking) {
-                resetState();
-                mStartVector = pointOnSphere(mCurrMousePosition);
-                mDragging    = true;
-            }
-            // update when a motion is in progress
-            else if (mDragging && clicking) {
-                drag(mCurrDragMotion);
-            }
-            // update when a motion ends
-            else if (mDragging && !clicking) {
-                mDragging = false;
-                resetState();
-            }
-        }
+        assert(
+            mDragging != (mCurrDragMotion == MOTION_NUMBER) &&
+            "Invalid state: dragging and no motion");
+        if (mDragging && mCurrMousePosition != mPrevMousePosition)
+            drag(mCurrDragMotion);
     }
+
+    //     const Camera<Scalar>& camera() const { return mCamera; }
+
+    //     Matrix44<Scalar> viewMatrix() const { return mCamera.viewMatrix(); }
+
+    //     const Point3<Scalar>& center() const { return mCamera.center(); }
+
+    //     const Scalar radius() const { return mEyeCenterDist / RADIUS_RATIO; }
+
+    //     void resetDirectionalLight() { mDirLight.reset(); }
 
 private:
     /**-------------- Generic Functions  --------------**/
-
-    void updateCameraEye()
-    {
-        Point3<Scalar> orientation = mArcRotationSum * Z;
-        mCamera.eye() = orientation * mEyeCenterDist + mCamera.center();
-    }
-
-    void updateCameraUp() { mCamera.up() = (mArcRotationSum * Y).normalized(); }
-
-    void resetState()
-    {
-        mArcRotationSum = Quaternion<Scalar>(mCamera.viewMatrix()).inverse();
-        mEyeCenterDist  = mCamera.eye().dist(mCamera.center());
-    }
 
     void setDragMotionValue(MotionType motion, bool value)
     {
@@ -307,220 +446,387 @@ private:
         switch (motion) {
         case ARC: dragArc(); break;
         case PAN: dragPan(); break;
+        case ZMOVE: dragZmove(); break;
         case ROLL: dragRoll(); break;
-        case ZOOM: dragZoom(); break;
+        case SCALE: dragScale(); break;
         case DIR_LIGHT_ARC: dragDirLightArc(); break;
         default: break;
         }
-
-        mPrevMousePosition = mCurrMousePosition;
     }
+
+    Scalar trackballToPixelRatio() const
+    {
+        return mCamera.verticalHeight() / mWidth;
+    }
+
+    Point3<Scalar> pointOnTrackballPlane(Point2<Scalar> screenCoord) const
+    {
+        Point2<Scalar> screenSize(mWidth, mHeight);
+        // convert to camera space
+        // range [-1, 1] for Y and [-aspectRatio, aspectRatio] for X
+        screenCoord =
+            (screenCoord - screenSize / 2.0) * trackballToPixelRatio();
+        return Point3<Scalar>(screenCoord.x(), screenCoord.y(), 0.0);
+    }
+
+    Point3<Scalar> pointOnArcball(Point2<Scalar> screenCoord) const
+    {
+        Point2<Scalar> screenSize(mWidth, mHeight);
+
+        // convert to range [-1, 1] for Y and [-aspectRatio, aspectRatio] for X
+        screenCoord =
+            (screenCoord - screenSize / 2.0) * trackballToPixelRatio();
+
+        // Solve the equations in 2D on the plane passing through the eye,
+        // the trackball center, and the intersection line.
+        // The X coordinate corresponds to the Z axis, while the Y coordinate
+        // is on the XY trackball plane.
+
+        const double   h = screenCoord.norm();
+        Point2<Scalar> hitPoint;
+
+        if (mCamera.projectionMode() == Camera<Scalar>::ProjectionMode::ORTHO) {
+            // in ortho projection we can project the Y coordinate directly
+            if (h < (M_SQRT1_2 * mRadius)) {
+                // hit sphere
+                // Y^2 + X^2 = r^2
+                // X = sqrt(r^2 - Y^2)
+                hitPoint =
+                    Point2<Scalar>(std::sqrt(mRadius * mRadius - h * h), h);
+            }
+            else {
+                // hit hyperbola
+                // X*Y = (r^2 / 2)
+                // X = r^2 / (2 * Y)
+                hitPoint = Point2<Scalar>(mRadius * mRadius / (2 * h), h);
+            }
+        }
+        else {
+            assert(
+                mCamera.projectionMode() ==
+                    Camera<Scalar>::ProjectionMode::PERSPECTIVE &&
+                "invalid camera projection value is supported");
+            // PERSPECTIVE PROJECTION
+            //
+            //      |            ^
+            //      |     h     /
+            //--target------------> Y axis
+            //      |         /
+            //      |        /
+            //      |       /
+            //      |      /
+            //      |     / intersecting line
+            //    d |    /
+            //      |   /
+            //      |  /
+            //      | /
+            //      |/
+            //     eye
+            //     /|
+            //    / |
+            //   /  |
+            //     \./ X axis
+
+            // Equation constants:
+            //     d = distance from the eye to the target
+            //     h = distance(target, line plane inter
+            const double d = (mCamera.eye() - mCamera.center()).norm();
+
+            const double m = -h / d;
+
+            bool           sphereHit = false;
+            Point2<Scalar> spherePoint;
+            {
+                // hit point on the sphere
+                //
+                // line equation:
+                // Y = -(h/d) * X + h
+                //
+                // circle equation:
+                // X^2 + Y^2 = r^2
+                //
+                // substitute Y in the circle equation:
+                // X^2 + (-h/d * X + h)^2 = r^2
+                // X^2 + h^2/d^2 * X^2 - 2 * h^2/d * X + h^2 = r^2
+                // (1 + h^2/d^2) * X^2 - 2 * h^2/d * X + h^2 - r^2 = 0
+
+                // a = 1 + h^2/d^2
+                // b = -2 * h^2/d
+                // c = h^2 - r^2
+                Scalar a = 1 + m * m;
+                Scalar b = -2 * h * h / d;
+                Scalar c = h * h - mRadius * mRadius;
+
+                // X = (-b +- sqrt(b^2 - 4ac)) / 2a
+                // Y = -(h/d) * X + h
+                // we take the positive solution (hit point closest to the eye)
+
+                Scalar delta = b * b - 4 * a * c;
+                sphereHit    = delta >= 0;
+                if (sphereHit) {
+                    spherePoint.x() = (-b + std::sqrt(delta)) / (2 * a);
+                    spherePoint.y() = m * spherePoint.x() + h;
+                }
+            }
+
+            bool           hyperHit = false;
+            Point2<Scalar> hyperPoint;
+            {
+                // hit point on the hyperbola
+                //
+                // line equation:
+                // Y = -(h/d) * X + h
+                //
+                // hyperbola equation:
+                // Y = 1/X * (r^2 / 2)
+
+                // substitute Y in the hyperbola equation:
+                // -(h/d) * X + h = 1/X * (r^2 / 2)
+                // -(h/d) * X^2 + h * X = r^2 / 2
+                // -h * X^2 + d * h * X = d * r^2 / 2
+                // -2 * h * X^2 + 2 * d * h * X = d * r^2
+                // -2 * h * X^2 + 2 * d * h * X - d * r^2 = 0
+
+                // a = -2 * h
+                // b = 2 * d * h
+                // c = - d * r^2
+
+                Scalar a = -2 * h;
+                Scalar b = 2 * d * h;
+                Scalar c = -d * mRadius * mRadius;
+
+                // X = (-b +- sqrt(b^2 - 4ac)) / 2a
+                // Y = -(h/d) * X + h
+                // we take the solution with smallest x
+                // (hit point farthest from the eye)
+
+                Scalar delta = b * b - 4 * a * c;
+                hyperHit     = delta >= 0;
+                if (hyperHit) {
+                    hyperPoint.x() = (-b + std::sqrt(delta)) / (2 * a);
+                    hyperPoint.y() = m * hyperPoint.x() + h;
+                }
+            }
+
+            // discriminate between sphere and hyperbola hit points
+            const int hitCase = sphereHit + 2 * hyperHit;
+            switch (hitCase) {
+            case 0: // no hit
+            {
+                // get closeset point of the line to the origin
+                // rotate the line vector by 90 degrees counter-clockwise
+                Point2<Scalar> lineVector = Point2<Scalar>(d, -h).normalized();
+                Point2<Scalar> lineNormal =
+                    Point2<Scalar>(-lineVector.y(), lineVector.x());
+                // project the eye on the vector
+                hitPoint = lineNormal * lineNormal.dot(Point2<Scalar>(d, 0));
+            } break;
+            case 1: // sphere hit
+                hitPoint = spherePoint;
+                break;
+            case 2: // hyperbola hit
+                hitPoint = hyperPoint;
+                break;
+            case 3: // both hit
+            {
+                // check angle of sphere point
+                Scalar angle = std::atan2(spherePoint.y(), spherePoint.x());
+                // if angle is more than 45 degrees, take the hyperbola point
+                if (angle > M_PI / 4) {
+                    hitPoint = hyperPoint;
+                }
+                else {
+                    hitPoint = spherePoint;
+                }
+            } break;
+            default: assert(false && "Invalid hit case");
+            }
+        }
+
+        // convert hit point to 3D
+        // rescale in trackball space
+        // TODO Avoid cancellation issue with different solution
+        assert(hitPoint.x() == hitPoint.x());
+        double factor =
+            (h > 0.0 && hitPoint.y() > 0.0) ? hitPoint.y() / h : 0.0;
+        return Point3<Scalar>(
+            screenCoord.x() * factor, screenCoord.y() * factor, hitPoint.x());
+    }
+
+    /**--------- Base functions ---------**/
+    // (general purpose and used for atomic operations)
+
+    void rotate(const Quaternion<Scalar> & q)
+    {
+        mTransform.prerotate(q.eigenQuaternion());
+    }
+
+    void rotate(Point3<Scalar> axis, Scalar angleRad = M_PI / 6)
+    {
+        mTransform.prerotate(
+            Quaternion<Scalar>(angleRad, axis).eigenQuaternion());
+    }
+
+    /**
+     * @brief Translate in the camera space
+     * @note from the trackball center
+     * Y range is [-1, 1] and X is [-aspectRatio, aspectRatio]
+     */
+    void translate(Point3<Scalar> t)
+    {
+        mTransform.pretranslate(t.eigenVector().transpose().eval());
+    }
+
+    void rotateDirLight(const Quaternion<Scalar> & rotation)
+    {
+        mDirectionalLightTransform = rotation * mDirectionalLightTransform;
+    }
+
+    void rotateDirLight(Point3<Scalar> axis, Scalar angle)
+    {
+        rotateDirLight(Quaternion<Scalar>(angle, axis));
+    }
+
+    /**--- User interaction functions ---**/
 
     /**-------------- Arc --------------**/
 
-    void performArc(const Quaternion<Scalar>& rotation)
-    {
-        mArcRotationSum *= rotation;
-        updateCameraEye();
-        updateCameraUp();
-    }
-
-    // atomic
-
-    void rotate(ViewAxis rot, Scalar angle = M_PI / 6)
-    {
-        switch (rot) {
-        case HORIZONTAL: performArc(Quaternion<Scalar>(-angle, Y)); break;
-        case VERTICAL: performArc(Quaternion<Scalar>(angle, X)); break;
-        case AXIAL: performArc(Quaternion<Scalar>(angle, Z)); break;
-        }
-    }
-
-    // drag
-
-    vcl::Point3<Scalar> pointOnSphere(const vcl::Point2<Scalar>& point) const
-    {
-        vcl::Point3<Scalar> result;
-
-        Scalar x = (2.f * point.x() - mWidth) / mWidth;
-        Scalar y = (2.f * point.y() - mHeight) / mHeight;
-
-        Scalar length2 = x * x + y * y;
-
-        if (length2 <= .5) {
-            result.z() = std::sqrt(1.0 - length2);
-        }
-        else {
-            result.z() = 0.5 / std::sqrt(length2);
-        }
-
-        Scalar norm = 1.0 / std::sqrt(length2 + result.z() * result.z());
-
-        result.x() = x * norm;
-        result.y() = y * norm;
-        result.z() *= norm;
-
-        return result;
-    }
-
     void dragArc()
     {
-        mStopVector = pointOnSphere(mCurrMousePosition);
-        Quaternion<Scalar> rotation(mStartVector, mStopVector);
-        performArc(rotation.conjugate());
-        mStartVector = mStopVector;
+        const Point3<Scalar> point = pointOnArcball(mCurrMousePosition);
+        Eigen::AngleAxis<Scalar> ax(Eigen::Quaternion<Scalar>::FromTwoVectors(
+            mInitialPoint.eigenVector(), point.eigenVector()));
+        // use angle proportional to the arc length
+        const Scalar phi = (point - mInitialPoint).norm() / mRadius;
+        ax.angle() = phi;
+
+        mTransform = mInitialTransform;
+        mTransform.prerotate(ax);
     }
 
     /**-------------- Roll --------------**/
 
-    void performRoll(Scalar delta)
+    void roll(Scalar delta)
     {
-        Point3<Scalar> axis  = (mCamera.center() - mCamera.eye()).normalized();
-        Scalar         angle = mRollScale * delta;
-
-        Quaternion<Scalar> rotation(angle, axis);
-
-        mCamera.up() = rotation * mCamera.up();
-    }
-
-    Quadrant quadrant(Scalar x, Scalar y) const
-    {
-        Scalar halfw = mWidth / 2.0;
-        Scalar halfh = mHeight / 2.0;
-
-        // image coordinates origin is upperleft.
-        if (x < halfw) {
-            if (y < halfh) {
-                return UPPER_LEFT;
-            }
-            else {
-                return LOWER_LEFT;
-            }
-        }
-        else {
-            if (y < halfh) {
-                return UPPER_RIGHT;
-            }
-            else {
-                return LOWER_RIGHT;
-            }
-        }
+        rotate(Point3<Scalar>(0, 0, 1), delta);
     }
 
     void dragRoll()
     {
-        auto     deltaP = mPrevMousePosition - mCurrMousePosition;
-        Quadrant quad =
-            quadrant(mCurrMousePosition.x(), mCurrMousePosition.y());
-        switch (quad) {
-        case UPPER_RIGHT: deltaP *= -1; break;
-        case UPPER_LEFT: deltaP.x() *= -1; break;
-        case LOWER_RIGHT: deltaP.y() *= -1; break;
-        default: break;
-        }
+        static constexpr Scalar ROLL_DIST_TO_CENTER_THRESHOLD = 0.025;
 
-        Scalar delta = deltaP.x() + deltaP.y();
+        const Point3<Scalar> prev = pointOnTrackballPlane(mPrevMousePosition);
+        const Point3<Scalar> curr = pointOnTrackballPlane(mCurrMousePosition);
+        if (prev.norm() < ROLL_DIST_TO_CENTER_THRESHOLD ||
+            curr.norm() < ROLL_DIST_TO_CENTER_THRESHOLD)
+            return;
 
-        performRoll(delta);
+        Scalar angle = std::atan2(curr.y(), curr.x()) -
+                       std::atan2(prev.y(), prev.x());
+
+        roll(angle);
     }
 
     /**-------------- Pan --------------**/
 
-    void performPan(const Point2<Scalar>& diff)
+    /**
+     * @brief perform a pan operation
+     * @param pixelDelta the pan movement in pixels
+     */
+    void performPan(const Point2<Scalar> & pixelDelta)
     {
-        Scalar         l = mCamera.eye().dist(mCamera.center());
-        Point3<Scalar> r = (mArcRotationSum * X).normalized();
-
-        Point3<Scalar> pan =
-            -(mCamera.up() * diff.y() + r * diff.x()) * l * mPanScale;
-        mCamera.center() += pan;
-        mCamera.eye() += pan;
-    }
-
-    // atomic
-
-    void translate(ViewAxis axis, Scalar dist)
-    {
-        switch (axis) {
-        case HORIZONTAL: {
-            Point2<Scalar> diff(dist, 0);
-            performPan(diff);
-        } break;
-        case VERTICAL: {
-            Point2<Scalar> diff(0, dist);
-            performPan(diff);
-        } break;
-        case AXIAL: performZoom(dist); break;
-        }
+        const Point2<Scalar> pan = pixelDelta * trackballToPixelRatio();
+        translate(Point3<Scalar>(pan.x(), pan.y(), 0.0));
     }
 
     // drag
-
     void dragPan()
     {
-        Point2<Scalar> diff = mCurrMousePosition - mPrevMousePosition;
-        performPan(diff);
+        Point2<Scalar> pixelDelta = mCurrMousePosition - mPrevMousePosition;
+        performPan(pixelDelta);
     }
 
-    /**-------------- Zoom --------------**/
-
-    void performZoom(Scalar inc)
+    /**-------------- Z-Move --------------**/
+    /**
+     * @brief translate in the camera z direction
+     * @param pixelDelta the delta movement in pixels
+     */
+    void performZmove(const Scalar & pixelDelta)
     {
-        mEyeCenterDist += (mZoomScale * radius()) * inc;
-        updateCameraEye();
-    }
-
-    void dragZoom()
-    {
-        Point2<Scalar> diff = mCurrMousePosition - mPrevMousePosition;
-
-        Scalar ax = std::abs(diff.x());
-        Scalar ay = std::abs(diff.y());
-
-        bool up = true;
-
-        if (ax > ay) {
-            up = diff.x() < 0;
-        }
-        else if (ay > ax) {
-            up = diff.y() < 0;
-        }
-
-        Scalar dist = mCurrMousePosition.dist(mPrevMousePosition);
-        Scalar inc  = up ? dist : -dist;
-
-        performZoom(inc);
-    }
-
-    /**-------------- Directional Light Arc --------------**/
-
-    void performDirLightArc(const Quaternion<Scalar>& rotation)
-    {
-        mDirLight.direction() = rotation.conjugate() * mDirLight.direction();
-        mDirLight.direction().normalize();
-    }
-
-    // atomic
-
-    void rotateDirLight(ViewAxis rot, Scalar angle = M_PI / 6)
-    {
-        switch (rot) {
-        case HORIZONTAL:
-            performDirLightArc(Quaternion<Scalar>(-angle, Y));
-            break;
-        case VERTICAL: performDirLightArc(Quaternion<Scalar>(angle, X)); break;
-        case AXIAL: performDirLightArc(Quaternion<Scalar>(angle, Z)); break;
-        }
+        const Scalar translation = pixelDelta * trackballToPixelRatio();
+        translate(Point3<Scalar>(0.0, 0.0, -translation));
     }
 
     // drag
+    void dragZmove()
+    {
+        auto pixelDelta = mCurrMousePosition.y() - mPrevMousePosition.y();
+        performZmove(pixelDelta);
+    }
 
+    /**-------------- Scaling --------------**/
+
+    // scrolling and scaling are setup with "magic" numbers
+    void performScale(Scalar pixelDelta)
+    {
+        pixelDelta /= 60;
+        const auto factor = std::pow(1.2f, -pixelDelta);
+        changeScale(factor);
+    }
+
+    void dragScale()
+    {
+        Scalar pixelDelta = mCurrMousePosition.y() - mPrevMousePosition.y();
+        performScale(pixelDelta);
+    }
+
+    /**----- Directional Light Arc -----**/
+
+    // drag
     void dragDirLightArc()
     {
-        mStopVector = pointOnSphere(mCurrMousePosition);
-        Quaternion<Scalar> rotation(mStartVector, mStopVector);
-        performDirLightArc(rotation.conjugate());
-        mStartVector = mStopVector;
+        const Point3<Scalar> point = pointOnArcball(mCurrMousePosition);
+        Eigen::AngleAxis<Scalar> ax(Eigen::Quaternion<Scalar>::FromTwoVectors(
+            mInitialPoint.eigenVector(), point.eigenVector()));
+        // use angle proportional to the arc length
+        const Scalar phi = (point - mInitialPoint).norm() / mRadius;
+
+        mDirectionalLightTransform = mInitialDirRotation;
+        rotateDirLight(Point3<Scalar>(ax.axis()), phi);
+    }
+
+    /**----- Fov -----**/
+
+    void performFov(Scalar pixelDelta)
+    {
+        static constexpr double MIN_FOV_DEG = 5.0;
+        static constexpr double MAX_FOV_DEG = 90.0;
+
+        pixelDelta /= 60.0;
+        double fov = fovDeg();
+
+        // ortho -> perspective
+        if (mCamera.projectionMode() == Camera<Scalar>::ProjectionMode::ORTHO) {
+            if (pixelDelta > 0) {
+                fov = MIN_FOV_DEG;
+                mCamera.projectionMode() =
+                    Camera<Scalar>::ProjectionMode::PERSPECTIVE;
+            }
+        }
+
+        // update fov
+        fov = std::clamp(fov + 1.2 * pixelDelta, MIN_FOV_DEG, MAX_FOV_DEG);
+
+        // perspective -> ortho
+        if (mCamera.projectionMode() ==
+                Camera<Scalar>::ProjectionMode::PERSPECTIVE &&
+            fov == MIN_FOV_DEG)
+        {
+            mCamera.projectionMode() = Camera<Scalar>::ProjectionMode::ORTHO;
+        }
+
+        // commit fov
+        setFovDeg(fov);
     }
 };
 
