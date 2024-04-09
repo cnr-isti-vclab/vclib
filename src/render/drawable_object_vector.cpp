@@ -75,13 +75,13 @@ uint DrawableObjectVector::pushBack(const DrawableObjectI* obj)
 
 DrawableObjectI& DrawableObjectVector::at(uint i)
 {
-    assert(i < drawVector.size());
+    assert(i < mDrawVector.size());
     return *mDrawVector.at(i);
 }
 
 const DrawableObjectI& DrawableObjectVector::at(uint i) const
 {
-    assert(i < drawVector.size());
+    assert(i < mDrawVector.size());
     return *mDrawVector.at(i);
 }
 

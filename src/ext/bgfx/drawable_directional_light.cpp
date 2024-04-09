@@ -65,8 +65,24 @@ DrawableDirectionalLight::DrawableDirectionalLight()
     vcl::setTransformMatrixTranslation(t, center);
     updateTransform(1, t);
 
-    updateVertexBuffer();
+    createVertexBuffer();
     setLinesColor(mColor);
+}
+
+DrawableDirectionalLight::DrawableDirectionalLight(
+    const DrawableDirectionalLight& other) :
+        DrawableObjectI(other),
+        mVisible(other.mVisible), mVertices(other.mVertices),
+        mColor(other.mColor), mUniform(other.mUniform), mProgram(other.mProgram)
+{
+    std::copy(other.mTransform, other.mTransform + 32, mTransform);
+    createVertexBuffer();
+}
+
+DrawableDirectionalLight::DrawableDirectionalLight(
+    DrawableDirectionalLight&& other)
+{
+    swap(other);
 }
 
 DrawableDirectionalLight::~DrawableDirectionalLight()
@@ -74,6 +90,24 @@ DrawableDirectionalLight::~DrawableDirectionalLight()
     if (bgfx::isValid(mVertexCoordBH)) {
         bgfx::destroy(mVertexCoordBH);
     }
+}
+
+DrawableDirectionalLight& DrawableDirectionalLight::operator=(
+    DrawableDirectionalLight other)
+{
+    swap(other);
+    return *this;
+}
+
+void DrawableDirectionalLight::swap(DrawableDirectionalLight& other)
+{
+    std::swap(mVisible, other.mVisible);
+    mVertices.swap(other.mVertices);
+    std::swap(mColor, other.mColor);
+    std::swap(mUniform, other.mUniform);
+    std::swap(mProgram, other.mProgram);
+    std::swap(mTransform, other.mTransform);
+    std::swap(mVertexCoordBH, other.mVertexCoordBH);
 }
 
 void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
@@ -128,12 +162,8 @@ DrawableObjectI* DrawableDirectionalLight::clone() const
     return new DrawableDirectionalLight(*this);
 }
 
-void DrawableDirectionalLight::updateVertexBuffer()
+void DrawableDirectionalLight::createVertexBuffer()
 {
-    if (bgfx::isValid(mVertexCoordBH)) {
-        bgfx::destroy(mVertexCoordBH);
-    }
-
     // vertex buffer (positions)
     bgfx::VertexLayout layout;
     layout.begin()

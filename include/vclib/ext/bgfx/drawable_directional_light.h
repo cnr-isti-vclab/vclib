@@ -52,10 +52,17 @@ class DrawableDirectionalLight : public DrawableObjectI
         VclProgram::DRAWABLE_DIRECTIONAL_LIGHT);
 
 public:
-    // TODO: manage copy and swap
     DrawableDirectionalLight();
 
+    DrawableDirectionalLight(const DrawableDirectionalLight& other);
+
+    DrawableDirectionalLight(DrawableDirectionalLight&& other);
+
     ~DrawableDirectionalLight();
+
+    DrawableDirectionalLight& operator=(DrawableDirectionalLight other);
+
+    void swap(DrawableDirectionalLight& other);
 
     void update(const DirectionalLight<float>& l);
 
@@ -78,7 +85,7 @@ public:
     void setVisibility(bool vis) { mVisible = vis; }
 
 private:
-    void updateVertexBuffer();
+    void createVertexBuffer();
 
     void updateTransform(uint i, const vcl::Matrix44f& matrix);
 };
