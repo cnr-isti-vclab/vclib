@@ -38,7 +38,7 @@ bool isDegenerate(Scalar t)
 }
 
 template<typename Scalar>
-bool epsilonCompare(
+bool epsilonEquals(
     Scalar p1,
     Scalar p2,
     Scalar epsilon = std::numeric_limits<Scalar>::epsilon())

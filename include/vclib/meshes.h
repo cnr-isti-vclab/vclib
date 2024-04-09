@@ -26,6 +26,7 @@
 #include "meshes/edge_mesh.h"
 #include "meshes/point_cloud.h"
 #include "meshes/poly_mesh.h"
+#include "meshes/tri_edge_mesh.h"
 #include "meshes/tri_mesh.h"
 
 /**

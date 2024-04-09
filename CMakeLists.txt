@@ -266,6 +266,7 @@ set(HEADERS
     include/vclib/meshes/edge_mesh.h
     include/vclib/meshes/point_cloud.h
     include/vclib/meshes/poly_mesh.h
+    include/vclib/meshes/tri_edge_mesh.h
     include/vclib/meshes/tri_mesh.h
     include/vclib/meshes/detail/tmp_meshes.h
     include/vclib/misc/compactness.h

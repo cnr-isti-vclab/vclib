@@ -245,7 +245,8 @@ public:
     }
 
     /**
-     * @brief Compares two Point objects within a given epsilon tolerance.
+     * @brief Checks for the equality of two Point objects within a given
+     * epsilon tolerance.
      *
      * The function compares two Point objects component-wise within a given
      * epsilon tolerance. If the difference between the corresponding components
@@ -259,11 +260,13 @@ public:
      * @return true if the two Point objects are considered equal within the
      * epsilon tolerance, false otherwise.
      */
-    bool epsilonCompare(const Point& p1, Scalar epsilon)
+    bool epsilonEquals(
+        const Point& p1,
+        Scalar       epsilon = std::numeric_limits<Scalar>::epsilon()) const
     {
         bool b = true;
         for (size_t i = 0; i < DIM; ++i)
-            b = b && vcl::epsilonCompare(mP(i), p1(i), epsilon);
+            b = b && vcl::epsilonEquals(mP(i), p1(i), epsilon);
         return b;
     }
 
@@ -496,7 +499,7 @@ public:
      */
     Point<Scalar, N> normalized() const
     {
-        if (norm() == 0)
+        if (norm() == 0) [[unlikely]]
             throw std::runtime_error(
                 "Math error: Attempted to divide by Zero\n");
 
@@ -516,7 +519,7 @@ public:
      */
     void normalize()
     {
-        if (norm() == 0)
+        if (norm() == 0) [[unlikely]]
             throw std::runtime_error(
                 "Math error: Attempted to divide by Zero\n");
 
@@ -845,7 +848,7 @@ public:
 
         Scalar w =
             mP(0) * m(3, 0) + mP(1) * m(3, 1) + mP(2) * m(3, 2) + m(3, 3);
-        if (w != 0)
+        if (w != 0) [[likely]]
             s = s / w;
         return Point(s);
     }
@@ -864,7 +867,7 @@ public:
      */
     Point operator/(const Scalar& s) const
     {
-        if (s == 0)
+        if (s == 0) [[unlikely]]
             throw std::runtime_error(
                 "Math error: Attempted to divide by Zero\n");
         return Point<Scalar, N>(mP / s);
@@ -1002,7 +1005,7 @@ public:
      */
     Point& operator/=(const Scalar& s)
     {
-        if (s == 0)
+        if (s == 0) [[unlikely]]
             throw std::runtime_error(
                 "Math error: Attempted to divide by Zero\n");
         mP /= s;
@@ -1045,6 +1048,28 @@ std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
 {
     out << p1.mP;
     return out;
+}
+
+/**
+ * @brief Compares two points for equality.
+ *
+ * This function is a specialization of the epsilonEquals function template for
+ * two points. It compares two points for equality by comparing each coordinate
+ * of the points for equality within a specified epsilon value.
+ *
+ * @param[in] p1: The first point to compare.
+ * @param[in] p2: The second point to compare.
+ * @param[in] epsilon: The epsilon value for equality comparison.
+ * @return True if the points are equal within the epsilon value, false
+ * otherwise.
+ */
+template<typename Scalar, uint N>
+bool epsilonEquals(
+    const Point<Scalar, N>& p1,
+    const Point<Scalar, N>& p2,
+    const Scalar&           epsilon = std::numeric_limits<Scalar>::epsilon())
+{
+    return p1.epsilonEquals(p2, epsilon);
 }
 
 /* Specialization Aliases */
