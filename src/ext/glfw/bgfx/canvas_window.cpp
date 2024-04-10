@@ -78,14 +78,14 @@ CanvasWindow::CanvasWindow(
 
 #if defined(__linux__)
 #ifdef VCLIB_RENDER_WITH_WAYLAND
-    nwh = (void*) (uintptr_t) glfwGetWaylandWindow(window);
+    nwh = (void*) (uintptr_t) glfwGetWaylandWindow(mWindow);
 #else
     nwh = (void*) (uintptr_t) glfwGetX11Window(mWindow);
 #endif
 #elif defined(_WIN32)
-    nwh = glfwGetWin32Window(window);
+    nwh = glfwGetWin32Window(mWindow);
 #elif defined(__APPLE__)
-    nwh = glfwGetCocoaWindow(window);
+    nwh = glfwGetCocoaWindow(mWindow);
 #endif
     Canvas::init(nwh, width, height);
 
