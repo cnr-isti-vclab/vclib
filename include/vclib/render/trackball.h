@@ -104,8 +104,8 @@ private:
     bool       mDragging       = false;
     MotionType mCurrDragMotion = MOTION_NUMBER;
 
-    Point3<Scalar>   mInitialPoint;       // initial arcaball hit point
-    Affine3<Scalar>  mInitialTransform;   // initial transformation
+    Point3<Scalar>  mInitialPoint;     // initial arcaball hit point
+    Affine3<Scalar> mInitialTransform; // initial transformation
     Quaternion<Scalar>
         mInitialDirRotation; // initial directional light rotation
 
@@ -139,15 +139,9 @@ private:
     // inline static const Point3<Scalar> Z = Point3<Scalar>(0, 0, 1);
 
 public:
-    TrackBall()
-    {
-        mCamera.setFieldOfViewAdaptingEyeDistance(45.0);
-    }
+    TrackBall() { mCamera.setFieldOfViewAdaptingEyeDistance(45.0); }
 
-    void reset()
-    {
-        *this = TrackBall();
-    }
+    void reset() { *this = TrackBall(); }
 
     /**
      * @brief Reset the manipulator to a given center and scale.
@@ -172,7 +166,7 @@ public:
         return mTransform.inverse().translation();
     }
 
-    void setCenter(const Point3<Scalar> & center)
+    void setCenter(const Point3<Scalar>& center)
     {
         // transform the center (world space) using the current transformation
         // then translate it to the origin
@@ -191,7 +185,7 @@ public:
         // scale the linear part of the transformation
         // so the manipulator will be scaled around the origin
         mTransform.prescale(scale);
-        //TODO scale also near/far?
+        // TODO scale also near/far?
     }
 
     void changeScale(Scalar factor) { mTransform.prescale(factor); }
@@ -211,10 +205,7 @@ public:
     /**
      * @brief Get the vertical field of view.
      */
-    Scalar fovDeg() const
-    {
-        return mCamera.fieldOfView();
-    }
+    Scalar fovDeg() const { return mCamera.fieldOfView(); }
 
     /**
      * @brief Set the vertical field of view adapting the eye distance.
@@ -248,7 +239,8 @@ public:
         }
     }
 
-    DirectionalLight<Scalar> light() const {
+    DirectionalLight<Scalar> light() const
+    {
         // TODO: return a light direction stored in this class,
         // in order to store also the light color
         return DirectionalLight<Scalar>(
@@ -262,10 +254,7 @@ public:
         return mCamera.viewMatrix() * mTransform.matrix();
     }
 
-    Matrix44<Scalar> projectionMatrix() const
-    {
-        return mCamera.projMatrix();
-    }
+    Matrix44<Scalar> projectionMatrix() const { return mCamera.projMatrix(); }
 
     Matrix44<Scalar> gizmoMatrix() const
     {
@@ -336,9 +325,7 @@ public:
             Point3<Scalar> val = std::get<Point3<Scalar>>(step);
             switch (motion) {
             case PAN: translate(val); break;
-            case FOCUS:
-                setCenter(val);
-                changeScale(FOCUS_SCALE_FACTOR);
+            case FOCUS: setCenter(val); changeScale(FOCUS_SCALE_FACTOR);
             default: break;
             }
         }
@@ -382,19 +369,19 @@ public:
     {
         assert(motion != MOTION_NUMBER && "Invalid motion type");
 
-               // no need to restart?
+        // no need to restart?
         if (mCurrDragMotion == motion)
             return;
 
-               // end previous motion
+        // end previous motion
         if (mCurrDragMotion != motion)
             endDragMotion(mCurrDragMotion);
 
         setDragMotionValue(motion, true);
-        mInitialPoint = pointOnArcball(mCurrMousePosition);
-        mInitialTransform = mTransform;
+        mInitialPoint       = pointOnArcball(mCurrMousePosition);
+        mInitialTransform   = mTransform;
         mInitialDirRotation = mDirectionalLightTransform;
-        mDragging = true;
+        mDragging           = true;
     }
 
     /**
@@ -656,7 +643,7 @@ private:
     /**--------- Base functions ---------**/
     // (general purpose and used for atomic operations)
 
-    void rotate(const Quaternion<Scalar> & q)
+    void rotate(const Quaternion<Scalar>& q)
     {
         mTransform.prerotate(q.eigenQuaternion());
     }
@@ -677,7 +664,7 @@ private:
         mTransform.pretranslate(t.eigenVector().transpose().eval());
     }
 
-    void rotateDirLight(const Quaternion<Scalar> & rotation)
+    void rotateDirLight(const Quaternion<Scalar>& rotation)
     {
         mDirectionalLightTransform = rotation * mDirectionalLightTransform;
     }
@@ -693,12 +680,12 @@ private:
 
     void dragArc()
     {
-        const Point3<Scalar> point = pointOnArcball(mCurrMousePosition);
+        const Point3<Scalar>     point = pointOnArcball(mCurrMousePosition);
         Eigen::AngleAxis<Scalar> ax(Eigen::Quaternion<Scalar>::FromTwoVectors(
             mInitialPoint.eigenVector(), point.eigenVector()));
         // use angle proportional to the arc length
         const Scalar phi = (point - mInitialPoint).norm() / mRadius;
-        ax.angle() = phi;
+        ax.angle()       = phi;
 
         mTransform = mInitialTransform;
         mTransform.prerotate(ax);
@@ -706,10 +693,7 @@ private:
 
     /**-------------- Roll --------------**/
 
-    void roll(Scalar delta)
-    {
-        rotate(Point3<Scalar>(0, 0, 1), delta);
-    }
+    void roll(Scalar delta) { rotate(Point3<Scalar>(0, 0, 1), delta); }
 
     void dragRoll()
     {
@@ -721,8 +705,8 @@ private:
             curr.norm() < ROLL_DIST_TO_CENTER_THRESHOLD)
             return;
 
-        Scalar angle = std::atan2(curr.y(), curr.x()) -
-                       std::atan2(prev.y(), prev.x());
+        Scalar angle =
+            std::atan2(curr.y(), curr.x()) - std::atan2(prev.y(), prev.x());
 
         roll(angle);
     }
@@ -733,7 +717,7 @@ private:
      * @brief perform a pan operation
      * @param pixelDelta the pan movement in pixels
      */
-    void performPan(const Point2<Scalar> & pixelDelta)
+    void performPan(const Point2<Scalar>& pixelDelta)
     {
         const Point2<Scalar> pan = pixelDelta * trackballToPixelRatio();
         translate(Point3<Scalar>(pan.x(), pan.y(), 0.0));
@@ -751,7 +735,7 @@ private:
      * @brief translate in the camera z direction
      * @param pixelDelta the delta movement in pixels
      */
-    void performZmove(const Scalar & pixelDelta)
+    void performZmove(const Scalar& pixelDelta)
     {
         const Scalar translation = pixelDelta * trackballToPixelRatio();
         translate(Point3<Scalar>(0.0, 0.0, -translation));
@@ -785,7 +769,7 @@ private:
     // drag
     void dragDirLightArc()
     {
-        const Point3<Scalar> point = pointOnArcball(mCurrMousePosition);
+        const Point3<Scalar>     point = pointOnArcball(mCurrMousePosition);
         Eigen::AngleAxis<Scalar> ax(Eigen::Quaternion<Scalar>::FromTwoVectors(
             mInitialPoint.eigenVector(), point.eigenVector()));
         // use angle proportional to the arc length

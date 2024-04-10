@@ -79,7 +79,7 @@ private:
     using Axis = unsigned char;
     std::map<std::pair<KeyModifiers, Axis>, MotionType> mScrollAtomicMap = {
         {{{KeyModifier::NO_MODIFIER}, 1}, TrackBallType::SCALE},
-        {{{KeyModifier::CONTROL}, 1},     TrackBallType::ROLL},
+        {{{KeyModifier::CONTROL}, 1},     TrackBallType::ROLL },
     };
 
     std::map<
@@ -131,7 +131,7 @@ private:
                  translate(t, UNIT_X * DISCRETE_TRANSLATION_STEP);
              }},
 
-  // set view
+ // set view
             {{Key::NP_1, {KeyModifier::NO_MODIFIER}},
              [](TrackBallType& t) { // front
                  t.reset();
@@ -161,17 +161,18 @@ private:
                  t.reset();
                  rotate(t, UNIT_Y, M_PI_2);
              }},
-  // projection mode
+ // projection mode
             {{Key::NP_5, {KeyModifier::NO_MODIFIER}},
              [](TrackBallType& t) { // reset
                  const auto v =
-                     t.projectionMode() == Camera<Scalar>::ProjectionMode::PERSPECTIVE
-                         ? Camera<Scalar>::ProjectionMode::ORTHO
-                         : Camera<Scalar>::ProjectionMode::PERSPECTIVE;
+                     t.projectionMode() ==
+                             Camera<Scalar>::ProjectionMode::PERSPECTIVE ?
+                         Camera<Scalar>::ProjectionMode::ORTHO :
+                         Camera<Scalar>::ProjectionMode::PERSPECTIVE;
                  t.setProjectionMode(v);
              }},
 
-  // rotate light
+ // rotate light
             {{Key::NP_2, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
              [](TrackBallType& t) {
                  rotateLight(t, UNIT_X, DISCRETE_ROTATION_STEP);
@@ -200,10 +201,7 @@ public:
 
     const Camera<Scalar>& camera() const { return mTrackball.camera(); }
 
-    Matrix44<Scalar> viewMatrix() const
-    {
-        return mTrackball.viewMatrix();
-    }
+    Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
 
     Matrix44<Scalar> projectionMatrix() const
     {
@@ -306,9 +304,7 @@ private:
         t.applyAtomicMotion(TrackBallType::DIR_LIGHT_ARC, Args(axis, angle));
     }
 
-    static void translate(
-        TrackBallType&        t,
-        const Point3<Scalar>& translation)
+    static void translate(TrackBallType& t, const Point3<Scalar>& translation)
     {
         t.applyAtomicMotion(TrackBallType::PAN, translation);
     }
