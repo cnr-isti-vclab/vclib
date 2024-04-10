@@ -203,8 +203,8 @@ auto covarianceMatrixOfPointCloud(const std::vector<PointType>& pointVec)
 
     // compute covariance matrix
     for (const PointType& p : pointVec) {
-        auto e = (p - barycenter).eigenVector();
-        m += e.transpose() * e; // outer product
+        PointType e = p - barycenter;
+        m += e.outerProduct(e);
     }
     return m;
 }
