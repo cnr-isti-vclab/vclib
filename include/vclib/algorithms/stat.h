@@ -231,8 +231,8 @@ auto covarianceMatrixOfPointCloud(const MeshType& m)
     mm.setZero();
     // compute covariance matrix
     for (const VertexType& v : m.vertices()) {
-        auto e = (v.coord() - barycenter).eigenVector();
-        m += e.transpose() * e; // outer product
+        auto e = v.coord() - barycenter;
+        m += e.outerProduct(e);
     }
     return m;
 }
@@ -256,8 +256,8 @@ auto weightedCovarianceMatrixOfPointCloud(
     // compute covariance matrix
     typename PointType::ScalarType wsum = 0;
     for (uint i = 0; i < pointVec.size(); ++i) {
-        auto e = ((pointVec[i] - barycenter) * weights[i]).eigenVector();
-        m += e.transpose() * e; // outer product
+        PointType e = (pointVec[i] - barycenter) * weights[i];
+        m += e.outerProduct(e);
         wsum += weights[i];
     }
     return m / wsum;
