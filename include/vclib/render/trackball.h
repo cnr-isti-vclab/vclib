@@ -152,7 +152,7 @@ public:
     {
         reset();
         mTransform.scale(scale);
-        mTransform.translate(-center.eigenVector().transpose().eval());
+        mTransform.translate(-center.eigenVector().transpose());
     }
 
     void resetDirectionalLight()
@@ -171,7 +171,7 @@ public:
         // transform the center (world space) using the current transformation
         // then translate it to the origin
         mTransform.pretranslate(
-            -(mTransform * center.eigenVector().transpose()).eval());
+            -(mTransform * center.eigenVector().transpose()));
     }
 
     Scalar scale() const
@@ -661,7 +661,7 @@ private:
      */
     void translate(Point3<Scalar> t)
     {
-        mTransform.pretranslate(t.eigenVector().transpose().eval());
+        mTransform.pretranslate(t.eigenVector().transpose());
     }
 
     void rotateDirLight(const Quaternion<Scalar>& rotation)
