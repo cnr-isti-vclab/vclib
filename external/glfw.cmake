@@ -33,6 +33,16 @@ if (VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
 elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
     message(STATUS "- GLFW - using downloaded source")
 
+    if(LINUX)
+        if (VCLIB_RENDER_WITH_WAYLAND)
+            set(GLFW_BUILD_WAYLAND ON)
+            set(GLFW_BUILD_X11 OFF)
+        else()
+            set(GLFW_BUILD_WAYLAND OFF)
+            set(GLFW_BUILD_X11 ON)
+        endif()
+    endif()
+
     FetchContent_Declare(glfw3
         GIT_REPOSITORY https://github.com/glfw/glfw.git
         GIT_TAG        3.4)
