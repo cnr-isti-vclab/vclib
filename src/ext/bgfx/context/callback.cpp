@@ -64,8 +64,10 @@ void Callback::traceVargs(
     const char* format,
     va_list     argList)
 {
-    bx::debugPrintf("%s (%d): ", filePath, line);
-    bx::debugPrintfVargs(format, argList);
+    if (mDebugVerbose) {
+        bx::debugPrintf("%s (%d): ", filePath, line);
+        bx::debugPrintfVargs(format, argList);
+    }
 }
 
 void Callback::profilerBegin(

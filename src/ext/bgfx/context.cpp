@@ -55,6 +55,11 @@ ProgramManager& Context::programManager()
     return *instance().mProgramManager;
 }
 
+void Context::setDebugVerbosity(bool verbose)
+{
+    instance().mCallBack.setDebugVerbosity(verbose);
+}
+
 Context::Context()
 {
     mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);

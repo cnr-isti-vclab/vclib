@@ -59,6 +59,8 @@ public:
 
     static ProgramManager& programManager();
 
+    static void setDebugVerbosity(bool verbose);
+
 private:
     Context();
 

@@ -29,6 +29,8 @@ namespace vcl::bgf {
 
 class Callback : public bgfx::CallbackI
 {
+    bool mDebugVerbose = false;
+
 public:
     Callback() = default;
 
@@ -36,6 +38,8 @@ public:
     Callback& operator=(const Callback&) = delete;
     Callback(Callback&&)                 = delete;
     Callback& operator=(Callback&&)      = delete;
+
+    void setDebugVerbosity(bool verbose) { mDebugVerbose = verbose; }
 
     // CallbackI interface
     void fatal(
