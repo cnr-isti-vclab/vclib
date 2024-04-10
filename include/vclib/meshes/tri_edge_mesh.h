@@ -80,15 +80,15 @@ class Face :
 
 template<typename Scalar>
 class Edge :
-             public vcl::Edge<
-                 TriEdgeMeshT<Scalar>,
-                 vcl::edge::BitFlags,
-                 vcl::edge::VertexPointers<Vertex<Scalar>>,
-                 vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>,
-                 vcl::edge::OptionalColor<Edge<Scalar>>,
-                 vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,
-                 vcl::edge::OptionalMark<Edge<Scalar>>,
-                 vcl::edge::CustomComponents<Edge<Scalar>>>
+        public vcl::Edge<
+            TriEdgeMeshT<Scalar>,
+            vcl::edge::BitFlags,
+            vcl::edge::VertexPointers<Vertex<Scalar>>,
+            vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>,
+            vcl::edge::OptionalColor<Edge<Scalar>>,
+            vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,
+            vcl::edge::OptionalMark<Edge<Scalar>>,
+            vcl::edge::CustomComponents<Edge<Scalar>>>
 {
 };
 

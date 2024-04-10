@@ -124,7 +124,7 @@ TEST_CASE("Update Referenced Vertex Normals")
 
     tem.addEdge(0, 4);
 
-    for(auto& v : tem.vertices()) {
+    for (auto& v : tem.vertices()) {
         v.normal() = vcl::Point3d(1, 1, 1);
     }
 
