@@ -25,6 +25,8 @@
 
 #include "matrix.h"
 
+#include <iostream>
+
 namespace vcl {
 
 template<typename Scalar>
@@ -130,16 +132,15 @@ public:
     MatrixType projMatrix() const
     {
         switch (mProjectionMode) {
-        case ProjectionMode::PERSPECTIVE: {
-            return projectionMatrix<MatrixType>(
-                mFovDeg, mAspect, mNear, mFar, false);
-        }
         case ProjectionMode::ORTHO: {
             const Scalar h = mVerticalHeight / 2.0;
             const Scalar w = h * mAspect;
             return orthoProjectionMatrix<MatrixType>(
                 -w, w, -h, h, mNear, mFar, false);
-            break;
+        }
+        case ProjectionMode::PERSPECTIVE: {
+            return projectionMatrix<MatrixType>(
+                mFovDeg, mAspect, mNear, mFar, false);
         }
         default: assert(false); return MatrixType::Identity();
         }

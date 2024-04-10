@@ -139,9 +139,14 @@ private:
     // inline static const Point3<Scalar> Z = Point3<Scalar>(0, 0, 1);
 
 public:
-    TrackBall() { mCamera.setFieldOfViewAdaptingEyeDistance(45.0); }
+    TrackBall() { mCamera.setFieldOfViewAdaptingEyeDistance(60.0); }
 
-    void reset() { *this = TrackBall(); }
+    void reset() {
+        Scalar w = mWidth;
+        Scalar h = mHeight;
+        *this = TrackBall();
+        setScreenSize(w, h);
+    }
 
     /**
      * @brief Reset the manipulator to a given center and scale.

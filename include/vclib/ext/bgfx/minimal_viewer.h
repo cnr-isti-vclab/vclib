@@ -94,7 +94,7 @@ public:
 
     void updateDrawableTrackball()
     {
-        auto v = DTB::camera().viewMatrix();
+        auto v = DTB::gizmoMatrix();
         mTrackBall.updateRotation(v);
     }
 
