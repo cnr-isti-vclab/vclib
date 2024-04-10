@@ -279,7 +279,7 @@ void orthoProjectionMatrix(
     std::fill(res, res + 16, 0);
     res[0]  = 2.0 / (right - left);
     res[5]  = 2.0 / (top - bottom);
-    res[10] = c;
+    res[10] = RIGHT_HAND ? -c : c;
     res[12] = (right + left) / (left - right);
     res[13] = (bottom + top) / (bottom - top);
     res[14] = f;
