@@ -448,7 +448,7 @@ private:
 
     Scalar trackballToPixelRatio() const
     {
-        return mCamera.verticalHeight() / mWidth;
+        return mCamera.verticalHeight() / mHeight;
     }
 
     Point3<Scalar> pointOnTrackballPlane(Point2<Scalar> screenCoord) const
