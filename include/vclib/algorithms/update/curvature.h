@@ -91,7 +91,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
             pos.nextEdgeAdjacentToV();
             tmpVertex = pos.adjVertex();
             AdjVertex adjV;
-            adjV.isBorder   = pos.edgeOnBorder();
+            adjV.isBorder   = pos.isEdgeOnBorder();
             adjV.vert       = tmpVertex;
             adjV.doubleArea = vcl::faceArea(*pos.face()) * 2;
             totalDoubleAreaSize += adjV.doubleArea;
@@ -132,7 +132,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
             CoordType edge = (v.coord() - vertices[i].vert->coord());
             float     curvature =
                 (2.0f * (v.normal().dot(edge))) / edge.squaredNorm();
-            CoordType t(Tp * edge.eigenVector().transpose());
+            CoordType t = Tp * edge;
             t.normalize();
             tempMatrix = t.outerProduct(t);
             M += tempMatrix * weights[i] * curvature;
