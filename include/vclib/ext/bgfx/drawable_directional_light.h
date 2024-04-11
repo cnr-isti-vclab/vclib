@@ -39,7 +39,7 @@ class DrawableDirectionalLight : public DrawableObjectI
 {
     bool mVisible = false;
 
-    float mTransform[32]; // two 4x4 matrices, first rotate, second translate
+    Matrix44f mTransform = vcl::Matrix44f::Identity();
 
     std::vector<float> mVertices; // vertices of the drawn lines
     vcl::Color         mColor = vcl::Color::Yellow; // color of the lines
@@ -64,7 +64,7 @@ public:
 
     void swap(DrawableDirectionalLight& other);
 
-    void update(const DirectionalLight<float>& l);
+    void updateRotation(const vcl::Matrix44f& rot);
 
     const vcl::Color& linesColor() const { return mColor; }
 
@@ -86,8 +86,6 @@ public:
 
 private:
     void createVertexBuffer();
-
-    void updateTransform(uint i, const vcl::Matrix44f& matrix);
 };
 
 } // namespace vcl::bgf

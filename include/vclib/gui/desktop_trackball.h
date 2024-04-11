@@ -204,6 +204,11 @@ public:
 
     Matrix44<Scalar> viewMatrix() const { return mTrackball.viewMatrix(); }
 
+    Matrix44<Scalar> lightGizmoMatrix() const
+    {
+        return mTrackball.lightGizmoMatrix();
+    }
+
     Matrix44<Scalar> gizmoMatrix() const { return mTrackball.gizmoMatrix(); }
 
     Matrix44<Scalar> projectionMatrix() const

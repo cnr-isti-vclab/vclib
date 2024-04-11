@@ -35,11 +35,11 @@ DrawableDirectionalLight::DrawableDirectionalLight()
 
     mVertices.reserve(16 * 2 * 3);
 
-    const float low  = -0.75f;
-    const float high = 0.75f;
+    const float low  = -1.f;
+    const float high = 1.f;
 
-    const float zlow  = -1.75f;
-    const float zhigh = 1.75f;
+    const float zlow  = -2.f;
+    const float zhigh = 2.f;
     const uint  n     = 4;
     const float step  = (high - low) / (n - 1);
 
@@ -55,16 +55,6 @@ DrawableDirectionalLight::DrawableDirectionalLight()
         }
     }
 
-    // rotate matrix is identity - will change in update
-    updateTransform(0, vcl::Matrix44f::Identity());
-
-    // translation matrix stays fixed, in order to have the lines visible
-    // in the viewport
-    Point3f        center(0, 0, -3.25);
-    vcl::Matrix44f t = vcl::Matrix44f::Identity();
-    vcl::setTransformMatrixTranslation(t, center);
-    updateTransform(1, t);
-
     createVertexBuffer();
     setLinesColor(mColor);
 }
@@ -72,10 +62,10 @@ DrawableDirectionalLight::DrawableDirectionalLight()
 DrawableDirectionalLight::DrawableDirectionalLight(
     const DrawableDirectionalLight& other) :
         DrawableObjectI(other),
-        mVisible(other.mVisible), mVertices(other.mVertices),
-        mColor(other.mColor), mUniform(other.mUniform), mProgram(other.mProgram)
+        mVisible(other.mVisible), mTransform(other.mTransform),
+        mVertices(other.mVertices), mColor(other.mColor),
+        mUniform(other.mUniform), mProgram(other.mProgram)
 {
-    std::copy(other.mTransform, other.mTransform + 32, mTransform);
     createVertexBuffer();
 }
 
@@ -110,14 +100,9 @@ void DrawableDirectionalLight::swap(DrawableDirectionalLight& other)
     std::swap(mVertexCoordBH, other.mVertexCoordBH);
 }
 
-void DrawableDirectionalLight::update(const DirectionalLight<float>& l)
+void DrawableDirectionalLight::updateRotation(const Matrix44f& rot)
 {
-    // make the transform matrix such that the lines will be drawn in the
-    // direction of the light
-    vcl::Matrix44f t = vcl::rotationMatrix<vcl::Matrix44f>(
-        vcl::Point3f(0, 0, 1), l.direction());
-
-    updateTransform(0, t);
+    mTransform = rot;
 }
 
 void DrawableDirectionalLight::setLinesColor(const Color& c)
@@ -135,7 +120,7 @@ void DrawableDirectionalLight::draw(uint viewId)
                 BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
                 BGFX_STATE_PT_LINES);
 
-            bgfx::setTransform(mTransform, 2);
+            bgfx::setTransform(mTransform.data());
 
             mUniform.bind();
 
@@ -173,11 +158,6 @@ void DrawableDirectionalLight::createVertexBuffer()
     mVertexCoordBH = bgfx::createVertexBuffer(
         bgfx::makeRef(mVertices.data(), mVertices.size() * sizeof(float)),
         layout);
-}
-
-void DrawableDirectionalLight::updateTransform(uint i, const Matrix44f& matrix)
-{
-    std::copy(matrix.data(), matrix.data() + 16, &mTransform[i * 16]);
 }
 
 } // namespace vcl::bgf

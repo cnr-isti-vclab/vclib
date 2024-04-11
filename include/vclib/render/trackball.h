@@ -248,7 +248,8 @@ public:
     Matrix44<Scalar> lightGizmoMatrix() const
     {
         Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
-        rot_radius.rotate(mDirectionalLightTransform).scale(mRadius);
+        rot_radius.rotate(mDirectionalLightTransform.eigenQuaternion())
+            .scale(mRadius);
         return mCamera.viewMatrix() * rot_radius.matrix();
     }
 

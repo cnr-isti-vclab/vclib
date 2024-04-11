@@ -88,7 +88,8 @@ public:
 
     void updateDirectionalLight()
     {
-        mDirectionalLight.update(light());
+        auto v = DTB::lightGizmoMatrix();
+        mDirectionalLight.updateRotation(v);
         mDirectionalLightUniforms.updateLight(light());
     }
 
