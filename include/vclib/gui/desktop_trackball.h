@@ -80,7 +80,7 @@ private:
     std::map<std::pair<KeyModifiers, Axis>, MotionType> mScrollAtomicMap = {
         {{{KeyModifier::NO_MODIFIER}, 1}, TrackBallType::SCALE},
         {{{KeyModifier::CONTROL}, 1},     TrackBallType::ROLL },
-        {{{KeyModifier::SHIFT}, 1},       TrackBallType::FOV },
+        {{{KeyModifier::SHIFT}, 1},       TrackBallType::FOV  },
     };
 
     std::map<

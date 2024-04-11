@@ -141,10 +141,11 @@ private:
 public:
     TrackBall() { mCamera.setFieldOfViewAdaptingEyeDistance(60.0); }
 
-    void reset() {
+    void reset()
+    {
         Scalar w = mWidth;
         Scalar h = mHeight;
-        *this = TrackBall();
+        *this    = TrackBall();
         setScreenSize(w, h);
     }
 
