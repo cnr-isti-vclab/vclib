@@ -117,7 +117,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     bool         clear,
     bool         depth32bit)
 {
-    bgfx::TextureFormat::Enum colorFormat = bgfx::TextureFormat::Count;
+    bgfx::TextureFormat::Enum colorFormat = bgfx::TextureFormat::RGBA32F;
     bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::Count;
 
     if (depth32bit) {

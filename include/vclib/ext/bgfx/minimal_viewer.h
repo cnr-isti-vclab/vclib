@@ -97,6 +97,7 @@ public:
     {
         auto v = DTB::gizmoMatrix();
         mTrackBall.updateRotation(v);
+        mTrackBall.updateDragging(isDragging());
     }
 
 private:

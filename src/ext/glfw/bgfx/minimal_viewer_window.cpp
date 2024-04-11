@@ -126,11 +126,13 @@ void MinimalViewerWindow::onMouseMove(double x, double y)
 void MinimalViewerWindow::onMousePress(MouseButton::Enum button)
 {
     MV::pressMouse(button);
+    MV::updateDrawableTrackball();
 }
 
 void MinimalViewerWindow::onMouseRelease(MouseButton::Enum button)
 {
     MV::releaseMouse(button);
+    MV::updateDrawableTrackball();
 }
 
 void MinimalViewerWindow::onMouseScroll(double dx, double dy)

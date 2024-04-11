@@ -99,6 +99,7 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.h
         include/vclib/ext/bgfx/uniforms/drawable_directional_light_uniforms.h
         include/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.h
+        include/vclib/ext/bgfx/uniforms/drawable_trackball_uniforms.h
         include/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.h
         include/vclib/ext/bgfx/uniforms/shader_uniform.h)
 
@@ -138,6 +139,7 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc
         shaders/vclib/ext/bgfx/drawable_trackball/varying.def.sc
         shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc
+        shaders/vclib/ext/bgfx/drawable_trackball/uniforms.sh
         shaders/vclib/ext/bgfx/font/fs_font_basic.sc
         shaders/vclib/ext/bgfx/font/fs_font_distance_field.sc
         shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow.sc
@@ -160,6 +162,7 @@ if (TARGET vclib-external-bgfx)
         shaders/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_directional_light_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.sh
+        shaders/vclib/ext/bgfx/uniforms/drawable_trackball_uniforms.sh
         shaders/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.sh)
 endif()
 

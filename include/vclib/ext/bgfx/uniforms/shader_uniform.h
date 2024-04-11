@@ -82,6 +82,18 @@ public:
         swap(oth);
         return *this;
     }
+
+    static float uintBitsToFloat(uint bits)
+    {
+        union
+        {
+            uint  i;
+            float f;
+        } u;
+
+        u.i = bits;
+        return u.f;
+    }
 };
 
 } // namespace vcl::bgf

@@ -24,10 +24,11 @@
 #define VCL_EXT_BGFX_DRAWABLE_TRACKBALL_H
 
 #include <vclib/ext/bgfx/context.h>
-
 #include <vclib/render/interfaces/drawable_object_i.h>
 
 #include <vclib/space/matrix.h>
+
+#include "uniforms/drawable_trackball_uniforms.h"
 
 namespace vcl::bgf {
 
@@ -40,11 +41,13 @@ class DrawableTrackBall : public DrawableObjectI
 
     vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
 
+    bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle  mEdgeIndexBH   = BGFX_INVALID_HANDLE;
+
     bgfx::ProgramHandle mProgram =
         Context::programManager().getProgram(VclProgram::DRAWABLE_TRACKBALL);
 
-    bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  mEdgeIndexBH   = BGFX_INVALID_HANDLE;
+    DrawableTrackballUniforms mUniforms;
 
 public:
     // TODO: manage copy and swap
@@ -53,6 +56,8 @@ public:
     ~DrawableTrackBall();
 
     void updateRotation(const vcl::Matrix44f& rot);
+
+    void updateDragging(bool isDragging);
 
     // DrawableObject interface
 
@@ -70,6 +75,9 @@ public:
     bool isVisible() const override { return mVisible; }
 
     void setVisibility(bool vis) override { mVisible = vis; }
+
+private:
+    void createBuffers();
 };
 
 } // namespace vcl::bgf

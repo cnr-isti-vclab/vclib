@@ -145,12 +145,14 @@ void MinimalViewerWidget::onMouseMove(double x, double y)
 void MinimalViewerWidget::onMousePress(MouseButton::Enum button)
 {
     MV::pressMouse(button);
+    MV::updateDrawableTrackball();
     update();
 }
 
 void MinimalViewerWidget::onMouseRelease(MouseButton::Enum button)
 {
     MV::releaseMouse(button);
+    MV::updateDrawableTrackball();
     update();
 }
 

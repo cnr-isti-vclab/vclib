@@ -20,63 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
-#define VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
-
-#include <vclib/render/mesh_render_settings.h>
-
-#include <bgfx/bgfx.h>
+#ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
+#define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
 
 #include "shader_uniform.h"
 
+#include <vclib/space/color.h>
+
 namespace vcl::bgf {
 
-class MeshRenderSettingsUniforms
+class DrawableTrackballUniforms
 {
-    // mDrawPack[0] -> primitive used
-    // mDrawPack[1] -> draw mode
-    // mDrawPack[1] -> point width
-    float mDrawPack[4] = {0.0, 0.0, 0.0, 0.0};
+    // first component is uint: number of vertices per circle
+    // second component is uint: 1 if dragging, 0 otherwise
+    float mTrackBallSettings[4];
 
-    // mColorPack[0] -> point user color
-    // mColorPack[1] -> surface user color
-    // mColorPack[2] -> wireframe user color
-    float mColorPack[4] = {0.0, 0.0, 0.0, 0.0};
-
-    ShaderUniform mDrawModeUniform =
-        ShaderUniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
-
-    ShaderUniform mColorUniform =
-        ShaderUniform("u_mrsColorPack", bgfx::UniformType::Vec4);
+    ShaderUniform mTrackballSettingsUniform =
+        ShaderUniform("u_trakcballSettingsPack", bgfx::UniformType::Vec4);
 
 public:
-    MeshRenderSettingsUniforms() {}
-
-    void updatePrimitive(uint primitive)
+    DrawableTrackballUniforms()
     {
-        mDrawPack[0] = ShaderUniform::uintBitsToFloat(primitive);
+        mTrackBallSettings[0] = ShaderUniform::uintBitsToFloat(64);
+        mTrackBallSettings[1] = ShaderUniform::uintBitsToFloat(0);
     }
 
-    void updateSettings(const vcl::MeshRenderSettings& settings)
+    void setNumberOfVerticesPerAxis(uint number)
     {
-        mDrawPack[1] = ShaderUniform::uintBitsToFloat(settings.drawMode());
-        mDrawPack[2] = settings.pointWidth();
-
-        mColorPack[0] = ShaderUniform::uintBitsToFloat(
-            settings.pointCloudUserColor().abgr());
-        mColorPack[1] =
-            ShaderUniform::uintBitsToFloat(settings.surfaceUserColor().abgr());
-        mColorPack[2] = ShaderUniform::uintBitsToFloat(
-            settings.wireframeUserColor().abgr());
+        mTrackBallSettings[0] = ShaderUniform::uintBitsToFloat(number);
     }
 
-    void bind() const
+    void setDragging(bool dragging)
     {
-        mDrawModeUniform.bind(mDrawPack);
-        mColorUniform.bind(mColorPack);
+        mTrackBallSettings[1] = ShaderUniform::uintBitsToFloat((uint) dragging);
     }
+
+    void bind() { mTrackballSettingsUniform.bind(mTrackBallSettings); }
 };
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
+#endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H

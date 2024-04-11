@@ -198,6 +198,8 @@ public:
         resizeViewer(width, height);
     }
 
+    bool isDragging() const { return mTrackball.isDragging(); }
+
     DirectionalLight<Scalar> light() const { return mTrackball.light(); }
 
     const Camera<Scalar>& camera() const { return mTrackball.camera(); }

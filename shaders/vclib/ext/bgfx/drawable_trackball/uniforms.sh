@@ -20,25 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position
+#ifndef VCL_EXT_BGFX_DRAWABLE_TRACKBALL_UNIFORMS_SH
+#define VCL_EXT_BGFX_DRAWABLE_TRACKBALL_UNIFORMS_SH
 
-$output v_color
+#include <shaders_common.sh>
 
-#include <drawable_trackball/uniforms.sh>
+#include <uniforms/drawable_trackball_uniforms.sh>
 
-void main()
-{
-    uint nVerticesPerCircle = floatBitsToUint(u_nVerticesPerCircleFloat);
-    uint isDragging = floatBitsToUint(u_isDraggingFloat);
-    float alpha = isDragging != 0u ? 0.9f : 0.5f;
-
-    gl_Position = mul(u_model[0] * u_proj, vec4(a_position, 1.0));
-
-    // Compute the color
-    if (gl_VertexID < nVerticesPerCircle) // x
-        v_color = vec4(1.0, 0.0, 0.0, alpha);
-    else if (gl_VertexID < nVerticesPerCircle * 2) // y
-        v_color = vec4(0.0, 1.0, 0.0, alpha);
-    else // z
-        v_color = vec4(0.0, 0.0, 1.0, alpha);
-}
+#endif // VCL_EXT_BGFX_DRAWABLE_TRACKBALL_UNIFORMS_SH
