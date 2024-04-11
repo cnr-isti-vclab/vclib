@@ -69,6 +69,7 @@ void MinimalViewerWidget::onResize(unsigned int width, unsigned int height)
     MV::resizeViewer(width, height);
     bgfx::setViewTransform(
         viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+    MV::updateDrawableTrackball();
 }
 
 void MinimalViewerWidget::onKeyPress(Key::Enum key)
