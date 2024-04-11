@@ -210,7 +210,7 @@ public:
             mScreenSize.x()                = width;
             mScreenSize.y()                = height;
             mCamera.aspectRatio() = width / height;
-            mRadius = ARC_BALL_RADIUS_RATIO * mCamera.verticalHeight();
+            mRadius = ARC_BALL_RADIUS_RATIO * mCamera.verticalHeight() / 2.0;
             if (width < height)
                 mRadius *= mCamera.aspectRatio();
         }
