@@ -80,11 +80,10 @@ void main()
         // if flat or smooth shading, compute light
         if (!bool(drawMode & VCL_MRS_SURF_SHADING_NONE)) {
             light = computeLight(u_lightDir, u_lightColor, normal);
-            vec3 camEyePos = mul(u_modelView, vec4(u_cameraEyePos, 1.0)).xyz;
 
             specular = computeSpecular(
                 v_position,
-                camEyePos,
+                u_cameraEyePos,
                 u_lightDir,
                 u_lightColor,
                 normal);
