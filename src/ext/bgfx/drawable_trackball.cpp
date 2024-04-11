@@ -32,7 +32,7 @@ DrawableTrackBall::DrawableTrackBall()
 {
     const uint cSize = 64;
 
-    vcl::Polygon2f circle = vcl::createCircle<vcl::Polygon2f>(cSize, 0.15f);
+    vcl::Polygon2f circle = vcl::createCircle<vcl::Polygon2f>(cSize, 1.0f);
 
     mVertices.reserve(cSize * 3);
 
@@ -75,8 +75,6 @@ DrawableTrackBall::DrawableTrackBall()
 
     mEdgeIndexBH = bgfx::createIndexBuffer(
         bgfx::makeRef(mEdges.data(), mEdges.size() * sizeof(uint16_t)));
-
-    vcl::setTransformMatrixTranslation(mTransform, vcl::Point3f(0, 0, -0.5));
 }
 
 DrawableTrackBall::~DrawableTrackBall()
@@ -88,7 +86,7 @@ DrawableTrackBall::~DrawableTrackBall()
 
 void DrawableTrackBall::updateRotation(const vcl::Matrix44f& rot)
 {
-    mTransform.block(0, 0, 3, 3) = rot.block(0, 0, 3, 3);
+    mTransform = rot;
 }
 
 void DrawableTrackBall::draw(uint viewId)
