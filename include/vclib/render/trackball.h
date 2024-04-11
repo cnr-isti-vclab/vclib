@@ -92,9 +92,7 @@ private:
 
     Quaternion<Scalar> mDirectionalLightTransform;
 
-    // screen size
-    Scalar mHeight = 1;
-    Scalar mWidth  = 1;
+    Point2<Scalar> mScreenSize = {1, 1};
 
     // trackball radius in camera space
     // this value affects the interaction and the visualization of the trackball
@@ -112,41 +110,14 @@ private:
     Point2<Scalar> mCurrMousePosition;
     Point2<Scalar> mPrevMousePosition;
 
-    // static constexpr Scalar RADIUS_RATIO = 1.75;
-
-    // enum Quadrant { UPPER_RIGHT, UPPER_LEFT, LOWER_LEFT, LOWER_RIGHT };
-
-    // vcl::DirectionalLight<Scalar> mDirLight;
-
-    // Point2<Scalar> mCurrMousePosition;
-    // Point2<Scalar> mPrevMousePosition;
-
-    // // arc motion state
-    // Point3<Scalar>     mStartVector;
-    // Point3<Scalar>     mStopVector;
-    // Quaternion<Scalar> mArcRotationSum;
-
-    // Scalar mPanScale = 0.005;
-
-    // Scalar mRollScale = 0.005;
-
-    // Scalar mZoomScale = 0.05;
-
-    // Scalar mEyeCenterDist = mCamera.eye().dist(mCamera.center());
-
-    // inline static const Point3<Scalar> X = Point3<Scalar>(1, 0, 0);
-    // inline static const Point3<Scalar> Y = Point3<Scalar>(0, 1, 0);
-    // inline static const Point3<Scalar> Z = Point3<Scalar>(0, 0, 1);
-
 public:
     TrackBall() { mCamera.setFieldOfViewAdaptingEyeDistance(60.0); }
 
     void reset()
     {
-        Scalar w = mWidth;
-        Scalar h = mHeight;
+        auto tmp = mScreenSize;
         *this    = TrackBall();
-        setScreenSize(w, h);
+        setScreenSize(tmp);
     }
 
     /**
@@ -236,13 +207,18 @@ public:
     void setScreenSize(Scalar width, Scalar height)
     {
         if (width > 1 || height > 1) {
-            mWidth                = width;
-            mHeight               = height;
-            mCamera.aspectRatio() = mWidth / mHeight;
+            mScreenSize.x()                = width;
+            mScreenSize.y()                = height;
+            mCamera.aspectRatio() = width / height;
             mRadius = ARC_BALL_RADIUS_RATIO * mCamera.verticalHeight();
             if (width < height)
                 mRadius *= mCamera.aspectRatio();
         }
+    }
+
+    void setScreenSize(const Point2<Scalar>& sz)
+    {
+        setScreenSize(sz.x(), sz.y());
     }
 
     DirectionalLight<Scalar> light() const
@@ -357,7 +333,7 @@ public:
     {
         mPrevMousePosition     = mCurrMousePosition;
         mCurrMousePosition.x() = x;
-        mCurrMousePosition.y() = mHeight - y;
+        mCurrMousePosition.y() = mScreenSize.y() - y;
     }
 
     void setMousePosition(const Point2<Scalar>& point)
@@ -449,26 +425,23 @@ private:
 
     Scalar trackballToPixelRatio() const
     {
-        return mCamera.verticalHeight() / mHeight;
+        return mCamera.verticalHeight() / mScreenSize.y();
     }
 
     Point3<Scalar> pointOnTrackballPlane(Point2<Scalar> screenCoord) const
     {
-        Point2<Scalar> screenSize(mWidth, mHeight);
         // convert to camera space
         // range [-1, 1] for Y and [-aspectRatio, aspectRatio] for X
         screenCoord =
-            (screenCoord - screenSize / 2.0) * trackballToPixelRatio();
+            (screenCoord - mScreenSize / 2.0) * trackballToPixelRatio();
         return Point3<Scalar>(screenCoord.x(), screenCoord.y(), 0.0);
     }
 
     Point3<Scalar> pointOnArcball(Point2<Scalar> screenCoord) const
     {
-        Point2<Scalar> screenSize(mWidth, mHeight);
-
         // convert to range [-1, 1] for Y and [-aspectRatio, aspectRatio] for X
         screenCoord =
-            (screenCoord - screenSize / 2.0) * trackballToPixelRatio();
+            (screenCoord - mScreenSize / 2.0) * trackballToPixelRatio();
 
         // Solve the equations in 2D on the plane passing through the eye,
         // the trackball center, and the intersection line.
