@@ -207,8 +207,8 @@ public:
     void setScreenSize(Scalar width, Scalar height)
     {
         if (width > 1 || height > 1) {
-            mScreenSize.x()                = width;
-            mScreenSize.y()                = height;
+            mScreenSize.x()       = width;
+            mScreenSize.y()       = height;
             mCamera.aspectRatio() = width / height;
             mRadius = ARC_BALL_RADIUS_RATIO * mCamera.verticalHeight() / 2.0;
             if (width < height)

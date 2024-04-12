@@ -80,7 +80,6 @@ void DrawableTrackBall::updateRotation(const vcl::Matrix44f& rot)
     mTransform = rot;
 }
 
-
 void DrawableTrackBall::updateDragging(bool isDragging)
 {
     mUniforms.setDragging(isDragging);
