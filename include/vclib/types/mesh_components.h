@@ -55,9 +55,9 @@ struct CompId
     };
 };
 
-inline static constexpr uint COMPONENTS_NUMBER = 19;
+constexpr uint COMPONENTS_NUMBER = 19;
 
-inline static constexpr const char*
+constexpr const char*
     COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
         "BitFlags",
         "Coordinate",

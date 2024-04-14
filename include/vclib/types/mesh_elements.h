@@ -41,7 +41,7 @@ struct ElemId
     };
 };
 
-inline static constexpr const char*
+constexpr const char*
     ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
         "Vertex",
         "Face",
