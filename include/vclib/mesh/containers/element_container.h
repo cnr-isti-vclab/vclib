@@ -29,10 +29,10 @@
 #include <vclib/concepts/mesh/containers.h>
 #include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/iterators/mesh/element_container_iterator.h>
-#include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/views/view.h>
 
 #include "custom_components_vector_map.h"
+#include "custom_component_vector_handle.h"
 #include "vertical_components_vector_tuple.h"
 
 namespace vcl::mesh {
