@@ -25,8 +25,6 @@
 
 #include "component.h"
 
-#include <vclib/space/point.h>
-
 namespace vcl::comp {
 
 /**

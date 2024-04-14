@@ -26,7 +26,6 @@
 #include <chrono>
 #include <iostream>
 #include <string>
-#include <time.h>
 
 namespace vcl {
 
