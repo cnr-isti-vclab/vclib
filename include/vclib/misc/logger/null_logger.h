@@ -81,7 +81,7 @@ public:
 };
 
 /**
- * @brief The static nullLogger object is an object of type NullLogger that is
+ * @brief The nullLogger object is an object of type NullLogger that is
  * used as default argument in the functions that can take as input a logger.
  *
  * A typical function that could take a logger is defined as follows:
@@ -103,7 +103,7 @@ public:
  *
  * @ingroup miscellaneous
  */
-static inline NullLogger nullLogger;
+inline NullLogger nullLogger;
 
 /**
  * @brief The isLoggerValid() function returns true at compile time if the type
