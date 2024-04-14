@@ -40,8 +40,8 @@ namespace vcl {
  */
 class Timer
 {
-    std::string mCaption;
-    bool        mIsStopped;
+    std::string mCaption   = "Timer";
+    bool        mIsStopped = false;
 
     std::chrono::high_resolution_clock::time_point mBegin, mEnd;
 
@@ -53,7 +53,7 @@ public:
      * @param[in] _start: if true, the timer will start when the object is
      * created.
      */
-    Timer(bool _start = true) : mCaption("Timer"), mIsStopped(false)
+    Timer(bool _start = true)
     {
         if (_start)
             start();
@@ -67,7 +67,7 @@ public:
      * @param[in] _start: if true, the timer will start when the object is
      * created.
      */
-    Timer(const char* caption, bool _start = true)
+    Timer(const char* caption, bool _start = true) : mCaption(caption)
     {
         if (_start)
             start();
@@ -81,7 +81,7 @@ public:
      * @param[in] _start: if true, the timer will start when the object is
      * created.
      */
-    Timer(const std::string& caption, bool _start = true)
+    Timer(const std::string& caption, bool _start = true) : mCaption(caption)
     {
         if (_start)
             start();
@@ -162,6 +162,12 @@ public:
         }
         return secs;
     }
+
+    /**
+     * @brief Sets the caption of the timer.
+     * @param[in] caption: the new caption of the timer.
+     */
+    void setCaption(const std::string& caption) { mCaption = caption; }
 };
 
 } // namespace vcl
