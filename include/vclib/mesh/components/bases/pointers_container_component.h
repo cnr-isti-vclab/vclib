@@ -23,8 +23,6 @@
 #ifndef VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
 
-#include <algorithm>
-
 #include <vclib/space/vector.h>
 
 #include "container_component.h"
