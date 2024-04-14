@@ -1,5 +1,7 @@
 # VCLib ToDo list
 
+- General:
+  - [ ] Enumerations should be declared in a struct to avoid name collisions
 - Concepts:
   - [ ] complete space data structures concepts
   - [ ] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
@@ -9,7 +11,7 @@
   - Containers:
     - Element container should provide fast compact function, that does not preserve elements order
   - Mesh:
-    - [ ] manage clean() for all components of mesh, not only element containers 
+    - [ ] manage clean() for all components of mesh, not only element containers
   - Utils:
     - [ ] MeshInfo should not use its own enums for elements and components
 - Exceptions:
@@ -20,6 +22,7 @@
 - IO:
   - [ ] Manage read and write colors from integral to non integral types
 - Algorithms:
+  - [ ] Separate Mesh algorithms from core(?) algorithms
   - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
   - [ ] Implement exporter to VCG
   - [ ] Implement importer/exporter from buffer
@@ -34,7 +37,6 @@
 - Misc:
   - [ ] implement non-static member functions for FileInfo class
 - External:
-  - [ ] make render functions using bgfx
   - [ ] remove zip-iterator library when c++23 zip-view will be supported
 - Documentation:
   - [ ] How to implement a user component
