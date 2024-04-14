@@ -27,7 +27,7 @@
 #include <queue>
 #include <vector>
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/concepts/mesh.h>
 #include <vclib/space/box.h>
 
 namespace vcl {
