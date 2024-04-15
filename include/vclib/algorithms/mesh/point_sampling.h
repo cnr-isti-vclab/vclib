@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_POINT_SAMPLING_H
-#define VCL_ALGORITHMS_POINT_SAMPLING_H
+#ifndef VCL_ALGORITHMS_MESH_POINT_SAMPLING_H
+#define VCL_ALGORITHMS_MESH_POINT_SAMPLING_H
 
 #include <vclib/algorithms/mesh/shuffle.h>
 #include <vclib/algorithms/mesh/stat.h>
@@ -1042,4 +1042,4 @@ SamplerType vertexQualityWeightedMontecarloPointSampling(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_POINT_SAMPLING_H
+#endif // VCL_ALGORITHMS_MESH_POINT_SAMPLING_H

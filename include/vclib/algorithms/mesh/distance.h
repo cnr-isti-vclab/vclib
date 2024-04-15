@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_DISTANCE_H
 #define VCL_ALGORITHMS_MESH_DISTANCE_H
 
-#include <vclib/algorithms/point_sampling.h>
+#include <vclib/algorithms/mesh/point_sampling.h>
 #include <vclib/math/histogram.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/logger.h>
