@@ -36,29 +36,7 @@
 
 namespace vcl {
 
-template<typename, typename...>
-class Vertex;
-
 namespace vert {
-
-// checks if a type derives from vcl::Vertex<Args...>
-template<typename Derived>
-using IsDerivedFromVertex =
-    IsDerivedFromTemplateSpecialization<Derived, Vertex>;
-
-// checks if a type is a vcl::Vertex<Args...>
-template<class T>
-struct IsAVertex : // Default case, no pattern match
-        std::false_type
-{
-};
-
-// note: here the templated types are the components of the Vertex
-template<class... Args>
-struct IsAVertex<Vertex<Args...>> : // types matching pattern Vertex<Args...>
-        std::true_type
-{
-};
 
 /**
  * @ingroup vert_concepts vert_components
@@ -128,7 +106,6 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
 template<typename T>
 concept VertexConcept =
     ElementConcept<T> && T::ELEMENT_ID == ElemId::VERTEX &&
-    (vert::IsDerivedFromVertex<T>::value || vert::IsAVertex<T>::value) &&
     vert::HasBitFlags<T> && vert::HasCoordinate<T>;
 
 } // namespace vcl

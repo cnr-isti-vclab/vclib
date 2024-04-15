@@ -36,27 +36,7 @@
 
 namespace vcl {
 
-template<typename, typename...>
-class Edge;
-
 namespace edge {
-
-// checks if a type derives from vcl::Edge<Args...>
-template<typename Derived>
-using IsDerivedFromEdge = IsDerivedFromTemplateSpecialization<Derived, Edge>;
-
-// checks if a type is a vcl::Edge<Args...>
-template<class T>
-struct IsAEdge : // Default case, no pattern match
-        std::false_type
-{
-};
-
-template<class... Args>
-struct IsAEdge<Edge<Args...>> : // For types matching the pattern Edge<Args...>
-        std::true_type
-{
-};
 
 /**
  * @ingroup edge_concepts edge_components
@@ -111,7 +91,6 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
 template<typename T>
 concept EdgeConcept =
     ElementConcept<T> && T::ELEMENT_ID == ElemId::EDGE &&
-    (edge::IsDerivedFromEdge<T>::value || edge::IsAEdge<T>::value) &&
     edge::HasBitFlags<T> && edge::HasVertexPointers<T> && T::VERTEX_NUMBER == 2;
 
 } // namespace vcl

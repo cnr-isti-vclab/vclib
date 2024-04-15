@@ -36,27 +36,7 @@
 
 namespace vcl {
 
-template<typename, typename...>
-class Face;
-
 namespace face {
-
-// checks if a type derives from vcl::Face<Args...>
-template<typename Derived>
-using IsDerivedFromFace = IsDerivedFromTemplateSpecialization<Derived, Face>;
-
-// checks if a type is a vcl::Face<Args...>
-template<class T>
-struct IsAFace : // Default case, no pattern match
-        std::false_type
-{
-};
-
-template<class... Args>
-struct IsAFace<Face<Args...>> : // For types matching the pattern Face<Args...>
-        std::true_type
-{
-};
 
 /**
  * @ingroup face_concepts face_components
@@ -144,7 +124,6 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
 template<typename T>
 concept FaceConcept =
     ElementConcept<T> && T::ELEMENT_ID == ElemId::FACE &&
-    (face::IsDerivedFromFace<T>::value || face::IsAFace<T>::value) &&
     face::HasBitFlags<T> && face::HasVertexPointers<T> &&
     (T::VERTEX_NUMBER < 0 || T::VERTEX_NUMBER >= 3) &&
     (!face::HasTriangleBitFlags<T> || T::VERTEX_NUMBER == 3) &&
