@@ -20,27 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_BOUNDING_BOX_H
-#define VCL_ALGORITHMS_BOUNDING_BOX_H
+#ifndef VCL_ALGORITHMS_CORE_BOUNDING_BOX_H
+#define VCL_ALGORITHMS_CORE_BOUNDING_BOX_H
 
 #include <vclib/concepts/iterators.h>
 #include <vclib/concepts/mesh/elements/edge.h>
 #include <vclib/concepts/range.h>
-#include <vclib/mesh/requirements.h>
 #include <vclib/space/box.h>
 #include <vclib/space/segment.h>
 #include <vclib/space/sphere.h>
 
 /**
- * @defgroup bounding_box Bounding Box Algorithms
+ * @defgroup core_bounding_box Core Bounding Box Algorithms
  *
- * @ingroup algorithms
+ * @ingroup algorithms_core
  *
  * @brief List of overloaded boundingBox functions that take in input an object
  * (or a Range of objects) and return its/their bounding box.
  *
  * You can access these algorithms by including
- * `#include <vclib/algorithms/bounding_box.h>`
+ * `#include <vclib/algorithms/core/bounding_box.h>`
+ *
+ * @note To compute the bounding box of a Mesh, use the `vcl::boundingBox`
+ * function defined in `vclib/algorithms/mesh/bounding_box.h`.
  */
 
 namespace vcl {
@@ -56,7 +58,7 @@ namespace vcl {
  * @param[in] p: The input point to compute the bounding box of
  * @return The bounding box of the input point
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<PointConcept PointType>
 auto boundingBox(const PointType& p)
@@ -78,7 +80,7 @@ auto boundingBox(const PointType& p)
  * @param[in] s: The input line segment to compute the bounding box of
  * @return The bounding box of the input line segment
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<SegmentConcept SegmentType>
 auto boundingBox(const SegmentType& s)
@@ -104,7 +106,7 @@ auto boundingBox(const SegmentType& s)
  * @param[in] s: The input sphere to compute the bounding box of
  * @return The bounding box of the input sphere
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<SphereConcept SphereType>
 auto boundingBox(const SphereType& s)
@@ -114,32 +116,6 @@ auto boundingBox(const SphereType& s)
 
     b.add(s.center() - s.radius());
     b.add(s.center() + s.radius());
-
-    return b;
-}
-
-/**
- * @brief Compute the bounding box of a mesh
- *
- * Given a mesh `m`, this function computes and returns the bounding
- * box of the mesh. The bounding box is represented by a `vcl::Box` object.
- *
- * @tparam MeshType: The type of the mesh. It must satisfy the MeshConcept.
- *
- * @param[in] m: The input mesh to compute the bounding box of
- * @return The bounding box of the input mesh
- *
- * @ingroup bounding_box
- */
-template<MeshConcept MeshType>
-auto boundingBox(const MeshType& m)
-{
-    using VertexType = MeshType::VertexType;
-    vcl::Box<typename VertexType::CoordType> b;
-
-    for (const VertexType& v : m.vertices()) {
-        b.add(v.coord());
-    }
 
     return b;
 }
@@ -156,7 +132,7 @@ auto boundingBox(const MeshType& m)
  * @param[in] v: The input vertex to compute the bounding box of
  * @return The bounding box of the input vertex
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<VertexConcept VertexType>
 auto boundingBox(const VertexType& v)
@@ -179,7 +155,7 @@ auto boundingBox(const VertexType& v)
  * @param[in] v: A pointer to the input vertex to compute the bounding box of
  * @return The bounding box of the input vertex
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<VertexConcept VertexType>
 auto boundingBox(const VertexType* v)
@@ -200,7 +176,7 @@ auto boundingBox(const VertexType* v)
  * @param[in] f The input face to compute the bounding box of
  * @return The bounding box of the input face
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<FaceConcept FaceType>
 auto boundingBox(const FaceType& f)
@@ -225,7 +201,7 @@ auto boundingBox(const FaceType& f)
  * @param[in] f: A pointer to the input face to compute the bounding box of
  * @return The bounding box of the input face
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<FaceConcept FaceType>
 auto boundingBox(const FaceType* f)
@@ -249,7 +225,7 @@ auto boundingBox(const FaceType* f)
  * @param[in] e: The input edge to compute the bounding box of
  * @return The bounding box of the input edge
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<EdgeConcept EdgeType>
 auto boundingBox(const EdgeType& e)
@@ -274,7 +250,7 @@ auto boundingBox(const EdgeType& e)
  *
  * @return The bounding box of the input edge
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<EdgeConcept EdgeType>
 auto boundingBox(const EdgeType* e)
@@ -306,7 +282,7 @@ auto boundingBox(const EdgeType* e)
  * @param[in] end: the iterator to the end of the range of objects.
  * @return the bounding box of the entire set of objects.
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<IteratorConcept Iterator>
 auto boundingBox(Iterator begin, Iterator end)
@@ -338,7 +314,7 @@ auto boundingBox(Iterator begin, Iterator end)
  * @param[in] r: the range of objects.
  * @return the bounding box of the entire range of objects.
  *
- * @ingroup bounding_box
+ * @ingroup core_bounding_box
  */
 template<Range Rng>
 auto boundingBox(Rng&& r)
@@ -348,4 +324,4 @@ auto boundingBox(Rng&& r)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_BOUNDING_BOX_H
+#endif // VCL_ALGORITHMS_CORE_BOUNDING_BOX_H

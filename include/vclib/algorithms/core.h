@@ -23,8 +23,10 @@
 #ifndef VCL_ALGORITHMS_CORE_H
 #define VCL_ALGORITHMS_CORE_H
 
+#include "core/bounding_box.h"
+
 /**
- * @defgroup algorithms-core Mesh Update Algorithms
+ * @defgroup algorithms_core Mesh Update Algorithms
  *
  * @ingroup algorithms
  *

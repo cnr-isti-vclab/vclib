@@ -61,6 +61,12 @@ set(HEADERS
     include/vclib/types.h
     include/vclib/views.h
 
+    include/vclib/algorithms/core.h
+    include/vclib/algorithms/mesh.h
+
+    include/vclib/algorithms/core/bounding_box.h
+
+    include/vclib/algorithms/mesh/bounding_box.h
     include/vclib/algorithms/mesh/create.h
     include/vclib/algorithms/mesh/create/cone.h
     include/vclib/algorithms/mesh/create/dodecahedron.h
@@ -70,7 +76,7 @@ set(HEADERS
     include/vclib/algorithms/mesh/create/tetrahedron.h
 
 
-    include/vclib/algorithms/bounding_box.h
+
     include/vclib/algorithms/clean.h
     include/vclib/algorithms/distance.h
     include/vclib/algorithms/export.h

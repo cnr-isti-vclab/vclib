@@ -23,10 +23,11 @@
 #ifndef VCL_ALGORITHMS_MESH_H
 #define VCL_ALGORITHMS_MESH_H
 
+#include "mesh/bounding_box.h"
 #include "mesh/create.h"
 
 /**
- * @defgroup algorithms-mesh Mesh Algorithms
+ * @defgroup algorithms_mesh Mesh Algorithms
  *
  * @ingroup algorithms
  *

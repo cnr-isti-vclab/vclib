@@ -33,7 +33,7 @@
 /**
  * @defgroup create Mesh Creation Algorithms
  *
- * @ingroup algorithms-mesh
+ * @ingroup algorithms_mesh
  *
  * @brief List of Mesh Creation algorithms.
  *
