@@ -81,7 +81,6 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
  *
  * The Edge concept is satisfied for a class E if ALL the following
  * sentences are true:
- * - The class E is vcl::Edge, or derives from it;
  * - The class E has the BitFlags component (or an equivalent one);
  * - The class E has the VertexPointers component (or a derivate);
  * - The number of vertices of the VertexPointers is 2.

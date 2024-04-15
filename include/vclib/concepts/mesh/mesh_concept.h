@@ -28,44 +28,34 @@
 
 namespace vcl {
 
-template<typename... Args>
-class Mesh;
-
-namespace mesh {
-
-// checks if a type derives from vcl::Mesh<Args...>
-template<typename Derived>
-using IsDerivedFromMesh = IsDerivedFromTemplateSpecialization<Derived, Mesh>;
-
-// checks if a type is a vcl::Mesh<Args...>
-// Default case, no pattern match
-template<class T>
-struct IsAMesh : std::false_type
-{
-};
-
-// For types matching the pattern Mesh<Args...>
-template<class... Args>
-struct IsAMesh<Mesh<Args...>> : std::true_type
-{
-};
-
-} // namespace mesh
-
 /**
  * @brief The Mesh Concept is evaluated to true when the type is a Mesh.
  *
- * A type T is a Mesh whem it inherits from or it is a template specialization
- * of the vcl::Mesh class, and it contains a VertexContainer, which is the only
- * container that is mandatory in a vcl::Mesh.
+ * A type T is a Mesh when it contains a VertexContainer, which is the only
+ * container that is mandatory in a vcl::Mesh, and provides:
+ *
+ * - A type definition called Containers, which is a TypeWrapper that contains
+ *   all the containers that the Mesh has.
+ * - A type definition called Components, which is a TypeWrapper that contains
+ *   all the components that the Mesh has.
+ * - A method called clear() that clears the mesh.
+ * - A method called isCompact() that returns a boolean indicating if the mesh
+ *   is compact.
+ * - A method called compact() that compacts the mesh.
+ * - A method called enableSameOptionalComponentsOf() that enables the same
+ *   optional components of another mesh.
+ * - A method called importFrom() that imports the mesh from another mesh.
+ * - A method called swap() that swaps the mesh with another mesh.
  *
  * @ingroup mesh_concepts
  */
 template<typename T>
 concept MeshConcept =
-    (mesh::IsDerivedFromMesh<T>::value || mesh::IsAMesh<T>::value) &&
     mesh::HasVertexContainer<T> && requires (T o, const T& co) {
         // clang-format off
+        typename T::Containers;
+        typename T::Components;
+
         { o.clear() } -> std::same_as<void>;
         { co.isCompact() } -> std::same_as<bool>;
         { o.compact() } -> std::same_as<void>;

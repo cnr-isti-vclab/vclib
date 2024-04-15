@@ -103,7 +103,6 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
  *
  * The Face concept is satisfied for a class F if ALL the following sentences
  * are true:
- * - The class F is vcl::Face, or derives from it;
  * - The class F has the BitFlags component (or a derivate);
  * - The class F has the VertexPointers component (or a derivate);
  * - The number of vertices of the VertexPointers is -1 (dynamic size) or at
