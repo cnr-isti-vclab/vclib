@@ -28,6 +28,7 @@
 #include "mesh/create.h"
 #include "mesh/distance.h"
 #include "mesh/export.h"
+#include "mesh/filter.h"
 #include "mesh/import.h"
 #include "mesh/polygon.h"
 #include "mesh/sort.h"

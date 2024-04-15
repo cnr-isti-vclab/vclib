@@ -79,6 +79,7 @@ set(HEADERS
     include/vclib/algorithms/mesh/create.h
     include/vclib/algorithms/mesh/distance.h
     include/vclib/algorithms/mesh/export.h
+    include/vclib/algorithms/mesh/filter.h
     include/vclib/algorithms/mesh/import.h
     include/vclib/algorithms/mesh/polygon.h
     include/vclib/algorithms/mesh/sort.h
@@ -95,7 +96,7 @@ set(HEADERS
 
 
 
-    include/vclib/algorithms/filter.h
+
     include/vclib/algorithms/fitting.h
 
     include/vclib/algorithms/intersection.h
