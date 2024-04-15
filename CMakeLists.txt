@@ -212,6 +212,8 @@ set(HEADERS
     include/vclib/math/perlin_noise.h
     include/vclib/math/random.h
     include/vclib/math/transform.h
+    include/vclib/mesh/components.h
+    include/vclib/mesh/elements.h
     include/vclib/mesh/mesh.h
     include/vclib/mesh/mesh_components.h
     include/vclib/mesh/mesh_containers.h

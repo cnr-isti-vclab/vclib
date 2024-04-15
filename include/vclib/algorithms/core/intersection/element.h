@@ -24,7 +24,7 @@
 #define VCL_ALGORITHMS_CORE_INTERSECTION_ELEMENT_H
 
 #include <vclib/algorithms/core/polygon.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/concepts/mesh/elements/face.h>
 #include <vclib/space/box.h>
 #include <vclib/space/sphere.h>
 #include <vclib/space/triangle_wrapper.h>
