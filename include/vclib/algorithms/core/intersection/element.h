@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INTERSECTION_ELEMENT_H
-#define VCL_ALGORITHMS_INTERSECTION_ELEMENT_H
+#ifndef VCL_ALGORITHMS_CORE_INTERSECTION_ELEMENT_H
+#define VCL_ALGORITHMS_CORE_INTERSECTION_ELEMENT_H
 
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/mesh/requirements.h>
@@ -157,4 +157,4 @@ bool faceSphereItersect(const FaceType& f, const Sphere<SScalar>& sphere)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_INTERSECTION_ELEMENT_H
+#endif // VCL_ALGORITHMS_CORE_INTERSECTION_ELEMENT_H

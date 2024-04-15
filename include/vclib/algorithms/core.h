@@ -26,6 +26,7 @@
 #include "core/bounding_box.h"
 #include "core/distance.h"
 #include "core/fitting.h"
+#include "core/intersection.h"
 #include "core/polygon.h"
 #include "core/stat.h"
 

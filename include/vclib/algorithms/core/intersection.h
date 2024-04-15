@@ -20,21 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INTERSECTION_H
-#define VCL_ALGORITHMS_INTERSECTION_H
+#ifndef VCL_ALGORITHMS_CORE_INTERSECTION_H
+#define VCL_ALGORITHMS_CORE_INTERSECTION_H
 
 #include "intersection/functions.h"
-#include "intersection/mesh.h"
 
 /**
- * @defgroup intersection Intersection Algorithms
+ * @defgroup intersection_core Core Intersection Algorithms
  *
- * @ingroup algorithms
+ * @ingroup algorithms_core
  *
  * @brief List of intersection algorithms.
  *
  * You can access these algorithms by including `#include
- * <vclib/algorithms/intersection.h>`
+ * <vclib/algorithms/core/intersection.h>`
  */
 
-#endif // VCL_ALGORITHMS_INTERSECTION_H
+#endif // VCL_ALGORITHMS_CORE_INTERSECTION_H

@@ -67,11 +67,15 @@ set(HEADERS
     include/vclib/algorithms/core/bounding_box.h
     include/vclib/algorithms/core/distance.h
     include/vclib/algorithms/core/fitting.h
+    include/vclib/algorithms/core/intersection.h
     include/vclib/algorithms/core/polygon.h
     include/vclib/algorithms/core/stat.h
     include/vclib/algorithms/core/distance/functions.h
     include/vclib/algorithms/core/distance/element.h
     include/vclib/algorithms/core/distance/misc.h
+    include/vclib/algorithms/core/intersection/element.h
+    include/vclib/algorithms/core/intersection/functions.h
+    include/vclib/algorithms/core/intersection/misc.h
     include/vclib/algorithms/core/polygon/create.h
     include/vclib/algorithms/core/polygon/geometry.h
     include/vclib/algorithms/core/polygon/topology.h
@@ -83,6 +87,7 @@ set(HEADERS
     include/vclib/algorithms/mesh/export.h
     include/vclib/algorithms/mesh/filter.h
     include/vclib/algorithms/mesh/import.h
+    include/vclib/algorithms/mesh/intersection.h
     include/vclib/algorithms/mesh/point_sampling.h
     include/vclib/algorithms/mesh/polygon.h
     include/vclib/algorithms/mesh/shuffle.h
@@ -107,7 +112,7 @@ set(HEADERS
 
 
 
-    include/vclib/algorithms/intersection.h
+
 
 
 
@@ -115,12 +120,6 @@ set(HEADERS
 
 
     include/vclib/algorithms/update.h
-
-
-    include/vclib/algorithms/intersection/element.h
-    include/vclib/algorithms/intersection/functions.h
-    include/vclib/algorithms/intersection/mesh.h
-    include/vclib/algorithms/intersection/misc.h
 
 
     include/vclib/algorithms/update/bounding_box.h

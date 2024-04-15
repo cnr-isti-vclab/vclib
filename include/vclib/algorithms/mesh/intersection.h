@@ -20,10 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_INTERSECTION_MESH_H
-#define VCL_ALGORITHMS_INTERSECTION_MESH_H
+#ifndef VCL_ALGORITHMS_MESH_INTERSECTION_H
+#define VCL_ALGORITHMS_MESH_INTERSECTION_H
 
-#include "element.h"
+#include <vclib/algorithms/core/intersection/element.h>
+#include <vclib/mesh/requirements.h>
+
+/**
+ * @defgroup intersection_mesh Mesh Intersection Algorithms
+ *
+ * @ingroup algorithms_mesh
+ *
+ * @brief List of mesh intersection algorithms.
+ *
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/mesh/intersection.h>`
+ */
 
 namespace vcl {
 
@@ -269,4 +281,4 @@ MeshType meshSphereIntersection(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_INTERSECTION_MESH_H
+#endif // VCL_ALGORITHMS_MESH_INTERSECTION_H
