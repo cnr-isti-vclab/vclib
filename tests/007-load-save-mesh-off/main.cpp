@@ -22,7 +22,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms/mesh/create.h>
-#include <vclib/algorithms/update.h>
+#include <vclib/algorithms/mesh/update.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 

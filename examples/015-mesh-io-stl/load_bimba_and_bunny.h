@@ -1,7 +1,7 @@
 #ifndef LOAD_BIMBA_AND_BUNNY_H
 #define LOAD_BIMBA_AND_BUNNY_H
 
-#include <vclib/algorithms/update.h>
+#include <vclib/algorithms/mesh/update.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 

@@ -20,30 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_UPDATE_H
-#define VCL_ALGORITHMS_UPDATE_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_BOUNDING_BOX_H
+#define VCL_ALGORITHMS_MESH_UPDATE_BOUNDING_BOX_H
 
-#include "update/bounding_box.h"
-#include "update/color.h"
-#include "update/curvature.h"
-#include "update/flag.h"
-#include "update/normal.h"
-#include "update/quality.h"
-#include "update/selection.h"
-#include "update/topology.h"
-#include "update/transform.h"
+#include <vclib/algorithms/mesh/bounding_box.h>
+
+namespace vcl {
 
 /**
- * @defgroup update Mesh Update Algorithms
+ * @brief Updates the bounding box of the mesh.
  *
- * @ingroup algorithms
+ * @tparam MeshType: type of the input mesh. It must satisfy the HasBoundingBox
+ * concept.
  *
- * @brief List of Mesh Update algorithms.
+ * @param[in] m: input mesh on which the bounding box is computed and updated.
  *
- * They allow to update components and properties of a mesh.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/update.h>`
+ * @ingroup update
  */
+template<HasBoundingBox MeshType>
+void updateBoundingBox(MeshType& m)
+{
+    m.boundingBox() = vcl::boundingBox(m);
+}
 
-#endif // VCL_ALGORITHMS_UPDATE_H
+} // namespace vcl
+
+#endif // VCL_ALGORITHMS_MESH_UPDATE_BOUNDING_BOX_H

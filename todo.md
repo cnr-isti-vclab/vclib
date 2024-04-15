@@ -23,7 +23,9 @@
   - [ ] Manage read and write colors from integral to non integral types
 - Algorithms:
   - [ ] Separate Mesh algorithms from core(?) algorithms
-  - [ ] take views arguments instead of vectors (e.g. for selection) - allows to be more general on algorithms
+  - [ ] Take views arguments instead of vectors- allows to be more general on algorithms
+    - [ ] core/fitting
+    - [ ] core/stat
   - [ ] Implement exporter to VCG
   - [ ] Implement importer/exporter from buffer
   - [ ] Shuffle algorithms should be all made using views

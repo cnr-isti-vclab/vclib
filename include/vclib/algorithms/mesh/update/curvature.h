@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_UPDATE_CURVATURE_H
-#define VCL_ALGORITHMS_UPDATE_CURVATURE_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_CURVATURE_H
+#define VCL_ALGORITHMS_MESH_UPDATE_CURVATURE_H
 
 #include <mutex>
 
@@ -29,7 +29,7 @@
 #include <vclib/algorithms/mesh/intersection.h>
 #include <vclib/algorithms/mesh/point_sampling.h>
 #include <vclib/algorithms/mesh/stat.h>
-#include <vclib/algorithms/update/normal.h>
+#include <vclib/algorithms/mesh/update/normal.h>
 #include <vclib/math/transform.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/mesh/utils/mesh_pos.h>
@@ -402,4 +402,4 @@ void updatePrincipalCurvature(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_UPDATE_CURVATURE_H
+#endif // VCL_ALGORITHMS_MESH_UPDATE_CURVATURE_H

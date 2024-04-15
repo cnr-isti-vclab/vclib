@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_UPDATE_COLOR_H
-#define VCL_ALGORITHMS_UPDATE_COLOR_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_COLOR_H
+#define VCL_ALGORITHMS_MESH_UPDATE_COLOR_H
 
 #include <set>
 
@@ -578,4 +578,4 @@ void setPerVertexPerlinColor(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_UPDATE_COLOR_H
+#endif // VCL_ALGORITHMS_MESH_UPDATE_COLOR_H

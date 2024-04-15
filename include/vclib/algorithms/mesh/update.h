@@ -20,56 +20,30 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_UPDATE_FLAG_H
-#define VCL_ALGORITHMS_UPDATE_FLAG_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_H
+#define VCL_ALGORITHMS_MESH_UPDATE_H
 
-#include <vclib/algorithms/mesh/sort.h>
-#include <vclib/mesh/requirements.h>
-
-namespace vcl {
+#include "update/bounding_box.h"
+#include "update/color.h"
+#include "update/curvature.h"
+#include "update/flag.h"
+#include "update/normal.h"
+#include "update/quality.h"
+#include "update/selection.h"
+#include "update/topology.h"
+#include "update/transform.h"
 
 /**
- * @brief Computes per-face border flags without requiring any kind of
- * topology info.
+ * @defgroup update Mesh Update Algorithms
  *
- * Requirements:
- * - Mesh:
- *   - Vertices
- *   - Faces
+ * @ingroup algorithms_mesh
  *
- * Complexity: O(NF log (NF))
+ * @brief List of Mesh Update algorithms.
  *
- * @param m: the mesh on which the border flags will be updated
+ * They allow to update components and properties of a mesh.
+ *
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/mesh/update.h>`
  */
-template<FaceMeshConcept MeshType>
-void updateBorder(MeshType& m)
-{
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
 
-    for (FaceType& f : m.faces())
-        f.unsetAllEdgesOnBorder();
-
-    if (m.faceNumber() == 0)
-        return;
-
-    std::vector<MeshEdgeUtil<MeshType>> e = fillAndSortMeshEdgeUtilVector(m);
-
-    typename std::vector<MeshEdgeUtil<MeshType>>::iterator pe, ps;
-    ps = e.begin();
-    pe = e.begin();
-    do {
-        if (pe == e.end() || *pe != *ps) { // Trovo blocco di edge uguali
-            if (pe - ps == 1) {
-                ps->f->edgeOnBorder(ps->e) = true;
-            }
-            ps = pe;
-        }
-        if (pe != e.end())
-            ++pe;
-    } while (pe != e.end());
-}
-
-} // namespace vcl
-
-#endif // VCL_ALGORITHMS_UPDATE_FLAG_H
+#endif // VCL_ALGORITHMS_MESH_UPDATE_H

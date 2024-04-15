@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_UPDATE_TRANSFORM_H
-#define VCL_ALGORITHMS_UPDATE_TRANSFORM_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_TRANSFORM_H
+#define VCL_ALGORITHMS_MESH_UPDATE_TRANSFORM_H
 
 #include <vclib/math/transform.h>
 #include <vclib/mesh/requirements.h>
@@ -139,4 +139,4 @@ void rotateDeg(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_UPDATE_TRANSFORM_H
+#endif // VCL_ALGORITHMS_MESH_UPDATE_TRANSFORM_H

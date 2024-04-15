@@ -36,6 +36,7 @@
 #include "mesh/smooth.h"
 #include "mesh/sort.h"
 #include "mesh/stat.h"
+#include "mesh/update.h"
 
 /**
  * @defgroup algorithms_mesh Mesh Algorithms

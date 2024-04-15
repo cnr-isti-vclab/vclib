@@ -60,10 +60,8 @@ set(HEADERS
     include/vclib/space.h
     include/vclib/types.h
     include/vclib/views.h
-
     include/vclib/algorithms/core.h
     include/vclib/algorithms/mesh.h
-
     include/vclib/algorithms/core/bounding_box.h
     include/vclib/algorithms/core/distance.h
     include/vclib/algorithms/core/fitting.h
@@ -79,7 +77,6 @@ set(HEADERS
     include/vclib/algorithms/core/polygon/create.h
     include/vclib/algorithms/core/polygon/geometry.h
     include/vclib/algorithms/core/polygon/topology.h
-
     include/vclib/algorithms/mesh/bounding_box.h
     include/vclib/algorithms/mesh/clean.h
     include/vclib/algorithms/mesh/create.h
@@ -94,6 +91,7 @@ set(HEADERS
     include/vclib/algorithms/mesh/smooth.h
     include/vclib/algorithms/mesh/sort.h
     include/vclib/algorithms/mesh/stat.h
+    include/vclib/algorithms/mesh/update.h
     include/vclib/algorithms/mesh/create/cone.h
     include/vclib/algorithms/mesh/create/dodecahedron.h
     include/vclib/algorithms/mesh/create/hexahedron.h
@@ -104,33 +102,15 @@ set(HEADERS
     include/vclib/algorithms/mesh/import/matrix.h
     include/vclib/algorithms/mesh/stat/quality.h
     include/vclib/algorithms/mesh/stat/selection.h
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    include/vclib/algorithms/update.h
-
-
-    include/vclib/algorithms/update/bounding_box.h
-    include/vclib/algorithms/update/color.h
-    include/vclib/algorithms/update/curvature.h
-    include/vclib/algorithms/update/flag.h
-    include/vclib/algorithms/update/normal.h
-    include/vclib/algorithms/update/quality.h
-    include/vclib/algorithms/update/selection.h
-    include/vclib/algorithms/update/topology.h
-    include/vclib/algorithms/update/transform.h
+    include/vclib/algorithms/mesh/update/bounding_box.h
+    include/vclib/algorithms/mesh/update/color.h
+    include/vclib/algorithms/mesh/update/curvature.h
+    include/vclib/algorithms/mesh/update/flag.h
+    include/vclib/algorithms/mesh/update/normal.h
+    include/vclib/algorithms/mesh/update/quality.h
+    include/vclib/algorithms/mesh/update/selection.h
+    include/vclib/algorithms/mesh/update/topology.h
+    include/vclib/algorithms/mesh/update/transform.h
     include/vclib/concepts/const_correctness.h
     include/vclib/concepts/iterators.h
     include/vclib/concepts/logger.h

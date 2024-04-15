@@ -26,8 +26,6 @@
 #include "algorithms/core.h"
 #include "algorithms/mesh.h"
 
-#include "algorithms/update.h"
-
 /**
  * @defgroup algorithms Algorithms
  *

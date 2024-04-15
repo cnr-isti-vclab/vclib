@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_UPDATE_TOPOLOGY_H
-#define VCL_ALGORITHMS_UPDATE_TOPOLOGY_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_TOPOLOGY_H
+#define VCL_ALGORITHMS_MESH_UPDATE_TOPOLOGY_H
 
 #include <vclib/algorithms/mesh/sort.h>
 #include <vclib/mesh/requirements.h>
@@ -266,4 +266,4 @@ void updatePerFaceAdjacentFaces(MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_UPDATE_TOPOLOGY_H
+#endif // VCL_ALGORITHMS_MESH_UPDATE_TOPOLOGY_H

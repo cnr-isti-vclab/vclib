@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_UPDATE_QUALITY_H
-#define VCL_ALGORITHMS_UPDATE_QUALITY_H
+#ifndef VCL_ALGORITHMS_MESH_UPDATE_QUALITY_H
+#define VCL_ALGORITHMS_MESH_UPDATE_QUALITY_H
 
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/algorithms/mesh/stat.h>
@@ -362,4 +362,4 @@ void setPerVertexQualityFromPrincipalCurvatureCurvedness(MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_UPDATE_QUALITY_H
+#endif // VCL_ALGORITHMS_MESH_UPDATE_QUALITY_H
