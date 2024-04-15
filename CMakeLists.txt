@@ -66,6 +66,7 @@ set(HEADERS
 
     include/vclib/algorithms/core/bounding_box.h
     include/vclib/algorithms/core/distance.h
+    include/vclib/algorithms/core/fitting.h
     include/vclib/algorithms/core/polygon.h
     include/vclib/algorithms/core/stat.h
     include/vclib/algorithms/core/distance/functions.h
@@ -101,7 +102,7 @@ set(HEADERS
 
 
 
-    include/vclib/algorithms/fitting.h
+
 
     include/vclib/algorithms/intersection.h
     include/vclib/algorithms/point_sampling.h

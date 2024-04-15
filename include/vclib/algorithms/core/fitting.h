@@ -20,11 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_FITTING_H
-#define VCL_ALGORITHMS_FITTING_H
+#ifndef VCL_ALGORITHMS_CORE_FITTING_H
+#define VCL_ALGORITHMS_CORE_FITTING_H
 
-#include <vclib/algorithms/mesh/stat.h>
+#include <Eigen/Eigenvalues>
+
 #include <vclib/space/plane.h>
+
+#include "stat.h"
 
 namespace vcl {
 
@@ -88,4 +91,4 @@ Plane<typename PointType::ScalarType> fitPlaneToWeightedPointCloud(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_FITTING_H
+#endif // VCL_ALGORITHMS_CORE_FITTING_H
