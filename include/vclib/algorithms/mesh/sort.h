@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_SORT_H
-#define VCL_ALGORITHMS_SORT_H
+#ifndef VCL_ALGORITHMS_MESH_SORT_H
+#define VCL_ALGORITHMS_MESH_SORT_H
 
 #include <algorithm>
 
@@ -90,4 +90,4 @@ std::vector<ConstMeshEdgeUtil<MeshType>> fillAndSortMeshEdgeUtilVector(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_SORT_H
+#endif // VCL_ALGORITHMS_MESH_SORT_H

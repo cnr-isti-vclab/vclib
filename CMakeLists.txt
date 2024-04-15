@@ -80,6 +80,7 @@ set(HEADERS
     include/vclib/algorithms/mesh/export.h
     include/vclib/algorithms/mesh/import.h
     include/vclib/algorithms/mesh/polygon.h
+    include/vclib/algorithms/mesh/sort.h
     include/vclib/algorithms/mesh/create/cone.h
     include/vclib/algorithms/mesh/create/dodecahedron.h
     include/vclib/algorithms/mesh/create/hexahedron.h
@@ -101,7 +102,7 @@ set(HEADERS
 
     include/vclib/algorithms/shuffle.h
     include/vclib/algorithms/smooth.h
-    include/vclib/algorithms/sort.h
+
     include/vclib/algorithms/stat.h
     include/vclib/algorithms/update.h
 

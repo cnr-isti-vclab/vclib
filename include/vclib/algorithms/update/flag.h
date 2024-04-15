@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_UPDATE_FLAG_H
 #define VCL_ALGORITHMS_UPDATE_FLAG_H
 
-#include <vclib/algorithms/sort.h>
+#include <vclib/algorithms/mesh/sort.h>
 #include <vclib/mesh/requirements.h>
 
 namespace vcl {

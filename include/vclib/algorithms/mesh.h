@@ -29,6 +29,7 @@
 #include "mesh/export.h"
 #include "mesh/import.h"
 #include "mesh/polygon.h"
+#include "mesh/sort.h"
 
 /**
  * @defgroup algorithms_mesh Mesh Algorithms
