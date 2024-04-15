@@ -24,6 +24,7 @@
 #define VCL_ALGORITHMS_CORE_H
 
 #include "core/bounding_box.h"
+#include "core/distance.h"
 #include "core/polygon.h"
 
 /**

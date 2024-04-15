@@ -20,21 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_DISTANCE_H
-#define VCL_ALGORITHMS_DISTANCE_H
+#ifndef VCL_ALGORITHMS_CORE_DISTANCE_H
+#define VCL_ALGORITHMS_CORE_DISTANCE_H
 
 #include "distance/functions.h"
-#include "distance/mesh.h"
 
 /**
  * @defgroup distance Distance Algorithms
  *
- * @ingroup algorithms
+ * @ingroup algorithms_core
  *
  * @brief List of distance algorithms.
  *
  * You can access these algorithms by including `#include
- * <vclib/algorithms/distance.h>`
+ * <vclib/algorithms/core/distance.h>`
  */
 
-#endif // VCL_ALGORITHMS_DISTANCE_H
+#endif // VCL_ALGORITHMS_CORE_DISTANCE_H

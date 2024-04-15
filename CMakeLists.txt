@@ -65,13 +65,18 @@ set(HEADERS
     include/vclib/algorithms/mesh.h
 
     include/vclib/algorithms/core/bounding_box.h
+    include/vclib/algorithms/core/distance.h
     include/vclib/algorithms/core/polygon.h
+    include/vclib/algorithms/core/distance/functions.h
+    include/vclib/algorithms/core/distance/element.h
+    include/vclib/algorithms/core/distance/misc.h
     include/vclib/algorithms/core/polygon/create.h
     include/vclib/algorithms/core/polygon/geometry.h
     include/vclib/algorithms/core/polygon/topology.h
 
     include/vclib/algorithms/mesh/bounding_box.h
     include/vclib/algorithms/mesh/create.h
+    include/vclib/algorithms/mesh/distance.h
     include/vclib/algorithms/mesh/polygon.h
     include/vclib/algorithms/mesh/create/cone.h
     include/vclib/algorithms/mesh/create/dodecahedron.h
@@ -83,7 +88,6 @@ set(HEADERS
 
 
     include/vclib/algorithms/clean.h
-    include/vclib/algorithms/distance.h
     include/vclib/algorithms/export.h
     include/vclib/algorithms/filter.h
     include/vclib/algorithms/fitting.h
@@ -96,10 +100,7 @@ set(HEADERS
     include/vclib/algorithms/sort.h
     include/vclib/algorithms/stat.h
     include/vclib/algorithms/update.h
-    include/vclib/algorithms/distance/functions.h
-    include/vclib/algorithms/distance/element.h
-    include/vclib/algorithms/distance/mesh.h
-    include/vclib/algorithms/distance/misc.h
+
     include/vclib/algorithms/export/matrix.h
     include/vclib/algorithms/import/matrix.h
     include/vclib/algorithms/intersection/element.h

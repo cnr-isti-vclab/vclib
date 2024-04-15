@@ -20,13 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_DISTANCE_FUNCTIONS_H
-#define VCL_ALGORITHMS_DISTANCE_FUNCTIONS_H
+#ifndef VCL_ALGORITHMS_CORE_DISTANCE_FUNCTIONS_H
+#define VCL_ALGORITHMS_CORE_DISTANCE_FUNCTIONS_H
 
 #include "element.h"
 #include "misc.h"
 
-#include <vclib/mesh/requirements.h>
+#include <vclib/concepts/mesh.h>
 
 namespace vcl {
 
@@ -267,4 +267,4 @@ struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_DISTANCE_FUNCTIONS_H
+#endif // VCL_ALGORITHMS_CORE_DISTANCE_FUNCTIONS_H

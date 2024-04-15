@@ -27,7 +27,6 @@
 #include "algorithms/mesh.h"
 
 #include "algorithms/clean.h"
-#include "algorithms/distance.h"
 #include "algorithms/export.h"
 #include "algorithms/filter.h"
 #include "algorithms/fitting.h"
