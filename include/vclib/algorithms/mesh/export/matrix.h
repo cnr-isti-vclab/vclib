@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_EXPORT_MATRIX_H
-#define VCL_ALGORITHMS_EXPORT_MATRIX_H
+#ifndef VCL_ALGORITHMS_MESH_EXPORT_MATRIX_H
+#define VCL_ALGORITHMS_MESH_EXPORT_MATRIX_H
 
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/mesh/requirements.h>
@@ -635,4 +635,4 @@ Vect faceQualityVector(const MeshType& mesh)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_EXPORT_MATRIX_H
+#endif // VCL_ALGORITHMS_MESH_EXPORT_MATRIX_H

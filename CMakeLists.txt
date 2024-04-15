@@ -77,6 +77,8 @@ set(HEADERS
     include/vclib/algorithms/mesh/bounding_box.h
     include/vclib/algorithms/mesh/create.h
     include/vclib/algorithms/mesh/distance.h
+    include/vclib/algorithms/mesh/export.h
+    include/vclib/algorithms/mesh/import.h
     include/vclib/algorithms/mesh/polygon.h
     include/vclib/algorithms/mesh/create/cone.h
     include/vclib/algorithms/mesh/create/dodecahedron.h
@@ -84,14 +86,16 @@ set(HEADERS
     include/vclib/algorithms/mesh/create/icosahedron.h
     include/vclib/algorithms/mesh/create/sphere.h
     include/vclib/algorithms/mesh/create/tetrahedron.h
+    include/vclib/algorithms/mesh/export/matrix.h
+    include/vclib/algorithms/mesh/import/matrix.h
 
 
 
     include/vclib/algorithms/clean.h
-    include/vclib/algorithms/export.h
+
     include/vclib/algorithms/filter.h
     include/vclib/algorithms/fitting.h
-    include/vclib/algorithms/import.h
+
     include/vclib/algorithms/intersection.h
     include/vclib/algorithms/point_sampling.h
 
@@ -101,8 +105,7 @@ set(HEADERS
     include/vclib/algorithms/stat.h
     include/vclib/algorithms/update.h
 
-    include/vclib/algorithms/export/matrix.h
-    include/vclib/algorithms/import/matrix.h
+
     include/vclib/algorithms/intersection/element.h
     include/vclib/algorithms/intersection/functions.h
     include/vclib/algorithms/intersection/mesh.h

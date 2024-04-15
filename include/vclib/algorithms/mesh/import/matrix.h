@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_IMPORT_MATRIX_H
-#define VCL_ALGORITHMS_IMPORT_MATRIX_H
+#ifndef VCL_ALGORITHMS_MESH_IMPORT_MATRIX_H
+#define VCL_ALGORITHMS_MESH_IMPORT_MATRIX_H
 
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/exceptions.h>
@@ -556,4 +556,4 @@ void importEdgeColorsFromMatrix(MeshType& mesh, const ECMatrix& edgeColors)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_IMPORT_MATRIX_H
+#endif // VCL_ALGORITHMS_MESH_IMPORT_MATRIX_H

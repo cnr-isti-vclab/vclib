@@ -26,6 +26,8 @@
 #include "mesh/bounding_box.h"
 #include "mesh/create.h"
 #include "mesh/distance.h"
+#include "mesh/export.h"
+#include "mesh/import.h"
 #include "mesh/polygon.h"
 
 /**
