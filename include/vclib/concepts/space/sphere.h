@@ -27,9 +27,6 @@
 
 namespace vcl {
 
-template<PointConcept P>
-class Box;
-
 /**
  * @brief Concept for types representing spheres in Euclidean space.
  *
@@ -38,6 +35,7 @@ class Box;
  * - `typename T::PointType`: a type that represents a point in Euclidean space.
  * - `typename T::ScalarType`: a type that represents the scalar used for the
  * coordinates of the sphere's points.
+ * - `typename T::BoxType`: a type that represents a box in Euclidean space.
  * - `o.center()`: a member function that returns a mutable reference to the
  * center of the sphere.
  * - `co.center()`: a member function that returns a constant reference to the
@@ -58,19 +56,20 @@ class Box;
  * intersects the box `b`, `false` otherwise.
  *
  * The `PointType` type should be a model of the `PointConcept`.
- * The `Box` type should be a model of the `BoxConcept`.
+ * The `BoxType` type should be a model of the `BoxConcept`.
  *
  * @tparam T The type to be tested for conformity to the SphereConcept.
  */
 template<typename T>
 concept SphereConcept = requires (
-    T                                 o,
-    const T&                          co,
-    const typename T::PointType&      p,
-    const Box<typename T::PointType>& b) {
+    T                            o,
+    const T&                     co,
+    const typename T::PointType& p,
+    const typename T::BoxType&   b) {
     // clang-format off
     typename T::ScalarType;
     typename T::PointType;
+    typename T::BoxType;
 
     T::PointType::DIM == 3;
 
