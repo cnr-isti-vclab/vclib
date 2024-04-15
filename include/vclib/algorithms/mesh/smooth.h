@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_SMOOTH_H
-#define VCL_ALGORITHMS_SMOOTH_H
+#ifndef VCL_ALGORITHMS_MESH_SMOOTH_H
+#define VCL_ALGORITHMS_MESH_SMOOTH_H
 
 #include <cmath>
 #include <vector>
@@ -267,4 +267,4 @@ void smoothPerVertexNormalsPointCloud(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_SMOOTH_H
+#endif // VCL_ALGORITHMS_MESH_SMOOTH_H
