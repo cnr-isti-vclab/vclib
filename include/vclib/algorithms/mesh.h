@@ -25,6 +25,7 @@
 
 #include "mesh/bounding_box.h"
 #include "mesh/create.h"
+#include "mesh/polygon.h"
 
 /**
  * @defgroup algorithms_mesh Mesh Algorithms

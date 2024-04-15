@@ -65,9 +65,14 @@ set(HEADERS
     include/vclib/algorithms/mesh.h
 
     include/vclib/algorithms/core/bounding_box.h
+    include/vclib/algorithms/core/polygon.h
+    include/vclib/algorithms/core/polygon/create.h
+    include/vclib/algorithms/core/polygon/geometry.h
+    include/vclib/algorithms/core/polygon/topology.h
 
     include/vclib/algorithms/mesh/bounding_box.h
     include/vclib/algorithms/mesh/create.h
+    include/vclib/algorithms/mesh/polygon.h
     include/vclib/algorithms/mesh/create/cone.h
     include/vclib/algorithms/mesh/create/dodecahedron.h
     include/vclib/algorithms/mesh/create/hexahedron.h
@@ -85,7 +90,7 @@ set(HEADERS
     include/vclib/algorithms/import.h
     include/vclib/algorithms/intersection.h
     include/vclib/algorithms/point_sampling.h
-    include/vclib/algorithms/polygon.h
+
     include/vclib/algorithms/shuffle.h
     include/vclib/algorithms/smooth.h
     include/vclib/algorithms/sort.h
@@ -101,9 +106,7 @@ set(HEADERS
     include/vclib/algorithms/intersection/functions.h
     include/vclib/algorithms/intersection/mesh.h
     include/vclib/algorithms/intersection/misc.h
-    include/vclib/algorithms/polygon/create.h
-    include/vclib/algorithms/polygon/geometry.h
-    include/vclib/algorithms/polygon/topology.h
+
     include/vclib/algorithms/stat/quality.h
     include/vclib/algorithms/stat/selection.h
     include/vclib/algorithms/update/bounding_box.h

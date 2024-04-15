@@ -24,7 +24,7 @@
 #define VCL_ALGORITHMS_DISTANCE_ELEMENT_H
 
 #include <vclib/algorithms/core/bounding_box.h>
-#include <vclib/algorithms/polygon/geometry.h>
+#include <vclib/algorithms/core/polygon/geometry.h>
 #include <vclib/math/min_max.h>
 #include <vclib/mesh/requirements.h>
 

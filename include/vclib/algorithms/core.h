@@ -24,6 +24,7 @@
 #define VCL_ALGORITHMS_CORE_H
 
 #include "core/bounding_box.h"
+#include "core/polygon.h"
 
 /**
  * @defgroup algorithms_core Mesh Update Algorithms

@@ -23,7 +23,7 @@
 #ifndef VCL_IO_PLY_FACE_H
 #define VCL_IO_PLY_FACE_H
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/mesh/polygon.h>
 #include <vclib/exceptions/io_exceptions.h>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>

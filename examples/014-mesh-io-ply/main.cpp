@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "vclib/algorithms/polygon/geometry.h"
+#include "vclib/algorithms/core/polygon/geometry.h"
 #include "vclib/misc/logger/null_logger.h"
 #include <iostream>
 

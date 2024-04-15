@@ -23,7 +23,7 @@
 #ifndef VCL_IO_OFF_LOAD_H
 #define VCL_IO_OFF_LOAD_H
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/mesh/polygon.h>
 #include <vclib/exceptions/io_exceptions.h>
 #include <vclib/io/file_info.h>
 #include <vclib/io/read.h>

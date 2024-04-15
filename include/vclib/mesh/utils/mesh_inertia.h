@@ -25,7 +25,7 @@
 
 #include <Eigen/Eigenvalues>
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/core/polygon.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/point.h>
 

@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_SAMPLER_POINT_SAMPLER_H
 #define VCL_SPACE_SAMPLER_POINT_SAMPLER_H
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/core/polygon.h>
 #include <vclib/concepts/space/sampler.h>
 #include <vclib/mesh/requirements.h>
 

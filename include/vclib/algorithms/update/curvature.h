@@ -27,7 +27,7 @@
 
 #include <vclib/algorithms/intersection.h>
 #include <vclib/algorithms/point_sampling.h>
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/core/polygon.h>
 #include <vclib/algorithms/stat.h>
 #include <vclib/algorithms/update/normal.h>
 #include <vclib/math/transform.h>

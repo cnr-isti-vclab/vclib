@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_INTERSECTION_ELEMENT_H
 #define VCL_ALGORITHMS_INTERSECTION_ELEMENT_H
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/core/polygon.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/box.h>
 #include <vclib/space/sphere.h>

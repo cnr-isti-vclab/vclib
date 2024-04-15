@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_POLYGON_CREATE_H
-#define VCL_ALGORITHMS_POLYGON_CREATE_H
+#ifndef VCL_ALGORITHMS_CORE_POLYGON_CREATE_H
+#define VCL_ALGORITHMS_CORE_POLYGON_CREATE_H
 
 #include <vclib/space/polygon.h>
 
@@ -56,4 +56,4 @@ PolygonType createCircle(uint n, typename PolygonType::ScalarType radius = 1.0)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_POLYGON_CREATE_H
+#endif // VCL_ALGORITHMS_CORE_POLYGON_CREATE_H
