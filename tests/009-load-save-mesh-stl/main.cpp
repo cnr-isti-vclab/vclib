@@ -21,7 +21,7 @@
  ****************************************************************************/
 
 #include <catch2/catch_test_macros.hpp>
-#include <vclib/algorithms/create/hexahedron.h>
+#include <vclib/algorithms/mesh/create/hexahedron.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 

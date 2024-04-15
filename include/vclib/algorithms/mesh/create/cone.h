@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CREATE_CONE_H
-#define VCL_ALGORITHMS_CREATE_CONE_H
+#ifndef VCL_ALGORITHMS_MESH_CREATE_CONE_H
+#define VCL_ALGORITHMS_MESH_CREATE_CONE_H
 
 #include <vclib/math/base.h>
 #include <vclib/mesh/requirements.h>
@@ -125,4 +125,4 @@ MeshType createCylinder(auto radius, auto height, const uint subdivisions = 36)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CREATE_CONE_H
+#endif // VCL_ALGORITHMS_MESH_CREATE_CONE_H

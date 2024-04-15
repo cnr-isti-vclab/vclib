@@ -60,9 +60,18 @@ set(HEADERS
     include/vclib/space.h
     include/vclib/types.h
     include/vclib/views.h
+
+    include/vclib/algorithms/mesh/create.h
+    include/vclib/algorithms/mesh/create/cone.h
+    include/vclib/algorithms/mesh/create/dodecahedron.h
+    include/vclib/algorithms/mesh/create/hexahedron.h
+    include/vclib/algorithms/mesh/create/icosahedron.h
+    include/vclib/algorithms/mesh/create/sphere.h
+    include/vclib/algorithms/mesh/create/tetrahedron.h
+
+
     include/vclib/algorithms/bounding_box.h
     include/vclib/algorithms/clean.h
-    include/vclib/algorithms/create.h
     include/vclib/algorithms/distance.h
     include/vclib/algorithms/export.h
     include/vclib/algorithms/filter.h
@@ -76,12 +85,6 @@ set(HEADERS
     include/vclib/algorithms/sort.h
     include/vclib/algorithms/stat.h
     include/vclib/algorithms/update.h
-    include/vclib/algorithms/create/cone.h
-    include/vclib/algorithms/create/dodecahedron.h
-    include/vclib/algorithms/create/hexahedron.h
-    include/vclib/algorithms/create/icosahedron.h
-    include/vclib/algorithms/create/sphere.h
-    include/vclib/algorithms/create/tetrahedron.h
     include/vclib/algorithms/distance/functions.h
     include/vclib/algorithms/distance/element.h
     include/vclib/algorithms/distance/mesh.h

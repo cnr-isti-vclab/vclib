@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CREATE_SPHERE_H
-#define VCL_ALGORITHMS_CREATE_SPHERE_H
+#ifndef VCL_ALGORITHMS_MESH_CREATE_SPHERE_H
+#define VCL_ALGORITHMS_MESH_CREATE_SPHERE_H
 
 #include <vclib/algorithms/clean.h>
 #include <vclib/algorithms/update/transform.h>
@@ -465,4 +465,4 @@ MeshType createSphere()
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CREATE_SPHERE_H
+#endif // VCL_ALGORITHMS_MESH_CREATE_SPHERE_H

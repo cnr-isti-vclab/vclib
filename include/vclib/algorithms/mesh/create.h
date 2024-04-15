@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CREATE_H
-#define VCL_ALGORITHMS_CREATE_H
+#ifndef VCL_ALGORITHMS_MESH_CREATE_H
+#define VCL_ALGORITHMS_MESH_CREATE_H
 
 #include "create/cone.h"
 #include "create/dodecahedron.h"
@@ -33,12 +33,12 @@
 /**
  * @defgroup create Mesh Creation Algorithms
  *
- * @ingroup algorithms
+ * @ingroup algorithms-mesh
  *
  * @brief List of Mesh Creation algorithms.
  *
  * You can access these algorithms by including `#include
- * <vclib/algorithms/create.h>`
+ * <vclib/algorithms/mesh/create.h>`
  */
 
-#endif // VCL_ALGORITHMS_CREATE_H
+#endif // VCL_ALGORITHMS_MESH_CREATE_H

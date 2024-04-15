@@ -20,38 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_H
-#define VCL_ALGORITHMS_H
+#ifndef VCL_ALGORITHMS_MESH_H
+#define VCL_ALGORITHMS_MESH_H
 
-#include "algorithms/core.h"
-#include "algorithms/mesh.h"
-
-#include "algorithms/bounding_box.h"
-#include "algorithms/clean.h"
-#include "algorithms/distance.h"
-#include "algorithms/export.h"
-#include "algorithms/filter.h"
-#include "algorithms/fitting.h"
-#include "algorithms/import.h"
-#include "algorithms/intersection.h"
-#include "algorithms/point_sampling.h"
-#include "algorithms/polygon.h"
-#include "algorithms/shuffle.h"
-#include "algorithms/smooth.h"
-#include "algorithms/sort.h"
-#include "algorithms/stat.h"
-#include "algorithms/update.h"
+#include "mesh/create.h"
 
 /**
- * @defgroup algorithms Algorithms
+ * @defgroup algorithms-mesh Mesh Algorithms
  *
- * @brief List of function algorithms of VCLib.
+ * @ingroup algorithms
  *
- * These algorithms are divided into two main categories: Core Algorithms and
- * Mesh Algorithms and Point.
+ * @brief List of Mesh algorithms.
  *
- * You can access all the algorithms of VCLib by including
- * `#include <vclib/algorithms.h>`
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/mesh.h>`
  */
 
-#endif // VCL_ALGORITHMS_H
+#endif // VCL_ALGORITHMS_MESH_H

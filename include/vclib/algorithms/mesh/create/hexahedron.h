@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CREATE_HEXAHEDRON_H
-#define VCL_ALGORITHMS_CREATE_HEXAHEDRON_H
+#ifndef VCL_ALGORITHMS_MESH_CREATE_HEXAHEDRON_H
+#define VCL_ALGORITHMS_MESH_CREATE_HEXAHEDRON_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -159,4 +159,4 @@ MeshType createCube()
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CREATE_HEXAHEDRON_H
+#endif // VCL_ALGORITHMS_MESH_CREATE_HEXAHEDRON_H
