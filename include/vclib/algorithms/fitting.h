@@ -58,12 +58,17 @@ Plane<Scalar> fitPlaneToPointCloud(const std::vector<Point3<Scalar>>& pointVec)
  * @brief Compute the plane best fitting a wighted set of points
  * The algorithm used is the wighted Covariance matrix eigenvector approach.
  */
-template<typename Scalar>
-Plane<Scalar> fitPlaneToWeightedPointCloud(
-    const std::vector<Point3<Scalar>>& pointVec)
+template<Point3Concept PointType>
+Plane<typename PointType::ScalarType> fitPlaneToWeightedPointCloud(
+    const std::vector<PointType>& pointVec,
+    const std::vector<typename PointType::ScalarType>& weights)
 {
-    Matrix33<Scalar> covMat = weightedCovarianceMatrixOfPointCloud(pointVec);
-    Point3<Scalar>   b      = polygonWeighedBarycenter(pointVec);
+    using Scalar = typename PointType::ScalarType;
+
+    Matrix33<Scalar> covMat =
+        weightedCovarianceMatrixOfPointCloud(pointVec, weights);
+    Point3<Scalar> b =
+        Polygon<PointType>::weightedBarycenter(pointVec, weights);
 
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix<Scalar, 3, 3>> eig(covMat);
 
