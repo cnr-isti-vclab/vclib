@@ -23,9 +23,8 @@
 #ifndef VCL_ALGORITHMS_FITTING_H
 #define VCL_ALGORITHMS_FITTING_H
 
+#include <vclib/algorithms/mesh/stat.h>
 #include <vclib/space/plane.h>
-
-#include "stat.h"
 
 namespace vcl {
 

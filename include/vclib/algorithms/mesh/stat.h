@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_H
-#define VCL_ALGORITHMS_STAT_H
+#ifndef VCL_ALGORITHMS_MESH_STAT_H
+#define VCL_ALGORITHMS_MESH_STAT_H
 
 #include <vector>
 
@@ -373,4 +373,4 @@ std::vector<ScalarType> vertexRadiusFromWeights(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_STAT_H
+#endif // VCL_ALGORITHMS_MESH_STAT_H

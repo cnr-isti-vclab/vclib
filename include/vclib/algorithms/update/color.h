@@ -25,12 +25,11 @@
 
 #include <set>
 
+#include <vclib/algorithms/mesh/stat.h>
 #include <vclib/math/perlin_noise.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/color.h>
 #include <vclib/views/mesh.h>
-
-#include "../stat.h"
 
 namespace vcl {
 

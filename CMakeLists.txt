@@ -83,6 +83,7 @@ set(HEADERS
     include/vclib/algorithms/mesh/import.h
     include/vclib/algorithms/mesh/polygon.h
     include/vclib/algorithms/mesh/sort.h
+    include/vclib/algorithms/mesh/stat.h
     include/vclib/algorithms/mesh/create/cone.h
     include/vclib/algorithms/mesh/create/dodecahedron.h
     include/vclib/algorithms/mesh/create/hexahedron.h
@@ -91,6 +92,8 @@ set(HEADERS
     include/vclib/algorithms/mesh/create/tetrahedron.h
     include/vclib/algorithms/mesh/export/matrix.h
     include/vclib/algorithms/mesh/import/matrix.h
+    include/vclib/algorithms/mesh/stat/quality.h
+    include/vclib/algorithms/mesh/stat/selection.h
 
 
 
@@ -105,7 +108,7 @@ set(HEADERS
     include/vclib/algorithms/shuffle.h
     include/vclib/algorithms/smooth.h
 
-    include/vclib/algorithms/stat.h
+
     include/vclib/algorithms/update.h
 
 
@@ -114,8 +117,7 @@ set(HEADERS
     include/vclib/algorithms/intersection/mesh.h
     include/vclib/algorithms/intersection/misc.h
 
-    include/vclib/algorithms/stat/quality.h
-    include/vclib/algorithms/stat/selection.h
+
     include/vclib/algorithms/update/bounding_box.h
     include/vclib/algorithms/update/color.h
     include/vclib/algorithms/update/curvature.h

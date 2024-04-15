@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_STAT_SELECTION_H
-#define VCL_ALGORITHMS_STAT_SELECTION_H
+#ifndef VCL_ALGORITHMS_MESH_STAT_SELECTION_H
+#define VCL_ALGORITHMS_MESH_STAT_SELECTION_H
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/views/mesh.h>
@@ -42,4 +42,4 @@ uint faceSelectionNumber(const MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_STAT_SELECTION_H
+#endif // VCL_ALGORITHMS_MESH_STAT_SELECTION_H

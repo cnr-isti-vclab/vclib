@@ -31,7 +31,6 @@
 #include "algorithms/point_sampling.h"
 #include "algorithms/shuffle.h"
 #include "algorithms/smooth.h"
-#include "algorithms/stat.h"
 #include "algorithms/update.h"
 
 /**

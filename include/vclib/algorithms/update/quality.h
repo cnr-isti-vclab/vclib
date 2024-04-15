@@ -24,9 +24,8 @@
 #define VCL_ALGORITHMS_UPDATE_QUALITY_H
 
 #include <vclib/algorithms/core/polygon.h>
+#include <vclib/algorithms/mesh/stat.h>
 #include <vclib/mesh/requirements.h>
-
-#include "../stat.h"
 
 namespace vcl {
 
