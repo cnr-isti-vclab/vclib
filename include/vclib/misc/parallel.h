@@ -35,13 +35,13 @@
 #if defined(__clang__) && defined(__APPLE__)
 #if __has_include(<pstld/pstld.h>)
 #include <pstld/pstld.h>
-#else // if pstld is not found, include the header only
+#else                       // if pstld is not found, include the header only
 // inclusion for usage of vclib without cmake
 #define PSTLD_HEADER_ONLY   // no prebuilt library, only the header
 #define PSTLD_HACK_INTO_STD // hack into std namespace
 #include "../../../external/pstld-master/pstld/pstld.h"
 #endif // __has_include(<pstld/pstld.h>)
-#else // if not apple clang
+#else  // if not apple clang
 // tbb and qt conflicts: if both are linked, we need to first undef Qt's
 // emit - see: https://github.com/oneapi-src/oneTBB/issues/547
 #ifndef Q_MOC_RUN
@@ -50,7 +50,7 @@
 #include <execution>
 #define emit // restore the macro definition of "emit", as it was
              // defined in gtmetamacros.h
-#else // if emit is not defined
+#else        // if emit is not defined
 #include <execution>
 #endif // emit
 #endif // Q_MOC_RUN

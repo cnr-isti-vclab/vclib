@@ -41,11 +41,10 @@ struct ElemId
     };
 };
 
-constexpr const char*
-    ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
-        "Vertex",
-        "Face",
-        "Edge",
+constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
+    "Vertex",
+    "Face",
+    "Edge",
 };
 
 /**

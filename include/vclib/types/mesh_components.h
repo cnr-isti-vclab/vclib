@@ -57,27 +57,26 @@ struct CompId
 
 constexpr uint COMPONENTS_NUMBER = 19;
 
-constexpr const char*
-    COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
-        "BitFlags",
-        "Coordinate",
-        "Normal",
-        "Color",
-        "Quality",
-        "Mark",
-        "PrincipalCurvature",
-        "TexCoord",
-        "VertexPointers",
-        "AdjacentEdges",
-        "AdjacentFaces",
-        "AdjacentVertices",
-        "WedgeColors",
-        "WedgeTexCoords",
-        "BoundingBox",
-        "Name",
-        "TexturePaths",
-        "TransformMatrix",
-        "CustomComponents",
+constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
+    "BitFlags",
+    "Coordinate",
+    "Normal",
+    "Color",
+    "Quality",
+    "Mark",
+    "PrincipalCurvature",
+    "TexCoord",
+    "VertexPointers",
+    "AdjacentEdges",
+    "AdjacentFaces",
+    "AdjacentVertices",
+    "WedgeColors",
+    "WedgeTexCoords",
+    "BoundingBox",
+    "Name",
+    "TexturePaths",
+    "TransformMatrix",
+    "CustomComponents",
 };
 
 /**
