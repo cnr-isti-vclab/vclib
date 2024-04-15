@@ -26,7 +26,6 @@
 #include "algorithms/core.h"
 #include "algorithms/mesh.h"
 
-#include "algorithms/clean.h"
 #include "algorithms/filter.h"
 #include "algorithms/fitting.h"
 #include "algorithms/intersection.h"

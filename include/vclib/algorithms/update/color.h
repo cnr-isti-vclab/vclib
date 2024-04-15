@@ -30,7 +30,6 @@
 #include <vclib/space/color.h>
 #include <vclib/views/mesh.h>
 
-#include "../clean.h"
 #include "../stat.h"
 
 namespace vcl {

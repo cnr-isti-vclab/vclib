@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CLEAN_H
-#define VCL_ALGORITHMS_CLEAN_H
+#ifndef VCL_ALGORITHMS_MESH_CLEAN_H
+#define VCL_ALGORITHMS_MESH_CLEAN_H
 
 #include <map>
 #include <set>
@@ -36,7 +36,7 @@
 /**
  * @defgroup clean Cleaning and Repairing Algorithms
  *
- * @ingroup algorithms
+ * @ingroup algorithms_mesh
  *
  * @brief List of Mesh Cleaning and repairing algorithms.
  *
@@ -794,4 +794,4 @@ uint numberConnectedComponents(const MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CLEAN_H
+#endif // VCL_ALGORITHMS_MESH_CLEAN_H

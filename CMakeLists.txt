@@ -75,6 +75,7 @@ set(HEADERS
     include/vclib/algorithms/core/polygon/topology.h
 
     include/vclib/algorithms/mesh/bounding_box.h
+    include/vclib/algorithms/mesh/clean.h
     include/vclib/algorithms/mesh/create.h
     include/vclib/algorithms/mesh/distance.h
     include/vclib/algorithms/mesh/export.h
@@ -92,7 +93,7 @@ set(HEADERS
 
 
 
-    include/vclib/algorithms/clean.h
+
 
     include/vclib/algorithms/filter.h
     include/vclib/algorithms/fitting.h

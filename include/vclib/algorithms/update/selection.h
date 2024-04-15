@@ -23,10 +23,9 @@
 #ifndef VCL_ALGORITHMS_UPDATE_SELECTION_H
 #define VCL_ALGORITHMS_UPDATE_SELECTION_H
 
+#include <vclib/algorithms/mesh/clean.h>
 #include <vclib/concepts/range.h>
 #include <vclib/mesh/requirements.h>
-
-#include "../clean.h"
 
 namespace vcl {
 
