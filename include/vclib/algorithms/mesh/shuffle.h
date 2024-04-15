@@ -20,13 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_SHUFFLE_H
-#define VCL_ALGORITHMS_SHUFFLE_H
+#ifndef VCL_ALGORITHMS_MESH_SHUFFLE_H
+#define VCL_ALGORITHMS_MESH_SHUFFLE_H
 
 #include <random>
 
 #include <vclib/mesh/requirements.h>
-#include <vclib/misc/timer.h>
 
 namespace vcl {
 
@@ -168,4 +167,4 @@ std::vector<uint> fillAndShuffleFaceIndexVector(
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_SHUFFLE_H
+#endif // VCL_ALGORITHMS_MESH_SHUFFLE_H

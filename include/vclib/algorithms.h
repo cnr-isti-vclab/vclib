@@ -28,7 +28,6 @@
 
 #include "algorithms/intersection.h"
 #include "algorithms/point_sampling.h"
-#include "algorithms/shuffle.h"
 #include "algorithms/update.h"
 
 /**

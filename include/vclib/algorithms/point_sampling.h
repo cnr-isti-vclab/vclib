@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_POINT_SAMPLING_H
 #define VCL_ALGORITHMS_POINT_SAMPLING_H
 
-#include <vclib/algorithms/shuffle.h>
+#include <vclib/algorithms/mesh/shuffle.h>
 #include <vclib/algorithms/mesh/stat.h>
 #include <vclib/math/random.h>
 #include <vclib/mesh/requirements.h>
