@@ -305,7 +305,7 @@ public:
         for (auto i = begin; i != end; ++i) {
             const PointT& p0 = *i;
             auto          i1 = i;
-            ++i;
+            ++i1;
             if (i1 == end)
                 i1 = begin;
             const PointT& p1 = *i1;
