@@ -35,7 +35,7 @@ namespace vcl {
 
 namespace detail {
 
-static const float OFF_GEOMVIEW_COLOR_MAP[148][4] = {
+constexpr float OFF_GEOMVIEW_COLOR_MAP[148][4] = {
     {1.0f,  1.0f,  1.0f,  1.0f },
     {1.0f,  1.0f,  1.0f,  1.0f },
     {1.0f,  1.0f,  1.0f,  1.0f },
