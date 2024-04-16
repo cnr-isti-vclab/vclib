@@ -1,9 +1,10 @@
 #ifndef VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
 #define VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
 
+#include <vclib/concepts/mesh/elements/vertex.h>
 #include <vclib/concepts/space/sampler.h>
 #include <vclib/iterators/mesh.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/views/mesh/components.h>
 
 namespace vcl {
 

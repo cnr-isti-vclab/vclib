@@ -25,8 +25,9 @@
 
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/concepts/mesh/elements/edge.h>
+#include <vclib/concepts/mesh/mesh_concept.h>
 #include <vclib/concepts/space/sampler.h>
-#include <vclib/mesh/requirements.h>
+#include <vclib/mesh/requirements/vertex_requirements.h>
 #include <vclib/views/mesh.h>
 
 namespace vcl {

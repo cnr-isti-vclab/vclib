@@ -26,8 +26,6 @@
 #include <set>
 #include <unordered_map>
 
-#include <vclib/mesh/requirements.h>
-
 #include "abstract_grid.h"
 #include "regular_grid.h"
 
