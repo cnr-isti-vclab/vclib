@@ -25,8 +25,8 @@
 
 #include <set>
 
-#include <vclib/exceptions/mesh_exceptions.h>
 #include <vclib/concepts/mesh.h>
+#include <vclib/exceptions/mesh_exceptions.h>
 #include <vclib/iterators/mesh.h>
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/comparators.h>

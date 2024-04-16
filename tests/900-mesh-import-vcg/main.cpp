@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <vclib/algorithms/mesh/create.h>
 #include <vclib/algorithms/core/polygon.h>
+#include <vclib/algorithms/mesh/create.h>
 #include <vclib/ext/vcg/export.h>
 #include <vclib/ext/vcg/import.h>
 #include <vclib/meshes.h>

@@ -63,7 +63,7 @@ Plane<Scalar> fitPlaneToPointCloud(const std::vector<Point3<Scalar>>& pointVec)
  */
 template<Point3Concept PointType>
 Plane<typename PointType::ScalarType> fitPlaneToWeightedPointCloud(
-    const std::vector<PointType>& pointVec,
+    const std::vector<PointType>&                      pointVec,
     const std::vector<typename PointType::ScalarType>& weights)
 {
     using Scalar = typename PointType::ScalarType;
