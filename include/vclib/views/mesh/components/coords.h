@@ -32,24 +32,23 @@ namespace vcl::views {
 
 namespace detail {
 
+constexpr auto constCoord = [](const auto& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->coord();
+    else
+        return p.coord();
+};
+
+constexpr auto coord = [](auto& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->coord();
+    else
+        return p.coord();
+};
+
 struct CoordsView
 {
     constexpr CoordsView() = default;
-
-    inline static constexpr auto constCoord =
-        [](const auto& p) -> decltype(auto) {
-        if constexpr (IsPointer<decltype(p)>)
-            return p->coord();
-        else
-            return p.coord();
-    };
-
-    inline static constexpr auto coord = [](auto& p) -> decltype(auto) {
-        if constexpr (IsPointer<decltype(p)>)
-            return p->coord();
-        else
-            return p.coord();
-    };
 
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, CoordsView)

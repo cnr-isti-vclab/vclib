@@ -32,24 +32,23 @@ namespace vcl::views {
 
 namespace detail {
 
+constexpr auto constNormal = [](const auto& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->normal();
+    else
+        return p.normal();
+};
+
+constexpr auto normal = [](auto& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->normal();
+    else
+        return p.normal();
+};
+
 struct NormalsView
 {
     constexpr NormalsView() = default;
-
-    inline static constexpr auto constNormal =
-        [](const auto& p) -> decltype(auto) {
-        if constexpr (IsPointer<decltype(p)>)
-            return p->normal();
-        else
-            return p.normal();
-    };
-
-    inline static constexpr auto normal = [](auto& p) -> decltype(auto) {
-        if constexpr (IsPointer<decltype(p)>)
-            return p->normal();
-        else
-            return p.normal();
-    };
 
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, NormalsView)
