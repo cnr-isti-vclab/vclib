@@ -36,14 +36,7 @@ namespace detail {
 template<typename T>
 concept CleanWedgeColorsConcept = comp::HasWedgeColors<std::remove_cvref_t<T>>;
 
-constexpr auto constColor = [](const auto& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->color();
-    else
-        return p.color();
-};
-
-constexpr auto color = [](auto& p) -> decltype(auto) {
+constexpr auto color = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->color();
     else
@@ -57,11 +50,7 @@ struct ColorsView
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, ColorsView)
     {
-        using ElemType = std::ranges::range_value_t<R>;
-        if constexpr (IsConst<ElemType>)
-            return std::forward<R>(r) | std::views::transform(constColor);
-        else
-            return std::forward<R>(r) | std::views::transform(color);
+        return std::forward<R>(r) | std::views::transform(color);
     }
 
     template<CleanWedgeColorsConcept R>

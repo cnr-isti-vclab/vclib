@@ -32,14 +32,7 @@ namespace vcl::views {
 
 namespace detail {
 
-constexpr auto constPrincipalCurvature = [](const auto& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->principalCurvature();
-    else
-        return p.principalCurvature();
-};
-
-constexpr auto principalCurvature = [](auto& p) -> decltype(auto) {
+constexpr auto principalCurvature = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->principalCurvature();
     else
@@ -53,13 +46,7 @@ struct PrincipalCurvaturesView
     template<std::ranges::range R>
     friend constexpr auto operator|(R&& r, PrincipalCurvaturesView)
     {
-        using ElemType = std::ranges::range_value_t<R>;
-        if constexpr (IsConst<ElemType>)
-            return std::forward<R>(r) |
-                   std::views::transform(constPrincipalCurvature);
-        else
-            return std::forward<R>(r) |
-                   std::views::transform(principalCurvature);
+        return std::forward<R>(r) | std::views::transform(principalCurvature);
     }
 };
 

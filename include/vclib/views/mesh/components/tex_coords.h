@@ -37,14 +37,7 @@ template<typename T>
 concept CleanWedgeTexCoordsConcept =
     comp::HasWedgeTexCoords<std::remove_cvref_t<T>>;
 
-constexpr auto constTexCoord = [](const auto& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->texCoord();
-    else
-        return p.texCoord();
-};
-
-constexpr auto texCoord = [](auto& p) -> decltype(auto) {
+constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->texCoord();
     else
@@ -59,10 +52,7 @@ struct TexCoordsView
     friend constexpr auto operator|(R&& r, TexCoordsView)
     {
         using ElemType = std::ranges::range_value_t<R>;
-        if constexpr (IsConst<ElemType>)
-            return std::forward<R>(r) | std::views::transform(constTexCoord);
-        else
-            return std::forward<R>(r) | std::views::transform(texCoord);
+        return std::forward<R>(r) | std::views::transform(texCoord);
     }
 
     template<CleanWedgeTexCoordsConcept R>

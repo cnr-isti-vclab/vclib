@@ -21,15 +21,39 @@
  ****************************************************************************/
 
 #include <iostream>
+#include <vector>
 
-#include <vclib/space.h>
+#include <vclib/views.h>
+
+struct Point
+{
+    float x, y, z;
+};
+
+class Vertex
+{
+    Point p;
+public:
+    Vertex(float x, float y, float z) : p{x, y, z} {}
+
+    Point& coord() { return p; }
+    const Point& coord() const { return p; }
+};
 
 int main()
 {
-    auto f = []<typename T>() {
-        std::cout << typeid(T).name() << std::endl;
-    };
+    std::vector<Vertex> v;
 
-    // call a function for each type in a parameter pack
-    vcl::ForEachType<int, float, double>::apply(f);
+    v.push_back(Vertex(-0.5, -0.5, 0.5));
+    v.push_back(Vertex(0.5, -0.5, 0.5));
+    v.push_back(Vertex(-0.5, 0.5, 0.5));
+    v.push_back(Vertex(0.5, 0.5, 0.5));
+
+    for (auto& p : v | vcl::views::coords) {
+        p.x += 1;
+    }
+
+    for (const auto& p : v | vcl::views::coords) {
+        std::cout << p.x << " " << p.y << " " << p.z << std::endl;
+    }
 }
