@@ -40,5 +40,6 @@
   - [ ] implement non-static member functions for FileInfo class
 - External:
   - [ ] remove zip-iterator library when c++23 zip-view will be supported
+  - [ ] look for a json header only library that is compatible with c++20 modules
 - Documentation:
   - [ ] How to implement a user component

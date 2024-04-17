@@ -33,9 +33,6 @@ option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
     "Allow use of bundled Mapbox-Eaurcut source" ON)
 
-# Nlohmann-json
-option(VCLIB_ALLOW_BUNDLED_NLOHMANN_JSON "Allow use of bundled Nlohmann-json source" ON)
-
 # Zip iterator
 option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
     "Allow use of bundled ZipViews source" ON)
@@ -71,9 +68,6 @@ include(eigen.cmake)
 
 ### Mapbox-Earcut
 include(mapbox.cmake)
-
-### Jeayeson
-include(nlohmann-json.cmake)
 
 ### Zip iterator
 include(zip-views.cmake)
