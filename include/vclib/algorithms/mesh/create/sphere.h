@@ -73,7 +73,7 @@ namespace detail {
 
 namespace cts { // Cube to Sphere
 
-static const vcl::Point3d origins[6] = {
+const vcl::Point3d origins[6] = {
     Point3d(-1.0, -1.0, -1.0),
     Point3d(1.0, -1.0, -1.0),
     Point3d(1.0, -1.0, 1.0),
@@ -81,7 +81,7 @@ static const vcl::Point3d origins[6] = {
     Point3d(-1.0, 1.0, -1.0),
     Point3d(-1.0, -1.0, 1.0)};
 
-static const Point3d rights[6] = {
+const Point3d rights[6] = {
     Point3d(2.0, 0.0, 0.0),
     Point3d(0.0, 0.0, 2.0),
     Point3d(-2.0, 0.0, 0.0),
@@ -89,7 +89,7 @@ static const Point3d rights[6] = {
     Point3d(2.0, 0.0, 0.0),
     Point3d(2.0, 0.0, 0.0)};
 
-static const Point3d ups[6] = {
+const Point3d ups[6] = {
     Point3d(0.0, 2.0, 0.0),
     Point3d(0.0, 2.0, 0.0),
     Point3d(0.0, 2.0, 0.0),
