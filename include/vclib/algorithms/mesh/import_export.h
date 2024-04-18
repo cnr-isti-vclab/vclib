@@ -20,9 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_MESH_EXPORT_H
-#define VCL_ALGORITHMS_MESH_EXPORT_H
+#ifndef VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
+#define VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
 
-#include "export/matrix.h"
+#include "import_export/export_matrix.h"
+#include "import_export/import_matrix.h"
 
-#endif // VCL_ALGORITHMS_MESH_EXPORT_H
+#endif // VCL_ALGORITHMS_MESH_IMPORT_EXPORT_H
