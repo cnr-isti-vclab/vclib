@@ -33,10 +33,12 @@ struct Point
 class Vertex
 {
     Point p;
+
 public:
-    Vertex(float x, float y, float z) : p{x, y, z} {}
+    Vertex(float x, float y, float z) : p {x, y, z} {}
 
     Point& coord() { return p; }
+
     const Point& coord() const { return p; }
 };
 
