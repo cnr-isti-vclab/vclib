@@ -32,7 +32,7 @@ namespace vcl::views {
 
 namespace detail {
 
-constexpr auto coord = [](auto&& p) -> decltype(auto) {
+inline constexpr auto coord = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->coord();
     else

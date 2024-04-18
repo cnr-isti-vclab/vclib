@@ -37,7 +37,7 @@ template<typename T>
 concept CleanWedgeTexCoordsConcept =
     comp::HasWedgeTexCoords<std::remove_cvref_t<T>>;
 
-constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
+inline constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->texCoord();
     else

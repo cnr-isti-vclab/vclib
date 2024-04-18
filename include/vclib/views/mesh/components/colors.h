@@ -36,7 +36,7 @@ namespace detail {
 template<typename T>
 concept CleanWedgeColorsConcept = comp::HasWedgeColors<std::remove_cvref_t<T>>;
 
-constexpr auto color = [](auto&& p) -> decltype(auto) {
+inline constexpr auto color = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->color();
     else
