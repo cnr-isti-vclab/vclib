@@ -347,7 +347,8 @@ set(HEADERS
     include/vclib/views/mesh/components/tex_coords.h
     include/vclib/views/mesh/elements/edge.h
     include/vclib/views/mesh/elements/face.h
-    include/vclib/views/mesh/elements/vertex.h)
+    include/vclib/views/mesh/elements/vertex.h
+)
 
 # headers and sources to include only if using VCG
 if (TARGET vclib-external-vcg)
