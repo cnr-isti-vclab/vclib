@@ -24,7 +24,7 @@ namespace vcl {
  * @ingroup elements
  */
 template<typename MeshType, typename... Comps>
-class %EL_UC% : public Element<%EL_U%, MeshType, Comps...>
+class %EL_UC% : public Element<ElemId::%EL_U%, MeshType, Comps...>
 {
 };
 
@@ -41,7 +41,6 @@ public:
      * their empty constructor is called only when they become available).
      */
     %EL_UC%() = default;
-}
 };
 
 } // namespace vcl
