@@ -66,12 +66,14 @@ def replace_shader_headers_in_dir(folder_path):
 
 if __name__ == "__main__":
     replace_headers_in_dir('../include/vclib/')
-    replace_headers_in_dir('../test/')
+    replace_headers_in_dir('../examples/')
+    replace_headers_in_dir('../tests/')
     replace_cmake_headers_in_dir('../')
     replace_cmake_headers_in_dir('../include/vclib/')
     replace_cmake_headers_in_dir('../external/', recursive=False)
     replace_cmake_headers_in_dir('../cmake/')
-    replace_cmake_headers_in_dir('../test/')
+    replace_cmake_headers_in_dir('../examples/')
+    replace_cmake_headers_in_dir('../tests/')
 
     # for vclib-render module, that has sources and shaders in different folders
     if os.path.exists('../src/'):
