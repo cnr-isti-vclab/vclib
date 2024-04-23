@@ -189,9 +189,9 @@ public:
             unsigned int i = 0;
             for (auto it = begin; it != end; ++it) {
                 if constexpr (std::integral<std::ranges::range_value_t<Rng>>)
-                    f.vertex(i) = &Base::mParentMesh->vertex(*it);
+                    f.setVertex(i, &Base::mParentMesh->vertex(*it));
                 else
-                    f.vertex(i) = *it;
+                    f.setVertex(i, *it);
                 ++i;
             }
         }
@@ -1198,7 +1198,7 @@ private:
     {
         // position on which add the vertex
         const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-        f.vertex(n)         = v; // set the vertex
+        f.setVertex(n, v); // set the vertex
         // set the remanining vertices, recursive variadics
         addFaceHelper(f, args...);
     }
@@ -1208,7 +1208,7 @@ private:
     {
         // position on which add the vertex
         const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-        f.vertex(n)         = &Base::mParentMesh->vertex(vid); // set the vertex
+        f.setVertex(n, &Base::mParentMesh->vertex(vid)); // set the vertex
         // set the remanining vertices, recursive variadics
         addFaceHelper(f, args...);
     }
@@ -1224,7 +1224,7 @@ private:
     {
         f.importFrom(mf); // import all the components from mf
         for (uint i = basetri, j = 0; i < basetri + 3; i++, j++) {
-            f.vertex(j) = base + (mf.vertex(tris[i]) - mvbase);
+            f.setVertex(j, base + (mf.vertex(tris[i]) - mvbase));
 
             // wedge colors
             if constexpr (

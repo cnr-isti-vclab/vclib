@@ -390,8 +390,8 @@ MeshType createSphereIcosahedron(const SphereConcept auto& sp, uint divisions)
             uint vbid = mesh.addVertex(pb);
             uint vcid = mesh.addVertex(pc);
 
-            f0.vertex(1) = &mesh.vertex(vaid);
-            f0.vertex(2) = &mesh.vertex(vcid);
+            f0.setVertex(1, &mesh.vertex(vaid));
+            f0.setVertex(2, &mesh.vertex(vcid));
             mesh.addFace(vaid, v1id, vbid);
             mesh.addFace(vcid, vbid, v2id);
             mesh.addFace(vaid, vbid, vcid);

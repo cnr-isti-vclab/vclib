@@ -282,7 +282,7 @@ void importMeshFromVCGMesh(
                 }
                 for (uint j = 0; j < 3; ++j) {
                     uint vi = vcg::tri::Index(vcgMesh, vcgMesh.face[i].V(j));
-                    face.vertex(j) = &mesh.vertex(vi);
+                    face.setVertex(j, &mesh.vertex(vi));
                 }
 
                 // flags

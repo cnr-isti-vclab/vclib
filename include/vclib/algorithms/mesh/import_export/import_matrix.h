@@ -447,7 +447,7 @@ void importFacesFromMatrix(
             f.resizeVertices(vertexNumber);
 
             for (uint j = 0; j < vertexNumber; ++j)
-                f.vertex(j) = &mesh.vertex(faces(i, j));
+                f.setVertex(j, &mesh.vertex(faces(i, j)));
         }
     }
     else { // the vertex number of mesh faces is fixed
@@ -459,7 +459,7 @@ void importFacesFromMatrix(
             uint i = 0;
             for (auto& f : mesh.faces()) {
                 for (uint j = 0; j < VN; ++j)
-                    f.vertex(j) = &mesh.vertex(faces(i, j));
+                    f.setVertex(j, &mesh.vertex(faces(i, j)));
             }
         }
         else { // faces of matrix and mesh have different sizes
@@ -516,8 +516,8 @@ void importEdgesFromMatrix(
 
     uint i = 0;
     for (auto& e : mesh.edges()) {
-        e.vertex(0) = &mesh.vertex(edges(i, 0));
-        e.vertex(1) = &mesh.vertex(edges(i, 1));
+        e.setVertex(0, &mesh.vertex(edges(i, 0)));
+        e.setVertex(1, &mesh.vertex(edges(i, 1)));
         i++;
     }
 }

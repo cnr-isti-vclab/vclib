@@ -123,7 +123,7 @@ SCENARIO("TriMesh usage")
             REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
             REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
 
-            m.face(1).vertex(2) = &m.vertex(3);
+            m.face(1).setVertex(2, &m.vertex(3));
             m.deleteVertex(2);
             REQUIRE(m.vertexNumber() == 102);
             REQUIRE(m.vertexContainerSize() == 103);

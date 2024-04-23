@@ -34,10 +34,10 @@ int main()
 
     m.number<vcl::ElemId::EDGE>();
 
-    m.edge(0).vertex(0) = &m.vertex(0);
-    m.edge(0).vertex(1) = &m.vertex(1);
-    m.edge(1).vertex(0) = &m.vertex(1);
-    m.edge(1).vertex(1) = &m.vertex(2);
+    m.edge(0).setVertex(0, &m.vertex(0));
+    m.edge(0).setVertex(1, &m.vertex(1));
+    m.edge(1).setVertex(0, &m.vertex(1));
+    m.edge(1).setVertex(1, &m.vertex(2));
 
     return 0;
 }

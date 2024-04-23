@@ -70,8 +70,8 @@ public:
      */
     void setVertices(VertexType* v0, VertexType* v1)
     {
-        VPtrs::vertex(0) = v0;
-        VPtrs::vertex(1) = v1;
+        VPtrs::setVertex(0, v0);
+        VPtrs::setVertex(1, v1);
     }
 };
 

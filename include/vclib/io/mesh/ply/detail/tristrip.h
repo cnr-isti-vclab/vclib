@@ -57,8 +57,11 @@ void facesFromPlyTriStrip(MeshType& m, const std::vector<int>& tristrip)
                 v = &m.vertex(tristrip[k + i]);
                 ++i;
             }
-            if (k % 2 == 0 != firstOddPos)
-                std::swap(f.vertex(0), f.vertex(1));
+            if (k % 2 == 0 != firstOddPos) {
+                auto* tmp = f.vertex(0);
+                f.setVertex(0, f.vertex(1));
+                f.setVertex(1, tmp);
+            }
         }
     }
 }

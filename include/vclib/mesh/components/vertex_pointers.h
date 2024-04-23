@@ -125,20 +125,12 @@ public:
     uint vertexNumber() const { return Base::container().size(); }
 
     /**
-     * @brief Returns a reference of the pointer to the i-th vertex of the
-     * element.
-     *
-     * You can use this function to set the i-th vertex:
-     *
-     * @code{.cpp}
-     * f.vertex(2) = &m.vertex(k); // the second vertex of f will point to
-     *                             // the k-th vertex of the mesh m.
-     * @endcode
+     * @brief Returns the pointer to the i-th vertex of the element.
      *
      * @param[in] i: the position of the required vertex in the container.
      * @return The pointer i-th vertex of the element.
      */
-    Vertex*& vertex(uint i) { return Base::container().at(i); }
+    Vertex* vertex(uint i) { return Base::container().at(i); }
 
     /**
      * @brief Returns a const pointer to the i-th vertex of the element.
@@ -473,7 +465,7 @@ private:
         if (ebase != nullptr && base != nullptr) {
             for (uint i = 0; i < e.vertexNumber(); ++i) {
                 if (e.vertex(i) != nullptr) {
-                    vertex(i) = base + (e.vertex(i) - ebase);
+                    setVertex(i, base + (e.vertex(i) - ebase));
                 }
             }
         }
