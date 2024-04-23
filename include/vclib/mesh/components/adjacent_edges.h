@@ -131,21 +131,13 @@ public:
     uint adjEdgesNumber() const { return Base::container().size(); }
 
     /**
-     * @brief Returns a reference of the pointer to the i-th adjacent edge of
-     * the element.
-     *
-     * You can use this function to set the i-th adjacent edge:
-     *
-     * @code{.cpp}
-     * e.adjEdge(2) = &m.edge(k); // the second adj edge of e will point to the
-     *                            // k-th edge of the mesh.
-     * @endcode
+     * @brief Returns the pointer to the i-th adjacent edge of the element.
      *
      * @param[in] i: the position of the required adjacent edge in the
      * container; the value must be between 0 and the number of adj edges.
      * @return The pointer to the i-th adjacent edge of the element.
      */
-    Edge*& adjEdge(uint i) { return Base::container().at(i); }
+    Edge* adjEdge(uint i) { return Base::container().at(i); }
 
     /**
      * @brief Returns a const pointer to the i-th adjacent edge of the element.
@@ -156,11 +148,11 @@ public:
     const Edge* adjEdge(uint i) const { return Base::container().at(i); }
 
     /**
-     * @brief Returns a reference of the pointer to the i-th adjacent edge of
-     * the element but using as index the module between i and the number of
-     * adjacent edges. You can use this function if you need to get the "next
-     * adjacent edge after position k", without check if it is less than the
-     * number of adj edges. Works also for negative numbers:
+     * @brief Returns the pointer to the i-th adjacent edge of the element but
+     * using as index the module between i and the number of adjacent edges. You
+     * can use this function if you need to get the "next adjacent edge after
+     * position k", without check if it is less than the number of adj edges.
+     * Works also for negative numbers:
      *
      * @code{.cpp}
      * k = pos; // some position of an adjacent edge
@@ -175,7 +167,7 @@ public:
      * adjEdgeNumber().
      * @return The pointer to the required adjacent edge of the element.
      */
-    Edge*& adjEdgeMod(int i) { return Base::container().atMod(i); }
+    Edge* adjEdgeMod(int i) { return Base::container().atMod(i); }
 
     /**
      * @brief Same of adjEdgeMod, but returns a const Pointer to the adjacent
@@ -474,7 +466,7 @@ private:
         if (ebase != nullptr && base != nullptr) {
             for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
                 if (e.adjEdge(i) != nullptr) {
-                    adjEdge(i) = base + (e.adjEdge(i) - ebase);
+                    setAdjEdge(i, base + (e.adjEdge(i) - ebase));
                 }
             }
         }

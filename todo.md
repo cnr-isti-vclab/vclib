@@ -10,6 +10,14 @@
     - [ ] set properly elements concepts
   - Containers:
     - Element container should provide fast compact function, that does not preserve elements order
+  - Components:
+    - add setVertexMod() member functions (and relative functions to all components that store container pointers)
+    - add member functions returning indices to components containing pointers
+    - add member functions setters with indices to components containing pointers
+    - implement VertexIndices component;
+    - implement AdjacentEdgeIndices component;
+    - implement AdjacentFaceIndices component;
+    - implement AdjacentVertexIndices component;
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
   - Utils:
