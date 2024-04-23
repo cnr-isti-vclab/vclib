@@ -158,7 +158,7 @@ public:
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The pointer to the required vertex of the element.
      */
-    Vertex*& vertexMod(int i) { return Base::container().atMod(i); }
+    Vertex* vertexMod(int i) { return Base::container().atMod(i); }
 
     /**
      * @brief Same of vertexMod, but returns a const pointer to the vertex.
