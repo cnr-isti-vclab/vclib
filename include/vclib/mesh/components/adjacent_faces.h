@@ -131,21 +131,13 @@ public:
     uint adjFacesNumber() const { return Base::container().size(); }
 
     /**
-     * @brief Returns a reference of the pointer to the i-th adjacent face of
-     * this element.
-     *
-     * You can use this function to set the i-th adjacent face:
-     *
-     * @code{.cpp}
-     * e.adjFace(2) = &m.face(k); // the second adj face of e will point to the
-     *                            // k-th face of the mesh.
-     * @endcode
+     * @brief Returns the pointer to the i-th adjacent face of this element.
      *
      * @param[in] i: the position of the required adjacent face in the
      * container; the value must be between 0 and the number of adj faces.
      * @return The pointer to the i-th adjacent face of this element.
      */
-    Face*& adjFace(uint i) { return Base::container().at(i); }
+    Face* adjFace(uint i) { return Base::container().at(i); }
 
     /**
      * @brief Returns a const pointer to the i-th adjacent face of this element.
@@ -156,9 +148,8 @@ public:
     const Face* adjFace(uint i) const { return Base::container().at(i); }
 
     /**
-     * @brief Returns a reference of the pointer to the i-th adjacent face of
-     * this element but using as index the module between i and the number of
-     * adjacent faces.
+     * @brief Returns the pointer to the i-th adjacent face of this element but
+     * using as index the module between i and the number of adjacent faces.
      *
      * You can use this function if you need to get the "next
      * adjacent face after position k", without check if it is less than the
@@ -177,7 +168,7 @@ public:
      * adjFaceNumber().
      * @return The pointer to the required adjacent face of this element.
      */
-    Face*& adjFaceMod(int i) { return Base::container().atMod(i); }
+    Face* adjFaceMod(int i) { return Base::container().atMod(i); }
 
     /**
      * @brief Same of adjFaceMod, but returns a const Pointer to the adjacent
@@ -480,7 +471,7 @@ private:
         if (ebase != nullptr && base != nullptr) {
             for (uint i = 0; i < e.adjFacesNumber(); ++i) {
                 if (e.adjFace(i) != nullptr) {
-                    adjFace(i) = base + (e.adjFace(i) - ebase);
+                    setAdjFace(i, base + (e.adjFace(i) - ebase));
                 }
             }
         }

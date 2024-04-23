@@ -245,16 +245,16 @@ void updatePerFaceAdjacentFaces(MeshType& m)
             if (j != vec.end()) {
                 // case of cluster composed of one element. adj of i is nullptr
                 if (*i != *j) {
-                    i->f->adjFace(i->e) = nullptr;
+                    i->f->setAdjFace(i->e, nullptr);
                 }
                 else { // at least two edges in the cluster
                     while (j != vec.end() && *i == *j) {
-                        i->f->adjFace(i->e) = j->f;
+                        i->f->setAdjFace(i->e, j->f);
                         ++i;
                         ++j;
                     }
                     // i now is the last element that was equal to first
-                    i->f->adjFace(i->e) = first->f;
+                    i->f->setAdjFace(i->e, first->f);
                 }
             }
 

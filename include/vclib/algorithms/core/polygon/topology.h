@@ -296,16 +296,16 @@ void detachAdjacentFacesOnEdge(FaceType& f, uint edge)
         if (nextFace == prevFace) { // manifold case
             uint en = nextFace->indexOfAdjFace(&f);
             assert(en != UINT_NULL);
-            nextFace->adjFace(en) = nullptr;
+            nextFace->setAdjFace(en, nullptr);
         }
         else { // non manifold case
             // the prev face does not have to point to f anymore, but to
             // nextFace
             uint pn = prevFace->indexOfAdjFace(&f);
             assert(pn != UINT_NULL);
-            prevFace->adjFace(pn) = nextFace;
+            prevFace->setAdjFace(pn, nextFace);
         }
-        f.adjFace(edge) = nullptr;
+        f.setAdjFace(edge, nullptr);
     }
 }
 
