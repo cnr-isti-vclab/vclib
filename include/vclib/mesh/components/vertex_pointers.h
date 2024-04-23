@@ -177,12 +177,20 @@ public:
     const Vertex* vertexMod(int i) const { return Base::container().atMod(i); }
 
     /**
+     * @brief Returns the index in the vertex container of the i-th vertex of
+     * the element.
+     * @param[in] i: the position of the required vertex in the container.
+     * @return The index of the i-th vertex of the element.
+     */
+    uint vertexIndex(uint i) const { return vertex(i)->index(); }
+
+    /**
      * @brief Sets the i-th vertex of the element.
-     * @param[in] v: The pointer to the vertex to set to the element.
      * @param[in] i: the position in the container on which set the vertex; the
      * value must be between 0 and the number of vertices.
+     * @param[in] v: The pointer to the vertex to set to the element.
      */
-    void setVertex(Vertex* v, uint i) { Base::container().set(v, i); }
+    void setVertex(uint i, Vertex* v) { Base::container().set(i, v); }
 
     /**
      * @brief Sets all the vertex pointers of the element.

@@ -163,11 +163,11 @@ public:
 
     /**
      * @brief Sets the i-th wedge color of the element.
-     * @param[in] c: the new wedge color.
      * @param[in] i: the position in the container on which set the wedge color;
      * the value must be between 0 and the number of vertices of the element.
+     * @param[in] c: the new wedge color.
      */
-    void setWedgeColor(const vcl::Color& c, uint i) { colors().set(c, i); }
+    void setWedgeColor(uint i, const vcl::Color& c) { colors().set(i, c); }
 
     /**
      * @brief Sets all the wedge colors of the element.

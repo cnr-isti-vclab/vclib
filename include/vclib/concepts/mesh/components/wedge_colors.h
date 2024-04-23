@@ -55,7 +55,7 @@ concept HasWedgeColors =
     { co.wedgeColor(uint()) } -> std::same_as<const vcl::Color&>;
     { o.wedgeColorMod(int()) } -> std::same_as<vcl::Color&>;
     { co.wedgeColorMod(int()) } -> std::same_as<const vcl::Color&>;
-    { o.setWedgeColor(c, uint()) } -> std::same_as<void>;
+    { o.setWedgeColor(uint(), c) } -> std::same_as<void>;
     { o.setWedgeColors(v) } -> std::same_as<void>;
 
     { o.wedgeColorBegin() } -> std::same_as<typename T::WedgeColorsIterator>;

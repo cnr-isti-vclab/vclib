@@ -191,11 +191,11 @@ public:
 
     /**
      * @brief Sets the i-th adjacent face of this element.
-     * @param[in] f: The pointer to the adjacent face to set to this element.
      * @param[in] i: the position in the container on which set the adj face;
      * the value must be between 0 and the number of adj faces.
+     * @param[in] f: The pointer to the adjacent face to set to this element.
      */
-    void setAdjFace(Face* f, uint i) { Base::container().set(f, i); }
+    void setAdjFace(uint i, Face* f) { Base::container().set(i, f); }
 
     /**
      * @brief Sets all the adjacent faces of this element.

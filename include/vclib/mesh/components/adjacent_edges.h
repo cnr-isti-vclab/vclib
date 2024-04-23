@@ -189,11 +189,11 @@ public:
 
     /**
      * @brief Sets the i-th adjacent edge of the element.
-     * @param[in] e: The pointer to the adjacent edge to set to the element.
      * @param[in] i: the position in the container on which set the adj edge;
      * the value must be between 0 and the number of adj edges.
+     * @param[in] e: The pointer to the adjacent edge to set to the element.
      */
-    void setAdjEdge(Edge* e, uint i) { Base::container().set(e, i); }
+    void setAdjEdge(uint i, Edge* e) { Base::container().set(i, e); }
 
     /**
      * @brief Sets all the adjacent edges of the element.

@@ -55,7 +55,7 @@ concept HasVertexPointers = requires (
     { o.vertexMod(int()) } -> std::same_as<typename T::VertexType*&>;
     { co.vertexMod(int()) } -> std::same_as<const typename T::VertexType*>;
 
-    { o.setVertex(&v, uint()) } -> std::same_as<void>;
+    { o.setVertex(uint(), &v) } -> std::same_as<void>;
     { o.setVertices(vec) } -> std::same_as<void>;
 
     { co.containsVertex(&v) } -> std::same_as<bool>;

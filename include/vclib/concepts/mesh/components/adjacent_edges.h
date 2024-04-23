@@ -61,7 +61,7 @@ concept HasAdjacentEdges = requires (
     { o.adjEdgeMod(int()) } -> std::same_as<typename T::AdjacentEdgeType*&>;
     { co.adjEdgeMod(int()) } ->
         std::same_as<const typename T::AdjacentEdgeType*>;
-    { o.setAdjEdge(&e, uint()) } -> std::same_as<void>;
+    { o.setAdjEdge(uint(), &e) } -> std::same_as<void>;
     { o.setAdjEdges(v) } -> std::same_as<void>;
     { co.containsAdjEdge(&e) } -> std::same_as<bool>;
 

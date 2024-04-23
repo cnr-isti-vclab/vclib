@@ -184,14 +184,14 @@ public:
 
     /**
      * @brief Sets the i-th wedge texcoord of the element.
-     * @param[in] t: the new wedge texcoord.
      * @param[in] i: the position in the container on which set the wedge
      * texcoord; the value must be between 0 and the number of vertices of the
      * element.
+     * @param[in] t: the new wedge texcoord.
      */
-    void setWedgeTexCoord(const vcl::TexCoord<Scalar>& t, uint i)
+    void setWedgeTexCoord(uint i, const vcl::TexCoord<Scalar>& t)
     {
-        texCoords().set(t, i);
+        texCoords().set(i, t);
     }
 
     /**

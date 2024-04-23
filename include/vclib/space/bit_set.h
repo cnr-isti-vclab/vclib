@@ -190,11 +190,11 @@ public:
 
     /**
      * @brief Sets the bit at position i to b
-     * @param[in] i: the position of the bit
      * @param[in] b: the boolena value to assign to the bit
+     * @param[in] i: the position of the bit
      * @return `*this`
      */
-    BitSet<T> set(uint i, bool b = true)
+    BitSet<T> set(bool b, uint i)
     {
         at(i) = b;
         return *this;

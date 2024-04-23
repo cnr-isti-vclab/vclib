@@ -177,11 +177,11 @@ public:
 
     /**
      * @brief Sets the i-th adjacent vertex of the element.
-     * @param[in] v: The pointer to the adjacent vertex to set to this element.
      * @param[in] i: the position in the container on which set the adj vertex;
      * the value must be between 0 and the number of adj vertices.
+     * @param[in] v: The pointer to the adjacent vertex to set to this element.
      */
-    void setAdjVertex(Vertex* v, uint i) { Base::container().set(v, i); }
+    void setAdjVertex(uint i, Vertex* v) { Base::container().set(i, v); }
 
     /**
      * @brief Sets all the adjacent vertices of this element.

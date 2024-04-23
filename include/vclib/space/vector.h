@@ -289,10 +289,10 @@ public:
      * Sets the value of the element at position `i` in the Vector to the
      * specified value `e`.
      *
-     * @param[in] e: The new value of the element.
      * @param[in] i: The position of the element.
+     * @param[in] e: The new value of the element.
      */
-    void set(const T& e, uint i)
+    void set(uint i, const T& e)
     {
         assert(i < size());
         mContainer[i] = e;

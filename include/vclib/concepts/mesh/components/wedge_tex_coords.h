@@ -62,7 +62,7 @@ concept HasWedgeTexCoords = requires (
         std::same_as<typename T::WedgeTexCoordType&>;
     { co.wedgeTexCoordMod(int()) } ->
         std::same_as<const typename T::WedgeTexCoordType&>;
-    { o.setWedgeTexCoord(t, uint()) } -> std::same_as<void>;
+    { o.setWedgeTexCoord(uint(), t) } -> std::same_as<void>;
     { o.setWedgeTexCoords(v) } -> std::same_as<void>;
     { o.textureIndex() } -> std::same_as<short&>;
     { co.textureIndex() } -> std::same_as<short>;
