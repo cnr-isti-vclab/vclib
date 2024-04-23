@@ -115,21 +115,13 @@ public:
     uint adjVerticesNumber() const { return Base::container().size(); }
 
     /**
-     * @brief Returns a reference of the pointer to the i-th adjacent vertex of
-     * an element.
-     *
-     * You can use this function to set the i-th adjacent vertex:
-     *
-     * @code{.cpp}
-     * e.adjVertex(2) = &m.vertex(k); // the second adj vertex of e will point
-     *                                // to the k-th vertex of the mesh.
-     * @endcode
+     * @brief Returns the pointer to the i-th adjacent vertex of an element.
      *
      * @param[in] i: the position of the required adjacent vertex in the
      * container.
      * @return The pointer i-th adjacent vertex of the element.
      */
-    Vertex*& adjVertex(uint i) { return Base::container().at(i); }
+    Vertex* adjVertex(uint i) { return Base::container().at(i); }
 
     /**
      * @brief Returns a const pointer to the i-th adjacent vertex of the
@@ -141,11 +133,11 @@ public:
     const Vertex* adjVertex(uint i) const { return Base::container().at(i); }
 
     /**
-     * @brief Returns a reference of the pointer to the i-th adjacent vertex of
-     * the element, but using as index the module between i and the number of
-     * adjacent vertices. You can use this function if you need to get the "next
-     * adjacent vertex after position k", without check if it is less than the
-     * number of adj vertices. Works also for negative numbers:
+     * @brief Returns the pointer to the i-th adjacent vertex of the element,
+     * but using as index the module between i and the number of adjacent
+     * vertices. You can use this function if you need to get the "next adjacent
+     * vertex after position k", without check if it is less than the number of
+     * adj vertices. Works also for negative numbers:
      *
      * @code{.cpp}
      * k = pos; // some position of an adjacent vertex
@@ -160,7 +152,7 @@ public:
      * adjVertexNumber().
      * @return The pointer to the required adjacent vertex of the element.
      */
-    Vertex*& adjVertexMod(int i) { return Base::container().atMod(i); }
+    Vertex* adjVertexMod(int i) { return Base::container().atMod(i); }
 
     /**
      * @brief Same of adjVertexMod, but returns a const Pointer to the adjacent
@@ -182,6 +174,27 @@ public:
      * @param[in] v: The pointer to the adjacent vertex to set to this element.
      */
     void setAdjVertex(uint i, Vertex* v) { Base::container().set(i, v); }
+
+    /**
+     * @brief Sets the i-th adjacent vertex of the element, but using as index
+     * the module between i and the number of adjacent vertices. You can use
+     * this function if you need to set the "next adjacent vertex after position
+     * k", without check if it is less than the number of adjacent vertices.
+     * Works also for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adj vertex
+     * e.setAdjVertexMod(k+1, aVertex); // set the adj vertex next to k, that
+     *                                  // may also be at pos 0
+     * e.setAdjVertexMod(-1, aVertex); // set the adj vertex in position
+     *                                 // adjVerticesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position in the container w.r.t. the position 0 on
+     * which set the adj vertex; value is modularized on adjVerticesNumber().
+     * @param[in] v: The pointer to the adj vertex to set to the element.
+     */
+    void setAdjVertexMod(int i, Vertex* v) { Base::container().atMod(i) = v; }
 
     /**
      * @brief Sets all the adjacent vertices of this element.
@@ -420,7 +433,7 @@ private:
         if (ebase != nullptr && base != nullptr) {
             for (uint i = 0; i < e.adjVerticesNumber(); ++i) {
                 if (e.adjVertex(i) != nullptr) {
-                    adjVertex(i) = base + (e.adjVertex(i) - ebase);
+                    setAdjVertex(i, base + (e.adjVertex(i) - ebase));
                 }
             }
         }

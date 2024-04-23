@@ -188,6 +188,27 @@ public:
     void setAdjEdge(uint i, Edge* e) { Base::container().set(i, e); }
 
     /**
+     * @brief Sets the i-th adjacent edge of the element, but using as index the
+     * module between i and the number of adjacent edges. You can use this
+     * function if you need to set the "next adjacent edge after position k",
+     * without check if it is less than the number of adjacent edges. Works also
+     * for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adj edge
+     * e.setAdjEdgeMod(k+1, aEdge); // set the adj edge next to k, that may also
+     *                               // be at pos 0
+     * e.setAdjEdgeMod(-1, aEdge); // set the adj edge in position
+     *                              // adjEdgesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position in the container w.r.t. the position 0 on
+     * which set the adj edge; value is modularized on adjEdgesNumber().
+     * @param[in] e: The pointer to the adj edge to set to the element.
+     */
+    void setAdjEdgeMod(int i, Edge* e) { Base::container().atMod(i) = e; }
+
+    /**
      * @brief Sets all the adjacent edges of the element.
      *
      * If the size of the container is static, the size of the input range must

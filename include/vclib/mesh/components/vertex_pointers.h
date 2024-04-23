@@ -185,6 +185,26 @@ public:
     void setVertex(uint i, Vertex* v) { Base::container().set(i, v); }
 
     /**
+     * @brief Sets the i-th vertex of the element, but using as index the module
+     * between i and the number of vertices. You can use this function if you
+     * need to set the "next vertex after position k", without check if it is
+     * less than the number of vertices. Works also for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of a vertex
+     * e.setVertexMod(k+1, aVertex); // set the vertex next to k, that may also
+     *                               // be at pos 0
+     * e.setVertexMod(-1, aVertex); // set the vertex in position
+     *                              // vertexNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position in the container w.r.t. the position 0 on
+     * which set the vertex; value is modularized on vertexNumber().
+     * @param[in] v: The pointer to the vertex to set to the element.
+     */
+    void setVertexMod(int i, Vertex* v) { Base::container().atMod(i) = v; }
+
+    /**
      * @brief Sets all the vertex pointers of the element.
      *
      * If the size of the container is static, the size of the input range must

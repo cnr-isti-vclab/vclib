@@ -189,6 +189,27 @@ public:
     void setAdjFace(uint i, Face* f) { Base::container().set(i, f); }
 
     /**
+     * @brief Sets the i-th adjacent face of the element, but using as index the
+     * module between i and the number of adjacent faces. You can use this
+     * function if you need to set the "next adjacent face after position k",
+     * without check if it is less than the number of adjacent faces. Works also
+     * for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adj face
+     * e.setAdjFaceMod(k+1, aFace); // set the adj face next to k, that may also
+     *                               // be at pos 0
+     * e.setAdjFaceMod(-1, aFace); // set the adj face in position
+     *                              // adjFacesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position in the container w.r.t. the position 0 on
+     * which set the adj face; value is modularized on adjFacesNumber().
+     * @param[in] f: The pointer to the adj face to set to the element.
+     */
+    void setAdjFaceMod(int i, Face* f) { Base::container().atMod(i) = f; }
+
+    /**
      * @brief Sets all the adjacent faces of this element.
      *
      * If the size of the container is static, the size of the input range must
