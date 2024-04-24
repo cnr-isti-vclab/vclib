@@ -59,17 +59,21 @@ concept HasAdjacentVertices = requires (
     { o.adjVertex(uint()) } -> std::same_as<typename T::AdjacentVertexType*>;
     { co.adjVertex(uint()) } ->
         std::same_as<const typename T::AdjacentVertexType*>;
+    { co.adjVertexIndex(uint()) } -> std::same_as<uint>;
     { o.adjVertexMod(int()) } -> std::same_as<typename T::AdjacentVertexType*>;
     { co.adjVertexMod(int()) } ->
         std::same_as<const typename T::AdjacentVertexType*>;
+    { co.adjVertexIndexMod(uint()) } -> std::same_as<uint>;
+
     { o.setAdjVertex(uint(), &v) } -> std::same_as<void>;
     { o.setAdjVertexMod(int(), &v) } -> std::same_as<void>;
     { o.setAdjVertices(vec) } -> std::same_as<void>;
-    { co.containsAdjVertex(&v) } -> std::same_as<bool>;
 
+    { co.containsAdjVertex(&v) } -> std::same_as<bool>;
     { o.findAdjVertex(&v) } -> std::same_as<typename T::AdjacentVertexIterator>;
     { co.findAdjVertex(&v) } ->
         std::same_as<typename T::ConstAdjacentVertexIterator>;
+
     { co.indexOfAdjVertex(&v) } -> std::same_as<uint>;
 
     { o.adjVertexBegin() } -> std::same_as<typename T::AdjacentVertexIterator>;
