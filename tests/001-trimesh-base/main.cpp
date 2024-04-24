@@ -149,5 +149,46 @@ SCENARIO("TriMesh usage")
             REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
             REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
         }
+
+        WHEN("Adding Faces with setVertices")
+        {
+            m.addVertices(5);
+            m.addFaces(3);
+
+            m.face(0).setVertices(0, 1, 2);
+            REQUIRE(m.face(0).vertexIndex(0) == 0);
+            REQUIRE(m.face(0).vertexIndex(1) == 1);
+            REQUIRE(m.face(0).vertexIndex(2) == 2);
+            REQUIRE(m.face(0).vertex(0) == &m.vertex(0));
+            REQUIRE(m.face(0).vertex(1) == &m.vertex(1));
+            REQUIRE(m.face(0).vertex(2) == &m.vertex(2));
+
+            m.face(1).setVertices(&m.vertex(2), &m.vertex(0), &m.vertex(1));
+            REQUIRE(m.face(1).vertexIndex(0) == 2);
+            REQUIRE(m.face(1).vertexIndex(1) == 0);
+            REQUIRE(m.face(1).vertexIndex(2) == 1);
+            REQUIRE(m.face(1).vertex(0) == &m.vertex(2));
+            REQUIRE(m.face(1).vertex(1) == &m.vertex(0));
+            REQUIRE(m.face(1).vertex(2) == &m.vertex(1));
+
+            std::list<uint> l1 = {4, 3, 1};
+            m.face(2).setVertices(l1);
+            REQUIRE(m.face(2).vertexIndex(0) == 4);
+            REQUIRE(m.face(2).vertexIndex(1) == 3);
+            REQUIRE(m.face(2).vertexIndex(2) == 1);
+            REQUIRE(m.face(2).vertex(0) == &m.vertex(4));
+            REQUIRE(m.face(2).vertex(1) == &m.vertex(3));
+            REQUIRE(m.face(2).vertex(2) == &m.vertex(1));
+
+            std::list<vcl::TriMesh::Vertex*> l2 = {
+                &m.vertex(2), &m.vertex(4), &m.vertex(3)};
+            m.face(3).setVertices(l2);
+            REQUIRE(m.face(3).vertexIndex(0) == 2);
+            REQUIRE(m.face(3).vertexIndex(1) == 4);
+            REQUIRE(m.face(3).vertexIndex(2) == 3);
+            REQUIRE(m.face(3).vertex(0) == &m.vertex(2));
+            REQUIRE(m.face(3).vertex(1) == &m.vertex(4));
+            REQUIRE(m.face(3).vertex(2) == &m.vertex(3));
+        }
     }
 }

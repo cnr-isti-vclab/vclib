@@ -73,6 +73,18 @@ public:
         VPtrs::setVertex(0, v0);
         VPtrs::setVertex(1, v1);
     }
+
+    /**
+     * @brief Sets the vertices of the edge.
+     *
+     * @param [in] vi0: the index first vertex of the edge.
+     * @param [in] vi1: the index second vertex of the edge.
+     */
+    void setVertices(uint vi0, uint vi1)
+    {
+        VPtrs::setVertex(0, vi0);
+        VPtrs::setVertex(1, vi1);
+    }
 };
 
 template<typename MeshType, typename... Comps>

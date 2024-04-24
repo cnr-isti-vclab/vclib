@@ -67,7 +67,7 @@ public:
     Face() = default;
 
     /**
-     * @brief Sets all the Vertex pointers to the face.
+     * @brief Sets all the Vertices to the face.
      *
      * If the Face size is static, the number of vertices of the input range
      * must be equal to the size of the Face (the value returned by
@@ -75,11 +75,16 @@ public:
      * the also the size of the components tied to the vertex number of the
      * face.
      *
-     * @param[in] r: a range of vertex pointers in counterclockwise order
-     * that will be set as vertices of the face.
+     * @tparam Rng: A range of vertex pointers or vertex indices in
+     * counterclockwise order.
+     *
+     * @param[in] r: a range of vertex pointers or vertex indices in
+     * counterclockwise order that will be set as vertices of the face.
      */
     template<Range Rng>
-    void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, VertexType*>
+    void setVertices(Rng&& r) requires (
+        RangeOfConvertibleTo<Rng, VertexType*> ||
+        RangeOfConvertibleTo<Rng, uint>)
     {
         using F = Face<MeshType, TypeWrapper<Comps...>>;
 
@@ -92,19 +97,24 @@ public:
     }
 
     /**
-     * @brief Sets a list of Vertex pointers to the face.
+     * @brief Sets a list of Vertices to the face.
      *
      * If the Face size is static, the number of vertices of the list must be
      * equal to the size of the Face (the value returned by vertexNumber()). If
      * the Face size is dynamic, it will take care to update the also the size
      * of the components tied to the vertex number of the face.
      *
-     * @param[in] args: a variable number of vertex pointers in counterclockwise
-     * order that will be set as vertices of the face.
+     * @tparam V: A list of vertex pointers or vertex indices in
+     * counterclockwise order.
+     *
+     * @param[in] args: a variable number of vertex pointers or vertex indices
+     * in counterclockwise order that will be set as vertices of the face.
      */
     template<typename... V>
-    void setVertices(V... args)
-        requires (std::convertible_to<V, VertexType*> && ...)
+    void setVertices(V... args) requires (
+        (std::convertible_to<V, VertexType*> ||
+         std::convertible_to<V, uint>) &&
+        ...)
     {
         setVertices(std::list({args...}));
     }

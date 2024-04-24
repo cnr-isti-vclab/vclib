@@ -42,7 +42,8 @@ concept HasVertexPointers = requires (
     T                                    o,
     const T&                             co,
     typename T::VertexType               v,
-    std::vector<typename T::VertexType*> vec) {
+    std::vector<typename T::VertexType*> vecv,
+    std::vector<uint> vecu) {
     // clang-format off
     T::VERTEX_NUMBER;
     typename T::VertexType;
@@ -61,7 +62,8 @@ concept HasVertexPointers = requires (
     { o.setVertex(uint(), uint()) } -> std::same_as<void>;
     { o.setVertexMod(int(), &v) } -> std::same_as<void>;
     { o.setVertexMod(int(), uint()) } -> std::same_as<void>;
-    { o.setVertices(vec) } -> std::same_as<void>;
+    { o.setVertices(vecv) } -> std::same_as<void>;
+    { o.setVertices(vecu) } -> std::same_as<void>;
 
     { co.containsVertex(&v) } -> std::same_as<bool>;
     { o.findVertex(&v) } -> std::same_as<typename T::VertexIterator>;

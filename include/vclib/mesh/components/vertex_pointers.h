@@ -283,6 +283,26 @@ public:
     }
 
     /**
+     * @brief Sets all the vertex pointers of the element.
+     *
+     * If the size of the container is static, the size of the input range must
+     * be the same one of the container.
+     *
+     * @tparam Rng: The type of the range of vertex indices to set.
+     *
+     * @param[in] r: range of vertex indices to set.
+     */
+    template<Range Rng>
+    void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
+    {
+        auto conv = [&](auto i) {
+            return &Base::parentElement()->parentMesh()->vertex(i);
+        };
+
+        Base::container().set(r | std::views::transform(conv));
+    }
+
+    /**
      * @brief Returns `true` if the container of vertices contains the given
      * vertex, `false` otherwise.
      *
