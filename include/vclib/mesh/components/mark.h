@@ -83,10 +83,16 @@ class Mark :
             CompId::MARK,
             int,
             ElementType,
+            !std::is_same_v<ElementType, void>,
             OPT>
 {
-    using Base =
-        Component<Mark<ElementType, OPT>, CompId::MARK, int, ElementType, OPT>;
+    using Base = Component<
+        Mark<ElementType, OPT>,
+        CompId::MARK,
+        int,
+        ElementType,
+        !std::is_same_v<ElementType, void>,
+        OPT>;
 
 public:
     /* Constructors */

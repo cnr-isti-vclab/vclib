@@ -64,7 +64,7 @@ class Face :
         public vcl::Face<
             TriMeshT<Scalar>,
             vcl::face::TriangleBitFlags,
-            vcl::face::TriangleVertexPtrs<Vertex<Scalar>>,
+            vcl::face::TriangleVertexPtrs<Vertex<Scalar>, Face<Scalar>>,
             vcl::face::Normal3<Scalar>,
             vcl::face::OptionalQuality<Scalar, Face<Scalar>>,
             vcl::face::OptionalColor<Face<Scalar>>,

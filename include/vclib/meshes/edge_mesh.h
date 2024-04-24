@@ -63,7 +63,7 @@ class Edge :
         public vcl::Edge<
             EdgeMeshT<Scalar>,
             vcl::edge::BitFlags,
-            vcl::edge::VertexPointers<Vertex<Scalar>>,
+            vcl::edge::VertexPointers<Vertex<Scalar>, Edge<Scalar>>,
             vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>,
             vcl::edge::OptionalColor<Edge<Scalar>>,
             vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,

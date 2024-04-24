@@ -55,39 +55,40 @@ namespace vcl::vert {
  */
 
 /* Port AdjacentEdges class into vert namespace */
-template<typename Edge>
-using AdjacentEdges = comp::AdjacentEdges<Edge, -1, false>;
+template<typename EdgeType, typename VertexType>
+using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, VertexType>;
 
 template<typename EdgeType, typename VertexType>
 using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, VertexType>;
+    comp::AdjacentEdges<EdgeType, -1, false, VertexType, true>;
 
 template<typename EdgeType, typename VertexType>
 using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, VertexType, true>;
+    comp::AdjacentEdges<EdgeType, -1, false, VertexType, true, true>;
 
 /* Port AdjacentFaces class into vert namespace */
-template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
+template<typename FaceType, typename VertexType>
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, VertexType>;
 
 template<typename FaceType, typename VertexType>
 using VerticalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, VertexType>;
+    comp::AdjacentFaces<FaceType, -1, false, VertexType, true>;
 
 template<typename FaceType, typename VertexType>
 using OptionalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, VertexType, true>;
+    comp::AdjacentFaces<FaceType, -1, false, VertexType, true, true>;
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
-using AdjacentVertices = comp::AdjacentVertices<VertexType>;
+using AdjacentVertices = comp::AdjacentVertices<VertexType, VertexType>;
 
 template<typename VertexType>
-using VerticalAdjacentVertices = comp::AdjacentVertices<VertexType, VertexType>;
+using VerticalAdjacentVertices =
+    comp::AdjacentVertices<VertexType, VertexType, true>;
 
 template<typename VertexType>
 using OptionalAdjacentVertices =
-    comp::AdjacentVertices<VertexType, VertexType, true>;
+    comp::AdjacentVertices<VertexType, VertexType, true, true>;
 
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags<>;

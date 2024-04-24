@@ -67,7 +67,7 @@ class Face :
         public vcl::Face<
             TriEdgeMeshT<Scalar>,
             vcl::face::TriangleBitFlags,
-            vcl::face::TriangleVertexPtrs<Vertex<Scalar>>,
+            vcl::face::TriangleVertexPtrs<Vertex<Scalar>, Face<Scalar>>,
             vcl::face::Normal3<Scalar>,
             vcl::face::OptionalQuality<Scalar, Face<Scalar>>,
             vcl::face::OptionalColor<Face<Scalar>>,
@@ -83,7 +83,7 @@ class Edge :
         public vcl::Edge<
             TriEdgeMeshT<Scalar>,
             vcl::edge::BitFlags,
-            vcl::edge::VertexPointers<Vertex<Scalar>>,
+            vcl::edge::VertexPointers<Vertex<Scalar>, Edge<Scalar>>,
             vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>,
             vcl::edge::OptionalColor<Edge<Scalar>>,
             vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,

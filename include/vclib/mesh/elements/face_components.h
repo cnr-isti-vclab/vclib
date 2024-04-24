@@ -57,50 +57,50 @@ namespace vcl::face {
  */
 
 /* Port AdjacentEdges class into face namespace */
-template<typename EdgeType>
-using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true>;
+template<typename EdgeType, typename FaceType>
+using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true, FaceType>;
 
-template<typename EdgeType>
-using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true>;
+template<typename EdgeType, typename FaceType>
+using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true, FaceType>;
 
 template<typename EdgeType, typename FaceType>
 using VerticalAdjacentPolygonEdges =
-    comp::AdjacentEdges<EdgeType, -1, true, FaceType>;
-
-template<typename EdgeType, typename FaceType>
-using VerticalAdjacentTriangleEdges =
-    comp::AdjacentEdges<EdgeType, 3, true, FaceType>;
-
-template<typename EdgeType, typename FaceType>
-using OptionalAdjacentPolygonEdges =
     comp::AdjacentEdges<EdgeType, -1, true, FaceType, true>;
 
 template<typename EdgeType, typename FaceType>
-using OptionalAdjacentTriangleEdges =
+using VerticalAdjacentTriangleEdges =
     comp::AdjacentEdges<EdgeType, 3, true, FaceType, true>;
+
+template<typename EdgeType, typename FaceType>
+using OptionalAdjacentPolygonEdges =
+    comp::AdjacentEdges<EdgeType, -1, true, FaceType, true, true>;
+
+template<typename EdgeType, typename FaceType>
+using OptionalAdjacentTriangleEdges =
+    comp::AdjacentEdges<EdgeType, 3, true, FaceType, true, true>;
 
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
-using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true>;
+using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true, FaceType>;
 
 template<typename FaceType>
-using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true>;
+using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true, FaceType>;
 
 template<typename FaceType>
 using VerticalAdjacentPolygons =
-    comp::AdjacentFaces<FaceType, -1, true, FaceType>;
-
-template<typename FaceType>
-using VerticalAdjacentTriangles =
-    comp::AdjacentFaces<FaceType, 3, true, FaceType>;
-
-template<typename FaceType>
-using OptionalAdjacentPolygons =
     comp::AdjacentFaces<FaceType, -1, true, FaceType, true>;
 
 template<typename FaceType>
-using OptionalAdjacentTriangles =
+using VerticalAdjacentTriangles =
     comp::AdjacentFaces<FaceType, 3, true, FaceType, true>;
+
+template<typename FaceType>
+using OptionalAdjacentPolygons =
+    comp::AdjacentFaces<FaceType, -1, true, FaceType, true, true>;
+
+template<typename FaceType>
+using OptionalAdjacentTriangles =
+    comp::AdjacentFaces<FaceType, 3, true, FaceType, true, true>;
 
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags<>;
@@ -231,14 +231,14 @@ template<typename FaceType>
 using VerticalTriangleBitFlags = comp::TriangleBitFlags<FaceType>;
 
 /* Port VertexPointers class into face namespace */
-template<typename Vertex, int N>
-using VertexPointers = comp::VertexPointers<Vertex, N>;
+template<typename Vertex, int N, typename FaceType>
+using VertexPointers = comp::VertexPointers<Vertex, N, FaceType>;
 
-template<typename Vertex>
-using TriangleVertexPtrs = comp::VertexPointers<Vertex, 3>;
+template<typename Vertex, typename FaceType>
+using TriangleVertexPtrs = comp::VertexPointers<Vertex, 3, FaceType>;
 
-template<typename Vertex>
-using PolygonVertexPtrs = comp::VertexPointers<Vertex, -1>;
+template<typename Vertex, typename FaceType>
+using PolygonVertexPtrs = comp::VertexPointers<Vertex, -1, FaceType>;
 
 /* Port WedgeColors class into face namespace */
 using PolygonWedgeColors = comp::WedgeColors<-1>;

@@ -48,11 +48,14 @@ class PolyVertex :
 {
 };
 
+class TriFace;
+class PolyFace;
+
 class TriFace :
         public vcl::Face<
             TMPSimpleTriMesh,
             vcl::face::TriangleBitFlags,
-            vcl::face::TriangleVertexPtrs<TriVertex>>
+            vcl::face::TriangleVertexPtrs<TriVertex, TriFace>>
 {
 };
 
@@ -60,7 +63,7 @@ class PolyFace :
         public vcl::Face<
             TMPSimplePolyMesh,
             vcl::face::PolygonBitFlags,
-            vcl::face::PolygonVertexPtrs<PolyVertex>>
+            vcl::face::PolygonVertexPtrs<PolyVertex, PolyFace>>
 {
 };
 

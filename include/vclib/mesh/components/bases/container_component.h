@@ -43,13 +43,14 @@ template<
     int N,
     typename AD,
     typename El,
+    bool v,
     bool o,
     bool TT,
     typename... PT>
 using ContCompBase = std::conditional_t<
     std::is_same_v<AD, void>,
-    Component<DC, CT, Vector<T, N>, El, o, PT...>,
-    Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, o, PT...>>;
+    Component<DC, CT, Vector<T, N>, El, v, o, PT...>,
+    Component<DC, CT, std::tuple<Vector<T, N>, AD>, El, v, o, PT...>>;
 
 } // namespace detail
 
@@ -79,11 +80,14 @@ using ContCompBase = std::conditional_t<
  * outside the Container. If you don't have additional data. set AdditionalData
  * = void. E.g. a WedgeTexCoord component stores a short as AdditionalData that
  * indicates the texture index used by all the Wedge TexCoords.
- * @tparam ElementType: This type is used to discriminate between horizontal and
- * vertical components. When a component is horizontal, this type must be void.
- * When a component is vertical, this type must be the type of the Element that
- * has the component, and it will be used by the vcl::Mesh to access to the data
- * stored vertically.
+ * @tparam ElementType: This type is used to get access to the Element that has
+ * the component (and, in case, to the Mesh that has the Element). If the
+ * component doesn't need to access the Element, this type can be void. Note:
+ * if the component is vertical (or optional), this type cannot be void.
+ * @tparam VERT: Boolean that tells if the component is vertical. If the
+ * component is vertical, this parameter must be true. Note: to be vertical,
+ * this parameter must be true, and ElementType must be the type of the Element
+ * that has the component (the 'parent' Element Type).
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
@@ -105,7 +109,8 @@ template<
     typename T,                // data stored in container
     int N,                     // container size
     typename AdditionalData,   // additional data outside container
-    typename ElementType,      // element type, void if horizontal
+    typename ElementType,      // element type
+    bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
     bool TTVN,                 // true if container size tied to vertex number
     typename... PointedTypes>  // types of pointers stored by the component
@@ -117,6 +122,7 @@ class ContainerComponent :
             N,
             AdditionalData,
             ElementType,
+            VERT,
             OPT,
             TTVN,
             PointedTypes...>
@@ -131,6 +137,7 @@ class ContainerComponent :
         N,
         AdditionalData,
         ElementType,
+        VERT,
         OPT,
         TTVN,
         PointedTypes...>;

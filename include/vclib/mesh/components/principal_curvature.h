@@ -65,6 +65,7 @@ class PrincipalCurvature :
             CompId::PRINCIPAL_CURVATURE,
             vcl::PrincipalCurvature<Scalar>,
             ElementType,
+            !std::is_same_v<ElementType, void>,
             OPT>
 {
     using Base = Component<
@@ -72,6 +73,7 @@ class PrincipalCurvature :
         CompId::PRINCIPAL_CURVATURE,
         vcl::PrincipalCurvature<Scalar>,
         ElementType,
+        !std::is_same_v<ElementType, void>,
         OPT>;
 
 public:

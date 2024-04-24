@@ -63,6 +63,7 @@ class BoundingBox :
             CompId::BOUNDING_BOX,
             Box<PointType>,
             ElementType,
+            !std::is_same_v<ElementType, void>,
             OPT>
 {
     using Base = Component<
@@ -70,6 +71,7 @@ class BoundingBox :
         CompId::BOUNDING_BOX,
         Box<PointType>,
         ElementType,
+        !std::is_same_v<ElementType, void>,
         OPT>;
 
 public:

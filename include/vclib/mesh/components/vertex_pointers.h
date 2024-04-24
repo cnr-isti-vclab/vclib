@@ -67,29 +67,34 @@ namespace vcl::comp {
  * @tparam Vertex The type of the vertices.
  * @tparam N: The size of the container, that will represent the number of
  * storable vertex pointers. If negative, the container is dynamic.
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ElementType: This type is used to get access to the Element that has
+ * the component (and, in case, to the Mesh that has the Element). If the
+ * component doesn't need to access the Element, this type can be void. Note:
+ * if the component is vertical (or optional), this type cannot be void.
+ * @tparam VERT: If true, the component will be stored vertically. This argument
+ * is considered only if the ElementType is not void.
  *
  * @ingroup components
  */
-template<typename Vertex, int N, typename ElementType = void>
+template<typename Vertex, int N, typename ElementType = void, bool VERT = false>
 class VertexPointers :
         public PointersContainerComponent<
-            VertexPointers<Vertex, N, ElementType>,
+            VertexPointers<Vertex, N, ElementType, VERT>,
             CompId::VERTEX_PTRS,
             Vertex,
             N,
             ElementType,
+            VERT,
             false,
             false>
 {
     using Base = PointersContainerComponent<
-        VertexPointers<Vertex, N, ElementType>,
+        VertexPointers<Vertex, N, ElementType, VERT>,
         CompId::VERTEX_PTRS,
         Vertex,
         N,
         ElementType,
+        VERT,
         false,
         false>;
 

@@ -83,6 +83,7 @@ class TriangleBitFlags :
             CompId::BIT_FLAGS,
             BitSet<short>,
             ElementType,
+            !std::is_same_v<ElementType, void>,
             OPT>
 {
     using Base = Component<
@@ -90,6 +91,7 @@ class TriangleBitFlags :
         CompId::BIT_FLAGS,
         BitSet<short>,
         ElementType,
+        !std::is_same_v<ElementType, void>,
         OPT>;
 
     using FT = short; // FlagsType, the integral type used for the flags

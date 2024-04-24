@@ -64,6 +64,7 @@ class TransformMatrix :
             CompId::TRANSFORM_MATRIX,
             Matrix44<Scalar>,
             ElementType,
+            !std::is_same_v<ElementType, void>,
             OPT>
 {
     using Base = Component<
@@ -71,6 +72,7 @@ class TransformMatrix :
         CompId::TRANSFORM_MATRIX,
         Matrix44<Scalar>,
         ElementType,
+        !std::is_same_v<ElementType, void>,
         OPT>;
 
 public:

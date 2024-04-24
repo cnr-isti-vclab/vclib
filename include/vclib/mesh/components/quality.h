@@ -59,6 +59,7 @@ class Quality :
             CompId::QUALITY,
             Scalar,
             ElementType,
+            !std::is_same_v<ElementType, void>,
             OPT>
 {
     using Base = Component<
@@ -66,6 +67,7 @@ class Quality :
         CompId::QUALITY,
         Scalar,
         ElementType,
+        !std::is_same_v<ElementType, void>,
         OPT>;
 
 public:

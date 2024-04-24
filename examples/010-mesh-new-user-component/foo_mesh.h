@@ -56,7 +56,7 @@ class Face :
         public vcl::Face<
             FooMesh,
             vcl::face::TriangleBitFlags,
-            vcl::face::TriangleVertexPtrs<Vertex>,
+            vcl::face::TriangleVertexPtrs<Vertex, Face>,
             vcl::face::Normal3d>
 {
 };

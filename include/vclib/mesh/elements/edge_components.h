@@ -52,27 +52,27 @@ namespace vcl::edge {
 
 /* Port AdjacentEdges class into edge namespace */
 template<typename EdgeType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false>;
+using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, EdgeType>;
 
 template<typename EdgeType>
 using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, EdgeType>;
+    comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true>;
 
 template<typename EdgeType>
 using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true>;
+    comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true, true>;
 
 /* Port AdjacentFaces class into edge namespace */
-template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
+template<typename FaceType, typename EdgeType>
+using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, EdgeType>;
 
 template<typename FaceType, typename EdgeType>
 using VerticalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, EdgeType>;
+    comp::AdjacentFaces<FaceType, -1, false, EdgeType, true>;
 
 template<typename FaceType, typename EdgeType>
 using OptionalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, EdgeType, true>;
+    comp::AdjacentFaces<FaceType, -1, false, EdgeType, true, true>;
 
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<>;
@@ -129,8 +129,8 @@ template<typename EdgeType>
 using OptionalQualityd = comp::Quality<double, EdgeType, true>;
 
 /* Port VertexPointers class into edge namespace */
-template<typename VertexType>
-using VertexPointers = comp::VertexPointers<VertexType, 2>;
+template<typename VertexType, typename EdgeType>
+using VertexPointers = comp::VertexPointers<VertexType, 2, EdgeType>;
 
 /** @} */ // end of edge_components group
 

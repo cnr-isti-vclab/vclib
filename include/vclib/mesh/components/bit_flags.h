@@ -73,6 +73,7 @@ class BitFlags :
             CompId::BIT_FLAGS,
             BitSet<char>,
             ElementType,
+            !std::is_same_v<ElementType, void>,
             OPT>
 {
     using Base = Component<
@@ -80,6 +81,7 @@ class BitFlags :
         CompId::BIT_FLAGS,
         BitSet<char>,
         ElementType,
+        !std::is_same_v<ElementType, void>,
         OPT>;
 
     using FT = char; // FlagsType, the integral type used for the flags

@@ -83,6 +83,7 @@ class WedgeTexCoords :
             short,
             ElementType,
             OPT,
+            !std::is_same_v<ElementType, void>,
             true>
 {
     using Base = ContainerComponent<
@@ -92,6 +93,7 @@ class WedgeTexCoords :
         N,
         short,
         ElementType,
+        !std::is_same_v<ElementType, void>,
         OPT,
         true>;
 
