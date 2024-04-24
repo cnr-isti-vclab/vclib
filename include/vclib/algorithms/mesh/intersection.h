@@ -129,11 +129,11 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
             }
         }
         if (ptVec.size() >= 2) {
-            uint eid               = em.addEdge();
-            uint v0                = em.addVertices(2);
-            uint v1                = v0 + 1;
-            em.vertex(v0).coord()  = ptVec[0];
-            em.vertex(v1).coord()  = ptVec[1];
+            uint eid              = em.addEdge();
+            uint v0               = em.addVertices(2);
+            uint v1               = v0 + 1;
+            em.vertex(v0).coord() = ptVec[0];
+            em.vertex(v1).coord() = ptVec[1];
             em.edge(eid).setVertex(0, &em.vertex(v0));
             em.edge(eid).setVertex(1, &em.vertex(v1));
             if constexpr (
