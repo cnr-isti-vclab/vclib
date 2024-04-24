@@ -210,7 +210,15 @@ public:
      */
     void setVertex(uint i, Vertex* v) { Base::container().set(i, v); }
 
-    void setVertexIndex(uint i, uint vi)
+    /**
+     * @brief Sets the i-th vertex of the element.
+     *
+     * @param[in] i: the position in this container on which set the vertex; the
+     * value must be between 0 and the number of vertices.
+     * @param[in] vi: The index in the vertex container of the vertex to set to
+     * the element.
+     */
+    void setVertex(uint i, uint vi)
     {
         setVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
     }

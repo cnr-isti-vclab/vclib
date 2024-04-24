@@ -145,7 +145,7 @@ void readStlBin(
             uint      fi = m.addFace();
             FaceType& f  = m.face(fi);
             for (uint j = 0; j < 3; ++j)
-                f.setVertex(j, &m.vertex(vi + j));
+                f.setVertex(j, vi + j);
             if (HasPerFaceNormal<MeshType>) {
                 using ST = FaceType::NormalType::ScalarType;
                 if (isPerFaceNormalAvailable(m)) {
@@ -232,7 +232,7 @@ void readStlAscii(
 
                     FaceType& f = m.face(fi);
                     for (uint j = 0; j < 3; ++j)
-                        f.setVertex(j, &m.vertex(vi + j));
+                        f.setVertex(j, vi + j);
                     if (HasPerFaceNormal<MeshType>) {
                         using ST = FaceType::NormalType::ScalarType;
                         if (isPerFaceNormalAvailable(m)) {

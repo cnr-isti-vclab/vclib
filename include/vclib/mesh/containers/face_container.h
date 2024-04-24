@@ -188,10 +188,7 @@ public:
 
             unsigned int i = 0;
             for (auto it = begin; it != end; ++it) {
-                if constexpr (std::integral<std::ranges::range_value_t<Rng>>)
-                    f.setVertex(i, &Base::mParentMesh->vertex(*it));
-                else
-                    f.setVertex(i, *it);
+                f.setVertex(i, *it);
                 ++i;
             }
         }
@@ -1208,7 +1205,7 @@ private:
     {
         // position on which add the vertex
         const std::size_t n = f.vertexNumber() - sizeof...(args) - 1;
-        f.setVertex(n, &Base::mParentMesh->vertex(vid)); // set the vertex
+        f.setVertex(n, vid); // set the vertex
         // set the remanining vertices, recursive variadics
         addFaceHelper(f, args...);
     }
