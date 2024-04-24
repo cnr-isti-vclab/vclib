@@ -133,7 +133,7 @@ public:
     /**
      * @brief Returns the pointer to the i-th adjacent edge of the element.
      *
-     * @param[in] i: the position of the required adjacent edge in the
+     * @param[in] i: the position of the required adjacent edge in this
      * container; the value must be between 0 and the number of adj edges.
      * @return The pointer to the i-th adjacent edge of the element.
      */
@@ -141,11 +141,19 @@ public:
 
     /**
      * @brief Returns a const pointer to the i-th adjacent edge of the element.
-     * @param[in] i: the position of the required adjacent edge in the
+     * @param[in] i: the position of the required adjacent edge in this
      * container; the value must be between 0 and the number of adj edges.
      * @return The pointer to the i-th adjacent edge of the element.
      */
     const Edge* adjEdge(uint i) const { return Base::container().at(i); }
+
+    /**
+     * @brief Returns the index in the edge container of the i-th adjacent edge
+     * of the element.
+     * @param[in] i: the position of the required edge in this container.
+     * @return The index of the i-th adjacent edge of the element.
+     */
+    uint adjEdgeIndex(uint i) const { return adjEdge(i)->index(); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent edge of the element but
@@ -162,7 +170,7 @@ public:
      *                                // adjEdgeNumber()-1
      * @endcode
      *
-     * @param[in] i: the position of the required adjacent edge in the
+     * @param[in] i: the position of the required adjacent edge in this
      * container, w.r.t. the position 0; value is modularized on
      * adjEdgeNumber().
      * @return The pointer to the required adjacent edge of the element.
@@ -172,7 +180,7 @@ public:
     /**
      * @brief Same of adjEdgeMod, but returns a const Pointer to the adjacent
      * edge.
-     * @param[in] i: the position of the required adjacent edge in the
+     * @param[in] i: the position of the required adjacent edge in this
      * container, w.r.t. the position 0; value is modularized on
      * adjEdgeNumber().
      * @return The pointer to the required adjacent edge of this element.
@@ -180,8 +188,30 @@ public:
     const Edge* adjEdgeMod(int i) const { return Base::container().atMod(i); }
 
     /**
+     * @brief Returns the index in the edge container of the i-th adjacent edge
+     * of the element, but using as index the module between i and the number of
+     * adjacent edges. You can use this function if you need to get the "index
+     * of the adjacent edge next to position k", without check if it is less
+     * than the number of adjacent edges. Works also for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adjacent edge
+     * auto idx = e.adjEdgeIndexMod(k+1); // the index of the adjacent edge next
+     *                                    // to k, that may also be at pos 0
+     * auto lastIdx = e.adjEdgeIndexMod(-1); // the index of the adjacent edge
+     *                                       // in position adjEdgesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position of the required adjacent edge in this
+     * container, w.r.t. the position 0; value is modularized on
+     * adjEdgesNumber().
+     * @return The index of the required adjacent edge of the element.
+     */
+    uint adjEdgeIndexMod(int i) const { return adjEdgeMod(i)->index(); }
+
+    /**
      * @brief Sets the i-th adjacent edge of the element.
-     * @param[in] i: the position in the container on which set the adj edge;
+     * @param[in] i: the position in this container on which set the adj edge;
      * the value must be between 0 and the number of adj edges.
      * @param[in] e: The pointer to the adjacent edge to set to the element.
      */
@@ -202,7 +232,7 @@ public:
      *                              // adjEdgesNumber()-1
      * @endcode
      *
-     * @param[in] i: the position in the container w.r.t. the position 0 on
+     * @param[in] i: the position in this container w.r.t. the position 0 on
      * which set the adj edge; value is modularized on adjEdgesNumber().
      * @param[in] e: The pointer to the adj edge to set to the element.
      */
@@ -310,7 +340,7 @@ public:
      * position.
      * @note This function is available only if the container of the Adjacent
      * Edges component has dynamic size.
-     * @param[in] i: The position in the container where to insert the adjacent
+     * @param[in] i: The position in this container where to insert the adjacent
      * edge.
      * @param[in] e: The pointer to the adjacent edge to insert in the
      * container.
@@ -325,7 +355,7 @@ public:
      * container.
      * @note This function is available only if the container of the Adjacent
      * Edges component has dynamic size.
-     * @param[in] i: The position of the adjacent edge to remove from the
+     * @param[in] i: The position of the adjacent edge to remove from this
      * container.
      */
     void eraseAdjEdge(uint i) requires (N < 0 && !TTVN)

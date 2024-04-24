@@ -117,7 +117,7 @@ public:
     /**
      * @brief Returns the pointer to the i-th adjacent vertex of an element.
      *
-     * @param[in] i: the position of the required adjacent vertex in the
+     * @param[in] i: the position of the required adjacent vertex in this
      * container.
      * @return The pointer i-th adjacent vertex of the element.
      */
@@ -126,11 +126,19 @@ public:
     /**
      * @brief Returns a const pointer to the i-th adjacent vertex of the
      * element.
-     * @param[in] i: the position of the required adjacent vertex in the
+     * @param[in] i: the position of the required adjacent vertex in this
      * container; the value must be between 0 and the number of adj vertices.
      * @return The pointer to the i-th adjacent vertex of the element.
      */
     const Vertex* adjVertex(uint i) const { return Base::container().at(i); }
+
+    /**
+     * @brief Returns the index in the vertex container of the i-th adjacent
+     * vertex of the element.
+     * @param[in] i: the position of the required vertex in this container.
+     * @return The index of the i-th adjacent vertex of the element.
+     */
+    uint adjVertexIndex(uint i) const { return adjVertex(i)->index(); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent vertex of the element,
@@ -147,7 +155,7 @@ public:
      *                                  // adjVertexNumber()-1
      * @endcode
      *
-     * @param[in] i: the position of the required adjacent vertex in the
+     * @param[in] i: the position of the required adjacent vertex in this
      * container, w.r.t. the position 0; value is modularized on
      * adjVertexNumber().
      * @return The pointer to the required adjacent vertex of the element.
@@ -157,7 +165,7 @@ public:
     /**
      * @brief Same of adjVertexMod, but returns a const Pointer to the adjacent
      * vertex.
-     * @param[in] i: the position of the required adjacent vertex in the
+     * @param[in] i: the position of the required adjacent vertex in this
      * container, w.r.t. the position 0; value is modularized on
      * adjVertexNumber().
      * @return The pointer to the required adjacent vertex of the element.
@@ -168,8 +176,33 @@ public:
     }
 
     /**
+     * @brief Returns the index in the vertex container of the i-th adjacent
+     * vertex of the element, but using as index the module between i and the
+     * number of adjacent vertices. You can use this function if you need to get
+     * the "index of the adjacent vertex next to position k", without check if
+     * it is less than the number of adjacent vertices. Works also for negative
+     * numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adjacent edge
+     * auto idx = e.adjVertexIndexMod(k+1); // the index of the adjacent vertex
+     *                                      // next to k, that may also be at
+     *                                      // pos 0
+     * auto lastIdx = e.adjVertexIndexMod(-1); // the index of the adjacent
+     *                                         // vertex in position
+     *                                         // adjVerticesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position of the required adjacent vertex in this
+     * container, w.r.t. the position 0; value is modularized on
+     * adjVerticesNumber().
+     * @return The index of the required adjacent vertex of the element.
+     */
+    uint adjVertexIndexMod(int i) const { return adjVertexMod(i)->index(); }
+
+    /**
      * @brief Sets the i-th adjacent vertex of the element.
-     * @param[in] i: the position in the container on which set the adj vertex;
+     * @param[in] i: the position in this container on which set the adj vertex;
      * the value must be between 0 and the number of adj vertices.
      * @param[in] v: The pointer to the adjacent vertex to set to this element.
      */
@@ -190,7 +223,7 @@ public:
      *                                 // adjVerticesNumber()-1
      * @endcode
      *
-     * @param[in] i: the position in the container w.r.t. the position 0 on
+     * @param[in] i: the position in this container w.r.t. the position 0 on
      * which set the adj vertex; value is modularized on adjVerticesNumber().
      * @param[in] v: The pointer to the adj vertex to set to the element.
      */
@@ -290,7 +323,7 @@ public:
      * position.
      * @note This function is available only if the container of the Adjacent
      * Vertices component has dynamic size.
-     * @param[in] i: The position in the container where to insert the adjacent
+     * @param[in] i: The position in this container where to insert the adjacent
      * vertex.
      * @param[in] v: The pointer to the adjacent vertex to insert in the
      * container.
@@ -302,7 +335,7 @@ public:
      * container.
      * @note This function is available only if the container of the Adjacent
      * Vertices component has dynamic size.
-     * @param[in] i: The position of the adjacent vertex to remove from the
+     * @param[in] i: The position of the adjacent vertex to remove from this
      * container.
      */
     void eraseAdjVertex(uint i) { Base::container().erase(i); }

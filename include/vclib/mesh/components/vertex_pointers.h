@@ -127,18 +127,26 @@ public:
     /**
      * @brief Returns the pointer to the i-th vertex of the element.
      *
-     * @param[in] i: the position of the required vertex in the container.
+     * @param[in] i: the position of the required vertex in this container.
      * @return The pointer i-th vertex of the element.
      */
     Vertex* vertex(uint i) { return Base::container().at(i); }
 
     /**
      * @brief Returns a const pointer to the i-th vertex of the element.
-     * @param[in] i: the position of the required vertex in the container;
+     * @param[in] i: the position of the required vertex in this container;
      * the value must be between 0 and the number of vertices.
      * @return The pointer to the i-th vertex of the element.
      */
     const Vertex* vertex(uint i) const { return Base::container().at(i); }
+
+    /**
+     * @brief Returns the index in the vertex container of the i-th vertex of
+     * the element.
+     * @param[in] i: the position of the required vertex in this container.
+     * @return The index of the i-th vertex of the element.
+     */
+    uint vertexIndex(uint i) const { return vertex(i)->index(); }
 
     /**
      * @brief Returns a reference of the pointer to the i-th vertex of the
@@ -154,7 +162,7 @@ public:
      * auto* last = e.vertexMod(-1); // the vertex in position vertexNumber()-1
      * @endcode
      *
-     * @param[in] i: the position of the required vertex in the container,
+     * @param[in] i: the position of the required vertex in this container,
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The pointer to the required vertex of the element.
      */
@@ -162,7 +170,7 @@ public:
 
     /**
      * @brief Same of vertexMod, but returns a const pointer to the vertex.
-     * @param[in] i: the position of the required vertex in the container,
+     * @param[in] i: the position of the required vertex in this container,
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The pointer to the required vertex of the element.
      */
@@ -170,15 +178,28 @@ public:
 
     /**
      * @brief Returns the index in the vertex container of the i-th vertex of
-     * the element.
-     * @param[in] i: the position of the required vertex in the container.
-     * @return The index of the i-th vertex of the element.
+     * the element, but using as index the module between i and the number of
+     * vertices. You can use this function if you need to get the "index of the
+     * vertex next to position k", without check if it is less than the number
+     * of vertices. Works also for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of a vertex
+     * auto idx = e.vertexIndexMod(k+1); // the index of the vertex next to k,
+     *                                   // that may also be at pos 0
+     * auto lastIdx = e.vertexIndexMod(-1); // the index of the vertex in
+     *                                      // position vertexNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position of the required vertex in this container,
+     * w.r.t. the position 0; value is modularized on vertexNumber().
+     * @return The index of the required vertex of the element.
      */
-    uint vertexIndex(uint i) const { return vertex(i)->index(); }
+    uint vertexIndexMod(int i) const { return vertexMod(i)->index(); }
 
     /**
      * @brief Sets the i-th vertex of the element.
-     * @param[in] i: the position in the container on which set the vertex; the
+     * @param[in] i: the position in this container on which set the vertex; the
      * value must be between 0 and the number of vertices.
      * @param[in] v: The pointer to the vertex to set to the element.
      */
@@ -198,7 +219,7 @@ public:
      *                              // vertexNumber()-1
      * @endcode
      *
-     * @param[in] i: the position in the container w.r.t. the position 0 on
+     * @param[in] i: the position in this container w.r.t. the position 0 on
      * which set the vertex; value is modularized on vertexNumber().
      * @param[in] v: The pointer to the vertex to set to the element.
      */
@@ -339,7 +360,7 @@ public:
      * @brief Inserts the given vertex in the container at the given position.
      * @note This function is available only if the container of the Vertices
      * has dynamic size.
-     * @param[in] i: The position in the container where to insert the vertex.
+     * @param[in] i: The position in this container where to insert the vertex.
      * @param[in] v: The pointer to the vertex to insert in the container.
      */
     void insertVertex(uint i, Vertex* v) requires (N < 0)
@@ -351,7 +372,7 @@ public:
      * @brief Removes the vertex at the given position from the container.
      * @note This function is available only if the container of the Vertices
      * has dynamic size.
-     * @param[in] i: The position of the vertex to remove from the container.
+     * @param[in] i: The position of the vertex to remove from this container.
      */
     void eraseVertex(uint i) requires (N < 0) { Base::container().erase(i); }
 

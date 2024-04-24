@@ -111,6 +111,9 @@ SCENARIO("TriMesh usage")
             REQUIRE(&m.face(fi0) == &m.face(0));
             m.addFace(0, 1, 2);
             REQUIRE(m.faceNumber() == 2);
+            REQUIRE(m.face(1).vertexIndex(0) == 0);
+            REQUIRE(m.face(1).vertexIndex(1) == 1);
+            REQUIRE(m.face(1).vertexIndex(2) == 2);
             REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
             REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
             REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
@@ -119,6 +122,9 @@ SCENARIO("TriMesh usage")
             m.addVertices(100);
             REQUIRE(m.vertexNumber() == 103);
             REQUIRE(m.vertexContainerSize() == 103);
+            REQUIRE(m.face(1).vertexIndex(0) == 0);
+            REQUIRE(m.face(1).vertexIndex(1) == 1);
+            REQUIRE(m.face(1).vertexIndex(2) == 2);
             REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
             REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
             REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
@@ -127,12 +133,18 @@ SCENARIO("TriMesh usage")
             m.deleteVertex(2);
             REQUIRE(m.vertexNumber() == 102);
             REQUIRE(m.vertexContainerSize() == 103);
+            REQUIRE(m.face(1).vertexIndex(0) == 0);
+            REQUIRE(m.face(1).vertexIndex(1) == 1);
+            REQUIRE(m.face(1).vertexIndex(2) == 3);
             REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
             REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
             REQUIRE(m.face(1).vertex(2) == &m.vertex(3));
             m.compactVertices();
             REQUIRE(m.vertexNumber() == 102);
             REQUIRE(m.vertexContainerSize() == 102);
+            REQUIRE(m.face(1).vertexIndex(0) == 0);
+            REQUIRE(m.face(1).vertexIndex(1) == 1);
+            REQUIRE(m.face(1).vertexIndex(2) == 2);
             REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
             REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
             REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
