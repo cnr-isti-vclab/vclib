@@ -139,7 +139,7 @@ public:
     /**
      * @brief Returns the pointer to the i-th adjacent face of this element.
      *
-     * @param[in] i: the position of the required adjacent face in the
+     * @param[in] i: the position of the required adjacent face in this
      * container; the value must be between 0 and the number of adj faces.
      * @return The pointer to the i-th adjacent face of this element.
      */
@@ -147,11 +147,19 @@ public:
 
     /**
      * @brief Returns a const pointer to the i-th adjacent face of this element.
-     * @param[in] i: the position of the required adjacent face in the
+     * @param[in] i: the position of the required adjacent face in this
      * container; the value must be between 0 and the number of adj faces.
      * @return The pointer to the i-th adjacent face of this element.
      */
     const Face* adjFace(uint i) const { return Base::container().at(i); }
+
+    /**
+     * @brief Returns the index in the face container of the i-th adjacent face
+     * of the element.
+     * @param[in] i: the position of the required face in this container.
+     * @return The index of the i-th adjacent face of the element.
+     */
+    uint adjFaceIndex(uint i) const { return adjFace(i)->index(); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent face of this element but
@@ -169,7 +177,7 @@ public:
      *                                // adjFaceNumber()-1
      * @endcode
      *
-     * @param[in] i: the position of the required adjacent face in the
+     * @param[in] i: the position of the required adjacent face in this
      * container, w.r.t. the position 0; value is modularized on
      * adjFaceNumber().
      * @return The pointer to the required adjacent face of this element.
@@ -179,7 +187,7 @@ public:
     /**
      * @brief Same of adjFaceMod, but returns a const Pointer to the adjacent
      * face.
-     * @param[in] i: the position of the required adjacent face in the
+     * @param[in] i: the position of the required adjacent face in this
      * container, w.r.t. the position 0; value is modularized on
      * adjFaceNumber().
      * @return The pointer to the required adjacent face of this element.
@@ -187,8 +195,30 @@ public:
     const Face* adjFaceMod(int i) const { return Base::container().atMod(i); }
 
     /**
+     * @brief Returns the index in the face container of the i-th adjacent face
+     * of the element, but using as index the module between i and the number of
+     * adjacent faces. You can use this function if you need to get the "index
+     * of the adjacent face next to position k", without check if it is less
+     * than the number of adjacent faces. Works also for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adjacent face
+     * auto idx = e.adjFaceIndexMod(k+1); // the index of the adjacent face next
+     *                                    // to k, that may also be at pos 0
+     * auto lastIdx = e.adjFaceIndexMod(-1); // the index of the adjacent face
+     *                                       // in position adjFacesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position of the required adjacent face in this
+     * container, w.r.t. the position 0; value is modularized on
+     * adjFacesNumber().
+     * @return The index of the required adjacent face of the element.
+     */
+    uint adjFaceIndexMod(int i) const { return adjFaceMod(i)->index(); }
+
+    /**
      * @brief Sets the i-th adjacent face of this element.
-     * @param[in] i: the position in the container on which set the adj face;
+     * @param[in] i: the position in this container on which set the adj face;
      * the value must be between 0 and the number of adj faces.
      * @param[in] f: The pointer to the adjacent face to set to this element.
      */
@@ -209,7 +239,7 @@ public:
      *                              // adjFacesNumber()-1
      * @endcode
      *
-     * @param[in] i: the position in the container w.r.t. the position 0 on
+     * @param[in] i: the position in this container w.r.t. the position 0 on
      * which set the adj face; value is modularized on adjFacesNumber().
      * @param[in] f: The pointer to the adj face to set to the element.
      */
@@ -317,7 +347,7 @@ public:
      * position.
      * @note This function is available only if the container of the Adjacent
      * Faces component has dynamic size.
-     * @param[in] i: The position in the container where to insert the adjacent
+     * @param[in] i: The position in this container where to insert the adjacent
      * face.
      * @param[in] e: The pointer to the adjacent face to insert in the
      * container.
@@ -332,7 +362,7 @@ public:
      * container.
      * @note This function is available only if the container of the Adjacent
      * Faces component has dynamic size.
-     * @param[in] i: The position of the adjacent face to remove from the
+     * @param[in] i: The position of the adjacent face to remove from this
      * container.
      */
     void eraseAdjFace(uint i) requires (N < 0 && !TTVN)
