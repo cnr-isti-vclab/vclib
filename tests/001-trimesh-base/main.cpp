@@ -153,7 +153,7 @@ SCENARIO("TriMesh usage")
         WHEN("Adding Faces with setVertices")
         {
             m.addVertices(5);
-            m.addFaces(3);
+            m.addFaces(4);
 
             m.face(0).setVertices(0, 1, 2);
             REQUIRE(m.face(0).vertexIndex(0) == 0);
