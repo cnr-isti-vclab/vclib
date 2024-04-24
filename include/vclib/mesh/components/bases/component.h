@@ -177,6 +177,32 @@ protected:
         return mData.template get<ElementType>(
             static_cast<const DerivedComponent*>(this));
     }
+
+    ElementType* parentElement()
+    {
+        static_assert(
+            !std::is_same_v<ElementType, void>,
+            "The component should know its parent element type to get access "
+            "to its pointer. You should define the component by passing the "
+            "element type as template parameter. E.G., for a Face element:\n"
+            "vcl::face::TriangleVertexPtrs<Vertex<Scalar>, Face<Scalar>>\n"
+            "                                              ^^^^^^^^^^^^ \n");
+
+        return static_cast<ElementType*>(this);
+    }
+
+    const ElementType* parentElement() const
+    {
+        static_assert(
+            !std::is_same_v<ElementType, void>,
+            "The component should know its parent element type to get access "
+            "to its pointer. You should define the component by passing the "
+            "element type as template parameter. E.G., for a Face element:\n"
+            "vcl::face::TriangleVertexPtrs<Vertex<Scalar>, Face<Scalar>>\n"
+            "                                              ^^^^^^^^^^^^ \n");
+
+        return static_cast<const ElementType*>(this);
+    }
 };
 
 /**
