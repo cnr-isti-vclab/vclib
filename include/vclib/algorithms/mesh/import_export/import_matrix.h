@@ -447,7 +447,7 @@ void importFacesFromMatrix(
             f.resizeVertices(vertexNumber);
 
             for (uint j = 0; j < vertexNumber; ++j)
-                f.setVertex(j, &mesh.vertex(faces(i, j)));
+                f.setVertexIndex(j, faces(i, j));
         }
     }
     else { // the vertex number of mesh faces is fixed

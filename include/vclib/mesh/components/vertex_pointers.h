@@ -210,6 +210,11 @@ public:
      */
     void setVertex(uint i, Vertex* v) { Base::container().set(i, v); }
 
+    void setVertexIndex(uint i, uint vi)
+    {
+        setVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
     /**
      * @brief Sets the i-th vertex of the element, but using as index the module
      * between i and the number of vertices. You can use this function if you

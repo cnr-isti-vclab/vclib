@@ -42,8 +42,37 @@ public:
     const Point& coord() const { return p; }
 };
 
+struct VertexIndex
+{
+    VertexIndex(uint vi) : vi(vi) {}
+
+    operator uint() const { return vi; }
+private:
+    uint vi;
+};
+
+struct FaceIndex
+{
+    FaceIndex(uint vi) : vi(vi) {}
+
+    operator uint() const { return vi; }
+private:
+    uint vi;
+};
+
+void foo(VertexIndex vi)
+{
+    std::cout << vi << std::endl;
+}
+
 int main()
 {
+    foo(56);
+
+    FaceIndex f = 4;
+
+    // VertexIndex vv = f; // error
+
     std::vector<Vertex> v;
 
     v.push_back(Vertex(-0.5, -0.5, 0.5));
