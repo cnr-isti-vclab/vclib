@@ -60,6 +60,7 @@ concept HasVertexPointers = requires (
     { o.setVertex(uint(), &v) } -> std::same_as<void>;
     { o.setVertex(uint(), uint()) } -> std::same_as<void>;
     { o.setVertexMod(int(), &v) } -> std::same_as<void>;
+    { o.setVertexMod(int(), uint()) } -> std::same_as<void>;
     { o.setVertices(vec) } -> std::same_as<void>;
 
     { co.containsVertex(&v) } -> std::same_as<bool>;
