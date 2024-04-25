@@ -50,10 +50,11 @@ class Vertex :
             vcl::vert::Normal3<Scalar>,
             vcl::vert::OptionalColor<Vertex<Scalar>>,
             vcl::vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
             vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
             vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
             vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
+            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vcl::vert::OptionalMark<Vertex<Scalar>>,
             vcl::vert::CustomComponents<Vertex<Scalar>>>
 {
 };
@@ -69,6 +70,7 @@ class Face :
             vcl::face::OptionalQuality<Scalar, Face<Scalar>>,
             vcl::face::OptionalAdjacentPolygons<Face<Scalar>>,
             vcl::face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
+            vcl::face::OptionalMark<Face<Scalar>>,
             vcl::face::CustomComponents<Face<Scalar>>>
 {
 };
