@@ -323,7 +323,7 @@ public:
             return vid;
         }
         else if (vertexMod((int) vid - 1) == v2) {
-            uint n = vertexNumber();
+            int n = vertexNumber(); // n must be int to avoid unwanted casts
             return (((int) vid - 1) % n + n) % n;
         }
         else {
