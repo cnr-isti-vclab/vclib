@@ -159,7 +159,13 @@ public:
      * @param[in] i: the position of the required face in this container.
      * @return The index of the i-th adjacent face of the element.
      */
-    uint adjFaceIndex(uint i) const { return adjFace(i)->index(); }
+    uint adjFaceIndex(uint i) const
+    {
+        auto* f = adjFace(i);
+        if (f) [[likely]]
+            return f->index();
+        else return UINT_NULL;
+    }
 
     /**
      * @brief Returns the pointer to the i-th adjacent face of this element but
@@ -214,7 +220,13 @@ public:
      * adjFacesNumber().
      * @return The index of the required adjacent face of the element.
      */
-    uint adjFaceIndexMod(int i) const { return adjFaceMod(i)->index(); }
+    uint adjFaceIndexMod(int i) const
+    {
+        auto* f = adjFaceMod(i);
+        if (f) [[likely]]
+            return f->index();
+        else return UINT_NULL;
+    }
 
     /**
      * @brief Sets the i-th adjacent face of this element.
