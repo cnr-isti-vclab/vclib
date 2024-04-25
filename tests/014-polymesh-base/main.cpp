@@ -104,12 +104,14 @@ SCENARIO("PolyMesh usage")
         {
             REQUIRE(m.vertexNumber() == 0);
             REQUIRE(m.faceNumber() == 0);
-            m.addVertices(3);
-            REQUIRE(m.vertexNumber() == 3);
+            m.addVertices(4);
+            REQUIRE(m.vertexNumber() == 4);
             uint fi0 = m.addFace();
             REQUIRE(m.faceNumber() == 1);
             REQUIRE(&m.face(fi0) == &m.face(0));
             m.addFace(0, 1, 2);
+            m.face(1).edgeSelected(0) = true;
+            m.face(1).edgeSelected(2) = true;
             REQUIRE(m.faceNumber() == 2);
             REQUIRE(m.face(1).vertexIndex(0) == 0);
             REQUIRE(m.face(1).vertexIndex(1) == 1);
@@ -125,11 +127,46 @@ SCENARIO("PolyMesh usage")
             REQUIRE(m.face(1).vertexIndexMod(-1) == 2);
             REQUIRE(m.face(1).vertexIndexMod(5) == 2);
             REQUIRE(m.face(1).vertexIndexMod(-5) == 1);
+            m.face(1).edgeSelected(0) = true;
+            m.face(1).edgeSelected(2) = true;
+            REQUIRE(m.face(1).edgeSelected(0) == true);
+            REQUIRE(m.face(1).edgeSelected(1) == false);
+            REQUIRE(m.face(1).edgeSelected(2) == true);
+            m.face(1).pushVertex(&m.vertex(3));
+            REQUIRE(m.face(1).vertexNumber() == 4);
+            REQUIRE(m.face(1).vertex(3) == &m.vertex(3));
+            REQUIRE(m.face(1).vertexIndex(3) == 3);
+            REQUIRE(m.face(1).edgeSelected(0) == true);
+            REQUIRE(m.face(1).edgeSelected(1) == false);
+            REQUIRE(m.face(1).edgeSelected(2) == true);
+            REQUIRE(m.face(1).edgeSelected(3) == false);
+            m.face(1).insertVertex(2, &m.vertex(2));
+            REQUIRE(m.face(1).vertexNumber() == 5);
+            REQUIRE(m.face(1).vertexIndex(0) == 0);
+            REQUIRE(m.face(1).vertexIndex(1) == 1);
+            REQUIRE(m.face(1).vertexIndex(2) == 2);
+            REQUIRE(m.face(1).vertexIndex(3) == 2);
+            REQUIRE(m.face(1).vertexIndex(4) == 3);
+            REQUIRE(m.face(1).edgeSelected(0) == true);
+            REQUIRE(m.face(1).edgeSelected(1) == false);
+            REQUIRE(m.face(1).edgeSelected(2) == false);
+            REQUIRE(m.face(1).edgeSelected(3) == true);
+            REQUIRE(m.face(1).edgeSelected(4) == false);
+            m.face(1).resizeVertices(6);
+            REQUIRE(m.face(1).vertexNumber() == 6);
+            REQUIRE(m.face(1).vertexIndex(0) == 0);
+            REQUIRE(m.face(1).vertexIndex(1) == 1);
+            REQUIRE(m.face(1).vertexIndex(2) == 2);
+            REQUIRE(m.face(1).vertexIndex(3) == 2);
+            REQUIRE(m.face(1).vertexIndex(4) == 3);
+            REQUIRE(m.face(1).vertex(5) == nullptr);
+            REQUIRE(m.face(1).vertexIndex(5) == vcl::UINT_NULL);
+            // todo: test eraseVertex and clearVertices()
 
             // force reallocation of vertex container
             m.addVertices(100);
-            REQUIRE(m.vertexNumber() == 103);
-            REQUIRE(m.vertexContainerSize() == 103);
+            REQUIRE(m.vertexNumber() == 104);
+            REQUIRE(m.vertexContainerSize() == 104);
             REQUIRE(m.face(1).vertexIndex(0) == 0);
             REQUIRE(m.face(1).vertexIndex(1) == 1);
             REQUIRE(m.face(1).vertexIndex(2) == 2);
@@ -139,8 +176,8 @@ SCENARIO("PolyMesh usage")
 
             m.face(1).setVertex(2, &m.vertex(3));
             m.deleteVertex(2);
-            REQUIRE(m.vertexNumber() == 102);
-            REQUIRE(m.vertexContainerSize() == 103);
+            REQUIRE(m.vertexNumber() == 103);
+            REQUIRE(m.vertexContainerSize() == 104);
             REQUIRE(m.face(1).vertexIndex(0) == 0);
             REQUIRE(m.face(1).vertexIndex(1) == 1);
             REQUIRE(m.face(1).vertexIndex(2) == 3);
@@ -148,8 +185,8 @@ SCENARIO("PolyMesh usage")
             REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
             REQUIRE(m.face(1).vertex(2) == &m.vertex(3));
             m.compactVertices();
-            REQUIRE(m.vertexNumber() == 102);
-            REQUIRE(m.vertexContainerSize() == 102);
+            REQUIRE(m.vertexNumber() == 103);
+            REQUIRE(m.vertexContainerSize() == 103);
             REQUIRE(m.face(1).vertexIndex(0) == 0);
             REQUIRE(m.face(1).vertexIndex(1) == 1);
             REQUIRE(m.face(1).vertexIndex(2) == 2);

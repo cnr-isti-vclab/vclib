@@ -146,7 +146,12 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The index of the i-th vertex of the element.
      */
-    uint vertexIndex(uint i) const { return vertex(i)->index(); }
+    uint vertexIndex(uint i) const {
+        auto* v = vertex(i);
+        if (v) [[likely]]
+            return v->index();
+        else return UINT_NULL;
+    }
 
     /**
      * @brief Returns a reference of the pointer to the i-th vertex of the
@@ -195,7 +200,13 @@ public:
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The index of the required vertex of the element.
      */
-    uint vertexIndexMod(int i) const { return vertexMod(i)->index(); }
+    uint vertexIndexMod(int i) const
+    {
+        auto* v = vertexMod(i);
+        if (v) [[likely]]
+            return v->index();
+        else return UINT_NULL;
+    }
 
     /**
      * @brief Sets the i-th vertex of the element.

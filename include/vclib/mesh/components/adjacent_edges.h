@@ -153,7 +153,12 @@ public:
      * @param[in] i: the position of the required edge in this container.
      * @return The index of the i-th adjacent edge of the element.
      */
-    uint adjEdgeIndex(uint i) const { return adjEdge(i)->index(); }
+    uint adjEdgeIndex(uint i) const {
+        auto* e = adjEdge(i);
+        if (e) [[likely]]
+            return e->index();
+        else return UINT_NULL;
+    }
 
     /**
      * @brief Returns the pointer to the i-th adjacent edge of the element but
@@ -207,7 +212,13 @@ public:
      * adjEdgesNumber().
      * @return The index of the required adjacent edge of the element.
      */
-    uint adjEdgeIndexMod(int i) const { return adjEdgeMod(i)->index(); }
+    uint adjEdgeIndexMod(int i) const
+    {
+        auto* e = adjEdgeMod(i);
+        if (e) [[likely]]
+            return e->index();
+        else return UINT_NULL;
+    }
 
     /**
      * @brief Sets the i-th adjacent edge of the element.

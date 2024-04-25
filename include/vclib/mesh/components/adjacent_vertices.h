@@ -138,7 +138,13 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The index of the i-th adjacent vertex of the element.
      */
-    uint adjVertexIndex(uint i) const { return adjVertex(i)->index(); }
+    uint adjVertexIndex(uint i) const
+    {
+        auto* v = adjVertex(i);
+        if (v) [[likely]]
+            return v->index();
+        else return UINT_NULL;
+    }
 
     /**
      * @brief Returns the pointer to the i-th adjacent vertex of the element,
@@ -198,7 +204,13 @@ public:
      * adjVerticesNumber().
      * @return The index of the required adjacent vertex of the element.
      */
-    uint adjVertexIndexMod(int i) const { return adjVertexMod(i)->index(); }
+    uint adjVertexIndexMod(int i) const
+    {
+        auto* v = adjVertexMod(i);
+        if (v) [[likely]]
+            return v->index();
+        else return UINT_NULL;
+    }
 
     /**
      * @brief Sets the i-th adjacent vertex of the element.

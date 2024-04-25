@@ -519,12 +519,12 @@ protected:
 
     void insert(uint i, BitSet<FT> f = BitSet<FT>()) requires (N < 0)
     {
-        edgeFlags().insert(edgeFlags().begin() + i, f);
+        edgeFlags().insert(i, f);
     }
 
     void erase(uint i) requires (N < 0)
     {
-        edgeFlags().erase(edgeFlags().begin() + i);
+        edgeFlags().erase(i);
     }
 
     void clear() requires (N < 0) { edgeFlags().clear(); }
