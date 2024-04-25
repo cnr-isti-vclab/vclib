@@ -316,6 +316,19 @@ public:
     }
 
     /**
+     * @brief Returns `true` if the container of vertices contains the vertex
+     * with the given index, `false` otherwise.
+     *
+     * @param[in] vi: the index of the vertex to search.
+     * @return `true` if the container of vertices contains the vertex with the
+     * given index, `false` otherwise.
+     */
+    bool containsVertex(uint vi) const
+    {
+        return containsVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Returns an iterator to the first vertex in the container of this
      * component that is equal to the given vertex. If no such vertex is
      * found, past-the-end iterator is returned.
@@ -344,6 +357,34 @@ public:
     }
 
     /**
+     * @brief Returns an iterator to the first vertex in the container of this
+     * component that is equal to the vertex with the given index. If no such
+     * vertex is found, past-the-end iterator is returned.
+     *
+     * @param[in] vi: the index of the vertex to search.
+     * @return an iterator pointing to the first vertex equal to the given
+     * vertex, or end if no such vertex is found.
+     */
+    VertexIterator findVertex(uint vi)
+    {
+        return findVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
+     * @brief Returns a const iterator to the first vertex in the container of
+     * this component that is equal to the vertex with the given index. If no
+     * such vertex is found, past-the-end iterator is returned.
+     *
+     * @param[in] vi: the index of the vertex to search.
+     * @return a const iterator pointing to the first vertex equal to the given
+     * vertex, or end if no such vertex is found.
+     */
+    ConstVertexIterator findVertex(uint vi) const
+    {
+        return findVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Returns the index of the given vertex in the container of
      * the element. If the given vertex is not in the container, returns
      * UINT_NULL.
@@ -355,6 +396,20 @@ public:
     uint indexOfVertex(const Vertex* v) const
     {
         return Base::container().indexOf(v);
+    }
+
+    /**
+     * @brief Returns the index of the vertex with the given index in the
+     * container of the element. If the vertex with the given index is not in
+     * the container, returns UINT_NULL.
+     *
+     * @param[in] vi: the index of the vertex to search.
+     * @return the index of the vertex with the given index, or UINT_NULL if it
+     * is not found.
+     */
+    uint indexOfVertex(uint vi) const
+    {
+        return indexOfVertex(&Base::parentElement()->parentMesh()->vertex(vi));
     }
 
     /**
@@ -389,6 +444,28 @@ public:
         else {
             return UINT_NULL;
         }
+    }
+
+    /**
+     * @brief Returns the index of the edge composed of the two vertices with
+     * the given indices in the container of the element.
+     *
+     * The order of the two vertices is not important. The index of the edge
+     * corresponds to the index of the first vertex found in the container. If
+     * the edge formed by the two vertices is not in the container, returns
+     * UINT_NULL.
+     *
+     * @param[in] vi1: the index of the first vertex that compose the edge to
+     * search.
+     * @param[in] vi2: the index of the second vertex that compose the edge to
+     * search.
+     * @return the index of the edge composed of the vertices with the given
+     * indices, or UINT_NULL if it is not found.
+     */
+    uint indexOfEdge(uint vi1, uint vi2) const
+    {
+        return indexOfEdge(&Base::parentElement()->parentMesh()->vertex(vi1),
+                           &Base::parentElement()->parentMesh()->vertex(vi2));
     }
 
     /* Member functions specific for vector of pointers */

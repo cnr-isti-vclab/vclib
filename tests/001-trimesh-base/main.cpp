@@ -191,4 +191,66 @@ SCENARIO("TriMesh usage")
             REQUIRE(m.face(3).vertex(2) == &m.vertex(3));
         }
     }
+
+    GIVEN("A cube TriMesh")
+    {
+        vcl::TriMesh m;
+        using PointT = vcl::TriMesh::VertexType::CoordType;
+
+        m.addVertices(
+            PointT(-0.5, -0.5,  0.5),
+            PointT( 0.5, -0.5,  0.5),
+            PointT(-0.5,  0.5,  0.5),
+            PointT( 0.5,  0.5,  0.5),
+            PointT(-0.5,  0.5, -0.5),
+            PointT( 0.5,  0.5, -0.5),
+            PointT(-0.5, -0.5, -0.5),
+            PointT( 0.5, -0.5, -0.5));
+        m.reserveFaces(12);
+        m.addFace(0, 1, 2);
+        m.addFace(1, 3, 2);
+        m.addFace(2, 3, 4);
+        m.addFace(3, 5, 4);
+        m.addFace(4, 5, 6);
+        m.addFace(5, 7, 6);
+        m.addFace(6, 7, 0);
+        m.addFace(7, 1, 0);
+        m.addFace(1, 7, 3);
+        m.addFace(7, 5, 3);
+        m.addFace(5, 7, 6);
+        m.addFace(7, 5, 4);
+
+        REQUIRE(m.vertexNumber() == 8);
+        REQUIRE(m.faceNumber() == 12);
+
+        THEN("Test Vertex References queries")
+        {
+            REQUIRE(m.face(0).containsVertex(&m.vertex(0)) == true);
+            REQUIRE(m.face(0).containsVertex(&m.vertex(1)) == true);
+            REQUIRE(m.face(0).containsVertex(&m.vertex(2)) == true);
+            REQUIRE(m.face(0).containsVertex(&m.vertex(3)) == false);
+
+            REQUIRE(m.face(0).containsVertex((uint) 0) == true);
+            REQUIRE(m.face(0).containsVertex(1) == true);
+            REQUIRE(m.face(0).containsVertex(2) == true);
+            REQUIRE(m.face(0).containsVertex(3) == false);
+
+            REQUIRE(
+                m.face(1).findVertex(&m.vertex(1)) != m.face(1).vertexEnd());
+            REQUIRE(
+                m.face(1).findVertex(&m.vertex(4)) == m.face(1).vertexEnd());
+            REQUIRE(m.face(1).findVertex(1) != m.face(1).vertexEnd());
+            REQUIRE(m.face(1).findVertex(4) == m.face(1).vertexEnd());
+
+            REQUIRE(m.face(2).indexOfVertex(&m.vertex(0)) == vcl::UINT_NULL);
+            REQUIRE(m.face(2).indexOfVertex(&m.vertex(3)) == 1);
+            REQUIRE(m.face(2).indexOfVertex((uint)0) == vcl::UINT_NULL);
+            REQUIRE(m.face(2).indexOfVertex(4) == 2);
+
+            REQUIRE(m.face(3).indexOfEdge(&m.vertex(5), &m.vertex(4)) == 1);
+            REQUIRE(m.face(3).indexOfEdge(&m.vertex(4), &m.vertex(5)) == 1);
+            REQUIRE(m.face(3).indexOfEdge(4, 3) == 2);
+            REQUIRE(m.face(3).indexOfEdge(3, 4) == 2);
+        }
+    }
 }
