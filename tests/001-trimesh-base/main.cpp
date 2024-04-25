@@ -117,6 +117,14 @@ SCENARIO("TriMesh usage")
             REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
             REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
             REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
+            REQUIRE(m.face(1).vertexMod(0) == &m.vertex(0));
+            REQUIRE(m.face(1).vertexMod(-1) == &m.vertex(2));
+            REQUIRE(m.face(1).vertexMod(5) == &m.vertex(2));
+            REQUIRE(m.face(1).vertexMod(-5) == &m.vertex(1));
+            REQUIRE(m.face(1).vertexIndexMod(0) == 0);
+            REQUIRE(m.face(1).vertexIndexMod(-1) == 2);
+            REQUIRE(m.face(1).vertexIndexMod(5) == 2);
+            REQUIRE(m.face(1).vertexIndexMod(-5) == 1);
 
             // force reallocation of vertex container
             m.addVertices(100);
