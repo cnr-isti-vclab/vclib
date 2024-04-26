@@ -522,10 +522,7 @@ protected:
         edgeFlags().insert(i, f);
     }
 
-    void erase(uint i) requires (N < 0)
-    {
-        edgeFlags().erase(i);
-    }
+    void erase(uint i) requires (N < 0) { edgeFlags().erase(i); }
 
     void clear() requires (N < 0) { edgeFlags().clear(); }
 
