@@ -152,7 +152,8 @@ public:
         auto* v = adjVertex(i);
         if (v) [[likely]]
             return v->index();
-        else return UINT_NULL;
+        else
+            return UINT_NULL;
     }
 
     /**
@@ -218,7 +219,8 @@ public:
         auto* v = adjVertexMod(i);
         if (v) [[likely]]
             return v->index();
-        else return UINT_NULL;
+        else
+            return UINT_NULL;
     }
 
     /**

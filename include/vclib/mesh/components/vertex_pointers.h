@@ -151,11 +151,13 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The index of the i-th vertex of the element.
      */
-    uint vertexIndex(uint i) const {
+    uint vertexIndex(uint i) const
+    {
         auto* v = vertex(i);
         if (v) [[likely]]
             return v->index();
-        else return UINT_NULL;
+        else
+            return UINT_NULL;
     }
 
     /**
@@ -210,7 +212,8 @@ public:
         auto* v = vertexMod(i);
         if (v) [[likely]]
             return v->index();
-        else return UINT_NULL;
+        else
+            return UINT_NULL;
     }
 
     /**

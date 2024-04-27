@@ -164,7 +164,8 @@ public:
         auto* f = adjFace(i);
         if (f) [[likely]]
             return f->index();
-        else return UINT_NULL;
+        else
+            return UINT_NULL;
     }
 
     /**
@@ -225,7 +226,8 @@ public:
         auto* f = adjFaceMod(i);
         if (f) [[likely]]
             return f->index();
-        else return UINT_NULL;
+        else
+            return UINT_NULL;
     }
 
     /**
