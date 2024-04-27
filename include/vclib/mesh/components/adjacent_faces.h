@@ -239,6 +239,18 @@ public:
     void setAdjFace(uint i, Face* f) { Base::container().set(i, f); }
 
     /**
+     * @brief Sets the i-th adjacent face of the element.
+     *
+     * @param[in] i: the position in this container on which set the adj face;
+     * the value must be between 0 and the number of adj faces.
+     * @param[in] fi: The index in the face container of the face to set.
+     */
+    void setAdjEdge(uint i, uint fi)
+    {
+        setAdjFace(i, &Base::parentElement()->parentMesh()->face(fi));
+    }
+
+    /**
      * @brief Sets the i-th adjacent face of the element, but using as index the
      * module between i and the number of adjacent faces. You can use this
      * function if you need to set the "next adjacent face after position k",
@@ -260,6 +272,30 @@ public:
     void setAdjFaceMod(int i, Face* f) { Base::container().atMod(i) = f; }
 
     /**
+     * @brief Sets the i-th adjacent face of the element, but using as index the
+     * module between i and the number of adjacent faces. You can use this
+     * function if you need to set the "next adjacent face after position k",
+     * without check if it is less than the number of adjacent faces. Works also
+     * for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adj face
+     * e.setAdjFaceMod(k+1, aFaceInd); // set the adj face next to k, that may
+     *                                 // also be at pos 0
+     * e.setAdjFaceMod(-1, aFaceInd); // set the adj face in position
+     *                                // adjFacesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position in this container w.r.t. the position 0 on
+     * which set the adj face; value is modularized on adjFacesNumber().
+     * @param[in] fi: The index in the face containrt of the face to set.
+     */
+    void setAdjFaceMod(int i, uint fi)
+    {
+        setAdjFaceMod(i, &Base::parentElement()->parentMesh()->face(fi));
+    }
+
+    /**
      * @brief Sets all the adjacent faces of this element.
      *
      * If the size of the container is static, the size of the input range must
@@ -268,12 +304,33 @@ public:
      * @tparam Rng: The type of the range of adjacent faces to set. The value
      * type of the range must be convertible to a pointer to an AdjacentFace.
      *
-     * @param[in] r: range of adjacent faces to set.
+     * @param[in] r: range of face pointers to set.
      */
     template<Range Rng>
     void setAdjFaces(Rng&& r) requires RangeOfConvertibleTo<Rng, Face*>
     {
         Base::container().set(r);
+    }
+
+    /**
+     * @brief Sets all the adjacent faces of this element.
+     *
+     * If the size of the container is static, the size of the input range must
+     * be the same one of the container.
+     *
+     * @tparam Rng: The type of the range of adjacent faces to set. The value
+     * type of the range must be convertible to an unsigned integer.
+     *
+     * @param[in] r: range of face indices to set.
+     */
+    template<Range Rng>
+    void setAdjFaces(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
+    {
+        auto conv = [&](auto i) {
+            return &Base::parentElement()->parentMesh()->face(i);
+        };
+
+        Base::container().set(r | std::views::transform(conv));
     }
 
     /**
@@ -287,6 +344,19 @@ public:
     bool containsAdjFace(const Face* f) const
     {
         return Base::container().contains(f);
+    }
+
+    /**
+     * @brief Returns `true` if the container of adjacent faces contains the
+     * face with the given index, `false` otherwise.
+     *
+     * @param[in] fi: the index of the face to search.
+     * @return `true` if the container of adjacent faces contains the face with
+     * the given index, `false` otherwise.
+     */
+    bool containsAdjFace(uint fi) const
+    {
+        return containsAdjFace(&Base::parentElement()->parentMesh()->face(fi));
     }
 
     /**
@@ -315,6 +385,35 @@ public:
     ConstAdjacentFaceIterator findAdjFace(const Face* f) const
     {
         return Base::container().find(f);
+    }
+
+    /**
+     * @brief Returns an iterator to the first adjacent face in the container of
+     * this component that is equal to the face with the given index. If no such
+     * adjacent face is found, past-the-end iterator is returned.
+     *
+     * @param[in] fi: the index to the face to search.
+     * @return an iterator pointing to the first adjacent face equal to the face
+     * with the given index, or end if no such adjacent face is found.
+     */
+    AdjacentFaceIterator findAdjFace(uint fi)
+    {
+        return findAdjFace(&Base::parentElement()->parentMesh()->face(fi));
+    }
+
+    /**
+     * @brief Returns a const iterator to the first adjacent face in the
+     * container of this component that is equal to the face with the given
+     * index. If no such adjacent face is found, past-the-end iterator is
+     * returned.
+     *
+     * @param[in] fi: the index to the face to search.
+     * @return a const iterator pointing to the first adjacent face equal to the
+     * face with the given index, or end if no such adjacent face is found.
+     */
+    ConstAdjacentFaceIterator findAdjFace(uint fi) const
+    {
+        return findAdjFace(&Base::parentElement()->parentMesh()->face(fi));
     }
 
     /**

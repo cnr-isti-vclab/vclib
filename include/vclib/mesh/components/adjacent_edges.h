@@ -317,7 +317,8 @@ public:
      * If the size of the container is static, the size of the input range must
      * be the same one of the container.
      *
-     * @tparam Rng: The type of the range of adjacent edges to set.
+     * @tparam Rng: The type of the range of adjacent edges to set. The value
+     * type of the range must be convertible to an unsigned integer.
      *
      * @param[in] r: range of edges indices to set.
      */
