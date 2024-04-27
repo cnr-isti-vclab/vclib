@@ -364,7 +364,7 @@ public:
      * this component that is equal to the given face. If no such adjacent face
      * is found, past-the-end iterator is returned.
      *
-     * @param[in] e: the pointer to the face to search.
+     * @param[in] f: the pointer to the face to search.
      * @return an iterator pointing to the first adjacent face equal to the
      * given face, or end if no such adjacent face is found.
      */
@@ -378,7 +378,7 @@ public:
      * container of this component that is equal to the given edge. If no such
      * adjacent face is found, past-the-end iterator is returned.
      *
-     * @param[in] e: the pointer to the face to search.
+     * @param[in] f: the pointer to the face to search.
      * @return a const iterator pointing to the first adjacent face equal to the
      * given face, or end if no such adjacent face is found.
      */
@@ -421,7 +421,7 @@ public:
      * this element. If the given adjacent face is not in the container, returns
      * UINT_NULL.
      *
-     * @param[in] e: the pointer to the adjacent face to search.
+     * @param[in] f: the pointer to the adjacent face to search.
      * @return the index of the given adjacent face, or UINT_NULL if it is not
      * found.
      */
@@ -447,7 +447,7 @@ public:
      * @brief Pushes in the back of the container the given adjacent face.
      * @note This function is available only if the container of the Adjacent
      * Faces component has dynamic size.
-     * @param[in] e: The pointer to the adjacent face to push in the back of the
+     * @param[in] f: The pointer to the adjacent face to push in the back of the
      * container.
      */
     void pushAdjFace(Face* f) requires (N < 0 && !TTVN)
@@ -462,7 +462,7 @@ public:
      * Faces component has dynamic size.
      * @param[in] i: The position in this container where to insert the adjacent
      * face.
-     * @param[in] e: The pointer to the adjacent face to insert in the
+     * @param[in] f: The pointer to the adjacent face to insert in the
      * container.
      */
     void insertAdjFace(uint i, Face* f) requires (N < 0 && !TTVN)
