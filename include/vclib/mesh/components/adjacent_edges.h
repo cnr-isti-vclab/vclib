@@ -238,6 +238,18 @@ public:
     void setAdjEdge(uint i, Edge* e) { Base::container().set(i, e); }
 
     /**
+     * @brief Sets the i-th adjacent edge of the element.
+     *
+     * @param[in] i: the position in this container on which set the adj edge;
+     * the value must be between 0 and the number of adj edges.
+     * @param[in] ei: The index in the edge container of the edge to set.
+     */
+    void setAdjEdge(uint i, uint ei)
+    {
+        setAdjEdge(i, &Base::parentElement()->parentMesh()->edge(ei));
+    }
+
+    /**
      * @brief Sets the i-th adjacent edge of the element, but using as index the
      * module between i and the number of adjacent edges. You can use this
      * function if you need to set the "next adjacent edge after position k",
@@ -259,6 +271,30 @@ public:
     void setAdjEdgeMod(int i, Edge* e) { Base::container().atMod(i) = e; }
 
     /**
+     * @brief Sets the i-th adjacent edge of the element, but using as index the
+     * module between i and the number of adjacent edges. You can use this
+     * function if you need to set the "next adjacent edge after position k",
+     * without check if it is less than the number of adjacent edges. Works also
+     * for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adj edge
+     * e.setAdjEdgeMod(k+1, aEdgeInd); // set the adj edge next to k, that may
+     *                                 // also be at pos 0
+     * e.setAdjEdgeMod(-1, aEdgeInd); // set the adj edge in position
+     *                                // adjEdgesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position in this container w.r.t. the position 0 on
+     * which set the adj edge; value is modularized on adjEdgesNumber().
+     * @param[in] ei: The index in the edge container of the edge to set.
+     */
+    void setAdjEdgeMod(int i, uint ei)
+    {
+        setAdjEdgeMod(i, &Base::parentElement()->parentMesh()->edge(ei));
+    }
+
+    /**
      * @brief Sets all the adjacent edges of the element.
      *
      * If the size of the container is static, the size of the input range must
@@ -267,12 +303,32 @@ public:
      * @tparam Rng: The type of the range of adjacent edges to set. The value
      * type of the range must be convertible to a pointer to an AdjacentEdge.
      *
-     * @param[in] r: range of adjacent edges to set.
+     * @param[in] r: range of edge pointers to set.
      */
     template<Range Rng>
     void setAdjEdges(Rng&& r) requires RangeOfConvertibleTo<Rng, Edge*>
     {
         Base::container().set(r);
+    }
+
+    /**
+     * @brief Sets all the adjacent edges of the element.
+     *
+     * If the size of the container is static, the size of the input range must
+     * be the same one of the container.
+     *
+     * @tparam Rng: The type of the range of adjacent edges to set.
+     *
+     * @param[in] r: range of edges indices to set.
+     */
+    template<Range Rng>
+    void setAdjEdges(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
+    {
+        auto conv = [&](auto i) {
+            return &Base::parentElement()->parentMesh()->edge(i);
+        };
+
+        Base::container().set(r | std::views::transform(conv));
     }
 
     /**
@@ -286,6 +342,19 @@ public:
     bool containsAdjEdge(const Edge* e) const
     {
         return Base::container().contains(e);
+    }
+
+    /**
+     * @brief Returns `true` if the container of adjacent edges contains the
+     * given index, `false` otherwise.
+     *
+     * @param[in] ei: the index to the edge to search.
+     * @return `true` if the container of adjacent edges contains the given
+     * index, `false` otherwise.
+     */
+    bool containsAdjEdge(uint ei) const
+    {
+        return containsAdjEdge(&Base::parentElement()->parentMesh()->edge(ei));
     }
 
     /**
@@ -317,6 +386,35 @@ public:
     }
 
     /**
+     * @brief Returns an iterator to the first adjacent edge in the container of
+     * this component that is equal to the edge with the given index. If no such
+     * adjacent edge is found, past-the-end iterator is returned.
+     *
+     * @param[in] ei: the index to the edge to search.
+     * @return an iterator pointing to the first adjacent edge equal to the edge
+     * with the given index, or end if no such adjacent edge is found.
+     */
+    AdjacentEdgeIterator findAdjEdge(uint ei)
+    {
+        return findAdjEdge(&Base::parentElement()->parentMesh()->edge(ei));
+    }
+
+    /**
+     * @brief Returns a const iterator to the first adjacent edge in the
+     * container of this component that is equal to the edge with the given
+     * index. If no such adjacent edge is found, past-the-end iterator is
+     * returned.
+     *
+     * @param[in] ei: the index to the edge to search.
+     * @return a const iterator pointing to the first adjacent edge equal to the
+     * edge with the given index, or end if no such adjacent edge is found.
+     */
+    ConstAdjacentEdgeIterator findAdjEdge(uint ei) const
+    {
+        return findAdjEdge(&Base::parentElement()->parentMesh()->edge(ei));
+    }
+
+    /**
      * @brief Returns the index of the given adjacent edge in the container of
      * the element. If the given adjacent edge is not in the container, returns
      * UINT_NULL.
@@ -328,6 +426,20 @@ public:
     uint indexOfAdjEdge(const Edge* e) const
     {
         return Base::container().indexOf(e);
+    }
+
+    /**
+     * @brief Returns the index of the adjacent edge with the given index in the
+     * container of the element. If the adjacent edge with the given index is
+     * not in the container, returns UINT_NULL.
+     *
+     * @param[in] ei: the index to the adjacent edge to search.
+     * @return the index of the adjacent edge with the given index, or UINT_NULL
+     * if it is not found.
+     */
+    uint indexOfAdjEdge(uint ei) const
+    {
+        return indexOfAdjEdge(&Base::parentElement()->parentMesh()->edge(ei));
     }
 
     /* Member functions specific for vector of adjacent edges */
@@ -356,6 +468,19 @@ public:
     }
 
     /**
+     * @brief Pushes in the back of the container the given adjacent edge.
+     * @note This function is available only if the container of the Adjacent
+     * Edges component has dynamic size.
+     * @param[in] ei: The index to the adjacent edge to push in the back of the
+     * container.
+     */
+    void pushAdjEdge(uint ei) requires (N < 0 && !TTVN)
+    {
+        Base::container().pushBack(
+            &Base::parentElement()->parentMesh()->edge(ei));
+    }
+
+    /**
      * @brief Inserts the given adjacent edge in the container at the given
      * position.
      * @note This function is available only if the container of the Adjacent
@@ -368,6 +493,21 @@ public:
     void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVN)
     {
         Base::container().insert(i, e);
+    }
+
+    /**
+     * @brief Inserts the adjacent edge with the given index in the container at
+     * the given position.
+     * @note This function is available only if the container of the Adjacent
+     * Edges component has dynamic size.
+     * @param[in] i: The position in this container where to insert the adjacent
+     * edge.
+     * @param[in] ei: The index to the adjacent edge to insert in the container.
+     */
+    void insertAdjEdge(uint i, uint ei) requires (N < 0 && !TTVN)
+    {
+        Base::container().insert(
+            i, &Base::parentElement()->parentMesh()->edge(ei));
     }
 
     /**

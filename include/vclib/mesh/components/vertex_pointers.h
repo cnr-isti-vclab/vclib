@@ -508,6 +508,18 @@ public:
     }
 
     /**
+     * @brief Pushes in the back of the container the given vertex.
+     * @note This function is available only if the container of the Vertices
+     * has dynamic size.
+     * @param[in] vi: The index to the vertex to push in the back of the
+     * container.
+     */
+    void pushVertex(uint vi) requires (N < 0)
+    {
+        pushVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Inserts the given vertex in the container at the given position.
      * @note This function is available only if the container of the Vertices
      * has dynamic size.
@@ -517,6 +529,19 @@ public:
     void insertVertex(uint i, Vertex* v) requires (N < 0)
     {
         Base::container().insert(i, v);
+    }
+
+    /**
+     * @brief Inserts the vertex with the given index in the container at the
+     * given position.
+     * @note This function is available only if the container of the Vertices
+     * has dynamic size.
+     * @param[in] i: The position in this container where to insert the vertex.
+     * @param[in] vi: The index of the vertex to insert in the container.
+     */
+    void insertVertex(uint i, uint vi) requires (N < 0)
+    {
+        insertVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
     }
 
     /**
