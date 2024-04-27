@@ -302,7 +302,8 @@ public:
      * If the size of the container is static, the size of the input range must
      * be the same one of the container.
      *
-     * @tparam Rng: The type of the range of vertex indices to set.
+     * @tparam Rng: The type of the range of vertex indices to set. The value
+     * type of the range must be convertible to unsigned integer.
      *
      * @param[in] r: range of vertex indices to set.
      */

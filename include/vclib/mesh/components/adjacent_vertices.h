@@ -232,6 +232,19 @@ public:
     void setAdjVertex(uint i, Vertex* v) { Base::container().set(i, v); }
 
     /**
+     * @brief Sets the i-th adjacent vertex of the element.
+     *
+     * @param[in] i: the position in this container on which set the adj vertex;
+     * the value must be between 0 and the number of adj vertices.
+     * @param[in] vi: The index in the vertex container of the adjacent vertex
+     * to set.
+     */
+    void setAdjVertex(uint i, uint vi)
+    {
+        setAdjVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Sets the i-th adjacent vertex of the element, but using as index
      * the module between i and the number of adjacent vertices. You can use
      * this function if you need to set the "next adjacent vertex after position
@@ -253,6 +266,30 @@ public:
     void setAdjVertexMod(int i, Vertex* v) { Base::container().atMod(i) = v; }
 
     /**
+     * @brief Sets the i-th adjacent vertex of the element, but using as index
+     * the module between i and the number of adjacent vertices. You can use
+     * this function if you need to set the "next adjacent vertex after position
+     * k", without check if it is less than the number of adjacent vertices.
+     * Works also for negative numbers:
+     *
+     * @code{.cpp}
+     * k = pos; // some position of an adj vertex
+     * e.setAdjVertexMod(k+1, aVertInd); // set the adj vertex next to k, that
+     *                                   // may also be at pos 0
+     * e.setAdjVertexMod(-1, aVertInd); // set the adj vertex in position
+     *                                  // adjVerticesNumber()-1
+     * @endcode
+     *
+     * @param[in] i: the position in this container w.r.t. the position 0 on
+     * which set the adj vertex; value is modularized on adjVerticesNumber().
+     * @param[in] vi: The index in the vertex container of the adj vertex to set.
+     */
+    void setAdjVertexMod(int i, uint vi)
+    {
+        setAdjVertexMod(i, &Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Sets all the adjacent vertices of this element.
      *
      * If the size of the container is static, the size of the input range must
@@ -270,6 +307,27 @@ public:
     }
 
     /**
+     * @brief Sets all the adjacent vertices of this element.
+     *
+     * If the size of the container is static, the size of the input range must
+     * be the same one of the container.
+     *
+     * @tparam Rng: The type of the range of adjacent vertex indices to set. The
+     * value type of the range must be convertible to unsigned integer.
+     *
+     * @param[in] r: range of indices of adjacent vertices to set.
+     */
+    template<Range Rng>
+    void setAdjVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
+    {
+        auto conv = [&](auto i) {
+            return &Base::parentElement()->parentMesh()->vertex(i);
+        };
+
+        Base::container().set(r | std::views::transform(conv));
+    }
+
+    /**
      * @brief Returns `true` if the container of adjacent vertices contains the
      * given vertex, `false` otherwise.
      *
@@ -280,6 +338,20 @@ public:
     bool containsAdjVertex(const Vertex* v) const
     {
         return Base::container().contains(v);
+    }
+
+    /**
+     * @brief Returns `true` if the container of adjacent vertices contains the
+     * given vertex, `false` otherwise.
+     *
+     * @param[in] vi: the index of the vertex to search.
+     * @return `true` if the container of adjacent vertices contains the given
+     * vertex, `false` otherwise.
+     */
+    bool containsAdjVertex(uint vi) const
+    {
+        return containsAdjVertex(
+            &Base::parentElement()->parentMesh()->vertex(vi));
     }
 
     /**
@@ -311,6 +383,36 @@ public:
     }
 
     /**
+     * @brief Returns an iterator to the first adjacent vertex in the container
+     * of this component that is equal to the vertex with the given index. If no
+     * such adjacent vertex is found, past-the-end iterator is returned.
+     *
+     * @param[in] vi: the index of the vertex to search.
+     * @return an iterator pointing to the first adjacent vertex equal to the
+     * vertex with the given index, or end if no such adjacent vertex is found.
+     */
+    AdjacentVertexIterator findAdjVertex(uint vi)
+    {
+        return findAdjVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
+     * @brief Returns a const iterator to the first adjacent vertex in the
+     * container of this component that is equal to the vertex with the given
+     * index. If no such adjacent vertex is found, past-the-end iterator is
+     * returned.
+     *
+     * @param[in] vi: the index of the vertex to search.
+     * @return a const iterator pointing to the first adjacent vertex equal to
+     * the vertex with the given index, or end if no such adjacent vertex is
+     * found.
+     */
+    ConstAdjacentVertexIterator findAdjVertex(uint vi) const
+    {
+        return findAdjVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Returns the index of the given adjacent vertex in the container of
      * the element. If the given adjacent vertex is not in the container,
      * returns UINT_NULL.
@@ -322,6 +424,21 @@ public:
     uint indexOfAdjVertex(const Vertex* v) const
     {
         return Base::container().indexOf(v);
+    }
+
+    /**
+     * @brief Returns the index of the adjacent vertex with the given index in
+     * the container of the element. If the given adjacent vertex is not in the
+     * container, returns UINT_NULL.
+     *
+     * @param[in] vi: the index of the adjacent vertex to search.
+     * @return the index of the given adjacent vertex, or UINT_NULL if it is not
+     * found.
+     */
+    uint indexOfAdjVertex(uint vi) const
+    {
+        return indexOfAdjVertex(
+            &Base::parentElement()->parentMesh()->vertex(vi));
     }
 
     /**
@@ -342,6 +459,18 @@ public:
     void pushAdjVertex(Vertex* v) { Base::container().pushBack(v); }
 
     /**
+     * @brief Pushes in the back of the container the given adjacent vertex..
+     * @note This function is available only if the container of the Adjacent
+     * Vertices component has dynamic size.
+     * @param[in] vi: The index to the vertex to push in the back of the
+     * container.
+     */
+    void pushAdjVertex(uint vi)
+    {
+        pushAdjVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Inserts the given adjacent vertex in the container at the given
      * position.
      * @note This function is available only if the container of the Adjacent
@@ -352,6 +481,20 @@ public:
      * container.
      */
     void insertAdjVertex(uint i, Vertex* v) { Base::container().insert(i, v); }
+
+    /**
+     * @brief Inserts the given adjacent vertex in the container at the given
+     * position.
+     * @note This function is available only if the container of the Adjacent
+     * Vertices component has dynamic size.
+     * @param[in] i: The position in this container where to insert the adjacent
+     * vertex.
+     * @param[in] vi: The index of the vertex to insert in the container.
+     */
+    void insertAdjVertex(uint i, uint vi)
+    {
+        insertAdjVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
+    }
 
     /**
      * @brief Removes the adjacent vertex at the given position from the
