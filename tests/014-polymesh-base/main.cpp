@@ -161,7 +161,24 @@ SCENARIO("PolyMesh usage")
             REQUIRE(m.face(1).vertexIndex(4) == 3);
             REQUIRE(m.face(1).vertex(5) == nullptr);
             REQUIRE(m.face(1).vertexIndex(5) == vcl::UINT_NULL);
-            // todo: test eraseVertex and clearVertices()
+            m.face(1).eraseVertex(1);
+            REQUIRE(m.face(1).vertexNumber() == 5);
+            REQUIRE(m.face(1).vertexIndex(0) == 0);
+            REQUIRE(m.face(1).vertexIndex(1) == 2);
+            REQUIRE(m.face(1).vertexIndex(2) == 2);
+            REQUIRE(m.face(1).vertexIndex(3) == 3);
+            REQUIRE(m.face(1).vertex(4) == nullptr);
+            REQUIRE(m.face(1).vertexIndex(4) == vcl::UINT_NULL);
+            m.face(1).clearVertices();
+            REQUIRE(m.face(1).vertexNumber() == 0);
+
+            // restore face 1
+            m.face(1).pushVertex(&m.vertex(0));
+            m.face(1).pushVertex(&m.vertex(1));
+            m.face(1).pushVertex(&m.vertex(2));
+            REQUIRE(m.face(1).edgeSelected(0) == false);
+            REQUIRE(m.face(1).edgeSelected(1) == false);
+            REQUIRE(m.face(1).edgeSelected(2) == false);
 
             // force reallocation of vertex container
             m.addVertices(100);
