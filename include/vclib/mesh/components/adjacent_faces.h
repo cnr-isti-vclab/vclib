@@ -430,6 +430,20 @@ public:
         return Base::container().indexOf(f);
     }
 
+    /**
+     * @brief Returns the index of the adjacent face with the given index in the
+     * container of this element. If the adjacent face with the given index is
+     * not in the container, returns UINT_NULL.
+     *
+     * @param[in] fi: the index of the adjacent face to search.
+     * @return the index of the adjacent face with the given index, or UINT_NULL
+     * if it is not found.
+     */
+    uint indexOfAdjFace(uint fi) const
+    {
+        return indexOfAdjFace(&Base::parentElement()->parentMesh()->face(fi));
+    }
+
     /* Member functions specific for vector adjacent faces */
 
     /**
@@ -456,6 +470,19 @@ public:
     }
 
     /**
+     * @brief Pushes in the back of the container the given adjacent face.
+     * @note This function is available only if the container of the Adjacent
+     * Faces component has dynamic size.
+     * @param[in] fi: The index to the adjacent face to push in the back of the
+     * container.
+     */
+    void pushAdjFace(uint fi) requires (N < 0 && !TTVN)
+    {
+        Base::container().pushBack(
+            &Base::parentElement()->parentMesh()->face(fi));
+    }
+
+    /**
      * @brief Inserts the given adjacent face in the container at the given
      * position.
      * @note This function is available only if the container of the Adjacent
@@ -468,6 +495,21 @@ public:
     void insertAdjFace(uint i, Face* f) requires (N < 0 && !TTVN)
     {
         Base::container().insert(i, f);
+    }
+
+    /**
+     * @brief Inserts the adjacent face with the given index in the container at
+     * the given position.
+     * @note This function is available only if the container of the Adjacent
+     * Faces component has dynamic size.
+     * @param[in] i: The position in this container where to insert the adjacent
+     * face.
+     * @param[in] fi: The index to the adjacent face to insert in the container.
+     */
+    void insertAdjFace(uint i, uint fi) requires (N < 0 && !TTVN)
+    {
+        Base::container().insert(
+            i, &Base::parentElement()->parentMesh()->face(fi));
     }
 
     /**
