@@ -64,8 +64,8 @@ class Edge :
             EdgeMeshT<Scalar>,
             edge::BitFlags,
             edge::VertexPointers<Vertex<Scalar>, Edge<Scalar>>,
-            edge::OptionalQuality<Scalar, Edge<Scalar>>,
             edge::OptionalColor<Edge<Scalar>>,
+            edge::OptionalQuality<Scalar, Edge<Scalar>>,
             edge::OptionalAdjacentEdgePointers<Edge<Scalar>>,
             edge::OptionalMark<Edge<Scalar>>,
             edge::CustomComponents<Edge<Scalar>>>

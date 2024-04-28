@@ -57,6 +57,9 @@ namespace vcl::face {
  */
 
 /* Port AdjacentEdges class into face namespace */
+template<typename EdgeType>
+using AdjacentEdgePointers = comp::AdjacentEdgePointers<EdgeType, -1, false>;
+
 template<typename EdgeType, typename FaceType>
 using AdjacentPolygonEdgePointers =
     comp::AdjacentEdgePointers<EdgeType, -1, true, FaceType>;
@@ -66,12 +69,20 @@ using AdjacentTriangleEdgePointers =
     comp::AdjacentEdgePointers<EdgeType, 3, true, FaceType>;
 
 template<typename EdgeType, typename FaceType>
+using VerticalAdjacentEdgePointers =
+    comp::AdjacentEdgePointers<EdgeType, -1, false, FaceType, true>;
+
+template<typename EdgeType, typename FaceType>
 using VerticalAdjacentPolygonEdgePointers =
     comp::AdjacentEdgePointers<EdgeType, -1, true, FaceType, true>;
 
 template<typename EdgeType, typename FaceType>
 using VerticalAdjacentTriangleEdgePointers =
     comp::AdjacentEdgePointers<EdgeType, 3, true, FaceType, true>;
+
+template<typename EdgeType, typename FaceType>
+using OptionalAdjacentEdgePointers =
+    comp::AdjacentEdgePointers<EdgeType, -1, false, FaceType, true, true>;
 
 template<typename EdgeType, typename FaceType>
 using OptionalAdjacentPolygonEdgePointers =
