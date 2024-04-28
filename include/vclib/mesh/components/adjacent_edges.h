@@ -108,7 +108,6 @@ public:
 
     /* Iterator Types declaration */
 
-    using AdjacentEdgeIterator      = Base::Iterator;
     using ConstAdjacentEdgeIterator = Base::ConstIterator;
 
     /**
@@ -381,20 +380,6 @@ public:
     }
 
     /**
-     * @brief Returns an iterator to the first adjacent edge in the container of
-     * this component that is equal to the given edge. If no such adjacent edge
-     * is found, past-the-end iterator is returned.
-     *
-     * @param[in] e: the pointer to the edge to search.
-     * @return an iterator pointing to the first adjacent edge equal to the
-     * given edge, or end if no such adjacent edge is found.
-     */
-    AdjacentEdgeIterator findAdjEdge(const Edge* e)
-    {
-        return Base::container().find(e);
-    }
-
-    /**
      * @brief Returns a const iterator to the first adjacent edge in the
      * container of this component that is equal to the given edge. If no such
      * adjacent edge is found, past-the-end iterator is returned.
@@ -406,20 +391,6 @@ public:
     ConstAdjacentEdgeIterator findAdjEdge(const Edge* e) const
     {
         return Base::container().find(e);
-    }
-
-    /**
-     * @brief Returns an iterator to the first adjacent edge in the container of
-     * this component that is equal to the edge with the given index. If no such
-     * adjacent edge is found, past-the-end iterator is returned.
-     *
-     * @param[in] ei: the index to the edge to search.
-     * @return an iterator pointing to the first adjacent edge equal to the edge
-     * with the given index, or end if no such adjacent edge is found.
-     */
-    AdjacentEdgeIterator findAdjEdge(uint ei)
-    {
-        return findAdjEdge(&Base::parentElement()->parentMesh()->edge(ei));
     }
 
     /**
@@ -559,21 +530,6 @@ public:
     /* Iterator Member functions */
 
     /**
-     * @brief Returns an iterator to the first adjacent edge in the container of
-     * this component.
-     *
-     * @return an iterator pointing to the begin of this container.
-     */
-    AdjacentEdgeIterator adjEdgeBegin() { return Base::container().begin(); }
-
-    /**
-     * @brief Returns an iterator to the end of the container of this component.
-     *
-     * @return an iterator pointing to the end of this container.
-     */
-    AdjacentEdgeIterator adjEdgeEnd() { return Base::container().end(); }
-
-    /**
      * @brief Returns a const iterator to the first adjacent edge in the
      * container of this component.
      *
@@ -593,27 +549,6 @@ public:
     ConstAdjacentEdgeIterator adjEdgeEnd() const
     {
         return Base::container().end();
-    }
-
-    /**
-     * @brief Returns a lightweight view object that stores the begin and end
-     * iterators of the container of adjacent edges of the element. The view
-     * object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (auto* adjEdge : el.adjEdges()) {
-     *     // Do something with adjEdge
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over adjacent edges.
-     */
-    View<AdjacentEdgeIterator> adjEdges()
-    {
-        return View(adjEdgeBegin(), adjEdgeEnd());
     }
 
     /**
