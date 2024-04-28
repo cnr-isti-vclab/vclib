@@ -45,17 +45,16 @@ template<typename Scalar>
 class Vertex :
         public vcl::Vertex<
             EdgeMeshT<Scalar>,
-            vcl::vert::BitFlags,
-            vcl::vert::Coordinate3<Scalar>,
-            vcl::vert::Normal3<Scalar>,
-            vcl::vert::OptionalColor<Vertex<Scalar>>,
-            vcl::vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vcl::vert::
-                OptionalAdjacentEdgePointers<Edge<Scalar>, Vertex<Scalar>>,
-            vcl::vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
-            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalMark<Vertex<Scalar>>,
-            vcl::vert::CustomComponents<Vertex<Scalar>>>
+            vert::BitFlags,
+            vert::Coordinate3<Scalar>,
+            vert::Normal3<Scalar>,
+            vert::OptionalColor<Vertex<Scalar>>,
+            vert::OptionalQuality<Scalar, Vertex<Scalar>>,
+            vert::OptionalAdjacentEdgePointers<Edge<Scalar>, Vertex<Scalar>>,
+            vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
+            vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vert::OptionalMark<Vertex<Scalar>>,
+            vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 
@@ -63,13 +62,13 @@ template<typename Scalar>
 class Edge :
         public vcl::Edge<
             EdgeMeshT<Scalar>,
-            vcl::edge::BitFlags,
-            vcl::edge::VertexPointers<Vertex<Scalar>, Edge<Scalar>>,
-            vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>,
-            vcl::edge::OptionalColor<Edge<Scalar>>,
-            vcl::edge::OptionalAdjacentEdgePointers<Edge<Scalar>>,
-            vcl::edge::OptionalMark<Edge<Scalar>>,
-            vcl::edge::CustomComponents<Edge<Scalar>>>
+            edge::BitFlags,
+            edge::VertexPointers<Vertex<Scalar>, Edge<Scalar>>,
+            edge::OptionalQuality<Scalar, Edge<Scalar>>,
+            edge::OptionalColor<Edge<Scalar>>,
+            edge::OptionalAdjacentEdgePointers<Edge<Scalar>>,
+            edge::OptionalMark<Edge<Scalar>>,
+            edge::CustomComponents<Edge<Scalar>>>
 {
 };
 
