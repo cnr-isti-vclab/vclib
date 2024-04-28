@@ -42,14 +42,14 @@ template<typename Scalar>
 class Vertex :
         public vcl::Vertex<
             PointCloudT<Scalar>,
-            vcl::vert::BitFlags,
-            vcl::vert::Coordinate3<Scalar>,
-            vcl::vert::Normal3<Scalar>,
-            vcl::vert::OptionalColor<Vertex<Scalar>>,
-            vcl::vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalMark<Vertex<Scalar>>,
-            vcl::vert::CustomComponents<Vertex<Scalar>>>
+            vert::BitFlags,
+            vert::Coordinate3<Scalar>,
+            vert::Normal3<Scalar>,
+            vert::OptionalColor<Vertex<Scalar>>,
+            vert::OptionalQuality<Scalar, Vertex<Scalar>>,
+            vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vert::OptionalMark<Vertex<Scalar>>,
+            vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 

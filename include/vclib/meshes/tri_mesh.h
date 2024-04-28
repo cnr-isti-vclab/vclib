@@ -45,17 +45,17 @@ template<typename Scalar>
 class Vertex :
         public vcl::Vertex<
             TriMeshT<Scalar>,
-            vcl::vert::BitFlags,
-            vcl::vert::Coordinate3<Scalar>,
-            vcl::vert::Normal3<Scalar>,
-            vcl::vert::OptionalColor<Vertex<Scalar>>,
-            vcl::vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
-            vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
-            vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalMark<Vertex<Scalar>>,
-            vcl::vert::CustomComponents<Vertex<Scalar>>>
+            vert::BitFlags,
+            vert::Coordinate3<Scalar>,
+            vert::Normal3<Scalar>,
+            vert::OptionalColor<Vertex<Scalar>>,
+            vert::OptionalQuality<Scalar, Vertex<Scalar>>,
+            vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
+            vert::OptionalAdjacentVertices<Vertex<Scalar>>,
+            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
+            vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
+            vert::OptionalMark<Vertex<Scalar>>,
+            vert::CustomComponents<Vertex<Scalar>>>
 {
 };
 
@@ -63,15 +63,15 @@ template<typename Scalar>
 class Face :
         public vcl::Face<
             TriMeshT<Scalar>,
-            vcl::face::TriangleBitFlags,
-            vcl::face::TriangleVertexPtrs<Vertex<Scalar>>,
-            vcl::face::Normal3<Scalar>,
-            vcl::face::OptionalColor<Face<Scalar>>,
-            vcl::face::OptionalQuality<Scalar, Face<Scalar>>,
-            vcl::face::OptionalAdjacentTriangles<Face<Scalar>>,
-            vcl::face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>,
-            vcl::face::OptionalMark<Face<Scalar>>,
-            vcl::face::CustomComponents<Face<Scalar>>>
+            face::TriangleBitFlags,
+            face::TriangleVertexPtrs<Vertex<Scalar>>,
+            face::Normal3<Scalar>,
+            face::OptionalColor<Face<Scalar>>,
+            face::OptionalQuality<Scalar, Face<Scalar>>,
+            face::OptionalAdjacentTriangles<Face<Scalar>>,
+            face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>,
+            face::OptionalMark<Face<Scalar>>,
+            face::CustomComponents<Face<Scalar>>>
 {
 };
 
