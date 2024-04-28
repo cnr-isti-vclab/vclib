@@ -108,7 +108,6 @@ public:
 
     /* Iterator Types declaration */
 
-    using VertexIterator      = Base::Iterator;
     using ConstVertexIterator = Base::ConstIterator;
 
     /* Constructors */
@@ -365,20 +364,6 @@ public:
     }
 
     /**
-     * @brief Returns an iterator to the first vertex in the container of this
-     * component that is equal to the given vertex. If no such vertex is
-     * found, past-the-end iterator is returned.
-     *
-     * @param[in] v: the pointer to the vertex to search.
-     * @return an iterator pointing to the first vertex equal to the given
-     * vertex, or end if no such vertex is found.
-     */
-    VertexIterator findVertex(const Vertex* v)
-    {
-        return Base::container().find(v);
-    }
-
-    /**
      * @brief Returns a const iterator to the first vertex in the container of
      * this component that is equal to the given vertex. If no such vertex is
      * found, past-the-end iterator is returned.
@@ -390,20 +375,6 @@ public:
     ConstVertexIterator findVertex(const Vertex* v) const
     {
         return Base::container().find(v);
-    }
-
-    /**
-     * @brief Returns an iterator to the first vertex in the container of this
-     * component that is equal to the vertex with the given index. If no such
-     * vertex is found, past-the-end iterator is returned.
-     *
-     * @param[in] vi: the index of the vertex to search.
-     * @return an iterator pointing to the first vertex equal to the given
-     * vertex, or end if no such vertex is found.
-     */
-    VertexIterator findVertex(uint vi)
-    {
-        return findVertex(&Base::parentElement()->parentMesh()->vertex(vi));
     }
 
     /**
@@ -584,21 +555,6 @@ public:
     /* Iterator Member functions */
 
     /**
-     * @brief Returns an iterator to the first vertex in the container of this
-     * component.
-     *
-     * @return an iterator pointing to the begin of this container.
-     */
-    VertexIterator vertexBegin() { return Base::container().begin(); }
-
-    /**
-     * @brief Returns an iterator to the end of the container of this component.
-     *
-     * @return an iterator pointing to the end of this container.
-     */
-    VertexIterator vertexEnd() { return Base::container().end(); }
-
-    /**
      * @brief Returns a const iterator to the first vertex in the container of
      * this component.
      *
@@ -616,24 +572,6 @@ public:
      * @return an iterator pointing to the end of this container.
      */
     ConstVertexIterator vertexEnd() const { return Base::container().end(); }
-
-    /**
-     * @brief Returns a lightweight view object that stores the begin and end
-     * iterators of the container of vertices of the element. The view
-     * object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
-     *
-     * @code{.cpp}
-     * for (auto* vertex : el.vertices()) {
-     *     // Do something with vertex...
-     * }
-     * @endcode
-     *
-     * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over vertices.
-     */
-    View<VertexIterator> vertices() { return View(vertexBegin(), vertexEnd()); }
 
     /**
      * @brief Returns a lightweight const view object that stores the begin and

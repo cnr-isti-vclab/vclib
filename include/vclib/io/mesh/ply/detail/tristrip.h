@@ -52,11 +52,10 @@ void facesFromPlyTriStrip(MeshType& m, const std::vector<int>& tristrip)
             if constexpr (FaceType::VERTEX_NUMBER < 0) {
                 f.resizeVertices(3);
             }
-            uint i = 0;
-            for (auto& v : f.vertices()) {
-                v = &m.vertex(tristrip[k + i]);
-                ++i;
+            for (uint i = 0; i < f.vertexNumber(); ++i) {
+                f.setVertex(i, tristrip[k + i]);
             }
+
             if (k % 2 == 0 != firstOddPos) {
                 auto* tmp = f.vertex(0);
                 f.setVertex(0U, f.vertex(1));

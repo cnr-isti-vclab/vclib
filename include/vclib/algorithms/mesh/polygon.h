@@ -94,10 +94,8 @@ void addTriangleFacesFromPolygon(
     }
 
     // set the first triangle of the loaded polygon
-    uint i = 0; // from 0 to 2, vertices indices of the triangle
-    for (auto& v : f.vertices()) {
-        v = &m.vertex(polygon[tris[i]]);
-        ++i;
+    for (uint i = 0; i < f.vertexNumber(); ++i) {
+        f.setVertex(i, polygon[tris[i]]);
     }
 
     if constexpr (face::HasFaceBitFlags<FaceType>) {
@@ -120,10 +118,8 @@ void addTriangleFacesFromPolygon(
             m.face(ff).resizeVertices(3);
         }
 
-        uint j = 0; // from 0 to 2, vertices indices of the triangle
-        for (auto& v : m.face(ff).vertices()) {
-            v = &m.vertex(polygon[tris[i + j]]);
-            ++j;
+        for (uint j = 0; j < m.face(ff).vertexNumber(); ++j) {
+            m.face(ff).setVertex(j, polygon[tris[i + j]]);
         }
 
         if constexpr (face::HasFaceBitFlags<FaceType>) {
