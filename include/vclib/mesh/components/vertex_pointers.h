@@ -235,6 +235,17 @@ public:
     {
         setVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
     }
+    
+	/**
+     * @brief Sets the vertex pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the vertex; the value must be between begin() and end().
+     * @param[in] v: The pointer to the vertex to set to the element.
+     */
+    void setVertex(ConstVertexIterator it, Vertex* v)
+    {
+        Base::container().set(it, v);
+    }
 
     /**
      * @brief Sets the i-th vertex of the element, but using as index the module

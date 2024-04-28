@@ -299,6 +299,21 @@ public:
     }
 
     /**
+     * @brief Set the value of the element at the specified position.
+     *
+     * Sets the value of the element at position `it` in the Vector to the
+     * specified value `e`.
+     *
+     * @param[in] it: The iterator pointing to the position of the element.
+     * @param[in] e: The new value of the element.
+     */
+    void set(ConstIterator it, const T& e)
+    {
+        assert(it < end());
+        mContainer[it - begin()] = e;
+    }
+
+    /**
      * @brief Set the elements of the Vector using the values from a range.
      *
      * Sets the elements of the Vector to the values from the range `r`. If the

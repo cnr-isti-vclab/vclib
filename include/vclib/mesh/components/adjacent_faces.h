@@ -245,9 +245,20 @@ public:
      * the value must be between 0 and the number of adj faces.
      * @param[in] fi: The index in the face container of the face to set.
      */
-    void setAdjEdge(uint i, uint fi)
+    void setAdjFace(uint i, uint fi)
     {
         setAdjFace(i, &Base::parentElement()->parentMesh()->face(fi));
+    }
+    
+	/**
+     * @brief Sets the adjacent face pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the adjacent face; the value must be between begin() and end().
+     * @param[in] f: The pointer to the adjacent face to set to the element.
+     */
+    void setAdjFace(ConstAdjacentFaceIterator it, Face* f)
+    {
+        Base::container().set(it, f);
     }
 
     /**
