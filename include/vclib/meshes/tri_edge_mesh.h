@@ -70,8 +70,9 @@ class Face :
             face::TriangleBitFlags,
             face::TriangleVertexPtrs<Vertex<Scalar>>,
             face::Normal3<Scalar>,
-            face::OptionalQuality<Scalar, Face<Scalar>>,
             face::OptionalColor<Face<Scalar>>,
+            face::OptionalQuality<Scalar, Face<Scalar>>,
+            face::OptionalAdjacentEdges<Edge<Scalar>, Face<Scalar>>,
             face::OptionalAdjacentTriangles<Face<Scalar>>,
             face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>,
             face::OptionalMark<Face<Scalar>>,
@@ -85,9 +86,10 @@ class Edge :
             TriEdgeMeshT<Scalar>,
             edge::BitFlags,
             edge::VertexPointers<Vertex<Scalar>>,
-            edge::OptionalQuality<Scalar, Edge<Scalar>>,
             edge::OptionalColor<Edge<Scalar>>,
+            edge::OptionalQuality<Scalar, Edge<Scalar>>,
             edge::OptionalAdjacentEdges<Edge<Scalar>>,
+            edge::OptionalAdjacentFaces<Face<Scalar>, Edge<Scalar>>,
             edge::OptionalMark<Edge<Scalar>>,
             edge::CustomComponents<Edge<Scalar>>>
 {

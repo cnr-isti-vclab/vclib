@@ -105,13 +105,16 @@ concept HasOptionalAdjacentFaces =
  * @brief HasRightNumberOfAdjacentFaces concept
  *
  * This concept is designed to be used with Face components, where the number of
- * adjacent faces must be consisted w.r.t. the number of vertices of the face.
+ * adjacent faces, if tied to the vertex number, must be consisted w.r.t. the
+ * number of vertices of the face.
  *
  * This concept is satisfied only if static number of adjacent faces is the same
  * of the static number of vertices.
  */
 template<typename T>
-concept HasRightNumberOfAdjacentFaces = T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
+concept HasRightNumberOfAdjacentFaces =
+    !comp::IsTiedToVertexNumber<typename T::AdjacentFaces> ||
+    T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
 
 /**
  * @private

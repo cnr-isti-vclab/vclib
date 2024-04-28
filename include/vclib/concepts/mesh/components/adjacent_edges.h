@@ -105,13 +105,16 @@ concept HasOptionalAdjacentEdges =
  * @brief HasRightNumberOfAdjacentEdges concept
  *
  * This concept is designed to be used with Face components, where the number of
- * adjacent edges must be consistent w.r.t. the number of vertices of the face.
+ * adjacent edges, if tied to the vertex number, must be consistent w.r.t. the
+ * number of vertices of the face.
  *
  * This concept is satisfied only if static number of adjacent edges is the same
  * of the static number of vertices.
  */
 template<typename T>
-concept HasRightNumberOfAdjacentEdges = T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
+concept HasRightNumberOfAdjacentEdges =
+    !comp::IsTiedToVertexNumber<typename T::AdjacentEdges> ||
+    T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
 
 /**
  * @private
