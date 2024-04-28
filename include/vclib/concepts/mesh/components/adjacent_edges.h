@@ -82,7 +82,6 @@ concept HasAdjacentEdges = requires (
         std::same_as<typename T::ConstAdjacentEdgeIterator>;
     { co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
     o.adjEdges();
-    co.adjEdges();
     // clang-format on
 };
 

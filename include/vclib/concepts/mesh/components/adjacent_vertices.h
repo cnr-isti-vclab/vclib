@@ -52,7 +52,6 @@ concept HasAdjacentVertices = requires (
     std::vector<typename T::AdjacentVertexType*> vec) {
     // clang-format off
     typename T::AdjacentVertexType;
-    typename T::AdjacentVertexIterator;
     typename T::ConstAdjacentVertexIterator;
 
     { o.adjVerticesNumber() } -> std::same_as<uint>;
@@ -75,20 +74,16 @@ concept HasAdjacentVertices = requires (
     { o.setAdjVertices(vec) } -> std::same_as<void>;
 
     { co.containsAdjVertex(&v) } -> std::same_as<bool>;
-    { o.findAdjVertex(&v) } -> std::same_as<typename T::AdjacentVertexIterator>;
     { co.findAdjVertex(&v) } ->
         std::same_as<typename T::ConstAdjacentVertexIterator>;
 
     { co.indexOfAdjVertex(&v) } -> std::same_as<uint>;
 
-    { o.adjVertexBegin() } -> std::same_as<typename T::AdjacentVertexIterator>;
-    { o.adjVertexEnd() } -> std::same_as<typename T::AdjacentVertexIterator>;
     { co.adjVertexBegin() } ->
         std::same_as<typename T::ConstAdjacentVertexIterator>;
     { co.adjVertexEnd() } ->
         std::same_as<typename T::ConstAdjacentVertexIterator>;
     o.adjVertices();
-    co.adjVertices();
     // clang-format on
 };
 

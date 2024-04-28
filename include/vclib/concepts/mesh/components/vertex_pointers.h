@@ -81,7 +81,6 @@ concept HasVertexPointers = requires (
     { co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
     { co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
     o.vertices();
-    co.vertices();
     // clang-format on
 };
 

@@ -82,7 +82,6 @@ concept HasAdjacentFaces = requires (
         std::same_as<typename T::ConstAdjacentFaceIterator>;
     { co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
     o.adjFaces();
-    co.adjFaces();
     // clang-format on
 };
 
