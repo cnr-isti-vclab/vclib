@@ -52,7 +52,6 @@ concept HasAdjacentFaces = requires (
     // clang-format off
     T::ADJ_FACE_NUMBER;
     typename T::AdjacentFaceType;
-    typename T::AdjacentFaceIterator;
     typename T::ConstAdjacentFaceIterator;
 
     { o.adjFacesNumber() } -> std::same_as<uint>;
@@ -74,14 +73,11 @@ concept HasAdjacentFaces = requires (
     { o.setAdjFaces(v) } -> std::same_as<void>;
 
     { co.containsAdjFace(&f) } -> std::same_as<bool>;
-    { o.findAdjFace(&f) } -> std::same_as<typename T::AdjacentFaceIterator>;
     { co.findAdjFace(&f) } ->
         std::same_as<typename T::ConstAdjacentFaceIterator>;
 
     { co.indexOfAdjFace(&f) } -> std::same_as<uint>;
 
-    { o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;
-    { o.adjFaceEnd() } -> std::same_as<typename T::AdjacentFaceIterator>;
     { co.adjFaceBegin() } ->
         std::same_as<typename T::ConstAdjacentFaceIterator>;
     { co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;
