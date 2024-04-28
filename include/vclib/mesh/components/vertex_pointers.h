@@ -220,6 +220,17 @@ public:
     void setVertex(uint i, Vertex* v) { Base::container().set(i, v); }
 
     /**
+     * @brief Sets the vertex pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the vertex; the value must be between begin() and end().
+     * @param[in] v: The pointer to the vertex to set to the element.
+     */
+    void setVertex(ConstVertexIterator it, Vertex* v)
+    {
+        Base::container().set(it, v);
+    }
+
+    /**
      * @brief Sets the i-th vertex of the element, but using as index the module
      * between i and the number of vertices. You can use this function if you
      * need to set the "next vertex after position k", without check if it is

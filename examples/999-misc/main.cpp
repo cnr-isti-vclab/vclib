@@ -23,6 +23,7 @@
 #include <iostream>
 #include <vector>
 
+#include <vclib/space.h>
 #include <vclib/views.h>
 
 struct Point
@@ -56,6 +57,21 @@ int main()
     }
 
     for (const auto& p : v | vcl::views::coords) {
+        std::cout << p.x << " " << p.y << " " << p.z << std::endl;
+    }
+
+    vcl::Vector<Vertex, -1> vv;
+
+    vv.pushBack(Vertex(-0.5, -0.5, 0.5));
+    vv.pushBack(Vertex(0.5, -0.5, 0.5));
+    vv.pushBack(Vertex(-0.5, 0.5, 0.5));
+    vv.pushBack(Vertex(0.5, 0.5, 0.5));
+
+    vcl::Vector<Vertex, -1>::Iterator it = vv.begin();
+
+    vv.set(it, Vertex(1, 1, 1));
+
+    for (const auto& p : vv | vcl::views::coords) {
         std::cout << p.x << " " << p.y << " " << p.z << std::endl;
     }
 }
