@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_ELEMENTS_EDGE_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_EDGE_COMPONENTS_H
 
-#include "../components/adjacent_edges.h"
+#include "../components/adjacent_edge_pointers.h"
 #include "../components/adjacent_faces.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
@@ -52,15 +52,16 @@ namespace vcl::edge {
 
 /* Port AdjacentEdges class into edge namespace */
 template<typename EdgeType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, EdgeType>;
+using AdjacentEdgePointers =
+    comp::AdjacentEdgePointers<EdgeType, -1, false, EdgeType>;
 
 template<typename EdgeType>
-using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true>;
+using VerticalAdjacentEdgePointers =
+    comp::AdjacentEdgePointers<EdgeType, -1, false, EdgeType, true>;
 
 template<typename EdgeType>
-using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true, true>;
+using OptionalAdjacentEdgePointers =
+    comp::AdjacentEdgePointers<EdgeType, -1, false, EdgeType, true, true>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType, typename EdgeType>

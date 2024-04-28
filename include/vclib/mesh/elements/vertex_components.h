@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 
-#include "../components/adjacent_edges.h"
+#include "../components/adjacent_edge_pointers.h"
 #include "../components/adjacent_faces.h"
 #include "../components/adjacent_vertices.h"
 #include "../components/bit_flags.h"
@@ -56,15 +56,16 @@ namespace vcl::vert {
 
 /* Port AdjacentEdges class into vert namespace */
 template<typename EdgeType, typename VertexType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false, VertexType>;
+using AdjacentEdgePointers =
+    comp::AdjacentEdgePointers<EdgeType, -1, false, VertexType>;
 
 template<typename EdgeType, typename VertexType>
-using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, VertexType, true>;
+using VerticalAdjacentEdgePointers =
+    comp::AdjacentEdgePointers<EdgeType, -1, false, VertexType, true>;
 
 template<typename EdgeType, typename VertexType>
-using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, VertexType, true, true>;
+using OptionalAdjacentEdgePointers =
+    comp::AdjacentEdgePointers<EdgeType, -1, false, VertexType, true, true>;
 
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType, typename VertexType>

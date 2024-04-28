@@ -50,7 +50,8 @@ class Vertex :
             vcl::vert::Normal3<Scalar>,
             vcl::vert::OptionalColor<Vertex<Scalar>>,
             vcl::vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>,
+            vcl::vert::
+                OptionalAdjacentEdgePointers<Edge<Scalar>, Vertex<Scalar>>,
             vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
             vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
             vcl::vert::OptionalMark<Vertex<Scalar>>,
@@ -66,7 +67,7 @@ class Edge :
             vcl::edge::VertexPointers<Vertex<Scalar>, Edge<Scalar>>,
             vcl::edge::OptionalQuality<Scalar, Edge<Scalar>>,
             vcl::edge::OptionalColor<Edge<Scalar>>,
-            vcl::edge::OptionalAdjacentEdges<Edge<Scalar>>,
+            vcl::edge::OptionalAdjacentEdgePointers<Edge<Scalar>>,
             vcl::edge::OptionalMark<Edge<Scalar>>,
             vcl::edge::CustomComponents<Edge<Scalar>>>
 {

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
-#define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
+#ifndef VCL_MESH_COMPONENTS_ADJACENT_EDGE_POINTERS_H
+#define VCL_MESH_COMPONENTS_ADJACENT_EDGE_POINTERS_H
 
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
 #include <vclib/views/view.h>
@@ -31,9 +31,9 @@
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentEdges class is a container of Edge pointers. It could be
- * used by any Element to save adjacencies information (also the Edge element
- * itself).
+ * @brief The AdjacentEdgePointers class is a container of Edge pointers. It
+ * could be used by any Element to save adjacencies information (also the Edge
+ * element itself).
  *
  * It is a random access container having static or dynamic size, depending on
  * the value of the template argument N (a negative number means dynamic).
@@ -79,9 +79,9 @@ template<
     typename ElementType = void,
     bool VERT            = false,
     bool OPT             = false>
-class AdjacentEdges :
+class AdjacentEdgePointers :
         public PointersContainerComponent<
-            AdjacentEdges<Edge, N, TTVN, ElementType, VERT, OPT>,
+            AdjacentEdgePointers<Edge, N, TTVN, ElementType, VERT, OPT>,
             CompId::ADJACENT_EDGES,
             Edge,
             N,
@@ -91,7 +91,7 @@ class AdjacentEdges :
             TTVN>
 {
     using Base = PointersContainerComponent<
-        AdjacentEdges<Edge, N, TTVN, ElementType, VERT, OPT>,
+        AdjacentEdgePointers<Edge, N, TTVN, ElementType, VERT, OPT>,
         CompId::ADJACENT_EDGES,
         Edge,
         N,
@@ -125,7 +125,7 @@ public:
      * If the Adjacent Edges container size is static, initializes all the
      * Adjacent Edges to `nullptr`, otherwise the container will be empty.
      */
-    AdjacentEdges() = default;
+    AdjacentEdgePointers() = default;
 
     /* Member functions */
 
@@ -662,4 +662,4 @@ bool isAdjacentEdgesAvailableOn(const ElementConcept auto& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
+#endif // VCL_MESH_COMPONENTS_ADJACENT_EDGE_POINTERS_H
