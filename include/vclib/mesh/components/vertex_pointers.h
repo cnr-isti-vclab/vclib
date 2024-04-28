@@ -226,7 +226,6 @@ public:
 
     /**
      * @brief Sets the i-th vertex of the element.
-     *
      * @param[in] i: the position in this container on which set the vertex; the
      * value must be between 0 and the number of vertices.
      * @param[in] vi: The index in the vertex container of the vertex to set.
@@ -235,8 +234,8 @@ public:
     {
         setVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
     }
-    
-	/**
+
+    /**
      * @brief Sets the vertex pointed by the iterator.
      * @param[in] it: the position of the iterator in this container on which
      * set the vertex; the value must be between begin() and end().
@@ -245,6 +244,17 @@ public:
     void setVertex(ConstVertexIterator it, Vertex* v)
     {
         Base::container().set(it, v);
+    }
+
+    /**
+     * @brief Sets the vertex pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the vertex; the value must be between begin() and end().
+     * @param[in] vi: The index in the vertex container of the vertex to set.
+     */
+    void setVertex(ConstVertexIterator it, uint vi)
+    {
+        setVertex(it, &Base::parentElement()->parentMesh()->vertex(vi));
     }
 
     /**

@@ -240,7 +240,6 @@ public:
 
     /**
      * @brief Sets the i-th adjacent face of the element.
-     *
      * @param[in] i: the position in this container on which set the adj face;
      * the value must be between 0 and the number of adj faces.
      * @param[in] fi: The index in the face container of the face to set.
@@ -250,7 +249,7 @@ public:
         setAdjFace(i, &Base::parentElement()->parentMesh()->face(fi));
     }
     
-	/**
+    /**
      * @brief Sets the adjacent face pointed by the iterator.
      * @param[in] it: the position of the iterator in this container on which
      * set the adjacent face; the value must be between begin() and end().
@@ -259,6 +258,17 @@ public:
     void setAdjFace(ConstAdjacentFaceIterator it, Face* f)
     {
         Base::container().set(it, f);
+    }
+
+    /**
+     * @brief Sets the adjacent face pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the adjacent face; the value must be between begin() and end().
+     * @param[in] fi: The index in the face container of the face to set.
+     */
+    void setAdjFace(ConstAdjacentFaceIterator it, uint fi)
+    {
+        setAdjFace(it, &Base::parentElement()->parentMesh()->face(fi));
     }
 
     /**

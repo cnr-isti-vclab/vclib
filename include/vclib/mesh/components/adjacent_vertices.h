@@ -233,7 +233,6 @@ public:
 
     /**
      * @brief Sets the i-th adjacent vertex of the element.
-     *
      * @param[in] i: the position in this container on which set the adj vertex;
      * the value must be between 0 and the number of adj vertices.
      * @param[in] vi: The index in the vertex container of the adjacent vertex
@@ -244,7 +243,7 @@ public:
         setAdjVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
     }
     
-	/**
+    /**
      * @brief Sets the adjacent vertex pointed by the iterator.
      * @param[in] it: the position of the iterator in this container on which
      * set the adjacent vertex; the value must be between begin() and end().
@@ -253,6 +252,18 @@ public:
     void setAdjVertex(ConstAdjacentVertexIterator it, Vertex* v)
     {
         Base::container().set(it, v);
+    }
+
+    /**
+     * @brief Sets the adjacent vertex pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the adjacent vertex; the value must be between begin() and end().
+     * @param[in] vi: The index in the vertex container of the adjacent vertex
+     * to set.
+     */
+    void setAdjVertex(ConstAdjacentVertexIterator it, uint vi)
+    {
+        setAdjVertex(it, &Base::parentElement()->parentMesh()->vertex(vi));
     }
 
     /**
