@@ -233,6 +233,17 @@ public:
     void setAdjFace(uint i, Face* f) { Base::container().set(i, f); }
 
     /**
+     * @brief Sets the adjacent face pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the adjacent face; the value must be between begin() and end().
+     * @param[in] f: The pointer to the adjacent face to set to the element.
+     */
+    void setAdjFace(ConstAdjacentFaceIterator it, Face* f)
+    {
+        Base::container().set(it, f);
+    }
+
+    /**
      * @brief Sets the i-th adjacent face of the element, but using as index the
      * module between i and the number of adjacent faces. You can use this
      * function if you need to set the "next adjacent face after position k",
