@@ -24,7 +24,7 @@
 #define VCL_MESH_ELEMENTS_FACE_COMPONENTS_H
 
 #include "../components/adjacent_edge_pointers.h"
-#include "../components/adjacent_faces.h"
+#include "../components/adjacent_face_pointers.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/custom_components.h"
@@ -83,26 +83,28 @@ using OptionalAdjacentTriangleEdgePointers =
 
 /* Port AdjacentFaces class into face namespace */
 template<typename FaceType>
-using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true, FaceType>;
+using AdjacentPolygonPointers =
+    comp::AdjacentFacePointers<FaceType, -1, true, FaceType>;
 
 template<typename FaceType>
-using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true, FaceType>;
+using AdjacentTrianglePointers =
+    comp::AdjacentFacePointers<FaceType, 3, true, FaceType>;
 
 template<typename FaceType>
-using VerticalAdjacentPolygons =
-    comp::AdjacentFaces<FaceType, -1, true, FaceType, true>;
+using VerticalAdjacentPolygonPointers =
+    comp::AdjacentFacePointers<FaceType, -1, true, FaceType, true>;
 
 template<typename FaceType>
-using VerticalAdjacentTriangles =
-    comp::AdjacentFaces<FaceType, 3, true, FaceType, true>;
+using VerticalAdjacentTrianglePointers =
+    comp::AdjacentFacePointers<FaceType, 3, true, FaceType, true>;
 
 template<typename FaceType>
-using OptionalAdjacentPolygons =
-    comp::AdjacentFaces<FaceType, -1, true, FaceType, true, true>;
+using OptionalAdjacentPolygonPointers =
+    comp::AdjacentFacePointers<FaceType, -1, true, FaceType, true, true>;
 
 template<typename FaceType>
-using OptionalAdjacentTriangles =
-    comp::AdjacentFaces<FaceType, 3, true, FaceType, true, true>;
+using OptionalAdjacentTrianglePointers =
+    comp::AdjacentFacePointers<FaceType, 3, true, FaceType, true, true>;
 
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags<>;

@@ -24,7 +24,7 @@
 #define VCL_MESH_ELEMENTS_VERTEX_COMPONENTS_H
 
 #include "../components/adjacent_edge_pointers.h"
-#include "../components/adjacent_faces.h"
+#include "../components/adjacent_face_pointers.h"
 #include "../components/adjacent_vertices.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
@@ -69,15 +69,16 @@ using OptionalAdjacentEdgePointers =
 
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType, typename VertexType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, VertexType>;
+using AdjacentFacePointers =
+    comp::AdjacentFacePointers<FaceType, -1, false, VertexType>;
 
 template<typename FaceType, typename VertexType>
-using VerticalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, VertexType, true>;
+using VerticalAdjacentFacePointers =
+    comp::AdjacentFacePointers<FaceType, -1, false, VertexType, true>;
 
 template<typename FaceType, typename VertexType>
-using OptionalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, VertexType, true, true>;
+using OptionalAdjacentFacePointers =
+    comp::AdjacentFacePointers<FaceType, -1, false, VertexType, true, true>;
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>

@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_H
 
 #include "components/adjacent_edge_pointers.h"
-#include "components/adjacent_faces.h"
+#include "components/adjacent_face_pointers.h"
 #include "components/adjacent_vertices.h"
 #include "components/bit_flags.h"
 #include "components/bounding_box.h"

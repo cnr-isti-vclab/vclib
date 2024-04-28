@@ -94,7 +94,8 @@ concept HasAdjacentFaces = requires (
  */
 template<typename T>
 concept HasOptionalAdjacentFaces =
-    HasAdjacentFaces<T> && IsOptionalComponent<typename T::AdjacentFaces>;
+    HasAdjacentFaces<T> &&
+    IsOptionalComponent<typename T::AdjacentFacePointers>;
 
 /**
  * @private

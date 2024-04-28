@@ -24,7 +24,7 @@
 #define VCL_MESH_ELEMENTS_EDGE_COMPONENTS_H
 
 #include "../components/adjacent_edge_pointers.h"
-#include "../components/adjacent_faces.h"
+#include "../components/adjacent_face_pointers.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/custom_components.h"
@@ -65,15 +65,16 @@ using OptionalAdjacentEdgePointers =
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType, typename EdgeType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false, EdgeType>;
+using AdjacentFacePointers =
+    comp::AdjacentFacePointers<FaceType, -1, false, EdgeType>;
 
 template<typename FaceType, typename EdgeType>
-using VerticalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, EdgeType, true>;
+using VerticalAdjacentFacePointers =
+    comp::AdjacentFacePointers<FaceType, -1, false, EdgeType, true>;
 
 template<typename FaceType, typename EdgeType>
-using OptionalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, EdgeType, true, true>;
+using OptionalAdjacentFacePointers =
+    comp::AdjacentFacePointers<FaceType, -1, false, EdgeType, true, true>;
 
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<>;

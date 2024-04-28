@@ -217,7 +217,7 @@ set(HEADERS
     include/vclib/mesh/mesh_containers.h
     include/vclib/mesh/requirements.h
     include/vclib/mesh/components/adjacent_edge_pointers.h
-    include/vclib/mesh/components/adjacent_faces.h
+    include/vclib/mesh/components/adjacent_face_pointers.h
     include/vclib/mesh/components/adjacent_vertices.h
     include/vclib/mesh/components/bit_flags.h
     include/vclib/mesh/components/bounding_box.h

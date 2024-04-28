@@ -94,7 +94,8 @@ concept HasAdjacentEdges = requires (
  */
 template<typename T>
 concept HasOptionalAdjacentEdges =
-    HasAdjacentEdges<T> && IsOptionalComponent<typename T::AdjacentEdges>;
+    HasAdjacentEdges<T> &&
+    IsOptionalComponent<typename T::AdjacentEdgePointers>;
 
 /**
  * @private

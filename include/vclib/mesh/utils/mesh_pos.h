@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_UTILS_MESH_POS_H
 #define VCL_MESH_UTILS_MESH_POS_H
 
-#include <vclib/mesh/components/adjacent_faces.h>
+#include <vclib/mesh/components/adjacent_face_pointers.h>
 #include <vclib/mesh/elements/face.h>
 
 namespace vcl {
