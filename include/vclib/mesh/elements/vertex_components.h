@@ -25,7 +25,7 @@
 
 #include "../components/adjacent_edge_pointers.h"
 #include "../components/adjacent_face_pointers.h"
-#include "../components/adjacent_vertices.h"
+#include "../components/adjacent_vertex_pointers.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/coordinate.h"
@@ -82,15 +82,16 @@ using OptionalAdjacentFacePointers =
 
 /* Port AdjacentVertices class into vert namespace */
 template<typename VertexType>
-using AdjacentVertices = comp::AdjacentVertices<VertexType, VertexType>;
+using AdjacentVertexPointers =
+    comp::AdjacentVertexPointers<VertexType, VertexType>;
 
 template<typename VertexType>
-using VerticalAdjacentVertices =
-    comp::AdjacentVertices<VertexType, VertexType, true>;
+using VerticalAdjacentVertexPointers =
+    comp::AdjacentVertexPointers<VertexType, VertexType, true>;
 
 template<typename VertexType>
-using OptionalAdjacentVertices =
-    comp::AdjacentVertices<VertexType, VertexType, true, true>;
+using OptionalAdjacentVertexPointers =
+    comp::AdjacentVertexPointers<VertexType, VertexType, true, true>;
 
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags<>;

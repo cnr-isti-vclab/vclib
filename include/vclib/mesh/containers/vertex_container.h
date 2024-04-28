@@ -589,7 +589,7 @@ public:
         requires vert::HasOptionalAdjacentVertices<T>
     {
         return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentVertices>();
+            typename T::AdjacentVertexPointers>();
     }
 
     /**
@@ -601,7 +601,8 @@ public:
     void enablePerVertexAdjacentVertices()
         requires vert::HasOptionalAdjacentVertices<T>
     {
-        Base::template enableOptionalComponent<typename T::AdjacentVertices>();
+        Base::template enableOptionalComponent<
+            typename T::AdjacentVertexPointers>();
     }
 
     /**
@@ -613,7 +614,8 @@ public:
     void disablePerVertexAdjacentVertices()
         requires vert::HasOptionalAdjacentVertices<T>
     {
-        Base::template disableOptionalComponent<typename T::AdjacentVertices>();
+        Base::template disableOptionalComponent<
+            typename T::AdjacentVertexPointers>();
     }
 
     // Color

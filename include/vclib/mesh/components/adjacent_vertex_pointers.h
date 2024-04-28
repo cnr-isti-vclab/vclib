@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
-#define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
+#ifndef VCL_MESH_COMPONENTS_ADJACENT_VERTEX_POINTERS_H
+#define VCL_MESH_COMPONENTS_ADJACENT_VERTEX_POINTERS_H
 
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
 #include <vclib/views/view.h>
@@ -31,10 +31,10 @@
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentVertices class is a container of Vertex pointers. It is a
- * component that makes sense to use mostly on Vertex Elements. For Faces and
- * Edges, see the VertexPointers component (which is similar, but has different
- * member function names).
+ * @brief The AdjacentVertexPointers class is a container of Vertex pointers. It
+ * is a component that makes sense to use mostly on Vertex Elements. For Faces
+ * and Edges, see the VertexPointers component (which is similar, but has
+ * different member function names).
  *
  * It is a random access container having dynamic size.
  *
@@ -74,9 +74,9 @@ template<
     typename ElementType = void,
     bool VERT            = false,
     bool OPT             = false>
-class AdjacentVertices :
+class AdjacentVertexPointers :
         public PointersContainerComponent<
-            AdjacentVertices<Vertex, ElementType, VERT, OPT>,
+            AdjacentVertexPointers<Vertex, ElementType, VERT, OPT>,
             CompId::ADJACENT_VERTICES,
             Vertex,
             -1,
@@ -86,7 +86,7 @@ class AdjacentVertices :
             false>
 {
     using Base = PointersContainerComponent<
-        AdjacentVertices<Vertex, ElementType, VERT, OPT>,
+        AdjacentVertexPointers<Vertex, ElementType, VERT, OPT>,
         CompId::ADJACENT_VERTICES,
         Vertex,
         -1,
@@ -112,7 +112,7 @@ public:
      *
      * Initializes an empty container of Adjacent Vertices.
      */
-    AdjacentVertices() = default;
+    AdjacentVertexPointers() = default;
 
     /* Member functions */
 
@@ -551,7 +551,7 @@ public:
         return View(adjVertexBegin(), adjVertexEnd());
     }
 
-    // dummy member to discriminate between AdjacentVertices and
+    // dummy member to discriminate between AdjacentVertexPointers and
     // VertexHalfEdgePointers
     void __adjacentVertices() const {}
 
@@ -615,4 +615,4 @@ bool isAdjacentVerticesAvailableOn(const ElementConcept auto& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
+#endif // VCL_MESH_COMPONENTS_ADJACENT_VERTEX_POINTERS_H

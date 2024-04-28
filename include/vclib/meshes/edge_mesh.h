@@ -52,7 +52,7 @@ class Vertex :
             vcl::vert::OptionalQuality<Scalar, Vertex<Scalar>>,
             vcl::vert::
                 OptionalAdjacentEdgePointers<Edge<Scalar>, Vertex<Scalar>>,
-            vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
+            vcl::vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
             vcl::vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
             vcl::vert::OptionalMark<Vertex<Scalar>>,
             vcl::vert::CustomComponents<Vertex<Scalar>>>
