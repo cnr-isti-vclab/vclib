@@ -53,6 +53,7 @@ class Vertex :
             vcl::vert::Normal3<Scalar>,
             vcl::vert::OptionalColor<Vertex<Scalar>>,
             vcl::vert::OptionalQuality<Scalar, Vertex<Scalar>>,
+            vcl::vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>,
             vcl::vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
             vcl::vert::OptionalAdjacentVertices<Vertex<Scalar>>,
             vcl::vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
