@@ -75,6 +75,7 @@ SCENARIO("Mesh Conversions")
 
                 uint i = 0;
                 for (const auto* pv : pf.vertices()) {
+                    REQUIRE(pv->index() == tf.vertexIndex(i));
                     REQUIRE(pv->coord() == tf.vertex(i)->coord());
                     ++i;
                 }

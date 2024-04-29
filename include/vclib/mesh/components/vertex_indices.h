@@ -675,7 +675,7 @@ protected:
     }
 
 private:
-    template<typename Element, typename ElVType>
+    template<typename Element>
     void importIndicesFrom(const Element& e)
     {
         for (uint i = 0; i < e.vertexNumber(); ++i) {
