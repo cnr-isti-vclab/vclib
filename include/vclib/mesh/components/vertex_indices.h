@@ -20,18 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
-#define VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
+#ifndef VCL_MESH_COMPONENTS_VERTEX_INDICES_H
+#define VCL_MESH_COMPONENTS_VERTEX_INDICES_H
 
 #include <vclib/concepts/mesh/components/vertex_pointers.h>
 #include <vclib/views/view.h>
 
-#include "bases/pointers_container_component.h"
+#include "bases/indices_container_component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The VertexPointers class represents a component that stores a
+ * @brief The VertexIndices class represents a component that stores a
  * container of pointers to vertices that will be part of an Element (e.g.
  * Face, Edge, Tetrahedron, etc.).
  *
@@ -47,7 +47,7 @@ namespace vcl::comp {
  * The member functions of this class will be available in the instance of any
  * Element that will contain this component.
  *
- * For example, if you have a Face Element `f` that has the VertexPointers
+ * For example, if you have a Face Element `f` that has the VertexIndices
  * component, you'll be able to access to this component member functions from
  * `f`:
  *
@@ -61,8 +61,8 @@ namespace vcl::comp {
  * therefore it cannot be optional.
  *
  * @note Several components are *Tied To Vertex Number*: in other words, they
- * are composed by a container that has the same size of the VertexPointers
- * and, when the VertexPointers container is resized, also the container of
+ * are composed by a container that has the same size of the VertexIndices
+ * and, when the VertexIndices container is resized, also the container of
  * these components is resized automatically.
  *
  * @tparam Vertex The type of the vertices.
@@ -78,10 +78,10 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<typename Vertex, int N, typename ElementType = void, bool VERT = false>
-class VertexPointers :
-        public PointersContainerComponent<
-            VertexPointers<Vertex, N, ElementType, VERT>,
-            CompId::VERTEX_POINTERS,
+class VertexIndices :
+        public IndicesContainerComponent<
+            VertexIndices<Vertex, N, ElementType, VERT>,
+            CompId::VERTEX_INDICES,
             Vertex,
             N,
             ElementType,
@@ -89,9 +89,9 @@ class VertexPointers :
             false,
             false>
 {
-    using Base = PointersContainerComponent<
-        VertexPointers<Vertex, N, ElementType, VERT>,
-        CompId::VERTEX_POINTERS,
+    using Base = IndicesContainerComponent<
+        VertexIndices<Vertex, N, ElementType, VERT>,
+        CompId::VERTEX_INDICES,
         Vertex,
         N,
         ElementType,
@@ -104,6 +104,8 @@ public:
      * @brief Expose the type of the Vertex.
      */
     using VertexType = Vertex;
+
+    static const bool STORES_VERTEX_POINTERS = false;
 
     static const int VERTEX_NUMBER = Base::SIZE;
 
@@ -119,7 +121,7 @@ public:
      * If the Vertex Pointers container size is static, initializes all the
      * Vertex Pointers to `nullptr`, otherwise the container will be empty.
      */
-    VertexPointers() = default;
+    VertexIndices() = default;
 
     /* Member functions */
 
@@ -135,7 +137,10 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The pointer i-th vertex of the element.
      */
-    Vertex* vertex(uint i) { return Base::container().at(i); }
+    Vertex* vertex(uint i)
+    {
+        &Base::parentElement()->parentMesh()->vertex(Base::container().at(i));
+    }
 
     /**
      * @brief Returns a const pointer to the i-th vertex of the element.
@@ -143,7 +148,10 @@ public:
      * the value must be between 0 and the number of vertices.
      * @return The pointer to the i-th vertex of the element.
      */
-    const Vertex* vertex(uint i) const { return Base::container().at(i); }
+    const Vertex* vertex(uint i) const
+    {
+        &Base::parentElement()->parentMesh()->vertex(Base::container().at(i));
+    }
 
     /**
      * @brief Returns the index in the vertex container of the i-th vertex of
@@ -153,11 +161,7 @@ public:
      */
     uint vertexIndex(uint i) const
     {
-        auto* v = vertex(i);
-        if (v) [[likely]]
-            return v->index();
-        else
-            return UINT_NULL;
+        return Base::container().at(i);
     }
 
     /**
@@ -178,7 +182,11 @@ public:
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The pointer to the required vertex of the element.
      */
-    Vertex* vertexMod(int i) { return Base::container().atMod(i); }
+    Vertex* vertexMod(int i)
+    {
+        return &Base::parentElement()->parentMesh()->vertex(
+            Base::container().atMod(i));
+    }
 
     /**
      * @brief Same of vertexMod, but returns a const pointer to the vertex.
@@ -186,7 +194,10 @@ public:
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The pointer to the required vertex of the element.
      */
-    const Vertex* vertexMod(int i) const { return Base::container().atMod(i); }
+    const Vertex* vertexMod(int i) const {
+        return &Base::parentElement()->parentMesh()->vertex(
+            Base::container().atMod(i));
+    }
 
     /**
      * @brief Returns the index in the vertex container of the i-th vertex of
@@ -209,11 +220,7 @@ public:
      */
     uint vertexIndexMod(int i) const
     {
-        auto* v = vertexMod(i);
-        if (v) [[likely]]
-            return v->index();
-        else
-            return UINT_NULL;
+        return Base::container().atMod(i);
     }
 
     /**
@@ -222,7 +229,13 @@ public:
      * value must be between 0 and the number of vertices.
      * @param[in] v: The pointer to the vertex to set to the element.
      */
-    void setVertex(uint i, Vertex* v) { Base::container().set(i, v); }
+    void setVertex(uint i, Vertex* v)
+    {
+        if (v == nullptr) [[unlikely]]
+            Base::container().set(i, UINT_NULL);
+        else
+            Base::container().set(i, v->index());
+    }
 
     /**
      * @brief Sets the i-th vertex of the element.
@@ -232,7 +245,7 @@ public:
      */
     void setVertex(uint i, uint vi)
     {
-        setVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
+        Base::container().set(i, vi);
     }
 
     /**
@@ -243,7 +256,10 @@ public:
      */
     void setVertex(ConstVertexIterator it, Vertex* v)
     {
-        Base::container().set(it, v);
+        if (v == nullptr) [[unlikely]]
+            Base::container().set(it, v);
+        else
+            Base::container().set(it, v->index());
     }
 
     /**
@@ -254,7 +270,7 @@ public:
      */
     void setVertex(ConstVertexIterator it, uint vi)
     {
-        setVertex(it, &Base::parentElement()->parentMesh()->vertex(vi));
+        Base::container().set(it, vi);
     }
 
     /**
@@ -275,7 +291,13 @@ public:
      * which set the vertex; value is modularized on vertexNumber().
      * @param[in] v: The pointer to the vertex to set to the element.
      */
-    void setVertexMod(int i, Vertex* v) { Base::container().atMod(i) = v; }
+    void setVertexMod(int i, Vertex* v)
+    {
+        uint vi = UINT_NULL;
+        if (v != nullptr) [[likely]]
+            vi = v->index();
+        Base::container().atMod(i) = vi;
+    }
 
     /**
      * @brief Sets the i-th vertex of the element, but using as index the module
@@ -297,7 +319,7 @@ public:
      */
     void setVertexMod(int i, uint vi)
     {
-        setVertexMod(i, &Base::parentElement()->parentMesh()->vertex(vi));
+        Base::container().atMod(i) = vi;
     }
 
     /**
@@ -314,7 +336,11 @@ public:
     template<Range Rng>
     void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, Vertex*>
     {
-        Base::container().set(r);
+        auto conv = [&](auto v) {
+            return v->index();
+        };
+
+        Base::container().set(r | std::views::transform(conv));
     }
 
     /**
@@ -331,11 +357,7 @@ public:
     template<Range Rng>
     void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
-        auto conv = [&](auto i) {
-            return &Base::parentElement()->parentMesh()->vertex(i);
-        };
-
-        Base::container().set(r | std::views::transform(conv));
+        Base::container().set(r);
     }
 
     /**
@@ -348,7 +370,10 @@ public:
      */
     bool containsVertex(const Vertex* v) const
     {
-        return Base::container().contains(v);
+        if (v == nullptr) [[unlikely]]
+            return Base::container().contains(UINT_NULL);
+        else
+            return Base::container().contains(v->index());
     }
 
     /**
@@ -361,7 +386,7 @@ public:
      */
     bool containsVertex(uint vi) const
     {
-        return containsVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+        return Base::container().contains(vi);
     }
 
     /**
@@ -375,7 +400,10 @@ public:
      */
     ConstVertexIterator findVertex(const Vertex* v) const
     {
-        return Base::container().find(v);
+        if (v == nullptr) [[unlikely]]
+            return Base::container().find(UINT_NULL);
+        else
+            return Base::container().find(v->index());
     }
 
     /**
@@ -389,7 +417,7 @@ public:
      */
     ConstVertexIterator findVertex(uint vi) const
     {
-        return findVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+        return Base::container().find(vi);
     }
 
     /**
@@ -403,7 +431,10 @@ public:
      */
     uint indexOfVertex(const Vertex* v) const
     {
-        return Base::container().indexOf(v);
+        if (v == nullptr) [[unlikely]]
+            return Base::container().indexOf(UINT_NULL);
+        else
+            return Base::container().indexOf(v->index());
     }
 
     /**
@@ -417,7 +448,7 @@ public:
      */
     uint indexOfVertex(uint vi) const
     {
-        return indexOfVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+        return Base::container().indexOf(vi);
     }
 
     /**
@@ -438,20 +469,9 @@ public:
      */
     uint indexOfEdge(const Vertex* v1, const Vertex* v2) const
     {
-        uint vid = indexOfVertex(v1);
-        if (vid == UINT_NULL) {
-            return UINT_NULL;
-        }
-        else if (vertexMod(vid + 1) == v2) {
-            return vid;
-        }
-        else if (vertexMod((int) vid - 1) == v2) {
-            int n = vertexNumber(); // n must be int to avoid unwanted casts
-            return (((int) vid - 1) % n + n) % n;
-        }
-        else {
-            return UINT_NULL;
-        }
+        uint vi1 = v1 == nullptr ? UINT_NULL : v1->index();
+        uint vi2 = v2 == nullptr ? UINT_NULL : v2->index();
+        return indexOfEdge(vi1, vi2);
     }
 
     /**
@@ -472,8 +492,20 @@ public:
      */
     uint indexOfEdge(uint vi1, uint vi2) const
     {
-        return indexOfEdge(&Base::parentElement()->parentMesh()->vertex(vi1),
-                           &Base::parentElement()->parentMesh()->vertex(vi2));
+        uint vid = indexOfVertex(vi1);
+        if (vid == UINT_NULL) {
+            return UINT_NULL;
+        }
+        else if (vertexMod(vid + 1) == vi2) {
+            return vid;
+        }
+        else if (vertexMod((int) vid - 1) == vi2) {
+            int n = vertexNumber(); // n must be int to avoid unwanted casts
+            return (((int) vid - 1) % n + n) % n;
+        }
+        else {
+            return UINT_NULL;
+        }
     }
 
     /* Member functions specific for vector of pointers */
@@ -498,7 +530,10 @@ public:
      */
     void pushVertex(Vertex* v) requires (N < 0)
     {
-        Base::container().pushBack(v);
+        if (v != nullptr) [[likely]]
+            Base::container().pushBack(v->index());
+        else
+            Base::container().pushBack(UINT_NULL);
     }
 
     /**
@@ -510,7 +545,7 @@ public:
      */
     void pushVertex(uint vi) requires (N < 0)
     {
-        pushVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+        Base::container().pushBack(vi);
     }
 
     /**
@@ -522,7 +557,10 @@ public:
      */
     void insertVertex(uint i, Vertex* v) requires (N < 0)
     {
-        Base::container().insert(i, v);
+        if (v != nullptr) [[likely]]
+            Base::container().insert(i, v->index());
+        else
+            Base::container().insert(i, UINT_NULL);
     }
 
     /**
@@ -535,7 +573,7 @@ public:
      */
     void insertVertex(uint i, uint vi) requires (N < 0)
     {
-        insertVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
+        Base::container().insert(i, vi);
     }
 
     /**
@@ -600,26 +638,17 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
-    }
-
-    // PointersComponent interface functions
-    template<typename Element, typename ElVType>
-    void importPointersFrom(
-        const Element& e,
-        Vertex*        base,
-        const ElVType* ebase)
-    {
         if constexpr (HasVertexPointers<Element>) {
             if constexpr (N > 0) {
                 // same size non-polygonal faces
                 if constexpr (N == Element::VERTEX_NUMBER) {
-                    importPtrsFrom(e, base, ebase);
+                    importIndicesFrom(e);
                 }
                 // from polygonal to fixed size, but the polygon size == the
                 // fixed face size
                 else if constexpr (Element::VERTEX_NUMBER < 0) {
                     if (e.vertexNumber() == N) {
-                        importPtrsFrom(e, base, ebase);
+                        importIndicesFrom(e);
                     }
                 }
                 else {
@@ -631,25 +660,30 @@ protected:
                 // from fixed to polygonal size: need to resize first, then
                 // import
                 resizeVertices(e.vertexNumber());
-                importPtrsFrom(e, base, ebase);
+                importIndicesFrom(e);
             }
         }
     }
 
+    // PointersComponent interface functions
+    template<typename Element, typename ElVType>
+    void importPointersFrom(
+        const Element&,
+        Vertex*,
+        const ElVType*)
+    {
+    }
+
 private:
     template<typename Element, typename ElVType>
-    void importPtrsFrom(const Element& e, Vertex* base, const ElVType* ebase)
+    void importIndicesFrom(const Element& e)
     {
-        if (ebase != nullptr && base != nullptr) {
-            for (uint i = 0; i < e.vertexNumber(); ++i) {
-                if (e.vertex(i) != nullptr) {
-                    setVertex(i, base + (e.vertex(i) - ebase));
-                }
-            }
+        for (uint i = 0; i < e.vertexNumber(); ++i) {
+            setVertex(i, e.vertexIndex(i));
         }
     }
 };
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
+#endif // VCL_MESH_COMPONENTS_VERTEX_INDICES_H

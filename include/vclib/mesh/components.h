@@ -41,6 +41,7 @@
 #include "components/texture_paths.h"
 #include "components/transform_matrix.h"
 #include "components/triangle_bit_flags.h"
+#include "components/vertex_indices.h"
 #include "components/vertex_pointers.h"
 #include "components/wedge_colors.h"
 #include "components/wedge_tex_coords.h"
