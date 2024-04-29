@@ -53,7 +53,8 @@ namespace vcl::comp {
  *
  * @code{.cpp}
  * uint n = f.vertexNumber();
- * auto* v = f.vertex(0);
+ * const auto* v = f.vertex(0);
+ * uint vi = f.vertexIndex(0);
  * @endcode
  *
  * @note This component is usually the main component of an Element, and

@@ -55,8 +55,6 @@ struct CompId
     };
 };
 
-constexpr uint COMPONENTS_NUMBER = 19;
-
 constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
     "BitFlags",
     "Coordinate",
@@ -94,8 +92,9 @@ struct ComponentString
     /**
      * @brief The string associated to the COMPONENT_ID.
      */
-    const char* str =
-        COMP_ID < COMPONENTS_NUMBER ? COMPONENT_ENUM_STRINGS[COMP_ID] : nullptr;
+    const char* str = COMP_ID < CompId::COMPONENTS_NUMBER ?
+                          COMPONENT_ENUM_STRINGS[COMP_ID] :
+                          nullptr;
 };
 
 /**
