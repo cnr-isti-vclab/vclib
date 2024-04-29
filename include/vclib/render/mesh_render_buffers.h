@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_MESH_RENDER_BUFFERS_H
 #define VCL_RENDER_MESH_RENDER_BUFFERS_H
 
-#include <vclib/algorithms/polygon.h>
+#include <vclib/algorithms/core/polygon.h>
 #include <vclib/math/min_max.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/mesh/utils/tri_poly_index_bimap.h>

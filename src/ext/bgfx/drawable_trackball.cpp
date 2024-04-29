@@ -22,7 +22,7 @@
 
 #include <vclib/ext/bgfx/drawable_trackball.h>
 
-#include <vclib/algorithms/polygon/create.h>
+#include <vclib/algorithms/core/polygon/create.h>
 
 #include <vclib/math/transform.h>
 

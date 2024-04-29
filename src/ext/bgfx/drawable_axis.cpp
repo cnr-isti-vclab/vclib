@@ -22,7 +22,7 @@
 
 #include <vclib/ext/bgfx/drawable_axis.h>
 
-#include <vclib/algorithms/create.h>
+#include <vclib/algorithms/mesh/create.h>
 
 namespace vcl::bgf {
 

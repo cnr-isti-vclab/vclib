@@ -15,3 +15,4 @@
  - [ ] Manage polygonal meshes by DrawableMesh
  - [ ] Manage wireframe and points depth in shaders
  - [ ] Implement raytracing to get the triangle clicked by the mouse
+ - [ ] Customizable background for canvas
