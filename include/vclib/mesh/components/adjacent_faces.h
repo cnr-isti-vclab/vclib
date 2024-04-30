@@ -24,6 +24,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
+#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -104,6 +105,8 @@ public:
 
     using AdjacentFaceIterator      = Base::Iterator;
     using ConstAdjacentFaceIterator = Base::ConstIterator;
+    using ConstAdjacentFaceIndexIterator =
+        IndexFromPointerIterator<ConstAdjacentFaceIterator>;
 
     /**
      * @brief Static size of the container. If the container is dynamic, this
@@ -439,6 +442,27 @@ public:
     }
 
     /**
+     * @brief Returns an iterator to the first adjacent face index in the
+     * container of this component.
+     *
+     * @return an iterator pointing to the begin of the adjacent face indices.
+     */
+    ConstAdjacentFaceIndexIterator adjFaceIndexBegin() const
+    {
+        return ConstAdjacentFaceIndexIterator(adjFaceBegin());
+    }
+
+    /**
+     * @brief Returns an iterator to the end of the container of this component.
+     *
+     * @return an iterator pointing to the end of the adjacent face indices.
+     */
+    ConstAdjacentFaceIndexIterator adjFaceIndexEnd() const
+    {
+        return ConstAdjacentFaceIndexIterator(adjFaceEnd(), true);
+    }
+
+    /**
      * @brief Returns a lightweight view object that stores the begin and end
      * iterators of the container of adjacent faces of the element. The view
      * object exposes the iterators trough the `begin()` and `end()` member
@@ -478,6 +502,27 @@ public:
     View<ConstAdjacentFaceIterator> adjFaces() const
     {
         return View(adjFaceBegin(), adjFaceEnd());
+    }
+
+    /**
+     * @brief Returns a lightweight view object that stores the begin and end
+     * iterators of the container of adjacent face indices of the element. The
+     * view object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (uint eid : el.adjFaceIndices()) {
+     *     // Do something with adj face index...
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over adjacent face indices.
+     */
+    View<ConstAdjacentFaceIndexIterator> adjFaceIndices() const
+    {
+        return View(adjFaceIndexBegin(), adjFaceIndexEnd());
     }
 
     // dummy member to discriminate between AdjacentFaces and
