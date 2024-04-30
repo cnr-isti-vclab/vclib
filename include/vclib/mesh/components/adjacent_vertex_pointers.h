@@ -24,6 +24,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTEX_POINTERS_H
 
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
+#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -104,6 +105,8 @@ public:
     /* Iterator Types declaration */
 
     using ConstAdjacentVertexIterator = Base::ConstIterator;
+    using ConstAdjacentVertexIndexIterator =
+        IndexFromPointerIterator<ConstAdjacentVertexIterator>;
 
     /* Constructors */
 
@@ -531,6 +534,27 @@ public:
     }
 
     /**
+     * @brief Returns an iterator to the first adjacent vertex index in the
+     * container of this component.
+     *
+     * @return an iterator pointing to the begin of the adjacent vertex indices.
+     */
+    ConstAdjacentVertexIndexIterator adjVertexIndexBegin() const
+    {
+        return ConstAdjacentVertexIndexIterator(adjVertexBegin());
+    }
+
+    /**
+     * @brief Returns an iterator to the end of the container of this component.
+     *
+     * @return an iterator pointing to the end of the adjacent vertex indices.
+     */
+    ConstAdjacentVertexIndexIterator adjVertexIndexEnd() const
+    {
+        return ConstAdjacentVertexIndexIterator(adjVertexEnd(), true);
+    }
+
+    /**
      * @brief Returns a lightweight const view object that stores the begin and
      * end iterators of the container of adjacent vertices of the element. The
      * view object exposes the iterators trough the `begin()` and `end()` member
@@ -549,6 +573,27 @@ public:
     View<ConstAdjacentVertexIterator> adjVertices() const
     {
         return View(adjVertexBegin(), adjVertexEnd());
+    }
+
+    /**
+     * @brief Returns a lightweight view object that stores the begin and end
+     * iterators of the container of adjacent vertex indices of the element. The
+     * view object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (uint eid : el.adjVertexIndices()) {
+     *     // Do something with adj vertex index...
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over adjacent vertex indices.
+     */
+    View<ConstAdjacentVertexIndexIterator> adjVertexIndices() const
+    {
+        return View(adjVertexIndexBegin(), adjVertexIndexEnd());
     }
 
     // dummy member to discriminate between AdjacentVertexPointers and

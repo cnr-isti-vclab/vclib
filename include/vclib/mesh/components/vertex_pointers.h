@@ -24,6 +24,7 @@
 #define VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
 
 #include <vclib/concepts/mesh/components/vertex_pointers.h>
+#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -110,6 +111,8 @@ public:
     /* Iterator Types declaration */
 
     using ConstVertexIterator = Base::ConstIterator;
+    using ConstVertexIndexIterator =
+        IndexFromPointerIterator<ConstVertexIterator>;
 
     /* Constructors */
 
@@ -575,6 +578,27 @@ public:
     ConstVertexIterator vertexEnd() const { return Base::container().end(); }
 
     /**
+     * @brief Returns an iterator to the first vertex index in the container of
+     * this component.
+     *
+     * @return an iterator pointing to the begin of the vertex indices.
+     */
+    ConstVertexIndexIterator vertexIndexBegin() const
+    {
+        return ConstVertexIndexIterator(vertexBegin());
+    }
+
+    /**
+     * @brief Returns an iterator to the end of the container of this component.
+     *
+     * @return an iterator pointing to the end of the vertex indices.
+     */
+    ConstVertexIndexIterator vertexIndexEnd() const
+    {
+        return ConstVertexIndexIterator(vertexEnd(), true);
+    }
+
+    /**
      * @brief Returns a lightweight const view object that stores the begin and
      * end iterators of the container of vertices of the element. The view
      * object exposes the iterators trough the `begin()` and `end()` member
@@ -593,6 +617,27 @@ public:
     View<ConstVertexIterator> vertices() const
     {
         return View(vertexBegin(), vertexEnd());
+    }
+
+    /**
+     * @brief Returns a lightweight view object that stores the begin and end
+     * iterators of the container of vertex indices of the element. The view
+     * object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (uint vid : el.vertexIndices()) {
+     *     // Do something with vertex index...
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over vertex indices.
+     */
+    View<ConstVertexIndexIterator> vertexIndices() const
+    {
+        return View(vertexIndexBegin(), vertexIndexEnd());
     }
 
 protected:

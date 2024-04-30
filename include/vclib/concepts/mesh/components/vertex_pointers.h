@@ -48,6 +48,7 @@ concept HasVertexPointers = requires (
     T::VERTEX_NUMBER;
     typename T::VertexType;
     typename T::ConstVertexIterator;
+    typename T::ConstVertexIndexIterator;
 
     { co.vertexNumber() } -> std::same_as<uint>;
     { o.vertex(uint()) } -> std::same_as<typename T::VertexType*>;
@@ -80,7 +81,14 @@ concept HasVertexPointers = requires (
 
     { co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
     { co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
-    o.vertices();
+
+    { co.vertexIndexBegin() } ->
+        std::same_as<typename T::ConstVertexIndexIterator>;
+    { co.vertexIndexEnd() } ->
+        std::same_as<typename T::ConstVertexIndexIterator>;
+
+    co.vertices();
+    co.vertexIndices();
     // clang-format on
 };
 

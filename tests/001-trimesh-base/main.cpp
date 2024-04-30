@@ -126,6 +126,16 @@ SCENARIO("TriMesh usage")
             REQUIRE(m.face(1).vertexIndexMod(5) == 2);
             REQUIRE(m.face(1).vertexIndexMod(-5) == 1);
 
+            // test also iterators
+            uint vi = 0;
+            for (auto* v : m.face(1).vertices()) {
+                REQUIRE(v == &m.vertex(vi++));
+            }
+            vi = 0;
+            for (auto v : m.face(1).vertexIndices()) {
+                REQUIRE(v == vi++);
+            }
+
             // force reallocation of vertex container
             m.addVertices(100);
             REQUIRE(m.vertexNumber() == 103);
