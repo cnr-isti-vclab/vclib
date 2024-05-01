@@ -39,7 +39,7 @@ template<typename Iterator>
 class IndexFromPointerIterator
 {
     Iterator mIt;
-    uint mCurrent = UINT_NULL;
+    uint     mCurrent = UINT_NULL;
 
 public:
     using difference_type   = ptrdiff_t;
@@ -50,8 +50,7 @@ public:
 
     IndexFromPointerIterator() = default;
 
-    IndexFromPointerIterator(const Iterator& it, bool end = false) :
-        mIt(it)
+    IndexFromPointerIterator(const Iterator& it, bool end = false) : mIt(it)
     {
         if (!end)
             updateCurrent();
