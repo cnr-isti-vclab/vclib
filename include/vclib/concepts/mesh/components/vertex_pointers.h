@@ -64,6 +64,10 @@ concept HasVertexPointers = requires (
         std::same_as<void>;
     { o.setVertex(typename T::ConstVertexIterator(), uint()) } ->
         std::same_as<void>;
+    { o.setVertex(typename T::ConstVertexIndexIterator(), &v) } ->
+        std::same_as<void>;
+    { o.setVertex(typename T::ConstVertexIndexIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setVertexMod(int(), &v) } -> std::same_as<void>;
     { o.setVertexMod(int(), uint()) } -> std::same_as<void>;
     { o.setVertices(vecv) } -> std::same_as<void>;

@@ -70,6 +70,10 @@ concept HasAdjacentFaces = requires (
         std::same_as<void>;
     { o.setAdjFace(typename T::ConstAdjacentFaceIterator(), uint()) } ->
         std::same_as<void>;
+    { o.setAdjFace(typename T::ConstAdjacentFaceIndexIterator(), &f) } ->
+        std::same_as<void>;
+    { o.setAdjFace(typename T::ConstAdjacentFaceIndexIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjFaceMod(int(), &f) } -> std::same_as<void>;
     { o.setAdjFaces(v) } -> std::same_as<void>;
 
