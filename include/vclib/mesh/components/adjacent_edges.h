@@ -236,13 +236,24 @@ public:
 
     /**
      * @brief Sets the adjacent edge pointed by the iterator.
-     * @param[in] it: the position of the iterator in this container on which
-     * set the adjacent edge; the value must be between begin() and end().
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * edge; the value must be between begin() and end().
      * @param[in] e: The pointer to the adjacent edge to set to the element.
      */
     void setAdjEdge(ConstAdjacentEdgeIterator it, Edge* e)
     {
         Base::container().set(it, e);
+    }
+
+    /**
+     * @brief Sets the adjacent edge pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * edge; the value must be between begin() and end().
+     * @param[in] e: The pointer to the adjacent edge to set to the element.
+     */
+    void setAdjEdge(ConstAdjacentEdgeIndexIterator it, Edge* e)
+    {
+        Base::container().set(it - adjEdgeIndexBegin(), e);
     }
 
     /**

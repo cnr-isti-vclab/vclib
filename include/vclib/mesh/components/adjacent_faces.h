@@ -237,13 +237,24 @@ public:
 
     /**
      * @brief Sets the adjacent face pointed by the iterator.
-     * @param[in] it: the position of the iterator in this container on which
-     * set the adjacent face; the value must be between begin() and end().
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * face; the value must be between begin() and end().
      * @param[in] f: The pointer to the adjacent face to set to the element.
      */
     void setAdjFace(ConstAdjacentFaceIterator it, Face* f)
     {
         Base::container().set(it, f);
+    }
+
+    /**
+     * @brief Sets the adjacent face pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * face; the value must be between begin() and end().
+     * @param[in] f: The pointer to the adjacent face to set to the element.
+     */
+    void setAdjFace(ConstAdjacentFaceIndexIterator it, Face* f)
+    {
+        Base::container().set(it - adjFaceIndexBegin(), f);
     }
 
     /**
