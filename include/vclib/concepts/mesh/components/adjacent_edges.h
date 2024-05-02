@@ -70,6 +70,8 @@ concept HasAdjacentEdges = requires (
         std::same_as<void>;
     { o.setAdjEdge(typename T::ConstAdjacentEdgeIterator(), &e) } ->
         std::same_as<void>;
+    { o.setAdjEdge(typename T::ConstAdjacentEdgeIndexIterator(), &e) } ->
+        std::same_as<void>;
     { o.setAdjEdgeMod(int(), &e) } -> std::same_as<void>;
     { o.setAdjEdges(v) } -> std::same_as<void>;
 

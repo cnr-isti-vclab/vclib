@@ -71,6 +71,8 @@ concept HasAdjacentVertices = requires (
         std::same_as<void>;
     { o.setAdjVertex(typename T::ConstAdjacentVertexIterator(), &v) } ->
         std::same_as<void>;
+    { o.setAdjVertex(typename T::ConstAdjacentVertexIndexIterator(), &v) } ->
+        std::same_as<void>;
     { o.setAdjVertexMod(int(), &v) } -> std::same_as<void>;
     { o.setAdjVertices(vec) } -> std::same_as<void>;
 
