@@ -68,9 +68,6 @@ concept HasVertexPointers = requires (
     { o.setVertices(vec) } -> std::same_as<void>;
 
     { co.containsVertex(&v) } -> std::same_as<bool>;
-    { o.findVertex(&v) } -> std::same_as<typename T::VertexIterator>;
-    { co.findVertex(&v) } -> std::same_as<typename T::ConstVertexIterator>;
-
     { co.indexOfVertex(&v) } -> std::same_as<uint>;
     { co.indexOfEdge(&v, &v) } -> std::same_as<uint>;
 

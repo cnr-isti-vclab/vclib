@@ -76,10 +76,6 @@ concept HasAdjacentFaces = requires (
     { o.setAdjFaces(v) } -> std::same_as<void>;
 
     { co.containsAdjFace(&f) } -> std::same_as<bool>;
-    { o.findAdjFace(&f) } -> std::same_as<typename T::AdjacentFaceIterator>;
-    { co.findAdjFace(&f) } ->
-        std::same_as<typename T::ConstAdjacentFaceIterator>;
-
     { co.indexOfAdjFace(&f) } -> std::same_as<uint>;
 
     { o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;

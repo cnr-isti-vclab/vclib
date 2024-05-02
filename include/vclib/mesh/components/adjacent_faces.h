@@ -309,34 +309,6 @@ public:
     }
 
     /**
-     * @brief Returns an iterator to the first adjacent face in the container of
-     * this component that is equal to the given face. If no such adjacent face
-     * is found, past-the-end iterator is returned.
-     *
-     * @param[in] f: the pointer to the face to search.
-     * @return an iterator pointing to the first adjacent face equal to the
-     * given face, or end if no such adjacent face is found.
-     */
-    AdjacentFaceIterator findAdjFace(const Face* f)
-    {
-        return Base::container().find(f);
-    }
-
-    /**
-     * @brief Returns a const iterator to the first adjacent face in the
-     * container of this component that is equal to the given edge. If no such
-     * adjacent face is found, past-the-end iterator is returned.
-     *
-     * @param[in] f: the pointer to the face to search.
-     * @return a const iterator pointing to the first adjacent face equal to the
-     * given face, or end if no such adjacent face is found.
-     */
-    ConstAdjacentFaceIterator findAdjFace(const Face* f) const
-    {
-        return Base::container().find(f);
-    }
-
-    /**
      * @brief Returns the index of the given adjacent face in the container of
      * this element. If the given adjacent face is not in the container, returns
      * UINT_NULL.
