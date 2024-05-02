@@ -131,6 +131,12 @@ SCENARIO("TriMesh usage")
             for (auto* v : m.face(1).vertices()) {
                 REQUIRE(v == &m.vertex(vi++));
             }
+
+            vi = 0;
+            for (uint v : m.face(1).vertices() | vcl::views::indices) {
+                REQUIRE(v == vi++);
+            }
+
             vi = 0;
             for (auto v : m.face(1).vertexIndices()) {
                 REQUIRE(v == vi++);
