@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTICES_H
 
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
-#include <vclib/views/mesh/elements/element.h>
+#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -97,8 +97,8 @@ public:
 
     using AdjacentVertexIterator      = Base::Iterator;
     using ConstAdjacentVertexIterator = Base::ConstIterator;
-    using ConstAdjacentVertexIndexIterator = std::ranges::iterator_t<
-        decltype(vcl::View<ConstAdjacentVertexIterator>() | vcl::views::indices)>;
+    using ConstAdjacentVertexIndexIterator =
+        IndexFromPointerIterator<ConstAdjacentVertexIterator>;
 
     /* Constructors */
 
@@ -425,7 +425,7 @@ public:
      */
     ConstAdjacentVertexIndexIterator adjVertexIndexBegin() const
     {
-        return std::ranges::begin(adjVertices() | vcl::views::indices);
+        return ConstAdjacentVertexIndexIterator(adjVertexBegin());
     }
 
     /**
@@ -435,7 +435,7 @@ public:
      */
     ConstAdjacentVertexIndexIterator adjVertexIndexEnd() const
     {
-        return std::ranges::end(adjVertices() | vcl::views::indices);
+        return ConstAdjacentVertexIndexIterator(adjVertexEnd(), true);
     }
 
     /**
@@ -496,9 +496,9 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over adjacent vertex indices.
      */
-    auto adjVertexIndices() const
+    View<ConstAdjacentVertexIndexIterator> adjVertexIndices() const
     {
-        return adjVertices() | vcl::views::indices;
+        return View(adjVertexIndexBegin(), adjVertexIndexEnd());
     }
 
     // dummy member to discriminate between AdjacentVertices and

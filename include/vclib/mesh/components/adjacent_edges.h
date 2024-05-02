@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGES_H
 
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
-#include <vclib/views/mesh/elements/element.h>
+#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -105,8 +105,8 @@ public:
 
     using AdjacentEdgeIterator      = Base::Iterator;
     using ConstAdjacentEdgeIterator = Base::ConstIterator;
-    using ConstAdjacentEdgeIndexIterator = std::ranges::iterator_t<
-        decltype(vcl::View<ConstAdjacentEdgeIterator>() | vcl::views::indices)>;
+    using ConstAdjacentEdgeIndexIterator =
+        IndexFromPointerIterator<ConstAdjacentEdgeIterator>;
 
     /**
      * @brief Static size of the container. If the container is dynamic, this
@@ -448,7 +448,7 @@ public:
      */
     ConstAdjacentEdgeIndexIterator adjEdgeIndexBegin() const
     {
-        return std::ranges::begin(adjEdges() | vcl::views::indices);
+        return ConstAdjacentEdgeIndexIterator(adjEdgeBegin());
     }
 
     /**
@@ -458,7 +458,7 @@ public:
      */
     ConstAdjacentEdgeIndexIterator adjEdgeIndexEnd() const
     {
-        return std::ranges::end(adjEdges() | vcl::views::indices);
+        return ConstAdjacentEdgeIndexIterator(adjEdgeEnd(), true);
     }
 
     /**
@@ -519,9 +519,9 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over adjacent edge indices.
      */
-    auto adjEdgeIndices() const
+    View<ConstAdjacentEdgeIndexIterator> adjEdgeIndices() const
     {
-        return adjEdges() | vcl::views::indices;
+        return View(adjEdgeIndexBegin(), adjEdgeIndexEnd());
     }
 
 protected:

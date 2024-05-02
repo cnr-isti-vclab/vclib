@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
 
 #include <vclib/concepts/mesh/components/vertex_pointers.h>
-#include <vclib/views/mesh/elements/element.h>
+#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -107,8 +107,8 @@ public:
 
     using VertexIterator      = Base::Iterator;
     using ConstVertexIterator = Base::ConstIterator;
-    using ConstVertexIndexIterator = std::ranges::iterator_t<
-        decltype(vcl::View<ConstVertexIterator>() | vcl::views::indices)>;
+    using ConstVertexIndexIterator =
+        IndexFromPointerIterator<ConstVertexIterator>;
 
     /* Constructors */
 
@@ -456,7 +456,7 @@ public:
      */
     ConstVertexIndexIterator vertexIndexBegin() const
     {
-        return std::ranges::begin(vertices() | vcl::views::indices);
+        return ConstVertexIndexIterator(vertexBegin());
     }
 
     /**
@@ -466,7 +466,7 @@ public:
      */
     ConstVertexIndexIterator vertexIndexEnd() const
     {
-        return std::ranges::end(vertices() | vcl::views::indices);
+        return ConstVertexIndexIterator(vertexEnd(), true);
     }
 
     /**
@@ -524,9 +524,9 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over vertex indices.
      */
-    auto vertexIndices() const
+    View<ConstVertexIndexIterator> vertexIndices() const
     {
-        return vertices() | vcl::views::indices;
+        return View(vertexIndexBegin(), vertexIndexEnd());
     }
 
 protected:
