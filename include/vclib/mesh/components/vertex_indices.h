@@ -239,10 +239,7 @@ public:
      */
     void setVertex(uint i, Vertex* v)
     {
-        if (v == nullptr) [[unlikely]]
-            Base::container().set(i, UINT_NULL);
-        else
-            Base::container().set(i, v->index());
+        Base::container().set(i, indexFromPointer(v));
     }
 
     /**
@@ -286,10 +283,7 @@ public:
      */
     void setVertex(ConstVertexIndexIterator it, Vertex* v)
     {
-        if (v == nullptr) [[unlikely]]
-            Base::container().set(it, UINT_NULL);
-        else
-            Base::container().set(it, v->index());
+        Base::container().set(it, indexFromPointer(v));
     }
 
     /**
@@ -323,10 +317,7 @@ public:
      */
     void setVertexMod(int i, Vertex* v)
     {
-        uint vi = UINT_NULL;
-        if (v != nullptr) [[likely]]
-            vi = v->index();
-        Base::container().atMod(i) = vi;
+        Base::container().atMod(i) = indexFromPointer(v);
     }
 
     /**
@@ -367,10 +358,7 @@ public:
     void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, Vertex*>
     {
         auto conv = [&](auto v) {
-            if (v == nullptr) [[unlikely]]
-                return UINT_NULL;
-            else
-                return v->index();
+            return indexFromPointer(v);
         };
 
         Base::container().set(r | std::views::transform(conv));
@@ -403,10 +391,7 @@ public:
      */
     bool containsVertex(const Vertex* v) const
     {
-        if (v == nullptr) [[unlikely]]
-            return Base::container().contains(UINT_NULL);
-        else
-            return Base::container().contains(v->index());
+        return Base::container().contains(indexFromPointer(v));
     }
 
     /**
@@ -433,10 +418,7 @@ public:
      */
     uint indexOfVertex(const Vertex* v) const
     {
-        if (v == nullptr) [[unlikely]]
-            return Base::container().indexOf(UINT_NULL);
-        else
-            return Base::container().indexOf(v->index());
+        return Base::container().indexOf(indexFromPointer(v));
     }
 
     /**
@@ -471,9 +453,7 @@ public:
      */
     uint indexOfEdge(const Vertex* v1, const Vertex* v2) const
     {
-        uint vi1 = v1 == nullptr ? UINT_NULL : v1->index();
-        uint vi2 = v2 == nullptr ? UINT_NULL : v2->index();
-        return indexOfEdge(vi1, vi2);
+        return indexOfEdge(indexFromPointer(v1), indexFromPointer(v2));
     }
 
     /**
@@ -532,10 +512,7 @@ public:
      */
     void pushVertex(Vertex* v) requires (N < 0)
     {
-        if (v != nullptr) [[likely]]
-            Base::container().pushBack(v->index());
-        else
-            Base::container().pushBack(UINT_NULL);
+        Base::container().pushBack(indexFromPointer(v));
     }
 
     /**
@@ -559,10 +536,7 @@ public:
      */
     void insertVertex(uint i, Vertex* v) requires (N < 0)
     {
-        if (v != nullptr) [[likely]]
-            Base::container().insert(i, v->index());
-        else
-            Base::container().insert(i, UINT_NULL);
+        Base::container().insert(i, indexFromPointer(v));
     }
 
     /**
@@ -730,6 +704,14 @@ private:
         for (uint i = 0; i < e.vertexNumber(); ++i) {
             setVertex(i, e.vertexIndex(i));
         }
+    }
+
+    uint indexFromPointer(const Vertex* v) const
+    {
+        if (v == nullptr) [[unlikely]]
+            return UINT_NULL;
+        else
+            return v->index();
     }
 };
 
