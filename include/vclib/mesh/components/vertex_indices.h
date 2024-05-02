@@ -262,6 +262,28 @@ public:
      * set the vertex; the value must be between begin() and end().
      * @param[in] v: The pointer to the vertex to set to the element.
      */
+    void setVertex(ConstVertexIterator it, Vertex* v)
+    {
+        setVertex(it - vertexBegin(), v);
+    }
+
+    /**
+     * @brief Sets the vertex pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the vertex; the value must be between begin() and end().
+     * @param[in] vi: The index in the vertex container of the vertex to set.
+     */
+    void setVertex(ConstVertexIterator it, uint vi)
+    {
+        setVertex(it - vertexBegin(), vi);
+    }
+
+    /**
+     * @brief Sets the vertex pointed by the iterator.
+     * @param[in] it: the position of the iterator in this container on which
+     * set the vertex; the value must be between begin() and end().
+     * @param[in] v: The pointer to the vertex to set to the element.
+     */
     void setVertex(ConstVertexIndexIterator it, Vertex* v)
     {
         if (v == nullptr) [[unlikely]]
