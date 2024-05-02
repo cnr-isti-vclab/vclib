@@ -100,6 +100,9 @@ class VertexIndices :
         false,
         false>;
 
+    using ParentMeshType =
+        RemoveCVRefAndPointer<decltype(Base::parentElement()->parentMesh())>;
+
 public:
     /**
      * @brief Expose the type of the Vertex.
@@ -113,6 +116,10 @@ public:
     /* Iterator Types declaration */
 
     using ConstVertexIndexIterator = Base::ConstIterator;
+    using ConstVertexIterator      = PointerFromIndexIterator<
+        ConstVertexIndexIterator,
+        Vertex,
+        ParentMeshType>;
 
     /* Constructors */
 
@@ -572,9 +579,11 @@ public:
      *
      * @return an iterator pointing to the begin of this container.
      */
-    ConstVertexIndexIterator vertexBegin() const
+    ConstVertexIterator vertexBegin() const
     {
-        return Base::container().begin();
+        return ConstVertexIterator(
+            Base::container().begin(),
+            Base::parentElement()->parentMesh());
     }
 
     /**
@@ -583,7 +592,28 @@ public:
      *
      * @return an iterator pointing to the end of this container.
      */
-    ConstVertexIndexIterator vertexEnd() const
+    ConstVertexIterator vertexEnd() const
+    {
+        return ConstVertexIterator(Base::container().end());
+    }
+
+    /**
+     * @brief Returns an iterator to the first vertex index in the container of
+     * this component.
+     *
+     * @return an iterator pointing to the begin of the vertex indices.
+     */
+    ConstVertexIndexIterator vertexIndexBegin() const
+    {
+        return Base::container().begin();
+    }
+
+    /**
+     * @brief Returns an iterator to the end of the container of this component.
+     *
+     * @return an iterator pointing to the end of the vertex indices.
+     */
+    ConstVertexIndexIterator vertexIndexEnd() const
     {
         return Base::container().end();
     }
@@ -604,9 +634,30 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over vertices.
      */
-    View<ConstVertexIndexIterator> vertices() const
+    View<ConstVertexIterator> vertices() const
     {
         return View(vertexBegin(), vertexEnd());
+    }
+
+    /**
+     * @brief Returns a lightweight view object that stores the begin and end
+     * iterators of the container of vertex indices of the element. The view
+     * object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (uint vid : el.vertexIndices()) {
+     *     // Do something with vertex index...
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over vertex indices.
+     */
+    View<ConstVertexIndexIterator> vertexIndices() const
+    {
+        return View(vertexIndexBegin(), vertexIndexEnd());
     }
 
 protected:
