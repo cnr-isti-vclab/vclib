@@ -248,7 +248,7 @@ public:
      */
     void setAdjEdge(uint i, uint ei)
     {
-        setAdjEdge(i, &Base::parentElement()->parentMesh()->edge(ei));
+        setAdjEdge(i, adjEdgeFromParent(ei));
     }
     
     /**
@@ -270,7 +270,7 @@ public:
      */
     void setAdjEdge(ConstAdjacentEdgeIterator it, uint ei)
     {
-        setAdjEdge(it, &Base::parentElement()->parentMesh()->edge(ei));
+        setAdjEdge(it, adjEdgeFromParent(ei));
     }
 
     /**
@@ -292,9 +292,7 @@ public:
      */
     void setAdjEdge(ConstAdjacentEdgeIndexIterator it, uint ei)
     {
-        setAdjEdge(
-            it - adjEdgeIndexBegin(),
-            &Base::parentElement()->parentMesh()->edge(ei));
+        setAdjEdge(it - adjEdgeIndexBegin(), adjEdgeFromParent(ei));
     }
 
     /**
@@ -339,7 +337,7 @@ public:
      */
     void setAdjEdgeMod(int i, uint ei)
     {
-        setAdjEdgeMod(i, &Base::parentElement()->parentMesh()->edge(ei));
+        setAdjEdgeMod(i, adjEdgeFromParent(ei));
     }
 
     /**
@@ -374,7 +372,7 @@ public:
     void setAdjEdges(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
         auto conv = [&](auto i) {
-            return &Base::parentElement()->parentMesh()->edge(i);
+            return adjEdgeFromParent(i);
         };
 
         Base::container().set(r | std::views::transform(conv));
@@ -403,7 +401,7 @@ public:
      */
     bool containsAdjEdge(uint ei) const
     {
-        return containsAdjEdge(&Base::parentElement()->parentMesh()->edge(ei));
+        return containsAdjEdge(adjEdgeFromParent(ei));
     }
 
     /**
@@ -431,7 +429,7 @@ public:
      */
     uint indexOfAdjEdge(uint ei) const
     {
-        return indexOfAdjEdge(&Base::parentElement()->parentMesh()->edge(ei));
+        return indexOfAdjEdge(adjEdgeFromParent(ei));
     }
 
     /* Member functions specific for vector of adjacent edges */
@@ -468,8 +466,7 @@ public:
      */
     void pushAdjEdge(uint ei) requires (N < 0 && !TTVN)
     {
-        Base::container().pushBack(
-            &Base::parentElement()->parentMesh()->edge(ei));
+        Base::container().pushBack(adjEdgeFromParent(ei));
     }
 
     /**
@@ -498,8 +495,7 @@ public:
      */
     void insertAdjEdge(uint i, uint ei) requires (N < 0 && !TTVN)
     {
-        Base::container().insert(
-            i, &Base::parentElement()->parentMesh()->edge(ei));
+        Base::container().insert(i, adjEdgeFromParent(ei));
     }
 
     /**
@@ -679,6 +675,22 @@ private:
                 }
             }
         }
+    }
+
+    Edge* adjEdgeFromParent(uint ei)
+    {
+        if (ei == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->edge(ei);
+    }
+
+    const Edge* adjEdgeFromParent(uint ei) const
+    {
+        if (ei == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->edge(ei);
     }
 };
 

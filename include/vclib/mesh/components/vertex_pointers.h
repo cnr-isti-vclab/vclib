@@ -257,7 +257,7 @@ public:
      */
     void setVertex(ConstVertexIterator it, uint vi)
     {
-        setVertex(it, &Base::parentElement()->parentMesh()->vertex(vi));
+        setVertex(it, vertFromParent(vi));
     }
 
     /**
@@ -279,9 +279,7 @@ public:
      */
     void setVertex(ConstVertexIndexIterator it, uint vi)
     {
-        setVertex(
-            it - vertexIndexBegin(),
-            &Base::parentElement()->parentMesh()->vertex(vi));
+        setVertex(it - vertexIndexBegin(), vertFromParent(vi));
     }
 
     /**
@@ -324,7 +322,7 @@ public:
      */
     void setVertexMod(int i, uint vi)
     {
-        setVertexMod(i, &Base::parentElement()->parentMesh()->vertex(vi));
+        setVertexMod(i, vertFromParent(vi));
     }
 
     /**
@@ -359,7 +357,7 @@ public:
     void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
         auto conv = [&](auto i) {
-            return &Base::parentElement()->parentMesh()->vertex(i);
+            return vertFromParent(i);
         };
 
         Base::container().set(r | std::views::transform(conv));
@@ -388,7 +386,7 @@ public:
      */
     bool containsVertex(uint vi) const
     {
-        return containsVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+        return containsVertex(vertFromParent(vi));
     }
 
     /**
@@ -416,7 +414,7 @@ public:
      */
     uint indexOfVertex(uint vi) const
     {
-        return indexOfVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+        return indexOfVertex(vertFromParent(vi));
     }
 
     /**
@@ -509,7 +507,7 @@ public:
      */
     void pushVertex(uint vi) requires (N < 0)
     {
-        pushVertex(&Base::parentElement()->parentMesh()->vertex(vi));
+        pushVertex(vertFromParent(vi));
     }
 
     /**
@@ -534,7 +532,7 @@ public:
      */
     void insertVertex(uint i, uint vi) requires (N < 0)
     {
-        insertVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
+        insertVertex(i, vertFromParent(vi));
     }
 
     /**
@@ -721,6 +719,22 @@ private:
         for (uint i = 0; i < e.vertexNumber(); ++i) {
             setVertex(i, e.vertexIndex(i));
         }
+    }
+
+    Vertex* vertFromParent(uint vi)
+    {
+        if (vi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->vertex(vi);
+    }
+
+    const Vertex* vertFromParent(uint vi) const
+    {
+        if (vi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->vertex(vi);
     }
 };
 

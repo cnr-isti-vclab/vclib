@@ -248,7 +248,7 @@ public:
      */
     void setAdjFace(uint i, uint fi)
     {
-        setAdjFace(i, &Base::parentElement()->parentMesh()->face(fi));
+        setAdjFace(i, adjFaceFromParent(fi));
     }
     
     /**
@@ -270,7 +270,7 @@ public:
      */
     void setAdjFace(ConstAdjacentFaceIterator it, uint fi)
     {
-        setAdjFace(it, &Base::parentElement()->parentMesh()->face(fi));
+        setAdjFace(it, adjFaceFromParent(fi));
     }
 
     /**
@@ -292,9 +292,7 @@ public:
      */
     void setAdjFace(ConstAdjacentFaceIndexIterator it, uint fi)
     {
-        setAdjFace(
-            it - adjFaceIndexBegin(),
-            &Base::parentElement()->parentMesh()->face(fi));
+        setAdjFace(it - adjFaceIndexBegin(), adjFaceFromParent(fi));
     }
 
     /**
@@ -339,7 +337,7 @@ public:
      */
     void setAdjFaceMod(int i, uint fi)
     {
-        setAdjFaceMod(i, &Base::parentElement()->parentMesh()->face(fi));
+        setAdjFaceMod(i, adjFaceFromParent(fi));
     }
 
     /**
@@ -374,7 +372,7 @@ public:
     void setAdjFaces(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
         auto conv = [&](auto i) {
-            return &Base::parentElement()->parentMesh()->face(i);
+            return adjFaceFromParent(i);
         };
 
         Base::container().set(r | std::views::transform(conv));
@@ -403,7 +401,7 @@ public:
      */
     bool containsAdjFace(uint fi) const
     {
-        return containsAdjFace(&Base::parentElement()->parentMesh()->face(fi));
+        return containsAdjFace(adjFaceFromParent(fi));
     }
 
     /**
@@ -431,7 +429,7 @@ public:
      */
     uint indexOfAdjFace(uint fi) const
     {
-        return indexOfAdjFace(&Base::parentElement()->parentMesh()->face(fi));
+        return indexOfAdjFace(adjFaceFromParent(fi));
     }
 
     /* Member functions specific for vector adjacent faces */
@@ -468,8 +466,7 @@ public:
      */
     void pushAdjFace(uint fi) requires (N < 0 && !TTVN)
     {
-        Base::container().pushBack(
-            &Base::parentElement()->parentMesh()->face(fi));
+        Base::container().pushBack(adjFaceFromParent(fi));
     }
 
     /**
@@ -498,8 +495,7 @@ public:
      */
     void insertAdjFace(uint i, uint fi) requires (N < 0 && !TTVN)
     {
-        Base::container().insert(
-            i, &Base::parentElement()->parentMesh()->face(fi));
+        Base::container().insert(i, adjFaceFromParent(fi));
     }
 
     /**
@@ -683,6 +679,22 @@ private:
                 }
             }
         }
+    }
+
+    Face* adjFaceFromParent(uint fi)
+    {
+        if (fi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->face(fi);
+    }
+
+    const Face* adjFaceFromParent(uint fi) const
+    {
+        if (fi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->face(fi);
     }
 };
 

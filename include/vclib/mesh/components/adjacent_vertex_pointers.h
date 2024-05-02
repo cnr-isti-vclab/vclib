@@ -242,7 +242,7 @@ public:
      */
     void setAdjVertex(uint i, uint vi)
     {
-        setAdjVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
+        setAdjVertex(i, adjVertexFromParent(vi));
     }
     
     /**
@@ -265,7 +265,7 @@ public:
      */
     void setAdjVertex(ConstAdjacentVertexIterator it, uint vi)
     {
-        setAdjVertex(it, &Base::parentElement()->parentMesh()->vertex(vi));
+        setAdjVertex(it, adjVertexFromParent(vi));
     }
 
     /**
@@ -288,9 +288,7 @@ public:
      */
     void setAdjVertex(ConstAdjacentVertexIndexIterator it, uint vi)
     {
-        setAdjVertex(
-            it - adjVertexIndexBegin(),
-            &Base::parentElement()->parentMesh()->vertex(vi));
+        setAdjVertex(it - adjVertexIndexBegin(), adjVertexFromParent(vi));
     }
 
     /**
@@ -335,7 +333,7 @@ public:
      */
     void setAdjVertexMod(int i, uint vi)
     {
-        setAdjVertexMod(i, &Base::parentElement()->parentMesh()->vertex(vi));
+        setAdjVertexMod(i, adjVertexFromParent(vi));
     }
 
     /**
@@ -370,7 +368,7 @@ public:
     void setAdjVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
         auto conv = [&](auto i) {
-            return &Base::parentElement()->parentMesh()->vertex(i);
+            return adjVertexFromParent(i);
         };
 
         Base::container().set(r | std::views::transform(conv));
@@ -399,8 +397,7 @@ public:
      */
     bool containsAdjVertex(uint vi) const
     {
-        return containsAdjVertex(
-            &Base::parentElement()->parentMesh()->vertex(vi));
+        return containsAdjVertex(adjVertexFromParent(vi));
     }
 
     /**
@@ -428,8 +425,7 @@ public:
      */
     uint indexOfAdjVertex(uint vi) const
     {
-        return indexOfAdjVertex(
-            &Base::parentElement()->parentMesh()->vertex(vi));
+        return indexOfAdjVertex(adjVertexFromParent(vi));
     }
 
     /**
@@ -456,10 +452,7 @@ public:
      * @param[in] vi: The index to the vertex to push in the back of the
      * container.
      */
-    void pushAdjVertex(uint vi)
-    {
-        pushAdjVertex(&Base::parentElement()->parentMesh()->vertex(vi));
-    }
+    void pushAdjVertex(uint vi) { pushAdjVertex(adjVertexFromParent(vi)); }
 
     /**
      * @brief Inserts the given adjacent vertex in the container at the given
@@ -484,7 +477,7 @@ public:
      */
     void insertAdjVertex(uint i, uint vi)
     {
-        insertAdjVertex(i, &Base::parentElement()->parentMesh()->vertex(vi));
+        insertAdjVertex(i, adjVertexFromParent(vi));
     }
 
     /**
@@ -630,6 +623,22 @@ private:
                 }
             }
         }
+    }
+
+    Vertex* adjVertexFromParent(uint vi)
+    {
+        if (vi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->vertex(vi);
+    }
+
+    const Vertex* adjVertexFromParent(uint vi) const
+    {
+        if (vi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->vertex(vi);
     }
 };
 

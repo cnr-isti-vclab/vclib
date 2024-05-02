@@ -353,7 +353,7 @@ public:
     }
 
     /**
-     * @brief Sets all the vertex pointers of the element.
+     * @brief Sets all the vertex indices of the element.
      *
      * If the size of the container is static, the size of the input range must
      * be the same one of the container.
@@ -377,7 +377,7 @@ public:
     }
 
     /**
-     * @brief Sets all the vertex pointers of the element.
+     * @brief Sets all the vertex indices of the element.
      *
      * If the size of the container is static, the size of the input range must
      * be the same one of the container.
