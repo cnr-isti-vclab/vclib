@@ -407,35 +407,6 @@ public:
     }
 
     /**
-     * @brief Returns a const iterator to the first adjacent edge in the
-     * container of this component that is equal to the given edge. If no such
-     * adjacent edge is found, past-the-end iterator is returned.
-     *
-     * @param[in] e: the pointer to the edge to search.
-     * @return a const iterator pointing to the first adjacent edge equal to the
-     * given edge, or end if no such adjacent edge is found.
-     */
-    ConstAdjacentEdgeIterator findAdjEdge(const Edge* e) const
-    {
-        return Base::container().find(e);
-    }
-
-    /**
-     * @brief Returns a const iterator to the first adjacent edge in the
-     * container of this component that is equal to the edge with the given
-     * index. If no such adjacent edge is found, past-the-end iterator is
-     * returned.
-     *
-     * @param[in] ei: the index to the edge to search.
-     * @return a const iterator pointing to the first adjacent edge equal to the
-     * edge with the given index, or end if no such adjacent edge is found.
-     */
-    ConstAdjacentEdgeIterator findAdjEdge(uint ei) const
-    {
-        return findAdjEdge(&Base::parentElement()->parentMesh()->edge(ei));
-    }
-
-    /**
      * @brief Returns the index of the given adjacent edge in the container of
      * the element. If the given adjacent edge is not in the container, returns
      * UINT_NULL.

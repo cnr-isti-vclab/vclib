@@ -392,34 +392,6 @@ public:
     }
 
     /**
-     * @brief Returns a const iterator to the first vertex in the container of
-     * this component that is equal to the given vertex. If no such vertex is
-     * found, past-the-end iterator is returned.
-     *
-     * @param[in] v: the pointer to the vertex to search.
-     * @return a const iterator pointing to the first vertex equal to the given
-     * vertex, or end if no such vertex is found.
-     */
-    ConstVertexIterator findVertex(const Vertex* v) const
-    {
-        return Base::container().find(v);
-    }
-
-    /**
-     * @brief Returns a const iterator to the first vertex in the container of
-     * this component that is equal to the vertex with the given index. If no
-     * such vertex is found, past-the-end iterator is returned.
-     *
-     * @param[in] vi: the index of the vertex to search.
-     * @return a const iterator pointing to the first vertex equal to the given
-     * vertex, or end if no such vertex is found.
-     */
-    ConstVertexIterator findVertex(uint vi) const
-    {
-        return findVertex(&Base::parentElement()->parentMesh()->vertex(vi));
-    }
-
-    /**
      * @brief Returns the index of the given vertex in the container of
      * the element. If the given vertex is not in the container, returns
      * UINT_NULL.

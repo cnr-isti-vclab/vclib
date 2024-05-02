@@ -259,12 +259,10 @@ SCENARIO("TriMesh usage")
             REQUIRE(m.face(0).containsVertex(2) == true);
             REQUIRE(m.face(0).containsVertex(3) == false);
 
-            REQUIRE(
-                m.face(1).findVertex(&m.vertex(1)) != m.face(1).vertexEnd());
-            REQUIRE(
-                m.face(1).findVertex(&m.vertex(4)) == m.face(1).vertexEnd());
-            REQUIRE(m.face(1).findVertex(1) != m.face(1).vertexEnd());
-            REQUIRE(m.face(1).findVertex(4) == m.face(1).vertexEnd());
+            REQUIRE(m.face(1).containsVertex(&m.vertex(1)) == true);
+            REQUIRE(m.face(1).containsVertex(&m.vertex(4)) == false);
+            REQUIRE(m.face(1).containsVertex(1) == true);
+            REQUIRE(m.face(1).containsVertex(4) == false);
 
             REQUIRE(m.face(2).indexOfVertex(&m.vertex(0)) == vcl::UINT_NULL);
             REQUIRE(m.face(2).indexOfVertex(&m.vertex(3)) == 1);

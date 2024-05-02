@@ -75,13 +75,13 @@ concept HasAdjacentFaces = requires (
     { o.setAdjFace(typename T::ConstAdjacentFaceIndexIterator(), uint()) } ->
         std::same_as<void>;
     { o.setAdjFaceMod(int(), &f) } -> std::same_as<void>;
+    { o.setAdjFaceMod(int(), uint()) } -> std::same_as<void>;
     { o.setAdjFaces(v) } -> std::same_as<void>;
 
     { co.containsAdjFace(&f) } -> std::same_as<bool>;
-    { co.findAdjFace(&f) } ->
-        std::same_as<typename T::ConstAdjacentFaceIterator>;
-
+    { co.containsAdjFace(uint()) } -> std::same_as<bool>;
     { co.indexOfAdjFace(&f) } -> std::same_as<uint>;
+    { co.indexOfAdjFace(uint()) } -> std::same_as<uint>;
 
     { co.adjFaceBegin() } ->
         std::same_as<typename T::ConstAdjacentFaceIterator>;

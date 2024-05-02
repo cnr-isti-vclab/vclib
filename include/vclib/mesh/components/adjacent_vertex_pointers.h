@@ -404,36 +404,6 @@ public:
     }
 
     /**
-     * @brief Returns a const iterator to the first adjacent vertex in the
-     * container of this component that is equal to the given vertex. If no such
-     * adjacent vertex is found, past-the-end iterator is returned.
-     *
-     * @param[in] v: the pointer to the vertex to search.
-     * @return a const iterator pointing to the first adjacent vertex equal to
-     * the given vertex, or end if no such adjacent vertex is found.
-     */
-    ConstAdjacentVertexIterator findAdjVertex(const Vertex* v) const
-    {
-        return Base::container().find(v);
-    }
-
-    /**
-     * @brief Returns a const iterator to the first adjacent vertex in the
-     * container of this component that is equal to the vertex with the given
-     * index. If no such adjacent vertex is found, past-the-end iterator is
-     * returned.
-     *
-     * @param[in] vi: the index of the vertex to search.
-     * @return a const iterator pointing to the first adjacent vertex equal to
-     * the vertex with the given index, or end if no such adjacent vertex is
-     * found.
-     */
-    ConstAdjacentVertexIterator findAdjVertex(uint vi) const
-    {
-        return findAdjVertex(&Base::parentElement()->parentMesh()->vertex(vi));
-    }
-
-    /**
      * @brief Returns the index of the given adjacent vertex in the container of
      * the element. If the given adjacent vertex is not in the container,
      * returns UINT_NULL.

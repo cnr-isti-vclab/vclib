@@ -75,13 +75,13 @@ concept HasAdjacentEdges = requires (
     { o.setAdjEdge(typename T::ConstAdjacentEdgeIndexIterator(), uint()) } ->
         std::same_as<void>;
     { o.setAdjEdgeMod(int(), &e) } -> std::same_as<void>;
+    { o.setAdjEdgeMod(int(), uint()) } -> std::same_as<void>;
     { o.setAdjEdges(v) } -> std::same_as<void>;
 
     { co.containsAdjEdge(&e) } -> std::same_as<bool>;
-    { co.findAdjEdge(&e) } ->
-        std::same_as<typename T::ConstAdjacentEdgeIterator>;
-
+    { co.containsAdjEdge(uint()) } -> std::same_as<bool>;
     { co.indexOfAdjEdge(&e) } -> std::same_as<uint>;
+    { co.indexOfAdjEdge(uint()) } -> std::same_as<uint>;
 
     { co.adjEdgeBegin() } ->
         std::same_as<typename T::ConstAdjacentEdgeIterator>;
