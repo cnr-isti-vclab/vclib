@@ -258,7 +258,7 @@ public:
     void setVertex(ConstVertexIndexIterator it, Vertex* v)
     {
         if (v == nullptr) [[unlikely]]
-            Base::container().set(it, v);
+            Base::container().set(it, UINT_NULL);
         else
             Base::container().set(it, v->index());
     }
@@ -338,7 +338,10 @@ public:
     void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, Vertex*>
     {
         auto conv = [&](auto v) {
-            return v->index();
+            if (v == nullptr) [[unlikely]]
+                return UINT_NULL;
+            else
+                return v->index();
         };
 
         Base::container().set(r | std::views::transform(conv));
@@ -388,37 +391,6 @@ public:
     bool containsVertex(uint vi) const
     {
         return Base::container().contains(vi);
-    }
-
-    /**
-     * @brief Returns a const iterator to the first vertex in the container of
-     * this component that is equal to the given vertex. If no such vertex is
-     * found, past-the-end iterator is returned.
-     *
-     * @param[in] v: the pointer to the vertex to search.
-     * @return a const iterator pointing to the first vertex equal to the given
-     * vertex, or end if no such vertex is found.
-     */
-    ConstVertexIndexIterator findVertex(const Vertex* v) const
-    {
-        if (v == nullptr) [[unlikely]]
-            return Base::container().find(UINT_NULL);
-        else
-            return Base::container().find(v->index());
-    }
-
-    /**
-     * @brief Returns a const iterator to the first vertex in the container of
-     * this component that is equal to the vertex with the given index. If no
-     * such vertex is found, past-the-end iterator is returned.
-     *
-     * @param[in] vi: the index of the vertex to search.
-     * @return a const iterator pointing to the first vertex equal to the given
-     * vertex, or end if no such vertex is found.
-     */
-    ConstVertexIndexIterator findVertex(uint vi) const
-    {
-        return Base::container().find(vi);
     }
 
     /**
@@ -611,7 +583,10 @@ public:
      *
      * @return an iterator pointing to the end of this container.
      */
-    ConstVertexIndexIterator vertexEnd() const { return Base::container().end(); }
+    ConstVertexIndexIterator vertexEnd() const
+    {
+        return Base::container().end();
+    }
 
     /**
      * @brief Returns a lightweight const view object that stores the begin and
