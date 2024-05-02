@@ -100,9 +100,6 @@ class VertexIndices :
         false,
         false>;
 
-    using ParentMeshType =
-        RemoveCVRefAndPointer<decltype(Base::parentElement()->parentMesh())>;
-
 public:
     /**
      * @brief Expose the type of the Vertex.
@@ -119,7 +116,7 @@ public:
     using ConstVertexIterator      = PointerFromIndexIterator<
         ConstVertexIndexIterator,
         Vertex,
-        ParentMeshType>;
+        ElementType>;
 
     /* Constructors */
 
@@ -578,8 +575,7 @@ public:
     ConstVertexIterator vertexBegin() const
     {
         return ConstVertexIterator(
-            Base::container().begin(),
-            Base::parentElement()->parentMesh());
+            Base::container().begin(), Base::parentElement());
     }
 
     /**

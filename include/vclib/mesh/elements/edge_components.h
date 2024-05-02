@@ -31,6 +31,7 @@
 #include "../components/mark.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/quality.h"
+#include "../components/vertex_indices.h"
 #include "../components/vertex_pointers.h"
 
 /**
@@ -129,6 +130,10 @@ using OptionalQualityf = comp::Quality<float, EdgeType, true>;
 
 template<typename EdgeType>
 using OptionalQualityd = comp::Quality<double, EdgeType, true>;
+
+/* Port VertexIndices class into edge namespace */
+template<typename VertexType, typename EdgeType>
+using VertexIndices = comp::VertexIndices<VertexType, 2, EdgeType>;
 
 /* Port VertexPointers class into edge namespace */
 template<typename VertexType, typename EdgeType>

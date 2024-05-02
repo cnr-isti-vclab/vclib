@@ -35,14 +35,14 @@ namespace vcl {
  *
  * @tparam Iterator: The iterator type of the container of pointers to elements.
  */
-template<typename Iterator, typename ElementType, typename MeshType>
+template<typename Iterator, typename ElementType, typename ParentElement>
 class PointerFromIndexIterator
 {
     static constexpr uint ELEM_ID = ElementType::ELEM_ID;
 
     Iterator mIt;
     const ElementType* mCurrent = nullptr;
-    const MeshType* parentMesh = nullptr;
+    const ParentElement* parentElement = nullptr;
 
 public:
     using difference_type   = ptrdiff_t;
@@ -58,8 +58,8 @@ public:
      * @param it
      * @param mesh
      */
-    PointerFromIndexIterator(const Iterator& it, const MeshType* mesh) :
-            mIt(it), parentMesh(mesh)
+    PointerFromIndexIterator(const Iterator& it, const ParentElement* pElem) :
+            mIt(it), parentElement(pElem)
     {
         updateCurrent();
     }
@@ -179,7 +179,8 @@ private:
         if (e == UINT_NULL) [[unlikely]]
             mCurrent = nullptr;
         else
-            mCurrent = &(parentMesh->template element<ELEM_ID>(e));
+            mCurrent =
+                &(parentElement->parentMesh()->template element<ELEM_ID>(e));
     }
 };
 
