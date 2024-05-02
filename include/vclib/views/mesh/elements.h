@@ -23,6 +23,8 @@
 #ifndef VCL_VIEWS_MESH_ELEMENTS_H
 #define VCL_VIEWS_MESH_ELEMENTS_H
 
+#include "elements/element.h"
+
 #include "elements/edge.h"
 #include "elements/face.h"
 #include "elements/vertex.h"

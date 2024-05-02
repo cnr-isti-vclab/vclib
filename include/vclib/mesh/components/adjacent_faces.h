@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
-#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
+#include <vclib/views/mesh/elements/element.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -105,8 +105,8 @@ public:
 
     using AdjacentFaceIterator      = Base::Iterator;
     using ConstAdjacentFaceIterator = Base::ConstIterator;
-    using ConstAdjacentFaceIndexIterator =
-        IndexFromPointerIterator<ConstAdjacentFaceIterator>;
+    using ConstAdjacentFaceIndexIterator = std::ranges::iterator_t<
+        decltype(vcl::View<ConstAdjacentFaceIterator>() | vcl::views::indices)>;
 
     /**
      * @brief Static size of the container. If the container is dynamic, this
@@ -449,7 +449,7 @@ public:
      */
     ConstAdjacentFaceIndexIterator adjFaceIndexBegin() const
     {
-        return ConstAdjacentFaceIndexIterator(adjFaceBegin());
+        return std::ranges::begin(adjFaces() | vcl::views::indices);
     }
 
     /**
@@ -459,7 +459,7 @@ public:
      */
     ConstAdjacentFaceIndexIterator adjFaceIndexEnd() const
     {
-        return ConstAdjacentFaceIndexIterator(adjFaceEnd(), true);
+        return std::ranges::end(adjFaces() | vcl::views::indices);
     }
 
     /**
@@ -520,9 +520,9 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over adjacent face indices.
      */
-    View<ConstAdjacentFaceIndexIterator> adjFaceIndices() const
+    auto adjFaceIndices() const
     {
-        return View(adjFaceIndexBegin(), adjFaceIndexEnd());
+        return adjFaces() | vcl::views::indices;
     }
 
     // dummy member to discriminate between AdjacentFaces and

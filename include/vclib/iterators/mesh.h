@@ -23,7 +23,6 @@
 #ifndef VCL_ITERATORS_MESH_H
 #define VCL_ITERATORS_MESH_H
 
-#include "mesh/components.h"
 #include "mesh/face.h"
 
 #endif // VCL_ITERATORS_MESH_H
