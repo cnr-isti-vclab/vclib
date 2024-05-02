@@ -24,6 +24,7 @@
 #define VCL_MESH_COMPONENTS_VERTEX_INDICES_H
 
 #include <vclib/concepts/mesh/components/vertex_pointers.h>
+#include <vclib/iterators/mesh/components/pointer_from_index_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/indices_container_component.h"
@@ -111,7 +112,7 @@ public:
 
     /* Iterator Types declaration */
 
-    using ConstVertexIterator = Base::ConstIterator;
+    using ConstVertexIndexIterator = Base::ConstIterator;
 
     /* Constructors */
 
@@ -254,7 +255,7 @@ public:
      * set the vertex; the value must be between begin() and end().
      * @param[in] v: The pointer to the vertex to set to the element.
      */
-    void setVertex(ConstVertexIterator it, Vertex* v)
+    void setVertex(ConstVertexIndexIterator it, Vertex* v)
     {
         if (v == nullptr) [[unlikely]]
             Base::container().set(it, v);
@@ -268,7 +269,7 @@ public:
      * set the vertex; the value must be between begin() and end().
      * @param[in] vi: The index in the vertex container of the vertex to set.
      */
-    void setVertex(ConstVertexIterator it, uint vi)
+    void setVertex(ConstVertexIndexIterator it, uint vi)
     {
         Base::container().set(it, vi);
     }
@@ -398,7 +399,7 @@ public:
      * @return a const iterator pointing to the first vertex equal to the given
      * vertex, or end if no such vertex is found.
      */
-    ConstVertexIterator findVertex(const Vertex* v) const
+    ConstVertexIndexIterator findVertex(const Vertex* v) const
     {
         if (v == nullptr) [[unlikely]]
             return Base::container().find(UINT_NULL);
@@ -415,7 +416,7 @@ public:
      * @return a const iterator pointing to the first vertex equal to the given
      * vertex, or end if no such vertex is found.
      */
-    ConstVertexIterator findVertex(uint vi) const
+    ConstVertexIndexIterator findVertex(uint vi) const
     {
         return Base::container().find(vi);
     }
@@ -599,7 +600,7 @@ public:
      *
      * @return an iterator pointing to the begin of this container.
      */
-    ConstVertexIterator vertexBegin() const
+    ConstVertexIndexIterator vertexBegin() const
     {
         return Base::container().begin();
     }
@@ -610,7 +611,7 @@ public:
      *
      * @return an iterator pointing to the end of this container.
      */
-    ConstVertexIterator vertexEnd() const { return Base::container().end(); }
+    ConstVertexIndexIterator vertexEnd() const { return Base::container().end(); }
 
     /**
      * @brief Returns a lightweight const view object that stores the begin and
@@ -628,7 +629,7 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over vertices.
      */
-    View<ConstVertexIterator> vertices() const
+    View<ConstVertexIndexIterator> vertices() const
     {
         return View(vertexBegin(), vertexEnd());
     }

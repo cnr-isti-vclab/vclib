@@ -197,9 +197,10 @@ set(HEADERS
     include/vclib/io/mesh/stl/load.h
     include/vclib/io/mesh/stl/save.h
     include/vclib/iterators/mesh.h
-	include/vclib/iterators/mesh/components.h
+    include/vclib/iterators/mesh/components.h
     include/vclib/iterators/mesh/face.h
-	include/vclib/iterators/mesh/components/index_from_pointer_iterator.h
+    include/vclib/iterators/mesh/components/index_from_pointer_iterator.h
+    include/vclib/iterators/mesh/components/pointer_from_index_iterator.h
     include/vclib/iterators/mesh/element_container_iterator.h
     include/vclib/iterators/mesh/face/edge_adj_face_iterator.h
     include/vclib/iterators/space/grid/cell_iterator.h
