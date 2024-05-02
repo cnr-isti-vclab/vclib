@@ -280,6 +280,20 @@ public:
     }
 
     /**
+     * @brief Sets the adjacent vertex pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * vertex; the value must be between begin() and end().
+     * @param[in] vi: The index in the vertex container of the adjacent vertex
+     * to set.
+     */
+    void setAdjVertex(ConstAdjacentVertexIndexIterator it, uint vi)
+    {
+        setAdjVertex(
+            it - adjVertexIndexBegin(),
+            &Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Sets the i-th adjacent vertex of the element, but using as index
      * the module between i and the number of adjacent vertices. You can use
      * this function if you need to set the "next adjacent vertex after position

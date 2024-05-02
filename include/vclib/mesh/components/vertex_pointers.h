@@ -272,6 +272,19 @@ public:
     }
 
     /**
+     * @brief Sets the vertex pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the vertex; the
+     * value must be between begin() and end().
+     * @param[in] vi: The index in the vertex container of the vertex to set.
+     */
+    void setVertex(ConstVertexIndexIterator it, uint vi)
+    {
+        setVertex(
+            it - vertexIndexBegin(),
+            &Base::parentElement()->parentMesh()->vertex(vi));
+    }
+
+    /**
      * @brief Sets the i-th vertex of the element, but using as index the module
      * between i and the number of vertices. You can use this function if you
      * need to set the "next vertex after position k", without check if it is

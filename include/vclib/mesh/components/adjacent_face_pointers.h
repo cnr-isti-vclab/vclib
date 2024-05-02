@@ -285,6 +285,19 @@ public:
     }
 
     /**
+     * @brief Sets the adjacent face pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * face; the value must be between begin() and end().
+     * @param[in] fi: The index in the face container of the face to set.
+     */
+    void setAdjFace(ConstAdjacentFaceIndexIterator it, uint fi)
+    {
+        setAdjFace(
+            it - adjFaceIndexBegin(),
+            &Base::parentElement()->parentMesh()->face(fi));
+    }
+
+    /**
      * @brief Sets the i-th adjacent face of the element, but using as index the
      * module between i and the number of adjacent faces. You can use this
      * function if you need to set the "next adjacent face after position k",

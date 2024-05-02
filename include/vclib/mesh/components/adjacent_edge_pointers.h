@@ -285,6 +285,19 @@ public:
     }
 
     /**
+     * @brief Sets the adjacent edge pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * edge; the value must be between begin() and end().
+     * @param[in] ei: The index in the edge container of the edge to set.
+     */
+    void setAdjEdge(ConstAdjacentEdgeIndexIterator it, uint ei)
+    {
+        setAdjEdge(
+            it - adjEdgeIndexBegin(),
+            &Base::parentElement()->parentMesh()->edge(ei));
+    }
+
+    /**
      * @brief Sets the i-th adjacent edge of the element, but using as index the
      * module between i and the number of adjacent edges. You can use this
      * function if you need to set the "next adjacent edge after position k",
