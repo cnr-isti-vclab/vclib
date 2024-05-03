@@ -25,6 +25,8 @@
 
 #include <vector>
 
+#include <vclib/views/view.h>
+
 #include "component.h"
 
 namespace vcl::comp {
@@ -89,9 +91,12 @@ concept HasAdjacentEdges = requires (
     { co.adjEdgeIndexEnd() } ->
         std::same_as<typename T::ConstAdjacentEdgeIndexIterator>;
 
-    o.adjEdges();
-    co.adjEdges();
-    co.adjEdgeIndices();
+    { o.adjEdges() } ->
+        std::same_as<vcl::View<typename T::AdjacentEdgeIterator>>;
+    { co.adjEdges() } ->
+        std::same_as<vcl::View<typename T::ConstAdjacentEdgeIterator>>;
+    { co.adjEdgeIndices() } ->
+        std::same_as<vcl::View<typename T::ConstAdjacentEdgeIndexIterator>>;
     // clang-format on
 };
 

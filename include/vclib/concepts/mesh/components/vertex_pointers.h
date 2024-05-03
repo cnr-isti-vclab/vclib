@@ -23,9 +23,11 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
 
-#include "component.h"
-
 #include <vector>
+
+#include <vclib/views/view.h>
+
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -81,9 +83,11 @@ concept HasVertexPointers = requires (
     { co.vertexIndexEnd() } ->
         std::same_as<typename T::ConstVertexIndexIterator>;
 
-    o.vertices();
-    co.vertices();
-    co.vertexIndices();
+    { o.vertices() } -> std::same_as<vcl::View<typename T::VertexIterator>>;
+    { co.vertices() } ->
+        std::same_as<vcl::View<typename T::ConstVertexIterator>>;
+    { co.vertexIndices() } ->
+        std::same_as<vcl::View<typename T::ConstVertexIndexIterator>>;
     // clang-format on
 };
 
