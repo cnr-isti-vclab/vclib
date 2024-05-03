@@ -106,7 +106,7 @@ class PointersContainerComponent :
 protected:
     using Base::container;
 
-    using Iterator      = Base::Iterator;
+    using Iterator      = Base::ConstIterator;
     using ConstIterator = ConstPointerIterator<typename Base::ConstIterator>;
 
     /*
