@@ -35,20 +35,30 @@ namespace vcl {
  *
  * @tparam Iterator: The iterator type of the container of pointers to elements.
  */
-template<typename Iterator, typename ElementType, typename ParentElement>
+template<
+    typename Iterator,
+    typename ElementType,
+    typename ParentElement,
+    bool CNST = false>
 class PointerFromIndexIterator
 {
+    template<typename, typename, typename, bool>
+    friend class PointerFromIndexIterator;
+
     static constexpr uint ELEM_ID = ElementType::ELEMENT_ID;
 
+    using VT = std::conditional_t<CNST, ElementType, const ElementType>;
+    using PE = std::conditional_t<CNST, ParentElement*, const ParentElement*>;
+
     Iterator mIt;
-    const ElementType* mCurrent = nullptr;
-    const ParentElement* parentElement = nullptr;
+    VT* mCurrent = nullptr;
+    PE parentElement = nullptr;
 
 public:
     using difference_type   = ptrdiff_t;
-    using value_type        = const ElementType*;
-    using reference         = value_type&;
-    using pointer           = value_type*;
+    using value_type        = VT*;
+    using reference         = VT*;
+    using pointer           = VT**;
     using iterator_category = std::random_access_iterator_tag;
 
     PointerFromIndexIterator() = default;
@@ -58,7 +68,7 @@ public:
      * @param it
      * @param mesh
      */
-    PointerFromIndexIterator(const Iterator& it, const ParentElement* pElem) :
+    PointerFromIndexIterator(const Iterator& it, PE pElem) :
             mIt(it), parentElement(pElem)
     {
         updateCurrent();
@@ -69,9 +79,20 @@ public:
      * @param it
      * @param end
      */
-    PointerFromIndexIterator(const Iterator& it) : mIt(it)
+    PointerFromIndexIterator(const Iterator& it) : mIt(it) {}
+
+    /**
+     * @brief Constructor from a non-const iterator
+     * @param oi
+     */
+    PointerFromIndexIterator(const PointerFromIndexIterator<
+                             Iterator,
+                             ElementType,
+                             ParentElement,
+                             false>& oi) requires (CNST == true) :
+        mIt(oi.mIt), mCurrent(oi.mCurrent), parentElement(oi.parentElement)
     {
-    }
+    };
 
     value_type operator*() const { return mCurrent; }
 
@@ -183,6 +204,10 @@ private:
                 &(parentElement->parentMesh()->template element<ELEM_ID>(e));
     }
 };
+
+template<typename Iterator, typename ElementType, typename ParentElement>
+using ConstPointerFromIndexIterator =
+    PointerFromIndexIterator<Iterator, ElementType, ParentElement, true>;
 
 } // namespace vcl
 

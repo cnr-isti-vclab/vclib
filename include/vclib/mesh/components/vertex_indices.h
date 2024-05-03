@@ -121,11 +121,9 @@ public:
 
     /* Iterator Types declaration */
 
-    using ConstVertexIndexIterator = Base::ConstIterator;
-    using ConstVertexIterator      = PointerFromIndexIterator<
-        ConstVertexIndexIterator,
-        Vertex,
-        ElementType>;
+    using VertexIterator = Base::Iterator;
+    using ConstVertexIterator = Base::ConstIterator;
+    using ConstVertexIndexIterator = Base::ConstIndexIterator;
 
     /* Constructors */
 
@@ -571,6 +569,28 @@ public:
     /* Iterator Member functions */
 
     /**
+     * @brief Returns an iterator to the first vertex in the container of
+     * this component.
+     *
+     * @return an iterator pointing to the begin of this container.
+     */
+    VertexIterator vertexBegin()
+    {
+        return VertexIterator(Base::container().begin(), Base::parentElement());
+    }
+
+    /**
+     * @brief Returns an iterator to the end of the container of this
+     * component.
+     *
+     * @return an iterator pointing to the end of this container.
+     */
+    VertexIterator vertexEnd()
+    {
+        return VertexIterator(Base::container().end());
+    }
+
+    /**
      * @brief Returns a const iterator to the first vertex in the container of
      * this component.
      *
@@ -612,6 +632,27 @@ public:
     ConstVertexIndexIterator vertexIndexEnd() const
     {
         return Base::container().end();
+    }
+
+    /**
+     * @brief Returns a lightweight view object that stores the begin and
+     * end iterators of the container of vertices of the element. The view
+     * object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (auto* vertex : el.vertices()) {
+     *     // Do something with vertex...
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over vertices.
+     */
+    View<VertexIterator> vertices()
+    {
+        return View(vertexBegin(), vertexEnd());
     }
 
     /**

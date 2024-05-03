@@ -477,8 +477,7 @@ public:
      */
     uint indexOfEdge(uint vi1, uint vi2) const
     {
-        return indexOfEdge(&Base::parentElement()->parentMesh()->vertex(vi1),
-                           &Base::parentElement()->parentMesh()->vertex(vi2));
+        return indexOfEdge(vertFromParent(vi1), vertFromParent(vi2));
     }
 
     /* Member functions specific for vector of pointers */

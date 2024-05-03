@@ -23,6 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_BASES_INDICES_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASES_INDICES_CONTAINER_COMPONENT_H
 
+#include <vclib/iterators/mesh/components/pointer_from_index_iterator.h>
 #include <vclib/space/vector.h>
 
 #include "container_component.h"
@@ -105,6 +106,12 @@ class IndicesContainerComponent :
 
 protected:
     using Base::container;
+
+    using ConstIndexIterator = typename Base::ConstIterator;
+    using Iterator =
+        PointerFromIndexIterator<ConstIndexIterator, Elem, ElementType>;
+    using ConstIterator =
+        ConstPointerFromIndexIterator<ConstIndexIterator, Elem, ElementType>;
 
     /*
      * This member function is called when we need to update the pointers in
