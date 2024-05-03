@@ -47,8 +47,8 @@ class PointerFromIndexIterator
 
     static constexpr uint ELEM_ID = ElementType::ELEMENT_ID;
 
-    using VT = std::conditional_t<CNST, ElementType, const ElementType>;
-    using PE = std::conditional_t<CNST, ParentElement*, const ParentElement*>;
+    using VT = std::conditional_t<CNST, const ElementType, ElementType>;
+    using PE = std::conditional_t<CNST, const ParentElement*, ParentElement*>;
 
     Iterator mIt;
     VT* mCurrent = nullptr;
@@ -85,14 +85,12 @@ public:
      * @brief Constructor from a non-const iterator
      * @param oi
      */
-    PointerFromIndexIterator(const PointerFromIndexIterator<
-                             Iterator,
-                             ElementType,
-                             ParentElement,
-                             false>& oi) requires (CNST == true) :
-        mIt(oi.mIt), mCurrent(oi.mCurrent), parentElement(oi.parentElement)
-    {
-    };
+    PointerFromIndexIterator(
+        PointerFromIndexIterator<Iterator, ElementType, ParentElement, false>
+            oi) requires (CNST == true)
+            :
+            mIt(oi.mIt), mCurrent(oi.mCurrent),
+            parentElement(oi.parentElement) {};
 
     value_type operator*() const { return mCurrent; }
 

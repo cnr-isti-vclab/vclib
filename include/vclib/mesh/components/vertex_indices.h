@@ -477,10 +477,10 @@ public:
         if (vid == UINT_NULL) {
             return UINT_NULL;
         }
-        else if (vertexMod(vid + 1) == vi2) {
+        else if (vertexIndexMod(vid + 1) == vi2) {
             return vid;
         }
-        else if (vertexMod((int) vid - 1) == vi2) {
+        else if (vertexIndexMod((int) vid - 1) == vi2) {
             int n = vertexNumber(); // n must be int to avoid unwanted casts
             return (((int) vid - 1) % n + n) % n;
         }
