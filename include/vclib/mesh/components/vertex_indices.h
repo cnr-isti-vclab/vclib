@@ -102,6 +102,15 @@ class VertexIndices :
 
 public:
     /**
+     * @brief Expose the type of the VertexIndices.
+     *
+     * Allows to access the type of the VertexIndices from the Element that
+     * contains it, without knowing whether the references to vertices are
+     * stored using pointers or indices.
+     */
+    using VertexReferences = VertexIndices;
+
+    /**
      * @brief Expose the type of the Vertex.
      */
     using VertexType = Vertex;
@@ -142,10 +151,7 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The pointer i-th vertex of the element.
      */
-    Vertex* vertex(uint i)
-    {
-        &Base::parentElement()->parentMesh()->vertex(Base::container().at(i));
-    }
+    Vertex* vertex(uint i) { return vertFromParent(vertexIndex(i)); }
 
     /**
      * @brief Returns a const pointer to the i-th vertex of the element.
@@ -155,7 +161,7 @@ public:
      */
     const Vertex* vertex(uint i) const
     {
-        &Base::parentElement()->parentMesh()->vertex(Base::container().at(i));
+        return vertFromParent(vertexIndex(i));
     }
 
     /**
@@ -189,8 +195,7 @@ public:
      */
     Vertex* vertexMod(int i)
     {
-        return &Base::parentElement()->parentMesh()->vertex(
-            Base::container().atMod(i));
+        return vertFromParent(vertexIndexMod(i));
     }
 
     /**
@@ -200,8 +205,7 @@ public:
      * @return The pointer to the required vertex of the element.
      */
     const Vertex* vertexMod(int i) const {
-        return &Base::parentElement()->parentMesh()->vertex(
-            Base::container().atMod(i));
+        return vertFromParent(vertexIndexMod(i));
     }
 
     /**
@@ -708,6 +712,22 @@ private:
             return UINT_NULL;
         else
             return v->index();
+    }
+
+    Vertex* vertFromParent(uint vi)
+    {
+        if (vi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->vertex(vi);
+    }
+
+    const Vertex* vertFromParent(uint vi) const
+    {
+        if (vi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()->parentMesh()->vertex(vi);
     }
 };
 

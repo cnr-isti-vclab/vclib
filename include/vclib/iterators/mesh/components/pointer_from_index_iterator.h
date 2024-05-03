@@ -38,7 +38,7 @@ namespace vcl {
 template<typename Iterator, typename ElementType, typename ParentElement>
 class PointerFromIndexIterator
 {
-    static constexpr uint ELEM_ID = ElementType::ELEM_ID;
+    static constexpr uint ELEM_ID = ElementType::ELEMENT_ID;
 
     Iterator mIt;
     const ElementType* mCurrent = nullptr;

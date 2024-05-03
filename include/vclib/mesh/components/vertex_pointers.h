@@ -102,6 +102,15 @@ class VertexPointers :
 
 public:
     /**
+     * @brief Expose the type of the VertexPointers.
+     *
+     * Allows to access the type of the VertexPointers from the Element that
+     * contains it, without knowing whether the references to vertices are
+     * stored using pointers or indices.
+     */
+    using VertexReferences = VertexPointers;
+
+    /**
      * @brief Expose the type of the Vertex.
      */
     using VertexType = Vertex;

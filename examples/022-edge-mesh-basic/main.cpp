@@ -32,12 +32,17 @@ int main()
 
     m.addEdges(2);
 
-    m.number<vcl::ElemId::EDGE>();
+    assert(m.number<vcl::ElemId::EDGE>() == 2);
 
     m.edge(0).setVertex(0U, 0U);
     m.edge(0).setVertex(1U, 1U);
     m.edge(1).setVertex(0U, 1U);
     m.edge(1).setVertex(1U, 2U);
+
+    assert(m.edge(0).vertex(0) == &m.vertex(0));
+    assert(m.edge(0).vertex(1) == &m.vertex(1));
+    assert(m.edge(1).vertex(0) == &m.vertex(1));
+    assert(m.edge(1).vertex(1) == &m.vertex(2));
 
     return 0;
 }
