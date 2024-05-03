@@ -32,12 +32,12 @@ namespace vcl {
 template<typename FaceType, bool CNST = false>
 class EdgeAdjFaceIterator
 {
-    using FT = std::conditional_t<CNST, FaceType, const FaceType>;
+    using FT = std::conditional_t<CNST, const FaceType, FaceType>;
 
     using VT = std::conditional_t<
         CNST,
-        typename FT::VertexType,
-        const typename FT::VertexType>;
+        const typename FT::VertexType,
+        typename FT::VertexType>;
 
     FT* mCurrent = nullptr;
     FT* mEnd     = nullptr;

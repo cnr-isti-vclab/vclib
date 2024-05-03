@@ -36,7 +36,7 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
     vcg::tri::Allocator<VCGMeshType>::AddVertices(vcgMesh, mesh.vertexNumber());
 
     uint vi = 0;
-    for (auto v : mesh.vertices()) {
+    for (const auto& v : mesh.vertices()) {
         vcgMesh.vert[vi].P().X() = v.coord().x();
         vcgMesh.vert[vi].P().Y() = v.coord().y();
         vcgMesh.vert[vi].P().Z() = v.coord().z();
@@ -95,7 +95,7 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
         vcg::tri::Allocator<VCGMeshType>::AddFaces(vcgMesh, mesh.faceNumber());
 
         uint fi = 0;
-        for (auto f : mesh.faces()) {
+        for (const auto& f : mesh.faces()) {
             vcgMesh.face[fi].V(0) = &vcgMesh.vert[mesh.index(f.vertex(0))];
             vcgMesh.face[fi].V(1) = &vcgMesh.vert[mesh.index(f.vertex(1))];
             vcgMesh.face[fi].V(2) = &vcgMesh.vert[mesh.index(f.vertex(2))];
