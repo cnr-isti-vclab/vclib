@@ -109,6 +109,7 @@ public:
 
     /* Iterator Types declaration */
 
+    using AdjacentFaceIterator = Base::Iterator;
     using ConstAdjacentFaceIterator = Base::ConstIterator;
     using ConstAdjacentFaceIndexIterator =
         IndexFromPointerIterator<ConstAdjacentFaceIterator>;
@@ -250,17 +251,6 @@ public:
     {
         setAdjFace(i, adjFaceFromParent(fi));
     }
-    
-    /**
-     * @brief Sets the adjacent face pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * face; the value must be between begin() and end().
-     * @param[in] f: The pointer to the adjacent face to set to the element.
-     */
-    void setAdjFace(ConstAdjacentFaceIterator it, Face* f)
-    {
-        Base::container().set(it, f);
-    }
 
     /**
      * @brief Sets the adjacent face pointed by the iterator.
@@ -271,6 +261,17 @@ public:
     void setAdjFace(ConstAdjacentFaceIterator it, uint fi)
     {
         setAdjFace(it, adjFaceFromParent(fi));
+    }
+
+    /**
+     * @brief Sets the adjacent face pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * face; the value must be between begin() and end().
+     * @param[in] f: The pointer to the adjacent face to set to the element.
+     */
+    void setAdjFace(ConstAdjacentFaceIterator it, Face* f)
+    {
+        Base::container().set(it - adjFaceBegin(), f);
     }
 
     /**
@@ -524,6 +525,28 @@ public:
     /* Iterator Member functions */
 
     /**
+     * @brief Returns an iterator to the first adjacent face in the
+     * container of this component.
+     *
+     * @return an iterator pointing to the begin of this container.
+     */
+    AdjacentFaceIterator adjFaceBegin()
+    {
+        return Base::container().begin();
+    }
+
+    /**
+     * @brief Returns an iterator to the end of the container of this
+     * component.
+     *
+     * @return an iterator pointing to the end of this container.
+     */
+    AdjacentFaceIterator adjFaceEnd()
+    {
+        return Base::container().end();
+    }
+
+    /**
      * @brief Returns a const iterator to the first adjacent face in the
      * container of this component.
      *
@@ -564,6 +587,27 @@ public:
     ConstAdjacentFaceIndexIterator adjFaceIndexEnd() const
     {
         return ConstAdjacentFaceIndexIterator(adjFaceEnd(), true);
+    }
+
+    /**
+     * @brief Returns a lightweight view object that stores the begin and
+     * end iterators of the container of adjacent faces of the element. The view
+     * object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (auto* adjFace : el.adjFaces()) {
+     *     // Do something with adjFace
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over adjacent faces.
+     */
+    View<AdjacentFaceIterator> adjFaces()
+    {
+        return View(adjFaceBegin(), adjFaceEnd());
     }
 
     /**

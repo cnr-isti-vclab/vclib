@@ -34,10 +34,16 @@ int main()
 
     assert(m.number<vcl::ElemId::EDGE>() == 2);
 
-    m.edge(0).setVertex(0U, 0U);
+    vcl::EdgeMesh::Edge::VertexIterator it = m.edge(0).vertexBegin();
+
+    m.edge(0).setVertex(it, 0U);
     m.edge(0).setVertex(1U, 1U);
     m.edge(1).setVertex(0U, 1U);
     m.edge(1).setVertex(1U, 2U);
+
+    (*it)->coord() = vcl::Point3d(1, 0, 0);
+
+    assert(m.vertex(0).coord() == vcl::Point3d(1, 0, 0));
 
     assert(m.edge(0).vertex(0) == &m.vertex(0));
     assert(m.edge(0).vertex(1) == &m.vertex(1));

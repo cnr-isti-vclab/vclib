@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
 
-#include <vclib/space/vector.h>
+#include <vclib/iterators/const_pointer_iterator.h>
 
 #include "container_component.h"
 
@@ -105,6 +105,9 @@ class PointersContainerComponent :
 
 protected:
     using Base::container;
+
+    using Iterator      = Base::Iterator;
+    using ConstIterator = ConstPointerIterator<typename Base::ConstIterator>;
 
     /*
      * This member function is called when we need to update the pointers in

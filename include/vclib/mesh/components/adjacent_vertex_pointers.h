@@ -104,6 +104,7 @@ public:
 
     /* Iterator Types declaration */
 
+    using AdjacentVertexIterator = Base::Iterator;
     using ConstAdjacentVertexIterator = Base::ConstIterator;
     using ConstAdjacentVertexIndexIterator =
         IndexFromPointerIterator<ConstAdjacentVertexIterator>;
@@ -244,17 +245,6 @@ public:
     {
         setAdjVertex(i, adjVertexFromParent(vi));
     }
-    
-    /**
-     * @brief Sets the adjacent vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * vertex; the value must be between begin() and end().
-     * @param[in] v: The pointer to the adjacent vertex to set to the element.
-     */
-    void setAdjVertex(ConstAdjacentVertexIterator it, Vertex* v)
-    {
-        Base::container().set(it, v);
-    }
 
     /**
      * @brief Sets the adjacent vertex pointed by the iterator.
@@ -266,6 +256,17 @@ public:
     void setAdjVertex(ConstAdjacentVertexIterator it, uint vi)
     {
         setAdjVertex(it, adjVertexFromParent(vi));
+    }
+
+    /**
+     * @brief Sets the adjacent vertex pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * vertex; the value must be between begin() and end().
+     * @param[in] v: The pointer to the adjacent vertex to set to the element.
+     */
+    void setAdjVertex(ConstAdjacentVertexIterator it, Vertex* v)
+    {
+        Base::container().set(it - adjVertexBegin(), v);
     }
 
     /**
@@ -500,6 +501,27 @@ public:
     /* Iterator Member functions */
 
     /**
+     * @brief Returns an iterator to the first adjacent vertex in the
+     * container of this component.
+     *
+     * @return an iterator pointing to the begin of this container.
+     */
+    AdjacentVertexIterator adjVertexBegin()
+    {
+        return Base::container().begin();
+    }
+
+    /**
+     * @brief Returns an iterator to the end of the container of this component.
+     *
+     * @return an iterator pointing to the end of this container.
+     */
+    AdjacentVertexIterator adjVertexEnd()
+    {
+        return Base::container().end();
+    }
+
+    /**
      * @brief Returns a const iterator to the first adjacent vertex in the
      * container of this component.
      *
@@ -540,6 +562,27 @@ public:
     ConstAdjacentVertexIndexIterator adjVertexIndexEnd() const
     {
         return ConstAdjacentVertexIndexIterator(adjVertexEnd(), true);
+    }
+
+    /**
+     * @brief Returns a lightweight view object that stores the begin and
+     * end iterators of the container of adjacent vertices of the element. The
+     * view object exposes the iterators trough the `begin()` and `end()` member
+     * functions, and therefore the returned object can be used in range-based
+     * for loops:
+     *
+     * @code{.cpp}
+     * for (auto* adjEdge : el.adjVertices()) {
+     *     // Do something with adjVertex
+     * }
+     * @endcode
+     *
+     * @return a lightweight view object that can be used in range-based for
+     * loops to iterate over adjacent edges.
+     */
+    View<AdjacentVertexIterator> adjVertices()
+    {
+        return View(adjVertexBegin(), adjVertexEnd());
     }
 
     /**

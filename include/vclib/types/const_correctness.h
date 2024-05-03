@@ -34,14 +34,17 @@ namespace vcl {
 template<typename T>
 struct MakeConstPointer
 {
-    typedef T type;
+    using type = T;
 };
 
 template<typename T>
 struct MakeConstPointer<T*>
 {
-    typedef const T* type;
+    using type = const T*;
 };
+
+template <typename T>
+using MakeConstPointerT = typename MakeConstPointer<T>::type;
 
 /*
  * Full deduction for the possibility to re-use same code for const and
