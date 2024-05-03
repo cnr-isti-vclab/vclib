@@ -24,7 +24,6 @@
 #define VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
 
 #include <vclib/concepts/mesh/components/vertex_pointers.h>
-#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -121,8 +120,7 @@ public:
 
     using VertexIterator      = Base::Iterator;
     using ConstVertexIterator = Base::ConstIterator;
-    using ConstVertexIndexIterator =
-        IndexFromPointerIterator<ConstVertexIterator>;
+    using ConstVertexIndexIterator = Base::ConstIndexIterator;
 
     /* Constructors */
 

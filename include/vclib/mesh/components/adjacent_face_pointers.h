@@ -24,7 +24,6 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_FACE_POINTERS_H
 
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
-#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -109,10 +108,9 @@ public:
 
     /* Iterator Types declaration */
 
-    using AdjacentFaceIterator = Base::Iterator;
-    using ConstAdjacentFaceIterator = Base::ConstIterator;
-    using ConstAdjacentFaceIndexIterator =
-        IndexFromPointerIterator<ConstAdjacentFaceIterator>;
+    using AdjacentFaceIterator           = Base::Iterator;
+    using ConstAdjacentFaceIterator      = Base::ConstIterator;
+    using ConstAdjacentFaceIndexIterator = Base::ConstIndexIterator;
 
     /**
      * @brief Static size of the container. If the container is dynamic, this

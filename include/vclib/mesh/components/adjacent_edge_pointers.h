@@ -24,7 +24,6 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_EDGE_POINTERS_H
 
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
-#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -109,10 +108,9 @@ public:
 
     /* Iterator Types declaration */
 
-    using AdjacentEdgeIterator      = Base::Iterator;
-    using ConstAdjacentEdgeIterator = Base::ConstIterator;
-    using ConstAdjacentEdgeIndexIterator =
-        IndexFromPointerIterator<ConstAdjacentEdgeIterator>;
+    using AdjacentEdgeIterator           = Base::Iterator;
+    using ConstAdjacentEdgeIterator      = Base::ConstIterator;
+    using ConstAdjacentEdgeIndexIterator = Base::ConstIndexIterator;
 
     /**
      * @brief Static size of the container. If the container is dynamic, this

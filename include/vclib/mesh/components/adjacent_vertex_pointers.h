@@ -24,7 +24,6 @@
 #define VCL_MESH_COMPONENTS_ADJACENT_VERTEX_POINTERS_H
 
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
-#include <vclib/iterators/mesh/components/index_from_pointer_iterator.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -104,10 +103,9 @@ public:
 
     /* Iterator Types declaration */
 
-    using AdjacentVertexIterator = Base::Iterator;
-    using ConstAdjacentVertexIterator = Base::ConstIterator;
-    using ConstAdjacentVertexIndexIterator =
-        IndexFromPointerIterator<ConstAdjacentVertexIterator>;
+    using AdjacentVertexIterator           = Base::Iterator;
+    using ConstAdjacentVertexIterator      = Base::ConstIterator;
+    using ConstAdjacentVertexIndexIterator = Base::ConstIndexIterator;
 
     /* Constructors */
 
