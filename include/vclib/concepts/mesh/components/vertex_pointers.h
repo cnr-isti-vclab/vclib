@@ -23,9 +23,11 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
 
-#include "component.h"
-
 #include <vector>
+
+#include <vclib/views/view.h>
+
+#include "component.h"
 
 namespace vcl::comp {
 
@@ -47,6 +49,7 @@ concept HasVertexPointers = requires (
     // clang-format off
     T::VERTEX_NUMBER;
     typename T::VertexType;
+    typename T::VertexIterator;
     typename T::ConstVertexIterator;
     typename T::ConstVertexIndexIterator;
 
@@ -60,6 +63,8 @@ concept HasVertexPointers = requires (
 
     { o.setVertex(uint(), &v) } -> std::same_as<void>;
     { o.setVertex(uint(), uint()) } -> std::same_as<void>;
+    { o.setVertex(typename T::VertexIterator(), &v) } -> std::same_as<void>;
+    { o.setVertex(typename T::VertexIterator(), uint()) } -> std::same_as<void>;
     { o.setVertex(typename T::ConstVertexIterator(), &v) } ->
         std::same_as<void>;
     { o.setVertex(typename T::ConstVertexIterator(), uint()) } ->
@@ -88,8 +93,11 @@ concept HasVertexPointers = requires (
     { co.vertexIndexEnd() } ->
         std::same_as<typename T::ConstVertexIndexIterator>;
 
-    co.vertices();
-    co.vertexIndices();
+    { o.vertices() } -> std::same_as<vcl::View<typename T::VertexIterator>>;
+    { co.vertices() } ->
+        std::same_as<vcl::View<typename T::ConstVertexIterator>>;
+    { co.vertexIndices() } ->
+        std::same_as<vcl::View<typename T::ConstVertexIndexIterator>>;
     // clang-format on
 };
 

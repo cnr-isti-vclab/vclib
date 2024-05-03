@@ -23,9 +23,9 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_WEDGE_COLORS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_WEDGE_COLORS_H
 
-#include "component.h"
-
 #include <vclib/space/color.h>
+
+#include "component.h"
 
 namespace vcl::comp {
 

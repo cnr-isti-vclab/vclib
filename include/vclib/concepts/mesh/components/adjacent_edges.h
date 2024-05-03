@@ -25,6 +25,8 @@
 
 #include <vector>
 
+#include <vclib/views/view.h>
+
 #include "component.h"
 
 namespace vcl::comp {
@@ -52,6 +54,7 @@ concept HasAdjacentEdges = requires (
     // clang-format off
     T::ADJ_EDGE_NUMBER;
     typename T::AdjacentEdgeType;
+    typename T::AdjacentEdgeIterator;
     typename T::ConstAdjacentEdgeIterator;
     typename T::ConstAdjacentEdgeIndexIterator;
 
@@ -66,6 +69,10 @@ concept HasAdjacentEdges = requires (
 
     { o.setAdjEdge(uint(), &e) } -> std::same_as<void>;
     { o.setAdjEdge(uint(), uint()) } -> std::same_as<void>;
+    { o.setAdjEdge(typename T::AdjacentEdgeIterator(), &e) } ->
+        std::same_as<void>;
+    { o.setAdjEdge(typename T::AdjacentEdgeIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjEdge(typename T::ConstAdjacentEdgeIterator(), &e) } ->
         std::same_as<void>;
     { o.setAdjEdge(typename T::ConstAdjacentEdgeIterator(), uint()) } ->
@@ -92,8 +99,12 @@ concept HasAdjacentEdges = requires (
     { co.adjEdgeIndexEnd() } ->
         std::same_as<typename T::ConstAdjacentEdgeIndexIterator>;
 
-    co.adjEdges();
-    co.adjEdgeIndices();
+    { o.adjEdges() } ->
+        std::same_as<vcl::View<typename T::AdjacentEdgeIterator>>;
+    { co.adjEdges() } ->
+        std::same_as<vcl::View<typename T::ConstAdjacentEdgeIterator>>;
+    { co.adjEdgeIndices() } ->
+        std::same_as<vcl::View<typename T::ConstAdjacentEdgeIndexIterator>>;
     // clang-format on
 };
 

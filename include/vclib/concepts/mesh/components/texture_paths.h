@@ -23,9 +23,9 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 
-#include "component.h"
-
 #include <string>
+
+#include "component.h"
 
 namespace vcl::comp {
 

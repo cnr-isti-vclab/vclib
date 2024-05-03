@@ -25,6 +25,8 @@
 
 #include <vector>
 
+#include <vclib/views/view.h>
+
 #include "component.h"
 
 namespace vcl::comp {
@@ -52,6 +54,7 @@ concept HasAdjacentVertices = requires (
     std::vector<typename T::AdjacentVertexType*> vec) {
     // clang-format off
     typename T::AdjacentVertexType;
+    typename T::AdjacentVertexIterator;
     typename T::ConstAdjacentVertexIterator;
     typename T::ConstAdjacentVertexIndexIterator;
 
@@ -67,6 +70,10 @@ concept HasAdjacentVertices = requires (
 
     { o.setAdjVertex(uint(), &v) } -> std::same_as<void>;
     { o.setAdjVertex(uint(), uint()) } -> std::same_as<void>;
+    { o.setAdjVertex(typename T::AdjacentVertexIterator(), &v) } ->
+        std::same_as<void>;
+    { o.setAdjVertex(typename T::AdjacentVertexIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjVertex(typename T::ConstAdjacentVertexIterator(), &v) } ->
         std::same_as<void>;
     { o.setAdjVertex(typename T::ConstAdjacentVertexIterator(), uint()) } ->
@@ -94,8 +101,12 @@ concept HasAdjacentVertices = requires (
     { co.adjVertexIndexEnd() } ->
         std::same_as<typename T::ConstAdjacentVertexIndexIterator>;
 
-    co.adjVertices();
-    co.adjVertexIndices();
+    { o.adjVertices() } ->
+        std::same_as<vcl::View<typename T::AdjacentVertexIterator>>;
+    { co.adjVertices() } ->
+        std::same_as<vcl::View<typename T::ConstAdjacentVertexIterator>>;
+    { co.adjVertexIndices() } ->
+        std::same_as<vcl::View<typename T::ConstAdjacentVertexIndexIterator>>;
     // clang-format on
 };
 

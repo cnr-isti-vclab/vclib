@@ -25,6 +25,8 @@
 
 #include <vector>
 
+#include <vclib/views/view.h>
+
 #include "component.h"
 
 namespace vcl::comp {
@@ -52,6 +54,7 @@ concept HasAdjacentFaces = requires (
     // clang-format off
     T::ADJ_FACE_NUMBER;
     typename T::AdjacentFaceType;
+    typename T::AdjacentFaceIterator;
     typename T::ConstAdjacentFaceIterator;
     typename T::ConstAdjacentFaceIndexIterator;
 
@@ -66,6 +69,10 @@ concept HasAdjacentFaces = requires (
 
     { o.setAdjFace(uint(), &f) } -> std::same_as<void>;
     { o.setAdjFace(uint(), uint()) } -> std::same_as<void>;
+    { o.setAdjFace(typename T::AdjacentFaceIterator(), &f) } ->
+        std::same_as<void>;
+    { o.setAdjFace(typename T::AdjacentFaceIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjFace(typename T::ConstAdjacentFaceIterator(), &f) } ->
         std::same_as<void>;
     { o.setAdjFace(typename T::ConstAdjacentFaceIterator(), uint()) } ->
@@ -92,8 +99,12 @@ concept HasAdjacentFaces = requires (
     { co.adjFaceIndexEnd() } ->
         std::same_as<typename T::ConstAdjacentFaceIndexIterator>;
 
-    co.adjFaces();
-    co.adjFaceIndices();
+    { o.adjFaces() } ->
+        std::same_as<vcl::View<typename T::AdjacentFaceIterator>>;
+    { co.adjFaces() } ->
+        std::same_as<vcl::View<typename T::ConstAdjacentFaceIterator>>;
+    { co.adjFaceIndices() } ->
+        std::same_as<vcl::View<typename T::ConstAdjacentFaceIndexIterator>>;
     // clang-format on
 };
 
