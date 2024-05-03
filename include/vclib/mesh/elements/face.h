@@ -49,13 +49,13 @@ class Face : public Element<ElemId::FACE, MeshType, Comps...>
 {
     using Base = Element<ElemId::FACE, MeshType, Comps...>;
 
-    // VertexPointers component of the Face
-    using VPtrs = typename Face::VertexPointers;
+    // VertexPointers or VertexIndices component of the Face
+    using VRefs = typename Face::VertexReferences;
 
-    static const int NV = VPtrs::VERTEX_NUMBER; // If dynamic, NV will be -1
+    static const int NV = VRefs::VERTEX_NUMBER; // If dynamic, NV will be -1
 
 public:
-    using VertexType = typename VPtrs::VertexType;
+    using VertexType = typename VRefs::VertexType;
 
     /**
      * @brief Empty constructor.
@@ -88,7 +88,7 @@ public:
     {
         using F = Face<MeshType, TypeWrapper<Comps...>>;
 
-        VPtrs::setVertices(r);
+        VRefs::setVertices(r);
 
         // if polygonal, I need to resize all the TTVN components
         if constexpr (NV < 0) {
@@ -136,7 +136,7 @@ public:
      */
     void resizeVertices(uint n) requires PolygonFaceConcept<Face>
     {
-        VPtrs::resizeVertices(n);
+        VRefs::resizeVertices(n);
 
         // Now I need to resize all the TTVN components
         (resizeTTVNComponent<Comps>(n), ...);
@@ -144,7 +144,7 @@ public:
 
     void pushVertex(VertexType* v) requires PolygonFaceConcept<Face>
     {
-        VPtrs::pushVertex(v);
+        VRefs::pushVertex(v);
 
         // Now I need to pushBack in all the TTVN components
         (pushBackTTVNComponent<Comps>(), ...);
@@ -152,7 +152,7 @@ public:
 
     void insertVertex(uint i, VertexType* v) requires PolygonFaceConcept<Face>
     {
-        VPtrs::insertVertex(i, v);
+        VRefs::insertVertex(i, v);
 
         // Now I need to insert in all the TTVN components
         (insertTTVNComponent<Comps>(i), ...);
@@ -160,7 +160,7 @@ public:
 
     void eraseVertex(uint i) requires PolygonFaceConcept<Face>
     {
-        VPtrs::eraseVertex(i);
+        VRefs::eraseVertex(i);
 
         // Now I need to erase in all the TTVN components
         (eraseTTVNComponent<Comps>(i), ...);
@@ -168,7 +168,7 @@ public:
 
     void clearVertices() requires PolygonFaceConcept<Face>
     {
-        VPtrs::clearVertices();
+        VRefs::clearVertices();
 
         // Now I need to clear all the TTVN components
         (clearTTVNComponent<Comps>(), ...);
@@ -178,7 +178,7 @@ public:
     void importFrom(const ElType& v)
     {
         if constexpr (comp::HasVertexPointers<ElType> && NV < 0) {
-            VPtrs::resizeVertices(v.vertexNumber());
+            VRefs::resizeVertices(v.vertexNumber());
             // Now I need to resize all the TTVN components
             (resizeTTVNComponent<Comps>(v.vertexNumber()), ...);
         }

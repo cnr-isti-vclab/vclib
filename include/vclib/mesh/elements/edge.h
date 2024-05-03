@@ -46,7 +46,7 @@ namespace vcl {
 template<typename MeshType, typename... Comps>
 class Edge : public Element<ElemId::EDGE, MeshType, Comps...>
 {
-    // VertexPointers component of the Edge
+    // VertexPointers or VertexIndices component of the Edge
     using VRefs = typename Edge::VertexReferences;
 
 public:

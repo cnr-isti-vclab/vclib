@@ -35,6 +35,7 @@
 #include "../components/principal_curvature.h"
 #include "../components/quality.h"
 #include "../components/triangle_bit_flags.h"
+#include "../components/vertex_indices.h"
 #include "../components/vertex_pointers.h"
 #include "../components/wedge_colors.h"
 #include "../components/wedge_tex_coords.h"
@@ -244,6 +245,16 @@ using TriangleBitFlags = comp::TriangleBitFlags<>;
 
 template<typename FaceType>
 using VerticalTriangleBitFlags = comp::TriangleBitFlags<FaceType>;
+
+/* Port VertexIndices class into face namespace */
+template<typename Vertex, int N, typename FaceType>
+using VertexIndices = comp::VertexIndices<Vertex, N, FaceType>;
+
+template<typename Vertex, typename FaceType>
+using TriangleVertexInds = comp::VertexIndices<Vertex, 3, FaceType>;
+
+template<typename Vertex, typename FaceType>
+using PolygonVertexInds = comp::VertexIndices<Vertex, -1, FaceType>;
 
 /* Port VertexPointers class into face namespace */
 template<typename Vertex, int N, typename FaceType>
