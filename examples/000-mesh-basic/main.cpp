@@ -107,8 +107,8 @@ int main()
 
     // setting some colors to all the faces of the mesh
     uint i = 17;
-    for (vcl::TriMesh::Face& f :
-         m.faces()) // iterates over all the non-deleted faces of m
+    // iterates over all the non-deleted faces of m
+    for (vcl::TriMesh::Face& f : m.faces())
         f.color() = vcl::Color(4 + 2 * i++, 134, 98);
 
     // add some other vertices

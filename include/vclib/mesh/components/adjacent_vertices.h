@@ -231,9 +231,20 @@ public:
      * vertex; the value must be between begin() and end().
      * @param[in] v: The pointer to the adjacent vertex to set to the element.
      */
-    void setAdjVertex(ConstAdjacentVertexIterator it, Vertex* v)
+    void setAdjVertex(AdjacentVertexIterator it, Vertex* v)
     {
         Base::container().set(it, v);
+    }
+
+    /**
+     * @brief Sets the adjacent vertex pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * vertex; the value must be between begin() and end().
+     * @param[in] v: The pointer to the adjacent vertex to set to the element.
+     */
+    void setAdjVertex(ConstAdjacentVertexIterator it, Vertex* v)
+    {
+        Base::container().set(it - adjVertexBegin(), v);
     }
 
     /**
