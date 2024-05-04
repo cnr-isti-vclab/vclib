@@ -27,27 +27,35 @@
 #include <vclib/space/kd_tree.h>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
-using PointType = vcl::TriMesh::VertexType::CoordType;
-
+template<typename MeshType, typename PointType>
 std::vector<uint> getKNearestNeighbors(
     const PointType& p,
     uint             k,
     std::string      mesh = "bone.ply")
 {
-    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/" + mesh);
+    MeshType m = vcl::loadPly<MeshType>(VCLIB_ASSETS_PATH "/" + mesh);
 
     vcl::KDTree tree(m);
 
     return tree.kNearestNeighborsIndices(p, k);
 }
 
-static const PointType p(0.5, 0.5, 0.5);
-
-TEST_CASE("KD-Tree nearest neighbors to [0.5, 0.5, 0.5] in bone.ply")
+TEMPLATE_TEST_CASE(
+    "KD-Tree nearest neighbors to [0.5, 0.5, 0.5] in bone.ply",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf)
 {
-    REQUIRE(getKNearestNeighbors(p, 1)[0] == 1558);
+    using TriMesh = TestType;
+
+    using PointType = TriMesh::VertexType::CoordType;
+
+    const PointType p(0.5, 0.5, 0.5);
+
+    REQUIRE(getKNearestNeighbors<TriMesh>(p, 1)[0] == 1558);
     REQUIRE(
-        getKNearestNeighbors(p, 5) ==
+        getKNearestNeighbors<TriMesh>(p, 5) ==
         std::vector<uint> {1558, 1613, 1720, 1576, 163});
 }

@@ -21,13 +21,20 @@
  ****************************************************************************/
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include "foo_mesh.h"
 
 #include <vclib/meshes/tri_mesh.h>
 
-TEST_CASE("Simple User Component")
+TEMPLATE_TEST_CASE(
+    "Simple User Component",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf)
 {
+    using TriMesh = TestType;
+
     FooMesh m;
 
     m.addVertices(10);
@@ -40,7 +47,7 @@ TEST_CASE("Simple User Component")
         REQUIRE(m.vertex(i).foo() == 42 + i);
     }
 
-    vcl::TriMesh tm;
+    TriMesh tm;
 
     // when importing in a trimesh, the foo component is not copied
     // because the trimesh does not have the component in its vertices

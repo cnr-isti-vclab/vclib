@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
@@ -98,12 +99,18 @@ std::istringstream plyTriCube()
     return ss;
 }
 
+using Meshes = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+
 // Test to load obj from a istringstream
-TEST_CASE("Load PLY cube from istringstream")
+TEMPLATE_TEST_CASE("Load PLY cube from istringstream", "", Meshes, Meshesf)
 {
+    using TriMesh = typename TestType::first_type;
+    using PolyMesh = typename TestType::second_type;
+
     SECTION("TriMesh - PolyCube")
     {
-        vcl::TriMesh tm;
+        TriMesh tm;
         auto         ss = plyPolyCube();
         vcl::loadPly(tm, ss);
         REQUIRE(tm.vertexNumber() == 8);
@@ -112,7 +119,7 @@ TEST_CASE("Load PLY cube from istringstream")
 
     SECTION("TriMesh - TriCube")
     {
-        vcl::TriMesh tm;
+        TriMesh tm;
         auto         ss = plyTriCube();
         vcl::loadPly(tm, ss);
         REQUIRE(tm.vertexNumber() == 8);
@@ -121,7 +128,7 @@ TEST_CASE("Load PLY cube from istringstream")
 
     SECTION("PolyMesh - PolyCube")
     {
-        vcl::PolyMesh pm;
+        PolyMesh pm;
         auto          ss = plyPolyCube();
         vcl::loadPly(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
@@ -130,7 +137,7 @@ TEST_CASE("Load PLY cube from istringstream")
 
     SECTION("PolyMesh - TriCube")
     {
-        vcl::PolyMesh pm;
+        PolyMesh pm;
         auto          ss = plyTriCube();
         vcl::loadPly(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);

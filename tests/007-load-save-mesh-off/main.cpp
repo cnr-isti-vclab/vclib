@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <vclib/algorithms/mesh/create.h>
 #include <vclib/algorithms/mesh/update.h>
 #include <vclib/load_save.h>
@@ -84,12 +85,18 @@ std::istringstream offTriCube()
     return ss;
 }
 
+using Meshes = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+
 // Test to load off from a istringstream
-TEST_CASE("Load OFF cube from istringstream")
+TEMPLATE_TEST_CASE("Load OFF cube from istringstream", "", Meshes, Meshesf)
 {
+    using TriMesh = typename TestType::first_type;
+    using PolyMesh = typename TestType::second_type;
+
     SECTION("TriMesh - PolyCube")
     {
-        vcl::TriMesh tm;
+        TriMesh tm;
         auto         ss = offPolyCube();
         vcl::loadOff(tm, ss);
         REQUIRE(tm.vertexNumber() == 8);
@@ -98,7 +105,7 @@ TEST_CASE("Load OFF cube from istringstream")
 
     SECTION("TriMesh - TriCube")
     {
-        vcl::TriMesh tm;
+        TriMesh tm;
         auto         ss = offTriCube();
         vcl::loadOff(tm, ss);
         REQUIRE(tm.vertexNumber() == 8);
@@ -107,7 +114,7 @@ TEST_CASE("Load OFF cube from istringstream")
 
     SECTION("PolyMesh - PolyCube")
     {
-        vcl::PolyMesh pm;
+        PolyMesh pm;
         auto          ss = offPolyCube();
         vcl::loadOff(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
@@ -116,7 +123,7 @@ TEST_CASE("Load OFF cube from istringstream")
 
     SECTION("PolyMesh - TriCube")
     {
-        vcl::PolyMesh pm;
+        PolyMesh pm;
         auto          ss = offTriCube();
         vcl::loadOff(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
@@ -124,11 +131,14 @@ TEST_CASE("Load OFF cube from istringstream")
     }
 }
 
-TEST_CASE("Save OFF to a ostringstream")
+TEMPLATE_TEST_CASE("Save OFF to a ostringstream", "", Meshes, Meshesf)
 {
+    using TriMesh = typename TestType::first_type;
+    using PolyMesh = typename TestType::second_type;
+
     SECTION("TriMesh - Cube (No Normals)")
     {
-        vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
+        TriMesh tm = vcl::createCube<TriMesh>();
 
         std::ostringstream oss;
         vcl::MeshInfo      i(tm);
@@ -151,7 +161,7 @@ TEST_CASE("Save OFF to a ostringstream")
 
     SECTION("TriMesh - Cube (Normals)")
     {
-        vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
+        TriMesh tm = vcl::createCube<TriMesh>();
         vcl::updatePerVertexNormals(tm);
 
         std::ostringstream oss;
@@ -173,7 +183,7 @@ TEST_CASE("Save OFF to a ostringstream")
 
     SECTION("PolyMesh - Cube (Normals and Colors)")
     {
-        vcl::PolyMesh pm = vcl::createCube<vcl::PolyMesh>();
+        PolyMesh pm = vcl::createCube<PolyMesh>();
         vcl::updatePerVertexNormals(pm);
 
         pm.enablePerVertexColor();

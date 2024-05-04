@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <vclib/algorithms/mesh/create/hexahedron.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
@@ -122,11 +123,17 @@ std::istringstream stlCube()
 }
 
 // Test to load stl from a istringstream
-TEST_CASE("Load STL cube from istringstream")
+TEMPLATE_TEST_CASE(
+    "Load STL cube from istringstream",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf)
 {
+    using TriMesh = TestType;
+
     SECTION("TriMesh - Cube")
     {
-        vcl::TriMesh tm;
+        TriMesh tm;
         auto         ss = stlCube();
         vcl::loadStl(tm, ss);
         REQUIRE(tm.vertexNumber() == 36);
@@ -134,11 +141,17 @@ TEST_CASE("Load STL cube from istringstream")
     }
 }
 
-TEST_CASE("Save STL cube in a ostringstream")
+TEMPLATE_TEST_CASE(
+    "Save STL cube in a ostringstream",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf)
 {
+    using TriMesh = TestType;
+
     SECTION("TriMesh - Cube")
     {
-        vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
+        TriMesh tm = vcl::createCube<TriMesh>();
 
         std::ostringstream ss;
         vcl::saveStl(tm, ss);
