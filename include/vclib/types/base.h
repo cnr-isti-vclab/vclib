@@ -67,8 +67,10 @@ typedef enum {
  * stored in the iterator itself.
  */
 template<class T>
-struct FakePointerWithValue {
+class FakePointerWithValue {
     T mValue;
+public:
+    FakePointerWithValue(const T& value) : mValue(value) {}
     T* operator->() { return std::addressof(mValue); }
 };
 
