@@ -27,13 +27,16 @@
 #include <vclib/meshes.h>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 
 #include <wrap/io_trimesh/import_ply.h>
 
 #include "mesh.h"
 
-TEST_CASE("Import TriMesh from VCG")
+TEMPLATE_TEST_CASE("Import TriMesh from VCG", "", vcl::TriMesh, vcl::TriMeshf)
 {
+    using TriMesh = TestType;
+
     VCGMesh vcgMesh;
 
     vcg::tri::io::ImporterPLY<VCGMesh>::Open(
@@ -44,7 +47,7 @@ TEST_CASE("Import TriMesh from VCG")
 
     SECTION("Test Vertices and Faces")
     {
-        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
@@ -65,7 +68,7 @@ TEST_CASE("Import TriMesh from VCG")
         vcg::tri::UpdateNormal<VCGMesh>::PerVertexNormalizedPerFaceNormalized(
             vcgMesh);
 
-        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         for (const auto& v : tm.vertices()) {
             REQUIRE(v.normal().x() == vcgMesh.vert[v.index()].N().X());
@@ -83,14 +86,14 @@ TEST_CASE("Import TriMesh from VCG")
             h[vcgMesh.vert[vi]] = (float) vi / vcgMesh.VN();
         }
 
-        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         REQUIRE(tm.hasPerVertexCustomComponent("perVertex"));
-        REQUIRE(tm.isPerVertexCustomComponentOfType<float>("perVertex"));
+        REQUIRE(tm.template isPerVertexCustomComponentOfType<float>("perVertex"));
 
         for (const auto& v : tm.vertices()) {
             REQUIRE(
-                v.customComponent<float>("perVertex") ==
+                v.template customComponent<float>("perVertex") ==
                 (float) v.index() / tm.vertexNumber());
         }
     }
@@ -105,15 +108,16 @@ TEST_CASE("Import TriMesh from VCG")
             h[vcgMesh.vert[vi]] = vcgMesh.vert[vi].P();
         }
 
-        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         REQUIRE(tm.hasPerVertexCustomComponent("perVertex"));
-        REQUIRE(tm.isPerVertexCustomComponentOfType<vcl::Point3f>("perVertex"));
+        REQUIRE(tm.template isPerVertexCustomComponentOfType<vcl::Point3f>(
+            "perVertex"));
 
         for (const auto& v : tm.vertices()) {
             REQUIRE(
-                v.customComponent<vcl::Point3f>("perVertex") ==
-                v.coord().cast<float>());
+                v.template customComponent<vcl::Point3f>("perVertex") ==
+                v.coord().template cast<float>());
         }
     }
 
@@ -122,7 +126,7 @@ TEST_CASE("Import TriMesh from VCG")
         vcg::tri::UpdateNormal<VCGMesh>::PerVertexNormalizedPerFaceNormalized(
             vcgMesh);
 
-        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         for (const auto& f : tm.faces()) {
             REQUIRE(f.normal().x() == vcgMesh.face[f.index()].N().X());
@@ -140,14 +144,14 @@ TEST_CASE("Import TriMesh from VCG")
             h[vcgMesh.face[fi]] = (double) fi / vcgMesh.FN();
         }
 
-        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         REQUIRE(tm.hasPerFaceCustomComponent("perFace"));
-        REQUIRE(tm.isPerFaceCustomComponentOfType<double>("perFace"));
+        REQUIRE(tm.template isPerFaceCustomComponentOfType<double>("perFace"));
 
         for (const auto& f : tm.faces()) {
             REQUIRE(
-                f.customComponent<double>("perFace") ==
+                f.template customComponent<double>("perFace") ==
                 (double) f.index() / tm.faceNumber());
         }
     }
@@ -163,15 +167,16 @@ TEST_CASE("Import TriMesh from VCG")
             h[vcgMesh.face[fi]] = vcg::Barycenter(vcgMesh.face[fi]);
         }
 
-        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         REQUIRE(tm.hasPerFaceCustomComponent("perFace"));
-        REQUIRE(tm.isPerFaceCustomComponentOfType<vcl::Point3f>("perFace"));
+        REQUIRE(tm.template isPerFaceCustomComponentOfType<vcl::Point3f>(
+            "perFace"));
 
         for (const auto& f : tm.faces()) {
             REQUIRE(
-                f.customComponent<vcl::Point3f>("perFace") ==
-                vcl::faceBarycenter(f).cast<float>());
+                f.template customComponent<vcl::Point3f>("perFace") ==
+                vcl::faceBarycenter(f).template cast<float>());
         }
     }
 
@@ -183,18 +188,24 @@ TEST_CASE("Import TriMesh from VCG")
 
         h() = vcg::Point3f(1, 2, 3);
 
-        vcl::TriMesh tm = vcl::vc::meshFromVCGMesh<vcl::TriMesh>(vcgMesh);
+        TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         REQUIRE(tm.hasCustomComponent("perMesh"));
-        REQUIRE(tm.isCustomComponentOfType<vcl::Point3f>("perMesh"));
+        REQUIRE(tm.template isCustomComponentOfType<vcl::Point3f>("perMesh"));
         REQUIRE(
-            tm.customComponent<vcl::Point3f>("perMesh") ==
+            tm.template customComponent<vcl::Point3f>("perMesh") ==
             vcl::Point3f(1, 2, 3));
     }
 }
 
-TEST_CASE("Import PolyMesh from VCG")
+TEMPLATE_TEST_CASE(
+    "Import PolyMesh from VCG",
+    "",
+    vcl::PolyMesh,
+    vcl::PolyMeshf)
 {
+    using PolyMesh = TestType;
+
     VCGMesh vcgMesh;
 
     vcg::tri::io::ImporterPLY<VCGMesh>::Open(
@@ -203,7 +214,7 @@ TEST_CASE("Import PolyMesh from VCG")
     REQUIRE(vcgMesh.VN() == 8);
     REQUIRE(vcgMesh.FN() == 12);
 
-    vcl::PolyMesh pm = vcl::vc::meshFromVCGMesh<vcl::PolyMesh>(vcgMesh);
+    PolyMesh pm = vcl::vc::meshFromVCGMesh<PolyMesh>(vcgMesh);
 
     REQUIRE(pm.vertexNumber() == 8);
     REQUIRE(pm.faceNumber() == 12);
@@ -220,9 +231,11 @@ TEST_CASE("Import PolyMesh from VCG")
     }
 }
 
-TEST_CASE("Export TriMesh to VCG")
+TEMPLATE_TEST_CASE("Export TriMesh to VCG", "", vcl::TriMesh, vcl::TriMeshf)
 {
-    vcl::TriMesh tm = vcl::createCube<vcl::TriMesh>();
+    using TriMesh = TestType;
+
+    TriMesh tm = vcl::createCube<TriMesh>();
 
     SECTION("Test Vertices and Faces")
     {

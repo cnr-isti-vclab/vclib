@@ -21,14 +21,17 @@
  ****************************************************************************/
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
-TEST_CASE("TriMesh Filter")
+TEMPLATE_TEST_CASE("TriMesh Filter", "", vcl::TriMesh, vcl::TriMeshf)
 {
-    vcl::TriMesh tm =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
+    using TriMesh = TestType;
+
+    TriMesh tm =
+        vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
@@ -39,7 +42,7 @@ TEST_CASE("TriMesh Filter")
     std::vector<bool> filter = {
         true, false, false, true, false, false, true, true};
 
-    vcl::TriMesh anotherMesh = vcl::perVertexMeshFilter(tm, filter);
+    TriMesh anotherMesh = vcl::perVertexMeshFilter(tm, filter);
 
     THEN("The mesh has been filtered")
     {
@@ -48,12 +51,16 @@ TEST_CASE("TriMesh Filter")
 
         REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
         REQUIRE(
-            anotherMesh.vertex(0).customComponent<uint>("birthVertex") == 0);
+            anotherMesh.vertex(0).template customComponent<uint>(
+                "birthVertex") == 0);
         REQUIRE(
-            anotherMesh.vertex(1).customComponent<uint>("birthVertex") == 3);
+            anotherMesh.vertex(1).template customComponent<uint>(
+                "birthVertex") == 3);
         REQUIRE(
-            anotherMesh.vertex(2).customComponent<uint>("birthVertex") == 6);
+            anotherMesh.vertex(2).template customComponent<uint>(
+                "birthVertex") == 6);
         REQUIRE(
-            anotherMesh.vertex(3).customComponent<uint>("birthVertex") == 7);
+            anotherMesh.vertex(3).template customComponent<uint>(
+                "birthVertex") == 7);
     }
 }
