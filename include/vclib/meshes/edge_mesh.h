@@ -28,47 +28,49 @@
 
 namespace vcl {
 
-template<typename ScalarType>
+template<typename ScalarType, bool INDEXED>
 class EdgeMeshT;
 
 } // namespace vcl
 
 namespace vcl::edgemesh {
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Vertex;
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Edge;
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Vertex :
         public vcl::Vertex<
-            EdgeMeshT<Scalar>,
+            EdgeMeshT<Scalar, I>,
             vert::BitFlags,
             vert::Coordinate3<Scalar>,
             vert::Normal3<Scalar>,
-            vert::OptionalColor<Vertex<Scalar>>,
-            vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vert::OptionalAdjacentEdgePointers<Edge<Scalar>, Vertex<Scalar>>,
-            vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
-            vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-            vert::OptionalMark<Vertex<Scalar>>,
-            vert::CustomComponents<Vertex<Scalar>>>
+            vert::OptionalColor<Vertex<Scalar, I>>,
+            vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalAdjacentEdgePointers<
+                Edge<Scalar, I>,
+                Vertex<Scalar, I>>,
+            vert::OptionalAdjacentVertexPointers<Vertex<Scalar, I>>,
+            vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalMark<Vertex<Scalar, I>>,
+            vert::CustomComponents<Vertex<Scalar, I>>>
 {
 };
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Edge :
         public vcl::Edge<
-            EdgeMeshT<Scalar>,
+            EdgeMeshT<Scalar, I>,
             edge::BitFlags,
-            edge::VertexPointers<Vertex<Scalar>, Edge<Scalar>>,
-            edge::OptionalColor<Edge<Scalar>>,
-            edge::OptionalQuality<Scalar, Edge<Scalar>>,
-            edge::OptionalAdjacentEdgePointers<Edge<Scalar>>,
-            edge::OptionalMark<Edge<Scalar>>,
-            edge::CustomComponents<Edge<Scalar>>>
+            edge::VertexPointers<Vertex<Scalar, I>, Edge<Scalar, I>>,
+            edge::OptionalColor<Edge<Scalar, I>>,
+            edge::OptionalQuality<Scalar, Edge<Scalar, I>>,
+            edge::OptionalAdjacentEdgePointers<Edge<Scalar, I>>,
+            edge::OptionalMark<Edge<Scalar, I>>,
+            edge::CustomComponents<Edge<Scalar, I>>>
 {
 };
 
@@ -76,11 +78,11 @@ class Edge :
 
 namespace vcl {
 
-template<typename Scalar = double>
+template<typename Scalar, bool INDEXED>
 class EdgeMeshT :
         public vcl::Mesh<
-            mesh::VertexContainer<edgemesh::Vertex<Scalar>>,
-            mesh::EdgeContainer<edgemesh::Edge<Scalar>>,
+            mesh::VertexContainer<edgemesh::Vertex<Scalar, INDEXED>>,
+            mesh::EdgeContainer<edgemesh::Edge<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Mark,
             mesh::Name,
@@ -92,8 +94,10 @@ public:
     using ScalarType = Scalar;
 };
 
-using EdgeMeshf = EdgeMeshT<float>;
-using EdgeMesh  = EdgeMeshT<double>;
+using EdgeMeshf = EdgeMeshT<float, false>;
+using EdgeMesh  = EdgeMeshT<double, false>;
+using EdgeMeshIndexedf = EdgeMeshT<float, true>;
+using EdgeMeshIndexed  = EdgeMeshT<double, true>;
 
 } // namespace vcl
 

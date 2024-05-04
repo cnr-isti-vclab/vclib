@@ -32,6 +32,7 @@
 #include "../components/parent_mesh_pointer.h"
 #include "../components/quality.h"
 #include "../components/vertex_indices.h"
+#include "../components/vertex_references.h"
 #include "../components/vertex_pointers.h"
 
 /**
@@ -134,6 +135,11 @@ using OptionalQualityd = comp::Quality<double, EdgeType, true>;
 /* Port VertexIndices class into edge namespace */
 template<typename VertexType, typename EdgeType>
 using VertexIndices = comp::VertexIndices<VertexType, 2, EdgeType>;
+
+/* Port VertexReferences alias into edge namespace */
+template<bool INDEXED, typename VertexType, typename EdgeType>
+using VertexReferences =
+    comp::VertexReferences<INDEXED, VertexType, 2, EdgeType>;
 
 /* Port VertexPointers class into edge namespace */
 template<typename VertexType, typename EdgeType>

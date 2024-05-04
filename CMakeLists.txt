@@ -236,6 +236,7 @@ set(HEADERS
     include/vclib/mesh/components/principal_curvature.h
     include/vclib/mesh/components/quality.h
     include/vclib/mesh/components/vertex_indices.h
+    include/vclib/mesh/components/vertex_references.h
     include/vclib/mesh/components/vertex_pointers.h
     include/vclib/mesh/components/tex_coord.h
     include/vclib/mesh/components/texture_paths.h

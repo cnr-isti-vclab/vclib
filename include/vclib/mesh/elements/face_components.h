@@ -36,6 +36,7 @@
 #include "../components/quality.h"
 #include "../components/triangle_bit_flags.h"
 #include "../components/vertex_indices.h"
+#include "../components/vertex_references.h"
 #include "../components/vertex_pointers.h"
 #include "../components/wedge_colors.h"
 #include "../components/wedge_tex_coords.h"
@@ -255,6 +256,16 @@ using TriangleVertexInds = comp::VertexIndices<Vertex, 3, FaceType>;
 
 template<typename Vertex, typename FaceType>
 using PolygonVertexInds = comp::VertexIndices<Vertex, -1, FaceType>;
+
+/* Port VertexReferences alias into face namespace */
+template<bool INDEXED, typename Vertex, int N, typename FaceType>
+using VertexReferences = comp::VertexReferences<INDEXED, Vertex, N, FaceType>;
+
+template<bool INDEXED, typename Vertex, typename FaceType>
+using TriangleVertexRefs = comp::VertexReferences<INDEXED, Vertex, 3, FaceType>;
+
+template<bool INDEXED, typename Vertex, typename FaceType>
+using PolygonVertexRefs = comp::VertexReferences<INDEXED, Vertex, -1, FaceType>;
 
 /* Port VertexPointers class into face namespace */
 template<typename Vertex, int N, typename FaceType>
