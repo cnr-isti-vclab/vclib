@@ -98,16 +98,6 @@ public:
     using T          = SecondRefPair<KeyType, const ValueType>;
     using value_type = T;
 
-    class ArrowHelper
-    {
-        T mValue;
-
-    public:
-        ArrowHelper(T value) : mValue(value) {}
-
-        const T* operator->() const { return &mValue; }
-    };
-
     ConstStaticGridIterator() = default;
 
     ConstStaticGridIterator(VecIt it, const GridType& g) : mVecIt(it), mGrid(&g)
@@ -120,7 +110,7 @@ public:
         return value_type(cell, mVecIt->second);
     }
 
-    ArrowHelper operator->() const { return **this; }
+    auto operator->() const { return FakePointerWithValue(**this); }
 
     bool operator==(const ConstStaticGridIterator& oi) const
     {

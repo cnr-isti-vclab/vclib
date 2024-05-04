@@ -59,6 +59,19 @@ typedef enum {
     NONE
 } PrimitiveType;
 
+
+/**
+ * @brief A simple utility class to represent a pointer with a value.
+ *
+ * Useful for iterators that return a pointer to a value, but the value is
+ * stored in the iterator itself.
+ */
+template<class T>
+struct FakePointerWithValue {
+    T mValue;
+    T* operator->() { return std::addressof(mValue); }
+};
+
 } // namespace vcl
 
 #endif // VCL_TYPES_BASE_H

@@ -450,7 +450,7 @@ public:
      */
     ConstVertexIndexIterator vertexIndexBegin() const
     {
-        return ConstVertexIndexIterator(vertexBegin(), vertexEnd());
+        return ConstVertexIndexIterator(vertexBegin());
     }
 
     /**
@@ -460,7 +460,7 @@ public:
      */
     ConstVertexIndexIterator vertexIndexEnd() const
     {
-        return ConstVertexIndexIterator(vertexEnd(), vertexEnd());
+        return ConstVertexIndexIterator(vertexEnd());
     }
 
     /**

@@ -443,7 +443,7 @@ public:
      */
     ConstAdjacentFaceIndexIterator adjFaceIndexBegin() const
     {
-        return ConstAdjacentFaceIndexIterator(adjFaceBegin(), adjFaceEnd());
+        return ConstAdjacentFaceIndexIterator(adjFaceBegin());
     }
 
     /**
@@ -453,7 +453,7 @@ public:
      */
     ConstAdjacentFaceIndexIterator adjFaceIndexEnd() const
     {
-        return ConstAdjacentFaceIndexIterator(adjFaceEnd(), adjFaceEnd());
+        return ConstAdjacentFaceIndexIterator(adjFaceEnd());
     }
 
     /**
