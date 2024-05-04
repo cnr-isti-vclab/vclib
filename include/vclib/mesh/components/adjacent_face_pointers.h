@@ -574,7 +574,7 @@ public:
      */
     ConstAdjacentFaceIndexIterator adjFaceIndexBegin() const
     {
-        return ConstAdjacentFaceIndexIterator(adjFaceBegin());
+        return ConstAdjacentFaceIndexIterator(adjFaceBegin(), adjFaceEnd());
     }
 
     /**
@@ -584,7 +584,7 @@ public:
      */
     ConstAdjacentFaceIndexIterator adjFaceIndexEnd() const
     {
-        return ConstAdjacentFaceIndexIterator(adjFaceEnd(), true);
+        return ConstAdjacentFaceIndexIterator(adjFaceEnd(), adjFaceEnd());
     }
 
     /**

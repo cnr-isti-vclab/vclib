@@ -605,7 +605,7 @@ public:
      */
     ConstVertexIndexIterator vertexIndexBegin() const
     {
-        return ConstVertexIndexIterator(vertexBegin());
+        return ConstVertexIndexIterator(vertexBegin(), vertexEnd());
     }
 
     /**
@@ -615,7 +615,7 @@ public:
      */
     ConstVertexIndexIterator vertexIndexEnd() const
     {
-        return ConstVertexIndexIterator(vertexEnd(), true);
+        return ConstVertexIndexIterator(vertexEnd(), vertexEnd());
     }
 
     /**
