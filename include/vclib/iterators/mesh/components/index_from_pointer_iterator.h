@@ -38,7 +38,7 @@ namespace vcl {
 template<typename Iterator>
 class IndexFromPointerIterator
 {
-    Iterator mIt;
+    Iterator mIt, mEnd;
     uint     mCurrent = UINT_NULL;
 
 public:
@@ -50,9 +50,10 @@ public:
 
     IndexFromPointerIterator() = default;
 
-    IndexFromPointerIterator(const Iterator& it, bool end = false) : mIt(it)
+    IndexFromPointerIterator(const Iterator& it, const Iterator& end) :
+            mIt(it), mEnd(end)
     {
-        if (!end)
+        if (mIt != mEnd)
             updateCurrent();
     }
 
@@ -158,11 +159,16 @@ public:
 private:
     void updateCurrent()
     {
-        auto e = *mIt;
-        if (e == nullptr) [[unlikely]]
+        if (mIt != mEnd) [[likely]] {
+            auto e = *mIt;
+            if (e == nullptr) [[unlikely]]
+                mCurrent = UINT_NULL;
+            else
+                mCurrent = e->index();
+        }
+        else {
             mCurrent = UINT_NULL;
-        else
-            mCurrent = e->index();
+        }
     }
 };
 

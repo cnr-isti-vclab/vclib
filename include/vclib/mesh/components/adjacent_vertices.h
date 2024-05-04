@@ -419,7 +419,8 @@ public:
      */
     ConstAdjacentVertexIndexIterator adjVertexIndexBegin() const
     {
-        return ConstAdjacentVertexIndexIterator(adjVertexBegin());
+        return ConstAdjacentVertexIndexIterator(
+            adjVertexBegin(), adjVertexEnd());
     }
 
     /**
@@ -429,7 +430,7 @@ public:
      */
     ConstAdjacentVertexIndexIterator adjVertexIndexEnd() const
     {
-        return ConstAdjacentVertexIndexIterator(adjVertexEnd(), true);
+        return ConstAdjacentVertexIndexIterator(adjVertexEnd(), adjVertexEnd());
     }
 
     /**
