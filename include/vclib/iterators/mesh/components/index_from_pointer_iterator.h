@@ -38,8 +38,7 @@ namespace vcl {
 template<typename Iterator>
 class IndexFromPointerIterator
 {
-    Iterator mIt, mEnd;
-    uint     mCurrent = UINT_NULL;
+    Iterator mIt;
 
 public:
     using difference_type   = ptrdiff_t;
@@ -50,16 +49,21 @@ public:
 
     IndexFromPointerIterator() = default;
 
-    IndexFromPointerIterator(const Iterator& it, const Iterator& end) :
-            mIt(it), mEnd(end)
+    IndexFromPointerIterator(const Iterator& it) : mIt(it) {}
+
+    value_type operator*() const
     {
-        if (mIt != mEnd)
-            updateCurrent();
+        auto e = *mIt;
+        if (e == nullptr) [[unlikely]]
+            return UINT_NULL;
+        else
+            return e->index();
     }
 
-    value_type operator*() const { return mCurrent; }
-
-    pointer operator->() const { return &mCurrent; }
+    auto operator->() const
+    {
+        return FakePointerWithValue(**this);
+    }
 
     bool operator==(const IndexFromPointerIterator& oi) const
     {
@@ -74,7 +78,6 @@ public:
     IndexFromPointerIterator& operator++()
     {
         ++mIt;
-        updateCurrent();
         return *this;
     }
 
@@ -82,14 +85,12 @@ public:
     {
         auto it = *this;
         ++mIt;
-        updateCurrent();
         return it;
     }
 
     IndexFromPointerIterator& operator--()
     {
         --mIt;
-        updateCurrent();
         return *this;
     }
 
@@ -97,21 +98,18 @@ public:
     {
         auto it = *this;
         --mIt;
-        updateCurrent();
         return it;
     }
 
     IndexFromPointerIterator& operator+=(difference_type n)
     {
         mIt += n;
-        updateCurrent();
         return *this;
     }
 
     IndexFromPointerIterator& operator-=(difference_type n)
     {
         mIt -= n;
-        updateCurrent();
         return *this;
     }
 
@@ -154,21 +152,6 @@ public:
     bool operator>=(const IndexFromPointerIterator& oi) const
     {
         return mIt >= oi.mIt;
-    }
-
-private:
-    void updateCurrent()
-    {
-        if (mIt != mEnd) [[likely]] {
-            auto e = *mIt;
-            if (e == nullptr) [[unlikely]]
-                mCurrent = UINT_NULL;
-            else
-                mCurrent = e->index();
-        }
-        else {
-            mCurrent = UINT_NULL;
-        }
     }
 };
 

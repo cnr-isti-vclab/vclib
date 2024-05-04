@@ -574,7 +574,7 @@ public:
      */
     ConstAdjacentEdgeIndexIterator adjEdgeIndexBegin() const
     {
-        return ConstAdjacentEdgeIndexIterator(adjEdgeBegin(), adjEdgeEnd());
+        return ConstAdjacentEdgeIndexIterator(adjEdgeBegin());
     }
 
     /**
@@ -584,7 +584,7 @@ public:
      */
     ConstAdjacentEdgeIndexIterator adjEdgeIndexEnd() const
     {
-        return ConstAdjacentEdgeIndexIterator(adjEdgeEnd(), adjEdgeEnd());
+        return ConstAdjacentEdgeIndexIterator(adjEdgeEnd());
     }
 
     /**
