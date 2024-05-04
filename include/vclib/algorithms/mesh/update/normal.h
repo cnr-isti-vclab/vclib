@@ -233,7 +233,7 @@ void clearPerReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
     // function that is called for each container Cont
     auto f = [&]<mesh::ElementContainerConcept Cont>() {
         using Elem = typename Cont::ElementType; // the Element type of Cont
-        if constexpr (comp::HasVertexPointers<Elem>) { // if Elem has vertices
+        if constexpr (comp::HasVertexReferences<Elem>) { // if Elem has vertices
             for (auto& e : mesh.template elements<Elem::ELEMENT_ID>()) {
                 for (auto* v : e.vertices()) {
                     v->normal().setZero();
@@ -296,7 +296,7 @@ void normalizePerReferencedVertexNormals(
     // function that is called for each container Cont
     auto f = [&]<mesh::ElementContainerConcept Cont>() {
         using Elem = typename Cont::ElementType; // the Element type of Cont
-        if constexpr (comp::HasVertexPointers<Elem>) { // if Elem has vertices
+        if constexpr (comp::HasVertexReferences<Elem>) { // if Elem has vertices
             for (auto& e : mesh.template elements<Elem::ELEMENT_ID>()) {
                 for (auto* v : e.vertices()) {
                     detail::normalizeNoThrow<ElemId::VERTEX>(*v, log);

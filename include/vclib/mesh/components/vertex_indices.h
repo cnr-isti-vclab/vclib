@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_INDICES_H
 #define VCL_MESH_COMPONENTS_VERTEX_INDICES_H
 
-#include <vclib/concepts/mesh/components/vertex_pointers.h>
+#include <vclib/concepts/mesh/components/vertex_references.h>
 #include <vclib/iterators/mesh/components/pointer_from_index_iterator.h>
 #include <vclib/views/view.h>
 
@@ -114,8 +114,6 @@ public:
      * @brief Expose the type of the Vertex.
      */
     using VertexType = Vertex;
-
-    static const bool STORES_VERTEX_POINTERS = false;
 
     static const int VERTEX_NUMBER = Base::SIZE;
 
@@ -702,7 +700,7 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
-        if constexpr (HasVertexPointers<Element>) {
+        if constexpr (HasVertexReferences<Element>) {
             if constexpr (N > 0) {
                 // same size non-polygonal faces
                 if constexpr (N == Element::VERTEX_NUMBER) {

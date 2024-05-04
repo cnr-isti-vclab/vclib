@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
 #define VCL_MESH_COMPONENTS_VERTEX_POINTERS_H
 
-#include <vclib/concepts/mesh/components/vertex_pointers.h>
+#include <vclib/concepts/mesh/components/vertex_references.h>
 #include <vclib/views/view.h>
 
 #include "bases/pointers_container_component.h"
@@ -259,8 +259,8 @@ public:
 
     /**
      * @brief Sets the vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the vertex; the
-     * value must be between begin() and end().
+     * @param[in] it: the iterator in this container on which set the vertex;
+     * the value must be between begin() and end().
      * @param[in] vi: The index in the vertex container of the vertex to set.
      */
     void setVertex(ConstVertexIterator it, uint vi)
@@ -281,8 +281,8 @@ public:
 
     /**
      * @brief Sets the vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the vertex; the
-     * value must be between begin() and end().
+     * @param[in] it: the iterator in this container on which set the vertex;
+     * the value must be between begin() and end().
      * @param[in] vi: The index in the vertex container of the vertex to set.
      */
     void setVertex(ConstVertexIndexIterator it, uint vi)
@@ -686,7 +686,7 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
-        if constexpr (HasVertexPointers<Element>) {
+        if constexpr (HasVertexReferences<Element>) {
             if constexpr (N > 0) {
                 // same size non-polygonal faces
                 if constexpr (N == Element::VERTEX_NUMBER) {

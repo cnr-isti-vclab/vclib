@@ -144,7 +144,7 @@ set(HEADERS
     include/vclib/concepts/mesh/components/tex_coord.h
     include/vclib/concepts/mesh/components/texture_paths.h
     include/vclib/concepts/mesh/components/transform_matrix.h
-    include/vclib/concepts/mesh/components/vertex_pointers.h
+    include/vclib/concepts/mesh/components/vertex_references.h
     include/vclib/concepts/mesh/components/wedge_colors.h
     include/vclib/concepts/mesh/components/wedge_tex_coords.h
     include/vclib/concepts/mesh/containers/edge_container.h

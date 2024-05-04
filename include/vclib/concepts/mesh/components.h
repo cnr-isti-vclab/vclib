@@ -40,7 +40,7 @@
 #include "components/tex_coord.h"
 #include "components/texture_paths.h"
 #include "components/transform_matrix.h"
-#include "components/vertex_pointers.h"
+#include "components/vertex_references.h"
 #include "components/wedge_colors.h"
 #include "components/wedge_tex_coords.h"
 

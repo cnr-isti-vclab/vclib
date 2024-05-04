@@ -177,7 +177,7 @@ public:
     template<typename ElType>
     void importFrom(const ElType& v)
     {
-        if constexpr (comp::HasVertexPointers<ElType> && NV < 0) {
+        if constexpr (comp::HasVertexReferences<ElType> && NV < 0) {
             VRefs::resizeVertices(v.vertexNumber());
             // Now I need to resize all the TTVN components
             (resizeTTVNComponent<Comps>(v.vertexNumber()), ...);

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include <vector>
 
@@ -32,15 +32,20 @@
 namespace vcl::comp {
 
 /**
- * @brief HasVertexPointers concept is satisfied only if a Element class
+ * @brief HasVertexReferences concept is satisfied only if a Element class
  * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to an VertexPointers component of
- * a given element.
+ * types and member functions allow to access to a VertexPointers or
+ * VertexIndices component of a given element.
+ *
+ * @note This concept does not discriminate between the VertexPointers and the
+ * VertexIndices components. It is made to check if either of them is
+ * available. If you need to check for a specific component, use the
+ * HasVertexPointers or HasVertexIndices concepts.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasVertexPointers = requires (
+concept HasVertexReferences = requires (
     T                                    o,
     const T&                             co,
     typename T::VertexType               v,
@@ -48,6 +53,8 @@ concept HasVertexPointers = requires (
     std::vector<uint> vecu) {
     // clang-format off
     T::VERTEX_NUMBER;
+    typename T::VertexReferences;
+
     typename T::VertexType;
     typename T::VertexIterator;
     typename T::ConstVertexIterator;
@@ -101,6 +108,18 @@ concept HasVertexPointers = requires (
     // clang-format on
 };
 
+template<typename T>
+concept HasVertexPointers = HasVertexReferences<T> && requires
+{
+    typename T::VertexPointers;
+};
+
+template<typename T>
+concept HasVertexIndices = HasVertexReferences<T> && requires
+{
+    typename T::VertexIndices;
+};
+
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
