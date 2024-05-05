@@ -26,7 +26,13 @@
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
-TEMPLATE_TEST_CASE("TriMesh Topology", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "TriMesh Topology",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 

@@ -28,50 +28,52 @@
 
 namespace vcl {
 
-template<typename ScalarType>
+template<typename ScalarType, bool INDEXED>
 class TriMeshT;
 
 } // namespace vcl
 
 namespace vcl::trimesh {
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Vertex;
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Face;
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Vertex :
         public vcl::Vertex<
-            TriMeshT<Scalar>,
+            TriMeshT<Scalar, I>,
             vert::BitFlags,
             vert::Coordinate3<Scalar>,
             vert::Normal3<Scalar>,
-            vert::OptionalColor<Vertex<Scalar>>,
-            vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vert::OptionalAdjacentFacePointers<Face<Scalar>, Vertex<Scalar>>,
-            vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
-            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-            vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-            vert::OptionalMark<Vertex<Scalar>>,
-            vert::CustomComponents<Vertex<Scalar>>>
+            vert::OptionalColor<Vertex<Scalar, I>>,
+            vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalAdjacentFacePointers<
+                Face<Scalar, I>,
+                Vertex<Scalar, I>>,
+            vert::OptionalAdjacentVertexPointers<Vertex<Scalar, I>>,
+            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalMark<Vertex<Scalar, I>>,
+            vert::CustomComponents<Vertex<Scalar, I>>>
 {
 };
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Face :
         public vcl::Face<
-            TriMeshT<Scalar>,
+            TriMeshT<Scalar, I>,
             face::TriangleBitFlags,
-            face::TriangleVertexPtrs<Vertex<Scalar>, Face<Scalar>>,
+            face::TriangleVertexPtrs<Vertex<Scalar, I>, Face<Scalar, I>>,
             face::Normal3<Scalar>,
-            face::OptionalColor<Face<Scalar>>,
-            face::OptionalQuality<Scalar, Face<Scalar>>,
-            face::OptionalAdjacentTrianglePointers<Face<Scalar>>,
-            face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>,
-            face::OptionalMark<Face<Scalar>>,
-            face::CustomComponents<Face<Scalar>>>
+            face::OptionalColor<Face<Scalar, I>>,
+            face::OptionalQuality<Scalar, Face<Scalar, I>>,
+            face::OptionalAdjacentTrianglePointers<Face<Scalar, I>>,
+            face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar, I>>,
+            face::OptionalMark<Face<Scalar, I>>,
+            face::CustomComponents<Face<Scalar, I>>>
 {
 };
 
@@ -83,11 +85,11 @@ namespace vcl {
  * @brief The TriMeshT class
  * @ingroup meshes
  */
-template<typename Scalar = double>
+template<typename Scalar, bool INDEXED>
 class TriMeshT :
         public vcl::Mesh<
-            mesh::VertexContainer<trimesh::Vertex<Scalar>>,
-            mesh::FaceContainer<trimesh::Face<Scalar>>,
+            mesh::VertexContainer<trimesh::Vertex<Scalar, INDEXED>>,
+            mesh::FaceContainer<trimesh::Face<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Color,
             mesh::Mark,
@@ -102,17 +104,31 @@ public:
 
 /**
  * @brief The TriMeshf class is a specialization of TriMeshT that uses `float`
- * as scalar.
+ * as scalar and pointers to store vertices of faces and adjacency information.
  * @ingroup meshes
  */
-using TriMeshf = TriMeshT<float>;
+using TriMeshf = TriMeshT<float, false>;
 
 /**
  * @brief The TriMesh class is a specialization of TriMeshT that uses `double`
- * as scalar.
+ * as scalar and pointers to store vertices of faces and adjacency information.
  * @ingroup meshes
  */
-using TriMesh = TriMeshT<double>;
+using TriMesh = TriMeshT<double, false>;
+
+/**
+ * @brief The TriMeshIndexedf class is a specialization of TriMeshT that uses
+ * `float` as scalar and indices (`unsigned int`) to store vertices of faces
+ * and adjacency information.
+ */
+using TriMeshIndexedf = TriMeshT<float, true>;
+
+/**
+ * @brief The TriMeshIndexed class is a specialization of TriMeshT that uses
+ * `double` as scalar and indices (`unsigned int`) to store vertices of faces
+ * and adjacency information.
+ */
+using TriMeshIndexed  = TriMeshT<double, true>;
 
 } // namespace vcl
 

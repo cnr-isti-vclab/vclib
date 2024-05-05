@@ -24,7 +24,13 @@
 #include <catch2/catch_test_macros.hpp>
 #include <vclib/meshes.h>
 
-TEMPLATE_TEST_CASE("Test empty TriMesh", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "Test empty TriMesh",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 
@@ -217,7 +223,13 @@ TEMPLATE_TEST_CASE("Test empty TriMesh", "", vcl::TriMesh, vcl::TriMeshf)
     }
 }
 
-TEMPLATE_TEST_CASE("Test a cube TriMesh", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "Test a cube TriMesh",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 

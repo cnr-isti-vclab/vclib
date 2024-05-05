@@ -94,8 +94,8 @@ public:
     using ScalarType = Scalar;
 };
 
-using EdgeMeshf = EdgeMeshT<float, false>;
-using EdgeMesh  = EdgeMeshT<double, false>;
+using EdgeMeshf        = EdgeMeshT<float, false>;
+using EdgeMesh         = EdgeMeshT<double, false>;
 using EdgeMeshIndexedf = EdgeMeshT<float, true>;
 using EdgeMeshIndexed  = EdgeMeshT<double, true>;
 
