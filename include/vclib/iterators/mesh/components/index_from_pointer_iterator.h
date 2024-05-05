@@ -60,10 +60,7 @@ public:
             return e->index();
     }
 
-    auto operator->() const
-    {
-        return FakePointerWithValue(**this);
-    }
+    auto operator->() const { return FakePointerWithValue(**this); }
 
     bool operator==(const IndexFromPointerIterator& oi) const
     {

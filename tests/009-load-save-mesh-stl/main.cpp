@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms/mesh/create/hexahedron.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
@@ -134,7 +134,7 @@ TEMPLATE_TEST_CASE(
     SECTION("TriMesh - Cube")
     {
         TriMesh tm;
-        auto         ss = stlCube();
+        auto    ss = stlCube();
         vcl::loadStl(tm, ss);
         REQUIRE(tm.vertexNumber() == 36);
         REQUIRE(tm.faceNumber() == 12);

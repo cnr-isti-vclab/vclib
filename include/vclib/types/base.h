@@ -59,7 +59,6 @@ typedef enum {
     NONE
 } PrimitiveType;
 
-
 /**
  * @brief A simple utility class to represent a pointer with a value.
  *
@@ -67,10 +66,13 @@ typedef enum {
  * stored in the iterator itself.
  */
 template<class T>
-class FakePointerWithValue {
+class FakePointerWithValue
+{
     T mValue;
+
 public:
     FakePointerWithValue(const T& value) : mValue(value) {}
+
     T* operator->() { return std::addressof(mValue); }
 };
 

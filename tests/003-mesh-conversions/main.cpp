@@ -20,12 +20,12 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
-using Meshes = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshes  = std::pair<vcl::TriMesh, vcl::PolyMesh>;
 using Meshesf = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
 
 TEMPLATE_TEST_CASE(
@@ -34,7 +34,7 @@ TEMPLATE_TEST_CASE(
     Meshes,
     Meshesf)
 {
-    using TriMesh = typename TestType::first_type;
+    using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
 
     TriMesh tm =
@@ -110,13 +110,14 @@ TEMPLATE_TEST_CASE(
 }
 
 TEMPLATE_TEST_CASE(
-    "Mesh Conversions - The polygonal cube mesh loaded on TriMesh", "",
-    vcl::TriMesh, vcl::TriMeshf)
+    "Mesh Conversions - The polygonal cube mesh loaded on TriMesh",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf)
 {
     using TriMesh = TestType;
 
-    TriMesh tm =
-        vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_poly.ply");
+    TriMesh tm = vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_poly.ply");
 
     THEN("The loaded TriMesh has 8 vertices and 12 faces")
     {
@@ -131,11 +132,10 @@ TEMPLATE_TEST_CASE(
     Meshes,
     Meshesf)
 {
-    using TriMesh = typename TestType::first_type;
+    using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
 
-    PolyMesh pm =
-        vcl::loadPly<PolyMesh>(VCLIB_ASSETS_PATH "/cube_poly.ply");
+    PolyMesh pm = vcl::loadPly<PolyMesh>(VCLIB_ASSETS_PATH "/cube_poly.ply");
 
     THEN("The loaded PolyMesh has 8 vertices and 6 faces")
     {
