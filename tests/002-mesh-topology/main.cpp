@@ -558,9 +558,9 @@ TEMPLATE_TEST_CASE(
     vcl::PolyMesh,
     vcl::PolyMeshf)
 {
-    using TriMesh = TestType;
+    using PolyMesh = TestType;
 
-    TriMesh pm = vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_poly.ply");
+    PolyMesh pm = vcl::loadPly<PolyMesh>(VCLIB_ASSETS_PATH "/cube_poly.ply");
 
     THEN("The mesh has 8 vertices, 6 faces")
     {
