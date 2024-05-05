@@ -102,14 +102,14 @@ public:
      */
     using VertexType = Vertex;
 
-    static const int VERTEX_NUMBER = Base::SIZE;
-
     /* Iterator Types declaration */
 
     using VertexIterator      = Base::Iterator;
     using ConstVertexIterator = Base::ConstIterator;
     using ConstVertexIndexIterator =
         IndexFromPointerIterator<ConstVertexIterator>;
+
+    static const int VERTEX_NUMBER = Base::SIZE;
 
     /* Constructors */
 
