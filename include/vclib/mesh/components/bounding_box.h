@@ -48,28 +48,32 @@ namespace vcl::comp {
  *
  * @tparam PointType: The type of the point that will be used to represent the
  * bounding box. This template argument must satisfy the PointConcept.
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<PointConcept PointType, typename ElementType = void, bool OPT = false>
+template<
+    PointConcept PointType,
+    typename ParentElemType = void,
+    bool OPT                = false>
 class BoundingBox :
         public Component<
-            BoundingBox<PointType, ElementType, OPT>,
+            BoundingBox<PointType, ParentElemType, OPT>,
             CompId::BOUNDING_BOX,
             Box<PointType>,
-            ElementType,
+            ParentElemType,
             OPT>
 {
     using Base = Component<
-        BoundingBox<PointType, ElementType, OPT>,
+        BoundingBox<PointType, ParentElemType, OPT>,
         CompId::BOUNDING_BOX,
         Box<PointType>,
-        ElementType,
+        ParentElemType,
         OPT>;
 
 public:

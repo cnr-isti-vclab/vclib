@@ -68,28 +68,29 @@ namespace vcl::comp {
  * v.edgeSelected(1) = true;
  * @endcode
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
+template<typename ParentElemType = void, bool OPT = false>
 class TriangleBitFlags :
         public Component<
-            TriangleBitFlags<ElementType, OPT>,
+            TriangleBitFlags<ParentElemType, OPT>,
             CompId::BIT_FLAGS,
             BitSet<short>,
-            ElementType,
+            ParentElemType,
             OPT>
 {
     using Base = Component<
-        TriangleBitFlags<ElementType, OPT>,
+        TriangleBitFlags<ParentElemType, OPT>,
         CompId::BIT_FLAGS,
         BitSet<short>,
-        ElementType,
+        ParentElemType,
         OPT>;
 
     using FT = short; // FlagsType, the integral type used for the flags

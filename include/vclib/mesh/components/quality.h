@@ -44,28 +44,29 @@ namespace vcl::comp {
  * @endcode
  *
  * @tparam Scalar: The scalar type of the Quality value.
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename Scalar, typename ElementType = void, bool OPT = false>
+template<typename Scalar, typename ParentElemType = void, bool OPT = false>
 class Quality :
         public Component<
-            Quality<Scalar, ElementType, OPT>,
+            Quality<Scalar, ParentElemType, OPT>,
             CompId::QUALITY,
             Scalar,
-            ElementType,
+            ParentElemType,
             OPT>
 {
     using Base = Component<
-        Quality<Scalar, ElementType, OPT>,
+        Quality<Scalar, ParentElemType, OPT>,
         CompId::QUALITY,
         Scalar,
-        ElementType,
+        ParentElemType,
         OPT>;
 
 public:

@@ -79,11 +79,11 @@ using ContCompBase = std::conditional_t<
  * outside the Container. If you don't have additional data. set AdditionalData
  * = void. E.g. a WedgeTexCoord component stores a short as AdditionalData that
  * indicates the texture index used by all the Wedge TexCoords.
- * @tparam ElementType: This type is used to discriminate between horizontal and
- * vertical components. When a component is horizontal, this type must be void.
- * When a component is vertical, this type must be the type of the Element that
- * has the component, and it will be used by the vcl::Mesh to access to the data
- * stored vertically.
+ * @tparam ParentElemType: The Parent Element type is used to discriminate
+ * between horizontal and vertical components. When a component is horizontal,
+ * this type must be void. When a component is vertical, this type must be the
+ * type of the Element that has the component, and it will be used by the
+ * component to access the vertical data stored in the vcl::Mesh.
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
@@ -105,7 +105,7 @@ template<
     typename T,                // data stored in container
     int N,                     // container size
     typename AdditionalData,   // additional data outside container
-    typename ElementType,      // element type, void if horizontal
+    typename ParentElemType,   // parent element type, void if horizontal
     bool OPT,                  // true if component vertical and optional
     bool TTVN,                 // true if container size tied to vertex number
     typename... PointedTypes>  // types of pointers stored by the component
@@ -116,7 +116,7 @@ class ContainerComponent :
             T,
             N,
             AdditionalData,
-            ElementType,
+            ParentElemType,
             OPT,
             TTVN,
             PointedTypes...>
@@ -130,7 +130,7 @@ class ContainerComponent :
         T,
         N,
         AdditionalData,
-        ElementType,
+        ParentElemType,
         OPT,
         TTVN,
         PointedTypes...>;

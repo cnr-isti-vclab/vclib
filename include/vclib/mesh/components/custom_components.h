@@ -80,20 +80,19 @@ namespace vcl::comp {
  * addPerVertexCustomComponent is provided by the VertexContainer and can be
  * accessed directly from the Mesh.
  *
- * @tparam ElementType: This type is used to discriminate between horizontal and
- * vertical components. When a component is horizontal, this type must be void.
- * When a component is vertical, this type must be the type of the Element that
- * has the component, and it will be used by the vcl::Mesh to access to the data
- * stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  *
  * @ingroup components
  */
-template<typename ElementType = void>
+template<typename ParentElemType = void>
 class CustomComponents
 {
-    static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+    static const bool IS_VERTICAL = !std::is_same_v<ParentElemType, void>;
 
-    detail::CustomComponentsData<ElementType, IS_VERTICAL> mData;
+    detail::CustomComponentsData<ParentElemType, IS_VERTICAL> mData;
 
 public:
     /**
@@ -121,7 +120,7 @@ public:
     bool hasCustomComponent(const std::string& compName) const
     {
         return mData.componentExists(
-            compName, static_cast<const ElementType*>(this));
+            compName, static_cast<const ParentElemType*>(this));
     }
 
     /**
@@ -145,7 +144,7 @@ public:
     bool isCustomComponentOfType(const std::string& compName) const
     {
         return mData.template isComponentOfType<CompType>(
-            compName, static_cast<const ElementType*>(this));
+            compName, static_cast<const ParentElemType*>(this));
     }
 
     /**
@@ -166,7 +165,7 @@ public:
     std::type_index customComponentType(const std::string& compName) const
     {
         return mData.componentType(
-            compName, static_cast<const ElementType*>(this));
+            compName, static_cast<const ParentElemType*>(this));
     }
 
     /**
@@ -181,7 +180,7 @@ public:
     std::vector<std::string> customComponentNamesOfType() const
     {
         return mData.template componentNamesOfType<CompType>(
-            static_cast<const ElementType*>(this));
+            static_cast<const ParentElemType*>(this));
     }
 
     /**
@@ -211,7 +210,7 @@ public:
     const CompType& customComponent(const std::string& compName) const
     {
         return mData.template get<CompType>(
-            compName, static_cast<const ElementType*>(this));
+            compName, static_cast<const ParentElemType*>(this));
     }
 
     /**
@@ -241,7 +240,7 @@ public:
     CompType& customComponent(const std::string& compName)
     {
         return mData.template get<CompType>(
-            compName, static_cast<ElementType*>(this));
+            compName, static_cast<ParentElemType*>(this));
     }
 
     template<typename CompType>

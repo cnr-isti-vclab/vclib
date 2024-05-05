@@ -62,9 +62,10 @@ namespace vcl::comp {
  * storable adjacent faces. If negative, the container is dynamic.
  * @tparam TTVN: If true, the size of the container will be tied to the Vertex
  * Number of the component (this is used mostly on Face elements).
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
@@ -74,24 +75,24 @@ template<
     typename Face,
     int  N,
     bool TTVN,
-    typename ElementType = void,
-    bool OPT             = false>
+    typename ParentElemType = void,
+    bool OPT                = false>
 class AdjacentFaces :
         public PointersContainerComponent<
-            AdjacentFaces<Face, N, TTVN, ElementType, OPT>,
+            AdjacentFaces<Face, N, TTVN, ParentElemType, OPT>,
             CompId::ADJACENT_FACES,
             Face,
             N,
-            ElementType,
+            ParentElemType,
             OPT,
             TTVN>
 {
     using Base = PointersContainerComponent<
-        AdjacentFaces<Face, N, TTVN, ElementType, OPT>,
+        AdjacentFaces<Face, N, TTVN, ParentElemType, OPT>,
         CompId::ADJACENT_FACES,
         Face,
         N,
-        ElementType,
+        ParentElemType,
         OPT,
         TTVN>;
 

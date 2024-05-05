@@ -51,28 +51,28 @@ namespace vcl::edge {
  */
 
 /* Port AdjacentEdges class into edge namespace */
-template<typename EdgeType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false>;
+template<typename ParentEdgeType>
+using AdjacentEdges = comp::AdjacentEdges<ParentEdgeType, -1, false>;
 
-template<typename EdgeType>
+template<typename ParentEdgeType>
 using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, EdgeType>;
+    comp::AdjacentEdges<ParentEdgeType, -1, false, ParentEdgeType>;
 
-template<typename EdgeType>
+template<typename ParentEdgeType>
 using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, EdgeType, true>;
+    comp::AdjacentEdges<ParentEdgeType, -1, false, ParentEdgeType, true>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
 
-template<typename FaceType, typename EdgeType>
+template<typename FaceType, typename ParentEdgeType>
 using VerticalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, EdgeType>;
+    comp::AdjacentFaces<FaceType, -1, false, ParentEdgeType>;
 
-template<typename FaceType, typename EdgeType>
+template<typename FaceType, typename ParentEdgeType>
 using OptionalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, EdgeType, true>;
+    comp::AdjacentFaces<FaceType, -1, false, ParentEdgeType, true>;
 
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<>;
@@ -83,21 +83,21 @@ using Color = comp::Color<>;
 template<typename VertexType>
 using VerticalColor = comp::Color<VertexType>;
 
-template<typename EdgeType>
-using OptionalColor = comp::Color<EdgeType, true>;
+template<typename ParentEdgeType>
+using OptionalColor = comp::Color<ParentEdgeType, true>;
 
 /* Port CustomComponents class into edge namespace */
-template<typename EdgeType>
-using CustomComponents = comp::CustomComponents<EdgeType>;
+template<typename ParentEdgeType>
+using CustomComponents = comp::CustomComponents<ParentEdgeType>;
 
 /* Port Mark class into edge namespace */
 using Mark = comp::Mark<>;
 
-template<typename EdgeType>
-using VerticalMark = comp::Mark<EdgeType>;
+template<typename ParentEdgeType>
+using VerticalMark = comp::Mark<ParentEdgeType>;
 
-template<typename EdgeType>
-using OptionalMark = comp::Mark<EdgeType, true>;
+template<typename ParentEdgeType>
+using OptionalMark = comp::Mark<ParentEdgeType, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
@@ -110,23 +110,23 @@ using Quality = comp::Quality<QualityType>;
 using Qualityf = comp::Qualityf<>;
 using Qualityd = comp::Qualityd<>;
 
-template<typename QualityType, typename EdgeType>
-using VerticalQuality = comp::Quality<QualityType, EdgeType>;
+template<typename QualityType, typename ParentEdgeType>
+using VerticalQuality = comp::Quality<QualityType, ParentEdgeType>;
 
-template<typename EdgeType>
-using VerticalQualityf = comp::Quality<float, EdgeType>;
+template<typename ParentEdgeType>
+using VerticalQualityf = comp::Quality<float, ParentEdgeType>;
 
-template<typename EdgeType>
-using VerticalQualityd = comp::Quality<double, EdgeType>;
+template<typename ParentEdgeType>
+using VerticalQualityd = comp::Quality<double, ParentEdgeType>;
 
-template<typename QualityType, typename EdgeType>
-using OptionalQuality = comp::Quality<QualityType, EdgeType, true>;
+template<typename QualityType, typename ParentEdgeType>
+using OptionalQuality = comp::Quality<QualityType, ParentEdgeType, true>;
 
-template<typename EdgeType>
-using OptionalQualityf = comp::Quality<float, EdgeType, true>;
+template<typename ParentEdgeType>
+using OptionalQualityf = comp::Quality<float, ParentEdgeType, true>;
 
-template<typename EdgeType>
-using OptionalQualityd = comp::Quality<double, EdgeType, true>;
+template<typename ParentEdgeType>
+using OptionalQualityd = comp::Quality<double, ParentEdgeType, true>;
 
 /* Port VertexPointers class into edge namespace */
 template<typename VertexType>

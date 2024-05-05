@@ -49,11 +49,11 @@ namespace vcl::comp {
  * a VertexPointers component would have VertexType as Elem.
  * @tparam N: The size of the container: if >= 0 the size is static, if < 0 the
  * size is dynamic.
- * @tparam ElementType: This type is used to discriminate between horizontal and
- * vertical components. When a component is horizontal, this type must be void.
- * When a component is vertical, this type must be the type of the Element that
- * has the component, and it will be used by the vcl::Mesh to access to the data
- * stored vertically.
+ * @tparam ParentElemType: The Parent Element type is used to discriminate
+ * between horizontal and vertical components. When a component is horizontal,
+ * this type must be void. When a component is vertical, this type must be the
+ * type of the Element that has the component, and it will be used by the
+ * component to access the vertical data stored in the vcl::Mesh.
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
@@ -71,7 +71,7 @@ template<
     uint COMP_ID,              // component id
     typename Elem,             // element type for which the pointers are stored
     int N,                     // container size
-    typename ElementType,      // element type, void if horizontal
+    typename ParentElemType,   // parent element type, void if horizontal
     bool OPT,                  // true if component vertical and optional
     bool TTVN>                 // true if container size tied to vertex number
 class PointersContainerComponent :
@@ -81,7 +81,7 @@ class PointersContainerComponent :
             Elem*,
             N,
             void,
-            ElementType,
+            ParentElemType,
             OPT,
             TTVN,
             Elem>
@@ -92,7 +92,7 @@ class PointersContainerComponent :
         Elem*,
         N,
         void,
-        ElementType,
+        ParentElemType,
         OPT,
         TTVN,
         Elem>;

@@ -66,58 +66,58 @@ using AdjacentPolygonEdges = comp::AdjacentEdges<EdgeType, -1, true>;
 template<typename EdgeType>
 using AdjacentTriangleEdges = comp::AdjacentEdges<EdgeType, 3, true>;
 
-template<typename EdgeType, typename FaceType>
+template<typename EdgeType, typename ParentFaceType>
 using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, FaceType>;
+    comp::AdjacentEdges<EdgeType, -1, false, ParentFaceType>;
 
-template<typename EdgeType, typename FaceType>
+template<typename EdgeType, typename ParentFaceType>
 using VerticalAdjacentPolygonEdges =
-    comp::AdjacentEdges<EdgeType, -1, true, FaceType>;
+    comp::AdjacentEdges<EdgeType, -1, true, ParentFaceType>;
 
-template<typename EdgeType, typename FaceType>
+template<typename EdgeType, typename ParentFaceType>
 using VerticalAdjacentTriangleEdges =
-    comp::AdjacentEdges<EdgeType, 3, true, FaceType>;
+    comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType>;
 
-template<typename EdgeType, typename FaceType>
+template<typename EdgeType, typename ParentFaceType>
 using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, FaceType, true>;
+    comp::AdjacentEdges<EdgeType, -1, false, ParentFaceType, true>;
 
-template<typename EdgeType, typename FaceType>
+template<typename EdgeType, typename ParentFaceType>
 using OptionalAdjacentPolygonEdges =
-    comp::AdjacentEdges<EdgeType, -1, true, FaceType, true>;
+    comp::AdjacentEdges<EdgeType, -1, true, ParentFaceType, true>;
 
-template<typename EdgeType, typename FaceType>
+template<typename EdgeType, typename ParentFaceType>
 using OptionalAdjacentTriangleEdges =
-    comp::AdjacentEdges<EdgeType, 3, true, FaceType, true>;
+    comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType, true>;
 
 /* Port AdjacentFaces class into face namespace */
-template<typename FaceType>
-using AdjacentPolygons = comp::AdjacentFaces<FaceType, -1, true>;
+template<typename ParentFaceType>
+using AdjacentPolygons = comp::AdjacentFaces<ParentFaceType, -1, true>;
 
-template<typename FaceType>
-using AdjacentTriangles = comp::AdjacentFaces<FaceType, 3, true>;
+template<typename ParentFaceType>
+using AdjacentTriangles = comp::AdjacentFaces<ParentFaceType, 3, true>;
 
-template<typename FaceType>
+template<typename ParentFaceType>
 using VerticalAdjacentPolygons =
-    comp::AdjacentFaces<FaceType, -1, true, FaceType>;
+    comp::AdjacentFaces<ParentFaceType, -1, true, ParentFaceType>;
 
-template<typename FaceType>
+template<typename ParentFaceType>
 using VerticalAdjacentTriangles =
-    comp::AdjacentFaces<FaceType, 3, true, FaceType>;
+    comp::AdjacentFaces<ParentFaceType, 3, true, ParentFaceType>;
 
-template<typename FaceType>
+template<typename ParentFaceType>
 using OptionalAdjacentPolygons =
-    comp::AdjacentFaces<FaceType, -1, true, FaceType, true>;
+    comp::AdjacentFaces<ParentFaceType, -1, true, ParentFaceType, true>;
 
-template<typename FaceType>
+template<typename ParentFaceType>
 using OptionalAdjacentTriangles =
-    comp::AdjacentFaces<FaceType, 3, true, FaceType, true>;
+    comp::AdjacentFaces<ParentFaceType, 3, true, ParentFaceType, true>;
 
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags<>;
 
-template<typename FaceType>
-using VerticalBitFlags = comp::BitFlags<FaceType>;
+template<typename ParentFaceType>
+using VerticalBitFlags = comp::BitFlags<ParentFaceType>;
 
 /* Port Color class into face namespace */
 using Color = comp::Color<>;
@@ -125,21 +125,21 @@ using Color = comp::Color<>;
 template<typename VertexType>
 using VerticalColor = comp::Color<VertexType>;
 
-template<typename FaceType>
-using OptionalColor = comp::Color<FaceType, true>;
+template<typename ParentFaceType>
+using OptionalColor = comp::Color<ParentFaceType, true>;
 
 /* Port CustomComponents class into face namespace */
-template<typename FaceType>
-using CustomComponents = comp::CustomComponents<FaceType>;
+template<typename ParentFaceType>
+using CustomComponents = comp::CustomComponents<ParentFaceType>;
 
 /* Port Mark class into face namespace */
 using Mark = comp::Mark<>;
 
-template<typename FaceType>
-using VerticalMark = comp::Mark<FaceType>;
+template<typename ParentFaceType>
+using VerticalMark = comp::Mark<ParentFaceType>;
 
-template<typename FaceType>
-using OptionalMark = comp::Mark<FaceType, true>;
+template<typename ParentFaceType>
+using OptionalMark = comp::Mark<ParentFaceType, true>;
 
 /* Port Normal classes into face namespace */
 template<typename ScalarType, int N>
@@ -163,17 +163,17 @@ using VerticalNormal3f = comp::Normal3f<VertexType>;
 template<typename VertexType>
 using VerticalNormal3d = comp::Normal3d<VertexType>;
 
-template<typename ScalarType, int N, typename FaceType>
-using OptionalNormal = comp::Normal<Point<ScalarType, N>, FaceType, true>;
+template<typename ScalarType, int N, typename ParentFaceType>
+using OptionalNormal = comp::Normal<Point<ScalarType, N>, ParentFaceType, true>;
 
-template<typename ScalarType, typename FaceType>
-using OptionalNormal3 = comp::Normal3<ScalarType, FaceType, true>;
+template<typename ScalarType, typename ParentFaceType>
+using OptionalNormal3 = comp::Normal3<ScalarType, ParentFaceType, true>;
 
-template<typename FaceType>
-using OptionalNormal3f = comp::Normal3f<FaceType, true>;
+template<typename ParentFaceType>
+using OptionalNormal3f = comp::Normal3f<ParentFaceType, true>;
 
-template<typename FaceType>
-using OptionalNormal3d = comp::Normal3d<FaceType, true>;
+template<typename ParentFaceType>
+using OptionalNormal3d = comp::Normal3d<ParentFaceType, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
@@ -182,33 +182,35 @@ using ParentMeshPointer = comp::ParentMeshPointer<MeshType>;
 /* Port PolygonBitFlags class into face namespace */
 using PolygonBitFlags = comp::PolygonBitFlags<-1>;
 
-template<typename FaceType>
-using VerticalPolygonBitFlags = comp::PolygonBitFlags<-1, FaceType>;
+template<typename ParentFaceType>
+using VerticalPolygonBitFlags = comp::PolygonBitFlags<-1, ParentFaceType>;
 
 /* Port PrincipalCurvature class into face namespace */
-template<typename FaceType>
-using PrincipalCurvature = comp::PrincipalCurvature<FaceType>;
+template<typename ParentFaceType>
+using PrincipalCurvature = comp::PrincipalCurvature<ParentFaceType>;
 
 using PrincipalCurvaturef = comp::PrincipalCurvaturef<>;
 using PrincipalCurvatured = comp::PrincipalCurvatured<>;
 
-template<typename ScalarType, typename FaceType>
+template<typename ScalarType, typename ParentFaceType>
 using VerticalPrincipalCurvature =
-    comp::PrincipalCurvature<ScalarType, FaceType>;
+    comp::PrincipalCurvature<ScalarType, ParentFaceType>;
 
-template<typename FaceType>
-using VerticalPrincipalCurvaturef = comp::PrincipalCurvaturef<FaceType>;
-template<typename FaceType>
-using VerticalPrincipalCurvatured = comp::PrincipalCurvatured<FaceType>;
+template<typename ParentFaceType>
+using VerticalPrincipalCurvaturef = comp::PrincipalCurvaturef<ParentFaceType>;
+template<typename ParentFaceType>
+using VerticalPrincipalCurvatured = comp::PrincipalCurvatured<ParentFaceType>;
 
-template<typename ScalarType, typename FaceType>
+template<typename ScalarType, typename ParentFaceType>
 using OptionalPrincipalCurvature =
-    comp::PrincipalCurvature<ScalarType, FaceType, true>;
+    comp::PrincipalCurvature<ScalarType, ParentFaceType, true>;
 
-template<typename FaceType>
-using OptionalPrincipalCurvaturef = comp::PrincipalCurvaturef<FaceType, true>;
-template<typename FaceType>
-using OptionalPrincipalCurvatured = comp::PrincipalCurvatured<FaceType, true>;
+template<typename ParentFaceType>
+using OptionalPrincipalCurvaturef =
+    comp::PrincipalCurvaturef<ParentFaceType, true>;
+template<typename ParentFaceType>
+using OptionalPrincipalCurvatured =
+    comp::PrincipalCurvatured<ParentFaceType, true>;
 
 /* Port Quality class into face namespace */
 template<typename QualityType>
@@ -217,29 +219,29 @@ using Quality = comp::Quality<QualityType>;
 using Qualityf = comp::Qualityf<>;
 using Qualityd = comp::Qualityd<>;
 
-template<typename QualityType, typename FaceType>
-using VerticalQuality = comp::Quality<QualityType, FaceType>;
+template<typename QualityType, typename ParentFaceType>
+using VerticalQuality = comp::Quality<QualityType, ParentFaceType>;
 
-template<typename FaceType>
-using VerticalQualityf = comp::Quality<float, FaceType>;
+template<typename ParentFaceType>
+using VerticalQualityf = comp::Quality<float, ParentFaceType>;
 
-template<typename FaceType>
-using VerticalQualityd = comp::Quality<double, FaceType>;
+template<typename ParentFaceType>
+using VerticalQualityd = comp::Quality<double, ParentFaceType>;
 
-template<typename QualityType, typename FaceType>
-using OptionalQuality = comp::Quality<QualityType, FaceType, true>;
+template<typename QualityType, typename ParentFaceType>
+using OptionalQuality = comp::Quality<QualityType, ParentFaceType, true>;
 
-template<typename FaceType>
-using OptionalQualityf = comp::Quality<float, FaceType, true>;
+template<typename ParentFaceType>
+using OptionalQualityf = comp::Quality<float, ParentFaceType, true>;
 
-template<typename FaceType>
-using OptionalQualityd = comp::Quality<double, FaceType, true>;
+template<typename ParentFaceType>
+using OptionalQualityd = comp::Quality<double, ParentFaceType, true>;
 
 /* Port TriangleBitFlags class into face namespace */
 using TriangleBitFlags = comp::TriangleBitFlags<>;
 
-template<typename FaceType>
-using VerticalTriangleBitFlags = comp::TriangleBitFlags<FaceType>;
+template<typename ParentFaceType>
+using VerticalTriangleBitFlags = comp::TriangleBitFlags<ParentFaceType>;
 
 /* Port VertexPointers class into face namespace */
 template<typename Vertex, int N>
@@ -256,17 +258,17 @@ using PolygonWedgeColors = comp::WedgeColors<-1>;
 
 using TriangleWedgeColors = comp::WedgeColors<3>;
 
-template<typename FaceType>
-using VerticalPolygonWedgeColors = comp::WedgeColors<-1, FaceType>;
+template<typename ParentFaceType>
+using VerticalPolygonWedgeColors = comp::WedgeColors<-1, ParentFaceType>;
 
-template<typename FaceType>
-using VerticalTriangleWedgeColors = comp::WedgeColors<3, FaceType>;
+template<typename ParentFaceType>
+using VerticalTriangleWedgeColors = comp::WedgeColors<3, ParentFaceType>;
 
-template<typename FaceType>
-using OptionalPolygonWedgeColors = comp::WedgeColors<-1, FaceType, true>;
+template<typename ParentFaceType>
+using OptionalPolygonWedgeColors = comp::WedgeColors<-1, ParentFaceType, true>;
 
-template<typename FaceType>
-using OptionalTriangleWedgeColors = comp::WedgeColors<3, FaceType, true>;
+template<typename ParentFaceType>
+using OptionalTriangleWedgeColors = comp::WedgeColors<3, ParentFaceType, true>;
 
 /* Port WedgeTexCoords class into face namespace */
 template<typename ScalarType>
@@ -280,47 +282,47 @@ using PolygonWedgeTexCoordsd  = PolygonWedgeTexCoords<double>;
 using TriangleWedgeTexCoordsf = TriangleWedgeTexCoords<float>;
 using TriangleWedgeTexCoordsd = TriangleWedgeTexCoords<double>;
 
-template<typename ScalarType, typename FaceType>
+template<typename ScalarType, typename ParentFaceType>
 using VerticalPolygonWedgeTexCoords =
-    comp::WedgeTexCoords<ScalarType, -1, FaceType, true>;
+    comp::WedgeTexCoords<ScalarType, -1, ParentFaceType, true>;
 
-template<typename ScalarType, typename FaceType>
+template<typename ScalarType, typename ParentFaceType>
 using VerticalTriangleWedgeTexCoords =
-    comp::WedgeTexCoords<ScalarType, 3, FaceType, true>;
+    comp::WedgeTexCoords<ScalarType, 3, ParentFaceType, true>;
 
-template<typename FaceType>
+template<typename ParentFaceType>
 using VerticalPolygonWedgeTexCoordsf =
-    comp::WedgeTexCoords<float, -1, FaceType>;
-template<typename FaceType>
+    comp::WedgeTexCoords<float, -1, ParentFaceType>;
+template<typename ParentFaceType>
 using VerticalPolygonWedgeTexCoordsd =
-    comp::WedgeTexCoords<double, -1, FaceType>;
-template<typename FaceType>
+    comp::WedgeTexCoords<double, -1, ParentFaceType>;
+template<typename ParentFaceType>
 using VerticalTriangleWedgeTexCoordsf =
-    comp::WedgeTexCoords<float, 3, FaceType>;
-template<typename FaceType>
+    comp::WedgeTexCoords<float, 3, ParentFaceType>;
+template<typename ParentFaceType>
 using VerticalTriangleWedgeTexCoordsd =
-    comp::WedgeTexCoords<double, 3, FaceType>;
+    comp::WedgeTexCoords<double, 3, ParentFaceType>;
 
-template<typename ScalarType, typename FaceType>
+template<typename ScalarType, typename ParentFaceType>
 using OptionalPolygonWedgeTexCoords =
-    comp::WedgeTexCoords<ScalarType, -1, FaceType, true>;
+    comp::WedgeTexCoords<ScalarType, -1, ParentFaceType, true>;
 
-template<typename ScalarType, typename FaceType>
+template<typename ScalarType, typename ParentFaceType>
 using OptionalTriangleWedgeTexCoords =
-    comp::WedgeTexCoords<ScalarType, 3, FaceType, true>;
+    comp::WedgeTexCoords<ScalarType, 3, ParentFaceType, true>;
 
-template<typename FaceType>
+template<typename ParentFaceType>
 using OptionalPolygonWedgeTexCoordsf =
-    comp::WedgeTexCoords<float, -1, FaceType, true>;
-template<typename FaceType>
+    comp::WedgeTexCoords<float, -1, ParentFaceType, true>;
+template<typename ParentFaceType>
 using OptionalPolygonWedgeTexCoordsd =
-    comp::WedgeTexCoords<double, -1, FaceType, true>;
-template<typename FaceType>
+    comp::WedgeTexCoords<double, -1, ParentFaceType, true>;
+template<typename ParentFaceType>
 using OptionalTriangleWedgeTexCoordsf =
-    comp::WedgeTexCoords<float, 3, FaceType, true>;
-template<typename FaceType>
+    comp::WedgeTexCoords<float, 3, ParentFaceType, true>;
+template<typename ParentFaceType>
 using OptionalTriangleWedgeTexCoordsd =
-    comp::WedgeTexCoords<double, 3, FaceType, true>;
+    comp::WedgeTexCoords<double, 3, ParentFaceType, true>;
 
 /** @} */ // end of edge_components group
 

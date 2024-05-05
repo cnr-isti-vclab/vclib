@@ -58,51 +58,52 @@ namespace vcl::vert {
 template<typename Edge>
 using AdjacentEdges = comp::AdjacentEdges<Edge, -1, false>;
 
-template<typename EdgeType, typename VertexType>
+template<typename EdgeType, typename ParentVertexType>
 using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, VertexType>;
+    comp::AdjacentEdges<EdgeType, -1, false, ParentVertexType>;
 
-template<typename EdgeType, typename VertexType>
+template<typename EdgeType, typename ParentVertexType>
 using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, VertexType, true>;
+    comp::AdjacentEdges<EdgeType, -1, false, ParentVertexType, true>;
 
 /* Port AdjacentFaces class into vert namespace */
 template<typename FaceType>
 using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
 
-template<typename FaceType, typename VertexType>
+template<typename FaceType, typename ParentVertexType>
 using VerticalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, VertexType>;
+    comp::AdjacentFaces<FaceType, -1, false, ParentVertexType>;
 
-template<typename FaceType, typename VertexType>
+template<typename FaceType, typename ParentVertexType>
 using OptionalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, VertexType, true>;
+    comp::AdjacentFaces<FaceType, -1, false, ParentVertexType, true>;
 
 /* Port AdjacentVertices class into vert namespace */
-template<typename VertexType>
-using AdjacentVertices = comp::AdjacentVertices<VertexType>;
+template<typename ParentVertexType>
+using AdjacentVertices = comp::AdjacentVertices<ParentVertexType>;
 
-template<typename VertexType>
-using VerticalAdjacentVertices = comp::AdjacentVertices<VertexType, VertexType>;
+template<typename ParentVertexType>
+using VerticalAdjacentVertices =
+    comp::AdjacentVertices<ParentVertexType, ParentVertexType>;
 
-template<typename VertexType>
+template<typename ParentVertexType>
 using OptionalAdjacentVertices =
-    comp::AdjacentVertices<VertexType, VertexType, true>;
+    comp::AdjacentVertices<ParentVertexType, ParentVertexType, true>;
 
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags<>;
 
-template<typename VertexType>
-using VerticalBitFlags = comp::BitFlags<VertexType>;
+template<typename ParentVertexType>
+using VerticalBitFlags = comp::BitFlags<ParentVertexType>;
 
 /* Port Color class into vert namespace */
 using Color = comp::Color<>;
 
-template<typename VertexType>
-using VerticalColor = comp::Color<VertexType>;
+template<typename ParentVertexType>
+using VerticalColor = comp::Color<ParentVertexType>;
 
-template<typename VertexType>
-using OptionalColor = comp::Color<VertexType, true>;
+template<typename ParentVertexType>
+using OptionalColor = comp::Color<ParentVertexType, true>;
 
 /* Port Coordinate class into vert namespace */
 template<typename ScalarType, int N>
@@ -114,30 +115,31 @@ using Coordinate3 = comp::Coordinate3<ScalarType>;
 using Coordinate3f = comp::Coordinate3f<>;
 using Coordinate3d = comp::Coordinate3d<>;
 
-template<typename ScalarType, int N, typename VertexType>
-using VerticalCoordinate = comp::Coordinate<Point<ScalarType, N>, VertexType>;
+template<typename ScalarType, int N, typename ParentVertexType>
+using VerticalCoordinate =
+    comp::Coordinate<Point<ScalarType, N>, ParentVertexType>;
 
-template<typename ScalarType, typename VertexType>
-using VerticalCoordinate3 = comp::Coordinate3<ScalarType, VertexType>;
+template<typename ScalarType, typename ParentVertexType>
+using VerticalCoordinate3 = comp::Coordinate3<ScalarType, ParentVertexType>;
 
-template<typename VertexType>
-using VerticalCoordinate3f = comp::Coordinate3f<VertexType>;
+template<typename ParentVertexType>
+using VerticalCoordinate3f = comp::Coordinate3f<ParentVertexType>;
 
-template<typename VertexType>
-using VerticalCoordinate3d = comp::Coordinate3d<VertexType>;
+template<typename ParentVertexType>
+using VerticalCoordinate3d = comp::Coordinate3d<ParentVertexType>;
 
 /* Port CustomComponents class into vert namespace */
-template<typename VertexType>
-using CustomComponents = comp::CustomComponents<VertexType>;
+template<typename ParentVertexType>
+using CustomComponents = comp::CustomComponents<ParentVertexType>;
 
 /* Port Mark class into vert namespace */
 using Mark = comp::Mark<>;
 
-template<typename VertexType>
-using VerticalMark = comp::Mark<VertexType>;
+template<typename ParentVertexType>
+using VerticalMark = comp::Mark<ParentVertexType>;
 
-template<typename VertexType>
-using OptionalMark = comp::Mark<VertexType, true>;
+template<typename ParentVertexType>
+using OptionalMark = comp::Mark<ParentVertexType, true>;
 
 /* Port Normal classes into vert namespace */
 template<typename ScalarType, int N>
@@ -149,29 +151,30 @@ using Normal3 = comp::Normal3<ScalarType>;
 using Normal3f = comp::Normal3f<>;
 using Normal3d = comp::Normal3d<>;
 
-template<typename ScalarType, int N, typename VertexType>
-using VerticalNormal = comp::Normal<Point<ScalarType, N>, VertexType>;
+template<typename ScalarType, int N, typename ParentVertexType>
+using VerticalNormal = comp::Normal<Point<ScalarType, N>, ParentVertexType>;
 
-template<typename ScalarType, typename VertexType>
-using VerticalNormal3 = comp::Normal3<ScalarType, VertexType>;
+template<typename ScalarType, typename ParentVertexType>
+using VerticalNormal3 = comp::Normal3<ScalarType, ParentVertexType>;
 
-template<typename VertexType>
-using VerticalNormal3f = comp::Normal3f<VertexType>;
+template<typename ParentVertexType>
+using VerticalNormal3f = comp::Normal3f<ParentVertexType>;
 
-template<typename VertexType>
-using VerticalNormal3d = comp::Normal3d<VertexType>;
+template<typename ParentVertexType>
+using VerticalNormal3d = comp::Normal3d<ParentVertexType>;
 
-template<typename ScalarType, int N, typename VertexType>
-using OptionalNormal = comp::Normal<Point<ScalarType, N>, VertexType, true>;
+template<typename ScalarType, int N, typename ParentVertexType>
+using OptionalNormal =
+    comp::Normal<Point<ScalarType, N>, ParentVertexType, true>;
 
-template<typename ScalarType, typename VertexType>
-using OptionalNormal3 = comp::Normal3<ScalarType, VertexType, true>;
+template<typename ScalarType, typename ParentVertexType>
+using OptionalNormal3 = comp::Normal3<ScalarType, ParentVertexType, true>;
 
-template<typename VertexType>
-using OptionalNormal3f = comp::Normal3f<VertexType, true>;
+template<typename ParentVertexType>
+using OptionalNormal3f = comp::Normal3f<ParentVertexType, true>;
 
-template<typename VertexType>
-using OptionalNormal3d = comp::Normal3d<VertexType, true>;
+template<typename ParentVertexType>
+using OptionalNormal3d = comp::Normal3d<ParentVertexType, true>;
 
 /* Port ParentMeshPointer class into vert namespace */
 template<typename MeshType>
@@ -184,23 +187,25 @@ using PrincipalCurvature = comp::PrincipalCurvature<ScalarType>;
 using PrincipalCurvaturef = comp::PrincipalCurvaturef<>;
 using PrincipalCurvatured = comp::PrincipalCurvatured<>;
 
-template<typename ScalarType, typename VertexType>
+template<typename ScalarType, typename ParentVertexType>
 using VerticalPrincipalCurvature =
-    comp::PrincipalCurvature<ScalarType, VertexType>;
+    comp::PrincipalCurvature<ScalarType, ParentVertexType>;
 
-template<typename VertexType>
-using VerticalPrincipalCurvaturef = comp::PrincipalCurvaturef<VertexType>;
-template<typename VertexType>
-using VerticalPrincipalCurvatured = comp::PrincipalCurvatured<VertexType>;
+template<typename ParentVertexType>
+using VerticalPrincipalCurvaturef = comp::PrincipalCurvaturef<ParentVertexType>;
+template<typename ParentVertexType>
+using VerticalPrincipalCurvatured = comp::PrincipalCurvatured<ParentVertexType>;
 
-template<typename ScalarType, typename VertexType>
+template<typename ScalarType, typename ParentVertexType>
 using OptionalPrincipalCurvature =
-    comp::PrincipalCurvature<ScalarType, VertexType, true>;
+    comp::PrincipalCurvature<ScalarType, ParentVertexType, true>;
 
-template<typename VertexType>
-using OptionalPrincipalCurvaturef = comp::PrincipalCurvaturef<VertexType, true>;
-template<typename VertexType>
-using OptionalPrincipalCurvatured = comp::PrincipalCurvatured<VertexType, true>;
+template<typename ParentVertexType>
+using OptionalPrincipalCurvaturef =
+    comp::PrincipalCurvaturef<ParentVertexType, true>;
+template<typename ParentVertexType>
+using OptionalPrincipalCurvatured =
+    comp::PrincipalCurvatured<ParentVertexType, true>;
 
 /* Port Quality class into vert namespace */
 template<typename QualityType>
@@ -218,14 +223,14 @@ using VerticalQualityf = comp::Quality<float, FaceType>;
 template<typename FaceType>
 using VerticalQualityd = comp::Quality<double, FaceType>;
 
-template<typename QualityType, typename VertexType>
-using OptionalQuality = comp::Quality<QualityType, VertexType, true>;
+template<typename QualityType, typename ParentVertexType>
+using OptionalQuality = comp::Quality<QualityType, ParentVertexType, true>;
 
-template<typename VertexType>
-using OptionalQualityf = comp::Quality<float, VertexType, true>;
+template<typename ParentVertexType>
+using OptionalQualityf = comp::Quality<float, ParentVertexType, true>;
 
-template<typename VertexType>
-using OptionalQualityd = comp::Quality<double, VertexType, true>;
+template<typename ParentVertexType>
+using OptionalQualityd = comp::Quality<double, ParentVertexType, true>;
 
 /* Port TexCoord class into vert namespace */
 template<typename ScalarType>
@@ -234,23 +239,23 @@ using TexCoord = comp::TexCoord<ScalarType>;
 using TexCoordf = comp::TexCoordf<>;
 using TexCoordd = comp::TexCoordd<>;
 
-template<typename ScalarType, typename VertexType>
-using VerticalTexCoord = comp::TexCoord<ScalarType, VertexType>;
+template<typename ScalarType, typename ParentVertexType>
+using VerticalTexCoord = comp::TexCoord<ScalarType, ParentVertexType>;
 
-template<typename VertexType>
-using VerticalTexCoordf = comp::TexCoord<float, VertexType>;
+template<typename ParentVertexType>
+using VerticalTexCoordf = comp::TexCoord<float, ParentVertexType>;
 
-template<typename VertexType>
-using VerticalTexCoordd = comp::TexCoord<double, VertexType>;
+template<typename ParentVertexType>
+using VerticalTexCoordd = comp::TexCoord<double, ParentVertexType>;
 
-template<typename ScalarType, typename VertexType>
-using OptionalTexCoord = comp::TexCoord<ScalarType, VertexType, true>;
+template<typename ScalarType, typename ParentVertexType>
+using OptionalTexCoord = comp::TexCoord<ScalarType, ParentVertexType, true>;
 
-template<typename VertexType>
-using OptionalTexCoordf = comp::TexCoord<float, VertexType, true>;
+template<typename ParentVertexType>
+using OptionalTexCoordf = comp::TexCoord<float, ParentVertexType, true>;
 
-template<typename VertexType>
-using OptionalTexCoordd = comp::TexCoord<double, VertexType, true>;
+template<typename ParentVertexType>
+using OptionalTexCoordd = comp::TexCoord<double, ParentVertexType, true>;
 
 /** @} */ // end of edge_components group
 

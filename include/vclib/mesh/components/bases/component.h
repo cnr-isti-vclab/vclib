@@ -99,11 +99,11 @@ namespace vcl::comp {
  * component. It is used to identify the component at compile time.
  * @tparam DataType: The type of the data that the component needs to store.
  * E.g. a Normal component would store a vcl::Point3d.
- * @tparam ElementType: This type is used to discriminate between horizontal and
- * vertical components. When a component is horizontal, this type must be void.
- * When a component is vertical, this type must be the type of the Element that
- * has the component, and it will be used by the vcl::Mesh to access to the data
- * stored vertically.
+ * @tparam ParentElemType: The Parent Element type is used to discriminate
+ * between horizontal and vertical components. When a component is horizontal,
+ * this type must be void. When a component is vertical, this type must be the
+ * type of the Element that has the component, and it will be used by the
+ * component to access the vertical data stored in the vcl::Mesh.
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
@@ -115,7 +115,7 @@ template<
     typename DerivedComponent, // CRTP pattern, derived class
     uint COMP_ID,              // component id
     typename DataType,         // data stored by the component
-    typename ElementType,      // element type, void if horizontal
+    typename ParentElemType,   // parent element type, void if horizontal
     bool OPT,                  // true if component vertical and optional
     typename... PointedTypes>  // types of the pointers stored by the component
 class Component : public PointersComponentTriggerer<PointedTypes>...
@@ -131,7 +131,7 @@ public:
      * @brief Boolean that tells if this component type stores its data
      * vertically (not in the Element frame memory, but in another vector).
      */
-    static const bool IS_VERTICAL = !std::is_same_v<ElementType, void>;
+    static const bool IS_VERTICAL = !std::is_same_v<ParentElemType, void>;
 
     /**
      * @brief The ID of the component.
@@ -161,47 +161,47 @@ public:
      */
     bool isAvailable() const
     {
-        return mData.template isComponentAvailable<ElementType>(
+        return mData.template isComponentAvailable<ParentElemType>(
             static_cast<const DerivedComponent*>(this));
     }
 
 protected:
     DataValueType& data()
     {
-        return mData.template get<ElementType>(
+        return mData.template get<ParentElemType>(
             static_cast<DerivedComponent*>(this));
     }
 
     const DataValueType& data() const
     {
-        return mData.template get<ElementType>(
+        return mData.template get<ParentElemType>(
             static_cast<const DerivedComponent*>(this));
     }
 
-    ElementType* parentElement()
+    ParentElemType* parentElement()
     {
         static_assert(
-            !std::is_same_v<ElementType, void>,
+            !std::is_same_v<ParentElemType, void>,
             "The component should know its parent element type to get access "
             "to its pointer. You should define the component by passing the "
             "element type as template parameter. E.G., for a Face element:\n"
             "vcl::face::TriangleVertexPtrs<Vertex<Scalar>, Face<Scalar>>\n"
             "                                              ^^^^^^^^^^^^ \n");
 
-        return static_cast<ElementType*>(this);
+        return static_cast<ParentElemType*>(this);
     }
 
-    const ElementType* parentElement() const
+    const ParentElemType* parentElement() const
     {
         static_assert(
-            !std::is_same_v<ElementType, void>,
+            !std::is_same_v<ParentElemType, void>,
             "The component should know its parent element type to get access "
             "to its pointer. You should define the component by passing the "
             "element type as template parameter. E.G., for a Face element:\n"
             "vcl::face::TriangleVertexPtrs<Vertex<Scalar>, Face<Scalar>>\n"
             "                                              ^^^^^^^^^^^^ \n");
 
-        return static_cast<const ElementType*>(this);
+        return static_cast<const ParentElemType*>(this);
     }
 };
 

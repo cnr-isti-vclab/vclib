@@ -45,28 +45,29 @@ namespace vcl::comp {
  *
  * @note This component can be both used for Elements and Meshes.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
+template<typename ParentElemType = void, bool OPT = false>
 class Name :
         public Component<
-            Name<ElementType, OPT>,
+            Name<ParentElemType, OPT>,
             CompId::NAME,
             std::string,
-            ElementType,
+            ParentElemType,
             OPT>
 {
     using Base = Component<
-        Name<ElementType, OPT>,
+        Name<ParentElemType, OPT>,
         CompId::NAME,
         std::string,
-        ElementType,
+        ParentElemType,
         OPT>;
 
 public:

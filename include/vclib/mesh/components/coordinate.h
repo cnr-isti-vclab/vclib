@@ -46,28 +46,29 @@ namespace vcl::comp {
  *
  * @tparam P: The type of the coordinate. This template argument must be a type
  * that satisfies the PointConcept.
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<PointConcept P, typename ElementType = void, bool OPT = false>
+template<PointConcept P, typename ParentElemType = void, bool OPT = false>
 class Coordinate :
         public Component<
-            Coordinate<P, ElementType, OPT>,
+            Coordinate<P, ParentElemType, OPT>,
             CompId::COORDINATE,
             P,
-            ElementType,
+            ParentElemType,
             OPT>
 {
     using Base = Component<
-        Coordinate<P, ElementType, OPT>,
+        Coordinate<P, ParentElemType, OPT>,
         CompId::COORDINATE,
         P,
-        ElementType,
+        ParentElemType,
         OPT>;
 
 public:
