@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
@@ -30,8 +30,7 @@ TEMPLATE_TEST_CASE("TriMesh Topology", "", vcl::TriMesh, vcl::TriMeshf)
 {
     using TriMesh = TestType;
 
-    TriMesh tm =
-        vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
+    TriMesh tm = vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
@@ -293,8 +292,7 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
-    TriMesh pm =
-        vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
+    TriMesh pm = vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {

@@ -26,8 +26,8 @@
 #include <vclib/meshes.h>
 #include <vclib/space/kd_tree.h>
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 template<typename MeshType, typename PointType>
 std::vector<uint> getKNearestNeighbors(

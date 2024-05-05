@@ -20,18 +20,18 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
 TEMPLATE_TEST_CASE("TriMesh Update Normal", "", vcl::TriMesh, vcl::TriMeshf)
 {
-    using TriMesh = TestType;
+    using TriMesh     = TestType;
     using VNormalType = TriMesh::VertexType::NormalType;
     using FNormalType = TriMesh::FaceType::NormalType;
-    using VNScalar = typename VNormalType::ScalarType;
+    using VNScalar    = typename VNormalType::ScalarType;
 
     TriMesh tm = vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/cube_tri.ply");
 
@@ -127,7 +127,7 @@ TEMPLATE_TEST_CASE(
 {
     using TriEdgeMesh = TestType;
     using VNormalType = TriEdgeMesh::VertexType::NormalType;
-    using VNScalar = typename VNormalType::ScalarType;
+    using VNScalar    = typename VNormalType::ScalarType;
 
     TriEdgeMesh tem;
 

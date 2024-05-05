@@ -20,18 +20,14 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "foo_mesh.h"
 
 #include <vclib/meshes/tri_mesh.h>
 
-TEMPLATE_TEST_CASE(
-    "Simple User Component",
-    "",
-    vcl::TriMesh,
-    vcl::TriMeshf)
+TEMPLATE_TEST_CASE("Simple User Component", "", vcl::TriMesh, vcl::TriMeshf)
 {
     using TriMesh = TestType;
 

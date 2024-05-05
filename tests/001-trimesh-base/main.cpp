@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/meshes.h>
 
 TEMPLATE_TEST_CASE("Test empty TriMesh", "", vcl::TriMesh, vcl::TriMeshf)

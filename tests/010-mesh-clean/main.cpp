@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
@@ -93,12 +93,12 @@ void populateEdgeMesh(MeshType& m)
     m.addEdge(3, 1);
 }
 
-using Meshes = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
+using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
 using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
 
 TEMPLATE_TEST_CASE("Clean Duplicated Faces", "", Meshes, Meshesf)
 {
-    using TriMesh = std::tuple_element_t<0, TestType>;
+    using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;
 
     SECTION("TriMesh")
@@ -154,8 +154,7 @@ TEMPLATE_TEST_CASE("WaterTightness", "", vcl::TriMesh, vcl::TriMeshf)
 
     SECTION("A TriMesh that is not watertight")
     {
-        TriMesh t =
-            vcl::load<TriMesh>(VCLIB_ASSETS_PATH "/brain.ply");
+        TriMesh t = vcl::load<TriMesh>(VCLIB_ASSETS_PATH "/brain.ply");
 
         REQUIRE(t.vertexNumber() == 18844);
         REQUIRE(t.faceNumber() == 36752);
@@ -193,7 +192,7 @@ TEMPLATE_TEST_CASE("Duplicated Vertices", "", vcl::TriMesh, vcl::TriMeshf)
 
 TEMPLATE_TEST_CASE("Unreferenced Vertices", "", Meshes, Meshesf)
 {
-    using TriMesh = std::tuple_element_t<0, TestType>;
+    using TriMesh  = std::tuple_element_t<0, TestType>;
     using EdgeMesh = std::tuple_element_t<2, TestType>;
 
     SECTION("TriMesh")

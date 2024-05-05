@@ -26,8 +26,8 @@
 #include <vclib/ext/vcg/import.h>
 #include <vclib/meshes.h>
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include <wrap/io_trimesh/import_ply.h>
 
@@ -89,7 +89,8 @@ TEMPLATE_TEST_CASE("Import TriMesh from VCG", "", vcl::TriMesh, vcl::TriMeshf)
         TriMesh tm = vcl::vc::meshFromVCGMesh<TriMesh>(vcgMesh);
 
         REQUIRE(tm.hasPerVertexCustomComponent("perVertex"));
-        REQUIRE(tm.template isPerVertexCustomComponentOfType<float>("perVertex"));
+        REQUIRE(
+            tm.template isPerVertexCustomComponentOfType<float>("perVertex"));
 
         for (const auto& v : tm.vertices()) {
             REQUIRE(

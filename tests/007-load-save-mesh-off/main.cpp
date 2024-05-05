@@ -20,8 +20,8 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms/mesh/create.h>
 #include <vclib/algorithms/mesh/update.h>
 #include <vclib/load_save.h>
@@ -85,19 +85,19 @@ std::istringstream offTriCube()
     return ss;
 }
 
-using Meshes = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshes  = std::pair<vcl::TriMesh, vcl::PolyMesh>;
 using Meshesf = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
 
 // Test to load off from a istringstream
 TEMPLATE_TEST_CASE("Load OFF cube from istringstream", "", Meshes, Meshesf)
 {
-    using TriMesh = typename TestType::first_type;
+    using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
 
     SECTION("TriMesh - PolyCube")
     {
         TriMesh tm;
-        auto         ss = offPolyCube();
+        auto    ss = offPolyCube();
         vcl::loadOff(tm, ss);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
@@ -106,7 +106,7 @@ TEMPLATE_TEST_CASE("Load OFF cube from istringstream", "", Meshes, Meshesf)
     SECTION("TriMesh - TriCube")
     {
         TriMesh tm;
-        auto         ss = offTriCube();
+        auto    ss = offTriCube();
         vcl::loadOff(tm, ss);
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
@@ -115,7 +115,7 @@ TEMPLATE_TEST_CASE("Load OFF cube from istringstream", "", Meshes, Meshesf)
     SECTION("PolyMesh - PolyCube")
     {
         PolyMesh pm;
-        auto          ss = offPolyCube();
+        auto     ss = offPolyCube();
         vcl::loadOff(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 6);
@@ -124,7 +124,7 @@ TEMPLATE_TEST_CASE("Load OFF cube from istringstream", "", Meshes, Meshesf)
     SECTION("PolyMesh - TriCube")
     {
         PolyMesh pm;
-        auto          ss = offTriCube();
+        auto     ss = offTriCube();
         vcl::loadOff(pm, ss);
         REQUIRE(pm.vertexNumber() == 8);
         REQUIRE(pm.faceNumber() == 12);
@@ -133,7 +133,7 @@ TEMPLATE_TEST_CASE("Load OFF cube from istringstream", "", Meshes, Meshesf)
 
 TEMPLATE_TEST_CASE("Save OFF to a ostringstream", "", Meshes, Meshesf)
 {
-    using TriMesh = typename TestType::first_type;
+    using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
 
     SECTION("TriMesh - Cube (No Normals)")
