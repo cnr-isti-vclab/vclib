@@ -28,50 +28,52 @@
 
 namespace vcl {
 
-template<typename ScalarType>
+template<typename ScalarType, bool INDEXED>
 class PolyMeshT;
 
 } // namespace vcl
 
 namespace vcl::polymesh {
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Vertex;
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Face;
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Vertex :
         public vcl::Vertex<
-            PolyMeshT<Scalar>,
+            PolyMeshT<Scalar, I>,
             vert::BitFlags,
             vert::Coordinate3<Scalar>,
             vert::Normal3<Scalar>,
-            vert::OptionalColor<Vertex<Scalar>>,
-            vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vert::OptionalAdjacentFacePointers<Face<Scalar>, Vertex<Scalar>>,
-            vert::OptionalAdjacentVertexPointers<Vertex<Scalar>>,
-            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-            vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-            vert::OptionalMark<Vertex<Scalar>>,
-            vert::CustomComponents<Vertex<Scalar>>>
+            vert::OptionalColor<Vertex<Scalar, I>>,
+            vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalAdjacentFacePointers<
+                Face<Scalar, I>,
+                Vertex<Scalar, I>>,
+            vert::OptionalAdjacentVertexPointers<Vertex<Scalar, I>>,
+            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalMark<Vertex<Scalar, I>>,
+            vert::CustomComponents<Vertex<Scalar, I>>>
 {
 };
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Face :
         public vcl::Face<
-            PolyMeshT<Scalar>,
+            PolyMeshT<Scalar, I>,
             face::PolygonBitFlags, // 4b
-            face::PolygonVertexPtrs<Vertex<Scalar>, Face<Scalar>>,
+            face::PolygonVertexPtrs<Vertex<Scalar, I>, Face<Scalar, I>>,
             face::Normal3<Scalar>,
-            face::OptionalColor<Face<Scalar>>,
-            face::OptionalQuality<Scalar, Face<Scalar>>,
-            face::OptionalAdjacentPolygonPointers<Face<Scalar>>,
-            face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar>>,
-            face::OptionalMark<Face<Scalar>>,
-            face::CustomComponents<Face<Scalar>>>
+            face::OptionalColor<Face<Scalar, I>>,
+            face::OptionalQuality<Scalar, Face<Scalar, I>>,
+            face::OptionalAdjacentPolygonPointers<Face<Scalar, I>>,
+            face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar, I>>,
+            face::OptionalMark<Face<Scalar, I>>,
+            face::CustomComponents<Face<Scalar, I>>>
 {
 };
 
@@ -79,11 +81,11 @@ class Face :
 
 namespace vcl {
 
-template<typename Scalar = double>
+template<typename Scalar, bool INDEXED>
 class PolyMeshT :
         public vcl::Mesh<
-            mesh::VertexContainer<polymesh::Vertex<Scalar>>,
-            mesh::FaceContainer<polymesh::Face<Scalar>>,
+            mesh::VertexContainer<polymesh::Vertex<Scalar, INDEXED>>,
+            mesh::FaceContainer<polymesh::Face<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Color,
             mesh::Mark,
@@ -96,8 +98,10 @@ public:
     using ScalarType = Scalar;
 };
 
-using PolyMeshf = PolyMeshT<float>;
-using PolyMesh  = PolyMeshT<double>;
+using PolyMeshf        = PolyMeshT<float, false>;
+using PolyMesh         = PolyMeshT<double, false>;
+using PolyMeshIndexedf = PolyMeshT<float, true>;
+using PolyMeshIndexed  = PolyMeshT<double, true>;
 
 } // namespace vcl
 

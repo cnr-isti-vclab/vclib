@@ -27,7 +27,13 @@
 
 #include <vclib/meshes/tri_mesh.h>
 
-TEMPLATE_TEST_CASE("Simple User Component", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "Simple User Component",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 

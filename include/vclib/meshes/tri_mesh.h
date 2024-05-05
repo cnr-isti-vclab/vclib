@@ -120,6 +120,7 @@ using TriMesh = TriMeshT<double, false>;
  * @brief The TriMeshIndexedf class is a specialization of TriMeshT that uses
  * `float` as scalar and indices (`unsigned int`) to store vertices of faces
  * and adjacency information.
+ * @ingroup meshes
  */
 using TriMeshIndexedf = TriMeshT<float, true>;
 
@@ -127,6 +128,7 @@ using TriMeshIndexedf = TriMeshT<float, true>;
  * @brief The TriMeshIndexed class is a specialization of TriMeshT that uses
  * `double` as scalar and indices (`unsigned int`) to store vertices of faces
  * and adjacency information.
+ * @ingroup meshes
  */
 using TriMeshIndexed  = TriMeshT<double, true>;
 

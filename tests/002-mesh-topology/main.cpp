@@ -556,7 +556,9 @@ TEMPLATE_TEST_CASE(
     "PolyMesh Polygon Mesh Topology",
     "",
     vcl::PolyMesh,
-    vcl::PolyMeshf)
+    vcl::PolyMeshf,
+    vcl::PolyMeshIndexed,
+    vcl::PolyMeshIndexedf)
 {
     using PolyMesh = TestType;
 
