@@ -95,6 +95,10 @@ void populateEdgeMesh(MeshType& m)
 
 using Meshes  = std::tuple<vcl::TriMesh, vcl::PolyMesh, vcl::EdgeMesh>;
 using Meshesf = std::tuple<vcl::TriMeshf, vcl::PolyMeshf, vcl::EdgeMeshf>;
+using MeshesIndexed =
+    std::tuple<vcl::TriMeshIndexed, vcl::PolyMeshIndexed, vcl::EdgeMeshIndexed>;
+using MeshesIndexedf = std::
+    tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
 
 TEMPLATE_TEST_CASE("Clean Duplicated Faces", "", Meshes, Meshesf)
 {
@@ -148,7 +152,13 @@ TEMPLATE_TEST_CASE("Clean Duplicated Faces", "", Meshes, Meshesf)
     }
 }
 
-TEMPLATE_TEST_CASE("WaterTightness", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "WaterTightness",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 
@@ -173,7 +183,13 @@ TEMPLATE_TEST_CASE("WaterTightness", "", vcl::TriMesh, vcl::TriMeshf)
     }
 }
 
-TEMPLATE_TEST_CASE("Duplicated Vertices", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "Duplicated Vertices",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 
@@ -222,7 +238,9 @@ TEMPLATE_TEST_CASE(
     "Duplicated Vertices brain.ply",
     "",
     vcl::TriMesh,
-    vcl::TriMeshf)
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 

@@ -26,7 +26,13 @@
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
-TEMPLATE_TEST_CASE("TriMesh Update Normal", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "TriMesh Update Normal",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh     = TestType;
     using VNormalType = TriMesh::VertexType::NormalType;
@@ -123,7 +129,9 @@ TEMPLATE_TEST_CASE(
     "Update Referenced Vertex Normals",
     "",
     vcl::TriEdgeMesh,
-    vcl::TriEdgeMeshf)
+    vcl::TriEdgeMeshf,
+    vcl::TriEdgeMeshIndexed,
+    vcl::TriEdgeMeshIndexedf)
 {
     using TriEdgeMesh = TestType;
     using VNormalType = TriEdgeMesh::VertexType::NormalType;

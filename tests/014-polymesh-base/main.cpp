@@ -28,7 +28,9 @@ TEMPLATE_TEST_CASE(
     "PolyMesh Usage - An empty PolyMesh",
     "",
     vcl::PolyMesh,
-    vcl::PolyMeshf)
+    vcl::PolyMeshf,
+    vcl::PolyMeshIndexed,
+    vcl::PolyMeshIndexedf)
 {
     using PolyMesh = TestType;
 

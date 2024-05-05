@@ -127,7 +127,9 @@ TEMPLATE_TEST_CASE(
     "Load STL cube from istringstream",
     "",
     vcl::TriMesh,
-    vcl::TriMeshf)
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 
@@ -145,7 +147,9 @@ TEMPLATE_TEST_CASE(
     "Save STL cube in a ostringstream",
     "",
     vcl::TriMesh,
-    vcl::TriMeshf)
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 
