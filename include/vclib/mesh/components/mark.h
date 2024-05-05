@@ -68,30 +68,31 @@ namespace vcl::comp {
  *
  * @note This component can be both used for Elements and Meshes.
  *
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename ElementType = void, bool OPT = false>
+template<typename ParentElemType = void, bool OPT = false>
 class Mark :
         public Component<
-            Mark<ElementType, OPT>,
+            Mark<ParentElemType, OPT>,
             CompId::MARK,
             int,
-            ElementType,
-            !std::is_same_v<ElementType, void>,
+            ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT>
 {
     using Base = Component<
-        Mark<ElementType, OPT>,
+        Mark<ParentElemType, OPT>,
         CompId::MARK,
         int,
-        ElementType,
-        !std::is_same_v<ElementType, void>,
+        ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT>;
 
 public:

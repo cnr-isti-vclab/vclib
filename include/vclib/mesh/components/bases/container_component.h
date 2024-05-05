@@ -80,10 +80,11 @@ using ContCompBase = std::conditional_t<
  * outside the Container. If you don't have additional data. set AdditionalData
  * = void. E.g. a WedgeTexCoord component stores a short as AdditionalData that
  * indicates the texture index used by all the Wedge TexCoords.
- * @tparam ElementType: This type is used to get access to the Element that has
- * the component (and, in case, to the Mesh that has the Element). If the
- * component doesn't need to access the Element, this type can be void. Note:
- * if the component is vertical (or optional), this type cannot be void.
+ * @tparam ParentElemType: The Parent Element type is used to get access to the
+ * Element that has the component (and, in case, to the Mesh that has the
+ * Element). If the component doesn't need to access the Element, this type can
+ * be void. Note: if the component is vertical (or optional), this type cannot
+ * be void.
  * @tparam VERT: Boolean that tells if the component is vertical. If the
  * component is vertical, this parameter must be true. Note: to be vertical,
  * this parameter must be true, and ElementType must be the type of the Element
@@ -109,7 +110,7 @@ template<
     typename T,                // data stored in container
     int N,                     // container size
     typename AdditionalData,   // additional data outside container
-    typename ElementType,      // element type
+    typename ParentElemType,   // parent element type
     bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
     bool TTVN,                 // true if container size tied to vertex number
@@ -121,7 +122,7 @@ class ContainerComponent :
             T,
             N,
             AdditionalData,
-            ElementType,
+            ParentElemType,
             VERT,
             OPT,
             TTVN,
@@ -136,7 +137,7 @@ class ContainerComponent :
         T,
         N,
         AdditionalData,
-        ElementType,
+        ParentElemType,
         VERT,
         OPT,
         TTVN,

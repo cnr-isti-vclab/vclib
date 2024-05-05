@@ -49,30 +49,31 @@ namespace vcl::comp {
  *
  * @tparam Scalar: The type of the scalar that will be used to represent the
  * matrix.
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename Scalar, typename ElementType = void, bool OPT = false>
+template<typename Scalar, typename ParentElemType = void, bool OPT = false>
 class TransformMatrix :
         public Component<
-            TransformMatrix<Scalar, ElementType, OPT>,
+            TransformMatrix<Scalar, ParentElemType, OPT>,
             CompId::TRANSFORM_MATRIX,
             Matrix44<Scalar>,
-            ElementType,
-            !std::is_same_v<ElementType, void>,
+            ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT>
 {
     using Base = Component<
-        TransformMatrix<Scalar, ElementType, OPT>,
+        TransformMatrix<Scalar, ParentElemType, OPT>,
         CompId::TRANSFORM_MATRIX,
         Matrix44<Scalar>,
-        ElementType,
-        !std::is_same_v<ElementType, void>,
+        ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT>;
 
 public:

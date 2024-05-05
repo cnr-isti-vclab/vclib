@@ -61,8 +61,8 @@ namespace vcl::comp {
  * storable adjacent edges. If negative, the container is dynamic.
  * @tparam TTVN: If true, the size of the container will be tied to the Vertex
  * Number of the component (this is used mostly on Face elements).
- * @tparam ElementType: This type is used to get access to the Element that has
- * the component (and, in case, to the Mesh that has the Element). If the
+ * @tparam ParentElemType: This type is used to get access to the Element that
+ * has the component (and, in case, to the Mesh that has the Element). If the
  * component doesn't need to access the Element, this type can be void. Note:
  * if the component is vertical (or optional), this type cannot be void.
  * @tparam VERT: If true, the component will be stored vertically. This argument
@@ -76,26 +76,26 @@ template<
     typename Edge,
     int  N,
     bool TTVN,
-    typename ElementType = void,
-    bool VERT            = false,
-    bool OPT             = false>
+    typename ParentElemType = void,
+    bool VERT               = false,
+    bool OPT                = false>
 class AdjacentEdgePointers :
         public PointersContainerComponent<
-            AdjacentEdgePointers<Edge, N, TTVN, ElementType, VERT, OPT>,
+            AdjacentEdgePointers<Edge, N, TTVN, ParentElemType, VERT, OPT>,
             CompId::ADJACENT_EDGES,
             Edge,
             N,
-            ElementType,
+            ParentElemType,
             VERT,
             OPT,
             TTVN>
 {
     using Base = PointersContainerComponent<
-        AdjacentEdgePointers<Edge, N, TTVN, ElementType, VERT, OPT>,
+        AdjacentEdgePointers<Edge, N, TTVN, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_EDGES,
         Edge,
         N,
-        ElementType,
+        ParentElemType,
         VERT,
         OPT,
         TTVN>;

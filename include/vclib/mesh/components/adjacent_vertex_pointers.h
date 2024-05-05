@@ -58,8 +58,8 @@ namespace vcl::comp {
  *   face elements, and this component does not apply to faces.
  *
  * @tparam Vertex: The type of the adjacent Vertex element.
- * @tparam ElementType: This type is used to get access to the Element that has
- * the component (and, in case, to the Mesh that has the Element). If the
+ * @tparam ParentElemType: This type is used to get access to the Element that
+ * has the component (and, in case, to the Mesh that has the Element). If the
  * component doesn't need to access the Element, this type can be void. Note:
  * if the component is vertical (or optional), this type cannot be void.
  * @tparam VERT: If true, the component will be stored vertically. This argument
@@ -71,26 +71,26 @@ namespace vcl::comp {
  */
 template<
     typename Vertex,
-    typename ElementType = void,
-    bool VERT            = false,
-    bool OPT             = false>
+    typename ParentElemType = void,
+    bool VERT               = false,
+    bool OPT                = false>
 class AdjacentVertexPointers :
         public PointersContainerComponent<
-            AdjacentVertexPointers<Vertex, ElementType, VERT, OPT>,
+            AdjacentVertexPointers<Vertex, ParentElemType, VERT, OPT>,
             CompId::ADJACENT_VERTICES,
             Vertex,
             -1,
-            ElementType,
+            ParentElemType,
             VERT,
             OPT,
             false>
 {
     using Base = PointersContainerComponent<
-        AdjacentVertexPointers<Vertex, ElementType, VERT, OPT>,
+        AdjacentVertexPointers<Vertex, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_VERTICES,
         Vertex,
         -1,
-        ElementType,
+        ParentElemType,
         VERT,
         OPT,
         false>;

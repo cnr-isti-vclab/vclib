@@ -65,35 +65,40 @@ namespace vcl::comp {
  * storable wedge texcoords. If N is negative, the container will be dynamic.
  * In any case, N must be the same of the Vertex Number of the Element that
  * will contain this component.
- * @tparam ElementType: This template argument must be `void` if the component
- * needs to be stored horizontally, or the type of the element that will contain
- * this component if the component needs to be stored vertically.
+ * @tparam ParentElemType: This template argument must be `void` if the
+ * component needs to be stored horizontally, or the type of the parent element
+ * that will contain this component if the component needs to be stored
+ * vertically.
  * @tparam OPT: If true, the component will be optional. This argument is
  * considered only if the component is stored vertically.
  *
  * @ingroup components
  */
-template<typename Scalar, int N, typename ElementType = void, bool OPT = false>
+template<
+    typename Scalar,
+    int N,
+    typename ParentElemType = void,
+    bool OPT                = false>
 class WedgeTexCoords :
         public ContainerComponent<
-            WedgeTexCoords<Scalar, N, ElementType, OPT>,
+            WedgeTexCoords<Scalar, N, ParentElemType, OPT>,
             CompId::WEDGE_TEX_COORDS,
             vcl::TexCoord<Scalar>,
             N,
             short,
-            ElementType,
+            ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT,
-            !std::is_same_v<ElementType, void>,
             true>
 {
     using Base = ContainerComponent<
-        WedgeTexCoords<Scalar, N, ElementType, OPT>,
+        WedgeTexCoords<Scalar, N, ParentElemType, OPT>,
         CompId::WEDGE_TEX_COORDS,
         vcl::TexCoord<Scalar>,
         N,
         short,
-        ElementType,
-        !std::is_same_v<ElementType, void>,
+        ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT,
         true>;
 

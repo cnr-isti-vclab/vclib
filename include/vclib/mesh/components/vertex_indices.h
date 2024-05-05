@@ -33,10 +33,10 @@ namespace vcl::comp {
 
 /**
  * @brief The VertexIndices class represents a component that stores a
- * container of pointers to vertices that will be part of an Element (e.g.
+ * container of indices to vertices that will be part of an Element (e.g.
  * Face, Edge, Tetrahedron, etc.).
  *
- * The container of Vertex pointers is a random access container that could have
+ * The container of Vertex indices is a random access container that could have
  * static or dynamic size, depending on the value of the template argument N
  * (a negative number means dynamic).
  *
@@ -69,8 +69,8 @@ namespace vcl::comp {
  * @tparam Vertex The type of the vertices.
  * @tparam N: The size of the container, that will represent the number of
  * storable vertex pointers. If negative, the container is dynamic.
- * @tparam ElementType: This type is used to get access to the Element that has
- * the component (and, in case, to the Mesh that has the Element). If the
+ * @tparam ParentElemType: This type is used to get access to the Element that
+ * has the component (and, in case, to the Mesh that has the Element). If the
  * component doesn't need to access the Element, this type can be void. Note:
  * if the component is vertical (or optional), this type cannot be void.
  * @tparam VERT: If true, the component will be stored vertically. This argument
@@ -78,24 +78,28 @@ namespace vcl::comp {
  *
  * @ingroup components
  */
-template<typename Vertex, int N, typename ElementType = void, bool VERT = false>
+template<
+    typename Vertex,
+    int N,
+    typename ParentElemType = void,
+    bool VERT               = false>
 class VertexIndices :
         public IndicesContainerComponent<
-            VertexIndices<Vertex, N, ElementType, VERT>,
+            VertexIndices<Vertex, N, ParentElemType, VERT>,
             CompId::VERTEX_INDICES,
             Vertex,
             N,
-            ElementType,
+            ParentElemType,
             VERT,
             false,
             false>
 {
     using Base = IndicesContainerComponent<
-        VertexIndices<Vertex, N, ElementType, VERT>,
+        VertexIndices<Vertex, N, ParentElemType, VERT>,
         CompId::VERTEX_INDICES,
         Vertex,
         N,
-        ElementType,
+        ParentElemType,
         VERT,
         false,
         false>;
