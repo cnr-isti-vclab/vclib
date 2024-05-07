@@ -50,7 +50,7 @@ class Vertex :
             vert::Normal3<Scalar>,
             vert::OptionalColor<Vertex<Scalar, I>>,
             vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentFacePointers<
+            vert::OptionalAdjacentFaces<
                 Face<Scalar, I>,
                 Vertex<Scalar, I>>,
             vert::OptionalAdjacentVertices<Vertex<Scalar, I>>,
@@ -70,7 +70,7 @@ class Face :
             face::Normal3<Scalar>,
             face::OptionalColor<Face<Scalar, I>>,
             face::OptionalQuality<Scalar, Face<Scalar, I>>,
-            face::OptionalAdjacentPolygonPointers<Face<Scalar, I>>,
+            face::OptionalAdjacentPolygons<Face<Scalar, I>>,
             face::OptionalPolygonWedgeTexCoords<Scalar, Face<Scalar, I>>,
             face::OptionalMark<Face<Scalar, I>>,
             face::CustomComponents<Face<Scalar, I>>>

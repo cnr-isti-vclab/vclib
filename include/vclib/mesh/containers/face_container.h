@@ -506,7 +506,7 @@ public:
         requires face::HasOptionalAdjacentEdges<T>
     {
         return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentEdgePointers>();
+            typename T::AdjacentEdges>();
     }
 
     /**
@@ -522,8 +522,7 @@ public:
      */
     void enablePerFaceAdjacentEdges() requires face::HasOptionalAdjacentEdges<T>
     {
-        Base::template enableOptionalComponent<
-            typename T::AdjacentEdgePointers>();
+        Base::template enableOptionalComponent<typename T::AdjacentEdges>();
     }
 
     /**
@@ -535,8 +534,7 @@ public:
     void disablePerFaceAdjacentEdges()
         requires face::HasOptionalAdjacentEdges<T>
     {
-        Base::template disableOptionalComponent<
-            typename T::AdjacentEdgePointers>();
+        Base::template disableOptionalComponent<typename T::AdjacentEdges>();
     }
 
     // AdjacentFaces
@@ -553,7 +551,7 @@ public:
         requires face::HasOptionalAdjacentFaces<T>
     {
         return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentFacePointers>();
+            typename T::AdjacentFaces>();
     }
 
     /**
@@ -569,8 +567,7 @@ public:
      */
     void enablePerFaceAdjacentFaces() requires face::HasOptionalAdjacentFaces<T>
     {
-        Base::template enableOptionalComponent<
-            typename T::AdjacentFacePointers>();
+        Base::template enableOptionalComponent<typename T::AdjacentFaces>();
     }
 
     /**
@@ -582,8 +579,7 @@ public:
     void disablePerFaceAdjacentFaces()
         requires face::HasOptionalAdjacentFaces<T>
     {
-        Base::template disableOptionalComponent<
-            typename T::AdjacentFacePointers>();
+        Base::template disableOptionalComponent<typename T::AdjacentFaces>();
     }
 
     // Color

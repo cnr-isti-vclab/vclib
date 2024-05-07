@@ -24,7 +24,7 @@
 #define VCL_MESH_ELEMENTS_FACE_COMPONENTS_H
 
 #include "../components/adjacent_edge_pointers.h"
-#include "../components/adjacent_face_pointers.h"
+#include "../components/adjacent_faces.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
 #include "../components/custom_components.h"
@@ -94,28 +94,28 @@ using OptionalAdjacentTriangleEdgePointers =
 
 /* Port AdjacentFaces class into face namespace */
 template<typename ParentFaceType>
-using AdjacentPolygonPointers =
-    comp::AdjacentFacePointers<ParentFaceType, -1, true, ParentFaceType>;
+using AdjacentPolygons =
+    comp::AdjacentFaces<ParentFaceType, -1, true, ParentFaceType>;
 
 template<typename ParentFaceType>
-using AdjacentTrianglePointers =
-    comp::AdjacentFacePointers<ParentFaceType, 3, true, ParentFaceType>;
+using AdjacentTriangles =
+    comp::AdjacentFaces<ParentFaceType, 3, true, ParentFaceType>;
 
 template<typename ParentFaceType>
-using VerticalAdjacentPolygonPointers =
-    comp::AdjacentFacePointers<ParentFaceType, -1, true, ParentFaceType, true>;
+using VerticalAdjacentPolygons =
+    comp::AdjacentFaces<ParentFaceType, -1, true, ParentFaceType, true>;
 
 template<typename ParentFaceType>
-using VerticalAdjacentTrianglePointers =
-    comp::AdjacentFacePointers<ParentFaceType, 3, true, ParentFaceType, true>;
+using VerticalAdjacentTriangles =
+    comp::AdjacentFaces<ParentFaceType, 3, true, ParentFaceType, true>;
 
 template<typename ParentFaceType>
-using OptionalAdjacentPolygonPointers = comp::
-    AdjacentFacePointers<ParentFaceType, -1, true, ParentFaceType, true, true>;
+using OptionalAdjacentPolygons = comp::
+    AdjacentFaces<ParentFaceType, -1, true, ParentFaceType, true, true>;
 
 template<typename ParentFaceType>
-using OptionalAdjacentTrianglePointers = comp::
-    AdjacentFacePointers<ParentFaceType, 3, true, ParentFaceType, true, true>;
+using OptionalAdjacentTriangles = comp::
+    AdjacentFaces<ParentFaceType, 3, true, ParentFaceType, true, true>;
 
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags<>;

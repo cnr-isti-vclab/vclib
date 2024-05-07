@@ -32,10 +32,9 @@ void polymeshStaticAsserts()
     static_assert(HasPolygons<PolyMesh>, "");
 
     static_assert(
-        comp::IsTiedToVertexNumber<PolyMesh::Face::AdjacentFacePointers>, "");
+        comp::IsTiedToVertexNumber<PolyMesh::Face::AdjacentFaces>, "");
     static_assert(
-        !comp::IsTiedToVertexNumber<PolyMesh::Vertex::AdjacentFacePointers>,
-        "");
+        !comp::IsTiedToVertexNumber<PolyMesh::Vertex::AdjacentFaces>, "");
 
     meshViewsStaticAsserts<PolyMesh>();
 }

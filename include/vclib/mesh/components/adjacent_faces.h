@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_ADJACENT_FACE_POINTERS_H
-#define VCL_MESH_COMPONENTS_ADJACENT_FACE_POINTERS_H
+#ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_H
+#define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
 #include <vclib/views/view.h>
@@ -31,9 +31,9 @@
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentFacePointers class is a container of Face pointers. It
- * could be used by any Element to save adjacencies information (also the Face
- * element itself).
+ * @brief The AdjacentFaces class is a container of Face pointers. It could be
+ * used by any Element to save adjacencies information (also the Face element
+ * itself).
  *
  * It is a random access container having static or dynamic size, depending on
  * the value of N (a negative number means dynamic).
@@ -79,9 +79,9 @@ template<
     typename ParentElemType = void,
     bool VERT               = false,
     bool OPT                = false>
-class AdjacentFacePointers :
+class AdjacentFaces :
         public PointersContainerComponent<
-            AdjacentFacePointers<Face, N, TTVN, ParentElemType, VERT, OPT>,
+            AdjacentFaces<Face, N, TTVN, ParentElemType, VERT, OPT>,
             CompId::ADJACENT_FACES,
             Face,
             N,
@@ -91,7 +91,7 @@ class AdjacentFacePointers :
             TTVN>
 {
     using Base = PointersContainerComponent<
-        AdjacentFacePointers<Face, N, TTVN, ParentElemType, VERT, OPT>,
+        AdjacentFaces<Face, N, TTVN, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_FACES,
         Face,
         N,
@@ -127,7 +127,7 @@ public:
      * If the Adjacent Faces container size is static, initializes all the
      * Adjacent Faces to `nullptr`, otherwise the container will be empty.
      */
-    AdjacentFacePointers() = default;
+    AdjacentFaces() = default;
 
     /* Member functions */
 
@@ -650,7 +650,7 @@ public:
         return View(adjFaceIndexBegin(), adjFaceIndexEnd());
     }
 
-    // dummy member to discriminate between AdjacentFacePointers and
+    // dummy member to discriminate between AdjacentFaces and
     // FaceHalfEdgePointers
     void __adjacentFaces() const {}
 
@@ -760,4 +760,4 @@ bool isAdjacentFacesAvailableOn(const ElementConcept auto& element)
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_ADJACENT_FACE_POINTERS_H
+#endif // VCL_MESH_COMPONENTS_ADJACENT_FACES_H

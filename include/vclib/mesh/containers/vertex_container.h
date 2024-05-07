@@ -501,7 +501,7 @@ public:
         requires vert::HasOptionalAdjacentEdges<T>
     {
         return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentEdgePointers>();
+            typename T::AdjacentEdges>();
     }
 
     /**
@@ -513,8 +513,7 @@ public:
     void enablePerVertexAdjacentEdges()
         requires vert::HasOptionalAdjacentEdges<T>
     {
-        Base::template enableOptionalComponent<
-            typename T::AdjacentEdgePointers>();
+        Base::template enableOptionalComponent<typename T::AdjacentEdges>();
     }
 
     /**
@@ -526,8 +525,7 @@ public:
     void disablePerVertexAdjacentEdges()
         requires vert::HasOptionalAdjacentEdges<T>
     {
-        Base::template disableOptionalComponent<
-            typename T::AdjacentEdgePointers>();
+        Base::template disableOptionalComponent<typename T::AdjacentEdges>();
     }
 
     // Adjacent Faces
@@ -544,7 +542,7 @@ public:
         requires vert::HasOptionalAdjacentFaces<T>
     {
         return Base::template isOptionalComponentEnabled<
-            typename T::AdjacentFacePointers>();
+            typename T::AdjacentFaces>();
     }
 
     /**
@@ -556,8 +554,7 @@ public:
     void enablePerVertexAdjacentFaces()
         requires vert::HasOptionalAdjacentFaces<T>
     {
-        Base::template enableOptionalComponent<
-            typename T::AdjacentFacePointers>();
+        Base::template enableOptionalComponent<typename T::AdjacentFaces>();
     }
 
     /**
@@ -569,8 +566,7 @@ public:
     void disablePerVertexAdjacentFaces()
         requires vert::HasOptionalAdjacentFaces<T>
     {
-        Base::template disableOptionalComponent<
-            typename T::AdjacentFacePointers>();
+        Base::template disableOptionalComponent<typename T::AdjacentFaces>();
     }
 
     // Adjacent Vertices

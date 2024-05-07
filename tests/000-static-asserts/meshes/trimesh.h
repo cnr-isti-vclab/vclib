@@ -31,10 +31,9 @@ void trimeshStaticAsserts()
     static_assert(!HasQuads<TriMesh>, "");
     static_assert(!HasPolygons<TriMesh>, "");
 
+    static_assert(comp::IsTiedToVertexNumber<TriMesh::Face::AdjacentFaces>, "");
     static_assert(
-        comp::IsTiedToVertexNumber<TriMesh::Face::AdjacentFacePointers>, "");
-    static_assert(
-        !comp::IsTiedToVertexNumber<TriMesh::Vertex::AdjacentFacePointers>, "");
+        !comp::IsTiedToVertexNumber<TriMesh::Vertex::AdjacentFaces>, "");
 
     static_assert(!comp::ComponentConcept<TriMesh::VertexContainer>, "");
     static_assert(comp::ComponentConcept<TriMesh::BoundingBox>, "");
