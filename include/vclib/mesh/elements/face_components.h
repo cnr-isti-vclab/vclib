@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_ELEMENTS_FACE_COMPONENTS_H
 #define VCL_MESH_ELEMENTS_FACE_COMPONENTS_H
 
-#include "../components/adjacent_edge_pointers.h"
+#include "../components/adjacent_edges.h"
 #include "../components/adjacent_faces.h"
 #include "../components/bit_flags.h"
 #include "../components/color.h"
@@ -58,39 +58,39 @@ namespace vcl::face {
 
 /* Port AdjacentEdges class into face namespace */
 template<typename EdgeType>
-using AdjacentEdgePointers = comp::AdjacentEdgePointers<EdgeType, -1, false>;
+using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false>;
 
 template<typename EdgeType, typename ParentFaceType>
-using AdjacentPolygonEdgePointers =
-    comp::AdjacentEdgePointers<EdgeType, -1, true, ParentFaceType>;
+using AdjacentPolygonEdges =
+    comp::AdjacentEdges<EdgeType, -1, true, ParentFaceType>;
 
 template<typename EdgeType, typename ParentFaceType>
-using AdjacentTriangleEdgePointers =
-    comp::AdjacentEdgePointers<EdgeType, 3, true, ParentFaceType>;
+using AdjacentTriangleEdges =
+    comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType>;
 
 template<typename EdgeType, typename ParentFaceType>
-using VerticalAdjacentEdgePointers =
-    comp::AdjacentEdgePointers<EdgeType, -1, false, ParentFaceType, true>;
+using VerticalAdjacentEdges =
+    comp::AdjacentEdges<EdgeType, -1, false, ParentFaceType, true>;
 
 template<typename EdgeType, typename ParentFaceType>
-using VerticalAdjacentPolygonEdgePointers =
-    comp::AdjacentEdgePointers<EdgeType, -1, true, ParentFaceType, true>;
+using VerticalAdjacentPolygonEdges =
+    comp::AdjacentEdges<EdgeType, -1, true, ParentFaceType, true>;
 
 template<typename EdgeType, typename ParentFaceType>
-using VerticalAdjacentTriangleEdgePointers =
-    comp::AdjacentEdgePointers<EdgeType, 3, true, ParentFaceType, true>;
+using VerticalAdjacentTriangleEdges =
+    comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType, true>;
 
 template<typename EdgeType, typename ParentFaceType>
-using OptionalAdjacentEdgePointers =
-    comp::AdjacentEdgePointers<EdgeType, -1, false, ParentFaceType, true, true>;
+using OptionalAdjacentEdges =
+    comp::AdjacentEdges<EdgeType, -1, false, ParentFaceType, true, true>;
 
 template<typename EdgeType, typename ParentFaceType>
-using OptionalAdjacentPolygonEdgePointers =
-    comp::AdjacentEdgePointers<EdgeType, -1, true, ParentFaceType, true, true>;
+using OptionalAdjacentPolygonEdges =
+    comp::AdjacentEdges<EdgeType, -1, true, ParentFaceType, true, true>;
 
 template<typename EdgeType, typename ParentFaceType>
-using OptionalAdjacentTriangleEdgePointers =
-    comp::AdjacentEdgePointers<EdgeType, 3, true, ParentFaceType, true, true>;
+using OptionalAdjacentTriangleEdges =
+    comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType, true, true>;
 
 /* Port AdjacentFaces class into face namespace */
 template<typename ParentFaceType>

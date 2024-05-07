@@ -50,9 +50,7 @@ class Vertex :
             vert::Normal3<Scalar>,
             vert::OptionalColor<Vertex<Scalar, I>>,
             vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentEdgePointers<
-                Edge<Scalar, I>,
-                Vertex<Scalar, I>>,
+            vert::OptionalAdjacentEdges<Edge<Scalar, I>, Vertex<Scalar, I>>,
             vert::OptionalAdjacentVertices<Vertex<Scalar, I>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
             vert::OptionalMark<Vertex<Scalar, I>>,
@@ -68,7 +66,7 @@ class Edge :
             edge::VertexReferences<I, Vertex<Scalar, I>, Edge<Scalar, I>>,
             edge::OptionalColor<Edge<Scalar, I>>,
             edge::OptionalQuality<Scalar, Edge<Scalar, I>>,
-            edge::OptionalAdjacentEdgePointers<Edge<Scalar, I>>,
+            edge::OptionalAdjacentEdges<Edge<Scalar, I>>,
             edge::OptionalMark<Edge<Scalar, I>>,
             edge::CustomComponents<Edge<Scalar, I>>>
 {

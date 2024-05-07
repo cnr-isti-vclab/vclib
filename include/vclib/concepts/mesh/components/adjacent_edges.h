@@ -132,7 +132,7 @@ concept HasOptionalAdjacentEdges =
  */
 template<typename T>
 concept HasRightNumberOfAdjacentEdges =
-    !comp::IsTiedToVertexNumber<typename T::AdjacentEdgePointers> ||
+    !comp::IsTiedToVertexNumber<typename T::AdjacentEdges> ||
     T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
 
 /**

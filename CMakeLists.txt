@@ -220,7 +220,7 @@ set(HEADERS
     include/vclib/mesh/mesh_components.h
     include/vclib/mesh/mesh_containers.h
     include/vclib/mesh/requirements.h
-    include/vclib/mesh/components/adjacent_edge_pointers.h
+    include/vclib/mesh/components/adjacent_edges.h
     include/vclib/mesh/components/adjacent_faces.h
     include/vclib/mesh/components/adjacent_vertices.h
     include/vclib/mesh/components/bit_flags.h

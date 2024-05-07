@@ -132,7 +132,7 @@ concept HasOptionalAdjacentFaces =
  */
 template<typename T>
 concept HasRightNumberOfAdjacentFaces =
-    !comp::IsTiedToVertexNumber<typename T::AdjacentFacePointers> ||
+    !comp::IsTiedToVertexNumber<typename T::AdjacentFaces> ||
     T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
 
 /**
