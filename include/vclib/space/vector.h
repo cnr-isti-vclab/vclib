@@ -435,8 +435,12 @@ public:
      * requirement `requires (N < 0)`.
      *
      * @param[in] n: The new size of the Vector.
+     * @param[in] v: The value to use to fill the new elements of the Vector.
      */
-    void resize(uint n) requires (N < 0) { mContainer.resize(n); }
+    void resize(uint n, const T& v = T()) requires (N < 0)
+    {
+        mContainer.resize(n, v);
+    }
 
     /**
      * @brief Add an element to the end of the Vector.

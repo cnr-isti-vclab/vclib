@@ -94,12 +94,12 @@ class WedgeColors :
         true>;
 
 public:
-    static const int WEDGE_COLOR_NUMBER = Base::SIZE;
-
     /* Iterator Types declaration */
 
     using WedgeColorsIterator      = Base::Iterator;
     using ConstWedgeColorsIterator = Base::ConstIterator;
+
+    static const int WEDGE_COLOR_NUMBER = Base::SIZE;
 
     /* Constructors */
 

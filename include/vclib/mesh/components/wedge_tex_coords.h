@@ -103,8 +103,6 @@ class WedgeTexCoords :
         true>;
 
 public:
-    static const int WEDGE_TEX_COORD_NUMBER = N;
-
     /**
      * @brief Expose the type of the Texture Coordinate.
      */
@@ -115,6 +113,8 @@ public:
     using WedgeTexCoordsIterator = Vector<vcl::TexCoord<Scalar>, N>::Iterator;
     using ConstWedgeTexCoordsIterator =
         Vector<vcl::TexCoord<Scalar>, N>::ConstIterator;
+
+    static const int WEDGE_TEX_COORD_NUMBER = N;
 
     /* Constructors */
 
