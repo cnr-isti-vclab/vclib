@@ -66,7 +66,7 @@ class Face :
         public vcl::Face<
             PolyMeshT<Scalar, I>,
             face::PolygonBitFlags, // 4b
-            face::PolygonVertexPtrs<Vertex<Scalar, I>, Face<Scalar, I>>,
+            face::PolygonVertexRefs<I, Vertex<Scalar, I>, Face<Scalar, I>>,
             face::Normal3<Scalar>,
             face::OptionalColor<Face<Scalar, I>>,
             face::OptionalQuality<Scalar, Face<Scalar, I>>,

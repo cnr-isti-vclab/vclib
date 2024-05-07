@@ -119,13 +119,13 @@ public:
      */
     using VertexType = Vertex;
 
-    static const int VERTEX_NUMBER = Base::SIZE;
-
     /* Iterator Types declaration */
 
     using VertexIterator = Base::Iterator;
     using ConstVertexIterator = Base::ConstIterator;
     using ConstVertexIndexIterator = Base::ConstIndexIterator;
+
+    static const int VERTEX_NUMBER = Base::SIZE;
 
     /* Constructors */
 
@@ -501,7 +501,7 @@ public:
      */
     void resizeVertices(uint n) requires (N < 0)
     {
-        Base::container().resize(n);
+        Base::container().resize(n, UINT_NULL);
     }
 
     /**

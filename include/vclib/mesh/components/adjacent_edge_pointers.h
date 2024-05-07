@@ -47,6 +47,8 @@ namespace vcl::comp {
  *
  * @code{.cpp}
  * v.adjEdgesNumber();
+ * auto* e = v.adjEdge(0);
+ * uint ei = v.adjEdgeIndex(0);
  * @endcode
  *
  * @note This component could be *Tied To Vertex Number*: it means that the size

@@ -724,46 +724,9 @@ protected:
         Vertex*        base,
         const ElVType* ebase)
     {
-        // if constexpr (HasVertexPointers<Element>) {
-        //     if constexpr (N > 0) {
-        //         // same size non-polygonal faces
-        //         if constexpr (N == Element::VERTEX_NUMBER) {
-        //             importPtrsFrom(e, base, ebase);
-        //         }
-        //         // from polygonal to fixed size, but the polygon size == the
-        //         // fixed face size
-        //         else if constexpr (Element::VERTEX_NUMBER < 0) {
-        //             if (e.vertexNumber() == N) {
-        //                 importPtrsFrom(e, base, ebase);
-        //             }
-        //         }
-        //         else {
-        //             // do not import in this case: cannot import from a face of
-        //             // different size
-        //         }
-        //     }
-        //     else {
-        //         // from fixed to polygonal size: need to resize first, then
-        //         // import
-        //         resizeVertices(e.vertexNumber());
-        //         importPtrsFrom(e, base, ebase);
-        //     }
-        // }
     }
 
 private:
-    // template<typename Element, typename ElVType>
-    // void importPtrsFrom(const Element& e, Vertex* base, const ElVType* ebase)
-    // {
-    //     if (ebase != nullptr && base != nullptr) {
-    //         for (uint i = 0; i < e.vertexNumber(); ++i) {
-    //             if (e.vertex(i) != nullptr) {
-    //                 setVertex(i, base + (e.vertex(i) - ebase));
-    //             }
-    //         }
-    //     }
-    // }
-
     template<typename Element>
     void importIndicesFrom(const Element& e)
     {

@@ -57,6 +57,12 @@ public:
     static constexpr uint componentsNumber() { return COMP_NUMBER; }
 
     template<typename C>
+    constexpr bool hasComponent() const
+    {
+        return indexOfType<C>() != UINT_NULL;
+    }
+
+    template<typename C>
     constexpr std::vector<typename C::DataValueType>& vector()
     {
         constexpr uint ind = indexOfType<C>();

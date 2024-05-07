@@ -68,7 +68,7 @@ public:
      * @param it
      * @param mesh
      */
-    PointerFromIndexIterator(const Iterator& it, PE pElem) :
+    PointerFromIndexIterator(Iterator it, PE pElem) :
             mIt(it), parentElement(pElem)
     {
         updateCurrent();
@@ -79,15 +79,19 @@ public:
      * @param it
      * @param end
      */
-    PointerFromIndexIterator(const Iterator& it) : mIt(it) {}
+    PointerFromIndexIterator(Iterator it) : mIt(it) {}
+
+    PointerFromIndexIterator(const PointerFromIndexIterator&) = default;
 
     /**
      * @brief Constructor from a non-const iterator
      * @param oi
      */
-    PointerFromIndexIterator(
-        PointerFromIndexIterator<Iterator, ElementType, ParentElement, false>
-            oi) requires (CNST == true)
+    PointerFromIndexIterator(const PointerFromIndexIterator<
+                             Iterator,
+                             ElementType,
+                             ParentElement,
+                             false>& oi) requires (CNST == true)
             :
             mIt(oi.mIt), mCurrent(oi.mCurrent),
             parentElement(oi.parentElement) {};

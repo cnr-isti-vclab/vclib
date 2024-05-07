@@ -114,6 +114,13 @@ protected:
     using ConstIterator =
         ConstPointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
 
+    IndicesContainerComponent()
+    {
+        if constexpr (N >= 0) {
+            container().fill(UINT_NULL);
+        }
+    }
+
     /*
      * This member function is called when we need to update the pointers in
      * this container after a reallocation (the pointer of the first element of
