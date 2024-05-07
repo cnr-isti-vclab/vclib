@@ -34,13 +34,8 @@ namespace vcl::comp {
 /**
  * @brief HasVertexReferences concept is satisfied only if a Element class
  * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to a VertexPointers or
- * VertexIndices component of a given element.
- *
- * @note This concept does not discriminate between the VertexPointers and the
- * VertexIndices components. It is made to check if either of them is
- * available. If you need to check for a specific component, use the
- * HasVertexPointers or HasVertexIndices concepts.
+ * types and member functions allow to access to a VertexReferences component of
+ * a given element.
  *
  * @ingroup components_concepts
  */

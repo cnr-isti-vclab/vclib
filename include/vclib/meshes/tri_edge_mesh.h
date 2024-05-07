@@ -54,7 +54,7 @@ class Vertex :
             vert::OptionalColor<Vertex<Scalar, I>>,
             vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
             vert::OptionalAdjacentEdges<Edge<Scalar, I>, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentFaces<Face<Scalar, I>, Vertex<Scalar, I>>,
+            vert::OptionalAdjacentFaces<I, Face<Scalar, I>, Vertex<Scalar, I>>,
             vert::OptionalAdjacentVertices<Vertex<Scalar, I>>,
             vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
@@ -72,7 +72,7 @@ class Face :
             face::Normal3<Scalar>,
             face::OptionalColor<Face<Scalar, I>>,
             face::OptionalQuality<Scalar, Face<Scalar, I>>,
-            face::OptionalAdjacentTriangles<Face<Scalar, I>>,
+            face::OptionalAdjacentTriangles<I, Face<Scalar, I>>,
             face::OptionalAdjacentEdges<Edge<Scalar, I>, Face<Scalar, I>>,
             face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar, I>>,
             face::OptionalMark<Face<Scalar, I>>,
@@ -89,8 +89,7 @@ class Edge :
             edge::OptionalColor<Edge<Scalar, I>>,
             edge::OptionalQuality<Scalar, Edge<Scalar, I>>,
             edge::OptionalAdjacentEdges<Edge<Scalar, I>>,
-            edge::
-                OptionalAdjacentFaces<Face<Scalar, I>, Edge<Scalar, I>>,
+            edge::OptionalAdjacentFaces<I, Face<Scalar, I>, Edge<Scalar, I>>,
             edge::OptionalMark<Edge<Scalar, I>>,
             edge::CustomComponents<Edge<Scalar, I>>>
 {

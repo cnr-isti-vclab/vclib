@@ -53,7 +53,7 @@ namespace vcl::comp {
  *
  * @code{.cpp}
  * uint n = f.vertexNumber();
- * const auto* v = f.vertex(0);
+ * auto* v = f.vertex(0);
  * uint vi = f.vertexIndex(0);
  * @endcode
  *

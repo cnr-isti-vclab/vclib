@@ -104,22 +104,30 @@ class IndicesContainerComponent :
         OPT,
         TTVN,
         Elem>;
-
 protected:
     using Base::container;
 
-    using ConstIndexIterator = typename Base::ConstIterator;
-    using Iterator =
-        PointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
-    using ConstIterator =
-        ConstPointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
-
+public:
     IndicesContainerComponent()
+    {
+        if constexpr (!Base::IS_VERTICAL) {
+            init();
+        }
+    }
+
+    void init()
     {
         if constexpr (N >= 0) {
             container().fill(UINT_NULL);
         }
     }
+
+protected:
+    using ConstIndexIterator = typename Base::ConstIterator;
+    using Iterator =
+        PointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
+    using ConstIterator =
+        ConstPointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
 
     /*
      * This member function is called when we need to update the pointers in

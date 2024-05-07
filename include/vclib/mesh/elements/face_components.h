@@ -93,29 +93,83 @@ using OptionalAdjacentTriangleEdges =
     comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType, true, true>;
 
 /* Port AdjacentFaces class into face namespace */
-template<typename ParentFaceType>
+template<bool INDEXED, typename ParentFaceType>
 using AdjacentPolygons =
-    comp::AdjacentFaces<ParentFaceType, -1, true, ParentFaceType>;
+    comp::AdjacentFaces<INDEXED, ParentFaceType, -1, true, ParentFaceType>;
 
-template<typename ParentFaceType>
+template<bool INDEXED, typename ParentFaceType>
 using AdjacentTriangles =
-    comp::AdjacentFaces<ParentFaceType, 3, true, ParentFaceType>;
+    comp::AdjacentFaces<INDEXED, ParentFaceType, 3, true, ParentFaceType>;
 
-template<typename ParentFaceType>
-using VerticalAdjacentPolygons =
-    comp::AdjacentFaces<ParentFaceType, -1, true, ParentFaceType, true>;
+template<bool INDEXED, typename ParentFaceType>
+using VerticalAdjacentPolygons = comp::
+    AdjacentFaces<INDEXED, ParentFaceType, -1, true, ParentFaceType, true>;
 
-template<typename ParentFaceType>
+template<bool INDEXED, typename ParentFaceType>
 using VerticalAdjacentTriangles =
-    comp::AdjacentFaces<ParentFaceType, 3, true, ParentFaceType, true>;
+    comp::AdjacentFaces<INDEXED, ParentFaceType, 3, true, ParentFaceType, true>;
 
-template<typename ParentFaceType>
-using OptionalAdjacentPolygons = comp::
-    AdjacentFaces<ParentFaceType, -1, true, ParentFaceType, true, true>;
+template<bool INDEXED, typename ParentFaceType>
+using OptionalAdjacentPolygons = comp::AdjacentFaces<
+    INDEXED,
+    ParentFaceType,
+    -1,
+    true,
+    ParentFaceType,
+    true,
+    true>;
 
-template<typename ParentFaceType>
+template<bool INDEXED, typename ParentFaceType>
 using OptionalAdjacentTriangles = comp::
-    AdjacentFaces<ParentFaceType, 3, true, ParentFaceType, true, true>;
+    AdjacentFaces<INDEXED, ParentFaceType, 3, true, ParentFaceType, true, true>;
+
+template<typename ParentFaceType>
+using AdjacentPolygonIndices =
+    comp::AdjacentFaces<true, ParentFaceType, -1, true, ParentFaceType>;
+
+template<typename ParentFaceType>
+using AdjacentTriangleIndices =
+    comp::AdjacentFaces<true, ParentFaceType, 3, true, ParentFaceType>;
+
+template<typename ParentFaceType>
+using VerticalAdjacentPolygonIndices =
+    comp::AdjacentFaces<true, ParentFaceType, -1, true, ParentFaceType, true>;
+
+template<typename ParentFaceType>
+using VerticalAdjacentTriangleIndices =
+    comp::AdjacentFaces<true, ParentFaceType, 3, true, ParentFaceType, true>;
+
+template<typename ParentFaceType>
+using OptionalAdjacentPolygonIndices = comp::
+    AdjacentFaces<true, ParentFaceType, -1, true, ParentFaceType, true, true>;
+
+template<typename ParentFaceType>
+using OptionalAdjacentTriangleIndices = comp::
+    AdjacentFaces<true, ParentFaceType, 3, true, ParentFaceType, true, true>;
+
+template<typename ParentFaceType>
+using AdjacentPolygonPointers =
+    comp::AdjacentFaces<false, ParentFaceType, -1, true, ParentFaceType>;
+
+template<typename ParentFaceType>
+using AdjacentTrianglePointers =
+    comp::AdjacentFaces<false, ParentFaceType, 3, true, ParentFaceType>;
+
+template<typename ParentFaceType>
+using VerticalAdjacentPolygonPointers =
+    comp::AdjacentFaces<false, ParentFaceType, -1, true, ParentFaceType, true>;
+
+template<typename ParentFaceType>
+using VerticalAdjacentTrianglePointers =
+    comp::AdjacentFaces<false, ParentFaceType, 3, true, ParentFaceType, true>;
+
+template<typename ParentFaceType>
+using OptionalAdjacentPolygonPointers = comp::
+    AdjacentFaces<false, ParentFaceType, -1, true, ParentFaceType, true, true>;
+
+template<typename ParentFaceType>
+using OptionalAdjacentTrianglePointers = comp::
+    AdjacentFaces<false, ParentFaceType, 3, true, ParentFaceType, true, true>;
 
 /* Port BitFlags class into face namespace */
 using BitFlags = comp::BitFlags<>;

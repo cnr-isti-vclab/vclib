@@ -64,17 +64,41 @@ using OptionalAdjacentEdges = comp::
     AdjacentEdges<ParentEdgeType, -1, false, ParentEdgeType, true, true>;
 
 /* Port AdjacentFaces class into edge namespace */
-template<typename FaceType, typename ParentEdgeType>
+template<bool INDEXED, typename FaceType, typename ParentEdgeType>
 using AdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, ParentEdgeType>;
+    comp::AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType>;
 
-template<typename FaceType, typename ParentEdgeType>
+template<bool INDEXED, typename FaceType, typename ParentEdgeType>
 using VerticalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, ParentEdgeType, true>;
+    comp::AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType, true>;
+
+template<bool INDEXED, typename FaceType, typename ParentEdgeType>
+using OptionalAdjacentFaces =
+    comp::AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType, true, true>;
 
 template<typename FaceType, typename ParentEdgeType>
-using OptionalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, ParentEdgeType, true, true>;
+using AdjacentFaceIndices =
+    comp::AdjacentFaces<true, FaceType, -1, false, ParentEdgeType>;
+
+template<typename FaceType, typename ParentEdgeType>
+using VerticalAdjacentFaceIndices =
+    comp::AdjacentFaces<true, FaceType, -1, false, ParentEdgeType, true>;
+
+template<typename FaceType, typename ParentEdgeType>
+using OptionalAdjacentFaceIndices =
+    comp::AdjacentFaces<true, FaceType, -1, false, ParentEdgeType, true, true>;
+
+template<typename FaceType, typename ParentEdgeType>
+using AdjacentFacePointers =
+    comp::AdjacentFaces<false, FaceType, -1, false, ParentEdgeType>;
+
+template<typename FaceType, typename ParentEdgeType>
+using VerticalAdjacentFacePointers =
+    comp::AdjacentFaces<false, FaceType, -1, false, ParentEdgeType, true>;
+
+template<typename FaceType, typename ParentEdgeType>
+using OptionalAdjacentFacePointers =
+    comp::AdjacentFaces<false, FaceType, -1, false, ParentEdgeType, true, true>;
 
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<>;
