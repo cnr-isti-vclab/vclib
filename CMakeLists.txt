@@ -247,6 +247,7 @@ set(HEADERS
     include/vclib/mesh/components/bases/component.h
     include/vclib/mesh/components/bases/container_component.h
     include/vclib/mesh/components/bases/indices_container_component.h
+    include/vclib/mesh/components/bases/references_container_component.h
     include/vclib/mesh/components/bases/pointers_container_component.h
     include/vclib/mesh/components/detail/component_data.h
     include/vclib/mesh/components/detail/custom_components_data.h

@@ -26,7 +26,7 @@
 #include <vclib/concepts/mesh/components/vertex_references.h>
 #include <vclib/views/view.h>
 
-#include "bases/pointers_container_component.h"
+#include "bases/references_container_component.h"
 
 namespace vcl::comp {
 
