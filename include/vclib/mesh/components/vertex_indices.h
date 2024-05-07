@@ -86,7 +86,7 @@ template<
 class VertexIndices :
         public IndicesContainerComponent<
             VertexIndices<Vertex, N, ParentElemType, VERT>,
-            CompId::VERTEX_INDICES,
+            CompId::VERTEX_REFERENCES,
             Vertex,
             N,
             ParentElemType,
@@ -96,7 +96,7 @@ class VertexIndices :
 {
     using Base = IndicesContainerComponent<
         VertexIndices<Vertex, N, ParentElemType, VERT>,
-        CompId::VERTEX_INDICES,
+        CompId::VERTEX_REFERENCES,
         Vertex,
         N,
         ParentElemType,

@@ -143,7 +143,7 @@ using VertexReferences =
 
 /* Port VertexPointers class into edge namespace */
 template<typename VertexType, typename EdgeType>
-using VertexPointers = comp::VertexPointers<VertexType, 2, EdgeType>;
+using VertexPointers = comp::VertexPointers<false, VertexType, 2, EdgeType>;
 
 /** @} */ // end of edge_components group
 

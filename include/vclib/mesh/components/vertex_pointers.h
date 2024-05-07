@@ -65,6 +65,8 @@ namespace vcl::comp {
  * and, when the VertexPointers container is resized, also the container of
  * these components is resized automatically.
  *
+ * @tparam STORE_INDICES: If true, the component will store indices, otherwise
+ * pointers to Vertex.
  * @tparam Vertex The type of the vertices.
  * @tparam N: The size of the container, that will represent the number of
  * storable vertex pointers. If negative, the container is dynamic.
@@ -78,14 +80,16 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<
+    bool STORE_INDICES,
     typename Vertex,
     int N,
     typename ParentElemType = void,
     bool VERT               = false>
 class VertexPointers :
-        public PointersContainerComponent<
-            VertexPointers<Vertex, N, ParentElemType, VERT>,
-            CompId::VERTEX_POINTERS,
+        public ReferencesContainerComponent<
+            STORE_INDICES,
+            VertexPointers<STORE_INDICES, Vertex, N, ParentElemType, VERT>,
+            CompId::VERTEX_REFERENCES,
             Vertex,
             N,
             ParentElemType,
@@ -93,9 +97,10 @@ class VertexPointers :
             false,
             false>
 {
-    using Base = PointersContainerComponent<
-        VertexPointers<Vertex, N, ParentElemType, VERT>,
-        CompId::VERTEX_POINTERS,
+    using Base = ReferencesContainerComponent<
+        STORE_INDICES,
+        VertexPointers<STORE_INDICES, Vertex, N, ParentElemType, VERT>,
+        CompId::VERTEX_REFERENCES,
         Vertex,
         N,
         ParentElemType,
@@ -120,8 +125,8 @@ public:
 
     /* Iterator Types declaration */
 
-    using VertexIterator      = Base::Iterator;
-    using ConstVertexIterator = Base::ConstIterator;
+    using VertexIterator           = Base::Iterator;
+    using ConstVertexIterator      = Base::ConstIterator;
     using ConstVertexIndexIterator = Base::ConstIndexIterator;
 
     static const int VERTEX_NUMBER = Base::SIZE;
@@ -131,8 +136,9 @@ public:
     /**
      * @brief Empty constructor.
      *
-     * If the Vertex Pointers container size is static, initializes all the
-     * Vertex Pointers to `nullptr`, otherwise the container will be empty.
+     * If the VertexReferences container size is static, initializes all the
+     * pointers/indices to `nullptr`/`UINT_NULL`, otherwise the container will
+     * be empty.
      */
     VertexPointers() = default;
 
@@ -733,6 +739,14 @@ private:
         for (uint i = 0; i < e.vertexNumber(); ++i) {
             setVertex(i, e.vertexIndex(i));
         }
+    }
+
+    uint indexFromPointer(const Vertex* v) const
+    {
+        if (v == nullptr) [[unlikely]]
+            return UINT_NULL;
+        else
+            return v->index();
     }
 
     Vertex* vertFromParent(uint vi)

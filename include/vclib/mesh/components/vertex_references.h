@@ -38,7 +38,7 @@ template<
     bool VERT            = false>
 struct VertexReferencesSelector
 {
-    using type = VertexPointers<Vertex, N, ElementType, VERT>;
+    using type = VertexPointers<false, Vertex, N, ElementType, VERT>;
 };
 
 template<typename Vertex, int N, typename ElementType, bool VERT>

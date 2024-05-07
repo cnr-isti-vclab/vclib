@@ -271,13 +271,13 @@ using PolygonVertexRefs = comp::VertexReferences<INDEXED, Vertex, -1, FaceType>;
 
 /* Port VertexPointers class into face namespace */
 template<typename Vertex, int N, typename FaceType>
-using VertexPointers = comp::VertexPointers<Vertex, N, FaceType>;
+using VertexPointers = comp::VertexPointers<false, Vertex, N, FaceType>;
 
 template<typename Vertex, typename FaceType>
-using TriangleVertexPtrs = comp::VertexPointers<Vertex, 3, FaceType>;
+using TriangleVertexPtrs = comp::VertexPointers<false, Vertex, 3, FaceType>;
 
 template<typename Vertex, typename FaceType>
-using PolygonVertexPtrs = comp::VertexPointers<Vertex, -1, FaceType>;
+using PolygonVertexPtrs = comp::VertexPointers<false, Vertex, -1, FaceType>;
 
 /* Port WedgeColors class into face namespace */
 using PolygonWedgeColors = comp::WedgeColors<-1>;
