@@ -25,7 +25,7 @@
 
 #include "components/adjacent_edge_pointers.h"
 #include "components/adjacent_face_pointers.h"
-#include "components/adjacent_vertex_pointers.h"
+#include "components/adjacent_vertices.h"
 #include "components/bit_flags.h"
 #include "components/bounding_box.h"
 #include "components/color.h"

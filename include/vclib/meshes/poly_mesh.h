@@ -53,7 +53,7 @@ class Vertex :
             vert::OptionalAdjacentFacePointers<
                 Face<Scalar, I>,
                 Vertex<Scalar, I>>,
-            vert::OptionalAdjacentVertexPointers<Vertex<Scalar, I>>,
+            vert::OptionalAdjacentVertices<Vertex<Scalar, I>>,
             vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
             vert::OptionalMark<Vertex<Scalar, I>>,
