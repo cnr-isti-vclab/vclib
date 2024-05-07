@@ -31,9 +31,7 @@
 #include "../components/mark.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/quality.h"
-#include "../components/vertex_indices.h"
 #include "../components/vertex_references.h"
-#include "../components/vertex_pointers.h"
 
 /**
  * @defgroup edge_components Edge Components

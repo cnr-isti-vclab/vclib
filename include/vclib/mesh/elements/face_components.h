@@ -35,9 +35,7 @@
 #include "../components/principal_curvature.h"
 #include "../components/quality.h"
 #include "../components/triangle_bit_flags.h"
-#include "../components/vertex_indices.h"
 #include "../components/vertex_references.h"
-#include "../components/vertex_pointers.h"
 #include "../components/wedge_colors.h"
 #include "../components/wedge_tex_coords.h"
 

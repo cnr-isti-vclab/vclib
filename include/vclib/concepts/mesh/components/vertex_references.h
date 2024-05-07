@@ -108,18 +108,6 @@ concept HasVertexReferences = requires (
     // clang-format on
 };
 
-template<typename T>
-concept HasVertexPointers = HasVertexReferences<T> && requires
-{
-    typename T::VertexPointers;
-};
-
-template<typename T>
-concept HasVertexIndices = HasVertexReferences<T> && requires
-{
-    typename T::VertexIndices;
-};
-
 } // namespace vcl::comp
 
 #endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
