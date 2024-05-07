@@ -247,16 +247,6 @@ using TriangleBitFlags = comp::TriangleBitFlags<>;
 template<typename ParentFaceType>
 using VerticalTriangleBitFlags = comp::TriangleBitFlags<ParentFaceType>;
 
-/* Port VertexIndices class into face namespace */
-template<typename Vertex, int N, typename FaceType>
-using VertexIndices = comp::VertexIndices<Vertex, N, FaceType>;
-
-template<typename Vertex, typename FaceType>
-using TriangleVertexInds = comp::VertexIndices<Vertex, 3, FaceType>;
-
-template<typename Vertex, typename FaceType>
-using PolygonVertexInds = comp::VertexIndices<Vertex, -1, FaceType>;
-
 /* Port VertexReferences alias into face namespace */
 template<bool INDEXED, typename Vertex, int N, typename FaceType>
 using VertexReferences = comp::VertexReferences<INDEXED, Vertex, N, FaceType>;
@@ -267,15 +257,23 @@ using TriangleVertexRefs = comp::VertexReferences<INDEXED, Vertex, 3, FaceType>;
 template<bool INDEXED, typename Vertex, typename FaceType>
 using PolygonVertexRefs = comp::VertexReferences<INDEXED, Vertex, -1, FaceType>;
 
-/* Port VertexPointers class into face namespace */
 template<typename Vertex, int N, typename FaceType>
-using VertexPointers = comp::VertexPointers<false, Vertex, N, FaceType>;
+using VertexIndices = comp::VertexReferences<true, Vertex, N, FaceType>;
 
 template<typename Vertex, typename FaceType>
-using TriangleVertexPtrs = comp::VertexPointers<false, Vertex, 3, FaceType>;
+using TriangleVertexInds = comp::VertexReferences<true, Vertex, 3, FaceType>;
 
 template<typename Vertex, typename FaceType>
-using PolygonVertexPtrs = comp::VertexPointers<false, Vertex, -1, FaceType>;
+using PolygonVertexInds = comp::VertexReferences<true, Vertex, -1, FaceType>;
+
+template<typename Vertex, int N, typename FaceType>
+using VertexPointers = comp::VertexReferences<false, Vertex, N, FaceType>;
+
+template<typename Vertex, typename FaceType>
+using TriangleVertexPtrs = comp::VertexReferences<false, Vertex, 3, FaceType>;
+
+template<typename Vertex, typename FaceType>
+using PolygonVertexPtrs = comp::VertexReferences<false, Vertex, -1, FaceType>;
 
 /* Port WedgeColors class into face namespace */
 using PolygonWedgeColors = comp::WedgeColors<-1>;

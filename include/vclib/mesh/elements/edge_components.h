@@ -130,18 +130,16 @@ using OptionalQualityf = comp::Quality<float, ParentEdgeType, true>;
 template<typename ParentEdgeType>
 using OptionalQualityd = comp::Quality<double, ParentEdgeType, true>;
 
-/* Port VertexIndices class into edge namespace */
-template<typename VertexType, typename EdgeType>
-using VertexIndices = comp::VertexIndices<VertexType, 2, EdgeType>;
-
 /* Port VertexReferences alias into edge namespace */
 template<bool INDEXED, typename VertexType, typename EdgeType>
 using VertexReferences =
     comp::VertexReferences<INDEXED, VertexType, 2, EdgeType>;
 
-/* Port VertexPointers class into edge namespace */
 template<typename VertexType, typename EdgeType>
-using VertexPointers = comp::VertexPointers<false, VertexType, 2, EdgeType>;
+using VertexIndices = comp::VertexReferences<true, VertexType, 2, EdgeType>;
+
+template<typename VertexType, typename EdgeType>
+using VertexPointers = comp::VertexReferences<false, VertexType, 2, EdgeType>;
 
 /** @} */ // end of edge_components group
 
