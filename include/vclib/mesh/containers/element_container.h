@@ -413,16 +413,19 @@ protected:
      */
     void append(const ElementContainer<T>& other)
     {
+        using Comps = T::Components;
+
         uint on = other.elementNumber();
         uint n  = elementContainerSize();
         addElements(on);
         for (uint i = 0; i < on; ++i) {
             // copy everything from the other elements, also the pointers:
             element(n + i) = other.element(i);
-            // importing also optional, vertical and custom components:
-            element(n + i).importFrom(other.element(i));
             element(n + i).setParentMesh(mParentMesh);
         }
+        // importing also optional, vertical and custom components:
+        appendVerticalComponents(other, vComps());
+        appendCustomComponents(other);
     }
 
     /**
@@ -1008,6 +1011,51 @@ private:
                 for (uint i = 0; i < elementContainerSize(); ++i) {
                     element(i).Comp::importPointersFrom(
                         c.element(i), base, cbase);
+                }
+            }
+        }
+    }
+
+    template<typename... Comps>
+    void appendVerticalComponents(
+        const ElementContainer<T>& other,
+        TypeWrapper<Comps...>)
+    {
+        (appendVerticalComponent<Comps>(other), ...);
+    }
+
+    template<typename Comp>
+    void appendVerticalComponent(const ElementContainer<T>& other)
+    {
+        uint on = other.elementNumber();
+        uint n = elementContainerSize() - on;
+
+        if (mVerticalCompVecTuple.template isComponentEnabled<Comp>()
+            && other.mVerticalCompVecTuple.template isComponentEnabled<Comp>())
+        {
+            auto& vc = mVerticalCompVecTuple.template vector<Comp>();
+            const auto& ovc =
+                other.mVerticalCompVecTuple.template vector<Comp>();
+
+            for (uint i = 0; i < on; ++i) {
+                vc[n + i] = ovc[i];
+            }
+        }
+    }
+
+    void appendCustomComponents(const ElementContainer<T>& other)
+    {
+        if constexpr (comp::HasCustomComponents<T>) {
+            uint on = other.elementNumber();
+            uint n = elementContainerSize() - on;
+
+            std::vector<std::string> ccNames =
+                mCustomCompVecMap.allComponentNames();
+
+            for (const std::string& name : ccNames) {
+                for (uint i = 0; i < on; ++i) {
+                    mCustomCompVecMap.importSameCustomComponentFrom(
+                        n+ i, i, name, other.mCustomCompVecMap);
                 }
             }
         }

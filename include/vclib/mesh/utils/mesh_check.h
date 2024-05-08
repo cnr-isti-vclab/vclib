@@ -34,7 +34,7 @@ namespace detail {
 /** check parent mesh pointers **/
 
 template<uint ELEM_ID, MeshConcept MeshType>
-void checkParentMeshPointers(const MeshType& mesh)
+bool checkParentMeshPointers(const MeshType& mesh)
 {
     for (const auto& el : mesh.template elements<ELEM_ID>()) {
         if (el.parentMesh() != &mesh) {
@@ -43,20 +43,24 @@ void checkParentMeshPointers(const MeshType& mesh)
                 vcl::toString(el.index()) + " has a wrong Parent Mesh.\n" +
                 "Expected: " + vcl::toString(&mesh) + "; " +
                 "Found: " + vcl::toString(el.parentMesh()));
+            return false;
         }
     }
+    return true;
 }
 
 template<MeshConcept MeshType, typename... Containers>
-void checkParentMeshPointers(const MeshType& mesh, TypeWrapper<Containers...>)
+bool checkParentMeshPointers(const MeshType& mesh, TypeWrapper<Containers...>)
 {
-    (checkParentMeshPointers<Containers::ElementType::ELEMENT_ID>(mesh), ...);
+    return (
+        checkParentMeshPointers<Containers::ElementType::ELEMENT_ID>(mesh) &&
+        ...);
 }
 
 /** check element mesh pointers **/
 
 template<uint ELEM_ID, typename Comp, MeshConcept MeshType, typename ElemType>
-void checkElementPointersInElementContainerOnComponent(
+bool checkElementPointersInElementContainerOnComponent(
     const MeshType& mesh,
     const ElemType* first,
     const ElemType* last)
@@ -92,10 +96,12 @@ void checkElementPointersInElementContainerOnComponent(
                                 vcl::toString(ptr) + " is out of range [" +
                                 vcl::toString(first) + ", " +
                                 vcl::toString(last) + ")");
+                            return false;
                         }
                     }
                 }
             }
+            return true;
         };
 
         // if Comp is optional, we first need to check if it is enabled
@@ -104,13 +110,16 @@ void checkElementPointersInElementContainerOnComponent(
                     ELEM_ID,
                     Comp::COMPONENT_ID>())
             {
-                loop();
+                return loop();
             }
+            return true;
         }
         else {
-            loop();
+            return loop();
         }
     }
+    else
+        return true;
 }
 
 template<
@@ -118,7 +127,7 @@ template<
     MeshConcept MeshType,
     typename ElemType,
     typename... Comps>
-void checkElementPointersInElementContainerOnComponents(
+bool checkElementPointersInElementContainerOnComponents(
     const MeshType& mesh,
     const ElemType* first,
     const ElemType* last,
@@ -126,13 +135,14 @@ void checkElementPointersInElementContainerOnComponents(
 {
     // this function calls the checker for each component of ELEM_ID element
 
-    (checkElementPointersInElementContainerOnComponent<ELEM_ID, Comps>(
-         mesh, first, last),
-     ...);
+    return (
+        checkElementPointersInElementContainerOnComponent<ELEM_ID, Comps>(
+            mesh, first, last) &&
+        ...);
 }
 
 template<uint ELEM_ID, MeshConcept MeshType, typename ElemType>
-void checkElementPointersInElementContainer(
+bool checkElementPointersInElementContainer(
     const MeshType& mesh,
     const ElemType* first,
     const ElemType* last)
@@ -144,12 +154,12 @@ void checkElementPointersInElementContainer(
     // on each component of ELEM_ID
 
     // loop into the components of ELEM_ID element
-    checkElementPointersInElementContainerOnComponents<ELEM_ID>(
+    return checkElementPointersInElementContainerOnComponents<ELEM_ID>(
         mesh, first, last, ThisElemComponents());
 }
 
 template<uint ELEM_ID, MeshConcept MeshType, typename... Containers>
-void checkElementPointers(const MeshType& mesh, TypeWrapper<Containers...>)
+bool checkElementPointers(const MeshType& mesh, TypeWrapper<Containers...>)
 {
     using ElemType = MeshType::template ElementType<ELEM_ID>;
 
@@ -159,27 +169,32 @@ void checkElementPointers(const MeshType& mesh, TypeWrapper<Containers...>)
 
     // now, for each Container, I need to check whether the pointers to
     // ElemType* are in the right range
-    (checkElementPointersInElementContainer<
-         Containers::ElementType::ELEMENT_ID>(mesh, first, last),
-     ...);
+    return (
+        checkElementPointersInElementContainer<
+            Containers::ElementType::ELEMENT_ID>(mesh, first, last) &&
+        ...);
 }
 
 template<MeshConcept MeshType, typename... Containers>
-void checkMeshPointers(const MeshType& mesh, TypeWrapper<Containers...>)
+bool checkMeshPointers(const MeshType& mesh, TypeWrapper<Containers...>)
 {
-    (checkElementPointers<Containers::ElementType::ELEMENT_ID>(
-         mesh, typename MeshType::Containers()),
-     ...);
+    return (
+        checkElementPointers<Containers::ElementType::ELEMENT_ID>(
+            mesh, typename MeshType::Containers()) &&
+        ...);
 }
 
 } // namespace detail
 
 template<MeshConcept MeshType>
-void checkMeshPointers(const MeshType& mesh)
+bool checkMeshPointers(const MeshType& mesh)
 {
-    detail::checkParentMeshPointers(mesh, typename MeshType::Containers());
+    bool res =
+        detail::checkParentMeshPointers(mesh, typename MeshType::Containers());
 
-    detail::checkMeshPointers(mesh, typename MeshType::Containers());
+    res =
+        res && detail::checkMeshPointers(mesh, typename MeshType::Containers());
+    return res;
 }
 
 } // namespace vcl
