@@ -400,7 +400,7 @@ public:
         std::array<std::size_t, N_CONTAINERS> sizes =
             Mesh<Args...>::getContainerSizes(*this);
 
-        // for each containe rof the other mesh m, save its bases
+        // for each container of the other mesh m, save its bases
         // will need it to update all the pointers of this mesh
         std::array<const void*, N_CONTAINERS> bases =
             Mesh<Args...>::getContainerBases(m);
