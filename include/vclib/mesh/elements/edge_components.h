@@ -51,17 +51,47 @@ namespace vcl::edge {
  */
 
 /* Port AdjacentEdges class into edge namespace */
-template<typename ParentEdgeType>
+template<bool INDEXED, typename ParentEdgeType>
 using AdjacentEdges =
-    comp::AdjacentEdges<ParentEdgeType, -1, false, ParentEdgeType>;
+    comp::AdjacentEdges<INDEXED, ParentEdgeType, -1, false, ParentEdgeType>;
+
+template<bool INDEXED, typename ParentEdgeType>
+using VerticalAdjacentEdges = comp::
+    AdjacentEdges<INDEXED, ParentEdgeType, -1, false, ParentEdgeType, true>;
+
+template<bool INDEXED, typename ParentEdgeType>
+using OptionalAdjacentEdges = comp::AdjacentEdges<
+    INDEXED,
+    ParentEdgeType,
+    -1,
+    false,
+    ParentEdgeType,
+    true,
+    true>;
 
 template<typename ParentEdgeType>
-using VerticalAdjacentEdges =
-    comp::AdjacentEdges<ParentEdgeType, -1, false, ParentEdgeType, true>;
+using AdjacentEdgeIndices =
+    comp::AdjacentEdges<true, ParentEdgeType, -1, false, ParentEdgeType>;
 
 template<typename ParentEdgeType>
-using OptionalAdjacentEdges = comp::
-    AdjacentEdges<ParentEdgeType, -1, false, ParentEdgeType, true, true>;
+using VerticalAdjacentEdgeIndices =
+    comp::AdjacentEdges<true, ParentEdgeType, -1, false, ParentEdgeType, true>;
+
+template<typename ParentEdgeType>
+using OptionalAdjacentEdgeIndices = comp::
+    AdjacentEdges<true, ParentEdgeType, -1, false, ParentEdgeType, true, true>;
+
+template<typename ParentEdgeType>
+using AdjacentEdgePointers =
+    comp::AdjacentEdges<false, ParentEdgeType, -1, false, ParentEdgeType>;
+
+template<typename ParentEdgeType>
+using VerticalAdjacentEdgePointers =
+    comp::AdjacentEdges<false, ParentEdgeType, -1, false, ParentEdgeType, true>;
+
+template<typename ParentEdgeType>
+using OptionalAdjacentEdgePointers = comp::
+    AdjacentEdges<false, ParentEdgeType, -1, false, ParentEdgeType, true, true>;
 
 /* Port AdjacentFaces class into edge namespace */
 template<bool INDEXED, typename FaceType, typename ParentEdgeType>

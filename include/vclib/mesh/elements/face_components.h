@@ -57,40 +57,110 @@ namespace vcl::face {
  */
 
 /* Port AdjacentEdges class into face namespace */
-template<typename EdgeType>
-using AdjacentEdges = comp::AdjacentEdges<EdgeType, -1, false>;
+template<bool INDEXED, typename EdgeType>
+using AdjacentEdges = comp::AdjacentEdges<INDEXED, EdgeType, -1, false>;
 
-template<typename EdgeType, typename ParentFaceType>
+template<bool INDEXED, typename EdgeType, typename ParentFaceType>
 using AdjacentPolygonEdges =
-    comp::AdjacentEdges<EdgeType, -1, true, ParentFaceType>;
+    comp::AdjacentEdges<INDEXED, EdgeType, -1, true, ParentFaceType>;
 
-template<typename EdgeType, typename ParentFaceType>
+template<bool INDEXED, typename EdgeType, typename ParentFaceType>
 using AdjacentTriangleEdges =
-    comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType>;
+    comp::AdjacentEdges<INDEXED, EdgeType, 3, true, ParentFaceType>;
 
-template<typename EdgeType, typename ParentFaceType>
+template<bool INDEXED, typename EdgeType, typename ParentFaceType>
 using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, ParentFaceType, true>;
+    comp::AdjacentEdges<INDEXED, EdgeType, -1, false, ParentFaceType, true>;
 
-template<typename EdgeType, typename ParentFaceType>
+template<bool INDEXED, typename EdgeType, typename ParentFaceType>
 using VerticalAdjacentPolygonEdges =
-    comp::AdjacentEdges<EdgeType, -1, true, ParentFaceType, true>;
+    comp::AdjacentEdges<INDEXED, EdgeType, -1, true, ParentFaceType, true>;
 
-template<typename EdgeType, typename ParentFaceType>
+template<bool INDEXED, typename EdgeType, typename ParentFaceType>
 using VerticalAdjacentTriangleEdges =
-    comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType, true>;
+    comp::AdjacentEdges<INDEXED, EdgeType, 3, true, ParentFaceType, true>;
 
-template<typename EdgeType, typename ParentFaceType>
-using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, ParentFaceType, true, true>;
+template<bool INDEXED, typename EdgeType, typename ParentFaceType>
+using OptionalAdjacentEdges = comp::
+    AdjacentEdges<INDEXED, EdgeType, -1, false, ParentFaceType, true, true>;
 
-template<typename EdgeType, typename ParentFaceType>
-using OptionalAdjacentPolygonEdges =
-    comp::AdjacentEdges<EdgeType, -1, true, ParentFaceType, true, true>;
+template<bool INDEXED, typename EdgeType, typename ParentFaceType>
+using OptionalAdjacentPolygonEdges = comp::
+    AdjacentEdges<INDEXED, EdgeType, -1, true, ParentFaceType, true, true>;
 
-template<typename EdgeType, typename ParentFaceType>
+template<bool INDEXED, typename EdgeType, typename ParentFaceType>
 using OptionalAdjacentTriangleEdges =
-    comp::AdjacentEdges<EdgeType, 3, true, ParentFaceType, true, true>;
+    comp::AdjacentEdges<INDEXED, EdgeType, 3, true, ParentFaceType, true, true>;
+
+template<typename EdgeType>
+using AdjacentEdgeIndices = comp::AdjacentEdges<true, EdgeType, -1, false>;
+
+template<typename EdgeType, typename ParentFaceType>
+using AdjacentPolygonEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, -1, true, ParentFaceType>;
+
+template<typename EdgeType, typename ParentFaceType>
+using AdjacentTriangleEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, 3, true, ParentFaceType>;
+
+template<typename EdgeType, typename ParentFaceType>
+using VerticalAdjacentEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, -1, false, ParentFaceType, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using VerticalAdjacentPolygonEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, -1, true, ParentFaceType, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using VerticalAdjacentTriangleEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, 3, true, ParentFaceType, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using OptionalAdjacentEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, -1, false, ParentFaceType, true, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using OptionalAdjacentPolygonEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, -1, true, ParentFaceType, true, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using OptionalAdjacentTriangleEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, 3, true, ParentFaceType, true, true>;
+
+template<typename EdgeType>
+using AdjacentEdgePointers = comp::AdjacentEdges<false, EdgeType, -1, false>;
+
+template<typename EdgeType, typename ParentFaceType>
+using AdjacentPolygonEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, -1, true, ParentFaceType>;
+
+template<typename EdgeType, typename ParentFaceType>
+using AdjacentTriangleEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, 3, true, ParentFaceType>;
+
+template<typename EdgeType, typename ParentFaceType>
+using VerticalAdjacentEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, -1, false, ParentFaceType, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using VerticalAdjacentPolygonEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, -1, true, ParentFaceType, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using VerticalAdjacentTriangleEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, 3, true, ParentFaceType, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using OptionalAdjacentEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, -1, false, ParentFaceType, true, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using OptionalAdjacentPolygonEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, -1, true, ParentFaceType, true, true>;
+
+template<typename EdgeType, typename ParentFaceType>
+using OptionalAdjacentTriangleEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, 3, true, ParentFaceType, true, true>;
 
 /* Port AdjacentFaces class into face namespace */
 template<bool INDEXED, typename ParentFaceType>

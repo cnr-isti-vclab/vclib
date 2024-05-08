@@ -31,9 +31,9 @@
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentFaces class is a container of Face pointers. It could be
- * used by any Element to save adjacencies information (also the Face element
- * itself).
+ * @brief The AdjacentFaces class is a container of Face indices or pointers. It
+ * could be used by any Element to save adjacencies information (also the Face
+ * element itself).
  *
  * It is a random access container having static or dynamic size, depending on
  * the value of N (a negative number means dynamic).
@@ -767,7 +767,7 @@ protected:
 
     // PointersComponent interface functions
     template<typename Element, typename ElFType>
-    void importPointersFrom(const Element& e, Face* base, const ElFType* ebase)
+    void importPointersFrom(const Element&, Face*, const ElFType*)
     {
     }
 
@@ -825,12 +825,12 @@ private:
         }
     }
 
-    uint indexFromPointer(const Face* v) const
+    uint indexFromPointer(const Face* f) const
     {
-        if (v == nullptr) [[unlikely]]
+        if (f == nullptr) [[unlikely]]
             return UINT_NULL;
         else
-            return v->index();
+            return f->index();
     }
 
     Face* adjFaceFromParent(uint fi)

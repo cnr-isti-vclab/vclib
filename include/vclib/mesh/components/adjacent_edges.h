@@ -26,14 +26,14 @@
 #include <vclib/concepts/mesh/components/adjacent_edges.h>
 #include <vclib/views/view.h>
 
-#include "bases/pointers_container_component.h"
+#include "bases/references_container_component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentEdges class is a container of Edge pointers. It could be
- * used by any Element to save adjacencies information (also the Edge element
- * itself).
+ * @brief The AdjacentEdges class is a container of Edge indices or pointers. It
+ * could be used by any Element to save adjacencies information (also the Edge
+ * element itself).
  *
  * It is a random access container having static or dynamic size, depending on
  * the value of the template argument N (a negative number means dynamic).
@@ -58,6 +58,8 @@ namespace vcl::comp {
  * For further details check the documentation of the @ref ContainerComponent
  * class.
  *
+ * @tparam STORE_INDICES: If true, the component will store indices, otherwise
+ * pointers to Edge.
  * @tparam Edge: The type of the adjacent Edge element.
  * @tparam N: The size of the container, that will represent the number of
  * storable adjacent edges. If negative, the container is dynamic.
@@ -75,6 +77,7 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<
+    bool STORE_INDICES,
     typename Edge,
     int  N,
     bool TTVN,
@@ -82,8 +85,16 @@ template<
     bool VERT               = false,
     bool OPT                = false>
 class AdjacentEdges :
-        public PointersContainerComponent<
-            AdjacentEdges<Edge, N, TTVN, ParentElemType, VERT, OPT>,
+        public ReferencesContainerComponent<
+            STORE_INDICES,
+            AdjacentEdges<
+                STORE_INDICES,
+                Edge,
+                N,
+                TTVN,
+                ParentElemType,
+                VERT,
+                OPT>,
             CompId::ADJACENT_EDGES,
             Edge,
             N,
@@ -92,8 +103,9 @@ class AdjacentEdges :
             OPT,
             TTVN>
 {
-    using Base = PointersContainerComponent<
-        AdjacentEdges<Edge, N, TTVN, ParentElemType, VERT, OPT>,
+    using Base = ReferencesContainerComponent<
+        STORE_INDICES,
+        AdjacentEdges<STORE_INDICES, Edge, N, TTVN, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_EDGES,
         Edge,
         N,
@@ -146,7 +158,13 @@ public:
      * container; the value must be between 0 and the number of adj edges.
      * @return The pointer to the i-th adjacent edge of the element.
      */
-    Edge* adjEdge(uint i) { return Base::container().at(i); }
+    Edge* adjEdge(uint i)
+    {
+        if constexpr (STORE_INDICES)
+            return adjFaceFromParent(adjEdgeIndex(i));
+        else
+            return Base::container().at(i);
+    }
 
     /**
      * @brief Returns a const pointer to the i-th adjacent edge of the element.
@@ -154,7 +172,13 @@ public:
      * container; the value must be between 0 and the number of adj edges.
      * @return The pointer to the i-th adjacent edge of the element.
      */
-    const Edge* adjEdge(uint i) const { return Base::container().at(i); }
+    const Edge* adjEdge(uint i) const
+    {
+        if constexpr (STORE_INDICES)
+            return adjFaceFromParent(adjEdgeIndex(i));
+        else
+            return Base::container().at(i);
+    }
 
     /**
      * @brief Returns the index in the edge container of the i-th adjacent edge
@@ -164,11 +188,10 @@ public:
      */
     uint adjEdgeIndex(uint i) const
     {
-        auto* e = adjEdge(i);
-        if (e) [[likely]]
-            return e->index();
+        if constexpr (STORE_INDICES)
+            return Base::container().at(i);
         else
-            return UINT_NULL;
+            return indexFromPointer(Base::container().at(i));
     }
 
     /**
@@ -191,7 +214,13 @@ public:
      * adjEdgeNumber().
      * @return The pointer to the required adjacent edge of the element.
      */
-    Edge* adjEdgeMod(int i) { return Base::container().atMod(i); }
+    Edge* adjEdgeMod(int i)
+    {
+        if constexpr (STORE_INDICES)
+            return adjFaceFromParent(adjEdgeIndexMod(i));
+        else
+            return Base::container().atMod(i);
+    }
 
     /**
      * @brief Same of adjEdgeMod, but returns a const Pointer to the adjacent
@@ -201,7 +230,13 @@ public:
      * adjEdgeNumber().
      * @return The pointer to the required adjacent edge of this element.
      */
-    const Edge* adjEdgeMod(int i) const { return Base::container().atMod(i); }
+    const Edge* adjEdgeMod(int i) const
+    {
+        if constexpr (STORE_INDICES)
+            return adjFaceFromParent(adjEdgeIndexMod(i));
+        else
+            return Base::container().atMod(i);
+    }
 
     /**
      * @brief Returns the index in the edge container of the i-th adjacent edge
@@ -225,11 +260,10 @@ public:
      */
     uint adjEdgeIndexMod(int i) const
     {
-        auto* e = adjEdgeMod(i);
-        if (e) [[likely]]
-            return e->index();
+        if constexpr (STORE_INDICES)
+            return Base::container().atMod(i);
         else
-            return UINT_NULL;
+            return indexFromPointer(adjEdgeMod(i));
     }
 
     /**
@@ -238,7 +272,13 @@ public:
      * the value must be between 0 and the number of adj edges.
      * @param[in] e: The pointer to the adjacent edge to set to the element.
      */
-    void setAdjEdge(uint i, Edge* e) { Base::container().set(i, e); }
+    void setAdjEdge(uint i, Edge* e)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().set(i, indexFromPointer(e));
+        else
+            Base::container().set(i, e);
+    }
 
     /**
      * @brief Sets the i-th adjacent edge of the element.
@@ -249,18 +289,10 @@ public:
      */
     void setAdjEdge(uint i, uint ei)
     {
-        setAdjEdge(i, adjEdgeFromParent(ei));
-    }
-
-    /**
-     * @brief Sets the adjacent edge pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * edge; the value must be between begin() and end().
-     * @param[in] ei: The index in the edge container of the edge to set.
-     */
-    void setAdjEdge(ConstAdjacentEdgeIterator it, uint ei)
-    {
-        setAdjEdge(it, adjEdgeFromParent(ei));
+        if constexpr (STORE_INDICES)
+            Base::container().set(i, ei);
+        else
+            Base::container().set(i, adjEdgeFromParent(ei));
     }
 
     /**
@@ -271,7 +303,18 @@ public:
      */
     void setAdjEdge(ConstAdjacentEdgeIterator it, Edge* e)
     {
-        Base::container().set(it - adjEdgeBegin(), e);
+        setAdjEdge(it - adjEdgeBegin(), e);
+    }
+
+    /**
+     * @brief Sets the adjacent edge pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * edge; the value must be between begin() and end().
+     * @param[in] ei: The index in the edge container of the edge to set.
+     */
+    void setAdjEdge(ConstAdjacentEdgeIterator it, uint ei)
+    {
+        setAdjEdge(it - adjEdgeBegin(), ei);
     }
 
     /**
@@ -282,7 +325,7 @@ public:
      */
     void setAdjEdge(ConstAdjacentEdgeIndexIterator it, Edge* e)
     {
-        Base::container().set(it - adjEdgeIndexBegin(), e);
+        setAdjEdge(it - adjEdgeBegin(), e);
     }
 
     /**
@@ -293,7 +336,7 @@ public:
      */
     void setAdjEdge(ConstAdjacentEdgeIndexIterator it, uint ei)
     {
-        setAdjEdge(it - adjEdgeIndexBegin(), adjEdgeFromParent(ei));
+        setAdjEdge(it - adjEdgeBegin(), ei);
     }
 
     /**
@@ -315,7 +358,13 @@ public:
      * which set the adj edge; value is modularized on adjEdgesNumber().
      * @param[in] e: The pointer to the adj edge to set to the element.
      */
-    void setAdjEdgeMod(int i, Edge* e) { Base::container().atMod(i) = e; }
+    void setAdjEdgeMod(int i, Edge* e)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().atMod(i) = indexFromPointer(e);
+        else
+            Base::container().atMod(i) = e;
+    }
 
     /**
      * @brief Sets the i-th adjacent edge of the element, but using as index the
@@ -338,7 +387,10 @@ public:
      */
     void setAdjEdgeMod(int i, uint ei)
     {
-        setAdjEdgeMod(i, adjEdgeFromParent(ei));
+        if constexpr (STORE_INDICES)
+            Base::container().atMod(i) = adjEdgeFromParent(ei);
+        else
+            Base::container().atMod(i) = ei;
     }
 
     /**
@@ -355,7 +407,16 @@ public:
     template<Range Rng>
     void setAdjEdges(Rng&& r) requires RangeOfConvertibleTo<Rng, Edge*>
     {
-        Base::container().set(r);
+        if constexpr(STORE_INDICES) {
+            auto conv = [&](auto e) {
+                return indexFromPointer(e);
+            };
+
+            Base::container().set(r | std::views::transform(conv));
+        }
+        else {
+            Base::container().set(r);
+        }
     }
 
     /**
@@ -372,11 +433,16 @@ public:
     template<Range Rng>
     void setAdjEdges(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
-        auto conv = [&](auto i) {
-            return adjEdgeFromParent(i);
-        };
+        if constexpr(STORE_INDICES) {
+            Base::container().set(r);
+        }
+        else {
+            auto conv = [&](auto i) {
+                return adjEdgeFromParent(i);
+            };
 
-        Base::container().set(r | std::views::transform(conv));
+            Base::container().set(r | std::views::transform(conv));
+        }
     }
 
     /**
@@ -389,7 +455,10 @@ public:
      */
     bool containsAdjEdge(const Edge* e) const
     {
-        return Base::container().contains(e);
+        if constexpr (STORE_INDICES)
+            return Base::container().contains(indexFromPointer(e));
+        else
+            return Base::container().contains(e);
     }
 
     /**
@@ -402,7 +471,10 @@ public:
      */
     bool containsAdjEdge(uint ei) const
     {
-        return containsAdjEdge(adjEdgeFromParent(ei));
+        if constexpr (STORE_INDICES)
+            return Base::container().contains(ei);
+        else
+            return Base::container().contains(adjEdgeFromParent(ei));
     }
 
     /**
@@ -416,7 +488,10 @@ public:
      */
     uint indexOfAdjEdge(const Edge* e) const
     {
-        return Base::container().indexOf(e);
+        if constexpr (STORE_INDICES)
+            return Base::container().indexOf(indexFromPointer(e));
+        else
+            return Base::container().indexOf(e);
     }
 
     /**
@@ -430,7 +505,10 @@ public:
      */
     uint indexOfAdjEdge(uint ei) const
     {
-        return indexOfAdjEdge(adjEdgeFromParent(ei));
+        if constexpr (STORE_INDICES)
+            return Base::container().indexOf(ei);
+        else
+            return Base::container().indexOf(adjEdgeFromParent(ei));
     }
 
     /* Member functions specific for vector of adjacent edges */
@@ -441,10 +519,7 @@ public:
      * Edges component has dynamic size.
      * @param[in] n: The new size of the adjacent edges container.
      */
-    void resizeAdjEdges(uint n) requires (N < 0 && !TTVN)
-    {
-        Base::container().resize(n);
-    }
+    void resizeAdjEdges(uint n) requires (N < 0 && !TTVN) { resize(n); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent edge.
@@ -453,10 +528,7 @@ public:
      * @param[in] e: The pointer to the adjacent edge to push in the back of the
      * container.
      */
-    void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN)
-    {
-        Base::container().pushBack(e);
-    }
+    void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN) { pushBack(e); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent edge.
@@ -465,10 +537,7 @@ public:
      * @param[in] ei: The index to the adjacent edge to push in the back of the
      * container.
      */
-    void pushAdjEdge(uint ei) requires (N < 0 && !TTVN)
-    {
-        Base::container().pushBack(adjEdgeFromParent(ei));
-    }
+    void pushAdjEdge(uint ei) requires (N < 0 && !TTVN) { pushBack(ei); }
 
     /**
      * @brief Inserts the given adjacent edge in the container at the given
@@ -482,7 +551,7 @@ public:
      */
     void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVN)
     {
-        Base::container().insert(i, e);
+        insert(i, e);
     }
 
     /**
@@ -496,7 +565,7 @@ public:
      */
     void insertAdjEdge(uint i, uint ei) requires (N < 0 && !TTVN)
     {
-        Base::container().insert(i, adjEdgeFromParent(ei));
+        insert(i, ei);
     }
 
     /**
@@ -507,20 +576,14 @@ public:
      * @param[in] i: The position of the adjacent edge to remove from this
      * container.
      */
-    void eraseAdjEdge(uint i) requires (N < 0 && !TTVN)
-    {
-        Base::container().erase(i);
-    }
+    void eraseAdjEdge(uint i) requires (N < 0 && !TTVN) { erase(i); }
 
     /**
      * @brief Clears the container of adjacent edges, making it empty.
      * @note This function is available only if the container of the Adjacent
      * Edges component has dynamic size.
      */
-    void clearAdjEdges() requires (N < 0 && !TTVN)
-    {
-        Base::container().clear();
-    }
+    void clearAdjEdges() requires (N < 0 && !TTVN) { clear(); }
 
     /* Iterator Member functions */
 
@@ -532,7 +595,11 @@ public:
      */
     AdjacentEdgeIterator adjEdgeBegin()
     {
-        return Base::container().begin();
+        if constexpr (STORE_INDICES)
+            return AdjacentEdgeIterator(
+                Base::container().begin(), Base::parentElement());
+        else
+            return Base::container().begin();
     }
 
     /**
@@ -543,7 +610,10 @@ public:
      */
     AdjacentEdgeIterator adjEdgeEnd()
     {
-        return Base::container().end();
+        if constexpr (STORE_INDICES)
+            return AdjacentEdgeIterator(Base::container().end());
+        else
+            return Base::container().end();
     }
 
     /**
@@ -554,7 +624,11 @@ public:
      */
     ConstAdjacentEdgeIterator adjEdgeBegin() const
     {
-        return Base::container().begin();
+        if constexpr (STORE_INDICES)
+            return ConstAdjacentEdgeIterator(
+                Base::container().begin(), Base::parentElement());
+        else
+            return Base::container().begin();
     }
 
     /**
@@ -565,7 +639,10 @@ public:
      */
     ConstAdjacentEdgeIterator adjEdgeEnd() const
     {
-        return Base::container().end();
+        if constexpr (STORE_INDICES)
+            return ConstAdjacentEdgeIterator(Base::container().end());
+        else
+            return Base::container().end();
     }
 
     /**
@@ -576,7 +653,10 @@ public:
      */
     ConstAdjacentEdgeIndexIterator adjEdgeIndexBegin() const
     {
-        return ConstAdjacentEdgeIndexIterator(adjEdgeBegin());
+        if constexpr (STORE_INDICES)
+            return Base::container().begin();
+        else
+            return ConstAdjacentEdgeIndexIterator(adjEdgeBegin());
     }
 
     /**
@@ -586,7 +666,10 @@ public:
      */
     ConstAdjacentEdgeIndexIterator adjEdgeIndexEnd() const
     {
-        return ConstAdjacentEdgeIndexIterator(adjEdgeEnd());
+        if constexpr (STORE_INDICES)
+            return Base::container().begin();
+        else
+            return ConstAdjacentEdgeIndexIterator(adjEdgeEnd());
     }
 
     /**
@@ -655,25 +738,19 @@ public:
 protected:
     // Component interface function
     template<typename Element>
-    void importFrom(const Element&)
-    {
-    }
-
-    // PointersComponent interface functions
-    template<typename Element, typename ElEType>
-    void importPointersFrom(const Element& e, Edge* base, const ElEType* ebase)
+    void importFrom(const Element& e)
     {
         if constexpr (HasAdjacentEdges<Element>) {
             if (isAdjacentEdgesAvailableOn(e)) {
                 if constexpr (N > 0) {
                     // same static size
                     if constexpr (N == Element::ADJ_EDGE_NUMBER) {
-                        importPtrsFrom(e, base, ebase);
+                        importIndicesFrom(e);
                     }
                     // from dynamic to static, but dynamic size == static size
                     else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
                         if (e.adjEdgesNumber() == N) {
-                            importPtrsFrom(e, base, ebase);
+                            importIndicesFrom(e);
                         }
                     }
                     else {
@@ -685,23 +762,57 @@ protected:
                     // from static/dynamic to dynamic size: need to resize
                     // first, then import
                     resize(e.adjEdgesNumber());
-                    importPtrsFrom(e, base, ebase);
+                    importIndicesFrom(e);
                 }
             }
         }
     }
 
+    // PointersComponent interface functions
+    template<typename Element, typename ElEType>
+    void importPointersFrom(const Element&, Edge*, const ElEType*)
+    {
+    }
+
     // ContainerComponent interface functions
-    void resize(uint n) requires (N < 0) { Base::container().resize(n); }
+    void resize(uint n) requires (N < 0)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().resize(n, UINT_NULL);
+        else
+            Base::container().resize(n);
+    }
 
     void pushBack(Edge* e = nullptr) requires (N < 0)
     {
-        Base::container().pushBack(e);
+        if constexpr (STORE_INDICES)
+            Base::container().pushBack(indexFromPointer(e));
+        else
+            Base::container().pushBack(e);
+    }
+
+    void pushBack(uint ei) requires (N < 0)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().pushBack(ei);
+        else
+            Base::container().pushBack(adjEdgeFromParent(ei));
     }
 
     void insert(uint i, Edge* e = nullptr) requires (N < 0)
     {
-        Base::container().insert(i, e);
+        if constexpr (STORE_INDICES)
+            Base::container().insert(i, indexFromPointer(e));
+        else
+            Base::container().insert(i, e);
+    }
+
+    void insert(uint i, uint ei) requires (N < 0)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().insert(i, ei);
+        else
+            Base::container().insert(i, adjEdgeFromParent(ei));
     }
 
     void erase(uint i) requires (N < 0) { Base::container().erase(i); }
@@ -709,16 +820,20 @@ protected:
     void clear() requires (N < 0) { Base::container().clear(); }
 
 private:
-    template<typename Element, typename ElEType>
-    void importPtrsFrom(const Element& e, Edge* base, const ElEType* ebase)
+    template<typename Element>
+    void importIndicesFrom(const Element& e)
     {
-        if (ebase != nullptr && base != nullptr) {
-            for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
-                if (e.adjEdge(i) != nullptr) {
-                    setAdjEdge(i, base + (e.adjEdge(i) - ebase));
-                }
-            }
+        for (uint i = 0; i < e.adjEdgesNumber(); ++i) {
+            setAdjEdge(i, e.adjEdgeIndex(i));
         }
+    }
+
+    uint indexFromPointer(const Edge* e) const
+    {
+        if (e == nullptr) [[unlikely]]
+            return UINT_NULL;
+        else
+            return e->index();
     }
 
     Edge* adjEdgeFromParent(uint ei)

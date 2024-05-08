@@ -55,17 +55,41 @@ namespace vcl::vert {
  */
 
 /* Port AdjacentEdges class into vert namespace */
-template<typename EdgeType, typename ParentVertexType>
+template<bool INDEXED, typename EdgeType, typename ParentVertexType>
 using AdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, ParentVertexType>;
+    comp::AdjacentEdges<INDEXED, EdgeType, -1, false, ParentVertexType>;
 
-template<typename EdgeType, typename ParentVertexType>
+template<bool INDEXED, typename EdgeType, typename ParentVertexType>
 using VerticalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, ParentVertexType, true>;
+    comp::AdjacentEdges<INDEXED, EdgeType, -1, false, ParentVertexType, true>;
+
+template<bool INDEXED, typename EdgeType, typename ParentVertexType>
+using OptionalAdjacentEdges = comp::
+    AdjacentEdges<INDEXED, EdgeType, -1, false, ParentVertexType, true, true>;
 
 template<typename EdgeType, typename ParentVertexType>
-using OptionalAdjacentEdges =
-    comp::AdjacentEdges<EdgeType, -1, false, ParentVertexType, true, true>;
+using AdjacentEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, -1, false, ParentVertexType>;
+
+template<typename EdgeType, typename ParentVertexType>
+using VerticalAdjacentEdgeIndices =
+    comp::AdjacentEdges<true, EdgeType, -1, false, ParentVertexType, true>;
+
+template<typename EdgeType, typename ParentVertexType>
+using OptionalAdjacentEdgeIndices = comp::
+    AdjacentEdges<true, EdgeType, -1, false, ParentVertexType, true, true>;
+
+template<typename EdgeType, typename ParentVertexType>
+using AdjacentEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, -1, false, ParentVertexType>;
+
+template<typename EdgeType, typename ParentVertexType>
+using VerticalAdjacentEdgePointers =
+    comp::AdjacentEdges<false, EdgeType, -1, false, ParentVertexType, true>;
+
+template<typename EdgeType, typename ParentVertexType>
+using OptionalAdjacentEdgePointers = comp::
+    AdjacentEdges<false, EdgeType, -1, false, ParentVertexType, true, true>;
 
 /* Port AdjacentFaces class into vert namespace */
 template<bool INDEXED, typename FaceType, typename ParentVertexType>
