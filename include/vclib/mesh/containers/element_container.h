@@ -947,7 +947,7 @@ private:
         uint         firstElementToProcess = 0,
         uint         offset                = 0)
     {
-        if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
+        if constexpr (comp::HasReferencesOfType<Comp, ElPtr>) {
             // lambda to avoid code duplication
             auto loop = [&]() {
                 for (uint i = firstElementToProcess; i < elementContainerSize();
@@ -960,7 +960,7 @@ private:
                 }
             };
 
-            if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
+            if constexpr (comp::HasOptionalReferencesOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
                     loop();
                 }
@@ -976,8 +976,8 @@ private:
         const ElPtr*             base,
         const std::vector<uint>& newIndices)
     {
-        if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
-            if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
+        if constexpr (comp::HasReferencesOfType<Comp, ElPtr>) {
+            if constexpr (comp::HasOptionalReferencesOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
                     for (T& e : elements()) {
                         e.Comp::updatePointers(base, newIndices);
@@ -998,8 +998,8 @@ private:
         ElPtr*           base,
         const CBase*     cbase)
     {
-        if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
-            if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
+        if constexpr (comp::HasReferencesOfType<Comp, ElPtr>) {
+            if constexpr (comp::HasOptionalReferencesOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
                     for (uint i = 0; i < elementContainerSize(); ++i) {
                         element(i).Comp::importPointersFrom(

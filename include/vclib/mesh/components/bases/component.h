@@ -45,22 +45,23 @@ namespace vcl::comp {
  *   - a component is horizontal when its data is stored in the memory frame of
  *     the Element that has the component;
  *   - a component is vertical when its data is not stored in the memory frame
- *     of the Element, but in a separated Conainer; in this case, the data will
+ *     of the Element, but in a separated Container; in this case, the data will
  *     be in a contiguous array;
  *   - a component is optional if it is vertical and can be enabled/disabled at
  *     runtime;
- * - possibility to store pointers to other Elements that must be updated when a
- *   reallocation happens
+ * - possibility to store references (pointers or indices) to other Elements
+ *   that must be updated when a reallocation or a compaction happens
  *   - An example is the VertexPointers component: it stores the pointers to the
  *     Vertices of an Element (e.g. a Face). When a a reallocation of the
  *     VertexContainer happens, all the pointers to the vertices must be
  *     updated, and this operation will be made automatically if the Vertex type
- *     will be part of the PointedTypes.
+ *     will be part of the ReferencesTypes.
  *
  * There are also some additional features that are given by the @ref
- * ContainerComponent and @ref PointersContainerComponent classes. If you need
- * to implement a Component that stores a Container of data or a Container of
- * Pointers, take a look to that classes.
+ * ContainerComponent, @ref PointersContainerComponent and @ref
+ * IndicesContainerComponent classes. If you need to implement a Component that
+ * stores a Container of data, a Container of Pointers or a Container of
+ * Indices, take a look to that classes.
  *
  * All the features of a Component can be defined trough its template
  * parameters, and implementing some protected member functions. To properly
@@ -72,8 +73,10 @@ namespace vcl::comp {
  * void importFrom(const Element& e);
  * ```
  *
- * Moreover, if the component has at least one PointedType, it must define the
- * following protected member functions:
+ * Moreover, if the component has at least one ReferencedType, it must define
+ * the following protected member functions:
+ *
+ * // TODO: RENAME THE FUNCTIONS
  *
  * ```cpp
  * template<typename Element, typename ElEType>
@@ -111,9 +114,9 @@ namespace vcl::comp {
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
- * @tparam PointedTypes: Variadic Template types of all the Pointer types that
- * the component stores, and that need to be updated when some reallocation
- * happens.
+ * @tparam ReferencedTypes: Variadic Template types of all the Pointer or
+ * Indices types that the component stores, and that need to be updated when
+ * some reallocation happens.
  */
 template<
     typename DerivedComponent, // CRTP pattern, derived class
@@ -122,8 +125,8 @@ template<
     typename ParentElemType,   // parent element type
     bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
-    typename... PointedTypes>  // types of the pointers stored by the component
-class Component : public PointersComponentTriggerer<PointedTypes>...
+    typename... ReferencedTypes>  // types of the refs stored by the component
+class Component : public ReferencesComponentTriggerer<ReferencedTypes>...
 {
 public:
     /**

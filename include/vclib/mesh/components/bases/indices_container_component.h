@@ -134,15 +134,21 @@ protected:
      * this container after a reallocation (the pointer of the first element of
      * the container is changed from oldBase to newBase).
      *
-     * It is called mainly when a container of elements gets reallocated.
-     *
-     * Since this is a container of indices, we do not need to update nothing.
+     * It is called mainly when a container of elements gets reallocated, but
+     * also when an append operation is performed (offset != 0).
      */
     void updatePointers(
         const Elem*,
         const Elem*,
-        std::size_t = 0)
+        std::size_t offset = 0)
     {
+        auto& baseContainer = Base::container();
+
+        for (uint j = 0; j < baseContainer.size(); ++j) {
+            if (baseContainer.at(j) != UINT_NULL) {
+                baseContainer.at(j) += offset;
+            }
+        }
     }
 
     /*
@@ -162,6 +168,21 @@ protected:
                 baseContainer.at(j) = newIndices.at(baseContainer.at(j));
             }
         }
+    }
+
+public:
+    /**
+     * @brief Exposes the indices of the container.
+     *
+     * This function is templated in order to force the user to specify the type
+     * of the indices to element that are stored in the container.
+     * This is necessary when a component that stores indices to different
+     * types of elements is used.
+     */
+    template<typename T>
+    const auto& indices() const requires std::is_same_v<T, Elem>
+    {
+        return container();
     }
 };
 

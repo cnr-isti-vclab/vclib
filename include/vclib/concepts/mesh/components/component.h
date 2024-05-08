@@ -133,16 +133,20 @@ concept IsOptionalComponent =
     };
 
 template<typename T>
-class PointersComponentTriggerer
+class ReferencesComponentTriggerer
 {
 };
 
 /**
- * @brief HasPointersOfType concept
+ * @brief The HasReferencesOfType concept checks whether a type T stores
+ * references (pointers or indices) of a type R.
  *
- * Each component that store pointers of a type R, must:
+ * Each component that store pointers/indices of a type R, must:
  *
- * - inherit from PointersComponentTriggerer<R> (automatic from Component class)
+ * TODO: RENAME FUNCTIONS
+ *
+ * - inherit from ReferencesComponentTriggerer<R> (automatic from Component
+ *   class)
  * - provide the following **protected** member functions:
  *   - void updatePointers(const R* oldBase, const R* newBase);
  *
@@ -166,12 +170,29 @@ class PointersComponentTriggerer
  *     - ebase is the base of the container that stores the another elements
  */
 template<typename T, typename R>
+concept HasReferencesOfType =
+    std::is_base_of<ReferencesComponentTriggerer<R>, T>::value;
+
+template<typename T, typename R>
+concept HasOptionalReferencesOfType =
+    HasReferencesOfType<T, R> && IsOptionalComponent<T>;
+
+template<typename T, typename R>
 concept HasPointersOfType =
-    std::is_base_of<PointersComponentTriggerer<R>, T>::value;
+    HasReferencesOfType<T, R> && requires (T o) { o.template pointers<R>(); };
 
 template<typename T, typename R>
 concept HasOptionalPointersOfType =
-    HasPointersOfType<T, R> && IsOptionalComponent<T>;
+    HasOptionalReferencesOfType<T, R> &&
+    requires (T o) { o.template pointers<R>(); };
+
+template<typename T, typename R>
+concept HasIndicesOfType =
+    HasReferencesOfType<T, R> && requires (T o) { o.template indices<R>(); };
+
+template<typename T, typename R>
+concept HasOptionalIndicesOfType = HasOptionalReferencesOfType<T, R> &&
+                                   requires (T o) { o.template indices<R>(); };
 
 // ======== Has Component Concepts ======== //
 // Concepts that needs to be called on a type T that has the "Components" type
