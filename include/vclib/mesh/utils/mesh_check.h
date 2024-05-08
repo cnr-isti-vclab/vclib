@@ -84,7 +84,7 @@ bool checkElementPointersInElementContainerOnComponent(
                 const Comp& comp = static_cast<const Comp&>(el);
 
                 // take the pointers in the component and look at them
-                for (const ElemType* ptr : comp.pointers()) {
+                for (const ElemType* ptr : comp.template pointers<ElemType>()) {
                     if (ptr != nullptr) {
                         if (ptr < first || ptr >= last) {
                             throw InconsistentMeshException(
