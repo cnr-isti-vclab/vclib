@@ -139,7 +139,7 @@ public:
      * @brief Returns the number of vertices of the element.
      * @return The number of vertices of the element.
      */
-    uint vertexNumber() const { return Base::container().size(); }
+    uint vertexNumber() const { return Base::size(); }
 
     /**
      * @brief Returns the pointer to the i-th vertex of the element.
@@ -147,12 +147,7 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The pointer i-th vertex of the element.
      */
-    Vertex* vertex(uint i) {
-        if constexpr (STORE_INDICES)
-            return vertFromParent(vertexIndex(i));
-        else
-            return Base::container().at(i);
-    }
+    Vertex* vertex(uint i) { return Base::element(i); }
 
     /**
      * @brief Returns a const pointer to the i-th vertex of the element.
@@ -160,13 +155,7 @@ public:
      * the value must be between 0 and the number of vertices.
      * @return The pointer to the i-th vertex of the element.
      */
-    const Vertex* vertex(uint i) const
-    {
-        if constexpr (STORE_INDICES)
-            return vertFromParent(vertexIndex(i));
-        else
-            return Base::container().at(i);
-    }
+    const Vertex* vertex(uint i) const { return Base::element(i); }
 
     /**
      * @brief Returns the index in the vertex container of the i-th vertex of
@@ -174,13 +163,7 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The index of the i-th vertex of the element.
      */
-    uint vertexIndex(uint i) const
-    {
-        if constexpr (STORE_INDICES)
-            return Base::container().at(i);
-        else
-            return indexFromPointer(Base::container().at(i));
-    }
+    uint vertexIndex(uint i) const { return Base::elementIndex(i); }
 
     /**
      * @brief Returns a reference of the pointer to the i-th vertex of the
@@ -200,12 +183,7 @@ public:
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The pointer to the required vertex of the element.
      */
-    Vertex* vertexMod(int i) {
-        if constexpr (STORE_INDICES)
-            return vertFromParent(vertexIndexMod(i));
-        else
-            return Base::container().atMod(i);
-    }
+    Vertex* vertexMod(int i) { return Base::elementMod(i); }
 
     /**
      * @brief Same of vertexMod, but returns a const pointer to the vertex.
@@ -213,12 +191,7 @@ public:
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The pointer to the required vertex of the element.
      */
-    const Vertex* vertexMod(int i) const {
-        if constexpr (STORE_INDICES)
-            return vertFromParent(vertexIndexMod(i));
-        else
-            return Base::container().atMod(i);
-    }
+    const Vertex* vertexMod(int i) const { return Base::elementMod(i); }
 
     /**
      * @brief Returns the index in the vertex container of the i-th vertex of
@@ -239,13 +212,7 @@ public:
      * w.r.t. the position 0; value is modularized on vertexNumber().
      * @return The index of the required vertex of the element.
      */
-    uint vertexIndexMod(int i) const
-    {
-        if constexpr (STORE_INDICES)
-            return Base::container().atMod(i);
-        else
-            return indexFromPointer(vertexMod(i));
-    }
+    uint vertexIndexMod(int i) const { return Base::elementIndexMod(i); }
 
     /**
      * @brief Sets the i-th vertex of the element.
@@ -253,13 +220,7 @@ public:
      * value must be between 0 and the number of vertices.
      * @param[in] v: The pointer to the vertex to set to the element.
      */
-    void setVertex(uint i, Vertex* v)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().set(i, indexFromPointer(v));
-        else
-            Base::container().set(i, v);
-    }
+    void setVertex(uint i, Vertex* v) { Base::setElement(i, v); }
 
     /**
      * @brief Sets the i-th vertex of the element.
@@ -267,13 +228,7 @@ public:
      * value must be between 0 and the number of vertices.
      * @param[in] vi: The index in the vertex container of the vertex to set.
      */
-    void setVertex(uint i, uint vi)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().set(i, vi);
-        else
-            Base::container().set(i, vertFromParent(vi));
-    }
+    void setVertex(uint i, uint vi) { Base::setElement(i, vi); }
 
     /**
      * @brief Sets the vertex pointed by the iterator.
@@ -283,7 +238,7 @@ public:
      */
     void setVertex(ConstVertexIterator it, Vertex* v)
     {
-        setVertex(it - vertexBegin(), v);
+        Base::setElement(it, v);
     }
 
     /**
@@ -294,7 +249,7 @@ public:
      */
     void setVertex(ConstVertexIterator it, uint vi)
     {
-        setVertex(it - vertexBegin(), vi);
+        Base::setElement(it, vi);
     }
 
     /**
@@ -305,7 +260,7 @@ public:
      */
     void setVertex(ConstVertexIndexIterator it, Vertex* v)
     {
-        setVertex(it - vertexIndexBegin(), v);
+        Base::setElement(it, v);
     }
 
     /**
@@ -316,7 +271,7 @@ public:
      */
     void setVertex(ConstVertexIndexIterator it, uint vi)
     {
-        setVertex(it - vertexIndexBegin(), vi);
+        Base::setElement(it, vi);
     }
 
     /**
@@ -337,13 +292,7 @@ public:
      * which set the vertex; value is modularized on vertexNumber().
      * @param[in] v: The pointer to the vertex to set to the element.
      */
-    void setVertexMod(int i, Vertex* v)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().atMod(i) = indexFromPointer(v);
-        else
-            Base::container().atMod(i) = v;
-    }
+    void setVertexMod(int i, Vertex* v) { Base::setElementMod(i, v); }
 
     /**
      * @brief Sets the i-th vertex of the element, but using as index the module
@@ -363,13 +312,7 @@ public:
      * which set the vertex; value is modularized on vertexNumber().
      * @param[in] vi: The index in the vertex container of the vertex to set.
      */
-    void setVertexMod(int i, uint vi)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().atMod(i) = vertFromParent(vi);
-        else
-            Base::container().atMod(i) = vi;
-    }
+    void setVertexMod(int i, uint vi) { Base::setElementMod(i, vi); }
 
     /**
      * @brief Sets all the vertex pointers of the element.
@@ -385,16 +328,7 @@ public:
     template<Range Rng>
     void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, Vertex*>
     {
-        if constexpr(STORE_INDICES) {
-            auto conv = [&](auto v) {
-                return indexFromPointer(v);
-            };
-
-            Base::container().set(r | std::views::transform(conv));
-        }
-        else {
-            Base::container().set(r);
-        }
+        Base::setElements(r);
     }
 
     /**
@@ -411,16 +345,7 @@ public:
     template<Range Rng>
     void setVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
-        if constexpr(STORE_INDICES) {
-            Base::container().set(r);
-        }
-        else {
-            auto conv = [&](auto i) {
-                return vertFromParent(i);
-            };
-
-            Base::container().set(r | std::views::transform(conv));
-        }
+        Base::setElements(r);
     }
 
     /**
@@ -433,10 +358,7 @@ public:
      */
     bool containsVertex(const Vertex* v) const
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().contains(indexFromPointer(v));
-        else
-            return Base::container().contains(v);
+        return Base::containsElement(v);
     }
 
     /**
@@ -447,13 +369,7 @@ public:
      * @return `true` if the container of vertices contains the vertex with the
      * given index, `false` otherwise.
      */
-    bool containsVertex(uint vi) const
-    {
-        if constexpr (STORE_INDICES)
-            return Base::container().contains(vi);
-        else
-            return Base::container().contains(vertFromParent(vi));
-    }
+    bool containsVertex(uint vi) const { return Base::containsElement(vi); }
 
     /**
      * @brief Returns the index of the given vertex in the container of
@@ -466,10 +382,7 @@ public:
      */
     uint indexOfVertex(const Vertex* v) const
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().indexOf(indexFromPointer(v));
-        else
-            return Base::container().indexOf(v);
+        return Base::indexOfElement(v);
     }
 
     /**
@@ -483,10 +396,7 @@ public:
      */
     uint indexOfVertex(uint vi) const
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().indexOf(vi);
-        else
-            return Base::container().indexOf(vertFromParent(vi));
+        return Base::indexOfElement(vi);
     }
 
     /**
@@ -508,7 +418,8 @@ public:
     uint indexOfEdge(const Vertex* v1, const Vertex* v2) const
     {
         if constexpr (STORE_INDICES) {
-            return indexOfEdge(indexFromPointer(v1), indexFromPointer(v2));
+            return indexOfEdge(
+                Base::indexFromPointer(v1), Base::indexFromPointer(v2));
         }
         else {
             uint vid = indexOfVertex(v1);
@@ -563,7 +474,8 @@ public:
             }
         }
         else {
-            return indexOfEdge(vertFromParent(vi1), vertFromParent(vi2));
+            return indexOfEdge(
+                Base::elemFromParent(vi1), Base::elemFromParent(vi2));
         }
     }
 
@@ -667,14 +579,7 @@ public:
      *
      * @return an iterator pointing to the begin of this container.
      */
-    VertexIterator vertexBegin()
-    {
-        if constexpr (STORE_INDICES)
-            return VertexIterator(
-                Base::container().begin(), Base::parentElement());
-        else
-            return Base::container().begin();
-    }
+    VertexIterator vertexBegin() { return Base::elementBegin(); }
 
     /**
      * @brief Returns an iterator to the end of the container of this
@@ -682,13 +587,7 @@ public:
      *
      * @return an iterator pointing to the end of this container.
      */
-    VertexIterator vertexEnd()
-    {
-        if constexpr (STORE_INDICES)
-            return VertexIterator(Base::container().end());
-        else
-            return Base::container().end();
-    }
+    VertexIterator vertexEnd() { return Base::elementEnd(); }
 
     /**
      * @brief Returns a const iterator to the first vertex in the container of
@@ -696,14 +595,7 @@ public:
      *
      * @return an iterator pointing to the begin of this container.
      */
-    ConstVertexIterator vertexBegin() const
-    {
-        if constexpr (STORE_INDICES)
-            return ConstVertexIterator(
-                Base::container().begin(), Base::parentElement());
-        else
-            return Base::container().begin();
-    }
+    ConstVertexIterator vertexBegin() const { return Base::elementBegin(); }
 
     /**
      * @brief Returns a const iterator to the end of the container of this
@@ -711,13 +603,7 @@ public:
      *
      * @return an iterator pointing to the end of this container.
      */
-    ConstVertexIterator vertexEnd() const
-    {
-        if constexpr (STORE_INDICES)
-            return ConstVertexIterator(Base::container().end());
-        else
-            return Base::container().end();
-    }
+    ConstVertexIterator vertexEnd() const { return Base::elementEnd(); }
 
     /**
      * @brief Returns an iterator to the first vertex index in the container of
@@ -727,10 +613,7 @@ public:
      */
     ConstVertexIndexIterator vertexIndexBegin() const
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().begin();
-        else
-            return ConstVertexIndexIterator(vertexBegin());
+        return Base::elementIndexBegin();
     }
 
     /**
@@ -740,10 +623,7 @@ public:
      */
     ConstVertexIndexIterator vertexIndexEnd() const
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().end();
-        else
-            return ConstVertexIndexIterator(vertexEnd());
+        return Base::elementIndexEnd();
     }
 
     /**

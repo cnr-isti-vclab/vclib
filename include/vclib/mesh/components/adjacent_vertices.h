@@ -26,15 +26,15 @@
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
 #include <vclib/views/view.h>
 
-#include "bases/pointers_container_component.h"
+#include "bases/references_container_component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The AdjacentVertices class is a container of Vertex pointers. It is a
- * component that makes sense to use mostly on Vertex Elements. For Faces and
- * Edges, see the VertexPointers component (which is similar, but has different
- * member function names).
+ * @brief The AdjacentVertices class is a container of Vertex indices or
+ * pointers. It is a component that makes sense to use mostly on Vertex
+ * Elements. For Faces and Edges, see the VertexPointers component (which is
+ * similar, but has different member function names).
  *
  * It is a random access container having dynamic size.
  *
@@ -47,6 +47,8 @@ namespace vcl::comp {
  *
  * @code{.cpp}
  * v.adjVerticesNumber();
+ * auto* v = v.adjVertex(0);
+ * uint vi = v.adjVertexIndex(0);
  * @endcode
  *
  * @note With respect to the other components that store adjacencies, this
@@ -57,6 +59,8 @@ namespace vcl::comp {
  * - `TTVN`, because this argument is used on components that could be part of
  *   face elements, and this component does not apply to faces.
  *
+ * @tparam STORE_INDICES: If true, the component will store indices, otherwise
+ * pointers to Face.
  * @tparam Vertex: The type of the adjacent Vertex element.
  * @tparam ParentElemType: This type is used to get access to the Element that
  * has the component (and, in case, to the Mesh that has the Element). If the
@@ -77,7 +81,6 @@ template<
 class AdjacentVertices :
         public PointersContainerComponent<
             AdjacentVertices<Vertex, ParentElemType, VERT, OPT>,
-
             CompId::ADJACENT_VERTICES,
             Vertex,
             -1,

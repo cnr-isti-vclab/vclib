@@ -142,7 +142,7 @@ public:
      * @brief Returns the number of adjacent faces of this element.
      * @return The number of adjacent faces of this element.
      */
-    uint adjFacesNumber() const { return Base::container().size(); }
+    uint adjFacesNumber() const { return Base::size(); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent face of this element.
@@ -151,13 +151,7 @@ public:
      * container; the value must be between 0 and the number of adj faces.
      * @return The pointer to the i-th adjacent face of this element.
      */
-    Face* adjFace(uint i)
-    {
-        if constexpr (STORE_INDICES)
-            return adjFaceFromParent(adjFaceIndex(i));
-        else
-            return Base::container().at(i);
-    }
+    Face* adjFace(uint i) { return Base::element(i); }
 
     /**
      * @brief Returns a const pointer to the i-th adjacent face of this element.
@@ -165,13 +159,7 @@ public:
      * container; the value must be between 0 and the number of adj faces.
      * @return The pointer to the i-th adjacent face of this element.
      */
-    const Face* adjFace(uint i) const
-    {
-        if constexpr (STORE_INDICES)
-            return adjFaceFromParent(adjFaceIndex(i));
-        else
-            return Base::container().at(i);
-    }
+    const Face* adjFace(uint i) const { return Base::element(i); }
 
     /**
      * @brief Returns the index in the face container of the i-th adjacent face
@@ -179,13 +167,7 @@ public:
      * @param[in] i: the position of the required face in this container.
      * @return The index of the i-th adjacent face of the element.
      */
-    uint adjFaceIndex(uint i) const
-    {
-        if constexpr (STORE_INDICES)
-            return Base::container().at(i);
-        else
-            return indexFromPointer(Base::container().at(i));
-    }
+    uint adjFaceIndex(uint i) const { return Base::elementIndex(i); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent face of this element but
@@ -208,13 +190,7 @@ public:
      * adjFacesNumber().
      * @return The pointer to the required adjacent face of this element.
      */
-    Face* adjFaceMod(int i)
-    {
-        if constexpr (STORE_INDICES)
-            return adjFaceFromParent(adjFaceIndexMod(i));
-        else
-            return Base::container().atMod(i);
-    }
+    Face* adjFaceMod(int i) { return Base::elementMod(i); }
 
     /**
      * @brief Same of adjFaceMod, but returns a const Pointer to the adjacent
@@ -224,13 +200,7 @@ public:
      * adjFacesNumber().
      * @return The pointer to the required adjacent face of this element.
      */
-    const Face* adjFaceMod(int i) const
-    {
-        if constexpr (STORE_INDICES)
-            return adjFaceFromParent(adjFaceIndexMod(i));
-        else
-            return Base::container().atMod(i);
-    }
+    const Face* adjFaceMod(int i) const { return Base::elementMod(i); }
 
     /**
      * @brief Returns the index in the face container of the i-th adjacent face
@@ -252,13 +222,7 @@ public:
      * adjFacesNumber().
      * @return The index of the required adjacent face of the element.
      */
-    uint adjFaceIndexMod(int i) const
-    {
-        if constexpr (STORE_INDICES)
-            return Base::container().atMod(i);
-        else
-            return indexFromPointer(adjFaceMod(i));
-    }
+    uint adjFaceIndexMod(int i) const { return Base::elementIndexMod(i); }
 
     /**
      * @brief Sets the i-th adjacent face of this element.
@@ -266,13 +230,7 @@ public:
      * the value must be between 0 and the number of adj faces.
      * @param[in] f: The pointer to the adjacent face to set to this element.
      */
-    void setAdjFace(uint i, Face* f)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().set(i, indexFromPointer(f));
-        else
-            Base::container().set(i, f);
-    }
+    void setAdjFace(uint i, Face* f) { Base::setElement(i, f); }
 
     /**
      * @brief Sets the i-th adjacent face of the element.
@@ -280,13 +238,7 @@ public:
      * the value must be between 0 and the number of adj faces.
      * @param[in] fi: The index in the face container of the face to set.
      */
-    void setAdjFace(uint i, uint fi)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().set(i, fi);
-        else
-            Base::container().set(i, adjFaceFromParent(fi));
-    }
+    void setAdjFace(uint i, uint fi) { Base::setElement(i, fi); }
 
     /**
      * @brief Sets the adjacent face pointed by the iterator.
@@ -296,7 +248,7 @@ public:
      */
     void setAdjFace(ConstAdjacentFaceIterator it, Face* f)
     {
-        setAdjFace(it - adjFaceBegin(), f);
+        Base::setElement(it, f);
     }
 
     /**
@@ -307,7 +259,7 @@ public:
      */
     void setAdjFace(ConstAdjacentFaceIterator it, uint fi)
     {
-        setAdjFace(it - adjFaceBegin(), fi);
+        Base::setElement(it, fi);
     }
 
     /**
@@ -318,7 +270,7 @@ public:
      */
     void setAdjFace(ConstAdjacentFaceIndexIterator it, Face* f)
     {
-        setAdjFace(it - adjFaceIndexBegin(), f);
+        Base::setElement(it, f);
     }
 
     /**
@@ -329,7 +281,7 @@ public:
      */
     void setAdjFace(ConstAdjacentFaceIndexIterator it, uint fi)
     {
-        setAdjFace(it - adjFaceIndexBegin(), fi);
+        Base::setElement(it, fi);
     }
 
     /**
@@ -351,13 +303,7 @@ public:
      * which set the adj face; value is modularized on adjFacesNumber().
      * @param[in] f: The pointer to the adj face to set to the element.
      */
-    void setAdjFaceMod(int i, Face* f)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().atMod(i) = indexFromPointer(f);
-        else
-            Base::container().atMod(i) = f;
-    }
+    void setAdjFaceMod(int i, Face* f) { Base::setElementMod(i, f); }
 
     /**
      * @brief Sets the i-th adjacent face of the element, but using as index the
@@ -378,13 +324,7 @@ public:
      * which set the adj face; value is modularized on adjFacesNumber().
      * @param[in] fi: The index in the face containrt of the face to set.
      */
-    void setAdjFaceMod(int i, uint fi)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().atMod(i) = adjFaceFromParent(fi);
-        else
-            Base::container().atMod(i) = fi;
-    }
+    void setAdjFaceMod(int i, uint fi) { Base::setElementMod(i, fi); }
 
     /**
      * @brief Sets all the adjacent faces of this element.
@@ -400,16 +340,7 @@ public:
     template<Range Rng>
     void setAdjFaces(Rng&& r) requires RangeOfConvertibleTo<Rng, Face*>
     {
-        if constexpr(STORE_INDICES) {
-            auto conv = [&](auto f) {
-                return indexFromPointer(f);
-            };
-
-            Base::container().set(r | std::views::transform(conv));
-        }
-        else {
-            Base::container().set(r);
-        }
+        Base::setElements(r);
     }
 
     /**
@@ -426,16 +357,7 @@ public:
     template<Range Rng>
     void setAdjFaces(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
-        if constexpr(STORE_INDICES) {
-            Base::container().set(r);
-        }
-        else {
-            auto conv = [&](auto i) {
-                return adjFaceFromParent(i);
-            };
-
-            Base::container().set(r | std::views::transform(conv));
-        }
+        Base::setElements(r);
     }
 
     /**
@@ -448,10 +370,7 @@ public:
      */
     bool containsAdjFace(const Face* f) const
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().contains(indexFromPointer(f));
-        else
-            return Base::container().contains(f);
+        return Base::containsElement(f);
     }
 
     /**
@@ -462,13 +381,7 @@ public:
      * @return `true` if the container of adjacent faces contains the face with
      * the given index, `false` otherwise.
      */
-    bool containsAdjFace(uint fi) const
-    {
-        if constexpr (STORE_INDICES)
-            return Base::container().contains(fi);
-        else
-            return Base::container().contains(adjFaceFromParent(fi));
-    }
+    bool containsAdjFace(uint fi) const { return Base::containsElement(fi); }
 
     /**
      * @brief Returns the index of the given adjacent face in the container of
@@ -479,13 +392,7 @@ public:
      * @return the index of the given adjacent face, or UINT_NULL if it is not
      * found.
      */
-    uint indexOfAdjFace(const Face* f) const
-    {
-        if constexpr (STORE_INDICES)
-            return Base::container().indexOf(indexFromPointer(f));
-        else
-            return Base::container().indexOf(f);
-    }
+    uint indexOfAdjFace(const Face* f) const { return Base::indexOfElement(f); }
 
     /**
      * @brief Returns the index of the adjacent face with the given index in the
@@ -496,13 +403,7 @@ public:
      * @return the index of the adjacent face with the given index, or UINT_NULL
      * if it is not found.
      */
-    uint indexOfAdjFace(uint fi) const
-    {
-        if constexpr (STORE_INDICES)
-            return Base::container().indexOf(fi);
-        else
-            return Base::container().indexOf(adjFaceFromParent(fi));
-    }
+    uint indexOfAdjFace(uint fi) const { return Base::indexOfElement(fi); }
 
     /* Member functions specific for vector adjacent faces */
 
@@ -586,14 +487,7 @@ public:
      *
      * @return an iterator pointing to the begin of this container.
      */
-    AdjacentFaceIterator adjFaceBegin()
-    {
-        if constexpr (STORE_INDICES)
-            return AdjacentFaceIterator(
-                Base::container().begin(), Base::parentElement());
-        else
-            return Base::container().begin();
-    }
+    AdjacentFaceIterator adjFaceBegin() { return Base::elementBegin(); }
 
     /**
      * @brief Returns an iterator to the end of the container of this
@@ -601,13 +495,7 @@ public:
      *
      * @return an iterator pointing to the end of this container.
      */
-    AdjacentFaceIterator adjFaceEnd()
-    {
-        if constexpr (STORE_INDICES)
-            return AdjacentFaceIterator(Base::container().end());
-        else
-            return Base::container().end();
-    }
+    AdjacentFaceIterator adjFaceEnd() { return Base::elementEnd(); }
 
     /**
      * @brief Returns a const iterator to the first adjacent face in the
@@ -617,11 +505,7 @@ public:
      */
     ConstAdjacentFaceIterator adjFaceBegin() const
     {
-        if constexpr (STORE_INDICES)
-            return ConstAdjacentFaceIterator(
-                Base::container().begin(), Base::parentElement());
-        else
-            return Base::container().begin();
+        return Base::elementBegin();
     }
 
     /**
@@ -630,13 +514,7 @@ public:
      *
      * @return an iterator pointing to the end of this container.
      */
-    ConstAdjacentFaceIterator adjFaceEnd() const
-    {
-        if constexpr (STORE_INDICES)
-            return ConstAdjacentFaceIterator(Base::container().end());
-        else
-            return Base::container().end();
-    }
+    ConstAdjacentFaceIterator adjFaceEnd() const { return Base::elementEnd(); }
 
     /**
      * @brief Returns an iterator to the first adjacent face index in the
@@ -646,10 +524,7 @@ public:
      */
     ConstAdjacentFaceIndexIterator adjFaceIndexBegin() const
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().begin();
-        else
-            return ConstAdjacentFaceIndexIterator(adjFaceBegin());
+        return Base::elementIndexBegin();
     }
 
     /**
@@ -659,10 +534,7 @@ public:
      */
     ConstAdjacentFaceIndexIterator adjFaceIndexEnd() const
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().begin();
-        else
-            return ConstAdjacentFaceIndexIterator(adjFaceEnd());
+        return Base::elementIndexEnd();
     }
 
     /**

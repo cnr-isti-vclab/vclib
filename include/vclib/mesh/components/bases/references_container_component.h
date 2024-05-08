@@ -29,8 +29,8 @@
 namespace vcl::comp {
 
 /**
- * @brief The ReferencesContainerComponent is an alias to @ref
- * IndicesContainerComponent or @ref PointersContainerComponent classes,
+ * @brief The ReferencesContainerComponent is a class that inherits from the
+ * @ref IndicesContainerComponent or @ref PointersContainerComponent classes,
  * depending on the STORE_INDICES template parameter.
  *
  * @tparam STORE_INDICES: If true, the component will store indices, otherwise
@@ -75,7 +75,7 @@ template<
     bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
     bool TTVN>                 // true if container size tied to vertex number
-using ReferencesContainerComponent = std::conditional_t<
+class ReferencesContainerComponent : public std::conditional_t<
     STORE_INDICES,
     IndicesContainerComponent<
         DerivedComponent,
@@ -94,7 +94,272 @@ using ReferencesContainerComponent = std::conditional_t<
         ParentElemType,
         VERT,
         OPT,
-        TTVN>>;
+        TTVN>>
+{
+protected:
+    using Base = std::conditional_t<
+        STORE_INDICES,
+        IndicesContainerComponent<
+            DerivedComponent,
+            COMP_ID,
+            Elem,
+            N,
+            ParentElemType,
+            VERT,
+            OPT,
+            TTVN>,
+        PointersContainerComponent<
+            DerivedComponent,
+            COMP_ID,
+            Elem,
+            N,
+            ParentElemType,
+            VERT,
+            OPT,
+            TTVN>>;
+
+    uint size() const { return Base::container().size(); }
+
+    Elem* element(uint i)
+    {
+        if constexpr (STORE_INDICES)
+            return elemFromParent(elementIndex(i));
+        else
+            return Base::container().at(i);
+    }
+
+    const Elem* element(uint i) const
+    {
+        if constexpr (STORE_INDICES)
+            return elemFromParent(elementIndex(i));
+        else
+            return Base::container().at(i);
+    }
+
+    uint elementIndex(uint i) const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().at(i);
+        else
+            return indexFromPointer(Base::container().at(i));
+    }
+
+    Elem* elementMod(int i)
+    {
+        if constexpr (STORE_INDICES)
+            return elemFromParent(elementIndexMod(i));
+        else
+            return Base::container().atMod(i);
+    }
+
+    const Elem* elementMod(int i) const
+    {
+        if constexpr (STORE_INDICES)
+            return elemFromParent(elementIndexMod(i));
+        else
+            return Base::container().atMod(i);
+    }
+
+    uint elementIndexMod(int i) const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().atMod(i);
+        else
+            return indexFromPointer(elementMod(i));
+    }
+
+    void setElement(uint i, Elem* e)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().set(i, indexFromPointer(e));
+        else
+            Base::container().set(i, e);
+    }
+
+    void setElement(uint i, uint ei)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().set(i, ei);
+        else
+            Base::container().set(i, elemFromParent(ei));
+    }
+
+    void setElement(Base::ConstIterator it, Elem* v)
+    {
+        setElement(it - elementBegin(), v);
+    }
+
+    void setElement(Base::ConstIterator it, uint vi)
+    {
+        setElement(it - elementBegin(), vi);
+    }
+
+    void setElement(Base::ConstIndexIterator it, Elem* v)
+    {
+        setElement(it - elementBegin(), v);
+    }
+
+    void setElement(Base::ConstIndexIterator it, uint vi)
+    {
+        setElement(it - elementBegin(), vi);
+    }
+
+    void setElementMod(int i, Elem* e)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().atMod(i) = indexFromPointer(e);
+        else
+            Base::container().atMod(i) = e;
+    }
+
+    void setElementMod(int i, uint ei)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().atMod(i) = elemFromParent(ei);
+        else
+            Base::container().atMod(i) = ei;
+    }
+
+    template<Range Rng>
+    void setElements(Rng&& r) requires RangeOfConvertibleTo<Rng, Elem*>
+    {
+        if constexpr(STORE_INDICES) {
+            auto conv = [&](auto v) {
+                return indexFromPointer(v);
+            };
+
+            Base::container().set(r | std::views::transform(conv));
+        }
+        else {
+            Base::container().set(r);
+        }
+    }
+
+    template<Range Rng>
+    void setElements(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
+    {
+        if constexpr(STORE_INDICES) {
+            Base::container().set(r);
+        }
+        else {
+            auto conv = [&](auto i) {
+                return elemFromParent(i);
+            };
+
+            Base::container().set(r | std::views::transform(conv));
+        }
+    }
+
+    bool containsElement(const Elem* e) const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().contains(indexFromPointer(e));
+        else
+            return Base::container().contains(e);
+    }
+
+    bool containsElement(uint ei) const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().contains(ei);
+        else
+            return Base::container().contains(elemFromParent(ei));
+    }
+
+    Base::Iterator elementBegin()
+    {
+        if constexpr (STORE_INDICES)
+            return typename Base::Iterator(
+                Base::container().begin(), Base::parentElement());
+        else
+            return Base::container().begin();
+    }
+
+    Base::Iterator elementEnd()
+    {
+        if constexpr (STORE_INDICES)
+            return typename Base::Iterator(Base::container().end());
+        else
+            return Base::container().end();
+    }
+
+    Base::ConstIterator elementBegin() const
+    {
+        if constexpr (STORE_INDICES)
+            return typename Base::ConstIterator(
+                Base::container().begin(), Base::parentElement());
+        else
+            return Base::container().begin();
+    }
+
+    Base::ConstIterator elementEnd() const
+    {
+        if constexpr (STORE_INDICES)
+            return typename Base::ConstIterator(Base::container().end());
+        else
+            return Base::container().end();
+    }
+
+    Base::ConstIndexIterator elementIndexBegin() const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().begin();
+        else
+            return typename Base::ConstIndexIterator(elementBegin());
+    }
+
+    Base::ConstIndexIterator elementIndexEnd() const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().end();
+        else
+            return typename Base::ConstIndexIterator(elementEnd());
+    }
+
+    uint indexOfElement(const Elem* e) const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().indexOf(indexFromPointer(e));
+        else
+            return Base::container().indexOf(e);
+    }
+
+    uint indexOfElement(uint ei) const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().indexOf(ei);
+        else
+            return Base::container().indexOf(elemFromParent(ei));
+    }
+
+    uint indexFromPointer(const Elem* v) const
+    {
+        if (v == nullptr) [[unlikely]]
+            return UINT_NULL;
+        else
+            return v->index();
+    }
+
+    Elem* elemFromParent(uint vi)
+    {
+        if (vi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()
+                        ->parentMesh()
+                        ->template element<Elem::ELEMENT_ID>(vi);
+    }
+
+    const Elem* elemFromParent(uint vi) const
+    {
+        if (vi == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &Base::parentElement()
+                        ->parentMesh()
+                        ->template element<Elem::ELEMENT_ID>(vi);
+    }
+};
 
 } // namespace vcl::comp
 
