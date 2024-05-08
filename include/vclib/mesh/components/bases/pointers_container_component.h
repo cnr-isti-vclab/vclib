@@ -176,7 +176,21 @@ protected:
     }
 
 public:
-    const Vector<Elem*, N>& pointers() const { return container(); }
+    /**
+     * @brief Exposes the pointers in the container as a View.
+     *
+     * This function is templated in order to force the user to specify the type
+     * of the pointers that are stored in the container.
+     * This is necessary when a component that stores pointers to different
+     * types of elements is used.
+     */
+    template<typename T>
+    auto pointers() const requires std::is_same_v<T, Elem>
+    {
+        return vcl::View(
+            ConstIterator(Base::container().begin()),
+            ConstIterator(Base::container().end()));
+    }
 };
 
 } // namespace vcl::comp
