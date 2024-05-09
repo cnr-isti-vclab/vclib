@@ -1486,19 +1486,17 @@ protected:
     void updateAllPointers(const Element* oldBase, const Element* newBase)
     {
         if (oldBase != nullptr && oldBase != newBase)
-            (updatePointers<Args>(oldBase, newBase), ...);
+            (updateReferences<Args>(oldBase), ...);
     }
 
     // this function is required in order to get msvc compile
     template<typename Element, typename... A>
-    void updatePointers(
+    void updateReferences(
         const Element* oldBase,
-        const Element* newBase,
         TypeWrapper<A...>)
     {
-        updatePointers(
+        updateReferences(
             oldBase,
-            newBase,
             TypeWrapper<A...>(),
             std::array<std::size_t, 0>(),
             0);
@@ -1506,29 +1504,27 @@ protected:
 
     // this function is required in order to get msvc compile
     template<typename Cont, typename Element>
-    void updatePointers(const Element* oldBase, const Element* newBase)
+    void updateReferences(const Element* oldBase)
     {
-        updatePointers<Cont>(oldBase, newBase, std::array<std::size_t, 0>(), 0);
+        updateReferences<Cont>(oldBase, std::array<std::size_t, 0>(), 0);
     }
 
     // this additional function is necessary because otherwise msvc jumps
     // totally the pack expansion if called directly in the function
     // updatePointersOfContainerTypeAfterAppend
     template<typename Element, std::size_t N, typename... A>
-    void updatePointers(
+    void updateReferences(
         const Element* oldBase,
-        const Element* newBase,
         TypeWrapper<A...>,
         const std::array<std::size_t, N>& sizes  = std::array<std::size_t, 0>(),
         uint                              offset = 0)
     {
-        (updatePointers<A>(oldBase, newBase, sizes, offset), ...);
+        (updateReferences<A>(oldBase, sizes, offset), ...);
     }
 
     template<typename Cont, typename Element, std::size_t N>
-    void updatePointers(
+    void updateReferences(
         const Element*                    oldBase,
-        const Element*                    newBase,
         const std::array<std::size_t, N>& sizes  = std::array<std::size_t, 0>(),
         uint                              offset = 0)
     {
@@ -1550,13 +1546,11 @@ protected:
         const Element*           base,
         const std::vector<uint>& newIndices)
     {
-        (updatePointers<Args>(base, newIndices), ...);
+        (updateReferences<Args, Element>(newIndices), ...);
     }
 
     template<typename Cont, typename Element>
-    void updatePointers(
-        const Element*           base,
-        const std::vector<uint>& newIndices)
+    void updateReferences(const std::vector<uint>& newIndices)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
             Cont::template updateReferences<Element>(newIndices);
@@ -1711,13 +1705,11 @@ private:
 
             using ContainerWrapper = TypeWrapper<A...>;
 
-            // for each Container A in m, we update the pointers of ElType.
+            // for each Container A in m, we update the references of ElType.
             // old base is contained in the array bases, the new base is the
             // base of the container
-            m.updatePointers(
-                reinterpret_cast<const ElType*>(bases[I]),
-                m.Cont::mElemVec.data(),
-                ContainerWrapper());
+            m.updateReferences(
+                reinterpret_cast<const ElType*>(bases[I]), ContainerWrapper());
         }
     }
 
@@ -1745,9 +1737,8 @@ private:
             // for each Container A in m, we update the pointers of ElType.
             // old base is contained in the array bases, the new base is the
             // base of the container
-            m.updatePointers(
+            m.updateReferences(
                 reinterpret_cast<const ElType*>(bases[I]),
-                m.Cont::mElemVec.data(),
                 ContainerWrapper(),
                 sizes,
                 sizes[I]);
