@@ -252,10 +252,10 @@ protected:
      * container having 15 elements and elementContainerSize() == 25. The
      * latest 5 elements will be the newly added.
      *
-     * @warning Any pointer to deleted elements in the Mesh will be left
+     * @warning Any pointer/index to deleted elements in the Mesh will be left
      * unchanged, and therefore will point to invalid elements. This means that
      * if you call this member function with a lower number of elements, you'll
-     * need to manually manage the pointers to the deleted elements.
+     * need to manually manage the pointers/indices to the deleted elements.
      *
      * @param[in] size: the new size of the Element container.
      */
@@ -322,8 +322,8 @@ protected:
      * Deleted elements are automatically jumped by the iterators provided by
      * the Element Container.
      *
-     * @warning If there were pointers to the deleted element in this or other
-     * containers, they will not be updated.
+     * @warning If there were pointers/indices to the deleted element in this or
+     * other containers, they will not be updated.
      *
      * @param[in] i: the id of the element that will be marked as deleted.
      */
@@ -345,7 +345,7 @@ protected:
      * Deleted elements are automatically jumped by the iterators provided by
      * the Element Container.
      *
-     * @warning If there were pointers to the deleted element in this or other
+     * @warning If there were pointers/indices to the deleted element in this or other
      * containers, they will not be updated.
      *
      * @param[in] e: the pointer of the element that will be marked as deleted.
@@ -429,7 +429,8 @@ protected:
         uint n  = elementContainerSize();
         addElements(on);
         for (uint i = 0; i < on; ++i) {
-            // copy everything from the other elements, also the pointers:
+            // copy everything from the other elements, also the (not updated)
+            // pointers:
             element(n + i) = other.element(i);
             element(n + i).setParentMesh(mParentMesh);
         }
@@ -712,26 +713,23 @@ protected:
     }
 
     template<typename Element>
-    void updatePointers(
+    void updateReferences(
         const Element* oldBase,
-        const Element* newBase,
         uint           firstElementToProcess = 0,
         uint           offset                = 0)
     {
         using Comps = T::Components;
 
-        updatePointersOnComponents(
-            oldBase, newBase, Comps(), firstElementToProcess, offset);
+        updateReferencesOnComponents(
+            oldBase, Comps(), firstElementToProcess, offset);
     }
 
     template<typename Element>
-    void updatePointers(
-        const Element*           base,
-        const std::vector<uint>& newIndices)
+    void updateReferences(const std::vector<uint>& newIndices)
     {
         using Comps = T::Components;
 
-        updatePointersOnComponents(base, newIndices, Comps());
+        updateReferencesOnComponents<Element>(newIndices, Comps());
     }
 
     /**
@@ -823,32 +821,30 @@ protected:
 
 private:
     template<typename ElPtr, typename... Comps>
-    void updatePointersOnComponents(
+    void updateReferencesOnComponents(
         const ElPtr* oldBase,
-        const ElPtr* newBase,
         TypeWrapper<Comps...>,
         uint firstElementToProcess = 0,
         uint offset                = 0)
     {
-        (updatePointersOnComponent<Comps>(
-             oldBase, newBase, firstElementToProcess, offset),
+        (updateReferencesOnComponent<Comps>(
+             oldBase, firstElementToProcess, offset),
          ...);
     }
 
     template<typename ElPtr, typename... Comps>
-    void updatePointersOnComponents(
-        const ElPtr*             base,
+    void updateReferencesOnComponents(
         const std::vector<uint>& newIndices,
         TypeWrapper<Comps...>)
     {
-        (updatePointersOnComponent<Comps>(base, newIndices), ...);
+        (updateReferencesOnComponent<Comps, ElPtr>(newIndices), ...);
     }
 
     /*
      * This function is called for each component of the element.
      *
      * Only if a component has references of the type ElPtr, then the
-     * updatePointers on each element will be executed.
+     * updateReferences on each element will be executed.
      *
      * firstElementToProcess and offset are used only when an append operation
      * has been executed. In this case, the firstElementToProcess is the index
@@ -858,9 +854,8 @@ private:
      * the elements have been copied).
      */
     template<typename Comp, typename ElPtr>
-    void updatePointersOnComponent(
+    void updateReferencesOnComponent(
         const ElPtr* oldBase,
-        const ElPtr* newBase,
         uint         firstElementToProcess = 0,
         uint         offset                = 0)
     {
@@ -889,9 +884,7 @@ private:
     }
 
     template<typename Comp, typename ElPtr>
-    void updatePointersOnComponent(
-        const ElPtr*             base,
-        const std::vector<uint>& newIndices)
+    void updateReferencesOnComponent(const std::vector<uint>& newIndices)
     {
         if constexpr (comp::HasReferencesOfType<Comp, ElPtr>) {
             if constexpr (comp::HasOptionalReferencesOfType<Comp, ElPtr>) {

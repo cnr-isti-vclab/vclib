@@ -1537,10 +1537,10 @@ protected:
                 using Containers = Mesh<Args...>::Containers;
                 constexpr uint I = IndexInTypes<Cont, Containers>::value;
                 static_assert(I >= 0 && I != UINT_NULL);
-                Cont::updatePointers(oldBase, newBase, sizes[I], offset);
+                Cont::updateReferences(oldBase, sizes[I], offset);
             }
             else {
-                Cont::updatePointers(oldBase, newBase);
+                Cont::updateReferences(oldBase);
             }
         }
     }
@@ -1559,7 +1559,7 @@ protected:
         const std::vector<uint>& newIndices)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            Cont::updatePointers(base, newIndices);
+            Cont::template updateReferences<Element>(newIndices);
         }
     }
 
