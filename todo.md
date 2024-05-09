@@ -11,12 +11,7 @@
   - Containers:
     - Element container should provide fast compact function, that does not preserve elements order
   - Components:
-    - add member functions returning indices to components containing pointers
-    - add member functions setters with indices to components containing pointers
-    - implement VertexIndices component;
-    - implement AdjacentEdgeIndices component;
-    - implement AdjacentFaceIndices component;
-    - implement AdjacentVertexIndices component;
+    - references to elements should be available using ELEMENT_ID
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
   - Utils:

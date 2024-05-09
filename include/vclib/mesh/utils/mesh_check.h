@@ -70,20 +70,20 @@ bool checkElementPointersInElementContainerOnComponent(
     // if it has pointers to ElemType, and if so, if they are in the range
     // [first, last).
 
+    // if Comp has pointers to ElemType
     if constexpr (comp::HasPointersOfType<Comp, ElemType>) {
-        // we have pointers of type ElemType in the component Comp of ELEM_ID
 
         // we create a lambda to loop over the elements of the mesh
         // to avoid code duplication
 
-        auto loop = [&]() {
+        auto pointersLoop = [&]() {
             // for each element of type ELEM_ID in the mesh
             for (const auto& el : mesh.template elements<ELEM_ID>()) {
                 // take its Comp component - we know that Comp is a component
                 // that has pointers to ElemType
                 const Comp& comp = static_cast<const Comp&>(el);
 
-                // take the pointers in the component and look at them
+                       // take the pointers in the component and look at them
                 for (const ElemType* ptr : comp.template pointers<ElemType>()) {
                     if (ptr != nullptr) {
                         if (ptr < first || ptr >= last) {
@@ -110,16 +110,64 @@ bool checkElementPointersInElementContainerOnComponent(
                     ELEM_ID,
                     Comp::COMPONENT_ID>())
             {
-                return loop();
+                return pointersLoop();
             }
             return true;
         }
         else {
-            return loop();
+            return pointersLoop();
         }
     }
-    else
-        return true;
+
+    // if Comp has indices to ElemType
+    if constexpr (comp::HasIndicesOfType<Comp, ElemType>) {
+
+        // we create a lambda to loop over the elements of the mesh
+        // to avoid code duplication
+
+        auto indicesLoop = [&]() {
+            // for each element of type ELEM_ID in the mesh
+            for (const auto& el : mesh.template elements<ELEM_ID>()) {
+                // take its Comp component - we know that Comp is a component
+                // that has indices to ElemType
+                const Comp& comp = static_cast<const Comp&>(el);
+
+                       // take the pointers in the component and look at them
+                for (uint i : comp.template indices<ElemType>()) {
+                    if (i != UINT_NULL) {
+                        if (i >= last - first) {
+                            throw InconsistentMeshException(
+                                "The " + vcl::elementEnumString<ELEM_ID>() +
+                                " n. " + vcl::toString(el.index()) +
+                                " has a wrong pointer in " +
+                                vcl::componentEnumString<Comp::COMPONENT_ID>() +
+                                " component.\n" + "The pointer " +
+                                vcl::toString(i) + " is out of range [ 0, " +
+                                vcl::toString(last - first) + ")");
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        };
+
+        // if Comp is optional, we first need to check if it is enabled
+        if constexpr (comp::HasOptionalIndicesOfType<Comp, ElemType>) {
+            if (mesh.template isPerElementComponentEnabled<
+                    ELEM_ID,
+                    Comp::COMPONENT_ID>())
+            {
+                return indicesLoop();
+            }
+            return true;
+        }
+        else {
+            return indicesLoop();
+        }
+    }
+
+    return true;
 }
 
 template<

@@ -134,8 +134,8 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
             uint v1               = v0 + 1;
             em.vertex(v0).coord() = ptVec[0];
             em.vertex(v1).coord() = ptVec[1];
-            em.edge(eid).setVertex(0, &em.vertex(v0));
-            em.edge(eid).setVertex(1, &em.vertex(v1));
+            em.edge(eid).setVertex(0, v0);
+            em.edge(eid).setVertex(1, v1);
             if constexpr (
                 HasPerVertexNormal<MeshType> && HasPerVertexNormal<EdgeMesh>)
             {

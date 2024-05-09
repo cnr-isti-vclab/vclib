@@ -68,20 +68,28 @@ concept HasAdjacentEdges = requires (
     { co.adjEdgeIndexMod(uint()) } -> std::same_as<uint>;
 
     { o.setAdjEdge(uint(), &e) } -> std::same_as<void>;
+    { o.setAdjEdge(uint(), uint()) } -> std::same_as<void>;
     { o.setAdjEdge(typename T::AdjacentEdgeIterator(), &e) } ->
+        std::same_as<void>;
+    { o.setAdjEdge(typename T::AdjacentEdgeIterator(), uint()) } ->
         std::same_as<void>;
     { o.setAdjEdge(typename T::ConstAdjacentEdgeIterator(), &e) } ->
         std::same_as<void>;
+    { o.setAdjEdge(typename T::ConstAdjacentEdgeIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjEdge(typename T::ConstAdjacentEdgeIndexIterator(), &e) } ->
         std::same_as<void>;
+    { o.setAdjEdge(typename T::ConstAdjacentEdgeIndexIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjEdgeMod(int(), &e) } -> std::same_as<void>;
+    { o.setAdjEdgeMod(int(), uint()) } -> std::same_as<void>;
     { o.setAdjEdges(v) } -> std::same_as<void>;
 
     { co.containsAdjEdge(&e) } -> std::same_as<bool>;
+    { co.containsAdjEdge(uint()) } -> std::same_as<bool>;
     { co.indexOfAdjEdge(&e) } -> std::same_as<uint>;
+    { co.indexOfAdjEdge(uint()) } -> std::same_as<uint>;
 
-    { o.adjEdgeBegin() } -> std::same_as<typename T::AdjacentEdgeIterator>;
-    { o.adjEdgeEnd() } -> std::same_as<typename T::AdjacentEdgeIterator>;
     { co.adjEdgeBegin() } ->
         std::same_as<typename T::ConstAdjacentEdgeIterator>;
     { co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;

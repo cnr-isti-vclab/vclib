@@ -31,7 +31,7 @@
 #include "../components/mark.h"
 #include "../components/parent_mesh_pointer.h"
 #include "../components/quality.h"
-#include "../components/vertex_pointers.h"
+#include "../components/vertex_references.h"
 
 /**
  * @defgroup edge_components Edge Components
@@ -51,28 +51,84 @@ namespace vcl::edge {
  */
 
 /* Port AdjacentEdges class into edge namespace */
-template<typename ParentEdgeType>
-using AdjacentEdges = comp::AdjacentEdges<ParentEdgeType, -1, false>;
+template<bool INDEXED, typename ParentEdgeType>
+using AdjacentEdges =
+    comp::AdjacentEdges<INDEXED, ParentEdgeType, -1, false, ParentEdgeType>;
+
+template<bool INDEXED, typename ParentEdgeType>
+using VerticalAdjacentEdges = comp::
+    AdjacentEdges<INDEXED, ParentEdgeType, -1, false, ParentEdgeType, true>;
+
+template<bool INDEXED, typename ParentEdgeType>
+using OptionalAdjacentEdges = comp::AdjacentEdges<
+    INDEXED,
+    ParentEdgeType,
+    -1,
+    false,
+    ParentEdgeType,
+    true,
+    true>;
 
 template<typename ParentEdgeType>
-using VerticalAdjacentEdges =
-    comp::AdjacentEdges<ParentEdgeType, -1, false, ParentEdgeType>;
+using AdjacentEdgeIndices =
+    comp::AdjacentEdges<true, ParentEdgeType, -1, false, ParentEdgeType>;
 
 template<typename ParentEdgeType>
-using OptionalAdjacentEdges =
-    comp::AdjacentEdges<ParentEdgeType, -1, false, ParentEdgeType, true>;
+using VerticalAdjacentEdgeIndices =
+    comp::AdjacentEdges<true, ParentEdgeType, -1, false, ParentEdgeType, true>;
+
+template<typename ParentEdgeType>
+using OptionalAdjacentEdgeIndices = comp::
+    AdjacentEdges<true, ParentEdgeType, -1, false, ParentEdgeType, true, true>;
+
+template<typename ParentEdgeType>
+using AdjacentEdgePointers =
+    comp::AdjacentEdges<false, ParentEdgeType, -1, false, ParentEdgeType>;
+
+template<typename ParentEdgeType>
+using VerticalAdjacentEdgePointers =
+    comp::AdjacentEdges<false, ParentEdgeType, -1, false, ParentEdgeType, true>;
+
+template<typename ParentEdgeType>
+using OptionalAdjacentEdgePointers = comp::
+    AdjacentEdges<false, ParentEdgeType, -1, false, ParentEdgeType, true, true>;
 
 /* Port AdjacentFaces class into edge namespace */
-template<typename FaceType>
-using AdjacentFaces = comp::AdjacentFaces<FaceType, -1, false>;
+template<bool INDEXED, typename FaceType, typename ParentEdgeType>
+using AdjacentFaces =
+    comp::AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType>;
 
-template<typename FaceType, typename ParentEdgeType>
+template<bool INDEXED, typename FaceType, typename ParentEdgeType>
 using VerticalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, ParentEdgeType>;
+    comp::AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType, true>;
+
+template<bool INDEXED, typename FaceType, typename ParentEdgeType>
+using OptionalAdjacentFaces =
+    comp::AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType, true, true>;
 
 template<typename FaceType, typename ParentEdgeType>
-using OptionalAdjacentFaces =
-    comp::AdjacentFaces<FaceType, -1, false, ParentEdgeType, true>;
+using AdjacentFaceIndices =
+    comp::AdjacentFaces<true, FaceType, -1, false, ParentEdgeType>;
+
+template<typename FaceType, typename ParentEdgeType>
+using VerticalAdjacentFaceIndices =
+    comp::AdjacentFaces<true, FaceType, -1, false, ParentEdgeType, true>;
+
+template<typename FaceType, typename ParentEdgeType>
+using OptionalAdjacentFaceIndices =
+    comp::AdjacentFaces<true, FaceType, -1, false, ParentEdgeType, true, true>;
+
+template<typename FaceType, typename ParentEdgeType>
+using AdjacentFacePointers =
+    comp::AdjacentFaces<false, FaceType, -1, false, ParentEdgeType>;
+
+template<typename FaceType, typename ParentEdgeType>
+using VerticalAdjacentFacePointers =
+    comp::AdjacentFaces<false, FaceType, -1, false, ParentEdgeType, true>;
+
+template<typename FaceType, typename ParentEdgeType>
+using OptionalAdjacentFacePointers =
+    comp::AdjacentFaces<false, FaceType, -1, false, ParentEdgeType, true, true>;
 
 /* Port BitFlags class into edge namespace */
 using BitFlags = comp::BitFlags<>;
@@ -128,9 +184,16 @@ using OptionalQualityf = comp::Quality<float, ParentEdgeType, true>;
 template<typename ParentEdgeType>
 using OptionalQualityd = comp::Quality<double, ParentEdgeType, true>;
 
-/* Port VertexPointers class into edge namespace */
-template<typename VertexType>
-using VertexPointers = comp::VertexPointers<VertexType, 2>;
+/* Port VertexReferences alias into edge namespace */
+template<bool INDEXED, typename VertexType, typename EdgeType>
+using VertexReferences =
+    comp::VertexReferences<INDEXED, VertexType, 2, EdgeType>;
+
+template<typename VertexType, typename EdgeType>
+using VertexIndices = comp::VertexReferences<true, VertexType, 2, EdgeType>;
+
+template<typename VertexType, typename EdgeType>
+using VertexPointers = comp::VertexReferences<false, VertexType, 2, EdgeType>;
 
 /** @} */ // end of edge_components group
 

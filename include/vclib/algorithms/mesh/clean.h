@@ -66,7 +66,7 @@ void setReferencedVerticesOnVector(
     uint&              nRefs)
 {
     // check if the Cont container of the Mesh has vertex pointers
-    if constexpr (comp::HasVertexPointers<typename Cont::ElementType>) {
+    if constexpr (comp::HasVertexReferences<typename Cont::ElementType>) {
         // if there are still some vertices non-referenced
         if (nRefs < m.vertexNumber()) {
             constexpr uint ELEM_ID = Cont::ElementType::ELEMENT_ID;

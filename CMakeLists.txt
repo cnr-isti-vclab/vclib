@@ -144,7 +144,7 @@ set(HEADERS
     include/vclib/concepts/mesh/components/tex_coord.h
     include/vclib/concepts/mesh/components/texture_paths.h
     include/vclib/concepts/mesh/components/transform_matrix.h
-    include/vclib/concepts/mesh/components/vertex_pointers.h
+    include/vclib/concepts/mesh/components/vertex_references.h
     include/vclib/concepts/mesh/components/wedge_colors.h
     include/vclib/concepts/mesh/components/wedge_tex_coords.h
     include/vclib/concepts/mesh/containers/edge_container.h
@@ -201,6 +201,7 @@ set(HEADERS
     include/vclib/iterators/mesh/components.h
     include/vclib/iterators/mesh/face.h
     include/vclib/iterators/mesh/components/index_from_pointer_iterator.h
+    include/vclib/iterators/mesh/components/pointer_from_index_iterator.h
     include/vclib/iterators/mesh/element_container_iterator.h
     include/vclib/iterators/mesh/face/edge_adj_face_iterator.h
     include/vclib/iterators/space/grid/cell_iterator.h
@@ -234,7 +235,7 @@ set(HEADERS
     include/vclib/mesh/components/polygon_bit_flags.h
     include/vclib/mesh/components/principal_curvature.h
     include/vclib/mesh/components/quality.h
-    include/vclib/mesh/components/vertex_pointers.h
+    include/vclib/mesh/components/vertex_references.h
     include/vclib/mesh/components/tex_coord.h
     include/vclib/mesh/components/texture_paths.h
     include/vclib/mesh/components/transform_matrix.h
@@ -243,6 +244,8 @@ set(HEADERS
     include/vclib/mesh/components/wedge_tex_coords.h
     include/vclib/mesh/components/bases/component.h
     include/vclib/mesh/components/bases/container_component.h
+    include/vclib/mesh/components/bases/indices_container_component.h
+    include/vclib/mesh/components/bases/references_container_component.h
     include/vclib/mesh/components/bases/pointers_container_component.h
     include/vclib/mesh/components/detail/component_data.h
     include/vclib/mesh/components/detail/custom_components_data.h

@@ -46,12 +46,12 @@ namespace vcl {
 template<typename MeshType, typename... Comps>
 class Edge : public Element<ElemId::EDGE, MeshType, Comps...>
 {
-    // VertexPointers component of the Edge
-    using VPtrs = typename Edge::VertexPointers;
+    // VertexPointers or VertexIndices component of the Edge
+    using VRefs = typename Edge::VertexReferences;
 
 public:
-    using VertexType = VPtrs::VertexType;
-    using VPtrs::setVertices;
+    using VertexType = VRefs::VertexType;
+    using VRefs::setVertices;
 
     /**
      * @brief Empty constructor.
@@ -70,8 +70,20 @@ public:
      */
     void setVertices(VertexType* v0, VertexType* v1)
     {
-        VPtrs::setVertex(0, v0);
-        VPtrs::setVertex(1, v1);
+        VRefs::setVertex(0, v0);
+        VRefs::setVertex(1, v1);
+    }
+
+    /**
+     * @brief Sets the vertices of the edge.
+     *
+     * @param [in] vi0: the index first vertex of the edge.
+     * @param [in] vi1: the index second vertex of the edge.
+     */
+    void setVertices(uint vi0, uint vi1)
+    {
+        VRefs::setVertex(0, vi0);
+        VRefs::setVertex(1, vi1);
     }
 };
 

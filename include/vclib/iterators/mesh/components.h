@@ -24,5 +24,6 @@
 #define VCL_ITERATORS_MESH_COMPONENTS_H
 
 #include "components/index_from_pointer_iterator.h"
+#include "components/pointer_from_index_iterator.h"
 
 #endif // VCL_ITERATORS_MESH_COMPONENTS_H

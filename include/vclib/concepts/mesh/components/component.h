@@ -133,45 +133,54 @@ concept IsOptionalComponent =
     };
 
 template<typename T>
-class PointersComponentTriggerer
+class ReferencesComponentTriggerer
 {
 };
 
 /**
- * @brief HasPointersOfType concept
+ * @brief The HasReferencesOfType concept checks whether a type T stores
+ * references (pointers or indices) of a type R.
  *
- * Each component that store pointers of a type R, must:
+ * Each component that store pointers/indices of a type R, must:
  *
- * - inherit from PointersComponentTriggerer<R> (automatic from Component class)
+ * - inherit from ReferencesComponentTriggerer<R> (automatic from Component
+ *   class)
  * - provide the following **protected** member functions:
- *   - void updatePointers(const R* oldBase, const R* newBase);
+ *   - void updateReferences(const R* oldBase, std::size_t offset = 0);
  *
- *     the function updates the stored R pointers having the old base of the
- *     container and the new base of the container.
+ *     the function updates the stored R pointers/indices having the old base
+ *     of the container (needed to update pointers) and the possible non-zero
+ *     offset (used for append operations).
  *
- *   - void updatePointers(
- *         const R* base, const std::vector<uint>& newIndices);
+ *   - void updateReferences(const std::vector<uint>& newIndices);
  *
- *     the function updates the stored R pointers having the base of the
- *     container, and, for each old element index, its new index in the
- *     container.
- *
- *   - template<typename Element, typename ElRType>
- *     void importPointersFrom(
- *         const Element& e, const R* base, const ElRType* ebase);
- *
- *     the function imports the pointers from the pointers of another element.
- *     - e is the another element;
- *     - base is the base of container that stores this element
- *     - ebase is the base of the container that stores the another elements
+ *     the function updates the stored R pointers/indices having, for each old
+ *     element index, its new index in the container.
  */
 template<typename T, typename R>
+concept HasReferencesOfType =
+    std::is_base_of<ReferencesComponentTriggerer<R>, T>::value;
+
+template<typename T, typename R>
+concept HasOptionalReferencesOfType =
+    HasReferencesOfType<T, R> && IsOptionalComponent<T>;
+
+template<typename T, typename R>
 concept HasPointersOfType =
-    std::is_base_of<PointersComponentTriggerer<R>, T>::value;
+    HasReferencesOfType<T, R> && requires (T o) { o.template pointers<R>(); };
 
 template<typename T, typename R>
 concept HasOptionalPointersOfType =
-    HasPointersOfType<T, R> && IsOptionalComponent<T>;
+    HasOptionalReferencesOfType<T, R> &&
+    requires (T o) { o.template pointers<R>(); };
+
+template<typename T, typename R>
+concept HasIndicesOfType =
+    HasReferencesOfType<T, R> && requires (T o) { o.template indices<R>(); };
+
+template<typename T, typename R>
+concept HasOptionalIndicesOfType = HasOptionalReferencesOfType<T, R> &&
+                                   requires (T o) { o.template indices<R>(); };
 
 // ======== Has Component Concepts ======== //
 // Concepts that needs to be called on a type T that has the "Components" type

@@ -180,7 +180,7 @@ protected:
 
         if (oldB != newB) {
             setParentMeshPointers(mParentMesh);
-            mParentMesh->updateAllPointers(oldB, newB);
+            mParentMesh->updateAllReferences(oldB);
         }
 
         return mElemVec.size() - 1;
@@ -213,7 +213,7 @@ protected:
 
         if (oldB != newB) {
             setParentMeshPointers(mParentMesh);
-            mParentMesh->updateAllPointers(oldB, newB);
+            mParentMesh->updateAllReferences(oldB);
         }
 
         return baseId;
@@ -252,10 +252,10 @@ protected:
      * container having 15 elements and elementContainerSize() == 25. The
      * latest 5 elements will be the newly added.
      *
-     * @warning Any pointer to deleted elements in the Mesh will be left
+     * @warning Any pointer/index to deleted elements in the Mesh will be left
      * unchanged, and therefore will point to invalid elements. This means that
      * if you call this member function with a lower number of elements, you'll
-     * need to manually manage the pointers to the deleted elements.
+     * need to manually manage the pointers/indices to the deleted elements.
      *
      * @param[in] size: the new size of the Element container.
      */
@@ -286,7 +286,7 @@ protected:
 
         if (oldB != newB) {
             setParentMeshPointers(mParentMesh);
-            mParentMesh->updateAllPointers(oldB, newB);
+            mParentMesh->updateAllReferences(oldB);
         }
     }
 
@@ -322,8 +322,8 @@ protected:
      * Deleted elements are automatically jumped by the iterators provided by
      * the Element Container.
      *
-     * @warning If there were pointers to the deleted element in this or other
-     * containers, they will not be updated.
+     * @warning If there were pointers/indices to the deleted element in this or
+     * other containers, they will not be updated.
      *
      * @param[in] i: the id of the element that will be marked as deleted.
      */
@@ -345,7 +345,7 @@ protected:
      * Deleted elements are automatically jumped by the iterators provided by
      * the Element Container.
      *
-     * @warning If there were pointers to the deleted element in this or other
+     * @warning If there were pointers/indices to the deleted element in this or other
      * containers, they will not be updated.
      *
      * @param[in] e: the pointer of the element that will be marked as deleted.
@@ -429,7 +429,8 @@ protected:
         uint n  = elementContainerSize();
         addElements(on);
         for (uint i = 0; i < on; ++i) {
-            // copy everything from the other elements, also the pointers:
+            // copy everything from the other elements, also the (not updated)
+            // pointers:
             element(n + i) = other.element(i);
             element(n + i).setParentMesh(mParentMesh);
         }
@@ -712,26 +713,23 @@ protected:
     }
 
     template<typename Element>
-    void updatePointers(
+    void updateReferences(
         const Element* oldBase,
-        const Element* newBase,
         uint           firstElementToProcess = 0,
         uint           offset                = 0)
     {
         using Comps = T::Components;
 
-        updatePointersOnComponents(
-            oldBase, newBase, Comps(), firstElementToProcess, offset);
+        updateReferencesOnComponents(
+            oldBase, Comps(), firstElementToProcess, offset);
     }
 
     template<typename Element>
-    void updatePointers(
-        const Element*           base,
-        const std::vector<uint>& newIndices)
+    void updateReferences(const std::vector<uint>& newIndices)
     {
         using Comps = T::Components;
 
-        updatePointersOnComponents(base, newIndices, Comps());
+        updateReferencesOnComponents<Element>(newIndices, Comps());
     }
 
     /**
@@ -767,9 +765,7 @@ protected:
      */
     void updateElementIndices(const std::vector<uint>& newIndices)
     {
-        T* base = mElemVec.data();
-
-        mParentMesh->updateAllPointers(base, newIndices);
+        mParentMesh->template updateAllReferences<T>(newIndices);
     }
 
     template<typename OtherMesh>
@@ -821,127 +817,32 @@ protected:
         }
     }
 
-    /**
-     * This function imports from another mesh, the pointers of the element
-     * OtherElement stored on this container.
-     *
-     * Checks if the other mesh has two containers: the one of T and the one of
-     * OtherElement. Only if both containers exists in othMesh, then the import
-     * makes sense (e.g. we can import per Vertex Face pointers (T = Vertex,
-     * OtherElement = Face) if othMesh has both a container of Vertices and a
-     * Container of Faces).
-     */
-    template<typename OtherMesh, typename OtherElement>
-    void importPointersFrom(const OtherMesh& othMesh, OtherElement* base)
-    {
-        // We need to be sure that the other mesh has two containers (that can
-        // be the same, see later):
-        // - the one of Elements of same type as T
-        // - the one of Elements of same type as OtherElement (the pointers
-        //   that we are actually importing on this Container of T elements)
-        // Note that OtherElement may be the same of T (e.g. Vertex[T] has
-        // pointers of other Vertices[OtherElement]) or different (e.g.
-        // Vertex[T] has pointers of Faces[OtherElement])
-        if constexpr (
-            OtherMesh::template hasContainerOf<T>() &&
-            OtherMesh::template hasContainerOf<OtherElement>())
-        {
-            // get the containe type of the other mesh for MyBase - used for get
-            // the base pointer
-            using OthBaseContainer =
-                OtherMesh::template ContainerOf<OtherElement>::type;
-            // get the container type of the other mesh for T - used to upcast
-            // othMesh
-            using OthTContainer = OtherMesh::template ContainerOf<T>::type;
-
-            // get the container base of the other mesh, that we use to import
-            // pointers
-            const auto* cbase = othMesh.OthBaseContainer::mElemVec.data();
-
-            // upcast the other mesh to the container and import the pointers
-            // from the OthTContainer
-            importPointersFromContainer(
-                (const OthTContainer&) othMesh, base, cbase);
-        }
-    }
-
 private:
     template<typename ElPtr, typename... Comps>
-    void updatePointersOnComponents(
+    void updateReferencesOnComponents(
         const ElPtr* oldBase,
-        const ElPtr* newBase,
         TypeWrapper<Comps...>,
         uint firstElementToProcess = 0,
         uint offset                = 0)
     {
-        (updatePointersOnComponent<Comps>(
-             oldBase, newBase, firstElementToProcess, offset),
+        (updateReferencesOnComponent<Comps>(
+             oldBase, firstElementToProcess, offset),
          ...);
     }
 
     template<typename ElPtr, typename... Comps>
-    void updatePointersOnComponents(
-        const ElPtr*             base,
+    void updateReferencesOnComponents(
         const std::vector<uint>& newIndices,
         TypeWrapper<Comps...>)
     {
-        (updatePointersOnComponent<Comps>(base, newIndices), ...);
-    }
-
-    /**
-     * This member function is called when this Element container needs to
-     * import element pointers from another Container c.
-     *
-     * It is called when an import from another mesh type is performed. The
-     * import first creates all the elements in the newly created mesh using the
-     * importFrom function, and then imports pointers from each element of the
-     * other mesh.
-     *
-     * For each element of this and the other container, we compute the offset
-     * between the any element pointer contained in the other element and its
-     * base (the pointer of the element 0) in the other mesh, and then add this
-     * offset to the base (the pointer of the element 0) in this mesh.
-     *
-     * Takes the following inputs:
-     * - c: another container of the same element of this container (but
-     *   probably with different components)
-     * - base: the pointer of the first Element of this mesh. We will use it to
-     *   compute the new element pointers in this container
-     * - cbase: the pointer of the first Element of the other mesh. We will use
-     *   it to compute the offset between any element contained in the other
-     *   element and the base. The offset is then used to compute the new
-     *   element pointer for this container
-     */
-    template<typename Container, typename MyBase, typename CBase>
-    void importPointersFromContainer(
-        const Container& c,
-        MyBase*          base,
-        const CBase*     cbase)
-    {
-        using Comps = T::Components;
-
-        importPointersOnComponentsFrom(c, base, cbase, Comps());
-    }
-
-    template<
-        typename Container,
-        typename ElPtr,
-        typename CBase,
-        typename... Comps>
-    void importPointersOnComponentsFrom(
-        const Container& c,
-        ElPtr*           base,
-        const CBase*     cbase,
-        TypeWrapper<Comps...>)
-    {
-        (importPointersOnComponentFrom<Comps>(c, base, cbase), ...);
+        (updateReferencesOnComponent<Comps, ElPtr>(newIndices), ...);
     }
 
     /*
      * This function is called for each component of the element.
      *
      * Only if a component has references of the type ElPtr, then the
-     * updatePointers on each element will be executed.
+     * updateReferences on each element will be executed.
      *
      * firstElementToProcess and offset are used only when an append operation
      * has been executed. In this case, the firstElementToProcess is the index
@@ -951,13 +852,12 @@ private:
      * the elements have been copied).
      */
     template<typename Comp, typename ElPtr>
-    void updatePointersOnComponent(
+    void updateReferencesOnComponent(
         const ElPtr* oldBase,
-        const ElPtr* newBase,
         uint         firstElementToProcess = 0,
         uint         offset                = 0)
     {
-        if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
+        if constexpr (comp::HasReferencesOfType<Comp, ElPtr>) {
             // lambda to avoid code duplication
             auto loop = [&]() {
                 for (uint i = firstElementToProcess; i < elementContainerSize();
@@ -965,12 +865,12 @@ private:
                 {
                     T& e = element(i);
                     if (!e.deleted()) {
-                        e.Comp::updatePointers(oldBase, newBase, offset);
+                        e.Comp::updateReferences(oldBase, offset);
                     }
                 }
             };
 
-            if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
+            if constexpr (comp::HasOptionalReferencesOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
                     loop();
                 }
@@ -982,45 +882,19 @@ private:
     }
 
     template<typename Comp, typename ElPtr>
-    void updatePointersOnComponent(
-        const ElPtr*             base,
-        const std::vector<uint>& newIndices)
+    void updateReferencesOnComponent(const std::vector<uint>& newIndices)
     {
-        if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
-            if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
+        if constexpr (comp::HasReferencesOfType<Comp, ElPtr>) {
+            if constexpr (comp::HasOptionalReferencesOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
                     for (T& e : elements()) {
-                        e.Comp::updatePointers(base, newIndices);
+                        e.Comp::updateReferences(newIndices);
                     }
                 }
             }
             else {
                 for (T& e : elements()) {
-                    e.Comp::updatePointers(base, newIndices);
-                }
-            }
-        }
-    }
-
-    template<typename Comp, typename Container, typename ElPtr, typename CBase>
-    void importPointersOnComponentFrom(
-        const Container& c,
-        ElPtr*           base,
-        const CBase*     cbase)
-    {
-        if constexpr (comp::HasPointersOfType<Comp, ElPtr>) {
-            if constexpr (comp::HasOptionalPointersOfType<Comp, ElPtr>) {
-                if (isOptionalComponentEnabled<Comp>()) {
-                    for (uint i = 0; i < elementContainerSize(); ++i) {
-                        element(i).Comp::importPointersFrom(
-                            c.element(i), base, cbase);
-                    }
-                }
-            }
-            else {
-                for (uint i = 0; i < elementContainerSize(); ++i) {
-                    element(i).Comp::importPointersFrom(
-                        c.element(i), base, cbase);
+                    e.Comp::updateReferences(newIndices);
                 }
             }
         }

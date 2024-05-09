@@ -69,20 +69,28 @@ concept HasAdjacentVertices = requires (
     { co.adjVertexIndexMod(uint()) } -> std::same_as<uint>;
 
     { o.setAdjVertex(uint(), &v) } -> std::same_as<void>;
+    { o.setAdjVertex(uint(), uint()) } -> std::same_as<void>;
     { o.setAdjVertex(typename T::AdjacentVertexIterator(), &v) } ->
+        std::same_as<void>;
+    { o.setAdjVertex(typename T::AdjacentVertexIterator(), uint()) } ->
         std::same_as<void>;
     { o.setAdjVertex(typename T::ConstAdjacentVertexIterator(), &v) } ->
         std::same_as<void>;
+    { o.setAdjVertex(typename T::ConstAdjacentVertexIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjVertex(typename T::ConstAdjacentVertexIndexIterator(), &v) } ->
         std::same_as<void>;
+    { o.setAdjVertex(typename T::ConstAdjacentVertexIndexIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjVertexMod(int(), &v) } -> std::same_as<void>;
+    { o.setAdjVertexMod(int(), uint()) } -> std::same_as<void>;
     { o.setAdjVertices(vec) } -> std::same_as<void>;
 
     { co.containsAdjVertex(&v) } -> std::same_as<bool>;
+    { co.containsAdjVertex(uint()) } -> std::same_as<bool>;
     { co.indexOfAdjVertex(&v) } -> std::same_as<uint>;
+    { co.indexOfAdjVertex(uint()) } -> std::same_as<uint>;
 
-    { o.adjVertexBegin() } -> std::same_as<typename T::AdjacentVertexIterator>;
-    { o.adjVertexEnd() } -> std::same_as<typename T::AdjacentVertexIterator>;
     { co.adjVertexBegin() } ->
         std::same_as<typename T::ConstAdjacentVertexIterator>;
     { co.adjVertexEnd() } ->

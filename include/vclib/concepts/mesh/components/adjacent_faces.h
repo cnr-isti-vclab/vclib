@@ -68,20 +68,28 @@ concept HasAdjacentFaces = requires (
     { co.adjFaceIndexMod(uint()) } -> std::same_as<uint>;
 
     { o.setAdjFace(uint(), &f) } -> std::same_as<void>;
+    { o.setAdjFace(uint(), uint()) } -> std::same_as<void>;
     { o.setAdjFace(typename T::AdjacentFaceIterator(), &f) } ->
+        std::same_as<void>;
+    { o.setAdjFace(typename T::AdjacentFaceIterator(), uint()) } ->
         std::same_as<void>;
     { o.setAdjFace(typename T::ConstAdjacentFaceIterator(), &f) } ->
         std::same_as<void>;
+    { o.setAdjFace(typename T::ConstAdjacentFaceIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjFace(typename T::ConstAdjacentFaceIndexIterator(), &f) } ->
         std::same_as<void>;
+    { o.setAdjFace(typename T::ConstAdjacentFaceIndexIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setAdjFaceMod(int(), &f) } -> std::same_as<void>;
+    { o.setAdjFaceMod(int(), uint()) } -> std::same_as<void>;
     { o.setAdjFaces(v) } -> std::same_as<void>;
 
     { co.containsAdjFace(&f) } -> std::same_as<bool>;
+    { co.containsAdjFace(uint()) } -> std::same_as<bool>;
     { co.indexOfAdjFace(&f) } -> std::same_as<uint>;
+    { co.indexOfAdjFace(uint()) } -> std::same_as<uint>;
 
-    { o.adjFaceBegin() } -> std::same_as<typename T::AdjacentFaceIterator>;
-    { o.adjFaceEnd() } -> std::same_as<typename T::AdjacentFaceIterator>;
     { co.adjFaceBegin() } ->
         std::same_as<typename T::ConstAdjacentFaceIterator>;
     { co.adjFaceEnd() } -> std::same_as<typename T::ConstAdjacentFaceIterator>;

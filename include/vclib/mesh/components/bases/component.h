@@ -45,22 +45,23 @@ namespace vcl::comp {
  *   - a component is horizontal when its data is stored in the memory frame of
  *     the Element that has the component;
  *   - a component is vertical when its data is not stored in the memory frame
- *     of the Element, but in a separated Conainer; in this case, the data will
+ *     of the Element, but in a separated Container; in this case, the data will
  *     be in a contiguous array;
  *   - a component is optional if it is vertical and can be enabled/disabled at
  *     runtime;
- * - possibility to store pointers to other Elements that must be updated when a
- *   reallocation happens
+ * - possibility to store references (pointers or indices) to other Elements
+ *   that must be updated when a reallocation or a compaction happens
  *   - An example is the VertexPointers component: it stores the pointers to the
  *     Vertices of an Element (e.g. a Face). When a a reallocation of the
  *     VertexContainer happens, all the pointers to the vertices must be
  *     updated, and this operation will be made automatically if the Vertex type
- *     will be part of the PointedTypes.
+ *     will be part of the ReferencesTypes.
  *
  * There are also some additional features that are given by the @ref
- * ContainerComponent and @ref PointersContainerComponent classes. If you need
- * to implement a Component that stores a Container of data or a Container of
- * Pointers, take a look to that classes.
+ * ContainerComponent, @ref PointersContainerComponent and @ref
+ * IndicesContainerComponent classes. If you need to implement a Component that
+ * stores a Container of data, a Container of Pointers or a Container of
+ * Indices, take a look to that classes.
  *
  * All the features of a Component can be defined trough its template
  * parameters, and implementing some protected member functions. To properly
@@ -72,23 +73,18 @@ namespace vcl::comp {
  * void importFrom(const Element& e);
  * ```
  *
- * Moreover, if the component has at least one PointedType, it must define the
- * following protected member functions:
+ * Moreover, if the component has at least one ReferencedType, it must define
+ * the following protected member functions:
  *
  * ```cpp
- * template<typename Element, typename ElEType>
- * void importPointersFrom(
- *     const Element& e, PointedType* base, const ElEType* ebase);
+ * void updateReferences(const PointedType* oldBase, std::size_t offset = 0);
  *
- * void updatePointers(const PointedType* oldBase, const PointedType* newBase);
- *
- * void updatePointers(
- *     const PointedType* base, const std::vector<uint>& newIndices);
+ * void updateReferences(const std::vector<uint>& newIndices);
  * ```
  *
- * If your component stores a Container of pointers, look for the @ref
- * PointersContainerComponent class, that provides the implementation of these
- * functions.
+ * If your component stores a Container of pointers or indices, look for the
+ * @ref PointersContainerComponent or @ref IndicesContainerComponent classes,
+ * that provide the implementation of these functions.
  *
  * For further details , please refer to the page @ref implement_component page.
  *
@@ -99,26 +95,31 @@ namespace vcl::comp {
  * component. It is used to identify the component at compile time.
  * @tparam DataType: The type of the data that the component needs to store.
  * E.g. a Normal component would store a vcl::Point3d.
- * @tparam ParentElemType: The Parent Element type is used to discriminate
- * between horizontal and vertical components. When a component is horizontal,
- * this type must be void. When a component is vertical, this type must be the
- * type of the Element that has the component, and it will be used by the
- * component to access the vertical data stored in the vcl::Mesh.
+ * @tparam ParentElemType: The Parent Element type is used to get access to the
+ * Element that has the component (and, in case, to the Mesh that has the
+ * Element). If the component doesn't need to access the Element, this type can
+ * be void. Note: if the component is vertical (or optional), this type cannot
+ * be void.
+ * @tparam VERT: Boolean that tells if the component is vertical. If the
+ * component is vertical, this parameter must be true. Note: to be vertical,
+ * this parameter must be true, and ElementType must be the type of the Element
+ * that has the component (the 'parent' Element Type).
  * @tparam OPT: When a component is vertical, it could be optional, that means
  * that could be enabled/disabled at runtime. To make the component optional,
  * this template parameter must be true.
- * @tparam PointedTypes: Variadic Template types of all the Pointer types that
- * the component stores, and that need to be updated when some reallocation
- * happens.
+ * @tparam ReferencedTypes: Variadic Template types of all the Pointer or
+ * Indices types that the component stores, and that need to be updated when
+ * some reallocation happens.
  */
 template<
     typename DerivedComponent, // CRTP pattern, derived class
     uint COMP_ID,              // component id
     typename DataType,         // data stored by the component
-    typename ParentElemType,   // parent element type, void if horizontal
+    typename ParentElemType,   // parent element type
+    bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
-    typename... PointedTypes>  // types of the pointers stored by the component
-class Component : public PointersComponentTriggerer<PointedTypes>...
+    typename... ReferencedTypes>  // types of the refs stored by the component
+class Component : public ReferencesComponentTriggerer<ReferencedTypes>...
 {
 public:
     /**
@@ -131,7 +132,8 @@ public:
      * @brief Boolean that tells if this component type stores its data
      * vertically (not in the Element frame memory, but in another vector).
      */
-    static const bool IS_VERTICAL = !std::is_same_v<ParentElemType, void>;
+    static const bool IS_VERTICAL =
+        !std::is_same_v<ParentElemType, void> && VERT;
 
     /**
      * @brief The ID of the component.
@@ -142,7 +144,7 @@ public:
      * @brief Boolean that tells if this component is optional. Makes sense only
      * when the component is vertical.
      */
-    static const bool IS_OPTIONAL = OPT;
+    static const bool IS_OPTIONAL = VERT && OPT;
 
 private:
     detail::ComponentData<DataValueType, IS_VERTICAL> mData;

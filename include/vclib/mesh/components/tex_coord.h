@@ -61,6 +61,7 @@ class TexCoord :
             CompId::TEX_COORD,
             vcl::TexCoord<Scalar>,
             ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT>
 {
     using Base = Component<
@@ -68,6 +69,7 @@ class TexCoord :
         CompId::TEX_COORD,
         vcl::TexCoord<Scalar>,
         ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT>;
 
 public:

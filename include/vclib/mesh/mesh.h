@@ -278,7 +278,7 @@ public:
         // pointers in this mesh. Each pointer of oth that was copied in this
         // mesh, will be updated computing its offset wrt the base of oth, and
         // then adding that offset to the new base pointer of this mesh
-        (updatePointersOfContainerType<Args>(*this, othBases), ...);
+        (updateReferencesOfContainerType<Args>(*this, othBases), ...);
     }
 
     /**
@@ -318,7 +318,7 @@ public:
      * @brief Compacts all the containers of the mesh.
      *
      * Removes all the deleted elements from each container, compacting the
-     * the containers and then updating automatically all the pointers.
+     * the containers and then updating automatically all the pointers/indices.
      */
     void compact() { (compactContainer<Args>(), ...); }
 
@@ -394,7 +394,7 @@ public:
     void append(const Mesh& m)
     {
         // for each container of this mesh, save its size
-        // will need it to update all the pointers of this mesh
+        // will need it to update all the pointers/indices of this mesh
         constexpr uint N_CONTAINERS =
             NumberOfTypes<typename Mesh<Args...>::Containers>::value;
         std::array<std::size_t, N_CONTAINERS> sizes =
@@ -408,8 +408,8 @@ public:
         // call the append function for each container
         (appendContainer<Args>(m), ...);
 
-        // update all the pointers contained on each container
-        (updatePointersOfContainerTypeAfterAppend<Args>(*this, bases, sizes),
+        // update all the pointers/indices contained on each container
+        (updateReferencesOfContainerTypeAfterAppend<Args>(*this, bases, sizes),
          ...);
     }
 
@@ -434,37 +434,21 @@ public:
         // Call, for each Container and Component of the mesh, its importFrom
         // function. In case of containers, it first creates the same number of
         // elements in the container, and then calls the importFrom function for
-        // each new element. Pointers are not managed here, since they need
-        // additional parameters to be imported
+        // each new element.
 
         (Args::importFrom(m), ...);
 
         // Set to all element containers their parent mesh (this)
         updateAllParentMeshPointers();
 
-        // after importing ordinary components, we need to convert the pointers
-        // between containers. each container can import more than one pointer
-        // type, e.g.:
-        // - VertexContainer could import vertex pointers (adjacent vertices),
-        //   face pointers (adjacent faces), and so on;
-        // - FaceContainer will always import vertex pointers, but could also
-        //   import face pointers (adjacent faces), edge pointers (adjacent
-        //   edges)...
-        // for each container of this Mesh, we'll call the importPointers
-        // passing the container (Args) as template parameter. This parameter
-        // will be used to call all the possible import functions available
-        // (vertices, faces, edges, half edges)
-
-        (importPointers<Args>(m), ...);
-
         if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
             // Now I need to manage imports between different types of meshes
-            // (same type of meshes are already managed from importFrom and
-            // importPointersFrom member functions).
+            // (same type of meshes are already managed from importFrom member
+            // function).
             //
             // Generally speaking, Polygon meshes can import from any other type
             // of mesh. We need to take care when this mesh has static vertex
-            // pointers number in the face container (VERTEX_NUMBER >= 3).
+            // references number in the face container (VERTEX_NUMBER >= 3).
             //
             // The follwing case don't need to be managed:
             // - import polygon mesh from triangle mesh
@@ -514,10 +498,10 @@ public:
         m1.updateAllParentMeshPointers();
         m2.updateAllParentMeshPointers();
 
-        // update all the pointers to m1 and m2: old base of m1 is now "old
+        // update all the refs to m1 and m2: old base of m1 is now "old
         // base" of m2, and viceversa
-        (updatePointersOfContainerType<Args>(m1, m2Bases), ...);
-        (updatePointersOfContainerType<Args>(m2, m1Bases), ...);
+        (updateReferencesOfContainerType<Args>(m1, m2Bases), ...);
+        (updateReferencesOfContainerType<Args>(m2, m1Bases), ...);
     }
 
     /**
@@ -772,7 +756,7 @@ public:
      * @warning Any pointer to deleted Elements in the Mesh will be left
      * unchanged, and therefore will point to invalid Elements. This means that
      * if you call this member function with a lower number of Elements, you'll
-     * need to manually manage the pointers to the deleted Elements.
+     * need to manually manage the pointers/indices to the deleted Elements.
      *
      * @tparam ELEM_ID: the ID of the element.
      * @param[in] n: the new size of the container in the mesh.
@@ -1498,22 +1482,20 @@ protected:
     }
 
     template<ElementConcept Element>
-    void updateAllPointers(const Element* oldBase, const Element* newBase)
+    void updateAllReferences(const Element* oldBase)
     {
-        if (oldBase != nullptr && oldBase != newBase)
-            (updatePointers<Args>(oldBase, newBase), ...);
+        if (oldBase != nullptr)
+            (updateReferences<Args>(oldBase), ...);
     }
 
     // this function is required in order to get msvc compile
     template<typename Element, typename... A>
-    void updatePointers(
+    void updateReferences(
         const Element* oldBase,
-        const Element* newBase,
         TypeWrapper<A...>)
     {
-        updatePointers(
+        updateReferences(
             oldBase,
-            newBase,
             TypeWrapper<A...>(),
             std::array<std::size_t, 0>(),
             0);
@@ -1521,29 +1503,27 @@ protected:
 
     // this function is required in order to get msvc compile
     template<typename Cont, typename Element>
-    void updatePointers(const Element* oldBase, const Element* newBase)
+    void updateReferences(const Element* oldBase)
     {
-        updatePointers<Cont>(oldBase, newBase, std::array<std::size_t, 0>(), 0);
+        updateReferences<Cont>(oldBase, std::array<std::size_t, 0>(), 0);
     }
 
     // this additional function is necessary because otherwise msvc jumps
     // totally the pack expansion if called directly in the function
-    // updatePointersOfContainerTypeAfterAppend
+    // updateReferencesOfContainerTypeAfterAppend
     template<typename Element, std::size_t N, typename... A>
-    void updatePointers(
+    void updateReferences(
         const Element* oldBase,
-        const Element* newBase,
         TypeWrapper<A...>,
         const std::array<std::size_t, N>& sizes  = std::array<std::size_t, 0>(),
         uint                              offset = 0)
     {
-        (updatePointers<A>(oldBase, newBase, sizes, offset), ...);
+        (updateReferences<A>(oldBase, sizes, offset), ...);
     }
 
     template<typename Cont, typename Element, std::size_t N>
-    void updatePointers(
+    void updateReferences(
         const Element*                    oldBase,
-        const Element*                    newBase,
         const std::array<std::size_t, N>& sizes  = std::array<std::size_t, 0>(),
         uint                              offset = 0)
     {
@@ -1552,29 +1532,25 @@ protected:
                 using Containers = Mesh<Args...>::Containers;
                 constexpr uint I = IndexInTypes<Cont, Containers>::value;
                 static_assert(I >= 0 && I != UINT_NULL);
-                Cont::updatePointers(oldBase, newBase, sizes[I], offset);
+                Cont::updateReferences(oldBase, sizes[I], offset);
             }
             else {
-                Cont::updatePointers(oldBase, newBase);
+                Cont::updateReferences(oldBase);
             }
         }
     }
 
     template<ElementConcept Element>
-    void updateAllPointers(
-        const Element*           base,
-        const std::vector<uint>& newIndices)
+    void updateAllReferences(const std::vector<uint>& newIndices)
     {
-        (updatePointers<Args>(base, newIndices), ...);
+        (updateReferences<Args, Element>(newIndices), ...);
     }
 
     template<typename Cont, typename Element>
-    void updatePointers(
-        const Element*           base,
-        const std::vector<uint>& newIndices)
+    void updateReferences(const std::vector<uint>& newIndices)
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
-            Cont::updatePointers(base, newIndices);
+            Cont::template updateReferences<Element>(newIndices);
         }
     }
 
@@ -1611,34 +1587,6 @@ private:
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
             Cont::append((const Cont&) m);
-        }
-    }
-
-    // private import member functions
-
-    /**
-     * This function will import, for a given container of this mesh that is
-     * passed as a template parameter Cont, all the pointers of all the elements
-     * from the other mesh m.
-     */
-    template<typename Cont, typename OthMesh>
-    void importPointers(const OthMesh& m)
-    {
-        // will loop again on Args. Args will be the element pointers imported
-        // on Cont
-        (importPointersOfElement<Cont, Args>(m), ...);
-    }
-
-    template<typename Cont, typename ElemCont, typename OthMesh>
-    void importPointersOfElement(const OthMesh& m)
-    {
-        // if Cont and ElemCont are containers (could be mesh components)
-        if constexpr (
-            mesh::ElementContainerConcept<Cont> &&
-            mesh::ElementContainerConcept<ElemCont>)
-        {
-            // import in Cont the ElemCont pointers from m
-            Cont::importPointersFrom(m, ElemCont::mElemVec.data());
         }
     }
 
@@ -1724,20 +1672,30 @@ private:
      * This function *is static*, and is generally called for each container of
      * the mesh, that is the template argument Cont.
      *
-     * In general, for each container, we need to update all the pointers
+     * In general, for each container, we need to update all the references
      * contained in it, that may be of any element of the mesh (example: in the
-     * VertexContainer there could be Vertex pointers, but also Face or Edge
-     * pointers).
+     * VertexContainer there could be Vertex references, but also Face or Edge
+     * references).
      *
      * Here in this function, we loop into the containers of the Mesh m using
-     * pack expansion, and we use the Cont type to choose which pointers type we
-     * are updating.
+     * pack expansion, and we use the Cont type to choose which references type
+     * we are updating:
+     *
+     * ```pseudo
+     * for each Element E in Mesh:
+     *    Cont::updateReferencesToElement(E)
+     * ```
+     *
+     * The foreach loop is done using pack expansion inside the last call
+     * m.updateReferences, trough the argument ContainerWrapper
      *
      * bases contains the old bases (the ones of the other mesh) for each
      * container.
      */
     template<typename Cont, typename Array, typename... A>
-    static void updatePointersOfContainerType(Mesh<A...>& m, const Array& bases)
+    static void updateReferencesOfContainerType(
+        Mesh<A...>&  m,
+        const Array& bases)
     {
         // since this function is called using pack expansion, it means that
         // Cont could be a mesh component and not a cointainer. We check if Cont
@@ -1754,18 +1712,16 @@ private:
 
             using ContainerWrapper = TypeWrapper<A...>;
 
-            // for each Container A in m, we update the pointers of ElType.
+            // for each Container A in m, we update the references of ElType.
             // old base is contained in the array bases, the new base is the
             // base of the container
-            m.updatePointers(
-                reinterpret_cast<const ElType*>(bases[I]),
-                m.Cont::mElemVec.data(),
-                ContainerWrapper());
+            m.updateReferences(
+                reinterpret_cast<const ElType*>(bases[I]), ContainerWrapper());
         }
     }
 
     template<typename Cont, typename ArrayB, typename ArrayS, typename... A>
-    static void updatePointersOfContainerTypeAfterAppend(
+    static void updateReferencesOfContainerTypeAfterAppend(
         Mesh<A...>&   m,
         const ArrayB& bases,
         const ArrayS& sizes)
@@ -1785,12 +1741,10 @@ private:
 
             using ContainerWrapper = TypeWrapper<A...>;
 
-            // for each Container A in m, we update the pointers of ElType.
-            // old base is contained in the array bases, the new base is the
-            // base of the container
-            m.updatePointers(
+            // for each Container A in m, we update the references of ElType.
+            // old base is contained in the array bases
+            m.updateReferences(
                 reinterpret_cast<const ElType*>(bases[I]),
-                m.Cont::mElemVec.data(),
                 ContainerWrapper(),
                 sizes,
                 sizes[I]);

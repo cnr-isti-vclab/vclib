@@ -211,17 +211,17 @@ concept HasPerFaceTriangleBitFlags =
  * @brief Concept that checks if a Mesh has the per Face VertexPointers
  * component.
  *
- * Evaluates to true if VertexPointers is part of the Face element, whether
- * it is horizontal, vertical or optional.
+ * Evaluates to true if VertexPointers or VertexIndices are part of the Face
+ * element, whether it is horizontal, vertical or optional.
  *
  * @tparam MeshType: mesh type to check.
  *
  * @ingroup face_mesh_concepts
  */
 template<typename MeshType>
-concept HasPerFaceVertexPointers =
+concept HasPerFaceVertexReferences =
     HasFaces<MeshType> &&
-    vcl::face::HasVertexPointers<typename MeshType::FaceType>;
+    vcl::face::HasVertexReferences<typename MeshType::FaceType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Face WedgeColors

@@ -103,6 +103,7 @@ class PolygonBitFlags :
             N,
             BitSet<char>,
             ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT,
             true>
 {
@@ -115,6 +116,7 @@ class PolygonBitFlags :
         N,
         BitSet<FT>,
         ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT,
         true>;
 

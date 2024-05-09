@@ -169,8 +169,8 @@ void clearPerFaceAdjacentFaces(MeshType& m)
     using FaceType = MeshType::FaceType;
 
     for (FaceType& f : m.faces()) {
-        for (FaceType*& adjF : f.adjFaces()) {
-            adjF = nullptr;
+        for (uint i = 0; i < f.adjFacesNumber(); ++i) {
+            f.setAdjFace(i, nullptr);
         }
     }
 }

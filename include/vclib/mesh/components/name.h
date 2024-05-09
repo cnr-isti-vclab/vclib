@@ -61,6 +61,7 @@ class Name :
             CompId::NAME,
             std::string,
             ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT>
 {
     using Base = Component<
@@ -68,6 +69,7 @@ class Name :
         CompId::NAME,
         std::string,
         ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT>;
 
 public:

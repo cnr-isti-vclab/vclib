@@ -69,7 +69,7 @@ concept HasQuality = comp::HasQuality<T>;
 template<typename T>
 concept HasOptionalQuality = comp::HasOptionalQuality<T>;
 template<typename T>
-concept HasVertexPointers = comp::HasVertexPointers<T>;
+concept HasVertexReferences = comp::HasVertexReferences<T>;
 
 /** @} */ // end of group
 
@@ -82,15 +82,15 @@ concept HasVertexPointers = comp::HasVertexPointers<T>;
  * The Edge concept is satisfied for a class E if ALL the following
  * sentences are true:
  * - The class E has the BitFlags component (or an equivalent one);
- * - The class E has the VertexPointers component (or a derivate);
- * - The number of vertices of the VertexPointers is 2.
+ * - The class E has the either VertexPointers or VertexIndices components;
+ * - The number of vertices of the VertexPointers/VertexIndices is 2.
  *
  * @ingroup edge_concepts
  */
 template<typename T>
-concept EdgeConcept =
-    ElementConcept<T> && T::ELEMENT_ID == ElemId::EDGE &&
-    edge::HasBitFlags<T> && edge::HasVertexPointers<T> && T::VERTEX_NUMBER == 2;
+concept EdgeConcept = ElementConcept<T> && T::ELEMENT_ID == ElemId::EDGE &&
+                      edge::HasBitFlags<T> && edge::HasVertexReferences<T> &&
+                      T::VERTEX_NUMBER == 2;
 
 } // namespace vcl
 

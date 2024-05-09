@@ -70,13 +70,12 @@ void setPlyFaceIndices(FaceType& f, MeshType& m, const std::vector<uint>& vids)
 
     if (!splitFace) { // classic load, no split needed
         uint i = 0;
-        for (auto& v : f.vertices()) {
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
             if (vids[i] >= m.vertexNumber()) {
                 throw vcl::MalformedFileException(
                     "Bad vertex index for face " + std::to_string(i));
             }
-            v = &m.vertex(vids[i]);
-            i++;
+            f.setVertex(i, vids[i]);
         }
     }
     else { // split needed

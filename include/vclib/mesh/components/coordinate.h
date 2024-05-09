@@ -62,6 +62,7 @@ class Coordinate :
             CompId::COORDINATE,
             P,
             ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT>
 {
     using Base = Component<
@@ -69,6 +70,7 @@ class Coordinate :
         CompId::COORDINATE,
         P,
         ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT>;
 
 public:

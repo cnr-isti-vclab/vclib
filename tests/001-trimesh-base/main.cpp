@@ -24,7 +24,13 @@
 #include <catch2/catch_test_macros.hpp>
 #include <vclib/meshes.h>
 
-TEMPLATE_TEST_CASE("Test empty TriMesh", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "Test empty TriMesh",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 
@@ -154,7 +160,7 @@ TEMPLATE_TEST_CASE("Test empty TriMesh", "", vcl::TriMesh, vcl::TriMeshf)
         REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
         REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
 
-        m.face(1).setVertex(2, &m.vertex(3));
+        m.face(1).setVertex(2, 3);
         m.deleteVertex(2);
         REQUIRE(m.vertexNumber() == 102);
         REQUIRE(m.vertexContainerSize() == 103);
@@ -173,5 +179,114 @@ TEMPLATE_TEST_CASE("Test empty TriMesh", "", vcl::TriMesh, vcl::TriMeshf)
         REQUIRE(m.face(1).vertex(0) == &m.vertex(0));
         REQUIRE(m.face(1).vertex(1) == &m.vertex(1));
         REQUIRE(m.face(1).vertex(2) == &m.vertex(2));
+    }
+
+    WHEN("Adding Faces with setVertices")
+    {
+        m.addVertices(5);
+        m.addFaces(4);
+
+        m.face(0).setVertices(0, 1, 2);
+        REQUIRE(m.face(0).vertexIndex(0) == 0);
+        REQUIRE(m.face(0).vertexIndex(1) == 1);
+        REQUIRE(m.face(0).vertexIndex(2) == 2);
+        REQUIRE(m.face(0).vertex(0) == &m.vertex(0));
+        REQUIRE(m.face(0).vertex(1) == &m.vertex(1));
+        REQUIRE(m.face(0).vertex(2) == &m.vertex(2));
+
+        m.face(1).setVertices(&m.vertex(2), &m.vertex(0), &m.vertex(1));
+        REQUIRE(m.face(1).vertexIndex(0) == 2);
+        REQUIRE(m.face(1).vertexIndex(1) == 0);
+        REQUIRE(m.face(1).vertexIndex(2) == 1);
+        REQUIRE(m.face(1).vertex(0) == &m.vertex(2));
+        REQUIRE(m.face(1).vertex(1) == &m.vertex(0));
+        REQUIRE(m.face(1).vertex(2) == &m.vertex(1));
+
+        std::list<uint> l1 = {4, 3, 1};
+        m.face(2).setVertices(l1);
+        REQUIRE(m.face(2).vertexIndex(0) == 4);
+        REQUIRE(m.face(2).vertexIndex(1) == 3);
+        REQUIRE(m.face(2).vertexIndex(2) == 1);
+        REQUIRE(m.face(2).vertex(0) == &m.vertex(4));
+        REQUIRE(m.face(2).vertex(1) == &m.vertex(3));
+        REQUIRE(m.face(2).vertex(2) == &m.vertex(1));
+
+        std::list<typename TriMesh::Vertex*> l2 = {
+            &m.vertex(2), &m.vertex(4), &m.vertex(3)};
+        m.face(3).setVertices(l2);
+        REQUIRE(m.face(3).vertexIndex(0) == 2);
+        REQUIRE(m.face(3).vertexIndex(1) == 4);
+        REQUIRE(m.face(3).vertexIndex(2) == 3);
+        REQUIRE(m.face(3).vertex(0) == &m.vertex(2));
+        REQUIRE(m.face(3).vertex(1) == &m.vertex(4));
+        REQUIRE(m.face(3).vertex(2) == &m.vertex(3));
+    }
+}
+
+TEMPLATE_TEST_CASE(
+    "Test a cube TriMesh",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
+{
+    using TriMesh = TestType;
+
+    TriMesh m;
+    using PointT = TriMesh::VertexType::CoordType;
+
+    m.addVertices(
+        PointT(-0.5, -0.5,  0.5),
+        PointT( 0.5, -0.5,  0.5),
+        PointT(-0.5,  0.5,  0.5),
+        PointT( 0.5,  0.5,  0.5),
+        PointT(-0.5,  0.5, -0.5),
+        PointT( 0.5,  0.5, -0.5),
+        PointT(-0.5, -0.5, -0.5),
+        PointT( 0.5, -0.5, -0.5));
+    m.reserveFaces(12);
+    m.addFace(0, 1, 2);
+    m.addFace(1, 3, 2);
+    m.addFace(2, 3, 4);
+    m.addFace(3, 5, 4);
+    m.addFace(4, 5, 6);
+    m.addFace(5, 7, 6);
+    m.addFace(6, 7, 0);
+    m.addFace(7, 1, 0);
+    m.addFace(1, 7, 3);
+    m.addFace(7, 5, 3);
+    m.addFace(5, 7, 6);
+    m.addFace(7, 5, 4);
+
+    REQUIRE(m.vertexNumber() == 8);
+    REQUIRE(m.faceNumber() == 12);
+
+    THEN("Test Vertex References queries")
+    {
+        REQUIRE(m.face(0).containsVertex(&m.vertex(0)) == true);
+        REQUIRE(m.face(0).containsVertex(&m.vertex(1)) == true);
+        REQUIRE(m.face(0).containsVertex(&m.vertex(2)) == true);
+        REQUIRE(m.face(0).containsVertex(&m.vertex(3)) == false);
+
+        REQUIRE(m.face(0).containsVertex((uint) 0) == true);
+        REQUIRE(m.face(0).containsVertex(1) == true);
+        REQUIRE(m.face(0).containsVertex(2) == true);
+        REQUIRE(m.face(0).containsVertex(3) == false);
+
+        REQUIRE(m.face(1).containsVertex(&m.vertex(1)) == true);
+        REQUIRE(m.face(1).containsVertex(&m.vertex(4)) == false);
+        REQUIRE(m.face(1).containsVertex(1) == true);
+        REQUIRE(m.face(1).containsVertex(4) == false);
+
+        REQUIRE(m.face(2).indexOfVertex(&m.vertex(0)) == vcl::UINT_NULL);
+        REQUIRE(m.face(2).indexOfVertex(&m.vertex(3)) == 1);
+        REQUIRE(m.face(2).indexOfVertex((uint)0) == vcl::UINT_NULL);
+        REQUIRE(m.face(2).indexOfVertex(4) == 2);
+
+        REQUIRE(m.face(3).indexOfEdge(&m.vertex(5), &m.vertex(4)) == 1);
+        REQUIRE(m.face(3).indexOfEdge(&m.vertex(4), &m.vertex(5)) == 1);
+        REQUIRE(m.face(3).indexOfEdge(4, 3) == 2);
+        REQUIRE(m.face(3).indexOfEdge(3, 4) == 2);
     }
 }

@@ -87,9 +87,17 @@ std::istringstream offTriCube()
 
 using Meshes  = std::pair<vcl::TriMesh, vcl::PolyMesh>;
 using Meshesf = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
+using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
 // Test to load off from a istringstream
-TEMPLATE_TEST_CASE("Load OFF cube from istringstream", "", Meshes, Meshesf)
+TEMPLATE_TEST_CASE(
+    "Load OFF cube from istringstream",
+    "",
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
@@ -131,7 +139,13 @@ TEMPLATE_TEST_CASE("Load OFF cube from istringstream", "", Meshes, Meshesf)
     }
 }
 
-TEMPLATE_TEST_CASE("Save OFF to a ostringstream", "", Meshes, Meshesf)
+TEMPLATE_TEST_CASE(
+    "Save OFF to a ostringstream",
+    "",
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;

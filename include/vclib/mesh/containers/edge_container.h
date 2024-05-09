@@ -150,8 +150,8 @@ public:
     uint addEdge(uint v0, uint v1)
     {
         uint eid = addEdge();
-        edge(eid).setVertex(0U, &Base::mParentMesh->vertex(v0));
-        edge(eid).setVertex(1U, &Base::mParentMesh->vertex(v1));
+        edge(eid).setVertex(0U, v0);
+        edge(eid).setVertex(1U, v1);
         return eid;
     }
 

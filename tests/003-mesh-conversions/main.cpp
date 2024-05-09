@@ -25,19 +25,24 @@
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
-using Meshes  = std::pair<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes         = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf        = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
+using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 
 TEMPLATE_TEST_CASE(
     "Mesh Conversions -The TextureDouble mesh loaded on TriMesh",
     "",
     Meshes,
-    Meshesf)
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
 
-    TriMesh tm = vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/TextureDouble.ply");
+    TriMesh tm =
+        vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/TextureDouble.ply");
 
     tm.template addCustomComponent<int>("cust_comp", 4);
     tm.template addPerVertexCustomComponent<float>("v_comp");
@@ -91,6 +96,7 @@ TEMPLATE_TEST_CASE(
 
             uint i = 0;
             for (const auto* pv : pf.vertices()) {
+                REQUIRE(pv->index() == tf.vertexIndex(i));
                 REQUIRE(pv->coord() == tf.vertex(i)->coord());
                 ++i;
             }
@@ -123,7 +129,9 @@ TEMPLATE_TEST_CASE(
     "Mesh Conversions - The polygonal cube mesh loaded on TriMesh",
     "",
     vcl::TriMesh,
-    vcl::TriMeshf)
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 
@@ -140,7 +148,9 @@ TEMPLATE_TEST_CASE(
     "Mesh Conversions - The polygonal cube mesh loaded on PolyMesh",
     "",
     Meshes,
-    Meshesf)
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;

@@ -87,6 +87,7 @@ class WedgeTexCoords :
             N,
             short,
             ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT,
             true>
 {
@@ -97,6 +98,7 @@ class WedgeTexCoords :
         N,
         short,
         ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT,
         true>;
 

@@ -38,7 +38,7 @@ struct CompId
         MARK,
         PRINCIPAL_CURVATURE,
         TEX_COORD,
-        VERTEX_PTRS,
+        VERTEX_REFERENCES,
         ADJACENT_EDGES,
         ADJACENT_FACES,
         ADJACENT_VERTICES,

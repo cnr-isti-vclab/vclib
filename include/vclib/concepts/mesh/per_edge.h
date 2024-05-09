@@ -154,7 +154,7 @@ concept HasPerEdgeQuality =
 template<typename MeshType>
 concept HasPerEdgeVertexPointers =
     HasEdges<MeshType> &&
-    vcl::edge::HasVertexPointers<typename MeshType::EdgeType>;
+    vcl::edge::HasVertexReferences<typename MeshType::EdgeType>;
 
 } // namespace vcl
 

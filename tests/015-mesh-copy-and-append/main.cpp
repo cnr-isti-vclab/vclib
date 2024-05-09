@@ -33,7 +33,11 @@ TEMPLATE_TEST_CASE(
     vcl::TriMesh,
     vcl::TriMeshf,
     vcl::PolyMesh,
-    vcl::PolyMeshf)
+    vcl::PolyMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf,
+    vcl::PolyMeshIndexed,
+    vcl::PolyMeshIndexedf)
 {
     using Mesh = TestType;
 

@@ -32,7 +32,9 @@ TEMPLATE_TEST_CASE(
     "Test Custom Components and Handles",
     "",
     vcl::TriMesh,
-    vcl::TriMeshf)
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 

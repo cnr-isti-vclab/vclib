@@ -28,70 +28,70 @@
 
 namespace vcl {
 
-template<typename ScalarType>
+template<typename ScalarType, bool INDEXED>
 class TriEdgeMeshT;
 
 } // namespace vcl
 
 namespace vcl::triedgemesh {
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Vertex;
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Face;
 
-template<typename Scalar>
+template<typename Scalar, bool INDEXED>
 class Edge;
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Vertex :
         public vcl::Vertex<
-            TriEdgeMeshT<Scalar>,
+            TriEdgeMeshT<Scalar, I>,
             vert::BitFlags,
             vert::Coordinate3<Scalar>,
             vert::Normal3<Scalar>,
-            vert::OptionalColor<Vertex<Scalar>>,
-            vert::OptionalQuality<Scalar, Vertex<Scalar>>,
-            vert::OptionalAdjacentEdges<Edge<Scalar>, Vertex<Scalar>>,
-            vert::OptionalAdjacentFaces<Face<Scalar>, Vertex<Scalar>>,
-            vert::OptionalAdjacentVertices<Vertex<Scalar>>,
-            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar>>,
-            vert::OptionalTexCoord<Scalar, Vertex<Scalar>>,
-            vert::OptionalMark<Vertex<Scalar>>,
-            vert::CustomComponents<Vertex<Scalar>>>
+            vert::OptionalColor<Vertex<Scalar, I>>,
+            vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalAdjacentEdges<I, Edge<Scalar, I>, Vertex<Scalar, I>>,
+            vert::OptionalAdjacentFaces<I, Face<Scalar, I>, Vertex<Scalar, I>>,
+            vert::OptionalAdjacentVertices<I, Vertex<Scalar, I>>,
+            vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
+            vert::OptionalMark<Vertex<Scalar, I>>,
+            vert::CustomComponents<Vertex<Scalar, I>>>
 {
 };
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Face :
         public vcl::Face<
-            TriEdgeMeshT<Scalar>,
+            TriEdgeMeshT<Scalar, I>,
             face::TriangleBitFlags,
-            face::TriangleVertexPtrs<Vertex<Scalar>>,
+            face::TriangleVertexRefs<I, Vertex<Scalar, I>, Face<Scalar, I>>,
             face::Normal3<Scalar>,
-            face::OptionalColor<Face<Scalar>>,
-            face::OptionalQuality<Scalar, Face<Scalar>>,
-            face::OptionalAdjacentEdges<Edge<Scalar>, Face<Scalar>>,
-            face::OptionalAdjacentTriangles<Face<Scalar>>,
-            face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar>>,
-            face::OptionalMark<Face<Scalar>>,
-            face::CustomComponents<Face<Scalar>>>
+            face::OptionalColor<Face<Scalar, I>>,
+            face::OptionalQuality<Scalar, Face<Scalar, I>>,
+            face::OptionalAdjacentTriangles<I, Face<Scalar, I>>,
+            face::OptionalAdjacentEdges<I, Edge<Scalar, I>, Face<Scalar, I>>,
+            face::OptionalTriangleWedgeTexCoords<Scalar, Face<Scalar, I>>,
+            face::OptionalMark<Face<Scalar, I>>,
+            face::CustomComponents<Face<Scalar, I>>>
 {
 };
 
-template<typename Scalar>
+template<typename Scalar, bool I>
 class Edge :
         public vcl::Edge<
-            TriEdgeMeshT<Scalar>,
+            TriEdgeMeshT<Scalar, I>,
             edge::BitFlags,
-            edge::VertexPointers<Vertex<Scalar>>,
-            edge::OptionalColor<Edge<Scalar>>,
-            edge::OptionalQuality<Scalar, Edge<Scalar>>,
-            edge::OptionalAdjacentEdges<Edge<Scalar>>,
-            edge::OptionalAdjacentFaces<Face<Scalar>, Edge<Scalar>>,
-            edge::OptionalMark<Edge<Scalar>>,
-            edge::CustomComponents<Edge<Scalar>>>
+            edge::VertexReferences<I, Vertex<Scalar, I>, Edge<Scalar, I>>,
+            edge::OptionalColor<Edge<Scalar, I>>,
+            edge::OptionalQuality<Scalar, Edge<Scalar, I>>,
+            edge::OptionalAdjacentEdges<I, Edge<Scalar, I>>,
+            edge::OptionalAdjacentFaces<I, Face<Scalar, I>, Edge<Scalar, I>>,
+            edge::OptionalMark<Edge<Scalar, I>>,
+            edge::CustomComponents<Edge<Scalar, I>>>
 {
 };
 
@@ -105,12 +105,12 @@ namespace vcl {
  * @tparam Scalar: The scalar type used for the mesh.
  * @ingroup meshes
  */
-template<typename Scalar = double>
+template<typename Scalar, bool INDEXED>
 class TriEdgeMeshT :
         public vcl::Mesh<
-            mesh::VertexContainer<triedgemesh::Vertex<Scalar>>,
-            mesh::FaceContainer<triedgemesh::Face<Scalar>>,
-            mesh::EdgeContainer<triedgemesh::Edge<Scalar>>,
+            mesh::VertexContainer<triedgemesh::Vertex<Scalar, INDEXED>>,
+            mesh::FaceContainer<triedgemesh::Face<Scalar, INDEXED>>,
+            mesh::EdgeContainer<triedgemesh::Edge<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Color,
             mesh::Mark,
@@ -125,17 +125,35 @@ public:
 
 /**
  * @brief The TriEdgeMeshf class is a specialization of TriEdgeMeshT that uses
- * `float` as scalar.
+ * `float` as scalar and pointers to store vertices of faces/edges and adjacency
+ * information.
  * @ingroup meshes
  */
-using TriEdgeMeshf = TriEdgeMeshT<float>;
+using TriEdgeMeshf = TriEdgeMeshT<float, false>;
 
 /**
  * @brief The TriEdgeMesh class is a specialization of TriEdgeMeshT that uses
- * `double` as scalar.
+ * `double` as scalar and pointers to store vertices of faces/edges and
+ * adjacency information.
  * @ingroup meshes
  */
-using TriEdgeMesh = TriEdgeMeshT<double>;
+using TriEdgeMesh = TriEdgeMeshT<double, false>;
+
+/**
+ * @brief The TriEdgeMeshIndexedf class is a specialization of TriEdgeMeshT that
+ * uses `float` as scalar and indices to store vertices of faces/edges and
+ * adjacency information.
+ * @ingroup meshes
+ */
+using TriEdgeMeshIndexedf = TriEdgeMeshT<float, true>;
+
+/**
+ * @brief The TriEdgeMeshIndexed class is a specialization of TriEdgeMeshT that
+ * uses `double` as scalar and indices to store vertices of faces/edges and
+ * adjacency information.
+ * @ingroup meshes
+ */
+using TriEdgeMeshIndexed = TriEdgeMeshT<double, true>;
 
 } // namespace vcl
 

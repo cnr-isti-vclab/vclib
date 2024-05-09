@@ -33,7 +33,13 @@
 
 #include "mesh.h"
 
-TEMPLATE_TEST_CASE("Import TriMesh from VCG", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "Import TriMesh from VCG",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 
@@ -203,7 +209,9 @@ TEMPLATE_TEST_CASE(
     "Import PolyMesh from VCG",
     "",
     vcl::PolyMesh,
-    vcl::PolyMeshf)
+    vcl::PolyMeshf,
+    vcl::PolyMeshIndexed,
+    vcl::PolyMeshIndexedf)
 {
     using PolyMesh = TestType;
 
@@ -232,7 +240,13 @@ TEMPLATE_TEST_CASE(
     }
 }
 
-TEMPLATE_TEST_CASE("Export TriMesh to VCG", "", vcl::TriMesh, vcl::TriMeshf)
+TEMPLATE_TEST_CASE(
+    "Export TriMesh to VCG",
+    "",
+    vcl::TriMesh,
+    vcl::TriMeshf,
+    vcl::TriMeshIndexed,
+    vcl::TriMeshIndexedf)
 {
     using TriMesh = TestType;
 

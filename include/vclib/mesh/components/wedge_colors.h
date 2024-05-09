@@ -78,6 +78,7 @@ class WedgeColors :
             N,
             void,
             ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT,
             true>
 {
@@ -88,6 +89,7 @@ class WedgeColors :
         N,
         void,
         ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT,
         true>;
 

@@ -84,6 +84,7 @@ class Mark :
             CompId::MARK,
             int,
             ParentElemType,
+            !std::is_same_v<ParentElemType, void>,
             OPT>
 {
     using Base = Component<
@@ -91,6 +92,7 @@ class Mark :
         CompId::MARK,
         int,
         ParentElemType,
+        !std::is_same_v<ParentElemType, void>,
         OPT>;
 
 public:

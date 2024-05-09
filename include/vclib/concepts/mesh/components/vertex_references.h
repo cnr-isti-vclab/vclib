@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
 #include <vector>
 
@@ -32,21 +32,24 @@
 namespace vcl::comp {
 
 /**
- * @brief HasVertexPointers concept is satisfied only if a Element class
+ * @brief HasVertexReferences concept is satisfied only if a Element class
  * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to an VertexPointers component of
+ * types and member functions allow to access to a VertexReferences component of
  * a given element.
  *
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasVertexPointers = requires (
+concept HasVertexReferences = requires (
     T                                    o,
     const T&                             co,
     typename T::VertexType               v,
-    std::vector<typename T::VertexType*> vec) {
+    std::vector<typename T::VertexType*> vecv,
+    std::vector<uint> vecu) {
     // clang-format off
     T::VERTEX_NUMBER;
+    typename T::VertexReferences;
+
     typename T::VertexType;
     typename T::VertexIterator;
     typename T::ConstVertexIterator;
@@ -61,20 +64,29 @@ concept HasVertexPointers = requires (
     { co.vertexIndexMod(int()) } -> std::same_as<uint>;
 
     { o.setVertex(uint(), &v) } -> std::same_as<void>;
+    { o.setVertex(uint(), uint()) } -> std::same_as<void>;
     { o.setVertex(typename T::VertexIterator(), &v) } -> std::same_as<void>;
+    { o.setVertex(typename T::VertexIterator(), uint()) } -> std::same_as<void>;
     { o.setVertex(typename T::ConstVertexIterator(), &v) } ->
+        std::same_as<void>;
+    { o.setVertex(typename T::ConstVertexIterator(), uint()) } ->
         std::same_as<void>;
     { o.setVertex(typename T::ConstVertexIndexIterator(), &v) } ->
         std::same_as<void>;
+    { o.setVertex(typename T::ConstVertexIndexIterator(), uint()) } ->
+        std::same_as<void>;
     { o.setVertexMod(int(), &v) } -> std::same_as<void>;
-    { o.setVertices(vec) } -> std::same_as<void>;
+    { o.setVertexMod(int(), uint()) } -> std::same_as<void>;
+    { o.setVertices(vecv) } -> std::same_as<void>;
+    { o.setVertices(vecu) } -> std::same_as<void>;
 
     { co.containsVertex(&v) } -> std::same_as<bool>;
+    { co.containsVertex(uint()) }-> std::same_as<bool>;
     { co.indexOfVertex(&v) } -> std::same_as<uint>;
+    { co.indexOfVertex(uint()) } -> std::same_as<uint>;
     { co.indexOfEdge(&v, &v) } -> std::same_as<uint>;
+    { co.indexOfEdge(uint(), uint()) } -> std::same_as<uint>;
 
-    { o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
-    { o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
     { co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
     { co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
 
@@ -93,4 +105,4 @@ concept HasVertexPointers = requires (
 
 } // namespace vcl::comp
 
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_POINTERS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
