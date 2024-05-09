@@ -51,7 +51,6 @@ class PointerFromIndexIterator
     using PE = std::conditional_t<CNST, const ParentElement*, ParentElement*>;
 
     Iterator mIt;
-    VT* mCurrent = nullptr;
     PE parentElement = nullptr;
 
 public:
@@ -71,7 +70,6 @@ public:
     PointerFromIndexIterator(Iterator it, PE pElem) :
             mIt(it), parentElement(pElem)
     {
-        updateCurrent();
     }
 
     /**
@@ -92,13 +90,18 @@ public:
                              ElementType,
                              ParentElement,
                              false>& oi) requires (CNST == true)
-            :
-            mIt(oi.mIt), mCurrent(oi.mCurrent),
-            parentElement(oi.parentElement) {};
+            : mIt(oi.mIt), parentElement(oi.parentElement) {};
 
-    value_type operator*() const { return mCurrent; }
+    value_type operator*() const
+    {
+        uint e = *mIt;
+        if (e == UINT_NULL) [[unlikely]]
+            return nullptr;
+        else
+            return &(parentElement->parentMesh()->template element<ELEM_ID>(e));
+    }
 
-    pointer operator->() const { return &mCurrent; }
+    auto operator->() const { return FakePointerWithValue(**this); }
 
     bool operator==(const PointerFromIndexIterator& oi) const
     {
@@ -113,7 +116,6 @@ public:
     PointerFromIndexIterator& operator++()
     {
         ++mIt;
-        updateCurrent();
         return *this;
     }
 
@@ -121,14 +123,12 @@ public:
     {
         auto it = *this;
         ++mIt;
-        updateCurrent();
         return it;
     }
 
     PointerFromIndexIterator& operator--()
     {
         --mIt;
-        updateCurrent();
         return *this;
     }
 
@@ -136,21 +136,18 @@ public:
     {
         auto it = *this;
         --mIt;
-        updateCurrent();
         return it;
     }
 
     PointerFromIndexIterator& operator+=(difference_type n)
     {
         mIt += n;
-        updateCurrent();
         return *this;
     }
 
     PointerFromIndexIterator& operator-=(difference_type n)
     {
         mIt -= n;
-        updateCurrent();
         return *this;
     }
 
@@ -193,17 +190,6 @@ public:
     bool operator>=(const PointerFromIndexIterator& oi) const
     {
         return mIt >= oi.mIt;
-    }
-
-private:
-    void updateCurrent()
-    {
-        uint e = *mIt;
-        if (e == UINT_NULL) [[unlikely]]
-            mCurrent = nullptr;
-        else
-            mCurrent =
-                &(parentElement->parentMesh()->template element<ELEM_ID>(e));
     }
 };
 
