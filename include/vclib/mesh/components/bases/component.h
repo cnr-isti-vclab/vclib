@@ -76,18 +76,15 @@ namespace vcl::comp {
  * Moreover, if the component has at least one ReferencedType, it must define
  * the following protected member functions:
  *
- * // TODO: RENAME THE FUNCTIONS
- *
  * ```cpp
- * void updatePointers(const PointedType* oldBase, const PointedType* newBase);
+ * void updateReferences(const PointedType* oldBase, std::size_t offset = 0);
  *
- * void updatePointers(
- *     const PointedType* base, const std::vector<uint>& newIndices);
+ * void updateReferences(const std::vector<uint>& newIndices);
  * ```
  *
- * If your component stores a Container of pointers, look for the @ref
- * PointersContainerComponent class, that provides the implementation of these
- * functions.
+ * If your component stores a Container of pointers or indices, look for the
+ * @ref PointersContainerComponent or @ref IndicesContainerComponent classes,
+ * that provide the implementation of these functions.
  *
  * For further details , please refer to the page @ref implement_component page.
  *

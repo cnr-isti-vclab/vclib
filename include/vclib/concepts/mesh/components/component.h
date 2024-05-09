@@ -143,22 +143,19 @@ class ReferencesComponentTriggerer
  *
  * Each component that store pointers/indices of a type R, must:
  *
- * TODO: RENAME FUNCTIONS
- *
  * - inherit from ReferencesComponentTriggerer<R> (automatic from Component
  *   class)
  * - provide the following **protected** member functions:
- *   - void updatePointers(const R* oldBase, const R* newBase);
+ *   - void updateReferences(const R* oldBase, std::size_t offset = 0);
  *
- *     the function updates the stored R pointers having the old base of the
- *     container and the new base of the container.
+ *     the function updates the stored R pointers/indices having the old base
+ *     of the container (needed to update pointers) and the possible non-zero
+ *     offset (used for append operations).
  *
- *   - void updatePointers(
- *         const R* base, const std::vector<uint>& newIndices);
+ *   - void updateReferences(const std::vector<uint>& newIndices);
  *
- *     the function updates the stored R pointers having the base of the
- *     container, and, for each old element index, its new index in the
- *     container.
+ *     the function updates the stored R pointers/indices having, for each old
+ *     element index, its new index in the container.
  */
 template<typename T, typename R>
 concept HasReferencesOfType =

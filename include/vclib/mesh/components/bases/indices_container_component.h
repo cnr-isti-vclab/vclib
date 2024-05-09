@@ -104,8 +104,6 @@ class IndicesContainerComponent :
         OPT,
         TTVN,
         Elem>;
-protected:
-    using Base::container;
 
 public:
     IndicesContainerComponent()
@@ -122,55 +120,6 @@ public:
         }
     }
 
-protected:
-    using ConstIndexIterator = typename Base::ConstIterator;
-    using Iterator =
-        PointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
-    using ConstIterator =
-        ConstPointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
-
-    /*
-     * This member function is called when we need to update the pointers in
-     * this container after a reallocation (the pointer of the first element of
-     * the container is changed from oldBase to newBase).
-     *
-     * It is called mainly when a container of elements gets reallocated, but
-     * also when an append operation is performed (offset != 0).
-     */
-    void updatePointers(
-        const Elem*,
-        const Elem*,
-        std::size_t offset = 0)
-    {
-        auto& baseContainer = Base::container();
-
-        for (uint j = 0; j < baseContainer.size(); ++j) {
-            if (baseContainer.at(j) != UINT_NULL) {
-                baseContainer.at(j) += offset;
-            }
-        }
-    }
-
-    /*
-     * This member function is called when we need to update the pointers or
-     * indices in this containers, usually after a compaction of the container
-     * (but not always).
-     *
-     * In this case, indices must be updated, because the indices of the
-     * elements have changed.
-     */
-    void updatePointers(const Elem*, const std::vector<uint>& newIndices)
-    {
-        auto& baseContainer = Base::container();
-
-        for (uint j = 0; j < baseContainer.size(); ++j) {
-            if (baseContainer.at(j) != UINT_NULL) {
-                baseContainer.at(j) = newIndices.at(baseContainer.at(j));
-            }
-        }
-    }
-
-public:
     /**
      * @brief Exposes the indices of the container.
      *
@@ -183,6 +132,61 @@ public:
     const auto& indices() const requires std::is_same_v<T, Elem>
     {
         return container();
+    }
+
+protected:
+    using Base::container;
+
+    using ConstIndexIterator = typename Base::ConstIterator;
+    using Iterator =
+        PointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
+    using ConstIterator =
+        ConstPointerFromIndexIterator<ConstIndexIterator, Elem, ParentElemType>;
+
+    /*
+     * This member function is called when we need to update the indices in
+     * this container after a reallocation (the pointer of the first element of
+     * the container of Elem is changed).
+     *
+     * With respect to the updateReferences function of the
+     * PointersContainerComponent, we need to do something only when offset is
+     * different from 0, because in this case the indices of the elements have
+     * changed (append case).
+     *
+     * When we append elements, this function is called only on the elements
+     * that have been appended, and the offset is the number of referenced
+     * elements that were in the container before the append operation.
+     */
+    void updateReferences(const Elem*, std::size_t offset = 0)
+    {
+        if (offset != 0) {
+            auto& baseContainer = Base::container();
+
+            for (uint j = 0; j < baseContainer.size(); ++j) {
+                if (baseContainer.at(j) != UINT_NULL) {
+                    baseContainer.at(j) += offset;
+                }
+            }
+        }
+    }
+
+    /*
+     * This member function is called when we need to update the pointers or
+     * indices in this containers, usually after a compaction of the container
+     * (but not always).
+     *
+     * In this case, indices must be updated, because the indices of the
+     * elements have changed.
+     */
+    void updateReferences(const std::vector<uint>& newIndices)
+    {
+        auto& baseContainer = Base::container();
+
+        for (uint j = 0; j < baseContainer.size(); ++j) {
+            if (baseContainer.at(j) != UINT_NULL) {
+                baseContainer.at(j) = newIndices.at(baseContainer.at(j));
+            }
+        }
     }
 };
 

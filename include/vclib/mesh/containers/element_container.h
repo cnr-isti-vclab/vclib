@@ -872,7 +872,7 @@ private:
                 {
                     T& e = element(i);
                     if (!e.deleted()) {
-                        e.Comp::updatePointers(oldBase, newBase, offset);
+                        e.Comp::updateReferences(oldBase, offset);
                     }
                 }
             };
@@ -897,13 +897,13 @@ private:
             if constexpr (comp::HasOptionalReferencesOfType<Comp, ElPtr>) {
                 if (isOptionalComponentEnabled<Comp>()) {
                     for (T& e : elements()) {
-                        e.Comp::updatePointers(base, newIndices);
+                        e.Comp::updateReferences(newIndices);
                     }
                 }
             }
             else {
                 for (T& e : elements()) {
-                    e.Comp::updatePointers(base, newIndices);
+                    e.Comp::updateReferences(newIndices);
                 }
             }
         }

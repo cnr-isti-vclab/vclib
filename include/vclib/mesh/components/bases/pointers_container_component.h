@@ -105,6 +105,23 @@ class PointersContainerComponent :
         TTVN,
         Elem>;
 
+public:
+    /**
+     * @brief Exposes the pointers in the container as a View.
+     *
+     * This function is templated in order to force the user to specify the type
+     * of the pointers that are stored in the container.
+     * This is necessary when a component that stores pointers to different
+     * types of elements is used.
+     */
+    template<typename T>
+    auto pointers() const requires std::is_same_v<T, Elem>
+    {
+        return vcl::View(
+            ConstIterator(Base::container().begin()),
+            ConstIterator(Base::container().end()));
+    }
+
 protected:
     using Base::container;
 
@@ -115,7 +132,7 @@ protected:
     /*
      * This member function is called when we need to update the pointers in
      * this container after a reallocation (the pointer of the first element of
-     * the container is changed from oldBase to newBase).
+     * the container of Elem is changed).
      *
      * This is necessary when, for example, the original container of Elements
      * has been reallocated. When this happens, the all the Elements have been
@@ -124,11 +141,11 @@ protected:
      * we need to update them.
      *
      * To update them, we need to know the oldBase (the pointer to the first
-     * Element of the reallocated Container before the reallocation) and the
-     * newBase (the pointer to the first Element of the reallocated Container
-     * after the reallocation. We can then compute, for each pointer, the
-     * difference w.r.t. the first element of the Container, and update the the
-     * pointer accordingly using the newBase.
+     * Element of the reallocated Container before the reallocation). We can
+     * then compute, for each pointer, the difference w.r.t. the old address of
+     * the first element of the Container, and update the the pointer
+     * accordingly using the new base of the Container, which is computed
+     * trough the parent mesh.
      *
      * When we perform an append operation, we need to update the pointers
      * taking into account also the offset: when we append a new element in a
@@ -137,11 +154,10 @@ protected:
      * container BEFORE the append operation, and this becomes the offset to
      * be applied to the pointers of the newly appended elements.
      */
-    void updatePointers(
-        const Elem* oldBase,
-        const Elem* newBase,
-        std::size_t offset = 0)
+    void updateReferences(const Elem* oldBase, std::size_t offset = 0)
     {
+        const Elem* newBase = baseOfElemContainer();
+
         auto& baseContainer = Base::container();
 
         for (uint j = 0; j < baseContainer.size(); ++j)
@@ -149,9 +165,9 @@ protected:
             if (baseContainer.at(j) != nullptr) {
                 size_t diff =
                     baseContainer.at(j) - oldBase; // offset w.r.t. the old base
-                baseContainer.at(j) =
-                    (Elem*) newBase + diff +
-                    offset; // update the pointer using newBase
+
+                // update the pointer using newBase
+                baseContainer.at(j) = (Elem*) newBase + diff + offset;
             }
         }
     }
@@ -168,8 +184,10 @@ protected:
      * the new position in the container (UINT_NULL if the element has been
      * removed and must be left unreferenced).
      */
-    void updatePointers(const Elem* base, const std::vector<uint>& newIndices)
+    void updateReferences(const std::vector<uint>& newIndices)
     {
+        const Elem* base = baseOfElemContainer();
+
         auto& baseContainer = Base::container();
 
         for (uint j = 0; j < baseContainer.size(); ++j) {
@@ -185,21 +203,12 @@ protected:
         }
     }
 
-public:
-    /**
-     * @brief Exposes the pointers in the container as a View.
-     *
-     * This function is templated in order to force the user to specify the type
-     * of the pointers that are stored in the container.
-     * This is necessary when a component that stores pointers to different
-     * types of elements is used.
-     */
-    template<typename T>
-    auto pointers() const requires std::is_same_v<T, Elem>
+private:
+    const Elem* baseOfElemContainer() const
     {
-        return vcl::View(
-            ConstIterator(Base::container().begin()),
-            ConstIterator(Base::container().end()));
+        return &(Base::parentElement()
+                    ->parentMesh()
+                    ->template element<Elem::ELEMENT_ID>(0));
     }
 };
 
