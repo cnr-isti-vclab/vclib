@@ -43,6 +43,10 @@ TEMPLATE_TEST_CASE(
     tm.template addPerVertexCustomComponent<float>("v_comp");
     tm.deleteFace(3);
 
+    for (auto& v : tm.vertices()) {
+        v.template customComponent<float>("v_comp") = 3.14f;
+    }
+
     THEN("The mesh has 8 vertices, 4 triangles, per face wedge texcoords")
     {
         REQUIRE(tm.vertexNumber() == 8);
@@ -53,6 +57,10 @@ TEMPLATE_TEST_CASE(
         REQUIRE(!tm.template isCustomComponentOfType<uint>("cust_comp"));
         REQUIRE(tm.template customComponent<int>("cust_comp") == 4);
         REQUIRE(tm.hasPerVertexCustomComponent("v_comp"));
+
+        for (const auto& v : tm.vertices()) {
+            REQUIRE(v.template customComponent<float>("v_comp") == 3.14f);
+        }
     }
 
     PolyMesh pm;
@@ -104,6 +112,10 @@ TEMPLATE_TEST_CASE(
         REQUIRE(pm.template customComponent<int>("cust_comp") == 4);
         REQUIRE(pm.hasPerVertexCustomComponent("v_comp"));
         REQUIRE(pm.template isPerVertexCustomComponentOfType<float>("v_comp"));
+
+        for (const auto& v : pm.vertices()) {
+            REQUIRE(v.template customComponent<float>("v_comp") == 3.14f);
+        }
     }
 }
 
