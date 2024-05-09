@@ -1028,12 +1028,12 @@ private:
     void appendVerticalComponent(const ElementContainer<T>& other)
     {
         uint on = other.elementNumber();
-        uint n = elementContainerSize() - on;
+        uint n  = elementContainerSize() - on;
 
-        if (mVerticalCompVecTuple.template isComponentEnabled<Comp>()
-            && other.mVerticalCompVecTuple.template isComponentEnabled<Comp>())
+        if (mVerticalCompVecTuple.template isComponentEnabled<Comp>() &&
+            other.mVerticalCompVecTuple.template isComponentEnabled<Comp>())
         {
-            auto& vc = mVerticalCompVecTuple.template vector<Comp>();
+            auto&       vc = mVerticalCompVecTuple.template vector<Comp>();
             const auto& ovc =
                 other.mVerticalCompVecTuple.template vector<Comp>();
 
@@ -1047,7 +1047,7 @@ private:
     {
         if constexpr (comp::HasCustomComponents<T>) {
             uint on = other.elementNumber();
-            uint n = elementContainerSize() - on;
+            uint n  = elementContainerSize() - on;
 
             std::vector<std::string> ccNames =
                 mCustomCompVecMap.allComponentNames();
@@ -1055,7 +1055,7 @@ private:
             for (const std::string& name : ccNames) {
                 for (uint i = 0; i < on; ++i) {
                     mCustomCompVecMap.importSameCustomComponentFrom(
-                        n+ i, i, name, other.mCustomCompVecMap);
+                        n + i, i, name, other.mCustomCompVecMap);
                 }
             }
         }

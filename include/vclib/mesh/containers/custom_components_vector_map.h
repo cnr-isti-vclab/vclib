@@ -325,15 +325,14 @@ public:
     }
 
     void importSameCustomComponentFrom(
-        uint thisPos,
-        uint otherPos,
-        const std::string& compName,
+        uint                                   thisPos,
+        uint                                   otherPos,
+        const std::string&                     compName,
         const CustomComponentsVectorMap<true>& other)
     {
         if (other.componentExists(compName) && componentExists(compName)) {
             if (other.componentType(compName) == componentType(compName)) {
-                mMap.at(compName)[thisPos] =
-                    other.mMap.at(compName)[otherPos];
+                mMap.at(compName)[thisPos] = other.mMap.at(compName)[otherPos];
             }
         }
     }

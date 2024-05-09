@@ -24,8 +24,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <vclib/algorithms/mesh/create.h>
 #include <vclib/algorithms/mesh/update/normal.h>
-#include <vclib/meshes.h>
 #include <vclib/mesh/utils/mesh_check.h>
+#include <vclib/meshes.h>
 
 TEMPLATE_TEST_CASE(
     "Copy a Mesh",
@@ -102,8 +102,6 @@ TEMPLATE_TEST_CASE(
 
         THEN("Vertices are copied correctly")
         {
-
-
             for (size_t i = 0; i < m1vn; ++i) {
                 REQUIRE(m3.vertex(i).coord() == m1.vertex(i).coord());
                 REQUIRE(m3.vertex(i).normal() == m1.vertex(i).normal());
