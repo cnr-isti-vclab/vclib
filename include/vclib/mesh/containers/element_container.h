@@ -180,7 +180,7 @@ protected:
 
         if (oldB != newB) {
             setParentMeshPointers(mParentMesh);
-            mParentMesh->updateAllPointers(oldB, newB);
+            mParentMesh->updateAllReferences(oldB);
         }
 
         return mElemVec.size() - 1;
@@ -213,7 +213,7 @@ protected:
 
         if (oldB != newB) {
             setParentMeshPointers(mParentMesh);
-            mParentMesh->updateAllPointers(oldB, newB);
+            mParentMesh->updateAllReferences(oldB);
         }
 
         return baseId;
@@ -286,7 +286,7 @@ protected:
 
         if (oldB != newB) {
             setParentMeshPointers(mParentMesh);
-            mParentMesh->updateAllPointers(oldB, newB);
+            mParentMesh->updateAllReferences(oldB);
         }
     }
 
@@ -765,9 +765,7 @@ protected:
      */
     void updateElementIndices(const std::vector<uint>& newIndices)
     {
-        T* base = mElemVec.data();
-
-        mParentMesh->updateAllPointers(base, newIndices);
+        mParentMesh->template updateAllReferences<T>(newIndices);
     }
 
     template<typename OtherMesh>

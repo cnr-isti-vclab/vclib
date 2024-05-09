@@ -318,7 +318,7 @@ public:
      * @brief Compacts all the containers of the mesh.
      *
      * Removes all the deleted elements from each container, compacting the
-     * the containers and then updating automatically all the pointers.
+     * the containers and then updating automatically all the pointers/indices.
      */
     void compact() { (compactContainer<Args>(), ...); }
 
@@ -394,7 +394,7 @@ public:
     void append(const Mesh& m)
     {
         // for each container of this mesh, save its size
-        // will need it to update all the pointers of this mesh
+        // will need it to update all the pointers/indices of this mesh
         constexpr uint N_CONTAINERS =
             NumberOfTypes<typename Mesh<Args...>::Containers>::value;
         std::array<std::size_t, N_CONTAINERS> sizes =
@@ -408,7 +408,7 @@ public:
         // call the append function for each container
         (appendContainer<Args>(m), ...);
 
-        // update all the pointers contained on each container
+        // update all the pointers/indices contained on each container
         (updatePointersOfContainerTypeAfterAppend<Args>(*this, bases, sizes),
          ...);
     }
@@ -434,8 +434,7 @@ public:
         // Call, for each Container and Component of the mesh, its importFrom
         // function. In case of containers, it first creates the same number of
         // elements in the container, and then calls the importFrom function for
-        // each new element. Pointers are not managed here, since they need
-        // additional parameters to be imported
+        // each new element.
 
         (Args::importFrom(m), ...);
 
@@ -449,7 +448,7 @@ public:
             //
             // Generally speaking, Polygon meshes can import from any other type
             // of mesh. We need to take care when this mesh has static vertex
-            // pointers number in the face container (VERTEX_NUMBER >= 3).
+            // references number in the face container (VERTEX_NUMBER >= 3).
             //
             // The follwing case don't need to be managed:
             // - import polygon mesh from triangle mesh
@@ -757,7 +756,7 @@ public:
      * @warning Any pointer to deleted Elements in the Mesh will be left
      * unchanged, and therefore will point to invalid Elements. This means that
      * if you call this member function with a lower number of Elements, you'll
-     * need to manually manage the pointers to the deleted Elements.
+     * need to manually manage the pointers/indices to the deleted Elements.
      *
      * @tparam ELEM_ID: the ID of the element.
      * @param[in] n: the new size of the container in the mesh.
@@ -1483,9 +1482,9 @@ protected:
     }
 
     template<ElementConcept Element>
-    void updateAllPointers(const Element* oldBase, const Element* newBase)
+    void updateAllReferences(const Element* oldBase)
     {
-        if (oldBase != nullptr && oldBase != newBase)
+        if (oldBase != nullptr)
             (updateReferences<Args>(oldBase), ...);
     }
 
@@ -1511,7 +1510,7 @@ protected:
 
     // this additional function is necessary because otherwise msvc jumps
     // totally the pack expansion if called directly in the function
-    // updatePointersOfContainerTypeAfterAppend
+    // updateReferencesOfContainerTypeAfterAppend
     template<typename Element, std::size_t N, typename... A>
     void updateReferences(
         const Element* oldBase,
@@ -1542,9 +1541,7 @@ protected:
     }
 
     template<ElementConcept Element>
-    void updateAllPointers(
-        const Element*           base,
-        const std::vector<uint>& newIndices)
+    void updateAllReferences(const std::vector<uint>& newIndices)
     {
         (updateReferences<Args, Element>(newIndices), ...);
     }
@@ -1675,14 +1672,22 @@ private:
      * This function *is static*, and is generally called for each container of
      * the mesh, that is the template argument Cont.
      *
-     * In general, for each container, we need to update all the pointers
+     * In general, for each container, we need to update all the references
      * contained in it, that may be of any element of the mesh (example: in the
-     * VertexContainer there could be Vertex pointers, but also Face or Edge
-     * pointers).
+     * VertexContainer there could be Vertex references, but also Face or Edge
+     * references).
      *
      * Here in this function, we loop into the containers of the Mesh m using
-     * pack expansion, and we use the Cont type to choose which pointers type we
-     * are updating.
+     * pack expansion, and we use the Cont type to choose which references type
+     * we are updating:
+     *
+     * ```pseudo
+     * for each Element E in Mesh:
+     *    Cont::updateReferencesToElement(E)
+     * ```
+     *
+     * The foreach loop is done using pack expansion inside the last call
+     * m.updateReferences, trough the argument ContainerWrapper
      *
      * bases contains the old bases (the ones of the other mesh) for each
      * container.
@@ -1734,7 +1739,7 @@ private:
 
             using ContainerWrapper = TypeWrapper<A...>;
 
-            // for each Container A in m, we update the pointers of ElType.
+            // for each Container A in m, we update the references of ElType.
             // old base is contained in the array bases, the new base is the
             // base of the container
             m.updateReferences(
