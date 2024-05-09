@@ -278,7 +278,7 @@ public:
         // pointers in this mesh. Each pointer of oth that was copied in this
         // mesh, will be updated computing its offset wrt the base of oth, and
         // then adding that offset to the new base pointer of this mesh
-        (updatePointersOfContainerType<Args>(*this, othBases), ...);
+        (updateReferencesOfContainerType<Args>(*this, othBases), ...);
     }
 
     /**
@@ -409,7 +409,7 @@ public:
         (appendContainer<Args>(m), ...);
 
         // update all the pointers/indices contained on each container
-        (updatePointersOfContainerTypeAfterAppend<Args>(*this, bases, sizes),
+        (updateReferencesOfContainerTypeAfterAppend<Args>(*this, bases, sizes),
          ...);
     }
 
@@ -498,10 +498,10 @@ public:
         m1.updateAllParentMeshPointers();
         m2.updateAllParentMeshPointers();
 
-        // update all the pointers to m1 and m2: old base of m1 is now "old
+        // update all the refs to m1 and m2: old base of m1 is now "old
         // base" of m2, and viceversa
-        (updatePointersOfContainerType<Args>(m1, m2Bases), ...);
-        (updatePointersOfContainerType<Args>(m2, m1Bases), ...);
+        (updateReferencesOfContainerType<Args>(m1, m2Bases), ...);
+        (updateReferencesOfContainerType<Args>(m2, m1Bases), ...);
     }
 
     /**
@@ -1693,7 +1693,9 @@ private:
      * container.
      */
     template<typename Cont, typename Array, typename... A>
-    static void updatePointersOfContainerType(Mesh<A...>& m, const Array& bases)
+    static void updateReferencesOfContainerType(
+        Mesh<A...>&  m,
+        const Array& bases)
     {
         // since this function is called using pack expansion, it means that
         // Cont could be a mesh component and not a cointainer. We check if Cont
@@ -1719,7 +1721,7 @@ private:
     }
 
     template<typename Cont, typename ArrayB, typename ArrayS, typename... A>
-    static void updatePointersOfContainerTypeAfterAppend(
+    static void updateReferencesOfContainerTypeAfterAppend(
         Mesh<A...>&   m,
         const ArrayB& bases,
         const ArrayS& sizes)
@@ -1740,8 +1742,7 @@ private:
             using ContainerWrapper = TypeWrapper<A...>;
 
             // for each Container A in m, we update the references of ElType.
-            // old base is contained in the array bases, the new base is the
-            // base of the container
+            // old base is contained in the array bases
             m.updateReferences(
                 reinterpret_cast<const ElType*>(bases[I]),
                 ContainerWrapper(),
