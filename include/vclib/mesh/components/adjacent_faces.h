@@ -651,30 +651,6 @@ private:
             setAdjFace(i, e.adjFaceIndex(i));
         }
     }
-
-    uint indexFromPointer(const Face* f) const
-    {
-        if (f == nullptr) [[unlikely]]
-            return UINT_NULL;
-        else
-            return f->index();
-    }
-
-    Face* adjFaceFromParent(uint fi)
-    {
-        if (fi == UINT_NULL) [[unlikely]]
-            return nullptr;
-        else
-            return &Base::parentElement()->parentMesh()->face(fi);
-    }
-
-    const Face* adjFaceFromParent(uint fi) const
-    {
-        if (fi == UINT_NULL) [[unlikely]]
-            return nullptr;
-        else
-            return &Base::parentElement()->parentMesh()->face(fi);
-    }
 };
 
 /* Detector function to check if a class has AdjacentFaces available */

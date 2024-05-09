@@ -51,7 +51,7 @@ class Vertex :
             vert::OptionalColor<Vertex<Scalar, I>>,
             vert::OptionalQuality<Scalar, Vertex<Scalar, I>>,
             vert::OptionalAdjacentFaces<I, Face<Scalar, I>, Vertex<Scalar, I>>,
-            vert::OptionalAdjacentVertices<Vertex<Scalar, I>>,
+            vert::OptionalAdjacentVertices<I, Vertex<Scalar, I>>,
             vert::OptionalPrincipalCurvature<Scalar, Vertex<Scalar, I>>,
             vert::OptionalTexCoord<Scalar, Vertex<Scalar, I>>,
             vert::OptionalMark<Vertex<Scalar, I>>,

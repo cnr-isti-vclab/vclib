@@ -129,17 +129,41 @@ using OptionalAdjacentFacePointers = comp::
     AdjacentFaces<false, FaceType, -1, false, ParentVertexType, true, true>;
 
 /* Port AdjacentVertices class into vert namespace */
-template<typename ParentVertexType>
+template<bool INDEXED, typename ParentVertexType>
 using AdjacentVertices =
-    comp::AdjacentVertices<ParentVertexType, ParentVertexType>;
+    comp::AdjacentVertices<INDEXED, ParentVertexType, ParentVertexType>;
 
-template<typename ParentVertexType>
+template<bool INDEXED, typename ParentVertexType>
 using VerticalAdjacentVertices =
-    comp::AdjacentVertices<ParentVertexType, ParentVertexType, true>;
+    comp::AdjacentVertices<INDEXED, ParentVertexType, ParentVertexType, true>;
+
+template<bool INDEXED, typename ParentVertexType>
+using OptionalAdjacentVertices = comp::
+    AdjacentVertices<INDEXED, ParentVertexType, ParentVertexType, true, true>;
 
 template<typename ParentVertexType>
-using OptionalAdjacentVertices =
-    comp::AdjacentVertices<ParentVertexType, ParentVertexType, true, true>;
+using AdjacentVertexIndices =
+    comp::AdjacentVertices<true, ParentVertexType, ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalAdjacentVertexIndices =
+    comp::AdjacentVertices<true, ParentVertexType, ParentVertexType, true>;
+
+template<typename ParentVertexType>
+using OptionalAdjacentVertexIndices = comp::
+    AdjacentVertices<true, ParentVertexType, ParentVertexType, true, true>;
+
+template<typename ParentVertexType>
+using AdjacentVertexPointers =
+    comp::AdjacentVertices<false, ParentVertexType, ParentVertexType>;
+
+template<typename ParentVertexType>
+using VerticalAdjacentVertexPointers =
+    comp::AdjacentVertices<false, ParentVertexType, ParentVertexType, true>;
+
+template<typename ParentVertexType>
+using OptionalAdjacentVertexPointers = comp::
+    AdjacentVertices<false, ParentVertexType, ParentVertexType, true, true>;
 
 /* Port BitFlags class into vert namespace */
 using BitFlags = comp::BitFlags<>;

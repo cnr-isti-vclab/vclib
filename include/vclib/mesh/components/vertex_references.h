@@ -394,10 +394,7 @@ public:
      * @return the index of the vertex with the given index, or UINT_NULL if it
      * is not found.
      */
-    uint indexOfVertex(uint vi) const
-    {
-        return Base::indexOfElement(vi);
-    }
+    uint indexOfVertex(uint vi) const { return Base::indexOfElement(vi); }
 
     /**
      * @brief Returns the index of the given edge composed of the two vertices
@@ -487,10 +484,7 @@ public:
      * has dynamic size.
      * @param[in] n: The new size of the vertices container.
      */
-    void resizeVertices(uint n) requires (N < 0)
-    {
-        Base::resize(n);
-    }
+    void resizeVertices(uint n) requires (N < 0) { Base::resize(n); }
 
     /**
      * @brief Pushes in the back of the container the given vertex.
@@ -499,10 +493,7 @@ public:
      * @param[in] v: The pointer to the vertex to push in the back of the
      * container.
      */
-    void pushVertex(Vertex* v) requires (N < 0)
-    {
-        Base::pushBack(v);
-    }
+    void pushVertex(Vertex* v) requires (N < 0) { Base::pushBack(v); }
 
     /**
      * @brief Pushes in the back of the container the given vertex.
@@ -722,30 +713,6 @@ private:
         for (uint i = 0; i < e.vertexNumber(); ++i) {
             setVertex(i, e.vertexIndex(i));
         }
-    }
-
-    uint indexFromPointer(const Vertex* v) const
-    {
-        if (v == nullptr) [[unlikely]]
-            return UINT_NULL;
-        else
-            return v->index();
-    }
-
-    Vertex* vertFromParent(uint vi)
-    {
-        if (vi == UINT_NULL) [[unlikely]]
-            return nullptr;
-        else
-            return &Base::parentElement()->parentMesh()->vertex(vi);
-    }
-
-    const Vertex* vertFromParent(uint vi) const
-    {
-        if (vi == UINT_NULL) [[unlikely]]
-            return nullptr;
-        else
-            return &Base::parentElement()->parentMesh()->vertex(vi);
     }
 };
 

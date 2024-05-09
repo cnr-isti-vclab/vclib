@@ -648,30 +648,6 @@ private:
             setAdjEdge(i, e.adjEdgeIndex(i));
         }
     }
-
-    uint indexFromPointer(const Edge* e) const
-    {
-        if (e == nullptr) [[unlikely]]
-            return UINT_NULL;
-        else
-            return e->index();
-    }
-
-    Edge* adjEdgeFromParent(uint ei)
-    {
-        if (ei == UINT_NULL) [[unlikely]]
-            return nullptr;
-        else
-            return &Base::parentElement()->parentMesh()->edge(ei);
-    }
-
-    const Edge* adjEdgeFromParent(uint ei) const
-    {
-        if (ei == UINT_NULL) [[unlikely]]
-            return nullptr;
-        else
-            return &Base::parentElement()->parentMesh()->edge(ei);
-    }
 };
 
 /* Detector function to check if a class has AdjacentEdges available */

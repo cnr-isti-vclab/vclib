@@ -74,13 +74,15 @@ namespace vcl::comp {
  * @ingroup components
  */
 template<
+    bool STORE_INDICES,
     typename Vertex,
     typename ParentElemType = void,
     bool VERT               = false,
     bool OPT                = false>
 class AdjacentVertices :
-        public PointersContainerComponent<
-            AdjacentVertices<Vertex, ParentElemType, VERT, OPT>,
+        public ReferencesContainerComponent<
+            STORE_INDICES,
+            AdjacentVertices<STORE_INDICES,Vertex, ParentElemType, VERT, OPT>,
             CompId::ADJACENT_VERTICES,
             Vertex,
             -1,
@@ -89,8 +91,9 @@ class AdjacentVertices :
             OPT,
             false>
 {
-    using Base = PointersContainerComponent<
-        AdjacentVertices<Vertex, ParentElemType, VERT, OPT>,
+    using Base = ReferencesContainerComponent<
+        STORE_INDICES,
+        AdjacentVertices<STORE_INDICES,Vertex, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_VERTICES,
         Vertex,
         -1,
@@ -126,7 +129,7 @@ public:
      * @brief Returns the number of adjacent vertices of the element.
      * @return The number of adjacent vertices of the element.
      */
-    uint adjVerticesNumber() const { return Base::container().size(); }
+    uint adjVerticesNumber() const { return Base::size(); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent vertex of an element.
@@ -135,7 +138,7 @@ public:
      * container.
      * @return The pointer i-th adjacent vertex of the element.
      */
-    Vertex* adjVertex(uint i) { return Base::container().at(i); }
+    Vertex* adjVertex(uint i) { return Base::element(i); }
 
     /**
      * @brief Returns a const pointer to the i-th adjacent vertex of the
@@ -144,7 +147,7 @@ public:
      * container; the value must be between 0 and the number of adj vertices.
      * @return The pointer to the i-th adjacent vertex of the element.
      */
-    const Vertex* adjVertex(uint i) const { return Base::container().at(i); }
+    const Vertex* adjVertex(uint i) const { return Base::element(i); }
 
     /**
      * @brief Returns the index in the vertex container of the i-th adjacent
@@ -152,14 +155,7 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The index of the i-th adjacent vertex of the element.
      */
-    uint adjVertexIndex(uint i) const
-    {
-        auto* v = adjVertex(i);
-        if (v) [[likely]]
-            return v->index();
-        else
-            return UINT_NULL;
-    }
+    uint adjVertexIndex(uint i) const {return Base::elementIndex(i); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent vertex of the element,
@@ -181,7 +177,7 @@ public:
      * adjVertexNumber().
      * @return The pointer to the required adjacent vertex of the element.
      */
-    Vertex* adjVertexMod(int i) { return Base::container().atMod(i); }
+    Vertex* adjVertexMod(int i) { return Base::elementMod(i); }
 
     /**
      * @brief Same of adjVertexMod, but returns a const Pointer to the adjacent
@@ -191,10 +187,7 @@ public:
      * adjVertexNumber().
      * @return The pointer to the required adjacent vertex of the element.
      */
-    const Vertex* adjVertexMod(int i) const
-    {
-        return Base::container().atMod(i);
-    }
+    const Vertex* adjVertexMod(int i) const { return Base::elementMod(i); }
 
     /**
      * @brief Returns the index in the vertex container of the i-th adjacent
@@ -219,14 +212,7 @@ public:
      * adjVerticesNumber().
      * @return The index of the required adjacent vertex of the element.
      */
-    uint adjVertexIndexMod(int i) const
-    {
-        auto* v = adjVertexMod(i);
-        if (v) [[likely]]
-            return v->index();
-        else
-            return UINT_NULL;
-    }
+    uint adjVertexIndexMod(int i) const { return Base::elementIndexMod(i); }
 
     /**
      * @brief Sets the i-th adjacent vertex of the element.
@@ -234,7 +220,7 @@ public:
      * the value must be between 0 and the number of adj vertices.
      * @param[in] v: The pointer to the adjacent vertex to set to this element.
      */
-    void setAdjVertex(uint i, Vertex* v) { Base::container().set(i, v); }
+    void setAdjVertex(uint i, Vertex* v) { Base::setElement(i, v); }
 
     /**
      * @brief Sets the i-th adjacent vertex of the element.
@@ -243,9 +229,17 @@ public:
      * @param[in] vi: The index in the vertex container of the adjacent vertex
      * to set.
      */
-    void setAdjVertex(uint i, uint vi)
+    void setAdjVertex(uint i, uint vi) { Base::setElement(i, vi); }
+
+    /**
+     * @brief Sets the adjacent vertex pointed by the iterator.
+     * @param[in] it: the iterator in this container on which set the adjacent
+     * vertex; the value must be between begin() and end().
+     * @param[in] v: The pointer to the adjacent vertex to set to the element.
+     */
+    void setAdjVertex(ConstAdjacentVertexIterator it, Vertex* v)
     {
-        setAdjVertex(i, adjVertexFromParent(vi));
+        Base::setElement(it, v);
     }
 
     /**
@@ -257,18 +251,7 @@ public:
      */
     void setAdjVertex(ConstAdjacentVertexIterator it, uint vi)
     {
-        setAdjVertex(it, adjVertexFromParent(vi));
-    }
-
-    /**
-     * @brief Sets the adjacent vertex pointed by the iterator.
-     * @param[in] it: the iterator in this container on which set the adjacent
-     * vertex; the value must be between begin() and end().
-     * @param[in] v: The pointer to the adjacent vertex to set to the element.
-     */
-    void setAdjVertex(ConstAdjacentVertexIterator it, Vertex* v)
-    {
-        Base::container().set(it - adjVertexBegin(), v);
+        Base::setElement(it, vi);
     }
 
     /**
@@ -279,7 +262,7 @@ public:
      */
     void setAdjVertex(ConstAdjacentVertexIndexIterator it, Vertex* v)
     {
-        Base::container().set(it - adjVertexIndexBegin(), v);
+        Base::setElement(it, v);
     }
 
     /**
@@ -291,7 +274,7 @@ public:
      */
     void setAdjVertex(ConstAdjacentVertexIndexIterator it, uint vi)
     {
-        setAdjVertex(it - adjVertexIndexBegin(), adjVertexFromParent(vi));
+        Base::setElement(it, vi);
     }
 
     /**
@@ -313,7 +296,7 @@ public:
      * which set the adj vertex; value is modularized on adjVerticesNumber().
      * @param[in] v: The pointer to the adj vertex to set to the element.
      */
-    void setAdjVertexMod(int i, Vertex* v) { Base::container().atMod(i) = v; }
+    void setAdjVertexMod(int i, Vertex* v) { Base::setElementMod(i, v); }
 
     /**
      * @brief Sets the i-th adjacent vertex of the element, but using as index
@@ -334,10 +317,7 @@ public:
      * which set the adj vertex; value is modularized on adjVerticesNumber().
      * @param[in] vi: The index in the vertex container of the adj vertex to set.
      */
-    void setAdjVertexMod(int i, uint vi)
-    {
-        setAdjVertexMod(i, adjVertexFromParent(vi));
-    }
+    void setAdjVertexMod(int i, uint vi) { Base::setElementMod(i, vi); }
 
     /**
      * @brief Sets all the adjacent vertices of this element.
@@ -353,7 +333,7 @@ public:
     template<Range Rng>
     void setAdjVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, Vertex*>
     {
-        Base::container().set(r);
+        Base::setElements(r);
     }
 
     /**
@@ -370,11 +350,7 @@ public:
     template<Range Rng>
     void setAdjVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
-        auto conv = [&](auto i) {
-            return adjVertexFromParent(i);
-        };
-
-        Base::container().set(r | std::views::transform(conv));
+        Base::setElements(r);
     }
 
     /**
@@ -387,7 +363,7 @@ public:
      */
     bool containsAdjVertex(const Vertex* v) const
     {
-        return Base::container().contains(v);
+        return Base::containsElement(v);
     }
 
     /**
@@ -398,10 +374,7 @@ public:
      * @return `true` if the container of adjacent vertices contains the given
      * vertex, `false` otherwise.
      */
-    bool containsAdjVertex(uint vi) const
-    {
-        return containsAdjVertex(adjVertexFromParent(vi));
-    }
+    bool containsAdjVertex(uint vi) const { return Base::containsElement(vi); }
 
     /**
      * @brief Returns the index of the given adjacent vertex in the container of
@@ -414,7 +387,7 @@ public:
      */
     uint indexOfAdjVertex(const Vertex* v) const
     {
-        return Base::container().indexOf(v);
+        return Base::indexOfElement(v);
     }
 
     /**
@@ -426,10 +399,7 @@ public:
      * @return the index of the given adjacent vertex, or UINT_NULL if it is not
      * found.
      */
-    uint indexOfAdjVertex(uint vi) const
-    {
-        return indexOfAdjVertex(adjVertexFromParent(vi));
-    }
+    uint indexOfAdjVertex(uint vi) const { return Base::indexOfElement(vi); }
 
     /**
      * @brief Resize the container of the adjacent vertices to the given size.
@@ -437,7 +407,7 @@ public:
      * Vertices has dynamic size.
      * @param[in] n: The new size of the adjacent vertices container.
      */
-    void resizeAdjVertices(uint n) { Base::container().resize(n); }
+    void resizeAdjVertices(uint n) { Base::resize(n); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent vertex.
@@ -446,7 +416,7 @@ public:
      * @param[in] v: The pointer to the adjacent vertex to push in the back of
      * the container.
      */
-    void pushAdjVertex(Vertex* v) { Base::container().pushBack(v); }
+    void pushAdjVertex(Vertex* v) { Base::pushBack(v); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent vertex..
@@ -455,7 +425,7 @@ public:
      * @param[in] vi: The index to the vertex to push in the back of the
      * container.
      */
-    void pushAdjVertex(uint vi) { pushAdjVertex(adjVertexFromParent(vi)); }
+    void pushAdjVertex(uint vi) { Base::pushBack(vi); }
 
     /**
      * @brief Inserts the given adjacent vertex in the container at the given
@@ -467,7 +437,7 @@ public:
      * @param[in] v: The pointer to the adjacent vertex to insert in the
      * container.
      */
-    void insertAdjVertex(uint i, Vertex* v) { Base::container().insert(i, v); }
+    void insertAdjVertex(uint i, Vertex* v) { Base::insert(i, v); }
 
     /**
      * @brief Inserts the given adjacent vertex in the container at the given
@@ -478,10 +448,7 @@ public:
      * vertex.
      * @param[in] vi: The index of the vertex to insert in the container.
      */
-    void insertAdjVertex(uint i, uint vi)
-    {
-        insertAdjVertex(i, adjVertexFromParent(vi));
-    }
+    void insertAdjVertex(uint i, uint vi) { Base::insert(i, vi); }
 
     /**
      * @brief Removes the adjacent vertex at the given position from the
@@ -491,14 +458,14 @@ public:
      * @param[in] i: The position of the adjacent vertex to remove from this
      * container.
      */
-    void eraseAdjVertex(uint i) { Base::container().erase(i); }
+    void eraseAdjVertex(uint i) { Base::erase(i); }
 
     /**
      * @brief Clears the container of adjacent vertices, making it empty.
      * @note This function is available only if the container of the Adjacent
      * Vertices component has dynamic size.
      */
-    void clearAdjVertices() { Base::container().clear(); }
+    void clearAdjVertices() { Base::clear(); }
 
     /* Iterator Member functions */
 
@@ -508,20 +475,14 @@ public:
      *
      * @return an iterator pointing to the begin of this container.
      */
-    AdjacentVertexIterator adjVertexBegin()
-    {
-        return Base::container().begin();
-    }
+    AdjacentVertexIterator adjVertexBegin() { return Base::elementBegin(); }
 
     /**
      * @brief Returns an iterator to the end of the container of this component.
      *
      * @return an iterator pointing to the end of this container.
      */
-    AdjacentVertexIterator adjVertexEnd()
-    {
-        return Base::container().end();
-    }
+    AdjacentVertexIterator adjVertexEnd() { return Base::elementEnd(); }
 
     /**
      * @brief Returns a const iterator to the first adjacent vertex in the
@@ -531,7 +492,7 @@ public:
      */
     ConstAdjacentVertexIterator adjVertexBegin() const
     {
-        return Base::container().begin();
+        return Base::elementBegin();
     }
 
     /**
@@ -542,7 +503,7 @@ public:
      */
     ConstAdjacentVertexIterator adjVertexEnd() const
     {
-        return Base::container().end();
+        return Base::elementEnd();
     }
 
     /**
@@ -553,7 +514,7 @@ public:
      */
     ConstAdjacentVertexIndexIterator adjVertexIndexBegin() const
     {
-        return ConstAdjacentVertexIndexIterator(adjVertexBegin());
+        return Base::elementIndexBegin();
     }
 
     /**
@@ -563,7 +524,7 @@ public:
      */
     ConstAdjacentVertexIndexIterator adjVertexIndexEnd() const
     {
-        return ConstAdjacentVertexIndexIterator(adjVertexEnd());
+        return Base::elementIndexEnd();
     }
 
     /**
@@ -582,10 +543,7 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over adjacent edges.
      */
-    View<AdjacentVertexIterator> adjVertices()
-    {
-        return View(adjVertexBegin(), adjVertexEnd());
-    }
+    View<AdjacentVertexIterator> adjVertices() { return Base::elements(); }
 
     /**
      * @brief Returns a lightweight const view object that stores the begin and
@@ -605,7 +563,7 @@ public:
      */
     View<ConstAdjacentVertexIterator> adjVertices() const
     {
-        return View(adjVertexBegin(), adjVertexEnd());
+        return Base::elements();
     }
 
     /**
@@ -626,7 +584,7 @@ public:
      */
     View<ConstAdjacentVertexIndexIterator> adjVertexIndices() const
     {
-        return View(adjVertexIndexBegin(), adjVertexIndexEnd());
+        return Base::elementIndices();
     }
 
     // dummy member to discriminate between AdjacentVertices and
@@ -638,6 +596,14 @@ protected:
     template<typename Element>
     void importFrom(const Element& e)
     {
+        if constexpr (HasAdjacentVertices<Element>) {
+            if (isAdjacentVerticesAvailableOn(e)) {
+                // from static/dynamic to dynamic size: need to resize first,
+                // then import
+                resizeAdjVertices(e.adjVerticesNumber());
+                importIndicesFrom(e);
+            }
+        }
     }
 
     // PointersContainerComponent interface functions
@@ -647,43 +613,15 @@ protected:
         Vertex*        base,
         const ElVType* ebase)
     {
-        if constexpr (HasAdjacentVertices<Element>) {
-            if (isAdjacentVerticesAvailableOn(e)) {
-                // from static/dynamic to dynamic size: need to resize first,
-                // then import
-                resizeAdjVertices(e.adjVerticesNumber());
-                importPtrsFrom(e, base, ebase);
-            }
-        }
     }
 
 private:
-    template<typename Element, typename ElVType>
-    void importPtrsFrom(const Element& e, Vertex* base, const ElVType* ebase)
+    template<typename Element>
+    void importIndicesFrom(const Element& e)
     {
-        if (ebase != nullptr && base != nullptr) {
-            for (uint i = 0; i < e.adjVerticesNumber(); ++i) {
-                if (e.adjVertex(i) != nullptr) {
-                    setAdjVertex(i, base + (e.adjVertex(i) - ebase));
-                }
-            }
+        for (uint i = 0; i < e.adjVerticesNumber(); ++i) {
+            setAdjVertex(i, e.adjVertexIndex(i));
         }
-    }
-
-    Vertex* adjVertexFromParent(uint vi)
-    {
-        if (vi == UINT_NULL) [[unlikely]]
-            return nullptr;
-        else
-            return &Base::parentElement()->parentMesh()->vertex(vi);
-    }
-
-    const Vertex* adjVertexFromParent(uint vi) const
-    {
-        if (vi == UINT_NULL) [[unlikely]]
-            return nullptr;
-        else
-            return &Base::parentElement()->parentMesh()->vertex(vi);
     }
 };
 
