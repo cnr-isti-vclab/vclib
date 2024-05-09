@@ -79,10 +79,6 @@ namespace vcl::comp {
  * // TODO: RENAME THE FUNCTIONS
  *
  * ```cpp
- * template<typename Element, typename ElEType>
- * void importPointersFrom(
- *     const Element& e, PointedType* base, const ElEType* ebase);
- *
  * void updatePointers(const PointedType* oldBase, const PointedType* newBase);
  *
  * void updatePointers(

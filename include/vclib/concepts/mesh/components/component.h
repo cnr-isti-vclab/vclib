@@ -159,15 +159,6 @@ class ReferencesComponentTriggerer
  *     the function updates the stored R pointers having the base of the
  *     container, and, for each old element index, its new index in the
  *     container.
- *
- *   - template<typename Element, typename ElRType>
- *     void importPointersFrom(
- *         const Element& e, const R* base, const ElRType* ebase);
- *
- *     the function imports the pointers from the pointers of another element.
- *     - e is the another element;
- *     - base is the base of container that stores this element
- *     - ebase is the base of the container that stores the another elements
  */
 template<typename T, typename R>
 concept HasReferencesOfType =
