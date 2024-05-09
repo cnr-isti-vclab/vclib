@@ -637,12 +637,6 @@ protected:
         }
     }
 
-    // PointersComponent interface functions
-    template<typename Element, typename ElFType>
-    void importPointersFrom(const Element&, Face*, const ElFType*)
-    {
-    }
-
 private:
     template<typename Element>
     void importIndicesFrom(const Element& e)

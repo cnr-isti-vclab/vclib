@@ -821,50 +821,6 @@ protected:
         }
     }
 
-    /**
-     * This function imports from another mesh, the pointers of the element
-     * OtherElement stored on this container.
-     *
-     * Checks if the other mesh has two containers: the one of T and the one of
-     * OtherElement. Only if both containers exists in othMesh, then the import
-     * makes sense (e.g. we can import per Vertex Face pointers (T = Vertex,
-     * OtherElement = Face) if othMesh has both a container of Vertices and a
-     * Container of Faces).
-     */
-    template<typename OtherMesh, typename OtherElement>
-    void importPointersFrom(const OtherMesh& othMesh, OtherElement* base)
-    {
-        // We need to be sure that the other mesh has two containers (that can
-        // be the same, see later):
-        // - the one of Elements of same type as T
-        // - the one of Elements of same type as OtherElement (the pointers
-        //   that we are actually importing on this Container of T elements)
-        // Note that OtherElement may be the same of T (e.g. Vertex[T] has
-        // pointers of other Vertices[OtherElement]) or different (e.g.
-        // Vertex[T] has pointers of Faces[OtherElement])
-        if constexpr (
-            OtherMesh::template hasContainerOf<T>() &&
-            OtherMesh::template hasContainerOf<OtherElement>())
-        {
-            // get the containe type of the other mesh for MyBase - used for get
-            // the base pointer
-            using OthBaseContainer =
-                OtherMesh::template ContainerOf<OtherElement>::type;
-            // get the container type of the other mesh for T - used to upcast
-            // othMesh
-            using OthTContainer = OtherMesh::template ContainerOf<T>::type;
-
-            // get the container base of the other mesh, that we use to import
-            // pointers
-            const auto* cbase = othMesh.OthBaseContainer::mElemVec.data();
-
-            // upcast the other mesh to the container and import the pointers
-            // from the OthTContainer
-            importPointersFromContainer(
-                (const OthTContainer&) othMesh, base, cbase);
-        }
-    }
-
 private:
     template<typename ElPtr, typename... Comps>
     void updatePointersOnComponents(
@@ -886,55 +842,6 @@ private:
         TypeWrapper<Comps...>)
     {
         (updatePointersOnComponent<Comps>(base, newIndices), ...);
-    }
-
-    /**
-     * This member function is called when this Element container needs to
-     * import element pointers from another Container c.
-     *
-     * It is called when an import from another mesh type is performed. The
-     * import first creates all the elements in the newly created mesh using the
-     * importFrom function, and then imports pointers from each element of the
-     * other mesh.
-     *
-     * For each element of this and the other container, we compute the offset
-     * between the any element pointer contained in the other element and its
-     * base (the pointer of the element 0) in the other mesh, and then add this
-     * offset to the base (the pointer of the element 0) in this mesh.
-     *
-     * Takes the following inputs:
-     * - c: another container of the same element of this container (but
-     *   probably with different components)
-     * - base: the pointer of the first Element of this mesh. We will use it to
-     *   compute the new element pointers in this container
-     * - cbase: the pointer of the first Element of the other mesh. We will use
-     *   it to compute the offset between any element contained in the other
-     *   element and the base. The offset is then used to compute the new
-     *   element pointer for this container
-     */
-    template<typename Container, typename MyBase, typename CBase>
-    void importPointersFromContainer(
-        const Container& c,
-        MyBase*          base,
-        const CBase*     cbase)
-    {
-        using Comps = T::Components;
-
-        importPointersOnComponentsFrom(c, base, cbase, Comps());
-    }
-
-    template<
-        typename Container,
-        typename ElPtr,
-        typename CBase,
-        typename... Comps>
-    void importPointersOnComponentsFrom(
-        const Container& c,
-        ElPtr*           base,
-        const CBase*     cbase,
-        TypeWrapper<Comps...>)
-    {
-        (importPointersOnComponentFrom<Comps>(c, base, cbase), ...);
     }
 
     /*
@@ -997,30 +904,6 @@ private:
             else {
                 for (T& e : elements()) {
                     e.Comp::updatePointers(base, newIndices);
-                }
-            }
-        }
-    }
-
-    template<typename Comp, typename Container, typename ElPtr, typename CBase>
-    void importPointersOnComponentFrom(
-        const Container& c,
-        ElPtr*           base,
-        const CBase*     cbase)
-    {
-        if constexpr (comp::HasReferencesOfType<Comp, ElPtr>) {
-            if constexpr (comp::HasOptionalReferencesOfType<Comp, ElPtr>) {
-                if (isOptionalComponentEnabled<Comp>()) {
-                    for (uint i = 0; i < elementContainerSize(); ++i) {
-                        element(i).Comp::importPointersFrom(
-                            c.element(i), base, cbase);
-                    }
-                }
-            }
-            else {
-                for (uint i = 0; i < elementContainerSize(); ++i) {
-                    element(i).Comp::importPointersFrom(
-                        c.element(i), base, cbase);
                 }
             }
         }

@@ -606,15 +606,6 @@ protected:
         }
     }
 
-    // PointersContainerComponent interface functions
-    template<typename Element, typename ElVType>
-    void importPointersFrom(
-        const Element& e,
-        Vertex*        base,
-        const ElVType* ebase)
-    {
-    }
-
 private:
     template<typename Element>
     void importIndicesFrom(const Element& e)

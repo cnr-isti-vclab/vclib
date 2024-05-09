@@ -442,25 +442,10 @@ public:
         // Set to all element containers their parent mesh (this)
         updateAllParentMeshPointers();
 
-        // after importing ordinary components, we need to convert the pointers
-        // between containers. each container can import more than one pointer
-        // type, e.g.:
-        // - VertexContainer could import vertex pointers (adjacent vertices),
-        //   face pointers (adjacent faces), and so on;
-        // - FaceContainer will always import vertex pointers, but could also
-        //   import face pointers (adjacent faces), edge pointers (adjacent
-        //   edges)...
-        // for each container of this Mesh, we'll call the importPointers
-        // passing the container (Args) as template parameter. This parameter
-        // will be used to call all the possible import functions available
-        // (vertices, faces, edges, half edges)
-
-        (importPointers<Args>(m), ...);
-
         if constexpr (mesh::HasFaceContainer<Mesh<Args...>>) {
             // Now I need to manage imports between different types of meshes
-            // (same type of meshes are already managed from importFrom and
-            // importPointersFrom member functions).
+            // (same type of meshes are already managed from importFrom member
+            // function).
             //
             // Generally speaking, Polygon meshes can import from any other type
             // of mesh. We need to take care when this mesh has static vertex
@@ -1611,34 +1596,6 @@ private:
     {
         if constexpr (mesh::ElementContainerConcept<Cont>) {
             Cont::append((const Cont&) m);
-        }
-    }
-
-    // private import member functions
-
-    /**
-     * This function will import, for a given container of this mesh that is
-     * passed as a template parameter Cont, all the pointers of all the elements
-     * from the other mesh m.
-     */
-    template<typename Cont, typename OthMesh>
-    void importPointers(const OthMesh& m)
-    {
-        // will loop again on Args. Args will be the element pointers imported
-        // on Cont
-        (importPointersOfElement<Cont, Args>(m), ...);
-    }
-
-    template<typename Cont, typename ElemCont, typename OthMesh>
-    void importPointersOfElement(const OthMesh& m)
-    {
-        // if Cont and ElemCont are containers (could be mesh components)
-        if constexpr (
-            mesh::ElementContainerConcept<Cont> &&
-            mesh::ElementContainerConcept<ElemCont>)
-        {
-            // import in Cont the ElemCont pointers from m
-            Cont::importPointersFrom(m, ElemCont::mElemVec.data());
         }
     }
 
