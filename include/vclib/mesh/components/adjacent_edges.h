@@ -412,7 +412,7 @@ public:
      */
     uint indexOfAdjEdge(uint ei) const { return Base::indexOfElement(ei); }
 
-    /* Member functions specific for vector of adjacent edges */
+    /* Member functions specific for dynamic vector of adjacent edges */
 
     /**
      * @brief Resize the container of the adjacent edges to the given size.
@@ -420,7 +420,7 @@ public:
      * Edges component has dynamic size.
      * @param[in] n: The new size of the adjacent edges container.
      */
-    void resizeAdjEdges(uint n) requires (N < 0 && !TTVN) { resize(n); }
+    void resizeAdjEdges(uint n) requires (N < 0 && !TTVN) { Base::resize(n); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent edge.
@@ -429,7 +429,7 @@ public:
      * @param[in] e: The pointer to the adjacent edge to push in the back of the
      * container.
      */
-    void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN) { pushBack(e); }
+    void pushAdjEdge(Edge* e) requires (N < 0 && !TTVN) { Base::pushBack(e); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent edge.
@@ -438,7 +438,7 @@ public:
      * @param[in] ei: The index to the adjacent edge to push in the back of the
      * container.
      */
-    void pushAdjEdge(uint ei) requires (N < 0 && !TTVN) { pushBack(ei); }
+    void pushAdjEdge(uint ei) requires (N < 0 && !TTVN) { Base::pushBack(ei); }
 
     /**
      * @brief Inserts the given adjacent edge in the container at the given
@@ -452,7 +452,7 @@ public:
      */
     void insertAdjEdge(uint i, Edge* e) requires (N < 0 && !TTVN)
     {
-        insert(i, e);
+        Base::insert(i, e);
     }
 
     /**
@@ -466,7 +466,7 @@ public:
      */
     void insertAdjEdge(uint i, uint ei) requires (N < 0 && !TTVN)
     {
-        insert(i, ei);
+        Base::insert(i, ei);
     }
 
     /**
@@ -477,14 +477,14 @@ public:
      * @param[in] i: The position of the adjacent edge to remove from this
      * container.
      */
-    void eraseAdjEdge(uint i) requires (N < 0 && !TTVN) { erase(i); }
+    void eraseAdjEdge(uint i) requires (N < 0 && !TTVN) { Base::erase(i); }
 
     /**
      * @brief Clears the container of adjacent edges, making it empty.
      * @note This function is available only if the container of the Adjacent
      * Edges component has dynamic size.
      */
-    void clearAdjEdges() requires (N < 0 && !TTVN) { clear(); }
+    void clearAdjEdges() requires (N < 0 && !TTVN) { Base::clear(); }
 
     /* Iterator Member functions */
 
@@ -562,7 +562,7 @@ public:
      */
     View<AdjacentEdgeIterator> adjEdges()
     {
-        return View(adjEdgeBegin(), adjEdgeEnd());
+        return Base::elements();
     }
 
     /**
@@ -583,7 +583,7 @@ public:
      */
     View<ConstAdjacentEdgeIterator> adjEdges() const
     {
-        return View(adjEdgeBegin(), adjEdgeEnd());
+        return Base::elements();
     }
 
     /**
@@ -604,7 +604,7 @@ public:
      */
     View<ConstAdjacentEdgeIndexIterator> adjEdgeIndices() const
     {
-        return View(adjEdgeIndexBegin(), adjEdgeIndexEnd());
+        return Base::elementIndices();
     }
 
 protected:
@@ -633,63 +633,12 @@ protected:
                 else {
                     // from static/dynamic to dynamic size: need to resize
                     // first, then import
-                    resize(e.adjEdgesNumber());
+                    Base::resize(e.adjEdgesNumber());
                     importIndicesFrom(e);
                 }
             }
         }
     }
-
-    // PointersComponent interface functions
-    template<typename Element, typename ElEType>
-    void importPointersFrom(const Element&, Edge*, const ElEType*)
-    {
-    }
-
-    // ContainerComponent interface functions
-    void resize(uint n) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().resize(n, UINT_NULL);
-        else
-            Base::container().resize(n);
-    }
-
-    void pushBack(Edge* e = nullptr) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().pushBack(indexFromPointer(e));
-        else
-            Base::container().pushBack(e);
-    }
-
-    void pushBack(uint ei) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().pushBack(ei);
-        else
-            Base::container().pushBack(adjEdgeFromParent(ei));
-    }
-
-    void insert(uint i, Edge* e = nullptr) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().insert(i, indexFromPointer(e));
-        else
-            Base::container().insert(i, e);
-    }
-
-    void insert(uint i, uint ei) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().insert(i, ei);
-        else
-            Base::container().insert(i, adjEdgeFromParent(ei));
-    }
-
-    void erase(uint i) requires (N < 0) { Base::container().erase(i); }
-
-    void clear() requires (N < 0) { Base::container().clear(); }
 
 private:
     template<typename Element>

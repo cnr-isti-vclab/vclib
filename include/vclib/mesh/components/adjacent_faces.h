@@ -405,7 +405,7 @@ public:
      */
     uint indexOfAdjFace(uint fi) const { return Base::indexOfElement(fi); }
 
-    /* Member functions specific for vector adjacent faces */
+    /* Member functions specific for dynamic vector adjacent faces */
 
     /**
      * @brief Resize the container of the adjacent faces to the given size.
@@ -413,7 +413,7 @@ public:
      * Faces is has dynamic size.
      * @param[in] n: The new size of the adjacent faces container.
      */
-    void resizeAdjFaces(uint n) requires (N < 0 && !TTVN) { resize(n); }
+    void resizeAdjFaces(uint n) requires (N < 0 && !TTVN) { Base::resize(n); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent face.
@@ -422,7 +422,7 @@ public:
      * @param[in] f: The pointer to the adjacent face to push in the back of the
      * container.
      */
-    void pushAdjFace(Face* f) requires (N < 0 && !TTVN) { pushBack(f); }
+    void pushAdjFace(Face* f) requires (N < 0 && !TTVN) { Base::pushBack(f); }
 
     /**
      * @brief Pushes in the back of the container the given adjacent face.
@@ -431,7 +431,7 @@ public:
      * @param[in] fi: The index to the adjacent face to push in the back of the
      * container.
      */
-    void pushAdjFace(uint fi) requires (N < 0 && !TTVN) { pushBack(fi); }
+    void pushAdjFace(uint fi) requires (N < 0 && !TTVN) { Base::pushBack(fi); }
 
     /**
      * @brief Inserts the given adjacent face in the container at the given
@@ -445,7 +445,7 @@ public:
      */
     void insertAdjFace(uint i, Face* f) requires (N < 0 && !TTVN)
     {
-        insert(i, f);
+        Base::insert(i, f);
     }
 
     /**
@@ -459,7 +459,7 @@ public:
      */
     void insertAdjFace(uint i, uint fi) requires (N < 0 && !TTVN)
     {
-        insert(i, fi);
+        Base::insert(i, fi);
     }
 
     /**
@@ -470,14 +470,14 @@ public:
      * @param[in] i: The position of the adjacent face to remove from this
      * container.
      */
-    void eraseAdjFace(uint i) requires (N < 0 && !TTVN) { erase(i); }
+    void eraseAdjFace(uint i) requires (N < 0 && !TTVN) { Base::erase(i); }
 
     /**
      * @brief Clears the container of adjacent faces, making it empty.
      * @note This function is available only if the container of the Adjacent
      * Faces component has dynamic size.
      */
-    void clearAdjFaces() requires (N < 0 && !TTVN) { clear(); }
+    void clearAdjFaces() requires (N < 0 && !TTVN) { Base::clear(); }
 
     /* Iterator Member functions */
 
@@ -555,7 +555,7 @@ public:
      */
     View<AdjacentFaceIterator> adjFaces()
     {
-        return View(adjFaceBegin(), adjFaceEnd());
+        return Base::elements();
     }
 
     /**
@@ -576,7 +576,7 @@ public:
      */
     View<ConstAdjacentFaceIterator> adjFaces() const
     {
-        return View(adjFaceBegin(), adjFaceEnd());
+        return Base::elements();
     }
 
     /**
@@ -597,7 +597,7 @@ public:
      */
     View<ConstAdjacentFaceIndexIterator> adjFaceIndices() const
     {
-        return View(adjFaceIndexBegin(), adjFaceIndexEnd());
+        return Base::elementIndices();
     }
 
     // dummy member to discriminate between AdjacentFaces and
@@ -630,7 +630,7 @@ protected:
                 else {
                     // from static/dynamic to dynamic size: need to resize
                     // first, then import
-                    resize(e.adjFacesNumber());
+                    Base::resize(e.adjFacesNumber());
                     importIndicesFrom(e);
                 }
             }
@@ -642,51 +642,6 @@ protected:
     void importPointersFrom(const Element&, Face*, const ElFType*)
     {
     }
-
-    // ContainerComponent interface functions
-    void resize(uint n) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().resize(n, UINT_NULL);
-        else
-            Base::container().resize(n);
-    }
-
-    void pushBack(Face* f = nullptr) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().pushBack(indexFromPointer(f));
-        else
-            Base::container().pushBack(f);
-    }
-
-    void pushBack(uint fi) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().pushBack(fi);
-        else
-            Base::container().pushBack(adjFaceFromParent(fi));
-    }
-
-    void insert(uint i, Face* f = nullptr) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().insert(i, indexFromPointer(f));
-        else
-            Base::container().insert(i, f);
-    }
-
-    void insert(uint i, uint fi) requires (N < 0)
-    {
-        if constexpr (STORE_INDICES)
-            Base::container().insert(i, fi);
-        else
-            Base::container().insert(i, adjFaceFromParent(fi));
-    }
-
-    void erase(uint i) requires (N < 0) { Base::container().erase(i); }
-
-    void clear() requires (N < 0) { Base::container().clear(); }
 
 private:
     template<typename Element>

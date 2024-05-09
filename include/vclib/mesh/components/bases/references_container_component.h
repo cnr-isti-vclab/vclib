@@ -266,6 +266,22 @@ protected:
             return Base::container().contains(elemFromParent(ei));
     }
 
+    uint indexOfElement(const Elem* e) const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().indexOf(indexFromPointer(e));
+        else
+            return Base::container().indexOf(e);
+    }
+
+    uint indexOfElement(uint ei) const
+    {
+        if constexpr (STORE_INDICES)
+            return Base::container().indexOf(ei);
+        else
+            return Base::container().indexOf(elemFromParent(ei));
+    }
+
     Base::Iterator elementBegin()
     {
         if constexpr (STORE_INDICES)
@@ -316,21 +332,68 @@ protected:
             return typename Base::ConstIndexIterator(elementEnd());
     }
 
-    uint indexOfElement(const Elem* e) const
+    View<typename Base::Iterator> elements()
     {
-        if constexpr (STORE_INDICES)
-            return Base::container().indexOf(indexFromPointer(e));
-        else
-            return Base::container().indexOf(e);
+        return View(elementBegin(), elementEnd());
     }
 
-    uint indexOfElement(uint ei) const
+    View<typename Base::ConstIterator> elements() const
+    {
+        return View(elementBegin(), elementEnd());
+    }
+
+    View<typename Base::ConstIndexIterator> elementIndices() const
+    {
+        return View(elementIndexBegin(), elementIndexEnd());
+    }
+
+    // ContainerComponent interface functions
+
+    void resize(uint n) requires (N < 0)
     {
         if constexpr (STORE_INDICES)
-            return Base::container().indexOf(ei);
+            Base::container().resize(n, UINT_NULL);
         else
-            return Base::container().indexOf(elemFromParent(ei));
+            Base::container().resize(n);
     }
+
+    void pushBack(Elem* e = nullptr) requires (N < 0)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().pushBack(indexFromPointer(e));
+        else
+            Base::container().pushBack(e);
+    }
+
+    void pushBack(uint ei) requires (N < 0)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().pushBack(ei);
+        else
+            Base::container().pushBack(elemFromParent(ei));
+    }
+
+    void insert(uint i, Elem* e = nullptr) requires (N < 0)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().insert(i, indexFromPointer(e));
+        else
+            Base::container().insert(i, e);
+    }
+
+    void insert(uint i, uint ei) requires (N < 0)
+    {
+        if constexpr (STORE_INDICES)
+            Base::container().insert(i, ei);
+        else
+            Base::container().insert(i, elemFromParent(ei));
+    }
+
+    void erase(uint i) requires (N < 0) { Base::container().erase(i); }
+
+    void clear() requires (N < 0) { Base::container().clear(); }
+
+    // Utility functions
 
     uint indexFromPointer(const Elem* v) const
     {

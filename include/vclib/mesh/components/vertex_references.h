@@ -479,7 +479,7 @@ public:
         }
     }
 
-    /* Member functions specific for vector of pointers */
+    /* Member functions specific for dynamic vector of refs */
 
     /**
      * @brief Resize the container of the vertices to the given size.
@@ -489,10 +489,7 @@ public:
      */
     void resizeVertices(uint n) requires (N < 0)
     {
-        if constexpr (STORE_INDICES)
-            Base::container().resize(n, UINT_NULL);
-        else
-            Base::container().resize(n);
+        Base::resize(n);
     }
 
     /**
@@ -504,10 +501,7 @@ public:
      */
     void pushVertex(Vertex* v) requires (N < 0)
     {
-        if constexpr (STORE_INDICES)
-            Base::container().pushBack(indexFromPointer(v));
-        else
-            Base::container().pushBack(v);
+        Base::pushBack(v);
     }
 
     /**
@@ -519,10 +513,7 @@ public:
      */
     void pushVertex(uint vi) requires (N < 0)
     {
-        if constexpr (STORE_INDICES)
-            Base::container().pushBack(vi);
-        else
-            Base::container().pushBack(vertFromParent(vi));
+        Base::pushBack(vi);
     }
 
     /**
@@ -534,10 +525,7 @@ public:
      */
     void insertVertex(uint i, Vertex* v) requires (N < 0)
     {
-        if constexpr (STORE_INDICES)
-            Base::container().insert(i, indexFromPointer(v));
-        else
-            Base::container().insert(i, v);
+        Base::insert(i, v);
     }
 
     /**
@@ -550,10 +538,7 @@ public:
      */
     void insertVertex(uint i, uint vi) requires (N < 0)
     {
-        if constexpr (STORE_INDICES)
-            Base::container().insert(i, vi);
-        else
-            Base::container().insert(i, vertFromParent(vi));
+        Base::insert(i, vi);
     }
 
     /**
@@ -562,14 +547,14 @@ public:
      * has dynamic size.
      * @param[in] i: The position of the vertex to remove from this container.
      */
-    void eraseVertex(uint i) requires (N < 0) { Base::container().erase(i); }
+    void eraseVertex(uint i) requires (N < 0) { Base::erase(i); }
 
     /**
      * @brief Clears the container of vertices, making it empty.
      * @note This function is available only if the container of the Vertices
      * has dynamic size.
      */
-    void clearVertices() requires (N < 0) { Base::container().clear(); }
+    void clearVertices() requires (N < 0) { Base::clear(); }
 
     /* Iterator Member functions */
 
@@ -644,7 +629,7 @@ public:
      */
     View<VertexIterator> vertices()
     {
-        return View(vertexBegin(), vertexEnd());
+        return Base::elements();
     }
 
     /**
@@ -665,7 +650,7 @@ public:
      */
     View<ConstVertexIterator> vertices() const
     {
-        return View(vertexBegin(), vertexEnd());
+        return Base::elements();
     }
 
     /**
@@ -686,7 +671,7 @@ public:
      */
     View<ConstVertexIndexIterator> vertexIndices() const
     {
-        return View(vertexIndexBegin(), vertexIndexEnd());
+        return Base::elementIndices();
     }
 
 protected:
