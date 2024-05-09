@@ -45,6 +45,13 @@ TEMPLATE_TEST_CASE(
 
     vcl::updatePerVertexAndFaceNormals(m1);
 
+    m1.template addPerVertexCustomComponent<float>("v_comp");
+
+    // putting some value into v_comp
+    for (auto& v : m1.vertices()) {
+        v.template customComponent<float>("v_comp") = v.normal().x() * 3;
+    }
+
     WHEN("Copying a mesh")
     {
         Mesh m2 = m1;
@@ -65,6 +72,9 @@ TEMPLATE_TEST_CASE(
             for (size_t i = 0; i < m1.vertexNumber(); ++i) {
                 REQUIRE(m2.vertex(i).coord() == m1.vertex(i).coord());
                 REQUIRE(m2.vertex(i).normal() == m1.vertex(i).normal());
+                REQUIRE(
+                    m2.vertex(i).template customComponent<float>("v_comp") ==
+                    m1.vertex(i).template customComponent<float>("v_comp"));
             }
         }
 
@@ -85,6 +95,14 @@ TEMPLATE_TEST_CASE(
     {
         Mesh m2 = vcl::createTetrahedron<Mesh>();
         vcl::updatePerVertexAndFaceNormals(m2);
+
+        m2.template addPerVertexCustomComponent<float>("v_comp");
+
+        // putting some value into v_comp
+        for (auto& v : m2.vertices()) {
+            v.template customComponent<float>("v_comp") = v.normal().z() * 3;
+        }
+
         Mesh m3 = m1;
         m3.append(m2);
 
@@ -109,11 +127,18 @@ TEMPLATE_TEST_CASE(
             for (size_t i = 0; i < m1vn; ++i) {
                 REQUIRE(m3.vertex(i).coord() == m1.vertex(i).coord());
                 REQUIRE(m3.vertex(i).normal() == m1.vertex(i).normal());
+                REQUIRE(
+                    m3.vertex(i).template customComponent<float>("v_comp") ==
+                    m1.vertex(i).template customComponent<float>("v_comp"));
             }
 
             for (size_t i = m1vn; i < m1vn + m2vn; ++i) {
                 REQUIRE(m3.vertex(i).coord() == m2.vertex(i - m1vn).coord());
                 REQUIRE(m3.vertex(i).normal() == m2.vertex(i - m1vn).normal());
+                REQUIRE(
+                    m3.vertex(i).template customComponent<float>("v_comp") ==
+                    m2.vertex(i - m1vn).template customComponent<float>(
+                        "v_comp"));
             }
         }
 

@@ -108,7 +108,11 @@ protected:
      *
      * @param[in] i: the index of the element that will be returned.
      */
-    const T& element(uint i) const { return mElemVec[i]; }
+    const T& element(uint i) const
+    {
+        assert(i < mElemVec.size());
+        return mElemVec[i];
+    }
 
     /**
      * @brief Returns a reference of the element at the i-th position in the
@@ -121,7 +125,11 @@ protected:
      *
      * @param[in] i: the index of the element that will be returned.
      */
-    T& element(uint i) { return mElemVec[i]; }
+    T& element(uint i)
+    {
+        assert(i < mElemVec.size());
+        return mElemVec[i];
+    }
 
     /**
      * @brief Returns the number of **non-deleted** elements contained in the
@@ -321,6 +329,7 @@ protected:
      */
     void deleteElement(uint i)
     {
+        assert(i < mElemVec.size());
         mElemVec[i].deletedBit() = true;
         --mElemNumber;
     }
@@ -358,6 +367,7 @@ protected:
      */
     uint elementIndexIfCompact(uint i) const
     {
+        assert(i < mElemVec.size());
         if (mElemVec.size() == mElemNumber)
             return i;
         else {
