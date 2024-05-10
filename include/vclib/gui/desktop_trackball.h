@@ -89,7 +89,8 @@ private:
         mKeyAtomicMap = {
             {{Key::R, {KeyModifier::NO_MODIFIER}},
              [&](TrackBallType& t) {
-                 t.reset(mDefaultTrackBallCenter, mDefaultTrackBallRadius);
+                 t.reset(
+                     mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
              }},
             {{Key::R, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
              [&](TrackBallType& t) {

@@ -96,7 +96,7 @@ public:
 
             if (mMRS.isWireframeVisible()) {
                 mMRB.bindVertexBuffers();
-                mMRB.bindIndexBuffers(false);
+                mMRB.bindIndexBuffers(mMRB.WIREFRAME);
                 bindUniforms(VCL_MRS_PRIMITIVE_LINES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);

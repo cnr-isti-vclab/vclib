@@ -42,6 +42,10 @@ class MeshRenderBuffers : public vcl::MeshRenderBuffers<MeshType>
     bgfx::IndexBufferHandle mTriangleNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mTriangleColorBH  = BGFX_INVALID_HANDLE;
 
+    bgfx::IndexBufferHandle mEdgeIndexBH  = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
+
     bgfx::IndexBufferHandle mWireframeIndexBH = BGFX_INVALID_HANDLE;
 
 public:
@@ -78,6 +82,9 @@ public:
         std::swap(mTriangleIndexBH, other.mTriangleIndexBH);
         std::swap(mTriangleNormalBH, other.mTriangleNormalBH);
         std::swap(mTriangleColorBH, other.mTriangleColorBH);
+        std::swap(mEdgeIndexBH, other.mEdgeIndexBH);
+        std::swap(mEdgeNormalBH, other.mEdgeNormalBH);
+        std::swap(mEdgeColorBH, other.mEdgeColorBH);
         std::swap(mWireframeIndexBH, other.mWireframeIndexBH);
     }
 
@@ -101,9 +108,9 @@ public:
         }
     }
 
-    void bindIndexBuffers(bool triangles = true)
+    void bindIndexBuffers(uint indexBufferToBind = Base::TRIANGLES)
     {
-        if (triangles) {
+        if (indexBufferToBind == Base::TRIANGLES) {
             bgfx::setIndexBuffer(mTriangleIndexBH);
 
             if (bgfx::isValid(mTriangleColorBH)) { // triangle colors
@@ -114,7 +121,18 @@ public:
                 bgfx::setBuffer(2, mTriangleNormalBH, bgfx::Access::Read);
             }
         }
-        else {
+        else if (indexBufferToBind == Base::EDGES) {
+            bgfx::setIndexBuffer(mEdgeIndexBH);
+
+            if (bgfx::isValid(mEdgeColorBH)) { // edge colors
+                bgfx::setBuffer(1, mEdgeColorBH, bgfx::Access::Read);
+            }
+
+            if (bgfx::isValid(mEdgeNormalBH)) { // edge normals
+                bgfx::setBuffer(2, mEdgeNormalBH, bgfx::Access::Read);
+            }
+        }
+        else if (indexBufferToBind == Base::WIREFRAME) {
             bgfx::setIndexBuffer(mWireframeIndexBH);
         }
     }
@@ -191,6 +209,34 @@ private:
         }
 
         // edge index buffer
+        if (Base::edgeBufferData()) {
+            mEdgeIndexBH = bgfx::createIndexBuffer(
+                bgfx::makeRef(
+                    Base::edgeBufferData(),
+                    Base::edgeBufferSize() * sizeof(uint32_t)),
+                BGFX_BUFFER_INDEX32);
+        }
+
+        // edge normal buffer
+        if (Base::edgeNormalBufferData()) {
+            mEdgeNormalBH = bgfx::createIndexBuffer(
+                bgfx::makeRef(
+                    Base::edgeNormalBufferData(),
+                    Base::edgeNumber() * 3 * sizeof(float)),
+                BGFX_BUFFER_COMPUTE_FORMAT_32X1 | BGFX_BUFFER_COMPUTE_READ |
+                    BGFX_BUFFER_COMPUTE_TYPE_FLOAT);
+        }
+
+        // edge color buffer
+        if (Base::edgeColorBufferData()) {
+            mEdgeColorBH = bgfx::createIndexBuffer(
+                bgfx::makeRef(
+                    Base::edgeColorBufferData(),
+                    Base::edgeNumber() * sizeof(uint32_t)),
+                BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
+        }
+
+        // wireframe index buffer
         if (Base::wireframeBufferData()) {
             mWireframeIndexBH = bgfx::createIndexBuffer(
                 bgfx::makeRef(
@@ -219,6 +265,15 @@ private:
 
         if (bgfx::isValid(mTriangleColorBH))
             bgfx::destroy(mTriangleColorBH);
+
+        if (bgfx::isValid(mEdgeIndexBH))
+            bgfx::destroy(mEdgeIndexBH);
+
+        if (bgfx::isValid(mEdgeNormalBH))
+            bgfx::destroy(mEdgeNormalBH);
+
+        if (bgfx::isValid(mEdgeColorBH))
+            bgfx::destroy(mEdgeColorBH);
 
         if (bgfx::isValid(mWireframeIndexBH))
             bgfx::destroy(mWireframeIndexBH);
