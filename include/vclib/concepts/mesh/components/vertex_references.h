@@ -45,7 +45,7 @@ concept HasVertexReferences = requires (
     const T&                             co,
     typename T::VertexType               v,
     std::vector<typename T::VertexType*> vecv,
-    std::vector<uint> vecu) {
+    std::vector<uint>                    vecu) {
     // clang-format off
     T::VERTEX_NUMBER;
     typename T::VertexReferences;

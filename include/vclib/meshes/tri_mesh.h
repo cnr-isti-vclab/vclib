@@ -128,7 +128,7 @@ using TriMeshIndexedf = TriMeshT<float, true>;
  * and adjacency information.
  * @ingroup meshes
  */
-using TriMeshIndexed  = TriMeshT<double, true>;
+using TriMeshIndexed = TriMeshT<double, true>;
 
 } // namespace vcl
 

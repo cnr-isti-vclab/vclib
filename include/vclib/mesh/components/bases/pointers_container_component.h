@@ -207,8 +207,8 @@ private:
     const Elem* baseOfElemContainer() const
     {
         return &(Base::parentElement()
-                    ->parentMesh()
-                    ->template element<Elem::ELEMENT_ID>(0));
+                     ->parentMesh()
+                     ->template element<Elem::ELEMENT_ID>(0));
     }
 };
 

@@ -112,13 +112,13 @@ namespace vcl::comp {
  * some reallocation happens.
  */
 template<
-    typename DerivedComponent, // CRTP pattern, derived class
-    uint COMP_ID,              // component id
-    typename DataType,         // data stored by the component
-    typename ParentElemType,   // parent element type
-    bool VERT,                 // true if component vertical
-    bool OPT,                  // true if component vertical and optional
-    typename... ReferencedTypes>  // types of the refs stored by the component
+    typename DerivedComponent,   // CRTP pattern, derived class
+    uint COMP_ID,                // component id
+    typename DataType,           // data stored by the component
+    typename ParentElemType,     // parent element type
+    bool VERT,                   // true if component vertical
+    bool OPT,                    // true if component vertical and optional
+    typename... ReferencedTypes> // types of the refs stored by the component
 class Component : public ReferencesComponentTriggerer<ReferencedTypes>...
 {
 public:

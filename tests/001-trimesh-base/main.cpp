@@ -237,14 +237,14 @@ TEMPLATE_TEST_CASE(
     using PointT = TriMesh::VertexType::CoordType;
 
     m.addVertices(
-        PointT(-0.5, -0.5,  0.5),
-        PointT( 0.5, -0.5,  0.5),
-        PointT(-0.5,  0.5,  0.5),
-        PointT( 0.5,  0.5,  0.5),
-        PointT(-0.5,  0.5, -0.5),
-        PointT( 0.5,  0.5, -0.5),
+        PointT(-0.5, -0.5, 0.5),
+        PointT(0.5, -0.5, 0.5),
+        PointT(-0.5, 0.5, 0.5),
+        PointT(0.5, 0.5, 0.5),
+        PointT(-0.5, 0.5, -0.5),
+        PointT(0.5, 0.5, -0.5),
         PointT(-0.5, -0.5, -0.5),
-        PointT( 0.5, -0.5, -0.5));
+        PointT(0.5, -0.5, -0.5));
     m.reserveFaces(12);
     m.addFace(0, 1, 2);
     m.addFace(1, 3, 2);
@@ -281,7 +281,7 @@ TEMPLATE_TEST_CASE(
 
         REQUIRE(m.face(2).indexOfVertex(&m.vertex(0)) == vcl::UINT_NULL);
         REQUIRE(m.face(2).indexOfVertex(&m.vertex(3)) == 1);
-        REQUIRE(m.face(2).indexOfVertex((uint)0) == vcl::UINT_NULL);
+        REQUIRE(m.face(2).indexOfVertex((uint) 0) == vcl::UINT_NULL);
         REQUIRE(m.face(2).indexOfVertex(4) == 2);
 
         REQUIRE(m.face(3).indexOfEdge(&m.vertex(5), &m.vertex(4)) == 1);

@@ -345,8 +345,8 @@ protected:
      * Deleted elements are automatically jumped by the iterators provided by
      * the Element Container.
      *
-     * @warning If there were pointers/indices to the deleted element in this or other
-     * containers, they will not be updated.
+     * @warning If there were pointers/indices to the deleted element in this or
+     * other containers, they will not be updated.
      *
      * @param[in] e: the pointer of the element that will be marked as deleted.
      */

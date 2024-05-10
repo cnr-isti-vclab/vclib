@@ -41,8 +41,7 @@ TEMPLATE_TEST_CASE(
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
 
-    TriMesh tm =
-        vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/TextureDouble.ply");
+    TriMesh tm = vcl::loadPly<TriMesh>(VCLIB_ASSETS_PATH "/TextureDouble.ply");
 
     tm.template addCustomComponent<int>("cust_comp", 4);
     tm.template addPerVertexCustomComponent<float>("v_comp");

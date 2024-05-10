@@ -87,7 +87,14 @@ template<
 class AdjacentFaces :
         public ReferencesContainerComponent<
             STORE_INDICES,
-            AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>,
+            AdjacentFaces<
+                STORE_INDICES,
+                Face,
+                N,
+                TTVN,
+                ParentElemType,
+                VERT,
+                OPT>,
             CompId::ADJACENT_FACES,
             Face,
             N,
@@ -553,10 +560,7 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over adjacent faces.
      */
-    View<AdjacentFaceIterator> adjFaces()
-    {
-        return Base::elements();
-    }
+    View<AdjacentFaceIterator> adjFaces() { return Base::elements(); }
 
     /**
      * @brief Returns a lightweight const view object that stores the begin and

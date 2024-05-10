@@ -1490,15 +1490,10 @@ protected:
 
     // this function is required in order to get msvc compile
     template<typename Element, typename... A>
-    void updateReferences(
-        const Element* oldBase,
-        TypeWrapper<A...>)
+    void updateReferences(const Element* oldBase, TypeWrapper<A...>)
     {
         updateReferences(
-            oldBase,
-            TypeWrapper<A...>(),
-            std::array<std::size_t, 0>(),
-            0);
+            oldBase, TypeWrapper<A...>(), std::array<std::size_t, 0>(), 0);
     }
 
     // this function is required in order to get msvc compile

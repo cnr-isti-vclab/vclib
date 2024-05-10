@@ -48,6 +48,7 @@ struct VertexIndex
     VertexIndex(uint vi) : vi(vi) {}
 
     operator uint() const { return vi; }
+
 private:
     uint vi;
 };
@@ -57,6 +58,7 @@ struct FaceIndex
     FaceIndex(uint vi) : vi(vi) {}
 
     operator uint() const { return vi; }
+
 private:
     uint vi;
 };

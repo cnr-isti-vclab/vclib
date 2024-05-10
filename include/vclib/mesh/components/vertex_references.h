@@ -502,10 +502,7 @@ public:
      * @param[in] vi: The index to the vertex to push in the back of the
      * container.
      */
-    void pushVertex(uint vi) requires (N < 0)
-    {
-        Base::pushBack(vi);
-    }
+    void pushVertex(uint vi) requires (N < 0) { Base::pushBack(vi); }
 
     /**
      * @brief Inserts the given vertex in the container at the given position.
@@ -527,10 +524,7 @@ public:
      * @param[in] i: The position in this container where to insert the vertex.
      * @param[in] vi: The index of the vertex to insert in the container.
      */
-    void insertVertex(uint i, uint vi) requires (N < 0)
-    {
-        Base::insert(i, vi);
-    }
+    void insertVertex(uint i, uint vi) requires (N < 0) { Base::insert(i, vi); }
 
     /**
      * @brief Removes the vertex at the given position from the container.
@@ -618,10 +612,7 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over vertices.
      */
-    View<VertexIterator> vertices()
-    {
-        return Base::elements();
-    }
+    View<VertexIterator> vertices() { return Base::elements(); }
 
     /**
      * @brief Returns a lightweight const view object that stores the begin and
@@ -639,10 +630,7 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over vertices.
      */
-    View<ConstVertexIterator> vertices() const
-    {
-        return Base::elements();
-    }
+    View<ConstVertexIterator> vertices() const { return Base::elements(); }
 
     /**
      * @brief Returns a lightweight view object that stores the begin and end

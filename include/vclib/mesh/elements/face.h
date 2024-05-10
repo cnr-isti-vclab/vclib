@@ -112,8 +112,7 @@ public:
      */
     template<typename... V>
     void setVertices(V... args) requires (
-        (std::convertible_to<V, VertexType*> ||
-         std::convertible_to<V, uint>) &&
+        (std::convertible_to<V, VertexType*> || std::convertible_to<V, uint>) &&
         ...)
     {
         setVertices(std::list({args...}));

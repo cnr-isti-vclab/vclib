@@ -51,7 +51,7 @@ class PointerFromIndexIterator
     using PE = std::conditional_t<CNST, const ParentElement*, ParentElement*>;
 
     Iterator mIt;
-    PE parentElement = nullptr;
+    PE       parentElement = nullptr;
 
 public:
     using difference_type   = ptrdiff_t;

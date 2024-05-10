@@ -560,10 +560,7 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over adjacent edges.
      */
-    View<AdjacentEdgeIterator> adjEdges()
-    {
-        return Base::elements();
-    }
+    View<AdjacentEdgeIterator> adjEdges() { return Base::elements(); }
 
     /**
      * @brief Returns a lightweight const view object that stores the begin and

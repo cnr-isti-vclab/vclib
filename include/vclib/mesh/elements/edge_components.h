@@ -103,8 +103,8 @@ using VerticalAdjacentFaces =
     comp::AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType, true>;
 
 template<bool INDEXED, typename FaceType, typename ParentEdgeType>
-using OptionalAdjacentFaces =
-    comp::AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType, true, true>;
+using OptionalAdjacentFaces = comp::
+    AdjacentFaces<INDEXED, FaceType, -1, false, ParentEdgeType, true, true>;
 
 template<typename FaceType, typename ParentEdgeType>
 using AdjacentFaceIndices =

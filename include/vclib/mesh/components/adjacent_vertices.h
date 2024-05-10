@@ -82,7 +82,7 @@ template<
 class AdjacentVertices :
         public ReferencesContainerComponent<
             STORE_INDICES,
-            AdjacentVertices<STORE_INDICES,Vertex, ParentElemType, VERT, OPT>,
+            AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>,
             CompId::ADJACENT_VERTICES,
             Vertex,
             -1,
@@ -93,7 +93,7 @@ class AdjacentVertices :
 {
     using Base = ReferencesContainerComponent<
         STORE_INDICES,
-        AdjacentVertices<STORE_INDICES,Vertex, ParentElemType, VERT, OPT>,
+        AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_VERTICES,
         Vertex,
         -1,
@@ -155,7 +155,7 @@ public:
      * @param[in] i: the position of the required vertex in this container.
      * @return The index of the i-th adjacent vertex of the element.
      */
-    uint adjVertexIndex(uint i) const {return Base::elementIndex(i); }
+    uint adjVertexIndex(uint i) const { return Base::elementIndex(i); }
 
     /**
      * @brief Returns the pointer to the i-th adjacent vertex of the element,
@@ -315,7 +315,8 @@ public:
      *
      * @param[in] i: the position in this container w.r.t. the position 0 on
      * which set the adj vertex; value is modularized on adjVerticesNumber().
-     * @param[in] vi: The index in the vertex container of the adj vertex to set.
+     * @param[in] vi: The index in the vertex container of the adj vertex to
+     * set.
      */
     void setAdjVertexMod(int i, uint vi) { Base::setElementMod(i, vi); }
 

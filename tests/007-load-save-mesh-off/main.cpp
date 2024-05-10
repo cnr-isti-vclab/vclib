@@ -85,8 +85,8 @@ std::istringstream offTriCube()
     return ss;
 }
 
-using Meshes  = std::pair<vcl::TriMesh, vcl::PolyMesh>;
-using Meshesf = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
+using Meshes         = std::pair<vcl::TriMesh, vcl::PolyMesh>;
+using Meshesf        = std::pair<vcl::TriMeshf, vcl::PolyMeshf>;
 using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::PolyMeshIndexed>;
 using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf>;
 

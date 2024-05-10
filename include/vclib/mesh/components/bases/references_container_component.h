@@ -75,26 +75,27 @@ template<
     bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
     bool TTVN>                 // true if container size tied to vertex number
-class ReferencesContainerComponent : public std::conditional_t<
-    STORE_INDICES,
-    IndicesContainerComponent<
-        DerivedComponent,
-        COMP_ID,
-        Elem,
-        N,
-        ParentElemType,
-        VERT,
-        OPT,
-        TTVN>,
-    PointersContainerComponent<
-        DerivedComponent,
-        COMP_ID,
-        Elem,
-        N,
-        ParentElemType,
-        VERT,
-        OPT,
-        TTVN>>
+class ReferencesContainerComponent :
+        public std::conditional_t<
+            STORE_INDICES,
+            IndicesContainerComponent<
+                DerivedComponent,
+                COMP_ID,
+                Elem,
+                N,
+                ParentElemType,
+                VERT,
+                OPT,
+                TTVN>,
+            PointersContainerComponent<
+                DerivedComponent,
+                COMP_ID,
+                Elem,
+                N,
+                ParentElemType,
+                VERT,
+                OPT,
+                TTVN>>
 {
 protected:
     using Base = std::conditional_t<
@@ -223,7 +224,7 @@ protected:
     template<Range Rng>
     void setElements(Rng&& r) requires RangeOfConvertibleTo<Rng, Elem*>
     {
-        if constexpr(STORE_INDICES) {
+        if constexpr (STORE_INDICES) {
             auto conv = [&](auto v) {
                 return indexFromPointer(v);
             };
@@ -238,7 +239,7 @@ protected:
     template<Range Rng>
     void setElements(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
     {
-        if constexpr(STORE_INDICES) {
+        if constexpr (STORE_INDICES) {
             Base::container().set(r);
         }
         else {
