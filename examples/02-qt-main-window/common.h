@@ -26,14 +26,15 @@
 #include <vclib/algorithms/mesh/update/color.h>
 #include <vclib/algorithms/mesh/update/normal.h>
 #include <vclib/load_save.h>
-#include <vclib/meshes/tri_mesh.h>
+#include <vclib/meshes/poly_mesh.h>
 
 #include <vclib/ext/bgfx/drawable_mesh.h>
 
-vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh()
+template<vcl::MeshConcept MeshType>
+vcl::bgf::DrawableMesh<MeshType> getDrawableMesh()
 {
     // load a mesh:
-    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
+    MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/greek_helmet.obj");
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
@@ -46,7 +47,7 @@ vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh()
     vcl::MeshRenderSettings settings(m);
 
     // create a DrawableMesh object from the mesh
-    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable(m);
+    vcl::bgf::DrawableMesh<MeshType> drawable(m);
 
     // set the settings to the drawable mesh
     drawable.setRenderSettings(settings);

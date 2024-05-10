@@ -220,7 +220,8 @@ public:
 
     void resetTrackBall()
     {
-        mTrackball.reset(mDefaultTrackBallCenter, mDefaultTrackBallRadius);
+        mTrackball.reset(
+            mDefaultTrackBallCenter, 1.5 / mDefaultTrackBallRadius);
     }
 
     void setTrackBall(const Point3<Scalar>& center, Scalar radius)

@@ -27,7 +27,7 @@
 MainWindowQt::MainWindowQt() : vcl::qbgf::ViewerMainWindow()
 {
     // load and set up a drawable mesh
-    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    auto drawable = getDrawableMesh<vcl::PolyMesh>();
 
     auto v = std::make_shared<vcl::DrawableObjectVector>();
     v->pushBack(drawable);

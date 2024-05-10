@@ -38,6 +38,7 @@ class MeshRenderBuffers
 {
     std::vector<float>    mVerts;
     std::vector<uint32_t> mTris;
+    std::vector<uint32_t> mEdges;
     std::vector<uint32_t> mWireframe;
 
     std::vector<float>    mVNormals;
@@ -48,6 +49,9 @@ class MeshRenderBuffers
     std::vector<uint32_t> mTColors;
     std::vector<float>    mWTexCoords;
     std::vector<short>    mWTexIds;
+
+    std::vector<float> mENormals;
+    std::vector<uint32_t> mEColors;
 
     std::array<float, 4> mMeshColor = {0.5, 0.5, 0.5, 1};
 
@@ -65,11 +69,14 @@ public:
         TRI_NORMALS     = 1 << 4,
         TRI_COLORS      = 1 << 5,
         WEDGE_TEXCOORDS = 1 << 6,
+
         WIREFRAME       = 1 << 7,
 
         EDGES = 1 << 8,
+        EDGE_COLORS = 1 << 9,
+        EDGE_NORMALS = 1 << 10,
 
-        TEXTURES = 1 << 9,
+        TEXTURES = 1 << 11,
 
         ALL = 0xFFFFFFFF,
     };
@@ -89,6 +96,9 @@ public:
         if (buffersToFill & TRIANGLES)
             fillTriangles(m, buffersToFill);
 
+        if (buffersToFill & EDGES)
+            fillEdges(m, buffersToFill);
+
         if (buffersToFill & WIREFRAME)
             fillWireframe(m);
 
@@ -102,6 +112,7 @@ public:
     {
         mVerts.clear();
         mTris.clear();
+        mEdges.clear();
         mWireframe.clear();
         mVNormals.clear();
         mVColors.clear();
@@ -110,6 +121,8 @@ public:
         mVTexCoords.clear();
         mWTexCoords.clear();
         mWTexIds.clear();
+        mENormals.clear();
+        mEColors.clear();
         mMeshColor = {0.5, 0.5, 0.5, 1};
         mTriPolyMap.clear();
         mTextures.clear();
@@ -119,6 +132,8 @@ public:
     uint vertexNumber() const { return mVerts.size() / 3; }
 
     uint triangleNumber() const { return mTris.size() / 3; }
+
+    uint edgeNumber() const { return mEdges.size() / 2; }
 
     uint wireframeEdgeNumber() const { return mWireframe.size() / 2; }
 
@@ -150,6 +165,15 @@ public:
     }
 
     const uint triangleBufferSize() const { return mTris.size(); }
+
+    const uint32_t* edgeBufferData() const
+    {
+        if (mEdges.empty())
+            return nullptr;
+        return mEdges.data();
+    }
+
+    const uint edgeBufferSize() const { return mEdges.size(); }
 
     const uint32_t* wireframeBufferData() const
     {
@@ -207,6 +231,20 @@ public:
         if (mWTexIds.empty())
             return nullptr;
         return mWTexIds.data();
+    }
+
+    const float* edgeNormalBufferData() const
+    {
+        if (mENormals.empty())
+            return nullptr;
+        return mENormals.data();
+    }
+
+    const uint32_t* edgeColorBufferData() const
+    {
+        if (mEColors.empty())
+            return nullptr;
+        return mEColors.data();
     }
 
     const float* meshColorBufferData() const { return mMeshColor.data(); }
@@ -479,6 +517,52 @@ private:
                                     mWTexIds.push_back(f.textureIndex());
                                 }
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void fillEdges(const MeshType& m, uint buffersToFill)
+    {
+        if constexpr (vcl::HasEdges<MeshType>) {
+            mEdges.reserve(m.edgeNumber() * 2);
+
+            if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
+                if (buffersToFill & EDGE_NORMALS) {
+                    if (vcl::isPerEdgeNormalAvailable(m)) {
+                        mENormals.reserve(m.edgeNumber() * 3);
+                    }
+                }
+            }
+
+            if constexpr (vcl::HasPerEdgeColor<MeshType>) {
+                if (buffersToFill & EDGE_COLORS) {
+                    if (vcl::isPerEdgeColorAvailable(m)) {
+                        mEColors.reserve(m.edgeNumber());
+                    }
+                }
+            }
+
+            for (const auto& e : m.edges()) {
+                mEdges.push_back(m.vertexIndexIfCompact(m.index(e.vertex(0))));
+                mEdges.push_back(m.vertexIndexIfCompact(m.index(e.vertex(1))));
+
+                if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
+                    if (buffersToFill & EDGE_NORMALS) {
+                        if (vcl::isPerEdgeNormalAvailable(m)) {
+                            mENormals.push_back(e.normal().x());
+                            mENormals.push_back(e.normal().y());
+                            mENormals.push_back(e.normal().z());
+                        }
+                    }
+                }
+
+                if constexpr (vcl::HasPerEdgeColor<MeshType>) {
+                    if (buffersToFill & EDGE_COLORS) {
+                        if (vcl::isPerEdgeColorAvailable(m)) {
+                            mEColors.push_back(e.color().abgr());
                         }
                     }
                 }
