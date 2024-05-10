@@ -298,6 +298,64 @@ bool enableIfPerEdgeMarkOptional(MeshType& m)
     return enableIfPerElementComponentOptional<ElemId::EDGE, CompId::MARK>(m);
 }
 
+// Edge Normal
+
+/**
+ * @brief Returns true if the Normal component is available (enabled) in
+ * the Edge element of the input mesh m.
+ *
+ * This function returns `true` when the Normal component can be used on the
+ * element, whether the component is horizontal, vertical or optional.
+ *
+ * These are the following cases:
+ * - if the Edge Element does not have a Normal Component, the
+ *   function returns `false`;
+ * - if the Edge Element has a non-optional Normal Component, the
+ *   function returns `true`;
+ * - if the Edge Element has an optional Normal Component, the function
+ *   returns `true` if the Normal component is enabled, false otherwise
+ *   (this check is the only one that is made at runtime);
+ *
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] m: the mesh on which check the availability of the Normal
+ * Component in the Edge Element.
+ * @return `true` if the Normal Component is available in the Edge
+ * Element of the given Mesh.
+ *
+ * @ingroup edge_requirements
+ */
+template<EdgeMeshConcept MeshType>
+bool isPerEdgeNormalAvailable(const MeshType& m)
+{
+    return isPerElementComponentAvailable<ElemId::EDGE, CompId::NORMAL>(m);
+}
+
+/**
+ * @brief If the input mesh has a EdgeContainer, and the Edge
+ * Element has a Normal Component, this function enables the Component in
+ * the Element if the component needs to be enabled (meaning that it is
+ * optional).
+ * Returns `true` if, after the call of this function, the Normal component
+ * will be available in the Edge Element of the mesh.
+ *
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in] m: the mesh on which enable the Normal component in the
+ * Edge Element.
+ * @return `true` if the Normal Component is available in the EdgeElement
+ * after the call of this funciton.
+ *
+ * @ingroup edge_requirements
+ */
+template<EdgeMeshConcept MeshType>
+bool enableIfPerEdgeNormalOptional(MeshType& m)
+{
+    return enableIfPerElementComponentOptional<ElemId::EDGE, CompId::NORMAL>(m);
+}
+
 // Edge Quality
 
 /**
@@ -525,6 +583,41 @@ template<EdgeMeshConcept MeshType>
 void requirePerEdgeMark(const MeshType& m) requires HasPerEdgeMark<MeshType>
 {
     requirePerElementComponent<ElemId::EDGE, CompId::MARK>(m);
+}
+
+// Edge Normal
+
+/**
+ * @brief This function asserts that a Mesh has a EdgeContainer,
+ * the Edge has a Normal Component, and that the Normal Component is
+ * enabled and available at runtime.
+ *
+ * If the Mesh:
+ * - has not a Container of the given ElementEnumType;
+ * - has the Container but the Element has not a Component of the given
+ *   ComponentEnumType;
+ * a build error will be generated.
+ *
+ * If the Mesh:
+ * - has the Edge Container, the Edge has the Normal Component,
+ * but the Component is not enabled, a vcl::MissingComponentException will be
+ * thrown.
+ *
+ * @tparam MeshType: the type of the Mesh to check, it must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @throws vcl::MissingComponentException if the Normal Component is not
+ * enabled in the EdgeContainer of the Mesh.
+ *
+ * @param[in] m: the mesh on which check the availability of the Normal
+ * Component in the Edge.
+ *
+ * @ingroup edge_requirements
+ */
+template<EdgeMeshConcept MeshType>
+void requirePerEdgeNormal(const MeshType& m) requires HasPerEdgeNormal<MeshType>
+{
+    requirePerElementComponent<ElemId::EDGE, CompId::NORMAL>(m);
 }
 
 // Edge Quality

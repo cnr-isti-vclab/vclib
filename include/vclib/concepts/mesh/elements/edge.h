@@ -65,6 +65,10 @@ concept HasMark = comp::HasMark<T>;
 template<typename T>
 concept HasOptionalMark = comp::HasOptionalMark<T>;
 template<typename T>
+concept HasNormal = comp::HasNormal<T>;
+template<typename T>
+concept HasOptionalNormal = comp::HasOptionalNormal<T>;
+template<typename T>
 concept HasQuality = comp::HasQuality<T>;
 template<typename T>
 concept HasOptionalQuality = comp::HasOptionalQuality<T>;

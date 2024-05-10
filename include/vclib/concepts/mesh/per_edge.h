@@ -127,6 +127,20 @@ concept HasPerEdgeMark =
     HasEdges<MeshType> && vcl::edge::HasMark<typename MeshType::EdgeType>;
 
 /**
+ * @brief Concept that checks if a Mesh has the per Edge Normal component.
+ *
+ * Evaluates to true if Normal is part of the Edge element, whether it is
+ * horizontal, vertical or optional.
+ *
+ * @tparam MeshType: mesh type to check.
+ *
+ * @ingroup edge_mesh_concepts
+ */
+template<typename MeshType>
+concept HasPerEdgeNormal =
+    HasEdges<MeshType> && vcl::edge::HasNormal<typename MeshType::EdgeType>;
+
+/**
  * @brief Concept that checks if a Mesh has the per Edge Quality component.
  *
  * Evaluates to true if Quality is part of the Edge element, whether it is
