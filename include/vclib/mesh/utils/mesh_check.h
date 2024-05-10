@@ -137,9 +137,9 @@ bool checkElementPointersInElementContainerOnComponent(
                             throw InconsistentMeshException(
                                 "The " + vcl::elementEnumString<ELEM_ID>() +
                                 " n. " + vcl::toString(el.index()) +
-                                " has a wrong pointer in " +
+                                " has a wrong index in " +
                                 vcl::componentEnumString<Comp::COMPONENT_ID>() +
-                                " component.\n" + "The pointer " +
+                                " component.\n" + "The index " +
                                 vcl::toString(i) + " is out of range [ 0, " +
                                 vcl::toString(last - first) + ")");
                             return false;
