@@ -50,7 +50,7 @@ class MeshRenderBuffers
     std::vector<float>    mWTexCoords;
     std::vector<short>    mWTexIds;
 
-    std::vector<float> mENormals;
+    std::vector<float>    mENormals;
     std::vector<uint32_t> mEColors;
 
     std::array<float, 4> mMeshColor = {0.5, 0.5, 0.5, 1};
@@ -70,10 +70,10 @@ public:
         TRI_COLORS      = 1 << 5,
         WEDGE_TEXCOORDS = 1 << 6,
 
-        WIREFRAME       = 1 << 7,
+        WIREFRAME = 1 << 7,
 
-        EDGES = 1 << 8,
-        EDGE_COLORS = 1 << 9,
+        EDGES        = 1 << 8,
+        EDGE_COLORS  = 1 << 9,
         EDGE_NORMALS = 1 << 10,
 
         TEXTURES = 1 << 11,
