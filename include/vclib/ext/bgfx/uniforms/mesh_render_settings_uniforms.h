@@ -59,7 +59,7 @@ public:
 
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
-        mDrawPack[1] = ShaderUniform::uintBitsToFloat(settings.drawMode());
+        mDrawPack[1] = ShaderUniform::uintBitsToFloat(settings.drawMode0());
         mDrawPack[2] = settings.pointWidth();
 
         mColorPack[0] = ShaderUniform::uintBitsToFloat(

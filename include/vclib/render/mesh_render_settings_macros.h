@@ -31,6 +31,8 @@
 #define VCL_MRS_PRIMITIVE_LINES     uint(1 << 1)
 #define VCL_MRS_PRIMITIVE_TRIANGLES uint(1 << 2)
 
+/* uint mDrawMode0 */
+
 #define VCL_MRS_DRAW_MESH uint(1 << 0) // mesh visibility
 
 // points
@@ -65,5 +67,17 @@
 
 // bounding box - TODO: remove this
 #define VCL_MRS_DRAW_BOUNDINGBOX uint(1 << 31) // bounding box visibility
+
+/* uint mDrawMode1 */
+
+// edges
+#define VCL_MRS_DRAW_EDGES           uint(1 << 0) // draw edges
+#define VCL_MRS_EDGES_SHADING_NONE   uint(1 << 1) // no shading
+#define VCL_MRS_EDGES_SHADING_FLAT   uint(1 << 2) // edge normal shading
+#define VCL_MRS_EDGES_SHADING_SMOOTH uint(1 << 3) // vertex normal shading
+#define VCL_MRS_EDGES_COLOR_VERTEX   uint(1 << 4) // vert color for edges
+#define VCL_MRS_EDGES_COLOR_EDGE     uint(1 << 5) // edge color for edges
+#define VCL_MRS_EDGES_COLOR_USER     uint(1 << 6) // user color for edges
+#define VCL_MRS_EDGES_COLOR_MESH     uint(1 << 7) // mesh color for edges
 
 #endif // VCL_RENDER_MESH_RENDER_SETTINGS_MACROS_H

@@ -104,7 +104,7 @@ void main()
     }
     else { // wireframe
         // shading
-        if (bool(drawMode & VCL_MRS_WIREFRAME_SHADING_VERT)) {
+        if (!bool(drawMode & VCL_MRS_WIREFRAME_SHADING_NONE)) {
             light = computeLight(u_lightDir, u_lightColor, normal);
         }
 
