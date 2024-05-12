@@ -71,7 +71,7 @@ class MeshRenderSettings
 
     float mPointWidth        = 3;
     float mPointUserColor[4] = {1, 1, 0, 1}; // todo: change to uint
-    uint  mSurfUserColor     = 0xFF808080; // abgr
+    uint  mSurfUserColor     = 0xFF808080;   // abgr
     int   mWrfWidth          = 1;
     float mWrfUserColor[4]   = {0, 0, 0, 1}; // todo: change to uint
     int   mEdgesWidth        = 1;
@@ -212,7 +212,10 @@ public:
 
     bool isVisible() const { return mDrawMode0 & VCL_MRS_DRAW_MESH; }
 
-    bool isPointCloudVisible() const { return mDrawMode0 & VCL_MRS_DRAW_POINTS; }
+    bool isPointCloudVisible() const
+    {
+        return mDrawMode0 & VCL_MRS_DRAW_POINTS;
+    }
 
     bool isPointCloudShadingNone() const
     {
@@ -531,7 +534,8 @@ public:
                     if constexpr (vcl::HasPerVertexColor<MeshType>) {
                         if (vcl::isPerVertexColorAvailable(m)) {
                             mDrawModeCapability0 |= VCL_MRS_SURF_COLOR_VERTEX;
-                            mDrawModeCapability0 |= VCL_MRS_WIREFRAME_COLOR_VERT;
+                            mDrawModeCapability0 |=
+                                VCL_MRS_WIREFRAME_COLOR_VERT;
                         }
                     }
 
@@ -574,8 +578,7 @@ public:
 
                     if constexpr (vcl::HasPerEdgeNormal<MeshType>) {
                         if (vcl::isPerEdgeNormalAvailable(m)) {
-                            mDrawModeCapability1 |=
-                                VCL_MRS_EDGES_SHADING_FLAT;
+                            mDrawModeCapability1 |= VCL_MRS_EDGES_SHADING_FLAT;
                         }
                     }
 
