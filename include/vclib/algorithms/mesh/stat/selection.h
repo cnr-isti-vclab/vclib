@@ -28,16 +28,47 @@
 
 namespace vcl {
 
+namespace detail {
+
+template<uint ELEM_ID, MeshConcept MeshType>
+uint elementSelectionNumber(const MeshType& m)
+{
+    return std::ranges::distance(
+        m.template elements<ELEM_ID>() | views::selected);
+}
+
+} // namespace detail
+
 template<MeshConcept MeshType>
 uint vertexSelectionNumber(const MeshType& m)
 {
-    return std::ranges::distance(m.vertices() | views::selected);
+    return detail::elementSelectionNumber<ElemId::VERTEX>(m);
 }
 
 template<FaceMeshConcept MeshType>
 uint faceSelectionNumber(const MeshType& m)
 {
-    return std::ranges::distance(m.faces() | views::selected);
+    return detail::elementSelectionNumber<ElemId::FACE>(m);
+}
+
+template<FaceMeshConcept MeshType>
+uint faceEdgesSelectionNumber(const MeshType& m)
+{
+    uint cnt = 0;
+    for (const auto& f : m.faces()) {
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
+            if (f.edgeSelected(i)) {
+                ++cnt;
+            }
+        }
+    }
+    return cnt;
+}
+
+template<EdgeMeshConcept MeshType>
+uint edgeSelectionNumber(const MeshType& m)
+{
+    return detail::elementSelectionNumber<ElemId::EDGE>(m);
 }
 
 } // namespace vcl

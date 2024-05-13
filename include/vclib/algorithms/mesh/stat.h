@@ -25,6 +25,7 @@
 
 #include <vector>
 
+#include <vclib/algorithms/core/polygon/geometry.h>
 #include <vclib/mesh/utils/mesh_inertia.h>
 #include <vclib/space/matrix.h>
 #include <vclib/space/polygon.h>
@@ -322,6 +323,53 @@ std::vector<ScalarType> vertexRadiusFromWeights(
     }
 
     return radius;
+}
+
+/**
+ * @brief Returns a vector of pairs <face index; edge index> of the edges that
+ * have a dihedral angle outside the given range.
+ *
+ * If alsoBorderEdges is true, border edges are also considered.
+ *
+ * The algorithm requires the adjacency information of the faces.
+ *
+ * @param[in] m: Input mesh.
+ * @param[in] angleRadNeg: Minimum angle in radians.
+ * @param[in] angleRadPos: Maximum angle in radians.
+ * @param[in] alsoBorderEdges: If true, also border edges are considered.
+ * @return A vector of pairs <face index; edge index> of the edges that have a
+ * dihedral angle outside the given range.
+ */
+template<FaceMeshConcept MeshType>
+std::vector<std::pair<uint, uint>> creaseFaceEdges(
+    const MeshType& m,
+    double          angleRadNeg,
+    double          angleRadPos,
+    bool            alsoBorderEdges = false)
+{
+    vcl::requirePerFaceAdjacentFaces(m);
+
+    std::vector<std::pair<uint, uint>> creaseEdges;
+
+    for (const auto& f : m.faces()) {
+        for (uint i = 0; i < f.vertexNumber(); ++i) {
+            if (f.adjFace(i) == nullptr) {
+                // border edge
+                if (alsoBorderEdges) {
+                    creaseEdges.push_back({f.index(), i});
+                }
+
+            }
+            else {
+                // internal edge
+                double angle = vcl::faceDihedralAngleOnEdge(f, i);
+                if (angle < angleRadNeg || angle > angleRadPos) {
+                    creaseEdges.push_back({f.index(), i});
+                }
+            }
+        }
+    }
+    return creaseEdges;
 }
 
 } // namespace vcl
