@@ -679,6 +679,17 @@ bool MeshRenderSettings::setEdgesColorUserDefined()
     }
 }
 
+bool MeshRenderSettings::setEdgesWidth(int width)
+{
+    if (canEdgesBeVisible()) {
+        mEdgesWidth = width;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 bool MeshRenderSettings::setEdgesUserColor(float r, float g, float b, float a)
 {
     if (canEdgesBeVisible()) {

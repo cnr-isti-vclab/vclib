@@ -74,7 +74,18 @@ private slots:
     void on_wireframeShadingVertexRadioButton_toggled(bool checked);
     void on_wireframeColorComboBox_currentIndexChanged(int index);
     void on_wireframeColorDialogPushButton_clicked();
-    void on_wireframeSizelSlider_valueChanged(int value);
+    void on_wireframeSizeSlider_valueChanged(int value);
+
+    void on_edgesVisibilityCheckBox_stateChanged(int arg1);
+    void on_edgesShadingSmoothRadioButton_toggled(bool checked);
+    void on_edgesShadingFlatRadioButton_toggled(bool checked);
+    void on_edgesShadingNoneRadioButton_toggled(bool checked);
+
+    void on_edgesColorComboBox_currentIndexChanged(int index);
+
+    void on_edgesColorDialogPushButton_clicked();
+
+    void on_edgesSizelSlider_valueChanged(int value);
 
 private:
     enum POINT_COLOR { P_VERT = 0, P_MESH, P_USER };
@@ -90,6 +101,8 @@ private:
 
     enum WIRE_COLOR { W_VERTEX = 0, W_MESH, W_USER };
 
+    enum EDGES_COLOR { E_VERTEX = 0, E_EDGES, E_MESH, E_USER };
+
     void updateGuiFromSettings();
     void updatePointsTabFromSettings();
     void updatePointsColorComboBoxFromSettings();
@@ -98,6 +111,8 @@ private:
     void updateSurfaceColorComboBoxFromSettings();
     void updateWireframeTabFromSettings();
     void updateWireframeComboBoxFromSettings();
+    void updateEdgesTabFromSettings();
+    void updateEdgesComboBoxFromSettings();
 
     void   setButtonBackGround(QPushButton* b, const QColor& c);
     QColor getButtonBackGround(QPushButton* b);

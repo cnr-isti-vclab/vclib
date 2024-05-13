@@ -462,6 +462,8 @@ public:
 
     bool setEdgesColorUserDefined();
 
+    bool setEdgesWidth(int width);
+
     bool setEdgesUserColor(float r, float g, float b, float a = 1);
 
     bool setEdgesUserColor(const vcl::Color& c);

@@ -227,9 +227,73 @@ void MeshRenderSettingsFrame::on_wireframeColorDialogPushButton_clicked()
     }
 }
 
-void MeshRenderSettingsFrame::on_wireframeSizelSlider_valueChanged(int value)
+void MeshRenderSettingsFrame::on_wireframeSizeSlider_valueChanged(int value)
 {
     mMRS.setWireframeWidth(value);
+    emit settingsUpdated();
+}
+
+void MeshRenderSettingsFrame::on_edgesVisibilityCheckBox_stateChanged(int arg1)
+{
+    mMRS.setEdgesVisibility(arg1 == Qt::Checked);
+    emit settingsUpdated();
+}
+
+void MeshRenderSettingsFrame::on_edgesShadingSmoothRadioButton_toggled(
+    bool checked)
+{
+    if (checked) {
+        mMRS.setEdgesShadingSmooth();
+        emit settingsUpdated();
+    }
+}
+
+void MeshRenderSettingsFrame::on_edgesShadingFlatRadioButton_toggled(
+    bool checked)
+{
+    if (checked) {
+        mMRS.setEdgesShadingFlat();
+        emit settingsUpdated();
+    }
+}
+
+void MeshRenderSettingsFrame::on_edgesShadingNoneRadioButton_toggled(
+    bool checked)
+{
+    if (checked) {
+        mMRS.setEdgesShadingNone();
+        emit settingsUpdated();
+    }
+}
+
+void MeshRenderSettingsFrame::on_edgesColorComboBox_currentIndexChanged(
+    int index)
+{
+    switch (index) {
+    case E_VERTEX: mMRS.setEdgesColorPerVertex(); break;
+    case E_EDGES: mMRS.setEdgesColorPerEdge(); break;
+    case E_MESH: mMRS.setEdgesColorPerMesh(); break;
+    case E_USER: mMRS.setEdgesColorUserDefined(); break;
+    }
+    mUI->edgesUserColorFrame->setVisible(index == E_USER);
+    emit settingsUpdated();
+}
+
+void MeshRenderSettingsFrame::on_edgesColorDialogPushButton_clicked()
+{
+    QColor color = QColorDialog::getColor();
+    if (color.isValid()) {
+        setButtonBackGround(mUI->edgesColorDialogPushButton, color);
+
+        mMRS.setEdgesUserColor(
+            color.redF(), color.greenF(), color.blueF(), color.alphaF());
+        emit settingsUpdated();
+    }
+}
+
+void MeshRenderSettingsFrame::on_edgesSizelSlider_valueChanged(int value)
+{
+    mMRS.setEdgesWidth(value);
     emit settingsUpdated();
 }
 
@@ -240,12 +304,14 @@ void MeshRenderSettingsFrame::updateGuiFromSettings()
         updatePointsTabFromSettings();
         updateSurfaceTabFromSettings();
         updateWireframeTabFromSettings();
+        updateEdgesTabFromSettings();
     }
     else {
         mUI->tabWidget->setEnabled(false);
         mUI->pointVisibilityCheckBox->setChecked(false);
         mUI->surfaceVisibilityCheckBox->setChecked(false);
         mUI->wireframeVisibilityCheckBox->setChecked(false);
+        mUI->edgesVisibilityCheckBox->setChecked(false);
     }
 }
 
@@ -416,7 +482,7 @@ void MeshRenderSettingsFrame::updateWireframeTabFromSettings()
             mMRS.isWireframeShadingNone());
 
         updateWireframeComboBoxFromSettings();
-        mUI->wireframeSizelSlider->setValue(mMRS.wireframeWidth());
+        mUI->wireframeSizeSlider->setValue(mMRS.wireframeWidth());
     }
     else {
         mUI->wireframeTab->setEnabled(false);
@@ -455,6 +521,72 @@ void MeshRenderSettingsFrame::updateWireframeComboBoxFromSettings()
     vcl::Color vc = mMRS.wireframeUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->wireframeColorDialogPushButton, c);
+}
+
+void MeshRenderSettingsFrame::updateEdgesTabFromSettings()
+{
+    if (mMRS.canEdgesBeVisible()) {
+        mUI->edgesTab->setEnabled(true);
+        mUI->edgesVisibilityCheckBox->setEnabled(mMRS.isEdgesVisible());
+        mUI->edgesShadingSmoothRadioButton->setEnabled(
+            mMRS.canEdgesShadingBeSmooth());
+        mUI->edgesShadingSmoothRadioButton->setChecked(
+            mMRS.canEdgesShadingBeSmooth());
+        mUI->edgesShadingFlatRadioButton->setEnabled(
+            mMRS.canEdgesShadingBeFlat());
+        mUI->edgesShadingFlatRadioButton->setChecked(
+            mMRS.canEdgesShadingBeFlat());
+        mUI->edgesShadingNoneRadioButton->setChecked(
+            mMRS.isEdgesShadingNone());
+    }
+    else {
+        mUI->edgesTab->setEnabled(false);
+    }
+}
+
+void MeshRenderSettingsFrame::updateEdgesComboBoxFromSettings()
+{
+    QStandardItemModel* model =
+        qobject_cast<QStandardItemModel*>(mUI->edgesColorComboBox->model());
+    assert(model != nullptr);
+    QStandardItem* item = model->item(E_VERTEX);
+    if (mMRS.canEdgesColorBePerVertex()) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+
+    item = model->item(E_EDGES);
+    if (mMRS.canEdgesColorBePerEdge()) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+
+    item = model->item(E_MESH);
+    if (mMRS.canEdgesColorBePerMesh()) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+
+    if (mMRS.isEdgesColorPerVertex())
+        mUI->edgesColorComboBox->setCurrentIndex(E_VERTEX);
+    if (mMRS.isEdgesColorPerEdge())
+        mUI->edgesColorComboBox->setCurrentIndex(E_EDGES);
+    if (mMRS.isEdgesColorPerMesh())
+        mUI->edgesColorComboBox->setCurrentIndex(E_MESH);
+    if (mMRS.isEdgesColorUserDefined())
+        mUI->edgesColorComboBox->setCurrentIndex(E_USER);
+
+    mUI->edgesUserColorFrame->setVisible(
+        mMRS.isEdgesColorUserDefined());
+    vcl::Color vc = mMRS.edgesUserColor();
+    QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
+    setButtonBackGround(mUI->edgesColorDialogPushButton, c);
 }
 
 void MeshRenderSettingsFrame::setButtonBackGround(
