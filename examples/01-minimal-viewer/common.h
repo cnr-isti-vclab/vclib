@@ -30,10 +30,11 @@
 
 #include <vclib/ext/bgfx/drawable_mesh.h>
 
-inline vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh()
+inline vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh(
+    const std::string& filename = "bimba.obj")
 {
     // load a mesh:
-    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
+    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/" + filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray

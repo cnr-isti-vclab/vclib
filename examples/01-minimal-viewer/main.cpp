@@ -50,6 +50,22 @@ int main(int argc, char** argv)
     tw.show();
 
 #ifdef USE_QT
+    vcl::qbgf::MinimalViewerWidget tw2("Minimal Viewer Qt");
+#elif USE_GLFW
+    vcl::bglfwx::MinimalViewerWindow tw2("Minimal Viewer GLFW");
+#endif
+    // load and set up a drawable mesh
+    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable2 = getDrawableMesh("greek_helmet.obj");
+
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw2.pushDrawableObject(drawable2);
+
+    tw2.fitScene();
+
+    tw2.show();
+
+#ifdef USE_QT
     return app.exec();
 #elif USE_GLFW
     return 0;
