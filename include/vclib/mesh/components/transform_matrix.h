@@ -123,7 +123,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool = true)
     {
         if constexpr (HasTransformMatrix<Element>) {
             transformMatrix() = e.transformMatrix().template cast<Scalar>();

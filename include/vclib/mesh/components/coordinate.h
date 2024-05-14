@@ -103,7 +103,7 @@ public:
 protected:
     // Component interface function
     template<typename Element>
-    void importFrom(const Element& v)
+    void importFrom(const Element& v, bool = true)
     {
         if constexpr (HasCoordinate<Element>) {
             coord() = v.coord().template cast<typename CoordType::ScalarType>();

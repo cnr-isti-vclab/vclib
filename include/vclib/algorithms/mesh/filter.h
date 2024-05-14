@@ -28,6 +28,172 @@
 
 namespace vcl {
 
+namespace detail {
+
+template<MeshConcept OutMeshType, uint ELEM_ID, MeshConcept InMeshType>
+OutMeshType perElementMeshFilter(
+    const InMeshType& m,
+    Range auto&&      elemFilterRng,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    using OutElemType = OutMeshType::template ElementType<ELEM_ID>;
+
+    std::string ccname = "birth" + vcl::elementEnumString<ELEM_ID>();
+
+    OutMeshType res;
+    res.enableSameOptionalComponentsOf(m);
+
+    // enable the custom component birth element
+    if constexpr (vcl::comp::HasCustomComponents<OutElemType>) {
+        if (saveBirthIndicesInCustomComponent) {
+            res.template addPerElementCustomComponent<ELEM_ID, uint>(ccname);
+        }
+    }
+
+    for (const auto& [birthV, filter] :
+         std::views::zip(m.template elements<ELEM_ID>(), elemFilterRng))
+    {
+        if (filter) {
+            uint v = res.template add<ELEM_ID>();
+            // import all the components from the input mesh
+            res.template element<ELEM_ID>(v).importFrom(birthV, false);
+            // set the birth element
+            if constexpr (vcl::comp::HasCustomComponents<OutElemType>) {
+                if (saveBirthIndicesInCustomComponent) {
+                    res.template element<ELEM_ID>(v)
+                        .template customComponent<uint>(ccname) =
+                        m.index(birthV);
+                }
+            }
+        }
+    }
+
+    return res;
+}
+
+template<MeshConcept OutMeshType, uint ELEM_ID, MeshConcept InMeshType>
+OutMeshType perElementMeshFilter(
+    const InMeshType&                                                m,
+    const std::function<bool(
+        const typename InMeshType::template ElementType<ELEM_ID>&)>& elemFilter,
+    bool saveBirthIndicesInCustomComponent = true)
+{
+    auto view =
+        m.template elements<ELEM_ID>() | std::views::transform(elemFilter);
+
+    return perElementMeshFilter<OutMeshType, ELEM_ID, InMeshType>(
+        m, view, saveBirthIndicesInCustomComponent);
+}
+
+template<MeshConcept OutMeshType, uint ELEM_ID, MeshConcept InMeshType>
+OutMeshType perElementMeshFilterWithVRefs(
+    const InMeshType& m,
+    Range auto&&      elemFilterRng,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    using InVertexType = InMeshType::VertexType;
+    using OutElemType = OutMeshType::template ElementType<ELEM_ID>;
+
+    std::string ccname = "birth" + vcl::elementEnumString<ELEM_ID>();
+
+    OutMeshType res;
+    res.enableSameOptionalComponentsOf(m);
+
+    // enable the custom component birthVertex
+    if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
+        if (saveBirthIndicesInCustomComponent) {
+            res.template addPerVertexCustomComponent<uint>("birthVertex");
+        }
+    }
+
+    // enable the custom component birth element
+    if constexpr (vcl::comp::HasCustomComponents<OutElemType>) {
+        if (saveBirthIndicesInCustomComponent) {
+            res.template addPerElementCustomComponent<ELEM_ID, uint>(ccname);
+        }
+    }
+
+    std::vector<uint> vertexMapping(m.vertexContainerSize(), UINT_NULL);
+
+    for (const auto& [birthF, filter] :
+         std::views::zip(m.template elements<ELEM_ID>(), elemFilterRng))
+    {
+        if (filter) {
+            std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
+            uint vi = 0; // incremented with vertices of the element
+            // set all the vertex indices in the verts vector
+            // two cases here:
+            // - the ith vertex of the face has been already added, we need just
+            //   to take its id in the out mesh from the vertexMapping vector
+            // - the ith vertex of the face has not been added: we need to add
+            //   it and import all its components, and update the
+            //   vertexMappingVector
+            for (const InVertexType* v : birthF.vertices()) {
+                // the vertex has not already added
+                if (vertexMapping[m.index(v)] == UINT_NULL) {
+                    // add the vertex to the out mesh
+                    uint ov = res.addVertex();
+                    // import all the components from the input mesh
+                    res.vertex(ov).importFrom(*v, false);
+                    if constexpr (vcl::HasPerVertexCustomComponents<
+                                      OutMeshType>)
+                    {
+                        // set the birth vertex
+                        if (saveBirthIndicesInCustomComponent) {
+                            res.vertex(ov).template customComponent<uint>(
+                                "birthVertex") = m.index(v);
+                        }
+                    }
+                    vertexMapping[m.index(v)] = ov;
+                    verts[vi]                 = ov;
+                }
+                else {
+                    verts[vi] = vertexMapping[m.index(v)];
+                }
+                ++vi;
+            }
+
+            // now all the vertices of the elements are in the out mesh, we can
+            // add the actual element
+            uint f = res.template add<ELEM_ID>();
+            // import all the components from the input mesh
+            res.template element<ELEM_ID>(f).importFrom(birthF, false);
+
+            if constexpr (OutElemType::VERTEX_NUMBER < 0) {
+                res.template element<ELEM_ID>(f).resizeVertices(verts.size());
+            }
+
+            res.template element<ELEM_ID>(f).setVertices(verts);
+
+            if constexpr (vcl::comp::HasCustomComponents<OutElemType>) {
+                // set the birth elements
+                if (saveBirthIndicesInCustomComponent) {
+                    res.template element<ELEM_ID>(f)
+                        .template customComponent<uint>(ccname) =
+                        m.index(birthF);
+                }
+            }
+        }
+    }
+    return res;
+}
+
+template<MeshConcept OutMeshType, uint ELEM_ID, MeshConcept InMeshType>
+OutMeshType perElementMeshFilterWithVRefs(
+    const InMeshType&                                                m,
+    const std::function<bool(
+        const typename InMeshType::template ElementType<ELEM_ID>&)>& elemFilter,
+    bool saveBirthIndicesInCustomComponent = true)
+{
+    auto view =
+        m.template elements<ELEM_ID>() | std::views::transform(elemFilter);
+
+    return perElementMeshFilterWithVRefs<OutMeshType, ELEM_ID, InMeshType>(
+        m, view, saveBirthIndicesInCustomComponent);
+}
+
+} // namespace detail
+
 /**
  * @brief Generates and returns a new mesh that is composed of the vertices of
  * the input mesh `m` filtered using the `vertexFilter` function.
@@ -57,14 +223,14 @@ namespace vcl {
  */
 template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
 OutMeshType perVertexMeshFilter(
-    const InMeshType&                                             m,
-    std::function<bool(const typename InMeshType::VertexType&)>&& vertexFilter,
+    const InMeshType& m,
+    const std::function<bool(const typename InMeshType::VertexType&)>&
+         vertexFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
-    auto view = m.vertices() | std::views::transform(vertexFilter);
-
-    return perVertexMeshFilter<InMeshType, OutMeshType>(
-        m, view, saveBirthIndicesInCustomComponent);
+    return detail::
+        perElementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+            m, vertexFilter, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -101,34 +267,9 @@ OutMeshType perVertexMeshFilter(
     Range auto&&      vertexFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    OutMeshType res;
-    res.enableSameOptionalComponentsOf(m);
-
-    // enable the custom component birthVertex
-    if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
-        if (saveBirthIndicesInCustomComponent) {
-            res.template addPerVertexCustomComponent<uint>("birthVertex");
-        }
-    }
-
-    for (const auto& [birthV, filter] :
-         std::views::zip(m.vertices(), vertexFilterRng))
-    {
-        if (filter) {
-            uint v = res.addVertex();
-            // import all the components from the input mesh
-            res.vertex(v).importFrom(birthV);
-            // set the birth vertex
-            if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
-                if (saveBirthIndicesInCustomComponent) {
-                    res.vertex(v).template customComponent<uint>(
-                        "birthVertex") = m.index(birthV);
-                }
-            }
-        }
-    }
-
-    return res;
+    return detail::
+        perElementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+            m, vertexFilterRng, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -164,13 +305,12 @@ OutMeshType perVertexMeshFilter(
 template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
 OutMeshType perFaceMeshFilter(
     const InMeshType&                                           m,
-    std::function<bool(const typename InMeshType::FaceType&)>&& faceFilter,
+    const std::function<bool(const typename InMeshType::FaceType&)>& faceFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
-    auto view = m.faces() | std::views::transform(faceFilter);
-
-    return perFaceMeshFilter<InMeshType, OutMeshType>(
-        m, view, saveBirthIndicesInCustomComponent);
+    return detail::
+        perElementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
+            m, faceFilter, saveBirthIndicesInCustomComponent);
 }
 
 /**
@@ -209,80 +349,9 @@ OutMeshType perFaceMeshFilter(
     Range auto&&      faceFilterRng,
     bool              saveBirthIndicesInCustomComponent = true)
 {
-    using InVertexType = InMeshType::VertexType;
-
-    OutMeshType res;
-    res.enableSameOptionalComponentsOf(m);
-
-    // enable the custom component birthVertex
-    if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
-        if (saveBirthIndicesInCustomComponent) {
-            res.template addPerVertexCustomComponent<uint>("birthVertex");
-        }
-    }
-
-    // enable the custom component birthFace
-    if constexpr (vcl::HasPerFaceCustomComponents<OutMeshType>) {
-        if (saveBirthIndicesInCustomComponent) {
-            res.template addPerFaceCustomComponent<uint>("birthFace");
-        }
-    }
-
-    std::vector<uint> vertexMapping(m.vertexContainerSize(), UINT_NULL);
-
-    for (const auto& [birthF, filter] :
-         std::views::zip(m.faces(), faceFilterRng))
-    {
-        if (filter) {
-            std::vector<uint> verts(birthF.vertexNumber(), UINT_NULL);
-            uint              vi = 0; // incremented with vertices of the face
-            // set all the vertex indices in the verts vector
-            // two cases here:
-            // - the ith vertex of the face has been already added, we need just
-            //   to take its id in the out mesh from the vertexMapping vector
-            // - the ith vertex of the face has not been added: we need to add
-            //   it and import all its components, and update the
-            //   vertexMappingVector
-            for (const InVertexType* v : birthF.vertices()) {
-                // the vertex has not already added
-                if (vertexMapping[m.index(v)] == UINT_NULL) {
-                    // add the vertex to the out mesh
-                    uint ov = res.addVertex();
-                    // import all the components from the input mesh
-                    res.vertex(ov).importFrom(*v);
-                    if constexpr (vcl::HasPerVertexCustomComponents<
-                                      OutMeshType>)
-                    {
-                        // set the birth vertex
-                        if (saveBirthIndicesInCustomComponent) {
-                            res.vertex(ov).template customComponent<uint>(
-                                "birthVertex") = m.index(v);
-                        }
-                    }
-                    vertexMapping[m.index(v)] = ov;
-                    verts[vi]                 = ov;
-                }
-                else {
-                    verts[vi] = vertexMapping[m.index(v)];
-                }
-                ++vi;
-            }
-
-            // now all the vertices of the face are in the out mesh, we can add
-            // the actual face
-            uint f = res.addFace(verts);
-            // import all the components from the input mesh
-            res.face(f).importFrom(birthF);
-            if constexpr (vcl::HasPerFaceCustomComponents<OutMeshType>) {
-                // set the birth face
-                if (saveBirthIndicesInCustomComponent) {
-                    res.face(f).template customComponent<uint>("birthFace") =
-                        m.index(birthF);
-                }
-            }
-        }
-    }
-    return res;
+    return detail::
+        perElementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
+            m, faceFilterRng, saveBirthIndicesInCustomComponent);
 }
 
 } // namespace vcl

@@ -80,7 +80,7 @@ public:
     void add(const VertexType& v)
     {
         uint vi = mMesh.addVertex(v.coord());
-        mMesh.vertex(vi).importFrom(v);
+        mMesh.vertex(vi).importFrom(v, false);
 
         setBirthElement(vi, "birthVertex", v.index());
     }
@@ -89,7 +89,7 @@ public:
     void set(uint i, const VertexType& v)
     {
         mMesh.vertex(i).coord() = v.coord();
-        mMesh.vertex(i).importFrom(v);
+        mMesh.vertex(i).importFrom(v, false);
 
         setBirthElement(i, "birthVertex", v.index());
     }

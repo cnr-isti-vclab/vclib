@@ -483,7 +483,7 @@ protected:
 
     // Component interface function
     template<typename Element>
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool = true)
     {
         if constexpr (HasBitFlags<Element>) {
             resetBitFlags();

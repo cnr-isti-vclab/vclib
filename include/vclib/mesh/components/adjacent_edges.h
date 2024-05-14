@@ -607,31 +607,33 @@ public:
 protected:
     // Component interface function
     template<typename Element>
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool importRefs = true)
     {
-        if constexpr (HasAdjacentEdges<Element>) {
-            if (isAdjacentEdgesAvailableOn(e)) {
-                if constexpr (N > 0) {
-                    // same static size
-                    if constexpr (N == Element::ADJ_EDGE_NUMBER) {
-                        importIndicesFrom(e);
-                    }
-                    // from dynamic to static, but dynamic size == static size
-                    else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
-                        if (e.adjEdgesNumber() == N) {
+        if (importRefs) {
+            if constexpr (HasAdjacentEdges<Element>) {
+                if (isAdjacentEdgesAvailableOn(e)) {
+                    if constexpr (N > 0) {
+                        // same static size
+                        if constexpr (N == Element::ADJ_EDGE_NUMBER) {
                             importIndicesFrom(e);
+                        }
+                        // from dynamic to static, but dynamic size == static size
+                        else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
+                            if (e.adjEdgesNumber() == N) {
+                                importIndicesFrom(e);
+                            }
+                        }
+                        else {
+                            // do not import in this case: cannot import from
+                            // dynamic size != static size
                         }
                     }
                     else {
-                        // do not import in this case: cannot import from
-                        // dynamic size != static size
+                        // from static/dynamic to dynamic size: need to resize
+                        // first, then import
+                        Base::resize(e.adjEdgesNumber());
+                        importIndicesFrom(e);
                     }
-                }
-                else {
-                    // from static/dynamic to dynamic size: need to resize
-                    // first, then import
-                    Base::resize(e.adjEdgesNumber());
-                    importIndicesFrom(e);
                 }
             }
         }

@@ -111,7 +111,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool = true)
     {
         if constexpr (HasPrincipalCurvature<Element>) {
             if (isPrincipalCurvatureAvailableOn(e)) {

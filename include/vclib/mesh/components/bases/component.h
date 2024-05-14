@@ -70,7 +70,7 @@ namespace vcl::comp {
  *
  * ```cpp
  * template <typename Element>
- * void importFrom(const Element& e);
+ * void importFrom(const Element& e, bool importRefs = true);
  * ```
  *
  * Moreover, if the component has at least one ReferencedType, it must define

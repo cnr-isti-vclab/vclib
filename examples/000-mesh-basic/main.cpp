@@ -129,7 +129,7 @@ int main()
 
     // test import data from another vertex type
     MyVertex vert;
-    vert.importFrom(m.vertex(0));
+    vert.importFrom(m.vertex(0), false);
 
     return 0;
 }

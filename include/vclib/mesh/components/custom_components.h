@@ -259,7 +259,7 @@ public:
 
 protected:
     template<typename Element>
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool = true)
     {
         // if the component is vertical, the import is managed by the container.
         // if is horizontal, it must be managed by the component itself.

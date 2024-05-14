@@ -656,31 +656,33 @@ public:
 protected:
     // Component interface function
     template<typename Element>
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool importRefs = true)
     {
-        if constexpr (HasVertexReferences<Element>) {
-            if constexpr (N > 0) {
-                // same size non-polygonal faces
-                if constexpr (N == Element::VERTEX_NUMBER) {
-                    importIndicesFrom(e);
-                }
-                // from polygonal to fixed size, but the polygon size == the
-                // fixed face size
-                else if constexpr (Element::VERTEX_NUMBER < 0) {
-                    if (e.vertexNumber() == N) {
+        if (importRefs) {
+            if constexpr (HasVertexReferences<Element>) {
+                if constexpr (N > 0) {
+                    // same size non-polygonal faces
+                    if constexpr (N == Element::VERTEX_NUMBER) {
                         importIndicesFrom(e);
+                    }
+                    // from polygonal to fixed size, but the polygon size == the
+                    // fixed face size
+                    else if constexpr (Element::VERTEX_NUMBER < 0) {
+                        if (e.vertexNumber() == N) {
+                            importIndicesFrom(e);
+                        }
+                    }
+                    else {
+                        // do not import in this case: cannot import from a face of
+                        // different size
                     }
                 }
                 else {
-                    // do not import in this case: cannot import from a face of
-                    // different size
+                    // from fixed to polygonal size: need to resize first, then
+                    // import
+                    resizeVertices(e.vertexNumber());
+                    importIndicesFrom(e);
                 }
-            }
-            else {
-                // from fixed to polygonal size: need to resize first, then
-                // import
-                resizeVertices(e.vertexNumber());
-                importIndicesFrom(e);
             }
         }
     }

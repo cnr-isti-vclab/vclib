@@ -150,7 +150,7 @@ public:
 protected:
     // first requirement: a protected `importFrom` member function
     template<typename Element> // another element, maybe from another mesh type
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool = true)
     {
         // will import the bar component from the element e only if it also has
         // the bar component

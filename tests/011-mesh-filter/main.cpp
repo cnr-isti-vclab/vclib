@@ -44,28 +44,93 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.faceNumber() == 12);
     }
 
-    std::vector<bool> filter = {
-        true, false, false, true, false, false, true, true};
-
-    TriMesh anotherMesh = vcl::perVertexMeshFilter(tm, filter);
-
-    THEN("The mesh has been filtered")
+    THEN("Filter vertices")
     {
-        REQUIRE(anotherMesh.vertexNumber() == 4);
-        REQUIRE(anotherMesh.faceNumber() == 0);
+        std::vector<bool> filter = {
+            true, false, false, true, false, false, true, true};
 
-        REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
-        REQUIRE(
-            anotherMesh.vertex(0).template customComponent<uint>(
-                "birthVertex") == 0);
-        REQUIRE(
-            anotherMesh.vertex(1).template customComponent<uint>(
-                "birthVertex") == 3);
-        REQUIRE(
-            anotherMesh.vertex(2).template customComponent<uint>(
-                "birthVertex") == 6);
-        REQUIRE(
-            anotherMesh.vertex(3).template customComponent<uint>(
-                "birthVertex") == 7);
+        TriMesh anotherMesh = vcl::perVertexMeshFilter(tm, filter);
+
+        THEN("The mesh has been filtered")
+        {
+            REQUIRE(anotherMesh.vertexNumber() == 4);
+            REQUIRE(anotherMesh.faceNumber() == 0);
+
+            REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
+            REQUIRE(
+                anotherMesh.vertex(0).template customComponent<uint>(
+                    "birthVertex") == 0);
+            REQUIRE(
+                anotherMesh.vertex(1).template customComponent<uint>(
+                    "birthVertex") == 3);
+            REQUIRE(
+                anotherMesh.vertex(2).template customComponent<uint>(
+                    "birthVertex") == 6);
+            REQUIRE(
+                anotherMesh.vertex(3).template customComponent<uint>(
+                    "birthVertex") == 7);
+        }
+    }
+
+    THEN("Filter faces")
+    {
+        std::vector<bool> filter = {
+            true, false, false, true, false, false, true, true, false, false,
+            true, false};
+
+        TriMesh anotherMesh = vcl::perFaceMeshFilter(tm, filter);
+
+        // order of vertices:
+        // pos:   0 1 2 3 4 5 6 7
+        // tm vi: 2 1 0 4 6 5 7 3
+
+        THEN("The mesh has been filtered")
+        {
+            REQUIRE(anotherMesh.vertexNumber() == 8);
+            REQUIRE(anotherMesh.faceNumber() == 5);
+
+            REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
+            REQUIRE(
+                anotherMesh.vertex(0).template customComponent<uint>(
+                    "birthVertex") == 2);
+            REQUIRE(
+                anotherMesh.vertex(1).template customComponent<uint>(
+                    "birthVertex") == 1);
+            REQUIRE(
+                anotherMesh.vertex(2).template customComponent<uint>(
+                    "birthVertex") == 0);
+            REQUIRE(
+                anotherMesh.vertex(3).template customComponent<uint>(
+                    "birthVertex") == 4);
+            REQUIRE(
+                anotherMesh.vertex(4).template customComponent<uint>(
+                    "birthVertex") == 6);
+            REQUIRE(
+                anotherMesh.vertex(5).template customComponent<uint>(
+                    "birthVertex") == 5);
+            REQUIRE(
+                anotherMesh.vertex(6).template customComponent<uint>(
+                    "birthVertex") == 7);
+            REQUIRE(
+                anotherMesh.vertex(7).template customComponent<uint>(
+                    "birthVertex") == 3);
+
+            REQUIRE(anotherMesh.hasPerFaceCustomComponent("birthFace"));
+            REQUIRE(
+                anotherMesh.face(0).template customComponent<uint>(
+                    "birthFace") == 0);
+            REQUIRE(
+                anotherMesh.face(1).template customComponent<uint>(
+                    "birthFace") == 3);
+            REQUIRE(
+                anotherMesh.face(2).template customComponent<uint>(
+                    "birthFace") == 6);
+            REQUIRE(
+                anotherMesh.face(3).template customComponent<uint>(
+                    "birthFace") == 7);
+            REQUIRE(
+                anotherMesh.face(4).template customComponent<uint>(
+                    "birthFace") == 10);
+        }
     }
 }

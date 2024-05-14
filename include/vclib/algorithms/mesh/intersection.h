@@ -220,32 +220,32 @@ MeshType meshSphereIntersection(
 
                 FaceType& f = res.face(i);
 
-                res.vertex(v0).importFrom(*f.vertex(0));
+                res.vertex(v0).importFrom(*f.vertex(0), false);
                 res.vertex(v0).coord() =
                     (f.vertex(0)->coord() + f.vertex(1)->coord()) / 2;
-                res.vertex(v1).importFrom(*f.vertex(1));
+                res.vertex(v1).importFrom(*f.vertex(1), false);
                 res.vertex(v1).coord() =
                     (f.vertex(1)->coord() + f.vertex(2)->coord()) / 2;
-                res.vertex(v2).importFrom(*f.vertex(2));
+                res.vertex(v2).importFrom(*f.vertex(2), false);
                 res.vertex(v2).coord() =
                     (f.vertex(2)->coord() + f.vertex(0)->coord()) / 2;
 
-                res.face(fi).importFrom(f);
+                res.face(fi).importFrom(f, false);
                 res.face(fi).setVertices(
                     f.vertex(0), &res.vertex(v0), &res.vertex(v2));
 
                 ++fi;
-                res.face(fi).importFrom(f);
+                res.face(fi).importFrom(f, false);
                 res.face(fi).setVertices(
                     f.vertex(1), &res.vertex(v1), &res.vertex(v0));
 
                 ++fi;
-                res.face(fi).importFrom(f);
+                res.face(fi).importFrom(f, false);
                 res.face(fi).setVertices(
                     &res.vertex(v0), &res.vertex(v1), &res.vertex(v2));
 
                 ++fi;
-                res.face(fi).importFrom(f);
+                res.face(fi).importFrom(f, false);
                 res.face(fi).setVertices(
                     &res.vertex(v2), &res.vertex(v1), f.vertex(2));
 

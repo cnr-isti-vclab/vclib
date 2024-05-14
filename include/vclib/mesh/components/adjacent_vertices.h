@@ -595,14 +595,16 @@ public:
 protected:
     // Component interface function
     template<typename Element>
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool importRefs = true)
     {
-        if constexpr (HasAdjacentVertices<Element>) {
-            if (isAdjacentVerticesAvailableOn(e)) {
-                // from static/dynamic to dynamic size: need to resize first,
-                // then import
-                resizeAdjVertices(e.adjVerticesNumber());
-                importIndicesFrom(e);
+        if (importRefs) {
+            if constexpr (HasAdjacentVertices<Element>) {
+                if (isAdjacentVerticesAvailableOn(e)) {
+                    // from static/dynamic to dynamic size: need to resize first,
+                    // then import
+                    resizeAdjVertices(e.adjVerticesNumber());
+                    importIndicesFrom(e);
+                }
             }
         }
     }

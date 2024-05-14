@@ -101,7 +101,7 @@ public:
 protected:
     // Component interface functions
     template<typename Element>
-    void importFrom(const Element& e)
+    void importFrom(const Element& e, bool = true)
     {
         if constexpr (HasQuality<Element>) {
             if (isQualityAvailableOn(e)) {
