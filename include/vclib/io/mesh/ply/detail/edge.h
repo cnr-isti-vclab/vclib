@@ -23,8 +23,6 @@
 #ifndef VCL_IO_PLY_EDGE_H
 #define VCL_IO_PLY_EDGE_H
 
-#include <fstream>
-
 #include <vclib/io/write.h>
 #include <vclib/misc/tokenizer.h>
 
@@ -42,7 +40,7 @@ void writePlyEdges(
     bool bin       = header.format() == ply::BINARY;
 
     // indices of vertices that do not consider deleted vertices
-    std::vector<int> vIndices = mesh.vertexCompactIndices();
+    std::vector<uint> vIndices = mesh.vertexCompactIndices();
 
     for (const EdgeType& e : mesh.edges()) {
         for (const PlyProperty& p : header.edgeProperties()) {

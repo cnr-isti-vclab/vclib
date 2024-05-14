@@ -41,6 +41,24 @@ struct ColorAvgInfo
     uint              cnt = 0;
 };
 
+template<uint ELEM_ID, FaceMeshConcept MeshType>
+void setPerElemColorFromVertexColor(MeshType& m)
+{
+    vcl::requirePerVertexColor(m);
+    vcl::requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
+
+    using VertexType = MeshType::VertexType;
+
+    for (auto& f : m.template elements<ELEM_ID>()) {
+        vcl::Point4<uint> avg(0, 0, 0, 0);
+        for (const VertexType* v : f.vertices()) {
+            avg += v->color().template cast<uint>();
+        }
+        avg /= f.vertexNumber();
+        f.color() = avg.cast<uint8_t>();
+    }
+}
+
 } // namespace detail
 
 /**
@@ -107,6 +125,40 @@ void setPerFaceColor(
     }
     else {
         std::ranges::fill(m.faces() | views::colors, c);
+    }
+}
+
+/**
+ * @brief Sets the color of the edges. If the `onlySelected` flag is set to
+ * `true`, only the color of the selected edges will be set. Otherwise, all the
+ * edges will have the same color.
+ *
+ * @throws vcl::MissingComponentException if the mesh does not have the
+ * per edge color component available.
+ *
+ * @tparam MeshType: type of the input mesh. It must satisfy the
+ * EdgeMeshConcept.
+ *
+ * @param[in,out] m: the mesh on which set the edge color.
+ * @param[in] c: the color to set to the edges of the mesh.
+ * @param[in] onlySelected: if `true`, the color will be set just on the
+ * selected edges.
+ *
+ * @ingroup update
+ */
+template<EdgeMeshConcept MeshType>
+void setPerEdgeColor(
+    MeshType&  m,
+    vcl::Color c            = vcl::Color::White,
+    bool       onlySelected = false)
+{
+    vcl::requirePerEdgeColor(m);
+
+    if (onlySelected) {
+        std::ranges::fill(m.edges() | views::selected | views::colors, c);
+    }
+    else {
+        std::ranges::fill(m.edges() | views::colors, c);
     }
 }
 
@@ -185,20 +237,29 @@ void setPerVertexColorFromFaceColor(MeshType& m)
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromVertexColor(MeshType& m)
 {
-    vcl::requirePerVertexColor(m);
-    vcl::requirePerFaceColor(m);
+    detail::setPerElemColorFromVertexColor<ElemId::FACE>(m);
+}
 
-    using VertexType = MeshType::VertexType;
-    using FaceType   = MeshType::FaceType;
-
-    for (FaceType& f : m.faces()) {
-        vcl::Point4<uint> avg(0, 0, 0, 0);
-        for (const VertexType* v : f.vertices()) {
-            avg += v->color().template cast<uint>();
-        }
-        avg /= f.vertexNumber();
-        f.color() = avg.cast<uint8_t>();
-    }
+/**
+ * @brief Sets the edge colors from its incident vertex colors, computing a
+ * plain average of the vertex colors.
+ *
+ * Requirements:
+ * - Mesh:
+ *   - Vertices:
+ *     - Color
+ *   - Edges:
+ *     - Color
+ *
+ * @param[in,out] m: mesh on which transfer the vertex color into the edge
+ * color.
+ *
+ * @ingroup update
+ */
+template<EdgeMeshConcept MeshType>
+void setPerEdgeColorFromVertexColor(MeshType& m)
+{
+    detail::setPerElemColorFromVertexColor<ElemId::EDGE>(m);
 }
 
 /**
