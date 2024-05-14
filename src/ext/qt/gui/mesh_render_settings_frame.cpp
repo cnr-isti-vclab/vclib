@@ -536,8 +536,7 @@ void MeshRenderSettingsFrame::updateEdgesTabFromSettings()
             mMRS.canEdgesShadingBeFlat());
         mUI->edgesShadingFlatRadioButton->setChecked(
             mMRS.canEdgesShadingBeFlat());
-        mUI->edgesShadingNoneRadioButton->setChecked(
-            mMRS.isEdgesShadingNone());
+        mUI->edgesShadingNoneRadioButton->setChecked(mMRS.isEdgesShadingNone());
     }
     else {
         mUI->edgesTab->setEnabled(false);
@@ -582,8 +581,7 @@ void MeshRenderSettingsFrame::updateEdgesComboBoxFromSettings()
     if (mMRS.isEdgesColorUserDefined())
         mUI->edgesColorComboBox->setCurrentIndex(E_USER);
 
-    mUI->edgesUserColorFrame->setVisible(
-        mMRS.isEdgesColorUserDefined());
+    mUI->edgesUserColorFrame->setVisible(mMRS.isEdgesColorUserDefined());
     vcl::Color vc = mMRS.edgesUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->edgesColorDialogPushButton, c);
