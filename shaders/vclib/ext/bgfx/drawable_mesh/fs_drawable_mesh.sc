@@ -25,8 +25,8 @@ $input v_position, v_normal, v_color
 #include <drawable_mesh/uniforms.sh>
 #include <vclib/render/mesh_render_settings_macros.h>
 
-BUFFER_RO(triangleColors, uint, 1);
-BUFFER_RO(triangleNormals, float, 2);
+BUFFER_RO(primitiveColors , uint, 1);  // color of each face / edge
+BUFFER_RO(primitiveNormals, float, 2); // normal of each face / edge
 
 void main()
 {
@@ -72,9 +72,9 @@ void main()
         // if flat shading, compute normal of face
         if (bool(drawMode0 & VCL_MRS_SURF_SHADING_FLAT)) {
             normal = vec3(
-                triangleNormals[gl_PrimitiveID * 3],
-                triangleNormals[gl_PrimitiveID * 3 + 1],
-                triangleNormals[gl_PrimitiveID * 3 + 2]);
+                primitiveNormals[gl_PrimitiveID * 3],
+                primitiveNormals[gl_PrimitiveID * 3 + 1],
+                primitiveNormals[gl_PrimitiveID * 3 + 2]);
             normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
         }
 
@@ -100,7 +100,7 @@ void main()
             color = u_meshColor;
         }
         if (bool(drawMode0 & VCL_MRS_SURF_COLOR_FACE)) {
-            color = uintToVec4Color(triangleColors[gl_PrimitiveID]);
+            color = uintToVec4Color(primitiveColors [gl_PrimitiveID]);
         }
     }
     else if (bool(primitive & VCL_MRS_DRAWING_WIREFRAME)){ // wireframe
@@ -122,12 +122,11 @@ void main()
     else if (bool(primitive & VCL_MRS_DRAWING_EDGES)) { // edges
         // if flat shading, compute normal of face
         if (bool(drawMode1 & VCL_MRS_EDGES_SHADING_FLAT)) {
-            // todo
-            // normal = vec3(
-            //     edgeNormals[gl_PrimitiveID * 3],
-            //     edgeNormals[gl_PrimitiveID * 3 + 1],
-            //     edgeNormals[gl_PrimitiveID * 3 + 2]);
-            // normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
+            normal = vec3(
+                primitiveNormals[gl_PrimitiveID * 3],
+                primitiveNormals[gl_PrimitiveID * 3 + 1],
+                primitiveNormals[gl_PrimitiveID * 3 + 2]);
+            normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
         }
 
         // if flat or smooth shading, compute light
@@ -152,8 +151,7 @@ void main()
             color = u_meshColor;
         }
         if (bool(drawMode1 & VCL_MRS_EDGES_COLOR_EDGE)) {
-            // todo
-            //color = uintToVec4Color(edgeColors[gl_PrimitiveID]);
+            color = uintToVec4Color(primitiveColors[gl_PrimitiveID]);
         }
         depthOffset = 0.00005;
     }

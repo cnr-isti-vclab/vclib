@@ -38,7 +38,13 @@ int main(int argc, char** argv)
 
     e.name() = "crease edges";
     e.enablePerEdgeColor();
-    vcl::setPerEdgeColor(e, vcl::Color::Red);
+
+    for (auto& edge : e.edges()) {
+        if (edge.vertex(0)->coord().y() > 0)
+            edge.color() = vcl::Color::Red;
+        else
+            edge.color() = vcl::Color::Blue;
+    }
 
     return showMeshesOnDefaultViewer(argc, argv, c, e);
 }
