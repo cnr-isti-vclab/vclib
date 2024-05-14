@@ -86,6 +86,7 @@ class Edge :
             TriEdgeMeshT<Scalar, I>,
             edge::BitFlags,
             edge::VertexReferences<I, Vertex<Scalar, I>, Edge<Scalar, I>>,
+            edge::OptionalNormal3<Scalar, Edge<Scalar, I>>,
             edge::OptionalColor<Edge<Scalar, I>>,
             edge::OptionalQuality<Scalar, Edge<Scalar, I>>,
             edge::OptionalAdjacentEdges<I, Edge<Scalar, I>>,

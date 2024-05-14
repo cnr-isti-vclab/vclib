@@ -23,7 +23,10 @@
 #ifndef VCL_ALGORITHMS_MESH_FILTER_H
 #define VCL_ALGORITHMS_MESH_FILTER_H
 
+#include <set>
+
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/comparators.h>
 #include <vclib/views.h>
 
 namespace vcl {
@@ -549,6 +552,180 @@ OutMeshType perEdgeSelectionMeshFilter(
     return detail::
         perElementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
             m, selView, saveBirthIndicesInCustomComponent);
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the edges
+ * computed from the face edges of the input mesh `m` filtered using the
+ * `faceEdgeFilter` function. Only vertices belonging to the imported face edges
+ * will be imported in the output mesh.
+ *
+ * Only the edges for which the `faceEdgeFilter` function returns  true` and
+ * their vertices will be put in the output mesh.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `FaceMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `EdgeMeshConcept`.
+ *
+ * @param[in] m: input mesh
+ * @param[in] faceEdgeFilter: a function that takes a face and an uint as input
+ * and returns a boolean value that tells whether the edge (uint) of the face
+ * should be "imported" in the output mesh or not.
+ * @param[in] dontDuplicateEdges: if `true` (default), the output mesh will not
+ * have duplicated edges (same vertices, also in different order).
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex CustomComponents component, will set a
+ * per vertex custom component of type `uint` in the output mesh telling, for
+ * each vertex, the index of its birth vertex in the input mesh. The names of
+ * the custom component is `"birthVertex"`.
+ *
+ * @return A new Mesh created by filtering the face edges of the input mesh `m`.
+ */
+template<EdgeMeshConcept OutMeshType, FaceMeshConcept InMeshType>
+OutMeshType perFaceEdgeMeshFilter(
+    const InMeshType& m,
+    const std::function<bool(const typename InMeshType::FaceType&, uint)>&
+         faceEdgeFilter,
+    bool dontDuplicateEdges                = true,
+    bool saveBirthIndicesInCustomComponent = true)
+{
+    using InVertexType = InMeshType::VertexType;
+    using OutEdgeType  = OutMeshType::EdgeType;
+
+    OutMeshType res;
+    // todo: enable only per vertex same optional components of m
+    res.enableSameOptionalComponentsOf(m);
+
+    // enable the custom component birthVertex
+    if constexpr (vcl::HasPerVertexCustomComponents<OutMeshType>) {
+        if (saveBirthIndicesInCustomComponent) {
+            res.template addPerVertexCustomComponent<uint>("birthVertex");
+        }
+    }
+
+    std::vector<uint> vertexMapping(m.vertexContainerSize(), UINT_NULL);
+
+    std::set<std::pair<uint, uint>, UnorderedPairComparator<uint>>
+        unorderedEdges;
+
+    for (const auto& f : m.faces()) {
+        for (uint ei = 0; ei < f.vertexNumber(); ++ei) {
+            if (faceEdgeFilter(f, ei)) {
+                std::array<uint, 2> verts = {UINT_NULL, UINT_NULL};
+                for (uint i = 0; i < 2; ++i) {
+                    const InVertexType* v = f.vertexMod(ei + i);
+                    if (vertexMapping[m.index(v)] == UINT_NULL) {
+                        uint ov = res.addVertex();
+                        res.vertex(ov).importFrom(*v, false);
+                        if constexpr (vcl::HasPerVertexCustomComponents<
+                                          OutMeshType>)
+                        {
+                            if (saveBirthIndicesInCustomComponent) {
+                                res.vertex(ov).template customComponent<uint>(
+                                    "birthVertex") = m.index(v);
+                            }
+                        }
+                        vertexMapping[m.index(v)] = ov;
+                        verts[i]                  = ov;
+                    }
+                    else {
+                        verts[i] = vertexMapping[m.index(v)];
+                    }
+                }
+
+                std::pair<uint, uint> ep {verts[0], verts[1]};
+                if (!dontDuplicateEdges || !unorderedEdges.contains(ep))
+                {
+                    uint e = res.addEdge(verts[0], verts[1]);
+                    unorderedEdges.insert(ep);
+                }
+            }
+        }
+    }
+
+    return res;
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the edges
+ * computed from the face edges of the input mesh `m` filtered using the
+ * `faceEdgeFilter` function. Only vertices belonging to the imported face edges
+ * will be imported in the output mesh.
+ *
+ * Only the edges for which the `faceEdgeFilter` function returns  true` and
+ * their vertices will be put in the output mesh.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `FaceMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `EdgeMeshConcept`.
+ *
+ * @param[in] m: input mesh
+ * @param[in] faceEdgeFilter: a function that takes a face and an uint as input
+ * and returns a boolean value that tells whether the edge (uint) of the face
+ * should be "imported" in the output mesh or not.
+ * @param[in] dontDuplicateEdges: if `true` (default), the output mesh will not
+ * have duplicated edges (same vertices, also in different order).
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex CustomComponents component, will set a
+ * per vertex custom component of type `uint` in the output mesh telling, for
+ * each vertex, the index of its birth vertex in the input mesh. The names of
+ * the custom component is `"birthVertex"`.
+ *
+ * @return A new Mesh created by filtering the face edges of the input mesh `m`.
+ */
+template<EdgeMeshConcept OutMeshType, FaceMeshConcept InMeshType>
+OutMeshType perFaceEdgeMeshFilter(
+    const InMeshType&                      m,
+    const std::function<bool(uint, uint)>& faceEdgeFilter,
+    bool                                   dontDuplicateEdges = true,
+    bool saveBirthIndicesInCustomComponent                    = true)
+{
+    auto filter = [&](const typename InMeshType::FaceType& f, uint ei) {
+        return faceEdgeFilter(m.index(f), ei);
+    };
+
+    return perFaceEdgeMeshFilter<OutMeshType, InMeshType>(
+        m, filter, dontDuplicateEdges, saveBirthIndicesInCustomComponent);
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the edges
+ * computed from the selected face edges of the input mesh `m`. Only vertices
+ * belonging to the imported face edges will be imported in the output mesh.
+ *
+ * Only the selected edges and their vertices will be put in the output mesh.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `FaceMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `EdgeMeshConcept`.
+ *
+ * @param[in] m: input mesh
+ * @param[in] dontDuplicateEdges: if `true` (default), the output mesh will not
+ * have duplicated edges (same vertices, also in different order).
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex CustomComponents component, will set a
+ * per vertex custom component of type `uint` in the output mesh telling, for
+ * each vertex, the index of its birth vertex in the input mesh. The names of
+ * the custom component is `"birthVertex"`.
+ *
+ * @return A new Mesh created by filtering the selected face edges of the input
+ * mesh `m`.
+ */
+template<EdgeMeshConcept OutMeshType, FaceMeshConcept InMeshType>
+OutMeshType perFaceEdgeSelectionMeshFilter(
+    const InMeshType& m,
+    bool              dontDuplicateEdges                = true,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    auto filter = [&](const typename InMeshType::FaceType& f, uint ei) {
+        return f.edgeSelected(ei);
+    };
+
+    return perFaceEdgeMeshFilter<OutMeshType, InMeshType>(
+        m, filter, dontDuplicateEdges, saveBirthIndicesInCustomComponent);
 }
 
 } // namespace vcl

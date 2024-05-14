@@ -100,7 +100,13 @@ using MeshesIndexed =
 using MeshesIndexedf = std::
     tuple<vcl::TriMeshIndexedf, vcl::PolyMeshIndexedf, vcl::EdgeMeshIndexedf>;
 
-TEMPLATE_TEST_CASE("Clean Duplicated Faces", "", Meshes, Meshesf)
+TEMPLATE_TEST_CASE(
+    "Clean Duplicated Faces",
+    "",
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
 {
     using TriMesh  = std::tuple_element_t<0, TestType>;
     using PolyMesh = std::tuple_element_t<1, TestType>;

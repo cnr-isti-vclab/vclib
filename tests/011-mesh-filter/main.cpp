@@ -27,7 +27,7 @@
 #include <vclib/meshes.h>
 
 TEMPLATE_TEST_CASE(
-    "TriMesh Filter",
+    "TriMesh Filter Vertices and Faces",
     "",
     vcl::TriMesh,
     vcl::TriMeshf,
@@ -132,5 +132,37 @@ TEMPLATE_TEST_CASE(
                 anotherMesh.face(4).template customComponent<uint>(
                     "birthFace") == 10);
         }
+    }
+}
+
+using Meshes         = std::pair<vcl::TriMesh, vcl::EdgeMesh>;
+using Meshesf        = std::pair<vcl::TriMeshf, vcl::EdgeMeshf>;
+using MeshesIndexed  = std::pair<vcl::TriMeshIndexed, vcl::EdgeMeshIndexed>;
+using MeshesIndexedf = std::pair<vcl::TriMeshIndexedf, vcl::EdgeMeshIndexedf>;
+
+TEMPLATE_TEST_CASE(
+    "TriMesh Filter Face Edges",
+    "",
+    Meshes,
+    Meshesf,
+    MeshesIndexed,
+    MeshesIndexedf)
+{
+    using TriMesh  = typename TestType::first_type;
+    using EdgeMesh = typename TestType::second_type;
+
+    TriMesh cylinder = vcl::createCylinder<TriMesh>(1, 1, 36);
+    cylinder.enablePerFaceAdjacentFaces();
+
+    vcl::updatePerFaceAdjacentFaces(cylinder);
+
+    // select crease edges
+    vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(30.f), vcl::toRad(30.f));
+
+    EdgeMesh creaseEdges = vcl::perFaceEdgeSelectionMeshFilter<EdgeMesh>(cylinder);
+
+    THEN("The mesh has 36 * 2 crease edges")
+    {
+        REQUIRE(creaseEdges.edgeNumber() == 36 * 2);
     }
 }
