@@ -376,6 +376,10 @@ target_link_libraries(vclib INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 
 target_sources(vclib PRIVATE ${HEADERS})
 
+if (MSVC)
+    target_compile_options(vclib INTERFACE "/bigobj")
+endif()
+
 ### Examples and Tests
 include(cmake/examples_and_tests.cmake)
 
