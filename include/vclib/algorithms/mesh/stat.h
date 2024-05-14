@@ -358,7 +358,6 @@ std::vector<std::pair<uint, uint>> creaseFaceEdges(
                 if (alsoBorderEdges) {
                     creaseEdges.push_back({f.index(), i});
                 }
-
             }
             else {
                 // internal edge

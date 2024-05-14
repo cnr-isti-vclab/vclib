@@ -54,5 +54,3 @@ TEMPLATE_TEST_CASE(
         REQUIRE(creaseEdges == 36 * 4);
     }
 }
-
-
