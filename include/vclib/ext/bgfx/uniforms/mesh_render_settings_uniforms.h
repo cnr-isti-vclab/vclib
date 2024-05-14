@@ -34,17 +34,28 @@ namespace vcl::bgf {
 class MeshRenderSettingsUniforms
 {
     // mDrawPack[0] -> primitive used
-    // mDrawPack[1] -> draw mode
-    // mDrawPack[1] -> point width
+    // mDrawPack[1] -> draw mode0
+    // mDrawPack[2] -> draw mode1
+    // mDrawPack[3] -> unused
     float mDrawPack[4] = {0.0, 0.0, 0.0, 0.0};
+
+    // mWidthPack[0] -> point width
+    // mWidthPack[1] -> wireframe width
+    // mWidthPack[2] -> edge width
+    // mWidthPack[3] -> unused
+    float mWidthPack[4] = {0.0, 0.0, 0.0, 0.0};
 
     // mColorPack[0] -> point user color
     // mColorPack[1] -> surface user color
     // mColorPack[2] -> wireframe user color
+    // mColorPack[3] -> edge user color
     float mColorPack[4] = {0.0, 0.0, 0.0, 0.0};
 
     ShaderUniform mDrawModeUniform =
         ShaderUniform("u_mrsDrawPack", bgfx::UniformType::Vec4);
+
+    ShaderUniform mWidthUniform =
+        ShaderUniform("u_mrsWidthPack", bgfx::UniformType::Vec4);
 
     ShaderUniform mColorUniform =
         ShaderUniform("u_mrsColorPack", bgfx::UniformType::Vec4);
@@ -60,7 +71,11 @@ public:
     void updateSettings(const vcl::MeshRenderSettings& settings)
     {
         mDrawPack[1] = ShaderUniform::uintBitsToFloat(settings.drawMode0());
-        mDrawPack[2] = settings.pointWidth();
+        mDrawPack[2] = ShaderUniform::uintBitsToFloat(settings.drawMode1());
+
+        mWidthPack[0] = settings.pointWidth();
+        mWidthPack[1] = settings.wireframeWidth();
+        mWidthPack[2] = settings.edgesWidth();
 
         mColorPack[0] = ShaderUniform::uintBitsToFloat(
             settings.pointCloudUserColor().abgr());
@@ -68,11 +83,14 @@ public:
             ShaderUniform::uintBitsToFloat(settings.surfaceUserColor().abgr());
         mColorPack[2] = ShaderUniform::uintBitsToFloat(
             settings.wireframeUserColor().abgr());
+        mColorPack[3] =
+            ShaderUniform::uintBitsToFloat(settings.edgesUserColor().abgr());
     }
 
     void bind() const
     {
         mDrawModeUniform.bind(mDrawPack);
+        mWidthUniform.bind(mWidthPack);
         mColorUniform.bind(mColorPack);
     }
 };

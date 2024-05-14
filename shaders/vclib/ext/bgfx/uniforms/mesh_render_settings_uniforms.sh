@@ -24,14 +24,20 @@
 #define VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH
 
 uniform vec4 u_mrsDrawPack;
+uniform vec4 u_mrsWidthPack;
 uniform vec4 u_mrsColorPack;
 
 #define u_primitiveFloat u_mrsDrawPack.x
-#define u_drawModeFloat u_mrsDrawPack.y
-#define u_pointWidth u_mrsDrawPack.z
+#define u_drawMode0Float u_mrsDrawPack.y
+#define u_drawMode1Float u_mrsDrawPack.z
+
+#define u_pointWidth u_mrsWidthPack.x
+#define u_wireframeWidth u_mrsWidthPack.y
+#define u_edgesWidth u_mrsWidthPack.z
 
 #define u_userPointColorFloat u_mrsColorPack.x
 #define u_userSurfaceColorFloat u_mrsColorPack.y
 #define u_userWireframeColorFloat u_mrsColorPack.z
+#define u_userEdgesColorFloat u_mrsColorPack.w
 
 #endif // VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_SH

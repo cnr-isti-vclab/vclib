@@ -527,19 +527,24 @@ void MeshRenderSettingsFrame::updateEdgesTabFromSettings()
 {
     if (mMRS.canEdgesBeVisible()) {
         mUI->edgesTab->setEnabled(true);
-        mUI->edgesVisibilityCheckBox->setEnabled(mMRS.isEdgesVisible());
+        mUI->edgesVisibilityCheckBox->setEnabled(true);
+        mUI->edgesVisibilityCheckBox->setChecked(mMRS.isEdgesVisible());
         mUI->edgesShadingSmoothRadioButton->setEnabled(
             mMRS.canEdgesShadingBeSmooth());
         mUI->edgesShadingSmoothRadioButton->setChecked(
-            mMRS.canEdgesShadingBeSmooth());
+            mMRS.isEdgesShadingSmooth());
         mUI->edgesShadingFlatRadioButton->setEnabled(
             mMRS.canEdgesShadingBeFlat());
         mUI->edgesShadingFlatRadioButton->setChecked(
-            mMRS.canEdgesShadingBeFlat());
+            mMRS.isEdgesShadingFlat());
         mUI->edgesShadingNoneRadioButton->setChecked(mMRS.isEdgesShadingNone());
+
+        updateEdgesComboBoxFromSettings();
+        mUI->edgesSizeSlider->setValue(mMRS.edgesWidth());
     }
     else {
         mUI->edgesTab->setEnabled(false);
+        mUI->edgesVisibilityCheckBox->setEnabled(false);
     }
 }
 

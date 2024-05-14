@@ -208,7 +208,11 @@ public:
 
     uint drawMode0() const { return mDrawMode0; }
 
+    uint drawMode1() const { return mDrawMode1; }
+
     uint drawModeCapability0() const { return mDrawModeCapability0; }
+
+    uint drawModeCapability1() const { return mDrawModeCapability1; }
 
     bool isVisible() const { return mDrawMode0 & VCL_MRS_DRAW_MESH; }
 

@@ -27,13 +27,14 @@
 int main(int argc, char** argv)
 {
     vcl::TriMesh c = vcl::createCylinder<vcl::TriMesh>(1, 1, 36);
+    vcl::updatePerVertexAndFaceNormals(c);
+    c.enablePerVertexColor();
+    vcl::setPerVertexColor(c, vcl::Color::Black);
+    c.name() = "cylinder";
 
     vcl::EdgeMesh e = creaseEdgesMesh<vcl::EdgeMesh>(c);
 
-    c.name() = "cylinder";
-    c.enablePerVertexColor();
     vcl::setPerVertexColor(c, vcl::Color::Gray);
-    vcl::updatePerVertexAndFaceNormals(c);
 
     e.name() = "crease edges";
     e.enablePerEdgeColor();

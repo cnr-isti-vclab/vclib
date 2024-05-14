@@ -87,7 +87,7 @@ public:
             if (mMRS.isSurfaceVisible()) {
                 mMRB.bindVertexBuffers();
                 mMRB.bindIndexBuffers();
-                bindUniforms(VCL_MRS_PRIMITIVE_TRIANGLES);
+                bindUniforms(VCL_MRS_DRAWING_SURFACE);
 
                 bgfx::setState(state);
 
@@ -97,7 +97,7 @@ public:
             if (mMRS.isWireframeVisible()) {
                 mMRB.bindVertexBuffers();
                 mMRB.bindIndexBuffers(mMRB.WIREFRAME);
-                bindUniforms(VCL_MRS_PRIMITIVE_LINES);
+                bindUniforms(VCL_MRS_DRAWING_WIREFRAME);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
@@ -106,7 +106,7 @@ public:
 
             if (mMRS.isPointCloudVisible()) {
                 mMRB.bindVertexBuffers();
-                bindUniforms(VCL_MRS_PRIMITIVE_POINTS);
+                bindUniforms(VCL_MRS_DRAWING_POINTS);
 
                 bgfx::setState(state | BGFX_STATE_PT_POINTS);
 
@@ -116,7 +116,7 @@ public:
             if (mMRS.isEdgesVisible()) {
                 mMRB.bindVertexBuffers();
                 mMRB.bindIndexBuffers(mMRB.EDGES);
-                bindUniforms(VCL_MRS_PRIMITIVE_LINES);
+                bindUniforms(VCL_MRS_DRAWING_EDGES);
 
                 bgfx::setState(state | BGFX_STATE_PT_LINES);
 
