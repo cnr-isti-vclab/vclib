@@ -273,13 +273,50 @@ OutMeshType perVertexMeshFilter(
 }
 
 /**
+ * @brief Generates and returns a new mesh that is composed of the selected
+ * vertices of the input mesh `m`.
+ *
+ * Only the selected vertices will be put in the output mesh. The order of the
+ * vertices in the output mesh is preserved.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `MeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `MeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex CustomComponents component, will set a
+ * per vertex custom component of type `uint` in the output mesh telling, for
+ * each vertex, the index of its birth vertex in the input mesh. The name of the
+ * custom component is `"birthVertex"`.
+ *
+ * @return A new Mesh created by filtering by selection the vertices of the
+ * input mesh `m`.
+ */
+template<MeshConcept InMeshType, MeshConcept OutMeshType = InMeshType>
+OutMeshType perVertexSelectionMeshFilter(
+    const InMeshType& m,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    auto selView = m.vertices() | vcl::views::selection;
+
+    return detail::
+        perElementMeshFilter<OutMeshType, ElemId::VERTEX, InMeshType>(
+            m, selView, saveBirthIndicesInCustomComponent);
+}
+
+/**
  * @brief Generates and returns a new mesh that is composed of the faces of the
  * input mesh `m` filtered using the `faceFilter` function. Only vertices
  * belonging to the imported faces will be imported in the output mesh.
  *
  * Only the faces for which the `faceFilter` function returns  true` and their
- * vertices will be put in the output mesh. The order of the faces and vertices
- * in the output mesh is preserved.
+ * vertices will be put in the output mesh. Only the order of the faces in the
+ * output mesh is preserved.
  *
  * By default, the type of the output mesh will be the same of the input mesh
  * type.
@@ -319,8 +356,8 @@ OutMeshType perFaceMeshFilter(
  * belonging to the imported faces will be imported in the output mesh.
  *
  * Only the faces having the corresponding boolean in `faceFilterRng` evaluated
- * to `true` and their vertices will be put in the output mesh. The order of the
- * faces and vertices in the output mesh is preserved.
+ * to `true` and their vertices will be put in the output mesh. Only the order
+ * of the faces in the output mesh is preserved.
  *
  * By default, the type of the output mesh will be the same of the input mesh
  * type.
@@ -352,6 +389,166 @@ OutMeshType perFaceMeshFilter(
     return detail::
         perElementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
             m, faceFilterRng, saveBirthIndicesInCustomComponent);
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the selected
+ * faces of the input mesh `m`. Only vertices belonging to the imported faces
+ * will be imported in the output mesh.
+ *
+ * Only the delected faces and their vertices will be put in the output mesh.
+ * Only the order of the faces in the output mesh is preserved.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `FaceMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `FaceMeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex and/or per face CustomComponents
+ * component, will set a per vertex/per face custom component of type `uint` in
+ * the output mesh telling, for each vertex/face, the index of its birth
+ * vertex/birth face in the input mesh. The names of the custom components are
+ * `"birthVertex"` and `"birthFace"`.
+ *
+ * @return A new Mesh created by filtering the selected faces of the input mesh
+ * `m`.
+ */
+template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
+OutMeshType perFaceSelectionMeshFilter(
+    const InMeshType& m,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    auto selView = m.faces() | vcl::views::selection;
+
+    return detail::
+        perElementMeshFilterWithVRefs<OutMeshType, ElemId::FACE, InMeshType>(
+            m, selView, saveBirthIndicesInCustomComponent);
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the edges of the
+ * input mesh `m` filtered using the `edgeFilter` function. Only vertices
+ * belonging to the imported edges will be imported in the output mesh.
+ *
+ * Only the edges for which the `edgeFilter` function returns  true` and their
+ * vertices will be put in the output mesh. Only the order of the edges in the
+ * output mesh is preserved.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `EdgeMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `EdgeMeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] edgeFilter: a function that takes a edge as input and returns a
+ * boolean value that tells whether the edge should be imported in the output
+ * mesh or not.
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex and/or per edge CustomComponents
+ * component, will set a per vertex/per edge custom component of type `uint` in
+ * the output mesh telling, for each vertex/edge, the index of its birth
+ * vertex/birth edge in the input mesh. The names of the custom components are
+ * `"birthVertex"` and `"birthEdge"`.
+ *
+ * @return A new Mesh created by filtering the edges of the input mesh `m`.
+ */
+template<EdgeMeshConcept InMeshType, EdgeMeshConcept OutMeshType = InMeshType>
+OutMeshType perEdgeMeshFilter(
+    const InMeshType&                                           m,
+    const std::function<bool(const typename InMeshType::EdgeType&)>& edgeFilter,
+    bool saveBirthIndicesInCustomComponent = true)
+{
+    return detail::
+        perElementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
+            m, edgeFilter, saveBirthIndicesInCustomComponent);
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the edges of the
+ * input mesh `m` filtered using the `edgeFilterRng` range. Only vertices
+ * belonging to the imported edges will be imported in the output mesh.
+ *
+ * Only the edges having the corresponding boolean in `edgeFilterRng` evaluated
+ * to `true` and their vertices will be put in the output mesh. Only the order
+ * of the edges in the output mesh is preserved.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `EdgeMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `EdgeMeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] edgeFilterRng: range of values that are evaluated as booleans,
+ * one for each edge of the input mesh. Its type must satisfy the `Range`
+ * concept.
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex and/or per edge CustomComponents
+ * component, will set a per vertex/per edge custom component of type `uint` in
+ * the output mesh telling, for each vertex/edge, the index of its birth
+ * vertex/birth edge in the input mesh. The names of the custom components are
+ * `"birthVertex"` and `"birthEdge"`.
+ *
+ * @return A new Mesh created by filtering the edges of the input mesh `m`.
+ */
+template<EdgeMeshConcept InMeshType, EdgeMeshConcept OutMeshType = InMeshType>
+OutMeshType perEdgeMeshFilter(
+    const InMeshType& m,
+    Range auto&&      edgeFilterRng,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    return detail::
+        perElementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
+            m, edgeFilterRng, saveBirthIndicesInCustomComponent);
+}
+
+/**
+ * @brief Generates and returns a new mesh that is composed of the selected
+ * edges of the input mesh `m`. Only vertices belonging to the imported edges
+ * will be imported in the output mesh.
+ *
+ * Only the delected edges and their vertices will be put in the output mesh.
+ * Only the order of the edges in the output mesh is preserved.
+ *
+ * By default, the type of the output mesh will be the same of the input mesh
+ * type.
+ *
+ * @tparam InMeshType: type of the input mesh. It must satisfy the
+ * `EdgeMeshConcept`.
+ * @tparam OutMeshType: type of the output mesh. It must satisfy the
+ * `EdgeMeshConcept`. By default, it is the same of the input mesh type.
+ *
+ * @param[in] m: input mesh
+ * @param[in] saveBirthIndicesInCustomComponent: if `true` (default), and if the
+ * output mesh type has the per vertex and/or per edge CustomComponents
+ * component, will set a per vertex/per edge custom component of type `uint` in
+ * the output mesh telling, for each vertex/edge, the index of its birth
+ * vertex/birth edge in the input mesh. The names of the custom components are
+ * `"birthVertex"` and `"birthEdge"`.
+ *
+ * @return A new Mesh created by filtering the selected edges of the input mesh
+ * `m`.
+ */
+template<EdgeMeshConcept InMeshType, EdgeMeshConcept OutMeshType = InMeshType>
+OutMeshType perEdgeSelectionMeshFilter(
+    const InMeshType& m,
+    bool              saveBirthIndicesInCustomComponent = true)
+{
+    auto selView = m.edges() | vcl::views::selection;
+
+    return detail::
+        perElementMeshFilterWithVRefs<OutMeshType, ElemId::EDGE, InMeshType>(
+            m, selView, saveBirthIndicesInCustomComponent);
 }
 
 } // namespace vcl
