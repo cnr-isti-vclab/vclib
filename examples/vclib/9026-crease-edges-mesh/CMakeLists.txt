@@ -21,12 +21,15 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-examples)
 
-add_subdirectory(9015-mesh-io-stl)
-add_subdirectory(9018-mesh-principal-curvature)
-add_subdirectory(9019-mesh-sampling)
-add_subdirectory(9021-mesh-sphere-intersection)
-add_subdirectory(9026-crease-edges-mesh)
+set(EXAMPLE_NAME 9026-crease-edges-mesh)
+project(vclib-render-example-${EXAMPLE_NAME})
 
+set(SOURCES
+    main.cpp)
 
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${SOURCES} VCLIB_EXAMPLE 026-crease-edges-mesh)
+
+if (TARGET vclib-external-bgfx)
+    target_expose_vclib_assets_and_shaders(${PROJECT_NAME})
+endif()

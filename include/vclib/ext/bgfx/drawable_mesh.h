@@ -112,6 +112,16 @@ public:
 
                 bgfx::submit(viewId, mProgram);
             }
+
+            if (mMRS.isEdgesVisible()) {
+                mMRB.bindVertexBuffers();
+                mMRB.bindIndexBuffers(mMRB.EDGES);
+                bindUniforms(VCL_MRS_PRIMITIVE_LINES);
+
+                bgfx::setState(state | BGFX_STATE_PT_LINES);
+
+                bgfx::submit(viewId, mProgram);
+            }
         }
     }
 
