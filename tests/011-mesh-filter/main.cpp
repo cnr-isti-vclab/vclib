@@ -75,8 +75,18 @@ TEMPLATE_TEST_CASE(
     THEN("Filter faces")
     {
         std::vector<bool> filter = {
-            true, false, false, true, false, false, true, true, false, false,
-            true, false};
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            false};
 
         TriMesh anotherMesh = vcl::perFaceMeshFilter(tm, filter);
 
@@ -159,7 +169,8 @@ TEMPLATE_TEST_CASE(
     // select crease edges
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(30.f), vcl::toRad(30.f));
 
-    EdgeMesh creaseEdges = vcl::perFaceEdgeSelectionMeshFilter<EdgeMesh>(cylinder);
+    EdgeMesh creaseEdges =
+        vcl::perFaceEdgeSelectionMeshFilter<EdgeMesh>(cylinder);
 
     THEN("The mesh has 36 * 2 crease edges")
     {

@@ -600,8 +600,8 @@ protected:
         if (importRefs) {
             if constexpr (HasAdjacentVertices<Element>) {
                 if (isAdjacentVerticesAvailableOn(e)) {
-                    // from static/dynamic to dynamic size: need to resize first,
-                    // then import
+                    // from static/dynamic to dynamic size: need to resize
+                    // first, then import
                     resizeAdjVertices(e.adjVerticesNumber());
                     importIndicesFrom(e);
                 }

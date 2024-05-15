@@ -95,7 +95,7 @@ OutMeshType perElementMeshFilterWithVRefs(
     bool              saveBirthIndicesInCustomComponent = true)
 {
     using InVertexType = InMeshType::VertexType;
-    using OutElemType = OutMeshType::template ElementType<ELEM_ID>;
+    using OutElemType  = OutMeshType::template ElementType<ELEM_ID>;
 
     std::string ccname = "birth" + vcl::elementEnumString<ELEM_ID>();
 
@@ -344,7 +344,7 @@ OutMeshType perVertexSelectionMeshFilter(
  */
 template<FaceMeshConcept InMeshType, FaceMeshConcept OutMeshType = InMeshType>
 OutMeshType perFaceMeshFilter(
-    const InMeshType&                                           m,
+    const InMeshType&                                                m,
     const std::function<bool(const typename InMeshType::FaceType&)>& faceFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
@@ -465,7 +465,7 @@ OutMeshType perFaceSelectionMeshFilter(
  */
 template<EdgeMeshConcept InMeshType, EdgeMeshConcept OutMeshType = InMeshType>
 OutMeshType perEdgeMeshFilter(
-    const InMeshType&                                           m,
+    const InMeshType&                                                m,
     const std::function<bool(const typename InMeshType::EdgeType&)>& edgeFilter,
     bool saveBirthIndicesInCustomComponent = true)
 {
@@ -635,8 +635,7 @@ OutMeshType perFaceEdgeMeshFilter(
                 }
 
                 std::pair<uint, uint> ep {verts[0], verts[1]};
-                if (!dontDuplicateEdges || !unorderedEdges.contains(ep))
-                {
+                if (!dontDuplicateEdges || !unorderedEdges.contains(ep)) {
                     uint e = res.addEdge(verts[0], verts[1]);
                     unorderedEdges.insert(ep);
                 }

@@ -179,8 +179,7 @@ template<typename ParentEdgeType>
 using VerticalNormal3d = comp::Normal3d<ParentEdgeType>;
 
 template<typename ScalarType, int N, typename ParentEdgeType>
-using OptionalNormal =
-    comp::Normal<Point<ScalarType, N>, ParentEdgeType, true>;
+using OptionalNormal = comp::Normal<Point<ScalarType, N>, ParentEdgeType, true>;
 
 template<typename ScalarType, typename ParentEdgeType>
 using OptionalNormal3 = comp::Normal3<ScalarType, ParentEdgeType, true>;

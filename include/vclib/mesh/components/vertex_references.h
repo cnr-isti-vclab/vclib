@@ -673,8 +673,8 @@ protected:
                         }
                     }
                     else {
-                        // do not import in this case: cannot import from a face of
-                        // different size
+                        // do not import in this case: cannot import from a face
+                        // of different size
                     }
                 }
                 else {

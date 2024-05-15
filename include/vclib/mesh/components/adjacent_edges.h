@@ -617,7 +617,8 @@ protected:
                         if constexpr (N == Element::ADJ_EDGE_NUMBER) {
                             importIndicesFrom(e);
                         }
-                        // from dynamic to static, but dynamic size == static size
+                        // from dynamic to static, but dynamic size == static
+                        // size
                         else if constexpr (Element::ADJ_EDGE_NUMBER < 0) {
                             if (e.adjEdgesNumber() == N) {
                                 importIndicesFrom(e);
