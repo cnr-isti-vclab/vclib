@@ -535,8 +535,7 @@ void MeshRenderSettingsFrame::updateEdgesTabFromSettings()
             mMRS.isEdgesShadingSmooth());
         mUI->edgesShadingFlatRadioButton->setEnabled(
             mMRS.canEdgesShadingBeFlat());
-        mUI->edgesShadingFlatRadioButton->setChecked(
-            mMRS.isEdgesShadingFlat());
+        mUI->edgesShadingFlatRadioButton->setChecked(mMRS.isEdgesShadingFlat());
         mUI->edgesShadingNoneRadioButton->setChecked(mMRS.isEdgesShadingNone());
 
         updateEdgesComboBoxFromSettings();
