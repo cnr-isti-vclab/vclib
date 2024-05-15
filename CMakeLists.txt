@@ -259,7 +259,7 @@ else()
 endif()
 
 add_library(vclib-render ${VLIB_RENDER_LIB_TYPE}
-    ${HEADERS} ${SOURCES} ${FORMS})
+    ${HEADERS} ${SOURCES} ${SHADERS} ${FORMS})
 
 target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
 set_target_properties(vclib-render PROPERTIES
@@ -285,6 +285,10 @@ if (TARGET vclib-external-bgfx)
         VCLIB_RENDER_BGFX_SHADERS "${SHADERS}")
 
     target_add_bgfx_shaders(vclib-render ${SHADERS})
+
+    #build_bgfx_shaders_to_headers(${SHADERS})
+    #target_include_directories(vclib-render PRIVATE
+    #    ${CMAKE_CURRENT_BINARY_DIR}/include)
 endif()
 
 target_link_libraries(vclib-render PUBLIC
