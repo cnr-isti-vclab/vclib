@@ -22,7 +22,23 @@
 
 #include <stdexcept>
 
+#include <bgfx/embedded_shader.h>
+
 #include <vclib/ext/bgfx/context/program_manger.h>
+
+// // main.cpp
+// #include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.140.bin.h>
+// #include <shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc.140.bin.h>
+// #include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.320_es.bin.h>
+// #include <shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc.320_es.bin.h>
+// #include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.spv.bin.h>
+// #include <shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc.spv.bin.h>
+// #if defined(_WIN32)
+// // todo
+// #endif //  defined(_WIN32)
+// #if __APPLE__
+// // todo
+// #endif // __APPLE__
 
 namespace vcl::bgf {
 
@@ -73,6 +89,9 @@ bgfx::ProgramHandle ProgramManager::loadProgram(VclProgram::Enum program)
         return bgf::loadProgram(
             "vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh",
             "vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh");
+        // return bgf::loadProgram(
+        //     BGFX_EMBEDDED_SHADER(vs_drawable_mesh),
+        //     BGFX_EMBEDDED_SHADER(fs_drawable_mesh);
 
     case VclProgram::DRAWABLE_AXIS:
         return bgf::loadProgram(

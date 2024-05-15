@@ -28,6 +28,8 @@
 #include <bx/file.h>
 #include <bx/readerwriter.h>
 
+#include <bgfx/embedded_shader.h>
+
 namespace vcl::bgf {
 
 namespace detail {
@@ -124,6 +126,35 @@ bgfx::ProgramHandle loadProgram(
 {
     detail::BXFileReader fr;
     return detail::loadProgram(fr.get(), vsName, fsName);
+}
+
+bgfx::ProgramHandle loadProgram(
+    const bgfx::EmbeddedShader& vs,
+    const bgfx::EmbeddedShader& fs,
+    bgfx::RendererType::Enum type)
+{
+    auto loadShader = [](const bgfx::EmbeddedShader& s,
+                         bgfx::RendererType::Enum type) -> bgfx::ShaderHandle {
+        for (const bgfx::EmbeddedShader::Data* esd = s.data;
+             bgfx::RendererType::Count != esd->type;
+             ++esd)
+        {
+            if (type == esd->type && 1 < esd->size) {
+                bgfx::ShaderHandle handle =
+                    bgfx::createShader(bgfx::makeRef(esd->data, esd->size));
+                // if (isValid(handle)) {
+                //     setName(handle, _name);
+                // }
+                return handle;
+            }
+        }
+        return BGFX_INVALID_HANDLE;
+    };
+
+    bgfx::ShaderHandle vsHandle = loadShader(vs, type);
+    bgfx::ShaderHandle fsHandle = loadShader(fs, type);
+
+    return bgfx::createProgram(vsHandle, fsHandle, true);
 }
 
 } // namespace vcl::bgf
