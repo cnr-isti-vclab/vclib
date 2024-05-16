@@ -48,7 +48,7 @@ int main(int argc, char** argv)
 
     tw.enableText();
 
-    tw.setTextFont("DroidSans", 20);
+    tw.setTextFont(vcl::bgf::VclFont::DROID_SANS, 20);
     tw.appendStaticText({5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
     tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));
 

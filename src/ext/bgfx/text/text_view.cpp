@@ -61,6 +61,11 @@ bool TextView::isTextEnabled() const
     return isViewValid(mView);
 }
 
+void TextView::setTextFont(VclFont::Enum font, uint fontSize)
+{
+    mTextManager.setCurrentFont(font, fontSize);
+}
+
 void TextView::setTextFont(const std::string& fontName, uint fontSize)
 {
     mTextManager.setCurrentFont(fontName, fontSize);
@@ -99,8 +104,7 @@ void TextView::init(uint width, uint height)
 
     mTextManager.init();
 
-    mTextManager.loadFont("assets/fonts/droidsans.ttf", "DroidSans");
-    mTextManager.setCurrentFont("DroidSans", 20);
+    mTextManager.setCurrentFont(VclFont::DROID_SANS, 20);
 }
 
 void TextView::frame(bgfx::FrameBufferHandle fbh)

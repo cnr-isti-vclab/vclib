@@ -20,56 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
-#define VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
+#ifndef VCL_EXT_BGFX_TEXT_EMBEDDED_FONTS_H
+#define VCL_EXT_BGFX_TEXT_EMBEDDED_FONTS_H
 
-#include "../context.h"
-#include "text_manager.h"
+#include "embedded_fonts/droid_sans.h"
 
-namespace vcl::bgf {
-
-class TextView
-{
-    TextManager  mTextManager;
-    bgfx::ViewId mView = BGFX_INVALID_VIEW;
-    float        mTextViewMatrix[16];
-    float        mTextProjMatrix[16];
-    uint         mWidth  = 0;
-    uint         mHeight = 0;
-
-public:
-    TextView();
-    ~TextView();
-
-    void enableText(bool b = true);
-    bool isTextEnabled() const;
-
-    void setTextFont(VclFont::Enum font, uint fontSize);
-    void setTextFont(const std::string& fontName, uint fontSize);
-
-    void clearText();
-
-    void appendStaticText(
-        const vcl::Point2f& pos,
-        const std::string&  text,
-        const vcl::Color&   color = vcl::Color::Black);
-
-    void appendTransientText(
-        const vcl::Point2f& pos,
-        const std::string&  text,
-        const vcl::Color&   color = vcl::Color::Black);
-
-protected:
-    void init(uint width, uint height);
-
-    void frame(bgfx::FrameBufferHandle fbh);
-
-    void resize(uint width, uint height);
-
-private:
-    void updateProjMatrix();
-};
-
-} // namespace vcl::bgf
-
-#endif // VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
+#endif // VCL_EXT_BGFX_TEXT_EMBEDDED_FONTS_H

@@ -27,6 +27,7 @@
 
 #include <vclib/space/color.h>
 
+#include "embedded_fonts.h"
 #include "font/text_buffer_manager.h"
 
 namespace vcl::bgf {
@@ -49,6 +50,7 @@ public:
 
     void clear();
 
+    void setCurrentFont(VclFont::Enum font, uint16_t fontSize);
     void setCurrentFont(const std::string& fontName, uint16_t fontSize);
 
     void appendTransientText(

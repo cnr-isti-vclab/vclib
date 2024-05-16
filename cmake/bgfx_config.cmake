@@ -235,7 +235,7 @@ function(_add_bgfx_shader FILE DIR TARGET)
 	endif()
 endfunction()
 
-function(ide_add_bgfx_shaders target_name)
+function(target_ide_add_bgfx_shaders target_name)
     list(REMOVE_AT ARGV 0)
     source_group("Shaders" FILES ${ARGV})
     target_sources(${target_name} PRIVATE ${ARGV})
@@ -265,11 +265,11 @@ function(target_add_bgfx_shaders target_name)
 
         _add_bgfx_shader("${ABSOLUTE_PATH_SHADER}" "${DIR_PATH}" ${target_name})
     endforeach()
-    ide_add_bgfx_shaders(${target_name} ${ARGV})
+    target_ide_add_bgfx_shaders(${target_name} ${ARGV})
 endfunction()
 
 function(build_bgfx_shaders_to_headers)
-    ide_add_bgfx_shaders(vclib-render ${ARGV})
+    target_ide_add_bgfx_shaders(vclib-render ${ARGV})
 
     get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
     get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
@@ -304,22 +304,5 @@ function(build_bgfx_shaders_to_headers)
                 INCLUDE_DIRS "${BGFX_DIR}/src;${VCLIB_RENDER_DIR};${VCLIB_RENDER_SHADER_DIR}"
             )
         endif()
-    endforeach()
-endfunction()
-
-# Function to make available the bgfx shaders defined by vclib to the given
-# target
-function(target_expose_vclib_bgfx_shaders target_name)
-    get_property(VCLIB_SHADERS TARGET vclib-render PROPERTY VCLIB_RENDER_BGFX_SHADERS)
-    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
-
-    foreach(SHADER ${VCLIB_SHADERS})
-        get_filename_component(DIR_PATH ${SHADER} DIRECTORY)
-
-        # remove "shaders/" characters from DIR_PATH
-        string(SUBSTRING ${DIR_PATH} 8 -1 DIR_PATH)
-
-        _add_bgfx_shader("${VCLIB_RENDER_DIR}/../${SHADER}" "${DIR_PATH}" ${target_name})
-        ide_add_bgfx_shaders(${target_name} "${VCLIB_RENDER_DIR}/../${SHADER}")
     endforeach()
 endfunction()

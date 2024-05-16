@@ -62,6 +62,11 @@ void TextManager::clear()
     mTextBufferManager->clearTextBuffer(mStaticText);
 }
 
+void TextManager::setCurrentFont(VclFont::Enum font, uint16_t fontSize)
+{
+    mCurrentFont = Context::fontManager().getFontHandle(font, fontSize);
+}
+
 void TextManager::setCurrentFont(const std::string& fontName, uint16_t fontSize)
 {
     mCurrentFont = Context::fontManager().getFontHandle(fontName, fontSize);

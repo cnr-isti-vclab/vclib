@@ -20,56 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
-#define VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
+#ifndef VCL_EXT_BGFX_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H
+#define VCL_EXT_BGFX_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H
 
-#include "../context.h"
-#include "text_manager.h"
+#include <array>
+#include <cstdint>
+#include <string>
 
 namespace vcl::bgf {
 
-class TextView
+struct FontData
 {
-    TextManager  mTextManager;
-    bgfx::ViewId mView = BGFX_INVALID_VIEW;
-    float        mTextViewMatrix[16];
-    float        mTextProjMatrix[16];
-    uint         mWidth  = 0;
-    uint         mHeight = 0;
+    const uint8_t* data = nullptr;
+    uint32_t size = 0;
+};
 
-public:
-    TextView();
-    ~TextView();
+struct VclFont
+{
+    enum Enum {
+        DROID_SANS,
 
-    void enableText(bool b = true);
-    bool isTextEnabled() const;
+        COUNT
+    };
 
-    void setTextFont(VclFont::Enum font, uint fontSize);
-    void setTextFont(const std::string& fontName, uint fontSize);
+    static inline const std::array<std::string, VclFont::COUNT>
+        fontNames = {
+            "DroidSans",
+    };
+};
 
-    void clearText();
-
-    void appendStaticText(
-        const vcl::Point2f& pos,
-        const std::string&  text,
-        const vcl::Color&   color = vcl::Color::Black);
-
-    void appendTransientText(
-        const vcl::Point2f& pos,
-        const std::string&  text,
-        const vcl::Color&   color = vcl::Color::Black);
-
-protected:
-    void init(uint width, uint height);
-
-    void frame(bgfx::FrameBufferHandle fbh);
-
-    void resize(uint width, uint height);
-
-private:
-    void updateProjMatrix();
+template<VclFont::Enum FONT = VclFont::COUNT>
+struct EmbeddedFont
+{
+    static FontData embeddedFont()
+    {
+        static_assert(true, "Invalid Font");
+        return {nullptr, 0};
+    }
 };
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_TEXT_TEXT_VIEW_H
+#endif // VCL_EXT_BGFX_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H

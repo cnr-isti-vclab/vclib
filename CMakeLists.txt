@@ -101,8 +101,11 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_outline_drop_shadow_image.h
         include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_outline_image.h
         include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_subpixel.h
+        include/vclib/ext/bgfx/text/embedded_fonts.h
         include/vclib/ext/bgfx/text/text_manager.h
         include/vclib/ext/bgfx/text/text_view.h
+        include/vclib/ext/bgfx/text/embedded_fonts/droid_sans.h
+        include/vclib/ext/bgfx/text/embedded_fonts/embedded_font.h
         include/vclib/ext/bgfx/text/font/cube_atlas.h
         include/vclib/ext/bgfx/text/font/font_manager.h
         include/vclib/ext/bgfx/text/font/text_buffer_manager.h
@@ -142,6 +145,7 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/context/embedded_shaders/font_distance_field_subpixel.cpp
         src/ext/bgfx/text/text_manager.cpp
         src/ext/bgfx/text/text_view.cpp
+        src/ext/bgfx/text/embedded_fonts/droid_sans.cpp
         src/ext/bgfx/text/font/cube_atlas.cpp
         src/ext/bgfx/text/font/font_manager.cpp
         src/ext/bgfx/text/font/text_buffer_manager.cpp
@@ -294,7 +298,8 @@ set_target_properties(vclib-render PROPERTIES
 set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_ASSETS "${ASSETS}")
 
-target_add_assets(vclib-render ${ASSETS})
+build_assets_to_headers(${ASSETS})
+#target_add_assets(vclib-render ${ASSETS})
 
 if (TARGET vclib-external-qt)
     set_property(TARGET vclib-render PROPERTY AUTOMOC ON)

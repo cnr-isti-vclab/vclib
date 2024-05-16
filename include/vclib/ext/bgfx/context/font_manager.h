@@ -26,6 +26,7 @@
 #include <map>
 #include <string>
 
+#include <vclib/ext/bgfx/text/embedded_fonts.h>
 #include <vclib/ext/bgfx/text/font/font_manager.h>
 
 namespace vcl::bgf {
@@ -47,8 +48,12 @@ public:
     FontManager(FontManager&&)                 = delete;
     FontManager& operator=(FontManager&&)      = delete;
 
+    void loadFont(VclFont::Enum font);
+    void loadFont(const FontData& fd, const std::string& fontName);
+
     void loadFont(const std::string& filePath, const std::string& fontName);
 
+    bgfx::FontHandle getFontHandle(VclFont::Enum font, uint16_t fontSize);
     bgfx::FontHandle getFontHandle(
         const std::string& fontName,
         uint16_t           fontSize);
@@ -59,6 +64,11 @@ private:
     static bgfx::TrueTypeHandle loadTtf(
         bgfx::FontManager& fontManager,
         const char*        filePath);
+
+    static bgfx::TrueTypeHandle loadTtf(
+        bgfx::FontManager& fontManager,
+        const uint8_t* data,
+        std::size_t size);
 };
 
 } // namespace vcl::bgf

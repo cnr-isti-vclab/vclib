@@ -25,35 +25,32 @@ if (TARGET vclib-external-bgfx)
 endif()
 
 # Function to add a list of assets to a target
-function(target_add_assets target_name)
+function(target_ide_add_assets target_name)
     list(REMOVE_AT ARGV 0)
 
     source_group("Asset Files" FILES ${ARGV})
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
-# Function to make available the assets defined by vclib to the given target
-function(target_expose_vclib_assets target_name)
-    get_property(VCLIB_ASSETS TARGET vclib-render PROPERTY VCLIB_RENDER_ASSETS)
-    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
+function(build_assets_to_headers)
+    target_ide_add_assets(vclib-render ${ARGV})
 
-    foreach(ASSET ${VCLIB_ASSETS})
+    get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
+
+    set(BGFX_ASSETS_OUTPUT_DIR "${TARGET_BIN_DIR}/include")
+
+    message(STATUS "OutDir: ${BGFX_ASSETS_OUTPUT_DIR}")
+    foreach(ASSET ${ARGV})
         get_filename_component(DIR_PATH ${ASSET} DIRECTORY)
-        get_property(TARGET_BIN_DIR TARGET ${target_name} PROPERTY BINARY_DIR)
+        get_filename_component(FILENAME "${ASSET}" NAME)
+        get_filename_component(FILENAME_WE "${ASSET}" NAME_WE)
+        get_filename_component(ABSOLUTE_PATH_ASSET ${ASSET} ABSOLUTE)
+        get_filename_component(ABSOLUTE_DIR_PATH ${DIR_PATH} ABSOLUTE)
 
-        # copy file from "${VCLIB_RENDER_DIR}/../${ASSET}" to "${TARGET_BIN_DIR}/${ASSET}"
-        add_custom_command(
-            TARGET ${target_name}
-            PRE_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy "${VCLIB_RENDER_DIR}/../${ASSET}" "${TARGET_BIN_DIR}/${ASSET}"
-            COMMENT "Copying asset ${ASSET}"
+        bgfx_compile_binary_to_header(
+            INPUT_FILE ${ABSOLUTE_PATH_ASSET}
+            OUTPUT_FILE ${BGFX_ASSETS_OUTPUT_DIR}/${DIR_PATH}/${FILENAME}.bin.h
+            ARRAY_NAME ${FILENAME_WE}
         )
     endforeach()
-endfunction()
-
-function (target_expose_vclib_assets_and_shaders target_name)
-    target_expose_vclib_assets(${target_name})
-    # if (TARGET vclib-external-bgfx)
-    #     target_expose_vclib_bgfx_shaders(${target_name})
-    # endif()
 endfunction()

@@ -41,6 +41,32 @@ FontManager::~FontManager()
     }
 }
 
+void FontManager::loadFont(VclFont::Enum font)
+{
+    if (mTTMap.find(VclFont::fontNames[font]) == mTTMap.end()) {
+        FontData fd;
+        switch (font) {
+        case VclFont::DROID_SANS:
+            fd = EmbeddedFont<VclFont::DROID_SANS>::embeddedFont();
+            break;
+        default:
+            return;
+        }
+        bgfx::TrueTypeHandle handle = loadTtf(mFontManager, fd.data, fd.size);
+        mTTMap[VclFont::fontNames[font]] = handle;
+    }
+}
+
+void FontManager::loadFont(
+    const FontData& fd,
+    const std::string& fontName)
+{
+    if (mTTMap.find(fontName) == mTTMap.end()) {
+        bgfx::TrueTypeHandle handle = loadTtf(mFontManager, fd.data, fd.size);
+        mTTMap[fontName]            = handle;
+    }
+}
+
 void FontManager::loadFont(
     const std::string& filePath,
     const std::string& fontName)
@@ -48,6 +74,23 @@ void FontManager::loadFont(
     if (mTTMap.find(fontName) == mTTMap.end()) {
         bgfx::TrueTypeHandle handle = loadTtf(mFontManager, filePath.c_str());
         mTTMap[fontName]            = handle;
+    }
+}
+
+bgfx::FontHandle FontManager::getFontHandle(
+    VclFont::Enum font,
+    uint16_t      fontSize)
+{
+    std::string fontName = VclFont::fontNames[font];
+    auto it = mFontMap.find({fontName, fontSize});
+    if (it != mFontMap.end()) {
+        return it->second;
+    }
+    else {
+        if (mTTMap.find(fontName) == mTTMap.end()) {
+            loadFont(font);
+        }
+        return getFontHandle(fontName, fontSize);
     }
 }
 
@@ -93,7 +136,15 @@ bgfx::TrueTypeHandle FontManager::loadTtf(
     data.resize(size);
     file.read((char*) data.data(), size);
 
-    bgfx::TrueTypeHandle handle = fontManager.createTtf(data.data(), size);
+    return loadTtf(fontManager, data.data(), size);
+}
+
+bgfx::TrueTypeHandle FontManager::loadTtf(
+    bgfx::FontManager& fontManager,
+    const uint8_t*     data,
+    std::size_t        size)
+{
+    bgfx::TrueTypeHandle handle = fontManager.createTtf(data, size);
     return handle;
 }
 
