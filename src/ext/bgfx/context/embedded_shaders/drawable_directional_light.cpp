@@ -35,8 +35,8 @@
 #include <shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/vclib/ext/bgfx/drawable_directional_light/fs_drawable_directional_light.sc.dx11.bin.h>
-#include <shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc.dx11.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_directional_light/fs_drawable_directional_light.sc.mtl.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl::bgf {
