@@ -120,6 +120,11 @@ bgfx::ShaderHandle loadShader(const std::string& name)
     return detail::loadShader(fr.get(), name);
 }
 
+bgfx::ShaderHandle loadShader(const bgfx::EmbeddedShader::Data& data)
+{
+    return bgfx::createShader(bgfx::makeRef(data.data, data.size));
+}
+
 bgfx::ProgramHandle loadProgram(
     const std::string& vsName,
     const std::string& fsName)
@@ -128,32 +133,10 @@ bgfx::ProgramHandle loadProgram(
     return detail::loadProgram(fr.get(), vsName, fsName);
 }
 
-bgfx::ProgramHandle loadProgram(
-    const bgfx::EmbeddedShader& vs,
-    const bgfx::EmbeddedShader& fs,
-    bgfx::RendererType::Enum    type)
+bgfx::ProgramHandle createProgram(
+    bgfx::ShaderHandle vsHandle,
+    bgfx::ShaderHandle fsHandle)
 {
-    auto loadShader = [](const bgfx::EmbeddedShader& s,
-                         bgfx::RendererType::Enum type) -> bgfx::ShaderHandle {
-        for (const bgfx::EmbeddedShader::Data* esd = s.data;
-             bgfx::RendererType::Count != esd->type;
-             ++esd)
-        {
-            if (type == esd->type && 1 < esd->size) {
-                bgfx::ShaderHandle handle =
-                    bgfx::createShader(bgfx::makeRef(esd->data, esd->size));
-                // if (isValid(handle)) {
-                //     setName(handle, _name);
-                // }
-                return handle;
-            }
-        }
-        return BGFX_INVALID_HANDLE;
-    };
-
-    bgfx::ShaderHandle vsHandle = loadShader(vs, type);
-    bgfx::ShaderHandle fsHandle = loadShader(fs, type);
-
     return bgfx::createProgram(vsHandle, fsHandle, true);
 }
 

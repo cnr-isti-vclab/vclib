@@ -224,7 +224,7 @@ endfunction()
 
 function(ide_add_bgfx_shaders target_name)
     list(REMOVE_AT ARGV 0)
-    source_group("Shader Files" FILES ${ARGV})
+    source_group("Shaders" FILES ${ARGV})
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
@@ -256,6 +256,8 @@ function(target_add_bgfx_shaders target_name)
 endfunction()
 
 function(build_bgfx_shaders_to_headers)
+    ide_add_bgfx_shaders(vclib-render ${ARGV})
+
     get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
     get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
     get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR)

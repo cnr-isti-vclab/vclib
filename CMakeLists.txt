@@ -85,8 +85,22 @@ if (TARGET vclib-external-bgfx)
         include/vclib/ext/bgfx/mesh_render_buffers.h
         include/vclib/ext/bgfx/minimal_viewer.h
         include/vclib/ext/bgfx/context/callback.h
+        include/vclib/ext/bgfx/context/embedded_shaders.h
         include/vclib/ext/bgfx/context/font_manager.h
         include/vclib/ext/bgfx/context/program_manger.h
+        include/vclib/ext/bgfx/context/embedded_shaders/drawable_axis.h
+        include/vclib/ext/bgfx/context/embedded_shaders/drawable_directional_light.h
+        include/vclib/ext/bgfx/context/embedded_shaders/drawable_mesh.h
+        include/vclib/ext/bgfx/context/embedded_shaders/drawable_trackball.h
+        include/vclib/ext/bgfx/context/embedded_shaders/embedded_shader.h
+        include/vclib/ext/bgfx/context/embedded_shaders/font_basic.h
+        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field.h
+        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow.h
+        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow_image.h
+        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_outline.h
+        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_outline_drop_shadow_image.h
+        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_outline_image.h
+        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_subpixel.h
         include/vclib/ext/bgfx/text/text_manager.h
         include/vclib/ext/bgfx/text/text_view.h
         include/vclib/ext/bgfx/text/font/cube_atlas.h
@@ -114,6 +128,18 @@ if (TARGET vclib-external-bgfx)
         src/ext/bgfx/context/callback.cpp
         src/ext/bgfx/context/font_manager.cpp
         src/ext/bgfx/context/program_manager.cpp
+        src/ext/bgfx/context/embedded_shaders/drawable_axis.cpp
+        src/ext/bgfx/context/embedded_shaders/drawable_directional_light.cpp
+        src/ext/bgfx/context/embedded_shaders/drawable_mesh.cpp
+        src/ext/bgfx/context/embedded_shaders/drawable_trackball.cpp
+        src/ext/bgfx/context/embedded_shaders/font_basic.cpp
+        src/ext/bgfx/context/embedded_shaders/font_distance_field.cpp
+        src/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow.cpp
+        src/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow_image.cpp
+        src/ext/bgfx/context/embedded_shaders/font_distance_field_outline.cpp
+        src/ext/bgfx/context/embedded_shaders/font_distance_field_outline_drop_shadow_image.cpp
+        src/ext/bgfx/context/embedded_shaders/font_distance_field_outline_image.cpp
+        src/ext/bgfx/context/embedded_shaders/font_distance_field_subpixel.cpp
         src/ext/bgfx/text/text_manager.cpp
         src/ext/bgfx/text/text_view.cpp
         src/ext/bgfx/text/font/cube_atlas.cpp
@@ -284,11 +310,11 @@ if (TARGET vclib-external-bgfx)
     set_target_properties(vclib-render PROPERTIES
         VCLIB_RENDER_BGFX_SHADERS "${SHADERS}")
 
-    target_add_bgfx_shaders(vclib-render ${SHADERS})
+    # target_add_bgfx_shaders(vclib-render ${SHADERS})
 
-    #build_bgfx_shaders_to_headers(${SHADERS})
-    #target_include_directories(vclib-render PRIVATE
-    #    ${CMAKE_CURRENT_BINARY_DIR}/include)
+    build_bgfx_shaders_to_headers(${SHADERS})
+    target_include_directories(vclib-render PRIVATE
+       ${CMAKE_CURRENT_BINARY_DIR}/include)
 endif()
 
 target_link_libraries(vclib-render PUBLIC

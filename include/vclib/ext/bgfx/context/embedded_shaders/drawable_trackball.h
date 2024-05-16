@@ -20,45 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
-#define VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
+#ifndef VCL_EXT_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_TRACKBALL_H
+#define VCL_EXT_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_TRACKBALL_H
 
-#include <array>
-#include <map>
-#include <string>
-
-#include <vclib/ext/bgfx/context/embedded_shaders/embedded_shader.h>
-#include <vclib/ext/bgfx/load_program.h>
+#include "embedded_shader.h"
 
 namespace vcl::bgf {
 
-class ProgramManager
+template <>
+struct EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>
 {
-    bgfx::RendererType::Enum mRenderType = bgfx::RendererType::Count;
-    std::map<std::string, bgfx::ProgramHandle> mPrograms;
+    static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
+        bgfx::RendererType::Enum type);
 
-public:
-    ProgramManager(bgfx::RendererType::Enum renderType) : mRenderType(renderType)
-    {
-    }
+    static bgfx::EmbeddedShader::Data fragmentEmbeddedShader(
+        bgfx::RendererType::Enum type);
 
-    ~ProgramManager();
-
-    bgfx::ProgramHandle getProgram(VclProgram::Enum program);
-
-    bgfx::ProgramHandle getProgram(const std::string& name) const;
-
-    bgfx::ProgramHandle loadProgram(
-        const std::string& name,
-        const std::string& vs,
-        const std::string& fs);
-
-private:
-    static bgfx::ProgramHandle loadProgram(
-        VclProgram::Enum         program,
+    static bgfx::EmbeddedShader::Data computeEmbeddedShader(
         bgfx::RendererType::Enum type);
 };
 
 } // namespace vcl::bgf
 
-#endif // VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
+#endif // VCL_EXT_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_TRACKBALL_H

@@ -22,25 +22,9 @@
 
 #include <stdexcept>
 
-#include <bgfx/embedded_shader.h>
-
 #include <vclib/ext/bgfx/context/program_manger.h>
 
-// // main.cpp
-// #include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.140.bin.h>
-// #include <shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc.140.bin.h>
-// #include
-// <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.320_es.bin.h>
-// #include
-// <shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc.320_es.bin.h>
-// #include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.spv.bin.h>
-// #include <shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc.spv.bin.h>
-// #if defined(_WIN32)
-// // todo
-// #endif //  defined(_WIN32)
-// #if __APPLE__
-// // todo
-// #endif // __APPLE__
+#include <vclib/ext/bgfx/context/embedded_shaders.h>
 
 namespace vcl::bgf {
 
@@ -55,13 +39,13 @@ ProgramManager::~ProgramManager()
 
 bgfx::ProgramHandle ProgramManager::getProgram(VclProgram::Enum program)
 {
-    auto it = mPrograms.find(programNames[program]);
+    auto it = mPrograms.find(VclProgram::programNames[program]);
     if (it != mPrograms.end()) [[likely]] {
         return it->second;
     }
     else [[unlikely]] {
-        bgfx::ProgramHandle p            = loadProgram(program);
-        mPrograms[programNames[program]] = p;
+        bgfx::ProgramHandle p = loadProgram(program, mRenderType);
+        mPrograms[VclProgram::programNames[program]] = p;
         return p;
     }
 }
@@ -84,75 +68,116 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
     return p;
 }
 
-bgfx::ProgramHandle ProgramManager::loadProgram(VclProgram::Enum program)
+bgfx::ProgramHandle ProgramManager::loadProgram(
+    VclProgram::Enum         program,
+    bgfx::RendererType::Enum type)
 {
     switch (program) {
     case VclProgram::DRAWABLE_MESH:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh",
-            "vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh");
-        // return bgf::loadProgram(
-        //     BGFX_EMBEDDED_SHADER(vs_drawable_mesh),
-        //     BGFX_EMBEDDED_SHADER(fs_drawable_mesh);
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::DRAWABLE_MESH>::vertexEmbeddedShader(
+                    type)),
+            bgf::loadShader(
+                EmbeddedShader<
+                    VclProgram::DRAWABLE_MESH>::fragmentEmbeddedShader(type)));
 
     case VclProgram::DRAWABLE_AXIS:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/drawable_axis/vs_drawable_axis",
-            "vclib/ext/bgfx/drawable_axis/fs_drawable_axis");
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::DRAWABLE_AXIS>::vertexEmbeddedShader(
+                    type)),
+            bgf::loadShader(
+                EmbeddedShader<
+                    VclProgram::DRAWABLE_AXIS>::fragmentEmbeddedShader(type)));
 
     case VclProgram::DRAWABLE_DIRECTIONAL_LIGHT:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/drawable_directional_light/"
-            "vs_drawable_directional_light",
-            "vclib/ext/bgfx/drawable_directional_light/"
-            "fs_drawable_directional_light");
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
+                    vertexEmbeddedShader(type)),
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::DRAWABLE_DIRECTIONAL_LIGHT>::
+                    fragmentEmbeddedShader(type)));
 
     case VclProgram::DRAWABLE_TRACKBALL:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball",
-            "vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball");
+        return bgf::createProgram(
+            bgf::loadShader(EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>::
+                                vertexEmbeddedShader(type)),
+            bgf::loadShader(EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>::
+                                fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_BASIC:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/font/vs_font_basic",
-            "vclib/ext/bgfx/font/fs_font_basic");
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_BASIC>::vertexEmbeddedShader(
+                    type)),
+            bgf::loadShader(
+                EmbeddedShader<
+                    VclProgram::FONT_BASIC>::fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow_image",
-            "vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow_image");
+        return bgf::createProgram(
+            bgf::loadShader(EmbeddedShader<
+                            VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE>::
+                                vertexEmbeddedShader(type)),
+            bgf::loadShader(EmbeddedShader<
+                            VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE>::
+                                fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow",
-            "vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow");
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>::
+                    vertexEmbeddedShader(type)),
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>::
+                    fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/font/"
-            "vs_font_distance_field_outline_drop_shadow_image",
-            "vclib/ext/bgfx/font/"
-            "fs_font_distance_field_outline_drop_shadow_image");
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<
+                    VclProgram::FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE>::
+                    vertexEmbeddedShader(type)),
+            bgf::loadShader(
+                EmbeddedShader<
+                    VclProgram::FONT_DISTANCE_FIELD_OUTLINE_DROP_SHADOW_IMAGE>::
+                    fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/font/vs_font_distance_field_outline_image",
-            "vclib/ext/bgfx/font/fs_font_distance_field_outline_image");
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE>::
+                    vertexEmbeddedShader(type)),
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_OUTLINE_IMAGE>::
+                    fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD_OUTLINE:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/font/vs_font_distance_field_outline",
-            "vclib/ext/bgfx/font/fs_font_distance_field_outline");
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_OUTLINE>::
+                vertexEmbeddedShader(type)),
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_OUTLINE>::
+                fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD_SUBPIXEL:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/font/vs_font_distance_field_subpixel",
-            "vclib/ext/bgfx/font/fs_font_distance_field_subpixel");
+        return bgf::createProgram(
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_SUBPIXEL>::
+                vertexEmbeddedShader(type)),
+            bgf::loadShader(
+                EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_SUBPIXEL>::
+                fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD:
-        return bgf::loadProgram(
-            "vclib/ext/bgfx/font/vs_font_distance_field",
-            "vclib/ext/bgfx/font/fs_font_distance_field");
+        return bgf::createProgram(
+            bgf::loadShader(EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD>::
+                                vertexEmbeddedShader(type)),
+            bgf::loadShader(EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD>::
+                                fragmentEmbeddedShader(type)));
 
     case VclProgram::COUNT: return BGFX_INVALID_HANDLE;
     }

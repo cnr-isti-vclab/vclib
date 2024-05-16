@@ -24,6 +24,7 @@
 #define VCL_EXT_BGFX_LOAD_PROGRAM_H
 
 #include <bgfx/bgfx.h>
+#include <bgfx/embedded_shader.h>
 
 #include <string>
 
@@ -31,9 +32,20 @@ namespace vcl::bgf {
 
 bgfx::ShaderHandle loadShader(const std::string& name);
 
+bgfx::ShaderHandle loadShader(const bgfx::EmbeddedShader::Data& data);
+
 bgfx::ProgramHandle loadProgram(
     const std::string& vsName,
     const std::string& fsName);
+
+bgfx::ProgramHandle loadProgram(
+    const bgfx::EmbeddedShader& vs,
+    const bgfx::EmbeddedShader& fs,
+    bgfx::RendererType::Enum    type);
+
+bgfx::ProgramHandle createProgram(
+    bgfx::ShaderHandle vsHandle,
+    bgfx::ShaderHandle fsHandle);
 
 } // namespace vcl::bgf
 

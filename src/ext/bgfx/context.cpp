@@ -88,7 +88,7 @@ Context::Context()
 
     // font manager must be created after bgfx::init
     mFontManager    = new FontManager();
-    mProgramManager = new ProgramManager();
+    mProgramManager = new ProgramManager(bgfx::getCaps()->rendererType);
 }
 
 Context::~Context()

@@ -20,45 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
-#define VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
+#ifndef VCL_EXT_BGFX_CONTEXT_EMBEDDED_SHADERS_H
+#define VCL_EXT_BGFX_CONTEXT_EMBEDDED_SHADERS_H
 
-#include <array>
-#include <map>
-#include <string>
+#include "embedded_shaders/drawable_axis.h"
+#include "embedded_shaders/drawable_directional_light.h"
+#include "embedded_shaders/drawable_mesh.h"
+#include "embedded_shaders/drawable_trackball.h"
+#include "embedded_shaders/font_basic.h"
+#include "embedded_shaders/font_distance_field.h"
+#include "embedded_shaders/font_distance_field_drop_shadow.h"
+#include "embedded_shaders/font_distance_field_drop_shadow_image.h"
+#include "embedded_shaders/font_distance_field_outline.h"
+#include "embedded_shaders/font_distance_field_outline_drop_shadow_image.h"
+#include "embedded_shaders/font_distance_field_outline_image.h"
+#include "embedded_shaders/font_distance_field_subpixel.h"
 
-#include <vclib/ext/bgfx/context/embedded_shaders/embedded_shader.h>
-#include <vclib/ext/bgfx/load_program.h>
-
-namespace vcl::bgf {
-
-class ProgramManager
-{
-    bgfx::RendererType::Enum mRenderType = bgfx::RendererType::Count;
-    std::map<std::string, bgfx::ProgramHandle> mPrograms;
-
-public:
-    ProgramManager(bgfx::RendererType::Enum renderType) : mRenderType(renderType)
-    {
-    }
-
-    ~ProgramManager();
-
-    bgfx::ProgramHandle getProgram(VclProgram::Enum program);
-
-    bgfx::ProgramHandle getProgram(const std::string& name) const;
-
-    bgfx::ProgramHandle loadProgram(
-        const std::string& name,
-        const std::string& vs,
-        const std::string& fs);
-
-private:
-    static bgfx::ProgramHandle loadProgram(
-        VclProgram::Enum         program,
-        bgfx::RendererType::Enum type);
-};
-
-} // namespace vcl::bgf
-
-#endif // VCL_EXT_BGFX_CONTEXT_PROGRAM_MANGER_H
+#endif // VCL_EXT_BGFX_CONTEXT_EMBEDDED_SHADERS_H
