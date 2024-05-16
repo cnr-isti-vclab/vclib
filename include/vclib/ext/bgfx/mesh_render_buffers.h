@@ -25,14 +25,14 @@
 
 #include <bgfx/bgfx.h>
 
-#include <vclib/render/mesh_render_buffers.h>
+#include <vclib/render/mesh_render_data.h>
 
 namespace vcl::bgf {
 
 template<MeshConcept MeshType>
-class MeshRenderBuffers : public vcl::MeshRenderBuffers<MeshType>
+class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 {
-    using Base = vcl::MeshRenderBuffers<MeshType>;
+    using Base = vcl::MeshRenderData<MeshType>;
 
     bgfx::VertexBufferHandle mVertexCoordBH  = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle mVertexNormalBH = BGFX_INVALID_HANDLE;

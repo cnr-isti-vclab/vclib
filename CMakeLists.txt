@@ -52,7 +52,7 @@ set(HEADERS
     include/vclib/render/drawable_object_vector.h
     include/vclib/render/lights.h
     include/vclib/render/matrix.h
-    include/vclib/render/mesh_render_buffers.h
+    include/vclib/render/mesh_render_data.h
     include/vclib/render/mesh_render_settings.h
     include/vclib/render/mesh_render_settings_macros.h
     include/vclib/render/trackball.h

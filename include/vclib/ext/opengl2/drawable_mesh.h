@@ -36,7 +36,7 @@
 #include <iostream>
 
 #include <vclib/render/interfaces/drawable_mesh_i.h>
-#include <vclib/render/mesh_render_buffers.h>
+#include <vclib/render/mesh_render_data.h>
 
 #include "draw_objects3.h"
 
@@ -79,7 +79,7 @@ inline void _check_gl_error(const char* file, int line)
 template<MeshConcept MeshType>
 class DrawableMesh : public DrawableMeshI
 {
-    MeshRenderBuffers<MeshType> mMRB;
+    MeshRenderData<MeshType> mMRD;
 
     std::vector<uint> mTextID;
 
@@ -101,7 +101,7 @@ public:
             name() = m.name();
         }
         unbindTextures();
-        mMRB = MeshRenderBuffers<MeshType>(m);
+        mMRD = MeshRenderData<MeshType>(m);
         mMRS.setRenderCapabilityFrom(m);
         bindTextures();
     }
@@ -180,31 +180,31 @@ public:
                 }
             }
             if (mMRS.isBboxEnabled()) {
-                drawBox3(mMRB.bbMin(), mMRB.bbMax(), vcl::Color(0, 0, 0));
+                drawBox3(mMRD.bbMin(), mMRD.bbMax(), vcl::Color(0, 0, 0));
             }
         }
     }
 
-    vcl::Point3d center() const { return (mMRB.bbMin() + mMRB.bbMax()) / 2; }
+    vcl::Point3d center() const { return (mMRD.bbMin() + mMRD.bbMax()) / 2; }
 
-    double radius() const { return (mMRB.bbMax() - mMRB.bbMin()).norm() / 2; }
+    double radius() const { return (mMRD.bbMax() - mMRD.bbMin()).norm() / 2; }
 
     DrawableMesh* clone() const { return new DrawableMesh(*this); }
 
 private:
     void renderPass() const
     {
-        uint nv = mMRB.vertexNumber();
-        uint nt = mMRB.triangleNumber();
+        uint nv = mMRD.vertexNumber();
+        uint nt = mMRD.triangleNumber();
 
-        const float*    coords          = mMRB.vertexBufferData();
-        const uint32_t* triangles       = mMRB.triangleBufferData();
-        const float*    vertexNormals   = mMRB.vertexNormalBufferData();
-        const uint32_t* vertexColors    = mMRB.vertexColorBufferData();
-        const float*    triangleNormals = mMRB.triangleNormalBufferData();
-        const uint32_t* triangleColors  = mMRB.triangleColorBufferData();
-        const float*    vertTexCoords   = mMRB.vertexTexCoordsBufferData();
-        const float*    wedgTexCoords   = mMRB.wedgeTexCoordsBufferData();
+        const float*    coords          = mMRD.vertexBufferData();
+        const uint32_t* triangles       = mMRD.triangleBufferData();
+        const float*    vertexNormals   = mMRD.vertexNormalBufferData();
+        const uint32_t* vertexColors    = mMRD.vertexColorBufferData();
+        const float*    triangleNormals = mMRD.triangleNormalBufferData();
+        const uint32_t* triangleColors  = mMRD.triangleColorBufferData();
+        const float*    vertTexCoords   = mMRD.vertexTexCoordsBufferData();
+        const float*    wedgTexCoords   = mMRD.wedgeTexCoordsBufferData();
 
         if (mMRS.isPointCloudVisible()) {
             glEnableClientState(GL_VERTEX_ARRAY);
@@ -215,7 +215,7 @@ private:
                 glColorPointer(4, GL_UNSIGNED_BYTE, 0, vertexColors);
             }
             else if (mMRS.isPointCloudColorPerMesh()) {
-                glColor4fv(mMRB.meshColorBufferData());
+                glColor4fv(mMRD.meshColorBufferData());
             }
             else if (mMRS.isPointCloudColorUserDefined()) {
                 glColor4fv(mMRS.pointCloudUserColorData());
@@ -322,7 +322,7 @@ private:
                     glNormalPointer(GL_FLOAT, 0, vertexNormals);
 
                     if (mMRS.isSurfaceColorPerMesh()) {
-                        glColor4fv(mMRB.meshColorBufferData());
+                        glColor4fv(mMRD.meshColorBufferData());
                     }
                     else {
                         glColor4ubv((GLubyte*) mMRS.surfaceUserColorData());
@@ -337,7 +337,7 @@ private:
                 }
                 else {
                     if (mMRS.isSurfaceColorPerMesh()) {
-                        glColor4fv(mMRB.meshColorBufferData());
+                        glColor4fv(mMRD.meshColorBufferData());
                     }
                     else {
                         glColor4ubv((GLubyte*) mMRS.surfaceUserColorData());
@@ -431,7 +431,7 @@ private:
                     int   vid1_ptr = 3 * vid1;
                     int   vid2_ptr = 3 * vid2;
                     short texture =
-                        mTextID[mMRB.wedgeTextureIDsBufferData()[tid]];
+                        mTextID[mMRD.wedgeTextureIDsBufferData()[tid]];
                     glBindTexture(GL_TEXTURE_2D, texture);
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
@@ -460,7 +460,7 @@ private:
             glLineWidth(mMRS.wireframeWidth());
 
             if (mMRS.isWireframeColorPerMesh()) {
-                glColor4fv(mMRB.meshColorBufferData());
+                glColor4fv(mMRD.meshColorBufferData());
             }
             else {
                 glColor4fv(mMRS.wireframeUserColorData());
@@ -474,22 +474,22 @@ private:
 
     void bindTextures()
     {
-        mTextID.resize(mMRB.textureNumber());
+        mTextID.resize(mMRD.textureNumber());
         glEnable(GL_TEXTURE_2D);
-        glGenTextures(mMRB.textureNumber(), mTextID.data());
+        glGenTextures(mMRD.textureNumber(), mTextID.data());
 
-        for (uint i = 0; i < mMRB.textureNumber(); i++) {
+        for (uint i = 0; i < mMRD.textureNumber(); i++) {
             glBindTexture(GL_TEXTURE_2D, mTextID[i]);
             glTexImage2D(
                 GL_TEXTURE_2D,
                 0,
                 GL_RGB,
-                mMRB.textureSize(i).x(),
-                mMRB.textureSize(i).y(),
+                mMRD.textureSize(i).x(),
+                mMRD.textureSize(i).y(),
                 0,
                 GL_RGBA,
                 GL_UNSIGNED_BYTE,
-                mMRB.textureBufferData(i));
+                mMRD.textureBufferData(i));
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

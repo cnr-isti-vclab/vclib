@@ -38,6 +38,21 @@ TextView::~TextView()
         Context::releaseViewId(mView);
 }
 
+void TextView::init(uint width, uint height)
+{
+    mWidth  = width;
+    mHeight = height;
+
+    const bx::Vec3 at  = {0.0f, 0.0f, 0.0f};
+    const bx::Vec3 eye = {0.0f, 0.0f, -1.0f};
+
+    bx::mtxLookAt(mTextViewMatrix, eye, at);
+
+    mTextManager.init();
+
+    mTextManager.setCurrentFont(VclFont::DROID_SANS, 20);
+}
+
 void TextView::enableText(bool b)
 {
     if (isViewValid(mView)) {
@@ -92,20 +107,7 @@ void TextView::appendTransientText(
     mTextManager.appendTransientText(pos, text, color);
 }
 
-void TextView::init(uint width, uint height)
-{
-    mWidth  = width;
-    mHeight = height;
 
-    const bx::Vec3 at  = {0.0f, 0.0f, 0.0f};
-    const bx::Vec3 eye = {0.0f, 0.0f, -1.0f};
-
-    bx::mtxLookAt(mTextViewMatrix, eye, at);
-
-    mTextManager.init();
-
-    mTextManager.setCurrentFont(VclFont::DROID_SANS, 20);
-}
 
 void TextView::frame(bgfx::FrameBufferHandle fbh)
 {

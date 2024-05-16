@@ -237,7 +237,7 @@ void CanvasWindow::glfwScrollCallback(
     double xoffset,
     double yoffset)
 {
-    onMouseScroll(xoffset, yoffset);
+    onMouseScroll(xoffset * 120, yoffset * 120);
 }
 
 // namespace detail

@@ -41,6 +41,8 @@ public:
     TextView();
     ~TextView();
 
+    void init(uint width, uint height);
+
     void enableText(bool b = true);
     bool isTextEnabled() const;
 
@@ -58,9 +60,6 @@ public:
         const vcl::Point2f& pos,
         const std::string&  text,
         const vcl::Color&   color = vcl::Color::Black);
-
-protected:
-    void init(uint width, uint height);
 
     void frame(bgfx::FrameBufferHandle fbh);
 

@@ -51,7 +51,7 @@ void Canvas::init(void* winId, uint width, uint height)
 
     mFbh = createFrameBufferAndInitView(winId, mViewId, width, height, true);
 
-    TextView::init(width, height);
+    mTextView.init(width, height);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -74,7 +74,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
         bgfx::ViewId tmpView = mViewId;
         mViewId              = v;
         draw();
-        TextView::frame(fbh);
+        mTextView.frame(fbh);
         bgfx::requestScreenShot(fbh, filename.c_str());
         bgfx::frame();
 
@@ -86,12 +86,53 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
     }
 }
 
+void Canvas::enableText(bool b)
+{
+    mTextView.enableText(b);
+}
+
+bool Canvas::isTextEnabled() const
+{
+    return mTextView.isTextEnabled();
+}
+
+void Canvas::setTextFont(VclFont::Enum font, uint fontSize)
+{
+    mTextView.setTextFont(font, fontSize);
+}
+
+void Canvas::setTextFont(const std::string& fontName, uint fontSize)
+{
+    mTextView.setTextFont(fontName, fontSize);
+}
+
+void Canvas::clearText()
+{
+    mTextView.clearText();
+}
+
+void Canvas::appendStaticText(
+    const Point2f&     pos,
+    const std::string& text,
+    const Color&       color)
+{
+    mTextView.appendStaticText(pos, text, color);
+}
+
+void Canvas::appendTransientText(
+    const Point2f&     pos,
+    const std::string& text,
+    const Color&       color)
+{
+    mTextView.appendTransientText(pos, text, color);
+}
+
 void Canvas::frame()
 {
     bgfx::setViewFrameBuffer(mViewId, mFbh);
     bgfx::touch(mViewId);
     draw();
-    TextView::frame(mFbh);
+    mTextView.frame(mFbh);
 
     bgfx::frame();
 #ifdef __APPLE__ // workaround for forcing bgfx refresh buffer on MacOS
@@ -106,7 +147,7 @@ void Canvas::resize(uint width, uint height)
 
     mFbh = createFrameBufferAndInitView(mWinId, mViewId, width, height);
 
-    TextView::resize(width, height);
+    mTextView.resize(width, height);
 }
 
 bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(

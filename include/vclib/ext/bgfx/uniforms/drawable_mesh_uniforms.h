@@ -23,7 +23,7 @@
 #ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 #define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_MESH_UNIFORMS_H
 
-#include <vclib/render/mesh_render_buffers.h>
+#include <vclib/render/mesh_render_data.h>
 
 #include "shader_uniform.h"
 

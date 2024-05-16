@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_MESH_RENDER_BUFFERS_H
-#define VCL_RENDER_MESH_RENDER_BUFFERS_H
+#ifndef VCL_RENDER_MESH_RENDER_DATA_H
+#define VCL_RENDER_MESH_RENDER_DATA_H
 
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/math/min_max.h>
@@ -34,7 +34,7 @@
 namespace vcl {
 
 template<MeshConcept MeshType>
-class MeshRenderBuffers
+class MeshRenderData
 {
     std::vector<float>    mVerts;
     std::vector<uint32_t> mTris;
@@ -81,9 +81,9 @@ public:
         ALL = 0xFFFFFFFF,
     };
 
-    MeshRenderBuffers() = default;
+    MeshRenderData() = default;
 
-    MeshRenderBuffers(const MeshType& m, uint buffersToFill = ALL)
+    MeshRenderData(const MeshType& m, uint buffersToFill = ALL)
     {
         update(m, buffersToFill);
     }
@@ -619,4 +619,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_MESH_RENDER_BUFFERS_H
+#endif // VCL_RENDER_MESH_RENDER_DATA_H

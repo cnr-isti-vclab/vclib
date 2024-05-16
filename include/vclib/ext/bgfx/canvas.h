@@ -61,11 +61,13 @@ namespace vcl::bgf {
  * - resize(width, height): this function must be called by the derived classes
  * whenever the window is resized.
  */
-class Canvas : public TextView
+class Canvas
 {
     void*                   mWinId  = nullptr;
     bgfx::FrameBufferHandle mFbh    = BGFX_INVALID_HANDLE;
     bgfx::ViewId            mViewId = 0;
+
+    TextView mTextView;
 
 public:
     Canvas();
@@ -82,6 +84,25 @@ public:
         const std::string& filename,
         uint               width  = 0,
         uint               height = 0);
+
+    // text
+    void enableText(bool b = true);
+    bool isTextEnabled() const;
+
+    void setTextFont(VclFont::Enum font, uint fontSize);
+    void setTextFont(const std::string& fontName, uint fontSize);
+
+    void clearText();
+
+    void appendStaticText(
+        const Point2f&     pos,
+        const std::string& text,
+        const Color&       color = Color::Black);
+
+    void appendTransientText(
+        const Point2f&     pos,
+        const std::string& text,
+        const Color&       color = Color::Black);
 
 protected:
     virtual void draw() = 0;
