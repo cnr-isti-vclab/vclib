@@ -153,9 +153,7 @@ function(_add_bgfx_shader FILE DIR TARGET)
 	endif()
 
 	if(NOT "${TYPE}" STREQUAL "")
-		get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
-		get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR)
-		set(COMMON FILE ${FILE} ${TYPE} INCLUDES "${BGFX_DIR}/src;${VCLIB_RENDER_DIR};${VCLIB_RENDER_SHADER_DIR}")
+		set(COMMON FILE ${FILE} ${TYPE} INCLUDES "${BGFX_DIR}/src")
 		set(OUTPUTS "")
 		set(OUTPUTS_PRETTY "")
 
@@ -304,5 +302,36 @@ function(build_bgfx_shaders_to_headers)
                 INCLUDE_DIRS "${BGFX_DIR}/src;${VCLIB_RENDER_DIR};${VCLIB_RENDER_SHADER_DIR}"
             )
         endif()
+    endforeach()
+endfunction()
+
+# Function to add a list of assets to a target
+function(target_ide_add_assets target_name)
+    list(REMOVE_AT ARGV 0)
+
+    source_group("Asset Files" FILES ${ARGV})
+    target_sources(${target_name} PRIVATE ${ARGV})
+endfunction()
+
+function(build_assets_to_headers)
+    target_ide_add_assets(vclib-render ${ARGV})
+
+    get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
+
+    set(BGFX_ASSETS_OUTPUT_DIR "${TARGET_BIN_DIR}/include")
+
+    message(STATUS "OutDir: ${BGFX_ASSETS_OUTPUT_DIR}")
+    foreach(ASSET ${ARGV})
+        get_filename_component(DIR_PATH ${ASSET} DIRECTORY)
+        get_filename_component(FILENAME "${ASSET}" NAME)
+        get_filename_component(FILENAME_WE "${ASSET}" NAME_WE)
+        get_filename_component(ABSOLUTE_PATH_ASSET ${ASSET} ABSOLUTE)
+        get_filename_component(ABSOLUTE_DIR_PATH ${DIR_PATH} ABSOLUTE)
+
+        bgfx_compile_binary_to_header(
+            INPUT_FILE ${ABSOLUTE_PATH_ASSET}
+            OUTPUT_FILE ${BGFX_ASSETS_OUTPUT_DIR}/${DIR_PATH}/${FILENAME}.bin.h
+            ARRAY_NAME ${FILENAME_WE}
+        )
     endforeach()
 endfunction()

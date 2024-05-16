@@ -39,7 +39,7 @@ if (TARGET vclib-external-bgfx)
     get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
 endif()
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/functions.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -295,12 +295,6 @@ target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
 set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
 
-set_target_properties(vclib-render PROPERTIES
-    VCLIB_RENDER_ASSETS "${ASSETS}")
-
-build_assets_to_headers(${ASSETS})
-#target_add_assets(vclib-render ${ASSETS})
-
 if (TARGET vclib-external-qt)
     set_property(TARGET vclib-render PROPERTY AUTOMOC ON)
     set_property(TARGET vclib-render PROPERTY AUTORCC ON)
@@ -312,12 +306,8 @@ if (TARGET vclib-external-bgfx)
         VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
         "${CMAKE_CURRENT_SOURCE_DIR}/shaders/vclib/ext/bgfx")
 
-    set_target_properties(vclib-render PROPERTIES
-        VCLIB_RENDER_BGFX_SHADERS "${SHADERS}")
-
-    # target_add_bgfx_shaders(vclib-render ${SHADERS})
-
     build_bgfx_shaders_to_headers(${SHADERS})
+    build_assets_to_headers(${ASSETS})
     target_include_directories(vclib-render PRIVATE
        ${CMAKE_CURRENT_BINARY_DIR}/include)
 endif()
