@@ -131,7 +131,7 @@ bgfx::ProgramHandle loadProgram(
 bgfx::ProgramHandle loadProgram(
     const bgfx::EmbeddedShader& vs,
     const bgfx::EmbeddedShader& fs,
-    bgfx::RendererType::Enum type)
+    bgfx::RendererType::Enum    type)
 {
     auto loadShader = [](const bgfx::EmbeddedShader& s,
                          bgfx::RendererType::Enum type) -> bgfx::ShaderHandle {
