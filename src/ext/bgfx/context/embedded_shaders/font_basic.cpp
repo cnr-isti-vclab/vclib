@@ -32,7 +32,8 @@
 #include <shaders/vclib/ext/bgfx/font/fs_font_basic.sc.spv.bin.h>
 #include <shaders/vclib/ext/bgfx/font/vs_font_basic.sc.spv.bin.h>
 #ifdef _WIN32
-// todo
+#include <shaders/vclib/ext/bgfx/font/fs_font_basic.sc.dx11.bin.h>
+#include <shaders/vclib/ext/bgfx/font/vs_font_basic.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
 #include <shaders/vclib/ext/bgfx/font/fs_font_basic.sc.mtl.bin.h>
@@ -53,6 +54,7 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::FONT_BASIC>::
         return {type, vs_font_basic_spv, sizeof(vs_font_basic_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {type, vs_font_basic_dx11, sizeof(vs_font_basic_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
@@ -75,6 +77,7 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::FONT_BASIC>::
         return {type, fs_font_basic_spv, sizeof(fs_font_basic_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {type, fs_font_basic_dx11, sizeof(fs_font_basic_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__

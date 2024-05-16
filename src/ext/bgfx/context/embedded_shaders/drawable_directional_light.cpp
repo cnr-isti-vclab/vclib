@@ -31,11 +31,12 @@
 #include <shaders/vclib/ext/bgfx/drawable_directional_light/fs_drawable_directional_light.sc.spv.bin.h>
 #include <shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc.spv.bin.h>
 #ifdef _WIN32
-// todo
+#include <shaders/vclib/ext/bgfx/drawable_directional_light/fs_drawable_directional_light.sc.dx11.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-#include <shaders/vclib/ext/bgfx/drawable_directional_light/fs_drawable_directional_light.sc.mtl.bin.h>
-#include <shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc.mtl.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_directional_light/fs_drawable_directional_light.sc.dx11.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc.dx11.bin.h>
 #endif // __APPLE__
 
 namespace vcl::bgf {
@@ -62,6 +63,10 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<
             sizeof(vs_drawable_directional_light_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {
+            type,
+            vs_drawable_directional_light_dx11,
+            sizeof(vs_drawable_directional_light_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
@@ -97,6 +102,10 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<
             sizeof(fs_drawable_directional_light_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {
+            type,
+            fs_drawable_directional_light_dx11,
+            sizeof(fs_drawable_directional_light_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__

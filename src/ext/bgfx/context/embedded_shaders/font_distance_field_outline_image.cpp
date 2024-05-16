@@ -32,7 +32,8 @@
 #include <shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline_image.sc.spv.bin.h>
 
 #ifdef _WIN32
-// todo
+#include <shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline_image.sc.dx11.bin.h>
+#include <shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline_image.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
 #include <shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline_image.sc.mtl.bin.h>
@@ -63,6 +64,10 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<
             sizeof(vs_font_distance_field_outline_image_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {
+            type,
+            vs_font_distance_field_outline_image_dx11,
+            sizeof(vs_font_distance_field_outline_image_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
@@ -98,6 +103,10 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<
             sizeof(fs_font_distance_field_outline_image_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {
+            type,
+            fs_font_distance_field_outline_image_dx11,
+            sizeof(fs_font_distance_field_outline_image_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__

@@ -32,7 +32,8 @@
 #include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.spv.bin.h>
 #include <shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc.spv.bin.h>
 #ifdef _WIN32
-// todo
+#include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.dx11.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
 #include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.mtl.bin.h>
@@ -53,6 +54,7 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_MESH>::
         return {type, vs_drawable_mesh_spv, sizeof(vs_drawable_mesh_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {type, vs_drawable_mesh_dx11, sizeof(vs_drawable_mesh_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
@@ -75,6 +77,7 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_MESH>::
         return {type, fs_drawable_mesh_spv, sizeof(fs_drawable_mesh_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {type, fs_drawable_mesh_dx11, sizeof(fs_drawable_mesh_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__

@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-
 #include <vclib/ext/bgfx/context/embedded_shaders/drawable_trackball.h>
 
 #include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.glsl.bin.h>
@@ -32,7 +31,8 @@
 #include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.spv.bin.h>
 #include <shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc.spv.bin.h>
 #ifdef _WIN32
-// todo
+#include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.dx11.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc.dx11.bin.h>
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
 #include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.mtl.bin.h>
@@ -41,18 +41,30 @@
 
 namespace vcl::bgf {
 
-bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>::
-    vertexEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::bgf::
+    EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>::vertexEmbeddedShader(
+        bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_drawable_trackball_essl, sizeof(vs_drawable_trackball_essl)};
+        return {
+            type,
+            vs_drawable_trackball_essl,
+            sizeof(vs_drawable_trackball_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_drawable_trackball_glsl, sizeof(vs_drawable_trackball_glsl)};
+        return {
+            type,
+            vs_drawable_trackball_glsl,
+            sizeof(vs_drawable_trackball_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, vs_drawable_trackball_spv, sizeof(vs_drawable_trackball_spv)};
+        return {
+            type, vs_drawable_trackball_spv, sizeof(vs_drawable_trackball_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {
+            type,
+            vs_drawable_trackball_dx11,
+            sizeof(vs_drawable_trackball_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
@@ -64,30 +76,45 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_TRACKBA
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>::
-    fragmentEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::bgf::
+    EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>::fragmentEmbeddedShader(
+        bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_drawable_trackball_essl, sizeof(fs_drawable_trackball_essl)};
+        return {
+            type,
+            fs_drawable_trackball_essl,
+            sizeof(fs_drawable_trackball_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_drawable_trackball_glsl, sizeof(fs_drawable_trackball_glsl)};
+        return {
+            type,
+            fs_drawable_trackball_glsl,
+            sizeof(fs_drawable_trackball_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_drawable_trackball_spv, sizeof(fs_drawable_trackball_spv)};
+        return {
+            type, fs_drawable_trackball_spv, sizeof(fs_drawable_trackball_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
+        return {
+            type,
+            fs_drawable_trackball_dx11,
+            sizeof(fs_drawable_trackball_dx11)};
+
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_drawable_trackball_mtl, sizeof(fs_drawable_trackball_mtl)};
+        return {
+            type, fs_drawable_trackball_mtl, sizeof(fs_drawable_trackball_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>::
-    computeEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::bgf::
+    EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>::computeEmbeddedShader(
+        bgfx::RendererType::Enum type)
 {
     static_assert(true, "Invalid shader type for Drawable Trackball");
     return {type, nullptr, 0};
