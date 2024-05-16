@@ -23,17 +23,20 @@
 
 #include <vclib/ext/bgfx/context/embedded_shaders/drawable_axis.h>
 
-#include <shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc.140.bin.h>
-#include <shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc.140.bin.h>
-#include <shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc.320_es.bin.h>
-#include <shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc.320_es.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc.glsl.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc.glsl.bin.h>
+
+#include <shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc.essl.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc.essl.bin.h>
+
 #include <shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc.spv.bin.h>
 #include <shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc.spv.bin.h>
 #ifdef _WIN32
 // todo
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-// todo
+#include <shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc.mtl.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl::bgf {
@@ -43,17 +46,18 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_AXIS>::
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_drawable_axis_320_es, sizeof(vs_drawable_axis_320_es)};
+        return {type, vs_drawable_axis_essl, sizeof(vs_drawable_axis_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_drawable_axis_140, sizeof(vs_drawable_axis_140)};
+        return {type, vs_drawable_axis_glsl, sizeof(vs_drawable_axis_glsl)};
     case bgfx::RendererType::Vulkan:
         return {type, vs_drawable_axis_spv, sizeof(vs_drawable_axis_spv)};
 #ifdef _WIN32
-    case bgfx::RendererType::Direct3D11: return {type, nullptr, 0};
-    case bgfx::RendererType::Direct3D12: return {type, nullptr, 0};
+    case bgfx::RendererType::Direct3D11:
+    case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
-    case bgfx::RendererType::Metal: return {type, nullptr, 0};
+    case bgfx::RendererType::Metal:
+        return {type, vs_drawable_axis_mtl, sizeof(vs_drawable_axis_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
@@ -64,17 +68,18 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_AXIS>::
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_drawable_axis_320_es, sizeof(fs_drawable_axis_320_es)};
+        return {type, fs_drawable_axis_essl, sizeof(fs_drawable_axis_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_drawable_axis_140, sizeof(fs_drawable_axis_140)};
+        return {type, fs_drawable_axis_glsl, sizeof(fs_drawable_axis_glsl)};
     case bgfx::RendererType::Vulkan:
         return {type, fs_drawable_axis_spv, sizeof(fs_drawable_axis_spv)};
 #ifdef _WIN32
-    case bgfx::RendererType::Direct3D11: return {type, nullptr, 0};
-    case bgfx::RendererType::Direct3D12: return {type, nullptr, 0};
+    case bgfx::RendererType::Direct3D11:
+    case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
-    case bgfx::RendererType::Metal: return {type, nullptr, 0};
+    case bgfx::RendererType::Metal:
+        return {type, fs_drawable_axis_mtl, sizeof(fs_drawable_axis_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }

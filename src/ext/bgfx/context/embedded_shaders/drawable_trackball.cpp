@@ -23,17 +23,20 @@
 
 #include <vclib/ext/bgfx/context/embedded_shaders/drawable_trackball.h>
 
-#include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.140.bin.h>
-#include <shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc.140.bin.h>
-#include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.320_es.bin.h>
-#include <shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc.320_es.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.glsl.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc.glsl.bin.h>
+
+#include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.essl.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc.essl.bin.h>
+
 #include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.spv.bin.h>
 #include <shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc.spv.bin.h>
 #ifdef _WIN32
 // todo
 #endif //  defined(_WIN32)
 #ifdef __APPLE__
-// todo
+#include <shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc.mtl.bin.h>
+#include <shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc.mtl.bin.h>
 #endif // __APPLE__
 
 namespace vcl::bgf {
@@ -43,17 +46,19 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_TRACKBA
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_drawable_trackball_320_es, sizeof(vs_drawable_trackball_320_es)};
+        return {type, vs_drawable_trackball_essl, sizeof(vs_drawable_trackball_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_drawable_trackball_140, sizeof(vs_drawable_trackball_140)};
+        return {type, vs_drawable_trackball_glsl, sizeof(vs_drawable_trackball_glsl)};
     case bgfx::RendererType::Vulkan:
         return {type, vs_drawable_trackball_spv, sizeof(vs_drawable_trackball_spv)};
 #ifdef _WIN32
-    case bgfx::RendererType::Direct3D11: return {type, nullptr, 0};
-    case bgfx::RendererType::Direct3D12: return {type, nullptr, 0};
+    case bgfx::RendererType::Direct3D11:
+    case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
-    case bgfx::RendererType::Metal: return {type, nullptr, 0};
+    case bgfx::RendererType::Metal:
+        return {
+            type, vs_drawable_trackball_mtl, sizeof(vs_drawable_trackball_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
@@ -64,17 +69,18 @@ bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::DRAWABLE_TRACKBA
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_drawable_trackball_320_es, sizeof(fs_drawable_trackball_320_es)};
+        return {type, fs_drawable_trackball_essl, sizeof(fs_drawable_trackball_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_drawable_trackball_140, sizeof(fs_drawable_trackball_140)};
+        return {type, fs_drawable_trackball_glsl, sizeof(fs_drawable_trackball_glsl)};
     case bgfx::RendererType::Vulkan:
         return {type, fs_drawable_trackball_spv, sizeof(fs_drawable_trackball_spv)};
 #ifdef _WIN32
-    case bgfx::RendererType::Direct3D11: return {type, nullptr, 0};
-    case bgfx::RendererType::Direct3D12: return {type, nullptr, 0};
+    case bgfx::RendererType::Direct3D11:
+    case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
-    case bgfx::RendererType::Metal: return {type, nullptr, 0};
+    case bgfx::RendererType::Metal:
+        return {type, fs_drawable_trackball_mtl, sizeof(fs_drawable_trackball_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }

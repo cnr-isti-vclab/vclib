@@ -29,6 +29,19 @@ set(SPIRV_PROFILE spirv)
 set(DX_PROFILE s_5_0)
 set(METAL_PROFILE metal22-11)
 
+function(get_bgfx_profile_ext PROFILE PROFILE_EXT)
+	string(REPLACE 320_es essl PROFILE ${PROFILE})
+	string(REPLACE 120 glsl PROFILE ${PROFILE})
+	string(REPLACE 140 glsl PROFILE ${PROFILE})
+	string(REPLACE spirv spv PROFILE ${PROFILE})
+	string(REPLACE metal22-11 mtl PROFILE ${PROFILE})
+	string(REPLACE metal mtl PROFILE ${PROFILE})
+	string(REPLACE s_4_0 dx10 PROFILE ${PROFILE})
+	string(REPLACE s_5_0 dx11 PROFILE ${PROFILE})
+
+	set(${PROFILE_EXT} ${PROFILE} PARENT_SCOPE)
+endfunction()
+
 # bgfx_compile_shader_to_header(
 # 	TYPE VERTEX|FRAGMENT|COMPUTE
 # 	SHADERS filenames
@@ -80,7 +93,7 @@ function(_bgfx_compile_shader_to_header)
 		set(OUTPUTS "")
 		set(COMMANDS "")
 		foreach(PROFILE ${PROFILES})
-			_bgfx_get_profile_ext(${PROFILE} PROFILE_EXT)
+			get_bgfx_profile_ext(${PROFILE} PROFILE_EXT)
 			set(OUTPUT ${ARGS_OUTPUT_DIR}/${SHADER_FILE_BASENAME}.${PROFILE_EXT}.bin.h)
 			set(PLATFORM_I ${PLATFORM})
 			if(PROFILE STREQUAL "spirv")
