@@ -113,8 +113,8 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
                 EmbeddedShader<VclProgram::FONT_BASIC>::vertexEmbeddedShader(
                     type)),
             bgf::loadShader(
-                EmbeddedShader<
-                    VclProgram::FONT_BASIC>::fragmentEmbeddedShader(type)));
+                EmbeddedShader<VclProgram::FONT_BASIC>::fragmentEmbeddedShader(
+                    type)));
 
     case VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE:
         return bgf::createProgram(
@@ -158,19 +158,19 @@ bgfx::ProgramHandle ProgramManager::loadProgram(
         return bgf::createProgram(
             bgf::loadShader(
                 EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_OUTLINE>::
-                vertexEmbeddedShader(type)),
+                    vertexEmbeddedShader(type)),
             bgf::loadShader(
                 EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_OUTLINE>::
-                fragmentEmbeddedShader(type)));
+                    fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD_SUBPIXEL:
         return bgf::createProgram(
             bgf::loadShader(
                 EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_SUBPIXEL>::
-                vertexEmbeddedShader(type)),
+                    vertexEmbeddedShader(type)),
             bgf::loadShader(
                 EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_SUBPIXEL>::
-                fragmentEmbeddedShader(type)));
+                    fragmentEmbeddedShader(type)));
 
     case VclProgram::FONT_DISTANCE_FIELD:
         return bgf::createProgram(

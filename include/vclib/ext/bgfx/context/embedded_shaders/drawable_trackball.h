@@ -27,7 +27,7 @@
 
 namespace vcl::bgf {
 
-template <>
+template<>
 struct EmbeddedShader<VclProgram::DRAWABLE_TRACKBALL>
 {
     static bgfx::EmbeddedShader::Data vertexEmbeddedShader(

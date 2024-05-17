@@ -107,8 +107,6 @@ void TextView::appendTransientText(
     mTextManager.appendTransientText(pos, text, color);
 }
 
-
-
 void TextView::frame(bgfx::FrameBufferHandle fbh)
 {
     static uint cnt = 0;

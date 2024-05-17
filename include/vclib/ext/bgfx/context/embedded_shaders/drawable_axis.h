@@ -27,7 +27,7 @@
 
 namespace vcl::bgf {
 
-template <>
+template<>
 struct EmbeddedShader<VclProgram::DRAWABLE_AXIS>
 {
     static bgfx::EmbeddedShader::Data vertexEmbeddedShader(

@@ -32,7 +32,7 @@ namespace vcl::bgf {
 struct FontData
 {
     const uint8_t* data = nullptr;
-    uint32_t size = 0;
+    uint32_t       size = 0;
 };
 
 struct VclFont
@@ -43,9 +43,8 @@ struct VclFont
         COUNT
     };
 
-    static inline const std::array<std::string, VclFont::COUNT>
-        fontNames = {
-            "DroidSans",
+    static inline const std::array<std::string, VclFont::COUNT> fontNames = {
+        "DroidSans",
     };
 };
 

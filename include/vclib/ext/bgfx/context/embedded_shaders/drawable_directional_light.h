@@ -27,7 +27,7 @@
 
 namespace vcl::bgf {
 
-template <>
+template<>
 struct EmbeddedShader<VclProgram::DRAWABLE_DIRECTIONAL_LIGHT>
 {
     static bgfx::EmbeddedShader::Data vertexEmbeddedShader(

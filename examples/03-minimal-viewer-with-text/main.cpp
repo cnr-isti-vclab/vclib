@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     vcl::bglfwx::MinimalViewerWindow tw("Minimal Viewer GLFW");
 #endif
     // load and set up a drawable mesh
-    vcl::TriMesh m = getMesh("greek_helmet.obj");
+    vcl::TriMesh                         m        = getMesh("greek_helmet.obj");
     vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh(m);
 
     // add the drawable mesh to the scene
@@ -49,7 +49,8 @@ int main(int argc, char** argv)
     tw.enableText();
 
     tw.setTextFont(vcl::bgf::VclFont::DROID_SANS, 20);
-    tw.appendStaticText({5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
+    tw.appendStaticText(
+        {5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
     tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));
 
     tw.fitScene();

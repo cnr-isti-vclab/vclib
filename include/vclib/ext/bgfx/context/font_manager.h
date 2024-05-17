@@ -67,8 +67,8 @@ private:
 
     static bgfx::TrueTypeHandle loadTtf(
         bgfx::FontManager& fontManager,
-        const uint8_t* data,
-        std::size_t size);
+        const uint8_t*     data,
+        std::size_t        size);
 };
 
 } // namespace vcl::bgf

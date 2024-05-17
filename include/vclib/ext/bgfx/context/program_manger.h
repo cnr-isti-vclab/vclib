@@ -38,7 +38,8 @@ class ProgramManager
     std::map<std::string, bgfx::ProgramHandle> mPrograms;
 
 public:
-    ProgramManager(bgfx::RendererType::Enum renderType) : mRenderType(renderType)
+    ProgramManager(bgfx::RendererType::Enum renderType) :
+            mRenderType(renderType)
     {
     }
 

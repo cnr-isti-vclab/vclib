@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-
 #include <vclib/ext/bgfx/context/embedded_shaders/font_basic.h>
 
 #include <shaders/vclib/ext/bgfx/font/fs_font_basic.sc.glsl.bin.h>
@@ -42,8 +41,8 @@
 
 namespace vcl::bgf {
 
-bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::FONT_BASIC>::
-    vertexEmbeddedShader(bgfx::RendererType::Enum type)
+bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<
+    VclProgram::FONT_BASIC>::vertexEmbeddedShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:

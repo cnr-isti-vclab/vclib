@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-
 #include <vclib/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow.h>
 
 #include <shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow.sc.glsl.bin.h>
@@ -42,53 +41,86 @@
 
 namespace vcl::bgf {
 
-bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>::
+bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<
+    VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>::
     vertexEmbeddedShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, vs_font_distance_field_drop_shadow_essl, sizeof(vs_font_distance_field_drop_shadow_essl)};
+        return {
+            type,
+            vs_font_distance_field_drop_shadow_essl,
+            sizeof(vs_font_distance_field_drop_shadow_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, vs_font_distance_field_drop_shadow_glsl, sizeof(vs_font_distance_field_drop_shadow_glsl)};
+        return {
+            type,
+            vs_font_distance_field_drop_shadow_glsl,
+            sizeof(vs_font_distance_field_drop_shadow_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, vs_font_distance_field_drop_shadow_spv, sizeof(vs_font_distance_field_drop_shadow_spv)};
+        return {
+            type,
+            vs_font_distance_field_drop_shadow_spv,
+            sizeof(vs_font_distance_field_drop_shadow_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, vs_font_distance_field_drop_shadow_dx11, sizeof(vs_font_distance_field_drop_shadow_dx11)};
+        return {
+            type,
+            vs_font_distance_field_drop_shadow_dx11,
+            sizeof(vs_font_distance_field_drop_shadow_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, vs_font_distance_field_drop_shadow_mtl, sizeof(vs_font_distance_field_drop_shadow_mtl)};
+        return {
+            type,
+            vs_font_distance_field_drop_shadow_mtl,
+            sizeof(vs_font_distance_field_drop_shadow_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>::
+bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<
+    VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>::
     fragmentEmbeddedShader(bgfx::RendererType::Enum type)
 {
     switch (type) {
     case bgfx::RendererType::OpenGLES:
-        return {type, fs_font_distance_field_drop_shadow_essl, sizeof(fs_font_distance_field_drop_shadow_essl)};
+        return {
+            type,
+            fs_font_distance_field_drop_shadow_essl,
+            sizeof(fs_font_distance_field_drop_shadow_essl)};
     case bgfx::RendererType::OpenGL:
-        return {type, fs_font_distance_field_drop_shadow_glsl, sizeof(fs_font_distance_field_drop_shadow_glsl)};
+        return {
+            type,
+            fs_font_distance_field_drop_shadow_glsl,
+            sizeof(fs_font_distance_field_drop_shadow_glsl)};
     case bgfx::RendererType::Vulkan:
-        return {type, fs_font_distance_field_drop_shadow_spv, sizeof(fs_font_distance_field_drop_shadow_spv)};
+        return {
+            type,
+            fs_font_distance_field_drop_shadow_spv,
+            sizeof(fs_font_distance_field_drop_shadow_spv)};
 #ifdef _WIN32
     case bgfx::RendererType::Direct3D11:
-        return {type, fs_font_distance_field_drop_shadow_dx11, sizeof(fs_font_distance_field_drop_shadow_dx11)};
+        return {
+            type,
+            fs_font_distance_field_drop_shadow_dx11,
+            sizeof(fs_font_distance_field_drop_shadow_dx11)};
     case bgfx::RendererType::Direct3D12:
 #endif
 #ifdef __APPLE__
     case bgfx::RendererType::Metal:
-        return {type, fs_font_distance_field_drop_shadow_mtl, sizeof(fs_font_distance_field_drop_shadow_mtl)};
+        return {
+            type,
+            fs_font_distance_field_drop_shadow_mtl,
+            sizeof(fs_font_distance_field_drop_shadow_mtl)};
 #endif
     default: return {type, nullptr, 0};
     }
 }
 
-bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>::
+bgfx::EmbeddedShader::Data vcl::bgf::EmbeddedShader<
+    VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW>::
     computeEmbeddedShader(bgfx::RendererType::Enum type)
 {
     static_assert(true, "Invalid shader type for Font Basic");

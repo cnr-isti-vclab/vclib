@@ -27,7 +27,7 @@
 
 namespace vcl::bgf {
 
-template <>
+template<>
 struct EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD_DROP_SHADOW_IMAGE>
 {
     static bgfx::EmbeddedShader::Data vertexEmbeddedShader(

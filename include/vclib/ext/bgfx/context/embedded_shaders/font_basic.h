@@ -27,7 +27,7 @@
 
 namespace vcl::bgf {
 
-template <>
+template<>
 struct EmbeddedShader<VclProgram::FONT_BASIC>
 {
     static bgfx::EmbeddedShader::Data vertexEmbeddedShader(

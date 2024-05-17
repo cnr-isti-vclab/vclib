@@ -20,7 +20,6 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-
 #include <vclib/ext/bgfx/context/embedded_shaders/drawable_mesh.h>
 
 #include <shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc.glsl.bin.h>

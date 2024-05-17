@@ -49,17 +49,14 @@ void FontManager::loadFont(VclFont::Enum font)
         case VclFont::DROID_SANS:
             fd = EmbeddedFont<VclFont::DROID_SANS>::embeddedFont();
             break;
-        default:
-            return;
+        default: return;
         }
         bgfx::TrueTypeHandle handle = loadTtf(mFontManager, fd.data, fd.size);
         mTTMap[VclFont::fontNames[font]] = handle;
     }
 }
 
-void FontManager::loadFont(
-    const FontData& fd,
-    const std::string& fontName)
+void FontManager::loadFont(const FontData& fd, const std::string& fontName)
 {
     if (mTTMap.find(fontName) == mTTMap.end()) {
         bgfx::TrueTypeHandle handle = loadTtf(mFontManager, fd.data, fd.size);
@@ -82,7 +79,7 @@ bgfx::FontHandle FontManager::getFontHandle(
     uint16_t      fontSize)
 {
     std::string fontName = VclFont::fontNames[font];
-    auto it = mFontMap.find({fontName, fontSize});
+    auto        it       = mFontMap.find({fontName, fontSize});
     if (it != mFontMap.end()) {
         return it->second;
     }
