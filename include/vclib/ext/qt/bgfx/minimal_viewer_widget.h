@@ -39,17 +39,17 @@ public:
     using CanvasWidget::width;
 
     MinimalViewerWidget(
-        const std::string& windowTitle = "Minimal Viewer",
-        uint               width       = 1024,
-        uint               height      = 768,
-        QWidget*           parent      = nullptr);
-
-    MinimalViewerWidget(
         std::shared_ptr<DrawableObjectVector> v,
         uint                                  width       = 1024,
         uint                                  height      = 768,
         const std::string&                    windowTitle = "",
         QWidget*                              parent      = nullptr);
+
+    MinimalViewerWidget(
+        const std::string& windowTitle = "Minimal Viewer",
+        uint               width       = 1024,
+        uint               height      = 768,
+        QWidget*           parent      = nullptr);
 
     MinimalViewerWidget(QWidget* parent);
 

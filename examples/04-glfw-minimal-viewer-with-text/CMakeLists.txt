@@ -23,7 +23,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
-    set(EXAMPLE_NAME 03-minimal-viewer-with-text)
+    set(EXAMPLE_NAME 04-glfw-minimal-viewer-with-text)
     project(vclib-render-example-${EXAMPLE_NAME})
 
     ### Build settings

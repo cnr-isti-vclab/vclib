@@ -30,6 +30,17 @@
 namespace vcl::qbgf {
 
 MinimalViewerWidget::MinimalViewerWidget(
+    std::shared_ptr<DrawableObjectVector> v,
+    uint                                  width,
+    uint                                  height,
+    const std::string&                    windowTitle,
+    QWidget*                              parent) :
+        CanvasWidget(windowTitle, width, height, parent),
+        vcl::bgf::MinimalViewer(v, width, height)
+{
+}
+
+MinimalViewerWidget::MinimalViewerWidget(
     const std::string& windowTitle,
     uint               width,
     uint               height,
@@ -40,17 +51,6 @@ MinimalViewerWidget::MinimalViewerWidget(
             height,
             windowTitle,
             parent)
-{
-}
-
-MinimalViewerWidget::MinimalViewerWidget(
-    std::shared_ptr<DrawableObjectVector> v,
-    uint                                  width,
-    uint                                  height,
-    const std::string&                    windowTitle,
-    QWidget*                              parent) :
-        CanvasWidget(windowTitle, width, height, parent),
-        vcl::bgf::MinimalViewer(v)
 {
 }
 

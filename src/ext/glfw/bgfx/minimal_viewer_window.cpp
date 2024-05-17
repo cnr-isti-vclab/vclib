@@ -30,7 +30,8 @@ MinimalViewerWindow::MinimalViewerWindow(
     std::shared_ptr<DrawableObjectVector> v,
     const std::string&                    windowTitle,
     uint                                  width,
-    uint                                  height) :
+    uint                                  height,
+    void*) :
         CanvasWindow(windowTitle, width, height),
         MinimalViewer(v, width, height)
 {
@@ -39,7 +40,8 @@ MinimalViewerWindow::MinimalViewerWindow(
 MinimalViewerWindow::MinimalViewerWindow(
     const std::string& windowTitle,
     uint               width,
-    uint               height) :
+    uint               height,
+    void*) :
         MinimalViewerWindow(
             std::make_shared<DrawableObjectVector>(),
             windowTitle,
@@ -48,12 +50,12 @@ MinimalViewerWindow::MinimalViewerWindow(
 {
 }
 
-MinimalViewerWindow::MinimalViewerWindow(uint width, uint height) :
+MinimalViewerWindow::MinimalViewerWindow(void*) :
         MinimalViewerWindow(
             std::make_shared<DrawableObjectVector>(),
             "Minimal Viewer",
-            width,
-            height)
+            1024,
+            768)
 {
 }
 

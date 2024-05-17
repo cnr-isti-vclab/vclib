@@ -29,10 +29,7 @@
 
 namespace vcl::bglfwx {
 
-class MinimalViewerWindow :
-        public vcl::bglfwx::CanvasWindow,
-        public vcl::bgf::MinimalViewer
-
+class MinimalViewerWindow : public CanvasWindow, public vcl::bgf::MinimalViewer
 {
 protected:
     using MV = vcl::bgf::MinimalViewer;
@@ -45,14 +42,16 @@ public:
         std::shared_ptr<DrawableObjectVector> v,
         const std::string&                    windowTitle = "Minimal Viewer",
         uint                                  width       = 1024,
-        uint                                  height      = 768);
+        uint                                  height      = 768,
+        void* parent = nullptr);
 
     MinimalViewerWindow(
-        const std::string& windowTitle,
-        uint               width  = 1024,
-        uint               height = 768);
+        const std::string& windowTitle = "Minimal Viewer",
+        uint               width       = 1024,
+        uint               height      = 768,
+        void*              parent      = nullptr);
 
-    MinimalViewerWindow(uint width = 1024, uint height = 768);
+    MinimalViewerWindow(void* parent);
 
     ~MinimalViewerWindow() override = default;
 
