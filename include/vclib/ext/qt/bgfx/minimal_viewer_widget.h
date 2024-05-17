@@ -60,6 +60,9 @@ public:
     void draw() override;
 
     void onKeyPress(Key::Enum key) override;
+
+private:
+    void showScreenShotDialog();
 };
 
 } // namespace vcl::qbgf

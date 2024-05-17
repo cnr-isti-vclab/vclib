@@ -73,18 +73,10 @@ void MinimalViewerWidget::draw()
 
 void MinimalViewerWidget::onKeyPress(Key::Enum key)
 {
-    qt::ScreenShotDialog dialog(this);
-
     switch (key) {
     case Key::S:
         if (modifiers()[KeyModifier::CONTROL]) {
-            if (dialog.exec() == QDialog::Accepted) {
-                auto fs = dialog.selectedFiles();
-                CanvasWidget::screenShot(fs.first().toStdString());
-            }
-            // the dialog stealed the focus, so we need to release the modifiers
-            MV::setKeyModifiers({KeyModifier::NO_MODIFIER});
-            setModifiers({KeyModifier::NO_MODIFIER});
+            showScreenShotDialog();
         }
         break;
 
@@ -92,6 +84,18 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key)
         MV::onKeyPress(key);
         break;
     }
+}
+
+void MinimalViewerWidget::showScreenShotDialog()
+{
+    qt::ScreenShotDialog* dialog = new qt::ScreenShotDialog(this);
+    if (dialog->exec() == QDialog::Accepted) {
+        auto fs = dialog->selectedFiles();
+        CanvasWidget::screenShot(fs.first().toStdString());
+    }
+    // the dialog stealed the focus, so we need to release the modifiers
+    MV::setKeyModifiers({KeyModifier::NO_MODIFIER});
+    setModifiers({KeyModifier::NO_MODIFIER});
 }
 
 } // namespace vcl::qbgf
