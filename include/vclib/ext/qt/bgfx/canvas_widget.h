@@ -34,7 +34,7 @@ namespace vcl::qbgf {
 class CanvasWidget :
         public QWidget,
         public vcl::bgf::Canvas,
-        public vcl::EventManagerInterface
+        public virtual vcl::EventManagerInterface
 {
     using Canvas = vcl::bgf::Canvas;
 
@@ -54,7 +54,7 @@ public:
 
     virtual ~CanvasWidget();
 
-    void update();
+    void update() override;
 
 protected:
     virtual void draw() override;

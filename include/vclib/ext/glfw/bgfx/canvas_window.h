@@ -31,7 +31,7 @@
 
 namespace vcl::bglfwx {
 
-class CanvasWindow : public vcl::bgf::Canvas, public vcl::EventManagerInterface
+class CanvasWindow : public vcl::bgf::Canvas, public virtual vcl::EventManagerInterface
 {
     using Canvas = vcl::bgf::Canvas;
 

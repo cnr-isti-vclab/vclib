@@ -24,6 +24,7 @@
 #define VCL_EXT_BGFX_MINIMAL_VIEWER_H
 
 #include <vclib/gui/desktop_trackball.h>
+#include <vclib/gui/event_manager_interface.h>
 #include <vclib/render/drawable_object_vector.h>
 
 #include "drawable_axis.h"
@@ -35,7 +36,9 @@
 
 namespace vcl::bgf {
 
-class MinimalViewer : public vcl::DesktopTrackBall<float>
+class MinimalViewer :
+        public vcl::DesktopTrackBall<float>,
+        public virtual vcl::EventManagerInterface
 {
     // this Viewer does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> mDrawList;
@@ -99,6 +102,20 @@ public:
         mTrackBall.updateRotation(v);
         mTrackBall.updateDragging(isDragging());
     }
+
+    // events
+
+    void onKeyPress(Key::Enum key) override;
+
+    void onKeyRelease(Key::Enum key) override;
+
+    void onMouseMove(double x, double y) override;
+
+    void onMousePress(MouseButton::Enum button) override;
+
+    void onMouseRelease(MouseButton::Enum button) override;
+
+    void onMouseScroll(double dx, double dy) override;
 
 private:
     void initDrawableObject(DrawableObjectI& obj);

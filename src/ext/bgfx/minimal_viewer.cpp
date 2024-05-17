@@ -100,6 +100,80 @@ void MinimalViewer::draw(uint viewId)
     }
 }
 
+void MinimalViewer::onKeyPress(Key::Enum key)
+{
+    DTB::setKeyModifiers(modifiers());
+
+    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT]) {
+        setDirectionalLightVisibility(true);
+    }
+
+    switch (key) {
+    case Key::C:
+        std::cerr << "(" << DTB::camera().eye() << ") "
+                  << "(" << DTB::camera().center() << ") "
+                  << "(" << DTB::camera().up() << ")\n";
+        break;
+
+    case Key::A: toggleAxisVisibility(); break;
+
+    case Key::T: toggleTrackballVisibility(); break;
+
+    default:
+        keyPress(key);
+        break;
+    }
+
+    updateDirectionalLight();
+    updateDrawableTrackball();
+
+    update();
+}
+
+void MinimalViewer::onKeyRelease(Key::Enum key)
+{
+    if (isDirectionalLightVisible()) {
+        if (!modifiers()[KeyModifier::CONTROL] ||
+            !modifiers()[KeyModifier::SHIFT])
+        {
+            setDirectionalLightVisibility(false);
+        }
+    }
+
+    setKeyModifiers(modifiers());
+    update();
+}
+
+void MinimalViewer::onMouseMove(double x, double y)
+{
+    DTB::moveMouse(x, y);
+    updateDirectionalLight();
+    updateDrawableTrackball();
+
+    update();
+}
+
+void MinimalViewer::onMousePress(MouseButton::Enum button)
+{
+    DTB::pressMouse(button);
+    updateDrawableTrackball();
+    update();
+}
+
+void MinimalViewer::onMouseRelease(MouseButton::Enum button)
+{
+    DTB::releaseMouse(button);
+    updateDrawableTrackball();
+    update();
+}
+
+
+void MinimalViewer::onMouseScroll(double dx, double dy)
+{
+    DTB::scroll(dx, dy);
+    update();
+}
+
 void MinimalViewer::initDrawableObject(DrawableObjectI& obj)
 {
     obj.init();

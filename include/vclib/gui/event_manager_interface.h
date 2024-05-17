@@ -54,39 +54,41 @@ public:
      * @brief Called when a key is pressed.
      * @param[in] key: The key that was pressed.
      */
-    virtual void onKeyPress(Key::Enum key) {};
+    virtual void onKeyPress(Key::Enum key) {}
 
     /**
      * @brief Called when a key is released.
      * @param[in] key: The key that was released.
      */
-    virtual void onKeyRelease(Key::Enum key) {};
+    virtual void onKeyRelease(Key::Enum key) {}
 
     /**
      * @brief Called when the mouse moves.
      * @param[in] x: The x coordinate of the mouse.
      * @param[in] y: The y coordinate of the mouse.
      */
-    virtual void onMouseMove(double x, double y) {};
+    virtual void onMouseMove(double x, double y) {}
 
     /**
      * @brief Called when a mouse button is pressed.
      * @param[in] button: The button that was pressed.
      */
-    virtual void onMousePress(MouseButton::Enum button) {};
+    virtual void onMousePress(MouseButton::Enum button) {}
 
     /**
      * @brief Called when a mouse button is released.
      * @param[in] button: The button that was released.
      */
-    virtual void onMouseRelease(MouseButton::Enum button) {};
+    virtual void onMouseRelease(MouseButton::Enum button) {}
 
     /**
      * @brief Called when the mouse wheel is scrolled.
      * @param[in] dx: The horizontal scroll amount.
      * @param[in] dy: The vertical scroll amount.
      */
-    virtual void onMouseScroll(double dx, double dy) {};
+    virtual void onMouseScroll(double dx, double dy) {}
+
+    virtual void update() {}
 };
 
 } // namespace vcl

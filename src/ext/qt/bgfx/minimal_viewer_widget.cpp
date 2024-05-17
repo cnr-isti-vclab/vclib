@@ -59,6 +59,13 @@ MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) :
 {
 }
 
+void MinimalViewerWidget::update()
+{
+    bgfx::setViewTransform(
+        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+    CanvasWidget::update();
+}
+
 void MinimalViewerWidget::draw()
 {
     MV::draw(viewId());
@@ -67,27 +74,16 @@ void MinimalViewerWidget::draw()
 void MinimalViewerWidget::onResize(unsigned int width, unsigned int height)
 {
     MV::resizeViewer(width, height);
+    MV::updateDrawableTrackball();
     bgfx::setViewTransform(
         viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
-    MV::updateDrawableTrackball();
 }
 
 void MinimalViewerWidget::onKeyPress(Key::Enum key)
 {
     qt::ScreenShotDialog dialog(this);
-    MV::setKeyModifiers(modifiers());
-
-    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT]) {
-        MV::setDirectionalLightVisibility(true);
-    }
 
     switch (key) {
-    case Key::C:
-        std::cerr << "(" << MV::camera().eye() << ") "
-                  << "(" << MV::camera().center() << ") "
-                  << "(" << MV::camera().up() << ")\n";
-        break;
-
     case Key::S:
         if (modifiers()[KeyModifier::CONTROL]) {
             if (dialog.exec() == QDialog::Accepted) {
@@ -100,73 +96,10 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key)
         }
         break;
 
-    case Key::A: MV::toggleAxisVisibility(); break;
-
-    case Key::T: MV::toggleTrackballVisibility(); break;
-
     default:
-        MV::keyPress(key);
-        bgfx::setViewTransform(
-            viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
+        MV::onKeyPress(key);
         break;
     }
-
-    MV::updateDirectionalLight();
-    MV::updateDrawableTrackball();
-    update();
-}
-
-void MinimalViewerWidget::onKeyRelease(Key::Enum key)
-{
-    if (isDirectionalLightVisible()) {
-        if (!modifiers()[KeyModifier::CONTROL] ||
-            !modifiers()[KeyModifier::SHIFT])
-        {
-            MV::setDirectionalLightVisibility(false);
-        }
-    }
-
-    MV::setKeyModifiers(modifiers());
-    update();
-}
-
-void MinimalViewerWidget::onMouseMove(double x, double y)
-{
-    MV::moveMouse(x, y);
-    MV::updateDirectionalLight();
-    MV::updateDrawableTrackball();
-
-    bgfx::setViewTransform(
-        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
-
-    update();
-}
-
-void MinimalViewerWidget::onMousePress(MouseButton::Enum button)
-{
-    MV::pressMouse(button);
-    MV::updateDrawableTrackball();
-    update();
-}
-
-void MinimalViewerWidget::onMouseRelease(MouseButton::Enum button)
-{
-    MV::releaseMouse(button);
-    MV::updateDrawableTrackball();
-    update();
-}
-
-void MinimalViewerWidget::onMouseScroll(double dx, double dy)
-{
-    // const int WHEEL_STEP = 120;
-    // float     notchY     = dy / float(WHEEL_STEP);
-
-    MV::scroll(dx, dy);
-
-    bgfx::setViewTransform(
-        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
-
-    update();
 }
 
 } // namespace vcl::qbgf
