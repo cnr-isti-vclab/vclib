@@ -48,9 +48,13 @@ public:
 
     /**
      * @brief Called when the window is updated.
+     *
+     * You should reimplement this method if you need to update some state
+     * when the window is updated.
      */
     virtual void update() {}
 
+protected:
     void setModifiers(KeyModifiers modifiers) { mMods = modifiers; }
 
     const KeyModifiers& modifiers() const { return mMods; }

@@ -174,10 +174,10 @@ void MinimalViewer::onMouseRelease(MouseButton::Enum button)
     update();
 }
 
-
 void MinimalViewer::onMouseScroll(double dx, double dy)
 {
     DTB::scroll(dx, dy);
+    updateDrawableTrackball();
     update();
 }
 
