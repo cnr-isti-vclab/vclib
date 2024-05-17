@@ -26,5 +26,5 @@ $input a_position
 
 void main()
 {
-    gl_Position = mul(u_model[0] * u_proj, vec4(a_position, 1.0));
+    gl_Position = mul(u_proj, mul(u_model[0], vec4(a_position, 1.0)));
 }

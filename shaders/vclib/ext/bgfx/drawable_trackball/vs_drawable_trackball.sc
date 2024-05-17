@@ -32,7 +32,7 @@ void main()
     uint isDragging = floatBitsToUint(u_isDraggingFloat);
     float alpha = isDragging != 0u ? 0.9f : 0.5f;
 
-    gl_Position = mul(u_model[0] * u_proj, vec4(a_position, 1.0));
+    gl_Position = mul(u_proj, mul(u_model[0], vec4(a_position, 1.0)));
 
     // Compute the color
     if (gl_VertexID < nVerticesPerCircle) // x
