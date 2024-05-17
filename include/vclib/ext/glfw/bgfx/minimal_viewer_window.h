@@ -56,8 +56,6 @@ public:
     ~MinimalViewerWindow() override = default;
 
     void draw() override;
-
-    void onResize(unsigned int width, unsigned int height) override;
 };
 
 } // namespace vcl::bglfwx

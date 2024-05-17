@@ -71,14 +71,6 @@ void MinimalViewerWidget::draw()
     MV::draw(viewId());
 }
 
-void MinimalViewerWidget::onResize(unsigned int width, unsigned int height)
-{
-    MV::resizeViewer(width, height);
-    MV::updateDrawableTrackball();
-    bgfx::setViewTransform(
-        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
-}
-
 void MinimalViewerWidget::onKeyPress(Key::Enum key)
 {
     qt::ScreenShotDialog dialog(this);

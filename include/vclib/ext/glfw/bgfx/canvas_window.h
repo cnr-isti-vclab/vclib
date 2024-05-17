@@ -31,7 +31,9 @@
 
 namespace vcl::bglfwx {
 
-class CanvasWindow : public vcl::bgf::Canvas, public virtual vcl::EventManagerInterface
+class CanvasWindow :
+        public vcl::bgf::Canvas,
+        public virtual vcl::EventManagerInterface
 {
     using Canvas = vcl::bgf::Canvas;
 
@@ -62,8 +64,6 @@ public:
 
 protected:
     virtual void draw() override {}
-
-    virtual void onResize(unsigned int w, unsigned int h) {}
 
 private:
     void setCallbacks();

@@ -67,10 +67,6 @@ void CanvasWidget::draw()
 {
 }
 
-void CanvasWidget::onResize(unsigned int, unsigned int)
-{
-}
-
 void CanvasWidget::update()
 {
     paint();

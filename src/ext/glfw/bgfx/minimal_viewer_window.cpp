@@ -64,12 +64,4 @@ void MinimalViewerWindow::draw()
     MV::draw(viewId());
 }
 
-void MinimalViewerWindow::onResize(unsigned int width, unsigned int height)
-{
-    MV::resizeViewer(width, height);
-    MV::updateDrawableTrackball();
-    bgfx::setViewTransform(
-        viewId(), MV::viewMatrix().data(), MV::projectionMatrix().data());
-}
-
 } // namespace vcl::bglfwx

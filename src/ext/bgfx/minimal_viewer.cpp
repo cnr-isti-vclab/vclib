@@ -100,6 +100,13 @@ void MinimalViewer::draw(uint viewId)
     }
 }
 
+void MinimalViewer::onResize(unsigned int width, unsigned int height)
+{
+    DTB::resizeViewer(width, height);
+    updateDrawableTrackball();
+    update();
+}
+
 void MinimalViewer::onKeyPress(Key::Enum key)
 {
     DTB::setKeyModifiers(modifiers());

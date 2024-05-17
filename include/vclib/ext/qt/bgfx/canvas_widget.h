@@ -59,8 +59,6 @@ public:
 protected:
     virtual void draw() override;
 
-    virtual void onResize(unsigned int w, unsigned int h);
-
 private:
     bool event(QEvent* event) override;
 

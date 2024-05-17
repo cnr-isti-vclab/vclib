@@ -46,9 +46,21 @@ class EventManagerInterface
 public:
     virtual ~EventManagerInterface() = default;
 
+    /**
+     * @brief Called when the window is updated.
+     */
+    virtual void update() {}
+
     void setModifiers(KeyModifiers modifiers) { mMods = modifiers; }
 
     const KeyModifiers& modifiers() const { return mMods; }
+
+    /**
+     * @brief Called when the window is resized.
+     * @param[in] w: The new width of the window.
+     * @param[in] h: The new height of the window.
+     */
+    virtual void onResize(unsigned int w, unsigned int h) {}
 
     /**
      * @brief Called when a key is pressed.
@@ -88,7 +100,7 @@ public:
      */
     virtual void onMouseScroll(double dx, double dy) {}
 
-    virtual void update() {}
+
 };
 
 } // namespace vcl
