@@ -43,7 +43,7 @@ public:
         const std::string&                    windowTitle = "Minimal Viewer",
         uint                                  width       = 1024,
         uint                                  height      = 768,
-        void* parent = nullptr);
+        void*                                 parent      = nullptr);
 
     MinimalViewerWindow(
         const std::string& windowTitle = "Minimal Viewer",

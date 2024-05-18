@@ -126,9 +126,7 @@ void MinimalViewer::onKeyPress(Key::Enum key)
 
     case Key::T: toggleTrackballVisibility(); break;
 
-    default:
-        keyPress(key);
-        break;
+    default: keyPress(key); break;
     }
 
     updateDirectionalLight();

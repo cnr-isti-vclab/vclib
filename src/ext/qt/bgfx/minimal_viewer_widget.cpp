@@ -80,9 +80,7 @@ void MinimalViewerWidget::onKeyPress(Key::Enum key)
         }
         break;
 
-    default:
-        MV::onKeyPress(key);
-        break;
+    default: MV::onKeyPress(key); break;
     }
 }
 

@@ -103,8 +103,6 @@ protected:
      * @param[in] dy: The vertical scroll amount.
      */
     virtual void onMouseScroll(double dx, double dy) {}
-
-
 };
 
 } // namespace vcl
