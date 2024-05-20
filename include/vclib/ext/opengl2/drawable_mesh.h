@@ -36,7 +36,7 @@
 #include <iostream>
 
 #include <vclib/render/interfaces/drawable_mesh_i.h>
-#include <vclib/render/mesh_render_data.h>
+#include <vclib/render/drawable/mesh/mesh_render_data.h>
 
 #include "draw_objects3.h"
 
