@@ -25,7 +25,7 @@
 
 #include <QMainWindow>
 
-#include <vclib/render/drawable_object_vector.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 
 namespace vcl::qbgf {
 

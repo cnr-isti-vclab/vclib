@@ -20,42 +20,73 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_LIGHTS_DIRECTIONAL_LIGHT_H
-#define VCL_RENDER_LIGHTS_DIRECTIONAL_LIGHT_H
+#ifndef VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
+#define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
 
-#include <vclib/space/color.h>
-#include <vclib/space/point.h>
+#include <vclib/render/interfaces/drawable_object_i.h>
+
+#include <vclib/space/box.h>
 
 namespace vcl {
 
-template<typename ScalarType>
-class DirectionalLight
+class DrawableObjectVector
 {
-    vcl::Point3<ScalarType> mDir   = vcl::Point3<ScalarType>(0.0f, 0.0f, 1.0f);
-    vcl::Color              mColor = vcl::Color::White;
+    std::vector<DrawableObjectI*> mDrawVector;
 
 public:
-    DirectionalLight() = default;
+    using iterator       = std::vector<DrawableObjectI*>::iterator;
+    using const_iterator = std::vector<DrawableObjectI*>::const_iterator;
 
-    DirectionalLight(
-        const vcl::Point3<ScalarType>& d,
-        const vcl::Color&              c = vcl::Color::White) :
-            mDir(d),
-            mColor(c)
-    {
-    }
+    DrawableObjectVector() = default;
 
-    vcl::Point3<ScalarType>& direction() { return mDir; }
+    DrawableObjectVector(const DrawableObjectVector& oth);
 
-    const vcl::Point3<ScalarType>& direction() const { return mDir; }
+    DrawableObjectVector(DrawableObjectVector&& oth);
 
-    vcl::Color& color() { return mColor; }
+    ~DrawableObjectVector();
 
-    const vcl::Color& color() const { return mColor; }
+    uint pushBack(const DrawableObjectI& obj);
 
-    void reset() { *this = {}; }
+    uint pushBack(const DrawableObjectI* obj);
+
+    DrawableObjectI& at(uint i);
+
+    const DrawableObjectI& at(uint i) const;
+
+    DrawableObjectI& operator[](uint i);
+
+    const DrawableObjectI& operator[](uint i) const;
+
+    std::size_t size() const;
+
+    DrawableObjectI& front();
+
+    const DrawableObjectI& front() const;
+
+    DrawableObjectI& back();
+
+    const DrawableObjectI& back() const;
+
+    void clear();
+
+    vcl::Box3d boundingBox(bool onlyVisible = true) const;
+
+    void swap(DrawableObjectVector& oth);
+
+    DrawableObjectVector& operator=(DrawableObjectVector oth);
+
+    iterator begin();
+
+    iterator end();
+
+    const_iterator begin() const;
+
+    const_iterator end() const;
+
+private:
+    uint firstVisibleObject() const;
 };
 
 } // namespace vcl
 
-#endif // VCL_RENDER_LIGHTS_DIRECTIONAL_LIGHT_H
+#endif // VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H

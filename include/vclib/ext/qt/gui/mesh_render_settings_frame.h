@@ -25,7 +25,7 @@
 
 #include <QFrame>
 
-#include <vclib/render/mesh_render_settings.h>
+#include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 class QPushButton;
 

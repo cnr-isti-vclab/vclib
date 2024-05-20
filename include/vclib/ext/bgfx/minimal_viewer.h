@@ -25,7 +25,7 @@
 
 #include <vclib/gui/desktop_trackball.h>
 #include <vclib/gui/event_manager_interface.h>
-#include <vclib/render/drawable_object_vector.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 
 #include "drawable_axis.h"
 #include "drawable_directional_light.h"

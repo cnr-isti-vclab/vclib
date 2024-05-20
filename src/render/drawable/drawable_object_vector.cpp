@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/drawable_object_vector.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 
 namespace vcl {
 

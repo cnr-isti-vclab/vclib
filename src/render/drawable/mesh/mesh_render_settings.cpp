@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/mesh_render_settings.h>
+#include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 namespace vcl {
 

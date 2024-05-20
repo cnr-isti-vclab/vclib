@@ -23,7 +23,7 @@
 #ifndef VCL_EXT_BGFX_UNIFORMS_DIRECTIONAL_LIGHT_UNIFORMS_H
 #define VCL_EXT_BGFX_UNIFORMS_DIRECTIONAL_LIGHT_UNIFORMS_H
 
-#include <vclib/render/lights/directional_light.h>
+#include <vclib/render/viewer/lights/directional_light.h>
 
 #include <bgfx/bgfx.h>
 

@@ -23,7 +23,7 @@
 #ifndef VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
 #define VCL_EXT_BGFX_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
 
-#include <vclib/render/mesh_render_settings.h>
+#include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 #include <bgfx/bgfx.h>
 

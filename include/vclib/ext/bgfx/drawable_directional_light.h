@@ -26,7 +26,7 @@
 #include <bgfx/bgfx.h>
 
 #include <vclib/render/interfaces/drawable_object_i.h>
-#include <vclib/render/lights/directional_light.h>
+#include <vclib/render/viewer/lights/directional_light.h>
 #include <vclib/space/matrix.h>
 
 #include <vclib/ext/bgfx/context.h>

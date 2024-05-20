@@ -23,8 +23,9 @@
 #ifndef VCL_RENDER_INTERFACES_DRAWABLE_MESH_I_H
 #define VCL_RENDER_INTERFACES_DRAWABLE_MESH_I_H
 
-#include "../mesh_render_settings.h"
 #include "drawable_object_i.h"
+
+#include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 namespace vcl {
 

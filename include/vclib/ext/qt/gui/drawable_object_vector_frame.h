@@ -25,7 +25,7 @@
 
 #include <QFrame>
 
-#include <vclib/render/drawable_object_vector.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 
 #include "drawable_object_frame.h"
 

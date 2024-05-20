@@ -25,7 +25,7 @@
 
 #include <bgfx/bgfx.h>
 
-#include <vclib/render/mesh_render_data.h>
+#include <vclib/render/drawable/mesh/mesh_render_data.h>
 
 namespace vcl::bgf {
 

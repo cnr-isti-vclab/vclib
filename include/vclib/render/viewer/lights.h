@@ -20,9 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_LIGHTS_H
-#define VCL_RENDER_LIGHTS_H
+#ifndef VCL_RENDER_VIEWER_LIGHTS_H
+#define VCL_RENDER_VIEWER_LIGHTS_H
 
 #include "lights/directional_light.h"
 
-#endif // VCL_RENDER_LIGHTS_H
+#endif // VCL_RENDER_VIEWER_LIGHTS_H

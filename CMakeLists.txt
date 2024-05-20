@@ -48,22 +48,22 @@ set(HEADERS
     include/vclib/gui/event_manager_interface.h
     include/vclib/gui/input.h
     include/vclib/gui/native_window_handle.h
-    include/vclib/render/camera.h
-    include/vclib/render/drawable_object_vector.h
-    include/vclib/render/lights.h
-    include/vclib/render/matrix.h
-    include/vclib/render/mesh_render_data.h
-    include/vclib/render/mesh_render_settings.h
-    include/vclib/render/mesh_render_settings_macros.h
-    include/vclib/render/trackball.h
+    include/vclib/render/drawable/drawable_object_vector.h
+    include/vclib/render/drawable/mesh/mesh_render_data.h
+    include/vclib/render/drawable/mesh/mesh_render_settings.h
+    include/vclib/render/drawable/mesh/mesh_render_settings_macros.h
     include/vclib/render/interfaces/drawable_mesh_i.h
     include/vclib/render/interfaces/drawable_object_i.h
-    include/vclib/render/lights/directional_light.h)
+    include/vclib/render/viewer/lights.h
+    include/vclib/render/viewer/camera.h
+    include/vclib/render/viewer/matrix.h
+    include/vclib/render/viewer/trackball.h
+    include/vclib/render/viewer/lights/directional_light.h)
 
 set(SOURCES
     src/gui/native_window_handle.cpp
-    src/render/drawable_object_vector.cpp
-    src/render/mesh_render_settings.cpp)
+    src/render/drawable/drawable_object_vector.cpp
+    src/render/drawable/mesh/mesh_render_settings.cpp)
 
 if (APPLE)
     list (APPEND SOURCES

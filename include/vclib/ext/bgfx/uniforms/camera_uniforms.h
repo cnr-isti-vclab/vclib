@@ -23,7 +23,7 @@
 #ifndef VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_H
 #define VCL_EXT_BGFX_UNIFORMS_CAMERA_UNIFORMS_H
 
-#include <vclib/render/camera.h>
+#include <vclib/render/viewer/camera.h>
 
 #include <bgfx/bgfx.h>
 

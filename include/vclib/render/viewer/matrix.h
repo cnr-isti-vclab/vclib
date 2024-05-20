@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_MATRIX_H
-#define VCL_RENDER_MATRIX_H
+#ifndef VCL_RENDER_VIEWER_MATRIX_H
+#define VCL_RENDER_VIEWER_MATRIX_H
 
 #include <vclib/space/matrix.h>
 #include <vclib/space/point.h>
@@ -313,4 +313,4 @@ Matrix44 orthoProjectionMatrix(
 
 } // namespace vcl
 
-#endif // VCL_RENDER_MATRIX_H
+#endif // VCL_RENDER_VIEWER_MATRIX_H

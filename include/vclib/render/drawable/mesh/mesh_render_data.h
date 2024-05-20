@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_MESH_RENDER_DATA_H
-#define VCL_RENDER_MESH_RENDER_DATA_H
+#ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
+#define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/math/min_max.h>
@@ -619,4 +619,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_MESH_RENDER_DATA_H
+#endif // VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H

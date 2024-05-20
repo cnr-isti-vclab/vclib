@@ -25,7 +25,7 @@
 
 #include "input.h"
 
-#include "vclib/render/trackball.h"
+#include <vclib/render/viewer/trackball.h>
 
 #include <vclib/space/bit_set.h>
 
