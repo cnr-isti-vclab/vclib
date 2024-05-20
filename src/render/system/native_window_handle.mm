@@ -20,7 +20,7 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "vclib/gui/native_window_handle.h"
+#include "vclib/render/system/native_window_handle.h"
 
 #import <Cocoa/Cocoa.h>
 
