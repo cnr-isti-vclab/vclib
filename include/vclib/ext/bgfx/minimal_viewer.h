@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_BGFX_MINIMAL_VIEWER_H
 #define VCL_EXT_BGFX_MINIMAL_VIEWER_H
 
-#include <vclib/gui/desktop_trackball.h>
-#include <vclib/gui/event_manager_interface.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/interfaces/event_manager_i.h>
+#include <vclib/render/viewer/desktop_trackball.h>
 
 #include "drawable_axis.h"
 #include "drawable_directional_light.h"

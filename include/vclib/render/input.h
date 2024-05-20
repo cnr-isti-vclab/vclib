@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_GUI_INPUT_H
-#define VCL_GUI_INPUT_H
+#ifndef VCL_RENDER_INPUT_H
+#define VCL_RENDER_INPUT_H
 
 #include <vclib/space/bit_set.h>
 
@@ -162,4 +162,4 @@ inline KeyModifier::Enum keyToModifier(Key::Enum key)
 
 } // namespace vcl
 
-#endif // VCL_GUI_INPUT_H
+#endif // VCL_RENDER_INPUT_H

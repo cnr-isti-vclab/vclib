@@ -23,7 +23,7 @@
 #ifndef VCL_EXT_QT_GUI_INPUT_H
 #define VCL_EXT_QT_GUI_INPUT_H
 
-#include <vclib/gui/input.h>
+#include <vclib/render/input.h>
 
 #include <QMouseEvent>
 

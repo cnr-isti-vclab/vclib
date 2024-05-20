@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/gui/native_window_handle.h>
+#include <vclib/render/system/native_window_handle.h>
 
 #include <cassert>
 #include <iostream>

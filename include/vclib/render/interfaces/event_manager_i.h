@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_GUI_EVENT_MANAGER_INTERFACE_H
-#define VCL_GUI_EVENT_MANAGER_INTERFACE_H
+#ifndef VCL_RENDER_INTERFACES_EVENT_MANAGER_I_H
+#define VCL_RENDER_INTERFACES_EVENT_MANAGER_I_H
 
-#include "input.h"
+#include <vclib/render/input.h>
 
 namespace vcl {
 
@@ -107,4 +107,4 @@ protected:
 
 } // namespace vcl
 
-#endif // VCL_GUI_EVENT_MANAGER_INTERFACE_H
+#endif // VCL_RENDER_INTERFACES_EVENT_MANAGER_I_H

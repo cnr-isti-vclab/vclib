@@ -20,16 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_GUI_DESKTOP_TRACKBALL_H
-#define VCL_GUI_DESKTOP_TRACKBALL_H
+#ifndef VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
+#define VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 
-#include "input.h"
-
-#include <vclib/render/viewer/trackball.h>
+#include <map>
 
 #include <vclib/space/bit_set.h>
 
-#include <map>
+#include <vclib/render/input.h>
+
+#include "trackball.h"
 
 namespace vcl {
 
@@ -324,4 +324,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_GUI_DESKTOP_TRACKBALL_H
+#endif // VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H

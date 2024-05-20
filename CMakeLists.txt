@@ -44,30 +44,30 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set(HEADERS
-    include/vclib/gui/desktop_trackball.h
-    include/vclib/gui/event_manager_interface.h
-    include/vclib/gui/input.h
-    include/vclib/gui/native_window_handle.h
+    include/vclib/render/input.h
     include/vclib/render/drawable/drawable_object_vector.h
     include/vclib/render/drawable/mesh/mesh_render_data.h
     include/vclib/render/drawable/mesh/mesh_render_settings.h
     include/vclib/render/drawable/mesh/mesh_render_settings_macros.h
     include/vclib/render/interfaces/drawable_mesh_i.h
     include/vclib/render/interfaces/drawable_object_i.h
+    include/vclib/render/interfaces/event_manager_i.h
+    include/vclib/render/system/native_window_handle.h
     include/vclib/render/viewer/lights.h
     include/vclib/render/viewer/camera.h
+    include/vclib/render/viewer/desktop_trackball.h
     include/vclib/render/viewer/matrix.h
     include/vclib/render/viewer/trackball.h
     include/vclib/render/viewer/lights/directional_light.h)
 
 set(SOURCES
-    src/gui/native_window_handle.cpp
     src/render/drawable/drawable_object_vector.cpp
-    src/render/drawable/mesh/mesh_render_settings.cpp)
+    src/render/drawable/mesh/mesh_render_settings.cpp
+    src/render/system/native_window_handle.cpp)
 
 if (APPLE)
     list (APPEND SOURCES
-        src/gui/native_window_handle.mm)
+        src/render/system/native_window_handle.mm)
 endif()
 
 set(ASSETS

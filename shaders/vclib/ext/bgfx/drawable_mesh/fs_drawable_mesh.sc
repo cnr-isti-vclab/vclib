@@ -23,7 +23,7 @@
 $input v_position, v_normal, v_color
 
 #include <drawable_mesh/uniforms.sh>
-#include <vclib/render/mesh_render_settings_macros.h>
+#include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
 BUFFER_RO(primitiveColors , uint, 1);  // color of each face / edge
 BUFFER_RO(primitiveNormals, float, 2); // normal of each face / edge

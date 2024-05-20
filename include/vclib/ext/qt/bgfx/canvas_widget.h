@@ -27,7 +27,7 @@
 #include <QWidget>
 
 #include <vclib/ext/bgfx/canvas.h>
-#include <vclib/gui/event_manager_interface.h>
+#include <vclib/render/interfaces/event_manager_i.h>
 
 namespace vcl::qbgf {
 

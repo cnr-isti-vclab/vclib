@@ -25,7 +25,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include <vclib/gui/input.h>
+#include <vclib/render/input.h>
 
 namespace vcl::glfw {
 
