@@ -27,14 +27,12 @@
 #include <QWidget>
 
 #include <vclib/ext/bgfx/canvas.h>
-#include <vclib/render/interfaces/event_manager_i.h>
 
 namespace vcl::qbgf {
 
 class CanvasWidget :
         public QWidget,
-        public vcl::bgf::Canvas,
-        public virtual vcl::EventManagerInterface
+        public vcl::bgf::Canvas
 {
     using Canvas = vcl::bgf::Canvas;
 

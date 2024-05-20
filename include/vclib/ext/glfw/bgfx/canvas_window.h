@@ -25,15 +25,11 @@
 
 #include <vclib/ext/bgfx/canvas.h>
 
-#include <vclib/render/interfaces/event_manager_i.h>
-
 #include <GLFW/glfw3.h>
 
 namespace vcl::bglfwx {
 
-class CanvasWindow :
-        public vcl::bgf::Canvas,
-        public virtual vcl::EventManagerInterface
+class CanvasWindow : public vcl::bgf::Canvas
 {
     using Canvas = vcl::bgf::Canvas;
 
