@@ -28,9 +28,9 @@
 #include <vclib/load_save.h>
 #include <vclib/meshes/tri_mesh.h>
 
-#include <vclib/ext/bgfx/drawable_mesh.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 
-inline vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh(
+inline vcl::DrawableMesh<vcl::TriMesh> getDrawableMesh(
     const std::string& filename = "bimba.obj")
 {
     // load a mesh:
@@ -47,7 +47,7 @@ inline vcl::bgf::DrawableMesh<vcl::TriMesh> getDrawableMesh(
     vcl::MeshRenderSettings settings(m);
 
     // create a DrawableMesh object from the mesh
-    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable(m);
+    vcl::DrawableMesh<vcl::TriMesh> drawable(m);
 
     // set the settings to the drawable mesh
     drawable.setRenderSettings(settings);

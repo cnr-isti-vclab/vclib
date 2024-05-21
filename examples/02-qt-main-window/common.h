@@ -28,10 +28,10 @@
 #include <vclib/load_save.h>
 #include <vclib/meshes/poly_mesh.h>
 
-#include <vclib/ext/bgfx/drawable_mesh.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 
 template<vcl::MeshConcept MeshType>
-vcl::bgf::DrawableMesh<MeshType> getDrawableMesh()
+vcl::DrawableMesh<MeshType> getDrawableMesh()
 {
     // load a mesh:
     MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/greek_helmet.obj");
@@ -47,7 +47,7 @@ vcl::bgf::DrawableMesh<MeshType> getDrawableMesh()
     vcl::MeshRenderSettings settings(m);
 
     // create a DrawableMesh object from the mesh
-    vcl::bgf::DrawableMesh<MeshType> drawable(m);
+    vcl::DrawableMesh<MeshType> drawable(m);
 
     // set the settings to the drawable mesh
     drawable.setRenderSettings(settings);

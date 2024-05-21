@@ -23,16 +23,16 @@
 #ifndef VCL_EXT_GLFW_BGFX_MINIMAL_VIEWER_WINDOW_H
 #define VCL_EXT_GLFW_BGFX_MINIMAL_VIEWER_WINDOW_H
 
-#include <vclib/ext/bgfx/minimal_viewer.h>
+#include <vclib/render/viewer/minimal_viewer.h>
 
 #include "canvas_window.h"
 
 namespace vcl::bglfwx {
 
-class MinimalViewerWindow : public CanvasWindow, public vcl::bgf::MinimalViewer
+class MinimalViewerWindow : public CanvasWindow, public vcl::MinimalViewer
 {
 protected:
-    using MV = vcl::bgf::MinimalViewer;
+    using MV = vcl::MinimalViewer;
 
 public:
     using CanvasWindow::height;

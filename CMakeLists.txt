@@ -43,158 +43,19 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-set(HEADERS
-    include/vclib/render/input.h
-    include/vclib/render/drawable/drawable_object_vector.h
-    include/vclib/render/drawable/mesh/mesh_render_data.h
-    include/vclib/render/drawable/mesh/mesh_render_settings.h
-    include/vclib/render/drawable/mesh/mesh_render_settings_macros.h
-    include/vclib/render/interfaces/drawable_mesh_i.h
-    include/vclib/render/interfaces/drawable_object_i.h
-    include/vclib/render/interfaces/event_manager_i.h
-    include/vclib/render/system/native_window_handle.h
-    include/vclib/render/viewer/lights.h
-    include/vclib/render/viewer/camera.h
-    include/vclib/render/viewer/desktop_trackball.h
-    include/vclib/render/viewer/matrix.h
-    include/vclib/render/viewer/trackball.h
-    include/vclib/render/viewer/lights/directional_light.h)
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/render/*.h")
 
-set(SOURCES
-    src/render/drawable/drawable_object_vector.cpp
-    src/render/drawable/mesh/mesh_render_settings.cpp
-    src/render/system/native_window_handle.cpp)
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/render/*.cpp")
 
 if (APPLE)
-    list (APPEND SOURCES
-        src/render/system/native_window_handle.mm)
+    file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS "src/render/*.mm")
+    list(APPEND SOURCES ${SOURCES_MM})
 endif()
 
 set(ASSETS
     assets/fonts/droidsans.ttf)
 
-if (TARGET vclib-external-bgfx)
-    list(APPEND HEADERS
-        include/vclib/ext/bgfx/canvas.h
-        include/vclib/ext/bgfx/context.h
-        include/vclib/ext/bgfx/drawable_axis.h
-        include/vclib/ext/bgfx/drawable_directional_light.h
-        include/vclib/ext/bgfx/drawable_mesh.h
-        include/vclib/ext/bgfx/drawable_trackball.h
-        include/vclib/ext/bgfx/load_program.h
-        include/vclib/ext/bgfx/mesh_render_buffers.h
-        include/vclib/ext/bgfx/minimal_viewer.h
-        include/vclib/ext/bgfx/context/callback.h
-        include/vclib/ext/bgfx/context/embedded_shaders.h
-        include/vclib/ext/bgfx/context/font_manager.h
-        include/vclib/ext/bgfx/context/program_manger.h
-        include/vclib/ext/bgfx/context/embedded_shaders/drawable_axis.h
-        include/vclib/ext/bgfx/context/embedded_shaders/drawable_directional_light.h
-        include/vclib/ext/bgfx/context/embedded_shaders/drawable_mesh.h
-        include/vclib/ext/bgfx/context/embedded_shaders/drawable_trackball.h
-        include/vclib/ext/bgfx/context/embedded_shaders/embedded_shader.h
-        include/vclib/ext/bgfx/context/embedded_shaders/font_basic.h
-        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field.h
-        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow.h
-        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow_image.h
-        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_outline.h
-        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_outline_drop_shadow_image.h
-        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_outline_image.h
-        include/vclib/ext/bgfx/context/embedded_shaders/font_distance_field_subpixel.h
-        include/vclib/ext/bgfx/text/embedded_fonts.h
-        include/vclib/ext/bgfx/text/text_manager.h
-        include/vclib/ext/bgfx/text/text_view.h
-        include/vclib/ext/bgfx/text/embedded_fonts/droid_sans.h
-        include/vclib/ext/bgfx/text/embedded_fonts/embedded_font.h
-        include/vclib/ext/bgfx/text/font/cube_atlas.h
-        include/vclib/ext/bgfx/text/font/font_manager.h
-        include/vclib/ext/bgfx/text/font/text_buffer_manager.h
-        include/vclib/ext/bgfx/text/font/text_metrics.h
-        include/vclib/ext/bgfx/text/font/utf8.h
-        include/vclib/ext/bgfx/uniforms/camera_uniforms.h
-        include/vclib/ext/bgfx/uniforms/directional_light_uniforms.h
-        include/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.h
-        include/vclib/ext/bgfx/uniforms/drawable_directional_light_uniforms.h
-        include/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.h
-        include/vclib/ext/bgfx/uniforms/drawable_trackball_uniforms.h
-        include/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.h
-        include/vclib/ext/bgfx/uniforms/shader_uniform.h)
-
-    list(APPEND SOURCES
-        src/ext/bgfx/canvas.cpp
-        src/ext/bgfx/context.cpp
-        src/ext/bgfx/drawable_axis.cpp
-        src/ext/bgfx/drawable_directional_light.cpp
-        src/ext/bgfx/drawable_trackball.cpp
-        src/ext/bgfx/load_program.cpp
-        src/ext/bgfx/minimal_viewer.cpp
-        src/ext/bgfx/context/callback.cpp
-        src/ext/bgfx/context/font_manager.cpp
-        src/ext/bgfx/context/program_manager.cpp
-        src/ext/bgfx/context/embedded_shaders/drawable_axis.cpp
-        src/ext/bgfx/context/embedded_shaders/drawable_directional_light.cpp
-        src/ext/bgfx/context/embedded_shaders/drawable_mesh.cpp
-        src/ext/bgfx/context/embedded_shaders/drawable_trackball.cpp
-        src/ext/bgfx/context/embedded_shaders/font_basic.cpp
-        src/ext/bgfx/context/embedded_shaders/font_distance_field.cpp
-        src/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow.cpp
-        src/ext/bgfx/context/embedded_shaders/font_distance_field_drop_shadow_image.cpp
-        src/ext/bgfx/context/embedded_shaders/font_distance_field_outline.cpp
-        src/ext/bgfx/context/embedded_shaders/font_distance_field_outline_drop_shadow_image.cpp
-        src/ext/bgfx/context/embedded_shaders/font_distance_field_outline_image.cpp
-        src/ext/bgfx/context/embedded_shaders/font_distance_field_subpixel.cpp
-        src/ext/bgfx/text/text_manager.cpp
-        src/ext/bgfx/text/text_view.cpp
-        src/ext/bgfx/text/embedded_fonts/droid_sans.cpp
-        src/ext/bgfx/text/font/cube_atlas.cpp
-        src/ext/bgfx/text/font/font_manager.cpp
-        src/ext/bgfx/text/font/text_buffer_manager.cpp
-        src/ext/bgfx/text/font/text_metrics.cpp
-        src/ext/bgfx/text/font/utf8.cpp)
-
-    list(APPEND SHADERS
-        shaders/vclib/ext/bgfx/shaders_common.sh
-        shaders/vclib/ext/bgfx/drawable_axis/fs_drawable_axis.sc
-        shaders/vclib/ext/bgfx/drawable_axis/varying.def.sc
-        shaders/vclib/ext/bgfx/drawable_axis/vs_drawable_axis.sc
-        shaders/vclib/ext/bgfx/drawable_axis/uniforms.sh
-        shaders/vclib/ext/bgfx/drawable_directional_light/fs_drawable_directional_light.sc
-        shaders/vclib/ext/bgfx/drawable_directional_light/varying.def.sc
-        shaders/vclib/ext/bgfx/drawable_directional_light/vs_drawable_directional_light.sc
-        shaders/vclib/ext/bgfx/drawable_directional_light/uniforms.sh
-        shaders/vclib/ext/bgfx/drawable_mesh/fs_drawable_mesh.sc
-        shaders/vclib/ext/bgfx/drawable_mesh/varying.def.sc
-        shaders/vclib/ext/bgfx/drawable_mesh/vs_drawable_mesh.sc
-        shaders/vclib/ext/bgfx/drawable_mesh/uniforms.sh
-        shaders/vclib/ext/bgfx/drawable_trackball/fs_drawable_trackball.sc
-        shaders/vclib/ext/bgfx/drawable_trackball/varying.def.sc
-        shaders/vclib/ext/bgfx/drawable_trackball/vs_drawable_trackball.sc
-        shaders/vclib/ext/bgfx/drawable_trackball/uniforms.sh
-        shaders/vclib/ext/bgfx/font/fs_font_basic.sc
-        shaders/vclib/ext/bgfx/font/fs_font_distance_field.sc
-        shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow.sc
-        shaders/vclib/ext/bgfx/font/fs_font_distance_field_drop_shadow_image.sc
-        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline.sc
-        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline_drop_shadow_image.sc
-        shaders/vclib/ext/bgfx/font/fs_font_distance_field_outline_image.sc
-        shaders/vclib/ext/bgfx/font/fs_font_distance_field_subpixel.sc
-        shaders/vclib/ext/bgfx/font/varying.def.sc
-        shaders/vclib/ext/bgfx/font/vs_font_basic.sc
-        shaders/vclib/ext/bgfx/font/vs_font_distance_field.sc
-        shaders/vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow.sc
-        shaders/vclib/ext/bgfx/font/vs_font_distance_field_drop_shadow_image.sc
-        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline.sc
-        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline_drop_shadow_image.sc
-        shaders/vclib/ext/bgfx/font/vs_font_distance_field_outline_image.sc
-        shaders/vclib/ext/bgfx/font/vs_font_distance_field_subpixel.sc
-        shaders/vclib/ext/bgfx/uniforms/camera_uniforms.sh
-        shaders/vclib/ext/bgfx/uniforms/directional_light_uniforms.sh
-        shaders/vclib/ext/bgfx/uniforms/drawable_axis_uniforms.sh
-        shaders/vclib/ext/bgfx/uniforms/drawable_directional_light_uniforms.sh
-        shaders/vclib/ext/bgfx/uniforms/drawable_mesh_uniforms.sh
-        shaders/vclib/ext/bgfx/uniforms/drawable_trackball_uniforms.sh
-        shaders/vclib/ext/bgfx/uniforms/mesh_render_settings_uniforms.sh)
-endif()
+file(GLOB_RECURSE SHADERS CONFIGURE_DEPENDS "shaders/vclib/render/*.sh" "shaders/vclib/render/*.sc")
 
 if (TARGET vclib-external-glfw)
     list(APPEND HEADERS
@@ -304,7 +165,7 @@ endif()
 if (TARGET vclib-external-bgfx)
     set_target_properties(vclib-render PROPERTIES
         VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
-        "${CMAKE_CURRENT_SOURCE_DIR}/shaders/vclib/ext/bgfx")
+        "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 
     build_bgfx_shaders_to_headers(${SHADERS})
     build_assets_to_headers(${ASSETS})

@@ -23,15 +23,15 @@
 #ifndef VCL_EXT_GLFW_BGFX_CANVAS_WINDOW_H
 #define VCL_EXT_GLFW_BGFX_CANVAS_WINDOW_H
 
-#include <vclib/ext/bgfx/canvas.h>
+#include <vclib/render/canvas.h>
 
 #include <GLFW/glfw3.h>
 
 namespace vcl::bglfwx {
 
-class CanvasWindow : public vcl::bgf::Canvas
+class CanvasWindow : public vcl::Canvas
 {
-    using Canvas = vcl::bgf::Canvas;
+    using Canvas = vcl::Canvas;
 
     std::string mTitle;
 

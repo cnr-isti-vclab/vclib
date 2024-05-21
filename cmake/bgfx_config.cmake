@@ -273,14 +273,14 @@ function(build_bgfx_shaders_to_headers)
     get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
     get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR)
 
-    set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include")
+    set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/shaders")
 
-    message(STATUS "OutDir: ${BGFX_SHADERS_OUTPUT_DIR}")
     foreach(SHADER ${ARGV})
-        get_filename_component(DIR_PATH ${SHADER} DIRECTORY)
+        file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/render" ${SHADER})
+        get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
         get_filename_component(FILENAME "${SHADER}" NAME_WE)
         get_filename_component(ABSOLUTE_PATH_SHADER ${SHADER} ABSOLUTE)
-        get_filename_component(ABSOLUTE_DIR_PATH ${DIR_PATH} ABSOLUTE)
+        get_filename_component(ABSOLUTE_DIR_PATH ${ABSOLUTE_PATH_SHADER} DIRECTORY)
 
         string(SUBSTRING "${FILENAME}" 0 2 TYPE)
         if("${TYPE}" STREQUAL "fs")
@@ -294,6 +294,12 @@ function(build_bgfx_shaders_to_headers)
         endif()
 
         if(NOT "${TYPE}" STREQUAL "")
+
+            message(SHADER: ${SHADER})
+            message(ABS: ${ABSOLUTE_PATH_SHADER})
+            message(VARYING: "${ABSOLUTE_DIR_PATH}/varying.def.sc")
+            message(OUTPUT_DIR: ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH})
+
             _bgfx_compile_shader_to_header(
                 TYPE ${TYPE}
                 SHADERS ${ABSOLUTE_PATH_SHADER}

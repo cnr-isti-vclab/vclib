@@ -45,8 +45,7 @@ CanvasWidget::CanvasWidget(
     // we will hide it:
     vcl::qt::MessageHider::activate();
 
-    vcl::bgf::Canvas::init(
-        (void*) winId(), width * pixelRatio(), height * pixelRatio());
+    Canvas::init((void*) winId(), width * pixelRatio(), height * pixelRatio());
 }
 
 CanvasWidget::CanvasWidget(uint width, uint height, QWidget* parent) :

@@ -30,7 +30,7 @@ int main(int argc, char** argv)
 
     // load and set up a drawable mesh
     vcl::TriMesh                         m        = getMesh("greek_helmet.obj");
-    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh(m);
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh(m);
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
     tw.enableText();
 
-    tw.setTextFont(vcl::bgf::VclFont::DROID_SANS, 20);
+    tw.setTextFont(vcl::VclFont::DROID_SANS, 20);
     tw.appendStaticText(
         {5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
     tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));

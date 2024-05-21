@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     vcl::bglfwx::MinimalViewerWindow tw("Minimal Viewer GLFW");
 #endif
     // load and set up a drawable mesh
-    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
     vcl::bglfwx::MinimalViewerWindow tw2("Minimal Viewer GLFW");
 #endif
     // load and set up a drawable mesh
-    vcl::bgf::DrawableMesh<vcl::TriMesh> drawable2 =
+    vcl::DrawableMesh<vcl::TriMesh> drawable2 =
         getDrawableMesh("greek_helmet.obj");
 
     // add the drawable mesh to the scene

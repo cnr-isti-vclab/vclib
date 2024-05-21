@@ -28,10 +28,10 @@
 #endif
 
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX
-#include <vclib/ext/bgfx/drawable_mesh.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/ext/qt/bgfx/viewer_main_window.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
-#include <vclib/ext/bgfx/drawable_mesh.h>
+#include <vclib/render/drawabledrawable_mesh.h>
 #include <vclib/ext/glfw/bgfx/minimal_viewer_window.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
 #include <vclib/ext/opengl2/drawable_mesh.h>
@@ -56,7 +56,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_BGFX
-    (vector->pushBack(vcl::bgf::DrawableMesh(meshes)), ...);
+    (vector->pushBack(vcl::DrawableMesh(meshes)), ...);
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
     (vector->pushBack(vcl::gl2::DrawableMesh(meshes)), ...);
 #endif

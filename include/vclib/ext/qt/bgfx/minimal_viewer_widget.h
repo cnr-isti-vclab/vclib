@@ -25,14 +25,14 @@
 
 #include "canvas_widget.h"
 
-#include <vclib/ext/bgfx/minimal_viewer.h>
+#include <vclib/render/viewer/minimal_viewer.h>
 
 namespace vcl::qbgf {
 
-class MinimalViewerWidget : public CanvasWidget, public vcl::bgf::MinimalViewer
+class MinimalViewerWidget : public CanvasWidget, public vcl::MinimalViewer
 {
 protected:
-    using MV = vcl::bgf::MinimalViewer;
+    using MV = vcl::MinimalViewer;
 
 public:
     using CanvasWidget::height;

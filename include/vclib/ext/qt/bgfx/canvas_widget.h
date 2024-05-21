@@ -26,13 +26,13 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <vclib/ext/bgfx/canvas.h>
+#include <vclib/render/canvas.h>
 
 namespace vcl::qbgf {
 
-class CanvasWidget : public QWidget, public vcl::bgf::Canvas
+class CanvasWidget : public QWidget, public vcl::Canvas
 {
-    using Canvas = vcl::bgf::Canvas;
+    using Canvas = vcl::Canvas;
 
 public:
     explicit CanvasWidget(

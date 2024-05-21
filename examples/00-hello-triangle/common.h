@@ -25,7 +25,7 @@
 
 #include <bgfx/bgfx.h>
 
-#include <vclib/ext/bgfx/load_program.h>
+#include <vclib/render/context/load_program.h>
 #include <vclib/space/color.h>
 
 struct Vertex
@@ -64,7 +64,7 @@ inline void setUpBGFX(
     vbh = bgfx::createVertexBuffer(
         bgfx::makeRef(vertices, sizeof(vertices)), layout);
 
-    program = vcl::bgf::loadProgram(
+    program = vcl::loadProgram(
         "shaders/vs_vertex_shader", "shaders/fs_fragment_shader");
 
     bgfx::touch(viewId);

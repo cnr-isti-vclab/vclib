@@ -36,7 +36,7 @@ MinimalViewerWidget::MinimalViewerWidget(
     const std::string&                    windowTitle,
     QWidget*                              parent) :
         CanvasWidget(windowTitle, width, height, parent),
-        vcl::bgf::MinimalViewer(v, width, height)
+        vcl::MinimalViewer(v, width, height)
 {
 }
 
