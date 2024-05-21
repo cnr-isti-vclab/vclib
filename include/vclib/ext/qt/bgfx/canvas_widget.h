@@ -30,9 +30,7 @@
 
 namespace vcl::qbgf {
 
-class CanvasWidget :
-        public QWidget,
-        public vcl::bgf::Canvas
+class CanvasWidget : public QWidget, public vcl::bgf::Canvas
 {
     using Canvas = vcl::bgf::Canvas;
 
