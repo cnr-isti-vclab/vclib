@@ -35,10 +35,7 @@ add_subdirectory(vclib)
 message(STATUS "VCLib-Render: external libraries")
 add_subdirectory(external)
 
-if (TARGET vclib-external-bgfx)
-    get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
-endif()
-
+get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -59,20 +56,14 @@ file(GLOB_RECURSE SHADERS CONFIGURE_DEPENDS "shaders/vclib/render/*.sh" "shaders
 
 if (TARGET vclib-external-glfw)
     list(APPEND HEADERS
-        include/vclib/ext/glfw/gui/input.h)
+        include/vclib/ext/glfw/input.h
+        include/vclib/ext/glfw/canvas_window.h
+        include/vclib/ext/glfw/minimal_viewer_window.h)
 
     list(APPEND SOURCES
-        src/ext/glfw/gui/input.cpp)
-
-    if (TARGET vclib-external-bgfx)
-        list(APPEND HEADERS
-            include/vclib/ext/glfw/bgfx/canvas_window.h
-            include/vclib/ext/glfw/bgfx/minimal_viewer_window.h)
-
-        list(APPEND SOURCES
-            src/ext/glfw/bgfx/canvas_window.cpp
-            src/ext/glfw/bgfx/minimal_viewer_window.cpp)
-    endif()
+        src/ext/glfw/input.cpp
+        src/ext/glfw/canvas_window.cpp
+        src/ext/glfw/minimal_viewer_window.cpp)
 endif()
 
 if (TARGET vclib-external-opengl)
@@ -94,7 +85,10 @@ if (TARGET vclib-external-qt)
         include/vclib/ext/qt/gui/input.h
         include/vclib/ext/qt/gui/mesh_render_settings_frame.h
         include/vclib/ext/qt/gui/q_clickable_label.h
-        include/vclib/ext/qt/gui/screen_shot_dialog.h)
+        include/vclib/ext/qt/gui/screen_shot_dialog.h
+        include/vclib/ext/qt/bgfx/canvas_widget.h
+        include/vclib/ext/qt/bgfx/minimal_viewer_widget.h
+        include/vclib/ext/qt/bgfx/viewer_main_window.h)
 
     list(APPEND SOURCES
         src/ext/qt/gui/drawable_object_frame.cpp
@@ -102,12 +96,16 @@ if (TARGET vclib-external-qt)
         src/ext/qt/gui/input.cpp
         src/ext/qt/gui/mesh_render_settings_frame.cpp
         src/ext/qt/gui/q_clickable_label.cpp
-        src/ext/qt/gui/screen_shot_dialog.cpp)
+        src/ext/qt/gui/screen_shot_dialog.cpp
+        src/ext/qt/bgfx/canvas_widget.cpp
+        src/ext/qt/bgfx/minimal_viewer_widget.cpp
+        src/ext/qt/bgfx/viewer_main_window.cpp)
 
     list(APPEND FORMS
         src/ext/qt/gui/drawable_object_frame.ui
         src/ext/qt/gui/drawable_object_vector_frame.ui
-        src/ext/qt/gui/mesh_render_settings_frame.ui)
+        src/ext/qt/gui/mesh_render_settings_frame.ui
+        src/ext/qt/bgfx/viewer_main_window.ui)
 
     if (TARGET vclib-external-qglviewer)
         list(APPEND HEADERS
@@ -120,21 +118,6 @@ if (TARGET vclib-external-qt)
 
         list(APPEND FORMS
             src/ext/qglviewer/viewer_main_window.ui)
-    endif()
-
-    if (TARGET vclib-external-bgfx)
-        list(APPEND HEADERS
-            include/vclib/ext/qt/bgfx/canvas_widget.h
-            include/vclib/ext/qt/bgfx/minimal_viewer_widget.h
-            include/vclib/ext/qt/bgfx/viewer_main_window.h)
-
-        list(APPEND SOURCES
-            src/ext/qt/bgfx/canvas_widget.cpp
-            src/ext/qt/bgfx/minimal_viewer_widget.cpp
-            src/ext/qt/bgfx/viewer_main_window.cpp)
-
-        list(APPEND FORMS
-            src/ext/qt/bgfx/viewer_main_window.ui)
     endif()
 endif()
 
@@ -156,21 +139,19 @@ target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
 set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
 
+set_target_properties(vclib-render PROPERTIES
+    VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
+    "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
+
+build_bgfx_shaders_to_headers(${SHADERS})
+build_assets_to_headers(${ASSETS})
+target_include_directories(vclib-render PRIVATE
+   ${CMAKE_CURRENT_BINARY_DIR}/include)
+
 if (TARGET vclib-external-qt)
     set_property(TARGET vclib-render PROPERTY AUTOMOC ON)
     set_property(TARGET vclib-render PROPERTY AUTORCC ON)
     set_property(TARGET vclib-render PROPERTY AUTOUIC ON)
-endif()
-
-if (TARGET vclib-external-bgfx)
-    set_target_properties(vclib-render PROPERTIES
-        VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
-        "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
-
-    build_bgfx_shaders_to_headers(${SHADERS})
-    build_assets_to_headers(${ASSETS})
-    target_include_directories(vclib-render PRIVATE
-       ${CMAKE_CURRENT_BINARY_DIR}/include)
 endif()
 
 target_link_libraries(vclib-render PUBLIC
@@ -179,12 +160,8 @@ target_include_directories(vclib-render PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})
 
 ### Examples
 
-include(cmake/examples.cmake)
-
 if (VCLIB_BUILD_EXAMPLES)
+    include(cmake/examples.cmake)
     get_target_property(VCLIB_EXAMPLES_DIR vclib VCLIB_EXAMPLES_DIR)
-endif()
-
-if (VCLIB_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()

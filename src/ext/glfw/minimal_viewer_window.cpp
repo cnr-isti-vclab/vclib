@@ -20,11 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/glfw/bgfx/minimal_viewer_window.h>
+#include <vclib/ext/glfw/minimal_viewer_window.h>
 
-#include <vclib/ext/glfw/gui/input.h>
-
-namespace vcl::bglfwx {
+namespace vcl::glfw {
 
 MinimalViewerWindow::MinimalViewerWindow(
     std::shared_ptr<DrawableObjectVector> v,
@@ -64,4 +62,4 @@ void MinimalViewerWindow::draw()
     MV::draw(viewId());
 }
 
-} // namespace vcl::bglfwx
+} // namespace vcl::glfw

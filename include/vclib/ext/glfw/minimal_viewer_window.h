@@ -20,14 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_BGFX_MINIMAL_VIEWER_WINDOW_H
-#define VCL_EXT_GLFW_BGFX_MINIMAL_VIEWER_WINDOW_H
+#ifndef VCL_EXT_GLFW_MINIMAL_VIEWER_WINDOW_H
+#define VCL_EXT_GLFW_MINIMAL_VIEWER_WINDOW_H
 
 #include <vclib/render/viewer/minimal_viewer.h>
 
 #include "canvas_window.h"
 
-namespace vcl::bglfwx {
+namespace vcl::glfw {
 
 class MinimalViewerWindow : public CanvasWindow, public vcl::MinimalViewer
 {
@@ -58,6 +58,6 @@ public:
     void draw() override;
 };
 
-} // namespace vcl::bglfwx
+} // namespace vcl::glfw
 
-#endif // VCL_EXT_GLFW_BGFX_MINIMAL_VIEWER_WINDOW_H
+#endif // VCL_EXT_GLFW_MINIMAL_VIEWER_WINDOW_H

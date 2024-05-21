@@ -23,9 +23,9 @@
 #ifndef HELLO_TRIANGLE_GLFW_H
 #define HELLO_TRIANGLE_GLFW_H
 
-#include <vclib/ext/glfw/bgfx/canvas_window.h>
+#include <vclib/ext/glfw/canvas_window.h>
 
-class HelloTriangleGLFW : public vcl::bglfwx::CanvasWindow
+class HelloTriangleGLFW : public vcl::glfw::CanvasWindow
 {
 public:
     HelloTriangleGLFW();

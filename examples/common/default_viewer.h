@@ -23,16 +23,16 @@
 #ifndef VCLIB_RENDER_EXAMPLES_COMMON_DEFAULT_VIEWER_H
 #define VCLIB_RENDER_EXAMPLES_COMMON_DEFAULT_VIEWER_H
 
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
+#if VCLIB_RENDER_EXAMPLES_WITH_QT || VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
 #include <QApplication>
 #endif
 
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX
+#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
 #include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/ext/qt/bgfx/viewer_main_window.h>
-#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
+#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
 #include <vclib/render/drawabledrawable_mesh.h>
-#include <vclib/ext/glfw/bgfx/minimal_viewer_window.h>
+#include <vclib/ext/glfw/minimal_viewer_window.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
 #include <vclib/ext/opengl2/drawable_mesh.h>
 #include <vclib/ext/qglviewer/viewer_main_window.h>
@@ -41,35 +41,36 @@
 template<vcl::MeshConcept... MeshTypes>
 int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
 {
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
+#if VCLIB_RENDER_EXAMPLES_WITH_QT || VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
     QApplication application(argc, argv);
 #endif
 
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT_AND_BGFX
+#ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
     vcl::qbgf::ViewerMainWindow viewer;
-#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
-    vcl::bglfwx::MinimalViewerWindow viewer;
+#elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
+    vcl::glfw::MinimalViewerWindow viewer;
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
     vcl::qgl::ViewerMainWindow viewer;
 #endif
 
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
-#ifdef VCLIB_RENDER_EXAMPLES_WITH_BGFX
+
+#ifndef VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
     (vector->pushBack(vcl::DrawableMesh(meshes)), ...);
-#elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
+#else
     (vector->pushBack(vcl::gl2::DrawableMesh(meshes)), ...);
 #endif
 
     viewer.setDrawableObjectVector(vector);
 
-#if VCLIB_RENDER_EXAMPLES_WITH_GLFW_AND_BGFX
+#if VCLIB_RENDER_EXAMPLES_WITH_GLFW
     viewer.fitScene();
 #endif
 
     viewer.show();
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT
+#if VCLIB_RENDER_EXAMPLES_WITH_QT || VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
     viewer.showMaximized();
     return application.exec();
 #else

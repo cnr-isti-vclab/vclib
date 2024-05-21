@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/glfw/gui/input.h>
+#include <vclib/ext/glfw/input.h>
 
 #include <GLFW/glfw3.h>
 

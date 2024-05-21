@@ -48,5 +48,6 @@ if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
 
     list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-bgfx)
 elseif(VCLIB_ALLOW_BUNDLED_BGFX)
-    message(STATUS "- bgfx - not found, skipping")
+    message(FATAL_ERROR
+        "bgfx is required - VCLIB_ALLOW_BUNDLED_BGFX must be enabled and found.")
 endif()

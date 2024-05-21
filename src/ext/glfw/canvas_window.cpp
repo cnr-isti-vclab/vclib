@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/glfw/bgfx/canvas_window.h>
+#include <vclib/ext/glfw/canvas_window.h>
 
 #include <iostream>
 
@@ -38,9 +38,9 @@
 
 #include <GLFW/glfw3native.h>
 
-#include <vclib/ext/glfw/gui/input.h>
+#include <vclib/ext/glfw/input.h>
 
-namespace vcl::bglfwx {
+namespace vcl::glfw {
 
 namespace detail {
 
@@ -95,7 +95,7 @@ CanvasWindow::CanvasWindow(
 }
 
 CanvasWindow::CanvasWindow(uint width, uint height) :
-        vcl::bglfwx::CanvasWindow("GLFW Canvas", width, height)
+        vcl::glfw::CanvasWindow("GLFW Canvas", width, height)
 {
 }
 
@@ -187,7 +187,7 @@ void CanvasWindow::glfwWindowSizeCallback(GLFWwindow*, int width, int height)
 
 void CanvasWindow::glfwKeyCallback(GLFWwindow*, int key, int, int action, int)
 {
-    Key::Enum k = glfw::fromGLFW((glfw::Key) key);
+    vcl::Key::Enum k = glfw::fromGLFW((glfw::Key) key);
     // GLFW modifier does not work as expected: modifiers are not updated
     // when a key modifier is released. We have to handle this manually.
     if (action == GLFW_PRESS) {
@@ -242,4 +242,4 @@ void CanvasWindow::glfwScrollCallback(
 
 // namespace detail
 
-} // namespace vcl::bglfwx
+} // namespace vcl::glfw

@@ -25,7 +25,7 @@
 #include "common.h"
 
 HelloTriangleGLFW::HelloTriangleGLFW() :
-        vcl::bglfwx::CanvasWindow("Hello Triangle GLFW")
+        vcl::glfw::CanvasWindow("Hello Triangle GLFW")
 {
     setUpBGFX(viewId(), vbh, program);
 }

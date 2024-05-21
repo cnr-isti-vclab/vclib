@@ -20,31 +20,63 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_GUI_INPUT_H
-#define VCL_EXT_GLFW_GUI_INPUT_H
+#ifndef VCL_EXT_GLFW_CANVAS_WINDOW_H
+#define VCL_EXT_GLFW_CANVAS_WINDOW_H
+
+#include <vclib/render/canvas.h>
 
 #include <GLFW/glfw3.h>
 
-#include <vclib/render/input.h>
-
 namespace vcl::glfw {
 
-enum MouseButton : uint {};
+class CanvasWindow : public vcl::Canvas
+{
+    using Canvas = vcl::Canvas;
 
-enum Key : uint {};
+    std::string mTitle;
 
-enum KeyboardModifier : uint {};
+protected:
+    GLFWwindow* mWindow = nullptr;
 
-enum KeyboardModifiers : uint {};
+public:
+    CanvasWindow(
+        const std::string& windowTitle,
+        uint               width  = 1024,
+        uint               height = 768);
 
-vcl::MouseButton::Enum fromGLFW(glfw::MouseButton button);
+    CanvasWindow(uint width = 1024, uint height = 768);
 
-vcl::Key::Enum fromGLFW(glfw::Key key);
+    virtual ~CanvasWindow();
 
-KeyModifier::Enum fromGLFW(glfw::KeyboardModifier key);
+    const std::string& windowTitle() const;
 
-KeyModifiers fromGLFW(glfw::KeyboardModifiers mods);
+    void setWindowTitle(const std::string& title);
+
+    uint width() const;
+
+    uint height() const;
+
+    void show();
+
+protected:
+    virtual void draw() override {}
+
+private:
+    void setCallbacks();
+
+    // callbacks
+    void glfwWindowSizeCallback(GLFWwindow*, int width, int height);
+
+    // callbacks
+    void glfwKeyCallback(GLFWwindow*, int key, int, int action, int mods);
+
+    void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods);
+
+    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos);
+
+    void glfwScrollCallback(GLFWwindow*, double xoffset, double yoffset);
+};
 
 } // namespace vcl::glfw
 
-#endif // VCL_EXT_GLFW_GUI_INPUT_H
+#endif // VCL_EXT_GLFW_CANVAS_WINDOW_H

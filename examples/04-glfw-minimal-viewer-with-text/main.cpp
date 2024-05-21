@@ -22,11 +22,11 @@
 
 #include "common.h"
 
-#include <vclib/ext/glfw/bgfx/minimal_viewer_window.h>
+#include <vclib/ext/glfw/minimal_viewer_window.h>
 
 int main(int argc, char** argv)
 {
-    vcl::bglfwx::MinimalViewerWindow tw("Minimal Viewer GLFW");
+    vcl::glfw::MinimalViewerWindow tw("Minimal Viewer GLFW");
 
     // load and set up a drawable mesh
     vcl::TriMesh                         m        = getMesh("greek_helmet.obj");

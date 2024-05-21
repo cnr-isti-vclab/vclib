@@ -45,6 +45,11 @@ option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
 
 set(VCLIB_RENDER_EXTERNAL_LIBRARIES "")
 
+# === REQUIRED === #
+
+### bgfx
+include(bgfx.cmake)
+
 # === OPTIONAL === #
 
 ### Wayland
@@ -58,9 +63,6 @@ include(qt.cmake)
 
 ### GLFW
 include(glfw.cmake)
-
-### bgfx
-include(bgfx.cmake)
 
 ### QGLViewer
 include(qglviewer.cmake)
