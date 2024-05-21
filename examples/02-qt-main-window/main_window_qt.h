@@ -23,9 +23,9 @@
 #ifndef MAIN_WINDOW_QT_H
 #define MAIN_WINDOW_QT_H
 
-#include <vclib/ext/qt/bgfx/viewer_main_window.h>
+#include <vclib/ext/qt/viewer_main_window.h>
 
-class MainWindowQt : public vcl::qbgf::ViewerMainWindow
+class MainWindowQt : public vcl::qt::ViewerMainWindow
 {
 public:
     MainWindowQt();

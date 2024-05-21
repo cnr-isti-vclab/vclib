@@ -20,23 +20,65 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_INPUT_H
-#define VCL_EXT_QT_GUI_INPUT_H
+#ifndef VCL_EXT_QT_CANVAS_WIDGET_H
+#define VCL_EXT_QT_CANVAS_WIDGET_H
 
-#include <vclib/render/input.h>
+#include <QVBoxLayout>
+#include <QWidget>
 
-#include <QMouseEvent>
+#include <vclib/render/canvas.h>
 
 namespace vcl::qt {
 
-MouseButton::Enum fromQt(Qt::MouseButton button);
+class CanvasWidget : public QWidget, public vcl::Canvas
+{
+    using Canvas = vcl::Canvas;
 
-KeyModifier::Enum fromQt(Qt::KeyboardModifier modifier);
+public:
+    explicit CanvasWidget(
+        const std::string& windowTitle,
+        uint               width  = 1024,
+        uint               height = 768,
+        QWidget*           parent = nullptr);
 
-Key::Enum fromQt(Qt::Key key, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
+    explicit CanvasWidget(
+        uint     width  = 1024,
+        uint     height = 768,
+        QWidget* parent = nullptr);
 
-KeyModifiers fromQt(Qt::KeyboardModifiers modifiers);
+    explicit CanvasWidget(QWidget* parent);
+
+    virtual ~CanvasWidget();
+
+    void update() override;
+
+protected:
+    virtual void draw() override;
+
+private:
+    bool event(QEvent* event) override;
+
+    void paintEvent(QPaintEvent* event) override;
+
+    void resizeEvent(QResizeEvent* event) override;
+
+    void keyPressEvent(QKeyEvent* event) override;
+
+    void keyReleaseEvent(QKeyEvent* event) override;
+
+    void mouseMoveEvent(QMouseEvent* event) override;
+
+    void mousePressEvent(QMouseEvent* event) override;
+
+    void mouseReleaseEvent(QMouseEvent* event) override;
+
+    void wheelEvent(QWheelEvent* event) override;
+
+    void paint();
+
+    static double pixelRatio();
+};
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_INPUT_H
+#endif // VCL_EXT_QT_CANVAS_WIDGET_H

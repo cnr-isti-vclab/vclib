@@ -24,9 +24,9 @@
 
 #ifdef USE_QT
 #include <QApplication>
-#include <vclib/ext/qt/bgfx/minimal_viewer_widget.h>
+#include <vclib/ext/qt/minimal_viewer_widget.h>
 #elif USE_GLFW
-#include <vclib/ext/glfw/bgfx/minimal_viewer_window.h>
+#include <vclib/ext/glfw/minimal_viewer_window.h>
 #endif
 
 int main(int argc, char** argv)
@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 #ifdef USE_QT
     QApplication app(argc, argv);
 
-    vcl::qbgf::MinimalViewerWidget tw("Minimal Viewer Qt");
+    vcl::qt::MinimalViewerWidget tw("Minimal Viewer Qt");
 #elif USE_GLFW
     vcl::glfw::MinimalViewerWindow tw("Minimal Viewer GLFW");
 #endif
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
     tw.show();
 
 #ifdef USE_QT
-    vcl::qbgf::MinimalViewerWidget tw2("Minimal Viewer Qt");
+    vcl::qt::MinimalViewerWidget tw2("Minimal Viewer Qt");
 #elif USE_GLFW
     vcl::glfw::MinimalViewerWindow tw2("Minimal Viewer GLFW");
 #endif

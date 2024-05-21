@@ -20,65 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
-#define VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
+#ifndef VCL_EXT_QT_MINIMAL_VIEWER_WIDGET_H
+#define VCL_EXT_QT_MINIMAL_VIEWER_WIDGET_H
 
-#include <QVBoxLayout>
-#include <QWidget>
+#include "canvas_widget.h"
 
-#include <vclib/render/canvas.h>
+#include <vclib/render/viewer/minimal_viewer.h>
 
-namespace vcl::qbgf {
+namespace vcl::qt {
 
-class CanvasWidget : public QWidget, public vcl::Canvas
+class MinimalViewerWidget : public CanvasWidget, public vcl::MinimalViewer
 {
-    using Canvas = vcl::Canvas;
+protected:
+    using MV = vcl::MinimalViewer;
 
 public:
-    explicit CanvasWidget(
-        const std::string& windowTitle,
-        uint               width  = 1024,
-        uint               height = 768,
-        QWidget*           parent = nullptr);
+    using CanvasWidget::height;
+    using CanvasWidget::width;
 
-    explicit CanvasWidget(
-        uint     width  = 1024,
-        uint     height = 768,
-        QWidget* parent = nullptr);
+    MinimalViewerWidget(
+        std::shared_ptr<DrawableObjectVector> v,
+        uint                                  width       = 1024,
+        uint                                  height      = 768,
+        const std::string&                    windowTitle = "",
+        QWidget*                              parent      = nullptr);
 
-    explicit CanvasWidget(QWidget* parent);
+    MinimalViewerWidget(
+        const std::string& windowTitle = "Minimal Viewer",
+        uint               width       = 1024,
+        uint               height      = 768,
+        QWidget*           parent      = nullptr);
 
-    virtual ~CanvasWidget();
+    MinimalViewerWidget(QWidget* parent);
+
+    virtual ~MinimalViewerWidget() = default;
 
     void update() override;
 
-protected:
-    virtual void draw() override;
+    void draw() override;
+
+    void onKeyPress(Key::Enum key) override;
 
 private:
-    bool event(QEvent* event) override;
-
-    void paintEvent(QPaintEvent* event) override;
-
-    void resizeEvent(QResizeEvent* event) override;
-
-    void keyPressEvent(QKeyEvent* event) override;
-
-    void keyReleaseEvent(QKeyEvent* event) override;
-
-    void mouseMoveEvent(QMouseEvent* event) override;
-
-    void mousePressEvent(QMouseEvent* event) override;
-
-    void mouseReleaseEvent(QMouseEvent* event) override;
-
-    void wheelEvent(QWheelEvent* event) override;
-
-    void paint();
-
-    static double pixelRatio();
+    void showScreenShotDialog();
 };
 
-} // namespace vcl::qbgf
+} // namespace vcl::qt
 
-#endif // VCL_EXT_QT_BGFX_CANVAS_WIDGET_H
+#endif // VCL_EXT_QT_MINIMAL_VIEWER_WIDGET_H

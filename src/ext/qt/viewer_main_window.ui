@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>vcl::qbgf::ViewerMainWindow</class>
- <widget class="QMainWindow" name="vcl::qbgf::ViewerMainWindow">
+ <class>vcl::qt::ViewerMainWindow</class>
+ <widget class="QMainWindow" name="vcl::qt::ViewerMainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="vcl::qbgf::MinimalViewerWidget" name="viewer" native="true">
+     <widget class="vcl::qt::MinimalViewerWidget" name="viewer" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -86,7 +86,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
@@ -106,9 +106,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>vcl::qbgf::MinimalViewerWidget</class>
+   <class>vcl::qt::MinimalViewerWidget</class>
    <extends>QWidget</extends>
-   <header>vclib/ext/qt/bgfx/minimal_viewer_widget.h</header>
+   <header>vclib/ext/qt/minimal_viewer_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

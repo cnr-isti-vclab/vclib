@@ -23,12 +23,12 @@
 #include <QApplication>
 #include <QMouseEvent>
 
-#include <vclib/ext/qt/bgfx/canvas_widget.h>
-#include <vclib/ext/qt/gui/input.h>
+#include <vclib/ext/qt/canvas_widget.h>
+#include <vclib/ext/qt/input.h>
 
 #include <vclib/ext/qt/message_hider.h>
 
-namespace vcl::qbgf {
+namespace vcl::qt {
 
 CanvasWidget::CanvasWidget(
     const std::string& windowTitle,
@@ -150,4 +150,4 @@ double CanvasWidget::pixelRatio()
     return app->devicePixelRatio();
 }
 
-} // namespace vcl::qbgf
+} // namespace vcl::qt

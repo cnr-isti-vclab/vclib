@@ -20,41 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_VIEWER_MAIN_WINDOW_H
-#define VCL_EXT_QT_BGFX_VIEWER_MAIN_WINDOW_H
+#ifndef VCL_EXT_QT_INPUT_H
+#define VCL_EXT_QT_INPUT_H
 
-#include <QMainWindow>
+#include <vclib/render/input.h>
 
-#include <vclib/render/drawable/drawable_object_vector.h>
+#include <QMouseEvent>
 
-namespace vcl::qbgf {
+namespace vcl::qt {
 
-namespace Ui {
-class ViewerMainWindow;
-} // namespace Ui
+MouseButton::Enum fromQt(Qt::MouseButton button);
 
-class ViewerMainWindow : public QMainWindow
-{
-    Q_OBJECT
+KeyModifier::Enum fromQt(Qt::KeyboardModifier modifier);
 
-    Ui::ViewerMainWindow*                      mUI;
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawVector;
+Key::Enum fromQt(Qt::Key key, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
 
-public:
-    explicit ViewerMainWindow(QWidget* parent = nullptr);
+KeyModifiers fromQt(Qt::KeyboardModifiers modifiers);
 
-    ~ViewerMainWindow();
+} // namespace vcl::qt
 
-    void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
-
-public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-};
-
-} // namespace vcl::qbgf
-
-#endif // VCL_EXT_QT_BGFX_VIEWER_MAIN_WINDOW_H
+#endif // VCL_EXT_QT_INPUT_H

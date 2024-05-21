@@ -23,9 +23,9 @@
 #ifndef HELLO_TRIANGLE_QT_H
 #define HELLO_TRIANGLE_QT_H
 
-#include <vclib/ext/qt/bgfx/canvas_widget.h>
+#include <vclib/ext/qt/canvas_widget.h>
 
-class HelloTriangleQt : public vcl::qbgf::CanvasWidget
+class HelloTriangleQt : public vcl::qt::CanvasWidget
 {
 public:
     HelloTriangleQt();

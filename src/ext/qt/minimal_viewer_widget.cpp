@@ -20,14 +20,14 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/qt/bgfx/minimal_viewer_widget.h>
+#include <vclib/ext/qt/minimal_viewer_widget.h>
 
 #include <QMouseEvent>
 
-#include <vclib/ext/qt/gui/input.h>
+#include <vclib/ext/qt/input.h>
 #include <vclib/ext/qt/gui/screen_shot_dialog.h>
 
-namespace vcl::qbgf {
+namespace vcl::qt {
 
 MinimalViewerWidget::MinimalViewerWidget(
     std::shared_ptr<DrawableObjectVector> v,
@@ -96,4 +96,4 @@ void MinimalViewerWidget::showScreenShotDialog()
     setModifiers({KeyModifier::NO_MODIFIER});
 }
 
-} // namespace vcl::qbgf
+} // namespace vcl::qt

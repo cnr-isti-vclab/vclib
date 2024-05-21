@@ -20,51 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WIDGET_H
-#define VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WIDGET_H
+#ifndef VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
+#define VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
 
-#include "canvas_widget.h"
+#include <QMainWindow>
 
-#include <vclib/render/viewer/minimal_viewer.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
 
-namespace vcl::qbgf {
+namespace vcl::qt {
 
-class MinimalViewerWidget : public CanvasWidget, public vcl::MinimalViewer
+namespace Ui {
+class ViewerMainWindow;
+} // namespace Ui
+
+class ViewerMainWindow : public QMainWindow
 {
-protected:
-    using MV = vcl::MinimalViewer;
+    Q_OBJECT
+
+    Ui::ViewerMainWindow*                      mUI;
+    std::shared_ptr<vcl::DrawableObjectVector> mDrawVector;
 
 public:
-    using CanvasWidget::height;
-    using CanvasWidget::width;
+    explicit ViewerMainWindow(QWidget* parent = nullptr);
 
-    MinimalViewerWidget(
-        std::shared_ptr<DrawableObjectVector> v,
-        uint                                  width       = 1024,
-        uint                                  height      = 768,
-        const std::string&                    windowTitle = "",
-        QWidget*                              parent      = nullptr);
+    ~ViewerMainWindow();
 
-    MinimalViewerWidget(
-        const std::string& windowTitle = "Minimal Viewer",
-        uint               width       = 1024,
-        uint               height      = 768,
-        QWidget*           parent      = nullptr);
+    void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
 
-    MinimalViewerWidget(QWidget* parent);
+public slots:
+    void visibilityDrawableObjectChanged();
 
-    virtual ~MinimalViewerWidget() = default;
+    void selectedDrawableObjectChanged(uint i);
 
-    void update() override;
-
-    void draw() override;
-
-    void onKeyPress(Key::Enum key) override;
-
-private:
-    void showScreenShotDialog();
+    void renderSettingsUpdated();
 };
 
-} // namespace vcl::qbgf
+} // namespace vcl::qt
 
-#endif // VCL_EXT_QT_BGFX_MINIMAL_VIEWER_WIDGET_H
+#endif // VCL_EXT_QT_VIEWER_MAIN_WINDOW_H

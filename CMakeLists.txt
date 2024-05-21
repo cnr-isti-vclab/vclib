@@ -79,33 +79,33 @@ endif()
 
 if (TARGET vclib-external-qt)
     list(APPEND HEADERS
+        include/vclib/ext/qt/canvas_widget.h
+        include/vclib/ext/qt/input.h
         include/vclib/ext/qt/message_hider.h
+        include/vclib/ext/qt/minimal_viewer_widget.h
+        include/vclib/ext/qt/viewer_main_window.h
         include/vclib/ext/qt/gui/drawable_object_frame.h
         include/vclib/ext/qt/gui/drawable_object_vector_frame.h
-        include/vclib/ext/qt/gui/input.h
         include/vclib/ext/qt/gui/mesh_render_settings_frame.h
         include/vclib/ext/qt/gui/q_clickable_label.h
-        include/vclib/ext/qt/gui/screen_shot_dialog.h
-        include/vclib/ext/qt/bgfx/canvas_widget.h
-        include/vclib/ext/qt/bgfx/minimal_viewer_widget.h
-        include/vclib/ext/qt/bgfx/viewer_main_window.h)
+        include/vclib/ext/qt/gui/screen_shot_dialog.h)
 
     list(APPEND SOURCES
+        src/ext/qt/canvas_widget.cpp
+        src/ext/qt/input.cpp
+        src/ext/qt/minimal_viewer_widget.cpp
+        src/ext/qt/viewer_main_window.cpp
         src/ext/qt/gui/drawable_object_frame.cpp
         src/ext/qt/gui/drawable_object_vector_frame.cpp
-        src/ext/qt/gui/input.cpp
         src/ext/qt/gui/mesh_render_settings_frame.cpp
         src/ext/qt/gui/q_clickable_label.cpp
-        src/ext/qt/gui/screen_shot_dialog.cpp
-        src/ext/qt/bgfx/canvas_widget.cpp
-        src/ext/qt/bgfx/minimal_viewer_widget.cpp
-        src/ext/qt/bgfx/viewer_main_window.cpp)
+        src/ext/qt/gui/screen_shot_dialog.cpp)
 
     list(APPEND FORMS
+        src/ext/qt/viewer_main_window.ui
         src/ext/qt/gui/drawable_object_frame.ui
         src/ext/qt/gui/drawable_object_vector_frame.ui
-        src/ext/qt/gui/mesh_render_settings_frame.ui
-        src/ext/qt/bgfx/viewer_main_window.ui)
+        src/ext/qt/gui/mesh_render_settings_frame.ui)
 
     if (TARGET vclib-external-qglviewer)
         list(APPEND HEADERS

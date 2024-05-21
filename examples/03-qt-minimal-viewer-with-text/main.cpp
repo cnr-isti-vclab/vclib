@@ -23,13 +23,13 @@
 #include "common.h"
 
 #include <QApplication>
-#include <vclib/ext/qt/bgfx/minimal_viewer_widget.h>
+#include <vclib/ext/qt/minimal_viewer_widget.h>
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    vcl::qbgf::MinimalViewerWidget tw("Minimal Viewer Qt");
+    vcl::qt::MinimalViewerWidget tw("Minimal Viewer Qt");
 
     // load and set up a drawable mesh
     vcl::TriMesh                         m        = getMesh("greek_helmet.obj");

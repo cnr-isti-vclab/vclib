@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/qt/gui/input.h>
+#include <vclib/ext/qt/input.h>
 
 namespace vcl::qt {
 

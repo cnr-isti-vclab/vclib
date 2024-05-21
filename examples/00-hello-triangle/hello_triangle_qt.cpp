@@ -25,7 +25,7 @@
 #include "common.h"
 
 HelloTriangleQt::HelloTriangleQt() :
-        vcl::qbgf::CanvasWidget("Hello Triangle Qt")
+        vcl::qt::CanvasWidget("Hello Triangle Qt")
 {
     setUpBGFX(viewId(), vbh, program);
 }

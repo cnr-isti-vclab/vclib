@@ -20,12 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ext/qt/bgfx/ui_viewer_main_window.h"
-#include <vclib/ext/qt/bgfx/viewer_main_window.h>
+#include "ext/qt/ui_viewer_main_window.h"
+#include <vclib/ext/qt/viewer_main_window.h>
 
 #include <vclib/render/interfaces/drawable_mesh_i.h>
 
-namespace vcl::qbgf {
+namespace vcl::qt {
 
 /**
  * @brief ViewerMainWindow constructor.
@@ -182,4 +182,4 @@ void ViewerMainWindow::renderSettingsUpdated()
     }
 }
 
-} // namespace vcl::qbgf
+} // namespace vcl::qt
