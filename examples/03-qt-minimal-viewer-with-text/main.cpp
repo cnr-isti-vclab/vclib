@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     vcl::qt::MinimalViewerWidget tw("Minimal Viewer Qt");
 
     // load and set up a drawable mesh
-    vcl::TriMesh                         m        = getMesh("greek_helmet.obj");
+    vcl::TriMesh                    m        = getMesh("greek_helmet.obj");
     vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh(m);
 
     // add the drawable mesh to the scene

@@ -24,8 +24,8 @@
 
 #include <QMouseEvent>
 
-#include <vclib/ext/qt/input.h>
 #include <vclib/ext/qt/gui/screen_shot_dialog.h>
+#include <vclib/ext/qt/input.h>
 
 namespace vcl::qt {
 

@@ -28,11 +28,11 @@
 #endif
 
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/ext/qt/viewer_main_window.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
-#include <vclib/render/drawabledrawable_mesh.h>
 #include <vclib/ext/glfw/minimal_viewer_window.h>
+#include <vclib/render/drawabledrawable_mesh.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
 #include <vclib/ext/opengl2/drawable_mesh.h>
 #include <vclib/ext/qglviewer/viewer_main_window.h>
