@@ -80,6 +80,7 @@ endif()
 if (TARGET vclib-external-qt)
     list(APPEND HEADERS
         include/vclib/ext/qt/canvas_widget.h
+        include/vclib/ext/qt/event_manager_widget.h
         include/vclib/ext/qt/input.h
         include/vclib/ext/qt/message_hider.h
         include/vclib/ext/qt/minimal_viewer_widget.h
@@ -92,6 +93,7 @@ if (TARGET vclib-external-qt)
 
     list(APPEND SOURCES
         src/ext/qt/canvas_widget.cpp
+        src/ext/qt/event_manager_widget.cpp
         src/ext/qt/input.cpp
         src/ext/qt/minimal_viewer_widget.cpp
         src/ext/qt/viewer_main_window.cpp
