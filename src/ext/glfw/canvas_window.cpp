@@ -58,10 +58,6 @@ CanvasWindow::CanvasWindow(
     nwh = glfwGetCocoaWindow(mWindow);
 #endif
     Canvas::init(nwh, width, height);
-
-    glfwSetWindowUserPointer(mWindow, this);
-
-    setCallbacks();
 }
 
 CanvasWindow::CanvasWindow(uint width, uint height) :
@@ -81,20 +77,10 @@ void CanvasWindow::show()
     }
 }
 
-void CanvasWindow::setCallbacks()
-{
-    glfwSetWindowSizeCallback(
-        mWindow, [](GLFWwindow* window, int width, int height) {
-            auto* self =
-                static_cast<CanvasWindow*>(glfwGetWindowUserPointer(window));
-            self->glfwWindowSizeCallback(window, width, height);
-        });
-}
-
-void CanvasWindow::glfwWindowSizeCallback(GLFWwindow*, int width, int height)
+void CanvasWindow::glfwWindowSizeCallback(GLFWwindow* w, int width, int height)
 {
     Canvas::resize(width, height);
-    onResize(width, height);
+    EventManagerWindow::glfwWindowSizeCallback(w, width, height);
 }
 
 } // namespace vcl::glfw
