@@ -20,41 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_CANVAS_WINDOW_H
-#define VCL_EXT_GLFW_CANVAS_WINDOW_H
+#ifndef VCL_EXT_GLFW_EVENT_MANAGER_WINDOW_H
+#define VCL_EXT_GLFW_EVENT_MANAGER_WINDOW_H
 
-#include <vclib/render/canvas.h>
+#include <GLFW/glfw3.h>
 
-#include "event_manager_window.h"
+#include <vclib/render/interfaces/event_manager_i.h>
 
 namespace vcl::glfw {
 
-class CanvasWindow : public vcl::Canvas, public EventManagerWindow
+class EventManagerWindow : public virtual vcl::EventManagerI
 {
-    using Canvas = vcl::Canvas;
+    std::string mTitle;
+
+protected:
+    GLFWwindow* mWindow = nullptr;
 
 public:
-    CanvasWindow(
+    EventManagerWindow(
         const std::string& windowTitle,
         uint               width  = 1024,
         uint               height = 768);
 
-    CanvasWindow(uint width = 1024, uint height = 768);
+    virtual ~EventManagerWindow() = default;
 
-    virtual ~CanvasWindow();
+    const std::string& windowTitle() const;
 
-    void show();
+    void setWindowTitle(const std::string& title);
 
-protected:
-    virtual void draw() override {}
+    uint width() const;
+
+    uint height() const;
 
 private:
     void setCallbacks();
 
     // callbacks
     void glfwWindowSizeCallback(GLFWwindow*, int width, int height);
+
+    void glfwKeyCallback(GLFWwindow*, int key, int, int action, int mods);
+
+    void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods);
+
+    void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos);
+
+    void glfwScrollCallback(GLFWwindow*, double xoffset, double yoffset);
 };
 
 } // namespace vcl::glfw
 
-#endif // VCL_EXT_GLFW_CANVAS_WINDOW_H
+#endif // VCL_EXT_GLFW_EVENT_MANAGER_WINDOW_H

@@ -56,13 +56,15 @@ file(GLOB_RECURSE SHADERS CONFIGURE_DEPENDS "shaders/vclib/render/*.sh" "shaders
 
 if (TARGET vclib-external-glfw)
     list(APPEND HEADERS
-        include/vclib/ext/glfw/input.h
         include/vclib/ext/glfw/canvas_window.h
+        include/vclib/ext/glfw/event_manager_window.h
+        include/vclib/ext/glfw/input.h
         include/vclib/ext/glfw/minimal_viewer_window.h)
 
     list(APPEND SOURCES
-        src/ext/glfw/input.cpp
         src/ext/glfw/canvas_window.cpp
+        src/ext/glfw/event_manager_window.cpp
+        src/ext/glfw/input.cpp
         src/ext/glfw/minimal_viewer_window.cpp)
 endif()
 
