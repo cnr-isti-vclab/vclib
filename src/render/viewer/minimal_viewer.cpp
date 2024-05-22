@@ -67,9 +67,15 @@ uint MinimalViewer::pushDrawableObject(const DrawableObjectI& obj)
 
 void MinimalViewer::fitScene()
 {
-    Box3d   bb          = mDrawList->boundingBox();
-    Point3f sceneCenter = bb.center().cast<float>();
-    float   sceneRadius = bb.diagonal() / 2;
+    Point3f sceneCenter;
+    float   sceneRadius = 1;
+
+    Box3d bb = mDrawList->boundingBox();
+
+    if (!bb.isNull()) {
+        sceneCenter = bb.center().cast<float>();
+        sceneRadius = bb.diagonal() / 2;
+    }
 
     DTB::setTrackBall(sceneCenter, sceneRadius);
 }
