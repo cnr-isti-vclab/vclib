@@ -28,7 +28,7 @@
 namespace vcl {
 
 /**
- * @brief The EventManagerInterface class provides a common interface for event
+ * @brief The EventManagerI class provides a common interface for event
  * managers.
  *
  * All the widgets/window classes of the vclib-render module will use this
@@ -39,12 +39,12 @@ namespace vcl {
  * have to provide an implementation of this interface to handle the input
  * events.
  */
-class EventManagerInterface
+class EventManagerI
 {
     KeyModifiers mMods = {KeyModifier::NO_MODIFIER};
 
 public:
-    virtual ~EventManagerInterface() = default;
+    virtual ~EventManagerI() = default;
 
     /**
      * @brief Called when the window is updated.

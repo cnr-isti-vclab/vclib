@@ -38,7 +38,7 @@ namespace vcl {
 
 class MinimalViewer :
         public vcl::DesktopTrackBall<float>,
-        public virtual vcl::EventManagerInterface
+        public virtual vcl::EventManagerI
 {
     // this Viewer does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> mDrawList;

@@ -60,7 +60,7 @@ namespace vcl {
  * - resize(width, height): this function must be called by the derived classes
  * whenever the window is resized.
  */
-class Canvas : public virtual vcl::EventManagerInterface
+class Canvas : public virtual vcl::EventManagerI
 {
     void*                   mWinId  = nullptr;
     bgfx::FrameBufferHandle mFbh    = BGFX_INVALID_HANDLE;
