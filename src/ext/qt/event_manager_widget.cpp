@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include <QMouseEvent>
+#include <QGuiApplication>
 
 #include <vclib/ext/qt/event_manager_widget.h>
 
