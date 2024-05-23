@@ -69,13 +69,9 @@ class Canvas : public virtual vcl::EventManagerI
     TextView mTextView;
 
 public:
-    Canvas();
-
-    Canvas(void* winID, uint width, uint height);
+    Canvas(void* winId, uint width, uint height);
 
     ~Canvas();
-
-    void init(void* winId, uint width, uint height);
 
     bgfx::ViewId viewId() const { return mViewId; }
 

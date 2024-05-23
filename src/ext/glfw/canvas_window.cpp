@@ -28,9 +28,9 @@ CanvasWindow::CanvasWindow(
     const std::string& windowTitle,
     uint               width,
     uint               height) :
-        EventManagerWindow(windowTitle, width, height)
+        EventManagerWindow(windowTitle, width, height),
+        Canvas(winId(), width, height)
 {
-    Canvas::init(winId(), width, height);
 }
 
 CanvasWindow::CanvasWindow(uint width, uint height) :

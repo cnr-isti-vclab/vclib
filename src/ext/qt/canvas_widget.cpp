@@ -35,15 +35,12 @@ CanvasWidget::CanvasWidget(
     uint               width,
     uint               height,
     QWidget*           parent) :
-        EventManagerWidget(parent)
+        EventManagerWidget(windowTitle, width, height, parent),
+        Canvas(
+            (void*) winId(),
+            width * EventManagerWidget::pixelRatio(),
+            height * EventManagerWidget::pixelRatio())
 {
-    setGeometry(100, 100, width, height);
-    setWindowTitle(windowTitle.c_str());
-
-    Canvas::init(
-        (void*) winId(),
-        width * EventManagerWidget::pixelRatio(),
-        height * EventManagerWidget::pixelRatio());
 }
 
 CanvasWidget::CanvasWidget(uint width, uint height, QWidget* parent) :

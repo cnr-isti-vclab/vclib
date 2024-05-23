@@ -30,12 +30,20 @@
 
 namespace vcl::qt {
 
-EventManagerWidget::EventManagerWidget(QWidget* parent) : QWidget(parent)
+EventManagerWidget::EventManagerWidget(
+    const std::string& windowTitle,
+    uint               width,
+    uint               height,
+    QWidget*           parent) :
+        QWidget(parent)
 {
     setAttribute(Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
     // PaintOnScreen is bugged - prints unuseful warning messages
     // we will hide it:
     vcl::qt::MessageHider::activate();
+
+    setGeometry(100, 100, width, height);
+    setWindowTitle(windowTitle.c_str());
 }
 
 void EventManagerWidget::resizeEvent(QResizeEvent* event)

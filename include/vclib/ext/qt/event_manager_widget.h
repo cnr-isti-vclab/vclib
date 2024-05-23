@@ -32,7 +32,11 @@ namespace vcl::qt {
 class EventManagerWidget : public QWidget, public virtual vcl::EventManagerI
 {
 public:
-    explicit EventManagerWidget(QWidget* parent = nullptr);
+    explicit EventManagerWidget(
+        const std::string& windowTitle,
+        uint               width  = 1024,
+        uint               height = 768,
+        QWidget* parent = nullptr);
 
     virtual ~EventManagerWidget() = default;
 

@@ -29,7 +29,7 @@
 
 namespace vcl::glfw {
 
-class CanvasWindow : public vcl::Canvas, public EventManagerWindow
+class CanvasWindow : public EventManagerWindow, public vcl::Canvas
 {
     using Canvas = vcl::Canvas;
 

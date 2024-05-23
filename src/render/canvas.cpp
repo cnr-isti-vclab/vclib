@@ -26,24 +26,7 @@
 
 namespace vcl {
 
-Canvas::Canvas()
-{
-}
-
-Canvas::Canvas(void* winID, uint width, uint height)
-{
-    init(winID, width, height);
-}
-
-Canvas::~Canvas()
-{
-    if (bgfx::isValid(mFbh))
-        bgfx::destroy(mFbh);
-
-    Context::releaseViewId(mViewId);
-}
-
-void Canvas::init(void* winId, uint width, uint height)
+Canvas::Canvas(void* winId, uint width, uint height)
 {
     mWinId = winId;
 
@@ -52,6 +35,14 @@ void Canvas::init(void* winId, uint width, uint height)
     mFbh = createFrameBufferAndInitView(winId, mViewId, width, height, true);
 
     mTextView.init(width, height);
+}
+
+Canvas::~Canvas()
+{
+    if (bgfx::isValid(mFbh))
+        bgfx::destroy(mFbh);
+
+    Context::releaseViewId(mViewId);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
