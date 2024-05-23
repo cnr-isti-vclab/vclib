@@ -83,8 +83,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
 
         file(CREATE_LINK
             ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
-            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE}
-            SYMBOLIC)
+            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE})
     endforeach()
 endif()
 
