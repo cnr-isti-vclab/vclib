@@ -49,79 +49,51 @@ if (APPLE)
     list(APPEND SOURCES ${SOURCES_MM})
 endif()
 
-set(ASSETS
-    assets/fonts/droidsans.ttf)
+file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS "assets/*")
 
-file(GLOB_RECURSE SHADERS CONFIGURE_DEPENDS "shaders/vclib/render/*.sh" "shaders/vclib/render/*.sc")
+file(GLOB_RECURSE SHADERS CONFIGURE_DEPENDS
+    "shaders/vclib/render/*.sh" "shaders/vclib/render/*.sc")
 
 if (TARGET vclib-external-glfw)
-    list(APPEND HEADERS
-        include/vclib/ext/glfw/canvas_window.h
-        include/vclib/ext/glfw/event_manager_window.h
-        include/vclib/ext/glfw/input.h
-        include/vclib/ext/glfw/viewer_window.h)
+    file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
+        "include/vclib/ext/glfw/*.h")
+    list(APPEND HEADERS ${HEADERS_GLFW})
 
-    list(APPEND SOURCES
-        src/ext/glfw/canvas_window.cpp
-        src/ext/glfw/event_manager_window.cpp
-        src/ext/glfw/input.cpp
-        src/ext/glfw/viewer_window.cpp)
+    file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/ext/glfw/*.cpp")
+    list(APPEND SOURCES ${SOURCES_GLFW})
 endif()
 
 if (TARGET vclib-external-opengl)
-    list(APPEND HEADERS
-        include/vclib/ext/opengl2/draw_objects2.h
-        include/vclib/ext/opengl2/draw_objects3.h
-        include/vclib/ext/opengl2/drawable_mesh.h)
+    file(GLOB_RECURSE HEADERS_OPENGL2 CONFIGURE_DEPENDS
+        "include/vclib/ext/opengl2/*.h")
+    list(APPEND HEADERS ${HEADERS_OPENGL2})
 
-    list(APPEND SOURCES
-        src/ext/opengl2/draw_objects2.cpp
-        src/ext/opengl2/draw_objects3.cpp)
+    file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS "src/ext/opengl2/*.cpp")
+    list(APPEND SOURCES ${SOURCES_OPENGL2})
 endif()
 
 if (TARGET vclib-external-qt)
-    list(APPEND HEADERS
-        include/vclib/ext/qt/canvas_widget.h
-        include/vclib/ext/qt/event_manager_widget.h
-        include/vclib/ext/qt/input.h
-        include/vclib/ext/qt/message_hider.h
-        include/vclib/ext/qt/viewer_main_window.h
-        include/vclib/ext/qt/viewer_widget.h
-        include/vclib/ext/qt/gui/drawable_object_frame.h
-        include/vclib/ext/qt/gui/drawable_object_vector_frame.h
-        include/vclib/ext/qt/gui/mesh_render_settings_frame.h
-        include/vclib/ext/qt/gui/q_clickable_label.h
-        include/vclib/ext/qt/gui/screen_shot_dialog.h)
+    file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
+    list(APPEND HEADERS ${HEADERS_QT})
 
-    list(APPEND SOURCES
-        src/ext/qt/canvas_widget.cpp
-        src/ext/qt/event_manager_widget.cpp
-        src/ext/qt/input.cpp
-        src/ext/qt/viewer_main_window.cpp
-        src/ext/qt/viewer_widget.cpp
-        src/ext/qt/gui/drawable_object_frame.cpp
-        src/ext/qt/gui/drawable_object_vector_frame.cpp
-        src/ext/qt/gui/mesh_render_settings_frame.cpp
-        src/ext/qt/gui/q_clickable_label.cpp
-        src/ext/qt/gui/screen_shot_dialog.cpp)
+    file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/ext/qt/*.cpp")
+    list(APPEND SOURCES ${SOURCES_QT})
 
-    list(APPEND FORMS
-        src/ext/qt/viewer_main_window.ui
-        src/ext/qt/gui/drawable_object_frame.ui
-        src/ext/qt/gui/drawable_object_vector_frame.ui
-        src/ext/qt/gui/mesh_render_settings_frame.ui)
+    file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/ext/qt/*.ui")
+    list(APPEND FORMS ${FORMS_QT})
 
     if (TARGET vclib-external-qglviewer)
-        list(APPEND HEADERS
-            include/vclib/ext/qglviewer/minimal_viewer_widget.h
-            include/vclib/ext/qglviewer/viewer_main_window.h)
+        file(GLOB_RECURSE HEADERS_QGLVIEWER CONFIGURE_DEPENDS
+            "include/vclib/ext/qglviewer/*.h")
+        list(APPEND HEADERS ${HEADERS_QGLVIEWER})
 
-        list(APPEND SOURCES
-            src/ext/qglviewer/minimal_viewer_widget.cpp
-            src/ext/qglviewer/viewer_main_window.cpp)
+        file(GLOB_RECURSE SOURCES_QGLVIEWER CONFIGURE_DEPENDS
+            "src/ext/qglviewer/*.cpp")
+        list(APPEND SOURCES ${SOURCES_QGLVIEWER})
 
-        list(APPEND FORMS
-            src/ext/qglviewer/viewer_main_window.ui)
+        file(GLOB_RECURSE FORMS_QGLVIEWER CONFIGURE_DEPENDS
+            "src/ext/qglviewer/*.ui")
+        list(APPEND FORMS ${FORMS_QGLVIEWER})
     endif()
 endif()
 
