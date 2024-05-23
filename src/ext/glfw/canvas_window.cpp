@@ -77,10 +77,4 @@ void CanvasWindow::show()
     }
 }
 
-void CanvasWindow::glfwWindowSizeCallback(GLFWwindow* w, int width, int height)
-{
-    Canvas::resize(width, height);
-    EventManagerWindow::glfwWindowSizeCallback(w, width, height);
-}
-
 } // namespace vcl::glfw

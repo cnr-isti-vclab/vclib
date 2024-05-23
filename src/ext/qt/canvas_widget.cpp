@@ -85,12 +85,6 @@ void CanvasWidget::paintEvent(QPaintEvent* event)
     QWidget::paintEvent(event);
 }
 
-void CanvasWidget::resizeEvent(QResizeEvent* event)
-{
-    Canvas::resize(width() * pixelRatio(), height() * pixelRatio());
-    EventManagerWidget::resizeEvent(event);
-}
-
 void CanvasWidget::paint()
 {
     Canvas::frame();

@@ -59,6 +59,8 @@ public:
 
     void draw() override;
 
+    void onResize(uint width, uint height) override;
+
     void onKeyPress(Key::Enum key) override;
 
 private:

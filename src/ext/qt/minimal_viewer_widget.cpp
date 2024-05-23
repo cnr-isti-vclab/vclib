@@ -71,6 +71,12 @@ void MinimalViewerWidget::draw()
     MV::draw(viewId());
 }
 
+void MinimalViewerWidget::onResize(uint width, uint height)
+{
+    CanvasWidget::onResize(width, height);
+    MV::onResize(width, height);
+}
+
 void MinimalViewerWidget::onKeyPress(Key::Enum key)
 {
     switch (key) {

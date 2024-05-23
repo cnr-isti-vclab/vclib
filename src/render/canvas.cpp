@@ -127,6 +127,16 @@ void Canvas::appendTransientText(
     mTextView.appendTransientText(pos, text, color);
 }
 
+void Canvas::onResize(uint width, uint height)
+{
+    if (bgfx::isValid(mFbh))
+        bgfx::destroy(mFbh);
+
+    mFbh = createFrameBufferAndInitView(mWinId, mViewId, width, height);
+
+    mTextView.resize(width, height);
+}
+
 void Canvas::frame()
 {
     bgfx::setViewFrameBuffer(mViewId, mFbh);
@@ -138,16 +148,6 @@ void Canvas::frame()
 #ifdef __APPLE__ // workaround for forcing bgfx refresh buffer on MacOS
     bgfx::frame();
 #endif // __APPLE__
-}
-
-void Canvas::resize(uint width, uint height)
-{
-    if (bgfx::isValid(mFbh))
-        bgfx::destroy(mFbh);
-
-    mFbh = createFrameBufferAndInitView(mWinId, mViewId, width, height);
-
-    mTextView.resize(width, height);
 }
 
 bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(

@@ -62,4 +62,10 @@ void MinimalViewerWindow::draw()
     MV::draw(viewId());
 }
 
+void MinimalViewerWindow::onResize(uint width, uint height)
+{
+    CanvasWindow::onResize(width, height);
+    MV::onResize(width, height);
+}
+
 } // namespace vcl::glfw

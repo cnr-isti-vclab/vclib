@@ -61,8 +61,6 @@ private:
 
     void paintEvent(QPaintEvent* event) override;
 
-    void resizeEvent(QResizeEvent* event) override;
-
     void paint();
 };
 

@@ -106,9 +106,9 @@ public:
 protected:
     virtual void draw() = 0;
 
-    void frame();
+    void onResize(uint width, uint height) override;
 
-    void resize(uint width, uint height);
+    void frame();
 
 private:
     static bgfx::FrameBufferHandle createFrameBufferAndInitView(

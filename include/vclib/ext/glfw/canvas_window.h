@@ -47,9 +47,6 @@ public:
 
 protected:
     virtual void draw() override {}
-
-    // callbacks
-    void glfwWindowSizeCallback(GLFWwindow*, int width, int height) override;
 };
 
 } // namespace vcl::glfw
