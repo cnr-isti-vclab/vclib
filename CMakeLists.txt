@@ -28,15 +28,16 @@ include(vclib/cmake/vclib_common_settings.cmake)
 # Add the cmake folder for find_package scripts
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+# Options
+set(VCLIB_RENDER_ENGINE "bgfx" CACHE STRING "Select the rendering engine")
+set_property(CACHE VCLIB_RENDER_ENGINE PROPERTY STRINGS bgfx)
+
 # vclib
 add_subdirectory(vclib)
 
 # external libraries
 message(STATUS "VCLib-Render: external libraries")
 add_subdirectory(external)
-
-get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -51,8 +52,41 @@ endif()
 
 file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS "assets/*")
 
-file(GLOB_RECURSE SHADERS CONFIGURE_DEPENDS
-    "shaders/vclib/render/*.sh" "shaders/vclib/render/*.sc")
+# if render engine is bgfx - include sources that use bgfx
+if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
+
+    file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
+        "include/vclib_bgfx/render/*.h")
+    list(APPEND HEADERS ${HEADERS_BGFX})
+
+    file(GLOB_RECURSE SOURCES_BGFX CONFIGURE_DEPENDS
+        "src/vclib_bgfx/render/*.cpp")
+    list(APPEND SOURCES ${SOURCES_BGFX})
+
+    file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
+        "shaders/vclib_bgfx/render/*.sh" "shaders/vclib_bgfx/render/*.sc")
+    list(APPEND SHADERS ${SHADERS_BGFX})
+
+    # required files that use bgfx
+    set(LINK_FILES
+        include/vclib_bgfx/render/canvas.h
+        include/vclib_bgfx/render/viewer_canvas.h
+        include/vclib_bgfx/render/drawable/drawable_mesh.h)
+
+    foreach(FILE ${LINK_FILES})
+        string(REPLACE "vclib_bgfx" "vclib" TARGET_FILE ${FILE})
+
+        get_filename_component(TARGET_DIR ${TARGET_FILE} DIRECTORY)
+        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR})
+
+        file(CREATE_LINK
+            ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
+            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE}
+            SYMBOLIC)
+    endforeach()
+endif()
 
 if (TARGET vclib-external-glfw)
     file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
@@ -96,9 +130,10 @@ if (TARGET vclib-external-qt)
             "src/vclib/ext/qglviewer/*.ui")
         list(APPEND FORMS ${FORMS_QGLVIEWER})
     endif()
+
+    source_group("Forms Files" FILES ${FORMS})
 endif()
 
-source_group("Forms Files" FILES ${FORMS})
 
 # vclib-render target
 if (WIN32)
@@ -112,18 +147,21 @@ endif()
 add_library(vclib-render ${VLIB_RENDER_LIB_TYPE}
     ${HEADERS} ${SOURCES} ${SHADERS} ${FORMS})
 
-target_include_directories(vclib-render INTERFACE ${VCLIB_RENDER_INCLUDE_DIR})
+target_include_directories(vclib-render PUBLIC ${VCLIB_RENDER_INCLUDE_DIR})
+target_include_directories(vclib-render PUBLIC
+    ${CMAKE_CURRENT_BINARY_DIR}/include)
+
 set_target_properties(vclib-render PROPERTIES
     VCLIB_RENDER_INCLUDE_DIR ${VCLIB_RENDER_INCLUDE_DIR})
 
 set_target_properties(vclib-render PROPERTIES
-    VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR
+    VCLIB_RENDER_SHADER_INCLUDE_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 
-build_bgfx_shaders_to_headers(${SHADERS})
-build_assets_to_headers(${ASSETS})
-target_include_directories(vclib-render PRIVATE
-   ${CMAKE_CURRENT_BINARY_DIR}/include)
+if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    build_bgfx_shaders_to_headers(${SHADERS})
+    build_assets_to_headers(${ASSETS})
+endif()
 
 if (TARGET vclib-external-qt)
     set_property(TARGET vclib-render PROPERTY AUTOMOC ON)

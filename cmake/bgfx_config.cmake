@@ -271,12 +271,12 @@ function(build_bgfx_shaders_to_headers)
 
     get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
     get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
-    get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_BGFX_SHADER_INCLUDE_DIR)
+    get_property(VCLIB_RENDER_SHADER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_SHADER_INCLUDE_DIR)
 
     set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/include/shaders")
 
     foreach(SHADER ${ARGV})
-        file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib/render" ${SHADER})
+        file(RELATIVE_PATH SHADER_REL "${VCLIB_RENDER_SHADER_DIR}/../shaders/vclib_bgfx/render" ${SHADER})
         get_filename_component(DIR_PATH ${SHADER_REL} DIRECTORY)
         get_filename_component(FILENAME "${SHADER}" NAME_WE)
         get_filename_component(ABSOLUTE_PATH_SHADER ${SHADER} ABSOLUTE)

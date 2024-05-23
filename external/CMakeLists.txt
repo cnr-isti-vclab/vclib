@@ -45,10 +45,12 @@ option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
 
 set(VCLIB_RENDER_EXTERNAL_LIBRARIES "")
 
-# === REQUIRED === #
+# === REQUIRED RENDER ENGINES === #
 
 ### bgfx
-include(bgfx.cmake)
+if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    include(bgfx.cmake)
+endif()
 
 # === OPTIONAL === #
 
