@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render/viewer/minimal_viewer.h>
+#include <vclib/render/viewer_canvas.h>
 
 #include <vclib/math/min_max.h>
 #include <vclib/render/interfaces/drawable_mesh_i.h>
@@ -28,27 +28,30 @@
 
 namespace vcl {
 
-MinimalViewer::MinimalViewer(uint width, uint height) : DTB(width, height)
+ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
+        Canvas(winId, width, height),
+        DTB(width, height)
 {
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());
 }
 
-MinimalViewer::MinimalViewer(
+ViewerCanvas::ViewerCanvas(
+    void*                                 winId,
     std::shared_ptr<DrawableObjectVector> v,
     uint                                  width,
     uint                                  height) :
-        MinimalViewer(width, height)
+        ViewerCanvas(winId, width, height)
 {
     setDrawableObjectVector(v);
 }
 
-const DrawableObjectVector& MinimalViewer::drawableObjectVector() const
+const DrawableObjectVector& ViewerCanvas::drawableObjectVector() const
 {
     return *mDrawList;
 }
 
-void MinimalViewer::setDrawableObjectVector(
+void ViewerCanvas::setDrawableObjectVector(
     std::shared_ptr<DrawableObjectVector> v)
 {
     mDrawList = v;
@@ -56,16 +59,17 @@ void MinimalViewer::setDrawableObjectVector(
     for (DrawableObjectI* obj : *mDrawList) {
         initDrawableObject(*obj);
     }
+    fitScene();
 }
 
-uint MinimalViewer::pushDrawableObject(const DrawableObjectI& obj)
+uint ViewerCanvas::pushDrawableObject(const DrawableObjectI& obj)
 {
     mDrawList->pushBack(obj);
     initDrawableObject(mDrawList->back());
     return mDrawList->size() - 1;
 }
 
-void MinimalViewer::fitScene()
+void ViewerCanvas::fitScene()
 {
     Point3f sceneCenter;
     float   sceneRadius = 1;
@@ -80,10 +84,10 @@ void MinimalViewer::fitScene()
     DTB::setTrackBall(sceneCenter, sceneRadius);
 }
 
-void MinimalViewer::draw(uint viewId)
+void ViewerCanvas::draw()
 {
     bgfx::setViewTransform(
-        viewId, viewMatrix().data(), projectionMatrix().data());
+        viewId(), viewMatrix().data(), projectionMatrix().data());
 
     mCameraUniforms.updateCamera(DTB::camera());
     mCameraUniforms.bind();
@@ -91,29 +95,30 @@ void MinimalViewer::draw(uint viewId)
     mDirectionalLightUniforms.bind();
 
     for (DrawableObjectI* obj : *mDrawList)
-        obj->draw(viewId);
+        obj->draw(viewId());
 
     if (mAxis.isVisible()) {
-        mAxis.draw(viewId);
+        mAxis.draw(viewId());
     }
 
     if (mDirectionalLight.isVisible()) {
-        mDirectionalLight.draw(viewId);
+        mDirectionalLight.draw(viewId());
     }
 
     if (mTrackBall.isVisible()) {
-        mTrackBall.draw(viewId);
+        mTrackBall.draw(viewId());
     }
 }
 
-void MinimalViewer::onResize(unsigned int width, unsigned int height)
+void ViewerCanvas::onResize(unsigned int width, unsigned int height)
 {
+    Canvas::onResize(width, height);
     DTB::resizeViewer(width, height);
     updateDrawableTrackball();
     update();
 }
 
-void MinimalViewer::onKeyPress(Key::Enum key)
+void ViewerCanvas::onKeyPress(Key::Enum key)
 {
     DTB::setKeyModifiers(modifiers());
 
@@ -141,7 +146,7 @@ void MinimalViewer::onKeyPress(Key::Enum key)
     update();
 }
 
-void MinimalViewer::onKeyRelease(Key::Enum key)
+void ViewerCanvas::onKeyRelease(Key::Enum key)
 {
     if (isDirectionalLightVisible()) {
         if (!modifiers()[KeyModifier::CONTROL] ||
@@ -155,7 +160,7 @@ void MinimalViewer::onKeyRelease(Key::Enum key)
     update();
 }
 
-void MinimalViewer::onMouseMove(double x, double y)
+void ViewerCanvas::onMouseMove(double x, double y)
 {
     DTB::moveMouse(x, y);
     updateDirectionalLight();
@@ -164,28 +169,28 @@ void MinimalViewer::onMouseMove(double x, double y)
     update();
 }
 
-void MinimalViewer::onMousePress(MouseButton::Enum button)
+void ViewerCanvas::onMousePress(MouseButton::Enum button)
 {
     DTB::pressMouse(button);
     updateDrawableTrackball();
     update();
 }
 
-void MinimalViewer::onMouseRelease(MouseButton::Enum button)
+void ViewerCanvas::onMouseRelease(MouseButton::Enum button)
 {
     DTB::releaseMouse(button);
     updateDrawableTrackball();
     update();
 }
 
-void MinimalViewer::onMouseScroll(double dx, double dy)
+void ViewerCanvas::onMouseScroll(double dx, double dy)
 {
     DTB::scroll(dx, dy);
     updateDrawableTrackball();
     update();
 }
 
-void MinimalViewer::initDrawableObject(DrawableObjectI& obj)
+void ViewerCanvas::initDrawableObject(DrawableObjectI& obj)
 {
     obj.init();
 }

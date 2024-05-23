@@ -60,8 +60,6 @@ private:
     bool event(QEvent* event) override;
 
     void paintEvent(QPaintEvent* event) override;
-
-    void paint();
 };
 
 } // namespace vcl::qt

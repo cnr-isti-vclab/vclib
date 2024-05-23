@@ -22,11 +22,14 @@
 
 #include "common.h"
 
-#include <vclib/ext/glfw/minimal_viewer_window.h>
+#include <QApplication>
+#include <vclib/ext/qt/viewer_widget.h>
 
 int main(int argc, char** argv)
 {
-    vcl::glfw::MinimalViewerWindow tw("Minimal Viewer GLFW");
+    QApplication app(argc, argv);
+
+    vcl::qt::ViewerWidget tw("Viewer Qt");
 
     // load and set up a drawable mesh
     vcl::TriMesh                    m        = getMesh("greek_helmet.obj");
@@ -47,5 +50,5 @@ int main(int argc, char** argv)
 
     tw.show();
 
-    return 0;
+    return app.exec();
 }

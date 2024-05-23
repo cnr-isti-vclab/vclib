@@ -31,7 +31,7 @@
 #include <vclib/ext/qt/viewer_main_window.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
-#include <vclib/ext/glfw/minimal_viewer_window.h>
+#include <vclib/ext/glfw/viewer_window.h>
 #include <vclib/render/drawabledrawable_mesh.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
 #include <vclib/ext/opengl2/drawable_mesh.h>
@@ -48,7 +48,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
     vcl::qt::ViewerMainWindow viewer;
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
-    vcl::glfw::MinimalViewerWindow viewer;
+    vcl::glfw::ViewerWindow viewer;
 #elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
     vcl::qgl::ViewerMainWindow viewer;
 #endif

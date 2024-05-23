@@ -22,53 +22,30 @@
 
 #include "common.h"
 
-#ifdef USE_QT
-#include <QApplication>
-#include <vclib/ext/qt/viewer_widget.h>
-#elif USE_GLFW
 #include <vclib/ext/glfw/viewer_window.h>
-#endif
 
 int main(int argc, char** argv)
 {
-#ifdef USE_QT
-    QApplication app(argc, argv);
-
-    vcl::qt::ViewerWidget tw("Viewer Qt");
-#elif USE_GLFW
     vcl::glfw::ViewerWindow tw("Viewer GLFW");
-#endif
+
     // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    vcl::TriMesh                    m        = getMesh("greek_helmet.obj");
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh(m);
 
     // add the drawable mesh to the scene
     // the viewer will own **a copy** of the drawable mesh
     tw.pushDrawableObject(drawable);
 
+    tw.enableText();
+
+    tw.setTextFont(vcl::VclFont::DROID_SANS, 20);
+    tw.appendStaticText(
+        {5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
+    tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));
+
     tw.fitScene();
 
     tw.show();
 
-#ifdef USE_QT
-    vcl::qt::ViewerWidget tw2("Viewer Qt");
-#elif USE_GLFW
-    vcl::glfw::ViewerWindow tw2("Viewer GLFW");
-#endif
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable2 =
-        getDrawableMesh("greek_helmet.obj");
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw2.pushDrawableObject(drawable2);
-
-    tw2.fitScene();
-
-    tw2.show();
-
-#ifdef USE_QT
-    return app.exec();
-#elif USE_GLFW
     return 0;
-#endif
 }

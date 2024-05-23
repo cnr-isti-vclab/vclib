@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_VIEWER_MINIMAL_VIEWER_H
-#define VCL_RENDER_VIEWER_MINIMAL_VIEWER_H
+#ifndef VCL_RENDER_VIEWER_CANVAS_H
+#define VCL_RENDER_VIEWER_CANVAS_H
 
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/interfaces/event_manager_i.h>
@@ -34,11 +34,11 @@
 #include <vclib/render/drawable/uniforms/directional_light_uniforms.h>
 #include <vclib/render/drawable/uniforms/mesh_render_settings_uniforms.h>
 
+#include "canvas.h"
+
 namespace vcl {
 
-class MinimalViewer :
-        public vcl::DesktopTrackBall<float>,
-        public virtual vcl::EventManagerI
+class ViewerCanvas : public vcl::Canvas, public vcl::DesktopTrackBall<float>
 {
     // this Viewer does not normally own this drawList
     std::shared_ptr<DrawableObjectVector> mDrawList;
@@ -55,9 +55,10 @@ protected:
     using DTB = vcl::DesktopTrackBall<float>;
 
 public:
-    MinimalViewer(uint width = 1024, uint height = 768);
+    ViewerCanvas(void* winId, uint width = 1024, uint height = 768);
 
-    MinimalViewer(
+    ViewerCanvas(
+        void* winId,
         std::shared_ptr<DrawableObjectVector> v,
         uint                                  width  = 1024,
         uint                                  height = 768);
@@ -69,8 +70,6 @@ public:
     uint pushDrawableObject(const DrawableObjectI& obj);
 
     void fitScene();
-
-    void draw(uint viewId);
 
     void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
 
@@ -103,8 +102,10 @@ public:
         mTrackBall.updateDragging(isDragging());
     }
 
-    // events
+protected:
+    void draw() override;
 
+    // events
     void onResize(unsigned int width, unsigned int height) override;
 
     void onKeyPress(Key::Enum key) override;
@@ -125,4 +126,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_VIEWER_MINIMAL_VIEWER_H
+#endif // VCL_RENDER_VIEWER_CANVAS_H

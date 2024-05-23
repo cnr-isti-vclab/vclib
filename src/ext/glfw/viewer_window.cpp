@@ -9,46 +9,60 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#include <vclib/ext/glfw/viewer_window.h>
 
-#include <QApplication>
-#include <vclib/ext/qt/minimal_viewer_widget.h>
+namespace vcl::glfw {
 
-int main(int argc, char** argv)
+ViewerWindow::ViewerWindow(
+    std::shared_ptr<DrawableObjectVector> v,
+    const std::string&                    windowTitle,
+    uint                                  width,
+    uint                                  height,
+    void*) :
+        EventManagerWindow(windowTitle, width, height),
+        ViewerCanvas(winId(), v, width, height)
 {
-    QApplication app(argc, argv);
-
-    vcl::qt::MinimalViewerWidget tw("Minimal Viewer Qt");
-
-    // load and set up a drawable mesh
-    vcl::TriMesh                    m        = getMesh("greek_helmet.obj");
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh(m);
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.enableText();
-
-    tw.setTextFont(vcl::VclFont::DROID_SANS, 20);
-    tw.appendStaticText(
-        {5, 5}, "Vertices: " + std::to_string(m.vertexNumber()));
-    tw.appendStaticText({5, 30}, "Faces: " + std::to_string(m.faceNumber()));
-
-    tw.fitScene();
-
-    tw.show();
-
-    return app.exec();
 }
+
+ViewerWindow::ViewerWindow(
+    const std::string& windowTitle,
+    uint               width,
+    uint               height,
+    void*) :
+        ViewerWindow(
+            std::make_shared<DrawableObjectVector>(),
+            windowTitle,
+            width,
+            height)
+{
+}
+
+ViewerWindow::ViewerWindow(void*) :
+        ViewerWindow(
+            std::make_shared<DrawableObjectVector>(),
+            "Viewer",
+            1024,
+            768)
+{
+}
+
+void ViewerWindow::show()
+{
+    while (!glfwWindowShouldClose(mWindow)) {
+        glfwPollEvents();
+        frame();
+    }
+}
+
+} // namespace vcl::glfw

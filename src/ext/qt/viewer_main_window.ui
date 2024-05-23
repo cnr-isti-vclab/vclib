@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="vcl::qt::MinimalViewerWidget" name="viewer" native="true">
+     <widget class="vcl::qt::ViewerWidget" name="viewer" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -106,9 +106,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>vcl::qt::MinimalViewerWidget</class>
+   <class>vcl::qt::ViewerWidget</class>
    <extends>QWidget</extends>
-   <header>vclib/ext/qt/minimal_viewer_widget.h</header>
+   <header>vclib/ext/qt/viewer_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

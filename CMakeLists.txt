@@ -59,13 +59,13 @@ if (TARGET vclib-external-glfw)
         include/vclib/ext/glfw/canvas_window.h
         include/vclib/ext/glfw/event_manager_window.h
         include/vclib/ext/glfw/input.h
-        include/vclib/ext/glfw/minimal_viewer_window.h)
+        include/vclib/ext/glfw/viewer_window.h)
 
     list(APPEND SOURCES
         src/ext/glfw/canvas_window.cpp
         src/ext/glfw/event_manager_window.cpp
         src/ext/glfw/input.cpp
-        src/ext/glfw/minimal_viewer_window.cpp)
+        src/ext/glfw/viewer_window.cpp)
 endif()
 
 if (TARGET vclib-external-opengl)
@@ -85,8 +85,8 @@ if (TARGET vclib-external-qt)
         include/vclib/ext/qt/event_manager_widget.h
         include/vclib/ext/qt/input.h
         include/vclib/ext/qt/message_hider.h
-        include/vclib/ext/qt/minimal_viewer_widget.h
         include/vclib/ext/qt/viewer_main_window.h
+        include/vclib/ext/qt/viewer_widget.h
         include/vclib/ext/qt/gui/drawable_object_frame.h
         include/vclib/ext/qt/gui/drawable_object_vector_frame.h
         include/vclib/ext/qt/gui/mesh_render_settings_frame.h
@@ -97,8 +97,8 @@ if (TARGET vclib-external-qt)
         src/ext/qt/canvas_widget.cpp
         src/ext/qt/event_manager_widget.cpp
         src/ext/qt/input.cpp
-        src/ext/qt/minimal_viewer_widget.cpp
         src/ext/qt/viewer_main_window.cpp
+        src/ext/qt/viewer_widget.cpp
         src/ext/qt/gui/drawable_object_frame.cpp
         src/ext/qt/gui/drawable_object_vector_frame.cpp
         src/ext/qt/gui/mesh_render_settings_frame.cpp

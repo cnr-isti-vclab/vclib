@@ -20,46 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_MINIMAL_VIEWER_WINDOW_H
-#define VCL_EXT_GLFW_MINIMAL_VIEWER_WINDOW_H
+#ifndef VCL_EXT_QT_VIEWER_WIDGET_H
+#define VCL_EXT_QT_VIEWER_WIDGET_H
 
-#include <vclib/render/viewer/minimal_viewer.h>
+#include <vclib/render/viewer_canvas.h>
 
-#include "canvas_window.h"
+#include "event_manager_widget.h"
 
-namespace vcl::glfw {
+namespace vcl::qt {
 
-class MinimalViewerWindow : public CanvasWindow, public vcl::MinimalViewer
+class ViewerWidget : public EventManagerWidget, public vcl::ViewerCanvas
 {
-protected:
-    using MV = vcl::MinimalViewer;
-
 public:
-    using CanvasWindow::height;
-    using CanvasWindow::width;
-
-    MinimalViewerWindow(
+    ViewerWidget(
         std::shared_ptr<DrawableObjectVector> v,
-        const std::string&                    windowTitle = "Minimal Viewer",
         uint                                  width       = 1024,
         uint                                  height      = 768,
-        void*                                 parent      = nullptr);
+        const std::string&                    windowTitle = "",
+        QWidget*                              parent      = nullptr);
 
-    MinimalViewerWindow(
+    ViewerWidget(
         const std::string& windowTitle = "Minimal Viewer",
         uint               width       = 1024,
         uint               height      = 768,
-        void*              parent      = nullptr);
+        QWidget*           parent      = nullptr);
 
-    MinimalViewerWindow(void* parent);
+    ViewerWidget(QWidget* parent);
 
-    ~MinimalViewerWindow() override = default;
+    virtual ~ViewerWidget() = default;
 
-    void draw() override;
+    void update() override;
 
-    void onResize(uint width, uint height) override;
+    void onKeyPress(Key::Enum key) override;
+
+private:
+    bool event(QEvent* event) override;
+
+    void paintEvent(QPaintEvent* event) override;
+
+    void showScreenShotDialog();
 };
 
-} // namespace vcl::glfw
+} // namespace vcl::qt
 
-#endif // VCL_EXT_GLFW_MINIMAL_VIEWER_WINDOW_H
+#endif // VCL_EXT_QT_VIEWER_WIDGET_H

@@ -20,52 +20,89 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/glfw/minimal_viewer_window.h>
+#include <vclib/ext/qt/viewer_widget.h>
 
-namespace vcl::glfw {
+#include <QMouseEvent>
 
-MinimalViewerWindow::MinimalViewerWindow(
+#include <vclib/ext/qt/gui/screen_shot_dialog.h>
+#include <vclib/ext/qt/input.h>
+
+namespace vcl::qt {
+
+ViewerWidget::ViewerWidget(
     std::shared_ptr<DrawableObjectVector> v,
-    const std::string&                    windowTitle,
     uint                                  width,
     uint                                  height,
-    void*) :
-        CanvasWindow(windowTitle, width, height),
-        MinimalViewer(v, width, height)
+    const std::string&                    windowTitle,
+    QWidget*                              parent) :
+        EventManagerWidget(windowTitle, width, height, parent),
+        ViewerCanvas((void*) winId(), v, width, height)
 {
 }
 
-MinimalViewerWindow::MinimalViewerWindow(
+ViewerWidget::ViewerWidget(
     const std::string& windowTitle,
     uint               width,
     uint               height,
-    void*) :
-        MinimalViewerWindow(
+    QWidget*           parent) :
+        ViewerWidget(
             std::make_shared<DrawableObjectVector>(),
-            windowTitle,
             width,
-            height)
+            height,
+            windowTitle,
+            parent)
 {
 }
 
-MinimalViewerWindow::MinimalViewerWindow(void*) :
-        MinimalViewerWindow(
-            std::make_shared<DrawableObjectVector>(),
-            "Minimal Viewer",
-            1024,
-            768)
+ViewerWidget::ViewerWidget(QWidget* parent) :
+        ViewerWidget("Viewer", 1024, 768, parent)
 {
 }
 
-void MinimalViewerWindow::draw()
+void ViewerWidget::update()
 {
-    MV::draw(viewId());
+    frame();
+    QWidget::update();
 }
 
-void MinimalViewerWindow::onResize(uint width, uint height)
+void ViewerWidget::onKeyPress(Key::Enum key)
 {
-    CanvasWindow::onResize(width, height);
-    MV::onResize(width, height);
+    switch (key) {
+    case Key::S:
+        if (modifiers()[KeyModifier::CONTROL]) {
+            showScreenShotDialog();
+        }
+        break;
+
+    default: ViewerCanvas::onKeyPress(key); break;
+    }
 }
 
-} // namespace vcl::glfw
+bool ViewerWidget::event(QEvent* event)
+{
+    if (event->type() == QEvent::UpdateRequest) {
+        frame();
+        return true;
+    }
+    return QWidget::event(event);
+}
+
+void ViewerWidget::paintEvent(QPaintEvent* event)
+{
+    frame();
+    QWidget::paintEvent(event);
+}
+
+void ViewerWidget::showScreenShotDialog()
+{
+    qt::ScreenShotDialog* dialog = new qt::ScreenShotDialog(this);
+    if (dialog->exec() == QDialog::Accepted) {
+        auto fs = dialog->selectedFiles();
+        ViewerCanvas::screenShot(fs.first().toStdString());
+    }
+    // the dialog stealed the focus, so we need to release the modifiers
+    ViewerCanvas::setKeyModifiers({KeyModifier::NO_MODIFIER});
+    setModifiers({KeyModifier::NO_MODIFIER});
+}
+
+} // namespace vcl::qt

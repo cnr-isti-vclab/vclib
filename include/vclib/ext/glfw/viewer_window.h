@@ -20,53 +20,38 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_MINIMAL_VIEWER_WIDGET_H
-#define VCL_EXT_QT_MINIMAL_VIEWER_WIDGET_H
+#ifndef VCL_EXT_GLFW_VIEWER_WINDOW_H
+#define VCL_EXT_GLFW_VIEWER_WINDOW_H
 
-#include "canvas_widget.h"
+#include <vclib/render/viewer_canvas.h>
 
-#include <vclib/render/viewer/minimal_viewer.h>
+#include "event_manager_window.h"
 
-namespace vcl::qt {
+namespace vcl::glfw {
 
-class MinimalViewerWidget : public CanvasWidget, public vcl::MinimalViewer
+class ViewerWindow : public EventManagerWindow, public vcl::ViewerCanvas
 {
-protected:
-    using MV = vcl::MinimalViewer;
-
 public:
-    using CanvasWidget::height;
-    using CanvasWidget::width;
-
-    MinimalViewerWidget(
+    ViewerWindow(
         std::shared_ptr<DrawableObjectVector> v,
+        const std::string&                    windowTitle = "Minimal Viewer",
         uint                                  width       = 1024,
         uint                                  height      = 768,
-        const std::string&                    windowTitle = "",
-        QWidget*                              parent      = nullptr);
+        void*                                 parent      = nullptr);
 
-    MinimalViewerWidget(
+    ViewerWindow(
         const std::string& windowTitle = "Minimal Viewer",
         uint               width       = 1024,
         uint               height      = 768,
-        QWidget*           parent      = nullptr);
+        void*              parent      = nullptr);
 
-    MinimalViewerWidget(QWidget* parent);
+    ViewerWindow(void* parent);
 
-    virtual ~MinimalViewerWidget() = default;
+    ~ViewerWindow() override = default;
 
-    void update() override;
-
-    void draw() override;
-
-    void onResize(uint width, uint height) override;
-
-    void onKeyPress(Key::Enum key) override;
-
-private:
-    void showScreenShotDialog();
+    void show();
 };
 
-} // namespace vcl::qt
+} // namespace vcl::glfw
 
-#endif // VCL_EXT_QT_MINIMAL_VIEWER_WIDGET_H
+#endif // VCL_EXT_GLFW_VIEWER_WINDOW_H

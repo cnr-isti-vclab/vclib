@@ -63,14 +63,14 @@ void CanvasWidget::draw()
 
 void CanvasWidget::update()
 {
-    paint();
+    frame();
     QWidget::update();
 }
 
 bool CanvasWidget::event(QEvent* event)
 {
     if (event->type() == QEvent::UpdateRequest) {
-        paint();
+        frame();
         return true;
     }
     return QWidget::event(event);
@@ -78,13 +78,8 @@ bool CanvasWidget::event(QEvent* event)
 
 void CanvasWidget::paintEvent(QPaintEvent* event)
 {
-    paint();
+    frame();
     QWidget::paintEvent(event);
-}
-
-void CanvasWidget::paint()
-{
-    Canvas::frame();
 }
 
 } // namespace vcl::qt
