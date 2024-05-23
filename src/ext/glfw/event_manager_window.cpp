@@ -90,12 +90,20 @@ uint EventManagerWindow::height() const
     return height;
 }
 
-void EventManagerWindow::glfwWindowSizeCallback(GLFWwindow*, int width, int height)
+void EventManagerWindow::glfwWindowSizeCallback(
+    GLFWwindow*,
+    int width,
+    int height)
 {
     onResize(width, height);
 }
 
-void EventManagerWindow::glfwKeyCallback(GLFWwindow*, int key, int, int action, int)
+void EventManagerWindow::glfwKeyCallback(
+    GLFWwindow*,
+    int key,
+    int,
+    int action,
+    int)
 {
     vcl::Key::Enum k = glfw::fromGLFW((glfw::Key) key);
     // GLFW modifier does not work as expected: modifiers are not updated
@@ -137,7 +145,10 @@ void EventManagerWindow::glfwMouseButtonCallback(
     }
 }
 
-void EventManagerWindow::glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos)
+void EventManagerWindow::glfwCursorPosCallback(
+    GLFWwindow*,
+    double xpos,
+    double ypos)
 {
     onMouseMove(xpos, ypos);
 }
@@ -154,41 +165,41 @@ void EventManagerWindow::setCallbacks()
 {
     glfwSetWindowSizeCallback(
         mWindow, [](GLFWwindow* window, int width, int height) {
-            auto* self =
-                static_cast<EventManagerWindow*>(glfwGetWindowUserPointer(window));
+            auto* self = static_cast<EventManagerWindow*>(
+                glfwGetWindowUserPointer(window));
             self->glfwWindowSizeCallback(window, width, height);
         });
 
-           // key callback
+    // key callback
     glfwSetKeyCallback(
         mWindow,
         [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-            auto* self =
-                static_cast<EventManagerWindow*>(glfwGetWindowUserPointer(window));
+            auto* self = static_cast<EventManagerWindow*>(
+                glfwGetWindowUserPointer(window));
             self->glfwKeyCallback(window, key, scancode, action, mods);
         });
 
-           // mouse position callback
+    // mouse position callback
     glfwSetCursorPosCallback(
         mWindow, [](GLFWwindow* window, double xpos, double ypos) {
-            auto* self =
-                static_cast<EventManagerWindow*>(glfwGetWindowUserPointer(window));
+            auto* self = static_cast<EventManagerWindow*>(
+                glfwGetWindowUserPointer(window));
             self->glfwCursorPosCallback(window, xpos, ypos);
         });
 
-           // mouse button callback
+    // mouse button callback
     glfwSetMouseButtonCallback(
         mWindow, [](GLFWwindow* window, int button, int action, int mods) {
-            auto* self =
-                static_cast<EventManagerWindow*>(glfwGetWindowUserPointer(window));
+            auto* self = static_cast<EventManagerWindow*>(
+                glfwGetWindowUserPointer(window));
             self->glfwMouseButtonCallback(window, button, action, mods);
         });
 
-           // scroll callback
+    // scroll callback
     glfwSetScrollCallback(
         mWindow, [](GLFWwindow* window, double xoffset, double yoffset) {
-            auto* self =
-                static_cast<EventManagerWindow*>(glfwGetWindowUserPointer(window));
+            auto* self = static_cast<EventManagerWindow*>(
+                glfwGetWindowUserPointer(window));
             self->glfwScrollCallback(window, xoffset, yoffset);
         });
 }

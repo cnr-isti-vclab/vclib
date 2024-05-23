@@ -56,13 +56,25 @@ protected:
     // callbacks
     virtual void glfwWindowSizeCallback(GLFWwindow*, int width, int height);
 
-    virtual void glfwKeyCallback(GLFWwindow*, int key, int, int action, int mods);
+    virtual void glfwKeyCallback(
+        GLFWwindow*,
+        int key,
+        int,
+        int action,
+        int mods);
 
-    virtual void glfwMouseButtonCallback(GLFWwindow*, int button, int action, int mods);
+    virtual void glfwMouseButtonCallback(
+        GLFWwindow*,
+        int button,
+        int action,
+        int mods);
 
     virtual void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos);
 
-    virtual void glfwScrollCallback(GLFWwindow*, double xoffset, double yoffset);
+    virtual void glfwScrollCallback(
+        GLFWwindow*,
+        double xoffset,
+        double yoffset);
 
 private:
     void setCallbacks();

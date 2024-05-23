@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <QMouseEvent>
 #include <QGuiApplication>
+#include <QMouseEvent>
 
 #include <vclib/ext/qt/event_manager_widget.h>
 
