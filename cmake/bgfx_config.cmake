@@ -294,12 +294,6 @@ function(build_bgfx_shaders_to_headers)
         endif()
 
         if(NOT "${TYPE}" STREQUAL "")
-
-            message(SHADER: ${SHADER})
-            message(ABS: ${ABSOLUTE_PATH_SHADER})
-            message(VARYING: "${ABSOLUTE_DIR_PATH}/varying.def.sc")
-            message(OUTPUT_DIR: ${BGFX_SHADERS_OUTPUT_DIR}/${DIR_PATH})
-
             _bgfx_compile_shader_to_header(
                 TYPE ${TYPE}
                 SHADERS ${ABSOLUTE_PATH_SHADER}
@@ -322,13 +316,15 @@ endfunction()
 function(build_assets_to_headers)
     target_ide_add_assets(vclib-render ${ARGV})
 
+    get_property(VCLIB_RENDER_DIR TARGET vclib-render PROPERTY VCLIB_RENDER_INCLUDE_DIR)
     get_property(TARGET_BIN_DIR TARGET vclib-render PROPERTY BINARY_DIR)
 
     set(BGFX_ASSETS_OUTPUT_DIR "${TARGET_BIN_DIR}/include")
 
     message(STATUS "OutDir: ${BGFX_ASSETS_OUTPUT_DIR}")
     foreach(ASSET ${ARGV})
-        get_filename_component(DIR_PATH ${ASSET} DIRECTORY)
+        file(RELATIVE_PATH ASSET_REL "${VCLIB_RENDER_DIR}/.." ${ASSET})
+        get_filename_component(DIR_PATH ${ASSET_REL} DIRECTORY)
         get_filename_component(FILENAME "${ASSET}" NAME)
         get_filename_component(FILENAME_WE "${ASSET}" NAME_WE)
         get_filename_component(ABSOLUTE_PATH_ASSET ${ASSET} ABSOLUTE)

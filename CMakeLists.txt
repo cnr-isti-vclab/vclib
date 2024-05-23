@@ -42,10 +42,10 @@ set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/render/*.h")
 
-file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/render/*.cpp")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/vclib/render/*.cpp")
 
 if (APPLE)
-    file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS "src/render/*.mm")
+    file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS "src/vclib/render/*.mm")
     list(APPEND SOURCES ${SOURCES_MM})
 endif()
 
@@ -59,7 +59,7 @@ if (TARGET vclib-external-glfw)
         "include/vclib/ext/glfw/*.h")
     list(APPEND HEADERS ${HEADERS_GLFW})
 
-    file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/ext/glfw/*.cpp")
+    file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/ext/glfw/*.cpp")
     list(APPEND SOURCES ${SOURCES_GLFW})
 endif()
 
@@ -68,7 +68,8 @@ if (TARGET vclib-external-opengl)
         "include/vclib/ext/opengl2/*.h")
     list(APPEND HEADERS ${HEADERS_OPENGL2})
 
-    file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS "src/ext/opengl2/*.cpp")
+    file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS
+        "src/vclib/ext/opengl2/*.cpp")
     list(APPEND SOURCES ${SOURCES_OPENGL2})
 endif()
 
@@ -76,10 +77,10 @@ if (TARGET vclib-external-qt)
     file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
     list(APPEND HEADERS ${HEADERS_QT})
 
-    file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/ext/qt/*.cpp")
+    file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.cpp")
     list(APPEND SOURCES ${SOURCES_QT})
 
-    file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/ext/qt/*.ui")
+    file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
     list(APPEND FORMS ${FORMS_QT})
 
     if (TARGET vclib-external-qglviewer)
@@ -88,11 +89,11 @@ if (TARGET vclib-external-qt)
         list(APPEND HEADERS ${HEADERS_QGLVIEWER})
 
         file(GLOB_RECURSE SOURCES_QGLVIEWER CONFIGURE_DEPENDS
-            "src/ext/qglviewer/*.cpp")
+            "src/vclib/ext/qglviewer/*.cpp")
         list(APPEND SOURCES ${SOURCES_QGLVIEWER})
 
         file(GLOB_RECURSE FORMS_QGLVIEWER CONFIGURE_DEPENDS
-            "src/ext/qglviewer/*.ui")
+            "src/vclib/ext/qglviewer/*.ui")
         list(APPEND FORMS ${FORMS_QGLVIEWER})
     endif()
 endif()
