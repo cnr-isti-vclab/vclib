@@ -26,6 +26,20 @@
 
 #include <vclib/ext/glfw/input.h>
 
+#if defined(__linux__)
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+#define GLFW_EXPOSE_NATIVE_WAYLAND
+#else
+#define GLFW_EXPOSE_NATIVE_X11
+#endif
+#elif defined(_WIN32)
+#define GLFW_EXPOSE_NATIVE_WIN32
+#elif defined(__APPLE__)
+#define GLFW_EXPOSE_NATIVE_COCOA
+#endif
+
+#include <GLFW/glfw3native.h>
+
 namespace vcl::glfw {
 
 namespace detail {
@@ -88,6 +102,25 @@ uint EventManagerWindow::height() const
     int width, height;
     glfwGetWindowSize(mWindow, &width, &height);
     return height;
+}
+
+void* EventManagerWindow::winId()
+{
+    void* nwh = nullptr;
+
+#if defined(__linux__)
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+    nwh = (void*) (uintptr_t) glfwGetWaylandWindow(mWindow);
+#else
+    nwh = (void*) (uintptr_t) glfwGetX11Window(mWindow);
+#endif
+#elif defined(_WIN32)
+    nwh = glfwGetWin32Window(mWindow);
+#elif defined(__APPLE__)
+    nwh = glfwGetCocoaWindow(mWindow);
+#endif
+
+    return nwh;
 }
 
 void EventManagerWindow::glfwWindowSizeCallback(

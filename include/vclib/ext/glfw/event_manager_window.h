@@ -53,6 +53,8 @@ public:
     uint height() const;
 
 protected:
+    void* winId();
+
     // callbacks
     virtual void glfwWindowSizeCallback(GLFWwindow*, int width, int height);
 
