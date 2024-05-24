@@ -21,21 +21,15 @@
  ****************************************************************************/
 
 #include "hello_triangle_qt.h"
+#include <QApplication>
 
-#include "common.h"
-
-HelloTriangleQt::HelloTriangleQt() : vcl::qt::CanvasWidget("Hello Triangle Qt")
+int main(int argc, char** argv)
 {
-    setUpBGFX(viewId(), vbh, program);
-}
+    QApplication app(argc, argv);
 
-HelloTriangleQt::~HelloTriangleQt()
-{
-    bgfx::destroy(vbh);
-    bgfx::destroy(program);
-}
+    HelloTriangleQt tw;
 
-void HelloTriangleQt::draw()
-{
-    drawOnView(viewId(), vbh, program);
+    tw.show();
+
+    return app.exec();
 }

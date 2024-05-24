@@ -22,6 +22,9 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    add_subdirectory(bgfx)
+if (TARGET vclib-external-qt)
+    add_subdirectory(qt)
+endif()
+if (TARGET vclib-external-glfw)
+    add_subdirectory(glfw)
 endif()

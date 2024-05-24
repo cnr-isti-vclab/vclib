@@ -22,6 +22,25 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    add_subdirectory(bgfx)
-endif()
+set(EXAMPLE_NAME 00-hello-triangle-glfw)
+project(vclib-render-example-${EXAMPLE_NAME})
+
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
+
+set(HEADERS
+    ../common.h
+    hello_triangle_glfw.h)
+
+set(SOURCES
+    main.cpp
+    hello_triangle_glfw.cpp)
+
+set(SHADERS
+    shaders/vs_vertex_shader.sc
+    shaders/fs_fragment_shader.sc
+    shaders/varying.def.sc)
+
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
+
+target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})

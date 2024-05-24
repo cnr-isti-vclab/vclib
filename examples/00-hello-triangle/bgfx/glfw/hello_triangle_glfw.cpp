@@ -22,7 +22,7 @@
 
 #include "hello_triangle_glfw.h"
 
-#include "common.h"
+#include "../common.h"
 
 HelloTriangleGLFW::HelloTriangleGLFW() :
         vcl::glfw::CanvasWindow("Hello Triangle GLFW")
