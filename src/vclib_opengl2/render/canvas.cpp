@@ -20,50 +20,29 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
-#define VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
+#include <vclib_opengl2/render/canvas.h>
 
-#include <vclib/space/color.h>
+namespace vcl {
 
-namespace vcl::gl2 {
+Canvas::Canvas(void* winId, uint width, uint height)
+{
+    glViewport(0, 0, width, height);
+    glClearColor(1.f, 1.f, 1.f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
 
-void drawPoint2(const Point2d& p, const Color& c, int size = 8);
+void Canvas::screenShot(const std::string& filename, uint width, uint height)
+{
+}
 
-void drawLine2(
-    const Point2d& a,
-    const Point2d& b,
-    const Color&   c,
-    int            width = 3);
+void Canvas::onResize(uint width, uint height)
+{
+    glViewport(0, 0, width, height);
+}
 
-void drawTriangle2(
-    const Point2d& p1,
-    const Point2d& p2,
-    const Point2d& p3,
-    const Color&   c,
-    int            width = 3,
-    bool           fill  = false);
+void Canvas::frame()
+{
+    draw();
+}
 
-void drawTriangle2(
-    const std::array<Point2d, 3>& arr,
-    const Color&                  c,
-    int                           width = 3,
-    bool                          fill  = false);
-
-void drawQuad2(
-    const std::array<Point2d, 4>& points,
-    const Color&                  c,
-    int                           width = 3,
-    bool                          fill  = false);
-
-void drawQuad2(
-    const Point2d& p1,
-    const Point2d& p2,
-    const Point2d& p3,
-    const Point2d& p4,
-    const Color&   c,
-    int            width = 3,
-    bool           fill  = false);
-
-} // namespace vcl::gl2
-
-#endif // VCL_EXT_OPENGL2_DRAW_OBJECTS2_H
+} // namespace vcl

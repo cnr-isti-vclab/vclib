@@ -20,91 +20,50 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_OPENGL2_DRAW_OBJECTS3_H
-#define VCL_EXT_OPENGL2_DRAW_OBJECTS3_H
+#ifndef VCL_OPENGL2_RENDER_DRAWABLE_DRAW_OBJECTS2_H
+#define VCL_OPENGL2_RENDER_DRAWABLE_DRAW_OBJECTS2_H
 
 #include <vclib/space/color.h>
 
-namespace vcl::gl2 {
+namespace vcl {
 
-void drawPoint3(const Point3d& p, const Color& c, int size = 8);
+void drawPoint2(const Point2d& p, const Color& c, int size = 8);
 
-void drawSphere(
-    const Point3d& center,
-    float          radius,
-    const Color&   color,
-    int            precision = 4);
-
-void drawCylinder(
-    const Point3d& a,
-    const Point3d& b,
-    float          top_radius,
-    float          bottom_radius,
-    const Color&   color,
-    unsigned int   slices = 50,
-    unsigned int   stacks = 10);
-
-void drawArrow3(
-    const Point3d& a,
-    const Point3d& b,
-    float          bottom_radius,
-    const Color&   color,
-    unsigned int   slices = 50,
-    unsigned int   stacks = 10);
-
-void drawLine3(
-    const Point3d& a,
-    const Point3d& b,
+void drawLine2(
+    const Point2d& a,
+    const Point2d& b,
     const Color&   c,
     int            width = 3);
 
-void drawSegment3(
-    const Point3d& a,
-    const Point3d& b,
-    const Color&   c,
-    int            width = 3);
-
-void drawDashedLine3(
-    const Point3d& a,
-    const Point3d& b,
-    const Color&   c,
-    int            width = 3);
-
-void drawTriangle(
-    const Point3d& p1,
-    const Point3d& p2,
-    const Point3d& p3,
+void drawTriangle2(
+    const Point2d& p1,
+    const Point2d& p2,
+    const Point2d& p3,
     const Color&   c,
     int            width = 3,
     bool           fill  = false);
 
-void drawQuad3(
-    const Point3d& a,
-    const Point3d& b,
-    const Point3d& c,
-    const Point3d& d,
-    int            width = 3);
+void drawTriangle2(
+    const std::array<Point2d, 3>& arr,
+    const Color&                  c,
+    int                           width = 3,
+    bool                          fill  = false);
 
-void drawBox3(
-    const Point3d& min,
-    const Point3d& max,
+void drawQuad2(
+    const std::array<Point2d, 4>& points,
+    const Color&                  c,
+    int                           width = 3,
+    bool                          fill  = false);
+
+void drawQuad2(
+    const Point2d& p1,
+    const Point2d& p2,
+    const Point2d& p3,
+    const Point2d& p4,
     const Color&   c,
-    int            width = 3);
+    int            width = 3,
+    bool           fill  = false);
 
-void drawBox3(
-    const Point3d& p0,
-    const Point3d& p1,
-    const Point3d& p2,
-    const Point3d& p3,
-    const Point3d& p4,
-    const Point3d& p5,
-    const Point3d& p6,
-    const Point3d& p7,
-    const Color&   c,
-    int            width = 3);
+} // namespace vcl
 
-void drawBox3(const std::vector<Point3d>& p, const Color& c, int width = 3);
-
-} // namespace vcl::gl2
-
-#endif // VCL_EXT_OPENGL2_DRAW_OBJECTS3_H
+#endif // VCL_OPENGL2_RENDER_DRAWABLE_DRAW_OBJECTS2_H

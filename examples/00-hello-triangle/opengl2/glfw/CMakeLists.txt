@@ -22,8 +22,18 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    add_subdirectory(bgfx)
-elseif (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
-    add_subdirectory(opengl2)
-endif()
+set(EXAMPLE_NAME 00-hello-triangle-glfw)
+project(vclib-render-example-${EXAMPLE_NAME})
+
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
+
+set(HEADERS
+    ../common.h
+    hello_triangle_glfw.h)
+
+set(SOURCES
+    main.cpp
+    hello_triangle_glfw.cpp)
+
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})

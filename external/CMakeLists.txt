@@ -28,6 +28,10 @@ include(FetchContent)
 # external libraries may have warnings
 set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 
+# bgfx
+option(VCLIB_ALLOW_BUNDLED_BGFX "Allow use of bundled bgfx source" ON)
+
+# Wayland
 option(VCLIB_RENDER_WITH_WAYLAND "Linux only - build vclib-render for wayland" OFF)
 
 # Qt
@@ -37,28 +41,27 @@ option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
 option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
 option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
 
-# bgfx
-option(VCLIB_ALLOW_BUNDLED_BGFX "Allow use of bundled bgfx source" ON)
-
 # QGLViewer
 option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
 
 set(VCLIB_RENDER_EXTERNAL_LIBRARIES "")
 
-# === REQUIRED RENDER ENGINES === #
+# === RENDER ENGINES (and optional libraries binded to them) === #
 
 ### bgfx
 if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    ### Wayland (optional)
+    include(wayland.cmake)
+
     include(bgfx.cmake)
 endif()
 
-# === OPTIONAL === #
-
-### Wayland
-include(wayland.cmake)
-
 ### OpenGL
-include(opengl.cmake)
+if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
+    include(opengl.cmake)
+endif()
+
+# === OPTIONAL === #
 
 ### Qt
 include(qt.cmake)

@@ -65,4 +65,12 @@ void ViewerWindow::show()
     }
 }
 
+void ViewerWindow::draw()
+{
+    ViewerCanvas::draw();
+#ifdef VCLIB_RENDER_ENGINE_OPENGL2
+    glfwSwapBuffers(mWindow);
+#endif
+}
+
 } // namespace vcl::glfw

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_OPENGL2_DRAWABLE_MESH_H
-#define VCL_EXT_OPENGL2_DRAWABLE_MESH_H
+#ifndef VCL_OPENGL2_RENDER_DRAWABLE_DRAWABLE_MESH_H
+#define VCL_OPENGL2_RENDER_DRAWABLE_DRAWABLE_MESH_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -40,7 +40,7 @@
 
 #include "draw_objects3.h"
 
-namespace vcl::gl2 {
+namespace vcl {
 
 // From:
 // https://blog.nobel-joergensen.com/2013/01/29/debugging-opengl-using-glgeterror/
@@ -506,6 +506,6 @@ private:
     }
 };
 
-} // namespace vcl::gl2
+} // namespace vcl
 
-#endif // VCL_EXT_OPENGL2_DRAWABLE_MESH_H
+#endif // VCL_OPENGL2_RENDER_DRAWABLE_DRAWABLE_MESH_H

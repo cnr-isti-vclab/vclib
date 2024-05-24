@@ -30,7 +30,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # Options
 set(VCLIB_RENDER_ENGINE "bgfx" CACHE STRING "Select the rendering engine")
-set_property(CACHE VCLIB_RENDER_ENGINE PROPERTY STRINGS bgfx)
+set_property(CACHE VCLIB_RENDER_ENGINE PROPERTY STRINGS bgfx opengl2 none)
 
 # vclib
 add_subdirectory(vclib)
@@ -51,6 +51,13 @@ if (APPLE)
 endif()
 
 file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS "assets/*")
+
+# remove all files in ${CMAKE_CURRENT_BINARY_DIR}/include/vclib
+file(GLOB_RECURSE VCLIB_RENDER_GEN_HEADERS CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_BINARY_DIR}/include/vclib/*")
+foreach(FILE ${VCLIB_RENDER_GEN_HEADERS})
+    file(REMOVE ${FILE})
+endforeach()
 
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
@@ -87,52 +94,87 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
     endforeach()
 endif()
 
-if (TARGET vclib-external-glfw)
-    file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
-        "include/vclib/ext/glfw/*.h")
-    list(APPEND HEADERS ${HEADERS_GLFW})
-
-    file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/ext/glfw/*.cpp")
-    list(APPEND SOURCES ${SOURCES_GLFW})
-endif()
-
-if (TARGET vclib-external-opengl)
+# if render engine is opengl2 - include sources that use opengl2
+if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
     file(GLOB_RECURSE HEADERS_OPENGL2 CONFIGURE_DEPENDS
-        "include/vclib/ext/opengl2/*.h")
+        "include/vclib_opengl2/render/*.h")
     list(APPEND HEADERS ${HEADERS_OPENGL2})
 
     file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS
-        "src/vclib/ext/opengl2/*.cpp")
+        "src/vclib_opengl2/render/*.cpp")
     list(APPEND SOURCES ${SOURCES_OPENGL2})
+
+    # required files that use opengl2
+    set(LINK_FILES
+        include/vclib_opengl2/render/canvas.h
+        include/vclib_opengl2/render/viewer_canvas.h
+        include/vclib_opengl2/render/drawable/drawable_mesh.h)
+
+    foreach(FILE ${LINK_FILES})
+        string(REPLACE "vclib_opengl2" "vclib" TARGET_FILE ${FILE})
+
+        get_filename_component(TARGET_DIR ${TARGET_FILE} DIRECTORY)
+        file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR})
+
+        file(CREATE_LINK
+            ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
+            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE})
+    endforeach()
 endif()
 
-if (TARGET vclib-external-qt)
-    file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
-    list(APPEND HEADERS ${HEADERS_QT})
+if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    if (TARGET vclib-external-glfw)
+        file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
+            "include/vclib/ext/glfw/*.h")
+        list(APPEND HEADERS ${HEADERS_GLFW})
 
-    file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.cpp")
-    list(APPEND SOURCES ${SOURCES_QT})
-
-    file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
-    list(APPEND FORMS ${FORMS_QT})
-
-    if (TARGET vclib-external-qglviewer)
-        file(GLOB_RECURSE HEADERS_QGLVIEWER CONFIGURE_DEPENDS
-            "include/vclib/ext/qglviewer/*.h")
-        list(APPEND HEADERS ${HEADERS_QGLVIEWER})
-
-        file(GLOB_RECURSE SOURCES_QGLVIEWER CONFIGURE_DEPENDS
-            "src/vclib/ext/qglviewer/*.cpp")
-        list(APPEND SOURCES ${SOURCES_QGLVIEWER})
-
-        file(GLOB_RECURSE FORMS_QGLVIEWER CONFIGURE_DEPENDS
-            "src/vclib/ext/qglviewer/*.ui")
-        list(APPEND FORMS ${FORMS_QGLVIEWER})
+        file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/ext/glfw/*.cpp")
+        list(APPEND SOURCES ${SOURCES_GLFW})
     endif()
 
-    source_group("Forms Files" FILES ${FORMS})
+    if (TARGET vclib-external-qt)
+        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
+        list(APPEND HEADERS ${HEADERS_QT})
+
+        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.cpp")
+        list(APPEND SOURCES ${SOURCES_QT})
+
+        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
+        list(APPEND FORMS ${FORMS_QT})
+
+        if (TARGET vclib-external-qglviewer)
+            file(GLOB_RECURSE HEADERS_QGLVIEWER CONFIGURE_DEPENDS
+                "include/vclib/ext/qglviewer/*.h")
+            list(APPEND HEADERS ${HEADERS_QGLVIEWER})
+
+            file(GLOB_RECURSE SOURCES_QGLVIEWER CONFIGURE_DEPENDS
+                "src/vclib/ext/qglviewer/*.cpp")
+            list(APPEND SOURCES ${SOURCES_QGLVIEWER})
+
+            file(GLOB_RECURSE FORMS_QGLVIEWER CONFIGURE_DEPENDS
+                "src/vclib/ext/qglviewer/*.ui")
+            list(APPEND FORMS ${FORMS_QGLVIEWER})
+        endif()
+
+        source_group("Forms Files" FILES ${FORMS})
+    endif()
 endif()
 
+if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
+    list(APPEND HEADERS
+        include/vclib/ext/glfw/canvas_window.h
+        include/vclib/ext/glfw/event_manager_window.h
+        include/vclib/ext/glfw/input.h
+        )
+
+    list(APPEND SOURCES
+        src/vclib/ext/glfw/canvas_window.cpp
+        src/vclib/ext/glfw/event_manager_window.cpp
+        src/vclib/ext/glfw/input.cpp
+        src/vclib/ext/glfw/viewer_window.cpp
+        )
+
+endif()
 
 # vclib-render target
 if (WIN32)
@@ -158,8 +200,14 @@ set_target_properties(vclib-render PROPERTIES
     "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 
 if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    target_compile_definitions(vclib-render PUBLIC VCLIB_RENDER_ENGINE_BGFX)
+
     build_bgfx_shaders_to_headers(${SHADERS})
     build_assets_to_headers(${ASSETS})
+endif()
+
+if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
+    target_compile_definitions(vclib-render PUBLIC VCLIB_RENDER_ENGINE_OPENGL2)
 endif()
 
 if (TARGET vclib-external-qt)

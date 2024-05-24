@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/opengl2/draw_objects2.h>
+#include <vclib_opengl2/render/drawable/draw_objects2.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -34,7 +34,7 @@
 #include <GL/glu.h>
 #endif
 
-namespace vcl::gl2 {
+namespace vcl {
 
 /**
  * @brief drawPoint2
@@ -163,4 +163,4 @@ void drawQuad2(
     drawQuad2(arr, c, width, fill);
 }
 
-} // namespace vcl::gl2
+} // namespace vcl

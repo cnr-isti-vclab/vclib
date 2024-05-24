@@ -20,41 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_VIEWER_WINDOW_H
-#define VCL_EXT_GLFW_VIEWER_WINDOW_H
+#ifndef VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#define VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
 
-#include <vclib/render/viewer_canvas.h>
+#include <memory>
 
-#include "event_manager_window.h"
+#include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/interfaces/event_manager_i.h>
+#include <vclib/render/viewer/desktop_trackball.h>
 
-namespace vcl::glfw {
+#include <vclib_opengl2/render/canvas.h>
 
-class ViewerWindow : public EventManagerWindow, public vcl::ViewerCanvas
+namespace vcl {
+
+class ViewerCanvas : public vcl::Canvas, public vcl::DesktopTrackBall<float>
 {
+    // this Viewer does not normally own this drawList
+    std::shared_ptr<DrawableObjectVector> mDrawList;
+
+protected:
+    using DTB = vcl::DesktopTrackBall<float>;
+
 public:
-    ViewerWindow(
+    ViewerCanvas(void* winId, uint width = 1024, uint height = 768);
+
+    ViewerCanvas(
+        void*                                 winId,
         std::shared_ptr<DrawableObjectVector> v,
-        const std::string&                    windowTitle = "Minimal Viewer",
-        uint                                  width       = 1024,
-        uint                                  height      = 768,
-        void*                                 parent      = nullptr);
+        uint                                  width  = 1024,
+        uint                                  height = 768);
 
-    ViewerWindow(
-        const std::string& windowTitle = "Minimal Viewer",
-        uint               width       = 1024,
-        uint               height      = 768,
-        void*              parent      = nullptr);
+    const DrawableObjectVector& drawableObjectVector() const;
 
-    ViewerWindow(void* parent);
+    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
 
-    ~ViewerWindow() override = default;
+    uint pushDrawableObject(const DrawableObjectI& obj);
 
-    void show();
+    void fitScene();
 
 protected:
     void draw() override;
+
+    // events
+    void onResize(unsigned int width, unsigned int height) override;
+
+    void onKeyPress(Key::Enum key) override;
+
+    void onKeyRelease(Key::Enum key) override;
+
+    void onMouseMove(double x, double y) override;
+
+    void onMousePress(MouseButton::Enum button) override;
+
+    void onMouseRelease(MouseButton::Enum button) override;
+
+    void onMouseScroll(double dx, double dy) override;
+
+private:
+    void initDrawableObject(DrawableObjectI& obj);
 };
 
-} // namespace vcl::glfw
+} // namespace vcl
 
-#endif // VCL_EXT_GLFW_VIEWER_WINDOW_H
+#endif // VCL_OPENGL2_RENDER_VIEWER_CANVAS_H

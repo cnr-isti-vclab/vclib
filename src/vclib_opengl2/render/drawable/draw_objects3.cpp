@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/opengl2/draw_objects3.h>
+#include <vclib_opengl2/render/drawable/draw_objects3.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -34,7 +34,7 @@
 #include <GL/glu.h>
 #endif
 
-namespace vcl::gl2 {
+namespace vcl {
 
 /**
  * @brief Draws a point on the plane (coord z = 0 if 3D).
@@ -342,4 +342,4 @@ void drawBox3(const std::vector<Point3d>& p, const Color& c, int width)
     drawBox3(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], c, width);
 }
 
-} // namespace vcl::gl2
+} // namespace vcl

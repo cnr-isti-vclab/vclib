@@ -9,52 +9,54 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
+ * it under the terms of the GNU General Public License as published by      *
+ * the Free Software Foundation; either version 3 of the License, or         *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_VIEWER_WINDOW_H
-#define VCL_EXT_GLFW_VIEWER_WINDOW_H
+#include "common.h"
 
-#include <vclib/render/viewer_canvas.h>
+#include <vclib/ext/glfw/viewer_window.h>
 
-#include "event_manager_window.h"
-
-namespace vcl::glfw {
-
-class ViewerWindow : public EventManagerWindow, public vcl::ViewerCanvas
+int main(int argc, char** argv)
 {
-public:
-    ViewerWindow(
-        std::shared_ptr<DrawableObjectVector> v,
-        const std::string&                    windowTitle = "Minimal Viewer",
-        uint                                  width       = 1024,
-        uint                                  height      = 768,
-        void*                                 parent      = nullptr);
+    vcl::glfw::ViewerWindow tw("Viewer GLFW");
 
-    ViewerWindow(
-        const std::string& windowTitle = "Minimal Viewer",
-        uint               width       = 1024,
-        uint               height      = 768,
-        void*              parent      = nullptr);
+    // load and set up a drawable mesh
+    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
 
-    ViewerWindow(void* parent);
+    auto mrs = drawable.renderSettings();
+    mrs.setSurfaceColorPerMesh();
+    mrs.setSurfaceShadingFlat();
+    drawable.setRenderSettings(mrs);
 
-    ~ViewerWindow() override = default;
+    // add the drawable mesh to the scene
+    // the viewer will own **a copy** of the drawable mesh
+    tw.pushDrawableObject(drawable);
 
-    void show();
+    tw.fitScene();
 
-protected:
-    void draw() override;
-};
+    tw.show();
 
-} // namespace vcl::glfw
+    // vcl::glfw::ViewerWindow tw2("Viewer GLFW");
 
-#endif // VCL_EXT_GLFW_VIEWER_WINDOW_H
+    // // load and set up a drawable mesh
+    // vcl::DrawableMesh<vcl::TriMesh> drawable2 =
+    //     getDrawableMesh("greek_helmet.obj");
+
+    // // add the drawable mesh to the scene
+    // // the viewer will own **a copy** of the drawable mesh
+    // tw2.pushDrawableObject(drawable2);
+
+    // tw2.fitScene();
+
+    // tw2.show();
+
+    return 0;
+}

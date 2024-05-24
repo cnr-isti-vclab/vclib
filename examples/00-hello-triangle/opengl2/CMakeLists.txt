@@ -22,8 +22,6 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    add_subdirectory(bgfx)
-elseif (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
-    add_subdirectory(opengl2)
+if (TARGET vclib-external-glfw)
+    add_subdirectory(glfw)
 endif()

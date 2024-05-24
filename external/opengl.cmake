@@ -30,10 +30,11 @@ if (OpenGL_FOUND)
         OpenGL::GL OpenGL::GLU)
 
     if(APPLE)
-        target_compile_definitions(vclib-external-opengl INTERFACE GL_SILENCE_DEPRECATION)
+        target_compile_definitions(vclib-external-opengl
+            INTERFACE GL_SILENCE_DEPRECATION)
     endif()
 
     list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-opengl)
 else()
-    message(STATUS "- OpenGL - not found, skipping")
+    message(FATAL ERROR "- OpenGL is required - system-provided library not found.")
 endif()
