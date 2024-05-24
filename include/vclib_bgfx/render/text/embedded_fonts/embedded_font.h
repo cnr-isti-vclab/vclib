@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H
-#define VCL_RENDER_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H
+#ifndef VCL_BGFX_RENDER_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H
+#define VCL_BGFX_RENDER_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H
 
 #include <array>
 #include <cstdint>
@@ -60,4 +60,4 @@ struct EmbeddedFont
 
 } // namespace vcl
 
-#endif // VCL_RENDER_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H
+#endif // VCL_BGFX_RENDER_TEXT_EMBEDDED_FONTS_EMBEDDED_FONT_H

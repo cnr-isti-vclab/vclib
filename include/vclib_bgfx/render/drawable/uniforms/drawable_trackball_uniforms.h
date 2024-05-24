@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_DRAWABLE_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
-#define VCL_RENDER_DRAWABLE_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
+#ifndef VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
+#define VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
 
 #include "shader_uniform.h"
 
@@ -60,4 +60,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_DRAWABLE_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H
+#endif // VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_H

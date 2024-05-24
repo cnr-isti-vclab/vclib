@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_EMBEDDED_SHADER_H
-#define VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_EMBEDDED_SHADER_H
+#ifndef VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_EMBEDDED_SHADER_H
+#define VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_EMBEDDED_SHADER_H
 
 #include <array>
 #include <string>
@@ -129,4 +129,4 @@ struct EmbeddedShader
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_EMBEDDED_SHADER_H
+#endif // VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_EMBEDDED_SHADER_H

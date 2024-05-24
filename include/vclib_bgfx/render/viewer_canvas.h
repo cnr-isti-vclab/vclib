@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_VIEWER_CANVAS_H
-#define VCL_RENDER_VIEWER_CANVAS_H
+#ifndef VCL_BGFX_RENDER_VIEWER_CANVAS_H
+#define VCL_BGFX_RENDER_VIEWER_CANVAS_H
 
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/interfaces/event_manager_i.h>
@@ -125,4 +125,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_RENDER_VIEWER_CANVAS_H
+#endif // VCL_BGFX_RENDER_VIEWER_CANVAS_H

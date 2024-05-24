@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONTEXT_H
-#define VCL_RENDER_CONTEXT_H
+#ifndef VCL_BGFX_RENDER_CONTEXT_H
+#define VCL_BGFX_RENDER_CONTEXT_H
 
 #include <stack>
 
@@ -79,4 +79,4 @@ bool isViewValid(bgfx::ViewId viewId);
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONTEXT_H
+#endif // VCL_BGFX_RENDER_CONTEXT_H

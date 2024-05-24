@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_BASIC_H
-#define VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_BASIC_H
+#ifndef VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_BASIC_H
+#define VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_BASIC_H
 
 #include "embedded_shader.h"
 
@@ -42,4 +42,4 @@ struct EmbeddedShader<VclProgram::FONT_BASIC>
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_BASIC_H
+#endif // VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_BASIC_H

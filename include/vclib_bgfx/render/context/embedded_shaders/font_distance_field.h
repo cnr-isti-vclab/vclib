@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_DISTANCE_FIELD_H
-#define VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_DISTANCE_FIELD_H
+#ifndef VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_DISTANCE_FIELD_H
+#define VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_DISTANCE_FIELD_H
 
 #include "embedded_shader.h"
 
@@ -42,4 +42,4 @@ struct EmbeddedShader<VclProgram::FONT_DISTANCE_FIELD>
 
 } // namespace vcl
 
-#endif // VCL_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_DISTANCE_FIELD_H
+#endif // VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_FONT_DISTANCE_FIELD_H
