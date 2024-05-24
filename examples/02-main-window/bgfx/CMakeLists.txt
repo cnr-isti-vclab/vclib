@@ -21,55 +21,9 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-render-examples)
-
-option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
-
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
-
-set(CAN_BUILD_EXAMPLES false)
-
-option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT "Force building examples using qt libraries" ON)
-option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW "Force building examples using glfw libraries" ON)
-option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_QGLVIEWER "Force building examples using qglviewer library" ON)
 
 if (TARGET vclib-external-qt)
-    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-        set(CAN_BUILD_EXAMPLES true)
-    endif()
-endif()
-if(TARGET vclib-external-glfw)
-    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW AND NOT CAN_BUILD_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_EXAMPLES true)
-    endif()
-endif()
-if(TARGET vclib-external-qglviewer)
-    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QGLVIEWER AND NOT CAN_BUILD_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER)
-        set(CAN_BUILD_EXAMPLES true)
-    endif()
+    add_subdirectory(qt)
 endif()
 
-add_subdirectory(00-hello-triangle)
-add_subdirectory(01-viewer)
-add_subdirectory(02-main-window)
-add_subdirectory(03-viewer-with-text)
 
-if (CAN_BUILD_EXAMPLES)
-    # examples
-    if (VCLIB_BUILD_EXAMPLES)
-        add_subdirectory(common)
-
-        add_subdirectory(999-misc)
-
-        if (TARGET vclib-external-qglviewer)
-            add_subdirectory(899-qglviewer)
-        endif()
-
-        # the following examples are the same of the ones in the vclib library,
-        # but they add a viewer at the end in order to visualize the results
-        add_subdirectory(vclib)
-    endif()
-endif()

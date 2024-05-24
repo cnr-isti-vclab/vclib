@@ -22,24 +22,19 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (TARGET vclib-external-qt)
+set(EXAMPLE_NAME 02-main-window)
+project(vclib-render-example-${EXAMPLE_NAME})
 
-    set(EXAMPLE_NAME 02-qt-main-window)
-    project(vclib-render-example-${EXAMPLE_NAME})
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-    ### Build settings
-    set(CMAKE_CXX_STANDARD 20)
+set(HEADERS
+    common.h
+    main_window_qt.h)
 
-    set(HEADERS
-        common.h
-        main_window_qt.h)
+set(SOURCES
+    main_window_qt.cpp
+    main.cpp)
 
-    set(SOURCES
-        main_window_qt.cpp
-        main.cpp)
-
-    # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
-    vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
-endif()
-
-
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})

@@ -22,25 +22,6 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
-    set(EXAMPLE_NAME 04-glfw-viewer-with-text)
-    project(vclib-render-example-${EXAMPLE_NAME})
-
-    ### Build settings
-    set(CMAKE_CXX_STANDARD 20)
-
-    set(HEADERS
-        common.h)
-
-    set(SOURCES
-        main.cpp)
-
-    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT_AND_BGFX)
-        add_compile_definitions(USE_QT)
-    elseif (VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW_AND_BGFX)
-        add_compile_definitions(USE_GLFW)
-    endif()
-
-    # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
-    vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
+if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    add_subdirectory(bgfx)
 endif()
