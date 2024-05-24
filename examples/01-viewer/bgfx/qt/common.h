@@ -20,55 +20,39 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "common.h"
+#ifndef COMMON_H
+#define COMMON_H
 
-#ifdef USE_QT
-#include <QApplication>
-#include <vclib/ext/qt/viewer_widget.h>
-#elif USE_GLFW
-#include <vclib/ext/glfw/viewer_window.h>
-#endif
+#include <vclib/algorithms/mesh/update/color.h>
+#include <vclib/algorithms/mesh/update/normal.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes/tri_mesh.h>
 
-int main(int argc, char** argv)
+#include <vclib/render/drawable/drawable_mesh.h>
+
+inline vcl::DrawableMesh<vcl::TriMesh> getDrawableMesh(
+    const std::string& filename = "bimba.obj")
 {
-#ifdef USE_QT
-    QApplication app(argc, argv);
+    // load a mesh:
+    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/" + filename);
+    vcl::updatePerVertexAndFaceNormals(m);
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
-#elif USE_GLFW
-    vcl::glfw::ViewerWindow tw("Viewer GLFW");
-#endif
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    // enable the vertex color of the mesh and set it to gray
+    m.enablePerVertexColor();
+    vcl::setPerVertexColor(m, vcl::Color::Gray);
 
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
+    // create a MeshRenderSettings object, that allows to set the rendering
+    // options of the mesh
+    // default is what we want: color per vertex, smooth shading, no wireframe
+    vcl::MeshRenderSettings settings(m);
 
-    tw.fitScene();
+    // create a DrawableMesh object from the mesh
+    vcl::DrawableMesh<vcl::TriMesh> drawable(m);
 
-    tw.show();
+    // set the settings to the drawable mesh
+    drawable.setRenderSettings(settings);
 
-#ifdef USE_QT
-    vcl::qt::ViewerWidget tw2("Viewer Qt");
-#elif USE_GLFW
-    vcl::glfw::ViewerWindow tw2("Viewer GLFW");
-#endif
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable2 =
-        getDrawableMesh("greek_helmet.obj");
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw2.pushDrawableObject(drawable2);
-
-    tw2.fitScene();
-
-    tw2.show();
-
-#ifdef USE_QT
-    return app.exec();
-#elif USE_GLFW
-    return 0;
-#endif
+    return drawable;
 }
+
+#endif // COMMON_H

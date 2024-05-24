@@ -21,15 +21,18 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-examples)
 
-# todo: remove this when another render engine will be available
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    add_subdirectory(9015-mesh-io-stl)
-    add_subdirectory(9018-mesh-principal-curvature)
-    add_subdirectory(9019-mesh-sampling)
-    add_subdirectory(9021-mesh-sphere-intersection)
-    add_subdirectory(9026-crease-edges-mesh)
-endif()
+set(EXAMPLE_NAME 01-viewer-glfw)
+project(vclib-render-example-${EXAMPLE_NAME})
 
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
+set(HEADERS
+    common.h)
+
+set(SOURCES
+    main.cpp)
+
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})

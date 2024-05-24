@@ -22,25 +22,18 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (TARGET vclib-external-qt OR TARGET vclib-external-glfw)
-    set(EXAMPLE_NAME 01-minimal-viewer)
-    project(vclib-render-example-${EXAMPLE_NAME})
+set(EXAMPLE_NAME 01-viewer-qt)
+project(vclib-render-example-${EXAMPLE_NAME})
 
-    ### Build settings
-    set(CMAKE_CXX_STANDARD 20)
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-    set(HEADERS
-        common.h)
+set(HEADERS
+    common.h)
 
-    set(SOURCES
-        main.cpp)
+set(SOURCES
+    main.cpp)
 
-    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT)
-        add_compile_definitions(USE_QT)
-    elseif (VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW)
-        add_compile_definitions(USE_GLFW)
-    endif()
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
 
-    # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
-    vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
-endif()

@@ -21,15 +21,7 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-examples)
 
-# todo: remove this when another render engine will be available
 if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    add_subdirectory(9015-mesh-io-stl)
-    add_subdirectory(9018-mesh-principal-curvature)
-    add_subdirectory(9019-mesh-sampling)
-    add_subdirectory(9021-mesh-sphere-intersection)
-    add_subdirectory(9026-crease-edges-mesh)
+    add_subdirectory(bgfx)
 endif()
-
-

@@ -61,7 +61,7 @@ if (CAN_BUILD_EXAMPLES)
         if ((VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT OR VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW) AND
                 (TARGET vclib-external-qt OR TARGET vclib-external-glfw))
             add_subdirectory(00-hello-triangle)
-            add_subdirectory(01-minimal-viewer)
+            add_subdirectory(01-viewer)
 
             if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT AND TARGET vclib-external-qt)
                 add_subdirectory(02-qt-main-window)
