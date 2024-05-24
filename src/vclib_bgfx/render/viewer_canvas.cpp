@@ -29,8 +29,7 @@
 namespace vcl {
 
 ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
-        Canvas(winId, width, height),
-        DTB(width, height)
+        Canvas(winId, width, height), DTB(width, height)
 {
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());

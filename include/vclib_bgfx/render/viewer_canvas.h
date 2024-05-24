@@ -57,7 +57,7 @@ public:
     ViewerCanvas(void* winId, uint width = 1024, uint height = 768);
 
     ViewerCanvas(
-        void* winId,
+        void*                                 winId,
         std::shared_ptr<DrawableObjectVector> v,
         uint                                  width  = 1024,
         uint                                  height = 768);
