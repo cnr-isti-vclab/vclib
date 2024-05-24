@@ -22,7 +22,8 @@
 
 #include <vclib_bgfx/render/context.h>
 
-#include <vclib/render/system/native_window_handle.h>
+#include <vclib_bgfx/render/system/native_window_handle.h>
+
 #include <vclib/types/base.h>
 
 namespace vcl {

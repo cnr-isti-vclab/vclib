@@ -44,6 +44,8 @@ if(TARGET vclib-external-qglviewer)
     endif()
 endif()
 
+add_subdirectory(common)
+
 add_subdirectory(00-hello-triangle)
 add_subdirectory(01-viewer)
 add_subdirectory(02-main-window)
@@ -60,8 +62,6 @@ add_subdirectory(999-misc)
 set(CAN_BUILD_VCLIB_EXAMPLES false)
 
 if (VCLIB_BUILD_EXAMPLES AND CAN_BUILD_VCLIB_EXAMPLES)
-    add_subdirectory(common)
-
     # the following examples are the same of the ones in the vclib library,
     # but they add a viewer at the end in order to visualize the results
     add_subdirectory(vclib)

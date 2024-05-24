@@ -22,7 +22,7 @@
 
 #include <vclib_bgfx/render/canvas.h>
 
-#include <vclib/render/system/native_window_handle.h>
+#include <vclib_bgfx/render/system/native_window_handle.h>
 
 namespace vcl {
 
