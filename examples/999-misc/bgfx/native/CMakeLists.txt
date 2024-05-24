@@ -22,6 +22,13 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    add_subdirectory(bgfx)
-endif()
+set(EXAMPLE_NAME 999-misc-native)
+project(vclib-render-example-${EXAMPLE_NAME})
+
+set(HEADERS
+    logo.h)
+
+set(SOURCES
+    main.cpp)
+
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})

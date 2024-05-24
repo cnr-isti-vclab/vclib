@@ -27,28 +27,20 @@ option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
 
-set(CAN_BUILD_EXAMPLES false)
-
-option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT "Force building examples using qt libraries" ON)
-option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW "Force building examples using glfw libraries" ON)
-option(VCLIB_RENDER_BUILD_EXAMPLES_WITH_QGLVIEWER "Force building examples using qglviewer library" ON)
-
 if (TARGET vclib-external-qt)
-    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QT)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-        set(CAN_BUILD_EXAMPLES true)
-    endif()
+    add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
+    set(CAN_BUILD_VCLIB_EXAMPLES true)
 endif()
 if(TARGET vclib-external-glfw)
-    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_GLFW AND NOT CAN_BUILD_EXAMPLES)
+    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
         add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_EXAMPLES true)
+        set(CAN_BUILD_VCLIB_EXAMPLES true)
     endif()
 endif()
 if(TARGET vclib-external-qglviewer)
-    if (VCLIB_RENDER_BUILD_EXAMPLES_WITH_QGLVIEWER AND NOT CAN_BUILD_EXAMPLES)
+    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
         add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER)
-        set(CAN_BUILD_EXAMPLES true)
+        set(CAN_BUILD_VCLIB_EXAMPLES true)
     endif()
 endif()
 
@@ -57,19 +49,20 @@ add_subdirectory(01-viewer)
 add_subdirectory(02-main-window)
 add_subdirectory(03-viewer-with-text)
 
-if (CAN_BUILD_EXAMPLES)
-    # examples
-    if (VCLIB_BUILD_EXAMPLES)
-        add_subdirectory(common)
+if (TARGET vclib-external-qglviewer)
+    add_subdirectory(899-qglviewer)
+endif()
 
-        add_subdirectory(999-misc)
+add_subdirectory(999-misc)
 
-        if (TARGET vclib-external-qglviewer)
-            add_subdirectory(899-qglviewer)
-        endif()
+# vclib examples - they just add a viewer at the end in order to visualize the
+# results. The viewer is choose among the available ones (Qt, GLFW, QGLViewer).
+set(CAN_BUILD_VCLIB_EXAMPLES false)
 
-        # the following examples are the same of the ones in the vclib library,
-        # but they add a viewer at the end in order to visualize the results
-        add_subdirectory(vclib)
-    endif()
+if (VCLIB_BUILD_EXAMPLES AND CAN_BUILD_VCLIB_EXAMPLES)
+    add_subdirectory(common)
+
+    # the following examples are the same of the ones in the vclib library,
+    # but they add a viewer at the end in order to visualize the results
+    add_subdirectory(vclib)
 endif()
