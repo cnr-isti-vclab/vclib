@@ -33,7 +33,6 @@ HelloTriangleGLFW::HelloTriangleGLFW() :
 
 HelloTriangleGLFW::~HelloTriangleGLFW()
 {
-
 }
 
 void HelloTriangleGLFW::draw()

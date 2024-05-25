@@ -31,9 +31,9 @@ namespace vcl {
 ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
         Canvas(winId, width, height), DTB(width, height)
 {
-    float light_position[] = { 0, 0, 1, 0.0f };
-    float light_ambient[] = {.2f, .2f, .2f, 1.0f };
-    float light_diffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float light_position[] = {0, 0, 1, 0.0f};
+    float light_ambient[]  = {.2f, .2f, .2f, 1.0f};
+    float light_diffuse[]  = {1.0f, 1.0f, 1.0f, 1.0f};
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
