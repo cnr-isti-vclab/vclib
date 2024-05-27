@@ -31,13 +31,16 @@ namespace vcl {
 ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
         Canvas(winId, width, height), DTB(width, height)
 {
-    float light_position[] = {0, 0, 1, 0.0f};
-    float light_ambient[]  = {.2f, .2f, .2f, 1.0f};
-    float light_diffuse[]  = {1.0f, 1.0f, 1.0f, 1.0f};
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_COLOR_MATERIAL);
 
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    float lightAmbient[]  = {.2f, .2f, .2f, 1.0f};
+    float lightDiffuse[]  = {.05f, .05f, .05f, 1.0f};
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
 }
 
 ViewerCanvas::ViewerCanvas(
@@ -92,7 +95,10 @@ void ViewerCanvas::draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glEnable(GL_LIGHT0);
+    auto tmp = -light().direction();
+    vcl::Point4f lPos (tmp.x(), tmp.y(), tmp.z(), 0.0f);
+
+    glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
 
     glPushMatrix();
     glMultMatrixf(projectionMatrix().data());
