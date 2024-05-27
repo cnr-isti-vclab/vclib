@@ -29,7 +29,7 @@
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
-#include <vclib/ext/opengl2/drawable_mesh.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 #include <vclib/ext/qglviewer/viewer_main_window.h>
 #include <vclib/ext/qt/gui/mesh_render_settings_frame.h>
 
@@ -59,8 +59,8 @@ int main(int argc, char** argv)
     vcl::updatePerVertexNormals(m);
     vcl::setPerVertexColor(m, vcl::Color::DarkGreen);
 
-    vcl::gl2::DrawableMesh<vcl::PolyMesh> dtm(tm);
-    vcl::gl2::DrawableMesh<vcl::TriMesh>  dm(m);
+    vcl::DrawableMesh<vcl::PolyMesh> dtm(tm);
+    vcl::DrawableMesh<vcl::TriMesh>  dm(m);
 
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();

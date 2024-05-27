@@ -291,7 +291,7 @@ void MeshRenderSettingsFrame::on_edgesColorDialogPushButton_clicked()
     }
 }
 
-void MeshRenderSettingsFrame::on_edgesSizelSlider_valueChanged(int value)
+void MeshRenderSettingsFrame::on_edgesSizeSlider_valueChanged(int value)
 {
     mMRS.setEdgesWidth(value);
     emit settingsUpdated();

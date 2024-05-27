@@ -80,12 +80,9 @@ private slots:
     void on_edgesShadingSmoothRadioButton_toggled(bool checked);
     void on_edgesShadingFlatRadioButton_toggled(bool checked);
     void on_edgesShadingNoneRadioButton_toggled(bool checked);
-
     void on_edgesColorComboBox_currentIndexChanged(int index);
-
     void on_edgesColorDialogPushButton_clicked();
-
-    void on_edgesSizelSlider_valueChanged(int value);
+    void on_edgesSizeSlider_valueChanged(int value);
 
 private:
     enum POINT_COLOR { P_VERT = 0, P_MESH, P_USER };

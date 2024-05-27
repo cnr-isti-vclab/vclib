@@ -142,20 +142,6 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
         file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
         list(APPEND FORMS ${FORMS_QT})
 
-        if (TARGET vclib-external-qglviewer)
-            file(GLOB_RECURSE HEADERS_QGLVIEWER CONFIGURE_DEPENDS
-                "include/vclib/ext/qglviewer/*.h")
-            list(APPEND HEADERS ${HEADERS_QGLVIEWER})
-
-            file(GLOB_RECURSE SOURCES_QGLVIEWER CONFIGURE_DEPENDS
-                "src/vclib/ext/qglviewer/*.cpp")
-            list(APPEND SOURCES ${SOURCES_QGLVIEWER})
-
-            file(GLOB_RECURSE FORMS_QGLVIEWER CONFIGURE_DEPENDS
-                "src/vclib/ext/qglviewer/*.ui")
-            list(APPEND FORMS ${FORMS_QGLVIEWER})
-        endif()
-
         source_group("Forms Files" FILES ${FORMS})
     endif()
 endif()
@@ -174,6 +160,32 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
         src/vclib/ext/glfw/viewer_window.cpp
         )
 
+    if (TARGET vclib-external-qt)
+        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
+        list(APPEND HEADERS ${HEADERS_QT})
+
+        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.cpp")
+        list(APPEND SOURCES ${SOURCES_QT})
+
+        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
+        list(APPEND FORMS ${FORMS_QT})
+
+        if (TARGET vclib-external-qglviewer)
+            file(GLOB_RECURSE HEADERS_QGLVIEWER CONFIGURE_DEPENDS
+                "include/vclib/ext/qglviewer/*.h")
+            list(APPEND HEADERS ${HEADERS_QGLVIEWER})
+
+            file(GLOB_RECURSE SOURCES_QGLVIEWER CONFIGURE_DEPENDS
+                "src/vclib/ext/qglviewer/*.cpp")
+            list(APPEND SOURCES ${SOURCES_QGLVIEWER})
+
+            file(GLOB_RECURSE FORMS_QGLVIEWER CONFIGURE_DEPENDS
+                "src/vclib/ext/qglviewer/*.ui")
+            list(APPEND FORMS ${FORMS_QGLVIEWER})
+        endif()
+
+        source_group("Forms Files" FILES ${FORMS})
+    endif()
 endif()
 
 # vclib-render target
