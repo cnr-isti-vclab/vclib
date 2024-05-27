@@ -35,12 +35,18 @@ EventManagerWidget::EventManagerWidget(
     uint               width,
     uint               height,
     QWidget*           parent) :
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
         QWidget(parent)
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+        QOpenGLWidget(parent)
+#endif
 {
+#ifdef VCLIB_RENDER_ENGINE_BGFX
     setAttribute(Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
     // PaintOnScreen is bugged - prints unuseful warning messages
     // we will hide it:
     vcl::qt::MessageHider::activate();
+#endif
 
     setGeometry(100, 100, width, height);
     setWindowTitle(windowTitle.c_str());
@@ -48,7 +54,11 @@ EventManagerWidget::EventManagerWidget(
 
 void EventManagerWidget::resizeEvent(QResizeEvent* event)
 {
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     QWidget::resizeEvent(event);
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+    QOpenGLWidget::resizeEvent(event);
+#endif
     onResize(width() * pixelRatio(), height() * pixelRatio());
 }
 

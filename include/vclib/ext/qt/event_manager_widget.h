@@ -23,13 +23,23 @@
 #ifndef VCL_EXT_QT_EVENT_MANAGER_WIDGET_H
 #define VCL_EXT_QT_EVENT_MANAGER_WIDGET_H
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
 #include <QWidget>
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#include <QOpenGLWidget>
+#endif
 
 #include <vclib/render/interfaces/event_manager_i.h>
 
 namespace vcl::qt {
 
-class EventManagerWidget : public QWidget, public virtual vcl::EventManagerI
+class EventManagerWidget :
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
+        public QWidget,
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+        public QOpenGLWidget,
+#endif
+        public virtual vcl::EventManagerI
 {
 public:
     explicit EventManagerWidget(
