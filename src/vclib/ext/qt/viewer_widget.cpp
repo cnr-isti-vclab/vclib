@@ -62,7 +62,7 @@ ViewerWidget::ViewerWidget(QWidget* parent) :
 void ViewerWidget::update()
 {
     frame();
-    QWidget::update();
+    EventManagerWidget::update();
 }
 
 void ViewerWidget::onKeyPress(Key::Enum key)
@@ -84,7 +84,7 @@ bool ViewerWidget::event(QEvent* event)
         frame();
         return true;
     }
-    return QWidget::event(event);
+    return EventManagerWidget::event(event);
 }
 
 void ViewerWidget::paintEvent(QPaintEvent* event)

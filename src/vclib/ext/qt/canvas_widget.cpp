@@ -64,7 +64,7 @@ void CanvasWidget::draw()
 void CanvasWidget::update()
 {
     frame();
-    QWidget::update();
+    EventManagerWidget::update();
 }
 
 bool CanvasWidget::event(QEvent* event)
@@ -73,7 +73,7 @@ bool CanvasWidget::event(QEvent* event)
         frame();
         return true;
     }
-    return QWidget::event(event);
+    return EventManagerWidget::event(event);
 }
 
 void CanvasWidget::paintEvent(QPaintEvent* event)
