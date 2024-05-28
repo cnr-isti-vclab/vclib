@@ -20,63 +20,37 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
-#define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
-
-#include <vclib/render/interfaces/drawable_object_i.h>
-#include <vclib/render/drawable/trackball/trackball_render_data.h>
-
-#include <vclib_bgfx/render/context.h>
+#ifndef VCL_RENDER_DRAWABLE_TRACKBALL_TRACKBALL_RENDER_DATA_H
+#define VCL_RENDER_DRAWABLE_TRACKBALL_TRACKBALL_RENDER_DATA_H
 
 #include <vclib/space/matrix.h>
-
-#include "uniforms/drawable_trackball_uniforms.h"
+#include <vclib/space/point.h>
 
 namespace vcl {
 
-class DrawableTrackBall : public DrawableObjectI, protected TrackballRenderData
+class TrackballRenderData
 {
-    bool mVisible = false;
+    std::vector<vcl::Point3f> mVertices;
+    std::vector<uint16_t>     mEdges;
 
-    bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
-    bgfx::IndexBufferHandle  mEdgeIndexBH   = BGFX_INVALID_HANDLE;
-
-    bgfx::ProgramHandle mProgram =
-        Context::programManager().getProgram(VclProgram::DRAWABLE_TRACKBALL);
-
-    DrawableTrackballUniforms mUniforms;
+    vcl::Matrix44f mTransform = vcl::Matrix44f::Identity();
 
 public:
-    using TrackballRenderData::updateRotation;
+    TrackballRenderData(uint pointsPerCircle = 64);
 
-    // TODO: manage copy and swap
-    DrawableTrackBall();
+    uint vertexNumber() const;
 
-    ~DrawableTrackBall();
+    uint edgeNumber() const;
 
-    void updateDragging(bool isDragging);
+    const float* vertexBufferData() const;
 
-    // DrawableObject interface
+    const uint16_t* edgeBufferData() const;
 
-    void draw(uint viewId) override;
+    const float* transformData() const;
 
-    Point3d center() const override { return Point3d(); };
-
-    double radius() const override { return 1.0; }
-
-    DrawableObjectI* clone() const override
-    {
-        return new DrawableTrackBall(*this);
-    }
-
-    bool isVisible() const override { return mVisible; }
-
-    void setVisibility(bool vis) override { mVisible = vis; }
-
-private:
-    void createBuffers();
+    void updateRotation(const vcl::Matrix44f& rot);
 };
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
+#endif // VCL_RENDER_DRAWABLE_TRACKBALL_TRACKBALL_RENDER_DATA_H

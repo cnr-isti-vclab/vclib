@@ -28,42 +28,9 @@
 
 namespace vcl {
 
-DrawableTrackBall::DrawableTrackBall()
+DrawableTrackBall::DrawableTrackBall() : TrackballRenderData(64)
 {
-    const uint cSize = 64;
-
-    mUniforms.setNumberOfVerticesPerAxis(cSize);
-
-    vcl::Polygon2f circle = vcl::createCircle<vcl::Polygon2f>(cSize, 1.0f);
-
-    mVertices.reserve(cSize * 3);
-
-    // x
-    uint first = 0;
-    for (uint i = 0; i < circle.size(); ++i) {
-        const auto& p = circle.point(i);
-        mVertices.push_back(vcl::Point3f(0, p.x(), p.y()));
-        mEdges.push_back(i + first);
-        mEdges.push_back((i + 1) % circle.size() + first);
-    }
-
-    // y
-    first = circle.size();
-    for (uint i = 0; i < circle.size(); ++i) {
-        const auto& p = circle.point(i);
-        mVertices.push_back(vcl::Point3f(p.x(), 0, p.y()));
-        mEdges.push_back(i + first);
-        mEdges.push_back((i + 1) % circle.size() + first);
-    }
-
-    // z
-    first = 2 * circle.size();
-    for (uint i = 0; i < circle.size(); ++i) {
-        const auto& p = circle.point(i);
-        mVertices.push_back(vcl::Point3f(p.x(), p.y(), 0));
-        mEdges.push_back(i + first);
-        mEdges.push_back((i + 1) % circle.size() + first);
-    }
+    mUniforms.setNumberOfVerticesPerAxis(64);
 
     createBuffers();
 }
@@ -73,11 +40,6 @@ DrawableTrackBall::~DrawableTrackBall()
     if (bgfx::isValid(mVertexCoordBH)) {
         bgfx::destroy(mVertexCoordBH);
     }
-}
-
-void DrawableTrackBall::updateRotation(const vcl::Matrix44f& rot)
-{
-    mTransform = rot;
 }
 
 void DrawableTrackBall::updateDragging(bool isDragging)
@@ -100,7 +62,7 @@ void DrawableTrackBall::draw(uint viewId)
             bgfx::setVertexBuffer(0, mVertexCoordBH);
             bgfx::setIndexBuffer(mEdgeIndexBH);
 
-            bgfx::setTransform(mTransform.data());
+            bgfx::setTransform(transformData());
 
             mUniforms.bind();
 
@@ -118,11 +80,11 @@ void DrawableTrackBall::createBuffers()
         .end();
 
     mVertexCoordBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(mVertices.data(), mVertices.size() * 3 * sizeof(float)),
+        bgfx::makeRef(vertexBufferData(), vertexNumber() * 3 * sizeof(float)),
         layout);
 
     mEdgeIndexBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(mEdges.data(), mEdges.size() * sizeof(uint16_t)));
+        bgfx::makeRef(edgeBufferData(), edgeNumber() * sizeof(uint16_t)));
 }
 
 } // namespace vcl

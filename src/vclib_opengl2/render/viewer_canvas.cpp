@@ -116,7 +116,7 @@ void ViewerCanvas::draw()
     glMultMatrixf(viewMatrix().data());
 
     for (DrawableObjectI* obj : *mDrawList)
-        obj->draw(0);
+        obj->draw();
 
     glPopMatrix();
 }
