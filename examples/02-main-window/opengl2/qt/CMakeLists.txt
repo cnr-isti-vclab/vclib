@@ -22,9 +22,19 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    add_subdirectory(bgfx)
-endif()
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
-    add_subdirectory(opengl2)
-endif()
+set(EXAMPLE_NAME 02-main-window)
+project(vclib-render-example-${EXAMPLE_NAME})
+
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
+
+set(HEADERS
+    common.h
+    main_window_qt.h)
+
+set(SOURCES
+    main_window_qt.cpp
+    main.cpp)
+
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
