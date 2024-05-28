@@ -58,7 +58,11 @@ public:
     virtual void update() override;
 
 protected:
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     void resizeEvent(QResizeEvent* event) override;
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+    void resizeGL(int w, int h) override;
+#endif
 
     void keyPressEvent(QKeyEvent* event) override;
 

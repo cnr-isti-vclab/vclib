@@ -57,11 +57,19 @@ void EventManagerWidget::update()
     Base::update();
 }
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
 void EventManagerWidget::resizeEvent(QResizeEvent* event)
 {
     Base::resizeEvent(event);
     onResize(width() * pixelRatio(), height() * pixelRatio());
 }
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+void EventManagerWidget::resizeGL(int w, int h)
+{
+    Base::resizeGL(w, h);
+    onResize(w * pixelRatio(), h * pixelRatio());
+}
+#endif
 
 void EventManagerWidget::keyPressEvent(QKeyEvent* event)
 {
