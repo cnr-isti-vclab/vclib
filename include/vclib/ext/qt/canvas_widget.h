@@ -52,6 +52,8 @@ public:
     virtual ~CanvasWidget();
 #if defined(VCLIB_RENDER_ENGINE_BGFX)
     void update() override;
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+    void initializeGL() override;
 #endif
 
 protected:
@@ -62,7 +64,11 @@ private:
     bool event(QEvent* event) override;
 #endif
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     void paintEvent(QPaintEvent* event) override;
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+    void paintGL() override;
+#endif
 };
 
 } // namespace vcl::qt

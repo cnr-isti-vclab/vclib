@@ -26,6 +26,11 @@ namespace vcl {
 
 Canvas::Canvas(void* winId, uint width, uint height)
 {
+    init(width, height);
+}
+
+void Canvas::init(uint width, uint height)
+{
     glViewport(0, 0, width, height);
     glClearColor(1.f, 1.f, 1.f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

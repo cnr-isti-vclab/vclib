@@ -51,6 +51,8 @@ public:
 
 #if defined(VCLIB_RENDER_ENGINE_BGFX)
     void update() override;
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+    void initializeGL() override;
 #endif
 
     void onKeyPress(Key::Enum key) override;
@@ -60,7 +62,11 @@ private:
     bool event(QEvent* event) override;
 #endif
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     void paintEvent(QPaintEvent* event) override;
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+    void paintGL() override;
+#endif
 
     void showScreenShotDialog();
 };

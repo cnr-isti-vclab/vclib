@@ -31,16 +31,7 @@ namespace vcl {
 ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
         Canvas(winId, width, height), DTB(width, height)
 {
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_COLOR_MATERIAL);
-
-    float lightAmbient[] = {.2f, .2f, .2f, 1.0f};
-    float lightDiffuse[] = {.05f, .05f, .05f, 1.0f};
-
-    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+    init(width, height);
 }
 
 ViewerCanvas::ViewerCanvas(
@@ -51,6 +42,21 @@ ViewerCanvas::ViewerCanvas(
         ViewerCanvas(winId, width, height)
 {
     setDrawableObjectVector(v);
+}
+
+void ViewerCanvas::init(uint width, uint height)
+{
+    Canvas::init(width, height);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_COLOR_MATERIAL);
+
+    float lightAmbient[] = {.2f, .2f, .2f, 1.0f};
+    float lightDiffuse[] = {.05f, .05f, .05f, 1.0f};
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
 }
 
 const DrawableObjectVector& ViewerCanvas::drawableObjectVector() const

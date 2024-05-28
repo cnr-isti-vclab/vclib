@@ -67,6 +67,11 @@ void CanvasWidget::update()
     frame();
     EventManagerWidget::update();
 }
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+void CanvasWidget::initializeGL()
+{
+    Canvas::init(width(), height());
+}
 #endif
 
 #if defined(VCLIB_RENDER_ENGINE_BGFX)
@@ -80,10 +85,17 @@ bool CanvasWidget::event(QEvent* event)
 }
 #endif
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
 void CanvasWidget::paintEvent(QPaintEvent* event)
 {
     frame();
     QWidget::paintEvent(event);
 }
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+void CanvasWidget::paintGL()
+{
+    frame();
+}
+#endif
 
 } // namespace vcl::qt

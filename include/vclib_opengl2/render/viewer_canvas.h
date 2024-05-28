@@ -50,6 +50,8 @@ public:
         uint                                  width  = 1024,
         uint                                  height = 768);
 
+    void init(uint width, uint height);
+
     const DrawableObjectVector& drawableObjectVector() const;
 
     void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);

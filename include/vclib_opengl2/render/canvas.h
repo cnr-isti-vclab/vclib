@@ -68,6 +68,8 @@ public:
 
     ~Canvas() {}
 
+    void init(uint width, uint height);
+
     void screenShot(
         const std::string& filename,
         uint               width  = 0,

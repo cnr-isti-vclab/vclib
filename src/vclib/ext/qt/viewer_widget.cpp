@@ -65,6 +65,11 @@ void ViewerWidget::update()
     frame();
     EventManagerWidget::update();
 }
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+void ViewerWidget::initializeGL()
+{
+    ViewerCanvas::init(width(), height());
+}
 #endif
 
 void ViewerWidget::onKeyPress(Key::Enum key)
@@ -91,11 +96,18 @@ bool ViewerWidget::event(QEvent* event)
 }
 #endif
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
 void ViewerWidget::paintEvent(QPaintEvent* event)
 {
     frame();
     QWidget::paintEvent(event);
 }
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+void ViewerWidget::paintGL()
+{
+    frame();
+}
+#endif
 
 void ViewerWidget::showScreenShotDialog()
 {
