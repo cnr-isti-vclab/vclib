@@ -88,9 +88,6 @@ public:
 
     DrawableMesh(const MeshType& m)
     {
-        if constexpr (HasName<MeshType>) {
-            name() = m.name();
-        }
         updateBuffers(m);
         mMRS.setDefaultSettingsFromCapability();
     }
