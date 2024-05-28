@@ -101,13 +101,18 @@ void ViewerCanvas::draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    auto         tmp = -light().direction();
+    auto         tmp = light().direction();
     vcl::Point4f lPos(tmp.x(), tmp.y(), tmp.z(), 0.0f);
 
     glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
 
     glPushMatrix();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
     glMultMatrixf(projectionMatrix().data());
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
     glMultMatrixf(viewMatrix().data());
 
     for (DrawableObjectI* obj : *mDrawList)
