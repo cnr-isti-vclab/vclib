@@ -41,7 +41,7 @@ EventManagerWidget::EventManagerWidget(
         QOpenGLWidget(parent)
 #endif
 {
-#ifdef VCLIB_RENDER_ENGINE_BGFX
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     setAttribute(Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
     // PaintOnScreen is bugged - prints unuseful warning messages
     // we will hide it:

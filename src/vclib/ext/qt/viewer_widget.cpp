@@ -59,11 +59,13 @@ ViewerWidget::ViewerWidget(QWidget* parent) :
 {
 }
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
 void ViewerWidget::update()
 {
     frame();
     EventManagerWidget::update();
 }
+#endif
 
 void ViewerWidget::onKeyPress(Key::Enum key)
 {
@@ -78,6 +80,7 @@ void ViewerWidget::onKeyPress(Key::Enum key)
     }
 }
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
 bool ViewerWidget::event(QEvent* event)
 {
     if (event->type() == QEvent::UpdateRequest) {
@@ -86,6 +89,7 @@ bool ViewerWidget::event(QEvent* event)
     }
     return EventManagerWidget::event(event);
 }
+#endif
 
 void ViewerWidget::paintEvent(QPaintEvent* event)
 {

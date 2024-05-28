@@ -61,12 +61,15 @@ void CanvasWidget::draw()
 {
 }
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
 void CanvasWidget::update()
 {
     frame();
     EventManagerWidget::update();
 }
+#endif
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
 bool CanvasWidget::event(QEvent* event)
 {
     if (event->type() == QEvent::UpdateRequest) {
@@ -75,6 +78,7 @@ bool CanvasWidget::event(QEvent* event)
     }
     return EventManagerWidget::event(event);
 }
+#endif
 
 void CanvasWidget::paintEvent(QPaintEvent* event)
 {

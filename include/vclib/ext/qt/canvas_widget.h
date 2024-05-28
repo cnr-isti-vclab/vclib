@@ -50,14 +50,17 @@ public:
     explicit CanvasWidget(QWidget* parent);
 
     virtual ~CanvasWidget();
-
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     void update() override;
+#endif
 
 protected:
     virtual void draw() override;
 
 private:
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     bool event(QEvent* event) override;
+#endif
 
     void paintEvent(QPaintEvent* event) override;
 };

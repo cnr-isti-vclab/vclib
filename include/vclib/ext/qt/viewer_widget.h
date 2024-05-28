@@ -49,12 +49,16 @@ public:
 
     virtual ~ViewerWidget() = default;
 
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     void update() override;
+#endif
 
     void onKeyPress(Key::Enum key) override;
 
 private:
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
     bool event(QEvent* event) override;
+#endif
 
     void paintEvent(QPaintEvent* event) override;
 
