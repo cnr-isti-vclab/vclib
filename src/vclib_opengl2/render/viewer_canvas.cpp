@@ -36,8 +36,8 @@ ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
 
-    float lightAmbient[]  = {.2f, .2f, .2f, 1.0f};
-    float lightDiffuse[]  = {.05f, .05f, .05f, 1.0f};
+    float lightAmbient[] = {.2f, .2f, .2f, 1.0f};
+    float lightDiffuse[] = {.05f, .05f, .05f, 1.0f};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
@@ -95,8 +95,8 @@ void ViewerCanvas::draw()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    auto tmp = -light().direction();
-    vcl::Point4f lPos (tmp.x(), tmp.y(), tmp.z(), 0.0f);
+    auto         tmp = -light().direction();
+    vcl::Point4f lPos(tmp.x(), tmp.y(), tmp.z(), 0.0f);
 
     glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
 
