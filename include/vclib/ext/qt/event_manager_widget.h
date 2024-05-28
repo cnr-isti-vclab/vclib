@@ -41,6 +41,11 @@ class EventManagerWidget :
 #endif
         public virtual vcl::EventManagerI
 {
+#if defined(VCLIB_RENDER_ENGINE_BGFX)
+    using Base = QWidget;
+#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+    using Base = QOpenGLWidget;
+#endif
 public:
     explicit EventManagerWidget(
         const std::string& windowTitle,
@@ -49,6 +54,8 @@ public:
         QWidget*           parent = nullptr);
 
     virtual ~EventManagerWidget() = default;
+
+    virtual void update() override;
 
 protected:
     void resizeEvent(QResizeEvent* event) override;

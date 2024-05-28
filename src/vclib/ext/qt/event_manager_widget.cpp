@@ -52,13 +52,14 @@ EventManagerWidget::EventManagerWidget(
     setWindowTitle(windowTitle.c_str());
 }
 
+void EventManagerWidget::update()
+{
+    Base::update();
+}
+
 void EventManagerWidget::resizeEvent(QResizeEvent* event)
 {
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
-    QWidget::resizeEvent(event);
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
-    QOpenGLWidget::resizeEvent(event);
-#endif
+    Base::resizeEvent(event);
     onResize(width() * pixelRatio(), height() * pixelRatio());
 }
 
@@ -67,7 +68,7 @@ void EventManagerWidget::keyPressEvent(QKeyEvent* event)
     setModifiers(vcl::qt::fromQt(event->modifiers()));
 
     onKeyPress(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
-    QWidget::keyPressEvent(event);
+    Base::keyPressEvent(event);
 }
 
 void EventManagerWidget::keyReleaseEvent(QKeyEvent* event)
@@ -75,14 +76,14 @@ void EventManagerWidget::keyReleaseEvent(QKeyEvent* event)
     setModifiers(vcl::qt::fromQt(event->modifiers()));
 
     onKeyRelease(vcl::qt::fromQt((Qt::Key) event->key(), event->modifiers()));
-    QWidget::keyReleaseEvent(event);
+    Base::keyReleaseEvent(event);
 }
 
 void EventManagerWidget::mouseMoveEvent(QMouseEvent* event)
 {
     onMouseMove(
         event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
-    QWidget::mouseMoveEvent(event);
+    Base::mouseMoveEvent(event);
 }
 
 void EventManagerWidget::mousePressEvent(QMouseEvent* event)
@@ -90,7 +91,7 @@ void EventManagerWidget::mousePressEvent(QMouseEvent* event)
     onMouseMove(
         event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
     onMousePress(vcl::qt::fromQt(event->button()));
-    QWidget::mousePressEvent(event);
+    Base::mousePressEvent(event);
 }
 
 void EventManagerWidget::mouseReleaseEvent(QMouseEvent* event)
@@ -98,13 +99,13 @@ void EventManagerWidget::mouseReleaseEvent(QMouseEvent* event)
     onMouseMove(
         event->pos().x() * pixelRatio(), event->pos().y() * pixelRatio());
     onMouseRelease(vcl::qt::fromQt(event->button()));
-    QWidget::mouseReleaseEvent(event);
+    Base::mouseReleaseEvent(event);
 }
 
 void EventManagerWidget::wheelEvent(QWheelEvent* event)
 {
     onMouseScroll(event->angleDelta().x(), event->angleDelta().y());
-    QWidget::wheelEvent(event);
+    Base::wheelEvent(event);
 }
 
 double EventManagerWidget::pixelRatio()
