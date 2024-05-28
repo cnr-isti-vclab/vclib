@@ -47,13 +47,14 @@ ViewerCanvas::ViewerCanvas(
 void ViewerCanvas::init(uint width, uint height)
 {
     Canvas::init(width, height);
-    glEnable(GL_LIGHT0);
     glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_NORMALIZE);
 
     float lightAmbient[] = {.2f, .2f, .2f, 1.0f};
-    float lightDiffuse[] = {.05f, .05f, .05f, 1.0f};
+    float lightDiffuse[] = {.5f, .5f, .5f, 1.0f};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
@@ -104,21 +105,16 @@ void ViewerCanvas::draw()
     auto         tmp = light().direction();
     vcl::Point4f lPos(tmp.x(), tmp.y(), tmp.z(), 0.0f);
 
-    glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
-
-    glPushMatrix();
-
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMultMatrixf(projectionMatrix().data());
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
     glMultMatrixf(viewMatrix().data());
 
     for (DrawableObjectI* obj : *mDrawList)
         obj->draw();
-
-    glPopMatrix();
 }
 
 void ViewerCanvas::onResize(unsigned int width, unsigned int height)
