@@ -46,6 +46,7 @@ class EventManagerWidget :
 #elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
     using Base = QOpenGLWidget;
 #endif
+
 public:
     explicit EventManagerWidget(
         const std::string& windowTitle,

@@ -23,8 +23,8 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
 #define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
 
-#include <vclib/render/interfaces/drawable_object_i.h>
 #include <vclib/render/drawable/trackball/trackball_render_data.h>
+#include <vclib/render/interfaces/drawable_object_i.h>
 
 #include <vclib_bgfx/render/context.h>
 
