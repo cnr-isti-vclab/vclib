@@ -155,7 +155,7 @@ public:
         return mVerts.data();
     }
 
-    const uint vertexBufferSize() const { return mVerts.size(); }
+    uint vertexBufferSize() const { return mVerts.size(); }
 
     const uint32_t* triangleBufferData() const
     {
@@ -164,7 +164,7 @@ public:
         return mTris.data();
     }
 
-    const uint triangleBufferSize() const { return mTris.size(); }
+    uint triangleBufferSize() const { return mTris.size(); }
 
     const uint32_t* edgeBufferData() const
     {
@@ -173,7 +173,7 @@ public:
         return mEdges.data();
     }
 
-    const uint edgeBufferSize() const { return mEdges.size(); }
+    uint edgeBufferSize() const { return mEdges.size(); }
 
     const uint32_t* wireframeBufferData() const
     {
@@ -182,7 +182,7 @@ public:
         return mWireframe.data();
     }
 
-    const uint wireframeBufferSize() const { return mWireframe.size(); }
+    uint wireframeBufferSize() const { return mWireframe.size(); }
 
     const float* vertexNormalBufferData() const
     {

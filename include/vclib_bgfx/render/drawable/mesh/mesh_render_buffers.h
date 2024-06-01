@@ -43,8 +43,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     bgfx::IndexBufferHandle mTriangleNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mTriangleColorBH  = BGFX_INVALID_HANDLE;
 
-    // bgfx::IndexBufferHandle mTriangleWedgeUVBH  = BGFX_INVALID_HANDLE;
-    // bgfx::IndexBufferHandle mTriangleWedgeIdxBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle mTriangleWedgeIdxBH = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle mEdgeIndexBH  = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
@@ -89,6 +88,7 @@ public:
         std::swap(mTriangleIndexBH, other.mTriangleIndexBH);
         std::swap(mTriangleNormalBH, other.mTriangleNormalBH);
         std::swap(mTriangleColorBH, other.mTriangleColorBH);
+        std::swap(mTriangleWedgeIdxBH, other.mTriangleWedgeIdxBH);
         std::swap(mEdgeIndexBH, other.mEdgeIndexBH);
         std::swap(mEdgeNormalBH, other.mEdgeNormalBH);
         std::swap(mEdgeColorBH, other.mEdgeColorBH);
@@ -131,6 +131,10 @@ public:
 
             if (bgfx::isValid(mTriangleNormalBH)) { // triangle normals
                 bgfx::setBuffer(2, mTriangleNormalBH, bgfx::Access::Read);
+            }
+
+            if (bgfx::isValid(mTriangleWedgeIdxBH)) { // triangle wedge indices
+                bgfx::setBuffer(3, mTriangleWedgeIdxBH, bgfx::Access::Read);
             }
         }
         else if (indexBufferToBind == Base::EDGES) {
@@ -243,6 +247,17 @@ private:
                 BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
         }
 
+        // triangle wedge UV buffer
+        if (Base::wedgeTexCoordsBufferData()) {
+            assert(Base::wedgeTextureIDsBufferData());
+
+            mTriangleWedgeIdxBH = bgfx::createIndexBuffer(
+                bgfx::makeRef(
+                    Base::wedgeTextureIDsBufferData(),
+                    Base::triangleNumber() * sizeof(uint32_t)),
+                BGFX_BUFFER_COMPUTE_FORMAT_32X1 | BGFX_BUFFER_COMPUTE_READ);
+        }
+
         // edge index buffer
         if (Base::edgeBufferData()) {
             mEdgeIndexBH = bgfx::createIndexBuffer(
@@ -330,6 +345,9 @@ private:
 
         if (bgfx::isValid(mTriangleColorBH))
             bgfx::destroy(mTriangleColorBH);
+
+        if (bgfx::isValid(mTriangleWedgeIdxBH))
+            bgfx::destroy(mTriangleWedgeIdxBH);
 
         if (bgfx::isValid(mEdgeIndexBH))
             bgfx::destroy(mEdgeIndexBH);

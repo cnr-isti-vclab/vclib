@@ -25,8 +25,9 @@ $input v_position, v_normal, v_color, v_texcoord0
 #include <vclib_bgfx/render/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
-BUFFER_RO(primitiveColors , uint, 1);  // color of each face / edge
+BUFFER_RO(primitiveColors, uint, 1);  // color of each face / edge
 BUFFER_RO(primitiveNormals, float, 2); // normal of each face / edge
+BUFFER_RO(wedgeIds, uint, 3); // wedge ids of each face
 
 // textures
 SAMPLER2D(s_tex0, 0);
@@ -35,6 +36,18 @@ SAMPLER2D(s_tex2, 2);
 SAMPLER2D(s_tex3, 3);
 SAMPLER2D(s_tex4, 4);
 SAMPLER2D(s_tex5, 5);
+
+BgfxSampler2D getTexture(uint texId) {
+    switch (texId) {
+    case 0: return s_tex0;
+    case 1: return s_tex1;
+    case 2: return s_tex2;
+    case 3: return s_tex3;
+    case 4: return s_tex4;
+    case 5: return s_tex5;
+    default: return s_tex0;
+    }
+}
 
 void main()
 {
@@ -112,7 +125,7 @@ void main()
             color = uintToVec4Color(primitiveColors[gl_PrimitiveID]);
         }
         if (bool(drawMode0 & VCL_MRS_SURF_TEX_VERTEX)) {
-            color = texture2D(s_tex0, v_texcoord0);
+            color = texture2D(getTexture(0), v_texcoord0);
         }
     }
     else if (bool(primitive & VCL_MRS_DRAWING_WIREFRAME)){ // wireframe
