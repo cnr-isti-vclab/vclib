@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input a_position, a_normal, a_color0
-$output v_position, v_normal, v_color
+$input a_position, a_normal, a_color0, a_texcoord0
+$output v_position, v_normal, v_color, v_texcoord0
 
 #include <vclib_bgfx/render/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
@@ -31,6 +31,7 @@ void main()
     gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
     v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
     v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
+    v_texcoord0 = a_texcoord0;
 
     // default case - color is taken from buffer
     v_color = a_color0;

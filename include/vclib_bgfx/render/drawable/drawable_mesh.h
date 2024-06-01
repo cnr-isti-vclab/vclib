@@ -86,6 +86,7 @@ public:
             if (mMRS.isSurfaceVisible()) {
                 mMRB.bindVertexBuffers();
                 mMRB.bindIndexBuffers();
+                mMRB.bindTextures();
                 bindUniforms(VCL_MRS_DRAWING_SURFACE);
 
                 bgfx::setState(state);

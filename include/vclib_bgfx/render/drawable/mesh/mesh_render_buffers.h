@@ -37,16 +37,22 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     bgfx::VertexBufferHandle mVertexCoordBH  = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle mVertexNormalBH = BGFX_INVALID_HANDLE;
     bgfx::VertexBufferHandle mVertexColorBH  = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle mVertexUVBH     = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle mTriangleIndexBH  = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mTriangleNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mTriangleColorBH  = BGFX_INVALID_HANDLE;
+
+    // bgfx::IndexBufferHandle mTriangleWedgeUVBH  = BGFX_INVALID_HANDLE;
+    // bgfx::IndexBufferHandle mTriangleWedgeIdxBH = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle mEdgeIndexBH  = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeColorBH  = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle mWireframeIndexBH = BGFX_INVALID_HANDLE;
+
+    std::vector<std::pair<bgfx::TextureHandle, bgfx::UniformHandle>> mTexturesH;
 
 public:
     MeshRenderBuffers() = default;
@@ -79,6 +85,7 @@ public:
         std::swap(mVertexCoordBH, other.mVertexCoordBH);
         std::swap(mVertexNormalBH, other.mVertexNormalBH);
         std::swap(mVertexColorBH, other.mVertexColorBH);
+        std::swap(mVertexUVBH, other.mVertexUVBH);
         std::swap(mTriangleIndexBH, other.mTriangleIndexBH);
         std::swap(mTriangleNormalBH, other.mTriangleNormalBH);
         std::swap(mTriangleColorBH, other.mTriangleColorBH);
@@ -86,6 +93,7 @@ public:
         std::swap(mEdgeNormalBH, other.mEdgeNormalBH);
         std::swap(mEdgeColorBH, other.mEdgeColorBH);
         std::swap(mWireframeIndexBH, other.mWireframeIndexBH);
+        std::swap(mTexturesH, other.mTexturesH);
     }
 
     void update(const MeshType& mesh)
@@ -105,6 +113,10 @@ public:
 
         if (bgfx::isValid(mVertexColorBH)) { // vertex colors
             bgfx::setVertexBuffer(2, mVertexColorBH);
+        }
+
+        if (bgfx::isValid(mVertexUVBH)) { // vertex UVs
+            bgfx::setVertexBuffer(3, mVertexUVBH);
         }
     }
 
@@ -134,6 +146,15 @@ public:
         }
         else if (indexBufferToBind == Base::WIREFRAME) {
             bgfx::setIndexBuffer(mWireframeIndexBH);
+        }
+    }
+
+    void bindTextures()
+    {
+        uint i = 0;
+        for (auto [th, uh] : mTexturesH) {
+            bgfx::setTexture(i, uh, th);
+            i++;
         }
     }
 
@@ -178,6 +199,20 @@ private:
                     Base::vertexColorBufferData(),
                     Base::vertexNumber() * sizeof(uint32_t)),
                 vclayout);
+        }
+
+        // vertex buffer (UVs)
+        if (Base::vertexTexCoordsBufferData()) {
+            bgfx::VertexLayout uvlayout;
+            uvlayout.begin()
+                .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+                .end();
+
+            mVertexUVBH = bgfx::createVertexBuffer(
+                bgfx::makeRef(
+                    Base::vertexTexCoordsBufferData(),
+                    Base::vertexNumber() * 2 * sizeof(float)),
+                uvlayout);
         }
 
         // triangle index buffer
@@ -244,6 +279,33 @@ private:
                     Base::wireframeBufferSize() * sizeof(uint32_t)),
                 BGFX_BUFFER_INDEX32);
         }
+
+        // textures
+        if (Base::textureNumber() > 0) {
+            mTexturesH.reserve(Base::textureNumber());
+
+            for (uint i = 0; i < Base::textureNumber(); ++i) {
+                vcl::Point2i tSize = Base::textureSize(i);
+
+                uint tBufSize = tSize.x() * tSize.y() * 4;
+
+                auto th = bgfx::createTexture2D(
+                    tSize.x(),
+                    tSize.y(),
+                    false,
+                    1,
+                    bgfx::TextureFormat::RGBA8,
+                    0,
+                    bgfx::makeRef(Base::textureBufferData(i), tBufSize));
+
+                std::string uniformName = "s_tex" + std::to_string(i);
+
+                auto uh = bgfx::createUniform(
+                    uniformName.c_str(), bgfx::UniformType::Sampler);
+
+                mTexturesH.push_back(std::make_pair(th, uh));
+            }
+        }
     }
 
     void destroyBGFXBuffers()
@@ -256,6 +318,9 @@ private:
 
         if (bgfx::isValid(mVertexColorBH))
             bgfx::destroy(mVertexColorBH);
+
+        if (bgfx::isValid(mVertexUVBH))
+            bgfx::destroy(mVertexUVBH);
 
         if (bgfx::isValid(mTriangleIndexBH))
             bgfx::destroy(mTriangleIndexBH);
@@ -277,6 +342,12 @@ private:
 
         if (bgfx::isValid(mWireframeIndexBH))
             bgfx::destroy(mWireframeIndexBH);
+
+        for (auto [th, uh] : mTexturesH) {
+            bgfx::destroy(th);
+            bgfx::destroy(uh);
+        }
+        mTexturesH.clear();
     }
 };
 

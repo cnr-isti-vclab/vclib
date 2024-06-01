@@ -20,13 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color
+$input v_position, v_normal, v_color, v_texcoord0
 
 #include <vclib_bgfx/render/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
 BUFFER_RO(primitiveColors , uint, 1);  // color of each face / edge
 BUFFER_RO(primitiveNormals, float, 2); // normal of each face / edge
+
+// textures
+SAMPLER2D(s_tex0, 0);
+SAMPLER2D(s_tex1, 1);
+SAMPLER2D(s_tex2, 2);
+SAMPLER2D(s_tex3, 3);
+SAMPLER2D(s_tex4, 4);
+SAMPLER2D(s_tex5, 5);
 
 void main()
 {
@@ -76,6 +84,7 @@ void main()
                 primitiveNormals[gl_PrimitiveID * 3 + 1],
                 primitiveNormals[gl_PrimitiveID * 3 + 2]);
             normal = mul(u_modelView, vec4(normal, 0.0)).xyz;
+            normal = normalize(normal);
         }
 
         // if flat or smooth shading, compute light
@@ -100,7 +109,10 @@ void main()
             color = u_meshColor;
         }
         if (bool(drawMode0 & VCL_MRS_SURF_COLOR_FACE)) {
-            color = uintToVec4Color(primitiveColors [gl_PrimitiveID]);
+            color = uintToVec4Color(primitiveColors[gl_PrimitiveID]);
+        }
+        if (bool(drawMode0 & VCL_MRS_SURF_TEX_VERTEX)) {
+            color = texture2D(s_tex0, v_texcoord0);
         }
     }
     else if (bool(primitive & VCL_MRS_DRAWING_WIREFRAME)){ // wireframe
