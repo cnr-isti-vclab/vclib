@@ -53,7 +53,7 @@ void DrawableAxis::draw(uint viewId)
                         mUniforms.setColor(vcl::Color::White);
                     mUniforms.bind();
 
-                    mArrowBuffers[j].bindVertexBuffers();
+                    mArrowBuffers[j].bindVertexBuffers(MeshRenderSettings());
                     mArrowBuffers[j].bindIndexBuffers();
 
                     bgfx::setTransform(mMatrices[i].data());

@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-$input v_position, v_normal, v_color, v_texcoord0
+$input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib_bgfx/render/drawable/drawable_mesh/uniforms.sh>
 #include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
@@ -126,6 +126,10 @@ void main()
         }
         if (bool(drawMode0 & VCL_MRS_SURF_TEX_VERTEX)) {
             color = texture2D(getTexture(0), v_texcoord0);
+        }
+        if (bool(drawMode0 & VCL_MRS_SURF_TEX_WEDGE)) {
+            uint texId = wedgeIds[gl_PrimitiveID];
+            color = texture2D(getTexture(0), v_texcoord1);
         }
     }
     else if (bool(primitive & VCL_MRS_DRAWING_WIREFRAME)){ // wireframe

@@ -36,6 +36,8 @@ namespace vcl {
 template<MeshConcept MeshType>
 class MeshRenderData
 {
+    bool mDuplicatedVertices = false;
+
     std::vector<float>    mVerts;
     std::vector<uint32_t> mTris;
     std::vector<uint32_t> mEdges;
@@ -48,7 +50,7 @@ class MeshRenderData
     std::vector<float>    mTNormals;
     std::vector<uint32_t> mTColors;
     std::vector<float>    mWTexCoords;
-    std::vector<short>    mWTexIds;
+    std::vector<uint32_t> mWTexIds;
 
     std::vector<float>    mENormals;
     std::vector<uint32_t> mEColors;
@@ -91,10 +93,11 @@ public:
     void update(const MeshType& m, uint buffersToFill = ALL)
     {
         clear();
-        fillVertices(m, buffersToFill);
+        std::vector<std::vector<uint>> triVertIndices;
+        fillVertices(m, buffersToFill, triVertIndices);
 
         if (buffersToFill & TRIANGLES)
-            fillTriangles(m, buffersToFill);
+            fillTriangles(m, buffersToFill, triVertIndices);
 
         if (buffersToFill & EDGES)
             fillEdges(m, buffersToFill);
@@ -110,6 +113,8 @@ public:
 
     void clear()
     {
+        mDuplicatedVertices = false;
+
         mVerts.clear();
         mTris.clear();
         mEdges.clear();
@@ -226,7 +231,7 @@ public:
         return mWTexCoords.data();
     }
 
-    const short* wedgeTextureIDsBufferData() const
+    const uint32_t* wedgeTextureIDsBufferData() const
     {
         if (mWTexIds.empty())
             return nullptr;
@@ -267,8 +272,23 @@ private:
             std::numeric_limits<double>::lowest());
     }
 
-    void fillVertices(const MeshType& m, uint buffersToFill)
+    void fillVertices(
+        const MeshType&                 m,
+        uint                            buffersToFill,
+        std::vector<std::vector<uint>>& triVertIndices)
     {
+        // used only when we duplicate vertices
+        std::vector<bool> vertAlreadyFound;
+
+        if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
+            if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
+                if (buffersToFill & WEDGE_TEXCOORDS) {
+                    mDuplicatedVertices = true;
+                    vertAlreadyFound.resize(m.vertexContainerSize(), false);
+                }
+            }
+        }
+
         // not using Mesh's bounding box if:
         // - it has not bounding box, or
         // - it has bounding box, but it is null (not valid)
@@ -289,12 +309,14 @@ private:
             clearBB();
         }
 
-        mVerts.resize(m.vertexNumber() * 3);
+        uint vn = mDuplicatedVertices ? m.faceNumber() * 3 : m.vertexNumber();
+
+        mVerts.reserve(vn * 3);
 
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (buffersToFill & VERT_NORMALS) {
                 if (vcl::isPerVertexNormalAvailable(m)) {
-                    mVNormals.resize(m.vertexNumber() * 3);
+                    mVNormals.reserve(vn * 3);
                 }
             }
         }
@@ -302,7 +324,7 @@ private:
         if constexpr (vcl::HasPerVertexColor<MeshType>) {
             if (buffersToFill & VERT_COLORS) {
                 if (vcl::isPerVertexColorAvailable(m)) {
-                    mVColors.resize(m.vertexNumber());
+                    mVColors.reserve(vn);
                 }
             }
         }
@@ -310,31 +332,23 @@ private:
         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             if (buffersToFill & VERT_TEXCOORDS) {
                 if (vcl::isPerVertexTexCoordAvailable(m)) {
-                    mVTexCoords.resize(m.vertexNumber() * 2);
+                    mVTexCoords.reserve(vn * 2);
                 }
             }
         }
 
-        uint vi = 0;
-        for (const auto& v : m.vertices()) {
-            uint i = vi * 2; // use i for size 2, like texcoords
-            uint j = vi * 3; // use j for size 3, like coords and normals
-
-            mVerts[j + 0] = v.coord().x();
-            mVerts[j + 1] = v.coord().y();
-            mVerts[j + 2] = v.coord().z();
-
-            if (bbToInitialize) {
-                mBBMin = vcl::min(mBBMin, v.coord().template cast<double>());
-                mBBMax = vcl::max(mBBMax, v.coord().template cast<double>());
-            }
+        // lambda to avoid code duplication
+        auto fillVertex = [&](const auto& v) {
+            mVerts.push_back(v.coord().x());
+            mVerts.push_back(v.coord().y());
+            mVerts.push_back(v.coord().z());
 
             if constexpr (vcl::HasPerVertexNormal<MeshType>) {
                 if (buffersToFill & VERT_NORMALS) {
                     if (vcl::isPerVertexNormalAvailable(m)) {
-                        mVNormals[j + 0] = v.normal().x();
-                        mVNormals[j + 1] = v.normal().y();
-                        mVNormals[j + 2] = v.normal().z();
+                        mVNormals.push_back(v.normal().x());
+                        mVNormals.push_back(v.normal().y());
+                        mVNormals.push_back(v.normal().z());
                     }
                 }
             }
@@ -342,7 +356,7 @@ private:
             if constexpr (vcl::HasPerVertexColor<MeshType>) {
                 if (buffersToFill & VERT_COLORS) {
                     if (vcl::isPerVertexColorAvailable(m)) {
-                        mVColors[vi] = v.color().abgr();
+                        mVColors.push_back(v.color().abgr());
                     }
                 }
             }
@@ -350,30 +364,66 @@ private:
             if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                 if (buffersToFill & VERT_TEXCOORDS) {
                     if (vcl::isPerVertexTexCoordAvailable(m)) {
-                        mVTexCoords[i + 0] = v.texCoord().u();
-                        mVTexCoords[i + 1] = v.texCoord().v();
+                        mVTexCoords.push_back(v.texCoord().u());
+                        mVTexCoords.push_back(v.texCoord().v());
                     }
                 }
             }
+        };
 
-            vi++;
+        // first, fill the vertices (in order to fill also unreferenced ones)
+        for (const auto& v : m.vertices()) {
+            if (bbToInitialize) {
+                mBBMin = vcl::min(mBBMin, v.coord().template cast<double>());
+                mBBMax = vcl::max(mBBMax, v.coord().template cast<double>());
+            }
+
+            fillVertex(v);
+        }
+
+        uint fi = 0;
+        uint vdi = m.vertexNumber();
+        triVertIndices.resize(m.faceNumber());
+        for (const auto& f : m.faces()) {
+            triVertIndices[fi].reserve(f.vertexNumber());
+            for (const auto* v : f.vertices()) {
+                uint vi = m.vertexIndexIfCompact(v->index());
+                if (mDuplicatedVertices) {
+                    if (!vertAlreadyFound[vi]) {
+                        vertAlreadyFound[vi] = true;
+                        triVertIndices[fi].push_back(vi);
+                    }
+                    else {
+                        fillVertex(*v);
+                        triVertIndices[fi].push_back(vdi++);
+                    }
+                }
+                else {
+                    triVertIndices[fi].push_back(vi);
+                }
+            }
+            fi++;
         }
     }
 
-    void fillTriangles(const MeshType& m, uint buffersToFill)
+    void fillTriangles(
+        const MeshType&                       m,
+        uint                                  buffersToFill,
+        const std::vector<std::vector<uint>>& triVertIndices)
     {
         if constexpr (vcl::HasFaces<MeshType>) {
             std::vector<std::vector<uint>> vinds; // necessary for wedge attribs
 
             if constexpr (vcl::HasTriangles<MeshType>) {
-                mTris.resize(m.faceNumber() * 3);
+                mTris.reserve(m.faceNumber() * 3);
 
-                uint i = 0;
+                uint fi = 0;
                 for (const auto& f : m.faces()) {
-                    mTris[i + 0] = m.vertexIndexIfCompact(m.index(f.vertex(0)));
-                    mTris[i + 1] = m.vertexIndexIfCompact(m.index(f.vertex(1)));
-                    mTris[i + 2] = m.vertexIndexIfCompact(m.index(f.vertex(2)));
-                    i += 3;
+                    uint i = 0;
+                    mTris.push_back(triVertIndices[fi][i++]);
+                    mTris.push_back(triVertIndices[fi][i++]);
+                    mTris.push_back(triVertIndices[fi][i++]);
+                    ++fi;
                 }
             }
             else {
@@ -381,35 +431,31 @@ private:
                 mTriPolyMap.reserve(m.faceNumber(), m.faceNumber());
                 mTris.reserve(m.faceNumber());
 
+                uint fi = 0;
                 uint nt = 0;
                 for (const auto& f : m.faces()) {
                     if (f.vertexNumber() == 3) {
-                        mTriPolyMap.insert(
-                            nt, m.faceIndexIfCompact(m.index(f)));
-                        mTris.push_back(
-                            m.vertexIndexIfCompact(m.index(f.vertex(0))));
-                        mTris.push_back(
-                            m.vertexIndexIfCompact(m.index(f.vertex(1))));
-                        mTris.push_back(
-                            m.vertexIndexIfCompact(m.index(f.vertex(2))));
-                        nt += 1;
+                        uint i = 0;
+                        mTriPolyMap.insert(nt, fi);
+                        mTris.push_back(triVertIndices[fi][i++]);
+                        mTris.push_back(triVertIndices[fi][i++]);
+                        mTris.push_back(triVertIndices[fi][i++]);
                         vinds.push_back({0, 1, 2});
+                        ++nt;
                     }
                     else {
                         std::vector<uint> vind = vcl::earCut(f);
                         for (uint vi = 0; vi < vind.size(); vi += 3) {
-                            mTriPolyMap.insert(
-                                nt + vi / 3, m.faceIndexIfCompact(m.index(f)));
-                            mTris.push_back(m.vertexIndexIfCompact(
-                                m.index(f.vertex(vind[vi + 0]))));
-                            mTris.push_back(m.vertexIndexIfCompact(
-                                m.index(f.vertex(vind[vi + 1]))));
-                            mTris.push_back(m.vertexIndexIfCompact(
-                                m.index(f.vertex(vind[vi + 2]))));
+                            mTriPolyMap.insert(nt + vi / 3, fi);
+
+                            mTris.push_back(triVertIndices[fi][vind[vi + 0]]);
+                            mTris.push_back(triVertIndices[fi][vind[vi + 1]]);
+                            mTris.push_back(triVertIndices[fi][vind[vi + 2]]);
                         }
                         nt += vind.size() / 3;
                         vinds.push_back(vind);
                     }
+                    ++fi;
                 }
             }
 
@@ -433,11 +479,19 @@ private:
                 if (buffersToFill & WEDGE_TEXCOORDS) {
                     if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
                         mWTexCoords.reserve(m.faceNumber() * 3 * 2);
+                        mWTexCoords.resize(m.vertexNumber() * 2);
                         mWTexIds.reserve(m.faceNumber());
                     }
                 }
             }
 
+            // used only when we duplicate vertices
+            std::vector<bool> vertAlreadyFound;
+            if (mDuplicatedVertices) {
+                vertAlreadyFound.resize(m.vertexNumber(), false);
+            }
+
+            uint fi = 0;
             for (const auto& f : m.faces()) {
                 if constexpr (vcl::HasPerFaceNormal<MeshType>) {
                     if (buffersToFill & TRI_NORMALS) {
@@ -448,8 +502,6 @@ private:
                                 mTNormals.push_back(f.normal().z());
                             }
                             else {
-                                const uint fi =
-                                    m.faceIndexIfCompact(m.index(f));
                                 for (uint i = 0;
                                      i < mTriPolyMap.triangleNumber(fi);
                                      i++)
@@ -470,8 +522,6 @@ private:
                                 mTColors.push_back(f.color().abgr());
                             }
                             else {
-                                const uint fi =
-                                    m.faceIndexIfCompact(m.index(f));
                                 for (uint i = 0;
                                      i < mTriPolyMap.triangleNumber(fi);
                                      i++)
@@ -486,40 +536,44 @@ private:
                 if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                     if (buffersToFill & WEDGE_TEXCOORDS) {
                         if (vcl::isPerFaceWedgeTexCoordsAvailable(m)) {
+                            // vertices are duplicated here - each face has
+                            // its one. We store the texture coordinates on it.
+                            // order is the same used when creating the
+                            // vertex buffer data.
+                            for (uint vi = 0; vi < f.vertexNumber(); ++vi) {
+                                const auto* v = f.vertex(vi);
+                                if (!vertAlreadyFound[v->index()]) {
+                                    vertAlreadyFound[v->index()] = true;
+                                    uint mvi =
+                                        m.vertexIndexIfCompact(v->index());
+                                    mWTexCoords[mvi * 2] =
+                                        f.wedgeTexCoord(vi).u();
+                                    mWTexCoords[mvi * 2 + 1] =
+                                        f.wedgeTexCoord(vi).v();
+                                }
+                                else {
+                                    mWTexCoords.push_back(
+                                        f.wedgeTexCoord(vi).u());
+                                    mWTexCoords.push_back(
+                                        f.wedgeTexCoord(vi).v());
+                                }
+                            }
+
                             if constexpr (vcl::HasTriangles<MeshType>) {
-                                mWTexCoords.push_back(f.wedgeTexCoord(0).u());
-                                mWTexCoords.push_back(f.wedgeTexCoord(0).v());
-                                mWTexCoords.push_back(f.wedgeTexCoord(1).u());
-                                mWTexCoords.push_back(f.wedgeTexCoord(1).v());
-                                mWTexCoords.push_back(f.wedgeTexCoord(2).u());
-                                mWTexCoords.push_back(f.wedgeTexCoord(2).v());
                                 mWTexIds.push_back(f.textureIndex());
                             }
                             else {
-                                const uint fi =
-                                    m.faceIndexIfCompact(m.index(f));
-                                // triangulation of f
-                                const std::vector<uint>& vind = vinds[fi];
-                                // for each triangle of f
-                                for (uint vi = 0; vi < vind.size(); vi += 3) {
-                                    mWTexCoords.push_back(
-                                        f.wedgeTexCoord(vind[vi + 0]).u());
-                                    mWTexCoords.push_back(
-                                        f.wedgeTexCoord(vind[vi + 0]).v());
-                                    mWTexCoords.push_back(
-                                        f.wedgeTexCoord(vind[vi + 1]).u());
-                                    mWTexCoords.push_back(
-                                        f.wedgeTexCoord(vind[vi + 1]).v());
-                                    mWTexCoords.push_back(
-                                        f.wedgeTexCoord(vind[vi + 2]).u());
-                                    mWTexCoords.push_back(
-                                        f.wedgeTexCoord(vind[vi + 2]).v());
+                                for (uint i = 0;
+                                     i < mTriPolyMap.triangleNumber(fi);
+                                     i++)
+                                {
                                     mWTexIds.push_back(f.textureIndex());
                                 }
                             }
                         }
                     }
                 }
+                ++fi;
             }
         }
     }

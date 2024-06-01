@@ -34,10 +34,11 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
 {
     using Base = vcl::MeshRenderData<MeshType>;
 
-    bgfx::VertexBufferHandle mVertexCoordBH  = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle mVertexNormalBH = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle mVertexColorBH  = BGFX_INVALID_HANDLE;
-    bgfx::VertexBufferHandle mVertexUVBH     = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle mVertexCoordBH   = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle mVertexNormalBH  = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle mVertexColorBH   = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle mVertexUVBH      = BGFX_INVALID_HANDLE;
+    bgfx::VertexBufferHandle mVertexWedgeUVBH = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle mTriangleIndexBH  = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mTriangleNormalBH = BGFX_INVALID_HANDLE;
@@ -85,6 +86,7 @@ public:
         std::swap(mVertexNormalBH, other.mVertexNormalBH);
         std::swap(mVertexColorBH, other.mVertexColorBH);
         std::swap(mVertexUVBH, other.mVertexUVBH);
+        std::swap(mVertexWedgeUVBH, other.mVertexWedgeUVBH);
         std::swap(mTriangleIndexBH, other.mTriangleIndexBH);
         std::swap(mTriangleNormalBH, other.mTriangleNormalBH);
         std::swap(mTriangleColorBH, other.mTriangleColorBH);
@@ -103,8 +105,10 @@ public:
         createBGFXBuffers();
     }
 
-    void bindVertexBuffers()
+    void bindVertexBuffers(const MeshRenderSettings& mrs)
     {
+        // bgfx allows a maximum number of 4 vertex streams...
+
         bgfx::setVertexBuffer(0, mVertexCoordBH);
 
         if (bgfx::isValid(mVertexNormalBH)) { // vertex normals
@@ -115,8 +119,15 @@ public:
             bgfx::setVertexBuffer(2, mVertexColorBH);
         }
 
-        if (bgfx::isValid(mVertexUVBH)) { // vertex UVs
-            bgfx::setVertexBuffer(3, mVertexUVBH);
+        if (mrs.isSurfaceColorPerVertexTexcoords()) {
+            if (bgfx::isValid(mVertexUVBH)) { // vertex UVs
+                bgfx::setVertexBuffer(3, mVertexUVBH);
+            }
+        }
+        else if (mrs.isSurfaceColorPerWedgeTexcoords()) {
+            if (bgfx::isValid(mVertexWedgeUVBH)) { // vertex wedge UVs
+                bgfx::setVertexBuffer(3, mVertexWedgeUVBH);
+            }
         }
     }
 
@@ -219,6 +230,20 @@ private:
                 uvlayout);
         }
 
+        // vertex wedges buffer (duplicated vertices)
+        if (Base::wedgeTexCoordsBufferData()) {
+            bgfx::VertexLayout uvlayout;
+            uvlayout.begin()
+                .add(bgfx::Attrib::TexCoord1, 2, bgfx::AttribType::Float)
+                .end();
+
+            mVertexWedgeUVBH = bgfx::createVertexBuffer(
+                bgfx::makeRef(
+                    Base::wedgeTexCoordsBufferData(),
+                    Base::vertexNumber() * 2 * sizeof(float)),
+                uvlayout);
+        }
+
         // triangle index buffer
         if (Base::triangleBufferData()) {
             mTriangleIndexBH = bgfx::createIndexBuffer(
@@ -255,7 +280,7 @@ private:
                 bgfx::makeRef(
                     Base::wedgeTextureIDsBufferData(),
                     Base::triangleNumber() * sizeof(uint32_t)),
-                BGFX_BUFFER_COMPUTE_FORMAT_32X1 | BGFX_BUFFER_COMPUTE_READ);
+                BGFX_BUFFER_INDEX32 | BGFX_BUFFER_COMPUTE_READ);
         }
 
         // edge index buffer
@@ -336,6 +361,9 @@ private:
 
         if (bgfx::isValid(mVertexUVBH))
             bgfx::destroy(mVertexUVBH);
+
+        if (bgfx::isValid(mVertexWedgeUVBH))
+            bgfx::destroy(mVertexWedgeUVBH);
 
         if (bgfx::isValid(mTriangleIndexBH))
             bgfx::destroy(mTriangleIndexBH);
