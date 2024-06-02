@@ -34,12 +34,24 @@ template<vcl::MeshConcept MeshType>
 vcl::DrawableMesh<MeshType> getDrawableMesh()
 {
     // load a mesh:
-    MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/greek_helmet.obj");
+    // MeshType m = vcl::load<MeshType>("/home/alessandro/tmp/chimera/chimera.ply");
+    // MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/greek_helmet.obj");
+    // MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/bunny_textured.ply");
+    MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/TextureDouble.ply");
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
     m.enablePerVertexColor();
     vcl::setPerVertexColor(m, vcl::Color::Gray);
+    m.enablePerFaceColor();
+    for (auto& f : m.faces()) {
+        if (f.index() % 3 == 0)
+            f.color() = vcl::Color::Red;
+        else if (f.index() % 3 == 1)
+            f.color() = vcl::Color::Green;
+        else
+            f.color() = vcl::Color::Blue;
+    }
 
     // create a MeshRenderSettings object, that allows to set the rendering
     // options of the mesh
