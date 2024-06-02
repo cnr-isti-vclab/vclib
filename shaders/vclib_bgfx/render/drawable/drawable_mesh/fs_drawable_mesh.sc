@@ -37,15 +37,15 @@ SAMPLER2D(s_tex3, 3);
 SAMPLER2D(s_tex4, 4);
 SAMPLER2D(s_tex5, 5);
 
-BgfxSampler2D getTexture(uint texId) {
+vec4 getColorFromTexture(uint texId, vec2 uv) {
     switch (texId) {
-    case 0: return s_tex0;
-    case 1: return s_tex1;
-    case 2: return s_tex2;
-    case 3: return s_tex3;
-    case 4: return s_tex4;
-    case 5: return s_tex5;
-    default: return s_tex0;
+        case 0: return texture2D(s_tex0, uv);
+        case 1: return texture2D(s_tex1, uv);
+        case 2: return texture2D(s_tex2, uv);
+        case 3: return texture2D(s_tex3, uv);
+        case 4: return texture2D(s_tex4, uv);
+        case 5: return texture2D(s_tex5, uv);
+        default: return vec4(0.0, 0.0, 0.0, 1.0);
     }
 }
 
@@ -125,11 +125,10 @@ void main()
             color = uintToVec4Color(primitiveColors[gl_PrimitiveID]);
         }
         if (bool(drawMode0 & VCL_MRS_SURF_TEX_VERTEX)) {
-            color = texture2D(getTexture(0), v_texcoord0);
+            color = getColorFromTexture(0, v_texcoord0);
         }
         if (bool(drawMode0 & VCL_MRS_SURF_TEX_WEDGE)) {
-            uint texId = wedgeIds[gl_PrimitiveID];
-            color = texture2D(getTexture(0), v_texcoord1);
+            color = getColorFromTexture(wedgeIds[gl_PrimitiveID], v_texcoord1);
         }
     }
     else if (bool(primitive & VCL_MRS_DRAWING_WIREFRAME)){ // wireframe
