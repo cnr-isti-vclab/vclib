@@ -84,9 +84,9 @@ public:
                     BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA);
 
             if (mMRS.isSurfaceVisible()) {
+                mMRB.bindTextures(); // Bind textures before vertex buffers!!
                 mMRB.bindVertexBuffers(mMRS);
                 mMRB.bindIndexBuffers();
-                mMRB.bindTextures();
                 bindUniforms(VCL_MRS_DRAWING_SURFACE);
 
                 bgfx::setState(state);
