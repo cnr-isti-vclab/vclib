@@ -30,12 +30,12 @@ BUFFER_RO(primitiveNormals, float, 2); // normal of each face / edge
 BUFFER_RO(wedgeIds, uint, 3); // wedge ids of each face
 
 // textures
-SAMPLER2D(s_tex0, 0);
-SAMPLER2D(s_tex1, 1);
-SAMPLER2D(s_tex2, 2);
-SAMPLER2D(s_tex3, 3);
-SAMPLER2D(s_tex4, 4);
-SAMPLER2D(s_tex5, 5);
+SAMPLER2D(s_tex0, 4);
+SAMPLER2D(s_tex1, 5);
+SAMPLER2D(s_tex2, 6);
+SAMPLER2D(s_tex3, 7);
+SAMPLER2D(s_tex4, 8);
+SAMPLER2D(s_tex5, 9);
 
 vec4 getColorFromTexture(uint texId, vec2 uv) {
     switch (texId) {

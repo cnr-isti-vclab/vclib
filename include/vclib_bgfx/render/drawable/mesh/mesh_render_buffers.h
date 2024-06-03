@@ -166,7 +166,7 @@ public:
 
     void bindTextures()
     {
-        uint i = 0;
+        uint i = 4; // first slot available is 4
         for (auto [th, uh] : mTexturesH) {
             bgfx::setTexture(i, uh, th);
             i++;
