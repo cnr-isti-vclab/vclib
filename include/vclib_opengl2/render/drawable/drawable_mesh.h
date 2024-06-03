@@ -77,7 +77,7 @@ inline void _check_gl_error(const char* file, int line)
 #define check_gl_error() _check_gl_error(__FILE__, __LINE__)
 
 template<MeshConcept MeshType>
-class DrawableMesh : public DrawableMeshI
+class DrawableMesh : public DrawableMeshI, public MeshType
 {
     MeshRenderData<MeshType> mMRD;
 
@@ -86,20 +86,22 @@ class DrawableMesh : public DrawableMeshI
 public:
     DrawableMesh() = default;
 
-    DrawableMesh(const MeshType& m)
+    DrawableMesh(const MeshType& mesh) : DrawableMeshI(mesh), MeshType(mesh)
     {
-        updateBuffers(m);
+        updateBuffers();
         mMRS.setDefaultSettingsFromCapability();
     }
 
-    void updateBuffers(const MeshType& m)
+    ~DrawableMesh() = default;
+
+    void updateBuffers()
     {
         if constexpr (HasName<MeshType>) {
-            name() = m.name();
+            DrawableMeshI::name() = MeshType::name();
         }
         unbindTextures();
-        mMRD = MeshRenderData<MeshType>(m);
-        mMRS.setRenderCapabilityFrom(m);
+        mMRD = MeshRenderData<MeshType>(*this);
+        mMRS.setRenderCapabilityFrom(*this);
         bindTextures();
     }
 

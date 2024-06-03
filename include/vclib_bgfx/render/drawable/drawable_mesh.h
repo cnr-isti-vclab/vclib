@@ -35,10 +35,8 @@
 namespace vcl {
 
 template<MeshConcept MeshType>
-class DrawableMesh : public DrawableMeshI
+class DrawableMesh : public DrawableMeshI, public MeshType
 {
-    using Base = DrawableMeshI;
-
     MeshRenderBuffers<MeshType> mMRB;
 
     bgfx::ProgramHandle mProgram =
@@ -50,22 +48,22 @@ class DrawableMesh : public DrawableMeshI
 public:
     DrawableMesh() = default;
 
-    DrawableMesh(const MeshType& mesh) : Base(mesh)
+    DrawableMesh(const MeshType& mesh) : DrawableMeshI(mesh), MeshType(mesh)
     {
-        updateBuffers(mesh);
+        updateBuffers();
         mMRS.setDefaultSettingsFromCapability();
     }
 
     ~DrawableMesh() = default;
 
-    void updateBuffers(const MeshType& m)
+    void updateBuffers()
     {
         if constexpr (HasName<MeshType>) {
-            name() = m.name();
+            DrawableMeshI::name() = MeshType::name();
         }
 
-        mMRB = MeshRenderBuffers<MeshType>(m);
-        mMRS.setRenderCapabilityFrom(m);
+        mMRB = MeshRenderBuffers<MeshType>(*this);
+        mMRS.setRenderCapabilityFrom(*this);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
         mMeshUniforms.update(mMRB);
     }
