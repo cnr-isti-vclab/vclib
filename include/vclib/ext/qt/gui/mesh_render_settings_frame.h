@@ -27,6 +27,8 @@
 
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
+#include "mesh_render_settings_frame/generic_mesh_render_settings_frame.h"
+
 class QPushButton;
 
 namespace vcl::qt {
@@ -42,6 +44,8 @@ class MeshRenderSettingsFrame : public QFrame
     Ui::MeshRenderSettingsFrame* mUI;
     MeshRenderSettings           mMRS;
 
+    std::vector<GenericMeshRenderSettingsFrame*> frames;
+
 public:
     explicit MeshRenderSettingsFrame(QWidget* parent = nullptr);
     ~MeshRenderSettingsFrame();
@@ -53,15 +57,6 @@ signals:
     void settingsUpdated();
 
 private slots:
-    void on_pointVisibilityCheckBox_stateChanged(int arg1);
-    void on_pointShapeCircleRadioButton_toggled(bool checked);
-    void on_pointShapePixelRadioButton_toggled(bool checked);
-    void on_pointShadingVertexRadioButton_toggled(bool checked);
-    void on_pointShadingNoneRadioButton_toggled(bool checked);
-    void on_pointColorComboBox_currentIndexChanged(int index);
-    void on_pointColorDialogPushButton_clicked();
-    void on_pointSizeSlider_valueChanged(int value);
-
     void on_surfaceVisibilityCheckBox_stateChanged(int arg1);
     void on_surfaceShadingNoneRadioButton_toggled(bool checked);
     void on_surfaceShadingSmoothRadioButton_toggled(bool checked);
@@ -85,8 +80,6 @@ private slots:
     void on_edgesSizeSlider_valueChanged(int value);
 
 private:
-    enum POINT_COLOR { P_VERT = 0, P_MESH, P_USER };
-
     enum SURF_COLOR {
         SC_VERT = 0,
         SC_FACE,
@@ -101,8 +94,6 @@ private:
     enum EDGES_COLOR { E_VERTEX = 0, E_EDGES, E_MESH, E_USER };
 
     void updateGuiFromSettings();
-    void updatePointsTabFromSettings();
-    void updatePointsColorComboBoxFromSettings();
     void updateSurfaceTabFromSettings();
     void uptateSurfaceShadingRadioButtonsFromSettings();
     void updateSurfaceColorComboBoxFromSettings();

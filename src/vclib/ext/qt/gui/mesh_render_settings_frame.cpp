@@ -26,12 +26,27 @@
 #include <QColorDialog>
 #include <QStandardItemModel>
 
+#include <vclib/ext/qt/gui/mesh_render_settings_frame/points_frame.h>
+
 namespace vcl::qt {
 
 MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
         QFrame(parent), mUI(new Ui::MeshRenderSettingsFrame)
 {
     mUI->setupUi(this);
+
+    auto* pointsFrame = new PointsFrame(mMRS, this);
+    mUI->tabWidget->addTab(pointsFrame, "Points");
+
+    frames.push_back(pointsFrame);
+
+    for (auto* frame : frames) {
+        connect(
+            frame,
+            SIGNAL(settingsUpdated()),
+            this,
+            SIGNAL(settingsUpdated()));
+    }
 }
 
 MeshRenderSettingsFrame::~MeshRenderSettingsFrame()
@@ -49,71 +64,6 @@ void MeshRenderSettingsFrame::setMeshRenderSettings(
 {
     mMRS = settings;
     updateGuiFromSettings();
-}
-
-void MeshRenderSettingsFrame::on_pointVisibilityCheckBox_stateChanged(int arg1)
-{
-    mMRS.setPointCloudVisibility(arg1 == Qt::Checked);
-    emit settingsUpdated();
-}
-
-void MeshRenderSettingsFrame::on_pointShapeCircleRadioButton_toggled(bool)
-{
-    // todo
-}
-
-void MeshRenderSettingsFrame::on_pointShapePixelRadioButton_toggled(bool)
-{
-    // todo
-}
-
-void MeshRenderSettingsFrame::on_pointShadingVertexRadioButton_toggled(
-    bool checked)
-{
-    if (checked) {
-        mMRS.setPointCloudShadingPerVertex();
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_pointShadingNoneRadioButton_toggled(
-    bool checked)
-{
-    if (checked) {
-        mMRS.setPointCloudShadingNone();
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_pointColorComboBox_currentIndexChanged(
-    int index)
-{
-    switch (index) {
-    case P_VERT: mMRS.setPointCloudColorPerVertex(); break;
-    case P_MESH: mMRS.setPointCloudColorPerMesh(); break;
-    case P_USER: mMRS.setPointCloudColorUserDefined(); break;
-    }
-    mUI->pointUserColorFrame->setVisible(index == P_USER);
-    emit settingsUpdated();
-}
-
-void MeshRenderSettingsFrame::on_pointColorDialogPushButton_clicked()
-{
-    QColor color = QColorDialog::getColor();
-
-    if (color.isValid()) {
-        setButtonBackGround(mUI->pointColorDialogPushButton, color);
-
-        mMRS.setPointCloudUserColor(
-            color.redF(), color.greenF(), color.blueF(), color.alphaF());
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_pointSizeSlider_valueChanged(int value)
-{
-    mMRS.setPointWidth(value);
-    emit settingsUpdated();
 }
 
 void MeshRenderSettingsFrame::on_surfaceVisibilityCheckBox_stateChanged(
@@ -299,85 +249,23 @@ void MeshRenderSettingsFrame::on_edgesSizeSlider_valueChanged(int value)
 
 void MeshRenderSettingsFrame::updateGuiFromSettings()
 {
+    for (auto* frame : frames) {
+        frame->updateFrameFromSettings();
+    }
+
     if (mMRS.canBeVisible()) {
         mUI->tabWidget->setEnabled(true);
-        updatePointsTabFromSettings();
         updateSurfaceTabFromSettings();
         updateWireframeTabFromSettings();
         updateEdgesTabFromSettings();
     }
     else {
         mUI->tabWidget->setEnabled(false);
-        mUI->pointVisibilityCheckBox->setChecked(false);
+        //mUI->pointVisibilityCheckBox->setChecked(false);
         mUI->surfaceVisibilityCheckBox->setChecked(false);
         mUI->wireframeVisibilityCheckBox->setChecked(false);
         mUI->edgesVisibilityCheckBox->setChecked(false);
     }
-}
-
-void MeshRenderSettingsFrame::updatePointsTabFromSettings()
-{
-    if (mMRS.canPointCloudBeVisible()) {
-        mUI->tabWidget->setCurrentIndex(0);
-        mUI->pointsTab->setEnabled(true);
-        mUI->pointVisibilityCheckBox->setEnabled(true);
-        mUI->pointVisibilityCheckBox->setChecked(mMRS.isPointCloudVisible());
-
-        mUI->pointShadingVertexRadioButton->setEnabled(
-            mMRS.canPointCloudShadingBePerVertex());
-        mUI->pointShadingVertexRadioButton->setChecked(
-            mMRS.isPointCloudShadingPerVertex());
-        mUI->pointShadingNoneRadioButton->setChecked(
-            mMRS.isPointCloudShadingNone());
-
-        // todo
-        mUI->pointShapePixelRadioButton->setChecked(true);
-        mUI->pointShapeCircleRadioButton->setEnabled(false);
-
-        updatePointsColorComboBoxFromSettings();
-        mUI->pointSizeSlider->setValue((uint) mMRS.pointWidth());
-    }
-    else {
-        mUI->pointsTab->setEnabled(false);
-        mUI->pointVisibilityCheckBox->setChecked(false);
-    }
-}
-
-void MeshRenderSettingsFrame::updatePointsColorComboBoxFromSettings()
-{
-    QStandardItemModel* model =
-        qobject_cast<QStandardItemModel*>(mUI->pointColorComboBox->model());
-    assert(model != nullptr);
-
-    // color per vertex
-    QStandardItem* item = model->item(P_VERT);
-    if (mMRS.canPointCloudColorBePerVertex()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-
-    // color per mesh
-    item = model->item(P_MESH);
-    if (mMRS.canPointCloudColorBePerMesh()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-
-    if (mMRS.isPointCloudColorPerVertex())
-        mUI->pointColorComboBox->setCurrentIndex(P_VERT);
-    if (mMRS.isPointCloudColorPerMesh())
-        mUI->pointColorComboBox->setCurrentIndex(P_MESH);
-    if (mMRS.isPointCloudColorUserDefined())
-        mUI->pointColorComboBox->setCurrentIndex(P_USER);
-
-    mUI->pointUserColorFrame->setVisible(mMRS.isPointCloudColorUserDefined());
-    vcl::Color vc = mMRS.pointCloudUserColor();
-    QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
-    setButtonBackGround(mUI->pointColorDialogPushButton, c);
 }
 
 void MeshRenderSettingsFrame::updateSurfaceTabFromSettings()
