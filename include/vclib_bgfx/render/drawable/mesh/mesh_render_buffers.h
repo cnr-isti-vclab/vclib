@@ -27,6 +27,8 @@
 
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 
+#include "mesh_render_buffers_macros.h"
+
 namespace vcl {
 
 template<MeshConcept MeshType>
@@ -44,7 +46,7 @@ class MeshRenderBuffers : public vcl::MeshRenderData<MeshType>
     bgfx::IndexBufferHandle mTriangleNormalBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mTriangleColorBH  = BGFX_INVALID_HANDLE;
 
-    bgfx::IndexBufferHandle mTriangleWedgeIdxBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle mTriangleTextureIndexBH = BGFX_INVALID_HANDLE;
 
     bgfx::IndexBufferHandle mEdgeIndexBH  = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle mEdgeNormalBH = BGFX_INVALID_HANDLE;
@@ -90,7 +92,7 @@ public:
         std::swap(mTriangleIndexBH, other.mTriangleIndexBH);
         std::swap(mTriangleNormalBH, other.mTriangleNormalBH);
         std::swap(mTriangleColorBH, other.mTriangleColorBH);
-        std::swap(mTriangleWedgeIdxBH, other.mTriangleWedgeIdxBH);
+        std::swap(mTriangleTextureIndexBH, other.mTriangleTextureIndexBH);
         std::swap(mEdgeIndexBH, other.mEdgeIndexBH);
         std::swap(mEdgeNormalBH, other.mEdgeNormalBH);
         std::swap(mEdgeColorBH, other.mEdgeColorBH);
@@ -137,15 +139,24 @@ public:
             bgfx::setIndexBuffer(mTriangleIndexBH);
 
             if (bgfx::isValid(mTriangleColorBH)) { // triangle colors
-                bgfx::setBuffer(1, mTriangleColorBH, bgfx::Access::Read);
+                bgfx::setBuffer(
+                    VCL_MRB_TRIANGLE_COLOR_BUFFER,
+                    mTriangleColorBH,
+                    bgfx::Access::Read);
             }
 
             if (bgfx::isValid(mTriangleNormalBH)) { // triangle normals
-                bgfx::setBuffer(2, mTriangleNormalBH, bgfx::Access::Read);
+                bgfx::setBuffer(
+                    VCL_MRB_TRIANGLE_NORMAL_BUFFER,
+                    mTriangleNormalBH,
+                    bgfx::Access::Read);
             }
 
-            if (bgfx::isValid(mTriangleWedgeIdxBH)) { // triangle wedge indices
-                bgfx::setBuffer(3, mTriangleWedgeIdxBH, bgfx::Access::Read);
+            if (bgfx::isValid(mTriangleTextureIndexBH)) { // tri texture indices
+                bgfx::setBuffer(
+                    VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER,
+                    mTriangleTextureIndexBH,
+                    bgfx::Access::Read);
             }
         }
         else if (indexBufferToBind == Base::EDGES) {
@@ -166,7 +177,7 @@ public:
 
     void bindTextures()
     {
-        uint i = 4; // first slot available is 4
+        uint i = VCL_MRB_TEXTURE0; // first slot available is VCL_MRB_TEXTURE0
         for (auto [th, uh] : mTexturesH) {
             bgfx::setTexture(i, uh, th);
             i++;
@@ -276,7 +287,7 @@ private:
         if (Base::wedgeTexCoordsBufferData()) {
             assert(Base::wedgeTextureIDsBufferData());
 
-            mTriangleWedgeIdxBH = bgfx::createIndexBuffer(
+            mTriangleTextureIndexBH = bgfx::createIndexBuffer(
                 bgfx::makeRef(
                     Base::wedgeTextureIDsBufferData(),
                     Base::triangleNumber() * sizeof(uint32_t)),
@@ -374,8 +385,8 @@ private:
         if (bgfx::isValid(mTriangleColorBH))
             bgfx::destroy(mTriangleColorBH);
 
-        if (bgfx::isValid(mTriangleWedgeIdxBH))
-            bgfx::destroy(mTriangleWedgeIdxBH);
+        if (bgfx::isValid(mTriangleTextureIndexBH))
+            bgfx::destroy(mTriangleTextureIndexBH);
 
         if (bgfx::isValid(mEdgeIndexBH))
             bgfx::destroy(mEdgeIndexBH);

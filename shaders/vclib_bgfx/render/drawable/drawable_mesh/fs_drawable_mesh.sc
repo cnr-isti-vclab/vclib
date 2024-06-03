@@ -23,19 +23,22 @@
 $input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 
 #include <vclib_bgfx/render/drawable/drawable_mesh/uniforms.sh>
+#include <vclib_bgfx/render/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
-BUFFER_RO(primitiveColors, uint, 1);  // color of each face / edge
-BUFFER_RO(primitiveNormals, float, 2); // normal of each face / edge
-BUFFER_RO(wedgeIds, uint, 3); // wedge ids of each face
+BUFFER_RO(primitiveColors, uint, VCL_MRB_TRIANGLE_COLOR_BUFFER);    // color of each face / edge
+BUFFER_RO(primitiveNormals, float, VCL_MRB_TRIANGLE_NORMAL_BUFFER); // normal of each face / edge
+BUFFER_RO(triTextureIds, uint, VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER); // wedge ids of each face
 
 // textures
-SAMPLER2D(s_tex0, 4);
-SAMPLER2D(s_tex1, 5);
-SAMPLER2D(s_tex2, 6);
-SAMPLER2D(s_tex3, 7);
-SAMPLER2D(s_tex4, 8);
-SAMPLER2D(s_tex5, 9);
+SAMPLER2D(s_tex0, VCL_MRB_TEXTURE0);
+SAMPLER2D(s_tex1, VCL_MRB_TEXTURE1);
+SAMPLER2D(s_tex2, VCL_MRB_TEXTURE2);
+SAMPLER2D(s_tex3, VCL_MRB_TEXTURE3);
+SAMPLER2D(s_tex4, VCL_MRB_TEXTURE4);
+SAMPLER2D(s_tex5, VCL_MRB_TEXTURE5);
+SAMPLER2D(s_tex6, VCL_MRB_TEXTURE6);
+SAMPLER2D(s_tex7, VCL_MRB_TEXTURE7);
 
 vec4 getColorFromTexture(uint texId, vec2 uv) {
     switch (texId) {
@@ -45,6 +48,8 @@ vec4 getColorFromTexture(uint texId, vec2 uv) {
         case 3: return texture2D(s_tex3, uv);
         case 4: return texture2D(s_tex4, uv);
         case 5: return texture2D(s_tex5, uv);
+        case 6: return texture2D(s_tex6, uv);
+        case 7: return texture2D(s_tex7, uv);
         default: return vec4(0.0, 0.0, 0.0, 1.0);
     }
 }
@@ -128,7 +133,7 @@ void main()
             color = getColorFromTexture(0, v_texcoord0);
         }
         if (bool(drawMode0 & VCL_MRS_SURF_TEX_WEDGE)) {
-            color = getColorFromTexture(wedgeIds[gl_PrimitiveID], v_texcoord1);
+            color = getColorFromTexture(triTextureIds[gl_PrimitiveID], v_texcoord1);
         }
     }
     else if (bool(primitive & VCL_MRS_DRAWING_WIREFRAME)){ // wireframe
