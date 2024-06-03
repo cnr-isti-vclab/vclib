@@ -381,7 +381,7 @@ private:
             fillVertex(v);
         }
 
-        uint fi = 0;
+        uint fi  = 0;
         uint vdi = m.vertexNumber();
         triVertIndices.resize(m.faceNumber());
         for (const auto& f : m.faces()) {
