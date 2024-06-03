@@ -45,11 +45,6 @@ file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/render/*.h")
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/vclib/render/*.cpp")
 
-if (APPLE)
-    file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS "src/vclib/render/*.mm")
-    list(APPEND SOURCES ${SOURCES_MM})
-endif()
-
 file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS "assets/*")
 
 # remove all files in ${CMAKE_CURRENT_BINARY_DIR}/include/vclib
@@ -71,6 +66,12 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
     file(GLOB_RECURSE SOURCES_BGFX CONFIGURE_DEPENDS
         "src/vclib_bgfx/render/*.cpp")
     list(APPEND SOURCES ${SOURCES_BGFX})
+
+    if (APPLE)
+        file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS
+            "src/vclib_bgfx/render/*.mm")
+        list(APPEND SOURCES ${SOURCES_MM})
+    endif()
 
     file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
         "shaders/vclib_bgfx/render/*.sh" "shaders/vclib_bgfx/render/*.sc")
