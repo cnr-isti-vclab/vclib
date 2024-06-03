@@ -58,6 +58,12 @@ void ViewerCanvas::init(uint width, uint height)
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+
+    if (mDrawList) {
+        for (DrawableObjectI* obj : *mDrawList) {
+            initDrawableObject(*obj);
+        }
+    }
 }
 
 const DrawableObjectVector& ViewerCanvas::drawableObjectVector() const

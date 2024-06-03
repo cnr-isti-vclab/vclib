@@ -433,15 +433,15 @@ private:
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
                     glTexCoord2f(
-                        wedgTexCoords[tid * 6 + 0], wedgTexCoords[tid * 6 + 1]);
+                        wedgTexCoords[vid0 * 2 + 0], wedgTexCoords[vid0 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid0_ptr]));
                     glVertex3fv(&(coords[vid0_ptr]));
                     glTexCoord2f(
-                        wedgTexCoords[tid * 6 + 2], wedgTexCoords[tid * 6 + 3]);
+                        wedgTexCoords[vid1 * 2 + 0], wedgTexCoords[vid1 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid1_ptr]));
                     glVertex3fv(&(coords[vid1_ptr]));
                     glTexCoord2f(
-                        wedgTexCoords[tid * 6 + 4], wedgTexCoords[tid * 6 + 5]);
+                        wedgTexCoords[vid2 * 2 + 0], wedgTexCoords[vid2 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid2_ptr]));
                     glVertex3fv(&(coords[vid2_ptr]));
                     glEnd();
@@ -480,7 +480,7 @@ private:
             glTexImage2D(
                 GL_TEXTURE_2D,
                 0,
-                GL_RGB,
+                GL_RGBA,
                 mMRD.textureSize(i).x(),
                 mMRD.textureSize(i).y(),
                 0,
