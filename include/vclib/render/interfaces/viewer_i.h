@@ -20,63 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
-#define VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#ifndef VCL_RENDER_INTERFACES_VIEWER_I_H
+#define VCL_RENDER_INTERFACES_VIEWER_I_H
 
 #include <memory>
 
-#include <vclib/render/interfaces/event_manager_i.h>
-#include <vclib/render/interfaces/viewer_i.h>
-
-#include <vclib_opengl2/render/canvas.h>
+#include <vclib/render/drawable/drawable_object_vector.h>
+#include <vclib/render/viewer/desktop_trackball.h>
 
 namespace vcl {
 
-class ViewerCanvas : public vcl::Canvas, public ViewerI
+class ViewerI : public DesktopTrackBall<float>
 {
-public:
-    ViewerCanvas(void* winId, uint width = 1024, uint height = 768);
-
-    ViewerCanvas(
-        void*                                 winId,
-        std::shared_ptr<DrawableObjectVector> v,
-        uint                                  width  = 1024,
-        uint                                  height = 768);
-
-    void init(uint width, uint height);
-
-    void toggleAxisVisibility() override
-    {
-        // todo
-    }
-
-    void toggleTrackBallVisibility() override
-    {
-        // todo
-    }
-
 protected:
-    void draw() override;
+    // this Viewer does not normally own this drawList
+    std::shared_ptr<DrawableObjectVector> mDrawList;
 
-    // events
-    void onResize(unsigned int width, unsigned int height) override;
+    using DTB = vcl::DesktopTrackBall<float>;
 
-    void onKeyPress(Key::Enum key) override;
+public:
+    ViewerI(uint width = 1024, uint height = 768) : DTB(width, height) {}
 
-    void onKeyRelease(Key::Enum key) override;
+    ~ViewerI() = default;
 
-    void onMouseMove(double x, double y) override;
+    const DrawableObjectVector& drawableObjectVector() const;
 
-    void onMousePress(MouseButton::Enum button) override;
+    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
 
-    void onMouseRelease(MouseButton::Enum button) override;
+    uint pushDrawableObject(const DrawableObjectI& obj);
 
-    void onMouseScroll(double dx, double dy) override;
+    void fitScene();
 
-private:
-    void initDrawableObject(DrawableObjectI& obj);
+    virtual void toggleAxisVisibility() = 0;
+
+    virtual void toggleTrackBallVisibility() = 0;
+
 };
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#endif // VCL_RENDER_INTERFACES_VIEWER_I_H

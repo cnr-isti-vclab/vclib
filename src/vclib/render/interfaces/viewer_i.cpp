@@ -20,63 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
-#define VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
-
-#include <memory>
-
-#include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/interfaces/viewer_i.h>
-
-#include <vclib_opengl2/render/canvas.h>
 
 namespace vcl {
 
-class ViewerCanvas : public vcl::Canvas, public ViewerI
+const DrawableObjectVector& ViewerI::drawableObjectVector() const
 {
-public:
-    ViewerCanvas(void* winId, uint width = 1024, uint height = 768);
+    return *mDrawList;
+}
 
-    ViewerCanvas(
-        void*                                 winId,
-        std::shared_ptr<DrawableObjectVector> v,
-        uint                                  width  = 1024,
-        uint                                  height = 768);
+void ViewerI::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
+{
+    mDrawList = v;
 
-    void init(uint width, uint height);
+    for (DrawableObjectI* obj : *mDrawList) {
+        obj->init();
+    }
+    fitScene();
+}
 
-    void toggleAxisVisibility() override
-    {
-        // todo
+uint ViewerI::pushDrawableObject(const DrawableObjectI& obj)
+{
+    mDrawList->pushBack(obj);
+    mDrawList->back().init();
+    return mDrawList->size() - 1;
+}
+
+void ViewerI::fitScene()
+{
+    Point3f sceneCenter;
+    float   sceneRadius = 1;
+
+    Box3d bb = mDrawList->boundingBox();
+
+    if (!bb.isNull()) {
+        sceneCenter = bb.center().cast<float>();
+        sceneRadius = bb.diagonal() / 2;
     }
 
-    void toggleTrackBallVisibility() override
-    {
-        // todo
-    }
-
-protected:
-    void draw() override;
-
-    // events
-    void onResize(unsigned int width, unsigned int height) override;
-
-    void onKeyPress(Key::Enum key) override;
-
-    void onKeyRelease(Key::Enum key) override;
-
-    void onMouseMove(double x, double y) override;
-
-    void onMousePress(MouseButton::Enum button) override;
-
-    void onMouseRelease(MouseButton::Enum button) override;
-
-    void onMouseScroll(double dx, double dy) override;
-
-private:
-    void initDrawableObject(DrawableObjectI& obj);
-};
+    DTB::setTrackBall(sceneCenter, sceneRadius);
+}
 
 } // namespace vcl
-
-#endif // VCL_OPENGL2_RENDER_VIEWER_CANVAS_H

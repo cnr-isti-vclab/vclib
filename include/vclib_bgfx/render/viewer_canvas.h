@@ -23,9 +23,8 @@
 #ifndef VCL_BGFX_RENDER_VIEWER_CANVAS_H
 #define VCL_BGFX_RENDER_VIEWER_CANVAS_H
 
-#include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/interfaces/event_manager_i.h>
-#include <vclib/render/viewer/desktop_trackball.h>
+#include <vclib/render/interfaces/viewer_i.h>
 
 #include <vclib_bgfx/render/canvas.h>
 #include <vclib_bgfx/render/drawable/drawable_axis.h>
@@ -37,11 +36,8 @@
 
 namespace vcl {
 
-class ViewerCanvas : public vcl::Canvas, public vcl::DesktopTrackBall<float>
+class ViewerCanvas : public Canvas, public ViewerI
 {
-    // this Viewer does not normally own this drawList
-    std::shared_ptr<DrawableObjectVector> mDrawList;
-
     CameraUniforms             mCameraUniforms;
     DirectionalLightUniforms   mDirectionalLightUniforms;
     MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
@@ -49,9 +45,6 @@ class ViewerCanvas : public vcl::Canvas, public vcl::DesktopTrackBall<float>
     DrawableAxis             mAxis;
     DrawableDirectionalLight mDirectionalLight;
     DrawableTrackBall        mTrackBall;
-
-protected:
-    using DTB = vcl::DesktopTrackBall<float>;
 
 public:
     ViewerCanvas(void* winId, uint width = 1024, uint height = 768);
@@ -62,20 +55,36 @@ public:
         uint                                  width  = 1024,
         uint                                  height = 768);
 
-    const DrawableObjectVector& drawableObjectVector() const;
+    void toggleAxisVisibility() override
+    {
+        mAxis.setVisibility(!mAxis.isVisible());
+    }
 
-    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
-
-    uint pushDrawableObject(const DrawableObjectI& obj);
-
-    void fitScene();
-
-    void toggleAxisVisibility() { mAxis.setVisibility(!mAxis.isVisible()); }
-
-    void toggleTrackballVisibility()
+    void toggleTrackBallVisibility() override
     {
         mTrackBall.setVisibility(!mTrackBall.isVisible());
     }
+
+protected:
+    void draw() override;
+
+    // events
+    void onResize(unsigned int width, unsigned int height) override;
+
+    void onKeyPress(Key::Enum key) override;
+
+    void onKeyRelease(Key::Enum key) override;
+
+    void onMouseMove(double x, double y) override;
+
+    void onMousePress(MouseButton::Enum button) override;
+
+    void onMouseRelease(MouseButton::Enum button) override;
+
+    void onMouseScroll(double dx, double dy) override;
+
+private:
+    void initDrawableObject(DrawableObjectI& obj);
 
     bool isDirectionalLightVisible() const
     {
@@ -100,27 +109,6 @@ public:
         mTrackBall.updateRotation(v);
         mTrackBall.updateDragging(isDragging());
     }
-
-protected:
-    void draw() override;
-
-    // events
-    void onResize(unsigned int width, unsigned int height) override;
-
-    void onKeyPress(Key::Enum key) override;
-
-    void onKeyRelease(Key::Enum key) override;
-
-    void onMouseMove(double x, double y) override;
-
-    void onMousePress(MouseButton::Enum button) override;
-
-    void onMouseRelease(MouseButton::Enum button) override;
-
-    void onMouseScroll(double dx, double dy) override;
-
-private:
-    void initDrawableObject(DrawableObjectI& obj);
 };
 
 } // namespace vcl

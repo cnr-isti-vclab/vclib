@@ -115,7 +115,6 @@ void ViewerMainWindow::setDrawableObjectVector(
     else {
         mUI->rightArea->setVisible(false);
     }
-    mUI->viewer->fitScene();
 }
 
 /**

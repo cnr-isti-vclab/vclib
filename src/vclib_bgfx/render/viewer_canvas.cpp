@@ -29,7 +29,7 @@
 namespace vcl {
 
 ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
-        Canvas(winId, width, height), DTB(width, height)
+        Canvas(winId, width, height), ViewerI(width, height)
 {
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());
@@ -45,44 +45,6 @@ ViewerCanvas::ViewerCanvas(
     setDrawableObjectVector(v);
 }
 
-const DrawableObjectVector& ViewerCanvas::drawableObjectVector() const
-{
-    return *mDrawList;
-}
-
-void ViewerCanvas::setDrawableObjectVector(
-    std::shared_ptr<DrawableObjectVector> v)
-{
-    mDrawList = v;
-
-    for (DrawableObjectI* obj : *mDrawList) {
-        initDrawableObject(*obj);
-    }
-    fitScene();
-}
-
-uint ViewerCanvas::pushDrawableObject(const DrawableObjectI& obj)
-{
-    mDrawList->pushBack(obj);
-    initDrawableObject(mDrawList->back());
-    return mDrawList->size() - 1;
-}
-
-void ViewerCanvas::fitScene()
-{
-    Point3f sceneCenter;
-    float   sceneRadius = 1;
-
-    Box3d bb = mDrawList->boundingBox();
-
-    if (!bb.isNull()) {
-        sceneCenter = bb.center().cast<float>();
-        sceneRadius = bb.diagonal() / 2;
-    }
-
-    DTB::setTrackBall(sceneCenter, sceneRadius);
-}
-
 void ViewerCanvas::draw()
 {
     bgfx::setViewTransform(
@@ -93,7 +55,7 @@ void ViewerCanvas::draw()
 
     mDirectionalLightUniforms.bind();
 
-    for (DrawableObjectI* obj : *mDrawList)
+    for (DrawableObjectI* obj : drawableObjectVector())
         obj->draw(viewId());
 
     if (mAxis.isVisible()) {
@@ -134,7 +96,7 @@ void ViewerCanvas::onKeyPress(Key::Enum key)
 
     case Key::A: toggleAxisVisibility(); break;
 
-    case Key::T: toggleTrackballVisibility(); break;
+    case Key::T: toggleTrackBallVisibility(); break;
 
     default: keyPress(key); break;
     }

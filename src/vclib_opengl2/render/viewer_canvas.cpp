@@ -29,7 +29,7 @@
 namespace vcl {
 
 ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
-        Canvas(winId, width, height), DTB(width, height)
+        Canvas(winId, width, height), ViewerI(width, height)
 {
     init(width, height);
 }
@@ -64,44 +64,6 @@ void ViewerCanvas::init(uint width, uint height)
             initDrawableObject(*obj);
         }
     }
-}
-
-const DrawableObjectVector& ViewerCanvas::drawableObjectVector() const
-{
-    return *mDrawList;
-}
-
-void ViewerCanvas::setDrawableObjectVector(
-    std::shared_ptr<DrawableObjectVector> v)
-{
-    mDrawList = v;
-
-    for (DrawableObjectI* obj : *mDrawList) {
-        initDrawableObject(*obj);
-    }
-    fitScene();
-}
-
-uint ViewerCanvas::pushDrawableObject(const DrawableObjectI& obj)
-{
-    mDrawList->pushBack(obj);
-    initDrawableObject(mDrawList->back());
-    return mDrawList->size() - 1;
-}
-
-void ViewerCanvas::fitScene()
-{
-    Point3f sceneCenter;
-    float   sceneRadius = 1;
-
-    Box3d bb = mDrawList->boundingBox();
-
-    if (!bb.isNull()) {
-        sceneCenter = bb.center().cast<float>();
-        sceneRadius = bb.diagonal() / 2;
-    }
-
-    DTB::setTrackBall(sceneCenter, sceneRadius);
 }
 
 void ViewerCanvas::draw()
