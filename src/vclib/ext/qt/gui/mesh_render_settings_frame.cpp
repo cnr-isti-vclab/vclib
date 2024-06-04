@@ -28,6 +28,7 @@
 
 #include <vclib/ext/qt/gui/mesh_render_settings_frame/points_frame.h>
 #include <vclib/ext/qt/gui/mesh_render_settings_frame/surface_frame.h>
+#include <vclib/ext/qt/gui/mesh_render_settings_frame/wireframe_frame.h>
 
 namespace vcl::qt {
 
@@ -43,6 +44,10 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
     auto* surfaceFrame = new SurfaceFrame(mMRS, this);
     mUI->tabWidget->addTab(surfaceFrame, "Surface");
     frames.push_back(surfaceFrame);
+
+    auto* wireframeFrame = new WireframeFrame(mMRS, this);
+    mUI->tabWidget->addTab(wireframeFrame, "Wireframe");
+    frames.push_back(wireframeFrame);
 
     for (auto* frame : frames) {
         connect(
@@ -65,61 +70,6 @@ void MeshRenderSettingsFrame::setMeshRenderSettings(
 {
     mMRS = settings;
     updateGuiFromSettings();
-}
-
-void MeshRenderSettingsFrame::on_wireframeVisibilityCheckBox_stateChanged(
-    int arg1)
-{
-    mMRS.setWireframeVisibility(arg1 == Qt::Checked);
-    emit settingsUpdated();
-}
-
-void MeshRenderSettingsFrame::on_wireframeShadingNoneRadioButton_toggled(
-    bool checked)
-{
-    if (checked) {
-        mMRS.setWireframeShadingNone();
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_wireframeShadingVertexRadioButton_toggled(
-    bool checked)
-{
-    if (checked) {
-        mMRS.setWireframeShadingPerVertex();
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_wireframeColorComboBox_currentIndexChanged(
-    int index)
-{
-    switch (index) {
-    case W_VERTEX: mMRS.setWireframeColorPerVertex(); break;
-    case W_MESH: mMRS.setWireframeColorPerMesh(); break;
-    case W_USER: mMRS.setWireframeColorUserDefined(); break;
-    }
-    mUI->wireframeUserColorFrame->setVisible(index == W_USER);
-    emit settingsUpdated();
-}
-
-void MeshRenderSettingsFrame::on_wireframeColorDialogPushButton_clicked()
-{
-    QColor color = QColorDialog::getColor();
-    if (color.isValid()) {
-        setButtonBackGround(mUI->wireframeColorDialogPushButton, color);
-
-        mMRS.setWireframeUserColor(
-            color.redF(), color.greenF(), color.blueF(), color.alphaF());
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_wireframeSizeSlider_valueChanged(int value)
-{
-    mMRS.setWireframeWidth(value);
-    emit settingsUpdated();
 }
 
 void MeshRenderSettingsFrame::on_edgesVisibilityCheckBox_stateChanged(int arg1)
@@ -194,71 +144,15 @@ void MeshRenderSettingsFrame::updateGuiFromSettings()
 
     if (mMRS.canBeVisible()) {
         mUI->tabWidget->setEnabled(true);
-        updateWireframeTabFromSettings();
         updateEdgesTabFromSettings();
     }
     else {
         mUI->tabWidget->setEnabled(false);
         // mUI->pointVisibilityCheckBox->setChecked(false);
         // mUI->surfaceVisibilityCheckBox->setChecked(false);
-        mUI->wireframeVisibilityCheckBox->setChecked(false);
+        // mUI->wireframeVisibilityCheckBox->setChecked(false);
         mUI->edgesVisibilityCheckBox->setChecked(false);
     }
-}
-
-void MeshRenderSettingsFrame::updateWireframeTabFromSettings()
-{
-    if (mMRS.canSurfaceBeVisible()) {
-        mUI->wireframeTab->setEnabled(true);
-        mUI->wireframeVisibilityCheckBox->setEnabled(true);
-        mUI->wireframeVisibilityCheckBox->setChecked(mMRS.isWireframeVisible());
-        mUI->wireframeShadingVertexRadioButton->setEnabled(
-            mMRS.canWireframeShadingBePerVertex());
-        mUI->wireframeShadingVertexRadioButton->setChecked(
-            mMRS.isWireframeShadingPerVertex());
-        mUI->wireframeShadingNoneRadioButton->setChecked(
-            mMRS.isWireframeShadingNone());
-
-        updateWireframeComboBoxFromSettings();
-        mUI->wireframeSizeSlider->setValue(mMRS.wireframeWidth());
-    }
-    else {
-        mUI->wireframeTab->setEnabled(false);
-    }
-}
-
-void MeshRenderSettingsFrame::updateWireframeComboBoxFromSettings()
-{
-    QStandardItemModel* model =
-        qobject_cast<QStandardItemModel*>(mUI->wireframeColorComboBox->model());
-    assert(model != nullptr);
-    QStandardItem* item = model->item(W_VERTEX);
-    if (mMRS.canWireframeColorBePerVertex()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-
-    item = model->item(W_MESH);
-    if (mMRS.canWireframeColorBePerMesh()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-    if (mMRS.isWireframeColorPerVertex())
-        mUI->wireframeColorComboBox->setCurrentIndex(W_VERTEX);
-    if (mMRS.isWireframeColorPerMesh())
-        mUI->wireframeColorComboBox->setCurrentIndex(W_MESH);
-    if (mMRS.isWireframeColorUserDefined())
-        mUI->wireframeColorComboBox->setCurrentIndex(W_USER);
-
-    mUI->wireframeUserColorFrame->setVisible(
-        mMRS.isWireframeColorUserDefined());
-    vcl::Color vc = mMRS.wireframeUserColor();
-    QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
-    setButtonBackGround(mUI->wireframeColorDialogPushButton, c);
 }
 
 void MeshRenderSettingsFrame::updateEdgesTabFromSettings()

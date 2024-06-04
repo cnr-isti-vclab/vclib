@@ -212,7 +212,8 @@ void SurfaceFrame::onColorComboBoxChanged(int index)
 
 void SurfaceFrame::onColorDialogButtonClicked()
 {
-    QColor color = QColorDialog::getColor();
+    QColor color =
+        QColorDialog::getColor(getButtonBackGround(mUI->colorDialogPushButton));
 
     if (color.isValid()) {
         setButtonBackGround(mUI->colorDialogPushButton, color);

@@ -20,17 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ui_points_frame.h"
-#include <vclib/ext/qt/gui/mesh_render_settings_frame/points_frame.h>
+#include "ui_wireframe_frame.h"
+#include <vclib/ext/qt/gui/mesh_render_settings_frame/wireframe_frame.h>
 
 #include <QColorDialog>
 #include <QStandardItemModel>
 
 namespace vcl::qt {
 
-PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
+WireframeFrame::WireframeFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
-        mUI(new Ui::PointsFrame)
+        mUI(new Ui::WireframeFrame)
 {
     mUI->setupUi(this);
 
@@ -39,18 +39,6 @@ PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(stateChanged(int)),
         this,
         SLOT(onVisibilityChanged(int)));
-
-    connect(
-        mUI->shapeCircleRadioButton,
-        SIGNAL(toggled(bool)),
-        this,
-        SLOT(onShapeCircleToggled(bool)));
-
-    connect(
-        mUI->shapePixelRadioButton,
-        SIGNAL(toggled(bool)),
-        this,
-        SLOT(onShapePixelToggled(bool)));
 
     connect(
         mUI->shadingVertexRadioButton,
@@ -83,132 +71,113 @@ PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
         SLOT(onSizeChanged(int)));
 }
 
-PointsFrame::~PointsFrame()
+WireframeFrame::~WireframeFrame()
 {
     delete mUI;
 }
 
-void PointsFrame::updateFrameFromSettings()
+void WireframeFrame::updateFrameFromSettings()
 {
-    if (mMRS.canPointCloudBeVisible()) {
+    if (mMRS.canSurfaceBeVisible()) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isPointCloudVisible());
-
+        mUI->visibilityCheckBox->setChecked(mMRS.isWireframeVisible());
         mUI->shadingVertexRadioButton->setEnabled(
-            mMRS.canPointCloudShadingBePerVertex());
+            mMRS.canWireframeShadingBePerVertex());
         mUI->shadingVertexRadioButton->setChecked(
-            mMRS.isPointCloudShadingPerVertex());
-        mUI->shadingNoneRadioButton->setChecked(mMRS.isPointCloudShadingNone());
-
-        // todo
-        mUI->shapePixelRadioButton->setChecked(true);
-        mUI->shapeCircleRadioButton->setEnabled(false);
+            mMRS.isWireframeShadingPerVertex());
+        mUI->shadingNoneRadioButton->setChecked(
+            mMRS.isWireframeShadingNone());
 
         updateColorComboBoxFromSettings();
-        mUI->sizeSlider->setValue((uint) mMRS.pointWidth());
+        mUI->sizeSlider->setValue(mMRS.wireframeWidth());
     }
     else {
         this->setEnabled(false);
-        mUI->visibilityCheckBox->setChecked(false);
     }
 }
 
-void PointsFrame::updateColorComboBoxFromSettings()
+void WireframeFrame::updateColorComboBoxFromSettings()
 {
     QStandardItemModel* model =
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
-
-    // color per vertex
-    QStandardItem* item = model->item(P_VERT);
-    if (mMRS.canPointCloudColorBePerVertex()) {
+    QStandardItem* item = model->item(W_VERTEX);
+    if (mMRS.canWireframeColorBePerVertex()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-    // color per mesh
-    item = model->item(P_MESH);
-    if (mMRS.canPointCloudColorBePerMesh()) {
+    item = model->item(W_MESH);
+    if (mMRS.canWireframeColorBePerMesh()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
+    if (mMRS.isWireframeColorPerVertex())
+        mUI->colorComboBox->setCurrentIndex(W_VERTEX);
+    if (mMRS.isWireframeColorPerMesh())
+        mUI->colorComboBox->setCurrentIndex(W_MESH);
+    if (mMRS.isWireframeColorUserDefined())
+        mUI->colorComboBox->setCurrentIndex(W_USER);
 
-    if (mMRS.isPointCloudColorPerVertex())
-        mUI->colorComboBox->setCurrentIndex(P_VERT);
-    if (mMRS.isPointCloudColorPerMesh())
-        mUI->colorComboBox->setCurrentIndex(P_MESH);
-    if (mMRS.isPointCloudColorUserDefined())
-        mUI->colorComboBox->setCurrentIndex(P_USER);
-
-    mUI->userColorFrame->setVisible(mMRS.isPointCloudColorUserDefined());
-    vcl::Color vc = mMRS.pointCloudUserColor();
+    mUI->userColorFrame->setVisible(
+        mMRS.isWireframeColorUserDefined());
+    vcl::Color vc = mMRS.wireframeUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
 }
 
-void PointsFrame::onVisibilityChanged(int arg1)
+void WireframeFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setPointCloudVisibility(arg1 == Qt::Checked);
+    mMRS.setWireframeVisibility(arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
-void PointsFrame::onShapeCircleToggled(bool checked)
-{
-    // todo
-}
-
-void PointsFrame::onShapePixelToggled(bool checked)
-{
-    // todo
-}
-
-void PointsFrame::onShadingVertexToggled(bool checked)
+void WireframeFrame::onShadingVertexToggled(bool checked)
 {
     if (checked) {
-        mMRS.setPointCloudShadingPerVertex();
+        mMRS.setWireframeShadingPerVertex();
         emit settingsUpdated();
     }
 }
 
-void PointsFrame::onShadingNoneToggled(bool checked)
+void WireframeFrame::onShadingNoneToggled(bool checked)
 {
     if (checked) {
-        mMRS.setPointCloudShadingNone();
+        mMRS.setWireframeShadingNone();
         emit settingsUpdated();
     }
 }
 
-void PointsFrame::onColorComboBoxChanged(int index)
+void WireframeFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case P_VERT: mMRS.setPointCloudColorPerVertex(); break;
-    case P_MESH: mMRS.setPointCloudColorPerMesh(); break;
-    case P_USER: mMRS.setPointCloudColorUserDefined(); break;
+    case W_VERTEX: mMRS.setWireframeColorPerVertex(); break;
+    case W_MESH: mMRS.setWireframeColorPerMesh(); break;
+    case W_USER: mMRS.setWireframeColorUserDefined(); break;
     }
-    mUI->userColorFrame->setVisible(index == P_USER);
+    mUI->userColorFrame->setVisible(index == W_USER);
     emit settingsUpdated();
 }
 
-void PointsFrame::onColorDialogButtonClicked()
+void WireframeFrame::onColorDialogButtonClicked()
 {
     QColor color =
         QColorDialog::getColor(getButtonBackGround(mUI->colorDialogPushButton));
-
     if (color.isValid()) {
         setButtonBackGround(mUI->colorDialogPushButton, color);
 
-        mMRS.setPointCloudUserColor(
+        mMRS.setWireframeUserColor(
             color.redF(), color.greenF(), color.blueF(), color.alphaF());
         emit settingsUpdated();
     }
 }
 
-void PointsFrame::onSizeChanged(int value)
+void WireframeFrame::onSizeChanged(int value)
 {
     mMRS.setPointWidth(value);
     emit settingsUpdated();

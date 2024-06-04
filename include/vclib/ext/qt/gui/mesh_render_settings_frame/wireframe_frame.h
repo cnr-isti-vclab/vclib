@@ -20,63 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
-#define VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
+#ifndef VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H
+#define VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H
 
 #include <QFrame>
 
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
-#include "mesh_render_settings_frame/generic_mesh_render_settings_frame.h"
-
-class QPushButton;
+#include "generic_mesh_render_settings_frame.h"
 
 namespace vcl::qt {
 
 namespace Ui {
-class MeshRenderSettingsFrame;
+class WireframeFrame;
 } // namespace Ui
 
-class MeshRenderSettingsFrame : public QFrame
+class WireframeFrame : public GenericMeshRenderSettingsFrame
 {
     Q_OBJECT
 
-    Ui::MeshRenderSettingsFrame* mUI;
-    MeshRenderSettings           mMRS;
-
-    std::vector<GenericMeshRenderSettingsFrame*> frames;
+    Ui::WireframeFrame* mUI;
 
 public:
-    explicit MeshRenderSettingsFrame(QWidget* parent = nullptr);
-    ~MeshRenderSettingsFrame();
+    explicit WireframeFrame(
+        MeshRenderSettings& settings,
+        QWidget*            parent = nullptr);
+    ~WireframeFrame();
 
-    const MeshRenderSettings& meshRenderSettings() const;
-    void setMeshRenderSettings(const MeshRenderSettings& settings);
-
-signals:
-    void settingsUpdated();
-
-private slots:
-    void on_edgesVisibilityCheckBox_stateChanged(int arg1);
-    void on_edgesShadingSmoothRadioButton_toggled(bool checked);
-    void on_edgesShadingFlatRadioButton_toggled(bool checked);
-    void on_edgesShadingNoneRadioButton_toggled(bool checked);
-    void on_edgesColorComboBox_currentIndexChanged(int index);
-    void on_edgesColorDialogPushButton_clicked();
-    void on_edgesSizeSlider_valueChanged(int value);
+    void updateFrameFromSettings() override;
 
 private:
+    enum WIRE_COLOR { W_VERTEX = 0, W_MESH, W_USER };
 
-    enum EDGES_COLOR { E_VERTEX = 0, E_EDGES, E_MESH, E_USER };
+    void updateColorComboBoxFromSettings();
 
-    void updateGuiFromSettings();
-    void updateEdgesTabFromSettings();
-    void updateEdgesComboBoxFromSettings();
-
-    void   setButtonBackGround(QPushButton* b, const QColor& c);
-    QColor getButtonBackGround(QPushButton* b);
+private slots:
+    void onVisibilityChanged(int arg1);
+    void onShadingVertexToggled(bool checked);
+    void onShadingNoneToggled(bool checked);
+    void onColorComboBoxChanged(int index);
+    void onColorDialogButtonClicked();
+    void onSizeChanged(int value);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
+#endif // VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_WIREFRAME_FRAME_H
