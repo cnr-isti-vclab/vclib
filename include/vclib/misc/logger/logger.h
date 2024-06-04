@@ -283,6 +283,12 @@ protected:
      */
     virtual Stream* levelStream(LogLevel lvl) = 0;
 
+    virtual void alignLeft(Stream& o) {};
+
+    virtual void alignRight(Stream& o) {};
+
+    virtual void setWidth(Stream& o, uint w) {};
+
 private:
     void updateStep()
     {
@@ -303,22 +309,24 @@ private:
             s += printIndentation(*stream);
             printMessage(*stream, msg, lvl, s);
             printElapsedTime(*stream);
-            *stream << std::endl;
+            *stream << "\n";
         }
     }
 
-    uint printPercentage(Stream& o) const
+    uint printPercentage(Stream& o)
     {
         uint size = 3;
         if (mPercPrecision > 0)
             size += 1 + mPercPrecision;
 
         o << "[";
-        o << std::right << std::setw(size) << percentage() << "%]";
+        alignRight(o);
+        setWidth(o, size);
+        o << percentage() << "%]";
         return size + 3;
     }
 
-    uint printIndentation(Stream& o) const
+    uint printIndentation(Stream& o)
     {
         uint s = 0;
         if (mIndent) {
@@ -362,14 +370,18 @@ private:
             o << " End ";
             break;
         }
-        o << std::setw(maxMsgSize) << std::left << msg;
+        setWidth(o, maxMsgSize);
+        alignLeft(o);
+        o << msg.c_str();
     }
 
-    void printElapsedTime(Stream& o) const
+    void printElapsedTime(Stream& o)
     {
         if (mPrintTimer) {
-            o << "[" << std::setw(TIMER_MAX_CHAR_NUMBER - 3) << std::right
-              << mTimer.delay() << "s]";
+            o << "[";
+            setWidth(o, TIMER_MAX_CHAR_NUMBER - 3);
+            alignRight(o);
+            o << mTimer.delay() << "s]";
         }
     }
 };

@@ -61,6 +61,21 @@ protected:
         }
         return nullptr;
     }
+
+    virtual void alignLeft(std::ostream& o)
+    {
+        o << std::left;
+    }
+
+    virtual void alignRight(std::ostream& o)
+    {
+        o << std::right;
+    }
+
+    virtual void setWidth(std::ostream& o, uint w)
+    {
+        o << std::setw(w);
+    }
 };
 
 } // namespace vcl
