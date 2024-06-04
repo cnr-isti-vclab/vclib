@@ -57,13 +57,6 @@ signals:
     void settingsUpdated();
 
 private slots:
-    void on_surfaceVisibilityCheckBox_stateChanged(int arg1);
-    void on_surfaceShadingNoneRadioButton_toggled(bool checked);
-    void on_surfaceShadingSmoothRadioButton_toggled(bool checked);
-    void on_surfaceShadingFlatRadioButton_toggled(bool checked);
-    void on_surfaceColorComboBox_currentIndexChanged(int index);
-    void on_surfaceColorDialogPushButton_clicked();
-
     void on_wireframeVisibilityCheckBox_stateChanged(int arg1);
     void on_wireframeShadingNoneRadioButton_toggled(bool checked);
     void on_wireframeShadingVertexRadioButton_toggled(bool checked);
@@ -80,23 +73,11 @@ private slots:
     void on_edgesSizeSlider_valueChanged(int value);
 
 private:
-    enum SURF_COLOR {
-        SC_VERT = 0,
-        SC_FACE,
-        SC_MESH,
-        SC_VERT_TEX,
-        SC_WEDG_TEX,
-        SC_USER
-    };
-
     enum WIRE_COLOR { W_VERTEX = 0, W_MESH, W_USER };
 
     enum EDGES_COLOR { E_VERTEX = 0, E_EDGES, E_MESH, E_USER };
 
     void updateGuiFromSettings();
-    void updateSurfaceTabFromSettings();
-    void uptateSurfaceShadingRadioButtonsFromSettings();
-    void updateSurfaceColorComboBoxFromSettings();
     void updateWireframeTabFromSettings();
     void updateWireframeComboBoxFromSettings();
     void updateEdgesTabFromSettings();

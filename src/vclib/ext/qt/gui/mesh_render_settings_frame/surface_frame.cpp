@@ -20,17 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ui_points_frame.h"
-#include <vclib/ext/qt/gui/mesh_render_settings_frame/points_frame.h>
+#include "ui_surface_frame.h"
+#include <vclib/ext/qt/gui/mesh_render_settings_frame/surface_frame.h>
 
 #include <QColorDialog>
 #include <QStandardItemModel>
 
 namespace vcl::qt {
 
-PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
+SurfaceFrame::SurfaceFrame(MeshRenderSettings& settings, QWidget* parent) :
         GenericMeshRenderSettingsFrame(settings, parent),
-        mUI(new Ui::PointsFrame)
+        mUI(new Ui::SurfaceFrame)
 {
     mUI->setupUi(this);
 
@@ -41,22 +41,16 @@ PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
         SLOT(onVisibilityChanged(int)));
 
     connect(
-        mUI->shapeCircleRadioButton,
+        mUI->shadingSmoothRadioButton,
         SIGNAL(toggled(bool)),
         this,
-        SLOT(onShapeCircleToggled(bool)));
+        SLOT(onShadingSmoothToggled(bool)));
 
     connect(
-        mUI->shapePixelRadioButton,
+        mUI->shadingFlatRadioButton,
         SIGNAL(toggled(bool)),
         this,
-        SLOT(onShapePixelToggled(bool)));
-
-    connect(
-        mUI->shadingVertexRadioButton,
-        SIGNAL(toggled(bool)),
-        this,
-        SLOT(onShadingVertexToggled(bool)));
+        SLOT(onShadingFlatToggled(bool)));
 
     connect(
         mUI->shadingNoneRadioButton,
@@ -75,38 +69,21 @@ PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
         SIGNAL(clicked()),
         this,
         SLOT(onColorDialogButtonClicked()));
-
-    connect(
-        mUI->sizeSlider,
-        SIGNAL(valueChanged(int)),
-        this,
-        SLOT(onSizeChanged(int)));
 }
 
-PointsFrame::~PointsFrame()
+SurfaceFrame::~SurfaceFrame()
 {
     delete mUI;
 }
 
-void PointsFrame::updateFrameFromSettings()
+void SurfaceFrame::updateFrameFromSettings()
 {
-    if (mMRS.canPointCloudBeVisible()) {
+    if (mMRS.canSurfaceBeVisible()) {
         this->setEnabled(true);
         mUI->visibilityCheckBox->setEnabled(true);
-        mUI->visibilityCheckBox->setChecked(mMRS.isPointCloudVisible());
-
-        mUI->shadingVertexRadioButton->setEnabled(
-            mMRS.canPointCloudShadingBePerVertex());
-        mUI->shadingVertexRadioButton->setChecked(
-            mMRS.isPointCloudShadingPerVertex());
-        mUI->shadingNoneRadioButton->setChecked(mMRS.isPointCloudShadingNone());
-
-        // todo
-        mUI->shapePixelRadioButton->setChecked(true);
-        mUI->shapeCircleRadioButton->setEnabled(false);
-
+        mUI->visibilityCheckBox->setChecked(mMRS.isSurfaceVisible());
+        uptateShadingRadioButtonsFromSettings();
         updateColorComboBoxFromSettings();
-        mUI->sizeSlider->setValue((uint) mMRS.pointWidth());
     }
     else {
         this->setEnabled(false);
@@ -114,103 +91,136 @@ void PointsFrame::updateFrameFromSettings()
     }
 }
 
-void PointsFrame::updateColorComboBoxFromSettings()
+
+void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
+{
+    if (!mMRS.canSurfaceShadingBeSmooth()) {
+        mUI->shadingSmoothRadioButton->setEnabled(false);
+    }
+    if (!mMRS.canSurfaceShadingBeFlat()) {
+        mUI->shadingFlatRadioButton->setEnabled(false);
+    }
+    mUI->shadingNoneRadioButton->setChecked(mMRS.isSurfaceShadingNone());
+    mUI->shadingFlatRadioButton->setChecked(mMRS.isSurfaceShadingFlat());
+    mUI->shadingSmoothRadioButton->setChecked(mMRS.isSurfaceShadingSmooth());
+}
+
+void SurfaceFrame::updateColorComboBoxFromSettings()
 {
     QStandardItemModel* model =
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
-
-    // color per vertex
-    QStandardItem* item = model->item(P_VERT);
-    if (mMRS.canPointCloudColorBePerVertex()) {
+    QStandardItem* item = model->item(SC_VERT);
+    if (mMRS.canSurfaceColorBePerVertex()) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+    item = model->item(SC_FACE);
+    if (mMRS.canSurfaceColorBePerFace()) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+    item = model->item(SC_MESH);
+    if (mMRS.canSurfaceColorBePerMesh()) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+    item = model->item(SC_VERT_TEX);
+    if (mMRS.canSurfaceColorBePerVertexTexcoords()) {
+        item->setFlags(item->flags() | Qt::ItemIsEnabled);
+    }
+    else {
+        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+    }
+    item = model->item(SC_WEDG_TEX);
+    if (mMRS.canSurfaceColorBePerWedgeTexcoords()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
     }
     else {
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-    // color per mesh
-    item = model->item(P_MESH);
-    if (mMRS.canPointCloudColorBePerMesh()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-
-    if (mMRS.isPointCloudColorPerVertex())
-        mUI->colorComboBox->setCurrentIndex(P_VERT);
-    if (mMRS.isPointCloudColorPerMesh())
-        mUI->colorComboBox->setCurrentIndex(P_MESH);
-    if (mMRS.isPointCloudColorUserDefined())
-        mUI->colorComboBox->setCurrentIndex(P_USER);
-
-    mUI->userColorFrame->setVisible(mMRS.isPointCloudColorUserDefined());
-    vcl::Color vc = mMRS.pointCloudUserColor();
+    if (mMRS.isSurfaceColorPerVertex())
+        mUI->colorComboBox->setCurrentIndex(SC_VERT);
+    if (mMRS.isSurfaceColorPerFace())
+        mUI->colorComboBox->setCurrentIndex(SC_FACE);
+    if (mMRS.isSurfaceColorPerMesh())
+        mUI->colorComboBox->setCurrentIndex(SC_MESH);
+    if (mMRS.isSurfaceColorPerVertexTexcoords())
+        mUI->colorComboBox->setCurrentIndex(SC_VERT_TEX);
+    if (mMRS.isSurfaceColorPerWedgeTexcoords())
+        mUI->colorComboBox->setCurrentIndex(SC_WEDG_TEX);
+    if (mMRS.isSurfaceColorUserDefined())
+        mUI->colorComboBox->setCurrentIndex(SC_USER);
+    mUI->userColorFrame->setVisible(mMRS.isSurfaceColorUserDefined());
+    vcl::Color vc = mMRS.surfaceUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
 }
 
-void PointsFrame::onVisibilityChanged(int arg1)
+void SurfaceFrame::onVisibilityChanged(int arg1)
 {
-    mMRS.setPointCloudVisibility(arg1 == Qt::Checked);
+    mMRS.setSurfaceVisibility(arg1 == Qt::Checked);
     emit settingsUpdated();
 }
 
-void PointsFrame::onShapeCircleToggled(bool checked)
-{
-    // todo
-}
 
-void PointsFrame::onShapePixelToggled(bool checked)
-{
-    // todo
-}
-
-void PointsFrame::onShadingVertexToggled(bool checked)
+void SurfaceFrame::onShadingSmoothToggled(bool checked)
 {
     if (checked) {
-        mMRS.setPointCloudShadingPerVertex();
+        mMRS.setSurfaceShadingSmooth();
         emit settingsUpdated();
     }
 }
 
-void PointsFrame::onShadingNoneToggled(bool checked)
+
+void SurfaceFrame::onShadingFlatToggled(bool checked)
 {
     if (checked) {
-        mMRS.setPointCloudShadingNone();
+        mMRS.setSurfaceShadingFlat();
         emit settingsUpdated();
     }
 }
 
-void PointsFrame::onColorComboBoxChanged(int index)
+void SurfaceFrame::onShadingNoneToggled(bool checked)
+{
+    if (checked) {
+        mMRS.setSurfaceShadingNone();
+        emit settingsUpdated();
+    }
+}
+
+void SurfaceFrame::onColorComboBoxChanged(int index)
 {
     switch (index) {
-    case P_VERT: mMRS.setPointCloudColorPerVertex(); break;
-    case P_MESH: mMRS.setPointCloudColorPerMesh(); break;
-    case P_USER: mMRS.setPointCloudColorUserDefined(); break;
+    case SC_FACE: mMRS.setSurfaceColorPerFace(); break;
+    case SC_VERT: mMRS.setSurfaceColorPerVertex(); break;
+    case SC_MESH: mMRS.setSurfaceColorPerMesh(); break;
+    case SC_VERT_TEX: mMRS.setSurfaceColorPerVertexTexcoords(); break;
+    case SC_WEDG_TEX: mMRS.setSurfaceColorPerWedgeTexcoords(); break;
+    case SC_USER: mMRS.setSurfaceColorUserDefined(); break;
     }
-    mUI->userColorFrame->setVisible(index == P_USER);
+    mUI->userColorFrame->setVisible(index == SC_USER);
     emit settingsUpdated();
 }
 
-void PointsFrame::onColorDialogButtonClicked()
+void SurfaceFrame::onColorDialogButtonClicked()
 {
     QColor color = QColorDialog::getColor();
 
     if (color.isValid()) {
         setButtonBackGround(mUI->colorDialogPushButton, color);
 
-        mMRS.setPointCloudUserColor(
+        mMRS.setSurfaceUserColor(
             color.redF(), color.greenF(), color.blueF(), color.alphaF());
         emit settingsUpdated();
     }
-}
-
-void PointsFrame::onSizeChanged(int value)
-{
-    mMRS.setPointWidth(value);
-    emit settingsUpdated();
 }
 
 } // namespace vcl::qt

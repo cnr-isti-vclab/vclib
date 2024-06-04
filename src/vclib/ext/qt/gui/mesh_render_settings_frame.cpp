@@ -27,6 +27,7 @@
 #include <QStandardItemModel>
 
 #include <vclib/ext/qt/gui/mesh_render_settings_frame/points_frame.h>
+#include <vclib/ext/qt/gui/mesh_render_settings_frame/surface_frame.h>
 
 namespace vcl::qt {
 
@@ -37,8 +38,11 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
 
     auto* pointsFrame = new PointsFrame(mMRS, this);
     mUI->tabWidget->addTab(pointsFrame, "Points");
-
     frames.push_back(pointsFrame);
+
+    auto* surfaceFrame = new SurfaceFrame(mMRS, this);
+    mUI->tabWidget->addTab(surfaceFrame, "Surface");
+    frames.push_back(surfaceFrame);
 
     for (auto* frame : frames) {
         connect(
@@ -61,68 +65,6 @@ void MeshRenderSettingsFrame::setMeshRenderSettings(
 {
     mMRS = settings;
     updateGuiFromSettings();
-}
-
-void MeshRenderSettingsFrame::on_surfaceVisibilityCheckBox_stateChanged(
-    int arg1)
-{
-    mMRS.setSurfaceVisibility(arg1 == Qt::Checked);
-    emit settingsUpdated();
-}
-
-void MeshRenderSettingsFrame::on_surfaceShadingNoneRadioButton_toggled(
-    bool checked)
-{
-    if (checked) {
-        mMRS.setSurfaceShadingNone();
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_surfaceShadingSmoothRadioButton_toggled(
-    bool checked)
-{
-    if (checked) {
-        mMRS.setSurfaceShadingSmooth();
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_surfaceShadingFlatRadioButton_toggled(
-    bool checked)
-{
-    if (checked) {
-        mMRS.setSurfaceShadingFlat();
-        emit settingsUpdated();
-    }
-}
-
-void MeshRenderSettingsFrame::on_surfaceColorComboBox_currentIndexChanged(
-    int index)
-{
-    switch (index) {
-    case SC_FACE: mMRS.setSurfaceColorPerFace(); break;
-    case SC_VERT: mMRS.setSurfaceColorPerVertex(); break;
-    case SC_MESH: mMRS.setSurfaceColorPerMesh(); break;
-    case SC_VERT_TEX: mMRS.setSurfaceColorPerVertexTexcoords(); break;
-    case SC_WEDG_TEX: mMRS.setSurfaceColorPerWedgeTexcoords(); break;
-    case SC_USER: mMRS.setSurfaceColorUserDefined(); break;
-    }
-    mUI->surfaceUserColorFrame->setVisible(index == SC_USER);
-    emit settingsUpdated();
-}
-
-void MeshRenderSettingsFrame::on_surfaceColorDialogPushButton_clicked()
-{
-    QColor color = QColorDialog::getColor();
-
-    if (color.isValid()) {
-        setButtonBackGround(mUI->surfaceColorDialogPushButton, color);
-
-        mMRS.setSurfaceUserColor(
-            color.redF(), color.greenF(), color.blueF(), color.alphaF());
-        emit settingsUpdated();
-    }
 }
 
 void MeshRenderSettingsFrame::on_wireframeVisibilityCheckBox_stateChanged(
@@ -252,105 +194,16 @@ void MeshRenderSettingsFrame::updateGuiFromSettings()
 
     if (mMRS.canBeVisible()) {
         mUI->tabWidget->setEnabled(true);
-        updateSurfaceTabFromSettings();
         updateWireframeTabFromSettings();
         updateEdgesTabFromSettings();
     }
     else {
         mUI->tabWidget->setEnabled(false);
         // mUI->pointVisibilityCheckBox->setChecked(false);
-        mUI->surfaceVisibilityCheckBox->setChecked(false);
+        // mUI->surfaceVisibilityCheckBox->setChecked(false);
         mUI->wireframeVisibilityCheckBox->setChecked(false);
         mUI->edgesVisibilityCheckBox->setChecked(false);
     }
-}
-
-void MeshRenderSettingsFrame::updateSurfaceTabFromSettings()
-{
-    if (mMRS.canSurfaceBeVisible()) {
-        mUI->tabWidget->setCurrentIndex(1);
-        mUI->surfaceTab->setEnabled(true);
-        mUI->surfaceVisibilityCheckBox->setEnabled(true);
-        mUI->surfaceVisibilityCheckBox->setChecked(mMRS.isSurfaceVisible());
-        uptateSurfaceShadingRadioButtonsFromSettings();
-        updateSurfaceColorComboBoxFromSettings();
-    }
-    else {
-        mUI->surfaceTab->setEnabled(false);
-    }
-}
-
-void MeshRenderSettingsFrame::uptateSurfaceShadingRadioButtonsFromSettings()
-{
-    if (!mMRS.canSurfaceShadingBeSmooth()) {
-        mUI->surfaceShadingSmoothRadioButton->setEnabled(false);
-    }
-    if (!mMRS.canSurfaceShadingBeFlat()) {
-        mUI->surfaceShadingFlatRadioButton->setEnabled(false);
-    }
-    mUI->surfaceShadingNoneRadioButton->setChecked(mMRS.isSurfaceShadingNone());
-    mUI->surfaceShadingFlatRadioButton->setChecked(mMRS.isSurfaceShadingFlat());
-    mUI->surfaceShadingSmoothRadioButton->setChecked(
-        mMRS.isSurfaceShadingSmooth());
-}
-
-void MeshRenderSettingsFrame::updateSurfaceColorComboBoxFromSettings()
-{
-    QStandardItemModel* model =
-        qobject_cast<QStandardItemModel*>(mUI->surfaceColorComboBox->model());
-    assert(model != nullptr);
-    QStandardItem* item = model->item(SC_VERT);
-    if (mMRS.canSurfaceColorBePerVertex()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-    item = model->item(SC_FACE);
-    if (mMRS.canSurfaceColorBePerFace()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-    item = model->item(SC_MESH);
-    if (mMRS.canSurfaceColorBePerMesh()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-    item = model->item(SC_VERT_TEX);
-    if (mMRS.canSurfaceColorBePerVertexTexcoords()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-    item = model->item(SC_WEDG_TEX);
-    if (mMRS.canSurfaceColorBePerWedgeTexcoords()) {
-        item->setFlags(item->flags() | Qt::ItemIsEnabled);
-    }
-    else {
-        item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
-    }
-
-    if (mMRS.isSurfaceColorPerVertex())
-        mUI->surfaceColorComboBox->setCurrentIndex(SC_VERT);
-    if (mMRS.isSurfaceColorPerFace())
-        mUI->surfaceColorComboBox->setCurrentIndex(SC_FACE);
-    if (mMRS.isSurfaceColorPerMesh())
-        mUI->surfaceColorComboBox->setCurrentIndex(SC_MESH);
-    if (mMRS.isSurfaceColorPerVertexTexcoords())
-        mUI->surfaceColorComboBox->setCurrentIndex(SC_VERT_TEX);
-    if (mMRS.isSurfaceColorPerWedgeTexcoords())
-        mUI->surfaceColorComboBox->setCurrentIndex(SC_WEDG_TEX);
-    if (mMRS.isSurfaceColorUserDefined())
-        mUI->surfaceColorComboBox->setCurrentIndex(SC_USER);
-    mUI->surfaceUserColorFrame->setVisible(mMRS.isSurfaceColorUserDefined());
-    vcl::Color vc = mMRS.surfaceUserColor();
-    QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
-    setButtonBackGround(mUI->surfaceColorDialogPushButton, c);
 }
 
 void MeshRenderSettingsFrame::updateWireframeTabFromSettings()
