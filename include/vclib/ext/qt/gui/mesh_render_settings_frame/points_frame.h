@@ -42,7 +42,9 @@ class PointsFrame : public GenericMeshRenderSettingsFrame
     Ui::PointsFrame* mUI;
 
 public:
-    explicit PointsFrame(MeshRenderSettings& settings, QWidget* parent = nullptr);
+    explicit PointsFrame(
+        MeshRenderSettings& settings,
+        QWidget*            parent = nullptr);
     ~PointsFrame();
 
     void updateFrameFromSettings() override;

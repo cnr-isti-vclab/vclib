@@ -32,7 +32,6 @@ GenericMeshRenderSettingsFrame::GenericMeshRenderSettingsFrame(
 {
 }
 
-
 GenericMeshRenderSettingsFrame::~GenericMeshRenderSettingsFrame()
 {
 }

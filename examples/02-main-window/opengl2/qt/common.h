@@ -37,8 +37,9 @@ vcl::DrawableMesh<MeshType> getDrawableMesh()
     // MeshType m =
     //     vcl::load<MeshType>("/home/alessandro/tmp/chimera/chimera.ply");
     // MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/greek_helmet.obj");
-    // MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/bunny_textured.ply");
-    // MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/VertTextureDouble.ply");
+    // MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH
+    // "/bunny_textured.ply"); MeshType m =
+    // vcl::load<MeshType>(VCLIB_ASSETS_PATH "/VertTextureDouble.ply");
     MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/TextureDouble.ply");
     vcl::updatePerVertexAndFaceNormals(m);
 

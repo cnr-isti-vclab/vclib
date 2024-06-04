@@ -29,7 +29,8 @@
 namespace vcl::qt {
 
 PointsFrame::PointsFrame(MeshRenderSettings& settings, QWidget* parent) :
-        GenericMeshRenderSettingsFrame(settings, parent), mUI(new Ui::PointsFrame)
+        GenericMeshRenderSettingsFrame(settings, parent),
+        mUI(new Ui::PointsFrame)
 {
     mUI->setupUi(this);
 
@@ -98,10 +99,9 @@ void PointsFrame::updateFrameFromSettings()
             mMRS.canPointCloudShadingBePerVertex());
         mUI->shadingVertexRadioButton->setChecked(
             mMRS.isPointCloudShadingPerVertex());
-        mUI->shadingNoneRadioButton->setChecked(
-            mMRS.isPointCloudShadingNone());
+        mUI->shadingNoneRadioButton->setChecked(mMRS.isPointCloudShadingNone());
 
-               // todo
+        // todo
         mUI->shapePixelRadioButton->setChecked(true);
         mUI->shapeCircleRadioButton->setEnabled(false);
 
@@ -120,7 +120,7 @@ void PointsFrame::updateColorComboBoxFromSettings()
         qobject_cast<QStandardItemModel*>(mUI->colorComboBox->model());
     assert(model != nullptr);
 
-           // color per vertex
+    // color per vertex
     QStandardItem* item = model->item(P_VERT);
     if (mMRS.canPointCloudColorBePerVertex()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);
@@ -129,7 +129,7 @@ void PointsFrame::updateColorComboBoxFromSettings()
         item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
     }
 
-           // color per mesh
+    // color per mesh
     item = model->item(P_MESH);
     if (mMRS.canPointCloudColorBePerMesh()) {
         item->setFlags(item->flags() | Qt::ItemIsEnabled);

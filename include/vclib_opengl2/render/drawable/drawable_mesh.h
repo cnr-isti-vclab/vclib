@@ -435,15 +435,18 @@ private:
                     glBegin(GL_TRIANGLES);
                     glColor4f(1, 1, 1, 1);
                     glTexCoord2f(
-                        wedgTexCoords[vid0 * 2 + 0], wedgTexCoords[vid0 * 2 + 1]);
+                        wedgTexCoords[vid0 * 2 + 0],
+                        wedgTexCoords[vid0 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid0_ptr]));
                     glVertex3fv(&(coords[vid0_ptr]));
                     glTexCoord2f(
-                        wedgTexCoords[vid1 * 2 + 0], wedgTexCoords[vid1 * 2 + 1]);
+                        wedgTexCoords[vid1 * 2 + 0],
+                        wedgTexCoords[vid1 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid1_ptr]));
                     glVertex3fv(&(coords[vid1_ptr]));
                     glTexCoord2f(
-                        wedgTexCoords[vid2 * 2 + 0], wedgTexCoords[vid2 * 2 + 1]);
+                        wedgTexCoords[vid2 * 2 + 0],
+                        wedgTexCoords[vid2 * 2 + 1]);
                     glNormal3fv(&(vertexNormals[vid2_ptr]));
                     glVertex3fv(&(coords[vid2_ptr]));
                     glEnd();

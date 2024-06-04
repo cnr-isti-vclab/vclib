@@ -42,10 +42,7 @@ MeshRenderSettingsFrame::MeshRenderSettingsFrame(QWidget* parent) :
 
     for (auto* frame : frames) {
         connect(
-            frame,
-            SIGNAL(settingsUpdated()),
-            this,
-            SIGNAL(settingsUpdated()));
+            frame, SIGNAL(settingsUpdated()), this, SIGNAL(settingsUpdated()));
     }
 }
 
@@ -261,7 +258,7 @@ void MeshRenderSettingsFrame::updateGuiFromSettings()
     }
     else {
         mUI->tabWidget->setEnabled(false);
-        //mUI->pointVisibilityCheckBox->setChecked(false);
+        // mUI->pointVisibilityCheckBox->setChecked(false);
         mUI->surfaceVisibilityCheckBox->setChecked(false);
         mUI->wireframeVisibilityCheckBox->setChecked(false);
         mUI->edgesVisibilityCheckBox->setChecked(false);
