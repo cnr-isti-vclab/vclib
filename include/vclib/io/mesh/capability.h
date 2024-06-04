@@ -19,33 +19,37 @@
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
-#ifndef VCL_IO_MESH_H
-#define VCL_IO_MESH_H
 
-#include "mesh/capability.h"
-#include "mesh/load.h"
-#include "mesh/save.h"
+#ifndef VCL_IO_CAPABILITY_H
+#define VCL_IO_CAPABILITY_H
 
-/**
- * @defgroup load_save Load/Save functions
- * @ingroup io
- *
- * @brief List of functions that allow to load from file or save to a file an
- * input Mesh.
- */
+#include <vclib/exceptions/io_exceptions.h>
+#include <vclib/misc/string.h>
 
-/**
- * @defgroup load Load functions
- * @ingroup load_save
- *
- * @brief List of functions that allow to load from file an input Mesh.
- */
+#include "obj/capability.h"
 
-/**
- * @defgroup save Save functions
- * @ingroup load_save
- *
- * @brief List of functions that allow to save to file an input Mesh.
- */
+namespace vcl {
 
-#endif // VCL_IO_MESH_H
+inline MeshInfo formatCapability(const std::string& format)
+{
+    std::string ext = vcl::toLower(format);
+    if (ext == "obj") {
+        return objFormatCapability();
+    }
+    else if (ext == "off") {
+        return MeshInfo(); // todo
+    }
+    else if (ext == "ply") {
+        return MeshInfo(); // todo
+    }
+    else if (ext == "stl") {
+        return MeshInfo(); // todo
+    }
+    else {
+        throw vcl::UnknownFileFormatException(ext);
+    }
+}
+
+} // namespace vcl
+
+#endif // VCL_IO_CAPABILITY_H
