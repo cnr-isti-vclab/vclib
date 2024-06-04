@@ -20,47 +20,88 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
-#define VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
+#ifndef VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
+#define VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
 
-#include <QMainWindow>
+#include <QIODevice>
+#include <QPointer>
+#include <QTextEdit>
 
-#include <vclib/render/drawable/drawable_object_vector.h>
-
-#include <vclib/ext/qt/gui/text_edit_logger.h>
+#include <vclib/misc/logger/logger.h>
 
 namespace vcl::qt {
 
-namespace Ui {
-class ViewerMainWindow;
-} // namespace Ui
+namespace detail {
 
-class ViewerMainWindow : public QMainWindow
+class TextEditIoDevice : public QIODevice
 {
     Q_OBJECT
 
-    Ui::ViewerMainWindow*                      mUI;
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawVector;
+public:
+    TextEditIoDevice(QTextEdit* textEdit, QObject* parent) :
+            QIODevice(parent), textEdit(textEdit)
+    {
+        open(QIODevice::WriteOnly | QIODevice::Text);
+    }
+
+    //...
+
+protected:
+    qint64 readData(char* data, qint64 maxSize) { return 0; }
+
+    qint64 writeData(const char* data, qint64 maxSize)
+    {
+        if (textEdit) {
+            textEdit->append(data);
+        }
+        return maxSize;
+    }
+
+private:
+    QPointer<QTextEdit> textEdit;
+};
+
+} // namespace detail
+
+class TextEditLogger : public QTextEdit, public vcl::Logger<QTextStream>
+{
+    Q_OBJECT
+
+    QTextStream mStream = QTextStream(new detail::TextEditIoDevice(this, this));
 
 public:
-    explicit ViewerMainWindow(QWidget* parent = nullptr);
+    using Logger<QTextStream>::startTimer;
 
-    ~ViewerMainWindow();
+    TextEditLogger(QWidget* parent) : QTextEdit(parent)
+    {
+        QTextEdit::setReadOnly(true);
+        QTextEdit::setFont(QFont("Monospace", 8));
+    }
 
-    void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
+protected:
+    QTextStream* levelStream(LogLevel lvl) override { return &mStream; }
 
-    TextEditLogger& logger();
+    void alignLeft(QTextStream& stream) override
+    {
+        stream.setFieldAlignment(QTextStream::AlignLeft);
+    }
 
-public slots:
-    void visibilityDrawableObjectChanged();
+    void alignRight(QTextStream& stream) override
+    {
+        stream.setFieldAlignment(QTextStream::AlignRight);
+    }
 
-    void selectedDrawableObjectChanged(uint i);
+    void setWidth(QTextStream& stream, uint width) override
+    {
+        stream.setFieldWidth(width);
+    }
 
-    void renderSettingsUpdated();
-private slots:
-    void on_actionSave_triggered();
+    void flush(QTextStream& stream) override
+    {
+        stream.flush();
+    }
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
+#endif // VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H

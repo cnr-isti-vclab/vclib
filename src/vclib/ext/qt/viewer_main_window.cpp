@@ -23,7 +23,11 @@
 #include "ext/qt/ui_viewer_main_window.h"
 #include <vclib/ext/qt/viewer_main_window.h>
 
-#include <vclib/render/interfaces/drawable_mesh_i.h>
+#include <vclib/render/drawable/drawable_mesh.h>
+
+#include <QFileDialog>
+
+#include <vclib/load_save.h>
 
 namespace vcl::qt {
 
@@ -117,6 +121,11 @@ void ViewerMainWindow::setDrawableObjectVector(
     }
 }
 
+TextEditLogger& ViewerMainWindow::logger()
+{
+    return *mUI->logger;
+}
+
 /**
  * @brief Slot called when the user changed the visibility of an object in the
  * DrawableObjectVectorFrame
@@ -181,5 +190,29 @@ void ViewerMainWindow::renderSettingsUpdated()
         mUI->viewer->update();
     }
 }
+
+
+void ViewerMainWindow::on_actionSave_triggered()
+{
+    QFileDialog* dialog = new QFileDialog(this, "Save Mesh", "", "Mesh Files (*.stl)");
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    if (dialog->exec() == QDialog::Accepted) {
+        auto fs = dialog->selectedFiles();
+        std::string filename = fs.first().toStdString();
+        if (filename.find(".stl") == std::string::npos) {
+            filename += ".stl";
+        }
+        uint i = mUI->drawVectorFrame->selectedDrawableObject();
+        DrawableObjectI& d = mDrawVector->at(i);
+
+        DrawableMesh<vcl::TriMesh> *m = dynamic_cast<DrawableMesh<vcl::TriMesh>*>(&d);
+
+        if (m) {
+            vcl::save(*m, filename, logger());
+        }
+    }
+}
+
+
 
 } // namespace vcl::qt

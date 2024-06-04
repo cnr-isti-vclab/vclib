@@ -26,7 +26,7 @@
 #include <vclib/algorithms/mesh/update/color.h>
 #include <vclib/algorithms/mesh/update/normal.h>
 #include <vclib/load_save.h>
-#include <vclib/meshes/poly_mesh.h>
+#include <vclib/meshes.h>
 
 #include <vclib/render/drawable/drawable_mesh.h>
 
@@ -39,7 +39,7 @@ vcl::DrawableMesh<MeshType> getDrawableMesh()
     // MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/greek_helmet.obj");
     // MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH
     // "/bunny_textured.ply");
-    MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/TextureDouble.ply");
+    MeshType m = vcl::load<MeshType>(VCLIB_ASSETS_PATH "/bimba.obj");
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray
