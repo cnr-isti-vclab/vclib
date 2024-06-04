@@ -57,10 +57,6 @@ endif()
 
 add_subdirectory(999-misc)
 
-# vclib examples - they just add a viewer at the end in order to visualize the
-# results. The viewer is choose among the available ones (Qt, GLFW, QGLViewer).
-set(CAN_BUILD_VCLIB_EXAMPLES false)
-
 if (VCLIB_BUILD_EXAMPLES AND CAN_BUILD_VCLIB_EXAMPLES)
     # the following examples are the same of the ones in the vclib library,
     # but they add a viewer at the end in order to visualize the results

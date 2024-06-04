@@ -309,7 +309,12 @@ private:
             clearBB();
         }
 
-        uint vn = mDuplicatedVertices ? m.faceNumber() * 3 : m.vertexNumber();
+        uint vn = m.vertexNumber();
+
+        if constexpr (vcl::HasFaces<MeshType>) {
+            if (mDuplicatedVertices)
+                vn = m.faceNumber() * 3;
+        }
 
         mVerts.reserve(vn * 3);
 
@@ -381,28 +386,30 @@ private:
             fillVertex(v);
         }
 
-        uint fi  = 0;
-        uint vdi = m.vertexNumber();
-        triVertIndices.resize(m.faceNumber());
-        for (const auto& f : m.faces()) {
-            triVertIndices[fi].reserve(f.vertexNumber());
-            for (const auto* v : f.vertices()) {
-                uint vi = m.vertexIndexIfCompact(v->index());
-                if (mDuplicatedVertices) {
-                    if (!vertAlreadyFound[vi]) {
-                        vertAlreadyFound[vi] = true;
-                        triVertIndices[fi].push_back(vi);
+        if constexpr(vcl::HasFaces<MeshType>) {
+            uint fi  = 0;
+            uint vdi = m.vertexNumber();
+            triVertIndices.resize(m.faceNumber());
+            for (const auto& f : m.faces()) {
+                triVertIndices[fi].reserve(f.vertexNumber());
+                for (const auto* v : f.vertices()) {
+                    uint vi = m.vertexIndexIfCompact(v->index());
+                    if (mDuplicatedVertices) {
+                        if (!vertAlreadyFound[vi]) {
+                            vertAlreadyFound[vi] = true;
+                            triVertIndices[fi].push_back(vi);
+                        }
+                        else {
+                            fillVertex(*v);
+                            triVertIndices[fi].push_back(vdi++);
+                        }
                     }
                     else {
-                        fillVertex(*v);
-                        triVertIndices[fi].push_back(vdi++);
+                        triVertIndices[fi].push_back(vi);
                     }
                 }
-                else {
-                    triVertIndices[fi].push_back(vi);
-                }
+                fi++;
             }
-            fi++;
         }
     }
 

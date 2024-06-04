@@ -71,13 +71,14 @@ const MeshRenderSettings& MeshRenderSettingsFrame::meshRenderSettings() const
 }
 
 void MeshRenderSettingsFrame::setMeshRenderSettings(
-    const MeshRenderSettings& settings)
+    const MeshRenderSettings& settings,
+    bool changeCurrentTab /*= false*/)
 {
     mMRS = settings;
-    updateGuiFromSettings();
+    updateGuiFromSettings(changeCurrentTab);
 }
 
-void MeshRenderSettingsFrame::updateGuiFromSettings()
+void MeshRenderSettingsFrame::updateGuiFromSettings(bool changeCurrentTab)
 {
     for (auto* frame : frames) {
         frame->updateFrameFromSettings();
@@ -94,6 +95,19 @@ void MeshRenderSettingsFrame::updateGuiFromSettings()
     mUI->tabWidget->setTabVisible(SURFACE_FRAME, mMRS.canSurfaceBeVisible());
     mUI->tabWidget->setTabVisible(WIREFRAME_FRAME, mMRS.canSurfaceBeVisible());
     mUI->tabWidget->setTabVisible(EDGES_FRAME, mMRS.canEdgesBeVisible());
+
+    if (changeCurrentTab) {
+        if (mMRS.canSurfaceBeVisible()) { // high priority: surface
+            mUI->tabWidget->setCurrentIndex(SURFACE_FRAME);
+        }
+        else if (mMRS.canEdgesBeVisible()) { // second priority: edges
+            mUI->tabWidget->setCurrentIndex(EDGES_FRAME);
+        }
+        else if (mMRS.canPointCloudBeVisible()) { // third priority: points
+            mUI->tabWidget->setCurrentIndex(POINTS_FRAME);
+        }
+
+    }
 }
 
 } // namespace vcl::qt

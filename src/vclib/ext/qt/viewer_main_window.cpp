@@ -100,11 +100,12 @@ void ViewerMainWindow::setDrawableObjectVector(
     if (mDrawVector->size() > 0) {
         try {
             DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(0));
-            mUI->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
+            mUI->renderSettingsFrame->setMeshRenderSettings(
+                m.renderSettings(), true);
             mUI->renderSettingsFrame->setVisible(true);
         }
         catch (std::bad_cast exp) {
-            // the current object (the first one) is not a GenericDrawableMesh
+            // the current object (the first one) is not a DrawableMesh
             // we hide the RenderSettingsFrame
             mUI->renderSettingsFrame->setVisible(false);
         }

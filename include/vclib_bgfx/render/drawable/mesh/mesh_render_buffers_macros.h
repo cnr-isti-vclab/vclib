@@ -27,8 +27,8 @@
  * These macros are used both on the library and on the shader side.
  */
 
-#define VCL_MRB_TRIANGLE_COLOR_BUFFER      0
-#define VCL_MRB_TRIANGLE_NORMAL_BUFFER     1
+#define VCL_MRB_PRIMITIVE_COLOR_BUFFER     0
+#define VCL_MRB_PRIMITIVE_NORMAL_BUFFER    1
 #define VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER 2
 
 #define VCL_MRB_TEXTURE0 8

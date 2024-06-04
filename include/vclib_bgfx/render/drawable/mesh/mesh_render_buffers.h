@@ -140,14 +140,14 @@ public:
 
             if (bgfx::isValid(mTriangleColorBH)) { // triangle colors
                 bgfx::setBuffer(
-                    VCL_MRB_TRIANGLE_COLOR_BUFFER,
+                    VCL_MRB_PRIMITIVE_COLOR_BUFFER,
                     mTriangleColorBH,
                     bgfx::Access::Read);
             }
 
             if (bgfx::isValid(mTriangleNormalBH)) { // triangle normals
                 bgfx::setBuffer(
-                    VCL_MRB_TRIANGLE_NORMAL_BUFFER,
+                    VCL_MRB_PRIMITIVE_NORMAL_BUFFER,
                     mTriangleNormalBH,
                     bgfx::Access::Read);
             }
@@ -163,11 +163,17 @@ public:
             bgfx::setIndexBuffer(mEdgeIndexBH);
 
             if (bgfx::isValid(mEdgeColorBH)) { // edge colors
-                bgfx::setBuffer(1, mEdgeColorBH, bgfx::Access::Read);
+                bgfx::setBuffer(
+                    VCL_MRB_PRIMITIVE_COLOR_BUFFER,
+                    mEdgeColorBH,
+                    bgfx::Access::Read);
             }
 
             if (bgfx::isValid(mEdgeNormalBH)) { // edge normals
-                bgfx::setBuffer(2, mEdgeNormalBH, bgfx::Access::Read);
+                bgfx::setBuffer(
+                    VCL_MRB_PRIMITIVE_NORMAL_BUFFER,
+                    mEdgeNormalBH,
+                    bgfx::Access::Read);
             }
         }
         else if (indexBufferToBind == Base::WIREFRAME) {

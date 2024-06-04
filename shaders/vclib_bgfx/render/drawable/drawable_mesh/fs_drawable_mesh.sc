@@ -26,9 +26,9 @@ $input v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 #include <vclib_bgfx/render/drawable/mesh/mesh_render_buffers_macros.h>
 #include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
-BUFFER_RO(primitiveColors, uint, VCL_MRB_TRIANGLE_COLOR_BUFFER);    // color of each face / edge
-BUFFER_RO(primitiveNormals, float, VCL_MRB_TRIANGLE_NORMAL_BUFFER); // normal of each face / edge
-BUFFER_RO(triTextureIds, uint, VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER); // wedge ids of each face
+BUFFER_RO(primitiveColors, uint, VCL_MRB_PRIMITIVE_COLOR_BUFFER);    // color of each face / edge
+BUFFER_RO(primitiveNormals, float, VCL_MRB_PRIMITIVE_NORMAL_BUFFER); // normal of each face / edge
+BUFFER_RO(triTextureIds, uint, VCL_MRB_TRIANGLE_TEXTURE_ID_BUFFER);  // wedge ids of each face
 
 // textures
 SAMPLER2D(s_tex0, VCL_MRB_TEXTURE0);

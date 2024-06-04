@@ -51,7 +51,10 @@ public:
     ~MeshRenderSettingsFrame();
 
     const MeshRenderSettings& meshRenderSettings() const;
-    void setMeshRenderSettings(const MeshRenderSettings& settings);
+
+    void setMeshRenderSettings(
+        const MeshRenderSettings& settings,
+        bool                      changeCurrentTab = false);
 
 signals:
     void settingsUpdated();
@@ -59,7 +62,7 @@ signals:
 private:
     enum {POINTS_FRAME = 0, SURFACE_FRAME, WIREFRAME_FRAME, EDGES_FRAME};
 
-    void updateGuiFromSettings();
+    void updateGuiFromSettings(bool changeCurrentTab);
 };
 
 } // namespace vcl::qt
