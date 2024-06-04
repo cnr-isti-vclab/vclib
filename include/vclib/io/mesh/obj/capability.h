@@ -31,7 +31,25 @@ inline MeshInfo objFormatCapability()
 {
     MeshInfo info;
 
-    // todo
+    info.setPolygonMesh();
+
+    info.setVertices();
+    info.setFaces();
+    info.setEdges();
+
+    info.setTextures();
+
+    info.setVertexCoords();
+    info.setVertexNormals();
+    info.setVertexColors();
+    info.setVertexTexCoords();
+
+    info.setFaceVRefs();
+    info.setFaceColors();
+    info.setFaceWedgeTexCoords();
+
+    info.setEdgeVRefs();
+    info.setEdgeColors();
 
     return info;
 }

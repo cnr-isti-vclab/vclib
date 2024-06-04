@@ -20,39 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_CAPABILITY_H
-#define VCL_IO_CAPABILITY_H
+#ifndef VCL_IO_PLY_CAPABILITY_H
+#define VCL_IO_PLY_CAPABILITY_H
 
-#include <vclib/exceptions/io_exceptions.h>
-#include <vclib/misc/string.h>
-
-#include "obj/capability.h"
-#include "off/capability.h"
-#include "ply/capability.h"
-#include "stl/capability.h"
+#include <vclib/mesh/utils/mesh_info.h>
 
 namespace vcl {
 
-inline MeshInfo formatCapability(const std::string& format)
+inline MeshInfo plyFormatCapability()
 {
-    std::string ext = vcl::toLower(format);
-    if (ext == "obj") {
-        return objFormatCapability();
-    }
-    else if (ext == "off") {
-        return offFormatCapability();
-    }
-    else if (ext == "ply") {
-        return plyFormatCapability();
-    }
-    else if (ext == "stl") {
-        return stlFormatCapability();
-    }
-    else {
-        throw vcl::UnknownFileFormatException(ext);
-    }
+    MeshInfo info;
+
+    info.setPolygonMesh();
+
+    info.setVertices();
+    info.setFaces();
+    info.setEdges();
+
+    info.setTextures();
+
+    info.setVertexCoords();
+    info.setVertexNormals();
+    info.setVertexColors();
+    info.setVertexQuality();
+    info.setVertexTexCoords();
+    info.setVertexCustomComponents();
+
+    info.setFaceVRefs();
+    info.setFaceColors();
+    info.setFaceNormals();
+    info.setFaceQuality();
+    info.setFaceWedgeTexCoords();
+    info.setFaceCustomComponents();
+
+    info.setEdgeVRefs();
+    info.setEdgeColors();
+
+    return info;
 }
 
 } // namespace vcl
 
-#endif // VCL_IO_CAPABILITY_H
+#endif // VCL_IO_PLY_CAPABILITY_H

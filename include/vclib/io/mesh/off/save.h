@@ -62,9 +62,6 @@ void saveOff(
     if constexpr (vcl::HasFaces<MeshType>) {
         fn = m.faceNumber();
     }
-    if constexpr (vcl::HasEdges<MeshType>) {
-        en = m.edgeNumber();
-    }
 
     io::writeInt(fp, vn, false);
     io::writeInt(fp, fn, false);
