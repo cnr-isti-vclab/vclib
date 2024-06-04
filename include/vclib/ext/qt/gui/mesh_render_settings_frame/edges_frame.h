@@ -20,48 +20,50 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
-#define VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
+#ifndef VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_EDGES_FRAME_H
+#define VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_EDGES_FRAME_H
 
 #include <QFrame>
 
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
-#include "mesh_render_settings_frame/generic_mesh_render_settings_frame.h"
-
-class QPushButton;
+#include "generic_mesh_render_settings_frame.h"
 
 namespace vcl::qt {
 
 namespace Ui {
-class MeshRenderSettingsFrame;
+class EdgesFrame;
 } // namespace Ui
 
-class MeshRenderSettingsFrame : public QFrame
+class EdgesFrame : public GenericMeshRenderSettingsFrame
 {
     Q_OBJECT
 
-    Ui::MeshRenderSettingsFrame* mUI;
-    MeshRenderSettings           mMRS;
-
-    std::vector<GenericMeshRenderSettingsFrame*> frames;
+    Ui::EdgesFrame* mUI;
 
 public:
-    explicit MeshRenderSettingsFrame(QWidget* parent = nullptr);
-    ~MeshRenderSettingsFrame();
+    explicit EdgesFrame(
+        MeshRenderSettings& settings,
+        QWidget*            parent = nullptr);
+    ~EdgesFrame();
 
-    const MeshRenderSettings& meshRenderSettings() const;
-    void setMeshRenderSettings(const MeshRenderSettings& settings);
-
-signals:
-    void settingsUpdated();
+    void updateFrameFromSettings() override;
 
 private:
-    enum {POINTS_FRAME = 0, SURFACE_FRAME, WIREFRAME_FRAME, EDGES_FRAME};
+    enum EDGES_COLOR { E_VERTEX = 0, E_EDGES, E_MESH, E_USER };
 
-    void updateGuiFromSettings();
+    void updateColorComboBoxFromSettings();
+
+private slots:
+    void onVisibilityChanged(int arg1);
+    void onShadingSmoothToggled(bool checked);
+    void onShadingFlatToggled(bool checked);
+    void onShadingNoneToggled(bool checked);
+    void onColorComboBoxChanged(int index);
+    void onColorDialogButtonClicked();
+    void onSizeChanged(int value);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_H
+#endif // VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_EDGES_FRAME_H
