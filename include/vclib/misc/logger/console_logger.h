@@ -51,7 +51,7 @@ public:
     }
 
 protected:
-    std::ostream* levelStream(LogLevel lvl)
+    std::ostream* levelStream(LogLevel lvl) override
     {
         switch (lvl) {
         case ERROR: return &mErrStream;
@@ -62,19 +62,24 @@ protected:
         return nullptr;
     }
 
-    virtual void alignLeft(std::ostream& o)
+    void alignLeft(std::ostream& o) override
     {
         o << std::left;
     }
 
-    virtual void alignRight(std::ostream& o)
+    void alignRight(std::ostream& o) override
     {
         o << std::right;
     }
 
-    virtual void setWidth(std::ostream& o, uint w)
+    void setWidth(std::ostream& o, uint w) override
     {
         o << std::setw(w);
+    }
+
+    void flush(std::ostream& o) override
+    {
+        o.flush();
     }
 };
 

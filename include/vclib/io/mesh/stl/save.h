@@ -123,7 +123,7 @@ void saveStl(
             io::writeInt(fp, m.faceNumber());
         }
 
-        log.startProgress("Loading STL file", m.faceNumber());
+        log.startProgress("Saving STL file", m.faceNumber());
 
         for (const FaceType& f : m.faces()) {
             // For each triangle write the normal, the three coords and a short

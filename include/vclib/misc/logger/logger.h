@@ -283,11 +283,13 @@ protected:
      */
     virtual Stream* levelStream(LogLevel lvl) = 0;
 
-    virtual void alignLeft(Stream& o) {};
+    virtual void alignLeft(Stream& o) {}
 
-    virtual void alignRight(Stream& o) {};
+    virtual void alignRight(Stream& o) {}
 
-    virtual void setWidth(Stream& o, uint w) {};
+    virtual void setWidth(Stream& o, uint w) {}
+
+    virtual void flush(Stream& o) {}
 
 private:
     void updateStep()
@@ -311,6 +313,7 @@ private:
             printElapsedTime(*stream);
             *stream << "\n";
         }
+        flush(*stream);
     }
 
     uint printPercentage(Stream& o)
