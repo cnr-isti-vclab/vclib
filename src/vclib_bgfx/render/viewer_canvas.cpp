@@ -81,24 +81,10 @@ void ViewerCanvas::onResize(unsigned int width, unsigned int height)
 
 void ViewerCanvas::onKeyPress(Key::Enum key)
 {
-    DTB::setKeyModifiers(modifiers());
+    ViewerI::onKeyPress(key);
 
     if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT]) {
         setDirectionalLightVisibility(true);
-    }
-
-    switch (key) {
-    case Key::C:
-        std::cerr << "(" << DTB::camera().eye() << ") "
-                  << "(" << DTB::camera().center() << ") "
-                  << "(" << DTB::camera().up() << ")\n";
-        break;
-
-    case Key::A: toggleAxisVisibility(); break;
-
-    case Key::T: toggleTrackBallVisibility(); break;
-
-    default: keyPress(key); break;
     }
 
     updateDirectionalLight();
@@ -109,6 +95,8 @@ void ViewerCanvas::onKeyPress(Key::Enum key)
 
 void ViewerCanvas::onKeyRelease(Key::Enum key)
 {
+    ViewerI::onKeyRelease(key);
+
     if (isDirectionalLightVisible()) {
         if (!modifiers()[KeyModifier::CONTROL] ||
             !modifiers()[KeyModifier::SHIFT])
@@ -117,13 +105,12 @@ void ViewerCanvas::onKeyRelease(Key::Enum key)
         }
     }
 
-    setKeyModifiers(modifiers());
     update();
 }
 
 void ViewerCanvas::onMouseMove(double x, double y)
 {
-    DTB::moveMouse(x, y);
+    ViewerI::onMouseMove(x, y);
     updateDirectionalLight();
     updateDrawableTrackball();
 
@@ -132,28 +119,23 @@ void ViewerCanvas::onMouseMove(double x, double y)
 
 void ViewerCanvas::onMousePress(MouseButton::Enum button)
 {
-    DTB::pressMouse(button);
+    ViewerI::onMousePress(button);
     updateDrawableTrackball();
     update();
 }
 
 void ViewerCanvas::onMouseRelease(MouseButton::Enum button)
 {
-    DTB::releaseMouse(button);
+    ViewerI::onMouseRelease(button);
     updateDrawableTrackball();
     update();
 }
 
 void ViewerCanvas::onMouseScroll(double dx, double dy)
 {
-    DTB::scroll(dx, dy);
+    ViewerI::onMouseScroll(dx, dy);
     updateDrawableTrackball();
     update();
-}
-
-void ViewerCanvas::initDrawableObject(DrawableObjectI& obj)
-{
-    obj.init();
 }
 
 } // namespace vcl

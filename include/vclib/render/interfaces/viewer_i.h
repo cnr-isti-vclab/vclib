@@ -28,9 +28,13 @@
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/viewer/desktop_trackball.h>
 
+#include "event_manager_i.h"
+
 namespace vcl {
 
-class ViewerI : public DesktopTrackBall<float>
+class ViewerI :
+        public DesktopTrackBall<float>,
+        public virtual vcl::EventManagerI
 {
 protected:
     // this Viewer does not normally own this drawList
@@ -54,6 +58,20 @@ public:
     virtual void toggleAxisVisibility() = 0;
 
     virtual void toggleTrackBallVisibility() = 0;
+
+protected:
+    // events
+    void onKeyPress(Key::Enum key) override;
+
+    void onKeyRelease(Key::Enum key) override;
+
+    void onMouseMove(double x, double y) override;
+
+    void onMousePress(MouseButton::Enum button) override;
+
+    void onMouseRelease(MouseButton::Enum button) override;
+
+    void onMouseScroll(double dx, double dy) override;
 
 };
 

@@ -22,6 +22,8 @@
 
 #include <vclib/render/interfaces/viewer_i.h>
 
+#include <iostream>
+
 namespace vcl {
 
 const DrawableObjectVector& ViewerI::drawableObjectVector() const
@@ -59,6 +61,58 @@ void ViewerI::fitScene()
     }
 
     DTB::setTrackBall(sceneCenter, sceneRadius);
+}
+
+void ViewerI::onKeyPress(Key::Enum key)
+{
+    DTB::setKeyModifiers(modifiers());
+
+    switch (key) {
+    case Key::C:
+        std::cout << "(" << DTB::camera().eye() << ") "
+                  << "(" << DTB::camera().center() << ") "
+                  << "(" << DTB::camera().up() << ")\n";
+        std::cout << std::flush;
+        break;
+
+    case Key::A: toggleAxisVisibility(); break;
+
+    case Key::T: toggleTrackBallVisibility(); break;
+
+    default: keyPress(key); break;
+    }
+
+    update();
+}
+
+void ViewerI::onKeyRelease(Key::Enum key)
+{
+    setKeyModifiers(modifiers());
+    update();
+}
+
+void ViewerI::onMouseMove(double x, double y)
+{
+    DTB::moveMouse(x, y);
+    update();
+}
+
+void ViewerI::onMousePress(MouseButton::Enum button)
+{
+    DTB::pressMouse(button);
+    update();
+}
+
+void ViewerI::onMouseRelease(MouseButton::Enum button)
+{
+    DTB::releaseMouse(button);
+    update();
+}
+
+void ViewerI::onMouseScroll(double dx, double dy)
+{
+    DTB::scroll(dx, dy);
+    update();
 }
 
 } // namespace vcl

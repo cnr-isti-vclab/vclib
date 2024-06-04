@@ -23,7 +23,6 @@
 #ifndef VCL_BGFX_RENDER_VIEWER_CANVAS_H
 #define VCL_BGFX_RENDER_VIEWER_CANVAS_H
 
-#include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/interfaces/viewer_i.h>
 
 #include <vclib_bgfx/render/canvas.h>
@@ -84,8 +83,6 @@ protected:
     void onMouseScroll(double dx, double dy) override;
 
 private:
-    void initDrawableObject(DrawableObjectI& obj);
-
     bool isDirectionalLightVisible() const
     {
         return mDirectionalLight.isVisible();

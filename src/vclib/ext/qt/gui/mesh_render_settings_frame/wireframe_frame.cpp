@@ -180,7 +180,7 @@ void WireframeFrame::onColorDialogButtonClicked()
 
 void WireframeFrame::onSizeChanged(int value)
 {
-    mMRS.setPointWidth(value);
+    mMRS.setWireframeWidth(value);
     emit settingsUpdated();
 }
 

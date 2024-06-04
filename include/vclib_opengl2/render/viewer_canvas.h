@@ -25,7 +25,6 @@
 
 #include <memory>
 
-#include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render/interfaces/viewer_i.h>
 
 #include <vclib_opengl2/render/canvas.h>
@@ -60,21 +59,6 @@ protected:
 
     // events
     void onResize(unsigned int width, unsigned int height) override;
-
-    void onKeyPress(Key::Enum key) override;
-
-    void onKeyRelease(Key::Enum key) override;
-
-    void onMouseMove(double x, double y) override;
-
-    void onMousePress(MouseButton::Enum button) override;
-
-    void onMouseRelease(MouseButton::Enum button) override;
-
-    void onMouseScroll(double dx, double dy) override;
-
-private:
-    void initDrawableObject(DrawableObjectI& obj);
 };
 
 } // namespace vcl

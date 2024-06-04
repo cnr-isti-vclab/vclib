@@ -61,7 +61,7 @@ void ViewerCanvas::init(uint width, uint height)
 
     if (mDrawList) {
         for (DrawableObjectI* obj : *mDrawList) {
-            initDrawableObject(*obj);
+            obj->init();
         }
     }
 }
@@ -90,59 +90,6 @@ void ViewerCanvas::onResize(unsigned int width, unsigned int height)
     Canvas::onResize(width, height);
     DTB::resizeViewer(width, height);
     update();
-}
-
-void ViewerCanvas::onKeyPress(Key::Enum key)
-{
-    DTB::setKeyModifiers(modifiers());
-
-    switch (key) {
-    case Key::C:
-        std::cerr << "(" << DTB::camera().eye() << ") "
-                  << "(" << DTB::camera().center() << ") "
-                  << "(" << DTB::camera().up() << ")\n";
-        break;
-
-    default: keyPress(key); break;
-    }
-
-    update();
-}
-
-void ViewerCanvas::onKeyRelease(Key::Enum key)
-{
-    setKeyModifiers(modifiers());
-    update();
-}
-
-void ViewerCanvas::onMouseMove(double x, double y)
-{
-    DTB::moveMouse(x, y);
-
-    update();
-}
-
-void ViewerCanvas::onMousePress(MouseButton::Enum button)
-{
-    DTB::pressMouse(button);
-    update();
-}
-
-void ViewerCanvas::onMouseRelease(MouseButton::Enum button)
-{
-    DTB::releaseMouse(button);
-    update();
-}
-
-void ViewerCanvas::onMouseScroll(double dx, double dy)
-{
-    DTB::scroll(dx, dy);
-    update();
-}
-
-void ViewerCanvas::initDrawableObject(DrawableObjectI& obj)
-{
-    obj.init();
 }
 
 } // namespace vcl
