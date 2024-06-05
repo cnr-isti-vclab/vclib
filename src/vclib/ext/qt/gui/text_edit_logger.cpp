@@ -20,49 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
-#define VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
+#include <vclib/ext/qt/gui/text_edit_logger.h>
 
-#include <QFrame>
+#include <vclib/ext/qt/gui/text_edit_logger/progress_io_device.h>
 
-#include <vclib/misc/logger/logger.h>
+#include "ui_text_edit_logger.h"
 
 namespace vcl::qt {
 
-namespace Ui {
-class TextEditLogger;
-} // namespace Ui
-
-class TextEditLogger : public QFrame, public vcl::Logger<QTextStream>
+TextEditLogger::TextEditLogger(QWidget* parent) :
+        QFrame(parent), ui(new Ui::TextEditLogger)
 {
-    Q_OBJECT
+    ui->setupUi(this);
+    ui->textEdit->setFontFamily("Monospace");
+    ui->textEdit->setFontPointSize(8);
 
-    QTextStream* mTextStream;
+    mTextStream = new QTextStream(new ProgressIoDevice(ui->textEdit, this));
+}
 
-public:
-    using Logger<QTextStream>::startTimer;
+QTextStream* TextEditLogger::levelStream(LogLevel lvl)
+{
+    return mTextStream;
+}
 
-    explicit TextEditLogger(QWidget* parent = nullptr);
-    ~TextEditLogger();
+void TextEditLogger::alignLeft(QTextStream& stream)
+{
+    stream.setFieldAlignment(QTextStream::AlignLeft);
+}
 
-    TextEditLogger(const TextEditLogger&) = delete;
-    TextEditLogger& operator=(const TextEditLogger&) = delete;
+void TextEditLogger::alignRight(QTextStream& stream)
+{
+    stream.setFieldAlignment(QTextStream::AlignRight);
+}
 
-protected:
-    QTextStream* levelStream(LogLevel lvl) override;
+void TextEditLogger::setWidth(QTextStream& stream, uint width)
+{
+    stream.setFieldWidth(width);
+}
 
-    void alignLeft(QTextStream& stream) override;
+void TextEditLogger::flush(QTextStream& stream)
+{
+    stream.flush();
+}
 
-    void alignRight(QTextStream& stream) override;
-
-    void setWidth(QTextStream& stream, uint width) override;
-
-    void flush(QTextStream& stream) override;
-
-private:
-    Ui::TextEditLogger* ui;
-};
+TextEditLogger::~TextEditLogger()
+{
+    delete ui;
+    delete mTextStream;
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H

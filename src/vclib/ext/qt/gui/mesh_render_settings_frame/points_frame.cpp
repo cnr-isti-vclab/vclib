@@ -145,7 +145,7 @@ void PointsFrame::updateColorComboBoxFromSettings()
     if (mMRS.isPointCloudColorUserDefined())
         mUI->colorComboBox->setCurrentIndex(P_USER);
 
-    mUI->userColorFrame->setVisible(mMRS.isPointCloudColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isPointCloudColorUserDefined());
     vcl::Color vc = mMRS.pointCloudUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
@@ -190,7 +190,7 @@ void PointsFrame::onColorComboBoxChanged(int index)
     case P_MESH: mMRS.setPointCloudColorPerMesh(); break;
     case P_USER: mMRS.setPointCloudColorUserDefined(); break;
     }
-    mUI->userColorFrame->setVisible(index == P_USER);
+    mUI->userColorFrame->setEnabled(index == P_USER);
     emit settingsUpdated();
 }
 

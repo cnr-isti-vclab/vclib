@@ -142,7 +142,7 @@ void EdgesFrame::updateColorComboBoxFromSettings()
     if (mMRS.isEdgesColorUserDefined())
         mUI->colorComboBox->setCurrentIndex(E_USER);
 
-    mUI->userColorFrame->setVisible(mMRS.isEdgesColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isEdgesColorUserDefined());
     vcl::Color vc = mMRS.edgesUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
@@ -186,7 +186,7 @@ void EdgesFrame::onColorComboBoxChanged(int index)
     case E_MESH: mMRS.setEdgesColorPerMesh(); break;
     case E_USER: mMRS.setEdgesColorUserDefined(); break;
     }
-    mUI->userColorFrame->setVisible(index == E_USER);
+    mUI->userColorFrame->setEnabled(index == E_USER);
     emit settingsUpdated();
 }
 

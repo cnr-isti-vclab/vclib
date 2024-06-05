@@ -157,7 +157,7 @@ void SurfaceFrame::updateColorComboBoxFromSettings()
         mUI->colorComboBox->setCurrentIndex(SC_WEDG_TEX);
     if (mMRS.isSurfaceColorUserDefined())
         mUI->colorComboBox->setCurrentIndex(SC_USER);
-    mUI->userColorFrame->setVisible(mMRS.isSurfaceColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isSurfaceColorUserDefined());
     vcl::Color vc = mMRS.surfaceUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
@@ -203,7 +203,7 @@ void SurfaceFrame::onColorComboBoxChanged(int index)
     case SC_WEDG_TEX: mMRS.setSurfaceColorPerWedgeTexcoords(); break;
     case SC_USER: mMRS.setSurfaceColorUserDefined(); break;
     }
-    mUI->userColorFrame->setVisible(index == SC_USER);
+    mUI->userColorFrame->setEnabled(index == SC_USER);
     emit settingsUpdated();
 }
 

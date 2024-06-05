@@ -124,7 +124,7 @@ void WireframeFrame::updateColorComboBoxFromSettings()
     if (mMRS.isWireframeColorUserDefined())
         mUI->colorComboBox->setCurrentIndex(W_USER);
 
-    mUI->userColorFrame->setVisible(mMRS.isWireframeColorUserDefined());
+    mUI->userColorFrame->setEnabled(mMRS.isWireframeColorUserDefined());
     vcl::Color vc = mMRS.wireframeUserColor();
     QColor     c(vc.red(), vc.green(), vc.blue(), vc.alpha());
     setButtonBackGround(mUI->colorDialogPushButton, c);
@@ -159,7 +159,7 @@ void WireframeFrame::onColorComboBoxChanged(int index)
     case W_MESH: mMRS.setWireframeColorPerMesh(); break;
     case W_USER: mMRS.setWireframeColorUserDefined(); break;
     }
-    mUI->userColorFrame->setVisible(index == W_USER);
+    mUI->userColorFrame->setEnabled(index == W_USER);
     emit settingsUpdated();
 }
 

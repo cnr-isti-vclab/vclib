@@ -83,6 +83,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
         </widget>
        </item>
       </layout>
@@ -135,8 +141,9 @@
   </customwidget>
   <customwidget>
    <class>vcl::qt::TextEditLogger</class>
-   <extends>QTextEdit</extends>
+   <extends>QFrame</extends>
    <header>vclib/ext/qt/gui/text_edit_logger.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
