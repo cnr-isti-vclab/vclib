@@ -78,6 +78,8 @@ QTextStream* TextEditLogger::levelStream(LogLevel lvl)
             return mMsgStream;
         case LogLevel::WARNING:
             return mWarningStream;
+        default:
+            return mMsgStream;
     }
 }
 

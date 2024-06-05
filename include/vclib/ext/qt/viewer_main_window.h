@@ -57,8 +57,13 @@ public slots:
     void selectedDrawableObjectChanged(uint i);
 
     void renderSettingsUpdated();
+
 private slots:
     void on_actionSave_triggered();
+    void on_actionShow_Right_Bar_triggered(bool checked);
+    void on_actionShow_Logger_triggered(bool checked);
+    void on_actionShow_Mesh_Render_Settings_triggered(bool checked);
+    void on_actionShow_Mesh_List_triggered(bool checked);
 };
 
 } // namespace vcl::qt

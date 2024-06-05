@@ -214,4 +214,29 @@ void ViewerMainWindow::on_actionSave_triggered()
     }
 }
 
+void ViewerMainWindow::on_actionShow_Right_Bar_triggered(bool checked)
+{
+    mUI->rightArea->setVisible(checked);
+
+    mUI->actionShow_Mesh_List->setEnabled(checked);
+    mUI->actionShow_Mesh_Render_Settings->setEnabled(checked);
+    mUI->actionShow_Logger->setEnabled(checked);
+}
+
+void ViewerMainWindow::on_actionShow_Logger_triggered(bool checked)
+{
+    mUI->logger->setVisible(checked);
+}
+
+void ViewerMainWindow::on_actionShow_Mesh_Render_Settings_triggered(
+    bool checked)
+{
+    mUI->renderSettingsFrame->setVisible(checked);
+}
+
+void ViewerMainWindow::on_actionShow_Mesh_List_triggered(bool checked)
+{
+    mUI->drawVectorFrame->setVisible(checked);
+}
+
 } // namespace vcl::qt
