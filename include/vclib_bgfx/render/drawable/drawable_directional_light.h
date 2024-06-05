@@ -72,17 +72,17 @@ public:
 
     // DrawableObjectI interface
 
-    void draw(uint viewId);
+    void draw(uint viewId) override;
 
-    Point3d center() const;
+    Point3d center() const override;
 
-    double radius() const;
+    double radius() const override;
 
     std::shared_ptr<DrawableObjectI> clone() const override;
 
-    bool isVisible() const { return mVisible; }
+    bool isVisible() const override { return mVisible; }
 
-    void setVisibility(bool vis) { mVisible = vis; }
+    void setVisibility(bool vis) override { mVisible = vis; }
 
 private:
     void createVertexBuffer();
