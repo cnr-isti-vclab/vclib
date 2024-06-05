@@ -26,7 +26,7 @@
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
 #include <vclib/views/view.h>
 
-#include "bases/references_container_component.h"
+#include "bases/reference_container_component.h"
 
 namespace vcl::comp {
 
@@ -85,7 +85,7 @@ template<
     bool VERT               = false,
     bool OPT                = false>
 class AdjacentFaces :
-        public ReferencesContainerComponent<
+        public ReferenceContainerComponent<
             STORE_INDICES,
             AdjacentFaces<
                 STORE_INDICES,
@@ -103,7 +103,7 @@ class AdjacentFaces :
             OPT,
             TTVN>
 {
-    using Base = ReferencesContainerComponent<
+    using Base = ReferenceContainerComponent<
         STORE_INDICES,
         AdjacentFaces<STORE_INDICES, Face, N, TTVN, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_FACES,

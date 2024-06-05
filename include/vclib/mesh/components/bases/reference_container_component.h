@@ -20,17 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_BASES_REFERENCES_CONTAINER_COMPONENT_H
-#define VCL_MESH_COMPONENTS_BASES_REFERENCES_CONTAINER_COMPONENT_H
+#ifndef VCL_MESH_COMPONENTS_BASES_REFERENCE_CONTAINER_COMPONENT_H
+#define VCL_MESH_COMPONENTS_BASES_REFERENCE_CONTAINER_COMPONENT_H
 
-#include "indices_container_component.h"
-#include "pointers_container_component.h"
+#include "index_container_component.h"
+#include "pointer_container_component.h"
 
 namespace vcl::comp {
 
 /**
- * @brief The ReferencesContainerComponent is a class that inherits from the
- * @ref IndicesContainerComponent or @ref PointersContainerComponent classes,
+ * @brief The ReferenceContainerComponent is a class that inherits from the
+ * @ref IndexContainerComponent or @ref PointerContainerComponent classes,
  * depending on the STORE_INDICES template parameter.
  *
  * @tparam STORE_INDICES: If true, the component will store indices, otherwise
@@ -75,10 +75,10 @@ template<
     bool VERT,                 // true if component vertical
     bool OPT,                  // true if component vertical and optional
     bool TTVN>                 // true if container size tied to vertex number
-class ReferencesContainerComponent :
+class ReferenceContainerComponent :
         public std::conditional_t<
             STORE_INDICES,
-            IndicesContainerComponent<
+            IndexContainerComponent<
                 DerivedComponent,
                 COMP_ID,
                 Elem,
@@ -87,7 +87,7 @@ class ReferencesContainerComponent :
                 VERT,
                 OPT,
                 TTVN>,
-            PointersContainerComponent<
+            PointerContainerComponent<
                 DerivedComponent,
                 COMP_ID,
                 Elem,
@@ -100,7 +100,7 @@ class ReferencesContainerComponent :
 protected:
     using Base = std::conditional_t<
         STORE_INDICES,
-        IndicesContainerComponent<
+        IndexContainerComponent<
             DerivedComponent,
             COMP_ID,
             Elem,
@@ -109,7 +109,7 @@ protected:
             VERT,
             OPT,
             TTVN>,
-        PointersContainerComponent<
+        PointerContainerComponent<
             DerivedComponent,
             COMP_ID,
             Elem,
@@ -427,4 +427,4 @@ protected:
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_BASES_POINTERS_CONTAINER_COMPONENT_H
+#endif // VCL_MESH_COMPONENTS_BASES_REFERENCE_CONTAINER_COMPONENT_H

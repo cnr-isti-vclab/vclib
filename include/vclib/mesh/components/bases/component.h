@@ -58,8 +58,8 @@ namespace vcl::comp {
  *     will be part of the ReferencesTypes.
  *
  * There are also some additional features that are given by the @ref
- * ContainerComponent, @ref PointersContainerComponent and @ref
- * IndicesContainerComponent classes. If you need to implement a Component that
+ * ContainerComponent, @ref PointerContainerComponent and @ref
+ * IndexContainerComponent classes. If you need to implement a Component that
  * stores a Container of data, a Container of Pointers or a Container of
  * Indices, take a look to that classes.
  *
@@ -83,7 +83,7 @@ namespace vcl::comp {
  * ```
  *
  * If your component stores a Container of pointers or indices, look for the
- * @ref PointersContainerComponent or @ref IndicesContainerComponent classes,
+ * @ref PointerContainerComponent or @ref IndexContainerComponent classes,
  * that provide the implementation of these functions.
  *
  * For further details , please refer to the page @ref implement_component page.

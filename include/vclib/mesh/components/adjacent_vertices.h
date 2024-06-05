@@ -26,7 +26,7 @@
 #include <vclib/concepts/mesh/components/adjacent_vertices.h>
 #include <vclib/views/view.h>
 
-#include "bases/references_container_component.h"
+#include "bases/reference_container_component.h"
 
 namespace vcl::comp {
 
@@ -80,7 +80,7 @@ template<
     bool VERT               = false,
     bool OPT                = false>
 class AdjacentVertices :
-        public ReferencesContainerComponent<
+        public ReferenceContainerComponent<
             STORE_INDICES,
             AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>,
             CompId::ADJACENT_VERTICES,
@@ -91,7 +91,7 @@ class AdjacentVertices :
             OPT,
             false>
 {
-    using Base = ReferencesContainerComponent<
+    using Base = ReferenceContainerComponent<
         STORE_INDICES,
         AdjacentVertices<STORE_INDICES, Vertex, ParentElemType, VERT, OPT>,
         CompId::ADJACENT_VERTICES,
