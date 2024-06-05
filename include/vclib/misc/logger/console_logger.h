@@ -62,25 +62,13 @@ protected:
         return nullptr;
     }
 
-    void alignLeft(std::ostream& o) override
-    {
-        o << std::left;
-    }
+    void alignLeft(std::ostream& o) override { o << std::left; }
 
-    void alignRight(std::ostream& o) override
-    {
-        o << std::right;
-    }
+    void alignRight(std::ostream& o) override { o << std::right; }
 
-    void setWidth(std::ostream& o, uint w) override
-    {
-        o << std::setw(w);
-    }
+    void setWidth(std::ostream& o, uint w) override { o << std::setw(w); }
 
-    void flush(std::ostream& o) override
-    {
-        o.flush();
-    }
+    void flush(std::ostream& o) override { o.flush(); }
 };
 
 } // namespace vcl
