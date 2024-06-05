@@ -301,7 +301,7 @@ public:
         mContainer[i] = e.clone();
     }
 
-    void set(uint i, std::shared_ptr<T> e)
+    void set(uint i, const std::shared_ptr<T>& e)
     {
         assert(i < size());
         mContainer[i] = e;
@@ -322,7 +322,7 @@ public:
         mContainer[it - begin()] = e.clone();
     }
 
-    void set(ConstIterator it, std::shared_ptr<T> e)
+    void set(ConstIterator it, const std::shared_ptr<T>& e)
     {
         assert(it < end());
         mContainer[it - begin()] = e;
@@ -450,7 +450,7 @@ public:
         mContainer.push_back(v.clone());
     }
 
-    void pushBack(std::shared_ptr<T> v) requires (N < 0)
+    void pushBack(const std::shared_ptr<T>& v) requires (N < 0)
     {
         mContainer.push_back(v);
     }
@@ -473,7 +473,7 @@ public:
         mContainer.insert(mContainer.begin() + i, v.clone());
     }
 
-    void insert(uint i, std::shared_ptr<T> v) requires (N < 0)
+    void insert(uint i, const std::shared_ptr<T>& v) requires (N < 0)
     {
         assert(i < size() + 1);
         mContainer.insert(mContainer.begin() + i, v);
