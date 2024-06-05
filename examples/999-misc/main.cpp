@@ -23,86 +23,71 @@
 #include <iostream>
 #include <vector>
 
+#include <vclib/concepts.h>
 #include <vclib/space.h>
-#include <vclib/views.h>
 
-struct Point
+struct Shape
 {
-    float x, y, z;
-};
-
-class Vertex
-{
-    Point p;
-
-public:
-    Vertex(float x, float y, float z) : p {x, y, z} {}
-
-    Point& coord() { return p; }
-
-    const Point& coord() const { return p; }
-};
-
-struct VertexIndex
-{
-    VertexIndex(uint vi) : vi(vi) {}
-
-    operator uint() const { return vi; }
-
+    virtual ~Shape() = default;
+    virtual void draw() const = 0;
+    virtual void setScale(float scale) { s = scale; }
+    virtual void printScale() const { std::cout << "Scale: " << s << '\n'; }
+    virtual std::shared_ptr<Shape> clone() const = 0;
 private:
-    uint vi;
+    float s = 1.0f;
 };
 
-struct FaceIndex
+struct Circle : public Shape
 {
-    FaceIndex(uint vi) : vi(vi) {}
+    void draw() const override
+    {
+        std::cout << "Drawing a circle\n";
+    }
 
-    operator uint() const { return vi; }
-
-private:
-    uint vi;
+    std::shared_ptr<Shape> clone() const override
+    {
+        return std::make_shared<Circle>(*this);
+    }
 };
 
-void foo(VertexIndex vi)
+struct Square : public Shape
 {
-    std::cout << vi << std::endl;
-}
+    void draw() const override
+    {
+        std::cout << "Drawing a square\n";
+    }
+
+    std::shared_ptr<Shape> clone() const override
+    {
+        return std::make_shared<Square>(*this);
+    }
+};
 
 int main()
 {
-    foo(56);
+    static_assert(vcl::Clonable<Shape>, "");
 
-    FaceIndex f = 4;
+    vcl::PolymorphicObjectVector<Shape> vec;
 
-    // VertexIndex vv = f; // error
+    Circle circle;
+    circle.setScale(2);
 
-    std::vector<Vertex> v;
+    vec.pushBack(circle);
+    vec.pushBack(Square());
 
-    v.push_back(Vertex(-0.5, -0.5, 0.5));
-    v.push_back(Vertex(0.5, -0.5, 0.5));
-    v.push_back(Vertex(-0.5, 0.5, 0.5));
-    v.push_back(Vertex(0.5, 0.5, 0.5));
+    const auto& constVec = vec;
 
-    for (auto& p : v | vcl::views::coords) {
-        p.x += 1;
+    for (const auto& shape : vec) {
+        shape->setScale(5);
     }
 
-    for (const auto& p : v | vcl::views::coords) {
-        std::cout << p.x << " " << p.y << " " << p.z << std::endl;
+    for (const auto& shape : constVec) {
+        shape->draw();
+        shape->printScale();
     }
 
-    vcl::Vector<Vertex, -1> vv;
+    // circle is not modified
+    circle.printScale();
 
-    vv.pushBack(Vertex(-0.5, -0.5, 0.5));
-    vv.pushBack(Vertex(0.5, -0.5, 0.5));
-    vv.pushBack(Vertex(-0.5, 0.5, 0.5));
-    vv.pushBack(Vertex(0.5, 0.5, 0.5));
-
-    vcl::Vector<Vertex, -1>::Iterator it = vv.begin();
-
-    vv.set(it, Vertex(1, 1, 1));
-
-    for (const auto& p : vv | vcl::views::coords) {
-        std::cout << p.x << " " << p.y << " " << p.z << std::endl;
-    }
+    return 0;
 }
