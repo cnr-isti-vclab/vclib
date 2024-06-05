@@ -70,7 +70,7 @@ namespace vcl {
  *
  * @ingroup space
  */
-template<Clonable T, int N = -1>
+template<Cloneable T, int N = -1>
 class PolymorphicObjectVector
 {
     // if we use the vector, the size of the array will be 0
