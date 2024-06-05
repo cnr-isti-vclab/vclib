@@ -72,7 +72,6 @@ protected:
     void onMouseRelease(MouseButton::Enum button) override;
 
     void onMouseScroll(double dx, double dy) override;
-
 };
 
 } // namespace vcl

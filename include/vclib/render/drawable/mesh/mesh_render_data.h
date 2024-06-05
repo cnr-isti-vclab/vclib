@@ -386,7 +386,7 @@ private:
             fillVertex(v);
         }
 
-        if constexpr(vcl::HasFaces<MeshType>) {
+        if constexpr (vcl::HasFaces<MeshType>) {
             uint fi  = 0;
             uint vdi = m.vertexNumber();
             triVertIndices.resize(m.faceNumber());

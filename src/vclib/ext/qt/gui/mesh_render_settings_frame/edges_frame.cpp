@@ -90,10 +90,8 @@ void EdgesFrame::updateFrameFromSettings()
         mUI->visibilityCheckBox->setChecked(mMRS.isEdgesVisible());
         mUI->shadingSmoothRadioButton->setEnabled(
             mMRS.canEdgesShadingBeSmooth());
-        mUI->shadingSmoothRadioButton->setChecked(
-            mMRS.isEdgesShadingSmooth());
-        mUI->shadingFlatRadioButton->setEnabled(
-            mMRS.canEdgesShadingBeFlat());
+        mUI->shadingSmoothRadioButton->setChecked(mMRS.isEdgesShadingSmooth());
+        mUI->shadingFlatRadioButton->setEnabled(mMRS.canEdgesShadingBeFlat());
         mUI->shadingFlatRadioButton->setChecked(mMRS.isEdgesShadingFlat());
         mUI->shadingNoneRadioButton->setChecked(mMRS.isEdgesShadingNone());
 

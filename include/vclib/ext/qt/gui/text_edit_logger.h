@@ -96,10 +96,7 @@ protected:
         stream.setFieldWidth(width);
     }
 
-    void flush(QTextStream& stream) override
-    {
-        stream.flush();
-    }
+    void flush(QTextStream& stream) override { stream.flush(); }
 };
 
 } // namespace vcl::qt

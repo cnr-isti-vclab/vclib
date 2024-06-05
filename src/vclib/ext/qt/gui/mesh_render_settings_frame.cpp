@@ -72,7 +72,7 @@ const MeshRenderSettings& MeshRenderSettingsFrame::meshRenderSettings() const
 
 void MeshRenderSettingsFrame::setMeshRenderSettings(
     const MeshRenderSettings& settings,
-    bool changeCurrentTab /*= false*/)
+    bool                      changeCurrentTab /*= false*/)
 {
     mMRS = settings;
     updateGuiFromSettings(changeCurrentTab);
@@ -106,7 +106,6 @@ void MeshRenderSettingsFrame::updateGuiFromSettings(bool changeCurrentTab)
         else if (mMRS.canPointCloudBeVisible()) { // third priority: points
             mUI->tabWidget->setCurrentIndex(POINTS_FRAME);
         }
-
     }
 }
 

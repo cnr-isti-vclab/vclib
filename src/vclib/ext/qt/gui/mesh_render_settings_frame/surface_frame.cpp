@@ -91,7 +91,6 @@ void SurfaceFrame::updateFrameFromSettings()
     }
 }
 
-
 void SurfaceFrame::uptateShadingRadioButtonsFromSettings()
 {
     if (!mMRS.canSurfaceShadingBeSmooth()) {
@@ -170,7 +169,6 @@ void SurfaceFrame::onVisibilityChanged(int arg1)
     emit settingsUpdated();
 }
 
-
 void SurfaceFrame::onShadingSmoothToggled(bool checked)
 {
     if (checked) {
@@ -178,7 +176,6 @@ void SurfaceFrame::onShadingSmoothToggled(bool checked)
         emit settingsUpdated();
     }
 }
-
 
 void SurfaceFrame::onShadingFlatToggled(bool checked)
 {

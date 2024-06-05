@@ -60,7 +60,7 @@ signals:
     void settingsUpdated();
 
 private:
-    enum {POINTS_FRAME = 0, SURFACE_FRAME, WIREFRAME_FRAME, EDGES_FRAME};
+    enum { POINTS_FRAME = 0, SURFACE_FRAME, WIREFRAME_FRAME, EDGES_FRAME };
 
     void updateGuiFromSettings(bool changeCurrentTab);
 };

@@ -191,28 +191,27 @@ void ViewerMainWindow::renderSettingsUpdated()
     }
 }
 
-
 void ViewerMainWindow::on_actionSave_triggered()
 {
-    QFileDialog* dialog = new QFileDialog(this, "Save Mesh", "", "Mesh Files (*.stl)");
+    QFileDialog* dialog =
+        new QFileDialog(this, "Save Mesh", "", "Mesh Files (*.stl)");
     dialog->setAcceptMode(QFileDialog::AcceptSave);
     if (dialog->exec() == QDialog::Accepted) {
-        auto fs = dialog->selectedFiles();
+        auto        fs       = dialog->selectedFiles();
         std::string filename = fs.first().toStdString();
         if (filename.find(".stl") == std::string::npos) {
             filename += ".stl";
         }
-        uint i = mUI->drawVectorFrame->selectedDrawableObject();
+        uint             i = mUI->drawVectorFrame->selectedDrawableObject();
         DrawableObjectI& d = mDrawVector->at(i);
 
-        DrawableMesh<vcl::TriMesh> *m = dynamic_cast<DrawableMesh<vcl::TriMesh>*>(&d);
+        DrawableMesh<vcl::TriMesh>* m =
+            dynamic_cast<DrawableMesh<vcl::TriMesh>*>(&d);
 
         if (m) {
             vcl::save(*m, filename, logger());
         }
     }
 }
-
-
 
 } // namespace vcl::qt
