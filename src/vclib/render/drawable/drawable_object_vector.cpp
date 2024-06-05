@@ -38,10 +38,6 @@ DrawableObjectVector::DrawableObjectVector(DrawableObjectVector&& oth)
 
 DrawableObjectVector::~DrawableObjectVector()
 {
-    // delete all the DrawableObjects
-    for (DrawableObjectI* obj : mDrawVector) {
-        delete obj;
-    }
 }
 
 /**
@@ -117,10 +113,6 @@ const DrawableObjectI& DrawableObjectVector::back() const
 
 void DrawableObjectVector::clear()
 {
-    // delete all the DrawableObjects
-    for (DrawableObjectI* obj : mDrawVector) {
-        delete obj;
-    }
     mDrawVector.clear();
 }
 

@@ -30,11 +30,11 @@
 namespace vcl::qt {
 
 ViewerWidget::ViewerWidget(
-    std::shared_ptr<DrawableObjectVector> v,
-    uint                                  width,
-    uint                                  height,
-    const std::string&                    windowTitle,
-    QWidget*                              parent) :
+    const std::shared_ptr<DrawableObjectVector>& v,
+    uint                                         width,
+    uint                                         height,
+    const std::string&                           windowTitle,
+    QWidget*                                     parent) :
         EventManagerWidget(windowTitle, width, height, parent),
         ViewerCanvas((void*) winId(), v, width, height)
 {

@@ -26,8 +26,8 @@
 namespace vcl::qt {
 
 DrawableObjectFrame::DrawableObjectFrame(
-    DrawableObjectI* obj,
-    QWidget*         parent) :
+    const std::shared_ptr<DrawableObjectI>& obj,
+    QWidget*                                parent) :
         QFrame(parent),
         mUI(new Ui::DrawableObjectFrame), mObj(obj)
 {

@@ -33,8 +33,8 @@ MinimalViewerWidget::MinimalViewerWidget(QWidget* parent) : QGLViewer(parent)
 }
 
 MinimalViewerWidget::MinimalViewerWidget(
-    std::shared_ptr<DrawableObjectVector> v,
-    QWidget*                              parent) :
+    const std::shared_ptr<DrawableObjectVector>& v,
+    QWidget*                                     parent) :
         QGLViewer(parent),
         mDrawList(v)
 {
@@ -42,13 +42,13 @@ MinimalViewerWidget::MinimalViewerWidget(
 
 void MinimalViewerWidget::init()
 {
-    for (DrawableObjectI* d : *mDrawList) {
+    for (auto& d : *mDrawList) {
         d->init();
     }
 }
 
 void MinimalViewerWidget::setDrawableObjectVector(
-    std::shared_ptr<DrawableObjectVector> v)
+    const std::shared_ptr<DrawableObjectVector>& v)
 {
     mDrawList = v;
 }
@@ -73,7 +73,7 @@ void MinimalViewerWidget::fitScene()
 
 void MinimalViewerWidget::draw()
 {
-    for (DrawableObjectI* obj : *mDrawList)
+    for (auto& obj : *mDrawList)
         obj->draw(0);
 }
 

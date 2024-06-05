@@ -127,7 +127,10 @@ public:
 
     double radius() const { return (mMRB.bbMax() - mMRB.bbMin()).norm() / 2; }
 
-    DrawableMesh* clone() const { return new DrawableMesh(*this); }
+    std::shared_ptr<DrawableObjectI> clone() const
+    {
+        return std::make_shared<DrawableMesh>(*this);
+    }
 
     void setVisibility(bool vis)
     {

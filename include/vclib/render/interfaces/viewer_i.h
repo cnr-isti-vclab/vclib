@@ -49,7 +49,8 @@ public:
 
     const DrawableObjectVector& drawableObjectVector() const;
 
-    void setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v);
+    void setDrawableObjectVector(
+        const std::shared_ptr<DrawableObjectVector>& v);
 
     uint pushDrawableObject(const DrawableObjectI& obj);
 

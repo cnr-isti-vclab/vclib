@@ -33,11 +33,11 @@ class ViewerWidget : public EventManagerWidget, public vcl::ViewerCanvas
 {
 public:
     ViewerWidget(
-        std::shared_ptr<DrawableObjectVector> v,
-        uint                                  width       = 1024,
-        uint                                  height      = 768,
-        const std::string&                    windowTitle = "",
-        QWidget*                              parent      = nullptr);
+        const std::shared_ptr<DrawableObjectVector>& v,
+        uint                                         width       = 1024,
+        uint                                         height      = 768,
+        const std::string&                           windowTitle = "",
+        QWidget*                                     parent      = nullptr);
 
     ViewerWidget(
         const std::string& windowTitle = "Minimal Viewer",

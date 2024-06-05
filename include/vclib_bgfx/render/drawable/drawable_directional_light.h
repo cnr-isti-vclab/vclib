@@ -78,7 +78,7 @@ public:
 
     double radius() const;
 
-    DrawableObjectI* clone() const;
+    std::shared_ptr<DrawableObjectI> clone() const override;
 
     bool isVisible() const { return mVisible; }
 

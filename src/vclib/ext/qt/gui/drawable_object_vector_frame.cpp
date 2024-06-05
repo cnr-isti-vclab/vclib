@@ -34,8 +34,8 @@ DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
 }
 
 DrawableObjectVectorFrame::DrawableObjectVectorFrame(
-    std::shared_ptr<DrawableObjectVector> v,
-    QWidget*                              parent) :
+    const std::shared_ptr<DrawableObjectVector>& v,
+    QWidget*                                     parent) :
         DrawableObjectVectorFrame(parent)
 {
     mDrawList = v;
@@ -48,7 +48,7 @@ DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
 }
 
 void DrawableObjectVectorFrame::setDrawableObjectVector(
-    std::shared_ptr<DrawableObjectVector> v)
+    const std::shared_ptr<DrawableObjectVector>& v)
 {
     mDrawList = v;
     updateDrawableVectorWidget();
@@ -73,7 +73,7 @@ void DrawableObjectVectorFrame::on_listWidget_itemSelectionChanged()
 void DrawableObjectVectorFrame::updateDrawableVectorWidget()
 {
     mUI->listWidget->clear();
-    for (auto* d : *mDrawList) {
+    for (auto& d : *mDrawList) {
         QListWidgetItem*     item = new QListWidgetItem(mUI->listWidget);
         DrawableObjectFrame* frame =
             new DrawableObjectFrame(d, mUI->listWidget);

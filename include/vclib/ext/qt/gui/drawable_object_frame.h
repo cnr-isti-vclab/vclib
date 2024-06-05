@@ -38,12 +38,12 @@ class DrawableObjectFrame : public QFrame
     Q_OBJECT
 
     Ui::DrawableObjectFrame* mUI;
-    DrawableObjectI*         mObj;
+    std::shared_ptr<DrawableObjectI> mObj;
 
 public:
     explicit DrawableObjectFrame(
-        DrawableObjectI* obj,
-        QWidget*         parent = nullptr);
+        const std::shared_ptr<DrawableObjectI>& obj,
+        QWidget*                                parent = nullptr);
     ~DrawableObjectFrame();
 
 signals:

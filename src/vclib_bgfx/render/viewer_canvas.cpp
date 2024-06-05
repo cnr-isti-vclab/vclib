@@ -36,10 +36,10 @@ ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
 }
 
 ViewerCanvas::ViewerCanvas(
-    void*                                 winId,
-    std::shared_ptr<DrawableObjectVector> v,
-    uint                                  width,
-    uint                                  height) :
+    void*                                        winId,
+    const std::shared_ptr<DrawableObjectVector>& v,
+    uint                                         width,
+    uint                                         height) :
         ViewerCanvas(winId, width, height)
 {
     setDrawableObjectVector(v);
@@ -55,7 +55,7 @@ void ViewerCanvas::draw()
 
     mDirectionalLightUniforms.bind();
 
-    for (DrawableObjectI* obj : drawableObjectVector())
+    for (auto obj : drawableObjectVector())
         obj->draw(viewId());
 
     if (mAxis.isVisible()) {

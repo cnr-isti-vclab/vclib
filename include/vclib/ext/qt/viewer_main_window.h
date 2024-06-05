@@ -47,7 +47,8 @@ public:
 
     ~ViewerMainWindow();
 
-    void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
+    void setDrawableObjectVector(
+        const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
     TextEditLogger& logger();
 

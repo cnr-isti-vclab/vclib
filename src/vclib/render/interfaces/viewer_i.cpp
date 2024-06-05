@@ -31,11 +31,12 @@ const DrawableObjectVector& ViewerI::drawableObjectVector() const
     return *mDrawList;
 }
 
-void ViewerI::setDrawableObjectVector(std::shared_ptr<DrawableObjectVector> v)
+void ViewerI::setDrawableObjectVector(
+    const std::shared_ptr<DrawableObjectVector>& v)
 {
     mDrawList = v;
 
-    for (DrawableObjectI* obj : *mDrawList) {
+    for (auto obj : *mDrawList) {
         obj->init();
     }
     fitScene();

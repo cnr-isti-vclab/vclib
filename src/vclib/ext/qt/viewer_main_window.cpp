@@ -28,6 +28,7 @@
 #include <QFileDialog>
 
 #include <vclib/load_save.h>
+#include <vclib/meshes.h>
 
 namespace vcl::qt {
 
@@ -93,7 +94,7 @@ ViewerMainWindow::~ViewerMainWindow()
  * @param v
  */
 void ViewerMainWindow::setDrawableObjectVector(
-    std::shared_ptr<vcl::DrawableObjectVector> v)
+    const std::shared_ptr<DrawableObjectVector>& v)
 {
     mDrawVector = v;
 

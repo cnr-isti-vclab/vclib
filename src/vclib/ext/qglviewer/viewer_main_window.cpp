@@ -87,7 +87,7 @@ ViewerMainWindow::~ViewerMainWindow()
  * @param v
  */
 void ViewerMainWindow::setDrawableObjectVector(
-    std::shared_ptr<vcl::DrawableObjectVector> v)
+    const std::shared_ptr<vcl::DrawableObjectVector>& v)
 {
     mDrawVector = v;
 

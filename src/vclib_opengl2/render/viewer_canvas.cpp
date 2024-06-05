@@ -35,10 +35,10 @@ ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
 }
 
 ViewerCanvas::ViewerCanvas(
-    void*                                 winId,
-    std::shared_ptr<DrawableObjectVector> v,
-    uint                                  width,
-    uint                                  height) :
+    void*                                        winId,
+    const std::shared_ptr<DrawableObjectVector>& v,
+    uint                                         width,
+    uint                                         height) :
         ViewerCanvas(winId, width, height)
 {
     setDrawableObjectVector(v);
@@ -60,7 +60,7 @@ void ViewerCanvas::init(uint width, uint height)
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
 
     if (mDrawList) {
-        for (DrawableObjectI* obj : *mDrawList) {
+        for (auto& obj : *mDrawList) {
             obj->init();
         }
     }
@@ -81,7 +81,7 @@ void ViewerCanvas::draw()
     glLightfv(GL_LIGHT0, GL_POSITION, lPos.data());
     glMultMatrixf(viewMatrix().data());
 
-    for (DrawableObjectI* obj : *mDrawList)
+    for (auto& obj : *mDrawList)
         obj->draw();
 }
 

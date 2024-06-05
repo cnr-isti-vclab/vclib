@@ -64,9 +64,9 @@ public:
 
     double radius() const override { return 1.0; }
 
-    DrawableObjectI* clone() const override
+    std::shared_ptr<DrawableObjectI> clone() const override
     {
-        return new DrawableTrackBall(*this);
+        return std::make_shared<DrawableTrackBall>(*this);
     }
 
     bool isVisible() const override { return mVisible; }

@@ -142,9 +142,9 @@ double DrawableDirectionalLight::radius() const
     return 1.0;
 }
 
-DrawableObjectI* DrawableDirectionalLight::clone() const
+std::shared_ptr<DrawableObjectI> DrawableDirectionalLight::clone() const
 {
-    return new DrawableDirectionalLight(*this);
+    return std::make_shared<DrawableDirectionalLight>(*this);
 }
 
 void DrawableDirectionalLight::createVertexBuffer()

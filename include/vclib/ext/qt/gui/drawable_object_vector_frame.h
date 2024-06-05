@@ -46,11 +46,11 @@ class DrawableObjectVectorFrame : public QFrame
 public:
     explicit DrawableObjectVectorFrame(QWidget* parent = nullptr);
     explicit DrawableObjectVectorFrame(
-        std::shared_ptr<DrawableObjectVector> v,
-        QWidget*                              parent = nullptr);
+        const std::shared_ptr<DrawableObjectVector>& v,
+        QWidget*                                     parent = nullptr);
     ~DrawableObjectVectorFrame();
 
-    void setDrawableObjectVector(std::shared_ptr<vcl::DrawableObjectVector> v);
+    void setDrawableObjectVector(const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
     uint selectedDrawableObject() const;
 

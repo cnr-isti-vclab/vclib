@@ -188,7 +188,10 @@ public:
 
     double radius() const { return (mMRD.bbMax() - mMRD.bbMin()).norm() / 2; }
 
-    DrawableMesh* clone() const { return new DrawableMesh(*this); }
+    std::shared_ptr<DrawableObjectI> clone() const
+    {
+        return std::make_shared<DrawableMesh>(*this);
+    }
 
 private:
     void renderPass() const

@@ -72,7 +72,10 @@ public:
 
     double radius() const override { return 1.0; }
 
-    DrawableObjectI* clone() const override { return new DrawableAxis(*this); }
+    std::shared_ptr<DrawableObjectI> clone() const override
+    {
+        return std::make_shared<DrawableAxis>(*this);
+    }
 
     bool isVisible() const override { return mVisible; }
 

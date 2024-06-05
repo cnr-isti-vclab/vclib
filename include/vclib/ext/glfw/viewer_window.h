@@ -33,11 +33,11 @@ class ViewerWindow : public EventManagerWindow, public vcl::ViewerCanvas
 {
 public:
     ViewerWindow(
-        std::shared_ptr<DrawableObjectVector> v,
-        const std::string&                    windowTitle = "Minimal Viewer",
-        uint                                  width       = 1024,
-        uint                                  height      = 768,
-        void*                                 parent      = nullptr);
+        const std::shared_ptr<DrawableObjectVector>& v,
+        const std::string& windowTitle = "Minimal Viewer",
+        uint               width       = 1024,
+        uint               height      = 768,
+        void*              parent      = nullptr);
 
     ViewerWindow(
         const std::string& windowTitle = "Minimal Viewer",

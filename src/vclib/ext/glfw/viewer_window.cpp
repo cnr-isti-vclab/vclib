@@ -25,10 +25,10 @@
 namespace vcl::glfw {
 
 ViewerWindow::ViewerWindow(
-    std::shared_ptr<DrawableObjectVector> v,
-    const std::string&                    windowTitle,
-    uint                                  width,
-    uint                                  height,
+    const std::shared_ptr<DrawableObjectVector>& v,
+    const std::string&                           windowTitle,
+    uint                                         width,
+    uint                                         height,
     void*) :
         EventManagerWindow(windowTitle, width, height),
         ViewerCanvas(winId(), v, width, height)

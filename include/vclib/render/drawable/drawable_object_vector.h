@@ -31,11 +31,12 @@ namespace vcl {
 
 class DrawableObjectVector
 {
-    std::vector<DrawableObjectI*> mDrawVector;
+    std::vector<std::shared_ptr<DrawableObjectI>> mDrawVector;
 
 public:
-    using iterator       = std::vector<DrawableObjectI*>::iterator;
-    using const_iterator = std::vector<DrawableObjectI*>::const_iterator;
+    using iterator = std::vector<std::shared_ptr<DrawableObjectI>>::iterator;
+    using const_iterator =
+        std::vector<std::shared_ptr<DrawableObjectI>>::const_iterator;
 
     DrawableObjectVector() = default;
 
