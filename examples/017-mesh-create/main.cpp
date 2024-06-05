@@ -50,7 +50,7 @@ int main()
     vcl::savePly(m, VCLIB_RESULTS_PATH "/hexahedron.ply", info);
 
     vcl::ConsoleLogger log;
-    log.setPrintTimer(true);
+    log.enablePrintTimer();
     log.startTimer();
     m = vcl::createDodecahedron<vcl::TriMesh>(log);
     vcl::savePly(m, VCLIB_RESULTS_PATH "/dodecahedron.ply", info);

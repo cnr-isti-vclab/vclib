@@ -33,6 +33,7 @@ class ConsoleLogger : public Logger<std::ostream>
 {
     std::ostream& mErrStream   = std::cerr;
     std::ostream& mWarnStream  = std::cout;
+    std::ostream& mMsgStream   = std::cout;
     std::ostream& mProgStream  = std::cout;
     std::ostream& mDebugStream = std::cerr;
 
@@ -42,11 +43,12 @@ public:
     ConsoleLogger(
         std::ostream& errStream,
         std::ostream& warnStream,
+        std::ostream& msgStream,
         std::ostream& progStream,
         std::ostream& debugStream) :
             mErrStream(errStream),
-            mWarnStream(warnStream), mProgStream(progStream),
-            mDebugStream(debugStream)
+            mWarnStream(warnStream), mMsgStream(msgStream),
+            mProgStream(progStream), mDebugStream(debugStream)
     {
     }
 
@@ -56,6 +58,7 @@ protected:
         switch (lvl) {
         case ERROR: return &mErrStream;
         case WARNING: return &mWarnStream;
+        case MESSAGE: return &mMsgStream;
         case PROGRESS: return &mProgStream;
         case DEBUG: return &mDebugStream;
         }

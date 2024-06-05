@@ -34,7 +34,7 @@ template<vcl::MeshConcept MeshType>
 void updateCurvature(MeshType& m)
 {
     vcl::ConsoleLogger log;
-    log.setPrintTimer(true);
+    log.enablePrintTimer();
 
     m.enablePerVertexAdjacentFaces();
     m.enablePerFaceAdjacentFaces();

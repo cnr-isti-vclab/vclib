@@ -47,7 +47,7 @@ int main()
     }
 
     vcl::ConsoleLogger log;
-    log.setPrintTimer(true);
+    log.enablePrintTimer();
 
     vcl::TriMesh m1 =
         vcl::loadObj<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");

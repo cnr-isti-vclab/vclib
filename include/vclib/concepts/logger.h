@@ -46,12 +46,19 @@ concept LoggerConcept =
 
         { o.enableIndentation() } -> std::same_as<void>;
         { o.disableIndentation() } -> std::same_as<void>;
+        { o.enablePrintPercentage() } -> std::same_as<void>;
+        { o.disablePrintPercentage() } -> std::same_as<void>;
+        { o.enablePrintMessageDuringProgress() } -> std::same_as<void>;
+        { o.disablePrintMessageDuringProgress() } -> std::same_as<void>;
+        { o.enablePrintTimer() } -> std::same_as<void>;
+        { o.disablePrintTimer() } -> std::same_as<void>;
 
         { o.reset() } -> std::same_as<void>;
 
         { o.setMaxLineWidth(uint()) } -> std::same_as<void>;
-        { o.setPrintTimer(bool()) } -> std::same_as<void>;
         { o.startTimer() } -> std::same_as<void>;
+        { o.stopTimer() } -> std::same_as<void>;
+        { o.getTime() } -> std::same_as<double>;
 
         { o.startNewTask(double(), double(), msg) } -> std::same_as<void>;
         { o.endTask(msg) } -> std::same_as<void>;
