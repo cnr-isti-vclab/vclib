@@ -20,59 +20,42 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
-#define VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
+#ifndef VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_ERROR_IO_DEVICE_H
+#define VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_ERROR_IO_DEVICE_H
 
-#include <QFrame>
-
-#include <vclib/misc/logger/logger.h>
-
-#include <vclib/ext/qt/gui/text_edit_logger/debug_io_device.h>
+#include <QIODevice>
+#include <QTextEdit>
 
 namespace vcl::qt {
 
-namespace Ui {
-class TextEditLogger;
-} // namespace Ui
-
-class TextEditLogger : public QFrame, public vcl::Logger<QTextStream>
+class ErrorIODevice : public QIODevice
 {
     Q_OBJECT
 
-    Ui::TextEditLogger* mUI;
-
-    DebugIODevice* mDebugIoDevice;
-
-    QTextStream* mDebugStream;
-    QTextStream* mErrorStream;
-    QTextStream* mMsgStream;
-    QTextStream* mWarningStream;
+    QTextEdit* mTextEdit;
 
 public:
-    using Logger<QTextStream>::startTimer;
-
-    explicit TextEditLogger(QWidget* parent = nullptr);
-    ~TextEditLogger();
-
-    TextEditLogger(const TextEditLogger&) = delete;
-    TextEditLogger& operator=(const TextEditLogger&) = delete;
-
-    void enableDebugLogging(bool enable);
-
-    void setPercentage(uint newPerc) override;
+    ErrorIODevice(QTextEdit* textEdit, QObject* parent) :
+            QIODevice(parent), mTextEdit(textEdit)
+    {
+        open(QIODevice::WriteOnly | QIODevice::Text);
+    }
 
 protected:
-    QTextStream* levelStream(LogLevel lvl) override;
+    qint64 readData(char* data, qint64 maxSize) { return 0; }
 
-    void alignLeft(QTextStream& stream) override;
-
-    void alignRight(QTextStream& stream) override;
-
-    void setWidth(QTextStream& stream, uint width) override;
-
-    void flush(QTextStream& stream) override;
+    qint64 writeData(const char* data, qint64 maxSize)
+    {
+        if (mTextEdit) {
+            QColor oldColor = mTextEdit->textColor();
+            mTextEdit->setTextColor(Qt::red);
+            mTextEdit->append(data);
+            mTextEdit->setTextColor(oldColor);
+        }
+        return maxSize;
+    }
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
+#endif // VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_ERROR_IO_DEVICE_H

@@ -22,25 +22,63 @@
 
 #include <vclib/ext/qt/gui/text_edit_logger.h>
 
-#include <vclib/ext/qt/gui/text_edit_logger/progress_io_device.h>
+#include <vclib/ext/qt/gui/text_edit_logger/debug_io_device.h>
+#include <vclib/ext/qt/gui/text_edit_logger/error_io_device.h>
+#include <vclib/ext/qt/gui/text_edit_logger/message_io_device.h>
+#include <vclib/ext/qt/gui/text_edit_logger/warning_io_device.h>
 
 #include "ui_text_edit_logger.h"
 
 namespace vcl::qt {
 
 TextEditLogger::TextEditLogger(QWidget* parent) :
-        QFrame(parent), ui(new Ui::TextEditLogger)
+        QFrame(parent), mUI(new Ui::TextEditLogger)
 {
-    ui->setupUi(this);
-    ui->textEdit->setFontFamily("Monospace");
-    ui->textEdit->setFontPointSize(8);
+    mUI->setupUi(this);
+    mUI->textEdit->setFontFamily("Monospace");
+    mUI->textEdit->setFontPointSize(8);
 
-    mTextStream = new QTextStream(new ProgressIoDevice(ui->textEdit, this));
+    mDebugIoDevice = new DebugIODevice(mUI->textEdit, this);
+
+    mDebugStream = new QTextStream(mDebugIoDevice);
+    mErrorStream = new QTextStream(new ErrorIODevice(mUI->textEdit, this));
+    mMsgStream = new QTextStream(new MessageIODevice(mUI->textEdit, this));
+    mWarningStream = new QTextStream(new WarningIODevice(mUI->textEdit, this));
+
+    disablePrintPercentage();
+    disablePrintMessageDuringProgress();
+}
+
+
+void TextEditLogger::enableDebugLogging(bool enable)
+{
+    if (enable) {
+        mDebugIoDevice->enable();
+    } else {
+        mDebugIoDevice->disable();
+    }
+}
+
+void TextEditLogger::setPercentage(uint newPerc)
+{
+    vcl::Logger<QTextStream>::setPercentage(newPerc);
+    mUI->progressBar->setValue(percentage());
+    mUI->progressBar->update();
 }
 
 QTextStream* TextEditLogger::levelStream(LogLevel lvl)
 {
-    return mTextStream;
+    switch (lvl) {
+        case LogLevel::DEBUG:
+            return mDebugStream;
+        case LogLevel::ERROR:
+            return mErrorStream;
+        case LogLevel::MESSAGE:
+        case LogLevel::PROGRESS:
+            return mMsgStream;
+        case LogLevel::WARNING:
+            return mWarningStream;
+    }
 }
 
 void TextEditLogger::alignLeft(QTextStream& stream)
@@ -65,8 +103,8 @@ void TextEditLogger::flush(QTextStream& stream)
 
 TextEditLogger::~TextEditLogger()
 {
-    delete ui;
-    delete mTextStream;
+    delete mUI;
+    delete mMsgStream;
 }
 
 } // namespace vcl::qt

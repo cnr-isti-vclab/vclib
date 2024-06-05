@@ -20,40 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_PROGRESS_IO_DEVICE_H
-#define VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_PROGRESS_IO_DEVICE_H
+#ifndef VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_DEBUG_IO_DEVICE_H
+#define VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_DEBUG_IO_DEVICE_H
 
 #include <QIODevice>
 #include <QTextEdit>
 
 namespace vcl::qt {
 
-class ProgressIoDevice : public QIODevice
+class DebugIODevice : public QIODevice
 {
     Q_OBJECT
 
+    QTextEdit* mTextEdit;
+    bool mEnabled = false;
+
 public:
-    ProgressIoDevice(QTextEdit* textEdit, QObject* parent) :
-            QIODevice(parent), textEdit(textEdit)
+    DebugIODevice(QTextEdit* textEdit, QObject* parent) :
+            QIODevice(parent), mTextEdit(textEdit)
     {
         open(QIODevice::WriteOnly | QIODevice::Text);
     }
+
+    void enable() { mEnabled = true; }
+
+    void disable() { mEnabled = false; }
 
 protected:
     qint64 readData(char* data, qint64 maxSize) { return 0; }
 
     qint64 writeData(const char* data, qint64 maxSize)
     {
-        if (textEdit) {
-            textEdit->append(data);
+        if (mTextEdit && mEnabled) {
+            QColor oldColor = mTextEdit->textColor();
+            mTextEdit->setTextColor(Qt::blue);
+            mTextEdit->append(data);
+            mTextEdit->setTextColor(oldColor);
         }
         return maxSize;
     }
-
-private:
-    QTextEdit* textEdit;
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_PROGRESS_IO_DEVICE_H
+#endif // VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_DEBUG_IO_DEVICE_H
