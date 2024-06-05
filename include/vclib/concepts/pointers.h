@@ -23,9 +23,25 @@
 #ifndef VCL_CONCEPTS_POINTERS_H
 #define VCL_CONCEPTS_POINTERS_H
 
+#include <memory>
+
 #include "const_correctness.h"
 
 namespace vcl {
+
+namespace detail {
+
+template<typename T>
+struct IsSharedPtr : std::false_type
+{
+};
+
+template<typename T>
+struct IsSharedPtr<std::shared_ptr<T>> : std::true_type
+{
+};
+
+} // namespace detail
 
 /**
  * @brief Utility concept that is evaluated true if T is a Pointer, even if the
@@ -36,6 +52,9 @@ namespace vcl {
 template<typename T>
 concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
 
+template<typename T>
+concept IsSharedPointer = detail::IsSharedPtr<T>::value;
+
 /**
  * @brief Utility concept that is evaluated true if T is a Pointer to a constant
  * object.
@@ -45,6 +64,10 @@ concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
 // https://stackoverflow.com/a/37370281/5851101
 template<typename T>
 concept IsPointerToConst = IsPointer<T> && IsConst<T>;
+
+template<typename T>
+concept IsSharedPointerToConst =
+    IsSharedPointer<T> && IsConst<typename T::element_type>;
 
 } // namespace vcl
 

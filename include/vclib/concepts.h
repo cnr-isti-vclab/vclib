@@ -27,6 +27,7 @@
 #include "concepts/logger.h"
 #include "concepts/mesh.h"
 #include "concepts/pointers.h"
+#include "concepts/polymorphism.h"
 #include "concepts/range.h"
 #include "concepts/space.h"
 #include "concepts/types.h"

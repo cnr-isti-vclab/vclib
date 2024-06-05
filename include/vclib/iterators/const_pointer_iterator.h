@@ -32,13 +32,29 @@ namespace vcl {
 
 /**
  * @brief The ConstPointerIterator class is a utility class that wraps an
- * iterator to a container of pointers, and returns a const pointer when
- * dereferencing the iterator.
+ * iterator of a container of [shared] pointers, and returns a const [shared]
+ * pointer when dereferencing the iterator.
+ *
+ * This iterator is useful in a context where you manage a container of
+ * pointers having two iterators:
+ * - iterator: it allows to modify the pointed objects (not the pointers!)
+ * - const_iterator: it allows to iterate over the container without modifying
+ *   the pointed objects.
+ * In this scenario, the iterator is easy to define (it is generally an alias
+ * to the container's const_iterator), while the const_iterator is a bit more
+ * tricky to define. This class allows to define easily the const_iterator:
+ *
+ * @code{.cpp}
+ * using const_iterator =
+ *     ConstPointerIterator<typename container::const_iterator>;
+ * @endcode
  *
  * @tparam It The iterator type.
  */
 template<typename It>
-requires (vcl::IsPointer<typename std::iterator_traits<It>::value_type>)
+requires (
+    vcl::IsPointer<typename std::iterator_traits<It>::value_type> ||
+    vcl::IsSharedPointer<typename std::iterator_traits<It>::value_type>)
 class ConstPointerIterator
 {
     using Base = It;

@@ -20,65 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_TYPES_CONST_CORRECTNESS_H
-#define VCL_TYPES_CONST_CORRECTNESS_H
+#ifndef VCL_CONCEPTS_POLYMORPHISM_H
+#define VCL_CONCEPTS_POLYMORPHISM_H
 
+#include <concepts>
 #include <memory>
-#include <type_traits>
 
 namespace vcl {
 
-/*
- * Utility type that makes possible to treat const pointers in a templated class
- * that can treat a both const and non-const pointer type.
- */
 template<typename T>
-struct MakeConstPointer
-{
-    using type = T;
+concept Clonable = requires (T o) {
+    // clang-format off
+    { o.clone() } -> std::same_as<std::shared_ptr<T>>;
+    // clang-format on
 };
-
-template<typename T>
-struct MakeConstPointer<T*>
-{
-    using type = const T*;
-};
-
-template<typename T>
-struct MakeConstPointer<std::shared_ptr<T>>
-{
-    using type = std::shared_ptr<const T>;
-};
-
-template<typename T>
-using MakeConstPointerT = typename MakeConstPointer<T>::type;
-
-/*
- * Full deduction for the possibility to re-use same code for const and
- * non-const member functions https://stackoverflow.com/a/47369227/5851101
- */
-
-template<typename T>
-constexpr T& asConst(const T& value) noexcept
-{
-    return const_cast<T&>(value);
-}
-
-template<typename T>
-constexpr T* asConst(const T* value) noexcept
-{
-    return const_cast<T*>(value);
-}
-
-template<typename T>
-constexpr T* asConst(T* value) noexcept
-{
-    return value;
-}
-
-template<typename T>
-void asConst(const T&&) = delete;
 
 } // namespace vcl
 
-#endif // VCL_TYPES_CONST_CORRECTNESS_H
+#endif // VCL_CONCEPTS_POLYMORPHISM_H
