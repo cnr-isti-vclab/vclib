@@ -29,8 +29,8 @@
 #include <string>
 #include <vector>
 
-#include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/polymorphism.h>
+#include <vclib/concepts/ranges/range.h>
 #include <vclib/exceptions.h>
 #include <vclib/iterators/const_pointer_iterator.h>
 #include <vclib/types.h>
@@ -353,19 +353,22 @@ public:
                 (int) std::distance(
                     std::ranges::begin(r), std::ranges::end(r)));
 
-            // for each element in the range, clone it and store it in the vector
+            // for each element in the range, clone it and store it in the
+            // vector
             std::transform(
                 std::ranges::begin(r),
                 std::ranges::begin(r) + n,
                 mContainer.begin(),
-                [](const auto& e) { return e.clone(); });
+                [](const auto& e) {
+                    return e.clone();
+                });
         }
         else {
             // create a new vector from the range, containing clones
             mContainer = std::vector<std::shared_ptr<T>>(
-                std::ranges::begin(r),
-                std::ranges::end(r),
-                [](const auto& e) { return e.clone(); });
+                std::ranges::begin(r), std::ranges::end(r), [](const auto& e) {
+                    return e.clone();
+                });
         }
     }
 

@@ -28,21 +28,22 @@
 
 struct Shape
 {
-    virtual ~Shape() = default;
+    virtual ~Shape()          = default;
     virtual void draw() const = 0;
+
     virtual void setScale(float scale) { s = scale; }
+
     virtual void printScale() const { std::cout << "Scale: " << s << '\n'; }
+
     virtual std::shared_ptr<Shape> clone() const = 0;
+
 private:
     float s = 1.0f;
 };
 
 struct Circle : public Shape
 {
-    void draw() const override
-    {
-        std::cout << "Drawing a circle\n";
-    }
+    void draw() const override { std::cout << "Drawing a circle\n"; }
 
     std::shared_ptr<Shape> clone() const override
     {
@@ -52,10 +53,7 @@ struct Circle : public Shape
 
 struct Square : public Shape
 {
-    void draw() const override
-    {
-        std::cout << "Drawing a square\n";
-    }
+    void draw() const override { std::cout << "Drawing a square\n"; }
 
     std::shared_ptr<Shape> clone() const override
     {
