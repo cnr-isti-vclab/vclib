@@ -25,7 +25,9 @@
 
 #include <fstream>
 
+#include <vclib/exceptions/io.h>
 #include <vclib/io/read.h>
+#include <vclib/io/mesh/settings.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/logger.h>
 
@@ -35,9 +37,10 @@ namespace vcl::detail {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void readPlyTextures(
-    const PlyHeader& header,
-    MeshType&        mesh,
-    LogType&         log = nullLogger)
+    const PlyHeader&    header,
+    MeshType&           mesh,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     if constexpr (vcl::HasTexturePaths<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
@@ -45,26 +48,44 @@ void readPlyTextures(
         }
     }
     if constexpr (vcl::HasTextureImages<MeshType>) {
-        for (const std::string& str : header.textureFileNames()) {
-            vcl::Texture t;
-            t.path() = str;
-            bool b = t.image().load(mesh.meshBasePath() + str);
-            if (!b) {
-                log.log(
-                    LogType::WARNING,
-                    "Cannot load texture " + str);
+        if (settings.loadTextureImages) {
+            for (const std::string& str : header.textureFileNames()) {
+                vcl::Texture t;
+                t.path() = str;
+                bool b = t.image().load(mesh.meshBasePath() + str);
+                if (!b) {
+                    log.log(
+                        LogType::WARNING,
+                        "Cannot load texture " + str);
+                }
+                mesh.pushTexture(t);
             }
-            mesh.pushTexture(t);
         }
     }
 }
 
-template<MeshConcept MeshType>
-void writePlyTextures(PlyHeader& header, const MeshType& mesh)
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void writePlyTextures(
+    PlyHeader&          header,
+    const MeshType&     mesh,
+    LogType&            log,
+    const SaveSettings& settings)
 {
     if constexpr (vcl::HasTexturePaths<MeshType>) {
         for (const std::string& str : mesh.texturePaths()) {
             header.pushTextureFileName(str);
+        }
+    }
+    if constexpr (vcl::HasTextureImages<MeshType>) {
+        if (settings.saveTextureImages) {
+            for (const vcl::Texture& t : mesh.textures()) {
+                try {
+                    t.image().save(mesh.meshBasePath() + t.path());
+                }
+                catch (const std::runtime_error& e) {
+                    log.log(LogType::WARNING, e.what());
+                }
+            }
         }
     }
 }

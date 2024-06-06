@@ -24,6 +24,7 @@
 #define VCL_IO_OFF_SAVE_H
 
 #include <vclib/exceptions/io.h>
+#include <vclib/io/mesh/settings.h>
 #include <vclib/io/write.h>
 #include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>
@@ -32,10 +33,11 @@ namespace vcl {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
-    const MeshType& m,
-    std::ostream&   fp,
-    const MeshInfo& info,
-    LogType&        log = nullLogger)
+    const MeshType&     m,
+    std::ostream&       fp,
+    const MeshInfo&     info,
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
 {
     MeshInfo meshInfo(m);
 
@@ -130,21 +132,26 @@ void saveOff(
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveOff(const MeshType& m, std::ostream& fp, LogType& log = nullLogger)
+void saveOff(
+    const MeshType&     m,
+    std::ostream&       fp,
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
 {
     MeshInfo info(m);
-    saveOff(m, fp, info, log);
+    saveOff(m, fp, info, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
-    const MeshType&    m,
-    const std::string& filename,
-    const MeshInfo&    info,
-    LogType&           log = nullLogger)
+    const MeshType&     m,
+    const std::string&  filename,
+    const MeshInfo&     info,
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
 {
     std::ofstream fp = openOutputFileStream(filename, "off");
-    saveOff(m, fp, info, log);
+    saveOff(m, fp, info, log, settings);
     fp.close();
 }
 
@@ -152,10 +159,11 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
     const MeshType&    m,
     const std::string& filename,
-    LogType&           log = nullLogger)
+    LogType&           log = nullLogger,
+    const SaveSettings& settings = SaveSettings())
 {
     MeshInfo info(m);
-    saveOff(m, filename, info, log);
+    saveOff(m, filename, info, log, settings);
 }
 
 } // namespace vcl

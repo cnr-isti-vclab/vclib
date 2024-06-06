@@ -42,5 +42,8 @@ int main()
     vcl::TriMesh mesh = xCyl;
     mesh.append(yCyl);
 
-    vcl::savePly(mesh, VCLIB_RESULTS_PATH "/axis.ply", false);
+    vcl::SaveSettings s;
+    s.binary = false;
+
+    vcl::savePly(mesh, VCLIB_RESULTS_PATH "/axis.ply", s);
 }

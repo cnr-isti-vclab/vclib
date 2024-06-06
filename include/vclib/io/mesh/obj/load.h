@@ -48,7 +48,8 @@ template<MeshConcept MeshType>
 void loadObjMaterials(
     std::map<std::string, ObjMaterial>& materialMap,
     MeshType&                           mesh,
-    std::istream&                       stream)
+    std::istream&                       stream,
+    const LoadSettings&                 settings)
 {
     std::string matName;
     ObjMaterial mat;
@@ -159,10 +160,11 @@ template<MeshConcept MeshType>
 void loadObjMaterials(
     std::map<std::string, ObjMaterial>& materialMap,
     MeshType&                           mesh,
-    const std::string&                  mtllib)
+    const std::string&                  mtllib,
+    const LoadSettings&                 settings)
 {
     std::ifstream file = openInputFileStream(mtllib);
-    loadObjMaterials(materialMap, mesh, file);
+    loadObjMaterials(materialMap, mesh, file, settings);
 }
 
 template<MeshConcept MeshType>
@@ -459,7 +461,7 @@ void loadObj(
 
     // load materials from the material files, if any
     for (auto* stream : inputMtlStreams) {
-        detail::loadObjMaterials(materialMap, m, *stream);
+        detail::loadObjMaterials(materialMap, m, *stream, settings);
     }
 
     // the current material, set by 'usemtl'
@@ -485,7 +487,7 @@ void loadObj(
                 std::string mtlfile =
                     FileInfo::pathWithoutFileName(filename) + *token;
                 try {
-                    detail::loadObjMaterials(materialMap, m, mtlfile);
+                    detail::loadObjMaterials(materialMap, m, mtlfile, settings);
                 }
                 catch (vcl::CannotOpenFileException) {
                     log.log(
@@ -599,13 +601,14 @@ void loadObj(
     }
 
     if constexpr (HasTextureImages<MeshType>) {
-        // try to load the textures
-        for (vcl::Texture& texture : m.textures()) {
-            bool b = texture.image().load(m.meshBasePath() + texture.path());
-            if (!b) {
-                log.log(
-                    LogType::WARNING,
-                    "Cannot load texture " + texture.path());
+        if (settings.loadTextureImages) {
+            for (vcl::Texture& texture : m.textures()) {
+                bool b = texture.image().load(m.meshBasePath() + texture.path());
+                if (!b) {
+                    log.log(
+                        LogType::WARNING,
+                        "Cannot load texture " + texture.path());
+                }
             }
         }
     }

@@ -24,6 +24,7 @@
 #define VCL_IO_PLY_SAVE_H
 
 #include <vclib/exceptions/io.h>
+#include <vclib/io/mesh/settings.h>
 #include <vclib/misc/logger.h>
 
 #include "detail/edge.h"
@@ -35,11 +36,11 @@ namespace vcl {
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
-    const MeshType& m,
-    std::ostream&   fp,
-    const MeshInfo& info,
-    LogType&        log    = nullLogger,
-    bool            binary = true)
+    const MeshType&     m,
+    std::ostream&       fp,
+    const MeshInfo&     info,
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
 {
     using namespace detail;
     MeshInfo meshInfo(m);
@@ -50,7 +51,7 @@ void savePly(
     // available in the mesh.
     meshInfo = info.intersect(meshInfo);
 
-    PlyHeader header(binary ? ply::BINARY : ply::ASCII, meshInfo);
+    PlyHeader header(settings.binary ? ply::BINARY : ply::ASCII, meshInfo);
     header.setNumberVertices(m.vertexNumber());
 
     if constexpr (vcl::HasFaces<MeshType>) {
@@ -63,7 +64,7 @@ void savePly(
             header.setNumberEdges(m.edgeNumber());
         }
     }
-    writePlyTextures(header, m);
+    writePlyTextures(header, m, log, settings);
 
     // this should never happen
     if (!header.isValid())
@@ -88,81 +89,81 @@ void savePly(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
-    const MeshType& m,
-    std::ostream&   fp,
-    const MeshInfo& info,
-    bool            binary,
-    LogType&        log = nullLogger)
+    const MeshType&     m,
+    std::ostream&       fp,
+    const MeshInfo&     info,
+    const SaveSettings& settings,
+    LogType&            log      = nullLogger)
 {
-    savePly(m, fp, info, log, binary);
+    savePly(m, fp, info, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
-    const MeshType& m,
-    std::ostream&   fp,
-    bool            binary,
-    LogType&        log = nullLogger)
-{
-    MeshInfo info(m);
-    savePly(m, fp, info, log, binary);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-    const MeshType& m,
-    std::ostream&   fp,
-    LogType&        log    = nullLogger,
-    bool            binary = true)
+    const MeshType&     m,
+    std::ostream&       fp,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
 {
     MeshInfo info(m);
-    savePly(m, fp, info, log, binary);
+    savePly(m, fp, info, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
-    const MeshType&    m,
-    const std::string& filename,
-    const MeshInfo&    info,
-    LogType&           log    = nullLogger,
-    bool               binary = true)
+    const MeshType&     m,
+    std::ostream&       fp,
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
+{
+    MeshInfo info(m);
+    savePly(m, fp, info, log, settings);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void savePly(
+    const MeshType&     m,
+    const std::string&  filename,
+    const MeshInfo&     info,
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
 {
     std::ofstream fp = openOutputFileStream(filename, "ply");
 
-    savePly(m, fp, info, log, binary);
+    savePly(m, fp, info, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
-    const MeshType&    m,
-    const std::string& filename,
-    const MeshInfo&    info,
-    bool               binary,
-    LogType&           log = nullLogger)
+    const MeshType&     m,
+    const std::string&  filename,
+    const MeshInfo&     info,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
 {
-    savePly(m, filename, info, log, binary);
+    savePly(m, filename, info, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void savePly(
-    const MeshType&    m,
-    const std::string& filename,
-    bool               binary,
-    LogType&           log = nullLogger)
-{
-    MeshInfo info(m);
-    savePly(m, filename, info, log, binary);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void savePly(
-    const MeshType&    m,
-    const std::string& filename,
-    LogType&           log    = nullLogger,
-    bool               binary = true)
+    const MeshType&     m,
+    const std::string&  filename,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
 {
     MeshInfo info(m);
-    savePly(m, filename, info, log, binary);
+    savePly(m, filename, info, log, settings);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void savePly(
+    const MeshType&     m,
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
+{
+    MeshInfo info(m);
+    savePly(m, filename, info, log, settings);
 }
 
 } // namespace vcl

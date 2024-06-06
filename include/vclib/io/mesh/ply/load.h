@@ -71,7 +71,7 @@ void loadPly(
             default: readPlyUnknownElement(file, header, el); break;
             }
         }
-        readPlyTextures(header, m, log);
+        readPlyTextures(header, m, log, settings);
     }
     catch (const std::runtime_error& err) {
         m.clear();

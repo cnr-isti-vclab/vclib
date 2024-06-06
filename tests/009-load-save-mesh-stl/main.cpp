@@ -157,8 +157,11 @@ TEMPLATE_TEST_CASE(
     {
         TriMesh tm = vcl::createCube<TriMesh>();
 
+        vcl::SaveSettings settings;
+        settings.binary = false;
+
         std::ostringstream ss;
-        vcl::saveStl(tm, ss);
+        vcl::saveStl(tm, ss, settings);
 
         const uint expectedStlSize = 7 * tm.faceNumber() + 2;
 

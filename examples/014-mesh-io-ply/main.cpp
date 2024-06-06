@@ -83,8 +83,10 @@ int main()
     }
 
     // save again the mesh
+    vcl::SaveSettings s;
+    s.binary = false;
     vcl::savePly(
-        m, VCLIB_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, false);
+        m, VCLIB_RESULTS_PATH "/triangulated_cube.ply", vcl::nullLogger, s);
 
     vcl::TriMesh mm = vcl::loadPly<vcl::TriMesh>(
         VCLIB_RESULTS_PATH "/triangulated_cube.ply", loadedInfo);

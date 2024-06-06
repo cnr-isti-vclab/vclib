@@ -28,8 +28,11 @@ int main()
 
     vcl::EdgeMesh e = creaseEdgesMesh<vcl::EdgeMesh>(c);
 
+    vcl::SaveSettings s;
+    s.binary = false;
+
     vcl::save(c, VCLIB_RESULTS_PATH "/cylinder.ply");
-    vcl::save(e, VCLIB_RESULTS_PATH "/cylinder_crease_edges.ply", false);
+    vcl::save(e, VCLIB_RESULTS_PATH "/cylinder_crease_edges.ply", s);
 
     return 0;
 }

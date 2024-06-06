@@ -40,7 +40,7 @@ int main()
 
     assert(pm.isPerFaceWedgeTexCoordsEnabled());
 
-    vcl::save(pm, VCLIB_RESULTS_PATH "/TextureDouble_converted.obj", false);
+    vcl::save(pm, VCLIB_RESULTS_PATH "/TextureDouble_converted.obj");
 
     pm = vcl::loadPly<vcl::PolyMesh>(VCLIB_ASSETS_PATH "/cube_poly.ply");
 
@@ -50,7 +50,10 @@ int main()
     m.enableSameOptionalComponentsOf(pm);
     m.importFrom(pm);
 
-    vcl::save(m, VCLIB_RESULTS_PATH "/cube_from_poly.ply", false);
+    vcl::SaveSettings s;
+    s.binary = false;
+
+    vcl::save(m, VCLIB_RESULTS_PATH "/cube_from_poly.ply", s);
 
     return 0;
 }
