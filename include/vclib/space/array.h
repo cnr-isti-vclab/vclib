@@ -29,7 +29,7 @@
 #include <utility>
 #include <vector>
 
-#include <vclib/concepts/range.h>
+#include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/space/array.h>
 #include <vclib/misc/nested_initializer_lists.h>
 #include <vclib/types.h>

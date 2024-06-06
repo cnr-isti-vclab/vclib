@@ -20,38 +20,63 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_H
-#define VCL_SPACE_H
+#ifndef VCL_SPACE_TEXTURE_H
+#define VCL_SPACE_TEXTURE_H
 
-#include "space/array.h"
-#include "space/bit_set.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/graph.h"
-#include "space/grid.h"
-#include "space/image.h"
-#include "space/kd_tree.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/polymorphic_object_vector.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/texture.h"
-#include "space/triangle_wrapper.h"
-#include "space/vector.h"
+#include "image.h"
 
-/**
- * @defgroup space Spatial Data Structures
- *
- * @brief List of Spatial Data Structures of VCLib.
- *
- * You can access all the algorithms of VCLib by including `#include
- * <vclib/space.h>`
- */
+#include <vclib/io/file_info.h>
 
-#endif // VCL_SPACE_H
+namespace vcl {
+
+class Texture
+{
+    Image mImg;
+    std::string mName;
+
+public:
+    Texture() {}
+
+    /**
+     * @brief Load a texture from a file.
+     *
+     * @param[in] filename: the name of the file.
+     */
+    Texture(const std::string& filename)
+    {
+        mName = FileInfo::fileNameWithExtension(filename);
+        mImg.load(filename);
+    }
+
+    /**
+     * @brief Get the name of the texture.
+     *
+     * @return the name of the texture.
+     */
+    const std::string& name() const { return mName; }
+
+    /**
+     * @brief Get the name of the texture.
+     *
+     * @return the name of the texture.
+     */
+    std::string& name() { return mName; }
+
+    /**
+     * @brief Get the image of the texture.
+     *
+     * @return the image of the texture.
+     */
+    const Image& image() const { return mImg; }
+
+    /**
+     * @brief Get the image of the texture.
+     *
+     * @return the image of the texture.
+     */
+    Image& image() { return mImg; }
+};
+
+} // namespace vcl
+
+#endif // VCL_SPACE_TEXTURE_H
