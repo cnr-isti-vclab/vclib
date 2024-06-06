@@ -49,6 +49,7 @@ void loadObjMaterials(
     std::map<std::string, ObjMaterial>& materialMap,
     MeshType&                           mesh,
     std::istream&                       stream,
+    MeshInfo&                           loadedInfo,
     const LoadSettings&                 settings)
 {
     std::string matName;
@@ -139,10 +140,12 @@ void loadObjMaterials(
                 mat.map_Kd     = *token;
                 mat.hasTexture = true;
                 if constexpr (HasTexturePaths<MeshType>) {
+                    loadedInfo.setTextures();
                     mat.mapId = mesh.textureNumber();
                     mesh.pushTexturePath(mat.map_Kd);
                 }
                 else if constexpr (HasTextureImages<MeshType>) {
+                    loadedInfo.setTextures();
                     mat.mapId = mesh.textureNumber();
                     mesh.pushTexture(mat.map_Kd);
                 }
@@ -161,10 +164,11 @@ void loadObjMaterials(
     std::map<std::string, ObjMaterial>& materialMap,
     MeshType&                           mesh,
     const std::string&                  mtllib,
+    MeshInfo&                           loadedInfo,
     const LoadSettings&                 settings)
 {
     std::ifstream file = openInputFileStream(mtllib);
-    loadObjMaterials(materialMap, mesh, file, settings);
+    loadObjMaterials(materialMap, mesh, file, loadedInfo, settings);
 }
 
 template<MeshConcept MeshType>
@@ -463,7 +467,7 @@ void loadObj(
 
     // load materials from the material files, if any
     for (auto* stream : inputMtlStreams) {
-        detail::loadObjMaterials(materialMap, m, *stream, settings);
+        detail::loadObjMaterials(materialMap, m, *stream, loadedInfo, settings);
     }
 
     // the current material, set by 'usemtl'
@@ -489,7 +493,8 @@ void loadObj(
                 std::string mtlfile =
                     FileInfo::pathWithoutFileName(filename) + *token;
                 try {
-                    detail::loadObjMaterials(materialMap, m, mtlfile, settings);
+                    detail::loadObjMaterials(
+                        materialMap, m, mtlfile, loadedInfo, settings);
                 }
                 catch (vcl::CannotOpenFileException) {
                     log.log(

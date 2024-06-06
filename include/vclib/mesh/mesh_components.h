@@ -76,6 +76,11 @@ using TextureImages = comp::TextureImages;
 /** Port TexturePaths class into mesh namespace **/
 using TexturePaths = comp::TexturePaths;
 
+/** Port Textures class into mesh namespace **/
+template<bool STORE_TEXTURE_IMAGES>
+using Textures =
+    std::conditional_t<STORE_TEXTURE_IMAGES, TextureImages, TexturePaths>;
+
 /** Port TransformMatrix class into mesh namespace **/
 template<typename Scalar>
 using TransformMatrix = comp::TransformMatrix<Scalar>;

@@ -85,7 +85,7 @@ class EdgeMeshT :
             mesh::BoundingBox3<Scalar>,
             mesh::Mark,
             mesh::Name,
-            mesh::TexturePaths,
+            mesh::TextureImages,
             mesh::TransformMatrix<Scalar>,
             mesh::CustomComponents>
 {

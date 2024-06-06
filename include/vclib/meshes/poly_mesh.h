@@ -88,7 +88,7 @@ class PolyMeshT :
             mesh::Color,
             mesh::Mark,
             mesh::Name,
-            mesh::TexturePaths,
+            mesh::TextureImages,
             mesh::TransformMatrix<Scalar>,
             mesh::CustomComponents>
 {
