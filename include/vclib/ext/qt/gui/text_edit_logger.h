@@ -54,7 +54,7 @@ public:
     explicit TextEditLogger(QWidget* parent = nullptr);
     ~TextEditLogger();
 
-    TextEditLogger(const TextEditLogger&) = delete;
+    TextEditLogger(const TextEditLogger&)            = delete;
     TextEditLogger& operator=(const TextEditLogger&) = delete;
 
     void enableDebugLogging(bool enable);

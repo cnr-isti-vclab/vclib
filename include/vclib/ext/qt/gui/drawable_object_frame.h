@@ -37,7 +37,7 @@ class DrawableObjectFrame : public QFrame
 {
     Q_OBJECT
 
-    Ui::DrawableObjectFrame* mUI;
+    Ui::DrawableObjectFrame*         mUI;
     std::shared_ptr<DrawableObjectI> mObj;
 
 public:

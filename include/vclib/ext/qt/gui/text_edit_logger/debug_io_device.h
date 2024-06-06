@@ -33,7 +33,7 @@ class DebugIODevice : public QIODevice
     Q_OBJECT
 
     QTextEdit* mTextEdit;
-    bool mEnabled = false;
+    bool       mEnabled = false;
 
 public:
     DebugIODevice(QTextEdit* textEdit, QObject* parent) :

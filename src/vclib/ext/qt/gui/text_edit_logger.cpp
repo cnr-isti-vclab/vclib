@@ -40,21 +40,21 @@ TextEditLogger::TextEditLogger(QWidget* parent) :
 
     mDebugIoDevice = new DebugIODevice(mUI->textEdit, this);
 
-    mDebugStream = new QTextStream(mDebugIoDevice);
-    mErrorStream = new QTextStream(new ErrorIODevice(mUI->textEdit, this));
-    mMsgStream = new QTextStream(new MessageIODevice(mUI->textEdit, this));
+    mDebugStream   = new QTextStream(mDebugIoDevice);
+    mErrorStream   = new QTextStream(new ErrorIODevice(mUI->textEdit, this));
+    mMsgStream     = new QTextStream(new MessageIODevice(mUI->textEdit, this));
     mWarningStream = new QTextStream(new WarningIODevice(mUI->textEdit, this));
 
     disablePrintPercentage();
     disablePrintMessageDuringProgress();
 }
 
-
 void TextEditLogger::enableDebugLogging(bool enable)
 {
     if (enable) {
         mDebugIoDevice->enable();
-    } else {
+    }
+    else {
         mDebugIoDevice->disable();
     }
 }
@@ -69,17 +69,12 @@ void TextEditLogger::setPercentage(uint newPerc)
 QTextStream* TextEditLogger::levelStream(LogLevel lvl)
 {
     switch (lvl) {
-        case LogLevel::DEBUG:
-            return mDebugStream;
-        case LogLevel::ERROR:
-            return mErrorStream;
-        case LogLevel::MESSAGE:
-        case LogLevel::PROGRESS:
-            return mMsgStream;
-        case LogLevel::WARNING:
-            return mWarningStream;
-        default:
-            return mMsgStream;
+    case LogLevel::DEBUG: return mDebugStream;
+    case LogLevel::ERROR: return mErrorStream;
+    case LogLevel::MESSAGE:
+    case LogLevel::PROGRESS: return mMsgStream;
+    case LogLevel::WARNING: return mWarningStream;
+    default: return mMsgStream;
     }
 }
 

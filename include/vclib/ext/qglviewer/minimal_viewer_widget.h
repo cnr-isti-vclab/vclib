@@ -39,15 +39,14 @@ public:
 
     MinimalViewerWidget(
         const std::shared_ptr<DrawableObjectVector>& v,
-        QWidget*                              parent = nullptr);
+        QWidget*                                     parent = nullptr);
 
     void init();
 
     void setDrawableObjectVector(
         const std::shared_ptr<DrawableObjectVector>& v);
 
-    std::shared_ptr<const DrawableObjectVector> drawableObjectVector()
-        const;
+    std::shared_ptr<const DrawableObjectVector> drawableObjectVector() const;
 
     void fitScene();
 
