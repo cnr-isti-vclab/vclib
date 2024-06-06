@@ -61,6 +61,9 @@ void load(
 {
     std::string ext = FileInfo::extension(filename);
     ext             = vcl::toLower(ext);
+
+    loadedInfo.clear();
+
     if (ext == ".obj") {
         loadObj(m, filename, loadedInfo, log, settings);
     }

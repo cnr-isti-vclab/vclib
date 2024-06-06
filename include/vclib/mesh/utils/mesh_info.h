@@ -272,6 +272,31 @@ public:
     }
 
     /**
+     * @brief Clears the MeshInfo object.
+     *
+     * All the Elements/Components are disabled, their type is set to
+     * DataType::NONE and the Mesh Type is set to MeshType::POLYGON_MESH.
+     */
+    void clear()
+    {
+        mElements.reset();
+        for (auto& comp : mPerElemComponents)
+            comp.reset();
+        mPerElemComponentsType.fill(NONE);
+
+        for (auto& v : mPerElemCustomComponents)
+            v.clear();
+
+        mType = POLYGON_MESH;
+    }
+
+    /**
+     * @brief Returns whether the current MeshInfo object is empty, i.e., it has
+     * no Elements set.
+     */
+    bool isEmpty() const { return !mElements.any(); }
+
+    /**
      * @brief Returns true if the current object has Mesh type set to
      * MeshType::TRIANGLE_MESH.
      * @return true if the current Mesh type is set to MeshType::TRIANGLE_MESH.

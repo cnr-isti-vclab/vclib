@@ -34,23 +34,22 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
     const MeshType&     m,
     const std::string&  filename,
-    const MeshInfo&     info,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
     std::string ext = FileInfo::extension(filename);
     ext             = vcl::toLower(ext);
     if (ext == ".obj") {
-        saveObj(m, filename, info, log, settings);
+        saveObj(m, filename, log, settings);
     }
     else if (ext == ".off") {
-        saveOff(m, filename, info, log, settings);
+        saveOff(m, filename, log, settings);
     }
     else if (ext == ".ply") {
-        savePly(m, filename, info, log, settings);
+        savePly(m, filename, log, settings);
     }
     else if (ext == ".stl") {
-        saveStl(m, filename, info, log, settings);
+        saveStl(m, filename, log, settings);
     }
     else {
         throw vcl::UnknownFileFormatException(ext);
@@ -61,33 +60,10 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void save(
     const MeshType&     m,
     const std::string&  filename,
-    const MeshInfo&     info,
     const SaveSettings& settings,
     LogType&            log = nullLogger)
 {
-    save(m, filename, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
-    const MeshType&    m,
-    const std::string& filename,
-    const SaveSettings& settings,
-    LogType&           log = nullLogger)
-{
-    MeshInfo info(m);
-    save(m, filename, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
-    const MeshType&    m,
-    const std::string& filename,
-    LogType&           log    = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    MeshInfo info(m);
-    save(m, filename, info, log, settings);
+    save(m, filename, log, settings);
 }
 
 } // namespace vcl

@@ -160,7 +160,6 @@ void saveObj(
     std::ostream&       fp,
     std::ostream*       mtlfp,
     bool                saveMtlFile,
-    const MeshInfo&     info,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
@@ -170,7 +169,8 @@ void saveObj(
     // available in the mesh. meshInfo will contain the intersection between the
     // components that the user wants to save and the components that are
     // available in the mesh.
-    meshInfo = info.intersect(meshInfo);
+    if (!settings.info.isEmpty())
+        meshInfo = settings.info.intersect(meshInfo);
 
     // if the mesh has both vertex and wedge texcords, will be saved just wedges
     // because obj does not allow to save them both. In any case, also vertex
@@ -310,34 +310,10 @@ void saveObj(
     const MeshType&     m,
     std::ostream&       fp,
     std::ostream&       mtlfp,
-    const MeshInfo&     info,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
-    detail::saveObj(m, "materials", fp, &mtlfp, false, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveObj(
-    const MeshType&     m,
-    std::ostream&       fp,
-    const MeshInfo&     info,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    detail::saveObj(m, "", fp, nullptr, false, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveObj(
-    const MeshType&     m,
-    std::ostream&       fp,
-    std::ostream&       mtlfp,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    MeshInfo info(m);
-    saveObj(m, fp, mtlfp, info, log, settings);
+    detail::saveObj(m, "materials", fp, &mtlfp, false, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
@@ -347,32 +323,19 @@ void saveObj(
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
-    MeshInfo info(m);
-    saveObj(m, fp, info, log, settings);
+    detail::saveObj(m, "", fp, nullptr, false, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveObj(
     const MeshType&     m,
     const std::string&  filename,
-    const MeshInfo&     info,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
     std::ofstream fp = openOutputFileStream(filename, "obj");
 
-    detail::saveObj(m, filename, fp, nullptr, true, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveObj(
-    const MeshType&     m,
-    const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    MeshInfo info(m);
-    saveObj(m, filename, info, log, settings);
+    detail::saveObj(m, filename, fp, nullptr, true, log, settings);
 }
 
 } // namespace vcl

@@ -35,7 +35,6 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
     const MeshType&     m,
     std::ostream&       fp,
-    const MeshInfo&     info,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
@@ -45,7 +44,8 @@ void saveOff(
     // available in the mesh. meshInfo will contain the intersection between the
     // components that the user wants to save and the components that are
     // available in the mesh.
-    meshInfo = info.intersect(meshInfo);
+    if (!settings.info.isEmpty())
+        meshInfo = settings.info.intersect(meshInfo);
 
     if (meshInfo.hasVertexNormals())
         fp << "N";
@@ -135,35 +135,32 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
     const MeshType&     m,
     std::ostream&       fp,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const SaveSettings& settings,
+    LogType&            log      = nullLogger)
 {
-    MeshInfo info(m);
-    saveOff(m, fp, info, log, settings);
+    saveOff(m, fp, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
     const MeshType&     m,
     const std::string&  filename,
-    const MeshInfo&     info,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
     std::ofstream fp = openOutputFileStream(filename, "off");
-    saveOff(m, fp, info, log, settings);
+    saveOff(m, fp, log, settings);
     fp.close();
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveOff(
-    const MeshType&    m,
-    const std::string& filename,
-    LogType&           log = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+    const MeshType&     m,
+    const std::string&  filename,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
 {
-    MeshInfo info(m);
-    saveOff(m, filename, info, log, settings);
+    saveOff(m, filename, log, settings);
 }
 
 } // namespace vcl

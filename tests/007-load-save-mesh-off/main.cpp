@@ -157,7 +157,9 @@ TEMPLATE_TEST_CASE(
         std::ostringstream oss;
         vcl::MeshInfo      i(tm);
         i.setVertexNormals(false);
-        vcl::saveOff(tm, oss, i);
+        vcl::SaveSettings settings;
+        settings.info = i;
+        vcl::saveOff(tm, oss, settings);
 
         // read some lines from oss and check them
         std::istringstream iss(oss.str());

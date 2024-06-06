@@ -98,10 +98,9 @@ void writeSTLTriangle(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveStl(
-    const MeshType& m,
-    std::ostream&   fp,
-    const MeshInfo& info,
-    LogType&        log        = nullLogger,
+    const MeshType&     m,
+    std::ostream&       fp,
+    LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
     MeshInfo meshInfo(m);
@@ -110,7 +109,8 @@ void saveStl(
     // available in the mesh. meshInfo will contain the intersection between the
     // components that the user wants to save and the components that are
     // available in the mesh.
-    meshInfo = info.intersect(meshInfo);
+    if (!settings.info.isEmpty())
+        meshInfo = settings.info.intersect(meshInfo);
 
     log.log(0, "Saving STL file");
 
@@ -177,59 +177,24 @@ void saveStl(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveStl(
-    const MeshType& m,
-    std::ostream&   fp,
-    LogType&        log        = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    MeshInfo info(m);
-    saveStl(m, fp, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveStl(
-    const MeshType&     m,
-    std::ostream&       fp,
-    const MeshInfo&     info,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    saveStl(m, fp, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveStl(
     const MeshType&     m,
     std::ostream&       fp,
     const SaveSettings& settings,
     LogType&            log = nullLogger)
 {
-    MeshInfo info(m);
-    saveStl(m, fp, info, log, settings);
+    saveStl(m, fp, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveStl(
     const MeshType&    m,
     const std::string& filename,
-    const MeshInfo&    info,
     LogType&           log        = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
     std::ofstream fp = openOutputFileStream(filename, "stl");
 
-    saveStl(m, fp, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveStl(
-    const MeshType&     m,
-    const std::string&  filename,
-    const MeshInfo&     info,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    saveStl(m, filename, info, log, settings);
+    saveStl(m, fp, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
@@ -239,19 +204,7 @@ void saveStl(
     const SaveSettings& settings,
     LogType&            log = nullLogger)
 {
-    MeshInfo info(m);
-    saveStl(m, filename, info, log, settings);
-}
-
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void saveStl(
-    const MeshType&    m,
-    const std::string& filename,
-    LogType&           log        = nullLogger,
-    const SaveSettings& settings = SaveSettings())
-{
-    MeshInfo info(m);
-    saveStl(m, filename, info, log, settings);
+    saveStl(m, filename, log, settings);
 }
 
 } // namespace vcl

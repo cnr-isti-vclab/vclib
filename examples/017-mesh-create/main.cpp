@@ -36,33 +36,36 @@ int main()
     info.setVertexCoords(true, vcl::FLOAT);
     info.setFaceVRefs();
 
+    vcl::SaveSettings settings;
+    settings.info = info;
+
     vcl::TriMesh m = vcl::createTetrahedron<vcl::TriMesh>();
 
     assert(m.vertexNumber() == 4);
     assert(m.faceNumber() == 4);
 
-    vcl::savePly(m, VCLIB_RESULTS_PATH "/tetrahedron.ply", info);
+    vcl::savePly(m, VCLIB_RESULTS_PATH "/tetrahedron.ply", settings);
 
     m = vcl::createIcosahedron<vcl::TriMesh>(true);
-    vcl::savePly(m, VCLIB_RESULTS_PATH "/icosahedron.ply", info);
+    vcl::savePly(m, VCLIB_RESULTS_PATH "/icosahedron.ply", settings);
 
     m = vcl::createHexahedron<vcl::TriMesh>();
-    vcl::savePly(m, VCLIB_RESULTS_PATH "/hexahedron.ply", info);
+    vcl::savePly(m, VCLIB_RESULTS_PATH "/hexahedron.ply", settings);
 
     vcl::ConsoleLogger log;
     log.enablePrintTimer();
     log.startTimer();
     m = vcl::createDodecahedron<vcl::TriMesh>(log);
-    vcl::savePly(m, VCLIB_RESULTS_PATH "/dodecahedron.ply", info);
+    vcl::savePly(m, VCLIB_RESULTS_PATH "/dodecahedron.ply", settings);
 
     vcl::PolyMesh pm = vcl::createHexahedron<vcl::PolyMesh>();
-    vcl::savePly(pm, VCLIB_RESULTS_PATH "/hexahedron_poly.ply", info);
+    vcl::savePly(pm, VCLIB_RESULTS_PATH "/hexahedron_poly.ply", settings);
 
     pm = vcl::createDodecahedron<vcl::PolyMesh>();
-    vcl::savePly(pm, VCLIB_RESULTS_PATH "/dodecahedron_poly.ply", info);
+    vcl::savePly(pm, VCLIB_RESULTS_PATH "/dodecahedron_poly.ply", settings);
 
     pm = vcl::createCube<vcl::PolyMesh>(vcl::Point3d(0, 0, 0), 4);
-    vcl::savePly(pm, VCLIB_RESULTS_PATH "/cube_poly.ply", info);
+    vcl::savePly(pm, VCLIB_RESULTS_PATH "/cube_poly.ply", settings);
 
     vcl::Sphere st(vcl::Point3<vcl::TriMesh::ScalarType>(), 1.0);
     m = vcl::createSphereSpherifiedCube<vcl::TriMesh>(st, 50);

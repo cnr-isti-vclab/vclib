@@ -292,7 +292,7 @@ void loadStl(
     LogType&            log      = nullLogger,
     const LoadSettings& settings = LoadSettings())
 {
-    loadedInfo = MeshInfo();
+    loadedInfo.clear();
     loadedInfo.setVertices();
     loadedInfo.setVertexCoords();
 

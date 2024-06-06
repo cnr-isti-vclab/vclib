@@ -23,6 +23,8 @@
 #ifndef VCL_IO_MESH_SETTINGS_H
 #define VCL_IO_MESH_SETTINGS_H
 
+#include <vclib/mesh/utils/mesh_info.h>
+
 namespace vcl {
 
 /**
@@ -85,6 +87,15 @@ struct SaveSettings
      * binary flag is set to `true`.
      */
     bool magicsMode = false;
+
+    /**
+     * @brief Data structure that tells the saving functions which components of
+     * the mesh should be saved. Only the components that can be saved in the
+     * file format will be saved.
+     * If the info is uninitialized, all the components that can be saved will
+     * be saved.
+     */
+    vcl::MeshInfo info;
 };
 
 } // namespace vcl

@@ -449,6 +449,8 @@ void loadObj(
     LogType&                          log          = nullLogger,
     const LoadSettings&               settings     = LoadSettings())
 {
+    loadedInfo.clear();
+
     // save normals if they can't be stored directly into vertices
     detail::ObjNormalsMap<MeshType> mapNormalsCache;
     uint                            vn = 0; // number of vertex normals read
