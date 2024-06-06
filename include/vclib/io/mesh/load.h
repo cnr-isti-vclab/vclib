@@ -44,9 +44,7 @@ namespace vcl {
  * loaded from the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * loading. Default is the nullLogger object.
- * @param[in] enableOptionalComponents: Whether to enable loading of optional
- * components of the mesh that can be loaded from the input file. Default value
- * is `true`.
+ * @param[in] settings: settings for loading the file.
  *
  * @throws vcl::UnknownFileFormatException if the file extension is not
  * recognized.
@@ -55,25 +53,25 @@ namespace vcl {
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void load(
-    MeshType&          m,
-    const std::string& filename,
-    MeshInfo&          loadedInfo,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    MeshType&           m,
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     std::string ext = FileInfo::extension(filename);
     ext             = vcl::toLower(ext);
     if (ext == ".obj") {
-        loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
+        loadObj(m, filename, loadedInfo, log, settings);
     }
     else if (ext == ".off") {
-        loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
+        loadOff(m, filename, loadedInfo, log, settings);
     }
     else if (ext == ".ply") {
-        loadPly(m, filename, loadedInfo, log, enableOptionalComponents);
+        loadPly(m, filename, loadedInfo, log, settings);
     }
     else if (ext == ".stl") {
-        loadStl(m, filename, loadedInfo, log, enableOptionalComponents);
+        loadStl(m, filename, loadedInfo, log, settings);
     }
     else {
         throw vcl::UnknownFileFormatException(ext);
@@ -94,9 +92,7 @@ void load(
  * loaded from the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * loading. Default is the nullLogger object.
- * @param[in] enableOptionalComponents: Whether to enable loading of optional
- * components of the mesh that can be loaded from the input file. Default value
- * is `true`.
+ * @param[in] settings: settings for loading the file.
  *
  * @throws vcl::UnknownFileFormatException if the file extension is not
  * recognized.
@@ -105,13 +101,13 @@ void load(
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void load(
-    MeshType&          m,
-    const std::string& filename,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    MeshType&           m,
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    load(m, filename, loadedInfo, log, enableOptionalComponents);
+    load(m, filename, loadedInfo, log, settings);
 }
 
 /**
@@ -127,9 +123,7 @@ void load(
  * loaded from the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * loading. Default is the nullLogger object.
- * @param[in] enableOptionalComponents: Whether to enable loading of optional
- * components of the mesh that can be loaded from the input file. Default value
- * is `true`.
+ * @param[in] settings: settings for loading the file.
  * @return The mesh object containing the loaded mesh.
  *
  * @throws vcl::UnknownFileFormatException if the file extension is not
@@ -139,13 +133,13 @@ void load(
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType load(
-    const std::string& filename,
-    MeshInfo&          loadedInfo,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshType m;
-    load(m, filename, loadedInfo, log, enableOptionalComponents);
+    load(m, filename, loadedInfo, log, settings);
     return m;
 }
 
@@ -160,9 +154,7 @@ MeshType load(
  * @param[in] filename: The filename of the file containing the mesh data.
  * @param[in, out] log: The logger object to use for logging messages during
  * loading. Default is the nullLogger object.
- * @param[in] enableOptionalComponents: Whether to enable loading of optional
- * components of the mesh that can be loaded from the input file. Default value
- * is `true`.
+ * @param[in] settings: settings for loading the file.
  * @return The mesh object containing the loaded mesh.
  *
  * @throws vcl::UnknownFileFormatException if the file extension is not
@@ -172,12 +164,12 @@ MeshType load(
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType load(
-    const std::string& filename,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    return load<MeshType>(filename, loadedInfo, log, enableOptionalComponents);
+    return load<MeshType>(filename, loadedInfo, log, settings);
 }
 
 } // namespace vcl

@@ -28,6 +28,7 @@
 #include "components/custom_components.h"
 #include "components/mark.h"
 #include "components/name.h"
+#include "components/texture_images.h"
 #include "components/texture_paths.h"
 #include "components/transform_matrix.h"
 
@@ -68,6 +69,9 @@ using Mark = comp::Mark<>;
 
 /** Port Name class into mesh namespace **/
 using Name = comp::Name<>;
+
+/** Port TextureImages class into mesh namespace **/
+using TextureImages = comp::TextureImages;
 
 /** Port TexturePaths class into mesh namespace **/
 using TexturePaths = comp::TexturePaths;

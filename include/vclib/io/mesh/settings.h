@@ -20,30 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_IO_MESH_SETTINGS_H
+#define VCL_IO_MESH_SETTINGS_H
 
-#include "components/adjacent_edges.h"
-#include "components/adjacent_faces.h"
-#include "components/adjacent_vertices.h"
-#include "components/bit_flags.h"
-#include "components/bounding_box.h"
-#include "components/color.h"
-#include "components/coordinate.h"
-#include "components/custom_components.h"
-#include "components/mark.h"
-#include "components/name.h"
-#include "components/normal.h"
-#include "components/polygon_bit_flags.h"
-#include "components/principal_curvature.h"
-#include "components/quality.h"
-#include "components/tex_coord.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
-#include "components/transform_matrix.h"
-#include "components/triangle_bit_flags.h"
-#include "components/vertex_references.h"
-#include "components/wedge_colors.h"
-#include "components/wedge_tex_coords.h"
+namespace vcl {
 
-#endif // VCL_MESH_COMPONENTS_H
+/**
+ * @brief The LoadSettings structure contains the settings that can be used to
+ * load a mesh from a stream/file.
+ */
+struct LoadSettings
+{
+    /**
+     * @brief if true, some eventual optional components of the mesh that were
+     * not enabled and that can be loaded from the stream/file, will be enabled
+     * before loading the stream/file.
+     */
+    bool enableOptionalComponents = true;
+    bool loadTextureImages        = false;
+};
+
+} // namespace vcl
+
+#endif // VCL_IO_MESH_SETTINGS_H

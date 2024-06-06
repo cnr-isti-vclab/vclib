@@ -27,6 +27,7 @@
 
 #include <vclib/algorithms/mesh/polygon.h>
 #include <vclib/io/file_info.h>
+#include <vclib/io/mesh/settings.h>
 #include <vclib/io/read.h>
 #include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>
@@ -140,6 +141,10 @@ void loadObjMaterials(
                     mat.mapId = mesh.textureNumber();
                     mesh.pushTexturePath(mat.map_Kd);
                 }
+                else if constexpr (HasTextureImages<MeshType>) {
+                    mat.mapId = mesh.textureNumber();
+                    mesh.pushTexture(mat.map_Kd);
+                }
                 else {
                     mat.mapId = nt++;
                 }
@@ -167,7 +172,7 @@ void readObjVertex(
     MeshInfo&                 loadedInfo,
     const vcl::Tokenizer&     tokens,
     const ObjMaterial&        currentMaterial,
-    bool                      enableOptionalComponents)
+    const LoadSettings&       settings)
 {
     // first, need to set that I'm loading vertices
     if (m.vertexNumber() == 0) {
@@ -184,7 +189,7 @@ void readObjVertex(
             // vertex color in the non-standard way (color values after the
             // coordinates)
             if (currentMaterial.hasColor || tokens.size() > 6) {
-                if (enableOptionalComponents) {
+                if (settings.enableOptionalComponents) {
                     enableIfPerVertexColorOptional(m);
                     loadedInfo.setVertexColors();
                 }
@@ -216,13 +221,13 @@ void readObjVertexNormal(
     uint                             vn,
     vcl::Tokenizer::iterator&        token,
     MeshInfo&                        loadedInfo,
-    bool                             enableOptionalComponents)
+    const LoadSettings&              settings)
 {
     using NormalType = MeshType::VertexType::NormalType;
 
     // first, need to check if I can store normals in the mesh
     if (vn == 0) {
-        if (enableOptionalComponents) {
+        if (settings.enableOptionalComponents) {
             enableIfPerVertexNormalOptional(m);
             loadedInfo.setVertexNormals();
         }
@@ -256,7 +261,7 @@ void readObjFace(
     const vcl::Tokenizer&              tokens,
     const std::vector<vcl::TexCoordd>& wedgeTexCoords,
     const ObjMaterial&                 currentMaterial,
-    bool                               enableOptionalComponents)
+    const LoadSettings&                settings)
 {
     using FaceType = MeshType::FaceType;
 
@@ -319,7 +324,7 @@ void readObjFace(
             // if the current material has no color, we assume that the file has
             // no face color
             if (currentMaterial.hasColor) {
-                if (enableOptionalComponents) {
+                if (settings.enableOptionalComponents) {
                     enableIfPerFaceColorOptional(m);
                     loadedInfo.setFaceColors();
                 }
@@ -347,7 +352,7 @@ void readObjFace(
             // if the current face has the right number of wedge texcoords, we
             // assume that we can load wedge texcoords
             if (wids.size() == vids.size()) {
-                if (enableOptionalComponents) {
+                if (settings.enableOptionalComponents) {
                     enableIfPerFaceWedgeTexCoordsOptional(m);
                     loadedInfo.setFaceWedgeTexCoords();
                 }
@@ -429,8 +434,7 @@ void readObjFace(
  * are known before reading the obj file, and they are passed trough the
  * inputMtlStreams parameter.
  * @param[in] log: The logger to use to log messages.
- * @param[in] enableOptionalComponents: If true, the optional components of the
- * mesh are enabled if they are found in the obj file.
+ * @param[in] settings: settings for loading the file/stream.
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadObj(
@@ -438,10 +442,10 @@ void loadObj(
     std::istream&                     inputObjStream,
     const std::vector<std::istream*>& inputMtlStreams,
     MeshInfo&                         loadedInfo,
-    const std::string&                filename                 = "",
-    bool                              ignoreMtlLib             = false,
-    LogType&                          log                      = nullLogger,
-    bool                              enableOptionalComponents = true)
+    const std::string&                filename     = "",
+    bool                              ignoreMtlLib = false,
+    LogType&                          log          = nullLogger,
+    const LoadSettings&               settings     = LoadSettings())
 {
     // save normals if they can't be stored directly into vertices
     detail::ObjNormalsMap<MeshType> mapNormalsCache;
@@ -461,7 +465,7 @@ void loadObj(
     // the current material, set by 'usemtl'
     detail::ObjMaterial currentMaterial;
 
-    if constexpr (HasTexturePaths<MeshType>) {
+    if constexpr (HasTexturePaths<MeshType> || HasTextureImages<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
 
@@ -511,7 +515,7 @@ void loadObj(
                     loadedInfo,
                     tokens,
                     currentMaterial,
-                    enableOptionalComponents);
+                    settings);
             }
             // read vertex normal (and save in vn how many normals we read)
             if constexpr (HasPerVertexNormal<MeshType>) {
@@ -522,7 +526,7 @@ void loadObj(
                         vn,
                         token,
                         loadedInfo,
-                        enableOptionalComponents);
+                        settings);
                     vn++;
                 }
             }
@@ -553,7 +557,7 @@ void loadObj(
                         tokens,
                         texCoords,
                         currentMaterial,
-                        enableOptionalComponents);
+                        settings);
                 }
             }
         }
@@ -573,7 +577,7 @@ void loadObj(
             // we can set the loaded texCoords to vertices, also if they are not
             // supported in obj
             if (texCoords.size() == m.vertexNumber()) {
-                if (enableOptionalComponents) {
+                if (settings.enableOptionalComponents) {
                     enableIfPerVertexTexCoordOptional(m);
                     loadedInfo.setVertexTexCoords();
                 }
@@ -590,6 +594,18 @@ void loadObj(
                                           ScalarType>();
                     }
                 }
+            }
+        }
+    }
+
+    if constexpr (HasTextureImages<MeshType>) {
+        // try to load the textures
+        for (vcl::Texture& texture : m.textures()) {
+            bool b = texture.image().load(m.meshBasePath() + texture.path());
+            if (!b) {
+                log.log(
+                    LogType::WARNING,
+                    "Cannot load texture " + texture.path());
             }
         }
     }
@@ -621,9 +637,7 @@ void loadObj(
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the stream
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * stream, will be enabled before loading the stream.
+ * @param[in] settings: settings for loading the file/stream.
  *
  * @ingroup load
  */
@@ -633,8 +647,8 @@ void loadObj(
     std::istream&                     inputObjStream,
     const std::vector<std::istream*>& inputMtlStreams,
     MeshInfo&                         loadedInfo,
-    LogType&                          log                      = nullLogger,
-    bool                              enableOptionalComponents = true)
+    LogType&                          log      = nullLogger,
+    const LoadSettings&               settings = LoadSettings())
 {
     detail::loadObj(
         m,
@@ -644,7 +658,7 @@ void loadObj(
         "",
         true,
         log,
-        enableOptionalComponents);
+        settings);
 }
 
 /**
@@ -663,9 +677,7 @@ void loadObj(
  * @param[in] inputObjStream: the stream to read from
  * @param[in] inputMtlStreams: the streams to read the material from (if any)
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * stream, will be enabled before loading the stream.
+ * @param[in] settings: settings for loading the file/stream.
  *
  * @ingroup load
  */
@@ -674,8 +686,8 @@ void loadObj(
     MeshType&                         m,
     std::istream&                     inputObjStream,
     const std::vector<std::istream*>& inputMtlStreams,
-    LogType&                          log                      = nullLogger,
-    bool                              enableOptionalComponents = true)
+    LogType&                          log      = nullLogger,
+    const LoadSettings&               settings = LoadSettings())
 {
     MeshInfo loadedInfo;
     detail::loadObj(
@@ -686,7 +698,7 @@ void loadObj(
         "",
         true,
         log,
-        enableOptionalComponents);
+        settings);
 }
 
 /**
@@ -712,9 +724,7 @@ void loadObj(
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the stream
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * stream, will be enabled before loading the stream.
+ * @param[in] settings: settings for loading the file/stream.
  * @returns the mesh loaded from the stream.
  *
  * @ingroup load
@@ -724,8 +734,8 @@ MeshType loadObj(
     std::istream&                     inputObjStream,
     const std::vector<std::istream*>& inputMtlStreams,
     MeshInfo&                         loadedInfo,
-    LogType&                          log                      = nullLogger,
-    bool                              enableOptionalComponents = true)
+    LogType&                          log      = nullLogger,
+    const LoadSettings&               settings = LoadSettings())
 {
     MeshType m;
     loadObj(
@@ -734,7 +744,7 @@ MeshType loadObj(
         inputMtlStreams,
         loadedInfo,
         log,
-        enableOptionalComponents);
+        settings);
     return m;
 }
 
@@ -756,9 +766,7 @@ MeshType loadObj(
  * @param[in] inputObjStream: the stream to read from
  * @param[in] inputMtlStreams: the streams to read the material from (if any)
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * stream, will be enabled before loading the stream.
+ * @param[in] settings: settings for loading the file/stream.
  * @returns the mesh loaded from the stream.
  *
  * @ingroup load
@@ -767,11 +775,11 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadObj(
     std::istream&                     inputObjStream,
     const std::vector<std::istream*>& inputMtlStreams,
-    LogType&                          log                      = nullLogger,
-    bool                              enableOptionalComponents = true)
+    LogType&                          log      = nullLogger,
+    const LoadSettings&               settings = LoadSettings())
 {
     MeshType m;
-    loadObj(m, inputObjStream, inputMtlStreams, log, enableOptionalComponents);
+    loadObj(m, inputObjStream, inputMtlStreams, log, settings);
     return m;
 }
 
@@ -798,19 +806,17 @@ MeshType loadObj(
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the file
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * file, will be enabled before loading the file.
+ * @param[in] settings: settings for loading the file/stream.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadObj(
-    MeshType&          m,
-    const std::string& filename,
-    MeshInfo&          loadedInfo,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    MeshType&           m,
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     std::ifstream file = openInputFileStream(filename);
 
@@ -840,7 +846,7 @@ void loadObj(
         filename,
         false,
         log,
-        enableOptionalComponents);
+        settings);
 }
 
 /**
@@ -861,21 +867,19 @@ void loadObj(
  * @param[in] m: the mesh to fill
  * @param[in] filename: the file to read from
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * file, will be enabled before loading the file.
+ * @param[in] settings: settings for loading the file/stream.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadObj(
-    MeshType&          m,
-    const std::string& filename,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    MeshType&           m,
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
+    loadObj(m, filename, loadedInfo, log, settings);
 }
 
 /**
@@ -900,22 +904,20 @@ void loadObj(
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the file
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * file, will be enabled before loading the file.
+ * @param[in] settings: settings for loading the file/stream.
  * @returns the mesh loaded from the file.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadObj(
-    const std::string& filename,
-    MeshInfo&          loadedInfo,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshType m;
-    loadObj(m, filename, loadedInfo, log, enableOptionalComponents);
+    loadObj(m, filename, loadedInfo, log, settings);
     return m;
 }
 
@@ -936,22 +938,20 @@ MeshType loadObj(
  *
  * @param[in] filename: the file to read from
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * file, will be enabled before loading the file.
+ * @param[in] settings: settings for loading the file/stream.
  * @returns the mesh loaded from the file.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadObj(
-    const std::string& filename,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
     return loadObj<MeshType>(
-        filename, loadedInfo, log, enableOptionalComponents);
+        filename, loadedInfo, log, settings);
 }
 
 } // namespace vcl

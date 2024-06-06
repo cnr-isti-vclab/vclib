@@ -26,6 +26,7 @@
 #include <vclib/algorithms/mesh/polygon.h>
 #include <vclib/exceptions/io.h>
 #include <vclib/io/file_info.h>
+#include <vclib/io/mesh/settings.h>
 #include <vclib/io/read.h>
 #include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>
@@ -398,11 +399,11 @@ void readOffVertices(
 
 template<FaceMeshConcept MeshType>
 void readOffFaces(
-    MeshType&     mesh,
-    std::istream& file,
-    MeshInfo&     loadedInfo,
-    uint          nf,
-    bool          enableOptionalComponents)
+    MeshType&           mesh,
+    std::istream&       file,
+    MeshInfo&           loadedInfo,
+    uint                nf,
+    const LoadSettings& settings)
 {
     if constexpr (HasFaces<MeshType>) {
         using FaceType = MeshType::FaceType;
@@ -454,7 +455,7 @@ void readOffFaces(
             if (token != tokens.end()) { // there are colors to read
                 if constexpr (HasPerFaceColor<MeshType>) {
                     if (isPerFaceColorAvailable(mesh) ||
-                        (enableOptionalComponents &&
+                        (settings.enableOptionalComponents &&
                          enableIfPerFaceColorOptional(mesh)))
                     {
                         loadedInfo.setFaceColors();
@@ -500,19 +501,17 @@ void readOffFaces(
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the stream
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * stream, will be enabled before loading the stream.
+ * @param[in] settings: settings for loading the file/stream.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadOff(
-    MeshType&     m,
-    std::istream& inputOffStream,
-    MeshInfo&     loadedInfo,
-    LogType&      log                      = nullLogger,
-    bool          enableOptionalComponents = true)
+    MeshType&           m,
+    std::istream&       inputOffStream,
+    MeshInfo&           loadedInfo,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     uint nVertices, nFaces, nEdges;
 
@@ -520,13 +519,12 @@ void loadOff(
 
     detail::readOffHeader(inputOffStream, fileInfo, nVertices, nFaces, nEdges);
     loadedInfo = fileInfo; // data that will be stored in the mesh!
-    if (enableOptionalComponents)
+    if (settings.enableOptionalComponents)
         enableOptionalComponentsFromInfo(loadedInfo, m);
 
     detail::readOffVertices(m, inputOffStream, fileInfo, nVertices);
-    detail::readOffFaces(
-        m, inputOffStream, fileInfo, nFaces, enableOptionalComponents);
-    if (enableOptionalComponents)
+    detail::readOffFaces(m, inputOffStream, fileInfo, nFaces, settings);
+    if (settings.enableOptionalComponents)
         loadedInfo = fileInfo;
 }
 
@@ -545,21 +543,19 @@ void loadOff(
  * @param[in] m: the mesh to fill
  * @param[in] inputOffStream: the stream to read from
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * stream, will be enabled before loading the stream.
+ * @param[in] settings: settings for loading the file/stream.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadOff(
-    MeshType&     m,
-    std::istream& inputOffStream,
-    LogType&      log                      = nullLogger,
-    bool          enableOptionalComponents = true)
+    MeshType&           m,
+    std::istream&       inputOffStream,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    loadOff(m, inputOffStream, loadedInfo, log, enableOptionalComponents);
+    loadOff(m, inputOffStream, loadedInfo, log, settings);
 }
 
 /**
@@ -581,22 +577,20 @@ void loadOff(
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the stream
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * stream, will be enabled before loading the stream.
+ * @param[in] settings: settings for loading the file/stream.
  * @returns the mesh loaded from the stream.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadOff(
-    std::istream& inputOffStream,
-    MeshInfo&     loadedInfo,
-    LogType&      log                      = nullLogger,
-    bool          enableOptionalComponents = true)
+    std::istream&       inputOffStream,
+    MeshInfo&           loadedInfo,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshType m;
-    loadOff(m, inputOffStream, loadedInfo, log, enableOptionalComponents);
+    loadOff(m, inputOffStream, loadedInfo, log, settings);
     return m;
 }
 
@@ -614,22 +608,20 @@ MeshType loadOff(
  *
  * @param[in] inputOffStream: the stream to read from
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * stream, will be enabled before loading the stream.
+ * @param[in] settings: settings for loading the file/stream.
  * @returns the mesh loaded from the stream.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadOff(
-    std::istream& inputOffStream,
-    LogType&      log                      = nullLogger,
-    bool          enableOptionalComponents = true)
+    std::istream&       inputOffStream,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
     return loadOff<MeshType>(
-        inputOffStream, loadedInfo, log, enableOptionalComponents);
+        inputOffStream, loadedInfo, log, settings);
 }
 
 /**
@@ -652,19 +644,17 @@ MeshType loadOff(
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the file
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * file, will be enabled before loading the file.
+ * @param[in] settings: settings for loading the file/stream.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadOff(
-    MeshType&          m,
-    const std::string& filename,
-    MeshInfo&          loadedInfo,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    MeshType&           m,
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     std::ifstream file = openInputFileStream(filename);
 
@@ -672,7 +662,7 @@ void loadOff(
         m.name() = FileInfo::fileNameWithoutExtension(filename);
     }
 
-    loadOff(m, file, loadedInfo, log, enableOptionalComponents);
+    loadOff(m, file, loadedInfo, log, settings);
 }
 
 /**
@@ -690,21 +680,19 @@ void loadOff(
  * @param[in] m: the mesh to fill
  * @param[in] filename: the name of the file to read from
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * file, will be enabled before loading the file.
+ * @param[in] settings: settings for loading the file/stream.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void loadOff(
-    MeshType&          m,
-    const std::string& filename,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    MeshType&           m,
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
+    loadOff(m, filename, loadedInfo, log, settings);
 }
 
 /**
@@ -726,22 +714,20 @@ void loadOff(
  * @param[out] loadedInfo: the info about what elements and components have been
  * loaded from the file
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * file, will be enabled before loading the file.
+ * @param[in] settings: settings for loading the file/stream.
  * @returns the mesh loaded from the file.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadOff(
-    const std::string& filename,
-    MeshInfo&          loadedInfo,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    const std::string&  filename,
+    MeshInfo&           loadedInfo,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshType m;
-    loadOff(m, filename, loadedInfo, log, enableOptionalComponents);
+    loadOff(m, filename, loadedInfo, log, settings);
     return m;
 }
 
@@ -759,22 +745,20 @@ MeshType loadOff(
  *
  * @param[in] filename: the name of the file to read from
  * @param[in] log: the logger to use
- * @param[in] enableOptionalComponents: if true, some eventual optional
- * components of the mesh that were not enabled and that can be loaded from the
- * file, will be enabled before loading the file.
+ * @param[in] settings: settings for loading the file/stream.
  * @returns the mesh loaded from the file.
  *
  * @ingroup load
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 MeshType loadOff(
-    const std::string& filename,
-    LogType&           log                      = nullLogger,
-    bool               enableOptionalComponents = true)
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
     return loadOff<MeshType>(
-        filename, loadedInfo, log, enableOptionalComponents);
+        filename, loadedInfo, log, settings);
 }
 
 } // namespace vcl

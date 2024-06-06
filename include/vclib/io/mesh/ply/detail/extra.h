@@ -27,17 +27,34 @@
 
 #include <vclib/io/read.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/logger.h>
 
 #include "header.h"
 
 namespace vcl::detail {
 
-template<MeshConcept MeshType>
-void readPlyTextures(const PlyHeader& header, MeshType& mesh)
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void readPlyTextures(
+    const PlyHeader& header,
+    MeshType&        mesh,
+    LogType&         log = nullLogger)
 {
     if constexpr (vcl::HasTexturePaths<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
             mesh.pushTexturePath(str);
+        }
+    }
+    if constexpr (vcl::HasTextureImages<MeshType>) {
+        for (const std::string& str : header.textureFileNames()) {
+            vcl::Texture t;
+            t.path() = str;
+            bool b = t.image().load(mesh.meshBasePath() + str);
+            if (!b) {
+                log.log(
+                    LogType::WARNING,
+                    "Cannot load texture " + str);
+            }
+            mesh.pushTexture(t);
         }
     }
 }

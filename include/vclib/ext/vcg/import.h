@@ -369,6 +369,12 @@ void importMeshFromVCGMesh(
             vcgMesh.bbox.max.X(), vcgMesh.bbox.max.Y(), vcgMesh.bbox.max.Z());
     }
 
+    if constexpr (HasTextureImages<MeshType>) {
+        for (const auto& s : vcgMesh.textures) {
+            mesh.pushTexture(s);
+        }
+    }
+
     if constexpr (HasTexturePaths<MeshType>) {
         for (const auto& s : vcgMesh.textures) {
             mesh.pushTexturePath(s);

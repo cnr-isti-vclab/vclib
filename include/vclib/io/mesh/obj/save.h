@@ -59,16 +59,23 @@ ObjMaterial objMaterialFromFace(
     const MeshInfo& fi)
 {
     ObjMaterial mat;
-    if (fi.hasFaceColors()) {
-        mat.hasColor = true;
-        mat.Kd.x()   = f.color().redF();
-        mat.Kd.y()   = f.color().greenF();
-        mat.Kd.z()   = f.color().blueF();
+    if constexpr (HasPerFaceColor<MeshType>) {
+        if (fi.hasFaceColors()) {
+            mat.hasColor = true;
+            mat.Kd.x()   = f.color().redF();
+            mat.Kd.y()   = f.color().greenF();
+            mat.Kd.z()   = f.color().blueF();
+        }
     }
     if constexpr (HasPerFaceWedgeTexCoords<MeshType>) {
         if (fi.hasFaceWedgeTexCoords()) {
             mat.hasTexture = true;
-            mat.map_Kd     = m.texturePath(f.textureIndex());
+            if constexpr (HasTexturePaths<MeshType>) {
+                mat.map_Kd = m.texturePath(f.textureIndex());
+            }
+            if constexpr (HasTextureImages<MeshType>) {
+                mat.map_Kd = m.texture(f.textureIndex()).path();
+            }
         }
     }
     return mat;
@@ -87,12 +94,15 @@ void writeElementObjMaterial(
     ObjMaterial mat;
     if constexpr (std::is_same<ElementType, typename MeshType::VertexType>::
                       value)
+    {
         mat = objMaterialFromVertex<typename MeshType::VertexType, MeshType>(
             e, fi);
-    if constexpr (HasFaces<MeshType>)
+    }
+    if constexpr (HasFaces<MeshType>) {
         if constexpr (std::is_same<ElementType, typename MeshType::FaceType>::
                           value)
             mat = objMaterialFromFace(e, m, fi);
+    }
     if (!mat.isEmpty()) {
         static const std::string MATERIAL_PREFIX = "MATERIAL_";
         std::string              mname; // name of the material of the vertex

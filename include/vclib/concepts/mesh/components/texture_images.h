@@ -20,30 +20,51 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_H
-#define VCL_MESH_COMPONENTS_H
+#ifndef VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H
+#define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H
 
-#include "components/adjacent_edges.h"
-#include "components/adjacent_faces.h"
-#include "components/adjacent_vertices.h"
-#include "components/bit_flags.h"
-#include "components/bounding_box.h"
-#include "components/color.h"
-#include "components/coordinate.h"
-#include "components/custom_components.h"
-#include "components/mark.h"
-#include "components/name.h"
-#include "components/normal.h"
-#include "components/polygon_bit_flags.h"
-#include "components/principal_curvature.h"
-#include "components/quality.h"
-#include "components/tex_coord.h"
-#include "components/texture_images.h"
-#include "components/texture_paths.h"
-#include "components/transform_matrix.h"
-#include "components/triangle_bit_flags.h"
-#include "components/vertex_references.h"
-#include "components/wedge_colors.h"
-#include "components/wedge_tex_coords.h"
+#include <string>
 
-#endif // VCL_MESH_COMPONENTS_H
+#include <vclib/space/texture.h>
+
+#include "component.h"
+
+namespace vcl::comp {
+
+/**
+ * @brief HasTextureImages concept is satisfied only if a Element or Mesh class
+ * provides the member functions specified in this concept. These member
+ * functions allows to access to a TextureImages component of a given
+ * element/mesh.
+ *
+ * @ingroup components_concepts
+ */
+template<typename T>
+concept HasTextureImages =
+    requires (T o, const T& co, std::string s, vcl::Texture t) {
+    // clang-format off
+    typename T::TextureIterator;
+    typename T::ConstTextureIterator;
+
+    { co.textureNumber() } -> std::same_as<uint>;
+    { co.texture(uint()) } -> std::same_as<const vcl::Texture&>;
+    { o.texture(uint()) } -> std::same_as<vcl::Texture&>;
+    { co.meshBasePath() } -> std::same_as<const std::string&>;
+    { o.meshBasePath() } -> std::same_as<std::string&>;
+
+    { o.clearTextures() } -> std::same_as<void>;
+    { o.pushTexture(s) } -> std::same_as<void>;
+    { o.pushTexture(t)} -> std::same_as<void>;
+
+    { o.textureBegin() } -> std::same_as<typename T::TextureIterator>;
+    { o.textureEnd() } -> std::same_as<typename T::TextureIterator>;
+    { co.textureBegin() } -> std::same_as<typename T::ConstTextureIterator>;
+    { co.textureEnd() } -> std::same_as<typename T::ConstTextureIterator>;
+    o.textures();
+    co.textures();
+    // clang-format on
+};
+
+} // namespace vcl::comp
+
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H

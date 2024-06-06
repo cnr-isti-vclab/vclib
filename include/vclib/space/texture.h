@@ -32,7 +32,7 @@ namespace vcl {
 class Texture
 {
     Image mImg;
-    std::string mName;
+    std::string mPath;
 
 public:
     Texture() {}
@@ -42,25 +42,24 @@ public:
      *
      * @param[in] filename: the name of the file.
      */
-    Texture(const std::string& filename)
+    Texture(const std::string& filename) : mPath(filename)
     {
-        mName = FileInfo::fileNameWithExtension(filename);
         mImg.load(filename);
     }
 
     /**
-     * @brief Get the name of the texture.
+     * @brief Get the path of the texture.
      *
-     * @return the name of the texture.
+     * @return the path of the texture.
      */
-    const std::string& name() const { return mName; }
+    const std::string& path() const { return mPath; }
 
     /**
-     * @brief Get the name of the texture.
+     * @brief Get the path of the texture.
      *
-     * @return the name of the texture.
+     * @return the path of the texture.
      */
-    std::string& name() { return mName; }
+    std::string& path() { return mPath; }
 
     /**
      * @brief Get the image of the texture.
