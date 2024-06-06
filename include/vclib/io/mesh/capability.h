@@ -23,7 +23,7 @@
 #ifndef VCL_IO_CAPABILITY_H
 #define VCL_IO_CAPABILITY_H
 
-#include <vclib/exceptions/io_exceptions.h>
+#include <vclib/exceptions/io.h>
 #include <vclib/misc/string.h>
 
 #include "obj/capability.h"

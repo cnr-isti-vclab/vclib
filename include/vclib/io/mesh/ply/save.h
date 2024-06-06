@@ -23,7 +23,7 @@
 #ifndef VCL_IO_PLY_SAVE_H
 #define VCL_IO_PLY_SAVE_H
 
-#include <vclib/exceptions/io_exceptions.h>
+#include <vclib/exceptions/io.h>
 #include <vclib/misc/logger.h>
 
 #include "detail/edge.h"

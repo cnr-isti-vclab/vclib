@@ -29,7 +29,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <vclib/exceptions/mesh_exceptions.h>
+#include <vclib/exceptions/mesh.h>
 #include <vclib/misc/compactness.h>
 #include <vclib/types.h>
 

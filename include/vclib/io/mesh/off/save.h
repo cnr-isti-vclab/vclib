@@ -23,7 +23,7 @@
 #ifndef VCL_IO_OFF_SAVE_H
 #define VCL_IO_OFF_SAVE_H
 
-#include <vclib/exceptions/io_exceptions.h>
+#include <vclib/exceptions/io.h>
 #include <vclib/io/write.h>
 #include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>

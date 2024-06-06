@@ -33,6 +33,10 @@ inline MeshInfo stlFormatCapability()
 
     info.setTriangleMesh();
 
+    info.setVertices();
+
+    info.setVertexCoords();
+
     info.setFaces();
 
     info.setFaceVRefs();

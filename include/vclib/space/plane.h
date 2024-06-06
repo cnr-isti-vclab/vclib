@@ -24,7 +24,7 @@
 #define VCL_SPACE_PLANE_H
 
 #include <vclib/concepts/space/plane.h>
-#include <vclib/exceptions/misc_exceptions.h>
+#include <vclib/exceptions/misc.h>
 
 #include "point.h"
 

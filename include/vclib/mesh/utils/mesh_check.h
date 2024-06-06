@@ -24,7 +24,7 @@
 #define VCL_MESH_UTILS_MESH_CHECK_H
 
 #include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh_exceptions.h>
+#include <vclib/exceptions/mesh.h>
 #include <vclib/misc/string.h>
 
 namespace vcl {

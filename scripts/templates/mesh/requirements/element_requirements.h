@@ -4,7 +4,7 @@
 #define VCL_MESH_REQUIREMENTS_%EL_U%_REQUIREMENTS_H
 
 #include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh_exceptions.h>
+#include <vclib/exceptions/mesh.h>
 
 #include "element_requirements.h"
 #include "../containers/%EL%_container.h"

@@ -23,8 +23,8 @@
 #ifndef VCL_EXCEPTIONS_H
 #define VCL_EXCEPTIONS_H
 
-#include "exceptions/io_exceptions.h"
-#include "exceptions/mesh_exceptions.h"
-#include "exceptions/misc_exceptions.h"
+#include "exceptions/io.h"
+#include "exceptions/mesh.h"
+#include "exceptions/misc.h"
 
 #endif // VCL_EXCEPTIONS_H

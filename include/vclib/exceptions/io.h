@@ -20,40 +20,56 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISC_EXCEPTIONS_H
-#define VCL_MISC_EXCEPTIONS_H
+#ifndef VCL_EXCEPTIONS_IO_H
+#define VCL_EXCEPTIONS_IO_H
 
 #include <stdexcept>
 #include <string>
 
 namespace vcl {
 
-class WrongSizeException : public std::runtime_error
+class UnknownFileFormatException : public std::runtime_error
 {
 public:
-    WrongSizeException(const std::string& err) : std::runtime_error(err) {}
+    UnknownFileFormatException(const std::string& err) : std::runtime_error(err)
+    {
+    }
 
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("Wrong Size - ") + std::runtime_error::what();
+        error =
+            std::string("Unknown File Format - ") + std::runtime_error::what();
         return error.c_str();
     }
 };
 
-class NoIntersectionException : public std::runtime_error
+class CannotOpenFileException : public std::runtime_error
 {
 public:
-    NoIntersectionException(const std::string& err) : std::runtime_error(err) {}
+    CannotOpenFileException(const std::string& err) : std::runtime_error(err) {}
 
     virtual const char* what() const throw()
     {
         static std::string error;
-        error = std::string("No Intersection - ") + std::runtime_error::what();
+        error = std::string("Cannot Open File - ") + std::runtime_error::what();
+        return error.c_str();
+    }
+};
+
+class MalformedFileException : public std::runtime_error
+{
+public:
+    MalformedFileException(const std::string& err) : std::runtime_error(err) {}
+
+    virtual const char* what() const throw()
+    {
+        static std::string error;
+        error = std::string("Malformed File - ") + std::runtime_error::what();
         return error.c_str();
     }
 };
 
 } // namespace vcl
 
-#endif // VCL_MISC_EXCEPTIONS_H
+#endif // VCL_EXCEPTIONS_IO_H

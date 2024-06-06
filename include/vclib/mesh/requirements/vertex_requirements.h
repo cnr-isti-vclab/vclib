@@ -24,7 +24,7 @@
 #define VCL_MESH_REQUIREMENTS_VERTEX_REQUIREMENTS_H
 
 #include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh_exceptions.h>
+#include <vclib/exceptions/mesh.h>
 
 #include "../containers/vertex_container.h"
 #include "element_requirements.h"
