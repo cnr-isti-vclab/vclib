@@ -49,7 +49,8 @@ public:
                     throw std::runtime_error("Extension already registered.");
                 }
                 mActions.pushBack(action);
-                mFormatMap[ext] = mActions.back();
+                mFormatMap[ext] =
+                    std::dynamic_pointer_cast<SaveImageAction>(mActions.back());
             }
         }
     }
