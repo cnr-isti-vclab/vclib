@@ -287,6 +287,46 @@ public:
     }
 
     /**
+     * @brief Access the first element of the Vector.
+     *
+     * Returns a reference to the first element of the Vector. If  the Vector is
+     * empty, the behavior is undefined.
+     *
+     * @return A reference to the first element.
+     */
+    ValueType front() { return mContainer.front(); }
+
+    /**
+     * @brief Access the first element of the Vector.
+     *
+     * Returns a const reference to the first element of the Vector. If the
+     * Vector is empty, the behavior is undefined.
+     *
+     * @return A const reference to the first element.
+     */
+    ConstValueType front() const { return mContainer.front(); }
+
+    /**
+     * @brief Access the last element of the Vector.
+     *
+     * Returns a reference to the last element of the Vector. If the Vector is
+     * empty, the behavior is undefined.
+     *
+     * @return A reference to the last element.
+     */
+    ValueType back() { return mContainer.back(); }
+
+    /**
+     * @brief Access the last element of the Vector.
+     *
+     * Returns a const reference to the last element of the Vector. If the
+     * Vector is empty, the behavior is undefined.
+     *
+     * @return A const reference to the last element.
+     */
+    ConstValueType back() const { return mContainer.back(); }
+
+    /**
      * @brief Set the value of the element at the specified position.
      *
      * Sets the value of the element at position `i` in the Vector to the

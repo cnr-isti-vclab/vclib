@@ -272,6 +272,46 @@ public:
     }
 
     /**
+     * @brief Access the first element of the Vector.
+     *
+     * Returns a reference to the first element of the Vector. If  the Vector is
+     * empty, the behavior is undefined.
+     *
+     * @return A reference to the first element.
+     */
+    Reference front() { return mContainer.front(); }
+
+    /**
+     * @brief Access the first element of the Vector.
+     *
+     * Returns a const reference to the first element of the Vector. If the
+     * Vector is empty, the behavior is undefined.
+     *
+     * @return A const reference to the first element.
+     */
+    ConstReference front() const { return mContainer.front(); }
+
+    /**
+     * @brief Access the last element of the Vector.
+     *
+     * Returns a reference to the last element of the Vector. If the Vector is
+     * empty, the behavior is undefined.
+     *
+     * @return A reference to the last element.
+     */
+    Reference back() { return mContainer.back(); }
+
+    /**
+     * @brief Access the last element of the Vector.
+     *
+     * Returns a const reference to the last element of the Vector. If the
+     * Vector is empty, the behavior is undefined.
+     *
+     * @return A const reference to the last element.
+     */
+    ConstReference back() const { return mContainer.back(); }
+
+    /**
      * @brief Returns a const pointer to the underlying array serving as element
      * storage. The pointer is such that range [data(), data() + size()) is
      * always a valid range, even if the container is empty (data() is not
