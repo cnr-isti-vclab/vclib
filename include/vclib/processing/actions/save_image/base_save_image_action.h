@@ -34,6 +34,11 @@ public:
 
     std::string name() const override { return "BaseSaveImageAction"; }
 
+    std::shared_ptr<Action> clone() const override
+    {
+        return std::make_shared<BaseSaveImageAction>(*this);
+    }
+
     std::vector<FileFormat> formats() const override
     {
         std::vector<FileFormat> formats;

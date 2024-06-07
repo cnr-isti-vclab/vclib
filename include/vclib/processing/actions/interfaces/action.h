@@ -23,6 +23,8 @@
 #ifndef VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
 #define VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
 
+#include <memory>
+
 #include <vclib/processing/meshes/abstract_mesh.h>
 #include <vclib/types.h>
 
@@ -32,6 +34,8 @@ class Action {
 public:
     Action() = default;
     virtual ~Action() = default;
+
+    virtual std::shared_ptr<Action> clone() const = 0;
 
     virtual std::string name() const = 0;
 };

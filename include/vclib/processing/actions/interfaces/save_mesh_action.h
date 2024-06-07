@@ -42,14 +42,16 @@ public:
     virtual MeshInfo formatCapability() const = 0;
 
     virtual void save(
-        const std::string& filename,
-        const TriMeshP&    mesh,
-        const MeshInfo&    info) const = 0;
+        const std::string&     filename,
+        const TriMeshP&        mesh,
+        const MeshInfo&        info,
+        const ParameterVector& parameters) const = 0;
 
     virtual void save(
-        const std::string&  filename,
-        const AbstractMesh& mesh,
-        const MeshInfo&     info) const
+        const std::string&     filename,
+        const AbstractMesh&    mesh,
+        const MeshInfo&        info,
+        const ParameterVector& parameters) const
     {
         vcl::BitSet<short> smt = supportedInputMeshTypes(0);
         if (!smt[mesh.type()]) {
@@ -59,7 +61,7 @@ public:
         switch(mesh.type())
         {
             case AbsMeshType::TRIANGLE_MESH:
-                save(filename, mesh.as<TriMeshP>(), info);
+                save(filename, mesh.as<TriMeshP>(), info, parameters);
                 break;
             default:
                 throw std::runtime_error("Unsupported mesh type");
@@ -68,7 +70,23 @@ public:
 
     void save(const std::string& filename, const AbstractMesh& mesh) const
     {
-        save(filename, mesh, formatCapability());
+        save(filename, mesh, formatCapability(), parameters());
+    }
+
+    void save(
+        const std::string&  filename,
+        const AbstractMesh& mesh,
+        const MeshInfo&     info) const
+    {
+        save(filename, mesh, info, parameters());
+    }
+
+    void save(
+        const std::string&     filename,
+        const AbstractMesh&    mesh,
+        const ParameterVector& parameters) const
+    {
+        save(filename, mesh, formatCapability(), parameters);
     }
 };
 

@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_INTERFACES_MESH_ACTION_H
 #define VCL_PROCESSING_ACTIONS_INTERFACES_MESH_ACTION_H
 
+#include <vclib/processing/actions/common/parameter_vector.h>
 #include <vclib/processing/meshes/abstract_mesh.h>
 #include <vclib/space/bit_set.h>
 
@@ -89,6 +90,20 @@ public:
         vcl::BitSet<short> bs;
         bs.set();
         return bs;
+    }
+
+    /**
+     * @brief Returns the parameters of the action.
+     *
+     * By default, the action has no parameters.
+     *
+     * You should override this method if your action has parameters.
+     *
+     * @return The parameters of the action.
+     */
+    virtual ParameterVector parameters() const
+    {
+        return ParameterVector();
     }
 };
 

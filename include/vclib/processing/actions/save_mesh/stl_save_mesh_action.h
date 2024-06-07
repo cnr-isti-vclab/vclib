@@ -26,13 +26,31 @@
 #include <vclib/io/mesh/stl/capability.h>
 #include <vclib/io/mesh/stl/save.h>
 #include <vclib/processing/actions/interfaces/save_mesh_action.h>
+#include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/meshes.h>
 
 namespace vcl {
 
 class StlSaveMeshAction : public SaveMeshAction {
 public:
-    std::string name() const override { return "StlSaveMeshAction"; }
+    using SaveMeshAction::save;
+
+    std::string name() const override { return "Save Stl Mesh"; }
+
+    std::shared_ptr<Action> clone() const override
+    {
+        return std::make_shared<StlSaveMeshAction>(*this);
+    }
+
+    ParameterVector parameters() const override
+    {
+        ParameterVector params;
+
+        params.pushBack(BoolParameter("binary", true, "", ""));
+        params.pushBack(BoolParameter("magics_mode", false, "", ""));
+
+        return params;
+    }
 
     FileFormat format() const override
     {
@@ -47,9 +65,10 @@ public:
     void save(
         const std::string& filename,
         const TriMeshP&    mesh,
-        const MeshInfo&    info) const override
+        const MeshInfo&    info,
+        const ParameterVector& parameters) const override
     {
-        saveStl(filename, mesh, info);
+        saveStl(filename, mesh, info, parameters);
     }
 
 private:
@@ -57,10 +76,13 @@ private:
     void saveStl(
         const std::string& filename,
         const MeshType&    mesh,
-        const MeshInfo&    info) const
+        const MeshInfo&    info,
+        const ParameterVector& parameters) const
     {
         vcl::SaveSettings settings;
         settings.info =  info;
+        settings.binary = parameters.get("binary")->boolValue();
+        settings.magicsMode = parameters.get("magics_mode")->boolValue();
         vcl::saveStl(mesh, filename, settings);
     }
 };

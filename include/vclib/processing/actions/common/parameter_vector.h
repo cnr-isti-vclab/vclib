@@ -9,25 +9,52 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/processing.h>
+#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETER_VECTOR_H
+#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETER_VECTOR_H
 
-int main()
+#include <vclib/space/polymorphic_object_vector.h>
+
+#include "parameters/abstract_parameter.h"
+
+namespace vcl {
+
+class ParameterVector : public PolymorphicObjectVector<AbstractParameter>
 {
-    vcl::TriMeshP mesh;
-    vcl::StlSaveMeshAction action;
+public:
+    std::shared_ptr<const AbstractParameter> get(const std::string& name) const
+    {
+        for (const auto& parameter : *this) {
+            if (parameter->name() == name) {
+                return parameter;
+            }
+        }
 
-    action.save("prova.stl", mesh);
+        return nullptr;
+    }
 
-    return 0;
-}
+    std::shared_ptr<AbstractParameter> get(const std::string& name)
+    {
+        for (auto& parameter : *this) {
+            if (parameter->name() == name) {
+                return parameter;
+            }
+        }
+
+        return nullptr;
+    }
+};
+
+} // namespace vcl
+
+#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETER_VECTOR_H
