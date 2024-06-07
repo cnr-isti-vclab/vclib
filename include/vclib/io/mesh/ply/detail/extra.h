@@ -48,10 +48,10 @@ void readPlyTextures(
         }
     }
     if constexpr (vcl::HasTextureImages<MeshType>) {
-        if (settings.loadTextureImages) {
-            for (const std::string& str : header.textureFileNames()) {
-                vcl::Texture t;
-                t.path() = str;
+        for (const std::string& str : header.textureFileNames()) {
+            vcl::Texture t;
+            t.path() = str;
+            if (settings.loadTextureImages) {
                 bool b   = t.image().load(mesh.meshBasePath() + str);
                 if (!b) {
                     log.log(LogType::WARNING, "Cannot load texture " + str);
@@ -59,8 +59,8 @@ void readPlyTextures(
                 else {
                     t.image().mirror();
                 }
-                mesh.pushTexture(t);
             }
+            mesh.pushTexture(t);
         }
     }
 }
