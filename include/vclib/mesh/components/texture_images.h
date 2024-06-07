@@ -178,41 +178,40 @@ public:
 
     /**
      * @brief Returns a lightweigth view object that stores the begin and end
-     * iterators of the vector of texture paths. The view
-     * object exposes the iterators trough the `begin()` and `end()` member
-     * functions, and therefore the returned object can be used in range-based
-     * for loops:
+     * iterators of the vector of textures. The view object exposes the
+     * iterators trough the `begin()` and `end()` member functions, and
+     * therefore the returned object can be used in range-based for loops:
      *
      * @code{.cpp}
-     * for (auto& tpath : m.texturePaths()) {
-     *     // Do something with tpath
+     * for (auto& texture : m.texturess()) {
+     *     // Do something with texture
      * }
      * @endcode
      *
      * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over the vector of texture paths.
+     * loops to iterate over the vector of textures.
      */
-    View<TextureIterator> texturePaths()
+    View<TextureIterator> textures()
     {
         return View(textureBegin(), textureEnd());
     }
 
     /**
      * @brief Returns a lightweigth const view object that stores the begin and
-     * end iterators of the vector of texture paths. The view object exposes the
+     * end iterators of the vector of textures. The view object exposes the
      * iterators trough the `begin()` and `end()` member functions, and
      * therefore the returned object can be used in range-based for loops:
      *
      * @code{.cpp}
-     * for (const auto& tpath : m.texturePaths()) {
-     *     // Do something with tpath
+     * for (const auto& texture : m.textures()) {
+     *     // Do something with texture
      * }
      * @endcode
      *
      * @return a lightweight view object that can be used in range-based for
-     * loops to iterate over the vector of texture paths.
+     * loops to iterate over the vector of textures.
      */
-    View<ConstTextureIterator> texturePaths() const
+    View<ConstTextureIterator> textures() const
     {
         return View(textureBegin(), textureEnd());
     }
