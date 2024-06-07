@@ -208,8 +208,7 @@ MeshType loadPly(
     const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    return loadPly<MeshType>(
-        inputPlyStream, loadedInfo, log, settings);
+    return loadPly<MeshType>(inputPlyStream, loadedInfo, log, settings);
 }
 
 /**
@@ -245,8 +244,7 @@ void loadPly(
 {
     std::ifstream file = openInputFileStream(filename);
 
-    detail::loadPly(
-        m, file, filename, loadedInfo, log, settings);
+    detail::loadPly(m, file, filename, loadedInfo, log, settings);
 }
 
 /**
@@ -340,8 +338,7 @@ MeshType loadPly(
     const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    return loadPly<MeshType>(
-        filename, loadedInfo, log, settings);
+    return loadPly<MeshType>(filename, loadedInfo, log, settings);
 }
 
 } // namespace vcl

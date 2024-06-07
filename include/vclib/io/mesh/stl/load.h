@@ -305,11 +305,9 @@ void loadStl(
     log.log(0, "Loading STL file");
 
     if (isBinary)
-        detail::readStlBin(
-            m, inputStlStream, loadedInfo, log, settings);
+        detail::readStlBin(m, inputStlStream, loadedInfo, log, settings);
     else
-        detail::readStlAscii(
-            m, inputStlStream, loadedInfo, log, settings);
+        detail::readStlAscii(m, inputStlStream, loadedInfo, log, settings);
 
     log.log(100, "STL file loaded");
 }
@@ -348,8 +346,7 @@ void loadStl(
     const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    loadStl(
-        m, inputStlStream, loadedInfo, isBinary, log, settings);
+    loadStl(m, inputStlStream, loadedInfo, isBinary, log, settings);
 }
 
 /**
@@ -391,8 +388,7 @@ MeshType loadStl(
     const LoadSettings& settings = LoadSettings())
 {
     MeshType m;
-    loadStl(
-        m, inputStlStream, loadedInfo, isBinary, log, settings);
+    loadStl(m, inputStlStream, loadedInfo, isBinary, log, settings);
     return m;
 }
 
@@ -575,8 +571,7 @@ MeshType loadStl(
     const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    return loadStl<MeshType>(
-        filename, loadedInfo, log, settings);
+    return loadStl<MeshType>(filename, loadedInfo, log, settings);
 }
 
 } // namespace vcl

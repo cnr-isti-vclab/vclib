@@ -187,9 +187,9 @@ void saveStl(
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveStl(
-    const MeshType&    m,
-    const std::string& filename,
-    LogType&           log        = nullLogger,
+    const MeshType&     m,
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
     std::ofstream fp = openOutputFileStream(filename, "stl");

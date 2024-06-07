@@ -39,9 +39,7 @@ namespace vcl {
 namespace detail {
 
 template<VertexConcept VertexType, MeshConcept MeshType>
-ObjMaterial objMaterialFromVertex(
-    const VertexType&   v,
-    const MeshInfo&     fi)
+ObjMaterial objMaterialFromVertex(const VertexType& v, const MeshInfo& fi)
 {
     ObjMaterial mat;
     if constexpr (HasPerVertexColor<MeshType>) {
@@ -57,9 +55,9 @@ ObjMaterial objMaterialFromVertex(
 
 template<FaceConcept FaceType, MeshConcept MeshType>
 ObjMaterial objMaterialFromFace(
-    const FaceType&     f,
-    const MeshType&     m,
-    const MeshInfo&     fi)
+    const FaceType& f,
+    const MeshType& m,
+    const MeshInfo& fi)
 {
     ObjMaterial mat;
     if constexpr (HasPerFaceColor<MeshType>) {
@@ -99,12 +97,11 @@ void writeElementObjMaterial(
     const SaveSettings&                 settings,
     LogType&                            log = nullLogger)
 {
-    ObjMaterial mat;
+    ObjMaterial    mat;
     constexpr bool EL_IS_VERTEX = ElementType::ELEMENT_ID == ElemId::VERTEX;
-    constexpr bool EL_IS_FACE = ElementType::ELEMENT_ID == ElemId::FACE;
+    constexpr bool EL_IS_FACE   = ElementType::ELEMENT_ID == ElemId::FACE;
 
-    if constexpr (EL_IS_VERTEX)
-    {
+    if constexpr (EL_IS_VERTEX) {
         mat = objMaterialFromVertex<typename MeshType::VertexType, MeshType>(
             e, fi);
     }
@@ -136,7 +133,7 @@ void writeElementObjMaterial(
                         t.image().save(m.meshBasePath() + mat.map_Kd);
                     }
                     catch (const std::runtime_error& e) {
-                       log.log(LogType::WARNING, e.what());
+                        log.log(LogType::WARNING, e.what());
                     }
                 }
             }

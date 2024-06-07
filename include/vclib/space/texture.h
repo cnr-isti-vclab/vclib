@@ -31,7 +31,7 @@ namespace vcl {
 
 class Texture
 {
-    Image mImg;
+    Image       mImg;
     std::string mPath;
 
 public:

@@ -149,10 +149,7 @@ public:
      * @brief Adds a texture to the vector of textures.
      * @param[in] texture: The texture to add.
      */
-    void pushTexture(const vcl::Texture& texture)
-    {
-        texs().push_back(texture);
-    }
+    void pushTexture(const vcl::Texture& texture) { texs().push_back(texture); }
 
     /**
      * @brief Returns an iterator to the beginning of the vector of textures.
@@ -171,19 +168,13 @@ public:
      * textures.
      * @return a const iterator to the beginning of the vector of textures.
      */
-    ConstTextureIterator textureBegin() const
-    {
-        return texs().begin();
-    }
+    ConstTextureIterator textureBegin() const { return texs().begin(); }
 
     /**
      * @brief Returns a const iterator to the end of the vector of textures.
      * @return a const iterator to the end of the vector of textures.
      */
-    ConstTextureIterator textureEnd() const
-    {
-        return texs().end();
-    }
+    ConstTextureIterator textureEnd() const { return texs().end(); }
 
     /**
      * @brief Returns a lightweigth view object that stores the begin and end

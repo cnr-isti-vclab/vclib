@@ -26,8 +26,8 @@
 #include <fstream>
 
 #include <vclib/exceptions/io.h>
-#include <vclib/io/read.h>
 #include <vclib/io/mesh/settings.h>
+#include <vclib/io/read.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/logger.h>
 
@@ -52,11 +52,9 @@ void readPlyTextures(
             for (const std::string& str : header.textureFileNames()) {
                 vcl::Texture t;
                 t.path() = str;
-                bool b = t.image().load(mesh.meshBasePath() + str);
+                bool b   = t.image().load(mesh.meshBasePath() + str);
                 if (!b) {
-                    log.log(
-                        LogType::WARNING,
-                        "Cannot load texture " + str);
+                    log.log(LogType::WARNING, "Cannot load texture " + str);
                 }
                 mesh.pushTexture(t);
             }

@@ -519,23 +519,13 @@ void loadObj(
             // color)
             if (header == "v") {
                 detail::readObjVertex(
-                    m,
-                    token,
-                    loadedInfo,
-                    tokens,
-                    currentMaterial,
-                    settings);
+                    m, token, loadedInfo, tokens, currentMaterial, settings);
             }
             // read vertex normal (and save in vn how many normals we read)
             if constexpr (HasPerVertexNormal<MeshType>) {
                 if (header == "vn") {
                     detail::readObjVertexNormal(
-                        m,
-                        mapNormalsCache,
-                        vn,
-                        token,
-                        loadedInfo,
-                        settings);
+                        m, mapNormalsCache, vn, token, loadedInfo, settings);
                     vn++;
                 }
             }
@@ -610,7 +600,8 @@ void loadObj(
     if constexpr (HasTextureImages<MeshType>) {
         if (settings.loadTextureImages) {
             for (vcl::Texture& texture : m.textures()) {
-                bool b = texture.image().load(m.meshBasePath() + texture.path());
+                bool b =
+                    texture.image().load(m.meshBasePath() + texture.path());
                 if (!b) {
                     log.log(
                         LogType::WARNING,
@@ -748,13 +739,7 @@ MeshType loadObj(
     const LoadSettings&               settings = LoadSettings())
 {
     MeshType m;
-    loadObj(
-        m,
-        inputObjStream,
-        inputMtlStreams,
-        loadedInfo,
-        log,
-        settings);
+    loadObj(m, inputObjStream, inputMtlStreams, loadedInfo, log, settings);
     return m;
 }
 
@@ -849,14 +834,7 @@ void loadObj(
     }
 
     detail::loadObj(
-        m,
-        file,
-        mtlStreams,
-        loadedInfo,
-        filename,
-        false,
-        log,
-        settings);
+        m, file, mtlStreams, loadedInfo, filename, false, log, settings);
 }
 
 /**
@@ -960,8 +938,7 @@ MeshType loadObj(
     const LoadSettings& settings = LoadSettings())
 {
     MeshInfo loadedInfo;
-    return loadObj<MeshType>(
-        filename, loadedInfo, log, settings);
+    return loadObj<MeshType>(filename, loadedInfo, log, settings);
 }
 
 } // namespace vcl

@@ -136,7 +136,7 @@ void saveOff(
     const MeshType&     m,
     std::ostream&       fp,
     const SaveSettings& settings,
-    LogType&            log      = nullLogger)
+    LogType&            log = nullLogger)
 {
     saveOff(m, fp, log, settings);
 }
