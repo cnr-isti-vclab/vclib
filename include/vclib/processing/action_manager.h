@@ -20,19 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_H
-#define VCL_PROCESSING_H
+#ifndef VCL_PROCESSING_ACTION_MANAGER_H
+#define VCL_PROCESSING_ACTION_MANAGER_H
 
-#include "processing/action_manager.h"
-#include "processing/actions.h"
-#include "processing/meshes.h"
+#include "action_manager/save_image_action_manager.h"
 
-/**
- * @defgroup processing Processing
- *
- * @brief List of classes and functions that allow to perform high level
- * processing, without the need to interact with the underlying data structures
- * and algorithms.
- */
-
-#endif // VCL_PROCESSING_H
+#endif // VCL_PROCESSING_ACTION_MANAGER_H

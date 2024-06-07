@@ -20,19 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_H
-#define VCL_PROCESSING_H
+#ifndef VCL_PROCESSING_ACTION_MANAGER_SAVE_IMAGE_ACTION_MANAGER_H
+#define VCL_PROCESSING_ACTION_MANAGER_SAVE_IMAGE_ACTION_MANAGER_H
 
-#include "processing/action_manager.h"
-#include "processing/actions.h"
-#include "processing/meshes.h"
+#include <map>
 
-/**
- * @defgroup processing Processing
- *
- * @brief List of classes and functions that allow to perform high level
- * processing, without the need to interact with the underlying data structures
- * and algorithms.
- */
+#include <vclib/processing/actions/interfaces/save_image_action.h>
+#include <vclib/space/polymorphic_object_vector.h>
 
-#endif // VCL_PROCESSING_H
+namespace vcl {
+
+class SaveImageActionManager
+{
+    vcl::PolymorphicObjectVector<Action> mActions;
+
+    std::map<std::string, std::shared_ptr<SaveImageAction>> mFormatMap;
+
+public:
+    SaveImageActionManager() = default;
+
+    void add(SaveImageAction& action)
+    {
+        std::vector<FileFormat> formats = action.formats();
+
+        for (const auto& format : formats) {
+            for (const auto& ext : format.extensions()) {
+                if (mFormatMap.find(ext) != mFormatMap.end()) {
+                    throw std::runtime_error("Extension already registered.");
+                }
+                mActions.pushBack(action);
+                mFormatMap[ext] = mActions.back();
+            }
+        }
+    }
+};
+
+} // namespace vcl
+
+#endif // VCL_PROCESSING_ACTION_MANAGER_SAVE_IMAGE_ACTION_MANAGER_H
