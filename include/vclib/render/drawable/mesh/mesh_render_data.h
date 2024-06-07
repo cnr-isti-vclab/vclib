@@ -665,6 +665,18 @@ private:
                 mTextures.push_back(txt);
             }
         }
+        if constexpr (vcl::HasTextureImages<MeshType>) {
+            for (const vcl::Texture& t : m.textures()) {
+                if (t.image().isNull()) {
+                    vcl::Image txt(m.meshBasePath() + t.path());
+                    txt.mirror();
+                    mTextures.push_back(txt);
+                }
+                else {
+                    mTextures.push_back(t.image());
+                }
+            }
+        }
     }
 
     void fillMeshAttribs(const MeshType& m)
