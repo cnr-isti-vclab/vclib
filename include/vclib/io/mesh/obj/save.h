@@ -307,6 +307,17 @@ void saveObj(
     const MeshType&     m,
     std::ostream&       fp,
     std::ostream&       mtlfp,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
+{
+    detail::saveObj(m, "materials", fp, &mtlfp, false, log, settings);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+    const MeshType&     m,
+    std::ostream&       fp,
+    std::ostream&       mtlfp,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
@@ -317,10 +328,32 @@ template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void saveObj(
     const MeshType&     m,
     std::ostream&       fp,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
+{
+    detail::saveObj(m, "", fp, nullptr, false, log, settings);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+    const MeshType&     m,
+    std::ostream&       fp,
     LogType&            log      = nullLogger,
     const SaveSettings& settings = SaveSettings())
 {
     detail::saveObj(m, "", fp, nullptr, false, log, settings);
+}
+
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void saveObj(
+    const MeshType&     m,
+    const std::string&  filename,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
+{
+    std::ofstream fp = openOutputFileStream(filename, "obj");
+
+    detail::saveObj(m, filename, fp, nullptr, true, log, settings);
 }
 
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>

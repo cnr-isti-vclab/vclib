@@ -607,9 +607,6 @@ void loadObj(
                         LogType::WARNING,
                         "Cannot load texture " + texture.path());
                 }
-                else {
-                    texture.image().mirror();
-                }
             }
         }
     }

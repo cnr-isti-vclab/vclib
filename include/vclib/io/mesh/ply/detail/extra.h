@@ -56,9 +56,6 @@ void readPlyTextures(
                 if (!b) {
                     log.log(LogType::WARNING, "Cannot load texture " + str);
                 }
-                else {
-                    t.image().mirror();
-                }
             }
             mesh.pushTexture(t);
         }
