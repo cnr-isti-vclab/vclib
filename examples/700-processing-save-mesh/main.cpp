@@ -40,6 +40,9 @@ int main()
     // saving obj
     manager.saveMeshAction("obj")->save("td.obj", mesh);
 
+    // saving off
+    manager.saveMeshAction("off")->save("td.off", mesh);
+
     // saving ply
     manager.saveMeshAction("ply")->save("td.ply", mesh);
 

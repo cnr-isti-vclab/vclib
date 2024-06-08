@@ -20,28 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_SAVE_MESH_H
-#define VCL_PROCESSING_ACTIONS_SAVE_MESH_H
+#ifndef VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
+#define VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
 
-#include "save_mesh/obj_save_mesh_action.h"
-#include "save_mesh/off_save_mesh_action.h"
-#include "save_mesh/ply_save_mesh_action.h"
-#include "save_mesh/stl_save_mesh_action.h"
+#include <vclib/io/mesh/off/capability.h>
+#include <vclib/io/mesh/off/save.h>
+#include <vclib/processing/actions/interfaces/save_mesh_action.h>
+#include <vclib/processing/actions/common/parameters.h>
+#include <vclib/processing/functions.h>
+#include <vclib/processing/meshes.h>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> vclibSaveMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
+class OffSaveMeshAction : public SaveMeshAction {
+public:
+    using SaveMeshAction::save;
 
-    vec.push_back(ObjSaveMeshAction().clone());
-    vec.push_back(OffSaveMeshAction().clone());
-    vec.push_back(PlySaveMeshAction().clone());
-    vec.push_back(StlSaveMeshAction().clone());
+    std::string name() const override { return "Save Off Mesh"; }
 
-    return vec;
-}
+    std::shared_ptr<Action> clone() const override
+    {
+        return std::make_shared<OffSaveMeshAction>(*this);
+    }
+
+    std::vector<FileFormat> formats() const override
+    {
+        return {FileFormat("off", "")};
+    }
+
+    MeshInfo formatCapability() const override
+    {
+        return objFormatCapability();
+    }
+
+    void save(
+        const std::string& filename,
+        const TriMesh&    mesh,
+        const MeshInfo&    info,
+        const ParameterVector&) const override
+    {
+        saveOff(filename, mesh, info);
+    }
+
+private:
+    template<MeshConcept MeshType>
+    void saveOff(
+        const std::string& filename,
+        const MeshType&    mesh,
+        const MeshInfo&    info) const
+    {
+        vcl::SaveSettings settings;
+        settings.info =  info;
+        vcl::saveOff(mesh, filename, settings);
+    }
+};
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_SAVE_MESH_H
+#endif // VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
