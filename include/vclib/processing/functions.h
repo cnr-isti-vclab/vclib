@@ -20,24 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_SAVE_MESH_H
-#define VCL_PROCESSING_ACTIONS_SAVE_MESH_H
+#ifndef VCL_PROCESSING_FUNCTIONS_H
+#define VCL_PROCESSING_FUNCTIONS_H
 
-#include "save_mesh/obj_save_mesh_action.h"
-#include "save_mesh/stl_save_mesh_action.h"
+#include "action_manager.h"
+#include "actions/common/file_format.h"
+
+#include <vclib/io/file_info.h>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> vclibSaveMeshActions()
+template<MeshConcept MeshType>
+void saveMeshTextures(
+    const MeshType&    mesh,
+    const std::string& filepath,
+    ActionManager*     manager)
 {
-    std::vector<std::shared_ptr<Action>> vec;
+    for (const vcl::Texture& texture : mesh.textures()) {
+        std::string ext = FileInfo::extension(texture.path());
 
-    vec.push_back(ObjSaveMeshAction().clone());
-    vec.push_back(StlSaveMeshAction().clone());
-
-    return vec;
+        try {
+            auto act = manager->getSaveImageAction(FileFormat(ext));
+            act->save(filepath + texture.path(), texture.image());
+        }
+        catch (const std::exception& e) {
+            // todo: log error
+            std::cerr << "Error saving texture: " << e.what() << std::endl;
+        }
+    }
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_SAVE_MESH_H
+#endif // VCL_PROCESSING_FUNCTIONS_H

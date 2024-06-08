@@ -22,18 +22,24 @@
 
 #include <vclib/processing.h>
 
+#include <vclib/load_save.h>
+
 int main()
 {
-    vcl::proc::TriMesh mesh;
+    vcl::LoadSettings s;
+    s.loadTextureImages = true;
+
+    vcl::proc::TriMesh mesh = vcl::load<vcl::proc::TriMesh>(
+        VCLIB_ASSETS_PATH "/TextureDouble.ply", s);
 
     vcl::proc::ActionManager manager;
 
     manager.add(vcl::proc::vclibSaveImageActions());
     manager.add(vcl::proc::vclibSaveMeshActions());
 
-    auto action = manager.getSaveMeshAction(vcl::proc::FileFormat("stl"));
+    auto action = manager.getSaveMeshAction(vcl::proc::FileFormat("obj"));
 
-    action->save("prova2.stl", mesh);
+    action->save("td.obj", mesh);
 
     return 0;
 }

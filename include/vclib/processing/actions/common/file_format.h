@@ -41,14 +41,14 @@ public:
     FileFormat(std::string extenison, std::string description = "") :
             mExtensions{extenison}, mDescription(description)
     {
-        mExtensions[0] = vcl::toLower(mExtensions[0]);
+        clearExtension(mExtensions[0]);
     }
 
     FileFormat(Range auto extensions, std::string description = "") :
             mExtensions(extensions), mDescription(description)
     {
         for (auto& ext : mExtensions) {
-            ext = vcl::toLower(ext);
+            clearExtension(ext);
         }
 
         // make sure extensions are sorted - this is important for the
@@ -96,6 +96,15 @@ public:
         }
 
         return mExtensions[0] <=> other.mExtensions[0];
+    }
+
+private:
+    static void clearExtension(std::string& extension)
+    {
+        if (extension.front() == '.') {
+            extension.erase(0, 1);
+        }
+        extension = vcl::toLower(extension);
     }
 };
 
