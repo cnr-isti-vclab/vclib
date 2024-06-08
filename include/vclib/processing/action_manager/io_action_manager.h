@@ -64,12 +64,6 @@ public:
         return mFormatMap[format];
     }
 
-    std::shared_ptr<IOAction> get(const std::string& ext)
-    {
-        FileFormat format(ext);
-        return get(format);
-    }
-
 private:
     void checkFormatDoesNotExist(const FileFormat& format)
     {

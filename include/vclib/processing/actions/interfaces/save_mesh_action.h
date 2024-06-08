@@ -34,7 +34,7 @@ namespace vcl::proc {
 
 class SaveMeshAction : public MeshAction {
 public:
-    uint type() const override { return ActionType::SAVE_MESH_ACTION; }
+    uint type() const final { return ActionType::SAVE_MESH_ACTION; }
 
     uint inputMeshNumber() const final { return 1; }
 

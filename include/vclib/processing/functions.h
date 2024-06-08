@@ -40,7 +40,7 @@ void saveMeshTextures(
         std::string ext = FileInfo::extension(texture.path());
 
         try {
-            auto act = manager->getSaveImageAction(FileFormat(ext));
+            auto act = manager->saveImageAction(ext);
             act->save(filepath + texture.path(), texture.image());
         }
         catch (const std::exception& e) {

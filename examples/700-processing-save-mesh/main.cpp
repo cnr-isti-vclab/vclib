@@ -37,9 +37,14 @@ int main()
     manager.add(vcl::proc::vclibSaveImageActions());
     manager.add(vcl::proc::vclibSaveMeshActions());
 
-    auto action = manager.getSaveMeshAction(vcl::proc::FileFormat("obj"));
+    // saving obj
+    manager.saveMeshAction("obj")->save("td.obj", mesh);
 
-    action->save("td.obj", mesh);
+    // saving ply
+    manager.saveMeshAction("ply")->save("td.ply", mesh);
+
+    // saving stl
+    manager.saveMeshAction("stl")->save("td.stl", mesh);
 
     return 0;
 }

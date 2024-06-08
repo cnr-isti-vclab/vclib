@@ -58,13 +58,13 @@ public:
         }
     }
 
-    std::shared_ptr<SaveImageAction> getSaveImageAction(
+    std::shared_ptr<SaveImageAction> saveImageAction(
         const FileFormat& format)
     {
         return mSaveImageActionManager.get(format);
     }
 
-    std::shared_ptr<SaveMeshAction> getSaveMeshAction(
+    std::shared_ptr<SaveMeshAction> saveMeshAction(
         const FileFormat& format)
     {
         return mSaveMeshActionManager.get(format);

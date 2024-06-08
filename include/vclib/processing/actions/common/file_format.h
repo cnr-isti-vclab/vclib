@@ -38,10 +38,15 @@ class FileFormat
     std::string mDescription;
 
 public:
-    FileFormat(std::string extenison, std::string description = "") :
-            mExtensions{extenison}, mDescription(description)
+    FileFormat(const char* extension, std::string description = "") :
+            mExtensions{extension}, mDescription(description)
     {
         clearExtension(mExtensions[0]);
+    }
+
+    FileFormat(const std::string& extension, std::string description = "") :
+            FileFormat(extension.c_str(), description)
+    {
     }
 
     FileFormat(Range auto extensions, std::string description = "") :

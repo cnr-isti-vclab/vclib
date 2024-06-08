@@ -24,6 +24,7 @@
 #define VCL_PROCESSING_ACTIONS_SAVE_MESH_H
 
 #include "save_mesh/obj_save_mesh_action.h"
+#include "save_mesh/ply_save_mesh_action.h"
 #include "save_mesh/stl_save_mesh_action.h"
 
 namespace vcl::proc {
@@ -33,6 +34,7 @@ std::vector<std::shared_ptr<Action>> vclibSaveMeshActions()
     std::vector<std::shared_ptr<Action>> vec;
 
     vec.push_back(ObjSaveMeshAction().clone());
+    vec.push_back(PlySaveMeshAction().clone());
     vec.push_back(StlSaveMeshAction().clone());
 
     return vec;
