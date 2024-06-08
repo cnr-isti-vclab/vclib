@@ -24,8 +24,8 @@
 
 int main()
 {
-    vcl::TriMeshP mesh;
-    vcl::StlSaveMeshAction action;
+    vcl::proc::TriMeshP mesh;
+    vcl::proc::StlSaveMeshAction action;
 
     action.save("prova.stl", mesh);
 

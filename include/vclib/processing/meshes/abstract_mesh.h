@@ -27,7 +27,7 @@
 
 #include <vclib/concepts/mesh/mesh_concept.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 struct AbsMeshType
 {
@@ -69,6 +69,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_MESHES_ABSTRACT_MESH_H

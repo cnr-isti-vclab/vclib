@@ -29,7 +29,7 @@
 
 #include "action.h"
 
-namespace vcl {
+namespace vcl::proc {
 
 class MeshAction : public Action {
 public:
@@ -107,6 +107,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_INTERFACES_MESH_ACTION_H

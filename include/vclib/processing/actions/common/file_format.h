@@ -28,7 +28,7 @@
 
 #include <vclib/concepts/ranges/range.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 class FileFormat
 {
@@ -57,6 +57,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_COMMON_FILE_FORMAT_H

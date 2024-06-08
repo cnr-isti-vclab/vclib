@@ -25,7 +25,7 @@
 
 #include "abstract_parameter.h"
 
-namespace vcl {
+namespace vcl::proc {
 
 class BoolParameter : public AbstractParameter
 {
@@ -51,6 +51,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_BOOL_PARAMETER_H

@@ -29,7 +29,7 @@
 #include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/meshes.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 class StlSaveMeshAction : public SaveMeshAction {
 public:
@@ -87,6 +87,6 @@ private:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_SAVE_MESH_STL_SAVE_MESH_ACTION_H

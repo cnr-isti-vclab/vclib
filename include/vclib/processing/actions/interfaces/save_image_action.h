@@ -30,7 +30,7 @@
 #include <vclib/processing/actions/common/file_format.h>
 #include <vclib/space/image.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 class SaveImageAction : public Action {
 public:
@@ -41,6 +41,6 @@ public:
         const Image& image) const = 0;
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_INTERFACES_SAVE_IMAGE_ACTION_H

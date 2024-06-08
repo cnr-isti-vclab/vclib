@@ -27,7 +27,7 @@
 
 #include "parameters/abstract_parameter.h"
 
-namespace vcl {
+namespace vcl::proc {
 
 class ParameterVector : public PolymorphicObjectVector<AbstractParameter>
 {
@@ -55,6 +55,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETER_VECTOR_H

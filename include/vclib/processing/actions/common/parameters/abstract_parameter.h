@@ -31,7 +31,7 @@
 #include <vclib/space/color.h>
 #include <vclib/space/point.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 struct ParameterType
 {
@@ -129,6 +129,6 @@ protected:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ABSTRACT_PARAMETER_H

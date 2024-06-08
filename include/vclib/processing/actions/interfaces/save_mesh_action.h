@@ -30,7 +30,7 @@
 #include <vclib/processing/meshes.h>
 #include <vclib/processing/settings.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 class SaveMeshAction : public MeshAction {
 public:
@@ -90,6 +90,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_INTERFACES_SAVE_MESH_ACTION_H

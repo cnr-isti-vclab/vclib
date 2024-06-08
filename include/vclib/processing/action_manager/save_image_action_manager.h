@@ -28,7 +28,7 @@
 #include <vclib/processing/actions/interfaces/save_image_action.h>
 #include <vclib/space/polymorphic_object_vector.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 class SaveImageActionManager
 {
@@ -56,6 +56,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTION_MANAGER_SAVE_IMAGE_ACTION_MANAGER_H

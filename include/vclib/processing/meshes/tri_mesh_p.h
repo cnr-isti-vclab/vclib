@@ -28,7 +28,7 @@
 #include <vclib/meshes/tri_mesh.h>
 #include <vclib/processing/settings.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 class TriMeshP :
         public AbstractMesh,
@@ -48,6 +48,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_MESHES_TRI_MESH_P_H

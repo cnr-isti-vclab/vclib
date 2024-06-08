@@ -33,7 +33,7 @@
 #define VCLIB_PROCESSING_INDEXED_MESHES false
 #endif // VCLIB_PROCESSING_INDEXED_MESHES
 
-namespace vcl {
+namespace vcl::proc {
 
 /**
  * @brief Scalar type used in the meshes of the processing module.
@@ -52,6 +52,6 @@ inline constexpr bool INDEXED_MESHES = VCLIB_PROCESSING_INDEXED_MESHES;
 // Action Types
 inline constexpr uint SAVE_MESH_ACTION = 0;
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_SETTINGS_H

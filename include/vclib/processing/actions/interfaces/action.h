@@ -28,7 +28,7 @@
 #include <vclib/processing/meshes/abstract_mesh.h>
 #include <vclib/types.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 class Action {
 public:
@@ -40,6 +40,6 @@ public:
     virtual std::string name() const = 0;
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H

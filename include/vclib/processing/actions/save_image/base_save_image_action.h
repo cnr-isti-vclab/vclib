@@ -25,7 +25,7 @@
 
 #include <vclib/processing/actions/interfaces/save_image_action.h>
 
-namespace vcl {
+namespace vcl::proc {
 
 class BaseSaveImageAction : public SaveImageAction {
 public:
@@ -57,6 +57,6 @@ public:
     }
 };
 
-} // namespace vcl
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_SAVE_IMAGE_ACTION_H
