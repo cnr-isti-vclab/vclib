@@ -75,8 +75,9 @@ void writePlyTextures(
         }
     }
     if constexpr (vcl::HasTextureImages<MeshType>) {
-        if (settings.saveTextureImages) {
-            for (const vcl::Texture& t : mesh.textures()) {
+        for (const vcl::Texture& t : mesh.textures()) {
+            header.pushTextureFileName(t.path());
+            if (settings.saveTextureImages) {
                 try {
                     t.image().save(mesh.meshBasePath() + t.path());
                 }
