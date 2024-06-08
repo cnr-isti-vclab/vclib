@@ -30,6 +30,8 @@
 
 namespace vcl::proc {
 
+class ActionManager;
+
 struct ActionType
 {
     enum Enum
@@ -40,6 +42,15 @@ struct ActionType
 };
 
 class Action {
+    friend class ActionManager;
+
+    /**
+     * @brief A pointer to the manager that contains the action.
+     *
+     * It could be used by the action to access and run other actions.
+     */
+    ActionManager* mManage = nullptr;
+
 public:
     Action() = default;
     virtual ~Action() = default;
@@ -49,6 +60,11 @@ public:
     virtual std::string name() const = 0;
 
     virtual uint type() const = 0;
+
+protected:
+    void setManager(ActionManager* manager) { mManage = manager; }
+
+    ActionManager* manager() const { return mManage; }
 };
 
 } // namespace vcl::proc

@@ -25,9 +25,13 @@
 
 #include <map>
 
+#include <vclib/processing/actions/interfaces/action.h>
+#include <vclib/processing/actions/common/file_format.h>
 #include <vclib/space/polymorphic_object_vector.h>
 
 namespace vcl::proc {
+
+class ActionManager;
 
 template<typename IOAction>
 class IOActionManager
@@ -38,18 +42,6 @@ class IOActionManager
 
 public:
     IOActionManager() = default;
-
-    void add(IOAction& action)
-    {
-        std::vector<FileFormat> formats = action.formats();
-
-        for (const auto& format : formats) {
-            checkFormatDoesNotExist(format);
-            mActions.pushBack(action);
-            mFormatMap[format] =
-                std::dynamic_pointer_cast<IOAction>(mActions.back());
-        }
-    }
 
     void add(std::shared_ptr<IOAction> action)
     {
