@@ -52,12 +52,9 @@ void readPlyTextures(
             vcl::Texture t;
             t.path() = str;
             if (settings.loadTextureImages) {
-                bool b   = t.image().load(mesh.meshBasePath() + str);
+                bool b = t.image().load(mesh.meshBasePath() + str);
                 if (!b) {
                     log.log(LogType::WARNING, "Cannot load texture " + str);
-                }
-                else {
-                    t.image().mirror();
                 }
             }
             mesh.pushTexture(t);
