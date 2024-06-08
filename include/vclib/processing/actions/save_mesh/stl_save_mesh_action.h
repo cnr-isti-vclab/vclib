@@ -63,27 +63,24 @@ public:
     }
 
     void save(
-        const std::string& filename,
-        const TriMesh&    mesh,
-        const MeshInfo&    info,
+        const std::string&     filename,
+        const MeshI&           mesh,
+        const MeshInfo&        info,
         const ParameterVector& parameters) const override
     {
-        saveStl(filename, mesh, info, parameters);
-    }
+        auto saveStl = [this](
+                           const std::string&      filename,
+                           const MeshConcept auto& mesh,
+                           const MeshInfo&         info,
+                           const ParameterVector&  parameters) {
+            vcl::SaveSettings settings;
+            settings.info =  info;
+            settings.binary = parameters.get("binary")->boolValue();
+            settings.magicsMode = parameters.get("magics_mode")->boolValue();
+            vcl::saveStl(mesh, filename, settings);
+        };
 
-private:
-    template<MeshConcept MeshType>
-    void saveStl(
-        const std::string& filename,
-        const MeshType&    mesh,
-        const MeshInfo&    info,
-        const ParameterVector& parameters) const
-    {
-        vcl::SaveSettings settings;
-        settings.info =  info;
-        settings.binary = parameters.get("binary")->boolValue();
-        settings.magicsMode = parameters.get("magics_mode")->boolValue();
-        vcl::saveStl(mesh, filename, settings);
+        callFunctionForAllMesheTypes(saveStl, filename, mesh, info, parameters);
     }
 };
 

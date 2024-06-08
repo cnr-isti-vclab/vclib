@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_MESHES_H
 #define VCL_PROCESSING_MESHES_H
 
+#include "meshes/poly_mesh.h"
 #include "meshes/tri_mesh.h"
 
 #endif // VCL_PROCESSING_MESHES_H

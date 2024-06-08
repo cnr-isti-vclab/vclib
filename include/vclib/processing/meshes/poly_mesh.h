@@ -20,56 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
-#define VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
+#ifndef VCL_PROCESSING_MESHES_POLY_MESH_H
+#define VCL_PROCESSING_MESHES_POLY_MESH_H
 
-#include <vclib/io/mesh/off/capability.h>
-#include <vclib/io/mesh/off/save.h>
-#include <vclib/processing/actions/interfaces/save_mesh_action.h>
-#include <vclib/processing/actions/common/parameters.h>
-#include <vclib/processing/functions.h>
-#include <vclib/processing/meshes.h>
+#include "mesh_i.h"
+
+#include <vclib/meshes/poly_mesh.h>
+#include <vclib/processing/settings.h>
 
 namespace vcl::proc {
 
-class OffSaveMeshAction : public SaveMeshAction {
+class PolyMesh final:
+        public MeshI,
+        public PolyMeshT<ProcScalarType, INDEXED_MESHES>
+{
 public:
-    using SaveMeshAction::save;
+    PolyMesh() = default;
 
-    std::string name() const override { return "Save Off Mesh"; }
-
-    std::shared_ptr<Action> clone() const override
+    std::shared_ptr<MeshI> clone() const override
     {
-        return std::make_shared<OffSaveMeshAction>(*this);
+        return std::make_shared<PolyMesh>(*this);
     }
 
-    std::vector<FileFormat> formats() const override
+    MeshIType::Enum type() const override
     {
-        return {FileFormat("off", "")};
-    }
-
-    MeshInfo formatCapability() const override { return offFormatCapability(); }
-
-    void save(
-        const std::string&     filename,
-        const MeshI&           mesh,
-        const MeshInfo&        info,
-        const ParameterVector& parameters) const override
-    {
-        auto saveOff = [this](
-                           const std::string&      filename,
-                           const MeshConcept auto& mesh,
-                           const MeshInfo&         info,
-                           const ParameterVector&  parameters) {
-            vcl::SaveSettings settings;
-            settings.info = info;
-            vcl::saveOff(mesh, filename, settings);
-        };
-
-        callFunctionForAllMesheTypes(saveOff, filename, mesh, info, parameters);
+        return MeshIType::POLY_MESH;
     }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_SAVE_MESH_OFF_SAVE_MESH_ACTION_H
+#endif // VCL_PROCESSING_MESHES_POLY_MESH_H

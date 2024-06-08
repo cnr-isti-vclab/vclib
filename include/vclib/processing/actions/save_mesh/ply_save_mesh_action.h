@@ -58,39 +58,35 @@ public:
         return {FileFormat("ply", "")};
     }
 
-    MeshInfo formatCapability() const override
-    {
-        return plyFormatCapability();
-    }
+    MeshInfo formatCapability() const override { return plyFormatCapability(); }
 
     void save(
-        const std::string& filename,
-        const TriMesh&    mesh,
-        const MeshInfo&    info,
+        const std::string&     filename,
+        const MeshI&           mesh,
+        const MeshInfo&        info,
         const ParameterVector& parameters) const override
     {
-        savePly(filename, mesh, info, parameters);
-    }
+        auto savePly = [this](
+                           const std::string&      filename,
+                           const MeshConcept auto& mesh,
+                           const MeshInfo&         info,
+                           const ParameterVector&  parameters) {
+            vcl::SaveSettings settings;
+            settings.info   = info;
+            settings.binary = parameters.get("binary")->boolValue();
+            vcl::savePly(mesh, filename, settings);
 
-private:
-    template<MeshConcept MeshType>
-    void savePly(
-        const std::string& filename,
-        const MeshType&    mesh,
-        const MeshInfo&    info,
-        const ParameterVector& parameters) const
-    {
-        vcl::SaveSettings settings;
-        settings.info =  info;
-        settings.binary = parameters.get("binary")->boolValue();
-        vcl::savePly(mesh, filename, settings);
-
-        if (parameters.get("save_texture_files")->boolValue()) {
-            if (manager()) {
-                saveMeshTextures(
-                    mesh, FileInfo::pathWithoutFileName(filename), manager());
+            if (parameters.get("save_texture_files")->boolValue()) {
+                if (manager()) {
+                    saveMeshTextures(
+                        mesh,
+                        FileInfo::pathWithoutFileName(filename),
+                        manager());
+                }
             }
-        }
+        };
+
+        callFunctionForAllMesheTypes(savePly, filename, mesh, info, parameters);
     }
 };
 

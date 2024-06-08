@@ -63,32 +63,31 @@ public:
     }
 
     void save(
-        const std::string& filename,
-        const TriMesh&    mesh,
-        const MeshInfo&    info,
+        const std::string&     filename,
+        const MeshI&           mesh,
+        const MeshInfo&        info,
         const ParameterVector& parameters) const override
     {
-        saveObj(filename, mesh, info, parameters);
-    }
+        auto saveObj = [this](
+                           const std::string&      filename,
+                           const MeshConcept auto& mesh,
+                           const MeshInfo&         info,
+                           const ParameterVector&  parameters) {
+            vcl::SaveSettings settings;
+            settings.info =  info;
+            vcl::saveObj(mesh, filename, settings);
 
-private:
-    template<MeshConcept MeshType>
-    void saveObj(
-        const std::string& filename,
-        const MeshType&    mesh,
-        const MeshInfo&    info,
-        const ParameterVector& parameters) const
-    {
-        vcl::SaveSettings settings;
-        settings.info =  info;
-        vcl::saveObj(mesh, filename, settings);
-
-        if (parameters.get("save_texture_files")->boolValue()) {
-            if (manager()) {
-                saveMeshTextures(
-                    mesh, FileInfo::pathWithoutFileName(filename), manager());
+            if (parameters.get("save_texture_files")->boolValue()) {
+                if (manager()) {
+                    saveMeshTextures(
+                        mesh,
+                        FileInfo::pathWithoutFileName(filename),
+                        manager());
+                }
             }
-        }
+        };
+
+        callFunctionForAllMesheTypes(saveObj, filename, mesh, info, parameters);
     }
 };
 

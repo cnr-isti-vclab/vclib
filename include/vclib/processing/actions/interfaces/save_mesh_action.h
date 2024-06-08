@@ -45,30 +45,9 @@ public:
 
     virtual void save(
         const std::string&     filename,
-        const TriMesh&         mesh,
-        const MeshInfo&        info,
-        const ParameterVector& parameters) const = 0;
-
-    virtual void save(
-        const std::string&     filename,
         const MeshI&           mesh,
         const MeshInfo&        info,
-        const ParameterVector& parameters) const
-    {
-        vcl::BitSet<short> smt = supportedInputMeshTypes(0);
-        if (!smt[mesh.type()]) {
-            throw std::runtime_error("Unsupported mesh type");
-        }
-
-        switch(mesh.type())
-        {
-            case MeshIType::TRI_MESH:
-                save(filename, mesh.as<TriMesh>(), info, parameters);
-                break;
-            default:
-                throw std::runtime_error("Unsupported mesh type");
-        }
-    }
+        const ParameterVector& parameters) const = 0;
 
     void save(const std::string& filename, const MeshI& mesh) const
     {
@@ -89,6 +68,27 @@ public:
         const ParameterVector& parameters) const
     {
         save(filename, mesh, formatCapability(), parameters);
+    }
+
+protected:
+    void callFunctionForAllMesheTypes(
+        auto&& function,
+        const std::string&     filename,
+        const MeshI&           mesh,
+        const MeshInfo&        info,
+        const ParameterVector& parameters) const
+    {
+        switch(mesh.type())
+        {
+        case MeshIType::TRI_MESH:
+            function(filename, mesh.as<TriMesh>(), info, parameters);
+            break;
+        case MeshIType::POLY_MESH:
+            function(filename, mesh.as<PolyMesh>(), info, parameters);
+            break;
+        default:
+            throw std::runtime_error("Unsupported mesh type");
+        }
     }
 };
 
