@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_MESHES_ABSTRACT_MESH_H
-#define VCL_PROCESSING_MESHES_ABSTRACT_MESH_H
+#ifndef VCL_PROCESSING_MESHES_MESH_I_H
+#define VCL_PROCESSING_MESHES_MESH_I_H
 
 #include <memory>
 
@@ -29,26 +29,26 @@
 
 namespace vcl::proc {
 
-struct AbsMeshType
+struct MeshIType
 {
     enum Enum
     {
-        TRIANGLE_MESH,
-        POLYGON_MESH,
+        TRI_MESH,
+        POLY_MESH,
 
         COUNT
     };
 };
 
-class AbstractMesh
+class MeshI
 {
 public:
-    AbstractMesh() = default;
-    virtual ~AbstractMesh() = default;
+    MeshI() = default;
+    virtual ~MeshI() = default;
 
-    virtual std::shared_ptr<AbstractMesh> clone() const = 0;
+    virtual std::shared_ptr<MeshI> clone() const = 0;
 
-    virtual AbsMeshType::Enum type() const = 0;
+    virtual MeshIType::Enum type() const = 0;
 
     template<MeshConcept MeshType>
     bool is() const
@@ -71,4 +71,4 @@ public:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_MESHES_ABSTRACT_MESH_H
+#endif // VCL_PROCESSING_MESHES_MESH_I_H

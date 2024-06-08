@@ -20,38 +20,76 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTION_MANAGER_SAVE_IMAGE_ACTION_MANAGER_H
-#define VCL_PROCESSING_ACTION_MANAGER_SAVE_IMAGE_ACTION_MANAGER_H
+#ifndef VCL_PROCESSING_ACTION_MANAGER_IO_ACTION_MANAGER_H
+#define VCL_PROCESSING_ACTION_MANAGER_IO_ACTION_MANAGER_H
 
 #include <map>
 
-#include <vclib/processing/actions/interfaces/save_image_action.h>
 #include <vclib/space/polymorphic_object_vector.h>
 
 namespace vcl::proc {
 
-class SaveImageActionManager
+template<typename IOAction>
+class IOActionManager
 {
     vcl::PolymorphicObjectVector<Action> mActions;
 
-    std::map<std::string, std::shared_ptr<SaveImageAction>> mFormatMap;
+    std::map<FileFormat, std::shared_ptr<IOAction>> mFormatMap;
 
 public:
-    SaveImageActionManager() = default;
+    IOActionManager() = default;
 
-    void add(SaveImageAction& action)
+    void add(IOAction& action)
     {
         std::vector<FileFormat> formats = action.formats();
 
         for (const auto& format : formats) {
-            for (const auto& ext : format.extensions()) {
-                if (mFormatMap.find(ext) != mFormatMap.end()) {
-                    throw std::runtime_error("Extension already registered.");
-                }
-                mActions.pushBack(action);
-                mFormatMap[ext] =
-                    std::dynamic_pointer_cast<SaveImageAction>(mActions.back());
-            }
+            checkFormatDoesNotExist(format);
+            mActions.pushBack(action);
+            mFormatMap[format] =
+                std::dynamic_pointer_cast<IOAction>(mActions.back());
+        }
+    }
+
+    void add(std::shared_ptr<IOAction> action)
+    {
+        if (!action) {
+            throw std::runtime_error("Action is nullptr.");
+        }
+        std::vector<FileFormat> formats = action->formats();
+
+        for (const auto& format : formats) {
+            checkFormatDoesNotExist(format);
+            mActions.pushBack(action);
+            mFormatMap[format] =
+                std::dynamic_pointer_cast<IOAction>(mActions.back());
+        }
+    }
+
+    std::shared_ptr<IOAction> get(const FileFormat& format)
+    {
+        checkFormat(format);
+        return mFormatMap[format];
+    }
+
+    std::shared_ptr<IOAction> get(const std::string& ext)
+    {
+        FileFormat format(ext);
+        return get(format);
+    }
+
+private:
+    void checkFormatDoesNotExist(const FileFormat& format)
+    {
+        if (mFormatMap.find(format) != mFormatMap.end()) {
+            throw std::runtime_error("Format already registered.");
+        }
+    }
+
+    void checkFormat(const FileFormat& format)
+    {
+        if (mFormatMap.find(format) == mFormatMap.end()) {
+            throw std::runtime_error("Format not registered.");
         }
     }
 };

@@ -25,4 +25,17 @@
 
 #include "save_mesh/stl_save_mesh_action.h"
 
+namespace vcl::proc {
+
+std::vector<std::shared_ptr<Action>> vclibSaveMeshActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    vec.push_back(StlSaveMeshAction().clone());
+
+    return vec;
+}
+
+} // namespace vcl::proc
+
 #endif // VCL_PROCESSING_ACTIONS_SAVE_MESH_H

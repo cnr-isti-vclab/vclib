@@ -52,9 +52,9 @@ public:
         return params;
     }
 
-    FileFormat format() const override
+    std::vector<FileFormat> formats() const override
     {
-        return FileFormat("stl", "");
+        return {FileFormat("stl", "")};
     }
 
     MeshInfo formatCapability() const override
@@ -64,7 +64,7 @@ public:
 
     void save(
         const std::string& filename,
-        const TriMeshP&    mesh,
+        const TriMesh&    mesh,
         const MeshInfo&    info,
         const ParameterVector& parameters) const override
     {

@@ -20,34 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_MESHES_TRI_MESH_P_H
-#define VCL_PROCESSING_MESHES_TRI_MESH_P_H
+#ifndef VCL_PROCESSING_MESHES_TRI_MESH_H
+#define VCL_PROCESSING_MESHES_TRI_MESH_H
 
-#include "abstract_mesh.h"
+#include "mesh_i.h"
 
 #include <vclib/meshes/tri_mesh.h>
 #include <vclib/processing/settings.h>
 
 namespace vcl::proc {
 
-class TriMeshP :
-        public AbstractMesh,
+class TriMesh final:
+        public MeshI,
         public TriMeshT<ProcScalarType, INDEXED_MESHES>
 {
 public:
-    TriMeshP() = default;
+    TriMesh() = default;
 
-    std::shared_ptr<AbstractMesh> clone() const override
+    std::shared_ptr<MeshI> clone() const override
     {
-        return std::make_shared<TriMeshP>(*this);
+        return std::make_shared<TriMesh>(*this);
     }
 
-    AbsMeshType::Enum type() const override
+    MeshIType::Enum type() const override
     {
-        return AbsMeshType::TRIANGLE_MESH;
+        return MeshIType::TRI_MESH;
     }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_MESHES_TRI_MESH_P_H
+#endif // VCL_PROCESSING_MESHES_TRI_MESH_H

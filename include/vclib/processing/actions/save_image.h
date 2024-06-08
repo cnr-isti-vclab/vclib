@@ -25,4 +25,17 @@
 
 #include "save_image/base_save_image_action.h"
 
+namespace vcl::proc {
+
+std::vector<std::shared_ptr<Action>> vclibSaveImageActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    vec.push_back(BaseSaveImageAction().clone());
+
+    return vec;
+}
+
+} // namespace vcl::proc
+
 #endif // VCL_PROCESSING_ACTIONS_SAVE_IMAGE_H

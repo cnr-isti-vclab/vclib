@@ -46,7 +46,7 @@ public:
         formats.push_back(FileFormat("bmp", "Bitmap"));
         formats.push_back(FileFormat("tga", "Truevision TGA"));
         formats.push_back(
-            FileFormat({"jpg", "jpeg"}, "Joint Photographic Experts Group"));
+            FileFormat(std::vector<std::string>{"jpg", "jpeg"}, "Joint Photographic Experts Group"));
 
         return formats;
     }

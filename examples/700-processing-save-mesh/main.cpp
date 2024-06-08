@@ -24,10 +24,16 @@
 
 int main()
 {
-    vcl::proc::TriMeshP mesh;
-    vcl::proc::StlSaveMeshAction action;
+    vcl::proc::TriMesh mesh;
 
-    action.save("prova.stl", mesh);
+    vcl::proc::ActionManager manager;
+
+    manager.add(vcl::proc::vclibSaveImageActions());
+    manager.add(vcl::proc::vclibSaveMeshActions());
+
+    auto action = manager.getSaveMeshAction(vcl::proc::FileFormat("stl"));
+
+    action->save("prova2.stl", mesh);
 
     return 0;
 }

@@ -34,22 +34,24 @@ namespace vcl::proc {
 
 class SaveMeshAction : public MeshAction {
 public:
+    uint type() const override { return ActionType::SAVE_MESH_ACTION; }
+
     uint inputMeshNumber() const final { return 1; }
 
     uint outputMeshNumber() const final { return 0; }
 
-    virtual FileFormat format() const = 0;
+    virtual std::vector<FileFormat> formats() const = 0;
     virtual MeshInfo formatCapability() const = 0;
 
     virtual void save(
         const std::string&     filename,
-        const TriMeshP&        mesh,
+        const TriMesh&         mesh,
         const MeshInfo&        info,
         const ParameterVector& parameters) const = 0;
 
     virtual void save(
         const std::string&     filename,
-        const AbstractMesh&    mesh,
+        const MeshI&           mesh,
         const MeshInfo&        info,
         const ParameterVector& parameters) const
     {
@@ -60,22 +62,22 @@ public:
 
         switch(mesh.type())
         {
-            case AbsMeshType::TRIANGLE_MESH:
-                save(filename, mesh.as<TriMeshP>(), info, parameters);
+            case MeshIType::TRI_MESH:
+                save(filename, mesh.as<TriMesh>(), info, parameters);
                 break;
             default:
                 throw std::runtime_error("Unsupported mesh type");
         }
     }
 
-    void save(const std::string& filename, const AbstractMesh& mesh) const
+    void save(const std::string& filename, const MeshI& mesh) const
     {
         save(filename, mesh, formatCapability(), parameters());
     }
 
     void save(
         const std::string&  filename,
-        const AbstractMesh& mesh,
+        const MeshI& mesh,
         const MeshInfo&     info) const
     {
         save(filename, mesh, info, parameters());
@@ -83,7 +85,7 @@ public:
 
     void save(
         const std::string&     filename,
-        const AbstractMesh&    mesh,
+        const MeshI&    mesh,
         const ParameterVector& parameters) const
     {
         save(filename, mesh, formatCapability(), parameters);

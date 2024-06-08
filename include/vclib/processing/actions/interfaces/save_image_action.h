@@ -34,6 +34,8 @@ namespace vcl::proc {
 
 class SaveImageAction : public Action {
 public:
+    uint type() const override { return ActionType::SAVE_IMAGE_ACTION; }
+
     virtual std::vector<FileFormat> formats() const = 0;
 
     virtual void save(

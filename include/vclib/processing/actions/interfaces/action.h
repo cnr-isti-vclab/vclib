@@ -25,10 +25,19 @@
 
 #include <memory>
 
-#include <vclib/processing/meshes/abstract_mesh.h>
+#include <vclib/processing/meshes/mesh_i.h>
 #include <vclib/types.h>
 
 namespace vcl::proc {
+
+struct ActionType
+{
+    enum Enum
+    {
+        SAVE_IMAGE_ACTION = 0,
+        SAVE_MESH_ACTION,
+    };
+};
 
 class Action {
 public:
@@ -38,6 +47,8 @@ public:
     virtual std::shared_ptr<Action> clone() const = 0;
 
     virtual std::string name() const = 0;
+
+    virtual uint type() const = 0;
 };
 
 } // namespace vcl::proc

@@ -23,10 +23,12 @@
 #ifndef VCL_PROCESSING_ACTIONS_COMMON_FILE_FORMAT_H
 #define VCL_PROCESSING_ACTIONS_COMMON_FILE_FORMAT_H
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
 #include <vclib/concepts/ranges/range.h>
+#include <vclib/misc/string.h>
 
 namespace vcl::proc {
 
@@ -36,14 +38,22 @@ class FileFormat
     std::string mDescription;
 
 public:
-    FileFormat(std::string extenison, std::string description) :
+    FileFormat(std::string extenison, std::string description = "") :
             mExtensions{extenison}, mDescription(description)
     {
+        mExtensions[0] = vcl::toLower(mExtensions[0]);
     }
 
-    FileFormat(Range auto extensions, std::string description) :
+    FileFormat(Range auto extensions, std::string description = "") :
             mExtensions(extensions), mDescription(description)
     {
+        for (auto& ext : mExtensions) {
+            ext = vcl::toLower(ext);
+        }
+
+        // make sure extensions are sorted - this is important for the
+        // comparison operator
+        std::sort(mExtensions.begin(), mExtensions.end());
     }
 
     const std::string& description() const
@@ -54,6 +64,38 @@ public:
     const std::vector<std::string>& extensions() const
     {
         return mExtensions;
+    }
+
+    bool matchExtension(const std::string& extension) const
+    {
+        for (const auto& ext : mExtensions) {
+            if (ext == extension) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @brief A FileFormat is equal to another if **at least** one extension is
+     * equal. The description is not considered.
+     *
+     * Otherwise, the comparison is based on the first extension.
+     *
+     * @note This is a lexicographical comparison.
+     *
+     * @param other
+     * @return a std::strong_ordering value indicating the comparison result
+     */
+    std::strong_ordering operator <=> (const FileFormat& other) const
+    {
+        for (const auto& ext : mExtensions) {
+            if (other.matchExtension(ext)) {
+                return std::strong_ordering::equal;
+            }
+        }
+
+        return mExtensions[0] <=> other.mExtensions[0];
     }
 };
 

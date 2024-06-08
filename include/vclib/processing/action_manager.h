@@ -23,6 +23,55 @@
 #ifndef VCL_PROCESSING_ACTION_MANAGER_H
 #define VCL_PROCESSING_ACTION_MANAGER_H
 
-#include "action_manager/save_image_action_manager.h"
+#include <vclib/processing/actions/save_image.h>
+#include <vclib/processing/actions/save_mesh.h>
+
+#include "action_manager/io_action_manager.h"
+
+namespace vcl::proc {
+
+class ActionManager {
+    IOActionManager<SaveImageAction> mSaveImageActionManager;
+    IOActionManager<SaveMeshAction>  mSaveMeshActionManager;
+
+public:
+    void add(const std::shared_ptr<Action>& action) {
+        std::shared_ptr<SaveImageAction> saveImgAction;
+        std::shared_ptr<SaveMeshAction>  saveMeshAction;
+
+        switch(action->type()) {
+        case ActionType::SAVE_IMAGE_ACTION:
+            saveImgAction = std::dynamic_pointer_cast<SaveImageAction>(action);
+            mSaveImageActionManager.add(saveImgAction);
+            break;
+        case ActionType::SAVE_MESH_ACTION:
+            saveMeshAction = std::dynamic_pointer_cast<SaveMeshAction>(action);
+            mSaveMeshActionManager.add(saveMeshAction);
+            break;
+        default: throw std::runtime_error("Action type not supported");
+        }
+    }
+
+    template<vcl::Range R> requires vcl::RangeOf<R, std::shared_ptr<Action>>
+    void add(R&& actions) {
+        for (const auto& action : actions) {
+            add(action);
+        }
+    }
+
+    std::shared_ptr<SaveImageAction> getSaveImageAction(
+        const FileFormat& format)
+    {
+        return mSaveImageActionManager.get(format);
+    }
+
+    std::shared_ptr<SaveMeshAction> getSaveMeshAction(
+        const FileFormat& format)
+    {
+        return mSaveMeshActionManager.get(format);
+    }
+};
+
+} // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTION_MANAGER_H
