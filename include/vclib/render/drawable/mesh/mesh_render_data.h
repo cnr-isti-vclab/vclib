@@ -674,6 +674,7 @@ private:
                 }
                 else {
                     mTextures.push_back(t.image());
+                    mTextures.back().mirror();
                 }
             }
         }
