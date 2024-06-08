@@ -20,11 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_H
+#ifndef VCL_PROCESSING_ACTIONS_LOAD_IMAGE_BASE_LOAD_IMAGE_ACTION_H
+#define VCL_PROCESSING_ACTIONS_LOAD_IMAGE_BASE_LOAD_IMAGE_ACTION_H
 
-#include "interfaces/load_image_action.h"
-#include "interfaces/save_image_action.h"
-#include "interfaces/save_mesh_action.h"
+#include <vclib/processing/actions/interfaces/load_image_action.h>
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_H
+namespace vcl::proc {
+
+class BaseLoadImageAction : public LoadImageAction {
+public:
+    BaseLoadImageAction() = default;
+    ~BaseLoadImageAction() = default;
+
+    std::string name() const override { return "BaseLoadImageAction"; }
+
+    std::shared_ptr<Action> clone() const override
+    {
+        return std::make_shared<BaseLoadImageAction>(*this);
+    }
+
+    std::vector<FileFormat> formats() const override
+    {
+        std::vector<FileFormat> formats;
+        formats.push_back(FileFormat("png", "Portable Network Graphics"));
+        formats.push_back(FileFormat("bmp", "Bitmap"));
+        formats.push_back(FileFormat("tga", "Truevision TGA"));
+        formats.push_back(
+            FileFormat(std::vector<std::string>{"jpg", "jpeg"}, "Joint Photographic Experts Group"));
+
+        return formats;
+    }
+
+    Image load(const std::string& filename) const override
+    {
+        return Image(filename);
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTIONS_LOAD_IMAGE_BASE_LOAD_IMAGE_ACTION_H

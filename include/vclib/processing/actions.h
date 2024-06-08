@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_H
 #define VCL_PROCESSING_ACTIONS_H
 
+#include "actions/load_image.h"
 #include "actions/save_image.h"
 #include "actions/save_mesh.h"
 

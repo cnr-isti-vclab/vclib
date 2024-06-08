@@ -20,11 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_H
+#ifndef VCL_PROCESSING_ACTIONS_LOAD_IMAGE_H
+#define VCL_PROCESSING_ACTIONS_LOAD_IMAGE_H
 
-#include "interfaces/load_image_action.h"
-#include "interfaces/save_image_action.h"
-#include "interfaces/save_mesh_action.h"
+#include "load_image/base_load_image_action.h"
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_H
+namespace vcl::proc {
+
+std::vector<std::shared_ptr<Action>> vclibLoadImageActions()
+{
+    std::vector<std::shared_ptr<Action>> vec;
+
+    vec.push_back(BaseLoadImageAction().clone());
+
+    return vec;
+}
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTIONS_LOAD_IMAGE_H

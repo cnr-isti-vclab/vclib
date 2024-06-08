@@ -29,15 +29,21 @@
 namespace vcl::proc {
 
 class ActionManager {
+    IOActionManager<LoadImageAction> mLoadImageActionManager;
     IOActionManager<SaveImageAction> mSaveImageActionManager;
     IOActionManager<SaveMeshAction>  mSaveMeshActionManager;
 
 public:
     void add(const std::shared_ptr<Action>& action) {
+        std::shared_ptr<LoadImageAction> loadImageAction;
         std::shared_ptr<SaveImageAction> saveImgAction;
         std::shared_ptr<SaveMeshAction>  saveMeshAction;
 
         switch(action->type()) {
+        case ActionType::LOAD_IMAGE_ACTION:
+            loadImageAction = std::dynamic_pointer_cast<LoadImageAction>(action);
+            mLoadImageActionManager.add(loadImageAction);
+            break;
         case ActionType::SAVE_IMAGE_ACTION:
             saveImgAction = std::dynamic_pointer_cast<SaveImageAction>(action);
             mSaveImageActionManager.add(saveImgAction);
@@ -56,6 +62,12 @@ public:
         for (const auto& action : actions) {
             add(action);
         }
+    }
+
+    std::shared_ptr<LoadImageAction> loadImageAction(
+        const FileFormat& format)
+    {
+        return mLoadImageActionManager.get(format);
     }
 
     std::shared_ptr<SaveImageAction> saveImageAction(

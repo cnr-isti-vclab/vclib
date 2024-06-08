@@ -36,7 +36,9 @@ struct ActionType
 {
     enum Enum
     {
-        SAVE_IMAGE_ACTION = 0,
+        LOAD_IMAGE_ACTION = 0,
+        SAVE_IMAGE_ACTION,
+        LOAD_MESH_ACTION,
         SAVE_MESH_ACTION,
     };
 };

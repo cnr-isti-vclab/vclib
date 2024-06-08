@@ -20,11 +20,37 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_H
+#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_STRING_PARAMETER_H
+#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_STRING_PARAMETER_H
 
-#include "interfaces/load_image_action.h"
-#include "interfaces/save_image_action.h"
-#include "interfaces/save_mesh_action.h"
+#include "abstract_parameter.h"
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_H
+namespace vcl::proc {
+
+class StringParameter : public AbstractParameter
+{
+public:
+    StringParameter(
+        const std::string& name,
+        const std::string& value,
+        const std::string& description = "",
+        const std::string& tooltip     = "",
+        const std::string& category    = "") :
+            AbstractParameter(name, value, description, tooltip, category)
+    {
+    }
+
+    ParameterType::Enum type() const override
+    {
+        return ParameterType::STRING;
+    }
+
+    std::shared_ptr<AbstractParameter> clone() const override
+    {
+        return std::make_shared<StringParameter>(*this);
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_STRING_PARAMETER_H
