@@ -68,19 +68,27 @@ public:
         const MeshInfo&        info,
         const ParameterVector& parameters) const override
     {
-        auto saveStl = [this](
-                           const std::string&      filename,
-                           const MeshConcept auto& mesh,
-                           const MeshInfo&         info,
-                           const ParameterVector&  parameters) {
-            vcl::SaveSettings settings;
-            settings.info =  info;
-            settings.binary = parameters.get("binary")->boolValue();
-            settings.magicsMode = parameters.get("magics_mode")->boolValue();
-            vcl::saveStl(mesh, filename, settings);
+        // transform saveStl to a lambda function
+        auto fun = [&](auto&& fn, auto&& m, auto&& i, auto&& p) {
+            saveStl(fn, m, i, p);
         };
 
-        callFunctionForAllMesheTypes(saveStl, filename, mesh, info, parameters);
+        callFunctionForSupportedMesheTypes(
+            fun, filename, mesh, info, parameters);
+    }
+
+private:
+    void saveStl(
+        const std::string&      filename,
+        const MeshConcept auto& mesh,
+        const MeshInfo&         info,
+        const ParameterVector&  parameters) const
+    {
+        vcl::SaveSettings settings;
+        settings.info =  info;
+        settings.binary = parameters.get("binary")->boolValue();
+        settings.magicsMode = parameters.get("magics_mode")->boolValue();
+        vcl::saveStl(mesh, filename, settings);
     }
 };
 

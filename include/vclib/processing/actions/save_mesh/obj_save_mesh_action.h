@@ -68,26 +68,34 @@ public:
         const MeshInfo&        info,
         const ParameterVector& parameters) const override
     {
-        auto saveObj = [this](
-                           const std::string&      filename,
-                           const MeshConcept auto& mesh,
-                           const MeshInfo&         info,
-                           const ParameterVector&  parameters) {
-            vcl::SaveSettings settings;
-            settings.info =  info;
-            vcl::saveObj(mesh, filename, settings);
-
-            if (parameters.get("save_texture_files")->boolValue()) {
-                if (manager()) {
-                    saveMeshTextures(
-                        mesh,
-                        FileInfo::pathWithoutFileName(filename),
-                        manager());
-                }
-            }
+        // transform saveObj to a lambda function
+        auto fun = [&](auto&& fn, auto&& m, auto&& i, auto&& p) {
+            saveObj(fn, m, i, p);
         };
 
-        callFunctionForAllMesheTypes(saveObj, filename, mesh, info, parameters);
+        callFunctionForSupportedMesheTypes(
+            fun, filename, mesh, info, parameters);
+    }
+
+private:
+    void saveObj(
+        const std::string&      filename,
+        const MeshConcept auto& mesh,
+        const MeshInfo&         info,
+        const ParameterVector&  parameters) const
+    {
+        vcl::SaveSettings settings;
+        settings.info =  info;
+        vcl::saveObj(mesh, filename, settings);
+
+        if (parameters.get("save_texture_files")->boolValue()) {
+            if (manager()) {
+                saveMeshTextures(
+                    mesh,
+                    FileInfo::pathWithoutFileName(filename),
+                    manager());
+            }
+        }
     }
 };
 

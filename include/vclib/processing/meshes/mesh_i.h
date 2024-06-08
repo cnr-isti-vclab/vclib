@@ -50,6 +50,8 @@ public:
 
     virtual MeshIType::Enum type() const = 0;
 
+    virtual std::string typeName() const = 0;
+
     template<MeshConcept MeshType>
     bool is() const
     {

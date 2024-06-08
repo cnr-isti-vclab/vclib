@@ -71,13 +71,20 @@ public:
     }
 
 protected:
-    void callFunctionForAllMesheTypes(
+    void callFunctionForSupportedMesheTypes(
         auto&& function,
         const std::string&     filename,
         const MeshI&           mesh,
         const MeshInfo&        info,
         const ParameterVector& parameters) const
     {
+        auto supportedMeshTypes = supportedInputMeshTypes(0);
+        if (! supportedMeshTypes[mesh.type()]) {
+            throw std::runtime_error(
+                "The action " + name() + " does not support the " +
+                mesh.typeName() + " type.");
+        }
+
         switch(mesh.type())
         {
         case MeshIType::TRI_MESH:
@@ -87,7 +94,7 @@ protected:
             function(filename, mesh.as<PolyMesh>(), info, parameters);
             break;
         default:
-            throw std::runtime_error("Unsupported mesh type");
+            throw std::runtime_error("Unknown mesh type");
         }
     }
 };

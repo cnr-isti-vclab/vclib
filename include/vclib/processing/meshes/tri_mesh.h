@@ -46,6 +46,11 @@ public:
     {
         return MeshIType::TRI_MESH;
     }
+
+    std::string typeName() const override
+    {
+        return "TriMesh";
+    }
 };
 
 } // namespace vcl::proc

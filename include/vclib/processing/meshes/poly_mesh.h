@@ -46,6 +46,11 @@ public:
     {
         return MeshIType::POLY_MESH;
     }
+
+    std::string typeName() const override
+    {
+        return "PolyMesh";
+    }
 };
 
 } // namespace vcl::proc

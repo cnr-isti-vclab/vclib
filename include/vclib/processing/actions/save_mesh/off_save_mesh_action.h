@@ -56,17 +56,25 @@ public:
         const MeshInfo&        info,
         const ParameterVector& parameters) const override
     {
-        auto saveOff = [this](
-                           const std::string&      filename,
-                           const MeshConcept auto& mesh,
-                           const MeshInfo&         info,
-                           const ParameterVector&  parameters) {
-            vcl::SaveSettings settings;
-            settings.info = info;
-            vcl::saveOff(mesh, filename, settings);
+        // transform saveOff to a lambda function
+        auto fun = [&](auto&& fn, auto&& m, auto&& i, auto&& p) {
+            saveOff(fn, m, i, p);
         };
 
-        callFunctionForAllMesheTypes(saveOff, filename, mesh, info, parameters);
+        callFunctionForSupportedMesheTypes(
+            fun, filename, mesh, info, parameters);
+    }
+
+private:
+    void saveOff(
+        const std::string&      filename,
+        const MeshConcept auto& mesh,
+        const MeshInfo&         info,
+        const ParameterVector&) const
+    {
+        vcl::SaveSettings settings;
+        settings.info = info;
+        vcl::saveOff(mesh, filename, settings);
     }
 };
 
