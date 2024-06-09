@@ -50,6 +50,26 @@ void saveMeshTextures(
     }
 }
 
+template<MeshConcept MeshType>
+void loadMeshTextures(
+    MeshType&          mesh,
+    const std::string& filepath,
+    ActionManager*     manager)
+{
+    for (vcl::Texture& texture : mesh.textures()) {
+        std::string ext = FileInfo::extension(texture.path());
+
+        try {
+            auto act = manager->loadImageAction(ext);
+            texture.image() = act->load(filepath + texture.path());
+        }
+        catch (const std::exception& e) {
+            // todo: log error
+            std::cerr << "Error loading texture: " << e.what() << std::endl;
+        }
+    }
+}
+
 } // namespace vcl::proc
 
 #endif // VCL_PROCESSING_FUNCTIONS_H
