@@ -74,18 +74,18 @@ public:
         const ParameterVector& parameters) const override
     {
         // transform saveObj to a lambda function
-        auto fun = [&](auto&& fn, auto&& m, auto&& i, auto&& p) {
-            saveObj(fn, m, i, p);
+        auto fun = [&](auto&& m, auto&& fn, auto&& i, auto&& p) {
+            saveObj(m, fn, i, p);
         };
 
         callFunctionForSupportedMesheTypes(
-            fun, filename, mesh, info, parameters);
+            fun, mesh, filename, info, parameters);
     }
 
 private:
     void saveObj(
-        const std::string&      filename,
         const MeshConcept auto& mesh,
+        const std::string&      filename,
         const MeshInfo&         info,
         const ParameterVector&  parameters) const
     {

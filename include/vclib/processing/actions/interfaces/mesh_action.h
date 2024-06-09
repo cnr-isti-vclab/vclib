@@ -24,7 +24,7 @@
 #define VCL_PROCESSING_ACTIONS_INTERFACES_MESH_ACTION_H
 
 #include <vclib/processing/actions/common/parameter_vector.h>
-#include <vclib/processing/meshes/mesh_i.h>
+#include <vclib/processing/meshes.h>
 #include <vclib/space/bit_set.h>
 
 #include "action.h"
@@ -72,27 +72,6 @@ public:
     }
 
     /**
-     * @brief Given the index of the output mesh of the action, returns a BitSet
-     * that tells, for each mesh type, if the action supports it or not.
-     *
-     * By default, all mesh types are supported.
-     *
-     * You should override this method if your action does not support all mesh
-     * types.
-     *
-     * @return A BitSet with the supported mesh types.
-     */
-    virtual vcl::BitSet<short> supportedOutputMeshTypes(uint i) const
-    {
-        if (i >= outputMeshNumber()) {
-            throw std::runtime_error("Invalid output mesh index");
-        }
-        vcl::BitSet<short> bs;
-        bs.set();
-        return bs;
-    }
-
-    /**
      * @brief Returns the parameters of the action.
      *
      * By default, the action has no parameters.
@@ -104,6 +83,22 @@ public:
     virtual ParameterVector parameters() const
     {
         return ParameterVector();
+    }
+
+protected:
+    void callFunctionForMesh(auto&& function, const MeshI& mesh, auto&&... args)
+        const
+    {
+        switch (mesh.type()) {
+        case MeshIType::TRI_MESH:
+            function(mesh.as<TriMesh>(), std::forward<decltype(args)>(args)...);
+            break;
+        case MeshIType::POLY_MESH:
+            function(
+                mesh.as<PolyMesh>(), std::forward<decltype(args)>(args)...);
+            break;
+        default: throw std::runtime_error("Unknown mesh type");
+        }
     }
 };
 

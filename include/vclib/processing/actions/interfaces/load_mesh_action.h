@@ -45,11 +45,15 @@ public:
 
     virtual std::shared_ptr<MeshI> load(
         const std::string&     filename,
+        const ParameterVector& parameters,
+        vcl::MeshInfo& loadedInfo) const = 0;
+
+    virtual std::shared_ptr<MeshI> load(
+        const std::string&     filename,
         const ParameterVector& parameter) const
     {
         MeshInfo info;
         auto mesh = load(filename, parameter, info);
-
         return mesh;
     }
 
@@ -59,29 +63,6 @@ public:
     }
 
 protected:
-    virtual std::shared_ptr<MeshI> load(
-        const std::string&     filename,
-        const ParameterVector& parameters,
-        vcl::MeshInfo& loadedInfo) const = 0;
-
-    void postLoad(
-        const std::shared_ptr<MeshI>& mesh,
-        const MeshInfo&               loadedInfo) const
-    {
-        if (mesh) {
-            switch(mesh->type()) {
-            case MeshIType::TRI_MESH:
-                postLoad(mesh->as<TriMesh>(), loadedInfo);
-                break;
-            case MeshIType::POLY_MESH:
-                postLoad(mesh->as<PolyMesh>(), loadedInfo);
-                break;
-            default:
-                throw std::runtime_error("Unknown mesh type");
-            }
-        }
-    }
-
     template<MeshConcept MeshType>
     void postLoad(MeshType& mesh, const MeshInfo& loadedInfo) const
     {

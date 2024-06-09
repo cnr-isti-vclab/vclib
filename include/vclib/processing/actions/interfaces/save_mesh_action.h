@@ -72,11 +72,9 @@ public:
 
 protected:
     void callFunctionForSupportedMesheTypes(
-        auto&& function,
-        const std::string&     filename,
-        const MeshI&           mesh,
-        const MeshInfo&        info,
-        const ParameterVector& parameters) const
+        auto&&       function,
+        const MeshI& mesh,
+        auto&&... args) const
     {
         auto supportedMeshTypes = supportedInputMeshTypes(0);
         if (! supportedMeshTypes[mesh.type()]) {
@@ -85,17 +83,8 @@ protected:
                 mesh.typeName() + " type.");
         }
 
-        switch(mesh.type())
-        {
-        case MeshIType::TRI_MESH:
-            function(filename, mesh.as<TriMesh>(), info, parameters);
-            break;
-        case MeshIType::POLY_MESH:
-            function(filename, mesh.as<PolyMesh>(), info, parameters);
-            break;
-        default:
-            throw std::runtime_error("Unknown mesh type");
-        }
+        callFunctionForMesh(
+            function, mesh, std::forward<decltype(args)>(args)...);
     }
 };
 
