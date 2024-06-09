@@ -20,28 +20,61 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_LOAD_MESH_H
-#define VCL_PROCESSING_ACTIONS_LOAD_MESH_H
+#ifndef VCL_PROCESSING_ACTIONS_LOAD_MESH_STL_LOAD_MESH_ACTION_H
+#define VCL_PROCESSING_ACTIONS_LOAD_MESH_STL_LOAD_MESH_ACTION_H
 
-#include "load_mesh/obj_load_mesh_action.h"
-#include "load_mesh/off_load_mesh_action.h"
-#include "load_mesh/ply_load_mesh_action.h"
-#include "load_mesh/stl_load_mesh_action.h"
+#include <vclib/algorithms/mesh/clean.h>
+#include <vclib/io/mesh/stl/load.h>
+#include <vclib/processing/actions/interfaces/load_mesh_action.h>
+#include <vclib/processing/actions/common/parameters.h>
+#include <vclib/processing/functions.h>
+#include <vclib/processing/meshes.h>
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> vclibLoadMeshActions()
-{
-    std::vector<std::shared_ptr<Action>> vec;
+class StlLoadMeshAction : public LoadMeshAction {
+public:
+    using LoadMeshAction::load;
 
-    vec.push_back(ObjLoadMeshAction().clone());
-    vec.push_back(OffLoadMeshAction().clone());
-    vec.push_back(PlyLoadMeshAction().clone());
-    vec.push_back(StlLoadMeshAction().clone());
+    std::string name() const override { return "Load Stl Mesh"; }
 
-    return vec;
-}
+    std::shared_ptr<Action> clone() const override
+    {
+        return std::make_shared<StlLoadMeshAction>(*this);
+    }
+
+    ParameterVector parameters() const override
+    {
+        ParameterVector params;
+
+        params.pushBack(BoolParameter(
+            "unify_duplicate_vertices", true, "Unify Duplicate Vertices", ""));
+
+        return params;
+    }
+
+    std::vector<FileFormat> formats() const override
+    {
+        return {FileFormat("stl", "")};
+    }
+
+    std::shared_ptr<MeshI> load(
+        const std::string&     filename,
+        const ParameterVector& parameters,
+        MeshInfo&              loadedInfo) const override
+    {
+        auto tm = vcl::loadStl<TriMesh>(filename, loadedInfo);
+        if (parameters.get("unify_duplicate_vertices")->boolValue()) {
+            vcl::removeDuplicatedVertices(tm);
+            tm.compactVertices();
+            // todo: log the number of removed vertices
+        }
+
+        postLoad(tm, loadedInfo);
+        return tm.clone();
+    }
+};
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_LOAD_MESH_H
+#endif // VCL_PROCESSING_ACTIONS_LOAD_MESH_PLY_LOAD_MESH_ACTION_H
