@@ -66,8 +66,10 @@ void loadPly(
         for (const PlyElement& el : header) {
             switch (el.type) {
             case ply::VERTEX: readPlyVertices(file, header, m); break;
-            case ply::FACE: readPlyFaces(file, header, m); break;
-            case ply::TRISTRIP: readPlyTriStrips(file, header, m); break;
+            case ply::FACE: readPlyFaces(file, header, m, loadedInfo); break;
+            case ply::TRISTRIP:
+                loadedInfo.setTriangleMesh();
+                readPlyTriStrips(file, header, m); break;
             default: readPlyUnknownElement(file, header, el); break;
             }
         }

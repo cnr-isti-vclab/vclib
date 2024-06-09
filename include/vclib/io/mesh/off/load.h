@@ -230,7 +230,7 @@ inline void readOffHeader(
     uint&         nf,
     uint&         ne)
 {
-    fileInfo.reset();
+    fileInfo.clear();
     vcl::Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
     vcl::Tokenizer::iterator token  = tokens.begin();
     std::string              header = *token;
@@ -417,6 +417,7 @@ void readOffFaces(
 
             // read vertex indices
             uint fSize = io::readUInt<uint>(token);
+            loadedInfo.updateMeshType(fSize);
             // contains the vertex ids of the actual face
             std::vector<uint> vids;
             vids.resize(fSize);
