@@ -66,11 +66,13 @@ public:
 
         switch (parameters.get("mesh_type")->intValue()) {
         case 0:
-        case 2:
-            mesh = loadObj<PolyMesh>(filename, loadedInfo).clone();
+            mesh = loadBestFit(filename, loadedInfo);
             break;
         case 1:
             mesh = loadObj<TriMesh>(filename, loadedInfo).clone();
+            break;
+        case 2:
+            mesh = loadObj<PolyMesh>(filename, loadedInfo).clone();
             break;
         default: throw std::runtime_error("Invalid mesh type");
         }
@@ -80,14 +82,47 @@ public:
 
 private:
     template<MeshConcept MeshType>
+    void postProcess(
+        MeshType&          mesh,
+        const std::string& filename,
+        MeshInfo&          loadedInfo) const
+    {
+        postLoad(mesh, loadedInfo);
+        loadMeshTextures(
+            mesh, FileInfo::pathWithoutFileName(filename), manager());
+    }
+
+    std::shared_ptr<MeshI> loadBestFit(
+        const std::string&     filename,
+        MeshInfo&              loadedInfo) const
+    {
+        std::shared_ptr<MeshI> mesh;
+
+        // first I load in a PolyMesh, which I know it can store all the info
+        // contained in a obj
+        PolyMesh pm = loadObj<PolyMesh>(filename, loadedInfo);
+
+        // if the file contains triangle meshes, I convert it to a TriMesh
+        if (loadedInfo.isTriangleMesh()) {
+            TriMesh tm;
+            tm.importFrom(pm);
+            postProcess(pm, filename, loadedInfo);
+            mesh = std::make_shared<TriMesh>(tm);
+        }
+        else {
+            postProcess(pm, filename, loadedInfo);
+            mesh = std::make_shared<PolyMesh>(pm);
+        }
+        return mesh;
+    }
+
+    template<MeshConcept MeshType>
     MeshType loadObj(
         const std::string&     filename,
         MeshInfo&              loadedInfo) const
     {
         MeshType mesh = vcl::loadObj<MeshType>(filename, loadedInfo);
-        postLoad(mesh, loadedInfo);
-        loadMeshTextures(
-            mesh, FileInfo::pathWithoutFileName(filename), manager());
+        postProcess(mesh, filename, loadedInfo);
         return mesh;
     }
 };

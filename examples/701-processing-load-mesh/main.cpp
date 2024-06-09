@@ -33,22 +33,29 @@ int main()
 
     manager.add(vcl::proc::vclibActions());
 
-    auto pm = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
+    auto pm0 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
                                                   "/TextureDouble.obj");
 
-    assert(pm->is<vcl::proc::PolyMesh>());
+    assert(pm0->is<vcl::proc::TriMesh>());
+
+    auto pm1 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
+                                                   "/greek_helmet.obj");
+
+    assert(pm1->is<vcl::proc::PolyMesh>());
 
     auto params = manager.loadMeshAction("obj")->parameters();
     params.get("mesh_type")->setIntValue(1);
 
     auto pm2 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
-                                                  "/TextureDouble.obj", params);
+                                                  "/greek_helmet.obj", params);
 
     assert(pm2->is<vcl::proc::TriMesh>());
 
-    manager.saveMeshAction("obj")->save("td1.obj", *pm);
+    manager.saveMeshAction("obj")->save("td1.obj", *pm0);
 
-    manager.saveMeshAction("obj")->save("td2.obj", *pm2);
+    manager.saveMeshAction("obj")->save("greek_poly.obj", *pm1);
+
+    manager.saveMeshAction("obj")->save("greek_tri.obj", *pm2);
 
     return 0;
 }
