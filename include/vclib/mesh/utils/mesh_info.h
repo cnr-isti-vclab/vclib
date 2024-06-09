@@ -25,7 +25,6 @@
 
 #include <array>
 #include <bitset>
-#include <list>
 #include <string>
 #include <typeindex>
 #include <vector>
@@ -77,10 +76,13 @@ class MeshInfo
 {
 public:
     /**
-     * @brief Enum used to describe the type of the Mesh - by default, a mesh is
-     * considered polygonal
+     * @brief Enum used to describe the type of the Mesh - by default, the value
+     * is set to UNKNOWN.
      */
-    enum MeshType { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH };
+    struct MeshType
+    {
+        enum Enum { TRIANGLE_MESH, QUAD_MESH, POLYGON_MESH, UNKNOWN };
+    };
 
     /**
      * @brief Enum used to describe the type of Elements that can be found in a
@@ -142,7 +144,7 @@ private:
         mPerElemCustomComponents;
 
     // Mesh Type
-    MeshType mType = POLYGON_MESH;
+    MeshType::Enum mType = MeshType::UNKNOWN;
 
 public:
     /**
@@ -275,7 +277,7 @@ public:
      * @brief Clears the MeshInfo object.
      *
      * All the Elements/Components are disabled, their type is set to
-     * DataType::NONE and the Mesh Type is set to MeshType::POLYGON_MESH.
+     * DataType::NONE and the Mesh Type is set to MeshType::UNKNOWN.
      */
     void clear()
     {
@@ -287,7 +289,7 @@ public:
         for (auto& v : mPerElemCustomComponents)
             v.clear();
 
-        mType = POLYGON_MESH;
+        mType = MeshType::UNKNOWN;
     }
 
     /**
@@ -296,26 +298,28 @@ public:
      */
     bool isEmpty() const { return !mElements.any(); }
 
+    bool isUnkownMesh() const { return mType == MeshType::UNKNOWN; }
+
     /**
      * @brief Returns true if the current object has Mesh type set to
      * MeshType::TRIANGLE_MESH.
      * @return true if the current Mesh type is set to MeshType::TRIANGLE_MESH.
      */
-    bool isTriangleMesh() const { return mType == TRIANGLE_MESH; }
+    bool isTriangleMesh() const { return mType == MeshType::TRIANGLE_MESH; }
 
     /**
      * @brief Returns true if the current object has Mesh type set to
      * MeshType::QUAD_MESH.
      * @return true if the current Mesh type is set to MeshType::QUAD_MESH.
      */
-    bool isQuadMesh() const { return mType == QUAD_MESH; }
+    bool isQuadMesh() const { return mType == MeshType::QUAD_MESH; }
 
     /**
      * @brief Returns true if the current object has Mesh type set to
      * MeshType::POLYGON_MESH.
      * @return true if the current Mesh type is set to MeshType::POLYGON_MESH.
      */
-    bool isPolygonMesh() const { return mType == POLYGON_MESH; }
+    bool isPolygonMesh() const { return mType == MeshType::POLYGON_MESH; }
 
     /*
      * Getter Elements/Components functions: they are used mostly after the
@@ -440,13 +444,33 @@ public:
      * Elements/Components of a Mesh.
      */
 
-    void setTriangleMesh() { mType = TRIANGLE_MESH; }
+    void updateMeshType(uint faceSize)
+    {
+        if (mType == MeshType::UNKNOWN) {
+            if (faceSize == 3)
+                setTriangleMesh();
+            else if (faceSize == 4)
+                setQuadMesh();
+            else
+                setPolygonMesh();
+        }
+        else if (mType == MeshType::TRIANGLE_MESH && faceSize != 3) {
+            setPolygonMesh();
+        }
+        else if (mType == MeshType::QUAD_MESH && faceSize != 4) {
+            setPolygonMesh();
+        }
+    }
 
-    void setQuadMesh() { mType = QUAD_MESH; }
+    void setUnknownMesh() { mType = MeshType::UNKNOWN; }
 
-    void setPolygonMesh() { mType = POLYGON_MESH; }
+    void setTriangleMesh() { mType = MeshType::TRIANGLE_MESH; }
 
-    void setMeshType(MeshType t) { mType = t; }
+    void setQuadMesh() { mType = MeshType::QUAD_MESH; }
+
+    void setPolygonMesh() { mType = MeshType::POLYGON_MESH; }
+
+    void setMeshType(MeshType::Enum t) { mType = t; }
 
     void setElement(Element el, bool b = true) { mElements[el] = b; }
 
@@ -649,7 +673,7 @@ public:
      * @param[in] info: The info object to compute the intersection with.
      * @return The intersection between this and `info`.
      */
-    MeshInfo intersect(const MeshInfo& info) const
+    [[ nodiscard ]] MeshInfo intersect(const MeshInfo& info) const
     {
         MeshInfo res;
         for (uint i = 0; i < NUM_ELEMENTS; ++i) {
@@ -671,19 +695,6 @@ public:
         res.mPerElemCustomComponents = mPerElemCustomComponents;
 
         return res;
-    }
-
-    void reset()
-    {
-        mElements.reset();
-        for (auto& comp : mPerElemComponents)
-            comp.reset();
-        mPerElemComponentsType.fill(NONE);
-
-        for (auto& v : mPerElemCustomComponents)
-            v.clear();
-
-        mType = TRIANGLE_MESH;
     }
 
 private:
