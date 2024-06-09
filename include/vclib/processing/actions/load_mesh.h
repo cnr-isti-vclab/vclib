@@ -20,37 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_H
-#define VCL_PROCESSING_ACTIONS_H
+#ifndef VCL_PROCESSING_ACTIONS_LOAD_MESH_H
+#define VCL_PROCESSING_ACTIONS_LOAD_MESH_H
 
-#include "actions/load_image.h"
-#include "actions/load_mesh.h"
-#include "actions/save_image.h"
-#include "actions/save_mesh.h"
+#include "load_mesh/obj_load_mesh_action.h"
+// #include "load_mesh/off_load_mesh_action.h"
+// #include "load_mesh/ply_load_mesh_action.h"
+// #include "load_mesh/stl_load_mesh_action.h"
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>> vclibActions()
+std::vector<std::shared_ptr<Action>> vclibLoadMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 
-    // Load actions
-    auto loadImageActions = vclibLoadImageActions();
-    vec.insert(vec.end(), loadImageActions.begin(), loadImageActions.end());
-
-    auto loadMeshActions = vclibLoadMeshActions();
-    vec.insert(vec.end(), loadMeshActions.begin(), loadMeshActions.end());
-
-    // Save actions
-    auto saveImageActions = vclibSaveImageActions();
-    vec.insert(vec.end(), saveImageActions.begin(), saveImageActions.end());
-
-    auto saveMeshActions = vclibSaveMeshActions();
-    vec.insert(vec.end(), saveMeshActions.begin(), saveMeshActions.end());
+    vec.push_back(ObjLoadMeshAction().clone());
+    // vec.push_back(OffLoadMeshAction().clone());
+    // vec.push_back(PlyLoadMeshAction().clone());
+    // vec.push_back(StlLoadMeshAction().clone());
 
     return vec;
 }
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_H
+#endif // VCL_PROCESSING_ACTIONS_LOAD_MESH_H

@@ -29,25 +29,26 @@ int main()
     vcl::LoadSettings s;
     s.loadTextureImages = true;
 
-    vcl::proc::TriMesh mesh = vcl::load<vcl::proc::TriMesh>(
-        VCLIB_ASSETS_PATH "/TextureDouble.ply", s);
-
     vcl::proc::ActionManager manager;
 
-    manager.add(vcl::proc::vclibSaveImageActions());
-    manager.add(vcl::proc::vclibSaveMeshActions());
+    manager.add(vcl::proc::vclibActions());
 
-    // saving obj
-    manager.saveMeshAction("obj")->save("td.obj", mesh);
+    auto pm = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
+                                                  "/TextureDouble.obj");
 
-    // saving off
-    manager.saveMeshAction("off")->save("td.off", mesh);
+    assert(pm->is<vcl::proc::PolyMesh>());
 
-    // saving ply
-    manager.saveMeshAction("ply")->save("td.ply", mesh);
+    auto params = manager.loadMeshAction("obj")->parameters();
+    params.get("mesh_type")->setIntValue(1);
 
-    // saving stl
-    manager.saveMeshAction("stl")->save("td.stl", mesh);
+    auto pm2 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
+                                                  "/TextureDouble.obj", params);
+
+    assert(pm2->is<vcl::proc::TriMesh>());
+
+    manager.saveMeshAction("obj")->save("td1.obj", *pm);
+
+    manager.saveMeshAction("obj")->save("td2.obj", *pm2);
 
     return 0;
 }

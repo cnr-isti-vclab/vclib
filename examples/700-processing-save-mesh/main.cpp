@@ -34,8 +34,7 @@ int main()
 
     vcl::proc::ActionManager manager;
 
-    manager.add(vcl::proc::vclibSaveImageActions());
-    manager.add(vcl::proc::vclibSaveMeshActions());
+    manager.add(vcl::proc::vclibActions());
 
     // saving obj
     manager.saveMeshAction("obj")->save("td.obj", mesh);

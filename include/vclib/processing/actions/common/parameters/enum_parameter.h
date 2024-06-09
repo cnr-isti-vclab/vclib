@@ -34,12 +34,12 @@ class EnumParameter : public Parameter
     std::vector<std::string> mEnumValues;
 public:
     EnumParameter(
-        const std::string& name,
-        int                value,
-        const Range auto & enumValues,
-        const std::string& description = "",
-        const std::string& tooltip     = "",
-        const std::string& category    = "") :
+        const std::string&              name,
+        int                             value,
+        const std::vector<std::string>& enumValues,
+        const std::string&              description = "",
+        const std::string&              tooltip     = "",
+        const std::string&              category    = "") :
             Parameter(name, value, description, tooltip, category)
     {
         for (const auto& v : enumValues)
