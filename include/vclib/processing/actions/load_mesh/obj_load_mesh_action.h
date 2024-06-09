@@ -100,13 +100,14 @@ private:
 
         // first I load in a PolyMesh, which I know it can store all the info
         // contained in a obj
-        PolyMesh pm = loadObj<PolyMesh>(filename, loadedInfo);
+        PolyMesh pm = vcl::loadObj<PolyMesh>(filename, loadedInfo);
 
         // if the file contains triangle meshes, I convert it to a TriMesh
         if (loadedInfo.isTriangleMesh()) {
             TriMesh tm;
+            tm.enableSameOptionalComponentsOf(pm);
             tm.importFrom(pm);
-            postProcess(pm, filename, loadedInfo);
+            postProcess(tm, filename, loadedInfo);
             mesh = std::make_shared<TriMesh>(tm);
         }
         else {
