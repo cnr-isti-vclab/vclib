@@ -37,10 +37,6 @@ class LoadMeshAction : public MeshAction {
 public:
     uint type() const final { return ActionType::LOAD_MESH_ACTION; }
 
-    uint inputMeshNumber() const final { return 0; }
-
-    uint outputMeshNumber() const final { return 1; }
-
     virtual std::vector<FileFormat> formats() const = 0;
 
     virtual std::shared_ptr<MeshI> load(

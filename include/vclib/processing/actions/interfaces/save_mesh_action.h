@@ -36,11 +36,26 @@ class SaveMeshAction : public MeshAction {
 public:
     uint type() const final { return ActionType::SAVE_MESH_ACTION; }
 
-    uint inputMeshNumber() const final { return 1; }
-
-    uint outputMeshNumber() const final { return 0; }
+    /**
+     * @brief Returns a BitSet that tells, for each mesh type, if the action
+     * supports it or not.
+     *
+     * By default, all mesh types are supported.
+     *
+     * You should override this method if your action does not support all mesh
+     * types.
+     *
+     * @return A BitSet with the supported mesh types.
+     */
+    virtual vcl::BitSet<short> supportedInputMeshType() const
+    {
+        vcl::BitSet<short> bs;
+        bs.set();
+        return bs;
+    }
 
     virtual std::vector<FileFormat> formats() const = 0;
+
     virtual MeshInfo formatCapability() const = 0;
 
     virtual void save(
@@ -76,7 +91,7 @@ protected:
         const MeshI& mesh,
         auto&&... args) const
     {
-        auto supportedMeshTypes = supportedInputMeshTypes(0);
+        auto supportedMeshTypes = supportedInputMeshType();
         if (! supportedMeshTypes[mesh.type()]) {
             throw std::runtime_error(
                 "The action " + name() + " does not support the " +
