@@ -46,8 +46,19 @@ public:
     {
         ParameterVector params;
 
-        params.pushBack(BoolParameter("binary", true, "", ""));
-        params.pushBack(BoolParameter("magics_mode", false, "", ""));
+        params.pushBack(BoolParameter(
+            "binary",
+            true,
+            "Binary",
+            "If true, the file will be saved as binary."));
+        params.pushBack(BoolParameter(
+            "magics_mode",
+            false,
+            "Magics Mode",
+            "Magics mode is a specific file format used by the Magics "
+            "software, which includes more information than the standard STL "
+            "format, like face colors. The magicsMode works only when the file "
+            "is saved as binary."));
 
         return params;
     }

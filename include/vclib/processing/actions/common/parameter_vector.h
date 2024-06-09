@@ -25,14 +25,14 @@
 
 #include <vclib/space/polymorphic_object_vector.h>
 
-#include "parameters/abstract_parameter.h"
+#include "parameters/parameter.h"
 
 namespace vcl::proc {
 
-class ParameterVector : public PolymorphicObjectVector<AbstractParameter>
+class ParameterVector : public PolymorphicObjectVector<Parameter>
 {
 public:
-    std::shared_ptr<const AbstractParameter> get(const std::string& name) const
+    std::shared_ptr<const Parameter> get(const std::string& name) const
     {
         for (const auto& parameter : *this) {
             if (parameter->name() == name) {
@@ -43,7 +43,7 @@ public:
         return nullptr;
     }
 
-    std::shared_ptr<AbstractParameter> get(const std::string& name)
+    std::shared_ptr<Parameter> get(const std::string& name)
     {
         for (auto& parameter : *this) {
             if (parameter->name() == name) {

@@ -23,11 +23,11 @@
 #ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_SCALAR_PARAMETER_H
 #define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_SCALAR_PARAMETER_H
 
-#include "abstract_parameter.h"
+#include "parameter.h"
 
 namespace vcl::proc {
 
-class ScalarParameter : public AbstractParameter
+class ScalarParameter : public Parameter
 {
 public:
     ScalarParameter(
@@ -36,7 +36,7 @@ public:
         const std::string& description = "",
         const std::string& tooltip     = "",
         const std::string& category    = "") :
-            AbstractParameter(name, value, description, tooltip, category)
+            Parameter(name, value, description, tooltip, category)
     {
     }
 
@@ -45,7 +45,7 @@ public:
         return ParameterType::SCALAR;
     }
 
-    std::shared_ptr<AbstractParameter> clone() const override
+    std::shared_ptr<Parameter> clone() const override
     {
         return std::make_shared<ScalarParameter>(*this);
     }

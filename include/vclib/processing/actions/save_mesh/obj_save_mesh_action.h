@@ -47,7 +47,12 @@ public:
     {
         ParameterVector params;
 
-        params.pushBack(BoolParameter("save_texture_files", true, "", ""));
+        params.pushBack(BoolParameter(
+            "save_texture_files",
+            true,
+            "Save Texture Files",
+            "If true, the texture image files will be saved along the mesh "
+            "file. Otherwise, only the mesh will be saved."));
 
         return params;
     }

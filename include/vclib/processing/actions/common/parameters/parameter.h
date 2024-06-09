@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ABSTRACT_PARAMETER_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ABSTRACT_PARAMETER_H
+#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_PARAMETER_H
+#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_PARAMETER_H
 
 #include <any>
 #include <memory>
@@ -36,6 +36,7 @@ namespace vcl::proc {
 struct ParameterType
 {
     enum Enum {
+        // native parameters
         INT,
         SCALAR,
         BOOL,
@@ -43,11 +44,15 @@ struct ParameterType
         COLOR,
         POINT3,
 
+        // special parameters - they store native parameters, but they add
+        // additional information or functionalities
+        ENUM, // enum is an int that can be converted to a string
+
         COUNT
     };
 };
 
-class AbstractParameter {
+class Parameter {
     std::string mName;
     std::any    mValue;
     std::string mDescription;
@@ -57,13 +62,13 @@ class AbstractParameter {
 public:
     using Scalar = ProcScalarType;
 
-    AbstractParameter() = default;
+    Parameter() = default;
 
-    virtual ~AbstractParameter() = default;
+    virtual ~Parameter() = default;
 
     virtual ParameterType::Enum type() const = 0;
 
-    virtual std::shared_ptr<AbstractParameter> clone() const = 0;
+    virtual std::shared_ptr<Parameter> clone() const = 0;
 
     const std::string& name() const { return mName; }
 
@@ -79,45 +84,81 @@ public:
 
     const std::string& category() const { return mCategory; }
 
-    bool& boolValue() { return std::any_cast<bool&>(mValue); }
+    void setBoolValue(bool v)
+    {
+        checkParameterType(ParameterType::BOOL);
+        std::any_cast<bool&>(mValue) = v;
+    }
 
-    bool boolValue() const { return std::any_cast<bool>(mValue); }
+    bool boolValue() const
+    {
+        checkParameterType(ParameterType::BOOL);
+        return std::any_cast<bool>(mValue);
+    }
 
-    int& intValue() { return std::any_cast<int&>(mValue); }
+    virtual void setIntValue(int v)
+    {
+        checkParameterType(ParameterType::INT);
+        std::any_cast<int&>(mValue) = v;
+    }
 
-    int intValue() const { return std::any_cast<int>(mValue); }
+    int intValue() const
+    {
+        checkParameterType(ParameterType::INT);
+        return std::any_cast<int>(mValue);
+    }
 
-    Scalar& scalarValue() { return std::any_cast<Scalar&>(mValue); }
+    virtual void setScalarValue(Scalar v)
+    {
+        checkParameterType(ParameterType::SCALAR);
+        std::any_cast<Scalar&>(mValue) = v;
+    }
 
-    Scalar scalarValue() const { return std::any_cast<Scalar>(mValue); }
+    Scalar scalarValue() const
+    {
+        checkParameterType(ParameterType::SCALAR);
+        return std::any_cast<Scalar>(mValue);
+    }
 
-    std::string& stringValue() { return std::any_cast<std::string&>(mValue); }
+    virtual void setStringValue(const std::string& v)
+    {
+        checkParameterType(ParameterType::STRING);
+        std::any_cast<std::string&>(mValue) = v;
+    }
 
     const std::string& stringValue() const
     {
+        checkParameterType(ParameterType::STRING);
         return std::any_cast<const std::string&>(mValue);
     }
 
-    vcl::Color& colorValue() { return std::any_cast<vcl::Color&>(mValue); }
+    void setColorValue(const vcl::Color& v)
+    {
+        checkParameterType(ParameterType::COLOR);
+        std::any_cast<vcl::Color&>(mValue) = v;
+    }
 
     const vcl::Color& colorValue() const
     {
+        checkParameterType(ParameterType::COLOR);
         return std::any_cast<const vcl::Color&>(mValue);
     }
 
-    Point3<ProcScalarType>& point3Value()
+    void setPoint3Value(const Point3<ProcScalarType>& v)
     {
-        return std::any_cast<Point3<ProcScalarType>&>(mValue);
+        checkParameterType(ParameterType::POINT3);
+        std::any_cast<Point3<ProcScalarType>&>(mValue) = v;
     }
 
     const Point3<ProcScalarType>& point3Value() const
     {
+        checkParameterType(ParameterType::POINT3);
         return std::any_cast<const Point3<ProcScalarType>&>(mValue);
     }
 
 protected:
     template<typename ValueType>
-    AbstractParameter(
+    Parameter(
         const std::string& name,
         const ValueType& value,
         const std::string& description,
@@ -127,8 +168,27 @@ protected:
             mDescription(description), mToolTip(tooltip), mCategory(category)
     {
     }
+
+private:
+    void checkParameterType(ParameterType::Enum t) const
+    {
+        if (nativeType() != t) {
+            throw std::runtime_error("Invalid parameter type");
+        }
+    }
+
+    ParameterType::Enum nativeType() const
+    {
+        ParameterType::Enum t = type();
+        switch (t) {
+        case vcl::proc::ParameterType::ENUM:
+            return ParameterType::INT;
+        default:
+            return t;
+        }
+    }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ABSTRACT_PARAMETER_H
+#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_PARAMETER_H

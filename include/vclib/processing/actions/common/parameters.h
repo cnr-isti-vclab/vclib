@@ -24,6 +24,7 @@
 #define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_H
 
 #include "parameters/bool_parameter.h"
+#include "parameters/enum_parameter.h"
 #include "parameters/int_parameter.h"
 #include "parameters/scalar_parameter.h"
 #include "parameters/string_parameter.h"

@@ -20,37 +20,70 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_BOOL_PARAMETER_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_BOOL_PARAMETER_H
+#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ENUM_PARAMETER_H
+#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ENUM_PARAMETER_H
 
 #include "parameter.h"
 
+#include <vclib/concepts/ranges/range.h>
+
 namespace vcl::proc {
 
-class BoolParameter : public Parameter
+class EnumParameter : public Parameter
 {
+    std::vector<std::string> mEnumValues;
 public:
-    BoolParameter(
+    EnumParameter(
         const std::string& name,
-        bool               value,
+        int                value,
+        const Range auto & enumValues,
         const std::string& description = "",
         const std::string& tooltip     = "",
         const std::string& category    = "") :
             Parameter(name, value, description, tooltip, category)
     {
+        for (const auto& v : enumValues)
+            mEnumValues.push_back(v);
+        if (value < 0 || value >= mEnumValues.size())
+            throw std::runtime_error("Invalid enum value");
     }
 
     ParameterType::Enum type() const override
     {
-        return ParameterType::BOOL;
+        return ParameterType::ENUM;
     }
 
     std::shared_ptr<Parameter> clone() const override
     {
-        return std::make_shared<BoolParameter>(*this);
+        return std::make_shared<EnumParameter>(*this);
+    }
+
+    void setIntValue(int value) override
+    {
+        if (value < 0 || value >= mEnumValues.size())
+            throw std::runtime_error("Invalid enum value");
+        Parameter::setIntValue(value);
+    }
+
+    const std::vector<std::string>& enumValues() const
+    {
+        return mEnumValues;
+    }
+
+    const std::string& enumValue() const
+    {
+        return mEnumValues[intValue()];
+    }
+
+    void setEnumValue(const std::string& value)
+    {
+        auto it = std::find(mEnumValues.begin(), mEnumValues.end(), value);
+        if (it == mEnumValues.end())
+            throw std::runtime_error("Invalid enum value");
+        Parameter::setIntValue(it - mEnumValues.begin());
     }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_BOOL_PARAMETER_H
+#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_INT_PARAMETER_H
