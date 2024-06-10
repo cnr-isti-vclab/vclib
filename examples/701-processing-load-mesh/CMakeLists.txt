@@ -21,44 +21,14 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-examples)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(EXAMPLE_NAME 701-processing-load-mesh)
+project(vclib-example-${EXAMPLE_NAME})
 
-# examples
-if (VCLIB_BUILD_EXAMPLES)
-    add_subdirectory(000-mesh-basic)
-    add_subdirectory(001-polymesh-basic)
-    add_subdirectory(002-mesh-iterators)
-    add_subdirectory(003-mesh-copy)
-    add_subdirectory(004-mesh-normal)
-    add_subdirectory(005-mesh-topology)
-    add_subdirectory(006-mesh-stat)
-    add_subdirectory(007-mesh-conversion)
-    add_subdirectory(008-mesh-transform)
-    add_subdirectory(009-mesh-custom-components)
-    add_subdirectory(010-mesh-new-user-component)
-    add_subdirectory(011-mesh-export-to-matrix)
-    add_subdirectory(012-mesh-io-obj)
-    add_subdirectory(013-mesh-io-off)
-    add_subdirectory(014-mesh-io-ply)
-    add_subdirectory(015-mesh-io-stl)
-    add_subdirectory(016-mesh-clean)
-    add_subdirectory(017-mesh-create)
-    add_subdirectory(018-mesh-principal-curvature)
-    add_subdirectory(019-mesh-sampling)
-    add_subdirectory(020-mesh-smooth)
-    add_subdirectory(021-mesh-sphere-intersection)
-    add_subdirectory(022-edge-mesh-basic)
-    add_subdirectory(023-polygon-earcut)
-    add_subdirectory(024-distance)
-    add_subdirectory(025-grid)
-    add_subdirectory(026-crease-edges-mesh)
+set(SOURCES
+    main.cpp)
 
-    add_subdirectory(700-processing-save-mesh)
-    add_subdirectory(701-processing-load-mesh)
-    add_subdirectory(702-processing-create-mesh)
-
-    add_subdirectory(999-misc)
-endif()
-
+vclib_add_example(
+    ${EXAMPLE_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})
