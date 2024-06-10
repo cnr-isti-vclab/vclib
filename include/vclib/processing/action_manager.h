@@ -81,6 +81,22 @@ public:
         }
     }
 
+    std::vector<FileFormat> loadImageFormats() const {
+        return mLoadImageActionManager.formats();
+    }
+
+    std::vector<FileFormat> loadMeshFormats() const {
+        return mLoadMeshActionManager.formats();
+    }
+
+    std::vector<FileFormat> saveImageFormats() const {
+        return mSaveImageActionManager.formats();
+    }
+
+    std::vector<FileFormat> saveMeshFormats() const {
+        return mSaveMeshActionManager.formats();
+    }
+
     std::shared_ptr<LoadImageAction> loadImageAction(
         const FileFormat& format)
     {

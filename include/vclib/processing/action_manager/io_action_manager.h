@@ -62,6 +62,15 @@ public:
         return mFormatMap[format];
     }
 
+    std::vector<FileFormat> formats() const
+    {
+        std::vector<FileFormat> formats;
+        for (const auto& [format, _] : mFormatMap) {
+            formats.push_back(format);
+        }
+        return formats;
+    }
+
 private:
     void checkFormatDoesNotExist(const FileFormat& format)
     {

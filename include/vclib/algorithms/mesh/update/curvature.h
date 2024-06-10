@@ -26,6 +26,7 @@
 #include <mutex>
 
 #include <vclib/algorithms/core/polygon.h>
+#include <vclib/algorithms/core/stat.h>
 #include <vclib/algorithms/mesh/intersection.h>
 #include <vclib/algorithms/mesh/point_sampling.h>
 #include <vclib/algorithms/mesh/stat.h>
