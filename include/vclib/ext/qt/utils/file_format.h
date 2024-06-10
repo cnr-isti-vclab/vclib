@@ -20,55 +20,37 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
-#define VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
+#ifndef VCL_EXT_QT_UTILS_FILE_FORMAT_H
+#define VCL_EXT_QT_UTILS_FILE_FORMAT_H
 
-#include <QMainWindow>
+#include <vclib/processing/actions/common/file_format.h>
 
-#include <vclib/render/drawable/drawable_object_vector.h>
-#include <vclib/processing/action_manager.h>
-
-#include <vclib/ext/qt/gui/text_edit_logger.h>
+#include <QString>
 
 namespace vcl::qt {
 
-namespace Ui {
-class ViewerMainWindow;
-} // namespace Ui
-
-class ViewerMainWindow : public QMainWindow
+inline QString filterFormatToQString(const proc::FileFormat& format)
 {
-    Q_OBJECT
+    QString filter = QString::fromStdString(format.description());
+    filter += " (";
+    for (const auto& ext : format.extensions()) {
+        filter += "*." + QString::fromStdString(ext) + " ";
+    }
+    filter += ")";
+    return filter;
+}
 
-    Ui::ViewerMainWindow*                      mUI;
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawVector;
-    proc::ActionManager                        mActionManager;
-
-public:
-    explicit ViewerMainWindow(QWidget* parent = nullptr);
-
-    ~ViewerMainWindow();
-
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    TextEditLogger& logger();
-
-public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
-private slots:
-    void on_actionSave_triggered();
-    void on_actionShow_Right_Bar_triggered(bool checked);
-    void on_actionShow_Logger_triggered(bool checked);
-    void on_actionShow_Mesh_Render_Settings_triggered(bool checked);
-    void on_actionShow_Mesh_List_triggered(bool checked);
-};
+inline QString filterFormatsToQString(
+    const std::vector<proc::FileFormat>& formats)
+{
+    QString filter;
+    for (const auto& format : formats) {
+        filter += filterFormatToQString(format);
+        filter += ";;";
+    }
+    return filter;
+}
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
+#endif // VCL_EXT_QT_UTILS_FILE_FORMAT_H

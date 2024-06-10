@@ -23,12 +23,14 @@
 #include "ext/qt/ui_viewer_main_window.h"
 #include <vclib/ext/qt/viewer_main_window.h>
 
+#include <vclib/ext/qt/utils/file_format.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 #include <QFileDialog>
 
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
+#include <vclib/processing/actions.h>
 
 namespace vcl::qt {
 
@@ -51,6 +53,9 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
     // give the vector pointer to the contained widgets
     mUI->viewer->setDrawableObjectVector(mDrawVector);
     mUI->drawVectorFrame->setDrawableObjectVector(mDrawVector);
+
+    // populate action manager
+    mActionManager.add(proc::vclibActions());
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function
@@ -194,14 +199,27 @@ void ViewerMainWindow::renderSettingsUpdated()
 
 void ViewerMainWindow::on_actionSave_triggered()
 {
+    std::vector<proc::FileFormat> formats = mActionManager.saveMeshFormats();
+
+    QString filter = filterFormatsToQString(formats);
+
     QFileDialog* dialog =
-        new QFileDialog(this, "Save Mesh", "", "Mesh Files (*.stl)");
+        new QFileDialog(this, "Save Mesh", "", filter);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
     if (dialog->exec() == QDialog::Accepted) {
         auto        fs       = dialog->selectedFiles();
+        auto frmt = dialog->selectedNameFilter();
+
+        std::cerr << frmt.toStdString() << "\n";
+
+        // get format from frmt, which is '(*.stl )'
+        std::string format = frmt.toStdString();
+        format = format.substr(2, 4);
+
         std::string filename = fs.first().toStdString();
-        if (filename.find(".stl") == std::string::npos) {
-            filename += ".stl";
+        std::string fnext = FileInfo::extension(filename);
+        if (fnext.empty() || fnext != format) {
+            filename += "." + format;
         }
         uint             i = mUI->drawVectorFrame->selectedDrawableObject();
         DrawableObjectI& d = mDrawVector->at(i);
@@ -210,7 +228,11 @@ void ViewerMainWindow::on_actionSave_triggered()
             dynamic_cast<DrawableMesh<vcl::TriMesh>*>(&d);
 
         if (m) {
-            vcl::save(*m, filename, logger());
+            // todo: use directly m when it will be a proc::TriMesh
+            proc::TriMesh t;
+            t.enableSameOptionalComponentsOf(*m);
+            t.importFrom(*m);
+            mActionManager.saveMeshAction(format)->save(filename, t);
         }
     }
 }
