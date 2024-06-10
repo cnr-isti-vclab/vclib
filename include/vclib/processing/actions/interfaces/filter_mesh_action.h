@@ -20,26 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_SAVE_MESH_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_SAVE_MESH_ACTION_H
+#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_FILTER_MESH_ACTION_H
+#define VCL_PROCESSING_ACTIONS_INTERFACES_FILTER_MESH_ACTION_H
+
+#include <vclib/processing/actions/common/mesh_vector.h>
+#include <vclib/space/bit_set.h>
 
 #include "mesh_action.h"
 
-#include <vclib/mesh/utils/mesh_info.h>
-#include <vclib/processing/actions/common/file_format.h>
-#include <vclib/processing/meshes.h>
-#include <vclib/processing/settings.h>
-#include <vclib/space/bit_set.h>
-
 namespace vcl::proc {
 
-class SaveMeshAction : public MeshAction {
+class FilterMeshAction : public MeshAction {
 public:
-    uint type() const final { return ActionType::SAVE_MESH_ACTION; }
+    uint type() const final { return ActionType::FILTER_MESH_ACTION; }
+
+    virtual uint numberInputMeshes() const = 0;
 
     /**
      * @brief Returns a BitSet that tells, for each mesh type, if the action
-     * supports it or not.
+     * supports it or not for the i-th input mesh.
      *
      * By default, all mesh types are supported.
      *
@@ -48,62 +47,47 @@ public:
      *
      * @return A BitSet with the supported mesh types.
      */
-    virtual vcl::BitSet<short> supportedInputMeshType() const
+    virtual vcl::BitSet<short> supportedInputMeshTypes(uint meshIndex) const
     {
+        if (meshIndex >= numberInputMeshes()) {
+            throw std::runtime_error("Mesh index out of bounds.");
+        }
         vcl::BitSet<short> bs;
         bs.set();
         return bs;
     }
 
-    virtual std::vector<FileFormat> formats() const = 0;
+    virtual uint numberInputOutputMeshes() const = 0;
 
-    virtual MeshInfo formatCapability() const = 0;
-
-    virtual void save(
-        const std::string&     filename,
-        const MeshI&           mesh,
-        const MeshInfo&        info,
-        const ParameterVector& parameters) const = 0;
-
-    void save(const std::string& filename, const MeshI& mesh) const
+    /**
+     * @brief Returns a BitSet that tells, for each mesh type, if the action
+     * supports it or not for the i-th input/output mesh.
+     *
+     * By default, all mesh types are supported.
+     *
+     * You should override this method if your action does not support all mesh
+     * types.
+     *
+     * @return A BitSet with the supported mesh types.
+     */
+    virtual vcl::BitSet<short> supportedInputOutputMeshTypes(
+        uint meshIndex) const
     {
-        save(filename, mesh, formatCapability(), parameters());
-    }
-
-    void save(
-        const std::string&  filename,
-        const MeshI& mesh,
-        const MeshInfo&     info) const
-    {
-        save(filename, mesh, info, parameters());
-    }
-
-    void save(
-        const std::string&     filename,
-        const MeshI&    mesh,
-        const ParameterVector& parameters) const
-    {
-        save(filename, mesh, formatCapability(), parameters);
-    }
-
-protected:
-    void callFunctionForSupportedMesheTypes(
-        auto&&       function,
-        const MeshI& mesh,
-        auto&&... args) const
-    {
-        auto supportedMeshTypes = supportedInputMeshType();
-        if (! supportedMeshTypes[mesh.type()]) {
-            throw std::runtime_error(
-                "The action " + name() + " does not support the " +
-                mesh.typeName() + " type.");
+        if (meshIndex >= numberInputOutputMeshes()) {
+            throw std::runtime_error("Mesh index out of bounds.");
         }
-
-        callFunctionForMesh(
-            function, mesh, std::forward<decltype(args)>(args)...);
+        vcl::BitSet<short> bs;
+        bs.set();
+        return bs;
     }
+
+    virtual OutputValues applyFilter(
+        const MeshVector       inputMeshes,
+        MeshVector&            inputOutputMeshes,
+        MeshVector&            outputMeshes,
+        const ParameterVector& parameters) const = 0;
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_SAVE_MESH_ACTION_H
+#endif // VCL_PROCESSING_ACTIONS_INTERFACES_FILTER_MESH_ACTION_H

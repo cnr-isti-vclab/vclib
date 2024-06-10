@@ -23,8 +23,10 @@
 #ifndef VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
 #define VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
 
+#include <algorithm>
 #include <memory>
 
+#include <vclib/misc/string.h>
 #include <vclib/processing/meshes/mesh_i.h>
 #include <vclib/types.h>
 
@@ -40,6 +42,7 @@ struct ActionType
         SAVE_IMAGE_ACTION,
         LOAD_MESH_ACTION,
         SAVE_MESH_ACTION,
+        FILTER_MESH_ACTION,
     };
 };
 
@@ -62,6 +65,16 @@ public:
     virtual std::string name() const = 0;
 
     virtual uint type() const = 0;
+
+    std::string identifier() const
+    {
+        std::string n = name();
+
+        std::replace(n.begin(), n.end(), ' ', '_');
+        n = vcl::toLower(n);
+
+        return std::to_string(type()) + "_" + n;
+    }
 
 protected:
     void setManager(ActionManager* manager) { mManage = manager; }

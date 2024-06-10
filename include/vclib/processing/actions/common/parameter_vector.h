@@ -55,6 +55,8 @@ public:
     }
 };
 
+using OutputValues = ParameterVector;
+
 } // namespace vcl::proc
 
 #endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETER_VECTOR_H

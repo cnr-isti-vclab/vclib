@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_INTERFACES_H
 #define VCL_PROCESSING_ACTIONS_INTERFACES_H
 
+#include "interfaces/filter_mesh_action.h"
 #include "interfaces/load_image_action.h"
 #include "interfaces/load_mesh_action.h"
 #include "interfaces/save_image_action.h"

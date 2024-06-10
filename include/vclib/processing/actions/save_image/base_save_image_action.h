@@ -32,7 +32,7 @@ public:
     BaseSaveImageAction() = default;
     ~BaseSaveImageAction() = default;
 
-    std::string name() const override { return "BaseSaveImageAction"; }
+    std::string name() const override { return "Base Save Image"; }
 
     std::shared_ptr<Action> clone() const override
     {
@@ -45,8 +45,9 @@ public:
         formats.push_back(FileFormat("png", "Portable Network Graphics"));
         formats.push_back(FileFormat("bmp", "Bitmap"));
         formats.push_back(FileFormat("tga", "Truevision TGA"));
-        formats.push_back(
-            FileFormat(std::vector<std::string>{"jpg", "jpeg"}, "Joint Photographic Experts Group"));
+        formats.push_back(FileFormat(
+            std::vector<std::string> {"jpg", "jpeg"},
+            "Joint Photographic Experts Group"));
 
         return formats;
     }
