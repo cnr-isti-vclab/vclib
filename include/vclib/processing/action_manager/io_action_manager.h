@@ -31,8 +31,6 @@
 
 namespace vcl::proc {
 
-class ActionManager;
-
 template<typename IOAction>
 class IOActionManager
 {
@@ -60,7 +58,7 @@ public:
 
     std::shared_ptr<IOAction> get(const FileFormat& format)
     {
-        checkFormat(format);
+        checkFormatExists(format);
         return mFormatMap[format];
     }
 
@@ -72,7 +70,7 @@ private:
         }
     }
 
-    void checkFormat(const FileFormat& format)
+    void checkFormatExists(const FileFormat& format)
     {
         if (mFormatMap.find(format) == mFormatMap.end()) {
             throw std::runtime_error("Format not registered.");

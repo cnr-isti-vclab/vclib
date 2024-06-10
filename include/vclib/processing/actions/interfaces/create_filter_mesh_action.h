@@ -20,73 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
+#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_CREATE_FILTER_MESH_ACTION_H
+#define VCL_PROCESSING_ACTIONS_INTERFACES_CREATE_FILTER_MESH_ACTION_H
 
-#include <algorithm>
-#include <memory>
-
-#include <vclib/misc/string.h>
-#include <vclib/processing/meshes/mesh_i.h>
-#include <vclib/types.h>
+#include "filter_mesh_action.h"
 
 namespace vcl::proc {
 
-class ActionManager;
-
-struct ActionType
-{
-    enum Enum
-    {
-        LOAD_IMAGE_ACTION = 0,
-        SAVE_IMAGE_ACTION,
-        LOAD_MESH_ACTION,
-        SAVE_MESH_ACTION,
-        FILTER_MESH_ACTION,
-    };
-};
-
-class Action {
-    friend class ActionManager;
-
-    /**
-     * @brief A pointer to the manager that contains the action.
-     *
-     * It could be used by the action to access and run other actions.
-     */
-    ActionManager* mManage = nullptr;
-
+class CreateFilterMeshAction : public FilterMeshAction {
 public:
-    Action() = default;
-    virtual ~Action() = default;
+    uint numberInputMeshes() const final { return 0; }
 
-    virtual std::shared_ptr<Action> clone() const = 0;
-
-    virtual std::string name() const = 0;
-
-    virtual uint type() const = 0;
-
-    std::string identifier() const
+    vcl::BitSet<short> supportedInputMeshTypes(uint) const final
     {
-        return identifierFromName(name());
+        vcl::BitSet<short> bs;
+        bs.reset();
+        return bs;
     }
 
-    static std::string identifierFromName(const std::string& name)
+    uint numberInputOutputMeshes() const final { return 0; }
+
+    vcl::BitSet<short> supportedInputOutputMeshTypes(uint) const final
     {
-        std::string n = name;
-
-        std::replace(n.begin(), n.end(), ' ', '_');
-        n = vcl::toLower(n);
-
-        return n;
+        return supportedInputMeshTypes(0);
     }
-
-protected:
-    void setManager(ActionManager* manager) { mManage = manager; }
-
-    ActionManager* manager() const { return mManage; }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
+#endif // VCL_PROCESSING_ACTIONS_INTERFACES_CREATE_FILTER_MESH_ACTION_H

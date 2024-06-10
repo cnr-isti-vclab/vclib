@@ -20,73 +20,56 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
+#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_CREATE_CONE_FILTER_H
+#define VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_CREATE_CONE_FILTER_H
 
-#include <algorithm>
-#include <memory>
-
-#include <vclib/misc/string.h>
-#include <vclib/processing/meshes/mesh_i.h>
-#include <vclib/types.h>
+#include <vclib/algorithms/mesh/create/cone.h>
+#include <vclib/processing/actions/common/parameters.h>
+#include <vclib/processing/actions/interfaces/create_filter_mesh_action.h>
 
 namespace vcl::proc {
 
-class ActionManager;
-
-struct ActionType
+class CreateConeFilter : public CreateFilterMeshAction
 {
-    enum Enum
-    {
-        LOAD_IMAGE_ACTION = 0,
-        SAVE_IMAGE_ACTION,
-        LOAD_MESH_ACTION,
-        SAVE_MESH_ACTION,
-        FILTER_MESH_ACTION,
-    };
-};
-
-class Action {
-    friend class ActionManager;
-
-    /**
-     * @brief A pointer to the manager that contains the action.
-     *
-     * It could be used by the action to access and run other actions.
-     */
-    ActionManager* mManage = nullptr;
-
 public:
-    Action() = default;
-    virtual ~Action() = default;
-
-    virtual std::shared_ptr<Action> clone() const = 0;
-
-    virtual std::string name() const = 0;
-
-    virtual uint type() const = 0;
-
-    std::string identifier() const
+    std::shared_ptr<Action> clone() const override
     {
-        return identifierFromName(name());
+        return std::make_shared<CreateConeFilter>(*this);
     }
 
-    static std::string identifierFromName(const std::string& name)
+    std::string name() const override { return "Create Cone"; }
+
+    ParameterVector parameters() const override
     {
-        std::string n = name;
+        ParameterVector params;
 
-        std::replace(n.begin(), n.end(), ' ', '_');
-        n = vcl::toLower(n);
+        params.pushBack(IntParameter("bottom_radius", 1, "Bottom Radius", ""));
+        params.pushBack(IntParameter("top_radius", 1, "Top Radius", ""));
+        params.pushBack(ScalarParameter("height", 1, "Height", ""));
+        params.pushBack(
+            IntParameter("subdivisions", 36, "N. Subdivisions", ""));
 
-        return n;
+        return params;
     }
 
-protected:
-    void setManager(ActionManager* manager) { mManage = manager; }
+    virtual OutputValues applyFilter(
+        const MeshVector,
+        const std::vector<std::shared_ptr<MeshI>>&,
+        MeshVector&            outputMeshes,
+        const ParameterVector& parameters) const override
+    {
+        auto bottomRadius = parameters.get("bottom_radius")->intValue();
+        auto topRadius = parameters.get("top_radius")->intValue();
+        auto height = parameters.get("height")->scalarValue();
+        auto subdivisions = parameters.get("subdivisions")->intValue();
 
-    ActionManager* manager() const { return mManage; }
+        outputMeshes.pushBack(vcl::createCone<TriMesh>(
+            bottomRadius, topRadius, height, subdivisions).clone());
+
+        return OutputValues();
+    }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
+#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_CREATE_CONE_FILTER_H

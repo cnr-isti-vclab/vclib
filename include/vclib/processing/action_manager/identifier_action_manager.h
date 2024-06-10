@@ -20,73 +20,65 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
+#ifndef VCL_PROCESSING_ACTION_MANAGER_IDENTIFIER_ACTION_MANAGER_H
+#define VCL_PROCESSING_ACTION_MANAGER_IDENTIFIER_ACTION_MANAGER_H
 
-#include <algorithm>
-#include <memory>
+#include <map>
 
-#include <vclib/misc/string.h>
-#include <vclib/processing/meshes/mesh_i.h>
-#include <vclib/types.h>
+#include <vclib/processing/actions/interfaces/action.h>
+#include <vclib/space/polymorphic_object_vector.h>
 
 namespace vcl::proc {
 
-class ActionManager;
-
-struct ActionType
+template<typename IDAction>
+class IdentifierActionManager
 {
-    enum Enum
-    {
-        LOAD_IMAGE_ACTION = 0,
-        SAVE_IMAGE_ACTION,
-        LOAD_MESH_ACTION,
-        SAVE_MESH_ACTION,
-        FILTER_MESH_ACTION,
-    };
-};
+    vcl::PolymorphicObjectVector<Action> mActions;
 
-class Action {
-    friend class ActionManager;
-
-    /**
-     * @brief A pointer to the manager that contains the action.
-     *
-     * It could be used by the action to access and run other actions.
-     */
-    ActionManager* mManage = nullptr;
+    std::map<std::string, std::shared_ptr<IDAction>> mIdActionMap;
 
 public:
-    Action() = default;
-    virtual ~Action() = default;
+    IdentifierActionManager() = default;
 
-    virtual std::shared_ptr<Action> clone() const = 0;
-
-    virtual std::string name() const = 0;
-
-    virtual uint type() const = 0;
-
-    std::string identifier() const
+    void add(std::shared_ptr<IDAction> action)
     {
-        return identifierFromName(name());
+        if (!action) {
+            throw std::runtime_error("Action is nullptr.");
+        }
+        std::string id = action->identifier();
+        checkIdDoesNotExist(id);
+        mActions.pushBack(action);
+        mIdActionMap[id] =
+            std::dynamic_pointer_cast<IDAction>(mActions.back());
     }
 
-    static std::string identifierFromName(const std::string& name)
+    std::shared_ptr<IDAction> get(const std::string& id)
     {
-        std::string n = name;
-
-        std::replace(n.begin(), n.end(), ' ', '_');
-        n = vcl::toLower(n);
-
-        return n;
+        checkIdExists(id);
+        return mIdActionMap[id];
     }
 
-protected:
-    void setManager(ActionManager* manager) { mManage = manager; }
+    std::shared_ptr<IDAction> getByName(const std::string& id)
+    {
+        return get(Action::identifierFromName(id));
+    }
 
-    ActionManager* manager() const { return mManage; }
+private:
+    void checkIdDoesNotExist(const std::string& id)
+    {
+        if (mIdActionMap.find(id) != mIdActionMap.end()) {
+            throw std::runtime_error("Action with the same id already exists.");
+        }
+    }
+
+    void checkIdExists(const std::string& id)
+    {
+        if (mIdActionMap.find(id) == mIdActionMap.end()) {
+            throw std::runtime_error("Action not found.");
+        }
+    }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
+#endif // VCL_PROCESSING_ACTION_MANAGER_IDENTIFIER_ACTION_MANAGER_H

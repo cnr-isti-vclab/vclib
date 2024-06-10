@@ -23,6 +23,9 @@
 #ifndef VCL_PROCESSING_ACTIONS_LOAD_IMAGE_H
 #define VCL_PROCESSING_ACTIONS_LOAD_IMAGE_H
 
+#include <memory>
+#include <vector>
+
 #include "load_image/base_load_image_action.h"
 
 namespace vcl::proc {

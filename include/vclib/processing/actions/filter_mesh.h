@@ -20,73 +20,24 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
+#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_H
+#define VCL_PROCESSING_ACTIONS_FILTER_MESH_H
 
-#include <algorithm>
-#include <memory>
-
-#include <vclib/misc/string.h>
-#include <vclib/processing/meshes/mesh_i.h>
-#include <vclib/types.h>
+#include "filter_mesh/create.h"
 
 namespace vcl::proc {
 
-class ActionManager;
-
-struct ActionType
+std::vector<std::shared_ptr<Action>> vclibFilterMeshActions()
 {
-    enum Enum
-    {
-        LOAD_IMAGE_ACTION = 0,
-        SAVE_IMAGE_ACTION,
-        LOAD_MESH_ACTION,
-        SAVE_MESH_ACTION,
-        FILTER_MESH_ACTION,
-    };
-};
+    std::vector<std::shared_ptr<Action>> vec;
 
-class Action {
-    friend class ActionManager;
+    // Create filters
+    auto createFilters = vclibCreateFilterMeshActions();
+    vec.insert(vec.end(), createFilters.begin(), createFilters.end());
 
-    /**
-     * @brief A pointer to the manager that contains the action.
-     *
-     * It could be used by the action to access and run other actions.
-     */
-    ActionManager* mManage = nullptr;
-
-public:
-    Action() = default;
-    virtual ~Action() = default;
-
-    virtual std::shared_ptr<Action> clone() const = 0;
-
-    virtual std::string name() const = 0;
-
-    virtual uint type() const = 0;
-
-    std::string identifier() const
-    {
-        return identifierFromName(name());
-    }
-
-    static std::string identifierFromName(const std::string& name)
-    {
-        std::string n = name;
-
-        std::replace(n.begin(), n.end(), ' ', '_');
-        n = vcl::toLower(n);
-
-        return n;
-    }
-
-protected:
-    void setManager(ActionManager* manager) { mManage = manager; }
-
-    ActionManager* manager() const { return mManage; }
-};
+    return vec;
+}
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_ACTION_H
+#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_H

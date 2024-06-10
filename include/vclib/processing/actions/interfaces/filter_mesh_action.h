@@ -82,10 +82,47 @@ public:
     }
 
     virtual OutputValues applyFilter(
-        const MeshVector       inputMeshes,
-        MeshVector&            inputOutputMeshes,
+        const MeshVector                           inputMeshes,
+        const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
+        MeshVector&                                outputMeshes,
+        const ParameterVector&                     parameters) const = 0;
+
+    OutputValues applyFilter(
+        const MeshVector                           inputMeshes,
+        const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
+        MeshVector&                                outputMeshes) const
+    {
+        return applyFilter(
+            inputMeshes, inputOutputMeshes, outputMeshes, parameters());
+    }
+
+    OutputValues applyFilter(
         MeshVector&            outputMeshes,
-        const ParameterVector& parameters) const = 0;
+        const ParameterVector& parameters) const
+    {
+        if (numberInputMeshes() > 0) {
+            throw std::runtime_error(
+                "This action requires input meshes. You called the wrong "
+                "overload of the applyFilter member function.");
+        }
+
+        if (numberInputOutputMeshes() > 0) {
+            throw std::runtime_error(
+                "This action requires input/output meshes. You called the "
+                "wrong overload of the applyFilter member function.");
+        }
+
+        return applyFilter(
+            MeshVector(),
+            std::vector<std::shared_ptr<MeshI>>(),
+            outputMeshes,
+            parameters);
+    }
+
+    OutputValues applyFilter(MeshVector& outputMeshes) const
+    {
+        return applyFilter(outputMeshes, parameters());
+    }
 };
 
 } // namespace vcl::proc

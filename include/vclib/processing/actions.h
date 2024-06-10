@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_H
 #define VCL_PROCESSING_ACTIONS_H
 
+#include "actions/filter_mesh.h"
 #include "actions/load_image.h"
 #include "actions/load_mesh.h"
 #include "actions/save_image.h"
@@ -47,6 +48,10 @@ std::vector<std::shared_ptr<Action>> vclibActions()
 
     auto saveMeshActions = vclibSaveMeshActions();
     vec.insert(vec.end(), saveMeshActions.begin(), saveMeshActions.end());
+
+    // Filter actions
+    auto filterMeshActions = vclibFilterMeshActions();
+    vec.insert(vec.end(), filterMeshActions.begin(), filterMeshActions.end());
 
     return vec;
 }

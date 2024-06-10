@@ -23,16 +23,21 @@
 #ifndef VCL_PROCESSING_ACTION_MANAGER_H
 #define VCL_PROCESSING_ACTION_MANAGER_H
 
+#include "action_manager/identifier_action_manager.h"
 #include "action_manager/io_action_manager.h"
 #include "actions/interfaces.h"
 
 namespace vcl::proc {
 
 class ActionManager {
+    // load/save actions
     IOActionManager<LoadImageAction> mLoadImageActionManager;
     IOActionManager<LoadMeshAction>  mLoadMeshActionManager;
     IOActionManager<SaveImageAction> mSaveImageActionManager;
     IOActionManager<SaveMeshAction>  mSaveMeshActionManager;
+
+    // filter/mesh
+    IdentifierActionManager<FilterMeshAction> mFilterMeshActionManager;
 
 public:
     void add(const std::shared_ptr<Action>& action) {
@@ -40,6 +45,8 @@ public:
         std::shared_ptr<LoadMeshAction>  loadMeshAction;
         std::shared_ptr<SaveImageAction> saveImgAction;
         std::shared_ptr<SaveMeshAction>  saveMeshAction;
+
+        std::shared_ptr<FilterMeshAction> filterMeshAction;
 
         switch(action->type()) {
         case ActionType::LOAD_IMAGE_ACTION:
@@ -57,6 +64,10 @@ public:
         case ActionType::SAVE_MESH_ACTION:
             saveMeshAction = std::dynamic_pointer_cast<SaveMeshAction>(action);
             mSaveMeshActionManager.add(saveMeshAction);
+            break;
+        case ActionType::FILTER_MESH_ACTION:
+            filterMeshAction = std::dynamic_pointer_cast<FilterMeshAction>(action);
+            mFilterMeshActionManager.add(filterMeshAction);
             break;
         default: throw std::runtime_error("Action type not supported");
         }
@@ -92,6 +103,18 @@ public:
         const FileFormat& format)
     {
         return mSaveMeshActionManager.get(format);
+    }
+
+    std::shared_ptr<FilterMeshAction> filterMeshActionById(
+        const std::string& id)
+    {
+        return mFilterMeshActionManager.get(id);
+    }
+
+    std::shared_ptr<FilterMeshAction> filterMeshActionByName(
+        const std::string& name)
+    {
+        return mFilterMeshActionManager.getByName(name);
     }
 };
 
