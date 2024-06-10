@@ -673,7 +673,7 @@ public:
      * @param[in] info: The info object to compute the intersection with.
      * @return The intersection between this and `info`.
      */
-    [[ nodiscard ]] MeshInfo intersect(const MeshInfo& info) const
+    [[nodiscard]] MeshInfo intersect(const MeshInfo& info) const
     {
         MeshInfo res;
         for (uint i = 0; i < NUM_ELEMENTS; ++i) {

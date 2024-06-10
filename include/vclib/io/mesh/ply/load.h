@@ -69,7 +69,8 @@ void loadPly(
             case ply::FACE: readPlyFaces(file, header, m, loadedInfo); break;
             case ply::TRISTRIP:
                 loadedInfo.setTriangleMesh();
-                readPlyTriStrips(file, header, m); break;
+                readPlyTriStrips(file, header, m);
+                break;
             default: readPlyUnknownElement(file, header, el); break;
             }
         }
