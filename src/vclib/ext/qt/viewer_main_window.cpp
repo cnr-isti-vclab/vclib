@@ -203,21 +203,20 @@ void ViewerMainWindow::on_actionSave_triggered()
 
     QString filter = filterFormatsToQString(formats);
 
-    QFileDialog* dialog =
-        new QFileDialog(this, "Save Mesh", "", filter);
+    QFileDialog* dialog = new QFileDialog(this, "Save Mesh", "", filter);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
     if (dialog->exec() == QDialog::Accepted) {
-        auto        fs       = dialog->selectedFiles();
+        auto fs   = dialog->selectedFiles();
         auto frmt = dialog->selectedNameFilter();
 
         std::cerr << frmt.toStdString() << "\n";
 
         // get format from frmt, which is '(*.stl )'
         std::string format = frmt.toStdString();
-        format = format.substr(2, 4);
+        format             = format.substr(2, 4);
 
         std::string filename = fs.first().toStdString();
-        std::string fnext = FileInfo::extension(filename);
+        std::string fnext    = FileInfo::extension(filename);
         if (fnext.empty() || fnext != format) {
             filename += "." + format;
         }
