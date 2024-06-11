@@ -23,6 +23,7 @@
 #ifndef VCL_SPACE_VECTOR_H
 #define VCL_SPACE_VECTOR_H
 
+#include "vector/pointer_vector.h"
 #include "vector/polymorphic_object_vector.h"
 #include "vector/vector.h"
 

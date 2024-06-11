@@ -312,6 +312,18 @@ public:
     ConstReference back() const { return mContainer.back(); }
 
     /**
+     * @brief Returns a pointer to the underlying array serving as element
+     * storage. The pointer is such that range [data(), data() + size()) is
+     * always a valid range, even if the container is empty (data() is not
+     * dereferenceable in that case).
+     *
+     * @return A pointer to the underlying element storage. For non-empty
+     * containers, the returned pointer compares equal to the address of the
+     * first element.
+     */
+    Pointer data() { return mContainer.data(); }
+
+    /**
      * @brief Returns a const pointer to the underlying array serving as element
      * storage. The pointer is such that range [data(), data() + size()) is
      * always a valid range, even if the container is empty (data() is not
