@@ -30,13 +30,23 @@
 
 namespace vcl {
 
-class DrawableObjectVector : public PolymorphicObjectVector<DrawableObjectI>
+class DrawableObjectVector :
+        public PolymorphicObjectVector<DrawableObjectI>,
+        public DrawableObjectI
 {
     using Base = PolymorphicObjectVector<DrawableObjectI>;
+
+    bool mVisible = true;
+
 public:
     DrawableObjectVector() = default;
 
-    vcl::Box3d boundingBox(bool onlyVisible = true) const;
+    // DrawableObjectI interface
+    void                             draw(uint viewId) const;
+    Box3d                            boundingBox() const;
+    std::shared_ptr<DrawableObjectI> clone() const;
+    bool                             isVisible() const;
+    void                             setVisibility(bool vis);
 
 private:
     uint firstVisibleObject() const;

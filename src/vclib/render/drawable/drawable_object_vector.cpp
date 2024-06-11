@@ -24,19 +24,45 @@
 
 namespace vcl {
 
-Box3d DrawableObjectVector::boundingBox(bool onlyVisible) const
+void DrawableObjectVector::draw(uint viewId) const
+{
+    if (isVisible()) {
+        for (const auto& p : *this) {
+            p->draw(viewId);
+        }
+    }
+}
+
+Box3d DrawableObjectVector::boundingBox() const
 {
     Box3d bb;
     if (Base::size() > 0) {
-        uint i = onlyVisible ? firstVisibleObject() : 0;
+        uint i = firstVisibleObject();
 
         for (; i < Base::size(); i++) { // rest of the list
-            if (!onlyVisible || Base::at(i)->isVisible()) {
+            if (Base::at(i)->isVisible()) {
                 bb.add(Base::at(i)->boundingBox());
             }
         }
     }
     return bb;
+}
+
+std::shared_ptr<DrawableObjectI> DrawableObjectVector::clone() const
+{
+    return std::make_shared<DrawableObjectVector>(*this);
+}
+
+
+bool DrawableObjectVector::isVisible() const
+{
+    return mVisible;
+}
+
+
+void DrawableObjectVector::setVisibility(bool vis)
+{
+    mVisible = vis;
 }
 
 uint DrawableObjectVector::firstVisibleObject() const
