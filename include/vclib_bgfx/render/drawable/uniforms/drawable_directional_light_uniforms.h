@@ -48,7 +48,7 @@ public:
         mLightColor[3] = color.alphaF();
     }
 
-    void bind() { mLightColorUniform.bind(mLightColor); }
+    void bind() const { mLightColorUniform.bind(mLightColor); }
 };
 
 } // namespace vcl

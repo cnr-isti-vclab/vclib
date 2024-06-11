@@ -55,7 +55,7 @@ class DrawableAxis : public DrawableObjectI
     bgfx::ProgramHandle mProgram =
         Context::programManager().getProgram(VclProgram::DRAWABLE_AXIS);
 
-    DrawableAxisUniforms mUniforms;
+    mutable DrawableAxisUniforms mUniforms;
 
 public:
     DrawableAxis(double size = 1, bool fromOrigin = false);
@@ -66,7 +66,7 @@ public:
 
     // DrawableObject interface
 
-    void draw(uint viewId) override;
+    void draw(uint viewId) const override;
 
     Point3d center() const override { return Point3d(); };
 

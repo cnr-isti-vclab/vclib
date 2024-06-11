@@ -42,8 +42,8 @@ class DrawableMesh : public DrawableMeshI, public MeshType
     bgfx::ProgramHandle mProgram =
         Context::programManager().getProgram(VclProgram::DRAWABLE_MESH);
 
-    DrawableMeshUniforms       mMeshUniforms;
-    MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
+    DrawableMeshUniforms mMeshUniforms;
+    mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:
     DrawableMesh() = default;
@@ -72,7 +72,7 @@ public:
 
     void init() {}
 
-    void draw(uint viewId)
+    void draw(uint viewId) const override
     {
         if (bgfx::isValid(mProgram)) {
             uint64_t state =
@@ -145,7 +145,7 @@ public:
     }
 
 private:
-    void bindUniforms(uint primitive)
+    void bindUniforms(uint primitive) const
     {
         mMeshRenderSettingsUniforms.updatePrimitive(primitive);
         mMeshRenderSettingsUniforms.bind();

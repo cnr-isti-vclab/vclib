@@ -72,7 +72,7 @@ public:
 
     // DrawableObjectI interface
 
-    void draw(uint viewId) override;
+    void draw(uint viewId) const override;
 
     Point3d center() const override;
 

@@ -47,7 +47,7 @@ void DrawableTrackBall::updateDragging(bool isDragging)
     mUniforms.setDragging(isDragging);
 }
 
-void DrawableTrackBall::draw(uint viewId)
+void DrawableTrackBall::draw(uint viewId) const
 {
     if (isVisible()) {
         if (bgfx::isValid(mProgram)) {

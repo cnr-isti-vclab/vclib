@@ -74,7 +74,7 @@ public:
      * @param viewId The ID of the view to draw. It may be used depending on the
      * rendering engine.
      */
-    virtual void draw(uint viewId = 0) = 0;
+    virtual void draw(uint viewId = 0) const = 0;
 
     /**
      * @brief This member function is used to find a good camera position

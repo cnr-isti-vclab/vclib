@@ -47,7 +47,7 @@ public:
         mAxisColor[3] = color.alphaF();
     }
 
-    void bind() { mAxisColorUniform.bind(mAxisColor); }
+    void bind() const { mAxisColorUniform.bind(mAxisColor); }
 };
 
 } // namespace vcl

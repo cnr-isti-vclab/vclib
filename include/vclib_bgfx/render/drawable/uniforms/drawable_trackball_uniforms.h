@@ -55,7 +55,7 @@ public:
         mTrackBallSettings[1] = ShaderUniform::uintBitsToFloat((uint) dragging);
     }
 
-    void bind() { mTrackballSettingsUniform.bind(mTrackBallSettings); }
+    void bind() const { mTrackballSettingsUniform.bind(mTrackBallSettings); }
 };
 
 } // namespace vcl

@@ -107,7 +107,7 @@ public:
         createBGFXBuffers();
     }
 
-    void bindVertexBuffers(const MeshRenderSettings& mrs)
+    void bindVertexBuffers(const MeshRenderSettings& mrs) const
     {
         // bgfx allows a maximum number of 4 vertex streams...
 
@@ -133,7 +133,7 @@ public:
         }
     }
 
-    void bindIndexBuffers(uint indexBufferToBind = Base::TRIANGLES)
+    void bindIndexBuffers(uint indexBufferToBind = Base::TRIANGLES) const
     {
         if (indexBufferToBind == Base::TRIANGLES) {
             bgfx::setIndexBuffer(mTriangleIndexBH);
@@ -181,7 +181,7 @@ public:
         }
     }
 
-    void bindTextures()
+    void bindTextures() const
     {
         uint i = VCL_MRB_TEXTURE0; // first slot available is VCL_MRB_TEXTURE0
         for (auto [th, uh] : mTexturesH) {

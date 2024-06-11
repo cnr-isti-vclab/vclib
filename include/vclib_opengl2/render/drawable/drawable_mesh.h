@@ -109,7 +109,7 @@ public:
 
     void init() { bindTextures(); }
 
-    void draw(uint)
+    void draw(uint) const override
     {
         if (mMRS.isVisible()) {
             if (mMRS.isWireframeVisible()) {

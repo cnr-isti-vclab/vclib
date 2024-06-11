@@ -111,7 +111,7 @@ void DrawableDirectionalLight::setLinesColor(const Color& c)
     mUniform.setColor(mColor);
 }
 
-void DrawableDirectionalLight::draw(uint viewId)
+void DrawableDirectionalLight::draw(uint viewId) const
 {
     if (isVisible()) {
         if (bgfx::isValid(mProgram)) {

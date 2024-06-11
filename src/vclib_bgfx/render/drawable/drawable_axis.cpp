@@ -38,7 +38,7 @@ void DrawableAxis::setSize(double size)
     updateMatrices(size);
 }
 
-void DrawableAxis::draw(uint viewId)
+void DrawableAxis::draw(uint viewId) const
 {
     if (isVisible()) {
         if (bgfx::isValid(mProgram)) {
