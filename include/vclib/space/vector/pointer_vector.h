@@ -110,6 +110,7 @@ public:
     using Base::contains;
     using Base::find;
     using Base::indexOf;
+    using Base::swap;
     using Base::resize;
     using Base::pushBack;
     using Base::insert;

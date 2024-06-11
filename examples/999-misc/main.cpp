@@ -75,7 +75,8 @@ int main()
 
     const auto& constVec = vec;
 
-    for (const auto& shape : vec) {
+    for (auto& shape : vec) {
+        // shape = std::make_shared<Square>(); <- does not build
         shape->setScale(5);
     }
 

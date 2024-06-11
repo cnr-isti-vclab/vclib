@@ -476,6 +476,8 @@ public:
             return it - begin();
     }
 
+    void swap(Vector& other) { mContainer.swap(other.mContainer); }
+
     /* Member functions specific for dynamic vector */
 
     /**

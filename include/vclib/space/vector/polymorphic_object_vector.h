@@ -23,18 +23,10 @@
 #ifndef VCL_SPACE_VECTOR_POLYMORPHIC_OBJECT_VECTOR_H
 #define VCL_SPACE_VECTOR_POLYMORPHIC_OBJECT_VECTOR_H
 
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <string>
-#include <vector>
+#include "pointer_vector.h"
 
 #include <vclib/concepts/polymorphism.h>
-#include <vclib/concepts/ranges/range.h>
-#include <vclib/exceptions.h>
-#include <vclib/iterators/const_pointer_iterator.h>
-#include <vclib/types.h>
-#include <vclib/views/view.h>
+
 
 namespace vcl {
 
@@ -71,49 +63,56 @@ namespace vcl {
  * @ingroup space
  */
 template<Cloneable T, int N = -1>
-class PolymorphicObjectVector
+class PolymorphicObjectVector : protected PointerVector<std::shared_ptr<T>, N>
 {
-    // if we use the vector, the size of the array will be 0
-    // actually the array will never be used and will not use memory, it's just
-    // for declaration
-    static const int ARRAY_SIZE = N >= 0 ? N : 0;
-
-    // the Container type will be array or vector, depending on N value
-    using Container = std::conditional_t<
-        (N >= 0),
-        typename std::array<std::shared_ptr<T>, ARRAY_SIZE>,
-        typename std::vector<std::shared_ptr<T>>>;
-
-protected:
-    Container mContainer;
+    using Base = PointerVector<std::shared_ptr<T>, N>;
+    using BaseVector = Base::Vector;
 
 public:
-    /** @brief The type of the elements stored in the Vector. */
-    using ValueType = Container::value_type;
+    // types
+    using ValueType = Base::ValueType;
 
-    using ConstValueType = vcl::MakeConstPointerT<ValueType>;
+    using ConstValueType = Base::ConstValueType;
 
-    /** @brief An iterator to the elements of the Vector. */
-    using Iterator = Container::const_iterator;
+    // the iterator of this vector is the const iterator of the base Vector
+    // because we don't want to allow to modify the shared pointers contained
+    // in the vector, but allow only to modify the objects pointed by the shared
+    // pointers
+    using Iterator = BaseVector::ConstIterator;
 
-    /** @brief A const iterator to the elements of the Vector. */
-    using ConstIterator =
-        ConstPointerIterator<typename Container::const_iterator>;
+    // the const iterator of this vector is the const iterator of the
+    // PointerVector, which transforms pointers to const pointers
+    using ConstIterator = Base::ConstIterator;
 
-    /**
-     * @brief Size of the vector at compile time. It will be -1 if the Vector
-     * has dynamic size.
-     */
-    static const int SIZE = N;
+    using Base::SIZE;
 
-    /**
-     * @brief Creates an empty Vector object.
-     *
-     * If the container is dynamic, its size is 0. When the container is static,
-     * the size is N and its elements are initialized with their empty
-     * constructor.
-     */
-    PolymorphicObjectVector() = default;
+    // constructors
+    using Base::Base;
+
+    // exposing members of base class, later we will redefine non-const members
+    // that should return values instead of references, and functions that
+    // allow to set directly shared pointers
+    using Base::size;
+    using Base::at;
+    using Base::atMod;
+    using Base::front;
+    using Base::back;
+    using Base::data;
+    using Base::set;
+    using Base::fill;
+    using Base::contains;
+    using Base::find;
+    using Base::indexOf;
+    using Base::swap;
+    using Base::resize;
+    using Base::pushBack;
+    using Base::insert;
+    using Base::erase;
+    using Base::clear;
+    using Base::operator[];
+    using Base::operator();
+    using Base::begin;
+    using Base::end;
 
     /**
      * @brief Creates a Vector object with copied of the elements of the other
@@ -128,10 +127,10 @@ public:
     PolymorphicObjectVector(const PolymorphicObjectVector& other)
     {
         if constexpr (N < 0) {
-            mContainer.resize(other.size());
+            Base::resize(other.size());
         }
         std::transform(
-            other.begin(), other.end(), mContainer.begin(), [](const auto& e) {
+            other.begin(), other.end(), Base::begin(), [](const auto& e) {
                 return e->clone();
             });
     }
@@ -144,25 +143,6 @@ public:
     PolymorphicObjectVector(PolymorphicObjectVector&& other) noexcept
     {
         swap(other);
-    }
-
-    /**
-     * @brief Creates a Vector object with the specified size.
-     *
-     * If the container is dynamic, its size is set to `size`.
-     * When the container is static, the given size must be equal to N.
-     * The elements are initialized to nullptr.
-     *
-     * @throws WrongSizeException if the given size is not equal to N and the
-     * container is static.
-     *
-     * @param[in] size: the size of the container.
-     */
-    PolymorphicObjectVector(std::size_t size)
-    {
-        if constexpr (N < 0) {
-            mContainer.resize(size);
-        }
     }
 
     /**
@@ -238,24 +218,6 @@ public:
     }
 
     /**
-     * @brief Returns the size of the container.
-     *
-     * If the container is static, the size is N. If the container is dynamic,
-     * the size is determined by the number of elements currently stored.
-     *
-     * @return The size of the container.
-     */
-    std::size_t size() const
-    {
-        if constexpr (N >= 0) {
-            return N;
-        }
-        else {
-            return mContainer.size();
-        }
-    }
-
-    /**
      * @brief Access the specified element with bounds checking.
      *
      * Returns a reference to the element at position `i` in the Vector, with
@@ -268,38 +230,7 @@ public:
      * @throws std::out_of_range If `i` is not within the range of valid indices
      * for the Vector.
      */
-    ValueType at(uint i) { return mContainer.at(i); }
-
-    /**
-     * @brief Access the specified element with bounds checking.
-     *
-     * Returns a const reference to the element at position `i` in the Vector,
-     * with bounds checking. If `i` is not within the range of valid indices for
-     * the Vector, an `std::out_of_range` exception is thrown.
-     *
-     * @param[in] i: The position of the element.
-     * @return A const reference to the element at position `i`.
-     *
-     * @throws std::out_of_range If `i` is not within the range of valid indices
-     * for the Vector.
-     */
-    ConstValueType at(uint i) const { return mContainer.at(i); }
-
-    /**
-     * @brief Access the specified element, computing first the module of the
-     * position w.r.t. the size of the container.
-     *
-     * Takes into account negative indices: atMod(-1) will access to the last
-     * element of the container.
-     *
-     * @param[in] i: The position of the element.
-     * @return A reference to the element at position i % size().
-     */
-    ValueType atMod(int i)
-    {
-        int n = size(); // need to save n as int to avoid unwanted casts
-        return mContainer[(i % n + n) % n];
-    }
+    ValueType at(uint i) { return Base::at(i); }
 
     /**
      * @brief Access the specified element, computing first the module of the
@@ -311,11 +242,7 @@ public:
      * @param[in] i The position of the element.
      * @return A const reference to the element at position i % size().
      */
-    ConstValueType atMod(int i) const
-    {
-        int n = size(); // need to save n as int to avoid unwanted casts
-        return mContainer[(i % n + n) % n];
-    }
+    ValueType atMod(int i) { return Base::atMod(i); }
 
     /**
      * @brief Access the first element of the Vector.
@@ -325,17 +252,7 @@ public:
      *
      * @return A reference to the first element.
      */
-    ValueType front() { return mContainer.front(); }
-
-    /**
-     * @brief Access the first element of the Vector.
-     *
-     * Returns a const reference to the first element of the Vector. If the
-     * Vector is empty, the behavior is undefined.
-     *
-     * @return A const reference to the first element.
-     */
-    ConstValueType front() const { return mContainer.front(); }
+    ValueType front() { return Base::front(); }
 
     /**
      * @brief Access the last element of the Vector.
@@ -345,17 +262,7 @@ public:
      *
      * @return A reference to the last element.
      */
-    ValueType back() { return mContainer.back(); }
-
-    /**
-     * @brief Access the last element of the Vector.
-     *
-     * Returns a const reference to the last element of the Vector. If the
-     * Vector is empty, the behavior is undefined.
-     *
-     * @return A const reference to the last element.
-     */
-    ConstValueType back() const { return mContainer.back(); }
+    ValueType back() { return Base::back(); }
 
     /**
      * @brief Set the value of the element at the specified position.
@@ -368,14 +275,8 @@ public:
      */
     void set(uint i, const T& e)
     {
-        assert(i < size());
-        mContainer[i] = e.clone();
-    }
-
-    void set(uint i, const std::shared_ptr<T>& e)
-    {
-        assert(i < size());
-        mContainer[i] = e;
+        assert(i < Base::size());
+        Base::at(i) = e.clone();
     }
 
     /**
@@ -387,16 +288,10 @@ public:
      * @param[in] it: The iterator pointing to the position of the element.
      * @param[in] e: The new value of the element.
      */
-    void set(ConstIterator it, const T& e)
+    void set(Base::ConstIterator it, const T& e)
     {
-        assert(it < end());
-        mContainer[it - begin()] = e.clone();
-    }
-
-    void set(ConstIterator it, const std::shared_ptr<T>& e)
-    {
-        assert(it < end());
-        mContainer[it - begin()] = e;
+        assert(it < Base::end());
+        Base::at(it - Base::begin()) = e.clone();
     }
 
     /**
@@ -418,29 +313,24 @@ public:
     template<Range Rng>
     void set(Rng&& r) requires RangeOfConvertibleTo<Rng, T>
     {
-        if constexpr (N >= 0) {
-            uint n = std::min(
-                N,
-                (int) std::distance(
-                    std::ranges::begin(r), std::ranges::end(r)));
+        uint n = std::ranges::distance(r);
 
-            // for each element in the range, clone it and store it in the
-            // vector
-            std::transform(
-                std::ranges::begin(r),
-                std::ranges::begin(r) + n,
-                mContainer.begin(),
-                [](const auto& e) {
-                    return e.clone();
-                });
+        if constexpr (N >= 0) {
+            n = std::min((uint)N, n);
         }
         else {
-            // create a new vector from the range, containing clones
-            mContainer = std::vector<std::shared_ptr<T>>(
-                std::ranges::begin(r), std::ranges::end(r), [](const auto& e) {
-                    return e.clone();
-                });
+            Base::resize(n);
         }
+
+        // for each element in the range, clone it and store it in the
+        // vector
+        std::transform(
+            std::ranges::begin(r),
+            std::ranges::begin(r) + n,
+            Base::begin(),
+            [](const auto& e) {
+                return e.clone();
+            });
     }
 
     /**
@@ -454,31 +344,12 @@ public:
      */
     void fill(const T& e)
     {
-        std::fill(mContainer.begin(), mContainer.end(), [e]() {
+        std::fill(Base::begin(), Base::end(), [e]() {
             return e.clone();
         });
     }
 
     /* Member functions specific for dynamic vector */
-
-    /**
-     * @brief Resize the Vector to the specified size.
-     *
-     * Resizes the Vector to the specified size `n` by resizing the underlying
-     * `std::vector`. This member function is only available if the size of the
-     * Vector is not known at compile-time, as specified by the concept
-     * requirement `requires (N < 0)`.
-     *
-     * If the new size is greater than the current size, the new elements are
-     * initialized with nullptr.
-     *
-     * @param[in] n: The new size of the Vector.
-     */
-    void resize(uint n) requires (N < 0)
-    {
-        // resize the vector, cloning the value of v on each new element
-        mContainer.resize(n);
-    }
 
     /**
      * @brief Resize the Vector to the specified size.
@@ -496,15 +367,15 @@ public:
      */
     void resize(uint n, const T& v) requires (N < 0)
     {
-        if (n > size()) {
-            uint oldSize = size();
-            mContainer.resize(n);
-            std::fill(mContainer.begin() + oldSize, mContainer.end(), [v]() {
+        if (n > Base::size()) {
+            uint oldSize = Base::size();
+            Base::resize(n);
+            std::fill(Base::begin() + oldSize, Base::end(), [v]() {
                 return v.clone();
             });
         }
         else {
-            mContainer.resize(n);
+            Base::resize(n);
         }
     }
 
@@ -521,12 +392,7 @@ public:
      */
     void pushBack(const T& v) requires (N < 0)
     {
-        mContainer.push_back(v.clone());
-    }
-
-    void pushBack(const std::shared_ptr<T>& v) requires (N < 0)
-    {
-        mContainer.push_back(v);
+        Base::pushBack(v.clone());
     }
 
     /**
@@ -543,42 +409,9 @@ public:
      */
     void insert(uint i, const T& v) requires (N < 0)
     {
-        assert(i < size() + 1);
-        mContainer.insert(mContainer.begin() + i, v.clone());
+        assert(i < Base::size() + 1);
+        Base::insert(Base::begin() + i, v.clone());
     }
-
-    void insert(uint i, const std::shared_ptr<T>& v) requires (N < 0)
-    {
-        assert(i < size() + 1);
-        mContainer.insert(mContainer.begin() + i, v);
-    }
-
-    /**
-     * @brief Remove the element at the specified index from the Vector.
-     *
-     * Removes the element at the position specified by `i` in the Vector by
-     * calling the `erase()` member function of the underlying `std::vector`.
-     * This member function is only available if the size of the Vector is not
-     * known at compile-time, as specified by the concept requirement `requires
-     * (N < 0)`.
-     *
-     * @param[in] i: The index of the element to remove from the Vector.
-     */
-    void erase(uint i) requires (N < 0)
-    {
-        assert(i < size());
-        mContainer.erase(mContainer.begin() + i);
-    }
-
-    /**
-     * @brief Remove all elements from the Vector.
-     *
-     * Removes all elements from the Vector by calling the `clear()` member
-     * function of the underlying `std::vector`. This member function is only
-     * available if the size of the Vector is not known at compile-time, as
-     * specified by the concept requirement `requires (N < 0)`.
-     */
-    void clear() requires (N < 0) { mContainer.clear(); }
 
     /**
      * @brief Exchanges the contents of the container with those of other.
@@ -587,7 +420,7 @@ public:
      */
     void swap(PolymorphicObjectVector& other)
     {
-        mContainer.swap(other.mContainer);
+        Base::swap(other);
     }
 
     /* Operators */
@@ -598,15 +431,7 @@ public:
      * @param[in] i: Position of the element to return
      * @return A reference to the requested element.
      */
-    ValueType operator[](uint i) { return mContainer[i]; }
-
-    /**
-     * @brief Returns a const reference to the element at specified location i.
-     * No bounds checking is performed.
-     * @param[in] i: Position of the element to return
-     * @return A const reference to the requested element.
-     */
-    ConstValueType operator[](uint i) const { return mContainer[i]; }
+    ValueType operator[](uint i) { return Base::operator[](i); }
 
     /**
      * @brief Returns a reference to the element at specified location i. No
@@ -614,15 +439,7 @@ public:
      * @param[in] i: Position of the element to return
      * @return A reference to the requested element.
      */
-    ValueType operator()(uint i) { return mContainer[i]; }
-
-    /**
-     * @brief Returns a const reference to the element at specified location i.
-     * No bounds checking is performed.
-     * @param[in] i: Position of the element to return
-     * @return A const reference to the requested element.
-     */
-    ConstValueType operator()(uint i) const { return mContainer[i]; }
+    ValueType operator()(uint i) { return Base::operator()(i); }
 
     /**
      * @brief Assignment operator of the PolymorphicObjectVector.
@@ -643,28 +460,14 @@ public:
      *
      * @return An iterator pointing to the beginning of the Vector.
      */
-    Iterator begin() { return mContainer.begin(); }
+    Iterator begin() { return Base::begin(); }
 
     /**
      * @brief Return an iterator pointing to the end of the Vector.
      *
      * @return An iterator pointing to the end of the Vector.
      */
-    Iterator end() { return mContainer.end(); }
-
-    /**
-     * @brief Return a const iterator pointing to the beginning of the Vector.
-     *
-     * @return A const iterator pointing to the beginning of the Vector.
-     */
-    ConstIterator begin() const { return mContainer.begin(); }
-
-    /**
-     * @brief Return a const iterator pointing to the end of the Vector.
-     *
-     * @return A const iterator pointing to the end of the Vector.
-     */
-    ConstIterator end() const { return mContainer.end(); }
+    Iterator end() { return Base::end(); }
 };
 
 } // namespace vcl
