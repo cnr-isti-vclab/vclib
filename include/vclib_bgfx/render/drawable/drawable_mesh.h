@@ -51,7 +51,6 @@ public:
     DrawableMesh(const MeshType& mesh) : DrawableMeshI(mesh), MeshType(mesh)
     {
         updateBuffers();
-        mMRS.setDefaultSettingsFromCapability();
     }
 
     ~DrawableMesh() = default;
