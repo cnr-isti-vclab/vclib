@@ -55,6 +55,9 @@ concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
 template<typename T>
 concept IsSharedPointer = detail::IsSharedPtr<T>::value;
 
+template<typename T>
+concept IsAnyPointer = IsPointer<T> || IsSharedPointer<T>;
+
 /**
  * @brief Utility concept that is evaluated true if T is a Pointer to a constant
  * object.
@@ -68,6 +71,9 @@ concept IsPointerToConst = IsPointer<T> && IsConst<T>;
 template<typename T>
 concept IsSharedPointerToConst =
     IsSharedPointer<T> && IsConst<typename T::element_type>;
+
+template<typename T>
+concept IsAnyPointerToConst = IsPointerToConst<T> || IsSharedPointerToConst<T>;
 
 } // namespace vcl
 
