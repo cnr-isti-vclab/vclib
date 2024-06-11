@@ -35,7 +35,6 @@
 #include "space/plane.h"
 #include "space/point.h"
 #include "space/polygon.h"
-#include "space/polymorphic_object_vector.h"
 #include "space/principal_curvature.h"
 #include "space/sampler.h"
 #include "space/segment.h"

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_VECTOR_H
-#define VCL_SPACE_VECTOR_H
+#ifndef VCL_SPACE_VECTOR_VECTOR_H
+#define VCL_SPACE_VECTOR_VECTOR_H
 
 #include <algorithm>
 #include <array>
@@ -626,4 +626,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_SPACE_VECTOR_H
+#endif // VCL_SPACE_VECTOR_VECTOR_H

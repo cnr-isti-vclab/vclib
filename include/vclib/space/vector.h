@@ -20,18 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_MESH_VECTOR_H
-#define VCL_PROCESSING_ACTIONS_COMMON_MESH_VECTOR_H
+#ifndef VCL_SPACE_VECTOR_H
+#define VCL_SPACE_VECTOR_H
 
-#include <vclib/processing/meshes/mesh_i.h>
-#include <vclib/space/vector/polymorphic_object_vector.h>
+#include "vector/polymorphic_object_vector.h"
+#include "vector/vector.h"
 
-namespace vcl::proc {
-
-class MeshVector : public PolymorphicObjectVector<MeshI>
-{
-};
-
-} // namespace vcl::proc
-
-#endif // VCL_PROCESSING_ACTIONS_COMMON_MESH_VECTOR_H
+#endif // VCL_SPACE_VECTOR_H
