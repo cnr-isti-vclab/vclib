@@ -25,14 +25,15 @@
 
 #include <vclib/io/mesh/obj/capability.h>
 #include <vclib/io/mesh/obj/save.h>
-#include <vclib/processing/actions/interfaces/save_mesh_action.h>
 #include <vclib/processing/actions/common/parameters.h>
+#include <vclib/processing/actions/interfaces/save_mesh_action.h>
 #include <vclib/processing/functions.h>
 #include <vclib/processing/meshes.h>
 
 namespace vcl::proc {
 
-class ObjSaveMeshAction : public SaveMeshAction {
+class ObjSaveMeshAction : public SaveMeshAction
+{
 public:
     using SaveMeshAction::save;
 
@@ -62,10 +63,7 @@ public:
         return {FileFormat("obj", "")};
     }
 
-    MeshInfo formatCapability() const override
-    {
-        return objFormatCapability();
-    }
+    MeshInfo formatCapability() const override { return objFormatCapability(); }
 
     void save(
         const std::string&     filename,
@@ -90,15 +88,13 @@ private:
         const ParameterVector&  parameters) const
     {
         vcl::SaveSettings settings;
-        settings.info =  info;
+        settings.info = info;
         vcl::saveObj(mesh, filename, settings);
 
         if (parameters.get("save_texture_files")->boolValue()) {
             if (manager()) {
                 saveMeshTextures(
-                    mesh,
-                    FileInfo::pathWithoutFileName(filename),
-                    manager());
+                    mesh, FileInfo::pathWithoutFileName(filename), manager());
             }
         }
     }

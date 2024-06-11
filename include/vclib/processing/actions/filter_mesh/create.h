@@ -30,7 +30,7 @@
 
 namespace vcl::proc {
 
-std::vector<std::shared_ptr<Action>>  vclibCreateFilterMeshActions()
+std::vector<std::shared_ptr<Action>> vclibCreateFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
 

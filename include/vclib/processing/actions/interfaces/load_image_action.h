@@ -32,14 +32,14 @@
 
 namespace vcl::proc {
 
-class LoadImageAction : public Action {
+class LoadImageAction : public Action
+{
 public:
     uint type() const final { return ActionType::LOAD_IMAGE_ACTION; }
 
     virtual std::vector<FileFormat> formats() const = 0;
 
-    virtual Image load(
-        const std::string& filename) const = 0;
+    virtual Image load(const std::string& filename) const = 0;
 };
 
 } // namespace vcl::proc

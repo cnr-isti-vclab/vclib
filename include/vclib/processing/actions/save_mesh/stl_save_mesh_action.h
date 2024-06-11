@@ -25,13 +25,14 @@
 
 #include <vclib/io/mesh/stl/capability.h>
 #include <vclib/io/mesh/stl/save.h>
-#include <vclib/processing/actions/interfaces/save_mesh_action.h>
 #include <vclib/processing/actions/common/parameters.h>
+#include <vclib/processing/actions/interfaces/save_mesh_action.h>
 #include <vclib/processing/meshes.h>
 
 namespace vcl::proc {
 
-class StlSaveMeshAction : public SaveMeshAction {
+class StlSaveMeshAction : public SaveMeshAction
+{
 public:
     using SaveMeshAction::save;
 
@@ -68,10 +69,7 @@ public:
         return {FileFormat("stl", "")};
     }
 
-    MeshInfo formatCapability() const override
-    {
-        return stlFormatCapability();
-    }
+    MeshInfo formatCapability() const override { return stlFormatCapability(); }
 
     void save(
         const std::string&     filename,
@@ -96,8 +94,8 @@ private:
         const ParameterVector&  parameters) const
     {
         vcl::SaveSettings settings;
-        settings.info =  info;
-        settings.binary = parameters.get("binary")->boolValue();
+        settings.info       = info;
+        settings.binary     = parameters.get("binary")->boolValue();
         settings.magicsMode = parameters.get("magics_mode")->boolValue();
         vcl::saveStl(mesh, filename, settings);
     }

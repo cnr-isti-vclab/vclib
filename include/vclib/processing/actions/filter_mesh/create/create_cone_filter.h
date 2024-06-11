@@ -59,12 +59,13 @@ public:
         const ParameterVector& parameters) const override
     {
         auto bottomRadius = parameters.get("bottom_radius")->intValue();
-        auto topRadius = parameters.get("top_radius")->intValue();
-        auto height = parameters.get("height")->scalarValue();
+        auto topRadius    = parameters.get("top_radius")->intValue();
+        auto height       = parameters.get("height")->scalarValue();
         auto subdivisions = parameters.get("subdivisions")->intValue();
 
         outputMeshes.pushBack(vcl::createCone<TriMesh>(
-            bottomRadius, topRadius, height, subdivisions).clone());
+                                  bottomRadius, topRadius, height, subdivisions)
+                                  .clone());
 
         return OutputValues();
     }

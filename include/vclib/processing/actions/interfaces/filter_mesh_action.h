@@ -30,7 +30,8 @@
 
 namespace vcl::proc {
 
-class FilterMeshAction : public MeshAction {
+class FilterMeshAction : public MeshAction
+{
 public:
     uint type() const final { return ActionType::FILTER_MESH_ACTION; }
 

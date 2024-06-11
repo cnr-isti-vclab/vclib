@@ -34,7 +34,7 @@ int main()
     manager.add(vcl::proc::vclibActions());
 
     auto pm0 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
-                                                  "/TextureDouble.obj");
+                                                   "/TextureDouble.obj");
 
     assert(pm0->is<vcl::proc::TriMesh>());
 
@@ -46,8 +46,8 @@ int main()
     auto params = manager.loadMeshAction("obj")->parameters();
     params.get("mesh_type")->setIntValue(1);
 
-    auto pm2 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
-                                                  "/greek_helmet.obj", params);
+    auto pm2 = manager.loadMeshAction("obj")->load(
+        VCLIB_ASSETS_PATH "/greek_helmet.obj", params);
 
     assert(pm2->is<vcl::proc::TriMesh>());
 

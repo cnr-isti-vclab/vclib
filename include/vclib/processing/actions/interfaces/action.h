@@ -36,8 +36,7 @@ class ActionManager;
 
 struct ActionType
 {
-    enum Enum
-    {
+    enum Enum {
         LOAD_IMAGE_ACTION = 0,
         SAVE_IMAGE_ACTION,
         LOAD_MESH_ACTION,
@@ -46,7 +45,8 @@ struct ActionType
     };
 };
 
-class Action {
+class Action
+{
     friend class ActionManager;
 
     /**
@@ -57,7 +57,7 @@ class Action {
     ActionManager* mManage = nullptr;
 
 public:
-    Action() = default;
+    Action()          = default;
     virtual ~Action() = default;
 
     virtual std::shared_ptr<Action> clone() const = 0;
@@ -66,10 +66,7 @@ public:
 
     virtual uint type() const = 0;
 
-    std::string identifier() const
-    {
-        return identifierFromName(name());
-    }
+    std::string identifier() const { return identifierFromName(name()); }
 
     static std::string identifierFromName(const std::string& name)
     {

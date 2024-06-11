@@ -29,7 +29,8 @@
 
 namespace vcl::proc {
 
-class ActionManager {
+class ActionManager
+{
     // load/save actions
     IOActionManager<LoadImageAction> mLoadImageActionManager;
     IOActionManager<LoadMeshAction>  mLoadMeshActionManager;
@@ -40,7 +41,8 @@ class ActionManager {
     IdentifierActionManager<FilterMeshAction> mFilterMeshActionManager;
 
 public:
-    void add(const std::shared_ptr<Action>& action) {
+    void add(const std::shared_ptr<Action>& action)
+    {
         std::shared_ptr<LoadImageAction> loadImageAction;
         std::shared_ptr<LoadMeshAction>  loadMeshAction;
         std::shared_ptr<SaveImageAction> saveImgAction;
@@ -48,9 +50,10 @@ public:
 
         std::shared_ptr<FilterMeshAction> filterMeshAction;
 
-        switch(action->type()) {
+        switch (action->type()) {
         case ActionType::LOAD_IMAGE_ACTION:
-            loadImageAction = std::dynamic_pointer_cast<LoadImageAction>(action);
+            loadImageAction =
+                std::dynamic_pointer_cast<LoadImageAction>(action);
             mLoadImageActionManager.add(loadImageAction);
             break;
         case ActionType::LOAD_MESH_ACTION:
@@ -66,7 +69,8 @@ public:
             mSaveMeshActionManager.add(saveMeshAction);
             break;
         case ActionType::FILTER_MESH_ACTION:
-            filterMeshAction = std::dynamic_pointer_cast<FilterMeshAction>(action);
+            filterMeshAction =
+                std::dynamic_pointer_cast<FilterMeshAction>(action);
             mFilterMeshActionManager.add(filterMeshAction);
             break;
         default: throw std::runtime_error("Action type not supported");
@@ -74,49 +78,51 @@ public:
         action->setManager(this);
     }
 
-    template<vcl::Range R> requires vcl::RangeOf<R, std::shared_ptr<Action>>
-    void add(R&& actions) {
+    template<vcl::Range R>
+    requires vcl::RangeOf<R, std::shared_ptr<Action>>
+    void add(R&& actions)
+    {
         for (const auto& action : actions) {
             add(action);
         }
     }
 
-    std::vector<FileFormat> loadImageFormats() const {
+    std::vector<FileFormat> loadImageFormats() const
+    {
         return mLoadImageActionManager.formats();
     }
 
-    std::vector<FileFormat> loadMeshFormats() const {
+    std::vector<FileFormat> loadMeshFormats() const
+    {
         return mLoadMeshActionManager.formats();
     }
 
-    std::vector<FileFormat> saveImageFormats() const {
+    std::vector<FileFormat> saveImageFormats() const
+    {
         return mSaveImageActionManager.formats();
     }
 
-    std::vector<FileFormat> saveMeshFormats() const {
+    std::vector<FileFormat> saveMeshFormats() const
+    {
         return mSaveMeshActionManager.formats();
     }
 
-    std::shared_ptr<LoadImageAction> loadImageAction(
-        const FileFormat& format)
+    std::shared_ptr<LoadImageAction> loadImageAction(const FileFormat& format)
     {
         return mLoadImageActionManager.get(format);
     }
 
-    std::shared_ptr<LoadMeshAction> loadMeshAction(
-        const FileFormat& format)
+    std::shared_ptr<LoadMeshAction> loadMeshAction(const FileFormat& format)
     {
         return mLoadMeshActionManager.get(format);
     }
 
-    std::shared_ptr<SaveImageAction> saveImageAction(
-        const FileFormat& format)
+    std::shared_ptr<SaveImageAction> saveImageAction(const FileFormat& format)
     {
         return mSaveImageActionManager.get(format);
     }
 
-    std::shared_ptr<SaveMeshAction> saveMeshAction(
-        const FileFormat& format)
+    std::shared_ptr<SaveMeshAction> saveMeshAction(const FileFormat& format)
     {
         return mSaveMeshActionManager.get(format);
     }

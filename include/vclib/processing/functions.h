@@ -60,7 +60,7 @@ void loadMeshTextures(
         std::string ext = FileInfo::extension(texture.path());
 
         try {
-            auto act = manager->loadImageAction(ext);
+            auto act        = manager->loadImageAction(ext);
             texture.image() = act->load(filepath + texture.path());
         }
         catch (const std::exception& e) {

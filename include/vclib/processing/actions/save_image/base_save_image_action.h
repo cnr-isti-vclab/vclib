@@ -27,9 +27,10 @@
 
 namespace vcl::proc {
 
-class BaseSaveImageAction : public SaveImageAction {
+class BaseSaveImageAction : public SaveImageAction
+{
 public:
-    BaseSaveImageAction() = default;
+    BaseSaveImageAction()  = default;
     ~BaseSaveImageAction() = default;
 
     std::string name() const override { return "Base Save Image"; }

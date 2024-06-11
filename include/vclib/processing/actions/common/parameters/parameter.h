@@ -52,7 +52,8 @@ struct ParameterType
     };
 };
 
-class Parameter {
+class Parameter
+{
     std::string mName;
     std::any    mValue;
     std::string mDescription;
@@ -160,12 +161,13 @@ protected:
     template<typename ValueType>
     Parameter(
         const std::string& name,
-        const ValueType& value,
+        const ValueType&   value,
         const std::string& description,
         const std::string& tooltip,
         const std::string& category) :
-            mName(name), mValue(value),
-            mDescription(description), mToolTip(tooltip), mCategory(category)
+            mName(name),
+            mValue(value), mDescription(description), mToolTip(tooltip),
+            mCategory(category)
     {
     }
 
@@ -181,10 +183,8 @@ private:
     {
         ParameterType::Enum t = type();
         switch (t) {
-        case vcl::proc::ParameterType::ENUM:
-            return ParameterType::INT;
-        default:
-            return t;
+        case vcl::proc::ParameterType::ENUM: return ParameterType::INT;
+        default: return t;
         }
     }
 };

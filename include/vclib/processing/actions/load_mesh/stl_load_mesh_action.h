@@ -25,14 +25,15 @@
 
 #include <vclib/algorithms/mesh/clean.h>
 #include <vclib/io/mesh/stl/load.h>
-#include <vclib/processing/actions/interfaces/load_mesh_action.h>
 #include <vclib/processing/actions/common/parameters.h>
+#include <vclib/processing/actions/interfaces/load_mesh_action.h>
 #include <vclib/processing/functions.h>
 #include <vclib/processing/meshes.h>
 
 namespace vcl::proc {
 
-class StlLoadMeshAction : public LoadMeshAction {
+class StlLoadMeshAction : public LoadMeshAction
+{
 public:
     using LoadMeshAction::load;
 

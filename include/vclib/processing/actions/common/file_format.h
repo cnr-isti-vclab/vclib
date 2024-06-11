@@ -35,11 +35,11 @@ namespace vcl::proc {
 class FileFormat
 {
     std::vector<std::string> mExtensions;
-    std::string mDescription;
+    std::string              mDescription;
 
 public:
     FileFormat(const char* extension, std::string description = "") :
-            mExtensions{extension}, mDescription(description)
+            mExtensions {extension}, mDescription(description)
     {
         clearExtension(mExtensions[0]);
     }
@@ -61,15 +61,9 @@ public:
         std::sort(mExtensions.begin(), mExtensions.end());
     }
 
-    const std::string& description() const
-    {
-        return mDescription;
-    }
+    const std::string& description() const { return mDescription; }
 
-    const std::vector<std::string>& extensions() const
-    {
-        return mExtensions;
-    }
+    const std::vector<std::string>& extensions() const { return mExtensions; }
 
     bool matchExtension(const std::string& extension) const
     {
@@ -92,7 +86,7 @@ public:
      * @param other
      * @return a std::strong_ordering value indicating the comparison result
      */
-    std::strong_ordering operator <=> (const FileFormat& other) const
+    std::strong_ordering operator<=>(const FileFormat& other) const
     {
         for (const auto& ext : mExtensions) {
             if (other.matchExtension(ext)) {

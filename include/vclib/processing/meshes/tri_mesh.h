@@ -30,7 +30,7 @@
 
 namespace vcl::proc {
 
-class TriMesh final:
+class TriMesh final :
         public MeshI,
         public TriMeshT<ProcScalarType, INDEXED_MESHES>
 {
@@ -42,15 +42,9 @@ public:
         return std::make_shared<TriMesh>(*this);
     }
 
-    MeshIType::Enum type() const override
-    {
-        return MeshIType::TRI_MESH;
-    }
+    MeshIType::Enum type() const override { return MeshIType::TRI_MESH; }
 
-    std::string typeName() const override
-    {
-        return "TriMesh";
-    }
+    std::string typeName() const override { return "TriMesh"; }
 };
 
 } // namespace vcl::proc

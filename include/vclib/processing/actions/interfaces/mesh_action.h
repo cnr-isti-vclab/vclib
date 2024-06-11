@@ -30,9 +30,10 @@
 
 namespace vcl::proc {
 
-class MeshAction : public Action {
+class MeshAction : public Action
+{
 public:
-    MeshAction() = default;
+    MeshAction()          = default;
     virtual ~MeshAction() = default;
 
     /**
@@ -44,10 +45,7 @@ public:
      *
      * @return The parameters of the action.
      */
-    virtual ParameterVector parameters() const
-    {
-        return ParameterVector();
-    }
+    virtual ParameterVector parameters() const { return ParameterVector(); }
 
 protected:
     /**
@@ -65,7 +63,8 @@ protected:
     {
         switch (mesh.type()) {
         case MeshIType::TRI_MESH:
-            return function(mesh.as<TriMesh>(), std::forward<decltype(args)>(args)...);
+            return function(
+                mesh.as<TriMesh>(), std::forward<decltype(args)>(args)...);
             break;
         case MeshIType::POLY_MESH:
             return function(

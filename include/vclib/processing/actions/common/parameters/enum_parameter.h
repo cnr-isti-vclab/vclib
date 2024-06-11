@@ -32,6 +32,7 @@ namespace vcl::proc {
 class EnumParameter : public Parameter
 {
     std::vector<std::string> mEnumValues;
+
 public:
     EnumParameter(
         const std::string&              name,
@@ -48,10 +49,7 @@ public:
             throw std::runtime_error("Invalid enum value");
     }
 
-    ParameterType::Enum type() const override
-    {
-        return ParameterType::ENUM;
-    }
+    ParameterType::Enum type() const override { return ParameterType::ENUM; }
 
     std::shared_ptr<Parameter> clone() const override
     {
@@ -65,15 +63,9 @@ public:
         Parameter::setIntValue(value);
     }
 
-    const std::vector<std::string>& enumValues() const
-    {
-        return mEnumValues;
-    }
+    const std::vector<std::string>& enumValues() const { return mEnumValues; }
 
-    const std::string& enumValue() const
-    {
-        return mEnumValues[intValue()];
-    }
+    const std::string& enumValue() const { return mEnumValues[intValue()]; }
 
     void setEnumValue(const std::string& value)
     {

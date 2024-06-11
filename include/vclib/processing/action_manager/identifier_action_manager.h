@@ -48,8 +48,7 @@ public:
         std::string id = action->identifier();
         checkIdDoesNotExist(id);
         mActions.pushBack(action);
-        mIdActionMap[id] =
-            std::dynamic_pointer_cast<IDAction>(mActions.back());
+        mIdActionMap[id] = std::dynamic_pointer_cast<IDAction>(mActions.back());
     }
 
     std::shared_ptr<IDAction> get(const std::string& id)

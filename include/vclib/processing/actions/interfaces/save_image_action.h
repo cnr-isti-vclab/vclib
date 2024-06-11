@@ -32,15 +32,15 @@
 
 namespace vcl::proc {
 
-class SaveImageAction : public Action {
+class SaveImageAction : public Action
+{
 public:
     uint type() const final { return ActionType::SAVE_IMAGE_ACTION; }
 
     virtual std::vector<FileFormat> formats() const = 0;
 
-    virtual void save(
-        const std::string& filename,
-        const Image& image) const = 0;
+    virtual void save(const std::string& filename, const Image& image)
+        const = 0;
 };
 
 } // namespace vcl::proc

@@ -25,14 +25,15 @@
 
 #include <vclib/io/mesh/off/capability.h>
 #include <vclib/io/mesh/off/save.h>
-#include <vclib/processing/actions/interfaces/save_mesh_action.h>
 #include <vclib/processing/actions/common/parameters.h>
+#include <vclib/processing/actions/interfaces/save_mesh_action.h>
 #include <vclib/processing/functions.h>
 #include <vclib/processing/meshes.h>
 
 namespace vcl::proc {
 
-class OffSaveMeshAction : public SaveMeshAction {
+class OffSaveMeshAction : public SaveMeshAction
+{
 public:
     using SaveMeshAction::save;
 

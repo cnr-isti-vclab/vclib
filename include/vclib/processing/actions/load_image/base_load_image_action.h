@@ -27,9 +27,10 @@
 
 namespace vcl::proc {
 
-class BaseLoadImageAction : public LoadImageAction {
+class BaseLoadImageAction : public LoadImageAction
+{
 public:
-    BaseLoadImageAction() = default;
+    BaseLoadImageAction()  = default;
     ~BaseLoadImageAction() = default;
 
     std::string name() const override { return "Base Load Image"; }

@@ -33,7 +33,8 @@
 
 namespace vcl::proc {
 
-class LoadMeshAction : public MeshAction {
+class LoadMeshAction : public MeshAction
+{
 public:
     uint type() const final { return ActionType::LOAD_MESH_ACTION; }
 
@@ -42,14 +43,14 @@ public:
     virtual std::shared_ptr<MeshI> load(
         const std::string&     filename,
         const ParameterVector& parameters,
-        vcl::MeshInfo& loadedInfo) const = 0;
+        vcl::MeshInfo&         loadedInfo) const = 0;
 
     virtual std::shared_ptr<MeshI> load(
         const std::string&     filename,
         const ParameterVector& parameter) const
     {
         MeshInfo info;
-        auto mesh = load(filename, parameter, info);
+        auto     mesh = load(filename, parameter, info);
         return mesh;
     }
 

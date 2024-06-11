@@ -27,7 +27,8 @@
 
 namespace vcl::proc {
 
-class CreateFilterMeshAction : public FilterMeshAction {
+class CreateFilterMeshAction : public FilterMeshAction
+{
 public:
     uint numberInputMeshes() const final { return 0; }
 
