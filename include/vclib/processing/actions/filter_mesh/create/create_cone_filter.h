@@ -63,9 +63,10 @@ public:
         auto height       = parameters.get("height")->scalarValue();
         auto subdivisions = parameters.get("subdivisions")->intValue();
 
-        outputMeshes.pushBack(vcl::createCone<TriMesh>(
-                                  bottomRadius, topRadius, height, subdivisions)
-                                  .clone());
+        auto meshPtr = std::make_shared<TriMesh>(vcl::createCone<TriMesh>(
+            bottomRadius, topRadius, height, subdivisions));
+
+        outputMeshes.pushBack(meshPtr);
 
         return OutputValues();
     }

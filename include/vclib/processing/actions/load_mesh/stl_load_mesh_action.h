@@ -72,7 +72,7 @@ public:
         }
 
         postLoad(tm, loadedInfo);
-        return tm.clone();
+        return std::make_shared<TriMesh>(tm);
     }
 };
 

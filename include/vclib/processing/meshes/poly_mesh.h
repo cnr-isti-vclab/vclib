@@ -37,11 +37,6 @@ class PolyMesh final :
 public:
     PolyMesh() = default;
 
-    std::shared_ptr<MeshI> clone() const override
-    {
-        return std::make_shared<PolyMesh>(*this);
-    }
-
     MeshIType::Enum type() const override { return MeshIType::POLY_MESH; }
 
     std::string typeName() const override { return "PolyMesh"; }

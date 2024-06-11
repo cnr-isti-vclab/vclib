@@ -37,11 +37,6 @@ class TriMesh final :
 public:
     TriMesh() = default;
 
-    std::shared_ptr<MeshI> clone() const override
-    {
-        return std::make_shared<TriMesh>(*this);
-    }
-
     MeshIType::Enum type() const override { return MeshIType::TRI_MESH; }
 
     std::string typeName() const override { return "TriMesh"; }

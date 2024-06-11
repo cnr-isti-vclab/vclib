@@ -24,11 +24,11 @@
 #define VCL_PROCESSING_ACTIONS_COMMON_MESH_VECTOR_H
 
 #include <vclib/processing/meshes/mesh_i.h>
-#include <vclib/space/vector/polymorphic_object_vector.h>
+#include <vclib/space/vector/pointer_vector.h>
 
 namespace vcl::proc {
 
-class MeshVector : public PolymorphicObjectVector<MeshI>
+class MeshVector : public PointerVector<std::shared_ptr<MeshI>>
 {
 };
 

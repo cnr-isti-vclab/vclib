@@ -45,8 +45,6 @@ public:
     MeshI()          = default;
     virtual ~MeshI() = default;
 
-    virtual std::shared_ptr<MeshI> clone() const = 0;
-
     virtual MeshIType::Enum type() const = 0;
 
     virtual std::string typeName() const = 0;

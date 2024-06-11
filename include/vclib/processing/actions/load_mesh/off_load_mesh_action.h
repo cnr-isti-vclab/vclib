@@ -68,8 +68,8 @@ public:
 
         switch (parameters.get("mesh_type")->intValue()) {
         case 0: mesh = loadBestFit(filename, loadedInfo); break;
-        case 1: mesh = loadOff<TriMesh>(filename, loadedInfo).clone(); break;
-        case 2: mesh = loadOff<PolyMesh>(filename, loadedInfo).clone(); break;
+        case 1: mesh = loadOff<TriMesh>(filename, loadedInfo); break;
+        case 2: mesh = loadOff<PolyMesh>(filename, loadedInfo); break;
         default: throw std::runtime_error("Invalid mesh type");
         }
 
@@ -114,11 +114,13 @@ private:
     }
 
     template<MeshConcept MeshType>
-    MeshType loadOff(const std::string& filename, MeshInfo& loadedInfo) const
+    std::shared_ptr<MeshI> loadOff(
+        const std::string& filename,
+        MeshInfo&          loadedInfo) const
     {
         MeshType mesh = vcl::loadOff<MeshType>(filename, loadedInfo);
         postProcess(mesh, filename, loadedInfo);
-        return mesh;
+        return std::make_shared<MeshType>(mesh);
     }
 };
 
