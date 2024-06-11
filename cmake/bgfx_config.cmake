@@ -84,7 +84,6 @@ function(_bgfx_compile_shader_to_header)
 
     set(ALL_OUTPUTS "")
     foreach(SHADER_FILE ${ARGS_SHADERS})
-        source_group("Shaders" FILES "${SHADER}")
         get_filename_component(SHADER_FILE_BASENAME ${SHADER_FILE} NAME)
         get_filename_component(SHADER_FILE_NAME_WE ${SHADER_FILE} NAME_WE)
         get_filename_component(SHADER_FILE_ABSOLUTE ${SHADER_FILE} ABSOLUTE)
@@ -235,7 +234,7 @@ endfunction()
 
 function(target_ide_add_bgfx_shaders target_name)
     list(REMOVE_AT ARGV 0)
-    source_group("Shaders" FILES ${ARGV})
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Shaders" FILES ${ARGV})
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 
@@ -309,7 +308,7 @@ endfunction()
 function(target_ide_add_assets target_name)
     list(REMOVE_AT ARGV 0)
 
-    source_group("Asset Files" FILES ${ARGV})
+    source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Asset Files" FILES ${ARGV})
     target_sources(${target_name} PRIVATE ${ARGV})
 endfunction()
 

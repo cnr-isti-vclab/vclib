@@ -143,7 +143,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
         file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
         list(APPEND FORMS ${FORMS_QT})
 
-        source_group("Forms Files" FILES ${FORMS})
+        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
     endif()
 endif()
 
@@ -185,7 +185,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
             list(APPEND FORMS ${FORMS_QGLVIEWER})
         endif()
 
-        source_group("Forms Files" FILES ${FORMS})
+        source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
     endif()
 endif()
 
