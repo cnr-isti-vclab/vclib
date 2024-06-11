@@ -60,9 +60,10 @@ public:
 
     void draw(uint viewId) const override;
 
-    Point3d center() const override { return Point3d(); };
-
-    double radius() const override { return 1.0; }
+    Box3d boundingBox() const override
+    {
+        return Box3d();
+    }
 
     std::shared_ptr<DrawableObjectI> clone() const override
     {

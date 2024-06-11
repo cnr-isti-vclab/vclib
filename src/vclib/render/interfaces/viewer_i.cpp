@@ -45,7 +45,7 @@ void ViewerI::setDrawableObjectVector(
 uint ViewerI::pushDrawableObject(const DrawableObjectI& obj)
 {
     mDrawList->pushBack(obj);
-    mDrawList->back().init();
+    mDrawList->back()->init();
     return mDrawList->size() - 1;
 }
 
@@ -58,7 +58,7 @@ void ViewerI::fitScene()
 
     if (!bb.isNull()) {
         sceneCenter = bb.center().cast<float>();
-        sceneRadius = bb.diagonal() / 2;
+        sceneRadius = bb.diagonal();
     }
 
     DTB::setTrackBall(sceneCenter, sceneRadius);

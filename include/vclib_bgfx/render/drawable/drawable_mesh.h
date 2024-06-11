@@ -70,7 +70,7 @@ public:
 
     // DrawableObject implementation
 
-    void init() {}
+    void init() override {}
 
     void draw(uint viewId) const override
     {
@@ -123,22 +123,23 @@ public:
         }
     }
 
-    vcl::Point3d center() const { return (mMRB.bbMin() + mMRB.bbMax()) / 2; }
+    Box3d boundingBox() const override
+    {
+        return Box3d(mMRB.bbMin(), mMRB.bbMax());
+    }
 
-    double radius() const { return (mMRB.bbMax() - mMRB.bbMin()).norm() / 2; }
-
-    std::shared_ptr<DrawableObjectI> clone() const
+    std::shared_ptr<DrawableObjectI> clone() const override
     {
         return std::make_shared<DrawableMesh>(*this);
     }
 
-    void setVisibility(bool vis)
+    void setVisibility(bool vis) override
     {
         DrawableMeshI::setVisibility(vis);
         mMeshRenderSettingsUniforms.updateSettings(mMRS);
     }
 
-    void setRenderSettings(const MeshRenderSettings& rs)
+    void setRenderSettings(const MeshRenderSettings& rs) override
     {
         DrawableMeshI::setRenderSettings(rs);
         mMeshRenderSettingsUniforms.updateSettings(rs);

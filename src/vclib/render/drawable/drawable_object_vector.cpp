@@ -24,164 +24,27 @@
 
 namespace vcl {
 
-DrawableObjectVector::DrawableObjectVector(const DrawableObjectVector& oth)
-{
-    mDrawVector.resize(oth.size());
-    for (uint i = 0; i < oth.size(); i++)
-        mDrawVector[i] = oth[i].clone();
-}
-
-DrawableObjectVector::DrawableObjectVector(DrawableObjectVector&& oth)
-{
-    swap(oth);
-}
-
-DrawableObjectVector::~DrawableObjectVector()
-{
-}
-
-/**
- * @brief Pushes a copy of the DrawableObject to the vector.
- * This function creates a **copy** of the given argument and inserts it
- * into the back of the vector.
- * @param obj
- * @return
- */
-uint DrawableObjectVector::pushBack(const DrawableObjectI& obj)
-{
-    mDrawVector.push_back(obj.clone());
-    return mDrawVector.size();
-}
-
-/**
- * @brief Pushes a copy of the DrawableObject to the vector.
- * This function creates a **copy** of the given argument and inserts it
- * into the back of the vector. If the given argument is a nullptr, the
- * function returns UINT_NULL.
- * @param obj
- * @return
- */
-uint DrawableObjectVector::pushBack(const DrawableObjectI* obj)
-{
-    if (obj == nullptr)
-        return UINT_NULL;
-    mDrawVector.push_back(obj->clone());
-    return mDrawVector.size();
-}
-
-DrawableObjectI& DrawableObjectVector::at(uint i)
-{
-    assert(i < mDrawVector.size());
-    return *mDrawVector.at(i);
-}
-
-const DrawableObjectI& DrawableObjectVector::at(uint i) const
-{
-    assert(i < mDrawVector.size());
-    return *mDrawVector.at(i);
-}
-
-const DrawableObjectI& DrawableObjectVector::operator[](uint i) const
-{
-    return *mDrawVector[i];
-}
-
-std::size_t DrawableObjectVector::size() const
-{
-    return mDrawVector.size();
-}
-
-DrawableObjectI& DrawableObjectVector::front()
-{
-    return *mDrawVector.front();
-}
-
-const DrawableObjectI& DrawableObjectVector::front() const
-{
-    return *mDrawVector.front();
-}
-
-DrawableObjectI& DrawableObjectVector::back()
-{
-    return *mDrawVector.back();
-}
-
-const DrawableObjectI& DrawableObjectVector::back() const
-{
-    return *mDrawVector.back();
-}
-
-void DrawableObjectVector::clear()
-{
-    mDrawVector.clear();
-}
-
 Box3d DrawableObjectVector::boundingBox(bool onlyVisible) const
 {
     Box3d bb;
-    if (mDrawVector.size() > 0) {
+    if (Base::size() > 0) {
         uint i = onlyVisible ? firstVisibleObject() : 0;
 
-        if (i < mDrawVector.size()) {
-            Point3d sc = mDrawVector.at(i)->center();
-            bb.add(sc - mDrawVector.at(i)->radius());
-            bb.add(sc + mDrawVector.at(i)->radius());
-
-            for (i = i + 1; i < mDrawVector.size(); i++) { // rest of the list
-                if (!onlyVisible || mDrawVector.at(i)->isVisible()) {
-                    Point3d sc = mDrawVector.at(i)->center();
-                    bb.add(sc - mDrawVector.at(i)->radius());
-                    bb.add(sc + mDrawVector.at(i)->radius());
-                }
+        for (; i < Base::size(); i++) { // rest of the list
+            if (!onlyVisible || Base::at(i)->isVisible()) {
+                bb.add(Base::at(i)->boundingBox());
             }
         }
     }
     return bb;
 }
 
-void DrawableObjectVector::swap(DrawableObjectVector& oth)
-{
-    using std::swap;
-    swap(mDrawVector, oth.mDrawVector);
-}
-
-DrawableObjectVector& DrawableObjectVector::operator=(DrawableObjectVector oth)
-{
-    swap(oth);
-    return *this;
-}
-
-DrawableObjectVector::iterator DrawableObjectVector::begin()
-{
-    return mDrawVector.begin();
-}
-
-DrawableObjectVector::iterator DrawableObjectVector::end()
-{
-    return mDrawVector.end();
-}
-
-DrawableObjectVector::const_iterator DrawableObjectVector::begin() const
-{
-    return mDrawVector.begin();
-}
-
-DrawableObjectVector::const_iterator DrawableObjectVector::end() const
-{
-    return mDrawVector.end();
-}
-
 uint DrawableObjectVector::firstVisibleObject() const
 {
-    for (uint i = 0; i < mDrawVector.size(); i++)
-        if (mDrawVector[i]->isVisible())
+    for (uint i = 0; i < Base::size(); i++)
+        if (Base::at(i)->isVisible())
             return i;
     return UINT_NULL;
-}
-
-DrawableObjectI& DrawableObjectVector::operator[](uint i)
-{
-    return *mDrawVector[i];
 }
 
 } // namespace vcl

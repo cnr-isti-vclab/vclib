@@ -107,7 +107,7 @@ public:
 
     // DrawableObject implementation
 
-    void init() { bindTextures(); }
+    void init() override { bindTextures(); }
 
     void draw(uint) const override
     {
@@ -184,11 +184,12 @@ public:
         }
     }
 
-    vcl::Point3d center() const { return (mMRD.bbMin() + mMRD.bbMax()) / 2; }
+    Box3d boundingBox() const override
+    {
+        return Box3d(mMRD.bbMin(), mMRD.bbMax());
+    }
 
-    double radius() const { return (mMRD.bbMax() - mMRD.bbMin()).norm() / 2; }
-
-    std::shared_ptr<DrawableObjectI> clone() const
+    std::shared_ptr<DrawableObjectI> clone() const override
     {
         return std::make_shared<DrawableMesh>(*this);
     }

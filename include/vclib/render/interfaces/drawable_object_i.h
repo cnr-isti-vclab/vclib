@@ -23,6 +23,7 @@
 #ifndef VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_I_H
 #define VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_I_H
 
+#include <vclib/space/box.h>
 #include <vclib/space/point.h>
 
 namespace vcl {
@@ -78,21 +79,12 @@ public:
 
     /**
      * @brief This member function is used to find a good camera position
-     * to render object. It must return the position of the center of the
-     * object.
-     * @return The position of the center of the object.
+     * to render object. It should return the the bounding box of the object.
+     * Return a null bounding box if the object shouldn't influence the position
+     * of the camera.
+     * @return The bounding box of the object.
      */
-    virtual vcl::Point3d center() const = 0;
-
-    /**
-     * @brief This member function is used to find a good camera position
-     * to render object. It should return the ray of the bounding sphere of the
-     * object, but also half diagonal of the bounding box of the object is a
-     * good approximation. Return -1 if the object shouldn't influence the
-     * position of the camera.
-     * @return The radius of the bounding sphere of the object.
-     */
-    virtual double radius() const = 0;
+    virtual vcl::Box3d boundingBox() const = 0;
 
     /**
      * @brief This member function is used to create a new copy of the

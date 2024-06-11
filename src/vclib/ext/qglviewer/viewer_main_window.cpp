@@ -96,14 +96,13 @@ void ViewerMainWindow::setDrawableObjectVector(
     mUI->glArea->setDrawableObjectVector(mDrawVector);
     mUI->drawVectorFrame->setDrawableObjectVector(mDrawVector);
     if (mDrawVector->size() > 0) {
-        try {
-            DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(0));
-            mUI->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
+        auto m = std::dynamic_pointer_cast<DrawableMeshI>(mDrawVector->at(0));
+        if (m) {
+            mUI->renderSettingsFrame->setMeshRenderSettings(
+                m->renderSettings(), true);
             mUI->renderSettingsFrame->setVisible(true);
         }
-        catch (std::bad_cast exp) {
-            // the current object (the first one) is not a GenericDrawableMesh
-            // we hide the RenderSettingsFrame
+        else {
             mUI->renderSettingsFrame->setVisible(false);
         }
         // right area is visible if there is at least one DrawableObject
@@ -123,13 +122,11 @@ void ViewerMainWindow::visibilityDrawableObjectChanged()
 {
     // get the selected drawable object
     uint i = mUI->drawVectorFrame->selectedDrawableObject();
-    try {
-        // if it is a DrawableMeshI, we must be sure that its render
-        // settings are updated accordingly.
-        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(i));
-        mUI->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
-    }
-    catch (std::bad_cast exp) {
+    auto m = std::dynamic_pointer_cast<DrawableMeshI>(mDrawVector->at(i));
+    // if it is a DrawableMeshI, we must be sure that its render
+    // settings are updated accordingly.
+    if (m) {
+        mUI->renderSettingsFrame->setMeshRenderSettings(m->renderSettings());
     }
     mUI->glArea->update();
 }
@@ -141,17 +138,17 @@ void ViewerMainWindow::visibilityDrawableObjectChanged()
  */
 void ViewerMainWindow::selectedDrawableObjectChanged(uint i)
 {
-    try {
-        // take the newly selected DrawableObject and check whether it is a
-        // DrawableMeshI
-        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(i));
-        // if it is a GenericDrawableMesh, update the RenderSettingsFrame, and
+    // take the newly selected DrawableObject and check whether it is a
+    // DrawableMeshI
+    auto m = std::dynamic_pointer_cast<DrawableMeshI>(mDrawVector->at(i));
+    if (m) {
+        // if it is a DrawableMeshI, update the RenderSettingsFrame, and
         // set it visible
-        mUI->renderSettingsFrame->setMeshRenderSettings(m.renderSettings());
+        mUI->renderSettingsFrame->setMeshRenderSettings(m->renderSettings());
         mUI->renderSettingsFrame->setVisible(true);
     }
-    catch (std::bad_cast exp) {
-        // it is not a GenericDrawableMesh, RenderSettingsFrame must be hidden
+    else {
+        // it is not a DrawableMeshI, RenderSettingsFrame must be hidden
         mUI->renderSettingsFrame->setVisible(false);
     }
 }
@@ -172,10 +169,10 @@ void ViewerMainWindow::renderSettingsUpdated()
         // The selected object must always be a DrawableMeshI, because the
         // RenderSettingsFrame (which called this member function) is visible
         // only when the selected Object is a DrawableMeshI
-        DrawableMeshI& m = dynamic_cast<DrawableMeshI&>(mDrawVector->at(i));
+        auto m = std::dynamic_pointer_cast<DrawableMeshI>(mDrawVector->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
-        // GenericDrawableMesh
-        m.setRenderSettings(mUI->renderSettingsFrame->meshRenderSettings());
+        // DrawableMeshI
+        m->setRenderSettings(mUI->renderSettingsFrame->meshRenderSettings());
         mUI->glArea->update();
     }
 }

@@ -131,15 +131,9 @@ void DrawableDirectionalLight::draw(uint viewId) const
     }
 }
 
-Point3d DrawableDirectionalLight::center() const
+Box3d DrawableDirectionalLight::boundingBox() const
 {
-    // should not used because this center is in view space
-    return Point3d(0, 0, 0);
-}
-
-double DrawableDirectionalLight::radius() const
-{
-    return 1.0;
+    return Box3d();
 }
 
 std::shared_ptr<DrawableObjectI> DrawableDirectionalLight::clone() const

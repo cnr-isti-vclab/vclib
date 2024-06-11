@@ -74,9 +74,7 @@ public:
 
     void draw(uint viewId) const override;
 
-    Point3d center() const override;
-
-    double radius() const override;
+    Box3d boundingBox() const override;
 
     std::shared_ptr<DrawableObjectI> clone() const override;
 

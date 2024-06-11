@@ -26,63 +26,17 @@
 #include <vclib/render/interfaces/drawable_object_i.h>
 
 #include <vclib/space/box.h>
+#include <vclib/space/polymorphic_object_vector.h>
 
 namespace vcl {
 
-class DrawableObjectVector
+class DrawableObjectVector : public PolymorphicObjectVector<DrawableObjectI>
 {
-    std::vector<std::shared_ptr<DrawableObjectI>> mDrawVector;
-
+    using Base = PolymorphicObjectVector<DrawableObjectI>;
 public:
-    using iterator = std::vector<std::shared_ptr<DrawableObjectI>>::iterator;
-    using const_iterator =
-        std::vector<std::shared_ptr<DrawableObjectI>>::const_iterator;
-
     DrawableObjectVector() = default;
 
-    DrawableObjectVector(const DrawableObjectVector& oth);
-
-    DrawableObjectVector(DrawableObjectVector&& oth);
-
-    ~DrawableObjectVector();
-
-    uint pushBack(const DrawableObjectI& obj);
-
-    uint pushBack(const DrawableObjectI* obj);
-
-    DrawableObjectI& at(uint i);
-
-    const DrawableObjectI& at(uint i) const;
-
-    DrawableObjectI& operator[](uint i);
-
-    const DrawableObjectI& operator[](uint i) const;
-
-    std::size_t size() const;
-
-    DrawableObjectI& front();
-
-    const DrawableObjectI& front() const;
-
-    DrawableObjectI& back();
-
-    const DrawableObjectI& back() const;
-
-    void clear();
-
     vcl::Box3d boundingBox(bool onlyVisible = true) const;
-
-    void swap(DrawableObjectVector& oth);
-
-    DrawableObjectVector& operator=(DrawableObjectVector oth);
-
-    iterator begin();
-
-    iterator end();
-
-    const_iterator begin() const;
-
-    const_iterator end() const;
 
 private:
     uint firstVisibleObject() const;
