@@ -116,6 +116,37 @@ public:
     PolymorphicObjectVector() = default;
 
     /**
+     * @brief Creates a Vector object with copied of the elements of the other
+     * Vector.
+     *
+     * If the container is dynamic, its size is set to the size of the other
+     * Vector. When the container is static, the size is N and the elements are
+     * initialized with the same elements as the other Vector.
+     *
+     * @param[in] other: The other Vector to copy.
+     */
+    PolymorphicObjectVector(const PolymorphicObjectVector& other)
+    {
+        if constexpr (N < 0) {
+            mContainer.resize(other.size());
+        }
+        std::transform(
+            other.begin(), other.end(), mContainer.begin(), [](const auto& e) {
+                return e->clone();
+            });
+    }
+
+    /**
+     * @brief Move constructor.
+     * @param[in] other: Another PolymorphicObjectVector container of the same
+     * type.
+     */
+    PolymorphicObjectVector(PolymorphicObjectVector&& other) noexcept
+    {
+        swap(other);
+    }
+
+    /**
      * @brief Creates a Vector object with the specified size.
      *
      * If the container is dynamic, its size is set to `size`.
@@ -549,6 +580,16 @@ public:
      */
     void clear() requires (N < 0) { mContainer.clear(); }
 
+    /**
+     * @brief Exchanges the contents of the container with those of other.
+     * @param[in] other: Another PolymorphicObjectVector container of the same
+     * type.
+     */
+    void swap(PolymorphicObjectVector& other)
+    {
+        mContainer.swap(other.mContainer);
+    }
+
     /* Operators */
 
     /**
@@ -582,6 +623,18 @@ public:
      * @return A const reference to the requested element.
      */
     ConstValueType operator()(uint i) const { return mContainer[i]; }
+
+    /**
+     * @brief Assignment operator of the PolymorphicObjectVector.
+     * @param[in] other: Another PolymorphicObjectVector container of the same
+     * type.
+     * @return A reference to this.
+     */
+    PolymorphicObjectVector& operator=(PolymorphicObjectVector other)
+    {
+        swap(other);
+        return *this;
+    }
 
     /* Iterator member functions */
 
