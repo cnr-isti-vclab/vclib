@@ -42,7 +42,7 @@ class DrawableMesh : public DrawableMeshI, public MeshType
     bgfx::ProgramHandle mProgram =
         Context::programManager().getProgram(VclProgram::DRAWABLE_MESH);
 
-    DrawableMeshUniforms mMeshUniforms;
+    DrawableMeshUniforms               mMeshUniforms;
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
 
 public:

@@ -216,7 +216,7 @@ void ViewerMainWindow::on_actionSave_triggered()
         if (fnext.empty() || fnext != format) {
             filename += "." + format;
         }
-        uint             i = mUI->drawVectorFrame->selectedDrawableObject();
+        uint i = mUI->drawVectorFrame->selectedDrawableObject();
         std::shared_ptr<DrawableObjectI> d = mDrawVector->at(i);
 
         std::shared_ptr<vcl::TriMesh> m =

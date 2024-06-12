@@ -53,12 +53,10 @@ std::shared_ptr<DrawableObjectI> DrawableObjectVector::clone() const
     return std::make_shared<DrawableObjectVector>(*this);
 }
 
-
 bool DrawableObjectVector::isVisible() const
 {
     return mVisible;
 }
-
 
 void DrawableObjectVector::setVisibility(bool vis)
 {
