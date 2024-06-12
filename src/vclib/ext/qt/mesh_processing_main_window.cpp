@@ -46,6 +46,12 @@ MeshProcessingMainWindow::MeshProcessingMainWindow(QWidget* parent) :
         &QAction::triggered,
         this,
         &MeshProcessingMainWindow::openMesh);
+
+    connect(
+        mUI->actionSaveMeshAs,
+        &QAction::triggered,
+        this,
+        &MeshProcessingMainWindow::saveMeshAs);
 }
 
 MeshProcessingMainWindow::~MeshProcessingMainWindow()
@@ -74,52 +80,51 @@ void MeshProcessingMainWindow::openMesh()
         }
 
         auto mesh = mActionManager.loadMeshAction(format)->load(filename);
-        mMeshVector->pushBack(meshToDrawableObject(mesh));
-        mUI->meshViewer->update();
+        mMeshVector->pushBack(makeMeshDrawable(mesh));
+        mUI->meshViewer->updateGUI();
+        mUI->meshViewer->fitScene();
     }
 }
 
-void MeshProcessingMainWindow::saveMesh()
+void MeshProcessingMainWindow::saveMeshAs()
 {
-    // std::vector<proc::FileFormat> formats = mActionManager.saveMeshFormats();
+    if (mMeshVector->size() == 0) {
+        return;
+    }
 
-    // QString filter = filterFormatsToQString(formats);
+    std::vector<proc::FileFormat> formats = mActionManager.saveMeshFormats();
 
-    // QFileDialog* dialog = new QFileDialog(this, "Save Mesh", "", filter);
-    // dialog->setAcceptMode(QFileDialog::AcceptSave);
-    // if (dialog->exec() == QDialog::Accepted) {
-    //     auto fs   = dialog->selectedFiles();
-    //     auto frmt = dialog->selectedNameFilter();
+    QString filter = filterFormatsToQString(formats);
 
-    //     std::cerr << frmt.toStdString() << "\n";
+    QFileDialog* dialog = new QFileDialog(this, "Save Mesh", "", filter);
+    dialog->setAcceptMode(QFileDialog::AcceptSave);
+    if (dialog->exec() == QDialog::Accepted) {
+        auto fs   = dialog->selectedFiles();
+        auto frmt = dialog->selectedNameFilter();
 
-    //            // get format from frmt, which is '(*.stl )'
-    //     std::string format = frmt.toStdString();
-    //     format             = format.substr(2, 4);
+        std::cerr << frmt.toStdString() << "\n";
 
-    //     std::string filename = fs.first().toStdString();
-    //     std::string fnext    = FileInfo::extension(filename);
-    //     if (fnext.empty() || fnext != format) {
-    //         filename += "." + format;
-    //     }
-    //     uint i = mUI->drawVectorFrame->selectedDrawableObject();
-    //     std::shared_ptr<DrawableObjectI> d = mDrawVector->at(i);
+        // get format from frmt, which is '(*.stl )'
+        std::string format = frmt.toStdString();
+        format             = format.substr(2, 4);
 
-    //     std::shared_ptr<vcl::TriMesh> m =
-    //         std::dynamic_pointer_cast<vcl::TriMesh>(d);
+        std::string filename = fs.first().toStdString();
+        std::string fnext    = FileInfo::extension(filename);
+        if (fnext.empty() || fnext != format) {
+            filename += "." + format;
+        }
+        uint i = mUI->meshViewer->selectedDrawableObject();
+        std::shared_ptr<DrawableObjectI> d = mMeshVector->at(i);
 
-    //     if (m) {
-    //         // todo: use directly m when it will be a proc::TriMesh
-    //         proc::TriMesh t;
-    //         t.enableSameOptionalComponentsOf(*m);
-    //         t.importFrom(*m);
-    //         mActionManager.saveMeshAction(format)->save(filename, t);
-    //     }
-    // }
+        std::shared_ptr<proc::MeshI> m = toMesh(d);
+
+        if (m) {
+            mActionManager.saveMeshAction(format)->save(filename, *m);
+        }
+    }
 }
 
-
-std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::meshToDrawableObject(
+std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::makeMeshDrawable(
     const std::shared_ptr<proc::MeshI>& mesh)
 {
     switch (mesh->type()) {
@@ -131,6 +136,18 @@ std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::meshToDrawableObject(
                 mesh->as<proc::PolyMesh>());
         default: return nullptr;
     }
+}
+
+std::shared_ptr<proc::MeshI> MeshProcessingMainWindow::toMesh(
+    const std::shared_ptr<DrawableObjectI>& drawable)
+{
+    return std::dynamic_pointer_cast<proc::MeshI>(drawable);
+}
+
+std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::toDrawableObject(
+    const std::shared_ptr<proc::MeshI>& mesh)
+{
+    return std::dynamic_pointer_cast<DrawableObjectI>(mesh);
 }
 
 } // namespace vcl::qt

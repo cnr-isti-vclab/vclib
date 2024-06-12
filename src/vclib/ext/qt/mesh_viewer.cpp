@@ -96,12 +96,17 @@ void MeshViewer::setDrawableObjectVector(
     mUI->viewer->setDrawableObjectVector(mListedDrawableObjects);
     mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
 
-    update();
+    updateGUI();
 }
 
 void MeshViewer::setUnlistedDrawableObjectVector(
     const std::shared_ptr<DrawableObjectVector>& v)
 {
+}
+
+uint MeshViewer::selectedDrawableObject() const
+{
+    return mUI->drawVectorFrame->selectedDrawableObject();
 }
 
 TextEditLogger& MeshViewer::logger()
@@ -175,7 +180,13 @@ void MeshViewer::renderSettingsUpdated()
     }
 }
 
-void MeshViewer::update()
+void MeshViewer::fitScene()
+{
+    mUI->viewer->fitScene();
+    mUI->viewer->update();
+}
+
+void MeshViewer::updateGUI()
 {
     mUI->drawVectorFrame->update();
 

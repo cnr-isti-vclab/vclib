@@ -54,6 +54,8 @@ public:
     void setUnlistedDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
+    uint selectedDrawableObject() const;
+
     TextEditLogger& logger();
 
 public slots:
@@ -63,7 +65,9 @@ public slots:
 
     void renderSettingsUpdated();
 
-    void update();
+    void fitScene();
+
+    void updateGUI();
 };
 
 } // namespace vcl::qt

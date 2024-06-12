@@ -28,6 +28,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpenMesh"/>
+    <addaction name="actionSaveMeshAs"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -38,6 +39,14 @@
    </property>
    <property name="text">
     <string>Open Mesh</string>
+   </property>
+  </action>
+  <action name="actionSaveMeshAs">
+   <property name="icon">
+    <iconset theme="document-save-as"/>
+   </property>
+   <property name="text">
+    <string>Save Mesh As...</string>
    </property>
   </action>
  </widget>

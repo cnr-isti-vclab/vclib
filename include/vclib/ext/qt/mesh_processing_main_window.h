@@ -52,11 +52,17 @@ public:
 public slots:
     void openMesh();
 
-    void saveMesh();
+    void saveMeshAs();
 
 private:
-    static std::shared_ptr<vcl::DrawableObjectI> meshToDrawableObject(
+    static std::shared_ptr<vcl::DrawableObjectI> makeMeshDrawable(
         const std::shared_ptr<proc::MeshI>& mesh);
+
+    static std::shared_ptr<vcl::proc::MeshI> toMesh(
+        const std::shared_ptr<vcl::DrawableObjectI>& drawable);
+
+    static std::shared_ptr<vcl::DrawableObjectI> toDrawableObject(
+        const std::shared_ptr<vcl::proc::MeshI>& mesh);
 };
 
 } // namespace vcl::qt
