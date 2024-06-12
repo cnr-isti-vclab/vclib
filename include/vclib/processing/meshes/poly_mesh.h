@@ -30,9 +30,7 @@
 
 namespace vcl::proc {
 
-class PolyMesh final :
-        public MeshI,
-        public PolyMeshT<ProcScalarType, INDEXED_MESHES>
+class PolyMesh : public MeshI, public PolyMeshT<ProcScalarType, INDEXED_MESHES>
 {
 public:
     PolyMesh() = default;

@@ -30,9 +30,7 @@
 
 namespace vcl::proc {
 
-class TriMesh final :
-        public MeshI,
-        public TriMeshT<ProcScalarType, INDEXED_MESHES>
+class TriMesh : public MeshI, public TriMeshT<ProcScalarType, INDEXED_MESHES>
 {
 public:
     TriMesh() = default;
