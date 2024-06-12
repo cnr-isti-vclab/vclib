@@ -20,12 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
-#define VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
+#ifndef VCL_EXT_QT_MESH_VIEWER_H
+#define VCL_EXT_QT_MESH_VIEWER_H
 
-#include <QMainWindow>
+#include <QWidget>
 
-#include <vclib/processing/action_manager.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 #include <vclib/ext/qt/gui/text_edit_logger.h>
@@ -33,23 +32,26 @@
 namespace vcl::qt {
 
 namespace Ui {
-class ViewerMainWindow;
+class MeshViewer;
 } // namespace Ui
 
-class ViewerMainWindow : public QMainWindow
+class MeshViewer : public QWidget
 {
     Q_OBJECT
 
-    Ui::ViewerMainWindow*                      mUI;
-    std::shared_ptr<vcl::DrawableObjectVector> mDrawVector;
-    proc::ActionManager                        mActionManager;
+    Ui::MeshViewer* mUI;
+
+    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
+    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
 
 public:
-    explicit ViewerMainWindow(QWidget* parent = nullptr);
-
-    ~ViewerMainWindow();
+    explicit MeshViewer(QWidget* parent = nullptr);
+    ~MeshViewer();
 
     void setDrawableObjectVector(
+        const std::shared_ptr<vcl::DrawableObjectVector>& v);
+
+    void setUnlistedDrawableObjectVector(
         const std::shared_ptr<vcl::DrawableObjectVector>& v);
 
     TextEditLogger& logger();
@@ -60,15 +62,8 @@ public slots:
     void selectedDrawableObjectChanged(uint i);
 
     void renderSettingsUpdated();
-
-private slots:
-    void on_actionSave_triggered();
-    void on_actionShow_Right_Bar_triggered(bool checked);
-    void on_actionShow_Logger_triggered(bool checked);
-    void on_actionShow_Mesh_Render_Settings_triggered(bool checked);
-    void on_actionShow_Mesh_List_triggered(bool checked);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_VIEWER_MAIN_WINDOW_H
+#endif // VCL_EXT_QT_MESH_VIEWER_H

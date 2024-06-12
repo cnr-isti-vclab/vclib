@@ -48,7 +48,7 @@ add_subdirectory(common)
 
 add_subdirectory(00-hello-triangle)
 add_subdirectory(01-viewer)
-add_subdirectory(02-main-window)
+add_subdirectory(02-mesh-viewer)
 add_subdirectory(03-viewer-with-text)
 
 if (VCLIB_RENDER_ENGINE STREQUAL "opengl2" AND TARGET vclib-external-qglviewer)

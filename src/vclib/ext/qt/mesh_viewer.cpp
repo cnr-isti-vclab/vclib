@@ -20,42 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ext/qt/ui_viewer_main_window.h"
-#include <vclib/ext/qt/viewer_main_window.h>
+#include "ui_mesh_viewer.h"
+#include <vclib/ext/qt/mesh_viewer.h>
 
-#include <vclib/ext/qt/utils/file_format.h>
 #include <vclib/render/drawable/drawable_mesh.h>
-
-#include <QFileDialog>
-
-#include <vclib/load_save.h>
-#include <vclib/meshes.h>
-#include <vclib/processing/actions.h>
 
 namespace vcl::qt {
 
 /**
- * @brief ViewerMainWindow constructor.
+ * @brief MeshViewer constructor.
  *
- * Creates a MainWindow having the given parent.
- * It will manage initialize an empty vector of DrawableObjects, which owns.
+ * Creates a MeshViewer having the given parent.
+ * // Todo: document
  *
  * @param parent
  */
-ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
-        QMainWindow(parent), mUI(new Ui::ViewerMainWindow)
+MeshViewer::MeshViewer(QWidget* parent) :
+        QWidget(parent), mUI(new Ui::MeshViewer)
 {
     mUI->setupUi(this);
 
     // create the vector of DrawableObjects
-    mDrawVector = std::make_shared<vcl::DrawableObjectVector>();
+    mListedDrawableObjects = std::make_shared<DrawableObjectVector>();
 
     // give the vector pointer to the contained widgets
-    mUI->viewer->setDrawableObjectVector(mDrawVector);
-    mUI->drawVectorFrame->setDrawableObjectVector(mDrawVector);
-
-    // populate action manager
-    mActionManager.add(proc::vclibActions());
+    mUI->viewer->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
 
     // each time that the RenderSettingsFrame updates its settings, we call the
     // renderSettingsUpdated() member function
@@ -87,9 +77,8 @@ ViewerMainWindow::ViewerMainWindow(QWidget* parent) :
     mUI->rightArea->setVisible(false);
 }
 
-ViewerMainWindow::~ViewerMainWindow()
+MeshViewer::~MeshViewer()
 {
-    mDrawVector->clear();
     delete mUI;
 }
 
@@ -98,17 +87,18 @@ ViewerMainWindow::~ViewerMainWindow()
  * accordingly.
  * @param v
  */
-void ViewerMainWindow::setDrawableObjectVector(
+void MeshViewer::setDrawableObjectVector(
     const std::shared_ptr<DrawableObjectVector>& v)
 {
-    mDrawVector = v;
+    mListedDrawableObjects = v;
 
     // order here is important: drawVectorFrame must have the drawVector before
     // the renderSettingsFrame!
-    mUI->viewer->setDrawableObjectVector(mDrawVector);
-    mUI->drawVectorFrame->setDrawableObjectVector(mDrawVector);
-    if (mDrawVector->size() > 0) {
-        auto m = std::dynamic_pointer_cast<DrawableMeshI>(mDrawVector->at(0));
+    mUI->viewer->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
+    if (mListedDrawableObjects->size() > 0) {
+        auto m = std::dynamic_pointer_cast<DrawableMeshI>(
+            mListedDrawableObjects->at(0));
         if (m) {
             mUI->renderSettingsFrame->setMeshRenderSettings(
                 m->renderSettings(), true);
@@ -125,7 +115,12 @@ void ViewerMainWindow::setDrawableObjectVector(
     }
 }
 
-TextEditLogger& ViewerMainWindow::logger()
+void MeshViewer::setUnlistedDrawableObjectVector(
+    const std::shared_ptr<DrawableObjectVector>& v)
+{
+}
+
+TextEditLogger& MeshViewer::logger()
 {
     return *mUI->logger;
 }
@@ -134,11 +129,12 @@ TextEditLogger& ViewerMainWindow::logger()
  * @brief Slot called when the user changed the visibility of an object in the
  * DrawableObjectVectorFrame
  */
-void ViewerMainWindow::visibilityDrawableObjectChanged()
+void MeshViewer::visibilityDrawableObjectChanged()
 {
     // get the selected drawable object
     uint i = mUI->drawVectorFrame->selectedDrawableObject();
-    auto m = std::dynamic_pointer_cast<DrawableMeshI>(mDrawVector->at(i));
+    auto m =
+        std::dynamic_pointer_cast<DrawableMeshI>(mListedDrawableObjects->at(i));
     // if it is a DrawableMeshI, we must be sure that its render
     // settings are updated accordingly.
     if (m) {
@@ -152,11 +148,12 @@ void ViewerMainWindow::visibilityDrawableObjectChanged()
  * DrawableObjectVectorFrame
  * @param i
  */
-void ViewerMainWindow::selectedDrawableObjectChanged(uint i)
+void MeshViewer::selectedDrawableObjectChanged(uint i)
 {
     // take the newly selected DrawableObject and check whether it is a
     // DrawableMeshI
-    auto m = std::dynamic_pointer_cast<DrawableMeshI>(mDrawVector->at(i));
+    auto m =
+        std::dynamic_pointer_cast<DrawableMeshI>(mListedDrawableObjects->at(i));
     if (m) {
         // if it is a DrawableMeshI, update the RenderSettingsFrame, and
         // set it visible
@@ -177,84 +174,21 @@ void ViewerMainWindow::selectedDrawableObjectChanged(uint i)
  * We need to get the selected GeneriDrawableMesh first, and then update the
  * settings to it.
  */
-void ViewerMainWindow::renderSettingsUpdated()
+void MeshViewer::renderSettingsUpdated()
 {
     // The user changed the RenderSettings of the ith object.
     uint i = mUI->drawVectorFrame->selectedDrawableObject();
-    if (mDrawVector->size() > 0) {
+    if (mListedDrawableObjects->size() > 0) {
         // The selected object must always be a DrawableMeshI, because the
         // RenderSettingsFrame (which called this member function) is visible
         // only when the selected Object is a DrawableMeshI
-        auto m = std::dynamic_pointer_cast<DrawableMeshI>(mDrawVector->at(i));
+        auto m = std::dynamic_pointer_cast<DrawableMeshI>(
+            mListedDrawableObjects->at(i));
         // get RenderSettings from the RenderSettingsFrame, and set it to the
         // DrawableMeshI
         m->setRenderSettings(mUI->renderSettingsFrame->meshRenderSettings());
         mUI->viewer->update();
     }
-}
-
-void ViewerMainWindow::on_actionSave_triggered()
-{
-    std::vector<proc::FileFormat> formats = mActionManager.saveMeshFormats();
-
-    QString filter = filterFormatsToQString(formats);
-
-    QFileDialog* dialog = new QFileDialog(this, "Save Mesh", "", filter);
-    dialog->setAcceptMode(QFileDialog::AcceptSave);
-    if (dialog->exec() == QDialog::Accepted) {
-        auto fs   = dialog->selectedFiles();
-        auto frmt = dialog->selectedNameFilter();
-
-        std::cerr << frmt.toStdString() << "\n";
-
-        // get format from frmt, which is '(*.stl )'
-        std::string format = frmt.toStdString();
-        format             = format.substr(2, 4);
-
-        std::string filename = fs.first().toStdString();
-        std::string fnext    = FileInfo::extension(filename);
-        if (fnext.empty() || fnext != format) {
-            filename += "." + format;
-        }
-        uint i = mUI->drawVectorFrame->selectedDrawableObject();
-        std::shared_ptr<DrawableObjectI> d = mDrawVector->at(i);
-
-        std::shared_ptr<vcl::TriMesh> m =
-            std::dynamic_pointer_cast<vcl::TriMesh>(d);
-
-        if (m) {
-            // todo: use directly m when it will be a proc::TriMesh
-            proc::TriMesh t;
-            t.enableSameOptionalComponentsOf(*m);
-            t.importFrom(*m);
-            mActionManager.saveMeshAction(format)->save(filename, t);
-        }
-    }
-}
-
-void ViewerMainWindow::on_actionShow_Right_Bar_triggered(bool checked)
-{
-    mUI->rightArea->setVisible(checked);
-
-    mUI->actionShow_Mesh_List->setEnabled(checked);
-    mUI->actionShow_Mesh_Render_Settings->setEnabled(checked);
-    mUI->actionShow_Logger->setEnabled(checked);
-}
-
-void ViewerMainWindow::on_actionShow_Logger_triggered(bool checked)
-{
-    mUI->logger->setVisible(checked);
-}
-
-void ViewerMainWindow::on_actionShow_Mesh_Render_Settings_triggered(
-    bool checked)
-{
-    mUI->renderSettingsFrame->setVisible(checked);
-}
-
-void ViewerMainWindow::on_actionShow_Mesh_List_triggered(bool checked)
-{
-    mUI->drawVectorFrame->setVisible(checked);
 }
 
 } // namespace vcl::qt

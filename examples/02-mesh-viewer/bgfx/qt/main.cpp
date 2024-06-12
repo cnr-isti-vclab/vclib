@@ -20,17 +20,29 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "main_window_qt.h"
 #include <QApplication>
+
+#include <vclib/ext/qt/mesh_viewer.h>
+
+#include "common.h"
+
 
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
 
-    MainWindowQt tw;
+    vcl::qt::MeshViewer mv;
 
-    tw.show();
-    tw.showMaximized();
+    // load and set up a drawable mesh
+    auto drawable = getDrawableMesh<vcl::TriMesh>();
+
+    auto v = std::make_shared<vcl::DrawableObjectVector>();
+    v->pushBack(drawable);
+
+    mv.setDrawableObjectVector(v);
+
+    mv.show();
+    mv.showMaximized();
 
     return app.exec();
 }

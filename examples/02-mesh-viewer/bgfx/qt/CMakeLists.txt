@@ -22,18 +22,16 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 02-main-window)
+set(EXAMPLE_NAME 02-mesh-viewer-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings
 set(CMAKE_CXX_STANDARD 20)
 
 set(HEADERS
-    common.h
-    main_window_qt.h)
+    common.h)
 
 set(SOURCES
-    main_window_qt.cpp
     main.cpp)
 
 # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
