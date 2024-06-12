@@ -21,45 +21,10 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-render-examples)
 
-option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
-
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
-
-if (TARGET vclib-external-qt)
-    add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-    set(CAN_BUILD_VCLIB_EXAMPLES true)
+if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    add_subdirectory(bgfx)
 endif()
-if(TARGET vclib-external-glfw)
-    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_VCLIB_EXAMPLES true)
-    endif()
-endif()
-if(TARGET vclib-external-qglviewer)
-    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER)
-        set(CAN_BUILD_VCLIB_EXAMPLES true)
-    endif()
-endif()
-
-add_subdirectory(common)
-
-add_subdirectory(00-hello-triangle)
-add_subdirectory(01-viewer)
-add_subdirectory(02-mesh-viewer)
-add_subdirectory(03-viewer-with-text)
-add_subdirectory(04-mesh-processing-main-window)
-
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2" AND TARGET vclib-external-qglviewer)
-    add_subdirectory(899-qglviewer)
-endif()
-
-add_subdirectory(999-misc)
-
-if (VCLIB_BUILD_EXAMPLES AND CAN_BUILD_VCLIB_EXAMPLES)
-    # the following examples are the same of the ones in the vclib library,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(vclib)
+if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
+    add_subdirectory(opengl2)
 endif()

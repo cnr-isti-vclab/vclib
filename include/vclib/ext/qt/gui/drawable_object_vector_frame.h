@@ -55,6 +55,8 @@ public:
 
     uint selectedDrawableObject() const;
 
+    void update();
+
 signals:
     void drawableObjectVisibilityChanged();
     void drawableObjectSelectionChanged(uint i);

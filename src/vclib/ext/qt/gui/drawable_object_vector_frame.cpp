@@ -40,6 +40,9 @@ DrawableObjectVectorFrame::DrawableObjectVectorFrame(
 {
     mDrawList = v;
     updateDrawableVectorWidget();
+    if (mDrawList->size() > 0) {
+        mUI->listWidget->item(0)->setSelected(true);
+    }
 }
 
 DrawableObjectVectorFrame::~DrawableObjectVectorFrame()
@@ -52,12 +55,30 @@ void DrawableObjectVectorFrame::setDrawableObjectVector(
 {
     mDrawList = v;
     updateDrawableVectorWidget();
+    if (mDrawList->size() > 0) {
+        mUI->listWidget->item(0)->setSelected(true);
+    }
 }
 
 uint DrawableObjectVectorFrame::selectedDrawableObject() const
 {
-    auto item = mUI->listWidget->selectedItems().first();
-    return mUI->listWidget->row(item);
+    auto sItems = mUI->listWidget->selectedItems();
+    if (sItems.size() == 0) {
+        return UINT_NULL;
+    }
+    return mUI->listWidget->row(sItems.first());
+}
+
+void DrawableObjectVectorFrame::update()
+{
+    uint selected = selectedDrawableObject();
+    updateDrawableVectorWidget();
+    if (selected == UINT_NULL && mDrawList->size() > 0)
+        selected = 0;
+
+    if (selected != UINT_NULL && selected < mDrawList->size()) {
+        mUI->listWidget->item(selected)->setSelected(true);
+    }
 }
 
 void DrawableObjectVectorFrame::on_listWidget_itemSelectionChanged()
@@ -87,9 +108,7 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
             this,
             SIGNAL(drawableObjectVisibilityChanged()));
     }
-    if (mDrawList->size() > 0) {
-        mUI->listWidget->item(0)->setSelected(true);
-    }
+
 }
 
 } // namespace vcl::qt

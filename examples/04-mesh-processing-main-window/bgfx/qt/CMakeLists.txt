@@ -21,45 +21,15 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-render-examples)
 
-option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+set(EXAMPLE_NAME 04-mesh-processing-main-window-qt)
+project(vclib-render-example-${EXAMPLE_NAME})
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-if (TARGET vclib-external-qt)
-    add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-    set(CAN_BUILD_VCLIB_EXAMPLES true)
-endif()
-if(TARGET vclib-external-glfw)
-    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_VCLIB_EXAMPLES true)
-    endif()
-endif()
-if(TARGET vclib-external-qglviewer)
-    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER)
-        set(CAN_BUILD_VCLIB_EXAMPLES true)
-    endif()
-endif()
+set(SOURCES
+    main.cpp)
 
-add_subdirectory(common)
-
-add_subdirectory(00-hello-triangle)
-add_subdirectory(01-viewer)
-add_subdirectory(02-mesh-viewer)
-add_subdirectory(03-viewer-with-text)
-add_subdirectory(04-mesh-processing-main-window)
-
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2" AND TARGET vclib-external-qglviewer)
-    add_subdirectory(899-qglviewer)
-endif()
-
-add_subdirectory(999-misc)
-
-if (VCLIB_BUILD_EXAMPLES AND CAN_BUILD_VCLIB_EXAMPLES)
-    # the following examples are the same of the ones in the vclib library,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(vclib)
-endif()
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${SOURCES})

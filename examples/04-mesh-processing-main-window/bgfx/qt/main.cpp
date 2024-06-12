@@ -9,63 +9,30 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
+ * it under the terms of the GNU General Public License as published by      *
+ * the Free Software Foundation; either version 3 of the License, or         *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_MESH_VIEWER_H
-#define VCL_EXT_QT_MESH_VIEWER_H
+#include <QApplication>
 
-#include <QWidget>
+#include <vclib/ext/qt/mesh_processing_main_window.h>
 
-#include <vclib/render/drawable/drawable_object_vector.h>
 
-#include <vclib/ext/qt/gui/text_edit_logger.h>
-
-namespace vcl::qt {
-
-namespace Ui {
-class MeshViewer;
-} // namespace Ui
-
-class MeshViewer : public QWidget
+int main(int argc, char** argv)
 {
-    Q_OBJECT
+    QApplication app(argc, argv);
 
-    Ui::MeshViewer* mUI;
+    vcl::qt::MeshProcessingMainWindow mw;
 
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
+    mw.show();
+    mw.showMaximized();
 
-public:
-    explicit MeshViewer(QWidget* parent = nullptr);
-    ~MeshViewer();
-
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    TextEditLogger& logger();
-
-public slots:
-    void visibilityDrawableObjectChanged();
-
-    void selectedDrawableObjectChanged(uint i);
-
-    void renderSettingsUpdated();
-
-    void update();
-};
-
-} // namespace vcl::qt
-
-#endif // VCL_EXT_QT_MESH_VIEWER_H
+    return app.exec();
+}

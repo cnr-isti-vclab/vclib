@@ -20,52 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_MESH_VIEWER_H
-#define VCL_EXT_QT_MESH_VIEWER_H
+#ifndef VCL_EXT_QT_MESH_PROCESSING_MAIN_WINDOW_H
+#define VCL_EXT_QT_MESH_PROCESSING_MAIN_WINDOW_H
 
-#include <QWidget>
+#include <QMainWindow>
 
+#include <vclib/processing/action_manager.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
-
-#include <vclib/ext/qt/gui/text_edit_logger.h>
 
 namespace vcl::qt {
 
 namespace Ui {
-class MeshViewer;
+class MeshProcessingMainWindow;
 } // namespace Ui
 
-class MeshViewer : public QWidget
+class MeshProcessingMainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    Ui::MeshViewer* mUI;
+    Ui::MeshProcessingMainWindow* mUI;
 
-    std::shared_ptr<vcl::DrawableObjectVector> mListedDrawableObjects;
-    std::shared_ptr<vcl::DrawableObjectVector> mUnlistedDrawableObjects;
+    proc::ActionManager mActionManager;
+
+    std::shared_ptr<vcl::DrawableObjectVector> mMeshVector =
+        std::make_shared<vcl::DrawableObjectVector>();
 
 public:
-    explicit MeshViewer(QWidget* parent = nullptr);
-    ~MeshViewer();
-
-    void setDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    void setUnlistedDrawableObjectVector(
-        const std::shared_ptr<vcl::DrawableObjectVector>& v);
-
-    TextEditLogger& logger();
+    explicit MeshProcessingMainWindow(QWidget* parent = nullptr);
+    ~MeshProcessingMainWindow();
 
 public slots:
-    void visibilityDrawableObjectChanged();
+    void openMesh();
 
-    void selectedDrawableObjectChanged(uint i);
+    void saveMesh();
 
-    void renderSettingsUpdated();
-
-    void update();
+private:
+    static std::shared_ptr<vcl::DrawableObjectI> meshToDrawableObject(
+        const std::shared_ptr<proc::MeshI>& mesh);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_MESH_VIEWER_H
+#endif // VCL_EXT_QT_MESH_PROCESSING_MAIN_WINDOW_H

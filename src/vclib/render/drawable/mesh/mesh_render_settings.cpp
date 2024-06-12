@@ -751,9 +751,6 @@ void MeshRenderSettings::setDefaultSettingsFromCapability()
             else if (canSurfaceColorBePerVertexTexcoords()) {
                 setSurfaceColorPerVertexTexcoords();
             }
-            else if (canSurfaceColorBePerMesh()) {
-                setSurfaceColorPerMesh();
-            }
             else {
                 setSurfaceColorUserDefined();
             }
@@ -768,9 +765,6 @@ void MeshRenderSettings::setDefaultSettingsFromCapability()
             }
             if (canPointCloudColorBePerVertex()) {
                 setPointCloudColorPerVertex();
-            }
-            else if (canPointCloudColorBePerMesh()) {
-                setPointCloudColorPerMesh();
             }
             else {
                 setPointCloudColorUserDefined();
@@ -795,9 +789,6 @@ void MeshRenderSettings::setDefaultSettingsFromCapability()
             }
             else if (canEdgesColorBePerEdge()) {
                 setEdgesColorPerEdge();
-            }
-            else if (canEdgesColorBePerMesh()) {
-                setEdgesColorPerMesh();
             }
             else {
                 setEdgesColorUserDefined();

@@ -74,7 +74,6 @@ MeshViewer::MeshViewer(QWidget* parent) :
         SLOT(selectedDrawableObjectChanged(uint)));
 
     mUI->viewer->setFocus();
-    mUI->rightArea->setVisible(false);
 }
 
 MeshViewer::~MeshViewer()
@@ -96,23 +95,8 @@ void MeshViewer::setDrawableObjectVector(
     // the renderSettingsFrame!
     mUI->viewer->setDrawableObjectVector(mListedDrawableObjects);
     mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
-    if (mListedDrawableObjects->size() > 0) {
-        auto m = std::dynamic_pointer_cast<DrawableMeshI>(
-            mListedDrawableObjects->at(0));
-        if (m) {
-            mUI->renderSettingsFrame->setMeshRenderSettings(
-                m->renderSettings(), true);
-            mUI->renderSettingsFrame->setVisible(true);
-        }
-        else {
-            mUI->renderSettingsFrame->setVisible(false);
-        }
-        // right area is visible if there is at least one DrawableObject
-        mUI->rightArea->setVisible(true);
-    }
-    else {
-        mUI->rightArea->setVisible(false);
-    }
+
+    update();
 }
 
 void MeshViewer::setUnlistedDrawableObjectVector(
@@ -156,13 +140,13 @@ void MeshViewer::selectedDrawableObjectChanged(uint i)
         std::dynamic_pointer_cast<DrawableMeshI>(mListedDrawableObjects->at(i));
     if (m) {
         // if it is a DrawableMeshI, update the RenderSettingsFrame, and
-        // set it visible
+        // set it enabled
         mUI->renderSettingsFrame->setMeshRenderSettings(m->renderSettings());
-        mUI->renderSettingsFrame->setVisible(true);
+        mUI->renderSettingsFrame->setEnabled(true);
     }
     else {
-        // it is not a DrawableMeshI, RenderSettingsFrame must be hidden
-        mUI->renderSettingsFrame->setVisible(false);
+        // it is not a DrawableMeshI, RenderSettingsFrame must be disabled
+        mUI->renderSettingsFrame->setEnabled(false);
     }
 }
 
@@ -189,6 +173,30 @@ void MeshViewer::renderSettingsUpdated()
         m->setRenderSettings(mUI->renderSettingsFrame->meshRenderSettings());
         mUI->viewer->update();
     }
+}
+
+void MeshViewer::update()
+{
+    mUI->drawVectorFrame->update();
+
+    uint selected = mUI->drawVectorFrame->selectedDrawableObject();
+
+    if (selected != UINT_NULL) {
+        auto m = std::dynamic_pointer_cast<DrawableMeshI>(
+            mListedDrawableObjects->at(selected));
+        if (m) {
+            mUI->renderSettingsFrame->setMeshRenderSettings(
+                m->renderSettings(), true);
+            mUI->renderSettingsFrame->setEnabled(true);
+        }
+        else {
+            mUI->renderSettingsFrame->setEnabled(false);
+        }
+    }
+    else {
+        mUI->renderSettingsFrame->setEnabled(false);
+    }
+    mUI->viewer->update();
 }
 
 } // namespace vcl::qt
