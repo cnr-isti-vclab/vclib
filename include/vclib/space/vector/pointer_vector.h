@@ -99,23 +99,23 @@ public:
 
     // exposing members of base class, later we will redefine const member
     // functions
-    using Base::size;
     using Base::at;
     using Base::atMod;
-    using Base::front;
     using Base::back;
-    using Base::data;
-    using Base::set;
-    using Base::fill;
-    using Base::contains;
-    using Base::find;
-    using Base::indexOf;
-    using Base::swap;
-    using Base::resize;
-    using Base::pushBack;
-    using Base::insert;
-    using Base::erase;
     using Base::clear;
+    using Base::contains;
+    using Base::data;
+    using Base::erase;
+    using Base::fill;
+    using Base::find;
+    using Base::front;
+    using Base::indexOf;
+    using Base::insert;
+    using Base::pushBack;
+    using Base::resize;
+    using Base::set;
+    using Base::size;
+    using Base::swap;
     using Base::operator[];
     using Base::operator();
     using Base::begin;
@@ -145,7 +145,6 @@ public:
     ConstIterator begin() const { return Base::begin(); }
 
     ConstIterator end() const { return Base::end(); }
-
 };
 
 } // namespace vcl

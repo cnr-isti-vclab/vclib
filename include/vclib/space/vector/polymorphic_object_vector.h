@@ -27,7 +27,6 @@
 
 #include <vclib/concepts/polymorphism.h>
 
-
 namespace vcl {
 
 /**
@@ -65,7 +64,7 @@ namespace vcl {
 template<Cloneable T, int N = -1>
 class PolymorphicObjectVector : protected PointerVector<std::shared_ptr<T>, N>
 {
-    using Base = PointerVector<std::shared_ptr<T>, N>;
+    using Base       = PointerVector<std::shared_ptr<T>, N>;
     using BaseVector = Base::Vector;
 
 public:
@@ -92,23 +91,23 @@ public:
     // exposing members of base class, later we will redefine non-const members
     // that should return values instead of references, and functions that
     // allow to set directly shared pointers
-    using Base::size;
     using Base::at;
     using Base::atMod;
-    using Base::front;
     using Base::back;
-    using Base::data;
-    using Base::set;
-    using Base::fill;
-    using Base::contains;
-    using Base::find;
-    using Base::indexOf;
-    using Base::swap;
-    using Base::resize;
-    using Base::pushBack;
-    using Base::insert;
-    using Base::erase;
     using Base::clear;
+    using Base::contains;
+    using Base::data;
+    using Base::erase;
+    using Base::fill;
+    using Base::find;
+    using Base::front;
+    using Base::indexOf;
+    using Base::insert;
+    using Base::pushBack;
+    using Base::resize;
+    using Base::set;
+    using Base::size;
+    using Base::swap;
     using Base::operator[];
     using Base::operator();
     using Base::begin;
@@ -316,7 +315,7 @@ public:
         uint n = std::ranges::distance(r);
 
         if constexpr (N >= 0) {
-            n = std::min((uint)N, n);
+            n = std::min((uint) N, n);
         }
         else {
             Base::resize(n);
@@ -390,10 +389,7 @@ public:
      *
      * @param[in] v: The value to add to the end of the Vector.
      */
-    void pushBack(const T& v) requires (N < 0)
-    {
-        Base::pushBack(v.clone());
-    }
+    void pushBack(const T& v) requires (N < 0) { Base::pushBack(v.clone()); }
 
     /**
      * @brief Insert an element at the specified position in the Vector.
@@ -418,10 +414,7 @@ public:
      * @param[in] other: Another PolymorphicObjectVector container of the same
      * type.
      */
-    void swap(PolymorphicObjectVector& other)
-    {
-        Base::swap(other);
-    }
+    void swap(PolymorphicObjectVector& other) { Base::swap(other); }
 
     /* Operators */
 
