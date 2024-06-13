@@ -343,9 +343,9 @@ public:
      */
     void fill(const T& e)
     {
-        std::fill(Base::begin(), Base::end(), [e]() {
-            return e.clone();
-        });
+        for (uint i = 0; i < size(); i++) {
+            Base::at(i) = e.clone();
+        }
     }
 
     /* Member functions specific for dynamic vector */
@@ -369,9 +369,9 @@ public:
         if (n > Base::size()) {
             uint oldSize = Base::size();
             Base::resize(n);
-            std::fill(Base::begin() + oldSize, Base::end(), [v]() {
-                return v.clone();
-            });
+            for (uint i = oldSize; i < n; i++) {
+                Base::at(i) = v.clone();
+            }
         }
         else {
             Base::resize(n);
