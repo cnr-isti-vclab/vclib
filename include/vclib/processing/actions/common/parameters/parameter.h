@@ -85,6 +85,12 @@ public:
 
     const std::string& category() const { return mCategory; }
 
+    void setValue(const Parameter& p)
+    {
+        checkParameterType(p.type());
+        mValue = p.mValue;
+    }
+
     void setBoolValue(bool v)
     {
         checkParameterType(ParameterType::BOOL);
