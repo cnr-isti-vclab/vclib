@@ -60,7 +60,7 @@ public:
 
     std::vector<FileFormat> formats() const override
     {
-        return {FileFormat("obj", "")};
+        return {FileFormat("obj", "OBJ Wavefront .obj")};
     }
 
     MeshInfo formatCapability() const override { return objFormatCapability(); }

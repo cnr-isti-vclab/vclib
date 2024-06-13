@@ -65,7 +65,7 @@ public:
 
     std::vector<FileFormat> formats() const override
     {
-        return {FileFormat("ply", "")};
+        return {FileFormat("ply", "PLY Polygon File Format")};
     }
 
     MeshInfo formatCapability() const override { return plyFormatCapability(); }

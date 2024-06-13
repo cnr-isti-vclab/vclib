@@ -55,7 +55,7 @@ public:
 
     std::vector<FileFormat> formats() const override
     {
-        return {FileFormat("ply", "")};
+        return {FileFormat("ply", "PLY Polygon File Format")};
     }
 
     std::shared_ptr<MeshI> load(

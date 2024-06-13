@@ -56,7 +56,7 @@ public:
 
     std::vector<FileFormat> formats() const override
     {
-        return {FileFormat("stl", "")};
+        return {FileFormat("stl", "STL STereo Lithography interface format")};
     }
 
     std::shared_ptr<MeshI> load(

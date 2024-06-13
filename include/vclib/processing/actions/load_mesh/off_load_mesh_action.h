@@ -56,7 +56,7 @@ public:
 
     std::vector<FileFormat> formats() const override
     {
-        return {FileFormat("off", "")};
+        return {FileFormat("off", "OFF Object File Format")};
     }
 
     std::shared_ptr<MeshI> load(

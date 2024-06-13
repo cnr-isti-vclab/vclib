@@ -55,7 +55,7 @@ public:
 
     std::vector<FileFormat> formats() const override
     {
-        return {FileFormat("obj", "")};
+        return {FileFormat("obj", "OBJ Wavefront .obj")};
     }
 
     std::shared_ptr<MeshI> load(

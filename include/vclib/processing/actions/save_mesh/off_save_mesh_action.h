@@ -46,7 +46,7 @@ public:
 
     std::vector<FileFormat> formats() const override
     {
-        return {FileFormat("off", "")};
+        return {FileFormat("off", "OFF Object File Format")};
     }
 
     MeshInfo formatCapability() const override { return offFormatCapability(); }
