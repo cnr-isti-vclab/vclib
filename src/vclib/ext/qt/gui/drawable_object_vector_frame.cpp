@@ -108,7 +108,6 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
             this,
             SIGNAL(drawableObjectVisibilityChanged()));
     }
-
 }
 
 } // namespace vcl::qt

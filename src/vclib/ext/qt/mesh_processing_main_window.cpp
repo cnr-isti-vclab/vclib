@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/qt/mesh_processing_main_window.h>
 #include "ui_mesh_processing_main_window.h"
+#include <vclib/ext/qt/mesh_processing_main_window.h>
 
 #include <QFileDialog>
 
@@ -62,7 +62,7 @@ MeshProcessingMainWindow::~MeshProcessingMainWindow()
 void MeshProcessingMainWindow::openMesh()
 {
     std::vector<proc::FileFormat> formats = mActionManager.loadMeshFormats();
-    QString filter = filterFormatsToQString(formats);
+    QString                       filter  = filterFormatsToQString(formats);
 
     QFileDialog* dialog = new QFileDialog(this, "Open Mesh", "", filter);
     dialog->setAcceptMode(QFileDialog::AcceptOpen);
@@ -128,13 +128,13 @@ std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::makeMeshDrawable(
     const std::shared_ptr<proc::MeshI>& mesh)
 {
     switch (mesh->type()) {
-        case proc::MeshIType::TRI_MESH:
-            return std::make_shared<DrawableMesh<proc::TriMesh>>(
-                mesh->as<proc::TriMesh>());
-        case proc::MeshIType::POLY_MESH:
-            return std::make_shared<DrawableMesh<proc::PolyMesh>>(
-                mesh->as<proc::PolyMesh>());
-        default: return nullptr;
+    case proc::MeshIType::TRI_MESH:
+        return std::make_shared<DrawableMesh<proc::TriMesh>>(
+            mesh->as<proc::TriMesh>());
+    case proc::MeshIType::POLY_MESH:
+        return std::make_shared<DrawableMesh<proc::PolyMesh>>(
+            mesh->as<proc::PolyMesh>());
+    default: return nullptr;
     }
 }
 
