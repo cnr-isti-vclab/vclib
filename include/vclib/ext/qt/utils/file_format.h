@@ -36,6 +36,7 @@ inline QString filterFormatToQString(const proc::FileFormat& format)
     for (const auto& ext : format.extensions()) {
         filter += "*." + QString::fromStdString(ext) + " ";
     }
+    filter.chop(1);
     filter += ")";
     return filter;
 }
@@ -48,6 +49,8 @@ inline QString filterFormatsToQString(
         filter += filterFormatToQString(format);
         filter += ";;";
     }
+    // remove last two chars
+    filter.chop(2);
     return filter;
 }
 

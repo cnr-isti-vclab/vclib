@@ -25,6 +25,7 @@
 
 #include <QFileDialog>
 
+#include <vclib/ext/qt/gui/processing/save_mesh_dialog.h>
 #include <vclib/ext/qt/utils/file_format.h>
 #include <vclib/processing/actions.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -70,14 +71,8 @@ void MeshProcessingMainWindow::openMesh()
         auto fs   = dialog->selectedFiles();
         auto frmt = dialog->selectedNameFilter();
 
-        std::string format = frmt.toStdString();
-        format             = format.substr(2, 4);
-
         std::string filename = fs.first().toStdString();
-        std::string fnext    = FileInfo::extension(filename);
-        if (fnext.empty() || fnext != format) {
-            filename += "." + format;
-        }
+        std::string format    = FileInfo::extension(filename);
 
         auto mesh = mActionManager.loadMeshAction(format)->load(filename);
         mMeshVector->pushBack(makeMeshDrawable(mesh));
@@ -96,23 +91,16 @@ void MeshProcessingMainWindow::saveMeshAs()
 
     QString filter = filterFormatsToQString(formats);
 
-    QFileDialog* dialog = new QFileDialog(this, "Save Mesh", "", filter);
+    SaveMeshDialog* dialog =
+        new SaveMeshDialog(mActionManager, "Save Mesh", "", filter, this);
     dialog->setAcceptMode(QFileDialog::AcceptSave);
     if (dialog->exec() == QDialog::Accepted) {
         auto fs   = dialog->selectedFiles();
         auto frmt = dialog->selectedNameFilter();
 
-        std::cerr << frmt.toStdString() << "\n";
-
-        // get format from frmt, which is '(*.stl )'
-        std::string format = frmt.toStdString();
-        format             = format.substr(2, 4);
-
         std::string filename = fs.first().toStdString();
-        std::string fnext    = FileInfo::extension(filename);
-        if (fnext.empty() || fnext != format) {
-            filename += "." + format;
-        }
+        std::string format    = FileInfo::extension(filename);
+
         uint i = mUI->meshViewer->selectedDrawableObject();
         std::shared_ptr<DrawableObjectI> d = mMeshVector->at(i);
 

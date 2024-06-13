@@ -20,30 +20,39 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/qt/gui/processing/parameters/bool_parameter_row.h>
+#ifndef VCL_EXT_QT_GUI_PROCESSING_SAVE_MESH_DIALOG_H
+#define VCL_EXT_QT_GUI_PROCESSING_SAVE_MESH_DIALOG_H
+
+#include <QFileDialog>
+
+#include <QSpinBox>
+
+#include <vclib/processing/action_manager.h>
+
+#include "parameters_grid_layout.h"
 
 namespace vcl::qt {
 
-BoolParameterRow::BoolParameterRow(const proc::BoolParameter& param) :
-        ParameterRow(param), mParam(param)
+class SaveMeshDialog : public QFileDialog
 {
-    mCheckBox = new QCheckBox("");
-    mCheckBox->setToolTip(param.tooltip().c_str());
-    mCheckBox->setChecked(param.boolValue());
+    Q_OBJECT
 
-    QObject::connect(
-        mDescriptionLabel, SIGNAL(clicked()), mCheckBox, SLOT(toggle()));
-}
+    proc::ActionManager* mActionManager = nullptr;
+    ParametersGridLayout* mParGridLayout = nullptr;
 
-QWidget* BoolParameterRow::parameterWidget()
-{
-    return mCheckBox;
-}
+public:
+    explicit SaveMeshDialog(
+        proc::ActionManager& actionManager,
+        const QString&       caption,
+        const QString&       directory,
+        const QString&       filter,
+        QWidget*             parent = nullptr);
 
-std::shared_ptr<proc::Parameter> BoolParameterRow::parameterFromWidget()
-{
-    mParam.setBoolValue(mCheckBox->isChecked());
-    return mParam.clone();
-}
+    ~SaveMeshDialog();
+
+    proc::ParameterVector parameters() const;
+};
 
 } // namespace vcl::qt
+
+#endif // VCL_EXT_QT_GUI_PROCESSING_SAVE_MESH_DIALOG_H
