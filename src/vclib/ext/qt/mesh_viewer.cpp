@@ -40,11 +40,19 @@ MeshViewer::MeshViewer(QWidget* parent) :
 {
     mUI->setupUi(this);
 
+    mDrawableObjectVector = std::make_shared<DrawableObjectVector>();
+
     // create the vector of DrawableObjects
-    mListedDrawableObjects = std::make_shared<DrawableObjectVector>();
+    mDrawableObjectVector->resize(2, DrawableObjectVector());
+
+    mListedDrawableObjects = std::dynamic_pointer_cast<DrawableObjectVector>(
+        mDrawableObjectVector->at(0));
+
+    mUnlistedDrawableObjects = std::dynamic_pointer_cast<DrawableObjectVector>(
+        mDrawableObjectVector->at(1));
 
     // give the vector pointer to the contained widgets
-    mUI->viewer->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
     mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
 
     // each time that the RenderSettingsFrame updates its settings, we call the
@@ -89,11 +97,12 @@ MeshViewer::~MeshViewer()
 void MeshViewer::setDrawableObjectVector(
     const std::shared_ptr<DrawableObjectVector>& v)
 {
+    mDrawableObjectVector->set(0, v);
     mListedDrawableObjects = v;
 
     // order here is important: drawVectorFrame must have the drawVector before
     // the renderSettingsFrame!
-    mUI->viewer->setDrawableObjectVector(mListedDrawableObjects);
+    mUI->viewer->setDrawableObjectVector(mDrawableObjectVector);
     mUI->drawVectorFrame->setDrawableObjectVector(mListedDrawableObjects);
 
     updateGUI();
