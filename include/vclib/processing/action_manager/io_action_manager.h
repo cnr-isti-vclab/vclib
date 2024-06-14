@@ -56,10 +56,10 @@ public:
         }
     }
 
-    std::shared_ptr<IOAction> get(const FileFormat& format)
+    std::shared_ptr<IOAction> get(const FileFormat& format) const
     {
         checkFormatExists(format);
-        return mFormatMap[format];
+        return mFormatMap.at(format);
     }
 
     std::vector<FileFormat> formats() const
@@ -72,14 +72,14 @@ public:
     }
 
 private:
-    void checkFormatDoesNotExist(const FileFormat& format)
+    void checkFormatDoesNotExist(const FileFormat& format) const
     {
         if (mFormatMap.find(format) != mFormatMap.end()) {
             throw std::runtime_error("Format already registered.");
         }
     }
 
-    void checkFormatExists(const FileFormat& format)
+    void checkFormatExists(const FileFormat& format) const
     {
         if (mFormatMap.find(format) == mFormatMap.end()) {
             throw std::runtime_error("Format not registered.");

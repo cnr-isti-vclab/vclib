@@ -87,6 +87,26 @@ public:
         }
     }
 
+    const IOActionManager<LoadImageAction>& loadImageActionManager() const
+    {
+        return mLoadImageActionManager;
+    }
+
+    const IOActionManager<LoadMeshAction>& loadMeshActionManager() const
+    {
+        return mLoadMeshActionManager;
+    }
+
+    const IOActionManager<SaveImageAction>& saveImageActionManager() const
+    {
+        return mSaveImageActionManager;
+    }
+
+    const IOActionManager<SaveMeshAction>& saveMeshActionManager() const
+    {
+        return mSaveMeshActionManager;
+    }
+
     std::vector<FileFormat> loadImageFormats() const
     {
         return mLoadImageActionManager.formats();
