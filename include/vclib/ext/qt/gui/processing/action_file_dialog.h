@@ -95,6 +95,8 @@ public:
             auto params = mActionManager->get(format)->parameters();
             mParameterFrame->setParameters(params);
         });
+
+        resize(sizeHint().width(), sizeHint().height());
     }
 
     ~ActionFileDialog() {}
