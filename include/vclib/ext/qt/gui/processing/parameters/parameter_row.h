@@ -36,7 +36,7 @@ namespace vcl::qt {
 
 class ParameterRow
 {
-    QLabel*          mHelpLabel;
+    QLabel* mHelpLabel;
 
     bool mVisible;
     bool mHelpVisible;

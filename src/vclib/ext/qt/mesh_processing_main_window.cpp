@@ -72,7 +72,7 @@ void MeshProcessingMainWindow::openMesh()
         auto frmt = dialog->selectedNameFilter();
 
         std::string filename = fs.first().toStdString();
-        std::string format    = FileInfo::extension(filename);
+        std::string format   = FileInfo::extension(filename);
 
         auto mesh = mActionManager.loadMeshAction(format)->load(filename);
         mMeshVector->pushBack(makeMeshDrawable(mesh));
@@ -99,7 +99,7 @@ void MeshProcessingMainWindow::saveMeshAs()
         auto frmt = dialog->selectedNameFilter();
 
         std::string filename = fs.first().toStdString();
-        std::string format    = FileInfo::extension(filename);
+        std::string format   = FileInfo::extension(filename);
 
         uint i = mUI->meshViewer->selectedDrawableObject();
         std::shared_ptr<DrawableObjectI> d = mMeshVector->at(i);

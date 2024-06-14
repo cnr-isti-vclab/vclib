@@ -37,7 +37,7 @@ class SaveMeshDialog : public QFileDialog
 {
     Q_OBJECT
 
-    proc::ActionManager* mActionManager = nullptr;
+    proc::ActionManager*  mActionManager = nullptr;
     ParametersGridLayout* mParGridLayout = nullptr;
 
 public:

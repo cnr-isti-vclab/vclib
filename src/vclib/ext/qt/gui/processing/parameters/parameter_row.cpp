@@ -33,7 +33,8 @@ ParameterRow::ParameterRow(const proc::Parameter& param) :
     mDescriptionLabel = new QClickableLabel();
     mDescriptionLabel->setText(dl);
     mDescriptionLabel->setToolTip(tt);
-    mDescriptionLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    mDescriptionLabel->setSizePolicy(
+        QSizePolicy::Fixed, QSizePolicy::Preferred);
 
     mHelpLabel = new QLabel("<small>" + tt + "</small>");
     mHelpLabel->setTextFormat(Qt::RichText);

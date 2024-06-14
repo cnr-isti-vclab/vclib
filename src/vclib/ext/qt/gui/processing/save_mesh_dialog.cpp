@@ -53,11 +53,11 @@ SaveMeshDialog::SaveMeshDialog(
     // mMultiplierSpinBox->setValue(1);
     // mMultiplierSpinBox->setSingleStep(0.5);
 
-    QWidget * w20 = layout->itemAtPosition(2, 0)->widget();
-    QWidget * w21 = layout->itemAtPosition(2, 1)->widget();
-    QWidget * w22 = layout->itemAtPosition(2, 2)->widget();
-    QWidget * w30 = layout->itemAtPosition(3, 0)->widget();
-    QWidget * w31 = layout->itemAtPosition(3, 1)->widget();
+    QWidget* w20 = layout->itemAtPosition(2, 0)->widget();
+    QWidget* w21 = layout->itemAtPosition(2, 1)->widget();
+    QWidget* w22 = layout->itemAtPosition(2, 2)->widget();
+    QWidget* w30 = layout->itemAtPosition(3, 0)->widget();
+    QWidget* w31 = layout->itemAtPosition(3, 1)->widget();
 
     layout->removeWidget(w20);
     layout->removeWidget(w21);
@@ -79,7 +79,6 @@ SaveMeshDialog::SaveMeshDialog(
     layout->addWidget(w22, startingRow, 2, 2, 1);
     layout->addWidget(w30, startingRow + 1, 0);
     layout->addWidget(w31, startingRow + 1, 1);
-
 }
 
 SaveMeshDialog::~SaveMeshDialog()
