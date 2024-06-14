@@ -25,7 +25,7 @@
 
 #include <QFileDialog>
 
-#include <vclib/ext/qt/gui/processing/save_mesh_dialog.h>
+#include <vclib/ext/qt/gui/processing/action_file_dialog.h>
 #include <vclib/ext/qt/utils/file_format.h>
 #include <vclib/processing/actions.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -63,18 +63,20 @@ MeshProcessingMainWindow::~MeshProcessingMainWindow()
 void MeshProcessingMainWindow::openMesh()
 {
     std::vector<proc::FileFormat> formats = mActionManager.loadMeshFormats();
-    QString                       filter  = filterFormatsToQString(formats);
 
-    QFileDialog* dialog = new QFileDialog(this, "Open Mesh", "", filter);
-    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    ActionOpenFileDialog<proc::LoadMeshAction>* dialog =
+        new ActionOpenFileDialog<proc::LoadMeshAction>(
+            mActionManager.loadMeshActionManager(), "Open Mesh", "", this);
+
     if (dialog->exec() == QDialog::Accepted) {
         auto fs   = dialog->selectedFiles();
-        auto frmt = dialog->selectedNameFilter();
 
         std::string filename = fs.first().toStdString();
-        std::string format   = FileInfo::extension(filename);
+        proc::FileFormat format   = dialog->selectedFormat();
+        auto params = dialog->parameters();
 
-        auto mesh = mActionManager.loadMeshAction(format)->load(filename);
+        auto mesh =
+            mActionManager.loadMeshAction(format)->load(filename, params);
         mMeshVector->pushBack(makeMeshDrawable(mesh));
         mUI->meshViewer->updateGUI();
         mUI->meshViewer->fitScene();
@@ -89,17 +91,20 @@ void MeshProcessingMainWindow::saveMeshAs()
 
     std::vector<proc::FileFormat> formats = mActionManager.saveMeshFormats();
 
-    QString filter = filterFormatsToQString(formats);
+    ActionSaveFileDialog<proc::SaveMeshAction>* dialog =
+        new ActionSaveFileDialog<proc::SaveMeshAction>(
+            mActionManager.saveMeshActionManager(), "Save Mesh", "", this);
 
-    SaveMeshDialog* dialog =
-        new SaveMeshDialog(mActionManager, "Save Mesh", "", filter, this);
-    dialog->setAcceptMode(QFileDialog::AcceptSave);
     if (dialog->exec() == QDialog::Accepted) {
         auto fs   = dialog->selectedFiles();
-        auto frmt = dialog->selectedNameFilter();
 
         std::string filename = fs.first().toStdString();
         std::string format   = FileInfo::extension(filename);
+        proc::FileFormat f   = dialog->selectedFormat();
+
+        if (f != proc::FileFormat(format)) {
+            filename += "." + f.extensions().front();
+        }
 
         uint i = mUI->meshViewer->selectedDrawableObject();
         std::shared_ptr<DrawableObjectI> d = mMeshVector->at(i);
@@ -107,7 +112,8 @@ void MeshProcessingMainWindow::saveMeshAs()
         std::shared_ptr<proc::MeshI> m = toMesh(d);
 
         if (m) {
-            mActionManager.saveMeshAction(format)->save(filename, *m);
+            auto params = dialog->parameters();
+            mActionManager.saveMeshAction(format)->save(filename, *m, params);
         }
     }
 }
