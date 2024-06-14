@@ -40,19 +40,6 @@ SaveMeshDialog::SaveMeshDialog(
     setAcceptMode(QFileDialog::AcceptSave);
     QGridLayout* layout = qobject_cast<QGridLayout*>(this->layout());
 
-    mParGridLayout = new ParametersGridLayout(this);
-
-    mParGridLayout->setParameters(
-        actionManager.saveMeshAction("ply")->parameters());
-
-    // Screen multiplier spin box
-    // layout->addWidget(new QLabel("Screen Multiplier:"), 4, 0);
-    // mMultiplierSpinBox = new QDoubleSpinBox();
-    // mMultiplierSpinBox->setMinimum(1);
-    // mMultiplierSpinBox->setMaximum(10);
-    // mMultiplierSpinBox->setValue(1);
-    // mMultiplierSpinBox->setSingleStep(0.5);
-
     QWidget* w20 = layout->itemAtPosition(2, 0)->widget();
     QWidget* w21 = layout->itemAtPosition(2, 1)->widget();
     QWidget* w22 = layout->itemAtPosition(2, 2)->widget();
@@ -65,20 +52,19 @@ SaveMeshDialog::SaveMeshDialog(
     layout->removeWidget(w30);
     layout->removeWidget(w31);
 
-    // layout->addWidget(mMultiplierSpinBox, 4, 1);
-    layout->addLayout(
-        mParGridLayout,
-        2,
-        0,
-        mParGridLayout->rowCount(),
-        mParGridLayout->columnCount());
+    mParameterFrame = new ParametersFrame(this);
 
-    uint startingRow = mParGridLayout->rowCount() + 2;
-    layout->addWidget(w20, startingRow, 0);
-    layout->addWidget(w21, startingRow, 1);
-    layout->addWidget(w22, startingRow, 2, 2, 1);
-    layout->addWidget(w30, startingRow + 1, 0);
-    layout->addWidget(w31, startingRow + 1, 1);
+    mParameterFrame->setParameters(
+        actionManager.saveMeshAction("ply")->parameters());
+
+    layout->addWidget(mParameterFrame, 2, 0, 1, 3);
+
+    uint startingRow = 3;
+    layout->addWidget(w20, 3, 0);
+    layout->addWidget(w21, 3, 1);
+    layout->addWidget(w22, 3, 2, 2, 1);
+    layout->addWidget(w30, 4, 0);
+    layout->addWidget(w31, 4, 1);
 }
 
 SaveMeshDialog::~SaveMeshDialog()
@@ -87,7 +73,7 @@ SaveMeshDialog::~SaveMeshDialog()
 
 proc::ParameterVector SaveMeshDialog::parameters() const
 {
-    return mParGridLayout->parameters();
+    return mParameterFrame->parameters();
 }
 
 } // namespace vcl::qt

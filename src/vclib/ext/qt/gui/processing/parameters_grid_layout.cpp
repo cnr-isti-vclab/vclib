@@ -71,6 +71,12 @@ proc::ParameterVector ParametersGridLayout::parameters() const
     return pars;
 }
 
+void ParametersGridLayout::setHelpVisible(bool b)
+{
+    for (const std::shared_ptr<ParameterRow>& row : mRows)
+        row->setHelpVisible(b);
+}
+
 void ParametersGridLayout::clear()
 {
     clear(this);

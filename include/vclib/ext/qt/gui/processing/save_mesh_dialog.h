@@ -30,6 +30,7 @@
 #include <vclib/processing/action_manager.h>
 
 #include "parameters_grid_layout.h"
+#include "parameters_frame.h"
 
 namespace vcl::qt {
 
@@ -38,7 +39,7 @@ class SaveMeshDialog : public QFileDialog
     Q_OBJECT
 
     proc::ActionManager*  mActionManager = nullptr;
-    ParametersGridLayout* mParGridLayout = nullptr;
+    ParametersFrame* mParameterFrame = nullptr;
 
 public:
     explicit SaveMeshDialog(

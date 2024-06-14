@@ -20,38 +20,38 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
-#define VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
+#ifndef VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_FRAME_H
+#define VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_FRAME_H
 
-#include <QGridLayout>
+#include <QFrame>
 
-#include <vclib/processing/actions/common/parameter_vector.h>
-
-#include "parameters/parameter_row.h"
+#include "parameters_grid_layout.h"
 
 namespace vcl::qt {
 
-class ParametersGridLayout : public QGridLayout
-{
-    proc::ParameterVector mParameters;
+namespace Ui {
+class ParametersFrame;
+} // namespace Ui
 
-    std::vector<std::shared_ptr<ParameterRow>> mRows;
+class ParametersFrame : public QFrame
+{
+    Q_OBJECT
+
+    Ui::ParametersFrame* mUI;
+    ParametersGridLayout* mParamGridLayout = nullptr;
 
 public:
-    ParametersGridLayout(QWidget* parent);
+    explicit ParametersFrame(QWidget* parent = nullptr);
+    ~ParametersFrame();
 
     void setParameters(const proc::ParameterVector& parameters);
 
     proc::ParameterVector parameters() const;
 
-    void setHelpVisible(bool b);
-
-private:
-    void clear();
-
-    static void clear(QLayout* layout);
+private slots:
+    void helpButtonClicked(bool checked);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
+#endif // VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_FRAME_H

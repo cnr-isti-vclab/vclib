@@ -20,38 +20,44 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
-#define VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
-
-#include <QGridLayout>
-
-#include <vclib/processing/actions/common/parameter_vector.h>
-
-#include "parameters/parameter_row.h"
+#include <vclib/ext/qt/gui/processing/parameters_frame.h>
+#include "ui_parameters_frame.h"
 
 namespace vcl::qt {
 
-class ParametersGridLayout : public QGridLayout
+ParametersFrame::ParametersFrame(QWidget* parent) :
+        QFrame(parent), mUI(new Ui::ParametersFrame)
 {
-    proc::ParameterVector mParameters;
+    mUI->setupUi(this);
+    mParamGridLayout = new ParametersGridLayout(this);
+    mUI->parametersLayout->addLayout(mParamGridLayout, 0, 0);
 
-    std::vector<std::shared_ptr<ParameterRow>> mRows;
+    connect(
+        mUI->helpRushButton,
+        SIGNAL(clicked(bool)),
+        this,
+        SLOT(helpButtonClicked(bool)));
+}
 
-public:
-    ParametersGridLayout(QWidget* parent);
+ParametersFrame::~ParametersFrame()
+{
+    delete mUI;
+}
 
-    void setParameters(const proc::ParameterVector& parameters);
+void ParametersFrame::setParameters(const proc::ParameterVector& parameters)
+{
+    setVisible(parameters.size() != 0);
+    mParamGridLayout->setParameters(parameters);
+}
 
-    proc::ParameterVector parameters() const;
+proc::ParameterVector ParametersFrame::parameters() const
+{
+    return mParamGridLayout->parameters();
+}
 
-    void setHelpVisible(bool b);
-
-private:
-    void clear();
-
-    static void clear(QLayout* layout);
-};
+void ParametersFrame::helpButtonClicked(bool checked)
+{
+    mParamGridLayout->setHelpVisible(checked);
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H

@@ -34,15 +34,16 @@ ParameterRow::ParameterRow(const proc::Parameter& param) :
     mDescriptionLabel->setText(dl);
     mDescriptionLabel->setToolTip(tt);
     mDescriptionLabel->setSizePolicy(
-        QSizePolicy::Fixed, QSizePolicy::Preferred);
+        QSizePolicy::Minimum, QSizePolicy::Preferred);
 
     mHelpLabel = new QLabel("<small>" + tt + "</small>");
     mHelpLabel->setTextFormat(Qt::RichText);
     mHelpLabel->setWordWrap(true);
     mHelpLabel->setVisible(false);
     mHelpLabel->setSizePolicy(
-        QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+        QSizePolicy::Expanding, QSizePolicy::Preferred);
     mHelpLabel->setMinimumWidth(250);
+    mHelpLabel->setMinimumHeight(mHelpLabel->sizeHint().height());
 }
 
 ParameterRow::~ParameterRow()
@@ -52,6 +53,8 @@ ParameterRow::~ParameterRow()
 void ParameterRow::addRowToGridLayout(QGridLayout* lay, const int row)
 {
     if (lay != NULL) {
+        parameterWidget()->setSizePolicy(
+            QSizePolicy::Expanding, QSizePolicy::Preferred);
         lay->addWidget(mDescriptionLabel, row, 0, 1, 1, Qt::AlignRight);
         lay->addWidget(parameterWidget(), row, 1);
         lay->addWidget(mHelpLabel, row, 2);
@@ -78,6 +81,14 @@ void ParameterRow::setHelpVisible(bool b)
 {
     mHelpVisible = b;
     mHelpLabel->setVisible(mVisible && mHelpVisible);
+    if (b) {
+        parameterWidget()->setSizePolicy(
+            QSizePolicy::Minimum, QSizePolicy::Preferred);
+    }
+    else {
+        parameterWidget()->setSizePolicy(
+            QSizePolicy::Expanding, QSizePolicy::Preferred);
+    }
 }
 
 void ParameterRow::setModified(bool b)
