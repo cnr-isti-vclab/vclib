@@ -90,12 +90,11 @@ public:
 
         QComboBox* cb = qobject_cast<QComboBox*>(w31);
 
-        qDebug() << connect(
-            cb, &QComboBox::currentIndexChanged, [&](int index) {
-                auto format = mActionManager->formats()[index];
-                auto params = mActionManager->get(format)->parameters();
-                mParameterFrame->setParameters(params);
-            });
+        connect(cb, &QComboBox::currentIndexChanged, [&](int index) {
+            auto format = mActionManager->formats()[index];
+            auto params = mActionManager->get(format)->parameters();
+            mParameterFrame->setParameters(params);
+        });
     }
 
     ~ActionFileDialog() {}
