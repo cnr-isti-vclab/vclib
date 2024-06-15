@@ -20,56 +20,54 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H
-#define VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H
-
-#include <QFrame>
-
-#include "parameters_grid_layout.h"
+#include <vclib/ext/qt/gui/processing/parameter_frame/parameter_sub_frame.h>
+#include "ui_parameter_sub_frame.h"
 
 namespace vcl::qt {
 
-namespace Ui {
-class MultiParameterFrame;
-} // namespace Ui
-
-class MultiParameterFrame : public QFrame
+ParameterSubFrame::ParameterSubFrame(QWidget* parent) :
+        QFrame(parent), mUI(new Ui::ParameterSubFrame)
 {
-    Q_OBJECT
+    mUI->setupUi(this);
 
-    Ui::MultiParameterFrame*  mUI;
+    connect(
+        mUI->toolButton,
+        SIGNAL(clicked(bool)),
+        this,
+        SLOT(showPushButtonClicked(bool)));
+}
 
-    std::vector<ParametersGridLayout*> mParamGrids;
+ParameterSubFrame::~ParameterSubFrame()
+{
+    delete mUI;
+}
 
-public:
-    explicit MultiParameterFrame(QWidget* parent = nullptr);
-    ~MultiParameterFrame();
+void ParameterSubFrame::setTitleLabel(const std::string& title)
+{
+    mUI->titleLabel->setText(QString::fromStdString(title));
+}
 
-    uint addParameters(
-        const std::string&           name,
-        const proc::ParameterVector& parameters);
+void ParameterSubFrame::setSubFrameLayout(QGridLayout* layout)
+{
+    mUI->subFrame->setLayout(layout);
+}
 
-    void setFrameVisible(uint i, bool visible);
+void ParameterSubFrame::setShowPushButtonChecked(bool checked)
+{
+    if (checked)
+        mUI->toolButton->setArrowType(Qt::ArrowType::DownArrow);
+    else
+        mUI->toolButton->setArrowType(Qt::ArrowType::RightArrow);
+    mUI->subFrame->setVisible(checked);
+}
 
-    proc::ParameterVector parameters(uint i) const;
-
-    uint numberParameters() const { return mParamGrids.size(); }
-
-    void setHeaderLabel(const std::string& label);
-
-    void setHeaderFrameVisible(bool visible);
-
-    void setShowAllParametersButtonChecked(bool checked);
-
-private slots:
-    void showAllParametersButtonClicked(bool checked);
-
-    void helpButtonClicked(bool checked);
-
-private:
-    uint addLayout(const std::string& name, ParametersGridLayout* layout);
-};
+void ParameterSubFrame::showPushButtonClicked(bool checked)
+{
+    mUI->subFrame->setVisible(checked);
+    if (checked)
+        mUI->toolButton->setArrowType(Qt::ArrowType::DownArrow);
+    else
+        mUI->toolButton->setArrowType(Qt::ArrowType::RightArrow);
+}
 
 } // namespace vcl::qt
-
-#endif // VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H

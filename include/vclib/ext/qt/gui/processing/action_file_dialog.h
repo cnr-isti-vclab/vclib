@@ -135,6 +135,14 @@ public:
 
         });
 
+        if constexpr (OPEN) {
+            mMultiParameterFrame->setHeaderLabel("Open Mesh Parameters:");
+        }
+        else {
+            mMultiParameterFrame->setHeaderLabel("Save Mesh Parameters:");
+        }
+        mMultiParameterFrame->setShowAllParametersButtonChecked(false);
+
         resize(sizeHint().width(), sizeHint().height());
     }
 

@@ -20,56 +20,39 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H
-#define VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H
+#ifndef VCL_EXT_QT_GUI_PROCESSING_PARAMETER_FRAME_PARAMETER_SUB_FRAME_H
+#define VCL_EXT_QT_GUI_PROCESSING_PARAMETER_FRAME_PARAMETER_SUB_FRAME_H
 
 #include <QFrame>
 
-#include "parameters_grid_layout.h"
+#include <QGridLayout>
 
 namespace vcl::qt {
 
 namespace Ui {
-class MultiParameterFrame;
+class ParameterSubFrame;
 } // namespace Ui
 
-class MultiParameterFrame : public QFrame
+class ParameterSubFrame : public QFrame
 {
     Q_OBJECT
 
-    Ui::MultiParameterFrame*  mUI;
-
-    std::vector<ParametersGridLayout*> mParamGrids;
+    Ui::ParameterSubFrame* mUI;
 
 public:
-    explicit MultiParameterFrame(QWidget* parent = nullptr);
-    ~MultiParameterFrame();
+    explicit ParameterSubFrame(QWidget* parent = nullptr);
+    ~ParameterSubFrame();
 
-    uint addParameters(
-        const std::string&           name,
-        const proc::ParameterVector& parameters);
+    void setTitleLabel(const std::string& title);
 
-    void setFrameVisible(uint i, bool visible);
+    void setSubFrameLayout(QGridLayout* layout);
 
-    proc::ParameterVector parameters(uint i) const;
-
-    uint numberParameters() const { return mParamGrids.size(); }
-
-    void setHeaderLabel(const std::string& label);
-
-    void setHeaderFrameVisible(bool visible);
-
-    void setShowAllParametersButtonChecked(bool checked);
+    void setShowPushButtonChecked(bool checked);
 
 private slots:
-    void showAllParametersButtonClicked(bool checked);
-
-    void helpButtonClicked(bool checked);
-
-private:
-    uint addLayout(const std::string& name, ParametersGridLayout* layout);
+    void showPushButtonClicked(bool checked);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H
+#endif // VCL_EXT_QT_GUI_PROCESSING_PARAMETER_FRAME_PARAMETER_SUB_FRAME_H

@@ -24,6 +24,8 @@
 
 #include <vclib/ext/qt/gui/processing/multi_parameter_frame.h>
 
+#include <vclib/ext/qt/gui/processing/parameter_frame/parameter_sub_frame.h>
+
 namespace vcl::qt {
 
 MultiParameterFrame::MultiParameterFrame(QWidget* parent) :
@@ -36,6 +38,12 @@ MultiParameterFrame::MultiParameterFrame(QWidget* parent) :
         SIGNAL(clicked(bool)),
         this,
         SLOT(helpButtonClicked(bool)));
+
+    connect(
+        mUI->showAllParametersToolButton,
+        SIGNAL(clicked(bool)),
+        this,
+        SLOT(showAllParametersButtonClicked(bool)));
 }
 
 MultiParameterFrame::~MultiParameterFrame()
@@ -54,12 +62,42 @@ uint MultiParameterFrame::addParameters(
 
 void MultiParameterFrame::setFrameVisible(uint i, bool visible)
 {
-    mParamGrids[i]->parentWidget()->setVisible(visible);
+    mParamGrids[i]->parentWidget()->parentWidget()->setVisible(visible);
 }
 
 proc::ParameterVector MultiParameterFrame::parameters(uint i) const
 {
     return mParamGrids.at(i)->parameters();
+}
+
+void MultiParameterFrame::setHeaderLabel(const std::string& label)
+{
+    mUI->headerLabel->setText(QString::fromStdString(label));
+}
+
+void MultiParameterFrame::setHeaderFrameVisible(bool visible)
+{
+    mUI->headerFrame->setVisible(visible);
+}
+
+void MultiParameterFrame::setShowAllParametersButtonChecked(bool checked)
+{
+    mUI->showAllParametersToolButton->setChecked(checked);
+    showAllParametersButtonClicked(checked);
+}
+
+void MultiParameterFrame::showAllParametersButtonClicked(bool checked)
+{
+    for (uint i = 0; i < mParamGrids.size(); ++i)
+        setFrameVisible(i, checked);
+    mUI->resetAllPushButton->setVisible(checked);
+    mUI->helpPushButton->setVisible(checked);
+    if (checked)
+        mUI->showAllParametersToolButton->setArrowType(
+            Qt::ArrowType::DownArrow);
+    else
+        mUI->showAllParametersToolButton->setArrowType(
+            Qt::ArrowType::RightArrow);
 }
 
 void MultiParameterFrame::helpButtonClicked(bool checked)
@@ -72,16 +110,10 @@ uint MultiParameterFrame::addLayout(
     const std::string&    name,
     ParametersGridLayout* layout)
 {
-    QFrame* frame = new QFrame(this);
-    frame->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
-    QGridLayout* grid = new QGridLayout();
-    grid->setContentsMargins(0, 0, 0, 0);
-    auto* l = new QLabel(this);
-    l->setText(name.c_str());
-    grid->addWidget(l, 0, 0);
+    ParameterSubFrame* frame = new ParameterSubFrame(this);
 
-    grid->addLayout(layout, 1, 0);
-    frame->setLayout(grid);
+    frame->setTitleLabel(name);
+    frame->setSubFrameLayout(layout);
 
     mUI->parametersLayout->addWidget(frame);
     mParamGrids.push_back(layout);
