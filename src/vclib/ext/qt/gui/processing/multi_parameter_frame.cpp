@@ -20,49 +20,72 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ui_parameters_frame.h"
-#include <vclib/ext/qt/gui/processing/parameters_frame.h>
+#include "ui_multi_parameter_frame.h"
+
+#include <vclib/ext/qt/gui/processing/multi_parameter_frame.h>
 
 namespace vcl::qt {
 
-ParametersFrame::ParametersFrame(QWidget* parent) :
-        QFrame(parent), mUI(new Ui::ParametersFrame)
+MultiParameterFrame::MultiParameterFrame(QWidget* parent) :
+        QFrame(parent), mUI(new Ui::MultiParameterFrame)
 {
     mUI->setupUi(this);
-    mParamGridLayout = new ParametersGridLayout(this);
-    mUI->parametersLayout->addLayout(mParamGridLayout, 0, 0);
 
     connect(
-        mUI->helpRushButton,
+        mUI->helpPushButton,
         SIGNAL(clicked(bool)),
         this,
         SLOT(helpButtonClicked(bool)));
 }
 
-ParametersFrame::~ParametersFrame()
+MultiParameterFrame::~MultiParameterFrame()
 {
     delete mUI;
 }
 
-void ParametersFrame::setHeaderLabel(const std::string& label)
+uint MultiParameterFrame::addParameters(
+    const std::string&           name,
+    const proc::ParameterVector& parameters)
 {
-    mUI->headerLabel->setText(QString::fromStdString(label));
+    ParametersGridLayout* layout = new ParametersGridLayout(this);
+    layout->setParameters(parameters);
+    return addLayout(name, layout);
 }
 
-void ParametersFrame::setParameters(const proc::ParameterVector& parameters)
+void MultiParameterFrame::setFrameVisible(uint i, bool visible)
 {
-    setVisible(parameters.size() != 0);
-    mParamGridLayout->setParameters(parameters);
+    mParamGrids[i]->parentWidget()->setVisible(visible);
 }
 
-proc::ParameterVector ParametersFrame::parameters() const
+proc::ParameterVector MultiParameterFrame::parameters(uint i) const
 {
-    return mParamGridLayout->parameters();
+    return mParamGrids.at(i)->parameters();
 }
 
-void ParametersFrame::helpButtonClicked(bool checked)
+void MultiParameterFrame::helpButtonClicked(bool checked)
 {
-    mParamGridLayout->setHelpVisible(checked);
+    for (auto* grid : mParamGrids)
+        grid->setHelpVisible(checked);
+}
+
+uint MultiParameterFrame::addLayout(
+    const std::string&    name,
+    ParametersGridLayout* layout)
+{
+    QFrame* frame = new QFrame(this);
+    frame->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
+    QGridLayout* grid = new QGridLayout();
+    grid->setContentsMargins(0, 0, 0, 0);
+    auto* l = new QLabel(this);
+    l->setText(name.c_str());
+    grid->addWidget(l, 0, 0);
+
+    grid->addLayout(layout, 1, 0);
+    frame->setLayout(grid);
+
+    mUI->parametersLayout->addWidget(frame);
+    mParamGrids.push_back(layout);
+    return mParamGrids.size() - 1;
 }
 
 } // namespace vcl::qt

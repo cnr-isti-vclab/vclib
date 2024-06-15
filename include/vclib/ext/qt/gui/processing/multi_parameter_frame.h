@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_FRAME_H
-#define VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_FRAME_H
+#ifndef VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H
+#define VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H
 
 #include <QFrame>
 
@@ -30,30 +30,38 @@
 namespace vcl::qt {
 
 namespace Ui {
-class ParametersFrame;
+class MultiParameterFrame;
 } // namespace Ui
 
-class ParametersFrame : public QFrame
+class MultiParameterFrame : public QFrame
 {
     Q_OBJECT
 
-    Ui::ParametersFrame*  mUI;
-    ParametersGridLayout* mParamGridLayout = nullptr;
+    Ui::MultiParameterFrame*  mUI;
+
+    std::vector<ParametersGridLayout*> mParamGrids;
 
 public:
-    explicit ParametersFrame(QWidget* parent = nullptr);
-    ~ParametersFrame();
+    explicit MultiParameterFrame(QWidget* parent = nullptr);
+    ~MultiParameterFrame();
 
-    void setHeaderLabel(const std::string& label);
+    uint addParameters(
+        const std::string&           name,
+        const proc::ParameterVector& parameters);
 
-    void setParameters(const proc::ParameterVector& parameters);
+    void setFrameVisible(uint i, bool visible);
 
-    proc::ParameterVector parameters() const;
+    proc::ParameterVector parameters(uint i) const;
+
+    uint numberParameters() const { return mParamGrids.size(); }
 
 private slots:
     void helpButtonClicked(bool checked);
+
+private:
+    uint addLayout(const std::string& name, ParametersGridLayout* layout);
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_FRAME_H
+#endif // VCL_EXT_QT_GUI_PROCESSING_MULTI_PARAMETER_FRAME_H

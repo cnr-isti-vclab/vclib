@@ -29,7 +29,7 @@
 #include <vclib/ext/qt/utils/file_format.h>
 #include <vclib/processing/action_manager.h>
 
-#include "parameters_frame.h"
+#include "multi_parameter_frame.h"
 
 namespace vcl::qt {
 
@@ -38,7 +38,7 @@ class ActionFileDialog : public QFileDialog
 {
     const proc::IOActionManager<IOAction>* mActionManager  = nullptr;
 
-    std::vector<ParametersFrame*> mParameterFrames;
+    MultiParameterFrame* mMultiParameterFrame = nullptr;
 
 public:
     explicit ActionFileDialog(
@@ -79,27 +79,23 @@ public:
         layout->removeWidget(w30);
         layout->removeWidget(w31);
 
-        QFrame* frame = new QFrame(this);
-        frame->setLayout(new QBoxLayout(QBoxLayout::TopToBottom, frame));
+        mMultiParameterFrame = new MultiParameterFrame(this);
 
         for (const auto& format : formats) {
-            auto* pf = new ParametersFrame(this);
-            pf->setHeaderLabel(format.description() + " Parameters: ");
-            pf->setParameters(actionManager.get(format)->parameters());
-            frame->layout()->addWidget(pf);
-            pf->setVisible(pf->parameters().size() > 0);
-            mParameterFrames.push_back(pf);
+            mMultiParameterFrame->addParameters(
+                format.description() + " parameters: ",
+                actionManager.get(format)->parameters());
         }
 
         if constexpr (!OPEN) {
-            mParameterFrames[0]->setVisible(
-                mParameterFrames[0]->parameters().size() > 0);
-            for (uint i = 1; i < mParameterFrames.size(); i++) {
-                mParameterFrames[i]->setVisible(false);
+            mMultiParameterFrame->setFrameVisible(0, true);
+
+            for (uint i = 1; i < mMultiParameterFrame->numberParameters(); i++) {
+                mMultiParameterFrame->setFrameVisible(i, false);
             }
         }
 
-        layout->addWidget(frame, 2, 0, 1, 3);
+        layout->addWidget(mMultiParameterFrame, 2, 0, 1, 3);
 
         layout->addWidget(w20, 3, 0);
         layout->addWidget(w21, 3, 1);
@@ -112,18 +108,31 @@ public:
         connect(cb, &QComboBox::currentIndexChanged, [&](int index) {
             if constexpr (OPEN) {
                 if (index == 0) {
-                    for (uint i = 0; i < mParameterFrames.size(); i++) {
-                        uint np = mParameterFrames[i]->parameters().size();
-                        mParameterFrames[i]->setVisible(np > 0);
+                    for (uint i = 0;
+                         i < mMultiParameterFrame->numberParameters();
+                         i++)
+                    {
+                        mMultiParameterFrame->setFrameVisible(i, true);
                     }
                     return;
                 }
+                else {
+                    for (uint i = 0;
+                         i < mMultiParameterFrame->numberParameters();
+                         i++)
+                    {
+                        mMultiParameterFrame->setFrameVisible(i, i == index - 1);
+                    }
+                }
             }
-            uint i = OPEN ? 1 : 0;
-            for (auto* pf : mParameterFrames) {
-                pf->setVisible(i == index && pf->parameters().size() > 0);
-                i++;
+            else {
+                for (uint i = 0; i < mMultiParameterFrame->numberParameters();
+                     i++)
+                {
+                    mMultiParameterFrame->setFrameVisible(i, i == index);
+                }
             }
+
         });
 
         resize(sizeHint().width(), sizeHint().height());
@@ -131,28 +140,11 @@ public:
 
     ~ActionFileDialog() {}
 
-    proc::ParameterVector parameters() const
-    {
-        QGridLayout* layout = gLayout();
-        QWidget*     w31    = layout->itemAtPosition(4, 1)->widget();
-        QComboBox*   cb     = qobject_cast<QComboBox*>(w31);
-        int ci = cb->currentIndex();
-        if (OPEN && ci == 0) {
-            assert(0);
-        }
-        else {
-            if (OPEN) ci--;
-            auto* pf = mParameterFrames[ci];
-            return pf->parameters();
-        }
-    }
-
-    proc::ParameterVector parametes(const proc::FileFormat& format) const
+    proc::ParameterVector parameters(const proc::FileFormat& format) const
     {
         for (int i = 0; i < mActionManager->formats().size(); i++) {
             if (mActionManager->formats()[i] == format) {
-                auto* pf = mParameterFrames[i];
-                return pf->parameters();
+                return mMultiParameterFrame->parameters(i);
             }
         }
         assert(0);

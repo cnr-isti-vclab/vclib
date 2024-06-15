@@ -73,7 +73,7 @@ void MeshProcessingMainWindow::openMesh()
 
         std::string      filename = fs.first().toStdString();
         proc::FileFormat format   = FileInfo::extension(filename);
-        auto             params   = dialog->parameters();
+        auto             params   = dialog->parameters(format);
 
         auto mesh =
             mActionManager.loadMeshAction(format)->load(filename, params);
@@ -112,7 +112,7 @@ void MeshProcessingMainWindow::saveMeshAs()
         std::shared_ptr<proc::MeshI> m = toMesh(d);
 
         if (m) {
-            auto params = dialog->parameters();
+            auto params = dialog->parameters(format);
             mActionManager.saveMeshAction(format)->save(filename, *m, params);
         }
     }
