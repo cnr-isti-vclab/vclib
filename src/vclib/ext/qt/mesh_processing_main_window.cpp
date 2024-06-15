@@ -72,7 +72,7 @@ void MeshProcessingMainWindow::openMesh()
         auto fs = dialog->selectedFiles();
 
         std::string      filename = fs.first().toStdString();
-        proc::FileFormat format   = dialog->selectedFormat();
+        proc::FileFormat format   = FileInfo::extension(filename);
         auto             params   = dialog->parameters();
 
         auto mesh =

@@ -44,6 +44,11 @@ ParametersFrame::~ParametersFrame()
     delete mUI;
 }
 
+void ParametersFrame::setHeaderLabel(const std::string& label)
+{
+    mUI->headerLabel->setText(QString::fromStdString(label));
+}
+
 void ParametersFrame::setParameters(const proc::ParameterVector& parameters)
 {
     setVisible(parameters.size() != 0);

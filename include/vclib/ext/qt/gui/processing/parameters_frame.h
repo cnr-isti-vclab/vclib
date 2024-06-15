@@ -44,6 +44,8 @@ public:
     explicit ParametersFrame(QWidget* parent = nullptr);
     ~ParametersFrame();
 
+    void setHeaderLabel(const std::string& label);
+
     void setParameters(const proc::ParameterVector& parameters);
 
     proc::ParameterVector parameters() const;

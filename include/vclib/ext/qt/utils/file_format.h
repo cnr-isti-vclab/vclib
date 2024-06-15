@@ -42,9 +42,19 @@ inline QString filterFormatToQString(const proc::FileFormat& format)
 }
 
 inline QString filterFormatsToQString(
-    const std::vector<proc::FileFormat>& formats)
+    const std::vector<proc::FileFormat>& formats, bool allFormats = false)
 {
     QString filter;
+    if (allFormats) {
+        filter += "All supported formats (";
+        for (const auto& format : formats) {
+            for (const auto& ext : format.extensions()) {
+                filter += "*." + QString::fromStdString(ext) + " ";
+            }
+        }
+        filter.chop(1);
+        filter += ");;";
+    }
     for (const auto& format : formats) {
         filter += filterFormatToQString(format);
         filter += ";;";
