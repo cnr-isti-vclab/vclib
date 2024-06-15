@@ -40,8 +40,7 @@ ParameterRow::ParameterRow(const proc::Parameter& param) :
     mHelpLabel->setTextFormat(Qt::RichText);
     mHelpLabel->setWordWrap(true);
     mHelpLabel->setVisible(false);
-    mHelpLabel->setSizePolicy(
-        QSizePolicy::Expanding, QSizePolicy::Preferred);
+    mHelpLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     mHelpLabel->setMinimumWidth(250);
     mHelpLabel->setMinimumHeight(mHelpLabel->sizeHint().height());
 }

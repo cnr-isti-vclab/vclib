@@ -69,11 +69,11 @@ void MeshProcessingMainWindow::openMesh()
             mActionManager.loadMeshActionManager(), "Open Mesh", "", this);
 
     if (dialog->exec() == QDialog::Accepted) {
-        auto fs   = dialog->selectedFiles();
+        auto fs = dialog->selectedFiles();
 
-        std::string filename = fs.first().toStdString();
+        std::string      filename = fs.first().toStdString();
         proc::FileFormat format   = dialog->selectedFormat();
-        auto params = dialog->parameters();
+        auto             params   = dialog->parameters();
 
         auto mesh =
             mActionManager.loadMeshAction(format)->load(filename, params);
@@ -96,11 +96,11 @@ void MeshProcessingMainWindow::saveMeshAs()
             mActionManager.saveMeshActionManager(), "Save Mesh", "", this);
 
     if (dialog->exec() == QDialog::Accepted) {
-        auto fs   = dialog->selectedFiles();
+        auto fs = dialog->selectedFiles();
 
-        std::string filename = fs.first().toStdString();
-        std::string format   = FileInfo::extension(filename);
-        proc::FileFormat f   = dialog->selectedFormat();
+        std::string      filename = fs.first().toStdString();
+        std::string      format   = FileInfo::extension(filename);
+        proc::FileFormat f        = dialog->selectedFormat();
 
         if (f != proc::FileFormat(format)) {
             filename += "." + f.extensions().front();

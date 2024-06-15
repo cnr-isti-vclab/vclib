@@ -37,7 +37,7 @@ class ParametersFrame : public QFrame
 {
     Q_OBJECT
 
-    Ui::ParametersFrame* mUI;
+    Ui::ParametersFrame*  mUI;
     ParametersGridLayout* mParamGridLayout = nullptr;
 
 public:

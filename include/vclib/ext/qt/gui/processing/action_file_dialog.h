@@ -23,12 +23,11 @@
 #ifndef VCL_EXT_QT_GUI_PROCESSING_ACTION_FILE_DIALOG_H
 #define VCL_EXT_QT_GUI_PROCESSING_ACTION_FILE_DIALOG_H
 
-#include <QFileDialog>
 #include <QComboBox>
+#include <QFileDialog>
 
 #include <vclib/ext/qt/utils/file_format.h>
 #include <vclib/processing/action_manager.h>
-
 
 #include "parameters_frame.h"
 
@@ -37,8 +36,8 @@ namespace vcl::qt {
 template<typename IOAction, bool OPEN = true>
 class ActionFileDialog : public QFileDialog
 {
-    const proc::IOActionManager<IOAction>* mActionManager = nullptr;
-    ParametersFrame* mParameterFrame = nullptr;
+    const proc::IOActionManager<IOAction>* mActionManager  = nullptr;
+    ParametersFrame*                       mParameterFrame = nullptr;
 
 public:
     explicit ActionFileDialog(
@@ -109,8 +108,8 @@ public:
     proc::FileFormat selectedFormat() const
     {
         QGridLayout* layout = gLayout();
-        QWidget* w31 = layout->itemAtPosition(4, 1)->widget();
-        QComboBox* cb = qobject_cast<QComboBox*>(w31);
+        QWidget*     w31    = layout->itemAtPosition(4, 1)->widget();
+        QComboBox*   cb     = qobject_cast<QComboBox*>(w31);
         return mActionManager->formats()[cb->currentIndex()];
     }
 

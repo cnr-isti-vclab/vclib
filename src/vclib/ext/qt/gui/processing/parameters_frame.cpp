@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/qt/gui/processing/parameters_frame.h>
 #include "ui_parameters_frame.h"
+#include <vclib/ext/qt/gui/processing/parameters_frame.h>
 
 namespace vcl::qt {
 
