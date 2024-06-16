@@ -24,8 +24,6 @@
 
 #include <vclib/ext/qt/gui/processing/multi_parameter_frame.h>
 
-#include <vclib/ext/qt/gui/processing/parameter_frame/parameter_sub_frame.h>
-
 namespace vcl::qt {
 
 MultiParameterFrame::MultiParameterFrame(QWidget* parent) :
@@ -40,7 +38,7 @@ MultiParameterFrame::MultiParameterFrame(QWidget* parent) :
         SLOT(helpButtonClicked(bool)));
 
     connect(
-        mUI->showAllParametersToolButton,
+        mUI->headerToolButton,
         SIGNAL(clicked(bool)),
         this,
         SLOT(showAllParametersButtonClicked(bool)));
@@ -57,12 +55,7 @@ uint MultiParameterFrame::addParameters(
 {
     ParametersGridLayout* layout = new ParametersGridLayout(this);
     layout->setParameters(parameters);
-    return addLayout(name, layout);
-}
-
-void MultiParameterFrame::setFrameVisible(uint i, bool visible)
-{
-    mParamGrids[i]->parentWidget()->parentWidget()->setVisible(visible);
+    return addSubFrame(name, layout);
 }
 
 proc::ParameterVector MultiParameterFrame::parameters(uint i) const
@@ -80,23 +73,39 @@ void MultiParameterFrame::setHeaderFrameVisible(bool visible)
     mUI->headerFrame->setVisible(visible);
 }
 
-void MultiParameterFrame::setShowAllParametersButtonChecked(bool checked)
+void MultiParameterFrame::setHeaderButtonChecked(bool checked)
 {
-    mUI->showAllParametersToolButton->setChecked(checked);
+    mUI->headerToolButton->setChecked(checked);
     showAllParametersButtonClicked(checked);
+}
+
+void MultiParameterFrame::setSubFrameVisible(uint i, bool visible)
+{
+    subFrame(i)->setVisible(visible);
+}
+
+
+void MultiParameterFrame::setSubFrameHeaderVisible(uint i, bool visible)
+{
+    subFrame(i)->setHeaderFrameVisible(visible);
+}
+
+void MultiParameterFrame::setSubFrameHeaderButtonChecked(uint i, bool checked)
+{
+    subFrame(i)->setHeaderButtonChecked(checked);
 }
 
 void MultiParameterFrame::showAllParametersButtonClicked(bool checked)
 {
     for (uint i = 0; i < mParamGrids.size(); ++i)
-        setFrameVisible(i, checked);
+        setSubFrameVisible(i, checked);
     mUI->resetAllPushButton->setVisible(checked);
     mUI->helpPushButton->setVisible(checked);
     if (checked)
-        mUI->showAllParametersToolButton->setArrowType(
+        mUI->headerToolButton->setArrowType(
             Qt::ArrowType::DownArrow);
     else
-        mUI->showAllParametersToolButton->setArrowType(
+        mUI->headerToolButton->setArrowType(
             Qt::ArrowType::RightArrow);
 }
 
@@ -106,7 +115,7 @@ void MultiParameterFrame::helpButtonClicked(bool checked)
         grid->setHelpVisible(checked);
 }
 
-uint MultiParameterFrame::addLayout(
+uint MultiParameterFrame::addSubFrame(
     const std::string&    name,
     ParametersGridLayout* layout)
 {
@@ -118,6 +127,13 @@ uint MultiParameterFrame::addLayout(
     mUI->parametersLayout->addWidget(frame);
     mParamGrids.push_back(layout);
     return mParamGrids.size() - 1;
+}
+
+
+ParameterSubFrame* MultiParameterFrame::subFrame(uint i)
+{
+    return static_cast<ParameterSubFrame*>(
+        mParamGrids[i]->parentWidget()->parentWidget());
 }
 
 } // namespace vcl::qt

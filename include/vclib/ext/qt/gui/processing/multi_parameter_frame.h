@@ -27,6 +27,8 @@
 
 #include "parameters_grid_layout.h"
 
+#include "parameter_frame/parameter_sub_frame.h"
+
 namespace vcl::qt {
 
 namespace Ui {
@@ -49,8 +51,6 @@ public:
         const std::string&           name,
         const proc::ParameterVector& parameters);
 
-    void setFrameVisible(uint i, bool visible);
-
     proc::ParameterVector parameters(uint i) const;
 
     uint numberParameters() const { return mParamGrids.size(); }
@@ -59,7 +59,13 @@ public:
 
     void setHeaderFrameVisible(bool visible);
 
-    void setShowAllParametersButtonChecked(bool checked);
+    void setHeaderButtonChecked(bool checked);
+
+    void setSubFrameVisible(uint i, bool visible);
+
+    void setSubFrameHeaderVisible(uint i, bool visible);
+
+    void setSubFrameHeaderButtonChecked(uint i, bool checked);
 
 private slots:
     void showAllParametersButtonClicked(bool checked);
@@ -67,7 +73,9 @@ private slots:
     void helpButtonClicked(bool checked);
 
 private:
-    uint addLayout(const std::string& name, ParametersGridLayout* layout);
+    uint addSubFrame(const std::string& name, ParametersGridLayout* layout);
+
+    ParameterSubFrame* subFrame(uint i);
 };
 
 } // namespace vcl::qt

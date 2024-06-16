@@ -47,7 +47,9 @@ public:
 
     void setSubFrameLayout(QGridLayout* layout);
 
-    void setShowPushButtonChecked(bool checked);
+    void setHeaderFrameVisible(bool visible);
+
+    void setHeaderButtonChecked(bool checked);
 
 private slots:
     void showPushButtonClicked(bool checked);

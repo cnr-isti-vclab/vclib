@@ -52,7 +52,12 @@ void ParameterSubFrame::setSubFrameLayout(QGridLayout* layout)
     mUI->subFrame->setLayout(layout);
 }
 
-void ParameterSubFrame::setShowPushButtonChecked(bool checked)
+void ParameterSubFrame::setHeaderFrameVisible(bool visible)
+{
+    mUI->headerFrame->setVisible(visible);
+}
+
+void ParameterSubFrame::setHeaderButtonChecked(bool checked)
 {
     if (checked)
         mUI->toolButton->setArrowType(Qt::ArrowType::DownArrow);

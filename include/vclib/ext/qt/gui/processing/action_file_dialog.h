@@ -82,17 +82,21 @@ public:
         mMultiParameterFrame = new MultiParameterFrame(this);
 
         for (const auto& format : formats) {
-            mMultiParameterFrame->addParameters(
+            uint i = mMultiParameterFrame->addParameters(
                 format.description() + " parameters: ",
                 actionManager.get(format)->parameters());
+            mMultiParameterFrame->setSubFrameVisible(i, false);
+            mMultiParameterFrame->setSubFrameHeaderButtonChecked(i, false);
         }
 
         if constexpr (!OPEN) {
-            mMultiParameterFrame->setFrameVisible(0, true);
+            mMultiParameterFrame->setSubFrameVisible(0, true);
+            mMultiParameterFrame->setSubFrameHeaderVisible(0, false);
 
             for (uint i = 1; i < mMultiParameterFrame->numberParameters(); i++)
             {
-                mMultiParameterFrame->setFrameVisible(i, false);
+                mMultiParameterFrame->setSubFrameVisible(i, false);
+                mMultiParameterFrame->setSubFrameHeaderVisible(i, false);
             }
         }
 
@@ -113,7 +117,8 @@ public:
                          i < mMultiParameterFrame->numberParameters();
                          i++)
                     {
-                        mMultiParameterFrame->setFrameVisible(i, true);
+                        mMultiParameterFrame->setSubFrameVisible(i, true);
+                        mMultiParameterFrame->setSubFrameHeaderVisible(i, true);
                     }
                     return;
                 }
@@ -122,7 +127,11 @@ public:
                          i < mMultiParameterFrame->numberParameters();
                          i++)
                     {
-                        mMultiParameterFrame->setFrameVisible(
+                        mMultiParameterFrame->setSubFrameVisible(
+                            i, i == index - 1);
+                        mMultiParameterFrame->setSubFrameHeaderVisible(
+                            i, i == index - 1);
+                        mMultiParameterFrame->setSubFrameHeaderButtonChecked(
                             i, i == index - 1);
                     }
                 }
@@ -131,18 +140,20 @@ public:
                 for (uint i = 0; i < mMultiParameterFrame->numberParameters();
                      i++)
                 {
-                    mMultiParameterFrame->setFrameVisible(i, i == index);
+                    mMultiParameterFrame->setSubFrameVisible(i, i == index);
+                    mMultiParameterFrame->setSubFrameHeaderButtonChecked(
+                        i, i == index);
                 }
             }
         });
 
         if constexpr (OPEN) {
-            mMultiParameterFrame->setHeaderLabel("Open Mesh Parameters:");
+            mMultiParameterFrame->setHeaderLabel("Open Mesh Parameters");
         }
         else {
-            mMultiParameterFrame->setHeaderLabel("Save Mesh Parameters:");
+            mMultiParameterFrame->setHeaderLabel("Save Mesh Parameters");
         }
-        mMultiParameterFrame->setShowAllParametersButtonChecked(false);
+        mMultiParameterFrame->setHeaderButtonChecked(false);
 
         resize(sizeHint().width(), sizeHint().height());
     }
