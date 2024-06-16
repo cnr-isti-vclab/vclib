@@ -37,7 +37,7 @@ class MultiParameterFrame : public QFrame
 {
     Q_OBJECT
 
-    Ui::MultiParameterFrame*  mUI;
+    Ui::MultiParameterFrame* mUI;
 
     std::vector<ParametersGridLayout*> mParamGrids;
 

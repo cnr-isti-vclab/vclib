@@ -36,7 +36,7 @@ namespace vcl::qt {
 template<typename IOAction, bool OPEN = true>
 class ActionFileDialog : public QFileDialog
 {
-    const proc::IOActionManager<IOAction>* mActionManager  = nullptr;
+    const proc::IOActionManager<IOAction>* mActionManager = nullptr;
 
     MultiParameterFrame* mMultiParameterFrame = nullptr;
 
@@ -60,7 +60,7 @@ public:
 
         std::vector<proc::FileFormat> formats = actionManager.formats();
 
-        bool allSupportedFormats = OPEN;
+        bool    allSupportedFormats = OPEN;
         QString filter = filterFormatsToQString(formats, allSupportedFormats);
         setNameFilter(filter);
 
@@ -90,7 +90,8 @@ public:
         if constexpr (!OPEN) {
             mMultiParameterFrame->setFrameVisible(0, true);
 
-            for (uint i = 1; i < mMultiParameterFrame->numberParameters(); i++) {
+            for (uint i = 1; i < mMultiParameterFrame->numberParameters(); i++)
+            {
                 mMultiParameterFrame->setFrameVisible(i, false);
             }
         }
@@ -121,7 +122,8 @@ public:
                          i < mMultiParameterFrame->numberParameters();
                          i++)
                     {
-                        mMultiParameterFrame->setFrameVisible(i, i == index - 1);
+                        mMultiParameterFrame->setFrameVisible(
+                            i, i == index - 1);
                     }
                 }
             }
@@ -132,7 +134,6 @@ public:
                     mMultiParameterFrame->setFrameVisible(i, i == index);
                 }
             }
-
         });
 
         if constexpr (OPEN) {
@@ -169,7 +170,7 @@ public:
         QGridLayout* layout = gLayout();
         QWidget*     w31    = layout->itemAtPosition(4, 1)->widget();
         QComboBox*   cb     = qobject_cast<QComboBox*>(w31);
-        int ci = cb->currentIndex();
+        int          ci     = cb->currentIndex();
         if (OPEN && ci == 0)
             return proc::FileFormat("", "");
         else if (OPEN)

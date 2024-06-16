@@ -42,7 +42,8 @@ inline QString filterFormatToQString(const proc::FileFormat& format)
 }
 
 inline QString filterFormatsToQString(
-    const std::vector<proc::FileFormat>& formats, bool allFormats = false)
+    const std::vector<proc::FileFormat>& formats,
+    bool                                 allFormats = false)
 {
     QString filter;
     if (allFormats) {
