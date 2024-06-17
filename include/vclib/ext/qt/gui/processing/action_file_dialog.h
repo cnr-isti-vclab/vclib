@@ -87,9 +87,9 @@ public:
                 actionManager.get(format)->parameters());
 
             if (OPEN) {
-                // all visible
-                mMultiParameterFrame->setSubFrameVisible(i, true);
-                mMultiParameterFrame->setSubFrameHeaderButtonVisible(i, true);
+                // none visible
+                mMultiParameterFrame->setSubFrameVisible(i, false);
+                mMultiParameterFrame->setSubFrameHeaderButtonVisible(i, false);
             }
             else {
                 // only first visible
@@ -123,32 +123,33 @@ public:
         }
         else {
             mMultiParameterFrame->setHeaderLabel("Open Mesh Parameters");
-            // connect(
-            //     this,
-            //     &QFileDialog::filesSelected,
-            //     [&](const QStringList& files) {
-            //         for (uint i = 0;
-            //              i < mMultiParameterFrame->subFramesNumber();
-            //              i++)
-            //         {
-            //             mMultiParameterFrame->setSubFrameVisible(i, false);
-            //             mMultiParameterFrame->setSubFrameHeaderVisible(
-            //                 i, false);
-            //         }
+            connect(
+                this, &QFileDialog::currentChanged, [&](const QString& file) {
+                    for (uint i = 0;
+                         i < mMultiParameterFrame->subFramesNumber();
+                         i++)
+                    {
+                        mMultiParameterFrame->setSubFrameVisible(i, false);
+                        mMultiParameterFrame->setSubFrameHeaderVisible(
+                            i, false);
+                    }
 
-            //         for (const QString& qfile : files) {
-            //             std::string file = qfile.toStdString();
-            //             std::string ext  = FileInfo::extension(file);
-            //             for (uint i = 0; i < formats.size(); ++i) {
-            //                 if (formats[i] == ext) {
-            //                     mMultiParameterFrame->setSubFrameVisible(
-            //                         i, true);
-            //                     mMultiParameterFrame->setSubFrameHeaderVisible(
-            //                         i, true);
-            //                 }
-            //             }
-            //         }
-            //     });
+                    QStringList files = selectedFiles();
+                    files.append(file);
+                    for (const auto& qfile : files) {
+                        std::string file = qfile.toStdString();
+                        std::string ext  = FileInfo::extension(file);
+                        for (uint i = 0; i < mActionManager->formats().size();
+                             ++i) {
+                            if (mActionManager->formats()[i] == ext) {
+                                mMultiParameterFrame->setSubFrameVisible(
+                                    i, true);
+                                mMultiParameterFrame->setSubFrameHeaderVisible(
+                                    i, true);
+                            }
+                        }
+                    }
+                });
         }
 
         mMultiParameterFrame->setHeaderButtonChecked(false);
