@@ -84,7 +84,6 @@ void MultiParameterFrame::setSubFrameVisible(uint i, bool visible)
     subFrame(i)->setVisible(visible);
 }
 
-
 void MultiParameterFrame::setSubFrameHeaderVisible(uint i, bool visible)
 {
     subFrame(i)->setHeaderFrameVisible(visible);
@@ -102,11 +101,9 @@ void MultiParameterFrame::showAllParametersButtonClicked(bool checked)
     mUI->resetAllPushButton->setVisible(checked);
     mUI->helpPushButton->setVisible(checked);
     if (checked)
-        mUI->headerToolButton->setArrowType(
-            Qt::ArrowType::DownArrow);
+        mUI->headerToolButton->setArrowType(Qt::ArrowType::DownArrow);
     else
-        mUI->headerToolButton->setArrowType(
-            Qt::ArrowType::RightArrow);
+        mUI->headerToolButton->setArrowType(Qt::ArrowType::RightArrow);
 }
 
 void MultiParameterFrame::helpButtonClicked(bool checked)
@@ -128,7 +125,6 @@ uint MultiParameterFrame::addSubFrame(
     mParamGrids.push_back(layout);
     return mParamGrids.size() - 1;
 }
-
 
 ParameterSubFrame* MultiParameterFrame::subFrame(uint i)
 {
