@@ -134,6 +134,11 @@ public:
                             i, false);
                     }
 
+                    // QFileDialog is bugged and selectedFiles() does not return
+                    // the updated list.
+                    // see: https://bugreports.qt.io/browse/QTBUG-126416
+                    // todo: when the bug is fixed, remove this workaround
+                    // and use the selected files without modification.
                     QStringList files = selectedFiles();
                     files.append(file);
                     for (const auto& qfile : files) {
