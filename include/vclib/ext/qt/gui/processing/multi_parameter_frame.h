@@ -47,13 +47,13 @@ public:
     explicit MultiParameterFrame(QWidget* parent = nullptr);
     ~MultiParameterFrame();
 
-    uint addParameters(
+    uint addSubFrame(
         const std::string&           name,
         const proc::ParameterVector& parameters);
 
     proc::ParameterVector parameters(uint i) const;
 
-    uint numberParameters() const { return mParamGrids.size(); }
+    uint subFramesNumber() const { return mParamGrids.size(); }
 
     void setHeaderLabel(const std::string& label);
 
@@ -64,6 +64,8 @@ public:
     void setSubFrameVisible(uint i, bool visible);
 
     void setSubFrameHeaderVisible(uint i, bool visible);
+
+    void setSubFrameHeaderButtonVisible(uint i, bool visible);
 
     void setSubFrameHeaderButtonChecked(uint i, bool checked);
 

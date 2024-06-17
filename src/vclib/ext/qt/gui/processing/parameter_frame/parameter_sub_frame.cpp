@@ -57,13 +57,15 @@ void ParameterSubFrame::setHeaderFrameVisible(bool visible)
     mUI->headerFrame->setVisible(visible);
 }
 
+void ParameterSubFrame::setHeaderButtonVisible(bool visible)
+{
+    mUI->toolButton->setVisible(visible);
+}
+
 void ParameterSubFrame::setHeaderButtonChecked(bool checked)
 {
-    if (checked)
-        mUI->toolButton->setArrowType(Qt::ArrowType::DownArrow);
-    else
-        mUI->toolButton->setArrowType(Qt::ArrowType::RightArrow);
-    mUI->subFrame->setVisible(checked);
+    mUI->toolButton->setChecked(checked);
+    showPushButtonClicked(checked);
 }
 
 void ParameterSubFrame::showPushButtonClicked(bool checked)

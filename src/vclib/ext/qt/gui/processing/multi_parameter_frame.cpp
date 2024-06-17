@@ -49,7 +49,7 @@ MultiParameterFrame::~MultiParameterFrame()
     delete mUI;
 }
 
-uint MultiParameterFrame::addParameters(
+uint MultiParameterFrame::addSubFrame(
     const std::string&           name,
     const proc::ParameterVector& parameters)
 {
@@ -89,6 +89,11 @@ void MultiParameterFrame::setSubFrameHeaderVisible(uint i, bool visible)
     subFrame(i)->setHeaderFrameVisible(visible);
 }
 
+void MultiParameterFrame::setSubFrameHeaderButtonVisible(uint i, bool visible)
+{
+    subFrame(i)->setHeaderButtonVisible(visible);
+}
+
 void MultiParameterFrame::setSubFrameHeaderButtonChecked(uint i, bool checked)
 {
     subFrame(i)->setHeaderButtonChecked(checked);
@@ -96,8 +101,7 @@ void MultiParameterFrame::setSubFrameHeaderButtonChecked(uint i, bool checked)
 
 void MultiParameterFrame::showAllParametersButtonClicked(bool checked)
 {
-    for (uint i = 0; i < mParamGrids.size(); ++i)
-        setSubFrameVisible(i, checked);
+    mUI->parametersFrame->setVisible(checked);
     mUI->resetAllPushButton->setVisible(checked);
     mUI->helpPushButton->setVisible(checked);
     if (checked)

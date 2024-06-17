@@ -49,6 +49,8 @@ public:
 
     void setHeaderFrameVisible(bool visible);
 
+    void setHeaderButtonVisible(bool visible);
+
     void setHeaderButtonChecked(bool checked);
 
 private slots:
