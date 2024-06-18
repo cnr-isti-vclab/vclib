@@ -96,7 +96,6 @@ public:
                 mMultiParameterFrame->setSubFrameVisible(i, i == 0);
                 mMultiParameterFrame->setSubFrameHeaderVisible(i, false);
             }
-
         }
 
         layout->addWidget(mMultiParameterFrame, 2, 0, 1, 3);

@@ -15,18 +15,15 @@ public:
 
         std::cerr << "MyDialog created" << std::endl;
 
-            connect(
-                this, &QFileDialog::currentChanged, [&](const QString&) {
+        connect(this, &QFileDialog::currentChanged, [&](const QString&) {
+            QStringList files = selectedFiles();
 
-                QStringList files = selectedFiles();
-
-                std::cerr << "Selected files: " << std::endl;
-                for (const QString& file : files) {
-                    std::cerr << file.toStdString() << std::endl;
-                }
-            });
+            std::cerr << "Selected files: " << std::endl;
+            for (const QString& file : files) {
+                std::cerr << file.toStdString() << std::endl;
+            }
+        });
     }
-
 };
 
 #endif // MY_DIALOG_H
