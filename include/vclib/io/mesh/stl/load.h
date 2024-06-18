@@ -186,12 +186,10 @@ void readStlAscii(
         enableOptionalComponentsFromInfo(loadedInfo, m);
     }
 
-    if constexpr (vcl::isLoggerValid<LogType>()) {
-        fp.seekg(0, fp.end);
-        std::size_t fsize = fp.tellg();
-        fp.seekg(0, fp.beg);
-        log.startProgress("Loading STL file", fsize);
-    }
+    fp.seekg(0, fp.end);
+    std::size_t fsize = fp.tellg();
+    fp.seekg(0, fp.beg);
+    log.startProgress("Loading STL file", fsize);
 
     vcl::Tokenizer tokens = readAndTokenizeNextNonEmptyLineNoThrow(fp);
     if (fp) {

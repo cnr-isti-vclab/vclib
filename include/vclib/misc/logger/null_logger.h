@@ -27,6 +27,8 @@
 
 #include <vclib/concepts/logger.h>
 
+#include "abstract_logger.h"
+
 namespace vcl {
 
 /**
@@ -38,60 +40,61 @@ namespace vcl {
  *
  * @ingroup miscellaneous
  */
-class NullLogger
+class NullLogger : public AbstractLogger
 {
 public:
-    enum LogLevel { ERROR = 0, WARNING, MESSAGE, PROGRESS, DEBUG };
-
     NullLogger() = default;
 
-    void enableIndentation() {}
+    void enableIndentation() override final {}
 
-    void disableIndentation() {}
+    void disableIndentation() override final {}
 
-    void enablePrintPercentage() {}
+    void enablePrintPercentage() override final {}
 
-    void disablePrintPercentage() {}
+    void disablePrintPercentage() override final {}
 
-    void enablePrintMessageDuringProgress() {}
+    void enablePrintMessageDuringProgress() override final {}
 
-    void disablePrintMessageDuringProgress() {}
+    void disablePrintMessageDuringProgress() override final {}
 
-    void enablePrintTimer() {}
+    void enablePrintTimer() override final {}
 
-    void disablePrintTimer() {}
+    void disablePrintTimer() override final {}
 
-    void reset() {}
+    void reset() override final {}
 
-    void setMaxLineWidth(uint) {}
+    void setMaxLineWidth(uint) override final {}
 
-    void startTimer() {}
+    void startTimer() override final {}
 
-    void stopTimer() {}
+    void stopTimer() override final {}
 
-    double getTime() { return 0; }
+    double getTime() override final { return 0; }
 
-    void startNewTask(double, double, std::string) {}
+    void startNewTask(double, double, const std::string&) override final {}
 
-    void endTask(std::string) {}
+    void endTask(const std::string&) override final {}
 
-    double percentage() const { return 0; }
+    double percentage() const override final { return 0; }
 
-    void setPercentage(uint) {}
+    void setPercentage(uint) override final {}
 
-    void log(std::string) {}
+    void log(const std::string&) override final {}
 
-    void log(LogLevel, std::string) {}
+    void log(LogLevel, const std::string&) override final {}
 
-    void log(uint, std::string) {}
+    void log(uint, const std::string&) override final {}
 
-    void log(uint, LogLevel, std::string) {}
+    void log(uint, LogLevel, const std::string&) override final {}
 
-    void startProgress(std::string, uint, uint = 0, uint = 0, uint = 0) {}
+    void startProgress(const std::string&, uint, uint = 0, uint = 0, uint = 0)
+        override final
+    {
+    }
 
-    void endProgress() {}
+    void endProgress() override final {}
 
-    void progress(uint) {}
+    void progress(uint) override final {}
 };
 
 /**
@@ -118,25 +121,6 @@ public:
  * @ingroup miscellaneous
  */
 inline NullLogger nullLogger;
-
-/**
- * @brief The isLoggerValid() function returns true at compile time if the type
- * T is not the NullLogger type.
- *
- * It is useful when you need to perform some operation explicitely for logging
- * that should not be done if the user does not give a logger. In this case the
- * code will not be compiled.
- *
- * @tparam T: the type to test if is a valid Logger. It must satisfy the
- * LoggerConcept.
- *
- * @return true it T is a valid Logger type.
- */
-template<LoggerConcept T>
-constexpr bool isLoggerValid()
-{
-    return !std::is_same_v<T, NullLogger>;
-}
 
 } // namespace vcl
 

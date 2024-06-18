@@ -25,22 +25,19 @@
 
 #include <cassert>
 #include <cmath>
-#include <iomanip>
 #include <mutex>
 #include <stack>
 
 #include <vclib/misc/timer.h>
 #include <vclib/types.h>
 
+#include "abstract_logger.h"
+
 namespace vcl {
 
 template<typename Stream>
-class Logger
+class Logger : public AbstractLogger
 {
-public:
-    enum LogLevel { ERROR = 0, WARNING, MESSAGE, PROGRESS, DEBUG };
-
-private:
     enum InternalLogLevel { START = DEBUG + 1, END };
 
     static const uint TIMER_MAX_CHAR_NUMBER = 12;
@@ -84,26 +81,29 @@ public:
         updateStep();
     }
 
-    void enableIndentation() { mIndent = true; }
+    void enableIndentation() override final { mIndent = true; }
 
-    void disableIndentation() { mIndent = false; }
+    void disableIndentation() override final { mIndent = false; }
 
-    void enablePrintPercentage() { mPrintPerc = true; }
+    void enablePrintPercentage() override final { mPrintPerc = true; }
 
-    void disablePrintPercentage() { mPrintPerc = false; }
+    void disablePrintPercentage() override final { mPrintPerc = false; }
 
-    void enablePrintMessageDuringProgress() { mPrintMsgDuringProgress = true; }
+    void enablePrintMessageDuringProgress() override final
+    {
+        mPrintMsgDuringProgress = true;
+    }
 
-    void disablePrintMessageDuringProgress()
+    void disablePrintMessageDuringProgress() override final
     {
         mPrintMsgDuringProgress = false;
     }
 
-    void enablePrintTimer() { mPrintTimer = true; }
+    void enablePrintTimer() override final { mPrintTimer = true; }
 
-    void disablePrintTimer() { mPrintTimer = false; }
+    void disablePrintTimer() override final { mPrintTimer = false; }
 
-    void reset()
+    void reset() override final
     {
         while (!mIntervals.empty())
             mIntervals.pop();
@@ -111,22 +111,16 @@ public:
         updateStep();
     }
 
-    void setMaxLineWidth(uint w) { mLineWidth = w; }
+    void setMaxLineWidth(uint w) override final { mLineWidth = w; }
 
-    void startTimer() { mTimer.start(); }
+    void startTimer() override final { mTimer.start(); }
 
-    void stopTimer() { mTimer.stop(); }
+    void stopTimer() override final { mTimer.stop(); }
 
-    /**
-     * @brief Returns the time passed since the last call to `startTimer` member
-     * function, or the time passed between the call to `startTimer` and the
-     * call to `stopTimer` member functions. The time is expressed in seconds.
-     *
-     * @return The time passed, expressed in seconds.
-     */
-    double getTime() { return mTimer.delay(); }
+    double getTime() override final { return mTimer.delay(); }
 
     void startNewTask(double fromPerc, double toPerc, const std::string& action)
+        override final
     {
         printLine(action, START);
 
@@ -143,7 +137,7 @@ public:
         updateStep();
     }
 
-    void endTask(const std::string& action)
+    void endTask(const std::string& action) override final
     {
         mGlobalPercProgress = mIntervals.top().second;
         if (mIntervals.size() > 1) {
@@ -154,27 +148,33 @@ public:
         }
     }
 
-    double percentage() const
+    double percentage() const override final
     {
         double k = std::pow(10, mPercPrecision);
         uint   c = mGlobalPercProgress * k;
         return c / k;
     }
 
-    virtual void setPercentage(uint newPerc)
+    virtual void setPercentage(uint newPerc) override final
     {
         if (newPerc >= 0 && newPerc <= 100) {
             mGlobalPercProgress = (mIntervals.top().first) + mStep * newPerc;
         }
     }
 
-    void log(const std::string& msg) { log(101, PROGRESS, msg); }
+    void log(const std::string& msg) override final { log(101, PROGRESS, msg); }
 
-    void log(LogLevel lvl, const std::string& msg) { log(101, lvl, msg); }
+    void log(LogLevel lvl, const std::string& msg) override final
+    {
+        log(101, lvl, msg);
+    }
 
-    void log(uint perc, const std::string& msg) { log(perc, PROGRESS, msg); }
+    void log(uint perc, const std::string& msg) override final
+    {
+        log(perc, PROGRESS, msg);
+    }
 
-    void log(uint perc, LogLevel lvl, const std::string& msg)
+    void log(uint perc, LogLevel lvl, const std::string& msg) override final
     {
         if (perc >= 0 && perc <= 100)
             setPercentage(perc);
@@ -182,44 +182,12 @@ public:
         printLine(msg, lvl);
     }
 
-    /**
-     * @brief Allows to easily manage progresses with the logger, along with the
-     * `progress` and `endProgress` member functions.
-     *
-     * This logger functionality should be used when processing a loop having a
-     * fixed size, with regular prints of the progress.
-     *
-     * This member function starts a new progress.
-     * With the default arguments, will print a message from 0% to 100%, every
-     * 10%.
-     *
-     * The typical usage is the following:
-     *
-     * @code{.cpp}
-     * log.startProgress("Computing...", vec.size());
-     *
-     * for (uint i = 0; i < vec.size(); ++i) {
-     *     // make computations
-     *     log.progress(i); // will print only every 10% of progress
-     * }
-     * log.endProgress();
-     *
-     * @endcode
-     *
-     * @param[in] msg: the message that will be printed during the progress
-     * @param[in] progressSize: the number of iterations made during the
-     * progress
-     * @param[in] percPrintProgress: interval of percentage on which print a
-     * progress message, default 10%
-     * @param[in] startPerc: start percentage of the progress, default 0%
-     * @param[in] endPerc: end percentage of the progress, default 100%
-     */
     void startProgress(
         const std::string& msg,
         uint               progressSize,
         uint               percPrintProgress = 10,
         uint               startPerc         = 0,
-        uint               endPerc           = 100)
+        uint               endPerc           = 100) override final
     {
         assert(percPrintProgress > 0);
         assert((endPerc - startPerc) > 0);
@@ -235,65 +203,13 @@ public:
         mLastProgress = 0;
     }
 
-    /**
-     * @brief Allows to easily manage progresses with the logger, along with the
-     * `startProgress` and `progress` member functions.
-     *
-     * This logger functionality should be used when processing a loop having a
-     * fixed size, with regular prints of the progress.
-     *
-     * This member function ends the current progress.
-     *
-     * The typical usage is the following:
-     *
-     * @code{.cpp}
-     * uint s = vec.size();
-     * log.startProgress("Computing...", s);
-     *
-     * for (uint i = 0; i < vec.size(); ++i) {
-     *     // make computations
-     *     log.progress(i); // will print only every 10% of progress
-     * }
-     * log.endProgress();
-     *
-     * @endcode
-     */
-    void endProgress()
+    void endProgress() override final
     {
         progress(mProgressSize);
         mIsProgressActive = false;
     }
 
-    /**
-     * @brief Allows to easily manage progresses with the logger, along with the
-     * `startProgress` and `endProgress` member functions.
-     *
-     * This logger functionality should be used when processing a loop having a
-     * fixed size, with regular prints of the progress.
-     *
-     * This member functions increments the current progress. Only if the
-     * current percentage reaches a new step percentage (set in the
-     * `startProgress` member function), a message will be printed by the
-     * logger.
-     *
-     * The typical usage is the following:
-     *
-     * @code{.cpp}
-     * uint s = vec.size();
-     * log.startProgress("Computing...", s);
-     *
-     * for (uint i = 0; i < vec.size(); ++i) {
-     *     // make computations
-     *     log.progress(i); // will print only every 10% of progress
-     * }
-     * log.endProgress();
-     *
-     * @endcode
-     *
-     * @param[in] n: iteration number of the current progress. It must be less
-     * than the `progressSize` argument of the `startProgress` member function.
-     */
-    void progress(uint n)
+    void progress(uint n) override final
     {
         mMutex.lock();
         assert(mIsProgressActive);
