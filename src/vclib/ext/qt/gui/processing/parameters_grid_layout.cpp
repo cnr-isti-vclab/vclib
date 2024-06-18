@@ -23,6 +23,7 @@
 #include <vclib/ext/qt/gui/processing/parameters_grid_layout.h>
 
 #include <vclib/ext/qt/gui/processing/parameters/bool_parameter_row.h>
+#include <vclib/ext/qt/gui/processing/parameters/enum_parameter_row.h>
 
 namespace vcl::qt {
 
@@ -51,7 +52,21 @@ void ParametersGridLayout::setParameters(
                 parRow->addRowToGridLayout(this, row);
 
                 mRows.push_back(parRow);
+
             }
+            break;
+            case proc::ParameterType::ENUM: {
+                std::shared_ptr<const proc::EnumParameter> ep =
+                    std::dynamic_pointer_cast<const proc::EnumParameter>(par);
+
+                std::shared_ptr<ParameterRow> parRow =
+                    std::make_shared<EnumParameterRow>(*ep);
+
+                parRow->addRowToGridLayout(this, row);
+
+                mRows.push_back(parRow);
+            }
+            break;
             default: break;
             }
             ++row;
