@@ -48,7 +48,12 @@ public:
         ParameterVector params;
 
         params.pushBack(EnumParameter(
-            "mesh_type", 0, {"Best Fit", "TriMesh", "PolyMesh"}, "", ""));
+            "mesh_type",
+            0,
+            {"Best Fit", "TriMesh", "PolyMesh"},
+            "Mesh Type",
+            "Type of the Mesh on which to load the file; Best Fit will try to "
+            "load the file in the most suitable mesh type."));
 
         return params;
     }

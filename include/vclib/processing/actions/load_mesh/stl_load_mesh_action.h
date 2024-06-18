@@ -49,7 +49,14 @@ public:
         ParameterVector params;
 
         params.pushBack(BoolParameter(
-            "unify_duplicate_vertices", true, "Unify Duplicate Vertices", ""));
+            "unify_duplicate_vertices",
+            true,
+            "Unify Duplicate Vertices",
+            "STL files may contain duplicated vertices. "
+            "If this option is enabled, the loader will remove them. "
+            "This may lead to a reduction in the number of vertices. "
+            "The original number of vertices and the number of removed "
+            "vertices will be logged."));
 
         return params;
     }
