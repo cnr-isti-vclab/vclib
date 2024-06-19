@@ -75,8 +75,8 @@ void MeshProcessingMainWindow::openMesh()
         proc::FileFormat format   = FileInfo::extension(filename);
         auto             params   = dialog->parameters(format);
 
-        auto mesh =
-            mActionManager.loadMeshAction(format)->load(filename, params);
+        auto mesh = mActionManager.loadMeshAction(format)->load(
+            filename, params, mUI->meshViewer->logger());
         mMeshVector->pushBack(makeMeshDrawable(mesh));
         mUI->meshViewer->updateGUI();
         mUI->meshViewer->fitScene();
@@ -113,7 +113,8 @@ void MeshProcessingMainWindow::saveMeshAs()
 
         if (m) {
             auto params = dialog->parameters(format);
-            mActionManager.saveMeshAction(format)->save(filename, *m, params);
+            mActionManager.saveMeshAction(format)->save(
+                filename, *m, params, mUI->meshViewer->logger());
         }
     }
 }
