@@ -533,6 +533,11 @@ void loadOff(
     if (settings.enableOptionalComponents)
         enableOptionalComponentsFromInfo(loadedInfo, m);
 
+    if (nVertices == 0) {
+        log.log(LogType::WARNING, "The file has no vertices");
+        return;
+    }
+
     int percVertices = nVertices / (nVertices + nFaces) * 100;
     int percFaces = 100 - percVertices;
 

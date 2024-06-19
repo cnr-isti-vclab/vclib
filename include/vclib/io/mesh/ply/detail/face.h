@@ -352,12 +352,13 @@ void writePlyFaces(
     }
 }
 
-template<FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void readPlyFaces(
     std::istream&    file,
     const PlyHeader& header,
     MeshType&        mesh,
-    MeshInfo&        loadedInfo)
+    MeshInfo&        loadedInfo,
+    LogType&         log)
 {
     using FaceType = MeshType::FaceType;
     mesh.reserveFaces(header.numberFaces());

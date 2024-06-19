@@ -134,11 +134,12 @@ void readPlyTriStripsBin(
     }
 }
 
-template<FaceMeshConcept MeshType>
+template<FaceMeshConcept MeshType, LoggerConcept LogType>
 void readPlyTriStrips(
     std::istream&    file,
     const PlyHeader& header,
-    MeshType&        mesh)
+    MeshType&        mesh,
+    LogType&         log)
 {
     if (header.format() == ply::ASCII) {
         detail::readPlyTriStripsTxt(file, header, mesh);

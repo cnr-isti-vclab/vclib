@@ -65,13 +65,15 @@ void loadPly(
     try {
         for (const PlyElement& el : header) {
             switch (el.type) {
-            case ply::VERTEX: readPlyVertices(file, header, m); break;
-            case ply::FACE: readPlyFaces(file, header, m, loadedInfo); break;
+            case ply::VERTEX: readPlyVertices(file, header, m, log); break;
+            case ply::FACE:
+                readPlyFaces(file, header, m, loadedInfo, log);
+                break;
             case ply::TRISTRIP:
                 loadedInfo.setTriangleMesh();
-                readPlyTriStrips(file, header, m);
+                readPlyTriStrips(file, header, m, log);
                 break;
-            default: readPlyUnknownElement(file, header, el); break;
+            default: readPlyUnknownElement(file, header, el, log); break;
             }
         }
         readPlyTextures(header, m, log, settings);

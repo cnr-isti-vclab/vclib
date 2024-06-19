@@ -89,10 +89,12 @@ void writePlyTextures(
     }
 }
 
-inline void readPlyUnknownElement(
+template<LoggerConcept LogType>
+void readPlyUnknownElement(
     std::istream&    file,
     const PlyHeader& header,
-    PlyElement       el)
+    PlyElement       el,
+    LogType&         log)
 {
     if (header.format() == ply::ASCII) {
         for (uint i = 0; i < el.numberElements; ++i) {

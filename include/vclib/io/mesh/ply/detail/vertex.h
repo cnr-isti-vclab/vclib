@@ -203,8 +203,12 @@ void writePlyVertices(
     }
 }
 
-template<MeshConcept MeshType>
-void readPlyVertices(std::istream& file, const PlyHeader& header, MeshType& m)
+template<MeshConcept MeshType, LoggerConcept LogType>
+void readPlyVertices(
+    std::istream&    file,
+    const PlyHeader& header,
+    MeshType&        m,
+    LogType&         log)
 {
     m.addVertices(header.numberVertices());
 
