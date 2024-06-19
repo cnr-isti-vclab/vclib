@@ -40,7 +40,7 @@ namespace vcl {
  */
 template<typename T>
 concept LoggerConcept =
-    requires (T o, const T& co, std::string msg, typename T::LogLevel lvl) {
+    requires (T& o, const T& co, std::string msg, typename T::LogLevel lvl) {
         // clang-format off
         typename T::LogLevel;
 
