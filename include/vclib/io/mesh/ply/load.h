@@ -62,19 +62,48 @@ void loadPly(
     if constexpr (HasTexturePaths<MeshType> || HasTextureImages<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
+
+    // for logging
+    std::vector<uint> eln;
+    uint sum = 0;
+    for (const PlyElement& el : header) {
+        eln.push_back(el.numberElements);
+        sum += el.numberElements;
+    }
+
     try {
+        uint currElems = 0;
+        uint i = 0;
         for (const PlyElement& el : header) {
+            double beginPerc = double(currElems) / sum * 100.0;
+            double endPerc = double(currElems + eln[i]) / sum * 100.0;
+
             switch (el.type) {
-            case ply::VERTEX: readPlyVertices(file, header, m, log); break;
+            case ply::VERTEX:
+                log.startNewTask(beginPerc, endPerc, "Reading vertices");
+                readPlyVertices(file, header, m, log);
+                log.endTask("Reading vertices");
+                break;
             case ply::FACE:
+                log.startNewTask(beginPerc, endPerc, "Reading faces");
                 readPlyFaces(file, header, m, loadedInfo, log);
+                log.endTask("Reading faces");
                 break;
             case ply::TRISTRIP:
+                log.startNewTask(beginPerc, endPerc, "Reading tristrips");
                 loadedInfo.setTriangleMesh();
                 readPlyTriStrips(file, header, m, log);
+                log.endTask("Reading tristrips");
                 break;
-            default: readPlyUnknownElement(file, header, el, log); break;
+            default:
+                log.startNewTask(
+                    beginPerc, endPerc, "Reading unknown elements");
+                readPlyUnknownElement(file, header, el, log);
+                log.endTask("Reading unknown elements");
+                break;
             }
+            currElems += eln[i];
+            ++i;
         }
         readPlyTextures(header, m, log, settings);
     }

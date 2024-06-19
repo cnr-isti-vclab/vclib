@@ -96,9 +96,12 @@ void readPlyUnknownElement(
     PlyElement       el,
     LogType&         log)
 {
+    log.startProgress("Reading unknown elements", el.numberElements);
+
     if (header.format() == ply::ASCII) {
         for (uint i = 0; i < el.numberElements; ++i) {
             readAndTokenizeNextNonEmptyLine(file);
+            log.progress(i);
         }
     }
     else {
@@ -113,8 +116,11 @@ void readPlyUnknownElement(
                     io::readPrimitiveType<int>(file, p.type);
                 }
             }
+            log.progress(i);
         }
     }
+
+    log.endProgress();
 }
 
 } // namespace vcl::detail

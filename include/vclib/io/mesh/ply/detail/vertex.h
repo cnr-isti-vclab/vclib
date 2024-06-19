@@ -212,6 +212,8 @@ void readPlyVertices(
 {
     m.addVertices(header.numberVertices());
 
+    log.startProgress("Reading vertices", header.numberVertices());
+
     for (uint vid = 0; vid < header.numberVertices(); ++vid) {
         auto& v = m.vertex(vid);
         if (header.format() == ply::ASCII) {
@@ -220,7 +222,9 @@ void readPlyVertices(
         else if (header.format() == ply::BINARY) {
             detail::readPlyVertexBin(file, v, m, header.vertexProperties());
         }
+        log.progress(vid);
     }
+    log.endProgress();
 }
 
 } // namespace vcl::detail

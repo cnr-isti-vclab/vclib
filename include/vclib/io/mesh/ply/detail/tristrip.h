@@ -141,6 +141,7 @@ void readPlyTriStrips(
     MeshType&        mesh,
     LogType&         log)
 {
+    // todo: manage log
     if (header.format() == ply::ASCII) {
         detail::readPlyTriStripsTxt(file, header, mesh);
     }
