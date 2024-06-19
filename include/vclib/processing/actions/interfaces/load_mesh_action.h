@@ -48,16 +48,19 @@ public:
 
     virtual std::shared_ptr<MeshI> load(
         const std::string&     filename,
-        const ParameterVector& parameter) const
+        const ParameterVector& parameter,
+        AbstractLogger&        log = logger()) const
     {
         MeshInfo info;
-        auto     mesh = load(filename, parameter, info);
+        auto     mesh = load(filename, parameter, info, log);
         return mesh;
     }
 
-    std::shared_ptr<MeshI> load(const std::string& filename) const
+    std::shared_ptr<MeshI> load(
+        const std::string& filename,
+        AbstractLogger&    log = logger()) const
     {
-        return load(filename, parameters());
+        return load(filename, parameters(), log);
     }
 
 protected:

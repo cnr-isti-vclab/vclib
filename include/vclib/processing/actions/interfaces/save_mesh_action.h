@@ -67,25 +67,30 @@ public:
         const ParameterVector& parameters,
         AbstractLogger&        log = logger()) const = 0;
 
-    void save(const std::string& filename, const MeshI& mesh) const
+    void save(
+        const std::string& filename,
+        const MeshI&       mesh,
+        AbstractLogger&    log = logger()) const
     {
-        save(filename, mesh, formatCapability(), parameters());
+        save(filename, mesh, formatCapability(), parameters(), log);
     }
 
     void save(
         const std::string& filename,
         const MeshI&       mesh,
-        const MeshInfo&    info) const
+        const MeshInfo&    info,
+        AbstractLogger&    log = logger()) const
     {
-        save(filename, mesh, info, parameters());
+        save(filename, mesh, info, parameters(), log);
     }
 
     void save(
         const std::string&     filename,
         const MeshI&           mesh,
-        const ParameterVector& parameters) const
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
     {
-        save(filename, mesh, formatCapability(), parameters);
+        save(filename, mesh, formatCapability(), parameters, log);
     }
 
 protected:
