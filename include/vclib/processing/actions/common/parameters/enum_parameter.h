@@ -41,12 +41,11 @@ public:
         const std::string&              description = "",
         const std::string&              tooltip     = "",
         const std::string&              category    = "") :
-            Parameter(name, value, description, tooltip, category)
+            Parameter(name, 0, description, tooltip, category)
     {
         for (const auto& v : enumValues)
             mEnumValues.push_back(v);
-        if (value < 0 || value >= mEnumValues.size())
-            throw std::runtime_error("Invalid enum value");
+        setIntValue(value);
     }
 
     ParameterType::Enum type() const override { return ParameterType::ENUM; }
@@ -58,8 +57,7 @@ public:
 
     void setIntValue(int value) override
     {
-        if (value < 0 || value >= mEnumValues.size())
-            throw std::runtime_error("Invalid enum value");
+        checkEnumValue(value);
         Parameter::setIntValue(value);
     }
 
@@ -71,8 +69,18 @@ public:
     {
         auto it = std::find(mEnumValues.begin(), mEnumValues.end(), value);
         if (it == mEnumValues.end())
-            throw std::runtime_error("Invalid enum value");
+            throw std::runtime_error("Invalid enum string value: " + value);
         Parameter::setIntValue(it - mEnumValues.begin());
+    }
+
+private:
+    void checkEnumValue(int value) const
+    {
+        if (value < 0 || value >= mEnumValues.size())
+            throw std::runtime_error(
+                "Invalid enum value: " + std::to_string(value) +
+                "; expected value in [0, " +
+                std::to_string(mEnumValues.size()) + ")");
     }
 };
 

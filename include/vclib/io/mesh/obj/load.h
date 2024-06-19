@@ -483,6 +483,11 @@ void loadObj(
         m.name() = FileInfo::fileNameWithoutExtension(filename);
     }
 
+    inputObjStream.seekg(0, inputObjStream.end);
+    std::size_t fsize = inputObjStream.tellg();
+    inputObjStream.seekg(0, inputObjStream.beg);
+    log.startProgress("Loading OBJ file", fsize);
+
     // cycle that reads line by line
     do {
         vcl::Tokenizer tokens =
@@ -561,6 +566,7 @@ void loadObj(
                         settings);
                 }
             }
+            log.progress(inputObjStream.tellg());
         }
     } while (inputObjStream);
 
@@ -612,6 +618,8 @@ void loadObj(
             }
         }
     }
+
+    log.endProgress();
 }
 
 } // namespace detail

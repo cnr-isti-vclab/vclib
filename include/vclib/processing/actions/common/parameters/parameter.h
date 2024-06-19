@@ -180,17 +180,41 @@ protected:
 private:
     void checkParameterType(ParameterType::Enum t) const
     {
-        if (nativeType() != t) {
-            throw std::runtime_error("Invalid parameter type");
+        if (nativeType() != nativeType(t)) {
+            throw std::runtime_error(
+                "Invalid parameter type: expected " +
+                parameterTypeToString(type()) + " (" +
+                parameterTypeToString(nativeType()) + "), got " +
+                parameterTypeToString(t) + "(" +
+                parameterTypeToString(nativeType(t)) + ") instead.");
         }
     }
 
     ParameterType::Enum nativeType() const
     {
         ParameterType::Enum t = type();
+        return nativeType(t);
+    }
+
+    static ParameterType::Enum nativeType(ParameterType::Enum t)
+    {
         switch (t) {
         case vcl::proc::ParameterType::ENUM: return ParameterType::INT;
         default: return t;
+        }
+    }
+
+    static std::string parameterTypeToString(ParameterType::Enum t)
+    {
+        switch (t) {
+        case ParameterType::INT: return "int";
+        case ParameterType::SCALAR: return "scalar";
+        case ParameterType::BOOL: return "bool";
+        case ParameterType::STRING: return "string";
+        case ParameterType::COLOR: return "color";
+        case ParameterType::POINT3: return "point3";
+        case ParameterType::ENUM: return "enum";
+        default: return "unknown";
         }
     }
 };
