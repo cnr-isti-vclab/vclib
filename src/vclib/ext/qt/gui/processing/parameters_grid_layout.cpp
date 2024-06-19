@@ -53,8 +53,7 @@ void ParametersGridLayout::setParameters(
 
                 mRows.push_back(parRow);
 
-            }
-            break;
+            } break;
             case proc::ParameterType::ENUM: {
                 std::shared_ptr<const proc::EnumParameter> ep =
                     std::dynamic_pointer_cast<const proc::EnumParameter>(par);
@@ -65,8 +64,7 @@ void ParametersGridLayout::setParameters(
                 parRow->addRowToGridLayout(this, row);
 
                 mRows.push_back(parRow);
-            }
-            break;
+            } break;
             default: break;
             }
             ++row;

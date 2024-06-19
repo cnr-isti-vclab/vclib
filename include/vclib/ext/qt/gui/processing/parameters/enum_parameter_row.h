@@ -46,5 +46,4 @@ public:
 
 } // namespace vcl::qt
 
-
 #endif // VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_ENUM_PARAMETER_ROW_H

@@ -30,8 +30,7 @@ EnumParameterRow::EnumParameterRow(const proc::EnumParameter& param) :
     mComboBox = new QComboBox();
     mComboBox->setToolTip(param.tooltip().c_str());
 
-    for (const auto& value : param.enumValues())
-    {
+    for (const auto& value : param.enumValues()) {
         mComboBox->addItem(value.c_str());
     }
 
