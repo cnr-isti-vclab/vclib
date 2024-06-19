@@ -39,7 +39,9 @@ public:
 
     virtual std::vector<FileFormat> formats() const = 0;
 
-    virtual Image load(const std::string& filename) const = 0;
+    virtual Image load(
+        const std::string& filename,
+        AbstractLogger&    log = logger()) const = 0;
 };
 
 } // namespace vcl::proc

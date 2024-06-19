@@ -49,9 +49,6 @@ using ProcScalarType = VCLIB_PROCESSING_SCALAR_TYPE;
  */
 inline constexpr bool INDEXED_MESHES = VCLIB_PROCESSING_INDEXED_MESHES;
 
-// Action Types
-inline constexpr uint SAVE_MESH_ACTION = 0;
-
 } // namespace vcl::proc
 
 #endif // VCL_PROCESSING_SETTINGS_H

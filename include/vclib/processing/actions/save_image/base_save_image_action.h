@@ -53,7 +53,10 @@ public:
         return formats;
     }
 
-    void save(const std::string& filename, const Image& image) const override
+    void save(
+        const std::string& filename,
+        const Image&       image,
+        AbstractLogger&    log = logger()) const override
     {
         image.save(filename);
     }

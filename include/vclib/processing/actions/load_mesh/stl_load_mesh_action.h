@@ -69,9 +69,10 @@ public:
     std::shared_ptr<MeshI> load(
         const std::string&     filename,
         const ParameterVector& parameters,
-        MeshInfo&              loadedInfo) const override
+        MeshInfo&              loadedInfo,
+        AbstractLogger&        log = logger()) const override
     {
-        auto tm = vcl::loadStl<TriMesh>(filename, loadedInfo);
+        auto tm = vcl::loadStl<TriMesh>(filename, loadedInfo, log);
         if (parameters.get("unify_duplicate_vertices")->boolValue()) {
             vcl::removeDuplicatedVertices(tm);
             tm.compactVertices();

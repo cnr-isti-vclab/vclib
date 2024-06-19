@@ -30,6 +30,10 @@ void loggersStaticAsserts()
     using namespace vcl;
 
     static_assert(
+        LoggerConcept<AbstractLogger>,
+        "AbstractLogger does not satisfy the LoggerConcept");
+
+    static_assert(
         LoggerConcept<NullLogger>,
         "NullLogger does not satisfy the LoggerConcept");
     static_assert(

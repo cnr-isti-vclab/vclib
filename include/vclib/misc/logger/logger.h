@@ -155,7 +155,7 @@ public:
         return c / k;
     }
 
-    virtual void setPercentage(uint newPerc) override final
+    virtual void setPercentage(uint newPerc) override
     {
         if (newPerc >= 0 && newPerc <= 100) {
             mGlobalPercProgress = (mIntervals.top().first) + mStep * newPerc;

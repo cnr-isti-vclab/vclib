@@ -66,14 +66,15 @@ public:
     std::shared_ptr<MeshI> load(
         const std::string&     filename,
         const ParameterVector& parameters,
-        MeshInfo&              loadedInfo) const override
+        MeshInfo&              loadedInfo,
+        AbstractLogger&        log = logger()) const override
     {
         std::shared_ptr<MeshI> mesh;
 
         switch (parameters.get("mesh_type")->intValue()) {
-        case 0: mesh = loadBestFit(filename, loadedInfo); break;
-        case 1: mesh = loadObj<TriMesh>(filename, loadedInfo); break;
-        case 2: mesh = loadObj<PolyMesh>(filename, loadedInfo); break;
+        case 0: mesh = loadBestFit(filename, loadedInfo, log); break;
+        case 1: mesh = loadObj<TriMesh>(filename, loadedInfo, log); break;
+        case 2: mesh = loadObj<PolyMesh>(filename, loadedInfo, log); break;
         default: throw std::runtime_error("Invalid mesh type");
         }
 
@@ -94,13 +95,14 @@ private:
 
     std::shared_ptr<MeshI> loadBestFit(
         const std::string& filename,
-        MeshInfo&          loadedInfo) const
+        MeshInfo&          loadedInfo,
+        AbstractLogger&    log) const
     {
         std::shared_ptr<MeshI> mesh;
 
         // first I load in a PolyMesh, which I know it can store all the info
         // contained in a obj
-        PolyMesh pm = vcl::loadObj<PolyMesh>(filename, loadedInfo);
+        PolyMesh pm = vcl::loadObj<PolyMesh>(filename, loadedInfo, log);
 
         // if the file contains triangle meshes, I convert it to a TriMesh
         if (loadedInfo.isTriangleMesh()) {
@@ -120,9 +122,10 @@ private:
     template<MeshConcept MeshType>
     std::shared_ptr<MeshI> loadObj(
         const std::string& filename,
-        MeshInfo&          loadedInfo) const
+        MeshInfo&          loadedInfo,
+        AbstractLogger&    log) const
     {
-        MeshType mesh = vcl::loadObj<MeshType>(filename, loadedInfo);
+        MeshType mesh = vcl::loadObj<MeshType>(filename, loadedInfo, log);
         postProcess(mesh, filename, loadedInfo);
         return std::make_shared<MeshType>(mesh);
     }

@@ -67,7 +67,8 @@ public:
     std::shared_ptr<MeshI> load(
         const std::string&     filename,
         const ParameterVector& parameters,
-        MeshInfo&              loadedInfo) const override
+        MeshInfo&              loadedInfo,
+        AbstractLogger&        log = logger()) const override
     {
         std::shared_ptr<MeshI> mesh;
 

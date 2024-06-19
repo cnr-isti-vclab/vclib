@@ -55,7 +55,8 @@ public:
         const std::string&     filename,
         const MeshI&           mesh,
         const MeshInfo&        info,
-        const ParameterVector& parameters) const override
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const override
     {
         // transform saveOff to a lambda function
         auto fun = [&](auto&& m, auto&& fn, auto&& i, auto&& p) {

@@ -43,7 +43,8 @@ public:
     virtual std::shared_ptr<MeshI> load(
         const std::string&     filename,
         const ParameterVector& parameters,
-        vcl::MeshInfo&         loadedInfo) const = 0;
+        vcl::MeshInfo&         loadedInfo,
+        AbstractLogger&        log = logger()) const = 0;
 
     virtual std::shared_ptr<MeshI> load(
         const std::string&     filename,

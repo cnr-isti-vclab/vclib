@@ -75,15 +75,16 @@ public:
         const std::string&     filename,
         const MeshI&           mesh,
         const MeshInfo&        info,
-        const ParameterVector& parameters) const override
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const override
     {
         // transform saveStl to a lambda function
-        auto fun = [&](auto&& m, auto&& fn, auto&& i, auto&& p) {
-            saveStl(m, fn, i, p);
+        auto fun = [&](auto&& m, auto&& fn, auto&& i, auto&& p, auto&& l) {
+            saveStl(m, fn, i, p, l);
         };
 
         callFunctionForSupportedMesheTypes(
-            fun, mesh, filename, info, parameters);
+            fun, mesh, filename, info, parameters, log);
     }
 
 private:
@@ -91,13 +92,14 @@ private:
         const MeshConcept auto& mesh,
         const std::string&      filename,
         const MeshInfo&         info,
-        const ParameterVector&  parameters) const
+        const ParameterVector&  parameters,
+        AbstractLogger&         log) const
     {
         vcl::SaveSettings settings;
         settings.info       = info;
         settings.binary     = parameters.get("binary")->boolValue();
         settings.magicsMode = parameters.get("magics_mode")->boolValue();
-        vcl::saveStl(mesh, filename, settings);
+        vcl::saveStl(mesh, filename, settings, log);
     }
 };
 

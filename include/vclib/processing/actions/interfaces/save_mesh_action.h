@@ -64,7 +64,8 @@ public:
         const std::string&     filename,
         const MeshI&           mesh,
         const MeshInfo&        info,
-        const ParameterVector& parameters) const = 0;
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const = 0;
 
     void save(const std::string& filename, const MeshI& mesh) const
     {
