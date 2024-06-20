@@ -20,14 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_H
+#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_UINT_PARAMETER_H
+#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_UINT_PARAMETER_H
 
-#include "parameters/bool_parameter.h"
-#include "parameters/enum_parameter.h"
-#include "parameters/int_parameter.h"
-#include "parameters/scalar_parameter.h"
-#include "parameters/string_parameter.h"
-#include "parameters/uint_parameter.h"
+#include "parameter.h"
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_H
+namespace vcl::proc {
+
+class UintParameter : public Parameter
+{
+public:
+    UintParameter(
+        const std::string& name,
+        uint               value,
+        const std::string& description = "",
+        const std::string& tooltip     = "",
+        const std::string& category    = "") :
+            Parameter(name, value, description, tooltip, category)
+    {
+    }
+
+    ParameterType::Enum type() const override { return ParameterType::UINT; }
+
+    std::shared_ptr<Parameter> clone() const override
+    {
+        return std::make_shared<UintParameter>(*this);
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_UINT_PARAMETER_H

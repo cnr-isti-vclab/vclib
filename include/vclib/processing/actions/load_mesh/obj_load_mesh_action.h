@@ -71,7 +71,7 @@ public:
     {
         std::shared_ptr<MeshI> mesh;
 
-        switch (parameters.get("mesh_type")->intValue()) {
+        switch (parameters.get("mesh_type")->uintValue()) {
         case 0: mesh = loadBestFit(filename, loadedInfo, log); break;
         case 1: mesh = loadObj<TriMesh>(filename, loadedInfo, log); break;
         case 2: mesh = loadObj<PolyMesh>(filename, loadedInfo, log); break;

@@ -38,6 +38,7 @@ struct ParameterType
     enum Enum {
         // native parameters
         INT,
+        UINT,
         SCALAR,
         BOOL,
         STRING,
@@ -101,6 +102,18 @@ public:
     {
         checkParameterType(ParameterType::BOOL);
         return std::any_cast<bool>(mValue);
+    }
+
+    virtual void setUintValue(uint v)
+    {
+        checkParameterType(ParameterType::UINT);
+        std::any_cast<uint&>(mValue) = v;
+    }
+
+    uint uintValue() const
+    {
+        checkParameterType(ParameterType::UINT);
+        return std::any_cast<uint>(mValue);
     }
 
     virtual void setIntValue(int v)
@@ -199,7 +212,7 @@ private:
     static ParameterType::Enum nativeType(ParameterType::Enum t)
     {
         switch (t) {
-        case vcl::proc::ParameterType::ENUM: return ParameterType::INT;
+        case vcl::proc::ParameterType::ENUM: return ParameterType::UINT;
         default: return t;
         }
     }
@@ -207,6 +220,7 @@ private:
     static std::string parameterTypeToString(ParameterType::Enum t)
     {
         switch (t) {
+        case ParameterType::UINT: return "uint";
         case ParameterType::INT: return "int";
         case ParameterType::SCALAR: return "scalar";
         case ParameterType::BOOL: return "bool";

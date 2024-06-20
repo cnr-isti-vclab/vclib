@@ -36,16 +36,16 @@ class EnumParameter : public Parameter
 public:
     EnumParameter(
         const std::string&              name,
-        int                             value,
+        uint                            value,
         const std::vector<std::string>& enumValues,
         const std::string&              description = "",
         const std::string&              tooltip     = "",
         const std::string&              category    = "") :
-            Parameter(name, 0, description, tooltip, category)
+            Parameter(name, 0u, description, tooltip, category)
     {
         for (const auto& v : enumValues)
             mEnumValues.push_back(v);
-        setIntValue(value);
+        setUintValue(value);
     }
 
     ParameterType::Enum type() const override { return ParameterType::ENUM; }
@@ -55,10 +55,10 @@ public:
         return std::make_shared<EnumParameter>(*this);
     }
 
-    void setIntValue(int value) override
+    void setUintValue(uint value) override
     {
         checkEnumValue(value);
-        Parameter::setIntValue(value);
+        Parameter::setUintValue(value);
     }
 
     const std::vector<std::string>& enumValues() const { return mEnumValues; }
@@ -70,13 +70,13 @@ public:
         auto it = std::find(mEnumValues.begin(), mEnumValues.end(), value);
         if (it == mEnumValues.end())
             throw std::runtime_error("Invalid enum string value: " + value);
-        Parameter::setIntValue(it - mEnumValues.begin());
+        Parameter::setUintValue(it - mEnumValues.begin());
     }
 
 private:
-    void checkEnumValue(int value) const
+    void checkEnumValue(uint value) const
     {
-        if (value < 0 || value >= mEnumValues.size())
+        if (value >= mEnumValues.size())
             throw std::runtime_error(
                 "Invalid enum value: " + std::to_string(value) +
                 "; expected value in [0, " +

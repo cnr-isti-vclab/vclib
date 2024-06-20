@@ -111,20 +111,23 @@ public:
         const MeshVector                           inputMeshes,
         const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
         MeshVector&                                outputMeshes,
-        const ParameterVector&                     parameters) const = 0;
+        const ParameterVector&                     parameters,
+        AbstractLogger&                            log = logger()) const = 0;
 
     OutputValues applyFilter(
         const MeshVector                           inputMeshes,
         const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
-        MeshVector&                                outputMeshes) const
+        MeshVector&                                outputMeshes,
+        AbstractLogger&                            log = logger()) const
     {
         return applyFilter(
-            inputMeshes, inputOutputMeshes, outputMeshes, parameters());
+            inputMeshes, inputOutputMeshes, outputMeshes, parameters(), log);
     }
 
     OutputValues applyFilter(
         MeshVector&            outputMeshes,
-        const ParameterVector& parameters) const
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const
     {
         if (numberInputMeshes() > 0) {
             throw std::runtime_error(
@@ -142,7 +145,8 @@ public:
             MeshVector(),
             std::vector<std::shared_ptr<MeshI>>(),
             outputMeshes,
-            parameters);
+            parameters,
+            log);
     }
 
     OutputValues applyFilter(MeshVector& outputMeshes) const

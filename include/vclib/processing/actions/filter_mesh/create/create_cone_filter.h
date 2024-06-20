@@ -48,11 +48,11 @@ public:
     {
         ParameterVector params;
 
-        params.pushBack(IntParameter("bottom_radius", 1, "Bottom Radius", ""));
-        params.pushBack(IntParameter("top_radius", 1, "Top Radius", ""));
+        params.pushBack(UintParameter("bottom_radius", 1, "Bottom Radius", ""));
+        params.pushBack(UintParameter("top_radius", 1, "Top Radius", ""));
         params.pushBack(ScalarParameter("height", 1, "Height", ""));
         params.pushBack(
-            IntParameter("subdivisions", 36, "N. Subdivisions", ""));
+            UintParameter("subdivisions", 36, "N. Subdivisions", ""));
 
         return params;
     }
@@ -61,12 +61,13 @@ public:
         const MeshVector,
         const std::vector<std::shared_ptr<MeshI>>&,
         MeshVector&            outputMeshes,
-        const ParameterVector& parameters) const override
+        const ParameterVector& parameters,
+        AbstractLogger&        log = logger()) const override
     {
-        auto bottomRadius = parameters.get("bottom_radius")->intValue();
-        auto topRadius    = parameters.get("top_radius")->intValue();
+        auto bottomRadius = parameters.get("bottom_radius")->uintValue();
+        auto topRadius    = parameters.get("top_radius")->uintValue();
         auto height       = parameters.get("height")->scalarValue();
-        auto subdivisions = parameters.get("subdivisions")->intValue();
+        auto subdivisions = parameters.get("subdivisions")->uintValue();
 
         auto meshPtr = std::make_shared<TriMesh>(vcl::createCone<TriMesh>(
             bottomRadius, topRadius, height, subdivisions));
