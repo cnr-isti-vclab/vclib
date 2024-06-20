@@ -49,6 +49,8 @@ public:
 signals:
     void visibilityChanged();
 
+    void resized();
+
 private slots:
     void visibilityCheckBoxStateChanged(int arg1);
 

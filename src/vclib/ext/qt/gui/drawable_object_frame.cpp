@@ -90,6 +90,7 @@ void DrawableObjectFrame::showInfoToolButtonChecked(bool checked)
         mUI->showInfoToolButton->setArrowType(Qt::RightArrow);
     }
     mUI->infoFrame->setVisible(checked);
+    emit resized();
 }
 
 } // namespace vcl::qt

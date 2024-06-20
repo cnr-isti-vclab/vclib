@@ -99,14 +99,20 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
         DrawableObjectFrame* frame =
             new DrawableObjectFrame(d, mUI->listWidget);
 
-        item->setSizeHint(frame->sizeHint());
         mUI->listWidget->addItem(item);
         mUI->listWidget->setItemWidget(item, frame);
+        item->setSizeHint(frame->sizeHint());
         connect(
             frame,
             SIGNAL(visibilityChanged()),
             this,
             SIGNAL(drawableObjectVisibilityChanged()));
+
+        // when frame resized, update the item size
+        connect(
+            frame,
+            &DrawableObjectFrame::resized,
+            [item, frame]() { item->setSizeHint(frame->sizeHint()); });
     }
 }
 
