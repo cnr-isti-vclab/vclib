@@ -23,6 +23,8 @@
 #include "ui_drawable_object_frame.h"
 #include <vclib/ext/qt/gui/drawable_object_frame.h>
 
+#include <vclib/render/interfaces/drawable_mesh_i.h>
+
 namespace vcl::qt {
 
 DrawableObjectFrame::DrawableObjectFrame(
@@ -35,6 +37,37 @@ DrawableObjectFrame::DrawableObjectFrame(
     assert(obj);
     mUI->objNameLabel->setText(QString::fromStdString(obj->name()));
     mUI->visibilityCheckBox->setChecked(obj->isVisible());
+
+    mUI->infoFrame->setVisible(false);
+    mUI->showInfoToolButton->setVisible(false);
+
+    // info management
+    mUI->infoLabel->setText(QString::fromStdString(obj->info()));
+    if (obj->info().empty()) {
+        mUI->showInfoToolButton->setVisible(false);
+        mUI->showInfoToolButton->setChecked(false);
+        mUI->showInfoToolButton->setEnabled(false);
+        mUI->infoFrame->setVisible(false);
+    }
+    else {
+        mUI->showInfoToolButton->setVisible(true);
+        mUI->showInfoToolButton->setEnabled(true);
+        mUI->showInfoToolButton->setChecked(false);
+        mUI->infoFrame->setVisible(false);
+    }
+
+    // connects
+    connect(
+        mUI->showInfoToolButton,
+        &QToolButton::toggled,
+        this,
+        &DrawableObjectFrame::showInfoToolButtonChecked);
+
+    connect(
+        mUI->visibilityCheckBox,
+        &QCheckBox::stateChanged,
+        this,
+        &DrawableObjectFrame::visibilityCheckBoxStateChanged);
 }
 
 DrawableObjectFrame::~DrawableObjectFrame()
@@ -42,10 +75,21 @@ DrawableObjectFrame::~DrawableObjectFrame()
     delete mUI;
 }
 
-void DrawableObjectFrame::on_visibilityCheckBox_stateChanged(int arg1)
+void DrawableObjectFrame::visibilityCheckBoxStateChanged(int arg1)
 {
     mObj->setVisibility(arg1 == Qt::Checked);
     emit visibilityChanged();
+}
+
+void DrawableObjectFrame::showInfoToolButtonChecked(bool checked)
+{
+    if (checked) {
+        mUI->showInfoToolButton->setArrowType(Qt::DownArrow);
+    }
+    else {
+        mUI->showInfoToolButton->setArrowType(Qt::RightArrow);
+    }
+    mUI->infoFrame->setVisible(checked);
 }
 
 } // namespace vcl::qt

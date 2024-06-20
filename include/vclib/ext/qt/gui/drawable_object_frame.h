@@ -50,7 +50,9 @@ signals:
     void visibilityChanged();
 
 private slots:
-    void on_visibilityCheckBox_stateChanged(int arg1);
+    void visibilityCheckBoxStateChanged(int arg1);
+
+    void showInfoToolButtonChecked(bool checked);
 };
 
 } // namespace vcl::qt

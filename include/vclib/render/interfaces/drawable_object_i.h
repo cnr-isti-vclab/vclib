@@ -55,6 +55,8 @@ class DrawableObjectI
 {
     std::string mName; /**< @brief Name of the object */
 
+    std::string mInfo; /**< @brief Info about the object */
+
 public:
     /**< @brief Empty constructor */
     DrawableObjectI() = default;
@@ -122,6 +124,19 @@ public:
      * @param[in] name: The name of the object.
      */
     std::string& name() { return mName; }
+
+    /**
+     * @brief Returns the info of the object.
+     * @return The info of the object.
+     */
+    const std::string& info() const { return mInfo; }
+
+    /**
+     * @brief Returns a reference of the info of the object, that allows to
+     * modify it.
+     * @param[in] info: The info of the object.
+     */
+    std::string& info() { return mInfo; }
 };
 
 } // namespace vcl

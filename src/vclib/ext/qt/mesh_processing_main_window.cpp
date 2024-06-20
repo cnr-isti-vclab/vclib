@@ -153,12 +153,18 @@ std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::makeMeshDrawable(
     const std::shared_ptr<proc::MeshI>& mesh)
 {
     switch (mesh->type()) {
-    case proc::MeshIType::TRI_MESH:
-        return std::make_shared<DrawableMesh<proc::TriMesh>>(
+    case proc::MeshIType::TRI_MESH: {
+        auto m = std::make_shared<DrawableMesh<proc::TriMesh>>(
             mesh->as<proc::TriMesh>());
-    case proc::MeshIType::POLY_MESH:
-        return std::make_shared<DrawableMesh<proc::PolyMesh>>(
+        setMeshInfo(*m);
+        return m;
+    }
+    case proc::MeshIType::POLY_MESH: {
+        auto m = std::make_shared<DrawableMesh<proc::PolyMesh>>(
             mesh->as<proc::PolyMesh>());
+        setMeshInfo(*m);
+        return m;
+    }
     default: return nullptr;
     }
 }

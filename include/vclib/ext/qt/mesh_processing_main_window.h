@@ -66,6 +66,24 @@ private:
 
     static std::shared_ptr<vcl::DrawableObjectI> toDrawableObject(
         const std::shared_ptr<vcl::proc::MeshI>& mesh);
+
+    template<MeshConcept MeshType>
+    static void setMeshInfo(MeshType& mesh)
+    {
+        std::string info;
+        if constexpr (HasTriangles<MeshType>) {
+            info += "TriMesh\n";
+        }
+        else if constexpr(HasPolygons<MeshType>) {
+            info += "PolyMesh\n";
+        }
+
+        info += "Vertices: " + std::to_string(mesh.vertexNumber()) + "\n";
+        if constexpr(HasFaces<MeshType>) {
+            info += "Faces: " + std::to_string(mesh.faceNumber()) + "\n";
+        }
+        mesh.info() = info;
+    }
 };
 
 } // namespace vcl::qt
