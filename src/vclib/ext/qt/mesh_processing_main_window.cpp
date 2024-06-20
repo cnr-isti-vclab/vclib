@@ -42,6 +42,8 @@ MeshProcessingMainWindow::MeshProcessingMainWindow(QWidget* parent) :
     // populate action manager
     mActionManager.add(proc::vclibActions());
 
+    populateFilterMenu();
+
     connect(
         mUI->actionOpenMesh,
         &QAction::triggered,
@@ -144,9 +146,59 @@ void MeshProcessingMainWindow::saveMeshAs()
     }
 }
 
+void MeshProcessingMainWindow::executeFilter(bool)
+{
+    QAction* sender = qobject_cast<QAction*>(QObject::sender());
+
+    std::string filterId =
+        sender->property("filter_id").toString().toStdString();
+    auto        filter   = mActionManager.filterMeshActionById(filterId);
+
+    if (filter) {
+        executeFilter(filter);
+    }
+}
+
 TextEditLogger& MeshProcessingMainWindow::logger()
 {
     return mUI->meshViewer->logger();
+}
+
+void MeshProcessingMainWindow::populateFilterMenu()
+{
+    auto filters = mActionManager.filterMeshActions();
+
+    std::array<QMenu*, proc::FilterMeshAction::N_CATEGORIES> menus;
+    menus[proc::FilterMeshAction::CREATE] =
+        new QMenu("Create", mUI->menuFilter);
+
+    for (uint i = 0; i < proc::FilterMeshAction::N_CATEGORIES; ++i) {
+        mUI->menuFilter->addMenu(menus[i]);
+    }
+
+    for (const std::shared_ptr<proc::FilterMeshAction>& f : filters) {
+        QAction* action = new QAction(f->name().c_str(), mUI->menuFilter);
+        action->setProperty(
+            "filter_id", QVariant(QString::fromStdString(f->identifier())));
+
+        for (uint i = 0; i < proc::FilterMeshAction::N_CATEGORIES; ++i) {
+            if (f->categories()[i]) {
+                menus[i]->addAction(action);
+            }
+        }
+
+        connect(
+            action,
+            SIGNAL(triggered(bool)),
+            this,
+            SLOT(executeFilter(bool)));
+    }
+}
+
+void MeshProcessingMainWindow::executeFilter(
+    const std::shared_ptr<proc::FilterMeshAction>& action)
+{
+    std::cerr << action->name() << "\n";
 }
 
 std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::makeMeshDrawable(

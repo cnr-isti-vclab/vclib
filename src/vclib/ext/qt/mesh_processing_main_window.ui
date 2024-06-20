@@ -30,7 +30,13 @@
     <addaction name="actionOpenMesh"/>
     <addaction name="actionSaveMeshAs"/>
    </widget>
+   <widget class="QMenu" name="menuFilter">
+    <property name="title">
+     <string>Filter</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuFilter"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionOpenMesh">
@@ -47,6 +53,11 @@
    </property>
    <property name="text">
     <string>Save Mesh As...</string>
+   </property>
+  </action>
+  <action name="actionCreate">
+   <property name="text">
+    <string>Create</string>
    </property>
   </action>
  </widget>
