@@ -171,6 +171,7 @@ public:
             }
         }
         assert(0);
+        return proc::ParameterVector();
     }
 
     /**

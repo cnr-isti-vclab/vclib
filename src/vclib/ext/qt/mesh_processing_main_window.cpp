@@ -71,13 +71,30 @@ void MeshProcessingMainWindow::openMesh()
     if (dialog->exec() == QDialog::Accepted) {
         auto fs = dialog->selectedFiles();
 
-        std::string      filename = fs.first().toStdString();
-        proc::FileFormat format   = FileInfo::extension(filename);
-        auto             params   = dialog->parameters(format);
+        double tTime = 0.0;
 
-        auto mesh = mActionManager.loadMeshAction(format)->load(
-            filename, params, mUI->meshViewer->logger());
-        mMeshVector->pushBack(makeMeshDrawable(mesh));
+        for (const auto& f : fs) {
+            std::string      filename = f.toStdString();
+            std::string      pfn    = FileInfo::fileNameWithExtension(filename);
+            proc::FileFormat format = FileInfo::extension(filename);
+            auto             params = dialog->parameters(format);
+
+            logger().startTimer();
+            auto mesh = mActionManager.loadMeshAction(format)->load(
+                filename, params, logger());
+            logger().stopTimer();
+            tTime += logger().getTime();
+            logger().log(
+                TextEditLogger::MESSAGE,
+                pfn + " loaded in " + std::to_string(logger().getTime()) +
+                    " seconds.");
+            mMeshVector->pushBack(makeMeshDrawable(mesh));
+        }
+
+        logger().log(
+            TextEditLogger::MESSAGE,
+            "All meshes loaded in " + std::to_string(tTime) + " seconds.");
+
         mUI->meshViewer->updateGUI();
         mUI->meshViewer->fitScene();
     }
@@ -99,6 +116,7 @@ void MeshProcessingMainWindow::saveMeshAs()
         auto fs = dialog->selectedFiles();
 
         std::string      filename = fs.first().toStdString();
+        std::string      pfn      = FileInfo::fileNameWithExtension(filename);
         std::string      format   = FileInfo::extension(filename);
         proc::FileFormat f        = dialog->selectedFormat();
 
@@ -113,10 +131,22 @@ void MeshProcessingMainWindow::saveMeshAs()
 
         if (m) {
             auto params = dialog->parameters(format);
+
+            logger().startTimer();
             mActionManager.saveMeshAction(format)->save(
-                filename, *m, params, mUI->meshViewer->logger());
+                filename, *m, params, logger());
+            logger().stopTimer();
+            logger().log(
+                TextEditLogger::MESSAGE,
+                pfn + " saved in " + std::to_string(logger().getTime()) +
+                    " seconds.");
         }
     }
+}
+
+TextEditLogger& MeshProcessingMainWindow::logger()
+{
+    return mUI->meshViewer->logger();
 }
 
 std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::makeMeshDrawable(

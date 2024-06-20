@@ -47,6 +47,7 @@ TextEditLogger::TextEditLogger(QWidget* parent) :
 
     disablePrintPercentage();
     disablePrintMessageDuringProgress();
+    setPrintLevel(LogLevel::MESSAGE);
 }
 
 void TextEditLogger::enableDebugLogging(bool enable)

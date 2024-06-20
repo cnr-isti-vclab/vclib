@@ -25,6 +25,7 @@
 
 #include <QMainWindow>
 
+#include <vclib/ext/qt/gui/text_edit_logger.h>
 #include <vclib/processing/action_manager.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
@@ -55,6 +56,8 @@ public slots:
     void saveMeshAs();
 
 private:
+    TextEditLogger& logger();
+
     static std::shared_ptr<vcl::DrawableObjectI> makeMeshDrawable(
         const std::shared_ptr<proc::MeshI>& mesh);
 
