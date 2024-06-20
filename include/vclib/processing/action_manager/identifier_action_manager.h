@@ -62,6 +62,14 @@ public:
         return get(Action::identifierFromName(id));
     }
 
+    auto actions()
+    {
+        // return a view of the actions downcasted to IDAction
+        return mActions | std::views::transform([](auto a) {
+            return std::dynamic_pointer_cast<IDAction>(a);
+        });
+    }
+
 private:
     void checkIdDoesNotExist(const std::string& id)
     {

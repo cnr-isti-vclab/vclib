@@ -33,7 +33,25 @@ namespace vcl::proc {
 class FilterMeshAction : public MeshAction
 {
 public:
+    enum MeshActionCategory
+    {
+        CREATE = 0,
+
+
+        N_CATEGORIES,
+    };
+
     uint type() const final { return ActionType::FILTER_MESH_ACTION; }
+
+    /**
+     * @brief Returns the categories of the action.
+     *
+     * Returns a BitSet that contains, for each category listed in the
+     * MeshActionCategory enum, whether the action belongs to that category.
+     *
+     * @return The categories of the action.
+     */
+    virtual BitSet<uint> categories() const = 0;
 
     virtual uint numberInputMeshes() const = 0;
 

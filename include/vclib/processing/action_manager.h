@@ -147,6 +147,11 @@ public:
         return mSaveMeshActionManager.get(format);
     }
 
+    auto filterMeshActions()
+    {
+        return mFilterMeshActionManager.actions();
+    }
+
     std::shared_ptr<FilterMeshAction> filterMeshActionById(
         const std::string& id)
     {
