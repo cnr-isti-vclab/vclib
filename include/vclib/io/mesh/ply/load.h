@@ -65,7 +65,7 @@ void loadPly(
 
     // for logging
     std::vector<uint> eln;
-    uint sum = 0;
+    uint              sum = 0;
     for (const PlyElement& el : header) {
         eln.push_back(el.numberElements);
         sum += el.numberElements;
@@ -73,10 +73,10 @@ void loadPly(
 
     try {
         uint currElems = 0;
-        uint i = 0;
+        uint i         = 0;
         for (const PlyElement& el : header) {
             double beginPerc = double(currElems) / sum * 100.0;
-            double endPerc = double(currElems + eln[i]) / sum * 100.0;
+            double endPerc   = double(currElems + eln[i]) / sum * 100.0;
 
             switch (el.type) {
             case ply::VERTEX:

@@ -539,7 +539,7 @@ void loadOff(
     }
 
     int percVertices = nVertices / (nVertices + nFaces) * 100;
-    int percFaces = 100 - percVertices;
+    int percFaces    = 100 - percVertices;
 
     log.startNewTask(0, percVertices, "Reading vertices");
     detail::readOffVertices(m, inputOffStream, fileInfo, nVertices, log);
