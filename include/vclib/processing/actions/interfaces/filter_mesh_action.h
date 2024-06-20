@@ -53,6 +53,13 @@ public:
      */
     virtual BitSet<uint> categories() const = 0;
 
+    /**
+     * @brief Returns the description of the action.
+     *
+     * @return The description of the action.
+     */
+    virtual std::string description() const = 0;
+
     virtual uint numberInputMeshes() const = 0;
 
     /**
