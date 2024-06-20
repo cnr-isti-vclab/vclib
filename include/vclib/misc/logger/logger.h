@@ -59,6 +59,7 @@ class Logger : public AbstractLogger
 
     // progress status members
     std::string mProgressMessage;
+    LogLevel    mPrintLevel = PROGRESS;
     uint        mProgressStep;
     uint        mProgressPerc;
     uint        mProgressPercStep;
@@ -88,6 +89,8 @@ public:
     void enablePrintPercentage() override final { mPrintPerc = true; }
 
     void disablePrintPercentage() override final { mPrintPerc = false; }
+
+    void setPrintLevel(LogLevel level) override final { mPrintLevel = level; }
 
     void enablePrintMessageDuringProgress() override final
     {
@@ -255,10 +258,13 @@ private:
         if (!mPrintPerc && msg.empty())
             return;
 
+        // lvl could be also InternalLogLevel BEGIN or END
         LogLevel l = PROGRESS;
-        if (lvl < DEBUG) {
+        if (lvl <= DEBUG) {
             l = (LogLevel) lvl;
         }
+        if (l > mPrintLevel)
+            return;
         Stream* stream = levelStream(l);
 
         if (stream) {

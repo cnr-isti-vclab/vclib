@@ -48,6 +48,7 @@ concept LoggerConcept =
         { o.disableIndentation() } -> std::same_as<void>;
         { o.enablePrintPercentage() } -> std::same_as<void>;
         { o.disablePrintPercentage() } -> std::same_as<void>;
+        { o.setPrintLevel(lvl) } -> std::same_as<void>;
         { o.enablePrintMessageDuringProgress() } -> std::same_as<void>;
         { o.disablePrintMessageDuringProgress() } -> std::same_as<void>;
         { o.enablePrintTimer() } -> std::same_as<void>;

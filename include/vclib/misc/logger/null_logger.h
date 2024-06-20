@@ -53,6 +53,8 @@ public:
 
     void disablePrintPercentage() override final {}
 
+    void setPrintLevel(LogLevel) override final {}
+
     void enablePrintMessageDuringProgress() override final {}
 
     void disablePrintMessageDuringProgress() override final {}

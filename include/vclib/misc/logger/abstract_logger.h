@@ -50,6 +50,20 @@ public:
 
     virtual void disablePrintPercentage() = 0;
 
+    /**
+     * @brief Sets the maximum print level of the logger.
+     *
+     * Only messages with a level less or equal to the given level will be
+     * printed. For example, if the level is set to `LogLevel::MESSAGE`, only
+     * messages with level `LogLevel::ERROR`, `LogLevel::WARNING` and
+     * `LogLevel::MESSAGE` will be printed.
+     *
+     * @note The default level is `LogLevel::PROGRESS`.
+     *
+     * @param[in] level: The maximum print level of the logger.
+     */
+    virtual void setPrintLevel(LogLevel level) = 0;
+
     virtual void enablePrintMessageDuringProgress() = 0;
 
     virtual void disablePrintMessageDuringProgress() = 0;
@@ -86,13 +100,41 @@ public:
 
     virtual void setPercentage(uint newPerc) = 0;
 
+    /**
+     * @brief Prints a message to the logger, with level `LogLevel::PROGRESS`
+     * and without modifying the current percentage.
+     *
+     * @param[in] msg: The message to print.
+     */
     virtual void log(const std::string& msg) = 0;
 
-    virtual void log(LogLevel, const std::string& msg) = 0;
+    /**
+     * @brief Prints a message to the logger, with the given level and without
+     * modifying the current percentage.
+     *
+     * @param[in] lvl: The level of the message.
+     * @param[in] msg: The message to print.
+     */
+    virtual void log(LogLevel lvl, const std::string& msg) = 0;
 
-    virtual void log(uint, const std::string& msg) = 0;
+    /**
+     * @brief Prints a message to the logger, with the level
+     * `LogLevel::PROGRESS` and with the given percentage.
+     *
+     * @param[in] perc: The percentage of the progress.
+     * @param[in] msg: The message to print.
+     */
+    virtual void log(uint perc, const std::string& msg) = 0;
 
-    virtual void log(uint, LogLevel, const std::string& msg) = 0;
+    /**
+     * @brief Prints a message to the logger, with the given level and with the
+     * given percentage.
+     *
+     * @param[in] perc: The percentage of the progress.
+     * @param[in] lvl: The level of the message.
+     * @param[in] msg: The message to print.
+     */
+    virtual void log(uint perc, LogLevel lvl, const std::string& msg) = 0;
 
     /**
      * @brief Allows to easily manage progresses with the logger, along with the
