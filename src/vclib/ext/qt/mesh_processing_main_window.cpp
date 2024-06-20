@@ -26,6 +26,7 @@
 #include <QFileDialog>
 
 #include <vclib/ext/qt/gui/processing/action_file_dialog.h>
+#include <vclib/ext/qt/gui/processing/filter_mesh_dialog.h>
 #include <vclib/ext/qt/utils/file_format.h>
 #include <vclib/processing/actions.h>
 #include <vclib/render/drawable/drawable_mesh.h>
@@ -198,7 +199,8 @@ void MeshProcessingMainWindow::populateFilterMenu()
 void MeshProcessingMainWindow::executeFilter(
     const std::shared_ptr<proc::FilterMeshAction>& action)
 {
-    std::cerr << action->name() << "\n";
+    FilterMeshDialog* dock = new FilterMeshDialog(action, this);
+    dock->show();
 }
 
 std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::makeMeshDrawable(

@@ -55,7 +55,21 @@ uint MultiParameterFrame::addSubFrame(
 {
     ParametersGridLayout* layout = new ParametersGridLayout(this);
     layout->setParameters(parameters);
-    return addSubFrame(name, layout);
+    return addSubFrameLayout(name, layout);
+}
+
+void MultiParameterFrame::setSubFrameName(uint i, const std::string& name)
+{
+    subFrame(i)->setTitleLabel(name);
+}
+
+void MultiParameterFrame::setSubFramePatameters(
+    uint                         i,
+    const proc::ParameterVector& parameters)
+{
+    ParametersGridLayout* layout = new ParametersGridLayout(this);
+    layout->setParameters(parameters);
+    setSubFrameLayout(i, layout);
 }
 
 proc::ParameterVector MultiParameterFrame::parameters(uint i) const
@@ -71,6 +85,11 @@ void MultiParameterFrame::setHeaderLabel(const std::string& label)
 void MultiParameterFrame::setHeaderFrameVisible(bool visible)
 {
     mUI->headerFrame->setVisible(visible);
+}
+
+void MultiParameterFrame::setHeaderButtonVisible(bool visible)
+{
+    mUI->headerToolButton->setVisible(visible);
 }
 
 void MultiParameterFrame::setHeaderButtonChecked(bool checked)
@@ -116,7 +135,7 @@ void MultiParameterFrame::helpButtonClicked(bool checked)
         grid->setHelpVisible(checked);
 }
 
-uint MultiParameterFrame::addSubFrame(
+uint MultiParameterFrame::addSubFrameLayout(
     const std::string&    name,
     ParametersGridLayout* layout)
 {
@@ -128,6 +147,14 @@ uint MultiParameterFrame::addSubFrame(
     mUI->parametersLayout->addWidget(frame);
     mParamGrids.push_back(layout);
     return mParamGrids.size() - 1;
+}
+
+void MultiParameterFrame::setSubFrameLayout(
+    uint                  i,
+    ParametersGridLayout* layout)
+{
+    subFrame(i)->setSubFrameLayout(layout);
+    mParamGrids[i] = layout;
 }
 
 ParameterSubFrame* MultiParameterFrame::subFrame(uint i)
