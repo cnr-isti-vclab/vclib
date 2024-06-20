@@ -34,7 +34,7 @@ EnumParameterRow::EnumParameterRow(const proc::EnumParameter& param) :
         mComboBox->addItem(value.c_str());
     }
 
-    mComboBox->setCurrentIndex(param.intValue());
+    mComboBox->setCurrentIndex(param.uintValue());
 }
 
 QWidget* EnumParameterRow::parameterWidget()
@@ -44,7 +44,7 @@ QWidget* EnumParameterRow::parameterWidget()
 
 std::shared_ptr<proc::Parameter> EnumParameterRow::parameterFromWidget()
 {
-    mParam.setIntValue(mComboBox->currentIndex());
+    mParam.setUintValue(mComboBox->currentIndex());
     return mParam.clone();
 }
 
