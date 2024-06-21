@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ENUM_PARAMETER_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ENUM_PARAMETER_H
+#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_MESH_PARAMETER_H
+#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_MESH_PARAMETER_H
 
 #include "parameter.h"
 
@@ -29,61 +29,61 @@
 
 namespace vcl::proc {
 
-class EnumParameter : public Parameter
+class MeshParameter : public Parameter
 {
-    std::vector<std::string> mEnumValues;
+    std::vector<std::pair<std::string, bool>> mMeshValues;
 
 public:
-    EnumParameter(
+    MeshParameter(
         const std::string&              name,
-        uint                            value,
-        const std::vector<std::string>& enumValues,
         const std::string&              description = "",
         const std::string&              tooltip     = "",
         const std::string&              category    = "") :
-            Parameter(name, 0u, description, tooltip, category)
+            Parameter(name, UINT_NULL, description, tooltip, category)
     {
-        for (const auto& v : enumValues)
-            mEnumValues.push_back(v);
-        setUintValue(value);
     }
 
-    ParameterType::Enum type() const override { return ParameterType::ENUM; }
+    ParameterType::Enum type() const override { return ParameterType::MESH; }
 
     std::shared_ptr<Parameter> clone() const override
     {
-        return std::make_shared<EnumParameter>(*this);
+        return std::make_shared<MeshParameter>(*this);
     }
 
     void setUintValue(uint value) override
     {
-        checkEnumValue(value);
+        checkMeshValue(value);
         Parameter::setUintValue(value);
     }
 
-    const std::vector<std::string>& enumValues() const { return mEnumValues; }
-
-    const std::string& enumValue() const { return mEnumValues[intValue()]; }
-
-    void setEnumValue(const std::string& value)
+    const std::vector<std::pair<std::string, bool>>& meshValues() const
     {
-        auto it = std::find(mEnumValues.begin(), mEnumValues.end(), value);
-        if (it == mEnumValues.end())
-            throw std::runtime_error("Invalid enum string value: " + value);
-        Parameter::setUintValue(it - mEnumValues.begin());
+        return mMeshValues;
+    }
+
+    void setMeshValues(
+        const std::vector<std::pair<std::string, bool>>& meshValues)
+    {
+        mMeshValues = meshValues;
     }
 
 private:
-    void checkEnumValue(uint value) const
+    void checkMeshValue(uint value) const
     {
-        if (value >= mEnumValues.size())
+        if (value >= mMeshValues.size()) {
             throw std::runtime_error(
-                "Invalid enum value: " + std::to_string(value) +
+                "Invalid mesh value: " + std::to_string(value) +
                 "; expected value in [0, " +
-                std::to_string(mEnumValues.size()) + ")");
+                std::to_string(mMeshValues.size()) + ")");
+        }
+        if (!mMeshValues[value].second) {
+            throw std::runtime_error(
+                "Invalid mesh value: Mesh " + mMeshValues[value].first + " (" +
+                std::to_string(value) + ") is disabled");
+        }
     }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_ENUM_PARAMETER_H
+#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_MESH_PARAMETER_H

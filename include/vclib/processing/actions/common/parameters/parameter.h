@@ -36,7 +36,7 @@ namespace vcl::proc {
 struct ParameterType
 {
     enum Enum {
-        // native parameters
+        // native parameters - the std::any mValue member is one of these types
         INT,
         UINT,
         SCALAR,
@@ -49,6 +49,8 @@ struct ParameterType
         // additional information or functionalities
         ENUM, // enum is an int that can be converted to a string
         USCALAR, // uscalar is a scalar that is guaranteed to be positive
+
+        MESH, // mesh is a special parameter that stores the index of a mesh
 
         COUNT
     };
@@ -215,6 +217,7 @@ private:
         switch (t) {
         case vcl::proc::ParameterType::ENUM: return ParameterType::UINT;
         case vcl::proc::ParameterType::USCALAR: return ParameterType::SCALAR;
+        case vcl::proc::ParameterType::MESH: return ParameterType::UINT;
         default: return t;
         }
     }
@@ -231,6 +234,7 @@ private:
         case ParameterType::POINT3: return "point3";
         case ParameterType::ENUM: return "enum";
         case ParameterType::USCALAR: return "uscalar";
+        case ParameterType::MESH: return "mesh";
         default: return "unknown";
         }
     }
