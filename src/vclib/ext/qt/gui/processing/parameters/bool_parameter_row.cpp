@@ -40,10 +40,11 @@ QWidget* BoolParameterRow::parameterWidget()
     return mCheckBox;
 }
 
-std::shared_ptr<proc::Parameter> BoolParameterRow::parameterFromWidget()
+std::shared_ptr<proc::Parameter> BoolParameterRow::parameterFromWidget() const
 {
-    mParam.setBoolValue(mCheckBox->isChecked());
-    return mParam.clone();
+    auto p = mParam.clone();
+    p->setBoolValue(mCheckBox->isChecked());
+    return p;
 }
 
 } // namespace vcl::qt

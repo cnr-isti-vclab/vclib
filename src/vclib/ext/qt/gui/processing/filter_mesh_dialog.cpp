@@ -23,15 +23,20 @@
 #include "ui_filter_mesh_dialog.h"
 #include <vclib/ext/qt/gui/processing/filter_mesh_dialog.h>
 
+#include <QPushButton>
+
 namespace vcl::qt {
 
 FilterMeshDialog::FilterMeshDialog(
     const std::shared_ptr<proc::FilterMeshAction>& action,
     QWidget*                                       parent) :
         QDialog(parent),
-        mUI(new Ui::FilterMeshDialog)
+        mUI(new Ui::FilterMeshDialog),
+        mAction(action)
 {
     mUI->setupUi(this);
+
+    mUI->buttonBox->
 
     setWindowTitle(QString::fromStdString(action->name()));
 
@@ -39,11 +44,24 @@ FilterMeshDialog::FilterMeshDialog(
         QString::fromStdString(action->description()));
 
     mUI->parameterFrame->setParameters(action->parameters());
+
+    QPushButton* applyButton = mUI->buttonBox->button(QDialogButtonBox::Apply);
+
+    connect(
+        applyButton,
+        &QPushButton::clicked,
+        this,
+        &FilterMeshDialog::onApplyButtonClicked);
 }
 
 FilterMeshDialog::~FilterMeshDialog()
 {
     delete mUI;
+}
+
+void FilterMeshDialog::onApplyButtonClicked()
+{
+    emit applyFilter(mAction, mUI->parameterFrame->parameters());
 }
 
 } // namespace vcl::qt

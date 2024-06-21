@@ -41,7 +41,7 @@ public:
     // ParameterRow interface
     QWidget* parameterWidget() override;
 
-    std::shared_ptr<proc::Parameter> parameterFromWidget() override;
+    std::shared_ptr<proc::Parameter> parameterFromWidget() const override;
 };
 
 } // namespace vcl::qt

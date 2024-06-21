@@ -42,10 +42,11 @@ QWidget* EnumParameterRow::parameterWidget()
     return mComboBox;
 }
 
-std::shared_ptr<proc::Parameter> EnumParameterRow::parameterFromWidget()
+std::shared_ptr<proc::Parameter> EnumParameterRow::parameterFromWidget() const
 {
-    mParam.setUintValue(mComboBox->currentIndex());
-    return mParam.clone();
+    auto p = mParam.clone();
+    p->setUintValue(mComboBox->currentIndex());
+    return p;
 }
 
 } // namespace vcl::qt

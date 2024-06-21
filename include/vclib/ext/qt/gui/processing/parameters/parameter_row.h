@@ -53,7 +53,7 @@ public:
 
     virtual QWidget* parameterWidget() = 0;
 
-    virtual std::shared_ptr<proc::Parameter> parameterFromWidget() = 0;
+    virtual std::shared_ptr<proc::Parameter> parameterFromWidget() const = 0;
 
     void addRowToGridLayout(QGridLayout* lay, const int row);
 

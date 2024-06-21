@@ -32,7 +32,7 @@ UintParameterRow::UintParameterRow(const proc::UintParameter& param) :
     mLineEdit = new QLineEdit();
     mLineEdit->setToolTip(param.tooltip().c_str());
     mLineEdit->setValidator(
-        new QIntValidator(0, std::numeric_limits<uint>::max(), mLineEdit));
+        new QIntValidator(0, std::numeric_limits<int>::max(), mLineEdit));
     mLineEdit->setText(QString::number(param.uintValue()));
 }
 
@@ -41,10 +41,11 @@ QWidget* UintParameterRow::parameterWidget()
     return mLineEdit;
 }
 
-std::shared_ptr<proc::Parameter> UintParameterRow::parameterFromWidget()
+std::shared_ptr<proc::Parameter> UintParameterRow::parameterFromWidget() const
 {
-    mParam.setUintValue(mLineEdit->text().toUInt());
-    return mParam.clone();
+    auto p = mParam.clone();
+    p->setUintValue(mLineEdit->text().toUInt());
+    return p;
 }
 
 } // namespace vcl::qt

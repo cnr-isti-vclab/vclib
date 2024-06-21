@@ -147,7 +147,7 @@ void MeshProcessingMainWindow::saveMeshAs()
     }
 }
 
-void MeshProcessingMainWindow::executeFilter(bool)
+void MeshProcessingMainWindow::openFilterDialog(bool)
 {
     QAction* sender = qobject_cast<QAction*>(QObject::sender());
 
@@ -156,8 +156,46 @@ void MeshProcessingMainWindow::executeFilter(bool)
     auto filter = mActionManager.filterMeshActionById(filterId);
 
     if (filter) {
-        executeFilter(filter);
+        openFilterDialog(filter);
     }
+}
+
+void MeshProcessingMainWindow::applyFilter(
+    const std::shared_ptr<proc::FilterMeshAction>& action,
+    const proc::ParameterVector&                   params)
+{
+    proc::MeshVector inputMeshes;
+    std::vector<std::shared_ptr<proc::MeshI>> inputOutputMeshes;
+    proc::MeshVector outputMeshes;
+
+    if (action->numberInputMeshes() + action->numberInputOutputMeshes() == 1) {
+        auto m = toMesh(mMeshVector->at(mUI->meshViewer->selectedDrawableObject()));
+        if (action->numberInputMeshes() == 1) {
+            inputMeshes.pushBack(m);
+        }
+        else {
+            inputOutputMeshes.push_back(m);
+        }
+    }
+
+    logger().startTimer();
+
+    action->applyFilter(
+        inputMeshes, inputOutputMeshes, outputMeshes, params, logger());
+
+    logger().stopTimer();
+
+    logger().log(
+        TextEditLogger::MESSAGE,
+        action->name() + " applied in " + std::to_string(logger().getTime()) +
+            " seconds.");
+
+    for (const auto& m : outputMeshes) {
+        mMeshVector->pushBack(makeMeshDrawable(m));
+    }
+
+    mUI->meshViewer->updateGUI();
+    mUI->meshViewer->fitScene();
 }
 
 TextEditLogger& MeshProcessingMainWindow::logger()
@@ -189,14 +227,24 @@ void MeshProcessingMainWindow::populateFilterMenu()
         }
 
         connect(
-            action, SIGNAL(triggered(bool)), this, SLOT(executeFilter(bool)));
+            action,
+            SIGNAL(triggered(bool)),
+            this,
+            SLOT(openFilterDialog(bool)));
     }
 }
 
-void MeshProcessingMainWindow::executeFilter(
+void MeshProcessingMainWindow::openFilterDialog(
     const std::shared_ptr<proc::FilterMeshAction>& action)
 {
     FilterMeshDialog* dock = new FilterMeshDialog(action, this);
+
+    connect(
+        dock,
+        &FilterMeshDialog::applyFilter,
+        this,
+        &MeshProcessingMainWindow::applyFilter);
+
     dock->show();
 }
 

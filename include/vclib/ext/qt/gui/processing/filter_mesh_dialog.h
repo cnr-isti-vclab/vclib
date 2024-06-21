@@ -39,11 +39,21 @@ class FilterMeshDialog : public QDialog
 
     Ui::FilterMeshDialog* mUI;
 
+    const std::shared_ptr<proc::FilterMeshAction> mAction;
+
 public:
     explicit FilterMeshDialog(
         const std::shared_ptr<proc::FilterMeshAction>& action,
         QWidget*                                       parent = nullptr);
     ~FilterMeshDialog();
+
+signals:
+    void applyFilter(
+        const std::shared_ptr<proc::FilterMeshAction>& action,
+        const proc::ParameterVector&                   parmas);
+
+private slots:
+    void onApplyButtonClicked();
 };
 
 } // namespace vcl::qt

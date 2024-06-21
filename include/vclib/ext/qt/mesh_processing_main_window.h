@@ -55,14 +55,18 @@ public slots:
 
     void saveMeshAs();
 
-    void executeFilter(bool);
+    void openFilterDialog(bool);
+
+    void applyFilter(
+        const std::shared_ptr<proc::FilterMeshAction>& action,
+        const proc::ParameterVector&                   params);
 
 private:
     TextEditLogger& logger();
 
     void populateFilterMenu();
 
-    void executeFilter(const std::shared_ptr<proc::FilterMeshAction>& action);
+    void openFilterDialog(const std::shared_ptr<proc::FilterMeshAction>& action);
 
     static std::shared_ptr<vcl::DrawableObjectI> makeMeshDrawable(
         const std::shared_ptr<proc::MeshI>& mesh);
