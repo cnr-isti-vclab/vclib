@@ -20,48 +20,35 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ui_filter_mesh_dialog.h"
-#include <vclib/ext/qt/gui/processing/filter_mesh_dialog.h>
+#include <vclib/ext/qt/gui/processing/parameters/scalar_parameter_row.h>
 
-#include <QPushButton>
+#include <QDoubleValidator>
 
 namespace vcl::qt {
 
-FilterMeshDialog::FilterMeshDialog(
-    const std::shared_ptr<proc::FilterMeshAction>& action,
-    QWidget*                                       parent) :
-        QDialog(parent),
-        mUI(new Ui::FilterMeshDialog),
-        mAction(action)
+ScalarParameterRow::ScalarParameterRow(const proc::ScalarParameter& param) :
+        ParameterRow(param), mParam(param)
 {
-    mUI->setupUi(this);
-
-    mUI->buttonBox->
-
-    setWindowTitle(QString::fromStdString(action->name()));
-
-    mUI->filterDescriptionLabel->setText(
-        QString::fromStdString(action->description()));
-
-    mUI->parameterFrame->setParameters(action->parameters());
-
-    QPushButton* applyButton = mUI->buttonBox->button(QDialogButtonBox::Apply);
-
-    connect(
-        applyButton,
-        &QPushButton::clicked,
-        this,
-        &FilterMeshDialog::onApplyButtonClicked);
+    mLineEdit = new QLineEdit();
+    mLineEdit->setToolTip(param.tooltip().c_str());
+    mLineEdit->setValidator(new QDoubleValidator(
+        std::numeric_limits<double>::lowest(),
+        std::numeric_limits<double>::max(),
+        4,
+        mLineEdit));
+    mLineEdit->setText(QString::number(param.scalarValue()));
 }
 
-FilterMeshDialog::~FilterMeshDialog()
+QWidget* ScalarParameterRow::parameterWidget()
 {
-    delete mUI;
+    return mLineEdit;
 }
 
-void FilterMeshDialog::onApplyButtonClicked()
+std::shared_ptr<proc::Parameter> ScalarParameterRow::parameterFromWidget() const
 {
-    emit applyFilter(mAction, mUI->parameterFrame->parameters());
+    auto p = mParam.clone();
+    p->setScalarValue(mLineEdit->text().toDouble());
+    return p;
 }
 
 } // namespace vcl::qt

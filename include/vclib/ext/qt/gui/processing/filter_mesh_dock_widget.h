@@ -20,32 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DIALOG_H
-#define VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DIALOG_H
+#ifndef VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
+#define VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
 
-#include <QDialog>
+#include <QDockWidget>
 
 #include <vclib/processing/actions/interfaces/filter_mesh_action.h>
 
 namespace vcl::qt {
 
 namespace Ui {
-class FilterMeshDialog;
+class FilterMeshDockWidget;
 } // namespace Ui
 
-class FilterMeshDialog : public QDialog
+class FilterMeshDockWidget : public QDockWidget
 {
     Q_OBJECT
 
-    Ui::FilterMeshDialog* mUI;
+    Ui::FilterMeshDockWidget* mUI;
 
     const std::shared_ptr<proc::FilterMeshAction> mAction;
 
 public:
-    explicit FilterMeshDialog(
+    explicit FilterMeshDockWidget(
         const std::shared_ptr<proc::FilterMeshAction>& action,
         QWidget*                                       parent = nullptr);
-    ~FilterMeshDialog();
+
+    ~FilterMeshDockWidget();
 
 signals:
     void applyFilter(
@@ -54,8 +55,10 @@ signals:
 
 private slots:
     void onApplyButtonClicked();
+
+    void onCancelButtonClicked();
 };
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DIALOG_H
+#endif // VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H

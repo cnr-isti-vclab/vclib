@@ -24,7 +24,9 @@
 
 #include <vclib/ext/qt/gui/processing/parameters/bool_parameter_row.h>
 #include <vclib/ext/qt/gui/processing/parameters/enum_parameter_row.h>
+#include <vclib/ext/qt/gui/processing/parameters/scalar_parameter_row.h>
 #include <vclib/ext/qt/gui/processing/parameters/uint_parameter_row.h>
+#include <vclib/ext/qt/gui/processing/parameters/uscalar_parameter_row.h>
 
 namespace vcl::qt {
 
@@ -61,10 +63,24 @@ void ParametersGridLayout::setParameters(
 
                 paramInserted = true;
             } break;
+            case proc::ParameterType::SCALAR: {
+                std::shared_ptr<const proc::ScalarParameter> sp =
+                    std::dynamic_pointer_cast<const proc::ScalarParameter>(par);
+                parRow = std::make_shared<ScalarParameterRow>(*sp);
+
+                paramInserted = true;
+            } break;
             case proc::ParameterType::UINT: {
                 std::shared_ptr<const proc::UintParameter> up =
                     std::dynamic_pointer_cast<const proc::UintParameter>(par);
                 parRow = std::make_shared<UintParameterRow>(*up);
+
+                paramInserted = true;
+            } break;
+            case proc::ParameterType::USCALAR: {
+                std::shared_ptr<const proc::UscalarParameter> usp =
+                    std::dynamic_pointer_cast<const proc::UscalarParameter>(par);
+                parRow = std::make_shared<UscalarParameterRow>(*usp);
 
                 paramInserted = true;
             } break;
