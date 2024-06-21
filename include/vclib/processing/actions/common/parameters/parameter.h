@@ -48,6 +48,7 @@ struct ParameterType
         // special parameters - they store native parameters, but they add
         // additional information or functionalities
         ENUM, // enum is an int that can be converted to a string
+        USCALAR, // uscalar is a scalar that is guaranteed to be positive
 
         COUNT
     };
@@ -213,6 +214,7 @@ private:
     {
         switch (t) {
         case vcl::proc::ParameterType::ENUM: return ParameterType::UINT;
+        case vcl::proc::ParameterType::USCALAR: return ParameterType::SCALAR;
         default: return t;
         }
     }
@@ -228,6 +230,7 @@ private:
         case ParameterType::COLOR: return "color";
         case ParameterType::POINT3: return "point3";
         case ParameterType::ENUM: return "enum";
+        case ParameterType::USCALAR: return "uscalar";
         default: return "unknown";
         }
     }

@@ -46,9 +46,9 @@ public:
     {
         ParameterVector params;
 
-        params.pushBack(UintParameter("bottom_radius", 1, "Bottom Radius", ""));
-        params.pushBack(UintParameter("top_radius", 1, "Top Radius", ""));
-        params.pushBack(ScalarParameter("height", 1, "Height", ""));
+        params.pushBack(UscalarParameter("bottom_radius", 1, "Bottom Radius", ""));
+        params.pushBack(UscalarParameter("top_radius", 1, "Top Radius", ""));
+        params.pushBack(UscalarParameter("height", 1, "Height", ""));
         params.pushBack(
             UintParameter("subdivisions", 36, "N. Subdivisions", ""));
 
@@ -62,8 +62,8 @@ public:
         const ParameterVector& parameters,
         AbstractLogger&        log = logger()) const override
     {
-        auto bottomRadius = parameters.get("bottom_radius")->uintValue();
-        auto topRadius    = parameters.get("top_radius")->uintValue();
+        auto bottomRadius = parameters.get("bottom_radius")->scalarValue();
+        auto topRadius    = parameters.get("top_radius")->scalarValue();
         auto height       = parameters.get("height")->scalarValue();
         auto subdivisions = parameters.get("subdivisions")->uintValue();
 
