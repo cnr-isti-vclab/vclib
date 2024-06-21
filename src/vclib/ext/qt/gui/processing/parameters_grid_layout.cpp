@@ -24,6 +24,7 @@
 
 #include <vclib/ext/qt/gui/processing/parameters/bool_parameter_row.h>
 #include <vclib/ext/qt/gui/processing/parameters/enum_parameter_row.h>
+#include <vclib/ext/qt/gui/processing/parameters/uint_parameter_row.h>
 
 namespace vcl::qt {
 
@@ -41,33 +42,40 @@ void ParametersGridLayout::setParameters(
     uint row = 0;
     for (const std::shared_ptr<const proc::Parameter>& par : parameters) {
         if (par) {
+            bool                          paramInserted = false;
+            std::shared_ptr<ParameterRow> parRow;
+
             switch (par->type()) {
             case proc::ParameterType::BOOL: {
                 std::shared_ptr<const proc::BoolParameter> bp =
                     std::dynamic_pointer_cast<const proc::BoolParameter>(par);
+                parRow = std::make_shared<BoolParameterRow>(*bp);
 
-                std::shared_ptr<ParameterRow> parRow =
-                    std::make_shared<BoolParameterRow>(*bp);
-
-                parRow->addRowToGridLayout(this, row);
-
-                mRows.push_back(parRow);
+                paramInserted = true;
 
             } break;
             case proc::ParameterType::ENUM: {
                 std::shared_ptr<const proc::EnumParameter> ep =
                     std::dynamic_pointer_cast<const proc::EnumParameter>(par);
+                parRow = std::make_shared<EnumParameterRow>(*ep);
 
-                std::shared_ptr<ParameterRow> parRow =
-                    std::make_shared<EnumParameterRow>(*ep);
+                paramInserted = true;
+            } break;
+            case proc::ParameterType::UINT: {
+                std::shared_ptr<const proc::UintParameter> up =
+                    std::dynamic_pointer_cast<const proc::UintParameter>(par);
+                parRow = std::make_shared<UintParameterRow>(*up);
 
-                parRow->addRowToGridLayout(this, row);
-
-                mRows.push_back(parRow);
+                paramInserted = true;
             } break;
             default: break;
             }
-            ++row;
+            if (paramInserted) {
+                parRow->addRowToGridLayout(this, row);
+
+                mRows.push_back(parRow);
+                ++row;
+            }
         }
     }
 }
