@@ -24,8 +24,7 @@
 
 namespace vcl::qt {
 
-ParameterFrame::ParameterFrame(QWidget* parent) :
-        MultiParameterFrame(parent)
+ParameterFrame::ParameterFrame(QWidget* parent) : MultiParameterFrame(parent)
 {
     setHeaderLabel("Parameters:");
     setHeaderFrameVisible(true);

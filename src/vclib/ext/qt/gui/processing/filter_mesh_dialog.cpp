@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/qt/gui/processing/filter_mesh_dialog.h>
 #include "ui_filter_mesh_dialog.h"
+#include <vclib/ext/qt/gui/processing/filter_mesh_dialog.h>
 
 namespace vcl::qt {
 

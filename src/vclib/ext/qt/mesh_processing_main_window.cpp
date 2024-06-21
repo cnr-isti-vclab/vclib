@@ -153,7 +153,7 @@ void MeshProcessingMainWindow::executeFilter(bool)
 
     std::string filterId =
         sender->property("filter_id").toString().toStdString();
-    auto        filter   = mActionManager.filterMeshActionById(filterId);
+    auto filter = mActionManager.filterMeshActionById(filterId);
 
     if (filter) {
         executeFilter(filter);
@@ -189,10 +189,7 @@ void MeshProcessingMainWindow::populateFilterMenu()
         }
 
         connect(
-            action,
-            SIGNAL(triggered(bool)),
-            this,
-            SLOT(executeFilter(bool)));
+            action, SIGNAL(triggered(bool)), this, SLOT(executeFilter(bool)));
     }
 }
 

@@ -44,7 +44,6 @@ public:
         const std::shared_ptr<proc::FilterMeshAction>& action,
         QWidget*                                       parent = nullptr);
     ~FilterMeshDialog();
-
 };
 
 } // namespace vcl::qt

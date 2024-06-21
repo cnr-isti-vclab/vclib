@@ -30,17 +30,17 @@ namespace vcl::qt {
 class ParameterFrame : public MultiParameterFrame
 {
     using MultiParameterFrame::addSubFrame;
+    using MultiParameterFrame::setHeaderButtonChecked;
+    using MultiParameterFrame::setHeaderButtonVisible;
+    using MultiParameterFrame::setHeaderFrameVisible;
+    using MultiParameterFrame::setHeaderLabel;
+    using MultiParameterFrame::setSubFrameHeaderButtonChecked;
+    using MultiParameterFrame::setSubFrameHeaderButtonVisible;
+    using MultiParameterFrame::setSubFrameHeaderVisible;
     using MultiParameterFrame::setSubFrameName;
     using MultiParameterFrame::setSubFramePatameters;
-    using MultiParameterFrame::subFramesNumber;
-    using MultiParameterFrame::setHeaderLabel;
-    using MultiParameterFrame::setHeaderFrameVisible;
-    using MultiParameterFrame::setHeaderButtonVisible;
-    using MultiParameterFrame::setHeaderButtonChecked;
     using MultiParameterFrame::setSubFrameVisible;
-    using MultiParameterFrame::setSubFrameHeaderVisible;
-    using MultiParameterFrame::setSubFrameHeaderButtonVisible;
-    using MultiParameterFrame::setSubFrameHeaderButtonChecked;
+    using MultiParameterFrame::subFramesNumber;
 
 public:
     explicit ParameterFrame(QWidget* parent = nullptr);

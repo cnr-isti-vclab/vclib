@@ -109,10 +109,9 @@ void DrawableObjectVectorFrame::updateDrawableVectorWidget()
             SIGNAL(drawableObjectVisibilityChanged()));
 
         // when frame resized, update the item size
-        connect(
-            frame,
-            &DrawableObjectFrame::resized,
-            [item, frame]() { item->setSizeHint(frame->sizeHint()); });
+        connect(frame, &DrawableObjectFrame::resized, [item, frame]() {
+            item->setSizeHint(frame->sizeHint());
+        });
     }
 }
 

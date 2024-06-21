@@ -80,12 +80,12 @@ private:
         if constexpr (HasTriangles<MeshType>) {
             info += "TriMesh\n";
         }
-        else if constexpr(HasPolygons<MeshType>) {
+        else if constexpr (HasPolygons<MeshType>) {
             info += "PolyMesh\n";
         }
 
         info += "Vertices: " + std::to_string(mesh.vertexNumber()) + "\n";
-        if constexpr(HasFaces<MeshType>) {
+        if constexpr (HasFaces<MeshType>) {
             info += "Faces: " + std::to_string(mesh.faceNumber()) + "\n";
         }
         mesh.info() = info;
