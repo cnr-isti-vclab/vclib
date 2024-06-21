@@ -39,10 +39,7 @@ public:
 
     std::string name() const override { return "Create Cone"; }
 
-    std::string description() const override
-    {
-        return "Creates a cone mesh.";
-    }
+    std::string description() const override { return "Creates a cone mesh."; }
 
     ParameterVector parameters() const override
     {

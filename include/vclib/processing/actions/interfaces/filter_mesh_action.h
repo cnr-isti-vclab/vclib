@@ -33,10 +33,8 @@ namespace vcl::proc {
 class FilterMeshAction : public MeshAction
 {
 public:
-    enum MeshActionCategory
-    {
+    enum MeshActionCategory {
         CREATE = 0,
-
 
         N_CATEGORIES,
     };

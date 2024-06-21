@@ -46,10 +46,7 @@ public:
         return supportedInputMeshTypes(0);
     }
 
-    vcl::BitSet<uint> categories() const
-    {
-        return vcl::BitSet<uint>({CREATE});
-    }
+    vcl::BitSet<uint> categories() const { return vcl::BitSet<uint>({CREATE}); }
 };
 
 } // namespace vcl::proc

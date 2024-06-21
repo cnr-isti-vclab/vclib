@@ -66,8 +66,8 @@ public:
     {
         // return a view of the actions downcasted to IDAction
         return mActions | std::views::transform([](auto a) {
-            return std::dynamic_pointer_cast<IDAction>(a);
-        });
+                   return std::dynamic_pointer_cast<IDAction>(a);
+               });
     }
 
 private:
