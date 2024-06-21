@@ -24,6 +24,7 @@
 #define VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_CREATE_CONE_FILTER_H
 
 #include <vclib/algorithms/mesh/create/cone.h>
+#include <vclib/algorithms/mesh/update/normal.h>
 #include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/actions/interfaces/create_filter_mesh_action.h>
 
@@ -68,6 +69,10 @@ public:
 
         auto meshPtr = std::make_shared<TriMesh>(vcl::createCone<TriMesh>(
             bottomRadius, topRadius, height, subdivisions));
+
+        vcl::updatePerVertexAndFaceNormals(*meshPtr);
+
+        meshPtr->name() = "Cone";
 
         outputMeshes.pushBack(meshPtr);
 
