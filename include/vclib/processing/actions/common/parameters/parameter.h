@@ -47,7 +47,7 @@ struct ParameterType
 
         // special parameters - they store native parameters, but they add
         // additional information or functionalities
-        ENUM, // enum is an int that can be converted to a string
+        ENUM,    // enum is an int that can be converted to a string
         USCALAR, // uscalar is a scalar that is guaranteed to be positive
 
         MESH, // mesh is a special parameter that stores the index of a mesh

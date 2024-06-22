@@ -46,7 +46,8 @@ public:
     {
         ParameterVector params;
 
-        params.pushBack(UscalarParameter("bottom_radius", 1, "Bottom Radius", ""));
+        params.pushBack(
+            UscalarParameter("bottom_radius", 1, "Bottom Radius", ""));
         params.pushBack(UscalarParameter("top_radius", 1, "Top Radius", ""));
         params.pushBack(UscalarParameter("height", 1, "Height", ""));
         params.pushBack(
