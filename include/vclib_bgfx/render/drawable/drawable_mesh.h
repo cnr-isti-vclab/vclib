@@ -55,7 +55,7 @@ public:
 
     ~DrawableMesh() = default;
 
-    void updateBuffers()
+    void updateBuffers() override
     {
         if constexpr (HasName<MeshType>) {
             DrawableMeshI::name() = MeshType::name();

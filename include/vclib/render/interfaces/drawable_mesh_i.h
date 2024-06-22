@@ -44,6 +44,8 @@ public:
 
     const MeshRenderSettings& renderSettings() const { return mMRS; }
 
+    virtual void updateBuffers() = 0;
+
     virtual void setRenderSettings(const MeshRenderSettings& rs) { mMRS = rs; }
 
     // DrawableObject implementation

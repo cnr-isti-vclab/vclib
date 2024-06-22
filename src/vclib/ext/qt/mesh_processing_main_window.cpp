@@ -168,10 +168,13 @@ void MeshProcessingMainWindow::applyFilter(
     std::vector<std::shared_ptr<proc::MeshI>> inputOutputMeshes;
     proc::MeshVector                          outputMeshes;
 
-    if (action->numberInputMeshes() + action->numberInputOutputMeshes() == 1) {
+    uint niMeshes = action->inputMeshParameters().size();
+    uint nioMeshes = action->inputOutputMeshParameters().size();
+
+    if (niMeshes + nioMeshes == 1) {
         auto m =
             toMesh(mMeshVector->at(mUI->meshViewer->selectedDrawableObject()));
-        if (action->numberInputMeshes() == 1) {
+        if (niMeshes == 1) {
             inputMeshes.pushBack(m);
         }
         else {
@@ -190,6 +193,10 @@ void MeshProcessingMainWindow::applyFilter(
         TextEditLogger::MESSAGE,
         action->name() + " applied in " + std::to_string(logger().getTime()) +
             " seconds.");
+
+    for (const auto& m : inputOutputMeshes) {
+        toDrawableMeshI(m)->updateBuffers();
+    }
 
     for (const auto& m : outputMeshes) {
         mMeshVector->pushBack(makeMeshDrawable(m));
@@ -211,6 +218,10 @@ void MeshProcessingMainWindow::populateFilterMenu()
     std::array<QMenu*, proc::FilterMeshAction::N_CATEGORIES> menus;
     menus[proc::FilterMeshAction::CREATE] =
         new QMenu("Create", mUI->menuFilter);
+    menus[proc::FilterMeshAction::CLEANING_AND_REPAIRING] =
+        new QMenu("Cleaning and Repairing", mUI->menuFilter);
+    menus[proc::FilterMeshAction::SMOOTHING] =
+        new QMenu("Smoothing", mUI->menuFilter);
 
     for (uint i = 0; i < proc::FilterMeshAction::N_CATEGORIES; ++i) {
         mUI->menuFilter->addMenu(menus[i]);
@@ -275,10 +286,10 @@ std::shared_ptr<proc::MeshI> MeshProcessingMainWindow::toMesh(
     return std::dynamic_pointer_cast<proc::MeshI>(drawable);
 }
 
-std::shared_ptr<DrawableObjectI> MeshProcessingMainWindow::toDrawableObject(
+std::shared_ptr<DrawableMeshI> MeshProcessingMainWindow::toDrawableMeshI(
     const std::shared_ptr<proc::MeshI>& mesh)
 {
-    return std::dynamic_pointer_cast<DrawableObjectI>(mesh);
+    return std::dynamic_pointer_cast<DrawableMeshI>(mesh);
 }
 
 } // namespace vcl::qt

@@ -27,6 +27,7 @@
 
 #include <vclib/ext/qt/gui/text_edit_logger.h>
 #include <vclib/processing/action_manager.h>
+#include <vclib/render/interfaces/drawable_mesh_i.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
 namespace vcl::qt {
@@ -75,7 +76,7 @@ private:
     static std::shared_ptr<vcl::proc::MeshI> toMesh(
         const std::shared_ptr<vcl::DrawableObjectI>& drawable);
 
-    static std::shared_ptr<vcl::DrawableObjectI> toDrawableObject(
+    static std::shared_ptr<vcl::DrawableMeshI> toDrawableMeshI(
         const std::shared_ptr<vcl::proc::MeshI>& mesh);
 
     template<MeshConcept MeshType>
