@@ -30,21 +30,9 @@ namespace vcl::proc {
 class CreateFilterMeshAction : public FilterMeshAction
 {
 public:
-    uint numberInputMeshes() const final { return 0; }
+    MeshParamVector inputMeshParameters() const final { return {}; }
 
-    vcl::BitSet<short> supportedInputMeshTypes(uint) const final
-    {
-        vcl::BitSet<short> bs;
-        bs.reset();
-        return bs;
-    }
-
-    uint numberInputOutputMeshes() const final { return 0; }
-
-    vcl::BitSet<short> supportedInputOutputMeshTypes(uint) const final
-    {
-        return supportedInputMeshTypes(0);
-    }
+    MeshParamVector inputOutputMeshParameters() const final { return {}; }
 
     vcl::BitSet<uint> categories() const { return vcl::BitSet<uint>({CREATE}); }
 };
