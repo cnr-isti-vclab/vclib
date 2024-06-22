@@ -164,12 +164,13 @@ void MeshProcessingMainWindow::applyFilter(
     const std::shared_ptr<proc::FilterMeshAction>& action,
     const proc::ParameterVector&                   params)
 {
-    proc::MeshVector inputMeshes;
+    proc::MeshVector                          inputMeshes;
     std::vector<std::shared_ptr<proc::MeshI>> inputOutputMeshes;
-    proc::MeshVector outputMeshes;
+    proc::MeshVector                          outputMeshes;
 
     if (action->numberInputMeshes() + action->numberInputOutputMeshes() == 1) {
-        auto m = toMesh(mMeshVector->at(mUI->meshViewer->selectedDrawableObject()));
+        auto m =
+            toMesh(mMeshVector->at(mUI->meshViewer->selectedDrawableObject()));
         if (action->numberInputMeshes() == 1) {
             inputMeshes.pushBack(m);
         }

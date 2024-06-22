@@ -79,7 +79,8 @@ void ParametersGridLayout::setParameters(
             } break;
             case proc::ParameterType::USCALAR: {
                 std::shared_ptr<const proc::UscalarParameter> usp =
-                    std::dynamic_pointer_cast<const proc::UscalarParameter>(par);
+                    std::dynamic_pointer_cast<const proc::UscalarParameter>(
+                        par);
                 parRow = std::make_shared<UscalarParameterRow>(*usp);
 
                 paramInserted = true;

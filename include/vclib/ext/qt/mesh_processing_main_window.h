@@ -66,7 +66,8 @@ private:
 
     void populateFilterMenu();
 
-    void openFilterDialog(const std::shared_ptr<proc::FilterMeshAction>& action);
+    void openFilterDialog(
+        const std::shared_ptr<proc::FilterMeshAction>& action);
 
     static std::shared_ptr<vcl::DrawableObjectI> makeMeshDrawable(
         const std::shared_ptr<proc::MeshI>& mesh);

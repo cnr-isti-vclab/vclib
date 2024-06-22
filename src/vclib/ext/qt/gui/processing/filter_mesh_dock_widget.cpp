@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/qt/gui/processing/filter_mesh_dock_widget.h>
 #include "ui_filter_mesh_dock_widget.h"
+#include <vclib/ext/qt/gui/processing/filter_mesh_dock_widget.h>
 
 #include <QPushButton>
 
@@ -31,8 +31,7 @@ FilterMeshDockWidget::FilterMeshDockWidget(
     const std::shared_ptr<proc::FilterMeshAction>& action,
     QWidget*                                       parent) :
         QDockWidget(parent),
-        mUI(new Ui::FilterMeshDockWidget),
-        mAction(action)
+        mUI(new Ui::FilterMeshDockWidget), mAction(action)
 {
     mUI->setupUi(this);
 
@@ -44,7 +43,8 @@ FilterMeshDockWidget::FilterMeshDockWidget(
     mUI->parameterFrame->setParameters(action->parameters());
 
     QPushButton* applyButton = mUI->buttonBox->button(QDialogButtonBox::Apply);
-    QPushButton* cancelButton = mUI->buttonBox->button(QDialogButtonBox::Cancel);
+    QPushButton* cancelButton =
+        mUI->buttonBox->button(QDialogButtonBox::Cancel);
 
     connect(
         applyButton,

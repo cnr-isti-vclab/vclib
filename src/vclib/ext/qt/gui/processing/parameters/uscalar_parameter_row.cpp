@@ -32,10 +32,7 @@ UscalarParameterRow::UscalarParameterRow(const proc::UscalarParameter& param) :
     mLineEdit = new QLineEdit();
     mLineEdit->setToolTip(param.tooltip().c_str());
     mLineEdit->setValidator(new QDoubleValidator(
-        0.0,
-        std::numeric_limits<double>::max(),
-        4,
-        mLineEdit));
+        0.0, std::numeric_limits<double>::max(), 4, mLineEdit));
     mLineEdit->setText(QString::number(param.scalarValue()));
 }
 
@@ -44,7 +41,8 @@ QWidget* UscalarParameterRow::parameterWidget()
     return mLineEdit;
 }
 
-std::shared_ptr<proc::Parameter> UscalarParameterRow::parameterFromWidget() const
+std::shared_ptr<proc::Parameter> UscalarParameterRow::parameterFromWidget()
+    const
 {
     auto p = mParam.clone();
     p->setScalarValue(mLineEdit->text().toDouble());
