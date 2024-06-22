@@ -26,11 +26,11 @@
 #include <vclib/algorithms/mesh/create/cone.h>
 #include <vclib/algorithms/mesh/update/normal.h>
 #include <vclib/processing/actions/common/parameters.h>
-#include <vclib/processing/actions/interfaces/create_filter_mesh_action.h>
+#include <vclib/processing/actions/interfaces/filter_mesh_action.h>
 
 namespace vcl::proc {
 
-class CreateConeFilter : public CreateFilterMeshAction
+class CreateConeFilter : public FilterMeshAction
 {
 public:
     std::shared_ptr<Action> clone() const override
@@ -41,6 +41,15 @@ public:
     std::string name() const override { return "Create Cone"; }
 
     std::string description() const override { return "Creates a cone mesh."; }
+
+    vcl::BitSet<uint> categories() const override
+    {
+        return vcl::BitSet<uint>({CREATE});
+    }
+
+    MeshParamVector inputMeshParameters() const final { return {}; }
+
+    MeshParamVector inputOutputMeshParameters() const final { return {}; }
 
     ParameterVector parameters() const override
     {

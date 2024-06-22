@@ -35,7 +35,7 @@ class MeshParameter : public Parameter
 
 public:
     MeshParameter(
-        const std::string& name,
+        const std::string& name        = "",
         const std::string& description = "",
         const std::string& tooltip     = "",
         const std::string& category    = "") :

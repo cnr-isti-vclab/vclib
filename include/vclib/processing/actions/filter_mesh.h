@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_H
 #define VCL_PROCESSING_ACTIONS_FILTER_MESH_H
 
+#include "filter_mesh/apply.h"
 #include "filter_mesh/create.h"
 
 namespace vcl::proc {
@@ -30,6 +31,10 @@ namespace vcl::proc {
 std::vector<std::shared_ptr<Action>> vclibFilterMeshActions()
 {
     std::vector<std::shared_ptr<Action>> vec;
+
+    // Apply filters
+    auto applyFilters = vclibApplyFilterMeshActions();
+    vec.insert(vec.end(), applyFilters.begin(), applyFilters.end());
 
     // Create filters
     auto createFilters = vclibCreateFilterMeshActions();

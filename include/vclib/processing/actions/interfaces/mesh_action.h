@@ -73,6 +73,22 @@ protected:
         default: throw std::runtime_error("Unknown mesh type");
         }
     }
+
+    auto callFunctionForMesh(auto&& function, MeshI& mesh, auto&&... args)
+        const
+    {
+        switch (mesh.type()) {
+        case MeshIType::TRI_MESH:
+            return function(
+                mesh.as<TriMesh>(), std::forward<decltype(args)>(args)...);
+            break;
+        case MeshIType::POLY_MESH:
+            return function(
+                mesh.as<PolyMesh>(), std::forward<decltype(args)>(args)...);
+            break;
+        default: throw std::runtime_error("Unknown mesh type");
+        }
+    }
 };
 
 } // namespace vcl::proc

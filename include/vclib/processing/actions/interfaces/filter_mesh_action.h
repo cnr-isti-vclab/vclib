@@ -23,6 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_INTERFACES_FILTER_MESH_ACTION_H
 #define VCL_PROCESSING_ACTIONS_INTERFACES_FILTER_MESH_ACTION_H
 
+#include <vclib/algorithms/mesh/update.h>
 #include <vclib/processing/actions/common/mesh_vector.h>
 #include <vclib/processing/actions/common/parameters/mesh_parameter.h>
 #include <vclib/space/bit_set.h>
@@ -39,6 +40,8 @@ public:
 
     enum MeshActionCategory {
         CREATE = 0,
+        CLEANING_AND_REPAIRING,
+        SMOOTHING,
 
         N_CATEGORIES,
     };
@@ -172,6 +175,48 @@ public:
     OutputValues applyFilter(MeshVector& outputMeshes) const
     {
         return applyFilter(outputMeshes, parameters());
+    }
+
+protected:
+    auto callFunctionForSupportedInputMeshTypes(
+        const MeshI& mesh,
+        const BitSet<short>& supportedMeshTypes,
+        auto&& function,
+        auto&&... args) const
+    {
+        if (!supportedMeshTypes[mesh.type()]) {
+            throw std::runtime_error(
+                "The action " + name() + " does not support the " +
+                mesh.typeName() + " type.");
+        }
+
+        return callFunctionForMesh(
+            function, mesh, std::forward<decltype(args)>(args)...);
+    }
+
+    auto callFunctionForSupportedInputOutputMeshTypes(
+        MeshI& mesh,
+        const BitSet<short>& supportedMeshTypes,
+        auto&& function,
+        auto&&... args) const
+    {
+        if (!supportedMeshTypes[mesh.type()]) {
+            throw std::runtime_error(
+                "The action " + name() + " does not support the " +
+                mesh.typeName() + " type.");
+        }
+
+        return callFunctionForMesh(
+            function, mesh, std::forward<decltype(args)>(args)...);
+    }
+
+    template<MeshConcept MeshType>
+    void updateBoxAndNormals(MeshType& mesh) const
+    {
+        if constexpr (vcl::HasFaces<MeshType>) {
+            vcl::updatePerVertexAndFaceNormals(mesh);
+        }
+        vcl::updateBoundingBox(mesh);
     }
 };
 

@@ -20,23 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_CREATE_FILTER_MESH_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_CREATE_FILTER_MESH_ACTION_H
+#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_H
+#define VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_H
 
-#include "filter_mesh_action.h"
+#include <memory>
+#include <vector>
+
+#include "apply/laplacian_smoothing_filter.h"
 
 namespace vcl::proc {
 
-class CreateFilterMeshAction : public FilterMeshAction
+std::vector<std::shared_ptr<Action>> vclibApplyFilterMeshActions()
 {
-public:
-    MeshParamVector inputMeshParameters() const final { return {}; }
+    std::vector<std::shared_ptr<Action>> vec;
 
-    MeshParamVector inputOutputMeshParameters() const final { return {}; }
+    vec.push_back(LaplacianSmoothingFilter().clone());
 
-    vcl::BitSet<uint> categories() const { return vcl::BitSet<uint>({CREATE}); }
-};
+    return vec;
+}
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_CREATE_FILTER_MESH_ACTION_H
+#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_APPLY_H
