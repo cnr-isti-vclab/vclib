@@ -83,6 +83,16 @@ public:
         setV(v);
     }
 
+    void serialize(std::ostream& os) const
+    {
+        mCoord.serialize(os);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        mCoord.deserialize(is);
+    }
+
     // operators
     Scalar& operator()(uint i) { return mCoord[i]; }
 

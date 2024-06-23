@@ -24,6 +24,7 @@
 #define VCL_MESH_COMPONENTS_NAME_H
 
 #include <vclib/concepts/mesh/components/name.h>
+#include <vclib/misc/string.h>
 
 #include "bases/component.h"
 
@@ -95,13 +96,23 @@ public:
     const std::string& name() const { return Base::data(); }
 
 protected:
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool = true)
     {
         if constexpr (HasName<Element>) {
             name() = e.name();
         }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        vcl::serialize(os, name());
+    }
+
+    void deserialize(std::istream& is)
+    {
+        vcl::deserialize(is, name());
     }
 };
 

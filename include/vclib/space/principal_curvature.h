@@ -130,6 +130,22 @@ public:
      * @return A reference to the minimum curvature value.
      */
     Scalar& minValue() { return mK2; }
+
+    void serialize(std::ostream& os) const
+    {
+        mDir1.serialize(os);
+        mDir1.serialize(os);
+        vcl::serialize(os, mK1);
+        vcl::serialize(os, mK2);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        mDir1.deserialize(is);
+        mDir2.deserialize(is);
+        vcl::deserialize(is, mK1);
+        vcl::deserialize(is, mK2);
+    }
 };
 
 } // namespace vcl

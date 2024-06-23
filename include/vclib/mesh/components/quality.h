@@ -24,6 +24,7 @@
 #define VCL_MESH_COMPONENTS_QUALITY_H
 
 #include <vclib/concepts/mesh/components/quality.h>
+#include <vclib/io/serialization.h>
 
 #include "bases/component.h"
 
@@ -108,6 +109,16 @@ protected:
                 quality() = e.quality();
             }
         }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        vcl::serialize(os, quality());
+    }
+
+    void deserialize(std::istream& is)
+    {
+        vcl::deserialize(is, quality());
     }
 };
 
