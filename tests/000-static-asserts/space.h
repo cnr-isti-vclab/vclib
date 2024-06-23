@@ -67,15 +67,24 @@ void spaceStaticAsserts()
         Array4Concept<Array4<double>>,
         "Array4d does not satisfy the Array4Concept");
 
+    // bitset
+    static_assert(
+        Serializable<BitSet<char>>, "Bitset<char> is not serializable");
+
     // box2
     static_assert(Box2Concept<Box2i>, "Box2i does not satisfy the Box2Concept");
     static_assert(Box2Concept<Box2f>, "Box2f does not satisfy the Box2Concept");
     static_assert(Box2Concept<Box2d>, "Box2d does not satisfy the Box2Concept");
+    static_assert(Serializable<Box2d>, "Box2d is not serializable");
 
     // box3
     static_assert(Box3Concept<Box3i>, "Box3i does not satisfy the Box3Concept");
     static_assert(Box3Concept<Box3f>, "Box3f does not satisfy the Box3Concept");
     static_assert(Box3Concept<Box3d>, "Box3d does not satisfy the Box3Concept");
+    static_assert(Serializable<Box3d>, "Box3d is not serializable");
+
+    // color
+    static_assert(Serializable<Color>, "Color is not serializable");
 
     // plane
     static_assert(
@@ -90,6 +99,7 @@ void spaceStaticAsserts()
         Point2Concept<Point2f>, "Point2f does not satisfy the Point2Concept");
     static_assert(
         Point2Concept<Point2d>, "Point2d does not satisfy the Point2Concept");
+    static_assert(Serializable<Point2d>, "Point2d is not serializable");
 
     // point3
     static_assert(
@@ -98,7 +108,7 @@ void spaceStaticAsserts()
         Point3Concept<Point3f>, "Point3f does not satisfy the Point3Concept");
     static_assert(
         Point3Concept<Point3d>, "Point3d does not satisfy the Point3Concept");
-    static_assert(Serializable<Point3i>, "Point3i is not serializable");
+    static_assert(Serializable<Point3d>, "Point3d is not serializable");
 
     static_assert(
         Point4Concept<Point4i>, "Point4i does not satisfy the Point4Concept");
@@ -106,6 +116,7 @@ void spaceStaticAsserts()
         Point4Concept<Point4f>, "Point4f does not satisfy the Point4Concept");
     static_assert(
         Point4Concept<Point4d>, "Point4d does not satisfy the Point4Concept");
+    static_assert(Serializable<Point4d>, "Point4d is not serializable");
 
     static_assert(
         Polygon2Concept<Polygon2f>,

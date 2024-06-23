@@ -445,6 +445,26 @@ public:
     }
 
     /**
+     * @brief Serializes the box to the given output stream.
+     * @param[in] os: The output stream.
+     */
+    void serialize(std::ostream& os) const
+    {
+        mMin.serialize(os);
+        mMax.serialize(os);
+    }
+
+    /**
+     * @brief Deserializes the box from the given input stream.
+     * @param[in] is: The input stream.
+     */
+    void deserialize(std::istream& is)
+    {
+        mMin.deserialize(is);
+        mMax.deserialize(is);
+    }
+
+    /**
      * @brief Compares the current box to another box for equality.
      *
      * @param[in] b: The box to compare to.

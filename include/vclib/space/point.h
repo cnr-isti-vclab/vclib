@@ -606,7 +606,8 @@ public:
     const Eigen::Matrix<Scalar, 1, N>& eigenVector() const { return mP; }
 
     /**
-     * @brief Serializes the point into a stream.
+     * @brief Serializes the point to the given output stream.
+     * @param[in] os: The output stream.
      */
     void serialize(std::ostream& os) const
     {
@@ -615,7 +616,8 @@ public:
     }
 
     /**
-     * @brief Deserializes the point from a stream.
+     * @brief Deserializes the point from the given input stream.
+     * @param[in] is: The input stream.
      */
     void deserialize(std::istream& is)
     {

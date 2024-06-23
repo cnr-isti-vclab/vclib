@@ -28,27 +28,132 @@
 #include <vclib/io/write.h>
 #include <vclib/space.h>
 
+template<typename Scalar, uint N>
+vcl::Point<Scalar, N> randomPoint()
+{
+    vcl::Point<Scalar, N> p;
+    for (uint i = 0; i < N; i++)
+        p[i] = GENERATE(take(1, random<Scalar>(-100, 100)));
+    return p;
+}
+
+template<typename Scalar, uint N>
+vcl::Box<vcl::Point<Scalar, N>> randomBox()
+{
+    vcl::Box<vcl::Point<Scalar, N>> b(
+        randomPoint<Scalar, N>(), randomPoint<Scalar, N>());
+    return b;
+}
+
+vcl::Color randomColor()
+{
+    return vcl::Color(GENERATE(take(1, random(0, 255))),
+                      GENERATE(take(1, random(0, 255))),
+                      GENERATE(take(1, random(0, 255))),
+                      GENERATE(take(1, random(0, 255))));
+}
+
+template<std::integral T>
+vcl::BitSet<T> randomBitSet()
+{
+    vcl::BitSet<T> bs;
+    for (uint i = 0; i < bs.size(); i++)
+        bs.set(i, GENERATE(take(1, random(0, 1))));
+    return bs;
+}
+
 TEMPLATE_TEST_CASE("Point Serialization", "", int, float, double)
 {
     using Scalar = TestType;
 
-    std::ofstream fo = vcl::openOutputFileStream(
-        VCLIB_RESULTS_PATH "/serialization/point3_serialization.bin");
+    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
+                                                 "/serialization/point3.bin");
 
-    vcl::Point3<Scalar> p(
-        GENERATE(take(1, random<Scalar>(-100, 100))),
-        GENERATE(take(1, random<Scalar>(-100, 100))),
-        GENERATE(take(1, random<Scalar>(-100, 100))));
+    vcl::Point3<Scalar> p1 = randomPoint<Scalar, 3>();
 
-    p.serialize(fo);
+    p1.serialize(fo);
     fo.close();
 
     vcl::Point3<Scalar> p2;
-    std::ifstream       fi = vcl::openInputFileStream(
-        VCLIB_RESULTS_PATH "/serialization/point3_serialization.bin");
+
+    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
+                                                "/serialization/point3.bin");
 
     p2.deserialize(fi);
     fi.close();
 
-    REQUIRE(p == p2);
+    REQUIRE(p1 == p2);
+}
+
+TEMPLATE_TEST_CASE("Box Serialization", "", int, float, double)
+{
+    using Scalar = TestType;
+
+    std::ofstream fo = vcl::openOutputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/box3.bin");
+
+    vcl::Box3<Scalar> b1 = randomBox<Scalar, 3>();
+
+    b1.serialize(fo);
+    fo.close();
+
+    vcl::Box3<Scalar> b2;
+
+    std::ifstream fi = vcl::openInputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/box3.bin");
+
+    b2.deserialize(fi);
+    fi.close();
+
+    REQUIRE(b1 == b2);
+}
+
+TEST_CASE("Color Serialization")
+{
+    std::ofstream fo = vcl::openOutputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/color.bin");
+
+    vcl::Color c1 = randomColor();
+
+    c1.serialize(fo);
+    fo.close();
+
+    vcl::Color c2;
+
+    std::ifstream fi = vcl::openInputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/color.bin");
+
+    c2.deserialize(fi);
+    fi.close();
+
+    REQUIRE(c1 == c2);
+}
+
+TEMPLATE_TEST_CASE(
+    "BitSet Serialization",
+    "",
+    uint8_t,
+    uint16_t,
+    uint32_t,
+    uint64_t)
+{
+    using T = TestType;
+
+    std::ofstream fo = vcl::openOutputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/bitset.bin");
+
+    vcl::BitSet<T> bs1 = randomBitSet<T>();
+
+    bs1.serialize(fo);
+    fo.close();
+
+    vcl::BitSet<T> bs2;
+
+    std::ifstream fi = vcl::openInputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/bitset.bin");
+
+    bs2.deserialize(fi);
+    fi.close();
+
+    REQUIRE(bs1 == bs2);
 }

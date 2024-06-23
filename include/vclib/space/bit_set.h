@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_BIT_SET_H
 #define VCL_SPACE_BIT_SET_H
 
-#include <ostream>
+#include <fstream>
 #include <stdexcept>
 #include <string>
 
@@ -240,6 +240,24 @@ public:
     {
         at(i) = !at(i);
         return *this;
+    }
+
+    /**
+     * @brief Serializes the BitSet to the given output stream.
+     * @param[in] os: The output stream.
+     */
+    void serialize(std::ostream& os) const
+    {
+        os.write(reinterpret_cast<const char*>(&mBits), sizeof(mBits));
+    }
+
+    /**
+     * @brief Deserializes the BitSet from the given input stream.
+     * @param[in] is: The input stream.
+     */
+    void deserialize(std::istream& is)
+    {
+        is.read(reinterpret_cast<char*>(&mBits), sizeof(mBits));
     }
 
     auto operator<=>(const BitSet<T>&) const = default;
