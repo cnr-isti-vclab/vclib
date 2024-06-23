@@ -23,11 +23,11 @@
 #ifndef VCL_SPACE_BIT_SET_H
 #define VCL_SPACE_BIT_SET_H
 
-#include <fstream>
 #include <stdexcept>
 #include <string>
 
 #include <vclib/concepts/types.h>
+#include <vclib/io/serialization.h>
 
 #include "bit_set/bit_proxy.h"
 
@@ -248,7 +248,7 @@ public:
      */
     void serialize(std::ostream& os) const
     {
-        os.write(reinterpret_cast<const char*>(&mBits), sizeof(mBits));
+        vcl::serialize(os, mBits);
     }
 
     /**
@@ -257,7 +257,7 @@ public:
      */
     void deserialize(std::istream& is)
     {
-        is.read(reinterpret_cast<char*>(&mBits), sizeof(mBits));
+        vcl::deserialize(is, mBits);
     }
 
     auto operator<=>(const BitSet<T>&) const = default;

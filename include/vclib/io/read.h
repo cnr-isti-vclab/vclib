@@ -226,7 +226,7 @@ template<typename T>
 T readShort(std::istream& file, std::endian end = std::endian::native)
 {
     short c;
-    deserialize(file, c);
+    deserialize(file, c, end);
     return static_cast<T>(c);
 }
 
@@ -242,7 +242,7 @@ template<typename T>
 T readUShort(std::istream& file, std::endian end = std::endian::native)
 {
     unsigned short c;
-    deserialize(file, c);
+    deserialize(file, c, end);
     return static_cast<T>(c);
 }
 
@@ -258,7 +258,7 @@ template<typename T>
 T readInt(std::istream& file, std::endian end = std::endian::native)
 {
     int c;
-    deserialize(file, c);
+    deserialize(file, c, end);
     return static_cast<T>(c);
 }
 
@@ -274,7 +274,7 @@ template<typename T>
 T readUInt(std::istream& file, std::endian end = std::endian::native)
 {
     uint c;
-    deserialize(file, c);
+    deserialize(file, c, end);
     return static_cast<T>(c);
 }
 
@@ -297,7 +297,7 @@ T readFloat(
     bool          isColor = false)
 {
     float c;
-    deserialize(file, c);
+    deserialize(file, c, end);
     if constexpr (std::integral<T>) {
         if (isColor)
             return static_cast<T>(c * 255);
@@ -324,7 +324,7 @@ T readDouble(
     bool          isColor = false)
 {
     double c;
-    deserialize(file, c);
+    deserialize(file, c, end);
     if constexpr (std::integral<T>) {
         if (isColor)
             return static_cast<T>(c * 255);

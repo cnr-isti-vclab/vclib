@@ -28,6 +28,8 @@
 #include <sstream>
 #include <string>
 
+#include <vclib/io/serialization.h>
+
 namespace vcl {
 
 /**
@@ -130,16 +132,16 @@ inline void removeCarriageReturn(std::string& s)
 inline void serialize(std::ostream& os, const std::string& s)
 {
     std::size_t size = s.size();
-    os.write(reinterpret_cast<const char*>(&size), sizeof(size));
-    os.write(s.c_str(), size);
+    serialize(os, size);
+    serialize(os, s.data(), size);
 }
 
 inline void deserialize(std::istream& is, std::string& s)
 {
     std::size_t size;
-    is.read(reinterpret_cast<char*>(&size), sizeof(size));
+    deserialize(is, size);
     s.resize(size);
-    is.read(s.data(), size);
+    deserialize(is, s.data(), size);
 }
 
 } // namespace vcl

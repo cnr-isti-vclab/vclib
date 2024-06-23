@@ -23,9 +23,8 @@
 #ifndef VCL_MESH_COMPONENTS_MARK_H
 #define VCL_MESH_COMPONENTS_MARK_H
 
-#include <fstream>
-
 #include <vclib/concepts/mesh/components/mark.h>
+#include <vclib/io/serialization.h>
 
 #include "bases/component.h"
 
@@ -177,12 +176,12 @@ protected:
 
     void serialize(std::ostream& os) const
     {
-        os.write(reinterpret_cast<const char*>(&mark()), sizeof(mark()));
+        vcl::serialize(os, mark());
     }
 
     void deserialize(std::istream& is)
     {
-        is.read(reinterpret_cast<char*>(&mark()), sizeof(mark()));
+        vcl::deserialize(is, mark());
     }
 
 private:

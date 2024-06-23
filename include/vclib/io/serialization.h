@@ -87,6 +87,18 @@ void serialize(
     }
 }
 
+template<typename T>
+void serialize(
+    std::ostream& os,
+    const T*      data,
+    std::size_t   size,
+    FileFormat    format = FileFormat())
+{
+    for (std::size_t i = 0; i < size; ++i) {
+        serialize(os, data[i], format);
+    }
+}
+
 /**
  * @brief Deserialize data from an input stream, using the specified format.
  *
@@ -119,6 +131,18 @@ void deserialize(
             throw std::runtime_error(
                 "Data type is not deserializable from text stream");
         }
+    }
+}
+
+template<typename T>
+void deserialize(
+    std::istream& is,
+    T*           data,
+    std::size_t  size,
+    FileFormat   format = FileFormat(std::endian::little))
+{
+    for (std::size_t i = 0; i < size; ++i) {
+        deserialize(is, data[i], format);
     }
 }
 
