@@ -98,6 +98,7 @@ void spaceStaticAsserts()
         Point3Concept<Point3f>, "Point3f does not satisfy the Point3Concept");
     static_assert(
         Point3Concept<Point3d>, "Point3d does not satisfy the Point3Concept");
+    static_assert(Serializable<Point3i>, "Point3i is not serializable");
 
     static_assert(
         Point4Concept<Point4i>, "Point4i does not satisfy the Point4Concept");

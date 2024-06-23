@@ -20,49 +20,22 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_H
-#define VCL_CONCEPTS_H
+#ifndef VCL_CONCEPTS_SERIALIZABLE_H
+#define VCL_CONCEPTS_SERIALIZABLE_H
 
-#include "concepts/iterators.h"
-#include "concepts/logger.h"
-#include "concepts/mesh.h"
-#include "concepts/pointers.h"
-#include "concepts/polymorphism.h"
-#include "concepts/range.h"
-#include "concepts/serializable.h"
-#include "concepts/space.h"
-#include "concepts/types.h"
+#include <fstream>
 
-/**
- * @defgroup concepts Concepts
- *
- * @brief List of concepts used in the library. They allow to discriminate
- * between all the defined types of the library, and to constrain the input
- * argument types of templated functions and classes.
- *
- * The library provides both generic utility concepts about iterators, pointers
- * or const correctness management, and concepts for types that have been
- * defined in this library. We separate these categories in two subgroups: @ref
- * uconcepts and @ref lconcepts.
- *
- * You can access all the concepts of VCLib by including `#include
- * <vclib/concepts.h>`
- */
+namespace vcl {
 
-/**
- * @defgroup uconcepts Utility Concepts
- * @ingroup concepts
- *
- * @brief List of utility concepts used in the library, that allows to check and
- * constrain iterators, pointers, const correctness management, ranges, etc.
- */
+template<typename T>
+concept Serializable =
+    requires (T& o, const T& co, std::ofstream& ofs, std::ifstream& ifs) {
+    // clang-format off
+    { co.serialize(ofs) } -> std::same_as<void>;
+    { o.deserialize(ifs) } -> std::same_as<void>;
+    // clang-format on
+};
 
-/**
- * @defgroup lconcepts Library Concepts
- * @ingroup concepts
- *
- * @brief List of concepts for types that have been defined in this library.
- * They are grouped in different categories depending on the involved types.
- */
+} // namespace vcl
 
-#endif // VCL_CONCEPTS_H
+#endif // VCL_CONCEPTS_SERIALIZABLE_H

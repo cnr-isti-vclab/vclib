@@ -606,6 +606,24 @@ public:
     const Eigen::Matrix<Scalar, 1, N>& eigenVector() const { return mP; }
 
     /**
+     * @brief Serializes the point into a stream.
+     */
+    void serialize(std::ostream& os) const
+    {
+        os.write(
+            reinterpret_cast<const char*>(mP.data()), mP.size() * sizeof(Scalar));
+    }
+
+    /**
+     * @brief Deserializes the point from a stream.
+     */
+    void deserialize(std::istream& is)
+    {
+        is.read(
+            reinterpret_cast<char*>(mP.data()), mP.size() * sizeof(Scalar));
+    }
+
+    /**
      * @brief Computes the hash value of the point.
      *
      * This function computes a hash value of the point, which can be used for
