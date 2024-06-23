@@ -127,14 +127,14 @@ inline void removeCarriageReturn(std::string& s)
         s = s.substr(0, s.size() - 1);
 }
 
-inline void serialize(const std::string& s, std::ostream& os)
+inline void serialize(std::ostream& os, const std::string& s)
 {
     std::size_t size = s.size();
     os.write(reinterpret_cast<const char*>(&size), sizeof(size));
     os.write(s.c_str(), size);
 }
 
-inline void deserialize(std::string& s, std::istream& is)
+inline void deserialize(std::istream& is, std::string& s)
 {
     std::size_t size;
     is.read(reinterpret_cast<char*>(&size), sizeof(size));

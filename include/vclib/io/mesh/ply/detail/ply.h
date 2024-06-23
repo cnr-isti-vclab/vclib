@@ -33,7 +33,7 @@ namespace vcl::detail {
 
 namespace ply {
 
-typedef enum { ASCII, BINARY, UNKNOWN } Format;
+typedef enum { ASCII, BINARY_LITTLE_ENDIAN, BINARY_BIG_ENDIAN, UNKNOWN } Format;
 
 typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
 

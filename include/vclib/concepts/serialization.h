@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SERIALIZABLE_H
-#define VCL_CONCEPTS_SERIALIZABLE_H
+#ifndef VCL_CONCEPTS_SERIALIZATION_H
+#define VCL_CONCEPTS_SERIALIZATION_H
 
 #include <ostream>
 #include <istream>
@@ -53,4 +53,4 @@ concept Serializable =
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_SERIALIZABLE_H
+#endif // VCL_CONCEPTS_SERIALIZATION_H

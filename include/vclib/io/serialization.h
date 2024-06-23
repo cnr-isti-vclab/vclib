@@ -25,7 +25,7 @@
 
 #include <bit>
 
-#include <vclib/concepts/serializable.h>
+#include <vclib/concepts/serialization.h>
 
 #include "file_format.h"
 
@@ -55,7 +55,7 @@ T swapEndian(T u)
  * The format specifies if the serialization should be binary or text, and if
  * the data should be converted to a different endianness w.r.t. the native one.
  *
- * By default, the serialization is done in binary native endian format.
+ * By default, the serialization is done in binary little endian format.
  *
  * @param[in] os: output stream.
  * @param[in] data: data to serialize.
@@ -65,7 +65,7 @@ template<typename T>
 void serialize(
     std::ostream& os,
     const T&      data,
-    FileFormat    format = FileFormat(std::endian::native))
+    FileFormat    format = FileFormat())
 {
     if (format.isBinary) {
         if (format.endian != std::endian::native) {
@@ -93,7 +93,7 @@ void serialize(
  * The format specifies if the deserialization should be binary or text, and if
  * the data is read with a different endianness w.r.t. the native one.
  *
- * By default, the deserialization is done in binary native endian format.
+ * By default, the deserialization is done in binary little endian format.
  *
  * @param[in] is: input stream.
  * @param[out] data: deserialized data.
@@ -103,7 +103,7 @@ template<typename T>
 void deserialize(
     std::istream& is,
     T&            data,
-    FileFormat    format = FileFormat(std::endian::native))
+    FileFormat    format = FileFormat(std::endian::little))
 {
     if (format.isBinary) {
         is.read(reinterpret_cast<char*>(&data), sizeof(T));
@@ -113,7 +113,7 @@ void deserialize(
     }
     else {
         if constexpr (InputStreamable<T>) {
-            is >> data >> " ";
+            is >> data;
         }
         else {
             throw std::runtime_error(

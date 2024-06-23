@@ -31,6 +31,7 @@
 #include <vclib/types.h>
 
 #include "file_info.h"
+#include "serialization.h"
 
 namespace vcl {
 
@@ -68,73 +69,97 @@ inline std::ofstream openOutputFileStream(
 namespace io {
 
 template<typename T>
-void writeChar(std::ostream& file, T p, bool bin = true, bool isColor = false)
+void writeChar(
+    std::ostream& file,
+    T             p,
+    FileFormat    format  = FileFormat(),
+    bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
     char tmp = p;
-    if (bin)
-        file.write((const char*) &tmp, 1);
+    if (format.isBinary)
+        serialize(file, tmp, format.endian);
     else
         file << (int) p << " "; // cast necessary to not print the ascii char
 }
 
 template<typename T>
-void writeUChar(std::ostream& file, T p, bool bin = true, bool isColor = false)
+void writeUChar(
+    std::ostream& file,
+    T             p,
+    FileFormat    format  = FileFormat(),
+    bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
     unsigned char tmp = p;
-    if (bin)
-        file.write((const char*) &tmp, 1);
+    if (format.isBinary)
+        serialize(file, tmp, format.endian);
     else
         file << (uint) p << " "; // cast necessary to not print the ascii char
 }
 
 template<typename T>
-void writeShort(std::ostream& file, T p, bool bin = true, bool isColor = false)
+void writeShort(
+    std::ostream& file,
+    T             p,
+    FileFormat    format  = FileFormat(),
+    bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
     short tmp = p;
-    if (bin)
-        file.write((const char*) &tmp, 2);
+    if (format.isBinary)
+        serialize(file, tmp, format.endian);
     else
         file << tmp << " ";
 }
 
 template<typename T>
-void writeUShort(std::ostream& file, T p, bool bin = true, bool isColor = false)
+void writeUShort(
+    std::ostream& file,
+    T             p,
+    FileFormat    format  = FileFormat(),
+    bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
     unsigned short tmp = p;
-    if (bin)
-        file.write((const char*) &tmp, 2);
+    if (format.isBinary)
+        serialize(file, tmp, format.endian);
     else
         file << tmp << " ";
 }
 
 template<typename T>
-void writeInt(std::ostream& file, T p, bool bin = true, bool isColor = false)
+void writeInt(
+    std::ostream& file,
+    T             p,
+    FileFormat    format  = FileFormat(),
+    bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
     int tmp = p;
-    if (bin)
-        file.write((const char*) &tmp, 4);
+    if (format.isBinary)
+        serialize(file, tmp, format.endian);
     else
         file << tmp << " ";
 }
 
 template<typename T>
-void writeUInt(std::ostream& file, T p, bool bin = true, bool isColor = false)
+void writeUInt(
+    std::ostream& file,
+    T             p,
+    FileFormat    format  = FileFormat(),
+    bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
         p *= 255;
     uint tmp = p;
-    if (bin)
-        file.write((const char*) &tmp, 4);
+    if (format.isBinary)
+        serialize(file, tmp, format.endian);
     else
         file << tmp << " ";
 }
@@ -143,14 +168,14 @@ template<typename T>
 void writeFloat(
     std::ostream& file,
     const T&      p,
-    bool          bin     = true,
+    FileFormat    format  = FileFormat(),
     bool          isColor = false)
 {
     float tmp = p;
     if (isColor && std::is_integral<T>::value)
         tmp /= 255;
-    if (bin)
-        file.write((const char*) &tmp, 4);
+    if (format.isBinary)
+        serialize(file, tmp, format.endian);
     else
         file << tmp << " ";
 }
@@ -159,14 +184,14 @@ template<typename T>
 void writeDouble(
     std::ostream& file,
     const T&      p,
-    bool          bin     = true,
+    FileFormat    format  = FileFormat(),
     bool          isColor = false)
 {
     double tmp = p;
     if (isColor && std::is_integral<T>::value)
         tmp /= 255;
-    if (bin)
-        file.write((const char*) &tmp, 8);
+    if (format.isBinary)
+        serialize(file, tmp, format.endian);
     else
         file << tmp << " ";
 }
@@ -177,18 +202,18 @@ void writeProperty(
     std::ostream& file,
     const T&      p,
     PrimitiveType type,
-    bool          bin     = true,
+    FileFormat    format  = FileFormat(),
     bool          isColor = false)
 {
     switch (type) {
-    case CHAR: writeChar(file, p, bin, isColor); break;
-    case UCHAR: writeUChar(file, p, bin, isColor); break;
-    case SHORT: writeShort(file, p, bin, isColor); break;
-    case USHORT: writeUShort(file, p, bin, isColor); break;
-    case INT: writeInt(file, p, bin, isColor); break;
-    case UINT: writeUInt(file, p, bin, isColor); break;
-    case FLOAT: writeFloat(file, p, bin, isColor); break;
-    case DOUBLE: writeDouble(file, p, bin, isColor); break;
+    case CHAR: writeChar(file, p, format, isColor); break;
+    case UCHAR: writeUChar(file, p, format, isColor); break;
+    case SHORT: writeShort(file, p, format, isColor); break;
+    case USHORT: writeUShort(file, p, format, isColor); break;
+    case INT: writeInt(file, p, format, isColor); break;
+    case UINT: writeUInt(file, p, format, isColor); break;
+    case FLOAT: writeFloat(file, p, format, isColor); break;
+    case DOUBLE: writeDouble(file, p, format, isColor); break;
     default: assert(0);
     }
 }
@@ -200,39 +225,39 @@ void writeCustomComponent(
     const El&          elem,
     const std::string& cName,
     PrimitiveType      type,
-    bool               bin = true)
+    FileFormat         format = FileFormat())
 {
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))
         writeProperty(
-            file, elem.template customComponent<char>(cName), type, bin);
+            file, elem.template customComponent<char>(cName), type, format);
     else if (ti == typeid(unsigned char))
         writeProperty(
             file,
             elem.template customComponent<unsigned char>(cName),
             type,
-            bin);
+            format);
     else if (ti == typeid(short))
         writeProperty(
-            file, elem.template customComponent<short>(cName), type, bin);
+            file, elem.template customComponent<short>(cName), type, format);
     else if (ti == typeid(unsigned short))
         writeProperty(
             file,
             elem.template customComponent<unsigned short>(cName),
             type,
-            bin);
+            format);
     else if (ti == typeid(int))
         writeProperty(
-            file, elem.template customComponent<int>(cName), type, bin);
+            file, elem.template customComponent<int>(cName), type, format);
     else if (ti == typeid(unsigned int))
         writeProperty(
-            file, elem.template customComponent<uint>(cName), type, bin);
+            file, elem.template customComponent<uint>(cName), type, format);
     else if (ti == typeid(float))
         writeProperty(
-            file, elem.template customComponent<float>(cName), type, bin);
+            file, elem.template customComponent<float>(cName), type, format);
     else if (ti == typeid(double))
         writeProperty(
-            file, elem.template customComponent<double>(cName), type, bin);
+            file, elem.template customComponent<double>(cName), type, format);
     else
         assert(0);
 }

@@ -23,7 +23,7 @@
 #ifndef VCL_IO_PLY_TRISTRIP_H
 #define VCL_IO_PLY_TRISTRIP_H
 
-#include <fstream>
+#include <istream>
 
 #include <vclib/io/read.h>
 #include <vclib/misc/tokenizer.h>
@@ -107,27 +107,30 @@ template<FaceMeshConcept MeshType>
 void readPlyTriStripsBin(
     std::istream&    file,
     const PlyHeader& header,
-    MeshType&        m)
+    MeshType&        m,
+    std::endian      end)
 {
     for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
         for (const PlyProperty& p : header.triStripsProperties()) {
             bool hasBeenRead = false;
             if (p.name == ply::vertex_indices) {
-                uint tSize = io::readPrimitiveType<uint>(file, p.listSizeType);
+                uint tSize =
+                    io::readPrimitiveType<uint>(file, p.listSizeType, end);
                 std::vector<int> tristrip(tSize);
                 for (uint i = 0; i < tSize; ++i)
-                    tristrip[i] = io::readPrimitiveType<int>(file, p.type);
+                    tristrip[i] = io::readPrimitiveType<int>(file, p.type, end);
                 hasBeenRead = true;
                 facesFromPlyTriStrip(m, tristrip);
             }
             if (!hasBeenRead) {
                 if (p.list) {
-                    uint s = io::readPrimitiveType<int>(file, p.listSizeType);
+                    uint s =
+                        io::readPrimitiveType<int>(file, p.listSizeType, end);
                     for (uint i = 0; i < s; ++i)
-                        io::readPrimitiveType<int>(file, p.type);
+                        io::readPrimitiveType<int>(file, p.type, end);
                 }
                 else {
-                    io::readPrimitiveType<int>(file, p.type);
+                    io::readPrimitiveType<int>(file, p.type, end);
                 }
             }
         }
@@ -145,8 +148,11 @@ void readPlyTriStrips(
     if (header.format() == ply::ASCII) {
         detail::readPlyTriStripsTxt(file, header, mesh);
     }
-    else if (header.format() == ply::BINARY) {
-        detail::readPlyTriStripsBin(file, header, mesh);
+    else {
+        std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
+                              std::endian::big :
+                              std::endian::little;
+        detail::readPlyTriStripsBin(file, header, mesh, end);
     }
 }
 

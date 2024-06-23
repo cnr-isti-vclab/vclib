@@ -37,12 +37,22 @@ struct FileFormat
 {
     bool isBinary = true;
 
-    std::endian endian   = std::endian::native;
+    std::endian endian   = std::endian::little;
 
     /**
-     * @brief Default constructor, creates a text file format.
+     * @brief Default constructor, creates a little endian binary file format.
      */
-    FileFormat() : isBinary(false), endian(std::endian::native) {}
+    FileFormat() = default;
+
+    /**
+     * @brief Constructor that creates a file format with the specified binary
+     * flag.
+     *
+     * If the file is binary, the endianness is set to little endian.
+     *
+     * @param binary: flag that specifies if the file is binary
+     */
+    FileFormat(bool binary) : isBinary(binary) {}
 
     /**
      * @brief Constructor that creates a binary file format with the specified

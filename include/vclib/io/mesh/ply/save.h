@@ -51,7 +51,7 @@ void savePly(
     if (!settings.info.isEmpty())
         meshInfo = settings.info.intersect(meshInfo);
 
-    PlyHeader header(settings.binary ? ply::BINARY : ply::ASCII, meshInfo);
+    PlyHeader header(settings.binary ? ply::BINARY_LITTLE_ENDIAN : ply::ASCII, meshInfo);
     header.setNumberVertices(m.vertexNumber());
 
     if constexpr (vcl::HasFaces<MeshType>) {

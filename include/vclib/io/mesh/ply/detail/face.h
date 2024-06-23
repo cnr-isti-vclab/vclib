@@ -41,14 +41,14 @@ void writePlyFaceIndices(
     const MeshType&          m,
     const std::vector<uint>& vIndices,
     const FaceType&          f,
-    bool                     bin)
+    FileFormat               format)
 {
     using VertexType = MeshType::VertexType;
 
     uint fsize = f.vertexNumber();
-    io::writeProperty(file, fsize, p.listSizeType, bin);
+    io::writeProperty(file, fsize, p.listSizeType, format);
     for (const VertexType* v : f.vertices()) {
-        io::writeProperty(file, vIndices[m.index(v)], p.type, bin);
+        io::writeProperty(file, vIndices[m.index(v)], p.type, format);
     }
 }
 
@@ -128,16 +128,17 @@ void readPlyFaceProperty(
     MeshType&   mesh,
     FaceType&   f,
     PlyProperty p,
-    MeshInfo&   loadedInfo)
+    MeshInfo&   loadedInfo,
+    std::endian end = std::endian::little)
 {
     bool              hasBeenRead = false;
     std::vector<uint> vids; // contains the vertex ids of the actual face
     if (p.name == ply::vertex_indices) { // loading vertex indices
-        uint fSize = io::readPrimitiveType<uint>(file, p.listSizeType);
+        uint fSize = io::readPrimitiveType<uint>(file, p.listSizeType, end);
         loadedInfo.updateMeshType(fSize);
         vids.resize(fSize);
         for (uint i = 0; i < fSize; ++i) {
-            vids[i] = io::readPrimitiveType<size_t>(file, p.type);
+            vids[i] = io::readPrimitiveType<size_t>(file, p.type, end);
         }
         hasBeenRead = true;
         // will manage the case of loading a polygon in a triangle mesh
@@ -147,12 +148,13 @@ void readPlyFaceProperty(
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
                 using Scalar = FaceType::WedgeTexCoordType::ScalarType;
-                uint uvSize = io::readPrimitiveType<uint>(file, p.listSizeType);
+                uint uvSize =
+                    io::readPrimitiveType<uint>(file, p.listSizeType, end);
                 uint fSize  = uvSize / 2;
                 std::vector<std::pair<Scalar, Scalar>> wedges(fSize);
                 for (uint i = 0; i < fSize; ++i) {
-                    Scalar u = io::readPrimitiveType<Scalar>(file, p.type);
-                    Scalar v = io::readPrimitiveType<Scalar>(file, p.type);
+                    Scalar u = io::readPrimitiveType<Scalar>(file, p.type, end);
+                    Scalar v = io::readPrimitiveType<Scalar>(file, p.type, end);
                     wedges[i].first  = u;
                     wedges[i].second = v;
                 }
@@ -165,7 +167,7 @@ void readPlyFaceProperty(
     if (p.name == ply::texnumber) {
         if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
             if (vcl::isPerFaceWedgeTexCoordsAvailable(mesh)) {
-                uint n      = io::readPrimitiveType<uint>(file, p.type);
+                uint n      = io::readPrimitiveType<uint>(file, p.type, end);
                 hasBeenRead = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -181,7 +183,7 @@ void readPlyFaceProperty(
             if (vcl::isPerFaceNormalAvailable(mesh)) {
                 using Scalar = FaceType::NormalType::ScalarType;
                 int    a     = p.name - ply::nx;
-                Scalar n     = io::readPrimitiveType<Scalar>(file, p.type);
+                Scalar n     = io::readPrimitiveType<Scalar>(file, p.type, end);
                 hasBeenRead  = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -197,7 +199,7 @@ void readPlyFaceProperty(
             if (vcl::isPerFaceColorAvailable(mesh)) {
                 int           a = p.name - ply::red;
                 unsigned char c =
-                    io::readPrimitiveType<unsigned char>(file, p.type);
+                    io::readPrimitiveType<unsigned char>(file, p.type, end);
                 hasBeenRead = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -212,7 +214,7 @@ void readPlyFaceProperty(
             using QualityType = FaceType::QualityType;
             if (vcl::isPerFaceQualityAvailable(mesh)) {
                 QualityType s =
-                    io::readPrimitiveType<QualityType>(file, p.type);
+                    io::readPrimitiveType<QualityType>(file, p.type, end);
                 hasBeenRead = true;
                 // in case the loaded polygon has been triangulated in the last
                 // n triangles of mesh
@@ -225,7 +227,8 @@ void readPlyFaceProperty(
     if (p.name == ply::unknown) {
         if constexpr (vcl::HasPerFaceCustomComponents<MeshType>) {
             if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)) {
-                io::readCustomComponent(file, f, p.unknownPropertyName, p.type);
+                io::readCustomComponent(
+                    file, f, p.unknownPropertyName, p.type, end);
                 hasBeenRead = true;
             }
         }
@@ -234,12 +237,12 @@ void readPlyFaceProperty(
     // we still need to read and discard what we read
     if (!hasBeenRead) {
         if (p.list) {
-            uint s = io::readPrimitiveType<int>(file, p.listSizeType);
+            uint s = io::readPrimitiveType<int>(file, p.listSizeType, end);
             for (uint i = 0; i < s; ++i)
-                io::readPrimitiveType<int>(file, p.type);
+                io::readPrimitiveType<int>(file, p.type, end);
         }
         else {
-            io::readPrimitiveType<int>(file, p.type);
+            io::readPrimitiveType<int>(file, p.type, end);
         }
     }
 }
@@ -268,10 +271,11 @@ void readPlyFaceBin(
     FaceType&                     f,
     MeshType&                     mesh,
     MeshInfo&                     loadedInfo,
-    const std::list<PlyProperty>& faceProperties)
+    const std::list<PlyProperty>& faceProperties,
+    std::endian                   end)
 {
     for (const PlyProperty& p : faceProperties) {
-        readPlyFaceProperty(file, mesh, f, p, loadedInfo);
+        readPlyFaceProperty(file, mesh, f, p, loadedInfo, end);
     }
 }
 
@@ -283,7 +287,13 @@ void writePlyFaces(
 {
     using FaceType = MeshType::FaceType;
 
-    bool bin = header.format() == ply::BINARY;
+    FileFormat format;
+    if (header.format() == ply::ASCII) {
+        format.isBinary = false;
+    }
+    else if (header.format() == ply::BINARY_BIG_ENDIAN) {
+        format.endian = std::endian::big;
+    }
 
     // indices of vertices that do not consider deleted vertices
     std::vector<uint> vIndices = mesh.vertexCompactIndices();
@@ -292,43 +302,43 @@ void writePlyFaces(
         for (const PlyProperty& p : header.faceProperties()) {
             bool hasBeenWritten = false;
             if (p.name == ply::vertex_indices) {
-                detail::writePlyFaceIndices(file, p, mesh, vIndices, f, bin);
+                detail::writePlyFaceIndices(file, p, mesh, vIndices, f, format);
                 hasBeenWritten = true;
             }
             if (p.name >= ply::nx && p.name <= ply::nz) {
                 if constexpr (vcl::HasPerFaceNormal<MeshType>) {
                     io::writeProperty(
-                        file, f.normal()[p.name - ply::nx], p.type, bin);
+                        file, f.normal()[p.name - ply::nx], p.type, format);
                     hasBeenWritten = true;
                 }
             }
             if (p.name >= ply::red && p.name <= ply::alpha) {
                 if constexpr (vcl::HasPerFaceColor<MeshType>) {
                     io::writeProperty(
-                        file, f.color()[p.name - ply::red], p.type, bin);
+                        file, f.color()[p.name - ply::red], p.type, format);
                     hasBeenWritten = true;
                 }
             }
             if (p.name == ply::quality) {
                 if constexpr (vcl::HasPerFaceQuality<MeshType>) {
-                    io::writeProperty(file, f.quality(), p.type, bin);
+                    io::writeProperty(file, f.quality(), p.type, format);
                     hasBeenWritten = true;
                 }
             }
             if (p.name == ply::texcoord) {
                 if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
                     io::writeProperty(
-                        file, f.vertexNumber() * 2, p.listSizeType, bin);
+                        file, f.vertexNumber() * 2, p.listSizeType, format);
                     for (const auto& tc : f.wedgeTexCoords()) {
-                        io::writeProperty(file, tc.u(), p.type, bin);
-                        io::writeProperty(file, tc.v(), p.type, bin);
+                        io::writeProperty(file, tc.u(), p.type, format);
+                        io::writeProperty(file, tc.v(), p.type, format);
                     }
                     hasBeenWritten = true;
                 }
             }
             if (p.name == ply::texnumber) {
                 if constexpr (vcl::HasPerFaceWedgeTexCoords<MeshType>) {
-                    io::writeProperty(file, f.textureIndex(), p.type, bin);
+                    io::writeProperty(file, f.textureIndex(), p.type, format);
                     hasBeenWritten = true;
                 }
             }
@@ -336,7 +346,7 @@ void writePlyFaces(
                 if constexpr (vcl::HasPerFaceCustomComponents<MeshType>) {
                     if (mesh.hasPerFaceCustomComponent(p.unknownPropertyName)) {
                         io::writeCustomComponent(
-                            file, f, p.unknownPropertyName, p.type, bin);
+                            file, f, p.unknownPropertyName, p.type, format);
                         hasBeenWritten = true;
                     }
                 }
@@ -344,10 +354,10 @@ void writePlyFaces(
             if (!hasBeenWritten) {
                 // be sure to write something if the header declares some
                 // property that is not in the mesh
-                io::writeProperty(file, 0, p.type, bin);
+                io::writeProperty(file, 0, p.type, format);
             }
         }
-        if (!bin)
+        if (!format.isBinary)
             file << std::endl;
     }
 }
@@ -373,8 +383,11 @@ void readPlyFaces(
                 file, f, mesh, loadedInfo, header.faceProperties());
         }
         else {
+            std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
+                                 std::endian::big :
+                                 std::endian::little;
             detail::readPlyFaceBin(
-                file, f, mesh, loadedInfo, header.faceProperties());
+                file, f, mesh, loadedInfo, header.faceProperties(), end);
         }
 
         log.progress(fid);

@@ -37,7 +37,14 @@ void writePlyEdges(
     const MeshType&  mesh)
 {
     using EdgeType = MeshType::EdgeType;
-    bool bin       = header.format() == ply::BINARY;
+
+    FileFormat format;
+    if (header.format() == ply::ASCII) {
+        format.isBinary = false;
+    }
+    else if (header.format() == ply::BINARY_BIG_ENDIAN) {
+        format.endian = std::endian::big;
+    }
 
     // indices of vertices that do not consider deleted vertices
     std::vector<uint> vIndices = mesh.vertexCompactIndices();
@@ -47,18 +54,18 @@ void writePlyEdges(
             bool hasBeenWritten = false;
             if (p.name == ply::vertex1) {
                 io::writeProperty(
-                    file, vIndices[mesh.index(e.vertex(0))], p.type, bin);
+                    file, vIndices[mesh.index(e.vertex(0))], p.type, format);
                 hasBeenWritten = true;
             }
             if (p.name == ply::vertex2) {
                 io::writeProperty(
-                    file, vIndices[mesh.index(e.vertex(1))], p.type, bin);
+                    file, vIndices[mesh.index(e.vertex(1))], p.type, format);
                 hasBeenWritten = true;
             }
             if (!hasBeenWritten) {
                 // be sure to write something if the header declares some
                 // property that is not in the mesh
-                io::writeProperty(file, 0, p.type, bin);
+                io::writeProperty(file, 0, p.type, format);
             }
         }
     }
