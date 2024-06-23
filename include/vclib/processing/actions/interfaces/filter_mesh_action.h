@@ -128,8 +128,7 @@ public:
      *
      * @return A BitSet with the supported mesh types.
      */
-    vcl::BitSet<short> supportedInputOutputMeshTypes(
-        uint meshIndex) const
+    vcl::BitSet<short> supportedInputOutputMeshTypes(uint meshIndex) const
     {
         if (meshIndex >= numberInputOutputMeshes()) {
             throw std::runtime_error("Mesh index out of bounds.");
@@ -179,9 +178,9 @@ public:
 
 protected:
     auto callFunctionForSupportedInputMeshTypes(
-        const MeshI& mesh,
+        const MeshI&         mesh,
         const BitSet<short>& supportedMeshTypes,
-        auto&& function,
+        auto&&               function,
         auto&&... args) const
     {
         if (!supportedMeshTypes[mesh.type()]) {
@@ -195,9 +194,9 @@ protected:
     }
 
     auto callFunctionForSupportedInputOutputMeshTypes(
-        MeshI& mesh,
+        MeshI&               mesh,
         const BitSet<short>& supportedMeshTypes,
-        auto&& function,
+        auto&&               function,
         auto&&... args) const
     {
         if (!supportedMeshTypes[mesh.type()]) {

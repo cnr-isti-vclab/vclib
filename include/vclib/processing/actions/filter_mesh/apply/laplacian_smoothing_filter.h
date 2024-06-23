@@ -40,7 +40,8 @@ public:
 
     std::string name() const override { return "Laplacian Smoothing"; }
 
-    std::string description() const override {
+    std::string description() const override
+    {
         return "Laplacian smooth. Average each vertex position with weighted "
                "positions of neighbour vertices.<br><b>"
                "Laplacian Mesh Processing</b> by <i>Olga Sorkine</i>. "
@@ -49,8 +50,9 @@ public:
                "egst.20051044</a>";
     }
 
-        vcl::BitSet<uint> categories()
-            const override {return vcl::BitSet<uint>({SMOOTHING});
+    vcl::BitSet<uint> categories() const override
+    {
+        return vcl::BitSet<uint>({SMOOTHING});
     }
 
     MeshParamVector inputMeshParameters() const final { return {}; }
@@ -58,7 +60,7 @@ public:
     MeshParamVector inputOutputMeshParameters() const final
     {
         std::pair<MeshParameter, BitSet<short>> par;
-        par.first = MeshParameter("input_output", "Input/Output Mesh", "");
+        par.first  = MeshParameter("input_output", "Input/Output Mesh", "");
         par.second = BitSet<short>({MeshIType::TRI_MESH, MeshIType::POLY_MESH});
 
         return {par};
@@ -102,8 +104,9 @@ public:
             inputOutputMeshParameters().front().second;
 
         uint smoothingSteps = parameters.get("smoothing_steps")->uintValue();
-        bool cotangentWeighting    = parameters.get("cotangent_weighting")->boolValue();
-        bool onlySelected       = parameters.get("only_selected")->boolValue();
+        bool cotangentWeighting =
+            parameters.get("cotangent_weighting")->boolValue();
+        bool onlySelected = parameters.get("only_selected")->boolValue();
 
         std::shared_ptr<MeshI> mesh = inputOutputMeshes[0];
 

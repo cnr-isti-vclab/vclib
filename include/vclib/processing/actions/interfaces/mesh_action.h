@@ -74,8 +74,7 @@ protected:
         }
     }
 
-    auto callFunctionForMesh(auto&& function, MeshI& mesh, auto&&... args)
-        const
+    auto callFunctionForMesh(auto&& function, MeshI& mesh, auto&&... args) const
     {
         switch (mesh.type()) {
         case MeshIType::TRI_MESH:
