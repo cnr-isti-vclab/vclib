@@ -106,7 +106,7 @@ public:
     BoundingBoxType& boundingBox() { return Base::data(); }
 
 protected:
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool = true)
     {
@@ -114,6 +114,16 @@ protected:
             using ScalarType = PointType::ScalarType;
             boundingBox()    = e.boundingBox().template cast<ScalarType>();
         }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        boundingBox().serialize(os);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        boundingBox().deserialize(is);
     }
 };
 

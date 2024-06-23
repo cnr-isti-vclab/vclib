@@ -253,7 +253,7 @@ public:
 protected:
     BitProxy<FT> deletedBit() { return flags()[DELETED]; }
 
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool = true)
     {
@@ -274,6 +274,16 @@ protected:
                 flags() = e.flags();
             }
         }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        flags().serialize(os);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        flags().deserialize(is);
     }
 
 private:

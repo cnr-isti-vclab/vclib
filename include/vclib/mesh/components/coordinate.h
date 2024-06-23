@@ -101,13 +101,23 @@ public:
     P& coord() { return Base::data(); }
 
 protected:
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& v, bool = true)
     {
         if constexpr (HasCoordinate<Element>) {
             coord() = v.coord().template cast<typename CoordType::ScalarType>();
         }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        coord().serialize(os);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        coord().deserialize(is);
     }
 };
 
