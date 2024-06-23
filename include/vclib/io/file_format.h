@@ -20,37 +20,39 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SERIALIZABLE_H
-#define VCL_CONCEPTS_SERIALIZABLE_H
+#ifndef VCL_IO_FILE_FORMAT_H
+#define VCL_IO_FILE_FORMAT_H
 
-#include <ostream>
-#include <istream>
+#include <bit>
 
 namespace vcl {
 
-template<typename T>
-concept OutputStreamable = requires (std::ostream& os, T value) {
-    // clang-format off
-    { os << value } -> std::convertible_to<std::ostream&>;
-    // clang-format on
-};
+/**
+ * @brief Class that defines the format of a file.
+ *
+ * This class is used to define the format of a file, specifying if it is binary
+ * or text, and (if binary) the endianness.
+ */
+struct FileFormat
+{
+    bool isBinary = true;
 
-template<typename T>
-concept InputStreamable = requires (std::istream& is, T& value) {
-    // clang-format off
-    { is >> value } -> std::convertible_to<std::istream&>;
-    // clang-format on
-};
+    std::endian endian   = std::endian::native;
 
-template<typename T>
-concept Serializable =
-    requires (T& o, const T& co, std::ofstream& ofs, std::ifstream& ifs) {
-    // clang-format off
-    { co.serialize(ofs) } -> std::same_as<void>;
-    { o.deserialize(ifs) } -> std::same_as<void>;
-    // clang-format on
+    /**
+     * @brief Default constructor, creates a text file format.
+     */
+    FileFormat() : isBinary(false), endian(std::endian::native) {}
+
+    /**
+     * @brief Constructor that creates a binary file format with the specified
+     * endianness.
+     *
+     * @param end: endianness of the file
+     */
+    FileFormat(std::endian end) : isBinary(true), endian(end) {}
 };
 
 } // namespace vcl
 
-#endif // VCL_CONCEPTS_SERIALIZABLE_H
+#endif // VCL_IO_FILE_FORMAT_H
