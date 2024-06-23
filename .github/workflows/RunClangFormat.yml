@@ -25,6 +25,6 @@ jobs:
       with:
         committer_name: GitHub Actions
         committer_email: actions@github.com
-        message: 'Committing clang-format changes'
+        message: '[clang-format] Committing clang-format changes'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
