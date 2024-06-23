@@ -168,7 +168,7 @@ void MeshProcessingMainWindow::applyFilter(
     std::vector<std::shared_ptr<proc::MeshI>> inputOutputMeshes;
     proc::MeshVector                          outputMeshes;
 
-    uint niMeshes = action->inputMeshParameters().size();
+    uint niMeshes  = action->inputMeshParameters().size();
     uint nioMeshes = action->inputOutputMeshParameters().size();
 
     if (niMeshes + nioMeshes == 1) {
