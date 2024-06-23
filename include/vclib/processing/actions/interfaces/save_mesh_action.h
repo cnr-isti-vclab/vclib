@@ -95,8 +95,8 @@ public:
 
 protected:
     void callFunctionForSupportedMesheTypes(
-        auto&&       function,
         const MeshI& mesh,
+        auto&&       function,
         auto&&... args) const
     {
         auto supportedMeshTypes = supportedInputMeshType();
@@ -107,7 +107,7 @@ protected:
         }
 
         callFunctionForMesh(
-            function, mesh, std::forward<decltype(args)>(args)...);
+            mesh, function, std::forward<decltype(args)>(args)...);
     }
 };
 

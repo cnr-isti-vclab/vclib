@@ -58,7 +58,7 @@ protected:
      * @param mesh
      * @param args
      */
-    auto callFunctionForMesh(auto&& function, const MeshI& mesh, auto&&... args)
+    auto callFunctionForMesh(const MeshI& mesh, auto&& function, auto&&... args)
         const
     {
         switch (mesh.type()) {
@@ -74,7 +74,7 @@ protected:
         }
     }
 
-    auto callFunctionForMesh(auto&& function, MeshI& mesh, auto&&... args) const
+    auto callFunctionForMesh(MeshI& mesh, auto&& function, auto&&... args) const
     {
         switch (mesh.type()) {
         case MeshIType::TRI_MESH:

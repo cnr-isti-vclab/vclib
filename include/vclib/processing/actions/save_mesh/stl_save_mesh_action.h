@@ -84,7 +84,7 @@ public:
         };
 
         callFunctionForSupportedMesheTypes(
-            fun, mesh, filename, info, parameters, log);
+            mesh, fun, filename, info, parameters, log);
     }
 
 private:
