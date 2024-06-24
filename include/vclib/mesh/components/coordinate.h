@@ -110,15 +110,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        coord().serialize(os);
-    }
+    void serialize(std::ostream& os) const { coord().serialize(os); }
 
-    void deserialize(std::istream& is)
-    {
-        coord().deserialize(is);
-    }
+    void deserialize(std::istream& is) { coord().deserialize(is); }
 };
 
 /* Detector function to check if a class has Coordinate available */

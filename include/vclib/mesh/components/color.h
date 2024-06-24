@@ -106,15 +106,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        color().serialize(os);
-    }
+    void serialize(std::ostream& os) const { color().serialize(os); }
 
-    void deserialize(std::istream& is)
-    {
-        color().deserialize(is);
-    }
+    void deserialize(std::istream& is) { color().deserialize(is); }
 };
 
 /* Detector function to check if a class has Color available */

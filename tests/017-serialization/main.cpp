@@ -47,10 +47,11 @@ vcl::Box<vcl::Point<Scalar, N>> randomBox()
 
 vcl::Color randomColor()
 {
-    return vcl::Color(GENERATE(take(1, random(0, 255))),
-                      GENERATE(take(1, random(0, 255))),
-                      GENERATE(take(1, random(0, 255))),
-                      GENERATE(take(1, random(0, 255))));
+    return vcl::Color(
+        GENERATE(take(1, random(0, 255))),
+        GENERATE(take(1, random(0, 255))),
+        GENERATE(take(1, random(0, 255))),
+        GENERATE(take(1, random(0, 255))));
 }
 
 template<std::integral T>
@@ -89,8 +90,8 @@ TEMPLATE_TEST_CASE("Box Serialization", "", int, float, double)
 {
     using Scalar = TestType;
 
-    std::ofstream fo = vcl::openOutputFileStream(
-        VCLIB_RESULTS_PATH "/serialization/box3.bin");
+    std::ofstream fo =
+        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/box3.bin");
 
     vcl::Box3<Scalar> b1 = randomBox<Scalar, 3>();
 
@@ -99,8 +100,8 @@ TEMPLATE_TEST_CASE("Box Serialization", "", int, float, double)
 
     vcl::Box3<Scalar> b2;
 
-    std::ifstream fi = vcl::openInputFileStream(
-        VCLIB_RESULTS_PATH "/serialization/box3.bin");
+    std::ifstream fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/box3.bin");
 
     b2.deserialize(fi);
     fi.close();
@@ -110,8 +111,8 @@ TEMPLATE_TEST_CASE("Box Serialization", "", int, float, double)
 
 TEST_CASE("Color Serialization")
 {
-    std::ofstream fo = vcl::openOutputFileStream(
-        VCLIB_RESULTS_PATH "/serialization/color.bin");
+    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
+                                                 "/serialization/color.bin");
 
     vcl::Color c1 = randomColor();
 
@@ -120,8 +121,8 @@ TEST_CASE("Color Serialization")
 
     vcl::Color c2;
 
-    std::ifstream fi = vcl::openInputFileStream(
-        VCLIB_RESULTS_PATH "/serialization/color.bin");
+    std::ifstream fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/color.bin");
 
     c2.deserialize(fi);
     fi.close();
@@ -139,8 +140,8 @@ TEMPLATE_TEST_CASE(
 {
     using T = TestType;
 
-    std::ofstream fo = vcl::openOutputFileStream(
-        VCLIB_RESULTS_PATH "/serialization/bitset.bin");
+    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
+                                                 "/serialization/bitset.bin");
 
     vcl::BitSet<T> bs1 = randomBitSet<T>();
 
@@ -149,8 +150,8 @@ TEMPLATE_TEST_CASE(
 
     vcl::BitSet<T> bs2;
 
-    std::ifstream fi = vcl::openInputFileStream(
-        VCLIB_RESULTS_PATH "/serialization/bitset.bin");
+    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
+                                                "/serialization/bitset.bin");
 
     bs2.deserialize(fi);
     fi.close();

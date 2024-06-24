@@ -355,8 +355,8 @@ template<typename T>
 T readPrimitiveType(
     std::istream& file,
     PrimitiveType type,
-    std::endian   end = std::endian::native,
-    bool isColor = false)
+    std::endian   end     = std::endian::native,
+    bool          isColor = false)
 {
     T p;
     switch (type) {

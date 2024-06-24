@@ -174,15 +174,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        vcl::serialize(os, mark());
-    }
+    void serialize(std::ostream& os) const { vcl::serialize(os, mark()); }
 
-    void deserialize(std::istream& is)
-    {
-        vcl::deserialize(is, mark());
-    }
+    void deserialize(std::istream& is) { vcl::deserialize(is, mark()); }
 
 private:
     int& mark() { return Base::data(); }

@@ -190,7 +190,7 @@ protected:
         }
 
         return callFunctionForMesh(
-             mesh, function, std::forward<decltype(args)>(args)...);
+            mesh, function, std::forward<decltype(args)>(args)...);
     }
 
     auto callFunctionForSupportedInputOutputMeshTypes(

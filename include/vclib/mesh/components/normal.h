@@ -113,15 +113,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        normal().serialize(os);
-    }
+    void serialize(std::ostream& os) const { normal().serialize(os); }
 
-    void deserialize(std::istream& is)
-    {
-        normal().deserialize(is);
-    }
+    void deserialize(std::istream& is) { normal().deserialize(is); }
 };
 
 /* Detector function to check if a class has Normal available */

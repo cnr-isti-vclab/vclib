@@ -105,15 +105,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        vcl::serialize(os, name());
-    }
+    void serialize(std::ostream& os) const { vcl::serialize(os, name()); }
 
-    void deserialize(std::istream& is)
-    {
-        vcl::deserialize(is, name());
-    }
+    void deserialize(std::istream& is) { vcl::deserialize(is, name()); }
 };
 
 /* Detector function to check if a class has Name available */

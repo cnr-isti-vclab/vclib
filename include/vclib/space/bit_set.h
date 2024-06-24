@@ -246,19 +246,13 @@ public:
      * @brief Serializes the BitSet to the given output stream.
      * @param[in] os: The output stream.
      */
-    void serialize(std::ostream& os) const
-    {
-        vcl::serialize(os, mBits);
-    }
+    void serialize(std::ostream& os) const { vcl::serialize(os, mBits); }
 
     /**
      * @brief Deserializes the BitSet from the given input stream.
      * @param[in] is: The input stream.
      */
-    void deserialize(std::istream& is)
-    {
-        vcl::deserialize(is, mBits);
-    }
+    void deserialize(std::istream& is) { vcl::deserialize(is, mBits); }
 
     auto operator<=>(const BitSet<T>&) const = default;
 

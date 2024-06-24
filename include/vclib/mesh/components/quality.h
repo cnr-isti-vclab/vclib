@@ -111,15 +111,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        vcl::serialize(os, quality());
-    }
+    void serialize(std::ostream& os) const { vcl::serialize(os, quality()); }
 
-    void deserialize(std::istream& is)
-    {
-        vcl::deserialize(is, quality());
-    }
+    void deserialize(std::istream& is) { vcl::deserialize(is, quality()); }
 };
 
 /* Detector function to check if a class has Quality available */

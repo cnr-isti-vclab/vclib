@@ -32,12 +32,12 @@
 namespace vcl {
 
 // https://stackoverflow.com/a/38141476/5851101
-template <typename T>
+template<typename T>
 T swapEndian(T u)
 {
     union
     {
-        T u;
+        T             u;
         unsigned char u8[sizeof(T)];
     } source, dest;
 
@@ -137,9 +137,9 @@ void deserialize(
 template<typename T>
 void deserialize(
     std::istream& is,
-    T*           data,
-    std::size_t  size,
-    FileFormat   format = FileFormat(std::endian::little))
+    T*            data,
+    std::size_t   size,
+    FileFormat    format = FileFormat(std::endian::little))
 {
     for (std::size_t i = 0; i < size; ++i) {
         deserialize(is, data[i], format);

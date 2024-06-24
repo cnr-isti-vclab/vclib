@@ -150,7 +150,7 @@ void readPlyFaceProperty(
                 using Scalar = FaceType::WedgeTexCoordType::ScalarType;
                 uint uvSize =
                     io::readPrimitiveType<uint>(file, p.listSizeType, end);
-                uint fSize  = uvSize / 2;
+                uint                                   fSize = uvSize / 2;
                 std::vector<std::pair<Scalar, Scalar>> wedges(fSize);
                 for (uint i = 0; i < fSize; ++i) {
                     Scalar u = io::readPrimitiveType<Scalar>(file, p.type, end);
@@ -384,8 +384,8 @@ void readPlyFaces(
         }
         else {
             std::endian end = header.format() == ply::BINARY_BIG_ENDIAN ?
-                                 std::endian::big :
-                                 std::endian::little;
+                                  std::endian::big :
+                                  std::endian::little;
             detail::readPlyFaceBin(
                 file, f, mesh, loadedInfo, header.faceProperties(), end);
         }

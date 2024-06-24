@@ -29,9 +29,9 @@
 #include <Eigen/Geometry>
 
 #include <vclib/concepts/space/point.h>
+#include <vclib/io/serialization.h>
 #include <vclib/math/base.h>
 #include <vclib/misc/hash.h>
-#include <vclib/io/serialization.h>
 
 namespace vcl {
 

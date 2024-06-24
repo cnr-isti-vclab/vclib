@@ -116,15 +116,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        boundingBox().serialize(os);
-    }
+    void serialize(std::ostream& os) const { boundingBox().serialize(os); }
 
-    void deserialize(std::istream& is)
-    {
-        boundingBox().deserialize(is);
-    }
+    void deserialize(std::istream& is) { boundingBox().deserialize(is); }
 };
 
 /* Detector function to check if a class has BoundingBox available */

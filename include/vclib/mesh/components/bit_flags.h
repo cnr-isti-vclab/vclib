@@ -276,15 +276,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        flags().serialize(os);
-    }
+    void serialize(std::ostream& os) const { flags().serialize(os); }
 
-    void deserialize(std::istream& is)
-    {
-        flags().deserialize(is);
-    }
+    void deserialize(std::istream& is) { flags().deserialize(is); }
 
 private:
     // members that allow to access the flags, trough data (horizontal) or

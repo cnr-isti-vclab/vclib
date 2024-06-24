@@ -54,11 +54,11 @@ void readPlyVertexProperty(
     if (p.name >= ply::nx && p.name <= ply::nz) {
         if constexpr (vcl::HasPerVertexNormal<MeshType>) {
             if (vcl::isPerVertexNormalAvailable(mesh)) {
-                using Scalar  = VertexType::NormalType::ScalarType;
-                int a         = p.name - ply::nx;
+                using Scalar = VertexType::NormalType::ScalarType;
+                int a        = p.name - ply::nx;
                 v.normal()[a] =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
-                hasBeenRead   = true;
+                hasBeenRead = true;
             }
         }
     }
@@ -86,10 +86,10 @@ void readPlyVertexProperty(
         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
             using Scalar = VertexType::TexCoordType::ScalarType;
             if (vcl::isPerVertexTexCoordAvailable(mesh)) {
-                int a           = p.name - ply::texture_u;
+                int a = p.name - ply::texture_u;
                 v.texCoord()[a] =
                     io::readPrimitiveType<Scalar>(file, p.type, end);
-                hasBeenRead     = true;
+                hasBeenRead = true;
             }
         }
     }

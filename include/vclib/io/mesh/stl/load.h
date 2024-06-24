@@ -85,7 +85,7 @@ inline bool isStlColored(std::istream& fp, bool& magicsMode)
         fp.seekg(fdataSize, std::ios::cur);
         unsigned short attr =
             io::readShort<unsigned short>(fp, std::endian::little);
-        Color          c;
+        Color c;
         c.setBgr5(attr);
         if (c != Color::White)
             colored = true;

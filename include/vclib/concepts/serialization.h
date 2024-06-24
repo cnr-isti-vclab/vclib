@@ -23,8 +23,8 @@
 #ifndef VCL_CONCEPTS_SERIALIZATION_H
 #define VCL_CONCEPTS_SERIALIZATION_H
 
-#include <ostream>
 #include <istream>
+#include <ostream>
 
 namespace vcl {
 
@@ -45,11 +45,11 @@ concept InputStreamable = requires (std::istream& is, T& value) {
 template<typename T>
 concept Serializable =
     requires (T& o, const T& co, std::ofstream& ofs, std::ifstream& ifs) {
-    // clang-format off
+        // clang-format off
     { co.serialize(ofs) } -> std::same_as<void>;
     { o.deserialize(ifs) } -> std::same_as<void>;
-    // clang-format on
-};
+        // clang-format on
+    };
 
 } // namespace vcl
 

@@ -357,7 +357,7 @@ public:
     void setInfo(
         const MeshInfo&          info,
         std::vector<std::string> textureFileNames = std::vector<std::string>(),
-        ply::Format format = ply::BINARY_LITTLE_ENDIAN)
+        ply::Format              format           = ply::BINARY_LITTLE_ENDIAN)
     {
         clear();
         mFormat       = format;

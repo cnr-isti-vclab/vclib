@@ -41,7 +41,7 @@ inline std::ofstream openOutputFileStream(
 {
     setlocale(LC_ALL, "C");
     std::string actualfilename = filename;
-    std::string path = FileInfo::pathWithoutFileName(filename);
+    std::string path           = FileInfo::pathWithoutFileName(filename);
 
     if (!std::filesystem::exists(path)) {
         bool res = std::filesystem::create_directory(path);
