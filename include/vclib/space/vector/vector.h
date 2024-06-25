@@ -32,6 +32,7 @@
 
 #include <vclib/concepts/ranges/range.h>
 #include <vclib/exceptions.h>
+#include <vclib/io/serialization.h>
 #include <vclib/types.h>
 #include <vclib/views/view.h>
 
@@ -572,6 +573,50 @@ public:
      * specified by the concept requirement `requires (N < 0)`.
      */
     void clear() requires (N < 0) { mContainer.clear(); }
+
+    void serialize(std::ostream& os) const
+    {
+        if constexpr (Serializable<T>) {
+            if constexpr (N < 0) {
+                vcl::serialize(os, size());
+            }
+            for(const auto& e : mContainer) {
+                e.serialize(os);
+            }
+        }
+        else {
+            if constexpr (N < 0) {
+                vcl::serialize(os, size());
+            }
+            for(const auto& e : mContainer) {
+                vcl::serialize(os, e);
+            }
+        }
+    }
+
+    void deserialize(std::istream& is)
+    {
+        if constexpr (Serializable<T>) {
+            if constexpr (N < 0) {
+                std::size_t size;
+                vcl::deserialize(is, size);
+                resize(size);
+            }
+            for(auto& e : mContainer) {
+                e.deserialize(is);
+            }
+        }
+        else {
+            if constexpr (N < 0) {
+                std::size_t size;
+                vcl::deserialize(is, size);
+                resize(size);
+            }
+            for(auto& e : mContainer) {
+                vcl::deserialize(is, e);
+            }
+        }
+    }
 
     /* Operators */
 

@@ -115,7 +115,7 @@ template<typename T>
 void deserialize(
     std::istream& is,
     T&            data,
-    FileFormat    format = FileFormat(std::endian::little))
+    FileFormat    format = FileFormat())
 {
     if (format.isBinary) {
         is.read(reinterpret_cast<char*>(&data), sizeof(T));
@@ -139,7 +139,7 @@ void deserialize(
     std::istream& is,
     T*            data,
     std::size_t   size,
-    FileFormat    format = FileFormat(std::endian::little))
+    FileFormat    format = FileFormat())
 {
     for (std::size_t i = 0; i < size; ++i) {
         deserialize(is, data[i], format);
