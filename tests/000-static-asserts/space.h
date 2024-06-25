@@ -44,6 +44,7 @@ void spaceStaticAsserts()
     static_assert(
         Array2Concept<Array2<double>>,
         "Array2d does not satisfy the Array2Concept");
+    static_assert(Serializable<Array2<double>>, "Array2d is not serializable");
 
     // array3
     static_assert(
@@ -55,6 +56,7 @@ void spaceStaticAsserts()
     static_assert(
         Array3Concept<Array3<double>>,
         "Array3d does not satisfy the Array3Concept");
+    static_assert(Serializable<Array3<double>>, "Array3d is not serializable");
 
     // array4
     static_assert(
@@ -66,6 +68,7 @@ void spaceStaticAsserts()
     static_assert(
         Array4Concept<Array4<double>>,
         "Array4d does not satisfy the Array4Concept");
+    static_assert(Serializable<Array4<double>>, "Array4d is not serializable");
 
     // bitset
     static_assert(

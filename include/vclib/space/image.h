@@ -26,6 +26,7 @@
 #include <string>
 
 #include <vclib/io/image.h>
+#include <vclib/io/serialization.h>
 #include <vclib/space/array.h>
 #include <vclib/space/color.h>
 
@@ -153,6 +154,10 @@ public:
             }
         }
     }
+
+    void serialize(std::ostream& os) const { mImg.serialize(os); }
+
+    void deserialize(std::istream& is) { mImg.deserialize(is); }
 };
 
 } // namespace vcl
