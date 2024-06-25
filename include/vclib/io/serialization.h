@@ -183,6 +183,36 @@ void deserialize(
 /// Serialize / Deserialize specializations ///
 
 /*
+ * std::array
+ */
+
+template<typename T, int N>
+void serialize(std::ostream& os, const std::array<T, N>& a)
+{
+    if constexpr (Serializable<T>) {
+        for (const T& v : a) {
+            v.serialize(os);
+        }
+    }
+    else {
+        serialize(os, a.data(), N);
+    }
+}
+
+template<typename T, int N>
+void deserialize(std::istream& is, std::array<T, N>& a)
+{
+    if constexpr (Serializable<T>) {
+        for (T& v : a) {
+            v.deserialize(is);
+        }
+    }
+    else {
+        deserialize(is, a.data(), N);
+    }
+}
+
+/*
  * std::string
  */
 
@@ -202,22 +232,6 @@ inline void deserialize(std::istream& is, std::string& s)
 }
 
 /*
- * std::array
- */
-
-template<typename T, int N>
-void serialize(std::ostream& os, const std::array<T, N>& a)
-{
-    serialize(os, a.data(), N);
-}
-
-template<typename T, int N>
-void deserialize(std::istream& is, std::array<T, N>& a)
-{
-    deserialize(is, a.data(), N);
-}
-
-/*
  * std::vector
  */
 
@@ -226,7 +240,14 @@ void serialize(std::ostream& os, const std::vector<T>& v)
 {
     std::size_t size = v.size();
     serialize(os, size);
-    serialize(os, v.data(), size);
+    if constexpr (Serializable<T>) {
+        for (const T& e : v) {
+            e.serialize(os);
+        }
+    }
+    else {
+        serialize(os, v.data(), size);
+    }
 }
 
 template<typename T>
@@ -235,7 +256,14 @@ void deserialize(std::istream& is, std::vector<T>& v)
     std::size_t size;
     deserialize(is, size);
     v.resize(size);
-    deserialize(is, v.data(), size);
+    if constexpr (Serializable<T>) {
+        for (T& e : v) {
+            e.deserialize(is);
+        }
+    }
+    else {
+        deserialize(is, v.data(), size);
+    }
 }
 
 } // namespace vcl

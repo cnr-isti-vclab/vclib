@@ -576,46 +576,12 @@ public:
 
     void serialize(std::ostream& os) const
     {
-        if constexpr (Serializable<T>) {
-            if constexpr (N < 0) {
-                vcl::serialize(os, size());
-            }
-            for(const auto& e : mContainer) {
-                e.serialize(os);
-            }
-        }
-        else {
-            if constexpr (N < 0) {
-                vcl::serialize(os, size());
-            }
-            for(const auto& e : mContainer) {
-                vcl::serialize(os, e);
-            }
-        }
+        vcl::serialize(os, mContainer);
     }
 
     void deserialize(std::istream& is)
     {
-        if constexpr (Serializable<T>) {
-            if constexpr (N < 0) {
-                std::size_t size;
-                vcl::deserialize(is, size);
-                resize(size);
-            }
-            for(auto& e : mContainer) {
-                e.deserialize(is);
-            }
-        }
-        else {
-            if constexpr (N < 0) {
-                std::size_t size;
-                vcl::deserialize(is, size);
-                resize(size);
-            }
-            for(auto& e : mContainer) {
-                vcl::deserialize(is, e);
-            }
-        }
+        vcl::deserialize(is, mContainer);
     }
 
     /* Operators */
