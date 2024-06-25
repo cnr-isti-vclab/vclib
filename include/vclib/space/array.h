@@ -31,6 +31,7 @@
 
 #include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/space/array.h>
+#include <vclib/io/serialization.h>
 #include <vclib/misc/nested_initializer_lists.h>
 #include <vclib/types.h>
 
@@ -528,6 +529,18 @@ public:
         sub.mVec = std::vector<T>(
             mVec.begin() + r * size, mVec.begin() + (r + 1) * size);
         return sub;
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        vcl::serialize(os, mSizes);
+        vcl::serialize(os, mVec);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        vcl::deserialize(is, mSizes);
+        vcl::deserialize(is, mVec);
     }
 
     /**

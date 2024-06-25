@@ -201,3 +201,58 @@ TEST_CASE("Vector serialization")
     for (uint i = 0; i < vecDouble.size(); i++)
         REQUIRE(vecDouble[i] == vecDouble2[i]);
 }
+
+TEST_CASE("Array serialization")
+{
+    vcl::Array<double, 2> array2D1;
+    vcl::Array<float, 3> array3D1;
+
+    array2D1.resize(
+        GENERATE(take(1, random(1, 10))), GENERATE(take(1, random(1, 10))));
+
+    array3D1.resize(
+        GENERATE(take(1, random(1, 10))),
+        GENERATE(take(1, random(1, 10))),
+        GENERATE(take(1, random(1, 10))));
+
+    for (uint i = 0; i < array2D1.size(0); i++)
+        for (uint j = 0; j < array2D1.size(1); j++)
+            array2D1(i, j) = GENERATE(take(1, random(0.0f, 1.0f)));
+
+    for (uint i = 0; i < array3D1.size(0); i++)
+        for (uint j = 0; j < array3D1.size(1); j++)
+            for (uint k = 0; k < array3D1.size(2); k++)
+                array3D1(i, j, k) = GENERATE(take(1, random(0.0f, 1.0f)));
+
+    std::ofstream fo = vcl::openOutputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/arrays.bin");
+    array2D1.serialize(fo);
+    array3D1.serialize(fo);
+    fo.close();
+
+    vcl::Array<double, 2> array2D2;
+    vcl::Array<float, 3> array3D2;
+
+    std::ifstream fi = vcl::openInputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/arrays.bin");
+    array2D2.deserialize(fi);
+    array3D2.deserialize(fi);
+    fi.close();
+
+    REQUIRE(array2D1.size(0) == array2D2.size(0));
+    REQUIRE(array2D1.size(1) == array2D2.size(1));
+
+    REQUIRE(array3D1.size(0) == array3D2.size(0));
+    REQUIRE(array3D1.size(1) == array3D2.size(1));
+    REQUIRE(array3D1.size(2) == array3D2.size(2));
+
+    for (uint i = 0; i < array2D1.size(0); i++)
+        for (uint j = 0; j < array2D1.size(1); j++)
+            REQUIRE(array2D1(i, j) == array2D2(i, j));
+
+    for (uint i = 0; i < array3D1.size(0); i++)
+        for (uint j = 0; j < array3D1.size(1); j++)
+            for (uint k = 0; k < array3D1.size(2); k++)
+                REQUIRE(array3D1(i, j, k) == array3D2(i, j, k));
+
+}

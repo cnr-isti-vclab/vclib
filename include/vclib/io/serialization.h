@@ -23,13 +23,17 @@
 #ifndef VCL_IO_SERIALIZATION_H
 #define VCL_IO_SERIALIZATION_H
 
+#include <array>
 #include <bit>
+#include <vector>
 
 #include <vclib/concepts/serialization.h>
 
 #include "file_format.h"
 
 namespace vcl {
+
+namespace detail {
 
 // https://stackoverflow.com/a/38141476/5851101
 template<typename T>
@@ -48,6 +52,8 @@ T swapEndian(T u)
 
     return dest.u;
 }
+
+} // namespace detail
 
 /**
  * @brief Serialize data to an output stream, using the specified format.
@@ -69,7 +75,7 @@ void serialize(
 {
     if (format.isBinary) {
         if (format.endian != std::endian::native) {
-            T swapped = swapEndian(data);
+            T swapped = detail::swapEndian(data);
             os.write(reinterpret_cast<const char*>(&swapped), sizeof(T));
         }
         else {
@@ -87,6 +93,20 @@ void serialize(
     }
 }
 
+/**
+ * @brief Serialize an array of contiguous data to an output stream, using the
+ * specified format.
+ *
+ * The format specifies if the serialization should be binary or text, and if
+ * the data should be converted to a different endianness w.r.t. the native one.
+ *
+ * By default, the serialization is done in binary little endian format.
+ *
+ * @param[in] os: output stream.
+ * @param[in] data: pointer to the data to serialize.
+ * @param[in] size: number of elements to serialize.
+ * @param[in] format: format of the serialization.
+ */
 template<typename T>
 void serialize(
     std::ostream& os,
@@ -120,7 +140,7 @@ void deserialize(
     if (format.isBinary) {
         is.read(reinterpret_cast<char*>(&data), sizeof(T));
         if (format.endian != std::endian::native) {
-            data = swapEndian(data);
+            data = detail::swapEndian(data);
         }
     }
     else {
@@ -134,6 +154,20 @@ void deserialize(
     }
 }
 
+/**
+ * @brief Deserialize an array of contiguous data from an input stream, using
+ * the specified format.
+ *
+ * The format specifies if the deserialization should be binary or text, and if
+ * the data is read with a different endianness w.r.t. the native one.
+ *
+ * By default, the deserialization is done in binary little endian format.
+ *
+ * @param[in] is: input stream.
+ * @param[out] data: pointer to the deserialized data.
+ * @param[in] size: number of elements to deserialize.
+ * @param[in] format: format of the deserialization.
+ */
 template<typename T>
 void deserialize(
     std::istream& is,
@@ -144,6 +178,64 @@ void deserialize(
     for (std::size_t i = 0; i < size; ++i) {
         deserialize(is, data[i], format);
     }
+}
+
+/// Serialize / Deserialize specializations ///
+
+/*
+ * std::string
+ */
+
+inline void serialize(std::ostream& os, const std::string& s)
+{
+    std::size_t size = s.size();
+    serialize(os, size);
+    serialize(os, s.data(), size);
+}
+
+inline void deserialize(std::istream& is, std::string& s)
+{
+    std::size_t size;
+    deserialize(is, size);
+    s.resize(size);
+    deserialize(is, s.data(), size);
+}
+
+/*
+ * std::array
+ */
+
+template<typename T, int N>
+void serialize(std::ostream& os, const std::array<T, N>& a)
+{
+    serialize(os, a.data(), N);
+}
+
+template<typename T, int N>
+void deserialize(std::istream& is, std::array<T, N>& a)
+{
+    deserialize(is, a.data(), N);
+}
+
+/*
+ * std::vector
+ */
+
+template<typename T>
+void serialize(std::ostream& os, const std::vector<T>& v)
+{
+    std::size_t size = v.size();
+    serialize(os, size);
+    serialize(os, v.data(), size);
+}
+
+template<typename T>
+void deserialize(std::istream& is, std::vector<T>& v)
+{
+    std::size_t size;
+    deserialize(is, size);
+    v.resize(size);
+    deserialize(is, v.data(), size);
 }
 
 } // namespace vcl
