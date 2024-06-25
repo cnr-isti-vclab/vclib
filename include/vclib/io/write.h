@@ -30,8 +30,9 @@
 #include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/types.h>
 
+#include "file_format.h"
 #include "file_info.h"
-#include "serialization.h"
+#include "serialization/serialize.h"
 
 namespace vcl {
 

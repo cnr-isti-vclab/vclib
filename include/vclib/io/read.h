@@ -28,7 +28,7 @@
 #include <vclib/misc/tokenizer.h>
 
 #include "file_info.h"
-#include "serialization.h"
+#include "serialization/deserialize.h"
 
 namespace vcl {
 
