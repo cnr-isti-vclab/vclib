@@ -256,3 +256,26 @@ TEST_CASE("Array serialization")
                 REQUIRE(array3D1(i, j, k) == array3D2(i, j, k));
 
 }
+
+TEST_CASE("std vector of strings serialization") {
+    std::vector<std::string> vecStr1;
+    vecStr1.push_back("Hello");
+    vecStr1.push_back("World");
+    vecStr1.push_back("!");
+
+    std::ofstream fo = vcl::openOutputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/vecStr.bin");
+    vcl::serialize(fo, vecStr1);
+    fo.close();
+
+    std::vector<std::string> vecStr2;
+    std::ifstream fi = vcl::openInputFileStream(
+        VCLIB_RESULTS_PATH "/serialization/vecStr.bin");
+    vcl::deserialize(fi, vecStr2);
+    fi.close();
+
+    REQUIRE(vecStr1.size() == vecStr2.size());
+    for (uint i = 0; i < vecStr1.size(); i++)
+        REQUIRE(vecStr1[i] == vecStr2[i]);
+}
+

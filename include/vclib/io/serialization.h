@@ -195,7 +195,9 @@ void serialize(std::ostream& os, const std::array<T, N>& a)
         }
     }
     else {
-        serialize(os, a.data(), N);
+        for (const T& e : a) {
+            serialize(os, e);
+        }
     }
 }
 
@@ -208,7 +210,9 @@ void deserialize(std::istream& is, std::array<T, N>& a)
         }
     }
     else {
-        deserialize(is, a.data(), N);
+        for (T& e : a) {
+            deserialize(is, e);
+        }
     }
 }
 
@@ -246,7 +250,9 @@ void serialize(std::ostream& os, const std::vector<T>& v)
         }
     }
     else {
-        serialize(os, v.data(), size);
+        for (const T& e : v) {
+            serialize(os, e);
+        }
     }
 }
 
@@ -262,7 +268,9 @@ void deserialize(std::istream& is, std::vector<T>& v)
         }
     }
     else {
-        deserialize(is, v.data(), size);
+        for (T& e : v) {
+            deserialize(is, e);
+        }
     }
 }
 
