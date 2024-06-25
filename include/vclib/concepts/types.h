@@ -39,6 +39,12 @@ concept IntegralOrEnum = std::integral<T> || std::is_enum_v<T>;
 template<typename T>
 concept NonBoolIntegralOrEnum = IntegralOrEnum<T> && !std::same_as<T, bool>;
 
+template<typename T>
+concept IsClass = std::is_class_v<T>;
+
+template<typename T>
+concept IsNotClass = !IsClass<T>;
+
 } // namespace vcl
 
 #endif // VCL_CONCEPTS_TYPES_H

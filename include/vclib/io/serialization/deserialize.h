@@ -27,6 +27,7 @@
 #include <vector>
 
 #include <vclib/concepts/serialization.h>
+#include <vclib/concepts/types.h>
 
 #include "endian.h"
 #include "../file_format.h"
@@ -39,17 +40,15 @@ namespace vcl {
  * The format specifies if the deserialization should be binary or text, and if
  * the data is read with a different endianness w.r.t. the native one.
  *
- * By default, the deserialization is done in binary little endian format.
- *
  * @param[in] is: input stream.
  * @param[out] data: deserialized data.
  * @param[in] format: format of the deserialization.
  */
-template<typename T>
+template<IsNotClass T>
 void deserialize(
     std::istream& is,
     T&            data,
-    FileFormat    format = FileFormat())
+    FileFormat    format)
 {
     if (format.isBinary) {
         is.read(reinterpret_cast<char*>(&data), sizeof(T));
@@ -94,13 +93,27 @@ void deserializeN(
     }
 }
 
+template<typename T, typename ...Others>
+void deserialize(std::istream& is, T& data, Others&... others)
+{
+    if constexpr(Serializable<T>) {
+        data.deserialize(is);
+    }
+    else {
+        deserialize(is, data, FileFormat());
+    }
+    if constexpr(sizeof...(Others) > 0) {
+        deserialize(is, others...);
+    }
+}
+
 /// Deserialize specializations ///
 
 /*
  * std::array
  */
 
-template<typename T, int N>
+template<typename T, std::size_t N>
 void deserialize(std::istream& is, std::array<T, N>& a)
 {
     if constexpr (Serializable<T>) {

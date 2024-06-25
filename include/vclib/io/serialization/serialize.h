@@ -27,6 +27,7 @@
 #include <vector>
 
 #include <vclib/concepts/serialization.h>
+#include <vclib/concepts/types.h>
 
 #include "endian.h"
 #include "../file_format.h"
@@ -39,17 +40,15 @@ namespace vcl {
  * The format specifies if the serialization should be binary or text, and if
  * the data should be converted to a different endianness w.r.t. the native one.
  *
- * By default, the serialization is done in binary little endian format.
- *
  * @param[in] os: output stream.
  * @param[in] data: data to serialize.
  * @param[in] format: format of the serialization.
  */
-template<typename T>
+template<IsNotClass T>
 void serialize(
     std::ostream& os,
     const T&      data,
-    FileFormat    format = FileFormat())
+    FileFormat    format)
 {
     if (format.isBinary) {
         if (format.endian != std::endian::native) {
@@ -97,13 +96,27 @@ void serializeN(
     }
 }
 
+template<typename T, typename ...Others>
+void serialize(std::ostream& os, const T& data, const Others&... others)
+{
+    if constexpr(Serializable<T>) {
+        data.serialize(os);
+    }
+    else {
+        serialize(os, data, FileFormat());
+    }
+    if constexpr(sizeof...(Others) > 0) {
+        serialize(os, others...);
+    }
+}
+
 /// Serialize specializations ///
 
 /*
  * std::array
  */
 
-template<typename T, int N>
+template<typename T, std::size_t N>
 void serialize(std::ostream& os, const std::array<T, N>& a)
 {
     if constexpr (Serializable<T>) {

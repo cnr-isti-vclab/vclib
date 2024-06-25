@@ -117,8 +117,7 @@ TEST_CASE("Colors Serialization")
     vcl::Color c1 = randomColor();
     vcl::Color c2 = randomColor();
 
-    c1.serialize(fo);
-    c2.serialize(fo);
+    vcl::serialize(fo, c1, c2);
     fo.close();
 
     vcl::Color c3;
@@ -127,8 +126,7 @@ TEST_CASE("Colors Serialization")
     std::ifstream fi =
         vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/color.bin");
 
-    c3.deserialize(fi);
-    c4.deserialize(fi);
+    vcl::deserialize(fi, c3, c4);
     fi.close();
 
     REQUIRE(c1 == c3);
@@ -167,7 +165,7 @@ TEMPLATE_TEST_CASE(
 TEST_CASE("Vector serialization")
 {
     vcl::Vector<vcl::Color, -1> vecColor1;
-    vcl::Vector<double, -1> vecDouble;
+    vcl::Vector<double, -1> vecDouble1;
 
     uint randSizeCol = GENERATE(take(1, random(1, 10)));
     uint randSizeDbl = GENERATE(take(1, random(1, 10)));
@@ -175,12 +173,12 @@ TEST_CASE("Vector serialization")
         vecColor1.pushBack(randomColor());
 
     for (uint i = 0; i < randSizeDbl; i++)
-        vecDouble.pushBack(GENERATE(take(1, random(0.0, 1.0))));
+        vecDouble1.pushBack(GENERATE(take(1, random(0.0, 1.0))));
 
     std::ofstream fo = vcl::openOutputFileStream(
         VCLIB_RESULTS_PATH "/serialization/vectors.bin");
-    vecColor1.serialize(fo);
-    vecDouble.serialize(fo);
+
+    vcl::serialize(fo, vecColor1, vecDouble1);
     fo.close();
 
     vcl::Vector<vcl::Color, -1> vecColor2;
@@ -188,18 +186,17 @@ TEST_CASE("Vector serialization")
 
     std::ifstream fi = vcl::openInputFileStream(
         VCLIB_RESULTS_PATH "/serialization/vectors.bin");
-    vecColor2.deserialize(fi);
-    vecDouble2.deserialize(fi);
+    vcl::deserialize(fi, vecColor2, vecDouble2);
     fi.close();
 
     REQUIRE(vecColor1.size() == vecColor2.size());
-    REQUIRE(vecDouble.size() == vecDouble2.size());
+    REQUIRE(vecDouble1.size() == vecDouble2.size());
 
     for (uint i = 0; i < vecColor1.size(); i++)
         REQUIRE(vecColor1[i] == vecColor2[i]);
 
-    for (uint i = 0; i < vecDouble.size(); i++)
-        REQUIRE(vecDouble[i] == vecDouble2[i]);
+    for (uint i = 0; i < vecDouble1.size(); i++)
+        REQUIRE(vecDouble1[i] == vecDouble2[i]);
 }
 
 TEST_CASE("Array serialization")
