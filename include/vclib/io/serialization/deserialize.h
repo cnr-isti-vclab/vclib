@@ -23,6 +23,7 @@
 #ifndef VCL_IO_SERIALIZATION_DESERIALIZE_H
 #define VCL_IO_SERIALIZATION_DESERIALIZE_H
 
+#include <bit>
 #include <istream>
 #include <vector>
 
