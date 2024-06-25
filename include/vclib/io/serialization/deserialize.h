@@ -30,40 +30,27 @@
 #include <vclib/concepts/types.h>
 
 #include "endian.h"
-#include "../file_format.h"
 
 namespace vcl {
 
 /**
- * @brief Deserialize data from an input stream, using the specified format.
+ * @brief Deserialize data from an input stream, using the specified endian
+ * format.
  *
- * The format specifies if the deserialization should be binary or text, and if
- * the data is read with a different endianness w.r.t. the native one.
+ * The endian format specifies the format of the data read from the input
+ * stream. If the endian format is different from the native one, the data is
+ * swapped.
  *
  * @param[in] is: input stream.
  * @param[out] data: deserialized data.
- * @param[in] format: format of the deserialization.
+ * @param[in] endian: endian format of the deserialization.
  */
 template<IsNotClass T>
-void deserialize(
-    std::istream& is,
-    T&            data,
-    FileFormat    format)
+void deserialize(std::istream& is, T& data, std::endian endian)
 {
-    if (format.isBinary) {
-        is.read(reinterpret_cast<char*>(&data), sizeof(T));
-        if (format.endian != std::endian::native) {
-            data = detail::swapEndian(data);
-        }
-    }
-    else {
-        if constexpr (InputStreamable<T>) {
-            is >> data;
-        }
-        else {
-            throw std::runtime_error(
-                "Data type is not deserializable from text stream");
-        }
+    is.read(reinterpret_cast<char*>(&data), sizeof(T));
+    if (endian != std::endian::native) {
+        data = detail::swapEndian(data);
     }
 }
 
@@ -71,25 +58,26 @@ void deserialize(
  * @brief Deserialize an array of contiguous data from an input stream, using
  * the specified format.
  *
- * The format specifies if the deserialization should be binary or text, and if
- * the data is read with a different endianness w.r.t. the native one.
+ * The endian format specifies the format of the data read from the input
+ * stream. If the endian format is different from the native one, the data is
+ * swapped.
  *
  * By default, the deserialization is done in binary little endian format.
  *
  * @param[in] is: input stream.
  * @param[out] data: pointer to the deserialized data.
  * @param[in] size: number of elements to deserialize.
- * @param[in] format: format of the deserialization.
+ * @param[in] endian: endian format of the deserialization.
  */
 template<typename T>
 void deserializeN(
     std::istream& is,
     T*            data,
     std::size_t   size,
-    FileFormat    format = FileFormat())
+    std::endian endian = std::endian::little)
 {
     for (std::size_t i = 0; i < size; ++i) {
-        deserialize(is, data[i], format);
+        deserialize(is, data[i], endian);
     }
 }
 
@@ -100,7 +88,7 @@ void deserialize(std::istream& is, T& data, Others&... others)
         data.deserialize(is);
     }
     else {
-        deserialize(is, data, FileFormat());
+        deserialize(is, data, std::endian::little);
     }
     if constexpr(sizeof...(Others) > 0) {
         deserialize(is, others...);

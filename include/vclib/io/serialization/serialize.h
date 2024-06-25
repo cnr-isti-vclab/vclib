@@ -30,69 +30,55 @@
 #include <vclib/concepts/types.h>
 
 #include "endian.h"
-#include "../file_format.h"
 
 namespace vcl {
 
 /**
- * @brief Serialize data to an output stream, using the specified format.
+ * @brief Serialize data to an output stream, using the specified endian format.
  *
- * The format specifies if the serialization should be binary or text, and if
- * the data should be converted to a different endianness w.r.t. the native one.
+ * The endian format specifies if the data should be converted to a different
+ * endianness w.r.t. the native one.
  *
  * @param[in] os: output stream.
  * @param[in] data: data to serialize.
- * @param[in] format: format of the serialization.
+ * @param[in] endian: endian format of the serialization.
  */
 template<IsNotClass T>
-void serialize(
-    std::ostream& os,
-    const T&      data,
-    FileFormat    format)
+void serialize(std::ostream& os, const T& data, std::endian endian)
 {
-    if (format.isBinary) {
-        if (format.endian != std::endian::native) {
-            T swapped = detail::swapEndian(data);
-            os.write(reinterpret_cast<const char*>(&swapped), sizeof(T));
-        }
-        else {
-            os.write(reinterpret_cast<const char*>(&data), sizeof(T));
-        }
+    if (endian != std::endian::native) {
+        T swapped = detail::swapEndian(data);
+        os.write(reinterpret_cast<const char*>(&swapped), sizeof(T));
     }
     else {
-        if constexpr (OutputStreamable<T>) {
-            os << data << " ";
-        }
-        else {
-            throw std::runtime_error(
-                "Data type is not serializable to text stream");
-        }
+        os.write(reinterpret_cast<const char*>(&data), sizeof(T));
     }
+
 }
 
 /**
  * @brief Serialize an array of contiguous data to an output stream, using the
  * specified format.
  *
- * The format specifies if the serialization should be binary or text, and if
- * the data should be converted to a different endianness w.r.t. the native one.
+ * The endian format specifies if the data should be converted to a different
+ * endianness w.r.t. the native one.
  *
  * By default, the serialization is done in binary little endian format.
  *
  * @param[in] os: output stream.
  * @param[in] data: pointer to the data to serialize.
  * @param[in] size: number of elements to serialize.
- * @param[in] format: format of the serialization.
+ * @param[in] endian: endian format of the serialization.
  */
 template<typename T>
 void serializeN(
     std::ostream& os,
     const T*      data,
     std::size_t   size,
-    FileFormat    format = FileFormat())
+    std::endian endian = std::endian::little)
 {
     for (std::size_t i = 0; i < size; ++i) {
-        serialize(os, data[i], format);
+        serialize(os, data[i], endian);
     }
 }
 
@@ -103,7 +89,7 @@ void serialize(std::ostream& os, const T& data, const Others&... others)
         data.serialize(os);
     }
     else {
-        serialize(os, data, FileFormat());
+        serialize(os, data, std::endian::little);
     }
     if constexpr(sizeof...(Others) > 0) {
         serialize(os, others...);
