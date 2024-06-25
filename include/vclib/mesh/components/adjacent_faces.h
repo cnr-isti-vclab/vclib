@@ -609,7 +609,7 @@ public:
     void __adjacentFaces() const {}
 
 protected:
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool importRefs = true)
     {
@@ -641,6 +641,33 @@ protected:
                     }
                 }
             }
+        }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        // regardless of the type of the container (indices or pointers), the
+        // serialization is always done using the indices
+        if constexpr (N < 0) {
+            serialize(os, adjFacesNumber());
+        }
+        for (uint i = 0; i < adjFacesNumber(); ++i) {
+            serialize(os, adjFaceIndex(i));
+        }
+
+    }
+
+    void deserialize(std::istream& is)
+    {
+        if constexpr (N < 0) {
+            uint n;
+            deserialize(is, n);
+            resizeAdjFaces(n);
+        }
+        for (uint i = 0; i < adjFacesNumber(); ++i) {
+            uint afi;
+            deserialize(is, afi);
+            setAdjFace(i, afi);
         }
     }
 

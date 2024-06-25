@@ -271,7 +271,7 @@ public:
     void __wedgeColors() const {}
 
 protected:
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool = true)
     {
@@ -301,6 +301,16 @@ protected:
                 }
             }
         }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        colors().serialize(os);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        colors().deserialize(is);
     }
 
     // ContainerComponent interface functions

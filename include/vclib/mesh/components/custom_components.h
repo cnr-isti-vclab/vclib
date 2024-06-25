@@ -267,6 +267,16 @@ protected:
             mData = e.CustomComponents::mData;
         }
     }
+
+    void serialize(std::ostream& os) const
+    {
+        // todo
+    }
+
+    void deserialize(std::istream& is)
+    {
+        // todo
+    }
 };
 
 } // namespace vcl::comp

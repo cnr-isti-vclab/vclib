@@ -593,7 +593,7 @@ public:
     void __adjacentVertices() const {}
 
 protected:
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool importRefs = true)
     {
@@ -606,6 +606,30 @@ protected:
                     importIndicesFrom(e);
                 }
             }
+        }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        // regardless of the type of the container (indices or pointers), the
+        // serialization is always done using the indices
+
+        serialize(os, adjVerticesNumber());
+        for (uint i = 0; i < adjVerticesNumber(); ++i) {
+            serialize(os, adjVertexIndex(i));
+        }
+    }
+
+    void deserialize(std::istream& is)
+    {
+        uint n;
+        deserialize(is, n);
+        resizeAdjVertices(n);
+
+        for (uint i = 0; i < adjVerticesNumber(); ++i) {
+            uint aei;
+            deserialize(is, aei);
+            setAdjVertex(i, aei);
         }
     }
 

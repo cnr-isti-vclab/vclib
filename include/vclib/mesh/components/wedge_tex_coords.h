@@ -323,7 +323,7 @@ public:
 protected:
     using WedgeTexCoordScalarType = Scalar;
 
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool = true)
     {
@@ -353,6 +353,18 @@ protected:
                 }
             }
         }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        texCoords().serialize(os);
+        vcl::serialize(os, textureIndex());
+    }
+
+    void deserialize(std::istream& is)
+    {
+        texCoords().deserialize(is);
+        vcl::deserialize(is, textureIndex());
     }
 
     // ContainerComponent interface functions

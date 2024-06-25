@@ -654,7 +654,7 @@ public:
     }
 
 protected:
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool importRefs = true)
     {
@@ -684,6 +684,33 @@ protected:
                     importIndicesFrom(e);
                 }
             }
+        }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        // regardless of the type of the container (indices or pointers), the
+        // serialization is always done using the indices
+        if constexpr (N < 0) {
+            serialize(os, vertexNumber());
+        }
+        for (uint i = 0; i < vertexNumber(); ++i) {
+            serialize(os, vertexIndex(i));
+        }
+
+    }
+
+    void deserialize(std::istream& is)
+    {
+        if constexpr (N < 0) {
+            uint n;
+            deserialize(is, n);
+            resizeVertices(n);
+        }
+        for (uint i = 0; i < vertexNumber(); ++i) {
+            uint vi;
+            deserialize(is, vi);
+            setVertex(i, vi);
         }
     }
 

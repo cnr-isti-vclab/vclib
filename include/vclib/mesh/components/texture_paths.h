@@ -236,6 +236,18 @@ protected:
         }
     }
 
+    void serialize(std::ostream& os) const
+    {
+        vcl::serialize(os, texPaths());
+        vcl::serialize(os, meshBasePath());
+    }
+
+    void deserialize(std::istream& is)
+    {
+        vcl::deserialize(is, texPaths());
+        vcl::deserialize(is, meshBasePath());
+    }
+
 private:
     // members that allow to access the data
     std::vector<std::string>& texPaths() { return Base::data().texPaths; }

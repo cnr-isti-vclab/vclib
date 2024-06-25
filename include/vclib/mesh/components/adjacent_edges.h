@@ -605,7 +605,7 @@ public:
     }
 
 protected:
-    // Component interface function
+    // Component interface functions
     template<typename Element>
     void importFrom(const Element& e, bool importRefs = true)
     {
@@ -637,6 +637,33 @@ protected:
                     }
                 }
             }
+        }
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        // regardless of the type of the container (indices or pointers), the
+        // serialization is always done using the indices
+        if constexpr (N < 0) {
+            serialize(os, adjEdgesNumber());
+        }
+        for (uint i = 0; i < adjEdgesNumber(); ++i) {
+            serialize(os, adjEdgeIndex(i));
+        }
+
+    }
+
+    void deserialize(std::istream& is)
+    {
+        if constexpr (N < 0) {
+            uint n;
+            deserialize(is, n);
+            resizeAdjEdges(n);
+        }
+        for (uint i = 0; i < adjEdgesNumber(); ++i) {
+            uint aei;
+            deserialize(is, aei);
+            setAdjEdge(i, aei);
         }
     }
 
