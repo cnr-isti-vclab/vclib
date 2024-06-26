@@ -248,7 +248,7 @@ public:
     Matrix44<Scalar> lightGizmoMatrix() const
     {
         Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
-        rot_radius.rotate(mDirectionalLightTransform.eigenQuaternion())
+        rot_radius.rotate(mDirectionalLightTransform)
             .scale(mRadius);
         return mCamera.viewMatrix() * rot_radius.matrix();
     }
@@ -625,13 +625,13 @@ private:
 
     void rotate(const Quaternion<Scalar>& q)
     {
-        mTransform.prerotate(q.eigenQuaternion());
+        mTransform.prerotate(q);
     }
 
     void rotate(Point3<Scalar> axis, Scalar angleRad = M_PI / 6)
     {
         mTransform.prerotate(
-            Quaternion<Scalar>(angleRad, axis).eigenQuaternion());
+            Quaternion<Scalar>(angleRad, axis));
     }
 
     /**
