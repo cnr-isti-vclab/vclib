@@ -332,7 +332,8 @@ void updatePrincipalCurvaturePCA(
             CoordType(v.principalCurvature().maxDir().cross(v.normal())),
             -(M_PI * 0.5 - angle));
 
-        v.principalCurvature().maxDir() = rot * v.principalCurvature().maxDir();
+        v.principalCurvature().maxDir() =
+            rot * v.principalCurvature().maxDir().transpose();
 
         angle = acos(v.principalCurvature().minDir().dot(v.normal()));
 
@@ -340,7 +341,8 @@ void updatePrincipalCurvaturePCA(
             CoordType(v.principalCurvature().minDir().cross(v.normal())),
             -(M_PI * 0.5 - angle));
 
-        v.principalCurvature().minDir() = rot * v.principalCurvature().minDir();
+        v.principalCurvature().minDir() =
+            rot * v.principalCurvature().minDir().transpose();
 
         // computes the curvature values
         const ScalarType r5 = std::pow(radius, 5);
