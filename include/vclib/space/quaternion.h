@@ -45,15 +45,15 @@ namespace vcl {
  * @tparam Scalar: the scalar used to represent the quaternion.
  */
 template<typename Scalar>
-class Quaternion
+class Quaternion : public Eigen::Quaternion<Scalar>
 {
-    template<typename S>
-    friend class Quaternion;
-
-protected:
-    Eigen::Quaternion<Scalar> mQ = Eigen::Quaternion<Scalar>(1, 0, 0, 0);
+    using Base = Eigen::Quaternion<Scalar>;
 
 public:
+    // inherit Base operators
+    using Base::operator*;
+    using Base::operator*=;
+
     /**
      * @brief The Scalar type of the Quaternion.
      */
@@ -65,39 +65,18 @@ public:
      */
     Quaternion() = default;
 
-    /**
-     * @brief Constructs and initializes the quaternion `w+xi+yj+zk` from its
-     * four coefficients w, x, y and z.
-     *
-     * @note Note the order of the arguments: the real w coefficient first,
-     * while internally the coefficients are stored in the following order: [x,
-     * y, z, w]
-     *
-     * @param[in] w: the real coefficient.
-     * @param[in] x: the first imaginary coefficient.
-     * @param[in] y: the second imaginary coefficient.
-     * @param[in] z: the third imaginary coefficient.
-     */
-    Quaternion(
-        const Scalar& w,
-        const Scalar& x,
-        const Scalar& y,
-        const Scalar& z) :
-            mQ(w, x, y, z)
+    template<typename S, int Options>
+    Quaternion(const Eigen::Quaternion<S, Options>& q) : Base(q)
     {
     }
 
     Quaternion(const Scalar& angle, const Point3<Scalar>& axis) :
-            mQ(Eigen::AngleAxis<Scalar>(angle, axis))
+            Base(Eigen::AngleAxis<Scalar>(angle, axis))
     {
     }
 
-    Quaternion(const Eigen::Quaternion<Scalar>& qq) : mQ(qq) {}
-
-    Quaternion(const Matrix33<Scalar>& rotMatrix) : mQ(rotMatrix) {}
-
     Quaternion(const Matrix44<Scalar>& rotMatrix) :
-            mQ(Matrix33<Scalar>(rotMatrix.block(0, 0, 3, 3)))
+            Base(Matrix33<Scalar>(rotMatrix.block(0, 0, 3, 3)))
     {
     }
 
@@ -114,24 +93,8 @@ public:
      */
     Quaternion(const Point3<Scalar>& a, const Point3<Scalar>& b)
     {
-        mQ.setFromTwoVectors(a, b);
+        Base::setFromTwoVectors(a, b);
     }
-
-    Scalar& w() { return mQ.w(); }
-
-    const Scalar& w() const { return mQ.w(); }
-
-    Scalar& x() { return mQ.x(); }
-
-    const Scalar& x() const { return mQ.x(); }
-
-    Scalar& y() { return mQ.y(); }
-
-    const Scalar& y() const { return mQ.y(); }
-
-    Scalar& z() { return mQ.z(); }
-
-    const Scalar& z() const { return mQ.z(); }
 
     /**
      * @brief Casts the Quaternion object to a different scalar type.
@@ -151,88 +114,26 @@ public:
             return *this;
         }
         else {
-            return Quaternion<S>(mQ.template cast<S>());
+            return Quaternion<S>(Base::template cast<S>());
         }
     }
 
-    /**
-     * @brief Returns the conjugate of the quaternion, which represents the
-     * opposite rotation.
-     *
-     * The conjugate of the quaternion is equal to the multiplicative inverse if
-     * the quaternion is normalized.
-     *
-     * @return The conjugate of the quaternion.
-     */
-    Quaternion<Scalar> conjugate() const
-    {
-        return Quaternion<Scalar>(mQ.conjugate());
-    }
-
-    /**
-     * @brief Returns the dot product between this quaternion and the given
-     * quaternion.
-     *
-     * The dot product between two unit quaternions corresponds to the cosine of
-     * half the angle between the two rotations.
-     *
-     * @param[in] q2: the quaternion to compute the dot product with.
-     * @return The dot product between this quaternion and the given quaternion.
-     */
-    Scalar dot(const Quaternion<Scalar>& q2) const { return mQ.dot(q2.mQ); }
-
-    /**
-     * @brief Returns the inverse of the quaternion, which represents the
-     * inverse rotation.
-     *
-     * The inverse of the quaternion is equal to the multiplicative inverse.
-     *
-     * @note Note that in most cases, i.e., if you simply want the opposite
-     * rotation, and/or the quaternion is normalized, then it is enough to use
-     * the conjugate.
-     *
-     * @return The inverse of the quaternion.
-     */
-    Quaternion<Scalar> inverse() const
-    {
-        return Quaternion<Scalar>(mQ.inverse());
-    }
-
-    Scalar norm() const { return mQ.norm(); }
-
-    Scalar squaredNorm() const { return mQ.squaredNorm(); }
-
     constexpr uint size() const { return 4; }
 
-    void setIdentity() { mQ.setIdentity(); }
+    // void setIdentity() { mQ.setIdentity(); }
 
     void set(const Scalar& w, const Scalar& x, const Scalar& y, const Scalar& z)
     {
-        mQ.w() = w;
-        mQ.x() = x;
-        mQ.y() = y;
-        mQ.z() = z;
-    }
-
-    void setFromTwoVectors(const Point3<Scalar>& a, const Point3<Scalar>& b)
-    {
-        mQ.setFromTwoVectors(a, b);
+        Base::w() = w;
+        Base::x() = x;
+        Base::y() = y;
+        Base::z() = z;
     }
 
     void setFromAngleAxis(const Scalar& angle, const Point3<Scalar>& axis)
     {
-        mQ = Eigen::Quaternion<Scalar>(
-            Eigen::AngleAxis<Scalar>(angle, axis));
+        *this = Base(Eigen::AngleAxis<Scalar>(angle, axis));
     }
-
-    Quaternion<Scalar> normalized() const
-    {
-        return Quaternion<Scalar>(mQ.normalized());
-    }
-
-    void normalize() { mQ.normalize(); }
-
-    const Eigen::Quaternion<Scalar>& eigenQuaternion() const { return mQ; }
 
     /**
      * @brief Computes the hash value of the quaternion.
@@ -246,25 +147,8 @@ public:
     {
         std::size_t h = 0;
         for (size_t i = 0; i < 4; ++i)
-            vcl::hashCombine(h, mQ(i));
+            vcl::hashCombine(h, Base::operator()(i));
         return h;
-    }
-
-    Scalar& operator()(uint i) { return mQ.coeffs()[i]; }
-
-    const Scalar& operator()(uint i) const { return mQ.coeffs()[i]; }
-
-    Scalar& operator[](uint i) { return mQ.coeffs()[i]; }
-
-    const Scalar& operator[](uint i) const { return mQ.coeffs()[i]; }
-
-    bool operator==(const Quaternion<Scalar>& q2) const { return mQ == q2.mQ; }
-
-    bool operator!=(const Quaternion<Scalar>& q2) const { return mQ != q2.mQ; }
-
-    Quaternion<Scalar> operator*(const Quaternion<Scalar>& q2) const
-    {
-        return Quaternion<Scalar>(mQ * q2.mQ);
     }
 
     /**
@@ -278,46 +162,17 @@ public:
      */
     Point3<Scalar> operator*(const Point3<Scalar>& p) const
     {
-        Eigen::Matrix<Scalar, 1, 3> fc = mQ.vec().cross(p);
+        Eigen::Matrix<Scalar, 1, 3> fc = Base::vec().cross(p);
 
-        Eigen::Matrix<Scalar, 1, 3> fd = p * mQ.w();
+        Eigen::Matrix<Scalar, 1, 3> fd = p * Base::w();
 
         Eigen::Matrix<Scalar, 1, 3> s = fc + fd;
 
-        Eigen::Matrix<Scalar, 1, 3> sc = mQ.vec().cross(s);
+        Eigen::Matrix<Scalar, 1, 3> sc = Base::vec().cross(s);
 
         return Point3<Scalar>(p + sc * 2.0);
     }
-
-    Quaternion& operator*=(const Quaternion<Scalar>& q2)
-    {
-        mQ *= q2.mQ;
-        return *this;
-    }
-
-    Matrix33<Scalar> toRotationMatrix() const { return mQ.toRotationMatrix(); }
-
-    /// @private
-    template<typename S>
-    friend std::ostream& operator<<(std::ostream& out, const Quaternion<S>& p);
 };
-
-/**
- * @brief Writes this quaternion to an output stream.
- *
- * This operator writes this quaternion to an output stream and returns the
- * output stream.
- *
- * @param[in,out] out: The output stream to write to.
- * @param[in] p1 The quaternion to write.
- * @return The output stream after the quaternion is written.
- */
-template<typename Scalar>
-std::ostream& operator<<(std::ostream& out, const Quaternion<Scalar>& p1)
-{
-    out << p1.mQ;
-    return out;
-}
 
 } // namespace vcl
 
