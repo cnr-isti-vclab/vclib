@@ -303,15 +303,9 @@ protected:
         }
     }
 
-    void serialize(std::ostream& os) const
-    {
-        colors().serialize(os);
-    }
+    void serialize(std::ostream& os) const { colors().serialize(os); }
 
-    void deserialize(std::istream& is)
-    {
-        colors().deserialize(is);
-    }
+    void deserialize(std::istream& is) { colors().deserialize(is); }
 
     // ContainerComponent interface functions
     void resize(uint n) requires (N < 0) { colors().resize(n); }

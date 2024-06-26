@@ -654,7 +654,6 @@ protected:
         for (uint i = 0; i < adjFacesNumber(); ++i) {
             serialize(os, adjFaceIndex(i));
         }
-
     }
 
     void deserialize(std::istream& is)

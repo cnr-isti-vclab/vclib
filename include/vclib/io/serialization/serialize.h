@@ -54,7 +54,6 @@ void serialize(std::ostream& os, const T& data, std::endian endian)
     else {
         os.write(reinterpret_cast<const char*>(&data), sizeof(T));
     }
-
 }
 
 /**
@@ -76,23 +75,23 @@ void serializeN(
     std::ostream& os,
     const T*      data,
     std::size_t   size,
-    std::endian endian = std::endian::little)
+    std::endian   endian = std::endian::little)
 {
     for (std::size_t i = 0; i < size; ++i) {
         serialize(os, data[i], endian);
     }
 }
 
-template<typename T, typename ...Others>
+template<typename T, typename... Others>
 void serialize(std::ostream& os, const T& data, const Others&... others)
 {
-    if constexpr(Serializable<T>) {
+    if constexpr (Serializable<T>) {
         data.serialize(os);
     }
     else {
         serialize(os, data, std::endian::little);
     }
-    if constexpr(sizeof...(Others) > 0) {
+    if constexpr (sizeof...(Others) > 0) {
         serialize(os, others...);
     }
 }

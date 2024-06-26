@@ -75,23 +75,23 @@ void deserializeN(
     std::istream& is,
     T*            data,
     std::size_t   size,
-    std::endian endian = std::endian::little)
+    std::endian   endian = std::endian::little)
 {
     for (std::size_t i = 0; i < size; ++i) {
         deserialize(is, data[i], endian);
     }
 }
 
-template<typename T, typename ...Others>
+template<typename T, typename... Others>
 void deserialize(std::istream& is, T& data, Others&... others)
 {
-    if constexpr(Serializable<T>) {
+    if constexpr (Serializable<T>) {
         data.deserialize(is);
     }
     else {
         deserialize(is, data, std::endian::little);
     }
-    if constexpr(sizeof...(Others) > 0) {
+    if constexpr (sizeof...(Others) > 0) {
         deserialize(is, others...);
     }
 }

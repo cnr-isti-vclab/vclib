@@ -574,15 +574,9 @@ public:
      */
     void clear() requires (N < 0) { mContainer.clear(); }
 
-    void serialize(std::ostream& os) const
-    {
-        vcl::serialize(os, mContainer);
-    }
+    void serialize(std::ostream& os) const { vcl::serialize(os, mContainer); }
 
-    void deserialize(std::istream& is)
-    {
-        vcl::deserialize(is, mContainer);
-    }
+    void deserialize(std::istream& is) { vcl::deserialize(is, mContainer); }
 
     /* Operators */
 
