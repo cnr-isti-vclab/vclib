@@ -88,7 +88,7 @@ public:
     }
 
     Quaternion(const Scalar& angle, const Point3<Scalar>& axis) :
-            mQ(Eigen::AngleAxis<Scalar>(angle, axis.eigenVector()))
+            mQ(Eigen::AngleAxis<Scalar>(angle, axis))
     {
     }
 
@@ -114,7 +114,7 @@ public:
      */
     Quaternion(const Point3<Scalar>& a, const Point3<Scalar>& b)
     {
-        mQ.setFromTwoVectors(a.eigenVector(), b.eigenVector());
+        mQ.setFromTwoVectors(a, b);
     }
 
     Scalar& w() { return mQ.w(); }
@@ -216,13 +216,13 @@ public:
 
     void setFromTwoVectors(const Point3<Scalar>& a, const Point3<Scalar>& b)
     {
-        mQ.setFromTwoVectors(a.eigenVector(), b.eigenVector());
+        mQ.setFromTwoVectors(a, b);
     }
 
     void setFromAngleAxis(const Scalar& angle, const Point3<Scalar>& axis)
     {
         mQ = Eigen::Quaternion<Scalar>(
-            Eigen::AngleAxis<Scalar>(angle, axis.eigenVector()));
+            Eigen::AngleAxis<Scalar>(angle, axis));
     }
 
     Quaternion<Scalar> normalized() const
@@ -278,17 +278,15 @@ public:
      */
     Point3<Scalar> operator*(const Point3<Scalar>& p) const
     {
-        const Eigen::Matrix<Scalar, 1, 3>& v = p.eigenVector();
+        Eigen::Matrix<Scalar, 1, 3> fc = mQ.vec().cross(p);
 
-        Eigen::Matrix<Scalar, 1, 3> fc = mQ.vec().cross(v);
-
-        Eigen::Matrix<Scalar, 1, 3> fd = v * mQ.w();
+        Eigen::Matrix<Scalar, 1, 3> fd = p * mQ.w();
 
         Eigen::Matrix<Scalar, 1, 3> s = fc + fd;
 
         Eigen::Matrix<Scalar, 1, 3> sc = mQ.vec().cross(s);
 
-        return Point3<Scalar>(v + sc * 2.0);
+        return Point3<Scalar>(p + sc * 2.0);
     }
 
     Quaternion& operator*=(const Quaternion<Scalar>& q2)

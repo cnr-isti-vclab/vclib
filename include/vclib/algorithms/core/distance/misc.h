@@ -57,7 +57,7 @@ auto pointSegmentDistance(
         closest = s.midPoint();
     }
     else {
-        ScalarType t = ((p - s.p0()) * dir) / esn;
+        ScalarType t = ((p - s.p0()).dot(dir)) / esn;
         if (t < 0)
             t = 0;
         else if (t > 1)

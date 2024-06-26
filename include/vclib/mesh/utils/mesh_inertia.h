@@ -200,7 +200,7 @@ private:
 
         projectionIntegrals(f);
 
-        w  = -f.vertex(0)->coord() * n;
+        w  = -f.vertex(0)->coord().dot(n);
         k1 = 1 / n[mC];
         k2 = k1 * k1;
         k3 = k2 * k1;

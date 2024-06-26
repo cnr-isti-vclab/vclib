@@ -115,7 +115,7 @@ public:
      */
     Color() : Point(0, 0, 0, 255) {}
 
-    Color(ColorABGR cc) { *reinterpret_cast<uint32_t*>(Point::mP.data()) = cc; }
+    Color(ColorABGR cc) { *reinterpret_cast<uint32_t*>(Point::data()) = cc; }
 
     Color(uint32_t cc, Format::Enum format) { set(cc, format); }
 
@@ -267,7 +267,7 @@ public:
 
     uint32_t abgr() const
     {
-        return *reinterpret_cast<const uint32_t*>(Point::mP.data());
+        return *reinterpret_cast<const uint32_t*>(Point::data());
     }
 
     uint32_t rgba() const
@@ -368,7 +368,7 @@ public:
 
     void setAbgr(uint32_t val)
     {
-        *reinterpret_cast<uint32_t*>(Point::mP.data()) = val;
+        *reinterpret_cast<uint32_t*>(Point::data()) = val;
     }
 
     void setArgb(uint32_t val)
@@ -623,7 +623,7 @@ public:
  */
 inline std::ostream& operator<<(std::ostream& out, const Color& c)
 {
-    out << c.mP.cast<uint>();
+    out << c.cast<uint>();
     return out;
 }
 

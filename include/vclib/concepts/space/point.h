@@ -94,8 +94,6 @@ concept PointConcept = requires (T o, const T& co) {
     { co == co } -> std::same_as<bool>;
     co <=> co;
 
-    { co * co } -> std::same_as<typename T::ScalarType>;
-
     o += typename T::ScalarType();
     o += co;
 

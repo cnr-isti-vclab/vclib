@@ -63,7 +63,7 @@ void accumulateLaplacianInfo(
                 const CoordType&  p1 = v1.coord();
                 const CoordType&  p2 = v2.coord();
                 if (cotangentFlag) {
-                    ScalarType angle = (p1 - p2).angle(p0 - p2);
+                    ScalarType angle = CoordType(p1 - p2).angle(p0 - p2);
                     weight           = std::tan((M_PI * 0.5) - angle);
                 }
 

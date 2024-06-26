@@ -38,7 +38,7 @@ int main()
 
     vcl::Point3<uint> first(2, 2, 2), last(5, 4, 7);
 
-    vcl::HashTableGrid3<vcl::Point<double, 3>, double, false> sht(g);
+    vcl::HashTableGrid3<vcl::Point3d, double, false> sht(g);
 
     sht.insert(vcl::Point3d(0.05, 0.15, 0.25));
     sht.insert(vcl::Point3d(0.05, 0.15, 0.25)); // duplicate won't be inserted

@@ -329,7 +329,7 @@ void updatePrincipalCurvaturePCA(
         angle = acos(v.principalCurvature().maxDir().dot(v.normal()));
 
         rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(
-            v.principalCurvature().maxDir().cross(v.normal()),
+            CoordType(v.principalCurvature().maxDir().cross(v.normal())),
             -(M_PI * 0.5 - angle));
 
         v.principalCurvature().maxDir() = rot * v.principalCurvature().maxDir();
@@ -337,7 +337,7 @@ void updatePrincipalCurvaturePCA(
         angle = acos(v.principalCurvature().minDir().dot(v.normal()));
 
         rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(
-            v.principalCurvature().minDir().cross(v.normal()),
+            CoordType(v.principalCurvature().minDir().cross(v.normal())),
             -(M_PI * 0.5 - angle));
 
         v.principalCurvature().minDir() = rot * v.principalCurvature().minDir();

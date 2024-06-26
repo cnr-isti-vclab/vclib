@@ -55,15 +55,24 @@ namespace vcl {
  * @ingroup space
  */
 template<typename Scalar, uint N>
-class Point
+class Point : public Eigen::Matrix<Scalar, 1, N>
 {
-    template<typename S, uint M>
-    friend class Point;
+    using Base = Eigen::Matrix<Scalar, 1, N>;
 
-protected:
-    Eigen::Matrix<Scalar, 1, N> mP = Eigen::Matrix<Scalar, 1, N>::Zero();
-
+    // hide Base begin and end members
+    using Base::begin;
+    using Base::end;
 public:
+    // inherit Base operators
+    using Base::operator+;
+    using Base::operator-;
+    using Base::operator*;
+    using Base::operator/;
+    using Base::operator+=;
+    using Base::operator-=;
+    using Base::operator*=;
+    using Base::operator/=;
+
     /**
      * @brief The Scalar type of the Point.
      */
@@ -77,7 +86,21 @@ public:
     /**
      * @brief Constructs a Point object with all components set to zero.
      */
-    Point() = default;
+    Point() { Base::setZero(); }
+
+    /**
+     * @brief Constructs a Point object from an Eigen matrix.
+     *
+     * The constructor initializes the components of the Point object from an
+     * Eigen matrix with the same dimensionality as the Point object.
+     *
+     * @param[in] other: An Eigen matrix with the same dimensionality as the
+     * Point object.
+     */
+    template<typename OtherDerived>
+    Point(const Eigen::MatrixBase<OtherDerived>& other) : Base(other)
+    {
+    }
 
     /**
      * @brief Constructs a Point object from a set of scalar values.
@@ -99,17 +122,6 @@ public:
     }
 
     /**
-     * @brief Constructs a Point object from an Eigen row vector.
-     *
-     * The constructor initializes the components of the Point object from an
-     * Eigen row vector with the same dimensionality as the Point object.
-     *
-     * @param[in] v: An Eigen row vector with the same dimensionality as the
-     * Point object.
-     */
-    Point(const Eigen::Matrix<Scalar, 1, N>& v) { mP << v; }
-
-    /**
      * @brief Returns a reference to the x-component of the Point object.
      *
      * The function returns a reference to the first component of the Point
@@ -118,7 +130,7 @@ public:
      *
      * @return A reference to the x-component of the Point object.
      */
-    ScalarType& x() requires (N >= 1) { return mP(0); }
+    ScalarType& x() requires (N >= 1) { return at(0); }
 
     /**
      * @brief Returns a const reference to the x-component of the Point object.
@@ -129,7 +141,7 @@ public:
      *
      * @return A const reference to the x-component of the Point object.
      */
-    const ScalarType& x() const requires (N >= 1) { return mP(0); }
+    const ScalarType& x() const requires (N >= 1) { return at(0); }
 
     /**
      * @brief Returns a reference to the y-component of the Point object.
@@ -140,7 +152,7 @@ public:
      *
      * @return A reference to the y-component of the Point object.
      */
-    ScalarType& y() requires (N >= 2) { return mP(1); }
+    ScalarType& y() requires (N >= 2) { return at(1); }
 
     /**
      * @brief Returns a const reference to the y-component of the Point object.
@@ -151,7 +163,7 @@ public:
      *
      * @return A const reference to the y-component of the Point object.
      */
-    const ScalarType& y() const requires (N >= 2) { return mP(1); }
+    const ScalarType& y() const requires (N >= 2) { return at(1); }
 
     /**
      * @brief Returns a reference to the z-component of the Point object.
@@ -162,7 +174,7 @@ public:
      *
      * @return A reference to the z-component of the Point object.
      */
-    ScalarType& z() requires (N >= 3) { return mP(2); }
+    ScalarType& z() requires (N >= 3) { return at(2); }
 
     /**
      * @brief Returns a const reference to the z-component of the Point object.
@@ -173,7 +185,7 @@ public:
      *
      * @return A const reference to the z-component of the Point object.
      */
-    const ScalarType& z() const requires (N >= 3) { return mP(2); }
+    const ScalarType& z() const requires (N >= 3) { return at(2); }
 
     /**
      * @brief Returns a reference to the w-component of the Point object.
@@ -184,7 +196,7 @@ public:
      *
      * @return A reference to the w-component of the Point object.
      */
-    ScalarType& w() requires (N >= 4) { return mP(3); }
+    ScalarType& w() requires (N >= 4) { return at(3); }
 
     /**
      * @brief Returns a const reference to the w-component of the Point object.
@@ -195,7 +207,11 @@ public:
      *
      * @return A const reference to the w-component of the Point object.
      */
-    const ScalarType& w() const requires (N >= 4) { return mP(3); }
+    const ScalarType& w() const requires (N >= 4) { return at(3); }
+
+    ScalarType& at(uint i) { return Base::operator()(i); }
+
+    const ScalarType& at(uint i) const { return Base::operator()(i); }
 
     /**
      * @brief Casts the Point object to a different scalar type.
@@ -215,16 +231,9 @@ public:
             return *this;
         }
         else {
-            return Point<S, N>(mP.template cast<S>());
+            return Point<S, N>(Base::template cast<S>());
         }
     }
-
-    /**
-     * @brief Returns the pointer to the underlying scalar storage.
-     *
-     * @return The pointer to the underlying scalar storage.
-     */
-    const ScalarType* data() const { return mP.data(); }
 
     /**
      * @brief Returns true if at least one of its components is NaN or inf.
@@ -240,7 +249,7 @@ public:
     bool isDegenerate() const
     {
         for (size_t i = 0; i < DIM; ++i)
-            if (isDegenerate(mP(i)))
+            if (vcl::isDegenerate(at(i)))
                 return true;
         return false;
     }
@@ -267,22 +276,9 @@ public:
     {
         bool b = true;
         for (size_t i = 0; i < DIM; ++i)
-            b = b && vcl::epsilonEquals(mP(i), p1(i), epsilon);
+            b = b && vcl::epsilonEquals(at(i), p1(i), epsilon);
         return b;
     }
-
-    /**
-     * @brief Computes the dot product of two Point objects.
-     *
-     * The function computes the dot product of two Point objects, which is
-     * defined as the sum of the products of the corresponding components of the
-     * two Point objects. The two Point objects must have the same dimension.
-     *
-     * @param[in] p1: The Point object to compute the dot product with.
-     *
-     * @return The dot product of the two Point objects.
-     */
-    Scalar dot(const Point& p1) const { return mP.dot(p1.mP); }
 
     /**
      * @brief Computes the angle between two Point objects.
@@ -299,10 +295,10 @@ public:
      */
     Scalar angle(const Point& p1) const
     {
-        Scalar w = mP.norm() * p1.mP.norm();
+        Scalar w = Base::norm() * p1.norm();
         if (w == 0)
             return -1;
-        Scalar t = dot(p1) / w;
+        Scalar t = Base::dot(p1) / w;
         if (t > 1)
             t = 1;
         else if (t < -1)
@@ -322,7 +318,7 @@ public:
      *
      * @return The Euclidean distance between the two Point objects.
      */
-    Scalar dist(const Point& p1) const { return (mP - p1.mP).norm(); }
+    Scalar dist(const Point& p1) const { return (*this - p1).norm(); }
 
     /**
      * @brief Computes the squared Euclidean distance between two Point objects.
@@ -338,25 +334,7 @@ public:
      */
     Scalar squaredDist(const Point& p1) const
     {
-        return (mP - p1.mP).squaredNorm();
-    }
-
-    /**
-     * @brief Returns the cross product between two points.
-     *
-     * This function returns the cross product between two points. The two
-     * points must have the same dimension, and this function is available only
-     * on Points having size == 3.
-     *
-     * @param[in] p1: The other point to compute the cross product with.
-     *
-     * @return The cross product between this and the other point.
-     *
-     * @note This function is available only on Points having size == 3.
-     */
-    Point cross(const Point& p1) const requires (N == 3)
-    {
-        return mP.cross(p1.mP);
+        return (*this - p1).squaredNorm();
     }
 
     /**
@@ -375,7 +353,7 @@ public:
     {
         Point<Scalar, N> tmp;
         for (size_t i = 0; i < DIM; ++i)
-            tmp[i] = mP[i] * p1.mP[i];
+            tmp[i] = at(i) * p1[i];
         return tmp;
     }
 
@@ -402,32 +380,10 @@ public:
             if (p1.mP[i] == 0)
                 throw std::runtime_error(
                     "Math error: Attempted to divide by Zero\n");
-            tmp[i] = mP[i] / p1.mP[i];
+            tmp[i] = at(i) / p1[i];
         }
         return tmp;
     }
-
-    /**
-     * @brief Computes the Euclidean norm of the Point object.
-     *
-     * This function computes the Euclidean norm (magnitude) of the Point
-     * object, which is defined as the square root of the sum of the squares of
-     * its components.
-     *
-     * @return The Euclidean norm of the Point object.
-     */
-    Scalar norm() const { return mP.norm(); }
-
-    /**
-     * @brief Computes the squared Euclidean norm of the Point object.
-     *
-     * This function computes the squared Euclidean norm (magnitude squared) of
-     * the Point object, which is defined as the sum of the squares of its
-     * components.
-     *
-     * @return The squared Euclidean norm of the Point object.
-     */
-    Scalar squaredNorm() const { return mP.squaredNorm(); }
 
     /**
      * @brief Returns the size of the Point object.
@@ -438,31 +394,6 @@ public:
      * @return The size of the Point object.
      */
     constexpr uint size() const { return N; }
-
-    /**
-     * @brief Sets all the components of the Point object to a constant value.
-     *
-     * This function sets all the components of the Point object to a constant
-     * value specified by the input parameter.
-     *
-     * @param s The constant value to set all the components of the Point object
-     * to.
-     */
-    void setConstant(Scalar s) { mP.setConstant(s); }
-
-    /**
-     * @brief Sets all the components of the Point object to zero.
-     *
-     * This function sets all the components of the Point object to zero.
-     */
-    void setZero() { mP.setZero(); }
-
-    /**
-     * @brief Sets all the components of the Point object to one.
-     *
-     * This function sets all the components of the Point object to one.
-     */
-    void setOnes() { mP.setOnes(); }
 
     /**
      * @brief Sets all the components of the Point object from a set of scalar
@@ -483,48 +414,7 @@ public:
     {
         Scalar args[N] = {static_cast<Scalar>(scalars)...};
         for (uint i = 0; i < N; i++)
-            mP(i) = args[i];
-    }
-
-    /**
-     * @brief Returns a normalized copy of the Point object.
-     *
-     * This function returns a normalized copy of the Point object, which has
-     * the same direction as the original Point object but a magnitude of 1.
-     *
-     * @return A normalized copy of the Point object.
-     *
-     * @throws std::runtime_error if the norm of the Point object is zero.
-     *
-     * @sa norm()
-     */
-    Point<Scalar, N> normalized() const
-    {
-        if (norm() == 0) [[unlikely]]
-            throw std::runtime_error(
-                "Math error: Attempted to divide by Zero\n");
-
-        return Point<Scalar, N>(mP.array() / norm());
-    }
-
-    /**
-     * @brief Normalizes the Point object in-place.
-     *
-     * This function normalizes the Point object in-place, which means that the
-     * direction of the Point object is preserved but its magnitude is changed
-     * to 1.
-     *
-     * @throws std::runtime_error if the norm of the Point object is zero.
-     *
-     * @sa norm()
-     */
-    void normalize()
-    {
-        if (norm() == 0) [[unlikely]]
-            throw std::runtime_error(
-                "Math error: Attempted to divide by Zero\n");
-
-        mP /= norm();
+            at(i) = args[i];
     }
 
     /**
@@ -544,7 +434,7 @@ public:
         Eigen::Matrix<ScalarType, DIM, DIM> res;
         for (uint i = 0; i < DIM; i++) {
             for (uint j = 0; j < DIM; j++) {
-                res(i, j) = mP(i) * p1(j);
+                res(i, j) = at(i) * p1(j);
             }
         }
         return res;
@@ -575,36 +465,26 @@ public:
         const double locEps = double(1e-7);
 
         Point<Scalar, 3> up(0, 1, 0);
-        u = cross(up);
+        u = Base::cross(up);
 
         double len = u.norm();
         if (len < locEps) {
-            if (std::abs(mP[0]) < std::abs(mP[1])) {
-                if (std::abs(mP[0]) < std::abs(mP[2]))
+            if (std::abs(at(0)) < std::abs(at(1))) {
+                if (std::abs(at(0)) < std::abs(at(2)))
                     up = Point<Scalar, 3>(1, 0, 0); // x is the min
                 else
                     up = Point<Scalar, 3>(0, 0, 1); // z is the min
             }
             else {
-                if (std::abs(mP[1]) < std::abs(mP[2]))
+                if (std::abs(at(1)) < std::abs(at(2)))
                     up = Point<Scalar, 3>(0, 1, 0); // y is the min
                 else
                     up = Point<Scalar, 3>(0, 0, 1); // z is the min
             }
-            u = cross(up);
+            u = Base::cross(up);
         }
-        v = cross(u);
+        v = Base::cross(u);
     }
-
-    /**
-     * @brief Returns the Eigen Vector representation of the point.
-     *
-     * This function returns an Eigen Vector representation of the point, which
-     * is a one-row matrix with N columns.
-     *
-     * @return An Eigen Vector representation of the point.
-     */
-    const Eigen::Matrix<Scalar, 1, N>& eigenVector() const { return mP; }
 
     /**
      * @brief Serializes the point to the given output stream.
@@ -612,7 +492,7 @@ public:
      */
     void serialize(std::ostream& os) const
     {
-        vcl::serializeN(os, mP.data(), mP.size());
+        vcl::serializeN(os, Base::data(), N);
     }
 
     /**
@@ -621,7 +501,7 @@ public:
      */
     void deserialize(std::istream& is)
     {
-        vcl::deserializeN(is, mP.data(), mP.size());
+        vcl::deserializeN(is, Base::data(), N);
     }
 
     /**
@@ -636,71 +516,21 @@ public:
     {
         std::size_t h = 0;
         for (size_t i = 0; i < DIM; ++i)
-            vcl::hashCombine(h, mP(i));
+            vcl::hashCombine(h, at(i));
         return h;
     }
 
     /**
-     * @brief Provides access to the i-th coordinate of the point.
-     *
-     * This operator provides read and write access to the i-th coordinate of
-     * the point. The index i is zero-based and must be less than the dimension
-     * of the point.
-     *
-     * @param[in] i: The index of the coordinate to access.
-     * @return A reference to the i-th coordinate of the point.
-     *
-     * @note The behavior of this operator is undefined if i is greater than or
-     * equal to the dimension of the point.
+     * @brief Assigns the point to the given Eigen matrix.
+     * @param[in] other: The Eigen matrix to assign to.
+     * @return A reference to the assigned point.
      */
-    Scalar& operator()(uint i) { return mP(i); }
-
-    /**
-     * @brief Provides read-only access to the i-th coordinate of the point.
-     *
-     * This operator provides read-only access to the i-th coordinate of the
-     * point. The index i is zero-based and must be less than the dimension of
-     * the point.
-     *
-     * @param[in] i: The index of the coordinate to access.
-     * @return A const reference to the i-th coordinate of the point.
-     *
-     * @note The behavior of this operator is undefined if i is greater than or
-     * equal to the dimension of the point.
-     */
-    const Scalar& operator()(uint i) const { return mP(i); }
-
-    /**
-     * @brief Provides access to the i-th coordinate of the point.
-     *
-     * This operator provides read and write access to the i-th coordinate of
-     * the point. The index i is zero-based and must be less than the dimension
-     * of the point.
-     *
-     * @param[in] i: The index of the coordinate to access.
-     * @return A reference to the i-th coordinate of the point.
-     *
-     * @note The behavior of this operator is undefined if i is greater than or
-     * equal to the dimension of the point.
-     */
-    Scalar& operator[](uint i) { return mP(i); }
-
-    /**
-     * @brief Provides read-only access to the i-th coordinate of the point.
-     *
-     * This operator provides read-only access to the i-th coordinate of the
-     * point. The index i is zero-based and must be less than the dimension of
-     * the point.
-     *
-     * @param[in] i: The index of the coordinate to access.
-     * @return A const reference to the i-th coordinate of the point.
-     *
-     * @note The behavior of this operator is undefined if i is greater than or
-     * equal to the dimension of the point.
-     */
-    const Scalar& operator[](uint i) const { return mP(i); }
-
-    bool operator==(const Point& p1) const = default;
+    template<typename OtherDerived>
+    Point& operator=(const Eigen::MatrixBase <OtherDerived>& other)
+    {
+        this->Base::operator=(other);
+        return *this;
+    }
 
     /**
      * @brief Compares the point with another point using the spaceship
@@ -719,10 +549,10 @@ public:
     auto operator<=>(const Point& p1) const
     {
         uint i = 0;
-        while (i < DIM && mP[i] == p1.mP[i]) {
+        while (i < DIM && at(i) == p1[i]) {
             ++i;
         }
-        return i == DIM ? std::strong_ordering::equal : mP[i] <=> p1.mP[i];
+        return i == DIM ? std::strong_ordering::equal : at(i) <=> p1[i];
     }
 
     /**
@@ -738,34 +568,8 @@ public:
      */
     Point operator+(const Scalar& s) const
     {
-        return Point<Scalar, N>(mP.array() + s);
+        return Base(Base::array() + s);
     }
-
-    /**
-     * @brief Adds another point to this point.
-     *
-     * This operator adds another point to this point and returns the resulting
-     * point. The addition is performed component-wise on each coordinate of the
-     * two points.
-     *
-     * @param[in] p1: The point to add.
-     * @return The point obtained by adding the other point to this point.
-     */
-    Point operator+(const Point& p1) const
-    {
-        return Point<Scalar, N>(mP + p1.mP);
-    }
-
-    /**
-     * @brief Negates each coordinate of the point.
-     *
-     * This operator negates each coordinate of the point and returns the
-     * resulting point. The negation is performed component-wise on each
-     * coordinate of the point.
-     *
-     * @return The point obtained by negating each coordinate of the point.
-     */
-    Point operator-() const { return Point<Scalar, N>(-mP); }
 
     /**
      * @brief Subtracts a scalar value from each coordinate of the point.
@@ -780,37 +584,8 @@ public:
      */
     Point operator-(const Scalar& s) const
     {
-        return Point<Scalar, N>(mP.array() - s);
+        return Base(Base::array() - s);
     }
-
-    /**
-     * @brief Subtracts another point from this point.
-     *
-     * This operator subtracts another point from this point and returns the
-     * resulting point. The subtraction is performed component-wise on each
-     * coordinate of the two points.
-     *
-     * @param[in] p1: The point to subtract.
-     * @return The point obtained by subtracting the other point from this
-     * point.
-     */
-    Point operator-(const Point& p1) const
-    {
-        return Point<Scalar, N>(mP - p1.mP);
-    }
-
-    /**
-     * @brief Multiplies each coordinate of the point by a scalar value.
-     *
-     * This operator multiplies each coordinate of the point by a scalar value
-     * and returns the resulting point. The multiplication is performed
-     * component-wise on each coordinate of the point.
-     *
-     * @param[in] s: The scalar value to multiply by.
-     * @return The point obtained by multiplying each coordinate of the point by
-     * the scalar value.
-     */
-    Point operator*(const Scalar& s) const { return Point<Scalar, N>(mP * s); }
 
     /**
      * @brief Computes the dot product of this point with another point.
@@ -823,23 +598,7 @@ public:
      * @param[in] p1: The point to compute the dot product with.
      * @return The dot product of this point with the other point.
      */
-    Scalar operator*(const Point& p1) const { return dot(p1); }
-
-    /**
-     * @brief Multiplies this point by a matrix.
-     *
-     * This operator multiplies this point by a matrix and returns the resulting
-     * point. The multiplication is performed by treating the point as a row
-     * vector and the matrix as a linear transformation that acts on the vector
-     * from the left.
-     *
-     * @param[in] m: The matrix to multiply by.
-     * @return The point obtained by multiplying this point by the matrix.
-     */
-    Point operator*(const Eigen::Matrix<Scalar, N, N>& m) const
-    {
-        return Point<Scalar, N>(mP * m);
-    }
+    Scalar operator*(const Point& p1) const { return Base::dot(p1); }
 
     /**
      * @brief Returns a new 3D point/vector on which has been applied a TRS 4x4
@@ -861,35 +620,15 @@ public:
     {
         Eigen::Matrix<Scalar, 1, N> s;
 
-        s(0) = m(0, 0) * mP(0) + m(0, 1) * mP(1) + m(0, 2) * mP(2) + m(0, 3);
-        s(1) = m(1, 0) * mP(0) + m(1, 1) * mP(1) + m(1, 2) * mP(2) + m(1, 3);
-        s(2) = m(2, 0) * mP(0) + m(2, 1) * mP(1) + m(2, 2) * mP(2) + m(2, 3);
+        s(0) = m(0, 0) * at(0) + m(0, 1) * at(1) + m(0, 2) * at(2) + m(0, 3);
+        s(1) = m(1, 0) * at(0) + m(1, 1) * at(1) + m(1, 2) * at(2) + m(1, 3);
+        s(2) = m(2, 0) * at(0) + m(2, 1) * at(1) + m(2, 2) * at(2) + m(2, 3);
 
         Scalar w =
-            mP(0) * m(3, 0) + mP(1) * m(3, 1) + mP(2) * m(3, 2) + m(3, 3);
+            at(0) * m(3, 0) + at(1) * m(3, 1) + at(2) * m(3, 2) + m(3, 3);
         if (w != 0) [[likely]]
             s = s / w;
         return Point(s);
-    }
-
-    /**
-     * @brief Divides this point by a scalar.
-     *
-     * This operator divides this point by a scalar and returns the resulting
-     * point. The division is performed by dividing each coordinate of the point
-     * by the scalar.
-     *
-     * @param[in] s: The scalar to divide by.
-     * @return The point obtained by dividing this point by the scalar.
-     *
-     * @throws std::runtime_error If the scalar is zero.
-     */
-    Point operator/(const Scalar& s) const
-    {
-        if (s == 0) [[unlikely]]
-            throw std::runtime_error(
-                "Math error: Attempted to divide by Zero\n");
-        return Point<Scalar, N>(mP / s);
     }
 
     /**
@@ -904,24 +643,7 @@ public:
      */
     Point& operator+=(const Scalar& s)
     {
-        mP = mP.array() + s;
-        return *this;
-    }
-
-    /**
-     * @brief Adds a point to this point.
-     *
-     * This operator adds each coordinate of another point to the corresponding
-     * coordinate of this point and returns a reference to this point. The
-     * addition is performed by adding the coordinates of the other point to the
-     * coordinates of this point element-wise.
-     *
-     * @param[in] p1: The point to add to this point.
-     * @return A reference to this point after the addition operation.
-     */
-    Point& operator+=(const Point& p1)
-    {
-        mP += p1.mP;
+        *this = *this + s;
         return *this;
     }
 
@@ -937,56 +659,7 @@ public:
      */
     Point& operator-=(const Scalar& s)
     {
-        mP = mP.array() - s;
-        return *this;
-    }
-
-    /**
-     * @brief Subtracts a point from this point.
-     *
-     * This operator subtracts each coordinate of another point from the
-     * corresponding coordinate of this point and returns a reference to this
-     * point. The subtraction is performed by subtracting the coordinates of the
-     * other point from the coordinates of this point element-wise.
-     *
-     * @param[in] p1: The point to subtract from this point.
-     * @return A reference to this point after the subtraction operation.
-     */
-    Point& operator-=(const Point& p1)
-    {
-        mP -= p1.mP;
-        return *this;
-    }
-
-    /**
-     * @brief Multiplies this point by a scalar value.
-     *
-     * This operator multiplies each coordinate of this point by a scalar value
-     * and returns a reference to this point. The multiplication is performed by
-     * multiplying the scalar value with each coordinate of the point.
-     *
-     * @param[in] s: The scalar value to multiply by.
-     * @return A reference to this point after the multiplication operation.
-     */
-    Point& operator*=(const Scalar& s)
-    {
-        mP *= s;
-        return *this;
-    }
-
-    /**
-     * @brief Multiplies this point by a square matrix.
-     *
-     * This operator multiplies this point by a square matrix and returns a
-     * reference to this point. The multiplication is performed by multiplying
-     * the square matrix with the column vector representation of this point.
-     *
-     * @param[in] m: The square matrix to multiply by.
-     * @return A reference to this point after the multiplication operation.
-     */
-    Point& operator*=(const Eigen::Matrix<Scalar, N, N>& m)
-    {
-        mP *= m;
+        *this = *this - s;
         return *this;
     }
 
@@ -1009,65 +682,7 @@ public:
         *this = *this * m;
         return *this;
     }
-
-    /**
-     * @brief Divides this point by a scalar value.
-     *
-     * This operator divides each coordinate of this point by a scalar value and
-     * returns a reference to this point. The division is performed by dividing
-     * each coordinate of the point by the scalar value.
-     *
-     * @param[in] s: The scalar value to divide by.
-     * @return A reference to this point after the division operation.
-     *
-     * @note If the divisor is zero, a runtime error is thrown.
-     */
-    Point& operator/=(const Scalar& s)
-    {
-        if (s == 0) [[unlikely]]
-            throw std::runtime_error(
-                "Math error: Attempted to divide by Zero\n");
-        mP /= s;
-        return *this;
-    }
-
-    /**
-     * @brief Assigns this point to a row vector.
-     *
-     * This operator assigns this point to a row vector and returns a reference
-     * to this point. The assignment is performed by setting this point's
-     * coordinates to the values of the row vector.
-     *
-     * @param[in] v: The row vector to assign from.
-     * @return A reference to this point after the assignment operation.
-     */
-    Point& operator=(const Eigen::Matrix<Scalar, 1, N>& v)
-    {
-        mP << v;
-        return *this;
-    }
-
-    /// @private
-    template<typename S, uint M>
-    friend std::ostream& operator<<(std::ostream& out, const Point<S, M>& p);
 };
-
-/**
- * @brief Writes this point to an output stream.
- *
- * This operator writes this point to an output stream and returns the output
- * stream. The point is written as a column vector of its coordinates.
- *
- * @param[in,out] out: The output stream to write to.
- * @param[in] p1 The point to write.
- * @return The output stream after the point is written.
- */
-template<typename Scalar, uint N>
-std::ostream& operator<<(std::ostream& out, const Point<Scalar, N>& p1)
-{
-    out << p1.mP;
-    return out;
-}
 
 /**
  * @brief Compares two points for equality.
