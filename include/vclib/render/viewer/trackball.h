@@ -129,7 +129,7 @@ public:
     {
         reset();
         mTransform.scale(scale);
-        mTransform.translate(-center.eigenVector().transpose());
+        mTransform.translate(-center.transpose());
     }
 
     void resetDirectionalLight()
@@ -148,7 +148,7 @@ public:
         // transform the center (world space) using the current transformation
         // then translate it to the origin
         mTransform.pretranslate(
-            -(mTransform * center.eigenVector().transpose()));
+            -(mTransform * center.transpose()));
     }
 
     Scalar scale() const
@@ -641,7 +641,7 @@ private:
      */
     void translate(Point3<Scalar> t)
     {
-        mTransform.pretranslate(t.eigenVector().transpose());
+        mTransform.pretranslate(t.transpose());
     }
 
     void rotateDirLight(const Quaternion<Scalar>& rotation)
@@ -662,7 +662,7 @@ private:
     {
         const Point3<Scalar>     point = pointOnArcball(mCurrMousePosition);
         Eigen::AngleAxis<Scalar> ax(Eigen::Quaternion<Scalar>::FromTwoVectors(
-            mInitialPoint.eigenVector(), point.eigenVector()));
+            mInitialPoint, point));
         // use angle proportional to the arc length
         const Scalar phi = (point - mInitialPoint).norm() / mRadius;
         ax.angle()       = phi;
@@ -751,7 +751,7 @@ private:
     {
         const Point3<Scalar>     point = pointOnArcball(mCurrMousePosition);
         Eigen::AngleAxis<Scalar> ax(Eigen::Quaternion<Scalar>::FromTwoVectors(
-            mInitialPoint.eigenVector(), point.eigenVector()));
+            mInitialPoint, point));
         // use angle proportional to the arc length
         const Scalar phi = (point - mInitialPoint).norm() / mRadius;
 
