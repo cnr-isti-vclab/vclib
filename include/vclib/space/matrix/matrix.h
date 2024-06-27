@@ -39,6 +39,9 @@ class Matrix : public Eigen::Matrix<Scalar, R, C>
 public:
     Matrix() = default;
 
+    // inherit constructors
+    using Base::Base;
+
     template<typename OtherDerived>
     Matrix(const Eigen::MatrixBase<OtherDerived>& other) : Base(other)
     {
