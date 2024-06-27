@@ -302,7 +302,8 @@ void updatePrincipalCurvaturePCA(
 
             A = covarianceMatrixOfMesh(tmpMesh);
         }
-        Eigen::SelfAdjointEigenSolver<vcl::Matrix33<ScalarType>> eig(A);
+
+        Eigen::SelfAdjointEigenSolver<Eigen::Matrix<ScalarType, 3, 3>> eig(A);
         eigenvalues  = CoordType(eig.eigenvalues());
         eigenvectors = eig.eigenvectors(); // eigenvector are stored as columns.
         // get the estimate of curvatures from eigenvalues and eigenvectors

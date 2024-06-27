@@ -20,10 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_MATRIX_H
-#define VCL_SPACE_MATRIX_H
+#ifndef VCL_SPACE_MATRIX_AFFINE_H
+#define VCL_SPACE_MATRIX_AFFINE_H
 
-#include "matrix/affine.h"
-#include "matrix/matrix.h"
+#include <Eigen/Core>
 
-#endif // VCL_SPACE_MATRIX_H
+#include <vclib/concepts/space/matrix.h>
+#include <vclib/concepts/space/point.h>
+
+namespace vcl {
+
+template<typename Scalar>
+using Affine3 = Eigen::Transform<Scalar, 3, Eigen::Affine>;
+
+using Affine3i = Affine3<int>;
+using Affine3f = Affine3<float>;
+using Affine3d = Affine3<double>;
+
+} // namespace vcl
+
+#endif // VCL_SPACE_MATRIX_AFFINE_H

@@ -20,10 +20,68 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_MATRIX_H
-#define VCL_SPACE_MATRIX_H
+#ifndef VCL_SPACE_MATRIX_MATRIX_H
+#define VCL_SPACE_MATRIX_MATRIX_H
 
-#include "matrix/affine.h"
-#include "matrix/matrix.h"
+#include <Eigen/Core>
 
-#endif // VCL_SPACE_MATRIX_H
+#include <vclib/concepts/space/matrix.h>
+#include <vclib/concepts/space/point.h>
+#include <vclib/io/serialization.h>
+
+namespace vcl {
+
+template<typename Scalar, int R, int C>
+class Matrix : public Eigen::Matrix<Scalar, R, C>
+{
+    using Base = Eigen::Matrix<Scalar, R, C>;
+
+public:
+    Matrix() = default;
+
+    template<typename OtherDerived>
+    Matrix(const Eigen::MatrixBase<OtherDerived>& other) : Base(other)
+    {
+    }
+
+    template<typename OtherDerived>
+    Matrix& operator=(const Eigen::MatrixBase<OtherDerived>& other)
+    {
+        this->Base::operator=(other);
+        return *this;
+    }
+
+    void serialize(std::ostream& os) const
+    {
+        uint rows = Base::rows();
+        uint cols = Base::cols();
+        vcl::serialize(os, rows, cols);
+        vcl::serializeN(os, Base::data(), Base::rows() * Base::cols());
+    }
+
+    void deserialize(std::istream& is)
+    {
+        uint rows, cols;
+        vcl::deserialize(is, rows, cols);
+        Base::resize(rows, cols);
+        vcl::deserializeN(is, Base::data(), Base::rows() * Base::cols());
+    }
+};
+
+template<typename Scalar>
+using Matrix33 = Matrix<Scalar, 3, 3>;
+
+using Matrix33i = Matrix33<int>;
+using Matrix33f = Matrix33<float>;
+using Matrix33d = Matrix33<double>;
+
+template<typename Scalar>
+using Matrix44 = Matrix<Scalar, 4, 4>;
+
+using Matrix44i = Matrix44<int>;
+using Matrix44f = Matrix44<float>;
+using Matrix44d = Matrix44<double>;
+
+} // namespace vcl
+
+#endif // VCL_SPACE_MATRIX_MATRIX_H
