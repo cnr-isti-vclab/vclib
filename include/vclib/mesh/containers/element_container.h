@@ -440,6 +440,66 @@ protected:
     }
 
     /**
+     * @brief This function serializes, for each optional component of the
+     * element, whether it is enabled or not, and then the number of elements
+     * of the container.
+     *
+     * This function must be called by the Mesh for all the containers before
+     * serializing the actual elements (by calling serializeElements).
+     *
+     * @param out
+     */
+    void serializeOptionalComponentsAndElementsNumber(std::ostream& out) const
+    {
+        // todo
+    }
+
+    /**
+     * @brief This function serializes the elements of the container.
+     *
+     * It must be called by the Mesh after calling
+     * serializeOptionalComponentsAndElementsNumber.
+     *
+     * @param out
+     */
+    void serializeElements(std::ostream& out) const
+    {
+        for (const auto& e : mElemVec) {
+            e.serialize(out);
+        }
+    }
+
+    /**
+     * @brief This function deserializes, for each optional component of the
+     * element, whether it is enabled or not, and then the number of elements
+     * of the container.
+     *
+     * This function must be called by the Mesh for all the containers before
+     * deserializing the actual elements (by calling deserializeElements).
+     *
+     * @param in
+     */
+    void deserializeOptionalComponentsAndElementsNumber(std::istream& in)
+    {
+        // todo
+    }
+
+    /**
+     * @brief This function deserializes the elements of the container.
+     *
+     * It must be called by the Mesh after calling
+     * deserializeOptionalComponentsAndElementsNumber for ALL its containers.
+     *
+     * @param in
+     */
+    void deserializeElements(std::istream& in)
+    {
+        for (auto& e : mElemVec) {
+            e.deserialize(in);
+        }
+    }
+
+    /**
      * @brief Returns an iterator to the beginning of the container.
      *
      * The iterator is automatically initialized to jump deleted elements of the

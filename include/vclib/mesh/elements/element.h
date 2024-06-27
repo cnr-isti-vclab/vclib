@@ -101,6 +101,22 @@ public:
         (importComponent<Comps>(v, importRefs), ...);
     }
 
+    void serialize(std::ostream& out) const
+    {
+        // we need to call serialize for each component of the Element,
+        // but serialize must be called only on components that are
+        // available (e.g. optional and not enabled)
+        (serializeComponent<Comps>(out), ...);
+    }
+
+    void deserialize(std::istream& in)
+    {
+        // we need to call deserialize for each component of the Element,
+        // but deserialize must be called only on components that are
+        // available (e.g. optional and not enabled)
+        (deserializeComponent<Comps>(in), ...);
+    }
+
 private:
     // hide init and isAvailable members
     void init() {}
@@ -139,6 +155,32 @@ private:
         else {                         // it is optional...
             if (Comp::isAvailable()) { // check if it is available
                 Comp::importFrom(v, importRefs);
+            }
+        }
+    }
+
+    template<typename Comp>
+    void serializeComponent(std::ostream& out) const
+    {
+        if constexpr (!comp::IsOptionalComponent<Comp>) {
+            Comp::serialize(out); // safe to call serialize
+        }
+        else {                         // it is optional...
+            if (Comp::isAvailable()) { // check if it is available
+                Comp::serialize(out);
+            }
+        }
+    }
+
+    template<typename Comp>
+    void deserializeComponent(std::istream& in)
+    {
+        if constexpr (!comp::IsOptionalComponent<Comp>) {
+            Comp::deserialize(in); // safe to call deserialize
+        }
+        else {                         // it is optional...
+            if (Comp::isAvailable()) { // check if it is available
+                Comp::deserialize(in);
             }
         }
     }
