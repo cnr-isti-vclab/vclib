@@ -147,8 +147,7 @@ public:
     {
         // transform the center (world space) using the current transformation
         // then translate it to the origin
-        mTransform.pretranslate(
-            -(mTransform * center.transpose()));
+        mTransform.pretranslate(-(mTransform * center.transpose()));
     }
 
     Scalar scale() const
@@ -248,8 +247,7 @@ public:
     Matrix44<Scalar> lightGizmoMatrix() const
     {
         Affine3<Scalar> rot_radius = Affine3<Scalar>::Identity();
-        rot_radius.rotate(mDirectionalLightTransform)
-            .scale(mRadius);
+        rot_radius.rotate(mDirectionalLightTransform).scale(mRadius);
         return mCamera.viewMatrix() * rot_radius.matrix();
     }
 
@@ -623,15 +621,11 @@ private:
     /**--------- Base functions ---------**/
     // (general purpose and used for atomic operations)
 
-    void rotate(const Quaternion<Scalar>& q)
-    {
-        mTransform.prerotate(q);
-    }
+    void rotate(const Quaternion<Scalar>& q) { mTransform.prerotate(q); }
 
     void rotate(Point3<Scalar> axis, Scalar angleRad = M_PI / 6)
     {
-        mTransform.prerotate(
-            Quaternion<Scalar>(angleRad, axis));
+        mTransform.prerotate(Quaternion<Scalar>(angleRad, axis));
     }
 
     /**
@@ -639,10 +633,7 @@ private:
      * @note from the trackball center
      * Y range is [-1, 1] and X is [-aspectRatio, aspectRatio]
      */
-    void translate(Point3<Scalar> t)
-    {
-        mTransform.pretranslate(t.transpose());
-    }
+    void translate(Point3<Scalar> t) { mTransform.pretranslate(t.transpose()); }
 
     void rotateDirLight(const Quaternion<Scalar>& rotation)
     {
@@ -661,8 +652,8 @@ private:
     void dragArc()
     {
         const Point3<Scalar>     point = pointOnArcball(mCurrMousePosition);
-        Eigen::AngleAxis<Scalar> ax(Eigen::Quaternion<Scalar>::FromTwoVectors(
-            mInitialPoint, point));
+        Eigen::AngleAxis<Scalar> ax(
+            Eigen::Quaternion<Scalar>::FromTwoVectors(mInitialPoint, point));
         // use angle proportional to the arc length
         const Scalar phi = (point - mInitialPoint).norm() / mRadius;
         ax.angle()       = phi;
@@ -750,8 +741,8 @@ private:
     void dragDirLightArc()
     {
         const Point3<Scalar>     point = pointOnArcball(mCurrMousePosition);
-        Eigen::AngleAxis<Scalar> ax(Eigen::Quaternion<Scalar>::FromTwoVectors(
-            mInitialPoint, point));
+        Eigen::AngleAxis<Scalar> ax(
+            Eigen::Quaternion<Scalar>::FromTwoVectors(mInitialPoint, point));
         // use angle proportional to the arc length
         const Scalar phi = (point - mInitialPoint).norm() / mRadius;
 
