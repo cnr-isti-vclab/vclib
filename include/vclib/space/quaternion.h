@@ -50,6 +50,8 @@ class Quaternion : public Eigen::Quaternion<Scalar>
     using Base = Eigen::Quaternion<Scalar>;
 
 public:
+
+
     // inherit Base operators
     using Base::operator*;
     using Base::operator*=;
@@ -63,7 +65,9 @@ public:
      * @brief Constructs a quaternion representing the identity rotation
      * (w = 1, 0, 0, 0).
      */
-    Quaternion() = default;
+    Quaternion() : Base(1, 0, 0, 0)
+    {
+    }
 
     template<typename S, int Options>
     Quaternion(const Eigen::Quaternion<S, Options>& q) : Base(q)
