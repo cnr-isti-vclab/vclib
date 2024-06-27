@@ -62,6 +62,7 @@ class Point : public Eigen::Matrix<Scalar, 1, N>
     // hide Base begin and end members
     using Base::begin;
     using Base::end;
+
 public:
     // inherit Base operators
     using Base::operator+;
@@ -526,7 +527,7 @@ public:
      * @return A reference to the assigned point.
      */
     template<typename OtherDerived>
-    Point& operator=(const Eigen::MatrixBase <OtherDerived>& other)
+    Point& operator=(const Eigen::MatrixBase<OtherDerived>& other)
     {
         this->Base::operator=(other);
         return *this;
@@ -566,10 +567,7 @@ public:
      * @return The point obtained by adding the scalar value to each coordinate
      * of the point.
      */
-    Point operator+(const Scalar& s) const
-    {
-        return Base(Base::array() + s);
-    }
+    Point operator+(const Scalar& s) const { return Base(Base::array() + s); }
 
     /**
      * @brief Subtracts a scalar value from each coordinate of the point.
@@ -582,10 +580,7 @@ public:
      * @return The point obtained by subtracting the scalar value from each
      * coordinate of the point.
      */
-    Point operator-(const Scalar& s) const
-    {
-        return Base(Base::array() - s);
-    }
+    Point operator-(const Scalar& s) const { return Base(Base::array() - s); }
 
     /**
      * @brief Computes the dot product of this point with another point.

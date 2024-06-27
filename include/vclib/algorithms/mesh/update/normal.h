@@ -598,12 +598,14 @@ void updatePerVertexNormalsAngleWeighted(
         auto n = faceNormal(f).template cast<NScalarType>();
 
         for (uint i = 0; i < f.vertexNumber(); ++i) {
-            NormalType vec1 = (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
-                            .normalized()
-                            .template cast<NScalarType>();
-            NormalType vec2 = (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
-                            .normalized()
-                            .template cast<NScalarType>();
+            NormalType vec1 =
+                (f.vertexMod(i - 1)->coord() - f.vertexMod(i)->coord())
+                    .normalized()
+                    .template cast<NScalarType>();
+            NormalType vec2 =
+                (f.vertexMod(i + 1)->coord() - f.vertexMod(i)->coord())
+                    .normalized()
+                    .template cast<NScalarType>();
 
             f.vertex(i)->normal() += n * vec1.angle(vec2);
         }
