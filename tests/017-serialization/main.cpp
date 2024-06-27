@@ -275,3 +275,29 @@ TEST_CASE("std vector of strings serialization")
     for (uint i = 0; i < vecStr1.size(); i++)
         REQUIRE(vecStr1[i] == vecStr2[i]);
 }
+
+TEMPLATE_TEST_CASE("Matrix serialization", "", int, float, double)
+{
+    using Scalar = TestType;
+
+    vcl::Matrix<Scalar, 2, 2> mat1;
+
+    for (uint i = 0; i < 2; i++)
+        for (uint j = 0; j < 2; j++)
+            mat1(i, j) = GENERATE(take(1, random(0.0, 1.0)));
+
+    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
+                                                 "/serialization/mat.bin");
+    mat1.serialize(fo);
+    fo.close();
+
+    vcl::Matrix<Scalar, 2, 2> mat2;
+    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
+                                                "/serialization/mat.bin");
+    mat2.deserialize(fi);
+    fi.close();
+
+    for (uint i = 0; i < 2; i++)
+        for (uint j = 0; j < 2; j++)
+            REQUIRE(mat1(i, j) == mat2(i, j));
+}

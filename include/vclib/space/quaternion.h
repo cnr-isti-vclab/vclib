@@ -50,7 +50,8 @@ class Quaternion : public Eigen::Quaternion<Scalar>
     using Base = Eigen::Quaternion<Scalar>;
 
 public:
-
+    // inherit Base constructors
+    using Base::Base;
 
     // inherit Base operators
     using Base::operator*;

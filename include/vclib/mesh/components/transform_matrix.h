@@ -129,6 +129,10 @@ protected:
             transformMatrix() = e.transformMatrix().template cast<Scalar>();
         }
     }
+
+    void serialize(std::ostream& os) const { transformMatrix().serialize(os); }
+
+    void deserialize(std::istream& is) { transformMatrix().deserialize(is); }
 };
 
 /* Detector function to check if a class has TransformMatrix available */
