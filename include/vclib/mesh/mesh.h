@@ -933,58 +933,16 @@ public:
 
     void serialize(std::ostream& os) const
     {
-        auto serializeOptionalComponentsAndElementsNumber =
-            [this, &os]<typename Cont>() {
-                this->Cont::serializeOptionalComponentsAndElementsNumber(os);
-            };
+        (preSerialization<Args>(os), ...);
 
-        vcl::ForEachType<Containers>::apply(
-            serializeOptionalComponentsAndElementsNumber);
-
-        auto serializeElements = [this, &os]<typename Cont>() {
-            this->Cont::serializeElements(os);
-        };
-
-        vcl::ForEachType<Containers>::apply(serializeElements);
-
-        auto serializeComponents = [this, &os]<typename Comp>() {
-            this->Comp::serialize(os);
-        };
-
-        vcl::ForEachType<Components>::apply(serializeComponents);
+        (postSerialization<Args>(os), ...);
     }
 
     void deserialize(std::istream& is)
     {
-        // First - deserialize the number of elements for each container,
-        // and whether the optional components of the elements are enabled or
-        // not.
+        (preDeserialization<Args>(is), ...);
 
-        auto deserializeOptionalComponentsAndElementsNumber =
-            [this, &is]<typename Cont>() {
-                this->Cont::deserializeOptionalComponentsAndElementsNumber(is);
-            };
-
-        vcl::ForEachType<Containers>::apply(
-            deserializeOptionalComponentsAndElementsNumber);
-
-        // Now, I can actually deserialize all the elements and their components
-        // safely (e.g. I could not load adjacent faces from the vertex
-        // container if the face container is not resized yet).
-
-        auto deserializeElements = [this, &is]<typename Cont>() {
-            this->Cont::deserializeElements(is);
-        };
-
-        vcl::ForEachType<Containers>::apply(deserializeElements);
-
-        // Deserialize the mesh components (e.g. bounding box, transform matrix)
-
-        auto deserializeComponents = [this, &is]<typename Comp>() {
-            this->Comp::deserialize(is);
-        };
-
-        vcl::ForEachType<Components>::apply(deserializeComponents);
+        (postDeserialization<Args>(is), ...);
     }
 
     /**
@@ -1799,6 +1757,48 @@ private:
                 ContainerWrapper(),
                 sizes,
                 sizes[I]);
+        }
+    }
+
+    // serialization/deserialization
+
+    template<typename Cont>
+    void preSerialization(std::ostream& os) const
+    {
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            Cont::serializeOptionalComponentsAndElementsNumber(os);
+        }
+    }
+
+    template<typename Cont>
+    void postSerialization(std::ostream& os) const
+    {
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            Cont::serializeElements(os);
+        }
+        else {
+            // cont is a component...
+            Cont::serialize(os);
+        }
+    }
+
+    template<typename Cont>
+    void preDeserialization(std::istream& is)
+    {
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            Cont::deserializeOptionalComponentsAndElementsNumber(is);
+        }
+    }
+
+    template<typename Cont>
+    void postDeserialization(std::istream& is)
+    {
+        if constexpr (mesh::ElementContainerConcept<Cont>) {
+            Cont::deserializeElements(is);
+        }
+        else {
+            // cont is a component...
+            Cont::deserialize(is);
         }
     }
 
