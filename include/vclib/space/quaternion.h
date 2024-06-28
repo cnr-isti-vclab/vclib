@@ -66,9 +66,7 @@ public:
      * @brief Constructs a quaternion representing the identity rotation
      * (w = 1, 0, 0, 0).
      */
-    Quaternion() : Base(1, 0, 0, 0)
-    {
-    }
+    Quaternion() : Base(1, 0, 0, 0) {}
 
     template<typename S, int Options>
     Quaternion(const Eigen::Quaternion<S, Options>& q) : Base(q)

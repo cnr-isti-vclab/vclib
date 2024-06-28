@@ -286,14 +286,14 @@ TEMPLATE_TEST_CASE("Matrix serialization", "", int, float, double)
         for (uint j = 0; j < 2; j++)
             mat1(i, j) = GENERATE(take(1, random(0.0, 1.0)));
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/mat.bin");
+    std::ofstream fo =
+        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/mat.bin");
     mat1.serialize(fo);
     fo.close();
 
     vcl::Matrix<Scalar, 2, 2> mat2;
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/mat.bin");
+    std::ifstream             fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/mat.bin");
     mat2.deserialize(fi);
     fi.close();
 
