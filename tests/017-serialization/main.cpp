@@ -26,6 +26,8 @@
 #include <catch2/generators/catch_generators_random.hpp>
 #include <vclib/io/read.h>
 #include <vclib/io/write.h>
+#include <vclib/load_save.h>
+#include <vclib/meshes.h>
 #include <vclib/space.h>
 
 template<typename Scalar, uint N>
@@ -47,11 +49,11 @@ vcl::Box<vcl::Point<Scalar, N>> randomBox()
 
 vcl::Color randomColor()
 {
-    return vcl::Color(
-        GENERATE(take(1, random(0, 255))),
-        GENERATE(take(1, random(0, 255))),
-        GENERATE(take(1, random(0, 255))),
-        GENERATE(take(1, random(0, 255))));
+    // generate random color using std::mt19937
+
+    std::mt19937 gen;
+    std::uniform_int_distribution<uint8_t> dist(0, 255);
+    return vcl::Color(dist(gen), dist(gen), dist(gen), dist(gen));
 }
 
 template<std::integral T>
@@ -300,4 +302,42 @@ TEMPLATE_TEST_CASE("Matrix serialization", "", int, float, double)
     for (uint i = 0; i < 2; i++)
         for (uint j = 0; j < 2; j++)
             REQUIRE(mat1(i, j) == mat2(i, j));
+}
+
+TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::TriMesh)
+{
+    using Mesh = TestType;
+    
+    Mesh mesh1 = vcl::load<Mesh>(VCLIB_ASSETS_PATH "/bunny.obj");
+
+    mesh1.enablePerVertexColor();
+    for (uint i = 0; i < mesh1.vertexNumber(); i++)
+        mesh1.vertex(i).color() = randomColor();
+
+    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
+                                                 "/serialization/mesh.bin");
+    mesh1.serialize(fo);
+    fo.close();
+
+    Mesh mesh2;
+    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
+                                                "/serialization/mesh.bin");
+    mesh2.deserialize(fi);
+    fi.close();
+
+    REQUIRE(mesh1.vertexNumber() == mesh2.vertexNumber());
+    REQUIRE(mesh1.faceNumber() == mesh2.faceNumber());
+    REQUIRE(mesh2.isPerVertexColorEnabled());
+    
+    for (uint i = 0; i < mesh1.vertexNumber(); i++) {
+        REQUIRE(mesh1.vertex(i).coord() == mesh2.vertex(i).coord());
+        REQUIRE(mesh1.vertex(i).color() == mesh2.vertex(i).color());
+    }
+    
+    for (uint i = 0; i < mesh1.faceNumber(); i++) {
+        REQUIRE(mesh1.face(i).vertexNumber() == mesh2.face(i).vertexNumber());
+        for (uint j = 0; j < mesh1.face(i).vertexNumber(); j++)
+            REQUIRE(
+                mesh1.face(i).vertexIndex(j) == mesh2.face(i).vertexIndex(j));
+    }
 }

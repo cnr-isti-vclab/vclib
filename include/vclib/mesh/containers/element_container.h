@@ -267,7 +267,7 @@ protected:
         else if (size < mElemNumber) {
             uint nToDelete = mElemNumber - size;
             for (uint i = mElemVec.size() - 1; nToDelete > 0; --i) {
-                if (!mElemVec[i].isDeleted()) {
+                if (!mElemVec[i].deleted()) {
                     deleteElement(i);
                 }
             }
@@ -455,13 +455,13 @@ protected:
         std::array<bool, N_VERT_COMPS> enabledComps;
         uint i = 0;
 
-        auto forEachType = [&]<typename Comp>() {
+        auto forEachVertComp = [&]<typename Comp>() {
             enabledComps[i] =
                 mVerticalCompVecTuple.template isComponentEnabled<Comp>();
             ++i;
         };
 
-        vcl::ForEachType<vComps>::apply(forEachType);
+        vcl::ForEachType<vComps>::apply(forEachVertComp);
 
         vcl::serialize(out, elementContainerSize());
         vcl::serialize(out, enabledComps);
@@ -504,13 +504,15 @@ protected:
         resizeElements(size);
 
         uint i = 0;
-        auto forEachType = [&]<typename Comp>() {
+        auto forEachVertComp = [&]<typename Comp>() {
             if (enabledComps[i])
                 mVerticalCompVecTuple.template enableComponent<Comp>();
             else
                 mVerticalCompVecTuple.template disableComponent<Comp>();
             ++i;
         };
+
+        vcl::ForEachType<vComps>::apply(forEachVertComp);
     }
 
     /**

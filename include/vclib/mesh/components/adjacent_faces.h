@@ -649,10 +649,10 @@ protected:
         // regardless of the type of the container (indices or pointers), the
         // serialization is always done using the indices
         if constexpr (N < 0) {
-            serialize(os, adjFacesNumber());
+            vcl::serialize(os, adjFacesNumber());
         }
         for (uint i = 0; i < adjFacesNumber(); ++i) {
-            serialize(os, adjFaceIndex(i));
+            vcl::serialize(os, adjFaceIndex(i));
         }
     }
 
@@ -660,12 +660,12 @@ protected:
     {
         if constexpr (N < 0) {
             uint n;
-            deserialize(is, n);
-            resizeAdjFaces(n);
+            vcl::deserialize(is, n);
+            Base::resize(n);
         }
         for (uint i = 0; i < adjFacesNumber(); ++i) {
             uint afi;
-            deserialize(is, afi);
+            vcl::deserialize(is, afi);
             setAdjFace(i, afi);
         }
     }

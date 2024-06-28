@@ -614,21 +614,21 @@ protected:
         // regardless of the type of the container (indices or pointers), the
         // serialization is always done using the indices
 
-        serialize(os, adjVerticesNumber());
+        vcl::serialize(os, adjVerticesNumber());
         for (uint i = 0; i < adjVerticesNumber(); ++i) {
-            serialize(os, adjVertexIndex(i));
+            vcl::serialize(os, adjVertexIndex(i));
         }
     }
 
     void deserialize(std::istream& is)
     {
         uint n;
-        deserialize(is, n);
+        vcl::deserialize(is, n);
         resizeAdjVertices(n);
 
         for (uint i = 0; i < adjVerticesNumber(); ++i) {
             uint aei;
-            deserialize(is, aei);
+            vcl::deserialize(is, aei);
             setAdjVertex(i, aei);
         }
     }

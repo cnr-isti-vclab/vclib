@@ -692,10 +692,10 @@ protected:
         // regardless of the type of the container (indices or pointers), the
         // serialization is always done using the indices
         if constexpr (N < 0) {
-            serialize(os, vertexNumber());
+            vcl::serialize(os, vertexNumber());
         }
         for (uint i = 0; i < vertexNumber(); ++i) {
-            serialize(os, vertexIndex(i));
+            vcl::serialize(os, vertexIndex(i));
         }
     }
 
@@ -703,12 +703,12 @@ protected:
     {
         if constexpr (N < 0) {
             uint n;
-            deserialize(is, n);
+            vcl::deserialize(is, n);
             resizeVertices(n);
         }
         for (uint i = 0; i < vertexNumber(); ++i) {
             uint vi;
-            deserialize(is, vi);
+            vcl::deserialize(is, vi);
             setVertex(i, vi);
         }
     }

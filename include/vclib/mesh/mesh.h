@@ -931,6 +931,62 @@ public:
         return Cont::updateElementIndices(newIndices);
     }
 
+    void serialize(std::ostream& os) const
+    {
+        auto serializeOptionalComponentsAndElementsNumber =
+            [this, &os]<typename Cont>() {
+                Cont::serializeOptionalComponentsAndElementsNumber(os);
+            };
+
+        vcl::ForEachType<Containers>::apply(
+            serializeOptionalComponentsAndElementsNumber);
+
+        auto serializeElements = [this, &os]<typename Cont>() {
+            Cont::serializeElements(os);
+        };
+
+        vcl::ForEachType<Containers>::apply(serializeElements);
+
+        auto serializeComponents = [this, &os]<typename Comp>() {
+            Comp::serialize(os);
+        };
+
+        vcl::ForEachType<Components>::apply(serializeComponents);
+    }
+
+    void deserialize(std::istream& is)
+    {
+        // First - deserialize the number of elements for each container,
+        // and whether the optional components of the elements are enabled or
+        // not.
+
+        auto deserializeOptionalComponentsAndElementsNumber =
+            [this, &is]<typename Cont>() {
+                Cont::deserializeOptionalComponentsAndElementsNumber(is);
+            };
+
+        vcl::ForEachType<Containers>::apply(
+            deserializeOptionalComponentsAndElementsNumber);
+
+        // Now, I can actually deserialize all the elements and their components
+        // safely (e.g. I could not load adjacent faces from the vertex
+        // container if the face container is not resized yet).
+
+        auto deserializeElements = [this, &is]<typename Cont>() {
+            Cont::deserializeElements(is);
+        };
+
+        vcl::ForEachType<Containers>::apply(deserializeElements);
+
+        // Deserialize the mesh components (e.g. bounding box, transform matrix)
+
+        auto deserializeComponents = [this, &is]<typename Comp>() {
+            Comp::deserialize(is);
+        };
+
+        vcl::ForEachType<Components>::apply(deserializeComponents);
+    }
+
     /**
      * @brief Returns an iterator to the begining of the container of the
      * elements having ID ELEM_ID in the mesh.

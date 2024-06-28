@@ -38,7 +38,7 @@ namespace vcl {
 template<typename... Args>
 struct TypeWrapper
 {
-    constexpr uint size() const { return sizeof...(Args); }
+    static constexpr uint size() { return sizeof...(Args); }
 };
 
 template<typename... Args>
