@@ -35,9 +35,10 @@ namespace vcl {
  * instantiating anything. Useful when you need to wrap a list of types, and
  * consider them as a single type.
  */
-template<typename...>
+template<typename... Args>
 struct TypeWrapper
 {
+    constexpr uint size() const { return sizeof...(Args); }
 };
 
 template<typename... Args>

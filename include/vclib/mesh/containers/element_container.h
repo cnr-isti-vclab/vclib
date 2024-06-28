@@ -451,7 +451,20 @@ protected:
      */
     void serializeOptionalComponentsAndElementsNumber(std::ostream& out) const
     {
-        // todo
+        constexpr uint N_VERT_COMPS = vComps::size();
+        std::array<bool, N_VERT_COMPS> enabledComps;
+        uint i = 0;
+
+        auto forEachType = [&]<typename Comp>() {
+            enabledComps[i] =
+                mVerticalCompVecTuple.template isComponentEnabled<Comp>();
+            ++i;
+        };
+
+        vcl::ForEachType<vComps>::apply(forEachType);
+
+        vcl::serialize(out, elementContainerSize());
+        vcl::serialize(out, enabledComps);
     }
 
     /**
@@ -481,7 +494,23 @@ protected:
      */
     void deserializeOptionalComponentsAndElementsNumber(std::istream& in)
     {
-        // todo
+        constexpr uint N_VERT_COMPS = vComps::size();
+        std::array<bool, N_VERT_COMPS> enabledComps;
+        uint size = 0;
+
+        vcl::deserialize(in, size);
+        vcl::deserialize(in, enabledComps);
+
+        resizeElements(size);
+
+        uint i = 0;
+        auto forEachType = [&]<typename Comp>() {
+            if (enabledComps[i])
+                mVerticalCompVecTuple.template enableComponent<Comp>();
+            else
+                mVerticalCompVecTuple.template disableComponent<Comp>();
+            ++i;
+        };
     }
 
     /**
