@@ -304,7 +304,7 @@ TEMPLATE_TEST_CASE("Matrix serialization", "", int, float, double)
             REQUIRE(mat1(i, j) == mat2(i, j));
 }
 
-TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::TriMesh)
+TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
 {
     using Mesh = TestType;
     

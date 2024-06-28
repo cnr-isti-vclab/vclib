@@ -935,20 +935,20 @@ public:
     {
         auto serializeOptionalComponentsAndElementsNumber =
             [this, &os]<typename Cont>() {
-                Cont::serializeOptionalComponentsAndElementsNumber(os);
+                this->Cont::serializeOptionalComponentsAndElementsNumber(os);
             };
 
         vcl::ForEachType<Containers>::apply(
             serializeOptionalComponentsAndElementsNumber);
 
         auto serializeElements = [this, &os]<typename Cont>() {
-            Cont::serializeElements(os);
+            this->Cont::serializeElements(os);
         };
 
         vcl::ForEachType<Containers>::apply(serializeElements);
 
         auto serializeComponents = [this, &os]<typename Comp>() {
-            Comp::serialize(os);
+            this->Comp::serialize(os);
         };
 
         vcl::ForEachType<Components>::apply(serializeComponents);
@@ -962,7 +962,7 @@ public:
 
         auto deserializeOptionalComponentsAndElementsNumber =
             [this, &is]<typename Cont>() {
-                Cont::deserializeOptionalComponentsAndElementsNumber(is);
+                this->Cont::deserializeOptionalComponentsAndElementsNumber(is);
             };
 
         vcl::ForEachType<Containers>::apply(
@@ -973,7 +973,7 @@ public:
         // container if the face container is not resized yet).
 
         auto deserializeElements = [this, &is]<typename Cont>() {
-            Cont::deserializeElements(is);
+            this->Cont::deserializeElements(is);
         };
 
         vcl::ForEachType<Containers>::apply(deserializeElements);
@@ -981,7 +981,7 @@ public:
         // Deserialize the mesh components (e.g. bounding box, transform matrix)
 
         auto deserializeComponents = [this, &is]<typename Comp>() {
-            Comp::deserialize(is);
+            this->Comp::deserialize(is);
         };
 
         vcl::ForEachType<Components>::apply(deserializeComponents);
