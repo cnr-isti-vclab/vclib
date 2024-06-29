@@ -451,9 +451,9 @@ protected:
      */
     void serializeOptionalComponentsAndElementsNumber(std::ostream& out) const
     {
-        constexpr uint N_VERT_COMPS = vComps::size();
+        constexpr uint                 N_VERT_COMPS = vComps::size();
         std::array<bool, N_VERT_COMPS> enabledComps;
-        uint i = 0;
+        uint                           i = 0;
 
         auto forEachVertComp = [&]<typename Comp>() {
             enabledComps[i] =
@@ -494,16 +494,16 @@ protected:
      */
     void deserializeOptionalComponentsAndElementsNumber(std::istream& in)
     {
-        constexpr uint N_VERT_COMPS = vComps::size();
+        constexpr uint                 N_VERT_COMPS = vComps::size();
         std::array<bool, N_VERT_COMPS> enabledComps;
-        uint size = 0;
+        uint                           size = 0;
 
         vcl::deserialize(in, size);
         vcl::deserialize(in, enabledComps);
 
         resizeElements(size);
 
-        uint i = 0;
+        uint i               = 0;
         auto forEachVertComp = [&]<typename Comp>() {
             if (enabledComps[i])
                 mVerticalCompVecTuple.template enableComponent<Comp>();

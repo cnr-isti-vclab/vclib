@@ -51,7 +51,7 @@ vcl::Color randomColor()
 {
     // generate random color using std::mt19937
 
-    std::mt19937 gen;
+    std::mt19937                        gen;
     std::uniform_int_distribution<uint> dist(0, 255);
     return vcl::Color(dist(gen), dist(gen), dist(gen), dist(gen));
 }
@@ -307,33 +307,33 @@ TEMPLATE_TEST_CASE("Matrix serialization", "", int, float, double)
 TEMPLATE_TEST_CASE("Mesh serialization", "", vcl::PolyMesh, vcl::TriMesh)
 {
     using Mesh = TestType;
-    
+
     Mesh mesh1 = vcl::load<Mesh>(VCLIB_ASSETS_PATH "/bunny.obj");
 
     mesh1.enablePerVertexColor();
     for (uint i = 0; i < mesh1.vertexNumber(); i++)
         mesh1.vertex(i).color() = randomColor();
 
-    std::ofstream fo = vcl::openOutputFileStream(VCLIB_RESULTS_PATH
-                                                 "/serialization/mesh.bin");
+    std::ofstream fo =
+        vcl::openOutputFileStream(VCLIB_RESULTS_PATH "/serialization/mesh.bin");
     mesh1.serialize(fo);
     fo.close();
 
-    Mesh mesh2;
-    std::ifstream fi = vcl::openInputFileStream(VCLIB_RESULTS_PATH
-                                                "/serialization/mesh.bin");
+    Mesh          mesh2;
+    std::ifstream fi =
+        vcl::openInputFileStream(VCLIB_RESULTS_PATH "/serialization/mesh.bin");
     mesh2.deserialize(fi);
     fi.close();
 
     REQUIRE(mesh1.vertexNumber() == mesh2.vertexNumber());
     REQUIRE(mesh1.faceNumber() == mesh2.faceNumber());
     REQUIRE(mesh2.isPerVertexColorEnabled());
-    
+
     for (uint i = 0; i < mesh1.vertexNumber(); i++) {
         REQUIRE(mesh1.vertex(i).coord() == mesh2.vertex(i).coord());
         REQUIRE(mesh1.vertex(i).color() == mesh2.vertex(i).color());
     }
-    
+
     for (uint i = 0; i < mesh1.faceNumber(); i++) {
         REQUIRE(mesh1.face(i).vertexNumber() == mesh2.face(i).vertexNumber());
         for (uint j = 0; j < mesh1.face(i).vertexNumber(); j++)
