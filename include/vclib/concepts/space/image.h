@@ -20,29 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SPACE_H
-#define VCL_CONCEPTS_SPACE_H
+#ifndef VCL_CONCEPTS_SPACE_IMAGE_H
+#define VCL_CONCEPTS_SPACE_IMAGE_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/matrix.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/texture.h"
-#include "space/triangle.h"
+#include <string>
 
-/**
- * @defgroup space_concepts Space Concepts
- * @ingroup lconcepts
- *
- * @brief List of concepts for types related to the Spatial data structures of
- * the library. They allow to discriminate between different Data Structures
- * types and their features.
- */
+#include <vclib/types.h>
 
-#endif // VCL_CONCEPTS_SPACE_H
+#include "color.h"
+
+namespace vcl {
+
+template<typename T>
+concept ImageConcept = requires (T&& o) {
+    // clang-format off
+    { o.isNull() } -> std::same_as<bool>;
+    { o.height() } -> std::same_as<int>;
+    { o.width() } -> std::same_as<int>;
+
+    { o.sizeInBytes() } -> std::same_as<std::size_t>;
+
+    { o.pixel(uint(), uint()) }  -> ColorConcept;
+
+    { o.data() } -> std::same_as<const unsigned char*>;
+
+    { o.load(std::string()) } -> std::same_as<bool>;
+    { o.save(std::string()) } -> std::same_as<void>;
+    { o.save(std::string(), uint()) } -> std::same_as<void>;
+
+    { o.mirror() } -> std::same_as<void>;
+    { o.mirror(bool()) } -> std::same_as<void>;
+    { o.mirror(bool(), bool()) } -> std::same_as<void>;
+
+    // clang-format on
+};
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_SPACE_IMAGE_H

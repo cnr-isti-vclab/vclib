@@ -20,29 +20,23 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SPACE_H
-#define VCL_CONCEPTS_SPACE_H
+#ifndef VCL_CONCEPTS_SPACE_TEXTURE_H
+#define VCL_CONCEPTS_SPACE_TEXTURE_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/matrix.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/texture.h"
-#include "space/triangle.h"
+#include <string>
 
-/**
- * @defgroup space_concepts Space Concepts
- * @ingroup lconcepts
- *
- * @brief List of concepts for types related to the Spatial data structures of
- * the library. They allow to discriminate between different Data Structures
- * types and their features.
- */
+#include "image.h"
 
-#endif // VCL_CONCEPTS_SPACE_H
+namespace vcl {
+
+template<typename T>
+concept TextureConcept = requires (T&& o) {
+    // clang-format off
+    { o.path() } -> std::convertible_to<std::string>;
+    { o.image() } -> ImageConcept;
+    // clang-format on
+};
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_SPACE_TEXTURE_H
