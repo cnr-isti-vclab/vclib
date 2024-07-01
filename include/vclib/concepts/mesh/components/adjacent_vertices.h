@@ -25,7 +25,7 @@
 
 #include <vector>
 
-#include <vclib/views/view.h>
+#include <vclib/concepts/ranges/range.h>
 
 #include "component.h"
 
@@ -101,12 +101,9 @@ concept HasAdjacentVertices = requires (
     { co.adjVertexIndexEnd() } ->
         std::same_as<typename T::ConstAdjacentVertexIndexIterator>;
 
-    { o.adjVertices() } ->
-        std::same_as<vcl::View<typename T::AdjacentVertexIterator>>;
-    { co.adjVertices() } ->
-        std::same_as<vcl::View<typename T::ConstAdjacentVertexIterator>>;
-    { co.adjVertexIndices() } ->
-        std::same_as<vcl::View<typename T::ConstAdjacentVertexIndexIterator>>;
+    { o.adjVertices() } -> vcl::RangeOf<typename T::AdjacentVertexType*>;
+    { co.adjVertices() } -> vcl::RangeOf<const typename T::AdjacentVertexType*>;
+    { co.adjVertexIndices() } -> vcl::RangeOf<uint>;
     // clang-format on
 };
 

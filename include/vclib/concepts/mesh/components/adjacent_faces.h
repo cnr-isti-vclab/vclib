@@ -25,7 +25,7 @@
 
 #include <vector>
 
-#include <vclib/views/view.h>
+#include <vclib/concepts/ranges/range.h>
 
 #include "component.h"
 
@@ -99,12 +99,9 @@ concept HasAdjacentFaces = requires (
     { co.adjFaceIndexEnd() } ->
         std::same_as<typename T::ConstAdjacentFaceIndexIterator>;
 
-    { o.adjFaces() } ->
-        std::same_as<vcl::View<typename T::AdjacentFaceIterator>>;
-    { co.adjFaces() } ->
-        std::same_as<vcl::View<typename T::ConstAdjacentFaceIterator>>;
-    { co.adjFaceIndices() } ->
-        std::same_as<vcl::View<typename T::ConstAdjacentFaceIndexIterator>>;
+    { o.adjFaces() } -> vcl::RangeOf<typename T::AdjacentFaceType*>;
+    { co.adjFaces() } -> vcl::RangeOf<const typename T::AdjacentFaceType*>;
+    { co.adjFaceIndices() } -> vcl::RangeOf<uint>;
     // clang-format on
 };
 
