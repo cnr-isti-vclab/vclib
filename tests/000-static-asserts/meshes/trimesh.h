@@ -38,10 +38,14 @@ void trimeshStaticAsserts()
     static_assert(!comp::ComponentConcept<TriMesh::VertexContainer>, "");
     static_assert(comp::ComponentConcept<TriMesh::BoundingBox>, "");
 
+    static_assert(comp::HasColor<TriMesh::VertexType>, "");
+    static_assert(comp::HasOptionalColor<TriMesh::VertexType>, "");
     static_assert(
         comp::
             HasOptionalComponentOfType<TriMesh::Face, CompId::WEDGE_TEX_COORDS>,
         "");
+
+    static_assert(HasBoundingBox<TriMesh>, "");
 
     // mesh views
     meshViewsStaticAsserts<TriMesh>();

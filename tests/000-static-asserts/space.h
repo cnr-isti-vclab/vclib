@@ -87,6 +87,8 @@ void spaceStaticAsserts()
     static_assert(Serializable<Box3d>, "Box3d is not serializable");
 
     // color
+    static_assert(
+        ColorConcept<Color>, "Color does not satisfy the ColorConcept");
     static_assert(Serializable<Color>, "Color is not serializable");
 
     // plane

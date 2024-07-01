@@ -23,7 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_COLOR_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_COLOR_H
 
-#include <vclib/space/color.h>
+#include <vclib/concepts/space/color.h>
 
 #include "component.h"
 
@@ -44,10 +44,9 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasColor = requires (T o, const T& co) {
+concept HasColor = requires (T && o) {
     // clang-format off
-    { o.color() } -> std::same_as<vcl::Color&>;
-    { co.color() } -> std::same_as<const vcl::Color&>;
+    { o.color() } -> ColorConcept;
     // clang-format on
 };
 

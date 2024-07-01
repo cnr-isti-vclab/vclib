@@ -20,27 +20,37 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SPACE_H
-#define VCL_CONCEPTS_SPACE_H
+#ifndef VCL_CONCEPTS_SPACE_COLOR_H
+#define VCL_CONCEPTS_SPACE_COLOR_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/matrix.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/triangle.h"
+#include "point.h"
+
+namespace vcl {
 
 /**
- * @defgroup space_concepts Space Concepts
- * @ingroup lconcepts
+ * @brief ColorConcept is satisfied only if a class provides the member functions
+ * specified in this concept. These member functions allows to access to the
+ * color components of a given color.
  *
- * @brief List of concepts for types related to the Spatial data structures of
- * the library. They allow to discriminate between different Data Structures
- * types and their features.
+ * @ingroup space_concepts
  */
+template<typename T>
+concept ColorConcept = requires (T&& o) {
+    // clang-format off
+    vcl::Point4Concept<T>;
 
-#endif // VCL_CONCEPTS_SPACE_H
+    { o.red() } -> std::same_as<uint8_t&>;
+    { o.green() } -> std::same_as<uint8_t&>;
+    { o.blue() } -> std::same_as<uint8_t&>;
+    { o.alpha() } -> std::same_as<uint8_t&>;
+
+    { o.redF() } -> std::same_as<float>;
+    { o.greenF() } -> std::same_as<float>;
+    { o.blueF() } -> std::same_as<float>;
+    { o.alphaF() } -> std::same_as<float>;
+    // clang-format on
+};
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_SPACE_COLOR_H
