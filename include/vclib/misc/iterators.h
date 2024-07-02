@@ -20,10 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_COMPONENTS_H
-#define VCL_ITERATORS_MESH_COMPONENTS_H
+#ifndef VCL_MISC_ITERATORS_H
+#define VCL_MISC_ITERATORS_H
 
-#include "components/index_from_pointer_iterator.h"
-#include "components/pointer_from_index_iterator.h"
+#include "iterators/const_pointer_iterator.h"
 
-#endif // VCL_ITERATORS_MESH_COMPONENTS_H
+#endif // VCL_MISC_ITERATORS_H

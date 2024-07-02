@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_COMPONENTS_POINTER_FROM_INDEX_ITERATOR_H
-#define VCL_ITERATORS_MESH_COMPONENTS_POINTER_FROM_INDEX_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_COMPONENTS_POINTER_FROM_INDEX_ITERATOR_H
+#define VCL_MESH_ITERATORS_COMPONENTS_POINTER_FROM_INDEX_ITERATOR_H
 
 #include <iterator>
 
@@ -199,4 +199,4 @@ using ConstPointerFromIndexIterator =
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_MESH_COMPONENTS_POINTER_FROM_INDEX_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_COMPONENTS_POINTER_FROM_INDEX_ITERATOR_H

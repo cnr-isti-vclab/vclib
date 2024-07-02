@@ -25,6 +25,7 @@
 
 #include "misc/comparators.h"
 #include "misc/hash.h"
+#include "misc/iterators.h"
 #include "misc/logger.h"
 #include "misc/parallel.h"
 #include "misc/string.h"

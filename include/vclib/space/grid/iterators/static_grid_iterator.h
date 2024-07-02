@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H
-#define VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H
+#ifndef VCL_SPACE_GRID_ITERATORS_STATIC_GRID_ITERATOR_H
+#define VCL_SPACE_GRID_ITERATORS_STATIC_GRID_ITERATOR_H
 
 #include <vclib/misc/pair.h>
 #include <vclib/space/point.h>
@@ -138,4 +138,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_SPACE_GRID_STATIC_GRID_ITERATOR_H
+#endif // VCL_SPACE_GRID_ITERATORS_STATIC_GRID_ITERATOR_H

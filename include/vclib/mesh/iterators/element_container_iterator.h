@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_MESH_ELEMENT_CONTAINER_ITERATOR_H
-#define VCL_ITERATORS_MESH_ELEMENT_CONTAINER_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_ELEMENT_CONTAINER_ITERATOR_H
+#define VCL_MESH_ITERATORS_ELEMENT_CONTAINER_ITERATOR_H
 
 #include <iterator>
 #include <type_traits>
@@ -319,4 +319,4 @@ vcl::ElementContainerIterator<Container, T, C> operator+(
     return it + n;
 }
 
-#endif // VCL_ITERATORS_MESH_ELEMENT_CONTAINER_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_ELEMENT_CONTAINER_ITERATOR_H

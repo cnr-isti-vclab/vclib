@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ITERATORS_CONST_POINTER_ITERATOR_H
-#define VCL_ITERATORS_CONST_POINTER_ITERATOR_H
+#ifndef VCL_MISC_ITERATORS_CONST_POINTER_ITERATOR_H
+#define VCL_MISC_ITERATORS_CONST_POINTER_ITERATOR_H
 
 #include <iterator>
 
@@ -162,4 +162,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_ITERATORS_CONST_POINTER_ITERATOR_H
+#endif // VCL_MISC_ITERATORS_CONST_POINTER_ITERATOR_H
