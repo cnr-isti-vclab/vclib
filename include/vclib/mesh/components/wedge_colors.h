@@ -25,6 +25,7 @@
 
 #include <vclib/concepts/mesh/components/color.h>
 #include <vclib/concepts/mesh/components/wedge_colors.h>
+#include <vclib/space/color.h>
 #include <vclib/space/vector.h>
 #include <vclib/views/view.h>
 
@@ -94,6 +95,11 @@ class WedgeColors :
         true>;
 
 public:
+    /**
+     * @brief Expose the type of the Color.
+     */
+    using WedgeColorType = vcl::Color;
+
     /* Iterator Types declaration */
 
     using WedgeColorsIterator      = Base::Iterator;
