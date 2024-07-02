@@ -36,6 +36,7 @@
 #include "space/point.h"
 #include "space/polygon.h"
 #include "space/principal_curvature.h"
+#include "space/quaternion.h"
 #include "space/sampler.h"
 #include "space/segment.h"
 #include "space/sphere.h"
