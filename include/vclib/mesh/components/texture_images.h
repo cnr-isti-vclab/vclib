@@ -28,6 +28,7 @@
 
 #include <vclib/concepts/mesh/components/texture_images.h>
 #include <vclib/concepts/mesh/components/texture_paths.h>
+#include <vclib/space/texture.h>
 #include <vclib/views/view.h>
 
 #include "bases/component.h"
@@ -86,6 +87,11 @@ class TextureImages :
         false>;
 
 public:
+    /**
+     * @brief Expose the type of the Texture.
+     */
+    using TextureType = vcl::Texture;
+
     // iterators
     using TextureIterator      = std::vector<vcl::Texture>::iterator;
     using ConstTextureIterator = std::vector<vcl::Texture>::const_iterator;

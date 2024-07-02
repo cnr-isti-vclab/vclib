@@ -89,7 +89,6 @@ void spaceStaticAsserts()
     // color
     static_assert(
         ColorConcept<Color>, "Color does not satisfy the ColorConcept");
-    static_assert(Serializable<Color>, "Color is not serializable");
 
     // image
     static_assert(

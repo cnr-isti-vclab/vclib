@@ -25,8 +25,6 @@
 
 #include <string>
 
-#include <vclib/space/texture.h>
-
 #include "component.h"
 
 namespace vcl::comp {
@@ -41,20 +39,21 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasTextureImages =
-    requires (T o, const T& co, std::string s, vcl::Texture t) {
-        // clang-format off
+    requires (T o, const T& co, std::string s) {
+    // clang-format off
+    typename T::TextureType;
     typename T::TextureIterator;
     typename T::ConstTextureIterator;
 
     { co.textureNumber() } -> std::same_as<uint>;
-    { co.texture(uint()) } -> std::same_as<const vcl::Texture&>;
-    { o.texture(uint()) } -> std::same_as<vcl::Texture&>;
+    { co.texture(uint()) } -> std::same_as<const typename T::TextureType&>;
+    { o.texture(uint()) } -> std::same_as<typename T::TextureType&>;
     { co.meshBasePath() } -> std::same_as<const std::string&>;
     { o.meshBasePath() } -> std::same_as<std::string&>;
 
     { o.clearTextures() } -> std::same_as<void>;
     { o.pushTexture(s) } -> std::same_as<void>;
-    { o.pushTexture(t)} -> std::same_as<void>;
+    { o.pushTexture(typename T::TextureType()) } -> std::same_as<void>;
 
     { o.textureBegin() } -> std::same_as<typename T::TextureIterator>;
     { o.textureEnd() } -> std::same_as<typename T::TextureIterator>;
@@ -62,7 +61,7 @@ concept HasTextureImages =
     { co.textureEnd() } -> std::same_as<typename T::ConstTextureIterator>;
     o.textures();
     co.textures();
-        // clang-format on
+    // clang-format on
     };
 
 } // namespace vcl::comp

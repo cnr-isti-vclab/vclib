@@ -35,14 +35,16 @@ namespace vcl {
  * @ingroup space_concepts
  */
 template<typename T>
-concept ColorConcept = requires (T&& o) {
+concept ColorConcept = requires (T o, const T& co) {
     // clang-format off
-    vcl::Point4Concept<T>;
-
     { o.red() } -> std::same_as<uint8_t&>;
     { o.green() } -> std::same_as<uint8_t&>;
     { o.blue() } -> std::same_as<uint8_t&>;
     { o.alpha() } -> std::same_as<uint8_t&>;
+    { co.red() } -> std::same_as<uint8_t>;
+    { co.green() } -> std::same_as<uint8_t>;
+    { co.blue() } -> std::same_as<uint8_t>;
+    { co.alpha() } -> std::same_as<uint8_t>;
 
     { o.redF() } -> std::same_as<float>;
     { o.greenF() } -> std::same_as<float>;

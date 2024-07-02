@@ -73,6 +73,11 @@ class Color :
         OPT>;
 
 public:
+    /**
+     * @brief Expose the type of the Color.
+     */
+    using ColorType = vcl::Color;
+
     /* Constructors */
 
     /**
