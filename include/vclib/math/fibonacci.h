@@ -23,7 +23,10 @@
 #ifndef VCL_MATH_FIBONACCI_H
 #define VCL_MATH_FIBONACCI_H
 
-#include <vclib/space/point.h>
+#include <cmath>
+#include <numbers>
+
+#include <vclib/concepts/space/point.h>
 
 namespace vcl {
 
@@ -34,8 +37,10 @@ PointType sphericalFibonacciPoint(uint i, uint n)
 {
     using ScalarType = PointType::ScalarType;
 
+    constexpr ScalarType PI = std::numbers::pi_v<ScalarType>;
+
     const ScalarType Phi = ScalarType(std::sqrt(ScalarType(5)) * 0.5 + 0.5);
-    const ScalarType phi = 2.0 * M_PI * (i / Phi - std::floor(i / Phi));
+    const ScalarType phi = 2.0 * PI * (i / Phi - std::floor(i / Phi));
     ScalarType       cosTheta = 1.0 - (2 * i + 1.0) / ScalarType(n);
     ScalarType       sinTheta = 1 - cosTheta * cosTheta;
     sinTheta =

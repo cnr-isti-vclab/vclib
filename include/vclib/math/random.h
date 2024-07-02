@@ -25,7 +25,7 @@
 
 #include <random>
 
-#include <vclib/space/point.h>
+#include <vclib/concepts/space/point.h>
 
 #include "base.h"
 
@@ -143,10 +143,12 @@ inline int poissonRandomNumber(double lambda)
  * @param gen
  * @return
  */
-template<typename ScalarType>
-vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate(std::mt19937& gen)
+template<Point3Concept PointType>
+PointType randomTriangleBarycentricCoordinate(std::mt19937& gen)
 {
-    vcl::Point3<ScalarType>                    interp;
+    using ScalarType = PointType::ScalarType;
+
+    PointType                                  interp;
     std::uniform_real_distribution<ScalarType> unif(0, 1);
 
     interp[1] = unif(gen);
@@ -160,12 +162,12 @@ vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate(std::mt19937& gen)
     return interp;
 }
 
-template<typename ScalarType>
-vcl::Point3<ScalarType> randomTriangleBarycentricCoordinate()
+template<Point3Concept PointType>
+PointType randomTriangleBarycentricCoordinate()
 {
     static std::random_device rd;
     static std::mt19937       gen(rd());
-    return randomTriangleBarycentricCoordinate<ScalarType>(gen);
+    return randomTriangleBarycentricCoordinate<PointType>(gen);
 }
 
 template<typename ScalarType>

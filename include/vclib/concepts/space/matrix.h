@@ -80,7 +80,7 @@ concept ResizableEigenMatrixConceipt = EigenMatrixConcept<T> && requires (T o) {
  * @brief Concept for 2D arrays (matrices). It is satisfied when `T` is a
  * matrix, no matter its sizes.
  *
- * The concept just checks that `T` is an resizable Eigen matrix or an Array2,
+ * The concept just checks that `T` is a resizable Eigen matrix or an Array2,
  * trough their respective concepts.
  */
 template<typename T>
