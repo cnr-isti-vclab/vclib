@@ -28,9 +28,9 @@
 namespace vcl {
 
 /**
- * @brief ColorConcept is satisfied only if a class provides the member functions
- * specified in this concept. These member functions allows to access to the
- * color components of a given color.
+ * @brief ColorConcept is satisfied only if a class provides the member
+ * functions specified in this concept. These member functions allows to access
+ * to the color components of a given color.
  *
  * @ingroup space_concepts
  */

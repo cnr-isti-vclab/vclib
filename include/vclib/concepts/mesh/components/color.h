@@ -44,7 +44,7 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasColor = requires (T && o) {
+concept HasColor = requires (T&& o) {
     // clang-format off
     { o.color() } -> ColorConcept;
     // clang-format on
