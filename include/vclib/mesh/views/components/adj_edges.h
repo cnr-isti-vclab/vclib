@@ -20,10 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
-#define VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
+#define VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
 
-#include <vclib/concepts/mesh.h>
+#include <vclib/concepts.h>
 #include <vclib/types.h>
 
 namespace vcl::views {
@@ -31,42 +31,41 @@ namespace vcl::views {
 namespace detail {
 
 template<typename T>
-concept CleanAdjVerticesConcept =
-    comp::HasAdjacentVertices<std::remove_cvref_t<T>>;
+concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<std::remove_cvref_t<T>>;
 
-struct AdjVerticesView
+struct AdjEdgesView
 {
-    constexpr AdjVerticesView() = default;
+    constexpr AdjEdgesView() = default;
 
-    template<CleanAdjVerticesConcept R>
-    friend constexpr auto operator|(R&& r, AdjVerticesView)
+    template<CleanAdjEdgesConcept R>
+    friend constexpr auto operator|(R&& r, AdjEdgesView)
     {
         if constexpr (IsPointer<R>)
-            return r->adjVertices();
+            return r->adjEdges();
         else
-            return r.adjVertices();
+            return r.adjEdges();
     }
 };
 
 } // namespace detail
 
 /**
- * @brief The adjVertices view allows to obtain a view that access to the
- * adjacent vertices of the object that has been piped. Every object having type
- * that satisfies the HasAdjacentVertices concept can be applied to this view.
+ * @brief The adjEdges view allows to obtain a view that access to the adjacent
+ * edges of the object that has been piped. Every object having type that
+ * satisfies the HasAdjacentEdges concept can be applied to this view.
  *
- * Resulting adjacent faces will be pointers to Vertices, that may be `nullptr`.
+ * Resulting adjacent edges will be pointers to Edges, that may be `nullptr`.
  * If you are interested only on the not-null pointers, you can use the
  * `notNull` view:
  *
  * @code{.cpp}
- * for (auto* av: v | views::adjVertices | views::notNull) { ... }
+ * for (auto* ae: f | views::adjEdges | views::notNull) { ... }
  * @endcode
  *
  * @ingroup views
  */
-inline constexpr detail::AdjVerticesView adjVertices;
+inline constexpr detail::AdjEdgesView adjEdges;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_ADJ_VERTICES_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H

@@ -30,7 +30,7 @@
 
 #include <vclib/space/graph/undirected_node.h>
 #include <vclib/types.h>
-#include <vclib/views/view.h>
+#include <vclib/types/view.h>
 
 #include "iterator/adjacent_left_node_iterator.h"
 #include "iterator/adjacent_right_node_iterator.h"

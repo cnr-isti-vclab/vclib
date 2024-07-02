@@ -31,7 +31,7 @@
 #include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>
-#include <vclib/views/mesh.h>
+#include <vclib/mesh/views.h>
 
 namespace vcl {
 

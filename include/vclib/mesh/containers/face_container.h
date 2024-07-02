@@ -26,8 +26,8 @@
 #include <vclib/mesh/containers/custom_component_vector_handle.h>
 #include <vclib/mesh/elements/face.h>
 #include <vclib/mesh/elements/face_components.h>
+#include <vclib/mesh/views.h>
 #include <vclib/space/polygon.h>
-#include <vclib/views/mesh.h>
 
 #include "element_container.h"
 

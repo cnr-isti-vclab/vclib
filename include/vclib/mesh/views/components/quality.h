@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_ELEMENTS_ELEMENT_H
-#define VCL_VIEWS_MESH_ELEMENTS_ELEMENT_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
+#define VCL_MESH_VIEWS_COMPONENTS_QUALITY_H
 
 #include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
@@ -32,32 +32,28 @@ namespace vcl::views {
 
 namespace detail {
 
-inline constexpr auto index = [](auto&& p) -> uint {
-    if constexpr (IsPointer<decltype(p)>) {
-        if (p == nullptr) [[unlikely]]
-            return UINT_NULL;
-        else
-            return p->index();
-    }
+inline constexpr auto quality = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->quality();
     else
-        return p.index();
+        return p.quality();
 };
 
-struct IndexView
+struct QualityView
 {
-    constexpr IndexView() = default;
+    constexpr QualityView() = default;
 
     template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, IndexView)
+    friend constexpr auto operator|(R&& r, QualityView)
     {
-        return std::forward<R>(r) | std::views::transform(index);
+        return std::forward<R>(r) | std::views::transform(quality);
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::IndexView indices;
+inline constexpr detail::QualityView quality;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_ELEMENTS_ELEMENT_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_QUALITY_H

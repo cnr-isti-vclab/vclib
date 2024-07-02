@@ -29,7 +29,7 @@
 #include <vclib/concepts/mesh/containers.h>
 #include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/iterators/mesh/element_container_iterator.h>
-#include <vclib/views/view.h>
+#include <vclib/types/view.h>
 
 #include "custom_component_vector_handle.h"
 #include "custom_components_vector_map.h"

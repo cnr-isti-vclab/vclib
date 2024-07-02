@@ -20,13 +20,52 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_ELEMENTS_H
-#define VCL_VIEWS_MESH_ELEMENTS_H
+#ifndef VCL_MESH_VIEWS_ELEMENTS_VERTEX_H
+#define VCL_MESH_VIEWS_ELEMENTS_VERTEX_H
 
-#include "elements/element.h"
+#include <vclib/concepts/mesh.h>
 
-#include "elements/edge.h"
-#include "elements/face.h"
-#include "elements/vertex.h"
+namespace vcl::views {
+namespace detail {
 
-#endif // VCL_VIEWS_MESH_ELEMENTS_H
+template<typename T>
+concept CleanMeshConcept = MeshConcept<std::remove_cvref_t<T>>;
+
+template<typename T>
+concept CleanVertexRefsConcept =
+    comp::HasVertexReferences<std::remove_cvref_t<T>>;
+
+struct VerticesView
+{
+    constexpr VerticesView() = default;
+
+    template<CleanMeshConcept R>
+    friend constexpr auto operator|(R&& r, VerticesView)
+    {
+        return r.vertices();
+    }
+
+    template<CleanVertexRefsConcept R>
+    friend constexpr auto operator|(R&& r, VerticesView)
+    {
+        return r.vertices();
+    }
+};
+
+} // namespace detail
+
+/**
+ * @brief A view that allows to iterate over the Vertex elements of an object.
+ *
+ * This view can be applied to objects having type that satisfies one of the
+ * following concepts:
+ * - MeshConcept
+ * - HasVertexReferences
+ *
+ * @ingroup views
+ */
+inline constexpr detail::VerticesView vertices;
+
+} // namespace vcl::views
+
+#endif // VCL_MESH_VIEWS_ELEMENTS_VERTEX_H

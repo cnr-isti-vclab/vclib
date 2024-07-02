@@ -23,7 +23,8 @@
 #ifndef VCL_CONCEPTS_SPACE_COLOR_H
 #define VCL_CONCEPTS_SPACE_COLOR_H
 
-#include "point.h"
+#include <concepts>
+#include <cstdint>
 
 namespace vcl {
 

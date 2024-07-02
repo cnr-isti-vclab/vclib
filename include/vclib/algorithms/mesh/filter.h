@@ -27,7 +27,6 @@
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/comparators.h>
-#include <vclib/views.h>
 
 namespace vcl {
 

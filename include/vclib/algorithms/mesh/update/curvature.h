@@ -38,7 +38,6 @@
 #include <vclib/misc/parallel.h>
 #include <vclib/space/grid.h>
 #include <vclib/space/principal_curvature.h>
-#include <vclib/views.h>
 
 namespace vcl {
 

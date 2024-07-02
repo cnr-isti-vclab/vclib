@@ -20,40 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_NORMALS_H
-#define VCL_VIEWS_MESH_COMPONENTS_NORMALS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_H
+#define VCL_MESH_VIEWS_COMPONENTS_H
 
-#include <vclib/concepts/pointers.h>
-#include <vclib/types.h>
+#include "components/adj_edges.h"
+#include "components/adj_faces.h"
+#include "components/adj_vertices.h"
+#include "components/colors.h"
+#include "components/coords.h"
+#include "components/normals.h"
+#include "components/quality.h"
+#include "components/selection.h"
+#include "components/tex_coords.h"
 
-#include <ranges>
-
-namespace vcl::views {
-
-namespace detail {
-
-inline constexpr auto normal = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->normal();
-    else
-        return p.normal();
-};
-
-struct NormalsView
-{
-    constexpr NormalsView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, NormalsView)
-    {
-        return std::forward<R>(r) | std::views::transform(normal);
-    }
-};
-
-} // namespace detail
-
-inline constexpr detail::NormalsView normals;
-
-} // namespace vcl::views
-
-#endif // VCL_VIEWS_MESH_COMPONENTS_NORMALS_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_H

@@ -20,52 +20,55 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
-#define VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
+#define VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
 
-#include <vclib/concepts.h>
+#include <vclib/concepts/mesh.h>
+#include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
+
+#include <ranges>
 
 namespace vcl::views {
 
 namespace detail {
 
 template<typename T>
-concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<std::remove_cvref_t<T>>;
+concept CleanWedgeTexCoordsConcept =
+    comp::HasWedgeTexCoords<std::remove_cvref_t<T>>;
 
-struct AdjEdgesView
+inline constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->texCoord();
+    else
+        return p.texCoord();
+};
+
+struct TexCoordsView
 {
-    constexpr AdjEdgesView() = default;
+    constexpr TexCoordsView() = default;
 
-    template<CleanAdjEdgesConcept R>
-    friend constexpr auto operator|(R&& r, AdjEdgesView)
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, TexCoordsView)
+    {
+        using ElemType = std::ranges::range_value_t<R>;
+        return std::forward<R>(r) | std::views::transform(texCoord);
+    }
+
+    template<CleanWedgeTexCoordsConcept R>
+    friend constexpr auto operator|(R&& r, TexCoordsView)
     {
         if constexpr (IsPointer<R>)
-            return r->adjEdges();
+            return r->wedgeTexCoords();
         else
-            return r.adjEdges();
+            return r.wedgeTexCoords();
     }
 };
 
 } // namespace detail
 
-/**
- * @brief The adjEdges view allows to obtain a view that access to the adjacent
- * edges of the object that has been piped. Every object having type that
- * satisfies the HasAdjacentEdges concept can be applied to this view.
- *
- * Resulting adjacent edges will be pointers to Edges, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the
- * `notNull` view:
- *
- * @code{.cpp}
- * for (auto* ae: f | views::adjEdges | views::notNull) { ... }
- * @endcode
- *
- * @ingroup views
- */
-inline constexpr detail::AdjEdgesView adjEdges;
+inline constexpr detail::TexCoordsView texCoords;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H

@@ -26,7 +26,7 @@
 #include <vclib/math/base.h>
 #include <vclib/math/histogram.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/views/mesh.h>
+#include <vclib/mesh/views.h>
 
 namespace vcl {
 

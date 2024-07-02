@@ -20,17 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_COMPONENTS_H
-#define VCL_VIEWS_MESH_COMPONENTS_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
+#define VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
 
-#include "components/adj_edges.h"
-#include "components/adj_faces.h"
-#include "components/adj_vertices.h"
-#include "components/colors.h"
-#include "components/coords.h"
-#include "components/normals.h"
-#include "components/quality.h"
-#include "components/selection.h"
-#include "components/tex_coords.h"
+#include <vclib/concepts/pointers.h>
+#include <vclib/types.h>
 
-#endif // VCL_VIEWS_MESH_COMPONENTS_H
+#include <ranges>
+
+namespace vcl::views {
+
+namespace detail {
+
+inline constexpr auto principalCurvature = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->principalCurvature();
+    else
+        return p.principalCurvature();
+};
+
+struct PrincipalCurvaturesView
+{
+    constexpr PrincipalCurvaturesView() = default;
+
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, PrincipalCurvaturesView)
+    {
+        return std::forward<R>(r) | std::views::transform(principalCurvature);
+    }
+};
+
+} // namespace detail
+
+inline constexpr detail::PrincipalCurvaturesView principalCurvatures;
+
+} // namespace vcl::views
+
+#endif // VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H

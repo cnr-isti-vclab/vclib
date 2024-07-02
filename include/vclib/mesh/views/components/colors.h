@@ -20,40 +20,53 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_ELEMENTS_EDGE_H
-#define VCL_VIEWS_MESH_ELEMENTS_EDGE_H
+#ifndef VCL_MESH_VIEWS_COMPONENTS_COLORS_H
+#define VCL_MESH_VIEWS_COMPONENTS_COLORS_H
 
 #include <vclib/concepts/mesh.h>
+#include <vclib/concepts/pointers.h>
+#include <vclib/types.h>
+
+#include <ranges>
 
 namespace vcl::views {
+
 namespace detail {
 
 template<typename T>
-concept CleanEdgeMeshConcept = EdgeMeshConcept<std::remove_cvref_t<T>>;
+concept CleanWedgeColorsConcept = comp::HasWedgeColors<std::remove_cvref_t<T>>;
 
-struct EdgesView
+inline constexpr auto color = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->color();
+    else
+        return p.color();
+};
+
+struct ColorsView
 {
-    constexpr EdgesView() = default;
+    constexpr ColorsView() = default;
 
-    template<CleanEdgeMeshConcept R>
-    friend constexpr auto operator|(R&& r, EdgesView)
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, ColorsView)
     {
-        return r.edges();
+        return std::forward<R>(r) | std::views::transform(color);
+    }
+
+    template<CleanWedgeColorsConcept R>
+    friend constexpr auto operator|(R&& r, ColorsView)
+    {
+        if constexpr (IsPointer<R>)
+            return r->wedgeColors();
+        else
+            return r.wedgeColors();
     }
 };
 
 } // namespace detail
 
-/**
- * @brief A view that allows to iterate overt the Edge elements of an object.
- *
- * This view can be applied to objects having type that satisfies the
- * EdgeMeshConcept.
- *
- * @ingroup views
- */
-inline constexpr detail::EdgesView edges;
+inline constexpr detail::ColorsView colors;
 
 } // namespace vcl::views
 
-#endif // VCL_VIEWS_MESH_ELEMENTS_EDGE_H
+#endif // VCL_MESH_VIEWS_COMPONENTS_COLORS_H

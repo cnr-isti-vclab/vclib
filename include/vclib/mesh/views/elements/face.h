@@ -20,10 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_VIEWS_MESH_H
-#define VCL_VIEWS_MESH_H
+#ifndef VCL_MESH_VIEWS_ELEMENTS_FACE_H
+#define VCL_MESH_VIEWS_ELEMENTS_FACE_H
 
-#include "mesh/components.h"
-#include "mesh/elements.h"
+#include <vclib/concepts/mesh.h>
 
-#endif // VCL_VIEWS_MESH_H
+namespace vcl::views {
+namespace detail {
+
+template<typename T>
+concept CleanFaceMeshConcept = FaceMeshConcept<std::remove_cvref_t<T>>;
+
+struct FacesView
+{
+    constexpr FacesView() = default;
+
+    template<CleanFaceMeshConcept R>
+    friend constexpr auto operator|(R&& r, FacesView)
+    {
+        return r.faces();
+    }
+};
+
+} // namespace detail
+
+/**
+ * @brief A view that allows to iterate overt the Face elements of an object.
+ *
+ * This view can be applied to objects having type that satisfies the
+ * FaceMeshConcept.
+ *
+ * @ingroup views
+ */
+inline constexpr detail::FacesView faces;
+
+} // namespace vcl::views
+
+#endif // VCL_MESH_VIEWS_ELEMENTS_FACE_H
