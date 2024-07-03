@@ -29,8 +29,8 @@
 #include <vclib/concepts/ranges/mesh/vertex_range.h>
 
 #include "abstract_grid.h"
-#include "regular_grid.h"
 #include "iterators/static_grid_iterator.h"
+#include "regular_grid.h"
 
 namespace vcl {
 
