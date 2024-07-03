@@ -20,45 +20,68 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_CAPABILITY_H
-#define VCL_IO_PLY_CAPABILITY_H
+#ifndef VCL_LOAD_SAVE_PLY_DETAIL_PLY_H
+#define VCL_LOAD_SAVE_PLY_DETAIL_PLY_H
 
-#include <vclib/mesh/utils/mesh_info.h>
+#include <list>
 
-namespace vcl {
+#include <vclib/misc/tokenizer.h>
 
-inline MeshInfo plyFormatCapability()
+namespace vcl::detail {
+
+// put all these enumeration names inside a ply namespace, to avoid collisions
+
+namespace ply {
+
+typedef enum { ASCII, BINARY_LITTLE_ENDIAN, BINARY_BIG_ENDIAN, UNKNOWN } Format;
+
+typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
+
+typedef enum { RGB, RGBA } ColorMode;
+
+typedef enum {
+    unknown = -1,
+    x,
+    y,
+    z,
+    nx,
+    ny,
+    nz,
+    red,
+    green,
+    blue,
+    alpha,
+    quality,
+    texture_u,
+    texture_v,
+    texnumber,
+    vertex_indices,
+    texcoord,
+    vertex1,
+    vertex2
+} PropertyName;
+
+using PropertyType = vcl::PrimitiveType;
+
+} // namespace ply
+
+struct PlyProperty
 {
-    MeshInfo info;
+    ply::PropertyName name;
+    ply::PropertyType type;
+    bool              list = false;
+    ply::PropertyType listSizeType;
+    std::string       unknownPropertyName; // when a property is not recognized
+};
 
-    info.setPolygonMesh();
+struct PlyElement
+{
+    ply::ElementType       type;
+    std::list<PlyProperty> properties;
+    uint                   numberElements;
+    std::string unknownElementType; // when an element is not recognized
+};
 
-    info.setVertices();
-    info.setFaces();
-    info.setEdges();
+} // namespace vcl::detail
 
-    info.setTextures();
-
-    info.setVertexCoords();
-    info.setVertexNormals();
-    info.setVertexColors();
-    info.setVertexQuality();
-    info.setVertexTexCoords();
-    info.setVertexCustomComponents();
-
-    info.setFaceVRefs();
-    info.setFaceColors();
-    info.setFaceNormals();
-    info.setFaceQuality();
-    info.setFaceWedgeTexCoords();
-    info.setFaceCustomComponents();
-
-    info.setEdgeVRefs();
-    info.setEdgeColors();
-
-    return info;
-}
-
-} // namespace vcl
-
-#endif // VCL_IO_PLY_CAPABILITY_H
+#endif // VCL_LOAD_SAVE_PLY_DETAIL_PLY_H

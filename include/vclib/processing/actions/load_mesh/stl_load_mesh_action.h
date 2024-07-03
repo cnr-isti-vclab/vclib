@@ -24,7 +24,7 @@
 #define VCL_PROCESSING_ACTIONS_LOAD_MESH_STL_LOAD_MESH_ACTION_H
 
 #include <vclib/algorithms/mesh/clean.h>
-#include <vclib/io/mesh/stl/load.h>
+#include <vclib/load_save/stl/load.h>
 #include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/actions/interfaces/load_mesh_action.h>
 #include <vclib/processing/functions.h>

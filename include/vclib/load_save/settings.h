@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_MESH_SETTINGS_H
-#define VCL_IO_MESH_SETTINGS_H
+#ifndef VCL_LOAD_SAVE_SETTINGS_H
+#define VCL_LOAD_SAVE_SETTINGS_H
 
 #include <vclib/mesh/utils/mesh_info.h>
 
@@ -100,4 +100,4 @@ struct SaveSettings
 
 } // namespace vcl
 
-#endif // VCL_IO_MESH_SETTINGS_H
+#endif // VCL_LOAD_SAVE_SETTINGS_H

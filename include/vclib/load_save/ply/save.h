@@ -20,11 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_SAVE_H
-#define VCL_IO_PLY_SAVE_H
+#ifndef VCL_LOAD_SAVE_PLY_SAVE_H
+#define VCL_LOAD_SAVE_PLY_SAVE_H
 
 #include <vclib/exceptions/io.h>
-#include <vclib/io/mesh/settings.h>
+#include <vclib/load_save/settings.h>
 #include <vclib/misc/logger.h>
 
 #include "detail/edge.h"
@@ -122,4 +122,4 @@ void savePly(
 
 } // namespace vcl
 
-#endif // VCL_IO_PLY_SAVE_H
+#endif // VCL_LOAD_SAVE_PLY_SAVE_H

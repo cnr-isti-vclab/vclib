@@ -23,8 +23,8 @@
 #ifndef VCL_PROCESSING_ACTIONS_SAVE_MESH_PLY_SAVE_MESH_ACTION_H
 #define VCL_PROCESSING_ACTIONS_SAVE_MESH_PLY_SAVE_MESH_ACTION_H
 
-#include <vclib/io/mesh/ply/capability.h>
-#include <vclib/io/mesh/ply/save.h>
+#include <vclib/load_save/ply/capability.h>
+#include <vclib/load_save/ply/save.h>
 #include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/actions/interfaces/save_mesh_action.h>
 #include <vclib/processing/functions.h>

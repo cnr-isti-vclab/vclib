@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_STL_CAPABILITY_H
-#define VCL_IO_STL_CAPABILITY_H
+#ifndef VCL_LOAD_SAVE_STL_CAPABILITY_H
+#define VCL_LOAD_SAVE_STL_CAPABILITY_H
 
 #include <vclib/mesh/utils/mesh_info.h>
 
@@ -48,4 +48,4 @@ inline MeshInfo stlFormatCapability()
 
 } // namespace vcl
 
-#endif // VCL_IO_STL_CAPABILITY_H
+#endif // VCL_LOAD_SAVE_STL_CAPABILITY_H

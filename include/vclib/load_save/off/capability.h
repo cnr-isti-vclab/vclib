@@ -19,33 +19,34 @@
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
-#ifndef VCL_IO_MESH_H
-#define VCL_IO_MESH_H
 
-#include "mesh/capability.h"
-#include "mesh/load.h"
-#include "mesh/save.h"
+#ifndef VCL_LOAD_SAVE_OFF_CAPABILITY_H
+#define VCL_LOAD_SAVE_OFF_CAPABILITY_H
 
-/**
- * @defgroup load_save Load/Save functions
- * @ingroup io
- *
- * @brief List of functions that allow to load from file or save to a file an
- * input Mesh.
- */
+#include <vclib/mesh/utils/mesh_info.h>
 
-/**
- * @defgroup load Load functions
- * @ingroup load_save
- *
- * @brief List of functions that allow to load from file an input Mesh.
- */
+namespace vcl {
 
-/**
- * @defgroup save Save functions
- * @ingroup load_save
- *
- * @brief List of functions that allow to save to file an input Mesh.
- */
+inline MeshInfo offFormatCapability()
+{
+    MeshInfo info;
 
-#endif // VCL_IO_MESH_H
+    info.setPolygonMesh();
+
+    info.setVertices();
+    info.setFaces();
+
+    info.setVertexCoords();
+    info.setVertexNormals();
+    info.setVertexColors();
+    info.setVertexTexCoords();
+
+    info.setFaceVRefs();
+    info.setFaceColors();
+
+    return info;
+}
+
+} // namespace vcl
+
+#endif // VCL_LOAD_SAVE_OFF_CAPABILITY_H

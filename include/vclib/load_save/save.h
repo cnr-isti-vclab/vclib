@@ -20,39 +20,59 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_CAPABILITY_H
-#define VCL_IO_CAPABILITY_H
+#ifndef VCL_LOAD_SAVE_SAVE_H
+#define VCL_LOAD_SAVE_SAVE_H
 
-#include <vclib/exceptions/io.h>
-#include <vclib/misc/string.h>
+#include "obj/save.h"
+#include "off/save.h"
+#include "ply/save.h"
+#include "stl/save.h"
 
-#include "obj/capability.h"
-#include "off/capability.h"
-#include "ply/capability.h"
-#include "stl/capability.h"
+/**
+ * @defgroup save Save functions
+ * @ingroup load_save
+ *
+ * @brief List of functions that allow to save to file an input Mesh.
+ */
 
 namespace vcl {
 
-inline MeshInfo formatCapability(const std::string& format)
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void save(
+    const MeshType&     m,
+    const std::string&  filename,
+    LogType&            log      = nullLogger,
+    const SaveSettings& settings = SaveSettings())
 {
-    std::string ext = vcl::toLower(format);
-    if (ext == "obj") {
-        return objFormatCapability();
+    std::string ext = FileInfo::extension(filename);
+    ext             = vcl::toLower(ext);
+    if (ext == ".obj") {
+        saveObj(m, filename, log, settings);
     }
-    else if (ext == "off") {
-        return offFormatCapability();
+    else if (ext == ".off") {
+        saveOff(m, filename, log, settings);
     }
-    else if (ext == "ply") {
-        return plyFormatCapability();
+    else if (ext == ".ply") {
+        savePly(m, filename, log, settings);
     }
-    else if (ext == "stl") {
-        return stlFormatCapability();
+    else if (ext == ".stl") {
+        saveStl(m, filename, log, settings);
     }
     else {
         throw vcl::UnknownFileFormatException(ext);
     }
 }
 
+template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
+void save(
+    const MeshType&     m,
+    const std::string&  filename,
+    const SaveSettings& settings,
+    LogType&            log = nullLogger)
+{
+    save(m, filename, log, settings);
+}
+
 } // namespace vcl
 
-#endif // VCL_IO_CAPABILITY_H
+#endif // VCL_LOAD_SAVE_SAVE_H

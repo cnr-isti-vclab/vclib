@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PLY_VERTEX_H
-#define VCL_PLY_VERTEX_H
+#ifndef VCL_LOAD_SAVE_PLY_DETAIL_VERTEX_H
+#define VCL_LOAD_SAVE_PLY_DETAIL_VERTEX_H
 
 #include <fstream>
 
@@ -246,4 +246,4 @@ void readPlyVertices(
 
 } // namespace vcl::detail
 
-#endif // VCL_PLY_VERTEX_H
+#endif // VCL_LOAD_SAVE_PLY_DETAIL_VERTEX_H

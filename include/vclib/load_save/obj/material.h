@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_OBJ_MATERIAL_H
-#define VCL_IO_OBJ_MATERIAL_H
+#ifndef VCL_LOAD_SAVE_OBJ_MATERIAL_H
+#define VCL_LOAD_SAVE_OBJ_MATERIAL_H
 
 #include <vclib/space/color.h>
 #include <vclib/space/point.h>
@@ -142,4 +142,4 @@ inline std::ostream& operator<<(std::ostream& out, const ObjMaterial& m)
 
 } // namespace vcl::detail
 
-#endif // VCL_IO_OBJ_MATERIAL_H
+#endif // VCL_LOAD_SAVE_OBJ_MATERIAL_H

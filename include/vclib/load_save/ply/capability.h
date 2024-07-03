@@ -20,52 +20,45 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_SAVE_H
-#define VCL_IO_SAVE_H
+#ifndef VCL_LOAD_SAVE_PLY_CAPABILITY_H
+#define VCL_LOAD_SAVE_PLY_CAPABILITY_H
 
-#include "obj/save.h"
-#include "off/save.h"
-#include "ply/save.h"
-#include "stl/save.h"
+#include <vclib/mesh/utils/mesh_info.h>
 
 namespace vcl {
 
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
-    const MeshType&     m,
-    const std::string&  filename,
-    LogType&            log      = nullLogger,
-    const SaveSettings& settings = SaveSettings())
+inline MeshInfo plyFormatCapability()
 {
-    std::string ext = FileInfo::extension(filename);
-    ext             = vcl::toLower(ext);
-    if (ext == ".obj") {
-        saveObj(m, filename, log, settings);
-    }
-    else if (ext == ".off") {
-        saveOff(m, filename, log, settings);
-    }
-    else if (ext == ".ply") {
-        savePly(m, filename, log, settings);
-    }
-    else if (ext == ".stl") {
-        saveStl(m, filename, log, settings);
-    }
-    else {
-        throw vcl::UnknownFileFormatException(ext);
-    }
-}
+    MeshInfo info;
 
-template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
-void save(
-    const MeshType&     m,
-    const std::string&  filename,
-    const SaveSettings& settings,
-    LogType&            log = nullLogger)
-{
-    save(m, filename, log, settings);
+    info.setPolygonMesh();
+
+    info.setVertices();
+    info.setFaces();
+    info.setEdges();
+
+    info.setTextures();
+
+    info.setVertexCoords();
+    info.setVertexNormals();
+    info.setVertexColors();
+    info.setVertexQuality();
+    info.setVertexTexCoords();
+    info.setVertexCustomComponents();
+
+    info.setFaceVRefs();
+    info.setFaceColors();
+    info.setFaceNormals();
+    info.setFaceQuality();
+    info.setFaceWedgeTexCoords();
+    info.setFaceCustomComponents();
+
+    info.setEdgeVRefs();
+    info.setEdgeColors();
+
+    return info;
 }
 
 } // namespace vcl
 
-#endif // VCL_IO_SAVE_H
+#endif // VCL_LOAD_SAVE_PLY_CAPABILITY_H

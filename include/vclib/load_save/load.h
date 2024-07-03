@@ -20,13 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_LOAD_H
-#define VCL_IO_LOAD_H
+#ifndef VCL_LOAD_SAVE_LOAD_H
+#define VCL_LOAD_SAVE_LOAD_H
 
 #include "obj/load.h"
 #include "off/load.h"
 #include "ply/load.h"
 #include "stl/load.h"
+
+/**
+ * @defgroup load Load functions
+ * @ingroup load_save
+ *
+ * @brief List of functions that allow to load from file an input Mesh.
+ */
 
 namespace vcl {
 
@@ -206,4 +213,4 @@ MeshType load(
 
 } // namespace vcl
 
-#endif // VCL_IO_LOAD_H
+#endif // VCL_LOAD_SAVE_LOAD_H

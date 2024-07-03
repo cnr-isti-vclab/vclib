@@ -20,15 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_OBJ_LOAD_H
-#define VCL_IO_OBJ_LOAD_H
+#ifndef VCL_LOAD_SAVE_OBJ_LOAD_H
+#define VCL_LOAD_SAVE_OBJ_LOAD_H
 
 #include <map>
 
 #include <vclib/algorithms/mesh/polygon.h>
 #include <vclib/io/file_info.h>
-#include <vclib/io/mesh/settings.h>
 #include <vclib/io/read.h>
+#include <vclib/load_save/settings.h>
 #include <vclib/mesh/utils/mesh_info.h>
 #include <vclib/misc/logger.h>
 #include <vclib/space/texture.h>
@@ -954,4 +954,4 @@ MeshType loadObj(
 
 } // namespace vcl
 
-#endif // VCL_IO_OBJ_LOAD_H
+#endif // VCL_LOAD_SAVE_OBJ_LOAD_H

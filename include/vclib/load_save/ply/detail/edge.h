@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_EDGE_H
-#define VCL_IO_PLY_EDGE_H
+#ifndef VCL_LOAD_SAVE_PLY_DETAIL_EDGE_H
+#define VCL_LOAD_SAVE_PLY_DETAIL_EDGE_H
 
 #include <vclib/io/write.h>
 #include <vclib/misc/tokenizer.h>
@@ -73,4 +73,4 @@ void writePlyEdges(
 
 } // namespace vcl::detail
 
-#endif // VCL_IO_PLY_EDGE_H
+#endif // VCL_LOAD_SAVE_PLY_DETAIL_EDGE_H

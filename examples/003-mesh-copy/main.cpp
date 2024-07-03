@@ -23,7 +23,7 @@
 #include <iostream>
 
 #include <vclib/algorithms.h>
-#include <vclib/io/mesh.h>
+#include <vclib/load_save.h>
 #include <vclib/meshes.h>
 
 int main()

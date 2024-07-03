@@ -20,16 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_EXTRA_H
-#define VCL_IO_PLY_EXTRA_H
+#ifndef VCL_LOAD_SAVE_PLY_DETAIL_EXTRA_H
+#define VCL_LOAD_SAVE_PLY_DETAIL_EXTRA_H
 
 #include <fstream>
 
 #include <vclib/exceptions/io.h>
-#include <vclib/io/mesh/settings.h>
+#include <vclib/load_save/settings.h>
 #include <vclib/io/read.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/logger.h>
+#include <vclib/space/texture.h>
 
 #include "header.h"
 
@@ -125,4 +126,4 @@ void readPlyUnknownElement(
 
 } // namespace vcl::detail
 
-#endif // VCL_IO_PLY_EXTRA_H
+#endif // VCL_LOAD_SAVE_PLY_DETAIL_EXTRA_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_TRISTRIP_H
-#define VCL_IO_PLY_TRISTRIP_H
+#ifndef VCL_LOAD_SAVE_PLY_DETAIL_TRISTRIP_H
+#define VCL_LOAD_SAVE_PLY_DETAIL_TRISTRIP_H
 
 #include <istream>
 
@@ -158,4 +158,4 @@ void readPlyTriStrips(
 
 } // namespace vcl::detail
 
-#endif // VCL_IO_PLY_TRISTRIP_H
+#endif // VCL_LOAD_SAVE_PLY_DETAIL_TRISTRIP_H

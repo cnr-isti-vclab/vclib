@@ -23,7 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_LOAD_MESH_PLY_LOAD_MESH_ACTION_H
 #define VCL_PROCESSING_ACTIONS_LOAD_MESH_PLY_LOAD_MESH_ACTION_H
 
-#include <vclib/io/mesh/ply/load.h>
+#include <vclib/load_save/ply/load.h>
 #include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/actions/interfaces/load_mesh_action.h>
 #include <vclib/processing/functions.h>

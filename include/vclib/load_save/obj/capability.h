@@ -20,68 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_IO_PLY_H
-#define VCL_IO_PLY_H
+#ifndef VCL_LOAD_SAVE_OBJ_CAPABILITY_H
+#define VCL_LOAD_SAVE_OBJ_CAPABILITY_H
 
-#include <list>
+#include <vclib/mesh/utils/mesh_info.h>
 
-#include <vclib/misc/tokenizer.h>
+namespace vcl {
 
-namespace vcl::detail {
-
-// put all these enumeration names inside a ply namespace, to avoid collisions
-
-namespace ply {
-
-typedef enum { ASCII, BINARY_LITTLE_ENDIAN, BINARY_BIG_ENDIAN, UNKNOWN } Format;
-
-typedef enum { VERTEX, FACE, EDGE, TRISTRIP, MATERIAL, OTHER } ElementType;
-
-typedef enum { RGB, RGBA } ColorMode;
-
-typedef enum {
-    unknown = -1,
-    x,
-    y,
-    z,
-    nx,
-    ny,
-    nz,
-    red,
-    green,
-    blue,
-    alpha,
-    quality,
-    texture_u,
-    texture_v,
-    texnumber,
-    vertex_indices,
-    texcoord,
-    vertex1,
-    vertex2
-} PropertyName;
-
-using PropertyType = vcl::PrimitiveType;
-
-} // namespace ply
-
-struct PlyProperty
+inline MeshInfo objFormatCapability()
 {
-    ply::PropertyName name;
-    ply::PropertyType type;
-    bool              list = false;
-    ply::PropertyType listSizeType;
-    std::string       unknownPropertyName; // when a property is not recognized
-};
+    MeshInfo info;
 
-struct PlyElement
-{
-    ply::ElementType       type;
-    std::list<PlyProperty> properties;
-    uint                   numberElements;
-    std::string unknownElementType; // when an element is not recognized
-};
+    info.setPolygonMesh();
 
-} // namespace vcl::detail
+    info.setVertices();
+    info.setFaces();
+    info.setEdges();
 
-#endif // VCL_IO_PLY_H
+    info.setTextures();
+
+    info.setVertexCoords();
+    info.setVertexNormals();
+    info.setVertexColors();
+    info.setVertexTexCoords();
+
+    info.setFaceVRefs();
+    info.setFaceColors();
+    info.setFaceWedgeTexCoords();
+
+    info.setEdgeVRefs();
+    info.setEdgeColors();
+
+    return info;
+}
+
+} // namespace vcl
+
+#endif // VCL_LOAD_SAVE_OBJ_CAPABILITY_H
