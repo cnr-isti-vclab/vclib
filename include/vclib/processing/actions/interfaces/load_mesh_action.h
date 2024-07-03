@@ -26,7 +26,7 @@
 #include "mesh_action.h"
 
 #include <vclib/algorithms/mesh/update.h>
-#include <vclib/mesh/utils/mesh_info.h>
+#include <vclib/mesh_aux/mesh_info.h>
 #include <vclib/processing/actions/common/file_format.h>
 #include <vclib/processing/meshes.h>
 #include <vclib/processing/settings.h>

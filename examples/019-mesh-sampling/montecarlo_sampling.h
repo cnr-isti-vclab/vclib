@@ -24,6 +24,7 @@
 #define MONTECARLO_SAMPLING_H
 
 #include <vclib/algorithms.h>
+#include <vclib/mesh_aux.h>
 #include <vclib/meshes.h>
 
 void montecarloSampling(const vcl::TriMesh& m, vcl::TriMesh& samples)

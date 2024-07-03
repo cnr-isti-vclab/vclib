@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_UTILS_MESH_INERTIA_H
-#define VCL_MESH_UTILS_MESH_INERTIA_H
+#ifndef VCL_MESH_AUX_MESH_INERTIA_H
+#define VCL_MESH_AUX_MESH_INERTIA_H
 
 #include <Eigen/Eigenvalues>
 
@@ -32,11 +32,8 @@
 namespace vcl {
 
 /**
- * @brief The MeshInertia class
- *
- * Methods for computing Polyhedral Mass properties (like inertia tensor,
- * volume, etc)
- *
+ * @brief The MeshInertia class provides several for computing Polyhedral Mass
+ * properties (like inertia tensor, volume, etc).
  *
  * The algorithm is based on a three step reduction of the volume integrals
  * to successively simpler integrals. The algorithm is designed to minimize
@@ -51,6 +48,8 @@ namespace vcl {
  * <b>Brian Mirtich,</b>
  * ``Fast and Accurate Computation of Polyhedral Mass Properties,''
  * journal of graphics tools, volume 1, number 2, 1996
+ *
+ * @ingroup mesh_aux
  */
 template<FaceMeshConcept MeshType>
 class MeshInertia
@@ -307,4 +306,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_MESH_UTILS_MESH_INERTIA_H
+#endif // VCL_MESH_AUX_MESH_INERTIA_H

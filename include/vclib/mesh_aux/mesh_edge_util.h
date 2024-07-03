@@ -20,23 +20,27 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_UTILS_MESH_EDGE_UTIL_H
-#define VCL_MESH_UTILS_MESH_EDGE_UTIL_H
+#ifndef VCL_MESH_AUX_MESH_EDGE_UTIL_H
+#define VCL_MESH_AUX_MESH_EDGE_UTIL_H
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/types.h>
 
 namespace vcl {
 
-/*
- * Utility class that stores, for an edge of the mesh:
+/**
+ * @brief Utility class that represents a edge in a Mesh.
+ *
+ * An instance of MeshEdgeUtil stores:
  * - the index of the edge in the face
  * - the pointer of the face
- * - the pointers of the vertices of the edge
+ * - the pointers of the vertices of the edge.
  *
- * edges can be sorted using this class
+ * Edges can be sorted using this class
  *
  * TODO: unify these two classes with a template parameter for constness
+ *
+ * @ingroup mesh_aux
  */
 template<FaceMeshConcept MeshType>
 class MeshEdgeUtil
@@ -132,4 +136,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MESH_UTILS_MESH_EDGE_UTIL_H
+#endif // VCL_MESH_AUX_MESH_EDGE_UTIL_H

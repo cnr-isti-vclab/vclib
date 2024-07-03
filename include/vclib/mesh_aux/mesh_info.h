@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_UTILS_MESH_INFO_H
-#define VCL_MESH_UTILS_MESH_INFO_H
+#ifndef VCL_MESH_AUX_MESH_INFO_H
+#define VCL_MESH_AUX_MESH_INFO_H
 
 #include <array>
 #include <bitset>
@@ -60,17 +60,17 @@ namespace vcl {
  *
  * @code{.cpp}
  * AMeshType m;
- * MeshInfo info(m); // compute the default MeshInfo object from the
- * Mesh
+ * MeshInfo info(m); // compute the default MeshInfo object from the Mesh
  *
  * info.setVertexCoords(true, MeshInfo::FLOAT); // force to store vertex
- * coords using floats info.setVertexColors(false); // do not store
+ *                                              // coords using floats
+ * info.setVertexColors(false); // do not store vertex colors
  *
  * vcl::save(m, "meshfile.ply", info);
  * @endcode
  *
  * @ingroup load_save
- * @ingroup miscellaneous
+ * @ingroup mesh_aux
  */
 class MeshInfo
 {
@@ -895,4 +895,4 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_MESH_UTILS_MESH_INFO_H
+#endif // VCL_MESH_AUX_MESH_INFO_H

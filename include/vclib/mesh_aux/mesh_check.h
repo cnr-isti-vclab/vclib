@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_UTILS_MESH_CHECK_H
-#define VCL_MESH_UTILS_MESH_CHECK_H
+#ifndef VCL_MESH_AUX_MESH_CHECK_H
+#define VCL_MESH_AUX_MESH_CHECK_H
 
 #include <vclib/concepts/mesh.h>
 #include <vclib/exceptions/mesh.h>
@@ -245,4 +245,4 @@ bool checkMeshPointers(const MeshType& mesh)
 
 } // namespace vcl
 
-#endif // VCL_MESH_UTILS_MESH_CHECK_H
+#endif // VCL_MESH_AUX_MESH_CHECK_H

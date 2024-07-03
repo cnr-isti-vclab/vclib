@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_UTILS_MESH_POS_H
-#define VCL_MESH_UTILS_MESH_POS_H
+#ifndef VCL_MESH_AUX_MESH_POS_H
+#define VCL_MESH_AUX_MESH_POS_H
 
 #include <vclib/mesh/components/adjacent_faces.h>
 #include <vclib/mesh/elements/face.h>
@@ -41,6 +41,8 @@ namespace vcl {
  * To be used, the MeshPos requires that the Mesh on which the given
  * Face-Vertex-Edge triplet is defined, has per Face Adjacent Faces topology
  * informtion.
+ *
+ * @ingroup mesh_aux
  */
 template<face::HasAdjacentFaces FaceType>
 class MeshPos
@@ -322,4 +324,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_MESH_UTILS_MESH_POS_H
+#endif // VCL_MESH_AUX_MESH_POS_H

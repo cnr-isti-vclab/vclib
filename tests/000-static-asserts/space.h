@@ -23,6 +23,7 @@
 #ifndef SPACE_H
 #define SPACE_H
 
+#include <vclib/mesh_aux.h>
 #include <vclib/meshes/detail/tmp_meshes.h>
 #include <vclib/space.h>
 

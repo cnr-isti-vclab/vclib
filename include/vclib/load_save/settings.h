@@ -23,7 +23,7 @@
 #ifndef VCL_LOAD_SAVE_SETTINGS_H
 #define VCL_LOAD_SAVE_SETTINGS_H
 
-#include <vclib/mesh/utils/mesh_info.h>
+#include <vclib/mesh_aux/mesh_info.h>
 
 namespace vcl {
 

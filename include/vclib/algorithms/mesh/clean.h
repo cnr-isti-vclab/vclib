@@ -31,7 +31,7 @@
 #include <vclib/algorithms/core/polygon/topology.h>
 #include <vclib/algorithms/mesh/sort.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/mesh/utils/mesh_pos.h>
+#include <vclib/mesh_aux/mesh_pos.h>
 
 /**
  * @defgroup clean Cleaning and Repairing Algorithms

@@ -20,10 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SAMPLER_H
-#define VCL_SPACE_SAMPLER_H
+#ifndef VCL_MESH_AUX_H
+#define VCL_MESH_AUX_H
 
-#include "sampler/point_sampler.h"
-#include "sampler/vertex_sampler.h"
+#include "mesh_aux/mesh_check.h"
+#include "mesh_aux/mesh_edge_util.h"
+#include "mesh_aux/mesh_inertia.h"
+#include "mesh_aux/mesh_pos.h"
+#include "mesh_aux/mesh_sampler.h"
+#include "mesh_aux/tri_poly_index_bimap.h"
 
-#endif // VCL_SPACE_SAMPLER_H
+/**
+ * @defgroup mesh_aux Mesh Auxiliary Data Structures and Utilities
+ *
+ * @brief TODO
+ */
+
+#endif // VCL_MESH_AUX_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_UTILS_TRI_POLY_INDEX_BIMAP_H
-#define VCL_MESH_UTILS_TRI_POLY_INDEX_BIMAP_H
+#ifndef VCL_MESH_AUX_TRI_POLY_INDEX_BIMAP_H
+#define VCL_MESH_AUX_TRI_POLY_INDEX_BIMAP_H
 
 #include <vector>
 
@@ -43,6 +43,8 @@ namespace vcl {
  * Insertion may have O(1) or O(n), depending on the size of the containers used
  * to store indices (same way of std::vector push_back() memeber function). You
  * can also reserve before, in order to be sure that the insertion will be O(1).
+ *
+ * @ingroup mesh_aux
  */
 class TriPolyIndexBiMap
 {
@@ -166,4 +168,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MESH_UTILS_TRI_POLY_INDEX_BIMAP_H
+#endif // VCL_MESH_AUX_TRI_POLY_INDEX_BIMAP_H

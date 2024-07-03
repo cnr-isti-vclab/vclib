@@ -28,8 +28,8 @@
 #include <vclib/concepts/mesh.h>
 #include <vclib/exceptions/mesh.h>
 #include <vclib/mesh/iterators/face/edge_adj_face_iterator.h>
-#include <vclib/mesh/utils/mesh_pos.h>
 #include <vclib/mesh/views.h>
+#include <vclib/mesh_aux/mesh_pos.h>
 #include <vclib/misc/comparators.h>
 #include <vclib/space/polygon.h>
 
