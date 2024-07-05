@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_AUX_MESH_EDGE_UTIL_H
-#define VCL_MESH_AUX_MESH_EDGE_UTIL_H
+#ifndef VCL_SPACE_COMPLEX_MESH_EDGE_UTIL_H
+#define VCL_SPACE_COMPLEX_MESH_EDGE_UTIL_H
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/types.h>
@@ -40,7 +40,7 @@ namespace vcl {
  *
  * TODO: unify these two classes with a template parameter for constness
  *
- * @ingroup mesh_aux
+ * @ingroup space_complex
  */
 template<FaceMeshConcept MeshType>
 class MeshEdgeUtil
@@ -136,4 +136,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MESH_AUX_MESH_EDGE_UTIL_H
+#endif // VCL_SPACE_COMPLEX_MESH_EDGE_UTIL_H

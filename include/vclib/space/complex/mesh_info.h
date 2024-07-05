@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_AUX_MESH_INFO_H
-#define VCL_MESH_AUX_MESH_INFO_H
+#ifndef VCL_SPACE_COMPLEX_MESH_INFO_H
+#define VCL_SPACE_COMPLEX_MESH_INFO_H
 
 #include <array>
 #include <bitset>
@@ -70,7 +70,7 @@ namespace vcl {
  * @endcode
  *
  * @ingroup load_save
- * @ingroup mesh_aux
+ * @ingroup space_complex
  */
 class MeshInfo
 {
@@ -895,4 +895,4 @@ void enableOptionalComponentsFromInfo(MeshInfo& info, MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_MESH_AUX_MESH_INFO_H
+#endif // VCL_SPACE_COMPLEX_MESH_INFO_H

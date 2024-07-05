@@ -23,7 +23,7 @@
 #ifndef VCL_LOAD_SAVE_STL_CAPABILITY_H
 #define VCL_LOAD_SAVE_STL_CAPABILITY_H
 
-#include <vclib/mesh_aux/mesh_info.h>
+#include <vclib/space/complex/mesh_info.h>
 
 namespace vcl {
 

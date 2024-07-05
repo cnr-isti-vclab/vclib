@@ -23,6 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_SAMPLER_H
 #define VCL_SPACE_COMPLEX_SAMPLER_H
 
+#include "sampler/mesh_sampler.h"
 #include "sampler/point_sampler.h"
 #include "sampler/vertex_sampler.h"
 

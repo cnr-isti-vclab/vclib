@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_AUX_MESH_INERTIA_H
-#define VCL_MESH_AUX_MESH_INERTIA_H
+#ifndef VCL_SPACE_COMPLEX_MESH_INERTIA_H
+#define VCL_SPACE_COMPLEX_MESH_INERTIA_H
 
 #include <Eigen/Eigenvalues>
 
@@ -49,7 +49,7 @@ namespace vcl {
  * ``Fast and Accurate Computation of Polyhedral Mass Properties,''
  * journal of graphics tools, volume 1, number 2, 1996
  *
- * @ingroup mesh_aux
+ * @ingroup space_complex
  */
 template<FaceMeshConcept MeshType>
 class MeshInertia
@@ -306,4 +306,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_MESH_AUX_MESH_INERTIA_H
+#endif // VCL_SPACE_COMPLEX_MESH_INERTIA_H

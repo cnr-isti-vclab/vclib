@@ -25,7 +25,7 @@
 
 #include <algorithm>
 
-#include <vclib/mesh_aux/mesh_edge_util.h>
+#include <vclib/space/complex/mesh_edge_util.h>
 #include <vclib/misc/parallel.h>
 
 namespace vcl {

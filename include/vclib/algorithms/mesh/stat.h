@@ -26,7 +26,7 @@
 #include <vector>
 
 #include <vclib/algorithms/core/polygon/geometry.h>
-#include <vclib/mesh_aux/mesh_inertia.h>
+#include <vclib/space/complex/mesh_inertia.h>
 #include <vclib/space/core/matrix.h>
 #include <vclib/space/core/polygon.h>
 

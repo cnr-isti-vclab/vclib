@@ -25,7 +25,7 @@
 
 #include <vclib/io/read.h>
 #include <vclib/load_save/settings.h>
-#include <vclib/mesh_aux/mesh_info.h>
+#include <vclib/space/complex/mesh_info.h>
 #include <vclib/misc/logger.h>
 
 namespace vcl {
