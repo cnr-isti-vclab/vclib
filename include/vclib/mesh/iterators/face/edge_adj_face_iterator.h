@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_ITERATORS_EDGE_ADJ_FACE_ITERATOR_H
-#define VCL_MESH_ITERATORS_EDGE_ADJ_FACE_ITERATOR_H
+#ifndef VCL_MESH_ITERATORS_FACE_EDGE_ADJ_FACE_ITERATOR_H
+#define VCL_MESH_ITERATORS_FACE_EDGE_ADJ_FACE_ITERATOR_H
 
 #include <iterator>
 
@@ -100,4 +100,4 @@ using ConstEdgeAdjFaceIterator = EdgeAdjFaceIterator<FaceType, true>;
 
 } // namespace vcl
 
-#endif // VCL_MESH_ITERATORS_EDGE_ADJ_FACE_ITERATOR_H
+#endif // VCL_MESH_ITERATORS_FACE_EDGE_ADJ_FACE_ITERATOR_H

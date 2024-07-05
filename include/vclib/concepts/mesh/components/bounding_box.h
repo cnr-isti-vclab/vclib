@@ -46,4 +46,4 @@ concept HasBoundingBox = requires (T o, const T& co) {
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_BOUNDING_BOX_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H

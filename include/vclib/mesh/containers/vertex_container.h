@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
-#define VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
+#ifndef VCL_MESH_CONTAINERS_VERTEX_CONTAINER_H
+#define VCL_MESH_CONTAINERS_VERTEX_CONTAINER_H
 
 #include <typeindex>
 #include <vclib/mesh/elements/vertex.h>
@@ -1097,4 +1097,4 @@ public:
 
 } // namespace vcl::mesh
 
-#endif // VCL_MESH_CONTAINER_VERTEX_CONTAINER_H
+#endif // VCL_MESH_CONTAINERS_VERTEX_CONTAINER_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef PARENT_MESH_POINTER_H
-#define PARENT_MESH_POINTER_H
+#ifndef VCL_MESH_COMPONENTS_PARENT_MESH_POINTER_H
+#define VCL_MESH_COMPONENTS_PARENT_MESH_POINTER_H
 
 namespace vcl::comp {
 
@@ -64,4 +64,4 @@ protected:
 
 } // namespace vcl::comp
 
-#endif // PARENT_MESH_POINTER_H
+#endif // VCL_MESH_COMPONENTS_PARENT_MESH_POINTER_H

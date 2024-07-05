@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESHES_TMP_MESHES_H
-#define VCL_MESHES_TMP_MESHES_H
+#ifndef VCL_MESHES_DETAIL_TMP_MESHES_H
+#define VCL_MESHES_DETAIL_TMP_MESHES_H
 
 #include <vclib/mesh/mesh.h>
 
@@ -85,4 +85,4 @@ class TMPSimplePolyMesh :
 
 } // namespace vcl::detail
 
-#endif // VCL_MESHES_TMP_MESHES_H
+#endif // VCL_MESHES_DETAIL_TMP_MESHES_H

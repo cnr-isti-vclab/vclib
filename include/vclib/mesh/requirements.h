@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_MESH_REQUIREMENTS_H
-#define VCL_MESH_MESH_REQUIREMENTS_H
+#ifndef VCL_MESH_REQUIREMENTS_H
+#define VCL_MESH_REQUIREMENTS_H
 
 #include "requirements/edge_requirements.h"
 #include "requirements/face_requirements.h"
@@ -36,4 +36,4 @@
  * and the availability of components in the Elements of a Mesh.
  */
 
-#endif // VCL_MESH_MESH_REQUIREMENTS_H
+#endif // VCL_MESH_REQUIREMENTS_H

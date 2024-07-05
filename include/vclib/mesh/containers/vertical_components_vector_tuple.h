@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_CONTAINER_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
-#define VCL_MESH_CONTAINER_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
+#ifndef VCL_MESH_CONTAINERS_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
+#define VCL_MESH_CONTAINERS_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
 
 #include <array>
 #include <tuple>
@@ -233,4 +233,4 @@ class VerticalComponentsVectorTuple<TypeWrapper<Comp...>> :
 
 } // namespace vcl::mesh
 
-#endif // VCL_MESH_CONTAINER_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
+#endif // VCL_MESH_CONTAINERS_VERTICAL_COMPONENTS_VECTOR_TUPLE_H

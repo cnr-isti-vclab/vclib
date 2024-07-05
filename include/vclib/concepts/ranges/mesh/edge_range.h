@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCLIB_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
-#define VCLIB_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
+#ifndef VCL_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
+#define VCL_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
 
 #include <vclib/concepts/mesh/elements/edge.h>
 #include <vclib/concepts/pointers.h>
@@ -61,4 +61,4 @@ concept EdgePointerRangeConcept =
 
 } // namespace vcl
 
-#endif // VCLIB_CONCEPTS_RANGES_MESH_EDGE_RANGE_H
+#endif // VCL_CONCEPTS_RANGES_MESH_EDGE_RANGE_H

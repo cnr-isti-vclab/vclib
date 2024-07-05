@@ -27,4 +27,4 @@
 #include "containers/face_container.h"
 #include "containers/vertex_container.h"
 
-#endif //  VCL_CONCEPTS_MESH_CONTAINERS_H
+#endif // VCL_CONCEPTS_MESH_CONTAINERS_H

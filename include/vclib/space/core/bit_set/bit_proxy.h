@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCLIB_SPACE_CORE_BIT_SET_BIT_PROXY_H
-#define VCLIB_SPACE_CORE_BIT_SET_BIT_PROXY_H
+#ifndef VCL_SPACE_CORE_BIT_SET_BIT_PROXY_H
+#define VCL_SPACE_CORE_BIT_SET_BIT_PROXY_H
 
 #include <concepts>
 #include <functional>
@@ -80,4 +80,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCLIB_SPACE_CORE_BIT_SET_BIT_PROXY_H
+#endif // VCL_SPACE_CORE_BIT_SET_BIT_PROXY_H

@@ -170,4 +170,4 @@ using TexCoordd = TexCoord<double, ElementType, OPT>;
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_TEXCOORD_H
+#endif // VCL_MESH_COMPONENTS_TEX_COORD_H

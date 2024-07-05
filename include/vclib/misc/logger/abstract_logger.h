@@ -234,4 +234,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_MISC_LOGGER_NULL_LOGGER_H
+#endif // VCL_MISC_LOGGER_ABSTRACT_LOGGER_H

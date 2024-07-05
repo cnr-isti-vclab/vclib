@@ -264,4 +264,4 @@ private:
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
+#endif // VCL_MESH_COMPONENTS_TEXTURE_IMAGES_H

@@ -113,4 +113,4 @@ concept HasFaceBitFlags = HasPolygonBitFlags<T> || HasTriangleBitFlags<T>;
 
 } // namespace vcl::comp
 
-#endif // VCL_MESH_COMPONENTS_CONCEPTS_BIT_FLAGS_H
+#endif // VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_COMPONENTS_INTERNAL_CUSTOM_COMPONENTS_DATA_H
-#define VCL_MESH_COMPONENTS_INTERNAL_CUSTOM_COMPONENTS_DATA_H
+#ifndef VCL_MESH_COMPONENTS_DETAIL_CUSTOM_COMPONENTS_DATA_H
+#define VCL_MESH_COMPONENTS_DETAIL_CUSTOM_COMPONENTS_DATA_H
 
 #include <any>
 #include <string>
@@ -187,4 +187,4 @@ private:
 
 } // namespace vcl::comp::detail
 
-#endif // VCL_MESH_COMPONENTS_INTERNAL_CUSTOM_COMPONENTS_DATA_H
+#endif // VCL_MESH_COMPONENTS_DETAIL_CUSTOM_COMPONENTS_DATA_H

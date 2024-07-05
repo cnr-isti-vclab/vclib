@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCLIB_CONCEPTS_RANGES_RANGE_H
-#define VCLIB_CONCEPTS_RANGES_RANGE_H
+#ifndef VCL_CONCEPTS_RANGES_RANGE_H
+#define VCL_CONCEPTS_RANGES_RANGE_H
 
 #include <ranges>
 
@@ -59,4 +59,4 @@ concept RangeOfConvertibleTo =
 
 } // namespace vcl
 
-#endif // VCLIB_CONCEPTS_RANGES_RANGE_H
+#endif // VCL_CONCEPTS_RANGES_RANGE_H
