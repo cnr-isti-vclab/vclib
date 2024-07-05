@@ -24,7 +24,6 @@
 #define VCL_ALGORITHMS_CORE_POLYGON_GEOMETRY_H
 
 #include <vclib/concepts/mesh/elements/face.h>
-#include <vclib/mesh/components.h>
 #include <vclib/mesh/views.h>
 #include <vclib/space/core/polygon.h>
 
@@ -161,69 +160,6 @@ auto faceAngleOnVertexRad(const FaceType& f, uint vi)
     const auto& p1 = f.vertexMod((int) vi + 1)->coord();
     const auto& p2 = f.vertexMod((int) vi - 1)->coord();
     return (p2 - p0).angle(p1 - p0);
-}
-
-/**
- * * @brief Compute the signed dihedral angle between the normals of the given
- * face and its adjacent face on the edge \p e.
- *
- * The angle between the normal is signed according to the concavity/convexity
- * of the dihedral angle: negative if the edge shared between the two faces is
- * concave, positive otherwise. The surface it is assumend to be oriented. It
- * simply use the projection of  the opposite vertex onto the plane of the other
- * one. It does not assume anything on face normals.
- *
- * @tparam FaceType: the type of the face that satisfies the FaceConcept.
- *
- * @param[in] f The face for which to compute the dihedral angle on an edge.
- * @param[in] e The index of the edge shared between the two faces.
- * @return The signed dihedral angle between the normals of the given face and
- * its adjacent face on the edge e.
- * @throws vcl::MissingComponentException If the "AdjacentFaces" component is
- * not available on \p f.
- */
-template<FaceConcept FaceType>
-auto faceDihedralAngleOnEdge(const FaceType& f, uint e)
-    requires comp::HasAdjacentFaces<FaceType>
-{
-    if (!comp::isAdjacentFacesAvailableOn(f)) {
-        throw vcl::MissingComponentException(
-            "Face has no Adjacent Faces component.");
-    }
-
-    /*
-     *     v0 ___________ vf1
-     *       |\          |
-     *       | e\     f1 |
-     *       |    \e1    |
-     *       |f     \    |
-     *       |        \  |
-     *       |__________\|
-     *    vf0             v1
-     */
-
-    assert(f.adjFace(e) != nullptr);
-    const FaceType& f1 = *(f.adjFace(e));
-
-    uint e1 = f1.indexOfAdjFace(&f);
-    assert(e1 != UINT_NULL);
-
-    const auto& vf0 = *(f.vertexMod((int) e - 1));
-    const auto& vf1 = *(f1.vertexMod(e1 - 1));
-
-    auto n0 = faceNormal(f);
-    auto n1 = faceNormal(f1);
-
-    auto off0 = n0 * vf0.coord();
-    auto off1 = n1 * vf1.coord();
-
-    auto dist01 = off0 - n0 * vf1.coord();
-    auto dist10 = off1 - n1 * vf0.coord();
-
-    auto sign = std::abs(dist01) > std::abs(dist10) ? dist01 : dist10;
-
-    auto angleRad = n0.angle(n1);
-    return sign > 0 ? angleRad : -angleRad;
 }
 
 } // namespace vcl
