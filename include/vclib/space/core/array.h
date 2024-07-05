@@ -57,7 +57,7 @@ namespace vcl {
  * @tparam T: The type of the elements stored in the array.
  * @tparam N: The number of dimensions of the array.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<class T, uint N>
 class Array
@@ -657,7 +657,7 @@ std::ostream& operator<<(std::ostream& out, const Array<Scalar, 2>& a)
  *
  * @tparam Scalar: The scalar type of the array components.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar>
 using Array2 = Array<Scalar, 2>;
@@ -670,7 +670,7 @@ using Array2 = Array<Scalar, 2>;
  *
  * @tparam Scalar: The scalar type of the array components.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar>
 using Array3 = Array<Scalar, 3>;
@@ -683,7 +683,7 @@ using Array3 = Array<Scalar, 3>;
  *
  * @tparam Scalar: The scalar type of the array components.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar>
 using Array4 = Array<Scalar, 4>;

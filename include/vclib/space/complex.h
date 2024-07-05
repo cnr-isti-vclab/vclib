@@ -20,10 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_H
-#define VCL_SPACE_GRID_H
+#ifndef VCL_SPACE_COMPLEX_H
+#define VCL_SPACE_COMPLEX_H
 
-#include "grid/hash_table_grid.h"
-#include "grid/static_grid.h"
+#include "complex/grid.h"
+#include "complex/kd_tree.h"
+#include "complex/sampler.h"
 
-#endif // VCL_SPACE_GRID_H
+/**
+ * @defgroup space_complex Complex Spatial Data Structures
+ *
+ * @ingroup space
+ *
+ * @brief TODO
+ */
+
+#endif // VCL_SPACE_COMPLEX_H

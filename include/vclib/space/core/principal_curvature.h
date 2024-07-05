@@ -37,7 +37,7 @@ namespace vcl {
  *
  * @tparam Scalar: The scalar type of the curvature values.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar>
 class PrincipalCurvature

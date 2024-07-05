@@ -46,6 +46,8 @@ namespace vcl {
  * This class cannot be copied or moved, and has just one constructor that
  * takes three points as input. The points are passed by const reference, and
  * their references are stored inside the class.
+ *
+ * @ingroup space_core
  */
 template<PointConcept PointT>
 class TriangleWrapper

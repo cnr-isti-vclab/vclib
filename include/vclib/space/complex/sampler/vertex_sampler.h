@@ -1,5 +1,5 @@
-#ifndef VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
-#define VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
+#ifndef VCL_SPACE_COMPLEX_SAMPLER_VERTEX_SAMPLER_H
+#define VCL_SPACE_COMPLEX_SAMPLER_VERTEX_SAMPLER_H
 
 #include <vclib/concepts/mesh/elements/vertex.h>
 #include <vclib/concepts/space/sampler.h>
@@ -56,4 +56,4 @@ using ConstVertexSampler = detail::VertexSampler<VertexType, true>;
 
 } // namespace vcl
 
-#endif // VCL_SPACE_SAMPLER_VERTEX_SAMPLER_H
+#endif // VCL_SPACE_COMPLEX_SAMPLER_VERTEX_SAMPLER_H

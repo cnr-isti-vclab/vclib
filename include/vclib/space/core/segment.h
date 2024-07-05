@@ -36,7 +36,7 @@ namespace vcl {
  *
  * @tparam PointT The type of the two endpoint points of the segment.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<PointConcept PointT>
 class Segment

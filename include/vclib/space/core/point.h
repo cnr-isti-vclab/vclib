@@ -52,7 +52,7 @@ namespace vcl {
  * @tparam Scalar: The scalar type of the point components.
  * @tparam N: The number of dimensions of the point.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar, uint N>
 class Point : public Eigen::Matrix<Scalar, 1, N>
@@ -712,7 +712,7 @@ bool epsilonEquals(
  *
  * @tparam Scalar: The scalar type of the point components.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar>
 using Point2 = Point<Scalar, 2>;
@@ -724,7 +724,7 @@ using Point2 = Point<Scalar, 2>;
  * with integer components and two dimensions. It is implemented as an alias
  * template for the Point2 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point2i = Point2<int>;
 
@@ -736,7 +736,7 @@ using Point2i = Point2<int>;
  * with floating-point components and two dimensions. It is implemented as an
  * alias template for the Point2 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point2f = Point2<float>;
 
@@ -748,7 +748,7 @@ using Point2f = Point2<float>;
  * with double-precision floating-point components and two dimensions. It is
  * implemented as an alias template for the Point2 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point2d = Point2<double>;
 
@@ -761,7 +761,7 @@ using Point2d = Point2<double>;
  *
  * @tparam Scalar: The scalar type of the point components.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar>
 using Point3 = Point<Scalar, 3>;
@@ -773,7 +773,7 @@ using Point3 = Point<Scalar, 3>;
  * with integer components and three dimensions. It is implemented as an alias
  * template for the Point3 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point3i = Point3<int>;
 
@@ -785,7 +785,7 @@ using Point3i = Point3<int>;
  * with floating-point components and three dimensions. It is implemented as an
  * alias template for the Point3 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point3f = Point3<float>;
 
@@ -797,7 +797,7 @@ using Point3f = Point3<float>;
  * with double-precision floating-point components and three dimensions. It is
  * implemented as an alias template for the Point3 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point3d = Point3<double>;
 
@@ -810,7 +810,7 @@ using Point3d = Point3<double>;
  *
  * @tparam Scalar: The scalar type of the point components.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar>
 using Point4 = Point<Scalar, 4>;
@@ -822,7 +822,7 @@ using Point4 = Point<Scalar, 4>;
  * with integer components and four dimensions. It is implemented as an alias
  * template for the Point4 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point4i = Point4<int>;
 
@@ -834,7 +834,7 @@ using Point4i = Point4<int>;
  * with floating-point components and four dimensions. It is implemented as an
  * alias template for the Point4 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point4f = Point4<float>;
 
@@ -846,7 +846,7 @@ using Point4f = Point4<float>;
  * with double-precision floating-point components and four dimensions. It is
  * implemented as an alias template for the Point4 alias template.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using Point4d = Point4<double>;
 

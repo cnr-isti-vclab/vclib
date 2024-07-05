@@ -36,7 +36,7 @@ namespace vcl {
  * @brief The BitProxy class allows to access to a bool reference from a bit
  * saved in a mask, and then allow assignment.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<std::integral T>
 class BitProxy

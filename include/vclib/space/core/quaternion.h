@@ -43,6 +43,8 @@ namespace vcl {
  * (index 3) will return the `w` component.
  *
  * @tparam Scalar: the scalar used to represent the quaternion.
+ *
+ * @ingroup space_core
  */
 template<typename Scalar>
 class Quaternion : public Eigen::Quaternion<Scalar>

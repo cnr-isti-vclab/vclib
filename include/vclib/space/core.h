@@ -45,6 +45,8 @@
 /**
  * @defgroup space_core Core Spatial Data Structures
  *
+ * @ingroup space
+ *
  * @brief TODO
  */
 

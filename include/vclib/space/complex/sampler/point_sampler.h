@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_SAMPLER_POINT_SAMPLER_H
-#define VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#ifndef VCL_SPACE_COMPLEX_SAMPLER_POINT_SAMPLER_H
+#define VCL_SPACE_COMPLEX_SAMPLER_POINT_SAMPLER_H
 
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/concepts/mesh/elements/edge.h>
@@ -157,4 +157,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_SPACE_SAMPLER_POINT_SAMPLER_H
+#endif // VCL_SPACE_COMPLEX_SAMPLER_POINT_SAMPLER_H

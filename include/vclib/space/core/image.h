@@ -37,6 +37,8 @@ namespace vcl {
  *
  * Each pixel is stored as 4 bytes, with the first byte representing RGBA in
  * a `uint32_t`.
+ *
+ * @ingroup space_core
  */
 class Image
 {

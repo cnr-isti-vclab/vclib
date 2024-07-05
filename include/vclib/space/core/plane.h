@@ -43,7 +43,7 @@ namespace vcl {
  *
  * A vcl::Plane, once initialized, cannot be changed.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<typename Scalar, bool NORM = true>
 class Plane

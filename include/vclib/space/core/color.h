@@ -42,7 +42,7 @@ namespace vcl {
  * The class provides some useful methods to convert the color from/to different
  * formats.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 class Color : public Point4<uint8_t>
 {

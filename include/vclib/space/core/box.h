@@ -44,7 +44,7 @@ namespace vcl {
  *
  * @tparam PointT: A type that satisfies the `PointConcept` requirements.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<PointConcept PointT>
 class Box

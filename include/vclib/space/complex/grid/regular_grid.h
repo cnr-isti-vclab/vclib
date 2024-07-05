@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_REGULAR_GRID_H
-#define VCL_SPACE_GRID_REGULAR_GRID_H
+#ifndef VCL_SPACE_COMPLEX_GRID_REGULAR_GRID_H
+#define VCL_SPACE_COMPLEX_GRID_REGULAR_GRID_H
 
 #include <vclib/space/core/box.h>
 #include <vclib/types/view.h>
@@ -322,4 +322,4 @@ Point<uint, PointType::DIM> bestGridSize(
 
 } // namespace vcl
 
-#endif // VCL_SPACE_GRID_REGULAR_GRID_H
+#endif // VCL_SPACE_COMPLEX_GRID_REGULAR_GRID_H

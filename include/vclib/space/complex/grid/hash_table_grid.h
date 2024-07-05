@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_HASH_TABLE_GRID_H
-#define VCL_SPACE_GRID_HASH_TABLE_GRID_H
+#ifndef VCL_SPACE_COMPLEX_GRID_HASH_TABLE_GRID_H
+#define VCL_SPACE_COMPLEX_GRID_HASH_TABLE_GRID_H
 
 #include <set>
 #include <unordered_map>
@@ -44,7 +44,7 @@ namespace vcl {
  * disallow the insertion of duplicate values by setting the boolean
  * AllowDuplicates template parameter, that is defaulted to `true`.
  *
- * @ingroup space
+ * @ingroup space_complex
  */
 template<typename GridType, typename ValueType, bool AllowDuplicates = true>
 class HashTableGrid :
@@ -250,4 +250,4 @@ using HashTableGrid3 =
 
 } // namespace vcl
 
-#endif // VCL_SPACE_GRID_HASH_TABLE_GRID_H
+#endif // VCL_SPACE_COMPLEX_GRID_HASH_TABLE_GRID_H

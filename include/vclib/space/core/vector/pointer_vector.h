@@ -69,7 +69,7 @@ namespace vcl {
  * an array to store the elements. If `N` is less than zero, the container will
  * have a dynamic size, and it will use a vector to store the elements.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<IsAnyPointer T, int N = -1>
 class PointerVector : protected Vector<T, N>

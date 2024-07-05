@@ -36,7 +36,7 @@
 #include <vclib/mesh_aux/mesh_pos.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/parallel.h>
-#include <vclib/space/grid.h>
+#include <vclib/space/complex/grid.h>
 #include <vclib/space/core/principal_curvature.h>
 
 namespace vcl {

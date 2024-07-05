@@ -20,19 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_H
-#define VCL_SPACE_H
+#ifndef VCL_SPACE_COMPLEX_GRID_H
+#define VCL_SPACE_COMPLEX_GRID_H
 
-#include "space/complex.h"
-#include "space/core.h"
+#include "grid/hash_table_grid.h"
+#include "grid/static_grid.h"
 
-/**
- * @defgroup space Spatial Data Structures
- *
- * @brief List of Spatial Data Structures of VCLib.
- *
- * You can access all the algorithms of VCLib by including `#include
- * <vclib/space.h>`
- */
-
-#endif // VCL_SPACE_H
+#endif // VCL_SPACE_COMPLEX_GRID_H

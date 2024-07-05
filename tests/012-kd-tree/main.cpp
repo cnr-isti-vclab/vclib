@@ -24,7 +24,7 @@
 
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
-#include <vclib/space/kd_tree.h>
+#include <vclib/space/complex/kd_tree.h>
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>

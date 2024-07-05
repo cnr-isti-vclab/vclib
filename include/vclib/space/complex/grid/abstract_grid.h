@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_GRID_ABSTRACT_GRID_H
-#define VCL_SPACE_GRID_ABSTRACT_GRID_H
+#ifndef VCL_SPACE_COMPLEX_GRID_ABSTRACT_GRID_H
+#define VCL_SPACE_COMPLEX_GRID_ABSTRACT_GRID_H
 
 #include <set>
 
@@ -101,7 +101,7 @@ namespace vcl {
  * member exposed in this class (e.g. they could disallow the possibility to
  * remove elements from a grid).
  *
- * @ingroup space
+ * @ingroup space_complex
  */
 template<typename GridType, typename ValueType, typename DerivedGrid>
 class AbstractGrid : public GridType
@@ -886,4 +886,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_SPACE_GRID_ABSTRACT_GRID_H
+#endif // VCL_SPACE_COMPLEX_GRID_ABSTRACT_GRID_H

@@ -46,7 +46,7 @@ namespace vcl {
  * @tparam T: The type to use as a storage for the bits. It must satisfy the
  * std::integral concept.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 template<std::integral T>
 class BitSet
@@ -282,28 +282,28 @@ std::ostream& operator<<(std::ostream& os, const BitSet<T>& bs)
 /**
  * @brief BitSet8 is a BitSet of 8 bits.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using BitSet8 = BitSet<char>;
 
 /**
  * @brief BitSet16 is a BitSet of 16 bits.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using BitSet16 = BitSet<short>;
 
 /**
  * @brief BitSet32 is a BitSet of 32 bits.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using BitSet32 = BitSet<int>;
 
 /**
  * @brief BitSet64 is a BitSet of 64 bits.
  *
- * @ingroup space
+ * @ingroup space_core
  */
 using BitSet64 = BitSet<std::size_t>;
 

@@ -27,7 +27,7 @@
 #include <vector>
 
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/kd_tree.h>
+#include <vclib/space/complex/kd_tree.h>
 
 namespace vcl {
 
