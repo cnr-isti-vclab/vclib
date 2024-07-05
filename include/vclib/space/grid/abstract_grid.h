@@ -29,7 +29,7 @@
 #include <vclib/algorithms/core/distance/functions.h>
 #include <vclib/concepts/range.h>
 #include <vclib/misc/comparators.h>
-#include <vclib/space/sphere.h>
+#include <vclib/space/core/sphere.h>
 
 namespace vcl {
 

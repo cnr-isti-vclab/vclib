@@ -26,7 +26,7 @@
 #include <vclib/algorithms/mesh/update.h>
 #include <vclib/processing/actions/common/mesh_vector.h>
 #include <vclib/processing/actions/common/parameters/mesh_parameter.h>
-#include <vclib/space/bit_set.h>
+#include <vclib/space/core/bit_set.h>
 
 #include "mesh_action.h"
 

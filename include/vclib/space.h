@@ -23,27 +23,11 @@
 #ifndef VCL_SPACE_H
 #define VCL_SPACE_H
 
-#include "space/array.h"
-#include "space/bit_set.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/graph.h"
+#include "space/core.h"
+
 #include "space/grid.h"
-#include "space/image.h"
 #include "space/kd_tree.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/quaternion.h"
 #include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/texture.h"
-#include "space/triangle_wrapper.h"
-#include "space/vector.h"
 
 /**
  * @defgroup space Spatial Data Structures

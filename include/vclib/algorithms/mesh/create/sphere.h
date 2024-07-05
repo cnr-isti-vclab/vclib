@@ -26,7 +26,7 @@
 #include <vclib/algorithms/mesh/clean.h>
 #include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/sphere.h>
+#include <vclib/space/core/sphere.h>
 
 #include "icosahedron.h"
 

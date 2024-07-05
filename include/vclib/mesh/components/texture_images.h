@@ -28,7 +28,7 @@
 
 #include <vclib/concepts/mesh/components/texture_images.h>
 #include <vclib/concepts/mesh/components/texture_paths.h>
-#include <vclib/space/texture.h>
+#include <vclib/space/core/texture.h>
 #include <vclib/types/view.h>
 
 #include "bases/component.h"

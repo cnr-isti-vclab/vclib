@@ -25,7 +25,7 @@
 #include <vclib/algorithms.h>
 #include <vclib/load_save.h>
 #include <vclib/meshes.h>
-#include <vclib/space/array.h>
+#include <vclib/space/core/array.h>
 
 int main()
 {

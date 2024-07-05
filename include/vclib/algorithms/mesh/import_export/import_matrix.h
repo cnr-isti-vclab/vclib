@@ -26,7 +26,7 @@
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/exceptions.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/polygon.h>
+#include <vclib/space/core/polygon.h>
 
 namespace vcl {
 

@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_COORDINATE_H
 
 #include <vclib/concepts/mesh/components/coordinate.h>
-#include <vclib/space/point.h>
+#include <vclib/space/core/point.h>
 
 #include "bases/component.h"
 

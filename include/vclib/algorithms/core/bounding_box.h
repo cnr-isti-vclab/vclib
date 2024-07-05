@@ -26,9 +26,9 @@
 #include <vclib/concepts/iterators.h>
 #include <vclib/concepts/mesh/elements/edge.h>
 #include <vclib/concepts/range.h>
-#include <vclib/space/box.h>
-#include <vclib/space/segment.h>
-#include <vclib/space/sphere.h>
+#include <vclib/space/core/box.h>
+#include <vclib/space/core/segment.h>
+#include <vclib/space/core/sphere.h>
 
 /**
  * @defgroup core_bounding_box Core Bounding Box Algorithms

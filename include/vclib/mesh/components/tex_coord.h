@@ -24,7 +24,7 @@
 #define VCL_MESH_COMPONENTS_TEX_COORD_H
 
 #include <vclib/concepts/mesh/components/tex_coord.h>
-#include <vclib/space/tex_coord.h>
+#include <vclib/space/core/tex_coord.h>
 
 #include "bases/component.h"
 

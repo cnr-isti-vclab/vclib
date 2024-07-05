@@ -27,7 +27,7 @@
 
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/point.h>
+#include <vclib/space/core/point.h>
 
 namespace vcl {
 

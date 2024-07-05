@@ -23,7 +23,7 @@
 #ifndef VCL_MESH_COMPONENTS_BASES_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASES_CONTAINER_COMPONENT_H
 
-#include <vclib/space/vector.h>
+#include <vclib/space/core/vector.h>
 
 #include "component.h"
 

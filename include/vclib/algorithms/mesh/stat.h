@@ -27,8 +27,8 @@
 
 #include <vclib/algorithms/core/polygon/geometry.h>
 #include <vclib/mesh_aux/mesh_inertia.h>
-#include <vclib/space/matrix.h>
-#include <vclib/space/polygon.h>
+#include <vclib/space/core/matrix.h>
+#include <vclib/space/core/polygon.h>
 
 #include "stat/quality.h"
 #include "stat/selection.h"

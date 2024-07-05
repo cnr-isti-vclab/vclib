@@ -26,7 +26,7 @@
 #include <vclib/concepts/mesh/elements/face.h>
 #include <vclib/mesh/components.h>
 #include <vclib/mesh/views.h>
-#include <vclib/space/polygon.h>
+#include <vclib/space/core/polygon.h>
 
 namespace vcl {
 

@@ -24,7 +24,7 @@
 #define VCL_ALGORITHMS_MESH_BOUNDING_BOX_H
 
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/box.h>
+#include <vclib/space/core/box.h>
 
 /**
  * @defgroup mesh_bounding_box Mesh Bounding Box Algorithm

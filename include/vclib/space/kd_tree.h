@@ -28,7 +28,7 @@
 #include <vector>
 
 #include <vclib/concepts/mesh.h>
-#include <vclib/space/box.h>
+#include <vclib/space/core/box.h>
 
 namespace vcl {
 

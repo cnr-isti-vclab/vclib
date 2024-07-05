@@ -23,7 +23,7 @@
 #ifndef VCL_SPACE_GRID_ITERATORS_CELL_ITERATOR_H
 #define VCL_SPACE_GRID_ITERATORS_CELL_ITERATOR_H
 
-#include <vclib/space/point.h>
+#include <vclib/space/core/point.h>
 
 namespace vcl {
 
