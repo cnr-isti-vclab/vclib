@@ -20,10 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
-#define VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_COORDS_H
+#define VCL_VIEWS_MESH_COMPONENTS_COORDS_H
 
-#include <vclib/concepts/mesh.h>
 #include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
 
@@ -33,42 +32,28 @@ namespace vcl::views {
 
 namespace detail {
 
-template<typename T>
-concept CleanWedgeTexCoordsConcept =
-    comp::HasWedgeTexCoords<std::remove_cvref_t<T>>;
-
-inline constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
+inline constexpr auto coord = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
-        return p->texCoord();
+        return p->coord();
     else
-        return p.texCoord();
+        return p.coord();
 };
 
-struct TexCoordsView
+struct CoordsView
 {
-    constexpr TexCoordsView() = default;
+    constexpr CoordsView() = default;
 
     template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, TexCoordsView)
+    friend constexpr auto operator|(R&& r, CoordsView)
     {
-        using ElemType = std::ranges::range_value_t<R>;
-        return std::forward<R>(r) | std::views::transform(texCoord);
-    }
-
-    template<CleanWedgeTexCoordsConcept R>
-    friend constexpr auto operator|(R&& r, TexCoordsView)
-    {
-        if constexpr (IsPointer<R>)
-            return r->wedgeTexCoords();
-        else
-            return r.wedgeTexCoords();
+        return std::forward<R>(r) | std::views::transform(coord);
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::TexCoordsView texCoords;
+inline constexpr detail::CoordsView coords;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_TEX_COORDS_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_COORDS_H

@@ -20,52 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
-#define VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
+#ifndef VCL_VIEWS_MESH_ELEMENTS_EDGE_H
+#define VCL_VIEWS_MESH_ELEMENTS_EDGE_H
 
-#include <vclib/concepts.h>
-#include <vclib/types.h>
+#include <vclib/concepts/mesh.h>
 
 namespace vcl::views {
-
 namespace detail {
 
 template<typename T>
-concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<std::remove_cvref_t<T>>;
+concept CleanEdgeMeshConcept = EdgeMeshConcept<std::remove_cvref_t<T>>;
 
-struct AdjEdgesView
+struct EdgesView
 {
-    constexpr AdjEdgesView() = default;
+    constexpr EdgesView() = default;
 
-    template<CleanAdjEdgesConcept R>
-    friend constexpr auto operator|(R&& r, AdjEdgesView)
+    template<CleanEdgeMeshConcept R>
+    friend constexpr auto operator|(R&& r, EdgesView)
     {
-        if constexpr (IsPointer<R>)
-            return r->adjEdges();
-        else
-            return r.adjEdges();
+        return r.edges();
     }
 };
 
 } // namespace detail
 
 /**
- * @brief The adjEdges view allows to obtain a view that access to the adjacent
- * edges of the object that has been piped. Every object having type that
- * satisfies the HasAdjacentEdges concept can be applied to this view.
+ * @brief A view that allows to iterate overt the Edge elements of an object.
  *
- * Resulting adjacent edges will be pointers to Edges, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the
- * `notNull` view:
- *
- * @code{.cpp}
- * for (auto* ae: f | views::adjEdges | views::notNull) { ... }
- * @endcode
+ * This view can be applied to objects having type that satisfies the
+ * EdgeMeshConcept.
  *
  * @ingroup views
  */
-inline constexpr detail::AdjEdgesView adjEdges;
+inline constexpr detail::EdgesView edges;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_ADJ_EDGES_H
+#endif // VCL_VIEWS_MESH_ELEMENTS_EDGE_H

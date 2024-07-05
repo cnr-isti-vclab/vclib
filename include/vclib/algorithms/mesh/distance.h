@@ -29,6 +29,7 @@
 #include <vclib/misc/logger.h>
 #include <vclib/misc/parallel.h>
 #include <vclib/space/complex/grid.h>
+#include <vclib/views/pointers.h>
 
 namespace vcl {
 

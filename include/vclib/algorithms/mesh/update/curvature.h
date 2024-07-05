@@ -38,6 +38,7 @@
 #include <vclib/misc/parallel.h>
 #include <vclib/space/complex/grid.h>
 #include <vclib/space/core/principal_curvature.h>
+#include <vclib/views/pointers.h>
 
 namespace vcl {
 

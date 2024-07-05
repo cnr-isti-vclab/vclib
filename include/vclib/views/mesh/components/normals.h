@@ -20,53 +20,40 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
-#define VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_NORMALS_H
+#define VCL_VIEWS_MESH_COMPONENTS_NORMALS_H
 
-#include <vclib/concepts/mesh.h>
 #include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
+
+#include <ranges>
 
 namespace vcl::views {
 
 namespace detail {
 
-template<typename T>
-concept CleanAdjFacesConcept = comp::HasAdjacentFaces<std::remove_cvref_t<T>>;
+inline constexpr auto normal = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->normal();
+    else
+        return p.normal();
+};
 
-struct AdjFacesView
+struct NormalsView
 {
-    constexpr AdjFacesView() = default;
+    constexpr NormalsView() = default;
 
-    template<CleanAdjFacesConcept R>
-    friend constexpr auto operator|(R&& r, AdjFacesView)
+    template<std::ranges::range R>
+    friend constexpr auto operator|(R&& r, NormalsView)
     {
-        if constexpr (IsPointer<R>)
-            return r->adjFaces();
-        else
-            return r.adjFaces();
+        return std::forward<R>(r) | std::views::transform(normal);
     }
 };
 
 } // namespace detail
 
-/**
- * @brief The adjFaces view allows to obtain a view that access to the adjacent
- * faces of the object that has been piped. Every object having type that
- * satisfies the HasAdjacentFaces concept can be applied to this view.
- *
- * Resulting adjacent faces will be pointers to Faces, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the
- * `notNull` view:
- *
- * @code{.cpp}
- * for (auto* af: f | views::adjFaces | views::notNull) { ... }
- * @endcode
- *
- * @ingroup views
- */
-inline constexpr detail::AdjFacesView adjFaces;
+inline constexpr detail::NormalsView normals;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_ADJ_FACES_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_NORMALS_H

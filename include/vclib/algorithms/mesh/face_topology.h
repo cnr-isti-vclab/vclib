@@ -28,10 +28,10 @@
 #include <vclib/concepts/mesh.h>
 #include <vclib/exceptions/mesh.h>
 #include <vclib/mesh/iterators/face/edge_adj_face_iterator.h>
-#include <vclib/mesh/views.h>
-#include <vclib/space/complex/mesh_pos.h>
 #include <vclib/misc/comparators.h>
+#include <vclib/space/complex/mesh_pos.h>
 #include <vclib/space/core/polygon.h>
+#include <vclib/views/mesh.h>
 
 namespace vcl {
 

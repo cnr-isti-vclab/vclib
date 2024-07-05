@@ -24,8 +24,8 @@
 #define VCL_ALGORITHMS_CORE_POLYGON_GEOMETRY_H
 
 #include <vclib/concepts/mesh/elements/face.h>
-#include <vclib/mesh/views.h>
 #include <vclib/space/core/polygon.h>
+#include <vclib/views/mesh.h>
 
 namespace vcl {
 

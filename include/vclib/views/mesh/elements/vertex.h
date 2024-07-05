@@ -20,53 +20,52 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
-#define VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
+#ifndef VCL_VIEWS_MESH_ELEMENTS_VERTEX_H
+#define VCL_VIEWS_MESH_ELEMENTS_VERTEX_H
 
 #include <vclib/concepts/mesh.h>
-#include <vclib/types.h>
 
 namespace vcl::views {
-
 namespace detail {
 
 template<typename T>
-concept CleanAdjVerticesConcept =
-    comp::HasAdjacentVertices<std::remove_cvref_t<T>>;
+concept CleanMeshConcept = MeshConcept<std::remove_cvref_t<T>>;
 
-struct AdjVerticesView
+template<typename T>
+concept CleanVertexRefsConcept =
+    comp::HasVertexReferences<std::remove_cvref_t<T>>;
+
+struct VerticesView
 {
-    constexpr AdjVerticesView() = default;
+    constexpr VerticesView() = default;
 
-    template<CleanAdjVerticesConcept R>
-    friend constexpr auto operator|(R&& r, AdjVerticesView)
+    template<CleanMeshConcept R>
+    friend constexpr auto operator|(R&& r, VerticesView)
     {
-        if constexpr (IsPointer<R>)
-            return r->adjVertices();
-        else
-            return r.adjVertices();
+        return r.vertices();
+    }
+
+    template<CleanVertexRefsConcept R>
+    friend constexpr auto operator|(R&& r, VerticesView)
+    {
+        return r.vertices();
     }
 };
 
 } // namespace detail
 
 /**
- * @brief The adjVertices view allows to obtain a view that access to the
- * adjacent vertices of the object that has been piped. Every object having type
- * that satisfies the HasAdjacentVertices concept can be applied to this view.
+ * @brief A view that allows to iterate over the Vertex elements of an object.
  *
- * Resulting adjacent faces will be pointers to Vertices, that may be `nullptr`.
- * If you are interested only on the not-null pointers, you can use the
- * `notNull` view:
- *
- * @code{.cpp}
- * for (auto* av: v | views::adjVertices | views::notNull) { ... }
- * @endcode
+ * This view can be applied to objects having type that satisfies one of the
+ * following concepts:
+ * - MeshConcept
+ * - HasVertexReferences
  *
  * @ingroup views
  */
-inline constexpr detail::AdjVerticesView adjVertices;
+inline constexpr detail::VerticesView vertices;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_ADJ_VERTICES_H
+#endif // VCL_VIEWS_MESH_ELEMENTS_VERTEX_H

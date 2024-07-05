@@ -28,8 +28,8 @@
 #include <vclib/algorithms/mesh/stat.h>
 #include <vclib/math/perlin_noise.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/mesh/views.h>
 #include <vclib/space/core/color.h>
+#include <vclib/views/mesh.h>
 
 namespace vcl {
 

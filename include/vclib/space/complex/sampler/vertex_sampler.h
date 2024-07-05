@@ -3,7 +3,7 @@
 
 #include <vclib/concepts/mesh/elements/vertex.h>
 #include <vclib/concepts/space/sampler.h>
-#include <vclib/mesh/views/components.h>
+#include <vclib/views/mesh.h>
 
 namespace vcl {
 

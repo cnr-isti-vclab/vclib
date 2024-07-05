@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
-#define VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_PRINCIPAL_CURVATURES_H
+#define VCL_VIEWS_MESH_COMPONENTS_PRINCIPAL_CURVATURES_H
 
 #include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
@@ -32,63 +32,28 @@ namespace vcl::views {
 
 namespace detail {
 
-inline constexpr auto isSelected = [](auto&& e) -> decltype(auto) {
-    if constexpr (vcl::IsPointer<decltype(e)>) {
-        return e->selected();
-    }
-    else {
-        return e.selected();
-    }
+inline constexpr auto principalCurvature = [](auto&& p) -> decltype(auto) {
+    if constexpr (IsPointer<decltype(p)>)
+        return p->principalCurvature();
+    else
+        return p.principalCurvature();
 };
 
-inline constexpr auto isNotSelected = [](auto&& e) -> decltype(auto) {
-    if constexpr (vcl::IsPointer<decltype(e)>) {
-        return !e->selected();
-    }
-    else {
-        return !e.selected();
-    }
-};
-
-struct SelectionView
+struct PrincipalCurvaturesView
 {
-    constexpr SelectionView() = default;
+    constexpr PrincipalCurvaturesView() = default;
 
     template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, SelectionView)
+    friend constexpr auto operator|(R&& r, PrincipalCurvaturesView)
     {
-        return std::forward<R>(r) | std::views::transform(isSelected);
-    }
-};
-
-struct SelectedView
-{
-    constexpr SelectedView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, SelectedView)
-    {
-        return std::forward<R>(r) | std::views::filter(isSelected);
-    }
-};
-
-struct NotSelectedView
-{
-    constexpr NotSelectedView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, NotSelectedView)
-    {
-        return std::forward<R>(r) | std::views::filter(isNotSelected);
+        return std::forward<R>(r) | std::views::transform(principalCurvature);
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::SelectionView   selection;
-inline constexpr detail::SelectedView    selected;
-inline constexpr detail::NotSelectedView notSelected;
+inline constexpr detail::PrincipalCurvaturesView principalCurvatures;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_SELECTION_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_PRINCIPAL_CURVATURES_H

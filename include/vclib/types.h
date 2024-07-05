@@ -35,6 +35,5 @@
 #include "types/pointers.h"
 #include "types/variadic_templates.h"
 #include "types/view.h"
-#include "types/views.h"
 
 #endif // VCL_TYPES_H

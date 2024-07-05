@@ -26,7 +26,7 @@
 #include <vclib/meshes.h>
 
 #include <vclib/algorithms/mesh/update.h>
-#include <vclib/mesh/views.h>
+#include <vclib/views/mesh.h>
 
 int main()
 {

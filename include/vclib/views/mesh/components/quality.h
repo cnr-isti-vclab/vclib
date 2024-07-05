@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_COORDS_H
-#define VCL_MESH_VIEWS_COMPONENTS_COORDS_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_QUALITY_H
+#define VCL_VIEWS_MESH_COMPONENTS_QUALITY_H
 
 #include <vclib/concepts/pointers.h>
 #include <vclib/types.h>
@@ -32,28 +32,28 @@ namespace vcl::views {
 
 namespace detail {
 
-inline constexpr auto coord = [](auto&& p) -> decltype(auto) {
+inline constexpr auto quality = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
-        return p->coord();
+        return p->quality();
     else
-        return p.coord();
+        return p.quality();
 };
 
-struct CoordsView
+struct QualityView
 {
-    constexpr CoordsView() = default;
+    constexpr QualityView() = default;
 
     template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, CoordsView)
+    friend constexpr auto operator|(R&& r, QualityView)
     {
-        return std::forward<R>(r) | std::views::transform(coord);
+        return std::forward<R>(r) | std::views::transform(quality);
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::CoordsView coords;
+inline constexpr detail::QualityView quality;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_COORDS_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_QUALITY_H

@@ -20,53 +20,52 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_COLORS_H
-#define VCL_MESH_VIEWS_COMPONENTS_COLORS_H
+#ifndef VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
+#define VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/concepts/pointers.h>
+#include <vclib/concepts.h>
 #include <vclib/types.h>
-
-#include <ranges>
 
 namespace vcl::views {
 
 namespace detail {
 
 template<typename T>
-concept CleanWedgeColorsConcept = comp::HasWedgeColors<std::remove_cvref_t<T>>;
+concept CleanAdjEdgesConcept = comp::HasAdjacentEdges<std::remove_cvref_t<T>>;
 
-inline constexpr auto color = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->color();
-    else
-        return p.color();
-};
-
-struct ColorsView
+struct AdjEdgesView
 {
-    constexpr ColorsView() = default;
+    constexpr AdjEdgesView() = default;
 
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, ColorsView)
-    {
-        return std::forward<R>(r) | std::views::transform(color);
-    }
-
-    template<CleanWedgeColorsConcept R>
-    friend constexpr auto operator|(R&& r, ColorsView)
+    template<CleanAdjEdgesConcept R>
+    friend constexpr auto operator|(R&& r, AdjEdgesView)
     {
         if constexpr (IsPointer<R>)
-            return r->wedgeColors();
+            return r->adjEdges();
         else
-            return r.wedgeColors();
+            return r.adjEdges();
     }
 };
 
 } // namespace detail
 
-inline constexpr detail::ColorsView colors;
+/**
+ * @brief The adjEdges view allows to obtain a view that access to the adjacent
+ * edges of the object that has been piped. Every object having type that
+ * satisfies the HasAdjacentEdges concept can be applied to this view.
+ *
+ * Resulting adjacent edges will be pointers to Edges, that may be `nullptr`.
+ * If you are interested only on the not-null pointers, you can use the
+ * `notNull` view:
+ *
+ * @code{.cpp}
+ * for (auto* ae: f | views::adjEdges | views::notNull) { ... }
+ * @endcode
+ *
+ * @ingroup views
+ */
+inline constexpr detail::AdjEdgesView adjEdges;
 
 } // namespace vcl::views
 
-#endif // VCL_MESH_VIEWS_COMPONENTS_COLORS_H
+#endif // VCL_VIEWS_MESH_COMPONENTS_ADJ_EDGES_H

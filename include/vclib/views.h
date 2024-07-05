@@ -20,42 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CORE_POLYGON_TOPOLOGY_H
-#define VCL_ALGORITHMS_CORE_POLYGON_TOPOLOGY_H
+#ifndef VCL_VIEWS_H
+#define VCL_VIEWS_H
 
-#include <set>
+#include "views/mesh.h"
+#include "views/pointers.h"
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/space/core/polygon.h>
-#include <vclib/views/mesh.h>
-
-namespace vcl {
-
-/**
- * @brief Computes the earcut algorithm of a 3D *planar* polygon, that returns a
- * triangulation of the polygon.
- *
- * Returns a list of indices in which each index is the index of a point of the
- * 3D input polgon, organized in triplets, each one of these is a triangle of
- * the resulting triangulation.
- *
- * This algorithm first computes the normal of the given polygon, then projects
- * it in a 2D plane and executes the classic 2D EarCut algorithm.
- *
- * @tparam Face: the type of the face that satisfies the FaceConcept.
- *
- * @param[in] polygon: A (polygonal) face of a vcl::Mesh.
- *
- * @return A vector of indices, representing the triplets of the triangulation
- * of the polygon.
- */
-template<FaceConcept Face>
-std::vector<uint> earCut(const Face& polygon)
-{
-    using CoordType = Face::VertexType::CoordType;
-    return Polygon<CoordType>::earCut(polygon.vertices() | views::coords);
-}
-
-} // namespace vcl
-
-#endif // VCL_ALGORITHMS_CORE_POLYGON_TOPOLOGY_H
+#endif // VCL_VIEWS_H

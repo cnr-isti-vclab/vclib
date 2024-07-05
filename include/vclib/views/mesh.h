@@ -20,40 +20,10 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
-#define VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
+#ifndef VCL_VIEWS_MESH_H
+#define VCL_VIEWS_MESH_H
 
-#include <vclib/concepts/pointers.h>
-#include <vclib/types.h>
+#include "mesh/components.h"
+#include "mesh/elements.h"
 
-#include <ranges>
-
-namespace vcl::views {
-
-namespace detail {
-
-inline constexpr auto principalCurvature = [](auto&& p) -> decltype(auto) {
-    if constexpr (IsPointer<decltype(p)>)
-        return p->principalCurvature();
-    else
-        return p.principalCurvature();
-};
-
-struct PrincipalCurvaturesView
-{
-    constexpr PrincipalCurvaturesView() = default;
-
-    template<std::ranges::range R>
-    friend constexpr auto operator|(R&& r, PrincipalCurvaturesView)
-    {
-        return std::forward<R>(r) | std::views::transform(principalCurvature);
-    }
-};
-
-} // namespace detail
-
-inline constexpr detail::PrincipalCurvaturesView principalCurvatures;
-
-} // namespace vcl::views
-
-#endif // VCL_MESH_VIEWS_COMPONENTS_PRINCIPAL_CURVATURES_H
+#endif // VCL_VIEWS_MESH_H
