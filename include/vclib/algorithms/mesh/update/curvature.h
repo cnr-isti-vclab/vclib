@@ -33,10 +33,10 @@
 #include <vclib/algorithms/mesh/update/normal.h>
 #include <vclib/math/transform.h>
 #include <vclib/mesh/requirements.h>
-#include <vclib/space/complex/mesh_pos.h>
 #include <vclib/misc/logger.h>
 #include <vclib/misc/parallel.h>
 #include <vclib/space/complex/grid.h>
+#include <vclib/space/complex/mesh_pos.h>
 #include <vclib/space/core/principal_curvature.h>
 #include <vclib/views/pointers.h>
 

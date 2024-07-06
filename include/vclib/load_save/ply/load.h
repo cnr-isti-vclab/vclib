@@ -24,8 +24,8 @@
 #define VCL_LOAD_SAVE_PLY_LOAD_H
 
 #include <vclib/load_save/settings.h>
-#include <vclib/space/complex/mesh_info.h>
 #include <vclib/misc/logger.h>
+#include <vclib/space/complex/mesh_info.h>
 
 #include "detail/extra.h"
 #include "detail/face.h"

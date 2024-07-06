@@ -29,8 +29,8 @@
 #include <vclib/io/file_info.h>
 #include <vclib/io/write.h>
 #include <vclib/load_save/settings.h>
-#include <vclib/space/complex/mesh_info.h>
 #include <vclib/misc/logger.h>
+#include <vclib/space/complex/mesh_info.h>
 
 #include "material.h"
 
