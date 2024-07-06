@@ -20,47 +20,58 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_CORE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
-#define VCL_SPACE_CORE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
+#ifndef VCL_SPACE_COMPLEX_GRAPH_UNDIRECTED_NODE_H
+#define VCL_SPACE_COMPLEX_GRAPH_UNDIRECTED_NODE_H
 
-namespace vcl::detail {
+#include <unordered_set>
 
-template<typename Graph, typename Iterator>
-class AdjacentNodeIterator
+namespace vcl {
+
+template<class T>
+class UndirectedNode
 {
 protected:
-    const Graph* mGraph = nullptr;
-    Iterator     mIt;
+    T                                mInfo;
+    std::unordered_set<unsigned int> mAdjacentNodes;
 
 public:
-    AdjacentNodeIterator() {}
+    using InfoType = T;
 
-    AdjacentNodeIterator(const Graph& g, Iterator it) : mGraph(&g), mIt(it) {}
+    UndirectedNode() {}
 
-    bool operator==(const AdjacentNodeIterator& otherIterator) const
+    UndirectedNode(const T& info) : mInfo(info) {}
+
+    const T& info() const { return mInfo; }
+
+    T& info() { return mInfo; }
+
+    void addAdjacent(unsigned int node) { mAdjacentNodes.insert(node); }
+
+    bool isAdjacent(unsigned int node) const
     {
-        return (mGraph == otherIterator.mGraph && mIt == otherIterator.mIt);
+        return mAdjacentNodes.find(node) != mAdjacentNodes.end();
     }
 
-    bool operator!=(const AdjacentNodeIterator& otherIterator) const
+    void deleteAdjacent(unsigned int node) { mAdjacentNodes.erase(node); }
+
+    void clearAdjacentNodes() { mAdjacentNodes.clear(); }
+
+    std::unordered_set<unsigned int>::const_iterator begin() const
     {
-        return !(*this == otherIterator);
+        return mAdjacentNodes.begin();
     }
 
-    AdjacentNodeIterator operator++()
+    std::unordered_set<unsigned int>::const_iterator end() const
     {
-        ++mIt;
-        return *this;
+        return mAdjacentNodes.end();
     }
 
-    AdjacentNodeIterator operator++(int)
+    unsigned int sizeAdjacentNodes() const
     {
-        AdjacentNodeIterator tmp;
-        ++mIt;
-        return tmp;
+        return (unsigned int) mAdjacentNodes.size();
     }
 };
 
-} // namespace vcl::detail
+} // namespace vcl
 
-#endif // VCL_SPACE_CORE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
+#endif // VCL_SPACE_COMPLEX_GRAPH_UNDIRECTED_NODE_H

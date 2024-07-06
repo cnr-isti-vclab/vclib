@@ -20,58 +20,28 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_CORE_GRAPH_UNDIRECTED_NODE_H
-#define VCL_SPACE_CORE_GRAPH_UNDIRECTED_NODE_H
-
-#include <unordered_set>
+#ifndef VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
+#define VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
 
 namespace vcl {
 
-template<class T>
-class UndirectedNode
+template<typename Iterator>
+class NodeIterator
 {
-protected:
-    T                                mInfo;
-    std::unordered_set<unsigned int> mAdjacentNodes;
-
 public:
-    using InfoType = T;
+    using Iterator::Iterator;
 
-    UndirectedNode() {}
+    using value_type = Iterator::value_type::InfoType;
+    using reference  = const value_type&;
+    using pointer    = const value_type*;
 
-    UndirectedNode(const T& info) : mInfo(info) {}
+    NodeIterator(Iterator it) : Iterator(it) {}
 
-    const T& info() const { return mInfo; }
+    reference operator*() const { return Iterator::operator*().info(); }
 
-    T& info() { return mInfo; }
-
-    void addAdjacent(unsigned int node) { mAdjacentNodes.insert(node); }
-
-    bool isAdjacent(unsigned int node) const
-    {
-        return mAdjacentNodes.find(node) != mAdjacentNodes.end();
-    }
-
-    void deleteAdjacent(unsigned int node) { mAdjacentNodes.erase(node); }
-
-    void clearAdjacentNodes() { mAdjacentNodes.clear(); }
-
-    std::unordered_set<unsigned int>::const_iterator begin() const
-    {
-        return mAdjacentNodes.begin();
-    }
-
-    std::unordered_set<unsigned int>::const_iterator end() const
-    {
-        return mAdjacentNodes.end();
-    }
-
-    unsigned int sizeAdjacentNodes() const
-    {
-        return (unsigned int) mAdjacentNodes.size();
-    }
+    pointer operator->() const { return &Iterator::operator->().info(); }
 };
 
 } // namespace vcl
 
-#endif // VCL_SPACE_CORE_GRAPH_UNDIRECTED_NODE_H
+#endif // VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H

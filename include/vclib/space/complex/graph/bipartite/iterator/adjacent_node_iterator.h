@@ -20,36 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_CORE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_RIGHT_NODE_ITERATOR_H
-#define VCL_SPACE_CORE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_RIGHT_NODE_ITERATOR_H
-
-#include "adjacent_node_iterator.h"
+#ifndef VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
+#define VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
 
 namespace vcl::detail {
 
 template<typename Graph, typename Iterator>
-class AdjacentRightNodeIterator : public AdjacentNodeIterator<Graph, Iterator>
+class AdjacentNodeIterator
 {
-    using Base = AdjacentNodeIterator<Graph, Iterator>;
+protected:
+    const Graph* mGraph = nullptr;
+    Iterator     mIt;
 
 public:
-    using value_type = Graph::LeftType;
-    using reference  = const value_type&;
-    using pointer    = const value_type*;
+    AdjacentNodeIterator() {}
 
-    using AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator;
+    AdjacentNodeIterator(const Graph& g, Iterator it) : mGraph(&g), mIt(it) {}
 
-    reference operator*() const
+    bool operator==(const AdjacentNodeIterator& otherIterator) const
     {
-        return Base::mGraph->nodesL[Base::mIt].info();
+        return (mGraph == otherIterator.mGraph && mIt == otherIterator.mIt);
     }
 
-    pointer operator->() const
+    bool operator!=(const AdjacentNodeIterator& otherIterator) const
     {
-        return &Base::mGraph->nodesL[Base::mIt].info();
+        return !(*this == otherIterator);
+    }
+
+    AdjacentNodeIterator operator++()
+    {
+        ++mIt;
+        return *this;
+    }
+
+    AdjacentNodeIterator operator++(int)
+    {
+        AdjacentNodeIterator tmp;
+        ++mIt;
+        return tmp;
     }
 };
 
 } // namespace vcl::detail
 
-#endif // VCL_SPACE_CORE_GRAPH_BIPARTITE_ITERATOR_ADJACENT_RIGHT_NODE_ITERATOR_H
+#endif // VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H

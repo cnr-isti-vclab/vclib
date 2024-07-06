@@ -27,7 +27,6 @@
 #include "core/bit_set.h"
 #include "core/box.h"
 #include "core/color.h"
-#include "core/graph.h"
 #include "core/image.h"
 #include "core/matrix.h"
 #include "core/plane.h"

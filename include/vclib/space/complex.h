@@ -23,6 +23,7 @@
 #ifndef VCL_SPACE_COMPLEX_H
 #define VCL_SPACE_COMPLEX_H
 
+#include "complex/graph.h"
 #include "complex/grid.h"
 #include "complex/kd_tree.h"
 #include "complex/mesh_edge_util.h"
