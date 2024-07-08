@@ -23,7 +23,7 @@
 #ifndef SPACE_H
 #define SPACE_H
 
-#include <vclib/meshes/detail/tmp_meshes.h>
+#include <vclib/mesh/tmp_meshes.h>
 #include <vclib/space.h>
 
 void spaceStaticAsserts()
