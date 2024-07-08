@@ -20,22 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_MESH_BOUNDING_BOX_H
-#define VCL_ALGORITHMS_MESH_BOUNDING_BOX_H
+#ifndef VCL_ALGORITHMS_MESH_STAT_BOUNDING_BOX_H
+#define VCL_ALGORITHMS_MESH_STAT_BOUNDING_BOX_H
 
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/core/box.h>
-
-/**
- * @defgroup mesh_bounding_box Mesh Bounding Box Algorithm
- *
- * @ingroup algorithms_mesh
- *
- * @brief Function that take in input a mesh and return its bounding box.
- *
- * You can access these algorithms by including
- * `#include <vclib/algorithms/mesh/bounding_box.h>`
- */
 
 namespace vcl {
 
@@ -50,7 +39,7 @@ namespace vcl {
  * @param[in] m: The input mesh to compute the bounding box of
  * @return The bounding box of the input mesh
  *
- * @ingroup mesh_bounding_box
+ * @ingroup mesh_stat
  */
 template<MeshConcept MeshType>
 auto boundingBox(const MeshType& m)
@@ -67,4 +56,4 @@ auto boundingBox(const MeshType& m)
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_MESH_BOUNDING_BOX_H
+#endif // VCL_ALGORITHMS_MESH_STAT_BOUNDING_BOX_H

@@ -23,7 +23,6 @@
 #ifndef VCL_ALGORITHMS_MESH_H
 #define VCL_ALGORITHMS_MESH_H
 
-#include "mesh/bounding_box.h"
 #include "mesh/clean.h"
 #include "mesh/create.h"
 #include "mesh/distance.h"
