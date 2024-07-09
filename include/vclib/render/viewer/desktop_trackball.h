@@ -25,7 +25,7 @@
 
 #include <map>
 
-#include <vclib/space/bit_set.h>
+#include <vclib/space/core/bit_set.h>
 
 #include <vclib/render/input.h>
 

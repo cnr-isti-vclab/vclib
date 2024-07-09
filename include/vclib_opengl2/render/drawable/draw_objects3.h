@@ -23,7 +23,7 @@
 #ifndef VCL_OPENGL2_RENDER_DRAWABLE_DRAW_OBJECTS3_H
 #define VCL_OPENGL2_RENDER_DRAWABLE_DRAW_OBJECTS3_H
 
-#include <vclib/space/color.h>
+#include <vclib/space/core/color.h>
 
 namespace vcl {
 

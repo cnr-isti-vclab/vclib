@@ -27,7 +27,7 @@
 
 #include <vclib/meshes/tri_mesh.h>
 #include <vclib/render/interfaces/drawable_object_i.h>
-#include <vclib/space/matrix.h>
+#include <vclib/space/core/matrix.h>
 
 #include <vclib_bgfx/render/context.h>
 

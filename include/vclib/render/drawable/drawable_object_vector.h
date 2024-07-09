@@ -25,8 +25,8 @@
 
 #include <vclib/render/interfaces/drawable_object_i.h>
 
-#include <vclib/space/box.h>
-#include <vclib/space/vector/polymorphic_object_vector.h>
+#include <vclib/space/core/box.h>
+#include <vclib/space/core/vector/polymorphic_object_vector.h>
 
 namespace vcl {
 

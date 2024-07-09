@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include <vclib/space/color.h>
+#include <vclib/space/core/color.h>
 
 #include "embedded_fonts/embedded_font.h"
 #include "font/text_buffer_manager.h"

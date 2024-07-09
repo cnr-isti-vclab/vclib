@@ -23,7 +23,7 @@
 #include <vclib/ext/qglviewer/minimal_viewer_widget.h>
 
 #include <vclib/math/min_max.h>
-#include <vclib/space/box.h>
+#include <vclib/space/core/box.h>
 
 namespace vcl::qgl {
 

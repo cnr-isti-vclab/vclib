@@ -25,7 +25,7 @@
 
 #include <variant>
 
-#include <vclib/space/quaternion.h>
+#include <vclib/space/core/quaternion.h>
 
 #include "camera.h"
 #include "lights/directional_light.h"

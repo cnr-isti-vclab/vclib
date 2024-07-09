@@ -24,7 +24,7 @@
 
 #include <vclib/math/min_max.h>
 #include <vclib/render/interfaces/drawable_mesh_i.h>
-#include <vclib/space/box.h>
+#include <vclib/space/core/box.h>
 
 namespace vcl {
 

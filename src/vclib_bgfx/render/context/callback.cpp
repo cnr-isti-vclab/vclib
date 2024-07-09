@@ -22,7 +22,7 @@
 
 #include <vclib_bgfx/render/context/callback.h>
 
-#include <vclib/space/image.h>
+#include <vclib/space/core/image.h>
 
 #include <iostream>
 

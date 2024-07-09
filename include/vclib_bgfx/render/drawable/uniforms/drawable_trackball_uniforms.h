@@ -25,7 +25,7 @@
 
 #include "shader_uniform.h"
 
-#include <vclib/space/color.h>
+#include <vclib/space/core/color.h>
 
 namespace vcl {
 

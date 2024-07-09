@@ -23,8 +23,8 @@
 #ifndef VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_I_H
 #define VCL_RENDER_INTERFACES_DRAWABLE_OBJECT_I_H
 
-#include <vclib/space/box.h>
-#include <vclib/space/point.h>
+#include <vclib/space/core/box.h>
+#include <vclib/space/core/point.h>
 
 namespace vcl {
 

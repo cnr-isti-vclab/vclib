@@ -23,7 +23,7 @@
 #ifndef VCL_RENDER_INPUT_H
 #define VCL_RENDER_INPUT_H
 
-#include <vclib/space/bit_set.h>
+#include <vclib/space/core/bit_set.h>
 
 namespace vcl {
 

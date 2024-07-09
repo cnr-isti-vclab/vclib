@@ -23,8 +23,8 @@
 #ifndef VCL_RENDER_VIEWER_LIGHTS_DIRECTIONAL_LIGHT_H
 #define VCL_RENDER_VIEWER_LIGHTS_DIRECTIONAL_LIGHT_H
 
-#include <vclib/space/color.h>
-#include <vclib/space/point.h>
+#include <vclib/space/core/color.h>
+#include <vclib/space/core/point.h>
 
 namespace vcl {
 

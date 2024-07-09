@@ -28,7 +28,7 @@
 
 #include <vclib_bgfx/render/context.h>
 
-#include <vclib/space/matrix.h>
+#include <vclib/space/core/matrix.h>
 
 #include "uniforms/drawable_trackball_uniforms.h"
 

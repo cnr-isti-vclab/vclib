@@ -23,8 +23,8 @@
 #ifndef VCL_RENDER_VIEWER_MATRIX_H
 #define VCL_RENDER_VIEWER_MATRIX_H
 
-#include <vclib/space/matrix.h>
-#include <vclib/space/point.h>
+#include <vclib/space/core/matrix.h>
+#include <vclib/space/core/point.h>
 
 namespace vcl {
 
