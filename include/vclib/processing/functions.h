@@ -24,8 +24,8 @@
 #define VCL_PROCESSING_FUNCTIONS_H
 
 #include "action_manager.h"
-#include "actions/common/file_format.h"
 
+#include <vclib/io/file_format.h>
 #include <vclib/io/file_info.h>
 
 namespace vcl::proc {

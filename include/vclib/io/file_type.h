@@ -20,34 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_STRING_PARAMETER_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_STRING_PARAMETER_H
+#ifndef VCL_IO_FILE_TYPE_H
+#define VCL_IO_FILE_TYPE_H
 
-#include "parameter.h"
+#include <bit>
 
-namespace vcl::proc {
+namespace vcl {
 
-class StringParameter : public Parameter
+/**
+ * @brief Class that defines whether a file is binary or text, and (if binary)
+ * the endianness of the file.
+ */
+struct FileType
 {
-public:
-    StringParameter(
-        const std::string& name,
-        const std::string& value,
-        const std::string& description = "",
-        const std::string& tooltip     = "",
-        const std::string& category    = "") :
-            Parameter(name, value, description, tooltip, category)
-    {
-    }
+    bool isBinary = true;
 
-    ParameterType::Enum type() const override { return ParameterType::STRING; }
+    std::endian endian = std::endian::little;
 
-    std::shared_ptr<Parameter> clone() const override
-    {
-        return std::make_shared<StringParameter>(*this);
-    }
+    /**
+     * @brief Default constructor, the file type is set to little endian binary.
+     */
+    FileType() = default;
+
+    /**
+     * @brief Constructor that creates a FileType object with the specified
+     * binary flag.
+     *
+     * If the file is binary, the endianness is set to little endian.
+     *
+     * @param binary: flag that specifies if the file is binary
+     */
+    FileType(bool binary) : isBinary(binary) {}
+
+    /**
+     * @brief Constructor that creates a FileType object with the specified
+     * endianness.
+     *
+     * The binary flag is set to true.
+     *
+     * @param end: endianness of the file
+     */
+    FileType(std::endian end) : isBinary(true), endian(end) {}
 };
 
-} // namespace vcl::proc
+} // namespace vcl
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_STRING_PARAMETER_H
+#endif // VCL_IO_FILE_TYPE_H

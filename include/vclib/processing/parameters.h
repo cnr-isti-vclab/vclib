@@ -20,30 +20,16 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_IMAGE_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_IMAGE_ACTION_H
+#ifndef VCL_PROCESSING_PARAMETERS_H
+#define VCL_PROCESSING_PARAMETERS_H
 
-#include <vector>
+#include "parameters/bool_parameter.h"
+#include "parameters/enum_parameter.h"
+#include "parameters/int_parameter.h"
+#include "parameters/mesh_parameter.h"
+#include "parameters/scalar_parameter.h"
+#include "parameters/string_parameter.h"
+#include "parameters/uint_parameter.h"
+#include "parameters/uscalar_parameter.h"
 
-#include "action.h"
-
-#include <vclib/io/file_format.h>
-#include <vclib/space/core/image.h>
-
-namespace vcl::proc {
-
-class LoadImageAction : public Action
-{
-public:
-    uint type() const final { return ActionType::LOAD_IMAGE_ACTION; }
-
-    virtual std::vector<FileFormat> formats() const = 0;
-
-    virtual Image load(
-        const std::string& filename,
-        AbstractLogger&    log = logger()) const = 0;
-};
-
-} // namespace vcl::proc
-
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_IMAGE_ACTION_H
+#endif // VCL_PROCESSING_PARAMETERS_H

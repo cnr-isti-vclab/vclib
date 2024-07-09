@@ -20,34 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_UINT_PARAMETER_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_UINT_PARAMETER_H
+#ifndef VCL_PROCESSING_PARAMETER_VECTOR_H
+#define VCL_PROCESSING_PARAMETER_VECTOR_H
 
-#include "parameter.h"
+#include <vclib/space/core/vector/polymorphic_object_vector.h>
+
+#include "parameters/parameter.h"
 
 namespace vcl::proc {
 
-class UintParameter : public Parameter
+class ParameterVector : public PolymorphicObjectVector<Parameter>
 {
 public:
-    UintParameter(
-        const std::string& name,
-        uint               value,
-        const std::string& description = "",
-        const std::string& tooltip     = "",
-        const std::string& category    = "") :
-            Parameter(name, value, description, tooltip, category)
+    std::shared_ptr<const Parameter> get(const std::string& name) const
     {
+        for (const auto& parameter : *this) {
+            if (parameter->name() == name) {
+                return parameter;
+            }
+        }
+
+        return nullptr;
     }
 
-    ParameterType::Enum type() const override { return ParameterType::UINT; }
-
-    std::shared_ptr<Parameter> clone() const override
+    std::shared_ptr<Parameter> get(const std::string& name)
     {
-        return std::make_shared<UintParameter>(*this);
+        for (auto& parameter : *this) {
+            if (parameter->name() == name) {
+                return parameter;
+            }
+        }
+
+        return nullptr;
     }
 };
 
+using OutputValues = ParameterVector;
+
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_UINT_PARAMETER_H
+#endif // VCL_PROCESSING_PARAMETER_VECTOR_H

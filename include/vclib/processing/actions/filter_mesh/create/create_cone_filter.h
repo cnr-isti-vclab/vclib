@@ -25,8 +25,8 @@
 
 #include <vclib/algorithms/mesh/create/cone.h>
 #include <vclib/algorithms/mesh/update/normal.h>
-#include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/actions/interfaces/filter_mesh_action.h>
+#include <vclib/processing/parameters.h>
 
 namespace vcl::proc {
 

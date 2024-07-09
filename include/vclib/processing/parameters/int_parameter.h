@@ -20,16 +20,34 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_H
+#ifndef VCL_PROCESSING_PARAMETERS_INT_PARAMETER_H
+#define VCL_PROCESSING_PARAMETERS_INT_PARAMETER_H
 
-#include "parameters/bool_parameter.h"
-#include "parameters/enum_parameter.h"
-#include "parameters/int_parameter.h"
-#include "parameters/mesh_parameter.h"
-#include "parameters/scalar_parameter.h"
-#include "parameters/string_parameter.h"
-#include "parameters/uint_parameter.h"
-#include "parameters/uscalar_parameter.h"
+#include "parameter.h"
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_H
+namespace vcl::proc {
+
+class IntParameter : public Parameter
+{
+public:
+    IntParameter(
+        const std::string& name,
+        int                value,
+        const std::string& description = "",
+        const std::string& tooltip     = "",
+        const std::string& category    = "") :
+            Parameter(name, value, description, tooltip, category)
+    {
+    }
+
+    ParameterType::Enum type() const override { return ParameterType::INT; }
+
+    std::shared_ptr<Parameter> clone() const override
+    {
+        return std::make_shared<IntParameter>(*this);
+    }
+};
+
+} // namespace vcl::proc
+
+#endif // VCL_PROCESSING_PARAMETERS_INT_PARAMETER_H

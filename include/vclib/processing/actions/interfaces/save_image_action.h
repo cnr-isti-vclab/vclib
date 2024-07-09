@@ -27,7 +27,7 @@
 
 #include "action.h"
 
-#include <vclib/processing/actions/common/file_format.h>
+#include <vclib/io/file_format.h>
 #include <vclib/space/core/image.h>
 
 namespace vcl::proc {

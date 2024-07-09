@@ -30,8 +30,8 @@
 #include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/types.h>
 
-#include "file_format.h"
 #include "file_info.h"
+#include "file_type.h"
 #include "serialization/serialize.h"
 
 namespace vcl {
@@ -73,7 +73,7 @@ template<typename T>
 void writeChar(
     std::ostream& file,
     T             p,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
@@ -89,7 +89,7 @@ template<typename T>
 void writeUChar(
     std::ostream& file,
     T             p,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
@@ -105,7 +105,7 @@ template<typename T>
 void writeShort(
     std::ostream& file,
     T             p,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
@@ -121,7 +121,7 @@ template<typename T>
 void writeUShort(
     std::ostream& file,
     T             p,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
@@ -137,7 +137,7 @@ template<typename T>
 void writeInt(
     std::ostream& file,
     T             p,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
@@ -153,7 +153,7 @@ template<typename T>
 void writeUInt(
     std::ostream& file,
     T             p,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     if (isColor && !std::is_integral<T>::value)
@@ -169,7 +169,7 @@ template<typename T>
 void writeFloat(
     std::ostream& file,
     const T&      p,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     float tmp = p;
@@ -185,7 +185,7 @@ template<typename T>
 void writeDouble(
     std::ostream& file,
     const T&      p,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     double tmp = p;
@@ -203,7 +203,7 @@ void writeProperty(
     std::ostream& file,
     const T&      p,
     PrimitiveType type,
-    FileFormat    format  = FileFormat(),
+    FileType    format  = FileType(),
     bool          isColor = false)
 {
     switch (type) {
@@ -226,7 +226,7 @@ void writeCustomComponent(
     const El&          elem,
     const std::string& cName,
     PrimitiveType      type,
-    FileFormat         format = FileFormat())
+    FileType         format = FileType())
 {
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))

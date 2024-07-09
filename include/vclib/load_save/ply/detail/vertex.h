@@ -152,7 +152,7 @@ void writePlyVertices(
 {
     using VertexType = MeshType::VertexType;
 
-    FileFormat format;
+    FileType format;
     if (header.format() == ply::ASCII) {
         format.isBinary = false;
     }

@@ -23,44 +23,98 @@
 #ifndef VCL_IO_FILE_FORMAT_H
 #define VCL_IO_FILE_FORMAT_H
 
-#include <bit>
+#include <algorithm>
+#include <string>
+#include <vector>
+
+#include <vclib/concepts/ranges/range.h>
+#include <vclib/misc/string.h>
 
 namespace vcl {
 
 /**
- * @brief Class that defines the format of a file.
+ * @brief The FileFormat class represents a file format.
  *
- * This class is used to define the format of a file, specifying if it is binary
- * or text, and (if binary) the endianness.
+ * A format is defined by a list of extensions and a description.
  */
-struct FileFormat
+class FileFormat
 {
-    bool isBinary = true;
+    std::vector<std::string> mExtensions;
+    std::string              mDescription;
 
-    std::endian endian = std::endian::little;
+public:
+    FileFormat(const char* extension, std::string description = "") :
+            mExtensions {extension}, mDescription(description)
+    {
+        clearExtension(mExtensions[0]);
+    }
+
+    FileFormat(const std::string& extension, std::string description = "") :
+            FileFormat(extension.c_str(), description)
+    {
+    }
+
+    FileFormat(Range auto extensions, std::string description = "") :
+            mExtensions(extensions), mDescription(description)
+    {
+        for (auto& ext : mExtensions) {
+            clearExtension(ext);
+        }
+
+        // make sure extensions are sorted - this is important for the
+        // comparison operator
+        std::sort(mExtensions.begin(), mExtensions.end());
+    }
+
+    const std::string& description() const { return mDescription; }
+
+    const std::vector<std::string>& extensions() const { return mExtensions; }
+
+    bool matchExtension(const std::string& extension) const
+    {
+        for (const auto& ext : mExtensions) {
+            if (ext == extension) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
-     * @brief Default constructor, creates a little endian binary file format.
+     * @brief A FileFormat is equal to another if **at least** one extension is
+     * equal. The description is not considered.
+     *
+     * Otherwise, the comparison is based on the first extension.
+     *
+     * @note This is a lexicographical comparison.
+     *
+     * @param other
+     * @return a std::strong_ordering value indicating the comparison result
      */
-    FileFormat() = default;
+    auto operator<=>(const FileFormat& other) const
+    {
+        for (const auto& ext : mExtensions) {
+            if (other.matchExtension(ext)) {
+                return std::strong_ordering::equal;
+            }
+        }
 
-    /**
-     * @brief Constructor that creates a file format with the specified binary
-     * flag.
-     *
-     * If the file is binary, the endianness is set to little endian.
-     *
-     * @param binary: flag that specifies if the file is binary
-     */
-    FileFormat(bool binary) : isBinary(binary) {}
+        return mExtensions[0] <=> other.mExtensions[0];
+    }
 
-    /**
-     * @brief Constructor that creates a binary file format with the specified
-     * endianness.
-     *
-     * @param end: endianness of the file
-     */
-    FileFormat(std::endian end) : isBinary(true), endian(end) {}
+    bool operator==(const FileFormat& other) const
+    {
+        return *this <=> other == std::strong_ordering::equal;
+    }
+
+private:
+    static void clearExtension(std::string& extension)
+    {
+        if (extension.front() == '.') {
+            extension.erase(0, 1);
+        }
+        extension = vcl::toLower(extension);
+    }
 };
 
 } // namespace vcl

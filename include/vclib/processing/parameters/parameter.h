@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_PARAMETER_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_PARAMETER_H
+#ifndef VCL_PROCESSING_PARAMETERS_PARAMETER_H
+#define VCL_PROCESSING_PARAMETERS_PARAMETER_H
 
 #include <any>
 #include <memory>
@@ -242,4 +242,4 @@ private:
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_PARAMETER_H
+#endif // VCL_PROCESSING_PARAMETERS_PARAMETER_H

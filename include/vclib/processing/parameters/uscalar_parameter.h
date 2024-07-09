@@ -20,34 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_BOOL_PARAMETER_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_BOOL_PARAMETER_H
+#ifndef VCL_PROCESSING_PARAMETERS_USCALAR_PARAMETER_H
+#define VCL_PROCESSING_PARAMETERS_USCALAR_PARAMETER_H
 
 #include "parameter.h"
 
 namespace vcl::proc {
 
-class BoolParameter : public Parameter
+class UscalarParameter : public Parameter
 {
 public:
-    BoolParameter(
+    UscalarParameter(
         const std::string& name,
-        bool               value,
+        Scalar             value,
         const std::string& description = "",
         const std::string& tooltip     = "",
         const std::string& category    = "") :
-            Parameter(name, value, description, tooltip, category)
+            Parameter(name, 0.0, description, tooltip, category)
     {
+        setScalarValue(value);
     }
 
-    ParameterType::Enum type() const override { return ParameterType::BOOL; }
+    ParameterType::Enum type() const override { return ParameterType::USCALAR; }
 
     std::shared_ptr<Parameter> clone() const override
     {
-        return std::make_shared<BoolParameter>(*this);
+        return std::make_shared<UscalarParameter>(*this);
+    }
+
+    void setScalarValue(Scalar value) override
+    {
+        checkScalarValue(value);
+        Parameter::setScalarValue(value);
+    }
+
+private:
+    void checkScalarValue(Scalar value) const
+    {
+        if (value < 0.0)
+            throw std::runtime_error(
+                "UscalarParameter: value cannot be negative");
     }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETERS_BOOL_PARAMETER_H
+#endif // VCL_PROCESSING_PARAMETERS_USCALAR_PARAMETER_H

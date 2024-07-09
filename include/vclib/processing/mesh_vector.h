@@ -20,43 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_COMMON_PARAMETER_VECTOR_H
-#define VCL_PROCESSING_ACTIONS_COMMON_PARAMETER_VECTOR_H
+#ifndef VCL_PROCESSING_MESH_VECTOR_H
+#define VCL_PROCESSING_MESH_VECTOR_H
 
-#include <vclib/space/core/vector/polymorphic_object_vector.h>
-
-#include "parameters/parameter.h"
+#include <vclib/processing/meshes/mesh_i.h>
+#include <vclib/space/core/vector/pointer_vector.h>
 
 namespace vcl::proc {
 
-class ParameterVector : public PolymorphicObjectVector<Parameter>
+class MeshVector : public PointerVector<std::shared_ptr<MeshI>>
 {
-public:
-    std::shared_ptr<const Parameter> get(const std::string& name) const
-    {
-        for (const auto& parameter : *this) {
-            if (parameter->name() == name) {
-                return parameter;
-            }
-        }
-
-        return nullptr;
-    }
-
-    std::shared_ptr<Parameter> get(const std::string& name)
-    {
-        for (auto& parameter : *this) {
-            if (parameter->name() == name) {
-                return parameter;
-            }
-        }
-
-        return nullptr;
-    }
 };
-
-using OutputValues = ParameterVector;
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_COMMON_PARAMETER_VECTOR_H
+#endif // VCL_PROCESSING_MESH_VECTOR_H

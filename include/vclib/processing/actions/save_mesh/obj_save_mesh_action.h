@@ -25,10 +25,10 @@
 
 #include <vclib/load_save/obj/capability.h>
 #include <vclib/load_save/obj/save.h>
-#include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/actions/interfaces/save_mesh_action.h>
 #include <vclib/processing/functions.h>
 #include <vclib/processing/meshes.h>
+#include <vclib/processing/parameters.h>
 
 namespace vcl::proc {
 

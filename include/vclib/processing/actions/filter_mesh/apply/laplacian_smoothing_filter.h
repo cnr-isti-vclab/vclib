@@ -25,8 +25,8 @@
 
 #include <vclib/algorithms/mesh/smooth.h>
 
-#include <vclib/processing/actions/common/parameters.h>
 #include <vclib/processing/actions/interfaces/filter_mesh_action.h>
+#include <vclib/processing/parameters.h>
 
 namespace vcl::proc {
 

@@ -38,7 +38,7 @@ void writePlyEdges(
 {
     using EdgeType = MeshType::EdgeType;
 
-    FileFormat format;
+    FileType format;
     if (header.format() == ply::ASCII) {
         format.isBinary = false;
     }

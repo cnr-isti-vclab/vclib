@@ -23,8 +23,8 @@
 #ifndef VCL_PROCESSING_ACTIONS_INTERFACES_MESH_ACTION_H
 #define VCL_PROCESSING_ACTIONS_INTERFACES_MESH_ACTION_H
 
-#include <vclib/processing/actions/common/parameter_vector.h>
 #include <vclib/processing/meshes.h>
+#include <vclib/processing/parameter_vector.h>
 
 #include "action.h"
 
