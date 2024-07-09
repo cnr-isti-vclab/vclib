@@ -20,13 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_H
+#ifndef VCL_PROCESSING_ACTION_INTERFACES_H
+#define VCL_PROCESSING_ACTION_INTERFACES_H
 
-#include "interfaces/filter_mesh_action.h"
-#include "interfaces/load_image_action.h"
-#include "interfaces/load_mesh_action.h"
-#include "interfaces/save_image_action.h"
-#include "interfaces/save_mesh_action.h"
+#include "action_interfaces/filter_mesh_action.h"
+#include "action_interfaces/load_image_action.h"
+#include "action_interfaces/load_mesh_action.h"
+#include "action_interfaces/save_image_action.h"
+#include "action_interfaces/save_mesh_action.h"
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_H
+#endif // VCL_PROCESSING_ACTION_INTERFACES_H

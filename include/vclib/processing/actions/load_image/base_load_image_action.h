@@ -23,7 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_LOAD_IMAGE_BASE_LOAD_IMAGE_ACTION_H
 #define VCL_PROCESSING_ACTIONS_LOAD_IMAGE_BASE_LOAD_IMAGE_ACTION_H
 
-#include <vclib/processing/actions/interfaces/load_image_action.h>
+#include <vclib/processing/action_interfaces/load_image_action.h>
 
 namespace vcl::proc {
 

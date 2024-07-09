@@ -25,7 +25,7 @@
 
 #include "action_manager/identifier_action_manager.h"
 #include "action_manager/io_action_manager.h"
-#include "actions/interfaces.h"
+#include "action_interfaces.h"
 
 namespace vcl::proc {
 

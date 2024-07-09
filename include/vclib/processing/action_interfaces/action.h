@@ -20,30 +20,75 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_IMAGE_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_IMAGE_ACTION_H
+#ifndef VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
+#define VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
 
-#include <vector>
+#include <algorithm>
+#include <memory>
 
-#include "action.h"
-
-#include <vclib/io/file_format.h>
-#include <vclib/space/core/image.h>
+#include <vclib/misc/logger.h>
+#include <vclib/misc/string.h>
+#include <vclib/processing/meshes/mesh_i.h>
+#include <vclib/types.h>
 
 namespace vcl::proc {
 
-class LoadImageAction : public Action
+class ActionManager;
+
+struct ActionType
 {
+    enum Enum {
+        LOAD_IMAGE_ACTION = 0,
+        SAVE_IMAGE_ACTION,
+        LOAD_MESH_ACTION,
+        SAVE_MESH_ACTION,
+        FILTER_MESH_ACTION,
+    };
+};
+
+class Action
+{
+    friend class ActionManager;
+
+    /**
+     * @brief A pointer to the manager that contains the action.
+     *
+     * It could be used by the action to access and run other actions.
+     */
+    ActionManager* mManage = nullptr;
+
+    static inline ConsoleLogger log;
+
 public:
-    uint type() const final { return ActionType::LOAD_IMAGE_ACTION; }
+    Action()          = default;
+    virtual ~Action() = default;
 
-    virtual std::vector<FileFormat> formats() const = 0;
+    virtual std::shared_ptr<Action> clone() const = 0;
 
-    virtual Image load(
-        const std::string& filename,
-        AbstractLogger&    log = logger()) const = 0;
+    virtual std::string name() const = 0;
+
+    virtual uint type() const = 0;
+
+    std::string identifier() const { return identifierFromName(name()); }
+
+    static std::string identifierFromName(const std::string& name)
+    {
+        std::string n = name;
+
+        std::replace(n.begin(), n.end(), ' ', '_');
+        n = vcl::toLower(n);
+
+        return n;
+    }
+
+protected:
+    void setManager(ActionManager* manager) { mManage = manager; }
+
+    ActionManager* manager() const { return mManage; }
+
+    static ConsoleLogger& logger() { return log; }
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_IMAGE_ACTION_H
+#endif // VCL_PROCESSING_ACTION_INTERFACES_ACTION_H

@@ -20,65 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_MESH_ACTION_H
-#define VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_MESH_ACTION_H
+#ifndef VCL_PROCESSING_ACTION_INTERFACES_SAVE_IMAGE_ACTION_H
+#define VCL_PROCESSING_ACTION_INTERFACES_SAVE_IMAGE_ACTION_H
 
-#include "mesh_action.h"
+#include <vector>
+
+#include "action.h"
 
 #include <vclib/io/file_format.h>
-#include <vclib/algorithms/mesh/update.h>
-#include <vclib/processing/meshes.h>
-#include <vclib/processing/settings.h>
-#include <vclib/space/complex/mesh_info.h>
+#include <vclib/space/core/image.h>
 
 namespace vcl::proc {
 
-class LoadMeshAction : public MeshAction
+class SaveImageAction : public Action
 {
 public:
-    uint type() const final { return ActionType::LOAD_MESH_ACTION; }
+    uint type() const final { return ActionType::SAVE_IMAGE_ACTION; }
 
     virtual std::vector<FileFormat> formats() const = 0;
 
-    virtual std::shared_ptr<MeshI> load(
-        const std::string&     filename,
-        const ParameterVector& parameters,
-        vcl::MeshInfo&         loadedInfo,
-        AbstractLogger&        log = logger()) const = 0;
-
-    virtual std::shared_ptr<MeshI> load(
-        const std::string&     filename,
-        const ParameterVector& parameter,
-        AbstractLogger&        log = logger()) const
-    {
-        MeshInfo info;
-        auto     mesh = load(filename, parameter, info, log);
-        return mesh;
-    }
-
-    std::shared_ptr<MeshI> load(
+    virtual void save(
         const std::string& filename,
-        AbstractLogger&    log = logger()) const
-    {
-        return load(filename, parameters(), log);
-    }
-
-protected:
-    template<MeshConcept MeshType>
-    void postLoad(MeshType& mesh, const MeshInfo& loadedInfo) const
-    {
-        if constexpr (vcl::HasFaces<MeshType>) {
-            if (!loadedInfo.hasFaceNormals()) {
-                vcl::updatePerFaceNormals(mesh);
-            }
-            if (!loadedInfo.hasVertexNormals()) {
-                vcl::updatePerVertexNormalsFromFaceNormals(mesh);
-            }
-        }
-        vcl::updateBoundingBox(mesh);
-    }
+        const Image&       image,
+        AbstractLogger&    log = logger()) const = 0;
 };
 
 } // namespace vcl::proc
 
-#endif // VCL_PROCESSING_ACTIONS_INTERFACES_LOAD_MESH_ACTION_H
+#endif // VCL_PROCESSING_ACTION_INTERFACES_SAVE_IMAGE_ACTION_H

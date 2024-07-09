@@ -23,7 +23,7 @@
 #ifndef VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_SAVE_IMAGE_ACTION_H
 #define VCL_PROCESSING_ACTIONS_SAVE_IMAGE_BASE_SAVE_IMAGE_ACTION_H
 
-#include <vclib/processing/actions/interfaces/save_image_action.h>
+#include <vclib/processing/action_interfaces/save_image_action.h>
 
 namespace vcl::proc {
 
