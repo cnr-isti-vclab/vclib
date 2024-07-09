@@ -25,7 +25,7 @@
 
 #include <QGridLayout>
 
-#include <vclib/processing/actions/common/parameter_vector.h>
+#include <vclib/processing/parameter_vector.h>
 
 #include "parameters/parameter_row.h"
 

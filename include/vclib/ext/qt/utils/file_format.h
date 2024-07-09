@@ -23,13 +23,13 @@
 #ifndef VCL_EXT_QT_UTILS_FILE_FORMAT_H
 #define VCL_EXT_QT_UTILS_FILE_FORMAT_H
 
-#include <vclib/processing/actions/common/file_format.h>
+#include <vclib/io/file_format.h>
 
 #include <QString>
 
 namespace vcl::qt {
 
-inline QString filterFormatToQString(const proc::FileFormat& format)
+inline QString filterFormatToQString(const FileFormat& format)
 {
     QString filter = QString::fromStdString(format.description());
     filter += " (";
@@ -42,8 +42,8 @@ inline QString filterFormatToQString(const proc::FileFormat& format)
 }
 
 inline QString filterFormatsToQString(
-    const std::vector<proc::FileFormat>& formats,
-    bool                                 allFormats = false)
+    const std::vector<FileFormat>& formats,
+    bool                           allFormats = false)
 {
     QString filter;
     if (allFormats) {

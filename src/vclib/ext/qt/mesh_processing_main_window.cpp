@@ -65,7 +65,7 @@ MeshProcessingMainWindow::~MeshProcessingMainWindow()
 
 void MeshProcessingMainWindow::openMesh()
 {
-    std::vector<proc::FileFormat> formats = mActionManager.loadMeshFormats();
+    std::vector<FileFormat> formats = mActionManager.loadMeshFormats();
 
     ActionOpenFileDialog<proc::LoadMeshAction>* dialog =
         new ActionOpenFileDialog<proc::LoadMeshAction>(
@@ -77,10 +77,10 @@ void MeshProcessingMainWindow::openMesh()
         double tTime = 0.0;
 
         for (const auto& f : fs) {
-            std::string      filename = f.toStdString();
-            std::string      pfn    = FileInfo::fileNameWithExtension(filename);
-            proc::FileFormat format = FileInfo::extension(filename);
-            auto             params = dialog->parameters(format);
+            std::string filename = f.toStdString();
+            std::string pfn      = FileInfo::fileNameWithExtension(filename);
+            FileFormat  format   = FileInfo::extension(filename);
+            auto        params   = dialog->parameters(format);
 
             logger().startTimer();
             auto mesh = mActionManager.loadMeshAction(format)->load(
@@ -109,7 +109,7 @@ void MeshProcessingMainWindow::saveMeshAs()
         return;
     }
 
-    std::vector<proc::FileFormat> formats = mActionManager.saveMeshFormats();
+    std::vector<FileFormat> formats = mActionManager.saveMeshFormats();
 
     ActionSaveFileDialog<proc::SaveMeshAction>* dialog =
         new ActionSaveFileDialog<proc::SaveMeshAction>(
@@ -118,12 +118,12 @@ void MeshProcessingMainWindow::saveMeshAs()
     if (dialog->exec() == QDialog::Accepted) {
         auto fs = dialog->selectedFiles();
 
-        std::string      filename = fs.first().toStdString();
-        std::string      pfn      = FileInfo::fileNameWithExtension(filename);
-        std::string      format   = FileInfo::extension(filename);
-        proc::FileFormat f        = dialog->selectedFormat();
+        std::string filename = fs.first().toStdString();
+        std::string pfn      = FileInfo::fileNameWithExtension(filename);
+        std::string format   = FileInfo::extension(filename);
+        FileFormat  f        = dialog->selectedFormat();
 
-        if (f != proc::FileFormat(format)) {
+        if (f != FileFormat(format)) {
             filename += "." + f.extensions().front();
         }
 

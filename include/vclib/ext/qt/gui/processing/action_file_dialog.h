@@ -58,7 +58,7 @@ public:
             setAcceptMode(QFileDialog::AcceptSave);
         }
 
-        std::vector<proc::FileFormat> formats = actionManager.formats();
+        std::vector<FileFormat> formats = actionManager.formats();
 
         bool    allSupportedFormats = OPEN;
         QString filter = filterFormatsToQString(formats, allSupportedFormats);
@@ -163,7 +163,7 @@ public:
 
     ~ActionFileDialog() {}
 
-    proc::ParameterVector parameters(const proc::FileFormat& format) const
+    proc::ParameterVector parameters(const FileFormat& format) const
     {
         for (int i = 0; i < mActionManager->formats().size(); i++) {
             if (mActionManager->formats()[i] == format) {
@@ -180,14 +180,14 @@ public:
      *
      * @return
      */
-    proc::FileFormat selectedFormat() const
+    FileFormat selectedFormat() const
     {
         QGridLayout* layout = gLayout();
         QWidget*     w31    = layout->itemAtPosition(4, 1)->widget();
         QComboBox*   cb     = qobject_cast<QComboBox*>(w31);
         int          ci     = cb->currentIndex();
         if (OPEN && ci == 0)
-            return proc::FileFormat("", "");
+            return FileFormat("", "");
         else if (OPEN)
             return mActionManager->formats()[cb->currentIndex() - 1];
         else

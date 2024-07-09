@@ -25,7 +25,7 @@
 
 #include <QDockWidget>
 
-#include <vclib/processing/actions/interfaces/filter_mesh_action.h>
+#include <vclib/processing/action_interfaces/filter_mesh_action.h>
 
 namespace vcl::qt {
 

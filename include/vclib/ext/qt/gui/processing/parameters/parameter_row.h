@@ -30,7 +30,7 @@
 #include <QWidget>
 
 #include <vclib/ext/qt/gui/q_clickable_label.h>
-#include <vclib/processing/actions/common/parameters.h>
+#include <vclib/processing/parameters.h>
 
 namespace vcl::qt {
 
