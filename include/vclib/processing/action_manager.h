@@ -23,9 +23,9 @@
 #ifndef VCL_PROCESSING_ACTION_MANAGER_H
 #define VCL_PROCESSING_ACTION_MANAGER_H
 
+#include "action_interfaces.h"
 #include "action_manager/identifier_action_manager.h"
 #include "action_manager/io_action_manager.h"
-#include "action_interfaces.h"
 
 namespace vcl::proc {
 
