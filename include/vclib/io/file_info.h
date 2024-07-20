@@ -126,25 +126,25 @@ public:
      * FileInfo::separateFilenameFromPath
      *
      * @param[in] fullname: string containing the filename
-     * @param[out] rawname: output string containing the filename without the
+     * @param[out] rawName: output string containing the filename without the
      * extension
      * @param[out] extension: output string containing the extension of the
      * filename
      */
     static void separateExtensionFromFileName(
         const std::string& fullname,
-        std::string&       rawname,
+        std::string&       rawName,
         std::string&       extension)
     {
         // https://stackoverflow.com/questions/6417817
 
-        size_t lastindex = fullname.find_last_of(".");
-        if (lastindex != std::string::npos) {
-            rawname   = fullname.substr(0, lastindex);
-            extension = fullname.substr(lastindex, fullname.size());
+        size_t lastIndex = fullname.find_last_of(".");
+        if (lastIndex != std::string::npos) {
+            rawName   = fullname.substr(0, lastIndex);
+            extension = fullname.substr(lastIndex, fullname.size());
         }
         else {
-            rawname = fullname;
+            rawName = fullname;
         }
     }
 
@@ -171,10 +171,10 @@ public:
         std::string&       path,
         std::string&       filename)
     {
-        size_t lastindex = fullpath.find_last_of("/");
-        if (lastindex != std::string::npos) {
-            path     = fullpath.substr(0, lastindex + 1);
-            filename = fullpath.substr(lastindex + 1, fullpath.size());
+        size_t lastIndex = fullpath.find_last_of("/");
+        if (lastIndex != std::string::npos) {
+            path     = fullpath.substr(0, lastIndex + 1);
+            filename = fullpath.substr(lastIndex + 1, fullpath.size());
         }
         else {
             filename = fullpath;
@@ -272,18 +272,18 @@ public:
         const std::string& filename,
         const std::string& ext)
     {
-        std::string actualfilename;
-        size_t      lastindex = filename.find_last_of(".");
-        if (lastindex != std::string::npos) {
-            std::string e = filename.substr(lastindex + 1, filename.size());
+        std::string actualFileName;
+        size_t      lastIndex = filename.find_last_of(".");
+        if (lastIndex != std::string::npos) {
+            std::string e = filename.substr(lastIndex + 1, filename.size());
             if (e == ext)
-                actualfilename = filename;
+                actualFileName = filename;
             else
-                actualfilename = filename + "." + ext;
+                actualFileName = filename + "." + ext;
         }
         else
-            actualfilename = filename + "." + ext;
-        return actualfilename;
+            actualFileName = filename + "." + ext;
+        return actualFileName;
     }
 };
 

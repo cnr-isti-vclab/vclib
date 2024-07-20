@@ -41,10 +41,10 @@ inline std::ofstream openOutputFileStream(
     const std::string& ext = "")
 {
     setlocale(LC_ALL, "C");
-    std::string actualfilename = filename;
+    std::string actualFileName = filename;
     std::string path           = FileInfo::pathWithoutFileName(filename);
 
-    if (!std::filesystem::exists(path)) {
+    if (!path.empty() && !std::filesystem::exists(path)) {
         bool res = std::filesystem::create_directory(path);
         if (!res) {
             throw std::runtime_error("Cannot create directory: " + path);
@@ -52,16 +52,16 @@ inline std::ofstream openOutputFileStream(
     }
 
     if (!ext.empty()) {
-        actualfilename = FileInfo::addExtensionIfNeeded(filename, ext);
+        actualFileName = FileInfo::addExtensionIfNeeded(filename, ext);
     }
 
     std::ofstream fp;
     fp.imbue(std::locale().classic());
 
     // need to set binary or windows will fail
-    fp.open(actualfilename, std::ofstream::binary);
+    fp.open(actualFileName, std::ofstream::binary);
     if (!fp) {
-        throw vcl::CannotOpenFileException(actualfilename);
+        throw vcl::CannotOpenFileException(actualFileName);
     }
 
     return fp;

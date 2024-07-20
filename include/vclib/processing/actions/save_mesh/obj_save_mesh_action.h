@@ -73,12 +73,11 @@ public:
         AbstractLogger&        log = logger()) const override
     {
         // transform saveObj to a lambda function
-        auto fun = [&](auto&& m, auto&& fn, auto&& i, auto&& p) {
-            saveObj(m, fn, i, p);
+        auto fun = [&](auto&& m) {
+            saveObj(m, filename, info, parameters);
         };
 
-        callFunctionForSupportedMesheTypes(
-            mesh, fun, filename, info, parameters);
+        callFunctionForSupportedMeshTypes(mesh, fun);
     }
 
 private:

@@ -232,8 +232,7 @@ protected:
     auto callFunctionForSupportedInputMeshTypes(
         const MeshI&         mesh,
         const BitSet<short>& supportedMeshTypes,
-        auto&&               function,
-        auto&&... args) const
+        auto&&               function) const
     {
         if (!supportedMeshTypes[mesh.type()]) {
             throw std::runtime_error(
@@ -242,14 +241,13 @@ protected:
         }
 
         return callFunctionForMesh(
-            mesh, function, std::forward<decltype(args)>(args)...);
+            mesh, function);
     }
 
     auto callFunctionForSupportedInputOutputMeshTypes(
         MeshI&               mesh,
         const BitSet<short>& supportedMeshTypes,
-        auto&&               function,
-        auto&&... args) const
+        auto&&               function) const
     {
         if (!supportedMeshTypes[mesh.type()]) {
             throw std::runtime_error(
@@ -257,8 +255,7 @@ protected:
                 mesh.typeName() + " type.");
         }
 
-        return callFunctionForMesh(
-            mesh, function, std::forward<decltype(args)>(args)...);
+        return callFunctionForMesh(mesh, function);
     }
 
     template<MeshConcept MeshType>

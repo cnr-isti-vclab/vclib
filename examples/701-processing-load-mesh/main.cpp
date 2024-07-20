@@ -41,7 +41,7 @@ int main()
     assert(pm1->is<vcl::proc::PolyMesh>());
 
     auto params = manager.loadMeshAction("obj")->parameters();
-    params.get("mesh_type")->setIntValue(1);
+    params.get("mesh_type")->setUintValue(1);
 
     auto pm2 = manager.loadMeshAction("obj")->load(
         VCLIB_ASSETS_PATH "/greek_helmet.obj", params);

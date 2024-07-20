@@ -94,10 +94,9 @@ public:
     }
 
 protected:
-    void callFunctionForSupportedMesheTypes(
+    void callFunctionForSupportedMeshTypes(
         const MeshI& mesh,
-        auto&&       function,
-        auto&&... args) const
+        auto&&       function) const
     {
         auto supportedMeshTypes = supportedInputMeshType();
         if (!supportedMeshTypes[mesh.type()]) {
@@ -106,8 +105,7 @@ protected:
                 mesh.typeName() + " type.");
         }
 
-        callFunctionForMesh(
-            mesh, function, std::forward<decltype(args)>(args)...);
+        callFunctionForMesh(mesh, function);
     }
 };
 

@@ -58,33 +58,21 @@ protected:
      * @param mesh
      * @param args
      */
-    auto callFunctionForMesh(const MeshI& mesh, auto&& function, auto&&... args)
+    auto callFunctionForMesh(const MeshI& mesh, auto&& function)
         const
     {
         switch (mesh.type()) {
-        case MeshIType::TRI_MESH:
-            return function(
-                mesh.as<TriMesh>(), std::forward<decltype(args)>(args)...);
-            break;
-        case MeshIType::POLY_MESH:
-            return function(
-                mesh.as<PolyMesh>(), std::forward<decltype(args)>(args)...);
-            break;
+        case MeshIType::TRI_MESH: return function(mesh.as<TriMesh>()); break;
+        case MeshIType::POLY_MESH: return function(mesh.as<PolyMesh>()); break;
         default: throw std::runtime_error("Unknown mesh type");
         }
     }
 
-    auto callFunctionForMesh(MeshI& mesh, auto&& function, auto&&... args) const
+    auto callFunctionForMesh(MeshI& mesh, auto&& function) const
     {
         switch (mesh.type()) {
-        case MeshIType::TRI_MESH:
-            return function(
-                mesh.as<TriMesh>(), std::forward<decltype(args)>(args)...);
-            break;
-        case MeshIType::POLY_MESH:
-            return function(
-                mesh.as<PolyMesh>(), std::forward<decltype(args)>(args)...);
-            break;
+        case MeshIType::TRI_MESH: return function(mesh.as<TriMesh>()); break;
+        case MeshIType::POLY_MESH: return function(mesh.as<PolyMesh>()); break;
         default: throw std::runtime_error("Unknown mesh type");
         }
     }
