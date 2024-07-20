@@ -176,6 +176,58 @@ public:
         return applyFilter(outputMeshes, parameters());
     }
 
+    OutputValues applyFilter(
+        const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
+        MeshVector&                                outputMeshes,
+        const ParameterVector&                     parameters,
+        AbstractLogger&                            log = logger())
+    {
+        if (numberInputMeshes() > 0) {
+            throw std::runtime_error(
+                "This action requires input meshes. You called the wrong "
+                "overload of the applyFilter member function.");
+        }
+
+        if (numberInputOutputMeshes() == 0) {
+            throw std::runtime_error(
+                "This action does not require input/output meshes. You called "
+                "the wrong overload of the applyFilter member function.");
+        }
+
+        return applyFilter(
+            MeshVector(),
+            inputOutputMeshes,
+            outputMeshes,
+            parameters,
+            log);
+    }
+
+    OutputValues applyFilter(
+        const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
+        MeshVector&                                outputMeshes,
+        AbstractLogger&                            log = logger())
+    {
+        return applyFilter(inputOutputMeshes, outputMeshes, parameters(), log);
+    }
+
+    OutputValues applyFilter(
+        const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
+        const ParameterVector&                     parameters,
+        AbstractLogger&                            log = logger())
+    {
+        MeshVector outputMeshes;
+
+        return applyFilter(
+            inputOutputMeshes, outputMeshes, parameters, log);
+    }
+
+    OutputValues applyFilter(
+        const std::vector<std::shared_ptr<MeshI>>& inputOutputMeshes,
+        AbstractLogger&                            log = logger())
+    {
+        return applyFilter(inputOutputMeshes, parameters(), log);
+    }
+
 protected:
     auto callFunctionForSupportedInputMeshTypes(
         const MeshI&         mesh,

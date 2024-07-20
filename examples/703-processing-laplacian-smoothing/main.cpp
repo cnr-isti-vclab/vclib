@@ -30,11 +30,16 @@ int main()
 
     manager.add(vcl::proc::vclibActions());
 
-    vcl::proc::MeshVector mv;
+    auto pm0 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
+                                                   "/bunny.obj");
 
-    manager.filterMeshActionByName("Create Cone")->applyFilter(mv);
+    std::vector<std::shared_ptr<vcl::proc::MeshI>> mv;
 
-    manager.saveMeshAction("ply")->save("cone.ply", *mv.front());
+    mv.push_back(pm0);
+
+    manager.filterMeshActionByName("Laplacian Smoothing")->applyFilter(mv);
+
+    manager.saveMeshAction("ply")->save(VCLIB_RESULTS_PATH "/smoothed_bunny.ply", *mv.front());
 
     return 0;
 }
