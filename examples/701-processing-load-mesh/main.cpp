@@ -30,8 +30,8 @@ int main()
 
     manager.add(vcl::proc::vclibActions());
 
-    std::shared_ptr<vcl::proc::MeshI> pm0 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
-                                                   "/TextureDouble.obj");
+    std::shared_ptr<vcl::proc::MeshI> pm0 = manager.loadMeshAction("obj")->load(
+        VCLIB_ASSETS_PATH "/TextureDouble.obj");
 
     assert(pm0->is<vcl::proc::TriMesh>());
 

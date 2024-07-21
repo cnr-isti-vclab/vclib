@@ -94,9 +94,8 @@ public:
     }
 
 protected:
-    void callFunctionForSupportedMeshTypes(
-        const MeshI& mesh,
-        auto&&       function) const
+    void callFunctionForSupportedMeshTypes(const MeshI& mesh, auto&& function)
+        const
     {
         auto supportedMeshTypes = supportedInputMeshType();
         if (!supportedMeshTypes[mesh.type()]) {

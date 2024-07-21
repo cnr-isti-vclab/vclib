@@ -30,8 +30,8 @@ int main()
 
     manager.add(vcl::proc::vclibActions());
 
-    auto pm0 = manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH
-                                                   "/bunny.obj");
+    auto pm0 =
+        manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH "/bunny.obj");
 
     std::vector<std::shared_ptr<vcl::proc::MeshI>> mv;
 
@@ -39,7 +39,8 @@ int main()
 
     manager.filterMeshActionByName("Laplacian Smoothing")->applyFilter(mv);
 
-    manager.saveMeshAction("ply")->save(VCLIB_RESULTS_PATH "/smoothed_bunny.ply", *mv.front());
+    manager.saveMeshAction("ply")->save(
+        VCLIB_RESULTS_PATH "/smoothed_bunny.ply", *mv.front());
 
     return 0;
 }

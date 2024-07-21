@@ -195,11 +195,7 @@ public:
         }
 
         return applyFilter(
-            MeshVector(),
-            inputOutputMeshes,
-            outputMeshes,
-            parameters,
-            log);
+            MeshVector(), inputOutputMeshes, outputMeshes, parameters, log);
     }
 
     OutputValues applyFilter(
@@ -217,8 +213,7 @@ public:
     {
         MeshVector outputMeshes;
 
-        return applyFilter(
-            inputOutputMeshes, outputMeshes, parameters, log);
+        return applyFilter(inputOutputMeshes, outputMeshes, parameters, log);
     }
 
     OutputValues applyFilter(
@@ -240,8 +235,7 @@ protected:
                 mesh.typeName() + " type.");
         }
 
-        return callFunctionForMesh(
-            mesh, function);
+        return callFunctionForMesh(mesh, function);
     }
 
     auto callFunctionForSupportedInputOutputMeshTypes(

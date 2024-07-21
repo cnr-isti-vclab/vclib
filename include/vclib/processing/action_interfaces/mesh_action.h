@@ -58,8 +58,7 @@ protected:
      * @param mesh
      * @param args
      */
-    auto callFunctionForMesh(const MeshI& mesh, auto&& function)
-        const
+    auto callFunctionForMesh(const MeshI& mesh, auto&& function) const
     {
         switch (mesh.type()) {
         case MeshIType::TRI_MESH: return function(mesh.as<TriMesh>()); break;

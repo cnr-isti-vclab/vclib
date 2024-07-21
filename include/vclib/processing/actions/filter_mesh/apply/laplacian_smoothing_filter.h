@@ -116,9 +116,7 @@ public:
         };
 
         callFunctionForSupportedInputOutputMeshTypes(
-            *mesh,
-            supportedMeshTypes,
-            fun);
+            *mesh, supportedMeshTypes, fun);
 
         return OutputValues();
     }
