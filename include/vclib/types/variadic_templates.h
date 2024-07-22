@@ -41,24 +41,48 @@ struct TypeWrapper
     static constexpr uint size() { return sizeof...(Args); }
 };
 
+/**
+ * @brief Get the first type of a pack of types (variadic templates) or a
+ * TypeWrapper.
+ *
+ * Usage:
+ * @code{.cpp}
+ * using ResType = FirstType<int, float, double>::type;
+ * static_assert(std::is_same<ResType, int>::value, "");
+ * @endcode
+ */
 template<typename... Args>
 struct FirstType
 {
     using type = std::tuple_element<0, std::tuple<Args...>>::type;
 };
 
+/**
+ * @copydoc FirstType
+ */
 template<typename... Args>
 struct FirstType<TypeWrapper<Args...>>
 {
     using type = std::tuple_element<0, std::tuple<Args...>>::type;
 };
 
-/*
- * Possibility to get the index of a Type T in a pack of types (variadic
- * templates). The pack is composed of U and Us...
+/**
+ * @brief Alias for the type of the first type in a pack of types.
  *
- * https://stackoverflow.com/a/71477756/5851101
+ * Usage:
+ * @code{.cpp}
+ * using ResType = FirstTypeT<int, float, double>;
+ * static_assert(std::is_same<ResType, int>::value, "");
+ * @endcode
  */
+template<typename... Args>
+using FirstTypeT = typename FirstType<Args...>::type;
+
+/**
+ * @brief Function that returns the index of a Type T in a pack of types
+ * (variadic templates). The pack is composed of U and Us...
+ */
+// https://stackoverflow.com/a/71477756/5851101
 template<typename T, typename U, typename... Us>
 constexpr uint indexInTypePack()
 {
@@ -81,6 +105,13 @@ constexpr uint indexInTypePack()
     }
 }
 
+/**
+ * @brief Function that returns the index of the type having the given
+ * type_index in a pack of types (variadic templates).
+ * The pack is composed of U and Us...
+ * 
+ * @param ti: the type_index of the type to search.
+ */
 template<typename U, typename... Us>
 uint indexInTypePack(std::type_index ti)
 {
@@ -268,7 +299,7 @@ private:
     using ResTypes = FilterTypesByCondition<Pred, Args...>::type;
 
 public:
-    using type = FirstType<ResTypes>::type;
+    using type = FirstTypeT<ResTypes>;
 };
 
 // TypeWrapper specialization

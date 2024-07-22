@@ -63,5 +63,3 @@ INCLUDE_PATH += path/to/vclib/include/
 and you are ready to go.
 
 **Note**: Using this configuration, only MSVC compiler will access to parallel speedup of the library. For other compilers, we suggest to use the [CMake configuration](#cmake_config).
-
-

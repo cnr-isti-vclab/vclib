@@ -34,11 +34,13 @@ using ushort = unsigned short;
 
 namespace vcl {
 
-/*
- * Represent a null value of uint that is the maximum value that can be
- * represented with unsigned int. Allows to fully use all the possible values
- * (except one) that can be represented in an unsigned int, but with the
- * possibility to flag whether the value is not initialized or is set to null.
+/**
+ * @brief The UINT_NULL value represent a null value of uint that is the maximum
+ * value that can be represented with unsigned int.
+ *
+ * Allows to fully use all the possible values (except one) that can be
+ * represented in an unsigned int, but with the possibility to flag whether the
+ * value is not initialized or is set to null.
  */
 constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
 

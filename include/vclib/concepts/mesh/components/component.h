@@ -90,8 +90,8 @@ struct IsComponentPred
 };
 
 template<uint COMP_ID, typename... Components>
-using ComponentOfType = typename FirstType<
-    typename detail::ComponentOfTypePred<COMP_ID, Components...>::type>::type;
+using ComponentOfType = FirstTypeT<
+    typename detail::ComponentOfTypePred<COMP_ID, Components...>::type>;
 
 template<typename T>
 concept HasInitMemberFunction = requires (T o) {

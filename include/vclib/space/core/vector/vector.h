@@ -419,7 +419,7 @@ public:
      * @param[in] e: The element to search for in the Vector.
      * @return `true` if the element is found in the Vector, `false` otherwise.
      */
-    bool contains(const typename MakeConstPointer<T>::type& e) const
+    bool contains(const MakeConstPointerT<T>& e) const
     {
         return std::find(mContainer.begin(), mContainer.end(), e) !=
                mContainer.end();
@@ -435,7 +435,7 @@ public:
      * @return An iterator to the first occurrence of the element in the Vector,
      * or `end()` if the element is not found.
      */
-    Iterator find(const typename MakeConstPointer<T>::type& e)
+    Iterator find(const MakeConstPointerT<T>& e)
     {
         return std::find(mContainer.begin(), mContainer.end(), e);
     }
@@ -450,7 +450,7 @@ public:
      * @return A const iterator to the first occurrence of the element in the
      * Vector, or `end()` if the element is not found.
      */
-    ConstIterator find(const typename MakeConstPointer<T>::type& e) const
+    ConstIterator find(const MakeConstPointerT<T>& e) const
     {
         return std::find(mContainer.begin(), mContainer.end(), e);
     }
@@ -467,7 +467,7 @@ public:
      * @return The index of the first occurrence of the element in the Vector,
      * or UINT_NULL if the element is not found.
      */
-    uint indexOf(const typename MakeConstPointer<T>::type& e) const
+    uint indexOf(const MakeConstPointerT<T>& e) const
     {
         auto it = find(e);
         if (it == end())

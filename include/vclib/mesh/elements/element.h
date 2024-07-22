@@ -190,7 +190,7 @@ private:
     // Components can be individuated with their ID, which is an unsigned int.
     // This struct sets its bool `value` to true if this Element has a Component
     // with the given unsigned integer COMP_ID. Sets also `type` with a
-    // TypeWrapper contianing the Component that satisfied the condition. The
+    // TypeWrapper containing the Component that satisfied the condition. The
     // TypeWrapper will be empty if no Components were found.
     template<uint COMP_ID>
     struct ComponentIDPred

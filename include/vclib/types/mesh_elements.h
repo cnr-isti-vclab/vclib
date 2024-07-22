@@ -29,6 +29,25 @@
 
 namespace vcl {
 
+/**
+ * @brief The ElemId struct enumerates the elements that can compose a mesh.
+ *
+ * The elements are identified by an unsigned integer value, that can be used to
+ * access the element of the mesh through a template parameter, without having
+ * to know the actual type of the element.
+ * 
+ * This is very useful when you want to write generic code that can work with
+ * different types of elements.
+ * 
+ * For example, you can iterate the vertices of a mesh with the following
+ * code:
+ * @code {.cpp}
+ * MyMesh m;
+ * for (auto& v : m.template elements<ElemId::VERTEX>()) {
+ *    // do something with the vertex v
+ * }
+ * @endcode
+ */
 struct ElemId
 {
     enum Enum : uint {
@@ -39,6 +58,10 @@ struct ElemId
     };
 };
 
+/**
+ * @brief The ELEMENT_ENUM_STRINGS array contains the string representation of
+ * the elements that can compose a mesh.
+ */
 constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
     "Vertex",
     "Face",
@@ -46,7 +69,7 @@ constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
 };
 
 /**
- * @brief The ElemenetString class is used to retrieve the string associated
+ * @brief The ElementString class is used to retrieve the string associated
  * to a ELEM_ID value, trough its member 'str'.
  *
  * If you use a custom element class, you should specialize this struct with
@@ -55,7 +78,7 @@ constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
  * @tparam ELEM_ID: The ELEM_ID value associated to the string.
  */
 template<uint ELEM_ID>
-struct ElemenetString
+struct ElementString
 {
     /**
      * @brief The string associated to the ELEM_ID.
@@ -65,17 +88,29 @@ struct ElemenetString
                           nullptr;
 };
 
+/**
+ * @brief Returns the string associated to the ELEM_ID value.
+ * 
+ * @tparam ELEM_ID: an unsigned integer that identifies the element.
+ * @return The string associated to the ELEM_ID value.
+ */
 template<uint ELEM_ID>
 constexpr const char* elementEnumCString()
 {
     static_assert(
-        ElemenetString<ELEM_ID>().str != nullptr,
+        ElementString<ELEM_ID>().str != nullptr,
         "Invalid ElementIDEnum. You should specialize 'the ElementString' "
         "struct with your ELEM_ID value.");
 
-    return ElemenetString<ELEM_ID>().str;
+    return ElementString<ELEM_ID>().str;
 }
 
+/**
+ * @brief Returns the string associated to the ELEM_ID value.
+ * 
+ * @tparam ELEM_ID: an unsigned integer that identifies the element.
+ * @return The string associated to the ELEM_ID value.
+ */
 // Todo: make this function constexpr when upgrading to C++23.
 template<uint ELEM_ID>
 const std::string& elementEnumString()

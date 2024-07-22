@@ -111,9 +111,9 @@ template<uint ELEM_ID, typename MeshType>
 struct ContainerOfElement
 {
 public:
-    using type = typename FirstType<typename detail::ContainerOfElementPred<
+    using type = FirstTypeT<typename detail::ContainerOfElementPred<
         ELEM_ID,
-        typename MeshType::Containers>::type>::type;
+        typename MeshType::Containers>::type>;
 };
 
 /**

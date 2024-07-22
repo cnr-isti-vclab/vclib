@@ -27,6 +27,21 @@
 
 namespace vcl {
 
+/**
+ * @brief The CompId struct enumerates the components that can compose a element
+ * or a mesh.
+ *
+ * The components are identified by an unsigned integer value, that can be used
+ * to access the component of the element or mesh through a template parameter,
+ * without having to know the actual type of the component.
+ * 
+ * For example, you can access the coordinate component of an element with the
+ * following code:
+ * @code{.cpp}
+ * MyElement e;
+ * auto& c = e.template component<CompId::COORDINATE>();
+ * @endcode
+ */
 struct CompId
 {
     enum Enum {
@@ -50,12 +65,16 @@ struct CompId
         TEXTURE_PATHS,
         TRANSFORM_MATRIX,
         CUSTOM_COMPONENTS,
-        // Additonal components here
+        // Additional components here
 
         COMPONENTS_NUMBER,
     };
 };
 
+/**
+ * @brief The COMPONENT_ENUM_STRINGS array contains the string representation
+ * of the CompId::Enum values.
+ */
 constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
     "BitFlags",
     "Coordinate",
@@ -102,7 +121,7 @@ struct ComponentString
 /**
  * @brief Returns the string associated to the COMP_ID value.
  *
- * @tparam COMP_ID: an unsigned integer that idetinfies the component.
+ * @tparam COMP_ID: an unsigned integer that identifies the component.
  * @return The string associated to the COMP_ID value.
  */
 template<uint COMP_ID>

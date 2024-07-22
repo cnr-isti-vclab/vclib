@@ -28,16 +28,16 @@
 
 namespace vcl {
 
-/*
- * Utility to get clean type from an input type that could have a reference or a
- * pointer.
+/**
+ * @brief Utility alias to get clean type from an input type that could have a
+ * reference or a pointer.
  */
 template<typename T>
 using RemoveCVRefAndPointer =
     typename std::remove_cvref_t<std::remove_pointer_t<T>>;
 
-/*
- * Utility to get a pointer type without the constness.
+/**
+ * @brief Utility alias to get a pointer type without the constness.
  * e.g. If T is const int*, the resulting type is int*
  * If the type is not a pointer, it is left as it was
  */

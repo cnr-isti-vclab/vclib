@@ -28,9 +28,14 @@
 
 namespace vcl {
 
-/*
- * Utility type that makes possible to treat const pointers in a templated class
- * that can treat a both const and non-const pointer type.
+/**
+ * @brief Utility type that makes possible to treat const pointers in a
+ * templated class that can treat a both const and non-const pointer type.
+ *
+ * The type `T` is converted to a const pointer if it is a raw pointer or a
+ * shared pointer type.
+ *
+ * @tparam T The type to be converted to a const pointer.
  */
 template<typename T>
 struct MakeConstPointer
@@ -38,18 +43,29 @@ struct MakeConstPointer
     using type = T;
 };
 
+/**
+ * @copydoc MakeConstPointer
+ */
 template<typename T>
 struct MakeConstPointer<T*>
 {
     using type = const T*;
 };
 
+/**
+ * @copydoc MakeConstPointer
+ */
 template<typename T>
 struct MakeConstPointer<std::shared_ptr<T>>
 {
     using type = std::shared_ptr<const T>;
 };
 
+/**
+ * @brief Utility alias for the MakeConstPointer type.
+ *
+ * @tparam T The type to be converted to a const pointer.
+ */
 template<typename T>
 using MakeConstPointerT = typename MakeConstPointer<T>::type;
 
@@ -58,18 +74,39 @@ using MakeConstPointerT = typename MakeConstPointer<T>::type;
  * non-const member functions https://stackoverflow.com/a/47369227/5851101
  */
 
+/**
+ * @brief Utility function that converts a const pointer/reference to a
+ * non-const pointer/reference.
+ *
+ * It is useful when you need to re-use the same code for const and non-const
+ * member functions.
+ *
+ * @warning The function should be used only in contexts where the constness of
+ * the pointer/reference is guaranteed to be removed (see
+ * [const_cast](https://en.cppreference.com/w/cpp/language/const_cast)).
+ *
+ * @tparam T The type of the pointer/reference.
+ * @param[in] value: The const pointer/reference to be const-casted.
+ * @return constexpr T& The non-const pointer/reference.
+ */
 template<typename T>
 constexpr T& asConst(const T& value) noexcept
 {
     return const_cast<T&>(value);
 }
 
+/**
+ * @copydoc asConst
+ */
 template<typename T>
 constexpr T* asConst(const T* value) noexcept
 {
     return const_cast<T*>(value);
 }
 
+/**
+ * @copydoc asConst
+ */
 template<typename T>
 constexpr T* asConst(T* value) noexcept
 {
