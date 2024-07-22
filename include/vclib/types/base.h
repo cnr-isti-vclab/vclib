@@ -28,6 +28,7 @@
 #include <limits>
 #include <numeric>
 
+// Define some basic types, for convenience
 using uint   = unsigned int;
 using ushort = unsigned short;
 
@@ -37,7 +38,7 @@ namespace vcl {
  * Represent a null value of uint that is the maximum value that can be
  * represented with unsigned int. Allows to fully use all the possible values
  * (except one) that can be represented in an unsigned int, but with the
- * possibility to flag is a value is not initialized or is set to null.
+ * possibility to flag whether the value is not initialized or is set to null.
  */
 constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
 
@@ -47,17 +48,10 @@ constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
  * It is used mostly for I/O operations, but can be useful in any context where
  * a type must be described in a variable at runtime.
  */
-typedef enum {
-    CHAR,
-    UCHAR,
-    SHORT,
-    USHORT,
-    INT,
-    UINT,
-    FLOAT,
-    DOUBLE,
-    NONE
-} PrimitiveType;
+struct PrimitiveType
+{
+    enum Enum { CHAR, UCHAR, SHORT, USHORT, INT, UINT, FLOAT, DOUBLE, NONE };
+};
 
 /**
  * @brief A simple utility class to represent a pointer with a value.

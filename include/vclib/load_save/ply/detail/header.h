@@ -370,11 +370,11 @@ public:
             if (info.hasVertexCoords()) {
                 PlyProperty px, py, pz;
                 px.name = ply::x;
-                px.type = (ply::PropertyType) info.vertexCoordsType();
+                px.type = info.vertexCoordsType();
                 py.name = ply::y;
-                py.type = (ply::PropertyType) info.vertexCoordsType();
+                py.type = info.vertexCoordsType();
                 pz.name = ply::z;
-                pz.type = (ply::PropertyType) info.vertexCoordsType();
+                pz.type = info.vertexCoordsType();
                 vElem.properties.push_back(px);
                 vElem.properties.push_back(py);
                 vElem.properties.push_back(pz);
@@ -382,11 +382,11 @@ public:
             if (info.hasVertexNormals()) {
                 PlyProperty vnx, vny, vnz;
                 vnx.name = ply::nx;
-                vnx.type = (ply::PropertyType) info.vertexNormalsType();
+                vnx.type = info.vertexNormalsType();
                 vny.name = ply::ny;
-                vny.type = (ply::PropertyType) info.vertexNormalsType();
+                vny.type = info.vertexNormalsType();
                 vnz.name = ply::nz;
-                vnz.type = (ply::PropertyType) info.vertexNormalsType();
+                vnz.type = info.vertexNormalsType();
                 vElem.properties.push_back(vnx);
                 vElem.properties.push_back(vny);
                 vElem.properties.push_back(vnz);
@@ -394,13 +394,13 @@ public:
             if (info.hasVertexColors()) {
                 PlyProperty vcr, vcg, vcb, vca;
                 vcr.name = ply::red;
-                vcr.type = (ply::PropertyType) info.vertexColorsType();
+                vcr.type = info.vertexColorsType();
                 vcg.name = ply::green;
-                vcg.type = (ply::PropertyType) info.vertexColorsType();
+                vcg.type = info.vertexColorsType();
                 vcb.name = ply::blue;
-                vcb.type = (ply::PropertyType) info.vertexColorsType();
+                vcb.type = info.vertexColorsType();
                 vca.name = ply::alpha;
-                vca.type = (ply::PropertyType) info.vertexColorsType();
+                vca.type = info.vertexColorsType();
                 vElem.properties.push_back(vcr);
                 vElem.properties.push_back(vcg);
                 vElem.properties.push_back(vcb);
@@ -409,28 +409,28 @@ public:
             if (info.hasVertexQuality()) {
                 PlyProperty vs;
                 vs.name = ply::quality;
-                vs.type = (ply::PropertyType) info.vertexQualityType();
+                vs.type = info.vertexQualityType();
                 vElem.properties.push_back(vs);
             }
             if (info.hasVertexTexCoords()) {
                 PlyProperty tcu, tcv, tcn;
                 tcu.name = ply::texture_u;
-                tcu.type = (ply::PropertyType) info.vertexTexCoordsType();
+                tcu.type = info.vertexTexCoordsType();
                 tcv.name = ply::texture_v;
-                tcv.type = (ply::PropertyType) info.vertexTexCoordsType();
+                tcv.type = info.vertexTexCoordsType();
                 tcn.name = ply::texnumber;
-                tcn.type = USHORT;
+                tcn.type = PrimitiveType::USHORT;
                 vElem.properties.push_back(tcu);
                 vElem.properties.push_back(tcv);
                 vElem.properties.push_back(tcn);
             }
             if (info.hasVertexCustomComponents()) {
                 for (const auto& cc : info.vertexCustomComponents()) {
-                    if (cc.type <= DOUBLE) {
+                    if (cc.type <= PrimitiveType::DOUBLE) {
                         PlyProperty pp;
                         pp.name                = ply::unknown;
                         pp.unknownPropertyName = cc.name;
-                        pp.type                = (ply::PropertyType) cc.type;
+                        pp.type                = cc.type;
                         vElem.properties.push_back(pp);
                     }
                 }
@@ -445,18 +445,18 @@ public:
                 PlyProperty vids;
                 vids.list         = true;
                 vids.name         = ply::vertex_indices;
-                vids.type         = UINT;
-                vids.listSizeType = UCHAR;
+                vids.type         = PrimitiveType::UINT;
+                vids.listSizeType = PrimitiveType::UCHAR;
                 fElem.properties.push_back(vids);
             }
             if (info.hasFaceNormals()) {
                 PlyProperty fnx, fny, fnz;
                 fnx.name = ply::nx;
-                fnx.type = (ply::PropertyType) info.faceNormalsType();
+                fnx.type = info.faceNormalsType();
                 fny.name = ply::ny;
-                fny.type = (ply::PropertyType) info.faceNormalsType();
+                fny.type = info.faceNormalsType();
                 fnz.name = ply::nz;
-                fnz.type = (ply::PropertyType) info.faceNormalsType();
+                fnz.type = info.faceNormalsType();
                 fElem.properties.push_back(fnx);
                 fElem.properties.push_back(fny);
                 fElem.properties.push_back(fnz);
@@ -464,13 +464,13 @@ public:
             if (info.hasFaceColors()) {
                 PlyProperty fcr, fcg, fcb, fca;
                 fcr.name = ply::red;
-                fcr.type = (ply::PropertyType) info.faceColorsType();
+                fcr.type = info.faceColorsType();
                 fcg.name = ply::green;
-                fcg.type = (ply::PropertyType) info.faceColorsType();
+                fcg.type = info.faceColorsType();
                 fcb.name = ply::blue;
-                fcb.type = (ply::PropertyType) info.faceColorsType();
+                fcb.type = info.faceColorsType();
                 fca.name = ply::alpha;
-                fca.type = (ply::PropertyType) info.faceColorsType();
+                fca.type = info.faceColorsType();
                 fElem.properties.push_back(fcr);
                 fElem.properties.push_back(fcg);
                 fElem.properties.push_back(fcb);
@@ -479,27 +479,28 @@ public:
             if (info.hasFaceQuality()) {
                 PlyProperty fs;
                 fs.name = ply::quality;
-                fs.type = (ply::PropertyType) info.faceQualityType();
+                fs.type = (ply::PropertyType::Enum) info.faceQualityType();
                 fElem.properties.push_back(fs);
             }
             if (info.hasFaceWedgeTexCoords()) {
                 PlyProperty tc, tn;
                 tc.list         = true;
-                tc.listSizeType = UCHAR;
+                tc.listSizeType = PrimitiveType::UCHAR;
                 tc.name         = ply::texcoord;
-                tc.type = (ply::PropertyType) info.faceWedgeTexCoordsType();
+                tc.type =
+                    (ply::PropertyType::Enum) info.faceWedgeTexCoordsType();
                 tn.name = ply::texnumber;
-                tn.type = USHORT;
+                tn.type = PrimitiveType::USHORT;
                 fElem.properties.push_back(tc);
                 fElem.properties.push_back(tn);
             }
             if (info.hasFaceCustomComponents()) {
                 for (const auto& cc : info.faceCustomComponents()) {
-                    if (cc.type <= DOUBLE) {
+                    if (cc.type <= PrimitiveType::DOUBLE) {
                         PlyProperty pp;
                         pp.name                = ply::unknown;
                         pp.unknownPropertyName = cc.name;
-                        pp.type                = (ply::PropertyType) cc.type;
+                        pp.type = (ply::PropertyType::Enum) cc.type;
                         fElem.properties.push_back(pp);
                     }
                 }
@@ -513,11 +514,11 @@ public:
             if (info.hasEdgeVRefs()) {
                 PlyProperty v1;
                 v1.name = ply::vertex1;
-                v1.type = UINT;
+                v1.type = PrimitiveType::UINT;
                 eElem.properties.push_back(v1);
                 PlyProperty v2;
                 v2.name = ply::vertex2;
-                v2.type = UINT;
+                v2.type = PrimitiveType::UINT;
                 eElem.properties.push_back(v2);
             }
             mElements.push_back(eElem);
@@ -688,25 +689,25 @@ private:
         return pn;
     }
 
-    ply::PropertyType stringToType(const std::string& type) const
+    ply::PropertyType::Enum stringToType(const std::string& type) const
     {
-        ply::PropertyType pt = UCHAR;
+        ply::PropertyType::Enum pt = ply::PropertyType::UCHAR;
         if (type == "char")
-            pt = CHAR;
+            pt = ply::PropertyType::CHAR;
         if (type == "uchar")
-            pt = UCHAR;
+            pt = ply::PropertyType::UCHAR;
         if (type == "short")
-            pt = SHORT;
+            pt = ply::PropertyType::SHORT;
         if (type == "ushort")
-            pt = USHORT;
+            pt = ply::PropertyType::USHORT;
         if (type == "int")
-            pt = INT;
+            pt = ply::PropertyType::INT;
         if (type == "uint")
-            pt = UINT;
+            pt = ply::PropertyType::UINT;
         if (type == "float")
-            pt = FLOAT;
+            pt = ply::PropertyType::FLOAT;
         if (type == "double")
-            pt = DOUBLE;
+            pt = ply::PropertyType::DOUBLE;
         return pt;
     }
 
@@ -735,18 +736,18 @@ private:
         }
     }
 
-    std::string typeToString(ply::PropertyType t) const
+    std::string typeToString(ply::PropertyType::Enum t) const
     {
         switch (t) {
-        case CHAR: return "char";
-        case UCHAR: return "uchar";
-        case SHORT: return "short";
-        case USHORT: return "ushort";
-        case INT: return "int";
-        case UINT: return "uint";
-        case FLOAT: return "float";
-        case DOUBLE: return "double";
-        case NONE: return "";
+        case ply::PropertyType::CHAR: return "char";
+        case ply::PropertyType::UCHAR: return "uchar";
+        case ply::PropertyType::SHORT: return "short";
+        case ply::PropertyType::USHORT: return "ushort";
+        case ply::PropertyType::INT: return "int";
+        case ply::PropertyType::UINT: return "uint";
+        case ply::PropertyType::FLOAT: return "float";
+        case ply::PropertyType::DOUBLE: return "double";
+        case ply::PropertyType::NONE: return "";
         }
         return "";
     }

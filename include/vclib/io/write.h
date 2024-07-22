@@ -200,21 +200,21 @@ void writeDouble(
 // TODO - rename to writePrimitiveType
 template<typename T>
 void writeProperty(
-    std::ostream& file,
-    const T&      p,
-    PrimitiveType type,
-    FileType      format  = FileType(),
-    bool          isColor = false)
+    std::ostream&       file,
+    const T&            p,
+    PrimitiveType::Enum type,
+    FileType            format  = FileType(),
+    bool                isColor = false)
 {
     switch (type) {
-    case CHAR: writeChar(file, p, format, isColor); break;
-    case UCHAR: writeUChar(file, p, format, isColor); break;
-    case SHORT: writeShort(file, p, format, isColor); break;
-    case USHORT: writeUShort(file, p, format, isColor); break;
-    case INT: writeInt(file, p, format, isColor); break;
-    case UINT: writeUInt(file, p, format, isColor); break;
-    case FLOAT: writeFloat(file, p, format, isColor); break;
-    case DOUBLE: writeDouble(file, p, format, isColor); break;
+    case PrimitiveType::CHAR: writeChar(file, p, format, isColor); break;
+    case PrimitiveType::UCHAR: writeUChar(file, p, format, isColor); break;
+    case PrimitiveType::SHORT: writeShort(file, p, format, isColor); break;
+    case PrimitiveType::USHORT: writeUShort(file, p, format, isColor); break;
+    case PrimitiveType::INT: writeInt(file, p, format, isColor); break;
+    case PrimitiveType::UINT: writeUInt(file, p, format, isColor); break;
+    case PrimitiveType::FLOAT: writeFloat(file, p, format, isColor); break;
+    case PrimitiveType::DOUBLE: writeDouble(file, p, format, isColor); break;
     default: assert(0);
     }
 }
@@ -222,11 +222,11 @@ void writeProperty(
 // TODO - move this to some specific mesh file
 template<ElementConcept El>
 void writeCustomComponent(
-    std::ostream&      file,
-    const El&          elem,
-    const std::string& cName,
-    PrimitiveType      type,
-    FileType           format = FileType())
+    std::ostream&       file,
+    const El&           elem,
+    const std::string&  cName,
+    PrimitiveType::Enum type,
+    FileType            format = FileType())
 {
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))

@@ -35,12 +35,13 @@
  * @brief List of functions that allow to load from file an input Mesh.
  */
 
+/// @brief 
 namespace vcl {
 
 /**
  * @brief Loads a mesh from a file with the given filename and stores it in the
  * given mesh object. Checks automatically the file format to load from the
- * fiven filename.
+ * given filename.
  *
  * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
@@ -91,7 +92,7 @@ void load(
 /**
  * @brief Loads a mesh from a file with the given filename and stores it in the
  * given mesh object. Checks automatically the file format to load from the
- * fiven filename.
+ * given filename.
  *
  * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
@@ -123,7 +124,7 @@ void load(
 /**
  * @brief Loads a mesh from a file with the given filename and stores it in the
  * returned mesh object. Checks automatically the file format to load from the
- * fiven filename.
+ * given filename.
  *
  * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
@@ -156,7 +157,7 @@ MeshType load(
 /**
  * @brief Loads a mesh from a file with the given filename and stores it in the
  * returned mesh object. Checks automatically the file format to load from the
- * fiven filename.
+ * given filename.
  *
  * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.
@@ -185,7 +186,7 @@ MeshType load(
 /**
  * @brief Loads a mesh from a file with the given filename and stores it in the
  * returned mesh object. Checks automatically the file format to load from the
- * fiven filename.
+ * given filename.
  *
  * @tparam MeshType The type of mesh to load. It must satisfy the MeshConcept.
  * @tparam LogType The type of logger to use. It must satisfy the LoggerConcept.

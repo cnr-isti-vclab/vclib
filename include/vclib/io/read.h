@@ -353,21 +353,21 @@ T readDouble(
  */
 template<typename T>
 T readPrimitiveType(
-    std::istream& file,
-    PrimitiveType type,
-    std::endian   end     = std::endian::native,
-    bool          isColor = false)
+    std::istream&       file,
+    PrimitiveType::Enum type,
+    std::endian         end     = std::endian::native,
+    bool                isColor = false)
 {
     T p;
     switch (type) {
-    case CHAR: p = readChar<T>(file, end); break;
-    case UCHAR: p = readUChar<T>(file, end); break;
-    case SHORT: p = readShort<T>(file, end); break;
-    case USHORT: p = readUShort<T>(file, end); break;
-    case INT: p = readInt<T>(file, end); break;
-    case UINT: p = readUInt<T>(file, end); break;
-    case FLOAT: p = readFloat<T>(file, end, isColor); break;
-    case DOUBLE: p = readDouble<T>(file, end, isColor); break;
+    case PrimitiveType::CHAR: p = readChar<T>(file, end); break;
+    case PrimitiveType::UCHAR: p = readUChar<T>(file, end); break;
+    case PrimitiveType::SHORT: p = readShort<T>(file, end); break;
+    case PrimitiveType::USHORT: p = readUShort<T>(file, end); break;
+    case PrimitiveType::INT: p = readInt<T>(file, end); break;
+    case PrimitiveType::UINT: p = readUInt<T>(file, end); break;
+    case PrimitiveType::FLOAT: p = readFloat<T>(file, end, isColor); break;
+    case PrimitiveType::DOUBLE: p = readDouble<T>(file, end, isColor); break;
     default: assert(0); p = 0;
     }
     // if I read a color that must be returned as a float or double
@@ -378,11 +378,11 @@ T readPrimitiveType(
 
 template<ElementConcept El>
 void readCustomComponent(
-    std::istream&      file,
-    El&                elem,
-    const std::string& cName,
-    PrimitiveType      type,
-    std::endian        end = std::endian::native)
+    std::istream&       file,
+    El&                 elem,
+    const std::string&  cName,
+    PrimitiveType::Enum type,
+    std::endian         end = std::endian::native)
 {
     std::type_index ti = elem.customComponentType(cName);
     if (ti == typeid(char))
@@ -482,20 +482,20 @@ T readDouble(
 template<typename T>
 T readPrimitiveType(
     vcl::Tokenizer::iterator& token,
-    PrimitiveType             type,
+    PrimitiveType::Enum       type,
     std::endian  = std::endian::native,
     bool isColor = false)
 {
     T p;
     switch (type) {
-    case CHAR:
-    case UCHAR:
-    case SHORT:
-    case USHORT:
-    case INT:
-    case UINT: p = std::stoi(*token++); break;
-    case FLOAT:
-    case DOUBLE:
+    case PrimitiveType::CHAR:
+    case PrimitiveType::UCHAR:
+    case PrimitiveType::SHORT:
+    case PrimitiveType::USHORT:
+    case PrimitiveType::INT:
+    case PrimitiveType::UINT: p = std::stoi(*token++); break;
+    case PrimitiveType::FLOAT:
+    case PrimitiveType::DOUBLE:
         if (isColor) {
             p = std::stod(*token++) * 255;
         }
@@ -516,7 +516,7 @@ void readCustomComponent(
     vcl::Tokenizer::iterator& token,
     El&                       elem,
     const std::string&        cName,
-    PrimitiveType             type,
+    PrimitiveType::Enum       type,
     std::endian = std::endian::native)
 {
     std::type_index ti = elem.customComponentType(cName);

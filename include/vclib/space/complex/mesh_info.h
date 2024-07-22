@@ -113,7 +113,7 @@ public:
     /**
      * @brief Enum used to describe the type of Data stored in a component
      */
-    using DataType = PrimitiveType;
+    using DataType = PrimitiveType::Enum;
 
     /**
      * @brief The CustomComponent struct is a simple structure that describes a
@@ -153,7 +153,7 @@ public:
      * All the Elements/Components are disabled, their type is set to
      * DataType::NONE and the Mesh Type is set to MeshType::POLYGON_MESH.
      */
-    MeshInfo() { mPerElemComponentsType.fill(NONE); }
+    MeshInfo() { mPerElemComponentsType.fill(PrimitiveType::NONE); }
 
     /**
      * @brief Sets the current status of the MeshInfo object from the input
@@ -180,7 +180,7 @@ public:
         }
         if constexpr (vcl::HasPerVertexColor<Mesh>) {
             if (vcl::isPerVertexColorAvailable(m)) {
-                setVertexColors(true, UCHAR);
+                setVertexColors(true, PrimitiveType::UCHAR);
             }
         }
         if constexpr (vcl::HasPerVertexQuality<Mesh>) {
@@ -201,7 +201,7 @@ public:
             auto names = m.perVertexCustomComponentNames();
             for (auto& name : names) {
                 DataType dt = getType(m.perVertexCustomComponentType(name));
-                if (dt != NONE) {
+                if (dt != PrimitiveType::NONE) {
                     addVertexCustomComponent(name, dt);
                 }
             }
@@ -229,7 +229,7 @@ public:
             }
             if constexpr (vcl::HasPerFaceColor<Mesh>) {
                 if (vcl::isPerFaceColorAvailable(m)) {
-                    setFaceColors(true, UCHAR);
+                    setFaceColors(true, PrimitiveType::UCHAR);
                 }
             }
             if constexpr (vcl::HasPerFaceQuality<Mesh>) {
@@ -250,7 +250,7 @@ public:
                 auto names = m.perFaceCustomComponentNames();
                 for (auto& name : names) {
                     DataType dt = getType(m.perFaceCustomComponentType(name));
-                    if (dt != NONE) {
+                    if (dt != PrimitiveType::NONE) {
                         addFaceCustomComponent(name, dt);
                     }
                 }
@@ -284,7 +284,7 @@ public:
         mElements.reset();
         for (auto& comp : mPerElemComponents)
             comp.reset();
-        mPerElemComponentsType.fill(NONE);
+        mPerElemComponentsType.fill(PrimitiveType::NONE);
 
         for (auto& v : mPerElemCustomComponents)
             v.clear();
@@ -484,83 +484,83 @@ public:
 
     void setVertices(bool b = true) { setElement(VERTEX, b); }
 
-    void setVertexCoords(bool b = true, DataType t = DOUBLE)
+    void setVertexCoords(bool b = true, DataType t = PrimitiveType::DOUBLE)
     {
         setElementComponents(VERTEX, COORD, b, t);
     }
 
-    void setVertexNormals(bool b = true, DataType t = FLOAT)
+    void setVertexNormals(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
         setElementComponents(VERTEX, NORMAL, b, t);
     }
 
-    void setVertexColors(bool b = true, DataType t = UCHAR)
+    void setVertexColors(bool b = true, DataType t = PrimitiveType::UCHAR)
     {
         setElementComponents(VERTEX, COLOR, b, t);
     }
 
-    void setVertexQuality(bool b = true, DataType t = DOUBLE)
+    void setVertexQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
     {
         setElementComponents(VERTEX, QUALITY, b, t);
     }
 
-    void setVertexTexCoords(bool b = true, DataType t = FLOAT)
+    void setVertexTexCoords(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
         setElementComponents(VERTEX, TEXCOORD, b, t);
     }
 
     void setVertexCustomComponents(bool b = true)
     {
-        setElementComponents(VERTEX, CUSTOM_COMPONENTS, b, NONE);
+        setElementComponents(VERTEX, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
     }
 
     void setFaces(bool b = true) { setElement(FACE, b); }
 
     void setFaceVRefs(bool b = true)
     {
-        setElementComponents(FACE, VREFS, b, NONE);
+        setElementComponents(FACE, VREFS, b, PrimitiveType::NONE);
     }
 
-    void setFaceNormals(bool b = true, DataType t = FLOAT)
+    void setFaceNormals(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
         setElementComponents(FACE, NORMAL, b, t);
     }
 
-    void setFaceColors(bool b = true, DataType t = UCHAR)
+    void setFaceColors(bool b = true, DataType t = PrimitiveType::UCHAR)
     {
         setElementComponents(FACE, COLOR, b, t);
     }
 
-    void setFaceQuality(bool b = true, DataType t = DOUBLE)
+    void setFaceQuality(bool b = true, DataType t = PrimitiveType::DOUBLE)
     {
         setElementComponents(FACE, QUALITY, b, t);
     }
 
-    void setFaceWedgeTexCoords(bool b = true, DataType t = FLOAT)
+    void setFaceWedgeTexCoords(bool b = true, DataType t = PrimitiveType::FLOAT)
     {
         setElementComponents(FACE, WEDGE_TEXCOORDS, b, t);
     }
 
     void setFaceCustomComponents(bool b = true)
     {
-        setElementComponents(FACE, CUSTOM_COMPONENTS, b, NONE);
+        setElementComponents(FACE, CUSTOM_COMPONENTS, b, PrimitiveType::NONE);
     }
 
     void setEdges(bool b = true) { setElement(EDGE, b); }
 
     void setEdgeVRefs(bool b = true)
     {
-        setElementComponents(EDGE, VREFS, b, NONE);
+        setElementComponents(EDGE, VREFS, b, PrimitiveType::NONE);
     }
 
-    void setEdgeColors(bool b = true, DataType t = UCHAR)
+    void setEdgeColors(bool b = true, DataType t = PrimitiveType::UCHAR)
     {
         setElementComponents(EDGE, COLOR, b, t);
     }
 
     void setTextures(bool b = true)
     {
-        setElementComponents(MESH, TEXTURES, b, NONE);
+        setElementComponents(MESH, TEXTURES, b, PrimitiveType::NONE);
     }
 
     void addElementCustomComponent(
@@ -568,13 +568,13 @@ public:
         const std::string& name,
         DataType           t)
     {
-        setElementComponents(el, CUSTOM_COMPONENTS, true, NONE);
+        setElementComponents(el, CUSTOM_COMPONENTS, true, PrimitiveType::NONE);
         mPerElemCustomComponents[el].emplace_back(name, t);
     }
 
     void clearElementCustomComponents(Element el)
     {
-        setElementComponents(el, CUSTOM_COMPONENTS, false, NONE);
+        setElementComponents(el, CUSTOM_COMPONENTS, false, PrimitiveType::NONE);
         mPerElemCustomComponents[el].clear();
     }
 
@@ -699,58 +699,58 @@ public:
 
 private:
     /**
-     * @brief Given the template T, returns the correspoding enum DataType value
+     * @brief Given the template T, returns the corresponding enum DataType value
      * of T.
      *
      * Returns DataType::NONE if the type T was not part of the type
-     * sypported by the DataType enum.
+     * supported by the DataType enum.
      * @return
      */
     template<typename T>
     static DataType getType()
     {
         if constexpr (std::is_same_v<T, char>)
-            return CHAR;
+            return PrimitiveType::CHAR;
         if constexpr (std::is_same_v<T, unsigned char>)
-            return UCHAR;
+            return PrimitiveType::UCHAR;
         if constexpr (std::is_same_v<T, short>)
-            return SHORT;
+            return PrimitiveType::SHORT;
         if constexpr (std::is_same_v<T, unsigned short>)
-            return USHORT;
+            return PrimitiveType::USHORT;
         if constexpr (std::is_same_v<T, int>)
-            return INT;
+            return PrimitiveType::INT;
         if constexpr (std::is_same_v<T, uint>)
-            return UINT;
+            return PrimitiveType::UINT;
         if constexpr (std::is_integral_v<T>)
-            return INT; // fallback to int
+            return PrimitiveType::INT; // fallback to int
         if constexpr (std::is_same_v<T, float>)
-            return FLOAT;
+            return PrimitiveType::FLOAT;
         if constexpr (std::is_same_v<T, double>)
-            return DOUBLE;
+            return PrimitiveType::DOUBLE;
         if constexpr (std::is_floating_point_v<T>)
-            return FLOAT; // fallback to float
-        return NONE;
+            return PrimitiveType::FLOAT; // fallback to float
+        return PrimitiveType::NONE;
     }
 
     static DataType getType(std::type_index ti)
     {
         if (ti == typeid(char))
-            return CHAR;
+            return PrimitiveType::CHAR;
         if (ti == typeid(unsigned char))
-            return UCHAR;
+            return PrimitiveType::UCHAR;
         if (ti == typeid(short))
-            return SHORT;
+            return PrimitiveType::SHORT;
         if (ti == typeid(unsigned short))
-            return USHORT;
+            return PrimitiveType::USHORT;
         if (ti == typeid(int))
-            return INT;
+            return PrimitiveType::INT;
         if (ti == typeid(uint))
-            return UINT;
+            return PrimitiveType::UINT;
         if (ti == typeid(float))
-            return FLOAT;
+            return PrimitiveType::FLOAT;
         if (ti == typeid(double))
-            return DOUBLE;
-        return NONE;
+            return PrimitiveType::DOUBLE;
+        return PrimitiveType::NONE;
     }
 };
 
@@ -760,30 +760,30 @@ void addPerElementCustomComponent(
     const MeshInfo::CustomComponent& cc)
 {
     switch (cc.type) {
-    case CHAR:
+    case PrimitiveType::CHAR:
         m.template addPerElementCustomComponent<ELEM_ID, char>(cc.name);
         break;
-    case UCHAR:
+    case PrimitiveType::UCHAR:
         m.template addPerElementCustomComponent<ELEM_ID, unsigned char>(
             cc.name);
         break;
-    case SHORT:
+    case PrimitiveType::SHORT:
         m.template addPerElementCustomComponent<ELEM_ID, short>(cc.name);
         break;
-    case USHORT:
+    case PrimitiveType::USHORT:
         m.template addPerElementCustomComponent<ELEM_ID, unsigned short>(
             cc.name);
         break;
-    case INT:
+    case PrimitiveType::INT:
         m.template addPerElementCustomComponent<ELEM_ID, int>(cc.name);
         break;
-    case UINT:
+    case PrimitiveType::UINT:
         m.template addPerElementCustomComponent<ELEM_ID, uint>(cc.name);
         break;
-    case FLOAT:
+    case PrimitiveType::FLOAT:
         m.template addPerElementCustomComponent<ELEM_ID, float>(cc.name);
         break;
-    case DOUBLE:
+    case PrimitiveType::DOUBLE:
         m.template addPerElementCustomComponent<ELEM_ID, double>(cc.name);
         break;
     default: assert(0);

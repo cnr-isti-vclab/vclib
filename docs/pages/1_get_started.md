@@ -9,8 +9,8 @@ VCLib is a header-only C++20 library, which means that you only need to add the 
 As the C++20 standard is new, VCLib is designed to work exclusively with recent C++ compilers::
 
    * GCC: 11.2
-   * Clang: 14.0
-   * MSVC: 17.1
+   * Clang: 16.0
+   * MSVC: 19.36
 
 ## Dependencies
 
