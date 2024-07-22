@@ -1,5 +1,5 @@
 {
-    "name": "Develop GCC",
+    "name": "Develop Clang",
 
     "build": {
         "dockerfile": "Dockerfile"
