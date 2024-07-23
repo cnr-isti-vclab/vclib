@@ -2856,6 +2856,7 @@ namespace std {
 #if __cplusplus >= 201603L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201603L)
 #if __has_include(<execution>)
 #ifndef POOLSTL_STD_SUPPLEMENT_NO_INCLUDE
+#include <execution>
 #endif
 #endif
 #endif

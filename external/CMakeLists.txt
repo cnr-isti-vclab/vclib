@@ -25,6 +25,8 @@ project(vclib-external)
 
 include(FetchContent)
 
+# === REQUIRED === #
+
 # Eigen
 option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
 option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
@@ -43,6 +45,8 @@ option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
 # poolSTL
 option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
 
+# === OPTIONAL === #
+
 # TBB
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 
@@ -57,9 +61,10 @@ if (VCLIB_BUILD_TESTS)
     option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 endif()
 
-set(VCLIB_EXTERNAL_LIBRARIES "")
 
-# === REQUIRED === #
+# === Fetch dependencies === #
+
+set(VCLIB_EXTERNAL_LIBRARIES "")
 
 ### Eigen
 include(eigen.cmake)
@@ -73,16 +78,14 @@ include(zip-views.cmake)
 ### STB
 include(stb.cmake)
 
+### TBB
+include(tbb.cmake) # leave this BEFORE poolSTL
+
 ### poolSTL
 include(poolstl.cmake)
 
-# === OPTIONAL === #
-
 ### Catch2
 include(catch2.cmake)
-
-### TBB
-include(tbb.cmake)
 
 ### VCG
 include(vcg.cmake)

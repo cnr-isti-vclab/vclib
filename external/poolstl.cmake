@@ -35,6 +35,11 @@ if (VCLIB_ALLOW_BUNDLED_POOLSTL AND
     target_include_directories(vclib-external-poolstl INTERFACE 
         ${POOLSTL_INCLUDE_DIRS})
 
+    if (NOT TARGET vclib-external-tbb)
+        target_compile_definitions(vclib-external-poolstl INTERFACE
+            -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE)
+    endif()
+
     list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-poolstl)
 else()
     message(FATAL_ERROR "poolSTL is required to full support parallel algorithms - VCLIB_ALLOW_BUNDLED_POOLSTL must be enabled and found.")
