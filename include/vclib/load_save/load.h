@@ -35,7 +35,7 @@
  * @brief List of functions that allow to load from file an input Mesh.
  */
 
-/// @brief 
+/// @brief
 namespace vcl {
 
 /**

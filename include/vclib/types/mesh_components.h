@@ -34,7 +34,7 @@ namespace vcl {
  * The components are identified by an unsigned integer value, that can be used
  * to access the component of the element or mesh through a template parameter,
  * without having to know the actual type of the component.
- * 
+ *
  * For example, you can access the coordinate component of an element with the
  * following code:
  * @code{.cpp}

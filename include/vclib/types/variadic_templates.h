@@ -109,7 +109,7 @@ constexpr uint indexInTypePack()
  * @brief Function that returns the index of the type having the given
  * type_index in a pack of types (variadic templates).
  * The pack is composed of U and Us...
- * 
+ *
  * @param ti: the type_index of the type to search.
  */
 template<typename U, typename... Us>

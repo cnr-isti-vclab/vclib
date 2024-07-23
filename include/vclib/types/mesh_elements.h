@@ -35,10 +35,10 @@ namespace vcl {
  * The elements are identified by an unsigned integer value, that can be used to
  * access the element of the mesh through a template parameter, without having
  * to know the actual type of the element.
- * 
+ *
  * This is very useful when you want to write generic code that can work with
  * different types of elements.
- * 
+ *
  * For example, you can iterate the vertices of a mesh with the following
  * code:
  * @code {.cpp}
@@ -90,7 +90,7 @@ struct ElementString
 
 /**
  * @brief Returns the string associated to the ELEM_ID value.
- * 
+ *
  * @tparam ELEM_ID: an unsigned integer that identifies the element.
  * @return The string associated to the ELEM_ID value.
  */
@@ -107,7 +107,7 @@ constexpr const char* elementEnumCString()
 
 /**
  * @brief Returns the string associated to the ELEM_ID value.
- * 
+ *
  * @tparam ELEM_ID: an unsigned integer that identifies the element.
  * @return The string associated to the ELEM_ID value.
  */

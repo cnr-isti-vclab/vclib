@@ -699,8 +699,8 @@ public:
 
 private:
     /**
-     * @brief Given the template T, returns the corresponding enum DataType value
-     * of T.
+     * @brief Given the template T, returns the corresponding enum DataType
+     * value of T.
      *
      * Returns DataType::NONE if the type T was not part of the type
      * supported by the DataType enum.
