@@ -35,9 +35,11 @@ if (VCLIB_ALLOW_BUNDLED_POOLSTL AND
     target_include_directories(vclib-external-poolstl INTERFACE 
         ${POOLSTL_INCLUDE_DIRS})
 
+    # in case of non MSVC (which supports c++17 parallel algorithms) and no TBB,
+    # we need to force the usage of the poolSTL std::execution::parallel policy
     if (NOT TARGET vclib-external-tbb AND NOT MSVC)
         target_compile_definitions(vclib-external-poolstl INTERFACE
-            -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE)
+            -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE -DPOOLSTL_STD_SUPPLEMENT_FORCE)
     endif()
 
     list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-poolstl)
