@@ -35,7 +35,7 @@ if (VCLIB_ALLOW_BUNDLED_POOLSTL AND
     target_include_directories(vclib-external-poolstl INTERFACE 
         ${POOLSTL_INCLUDE_DIRS})
 
-    if (NOT TARGET vclib-external-tbb)
+    if (NOT TARGET vclib-external-tbb AND NOT MSVC)
         target_compile_definitions(vclib-external-poolstl INTERFACE
             -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE)
     endif()
