@@ -40,12 +40,6 @@ option(VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY
 message(STATUS "VCLib: external libraries")
 add_subdirectory(external)
 
-if (WIN32 OR TARGET vclib-external-tbb OR TARGET vclib-external-pstld)
-    message(STATUS "VCLib: using parallel algorithms")
-else()
-    message(STATUS "VCLib: not using parallel algorithms")
-endif()
-
 ### vclib target
 set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

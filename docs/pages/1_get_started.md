@@ -18,18 +18,22 @@ To access the basic functionalities of VCLib, you don't need to install any depe
 
    * [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
    * [MapBox Earcut](https://github.com/mapbox/earcut.hpp)
+   * [poolSTL](https://github.com/alugowski/poolSTL)
    * [STB](https://github.com/nothings/stb)
 
-However, at the time of writing, some functionalities of standard C++17 require attention when used on certain platforms. Specifically, VCLib uses C++17 parallel STL, which:
+### C++17 Parallel STL
 
-   * On Apple systems using CLang, it can be used thanks to [pstld](https://github.com/mikekazakov/pstld) (header only, bundled in VCLib, no additional action required);
-   * It is supported by MSVC without requiring additional action;
-   * It is supported by GCC + libstdc++ when the [Threading Building Blocks](https://github.com/oneapi-src/oneTBB) library is linked (linking is required);
-   * It is not supported by CLang + libc++ (except for Apple systems, thanks to `pstld`);
+The lack of support for C++17 parallel STL in some compilers is still a problem.
 
-To access the parallel speedup of VCLib, we suggest using [CMake](#cmake_config) which will automatically check whether this feature is available on your system.
+To allow the use of C++17 parallel STL, VCLib uses poolSTL as a fallback. poolSTL
+will use the parallel STL if it is available, and otherwise, it implements the 
+parallel algorithms using a thread pool.
 
-If you are using Ubuntu, you can download the `Threading Building Blocks` library by running the following command in the terminal:
+In the case of libstdc++, the parallel STL is available only if the `Threading Building Blocks`
+library is installed. If you are using libstdc++, we suggest to install TBB in 
+order to bypass poolSTL and use the parallel STL.
+
+On Ubuntu, you can install it by running the following command in the terminal:
 
 ```bash
 sudo apt install libtbb-dev
@@ -51,7 +55,7 @@ Where `my_target` is the target of your project.
 ## Usage with INCLUDE_PATH
 
 In order to work with VCLib, you must ensure that Eigen is accessible in your `INCLUDE_PATH`.
-MapBox Earcut, STB, and (if you're using Apple Clang) pstld are already included automatically by VCLib, so you don't need to include them manually. Eigen is also provided within the `external` directory of VCLib.
+MapBox Earcut, STB, and poolSTL are already included automatically by VCLib, so you don't need to include them manually. Eigen is also provided within the `external` directory of VCLib.
 
 To set your `INCLUDE_PATH` correctly, follow these steps:
 

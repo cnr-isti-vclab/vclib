@@ -37,20 +37,11 @@ option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
 option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
     "Allow use of bundled ZipViews source" ON)
 
-# pstld
-if (APPLE)
-    option(VCLIB_ALLOW_BUNDLED_PSTLD "Allow use of bundled pstld source" ON)
-endif()
-
-# Catch2
-if (VCLIB_BUILD_TESTS)
-    option(VCLIB_ALLOW_DOWNLOAD_CATCH2
-        "Allow use of downloaded Catch2 source" ON)
-    option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
-endif()
-
 # STB
 option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
+
+# poolSTL
+option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
 
 # TBB
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
@@ -58,6 +49,13 @@ option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 #VCG
 option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
 option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
+
+# Catch2
+if (VCLIB_BUILD_TESTS)
+    option(VCLIB_ALLOW_DOWNLOAD_CATCH2
+        "Allow use of downloaded Catch2 source" ON)
+    option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
+endif()
 
 set(VCLIB_EXTERNAL_LIBRARIES "")
 
@@ -72,19 +70,16 @@ include(mapbox.cmake)
 ### Zip iterator
 include(zip-views.cmake)
 
-### pstld, required on AppleClang
-### (waiting for c++17 parallel algorithms support)
-if (APPLE)
-    include(pstld.cmake)
-endif()
+### STB
+include(stb.cmake)
+
+### poolSTL
+include(poolstl.cmake)
 
 # === OPTIONAL === #
 
 ### Catch2
 include(catch2.cmake)
-
-### STB
-include(stb.cmake)
 
 ### TBB
 include(tbb.cmake)

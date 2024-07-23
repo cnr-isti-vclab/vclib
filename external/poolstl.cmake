@@ -20,21 +20,22 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_PSTLD_DIR ${CMAKE_CURRENT_LIST_DIR}/pstld-master)
+set(POOLSTL_VERSION 0.3.5)
+set(VCLIB_POOLSTL_DIR ${CMAKE_CURRENT_LIST_DIR}/poolSTL-${POOLSTL_VERSION})
 
-if (VCLIB_ALLOW_BUNDLED_PSTLD AND EXISTS ${VCLIB_PSTLD_DIR}/pstld/pstld.h)
-    message(STATUS "- pstld - using bundled source")
+if (VCLIB_ALLOW_BUNDLED_POOLSTL AND 
+        EXISTS ${VCLIB_POOLSTL_DIR}/include/poolstl/poolstl.hpp)
+
+    message(STATUS "- poolstl - using bundled source")
+
+    set(POOLSTL_INCLUDE_DIRS ${VCLIB_POOLSTL_DIR}/include)
+
+    add_library(vclib-external-poolstl INTERFACE)
+
+    target_include_directories(vclib-external-poolstl INTERFACE 
+        ${POOLSTL_INCLUDE_DIRS})
+
+    list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-poolstl)
 else()
-    message(
-        FATAL_ERROR
-        "pstld is required on Apple Clang- VCLIB_ALLOW_BUNDLED_PSTLD must be enabled and found.")
+    message(FATAL_ERROR "poolSTL is required to full support parallel algorithms - VCLIB_ALLOW_BUNDLED_POOLSTL must be enabled and found.")
 endif()
-
-set(PSTLD_INCLUDE_DIRS ${VCLIB_PSTLD_DIR})
-
-add_library(vclib-external-pstld SHARED ${VCLIB_PSTLD_DIR}/pstld/pstld.cpp)
-
-target_include_directories(vclib-external-pstld PUBLIC ${PSTLD_INCLUDE_DIRS})
-target_compile_definitions(vclib-external-pstld PUBLIC PSTLD_HACK_INTO_STD)
-
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-pstld)
