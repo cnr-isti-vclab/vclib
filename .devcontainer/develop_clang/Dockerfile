@@ -1,6 +1,7 @@
 FROM ubuntu:24.04
 
 RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    catch2 \
     clang-18 \
     cmake \
     git \
