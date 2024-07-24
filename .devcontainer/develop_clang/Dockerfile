@@ -7,7 +7,11 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     git \
     libtbb-dev \
     ninja-build \
-    python3
+    python3 \
+    sudo && \
+    # add ubuntu user to sudoers
+    echo ubuntu ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/ubuntu && \
+    chmod 0440 /etc/sudoers.d/ubuntu
 
 # clean
 RUN apt-get -y remove gcc g++ && \
