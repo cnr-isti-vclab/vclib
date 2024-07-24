@@ -41,6 +41,8 @@ namespace vcl {
  * MyElement e;
  * auto& c = e.template component<CompId::COORDINATE>();
  * @endcode
+ * 
+ * @ingroup types
  */
 struct CompId
 {
@@ -74,6 +76,8 @@ struct CompId
 /**
  * @brief The COMPONENT_ENUM_STRINGS array contains the string representation
  * of the CompId::Enum values.
+ * 
+ * @ingroup types
  */
 constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
     "BitFlags",
@@ -106,6 +110,8 @@ constexpr const char* COMPONENT_ENUM_STRINGS[CompId::COMPONENTS_NUMBER] = {
  * your COMP_ID value (that is >= COMPONENTS_NUMBER).
  *
  * @tparam COMP_ID: The COMP_ID value associated to the string.
+ * 
+ * @ingroup types
  */
 template<uint COMP_ID>
 struct ComponentString
@@ -123,6 +129,8 @@ struct ComponentString
  *
  * @tparam COMP_ID: an unsigned integer that identifies the component.
  * @return The string associated to the COMP_ID value.
+ * 
+ * @ingroup types
  */
 template<uint COMP_ID>
 constexpr const char* componentEnumString()

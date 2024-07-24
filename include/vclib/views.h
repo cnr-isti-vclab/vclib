@@ -26,4 +26,11 @@
 #include "views/mesh.h"
 #include "views/pointers.h"
 
+/**
+ * @defgroup views  Views Module
+ *
+ * @brief List of [range views](https://en.cppreference.com/w/cpp/ranges/view)
+ * of the library.
+ */
+
 #endif // VCL_VIEWS_H

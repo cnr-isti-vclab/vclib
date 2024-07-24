@@ -34,13 +34,6 @@
 #include "../../../external/zip-views-1.0/zip_view.hpp"
 #endif
 
-/**
- * @defgroup views Range Views
- *
- * @brief List of [range views](https://en.cppreference.com/w/cpp/ranges/view)
- * of the library.
- */
-
 namespace vcl {
 
 /**
@@ -60,9 +53,13 @@ namespace vcl {
  * - faceEnd()
  * To allow view iteration over vertices, the Mesh could expose a vertices()
  * member function that returns a View object that is constructed in this way:
- * View(vertexBegin(), vertexEnd());
+ * 
+ * @code {.cpp}
+ * auto vertices() { return View{vertexBegin(), vertexEnd()}; }
+ * @endcode
  *
  * @ingroup views
+ * @ingroup types
  */
 template<typename It>
 class View : public std::ranges::view_interface<View<It>>

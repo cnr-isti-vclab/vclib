@@ -23,11 +23,6 @@
 #ifndef VCL_TYPES_H
 #define VCL_TYPES_H
 
-/*
- * This header includes all the utility types and type traits used in VCLib.
- * Almost all the files in VCLib include this header.
- */
-
 #include "types/const_correctness.h"
 #include "types/inheritance.h"
 #include "types/mesh_components.h"
@@ -35,5 +30,18 @@
 #include "types/pointers.h"
 #include "types/variadic_templates.h"
 #include "types/view.h"
+
+/**
+ * @defgroup types VCLib Types Module
+ *
+ * @brief The Types module defines all the utility definitions, types, classes
+ * and type traits that are common in the library.
+ *
+ * This module does not depend on any other module of the library, and it is
+ * used by all the other modules to define the types that are used in the
+ * library.
+ * 
+ * You can access all the types of VCLib by including `#include <vclib/types.h>`
+ */
 
 #endif // VCL_TYPES_H

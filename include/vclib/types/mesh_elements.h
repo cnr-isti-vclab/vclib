@@ -47,6 +47,8 @@ namespace vcl {
  *    // do something with the vertex v
  * }
  * @endcode
+ * 
+ * @ingroup types
  */
 struct ElemId
 {
@@ -61,6 +63,8 @@ struct ElemId
 /**
  * @brief The ELEMENT_ENUM_STRINGS array contains the string representation of
  * the elements that can compose a mesh.
+ * 
+ * @ingroup types
  */
 constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
     "Vertex",
@@ -76,6 +80,8 @@ constexpr const char* ELEMENT_ENUM_STRINGS[ElemId::ELEMENTS_NUMBER] = {
  * your ELEM_ID value (that is >= ELEMENTS_NUMBER).
  *
  * @tparam ELEM_ID: The ELEM_ID value associated to the string.
+ * 
+ * @ingroup types
  */
 template<uint ELEM_ID>
 struct ElementString
@@ -93,6 +99,8 @@ struct ElementString
  *
  * @tparam ELEM_ID: an unsigned integer that identifies the element.
  * @return The string associated to the ELEM_ID value.
+ * 
+ * @ingroup types
  */
 template<uint ELEM_ID>
 constexpr const char* elementEnumCString()
@@ -110,6 +118,8 @@ constexpr const char* elementEnumCString()
  *
  * @tparam ELEM_ID: an unsigned integer that identifies the element.
  * @return The string associated to the ELEM_ID value.
+ * 
+ * @ingroup types
  */
 // Todo: make this function constexpr when upgrading to C++23.
 template<uint ELEM_ID>
