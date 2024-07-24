@@ -163,7 +163,7 @@ TEMPLATE_TEST_CASE(
         std::ostringstream ss;
         vcl::saveStl(tm, ss, settings);
 
-        const uint expectedStlSize = 7 * tm.faceNumber() + 2;
+        const unsigned int expectedStlSize = 7 * tm.faceNumber() + 2;
 
         // verify that ss contains 86 lines
         std::istringstream iss(ss.str());

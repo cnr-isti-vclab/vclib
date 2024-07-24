@@ -58,16 +58,16 @@ TEMPLATE_TEST_CASE(
 
             REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
             REQUIRE(
-                anotherMesh.vertex(0).template customComponent<uint>(
+                anotherMesh.vertex(0).template customComponent<unsigned int>(
                     "birthVertex") == 0);
             REQUIRE(
-                anotherMesh.vertex(1).template customComponent<uint>(
+                anotherMesh.vertex(1).template customComponent<unsigned int>(
                     "birthVertex") == 3);
             REQUIRE(
-                anotherMesh.vertex(2).template customComponent<uint>(
+                anotherMesh.vertex(2).template customComponent<unsigned int>(
                     "birthVertex") == 6);
             REQUIRE(
-                anotherMesh.vertex(3).template customComponent<uint>(
+                anotherMesh.vertex(3).template customComponent<unsigned int>(
                     "birthVertex") == 7);
         }
     }
@@ -101,45 +101,45 @@ TEMPLATE_TEST_CASE(
 
             REQUIRE(anotherMesh.hasPerVertexCustomComponent("birthVertex"));
             REQUIRE(
-                anotherMesh.vertex(0).template customComponent<uint>(
+                anotherMesh.vertex(0).template customComponent<unsigned int>(
                     "birthVertex") == 2);
             REQUIRE(
-                anotherMesh.vertex(1).template customComponent<uint>(
+                anotherMesh.vertex(1).template customComponent<unsigned int>(
                     "birthVertex") == 1);
             REQUIRE(
-                anotherMesh.vertex(2).template customComponent<uint>(
+                anotherMesh.vertex(2).template customComponent<unsigned int>(
                     "birthVertex") == 0);
             REQUIRE(
-                anotherMesh.vertex(3).template customComponent<uint>(
+                anotherMesh.vertex(3).template customComponent<unsigned int>(
                     "birthVertex") == 4);
             REQUIRE(
-                anotherMesh.vertex(4).template customComponent<uint>(
+                anotherMesh.vertex(4).template customComponent<unsigned int>(
                     "birthVertex") == 6);
             REQUIRE(
-                anotherMesh.vertex(5).template customComponent<uint>(
+                anotherMesh.vertex(5).template customComponent<unsigned int>(
                     "birthVertex") == 5);
             REQUIRE(
-                anotherMesh.vertex(6).template customComponent<uint>(
+                anotherMesh.vertex(6).template customComponent<unsigned int>(
                     "birthVertex") == 7);
             REQUIRE(
-                anotherMesh.vertex(7).template customComponent<uint>(
+                anotherMesh.vertex(7).template customComponent<unsigned int>(
                     "birthVertex") == 3);
 
             REQUIRE(anotherMesh.hasPerFaceCustomComponent("birthFace"));
             REQUIRE(
-                anotherMesh.face(0).template customComponent<uint>(
+                anotherMesh.face(0).template customComponent<unsigned int>(
                     "birthFace") == 0);
             REQUIRE(
-                anotherMesh.face(1).template customComponent<uint>(
+                anotherMesh.face(1).template customComponent<unsigned int>(
                     "birthFace") == 3);
             REQUIRE(
-                anotherMesh.face(2).template customComponent<uint>(
+                anotherMesh.face(2).template customComponent<unsigned int>(
                     "birthFace") == 6);
             REQUIRE(
-                anotherMesh.face(3).template customComponent<uint>(
+                anotherMesh.face(3).template customComponent<unsigned int>(
                     "birthFace") == 7);
             REQUIRE(
-                anotherMesh.face(4).template customComponent<uint>(
+                anotherMesh.face(4).template customComponent<unsigned int>(
                     "birthFace") == 10);
         }
     }

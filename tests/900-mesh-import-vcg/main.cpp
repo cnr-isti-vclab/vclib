@@ -58,10 +58,10 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.vertexNumber() == 8);
         REQUIRE(tm.faceNumber() == 12);
 
-        for (uint fi = 0; fi < tm.faceNumber(); ++fi) {
+        for (unsigned int fi = 0; fi < tm.faceNumber(); ++fi) {
             const auto& f    = tm.face(fi);
             const auto& vcgf = vcgMesh.face[fi];
-            for (uint vi = 0; vi < 3; ++vi) {
+            for (unsigned int vi = 0; vi < 3; ++vi) {
                 REQUIRE(
                     tm.index(f.vertex(vi)) ==
                     vcg::tri::Index(vcgMesh, vcgf.V(vi)));
@@ -88,7 +88,7 @@ TEMPLATE_TEST_CASE(
         auto h = vcg::tri::Allocator<VCGMesh>::AddPerVertexAttribute<float>(
             vcgMesh, "perVertex");
 
-        for (uint vi = 0; vi < vcgMesh.VN(); ++vi) {
+        for (unsigned int vi = 0; vi < vcgMesh.VN(); ++vi) {
             h[vcgMesh.vert[vi]] = (float) vi / vcgMesh.VN();
         }
 
@@ -111,7 +111,7 @@ TEMPLATE_TEST_CASE(
             vcg::tri::Allocator<VCGMesh>::AddPerVertexAttribute<vcg::Point3f>(
                 vcgMesh, "perVertex");
 
-        for (uint vi = 0; vi < vcgMesh.VN(); ++vi) {
+        for (unsigned int vi = 0; vi < vcgMesh.VN(); ++vi) {
             h[vcgMesh.vert[vi]] = vcgMesh.vert[vi].P();
         }
 
@@ -147,7 +147,7 @@ TEMPLATE_TEST_CASE(
         auto h = vcg::tri::Allocator<VCGMesh>::AddPerFaceAttribute<double>(
             vcgMesh, "perFace");
 
-        for (uint fi = 0; fi < vcgMesh.FN(); ++fi) {
+        for (unsigned int fi = 0; fi < vcgMesh.FN(); ++fi) {
             h[vcgMesh.face[fi]] = (double) fi / vcgMesh.FN();
         }
 
@@ -169,7 +169,7 @@ TEMPLATE_TEST_CASE(
             vcg::tri::Allocator<VCGMesh>::AddPerFaceAttribute<vcg::Point3f>(
                 vcgMesh, "perFace");
 
-        for (uint fi = 0; fi < vcgMesh.FN(); ++fi) {
+        for (unsigned int fi = 0; fi < vcgMesh.FN(); ++fi) {
             // assign barycener of face fi
             h[vcgMesh.face[fi]] = vcg::Barycenter(vcgMesh.face[fi]);
         }
@@ -228,12 +228,12 @@ TEMPLATE_TEST_CASE(
     REQUIRE(pm.vertexNumber() == 8);
     REQUIRE(pm.faceNumber() == 12);
 
-    for (uint fi = 0; fi < pm.faceNumber(); ++fi) {
+    for (unsigned int fi = 0; fi < pm.faceNumber(); ++fi) {
         const auto& f    = pm.face(fi);
         const auto& vcgf = vcgMesh.face[fi];
 
         REQUIRE(f.vertexNumber() == 3);
-        for (uint vi = 0; vi < 3; ++vi) {
+        for (unsigned int vi = 0; vi < 3; ++vi) {
             REQUIRE(
                 pm.index(f.vertex(vi)) == vcg::tri::Index(vcgMesh, vcgf.V(vi)));
         }
@@ -260,10 +260,10 @@ TEMPLATE_TEST_CASE(
         REQUIRE(vcgMesh.VN() == tm.vertexNumber());
         REQUIRE(vcgMesh.FN() == tm.faceNumber());
 
-        for (uint fi = 0; fi < tm.faceNumber(); ++fi) {
+        for (unsigned int fi = 0; fi < tm.faceNumber(); ++fi) {
             const auto& f    = tm.face(fi);
             const auto& vcgf = vcgMesh.face[fi];
-            for (uint vi = 0; vi < 3; ++vi) {
+            for (unsigned int vi = 0; vi < 3; ++vi) {
                 REQUIRE(
                     tm.index(f.vertex(vi)) ==
                     vcg::tri::Index(vcgMesh, vcgf.V(vi)));

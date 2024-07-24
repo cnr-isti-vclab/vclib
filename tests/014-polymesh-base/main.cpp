@@ -86,21 +86,21 @@ TEMPLATE_TEST_CASE(
 
     WHEN("Adding and removing vertices")
     {
-        uint vi0 = m.addVertex();
+        unsigned int vi0 = m.addVertex();
 
         REQUIRE(m.vertexNumber() == 1);
         REQUIRE(m.faceNumber() == 0);
         REQUIRE(m.vertex(0).coord() == PolyMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
 
-        uint vi1 = m.addVertex();
+        unsigned int vi1 = m.addVertex();
 
         REQUIRE(m.vertexNumber() == 2);
         REQUIRE(m.vertex(1).coord() == PolyMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
         REQUIRE(&m.vertex(vi1) == &m.vertex(1));
 
-        uint vi2 = m.addVertices(5);
+        unsigned int vi2 = m.addVertices(5);
         REQUIRE(m.vertexNumber() == 7);
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
         REQUIRE(&m.vertex(vi1) == &m.vertex(1));
@@ -113,7 +113,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.faceNumber() == 0);
         m.addVertices(4);
         REQUIRE(m.vertexNumber() == 4);
-        uint fi0 = m.addFace();
+        unsigned int fi0 = m.addFace();
         REQUIRE(m.faceNumber() == 1);
         REQUIRE(&m.face(fi0) == &m.face(0));
         m.addFace(0, 1, 2);

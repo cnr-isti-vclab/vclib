@@ -83,7 +83,7 @@ int main()
 
     std::cerr << "\n\nTransform Selection:\n";
 
-    uint i = 0;
+    unsigned int i = 0;
     for (auto& v : m.vertices()) {
         v.selected() = i % 2 ? true : false;
         std::cerr << v.selected() << "\n";

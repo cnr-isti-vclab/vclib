@@ -56,7 +56,7 @@ public:
     // first requirement: an unique static const uint ID of the component
     // vcl::CompId::COMPONENTS_NUMBER is the number of components that are
     // already defined in VCLib. You can use it to avoid collisions.
-    static const uint COMPONENT_ID = vcl::CompId::COMPONENTS_NUMBER + 0;
+    static const unsigned int COMPONENT_ID = vcl::CompId::COMPONENTS_NUMBER + 0;
 
     // any member that you want to add to the component
     int& foo() { return data; }

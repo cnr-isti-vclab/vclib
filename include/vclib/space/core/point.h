@@ -860,7 +860,7 @@ Point(S, Scalars... scalars) -> Point<S, sizeof...(Scalars) + 1>;
 // inject vcl::Point hash function in std namespace
 namespace std {
 
-template<typename Scalar, uint N>
+template<typename Scalar, unsigned int N>
 struct hash<vcl::Point<Scalar, N>>
 {
     /**

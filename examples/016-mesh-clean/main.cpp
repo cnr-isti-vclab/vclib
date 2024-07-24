@@ -40,13 +40,13 @@ int main()
     m.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(m);
 
-    uint nm = vcl::numberNonManifoldVertices(m);
+    unsigned int nm = vcl::numberNonManifoldVertices(m);
 
     assert(nm == 4);
 
     std::cerr << "Non Manifold Vertices: " << nm << "\n";
 
-    uint nv = vcl::removeUnreferencedVertices(m);
+    unsigned int nv = vcl::removeUnreferencedVertices(m);
 
     assert(nv == 0);
 
@@ -66,7 +66,7 @@ int main()
 
     m.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(m);
-    uint nHoles = vcl::numberHoles(m);
+    unsigned int nHoles = vcl::numberHoles(m);
 
     assert(nHoles == 5);
 
@@ -79,7 +79,7 @@ int main()
     m.enablePerFaceAdjacentFaces();
     vcl::updatePerFaceAdjacentFaces(m);
 
-    std::vector<std::set<uint>> cc = vcl::connectedComponents(m);
+    std::vector<std::set<unsigned int>> cc = vcl::connectedComponents(m);
 
     assert(cc.size() == 25);
 

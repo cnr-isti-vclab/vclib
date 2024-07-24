@@ -28,11 +28,11 @@
 #include <limits>
 #include <numeric>
 
+namespace vcl {
+
 // Define some basic types, for convenience
 using uint   = unsigned int;
 using ushort = unsigned short;
-
-namespace vcl {
 
 /**
  * @brief The UINT_NULL value represent a null value of uint that is the maximum

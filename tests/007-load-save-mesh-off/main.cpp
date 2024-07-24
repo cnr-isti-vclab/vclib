@@ -170,7 +170,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(line == "8 12 0 ");
         std::getline(iss, line);
         REQUIRE(line == "-0.5 -0.5 -0.5 ");
-        for (uint i = 0; i < 8; i++)
+        for (unsigned int i = 0; i < 8; i++)
             std::getline(iss, line); // go to face 0
         REQUIRE(line == "3 0 2 1 ");
     }
@@ -192,7 +192,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(line == "8 12 0 ");
         std::getline(iss, line);
         REQUIRE(line == "-0.5 -0.5 -0.5 -0.57735 -0.57735 -0.57735 ");
-        for (uint i = 0; i < 8; i++)
+        for (unsigned int i = 0; i < 8; i++)
             std::getline(iss, line); // go to face 0
         REQUIRE(line == "3 0 2 1 ");
     }
@@ -218,7 +218,7 @@ TEMPLATE_TEST_CASE(
         std::getline(iss, line);
         REQUIRE(
             line == "-0.5 -0.5 -0.5 0 0 255 255 -0.57735 -0.57735 -0.57735 ");
-        for (uint i = 0; i < 8; i++)
+        for (unsigned int i = 0; i < 8; i++)
             std::getline(iss, line); // go to face 0
         REQUIRE(line == "4 2 3 1 0 ");
     }

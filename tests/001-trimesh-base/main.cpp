@@ -86,21 +86,21 @@ TEMPLATE_TEST_CASE(
 
     WHEN("Adding and removing vertices")
     {
-        uint vi0 = m.addVertex();
+        unsigned int vi0 = m.addVertex();
 
         REQUIRE(m.vertexNumber() == 1);
         REQUIRE(m.faceNumber() == 0);
         REQUIRE(m.vertex(0).coord() == TriMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
 
-        uint vi1 = m.addVertex();
+        unsigned int vi1 = m.addVertex();
 
         REQUIRE(m.vertexNumber() == 2);
         REQUIRE(m.vertex(1).coord() == TriMeshPoint(0, 0, 0));
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
         REQUIRE(&m.vertex(vi1) == &m.vertex(1));
 
-        uint vi2 = m.addVertices(5);
+        unsigned int vi2 = m.addVertices(5);
         REQUIRE(m.vertexNumber() == 7);
         REQUIRE(&m.vertex(vi0) == &m.vertex(0));
         REQUIRE(&m.vertex(vi1) == &m.vertex(1));
@@ -113,7 +113,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.faceNumber() == 0);
         m.addVertices(3);
         REQUIRE(m.vertexNumber() == 3);
-        uint fi0 = m.addFace();
+        unsigned int fi0 = m.addFace();
         REQUIRE(m.faceNumber() == 1);
         REQUIRE(&m.face(fi0) == &m.face(0));
         m.addFace(0, 1, 2);
@@ -134,13 +134,13 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.face(1).vertexIndexMod(-5) == 1);
 
         // test also iterators
-        uint vi = 0;
+        unsigned int vi = 0;
         for (auto* v : m.face(1).vertices()) {
             REQUIRE(v == &m.vertex(vi++));
         }
 
         vi = 0;
-        for (uint v : m.face(1).vertices() | vcl::views::indices) {
+        for (unsigned int v : m.face(1).vertices() | vcl::views::indices) {
             REQUIRE(v == vi++);
         }
 
@@ -202,7 +202,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.face(1).vertex(1) == &m.vertex(0));
         REQUIRE(m.face(1).vertex(2) == &m.vertex(1));
 
-        std::list<uint> l1 = {4, 3, 1};
+        std::list<unsigned int> l1 = {4, 3, 1};
         m.face(2).setVertices(l1);
         REQUIRE(m.face(2).vertexIndex(0) == 4);
         REQUIRE(m.face(2).vertexIndex(1) == 3);
@@ -269,7 +269,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(m.face(0).containsVertex(&m.vertex(2)) == true);
         REQUIRE(m.face(0).containsVertex(&m.vertex(3)) == false);
 
-        REQUIRE(m.face(0).containsVertex((uint) 0) == true);
+        REQUIRE(m.face(0).containsVertex((unsigned int) 0) == true);
         REQUIRE(m.face(0).containsVertex(1) == true);
         REQUIRE(m.face(0).containsVertex(2) == true);
         REQUIRE(m.face(0).containsVertex(3) == false);
@@ -281,7 +281,7 @@ TEMPLATE_TEST_CASE(
 
         REQUIRE(m.face(2).indexOfVertex(&m.vertex(0)) == vcl::UINT_NULL);
         REQUIRE(m.face(2).indexOfVertex(&m.vertex(3)) == 1);
-        REQUIRE(m.face(2).indexOfVertex((uint) 0) == vcl::UINT_NULL);
+        REQUIRE(m.face(2).indexOfVertex((unsigned int) 0) == vcl::UINT_NULL);
         REQUIRE(m.face(2).indexOfVertex(4) == 2);
 
         REQUIRE(m.face(3).indexOfEdge(&m.vertex(5), &m.vertex(4)) == 1);

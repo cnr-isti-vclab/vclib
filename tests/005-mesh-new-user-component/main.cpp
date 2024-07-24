@@ -45,7 +45,7 @@ TEMPLATE_TEST_CASE(
         v.foo() = m.index(v) + 42;
     }
 
-    for (uint i = 0; i < 10; ++i) {
+    for (unsigned int i = 0; i < 10; ++i) {
         REQUIRE(m.vertex(i).foo() == 42 + i);
     }
 

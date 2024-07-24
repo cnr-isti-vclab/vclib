@@ -106,10 +106,10 @@ TEMPLATE_TEST_CASE(
         Mesh m3 = m1;
         m3.append(m2);
 
-        uint m1vn = m1.vertexNumber();
-        uint m2vn = m2.vertexNumber();
-        uint m1fn = m1.faceNumber();
-        uint m2fn = m2.faceNumber();
+        unsigned int m1vn = m1.vertexNumber();
+        unsigned int m2vn = m2.vertexNumber();
+        unsigned int m1fn = m1.faceNumber();
+        unsigned int m2fn = m2.faceNumber();
 
         THEN("Right number of vertices and faces")
         {

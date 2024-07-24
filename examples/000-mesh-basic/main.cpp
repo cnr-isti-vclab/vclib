@@ -65,7 +65,7 @@ int main()
     m.vertex(1).texCoord().set(0.52, 0.35);
 
     // setting vertex normals
-    // in this mesh vertex normaks are not optional, I don't need to enable them
+    // in this mesh vertex normals are not optional, I don't need to enable them
     m.vertex(0).normal() = TriMeshPoint(1, 0, 0);
 
     m.enablePerVertexColor();
@@ -106,7 +106,7 @@ int main()
     m.face(0).quality() = 4;
 
     // setting some colors to all the faces of the mesh
-    uint i = 17;
+    unsigned int i = 17;
     // iterates over all the non-deleted faces of m
     for (vcl::TriMesh::Face& f : m.faces())
         f.color() = vcl::Color(4 + 2 * i++, 134, 98);

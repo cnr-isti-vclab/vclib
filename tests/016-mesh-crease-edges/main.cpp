@@ -47,7 +47,7 @@ TEMPLATE_TEST_CASE(
     // select crease edges
     vcl::selectCreaseFaceEdges(cylinder, -vcl::toRad(30.f), vcl::toRad(30.f));
 
-    uint creaseEdges = vcl::faceEdgesSelectionNumber(cylinder);
+    unsigned int creaseEdges = vcl::faceEdgesSelectionNumber(cylinder);
 
     THEN("Compute the number of selected face edges on cylinder")
     {

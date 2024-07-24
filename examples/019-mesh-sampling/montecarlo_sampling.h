@@ -28,7 +28,7 @@
 
 void montecarloSampling(const vcl::TriMesh& m, vcl::TriMesh& samples)
 {
-    uint nSamples = 50;
+    unsigned int nSamples = 50;
 
     vcl::MeshSampler<vcl::TriMesh> s =
         vcl::montecarloPointSampling<vcl::MeshSampler<vcl::TriMesh>>(

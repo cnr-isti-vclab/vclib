@@ -58,7 +58,7 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         REQUIRE(tm.hasCustomComponent("cust_comp"));
         REQUIRE(tm.template isCustomComponentOfType<int>("cust_comp"));
-        REQUIRE(!tm.template isCustomComponentOfType<uint>("cust_comp"));
+        REQUIRE(!tm.template isCustomComponentOfType<unsigned int>("cust_comp"));
         REQUIRE(tm.template customComponent<int>("cust_comp") == 4);
         REQUIRE(tm.hasPerVertexCustomComponent("v_comp"));
 
@@ -93,7 +93,7 @@ TEMPLATE_TEST_CASE(
             REQUIRE(pf.vertexNumber() == 3);
             const auto& tf = tm.face(pf.index());
 
-            uint i = 0;
+            unsigned int i = 0;
             for (const auto* pv : pf.vertices()) {
                 REQUIRE(pv->index() == tf.vertexIndex(i));
                 REQUIRE(pv->coord() == tf.vertex(i)->coord());
@@ -113,7 +113,7 @@ TEMPLATE_TEST_CASE(
     {
         REQUIRE(pm.hasCustomComponent("cust_comp"));
         REQUIRE(pm.template isCustomComponentOfType<int>("cust_comp"));
-        REQUIRE(!pm.template isCustomComponentOfType<uint>("cust_comp"));
+        REQUIRE(!pm.template isCustomComponentOfType<unsigned int>("cust_comp"));
         REQUIRE(pm.template customComponent<int>("cust_comp") == 4);
         REQUIRE(pm.hasPerVertexCustomComponent("v_comp"));
         REQUIRE(pm.template isPerVertexCustomComponentOfType<float>("v_comp"));
@@ -172,7 +172,7 @@ TEMPLATE_TEST_CASE(
         {
             REQUIRE(tm.vertexNumber() == pm.vertexNumber());
 
-            for (uint i = 0; i < tm.vertexNumber(); ++i) {
+            for (unsigned int i = 0; i < tm.vertexNumber(); ++i) {
                 REQUIRE(tm.vertex(i).coord() == pm.vertex(i).coord());
             }
         }
