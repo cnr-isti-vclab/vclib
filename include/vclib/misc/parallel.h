@@ -35,7 +35,7 @@
 #define VCLIB_EMIT_REDEFINED
 #endif // emit
 
-// Hack to compensate lack of support for c++17 parallel algorithms by 
+// Hack to compensate lack of support for c++17 parallel algorithms by
 // several compilers. We use poolSTL.
 #define POOLSTL_STD_SUPPLEMENT
 #if __has_include(<poolstl/poolstl.hpp>)
@@ -49,7 +49,7 @@
 #undef VCLIB_EMIT_REDEFINED
 #define emit // restore the macro definition of "emit", as it was
              // defined in gtmetamacros.h
-#endif // VCLIB_EMIT_REDEFINED
+#endif       // VCLIB_EMIT_REDEFINED
 
 namespace vcl {
 
