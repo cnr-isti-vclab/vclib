@@ -6,24 +6,16 @@ on:
 jobs:
   build_docs:
     name: Build Docs
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
         run: | # apt doxygen version is buggy - need to use 1.9.6
           sudo apt-get install graphviz
-          mkdir doxygen
-          cd doxygen
-          wget https://www.doxygen.nl/files/doxygen-1.9.6.linux.bin.tar.gz
-          tar -xvzf doxygen-1.9.6.linux.bin.tar.gz
-          mv doxygen-*/* .
-          chmod +x bin/*
-          echo "${GITHUB_WORKSPACE}/doxygen/bin" >> $GITHUB_PATH
       - name: Build Docs
         run: |
-          cd docs
-          doxygen Doxyfile
+          doxygen docs/Doxyfile
       - name: Upload Docs
         uses: actions/upload-artifact@v4
         with:
@@ -33,7 +25,7 @@ jobs:
   upload_docs:
     needs: build_docs
     name: Upload Docs
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v4

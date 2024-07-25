@@ -62,7 +62,7 @@ inline bool axisTestX01(
     ScalarType       fb,
     const PointType& v0,
     const PointType& v2,
-    const PointType& bHalfSixe)
+    const PointType& bHalfSize)
 {
     ScalarType p0 = a * v0.y() - b * v0.z();
     ScalarType p2 = a * v2.y() - b * v2.z();
@@ -75,7 +75,7 @@ inline bool axisTestX01(
         min = p2;
         max = p0;
     }
-    ScalarType rad = fa * bHalfSixe.y() + fb * bHalfSixe.z();
+    ScalarType rad = fa * bHalfSize.y() + fb * bHalfSize.z();
     if (min > rad || max < -rad)
         return false;
     return true;
@@ -89,7 +89,7 @@ inline bool axisTestX2(
     ScalarType       fb,
     const PointType& v0,
     const PointType& v1,
-    const PointType& bHalfSixe)
+    const PointType& bHalfSize)
 {
     ScalarType p0 = a * v0.y() - b * v0.z();
     ScalarType p1 = a * v1.y() - b * v1.z();
@@ -102,7 +102,7 @@ inline bool axisTestX2(
         min = p1;
         max = p0;
     }
-    ScalarType rad = fa * bHalfSixe.y() + fb * bHalfSixe.z();
+    ScalarType rad = fa * bHalfSize.y() + fb * bHalfSize.z();
     if (min > rad || max < -rad)
         return false;
     return true;
@@ -117,7 +117,7 @@ inline bool axisTestY02(
     ScalarType       fb,
     const PointType& v0,
     const PointType& v2,
-    const PointType& bHalfSixe)
+    const PointType& bHalfSize)
 {
     ScalarType p0 = -a * v0.x() + b * v0.z();
     ScalarType p2 = -a * v2.x() + b * v2.z();
@@ -130,7 +130,7 @@ inline bool axisTestY02(
         min = p2;
         max = p0;
     }
-    ScalarType rad = fa * bHalfSixe.x() + fb * bHalfSixe.z();
+    ScalarType rad = fa * bHalfSize.x() + fb * bHalfSize.z();
     if (min > rad || max < -rad)
         return false;
     return true;
@@ -144,7 +144,7 @@ inline bool axisTestY1(
     ScalarType       fb,
     const PointType& v0,
     const PointType& v1,
-    const PointType& bHalfSixe)
+    const PointType& bHalfSize)
 {
     ScalarType p0 = -a * v0.x() + b * v0.z();
     ScalarType p1 = -a * v1.x() + b * v1.z();
@@ -157,7 +157,7 @@ inline bool axisTestY1(
         min = p1;
         max = p0;
     }
-    ScalarType rad = fa * bHalfSixe.x() + fb * bHalfSixe.z();
+    ScalarType rad = fa * bHalfSize.x() + fb * bHalfSize.z();
     if (min > rad || max < -rad)
         return false;
     return true;
@@ -172,7 +172,7 @@ inline bool axisTestZ12(
     ScalarType       fb,
     const PointType& v1,
     const PointType& v2,
-    const PointType& bHalfSixe)
+    const PointType& bHalfSize)
 {
     ScalarType p1 = a * v1.x() - b * v1.y();
     ScalarType p2 = a * v2.x() - b * v2.y();
@@ -185,7 +185,7 @@ inline bool axisTestZ12(
         min = p2;
         max = p1;
     }
-    ScalarType rad = fa * bHalfSixe.x() + fb * bHalfSixe.y();
+    ScalarType rad = fa * bHalfSize.x() + fb * bHalfSize.y();
     if (min > rad || max < -rad)
         return false;
     return true;
@@ -199,7 +199,7 @@ inline bool axisTestZ0(
     ScalarType       fb,
     const PointType& v0,
     const PointType& v1,
-    const PointType& bHalfSixe)
+    const PointType& bHalfSize)
 {
     ScalarType p0 = a * v0.x() - b * v0.y();
     ScalarType p1 = a * v1.x() - b * v1.y();
@@ -212,7 +212,7 @@ inline bool axisTestZ0(
         min = p1;
         max = p0;
     }
-    ScalarType rad = fa * bHalfSixe.x() + fb * bHalfSixe.y();
+    ScalarType rad = fa * bHalfSize.x() + fb * bHalfSize.y();
     if (min > rad || max < -rad)
         return false;
     return true;
@@ -379,8 +379,8 @@ bool trianglePointIntersect(const TriangleType& tr, const PointType& p)
 }
 
 /**
- * Checks if a 3D point intersects/is inside a 3D triangle having its points in
- * counterclockwise order.
+ * @brief Checks if a 3D point intersects/is inside a 3D triangle having its
+ * points in counterclockwise order.
  *
  * @tparam TriangleType: A type that satisfies the ConstTriangle3Concept
  * concept.
@@ -412,7 +412,7 @@ bool triangleBoxIntersect(const TriangleType& t, const BoxType& box)
     using ScalarType = PointType::ScalarType;
 
     PointType boxcenter = box.center();
-    PointType bHalfSixe = box.size() / 2;
+    PointType bHalfSize = box.size() / 2;
 
     /* use separating axis theorem to test overlap between triangle and box
      * need to test for overlap in these directions:
@@ -442,32 +442,32 @@ bool triangleBoxIntersect(const TriangleType& t, const BoxType& box)
     ScalarType fey = std::abs(e0.y());
     ScalarType fez = std::abs(e0.z());
 
-    if (!detail::axisTestX01(e0.z(), e0.y(), fez, fey, v0, v2, bHalfSixe))
+    if (!detail::axisTestX01(e0.z(), e0.y(), fez, fey, v0, v2, bHalfSize))
         return false;
-    if (!detail::axisTestY02(e0.z(), e0.x(), fez, fex, v0, v2, bHalfSixe))
+    if (!detail::axisTestY02(e0.z(), e0.x(), fez, fex, v0, v2, bHalfSize))
         return false;
-    if (!detail::axisTestZ12(e0.y(), e0.x(), fey, fex, v1, v2, bHalfSixe))
+    if (!detail::axisTestZ12(e0.y(), e0.x(), fey, fex, v1, v2, bHalfSize))
         return false;
 
     fex = std::abs(e1.x());
     fey = std::abs(e1.y());
     fez = std::abs(e1.z());
 
-    if (!detail::axisTestX01(e1.z(), e1.y(), fez, fey, v0, v2, bHalfSixe))
+    if (!detail::axisTestX01(e1.z(), e1.y(), fez, fey, v0, v2, bHalfSize))
         return false;
-    if (!detail::axisTestY02(e1.z(), e1.x(), fez, fex, v0, v2, bHalfSixe))
+    if (!detail::axisTestY02(e1.z(), e1.x(), fez, fex, v0, v2, bHalfSize))
         return false;
-    if (!detail::axisTestZ0(e1.y(), e1.x(), fey, fex, v0, v1, bHalfSixe))
+    if (!detail::axisTestZ0(e1.y(), e1.x(), fey, fex, v0, v1, bHalfSize))
         return false;
 
     fex = std::abs(e2.x());
     fey = std::abs(e2.y());
     fez = std::abs(e2.z());
-    if (!detail::axisTestX2(e2.z(), e2.y(), fez, fey, v0, v1, bHalfSixe))
+    if (!detail::axisTestX2(e2.z(), e2.y(), fez, fey, v0, v1, bHalfSize))
         return false;
-    if (!detail::axisTestY1(e2.z(), e2.x(), fez, fex, v0, v1, bHalfSixe))
+    if (!detail::axisTestY1(e2.z(), e2.x(), fez, fex, v0, v1, bHalfSize))
         return false;
-    if (!detail::axisTestZ12(e2.y(), e2.x(), fey, fex, v1, v2, bHalfSixe))
+    if (!detail::axisTestZ12(e2.y(), e2.x(), fey, fex, v1, v2, bHalfSize))
         return false;
 
     /* Bullet 1:
@@ -479,17 +479,17 @@ bool triangleBoxIntersect(const TriangleType& t, const BoxType& box)
 
     /* test in X-direction */
     detail::findMinMax(v0.x(), v1.x(), v2.x(), min, max);
-    if (min > bHalfSixe.x() || max < -bHalfSixe.x())
+    if (min > bHalfSize.x() || max < -bHalfSize.x())
         return false;
 
     /* test in Y-direction */
     detail::findMinMax(v0.y(), v1.y(), v2.y(), min, max);
-    if (min > bHalfSixe.y() || max < -bHalfSixe.y())
+    if (min > bHalfSize.y() || max < -bHalfSize.y())
         return false;
 
     /* test in Z-direction */
     detail::findMinMax(v0.z(), v1.z(), v2.z(), min, max);
-    if (min > bHalfSixe.z() || max < -bHalfSixe.z())
+    if (min > bHalfSize.z() || max < -bHalfSize.z())
         return false;
 
     /* Bullet 2:

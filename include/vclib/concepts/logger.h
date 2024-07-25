@@ -37,6 +37,7 @@ namespace vcl {
  * all the required member functions as no-op.
  *
  * @ingroup lib_concepts
+ * @ingroup miscellaneous
  */
 template<typename T>
 concept LoggerConcept =

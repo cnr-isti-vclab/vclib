@@ -628,6 +628,7 @@ SamplerType faceWeightedPointSampling(
  *
  * @param m
  * @param nSamples
+ * @param deterministic
  * @return
  *
  * @ingroup point_sampling
@@ -660,6 +661,7 @@ SamplerType vertexQualityWeightedPointSampling(
  *
  * @param m
  * @param nSamples
+ * @param deterministic
  * @return
  *
  * @ingroup point_sampling
@@ -692,6 +694,7 @@ SamplerType faceQualityWeightedPointSampling(
  *
  * @param m
  * @param nSamples
+ * @param deterministic
  * @return
  *
  * @ingroup point_sampling
@@ -736,6 +739,7 @@ SamplerType vertexAreaWeightedPointSampling(
  *
  * @param m
  * @param nSamples
+ * @param deterministic
  * @return
  *
  * @ingroup point_sampling
@@ -908,10 +912,11 @@ SamplerType stratifiedMontecarloPointSampling(
  *
  * For a given triangle t of area a_t, in a Mesh of area A,
  * if we take n_s sample over the mesh, the number of samples that falls in t
- * follows the poisson distribution of P(lambda ) with lambda = n_s * (a_t/A).
+ * follows the poisson distribution of `P(lambda)` with `lambda = n_s *
+ * (a_t/A)`.
  *
  * To approximate the Binomial we use a Poisson distribution with parameter
- * \lambda = np can be used as an approximation to B(n,p)
+ * `lambda = np` can be used as an approximation to `B(n,p)`
  * (it works if n is sufficiently large and p is sufficiently small).
  *
  *

@@ -40,6 +40,9 @@ namespace vcl {
  *
  * @param[in] p: The point to calculate the distance from.
  * @param[in] f: The face to calculate the distance to.
+ * @param[in] maxDist: The maximum distance to consider. If the distance is
+ * greater than this value, the function returns immediately. Default is
+ * std::numeric_limits<ScalarType>::max().
  * @param[out] closest: The closest point on the triangle to the given point.
  * @param[in] signedDist: Whether to calculate the signed distance. Default is
  * false.

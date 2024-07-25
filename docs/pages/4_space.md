@@ -13,4 +13,4 @@ A list of all the spatial data structures provided by this library can be found 
 
 ## Utility and Miscellanous Data Structures
 
-Several other utility data structures are provided by VCLib. They can be used by including `#include<vclib/miscellaneous.h>`, and they are listed in the @ref misc_classes group.
+Several other utility data structures are provided by VCLib. They can be used by including `#include<vclib/miscellaneous.h>`, and they are listed in the @ref miscellaneous group.

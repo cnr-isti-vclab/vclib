@@ -50,17 +50,17 @@ void normalizeNoThrow(auto& elem, LogType& log = nullLogger)
 } // namespace detail
 
 /**
- * @brief Sets to zero the normals of all the <ELEM_ID> elements of the mesh,
+ * @brief Sets to zero the normals of all the `ELEM_ID` elements of the mesh,
  * including the unreferenced ones.
  *
  * Requirements:
  * - Mesh:
- *   - <ELEM_ID>:
+ *   - `ELEM_ID`:
  *     - Normal
  *
  * @tparam ELEM_ID: The ID of an Element, that is a value in the ElementIDEnum.
  *
- * @param[in,out] mesh: The mesh on which clear the <ELEM_ID> normals.
+ * @param[in,out] mesh: The mesh on which clear the `ELEM_ID` normals.
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
@@ -78,16 +78,16 @@ void clearPerElementNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
 }
 
 /**
- * @brief Normalizes the length of the normals of all the <ELEM_ID> elements.
+ * @brief Normalizes the length of the normals of all the `ELEM_ID` elements.
  *
  * Requirements:
  * - Mesh:
- *   - <ELEM_ID>:
+ *   - `ELEM_ID`:
  *     - Normal
  *
  * @tparam ELEM_ID: The ID of an Element, that is a value in the ElementIDEnum.
  *
- * @param[in,out] mesh: the mesh on which normalize the <ELEM_ID> normals.
+ * @param[in,out] mesh: the mesh on which normalize the `ELEM_ID` normals.
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<uint ELEM_ID, LoggerConcept LogType = NullLogger>
@@ -112,7 +112,7 @@ void normalizePerElementNormals(
 }
 
 /**
- * @brief Multiplies the normals of all the <ELEM_ID> elements by the given 3x3
+ * @brief Multiplies the normals of all the `ELEM_ID` elements by the given 3x3
  * Matrix.
  *
  * If removeScalingFromMatrix is true (default), the scale component is
@@ -120,7 +120,7 @@ void normalizePerElementNormals(
  *
  * Requirements:
  * - Mesh:
- *   - <ELEM_ID>:
+ *   - `ELEM_ID`:
  *     - Normal
  *
  * @param[in,out] mesh: the mesh on which multiply the element normals.
@@ -169,7 +169,7 @@ void multiplyPerElementNormalsByMatrix(
 }
 
 /**
- * @brief Multiplies the normals of all the <ELEM_ID> elements by the given TRS
+ * @brief Multiplies the normals of all the `ELEM_ID` elements by the given TRS
  * 4x4 Matrix.
  *
  * The normals are multiplied by the 3x3 rotation matrix of the given TRS
@@ -178,7 +178,7 @@ void multiplyPerElementNormalsByMatrix(
  *
  * Requirements:
  * - Mesh:
- *   - <ELEM_ID>:
+ *   - `ELEM_ID`:
  *     - Normal
  *
  * @param[in,out] mesh: the mesh on which multiply the element normals.
