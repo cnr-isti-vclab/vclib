@@ -28,6 +28,8 @@
 
 #include "element_container.h"
 
+// TODO: complete documentation
+
 namespace vcl {
 namespace mesh {
 

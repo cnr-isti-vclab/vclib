@@ -82,7 +82,7 @@ concept HasWedgeTexCoords = requires (
 
 /**
  * @brief HasOptionalWedgeTexCoords concept is satisfied only if a class
- * satisfied the @ref vcl::comp::HasWedgeCoordsComponent and has the static
+ * satisfied the @ref vcl::comp::HasWedgeCoords and has the static
  * boolean constant `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
