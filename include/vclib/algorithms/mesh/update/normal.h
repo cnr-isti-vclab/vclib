@@ -222,7 +222,7 @@ void clearPerVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
  *   - Vertices:
  *     - Normal
  *
- * @param[in,out] m: The mesh on which clear the referenced vertex normals.
+ * @param[in,out] mesh: The mesh on which clear the referenced vertex normals.
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>

@@ -79,14 +79,14 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
  * @return true iff there is an intersection between the sphere and the face
  */
 template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
-bool faceSphereItersect(
+bool faceSphereIntersect(
     const FaceType&              f,
     const Sphere<SScalar>&       sphere,
     PointType&                   witness,
     std::pair<SScalar, SScalar>& res)
 {
     if constexpr (TriangleFaceConcept<FaceType>) {
-        return triangleSphereItersect(
+        return triangleSphereIntersect(
             TriangleWrapper(
                 f.vertex(0)->coord(),
                 f.vertex(1)->coord(),
@@ -97,7 +97,7 @@ bool faceSphereItersect(
     }
     else {
         if (f.vertexNumber() == 3) {
-            return triangleSphereItersect(
+            return triangleSphereIntersect(
                 TriangleWrapper(
                     f.vertex(0)->coord(),
                     f.vertex(1)->coord(),
@@ -115,7 +115,7 @@ bool faceSphereItersect(
 
             std::vector<uint> tris = vcl::earCut(f);
             for (uint i = 0; i < tris.size() && !b; i += 3) {
-                b |= triangleSphereItersect(
+                b |= triangleSphereIntersect(
                     TriangleWrapper(
                         f.vertex(tris[i])->coord(),
                         f.vertex(tris[i + 1])->coord(),
@@ -148,11 +148,11 @@ bool faceSphereItersect(
  * @return true iff there is an intersection between the sphere and the face
  */
 template<FaceConcept FaceType, typename SScalar>
-bool faceSphereItersect(const FaceType& f, const Sphere<SScalar>& sphere)
+bool faceSphereIntersect(const FaceType& f, const Sphere<SScalar>& sphere)
 {
     Point3<SScalar>             witness;
     std::pair<SScalar, SScalar> res;
-    return faceSphereItersect(f, sphere, witness, res);
+    return faceSphereIntersect(f, sphere, witness, res);
 }
 
 } // namespace vcl

@@ -350,32 +350,32 @@ bool sphereBoxIntersect(const SphereType& s, const BoxType& box)
  * concept.
  * @tparam PointType: A type that satisfies the Point2Concept concept.
  *
- * @param[in] tr: The triangle to test for intersection.
+ * @param[in] t: The triangle to test for intersection.
  * @param[in] p: The point to test for intersection with the triangle.
  * @return True if the point intersects with/is inside the triangle, false
  * otherwise.
  */
 template<ConstTriangle2Concept TriangleType, Point2Concept PointType>
-bool trianglePointIntersect(const TriangleType& tr, const PointType& p)
+bool trianglePointIntersect(const TriangleType& t, const PointType& p)
 {
     using TP         = TriangleType::PointType;
     using ScalarType = TP::ScalarType;
 
-    const TP& p0 = tr.point(0);
-    const TP& p1 = tr.point(1);
-    const TP& p2 = tr.point(2);
+    const TP& p0 = t.point(0);
+    const TP& p1 = t.point(1);
+    const TP& p2 = t.point(2);
 
-    ScalarType A    = tr.area();
+    ScalarType A    = t.area();
     ScalarType sign = A < 0 ? -1 : 1;
 
     ScalarType s = (p0.y() * p2.x() - p0.x() * p2.y() +
                     (p2.y() - p0.y()) * p.x() + (p0.x() - p2.x()) * p.y()) *
                    sign;
-    ScalarType t = (p0.x() * p1.y() - p0.y() * p1.x() +
-                    (p0.y() - p1.y()) * p.x() + (p1.x() - p0.x()) * p.y()) *
-                   sign;
+    ScalarType tt = (p0.x() * p1.y() - p0.y() * p1.x() +
+                     (p0.y() - p1.y()) * p.x() + (p1.x() - p0.x()) * p.y()) *
+                    sign;
 
-    return s > 0 && t > 0 && (s + t) < 2 * A * sign;
+    return s > 0 && tt > 0 && (s + tt) < 2 * A * sign;
 }
 
 /**
@@ -411,7 +411,7 @@ bool triangleBoxIntersect(const TriangleType& t, const BoxType& box)
     using PointType  = TriangleType::PointType;
     using ScalarType = PointType::ScalarType;
 
-    PointType boxcenter = box.center();
+    PointType boxCenter = box.center();
     PointType bHalfSize = box.size() / 2;
 
     /* use separating axis theorem to test overlap between triangle and box
@@ -419,17 +419,17 @@ bool triangleBoxIntersect(const TriangleType& t, const BoxType& box)
      *    1) the {x,y,z}-directions (actually, since we use the AABB of the
      *       triangle we do not even need to test these)
      *    2) normal of the triangle
-     *    3) crossproduct(edge from tri, {x,y,z}-directin)
+     *    3) cross product(edge from tri, {x,y,z}-direction)
      *       this gives 3x3=9 more tests
      */
     ScalarType min, max;
     PointType  normal;
 
     /* This is the fastest branch on Sun */
-    /* move everything so that the boxcenter is in (0,0,0) */
-    PointType v0 = t.point(0) - boxcenter;
-    PointType v1 = t.point(1) - boxcenter;
-    PointType v2 = t.point(2) - boxcenter;
+    /* move everything so that the boxCenter is in (0,0,0) */
+    PointType v0 = t.point(0) - boxCenter;
+    PointType v1 = t.point(1) - boxCenter;
+    PointType v2 = t.point(2) - boxCenter;
 
     /* compute triangle edges */
     PointType e0 = v1 - v0;
@@ -520,7 +520,7 @@ template<
     SphereConcept         SphereType,
     Point3Concept         PointType,
     typename ScalarType>
-bool triangleSphereItersect(
+bool triangleSphereIntersect(
     const TriangleType&                t,
     const SphereType&                  sphere,
     PointType&                         witness,
@@ -609,7 +609,7 @@ bool triangleSphereItersect(
  * @return true iff there is an intersection between the sphere and the triangle
  */
 template<ConstTriangle3Concept TriangleType, SphereConcept SphereType>
-bool triangleSphereItersect(const TriangleType& t, const SphereType& sphere)
+bool triangleSphereIntersect(const TriangleType& t, const SphereType& sphere)
 {
     using SScalar = SphereType::ScalarType;
     typename TriangleType::PointType witness;

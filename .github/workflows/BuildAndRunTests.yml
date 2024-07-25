@@ -20,7 +20,7 @@ jobs:
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
-        sudo apt-get install cmake ninja-build libtbb-dev
+        sudo apt-get install cmake ninja-build libtbb-dev catch2
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
