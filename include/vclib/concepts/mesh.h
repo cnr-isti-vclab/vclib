@@ -30,7 +30,7 @@
 
 /**
  * @defgroup mesh_concepts Mesh Concepts
- * @ingroup lconcepts
+ * @ingroup lib_concepts
  * @ingroup mesh
  *
  * @brief List of concepts for types related to the Mesh data structures of the

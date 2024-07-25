@@ -29,19 +29,35 @@ namespace vcl {
 
 /**
  * @brief Concept for types that can be used as indices.
+ * 
+ * This concept is evaluated true if T is an integral type or an enum type.
+ * 
+ * @ingroup util_concepts
  */
 template<typename T>
 concept IntegralOrEnum = std::integral<T> || std::is_enum_v<T>;
 
 /**
  * @brief Concept for types that can be used as indices, excluding bool.
+ * 
+ * @ingroup util_concepts
  */
 template<typename T>
 concept NonBoolIntegralOrEnum = IntegralOrEnum<T> && !std::same_as<T, bool>;
 
+/**
+ * @brief Concept that is evaluated true if T is a class.
+ * 
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept IsClass = std::is_class_v<T>;
 
+/**
+ * @brief Concept that is evaluated true if T is not a class.
+ * 
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept IsNotClass = !IsClass<T>;
 

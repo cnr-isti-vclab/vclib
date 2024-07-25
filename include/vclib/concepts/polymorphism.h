@@ -28,6 +28,25 @@
 
 namespace vcl {
 
+/**
+ * @brief Concept that is evaluated true if T is a cloneable object.
+ *
+ * A cloneable object is an object that can be cloned by calling the method
+ * `clone()`, which returns a shared pointer to the cloned object.
+ * 
+ * Cloneable objects are useful when polymorphism is needed, and the object
+ * needs to be copied without knowing the exact type of the object:
+ * 
+ * @code
+ * std::shared_ptr<Shape> circle = std::make_shared<Circle>();
+ * 
+ * std::shared_ptr<Shape> clonedCircle = circle->clone();
+ * @endcode
+ * 
+ * @tparam T The type to be checked if it is cloneable.
+ * 
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept Cloneable = requires (const T& o) {
     // clang-format off

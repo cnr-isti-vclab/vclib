@@ -28,6 +28,14 @@
 
 namespace vcl {
 
+/**
+ * @brief Concept that is evaluated true if T is an output streamable type.
+ * 
+ * A type T is output streamable if it can be written to an output stream, i.e.,
+ * it has an overloaded operator<<.
+ * 
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept OutputStreamable = requires (std::ostream& os, T value) {
     // clang-format off
@@ -35,6 +43,14 @@ concept OutputStreamable = requires (std::ostream& os, T value) {
     // clang-format on
 };
 
+/**
+ * @brief Concept that is evaluated true if T is an input streamable type.
+ * 
+ * A type T is input streamable if it can be read from an input stream, i.e.,
+ * it has an overloaded operator>>.
+ * 
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept InputStreamable = requires (std::istream& is, T& value) {
     // clang-format off
@@ -42,6 +58,14 @@ concept InputStreamable = requires (std::istream& is, T& value) {
     // clang-format on
 };
 
+/**
+ * @brief Concept that is evaluated true if T is serializable.
+ * 
+ * A type T is serializable if it can be written to an output stream and read
+ * from an input stream, through the methods `serialize` and `deserialize`.
+ * 
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept Serializable =
     requires (T& o, const T& co, std::ostream& os, std::istream& is) {

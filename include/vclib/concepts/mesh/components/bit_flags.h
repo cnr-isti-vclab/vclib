@@ -57,7 +57,6 @@ namespace detail {
  * @private
  * @brief Concept for internal use - contains all the flags member functions
  * that are contained on both the BitFlags components for Face Elements.
- *
  */
 template<typename T>
 concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T o, const T& co) {

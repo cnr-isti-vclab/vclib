@@ -45,16 +45,27 @@ struct IsSharedPtr<std::shared_ptr<T>> : std::true_type
 
 /**
  * @brief Utility concept that is evaluated true if T is a Pointer, even if the
- * type is a T is a reference to a pointer.
+ * type T is a reference to a pointer.
  *
- * @ingroup uconcepts
+ * @ingroup util_concepts
  */
 template<typename T>
 concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
 
+/**
+ * @brief Utility concept that is evaluated true if T is a shared pointer.
+ *
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept IsSharedPointer = detail::IsSharedPtr<T>::value;
 
+/**
+ * @brief Utility concept that is evaluated true if T is a Pointer or a shared
+ * pointer.
+ *
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept IsAnyPointer = IsPointer<T> || IsSharedPointer<T>;
 
@@ -62,16 +73,28 @@ concept IsAnyPointer = IsPointer<T> || IsSharedPointer<T>;
  * @brief Utility concept that is evaluated true if T is a Pointer to a constant
  * object.
  *
- * @ingroup uconcepts
+ * @ingroup util_concepts
  */
 // https://stackoverflow.com/a/37370281/5851101
 template<typename T>
 concept IsPointerToConst = IsPointer<T> && IsConst<T>;
 
+/**
+ * @brief Utility concept that is evaluated true if T is a shared pointer to a
+ * constant object.
+ *
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept IsSharedPointerToConst =
     IsSharedPointer<T> && IsConst<typename T::element_type>;
 
+/**
+ * @brief Utility concept that is evaluated true if T is a Pointer or a shared
+ * pointer to a constant object.
+ * 
+ * @ingroup util_concepts
+ */
 template<typename T>
 concept IsAnyPointerToConst = IsPointerToConst<T> || IsSharedPointerToConst<T>;
 

@@ -43,14 +43,16 @@
  * The library provides both generic utility concepts about iterators, pointers
  * or const correctness management, and concepts for types that have been
  * defined in this library. We separate these categories in two subgroups: @ref
- * uconcepts and @ref lconcepts.
+ * util_concepts and @ref lib_concepts.
+ * 
+ * This module depends on the @ref types module.
  *
  * You can access all the concepts of VCLib by including `#include
  * <vclib/concepts.h>`
  */
 
 /**
- * @defgroup uconcepts Utility Concepts
+ * @defgroup util_concepts Utility Concepts
  * @ingroup concepts
  *
  * @brief List of utility concepts used in the library, that allows to check and
@@ -58,7 +60,7 @@
  */
 
 /**
- * @defgroup lconcepts Library Concepts
+ * @defgroup lib_concepts Library Concepts
  * @ingroup concepts
  *
  * @brief List of concepts for types that have been defined in this library.

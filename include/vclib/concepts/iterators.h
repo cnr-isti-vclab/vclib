@@ -31,7 +31,7 @@ namespace vcl {
 /**
  * @brief Utility concept that is evaluated true if T is an iterator.
  *
- * @ingroup uconcepts
+ * @ingroup util_concepts
  */
 template<typename T>
 concept IteratorConcept = std::input_or_output_iterator<T>;
@@ -40,7 +40,7 @@ concept IteratorConcept = std::input_or_output_iterator<T>;
  * @brief Utility concept that is evaluated true if T is an iterator having its
  * value_type that is a class.
  *
- * @ingroup uconcepts
+ * @ingroup util_concepts
  */
 template<typename T>
 concept IteratesOverClass =
@@ -50,7 +50,7 @@ concept IteratesOverClass =
  * @brief Utility concept that is evaluated true if T is an iterator having its
  * value_type that is a pointer.
  *
- * @ingroup uconcepts
+ * @ingroup util_concepts
  */
 template<typename T>
 concept IteratesOverPointer =

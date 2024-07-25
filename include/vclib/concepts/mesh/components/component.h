@@ -68,7 +68,7 @@ struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
  * @brief The ComponentConcept is evaluated to true whenever the type T is a
  * valid component.
  *
- * @tparam T: the type to be evaluated
+ * @tparam T the type to be evaluated
  */
 template<typename T>
 concept ComponentConcept = requires {
@@ -81,7 +81,7 @@ concept ComponentConcept = requires {
  * @brief The predicate struct IsComponentPred sets its bool `value` to `true`
  * when the type T satisfies the ComponentConcept concept
  *
- * @tparam T: the type to be evaluated
+ * @tparam T the type to be evaluated
  */
 template<typename T>
 struct IsComponentPred
@@ -111,10 +111,10 @@ template<typename T>
 concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
 
 template<typename T>
-concept IsVerticalComponent = T::IS_VERTICAL == true && requires (T o) {
+concept IsVerticalComponent = T::IS_VERTICAL == true && requires {
     // clang-format off
     typename T::DataValueType;
-    { o.IS_VERTICAL } -> std::same_as<const bool&>;
+    { T::IS_VERTICAL } -> std::same_as<const bool&>;
     // clang-format on
 };
 
@@ -126,9 +126,9 @@ struct IsVerticalComponentPred
 
 template<typename T>
 concept IsOptionalComponent =
-    IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires (T o) {
+    IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires {
         // clang-format off
-        { o.IS_OPTIONAL } -> std::same_as<const bool&>;
+        { T::IS_OPTIONAL } -> std::same_as<const bool&>;
         // clang-format on
     };
 

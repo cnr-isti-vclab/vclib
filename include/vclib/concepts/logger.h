@@ -33,10 +33,10 @@ namespace vcl {
  * @brief The LoggerConcept is evaluated to true when the input type is a valid
  * Logger type.
  *
- * A valid logger type may be the NullLogger type, or a class that implement all
- * the member functions of a Logger class.
+ * @note The @ref NullLogger class does satisfy this concept, by providing
+ * all the required member functions as no-op.
  *
- * @ingroup lconcepts
+ * @ingroup lib_concepts
  */
 template<typename T>
 concept LoggerConcept =
