@@ -113,13 +113,13 @@ inline std::string toUpper(const std::string& s)
 }
 
 /**
- * @brief Removes the carriage return character ('\r') from the end of the
+ * @brief Removes the carriage return character (`\r`) from the end of the
  * string.
  *
  * This is useful when reading text files in Windows, where the end of line is
- * represented by the sequence "\r\n".
+ * represented by the sequence `\r\n`.
  *
- * @param[in/out] s: input string.
+ * @param[in,out] s: input string.
  */
 inline void removeCarriageReturn(std::string& s)
 {

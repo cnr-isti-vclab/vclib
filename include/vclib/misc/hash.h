@@ -32,9 +32,9 @@ namespace vcl {
  *
  * https://stackoverflow.com/a/57595105/5851101
  *
- * @param[in/out] seed: input seed and output hash
- * @param v: first argument object
- * @param rest: rest of the argument objects
+ * @param[in,out] seed: input seed and output hash
+ * @param[in] v: first argument object
+ * @param[in] rest: rest of the argument objects
  *
  * @ingroup misc
  */

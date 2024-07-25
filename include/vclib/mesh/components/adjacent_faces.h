@@ -371,7 +371,7 @@ public:
      * @brief Returns `true` if the container of adjacent faces contains the
      * given face, `false` otherwise.
      *
-     * @param[in] e: the pointer to the face to search.
+     * @param[in] f: the pointer to the face to search.
      * @return `true` if the container of adjacent faces contains the given
      * face, `false` otherwise.
      */

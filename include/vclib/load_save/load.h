@@ -99,8 +99,6 @@ void load(
  *
  * @param[out] m: The mesh object in which to store the loaded mesh.
  * @param[in] filename: The filename of the file containing the mesh data.
- * @param[out] loadedInfo: Information about the mesh components that have been
- * loaded from the file.
  * @param[in, out] log: The logger object to use for logging messages during
  * loading. Default is the nullLogger object.
  * @param[in] settings: settings for loading the file.

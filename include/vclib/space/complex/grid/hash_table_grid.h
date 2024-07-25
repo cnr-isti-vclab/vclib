@@ -96,6 +96,7 @@ public:
      *
      * @param begin
      * @param end
+     * @param intersects
      */
     template<typename ObjIterator>
     HashTableGrid(

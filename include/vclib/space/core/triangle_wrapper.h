@@ -116,7 +116,7 @@ public:
     const PointT& point2() const { return mPoint2; }
 
     /**
-     * @copydoc Triangle::sideLength(uint)
+     * @copydoc Triangle::sideLength()
      */
     ScalarType sideLength(uint i) const
     {
@@ -155,7 +155,7 @@ public:
     }
 
     /**
-     * @copydoc Triangle::weightedBarycenter(ScalarType, ScalarType, ScalarType)
+     * @copydoc Triangle::weightedBarycenter()
      */
     PointT weightedBarycenter(ScalarType w0, ScalarType w1, ScalarType w2) const
     {
@@ -164,7 +164,7 @@ public:
     }
 
     /**
-     * @copydoc Triangle::weightedBarycenter(const Point3<ScalarType>&)
+     * @copydoc Triangle::weightedBarycenter()
      */
     PointT weightedBarycenter(const Point3<ScalarType>& w) const
     {
@@ -173,8 +173,7 @@ public:
     }
 
     /**
-     * @copydoc Triangle::barycentricCoordinatePoint(ScalarType, ScalarType,
-     * ScalarType)
+     * @copydoc Triangle::barycentricCoordinatePoint()
      */
     PointT barycentricCoordinatePoint(
         ScalarType b0,
@@ -186,7 +185,7 @@ public:
     }
 
     /**
-     * @copydoc Triangle::barycentricCoordinatePoint(const Point3<ScalarType>&)
+     * @copydoc Triangle::barycentricCoordinatePoint()
      */
     PointT barycentricCoordinatePoint(const Point3<ScalarType>& b) const
     {

@@ -232,8 +232,8 @@ public:
 
     /**
      * @brief Sets the vertex pointed by the iterator.
-     * @param[in] it:the iterator in this container on which set the vertex; the
-     * value must be between begin() and end().
+     * @param[in] it: the iterator in this container on which set the vertex;
+     * the value must be between begin() and end().
      * @param[in] v: The pointer to the vertex to set to the element.
      */
     void setVertex(ConstVertexIterator it, Vertex* v)

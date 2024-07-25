@@ -49,6 +49,7 @@ namespace vcl {
  * library ( www.agner.org/random ) Same licensing scheme.
  *
  * @param L
+ * @param gen
  * @return
  */
 inline int poissonRatioOfUniformsInteger(double L, std::mt19937& gen)

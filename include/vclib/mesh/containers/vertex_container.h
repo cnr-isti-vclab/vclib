@@ -718,9 +718,6 @@ public:
      *
      * @note This function is available only if the Vertex Element has the
      * OptionalPrincipalCurvature Component.
-     *
-     * @return true if the Optional PrincipalCurvature is enabled, false
-     * otherwise.
      */
     void disablePerVertexNormal() requires vert::HasOptionalNormal<T>
     {
