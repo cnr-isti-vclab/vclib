@@ -23,7 +23,9 @@
 #ifndef VCL_TYPES_MESH_COMPONENTS_H
 #define VCL_TYPES_MESH_COMPONENTS_H
 
-#include "base.h"
+#include "variadic_templates.h"
+
+// TODO: complete documentation
 
 namespace vcl {
 
@@ -142,6 +144,56 @@ constexpr const char* componentEnumString()
 
     return ComponentString<COMP_ID>().str;
 }
+
+namespace comp {
+
+namespace detail {
+
+/**
+ * @brief Given the ID of a Component and a list of Component types,
+ * this predicate sets its bool `value` to `true` if there exists a Component in
+ * the list having the COMP_ID, and sets `type` to the TypeWrapper of the
+ * found component.
+ *
+ * If no Component was found, value will be set to `false` and type will contain
+ * an empty TypeWrapper.
+ */
+template<uint COMP_ID, typename... Components>
+struct ComponentOfTypePred
+{
+private:
+    template<typename Comp>
+    struct SameCompPred
+    {
+        static constexpr bool value = Comp::COMPONENT_ID == COMP_ID;
+    };
+
+public:
+    // TypeWrapper of the found container, if any
+    using type =
+        typename vcl::FilterTypesByCondition<SameCompPred, Components...>::type;
+    static constexpr bool value = NumberOfTypes<type>::value == 1;
+};
+
+// TypeWrapper specialization
+template<uint COMP_ID, typename... Components>
+struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
+        public ComponentOfTypePred<COMP_ID, Components...>
+{
+};
+
+} // namespace detail
+
+template<uint COMP_ID, typename... Components>
+using ComponentOfType = FirstTypeT<
+    typename detail::ComponentOfTypePred<COMP_ID, Components...>::type>;
+
+template<typename T>
+class ReferencesComponentTriggerer
+{
+};
+
+} // namespace comp
 
 } // namespace vcl
 

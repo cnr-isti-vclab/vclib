@@ -27,43 +27,6 @@
 
 namespace vcl::comp {
 
-namespace detail {
-
-/**
- * @brief Given the ID of a Component and a list of Component types,
- * this predicate sets its bool `value` to `true` if there exists a Component in
- * the list having the COMP_ID, and sets `type` to the TypeWrapper of the
- * found component.
- *
- * If no Component was found, value will be set to `false` and type will contain
- * an empty TypeWrapper.
- */
-template<uint COMP_ID, typename... Components>
-struct ComponentOfTypePred
-{
-private:
-    template<typename Comp>
-    struct SameCompPred
-    {
-        static constexpr bool value = Comp::COMPONENT_ID == COMP_ID;
-    };
-
-public:
-    // TypeWrapper of the found container, if any
-    using type =
-        typename vcl::FilterTypesByCondition<SameCompPred, Components...>::type;
-    static constexpr bool value = NumberOfTypes<type>::value == 1;
-};
-
-// TypeWrapper specialization
-template<uint COMP_ID, typename... Components>
-struct ComponentOfTypePred<COMP_ID, TypeWrapper<Components...>> :
-        public ComponentOfTypePred<COMP_ID, Components...>
-{
-};
-
-} // namespace detail
-
 /**
  * @brief The ComponentConcept is evaluated to true whenever the type T is a
  * valid component.
@@ -76,22 +39,6 @@ concept ComponentConcept = requires {
     { T::COMPONENT_ID } -> std::same_as<const uint&>;
     // clang-format on
 };
-
-/**
- * @brief The predicate struct IsComponentPred sets its bool `value` to `true`
- * when the type T satisfies the ComponentConcept concept
- *
- * @tparam T the type to be evaluated
- */
-template<typename T>
-struct IsComponentPred
-{
-    static const bool value = ComponentConcept<T>;
-};
-
-template<uint COMP_ID, typename... Components>
-using ComponentOfType = FirstTypeT<
-    typename detail::ComponentOfTypePred<COMP_ID, Components...>::type>;
 
 template<typename T>
 concept HasInitMemberFunction = requires (T o) {
@@ -119,23 +66,12 @@ concept IsVerticalComponent = T::IS_VERTICAL == true && requires {
 };
 
 template<typename T>
-struct IsVerticalComponentPred
-{
-    static const bool value = IsVerticalComponent<T>;
-};
-
-template<typename T>
 concept IsOptionalComponent =
     IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires {
         // clang-format off
         { T::IS_OPTIONAL } -> std::same_as<const bool&>;
         // clang-format on
     };
-
-template<typename T>
-class ReferencesComponentTriggerer
-{
-};
 
 /**
  * @brief The HasReferencesOfType concept checks whether a type T stores

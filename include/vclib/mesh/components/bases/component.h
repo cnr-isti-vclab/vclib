@@ -233,6 +233,24 @@ bool isComponentAvailableOn(const T& obj)
         return HasComponentOfType<T, COMPONENT_ID>;
 }
 
+/**
+ * @brief The predicate struct IsComponentPred sets its bool `value` to `true`
+ * when the type T satisfies the ComponentConcept concept
+ *
+ * @tparam T the type to be evaluated
+ */
+template<typename T>
+struct IsComponentPred
+{
+    static const bool value = ComponentConcept<T>;
+};
+
+template<typename T>
+struct IsVerticalComponentPred
+{
+    static const bool value = IsVerticalComponent<T>;
+};
+
 } // namespace vcl::comp
 
 #endif // VCL_MESH_COMPONENTS_BASES_COMPONENT_H
