@@ -45,11 +45,11 @@ concept InputStreamable = requires (std::istream& is, T& value) {
 template<typename T>
 concept Serializable =
     requires (T& o, const T& co, std::ostream& os, std::istream& is) {
-    // clang-format off
+        // clang-format off
     { co.serialize(os) } -> std::same_as<void>;
     { o.deserialize(is) } -> std::same_as<void>;
-    // clang-format on
-};
+        // clang-format on
+    };
 
 } // namespace vcl
 

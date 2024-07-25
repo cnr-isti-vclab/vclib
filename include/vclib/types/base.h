@@ -41,7 +41,7 @@ using ushort = unsigned short;
  * Allows to fully use all the possible values (except one) that can be
  * represented in an unsigned int, but with the possibility to flag whether the
  * value is not initialized or is set to null.
- * 
+ *
  * @ingroup types
  */
 constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
@@ -51,7 +51,7 @@ constexpr uint UINT_NULL = std::numeric_limits<uint>::max();
  *
  * It is used mostly for I/O operations, but can be useful in any context where
  * a type must be described in a variable at runtime.
- * 
+ *
  * @ingroup types
  */
 struct PrimitiveType
@@ -64,7 +64,7 @@ struct PrimitiveType
  *
  * Useful for iterators that return a pointer to a value, but the value is
  * stored in the iterator itself.
- * 
+ *
  * @ingroup types
  */
 template<class T>

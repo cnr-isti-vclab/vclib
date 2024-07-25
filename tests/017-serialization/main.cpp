@@ -51,7 +51,7 @@ vcl::Color randomColor()
 {
     // generate random color using std::mt19937
 
-    std::mt19937                        gen;
+    std::mt19937                                gen;
     std::uniform_int_distribution<unsigned int> dist(0, 255);
     return vcl::Color(dist(gen), dist(gen), dist(gen), dist(gen));
 }

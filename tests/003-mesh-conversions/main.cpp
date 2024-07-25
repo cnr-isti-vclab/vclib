@@ -58,7 +58,8 @@ TEMPLATE_TEST_CASE(
         REQUIRE(tm.isPerFaceWedgeTexCoordsEnabled());
         REQUIRE(tm.hasCustomComponent("cust_comp"));
         REQUIRE(tm.template isCustomComponentOfType<int>("cust_comp"));
-        REQUIRE(!tm.template isCustomComponentOfType<unsigned int>("cust_comp"));
+        REQUIRE(
+            !tm.template isCustomComponentOfType<unsigned int>("cust_comp"));
         REQUIRE(tm.template customComponent<int>("cust_comp") == 4);
         REQUIRE(tm.hasPerVertexCustomComponent("v_comp"));
 
@@ -113,7 +114,8 @@ TEMPLATE_TEST_CASE(
     {
         REQUIRE(pm.hasCustomComponent("cust_comp"));
         REQUIRE(pm.template isCustomComponentOfType<int>("cust_comp"));
-        REQUIRE(!pm.template isCustomComponentOfType<unsigned int>("cust_comp"));
+        REQUIRE(
+            !pm.template isCustomComponentOfType<unsigned int>("cust_comp"));
         REQUIRE(pm.template customComponent<int>("cust_comp") == 4);
         REQUIRE(pm.hasPerVertexCustomComponent("v_comp"));
         REQUIRE(pm.template isPerVertexCustomComponentOfType<float>("v_comp"));

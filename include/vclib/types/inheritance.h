@@ -57,7 +57,7 @@ struct IsDerivedFromImplementation
  *
  * @tparam derived The class to be checked.
  * @tparam base The templated class to be checked.
- * 
+ *
  * @ingroup types
  */
 // https://stackoverflow.com/a/25846080/5851101

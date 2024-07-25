@@ -40,7 +40,7 @@
  * This module does not depend on any other module of the library, and it is
  * used by all the other modules to define the types that are used in the
  * library.
- * 
+ *
  * You can access all the types of VCLib by including `#include <vclib/types.h>`
  */
 

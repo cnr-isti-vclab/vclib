@@ -53,7 +53,7 @@ namespace vcl {
  * - faceEnd()
  * To allow view iteration over vertices, the Mesh could expose a vertices()
  * member function that returns a View object that is constructed in this way:
- * 
+ *
  * @code {.cpp}
  * auto vertices() { return View{vertexBegin(), vertexEnd()}; }
  * @endcode

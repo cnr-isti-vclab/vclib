@@ -31,9 +31,9 @@ namespace vcl {
 /**
  * @brief Utility alias to get clean type from an input type that could have a
  * reference or a pointer.
- * 
+ *
  * @tparam T The input type.
- * 
+ *
  * @ingroup types
  */
 template<typename T>
@@ -44,9 +44,9 @@ using RemoveCVRefAndPointer =
  * @brief Utility alias to get a pointer type without the constness.
  * e.g. If T is const int*, the resulting type is int*
  * If the type is not a pointer, it is left as it was
- * 
+ *
  * @tparam T The input type.
- * 
+ *
  * @ingroup types
  */
 template<typename T>
@@ -62,7 +62,7 @@ using RemoveConstFromPointer = std::conditional_t<
  *
  * @param obj
  * @return obj if it is not a pointer, or *obj if it is a pointer.
- * 
+ *
  * @ingroup types
  */
 template<typename T>
@@ -83,7 +83,7 @@ auto dereferencePtr(T&& obj)
  * @param obj
  * @return the address of 'obj' if obj is not a pointer, or obj if it is a
  * pointer.
- * 
+ *
  * @ingroup types
  */
 template<typename T>

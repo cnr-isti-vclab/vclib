@@ -36,7 +36,7 @@ namespace vcl {
  * @brief A simple structure that wraps a list of variadic templates, without
  * instantiating anything. Useful when you need to wrap a list of types, and
  * consider them as a single type.
- * 
+ *
  * @ingroup types
  */
 template<typename... Args>
@@ -54,7 +54,7 @@ struct TypeWrapper
  * using ResType = FirstType<int, float, double>::type;
  * static_assert(std::is_same<ResType, int>::value, "");
  * @endcode
- * 
+ *
  * @ingroup types
  */
 template<typename... Args>
@@ -80,7 +80,7 @@ struct FirstType<TypeWrapper<Args...>>
  * using ResType = FirstTypeT<int, float, double>;
  * static_assert(std::is_same<ResType, int>::value, "");
  * @endcode
- * 
+ *
  * @ingroup types
  */
 template<typename... Args>
@@ -89,7 +89,7 @@ using FirstTypeT = typename FirstType<Args...>::type;
 /**
  * @brief Function that returns the index of a Type T in a pack of types
  * (variadic templates). The pack is composed of U and Us...
- * 
+ *
  * @ingroup types
  */
 // https://stackoverflow.com/a/71477756/5851101
@@ -121,7 +121,7 @@ constexpr uint indexInTypePack()
  * The pack is composed of U and Us...
  *
  * @param ti: the type_index of the type to search.
- * 
+ *
  * @ingroup types
  */
 template<typename U, typename... Us>
@@ -188,7 +188,7 @@ struct NumberOfTypes<TypeWrapper<Args...>> : public NumberOfTypes<Args...>
  * // call a function for each type in a parameter pack
  * vcl::ForEachType<int, float, double>::apply(f);
  * @endcode
- * 
+ *
  * @ingroup types
  */
 template<typename... T>
@@ -242,7 +242,7 @@ struct FilterTypesByCondition
  *
  * ResTuple will be a TypeWrapper<int, char> (int and char are the only integral
  * types)
- * 
+ *
  * @ingroup types
  */
 template<template<class> class Pred, typename Head, typename... Tail>
@@ -279,7 +279,7 @@ struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
  *     = TypesContainConditionType<std::is_integral, float, double>::value;
  * static_assert(res2 != true, "");
  * @endcode
- * 
+ *
  * @ingroup types
  */
 template<template<class> class Pred, typename... Args>
@@ -309,7 +309,7 @@ struct TypesContainConditionType<Pred, TypeWrapper<Args...>>
  *     GetTypeByCondition<std::is_integral, float, double, char, int>::type;
  * static_assert(std::is_same<ResType, char>::value, "");
  * @endcode
- * 
+ *
  * @ingroup types
  */
 template<template<class> class Pred, typename... Args>
