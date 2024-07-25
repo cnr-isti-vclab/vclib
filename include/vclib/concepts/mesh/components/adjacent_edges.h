@@ -34,8 +34,8 @@ namespace vcl::comp {
 /**
  * @brief HasAdjacentEdges concept is satisfied only if a Element class provides
  * the types and member functions specified in this concept. These types and
- * member functions allow to access to an AdjacentEdges component of a given
- * element.
+ * member functions allow to access to a @ref vcl::comp::AdjacentEdges
+ * component of a given element.
  *
  * Note that this concept does not discriminate between the Horizontal
  * AdjacentEdges component and the vertical OptionalAdjacentEdges component,
@@ -107,8 +107,8 @@ concept HasAdjacentEdges = requires (
 
 /**
  * @brief HasOptionalAdjacentEdges concept is satisfied only if a class
- * satisfies the HasAdjacentEdges concept and the static boolean constant
- * IS_OPTIONAL is set to true.
+ * satisfies the @ref vcl::comp::HasAdjacentEdges concept and the static boolean
+ * constant `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
  */

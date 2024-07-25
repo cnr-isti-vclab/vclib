@@ -220,15 +220,6 @@ struct TypeWrapperConstructor<T, TypeWrapper<Args...>>
 } // namespace detail
 
 /**
- * @copydoc FilterTypesByCondition
- */
-template<template<class> class, typename...>
-struct FilterTypesByCondition
-{
-    using type = TypeWrapper<>;
-};
-
-/**
  * @brief Removes all types that do not satisfy a condition, and get them as a
  * tuple.
  *
@@ -252,6 +243,15 @@ struct FilterTypesByCondition
  * types).
  *
  * @ingroup types
+ */
+template<template<class> class, typename...>
+struct FilterTypesByCondition
+{
+    using type = TypeWrapper<>;
+};
+
+/**
+ * @copydoc FilterTypesByCondition
  */
 template<template<class> class Pred, typename Head, typename... Tail>
 struct FilterTypesByCondition<Pred, Head, Tail...>

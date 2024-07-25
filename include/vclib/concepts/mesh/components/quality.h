@@ -30,7 +30,8 @@ namespace vcl::comp {
 /**
  * @brief HasQuality concept is satisfied only if a Element class provides the
  * types and member functions specified in this concept. These types and member
- * functions allow to access to a Quality component of a given element.
+ * functions allow to access to a @ref vcl::comp::Quality component of a given
+ * element.
  *
  * Note that this concept does not discriminate between the Horizontal Quality
  * component and the vertical OptionalQuality component, therefore it does not
@@ -50,9 +51,9 @@ concept HasQuality = requires (T o, const T& co) {
 };
 
 /**
- * @brief HasOptionalQuality concept is satisfied only if a class satisfis the
- * HasQuality concept and the static boolean constant IS_OPTIONAL is set to
- * true.
+ * @brief HasOptionalQuality concept is satisfied only if a class satisfies the
+ * @ref vcl::comp::HasQuality concept and the static boolean constant
+ * `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
  */

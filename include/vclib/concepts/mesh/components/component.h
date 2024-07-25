@@ -28,16 +28,16 @@
 namespace vcl::comp {
 
 /**
- * @brief The ComponentConcept is evaluated to true whenever the type T is a
- * valid component, i.e., it has a static constexpr member COMPONENT_ID of type
- * unsigned int. 
- * 
- * The COMPONENT_ID is used to identify the component type in the mesh or in the
- * mesh element. Its value should be one of the values defined in the
+ * @brief The ComponentConcept is evaluated to true whenever the type `T` is a
+ * valid component, i.e., it has a static constexpr member `COMPONENT_ID` of
+ * type `unsigned int`.
+ *
+ * The `COMPONENT_ID` is used to identify the component type in the mesh or in
+ * the mesh element. Its value should be one of the values defined in the
  * @ref vcl::CompId enum.
  *
- * @tparam T the type to be evaluated.
- * 
+ * @tparam T The type to be evaluated.
+ *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -48,10 +48,10 @@ concept ComponentConcept = requires {
 };
 
 /**
- * @brief Evaluates to true if the type T is a component that is stored 
+ * @brief Evaluates to true if the type `T` is a component that is stored 
  * vertically in its element container.
  *
- * @tparam T the type to be evaluated.
+ * @tparam T The type to be evaluated.
  * 
  * @ingroup components_concepts
  */
@@ -64,10 +64,10 @@ concept IsVerticalComponent = T::IS_VERTICAL == true && requires {
 };
 
 /**
- * @brief Evaluates to true if the type T is a component that is stored
+ * @brief Evaluates to true if the type `T` is a component that is stored
  * vertically in its element container, and it is optional.
  *
- * @tparam T the type to be evaluated.
+ * @tparam T The type to be evaluated.
  *
  * @ingroup components_concepts
  */
@@ -81,7 +81,7 @@ concept IsOptionalComponent =
 
 /**
  * @private
- * @brief Evaluates to true if the type T is a component that has a init()
+ * @brief Evaluates to true if the type `T` is a component that has a `init()`
  * member function, that must be called to initialize the component.
  * 
  * The `init()` function is necessary in components that may be optional and,
@@ -90,7 +90,7 @@ concept IsOptionalComponent =
  * @note Only components that store data that require non-default initialization
  * should have the `init()` function.
  * 
- * @tparam T the type to be evaluated.
+ * @tparam T The type to be evaluated.
  */
 template<typename T>
 concept HasInitMemberFunction = requires (T o) {
@@ -101,11 +101,11 @@ concept HasInitMemberFunction = requires (T o) {
 
 /**
  * @private
- * @brief Evaluates to true if the type T is a component that has a
- * isAvailable() member function, that must be called to check if the component
- * is available (i.e. it could be optional and not enabled).
+ * @brief Evaluates to true if the type `T` is a component that has a
+ * `isAvailable()` member function, that must be called to check if the
+ * component is available (i.e. it could be optional and not enabled).
  *
- * @tparam T the type to be evaluated.
+ * @tparam T The type to be evaluated.
  */
 template<typename T>
 concept HasIsAvailableMemberFunction = requires (T o) {
@@ -116,7 +116,7 @@ concept HasIsAvailableMemberFunction = requires (T o) {
 
 /**
  * @private
- * @brief Evaluates to true if the type T is tied to the number of vertices in
+ * @brief Evaluates to true if the type `T` is tied to the number of vertices in
  * the face.
  * 
  * A component that is tied to the vertex number if it belongs to a face element
@@ -124,7 +124,7 @@ concept HasIsAvailableMemberFunction = requires (T o) {
  * number of vertices in the face.
  * 
  * To be evaluated as true, the component must have a static constexpr member
- * TIED_TO_VERTEX_NUMBER of type bool set to true.
+ * `TIED_TO_VERTEX_NUMBER` of type `bool` set to `true`.
  *
  * @tparam T the type to be evaluated.
  */
@@ -232,16 +232,17 @@ concept HasOptionalIndicesOfType = HasOptionalReferencesOfType<T, R> &&
 // MeshElement.
 
 /**
- * @brief The HasComponentOfType concept checks whether a type T (that may be a
- * Mesh or a MeshElement) has a component having its CompId equal to `COMP_ID`.
- * 
- * The concept looks for the component having `COMP_ID` in the inner type 
- * `Components` type defined in the type T, that must be a TypeWrapper of
- * components.
- * 
- * @tparam T the type to be evaluated.
- * @tparam COMP_ID the id of the component to be checked.
- * 
+ * @brief The HasComponentOfType concept checks whether a type `T` (that may be
+ * a Mesh or a MeshElement) has a component having its @ref vcl::CompId equal to
+ * `COMP_ID`.
+ *
+ * The concept looks for the component having `COMP_ID` in the inner type
+ * `Components` type defined in the type `T`, that must be a @ref
+ * vcl::TypeWrapper of components.
+ *
+ * @tparam T The type to be evaluated.
+ * @tparam COMP_ID The id of the component to be checked.
+ *
  * @ingroup components_concepts
  * @ingroup elements_concepts
  */
@@ -250,17 +251,18 @@ concept HasComponentOfType =
     detail::ComponentOfTypePred<COMP_ID, typename T::Components>::value;
 
 /**
- * @brief The HasVerticalComponentOfType concept checks whether a type T (that
- * should be a MeshElement) has a vertical component having its CompId equal to
- * `COMP_ID`.
- * 
- * The concept looks for the component having `COMP_ID` in the inner type 
- * `Components` type defined in the type T, that must be a TypeWrapper of
- * components. If the component exists, it checks if it is vertical.
- * 
- * @tparam T the type to be evaluated.
- * @tparam COMP_ID the id of the component to be checked.
- * 
+ * @brief The HasVerticalComponentOfType concept checks whether a type `T` (that
+ * should be a MeshElement) has a vertical component having its @ref vcl::CompId
+ * equal to `COMP_ID`.
+ *
+ * The concept looks for the component having `COMP_ID` in the inner type
+ * `Components` type defined in the type `T`, that must be a @ref
+ * vcl::TypeWrapper of components. If the component exists, it checks if it is
+ * vertical.
+ *
+ * @tparam T The type to be evaluated.
+ * @tparam COMP_ID The id of the component to be checked.
+ *
  * @ingroup components_concepts
  * @ingroup elements_concepts
  */
@@ -270,17 +272,18 @@ concept HasVerticalComponentOfType =
     IsVerticalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
 
 /**
- * @brief The HasOptionalComponentOfType concept checks whether a type T (that
- * should be a MeshElement) has an optional component having its CompId equal to
- * `COMP_ID`.
- * 
+ * @brief The HasOptionalComponentOfType concept checks whether a type `T` (that
+ * should be a MeshElement) has an optional component having its @ref
+ * vcl::CompId equal to `COMP_ID`.
+ *
  * The concept looks for the component having `COMP_ID` in the inner type
- * `Components` type defined in the type T, that must be a TypeWrapper of
- * components. If the component exists, it checks if it is optional.
- * 
- * @tparam T the type to be evaluated.
- * @tparam COMP_ID the id of the component to be checked.
- * 
+ * `Components` type defined in the type `T`, that must be a @ref
+ * vcl::TypeWrapper of components. If the component exists, it checks if it is
+ * optional.
+ *
+ * @tparam T The type to be evaluated.
+ * @tparam COMP_ID The id of the component to be checked.
+ *
  * @ingroup components_concepts
  * @ingroup elements_concepts
  */

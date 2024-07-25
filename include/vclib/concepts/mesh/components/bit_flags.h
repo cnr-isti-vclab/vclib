@@ -32,7 +32,7 @@ namespace vcl::comp {
 /**
  * @brief HasBitFlags concept is satisfied only if a Element class provides the
  * member functions specified in this concept. These member functions allows to
- * access to a BitFlag component of a given element.
+ * access to a @ref vcl::comp::BitFlags component of a given element.
  *
  * @ingroup components_concepts
  */
@@ -73,8 +73,8 @@ concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T o, const T& co) {
 /**
  * @brief HasPolygonBitFlags concept is satisfied only if a Element class (that
  * should be a Face) provides the member functions specified in this concept.
- * These member functions allows to access to PolygonBitFlags component of a
- * given element.
+ * These member functions allows to access to @ref vcl::comp::PolygonBitFlags
+ * component of a given element.
  *
  * @ingroup components_concepts
  */
@@ -88,8 +88,8 @@ concept HasPolygonBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
 /**
  * @brief HasTriangleBitFlags concept is satisfied only if a Element class (that
  * should be a Face) provides the member functions specified in this concept.
- * These member functions allows to access to TriangleBitFlags component of a
- * given element.
+ * These member functions allows to access to @ref vcl::comp::TriangleBitFlags
+ * component of a given element.
  *
  * @ingroup components_concepts
  */
@@ -101,9 +101,10 @@ concept HasTriangleBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
 };
 
 /**
- * @brief HasFaceBitFlags concept is satisfied if one between HasPolygonBitFlags
- * and HasTriangleBitFlags concept is satisfied. This concept allows to make
- * sure that a Face element has proper FaceBitFlags (Triangle or Polygon).
+ * @brief HasFaceBitFlags concept is satisfied if one between @ref
+ * vcl::comp::HasPolygonBitFlags and @ref vcl::comp::HasTriangleBitFlags concept
+ * is satisfied. This concept allows to make sure that a Face element has proper
+ * FaceBitFlags (Triangle or Polygon).
  *
  * @ingroup components_concepts
  */

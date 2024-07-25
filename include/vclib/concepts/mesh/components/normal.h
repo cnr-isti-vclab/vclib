@@ -30,7 +30,8 @@ namespace vcl::comp {
 /**
  * @brief HasNormal concept is satisfied only if a Element class provides the
  * types and member functions specified in this concept. These types and member
- * functions allow to access to a Normal component of a given element.
+ * functions allow to access to a @ref vcl::comp::Normal component of a given
+ * element.
  *
  * Note that this concept does not discriminate between the Horizontal Normal
  * component and the vertical OptionalNormal component, therefore it does not
@@ -50,8 +51,9 @@ concept HasNormal = requires (T o, const T& co) {
 };
 
 /**
- * @brief HasOptionalNormal concept is satisfied only if a class satisfis the
- * HasNormal concept and the static boolean constant IS_OPTIONAL is set to true.
+ * @brief HasOptionalNormal concept is satisfied only if a class satisfies the
+ * @ref vcl::comp::HasNormal concept and the static boolean constant
+ * `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
  */

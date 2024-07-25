@@ -32,8 +32,8 @@ namespace vcl::comp {
 /**
  * @brief HasTextureImages concept is satisfied only if a Element or Mesh class
  * provides the member functions specified in this concept. These member
- * functions allows to access to a TextureImages component of a given
- * element/mesh.
+ * functions allows to access to a @ref vcl::comp::TextureImages component of a
+ * given element/mesh.
  *
  * @ingroup components_concepts
  */

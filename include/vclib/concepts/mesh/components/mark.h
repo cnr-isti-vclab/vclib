@@ -30,7 +30,8 @@ namespace vcl::comp {
 /**
  * @brief HasMark concept is satisfied only if a Element/Mesh class provides the
  * types and member functions specified in this concept. These types and member
- * functions allow to access to a Mark component of a given element/mesh.
+ * functions allow to access to a @ref vcl::comp::Mark component of a given
+ * element/mesh.
  *
  * Note that this concept does not discriminate between the Horizontal Mark
  * component and the vertical OptionalMark component, therefore it does not
@@ -51,9 +52,11 @@ concept HasMark = requires (T o, const T& co) {
 };
 
 /**
- * @brief HasOptionalMark concept is satisfied only if a class satisfis the
- * HasMark concept and and the static boolean constant IS_OPTIONAL is set to
- * true.
+ * @brief HasOptionalMark concept is satisfied only if a class satisfies the
+ * @ref vcl::comp::HasMark concept and and the static boolean constant
+ * `IS_OPTIONAL` is set to `true`.
+ * 
+ * @ingroup components_concepts
  */
 template<typename T>
 concept HasOptionalMark = HasMark<T> && IsOptionalComponent<typename T::Mark>;

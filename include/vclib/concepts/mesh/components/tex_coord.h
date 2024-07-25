@@ -30,7 +30,8 @@ namespace vcl::comp {
 /**
  * @brief HasTexCoord concept is satisfied only if a Element class provides the
  * types and member functions specified in this concept. These types and member
- * functions allow to access to a TexCoord component of a given element.
+ * functions allow to access to a @ref vcl::comp::TexCoord component of a given
+ * element.
  *
  * Note that this concept does not discriminate between the Horizontal TexCoord
  * component and the vertical OptionalTexCoord component, therefore it does not
@@ -50,9 +51,9 @@ concept HasTexCoord = requires (T o, const T& co) {
 };
 
 /**
- * @brief HasOptionalTexCoord concept is satisfied only if a class satisfis the
- * HasTexCoord concept and the static boolean constant IS_OPTIONAL is set to
- * true.
+ * @brief HasOptionalTexCoord concept is satisfied only if a class satisfies the
+ * @ref vcl::comp::HasTexCoord concept and the static boolean constant
+ * `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
  */

@@ -34,8 +34,8 @@ namespace vcl::comp {
 /**
  * @brief HasAdjacentVertices concept is satisfied only if a Element class
  * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to an AdjacentVertices component
- * of a given element.
+ * types and member functions allow to access to an @ref
+ * vcl::comp::AdjacentVertices component of a given element.
  *
  * Note that this concept does not discriminate between the Horizontal
  * AdjacentVertices component and the vertical OptionalAdjacentVertices
@@ -109,8 +109,8 @@ concept HasAdjacentVertices = requires (
 
 /**
  * @brief HasOptionalAdjacentVertices concept is satisfied only if a class
- * satisfies the HasAdjacentVertices concept and has the static boolean constant
- * IS_OPTIONAL is set to true.
+ * satisfies the @ref vcl::comp::HasAdjacentVertices concept and has the static
+ * boolean constant `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
  */

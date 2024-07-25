@@ -32,8 +32,8 @@ namespace vcl::comp {
 /**
  * @brief HasWedgeColors concept is satisfied only if a Element class provides
  * the types and member functions specified in this concept. These types and
- * member functions allow to access to an WedgeColors component of a given
- * element.
+ * member functions allow to access to an @ref vcl::comp::WedgeColors component
+ * of a given element.
  *
  * Note that this concept does not discriminate between the Horizontal
  * WedgeColors component and the vertical OptionalWedgeColors component,
@@ -75,8 +75,8 @@ concept HasWedgeColors = requires (T o, const T& co) {
 
 /**
  * @brief HasOptionalWedgeColors concept is satisfied only if a class satisfies
- * the HasWedgeColors concept and has the static boolean constant IS_OPTIONAL is
- * set to true.
+ * the @ref vcl::comp::HasWedgeColors concept and has the static boolean
+ * constant `IS_OPTIONAL` is set to `true`.
  *
  * @ingroup components_concepts
  */
