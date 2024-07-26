@@ -21,7 +21,12 @@
             "extensions": [
                 "ms-vscode.cpptools",
                 "ms-vscode.cpptools-extension-pack",
-                "ms-vscode.cmake-tools"
+                "ms-vscode.cmake-tools",
+                "cschlosser.doxdocgen",
+                "betwo.vscode-doxygen-runner",
+                "grimmer.vscode-back-forward-button",
+                "streetsidesoftware.code-spell-checker",
+                "Gruntfuggly.todo-tree"
             ],
         }
     }

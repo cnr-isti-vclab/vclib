@@ -4,7 +4,9 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     catch2 \
     clang-18 \
     cmake \
+    doxygen \
     git \
+    graphviz \
     libtbb-dev \
     ninja-build \
     python3 \

@@ -19,5 +19,6 @@
     ],
     "files.associations": {
         "concepts": "cpp"
-    }
+    },
+    "doxygen_runner.configuration_file_override": "${workspaceFolder}/docs/Doxyfile"
 }
