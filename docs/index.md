@@ -4,6 +4,8 @@ This is a C++20 modern and header only Mesh and Geometry Processing templated li
 
 The goal of this library is to provide a set of tools and algorithms in a well-structured Object Oriented paradigm exploiting the powerfulness of C++20.
 
+The library is organized in several modules. You can find the list of modules in the [Modules](topics.html) section.
+
 ## Table of Contents
 
 1. [Get Started](@ref get_started_page)

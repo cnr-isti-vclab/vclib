@@ -27,12 +27,28 @@
 #include "space/core.h"
 
 /**
- * @defgroup space Spatial Data Structures
+ * @defgroup space_core Core Data Structures
  *
- * @brief List of Spatial Data Structures of VCLib.
+ * @brief List of the Core Data Structures of VCLib.
+ * 
+ * In this module, you can find the core data structures of VCLib, such as
+ * simple geometric primitives, like points, vectors, and matrices, as well as
+ * more complex data structures, like images, textures, and bounding boxes.
  *
  * You can access all the algorithms of VCLib by including `#include
- * <vclib/space.h>`
+ * <vclib/space/core.h>`
+ */
+
+/**
+ * @defgroup space_complex Spatial Data Structures
+ *
+ * @brief List of the Spatial Data Structures of VCLib.
+ * 
+ * In this module, you can find the spatial data structures of VCLib, such as
+ * graphs, grids, kd-trees, and samplers.
+ * 
+ * You can access all the algorithms of VCLib by including `#include
+ * <vclib/space/complex.h>`
  */
 
 #endif // VCL_SPACE_H

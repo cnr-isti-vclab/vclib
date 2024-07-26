@@ -11,6 +11,14 @@
 namespace vcl {
 namespace mesh {
 
+/**
+ * @brief The Has%EL_UC%Container concept is satisfied only if a container class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to a @ref 
+ * vcl::mesh::%EL_UC%Container container of a given mesh.
+ * 
+ * @ingroup containers_concepts
+ */
 template <typename T>
 concept Has%EL_UC%Container = requires(
     T o,
@@ -52,12 +60,12 @@ concept Has%EL_UC%Container = requires(
 
 /**
  * @brief Has%EL_UC%s concepts is satisfied when at least one of its
- * template types is (or inherits from) a %EL_UC%Container. It can be used
- * both to check if a Mesh has %EL_C%s, or if in a list of types there is
- * a %EL_UC%Container.
+ * template types is (or inherits from) a @ref vcl::mesh::%EL_UC%Container. 
+ * It can be used both to check if a Mesh has %EL_C%s, or if in a list of 
+ * types there is a %EL_UC%Container.
  *
- * In the following example, a MyMesh type can be instatiated only if one of its
- * template Args is a %EL_UC%Container:
+ * In the following example, a MyMesh type can be instantiated only if one of 
+ * its template Args is a %EL_UC%Container:
  * @code{.cpp}
  * template <typename... Args> requires Has%EL_UC%s<Args...>
  * class MyMesh {
@@ -68,7 +76,9 @@ concept Has%EL_UC%Container = requires(
  *
  * MyMesh<vcl::VertexContainer<MyVertex>> m1; // not ok
  * MyMesh<vcl::%EL_UC%Container<My%EL_UC%>> m2; // ok
- * MyMesh<vcl::VertexContainer<MyVertex>, vcl::%EL_UC%Container<My%EL_UC%>> m3; // ok
+ * MyMesh<
+ *     vcl::VertexContainer<MyVertex>, 
+ *     vcl::%EL_UC%Container<My%EL_UC%>> m3; // ok
  * @endcode
  *
  * To check if a type has (inherits from) %EL_UC%Container:
@@ -80,6 +90,8 @@ concept Has%EL_UC%Container = requires(
  *
  * @note This concept does not check if a Mesh is a valid %EL_UC%Mesh.
  * To do that, use the %EL_UC%MeshConcept.
+ * 
+ * @ingroup containers_concepts
  */
 template<typename... Args>
 concept Has%EL_UC%s = (vcl::mesh::Has%EL_UC%Container<Args> || ...);

@@ -31,6 +31,14 @@
 namespace vcl {
 namespace mesh {
 
+/**
+ * @brief The HasFaceContainer concept is satisfied only if a container class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to a @ref vcl::mesh::FaceContainer
+ * container of a given mesh.
+ * 
+ * @ingroup containers_concepts
+ */
 template<typename T>
 concept HasFaceContainer =
     requires (T o, const T& co, typename T::FaceType* f) {
@@ -69,12 +77,12 @@ concept HasFaceContainer =
 
 /**
  * @brief HasFaces concepts is satisfied when at least one of its
- * template types is (or inherits from) a FaceContainer. It can be used
- * both to check if a Mesh has faces, or if in a list of types there is
+ * template types is (or inherits from) a @ref vcl::mesh::FaceContainer. It can
+ * be used both to check if a Mesh has faces, or if in a list of types there is
  * a FaceContainer.
  *
- * In the following example, a MyMesh type can be instatiated only if one of its
- * template Args is a FaceContainer:
+ * In the following example, a MyMesh type can be instantiated only if one of
+ * its template Args is a FaceContainer:
  * @code{.cpp}
  * template <typename... Args> requires HasFaces<Args...>
  * class MyMesh {
@@ -96,7 +104,9 @@ concept HasFaceContainer =
  * @endcode
  *
  * @note This concept does not check if a Mesh is a valid FaceMesh.
- * To do that, use the FaceMeshConcept.
+ * To do that, use the @ref vcl::FaceMeshConcept.
+ * 
+ * @ingroup containers_concepts
  */
 template<typename... Args>
 concept HasFaces = (vcl::mesh::HasFaceContainer<Args> || ...);

@@ -28,11 +28,17 @@
 
 #include "element_container.h"
 
-// TODO: complete documentation
-
 namespace vcl {
 namespace mesh {
 
+/**
+ * @brief The HasEdgeContainer concept is satisfied only if a container class
+ * provides the types and member functions specified in this concept. These
+ * types and member functions allow to access to a @ref vcl::mesh::EdgeContainer
+ * container of a given mesh.
+ * 
+ * @ingroup containers_concepts
+ */
 template<typename T>
 concept HasEdgeContainer =
     requires (T o, const T& co, typename T::EdgeType* e) {
@@ -71,12 +77,12 @@ concept HasEdgeContainer =
 
 /**
  * @brief HasEdges concepts is satisfied when at least one of its
- * template types is (or inherits from) a EdgeContainer. It can be used
- * both to check if a Mesh has edges, or if in a list of types there is
+ * template types is (or inherits from) a @ref vcl::mesh::EdgeContainer. It can
+ * be used both to check if a Mesh has edges, or if in a list of types there is
  * a EdgeContainer.
  *
- * In the following example, a MyMesh type can be instatiated only if one of its
- * template Args is a EdgeContainer:
+ * In the following example, a MyMesh type can be instantiated only if one of
+ * its template Args is a EdgeContainer:
  * @code{.cpp}
  * template <typename... Args> requires HasEdges<Args...>
  * class MyMesh {
@@ -98,7 +104,9 @@ concept HasEdgeContainer =
  * @endcode
  *
  * @note This concept does not check if a Mesh is a valid EdgeMesh.
- * To do that, use the EdgeMeshConcept.
+ * To do that, use the @ref vcl::EdgeMeshConcept.
+ * 
+ * @ingroup containers_concepts
  */
 template<typename... Args>
 concept HasEdges = (vcl::mesh::HasEdgeContainer<Args> || ...);

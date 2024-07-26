@@ -27,4 +27,13 @@
 #include "containers/face_container.h"
 #include "containers/vertex_container.h"
 
+/**
+ * @defgroup containers_concepts Containers Concepts
+ * @ingroup mesh_concepts
+ * @ingroup containers
+ *
+ * @brief List of concepts for types related to the Container classes of the
+ * library.
+ */
+
 #endif // VCL_CONCEPTS_MESH_CONTAINERS_H

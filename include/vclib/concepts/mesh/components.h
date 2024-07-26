@@ -50,7 +50,7 @@
  * @ingroup mesh_concepts
  * @ingroup components
  *
- * @brief List of concepts for types related to the Component classes the
+ * @brief List of concepts for types related to the Component classes of the
  * library.
  */
 

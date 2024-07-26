@@ -27,15 +27,27 @@
 #include "algorithms/mesh.h"
 
 /**
- * @defgroup algorithms Algorithms
+ * @defgroup algorithms_core Core Algorithms
  *
- * @brief List of function algorithms of VCLib.
+ * @brief List of Core algorithms.
+ * 
+ * In this module, you can find the core algorithms of VCLib, that generally
+ * involve simple geometric primitives, like points, vectors, and matrices.
  *
- * These algorithms are divided into two main categories: Core Algorithms and
- * Mesh Algorithms and Point.
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/core.h>`
+ */
+
+/**
+ * @defgroup algorithms_mesh Mesh Algorithms
  *
- * You can access all the algorithms of VCLib by including
- * `#include <vclib/algorithms.h>`
+ * @brief List of Mesh algorithms.
+ * 
+ * In this module, you can find the mesh algorithms of VCLib, that involve
+ * operations on meshes, like cleaning, filtering, and smoothing.
+ *
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/mesh.h>`
  */
 
 #endif // VCL_ALGORITHMS_H

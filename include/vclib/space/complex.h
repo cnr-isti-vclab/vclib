@@ -32,12 +32,4 @@
 #include "complex/sampler.h"
 #include "complex/tri_poly_index_bimap.h"
 
-/**
- * @defgroup space_complex Complex Spatial Data Structures
- *
- * @ingroup space
- *
- * @brief TODO
- */
-
 #endif // VCL_SPACE_COMPLEX_H

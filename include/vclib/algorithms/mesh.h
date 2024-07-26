@@ -37,15 +37,4 @@
 #include "mesh/stat.h"
 #include "mesh/update.h"
 
-/**
- * @defgroup algorithms_mesh Mesh Algorithms
- *
- * @ingroup algorithms
- *
- * @brief List of Mesh algorithms.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/mesh.h>`
- */
-
 #endif // VCL_ALGORITHMS_MESH_H

@@ -41,12 +41,4 @@
 #include "core/triangle_wrapper.h"
 #include "core/vector.h"
 
-/**
- * @defgroup space_core Core Spatial Data Structures
- *
- * @ingroup space
- *
- * @brief TODO
- */
-
 #endif // VCL_SPACE_CORE_H

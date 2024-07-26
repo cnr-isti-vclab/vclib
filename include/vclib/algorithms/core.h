@@ -30,15 +30,4 @@
 #include "core/polygon.h"
 #include "core/stat.h"
 
-/**
- * @defgroup algorithms_core Mesh Update Algorithms
- *
- * @ingroup algorithms
- *
- * @brief List of Core algorithms.
- *
- * You can access these algorithms by including `#include
- * <vclib/algorithms/core.h>`
- */
-
 #endif // VCL_ALGORITHMS_CORE_H

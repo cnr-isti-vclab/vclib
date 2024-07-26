@@ -18,16 +18,43 @@ VCLib uses the following coding style rules:
 - Generally, the code of the library uses CamelCase: use upper case letters as word separators
 - Class names and type names start with an upper case letter;
 - Functions, member functions, non-const variables and namespaces start with a lower case letter;
-- The private member attribute name in class should be prepended with the character ‘m’;
+- The private member attribute name in class should be prepended with the character `m`;
 - Class member attributes should be declared before the member functions;
-- The global or class constants and enumeration values should be all capital letters separated with ‘_’;
+- The global or class constants and enumeration values should be all capital letters separated with `_`;
+    - The only exception are the view constants, which are all lower camel case and reside in the `vcl::views` namespace;
 
-TODO
+Example:
+
+```cpp
+class MyClass {
+    int mMyAttribute = 0;
+
+public:
+    const int MY_CONSTANT = 42;
+
+    enum class MyEnum {
+        VALUE_1,
+        VALUE_2
+    };
+
+    void myFunction(int myParameter) 
+    {
+        mMyAttribute = myParameter;
+    }
+
+};
+
+void anotherFunction() 
+{
+    MyClass myObject;
+    myObject.myFunction(42);
+}
+
+```
 
 ## File naming 
 
-- File names should be lower case, and should use ‘_’ as word separator;
-- Header file names should end with the .h extension;
-- Source file names should end with the .cpp extension;
+- File names should be lower case, and should use `_` as word separator;
+- Header file names should end with the `.h` extension;
+- Source file names should end with the `.cpp` extension;
 
-TODO
