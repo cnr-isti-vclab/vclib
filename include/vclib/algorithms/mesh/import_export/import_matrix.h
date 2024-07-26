@@ -152,8 +152,8 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
  * @tparam VNMatrix: the type of the input vertex normal matrix. It must satisfy
  * the MatrixConcept.
  *
- * @param[in] vertices: a \#V*3 matrix containing the coordinates of the vertices
- * of the mesh.
+ * @param[in] vertices: a \#V*3 matrix containing the coordinates of the
+ * vertices of the mesh.
  * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
  * vertices of the mesh. If the number of rows of this matrix is zero, the
  * function will not add vertex normals to the mesh.
@@ -212,10 +212,10 @@ MeshType pointCloudMeshFromMatrices(
  * @tparam FNMatrix: the type of the input face normal matrix. It must satisfy
  * the MatrixConcept.
  *
- * @param[in] vertices: a \#V*3 matrix containing the coordinates of the vertices
- * of the mesh.
- * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of the
- * faces of the mesh. If the number of rows of this matrix is zero, the
+ * @param[in] vertices: a \#V*3 matrix containing the coordinates of the
+ * vertices of the mesh.
+ * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of
+ * the faces of the mesh. If the number of rows of this matrix is zero, the
  * function will not add faces to the mesh.
  * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
  * vertices of the mesh. If the number of rows of this matrix is zero, the
@@ -289,13 +289,13 @@ MeshType meshFromMatrices(
  *
  * @param[in] mesh: the mesh on which import all the input data from the
  * matrices.
- * @param[in] vertices: a \#V*3 matrix containing the coordinates of the vertices
- * of the mesh.
- * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of the
- * faces of the mesh. If the number of rows of this matrix is zero, the
+ * @param[in] vertices: a \#V*3 matrix containing the coordinates of the
+ * vertices of the mesh.
+ * @param[in] faces: a \#F*3 matrix containing the indices of the vertices of
+ * the faces of the mesh. If the number of rows of this matrix is zero, the
  * function will not add faces to the mesh.
- * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of the
- * edges of the mesh. If the number of rows of this matrix is zero, the
+ * @param[in] edges: a \#E*2 matrix containing the indices of the vertices of
+ * the edges of the mesh. If the number of rows of this matrix is zero, the
  * function will not add edges to the mesh.
  * @param[in] vertexNormals: a \#V*3 matrix containing the normals of the
  * vertices of the mesh. If the number of rows of this matrix is zero, the
@@ -378,8 +378,8 @@ void importMeshFromMatrices(
  * MatrixConcept.
  *
  * @param[in] mesh: the mesh on which import the input vertices.
- * @param[in] vertices: a \#V*3 matrix containing the coordinates of the vertices
- * of the mesh.
+ * @param[in] vertices: a \#V*3 matrix containing the coordinates of the
+ * vertices of the mesh.
  * @param[in] clearBeforeSet: if `true`, the function clears the container of
  * the vertices of the mesh before adding the vertices from the input matrix.
  * If `false`, the function sets the coordinates in the input matrix to the

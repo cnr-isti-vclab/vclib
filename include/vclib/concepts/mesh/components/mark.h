@@ -55,7 +55,7 @@ concept HasMark = requires (T o, const T& co) {
  * @brief HasOptionalMark concept is satisfied only if a class satisfies the
  * @ref vcl::comp::HasMark concept and and the static boolean constant
  * `IS_OPTIONAL` is set to `true`.
- * 
+ *
  * @ingroup components_concepts
  */
 template<typename T>

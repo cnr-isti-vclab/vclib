@@ -225,10 +225,10 @@ struct TypeWrapperConstructor<T, TypeWrapper<Args...>>
  *
  * The condition is a templated predicate struct that must have a static member
  * bool `value` that is true if the type satisfies the condition.
- * 
+ *
  * The result is the `type` type alias, that is a TypeWrapper containing the
  * types that satisfy the condition.
- * 
+ *
  * The input types can be a pack of types or a TypeWrapper.
  *
  * Usage:
@@ -286,7 +286,7 @@ struct FilterTypesByCondition<Pred, TypeWrapper<Tail...>>
  *     TypesSatisfyCondition<std::is_integral, int, float, double>::value;
  * static_assert(res == true, "");
  *
- * static const bool res2 = 
+ * static const bool res2 =
  *     TypesSatisfyCondition<std::is_integral, float, double>::value;
  * static_assert(res2 != true, "");
  * @endcode

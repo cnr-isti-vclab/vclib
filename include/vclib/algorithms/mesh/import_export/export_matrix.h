@@ -364,8 +364,8 @@ Matrix elementNormalsMatrix(const MeshType& mesh)
 }
 
 /**
- * @brief Get a \#V*3 Matrix of scalars containing the normals of the vertices of
- * a Mesh. The function is templated on the Matrix itself.
+ * @brief Get a \#V*3 Matrix of scalars containing the normals of the vertices
+ * of a Mesh. The function is templated on the Matrix itself.
  *
  * This function works with every Matrix type that satisfies the MatrixConcept,
  * and requires that the mesh has per-vertex normals.
@@ -468,8 +468,8 @@ Matrix elementColorsMatrix(const MeshType& mesh)
 }
 
 /**
- * @brief Get a \#V*4 Matrix of integers containing the colors of the vertices of
- * a Mesh. The function is templated on the Matrix itself.
+ * @brief Get a \#V*4 Matrix of integers containing the colors of the vertices
+ * of a Mesh. The function is templated on the Matrix itself.
  *
  * This function works with every Matrix type that satisfies the MatrixConcept,
  * and requires that the mesh has per-vertex colors.

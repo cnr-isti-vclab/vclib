@@ -92,7 +92,7 @@ concept IsSharedPointerToConst =
 /**
  * @brief Utility concept that is evaluated true if T is a Pointer or a shared
  * pointer to a constant object.
- * 
+ *
  * @ingroup util_concepts
  */
 template<typename T>

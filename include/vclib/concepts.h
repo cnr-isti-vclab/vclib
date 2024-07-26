@@ -44,7 +44,7 @@
  * or const correctness management, and concepts for types that have been
  * defined in this library. We separate these categories in two subgroups: @ref
  * util_concepts and @ref lib_concepts.
- * 
+ *
  * This module depends on the @ref types module.
  *
  * You can access all the concepts of VCLib by including `#include

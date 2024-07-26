@@ -48,11 +48,11 @@ concept ComponentConcept = requires {
 };
 
 /**
- * @brief Evaluates to true if the type `T` is a component that is stored 
+ * @brief Evaluates to true if the type `T` is a component that is stored
  * vertically in its element container.
  *
  * @tparam T The type to be evaluated.
- * 
+ *
  * @ingroup components_concepts
  */
 template<typename T>
@@ -83,13 +83,13 @@ concept IsOptionalComponent =
  * @private
  * @brief Evaluates to true if the type `T` is a component that has a `init()`
  * member function, that must be called to initialize the component.
- * 
+ *
  * The `init()` function is necessary in components that may be optional and,
  * when enabled, they need to be initialized.
- * 
+ *
  * @note Only components that store data that require non-default initialization
  * should have the `init()` function.
- * 
+ *
  * @tparam T The type to be evaluated.
  */
 template<typename T>
@@ -118,11 +118,11 @@ concept HasIsAvailableMemberFunction = requires (T o) {
  * @private
  * @brief Evaluates to true if the type `T` is tied to the number of vertices in
  * the face.
- * 
+ *
  * A component that is tied to the vertex number if it belongs to a face element
  * and its data is composed of a number of elements that must be equal to the
  * number of vertices in the face.
- * 
+ *
  * To be evaluated as true, the component must have a static constexpr member
  * `TIED_TO_VERTEX_NUMBER` of type `bool` set to `true`.
  *
@@ -151,7 +151,7 @@ concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
  *
  *     the function updates the stored R pointers/indices having, for each old
  *     element index, its new index in the container.
- * 
+ *
  * @tparam T the type to be evaluated.
  * @tparam R the type of the references.
  */
