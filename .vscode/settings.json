@@ -1,0 +1,23 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cSpell.words": [
+        "AABB",
+        "circumcenter",
+        "cloneable",
+        "copydoc",
+        "earcut",
+        "Eigen",
+        "illum",
+        "Montecarlo",
+        "nameaspace",
+        "newmtl",
+        "Triggerer",
+        "tris",
+        "TTVN",
+        "Unwrapper",
+        "vclib"
+    ],
+    "files.associations": {
+        "concepts": "cpp"
+    }
+}
