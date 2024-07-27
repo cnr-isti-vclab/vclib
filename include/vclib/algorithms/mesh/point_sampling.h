@@ -43,7 +43,7 @@
  *
  * You can access these algorithms by including `#include
  * <vclib/algorithms/point_sampling.h>`
- * 
+ *
  * @ingroup algorithms_mesh
  */
 

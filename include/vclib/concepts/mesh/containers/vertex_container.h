@@ -110,7 +110,7 @@ concept HasVertexContainer = requires (
  *
  * @note This concept does not check if a Mesh is a valid Mesh. To do that, use
  * the MeshConcept.
- * 
+ *
  * @ingroup containers_concepts
  */
 template<typename... Args>

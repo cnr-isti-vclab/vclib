@@ -36,7 +36,7 @@ namespace mesh {
  * provides the types and member functions specified in this concept. These
  * types and member functions allow to access to a @ref vcl::mesh::EdgeContainer
  * container of a given mesh.
- * 
+ *
  * @ingroup containers_concepts
  */
 template<typename T>
@@ -105,7 +105,7 @@ concept HasEdgeContainer =
  *
  * @note This concept does not check if a Mesh is a valid EdgeMesh.
  * To do that, use the @ref vcl::EdgeMeshConcept.
- * 
+ *
  * @ingroup containers_concepts
  */
 template<typename... Args>

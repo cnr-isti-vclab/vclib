@@ -30,7 +30,7 @@
  * @defgroup algorithms_core Core Algorithms
  *
  * @brief List of Core algorithms.
- * 
+ *
  * In this module, you can find the core algorithms of VCLib, that generally
  * involve simple geometric primitives, like points, vectors, and matrices.
  *
@@ -42,7 +42,7 @@
  * @defgroup algorithms_mesh Mesh Algorithms
  *
  * @brief List of Mesh algorithms.
- * 
+ *
  * In this module, you can find the mesh algorithms of VCLib, that involve
  * operations on meshes, like cleaning, filtering, and smoothing.
  *
