@@ -1,0 +1,33 @@
+{
+    "name": "Develop GCC",
+
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "runArgs": [
+        "-ti"
+    ],
+    "workspaceFolder": "/home/ubuntu/devel/vclib",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/devel/vclib,type=bind",
+
+    // personal mounts for build directory (can't set this in my personal settings...)
+    // "mounts": [
+    //    "source=${localEnv:HOME}${localEnv:USERPROFILE}/devel/builds/containers,target=/home/ubuntu/builds,type=bind"
+    // ],
+
+    // vscode extensions
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-extension-pack",
+                "ms-vscode.cmake-tools",
+                "cschlosser.doxdocgen",
+                "betwo.vscode-doxygen-runner",
+                "grimmer.vscode-back-forward-button",
+                "streetsidesoftware.code-spell-checker",
+                "Gruntfuggly.todo-tree"
+            ],
+        }
+    }
+}

@@ -91,7 +91,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
 
         file(CREATE_LINK
             ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
-            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE})
+            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE} COPY_ON_ERROR)
     endforeach()
 endif()
 
@@ -119,7 +119,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
 
         file(CREATE_LINK
             ${CMAKE_CURRENT_SOURCE_DIR}/${FILE}
-            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE})
+            ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_FILE} COPY_ON_ERROR)
     endforeach()
 endif()
 
