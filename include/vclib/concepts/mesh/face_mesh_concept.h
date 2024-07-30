@@ -40,6 +40,12 @@ template<typename MeshType>
 concept HasPolygons =
     vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
 
+/**
+ * @brief The FaceMeshConcept is evaluated true if the type T is a Mesh (it
+ * satisfies the @ref vcl::MeshConcept) and has a FaceContainer.
+ *
+ * @ingroup mesh_concepts
+ */
 template<typename T>
 concept FaceMeshConcept = MeshConcept<T> && mesh::HasFaceContainer<T>;
 

@@ -9,7 +9,7 @@ Generally, they are templated over a a type `Scalar`, which is the Scalar that t
 
 For example, the `Point` class is templated over `Scalar` and `N`. Specializations are then provided, like `Point3d`, which is a `Point<double, 3>`.
 
-A list of all the spatial data structures provided by this library can be found in the @ref space group.
+A list of all the spatial data structures provided by this library can be found in the @ref space_core and @ref space_complex groups.
 
 ## Utility and Miscellaneous Data Structures
 

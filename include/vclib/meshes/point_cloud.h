@@ -57,7 +57,14 @@ class Vertex :
 
 namespace vcl {
 
-template<typename Scalar = double>
+/**
+ * @brief The PointCloudT is a Mesh type that stores only Vertices as elements.
+ *
+ * @tparam Scalar: The scalar type used for the mesh.
+ * 
+ * @ingroup meshes
+ */
+template<typename Scalar>
 class PointCloudT :
         public vcl::Mesh<
             mesh::VertexContainer<pointcloud::Vertex<Scalar>>,

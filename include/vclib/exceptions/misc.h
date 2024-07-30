@@ -28,6 +28,12 @@
 
 namespace vcl {
 
+/**
+ * @brief Exception thrown when the size (generally of a container) is not the
+ * expected one.
+ * 
+ * @ingroup exceptions
+ */
 class WrongSizeException : public std::runtime_error
 {
 public:
@@ -41,6 +47,11 @@ public:
     }
 };
 
+/**
+ * @brief Exception thrown when the intersection between two objects is empty.
+ * 
+ * @ingroup exceptions
+ */
 class NoIntersectionException : public std::runtime_error
 {
 public:

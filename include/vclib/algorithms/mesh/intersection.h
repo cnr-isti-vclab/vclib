@@ -173,7 +173,7 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
  * @brief Compute the intersection between a mesh and a ball.
  *
  * given a mesh return a new mesh made by a copy of all the faces entirely
- * includeded in the ball plus new faces created by refining the ones
+ * included in the ball plus new faces created by refining the ones
  * intersected by the ball border. It works by recursively splitting the
  * triangles that cross the border, as long as their area is greater than a
  * given value tol. NOTE: the returned mesh is a triangle soup

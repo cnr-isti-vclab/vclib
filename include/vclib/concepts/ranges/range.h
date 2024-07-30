@@ -33,7 +33,7 @@ namespace vcl {
  *
  * It is equivalent to std::ranges::range.
  *
- * @ingroup uconcepts
+ * @ingroup util_concepts
  */
 template<typename T>
 concept Range = std::ranges::range<T>;
@@ -42,7 +42,7 @@ concept Range = std::ranges::range<T>;
  * @brief Utility concept that is evaluated true the Range R has a value_type
  * that is T.
  *
- * @ingroup uconcepts
+ * @ingroup util_concepts
  */
 template<typename R, typename T>
 concept RangeOf = Range<R> && std::is_same_v<std::ranges::range_value_t<R>, T>;
@@ -51,7 +51,7 @@ concept RangeOf = Range<R> && std::is_same_v<std::ranges::range_value_t<R>, T>;
  * @brief Utility concept that is evaluated true the Range R has a value_type
  * that is convertible to T.
  *
- * @ingroup uconcepts
+ * @ingroup util_concepts
  */
 template<typename R, typename T>
 concept RangeOfConvertibleTo =

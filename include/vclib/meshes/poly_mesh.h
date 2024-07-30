@@ -79,6 +79,15 @@ class Face :
 
 namespace vcl {
 
+/**
+ * @brief The PolyMeshT is a Polygonal Mesh type that stores Vertices and Faces
+ * as elements.
+ * @tparam Scalar: The scalar type used for the mesh.
+ * @tparam INDEXED: A boolean flag that indicates whether the mesh uses indices
+ * or pointers to store references.
+ * 
+ * @ingroup meshes
+ */
 template<typename Scalar, bool INDEXED>
 class PolyMeshT :
         public vcl::Mesh<
