@@ -31,4 +31,16 @@
 #include "math/perlin_noise.h"
 #include "math/random.h"
 
+/**
+ * @defgroup math Math
+ *
+ * @brief This module contains all the mathematical functions and utilities
+ * used in the library.
+ *
+ * This module depends on the @ref concepts module.
+ *
+ * You can access all the concepts of VCLib by including `#include
+ * <vclib/math.h>`
+ */
+
 #endif // VCL_MATH_H

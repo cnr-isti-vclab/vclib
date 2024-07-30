@@ -31,6 +31,16 @@
 
 namespace vcl {
 
+// TODO: improve documentation for this class
+
+/**
+ * @brief The Histogram class allows to collect a set of values and then compute
+ * some statistics like average, variance, standardDeviation, and percentiles.
+ * 
+ * @tparam ScalarType 
+ * 
+ * @ingroup math
+ */
 template<typename ScalarType>
 class Histogram
 {
@@ -43,7 +53,7 @@ class Histogram
     ScalarType mMin = std::numeric_limits<ScalarType>::max();
     ScalarType mMax = std::numeric_limits<ScalarType>::lowest();
 
-    // Number of valid bins stored between minRangeValue and maxRangeValue
+    // Number of valid bins stored between mMinRange and mMaxRange
     uint mBinNumber = 0;
 
     ScalarType mCnt = 0; // Number of accumulated values
@@ -61,7 +71,7 @@ public:
      * for a more robust working, the Histogram class stores also the two out of
      * range intervals (-inf, minv] and [maxv, +inf). Each bin is left closed
      * (eg it contains the value). The \a gamma parameter is applied to modify
-     * the distribution of the ranges of the bins. Default uniform distibution.
+     * the distribution of the ranges of the bins. Default uniform distribution.
      */
     Histogram(
         ScalarType minRangeValue,

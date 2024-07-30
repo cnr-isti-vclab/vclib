@@ -140,6 +140,15 @@ public:
             mPoints[0], mPoints[1], mPoints[2], w0, w1, w2);
     }
 
+    /**
+     * @brief Computes the weighted barycenter of the triangle.
+     * 
+     * Given three weights corresponding to the three triangle points, this
+     * function computes the weighted barycenter of the triangle.
+     * 
+     * @param[in] w: The weights of the three points of the triangle.
+     * @return The weighted barycenter of the triangle.
+     */
     PointT weightedBarycenter(const Point3<ScalarType>& w) const
     {
         return weightedBarycenter(w(0), w(1), w(2));

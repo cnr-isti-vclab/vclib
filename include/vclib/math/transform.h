@@ -31,7 +31,7 @@
 namespace vcl {
 
 /**
- * @brief Given an 3D axis and an angle expressed in randiants, fills the given
+ * @brief Given an 3D axis and an angle expressed in radiants, fills the given
  * matrix with a transform matrix that represents the rotation matrix of the
  * given axis/angle.
  *
@@ -42,6 +42,8 @@ namespace vcl {
  * @param matrix
  * @param axis
  * @param angleRad
+ * 
+ * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType, typename ScalarType>
 void setTransformMatrixRotation(
@@ -76,6 +78,8 @@ void setTransformMatrixRotation(
  * @param matrix
  * @param axis
  * @param angleDeg
+ * 
+ * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType, typename ScalarType>
 void setTransformMatrixRotationDeg(
@@ -98,6 +102,8 @@ void setTransformMatrixRotationDeg(
  * @param matrix
  * @param fromVector
  * @param toVector
+ * 
+ * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType>
 void setTransformMatrixRotation(
@@ -144,7 +150,7 @@ void setTransformMatrixScale(MatrixType& matrix, const PointType& scale)
 }
 
 /**
- * @brief Given an 3D axis and an angle expressed in randiants, returns a
+ * @brief Given an 3D axis and an angle expressed in radiants, returns a
  * transform matrix that represents the rotation matrix of the given axis/angle.
  *
  * The MatrixType must be at least a 3x3 matrix having the setIdentity() member
@@ -155,6 +161,8 @@ void setTransformMatrixScale(MatrixType& matrix, const PointType& scale)
  * @param axis
  * @param angleRad
  * @return
+ * 
+ * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType, typename ScalarType>
 MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
@@ -178,6 +186,8 @@ MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
  * @param axis
  * @param angleDeg
  * @return
+ * 
+ * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType, typename ScalarType>
 MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg)
@@ -197,6 +207,8 @@ MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg)
  * @param fromVector
  * @param toVector
  * @return
+ * 
+ * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType>
 MatrixType rotationMatrix(

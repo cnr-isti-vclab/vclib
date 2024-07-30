@@ -31,39 +31,85 @@
 
 namespace vcl {
 
+/**
+ * @brief Checks if a floating point number is degenerate.
+ *
+ * A floating point number is degenerate if it is infinite or NaN.
+ *
+ * @param[in] number: the number to check
+ * @return true if the number is degenerate, false otherwise.
+ * 
+ * @ingroup math
+ */
 template<typename Scalar>
-bool isDegenerate(Scalar t)
+bool isDegenerate(Scalar number)
 {
-    return std::isinf(t) || std::isnan(t);
+    return std::isinf(number) || std::isnan(number);
 }
 
+/**
+ * @brief Checks if two floating point numbers are equal within an epsilon
+ * value.
+ * 
+ * This function returns true if the absolute difference between the two
+ * numbers is less than or equal to the epsilon value.
+ *
+ * @param[in] n1: the first number to compare
+ * @param[in] n2: the second number to compare
+ * @param[in] epsilon: the epsilon value to use for the check
+ * @return true if the numbers are equal within the epsilon value, false
+ * otherwise.
+ * 
+ * @ingroup math
+ */
 template<typename Scalar>
 bool epsilonEquals(
-    Scalar p1,
-    Scalar p2,
+    Scalar n1,
+    Scalar n2,
     Scalar epsilon = std::numeric_limits<Scalar>::epsilon())
 {
-    return (std::abs(p1 - p2) <= epsilon);
+    return (std::abs(n1 - n2) <= epsilon);
 }
 
+/**
+ * @brief Converts an angle in degrees to radians.
+ * 
+ * @param[in] deg: the angle in degrees
+ * @return the angle in radians.ù
+ * 
+ * @ingroup math
+ */
 template<typename Scalar>
-Scalar toRad(const Scalar& a)
+Scalar toRad(const Scalar& deg)
 {
-    return M_PI * a / 180.0;
+    return M_PI * deg / 180.0;
 }
 
+/**
+ * @brief Converts an angle in radians to degrees.
+ * 
+ * @param[in] rad: the angle in radians
+ * @return the angle in degrees.
+ * 
+ * @ingroup math
+ */
 template<typename Scalar>
-Scalar toDeg(const Scalar& a)
+Scalar toDeg(const Scalar& rad)
 {
-    return a * 180.0 / M_PI;
+    return rad * 180.0 / M_PI;
 }
 
 /**
  * @brief Computes and caches the result of the natural logarithm of n!
  *
  * If n > 1024, uses the Stirling approximation.
- * @param n
- * @return
+ * 
+ * @param[in] n: the number for which to compute the natural logarithm of the
+ * factorial.
+ * 
+ * @return the natural logarithm of n!.
+ * 
+ * @ingroup math
  */
 inline double lnOfFactorial(int n)
 {

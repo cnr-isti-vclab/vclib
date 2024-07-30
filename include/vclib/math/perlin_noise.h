@@ -25,6 +25,8 @@
 
 #include <cmath>
 
+// TODO: Improve the documentation of these functions.
+
 namespace vcl {
 
 namespace detail {
@@ -95,15 +97,17 @@ inline double perlinNoiseFade(double t)
 } // namespace detail
 
 /**
- * @brief 3D Perlin noise, returns a value in the [-1,1] range with period 255
+ * @brief 3D Perlin noise, returns a value in the [-1,1] range with period 255.
  *
- * based on the java reference implementation published
- * on http://mrl.nyu.edu/~perlin/noise/
+ * @internal This implementation is based on the java reference implementation published
+ * on http://mrl.nyu.edu/~perlin/noise/.
  *
  * @param x
  * @param y
  * @param z
  * @return
+ * 
+ * @ingroup math
  */
 inline double perlinNoise(double x, double y, double z)
 {
