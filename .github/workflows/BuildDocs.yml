@@ -11,8 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
-        run: | # apt doxygen version is buggy - need to use 1.9.6
-          sudo apt-get install graphviz
+        run: | 
+          sudo apt-get install doxygen graphviz
       - name: Build Docs
         run: |
           doxygen docs/Doxyfile
