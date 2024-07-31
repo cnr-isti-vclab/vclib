@@ -63,7 +63,7 @@ PointType sphericalFibonacciPoint(uint i, uint n)
  *
  * @param[in] n: The number of points to generate.
  * @return A vector of `n` points distributed in a unit sphere.
- * 
+ *
  * @ingroup math
  */
 template<Point3Concept PointType>

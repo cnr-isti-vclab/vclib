@@ -142,10 +142,10 @@ public:
 
     /**
      * @brief Computes the weighted barycenter of the triangle.
-     * 
+     *
      * Given three weights corresponding to the three triangle points, this
      * function computes the weighted barycenter of the triangle.
-     * 
+     *
      * @param[in] w: The weights of the three points of the triangle.
      * @return The weighted barycenter of the triangle.
      */

@@ -36,9 +36,9 @@ namespace vcl {
 /**
  * @brief The Histogram class allows to collect a set of values and then compute
  * some statistics like average, variance, standardDeviation, and percentiles.
- * 
- * @tparam ScalarType 
- * 
+ *
+ * @tparam ScalarType
+ *
  * @ingroup math
  */
 template<typename ScalarType>

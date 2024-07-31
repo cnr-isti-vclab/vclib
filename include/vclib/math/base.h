@@ -38,7 +38,7 @@ namespace vcl {
  *
  * @param[in] number: the number to check
  * @return true if the number is degenerate, false otherwise.
- * 
+ *
  * @ingroup math
  */
 template<typename Scalar>
@@ -50,7 +50,7 @@ bool isDegenerate(Scalar number)
 /**
  * @brief Checks if two floating point numbers are equal within an epsilon
  * value.
- * 
+ *
  * This function returns true if the absolute difference between the two
  * numbers is less than or equal to the epsilon value.
  *
@@ -59,7 +59,7 @@ bool isDegenerate(Scalar number)
  * @param[in] epsilon: the epsilon value to use for the check
  * @return true if the numbers are equal within the epsilon value, false
  * otherwise.
- * 
+ *
  * @ingroup math
  */
 template<typename Scalar>
@@ -73,10 +73,10 @@ bool epsilonEquals(
 
 /**
  * @brief Converts an angle in degrees to radians.
- * 
+ *
  * @param[in] deg: the angle in degrees
  * @return the angle in radians.ù
- * 
+ *
  * @ingroup math
  */
 template<typename Scalar>
@@ -87,10 +87,10 @@ Scalar toRad(const Scalar& deg)
 
 /**
  * @brief Converts an angle in radians to degrees.
- * 
+ *
  * @param[in] rad: the angle in radians
  * @return the angle in degrees.
- * 
+ *
  * @ingroup math
  */
 template<typename Scalar>
@@ -103,12 +103,12 @@ Scalar toDeg(const Scalar& rad)
  * @brief Computes and caches the result of the natural logarithm of n!
  *
  * If n > 1024, uses the Stirling approximation.
- * 
+ *
  * @param[in] n: the number for which to compute the natural logarithm of the
  * factorial.
- * 
+ *
  * @return the natural logarithm of n!.
- * 
+ *
  * @ingroup math
  */
 inline double lnOfFactorial(int n)

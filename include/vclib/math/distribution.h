@@ -35,7 +35,7 @@ namespace vcl {
  * @brief The Distribution class allows to collect a set of values and then
  * compute some statistics like average, variance, standardDeviation, and
  * percentiles.
- * 
+ *
  * @ingroup math
  */
 template<typename Scalar>

@@ -51,7 +51,7 @@ namespace vcl {
  * @param L
  * @param gen
  * @return
- * 
+ *
  * @ingroup math
  */
 inline int poissonRatioOfUniformsInteger(double L, std::mt19937& gen)
@@ -112,7 +112,7 @@ inline int poissonRatioOfUniformsInteger(double L)
  * @param lambda
  * @param gen
  * @return
- * 
+ *
  * @ingroup math
  */
 inline int poissonRandomNumber(double lambda, std::mt19937& gen)
@@ -147,7 +147,7 @@ inline int poissonRandomNumber(double lambda)
  *
  * @param gen
  * @return
- * 
+ *
  * @ingroup math
  */
 template<Point3Concept PointType>

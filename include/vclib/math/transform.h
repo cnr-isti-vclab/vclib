@@ -42,7 +42,7 @@ namespace vcl {
  * @param matrix
  * @param axis
  * @param angleRad
- * 
+ *
  * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType, typename ScalarType>
@@ -78,7 +78,7 @@ void setTransformMatrixRotation(
  * @param matrix
  * @param axis
  * @param angleDeg
- * 
+ *
  * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType, typename ScalarType>
@@ -102,7 +102,7 @@ void setTransformMatrixRotationDeg(
  * @param matrix
  * @param fromVector
  * @param toVector
- * 
+ *
  * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType>
@@ -161,7 +161,7 @@ void setTransformMatrixScale(MatrixType& matrix, const PointType& scale)
  * @param axis
  * @param angleRad
  * @return
- * 
+ *
  * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType, typename ScalarType>
@@ -186,7 +186,7 @@ MatrixType rotationMatrix(const PointType& axis, const ScalarType& angleRad)
  * @param axis
  * @param angleDeg
  * @return
- * 
+ *
  * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType, typename ScalarType>
@@ -207,7 +207,7 @@ MatrixType rotationMatrixDeg(const PointType& axis, const ScalarType& angleDeg)
  * @param fromVector
  * @param toVector
  * @return
- * 
+ *
  * @ingroup math
  */
 template<MatrixConcept MatrixType, Point3Concept PointType>
