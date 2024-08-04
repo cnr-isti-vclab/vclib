@@ -7,8 +7,8 @@
     "runArgs": [
         "-ti"
     ],
-    "workspaceFolder": "/home/ubuntu/devel/vclib",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/devel/vclib,type=bind",
+    "workspaceFolder": "/home/ubuntu/devel/vclib-render",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/devel/vclib-render,type=bind",
 
     // personal mounts for build directory (can't set this in my personal settings...)
     // "mounts": [

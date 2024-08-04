@@ -12,6 +12,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     catch2 \
     clang-18 \
     cmake \
+    dbus \
     doxygen \
     git \
     graphviz \
@@ -20,6 +21,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     libx11-dev \
     libxi-dev \
     libxinerama-dev \
+    libxkbcommon-dev \
     libxcursor-dev \
     libxrandr-dev \
     ninja-build \

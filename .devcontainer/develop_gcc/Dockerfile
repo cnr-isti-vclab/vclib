@@ -12,6 +12,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     build-essential \
     catch2 \
     cmake \
+    dbus \
     doxygen \
     git \
     graphviz \
@@ -21,6 +22,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     libxcursor-dev \
     libxi-dev \
     libxinerama-dev \
+    libxkbcommon-dev \
     libxrandr-dev \
     ninja-build \
     sudo \
