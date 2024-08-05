@@ -65,6 +65,8 @@ struct FirstType
 
 /**
  * @copydoc FirstType
+ * 
+ * @ingroup types
  */
 template<typename... Args>
 struct FirstType<TypeWrapper<Args...>>
@@ -252,6 +254,8 @@ struct FilterTypesByCondition
 
 /**
  * @copydoc FilterTypesByCondition
+ * 
+ * @ingroup types
  */
 template<template<class> class Pred, typename Head, typename... Tail>
 struct FilterTypesByCondition<Pred, Head, Tail...>
@@ -266,6 +270,8 @@ struct FilterTypesByCondition<Pred, Head, Tail...>
 
 /**
  * @copydoc FilterTypesByCondition
+ * 
+ * @ingroup types
  */
 // TypeWrapper specialization
 template<template<class> class Pred, typename... Tail>
@@ -305,6 +311,8 @@ public:
 
 /**
  * @copydoc TypesSatisfyCondition
+ * 
+ * @ingroup types
  */
 // TypeWrapper specialization
 template<template<class> class Pred, typename... Args>
@@ -338,6 +346,8 @@ public:
 
 /**
  * @copydoc GetTypeByCondition
+ * 
+ * @ingroup types
  */
 // TypeWrapper specialization
 template<template<class> class Pred, typename... Args>

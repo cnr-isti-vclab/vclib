@@ -37,7 +37,7 @@ template<FaceConcept FaceType, PointConcept PointType>
 bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
 {
     if constexpr (TriangleFaceConcept<FaceType>) {
-        return triangleBoxIntersect(
+        return intersect(
             TriangleWrapper(
                 f.vertex(0)->coord(),
                 f.vertex(1)->coord(),
@@ -49,7 +49,7 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
 
         std::vector<uint> tris = vcl::earCut(f);
         for (uint i = 0; i < tris.size() && !b; i += 3) {
-            b |= triangleBoxIntersect(
+            b |= intersect(
                 TriangleWrapper(
                     f.vertex(tris[i])->coord(),
                     f.vertex(tris[i + 1])->coord(),
@@ -64,10 +64,10 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
  * @brief Compute the intersection between a sphere and a face, that may be also
  * polygonal.
  *
- * If the face is a triangle, the triangleSphereIntersect function will be used.
- * If the face is polygonal, the face is first triangulated using an earcut
- * algorithm, and then for each triangle, the triangleSphereIntersect is
- * computed.
+ * If the face is a triangle, the intersect function between triangle and sphere
+ * will be used. If the face is polygonal, the face is first triangulated using
+ * an earcut algorithm, and then for each triangle, the triangle-sphere
+ * intersection is computed.
  *
  * @param[in] f: the input face
  * @param[in] sphere: the input sphere
@@ -86,7 +86,7 @@ bool faceSphereIntersect(
     std::pair<SScalar, SScalar>& res)
 {
     if constexpr (TriangleFaceConcept<FaceType>) {
-        return triangleSphereIntersect(
+        return intersect(
             TriangleWrapper(
                 f.vertex(0)->coord(),
                 f.vertex(1)->coord(),
@@ -97,7 +97,7 @@ bool faceSphereIntersect(
     }
     else {
         if (f.vertexNumber() == 3) {
-            return triangleSphereIntersect(
+            return intersect(
                 TriangleWrapper(
                     f.vertex(0)->coord(),
                     f.vertex(1)->coord(),
@@ -115,7 +115,7 @@ bool faceSphereIntersect(
 
             std::vector<uint> tris = vcl::earCut(f);
             for (uint i = 0; i < tris.size() && !b; i += 3) {
-                b |= triangleSphereIntersect(
+                b |= intersect(
                     TriangleWrapper(
                         f.vertex(tris[i])->coord(),
                         f.vertex(tris[i + 1])->coord(),
@@ -138,10 +138,10 @@ bool faceSphereIntersect(
  * @brief Compute the intersection between a sphere and a face, that may be also
  * polygonal.
  *
- * If the face is a triangle, the triangleSphereIntersect function will be used.
- * If the face is polygonal, the face is first triangulated using an earcut
- * algorithm, and then for each triangle, the triangleSphereIntersect is
- * computed.
+ * If the face is a triangle, the intersect function between triangle and sphere
+ * will be used. If the face is polygonal, the face is first triangulated using
+ * an earcut algorithm, and then for each triangle, the triangle-sphere
+ * intersection is computed.
  *
  * @param[in] f: the input face
  * @param[in] sphere: the input sphere

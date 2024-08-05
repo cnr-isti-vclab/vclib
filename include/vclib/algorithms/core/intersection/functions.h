@@ -128,7 +128,7 @@ template<PlaneConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
     static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-        return planeBoxIntersect(o1, o2);
+        return intersect(o1, o2);
     };
 };
 
@@ -137,7 +137,7 @@ template<Box3Concept Obj1, PlaneConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
     static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-        return planeBoxIntersect(o2, o1);
+        return intersect(o2, o1);
     };
 };
 
@@ -146,7 +146,7 @@ template<PlaneConcept Obj1, Segment3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
     static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-        return planeSegmentIntersect(o1, o2);
+        return intersect(o1, o2);
     };
 };
 
@@ -155,7 +155,7 @@ template<Segment3Concept Obj1, PlaneConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
     static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-        return planeSegmentIntersect(o2, o1);
+        return intersect(o2, o1);
     };
 };
 
@@ -164,7 +164,7 @@ template<SphereConcept Obj1, Box3Concept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
     static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-        return sphereBoxIntersect(o1, o2);
+        return intersect(o1, o2);
     };
 };
 
@@ -173,7 +173,7 @@ template<Box3Concept Obj1, SphereConcept Obj2>
 struct IntersFunctionStruct<Obj1, Obj2>
 {
     static inline const auto intersFun = [](const Obj1& o1, const Obj2& o2) {
-        return sphereBoxIntersect(o2, o1);
+        return intersect(o2, o1);
     };
 };
 
