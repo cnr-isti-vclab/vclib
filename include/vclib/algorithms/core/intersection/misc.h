@@ -255,7 +255,7 @@ inline bool axisTestZ0(
  * @param[in] p: The plane to check intersection with.
  * @param[in] box: The box to check intersection with.
  * @return True if the plane intersects with the box, false otherwise.
- * 
+ *
  * @ingroup intersection_core
  */
 template<PlaneConcept PlaneType, Box3Concept BoxType>
@@ -282,7 +282,7 @@ bool intersect(const PlaneType& p, const BoxType& box)
 
 /**
  * @copydoc vcl::intersect(const PlaneType&, const BoxType&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<Box3Concept BoxType, PlaneConcept PlaneType>
@@ -293,19 +293,19 @@ bool intersect(const BoxType& box, const PlaneType& p)
 
 /**
  * @brief Checks if a plane intersects with a segment.
- * 
+ *
  * The function computes the projection of the segment endpoints onto the plane
  * and checks if the endpoints are on opposite sides of the plane. If the
  * endpoints are on opposite sides of the plane, the function returns true,
  * indicating that an intersection exists.
- * 
+ *
  * @tparam PlaneType: The type of plane used in the intersection check.
  * @tparam SegmentType: The type of segment used in the intersection check.
  *
  * @param[in] p: the plane to compute the intersection with.
  * @param[in] s: the 3D segment to compute the intersection with.
  * @return A boolean value indicating whether an intersection was found or not.
- * 
+ *
  * @ingroup intersection_core
  */
 template<PlaneConcept PlaneType, Segment3Concept SegmentType>
@@ -333,7 +333,7 @@ bool intersect(const PlaneType& p, const SegmentType& s)
 
 /**
  * @copydoc vcl::intersect(const PlaneType&, const SegmentType&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<Segment3Concept SegmentType, PlaneConcept PlaneType>
@@ -345,15 +345,15 @@ bool intersect(const SegmentType& s, const PlaneType& p)
 /**
  * @brief Returns the intersection point between a plane and a segment, if it
  * exists.
- * 
+ *
  * The function computes the projection of the segment endpoints onto the plane
  * and checks if the endpoints are on opposite sides of the plane. If the
  * endpoints are on opposite sides of the plane, the function computes and
  * returns the intersection point between the plane and the segment.
- * 
+ *
  * If the endpoints are on the same side of the plane, or if the endpoints have
  * the same projection onto the plane, the function returns an empty optional.
- * 
+ *
  * @tparam PlaneType: The type of plane used in the intersection check.
  * @tparam SegmentType: The type of segment used in the intersection check.
  *
@@ -361,7 +361,7 @@ bool intersect(const SegmentType& s, const PlaneType& p)
  * @param[in] s: the 3D segment to compute the intersection with.
  * @return An optional point that represents the intersection point between the
  * plane and the box, if it exists.
- * 
+ *
  * @ingroup intersection_core
  */
 template<PlaneConcept PlaneType, Segment3Concept SegmentType>
@@ -403,7 +403,7 @@ std::optional<typename SegmentType::PointType> intersection(
  * @param[in] s: The sphere to check for intersection.
  * @param[in] box: The box to check for intersection.
  * @return true if the sphere intersects with the box, false otherwise.
- * 
+ *
  * @ingroup intersection_core
  */
 template<SphereConcept SphereType, Box3Concept BoxType>
@@ -414,7 +414,7 @@ bool intersect(const SphereType& s, const BoxType& box)
 
 /**
  * @copydoc vcl::intersect(const SphereType&, const BoxType&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<Box3Concept BoxType, SphereConcept SphereType>
@@ -441,7 +441,7 @@ bool intersect(const BoxType& box, const SphereType& s)
  * @param[in] p: The point to test for intersection with the triangle.
  * @return True if the point intersects with/is inside the triangle, false
  * otherwise.
- * 
+ *
  * @ingroup intersection_core
  */
 template<ConstTriangle2Concept TriangleType, Point2Concept PointType>
@@ -469,7 +469,7 @@ bool intersect(const TriangleType& t, const PointType& p)
 
 /**
  * @copydoc vcl::intersect(const TriangleType&, const PointType&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<Point2Concept PointType, ConstTriangle2Concept TriangleType>
@@ -490,7 +490,7 @@ bool intersect(const PointType& p, const TriangleType& t)
  * @param[in] p: The point to test for intersection with the triangle.
  * @return True if the point intersects with/is inside the triangle, false
  * otherwise.
- * 
+ *
  * @ingroup intersection_core
  */
 template<ConstTriangle3Concept TriangleType, Point3Concept PointType>
@@ -505,7 +505,7 @@ bool intersect(const TriangleType& t, const PointType& p)
 
 /**
  * @copydoc vcl::intersect(const TriangleType&, const PointType&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<Point3Concept PointType, ConstTriangle3Concept TriangleType>
@@ -516,24 +516,25 @@ bool intersect(const PointType& p, const TriangleType& t)
 
 /**
  * @brief Checks if a triangle intersects with a box.
- * 
+ *
  * The function uses the separating axis theorem to test the overlap between a
  * triangle and a box. It tests for overlap in the following directions:
  * 1) the {x,y,z}-directions (actually, since we use the AABB of the triangle we
  * do not even need to test these)
  * 2) normal of the triangle
  * 3) cross product(edge from tri, {x,y,z}-direction)
- * 
- * @tparam TriangleType: A type that satisfies the ConstTriangle3Concept concept.
+ *
+ * @tparam TriangleType: A type that satisfies the ConstTriangle3Concept
+ * concept.
  * @tparam BoxType: A type that satisfies the Box3Concept concept.
- * 
+ *
  * @param[in] t: The triangle to test for intersection.
  * @param[in] box: The box to test for intersection with the triangle.
- * 
+ *
  * @return True if the box and triangle overlap, false otherwise.
- * 
+ *
  * @private https://gist.github.com/jflipts/fc68d4eeacfcc04fbdb2bf38e0911850
- * 
+ *
  * @ingroup intersection_core
  */
 template<ConstTriangle3Concept TriangleType, Box3Concept BoxType>
@@ -637,7 +638,7 @@ bool intersect(const TriangleType& t, const BoxType& box)
 
 /**
  * @copydoc vcl::intersect(const TriangleType&, const BoxType&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<Box3Concept BoxType, ConstTriangle3Concept TriangleType>
@@ -648,7 +649,7 @@ bool intersect(const BoxType& box, const TriangleType& t)
 
 /**
  * @brief Compute the intersection between a sphere and a triangle.
- * 
+ *
  * @param[in] t: the 3D input triangle
  * @param[in] sphere: the input sphere
  * @param[out] witness: the point on the triangle nearest to the center of the
@@ -657,7 +658,7 @@ bool intersect(const BoxType& box, const TriangleType& t)
  * distance between the triangle and the sphere, while in the second item is
  * stored the penetration depth
  * @return true iff there is an intersection between the sphere and the triangle
- * 
+ *
  * @ingroup intersection_core
  */
 template<
@@ -749,11 +750,11 @@ bool intersect(
 
 /**
  * @brief Compute the intersection between a sphere and a triangle.
- * 
+ *
  * @param[in] t: the 3D input triangle
  * @param[in] sphere: the input sphere
  * @return true iff there is an intersection between the sphere and the triangle
- * 
+ *
  * @ingroup intersection_core
  */
 template<ConstTriangle3Concept TriangleType, SphereConcept SphereType>
@@ -767,7 +768,7 @@ bool intersect(const TriangleType& t, const SphereType& sphere)
 
 /**
  * @copydoc vcl::intersect(const TriangleType&, const SphereType&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<SphereConcept SphereType, ConstTriangle3Concept TriangleType>
