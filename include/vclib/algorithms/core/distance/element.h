@@ -74,7 +74,7 @@ auto pointFaceDistance(
         // If the diagonal of the bounding box is greater than zero, calculate
         // the distance between the query point and the segment.
         if (box.diagonal() > 0) {
-            dist = vcl::pointSegmentDistance(p, s, closest);
+            dist = vcl::distance(p, s, closest);
         }
         else {
             // If the diagonal of the bounding box is zero, set the closest
@@ -88,7 +88,7 @@ auto pointFaceDistance(
         // Calculate the distance between the query point and the plane of the
         // triangle.
         Plane<ScalarType> fPlane(fp0, f.normal());
-        dist = pointPlaneDistance(p, fPlane, true);
+        dist = distance(p, fPlane, true);
 
         if (dist >= maxDist)
             return dist;
@@ -135,17 +135,17 @@ auto pointFaceDistance(
         b0 = fEdge[1][bb] * (closest[ba] - fp1[ba]) -
              fEdge[1][ba] * (closest[bb] - fp1[bb]);
         if (b0 <= 0) {
-            return pointSegmentDistance(p, s0, closest);
+            return distance(p, s0, closest);
         }
         b1 = fEdge[2][bb] * (closest[ba] - fp2[ba]) -
              fEdge[2][ba] * (closest[bb] - fp2[bb]);
         if (b1 <= 0) {
-            return pointSegmentDistance(p, s1, closest);
+            return distance(p, s1, closest);
         }
         b2 = fEdge[0][bb] * (closest[ba] - fp0[ba]) -
              fEdge[0][ba] * (closest[bb] - fp0[bb]);
         if (b2 <= 0) {
-            return pointSegmentDistance(p, s2, closest);
+            return distance(p, s2, closest);
         }
 
         const ScalarType EPS = ScalarType(0.000001);
@@ -153,12 +153,12 @@ auto pointFaceDistance(
         if (b < EPS * faceArea(f)) {
             ScalarType bt;
             if (b == b0)
-                bt = pointSegmentDistance(p, s0, closest);
+                bt = distance(p, s0, closest);
             else if (b == b1)
-                bt = pointSegmentDistance(p, s1, closest);
+                bt = distance(p, s1, closest);
             else {
                 assert(b == b2);
-                bt = pointSegmentDistance(p, s2, closest);
+                bt = distance(p, s2, closest);
             }
             dist = bt;
         }

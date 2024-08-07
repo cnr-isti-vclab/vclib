@@ -142,12 +142,12 @@ requires (Obj1::DIM == Obj2::DIM)
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static inline const auto distFun = [](const Obj1& o1, const Obj2& o2) {
-        return pointSegmentDistance(o1, o2);
+        return distance(o1, o2);
     };
 
     static inline const auto boundDistFun =
         [](const Obj1& o1, const Obj2& o2, ScalarType) {
-            return pointSegmentDistance(o1, o2);
+            return distance(o1, o2);
         };
 };
 
@@ -157,12 +157,12 @@ requires (Obj1::DIM == Obj2::DIM)
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static inline const auto distFun = [](const Obj1& o1, const Obj2& o2) {
-        return pointSegmentDistance(o2, o1);
+        return distance(o2, o1);
     };
 
     static inline const auto boundDistFun =
         [](const Obj1& o1, const Obj2& o2, ScalarType) {
-            return pointSegmentDistance(o2, o1);
+            return distance(o2, o1);
         };
 };
 

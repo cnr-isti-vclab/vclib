@@ -26,7 +26,7 @@
 #include "distance/functions.h"
 
 /**
- * @defgroup distance Distance Algorithms
+ * @defgroup distance_core Core Distance Algorithms
  *
  * @ingroup algorithms_core
  *

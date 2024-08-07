@@ -28,53 +28,127 @@
 
 namespace vcl {
 
+/**
+ * @brief Compute the distance between a point and a plane.
+ *
+ * Compute the distance between a point and a plane. The distance can be signed
+ * or unsigned, depending on the value of the signedDist parameter.
+ *
+ * @tparam PointType: The type of the input point.
+ * @tparam PlaneType: The type of the input plane.
+ * 
+ * @param[in] point: The input point.
+ * @param[in] plane: The input plane.
+ * @param[in] signedDist: If true, the distance is signed, otherwise it is
+ * unsigned.
+ * @return The distance between the point and the plane.
+ * 
+ * @ingroup distance_core
+ */
 template<Point3Concept PointType, PlaneConcept PlaneType>
-auto pointPlaneDistance(
-    const PointType& p,
+auto distance(
+    const PointType& point,
     const PlaneType& plane,
     bool             signedDist = false)
 {
-    auto dist = plane.direction().dot(p) - plane.offset();
+    auto dist = plane.direction().dot(point) - plane.offset();
     if (!signedDist)
         dist = std::abs(dist);
     return dist;
 }
 
+/**
+ * @copydoc vcl::distance(const PointType&, const PlaneType&, bool)
+ * 
+ * @ingroup distance_core
+ */
+template<PlaneConcept PlaneType, Point3Concept PointType>
+auto distance(
+    const PlaneType& plane,
+    const PointType& point,
+    bool             signedDist = false)
+{
+    return distance(point, plane, signedDist);
+}
+
+/**
+ * @brief Compute the distance between a point and a segment.
+ *
+ * Compute the distance between a point and a segment of any dimension. The
+ * closest point on the segment is also computed, and stored in the closestPoint
+ * parameter.
+ *
+ * @tparam PointType: The type of the input point.
+ * @tparam SegmentType: The type of the input segment.
+ *
+ * @param[in] point: The input point.
+ * @param[in] segment: The input segment.
+ * @param[out] closestPoint: The closest point on the segment.
+ * @return The distance between the point and the segment.
+ *
+ * @ingroup distance_core
+ */
 template<PointConcept PointType, SegmentConcept SegmentType>
-auto pointSegmentDistance(
-    const PointType&   p,
-    const SegmentType& s,
-    PointType&         closest) requires (PointType::DIM == SegmentType::DIM)
+auto distance(
+    const PointType&   point,
+    const SegmentType& segment,
+    PointType& closestPoint) requires (PointType::DIM == SegmentType::DIM)
 {
     using ScalarType = PointType::ScalarType;
 
     ScalarType dist;
 
-    PointType  dir = s.direction();
+    PointType  dir = segment.direction();
     ScalarType esn = dir.squaredNorm();
 
     if (esn < std::numeric_limits<ScalarType>::min()) {
-        closest = s.midPoint();
+        closestPoint = segment.midPoint();
     }
     else {
-        ScalarType t = ((p - s.p0()).dot(dir)) / esn;
+        ScalarType t = ((point - segment.p0()).dot(dir)) / esn;
         if (t < 0)
             t = 0;
         else if (t > 1)
             t = 1;
 
-        closest = s.p0() * (1 - t) + s.p1() * t;
+        closestPoint = segment.p0() * (1 - t) + segment.p1() * t;
     }
-    dist = p.dist(closest);
+    dist = point.dist(closestPoint);
     return dist;
 }
 
+/**
+ * @brief Compute the distance between a point and a segment.
+ *
+ * Compute the distance between a point and a segment of any dimension.
+ * 
+ * @tparam PointType: The type of the input point.
+ * @tparam SegmentType: The type of the input segment.
+ * 
+ * @param[in] point: The input point.
+ * @param[in] segment: The input segment.
+ * @return The distance between the point and the segment.
+ * 
+ * @ingroup distance_core
+ */
 template<PointConcept PointType, SegmentConcept SegmentType>
-auto pointSegmentDistance(const PointType& p, const SegmentType& s)
+auto distance(const PointType& point, const SegmentType& segment)
     requires (PointType::DIM == SegmentType::DIM)
 {
-    PointType closest;
-    return pointSegmentDistance(p, s, closest);
+    PointType closestPoint;
+    return distance(point, segment, closestPoint);
+}
+
+/**
+ * @copydoc vcl::distance(const PointType&, const SegmentType&)
+ * 
+ * @ingroup distance_core
+ */
+template<SegmentConcept SegmentType, PointConcept PointType>
+auto distance(const SegmentType& segment, const PointType& point)
+    requires (PointType::DIM == SegmentType::DIM)
+{
+    return distance(point, segment);
 }
 
 } // namespace vcl
