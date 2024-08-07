@@ -38,7 +38,7 @@ vcl::TriMesh bimbaSphereIntersection(
     vcl::updatePerFaceNormals(m);
     vcl::updatePerVertexNormals(m);
 
-    return vcl::meshSphereIntersection(m, s);
+    return vcl::intersection(m, s);
 }
 
 #endif // BIMBA_SPHERE_INTERSECTION_H

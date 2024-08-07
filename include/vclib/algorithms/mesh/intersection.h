@@ -73,12 +73,14 @@ namespace vcl {
  *
  * @return the intersection between the original mesh and the plane as a
  * collection of line segments with optional normal vectors.
+ * 
+ * @ingroup intersection_mesh
  */
 template<
     EdgeMeshConcept EdgeMesh,
     FaceMeshConcept MeshType,
     PlaneConcept    PlaneType>
-EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
+EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
 {
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
@@ -172,19 +174,23 @@ EdgeMesh meshPlaneIntersection(const MeshType& m, const PlaneType& pl)
 /**
  * @brief Compute the intersection between a mesh and a ball.
  *
- * given a mesh return a new mesh made by a copy of all the faces entirely
- * included in the ball plus new faces created by refining the ones
- * intersected by the ball border. It works by recursively splitting the
+ * Given a mesh and a sphere, returns a new mesh made by a copy of all the faces
+ * entirely included in the sphere, plus new faces created by refining the ones
+ * intersected by the sphere border. It works by recursively splitting the
  * triangles that cross the border, as long as their area is greater than a
- * given value tol. NOTE: the returned mesh is a triangle soup
+ * given value tol. 
+ * 
+ * @note The returned mesh is a triangle soup
  *
  * @param m
  * @param sphere
  * @param tol
  * @return
+ *
+ * @ingroup intersection_mesh
  */
 template<FaceMeshConcept MeshType, typename SScalar>
-MeshType meshSphereIntersection(
+MeshType intersection(
     const MeshType&             m,
     const vcl::Sphere<SScalar>& sphere,
     double                      tol)
@@ -194,11 +200,11 @@ MeshType meshSphereIntersection(
     using ScalarType = CoordType::ScalarType;
     using FaceType   = MeshType::FaceType;
 
-    auto ffilter = [&sphere](const FaceType& f) -> bool {
+    auto faceSphereIntersectionFilter = [&sphere](const FaceType& f) -> bool {
         return intersect(f, sphere);
     };
 
-    MeshType res = perFaceMeshFilter(m, ffilter);
+    MeshType res = perFaceMeshFilter(m, faceSphereIntersectionFilter);
 
     uint i = 0;
     while (i < res.faceContainerSize()) {
@@ -263,20 +269,19 @@ MeshType meshSphereIntersection(
 }
 
 /**
- * @brief Same as meshSphereIntersection(MeshType, Sphere, double);
- *
+ * @copydoc intersection(const MeshType&, const PlaneType&)
+ * 
  * The tolerance is set as 1/10^5*2*pi*radius.
- * @param m
- * @param sphere
- * @return
+ * 
+ * @ingroup intersection_mesh
  */
 template<FaceMeshConcept MeshType, typename SScalar>
-MeshType meshSphereIntersection(
+MeshType intersection(
     const MeshType&             m,
     const vcl::Sphere<SScalar>& sphere)
 {
     double tol = M_PI * sphere.radius() * sphere.radius() / 100000;
-    return meshSphereIntersection(m, sphere, tol);
+    return intersection(m, sphere, tol);
 }
 
 } // namespace vcl

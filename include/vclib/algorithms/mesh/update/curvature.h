@@ -298,7 +298,7 @@ void updatePrincipalCurvaturePCA(
         }
         else {
             Sphere<ScalarType> sph(v.coord(), radius);
-            MeshType           tmpMesh = meshSphereIntersection(m, sph);
+            MeshType           tmpMesh = intersection(m, sph);
 
             A = covarianceMatrixOfMesh(tmpMesh);
         }
