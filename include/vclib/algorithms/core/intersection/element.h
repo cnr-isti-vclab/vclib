@@ -33,8 +33,28 @@
 
 namespace vcl {
 
+/**
+ * @brief Checks if a face intersects a box.
+ *
+ * The function uses the separating axis theorem to test the overlap between a
+ * triangle and a box. If the face is a triangle, the function will use the
+ * intersect function between a triangle and a box. If the face is polygonal,
+ * the face is first triangulated using an earcut algorithm, and then for each
+ * triangle, the triangle-box intersection is computed.
+ * 
+ * @see vcl::intersect(const TriangleWrapper<Scalar>&, const Box<PointType>&)
+ *
+ * @tparam FaceType: A type that satisfies the FaceConcept.
+ * @tparam PointType: A type that satisfies the PointConcept.
+ * 
+ * @param[in] f: The input face.
+ * @param[in] box: The input box.
+ * @return True if the face intersects the box, false otherwise.
+ *
+ * @ingroup intersection_core
+ */
 template<FaceConcept FaceType, PointConcept PointType>
-bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
+bool intersect(const FaceType& f, const Box<PointType>& box)
 {
     if constexpr (TriangleFaceConcept<FaceType>) {
         return intersect(
@@ -61,6 +81,17 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
 }
 
 /**
+ * @copydoc intersect(const FaceType&, const Box<PointType>&)
+ * 
+ * @ingroup intersection_core
+ */
+template<PointConcept PointType, FaceConcept FaceType>
+bool intersect(const Box<PointType>& box, const FaceType& f)
+{
+    return intersect(f, box);
+}
+
+/**
  * @brief Compute the intersection between a sphere and a face, that may be also
  * polygonal.
  *
@@ -77,9 +108,11 @@ bool faceBoxIntersect(const FaceType& f, const Box<PointType>& box)
  * distance between the face and the sphere, while in the second item is stored
  * the penetration depth
  * @return true iff there is an intersection between the sphere and the face
+ * 
+ * @ingroup intersection_core
  */
 template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
-bool faceSphereIntersect(
+bool intersect(
     const FaceType&              f,
     const Sphere<SScalar>&       sphere,
     PointType&                   witness,
@@ -146,13 +179,26 @@ bool faceSphereIntersect(
  * @param[in] f: the input face
  * @param[in] sphere: the input sphere
  * @return true iff there is an intersection between the sphere and the face
+ * 
+ * @ingroup intersection_core
  */
 template<FaceConcept FaceType, typename SScalar>
-bool faceSphereIntersect(const FaceType& f, const Sphere<SScalar>& sphere)
+bool intersect(const FaceType& f, const Sphere<SScalar>& sphere)
 {
     Point3<SScalar>             witness;
     std::pair<SScalar, SScalar> res;
-    return faceSphereIntersect(f, sphere, witness, res);
+    return intersect(f, sphere, witness, res);
+}
+
+/**
+ * @copydoc intersect(const FaceType&, const Sphere<SScalar>&)
+ * 
+ * @ingroup intersection_core
+ */
+template<typename SScalar, FaceConcept FaceType>
+bool intersect(const Sphere<SScalar>& sphere, const FaceType& f)
+{
+    return intersect(f, sphere);
 }
 
 } // namespace vcl
