@@ -73,7 +73,7 @@ namespace vcl {
  *
  * @return the intersection between the original mesh and the plane as a
  * collection of line segments with optional normal vectors.
- * 
+ *
  * @ingroup intersection_mesh
  */
 template<
@@ -178,8 +178,8 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
  * entirely included in the sphere, plus new faces created by refining the ones
  * intersected by the sphere border. It works by recursively splitting the
  * triangles that cross the border, as long as their area is greater than a
- * given value tol. 
- * 
+ * given value tol.
+ *
  * @note The returned mesh is a triangle soup
  *
  * @param m
@@ -270,15 +270,13 @@ MeshType intersection(
 
 /**
  * @copydoc intersection(const MeshType&, const PlaneType&)
- * 
+ *
  * The tolerance is set as 1/10^5*2*pi*radius.
- * 
+ *
  * @ingroup intersection_mesh
  */
 template<FaceMeshConcept MeshType, typename SScalar>
-MeshType intersection(
-    const MeshType&             m,
-    const vcl::Sphere<SScalar>& sphere)
+MeshType intersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere)
 {
     double tol = M_PI * sphere.radius() * sphere.radius() / 100000;
     return intersection(m, sphere, tol);

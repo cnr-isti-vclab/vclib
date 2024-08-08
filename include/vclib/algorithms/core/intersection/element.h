@@ -41,12 +41,12 @@ namespace vcl {
  * intersect function between a triangle and a box. If the face is polygonal,
  * the face is first triangulated using an earcut algorithm, and then for each
  * triangle, the triangle-box intersection is computed.
- * 
+ *
  * @see vcl::intersect(const TriangleWrapper<Scalar>&, const Box<PointType>&)
  *
  * @tparam FaceType: A type that satisfies the FaceConcept.
  * @tparam PointType: A type that satisfies the PointConcept.
- * 
+ *
  * @param[in] f: The input face.
  * @param[in] box: The input box.
  * @return True if the face intersects the box, false otherwise.
@@ -82,7 +82,7 @@ bool intersect(const FaceType& f, const Box<PointType>& box)
 
 /**
  * @copydoc intersect(const FaceType&, const Box<PointType>&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<PointConcept PointType, FaceConcept FaceType>
@@ -108,7 +108,7 @@ bool intersect(const Box<PointType>& box, const FaceType& f)
  * distance between the face and the sphere, while in the second item is stored
  * the penetration depth
  * @return true iff there is an intersection between the sphere and the face
- * 
+ *
  * @ingroup intersection_core
  */
 template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
@@ -179,7 +179,7 @@ bool intersect(
  * @param[in] f: the input face
  * @param[in] sphere: the input sphere
  * @return true iff there is an intersection between the sphere and the face
- * 
+ *
  * @ingroup intersection_core
  */
 template<FaceConcept FaceType, typename SScalar>
@@ -192,7 +192,7 @@ bool intersect(const FaceType& f, const Sphere<SScalar>& sphere)
 
 /**
  * @copydoc intersect(const FaceType&, const Sphere<SScalar>&)
- * 
+ *
  * @ingroup intersection_core
  */
 template<typename SScalar, FaceConcept FaceType>

@@ -36,13 +36,13 @@ namespace vcl {
  *
  * @tparam PointType: The type of the input point.
  * @tparam PlaneType: The type of the input plane.
- * 
+ *
  * @param[in] point: The input point.
  * @param[in] plane: The input plane.
  * @param[in] signedDist: If true, the distance is signed, otherwise it is
  * unsigned.
  * @return The distance between the point and the plane.
- * 
+ *
  * @ingroup distance_core
  */
 template<Point3Concept PointType, PlaneConcept PlaneType>
@@ -59,7 +59,7 @@ auto distance(
 
 /**
  * @copydoc vcl::distance(const PointType&, const PlaneType&, bool)
- * 
+ *
  * @ingroup distance_core
  */
 template<PlaneConcept PlaneType, Point3Concept PointType>
@@ -121,14 +121,14 @@ auto distance(
  * @brief Compute the distance between a point and a segment.
  *
  * Compute the distance between a point and a segment of any dimension.
- * 
+ *
  * @tparam PointType: The type of the input point.
  * @tparam SegmentType: The type of the input segment.
- * 
+ *
  * @param[in] point: The input point.
  * @param[in] segment: The input segment.
  * @return The distance between the point and the segment.
- * 
+ *
  * @ingroup distance_core
  */
 template<PointConcept PointType, SegmentConcept SegmentType>
@@ -141,7 +141,7 @@ auto distance(const PointType& point, const SegmentType& segment)
 
 /**
  * @copydoc vcl::distance(const PointType&, const SegmentType&)
- * 
+ *
  * @ingroup distance_core
  */
 template<SegmentConcept SegmentType, PointConcept PointType>
