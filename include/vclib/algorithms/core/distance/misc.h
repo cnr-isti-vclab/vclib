@@ -29,6 +29,24 @@
 namespace vcl {
 
 /**
+ * @brief Compute the distance between two Points of any dimension.
+ * 
+ * @tparam PointType: The type of the input points.
+ * 
+ * @param[in] point0: The first input point.
+ * @param[in] point1: The second input point.
+ * 
+ * @return The distance between the two points.
+ * 
+ * @ingroup distance_core
+ */
+template<PointConcept PointType>
+auto distance(const PointType& point0, const PointType& point1)
+{
+    return point0.dist(point1);
+}
+
+/**
  * @brief Compute the distance between a point and a plane.
  *
  * Compute the distance between a point and a plane. The distance can be signed
