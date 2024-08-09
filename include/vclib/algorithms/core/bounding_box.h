@@ -25,6 +25,7 @@
 
 #include <vclib/concepts/iterators.h>
 #include <vclib/concepts/mesh/elements/edge.h>
+#include <vclib/concepts/space/triangle.h>
 #include <vclib/concepts/range.h>
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/segment.h>
@@ -116,6 +117,32 @@ auto boundingBox(const SphereType& s)
 
     b.add(s.center() - s.radius());
     b.add(s.center() + s.radius());
+
+    return b;
+}
+
+/**
+ * @brief Compute the bounding box of a triangle
+ * 
+ * Given a triangle `t`, this function computes and returns the bounding box
+ * of the triangle. The bounding box is represented by a `vcl::Box` object.
+ * 
+ * @tparam TriangleType: The type of the triangle.
+ * 
+ * @param[in] t: The input triangle to compute the bounding box of 
+ * @return The bounding box of the input triangle
+ * 
+ * @ingroup core_bounding_box
+ */
+template<ConstTriangleConcept TriangleType>
+auto boundingBox(const TriangleType& t)
+{
+    using PointType = TriangleType::PointType;
+    vcl::Box<PointType> b;
+
+    b.add(t.point(0));
+    b.add(t.point(1));
+    b.add(t.point(2));
 
     return b;
 }
