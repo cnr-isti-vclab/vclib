@@ -30,9 +30,11 @@
 namespace vcl {
 
 /**
- * @brief The LoggerConcept is evaluated to true when the input type is a valid
- * Logger type.
+ * @brief The LoggerConcept is satisfied if the type T is a valid Logger type.
  *
+ * A valid Logger type must provide a set of member functions to control the
+ * logging behavior, that are checked by this concept.
+ * 
  * @note The NullLogger class does satisfy this concept, by providing all the
  * required member functions as no-op.
  *

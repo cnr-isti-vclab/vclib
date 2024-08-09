@@ -27,6 +27,15 @@
 
 namespace vcl {
 
+/**
+ * @brief Concept for types representing const triangles in Euclidean space.
+ *
+ * This concept is less strict than the vcl::TriangleConcept as it does not
+ * require the type to be mutable (i.e., it does not require the type to provide
+ * non-const member functions).
+ *
+ * @ingroup space_concepts
+ */
 template<typename T>
 concept ConstTriangleConcept = requires (const T& co) {
     // clang-format off
@@ -44,6 +53,15 @@ concept ConstTriangleConcept = requires (const T& co) {
     // clang-format on
 };
 
+/**
+ * @brief Concept for types representing triangles in Euclidean space.
+ *
+ * This concept is more strict than the vcl::ConstTriangleConcept as it requires
+ * the type to be mutable (i.e., it requires the type to provide non-const
+ * member functions).
+ * 
+ * @ingroup space_concepts
+ */
 template<typename T>
 concept TriangleConcept =
     ConstTriangleConcept<T> && requires (T o, const T& co) {

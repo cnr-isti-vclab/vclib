@@ -89,9 +89,9 @@ public:
     PointT barycenter() const { return barycenter(mPoints); }
 
     template<typename WIterator>
-    PointT weightedBarycenter(WIterator wbegin) const
+    PointT weightedBarycenter(WIterator wBegin) const
     {
-        return weightedBarycenter(mPoints.begin(), mPoints.end(), wbegin);
+        return weightedBarycenter(mPoints.begin(), mPoints.end(), wBegin);
     }
 
     ScalarType perimeter() const { return perimeter(mPoints); }
@@ -114,7 +114,7 @@ public:
      * The normal is computed as the normalized sum of the cross products of
      * each triplet of consecutive points.
      *
-     * @tparam Iterator: an iterator which points to a type that satiesfies the
+     * @tparam Iterator: an iterator which points to a type that satisfies the
      * PointConcept.
      * @param[in] begin: iterator pointing to the first point of the polygon.
      * @param[in] end: end iterator
@@ -156,7 +156,7 @@ public:
      * the iterators begin and end, listed in counterclockwise order,
      * representing a polygon.
      *
-     * @tparam Iterator: an iterator which points to a type that satiesfies the
+     * @tparam Iterator: an iterator which points to a type that satisfies the
      * PointConcept.
      *
      * @param[in] begin: iterator pointing to the first point of the polygon.
@@ -191,16 +191,16 @@ public:
      * @brief Computes the weighted barycenter of a container of 3D points
      * iterated between the iterators begin and end, listed in counterclockwise
      * order, representing a polygon. Weights are iterated by another iterator
-     * wbegin, which iterates to a container of the same size of the polygon
+     * wBegin, which iterates to a container of the same size of the polygon
      * container.
      *
-     * @tparam Iterator: an iterator which points to a type that satiesfies the
+     * @tparam Iterator: an iterator which points to a type that satisfies the
      * PointConcept.
      * @tparam WIterator: an iterator which points to a scalar type.
      *
      * @param[in] begin: iterator pointing to the first point of the polygon.
      * @param[in] end: end iterator of the polygon container.
-     * @param[in] wbegin: iterator pointing to the first weight associated to
+     * @param[in] wBegin: iterator pointing to the first weight associated to
      * the fist polygon point.
      * @return The weighted barycenter of the polygon.
      */
@@ -208,21 +208,21 @@ public:
     static PointT weightedBarycenter(
         Iterator  begin,
         Iterator  end,
-        WIterator wbegin)
+        WIterator wBegin)
         requires (std::is_same_v<typename Iterator::value_type, PointT>)
     {
         using ScalarType = WIterator::value_type;
 
         PointT bar;
         bar.setZero();
-        ScalarType wsum = 0;
+        ScalarType wSum = 0;
 
-        for (; begin != end; ++begin, ++wbegin) {
-            bar += *begin * *wbegin;
-            wsum += *wbegin;
+        for (; begin != end; ++begin, ++wBegin) {
+            bar += *begin * *wBegin;
+            wSum += *wBegin;
         }
 
-        return bar / wsum;
+        return bar / wSum;
     }
 
     template<vcl::Range Rp, vcl::Range Rw>
@@ -245,7 +245,7 @@ public:
      * the point type to have a ScalarType and a dist() function that calculates
      * the distance between two points.
      *
-     * @tparam Iterator: an iterator which points to a type that satiesfies the
+     * @tparam Iterator: an iterator which points to a type that satisfies the
      * PointConcept.
      *
      * @param[in] begin: An iterator pointing to the first point in the range.
@@ -283,7 +283,7 @@ public:
      * simple triangles, but it is less efficient thant the function
      * "Triangle<PointT>::area()".
      *
-     * @tparam Iterator: an iterator which points to a type that satiesfies the
+     * @tparam Iterator: an iterator which points to a type that satisfies the
      * PointConcept.
      *
      * @param[in] begin: an iterator pointing to the first point in the polygon

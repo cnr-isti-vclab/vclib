@@ -31,39 +31,9 @@ namespace vcl {
 /**
  * @brief Concept for types representing points in Euclidean space.
  *
- * A type `T` models the `PointConcept` if it provides the following:
- *
- * - `typename T::ScalarType`: a type that represents the scalar used for the
- * coordinates of the point.
- * - `o.DIM`: a static data member or constant expression that specifies the
- * dimension of the point.
- * - `o.isDegenerate()`: a member function that returns true if the point is
- * degenerate (e.g., the zero vector).
- * - `co.dot(co)`: a member function that returns the dot product of the point
- * with another point `co`.
- * - `co.angle(co)`: a member function that returns the angle between the point
- * and another point `co`.
- * - `co.dist(co)`: a member function that returns the Euclidean distance
- * between the point and another point `co`.
- * - `co.squaredDist(co)`: a member function that returns the squared Euclidean
- * distance between the point and another point `co`.
- * - `co.norm()`: a member function that returns the Euclidean norm (length) of
- * the point.
- * - `co.squaredNorm()`: a member function that returns the squared Euclidean
- * norm (length) of the point.
- * - `co.size()`: a member function that returns the size (number of
- * coordinates) of the point.
- * - `o.setConstant(typename T::ScalarType())`: a member function that sets all
- * coordinates of the point to a constant scalar value.
- * - `o.setZero()`: a member function that sets all coordinates of the point to
- * zero.
- * - `o.setOnes()`: a member function that sets all coordinates of the point to
- * one.
- * - `o.normalize()`: a member function that normalizes the point to have unit
- * length.
- * - `co.hash()`: a member function that returns a hash value for the point.
- *
  * @tparam T: The type to be tested for conformity to the PointConcept.
+ * 
+ * @ingroup space_concepts
  */
 template<typename T>
 concept PointConcept = requires (T o, const T& co) {
@@ -118,46 +88,54 @@ concept PointConcept = requires (T o, const T& co) {
 };
 
 /**
- * @brief A concept for points in two-dimensional space.
+ * @brief Concept for points in two-dimensional space.
  *
- * A type satisfies this concept if it satisfies the `PointConcept` and if the
- * `DIM` value of the point type is 2.
+ * A type satisfies this concept if it satisfies the vcl::PointConcept and if
+ * the `DIM` value of the point type is 2.
  *
  * @tparam T: The type to be tested for conformity to the Point2Concept.
+ *
+ * @ingroup space_concepts
  */
 template<typename T>
 concept Point2Concept = PointConcept<T> && T::DIM == 2;
 
 /**
- * @brief A concept for points in three-dimensional space.
+ * @brief Concept for points in three-dimensional space.
  *
- * A type satisfies this concept if it satisfies the `PointConcept` and if the
- * `DIM` value of the point type is 3.
+ * A type satisfies this concept if it satisfies the vcl::PointConcept and if
+ * the `DIM` value of the point type is 3.
  *
  * @tparam T: The type to be tested for conformity to the Point3Concept.
+ *
+ * @ingroup space_concepts
  */
 template<typename T>
 concept Point3Concept = PointConcept<T> && T::DIM == 3;
 
 /**
- * @brief A concept for points in four-dimensional space.
+ * @brief Concept for points in four-dimensional space.
  *
- * A type satisfies this concept if it satisfies the `PointConcept` and if the
- * `DIM` value of the point type is 4.
+ * A type satisfies this concept if it satisfies the vcl::PointConcept and if
+ * the `DIM` value of the point type is 4.
  *
  * @tparam T: The type to be tested for conformity to the Point4Concept.
+ *
+ * @ingroup space_concepts
  */
 template<typename T>
 concept Point4Concept = PointConcept<T> && T::DIM == 4;
 
 /**
  * @brief Concept for iterators that iterate over Points (class that satisfies
- * the PointConcept).
+ * the vcl::PointConcept).
  *
  * A type satisfies this concept if it is an iterator having its `value_type`
- * that satisfies the `PointConcpet`.
+ * that satisfies the vcl::PointConcept.
  *
  * @tparam It: The type to be tested for conformity to the PointIteratorConcept.
+ * 
+ * @ingroup space_concepts
  */
 template<typename It>
 concept PointIteratorConcept =
@@ -165,13 +143,15 @@ concept PointIteratorConcept =
 
 /**
  * @brief Concept for iterators that iterate over 2D Points (class that
- * satisfies the Point2Concept).
+ * satisfies the vcl::Point2Concept).
  *
  * A type satisfies this concept if it is an iterator having its `value_type`
- * that satisfies the `Point2Concpet`.
+ * that satisfies the vcl::Point2Concept.
  *
  * @tparam It: The type to be tested for conformity to the
  * Point2IteratorConcept.
+ * 
+ * @ingroup space_concepts
  */
 template<typename It>
 concept Point2IteratorConcept =
@@ -179,13 +159,15 @@ concept Point2IteratorConcept =
 
 /**
  * @brief Concept for iterators that iterate over 3D Points (class that
- * satisfies the Point3Concept).
+ * satisfies the vcl::Point3Concept).
  *
  * A type satisfies this concept if it is an iterator having its `value_type`
- * that satisfies the `Point3Concpet`.
+ * that satisfies the vcl::Point3Concept.
  *
  * @tparam It: The type to be tested for conformity to the
  * Point3IteratorConcept.
+ * 
+ * @ingroup space_concepts
  */
 template<typename It>
 concept Point3IteratorConcept =
@@ -193,13 +175,15 @@ concept Point3IteratorConcept =
 
 /**
  * @brief Concept for iterators that iterate over 4D Points (class that
- * satisfies the Point4Concept).
+ * satisfies the vcl::Point4Concept).
  *
  * A type satisfies this concept if it is an iterator having its `value_type`
- * that satisfies the `Point4Concpet`.
+ * that satisfies the vcl::Point4Concept.
  *
  * @tparam It: The type to be tested for conformity to the
  * Point4IteratorConcept.
+ * 
+ * @ingroup space_concepts
  */
 template<typename It>
 concept Point4IteratorConcept =

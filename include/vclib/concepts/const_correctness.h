@@ -28,8 +28,8 @@
 namespace vcl {
 
 /**
- * @brief Utility concept that is evaluated true if T is const or it is a
- * pointer to const.
+ * @brief The IsConst concept is satisfied if T is const or it is a pointer to
+ * const.
  *
  * @ingroup util_concepts
  */
