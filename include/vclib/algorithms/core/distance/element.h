@@ -32,8 +32,26 @@
 
 namespace vcl {
 
+template<VertexConcept VertexType, Point3Concept PointType>
+auto distance(const VertexType& v, const PointType& p)
+{
+    return v.coord().dist(p);
+}
+
+template<Point3Concept PointType, VertexConcept VertexType>
+auto distance(const PointType& p, const VertexType& v)
+{
+    return v.coord().dist(p);
+}
+
+template<VertexConcept VertexType1, VertexConcept VertexType2>
+auto distance(const VertexType1& v1, const VertexType2& v2)
+{
+    return v1.coord().dist(v2.coord());
+}
+
 /**
- * @brief Calculate the distance between a 3D point and a 3D triangle face.
+ * @brief Compute the distance between a 3D point and a 3D triangle face.
  *
  * @tparam PointType: The type of point. Must satisfy the Point3Concept.
  * @tparam FaceType: The type of face. Must satisfy the FaceConcept.
@@ -47,9 +65,11 @@ namespace vcl {
  * @param[in] signedDist: Whether to calculate the signed distance. Default is
  * false.
  * @return The distance between the point and the face.
+ * 
+ * @ingroup distance_core
  */
 template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
-auto pointFaceDistance(
+auto boundedDistance(
     const PointType& p,
     const FaceType&  f,
     ScalarType       maxDist,
@@ -171,18 +191,29 @@ auto pointFaceDistance(
 }
 
 template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
-auto pointFaceDistance(
+auto boundedDistance(
     const PointType& p,
     const FaceType&  f,
     ScalarType       maxDist,
     bool             signedDist = false)
 {
     PointType closest;
-    return pointFaceDistance(p, f, maxDist, closest, signedDist);
+    return boundedDistance(p, f, maxDist, closest, signedDist);
+}
+
+template<FaceConcept FaceType, Point3Concept PointType, typename ScalarType>
+auto boundedDistance(
+    const FaceType&  f,
+    const PointType& p,
+    ScalarType       maxDist,
+    bool             signedDist = false)
+{
+    PointType closest;
+    return boundedDistance(p, f, maxDist, closest, signedDist);
 }
 
 template<Point3Concept PointType, FaceConcept FaceType>
-auto pointFaceDistance(
+auto distance(
     const PointType& p,
     const FaceType&  f,
     PointType&       closest,
@@ -191,7 +222,7 @@ auto pointFaceDistance(
     using ScalarType = PointType::ScalarType;
 
     ScalarType maxDist = std::numeric_limits<ScalarType>::max();
-    return pointFaceDistance(p, f, maxDist, closest, signedDist);
+    return boundedDistance(p, f, maxDist, closest, signedDist);
 }
 
 /**
@@ -205,9 +236,11 @@ auto pointFaceDistance(
  * @param[in] signedDist: Whether to calculate the signed distance. Default is
  * false.
  * @return The distance between the point and the face.
+ * 
+ * @ingroup distance_core
  */
 template<Point3Concept PointType, FaceConcept FaceType>
-auto pointFaceDistance(
+auto distance(
     const PointType& p,
     const FaceType&  f,
     bool             signedDist = false)
@@ -217,7 +250,33 @@ auto pointFaceDistance(
     PointType closest;
 
     ScalarType maxDist = std::numeric_limits<ScalarType>::max();
-    return pointFaceDistance(p, f, maxDist, closest, signedDist);
+    return boundedDistance(p, f, maxDist, closest, signedDist);
+}
+
+/**
+ * @copydoc vcl::distance(const PointType&, const FaceType&, bool)
+ * 
+ * @ingroup distance_core
+ */
+template<FaceConcept FaceType, Point3Concept PointType>
+auto distance(
+    const FaceType&  f,
+    const PointType& p,
+    bool             signedDist = false)
+{
+    return distance(p, f, signedDist);
+}
+
+template<VertexConcept VertexType, FaceConcept FaceType>
+auto distance(const VertexType& v, const FaceType& f, bool signedDist = false)
+{
+    return distance(v.coord(), f, signedDist);
+}
+
+template<FaceConcept FaceType, VertexConcept VertexType>
+auto distance(const FaceType& f, const VertexType& v, bool signedDist = false)
+{
+    return distance(v.coord(), f, signedDist);
 }
 
 } // namespace vcl

@@ -72,7 +72,11 @@ struct DistFunctionStruct
 template<typename Obj1, typename Obj2>
 auto distFunction()
 {
-    return DistFunctionStruct<Obj1, Obj2, double>::distFun;
+    auto f = [](const Obj1& o1, const Obj2& o2) {
+        return vcl::distance(o1, o2);
+    };
+
+    return f;
 }
 
 /**
@@ -214,12 +218,12 @@ template<Point3Concept Obj1, FaceConcept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static const inline auto distFun = [](const Obj1& o1, const Obj2& o2) {
-        return pointFaceDistance(o1, o2);
+        return distance(o1, o2);
     };
 
     static const inline auto boundDistFun =
         [](const Obj1& o1, const Obj2& o2, ScalarType m) {
-            return pointFaceDistance(o1, o2, m);
+            return boundedDistance(o1, o2, m);
         };
 };
 
@@ -228,12 +232,12 @@ template<FaceConcept Obj1, Point3Concept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static const inline auto distFun = [](const Obj1& o1, const Obj2& o2) {
-        return pointFaceDistance(o2, o1);
+        return distance(o2, o1);
     };
 
     static const inline auto boundDistFun =
         [](const Obj1& o1, const Obj2& o2, ScalarType m) {
-            return pointFaceDistance(o2, o1, m);
+            return boundedDistance(o2, o1, m);
         };
 };
 
@@ -242,12 +246,12 @@ template<VertexConcept Obj1, FaceConcept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static const inline auto distFun = [](const Obj1& o1, const Obj2& o2) {
-        return pointFaceDistance(o1.coord(), o2);
+        return distance(o1.coord(), o2);
     };
 
     static const inline auto boundDistFun =
         [](const Obj1& o1, const Obj2& o2, ScalarType m) {
-            return pointFaceDistance(o1.coord(), o2, m);
+            return boundedDistance(o1.coord(), o2, m);
         };
 };
 
@@ -256,12 +260,12 @@ template<FaceConcept Obj1, VertexConcept Obj2, typename ScalarType>
 struct DistFunctionStruct<Obj1, Obj2, ScalarType>
 {
     static const inline auto distFun = [](const Obj1& o1, const Obj2& o2) {
-        return pointFaceDistance(o2.coord(), o1);
+        return distance(o2.coord(), o1);
     };
 
     static const inline auto boundDistFun =
         [](const Obj1& o1, const Obj2& o2, ScalarType m) {
-            return pointFaceDistance(o2.coord(), o1, m);
+            return boundedDistance(o2.coord(), o1, m);
         };
 };
 

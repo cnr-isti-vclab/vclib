@@ -39,7 +39,7 @@ int main()
     PointType c;
 
     for (const auto& f : m.faces()) {
-        double dist = vcl::pointFaceDistance(p, f, c);
+        double dist = vcl::distance(p, f, c);
 
         std::cerr << "Face " << m.index(f) << ": \n";
         std::cerr << "\tdist: " << dist << ";\n";
