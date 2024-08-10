@@ -32,7 +32,7 @@ namespace vcl {
  * @brief Concept for types representing points in Euclidean space.
  *
  * @tparam T: The type to be tested for conformity to the PointConcept.
- * 
+ *
  * @ingroup space_concepts
  */
 template<typename T>
@@ -134,7 +134,7 @@ concept Point4Concept = PointConcept<T> && T::DIM == 4;
  * that satisfies the vcl::PointConcept.
  *
  * @tparam It: The type to be tested for conformity to the PointIteratorConcept.
- * 
+ *
  * @ingroup space_concepts
  */
 template<typename It>
@@ -150,7 +150,7 @@ concept PointIteratorConcept =
  *
  * @tparam It: The type to be tested for conformity to the
  * Point2IteratorConcept.
- * 
+ *
  * @ingroup space_concepts
  */
 template<typename It>
@@ -166,7 +166,7 @@ concept Point2IteratorConcept =
  *
  * @tparam It: The type to be tested for conformity to the
  * Point3IteratorConcept.
- * 
+ *
  * @ingroup space_concepts
  */
 template<typename It>
@@ -182,7 +182,7 @@ concept Point3IteratorConcept =
  *
  * @tparam It: The type to be tested for conformity to the
  * Point4IteratorConcept.
- * 
+ *
  * @ingroup space_concepts
  */
 template<typename It>

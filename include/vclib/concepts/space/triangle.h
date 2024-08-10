@@ -59,7 +59,7 @@ concept ConstTriangleConcept = requires (const T& co) {
  * This concept is more strict than the vcl::ConstTriangleConcept as it requires
  * the type to be mutable (i.e., it requires the type to provide non-const
  * member functions).
- * 
+ *
  * @ingroup space_concepts
  */
 template<typename T>

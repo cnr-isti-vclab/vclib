@@ -34,7 +34,7 @@ namespace vcl {
  *
  * A valid Logger type must provide a set of member functions to control the
  * logging behavior, that are checked by this concept.
- * 
+ *
  * @note The NullLogger class does satisfy this concept, by providing all the
  * required member functions as no-op.
  *

@@ -74,7 +74,7 @@ concept IsAnyPointer = IsPointer<T> || IsSharedPointer<T>;
  * constant object.
  *
  * @ingroup util_concepts
- * 
+ *
  * @private https://stackoverflow.com/a/37370281/5851101
  */
 template<typename T>

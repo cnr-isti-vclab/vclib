@@ -35,21 +35,19 @@ namespace detail {
 /**
  * @brief Concept that checks if exists a bounded distance function between two
  * objects of type Obj1 and Obj2.
- * 
+ *
  * It is used by the boundedDistFunction() function to check if a proper
  * bounded distance function exists for the given types. If it does not exist,
- * the function will return the standard distance function, and the bound 
+ * the function will return the standard distance function, and the bound
  * parameter will be ignored.
- * 
- * @tparam Obj1 
- * @tparam Obj2 
- * @tparam ST 
+ *
+ * @tparam Obj1
+ * @tparam Obj2
+ * @tparam ST
  */
 template<typename Obj1, typename Obj2, typename ST>
-concept BoundedDistFunctionExists = requires(Obj1 o1, Obj2 o2, ST v)
-{
-    vcl::boundedDistance(o1, o2, v);
-};
+concept BoundedDistFunctionExists =
+    requires (Obj1 o1, Obj2 o2, ST v) { vcl::boundedDistance(o1, o2, v); };
 
 } // namespace detail
 
@@ -131,7 +129,7 @@ auto distFunction()
 template<typename Obj1, typename Obj2, typename ScalarType = double>
 auto boundedDistFunction()
 {
-    if constexpr(detail::BoundedDistFunctionExists<Obj1, Obj2, ScalarType>) {
+    if constexpr (detail::BoundedDistFunctionExists<Obj1, Obj2, ScalarType>) {
         auto f = [](const Obj1& o1, const Obj2& o2, ScalarType s) {
             return vcl::boundedDistance(o1, o2, s);
         };

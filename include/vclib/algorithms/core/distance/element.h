@@ -35,15 +35,15 @@ namespace vcl {
 
 /**
  * @brief Computes the distance between a Vertex and a 3D point.
- * 
+ *
  * @tparam VertexType: The type of vertex. Must satisfy the VertexConcept.
  * @tparam PointType: The type of point. Must satisfy the Point3Concept.
- * 
+ *
  * @param[in] v: The vertex to calculate the distance from.
  * @param[in] p: The point to calculate the distance to.
- * 
+ *
  * @return The distance between the vertex and the point.
- * 
+ *
  * @ingroup distance_core
  */
 template<VertexConcept VertexType, Point3Concept PointType>
@@ -54,7 +54,7 @@ auto distance(const VertexType& v, const PointType& p)
 
 /**
  * @copydoc vcl::distance(const VertexType&, const PointType&)
- * 
+ *
  * @ingroup distance_core
  */
 template<Point3Concept PointType, VertexConcept VertexType>
@@ -72,9 +72,9 @@ auto distance(const PointType& p, const VertexType& v)
  * VertexConcept.
  * @param[in] v1: The first vertex.
  * @param[in] v2: The second vertex.
- * 
+ *
  * @return The distance between the two vertices.
- * 
+ *
  * @ingroup distance_core
  */
 template<VertexConcept VertexType1, VertexConcept VertexType2>
@@ -125,7 +125,7 @@ auto boundedDistance(
 
         std::vector<uint> tris = vcl::earCut(f);
         for (uint i = 0; i < tris.size(); i += 3) {
-            PointType w;
+            PointType  w;
             ScalarType d = boundedDistance(
                 p,
                 TriangleWrapper(
@@ -153,7 +153,7 @@ auto boundedDistance(
  * function between a point and a triangle. If the face is a polygon, the face
  * is first triangulated using an earcut algorithm, and then for each triangle,
  * the distance between the point and the triangle is computed.
- * 
+ *
  * @tparam PointType: The type of point. Must satisfy the Point3Concept.
  * @tparam FaceType: The type of face. Must satisfy the FaceConcept.
  *
@@ -249,10 +249,7 @@ auto distance(
  * @ingroup distance_core
  */
 template<Point3Concept PointType, FaceConcept FaceType>
-auto distance(
-    const PointType& p,
-    const FaceType&  f,
-    bool             signedDist = false)
+auto distance(const PointType& p, const FaceType& f, bool signedDist = false)
 {
     using ScalarType = PointType::ScalarType;
 
@@ -264,14 +261,11 @@ auto distance(
 
 /**
  * @copydoc vcl::distance(const PointType&, const FaceType&, bool)
- * 
+ *
  * @ingroup distance_core
  */
 template<FaceConcept FaceType, Point3Concept PointType>
-auto distance(
-    const FaceType&  f,
-    const PointType& p,
-    bool             signedDist = false)
+auto distance(const FaceType& f, const PointType& p, bool signedDist = false)
 {
     return distance(p, f, signedDist);
 }
@@ -303,7 +297,7 @@ auto distance(const VertexType& v, const FaceType& f, bool signedDist = false)
 
 /**
  * @copydoc vcl::distance(const VertexType&, const FaceType&, bool)
- * 
+ *
  * @ingroup distance_core
  */
 template<FaceConcept FaceType, VertexConcept VertexType>
