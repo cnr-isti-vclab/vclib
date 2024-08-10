@@ -252,29 +252,29 @@ inline bool axisTestZ0(
  * @tparam PlaneType: The type of plane used in the intersection check.
  * @tparam BoxType: The type of box used in the intersection check.
  *
- * @param[in] p: The plane to check intersection with.
+ * @param[in] plane: The plane to check intersection with.
  * @param[in] box: The box to check intersection with.
  * @return True if the plane intersects with the box, false otherwise.
  *
  * @ingroup intersection_core
  */
 template<PlaneConcept PlaneType, Box3Concept BoxType>
-bool intersect(const PlaneType& p, const BoxType& box)
+bool intersect(const PlaneType& plane, const BoxType& box)
 {
     using PointType  = BoxType::PointType;
     using ScalarType = PointType::ScalarType;
 
     // Convert AABB to center-extents representation
-    PointType c = (box.max() + box.min()) * 0.5f; // Compute AABB center
-    PointType e = box.max() - c;                  // Compute positive extents
+    PointType c = box.center(); // Compute AABB center
+    PointType e = box.max() - c; // Compute positive extents
 
-    PointType n = p.direction();
+    PointType n = plane.direction();
     // Compute the projection interval radius of b onto L(t) = b.c + t * p.n
     ScalarType r =
         e[0] * std::abs(n[0]) + e[1] * std::abs(n[1]) + e[2] * std::abs(n[2]);
 
     // Compute distance of box center from plane
-    ScalarType s = n.dot(c) - p.offset();
+    ScalarType s = n.dot(c) - plane.offset();
 
     // Intersection occurs when distance s falls within [-r,+r] interval
     return std::abs(s) <= r;
@@ -302,21 +302,21 @@ bool intersect(const BoxType& box, const PlaneType& p)
  * @tparam PlaneType: The type of plane used in the intersection check.
  * @tparam SegmentType: The type of segment used in the intersection check.
  *
- * @param[in] p: the plane to compute the intersection with.
- * @param[in] s: the 3D segment to compute the intersection with.
+ * @param[in] plane: the plane to compute the intersection with.
+ * @param[in] segment: the 3D segment to compute the intersection with.
  * @return A boolean value indicating whether an intersection was found or not.
  *
  * @ingroup intersection_core
  */
 template<PlaneConcept PlaneType, Segment3Concept SegmentType>
-bool intersect(const PlaneType& p, const SegmentType& s)
+bool intersect(const PlaneType& plane, const SegmentType& segment)
 {
     using ScalarType = SegmentType::ScalarType;
 
     ScalarType p0Proj;
     ScalarType p1Proj;
 
-    detail::projectSegmentEndPoints(p, s, p1Proj, p0Proj);
+    detail::projectSegmentEndPoints(plane, segment, p1Proj, p0Proj);
 
     // If both endpoints are on the same side of the plane, there is no
     // intersection.
@@ -337,9 +337,9 @@ bool intersect(const PlaneType& p, const SegmentType& s)
  * @ingroup intersection_core
  */
 template<Segment3Concept SegmentType, PlaneConcept PlaneType>
-bool intersect(const SegmentType& s, const PlaneType& p)
+bool intersect(const SegmentType& segment, const PlaneType& plane)
 {
-    return intersect(p, s);
+    return intersect(plane, segment);
 }
 
 /**
@@ -357,8 +357,8 @@ bool intersect(const SegmentType& s, const PlaneType& p)
  * @tparam PlaneType: The type of plane used in the intersection check.
  * @tparam SegmentType: The type of segment used in the intersection check.
  *
- * @param[in] p: the plane to compute the intersection with.
- * @param[in] s: the 3D segment to compute the intersection with.
+ * @param[in] plane: the plane to compute the intersection with.
+ * @param[in] segment: the 3D segment to compute the intersection with.
  * @return An optional point that represents the intersection point between the
  * plane and the box, if it exists.
  *
@@ -366,8 +366,8 @@ bool intersect(const SegmentType& s, const PlaneType& p)
  */
 template<PlaneConcept PlaneType, Segment3Concept SegmentType>
 std::optional<typename SegmentType::PointType> intersection(
-    const PlaneType&   p,
-    const SegmentType& s)
+    const PlaneType&   plane,
+    const SegmentType& segment)
 {
     std::optional<typename SegmentType::PointType> intersection;
 
@@ -376,7 +376,7 @@ std::optional<typename SegmentType::PointType> intersection(
     ScalarType p0Proj;
     ScalarType p1Proj;
 
-    detail::projectSegmentEndPoints(p, s, p1Proj, p0Proj);
+    detail::projectSegmentEndPoints(plane, segment, p1Proj, p0Proj);
 
     // If either endpoint is on the opposite side of the plane, there is an
     // intersection.
@@ -384,10 +384,10 @@ std::optional<typename SegmentType::PointType> intersection(
         // check that we perform the computation in a way that is independent
         // with v0 v1 swaps
         if (p1Proj < p0Proj)
-            intersection = s.p0() + (s.p1() - s.p0()) *
+            intersection = segment.p0() + (segment.p1() - segment.p0()) *
                                         std::abs(p1Proj / (p0Proj - p1Proj));
         if (p1Proj > p0Proj)
-            intersection = s.p1() + (s.p0() - s.p1()) *
+            intersection = segment.p1() + (segment.p0() - segment.p1()) *
                                         std::abs(p0Proj / (p1Proj - p0Proj));
     }
 
@@ -400,16 +400,16 @@ std::optional<typename SegmentType::PointType> intersection(
  * @tparam SphereType: A type that satisfies the SphereConcept concept.
  * @tparam BoxType: A type that satisfies the Box3Concept concept.
  *
- * @param[in] s: The sphere to check for intersection.
+ * @param[in] sphere: The sphere to check for intersection.
  * @param[in] box: The box to check for intersection.
  * @return true if the sphere intersects with the box, false otherwise.
  *
  * @ingroup intersection_core
  */
 template<SphereConcept SphereType, Box3Concept BoxType>
-bool intersect(const SphereType& s, const BoxType& box)
+bool intersect(const SphereType& sphere, const BoxType& box)
 {
-    return s.intersects(box);
+    return sphere.intersects(box);
 }
 
 /**
@@ -418,9 +418,9 @@ bool intersect(const SphereType& s, const BoxType& box)
  * @ingroup intersection_core
  */
 template<Box3Concept BoxType, SphereConcept SphereType>
-bool intersect(const BoxType& box, const SphereType& s)
+bool intersect(const BoxType& box, const SphereType& sphere)
 {
-    return s.intersects(box);
+    return sphere.intersects(box);
 }
 
 /**
@@ -437,32 +437,34 @@ bool intersect(const BoxType& box, const SphereType& s)
  * concept.
  * @tparam PointType: A type that satisfies the Point2Concept concept.
  *
- * @param[in] t: The triangle to test for intersection.
- * @param[in] p: The point to test for intersection with the triangle.
+ * @param[in] triangle: The triangle to test for intersection.
+ * @param[in] point: The point to test for intersection with the triangle.
  * @return True if the point intersects with/is inside the triangle, false
  * otherwise.
  *
  * @ingroup intersection_core
  */
 template<ConstTriangle2Concept TriangleType, Point2Concept PointType>
-bool intersect(const TriangleType& t, const PointType& p)
+bool intersect(const TriangleType& triangle, const PointType& point)
 {
     using TP         = TriangleType::PointType;
     using ScalarType = TP::ScalarType;
 
-    const TP& p0 = t.point(0);
-    const TP& p1 = t.point(1);
-    const TP& p2 = t.point(2);
+    const TP& p0 = triangle.point(0);
+    const TP& p1 = triangle.point(1);
+    const TP& p2 = triangle.point(2);
 
-    ScalarType A    = t.area();
+    ScalarType A    = triangle.area();
     ScalarType sign = A < 0 ? -1 : 1;
 
-    ScalarType s = (p0.y() * p2.x() - p0.x() * p2.y() +
-                    (p2.y() - p0.y()) * p.x() + (p0.x() - p2.x()) * p.y()) *
-                   sign;
-    ScalarType tt = (p0.x() * p1.y() - p0.y() * p1.x() +
-                     (p0.y() - p1.y()) * p.x() + (p1.x() - p0.x()) * p.y()) *
-                    sign;
+    ScalarType s =
+        (p0.y() * p2.x() - p0.x() * p2.y() + (p2.y() - p0.y()) * point.x() +
+         (p0.x() - p2.x()) * point.y()) *
+        sign;
+    ScalarType tt =
+        (p0.x() * p1.y() - p0.y() * p1.x() + (p0.y() - p1.y()) * point.x() +
+         (p1.x() - p0.x()) * point.y()) *
+        sign;
 
     return s > 0 && tt > 0 && (s + tt) < 2 * A * sign;
 }
@@ -473,9 +475,9 @@ bool intersect(const TriangleType& t, const PointType& p)
  * @ingroup intersection_core
  */
 template<Point2Concept PointType, ConstTriangle2Concept TriangleType>
-bool intersect(const PointType& p, const TriangleType& t)
+bool intersect(const PointType& point, const TriangleType& triangle)
 {
-    return intersect(t, p);
+    return intersect(triangle, point);
 }
 
 /**
@@ -486,19 +488,19 @@ bool intersect(const PointType& p, const TriangleType& t)
  * concept.
  * @tparam PointType: A type that satisfies the Point3Concept concept.
  *
- * @param[in] t: The triangle to test for intersection.
- * @param[in] p: The point to test for intersection with the triangle.
+ * @param[in] triangle: The triangle to test for intersection.
+ * @param[in] point: The point to test for intersection with the triangle.
  * @return True if the point intersects with/is inside the triangle, false
  * otherwise.
  *
  * @ingroup intersection_core
  */
 template<ConstTriangle3Concept TriangleType, Point3Concept PointType>
-bool intersect(const TriangleType& t, const PointType& p)
+bool intersect(const TriangleType& triangle, const PointType& point)
 {
-    PointType v1 = t.point(1) - t.point(0);
-    PointType v2 = t.point(2) - t.point(0);
-    PointType v3 = p - t.point(0);
+    PointType v1 = triangle.point(1) - triangle.point(0);
+    PointType v2 = triangle.point(2) - triangle.point(0);
+    PointType v3 = point - triangle.point(0);
 
     return v1.dot(v2.cross(v3)) > 0;
 }
@@ -509,9 +511,9 @@ bool intersect(const TriangleType& t, const PointType& p)
  * @ingroup intersection_core
  */
 template<Point3Concept PointType, ConstTriangle3Concept TriangleType>
-bool intersect(const PointType& p, const TriangleType& t)
+bool intersect(const PointType& point, const TriangleType& triangle)
 {
-    return intersect(t, p);
+    return intersect(triangle, point);
 }
 
 /**
@@ -528,7 +530,7 @@ bool intersect(const PointType& p, const TriangleType& t)
  * concept.
  * @tparam BoxType: A type that satisfies the Box3Concept concept.
  *
- * @param[in] t: The triangle to test for intersection.
+ * @param[in] triangle: The triangle to test for intersection.
  * @param[in] box: The box to test for intersection with the triangle.
  *
  * @return True if the box and triangle overlap, false otherwise.
@@ -538,7 +540,7 @@ bool intersect(const PointType& p, const TriangleType& t)
  * @ingroup intersection_core
  */
 template<ConstTriangle3Concept TriangleType, Box3Concept BoxType>
-bool intersect(const TriangleType& t, const BoxType& box)
+bool intersect(const TriangleType& triangle, const BoxType& box)
 {
     using PointType  = TriangleType::PointType;
     using ScalarType = PointType::ScalarType;
@@ -559,9 +561,9 @@ bool intersect(const TriangleType& t, const BoxType& box)
 
     /* This is the fastest branch on Sun */
     /* move everything so that the boxCenter is in (0,0,0) */
-    PointType v0 = t.point(0) - boxCenter;
-    PointType v1 = t.point(1) - boxCenter;
-    PointType v2 = t.point(2) - boxCenter;
+    PointType v0 = triangle.point(0) - boxCenter;
+    PointType v1 = triangle.point(1) - boxCenter;
+    PointType v2 = triangle.point(2) - boxCenter;
 
     /* compute triangle edges */
     PointType e0 = v1 - v0;
@@ -629,7 +631,8 @@ bool intersect(const TriangleType& t, const BoxType& box)
      *  compute plane equation of triangle: normal*x+d=0
      */
     normal = e0.cross(e1);
-    vcl::Plane<ScalarType> plane(t.point(0), t.point(1), t.point(2));
+    vcl::Plane<ScalarType> plane(
+        triangle.point(0), triangle.point(1), triangle.point(2));
     if (!intersect(plane, box))
         return false;
 
@@ -642,15 +645,15 @@ bool intersect(const TriangleType& t, const BoxType& box)
  * @ingroup intersection_core
  */
 template<Box3Concept BoxType, ConstTriangle3Concept TriangleType>
-bool intersect(const BoxType& box, const TriangleType& t)
+bool intersect(const BoxType& box, const TriangleType& triangle)
 {
-    return intersect(t, box);
+    return intersect(triangle, box);
 }
 
 /**
  * @brief Compute the intersection between a sphere and a triangle.
  *
- * @param[in] t: the 3D input triangle
+ * @param[in] triangle: the 3D input triangle
  * @param[in] sphere: the input sphere
  * @param[out] witness: the point on the triangle nearest to the center of the
  * sphere (even when there isn't intersection)
@@ -667,7 +670,7 @@ template<
     Point3Concept         PointType,
     typename ScalarType>
 bool intersect(
-    const TriangleType&                t,
+    const TriangleType&                triangle,
     const SphereType&                  sphere,
     PointType&                         witness,
     std::pair<ScalarType, ScalarType>& res)
@@ -676,9 +679,9 @@ bool intersect(
 
     ScalarType radius = sphere.radius();
     PointType  center = sphere.center();
-    PointType  p0     = t.point0() - center;
-    PointType  p1     = t.point1() - center;
-    PointType  p2     = t.point2() - center;
+    PointType  p0     = triangle.point0() - center;
+    PointType  p1     = triangle.point1() - center;
+    PointType  p2     = triangle.point2() - center;
 
     PointType p10 = p1 - p0;
     PointType p21 = p2 - p1;
@@ -751,19 +754,19 @@ bool intersect(
 /**
  * @brief Compute the intersection between a sphere and a triangle.
  *
- * @param[in] t: the 3D input triangle
+ * @param[in] triangle: the 3D input triangle
  * @param[in] sphere: the input sphere
  * @return true iff there is an intersection between the sphere and the triangle
  *
  * @ingroup intersection_core
  */
 template<ConstTriangle3Concept TriangleType, SphereConcept SphereType>
-bool intersect(const TriangleType& t, const SphereType& sphere)
+bool intersect(const TriangleType& triangle, const SphereType& sphere)
 {
     using SScalar = SphereType::ScalarType;
     typename TriangleType::PointType witness;
     std::pair<SScalar, SScalar>      res;
-    return intersect(t, sphere, witness, res);
+    return intersect(triangle, sphere, witness, res);
 }
 
 /**
