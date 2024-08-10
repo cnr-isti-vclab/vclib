@@ -79,7 +79,7 @@ void addTriangleFacesFromPolygon(
 
     // compute earcut of the polygons
     std::vector<uint> tris =
-        Polygon<CoordType>::earCut(polCoords.begin(), polCoords.end());
+        Polygon<CoordType>::earCut(polCoords);
 
     // faux edges management: create a set of unordered edges of the polygon
     // note: we use indices from 0 to polygon.size() because that are the output
