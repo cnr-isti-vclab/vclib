@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_MESH_POLYGON_H
 #define VCL_ALGORITHMS_MESH_POLYGON_H
 
+#include <vclib/algorithms/core/polygon/topology.h>
 #include <vclib/algorithms/mesh/face_topology.h>
 
 namespace vcl {
@@ -78,7 +79,7 @@ void addTriangleFacesFromPolygon(
     }
 
     // compute earcut of the polygons
-    std::vector<uint> tris = Polygon<CoordType>::earCut(polCoords);
+    std::vector<uint> tris = vcl::earCut(polCoords);
 
     // faux edges management: create a set of unordered edges of the polygon
     // note: we use indices from 0 to polygon.size() because that are the output

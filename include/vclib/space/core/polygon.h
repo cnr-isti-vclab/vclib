@@ -26,14 +26,6 @@
 #include <ranges>
 #include <vector>
 
-#if __has_include(<mapbox/earcut.hpp>)
-#include <mapbox/earcut.hpp>
-#else
-// inclusion for usage of vclib without CMake - not ideal but necessary for
-// header only
-#include "../../../external/earcut.hpp-2.2.3/include/mapbox/earcut.hpp"
-#endif
-
 #include <vclib/concepts/range.h>
 #include <vclib/concepts/space/polygon.h>
 #include <vclib/space/core/point.h>
@@ -81,6 +73,16 @@ public:
      * @brief Construct a new empty Polygon object.
      */
     Polygon() {}
+
+    /**
+     * @brief Construct a new Polygon object from an initializer list of points.
+     *
+     * @param[in] points: the list of points that define the polygon.
+     */
+    Polygon(std::initializer_list<PointT> points)
+        : mPoints(points)
+    {
+    }
 
     /**
      * @brief Construct a new Polygon object from a range of points.
@@ -227,20 +229,6 @@ public:
      * @return The area of the polygon.
      */
     ScalarType area() const { return area(mPoints); }
-
-    /**
-     * @brief Triangulates the polygon using the ear-cutting algorithm.
-     *
-     * @return A vector containing the indices of the vertices that form
-     * triangles in the triangulated polygon. Each group of three indices
-     * represents the vertices of a single triangle, and the indices are ordered
-     * in a counter-clockwise direction.
-     */
-    std::vector<uint> earCut() const
-        requires (PointT::DIM == 2 || PointT::DIM == 3)
-    {
-        return earCut(mPoints);
-    }
 
     /**
      * @brief Returns an iterator pointing to the first point of the polygon.
@@ -517,135 +505,6 @@ public:
     {
         return area(std::ranges::begin(range), std::ranges::end(range));
     }
-
-    /**
-     * @brief Triangulates a simple polygon with no holes using the ear-cutting
-     * algorithm.
-     *
-     * @tparam Iterator: The type of iterator used to represent the vertices of
-     * the polygon. It must satisfy the Point2Concept requirement.
-     * @param[in] begin: An iterator pointing to the first vertex of the
-     * polygon.
-     * @param[in] end: An iterator pointing to one past the last vertex of the
-     * polygon.
-     * @return A vector containing the indices of the vertices that form
-     * triangles in the triangulated polygon. Each group of three indices
-     * represents the vertices of a single triangle, and the indices are ordered
-     * in a counter-clockwise direction.
-     * @throws std::logic_error If the polygon is not simple or has holes.
-     *
-     * @remarks This function uses the ear-cutting algorithm to triangulate a
-     * simple polygon with no holes. The polygon is represented as a sequence of
-     * vertices, where each vertex is a two-dimensional point. The function
-     * returns a vector containing the indices of the vertices that form
-     * triangles in the triangulated polygon. The indices are ordered in a
-     * counter-clockwise direction, and each group of three indices represents
-     * the vertices of a single triangle. The function requires that the type of
-     * iterator used to represent the vertices of the polygon satisfies the
-     * Point2Concept requirement, which means that it must have a value_type
-     * that is a Point2 object with a ScalarType member representing the scalar
-     * type used to represent the coordinates of the point. If the polygon is
-     * not simple or has holes, the function throws a std::logic_error.
-     */
-    template<typename Iterator>
-    static std::vector<uint> earCut(Iterator begin, Iterator end) requires (
-        std::is_same_v<typename Iterator::value_type, PointT> &&
-        PointT::DIM == 2)
-    {
-        using Scalar = PointT::ScalarType;
-
-        // Convert the polygon represented as a sequence of vertices to a vector
-        // of vectors of points. This is necessary because the earcut library
-        // expects the polygon to be represented as a vector of contours, where
-        // each contour is a vector of points. In this case, there is only one
-        // contour, which is represented as a vector of points.
-        std::vector<std::vector<Point2<Scalar>>> poly;
-        poly.emplace_back(begin, end);
-
-        // Use the earcut library to triangulate the polygon and return the
-        // result.
-        return mapbox::earcut<uint>(poly);
-    }
-
-    /**
-     * @brief Triangulates a simple polygon with no holes in 3D space by
-     * projecting it onto a 2D plane and applying the ear-cutting algorithm.
-     *
-     * @tparam Iterator: The type of iterator used to represent the vertices of
-     * the polygon. It must satisfy the Point3Concept requirement.
-     * @param[in] begin: An iterator pointing to the first vertex of the
-     * polygon.
-     * @param[in] end: An iterator pointing to one past the last vertex of the
-     * polygon.
-     * @return A vector containing the indices of the vertices that form
-     * triangles in the triangulated polygon. Each group of three indices
-     * represents the vertices of a single triangle, and the indices are ordered
-     * in a counter-clockwise direction.
-     * @throws std::logic_error If the polygon is not simple or has holes.
-     *
-     * @remarks This function triangulates a simple polygon with no holes in 3D
-     * space by projecting it onto a 2D plane and applying the ear-cutting
-     * algorithm. The polygon is represented as a sequence of vertices, where
-     * each vertex is a three-dimensional point. The function first calculates
-     * the normal vector of the polygon and an orthonormal basis for the plane
-     * containing the polygon. It then projects each vertex onto the plane and
-     * triangulates the resulting 2D polygon using the ear-cutting algorithm.
-     * The function returns a vector containing the indices of the vertices that
-     * form triangles in the triangulated polygon. The indices are ordered in a
-     * counter-clockwise direction, and each group of three indices represents
-     * the vertices of a single triangle. The function requires that the type of
-     * iterator used to represent the vertices of the polygon satisfies the
-     * Point3Concept requirement, which means that it must have a value_type
-     * that is a Point3 object with a ScalarType member representing the scalar
-     * type used to represent the coordinates of the point. If the polygon is
-     * not simple or has holes, the function throws a std::logic_error.
-     */
-    template<typename Iterator>
-    static std::vector<uint> earCut(Iterator begin, Iterator end) requires (
-        std::is_same_v<typename Iterator::value_type, PointT> &&
-        PointT::DIM == 3)
-    {
-        using Scalar = PointType::ScalarType;
-
-        // Calculate the normal vector of the polygon and an orthonormal basis
-        // for the plane containing the polygon.
-        PointType n = normal(begin, end);
-        PointType u, v;
-        n.orthoBase(u, v);
-
-        // Project each vertex onto the plane defined by the orthonormal basis.
-        std::vector<Point2<Scalar>> poly2D;
-
-        if constexpr (std::is_same_v<
-                          typename Iterator::iterator_category,
-                          std::random_access_iterator_tag>)
-        {
-            poly2D.reserve(std::distance(begin, end));
-        }
-
-        for (auto i = begin; i != end; ++i) {
-            // project i-th polygon in a 2D plane
-            poly2D.emplace_back(*i * u, *i * v);
-        }
-
-        // Use the ear-cut algorithm to triangulate the polygon in the 2D plane
-        // and return the result.
-        return Polygon<Point2<Scalar>>::earCut(poly2D.begin(), poly2D.end());
-    }
-
-    /**
-     * @copybrief earCut(Iterator, Iterator)
-     *
-     * @tparam R: a range of points that satisfy the PointConcept.
-     * @param[in] range: the range of points that define the polygon.
-     * @return A vector containing the indices of the vertices that form
-     * triangles in the triangulated polygon.
-     */
-    template<vcl::Range R>
-    static std::vector<uint> earCut(R&& range)
-    {
-        return earCut(std::ranges::begin(range), std::ranges::end(range));
-    }
 };
 
 /* Specialization Aliases */
@@ -705,23 +564,5 @@ using Polygon3f = Polygon<Point3f>;
 using Polygon3d = Polygon<Point3d>;
 
 } // namespace vcl
-
-/* Structs to make working the mapbox earcut algorithm on vcl::Point2 */
-
-namespace mapbox::util {
-
-template<typename Scalar>
-struct nth<0, vcl::Point2<Scalar>>
-{
-    inline static auto get(const vcl::Point2<Scalar>& t) { return t.x(); };
-};
-
-template<typename Scalar>
-struct nth<1, vcl::Point2<Scalar>>
-{
-    inline static auto get(const vcl::Point2<Scalar>& t) { return t.y(); };
-};
-
-} // namespace mapbox::util
 
 #endif // VCL_SPACE_CORE_POLYGON_H
