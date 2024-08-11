@@ -265,7 +265,7 @@ bool intersect(const PlaneType& plane, const BoxType& box)
     using ScalarType = PointType::ScalarType;
 
     // Convert AABB to center-extents representation
-    PointType c = box.center(); // Compute AABB center
+    PointType c = box.center();  // Compute AABB center
     PointType e = box.max() - c; // Compute positive extents
 
     PointType n = plane.direction();
@@ -384,11 +384,13 @@ std::optional<typename SegmentType::PointType> intersection(
         // check that we perform the computation in a way that is independent
         // with v0 v1 swaps
         if (p1Proj < p0Proj)
-            intersection = segment.p0() + (segment.p1() - segment.p0()) *
-                                        std::abs(p1Proj / (p0Proj - p1Proj));
+            intersection =
+                segment.p0() + (segment.p1() - segment.p0()) *
+                                   std::abs(p1Proj / (p0Proj - p1Proj));
         if (p1Proj > p0Proj)
-            intersection = segment.p1() + (segment.p0() - segment.p1()) *
-                                        std::abs(p0Proj / (p1Proj - p0Proj));
+            intersection =
+                segment.p1() + (segment.p0() - segment.p1()) *
+                                   std::abs(p0Proj / (p1Proj - p0Proj));
     }
 
     return intersection;
