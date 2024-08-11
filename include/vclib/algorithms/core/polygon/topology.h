@@ -37,6 +37,8 @@
 #include <vclib/space/core/polygon.h>
 #include <vclib/views/mesh.h>
 
+#include "projection.h"
+
 /* Structs to make working the mapbox earcut algorithm on vcl::Point2 */
 
 namespace mapbox::util {
@@ -85,6 +87,8 @@ namespace vcl {
  * that is a Point2 object with a ScalarType member representing the scalar
  * type used to represent the coordinates of the point. If the polygon is
  * not simple or has holes, the function throws a std::logic_error.
+ * 
+ * @ingroup algorithms_core_polygon
  */
 template<Point2IteratorConcept Iterator>
 std::vector<uint> earCut(Iterator begin, Iterator end)
@@ -137,33 +141,14 @@ std::vector<uint> earCut(Iterator begin, Iterator end)
  * that is a Point3 object with a ScalarType member representing the scalar
  * type used to represent the coordinates of the point. If the polygon is
  * not simple or has holes, the function throws a std::logic_error.
+ * 
+ * @ingroup algorithms_core_polygon
  */
 template<Point3IteratorConcept Iterator>
 std::vector<uint> earCut(Iterator begin, Iterator end)
 {
-    using PointType = Iterator::value_type;
-    using Scalar = PointType::ScalarType;
-
-    // Calculate the normal vector of the polygon and an orthonormal basis
-    // for the plane containing the polygon.
-    PointType n = Polygon<PointType>::normal(begin, end);
-    PointType u, v;
-    n.orthoBase(u, v);
-
-    // Project each vertex onto the plane defined by the orthonormal basis.
-    std::vector<Point2<Scalar>> poly2D;
-
-    if constexpr (std::is_same_v<
-                        typename Iterator::iterator_category,
-                        std::random_access_iterator_tag>)
-    {
-        poly2D.reserve(std::distance(begin, end));
-    }
-
-    for (auto i = begin; i != end; ++i) {
-        // project i-th polygon in a 2D plane
-        poly2D.emplace_back(*i * u, *i * v);
-    }
+    // Project the 3D polygon onto a 2D plane defined by its normal.
+    auto poly2D = vcl::project(begin, end);
 
     // Use the ear-cut algorithm to triangulate the polygon in the 2D plane
     // and return the result.
@@ -177,6 +162,8 @@ std::vector<uint> earCut(Iterator begin, Iterator end)
  * @param[in] range: the range of points that define the polygon.
  * @return A vector containing the indices of the vertices that form
  * triangles in the triangulated polygon.
+ * 
+ * @ingroup algorithms_core_polygon
  */
 template<vcl::Range R>
 std::vector<uint> earCut(R&& range)
@@ -201,6 +188,8 @@ std::vector<uint> earCut(R&& range)
  *
  * @return A vector of indices, representing the triplets of the triangulation
  * of the polygon.
+ * 
+ * @ingroup algorithms_core_polygon
  */
 template<FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)

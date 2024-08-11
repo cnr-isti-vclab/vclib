@@ -20,42 +20,66 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_ALGORITHMS_CORE_POLYGON_CREATE_H
-#define VCL_ALGORITHMS_CORE_POLYGON_CREATE_H
+#ifndef VCL_ALGORITHMS_CORE_POLYGON_PROJECTION_H
+#define VCL_ALGORITHMS_CORE_POLYGON_PROJECTION_H
 
+#include <vclib/concepts/space/point.h>
 #include <vclib/space/core/polygon.h>
 
 namespace vcl {
 
 /**
- * @brief Create a 2D circle polygon with n vertices and the given radius.
- * @tparam PolygonType: The polygon type.
- * @param[in] n: The number of vertices.
- * @param[in] radius: The radius of the circle.
- * @return The circle polygon.
+ * @brief Project a 3D polygon onto a plane, and return the 2D polygon.
+ *
+ * @tparam Iterator: Iterator type, it must iterate over 3D points.
+ * @param[in] begin: Iterator to the first point of the polygon.
+ * @param[in] end: Iterator to the past-the-end point of the polygon.
+ * @return The projected polygon.
  * 
  * @ingroup algorithms_core_polygon
  */
-template<Polygon2Concept PolygonType>
-PolygonType createCircle(uint n, typename PolygonType::ScalarType radius = 1.0)
+template<Point3IteratorConcept Iterator>
+auto project(Iterator begin, Iterator end)
 {
-    using ScalarType = typename PolygonType::ScalarType;
-    using PointType  = typename PolygonType::PointType;
+    using PointType = Iterator::value_type;
+    using ScalarType = PointType::ScalarType;
 
-    PolygonType poly;
-    poly.reserve(n);
+    Polygon2<ScalarType> projectedPolygon;
 
-    const ScalarType angleStep = 2 * M_PI / n;
-    for (uint i = 0; i < n; ++i) {
-        const ScalarType angle = i * angleStep;
-        const PointType  p =
-            PointType(std::cos(angle), std::sin(angle)) * radius;
-        poly.pushBack(p);
+    // Calculate the normal vector of the polygon and an orthonormal basis
+    // for the plane containing the polygon.
+    PointType normal = Polygon3<ScalarType>::normal(begin, end);
+    PointType u, v;
+    normal.orthoBase(u, v);
+
+    projectedPolygon.reserve(std::distance(begin, end));
+
+    // Project each vertex onto the plane defined by the orthonormal basis.
+    for (auto it = begin; it != end; ++it) {
+        ScalarType x = (*it).dot(u);
+        ScalarType y = (*it).dot(v);
+        projectedPolygon.pushBack(Point2<ScalarType>(x, y));
     }
 
-    return poly;
+    return projectedPolygon;
+}
+
+/**
+ * @brief Project a 3D polygon defined by the given range onto a plane, and
+ * return the 2D polygon.
+ *
+ * @tparam R: A range of 3D points.
+ * @param[in] polygon: The input polygon.
+ * @return The projected polygon.
+ *
+ * @ingroup algorithms_core_polygon
+ */
+template<vcl::Range R>
+auto project(R&& polygon) requires Point3Concept<std::ranges::range_value_t<R>>
+{
+    return project(polygon.begin(), polygon.end());
 }
 
 } // namespace vcl
 
-#endif // VCL_ALGORITHMS_CORE_POLYGON_CREATE_H
+#endif // VCL_ALGORITHMS_CORE_POLYGON_PROJECTION_H

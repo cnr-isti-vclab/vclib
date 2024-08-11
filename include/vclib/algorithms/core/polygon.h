@@ -25,6 +25,15 @@
 
 #include "polygon/create.h"
 #include "polygon/geometry.h"
+#include "polygon/projection.h"
 #include "polygon/topology.h"
+
+/**
+ * @defgroup algorithms_core_polygon Polygon Core Algorithms
+ * 
+ * @ingroup algorithms_core
+ * 
+ * @brief List of Core Polygon algorithms.
+ */
 
 #endif // VCL_ALGORITHMS_CORE_POLYGON_H

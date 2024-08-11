@@ -26,7 +26,18 @@
 
 int main()
 {
-    std::vector<vcl::Point2d> polygon = {
+    /*
+     *  3 6------------------5
+     *    |                  |
+     *  2 |                  |
+     *    |                  |
+     *  1 |  1--+--2         |
+     *    |  |     |         |
+     *  0 7--0     3--+--+---4
+     *    0  1     2  3
+     */
+
+    vcl::Polygon2d polygon = {
         vcl::Point2d(1, 0),
         vcl::Point2d(1, 1),
         vcl::Point2d(2, 1),

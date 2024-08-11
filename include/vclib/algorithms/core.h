@@ -31,4 +31,16 @@
 #include "core/polygon.h"
 #include "core/stat.h"
 
+/**
+ * @defgroup algorithms_core Core Algorithms
+ *
+ * @brief List of Core algorithms.
+ *
+ * In this module, you can find the core algorithms of VCLib, that generally
+ * involve simple geometric primitives, like points, vectors, and matrices.
+ *
+ * You can access these algorithms by including `#include
+ * <vclib/algorithms/core.h>`
+ */
+
 #endif // VCL_ALGORITHMS_CORE_H
