@@ -25,15 +25,20 @@
 #include <catch2/generators/catch_generators_adapters.hpp>
 #include <catch2/generators/catch_generators_random.hpp>
 
+#include <random>
+
 #include <vclib/algorithms/core.h>
 #include <vclib/space/core.h>
 
 template<typename Scalar, unsigned int N>
 vcl::Point<Scalar, N> randomPoint()
 {
+    std::random_device rd;
+    std::mt19937       gen(rd());
+
     vcl::Point<Scalar, N> p;
     for (unsigned int i = 0; i < N; i++)
-        p[i] = GENERATE(take(1, random<Scalar>(-100, 100)));
+        p[i] = std::uniform_real_distribution<Scalar>(-10.0, 10.0)(gen);
     return p;
 }
 
@@ -50,9 +55,9 @@ TEST_CASE("Collinearity and Points Order")
     REQUIRE(vcl::collinearityTest(a, b, e) == 0);
     REQUIRE(vcl::collinearityTest(a, c, e) < 0);
 
-    REQUIRE(vcl::arePointsCounterClockwise(a, b, c) == true);
-    REQUIRE(vcl::arePointsCounterClockwise(b, a, c) == false);
-    REQUIRE(vcl::arePointsCounterClockwise(a, b, e) == false);
+    REQUIRE(vcl::areCounterClockwise(a, b, c) == true);
+    REQUIRE(vcl::areCounterClockwise(b, a, c) == false);
+    REQUIRE(vcl::areCounterClockwise(a, b, e) == false);
 }
 
 TEST_CASE("Convex hull")
@@ -111,5 +116,44 @@ TEST_CASE("Convex hull")
     REQUIRE(ch[5] == v[30]);
     REQUIRE(ch[6] == v[14]);
     REQUIRE(ch[7] == v[31]);
+
+    REQUIRE(vcl::isCounterClockWise(ch.begin(), ch.end()) == true);
+}
+
+TEST_CASE("Sort points of convex polygon")
+{
+    std::vector<vcl::Point2d> v;
+
+    for (int i = 0; i < 100; i++)
+        v.push_back(randomPoint<double, 2>());
+
+    auto ch = vcl::convexHull(v);
+
+    std::cerr << "Convex hull: " << std::endl;
+    for (const auto& p : ch)
+        std::cerr << p << std::endl;
+
+    auto shuffled = ch;
+    std::shuffle(
+        shuffled.begin(),
+        shuffled.end(),
+        std::mt19937 {std::random_device {}()});
+
+    vcl::sortConvexPolygonVertices(shuffled.begin(), shuffled.end());
+
+    std::cerr << "Shuffled and sorted: " << std::endl;
+    for (const auto& p : shuffled)
+        std::cerr << p << std::endl;
+
+    REQUIRE(shuffled.size() == ch.size());
+    
+    // find ch[0] in shuffled
+    auto it = std::find(shuffled.begin(), shuffled.end(), ch[0]);
+    REQUIRE(it != shuffled.end());
+    uint k = std::distance(shuffled.begin(), it);
+
+    for (uint i = 0; i < ch.size(); i++)
+        REQUIRE(shuffled[(i + k) % ch.size()] == ch[i]);
+
 }
 

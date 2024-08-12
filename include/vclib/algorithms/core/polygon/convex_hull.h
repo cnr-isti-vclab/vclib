@@ -23,7 +23,7 @@
 #ifndef VCL_ALGORITHMS_CORE_POLYGON_CONVEX_HULL_H
 #define VCL_ALGORITHMS_CORE_POLYGON_CONVEX_HULL_H
 
-#include "geometry.h"
+#include "core2.h"
 
 namespace vcl {
 
@@ -69,7 +69,7 @@ void grahamScanOnContainer(
     // Skip points not at the left of first-last segment
     do {
         it1++;
-    } while (it1 != last && !vcl::arePointsCounterClockwise(*first, *last, *it1));
+    } while (it1 != last && !vcl::areCounterClockwise(*first, *last, *it1));
 
     if (it1 != last) {
         // Initialize stack with the first element which could be in the convex
@@ -89,8 +89,8 @@ void grahamScanOnContainer(
         for (it1++; it1 != last; it1++) {
             // Skip point for which last element is on the right of
             // it1 - it2 segment
-            if (vcl::arePointsCounterClockwise(*it1, *it2, *last)) {
-                while (!vcl::arePointsCounterClockwise(*it2, *it3, *it1)) {
+            if (vcl::areCounterClockwise(*it1, *it2, *last)) {
+                while (!vcl::areCounterClockwise(*it2, *it3, *it1)) {
                     // Pop from stack
                     stack.pop_back();
 
