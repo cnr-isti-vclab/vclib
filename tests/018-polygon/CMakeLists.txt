@@ -21,35 +21,14 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-tests)
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+set(TEST_NAME 018-polygon)
+project(vclib-test-${TEST_NAME})
 
-# tests
-if (VCLIB_BUILD_TESTS)
-    add_subdirectory(000-static-asserts)
-    add_subdirectory(001-trimesh-base)
-    add_subdirectory(002-mesh-topology)
-    add_subdirectory(003-mesh-conversions)
-    add_subdirectory(004-mesh-custom-components)
-    add_subdirectory(005-mesh-new-user-component)
-    add_subdirectory(006-load-save-mesh-obj)
-    add_subdirectory(007-load-save-mesh-off)
-    add_subdirectory(008-load-save-mesh-ply)
-    add_subdirectory(009-load-save-mesh-stl)
-    add_subdirectory(010-mesh-clean)
-    add_subdirectory(011-mesh-filter)
-    add_subdirectory(012-kd-tree)
-    add_subdirectory(013-mesh-update-normal)
-    add_subdirectory(014-polymesh-base)
-    add_subdirectory(015-mesh-copy-and-append)
-    add_subdirectory(016-mesh-crease-edges)
-    add_subdirectory(017-serialization)
-    add_subdirectory(018-polygon)
+set(SOURCES
+    main.cpp)
 
-
-    if (TARGET vclib-external-vcg)
-        add_subdirectory(900-mesh-import-vcg)
-    endif()
-endif()
-
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})
