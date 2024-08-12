@@ -142,9 +142,9 @@ TEST_CASE("Sort points of convex polygon")
     // find ch[0] in shuffled
     auto it = std::find(shuffled.begin(), shuffled.end(), ch[0]);
     REQUIRE(it != shuffled.end());
-    uint k = std::distance(shuffled.begin(), it);
+    unsigned int k = std::distance(shuffled.begin(), it);
 
-    for (uint i = 0; i < ch.size(); i++)
+    for (unsigned int i = 0; i < ch.size(); i++)
         REQUIRE(shuffled[(i + k) % ch.size()] == ch[i]);
 }
 
