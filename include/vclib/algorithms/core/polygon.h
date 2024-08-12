@@ -30,9 +30,9 @@
 
 /**
  * @defgroup algorithms_core_polygon Polygon Core Algorithms
- * 
+ *
  * @ingroup algorithms_core
- * 
+ *
  * @brief List of Core Polygon algorithms.
  */
 

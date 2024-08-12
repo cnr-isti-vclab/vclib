@@ -79,10 +79,7 @@ public:
      *
      * @param[in] points: the list of points that define the polygon.
      */
-    Polygon(std::initializer_list<PointT> points)
-        : mPoints(points)
-    {
-    }
+    Polygon(std::initializer_list<PointT> points) : mPoints(points) {}
 
     /**
      * @brief Construct a new Polygon object from a range of points.
