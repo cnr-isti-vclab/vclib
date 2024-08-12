@@ -129,10 +129,6 @@ TEST_CASE("Sort points of convex polygon")
 
     auto ch = vcl::convexHull(v);
 
-    std::cerr << "Convex hull: " << std::endl;
-    for (const auto& p : ch)
-        std::cerr << p << std::endl;
-
     auto shuffled = ch;
     std::shuffle(
         shuffled.begin(),
@@ -141,12 +137,8 @@ TEST_CASE("Sort points of convex polygon")
 
     vcl::sortConvexPolygonVertices(shuffled.begin(), shuffled.end());
 
-    std::cerr << "Shuffled and sorted: " << std::endl;
-    for (const auto& p : shuffled)
-        std::cerr << p << std::endl;
-
     REQUIRE(shuffled.size() == ch.size());
-    
+
     // find ch[0] in shuffled
     auto it = std::find(shuffled.begin(), shuffled.end(), ch[0]);
     REQUIRE(it != shuffled.end());
@@ -154,6 +146,5 @@ TEST_CASE("Sort points of convex polygon")
 
     for (uint i = 0; i < ch.size(); i++)
         REQUIRE(shuffled[(i + k) % ch.size()] == ch[i]);
-
 }
 
