@@ -23,6 +23,7 @@
 #ifndef VCL_ALGORITHMS_CORE_POLYGON_H
 #define VCL_ALGORITHMS_CORE_POLYGON_H
 
+#include "polygon/convex_hull.h"
 #include "polygon/create.h"
 #include "polygon/geometry.h"
 #include "polygon/projection.h"

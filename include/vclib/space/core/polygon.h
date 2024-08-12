@@ -221,6 +221,22 @@ public:
     ScalarType perimeter() const { return perimeter(mPoints); }
 
     /**
+     * @brief Returns the i-th point of the polygon.
+     * 
+     * @param i: the index of the point to return.
+     * @return The i-th point of the polygon.
+     */
+    PointType& operator[](uint i) { return mPoints[i]; }
+
+    /**
+     * @brief Returns the i-th point of the polygon.
+     * 
+     * @param i: the index of the point to return.
+     * @return The i-th point of the polygon.
+     */
+    const PointType& operator[](uint i) const { return mPoints[i]; }
+
+    /**
      * @brief Returns the area of the polygon.
      *
      * @return The area of the polygon.
