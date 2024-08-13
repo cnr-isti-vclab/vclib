@@ -34,7 +34,7 @@ namespace vcl {
  *
  * The function computes the z coordinate of the cross product between the
  * vectors p1 - p0 and p2 - p0:
- * - If the result is 0, the points are collinear; 
+ * - If the result is 0, the points are collinear;
  * - if the result is positive, the three points constitute a "left turn" or
  *   counter-clockwise orientation (p0 is at the left of the line p1-p2);
  * - if the result is negative, a "right turn" or clockwise orientation
@@ -46,7 +46,7 @@ namespace vcl {
  * @param[in] p2: the third point.
  * @return 0 if the points are collinear, a positive value if the points are
  * counter-clockwise, and a negative value if the points are clockwise.
- * 
+ *
  * @ingroup algorithms_core_polygon
  */
 template<Point2Concept PointType>
@@ -68,7 +68,7 @@ auto collinearityTest(
  * @param[in] p1: the second point.
  * @param[in] p2: the third point.
  * @return true if the points are counter-clockwise, false otherwise.
- * 
+ *
  * @ingroup algorithms_core_polygon
  */
 template<Point2Concept PointType>
@@ -95,15 +95,15 @@ bool areCounterClockwise(
 template<Point2IteratorConcept Iterator>
 bool isCounterClockWise(Iterator begin, Iterator end)
 {
-    using PointType = std::decay_t<decltype(*begin)>;
+    using PointType  = std::decay_t<decltype(*begin)>;
     using ScalarType = PointType::ScalarType;
 
     if (begin == end)
         return false;
 
-    auto latest = begin;
-    auto it = begin;
-    ScalarType sum = 0;
+    auto       latest = begin;
+    auto       it     = begin;
+    ScalarType sum    = 0;
     for (++it; it != end; ++it) {
         sum += (it->x() - latest->x()) * (it->y() + latest->y());
         latest = it;
@@ -116,7 +116,7 @@ bool isCounterClockWise(Iterator begin, Iterator end)
 
 /**
  * @brief Sorts the vertices of a convex polygon in counter-clockwise order.
- * 
+ *
  * Given a set of points that form a convex polygon, this function sorts the
  * points in counter-clockwise order. The function assumes that the input points
  * form a convex polygon, and it sorts the points in counter-clockwise order

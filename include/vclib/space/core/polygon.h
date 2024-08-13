@@ -222,7 +222,7 @@ public:
 
     /**
      * @brief Returns the i-th point of the polygon.
-     * 
+     *
      * @param i: the index of the point to return.
      * @return The i-th point of the polygon.
      */
@@ -230,7 +230,7 @@ public:
 
     /**
      * @brief Returns the i-th point of the polygon.
-     * 
+     *
      * @param i: the index of the point to return.
      * @return The i-th point of the polygon.
      */

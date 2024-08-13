@@ -147,4 +147,3 @@ TEST_CASE("Sort points of convex polygon")
     for (unsigned int i = 0; i < ch.size(); i++)
         REQUIRE(shuffled[(i + k) % ch.size()] == ch[i]);
 }
-

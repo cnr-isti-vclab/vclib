@@ -124,13 +124,13 @@ void grahamScanOnContainer(
 
 /**
  * @brief Get the 2D convex hull using Graham scan algorithm on a set of points.
- * 
+ *
  * @tparam InputIterator Iterator type of the input container of points. It must
  * Iterate over a range of elements that satisfy the Point2Concept.
  * @param[in] first First iterator of the input container of points.
  * @param[in] end End iterator of the input container of points.
  * @return A polygon representing the convex hull of the input points.
- * 
+ *
  * @ingroup algorithms_core_polygon
  */
 template<Point2IteratorConcept InputIterator>
