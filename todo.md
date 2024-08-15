@@ -31,6 +31,7 @@
   - [ ] Implement exporter to VCG
   - [ ] Implement importer/exporter from buffer
   - [ ] Shuffle algorithms should be all made using views
+  - [ ] Shuffle algorithms should take as input a random_device instead of a boolean 'deterministic', and they should log the seed at debug level
   - [ ] Smooth algorithms should be made using loggers
   - Point Sampling:
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces

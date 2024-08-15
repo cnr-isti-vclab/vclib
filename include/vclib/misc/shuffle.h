@@ -20,23 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_MISCELLANEOUS_H
-#define VCL_MISCELLANEOUS_H
+#ifndef VCL_MISC_SHUFFLE_H
+#define VCL_MISC_SHUFFLE_H
 
-#include "misc/comparators.h"
-#include "misc/hash.h"
-#include "misc/iterators.h"
-#include "misc/logger.h"
-#include "misc/parallel.h"
-#include "misc/shuffle.h"
-#include "misc/string.h"
-#include "misc/timer.h"
-#include "misc/tokenizer.h"
+#include <random>
+
+#include <vclib/concepts/ranges/range.h>
+
+namespace vcl {
 
 /**
- * @defgroup miscellaneous Miscellaneous
+ * @brief Shuffle the elements of a range.
  *
- * @brief List of utility functions, classes and structs used in the library.
+ * @tparam R: Type of the range.
+ * @param[in] range: Range to shuffle.
+ * @param[in] deterministic: If true, the shuffle will be deterministic.
+ * 
+ * @ingroup miscellaneous
  */
+template<vcl::Range R>
+void shuffle(R&& range, bool deterministic = false)
+{
+    std::random_device rd;
+    std::mt19937 generator(deterministic ? 0 : rd());
+    std::shuffle(range.begin(), range.end(), generator);
+}
 
-#endif // VCL_MISCELLANEOUS_H
+} // namespace vcl
+
+#endif // VCL_MISC_SHUFFLE_H
