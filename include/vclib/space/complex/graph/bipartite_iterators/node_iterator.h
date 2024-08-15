@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
-#define VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
+#ifndef VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATORS_NODE_ITERATOR_H
+#define VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATORS_NODE_ITERATOR_H
 
 namespace vcl {
 
@@ -44,4 +44,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_NODE_ITERATOR_H
+#endif // VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATORS_NODE_ITERATOR_H

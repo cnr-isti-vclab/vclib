@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_COMPLEX_GRAPH_UNDIRECTED_NODE_H
-#define VCL_SPACE_COMPLEX_GRAPH_UNDIRECTED_NODE_H
+#ifndef VCL_SPACE_COMPLEX_GRAPH_NODES_UNDIRECTED_NODE_H
+#define VCL_SPACE_COMPLEX_GRAPH_NODES_UNDIRECTED_NODE_H
 
 #include <unordered_set>
 
@@ -74,4 +74,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_SPACE_COMPLEX_GRAPH_UNDIRECTED_NODE_H
+#endif // VCL_SPACE_COMPLEX_GRAPH_NODES_UNDIRECTED_NODE_H

@@ -20,47 +20,36 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
-#define VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
+#ifndef VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATORS_ADJACENT_LEFT_NODE_ITERATOR_H
+#define VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATORS_ADJACENT_LEFT_NODE_ITERATOR_H
+
+#include "adjacent_node_iterator.h"
 
 namespace vcl::detail {
 
 template<typename Graph, typename Iterator>
-class AdjacentNodeIterator
+class AdjacentLeftNodeIterator : public AdjacentNodeIterator<Graph, Iterator>
 {
-protected:
-    const Graph* mGraph = nullptr;
-    Iterator     mIt;
+    using Base = AdjacentNodeIterator<Graph, Iterator>;
 
 public:
-    AdjacentNodeIterator() {}
+    using value_type = Graph::RightType;
+    using reference  = const value_type&;
+    using pointer    = const value_type*;
 
-    AdjacentNodeIterator(const Graph& g, Iterator it) : mGraph(&g), mIt(it) {}
+    using AdjacentNodeIterator<Graph, Iterator>::AdjacentNodeIterator;
 
-    bool operator==(const AdjacentNodeIterator& otherIterator) const
+    reference operator*() const
     {
-        return (mGraph == otherIterator.mGraph && mIt == otherIterator.mIt);
+        return Base::mGraph->nodesR[Base::mIt].info();
     }
 
-    bool operator!=(const AdjacentNodeIterator& otherIterator) const
+    pointer operator->() const
     {
-        return !(*this == otherIterator);
-    }
-
-    AdjacentNodeIterator operator++()
-    {
-        ++mIt;
-        return *this;
-    }
-
-    AdjacentNodeIterator operator++(int)
-    {
-        AdjacentNodeIterator tmp;
-        ++mIt;
-        return tmp;
+        return &Base::mGraph->nodesR[Base::mIt].info();
     }
 };
 
 } // namespace vcl::detail
 
-#endif // VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATOR_ADJACENT_NODE_ITERATOR_H
+#endif // VCL_SPACE_COMPLEX_GRAPH_BIPARTITE_ITERATORS_ADJACENT_LEFT_NODE_ITERATOR_H

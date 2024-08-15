@@ -23,6 +23,7 @@
 #ifndef VCL_SPACE_CORE_TRIANGLE_H
 #define VCL_SPACE_CORE_TRIANGLE_H
 
+#include <vclib/concepts/range.h>
 #include <vclib/concepts/space/triangle.h>
 #include <vclib/space/core/point.h>
 

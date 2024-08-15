@@ -23,6 +23,6 @@
 #ifndef VCL_SPACE_COMPLEX_GRAPH_H
 #define VCL_SPACE_COMPLEX_GRAPH_H
 
-#include "graph/bipartite/bipartite_graph.h"
+#include "graph/bipartite_graph.h"
 
 #endif // VCL_SPACE_COMPLEX_GRAPH_H
