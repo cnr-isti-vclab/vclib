@@ -29,6 +29,7 @@
 #include <vclib/concepts/mesh.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/shuffle.h>
+#include <vclib/space/complex/graph/bipartite_graph.h>
 
 namespace vcl {
 
@@ -94,6 +95,37 @@ MeshType makeTetrahedron(
     return result;
 }
 
+template<FaceMeshConcept MeshType, Range R>
+auto initConflictGraph(const MeshType& mesh, R&& points)
+    requires vcl::Point3Concept<std::ranges::range_value_t<R>>
+{
+    using PointType = std::ranges::range_value_t<R>;
+    using MPointType = MeshType::VertexType::CoordType;
+    using FaceType = MeshType::FaceType;
+    using GraphType = vcl::BipartiteGraph<PointType, uint>;
+
+    // left nodes are points, right nodes are faces
+    // an arc (conflict) is added if a point is visible from a face
+    GraphType graph;
+
+    for (const auto& face : mesh.faces()) {
+        graph.addRightNode(face.index());
+    }
+
+    for (const auto& point : points) {
+        graph.addLeftNode(point);
+        for (const auto& face : mesh.faces()) {
+            vcl::TriangleWrapper<MPointType> t(face.vertex(0)->coord(), face.vertex(1)->coord(), face.vertex(2)->coord());
+
+            if (vcl::trianglePointVisibility(t, point)) {
+                graph.addArc(point, face.index());
+            }
+        }
+    }
+
+    return graph;
+}
+
 } // namespace detail
 
 /**
@@ -121,7 +153,23 @@ MeshType convexHull(R&& points, bool deterministic = false)
     auto result = detail::makeTetrahedron<MeshType>(
         points[0], points[1], points[2], points[3]);
 
-    // todo: implement the convex hull algorithm
+    auto remainingPoints = points | std::views::drop(4);
+    
+    auto conflictGraph = detail::initConflictGraph(result, remainingPoints);
+
+    // for each point in the conflict graph (still not in the convex hull)
+    // for (const auto& point : conflictGraph.leftNodes()) {
+
+    //     // if the point is visible from a face in the convex hull
+    //     if (conflictGraph.adjacentLeftNodeNumber(point) != 0) {
+
+    //     }
+    //     else {
+    //         conflictGraph.deleteLeftNode(point);
+    //     }
+
+    //     // todo: implement the convex hull algorithm
+    // }
 
     return result;
 }
