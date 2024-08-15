@@ -57,7 +57,7 @@ namespace vcl {
  * bool theyIntersect = f(dereferencePtr(obj1), dereferencePtr(obj2));
  * @endcode
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<typename Obj1, typename Obj2>
 auto intersectFunction()

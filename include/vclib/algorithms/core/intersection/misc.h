@@ -256,7 +256,7 @@ inline bool axisTestZ0(
  * @param[in] box: The box to check intersection with.
  * @return True if the plane intersects with the box, false otherwise.
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<PlaneConcept PlaneType, Box3Concept BoxType>
 bool intersect(const PlaneType& plane, const BoxType& box)
@@ -283,7 +283,7 @@ bool intersect(const PlaneType& plane, const BoxType& box)
 /**
  * @copydoc vcl::intersect(const PlaneType&, const BoxType&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<Box3Concept BoxType, PlaneConcept PlaneType>
 bool intersect(const BoxType& box, const PlaneType& p)
@@ -306,7 +306,7 @@ bool intersect(const BoxType& box, const PlaneType& p)
  * @param[in] segment: the 3D segment to compute the intersection with.
  * @return A boolean value indicating whether an intersection was found or not.
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<PlaneConcept PlaneType, Segment3Concept SegmentType>
 bool intersect(const PlaneType& plane, const SegmentType& segment)
@@ -334,7 +334,7 @@ bool intersect(const PlaneType& plane, const SegmentType& segment)
 /**
  * @copydoc vcl::intersect(const PlaneType&, const SegmentType&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<Segment3Concept SegmentType, PlaneConcept PlaneType>
 bool intersect(const SegmentType& segment, const PlaneType& plane)
@@ -362,7 +362,7 @@ bool intersect(const SegmentType& segment, const PlaneType& plane)
  * @return An optional point that represents the intersection point between the
  * plane and the box, if it exists.
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<PlaneConcept PlaneType, Segment3Concept SegmentType>
 std::optional<typename SegmentType::PointType> intersection(
@@ -406,7 +406,7 @@ std::optional<typename SegmentType::PointType> intersection(
  * @param[in] box: The box to check for intersection.
  * @return true if the sphere intersects with the box, false otherwise.
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<SphereConcept SphereType, Box3Concept BoxType>
 bool intersect(const SphereType& sphere, const BoxType& box)
@@ -417,7 +417,7 @@ bool intersect(const SphereType& sphere, const BoxType& box)
 /**
  * @copydoc vcl::intersect(const SphereType&, const BoxType&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<Box3Concept BoxType, SphereConcept SphereType>
 bool intersect(const BoxType& box, const SphereType& sphere)
@@ -444,7 +444,7 @@ bool intersect(const BoxType& box, const SphereType& sphere)
  * @return True if the point intersects with/is inside the triangle, false
  * otherwise.
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<ConstTriangle2Concept TriangleType, Point2Concept PointType>
 bool intersect(const TriangleType& triangle, const PointType& point)
@@ -474,7 +474,7 @@ bool intersect(const TriangleType& triangle, const PointType& point)
 /**
  * @copydoc vcl::intersect(const TriangleType&, const PointType&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<Point2Concept PointType, ConstTriangle2Concept TriangleType>
 bool intersect(const PointType& point, const TriangleType& triangle)
@@ -495,7 +495,7 @@ bool intersect(const PointType& point, const TriangleType& triangle)
  * @return True if the point intersects with/is inside the triangle, false
  * otherwise.
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<ConstTriangle3Concept TriangleType, Point3Concept PointType>
 bool intersect(const TriangleType& triangle, const PointType& point)
@@ -510,7 +510,7 @@ bool intersect(const TriangleType& triangle, const PointType& point)
 /**
  * @copydoc vcl::intersect(const TriangleType&, const PointType&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<Point3Concept PointType, ConstTriangle3Concept TriangleType>
 bool intersect(const PointType& point, const TriangleType& triangle)
@@ -539,7 +539,7 @@ bool intersect(const PointType& point, const TriangleType& triangle)
  *
  * @private https://gist.github.com/jflipts/fc68d4eeacfcc04fbdb2bf38e0911850
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<ConstTriangle3Concept TriangleType, Box3Concept BoxType>
 bool intersect(const TriangleType& triangle, const BoxType& box)
@@ -644,7 +644,7 @@ bool intersect(const TriangleType& triangle, const BoxType& box)
 /**
  * @copydoc vcl::intersect(const TriangleType&, const BoxType&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<Box3Concept BoxType, ConstTriangle3Concept TriangleType>
 bool intersect(const BoxType& box, const TriangleType& triangle)
@@ -664,7 +664,7 @@ bool intersect(const BoxType& box, const TriangleType& triangle)
  * stored the penetration depth
  * @return true iff there is an intersection between the sphere and the triangle
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<
     ConstTriangle3Concept TriangleType,
@@ -760,7 +760,7 @@ bool intersect(
  * @param[in] sphere: the input sphere
  * @return true iff there is an intersection between the sphere and the triangle
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<ConstTriangle3Concept TriangleType, SphereConcept SphereType>
 bool intersect(const TriangleType& triangle, const SphereType& sphere)
@@ -774,7 +774,7 @@ bool intersect(const TriangleType& triangle, const SphereType& sphere)
 /**
  * @copydoc vcl::intersect(const TriangleType&, const SphereType&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<SphereConcept SphereType, ConstTriangle3Concept TriangleType>
 bool intersect(const SphereType& sphere, const TriangleType& t)

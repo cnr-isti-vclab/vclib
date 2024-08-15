@@ -58,8 +58,8 @@ Plane<Scalar> fitPlaneToPointCloud(const std::vector<Point3<Scalar>>& pointVec)
 }
 
 /**
- * @brief Compute the plane best fitting a wighted set of points
- * The algorithm used is the wighted Covariance matrix eigenvector approach.
+ * @brief Compute the plane best fitting a weighted set of points
+ * The algorithm used is the weighted Covariance matrix eigenvector approach.
  */
 template<Point3Concept PointType>
 Plane<typename PointType::ScalarType> fitPlaneToWeightedPointCloud(

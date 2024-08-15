@@ -47,7 +47,7 @@ namespace vcl {
  * @return 0 if the points are collinear, a positive value if the points are
  * counter-clockwise, and a negative value if the points are clockwise.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<Point2Concept PointType>
 auto collinearityTest(
@@ -69,7 +69,7 @@ auto collinearityTest(
  * @param[in] p2: the third point.
  * @return true if the points are counter-clockwise, false otherwise.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<Point2Concept PointType>
 bool areCounterClockwise(
@@ -90,7 +90,7 @@ bool areCounterClockwise(
  * @param[in] end: the iterator pointing to one past the last point.
  * @return true if the points are in counter-clockwise order, false otherwise.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<Point2IteratorConcept Iterator>
 bool isCounterClockWise(Iterator begin, Iterator end)
@@ -129,7 +129,7 @@ bool isCounterClockWise(Iterator begin, Iterator end)
  * @param[in] begin: the iterator pointing to the first point.
  * @param[in] end: the iterator pointing to one past the last point.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<Point2IteratorConcept Iterator>
 void sortConvexPolygonVertices(Iterator begin, Iterator end)

@@ -26,7 +26,7 @@
 #include "intersection/functions.h"
 
 /**
- * @defgroup intersection_core Core Intersection Algorithms
+ * @defgroup core_intersection Core Intersection Algorithms
  *
  * @ingroup algorithms_core
  *

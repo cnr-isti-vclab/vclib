@@ -44,7 +44,7 @@ namespace vcl {
  *
  * @return The distance between the vertex and the point.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<VertexConcept VertexType, Point3Concept PointType>
 auto distance(const VertexType& v, const PointType& p)
@@ -55,7 +55,7 @@ auto distance(const VertexType& v, const PointType& p)
 /**
  * @copydoc vcl::distance(const VertexType&, const PointType&)
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<Point3Concept PointType, VertexConcept VertexType>
 auto distance(const PointType& p, const VertexType& v)
@@ -75,7 +75,7 @@ auto distance(const PointType& p, const VertexType& v)
  *
  * @return The distance between the two vertices.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<VertexConcept VertexType1, VertexConcept VertexType2>
 auto distance(const VertexType1& v1, const VertexType2& v2)
@@ -104,7 +104,7 @@ auto distance(const VertexType1& v1, const VertexType2& v2)
  * false.
  * @return The distance between the point and the face.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
 auto boundedDistance(
@@ -166,7 +166,7 @@ auto boundedDistance(
  * false.
  * @return The distance between the point and the face.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<Point3Concept PointType, FaceConcept FaceType, typename ScalarType>
 auto boundedDistance(
@@ -183,7 +183,7 @@ auto boundedDistance(
  * @copydoc vcl::boundedDistance(const PointType&, const FaceType&, ScalarType,
  * bool)
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<FaceConcept FaceType, Point3Concept PointType, typename ScalarType>
 auto boundedDistance(
@@ -214,7 +214,7 @@ auto boundedDistance(
  * false.
  * @return The distance between the point and the face.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<Point3Concept PointType, FaceConcept FaceType>
 auto distance(
@@ -246,7 +246,7 @@ auto distance(
  * false.
  * @return The distance between the point and the face.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<Point3Concept PointType, FaceConcept FaceType>
 auto distance(const PointType& p, const FaceType& f, bool signedDist = false)
@@ -262,7 +262,7 @@ auto distance(const PointType& p, const FaceType& f, bool signedDist = false)
 /**
  * @copydoc vcl::distance(const PointType&, const FaceType&, bool)
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<FaceConcept FaceType, Point3Concept PointType>
 auto distance(const FaceType& f, const PointType& p, bool signedDist = false)
@@ -287,7 +287,7 @@ auto distance(const FaceType& f, const PointType& p, bool signedDist = false)
  * false.
  * @return The distance between the vertex and the face.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<VertexConcept VertexType, FaceConcept FaceType>
 auto distance(const VertexType& v, const FaceType& f, bool signedDist = false)
@@ -298,7 +298,7 @@ auto distance(const VertexType& v, const FaceType& f, bool signedDist = false)
 /**
  * @copydoc vcl::distance(const VertexType&, const FaceType&, bool)
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<FaceConcept FaceType, VertexConcept VertexType>
 auto distance(const FaceType& f, const VertexType& v, bool signedDist = false)

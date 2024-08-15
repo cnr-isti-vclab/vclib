@@ -88,7 +88,7 @@ namespace vcl {
  * type used to represent the coordinates of the point. If the polygon is
  * not simple or has holes, the function throws a std::logic_error.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<Point2IteratorConcept Iterator>
 std::vector<uint> earCut(Iterator begin, Iterator end)
@@ -142,7 +142,7 @@ std::vector<uint> earCut(Iterator begin, Iterator end)
  * type used to represent the coordinates of the point. If the polygon is
  * not simple or has holes, the function throws a std::logic_error.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<Point3IteratorConcept Iterator>
 std::vector<uint> earCut(Iterator begin, Iterator end)
@@ -163,7 +163,7 @@ std::vector<uint> earCut(Iterator begin, Iterator end)
  * @return A vector containing the indices of the vertices that form
  * triangles in the triangulated polygon.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<vcl::Range R>
 std::vector<uint> earCut(R&& range)
@@ -189,7 +189,7 @@ std::vector<uint> earCut(R&& range)
  * @return A vector of indices, representing the triplets of the triangulation
  * of the polygon.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<FaceConcept Face>
 std::vector<uint> earCut(const Face& polygon)

@@ -131,7 +131,7 @@ void grahamScanOnContainer(
  * @param[in] end End iterator of the input container of points.
  * @return A polygon representing the convex hull of the input points.
  *
- * @ingroup algorithms_core_polygon
+ * @ingroup core_polygon
  */
 template<Point2IteratorConcept InputIterator>
 auto convexHull(InputIterator first, InputIterator end)

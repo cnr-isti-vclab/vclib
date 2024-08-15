@@ -30,6 +30,7 @@
 #include "core/intersection.h"
 #include "core/polygon.h"
 #include "core/stat.h"
+#include "core/visibility.h"
 
 /**
  * @defgroup algorithms_core Core Algorithms

@@ -31,7 +31,7 @@
 #include "polygon/projection.h"
 
 /**
- * @defgroup algorithms_core_polygon Polygon Core Algorithms
+ * @defgroup core_polygon Polygon Core Algorithms
  *
  * @ingroup algorithms_core
  *

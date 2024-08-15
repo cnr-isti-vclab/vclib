@@ -38,7 +38,7 @@ namespace vcl {
  *
  * @return The distance between the two points.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<PointConcept PointType>
 auto distance(const PointType& point0, const PointType& point1)
@@ -61,7 +61,7 @@ auto distance(const PointType& point0, const PointType& point1)
  * unsigned.
  * @return The distance between the point and the plane.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<Point3Concept PointType, PlaneConcept PlaneType>
 auto distance(
@@ -78,7 +78,7 @@ auto distance(
 /**
  * @copydoc vcl::distance(const PointType&, const PlaneType&, bool)
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<PlaneConcept PlaneType, Point3Concept PointType>
 auto distance(
@@ -104,7 +104,7 @@ auto distance(
  * @param[out] closestPoint: The closest point on the segment.
  * @return The distance between the point and the segment.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<PointConcept PointType, SegmentConcept SegmentType>
 auto distance(
@@ -147,7 +147,7 @@ auto distance(
  * @param[in] segment: The input segment.
  * @return The distance between the point and the segment.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<PointConcept PointType, SegmentConcept SegmentType>
 auto distance(const PointType& point, const SegmentType& segment)
@@ -160,7 +160,7 @@ auto distance(const PointType& point, const SegmentType& segment)
 /**
  * @copydoc vcl::distance(const PointType&, const SegmentType&)
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<SegmentConcept SegmentType, PointConcept PointType>
 auto distance(const SegmentType& segment, const PointType& point)
@@ -193,7 +193,7 @@ auto distance(const SegmentType& segment, const PointType& point)
  * false.
  * @return The distance between the point and the triangle.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<
     Point3Concept         PointType,
@@ -335,7 +335,7 @@ auto boundedDistance(
  * false.
  * @return The distance between the point and the triangle.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<
     Point3Concept         PointType,
@@ -364,7 +364,7 @@ auto boundedDistance(
  * false.
  * @return The distance between the point and the triangle.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<
     Point3Concept         PointType,
@@ -392,7 +392,7 @@ auto distance(
  * false.
  * @return The distance between the point and the triangle.
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<
     Point3Concept         PointType,
@@ -412,7 +412,7 @@ auto distance(
 /**
  * @copydoc vcl::distance(const PointType&, const TriangleType&, bool)
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<
     ConstTriangle3Concept TriangleType,

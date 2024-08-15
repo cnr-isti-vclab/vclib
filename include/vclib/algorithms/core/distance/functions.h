@@ -75,7 +75,7 @@ concept BoundedDistFunctionExists =
  * auto dist = f(dereferencePtr(obj1), dereferencePtr(obj2));
  * @endcode
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<typename Obj1, typename Obj2>
 auto distFunction()
@@ -124,7 +124,7 @@ auto distFunction()
  * auto dist = f(dereferencePtr(obj1), dereferencePtr(obj2), maxDist);
  * @endcode
  *
- * @ingroup distance_core
+ * @ingroup core_distance
  */
 template<typename Obj1, typename Obj2, typename ScalarType = double>
 auto boundedDistFunction()

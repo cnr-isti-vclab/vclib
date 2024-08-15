@@ -51,7 +51,7 @@ namespace vcl {
  * @param[in] box: The input box.
  * @return True if the face intersects the box, false otherwise.
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<FaceConcept FaceType, PointConcept PointType>
 bool intersect(const FaceType& f, const Box<PointType>& box)
@@ -83,7 +83,7 @@ bool intersect(const FaceType& f, const Box<PointType>& box)
 /**
  * @copydoc intersect(const FaceType&, const Box<PointType>&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<PointConcept PointType, FaceConcept FaceType>
 bool intersect(const Box<PointType>& box, const FaceType& f)
@@ -109,7 +109,7 @@ bool intersect(const Box<PointType>& box, const FaceType& f)
  * the penetration depth
  * @return true iff there is an intersection between the sphere and the face
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<FaceConcept FaceType, PointConcept PointType, typename SScalar>
 bool intersect(
@@ -180,7 +180,7 @@ bool intersect(
  * @param[in] sphere: the input sphere
  * @return true iff there is an intersection between the sphere and the face
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<FaceConcept FaceType, typename SScalar>
 bool intersect(const FaceType& f, const Sphere<SScalar>& sphere)
@@ -193,7 +193,7 @@ bool intersect(const FaceType& f, const Sphere<SScalar>& sphere)
 /**
  * @copydoc intersect(const FaceType&, const Sphere<SScalar>&)
  *
- * @ingroup intersection_core
+ * @ingroup core_intersection
  */
 template<typename SScalar, FaceConcept FaceType>
 bool intersect(const Sphere<SScalar>& sphere, const FaceType& f)
