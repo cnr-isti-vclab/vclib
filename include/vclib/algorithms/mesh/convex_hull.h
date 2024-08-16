@@ -30,6 +30,7 @@
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/shuffle.h>
 #include <vclib/space/complex/graph/bipartite_graph.h>
+#include <vclib/space/complex/mesh_pos.h>
 
 namespace vcl {
 
@@ -124,6 +125,68 @@ auto initConflictGraph(const MeshType& mesh, R&& points)
     return graph;
 }
 
+/**
+ * @brief Returns the horizon, that is composed of a sequence of <face-edge>
+ * pairs that looks out the boundary of the visible faces.
+ * 
+ * The faces listed in the horizon are faces that are not visible from the
+ * input set of visible faces, but are adjacent to at least one face in the
+ * input set.
+ * 
+ * @tparam FaceType 
+ * @param[in] visibleFaces: The set of visible faces.
+ * @param[out] horizonVertices: The set of vertices that are on the horizon.
+ * @return std::vector<std::pair<uint, uint>> 
+ */
+template<FaceConcept FaceType, VertexConcept VertexType>
+std::vector<std::pair<uint, uint>> horizonFaces(
+    const std::set<const FaceType*>& visibleFaces,
+    std::set<const VertexType*>&     horizonVertices)
+{
+    std::vector<std::pair<uint, uint>> horizon;
+
+    const FaceType* firstFace   = nullptr;
+    uint            firstEdge   = UINT_NULL;
+    const FaceType* currentFace = nullptr;
+    uint            currentEdge = UINT_NULL;
+
+    // looking for the first visible face that lies on the border
+    bool found = false;
+    for (auto it = visibleFaces.begin(); it != visibleFaces.end() && !found; ++it) {
+        uint i = 0;
+        for (const FaceType* adjFace : (*it)->adjFaces()) {
+            // if the adjacent face is not visible, then it is on the border
+            if (visibleFaces.find(adjFace) == visibleFaces.end()) {
+                firstFace        = *it;
+                firstEdge        = i;
+                currentFace      = firstFace;
+                currentEdge      = firstEdge;
+                found            = true;
+                break;
+            }
+            i++;
+        }
+    }
+
+    do {
+        MeshPos<FaceType> pos(currentFace, currentEdge);
+        pos.flipVertex();
+        horizonVertices.insert(pos.vertex());
+
+        while(visibleFaces.find(pos.face()) != visibleFaces.end()) {
+            pos.nextEdgeAdjacentToV();
+        }
+        auto p = std::make_pair(pos.face()->index(), pos.edge());
+        horizon.push_back(p);
+
+        pos.flipFace();
+        currentFace = pos.face();
+        currentEdge = pos.edge();
+    } while (currentFace != firstFace || currentEdge != firstEdge);
+
+    return horizon;
+}
+
 } // namespace detail
 
 /**
@@ -140,6 +203,7 @@ template<FaceMeshConcept MeshType, Range R>
 MeshType convexHull(R&& points, bool deterministic = false)
     requires vcl::Point3Concept<std::ranges::range_value_t<R>>
 {
+    using VertexType = MeshType::VertexType;
     using FaceType = MeshType::FaceType;
 
     static_assert(
@@ -160,7 +224,19 @@ MeshType convexHull(R&& points, bool deterministic = false)
 
         // if the point is visible from a face in the convex hull
         if (conflictGraph.adjacentLeftNodeNumber(point) != 0) {
-            
+            // store the faces that are visible from (conflict with) the point
+            // these faces will be deleted from the convex hull
+            std::set<const FaceType*> visibleFaces;
+            for (const auto& faceIndex : conflictGraph.adjacentLeftNodes(point)) {
+                visibleFaces.insert(&result.face(faceIndex));
+            }
+
+            // compute the horizon of the visible faces
+            std::set<const VertexType*> horizonVertices;
+            auto horizon = detail::horizonFaces(visibleFaces, horizonVertices);
+
+            // compute the potential conflict points for the new faces
+            // todo: implement this
         }
         else {
             conflictGraph.deleteLeftNode(point);
