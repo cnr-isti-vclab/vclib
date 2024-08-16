@@ -37,9 +37,25 @@
 
 namespace vcl {
 
+namespace detail {
+
+template<typename Graph, typename Iterator>
+class AdjacentLeftNodeIterator;
+
+template<typename Graph, typename Iterator>
+class AdjacentRightNodeIterator;
+
+} // namespace detail
+
 template<class T1, class T2>
 class BipartiteGraph
 {
+    template<typename Graph, typename Iterator>
+    friend class detail::AdjacentLeftNodeIterator;
+
+    template<typename Graph, typename Iterator>
+    friend class detail::AdjacentRightNodeIterator;
+    
 protected:
     std::map<T1, unsigned int> mMapL;
     std::map<T2, unsigned int> mMapR;

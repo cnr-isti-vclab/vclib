@@ -41,12 +41,12 @@ public:
 
     reference operator*() const
     {
-        return Base::mGraph->nodesL[Base::mIt].info();
+        return Base::mGraph->mNodesL[*(Base::mIt)].info();
     }
 
     pointer operator->() const
     {
-        return &Base::mGraph->nodesL[Base::mIt].info();
+        return &Base::mGraph->mNodesL[*(Base::mIt)].info();
     }
 };
 
