@@ -161,18 +161,16 @@ MeshType convexHull(R&& points, bool deterministic = false)
     auto conflictGraph = detail::initConflictGraph(result, remainingPoints);
 
     // for each point in the conflict graph (still not in the convex hull)
-    // for (const auto& point : conflictGraph.leftNodes()) {
+    for (const auto& point : conflictGraph.leftNodes()) {
 
-    //     // if the point is visible from a face in the convex hull
-    //     if (conflictGraph.adjacentLeftNodeNumber(point) != 0) {
-
-    //     }
-    //     else {
-    //         conflictGraph.deleteLeftNode(point);
-    //     }
-
-    //     // todo: implement the convex hull algorithm
-    // }
+        // if the point is visible from a face in the convex hull
+        if (conflictGraph.adjacentLeftNodeNumber(point) != 0) {
+            
+        }
+        else {
+            conflictGraph.deleteLeftNode(point);
+        }
+    }
 
     return result;
 }

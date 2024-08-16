@@ -26,7 +26,7 @@
 namespace vcl {
 
 template<typename Iterator>
-class NodeIterator
+class NodeIterator : public Iterator
 {
 public:
     using Iterator::Iterator;
