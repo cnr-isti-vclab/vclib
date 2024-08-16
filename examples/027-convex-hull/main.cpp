@@ -28,22 +28,11 @@
 
 int main()
 {
-    std::vector<vcl::Point3d> v = {
-        {0.0, 0.0, 0.0}, // Belongs to the convex hull surface
-        {1.0, 0.0, 0.0}, // Belongs to the convex hull surface
-        {0.0, 1.0, 0.0}, // Belongs to the convex hull surface
-        {0.0, 0.0, 1.0}, // Belongs to the convex hull surface
-        {1.0, 1.0, 0.0}, // Belongs to the convex hull surface
-        {1.0, 0.0, 1.0}, // Belongs to the convex hull surface
-        {0.0, 1.0, 1.0}, // Belongs to the convex hull surface
-        {1.0, 1.0, 1.0}, // Belongs to the convex hull surface
-        {0.5, 0.5, 0.5}, // Inside the convex hull
-        {0.2, 0.2, 0.2}  // Inside the convex hull
-    };
+    vcl::TriMesh mesh = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
 
-    vcl::TriMesh mesh = vcl::convexHull<vcl::TriMesh>(v, true);
+    vcl::TriMesh ch = vcl::convexHull<vcl::TriMesh>(mesh.vertices() | vcl::views::coords);
 
-    vcl::save(mesh, VCLIB_RESULTS_PATH "/convex_hull.ply");
+    vcl::save(ch, VCLIB_RESULTS_PATH "/convex_hull.ply");
 
     return 0;
 }

@@ -187,6 +187,130 @@ std::vector<std::pair<uint, uint>> horizonFaces(
     return horizon;
 }
 
+template<Point3Concept PointType, FaceMeshConcept MeshType>
+auto potentialConflictPoints(
+    const BipartiteGraph<PointType, uint>& conflictGraph,
+    const PointType&                       currentPoint,
+    const MeshType&                        convexHull,
+    const auto&                            horizon)
+{
+    using FaceType = MeshType::FaceType;
+
+    std::vector<std::set<PointType>> potentialConflictPoints(horizon.size());
+
+    uint i = 0;
+    for (const auto& [faceIndex, edgeIndex] : horizon) {
+        for (const auto& p : conflictGraph.adjacentRightNodes(faceIndex)) {
+            if (p != currentPoint) {
+                potentialConflictPoints[i].insert(p);
+            }
+        }
+
+        const FaceType& face = convexHull.face(faceIndex);
+
+        uint adjFaceIndex = face.adjFace(edgeIndex)->index();
+
+        for (const auto& p : conflictGraph.adjacentRightNodes(adjFaceIndex)) {
+            if (p != currentPoint) {
+                potentialConflictPoints[i].insert(p);
+            }
+        }
+
+        i++;
+    }
+
+    return potentialConflictPoints;
+}
+
+template<FaceMeshConcept MeshType, FaceConcept FaceType, VertexConcept VertexType>
+void deleteVisibleFaces(
+    MeshType& convexHull,
+    const std::set<const FaceType*>& visibleFaces,
+    const std::set<const VertexType*>& horizonVertices)
+{
+    std::set<const VertexType*> verticesToDelete;
+
+    for (const FaceType* face : visibleFaces) {
+        for (const VertexType* vertex : face->vertices()) {
+            if (horizonVertices.find(vertex) == horizonVertices.end()) {
+                verticesToDelete.insert(vertex);
+            }
+        }
+        convexHull.deleteFace(face->index());
+    }
+
+    for (const VertexType* vertex : verticesToDelete) {
+        convexHull.deleteVertex(vertex->index());
+    }
+}
+
+template<Point3Concept PointType, FaceMeshConcept MeshType>
+std::vector<uint> addNewFaces(
+    MeshType&                                 convexHull,
+    const PointType&                          currentPoint,
+    const std::vector<std::pair<uint, uint>>& horizon)
+{
+    using VertexType = MeshType::VertexType;
+    using FaceType = MeshType::FaceType;
+
+    std::vector<uint> newFaces;
+
+    newFaces.reserve(horizon.size());
+
+    uint v = convexHull.addVertex(currentPoint);
+
+    uint firstFace = UINT_NULL;
+    uint lastFace  = UINT_NULL;
+
+    for (const auto& [faceIndex, edgeIndex] : horizon) {
+        uint v1 = convexHull.face(faceIndex).vertexIndexMod(edgeIndex + 1);
+        uint v2 = convexHull.face(faceIndex).vertexIndex(edgeIndex);
+        
+        uint f = convexHull.addFace(v, v1, v2);
+        newFaces.push_back(f);
+
+        if (firstFace == UINT_NULL) {
+            firstFace = f;
+        }
+
+        convexHull.face(f).setAdjFace(0, lastFace);
+        if (lastFace != UINT_NULL)
+            convexHull.face(lastFace).setAdjFace(2, f);
+
+        convexHull.face(f).setAdjFace(1, faceIndex);
+        convexHull.face(faceIndex).setAdjFace(edgeIndex, f);
+
+        lastFace = f;
+    }
+
+    convexHull.face(firstFace).setAdjFace(0, lastFace);
+    convexHull.face(lastFace).setAdjFace(2, firstFace);
+
+    return newFaces;
+}
+
+template<Point3Concept PointType, FaceMeshConcept MeshType>
+void updateNewConflicts(
+    BipartiteGraph<PointType, uint>& conflictGraph,
+    const MeshType& convexHull,
+    const std::vector<uint>& newFaces,
+    const std::vector<std::set<PointType>>& potentialConflictPoints)
+{
+    using FaceType = MeshType::FaceType;
+
+    for (uint i = 0; i < newFaces.size(); ++i) {
+        conflictGraph.addRightNode(newFaces[i]);
+
+        const FaceType& face = convexHull.face(newFaces[i]);
+
+        for (const auto& p : potentialConflictPoints[i]) {
+            if (vcl::facePointVisibility(face, p)) {
+                conflictGraph.addArc(p, newFaces[i]);
+            }
+        }
+    }
+}
+
 } // namespace detail
 
 /**
@@ -200,9 +324,10 @@ std::vector<std::pair<uint, uint>> horizonFaces(
  * @ingroup algorithms_mesh
  */
 template<FaceMeshConcept MeshType, Range R>
-MeshType convexHull(R&& points, bool deterministic = false)
+MeshType convexHull(const R& points, bool deterministic = false)
     requires vcl::Point3Concept<std::ranges::range_value_t<R>>
 {
+    using PointType = std::ranges::range_value_t<R>;
     using VertexType = MeshType::VertexType;
     using FaceType = MeshType::FaceType;
 
@@ -210,12 +335,15 @@ MeshType convexHull(R&& points, bool deterministic = false)
         vcl::face::HasAdjacentFaces<FaceType>,
         "MeshType must have per-face adjacent faces.");
 
-    detail::shufflePoints(points, deterministic);
+    std::vector<PointType> pointsCopy(
+        std::ranges::begin(points), std::ranges::end(points));
+
+    detail::shufflePoints(pointsCopy, deterministic);
 
     auto result = detail::makeTetrahedron<MeshType>(
-        points[0], points[1], points[2], points[3]);
+        pointsCopy[0], pointsCopy[1], pointsCopy[2], pointsCopy[3]);
 
-    auto remainingPoints = points | std::views::drop(4);
+    auto remainingPoints = pointsCopy | std::views::drop(4);
 
     auto conflictGraph = detail::initConflictGraph(result, remainingPoints);
 
@@ -235,8 +363,28 @@ MeshType convexHull(R&& points, bool deterministic = false)
             std::set<const VertexType*> horizonVertices;
             auto horizon = detail::horizonFaces(visibleFaces, horizonVertices);
 
-            // compute the potential conflict points for the new faces
-            // todo: implement this
+            // for each edge in the horizon, compute the points that could
+            // conflict with the new face that will be added to the convex hull
+            // in that edge
+            auto potentialConflictPoints = detail::potentialConflictPoints(
+                conflictGraph, point, result, horizon);
+
+            // delete the point and faces from the conflict graph - no more conflicts
+            conflictGraph.deleteLeftNode(point);
+            for (const FaceType* face : visibleFaces) {
+                conflictGraph.deleteRightNode(face->index());
+            }
+
+            // delete the visible faces from the convex hull, and the vertices 
+            // that are not on the horizon
+            detail::deleteVisibleFaces(result, visibleFaces, horizonVertices);
+
+            // add the new faces to the convex hull
+            auto newFaces = detail::addNewFaces(result, point, horizon);
+
+            // update the conflict graph with the new faces
+            detail::updateNewConflicts(
+                conflictGraph, result, newFaces, potentialConflictPoints);
         }
         else {
             conflictGraph.deleteLeftNode(point);
@@ -244,16 +392,6 @@ MeshType convexHull(R&& points, bool deterministic = false)
     }
 
     return result;
-}
-
-template<FaceMeshConcept MeshType, Range R>
-MeshType convexHull(const R& points, bool deterministic = false)
-    requires vcl::Point3Concept<std::ranges::range_value_t<R>>
-{
-    using PointType = std::ranges::range_value_t<R>;
-    std::vector<PointType> pointsCopy(
-        std::ranges::begin(points), std::ranges::end(points));
-    return convexHull<MeshType>(pointsCopy, deterministic);
 }
 
 } // namespace vcl
