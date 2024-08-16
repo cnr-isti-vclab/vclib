@@ -115,12 +115,7 @@ auto initConflictGraph(const MeshType& mesh, R&& points)
     for (const auto& point : points) {
         graph.addLeftNode(point);
         for (const auto& face : mesh.faces()) {
-            vcl::TriangleWrapper<MPointType> t(
-                face.vertex(0)->coord(),
-                face.vertex(1)->coord(),
-                face.vertex(2)->coord());
-
-            if (vcl::trianglePointVisibility(t, point)) {
+            if (vcl::facePointVisibility(face, point)) {
                 graph.addArc(point, face.index());
             }
         }
