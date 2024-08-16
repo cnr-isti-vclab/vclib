@@ -28,6 +28,7 @@
 #include <vclib/algorithms/mesh/update/topology.h>
 #include <vclib/concepts/mesh.h>
 #include <vclib/mesh/requirements.h>
+#include <vclib/misc/logger.h>
 #include <vclib/misc/shuffle.h>
 #include <vclib/space/complex/graph/bipartite_graph.h>
 #include <vclib/space/complex/mesh_pos.h>
@@ -319,26 +320,34 @@ void updateNewConflicts(
  * @tparam PointType: The type of the points.
  * @param[in] points: The set of points.
  * @param[in] deterministic: If true, the shuffle will be deterministic.
+ * @param[in] log: The logger.
  * @return The convex hull of the points.
  *
  * @ingroup algorithms_mesh
  */
-template<FaceMeshConcept MeshType, Range R>
-MeshType convexHull(const R& points, bool deterministic = false)
+template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
+MeshType convexHull(
+    const R& points,
+    bool     deterministic = false,
+    LogType& log           = nullLogger)
     requires vcl::Point3Concept<std::ranges::range_value_t<R>>
 {
-    using PointType = std::ranges::range_value_t<R>;
+    using PointType  = std::ranges::range_value_t<R>;
     using VertexType = MeshType::VertexType;
-    using FaceType = MeshType::FaceType;
+    using FaceType   = MeshType::FaceType;
 
     static_assert(
         vcl::face::HasAdjacentFaces<FaceType>,
         "MeshType must have per-face adjacent faces.");
 
+    log.log(0, "Shuffling points...");
+
     std::vector<PointType> pointsCopy(
         std::ranges::begin(points), std::ranges::end(points));
 
     detail::shufflePoints(pointsCopy, deterministic);
+
+    log.log(0, "Making first tetrahedron...");
 
     auto result = detail::makeTetrahedron<MeshType>(
         pointsCopy[0], pointsCopy[1], pointsCopy[2], pointsCopy[3]);
@@ -347,15 +356,19 @@ MeshType convexHull(const R& points, bool deterministic = false)
 
     auto conflictGraph = detail::initConflictGraph(result, remainingPoints);
 
+    log.log(0, "Computing convex hull...");
+
+    log.startProgress("Processing Points...", pointsCopy.size() - 4);
+    uint iteration = 0;
     // for each point in the conflict graph (still not in the convex hull)
     for (const auto& point : conflictGraph.leftNodes()) {
-
         // if the point is visible from a face in the convex hull
         if (conflictGraph.adjacentLeftNodeNumber(point) != 0) {
             // store the faces that are visible from (conflict with) the point
             // these faces will be deleted from the convex hull
             std::set<const FaceType*> visibleFaces;
-            for (const auto& faceIndex : conflictGraph.adjacentLeftNodes(point)) {
+            for (const auto& faceIndex : conflictGraph.adjacentLeftNodes(point))
+            {
                 visibleFaces.insert(&result.face(faceIndex));
             }
 
@@ -369,13 +382,14 @@ MeshType convexHull(const R& points, bool deterministic = false)
             auto potentialConflictPoints = detail::potentialConflictPoints(
                 conflictGraph, point, result, horizon);
 
-            // delete the point and faces from the conflict graph - no more conflicts
+            // delete the point and faces from the conflict graph - no more
+            // conflicts
             conflictGraph.deleteLeftNode(point);
             for (const FaceType* face : visibleFaces) {
                 conflictGraph.deleteRightNode(face->index());
             }
 
-            // delete the visible faces from the convex hull, and the vertices 
+            // delete the visible faces from the convex hull, and the vertices
             // that are not on the horizon
             detail::deleteVisibleFaces(result, visibleFaces, horizonVertices);
 
@@ -389,9 +403,33 @@ MeshType convexHull(const R& points, bool deterministic = false)
         else {
             conflictGraph.deleteLeftNode(point);
         }
+        iteration++;
+        log.progress(iteration);
     }
 
+    log.endProgress();
+    log.log(100, "Convex hull computed.");
+
     return result;
+}
+
+/**
+ * @brief Compute the convex hull of a set of points.
+ *
+ * @tparam PointType: The type of the points.
+ * @param[in] points: The set of points.
+ * @param[in] log: The logger.
+ * @return The convex hull of the points.
+ *
+ * @ingroup algorithms_mesh
+ */
+template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
+MeshType convexHull(
+    const R& points,
+    LogType& log)
+    requires vcl::Point3Concept<std::ranges::range_value_t<R>>
+{
+    return convexHull<MeshType>(points, false, log);
 }
 
 } // namespace vcl
