@@ -35,14 +35,14 @@ namespace vcl {
  * @tparam R: Type of the range.
  * @param[in] range: Range to shuffle.
  * @param[in] deterministic: If true, the shuffle will be deterministic.
- * 
+ *
  * @ingroup miscellaneous
  */
 template<vcl::Range R>
 void shuffle(R&& range, bool deterministic = false)
 {
     std::random_device rd;
-    std::mt19937 generator(deterministic ? 0 : rd());
+    std::mt19937       generator(deterministic ? 0 : rd());
     std::shuffle(range.begin(), range.end(), generator);
 }
 

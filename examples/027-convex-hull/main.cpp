@@ -29,16 +29,16 @@
 int main()
 {
     std::vector<vcl::Point3d> v = {
-        {0.0, 0.0, 0.0},  // Belongs to the convex hull surface
-        {1.0, 0.0, 0.0},  // Belongs to the convex hull surface
-        {0.0, 1.0, 0.0},  // Belongs to the convex hull surface
-        {0.0, 0.0, 1.0},  // Belongs to the convex hull surface
-        {1.0, 1.0, 0.0},  // Belongs to the convex hull surface
-        {1.0, 0.0, 1.0},  // Belongs to the convex hull surface
-        {0.0, 1.0, 1.0},  // Belongs to the convex hull surface
-        {1.0, 1.0, 1.0},  // Belongs to the convex hull surface
-        {0.5, 0.5, 0.5},  // Inside the convex hull
-        {0.2, 0.2, 0.2}   // Inside the convex hull
+        {0.0, 0.0, 0.0}, // Belongs to the convex hull surface
+        {1.0, 0.0, 0.0}, // Belongs to the convex hull surface
+        {0.0, 1.0, 0.0}, // Belongs to the convex hull surface
+        {0.0, 0.0, 1.0}, // Belongs to the convex hull surface
+        {1.0, 1.0, 0.0}, // Belongs to the convex hull surface
+        {1.0, 0.0, 1.0}, // Belongs to the convex hull surface
+        {0.0, 1.0, 1.0}, // Belongs to the convex hull surface
+        {1.0, 1.0, 1.0}, // Belongs to the convex hull surface
+        {0.5, 0.5, 0.5}, // Inside the convex hull
+        {0.2, 0.2, 0.2}  // Inside the convex hull
     };
 
     vcl::TriMesh mesh = vcl::convexHull<vcl::TriMesh>(v, true);

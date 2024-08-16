@@ -38,10 +38,10 @@ namespace detail {
 /**
  * @brief Shuffle the input range of points such that the first four points are
  * not coplanar.
- * 
- * @tparam R 
- * @param points 
- * @param deterministic 
+ *
+ * @tparam R
+ * @param points
+ * @param deterministic
  */
 template<vcl::Range R>
 void shufflePoints(R&& points, bool deterministic = false)
@@ -53,7 +53,7 @@ void shufflePoints(R&& points, bool deterministic = false)
     auto itP1 = std::next(itP0);
     auto itP2 = std::next(itP1);
     auto itP3 = std::next(itP2);
-    auto itP = std::next(itP2);
+    auto itP  = std::next(itP2);
 
     auto rEnd = std::ranges::end(points);
 
@@ -99,10 +99,10 @@ template<FaceMeshConcept MeshType, Range R>
 auto initConflictGraph(const MeshType& mesh, R&& points)
     requires vcl::Point3Concept<std::ranges::range_value_t<R>>
 {
-    using PointType = std::ranges::range_value_t<R>;
+    using PointType  = std::ranges::range_value_t<R>;
     using MPointType = MeshType::VertexType::CoordType;
-    using FaceType = MeshType::FaceType;
-    using GraphType = vcl::BipartiteGraph<PointType, uint>;
+    using FaceType   = MeshType::FaceType;
+    using GraphType  = vcl::BipartiteGraph<PointType, uint>;
 
     // left nodes are points, right nodes are faces
     // an arc (conflict) is added if a point is visible from a face
@@ -115,7 +115,10 @@ auto initConflictGraph(const MeshType& mesh, R&& points)
     for (const auto& point : points) {
         graph.addLeftNode(point);
         for (const auto& face : mesh.faces()) {
-            vcl::TriangleWrapper<MPointType> t(face.vertex(0)->coord(), face.vertex(1)->coord(), face.vertex(2)->coord());
+            vcl::TriangleWrapper<MPointType> t(
+                face.vertex(0)->coord(),
+                face.vertex(1)->coord(),
+                face.vertex(2)->coord());
 
             if (vcl::trianglePointVisibility(t, point)) {
                 graph.addArc(point, face.index());
@@ -135,7 +138,7 @@ auto initConflictGraph(const MeshType& mesh, R&& points)
  * @param[in] points: The set of points.
  * @param[in] deterministic: If true, the shuffle will be deterministic.
  * @return The convex hull of the points.
- * 
+ *
  * @ingroup algorithms_mesh
  */
 template<FaceMeshConcept MeshType, Range R>
@@ -154,7 +157,7 @@ MeshType convexHull(R&& points, bool deterministic = false)
         points[0], points[1], points[2], points[3]);
 
     auto remainingPoints = points | std::views::drop(4);
-    
+
     auto conflictGraph = detail::initConflictGraph(result, remainingPoints);
 
     // for each point in the conflict graph (still not in the convex hull)

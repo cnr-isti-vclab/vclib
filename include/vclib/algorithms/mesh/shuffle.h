@@ -148,7 +148,7 @@ std::vector<uint> fillAndShuffleFaceIndexVector(
     }
 
     vcl::shuffle(vec, deterministic);
-    
+
     return vec;
 }
 
