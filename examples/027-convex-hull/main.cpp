@@ -33,7 +33,8 @@ int main()
     vcl::ConsoleLogger log;
 
     log.enablePrintTimer();
-    vcl::TriMesh ch = vcl::convexHull<vcl::TriMesh>(mesh.vertices() | vcl::views::coords, log);
+    vcl::TriMesh ch = vcl::convexHull<vcl::TriMesh>(
+        mesh.vertices() | vcl::views::coords, log);
 
     vcl::save(ch, VCLIB_RESULTS_PATH "/convex_hull.ply");
 

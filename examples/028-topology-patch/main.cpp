@@ -28,8 +28,7 @@
 
 int main()
 {
-    vcl::TriMesh m =
-        vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
+    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_ASSETS_PATH "/bimba.obj");
 
     m.enablePerFaceAdjacentFaces();
     m.enablePerFaceColor();
@@ -46,20 +45,18 @@ int main()
         return vcl::facePointVisibility(f, min);
     };
 
-    bool found = false;
+    bool         found    = false;
     unsigned int seedFace = vcl::UINT_NULL;
-    auto it = m.faceBegin();
+    auto         it       = m.faceBegin();
     while (!found) {
         if (func(*it)) {
-            found = true;
+            found    = true;
             seedFace = it->index();
         }
         ++it;
     }
 
     m.face(seedFace).color() = vcl::Color::Red;
-
-    
 
     auto patchFaces = vcl::floodFacePatch(m.face(seedFace), func);
 

@@ -129,15 +129,15 @@ auto initConflictGraph(const MeshType& mesh, R&& points)
 /**
  * @brief Returns the horizon, that is composed of a sequence of <face-edge>
  * pairs that looks out the boundary of the visible faces.
- * 
+ *
  * The faces listed in the horizon are faces that are not visible from the
  * input set of visible faces, but are adjacent to at least one face in the
  * input set.
- * 
- * @tparam FaceType 
+ *
+ * @tparam FaceType
  * @param[in] visibleFaces: The set of visible faces.
  * @param[out] horizonVertices: The set of vertices that are on the horizon.
- * @return std::vector<std::pair<uint, uint>> 
+ * @return std::vector<std::pair<uint, uint>>
  */
 template<FaceConcept FaceType, VertexConcept VertexType>
 std::vector<std::pair<uint, uint>> horizonFaces(
@@ -153,16 +153,18 @@ std::vector<std::pair<uint, uint>> horizonFaces(
 
     // looking for the first visible face that lies on the border
     bool found = false;
-    for (auto it = visibleFaces.begin(); it != visibleFaces.end() && !found; ++it) {
+    for (auto it = visibleFaces.begin(); it != visibleFaces.end() && !found;
+         ++it)
+    {
         uint i = 0;
         for (const FaceType* adjFace : (*it)->adjFaces()) {
             // if the adjacent face is not visible, then it is on the border
             if (visibleFaces.find(adjFace) == visibleFaces.end()) {
-                firstFace        = *it;
-                firstEdge        = i;
-                currentFace      = firstFace;
-                currentEdge      = firstEdge;
-                found            = true;
+                firstFace   = *it;
+                firstEdge   = i;
+                currentFace = firstFace;
+                currentEdge = firstEdge;
+                found       = true;
                 break;
             }
             i++;
@@ -174,7 +176,7 @@ std::vector<std::pair<uint, uint>> horizonFaces(
         pos.flipVertex();
         horizonVertices.insert(pos.vertex());
 
-        while(visibleFaces.find(pos.face()) != visibleFaces.end()) {
+        while (visibleFaces.find(pos.face()) != visibleFaces.end()) {
             pos.nextEdgeAdjacentToV();
         }
         auto p = std::make_pair(pos.face()->index(), pos.edge());
@@ -223,10 +225,13 @@ auto potentialConflictPoints(
     return potentialConflictPoints;
 }
 
-template<FaceMeshConcept MeshType, FaceConcept FaceType, VertexConcept VertexType>
+template<
+    FaceMeshConcept MeshType,
+    FaceConcept     FaceType,
+    VertexConcept   VertexType>
 void deleteVisibleFaces(
-    MeshType& convexHull,
-    const std::set<const FaceType*>& visibleFaces,
+    MeshType&                          convexHull,
+    const std::set<const FaceType*>&   visibleFaces,
     const std::set<const VertexType*>& horizonVertices)
 {
     std::set<const VertexType*> verticesToDelete;
@@ -252,7 +257,7 @@ std::vector<uint> addNewFaces(
     const std::vector<std::pair<uint, uint>>& horizon)
 {
     using VertexType = MeshType::VertexType;
-    using FaceType = MeshType::FaceType;
+    using FaceType   = MeshType::FaceType;
 
     std::vector<uint> newFaces;
 
@@ -266,7 +271,7 @@ std::vector<uint> addNewFaces(
     for (const auto& [faceIndex, edgeIndex] : horizon) {
         uint v1 = convexHull.face(faceIndex).vertexIndexMod(edgeIndex + 1);
         uint v2 = convexHull.face(faceIndex).vertexIndex(edgeIndex);
-        
+
         uint f = convexHull.addFace(v, v1, v2);
         newFaces.push_back(f);
 
@@ -292,9 +297,9 @@ std::vector<uint> addNewFaces(
 
 template<Point3Concept PointType, FaceMeshConcept MeshType>
 void updateNewConflicts(
-    BipartiteGraph<PointType, uint>& conflictGraph,
-    const MeshType& convexHull,
-    const std::vector<uint>& newFaces,
+    BipartiteGraph<PointType, uint>&        conflictGraph,
+    const MeshType&                         convexHull,
+    const std::vector<uint>&                newFaces,
     const std::vector<std::set<PointType>>& potentialConflictPoints)
 {
     using FaceType = MeshType::FaceType;
@@ -424,9 +429,7 @@ MeshType convexHull(
  * @ingroup algorithms_mesh
  */
 template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
-MeshType convexHull(
-    const R& points,
-    LogType& log)
+MeshType convexHull(const R& points, LogType& log)
     requires vcl::Point3Concept<std::ranges::range_value_t<R>>
 {
     return convexHull<MeshType>(points, false, log);

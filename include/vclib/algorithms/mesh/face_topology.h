@@ -425,17 +425,19 @@ void detachFace(FaceType& f) requires comp::HasAdjacentFaces<FaceType>
  * @brief Given the face @p f, the function returns the set of faces that are
  * reachable from @p f through a path of adjacent faces, using a depth-first
  * search approach.
- * 
+ *
  * @tparam FaceType: the type of the face that satisfies the FaceConcept.
  * @param[in] seed: the face from which to start the search.
  * @param[in] faceSelector: a function that takes a face and returns true if the
  * face is part of the patch, false otherwise.
- * 
+ *
  * @return The set of faces that are reachable from @p f through a path of
  * adjacent faces.
  */
 template<FaceConcept FaceType>
-std::set<const FaceType*> floodFacePatch(const FaceType& seed, auto&& faceSelector)
+std::set<const FaceType*> floodFacePatch(
+    const FaceType& seed,
+    auto&&          faceSelector)
 {
     if (!comp::isAdjacentFacesAvailableOn(seed)) {
         throw vcl::MissingComponentException(
@@ -444,7 +446,7 @@ std::set<const FaceType*> floodFacePatch(const FaceType& seed, auto&& faceSelect
 
     std::set<const FaceType*> faces;
     // only faces that satisfy the faceSelector will stay on the stack
-    std::vector<const FaceType*> stackFaces; 
+    std::vector<const FaceType*> stackFaces;
 
     if (!faceSelector(seed))
         return faces;
@@ -459,8 +461,8 @@ std::set<const FaceType*> floodFacePatch(const FaceType& seed, auto&& faceSelect
 
     // while there aren't other faces on the stack
     while (stackFaces.size() > 0) {
-        const FaceType* fi = stackFaces[stackFaces.size()-1];
-        stackFaces.pop_back(); //pop
+        const FaceType* fi = stackFaces[stackFaces.size() - 1];
+        stackFaces.pop_back(); // pop
         faces.insert(fi);
         for (const FaceType* adjacent : fi->adjFaces()) {
             if (adjacent && faceSelector(*adjacent)) {

@@ -55,7 +55,7 @@ class BipartiteGraph
 
     template<typename Graph, typename Iterator>
     friend class detail::AdjacentRightNodeIterator;
-    
+
 protected:
     std::map<T1, unsigned int> mMapL;
     std::map<T2, unsigned int> mMapR;

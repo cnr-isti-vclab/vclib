@@ -72,10 +72,10 @@ auto halfSpaceDeterminant(const FaceType& face, const PointType& point)
     // - if it is a triangle, keep the current implementation
     // - if it is a polygon, use its normal to compute the determinant
     return halfSpaceDeterminant(
-            face.vertex(0)->coord(),
-            face.vertex(1)->coord(),
-            face.vertex(2)->coord(),
-            point);
+        face.vertex(0)->coord(),
+        face.vertex(1)->coord(),
+        face.vertex(2)->coord(),
+        point);
 }
 
 /**
