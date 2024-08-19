@@ -23,12 +23,14 @@
 #ifndef VCL_ALGORITHMS_MESH_CONVEX_HULL_H
 #define VCL_ALGORITHMS_MESH_CONVEX_HULL_H
 
+#include <vclib/algorithms/core/box/box3.h>
 #include <vclib/algorithms/core/visibility.h>
 #include <vclib/algorithms/mesh/create/tetrahedron.h>
 #include <vclib/algorithms/mesh/update/topology.h>
 #include <vclib/concepts/mesh.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/logger.h>
+#include <vclib/misc/parallel.h>
 #include <vclib/misc/shuffle.h>
 #include <vclib/space/complex/graph/bipartite_graph.h>
 #include <vclib/space/complex/mesh_pos.h>
@@ -36,6 +38,61 @@
 namespace vcl {
 
 namespace detail {
+
+/**
+ * @brief The first points are not actually random, but are the points that are
+ * closest to the box sides. This optimization makes the first tetrahedron
+ * bigger, and thus the convex hull computation faster at the beginning.
+ * 
+ * @tparam R 
+ * @param points 
+ */
+template<vcl::Range R>
+void firstTetOptimization(R&& points)
+{
+    using PointType = std::ranges::range_value_t<R>;
+    using Iterator  = std::ranges::iterator_t<R>;
+
+    vcl::Box<PointType> box;
+
+    for (const auto& p : points) {
+        box.add(p);
+    }
+
+    std::array<std::pair<double, Iterator>, 6> distances;
+
+    // save in the array the closest point to each of the 6 sides of the box
+    for (uint i = 0; i < 6; ++i) {
+        auto it = std::ranges::begin(points);
+        const auto& boxCorner = i < 3 ? box.min() : box.max();
+        distances[i] = std::make_pair(
+            std::abs(boxCorner(i % 3) - (*it)(i % 3)), it);
+        for (++it; it != std::ranges::end(points);
+             ++it)
+        {
+            double d = std::abs(boxCorner(i % 3) - (*it)(i % 3));
+            if (d < distances[i].first) {
+                distances[i] = std::make_pair(d, it);
+            }
+        }
+    }
+
+    // sort the array by distance
+    std::sort(
+        distances.begin(), distances.end(), [](auto& a, auto& b) {
+            return a.first < b.first;
+        });
+
+    // print the points
+    for (uint i = 0; i < 6; ++i) {
+        std::cout << "Point " << i << ": " << *distances[i].second << std::endl;
+    }
+
+    // swap the first points with the closest points to the box corners
+    for (uint i = 0; i < 6; ++i) {
+        std::iter_swap(std::ranges::begin(points) + i, distances[i].second);
+    }
+}
 
 /**
  * @brief Shuffle the input range of points such that the first four points are
@@ -50,6 +107,8 @@ void shufflePoints(R&& points, bool deterministic = false)
     requires vcl::Point3Concept<std::ranges::range_value_t<R>>
 {
     vcl::shuffle(points, deterministic);
+
+    firstTetOptimization(points);
 
     auto itP0 = std::ranges::begin(points);
     auto itP1 = std::next(itP0);
@@ -115,9 +174,13 @@ auto initConflictGraph(const MeshType& mesh, R&& points)
     }
 
     for (const auto& point : points) {
-        graph.addLeftNode(point);
+        bool added = false;
         for (const auto& face : mesh.faces()) {
             if (vcl::facePointVisibility(face, point)) {
+                if (!added) {
+                    graph.addLeftNode(point);
+                    added = true;
+                }
                 graph.addArc(point, face.index());
             }
         }
@@ -204,9 +267,7 @@ auto potentialConflictPoints(
     uint i = 0;
     for (const auto& [faceIndex, edgeIndex] : horizon) {
         for (const auto& p : conflictGraph.adjacentRightNodes(faceIndex)) {
-            if (p != currentPoint) {
-                potentialConflictPoints[i].insert(p);
-            }
+            potentialConflictPoints[i].insert(p);
         }
 
         const FaceType& face = convexHull.face(faceIndex);
@@ -214,10 +275,10 @@ auto potentialConflictPoints(
         uint adjFaceIndex = face.adjFace(edgeIndex)->index();
 
         for (const auto& p : conflictGraph.adjacentRightNodes(adjFaceIndex)) {
-            if (p != currentPoint) {
-                potentialConflictPoints[i].insert(p);
-            }
+            potentialConflictPoints[i].insert(p);
         }
+
+        potentialConflictPoints[i].erase(currentPoint);
 
         i++;
     }
