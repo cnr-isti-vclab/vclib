@@ -83,11 +83,6 @@ void firstTetOptimization(R&& points)
             return a.first < b.first;
         });
 
-    // print the points
-    for (uint i = 0; i < 6; ++i) {
-        std::cout << "Point " << i << ": " << *distances[i].second << std::endl;
-    }
-
     // swap the first points with the closest points to the box corners
     for (uint i = 0; i < 6; ++i) {
         std::iter_swap(std::ranges::begin(points) + i, distances[i].second);
