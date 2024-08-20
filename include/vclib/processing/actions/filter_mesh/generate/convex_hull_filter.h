@@ -88,8 +88,14 @@ private:
     template <MeshConcept MeshType>
     TriMesh convexHull(const MeshType& mesh, AbstractLogger& log) const
     {
-        return vcl::convexHull<TriMesh>(
+        TriMesh m = vcl::convexHull<TriMesh>(
             mesh.vertices() | vcl::views::coords, log);
+
+        vcl::updatePerVertexAndFaceNormals(m);
+
+        m.name() = mesh.name() + " convex hull";
+
+        return m;
     }
 };
 
