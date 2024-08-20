@@ -9,45 +9,40 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
+ * it under the terms of the GNU General Public License as published by      *
+ * the Free Software Foundation; either version 3 of the License, or         *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_H
-#define VCL_PROCESSING_ACTIONS_FILTER_MESH_H
+#include <vclib/processing.h>
 
-#include "filter_mesh/apply.h"
-#include "filter_mesh/create.h"
-#include "filter_mesh/generate.h"
+#include <vclib/load_save.h>
 
-namespace vcl::proc {
-
-std::vector<std::shared_ptr<Action>> vclibFilterMeshActions()
+int main()
 {
-    std::vector<std::shared_ptr<Action>> vec;
+    vcl::proc::ActionManager manager;
 
-    // Apply filters
-    auto applyFilters = vclibApplyFilterMeshActions();
-    vec.insert(vec.end(), applyFilters.begin(), applyFilters.end());
+    manager.add(vcl::proc::vclibActions());
 
-    // Create filters
-    auto createFilters = vclibCreateFilterMeshActions();
-    vec.insert(vec.end(), createFilters.begin(), createFilters.end());
+    auto pm0 =
+        manager.loadMeshAction("obj")->load(VCLIB_ASSETS_PATH "/bunny.obj");
 
-    // Generate filters
-    auto generateFilters = vclibGenerateFilterMeshActions();
-    vec.insert(vec.end(), generateFilters.begin(), generateFilters.end());
+    vcl::proc::MeshVector mv;
 
-    return vec;
+    vcl::proc::MeshVector outputMeshes;
+
+    mv.pushBack(pm0);
+
+    manager.filterMeshActionByName("Convex Hull")->applyFilter(mv, outputMeshes);
+
+    manager.saveMeshAction("ply")->save(
+        VCLIB_RESULTS_PATH "/convex_hull_bunny.ply", *outputMeshes.front());
+
+    return 0;
 }
-
-} // namespace vcl::proc
-
-#endif // VCL_PROCESSING_ACTIONS_FILTER_MESH_H

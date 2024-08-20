@@ -41,6 +41,7 @@ public:
     enum MeshActionCategory {
         CREATE = 0,
         CLEANING_AND_REPAIRING,
+        RECONSTRUCTION,
         SMOOTHING,
 
         N_CATEGORIES,
@@ -144,6 +145,17 @@ public:
     {
         return applyFilter(
             inputMeshes, inputOutputMeshes, outputMeshes, parameters(), log);
+    }
+
+    OutputValues applyFilter(
+        const MeshVector inputMeshes,
+        MeshVector&      outputMeshes,
+        AbstractLogger&  log = logger()) const
+    {
+        std::vector<std::shared_ptr<MeshI>> ioMeshes;
+
+        return applyFilter(
+            inputMeshes, ioMeshes, outputMeshes, parameters(), log);
     }
 
     OutputValues applyFilter(
