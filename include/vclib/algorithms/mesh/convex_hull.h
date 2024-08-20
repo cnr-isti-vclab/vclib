@@ -43,9 +43,9 @@ namespace detail {
  * @brief The first points are not actually random, but are the points that are
  * closest to the box sides. This optimization makes the first tetrahedron
  * bigger, and thus the convex hull computation faster at the beginning.
- * 
- * @tparam R 
- * @param points 
+ *
+ * @tparam R
+ * @param points
  */
 template<vcl::Range R>
 void firstTetOptimization(R&& points)
@@ -63,13 +63,11 @@ void firstTetOptimization(R&& points)
 
     // save in the array the closest point to each of the 6 sides of the box
     for (uint i = 0; i < 6; ++i) {
-        auto it = std::ranges::begin(points);
+        auto        it        = std::ranges::begin(points);
         const auto& boxCorner = i < 3 ? box.min() : box.max();
-        distances[i] = std::make_pair(
-            std::abs(boxCorner(i % 3) - (*it)(i % 3)), it);
-        for (++it; it != std::ranges::end(points);
-             ++it)
-        {
+        distances[i] =
+            std::make_pair(std::abs(boxCorner(i % 3) - (*it)(i % 3)), it);
+        for (++it; it != std::ranges::end(points); ++it) {
             double d = std::abs(boxCorner(i % 3) - (*it)(i % 3));
             if (d < distances[i].first) {
                 distances[i] = std::make_pair(d, it);
@@ -78,10 +76,9 @@ void firstTetOptimization(R&& points)
     }
 
     // sort the array by distance
-    std::sort(
-        distances.begin(), distances.end(), [](auto& a, auto& b) {
-            return a.first < b.first;
-        });
+    std::sort(distances.begin(), distances.end(), [](auto& a, auto& b) {
+        return a.first < b.first;
+    });
 
     // swap the first points with the closest points to the box corners
     for (uint i = 0; i < 6; ++i) {
