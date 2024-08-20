@@ -220,6 +220,8 @@ void MeshProcessingMainWindow::populateFilterMenu()
         new QMenu("Create", mUI->menuFilter);
     menus[proc::FilterMeshAction::CLEANING_AND_REPAIRING] =
         new QMenu("Cleaning and Repairing", mUI->menuFilter);
+    menus[proc::FilterMeshAction::RECONSTRUCTION] =
+        new QMenu("Reconstruction", mUI->menuFilter);
     menus[proc::FilterMeshAction::SMOOTHING] =
         new QMenu("Smoothing", mUI->menuFilter);
 
