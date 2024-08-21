@@ -51,7 +51,7 @@ public:
     MeshParamVector inputMeshParameters() const final
     {
         std::pair<MeshParameter, BitSet<short>> par;
-        par.first  = MeshParameter("input", "Input Mesh", "");
+        par.first = MeshParameter("input", "Input Mesh", "");
         par.second.set(); // all meshes are supported
 
         return {par};
@@ -64,7 +64,7 @@ public:
     virtual OutputValues applyFilter(
         const MeshVector inputMeshes,
         const std::vector<std::shared_ptr<MeshI>>&,
-        MeshVector& outputMeshes,
+        MeshVector&            outputMeshes,
         const ParameterVector& parameters,
         AbstractLogger&        log = logger()) const override
     {
@@ -85,11 +85,11 @@ public:
     }
 
 private:
-    template <MeshConcept MeshType>
+    template<MeshConcept MeshType>
     TriMesh convexHull(const MeshType& mesh, AbstractLogger& log) const
     {
-        TriMesh m = vcl::convexHull<TriMesh>(
-            mesh.vertices() | vcl::views::coords, log);
+        TriMesh m =
+            vcl::convexHull<TriMesh>(mesh.vertices() | vcl::views::coords, log);
 
         vcl::updatePerVertexAndFaceNormals(m);
 

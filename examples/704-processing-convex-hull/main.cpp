@@ -39,7 +39,8 @@ int main()
 
     mv.pushBack(pm0);
 
-    manager.filterMeshActionByName("Convex Hull")->applyFilter(mv, outputMeshes);
+    manager.filterMeshActionByName("Convex Hull")
+        ->applyFilter(mv, outputMeshes);
 
     manager.saveMeshAction("ply")->save(
         VCLIB_RESULTS_PATH "/convex_hull_bunny.ply", *outputMeshes.front());
