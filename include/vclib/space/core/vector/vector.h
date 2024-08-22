@@ -192,6 +192,25 @@ public:
     }
 
     /**
+     * @brief Constructs the container with the contents of the initializer list
+     * `list`.
+     *
+     * If the container is dynamic, the size of the container is determined by
+     * the number of elements in the initializer list `list`. If the container
+     * is static, the elements are initialized with the contents of the first N
+     * elements of the initializer list `list`. If the initializer list contains
+     * less than N elements, the remaining elements are initialized with their
+     * empty constructor.
+     *
+     * @param[in] list: The initializer list to initialize the elements of the
+     * container with.
+     */
+    explicit Vector(std::initializer_list<T> list)
+    {
+        set(vcl::View(std::begin(list), std::end(list)));
+    }
+
+    /**
      * @brief Returns the size of the container.
      *
      * If the container is static, the size is N. If the container is dynamic,
