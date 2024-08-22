@@ -1,4 +1,5 @@
 from dumper import *
+from stdtypes import *
 
 def qdump__vcl__BitSet(d, value):
     size = value["mBits"].type.size() * 8
@@ -21,3 +22,11 @@ def qdump__vcl__BitSet(d, value):
                 with SubItem(d, i):
                     d.putValue(bit)
                     d.putType('bool')
+
+def qdump__vcl__Vector(d, value):
+    cont = value["mContainer"]
+    if cont.type.name.startswith("std::vector"):
+        return qdump__std__vector(d, cont)
+    else:
+        return qdump__std__array(d, cont)
+
