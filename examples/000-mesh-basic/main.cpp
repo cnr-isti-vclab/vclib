@@ -28,6 +28,7 @@
 
 class MyVertex :
         public vcl::Vertex<
+            vcl::vert::ParentMeshPointer<void>,
             vcl::vert::BitFlags,
             vcl::vert::Coordinate3d,
             vcl::vert::Normal3f,
