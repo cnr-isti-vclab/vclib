@@ -22,7 +22,7 @@ def comp_names():
         'CustomComponents']
 
 
-def qdump__vcl__Vertex(d, value):
+def dump_element(d, value, str_value):
     elemValue = value.members(True)[0]
     coord = None
     compList = []
@@ -37,8 +37,20 @@ def qdump__vcl__Vertex(d, value):
 
     d.putExpandable()
     d.putNumChild(len(compList))
-    d.putValue("vcl::Vertex<...>")
+    d.putValue(str_value)
     if d.isExpanded():
         with Children(d, len(compList), maxNumChild=10000):
             for i in d.childRange():
                 d.putSubItem(compListNames[i], compList[i])
+
+
+def qdump__vcl__Vertex(d, value):
+    dump_element(d, value, 'vcl::Vertex<...>')
+
+
+def qdump__vcl__Face(d, value):
+    dump_element(d, value, 'vcl::Face<...>')
+
+
+def qdump__vcl__Edge(d, value):
+    dump_element(d, value, 'vcl::Edge<...>')
