@@ -1,28 +1,5 @@
 from dumper import *
-
-
-def get_ith_eigen_value(d, value, i):
-    innerType = value.type[0]
-    argRow = value.type[1]
-    argCol = value.type[2]
-    if argCol == 10000 and argRow == 10000:
-        argCol = -1
-        argRow = -1
-    if argCol != -1 and argRow != -1:
-        nrows = argRow
-        ncols = argCol
-        p = value.address()
-    else:
-        storage = value['m_storage']
-        nrows = storage['m_rows'].integer() if argRow == -1 else argRow
-        ncols = storage['m_cols'].integer() if argCol == -1 else argCol
-        p = storage['m_data'].pointer()
-
-    innerSize = innerType.size()
-    storage = value['m_storage']
-    p = value.address()
-    v = d.createValue(p + i * innerSize, innerType)
-    return v
+from eigen import *
 
 
 def qdump__vcl__BitSet(d, value):
@@ -60,7 +37,9 @@ def qdump__vcl__Color(d, value):
         with Children(d, 4):
             for i in d.childRange():
                 v = get_ith_eigen_value(d, pointValue, i)
-                d.putSubItem(vs[i], v)
+                with SubItem(d, i):
+                    d.putName(vs[i])
+                    d.putValue(str(v.integer()))
 
 
 def qdump__vcl__Point(d, value):
@@ -68,6 +47,11 @@ def qdump__vcl__Point(d, value):
     d.putItem(eigenValue)
     d.putType(value.type.name)
 
+
+def qdump__vcl__Quaternion(d, value):
+    eigenValue = value.members(True)[0]
+    d.putItem(eigenValue['m_coeffs'])
+    d.putType(value.type.name)
 
 
 def qdump__vcl__Vector(d, value):

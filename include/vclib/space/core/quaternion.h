@@ -179,6 +179,27 @@ public:
     }
 };
 
+/**
+ * @brief A convenience alias for Quaternion with floating-point components.
+ *
+ * The Quaternionf alias is a shorthand for a Quaternion class template
+ * specialization with floating-point components.
+ *
+ * @ingroup space_core
+ */
+using Quaternionf = Quaternion<float>;
+
+/**
+ * @brief A convenience alias for Quaternion with double-precision
+ * floating-point components.
+ *
+ * The Quaterniond alias is a shorthand for a Quaternion class template
+ * specialization with double-precision floating-point components.
+ *
+ * @ingroup space_core
+ */
+using Quaterniond = Quaternion<double>;
+
 } // namespace vcl
 
 #endif // VCL_SPACE_CORE_QUATERNION_H
