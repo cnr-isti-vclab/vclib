@@ -27,19 +27,21 @@ def qdump__vcl__BitSet(d, value):
 
 def qdump__vcl__Color(d, value):
     pointValue = value.members(True)[0]
-    eigenValue = value.members(True)[0]
-    #d.putItem(eigenValue)
-    d.putValue('vcl::Color')
+    eigenValue = pointValue.members(True)[0]
+    vs = ['[Red]', '[Green]', '[Blue]', '[Alpha]']
+    vl = get_list_eigen_values(d, eigenValue)
+    strList = ['%d' % vl[i].integer() for i in range(4)]
+    strList = '[' + ', '.join(strList) + ']'
+
+    d.putValue(strList)
     d.putExpandable()
     d.putNumChild(4)
-    vs = ['[Red]', '[Green]', '[Blue]', '[Alpha]']
     if d.isExpanded():
         with Children(d, 4):
             for i in d.childRange():
-                v = get_ith_eigen_value(d, pointValue, i)
                 with SubItem(d, i):
                     d.putName(vs[i])
-                    d.putValue(str(v.integer()))
+                    d.putValue(str(vl[i].integer()))
 
 
 def qdump__vcl__Point(d, value):
