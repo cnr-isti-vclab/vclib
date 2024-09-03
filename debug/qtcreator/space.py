@@ -30,10 +30,10 @@ def qdump__vcl__Color(d, value):
     eigenValue = pointValue.members(True)[0]
     vs = ['[Red]', '[Green]', '[Blue]', '[Alpha]']
     vl = get_list_eigen_values(d, eigenValue)
-    strList = ['%d' % vl[i].integer() for i in range(4)]
+    strList = ['%d' % d.value_as_integer(vl[i]) for i in range(4)]
     strList = '[' + ', '.join(strList) + ']'
-
     d.putValue(strList)
+
     d.putExpandable()
     d.putNumChild(4)
     if d.isExpanded():
@@ -48,12 +48,16 @@ def qdump__vcl__Point(d, value):
     eigenValue = value.members(True)[0]
     d.putItem(eigenValue)
     d.putType(value.type.name)
+    strList = get_string_list_eigen_values(d, eigenValue)
+    d.putValue(strList)
 
 
 def qdump__vcl__Quaternion(d, value):
     eigenValue = value.members(True)[0]
     d.putItem(eigenValue['m_coeffs'])
     d.putType(value.type.name)
+    strList = get_string_list_eigen_values(d, eigenValue['m_coeffs'])
+    d.putValue(strList)
 
 
 def qdump__vcl__Vector(d, value):

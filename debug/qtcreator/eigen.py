@@ -37,8 +37,20 @@ def get_list_eigen_values(d, value):
     inner_type, nrows, ncols, row_major, p = get_eigen_matrix_data(value)
 
     inner_size = inner_type.size()
-    retList = []
+    ret_list = []
     for i in range(nrows * ncols):
         v = d.createValue(p + i * inner_size, inner_type)
-        retList.append(v)
-    return retList
+        ret_list.append(v)
+    return ret_list
+
+
+def get_string_list_eigen_values(d, value):
+    vl = get_list_eigen_values(d, value)
+    inner_type = value.type[0]
+    n = len(vl)
+    if inner_type.name == 'float' or inner_type.name == 'double':
+        str_list = [str(d.value_as_floating_point(vl[i])) for i in range(n)]
+    else:
+        str_list = [str(d.value_as_integer(vl[i])) for i in range(n)]
+    str_list = '[' + ', '.join(str_list) + ']'
+    return str_list
