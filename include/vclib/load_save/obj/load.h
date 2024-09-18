@@ -23,6 +23,7 @@
 #ifndef VCL_LOAD_SAVE_OBJ_LOAD_H
 #define VCL_LOAD_SAVE_OBJ_LOAD_H
 
+#include <algorithm>
 #include <map>
 
 #include <vclib/algorithms/mesh/polygon.h>
@@ -139,6 +140,8 @@ void loadObjMaterials(
                     }
                 }
                 mat.map_Kd     = *token;
+                // replace backslashes with slashes - windows compatibility
+                std::ranges::replace(mat.map_Kd, '\\', '/');
                 mat.hasTexture = true;
                 if constexpr (HasTexturePaths<MeshType>) {
                     loadedInfo.setTextures();

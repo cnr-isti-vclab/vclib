@@ -131,20 +131,20 @@ inline std::string readNextNonEmptyLineNoThrow(std::istream& file)
  * found.
  *
  * @param[in] file: the stream to read from.
- * @param[in] separator: the separator to use for tokenization.
+ * @param[in] separators: the separators to use for tokenization.
  * @return the next non-empty line read from the stream, tokenized with the
  * given separator.
  */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
     std::istream& file,
-    char          separator = ' ')
+    std::vector<char>          separators = {' ', '\t'})
 {
     std::string    line;
     vcl::Tokenizer tokenizer;
 
     do {
         line      = readNextNonEmptyLine(file);
-        tokenizer = vcl::Tokenizer(line, separator);
+        tokenizer = vcl::Tokenizer(line, separators);
     } while (tokenizer.begin() == tokenizer.end());
 
     return tokenizer;
@@ -155,21 +155,21 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
  * with the given separator.
  *
  * @param[in] file: the stream to read from.
- * @param[in] separator: the separator to use for tokenization.
+ * @param[in] separators: the separators to use for tokenization.
  * @return the next non-empty line read from the stream, tokenized with the
  * given separator. If the stream ends before a non-empty line is found, returns
  * an empty tokenizer.
  */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
     std::istream& file,
-    char          separator = ' ')
+    std::vector<char>          separators = {' ', '\t'})
 {
     std::string    line;
     vcl::Tokenizer tokenizer;
 
     do {
         line      = readNextNonEmptyLineNoThrow(file);
-        tokenizer = vcl::Tokenizer(line, separator);
+        tokenizer = vcl::Tokenizer(line, separators);
     } while (file && tokenizer.begin() == tokenizer.end());
 
     return tokenizer;
