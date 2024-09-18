@@ -110,7 +110,7 @@ public:
 private:
     static void clearExtension(std::string& extension)
     {
-        if (extension.front() == '.') {
+        if (!extension.empty() && extension.front() == '.') {
             extension.erase(0, 1);
         }
         extension = vcl::toLower(extension);
