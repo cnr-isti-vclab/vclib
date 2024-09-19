@@ -139,7 +139,7 @@ void loadObjMaterials(
                         ++token;
                     }
                 }
-                mat.map_Kd     = *token;
+                mat.map_Kd = *token;
                 // replace backslashes with slashes - windows compatibility
                 std::ranges::replace(mat.map_Kd, '\\', '/');
                 mat.hasTexture = true;

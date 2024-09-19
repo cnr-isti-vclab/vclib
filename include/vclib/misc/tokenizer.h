@@ -53,7 +53,8 @@ public:
     Tokenizer(
         const char*              string,
         const std::vector<char>& separators,
-        bool jumpEmptyTokens = true) : mSeparators(separators)
+        bool                     jumpEmptyTokens = true) :
+            mSeparators(separators)
     {
         split(string, jumpEmptyTokens);
     }
@@ -70,7 +71,8 @@ public:
     Tokenizer(
         const std::string&       string,
         const std::vector<char>& separators,
-        bool jumpEmptyTokens = true) : mSeparators(separators)
+        bool                     jumpEmptyTokens = true) :
+            mSeparators(separators)
     {
         split(string.c_str(), jumpEmptyTokens);
     }

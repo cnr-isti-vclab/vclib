@@ -136,8 +136,8 @@ inline std::string readNextNonEmptyLineNoThrow(std::istream& file)
  * given separator.
  */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
-    std::istream& file,
-    std::vector<char>          separators = {' ', '\t'})
+    std::istream&     file,
+    std::vector<char> separators = {' ', '\t'})
 {
     std::string    line;
     vcl::Tokenizer tokenizer;
@@ -161,8 +161,8 @@ inline vcl::Tokenizer readAndTokenizeNextNonEmptyLine(
  * an empty tokenizer.
  */
 inline vcl::Tokenizer readAndTokenizeNextNonEmptyLineNoThrow(
-    std::istream& file,
-    std::vector<char>          separators = {' ', '\t'})
+    std::istream&     file,
+    std::vector<char> separators = {' ', '\t'})
 {
     std::string    line;
     vcl::Tokenizer tokenizer;
