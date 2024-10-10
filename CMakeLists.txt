@@ -23,8 +23,10 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+### Options
 
+option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+# Optional modules build options
 option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
 
 ### Common settings
@@ -33,8 +35,12 @@ include(cmake/vclib_common_settings.cmake)
 ### Examples and Tests
 include(cmake/examples_and_tests.cmake)
 
+add_library(vclib INTERFACE)
+
 add_subdirectory(core)
+target_link_libraries(vclib INTERFACE vclib-core)
 
 if (VCLIB_BUILD_RENDER_MODULE)
     add_subdirectory(render)
+    target_link_libraries(vclib INTERFACE vclib-render)
 endif()
