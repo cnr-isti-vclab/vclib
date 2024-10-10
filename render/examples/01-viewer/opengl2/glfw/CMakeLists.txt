@@ -21,20 +21,18 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+set(EXAMPLE_NAME 01-viewer-glfw)
+project(vclib-render-example-${EXAMPLE_NAME})
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+set(HEADERS
+    common.h)
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
+set(SOURCES
+    main.cpp)
 
-add_subdirectory(core)
-
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
-endif()
+# will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})

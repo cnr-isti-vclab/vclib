@@ -21,20 +21,10 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib)
+project(vclib-examples)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
-
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
-
-### Common settings
-include(cmake/vclib_common_settings.cmake)
-
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
-
-add_subdirectory(core)
-
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
-endif()
+add_subdirectory(9015-mesh-io-stl)
+add_subdirectory(9018-mesh-principal-curvature)
+add_subdirectory(9019-mesh-sampling)
+add_subdirectory(9021-mesh-sphere-intersection)
+add_subdirectory(9026-crease-edges-mesh)

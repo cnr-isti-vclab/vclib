@@ -20,21 +20,19 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib)
+find_package(Wayland QUIET)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+if (LINUX AND VCLIB_RENDER_WITH_WAYLAND)
+    if (Wayland_FOUND)
+        message(STATUS "- Wayland - using system-provided library")
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+        add_library(vclib-external-wayland INTERFACE)
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+        target_link_libraries(vclib-external-wayland INTERFACE Wayland::Wayland)
+        target_compile_definitions(vclib-external-wayland INTERFACE VCLIB_RENDER_WITH_WAYLAND)
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
-
-add_subdirectory(core)
-
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
+        list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-wayland)
+    else()
+        message(STATUS "- Wayland - not found, skipping")
+    endif()
 endif()

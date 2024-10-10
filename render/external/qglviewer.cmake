@@ -20,21 +20,40 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib)
+# to install QGLViewer on Mac:
+# - download libQGLViewer
+# - be sure to have a Qt environment set up
+# - cd libQGLViewer/QGLViewer
+# - qmake LIB_DIR=/Library/Frameworks
+# - make
+# - sudo make install
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+find_package(QGLViewer QUIET)
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+if (VCLIB_ALLOW_SYSTEM_QGLVIEWER)
+    if (VCLIB_ALLOW_SYSTEM_QT AND QT_FOUND AND OpenGL_FOUND)
+        if (QGLViewer_FOUND)
+            message(STATUS "- QGLViewer - using system-provided library")
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+            add_library(vclib-external-qglviewer INTERFACE)
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
+            target_include_directories(vclib-external-qglviewer INTERFACE ${QGLVIEWER_INCLUDE_DIR})
+            target_link_libraries(vclib-external-qglviewer INTERFACE ${QGLVIEWER_LIBRARY})
 
-add_subdirectory(core)
+            list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-qglviewer)
+        else()
+            message(STATUS "- QGLViewer - not found, skipping")
+        endif()
+    else()
+        # message indicating why we jumped QGLViewer
+        set (MISSING_LIB)
+        if (NOT OpenGL_FOUND)
+            list(APPEND MISSING_LIB OpenGL)
+        endif()
+        if (NOT QT_FOUND OR NOT VCLIB_ALLOW_SYSTEM_QT)
+            list(APPEND MISSING_LIB Qt)
+        endif()
 
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
+        message(STATUS "- QGLViewer - ignored: missing ${MISSING_LIB}")
+    endif()
 endif()

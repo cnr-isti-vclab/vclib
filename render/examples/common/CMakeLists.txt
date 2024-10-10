@@ -21,20 +21,15 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib)
+project(common)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+set(HEADERS
+    default_viewer.h)
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+add_library(vclib-render-examples-common INTERFACE)
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+target_include_directories(vclib-render-examples-common INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
+target_sources(vclib-render-examples-common PRIVATE ${HEADERS})
 
-add_subdirectory(core)
 
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
-endif()

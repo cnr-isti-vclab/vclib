@@ -20,21 +20,40 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib)
+find_package(glfw3 3.4 QUIET)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+if (VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
+    message(STATUS "- GLFW - using system-provided library")
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+    add_library(vclib-external-glfw INTERFACE)
+    target_link_libraries(vclib-external-glfw INTERFACE glfw)
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
+elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
+    message(STATUS "- GLFW - using downloaded source")
 
-add_subdirectory(core)
+    if(LINUX)
+        if (VCLIB_RENDER_WITH_WAYLAND)
+            set(GLFW_BUILD_WAYLAND ON)
+            set(GLFW_BUILD_X11 OFF)
+        else()
+            set(GLFW_BUILD_WAYLAND OFF)
+            set(GLFW_BUILD_X11 ON)
+        endif()
+    endif()
 
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
+    FetchContent_Declare(glfw3
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG        3.4)
+
+    FetchContent_MakeAvailable(glfw3)
+
+    add_library(vclib-external-glfw INTERFACE)
+    target_link_libraries(vclib-external-glfw INTERFACE glfw)
+
+    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
+
+else()
+    message(STATUS "- GLFW - not found, skipping")
 endif()

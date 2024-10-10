@@ -20,21 +20,21 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib)
+find_package(OpenGL QUIET)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+if (OpenGL_FOUND)
+    message(STATUS "- OpenGL - using system-provided library")
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+    add_library(vclib-external-opengl INTERFACE)
+    target_link_libraries(vclib-external-opengl INTERFACE
+        OpenGL::GL OpenGL::GLU)
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+    if(APPLE)
+        target_compile_definitions(vclib-external-opengl
+            INTERFACE GL_SILENCE_DEPRECATION)
+    endif()
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
-
-add_subdirectory(core)
-
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
+    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-opengl)
+else()
+    message(FATAL ERROR "- OpenGL is required - system-provided library not found.")
 endif()

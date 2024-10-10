@@ -21,20 +21,9 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
-
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
-
-### Common settings
-include(cmake/vclib_common_settings.cmake)
-
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
-
-add_subdirectory(core)
-
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
+if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+    add_subdirectory(bgfx)
 endif()
+
+add_subdirectory(none)

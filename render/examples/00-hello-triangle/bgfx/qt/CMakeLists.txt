@@ -21,20 +21,26 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+set(EXAMPLE_NAME 00-hello-triangle-qt)
+project(vclib-render-example-${EXAMPLE_NAME})
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+### Build settings
+set(CMAKE_CXX_STANDARD 20)
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+set(HEADERS
+    ../common.h
+    hello_triangle_qt.h)
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
+set(SOURCES
+    main.cpp
+    hello_triangle_qt.cpp)
 
-add_subdirectory(core)
+set(SHADERS
+    shaders/vs_vertex_shader.sc
+    shaders/fs_fragment_shader.sc
+    shaders/varying.def.sc)
 
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
-endif()
+vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
+
+target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})

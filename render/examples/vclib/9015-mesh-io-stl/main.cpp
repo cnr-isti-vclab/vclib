@@ -1,0 +1,44 @@
+/*****************************************************************************
+ * VCLib                                                                     *
+ * Visual Computing Library                                                  *
+ *                                                                           *
+ * Copyright(C) 2021-2024                                                    *
+ * Visual Computing Lab                                                      *
+ * ISTI - Italian National Research Council                                  *
+ *                                                                           *
+ * All rights reserved.                                                      *
+ *                                                                           *
+ * This program is free software; you can redistribute it and/or modify      *
+ * it under the terms of the GNU General Public License as published by      *
+ * the Free Software Foundation; either version 3 of the License, or         *
+ * (at your option) any later version.                                       *
+ *                                                                           *
+ * This program is distributed in the hope that it will be useful,           *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * for more details.                                                         *
+ ****************************************************************************/
+
+#include <default_viewer.h>
+
+#include "load_bimba_and_bunny.h"
+
+int main(int argc, char** argv)
+{
+    vcl::TriMesh m1, m2;
+
+    loadBimbaAndBunnyMeshes(m1, m2);
+
+    m1.enablePerVertexColor();
+    vcl::updateBoundingBox(m1);
+    vcl::updatePerVertexNormals(m1);
+    vcl::setPerVertexColor(m1, vcl::Color::DarkMagenta);
+
+    m2.enablePerVertexColor();
+    vcl::updateBoundingBox(m2);
+    vcl::updatePerVertexNormals(m2);
+    vcl::setPerVertexColor(m2, vcl::Color::DarkMagenta);
+
+    return showMeshesOnDefaultViewer(argc, argv, m1, m2);
+}

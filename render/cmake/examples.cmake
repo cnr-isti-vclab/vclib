@@ -20,21 +20,26 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib)
+# declare a function vclib_render_add_example:
+# vclib_render_add_example(<example_name> SOURCES <source_files>... [VCLIB_EXAMPLE <vclib example>])
+# where:
+# example_name: the name of the example
+# source_files: the source files of the example
+# vclib_example: the name of the vclib example associated with the example
+function(vclib_render_add_example name)
+    cmake_parse_arguments(ARG "" "VCLIB_EXAMPLE" "SOURCES" ${ARGN})
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+    set(TARGET_NAME "vclib-render-example-${name}")
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+    add_executable(${TARGET_NAME} ${ARG_SOURCES})
+    target_link_libraries(${TARGET_NAME} PRIVATE
+        vclib-render vclib-examples-common vclib-render-examples-common)
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+    if (ARG_VCLIB_EXAMPLE)
+        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/${ARG_VCLIB_EXAMPLE})
+        target_include_directories(${TARGET_NAME} PUBLIC
+                ${VCLIB_INCLUDE_EXAMPLES_DIR})
+    endif()
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
-
-add_subdirectory(core)
-
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
-endif()
+    set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "examples")
+endfunction()

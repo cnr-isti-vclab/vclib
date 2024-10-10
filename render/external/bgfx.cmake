@@ -20,21 +20,34 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib)
+set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
+    message(STATUS "- bgfx - using bundled source")
 
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+    # leave the option to build bgfx examples, but set it to OFF by default
+    option(BGFX_BUILD_EXAMPLES "Build bgfx examples" OFF)
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+    set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+    set(BGFX_OPENGL_VERSION 44)
+    if (TARGET vclib-external-wayland AND VCLIB_RENDER_WITH_WAYLAND)
+        add_definitions(-DWL_EGL_PLATFORM=1)
+    endif()
+    add_subdirectory(${VCLIB_BGFX_DIR})
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
+    add_library(vclib-external-bgfx INTERFACE)
 
-add_subdirectory(core)
+    # there are three warnings on gcc that we need to ignore
+    set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
 
-if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
+    target_link_libraries(vclib-external-bgfx INTERFACE bx bgfx bimg)
+    target_include_directories(vclib-external-bgfx
+        INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
+
+    set_target_properties(vclib-external-bgfx PROPERTIES BGFX_DIR ${VCLIB_BGFX_DIR})
+
+    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-bgfx)
+elseif(VCLIB_ALLOW_BUNDLED_BGFX)
+    message(FATAL_ERROR
+        "bgfx is required - VCLIB_ALLOW_BUNDLED_BGFX must be enabled and found.")
 endif()

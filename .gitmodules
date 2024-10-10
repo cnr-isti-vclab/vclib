@@ -1,0 +1,3 @@
+[submodule "render/external/bgfx"]
+	path = render/external/bgfx
+	url = https://github.com/bkaradzic/bgfx.cmake
