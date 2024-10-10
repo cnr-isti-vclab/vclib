@@ -21,14 +21,18 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib)
 
-option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
+set(TEST_NAME 005-mesh-new-user-component)
+project(vclib-test-${TEST_NAME})
 
-### Common settings
-include(cmake/vclib_common_settings.cmake)
+set(SOURCES
+    main.cpp)
 
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})
 
-add_subdirectory(core)
+target_include_directories(vclib-test-${TEST_NAME}
+    PUBLIC
+        ${VCLIB_CORE_EXAMPLES_DIR}/010-mesh-new-user-component)

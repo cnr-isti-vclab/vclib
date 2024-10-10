@@ -172,7 +172,7 @@ cython_debug/
 *.lo
 *.o
 *.obj
-!examples/assets/*.obj
+!assets/*/*.obj
 
 # Precompiled Headers
 *.gch
