@@ -52,9 +52,10 @@ A first draft of the (not up-to-date) documentation of the library can be found 
 You can build the documentation using doxygen (tested on 1.9.1 version):
 
 ```
-cd docs
-doxygen Doxyfile
+doxygen docs/Doxyfile
 ```
+
+Be sure to call doxygen from the root directory of the repository, otherwise the paths in the Doxyfile will be wrong.
 
 The output will be placed in the `docs/_doxygen/html` directory.
 
