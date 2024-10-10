@@ -20,7 +20,7 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-if (VCLIB_BUILD_TESTS)
+if (VCLIB_BUILD_CORE_TESTS)
     find_package(Catch2 3 QUIET)
 
     if(VCLIB_ALLOW_SYSTEM_CATCH2 AND TARGET Catch2::Catch2WithMain)

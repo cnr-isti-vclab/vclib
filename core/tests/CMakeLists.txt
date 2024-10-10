@@ -26,7 +26,7 @@ project(vclib-tests)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 # tests
-if (VCLIB_BUILD_TESTS)
+if (VCLIB_BUILD_CORE_TESTS)
     add_subdirectory(000-static-asserts)
     add_subdirectory(001-trimesh-base)
     add_subdirectory(002-mesh-topology)

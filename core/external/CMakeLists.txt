@@ -55,7 +55,7 @@ option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
 option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
 
 # Catch2
-if (VCLIB_BUILD_TESTS)
+if (VCLIB_BUILD_CORE_TESTS)
     option(VCLIB_ALLOW_DOWNLOAD_CATCH2
         "Allow use of downloaded Catch2 source" ON)
     option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
