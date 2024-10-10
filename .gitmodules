@@ -1,3 +1,3 @@
-[submodule "render/external/bgfx"]
-	path = render/external/bgfx
+[submodule "vclib/render/external/bgfx"]
+	path = vclib/render/external/bgfx
 	url = https://github.com/bkaradzic/bgfx.cmake

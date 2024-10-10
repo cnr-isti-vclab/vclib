@@ -37,10 +37,10 @@ include(cmake/examples_and_tests.cmake)
 
 add_library(vclib INTERFACE)
 
-add_subdirectory(core)
+add_subdirectory(vclib/core)
 target_link_libraries(vclib INTERFACE vclib-core)
 
 if (VCLIB_BUILD_RENDER_MODULE)
-    add_subdirectory(render)
+    add_subdirectory(vclib/render)
     target_link_libraries(vclib INTERFACE vclib-render)
 endif()
