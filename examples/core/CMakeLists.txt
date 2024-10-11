@@ -21,63 +21,46 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-external)
+project(vclib-core-examples)
 
-include(FetchContent)
+set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-# === REQUIRED === #
+add_subdirectory(000-mesh-basic)
+add_subdirectory(001-polymesh-basic)
+add_subdirectory(002-mesh-iterators)
+add_subdirectory(003-mesh-copy)
+add_subdirectory(004-mesh-normal)
+add_subdirectory(005-mesh-topology)
+add_subdirectory(006-mesh-stat)
+add_subdirectory(007-mesh-conversion)
+add_subdirectory(008-mesh-transform)
+add_subdirectory(009-mesh-custom-components)
+add_subdirectory(010-mesh-new-user-component)
+add_subdirectory(011-mesh-export-to-matrix)
+add_subdirectory(012-mesh-io-obj)
+add_subdirectory(013-mesh-io-off)
+add_subdirectory(014-mesh-io-ply)
+add_subdirectory(015-mesh-io-stl)
+add_subdirectory(016-mesh-clean)
+add_subdirectory(017-mesh-create)
+add_subdirectory(018-mesh-principal-curvature)
+add_subdirectory(019-mesh-sampling)
+add_subdirectory(020-mesh-smooth)
+add_subdirectory(021-mesh-sphere-intersection)
+add_subdirectory(022-edge-mesh-basic)
+add_subdirectory(023-polygon-earcut)
+add_subdirectory(024-distance)
+add_subdirectory(025-grid)
+add_subdirectory(026-crease-edges-mesh)
+add_subdirectory(027-convex-hull)
+add_subdirectory(028-topology-patch)
 
-# Eigen
-option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
-option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
+add_subdirectory(700-processing-save-mesh)
+add_subdirectory(701-processing-load-mesh)
+add_subdirectory(702-processing-create-mesh)
+add_subdirectory(703-processing-laplacian-smoothing)
+add_subdirectory(704-processing-convex-hull)
 
-# MapBox earcut
-option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
-    "Allow use of bundled Mapbox-Eaurcut source" ON)
-
-# Zip iterator
-option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
-    "Allow use of bundled ZipViews source" ON)
-
-# STB
-option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
-
-# poolSTL
-option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
-
-# === OPTIONAL === #
-
-# TBB
-option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
-
-#VCG
-option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
-option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
+add_subdirectory(999-misc)
 
 
-# === Fetch dependencies === #
-
-set(VCLIB_EXTERNAL_LIBRARIES "")
-
-### Eigen
-include(eigen.cmake)
-
-### Mapbox-Earcut
-include(mapbox.cmake)
-
-### Zip iterator
-include(zip-views.cmake)
-
-### STB
-include(stb.cmake)
-
-### TBB
-include(tbb.cmake) # leave this BEFORE poolSTL
-
-### poolSTL
-include(poolstl.cmake)
-
-### VCG
-include(vcg.cmake)
-
-set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)

@@ -29,6 +29,12 @@ option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 # Optional modules build options
 option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
 
+# Build examples
+option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
+
+# Build tests
+option(VCLIB_BUILD_TESTS "Build tests" ON)
+
 ### Common settings
 include(cmake/vclib_common_settings.cmake)
 
@@ -43,4 +49,22 @@ target_link_libraries(vclib INTERFACE vclib-core)
 if (VCLIB_BUILD_RENDER_MODULE)
     add_subdirectory(vclib/render)
     target_link_libraries(vclib INTERFACE vclib-render)
+endif()
+
+set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
+set(VCLIB_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
+if (VCLIB_BUILD_EXAMPLES)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        VCLIB_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR})
+
+    add_subdirectory(${VCLIB_EXAMPLES_DIR})
+endif()
+
+if (VCLIB_BUILD_TESTS)
+    include(CTest)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        VCLIB_TESTS_DIR ${VCLIB_TESTS_DIR})
+
+    add_subdirectory(${VCLIB_TESTS_DIR})
 endif()

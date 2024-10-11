@@ -33,7 +33,7 @@ function(vclib_render_add_example name)
 
     add_executable(${TARGET_NAME} ${ARG_SOURCES})
     target_link_libraries(${TARGET_NAME} PRIVATE
-        vclib-render vclib-examples-common vclib-render-examples-common)
+        vclib-render vclib-tests-examples-common vclib-render-examples-common)
 
     if (ARG_VCLIB_EXAMPLE)
         set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/${ARG_VCLIB_EXAMPLE})

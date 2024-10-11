@@ -21,18 +21,24 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
+project(vclib-tests)
 
-set(TEST_NAME 005-mesh-new-user-component)
-project(vclib-test-${TEST_NAME})
+option(VCLIB_ALLOW_DOWNLOAD_CATCH2
+    "Allow use of downloaded Catch2 source" ON)
+option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 
-set(SOURCES
-    main.cpp)
+set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-vclib_add_test(
-    ${TEST_NAME}
-    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
-    ${SOURCES})
+### Catch2
+include(catch2.cmake)
 
-target_include_directories(vclib-test-${TEST_NAME}
-    PUBLIC
-        ${VCLIB_CORE_EXAMPLES_DIR}/010-mesh-new-user-component)
+# examples
+add_subdirectory(core)
+
+# if (VCLIB_BUILD_PROCESSING_MODULE)
+#     add_subdirectory(processing)
+# endif()
+
+# if (VCLIB_BUILD_RENDER_MODULE)
+#     add_subdirectory(render)
+# endif()

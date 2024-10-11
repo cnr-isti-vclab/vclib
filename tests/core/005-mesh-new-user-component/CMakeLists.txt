@@ -20,27 +20,19 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-if (VCLIB_BUILD_CORE_TESTS)
-    find_package(Catch2 3 QUIET)
+cmake_minimum_required(VERSION 3.24)
 
-    if(VCLIB_ALLOW_SYSTEM_CATCH2 AND TARGET Catch2::Catch2WithMain)
-        message(STATUS "- Catch2 - using system-provided library")
-    elseif (VCLIB_ALLOW_DOWNLOAD_CATCH2)
-        message(STATUS "- Catch2 - using downloaded source")
+set(TEST_NAME 005-mesh-new-user-component)
+project(vclib-test-${TEST_NAME})
 
-        FetchContent_Declare(Catch2
-            GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-            GIT_TAG        v3.3.2)
+set(SOURCES
+    main.cpp)
 
-        FetchContent_MakeAvailable(Catch2)
-    else()
-        message(
-            FATAL_ERROR
-            "Catch2 is required to build tests - VCLIB_ALLOW_DOWNLOAD_CATCH2 must be enabled and found.")
-    endif()
+vclib_add_test(
+    ${TEST_NAME}
+    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
+    ${SOURCES})
 
-    add_library(vclib-external-catch2 INTERFACE)
-    target_link_libraries(vclib-external-catch2 INTERFACE Catch2::Catch2WithMain)
-
-    list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-catch2)
-endif()
+target_include_directories(vclib-test-${TEST_NAME}
+    PUBLIC
+        ${VCLIB_EXAMPLES_DIR}/core/010-mesh-new-user-component)

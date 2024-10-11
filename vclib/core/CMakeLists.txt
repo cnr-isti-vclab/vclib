@@ -53,25 +53,3 @@ target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
 if (MSVC)
     target_compile_options(${PROJECT_NAME} INTERFACE "/bigobj")
 endif()
-
-### Examples and Tests
-include(cmake/examples_and_tests.cmake)
-
-set(VCLIB_CORE_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
-set(VCLIB_CORE_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-
-if (VCLIB_BUILD_CORE_EXAMPLES)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        VCLIB_CORE_EXAMPLES_DIR ${VCLIB_CORE_EXAMPLES_DIR})
-
-    add_subdirectory(${VCLIB_CORE_EXAMPLES_DIR})
-endif()
-
-if (VCLIB_BUILD_CORE_TESTS)
-    include(CTest)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        VCLIB_CORE_TESTS_DIR ${VCLIB_CORE_TESTS_DIR})
-
-    add_subdirectory(${VCLIB_CORE_TESTS_DIR})
-endif()
-

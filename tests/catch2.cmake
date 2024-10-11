@@ -20,64 +20,23 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-external)
+find_package(Catch2 3 QUIET)
 
-include(FetchContent)
+if(VCLIB_ALLOW_SYSTEM_CATCH2 AND TARGET Catch2::Catch2WithMain)
+    message(STATUS "- Catch2 - using system-provided library")
+elseif (VCLIB_ALLOW_DOWNLOAD_CATCH2)
+    message(STATUS "- Catch2 - using downloaded source")
 
-# === REQUIRED === #
+    FetchContent_Declare(Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG        v3.3.2)
 
-# Eigen
-option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
-option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
+    FetchContent_MakeAvailable(Catch2)
+else()
+    message(
+        FATAL_ERROR
+        "Catch2 is required to build tests - VCLIB_ALLOW_DOWNLOAD_CATCH2 must be enabled and found.")
+endif()
 
-# MapBox earcut
-option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
-    "Allow use of bundled Mapbox-Eaurcut source" ON)
+target_link_libraries(vclib-tests-examples-common INTERFACE Catch2::Catch2WithMain)
 
-# Zip iterator
-option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
-    "Allow use of bundled ZipViews source" ON)
-
-# STB
-option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
-
-# poolSTL
-option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
-
-# === OPTIONAL === #
-
-# TBB
-option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
-
-#VCG
-option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
-option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
-
-
-# === Fetch dependencies === #
-
-set(VCLIB_EXTERNAL_LIBRARIES "")
-
-### Eigen
-include(eigen.cmake)
-
-### Mapbox-Earcut
-include(mapbox.cmake)
-
-### Zip iterator
-include(zip-views.cmake)
-
-### STB
-include(stb.cmake)
-
-### TBB
-include(tbb.cmake) # leave this BEFORE poolSTL
-
-### poolSTL
-include(poolstl.cmake)
-
-### VCG
-include(vcg.cmake)
-
-set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)
