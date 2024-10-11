@@ -22,12 +22,14 @@
 
 include(${VCLIB_BGFX_DIR}/cmake/bgfxToolUtils.cmake)
 
-set(GLSL_PROFILE 140)
-set(GLSL_COMPUTE_PROFILE 300)
-set(ESSL_PROFILE 320_es)
-set(SPIRV_PROFILE spirv)
-set(DX_PROFILE s_5_0)
-set(METAL_PROFILE metal22-11)
+function(_set_bgfx_profiles)
+    set(GLSL_PROFILE 140 PARENT_SCOPE)
+    set(GLSL_COMPUTE_PROFILE 300 PARENT_SCOPE)
+    set(ESSL_PROFILE 320_es PARENT_SCOPE)
+    set(SPIRV_PROFILE spirv PARENT_SCOPE)
+    set(DX_PROFILE s_5_0 PARENT_SCOPE)
+    set(METAL_PROFILE metal22-11 PARENT_SCOPE)
+endfunction()
 
 function(get_bgfx_profile_ext PROFILE PROFILE_EXT)
     string(REPLACE 320_es essl PROFILE ${PROFILE})
@@ -52,6 +54,8 @@ endfunction()
 # )
 #
 function(_bgfx_compile_shader_to_header)
+    _set_bgfx_profiles()
+
     set(options "")
     set(oneValueArgs TYPE VARYING_DEF OUTPUT_DIR OUT_FILES_VAR)
     set(multiValueArgs SHADERS INCLUDE_DIRS)
@@ -136,6 +140,8 @@ endfunction()
 # The compiled shader will be placed in the following directory:
 # <BINARY_DIR>/shaders/<platform>/<DIR>/<FILE_NAME>.bin
 function(_add_bgfx_shader FILE DIR TARGET)
+    _set_bgfx_profiles()
+
     get_property(TARGET_BIN_DIR TARGET ${TARGET} PROPERTY BINARY_DIR)
     set(BGFX_SHADERS_OUTPUT_DIR "${TARGET_BIN_DIR}/shaders")
 

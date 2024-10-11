@@ -32,7 +32,7 @@ add_subdirectory(core)
 #     add_subdirectory(processing)
 # endif()
 
-# if (VCLIB_BUILD_RENDER_MODULE)
-#     add_subdirectory(render)
-# endif()
+if (VCLIB_BUILD_RENDER_MODULE)
+    add_subdirectory(render)
+endif()
 
