@@ -230,8 +230,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})
 
 ### Examples
 
-if (VCLIB_BUILD_CORE_EXAMPLES)
+if (VCLIB_BUILD_EXAMPLES)
     include(cmake/examples.cmake)
-    get_target_property(VCLIB_EXAMPLES_DIR vclib-core VCLIB_CORE_EXAMPLES_DIR)
     add_subdirectory(examples)
 endif()

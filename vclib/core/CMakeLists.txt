@@ -23,10 +23,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-core)
 
-### Options
-option(VCLIB_BUILD_CORE_EXAMPLES "Build VCLib-core examples" ON)
-option(VCLIB_BUILD_CORE_TESTS "Build VCLib-core tests" ON)
-
 option(VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY
     "If true, the examples and tests of VCLib will be built just setting the
     INCLUDE_PATH of the library (no cmake targets)." OFF)

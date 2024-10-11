@@ -36,7 +36,7 @@ function(vclib_render_add_example name)
         vclib-render vclib-tests-examples-common vclib-render-examples-common)
 
     if (ARG_VCLIB_EXAMPLE)
-        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/${ARG_VCLIB_EXAMPLE})
+        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/core/${ARG_VCLIB_EXAMPLE})
         target_include_directories(${TARGET_NAME} PUBLIC
                 ${VCLIB_INCLUDE_EXAMPLES_DIR})
     endif()
