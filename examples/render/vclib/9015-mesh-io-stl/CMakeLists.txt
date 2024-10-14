@@ -28,4 +28,7 @@ project(vclib-render-example-${EXAMPLE_NAME})
 set(SOURCES
     main.cpp)
 
-vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${SOURCES} VCLIB_EXAMPLE 015-mesh-io-stl)
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    VCLIB_CORE_EXAMPLE 015-mesh-io-stl
+    SOURCES ${SOURCES})

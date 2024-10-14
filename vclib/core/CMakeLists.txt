@@ -23,10 +23,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-core)
 
-option(VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY
-    "If true, the examples and tests of VCLib will be built just setting the
-    INCLUDE_PATH of the library (no cmake targets)." OFF)
-
 # external libraries
 message(STATUS "VCLib: external libraries")
 add_subdirectory(external)

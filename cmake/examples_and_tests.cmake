@@ -11,21 +11,40 @@ target_compile_definitions(vclib-tests-examples-common INTERFACE
 target_compile_definitions(vclib-tests-examples-common INTERFACE
     VCLIB_RESULTS_PATH="${VCLIB_ASSETS_PATH}/results")
 
+function(_vclib_add_test_example name)
+    set(options TEST HEADER_ONLY)
+    set(oneValueArgs VCLIB_MODULE VCLIB_CORE_EXAMPLE)
+    set(multiValueArgs SOURCES)
 
+    cmake_parse_arguments(ARG
+        "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-function(_vclib_add_test_example name header_only test)
-    cmake_parse_arguments(ARG "" "" "" ${ARGN})
-
-    if (${test})
-        set(TARGET_NAME "vclib-test-${name}")
-    else()
-        set(TARGET_NAME "vclib-example-${name}")
+    if (NOT ARG_VCLIB_MODULE)
+        set(ARG_VCLIB_MODULE "core")
     endif()
 
-    add_executable(${TARGET_NAME} ${ARG_UNPARSED_ARGUMENTS})
+    if (${ARG_TEST})
+        set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-test-${name}")
+    else()
+        set(TARGET_NAME "vclib-${ARG_VCLIB_MODULE}-example-${name}")
+    endif()
+
+    add_executable(${TARGET_NAME} ${ARG_SOURCES})
     target_link_libraries(${TARGET_NAME} PRIVATE vclib-tests-examples-common)
-    if (NOT ${header_only})
-        target_link_libraries(${TARGET_NAME} PRIVATE vclib)
+
+    # if ARG_VCLIB_MODULE is "render"
+    if (ARG_VCLIB_MODULE STREQUAL "render")
+        target_link_libraries(${TARGET_NAME} PRIVATE vclib-render-examples-common)
+    endif()
+
+    if (ARG_VCLIB_CORE_EXAMPLE)
+        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/core/${ARG_VCLIB_CORE_EXAMPLE})
+        target_include_directories(${TARGET_NAME} PUBLIC
+                ${VCLIB_INCLUDE_EXAMPLES_DIR})
+    endif()
+
+    if (NOT ${ARG_HEADER_ONLY})
+        target_link_libraries(${TARGET_NAME} PRIVATE vclib-${ARG_VCLIB_MODULE})
     else()
         # additional include and links required when using header only:
 
@@ -47,7 +66,7 @@ function(_vclib_add_test_example name header_only test)
         endif()
     endif()
 
-    if (${test})
+    if (${ARG_TEST})
         set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "tests")
         enable_testing()
         add_test(NAME ${name} COMMAND ${TARGET_NAME})
@@ -56,39 +75,36 @@ function(_vclib_add_test_example name header_only test)
     endif()
 endfunction()
 
-function(vclib_add_example name header_only)
+# example of call of this function
+# vclib_add_example(
+#     000-mesh-basic # name of the example
+#     [HEADER_ONLY] # optional - to build the example with includepath
+#                     (no cmake targets)
+#     [VCLIB_MODULE core] # optional - to specify the module of the example
+#                           (default is core)
+#     [VCLIB_CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
+#                                     the core module from which reuse some code
+#     SOURCES main.cpp # sources of the example
+# )
+function(vclib_add_example name)
     cmake_parse_arguments(ARG "" "" "" ${ARGN})
 
-    _vclib_add_test_example(${name} ${header_only} FALSE ${ARG_UNPARSED_ARGUMENTS})
+    _vclib_add_test_example(${name} ${ARG_UNPARSED_ARGUMENTS})
 endfunction()
 
-function(vclib_add_test name header_only)
+# example of call of this function
+# vclib_add_test(
+#     000-mesh-basic # name of the test
+#     [HEADER_ONLY] # optional - to build the test with includepath
+#                     (no cmake targets)
+#     [VCLIB_MODULE core] # optional - to specify the module of the test
+#                           (default is core)
+#     [VCLIB_CORE_EXAMPLE 000-mesh-basic] # optional - to specify the example of
+#                                     the core module from which reuse some code
+#     SOURCES main.cpp # sources of the test
+# )
+function(vclib_add_test name)
     cmake_parse_arguments(ARG "" "" "" ${ARGN})
 
-    _vclib_add_test_example(${name} ${header_only} TRUE ${ARG_UNPARSED_ARGUMENTS})
-endfunction()
-
-# declare a function vclib_render_add_example:
-# vclib_render_add_example(<example_name> SOURCES <source_files>... [VCLIB_EXAMPLE <vclib example>])
-# where:
-# example_name: the name of the example
-# source_files: the source files of the example
-# vclib_example: the name of the vclib example associated with the example
-#                - todo: rename to core
-function(vclib_render_add_example name)
-    cmake_parse_arguments(ARG "" "VCLIB_EXAMPLE" "SOURCES" ${ARGN})
-
-    set(TARGET_NAME "vclib-render-example-${name}")
-
-    add_executable(${TARGET_NAME} ${ARG_SOURCES})
-    target_link_libraries(${TARGET_NAME} PRIVATE
-        vclib-render vclib-tests-examples-common vclib-render-examples-common)
-
-    if (ARG_VCLIB_EXAMPLE)
-        set(VCLIB_INCLUDE_EXAMPLES_DIR ${VCLIB_EXAMPLES_DIR}/core/${ARG_VCLIB_EXAMPLE})
-        target_include_directories(${TARGET_NAME} PUBLIC
-                ${VCLIB_INCLUDE_EXAMPLES_DIR})
-    endif()
-
-    set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "examples")
+    _vclib_add_test_example(${name} TEST ${ARG_UNPARSED_ARGUMENTS})
 endfunction()

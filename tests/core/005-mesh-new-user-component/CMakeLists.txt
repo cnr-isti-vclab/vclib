@@ -30,9 +30,6 @@ set(SOURCES
 
 vclib_add_test(
     ${TEST_NAME}
-    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
-    ${SOURCES})
-
-target_include_directories(vclib-test-${TEST_NAME}
-    PUBLIC
-        ${VCLIB_EXAMPLES_DIR}/core/010-mesh-new-user-component)
+    SOURCES ${SOURCES}
+    VCLIB_CORE_EXAMPLE 010-mesh-new-user-component
+    ${HEADER_ONLY_OPTION})

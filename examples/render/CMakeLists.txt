@@ -23,9 +23,7 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-render-examples)
 
-option(VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
-
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_RENDER_COMPILE_WARNINGS_AS_ERRORS})
+set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 if (TARGET vclib-external-qt)
     add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)

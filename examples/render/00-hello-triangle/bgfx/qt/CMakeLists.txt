@@ -41,6 +41,8 @@ set(SHADERS
     shaders/fs_fragment_shader.sc
     shaders/varying.def.sc)
 
-vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${HEADERS} ${SOURCES})
 
 target_add_bgfx_shaders(${PROJECT_NAME} ${SHADERS})

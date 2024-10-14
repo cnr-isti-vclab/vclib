@@ -34,13 +34,13 @@ set(SOURCES
 
 vclib_add_test(
     ${TEST_NAME}
-    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
-    ${SOURCES})
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})
 
 get_property(VCG_INCLUDE_DIRS
     TARGET vclib-external-vcg
     PROPERTY VCG_INCLUDE_DIRS)
 
 # add plylib.cpp source from vcg
-target_sources(vclib-test-${TEST_NAME} PRIVATE
+target_sources(vclib-core-test-${TEST_NAME} PRIVATE
     ${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp)

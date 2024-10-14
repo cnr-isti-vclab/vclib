@@ -31,4 +31,6 @@ set(HEADERS
 set(SOURCES
     main.cpp)
 
-vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${HEADERS} ${SOURCES})

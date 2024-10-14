@@ -46,14 +46,13 @@ add_library(vclib INTERFACE)
 add_subdirectory(vclib/core)
 target_link_libraries(vclib INTERFACE vclib-core)
 
-# todo move these down when render examples are moved
-set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
-set(VCLIB_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-
 if (VCLIB_BUILD_RENDER_MODULE)
     add_subdirectory(vclib/render)
     target_link_libraries(vclib INTERFACE vclib-render)
 endif()
+
+set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
+set(VCLIB_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 if (VCLIB_BUILD_EXAMPLES)
     set_target_properties(${PROJECT_NAME} PROPERTIES

@@ -28,4 +28,6 @@ project(vclib-render-example-${EXAMPLE_NAME})
 set(SOURCES
     main.cpp)
 
-vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${SOURCES})
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${SOURCES})

@@ -4,4 +4,6 @@ set(HEADERS my_dialog.h)
 
 set(SOURCES main.cpp)
 
-vclib_render_add_example(999-misc-none SOURCES ${HEADERS} ${SOURCES})
+vclib_add_example(999-misc-none
+    VCLIB_MODULE render
+    SOURCES ${HEADERS} ${SOURCES})

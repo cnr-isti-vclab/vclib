@@ -35,4 +35,6 @@ set(SOURCES
     main.cpp)
 
 # will create a target called 'vclib-render-example-${EXAMPLE_NAME}'
-vclib_render_add_example(${EXAMPLE_NAME} SOURCES ${HEADERS} ${SOURCES})
+vclib_add_example(${EXAMPLE_NAME}
+    VCLIB_MODULE render
+    SOURCES ${HEADERS} ${SOURCES})

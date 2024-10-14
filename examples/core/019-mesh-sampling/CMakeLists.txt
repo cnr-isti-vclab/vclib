@@ -33,5 +33,5 @@ set(SOURCES
 
 vclib_add_example(
     ${EXAMPLE_NAME}
-    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
-    ${HEADERS} ${SOURCES})
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})

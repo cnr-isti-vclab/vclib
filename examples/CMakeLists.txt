@@ -25,6 +25,14 @@ project(vclib-examples)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
+option(VCLIB_CORE_TESTS_AND_EXAMPLES_HEADER_ONLY
+    "If true, the examples and tests of VCLib-core will be built just setting
+    the INCLUDE_PATH of the library (no cmake targets)." OFF)
+
+if (VCLIB_CORE_TESTS_AND_EXAMPLES_HEADER_ONLY)
+    set(HEADER_ONLY_OPTION HEADER_ONLY)
+endif()
+
 # examples
 add_subdirectory(core)
 

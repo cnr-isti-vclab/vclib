@@ -22,8 +22,8 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 000-static-asserts)
-project(vclib-test-${EXAMPLE_NAME})
+set(TEST_NAME 000-static-asserts)
+project(vclib-test-${TEST_NAME})
 
 set(HEADERS
     meshes.h
@@ -41,6 +41,6 @@ set(SOURCES
 )
 
 vclib_add_test(
-    ${EXAMPLE_NAME}
-    ${VCLIB_TESTS_AND_EXAMPLES_HEADER_ONLY}
-    ${HEADERS} ${SOURCES})
+    ${TEST_NAME}
+    SOURCES ${HEADERS} ${SOURCES}
+    ${HEADER_ONLY_OPTION})
