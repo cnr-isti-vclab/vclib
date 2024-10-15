@@ -93,21 +93,21 @@ endif()
 # if render engine is opengl2 - include sources that use opengl2
 if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
     file(GLOB_RECURSE HEADERS_OPENGL2 CONFIGURE_DEPENDS
-        "include/vclib_opengl2/render/*.h")
+        "include/vclib/render_opengl2/*.h")
     list(APPEND HEADERS ${HEADERS_OPENGL2})
 
     file(GLOB_RECURSE SOURCES_OPENGL2 CONFIGURE_DEPENDS
-        "src/vclib_opengl2/render/*.cpp")
+        "src/vclib/render_opengl2/*.cpp")
     list(APPEND SOURCES ${SOURCES_OPENGL2})
 
     # required files that use opengl2
     set(LINK_FILES
-        include/vclib_opengl2/render/canvas.h
-        include/vclib_opengl2/render/viewer_canvas.h
-        include/vclib_opengl2/render/drawable/drawable_mesh.h)
+        include/vclib/render_opengl2/canvas.h
+        include/vclib/render_opengl2/viewer_canvas.h
+        include/vclib/render_opengl2/drawable/drawable_mesh.h)
 
     foreach(FILE ${LINK_FILES})
-        string(REPLACE "vclib_opengl2" "vclib" TARGET_FILE ${FILE})
+        string(REPLACE "render_opengl2" "render" TARGET_FILE ${FILE})
 
         get_filename_component(TARGET_DIR ${TARGET_FILE} DIRECTORY)
         file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR})

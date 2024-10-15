@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib_opengl2/render/canvas.h>
+#include <vclib/render_opengl2/canvas.h>
 
 namespace vcl {
 

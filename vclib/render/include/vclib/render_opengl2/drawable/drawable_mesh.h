@@ -38,7 +38,7 @@
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 #include <vclib/render/interfaces/drawable_mesh_i.h>
 
-#include <vclib_opengl2/render/drawable/draw_objects3.h>
+#include <vclib/render_opengl2/drawable/draw_objects3.h>
 
 namespace vcl {
 

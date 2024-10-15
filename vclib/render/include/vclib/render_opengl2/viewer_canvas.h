@@ -27,7 +27,7 @@
 
 #include <vclib/render/interfaces/viewer_i.h>
 
-#include <vclib_opengl2/render/canvas.h>
+#include <vclib/render_opengl2/canvas.h>
 
 namespace vcl {
 

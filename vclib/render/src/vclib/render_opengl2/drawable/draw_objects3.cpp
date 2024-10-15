@@ -20,7 +20,7 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib_opengl2/render/drawable/draw_objects3.h>
+#include <vclib/render_opengl2/drawable/draw_objects3.h>
 
 #ifdef _WIN32
 #include <windows.h>
