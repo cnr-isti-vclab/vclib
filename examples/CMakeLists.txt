@@ -29,18 +29,29 @@ option(VCLIB_CORE_TESTS_AND_EXAMPLES_HEADER_ONLY
     "If true, the examples and tests of VCLib-core will be built just setting
     the INCLUDE_PATH of the library (no cmake targets)." OFF)
 
+option(VCLIB_CORE_BUILD_EXAMPLES
+    "If true, the examples of VCLib-core will be built." ON)
+
+option(VCLIB_PROCESSING_BUILD_EXAMPLES
+    "If true, the examples of VCLib-processing will be built." ON)
+
+option(VCLIB_RENDER_BUILD_EXAMPLES
+    "If true, the examples of VCLib-render will be built." ON)
+
 if (VCLIB_CORE_TESTS_AND_EXAMPLES_HEADER_ONLY)
     set(HEADER_ONLY_OPTION HEADER_ONLY)
 endif()
 
 # examples
-add_subdirectory(core)
+if (VCLIB_CORE_BUILD_EXAMPLES)
+    add_subdirectory(core)
+endif()
 
-# if (VCLIB_BUILD_PROCESSING_MODULE)
+# if (VCLIB_BUILD_PROCESSING_MODULE AND VCLIB_PROCESSING_BUILD_EXAMPLES)
 #     add_subdirectory(processing)
 # endif()
 
-if (VCLIB_BUILD_RENDER_MODULE)
+if (VCLIB_BUILD_RENDER_MODULE AND VCLIB_RENDER_BUILD_EXAMPLES)
     add_subdirectory(render)
 endif()
 

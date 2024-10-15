@@ -27,6 +27,9 @@ option(VCLIB_ALLOW_DOWNLOAD_CATCH2
     "Allow use of downloaded Catch2 source" ON)
 option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 
+option(VCLIB_CORE_BUILD_TESTS
+    "If true, the tests of VCLib-core will be built." ON)
+
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 ### Catch2
@@ -37,8 +40,4 @@ add_subdirectory(core)
 
 # if (VCLIB_BUILD_PROCESSING_MODULE)
 #     add_subdirectory(processing)
-# endif()
-
-# if (VCLIB_BUILD_RENDER_MODULE)
-#     add_subdirectory(render)
 # endif()
