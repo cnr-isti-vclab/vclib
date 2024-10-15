@@ -20,38 +20,22 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
+cmake_minimum_required(VERSION 3.24)
+project(vclib-external)
 
-if (VCLIB_ALLOW_SYSTEM_VCG AND (DEFINED VCG_INCLUDE_DIRS OR DEFINED VCG_DIR))
-    if (DEFINED VCG_DIR)
-        set(VCG_INCLUDE_DIRS ${VCG_DIR})
-    endif()
-    message(STATUS "- VCG - using system-provided library")
-    set(VCLIB_USES_VCG TRUE)
-else()
-    if (VCLIB_ALLOW_DOWNLOAD_VCG)
-        message(STATUS "- VCG - using downloaded source")
-        include(FetchContent)
-        FetchContent_Declare(
-            vcglib
-            GIT_REPOSITORY https://github.com/cnr-isti-vclab/vcglib.git
-            GIT_TAG        origin/devel) # TODO: change to next version of vcg
+# 3rd party libraries
+message(STATUS "VCLib: 3rd party libraries")
+add_subdirectory(3rdparty)
 
-        FetchContent_MakeAvailable(vcglib)
-        set(VCG_INCLUDE_DIRS ${vcglib_SOURCE_DIR})
-        set(VCLIB_USES_VCG TRUE)
-    else()
-        message(STATUS "- VCG - not found, skipping")
-    endif()
-endif()
+### vclib-core target
+set(VCLIB_EXTERNAL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-if (VCLIB_USES_VCG)
-    add_library(vclib-external-vcg INTERFACE)
-    target_include_directories(vclib-external-vcg INTERFACE
-        ${VCG_INCLUDE_DIRS})
-    set_target_properties(
-        vclib-external-vcg
-        PROPERTIES
-        VCG_INCLUDE_DIRS ${VCG_INCLUDE_DIRS})
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 
-    list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-vcg)
-endif()
+add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
+target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_EXTERNAL_INCLUDE_DIR})
+
+target_link_libraries(${PROJECT_NAME} INTERFACE
+    ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} vclib-core)
+
+target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})

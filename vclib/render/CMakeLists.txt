@@ -226,4 +226,3 @@ endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib-core)
-target_include_directories(${PROJECT_NAME} PRIVATE ${VCLIB_RENDER_INCLUDE_DIR})

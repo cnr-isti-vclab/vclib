@@ -20,25 +20,13 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_ZIP_VIEWS_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-views-1.0)
+cmake_minimum_required(VERSION 3.24)
+project(vclib-external-tests)
 
-if (VCLIB_ALLOW_BUNDLED_ZIP_VIEWS AND
-        EXISTS ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp)
-    message(STATUS "- ZipViews - using bundled source")
-else()
-    message(
-        FATAL_ERROR
-        "ZipViews is required -
-        VCLIB_ALLOW_BUNDLED_ZIP_VIEWS must be enabled and found.")
+set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+
+if (TARGET vclib-external-vcg)
+    add_subdirectory(000-mesh-import-vcg)
 endif()
 
-set(ZIP_VIEWS_INCLUDE_DIRS ${VCLIB_ZIP_VIEWS_DIR})
 
-set(ZIP_VIEW_BUILD_TEST OFF CACHE BOOL "Build ZipViews tests")
-add_subdirectory(${VCLIB_ZIP_VIEWS_DIR})
-
-add_library(vclib-external-zip-views INTERFACE)
-
-target_link_libraries(vclib-external-zip-views INTERFACE zip-view)
-
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-zip-views)

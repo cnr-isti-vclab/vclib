@@ -38,6 +38,12 @@ include(catch2.cmake)
 # examples
 add_subdirectory(core)
 
-# if (VCLIB_BUILD_PROCESSING_MODULE)
+if (VCLIB_BUILD_MODULE_EXTERNAL)
+    add_subdirectory(external)
+endif()
+
+# if (VCLIB_BUILD_MODULE_PROCESSING)
 #     add_subdirectory(processing)
 # endif()
+
+

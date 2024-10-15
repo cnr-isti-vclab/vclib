@@ -20,25 +20,28 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_ZIP_VIEWS_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-views-1.0)
+cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_ALLOW_BUNDLED_ZIP_VIEWS AND
-        EXISTS ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp)
-    message(STATUS "- ZipViews - using bundled source")
-else()
-    message(
-        FATAL_ERROR
-        "ZipViews is required -
-        VCLIB_ALLOW_BUNDLED_ZIP_VIEWS must be enabled and found.")
-endif()
+set(TEST_NAME 000-vcg-mesh-import)
+project(vclib-test-${TEST_NAME})
 
-set(ZIP_VIEWS_INCLUDE_DIRS ${VCLIB_ZIP_VIEWS_DIR})
+# vcg generates a lot of warnings
+set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
 
-set(ZIP_VIEW_BUILD_TEST OFF CACHE BOOL "Build ZipViews tests")
-add_subdirectory(${VCLIB_ZIP_VIEWS_DIR})
+set(SOURCES
+    mesh.h
+    main.cpp)
 
-add_library(vclib-external-zip-views INTERFACE)
+vclib_add_test(
+    ${TEST_NAME}
+    VCLIB_MODULE external
+    SOURCES ${SOURCES}
+    ${HEADER_ONLY_OPTION})
 
-target_link_libraries(vclib-external-zip-views INTERFACE zip-view)
+get_property(VCG_INCLUDE_DIRS
+    TARGET vclib-external-vcg
+    PROPERTY VCG_INCLUDE_DIRS)
 
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-zip-views)
+# add plylib.cpp source from vcg
+target_sources(vclib-external-test-${TEST_NAME} PRIVATE
+    ${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp)

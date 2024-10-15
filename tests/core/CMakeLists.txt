@@ -46,8 +46,3 @@ add_subdirectory(017-serialization)
 add_subdirectory(018-polygon)
 
 
-if (TARGET vclib-external-vcg)
-    add_subdirectory(900-mesh-import-vcg)
-endif()
-
-

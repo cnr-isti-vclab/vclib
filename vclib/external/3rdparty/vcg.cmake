@@ -20,27 +20,38 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
 
-set(TEST_NAME 900-mesh-import-vcg)
-project(vclib-test-${TEST_NAME})
+if (VCLIB_ALLOW_SYSTEM_VCG AND (DEFINED VCG_INCLUDE_DIRS OR DEFINED VCG_DIR))
+    if (DEFINED VCG_DIR)
+        set(VCG_INCLUDE_DIRS ${VCG_DIR})
+    endif()
+    message(STATUS "- VCG - using system-provided library")
+    set(VCLIB_USES_VCG TRUE)
+else()
+    if (VCLIB_ALLOW_DOWNLOAD_VCG)
+        message(STATUS "- VCG - using downloaded source")
+        include(FetchContent)
+        FetchContent_Declare(
+            vcglib
+            GIT_REPOSITORY https://github.com/cnr-isti-vclab/vcglib.git
+            GIT_TAG        origin/devel) # TODO: change to next version of vcg
 
-# vcg generates a lot of warnings
-set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
+        FetchContent_MakeAvailable(vcglib)
+        set(VCG_INCLUDE_DIRS ${vcglib_SOURCE_DIR})
+        set(VCLIB_USES_VCG TRUE)
+    else()
+        message(STATUS "- VCG - not found, skipping")
+    endif()
+endif()
 
-set(SOURCES
-    mesh.h
-    main.cpp)
+if (VCLIB_USES_VCG)
+    add_library(vclib-external-vcg INTERFACE)
+    target_include_directories(vclib-external-vcg INTERFACE
+        ${VCG_INCLUDE_DIRS})
+    set_target_properties(
+        vclib-external-vcg
+        PROPERTIES
+        VCG_INCLUDE_DIRS ${VCG_INCLUDE_DIRS})
 
-vclib_add_test(
-    ${TEST_NAME}
-    SOURCES ${SOURCES}
-    ${HEADER_ONLY_OPTION})
-
-get_property(VCG_INCLUDE_DIRS
-    TARGET vclib-external-vcg
-    PROPERTY VCG_INCLUDE_DIRS)
-
-# add plylib.cpp source from vcg
-target_sources(vclib-core-test-${TEST_NAME} PRIVATE
-    ${VCG_INCLUDE_DIRS}/wrap/ply/plylib.cpp)
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-external-vcg)
+endif()

@@ -20,25 +20,23 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_ZIP_VIEWS_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-views-1.0)
+cmake_minimum_required(VERSION 3.24)
+project(vclib-external)
 
-if (VCLIB_ALLOW_BUNDLED_ZIP_VIEWS AND
-        EXISTS ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp)
-    message(STATUS "- ZipViews - using bundled source")
-else()
-    message(
-        FATAL_ERROR
-        "ZipViews is required -
-        VCLIB_ALLOW_BUNDLED_ZIP_VIEWS must be enabled and found.")
-endif()
+include(FetchContent)
 
-set(ZIP_VIEWS_INCLUDE_DIRS ${VCLIB_ZIP_VIEWS_DIR})
+# === OPTIONAL === #
 
-set(ZIP_VIEW_BUILD_TEST OFF CACHE BOOL "Build ZipViews tests")
-add_subdirectory(${VCLIB_ZIP_VIEWS_DIR})
+#VCG
+option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
+option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
 
-add_library(vclib-external-zip-views INTERFACE)
 
-target_link_libraries(vclib-external-zip-views INTERFACE zip-view)
+# === Fetch dependencies === #
 
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-zip-views)
+set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES "")
+
+### VCG
+include(vcg.cmake)
+
+set(VCLIB_EXTERNAL_3RDPARTY_LIBRARIES ${VCLIB_EXTERNAL_3RDPARTY_LIBRARIES} PARENT_SCOPE)

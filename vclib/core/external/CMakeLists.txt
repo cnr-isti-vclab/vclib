@@ -50,10 +50,6 @@ option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
 # TBB
 option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
 
-#VCG
-option(VCLIB_ALLOW_DOWNLOAD_VCG "Allow use of downloaded VCG source" ON)
-option(VCLIB_ALLOW_SYSTEM_VCG "Allow use of system-provided VCG" ON)
-
 
 # === Fetch dependencies === #
 
@@ -77,7 +73,5 @@ include(tbb.cmake) # leave this BEFORE poolSTL
 ### poolSTL
 include(poolstl.cmake)
 
-### VCG
-include(vcg.cmake)
 
 set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)
