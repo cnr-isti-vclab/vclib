@@ -326,7 +326,6 @@ function(build_assets_to_headers)
 
     set(BGFX_ASSETS_OUTPUT_DIR "${TARGET_BIN_DIR}/include")
 
-    message(STATUS "OutDir: ${BGFX_ASSETS_OUTPUT_DIR}")
     foreach(ASSET ${ARGV})
         file(RELATIVE_PATH ASSET_REL "${VCLIB_RENDER_DIR}/.." ${ASSET})
         get_filename_component(DIR_PATH ${ASSET_REL} DIRECTORY)

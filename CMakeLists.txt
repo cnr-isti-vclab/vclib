@@ -27,13 +27,19 @@ project(vclib)
 
 option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 # Optional modules build options
-option(VCLIB_BUILD_RENDER_MODULE "Build the render module" OFF)
+option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
 # Build examples
 option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
 
 # Build tests
 option(VCLIB_BUILD_TESTS "Build tests" ON)
+
+# If true, the examples and tests of VCLib will be built just setting
+# the INCLUDE_PATH of the core module (no cmake targets).
+option(VCLIB_TESTS_AND_EXAMPLES_USE_CORE_HEADER_ONLY
+    "If true, the examples and tests of VCLib-core will be built just setting
+    the INCLUDE_PATH of the library (no cmake targets)." OFF)
 
 ### Common settings
 include(cmake/vclib_common_settings.cmake)
@@ -46,13 +52,19 @@ add_library(vclib INTERFACE)
 add_subdirectory(vclib/core)
 target_link_libraries(vclib INTERFACE vclib-core)
 
-if (VCLIB_BUILD_RENDER_MODULE)
+if (VCLIB_BUILD_MODULE_RENDER)
     add_subdirectory(vclib/render)
     target_link_libraries(vclib INTERFACE vclib-render)
 endif()
 
 set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 set(VCLIB_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
+if (VCLIB_TESTS_AND_EXAMPLES_USE_CORE_HEADER_ONLY)
+    message(STATUS
+        "VCLib tests and examples will use core module in header only mode")
+    set(HEADER_ONLY_OPTION HEADER_ONLY)
+endif()
 
 if (VCLIB_BUILD_EXAMPLES)
     set_target_properties(${PROJECT_NAME} PROPERTIES

@@ -2,7 +2,13 @@
 
 [![BuildAndRunTests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/BuildAndRunTests.yml)
 
-The Visual Computing Library is a C++20 modern, header only, multiplatform Mesh and Geometry Processing templated library.
+The Visual Computing Library is a C++20 modern, multiplatform Mesh and Geometry Processing library.
+
+The library is divided in several modules, each one with a specific purpose:
+  - **Core**: contains the basic core library, that is templated header only and contains the basic data structures and algorithms; all the other modules depend on this one.
+  - **Render**: contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
+
+All the modules can be found in the [vclib](vclib) directory, and can be built separately.
 
 ## Disclaimer
 
