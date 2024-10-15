@@ -25,7 +25,7 @@
 
 #include <vclib/mesh/requirements.h>
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT || VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
 #include <QApplication>
 #endif
 
@@ -35,15 +35,12 @@
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
 #include <vclib/glfw/viewer_window.h>
 #include <vclib/render/drawable_mesh.h>
-#elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
-#include <vclib/render/drawable_mesh.h>
-#include <vclib/ext/qglviewer/viewer_main_window.h>
 #endif
 
 template<vcl::MeshConcept... MeshTypes>
 int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
 {
-#if VCLIB_RENDER_EXAMPLES_WITH_QT || VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
     QApplication application(argc, argv);
 #endif
 
@@ -51,18 +48,12 @@ int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
     vcl::qt::MeshViewer viewer;
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
     vcl::glfw::ViewerWindow viewer;
-#elif VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
-    vcl::qgl::ViewerMainWindow viewer;
 #endif
 
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
 
-#ifndef VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
     (vector->pushBack(vcl::DrawableMesh(meshes)), ...);
-#else
-    (vector->pushBack(vcl::gl2::DrawableMesh(meshes)), ...);
-#endif
 
     viewer.setDrawableObjectVector(vector);
 
@@ -72,7 +63,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
 
     viewer.show();
 
-#if VCLIB_RENDER_EXAMPLES_WITH_QT || VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER
+#if VCLIB_RENDER_EXAMPLES_WITH_QT
     viewer.showMaximized();
     return application.exec();
 #else

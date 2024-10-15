@@ -35,12 +35,6 @@ if(TARGET vclib-3rd-glfw)
         set(CAN_BUILD_VCLIB_EXAMPLES true)
     endif()
 endif()
-if(TARGET vclib-3rd-qglviewer)
-    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QGLVIEWER)
-        set(CAN_BUILD_VCLIB_EXAMPLES true)
-    endif()
-endif()
 
 add_subdirectory(common)
 
@@ -49,10 +43,6 @@ add_subdirectory(01-viewer)
 add_subdirectory(02-mesh-viewer)
 add_subdirectory(03-viewer-with-text)
 add_subdirectory(04-mesh-processing-main-window)
-
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2" AND TARGET vclib-3rd-qglviewer)
-    add_subdirectory(899-qglviewer)
-endif()
 
 add_subdirectory(999-misc)
 

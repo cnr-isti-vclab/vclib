@@ -166,20 +166,6 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
         file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
         list(APPEND FORMS ${FORMS_QT})
 
-        if (TARGET vclib-3rd-qglviewer)
-            file(GLOB_RECURSE HEADERS_QGLVIEWER CONFIGURE_DEPENDS
-                "include/vclib/ext/qglviewer/*.h")
-            list(APPEND HEADERS ${HEADERS_QGLVIEWER})
-
-            file(GLOB_RECURSE SOURCES_QGLVIEWER CONFIGURE_DEPENDS
-                "src/vclib/ext/qglviewer/*.cpp")
-            list(APPEND SOURCES ${SOURCES_QGLVIEWER})
-
-            file(GLOB_RECURSE FORMS_QGLVIEWER CONFIGURE_DEPENDS
-                "src/vclib/ext/qglviewer/*.ui")
-            list(APPEND FORMS ${FORMS_QGLVIEWER})
-        endif()
-
         source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
     endif()
 endif()
