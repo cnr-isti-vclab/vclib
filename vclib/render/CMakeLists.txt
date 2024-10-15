@@ -55,31 +55,31 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
     file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
-        "include/vclib_bgfx/render/*.h")
+        "include/vclib/render_bgfx/*.h")
     list(APPEND HEADERS ${HEADERS_BGFX})
 
     file(GLOB_RECURSE SOURCES_BGFX CONFIGURE_DEPENDS
-        "src/vclib_bgfx/render/*.cpp")
+        "src/vclib/render_bgfx/*.cpp")
     list(APPEND SOURCES ${SOURCES_BGFX})
 
     if (APPLE)
         file(GLOB_RECURSE SOURCES_MM CONFIGURE_DEPENDS
-            "src/vclib_bgfx/render/*.mm")
+            "src/vclib/render_bgfx/*.mm")
         list(APPEND SOURCES ${SOURCES_MM})
     endif()
 
     file(GLOB_RECURSE SHADERS_BGFX CONFIGURE_DEPENDS
-        "shaders/vclib_bgfx/render/*.sh" "shaders/vclib_bgfx/render/*.sc")
+        "shaders/vclib/render_bgfx/*.sh" "shaders/vclib/render_bgfx/*.sc")
     list(APPEND SHADERS ${SHADERS_BGFX})
 
     # required files that use bgfx
     set(LINK_FILES
-        include/vclib_bgfx/render/canvas.h
-        include/vclib_bgfx/render/viewer_canvas.h
-        include/vclib_bgfx/render/drawable/drawable_mesh.h)
+        include/vclib/render_bgfx/canvas.h
+        include/vclib/render_bgfx/viewer_canvas.h
+        include/vclib/render_bgfx/drawable/drawable_mesh.h)
 
     foreach(FILE ${LINK_FILES})
-        string(REPLACE "vclib_bgfx" "vclib" TARGET_FILE ${FILE})
+        string(REPLACE "render_bgfx" "render" TARGET_FILE ${FILE})
 
         get_filename_component(TARGET_DIR ${TARGET_FILE} DIRECTORY)
         file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_DIR})
