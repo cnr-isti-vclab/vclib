@@ -64,6 +64,7 @@ if (VCLIB_TESTS_AND_EXAMPLES_USE_CORE_HEADER_ONLY)
     message(STATUS
         "VCLib tests and examples will use core module in header only mode")
     set(HEADER_ONLY_OPTION HEADER_ONLY)
+    set(VCLIB_CORE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vclib/core/include)
 endif()
 
 if (VCLIB_BUILD_EXAMPLES)

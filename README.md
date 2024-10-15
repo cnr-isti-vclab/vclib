@@ -2,13 +2,15 @@
 
 [![BuildAndRunTests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/BuildAndRunTests.yml)
 
-The Visual Computing Library is a C++20 modern, multiplatform Mesh and Geometry Processing library.
+The Visual Computing Library is a C++20 modern, multi-platform Mesh and Geometry Processing library.
 
 The library is divided in several modules, each one with a specific purpose:
   - **Core**: contains the basic core library, that is templated header only and contains the basic data structures and algorithms; all the other modules depend on this one.
   - **Render**: contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
 
 All the modules can be found in the [vclib](vclib) directory, and can be built separately.
+
+By default, the library is built with the `Core` module only, but you can enable the other modules by setting the `VCLIB_BUILD_MODULE_<module>` CMake variable to `ON`.
 
 ## Disclaimer
 
@@ -20,16 +22,16 @@ Looking forward for your feedback!
 
 ## Install
 
-The library is header only, therefore to install it you just need to add the vclib/include directory in your
+The core module of library is header only, therefore to install it you just need to add the vclib/vclib/include directory in your
 `INCLUDE_PATH`.
-You can use the library by using the `cmake` command `add_subdirectory`, by adding the path to this repository
+Otherwise, you can use the library by using the `cmake` command `add_subdirectory`, by adding the path to this repository
 in your `cmake` project. CMake will create a target called `vclib`, that you can link using the `target_link_libraries` command.
 
 ## Compiler support
 
 VCLib requires recent compiler versions in order to build the newly features of the C++20 language, that have been recently integrated in the major compilers.
 
-VCLib currently builds with the follwing compilers:
+VCLib currently builds with the following compilers:
   - GCC 11.3 (default in Ubuntu 22.04)
   - CLang 16 (default in XCode 15.0 on MacOS)
   - MSVC 19.36 (last version in Visual Studio 2022)

@@ -28,15 +28,15 @@ message(STATUS "VCLib: external libraries")
 add_subdirectory(external)
 
 ### vclib-core target
-set(VCLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(VCLIB_CORE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 
 add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
-target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} INTERFACE ${VCLIB_CORE_INCLUDE_DIR})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    VCLIB_INCLUDE_DIR ${VCLIB_INCLUDE_DIR})
+    VCLIB_CORE_INCLUDE_DIR ${VCLIB_CORE_INCLUDE_DIR})
 
 target_link_libraries(${PROJECT_NAME} INTERFACE ${VCLIB_EXTERNAL_LIBRARIES})
 

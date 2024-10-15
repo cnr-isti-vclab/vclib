@@ -49,10 +49,11 @@ function(_vclib_add_test_example name)
         # additional include and links required when using header only:
 
         # vclib-core
-        target_include_directories(${TARGET_NAME} PRIVATE ${VCLIB_INCLUDE_DIR})
+        target_include_directories(${TARGET_NAME} PRIVATE
+            ${VCLIB_CORE_INCLUDE_DIR})
 
         # eigen
-        set(EIGEN_DIR ${VCLIB_INCLUDE_DIR}/../external/eigen-3.4.0/)
+        set(EIGEN_DIR ${VCLIB_CORE_INCLUDE_DIR}/../external/eigen-3.4.0/)
         target_include_directories(${TARGET_NAME} PRIVATE ${EIGEN_DIR})
 
         # Tbb and Threads if available - needed for gcc
