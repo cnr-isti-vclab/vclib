@@ -129,13 +129,13 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
     endif()
 
     if (TARGET vclib-3rd-qt)
-        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
+        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
         list(APPEND HEADERS ${HEADERS_QT})
 
-        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.cpp")
+        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
         list(APPEND SOURCES ${SOURCES_QT})
 
-        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
+        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
         list(APPEND FORMS ${FORMS_QT})
 
         source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX "Forms Files" FILES ${FORMS})
@@ -157,13 +157,13 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
         )
 
     if (TARGET vclib-3rd-qt)
-        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
+        file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/qt/*.h")
         list(APPEND HEADERS ${HEADERS_QT})
 
-        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.cpp")
+        file(GLOB_RECURSE SOURCES_QT CONFIGURE_DEPENDS "src/vclib/qt/*.cpp")
         list(APPEND SOURCES ${SOURCES_QT})
 
-        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
+        file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/qt/*.ui")
         list(APPEND FORMS ${FORMS_QT})
 
         if (TARGET vclib-3rd-qglviewer)

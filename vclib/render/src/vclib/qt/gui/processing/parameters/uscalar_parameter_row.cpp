@@ -9,52 +9,44 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#include <vclib/qt/gui/processing/parameters/uscalar_parameter_row.h>
 
-#include <QApplication>
-#include <vclib/qt/viewer_widget.h>
+#include <QDoubleValidator>
 
-int main(int argc, char** argv)
+namespace vcl::qt {
+
+UscalarParameterRow::UscalarParameterRow(const proc::UscalarParameter& param) :
+        ParameterRow(param), mParam(param)
 {
-    QApplication app(argc, argv);
-
-    vcl::qt::ViewerWidget tw("Viewer Qt");
-
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    // vcl::qt::ViewerWidget tw2("Viewer Qt");
-
-    // // load and set up a drawable mesh
-    // vcl::DrawableMesh<vcl::TriMesh> drawable2 =
-    //     getDrawableMesh("greek_helmet.obj");
-
-    // // add the drawable mesh to the scene
-    // // the viewer will own **a copy** of the drawable mesh
-    // tw2.pushDrawableObject(drawable2);
-
-    // tw2.fitScene();
-
-    // tw2.show();
-
-    return app.exec();
+    mLineEdit = new QLineEdit();
+    mLineEdit->setToolTip(param.tooltip().c_str());
+    mLineEdit->setValidator(new QDoubleValidator(
+        0.0, std::numeric_limits<double>::max(), 4, mLineEdit));
+    mLineEdit->setText(QString::number(param.scalarValue()));
 }
+
+QWidget* UscalarParameterRow::parameterWidget()
+{
+    return mLineEdit;
+}
+
+std::shared_ptr<proc::Parameter> UscalarParameterRow::parameterFromWidget()
+    const
+{
+    auto p = mParam.clone();
+    p->setScalarValue(mLineEdit->text().toDouble());
+    return p;
+}
+
+} // namespace vcl::qt

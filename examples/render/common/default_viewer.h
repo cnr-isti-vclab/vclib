@@ -30,7 +30,7 @@
 #endif
 
 #ifdef VCLIB_RENDER_EXAMPLES_WITH_QT
-#include <vclib/ext/qt/mesh_viewer.h>
+#include <vclib/qt/mesh_viewer.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
 #include <vclib/ext/glfw/viewer_window.h>

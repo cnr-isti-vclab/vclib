@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>vcl::qgl::ViewerMainWindow</class>
- <widget class="QMainWindow" name="vcl::qgl::ViewerMainWindow">
+ <class>vcl::qt::MeshViewer</class>
+ <widget class="QWidget" name="vcl::qt::MeshViewer">
+  <property name="windowModality">
+   <enum>Qt::WindowModality::NonModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,28 +13,47 @@
     <height>600</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="vcl::qgl::MinimalViewerWidget" name="glArea" native="true">
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="childrenCollapsible">
+      <bool>false</bool>
+     </property>
+     <widget class="vcl::qt::ViewerWidget" name="viewer" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="focusPolicy">
+       <enum>Qt::FocusPolicy::ClickFocus</enum>
+      </property>
      </widget>
-    </item>
-    <item row="0" column="1">
      <widget class="QFrame" name="rightArea">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>300</width>
+        <height>0</height>
+       </size>
       </property>
       <property name="frameShape">
        <enum>QFrame::Shape::NoFrame</enum>
@@ -43,7 +65,7 @@
        <item>
         <widget class="vcl::qt::DrawableObjectVectorFrame" name="drawVectorFrame">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -59,7 +81,7 @@
        <item>
         <widget class="vcl::qt::MeshRenderSettingsFrame" name="renderSettingsFrame">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -72,30 +94,29 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="vcl::qt::TextEditLogger" name="logger">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>23</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>vcl::qgl::MinimalViewerWidget</class>
-   <extends>QWidget</extends>
-   <header>vclib/ext/qglviewer/minimal_viewer_widget.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>vcl::qt::MeshRenderSettingsFrame</class>
    <extends>QFrame</extends>
@@ -106,6 +127,18 @@
    <class>vcl::qt::DrawableObjectVectorFrame</class>
    <extends>QFrame</extends>
    <header>vclib/qt/gui/drawable_object_vector_frame.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>vcl::qt::ViewerWidget</class>
+   <extends>QWidget</extends>
+   <header>vclib/qt/viewer_widget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>vcl::qt::TextEditLogger</class>
+   <extends>QFrame</extends>
+   <header>vclib/qt/gui/text_edit_logger.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -30,7 +30,7 @@
 #include <vclib/meshes.h>
 
 #include <vclib/ext/qglviewer/viewer_main_window.h>
-#include <vclib/ext/qt/gui/mesh_render_settings_frame.h>
+#include <vclib/qt/gui/mesh_render_settings_frame.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 int main(int argc, char** argv)

@@ -22,7 +22,7 @@
 
 #include <QApplication>
 
-#include <vclib/ext/qt/mesh_processing_main_window.h>
+#include <vclib/qt/mesh_processing_main_window.h>
 
 int main(int argc, char** argv)
 {

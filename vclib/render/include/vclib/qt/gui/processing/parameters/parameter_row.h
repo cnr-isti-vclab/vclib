@@ -9,52 +9,64 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#ifndef VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_PARAMETER_ROW_H
+#define VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_PARAMETER_ROW_H
 
-#include <QApplication>
-#include <vclib/qt/viewer_widget.h>
+#include <memory>
 
-int main(int argc, char** argv)
+#include <QGridLayout>
+#include <QLabel>
+#include <QWidget>
+
+#include <vclib/qt/gui/q_clickable_label.h>
+#include <vclib/processing/parameters.h>
+
+namespace vcl::qt {
+
+class ParameterRow
 {
-    QApplication app(argc, argv);
+    QLabel* mHelpLabel;
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    bool mVisible;
+    bool mHelpVisible;
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
+    bool mHasBeenModified;
 
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
+protected:
+    QClickableLabel* mDescriptionLabel;
 
-    tw.fitScene();
+public:
+    ParameterRow(const proc::Parameter& param);
 
-    tw.show();
+    virtual ~ParameterRow();
 
-    // vcl::qt::ViewerWidget tw2("Viewer Qt");
+    virtual QWidget* parameterWidget() = 0;
 
-    // // load and set up a drawable mesh
-    // vcl::DrawableMesh<vcl::TriMesh> drawable2 =
-    //     getDrawableMesh("greek_helmet.obj");
+    virtual std::shared_ptr<proc::Parameter> parameterFromWidget() const = 0;
 
-    // // add the drawable mesh to the scene
-    // // the viewer will own **a copy** of the drawable mesh
-    // tw2.pushDrawableObject(drawable2);
+    void addRowToGridLayout(QGridLayout* lay, const int row);
 
-    // tw2.fitScene();
+    bool hasBeenModified() const;
 
-    // tw2.show();
+    void setVisible(bool b);
 
-    return app.exec();
-}
+    void setHelpVisible(bool b);
+
+protected:
+    void setModified(bool b);
+};
+
+} // namespace vcl::qt
+
+#endif // VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_PARAMETER_ROW_H

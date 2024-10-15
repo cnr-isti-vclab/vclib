@@ -23,7 +23,7 @@
 #include "common.h"
 
 #include <QApplication>
-#include <vclib/ext/qt/viewer_widget.h>
+#include <vclib/qt/viewer_widget.h>
 
 int main(int argc, char** argv)
 {

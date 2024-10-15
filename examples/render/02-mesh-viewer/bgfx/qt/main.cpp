@@ -22,7 +22,7 @@
 
 #include <QApplication>
 
-#include <vclib/ext/qt/mesh_viewer.h>
+#include <vclib/qt/mesh_viewer.h>
 
 #include "common.h"
 

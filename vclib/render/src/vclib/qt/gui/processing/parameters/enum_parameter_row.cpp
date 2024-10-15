@@ -9,52 +9,44 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "common.h"
+#include <vclib/qt/gui/processing/parameters/enum_parameter_row.h>
 
-#include <QApplication>
-#include <vclib/qt/viewer_widget.h>
+namespace vcl::qt {
 
-int main(int argc, char** argv)
+EnumParameterRow::EnumParameterRow(const proc::EnumParameter& param) :
+        ParameterRow(param), mParam(param)
 {
-    QApplication app(argc, argv);
+    mComboBox = new QComboBox();
+    mComboBox->setToolTip(param.tooltip().c_str());
 
-    vcl::qt::ViewerWidget tw("Viewer Qt");
+    for (const auto& value : param.enumValues()) {
+        mComboBox->addItem(value.c_str());
+    }
 
-    // load and set up a drawable mesh
-    vcl::DrawableMesh<vcl::TriMesh> drawable = getDrawableMesh();
-
-    // add the drawable mesh to the scene
-    // the viewer will own **a copy** of the drawable mesh
-    tw.pushDrawableObject(drawable);
-
-    tw.fitScene();
-
-    tw.show();
-
-    // vcl::qt::ViewerWidget tw2("Viewer Qt");
-
-    // // load and set up a drawable mesh
-    // vcl::DrawableMesh<vcl::TriMesh> drawable2 =
-    //     getDrawableMesh("greek_helmet.obj");
-
-    // // add the drawable mesh to the scene
-    // // the viewer will own **a copy** of the drawable mesh
-    // tw2.pushDrawableObject(drawable2);
-
-    // tw2.fitScene();
-
-    // tw2.show();
-
-    return app.exec();
+    mComboBox->setCurrentIndex(param.uintValue());
 }
+
+QWidget* EnumParameterRow::parameterWidget()
+{
+    return mComboBox;
+}
+
+std::shared_ptr<proc::Parameter> EnumParameterRow::parameterFromWidget() const
+{
+    auto p = mParam.clone();
+    p->setUintValue(mComboBox->currentIndex());
+    return p;
+}
+
+} // namespace vcl::qt
