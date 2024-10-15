@@ -20,11 +20,11 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/glfw/event_manager_window.h>
+#include <vclib/glfw/event_manager_window.h>
 
 #include <iostream>
 
-#include <vclib/ext/glfw/input.h>
+#include <vclib/glfw/input.h>
 
 #if defined(__linux__)
 #ifdef VCLIB_RENDER_WITH_WAYLAND

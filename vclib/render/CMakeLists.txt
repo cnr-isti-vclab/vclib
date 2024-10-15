@@ -121,10 +121,10 @@ endif()
 if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
     if (TARGET vclib-3rd-glfw)
         file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
-            "include/vclib/ext/glfw/*.h")
+            "include/vclib/glfw/*.h")
         list(APPEND HEADERS ${HEADERS_GLFW})
 
-        file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/ext/glfw/*.cpp")
+        file(GLOB_RECURSE SOURCES_GLFW CONFIGURE_DEPENDS "src/vclib/glfw/*.cpp")
         list(APPEND SOURCES ${SOURCES_GLFW})
     endif()
 
@@ -144,16 +144,16 @@ endif()
 
 if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
     list(APPEND HEADERS
-        include/vclib/ext/glfw/canvas_window.h
-        include/vclib/ext/glfw/event_manager_window.h
-        include/vclib/ext/glfw/input.h
+        include/vclib/glfw/canvas_window.h
+        include/vclib/glfw/event_manager_window.h
+        include/vclib/glfw/input.h
         )
 
     list(APPEND SOURCES
-        src/vclib/ext/glfw/canvas_window.cpp
-        src/vclib/ext/glfw/event_manager_window.cpp
-        src/vclib/ext/glfw/input.cpp
-        src/vclib/ext/glfw/viewer_window.cpp
+        src/vclib/glfw/canvas_window.cpp
+        src/vclib/glfw/event_manager_window.cpp
+        src/vclib/glfw/input.cpp
+        src/vclib/glfw/viewer_window.cpp
         )
 
     if (TARGET vclib-3rd-qt)

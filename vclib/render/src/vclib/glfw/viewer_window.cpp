@@ -20,34 +20,57 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/ext/glfw/canvas_window.h>
+#include <vclib/glfw/viewer_window.h>
 
 namespace vcl::glfw {
 
-CanvasWindow::CanvasWindow(
+ViewerWindow::ViewerWindow(
+    const std::shared_ptr<DrawableObjectVector>& v,
+    const std::string&                           windowTitle,
+    uint                                         width,
+    uint                                         height,
+    void*) :
+        EventManagerWindow(windowTitle, width, height),
+        ViewerCanvas(winId(), v, width, height)
+{
+}
+
+ViewerWindow::ViewerWindow(
     const std::string& windowTitle,
     uint               width,
-    uint               height) :
-        EventManagerWindow(windowTitle, width, height),
-        Canvas(winId(), width, height)
+    uint               height,
+    void*) :
+        ViewerWindow(
+            std::make_shared<DrawableObjectVector>(),
+            windowTitle,
+            width,
+            height)
 {
 }
 
-CanvasWindow::CanvasWindow(uint width, uint height) :
-        vcl::glfw::CanvasWindow("GLFW Canvas", width, height)
+ViewerWindow::ViewerWindow(void*) :
+        ViewerWindow(
+            std::make_shared<DrawableObjectVector>(),
+            "Viewer",
+            1024,
+            768)
 {
 }
 
-CanvasWindow::~CanvasWindow()
-{
-}
-
-void CanvasWindow::show()
+void ViewerWindow::show()
 {
     while (!glfwWindowShouldClose(mWindow)) {
         glfwPollEvents();
         frame();
     }
+}
+
+void ViewerWindow::draw()
+{
+    ViewerCanvas::draw();
+#ifdef VCLIB_RENDER_ENGINE_OPENGL2
+    glfwSwapBuffers(mWindow);
+#endif
 }
 
 } // namespace vcl::glfw

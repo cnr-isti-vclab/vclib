@@ -22,7 +22,7 @@
 
 #include "common.h"
 
-#include <vclib/ext/glfw/viewer_window.h>
+#include <vclib/glfw/viewer_window.h>
 
 int main(int argc, char** argv)
 {
