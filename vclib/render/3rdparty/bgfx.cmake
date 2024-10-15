@@ -20,22 +20,34 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(Eigen3 QUIET)
+set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
 
-set(VCLIB_EIGEN_DIR ${CMAKE_CURRENT_LIST_DIR}/eigen-3.4.0)
+if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
+    message(STATUS "- bgfx - using bundled source")
 
-if(VCLIB_ALLOW_SYSTEM_EIGEN AND TARGET Eigen3::Eigen)
-    message(STATUS "- Eigen - using system-provided library")
-    add_library(vclib-external-eigen INTERFACE)
-    target_link_libraries(vclib-external-eigen INTERFACE Eigen3::Eigen)
-elseif(VCLIB_ALLOW_BUNDLED_EIGEN AND EXISTS "${VCLIB_EIGEN_DIR}/Eigen/Eigen")
-    message(STATUS "- Eigen - using bundled source")
-    add_library(vclib-external-eigen INTERFACE)
-    target_include_directories(vclib-external-eigen INTERFACE ${VCLIB_EIGEN_DIR})
-else()
-    message(
-        FATAL_ERROR
-        "Eigen is required - at least one of VCLIB_ALLOW_SYSTEM_EIGEN or VCLIB_ALLOW_BUNDLED_EIGEN must be enabled and found.")
+    # leave the option to build bgfx examples, but set it to OFF by default
+    option(BGFX_BUILD_EXAMPLES "Build bgfx examples" OFF)
+
+    set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+    set(BGFX_OPENGL_VERSION 44)
+    if (TARGET vclib-3rd-wayland AND VCLIB_RENDER_WITH_WAYLAND)
+        add_definitions(-DWL_EGL_PLATFORM=1)
+    endif()
+    add_subdirectory(${VCLIB_BGFX_DIR})
+
+    add_library(vclib-3rd-bgfx INTERFACE)
+
+    # there are three warnings on gcc that we need to ignore
+    set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
+
+    target_link_libraries(vclib-3rd-bgfx INTERFACE bx bgfx bimg)
+    target_include_directories(vclib-3rd-bgfx
+        INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
+
+    set_target_properties(vclib-3rd-bgfx PROPERTIES BGFX_DIR ${VCLIB_BGFX_DIR})
+
+    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
+elseif(VCLIB_ALLOW_BUNDLED_BGFX)
+    message(FATAL_ERROR
+        "bgfx is required - VCLIB_ALLOW_BUNDLED_BGFX must be enabled and found.")
 endif()
-
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-eigen)

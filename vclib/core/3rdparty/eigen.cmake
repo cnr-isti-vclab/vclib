@@ -20,40 +20,22 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(glfw3 3.4 QUIET)
+find_package(Eigen3 QUIET)
 
-if (VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
-    message(STATUS "- GLFW - using system-provided library")
+set(VCLIB_EIGEN_DIR ${CMAKE_CURRENT_LIST_DIR}/eigen-3.4.0)
 
-    add_library(vclib-external-glfw INTERFACE)
-    target_link_libraries(vclib-external-glfw INTERFACE glfw)
-
-    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
-
-elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
-    message(STATUS "- GLFW - using downloaded source")
-
-    if(LINUX)
-        if (VCLIB_RENDER_WITH_WAYLAND)
-            set(GLFW_BUILD_WAYLAND ON)
-            set(GLFW_BUILD_X11 OFF)
-        else()
-            set(GLFW_BUILD_WAYLAND OFF)
-            set(GLFW_BUILD_X11 ON)
-        endif()
-    endif()
-
-    FetchContent_Declare(glfw3
-        GIT_REPOSITORY https://github.com/glfw/glfw.git
-        GIT_TAG        3.4)
-
-    FetchContent_MakeAvailable(glfw3)
-
-    add_library(vclib-external-glfw INTERFACE)
-    target_link_libraries(vclib-external-glfw INTERFACE glfw)
-
-    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-glfw)
-
+if(VCLIB_ALLOW_SYSTEM_EIGEN AND TARGET Eigen3::Eigen)
+    message(STATUS "- Eigen - using system-provided library")
+    add_library(vclib-3rd-eigen INTERFACE)
+    target_link_libraries(vclib-3rd-eigen INTERFACE Eigen3::Eigen)
+elseif(VCLIB_ALLOW_BUNDLED_EIGEN AND EXISTS "${VCLIB_EIGEN_DIR}/Eigen/Eigen")
+    message(STATUS "- Eigen - using bundled source")
+    add_library(vclib-3rd-eigen INTERFACE)
+    target_include_directories(vclib-3rd-eigen INTERFACE ${VCLIB_EIGEN_DIR})
 else()
-    message(STATUS "- GLFW - not found, skipping")
+    message(
+        FATAL_ERROR
+        "Eigen is required - at least one of VCLIB_ALLOW_SYSTEM_EIGEN or VCLIB_ALLOW_BUNDLED_EIGEN must be enabled and found.")
 endif()
+
+list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-eigen)

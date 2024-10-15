@@ -45,13 +45,13 @@ else()
 endif()
 
 if (VCLIB_USES_VCG)
-    add_library(vclib-external-vcg INTERFACE)
-    target_include_directories(vclib-external-vcg INTERFACE
+    add_library(vclib-3rd-vcg INTERFACE)
+    target_include_directories(vclib-3rd-vcg INTERFACE
         ${VCG_INCLUDE_DIRS})
     set_target_properties(
-        vclib-external-vcg
+        vclib-3rd-vcg
         PROPERTIES
         VCG_INCLUDE_DIRS ${VCG_INCLUDE_DIRS})
 
-    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-external-vcg)
+    list(APPEND VCLIB_EXTERNAL_3RDPARTY_LIBRARIES vclib-3rd-vcg)
 endif()

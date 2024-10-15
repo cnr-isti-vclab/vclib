@@ -20,47 +20,40 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(Qt5 COMPONENTS Core Xml OpenGL Gui Widgets QUIET)
-find_package(Qt6 COMPONENTS Core Xml OpenGL Gui Widgets OpenGLWidgets QUIET)
+# to install QGLViewer on Mac:
+# - download libQGLViewer
+# - be sure to have a Qt environment set up
+# - cd libQGLViewer/QGLViewer
+# - qmake LIB_DIR=/Library/Frameworks
+# - make
+# - sudo make install
 
-if (Qt6_FOUND OR Qt5_FOUND)
-    set(QT_FOUND TRUE)
-    if(Qt6_FOUND)
-        set(QT_VER 6)
+find_package(QGLViewer QUIET)
+
+if (VCLIB_ALLOW_SYSTEM_QGLVIEWER)
+    if (VCLIB_ALLOW_SYSTEM_QT AND QT_FOUND AND OpenGL_FOUND)
+        if (QGLViewer_FOUND)
+            message(STATUS "- QGLViewer - using system-provided library")
+
+            add_library(vclib-3rd-qglviewer INTERFACE)
+
+            target_include_directories(vclib-3rd-qglviewer INTERFACE ${QGLVIEWER_INCLUDE_DIR})
+            target_link_libraries(vclib-3rd-qglviewer INTERFACE ${QGLVIEWER_LIBRARY})
+
+            list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-qglviewer)
+        else()
+            message(STATUS "- QGLViewer - not found, skipping")
+        endif()
     else()
-        set(QT_VER 5)
-    endif()
-endif()
-
-if (VCLIB_ALLOW_SYSTEM_QT)
-    if (QT_FOUND)
-        message(STATUS "- Qt${QT_VER} - using system-provided library")
-
-        add_library(vclib-external-qt INTERFACE)
-        target_compile_definitions(vclib-external-qt INTERFACE
-            VCLIB_WITH_QT)
-
-        # prefer Qt6
-        if (Qt6_FOUND)
-            target_link_libraries(vclib-external-qt INTERFACE Qt6::Core Qt6::Widgets Qt6::Xml)
-
-            if (OpenGL_FOUND)
-                target_link_libraries(vclib-external-qt INTERFACE Qt6::OpenGL Qt6::OpenGLWidgets)
-            endif()
+        # message indicating why we jumped QGLViewer
+        set (MISSING_LIB)
+        if (NOT OpenGL_FOUND)
+            list(APPEND MISSING_LIB OpenGL)
+        endif()
+        if (NOT QT_FOUND OR NOT VCLIB_ALLOW_SYSTEM_QT)
+            list(APPEND MISSING_LIB Qt)
         endif()
 
-        if (Qt5_FOUND AND NOT Qt6_FOUND)
-            target_link_libraries(vclib-external-qt INTERFACE Qt5::Core Qt5::Widgets Qt5::Xml)
-
-            if (OpenGL_FOUND)
-                target_link_libraries(vclib-external-qt INTERFACE Qt5::OpenGL)
-            endif()
-        endif()
-
-        list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-qt)
-    else()
-        message(STATUS "- Qt - not found, skipping")
+        message(STATUS "- QGLViewer - ignored: missing ${MISSING_LIB}")
     endif()
 endif()
-
-

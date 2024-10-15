@@ -25,7 +25,7 @@ project(vclib-external-tests)
 
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
-if (TARGET vclib-external-vcg)
+if (TARGET vclib-3rd-vcg)
     add_subdirectory(000-mesh-import-vcg)
 endif()
 

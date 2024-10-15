@@ -28,10 +28,10 @@ if (UNIX)
         if (TARGET TBB::tbb AND TARGET Threads::Threads)
             message(STATUS "- TBB - using system-provided library")
 
-            add_library(vclib-external-tbb INTERFACE)
-            target_link_libraries(vclib-external-tbb INTERFACE TBB::tbb Threads::Threads)
+            add_library(vclib-3rd-tbb INTERFACE)
+            target_link_libraries(vclib-3rd-tbb INTERFACE TBB::tbb Threads::Threads)
 
-            list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-tbb)
+            list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-tbb)
         else()
             message(STATUS "- TBB - not found, skipping")
         endif()

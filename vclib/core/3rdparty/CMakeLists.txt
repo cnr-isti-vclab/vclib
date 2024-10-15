@@ -20,34 +20,58 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
+cmake_minimum_required(VERSION 3.24)
+project(vclib-core-3rdparty)
 
-if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
-    message(STATUS "- bgfx - using bundled source")
+include(FetchContent)
 
-    # leave the option to build bgfx examples, but set it to OFF by default
-    option(BGFX_BUILD_EXAMPLES "Build bgfx examples" OFF)
+# === REQUIRED === #
 
-    set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
-    set(BGFX_OPENGL_VERSION 44)
-    if (TARGET vclib-external-wayland AND VCLIB_RENDER_WITH_WAYLAND)
-        add_definitions(-DWL_EGL_PLATFORM=1)
-    endif()
-    add_subdirectory(${VCLIB_BGFX_DIR})
+# Eigen
+option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
+option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
 
-    add_library(vclib-external-bgfx INTERFACE)
+# MapBox earcut
+option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
+    "Allow use of bundled Mapbox-Eaurcut source" ON)
 
-    # there are three warnings on gcc that we need to ignore
-    set_property(TARGET bgfx PROPERTY COMPILE_WARNING_AS_ERROR OFF)
+# Zip iterator
+option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
+    "Allow use of bundled ZipViews source" ON)
 
-    target_link_libraries(vclib-external-bgfx INTERFACE bx bgfx bimg)
-    target_include_directories(vclib-external-bgfx
-        INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
+# STB
+option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
 
-    set_target_properties(vclib-external-bgfx PROPERTIES BGFX_DIR ${VCLIB_BGFX_DIR})
+# poolSTL
+option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
 
-    list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-bgfx)
-elseif(VCLIB_ALLOW_BUNDLED_BGFX)
-    message(FATAL_ERROR
-        "bgfx is required - VCLIB_ALLOW_BUNDLED_BGFX must be enabled and found.")
-endif()
+# === OPTIONAL === #
+
+# TBB
+option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
+
+
+# === Fetch dependencies === #
+
+set(VCLIB_CORE_3RDPARTY_LIBRARIES "")
+
+### Eigen
+include(eigen.cmake)
+
+### Mapbox-Earcut
+include(mapbox.cmake)
+
+### Zip iterator
+include(zip-views.cmake)
+
+### STB
+include(stb.cmake)
+
+### TBB
+include(tbb.cmake) # leave this BEFORE poolSTL
+
+### poolSTL
+include(poolstl.cmake)
+
+
+set(VCLIB_CORE_3RDPARTY_LIBRARIES ${VCLIB_CORE_3RDPARTY_LIBRARIES} PARENT_SCOPE)

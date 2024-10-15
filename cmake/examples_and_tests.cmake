@@ -57,13 +57,13 @@ function(_vclib_add_test_example name)
         target_include_directories(${TARGET_NAME} PRIVATE ${EIGEN_DIR})
 
         # Tbb and Threads if available - needed for gcc
-        if (TARGET vclib-external-tbb)
-            target_link_libraries(${TARGET_NAME} PRIVATE vclib-external-tbb)
+        if (TARGET vclib-3rd-tbb)
+            target_link_libraries(${TARGET_NAME} PRIVATE vclib-3rd-tbb)
         endif()
 
         if (${test})
             # Catch2
-            target_link_libraries(${TARGET_NAME} PRIVATE vclib-external-catch2)
+            target_link_libraries(${TARGET_NAME} PRIVATE vclib-3rd-catch2)
         endif()
     endif()
 

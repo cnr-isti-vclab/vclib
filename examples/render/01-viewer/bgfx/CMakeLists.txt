@@ -22,9 +22,9 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (TARGET vclib-external-qt)
+if (TARGET vclib-3rd-qt)
     add_subdirectory(qt)
 endif()
-if (TARGET vclib-external-glfw)
+if (TARGET vclib-3rd-glfw)
     add_subdirectory(glfw)
 endif()

@@ -20,25 +20,21 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_ZIP_VIEWS_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-views-1.0)
+find_package(OpenGL QUIET)
 
-if (VCLIB_ALLOW_BUNDLED_ZIP_VIEWS AND
-        EXISTS ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp)
-    message(STATUS "- ZipViews - using bundled source")
+if (OpenGL_FOUND)
+    message(STATUS "- OpenGL - using system-provided library")
+
+    add_library(vclib-3rd-opengl INTERFACE)
+    target_link_libraries(vclib-3rd-opengl INTERFACE
+        OpenGL::GL OpenGL::GLU)
+
+    if(APPLE)
+        target_compile_definitions(vclib-3rd-opengl
+            INTERFACE GL_SILENCE_DEPRECATION)
+    endif()
+
+    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-opengl)
 else()
-    message(
-        FATAL_ERROR
-        "ZipViews is required -
-        VCLIB_ALLOW_BUNDLED_ZIP_VIEWS must be enabled and found.")
+    message(FATAL ERROR "- OpenGL is required - system-provided library not found.")
 endif()
-
-set(ZIP_VIEWS_INCLUDE_DIRS ${VCLIB_ZIP_VIEWS_DIR})
-
-set(ZIP_VIEW_BUILD_TEST OFF CACHE BOOL "Build ZipViews tests")
-add_subdirectory(${VCLIB_ZIP_VIEWS_DIR})
-
-add_library(vclib-external-zip-views INTERFACE)
-
-target_link_libraries(vclib-external-zip-views INTERFACE zip-view)
-
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-zip-views)

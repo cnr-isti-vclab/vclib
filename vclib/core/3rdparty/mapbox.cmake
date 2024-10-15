@@ -20,16 +20,22 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_STB_DIR ${CMAKE_CURRENT_LIST_DIR}/stb-master)
+set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
 
-if (VCLIB_ALLOW_BUNDLED_STB AND EXISTS ${VCLIB_STB_DIR}/stb/stb_image.h)
-    message(STATUS "- STB - using bundled source")
-
-    set(STB_INCLUDE_DIRS ${VCLIB_STB_DIR})
-
-    add_library(vclib-external-stb SHARED src/stb_src.cpp)
-
-    target_include_directories(vclib-external-stb PUBLIC ${STB_INCLUDE_DIRS})
-
-    list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-stb)
+if (VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT AND
+        EXISTS ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox/earcut.hpp)
+    message(STATUS "- Mapbox-Eaurcut - using bundled source")
+else()
+    message(FATAL_ERROR
+        "MapBox earcut is required - VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT"
+        "must be enabled and found.")
 endif()
+
+set(MAPBOX_EARCUT_INCLUDE_DIRS ${VCLIB_MAPBOX_EARCUT_DIR}/include)
+
+add_library(vclib-3rd-mapbox-earcut INTERFACE)
+
+target_include_directories(vclib-3rd-mapbox-earcut
+    INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
+
+list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-mapbox-earcut)

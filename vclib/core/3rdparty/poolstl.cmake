@@ -20,19 +20,29 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(Wayland QUIET)
+set(POOLSTL_VERSION 0.3.5)
+set(VCLIB_POOLSTL_DIR ${CMAKE_CURRENT_LIST_DIR}/poolSTL-${POOLSTL_VERSION})
 
-if (LINUX AND VCLIB_RENDER_WITH_WAYLAND)
-    if (Wayland_FOUND)
-        message(STATUS "- Wayland - using system-provided library")
+if (VCLIB_ALLOW_BUNDLED_POOLSTL AND 
+        EXISTS ${VCLIB_POOLSTL_DIR}/include/poolstl/poolstl.hpp)
 
-        add_library(vclib-external-wayland INTERFACE)
+    message(STATUS "- poolstl - using bundled source")
 
-        target_link_libraries(vclib-external-wayland INTERFACE Wayland::Wayland)
-        target_compile_definitions(vclib-external-wayland INTERFACE VCLIB_RENDER_WITH_WAYLAND)
+    set(POOLSTL_INCLUDE_DIRS ${VCLIB_POOLSTL_DIR}/include)
 
-        list(APPEND VCLIB_RENDER_EXTERNAL_LIBRARIES vclib-external-wayland)
-    else()
-        message(STATUS "- Wayland - not found, skipping")
+    add_library(vclib-3rd-poolstl INTERFACE)
+
+    target_include_directories(vclib-3rd-poolstl INTERFACE
+        ${POOLSTL_INCLUDE_DIRS})
+
+    # in case of non MSVC (which supports c++17 parallel algorithms) and no TBB,
+    # we need to force the usage of the poolSTL std::execution::parallel policy
+    if (NOT TARGET vclib-3rd-tbb AND NOT MSVC)
+        target_compile_definitions(vclib-3rd-poolstl INTERFACE
+            -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE -DPOOLSTL_STD_SUPPLEMENT_FORCE)
     endif()
+
+    list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-poolstl)
+else()
+    message(FATAL_ERROR "poolSTL is required to full support parallel algorithms - VCLIB_ALLOW_BUNDLED_POOLSTL must be enabled and found.")
 endif()

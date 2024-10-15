@@ -20,57 +20,47 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-render-external)
+find_package(Qt5 COMPONENTS Core Xml OpenGL Gui Widgets QUIET)
+find_package(Qt6 COMPONENTS Core Xml OpenGL Gui Widgets OpenGLWidgets QUIET)
 
-include(FetchContent)
-
-# external libraries may have warnings
-set(CMAKE_COMPILE_WARNING_AS_ERROR OFF)
-
-# bgfx
-option(VCLIB_ALLOW_BUNDLED_BGFX "Allow use of bundled bgfx source" ON)
-
-# Wayland
-option(VCLIB_RENDER_WITH_WAYLAND "Linux only - build vclib-render for wayland" OFF)
-
-# Qt
-option(VCLIB_ALLOW_SYSTEM_QT "Allow use of system-provided Qt" ON)
-
-# GLFW
-option(VCLIB_ALLOW_SYSTEM_GLFW "Allow use of system-provided GLFW" ON)
-option(VCLIB_ALLOW_DOWNLOAD_GLFW "Allow use of downloaded GLFW source" ON)
-
-# QGLViewer
-option(VCLIB_ALLOW_SYSTEM_QGLVIEWER "Allow use of system-provided QGLViewer" ON)
-
-set(VCLIB_RENDER_EXTERNAL_LIBRARIES "")
-
-# === RENDER ENGINES (and optional libraries binded to them) === #
-
-### bgfx
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    ### Wayland (optional)
-    include(wayland.cmake)
-
-    include(bgfx.cmake)
+if (Qt6_FOUND OR Qt5_FOUND)
+    set(QT_FOUND TRUE)
+    if(Qt6_FOUND)
+        set(QT_VER 6)
+    else()
+        set(QT_VER 5)
+    endif()
 endif()
 
-### OpenGL
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
-    include(opengl.cmake)
+if (VCLIB_ALLOW_SYSTEM_QT)
+    if (QT_FOUND)
+        message(STATUS "- Qt${QT_VER} - using system-provided library")
+
+        add_library(vclib-3rd-qt INTERFACE)
+        target_compile_definitions(vclib-3rd-qt INTERFACE
+            VCLIB_WITH_QT)
+
+        # prefer Qt6
+        if (Qt6_FOUND)
+            target_link_libraries(vclib-3rd-qt INTERFACE Qt6::Core Qt6::Widgets Qt6::Xml)
+
+            if (OpenGL_FOUND)
+                target_link_libraries(vclib-3rd-qt INTERFACE Qt6::OpenGL Qt6::OpenGLWidgets)
+            endif()
+        endif()
+
+        if (Qt5_FOUND AND NOT Qt6_FOUND)
+            target_link_libraries(vclib-3rd-qt INTERFACE Qt5::Core Qt5::Widgets Qt5::Xml)
+
+            if (OpenGL_FOUND)
+                target_link_libraries(vclib-3rd-qt INTERFACE Qt5::OpenGL)
+            endif()
+        endif()
+
+        list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-qt)
+    else()
+        message(STATUS "- Qt - not found, skipping")
+    endif()
 endif()
 
-# === OPTIONAL === #
 
-### Qt
-include(qt.cmake)
-
-### GLFW
-include(glfw.cmake)
-
-### QGLViewer
-include(qglviewer.cmake)
-
-set(VCLIB_RENDER_EXTERNAL_LIBRARIES
-    ${VCLIB_RENDER_EXTERNAL_LIBRARIES} PARENT_SCOPE)

@@ -61,7 +61,7 @@ endif()
 
 if (VCLIB_BUILD_MODULE_EXTERNAL)
     add_subdirectory(vclib/external)
-    target_link_libraries(vclib INTERFACE vclib-external)
+    target_link_libraries(vclib INTERFACE vclib-3rd)
 endif()
 
 set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)

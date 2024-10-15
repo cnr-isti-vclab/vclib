@@ -31,8 +31,8 @@ set(VCLIB_RENDER_ENGINE "bgfx" CACHE STRING "Select the rendering engine")
 set_property(CACHE VCLIB_RENDER_ENGINE PROPERTY STRINGS bgfx opengl2 none)
 
 # external libraries
-message(STATUS "VCLib-Render: external libraries")
-add_subdirectory(external)
+message(STATUS "VCLib-Render: 3rdparty libraries")
+add_subdirectory(3rdparty)
 
 set(VCLIB_RENDER_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -51,7 +51,7 @@ endforeach()
 
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    get_target_property(VCLIB_BGFX_DIR vclib-external-bgfx BGFX_DIR)
+    get_target_property(VCLIB_BGFX_DIR vclib-3rd-bgfx BGFX_DIR)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
     file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
@@ -119,7 +119,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
 endif()
 
 if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    if (TARGET vclib-external-glfw)
+    if (TARGET vclib-3rd-glfw)
         file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
             "include/vclib/ext/glfw/*.h")
         list(APPEND HEADERS ${HEADERS_GLFW})
@@ -128,7 +128,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
         list(APPEND SOURCES ${SOURCES_GLFW})
     endif()
 
-    if (TARGET vclib-external-qt)
+    if (TARGET vclib-3rd-qt)
         file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
         list(APPEND HEADERS ${HEADERS_QT})
 
@@ -156,7 +156,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
         src/vclib/ext/glfw/viewer_window.cpp
         )
 
-    if (TARGET vclib-external-qt)
+    if (TARGET vclib-3rd-qt)
         file(GLOB_RECURSE HEADERS_QT CONFIGURE_DEPENDS "include/vclib/ext/qt/*.h")
         list(APPEND HEADERS ${HEADERS_QT})
 
@@ -166,7 +166,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
         file(GLOB_RECURSE FORMS_QT CONFIGURE_DEPENDS "src/vclib/ext/qt/*.ui")
         list(APPEND FORMS ${FORMS_QT})
 
-        if (TARGET vclib-external-qglviewer)
+        if (TARGET vclib-3rd-qglviewer)
             file(GLOB_RECURSE HEADERS_QGLVIEWER CONFIGURE_DEPENDS
                 "include/vclib/ext/qglviewer/*.h")
             list(APPEND HEADERS ${HEADERS_QGLVIEWER})
@@ -218,11 +218,11 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
     target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_ENGINE_OPENGL2)
 endif()
 
-if (TARGET vclib-external-qt)
+if (TARGET vclib-3rd-qt)
     set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOMOC ON)
     set_property(TARGET ${PROJECT_NAME} PROPERTY AUTORCC ON)
     set_property(TARGET ${PROJECT_NAME} PROPERTY AUTOUIC ON)
 endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    ${VCLIB_RENDER_EXTERNAL_LIBRARIES} vclib-core)
+    ${VCLIB_RENDER_3RDPARTY_LIBRARIES} vclib-core)

@@ -20,29 +20,16 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(POOLSTL_VERSION 0.3.5)
-set(VCLIB_POOLSTL_DIR ${CMAKE_CURRENT_LIST_DIR}/poolSTL-${POOLSTL_VERSION})
+set(VCLIB_STB_DIR ${CMAKE_CURRENT_LIST_DIR}/stb-master)
 
-if (VCLIB_ALLOW_BUNDLED_POOLSTL AND 
-        EXISTS ${VCLIB_POOLSTL_DIR}/include/poolstl/poolstl.hpp)
+if (VCLIB_ALLOW_BUNDLED_STB AND EXISTS ${VCLIB_STB_DIR}/stb/stb_image.h)
+    message(STATUS "- STB - using bundled source")
 
-    message(STATUS "- poolstl - using bundled source")
+    set(STB_INCLUDE_DIRS ${VCLIB_STB_DIR})
 
-    set(POOLSTL_INCLUDE_DIRS ${VCLIB_POOLSTL_DIR}/include)
+    add_library(vclib-3rd-stb SHARED src/stb_src.cpp)
 
-    add_library(vclib-external-poolstl INTERFACE)
+    target_include_directories(vclib-3rd-stb PUBLIC ${STB_INCLUDE_DIRS})
 
-    target_include_directories(vclib-external-poolstl INTERFACE 
-        ${POOLSTL_INCLUDE_DIRS})
-
-    # in case of non MSVC (which supports c++17 parallel algorithms) and no TBB,
-    # we need to force the usage of the poolSTL std::execution::parallel policy
-    if (NOT TARGET vclib-external-tbb AND NOT MSVC)
-        target_compile_definitions(vclib-external-poolstl INTERFACE
-            -DPOOLSTL_STD_SUPPLEMENT_NO_INCLUDE -DPOOLSTL_STD_SUPPLEMENT_FORCE)
-    endif()
-
-    list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-poolstl)
-else()
-    message(FATAL_ERROR "poolSTL is required to full support parallel algorithms - VCLIB_ALLOW_BUNDLED_POOLSTL must be enabled and found.")
+    list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-stb)
 endif()

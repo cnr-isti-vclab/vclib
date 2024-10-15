@@ -20,58 +20,25 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-external)
+set(VCLIB_ZIP_VIEWS_DIR ${CMAKE_CURRENT_LIST_DIR}/zip-views-1.0)
 
-include(FetchContent)
+if (VCLIB_ALLOW_BUNDLED_ZIP_VIEWS AND
+        EXISTS ${VCLIB_ZIP_VIEWS_DIR}/zip_view.hpp)
+    message(STATUS "- ZipViews - using bundled source")
+else()
+    message(
+        FATAL_ERROR
+        "ZipViews is required -
+        VCLIB_ALLOW_BUNDLED_ZIP_VIEWS must be enabled and found.")
+endif()
 
-# === REQUIRED === #
+set(ZIP_VIEWS_INCLUDE_DIRS ${VCLIB_ZIP_VIEWS_DIR})
 
-# Eigen
-option(VCLIB_ALLOW_BUNDLED_EIGEN "Allow use of bundled Eigen source" ON)
-option(VCLIB_ALLOW_SYSTEM_EIGEN "Allow use of system-provided Eigen" ON)
+set(ZIP_VIEW_BUILD_TEST OFF CACHE BOOL "Build ZipViews tests")
+add_subdirectory(${VCLIB_ZIP_VIEWS_DIR})
 
-# MapBox earcut
-option(VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT
-    "Allow use of bundled Mapbox-Eaurcut source" ON)
+add_library(vclib-3rd-zip-views INTERFACE)
 
-# Zip iterator
-option(VCLIB_ALLOW_BUNDLED_ZIP_VIEWS
-    "Allow use of bundled ZipViews source" ON)
+target_link_libraries(vclib-3rd-zip-views INTERFACE zip-view)
 
-# STB
-option(VCLIB_ALLOW_BUNDLED_STB "Allow use of bundled STB source" ON)
-
-# poolSTL
-option(VCLIB_ALLOW_BUNDLED_POOLSTL "Allow use of bundled poolSTL source" ON)
-
-# === OPTIONAL === #
-
-# TBB
-option(VCLIB_ALLOW_SYSTEM_TBB "Allow use of system-provided TBB" ON)
-
-
-# === Fetch dependencies === #
-
-set(VCLIB_EXTERNAL_LIBRARIES "")
-
-### Eigen
-include(eigen.cmake)
-
-### Mapbox-Earcut
-include(mapbox.cmake)
-
-### Zip iterator
-include(zip-views.cmake)
-
-### STB
-include(stb.cmake)
-
-### TBB
-include(tbb.cmake) # leave this BEFORE poolSTL
-
-### poolSTL
-include(poolstl.cmake)
-
-
-set(VCLIB_EXTERNAL_LIBRARIES ${VCLIB_EXTERNAL_LIBRARIES} PARENT_SCOPE)
+list(APPEND VCLIB_CORE_3RDPARTY_LIBRARIES vclib-3rd-zip-views)

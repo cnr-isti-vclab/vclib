@@ -21,7 +21,7 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
-project(vclib-external)
+project(vclib-external-3rdparty)
 
 include(FetchContent)
 

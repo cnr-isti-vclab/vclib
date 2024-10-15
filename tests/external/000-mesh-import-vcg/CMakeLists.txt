@@ -39,7 +39,7 @@ vclib_add_test(
     ${HEADER_ONLY_OPTION})
 
 get_property(VCG_INCLUDE_DIRS
-    TARGET vclib-external-vcg
+    TARGET vclib-3rd-vcg
     PROPERTY VCG_INCLUDE_DIRS)
 
 # add plylib.cpp source from vcg

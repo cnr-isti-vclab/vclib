@@ -20,22 +20,40 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-set(VCLIB_MAPBOX_EARCUT_DIR ${CMAKE_CURRENT_LIST_DIR}/earcut.hpp-2.2.3)
+find_package(glfw3 3.4 QUIET)
 
-if (VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT AND
-        EXISTS ${VCLIB_MAPBOX_EARCUT_DIR}/include/mapbox/earcut.hpp)
-    message(STATUS "- Mapbox-Eaurcut - using bundled source")
+if (VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
+    message(STATUS "- GLFW - using system-provided library")
+
+    add_library(vclib-3rd-glfw INTERFACE)
+    target_link_libraries(vclib-3rd-glfw INTERFACE glfw)
+
+    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-glfw)
+
+elseif(VCLIB_ALLOW_DOWNLOAD_GLFW)
+    message(STATUS "- GLFW - using downloaded source")
+
+    if(LINUX)
+        if (VCLIB_RENDER_WITH_WAYLAND)
+            set(GLFW_BUILD_WAYLAND ON)
+            set(GLFW_BUILD_X11 OFF)
+        else()
+            set(GLFW_BUILD_WAYLAND OFF)
+            set(GLFW_BUILD_X11 ON)
+        endif()
+    endif()
+
+    FetchContent_Declare(glfw3
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG        3.4)
+
+    FetchContent_MakeAvailable(glfw3)
+
+    add_library(vclib-3rd-glfw INTERFACE)
+    target_link_libraries(vclib-3rd-glfw INTERFACE glfw)
+
+    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-glfw)
+
 else()
-    message(FATAL_ERROR
-        "MapBox earcut is required - VCLIB_ALLOW_BUNDLED_MAPBOX_EARCUT"
-        "must be enabled and found.")
+    message(STATUS "- GLFW - not found, skipping")
 endif()
-
-set(MAPBOX_EARCUT_INCLUDE_DIRS ${VCLIB_MAPBOX_EARCUT_DIR}/include)
-
-add_library(vclib-external-mapbox-earcut INTERFACE)
-
-target_include_directories(vclib-external-mapbox-earcut
-    INTERFACE ${MAPBOX_EARCUT_INCLUDE_DIRS})
-
-list(APPEND VCLIB_EXTERNAL_LIBRARIES vclib-external-mapbox-earcut)
