@@ -61,20 +61,20 @@ void CanvasWidget::draw()
 {
 }
 
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
 void CanvasWidget::update()
 {
     frame();
     EventManagerWidget::update();
 }
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void CanvasWidget::initializeGL()
 {
     Canvas::init(width(), height());
 }
 #endif
 
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
 bool CanvasWidget::event(QEvent* event)
 {
     if (event->type() == QEvent::UpdateRequest) {
@@ -85,13 +85,13 @@ bool CanvasWidget::event(QEvent* event)
 }
 #endif
 
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
 void CanvasWidget::paintEvent(QPaintEvent* event)
 {
     frame();
     QWidget::paintEvent(event);
 }
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void CanvasWidget::paintGL()
 {
     frame();

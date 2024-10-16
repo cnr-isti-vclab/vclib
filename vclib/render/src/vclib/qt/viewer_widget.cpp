@@ -59,13 +59,13 @@ ViewerWidget::ViewerWidget(QWidget* parent) :
 {
 }
 
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
 void ViewerWidget::update()
 {
     frame();
     EventManagerWidget::update();
 }
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void ViewerWidget::initializeGL()
 {
     ViewerCanvas::init(width(), height());
@@ -85,7 +85,7 @@ void ViewerWidget::onKeyPress(Key::Enum key)
     }
 }
 
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
 bool ViewerWidget::event(QEvent* event)
 {
     if (event->type() == QEvent::UpdateRequest) {
@@ -96,13 +96,13 @@ bool ViewerWidget::event(QEvent* event)
 }
 #endif
 
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
 void ViewerWidget::paintEvent(QPaintEvent* event)
 {
     frame();
     QWidget::paintEvent(event);
 }
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void ViewerWidget::paintGL()
 {
     frame();

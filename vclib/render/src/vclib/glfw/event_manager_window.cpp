@@ -63,10 +63,10 @@ EventManagerWindow::EventManagerWindow(
         exit(EXIT_FAILURE);
     }
 
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
@@ -81,7 +81,7 @@ EventManagerWindow::EventManagerWindow(
         exit(EXIT_FAILURE);
     }
 
-#ifdef VCLIB_RENDER_ENGINE_OPENGL2
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
     glfwMakeContextCurrent(mWindow);
 #endif
 
@@ -207,14 +207,14 @@ void EventManagerWindow::glfwScrollCallback(
 
 void EventManagerWindow::setCallbacks()
 {
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
     glfwSetWindowSizeCallback(
         mWindow, [](GLFWwindow* window, int width, int height) {
             auto* self = static_cast<EventManagerWindow*>(
                 glfwGetWindowUserPointer(window));
             self->glfwWindowSizeCallback(window, width, height);
         });
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     glfwSetFramebufferSizeCallback(
         mWindow, [](GLFWwindow* window, int width, int height) {
             auto* self = static_cast<EventManagerWindow*>(

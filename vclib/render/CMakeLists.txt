@@ -27,8 +27,8 @@ project(vclib-render)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # Options
-set(VCLIB_RENDER_ENGINE "bgfx" CACHE STRING "Select the rendering engine")
-set_property(CACHE VCLIB_RENDER_ENGINE PROPERTY STRINGS bgfx opengl2 none)
+set(VCLIB_RENDER_BACKEND "bgfx" CACHE STRING "Select the rendering engine")
+set_property(CACHE VCLIB_RENDER_BACKEND PROPERTY STRINGS bgfx opengl2 none)
 
 # external libraries
 message(STATUS "VCLib-Render: 3rdparty libraries")
@@ -50,7 +50,7 @@ foreach(FILE ${VCLIB_RENDER_GEN_HEADERS})
 endforeach()
 
 # if render engine is bgfx - include sources that use bgfx
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     get_target_property(VCLIB_BGFX_DIR vclib-3rd-bgfx BGFX_DIR)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
@@ -91,7 +91,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
 endif()
 
 # if render engine is opengl2 - include sources that use opengl2
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
+if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
     file(GLOB_RECURSE HEADERS_OPENGL2 CONFIGURE_DEPENDS
         "include/vclib/render_opengl2/*.h")
     list(APPEND HEADERS ${HEADERS_OPENGL2})
@@ -118,7 +118,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
     endforeach()
 endif()
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     if (TARGET vclib-3rd-glfw)
         file(GLOB_RECURSE HEADERS_GLFW CONFIGURE_DEPENDS
             "include/vclib/glfw/*.h")
@@ -142,7 +142,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
     endif()
 endif()
 
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
+if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
     list(APPEND HEADERS
         include/vclib/glfw/canvas_window.h
         include/vclib/glfw/event_manager_window.h
@@ -216,15 +216,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VCLIB_RENDER_SHADER_INCLUDE_DIR
     "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_ENGINE_BGFX)
+if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_BACKEND_BGFX)
 
     build_bgfx_shaders_to_headers(${SHADERS})
     build_assets_to_headers(${ASSETS})
 endif()
 
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
-    target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_ENGINE_OPENGL2)
+if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_BACKEND_OPENGL2)
 endif()
 
 if (TARGET vclib-processing)

@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_QT_EVENT_MANAGER_WIDGET_H
 #define VCL_EXT_QT_EVENT_MANAGER_WIDGET_H
 
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <QWidget>
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 #include <QOpenGLWidget>
 #endif
 
@@ -34,16 +34,16 @@
 namespace vcl::qt {
 
 class EventManagerWidget :
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
         public QWidget,
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
         public QOpenGLWidget,
 #endif
         public virtual vcl::EventManagerI
 {
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
     using Base = QWidget;
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     using Base = QOpenGLWidget;
 #endif
 
@@ -59,9 +59,9 @@ public:
     virtual void update() override;
 
 protected:
-#if defined(VCLIB_RENDER_ENGINE_BGFX)
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override;
-#elif defined(VCLIB_RENDER_ENGINE_OPENGL2)
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void resizeGL(int w, int h) override;
 #endif
 

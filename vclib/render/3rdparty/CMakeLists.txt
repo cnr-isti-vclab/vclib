@@ -46,7 +46,7 @@ set(VCLIB_RENDER_3RDPARTY_LIBRARIES "")
 # === RENDER ENGINES (and optional libraries binded to them) === #
 
 ### bgfx
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     ### Wayland (optional)
     include(wayland.cmake)
 
@@ -54,7 +54,7 @@ if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
 endif()
 
 ### OpenGL
-if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
+if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
     include(opengl.cmake)
 endif()
 
