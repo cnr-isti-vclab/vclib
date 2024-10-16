@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-if (VCLIB_RENDER_ENGINE STREQUAL "bgfx")
+if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     add_subdirectory(bgfx)
 endif()
 
