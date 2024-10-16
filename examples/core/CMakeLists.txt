@@ -55,12 +55,6 @@ add_subdirectory(026-crease-edges-mesh)
 add_subdirectory(027-convex-hull)
 add_subdirectory(028-topology-patch)
 
-add_subdirectory(700-processing-save-mesh)
-add_subdirectory(701-processing-load-mesh)
-add_subdirectory(702-processing-create-mesh)
-add_subdirectory(703-processing-laplacian-smoothing)
-add_subdirectory(704-processing-convex-hull)
-
 add_subdirectory(999-misc)
 
 

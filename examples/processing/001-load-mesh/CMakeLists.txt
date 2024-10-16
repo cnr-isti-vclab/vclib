@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 704-processing-convex-hull)
+set(EXAMPLE_NAME 001-load-mesh)
 project(vclib-example-${EXAMPLE_NAME})
 
 set(SOURCES
@@ -30,5 +30,6 @@ set(SOURCES
 
 vclib_add_example(
     ${EXAMPLE_NAME}
+    VCLIB_MODULE processing
     SOURCES ${SOURCES}
     ${HEADER_ONLY_OPTION})

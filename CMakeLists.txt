@@ -28,8 +28,9 @@ project(vclib)
 option(VCLIB_COMPILE_WARNINGS_AS_ERRORS "Compile warnings as errors" ON)
 
 # Optional modules build options
-option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 option(VCLIB_BUILD_MODULE_EXTERNAL "Build the external module" OFF)
+option(VCLIB_BUILD_MODULE_PROCESSING "Build the processing module" OFF)
+option(VCLIB_BUILD_MODULE_RENDER "Build the render module" OFF)
 
 # Build examples
 option(VCLIB_BUILD_EXAMPLES "Build examples" ON)
@@ -54,14 +55,19 @@ add_library(vclib INTERFACE)
 add_subdirectory(vclib/core)
 target_link_libraries(vclib INTERFACE vclib-core)
 
+if (VCLIB_BUILD_MODULE_EXTERNAL)
+    add_subdirectory(vclib/external)
+    target_link_libraries(vclib INTERFACE vclib-external)
+endif()
+
+if (VCLIB_BUILD_MODULE_PROCESSING)
+    add_subdirectory(vclib/processing)
+    target_link_libraries(vclib INTERFACE vclib-processing)
+endif()
+
 if (VCLIB_BUILD_MODULE_RENDER)
     add_subdirectory(vclib/render)
     target_link_libraries(vclib INTERFACE vclib-render)
-endif()
-
-if (VCLIB_BUILD_MODULE_EXTERNAL)
-    add_subdirectory(vclib/external)
-    target_link_libraries(vclib INTERFACE vclib-3rd)
 endif()
 
 set(VCLIB_EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)

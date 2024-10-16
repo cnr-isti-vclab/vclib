@@ -170,6 +170,29 @@ if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
     endif()
 endif()
 
+# todo: this is a terrible hack
+# these files should be organized in a better way
+if (NOT TARGET vclib-processing)
+    # remove from HEADERS, SOURCES, FORMS all the files that use the processing
+    # module (they contain the 'processing' string in the path)
+
+    foreach(FILE ${HEADERS})
+        if (FILE MATCHES "processing")
+            list(REMOVE_ITEM HEADERS ${FILE})
+        endif()
+    endforeach()
+    foreach(FILE ${SOURCES})
+        if (FILE MATCHES "processing")
+            list(REMOVE_ITEM SOURCES ${FILE})
+        endif()
+    endforeach()
+    foreach(FILE ${FORMS})
+        if (FILE MATCHES "processing")
+            list(REMOVE_ITEM FORMS ${FILE})
+        endif()
+    endforeach()
+endif()
+
 # vclib-render target
 if (WIN32)
     # on windows vclib-render must be static - needed for bgfx
@@ -202,6 +225,10 @@ endif()
 
 if (VCLIB_RENDER_ENGINE STREQUAL "opengl2")
     target_compile_definitions(${PROJECT_NAME} PUBLIC VCLIB_RENDER_ENGINE_OPENGL2)
+endif()
+
+if (TARGET vclib-processing)
+    target_link_libraries(${PROJECT_NAME} PUBLIC vclib-processing)
 endif()
 
 if (TARGET vclib-3rd-qt)

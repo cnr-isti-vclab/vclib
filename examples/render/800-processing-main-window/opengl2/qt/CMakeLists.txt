@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.24)
 
-set(EXAMPLE_NAME 04-mesh-processing-main-window-qt)
+set(EXAMPLE_NAME 800-processing-main-window-qt)
 project(vclib-render-example-${EXAMPLE_NAME})
 
 ### Build settings

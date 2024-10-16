@@ -21,14 +21,15 @@
 #****************************************************************************/
 
 cmake_minimum_required(VERSION 3.24)
+project(vclib-processing)
 
-set(EXAMPLE_NAME 702-processing-create-mesh)
-project(vclib-example-${EXAMPLE_NAME})
+file(GLOB_RECURSE HEADERS CONFIGURE_DEPENDS "include/vclib/*.h")
 
-set(SOURCES
-    main.cpp)
+add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
 
-vclib_add_example(
-    ${EXAMPLE_NAME}
-    SOURCES ${SOURCES}
-    ${HEADER_ONLY_OPTION})
+target_include_directories(${PROJECT_NAME} INTERFACE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(${PROJECT_NAME} INTERFACE vclib-core)
+
+target_sources(${PROJECT_NAME} PRIVATE ${HEADERS})
