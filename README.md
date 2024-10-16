@@ -6,6 +6,8 @@ The Visual Computing Library is a C++20 modern, multi-platform Mesh and Geometry
 
 The library is divided in several modules, each one with a specific purpose:
   - **Core**: contains the basic core library, that is templated header only and contains the basic data structures and algorithms; all the other modules depend on this one.
+  - **External**: contains algorithms and data structures that use external libraries, like VCG, etc.
+  - **Processing**: contains algorithms for high level mesh and geometry processing tasks that can be used as black boxes plugins.
   - **Render**: contains the rendering library, that allows to render meshes using different rendering engines and different window managers and GUI libraries.
 
 All the modules can be found in the [vclib](vclib) directory, and can be built separately.
