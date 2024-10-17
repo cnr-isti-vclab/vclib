@@ -156,9 +156,13 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
         depthFormat = bgfx::TextureFormat::D32;
     }
 
-    bgfx::FrameBufferHandle fbh =
-        bgfx::createFrameBuffer(winId, width, height, colorFormat, depthFormat);
-    bgfx::setViewFrameBuffer(view, fbh);
+    bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
+
+    if (view != 0) {
+        bgfx::FrameBufferHandle fbh =
+            bgfx::createFrameBuffer(winId, width, height, colorFormat, depthFormat);
+        bgfx::setViewFrameBuffer(view, fbh);
+    }
     if (clear) {
         bgfx::setViewClear(
             view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
