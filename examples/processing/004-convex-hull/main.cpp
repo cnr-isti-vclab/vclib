@@ -30,8 +30,8 @@ int main()
 
     manager.add(vcl::proc::vclibActions());
 
-    auto pm0 =
-        manager.loadMeshAction("obj")->load(VCLIB_EXAMPLE_MESHES_PATH "/bunny.obj");
+    auto pm0 = manager.loadMeshAction("obj")->load(VCLIB_EXAMPLE_MESHES_PATH
+                                                   "/bunny.obj");
 
     vcl::proc::MeshVector mv;
 

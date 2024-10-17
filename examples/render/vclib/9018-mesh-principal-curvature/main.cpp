@@ -26,7 +26,8 @@
 
 int main(int argc, char** argv)
 {
-    vcl::TriMesh m = vcl::loadObj<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
+    vcl::TriMesh m =
+        vcl::loadObj<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
 
     updateCurvature(m);
 

@@ -22,9 +22,9 @@
 
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/algorithms/mesh/create.h>
+#include <vclib/meshes.h>
 #include <vclib/vcg/export.h>
 #include <vclib/vcg/import.h>
-#include <vclib/meshes.h>
 
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>

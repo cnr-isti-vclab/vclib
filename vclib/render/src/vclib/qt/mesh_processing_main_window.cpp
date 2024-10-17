@@ -25,10 +25,10 @@
 
 #include <QFileDialog>
 
+#include <vclib/processing/actions.h>
 #include <vclib/qt/gui/processing/action_file_dialog.h>
 #include <vclib/qt/gui/processing/filter_mesh_dock_widget.h>
 #include <vclib/qt/utils/file_format.h>
-#include <vclib/processing/actions.h>
 #include <vclib/render/drawable/drawable_mesh.h>
 
 namespace vcl::qt {

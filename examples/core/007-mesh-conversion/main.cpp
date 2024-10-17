@@ -28,8 +28,8 @@
 
 int main()
 {
-    vcl::TriMesh m =
-        vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
+    vcl::TriMesh m = vcl::loadPly<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH
+                                                "/TextureDouble.ply");
 
     vcl::PolyMesh pm;
 

@@ -29,8 +29,8 @@
 #include <QLabel>
 #include <QWidget>
 
-#include <vclib/qt/gui/q_clickable_label.h>
 #include <vclib/processing/parameters.h>
+#include <vclib/qt/gui/q_clickable_label.h>
 
 namespace vcl::qt {
 

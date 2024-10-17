@@ -25,8 +25,8 @@
 
 #include <QMainWindow>
 
-#include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/processing/action_manager.h>
+#include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/interfaces/drawable_mesh_i.h>
 

@@ -26,8 +26,8 @@
 #include <QComboBox>
 #include <QFileDialog>
 
-#include <vclib/qt/utils/file_format.h>
 #include <vclib/processing/action_manager.h>
+#include <vclib/qt/utils/file_format.h>
 
 #include "multi_parameter_frame.h"
 

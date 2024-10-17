@@ -41,7 +41,8 @@ TEMPLATE_TEST_CASE(
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
 
-    TriMesh tm = vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
+    TriMesh tm =
+        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply");
 
     tm.template addCustomComponent<int>("cust_comp", 4);
     tm.template addPerVertexCustomComponent<float>("v_comp");
@@ -136,7 +137,8 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
-    TriMesh tm = vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+    TriMesh tm =
+        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     THEN("The loaded TriMesh has 8 vertices and 12 faces")
     {
@@ -156,7 +158,8 @@ TEMPLATE_TEST_CASE(
     using TriMesh  = typename TestType::first_type;
     using PolyMesh = typename TestType::second_type;
 
-    PolyMesh pm = vcl::loadPly<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+    PolyMesh pm =
+        vcl::loadPly<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     THEN("The loaded PolyMesh has 8 vertices and 6 faces")
     {

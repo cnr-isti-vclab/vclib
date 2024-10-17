@@ -180,7 +180,8 @@ TEMPLATE_TEST_CASE(
 
     SECTION("A TriMesh that is watertight")
     {
-        vcl::TriMesh t = vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
+        vcl::TriMesh t =
+            vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/bone.ply");
 
         REQUIRE(t.vertexNumber() == 1872);
         REQUIRE(t.faceNumber() == 3022);

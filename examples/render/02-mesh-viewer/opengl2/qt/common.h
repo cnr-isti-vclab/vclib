@@ -38,11 +38,13 @@ vcl::DrawableMesh<MeshType> getDrawableMesh()
     // load a mesh:
     // MeshType m =
     //     vcl::load<MeshType>("/home/alessandro/tmp/chimera/chimera.ply");
-    // MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/greek_helmet.obj");
     // MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH
+    // "/greek_helmet.obj"); MeshType m =
+    // vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH
     // "/bunny_textured.ply");
     // MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/bimba.obj");
-    MeshType m = vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", s);
+    MeshType m =
+        vcl::load<MeshType>(VCLIB_EXAMPLE_MESHES_PATH "/TextureDouble.ply", s);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray

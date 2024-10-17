@@ -33,7 +33,8 @@
 inline vcl::TriMesh getMesh(const std::string& filename = "bimba.obj")
 {
     // load a mesh:
-    vcl::TriMesh m = vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
+    vcl::TriMesh m =
+        vcl::load<vcl::TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/" + filename);
     vcl::updatePerVertexAndFaceNormals(m);
 
     // enable the vertex color of the mesh and set it to gray

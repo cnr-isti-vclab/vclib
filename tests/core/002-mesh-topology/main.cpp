@@ -36,7 +36,8 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
-    TriMesh tm = vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+    TriMesh tm =
+        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
@@ -298,7 +299,8 @@ TEMPLATE_TEST_CASE(
 {
     using TriMesh = TestType;
 
-    TriMesh pm = vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
+    TriMesh pm =
+        vcl::loadPly<TriMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_tri.ply");
 
     THEN("The mesh has 8 vertices, 12 triangles")
     {
@@ -562,7 +564,8 @@ TEMPLATE_TEST_CASE(
 {
     using PolyMesh = TestType;
 
-    PolyMesh pm = vcl::loadPly<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
+    PolyMesh pm =
+        vcl::loadPly<PolyMesh>(VCLIB_EXAMPLE_MESHES_PATH "/cube_poly.ply");
 
     THEN("The mesh has 8 vertices, 6 faces")
     {
