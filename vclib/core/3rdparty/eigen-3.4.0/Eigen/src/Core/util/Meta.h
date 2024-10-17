@@ -1242,7 +1242,7 @@ template<typename T>
 struct has_ReturnType
 {
     template<typename C>
-    static meta_yes testFunctor(const C*, typename const C::ReturnType* = 0);
+    static meta_yes testFunctor(C const*, typename C::ReturnType const* = 0);
     template<typename C>
     static meta_no testFunctor(...);
 
