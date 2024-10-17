@@ -39,7 +39,8 @@ CanvasWidget::CanvasWidget(
         Canvas(
             (void*) winId(),
             width * EventManagerWidget::pixelRatio(),
-            height * EventManagerWidget::pixelRatio())
+            height * EventManagerWidget::pixelRatio(),
+            displayId())
 {
 }
 

@@ -134,6 +134,19 @@ void* EventManagerWindow::winId()
     return nwh;
 }
 
+void* EventManagerWindow::displayId()
+{
+    void* ndt = nullptr;
+#ifdef __linux__
+#ifdef VCLIB_RENDER_WITH_WAYLAND
+    ndt = (void*) (uintptr_t) glfwGetWaylandDisplay();
+#else
+    ndt = (void*) (uintptr_t) glfwGetX11Display();
+#endif
+#endif
+    return ndt;
+}
+
 void EventManagerWindow::glfwWindowSizeCallback(
     GLFWwindow*,
     int width,

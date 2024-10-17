@@ -122,4 +122,28 @@ double EventManagerWidget::pixelRatio()
     return app->devicePixelRatio();
 }
 
+void* EventManagerWidget::displayId() const
+{
+    void* displayID = nullptr;
+#ifdef Q_OS_LINUX
+    /// THIS WORKS ONLY IF QT_QPA_PLATFORM = xcb
+    QNativeInterface::QX11Application* x11AppInfo =
+        qApp->nativeInterface<QNativeInterface::QX11Application>();
+    if (x11AppInfo) {
+        displayID = x11AppInfo->display();
+    }
+    else {
+        QNativeInterface::QWaylandApplication* wayAppInfo =
+            qApp->nativeInterface<QNativeInterface::QWaylandApplication>();
+        if (wayAppInfo) {
+            displayID = wayAppInfo->display();
+        }
+        else {
+            exit(-1);
+        }
+    }
+#endif
+    return displayID;
+}
+
 } // namespace vcl::qt

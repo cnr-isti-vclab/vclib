@@ -69,7 +69,7 @@ class Canvas : public virtual vcl::EventManagerI
     TextView mTextView;
 
 public:
-    Canvas(void* winId, uint width, uint height);
+    Canvas(void* winId, uint width, uint height, void* displayId = nullptr);
 
     ~Canvas();
 

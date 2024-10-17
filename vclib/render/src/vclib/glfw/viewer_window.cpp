@@ -31,7 +31,7 @@ ViewerWindow::ViewerWindow(
     uint                                         height,
     void*) :
         EventManagerWindow(windowTitle, width, height),
-        ViewerCanvas(winId(), v, width, height)
+        ViewerCanvas(winId(), v, width, height, displayId())
 {
 }
 

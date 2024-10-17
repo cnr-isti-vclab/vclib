@@ -26,11 +26,11 @@
 
 namespace vcl {
 
-Canvas::Canvas(void* winId, uint width, uint height)
+Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
 {
     mWinId = winId;
 
-    mViewId = Context::requestViewId();
+    mViewId = Context::requestViewId(mWinId, displayId);
 
     mFbh = createFrameBufferAndInitView(winId, mViewId, width, height, true);
 

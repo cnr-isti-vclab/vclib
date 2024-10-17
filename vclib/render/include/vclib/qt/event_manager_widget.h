@@ -78,6 +78,8 @@ protected:
     void wheelEvent(QWheelEvent* event) override;
 
     static double pixelRatio();
+
+    void* displayId() const;
 };
 
 } // namespace vcl::qt

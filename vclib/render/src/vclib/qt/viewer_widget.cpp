@@ -36,7 +36,7 @@ ViewerWidget::ViewerWidget(
     const std::string&                           windowTitle,
     QWidget*                                     parent) :
         EventManagerWidget(windowTitle, width, height, parent),
-        ViewerCanvas((void*) winId(), v, width, height)
+        ViewerCanvas((void*) winId(), v, width, height, displayId())
 {
 }
 

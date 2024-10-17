@@ -51,7 +51,9 @@ public:
     inline static bgfx::RendererType::Enum renderType =
         bgfx::RendererType::Count;
 
-    static bgfx::ViewId requestViewId();
+    static bgfx::ViewId requestViewId(
+        void* windowHandle  = nullptr,
+        void* displayHandle = nullptr);
 
     static void releaseViewId(bgfx::ViewId viewId);
 
@@ -62,11 +64,13 @@ public:
     static void setDebugVerbosity(bool verbose);
 
 private:
-    Context();
+    Context(void *windowHandle, void* displayHandle);
 
     ~Context();
 
-    static Context& instance();
+    static Context& instance(
+        void* windowHandle  = nullptr,
+        void* displayHandle = nullptr);
 
 public:
     Context(const Context&)            = delete;

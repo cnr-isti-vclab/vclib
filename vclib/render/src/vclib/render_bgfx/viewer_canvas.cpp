@@ -28,8 +28,12 @@
 
 namespace vcl {
 
-ViewerCanvas::ViewerCanvas(void* winId, uint width, uint height) :
-        Canvas(winId, width, height), ViewerI(width, height)
+ViewerCanvas::ViewerCanvas(
+    void* winId,
+    uint  width,
+    uint  height,
+    void* displayId) :
+        Canvas(winId, width, height, displayId), ViewerI(width, height)
 {
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());
@@ -39,8 +43,9 @@ ViewerCanvas::ViewerCanvas(
     void*                                        winId,
     const std::shared_ptr<DrawableObjectVector>& v,
     uint                                         width,
-    uint                                         height) :
-        ViewerCanvas(winId, width, height)
+    uint                                         height,
+    void*                                        displayId) :
+        ViewerCanvas(winId, width, height, displayId)
 {
     setDrawableObjectVector(v);
 }

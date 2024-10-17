@@ -29,7 +29,7 @@ namespace vcl {
 
 class Callback : public bgfx::CallbackI
 {
-    bool mDebugVerbose = false;
+    bool mDebugVerbose = true;
 
 public:
     Callback() = default;

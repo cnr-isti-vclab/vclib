@@ -46,13 +46,18 @@ class ViewerCanvas : public Canvas, public ViewerI
     DrawableTrackBall        mTrackBall;
 
 public:
-    ViewerCanvas(void* winId, uint width = 1024, uint height = 768);
+    ViewerCanvas(
+        void* winId,
+        uint  width     = 1024,
+        uint  height    = 768,
+        void* displayId = nullptr);
 
     ViewerCanvas(
         void*                                        winId,
         const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width  = 1024,
-        uint                                         height = 768);
+        uint                                         width     = 1024,
+        uint                                         height    = 768,
+        void*                                        displayId = nullptr);
 
     void toggleAxisVisibility() override
     {

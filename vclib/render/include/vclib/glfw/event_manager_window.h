@@ -55,6 +55,8 @@ public:
 protected:
     void* winId();
 
+    void* displayId();
+
     // callbacks
     virtual void glfwWindowSizeCallback(GLFWwindow*, int width, int height);
 

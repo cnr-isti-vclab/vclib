@@ -20,23 +20,18 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <iostream>
+
 #include <vclib/render_bgfx/context.h>
-
 #include <vclib/render_bgfx/system/native_window_handle.h>
-
 #include <vclib/types/base.h>
 
 namespace vcl {
 
-Context& Context::instance()
+bgfx::ViewId Context::requestViewId(void* windowHandle, void* displayHandle)
 {
-    static Context ctx;
-    return ctx;
-}
-
-bgfx::ViewId Context::requestViewId()
-{
-    bgfx::ViewId viewId = instance().mViewStack.top();
+    bgfx::ViewId viewId =
+        instance(windowHandle, displayHandle).mViewStack.top();
     instance().mViewStack.pop();
     return viewId;
 }
@@ -61,9 +56,24 @@ void Context::setDebugVerbosity(bool verbose)
     instance().mCallBack.setDebugVerbosity(verbose);
 }
 
-Context::Context()
+Context::Context(void* windowHandle, void* displayHandle)
 {
-    mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
+    if (windowHandle == nullptr) {
+        std::cerr << "WARNING: The first window used to create the bgfx "
+                     "context is a dummy window. This is not recommended."
+                  << std::endl;
+        std::cerr
+            << "Be sure to pass a valid window handle when requesting the "
+               "context instance for the first time."
+            << std::endl;
+        mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
+    } else {
+#ifdef __linux__
+        assert(displayHandle != nullptr);
+#endif
+        mWindowHandle = windowHandle;
+        mDisplayHandle = displayHandle;
+    }
 #ifdef __APPLE__
     bgfx::renderFrame(); // needed for macos
 #endif                   // __APPLE__
@@ -78,7 +88,9 @@ Context::Context()
     init.callback          = &mCallBack;
     bgfx::init(init);
 
-    vcl::closeWindow(mWindowHandle, mDisplayHandle);
+    if (windowHandle == nullptr) {
+        vcl::closeWindow(mWindowHandle, mDisplayHandle);
+    }
 
     uint mv = bgfx::getCaps()->limits.maxViews;
 
@@ -97,6 +109,12 @@ Context::~Context()
     delete mFontManager;
     delete mProgramManager;
     bgfx::shutdown();
+}
+
+Context& Context::instance(void* windowHandle, void* displayHandle)
+{
+    static Context ctx(windowHandle, displayHandle);
+    return ctx;
 }
 
 bool isViewValid(bgfx::ViewId viewId)

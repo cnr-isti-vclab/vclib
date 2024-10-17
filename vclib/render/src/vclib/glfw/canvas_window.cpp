@@ -29,7 +29,7 @@ CanvasWindow::CanvasWindow(
     uint               width,
     uint               height) :
         EventManagerWindow(windowTitle, width, height),
-        Canvas(winId(), width, height)
+        Canvas(winId(), width, height, displayId())
 {
 }
 
