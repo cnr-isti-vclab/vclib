@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 
-set(HEADERS my_dialog.h)
-
 set(SOURCES main.cpp)
 
 vclib_add_example(999-misc-none
     VCLIB_MODULE render
-    SOURCES ${HEADERS} ${SOURCES})
+    SOURCES ${SOURCES})

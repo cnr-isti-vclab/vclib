@@ -65,7 +65,7 @@ void CanvasWidget::draw()
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 void CanvasWidget::update()
 {
-    frame();
+    //frame();
     EventManagerWidget::update();
 }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
@@ -78,10 +78,10 @@ void CanvasWidget::initializeGL()
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 bool CanvasWidget::event(QEvent* event)
 {
-    if (event->type() == QEvent::UpdateRequest) {
-        frame();
-        return true;
-    }
+    // if (event->type() == QEvent::UpdateRequest) {
+    //     frame();
+    //     return true;
+    // }
     return EventManagerWidget::event(event);
 }
 #endif

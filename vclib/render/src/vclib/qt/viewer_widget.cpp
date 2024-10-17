@@ -62,7 +62,7 @@ ViewerWidget::ViewerWidget(QWidget* parent) :
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 void ViewerWidget::update()
 {
-    frame();
+    //frame();
     EventManagerWidget::update();
 }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
@@ -88,10 +88,10 @@ void ViewerWidget::onKeyPress(Key::Enum key)
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 bool ViewerWidget::event(QEvent* event)
 {
-    if (event->type() == QEvent::UpdateRequest) {
-        frame();
-        return true;
-    }
+    // if (event->type() == QEvent::UpdateRequest) {
+    //     frame();
+    //     return true;
+    // }
     return EventManagerWidget::event(event);
 }
 #endif
