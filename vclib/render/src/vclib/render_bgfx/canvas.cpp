@@ -166,7 +166,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     }
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::reset(width, height, BGFX_RESET_VSYNC);
-    bgfx::setDebug(BGFX_DEBUG_STATS);
+    // bgfx::setDebug(BGFX_DEBUG_STATS);
     bgfx::touch(view);
     return fbh;
 }
