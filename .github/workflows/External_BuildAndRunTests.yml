@@ -33,7 +33,7 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: ${{ runner.os }}-${{ github.ref }}
+        key: external-${{ matrix.os }}-${{ github.ref }}
     - name: Build
       shell: bash
       run: |
