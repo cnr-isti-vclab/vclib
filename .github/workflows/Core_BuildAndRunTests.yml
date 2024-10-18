@@ -1,11 +1,11 @@
-name: BuildAndRunTests
+name: Core - Build and run Tests
 
 on:
   [push, pull_request]
 
 jobs:
-  build_and_run_tests:
-    name: Build and run Tests
+  core_build_and_run_tests:
+    name: Core - Build and run Tests
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -39,7 +39,10 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -GNinja -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=Release ..
+        cmake -GNinja \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_BUILD_TYPE=Release \
+          ..
         ninja
     - name: Run Tests
       if: runner.os != 'Windows'

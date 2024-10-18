@@ -1,0 +1,54 @@
+name: External - Build and run Tests
+
+on:
+  [push, pull_request]
+
+jobs:
+  external_build_and_run_tests:
+    name: External - Build and run Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'macos-13', 'macos-latest', 'windows-latest']
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+    - name: Install dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get install cmake ninja-build libtbb-dev catch2
+    - name: Install dependencies
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        brew install cmake ninja
+    - name: Install dependencies
+      if: runner.os == 'Windows'
+      run: |
+        choco upgrade ccache ninja
+    - name: Ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: ${{ runner.os }}-${{ github.ref }}
+    - name: Build
+      shell: bash
+      run: |
+        mkdir build
+        cd build
+        cmake -GNinja \
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DVCLIB_BUILD_MODULE_EXTERNAL=ON \
+          -DVCLIB_CORE_BUILD_EXAMPLES=OFF -DVCLIB_CORE_BUILD_TESTS=OFF \
+          ..
+        ninja
+    - name: Run Tests
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        cd build
+        ctest --verbose
