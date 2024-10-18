@@ -136,9 +136,6 @@ void Canvas::frame()
     mTextView.frame(mFbh);
 
     bgfx::frame();
-#ifdef __APPLE__ // workaround for forcing bgfx refresh buffer on MacOS
-    bgfx::frame();
-#endif // __APPLE__
 }
 
 bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
@@ -169,7 +166,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     }
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::reset(width, height, BGFX_RESET_VSYNC);
-    // bgfx::setDebug(BGFX_DEBUG_STATS);
+    bgfx::setDebug(BGFX_DEBUG_STATS);
     bgfx::touch(view);
     return fbh;
 }
