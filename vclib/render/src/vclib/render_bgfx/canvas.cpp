@@ -159,8 +159,8 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
 
     if (view != 0) {
-        bgfx::FrameBufferHandle fbh =
-            bgfx::createFrameBuffer(winId, width, height, colorFormat, depthFormat);
+        bgfx::FrameBufferHandle fbh = bgfx::createFrameBuffer(
+            winId, width, height, colorFormat, depthFormat);
         bgfx::setViewFrameBuffer(view, fbh);
     }
     if (clear) {
@@ -169,7 +169,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     }
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::reset(width, height, BGFX_RESET_VSYNC);
-    //bgfx::setDebug(BGFX_DEBUG_STATS);
+    // bgfx::setDebug(BGFX_DEBUG_STATS);
     bgfx::touch(view);
     return fbh;
 }

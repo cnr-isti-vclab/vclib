@@ -117,8 +117,8 @@ public:
 
     /** \returns the nested expression */
     EIGEN_DEVICE_FUNC
-        typename internal::remove_reference<MatrixTypeNested>::type&
-        nestedExpression()
+    typename internal::remove_reference<MatrixTypeNested>::type&
+    nestedExpression()
     {
         return m_matrix;
     }

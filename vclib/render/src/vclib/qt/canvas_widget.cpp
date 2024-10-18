@@ -65,7 +65,7 @@ void CanvasWidget::draw()
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 void CanvasWidget::update()
 {
-    //frame();
+    // frame();
     EventManagerWidget::update();
 }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)

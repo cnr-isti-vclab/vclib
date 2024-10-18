@@ -818,9 +818,9 @@ int stb_c_lexer_get_token(stb_lexer* lexer)
 #endif
             }
         }
-#endif  // defined(STB__clex_hex_ints) || defined(STB__clex_hex_floats)
-        // can't test for octal because we might parse '0.0' as float or as '0'
-        // '.' '0', so have to do float first
+#endif // defined(STB__clex_hex_ints) || defined(STB__clex_hex_floats)
+       // can't test for octal because we might parse '0.0' as float or as '0'
+       // '.' '0', so have to do float first
 
         /* FALL THROUGH */
     case '1':

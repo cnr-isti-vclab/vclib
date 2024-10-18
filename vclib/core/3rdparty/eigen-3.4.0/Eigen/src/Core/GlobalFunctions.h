@@ -13,18 +13,18 @@
 
 #ifdef EIGEN_PARSED_BY_DOXYGEN
 
-#define EIGEN_ARRAY_DECLARE_GLOBAL_UNARY(NAME, FUNCTOR, DOC_OP, DOC_DETAILS)  \
-    /** \returns an expression of the coefficient-wise DOC_OP of \a x         \
-                                                                              \
-      DOC_DETAILS                                                             \
-                                                                              \
-      \sa <a href="group__CoeffwiseMathFunctions.html#cwisetable_##NAME">Math \
-      functions</a>, class CwiseUnaryOp                                       \
-      */                                                                      \
-    template<typename Derived>                                                \
-    inline const Eigen::CwiseUnaryOp<                                         \
-        Eigen::internal::FUNCTOR<typename Derived::Scalar>,                   \
-        const Derived>                                                        \
+#define EIGEN_ARRAY_DECLARE_GLOBAL_UNARY(NAME, FUNCTOR, DOC_OP, DOC_DETAILS)    \
+    /** \returns an expression of the coefficient-wise DOC_OP of \a x           \
+                                                                              \ \
+      DOC_DETAILS                                                               \
+                                                                              \ \
+      \sa <a href="group__CoeffwiseMathFunctions.html#cwisetable_##NAME">Math   \
+      functions</a>, class CwiseUnaryOp                                         \
+      */                                                                        \
+    template<typename Derived>                                                  \
+    inline const Eigen::CwiseUnaryOp<                                           \
+        Eigen::internal::FUNCTOR<typename Derived::Scalar>,                     \
+        const Derived>                                                          \
     NAME(const Eigen::ArrayBase<Derived>& x);
 
 #else

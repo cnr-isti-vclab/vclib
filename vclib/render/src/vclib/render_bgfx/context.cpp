@@ -67,11 +67,12 @@ Context::Context(void* windowHandle, void* displayHandle)
                "context instance for the first time."
             << std::endl;
         mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
-    } else {
+    }
+    else {
 #ifdef __linux__
         assert(displayHandle != nullptr);
 #endif
-        mWindowHandle = windowHandle;
+        mWindowHandle  = windowHandle;
         mDisplayHandle = displayHandle;
     }
 #ifdef __APPLE__

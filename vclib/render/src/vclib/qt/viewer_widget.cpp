@@ -62,7 +62,7 @@ ViewerWidget::ViewerWidget(QWidget* parent) :
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 void ViewerWidget::update()
 {
-    //frame();
+    // frame();
     EventManagerWidget::update();
 }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)

@@ -339,7 +339,7 @@ BDCSVD<MatrixType>& BDCSVD<MatrixType>::compute(
     const RealScalar considerZero = (std::numeric_limits<RealScalar>::min)();
 
     //**** step -1 - If the problem is too small, directly falls back to
-    //JacobiSVD and return
+    // JacobiSVD and return
     if (matrix.cols() < m_algoswap) {
         // FIXME this line involves temporaries
         JacobiSVD<MatrixType> jsvd(matrix, computationOptions);
@@ -357,7 +357,7 @@ BDCSVD<MatrixType>& BDCSVD<MatrixType>::compute(
     }
 
     //**** step 0 - Copy the input matrix and apply scaling to reduce
-    //over/under-flows
+    // over/under-flows
     RealScalar scale = matrix.cwiseAbs().template maxCoeff<PropagateNaN>();
     if (!(numext::isfinite)(scale)) {
         m_isInitialized = true;
@@ -503,15 +503,15 @@ void BDCSVD<MatrixType>::structured_update(
 // submatrix we are currently working on.
 
 //@param firstCol : The Index of the first column of the submatrix of m_computed
-//and for m_naiveU;
+// and for m_naiveU;
 //@param lastCol : The Index of the last column of the submatrix of m_computed
-//and for m_naiveU;
+// and for m_naiveU;
 // lastCol + 1 - firstCol is the size of the submatrix.
 //@param firstRowW : The Index of the first row of the matrix W that we are to
-//change. (see the reference paper section 1 for more information on W)
+// change. (see the reference paper section 1 for more information on W)
 //@param firstRowW : Same as firstRowW with the column.
 //@param shift : Each time one takes the left submatrix, one must add 1 to the
-//shift. Why? Because! We actually want the last column of the U submatrix
+// shift. Why? Because! We actually want the last column of the U submatrix
 // to become the first column (*coeff) and to shift all the other columns to the
 // right. There are more details on the reference paper.
 template<typename MatrixType>

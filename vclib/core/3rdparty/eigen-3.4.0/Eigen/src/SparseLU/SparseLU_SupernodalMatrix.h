@@ -168,8 +168,8 @@ protected:
         m_rowind; // Array of compressed row indices of rectangular supernodes
     StorageIndex* m_rowind_colptr; // rowind_colptr[j] stores the location in
                                    // rowind[] which starts column j
-    StorageIndex* m_col_to_sup; // col_to_sup[j] is the supernode number to
-                                // which column j belongs
+    StorageIndex* m_col_to_sup;    // col_to_sup[j] is the supernode number to
+                                   // which column j belongs
     StorageIndex* m_sup_to_col; // sup_to_col[s] points to the starting column
                                 // of the s-th supernode
 

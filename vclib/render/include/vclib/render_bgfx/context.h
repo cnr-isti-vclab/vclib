@@ -64,7 +64,7 @@ public:
     static void setDebugVerbosity(bool verbose);
 
 private:
-    Context(void *windowHandle, void* displayHandle);
+    Context(void* windowHandle, void* displayHandle);
 
     ~Context();
 

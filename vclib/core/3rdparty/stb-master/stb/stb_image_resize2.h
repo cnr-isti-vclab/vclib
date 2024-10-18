@@ -2395,12 +2395,13 @@ static stbir__inline uint8x8x2_t stbir_make8x2(float32x4_t reg)
             vqmovn_s32(vreinterpretq_s32_u32(r3)));                  \
         uint8x8x2_t out = {                                          \
             {                                                        \
-             vqmovun_s16(vcombine_s16(tmp0.val[0], tmp0.val[1])), \
-             vqmovun_s16(vcombine_s16(tmp1.val[0], tmp1.val[1])), \
-             }
-        };                                                      \
-        vst2_u8(ptr, out);                                           \
-    }
+                vqmovun_s16(vcombine_s16(tmp0.val[0], tmp0.val[1])), \
+                vqmovun_s16(vcombine_s16(tmp1.val[0], tmp1.val[1])), \
+            }
+}
+;
+vst2_u8(ptr, out);
+}
 
 #define stbir__simdf_load4_transposed(o0, o1, o2, o3, ptr) \
     {                                                      \
@@ -8081,56 +8082,55 @@ static float stbir__compute_weights[5][STBIR_RESIZE_CLASSIFICATIONS]
                                          // 3=4chan, 4=7chan
     {
         {
-         {1.00000f, 1.00000f, 0.31250f, 1.00000f},
-         {0.56250f, 0.59375f, 0.00000f, 0.96875f},
-         {1.00000f, 0.06250f, 0.00000f, 1.00000f},
-         {0.00000f, 0.09375f, 1.00000f, 1.00000f},
-         {1.00000f, 1.00000f, 1.00000f, 1.00000f},
-         {0.03125f, 0.12500f, 1.00000f, 1.00000f},
-         {0.06250f, 0.12500f, 0.00000f, 1.00000f},
-         {0.00000f, 1.00000f, 0.00000f, 0.03125f},
-         },
+            {1.00000f, 1.00000f, 0.31250f, 1.00000f},
+            {0.56250f, 0.59375f, 0.00000f, 0.96875f},
+            {1.00000f, 0.06250f, 0.00000f, 1.00000f},
+            {0.00000f, 0.09375f, 1.00000f, 1.00000f},
+            {1.00000f, 1.00000f, 1.00000f, 1.00000f},
+            {0.03125f, 0.12500f, 1.00000f, 1.00000f},
+            {0.06250f, 0.12500f, 0.00000f, 1.00000f},
+            {0.00000f, 1.00000f, 0.00000f, 0.03125f},
+        },
         {
-         {0.00000f, 0.84375f, 0.00000f, 0.03125f},
-         {0.09375f, 0.93750f, 0.00000f, 0.78125f},
-         {0.87500f, 0.21875f, 0.00000f, 0.96875f},
-         {0.09375f, 0.09375f, 1.00000f, 1.00000f},
-         {1.00000f, 1.00000f, 1.00000f, 1.00000f},
-         {0.03125f, 0.12500f, 1.00000f, 1.00000f},
-         {0.06250f, 0.12500f, 0.00000f, 1.00000f},
-         {0.00000f, 1.00000f, 0.00000f, 0.53125f},
-         },
+            {0.00000f, 0.84375f, 0.00000f, 0.03125f},
+            {0.09375f, 0.93750f, 0.00000f, 0.78125f},
+            {0.87500f, 0.21875f, 0.00000f, 0.96875f},
+            {0.09375f, 0.09375f, 1.00000f, 1.00000f},
+            {1.00000f, 1.00000f, 1.00000f, 1.00000f},
+            {0.03125f, 0.12500f, 1.00000f, 1.00000f},
+            {0.06250f, 0.12500f, 0.00000f, 1.00000f},
+            {0.00000f, 1.00000f, 0.00000f, 0.53125f},
+        },
         {
-         {0.00000f, 0.53125f, 0.00000f, 0.03125f},
-         {0.06250f, 0.96875f, 0.00000f, 0.53125f},
-         {0.87500f, 0.18750f, 0.00000f, 0.93750f},
-         {0.00000f, 0.09375f, 1.00000f, 1.00000f},
-         {1.00000f, 1.00000f, 1.00000f, 1.00000f},
-         {0.03125f, 0.12500f, 1.00000f, 1.00000f},
-         {0.06250f, 0.12500f, 0.00000f, 1.00000f},
-         {0.00000f, 1.00000f, 0.00000f, 0.56250f},
-         },
+            {0.00000f, 0.53125f, 0.00000f, 0.03125f},
+            {0.06250f, 0.96875f, 0.00000f, 0.53125f},
+            {0.87500f, 0.18750f, 0.00000f, 0.93750f},
+            {0.00000f, 0.09375f, 1.00000f, 1.00000f},
+            {1.00000f, 1.00000f, 1.00000f, 1.00000f},
+            {0.03125f, 0.12500f, 1.00000f, 1.00000f},
+            {0.06250f, 0.12500f, 0.00000f, 1.00000f},
+            {0.00000f, 1.00000f, 0.00000f, 0.56250f},
+        },
         {
-         {0.00000f, 0.50000f, 0.00000f, 0.71875f},
-         {0.06250f, 0.84375f, 0.00000f, 0.87500f},
-         {1.00000f, 0.50000f, 0.50000f, 0.96875f},
-         {1.00000f, 0.09375f, 0.31250f, 0.50000f},
-         {1.00000f, 1.00000f, 1.00000f, 1.00000f},
-         {1.00000f, 0.03125f, 0.03125f, 0.53125f},
-         {0.18750f, 0.12500f, 0.00000f, 1.00000f},
-         {0.00000f, 1.00000f, 0.03125f, 0.18750f},
-         },
+            {0.00000f, 0.50000f, 0.00000f, 0.71875f},
+            {0.06250f, 0.84375f, 0.00000f, 0.87500f},
+            {1.00000f, 0.50000f, 0.50000f, 0.96875f},
+            {1.00000f, 0.09375f, 0.31250f, 0.50000f},
+            {1.00000f, 1.00000f, 1.00000f, 1.00000f},
+            {1.00000f, 0.03125f, 0.03125f, 0.53125f},
+            {0.18750f, 0.12500f, 0.00000f, 1.00000f},
+            {0.00000f, 1.00000f, 0.03125f, 0.18750f},
+        },
         {
-         {0.00000f, 0.59375f, 0.00000f, 0.96875f},
-         {0.06250f, 0.81250f, 0.06250f, 0.59375f},
-         {0.75000f, 0.43750f, 0.12500f, 0.96875f},
-         {0.87500f, 0.06250f, 0.18750f, 0.43750f},
-         {1.00000f, 1.00000f, 1.00000f, 1.00000f},
-         {0.15625f, 0.12500f, 1.00000f, 1.00000f},
-         {0.06250f, 0.12500f, 0.00000f, 1.00000f},
-         {0.00000f, 1.00000f, 0.03125f, 0.34375f},
-         }
-};
+            {0.00000f, 0.59375f, 0.00000f, 0.96875f},
+            {0.06250f, 0.81250f, 0.06250f, 0.59375f},
+            {0.75000f, 0.43750f, 0.12500f, 0.96875f},
+            {0.87500f, 0.06250f, 0.18750f, 0.43750f},
+            {1.00000f, 1.00000f, 1.00000f, 1.00000f},
+            {0.15625f, 0.12500f, 1.00000f, 1.00000f},
+            {0.06250f, 0.12500f, 0.00000f, 1.00000f},
+            {0.00000f, 1.00000f, 0.03125f, 0.34375f},
+        }};
 
 // structure that allow us to query and override info for training the costs
 typedef struct STBIR__V_FIRST_INFO
@@ -8829,27 +8829,39 @@ static void stbir__update_info_from_resize(
         decode_alphas[STBIRI_AR - STBIRI_RGBA + 1]
                      [STBIR_TYPE_HALF_FLOAT - STBIR_TYPE_UINT8_SRGB + 1] = {
                          {/* RGBA */ stbir__decode_uint8_srgb4_linearalpha,
-                          stbir__decode_uint8_srgb,      0,
-                          stbir__decode_float_linear,      stbir__decode_half_float_linear     },
+                          stbir__decode_uint8_srgb,
+                          0,
+                          stbir__decode_float_linear,
+                          stbir__decode_half_float_linear},
                          {/* BGRA */ stbir__decode_uint8_srgb4_linearalpha_BGRA,
-                          stbir__decode_uint8_srgb_BGRA, 0,
-                          stbir__decode_float_linear_BGRA, stbir__decode_half_float_linear_BGRA},
+                          stbir__decode_uint8_srgb_BGRA,
+                          0,
+                          stbir__decode_float_linear_BGRA,
+                          stbir__decode_half_float_linear_BGRA},
                          {/* ARGB */ stbir__decode_uint8_srgb4_linearalpha_ARGB,
-                          stbir__decode_uint8_srgb_ARGB, 0,
-                          stbir__decode_float_linear_ARGB, stbir__decode_half_float_linear_ARGB},
+                          stbir__decode_uint8_srgb_ARGB,
+                          0,
+                          stbir__decode_float_linear_ARGB,
+                          stbir__decode_half_float_linear_ARGB},
                          {/* ABGR */ stbir__decode_uint8_srgb4_linearalpha_ABGR,
-                          stbir__decode_uint8_srgb_ABGR, 0,
-                          stbir__decode_float_linear_ABGR, stbir__decode_half_float_linear_ABGR},
+                          stbir__decode_uint8_srgb_ABGR,
+                          0,
+                          stbir__decode_float_linear_ABGR,
+                          stbir__decode_half_float_linear_ABGR},
                          {/* RA   */ stbir__decode_uint8_srgb2_linearalpha,
-                          stbir__decode_uint8_srgb,      0,
-                          stbir__decode_float_linear,      stbir__decode_half_float_linear     },
+                          stbir__decode_uint8_srgb,
+                          0,
+                          stbir__decode_float_linear,
+                          stbir__decode_half_float_linear},
                          {/* AR   */ stbir__decode_uint8_srgb2_linearalpha_AR,
-                          stbir__decode_uint8_srgb_AR,   0,
-                          stbir__decode_float_linear_AR,   stbir__decode_half_float_linear_AR  },
-    };
+                          stbir__decode_uint8_srgb_AR,
+                          0,
+                          stbir__decode_float_linear_AR,
+                          stbir__decode_half_float_linear_AR},
+                     };
 
     static stbir__decode_pixels_func* decode_simple_scaled_or_not[2][2] = {
-        {stbir__decode_uint8_linear_scaled,  stbir__decode_uint8_linear },
+        {stbir__decode_uint8_linear_scaled, stbir__decode_uint8_linear},
         {stbir__decode_uint16_linear_scaled, stbir__decode_uint16_linear},
     };
 
@@ -8862,17 +8874,17 @@ static void stbir__update_info_from_resize(
                  stbir__decode_uint8_linear_scaled_BGRA,
                  stbir__decode_uint8_linear_BGRA},
              {stbir__decode_uint16_linear_scaled_BGRA,
-              stbir__decode_uint16_linear_BGRA}                               },
+              stbir__decode_uint16_linear_BGRA}},
             {/* ARGB */ {
                  stbir__decode_uint8_linear_scaled_ARGB,
                  stbir__decode_uint8_linear_ARGB},
              {stbir__decode_uint16_linear_scaled_ARGB,
-              stbir__decode_uint16_linear_ARGB}                               },
+              stbir__decode_uint16_linear_ARGB}},
             {/* ABGR */ {
                  stbir__decode_uint8_linear_scaled_ABGR,
                  stbir__decode_uint8_linear_ABGR},
              {stbir__decode_uint16_linear_scaled_ABGR,
-              stbir__decode_uint16_linear_ABGR}                               },
+              stbir__decode_uint16_linear_ABGR}},
             {/* RA   */ {
                  stbir__decode_uint8_linear_scaled, stbir__decode_uint8_linear},
              {stbir__decode_uint16_linear_scaled, stbir__decode_uint16_linear}},
@@ -8880,8 +8892,7 @@ static void stbir__update_info_from_resize(
                  stbir__decode_uint8_linear_scaled_AR,
                  stbir__decode_uint8_linear_AR},
              {stbir__decode_uint16_linear_scaled_AR,
-              stbir__decode_uint16_linear_AR}                                 }
-    };
+              stbir__decode_uint16_linear_AR}}};
 
     static stbir__encode_pixels_func*
         encode_simple[STBIR_TYPE_HALF_FLOAT - STBIR_TYPE_UINT8_SRGB + 1] = {
@@ -8896,27 +8907,38 @@ static void stbir__update_info_from_resize(
         encode_alphas[STBIRI_AR - STBIRI_RGBA + 1]
                      [STBIR_TYPE_HALF_FLOAT - STBIR_TYPE_UINT8_SRGB + 1] = {
                          {/* RGBA */ stbir__encode_uint8_srgb4_linearalpha,
-                          stbir__encode_uint8_srgb,      0,
-                          stbir__encode_float_linear,      stbir__encode_half_float_linear     },
+                          stbir__encode_uint8_srgb,
+                          0,
+                          stbir__encode_float_linear,
+                          stbir__encode_half_float_linear},
                          {/* BGRA */ stbir__encode_uint8_srgb4_linearalpha_BGRA,
-                          stbir__encode_uint8_srgb_BGRA, 0,
-                          stbir__encode_float_linear_BGRA, stbir__encode_half_float_linear_BGRA},
+                          stbir__encode_uint8_srgb_BGRA,
+                          0,
+                          stbir__encode_float_linear_BGRA,
+                          stbir__encode_half_float_linear_BGRA},
                          {/* ARGB */ stbir__encode_uint8_srgb4_linearalpha_ARGB,
-                          stbir__encode_uint8_srgb_ARGB, 0,
-                          stbir__encode_float_linear_ARGB, stbir__encode_half_float_linear_ARGB},
+                          stbir__encode_uint8_srgb_ARGB,
+                          0,
+                          stbir__encode_float_linear_ARGB,
+                          stbir__encode_half_float_linear_ARGB},
                          {/* ABGR */ stbir__encode_uint8_srgb4_linearalpha_ABGR,
-                          stbir__encode_uint8_srgb_ABGR, 0,
-                          stbir__encode_float_linear_ABGR, stbir__encode_half_float_linear_ABGR},
+                          stbir__encode_uint8_srgb_ABGR,
+                          0,
+                          stbir__encode_float_linear_ABGR,
+                          stbir__encode_half_float_linear_ABGR},
                          {/* RA   */ stbir__encode_uint8_srgb2_linearalpha,
-                          stbir__encode_uint8_srgb,      0,
-                          stbir__encode_float_linear,      stbir__encode_half_float_linear     },
+                          stbir__encode_uint8_srgb,
+                          0,
+                          stbir__encode_float_linear,
+                          stbir__encode_half_float_linear},
                          {/* AR   */ stbir__encode_uint8_srgb2_linearalpha_AR,
-                          stbir__encode_uint8_srgb_AR,   0,
-                          stbir__encode_float_linear_AR,   stbir__encode_half_float_linear_AR  }
-    };
+                          stbir__encode_uint8_srgb_AR,
+                          0,
+                          stbir__encode_float_linear_AR,
+                          stbir__encode_half_float_linear_AR}};
 
     static stbir__encode_pixels_func* encode_simple_scaled_or_not[2][2] = {
-        {stbir__encode_uint8_linear_scaled,  stbir__encode_uint8_linear },
+        {stbir__encode_uint8_linear_scaled, stbir__encode_uint8_linear},
         {stbir__encode_uint16_linear_scaled, stbir__encode_uint16_linear},
     };
 
@@ -8929,17 +8951,17 @@ static void stbir__update_info_from_resize(
                  stbir__encode_uint8_linear_scaled_BGRA,
                  stbir__encode_uint8_linear_BGRA},
              {stbir__encode_uint16_linear_scaled_BGRA,
-              stbir__encode_uint16_linear_BGRA}                               },
+              stbir__encode_uint16_linear_BGRA}},
             {/* ARGB */ {
                  stbir__encode_uint8_linear_scaled_ARGB,
                  stbir__encode_uint8_linear_ARGB},
              {stbir__encode_uint16_linear_scaled_ARGB,
-              stbir__encode_uint16_linear_ARGB}                               },
+              stbir__encode_uint16_linear_ARGB}},
             {/* ABGR */ {
                  stbir__encode_uint8_linear_scaled_ABGR,
                  stbir__encode_uint8_linear_ABGR},
              {stbir__encode_uint16_linear_scaled_ABGR,
-              stbir__encode_uint16_linear_ABGR}                               },
+              stbir__encode_uint16_linear_ABGR}},
             {/* RA   */ {
                  stbir__encode_uint8_linear_scaled, stbir__encode_uint8_linear},
              {stbir__encode_uint16_linear_scaled, stbir__encode_uint16_linear}},
@@ -8947,8 +8969,7 @@ static void stbir__update_info_from_resize(
                  stbir__encode_uint8_linear_scaled_AR,
                  stbir__encode_uint8_linear_AR},
              {stbir__encode_uint16_linear_scaled_AR,
-              stbir__encode_uint16_linear_AR}                                 }
-    };
+              stbir__encode_uint16_linear_AR}}};
 
     stbir__decode_pixels_func* decode_pixels = 0;
     stbir__encode_pixels_func* encode_pixels = 0;

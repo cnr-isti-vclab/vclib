@@ -707,7 +707,7 @@ struct functor_traits<scalar_absolute_difference_op<LhsScalar, RhsScalar>>
 };
 
 //---------- binary functors bound to a constant, thus appearing as a unary
-//functor ----------
+// functor ----------
 
 // The following two classes permits to turn any binary functor into a unary one
 // with one argument bound to a constant value. They are analogues to

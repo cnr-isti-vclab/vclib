@@ -157,7 +157,7 @@ vec_mergeh((Packet4ui)p16uc_PSET32_WODD, (Packet4ui)p16uc_PSET32_WEVEN);     //{
 static Packet16uc p16uc_PSET64_LO = (Packet16uc) vec_mergel(
     (Packet4ui) p16uc_PSET32_WODD,
     (Packet4ui) p16uc_PSET32_WEVEN); //{ 8,9,10,11, 12,13,14,15, 8,9,10,11,
-                                     //12,13,14,15 };
+                                     // 12,13,14,15 };
 /*static Packet16uc p16uc_TRANSPOSE64_HI = vec_add(p16uc_PSET64_HI,
 p16uc_HALF64_0_16);                                         //{ 0,1,2,3,
 4,5,6,7, 16,17,18,19, 20,21,22,23}; static Packet16uc p16uc_TRANSPOSE64_LO =

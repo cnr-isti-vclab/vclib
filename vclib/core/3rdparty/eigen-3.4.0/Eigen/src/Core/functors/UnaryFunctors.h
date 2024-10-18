@@ -990,11 +990,10 @@ struct functor_traits<scalar_tanh_op<Scalar>>
                   6 * NumTraits<Scalar>::MulCost +
                   scalar_div_cost<Scalar, packet_traits<Scalar>::HasDiv>::value)
 #else
-                  ?
-                  (11 * NumTraits<Scalar>::AddCost +
-                   11 * NumTraits<Scalar>::MulCost +
-                   scalar_div_cost<Scalar, packet_traits<Scalar>::HasDiv>::
-                       value)
+                 ?
+                 (11 * NumTraits<Scalar>::AddCost +
+                  11 * NumTraits<Scalar>::MulCost +
+                  scalar_div_cost<Scalar, packet_traits<Scalar>::HasDiv>::value)
 #endif
                  // This number assumes a naive implementation of tanh
                  :

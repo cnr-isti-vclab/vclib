@@ -295,13 +295,13 @@ protected:
                         1; // Maximum weighted matching algorithm is
                            // switched-off (default for symmetric). Try
                            // m_iparm[12] = 1 in case of inappropriate accuracy
-        m_iparm[13] = 0;  // Output: Number of perturbed pivots
-        m_iparm[14] = 0;  // Not in use
-        m_iparm[15] = 0;  // Not in use
-        m_iparm[16] = 0;  // Not in use
-        m_iparm[17] = -1; // Output: Number of nonzeros in the factor LU
-        m_iparm[18] = -1; // Output: Mflops for LU factorization
-        m_iparm[19] = 0;  // Output: Numbers of CG Iterations
+        m_iparm[13] = 0;   // Output: Number of perturbed pivots
+        m_iparm[14] = 0;   // Not in use
+        m_iparm[15] = 0;   // Not in use
+        m_iparm[16] = 0;   // Not in use
+        m_iparm[17] = -1;  // Output: Number of nonzeros in the factor LU
+        m_iparm[18] = -1;  // Output: Mflops for LU factorization
+        m_iparm[19] = 0;   // Output: Numbers of CG Iterations
 
         m_iparm[20] = 0; // 1x1 pivoting
         m_iparm[26] = 0; // No matrix checker

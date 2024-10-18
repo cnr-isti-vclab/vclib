@@ -79,8 +79,8 @@ template<typename IndexVector, typename ScalarVector>
 struct LU_GlobalLU_t
 {
     typedef typename IndexVector::Scalar StorageIndex;
-    IndexVector xsup; // First supernode column ... xsup(s) points to the
-                      // beginning of the s-th supernode
+    IndexVector xsup;   // First supernode column ... xsup(s) points to the
+                        // beginning of the s-th supernode
     IndexVector supno;  // Supernode number corresponding to this column (column
                         // to supernode mapping)
     ScalarVector lusup; // nonzero values of L ordered by columns

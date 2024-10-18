@@ -1485,7 +1485,7 @@ public:
         // should be the one
         //_Vectorizable = bool(int(MatrixFlags)&PacketAccessBit) &&
         //((!_PacketOnDiag) || (_SameTypes &&
-        //bool(int(DiagFlags)&PacketAccessBit))),
+        // bool(int(DiagFlags)&PacketAccessBit))),
         _Vectorizable =
             bool(int(MatrixFlags) & PacketAccessBit) && _SameTypes &&
             (_SameStorageOrder ||

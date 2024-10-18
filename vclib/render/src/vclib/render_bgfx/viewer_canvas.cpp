@@ -33,7 +33,8 @@ ViewerCanvas::ViewerCanvas(
     uint  width,
     uint  height,
     void* displayId) :
-        Canvas(winId, width, height, displayId), ViewerI(width, height)
+        Canvas(winId, width, height, displayId),
+        ViewerI(width, height)
 {
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());
