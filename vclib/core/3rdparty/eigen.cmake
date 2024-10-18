@@ -22,13 +22,6 @@
 
 find_package(Eigen3 QUIET)
 
-# TODO: Eigen 3.4.0 has been patched to fix a build error with GCC 13.2 of Ubuntu 24.04
-#       Remove this patch when next version of Eigen is released
-
-# Patched files:
-#  - Eigen/src/Core/util/Meta.h
-#  - Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h
-
 set(VCLIB_EIGEN_DIR ${CMAKE_CURRENT_LIST_DIR}/eigen-3.4.0)
 
 if(VCLIB_ALLOW_SYSTEM_EIGEN AND TARGET Eigen3::Eigen)

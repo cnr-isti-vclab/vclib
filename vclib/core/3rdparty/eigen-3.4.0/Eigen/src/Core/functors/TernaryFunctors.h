@@ -16,6 +16,8 @@ namespace internal {
 
 //---------- associative ternary functors ----------
 
+
+
 } // end namespace internal
 
 } // end namespace Eigen

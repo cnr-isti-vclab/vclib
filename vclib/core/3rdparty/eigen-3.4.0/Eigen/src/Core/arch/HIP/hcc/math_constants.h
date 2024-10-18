@@ -1,5 +1,5 @@
 /*
- * math_constants.h -
+ * math_constants.h - 
  *  HIP equivalent of the CUDA header of the same name
  */
 
@@ -17,7 +17,7 @@
 #define HIPRT_ONE_F        1.0f
 
 /* double precision constants */
-#define HIPRT_INF __hiloint2double(0x7ff00000, 0x00000000)
-#define HIPRT_NAN __hiloint2double(0xfff80000, 0x00000000)
+#define HIPRT_INF          __hiloint2double(0x7ff00000, 0x00000000)
+#define HIPRT_NAN          __hiloint2double(0xfff80000, 0x00000000)
 
 #endif
