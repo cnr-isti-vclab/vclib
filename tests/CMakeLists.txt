@@ -30,15 +30,20 @@ option(VCLIB_ALLOW_SYSTEM_CATCH2 "Allow use of system-provided Catch2" ON)
 option(VCLIB_CORE_BUILD_TESTS
     "If true, the tests of VCLib-core will be built." ON)
 
+option(VCLIB_EXTERNAL_BUILD_TESTS
+    "If true, the tests of VCLib-external will be built." ON)
+
 set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
 
 ### Catch2
 include(catch2.cmake)
 
 # examples
-add_subdirectory(core)
+if (VCLIB_CORE_BUILD_TESTS)
+    add_subdirectory(core)
+endif()
 
-if (VCLIB_BUILD_MODULE_EXTERNAL)
+if (VCLIB_BUILD_MODULE_EXTERNAL AND VCLIB_EXTERNAL_BUILD_TESTS)
     add_subdirectory(external)
 endif()
 
