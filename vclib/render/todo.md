@@ -4,6 +4,7 @@
     - [ ] qt headers and sources should be moved into vclib/processing/qt inside this module,
       and should be included only if vclib-processing target is available
     - [x] Manage polygonal meshes by DrawableMesh
+    - [ ] Fix build failure when the build directory is in the same directory as the source
 - BGFX
   - [x] Library shaders should be built as headers
   - [ ] Check why OpenGL backend does not work
