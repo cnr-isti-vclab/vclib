@@ -26,6 +26,7 @@
 #include <iostream>
 
 #ifdef _WIN32
+#include <tchar.h>
 #include <windows.h>
 #elif __linux__
 #ifdef VCLIB_RENDER_WITH_WAYLAND
@@ -56,13 +57,13 @@ void* createWindow(
     WNDCLASS wc      = {};
     wc.lpfnWndProc   = DefWindowProc;
     wc.hInstance     = GetModuleHandle(NULL);
-    wc.lpszClassName = L"MyWindowClass";
+    wc.lpszClassName = _T("MyWindowClass");
 
     RegisterClass(&wc);
 
     HWND hWnd = CreateWindowEx(
         0,
-        L"MyWindowClass",
+        _T("MyWindowClass"),
         ptr,
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
