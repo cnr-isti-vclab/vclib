@@ -23,3 +23,4 @@
   - [ ] Draw lines trough shader - Work in progress
   - [ ] check retina resolution on macOS + GLFW
   - [ ] start integration of ImGUI along GLFW
+  - [ ] fix trackball bug on Qt implementation (pan after wheel zoom)
