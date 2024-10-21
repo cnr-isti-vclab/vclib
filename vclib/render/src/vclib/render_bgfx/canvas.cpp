@@ -118,6 +118,20 @@ void Canvas::appendTransientText(
     mTextView.appendTransientText(pos, text, color);
 }
 
+void Canvas::onKeyPress(Key::Enum key)
+{
+    if (key == Key::F1) {
+        if (mStatsEnabled) {
+            mStatsEnabled = false;
+            bgfx::setDebug(BGFX_DEBUG_NONE);
+        }
+        else {
+            mStatsEnabled = true;
+            bgfx::setDebug(BGFX_DEBUG_STATS);
+        }
+    }
+}
+
 void Canvas::onResize(uint width, uint height)
 {
     if (bgfx::isValid(mFbh))
@@ -166,7 +180,6 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     }
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::reset(width, height, BGFX_RESET_VSYNC);
-    // bgfx::setDebug(BGFX_DEBUG_STATS);
     bgfx::touch(view);
     return fbh;
 }

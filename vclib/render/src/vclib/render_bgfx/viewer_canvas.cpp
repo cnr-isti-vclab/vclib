@@ -88,6 +88,7 @@ void ViewerCanvas::onResize(unsigned int width, unsigned int height)
 void ViewerCanvas::onKeyPress(Key::Enum key)
 {
     ViewerI::onKeyPress(key);
+    Canvas::onKeyPress(key);
 
     if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT]) {
         setDirectionalLightVisibility(true);

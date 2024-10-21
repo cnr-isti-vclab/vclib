@@ -68,6 +68,9 @@ class Canvas : public virtual vcl::EventManagerI
 
     TextView mTextView;
 
+    // flags
+    bool mStatsEnabled = false;
+
 public:
     Canvas(void* winId, uint width, uint height, void* displayId = nullptr);
 
@@ -98,6 +101,8 @@ public:
         const Point2f&     pos,
         const std::string& text,
         const Color&       color = Color::Black);
+
+    void onKeyPress(Key::Enum key) override;
 
 protected:
     virtual void draw() = 0;
