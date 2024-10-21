@@ -36,7 +36,7 @@ namespace vcl {
 
 class DrawableTrackBall : public DrawableObjectI, protected TrackballRenderData
 {
-    bool mVisible = false;
+    bool mVisible = true;
 
     bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle  mEdgeIndexBH   = BGFX_INVALID_HANDLE;
