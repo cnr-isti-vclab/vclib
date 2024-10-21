@@ -24,6 +24,8 @@ cmake_minimum_required(VERSION 3.24)
 
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     add_subdirectory(bgfx)
-endif()
 
-add_subdirectory(none)
+    if (TARGET vclib-3rd-glfw)
+        add_subdirectory(bgfx-glfw)
+    endif()
+endif()

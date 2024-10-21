@@ -34,13 +34,18 @@ namespace vcl {
 class ViewerCanvas : public vcl::Canvas, public ViewerI
 {
 public:
-    ViewerCanvas(void* winId, uint width = 1024, uint height = 768);
+    ViewerCanvas(
+        void* winId,
+        uint  width     = 1024,
+        uint  height    = 768,
+        void* displayId = nullptr);
 
     ViewerCanvas(
         void*                                        winId,
         const std::shared_ptr<DrawableObjectVector>& v,
         uint                                         width  = 1024,
-        uint                                         height = 768);
+        uint                                         height = 768,
+        void*                                        displayId = nullptr);
 
     void init(uint width, uint height);
 

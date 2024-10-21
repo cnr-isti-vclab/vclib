@@ -24,7 +24,7 @@
 
 namespace vcl {
 
-Canvas::Canvas(void* winId, uint width, uint height)
+Canvas::Canvas(void*, uint width, uint height, void*)
 {
     init(width, height);
 }
