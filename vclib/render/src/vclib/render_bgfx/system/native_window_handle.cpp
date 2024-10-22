@@ -30,7 +30,6 @@
 #define VCLIB_DEF_UNICODE
 #define UNICODE
 #endif
-#include <tchar.h>
 #include <windows.h>
 #ifdef VCLIB_DEF_UNICODE
 #undef UNICODE
@@ -65,13 +64,13 @@ void* createWindow(
     WNDCLASS wc      = {};
     wc.lpfnWndProc   = DefWindowProc;
     wc.hInstance     = GetModuleHandle(NULL);
-    wc.lpszClassName = _T("MyWindowClass");
+    wc.lpszClassName = L"MyWindowClass";
 
     RegisterClass(&wc);
 
     HWND hWnd = CreateWindowEx(
         0,
-        _T("MyWindowClass"),
+        L"MyWindowClass",
         ptr,
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
