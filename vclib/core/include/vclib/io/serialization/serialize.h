@@ -23,6 +23,7 @@
 #ifndef VCL_IO_SERIALIZATION_SERIALIZE_H
 #define VCL_IO_SERIALIZATION_SERIALIZE_H
 
+#include <array>
 #include <bit>
 #include <ostream>
 #include <vector>
