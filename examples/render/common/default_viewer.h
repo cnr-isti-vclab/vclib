@@ -34,7 +34,7 @@
 #include <vclib/render/drawable/drawable_mesh.h>
 #elif VCLIB_RENDER_EXAMPLES_WITH_GLFW
 #include <vclib/glfw/viewer_window.h>
-#include <vclib/render/drawable_mesh.h>
+#include <vclib/render/drawable/drawable_mesh.h>
 #endif
 
 template<vcl::MeshConcept... MeshTypes>
