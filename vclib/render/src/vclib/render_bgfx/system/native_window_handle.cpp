@@ -26,8 +26,16 @@
 #include <iostream>
 
 #ifdef _WIN32
+#ifndef UNICODE
+#define VCLIB_DEF_UNICODE
+#define UNICODE
+#endif
 #include <tchar.h>
 #include <windows.h>
+#ifdef VCLIB_DEF_UNICODE
+#undef UNICODE
+#undef VCLIB_DEF_UNICODE
+#endif
 #elif __linux__
 #ifdef VCLIB_RENDER_WITH_WAYLAND
 #include <wayland-client.h>
@@ -52,7 +60,7 @@ void* createWindow(
     wchar_t wtext[256];
     size_t  sz;
     mbstowcs_s(&sz, wtext, title, strlen(title) + 1); // Plus null
-    LPWSTR ptr = wtext;
+    LPCWSTR ptr = wtext;
 
     WNDCLASS wc      = {};
     wc.lpfnWndProc   = DefWindowProc;
