@@ -50,7 +50,11 @@ endif()
 add_subdirectory(999-misc)
 
 if (CAN_BUILD_VCLIB_EXAMPLES)
-    # the following examples are the same of the ones in the vclib library,
+    # the following examples are the same of the ones in the core module,
     # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(vclib)
+    add_subdirectory(9015-mesh-io-stl)
+    add_subdirectory(9018-mesh-principal-curvature)
+    add_subdirectory(9019-mesh-sampling)
+    add_subdirectory(9021-mesh-sphere-intersection)
+    add_subdirectory(9026-crease-edges-mesh)
 endif()
