@@ -43,8 +43,8 @@ public:
     ViewerCanvas(
         void*                                        winId,
         const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width  = 1024,
-        uint                                         height = 768,
+        uint                                         width     = 1024,
+        uint                                         height    = 768,
         void*                                        displayId = nullptr);
 
     void init(uint width, uint height);
