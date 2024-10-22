@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     vcl::setPerFaceColor(m, vcl::Color::LightBlue);
 
     for (const vcl::TriMesh::Vertex& v : samples.vertices()) {
-        m.face(v.customComponent<uint>("birthFace")).color() =
+        m.face(v.customComponent<vcl::uint>("birthFace")).color() =
             vcl::Color::LightRed;
     }
 
