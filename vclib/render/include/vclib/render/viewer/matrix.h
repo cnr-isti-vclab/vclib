@@ -39,14 +39,17 @@ void projectionMatrixXYWH(
     Scalar     y,
     Scalar     width,
     Scalar     height,
-    Scalar     near,
-    Scalar     far,
+    Scalar     nearPlane,
+    Scalar     farPlane,
     bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
-    Scalar diff = far - near;
-    Scalar a    = homogeneousNDC ? (far + near) / diff : far / diff;
-    Scalar b    = homogeneousNDC ? (2.0 * far * near) / diff : near * a;
+    // note: don't use 'near' and 'far' variable names, as they are already
+    // defined in windows.h headers
+    Scalar diff = farPlane - nearPlane;
+    Scalar a = homogeneousNDC ? (farPlane + nearPlane) / diff : farPlane / diff;
+    Scalar b =
+        homogeneousNDC ? (2.0 * farPlane * nearPlane) / diff : nearPlane * a;
 
     std::fill(res, res + 16, 0);
 
@@ -198,8 +201,8 @@ void projectionMatrix(
     auto*      res,
     Scalar     fov,
     Scalar     aspect,
-    Scalar     near,
-    Scalar     far,
+    Scalar     nearPlane,
+    Scalar     farPlane,
     bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
@@ -211,8 +214,8 @@ void projectionMatrix(
         (Scalar) 0,
         w,
         h,
-        near,
-        far,
+        nearPlane,
+        farPlane,
         homogeneousNDC,
         handedness);
 }
@@ -221,14 +224,20 @@ template<MatrixConcept Matrix44, typename Scalar>
 Matrix44 projectionMatrix(
     Scalar     fov,
     Scalar     aspect,
-    Scalar     near,
-    Scalar     far,
+    Scalar     nearPlane,
+    Scalar     farPlane,
     bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
     Matrix44 res(4, 4);
     projectionMatrix(
-        res.data(), fov, aspect, near, far, homogeneousNDC, handedness);
+        res.data(),
+        fov,
+        aspect,
+        nearPlane,
+        farPlane,
+        homogeneousNDC,
+        handedness);
     return res;
 }
 
@@ -237,26 +246,33 @@ void projectionMatrixLeftHanded(
     auto*  res,
     Scalar fov,
     Scalar aspect,
-    Scalar near,
-    Scalar far,
+    Scalar nearPlane,
+    Scalar farPlane,
     bool   homogeneousNDC)
 {
     Scalar h = 1.0 / std::tan(vcl::toRad(fov) * 0.5);
     Scalar w = h * 1.0 / aspect;
-    projectionMatrix(res, fov, aspect, near, far, homogeneousNDC, LEFT_HAND);
+    projectionMatrix(
+        res, fov, aspect, nearPlane, farPlane, homogeneousNDC, LEFT_HAND);
 }
 
 template<MatrixConcept Matrix44, typename Scalar>
 Matrix44 projectionMatrixLeftHanded(
     Scalar fov,
     Scalar aspect,
-    Scalar near,
-    Scalar far,
+    Scalar nearPlane,
+    Scalar farPlane,
     bool   homogeneousNDC)
 {
     Matrix44 res(4, 4);
     projectionMatrix(
-        res.data(), fov, aspect, near, far, homogeneousNDC, LEFT_HAND);
+        res.data(),
+        fov,
+        aspect,
+        nearPlane,
+        farPlane,
+        homogeneousNDC,
+        LEFT_HAND);
     return res;
 }
 
@@ -267,14 +283,18 @@ void orthoProjectionMatrix(
     Scalar     right,
     Scalar     top,
     Scalar     bottom,
-    Scalar     near,
-    Scalar     far,
+    Scalar     nearPlane,
+    Scalar     farPlane,
     bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
-    Scalar c = homogeneousNDC ? 2.0 / (far - near) : 1.0 / (far - near);
-    Scalar f =
-        homogeneousNDC ? (far + near) / (near - far) : near / (near - far);
+    // note: don't use 'near' and 'far' variable names, as they are already
+    // defined in windows.h headers
+    Scalar c = homogeneousNDC ? 2.0 / (farPlane - nearPlane) :
+                                1.0 / (farPlane - nearPlane);
+    Scalar f = homogeneousNDC ?
+                   (farPlane + nearPlane) / (nearPlane - farPlane) :
+                   nearPlane / (nearPlane - farPlane);
 
     std::fill(res, res + 16, 0);
     res[0]  = 2.0 / (right - left);
@@ -292,8 +312,8 @@ Matrix44 orthoProjectionMatrix(
     Scalar     right,
     Scalar     top,
     Scalar     bottom,
-    Scalar     near,
-    Scalar     far,
+    Scalar     nearPlane,
+    Scalar     farPlane,
     bool       homogeneousNDC,
     Handedness handedness = RIGHT_HAND)
 {
@@ -304,8 +324,8 @@ Matrix44 orthoProjectionMatrix(
         right,
         top,
         bottom,
-        near,
-        far,
+        nearPlane,
+        farPlane,
         homogeneousNDC,
         handedness);
     return res;
