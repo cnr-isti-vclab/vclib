@@ -1,26 +1,33 @@
-name: Core - Build and run Tests
+name: Render - Build and run Tests
 
 on:
   [push, pull_request]
 
 jobs:
-  core_build_and_run_tests:
-    name: Core - Build and run Tests
+  render_build_and_run_tests:
+    name: Render - Build and run Tests
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: ['ubuntu-22.04', 'ubuntu-24.04', 'macos-13', 'macos-latest', 'windows-latest']
+        render_backend: ['bgfx', 'opengl2']
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        cache: 'true'
+        version: '6.6.*'
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: |
         sudo apt-get install cmake ninja-build libtbb-dev catch2
+        sudo apt-get install freeglut3-dev libgl1-mesa-dev libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev
     - name: Install dependencies
       if: runner.os == 'macOS'
       shell: bash
@@ -33,7 +40,7 @@ jobs:
     - name: Ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: core-${{ matrix.os }}-${{ github.ref }}
+        key: render-${{ matrix.os }}-${{matrix.render_backend}}-${{ github.ref }}
     - name: Build
       shell: bash
       run: |
@@ -42,11 +49,14 @@ jobs:
         cmake -GNinja \
           -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
           -DCMAKE_BUILD_TYPE=Release \
+          -DVCLIB_BUILD_MODULE_RENDER=ON \
+          -DVCLIB_RENDER_BACKEND=${{ matrix.render_backend }} \
+          -DVCLIB_CORE_BUILD_EXAMPLES=OFF -DVCLIB_CORE_BUILD_TESTS=OFF \
           ..
         ninja
-    - name: Run Tests
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        cd build
-        ctest --verbose
+    # - name: Run Tests
+    #   if: runner.os != 'Windows'
+    #   shell: bash
+    #   run: |
+    #     cd build
+    #     ctest --verbose
