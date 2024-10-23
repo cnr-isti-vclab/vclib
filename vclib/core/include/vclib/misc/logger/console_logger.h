@@ -58,11 +58,11 @@ protected:
     std::ostream* levelStream(LogLevel lvl) override
     {
         switch (lvl) {
-        case ERROR: return &mErrStream;
-        case WARNING: return &mWarnStream;
-        case MESSAGE: return &mMsgStream;
-        case PROGRESS: return &mProgStream;
-        case DEBUG: return &mDebugStream;
+        case ERROR_LOG: return &mErrStream;
+        case WARNING_LOG: return &mWarnStream;
+        case MESSAGE_LOG: return &mMsgStream;
+        case PROGRESS_LOG: return &mProgStream;
+        case DEBUG_LOG: return &mDebugStream;
         }
         return nullptr;
     }

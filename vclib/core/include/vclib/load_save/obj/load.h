@@ -509,7 +509,7 @@ void loadObj(
                 }
                 catch (vcl::CannotOpenFileException) {
                     log.log(
-                        LogType::WARNING,
+                        LogType::WARNING_LOG,
                         "Cannot open material file " + mtlfile);
                 }
             }
@@ -522,7 +522,7 @@ void loadObj(
                 }
                 else { // material not found - warning
                     log.log(
-                        LogType::WARNING,
+                        LogType::WARNING_LOG,
                         "Material " + matname + " not found.");
                 }
             }
@@ -616,7 +616,7 @@ void loadObj(
                     texture.image().load(m.meshBasePath() + texture.path());
                 if (!b) {
                     log.log(
-                        LogType::WARNING,
+                        LogType::WARNING_LOG,
                         "Cannot load texture " + texture.path());
                 }
             }

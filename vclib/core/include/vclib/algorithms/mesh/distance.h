@@ -104,7 +104,7 @@ HausdorffDistResult hausdorffDist(
     if (ns != s.size()) {
         log.log(
             100,
-            LogType::WARNING,
+            LogType::WARNING_LOG,
             std::to_string(s.size() - ns) +
                 " samples were not counted because no closest vertex/face "
                 "was found.");

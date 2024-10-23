@@ -38,7 +38,15 @@ namespace vcl {
 class AbstractLogger
 {
 public:
-    enum LogLevel { ERROR = 0, WARNING, MESSAGE, PROGRESS, DEBUG };
+    // note: these constants have the _LOG suffix to avoid conflicts with some
+    // macros defined in windows.h headers
+    enum LogLevel {
+        ERROR_LOG = 0,
+        WARNING_LOG,
+        MESSAGE_LOG,
+        PROGRESS_LOG,
+        DEBUG_LOG
+    };
 
     AbstractLogger() = default;
 

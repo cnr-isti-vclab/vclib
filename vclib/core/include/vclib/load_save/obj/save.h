@@ -133,7 +133,7 @@ void writeElementObjMaterial(
                         t.image().save(m.meshBasePath() + mat.map_Kd);
                     }
                     catch (const std::runtime_error& e) {
-                        log.log(LogType::WARNING, e.what());
+                        log.log(LogType::WARNING_LOG, e.what());
                     }
                 }
             }

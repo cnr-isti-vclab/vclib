@@ -88,14 +88,14 @@ void MeshProcessingMainWindow::openMesh()
             logger().stopTimer();
             tTime += logger().getTime();
             logger().log(
-                TextEditLogger::MESSAGE,
+                TextEditLogger::MESSAGE_LOG,
                 pfn + " loaded in " + std::to_string(logger().getTime()) +
                     " seconds.");
             mMeshVector->pushBack(makeMeshDrawable(mesh));
         }
 
         logger().log(
-            TextEditLogger::MESSAGE,
+            TextEditLogger::MESSAGE_LOG,
             "All meshes loaded in " + std::to_string(tTime) + " seconds.");
 
         mUI->meshViewer->updateGUI();
@@ -140,7 +140,7 @@ void MeshProcessingMainWindow::saveMeshAs()
                 filename, *m, params, logger());
             logger().stopTimer();
             logger().log(
-                TextEditLogger::MESSAGE,
+                TextEditLogger::MESSAGE_LOG,
                 pfn + " saved in " + std::to_string(logger().getTime()) +
                     " seconds.");
         }
@@ -190,7 +190,7 @@ void MeshProcessingMainWindow::applyFilter(
     logger().stopTimer();
 
     logger().log(
-        TextEditLogger::MESSAGE,
+        TextEditLogger::MESSAGE_LOG,
         action->name() + " applied in " + std::to_string(logger().getTime()) +
             " seconds.");
 

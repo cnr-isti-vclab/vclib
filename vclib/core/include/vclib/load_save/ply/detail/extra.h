@@ -55,7 +55,7 @@ void readPlyTextures(
             if (settings.loadTextureImages) {
                 bool b = t.image().load(mesh.meshBasePath() + str);
                 if (!b) {
-                    log.log(LogType::WARNING, "Cannot load texture " + str);
+                    log.log(LogType::WARNING_LOG, "Cannot load texture " + str);
                 }
             }
             mesh.pushTexture(t);
@@ -83,7 +83,7 @@ void writePlyTextures(
                     t.image().save(mesh.meshBasePath() + t.path());
                 }
                 catch (const std::runtime_error& e) {
-                    log.log(LogType::WARNING, e.what());
+                    log.log(LogType::WARNING_LOG, e.what());
                 }
             }
         }

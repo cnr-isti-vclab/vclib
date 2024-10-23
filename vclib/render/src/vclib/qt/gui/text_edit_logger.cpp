@@ -47,7 +47,7 @@ TextEditLogger::TextEditLogger(QWidget* parent) :
 
     disablePrintPercentage();
     disablePrintMessageDuringProgress();
-    setPrintLevel(LogLevel::MESSAGE);
+    setPrintLevel(LogLevel::MESSAGE_LOG);
 }
 
 void TextEditLogger::enableDebugLogging(bool enable)
@@ -70,11 +70,11 @@ void TextEditLogger::setPercentage(uint newPerc)
 QTextStream* TextEditLogger::levelStream(LogLevel lvl)
 {
     switch (lvl) {
-    case LogLevel::DEBUG: return mDebugStream;
-    case LogLevel::ERROR: return mErrorStream;
-    case LogLevel::MESSAGE:
-    case LogLevel::PROGRESS: return mMsgStream;
-    case LogLevel::WARNING: return mWarningStream;
+    case LogLevel::DEBUG_LOG: return mDebugStream;
+    case LogLevel::ERROR_LOG: return mErrorStream;
+    case LogLevel::MESSAGE_LOG:
+    case LogLevel::PROGRESS_LOG: return mMsgStream;
+    case LogLevel::WARNING_LOG: return mWarningStream;
     default: return mMsgStream;
     }
 }

@@ -38,7 +38,7 @@ namespace vcl {
 template<typename Stream>
 class Logger : public AbstractLogger
 {
-    enum InternalLogLevel { START = DEBUG + 1, END };
+    enum InternalLogLevel { START = DEBUG_LOG + 1, END };
 
     static const uint TIMER_MAX_CHAR_NUMBER = 12;
 
@@ -59,7 +59,7 @@ class Logger : public AbstractLogger
 
     // progress status members
     std::string mProgressMessage;
-    LogLevel    mPrintLevel = PROGRESS;
+    LogLevel    mPrintLevel = PROGRESS_LOG;
     uint        mProgressStep;
     uint        mProgressPerc;
     uint        mProgressPercStep;
@@ -165,7 +165,7 @@ public:
         }
     }
 
-    void log(const std::string& msg) override final { log(101, PROGRESS, msg); }
+    void log(const std::string& msg) override final { log(101, PROGRESS_LOG, msg); }
 
     void log(LogLevel lvl, const std::string& msg) override final
     {
@@ -174,7 +174,7 @@ public:
 
     void log(uint perc, const std::string& msg) override final
     {
-        log(perc, PROGRESS, msg);
+        log(perc, PROGRESS_LOG, msg);
     }
 
     void log(uint perc, LogLevel lvl, const std::string& msg) override final
@@ -220,7 +220,7 @@ public:
         if (mLastProgress < progress) {
             mProgressPerc = progress * mProgressPercStep;
             if (mPrintMsgDuringProgress)
-                log(mProgressPerc, PROGRESS, mProgressMessage);
+                log(mProgressPerc, PROGRESS_LOG, mProgressMessage);
             else
                 setPercentage(mProgressPerc);
             mLastProgress = progress;
@@ -259,8 +259,8 @@ private:
             return;
 
         // lvl could be also InternalLogLevel BEGIN or END
-        LogLevel l = PROGRESS;
-        if (lvl <= DEBUG) {
+        LogLevel l = PROGRESS_LOG;
+        if (lvl <= DEBUG_LOG) {
             l = (LogLevel) lvl;
         }
         if (l > mPrintLevel)
@@ -313,27 +313,27 @@ private:
         if (mPrintTimer)
             maxMsgSize -= TIMER_MAX_CHAR_NUMBER;
         switch (lvl) {
-        case ERROR:
+        case LogLevel::ERROR_LOG:
             maxMsgSize -= 8;
             o << " ERROR: ";
             break;
-        case WARNING:
+        case LogLevel::WARNING_LOG:
             maxMsgSize -= 10;
             o << " WARNING: ";
             break;
-        case PROGRESS:
+        case LogLevel::PROGRESS_LOG:
             maxMsgSize -= 1;
             o << " ";
             break;
-        case DEBUG:
+        case LogLevel::DEBUG_LOG:
             maxMsgSize -= 9;
             o << " (debug) ";
             break;
-        case START:
+        case InternalLogLevel::START:
             maxMsgSize -= 7;
             o << " Start ";
             break;
-        case END:
+        case InternalLogLevel::END:
             maxMsgSize -= 5;
             o << " End ";
             break;
