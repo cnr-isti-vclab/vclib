@@ -1,5 +1,5 @@
 {
-    "name": "Develop Clang",
+    "name": "Develop VCLib-Core - Clang",
 
     "build": {
         "dockerfile": "Dockerfile"

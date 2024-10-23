@@ -1,25 +1,11 @@
 buildType:
-    default: debug
-    choices:
-      debug:
-        short: Debug
-        long: Emit debug information
-        buildType: Debug
-      release:
-        short: Release
-        long: Optimize generated code
-        buildType: Release
-
-useModules:
-    default: ''
-    choices:
-      '':
-        short: Do not use modules
-        long: Do not use C++20 modules
-        settings:
-          VCLIB_BUILD_CXX20_MODULES: OFF
-      'Modules':
-        short: Use modules
-        long: Use C++20 modules
-        settings:
-          VCLIB_BUILD_CXX20_MODULES: ON
+  default: debug
+  choices:
+    debug:
+      short: Debug
+      long: Emit debug information
+      buildType: Debug
+    release:
+      short: Release
+      long: Optimize generated code
+      buildType: Release
