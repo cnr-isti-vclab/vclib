@@ -45,7 +45,9 @@ EventManagerWidget::EventManagerWidget(
     setAttribute(Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
     // PaintOnScreen is bugged - prints unuseful warning messages
     // we will hide it:
-    vcl::qt::MessageHider::activate();
+    // vcl::qt::MessageHider::activate(); // TODO check again
+    setAttribute(Qt::WA_DontCreateNativeAncestors);
+    setAttribute(Qt::WA_NativeWindow);
 #endif
 
     setGeometry(100, 100, width, height);
@@ -55,6 +57,11 @@ EventManagerWidget::EventManagerWidget(
 void EventManagerWidget::update()
 {
     Base::update();
+}
+
+QPaintEngine* EventManagerWidget::paintEngine() const
+{
+    return nullptr;
 }
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)

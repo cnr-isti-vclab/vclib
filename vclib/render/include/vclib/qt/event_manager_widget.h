@@ -58,6 +58,8 @@ public:
 
     virtual void update() override;
 
+    QPaintEngine* paintEngine() const override;
+
 protected:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void resizeEvent(QResizeEvent* event) override;
