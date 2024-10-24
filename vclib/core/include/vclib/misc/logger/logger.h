@@ -165,7 +165,10 @@ public:
         }
     }
 
-    void log(const std::string& msg) override final { log(101, PROGRESS_LOG, msg); }
+    void log(const std::string& msg) override final
+    {
+        log(101, PROGRESS_LOG, msg);
+    }
 
     void log(LogLevel lvl, const std::string& msg) override final
     {
