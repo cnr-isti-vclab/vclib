@@ -19,6 +19,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     doxygen \
     git \
     graphviz \
+    libgl1-mesa-dev \
     libglu1-mesa-dev \
     libtbb-dev \
     libx11-dev \
