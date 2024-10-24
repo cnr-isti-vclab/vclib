@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.24)
 project(vclib-external)
 
 # 3rd party libraries
-message(STATUS "VCLib: 3rd party libraries")
+message(STATUS "VCLib-External: 3rd party libraries")
 add_subdirectory(3rdparty)
 
 ### vclib-core target
