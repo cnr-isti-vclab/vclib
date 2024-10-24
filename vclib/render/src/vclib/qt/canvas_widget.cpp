@@ -90,6 +90,9 @@ bool CanvasWidget::event(QEvent* event)
 void CanvasWidget::paintEvent(QPaintEvent* event)
 {
     frame();
+#ifdef __APPLE__
+    bgfx::frame(); // needed for macos
+#endif             // __APPLE__
     QWidget::paintEvent(event);
 }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
