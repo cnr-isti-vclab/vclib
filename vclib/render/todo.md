@@ -1,13 +1,16 @@
 # VCLib-Render ToDo list
 
 - General
-    - [ ] qt headers and sources should be moved into vclib/processing/qt inside this module,
-      and should be included only if vclib-processing target is available
-    - [x] Manage polygonal meshes by DrawableMesh
-    - [x] Fix build failure when the build directory is in the same directory as the source
+  - [ ] qt headers and sources should be moved into vclib/processing/qt inside this module,
+    and should be included only if vclib-processing target is available
+  - [x] Manage polygonal meshes by DrawableMesh
+  - [x] Fix build failure when the build directory is in the same directory as the source
+  - [ ] Add the possibility to check if BGFX is available in the system
+    - [ ] Devcontainers should have BGFX installed
+  - [ ] Move BGFX from submodule to a CMake dependency
 - BGFX
   - [x] Library shaders should be built as headers
-  - [ ] Check why OpenGL backend does not work
+  - [ ] Check why OpenGL backend does not work when using BGFX (probably the cause is BGFX itself)
   - [ ] assets and shaders should be compiled in headers that are in paths like
     'vclib/assets/' and 'vclib/shaders/' (right now they are in 'assets/' and 'shaders/')
   - [x] the first window used by the context to create the bgfx backend context should be

@@ -44,7 +44,7 @@ if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
     target_include_directories(vclib-3rd-bgfx
         INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
 
-    set_target_properties(vclib-3rd-bgfx PROPERTIES BGFX_DIR ${VCLIB_BGFX_DIR})
+    set_target_properties(vclib-3rd-bgfx PROPERTIES BGFX_CMAKE_DIR "${VCLIB_BGFX_DIR}/cmake")
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
 elseif(VCLIB_ALLOW_BUNDLED_BGFX)

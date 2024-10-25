@@ -51,7 +51,7 @@ endforeach()
 
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    get_target_property(VCLIB_BGFX_DIR vclib-3rd-bgfx BGFX_DIR)
+    get_target_property(VCLIB_BGFX_CMAKE_DIR vclib-3rd-bgfx BGFX_CMAKE_DIR)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 
     file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
