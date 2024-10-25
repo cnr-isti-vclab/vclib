@@ -20,11 +20,11 @@
   - [ ] Draw cross in DrawableTrackball
   - [ ] Manage wireframe and points depth in shaders
   - [ ] Better management of canvas and viewer classes - qt and glfw share a lot of code
-  - [ ] Implement raytracing to get the triangle clicked by the mouse
+  - [ ] Implement picking (raytracing to get the triangle clicked by the mouse?)
   - [ ] Customizable background for canvas
   - [ ] check crash example 9015 mesh io stl (crashes if the bimba model (m1) is rendered)
-  - [ ] Include ImGui??
   - [ ] Draw lines trough shader - Work in progress
   - [ ] check retina resolution on macOS + GLFW
   - [ ] start integration of ImGUI along GLFW
   - [ ] fix trackball bug on Qt implementation (pan after wheel zoom)
+  - [ ] fix event mapping for GLFW (it should be slightly different from Qt)
