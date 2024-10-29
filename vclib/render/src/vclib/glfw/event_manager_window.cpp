@@ -66,6 +66,9 @@ EventManagerWindow::EventManagerWindow(
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+    #if defined(__APPLE__)
+    glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
+    #endif
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -85,9 +88,12 @@ EventManagerWindow::EventManagerWindow(
     glfwMakeContextCurrent(mWindow);
 #endif
 
-    glfwSetWindowUserPointer(mWindow, this);
+    // get content scale (e.g. for macOS retina displays)
+    glfwGetWindowContentScale(mWindow, &mScaleX, &mScaleY);
 
+    glfwSetWindowUserPointer(mWindow, this);
     setCallbacks();
+
 }
 
 const std::string& EventManagerWindow::windowTitle() const
@@ -113,6 +119,16 @@ uint EventManagerWindow::height() const
     int width, height;
     glfwGetWindowSize(mWindow, &width, &height);
     return height;
+}
+
+float EventManagerWindow::contentScaleX() const
+{
+    return mScaleX;
+}
+
+float EventManagerWindow::contentScaleY() const
+{
+    return mScaleY;
 }
 
 void* EventManagerWindow::winId()
@@ -152,7 +168,21 @@ void EventManagerWindow::glfwWindowSizeCallback(
     int width,
     int height)
 {
-    onResize(width, height);
+    onResize(width * contentScaleX(), height * contentScaleY());
+    std::cerr << "Window size: " << width << ", " << height << std::endl;
+}
+
+void EventManagerWindow::glfwContentScaleCallback(
+        GLFWwindow*,
+        float xscale,
+        float yscale)
+{
+    mScaleX = xscale;
+    mScaleY = yscale;
+    
+    int width, height;
+    glfwGetWindowSize(mWindow, &width, &height);
+    onResize(width * contentScaleX(), height * contentScaleY());
 }
 
 void EventManagerWindow::glfwKeyCallback(
@@ -207,7 +237,7 @@ void EventManagerWindow::glfwCursorPosCallback(
     double xpos,
     double ypos)
 {
-    onMouseMove(xpos, ypos);
+    onMouseMove(xpos * contentScaleX(), ypos * contentScaleY());
 }
 
 void EventManagerWindow::glfwScrollCallback(
@@ -220,6 +250,7 @@ void EventManagerWindow::glfwScrollCallback(
 
 void EventManagerWindow::setCallbacks()
 {
+    // window size callback
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     glfwSetWindowSizeCallback(
         mWindow, [](GLFWwindow* window, int width, int height) {
@@ -235,6 +266,14 @@ void EventManagerWindow::setCallbacks()
             self->glfwWindowSizeCallback(window, width, height);
         });
 #endif
+    // content scale callback
+    glfwSetWindowContentScaleCallback(
+        mWindow,
+        [](GLFWwindow* window, float xscale, float yscale) {
+            auto* self = static_cast<EventManagerWindow*>(
+                glfwGetWindowUserPointer(window));
+            self->glfwContentScaleCallback(window, xscale, yscale);
+        });
 
     // key callback
     glfwSetKeyCallback(

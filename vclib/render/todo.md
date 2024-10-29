@@ -24,7 +24,8 @@
   - [ ] Customizable background for canvas
   - [ ] check crash example 9015 mesh io stl (crashes if the bimba model (m1) is rendered)
   - [ ] Draw lines trough shader - Work in progress
-  - [ ] check retina resolution on macOS + GLFW
+  - [x] check retina resolution on macOS + GLFW
+  - [ ] fix event handling for the trackball using GLFW (metrics)
   - [ ] start integration of ImGUI along GLFW
   - [ ] fix trackball bug on Qt implementation (pan after wheel zoom)
   - [ ] fix event mapping for GLFW (it should be slightly different from Qt)
