@@ -75,6 +75,8 @@ EventManagerWindow::EventManagerWindow(
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 #endif
 
+    glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+
     mWindow =
         glfwCreateWindow(width, height, windowTitle.c_str(), nullptr, nullptr);
     if (!mWindow) {
@@ -235,7 +237,12 @@ void EventManagerWindow::glfwCursorPosCallback(
     double xpos,
     double ypos)
 {
-    onMouseMove(xpos * contentScaleX(), ypos * contentScaleY());
+#ifdef __APPLE__
+    // macOS retina display fix
+    xpos *= contentScaleX();
+    ypos *= contentScaleY();
+#endif
+    onMouseMove(xpos, ypos);
 }
 
 void EventManagerWindow::glfwScrollCallback(
