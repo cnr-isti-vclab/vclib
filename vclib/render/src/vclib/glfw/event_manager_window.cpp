@@ -169,7 +169,11 @@ void EventManagerWindow::glfwWindowSizeCallback(
     int width,
     int height)
 {
-    onResize(width * contentScaleX(), height * contentScaleY());
+#ifdef __APPLE__
+    width *= contentScaleX();
+    height *= contentScaleY();
+#endif
+    onResize(width, height);
 }
 
 void EventManagerWindow::glfwContentScaleCallback(
@@ -182,7 +186,11 @@ void EventManagerWindow::glfwContentScaleCallback(
     
     int width, height;
     glfwGetWindowSize(mWindow, &width, &height);
-    onResize(width * contentScaleX(), height * contentScaleY());
+#ifdef __APPLE__
+    width *= contentScaleX();
+    height *= contentScaleY();
+#endif
+    onResize(width, height);
 }
 
 void EventManagerWindow::glfwKeyCallback(
