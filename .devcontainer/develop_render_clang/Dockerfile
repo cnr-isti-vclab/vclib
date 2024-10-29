@@ -21,6 +21,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     git \
     graphviz \
     libgl1-mesa-dev \
+    libglfw3-dev \
     libglu1-mesa-dev \
     libtbb-dev \
     libx11-dev \
@@ -31,17 +32,32 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     libxcursor-dev \
     libxrandr-dev \
     ninja-build \
+    pkg-config \
     python3 \
     sudo \
     # to be removed
+    gcc \
+    g++ \
     pipx && \
     # add ubuntu user to sudoers
     echo ubuntu ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/ubuntu && \
     chmod 0440 /etc/sudoers.d/ubuntu
 
+# qt
 RUN pipx install aqtinstall && \
     aqt install-qt -O /opt/qt linux desktop ${QT_VERSION}  && \
     pipx uninstall aqtinstall
+
+# bgfx
+RUN mkdir -p ~/bgfx && \
+    cd ~/bgfx && \
+    git clone --recursive https://github.com/bkaradzic/bgfx.cmake && \
+    cd bgfx.cmake && \
+    mkdir build && cd build && \
+    cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DBGFX_LIBRARY_TYPE=SHARED -DCMAKE_INSTALL_PREFIX=/usr .. && \
+    ninja && \
+    ninja install && \
+    rm -rf ~/bgfx
 
 # clean
 RUN apt-get -y remove gcc g++ pipx && \
