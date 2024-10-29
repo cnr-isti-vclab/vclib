@@ -14,6 +14,7 @@ ENV QML2_IMPORT_PATH=/opt/qt/${QT_VERSION}/gcc_64/qml/
 RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     build-essential \
     catch2 \
+    clangd-18 \
     cmake \
     dbus \
     doxygen \

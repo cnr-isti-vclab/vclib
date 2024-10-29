@@ -3,6 +3,7 @@ FROM ubuntu:24.04
 RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     build-essential \
     catch2 \
+    clangd-18 \
     cmake \
     doxygen \
     git \

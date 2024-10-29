@@ -15,6 +15,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     catch2 \
     clang-18 \
     clang-tidy-18 \
+    clangd-18 \
     cmake \
     dbus \
     doxygen \
