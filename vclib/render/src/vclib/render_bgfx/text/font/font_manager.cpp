@@ -40,8 +40,14 @@ BX_PRAGMA_DIAGNOSTIC_POP()
 
 #include <wchar.h> // wcslen
 
+#if __has_include(<bx/tinystl/allocator.h>)
+#include <bx/tinystl/allocator.h>
+#include <bx/tinystl/unordered_map.h>
+#else
 #include <tinystl/allocator.h>
 #include <tinystl/unordered_map.h>
+#endif
+
 namespace stl = tinystl;
 
 #include <vclib/render_bgfx/text/font/font_manager.h>

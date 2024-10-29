@@ -20,9 +20,49 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
+find_package(bgfx QUIET)
+
 set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
 
-if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
+if (VCLIB_ALLOW_SYSTEM_BGFX AND bgfx_FOUND)
+    message(STATUS "- bgfx - using system-provided library")
+
+    add_library(vclib-3rd-bgfx INTERFACE)
+
+    target_link_libraries(vclib-3rd-bgfx INTERFACE bgfx::bx bgfx::bgfx bgfx::bimg)
+    target_include_directories(vclib-3rd-bgfx
+        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sdf/include)
+
+    # make sure that the imported targets are global
+    set_target_properties(bgfx::bin2c PROPERTIES IMPORTED_GLOBAL TRUE)
+    set_target_properties(bgfx::texturec PROPERTIES IMPORTED_GLOBAL TRUE)
+    set_target_properties(bgfx::texturev PROPERTIES IMPORTED_GLOBAL TRUE)
+    set_target_properties(bgfx::geometryc PROPERTIES IMPORTED_GLOBAL TRUE)
+    set_target_properties(bgfx::geometryv PROPERTIES IMPORTED_GLOBAL TRUE)
+    set_target_properties(bgfx::shaderc PROPERTIES IMPORTED_GLOBAL TRUE)
+
+    set(VCLIB_BGFX_CMAKE_DIR "${bgfx_DIR}")
+
+    # get bgfx include path
+    get_target_property(BGFX_INCLUDE_PATH bgfx::bgfx INTERFACE_INCLUDE_DIRECTORIES)
+
+    # for each path in BGFX_INCLUDE_PATH:
+    foreach(PATH ${BGFX_INCLUDE_PATH})
+        # if $PATH/bgfx_shader.sh exists
+        if (EXISTS ${PATH}/bgfx_shader.sh)
+            # set BGFX_SHADER_INCLUDE_PATH to $PATH/bgfx
+            set (BGFX_SHADER_INCLUDE_PATH ${PATH}/bgfx)
+        endif()
+    endforeach(PATH ${BGFX_INCLUDE_PATH})
+
+    set_target_properties(vclib-3rd-bgfx PROPERTIES
+        BGFX_SHADER_INCLUDE_PATH ${BGFX_SHADER_INCLUDE_PATH})
+
+    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
+
+elseif (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
+    set(VCLIB_BGFX_DIR ${CMAKE_CURRENT_LIST_DIR}/bgfx)
+
     message(STATUS "- bgfx - using bundled source")
 
     # leave the option to build bgfx examples, but set it to OFF by default
@@ -44,10 +84,17 @@ if (VCLIB_ALLOW_BUNDLED_BGFX AND EXISTS ${VCLIB_BGFX_DIR})
     target_include_directories(vclib-3rd-bgfx
         INTERFACE ${VCLIB_BGFX_DIR}/bgfx/3rdparty)
 
-    set_target_properties(vclib-3rd-bgfx PROPERTIES BGFX_CMAKE_DIR "${VCLIB_BGFX_DIR}/cmake")
+    set(VCLIB_BGFX_CMAKE_DIR "${VCLIB_BGFX_DIR}/cmake")
+
+    set_target_properties(vclib-3rd-bgfx PROPERTIES
+        BGFX_SHADER_INCLUDE_PATH ${VCLIB_BGFX_DIR}/bgfx/src)
 
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-bgfx)
-elseif(VCLIB_ALLOW_BUNDLED_BGFX)
+else()
     message(FATAL_ERROR
-        "bgfx is required - VCLIB_ALLOW_BUNDLED_BGFX must be enabled and found.")
+        "bgfx is required - be sure to clone recursively the vclib repository.")
+endif()
+
+if (TARGET vclib-3rd-bgfx)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
 endif()

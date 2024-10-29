@@ -23,9 +23,6 @@
 cmake_minimum_required(VERSION 3.24)
 project(vclib-render)
 
-# Add the cmake folder for find_package scripts
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
-
 # Options
 set(VCLIB_RENDER_BACKEND "bgfx" CACHE STRING "Select the rendering engine")
 set_property(CACHE VCLIB_RENDER_BACKEND PROPERTY STRINGS bgfx opengl2 none)
@@ -51,9 +48,6 @@ endforeach()
 
 # if render engine is bgfx - include sources that use bgfx
 if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
-    get_target_property(VCLIB_BGFX_CMAKE_DIR vclib-3rd-bgfx BGFX_CMAKE_DIR)
-    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/bgfx_config.cmake)
-
     file(GLOB_RECURSE HEADERS_BGFX CONFIGURE_DEPENDS
         "include/vclib/render_bgfx/*.h")
     list(APPEND HEADERS ${HEADERS_BGFX})
