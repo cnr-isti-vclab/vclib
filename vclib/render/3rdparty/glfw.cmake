@@ -20,7 +20,7 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-find_package(glfw3 3.4 QUIET)
+find_package(glfw3 3 QUIET)
 
 if (VCLIB_ALLOW_SYSTEM_GLFW AND glfw3_FOUND)
     message(STATUS "- GLFW - using system-provided library")
