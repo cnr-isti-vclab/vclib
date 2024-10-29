@@ -1,3 +1,6 @@
+# suggestion for build directory name (for this workspace) is:
+# build-${workspaceRootFolderName}-${variant:modules}-${buildKit}-${buildType}
+
 buildType:
   default: debug
   choices:
@@ -9,3 +12,21 @@ buildType:
       short: Release
       long: Optimize generated code
       buildType: Release
+
+modules:
+  default: 'core'
+  choices:
+    core:
+      short: Core
+      long: Core library
+    render_bgfx:
+      short: Render (BGFX)
+      long: Core library and Render module, using BGFX as render backend
+      settings:
+        VCLIB_BUILD_MODULE_RENDER: ON
+    render_opengl2:
+      short: Render (OpenGL 2)
+      long: Core library and Render module, using OpenGL 2 as render backend
+      settings:
+        VCLIB_BUILD_MODULE_RENDER: ON
+        VCLIB_RENDER_BACKEND: opengl2

@@ -7,6 +7,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     doxygen \
     git \
     graphviz \
+    libeigen3-dev \
     libtbb-dev \
     ninja-build \
     python3 \
