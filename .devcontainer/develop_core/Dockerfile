@@ -1,6 +1,7 @@
 FROM ubuntu:24.04
 
 RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    build-essential \
     catch2 \
     clang-18 \
     clang-tidy-18 \
@@ -19,8 +20,7 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     chmod 0440 /etc/sudoers.d/ubuntu
 
 # clean
-RUN apt-get -y remove gcc g++ && \
-    apt-get -y autoremove && \
+RUN apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*
 

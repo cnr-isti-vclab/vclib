@@ -12,6 +12,7 @@ ENV QML_IMPORT_PATH=/opt/qt/${QT_VERSION}/gcc_64/qml/
 ENV QML2_IMPORT_PATH=/opt/qt/${QT_VERSION}/gcc_64/qml/
 
 RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    build-essential \
     catch2 \
     clang-18 \
     clang-tidy-18 \
@@ -38,8 +39,6 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     python3 \
     sudo \
     # to be removed
-    gcc \
-    g++ \
     pipx && \
     # add ubuntu user to sudoers
     echo ubuntu ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/ubuntu && \
@@ -62,7 +61,7 @@ RUN mkdir -p ~/bgfx && \
     rm -rf ~/bgfx
 
 # clean
-RUN apt-get -y remove gcc g++ pipx && \
+RUN apt-get -y remove pipx && \
     apt-get -y autoremove && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/*

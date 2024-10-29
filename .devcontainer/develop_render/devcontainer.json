@@ -1,5 +1,5 @@
 {
-    "name": "Develop VCLib-Render - GCC",
+    "name": "Develop VCLib-Render",
 
     "build": {
         "dockerfile": "Dockerfile"
