@@ -1,6 +1,6 @@
 # Visual Computing Library
 
-[![BuildAndRunTests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/BuildAndRunTests.yml)
+[![Core - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Core_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Core_BuildAndRunTests.yml) [![External - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/External_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/External_BuildAndRunTests.yml) [![Render - Build and run Tests](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Render_BuildAndRunTests.yml/badge.svg)](https://github.com/cnr-isti-vclab/vclib/actions/workflows/Render_BuildAndRunTests.yml)
 
 The Visual Computing Library is a C++20 modern, multi-platform Mesh and Geometry Processing library.
 
