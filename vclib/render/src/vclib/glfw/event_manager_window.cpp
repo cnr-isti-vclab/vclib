@@ -169,7 +169,6 @@ void EventManagerWindow::glfwWindowSizeCallback(
     int height)
 {
     onResize(width * contentScaleX(), height * contentScaleY());
-    std::cerr << "Window size: " << width << ", " << height << std::endl;
 }
 
 void EventManagerWindow::glfwContentScaleCallback(
