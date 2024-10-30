@@ -45,7 +45,6 @@ jobs:
           ..
         ninja
     - name: Run Tests
-      if: runner.os != 'Windows'
       shell: bash
       run: |
         cd build
