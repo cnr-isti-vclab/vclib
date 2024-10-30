@@ -14,12 +14,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: DoozyX/clang-format-lint-action@v0.16.2
+    - uses: DoozyX/clang-format-lint-action@v0.18.2
       with:
         source: '.'
         exclude: './vclib/*/3rdparty ./vclib/*/scripts'
         extensions: 'h,cpp'
-        clangFormatVersion: 16
+        clangFormatVersion: 18
         inplace: True
     - uses: EndBug/add-and-commit@v9
       with:

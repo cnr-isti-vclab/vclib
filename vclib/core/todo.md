@@ -2,6 +2,8 @@
 
 - General:
   - [ ] Enumerations should be declared in a struct to avoid name collisions
+  - [ ] Fix scripts to add a mesh element
+    - [ ] Add documentation on how to add a new mesh element using scripts
 - Concepts:
   - [ ] complete space data structures concepts
   - [ ] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
