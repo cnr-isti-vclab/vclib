@@ -28,6 +28,7 @@ if (VCLIB_ALLOW_BUNDLED_STB AND EXISTS ${VCLIB_STB_DIR}/stb/stb_image.h)
     set(STB_INCLUDE_DIRS ${VCLIB_STB_DIR})
 
     add_library(vclib-3rd-stb STATIC src/stb_src.cpp)
+    set_property(TARGET vclib-3rd-stb PROPERTY POSITION_INDEPENDENT_CODE ON)
 
     target_include_directories(vclib-3rd-stb PUBLIC ${STB_INCLUDE_DIRS})
 
