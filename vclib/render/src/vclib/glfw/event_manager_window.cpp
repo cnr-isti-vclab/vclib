@@ -163,15 +163,11 @@ void* EventManagerWindow::displayId()
     return ndt;
 }
 
-void EventManagerWindow::glfwWindowSizeCallback(
+void EventManagerWindow::glfwFramebufferSizeCallback(
     GLFWwindow*,
     int width,
     int height)
 {
-#ifdef __APPLE__
-    width *= contentScaleX();
-    height *= contentScaleY();
-#endif
     onResize(width, height);
 }
 
@@ -184,11 +180,7 @@ void EventManagerWindow::glfwContentScaleCallback(
     mScaleY = yscale;
 
     int width, height;
-    glfwGetWindowSize(mWindow, &width, &height);
-#ifdef __APPLE__
-    width *= contentScaleX();
-    height *= contentScaleY();
-#endif
+    glfwGetFramebufferSize(mWindow, &width, &height);
     onResize(width, height);
 }
 
@@ -262,22 +254,14 @@ void EventManagerWindow::glfwScrollCallback(
 
 void EventManagerWindow::setCallbacks()
 {
-    // window size callback
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-    glfwSetWindowSizeCallback(
-        mWindow, [](GLFWwindow* window, int width, int height) {
-            auto* self = static_cast<EventManagerWindow*>(
-                glfwGetWindowUserPointer(window));
-            self->glfwWindowSizeCallback(window, width, height);
-        });
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+    // framebuffer size callback
     glfwSetFramebufferSizeCallback(
         mWindow, [](GLFWwindow* window, int width, int height) {
             auto* self = static_cast<EventManagerWindow*>(
                 glfwGetWindowUserPointer(window));
-            self->glfwWindowSizeCallback(window, width, height);
+            self->glfwFramebufferSizeCallback(window, width, height);
         });
-#endif
+
     // content scale callback
     glfwSetWindowContentScaleCallback(
         mWindow, [](GLFWwindow* window, float xscale, float yscale) {

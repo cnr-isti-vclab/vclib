@@ -64,7 +64,10 @@ protected:
     void* displayId();
 
     // callbacks
-    virtual void glfwWindowSizeCallback(GLFWwindow*, int width, int height);
+    virtual void glfwFramebufferSizeCallback(
+        GLFWwindow*,
+        int width,
+        int height);
 
     virtual void glfwContentScaleCallback(
         GLFWwindow*,
