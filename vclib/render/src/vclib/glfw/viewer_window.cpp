@@ -36,8 +36,7 @@ ViewerWindow::ViewerWindow(
             v,
             width * contentScaleX(),
             height * contentScaleY(),
-            displayId()
-        )
+            displayId())
 {
 }
 

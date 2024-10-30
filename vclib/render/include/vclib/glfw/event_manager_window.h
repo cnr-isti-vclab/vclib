@@ -35,8 +35,8 @@ class EventManagerWindow : public virtual vcl::EventManagerI
 
 protected:
     GLFWwindow* mWindow = nullptr;
-    float mScaleX = 1.0f; // content scaling
-    float mScaleY = 1.0f;
+    float       mScaleX = 1.0f; // content scaling
+    float       mScaleY = 1.0f;
 
 public:
     EventManagerWindow(

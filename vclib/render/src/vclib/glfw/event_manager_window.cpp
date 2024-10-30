@@ -66,9 +66,9 @@ EventManagerWindow::EventManagerWindow(
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-    #if defined(__APPLE__)
+#if defined(__APPLE__)
     glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_TRUE);
-    #endif
+#endif
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -94,7 +94,6 @@ EventManagerWindow::EventManagerWindow(
 
     glfwSetWindowUserPointer(mWindow, this);
     setCallbacks();
-
 }
 
 const std::string& EventManagerWindow::windowTitle() const
@@ -177,13 +176,13 @@ void EventManagerWindow::glfwWindowSizeCallback(
 }
 
 void EventManagerWindow::glfwContentScaleCallback(
-        GLFWwindow*,
-        float xscale,
-        float yscale)
+    GLFWwindow*,
+    float xscale,
+    float yscale)
 {
     mScaleX = xscale;
     mScaleY = yscale;
-    
+
     int width, height;
     glfwGetWindowSize(mWindow, &width, &height);
 #ifdef __APPLE__
@@ -281,8 +280,7 @@ void EventManagerWindow::setCallbacks()
 #endif
     // content scale callback
     glfwSetWindowContentScaleCallback(
-        mWindow,
-        [](GLFWwindow* window, float xscale, float yscale) {
+        mWindow, [](GLFWwindow* window, float xscale, float yscale) {
             auto* self = static_cast<EventManagerWindow*>(
                 glfwGetWindowUserPointer(window));
             self->glfwContentScaleCallback(window, xscale, yscale);
