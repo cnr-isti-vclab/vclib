@@ -28,9 +28,9 @@
 
 namespace vcl {
 
-DrawableTrackBall::DrawableTrackBall() : TrackballRenderData(64)
+DrawableTrackBall::DrawableTrackBall() : TrackballRenderData(128)
 {
-    mUniforms.setNumberOfVerticesPerAxis(64);
+    mUniforms.setNumberOfVerticesPerAxis(128);
 
     createBuffers();
 }

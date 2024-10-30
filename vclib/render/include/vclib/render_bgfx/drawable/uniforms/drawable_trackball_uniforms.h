@@ -36,7 +36,7 @@ class DrawableTrackballUniforms
     float mTrackBallSettings[4];
 
     ShaderUniform mTrackballSettingsUniform =
-        ShaderUniform("u_trakcballSettingsPack", bgfx::UniformType::Vec4);
+        ShaderUniform("u_trackballSettingsPack", bgfx::UniformType::Vec4);
 
 public:
     DrawableTrackballUniforms()

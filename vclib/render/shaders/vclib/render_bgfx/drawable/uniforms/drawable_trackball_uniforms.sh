@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
 #define VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
 
-uniform vec4 u_trakcballSettingsPack;
+uniform vec4 u_trackballSettingsPack;
 
-#define u_nVerticesPerCircleFloat u_trakcballSettingsPack.x
-#define u_isDraggingFloat u_trakcballSettingsPack.y
+#define u_nVerticesPerCircleFloat u_trackballSettingsPack.x
+#define u_isDraggingFloat u_trackballSettingsPack.y
 
 #endif // VCL_EXT_BGFX_UNIFORMS_DRAWABLE_TRACKBALL_UNIFORMS_SH
