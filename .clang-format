@@ -36,7 +36,7 @@ AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: true
-#AllowShortCompoundRequirementOnASingleLine: true #uncomment when clang-format has version 18
+AllowShortCompoundRequirementOnASingleLine: true
 AllowShortEnumsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: InlineOnly
 AllowShortIfStatementsOnASingleLine: Never
@@ -54,7 +54,7 @@ BitFieldColonSpacing: Both
 BraceWrapping:
   AfterCaseLabel: false
   AfterClass: true
-  AfterControlStatement: MultiLine
+  # AfterControlStatement: MultiLine # conflict with AllowShortCompoundRequirementOnASingleLine
   AfterEnum: false
   AfterFunction: true
   AfterNamespace: false
