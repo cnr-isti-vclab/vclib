@@ -48,7 +48,7 @@ public:
 
     const float* transformData() const;
 
-    void updateRotation(const vcl::Matrix44f& rot);
+    void setTransform(const vcl::Matrix44f& mtx);
 };
 
 } // namespace vcl

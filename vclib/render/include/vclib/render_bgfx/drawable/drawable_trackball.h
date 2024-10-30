@@ -47,7 +47,7 @@ class DrawableTrackBall : public DrawableObjectI, protected TrackballRenderData
     DrawableTrackballUniforms mUniforms;
 
 public:
-    using TrackballRenderData::updateRotation;
+    using TrackballRenderData::setTransform;
 
     // TODO: manage copy and swap
     DrawableTrackBall();

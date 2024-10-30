@@ -43,7 +43,7 @@ class ViewerCanvas : public Canvas, public ViewerI
 
     DrawableAxis             mAxis;
     DrawableDirectionalLight mDirectionalLight;
-    DrawableTrackBall        mTrackBall;
+    DrawableTrackBall        mDrawTrackBall;
 
 public:
     ViewerCanvas(
@@ -66,7 +66,7 @@ public:
 
     void toggleTrackBallVisibility() override
     {
-        mTrackBall.setVisibility(!mTrackBall.isVisible());
+        mDrawTrackBall.setVisibility(!mDrawTrackBall.isVisible());
     }
 
 protected:
@@ -108,8 +108,8 @@ private:
     void updateDrawableTrackball()
     {
         auto v = DTB::gizmoMatrix();
-        mTrackBall.updateRotation(v);
-        mTrackBall.updateDragging(isDragging());
+        mDrawTrackBall.setTransform(v);
+        mDrawTrackBall.updateDragging(isDragging());
     }
 };
 

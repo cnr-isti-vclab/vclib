@@ -72,8 +72,9 @@ void ViewerCanvas::draw()
         mDirectionalLight.draw(viewId());
     }
 
-    if (mTrackBall.isVisible()) {
-        mTrackBall.draw(viewId());
+    if (mDrawTrackBall.isVisible()) {
+        updateDrawableTrackball();
+        mDrawTrackBall.draw(viewId());
     }
 }
 

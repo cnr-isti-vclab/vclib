@@ -87,9 +87,9 @@ const float* TrackballRenderData::transformData() const
     return mTransform.data();
 }
 
-void TrackballRenderData::updateRotation(const Matrix44f& rot)
+void TrackballRenderData::setTransform(const Matrix44f& mtx)
 {
-    mTransform = rot;
+    mTransform = mtx;
 }
 
 } // namespace vcl
