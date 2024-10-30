@@ -3,9 +3,9 @@ FROM ubuntu:24.04
 RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     build-essential \
     catch2 \
-    clang-18 \
-    clang-tidy-18 \
-    clangd-18 \
+    clang \
+    clang-tidy \
+    clangd \
     cmake \
     doxygen \
     git \

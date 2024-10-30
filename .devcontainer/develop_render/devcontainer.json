@@ -7,7 +7,8 @@
     "runArgs": [
         "-ti",
         "-e", "DISPLAY=:0", // WARNING: replace :0 with your $DISPLAY value
-        "-v", "/tmp/.X11-unix:/tmp/.X11-unix"
+        "-v", "/tmp/.X11-unix:/tmp/.X11-unix",
+        "--ipc", "host",
     ],
     "workspaceFolder": "/home/ubuntu/devel/vclib",
     "workspaceMount": "source=${localWorkspaceFolder},target=/home/ubuntu/devel/vclib,type=bind",

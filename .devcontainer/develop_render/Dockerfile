@@ -14,9 +14,9 @@ ENV QML2_IMPORT_PATH=/opt/qt/${QT_VERSION}/gcc_64/qml/
 RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     build-essential \
     catch2 \
-    clang-18 \
-    clang-tidy-18 \
-    clangd-18 \
+    clang \
+    clang-tidy \
+    clangd \
     cmake \
     dbus \
     doxygen \
@@ -31,7 +31,11 @@ RUN apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     libxi-dev \
     libxinerama-dev \
     libxcb-cursor0 \
+    libxcb-icccm4-dev \
+    libxcb-imdkit-dev \
+    libxcb-composite0-dev \
     libxkbcommon-dev \
+    libxkbcommon-x11-dev \
     libxcursor-dev \
     libxrandr-dev \
     ninja-build \
