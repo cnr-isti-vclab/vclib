@@ -902,8 +902,7 @@ protected:
             mElemNumber = c.mElemNumber;
             if constexpr (
                 comp::HasCustomComponents<T> &&
-                comp::HasCustomComponents<typename Container::ElementType>)
-            {
+                comp::HasCustomComponents<typename Container::ElementType>) {
                 mCustomCompVecMap = c.mCustomCompVecMap;
             }
         }
@@ -953,8 +952,7 @@ private:
             // lambda to avoid code duplication
             auto loop = [&]() {
                 for (uint i = firstElementToProcess; i < elementContainerSize();
-                     i++)
-                {
+                     i++) {
                     T& e = element(i);
                     if (!e.deleted()) {
                         e.Comp::updateReferences(oldBase, offset);
@@ -1007,8 +1005,7 @@ private:
         uint n  = elementContainerSize() - on;
 
         if (mVerticalCompVecTuple.template isComponentEnabled<Comp>() &&
-            other.mVerticalCompVecTuple.template isComponentEnabled<Comp>())
-        {
+            other.mVerticalCompVecTuple.template isComponentEnabled<Comp>()) {
             auto&       vc = mVerticalCompVecTuple.template vector<Comp>();
             const auto& ovc =
                 other.mVerticalCompVecTuple.template vector<Comp>();
@@ -1056,18 +1053,15 @@ private:
             // if Comp is available in Cont2
             if constexpr (comp::HasComponentOfType<
                               typename Cont2::ElementType,
-                              Comp::COMPONENT_ID>)
-            {
+                              Comp::COMPONENT_ID>) {
                 // if Comp is optional in Cont2
                 if constexpr (comp::HasOptionalComponentOfType<
                                   typename Cont2::ElementType,
-                                  Comp::COMPONENT_ID>)
-                {
+                                  Comp::COMPONENT_ID>) {
                     // if Comp is enabled in Cont2, we enable it in this
                     // container
                     if (c2.template isOptionalComponentEnabled<
-                            Comp::COMPONENT_ID>())
-                    {
+                            Comp::COMPONENT_ID>()) {
                         enableOptionalComponent<Comp::COMPONENT_ID>();
                     }
                 }

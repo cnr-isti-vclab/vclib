@@ -197,8 +197,8 @@ void writePlyVertices(
             }
             if (p.name == ply::unknown) {
                 if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
-                    if (mesh.hasPerVertexCustomComponent(p.unknownPropertyName))
-                    {
+                    if (mesh.hasPerVertexCustomComponent(
+                            p.unknownPropertyName)) {
                         io::writeCustomComponent(
                             file, v, p.unknownPropertyName, p.type, format);
                         hasBeenWritten = true;

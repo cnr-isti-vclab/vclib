@@ -30,8 +30,7 @@ namespace vcl::qt {
 DrawableObjectFrame::DrawableObjectFrame(
     const std::shared_ptr<DrawableObjectI>& obj,
     QWidget*                                parent) :
-        QFrame(parent),
-        mUI(new Ui::DrawableObjectFrame), mObj(obj)
+        QFrame(parent), mUI(new Ui::DrawableObjectFrame), mObj(obj)
 {
     mUI->setupUi(this);
     assert(obj);

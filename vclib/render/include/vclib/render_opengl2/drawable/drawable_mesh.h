@@ -315,8 +315,7 @@ private:
             }
             else if (
                 mMRS.isSurfaceColorPerMesh() ||
-                mMRS.isSurfaceColorUserDefined())
-            {
+                mMRS.isSurfaceColorUserDefined()) {
                 if (mMRS.isSurfaceShadingSmooth()) {
                     glEnableClientState(GL_VERTEX_ARRAY);
                     glVertexPointer(3, GL_FLOAT, 0, coords);

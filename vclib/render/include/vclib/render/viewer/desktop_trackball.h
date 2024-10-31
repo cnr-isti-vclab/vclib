@@ -97,7 +97,7 @@ private:
                  t.resetDirectionalLight();
              }},
 
- // rotate
+            // rotate
             {{Key::NP_2, {KeyModifier::NO_MODIFIER}},
              [](TrackBallType& t) {
                  rotate(t, UNIT_X, DISCRETE_ROTATION_STEP);
@@ -115,7 +115,7 @@ private:
                  rotate(t, UNIT_X, -DISCRETE_ROTATION_STEP);
              }},
 
- // translate
+            // translate
             {{Key::UP, {KeyModifier::NO_MODIFIER}},
              [](TrackBallType& t) {
                  translate(t, UNIT_Y * DISCRETE_TRANSLATION_STEP);
@@ -133,7 +133,7 @@ private:
                  translate(t, UNIT_X * DISCRETE_TRANSLATION_STEP);
              }},
 
- // set view
+            // set view
             {{Key::NP_1, {KeyModifier::NO_MODIFIER}},
              [](TrackBallType& t) { // front
                  t.reset();
@@ -163,7 +163,7 @@ private:
                  t.reset();
                  rotate(t, UNIT_Y, M_PI_2);
              }},
- // projection mode
+            // projection mode
             {{Key::NP_5, {KeyModifier::NO_MODIFIER}},
              [](TrackBallType& t) { // reset
                  const auto v =
@@ -174,7 +174,7 @@ private:
                  t.setProjectionMode(v);
              }},
 
- // rotate light
+            // rotate light
             {{Key::NP_2, {KeyModifier::CONTROL, KeyModifier::SHIFT}},
              [](TrackBallType& t) {
                  rotateLight(t, UNIT_X, DISCRETE_ROTATION_STEP);

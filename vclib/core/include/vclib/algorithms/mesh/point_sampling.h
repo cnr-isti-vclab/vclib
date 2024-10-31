@@ -265,8 +265,7 @@ SamplerType vertexUniformPointSampling(
     while (nVisited < nSamples) {
         uint vi = dist(gen);
         if (!m.vertex(vi).deleted() && !visited[vi] &&
-            (!onlySelected || m.vertex(vi).selected()))
-        {
+            (!onlySelected || m.vertex(vi).selected())) {
             visited[vi] = true;
             nVisited++;
             ps.add(m.vertex(vi));
@@ -364,8 +363,7 @@ SamplerType faceUniformPointSampling(
     while (nVisited < nSamples) {
         uint fi = dist(gen);
         if (!m.face(fi).deleted() && !visited[fi] &&
-            (!onlySelected || m.face(fi).selected()))
-        {
+            (!onlySelected || m.face(fi).selected())) {
             visited[fi] = true;
             nVisited++;
             ps.add(m.face(fi));
@@ -464,8 +462,7 @@ SamplerType vertexWeightedPointSampling(
     while (nVisited < nSamples) {
         uint vi = dist(gen);
         if (vi < m.vertexContainerSize() && !m.vertex(vi).deleted() &&
-            !visited[vi])
-        {
+            !visited[vi]) {
             visited[vi] = true;
             nVisited++;
             ps.add(m.vertex(vi));
@@ -571,8 +568,8 @@ SamplerType faceWeightedPointSampling(
 
     while (nVisited < nSamples) {
         uint fi = dist(gen);
-        if (fi < m.faceContainerSize() && !m.face(fi).deleted() && !visited[fi])
-        {
+        if (fi < m.faceContainerSize() && !m.face(fi).deleted() &&
+            !visited[fi]) {
             visited[fi] = true;
             nVisited++;
             ps.add(m.face(fi));

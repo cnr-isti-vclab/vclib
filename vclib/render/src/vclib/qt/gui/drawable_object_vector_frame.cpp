@@ -35,8 +35,7 @@ DrawableObjectVectorFrame::DrawableObjectVectorFrame(QWidget* parent) :
 
 DrawableObjectVectorFrame::DrawableObjectVectorFrame(
     const std::shared_ptr<DrawableObjectVector>& v,
-    QWidget*                                     parent) :
-        DrawableObjectVectorFrame(parent)
+    QWidget* parent) : DrawableObjectVectorFrame(parent)
 {
     mDrawList = v;
     updateDrawableVectorWidget();

@@ -359,8 +359,7 @@ void updatePrincipalCurvaturePCA(
              45.0 * eigenvalues[(best + 2) % 3]) /
             (M_PI * r6);
         if (v.principalCurvature().maxValue() <
-            v.principalCurvature().minValue())
-        {
+            v.principalCurvature().minValue()) {
             std::swap(
                 v.principalCurvature().minValue(),
                 v.principalCurvature().maxValue());

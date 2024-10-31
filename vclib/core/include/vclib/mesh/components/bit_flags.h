@@ -260,8 +260,7 @@ protected:
         if constexpr (HasBitFlags<Element>) {
             resetBitFlags();
             if constexpr (
-                HasPolygonBitFlags<Element> || HasTriangleBitFlags<Element>)
-            {
+                HasPolygonBitFlags<Element> || HasTriangleBitFlags<Element>) {
                 deletedBit()  = e.deleted();
                 selected()    = e.selected();
                 visited()     = e.visited();

@@ -1147,8 +1147,8 @@ protected:
             // the polygon using the earcut algorithm.
             if constexpr (
                 FaceType::VERTEX_NUMBER == 3 &&
-                (MFaceType::VERTEX_NUMBER > 3 || MFaceType::VERTEX_NUMBER < 0))
-            {
+                (MFaceType::VERTEX_NUMBER > 3 ||
+                 MFaceType::VERTEX_NUMBER < 0)) {
                 VertexType*        base   = &Base::mParentMesh->vertex(0);
                 const MVertexType* mvbase = &m.vertex(0);
 
@@ -1186,9 +1186,7 @@ protected:
     }
 
 private:
-    void addFaceHelper(T& f)
-    { /* base case: no need to add vertices */
-    }
+    void addFaceHelper(T& f) { /* base case: no need to add vertices */ }
 
     template<typename... V>
     void addFaceHelper(T& f, typename T::VertexType* v, V... args)
@@ -1226,11 +1224,9 @@ private:
             // wedge colors
             if constexpr (
                 face::HasWedgeColors<FaceType> &&
-                face::HasWedgeColors<MFaceType>)
-            {
+                face::HasWedgeColors<MFaceType>) {
                 if (comp::isWedgeColorsAvailableOn(f) &&
-                    comp::isWedgeColorsAvailableOn(mf))
-                {
+                    comp::isWedgeColorsAvailableOn(mf)) {
                     f.wedgeColor(j) = mf.wedgeColor(tris[i]);
                 }
             }
@@ -1238,11 +1234,9 @@ private:
             // wedge texcoords
             if constexpr (
                 face::HasWedgeTexCoords<FaceType> &&
-                face::HasWedgeTexCoords<MFaceType>)
-            {
+                face::HasWedgeTexCoords<MFaceType>) {
                 if (comp::isWedgeTexCoordsAvailableOn(f) &&
-                    comp::isWedgeTexCoordsAvailableOn(mf))
-                {
+                    comp::isWedgeTexCoordsAvailableOn(mf)) {
                     using ST = typename FaceType::WedgeTexCoordType::ScalarType;
                     f.wedgeTexCoord(j) =
                         mf.wedgeTexCoord(tris[i]).template cast<ST>();

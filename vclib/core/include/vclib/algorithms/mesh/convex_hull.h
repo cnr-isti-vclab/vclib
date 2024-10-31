@@ -209,8 +209,7 @@ std::vector<std::pair<uint, uint>> horizonFaces(
     // looking for the first visible face that lies on the border
     bool found = false;
     for (auto it = visibleFaces.begin(); it != visibleFaces.end() && !found;
-         ++it)
-    {
+         ++it) {
         uint i = 0;
         for (const FaceType* adjFace : (*it)->adjFaces()) {
             // if the adjacent face is not visible, then it is on the border
@@ -425,8 +424,8 @@ MeshType convexHull(
             // store the faces that are visible from (conflict with) the point
             // these faces will be deleted from the convex hull
             std::set<const FaceType*> visibleFaces;
-            for (const auto& faceIndex : conflictGraph.adjacentLeftNodes(point))
-            {
+            for (const auto& faceIndex :
+                 conflictGraph.adjacentLeftNodes(point)) {
                 visibleFaces.insert(&result.face(faceIndex));
             }
 

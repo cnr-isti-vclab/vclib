@@ -61,8 +61,8 @@ struct UnorderedPairComparator
         if (std::min(p1.first, p1.second) < std::min(p2.first, p2.second)) {
             return true;
         }
-        else if (std::min(p1.first, p1.second) == std::min(p2.first, p2.second))
-        {
+        else if (
+            std::min(p1.first, p1.second) == std::min(p2.first, p2.second)) {
             return std::max(p1.first, p1.second) <
                    std::max(p2.first, p2.second);
         }

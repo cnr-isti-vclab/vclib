@@ -775,8 +775,7 @@ private:
         // perspective -> ortho
         if (mCamera.projectionMode() ==
                 Camera<Scalar>::ProjectionMode::PERSPECTIVE &&
-            fov == MIN_FOV_DEG)
-        {
+            fov == MIN_FOV_DEG) {
             mCamera.projectionMode() = Camera<Scalar>::ProjectionMode::ORTHO;
         }
 

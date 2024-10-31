@@ -112,8 +112,7 @@ public:
             mMultiParameterFrame->setHeaderLabel("Save Mesh Parameters");
             connect(cb, &QComboBox::currentIndexChanged, [&](int index) {
                 for (uint i = 0; i < mMultiParameterFrame->subFramesNumber();
-                     i++)
-                {
+                     i++) {
                     mMultiParameterFrame->setSubFrameVisible(i, i == index);
                     mMultiParameterFrame->setSubFrameHeaderButtonChecked(
                         i, i == index);
@@ -126,8 +125,7 @@ public:
                 this, &QFileDialog::currentChanged, [&](const QString& file) {
                     for (uint i = 0;
                          i < mMultiParameterFrame->subFramesNumber();
-                         i++)
-                    {
+                         i++) {
                         mMultiParameterFrame->setSubFrameVisible(i, false);
                         mMultiParameterFrame->setSubFrameHeaderVisible(
                             i, false);

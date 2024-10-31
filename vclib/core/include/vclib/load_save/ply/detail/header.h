@@ -67,8 +67,7 @@ public:
         ply::Format              format,
         const MeshInfo&          info,
         std::vector<std::string> textureFiles = std::vector<std::string>()) :
-            mValid(true),
-            mFormat(format)
+            mValid(true), mFormat(format)
     {
         setInfo(info, textureFiles, format);
     }
@@ -106,8 +105,8 @@ public:
                     else if (headerLine == "comment") {
                         token++;
                         if (token != spaceTokenizer.end()) {
-                            if (vcl::containsCaseInsensitive(*token, "texture"))
-                            {
+                            if (vcl::containsCaseInsensitive(
+                                    *token, "texture")) {
                                 ++token;
                                 if (token != spaceTokenizer.end()) {
                                     std::string textName = *token;
@@ -241,8 +240,8 @@ public:
         }
         if (mTriStripElemPos != UINT_NULL) {
             mod.setFaces();
-            for (const PlyProperty& p : mElements[mTriStripElemPos].properties)
-            {
+            for (const PlyProperty& p :
+                 mElements[mTriStripElemPos].properties) {
                 switch (p.name) {
                 case ply::vertex_indices: mod.setFaceVRefs(); break;
                 case ply::nx:

@@ -187,9 +187,8 @@ protected:
         const std::string& description,
         const std::string& tooltip,
         const std::string& category) :
-            mName(name),
-            mValue(value), mDescription(description), mToolTip(tooltip),
-            mCategory(category)
+            mName(name), mValue(value), mDescription(description),
+            mToolTip(tooltip), mCategory(category)
     {
     }
 

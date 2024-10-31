@@ -160,8 +160,8 @@ protected:
 
         auto& baseContainer = Base::container();
 
-        for (uint j = 0; j < baseContainer.size(); ++j)
-        { // for each pointer in this container
+        for (uint j = 0; j < baseContainer.size();
+             ++j) { // for each pointer in this container
             if (baseContainer.at(j) != nullptr) {
                 size_t diff =
                     baseContainer.at(j) - oldBase; // offset w.r.t. the old base

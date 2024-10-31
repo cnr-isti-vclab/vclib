@@ -34,8 +34,7 @@ ParameterFrame::ParameterFrame(QWidget* parent) : MultiParameterFrame(parent)
 
 ParameterFrame::ParameterFrame(
     const proc::ParameterVector& parameters,
-    QWidget*                     parent) :
-        ParameterFrame(parent)
+    QWidget*                     parent) : ParameterFrame(parent)
 {
     setParameters(parameters);
 }

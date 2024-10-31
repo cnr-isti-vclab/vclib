@@ -85,9 +85,7 @@ public:
     ElementContainerIterator(
         ContIt              it,
         const Container<T>& vec,
-        bool                jumpDeleted = true) :
-            mIt(it),
-            mVec(&vec)
+        bool                jumpDeleted = true) : mIt(it), mVec(&vec)
     {
         if (!jumpDeleted) {
             mIncrementFun     = &ElementContainerIterator::incrementFast;

@@ -213,8 +213,7 @@ public:
             if (mIntersectsFun) {
                 for (const auto& cell : GridType::cells(bmin, bmax)) {
                     if (mIntersectsFun(
-                            GridType::cellBox(cell), dereferencePtr(v)))
-                    {
+                            GridType::cellBox(cell), dereferencePtr(v))) {
                         ins |= static_cast<DerivedGrid*>(this)->insertInCell(
                             cell, v);
                     }
@@ -550,8 +549,7 @@ public:
 
             // for all the cells in the current interval box
             for (const KeyType& c : GridType::cells(
-                     currentIntervalBox.min(), currentIntervalBox.max()))
-            {
+                     currentIntervalBox.min(), currentIntervalBox.max())) {
                 if (!ignore.isInsideOpenBox(c)) {
                     // get the values of the cell c
                     const auto& p =
@@ -607,8 +605,7 @@ protected:
     AbstractGrid(
         const GridType&        grid,
         IntersectsCellFunction intersects = nullptr) :
-            GridType(grid),
-            mIntersectsFun(intersects)
+            GridType(grid), mIntersectsFun(intersects)
     {
     }
 
@@ -631,8 +628,7 @@ protected:
         const PointType&       max,
         const KeyType&         sizes,
         IntersectsCellFunction intersects = nullptr) :
-            GridType(min, max, sizes),
-            mIntersectsFun(intersects)
+            GridType(min, max, sizes), mIntersectsFun(intersects)
     {
     }
 
@@ -652,8 +648,7 @@ protected:
         const BoxType&         bbox,
         const KeyType&         sizes,
         IntersectsCellFunction intersects = nullptr) :
-            GridType(bbox, sizes),
-            mIntersectsFun(intersects)
+            GridType(bbox, sizes), mIntersectsFun(intersects)
     {
     }
 
@@ -803,8 +798,8 @@ private:
         ResType res   = static_cast<const DerivedGrid*>(this)->end();
 
         // for each cell in the interval
-        for (const KeyType& c : GridType::cells(interval.min(), interval.max()))
-        {
+        for (const KeyType& c :
+             GridType::cells(interval.min(), interval.max())) {
             if (!ignore.isInsideOpenBox(c)) {
                 // p is a pair of iterators
                 const auto& p =
@@ -855,8 +850,7 @@ private:
             while (res.size() < n && currentIntervalBox != ignore) {
                 // for each cell in the interval
                 for (const KeyType& c : GridType::cells(
-                         currentIntervalBox.min(), currentIntervalBox.max()))
-                {
+                         currentIntervalBox.min(), currentIntervalBox.max())) {
                     if (!ignore.isInsideOpenBox(c)) {
                         const auto& p =
                             static_cast<const DerivedGrid*>(this)->valuesInCell(

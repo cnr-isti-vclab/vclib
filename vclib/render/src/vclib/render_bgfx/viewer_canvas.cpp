@@ -33,8 +33,7 @@ ViewerCanvas::ViewerCanvas(
     uint  width,
     uint  height,
     void* displayId) :
-        Canvas(winId, width, height, displayId),
-        ViewerI(width, height)
+        Canvas(winId, width, height, displayId), ViewerI(width, height)
 {
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());
@@ -45,8 +44,7 @@ ViewerCanvas::ViewerCanvas(
     const std::shared_ptr<DrawableObjectVector>& v,
     uint                                         width,
     uint                                         height,
-    void*                                        displayId) :
-        ViewerCanvas(winId, width, height, displayId)
+    void* displayId) : ViewerCanvas(winId, width, height, displayId)
 {
     setDrawableObjectVector(v);
 }
@@ -107,8 +105,7 @@ void ViewerCanvas::onKeyRelease(Key::Enum key)
 
     if (isDirectionalLightVisible()) {
         if (!modifiers()[KeyModifier::CONTROL] ||
-            !modifiers()[KeyModifier::SHIFT])
-        {
+            !modifiers()[KeyModifier::SHIFT]) {
             setDirectionalLightVisibility(false);
         }
     }

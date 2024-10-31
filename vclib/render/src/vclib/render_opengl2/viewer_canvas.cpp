@@ -33,8 +33,7 @@ ViewerCanvas::ViewerCanvas(
     uint  width,
     uint  height,
     void* displayId) :
-        Canvas(winId, width, height, displayId),
-        ViewerI(width, height)
+        Canvas(winId, width, height, displayId), ViewerI(width, height)
 {
     init(width, height);
 }
@@ -44,8 +43,7 @@ ViewerCanvas::ViewerCanvas(
     const std::shared_ptr<DrawableObjectVector>& v,
     uint                                         width,
     uint                                         height,
-    void*                                        displayId) :
-        ViewerCanvas(winId, width, height, displayId)
+    void* displayId) : ViewerCanvas(winId, width, height, displayId)
 {
     setDrawableObjectVector(v);
 }

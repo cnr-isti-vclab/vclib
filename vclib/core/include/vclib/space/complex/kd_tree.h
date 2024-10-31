@@ -89,9 +89,8 @@ public:
         uint                          pointsPerCell = 16,
         uint                          maxDepth      = 64,
         bool                          balanced      = false) :
-            mPoints(points),
-            mIndices(points.size()), mPointsPerCell(pointsPerCell),
-            mMaxDepth(maxDepth)
+            mPoints(points), mIndices(points.size()),
+            mPointsPerCell(pointsPerCell), mMaxDepth(maxDepth)
     {
         std::iota(std::begin(mIndices), std::end(mIndices), 0);
         mNodes.resize(1);
@@ -274,8 +273,7 @@ public:
             // if the distance is less than the top of the max-heap, it could be
             // one of the k-nearest neighbours
             if (neighborQueue.size() < k ||
-                qnode.sq < queryPoint.squaredDist(neighborQueue.top().p))
-            {
+                qnode.sq < queryPoint.squaredDist(neighborQueue.top().p)) {
                 // when we arrive to a leaf
                 if (node.leaf) {
                     --count; // pop of the leaf

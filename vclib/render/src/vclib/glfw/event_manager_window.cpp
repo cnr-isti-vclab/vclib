@@ -54,8 +54,7 @@ void glfwErrorCallback(int error, const char* description)
 EventManagerWindow::EventManagerWindow(
     const std::string& windowTitle,
     uint               width,
-    uint               height) :
-        mTitle(windowTitle)
+    uint               height) : mTitle(windowTitle)
 {
     glfwSetErrorCallback(detail::glfwErrorCallback);
     if (!glfwInit()) {

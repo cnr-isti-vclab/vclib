@@ -203,8 +203,8 @@ private:
         else {
             auto range = mMap.equal_range(k);
             bool found = false;
-            for (Iterator ci = range.first; ci != range.second && !found; ++ci)
-            {
+            for (Iterator ci = range.first; ci != range.second && !found;
+                 ++ci) {
                 if (ci->second == v) {
                     found = true;
                 }

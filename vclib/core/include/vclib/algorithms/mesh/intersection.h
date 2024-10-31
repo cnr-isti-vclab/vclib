@@ -107,8 +107,7 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
             }
             else if (
                 (qH[m.index(f.vertex(j))] * qH[m.index(f.vertexMod(j + 1))]) <
-                0)
-            {
+                0) {
                 const CoordType& p0 = f.vertex(j)->coord();
                 const CoordType& p1 = f.vertexMod(j + 1)->coord();
 
@@ -139,11 +138,9 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
             em.edge(eid).setVertex(0, v0);
             em.edge(eid).setVertex(1, v1);
             if constexpr (
-                HasPerVertexNormal<MeshType> && HasPerVertexNormal<EdgeMesh>)
-            {
+                HasPerVertexNormal<MeshType> && HasPerVertexNormal<EdgeMesh>) {
                 if (isPerVertexNormalAvailable(m) &&
-                    isPerVertexNormalAvailable(em))
-                {
+                    isPerVertexNormalAvailable(em)) {
                     em.vertex(v0).normal() = nmVec[0];
                     em.vertex(v1).normal() = nmVec[1];
                 }

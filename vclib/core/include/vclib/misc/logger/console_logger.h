@@ -48,9 +48,9 @@ public:
         std::ostream& msgStream,
         std::ostream& progStream,
         std::ostream& debugStream) :
-            mErrStream(errStream),
-            mWarnStream(warnStream), mMsgStream(msgStream),
-            mProgStream(progStream), mDebugStream(debugStream)
+            mErrStream(errStream), mWarnStream(warnStream),
+            mMsgStream(msgStream), mProgStream(progStream),
+            mDebugStream(debugStream)
     {
     }
 

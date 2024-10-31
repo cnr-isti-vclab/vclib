@@ -26,9 +26,7 @@ namespace vcl::qt {
 
 GenericMeshRenderSettingsFrame::GenericMeshRenderSettingsFrame(
     MeshRenderSettings& settings,
-    QWidget*            parent) :
-        QFrame(parent),
-        mMRS(settings)
+    QWidget*            parent) : QFrame(parent), mMRS(settings)
 {
 }
 

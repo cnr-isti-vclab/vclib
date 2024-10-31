@@ -512,8 +512,7 @@ private:
                             else {
                                 for (uint i = 0;
                                      i < mTriPolyMap.triangleNumber(fi);
-                                     i++)
-                                {
+                                     i++) {
                                     mTNormals.push_back(f.normal().x());
                                     mTNormals.push_back(f.normal().y());
                                     mTNormals.push_back(f.normal().z());
@@ -532,8 +531,7 @@ private:
                             else {
                                 for (uint i = 0;
                                      i < mTriPolyMap.triangleNumber(fi);
-                                     i++)
-                                {
+                                     i++) {
                                     mTColors.push_back(f.color().abgr());
                                 }
                             }
@@ -573,8 +571,7 @@ private:
                             else {
                                 for (uint i = 0;
                                      i < mTriPolyMap.triangleNumber(fi);
-                                     i++)
-                                {
+                                     i++) {
                                     mWTexIds.push_back(f.textureIndex());
                                 }
                             }

@@ -417,8 +417,7 @@ public:
         uint i = 0;
         for (auto it = std::ranges::begin(r);
              it != std::ranges::end(r) && i < mVec.size();
-             ++i, ++it)
-        {
+             ++i, ++it) {
             mVec[i] = *it;
         }
     }

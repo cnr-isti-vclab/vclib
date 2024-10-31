@@ -39,9 +39,7 @@ public:
 
     DirectionalLight(
         const vcl::Point3<ScalarType>& d,
-        const vcl::Color&              c = vcl::Color::White) :
-            mDir(d),
-            mColor(c)
+        const vcl::Color& c = vcl::Color::White) : mDir(d), mColor(c)
     {
     }
 

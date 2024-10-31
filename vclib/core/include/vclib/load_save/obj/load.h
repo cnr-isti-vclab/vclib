@@ -132,8 +132,7 @@ void loadObjMaterials(
                     }
                     if (*token == "-blendu" || *token == "-blendv" ||
                         *token == "-cc" || *token == "-clamp" ||
-                        *token == "-texres")
-                    {
+                        *token == "-texres") {
                         // ignore the argument and the value
                         ++token;
                         ++token;
@@ -544,8 +543,7 @@ void loadObj(
             // store them in the mesh later
             if constexpr (
                 HasPerVertexTexCoord<MeshType> ||
-                HasPerFaceWedgeTexCoords<MeshType>)
-            {
+                HasPerFaceWedgeTexCoords<MeshType>) {
                 if (header == "vt") {
                     // save the texcoord for later
                     TexCoordd tf;

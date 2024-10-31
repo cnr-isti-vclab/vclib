@@ -30,8 +30,7 @@ namespace vcl::qt {
 FilterMeshDockWidget::FilterMeshDockWidget(
     const std::shared_ptr<proc::FilterMeshAction>& action,
     QWidget*                                       parent) :
-        QDockWidget(parent),
-        mUI(new Ui::FilterMeshDockWidget), mAction(action)
+        QDockWidget(parent), mUI(new Ui::FilterMeshDockWidget), mAction(action)
 {
     mUI->setupUi(this);
 
