@@ -88,10 +88,6 @@ void ViewerWidget::onKeyPress(Key::Enum key)
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 bool ViewerWidget::event(QEvent* event)
 {
-    // if (event->type() == QEvent::UpdateRequest) {
-    //     frame();
-    //     return true;
-    // }
     return EventManagerWidget::event(event);
 }
 #endif

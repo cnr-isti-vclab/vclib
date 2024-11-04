@@ -248,7 +248,11 @@ void EventManagerWindow::glfwScrollCallback(
     double xoffset,
     double yoffset)
 {
-    onMouseScroll(xoffset * 120, yoffset * 120);
+    // This is ok for macOS
+    // TODO check other platforms
+    // TODO check if content scale must be used
+    const double ToPixelFactor = 10;
+    onMouseScroll(xoffset * ToPixelFactor, yoffset * ToPixelFactor);
 }
 
 void EventManagerWindow::setCallbacks()
