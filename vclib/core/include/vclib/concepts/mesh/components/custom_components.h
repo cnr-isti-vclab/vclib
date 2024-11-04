@@ -39,11 +39,9 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasCustomComponents = requires (T o, const T& co, std::string s) {
-    // clang-format off
-    { o.hasCustomComponent( std::string() ) } -> std::same_as<bool>;
+    { o.hasCustomComponent(std::string()) } -> std::same_as<bool>;
     { o.template customComponent<int>(s) } -> std::same_as<int&>;
     { co.template customComponent<int>(s) } -> std::same_as<const int&>;
-    // clang-format on
 };
 
 } // namespace vcl::comp

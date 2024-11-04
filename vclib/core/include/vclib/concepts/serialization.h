@@ -38,9 +38,7 @@ namespace vcl {
  */
 template<typename T>
 concept OutputStreamable = requires (std::ostream& os, T value) {
-    // clang-format off
     { os << value } -> std::convertible_to<std::ostream&>;
-    // clang-format on
 };
 
 /**
@@ -53,9 +51,7 @@ concept OutputStreamable = requires (std::ostream& os, T value) {
  */
 template<typename T>
 concept InputStreamable = requires (std::istream& is, T& value) {
-    // clang-format off
     { is >> value } -> std::convertible_to<std::istream&>;
-    // clang-format on
 };
 
 /**
@@ -69,10 +65,8 @@ concept InputStreamable = requires (std::istream& is, T& value) {
 template<typename T>
 concept Serializable =
     requires (T& o, const T& co, std::ostream& os, std::istream& is) {
-        // clang-format off
-    { co.serialize(os) } -> std::same_as<void>;
-    { o.deserialize(is) } -> std::same_as<void>;
-        // clang-format on
+        { co.serialize(os) } -> std::same_as<void>;
+        { o.deserialize(is) } -> std::same_as<void>;
     };
 
 } // namespace vcl

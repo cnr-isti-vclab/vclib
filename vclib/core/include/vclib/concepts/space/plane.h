@@ -54,19 +54,17 @@ namespace vcl {
 template<typename T>
 concept PlaneConcept =
     requires (T o, const T& co, const typename T::PointType& p) {
-        // clang-format off
-    typename T::ScalarType;
-    typename T::PointType;
+        typename T::ScalarType;
+        typename T::PointType;
 
-    { co.direction() } -> std::same_as<const typename T::PointType&>;
-    { co.offset() } -> std::same_as<typename T::ScalarType>;
+        { co.direction() } -> std::same_as<const typename T::PointType&>;
+        { co.offset() } -> std::same_as<typename T::ScalarType>;
 
-    { co.projectPoint(p) } -> std::same_as<typename T::PointType>;
-    { co.mirrorPoint(p) } -> std::same_as<typename T::PointType>;
+        { co.projectPoint(p) } -> std::same_as<typename T::PointType>;
+        { co.mirrorPoint(p) } -> std::same_as<typename T::PointType>;
 
-    { co == co } -> std::same_as<bool>;
-    { co != co } -> std::same_as<bool>;
-        // clang-format on
+        { co == co } -> std::same_as<bool>;
+        { co != co } -> std::same_as<bool>;
     };
 
 } // namespace vcl

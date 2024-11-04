@@ -37,11 +37,9 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasBoundingBox = requires (T o, const T& co) {
-    // clang-format off
     typename T::BoundingBoxType;
     { o.boundingBox() } -> std::same_as<typename T::BoundingBoxType&>;
     { co.boundingBox() } -> std::same_as<const typename T::BoundingBoxType&>;
-    // clang-format on
 };
 
 } // namespace vcl::comp

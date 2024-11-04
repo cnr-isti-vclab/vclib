@@ -43,7 +43,6 @@
 // that are part of the component class.
 template<typename T>
 concept HasBarComponent = requires (T t, const T& ct) {
-    // clang-format off
     // accessor to the int value of the bar component, returns int&
     { t.foo() } -> std::same_as<int&>;
 
@@ -55,7 +54,6 @@ concept HasBarComponent = requires (T t, const T& ct) {
 
     // const accessor to the double value of the bar component
     { ct.bar() } -> std::same_as<double>;
-    // clang-format on
 };
 
 // if you want, you can also define a concept that checks if an element has

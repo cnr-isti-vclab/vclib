@@ -37,7 +37,6 @@ namespace vcl {
  */
 template<typename T>
 concept ColorConcept = requires (T o, const T& co) {
-    // clang-format off
     { o.red() } -> std::same_as<uint8_t&>;
     { o.green() } -> std::same_as<uint8_t&>;
     { o.blue() } -> std::same_as<uint8_t&>;
@@ -51,7 +50,6 @@ concept ColorConcept = requires (T o, const T& co) {
     { o.greenF() } -> std::same_as<float>;
     { o.blueF() } -> std::same_as<float>;
     { o.alphaF() } -> std::same_as<float>;
-    // clang-format on
 };
 
 } // namespace vcl

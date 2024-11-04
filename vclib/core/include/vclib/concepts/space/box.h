@@ -40,7 +40,6 @@ namespace vcl {
 template<typename T>
 concept BoxConcept =
     requires (T o, const T& co, const typename T::PointType& p) {
-        // clang-format off
         typename T::PointType;
         o.DIM;
 

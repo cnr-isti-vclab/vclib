@@ -45,7 +45,6 @@ concept HasVertexContainer = requires (
     const T&                          co,
     typename T::VertexType*           v,
     typename T::VertexType::CoordType c) {
-    // clang-format off
     typename T::VertexType;
     typename T::VertexIterator;
     typename T::ConstVertexIterator;
@@ -75,7 +74,6 @@ concept HasVertexContainer = requires (
 
     requires std::ranges::range<decltype(o.vertices())>;
     requires std::ranges::range<decltype(co.vertices())>;
-    // clang-format on
 };
 
 } // namespace mesh

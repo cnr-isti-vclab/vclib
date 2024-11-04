@@ -31,12 +31,10 @@ namespace vcl {
 
 template<typename T>
 concept ElementConcept = requires (T o, const T& co) {
-    // clang-format off
     T::ELEMENT_ID;
     typename T::Components;
     typename T::ParentMeshType;
     { co.index() } -> std::same_as<uint>;
-    // clang-format on
 };
 
 } // namespace vcl

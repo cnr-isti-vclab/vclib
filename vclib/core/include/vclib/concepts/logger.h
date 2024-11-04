@@ -44,7 +44,6 @@ namespace vcl {
 template<typename T>
 concept LoggerConcept =
     requires (T& o, const T& co, std::string msg, typename T::LogLevel lvl) {
-        // clang-format off
         typename T::LogLevel;
 
         { o.enableIndentation() } -> std::same_as<void>;
@@ -75,16 +74,15 @@ concept LoggerConcept =
         { o.log(uint(), msg) } -> std::same_as<void>;
         { o.log(uint(), lvl, msg) } -> std::same_as<void>;
 
-
         { o.startProgress(msg, uint()) } -> std::same_as<void>;
         { o.startProgress(msg, uint(), uint()) } -> std::same_as<void>;
         { o.startProgress(msg, uint(), uint(), uint()) } -> std::same_as<void>;
-        { o.startProgress(msg, uint(), uint(), uint(), uint()) } ->
-            std::same_as<void>;
-        { o.endProgress() }  -> std::same_as<void>;
-        { o.progress(uint()) }  -> std::same_as<void>;
-        // clang-format off
-};
+        {
+            o.startProgress(msg, uint(), uint(), uint(), uint())
+        } -> std::same_as<void>;
+        { o.endProgress() } -> std::same_as<void>;
+        { o.progress(uint()) } -> std::same_as<void>;
+    };
 
 } // nameaspace vcl
 

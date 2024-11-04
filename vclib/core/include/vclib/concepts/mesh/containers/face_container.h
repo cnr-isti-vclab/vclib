@@ -42,7 +42,6 @@ namespace mesh {
 template<typename T>
 concept HasFaceContainer =
     requires (T o, const T& co, typename T::FaceType* f) {
-        // clang-format off
         typename T::FaceType;
         typename T::FaceIterator;
         typename T::ConstFaceIterator;
@@ -70,7 +69,6 @@ concept HasFaceContainer =
 
         requires std::ranges::range<decltype(o.faces())>;
         requires std::ranges::range<decltype(co.faces())>;
-        // clang-format on
     };
 
 } // namespace mesh

@@ -52,7 +52,6 @@ namespace vcl {
 template<typename T>
 concept MeshConcept =
     mesh::HasVertexContainer<T> && requires (T o, const T& co) {
-        // clang-format off
         typename T::Containers;
         typename T::Components;
 
@@ -62,7 +61,6 @@ concept MeshConcept =
         { o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
         { o.importFrom(T()) } -> std::same_as<void>;
         { o.swap(o) } -> std::same_as<void>;
-        // clang-format on
     };
 
 /**

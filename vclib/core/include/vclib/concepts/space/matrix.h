@@ -40,7 +40,6 @@ namespace vcl {
  */
 template<typename T>
 concept EigenMatrixConcept = requires (T o, const T& co) {
-    // clang-format off
     typename T::Scalar;
 
     co.RowsAtCompileTime;
@@ -51,7 +50,6 @@ concept EigenMatrixConcept = requires (T o, const T& co) {
 
     o.operator()(std::size_t(), std::size_t());
     co.operator()(std::size_t(), std::size_t());
-    // clang-format on
 };
 
 /**
@@ -70,10 +68,8 @@ concept EigenMatrixConcept = requires (T o, const T& co) {
  */
 template<typename T>
 concept ResizableEigenMatrixConceipt = EigenMatrixConcept<T> && requires (T o) {
-    // clang-format off
     o.resize(std::size_t(), std::size_t());
     o.conservativeResize(std::size_t(), std::size_t());
-    // clang-format on
 };
 
 /**

@@ -40,7 +40,6 @@ namespace vcl {
  */
 template<typename T>
 concept SamplerConcept = requires (T o, const T& co) {
-    // clang-format off
     typename T::PointType;
 
     o.samples();
@@ -54,7 +53,6 @@ concept SamplerConcept = requires (T o, const T& co) {
     
     co.begin();
     co.end();
-    // clang-format on
 };
 
 } // namespace vcl

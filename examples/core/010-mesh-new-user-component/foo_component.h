@@ -37,13 +37,11 @@
 // that are part of the component class.
 template<typename T>
 concept HasFooComponent = requires (T t, const T& ct) {
-    // clang-format off
     // accessor to the foo component, returns int&
     { t.foo() } -> std::same_as<int&>;
 
     // const accessor to the foo component
     { ct.foo() } -> std::same_as<int>;
-    // clang-format on
 };
 
 // class of the Foo component

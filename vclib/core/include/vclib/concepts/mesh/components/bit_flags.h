@@ -38,7 +38,6 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasBitFlags = requires (T o, const T& co) {
-    // clang-format off
     { co.deleted() } -> std::same_as<bool>;
     { co.selected() } -> std::same_as<bool>;
     { co.onBorder() } -> std::same_as<bool>;
@@ -46,9 +45,8 @@ concept HasBitFlags = requires (T o, const T& co) {
     { co.userBit(uint()) } -> std::same_as<bool>;
 
     { o.resetBitFlags() } -> std::same_as<void>;
-    { o.importFlagsFromVCGFormat(int())} -> std::same_as<void>;
+    { o.importFlagsFromVCGFormat(int()) } -> std::same_as<void>;
     { co.exportFlagsToVCGFormat() } -> std::same_as<int>;
-    // clang-format on
 };
 
 namespace detail {
@@ -60,12 +58,10 @@ namespace detail {
  */
 template<typename T>
 concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T o, const T& co) {
-    // clang-format off
     { co.edgeOnBorder(uint()) } -> std::same_as<bool>;
     { co.edgeSelected(uint()) } -> std::same_as<bool>;
     { co.edgeVisited(uint()) } -> std::same_as<bool>;
     { co.edgeFaux(uint()) } -> std::same_as<bool>;
-    // clang-format on
 };
 
 } // namespace detail
@@ -80,9 +76,7 @@ concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T o, const T& co) {
  */
 template<typename T>
 concept HasPolygonBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
-    // clang-format off
     { o.__polygonBitFlags() } -> std::same_as<void>;
-    // clang-format on
 };
 
 /**
@@ -95,9 +89,7 @@ concept HasPolygonBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
  */
 template<typename T>
 concept HasTriangleBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
-    // clang-format off
     { o.__triangleBitFlags() } -> std::same_as<void>;
-    // clang-format on
 };
 
 /**

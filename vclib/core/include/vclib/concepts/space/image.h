@@ -33,14 +33,13 @@ namespace vcl {
 
 template<typename T>
 concept ImageConcept = requires (T&& o) {
-    // clang-format off
     { o.isNull() } -> std::same_as<bool>;
     { o.height() } -> std::same_as<int>;
     { o.width() } -> std::same_as<int>;
 
     { o.sizeInBytes() } -> std::same_as<std::size_t>;
 
-    { o.pixel(uint(), uint()) }  -> ColorConcept;
+    { o.pixel(uint(), uint()) } -> ColorConcept;
 
     { o.data() } -> std::same_as<const unsigned char*>;
 
@@ -51,8 +50,6 @@ concept ImageConcept = requires (T&& o) {
     { o.mirror() } -> std::same_as<void>;
     { o.mirror(bool()) } -> std::same_as<void>;
     { o.mirror(bool(), bool()) } -> std::same_as<void>;
-
-    // clang-format on
 };
 
 } // namespace vcl

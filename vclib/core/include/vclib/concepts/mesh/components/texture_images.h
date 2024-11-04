@@ -39,7 +39,6 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasTextureImages = requires (T o, const T& co, std::string s) {
-    // clang-format off
     typename T::TextureType;
     typename T::TextureIterator;
     typename T::ConstTextureIterator;
@@ -60,7 +59,6 @@ concept HasTextureImages = requires (T o, const T& co, std::string s) {
     { co.textureEnd() } -> std::same_as<typename T::ConstTextureIterator>;
     o.textures();
     co.textures();
-    // clang-format on
 };
 
 } // namespace vcl::comp

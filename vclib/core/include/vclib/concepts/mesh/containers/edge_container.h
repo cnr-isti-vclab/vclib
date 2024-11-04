@@ -42,7 +42,6 @@ namespace mesh {
 template<typename T>
 concept HasEdgeContainer =
     requires (T o, const T& co, typename T::EdgeType* e) {
-        // clang-format off
         typename T::EdgeType;
         typename T::EdgeIterator;
         typename T::ConstEdgeIterator;
@@ -70,7 +69,6 @@ concept HasEdgeContainer =
 
         requires std::ranges::range<decltype(o.edges())>;
         requires std::ranges::range<decltype(co.edges())>;
-        // clang-format on
     };
 
 } // namespace mesh

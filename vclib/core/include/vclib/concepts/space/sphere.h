@@ -66,7 +66,6 @@ concept SphereConcept = requires (
     const T&                     co,
     const typename T::PointType& p,
     const typename T::BoxType&   b) {
-    // clang-format off
     typename T::ScalarType;
     typename T::PointType;
     typename T::BoxType;
@@ -85,7 +84,6 @@ concept SphereConcept = requires (
 
     { co.isInside(p) } -> std::same_as<bool>;
     { co.intersects(b) } -> std::same_as<bool>;
-    // clang-format on
 };
 
 } // namespace vcl

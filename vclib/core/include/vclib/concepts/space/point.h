@@ -37,7 +37,6 @@ namespace vcl {
  */
 template<typename T>
 concept PointConcept = requires (T o, const T& co) {
-    // clang-format off
     typename T::ScalarType;
     o.DIM;
     o.isDegenerate();
@@ -81,10 +80,9 @@ concept PointConcept = requires (T o, const T& co) {
     { co - typename T::ScalarType() } -> std::convertible_to<T>;
     { co - co } -> std::convertible_to<T>;
 
-    { co * typename T::ScalarType() } -> std::convertible_to<T>;
+    { co* typename T::ScalarType() } -> std::convertible_to<T>;
 
     { co / typename T::ScalarType() } -> std::convertible_to<T>;
-    // clang-format on
 };
 
 /**

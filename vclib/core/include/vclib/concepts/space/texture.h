@@ -31,10 +31,8 @@ namespace vcl {
 
 template<typename T>
 concept TextureConcept = requires (T&& o) {
-    // clang-format off
     { o.path() } -> std::convertible_to<std::string>;
     { o.image() } -> ImageConcept;
-    // clang-format on
 };
 
 } // namespace vcl

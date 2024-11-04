@@ -43,11 +43,9 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasColor = requires (T o, const T& co) {
-    // clang-format off
     typename T::ColorType;
     { o.color() } -> std::same_as<typename T::ColorType&>;
     { co.color() } -> std::same_as<const typename T::ColorType&>;
-    // clang-format on
 };
 
 /**

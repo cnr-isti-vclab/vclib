@@ -52,7 +52,6 @@ namespace vcl {
  */
 template<typename T>
 concept SegmentConcept = requires (T o, const T& co) {
-    // clang-format off
     typename T::PointType;
     typename T::ScalarType;
     o.DIM;
@@ -60,7 +59,6 @@ concept SegmentConcept = requires (T o, const T& co) {
     { co.p0() } -> std::same_as<const typename T::PointType&>;
     { o.p1() } -> std::same_as<typename T::PointType&>;
     { co.p1() } -> std::same_as<const typename T::PointType&>;
-    // clang-format on
 };
 
 /**

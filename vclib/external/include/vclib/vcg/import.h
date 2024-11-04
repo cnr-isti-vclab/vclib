@@ -34,15 +34,19 @@ namespace vcl::vc {
 namespace detail {
 
 // all the custom components of these types will be imported
-using SupportedCustomComponentTypes =
-    // clang-format off
-    TypeWrapper<
-        int, float, double,
-        vcg::Point2i, vcg::Point2f, vcg::Point2d,
-        vcg::Point3i, vcg::Point3f, vcg::Point3d,
-        vcg::Point4i, vcg::Point4f, vcg::Point4d>;
-
-// clang-format on
+using SupportedCustomComponentTypes = TypeWrapper<
+    int,
+    float,
+    double,
+    vcg::Point2i,
+    vcg::Point2f,
+    vcg::Point2d,
+    vcg::Point3i,
+    vcg::Point3f,
+    vcg::Point3d,
+    vcg::Point4i,
+    vcg::Point4f,
+    vcg::Point4d>;
 
 template<ElementConcept VCLElem, typename VCGElem>
 void importNormal(VCLElem& vclElem, const VCGElem& vcgElem)

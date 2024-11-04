@@ -42,9 +42,7 @@ namespace vcl::comp {
  */
 template<typename T>
 concept ComponentConcept = requires {
-    // clang-format off
     { T::COMPONENT_ID } -> std::same_as<const uint&>;
-    // clang-format on
 };
 
 /**
@@ -57,10 +55,8 @@ concept ComponentConcept = requires {
  */
 template<typename T>
 concept IsVerticalComponent = T::IS_VERTICAL == true && requires {
-    // clang-format off
     typename T::DataValueType;
     { T::IS_VERTICAL } -> std::same_as<const bool&>;
-    // clang-format on
 };
 
 /**
@@ -94,9 +90,7 @@ concept IsOptionalComponent =
  */
 template<typename T>
 concept HasInitMemberFunction = requires (T o) {
-    // clang-format off
     { o.init() } -> std::same_as<void>;
-    // clang-format on
 };
 
 /**
@@ -109,9 +103,7 @@ concept HasInitMemberFunction = requires (T o) {
  */
 template<typename T>
 concept HasIsAvailableMemberFunction = requires (T o) {
-    // clang-format off
     { o.isAvailable() } -> std::same_as<bool>;
-    // clang-format on
 };
 
 /**
