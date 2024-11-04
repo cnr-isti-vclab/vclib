@@ -86,10 +86,17 @@ vcl::Key::Enum fromGLFW(Key key)
 
     case GLFW_KEY_LEFT_SHIFT: return vcl::Key::SHIFT;
     case GLFW_KEY_RIGHT_SHIFT: return vcl::Key::SHIFT;
+#if defined(__APPLE__)
+    case GLFW_KEY_LEFT_CONTROL: return vcl::Key::SUPER;
+    case GLFW_KEY_RIGHT_CONTROL: return vcl::Key::SUPER;
+    case GLFW_KEY_LEFT_SUPER: return vcl::Key::CONTROL;
+    case GLFW_KEY_RIGHT_SUPER: return vcl::Key::CONTROL;
+#else
     case GLFW_KEY_LEFT_CONTROL: return vcl::Key::CONTROL;
     case GLFW_KEY_RIGHT_CONTROL: return vcl::Key::CONTROL;
     case GLFW_KEY_LEFT_SUPER: return vcl::Key::SUPER;
     case GLFW_KEY_RIGHT_SUPER: return vcl::Key::SUPER;
+#endif
     case GLFW_KEY_LEFT_ALT: return vcl::Key::ALT;
     case GLFW_KEY_RIGHT_ALT: return vcl::Key::ALT;
     case GLFW_KEY_CAPS_LOCK: return vcl::Key::CAPS_LOCK;
@@ -129,8 +136,17 @@ KeyModifier::Enum fromGLFW(KeyboardModifier key)
     switch (key) {
     case GLFW_KEY_LEFT_SHIFT: return KeyModifier::SHIFT;
     case GLFW_KEY_RIGHT_SHIFT: return KeyModifier::SHIFT;
+#if defined(__APPLE__)
+    case GLFW_KEY_LEFT_CONTROL: return KeyModifier::SUPER;
+    case GLFW_KEY_RIGHT_CONTROL: return KeyModifier::SUPER;
+    case GLFW_KEY_LEFT_SUPER: return KeyModifier::CONTROL;
+    case GLFW_KEY_RIGHT_SUPER: return KeyModifier::CONTROL;
+#else
     case GLFW_KEY_LEFT_CONTROL: return KeyModifier::CONTROL;
     case GLFW_KEY_RIGHT_CONTROL: return KeyModifier::CONTROL;
+    case GLFW_KEY_LEFT_SUPER: return KeyModifier::SUPER;
+    case GLFW_KEY_RIGHT_SUPER: return KeyModifier::SUPER;
+#endif
     case GLFW_KEY_LEFT_ALT: return KeyModifier::ALT;
     case GLFW_KEY_RIGHT_ALT: return KeyModifier::ALT;
     default: return KeyModifier::NO_MODIFIER;
@@ -143,8 +159,17 @@ KeyModifiers fromGLFW(KeyboardModifiers mods)
 
     if (mods & GLFW_MOD_SHIFT)
         res[KeyModifier::SHIFT] = true;
+#if defined(__APPLE__)
+    if (mods & GLFW_MOD_CONTROL)
+        res[KeyModifier::SUPER] = true;
+    if (mods & GLFW_MOD_SUPER)
+        res[KeyModifier::CONTROL] = true;
+#else
     if (mods & GLFW_MOD_CONTROL)
         res[KeyModifier::CONTROL] = true;
+    if (mods & GLFW_MOD_SUPER)
+        res[KeyModifier::SUPER] = true;
+#endif
     if (mods & GLFW_MOD_ALT)
         res[KeyModifier::ALT] = true;
 

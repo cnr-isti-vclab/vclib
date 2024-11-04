@@ -43,7 +43,8 @@ struct KeyModifier
         SHIFT       = 0,
         CONTROL     = 1,
         ALT         = 2,
-        NO_MODIFIER = 3,
+        SUPER       = 3,
+        NO_MODIFIER = 4,
     };
 };
 
@@ -145,6 +146,7 @@ inline Key::Enum modifierToKey(KeyModifier::Enum modifier)
     switch (modifier) {
     case KeyModifier::SHIFT: return Key::SHIFT;
     case KeyModifier::CONTROL: return Key::CONTROL;
+    case KeyModifier::SUPER: return Key::SUPER;
     case KeyModifier::ALT: return Key::ALT;
     default: return Key::UNKNOWN;
     }
@@ -155,6 +157,7 @@ inline KeyModifier::Enum keyToModifier(Key::Enum key)
     switch (key) {
     case Key::SHIFT: return KeyModifier::SHIFT;
     case Key::CONTROL: return KeyModifier::CONTROL;
+    case Key::SUPER: return KeyModifier::SUPER;
     case Key::ALT: return KeyModifier::ALT;
     default: return KeyModifier::NO_MODIFIER;
     }
