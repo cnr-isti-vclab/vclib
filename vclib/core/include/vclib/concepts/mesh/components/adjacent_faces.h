@@ -47,58 +47,58 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasAdjacentFaces = requires (
-    T                                          o,
-    const T&                                   co,
+    T                                          obj,
+    const T&                                   cObj,
     typename T::AdjacentFaceType               f,
     typename T::AdjacentFaceIterator           it,
-    typename T::ConstAdjacentFaceIterator      cit,
-    typename T::ConstAdjacentFaceIndexIterator ciit,
-    typename T::AdjacentFaceType*              fp,
-    const typename T::AdjacentFaceType*        cfp,
-    std::vector<typename T::AdjacentFaceType*> v) {
+    typename T::ConstAdjacentFaceIterator      cIt,
+    typename T::ConstAdjacentFaceIndexIterator cIIt,
+    typename T::AdjacentFaceType*              fP,
+    const typename T::AdjacentFaceType*        cFP,
+    std::vector<typename T::AdjacentFaceType*> vec) {
     T::ADJ_FACE_NUMBER;
     typename T::AdjacentFaceType;
     typename T::AdjacentFaceIterator;
     typename T::ConstAdjacentFaceIterator;
     typename T::ConstAdjacentFaceIndexIterator;
 
-    { o.adjFacesNumber() } -> std::same_as<uint>;
-    { o.adjFace(uint()) } -> std::same_as<decltype(fp)>;
-    { co.adjFace(uint()) } -> std::same_as<decltype(cfp)>;
-    { co.adjFaceIndex(uint()) } -> std::same_as<uint>;
-    { o.adjFaceMod(int()) } -> std::same_as<decltype(fp)>;
-    { co.adjFaceMod(int()) } -> std::same_as<decltype(cfp)>;
-    { co.adjFaceIndexMod(uint()) } -> std::same_as<uint>;
+    { obj.adjFacesNumber() } -> std::same_as<uint>;
+    { obj.adjFace(uint()) } -> std::same_as<decltype(fP)>;
+    { cObj.adjFace(uint()) } -> std::same_as<decltype(cFP)>;
+    { cObj.adjFaceIndex(uint()) } -> std::same_as<uint>;
+    { obj.adjFaceMod(int()) } -> std::same_as<decltype(fP)>;
+    { cObj.adjFaceMod(int()) } -> std::same_as<decltype(cFP)>;
+    { cObj.adjFaceIndexMod(uint()) } -> std::same_as<uint>;
 
-    { o.setAdjFace(uint(), &f) } -> std::same_as<void>;
-    { o.setAdjFace(uint(), uint()) } -> std::same_as<void>;
-    { o.setAdjFace(it, &f) } -> std::same_as<void>;
-    { o.setAdjFace(it, uint()) } -> std::same_as<void>;
-    { o.setAdjFace(cit, &f) } -> std::same_as<void>;
-    { o.setAdjFace(cit, uint()) } -> std::same_as<void>;
-    { o.setAdjFace(ciit, &f) } -> std::same_as<void>;
-    { o.setAdjFace(ciit, uint()) } -> std::same_as<void>;
-    { o.setAdjFaceMod(int(), &f) } -> std::same_as<void>;
-    { o.setAdjFaceMod(int(), uint()) } -> std::same_as<void>;
-    { o.setAdjFaces(v) } -> std::same_as<void>;
+    { obj.setAdjFace(uint(), &f) } -> std::same_as<void>;
+    { obj.setAdjFace(uint(), uint()) } -> std::same_as<void>;
+    { obj.setAdjFace(it, &f) } -> std::same_as<void>;
+    { obj.setAdjFace(it, uint()) } -> std::same_as<void>;
+    { obj.setAdjFace(cIt, &f) } -> std::same_as<void>;
+    { obj.setAdjFace(cIt, uint()) } -> std::same_as<void>;
+    { obj.setAdjFace(cIIt, &f) } -> std::same_as<void>;
+    { obj.setAdjFace(cIIt, uint()) } -> std::same_as<void>;
+    { obj.setAdjFaceMod(int(), &f) } -> std::same_as<void>;
+    { obj.setAdjFaceMod(int(), uint()) } -> std::same_as<void>;
+    { obj.setAdjFaces(vec) } -> std::same_as<void>;
 
-    { co.containsAdjFace(&f) } -> std::same_as<bool>;
-    { co.containsAdjFace(uint()) } -> std::same_as<bool>;
-    { co.indexOfAdjFace(&f) } -> std::same_as<uint>;
-    { co.indexOfAdjFace(uint()) } -> std::same_as<uint>;
+    { cObj.containsAdjFace(&f) } -> std::same_as<bool>;
+    { cObj.containsAdjFace(uint()) } -> std::same_as<bool>;
+    { cObj.indexOfAdjFace(&f) } -> std::same_as<uint>;
+    { cObj.indexOfAdjFace(uint()) } -> std::same_as<uint>;
 
-    { o.adjFaceBegin() } -> std::same_as<decltype(it)>;
-    { o.adjFaceEnd() } -> std::same_as<decltype(it)>;
+    { obj.adjFaceBegin() } -> std::same_as<decltype(it)>;
+    { obj.adjFaceEnd() } -> std::same_as<decltype(it)>;
 
-    { co.adjFaceBegin() } -> std::same_as<decltype(cit)>;
-    { co.adjFaceEnd() } -> std::same_as<decltype(cit)>;
+    { cObj.adjFaceBegin() } -> std::same_as<decltype(cIt)>;
+    { cObj.adjFaceEnd() } -> std::same_as<decltype(cIt)>;
 
-    { co.adjFaceIndexBegin() } -> std::same_as<decltype(ciit)>;
-    { co.adjFaceIndexEnd() } -> std::same_as<decltype(ciit)>;
+    { cObj.adjFaceIndexBegin() } -> std::same_as<decltype(cIIt)>;
+    { cObj.adjFaceIndexEnd() } -> std::same_as<decltype(cIIt)>;
 
-    { o.adjFaces() } -> vcl::RangeOf<decltype(fp)>;
-    { co.adjFaces() } -> vcl::RangeOf<decltype(cfp)>;
-    { co.adjFaceIndices() } -> vcl::RangeOf<uint>;
+    { obj.adjFaces() } -> vcl::RangeOf<decltype(fP)>;
+    { cObj.adjFaces() } -> vcl::RangeOf<decltype(cFP)>;
+    { cObj.adjFaceIndices() } -> vcl::RangeOf<uint>;
 };
 
 /**

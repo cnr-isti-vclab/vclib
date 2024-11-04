@@ -47,62 +47,58 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasAdjacentEdges = requires (
-    T                                          o,
-    const T&                                   co,
+    T                                          obj,
+    const T&                                   cObj,
     typename T::AdjacentEdgeType               e,
-    std::vector<typename T::AdjacentEdgeType*> v) {
-    // clang-format off
+    typename T::AdjacentEdgeIterator           it,
+    typename T::ConstAdjacentEdgeIterator      cIt,
+    typename T::ConstAdjacentEdgeIndexIterator cIIt,
+    typename T::AdjacentEdgeType*              eP,
+    const typename T::AdjacentEdgeType*        cEP,
+    std::vector<typename T::AdjacentEdgeType*> vec) {
     T::ADJ_EDGE_NUMBER;
     typename T::AdjacentEdgeType;
     typename T::AdjacentEdgeIterator;
     typename T::ConstAdjacentEdgeIterator;
     typename T::ConstAdjacentEdgeIndexIterator;
 
-    { o.adjEdgesNumber() } -> std::same_as<uint>;
-    { o.adjEdge(uint()) } -> std::same_as<typename T::AdjacentEdgeType*>;
-    { co.adjEdge(uint()) } -> std::same_as<const typename T::AdjacentEdgeType*>;
-    { co.adjEdgeIndex(uint()) } -> std::same_as<uint>;
-    { o.adjEdgeMod(int()) } -> std::same_as<typename T::AdjacentEdgeType*>;
-    { co.adjEdgeMod(int()) } ->
-        std::same_as<const typename T::AdjacentEdgeType*>;
-    { co.adjEdgeIndexMod(uint()) } -> std::same_as<uint>;
+    { obj.adjEdgesNumber() } -> std::same_as<uint>;
+    { obj.adjEdge(uint()) } -> std::same_as<decltype(eP)>;
+    { cObj.adjEdge(uint()) } -> std::same_as<decltype(cEP)>;
+    { cObj.adjEdgeIndex(uint()) } -> std::same_as<uint>;
+    { obj.adjEdgeMod(int()) } -> std::same_as<decltype(eP)>;
+    { cObj.adjEdgeMod(int()) } -> std::same_as<decltype(cEP)>;
+    { cObj.adjEdgeIndexMod(uint()) } -> std::same_as<uint>;
 
-    { o.setAdjEdge(uint(), &e) } -> std::same_as<void>;
-    { o.setAdjEdge(uint(), uint()) } -> std::same_as<void>;
-    { o.setAdjEdge(typename T::AdjacentEdgeIterator(), &e) } ->
-        std::same_as<void>;
-    { o.setAdjEdge(typename T::AdjacentEdgeIterator(), uint()) } ->
-        std::same_as<void>;
-    { o.setAdjEdge(typename T::ConstAdjacentEdgeIterator(), &e) } ->
-        std::same_as<void>;
-    { o.setAdjEdge(typename T::ConstAdjacentEdgeIterator(), uint()) } ->
-        std::same_as<void>;
-    { o.setAdjEdge(typename T::ConstAdjacentEdgeIndexIterator(), &e) } ->
-        std::same_as<void>;
-    { o.setAdjEdge(typename T::ConstAdjacentEdgeIndexIterator(), uint()) } ->
-        std::same_as<void>;
-    { o.setAdjEdgeMod(int(), &e) } -> std::same_as<void>;
-    { o.setAdjEdgeMod(int(), uint()) } -> std::same_as<void>;
-    { o.setAdjEdges(v) } -> std::same_as<void>;
+    { obj.setAdjEdge(uint(), &e) } -> std::same_as<void>;
+    { obj.setAdjEdge(uint(), uint()) } -> std::same_as<void>;
+    { obj.setAdjEdge(it, &e) } -> std::same_as<void>;
+    { obj.setAdjEdge(it, uint()) } -> std::same_as<void>;
+    { obj.setAdjEdge(cIt, &e) } -> std::same_as<void>;
+    { obj.setAdjEdge(cIt, uint()) } -> std::same_as<void>;
+    { obj.setAdjEdge(cIIt, &e) } -> std::same_as<void>;
+    { obj.setAdjEdge(cIIt, uint()) } -> std::same_as<void>;
+    { obj.setAdjEdgeMod(int(), &e) } -> std::same_as<void>;
+    { obj.setAdjEdgeMod(int(), uint()) } -> std::same_as<void>;
+    { obj.setAdjEdges(vec) } -> std::same_as<void>;
 
-    { co.containsAdjEdge(&e) } -> std::same_as<bool>;
-    { co.containsAdjEdge(uint()) } -> std::same_as<bool>;
-    { co.indexOfAdjEdge(&e) } -> std::same_as<uint>;
-    { co.indexOfAdjEdge(uint()) } -> std::same_as<uint>;
+    { cObj.containsAdjEdge(&e) } -> std::same_as<bool>;
+    { cObj.containsAdjEdge(uint()) } -> std::same_as<bool>;
+    { cObj.indexOfAdjEdge(&e) } -> std::same_as<uint>;
+    { cObj.indexOfAdjEdge(uint()) } -> std::same_as<uint>;
 
-    { co.adjEdgeBegin() } ->
-        std::same_as<typename T::ConstAdjacentEdgeIterator>;
-    { co.adjEdgeEnd() } -> std::same_as<typename T::ConstAdjacentEdgeIterator>;
+    { obj.adjEdgeBegin() } -> std::same_as<decltype(it)>;
+    { obj.adjEdgeEnd() } -> std::same_as<decltype(it)>;
 
-    { co.adjEdgeIndexBegin() } ->
-        std::same_as<typename T::ConstAdjacentEdgeIndexIterator>;
-    { co.adjEdgeIndexEnd() } ->
-        std::same_as<typename T::ConstAdjacentEdgeIndexIterator>;
+    { cObj.adjEdgeBegin() } -> std::same_as<decltype(cIt)>;
+    { cObj.adjEdgeEnd() } -> std::same_as<decltype(cIt)>;
 
-    { o.adjEdges() } -> vcl::RangeOf<typename T::AdjacentEdgeType*>;
-    { co.adjEdges() } -> vcl::RangeOf<const typename T::AdjacentEdgeType*>;
-    { co.adjEdgeIndices() } -> vcl::RangeOf<uint>;
-    // clang-format on
+    { cObj.adjEdgeIndexBegin() } -> std::same_as<decltype(cIIt)>;
+    { cObj.adjEdgeIndexEnd() } -> std::same_as<decltype(cIIt)>;
+
+    { obj.adjEdges() } -> vcl::RangeOf<decltype(eP)>;
+    { cObj.adjEdges() } -> vcl::RangeOf<decltype(cEP)>;
+    { cObj.adjEdgeIndices() } -> vcl::RangeOf<uint>;
 };
 
 /**

@@ -37,16 +37,16 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasBitFlags = requires (T o, const T& co) {
-    { co.deleted() } -> std::same_as<bool>;
-    { co.selected() } -> std::same_as<bool>;
-    { co.onBorder() } -> std::same_as<bool>;
-    { co.selected() } -> std::same_as<bool>;
-    { co.userBit(uint()) } -> std::same_as<bool>;
+concept HasBitFlags = requires (T obj, const T& cObj) {
+    { cObj.deleted() } -> std::same_as<bool>;
+    { cObj.selected() } -> std::same_as<bool>;
+    { cObj.onBorder() } -> std::same_as<bool>;
+    { cObj.selected() } -> std::same_as<bool>;
+    { cObj.userBit(uint()) } -> std::same_as<bool>;
 
-    { o.resetBitFlags() } -> std::same_as<void>;
-    { o.importFlagsFromVCGFormat(int()) } -> std::same_as<void>;
-    { co.exportFlagsToVCGFormat() } -> std::same_as<int>;
+    { obj.resetBitFlags() } -> std::same_as<void>;
+    { obj.importFlagsFromVCGFormat(int()) } -> std::same_as<void>;
+    { cObj.exportFlagsToVCGFormat() } -> std::same_as<int>;
 };
 
 namespace detail {
@@ -57,11 +57,11 @@ namespace detail {
  * that are contained on both the BitFlags components for Face Elements.
  */
 template<typename T>
-concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T o, const T& co) {
-    { co.edgeOnBorder(uint()) } -> std::same_as<bool>;
-    { co.edgeSelected(uint()) } -> std::same_as<bool>;
-    { co.edgeVisited(uint()) } -> std::same_as<bool>;
-    { co.edgeFaux(uint()) } -> std::same_as<bool>;
+concept FaceBitFlagsConcept = HasBitFlags<T> && requires (const T& cObj) {
+    { cObj.edgeOnBorder(uint()) } -> std::same_as<bool>;
+    { cObj.edgeSelected(uint()) } -> std::same_as<bool>;
+    { cObj.edgeVisited(uint()) } -> std::same_as<bool>;
+    { cObj.edgeFaux(uint()) } -> std::same_as<bool>;
 };
 
 } // namespace detail
@@ -75,9 +75,10 @@ concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T o, const T& co) {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasPolygonBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
-    { o.__polygonBitFlags() } -> std::same_as<void>;
-};
+concept HasPolygonBitFlags =
+    detail::FaceBitFlagsConcept<T> && requires (T obj) {
+        { obj.__polygonBitFlags() } -> std::same_as<void>;
+    };
 
 /**
  * @brief HasTriangleBitFlags concept is satisfied only if a Element class (that
@@ -88,9 +89,10 @@ concept HasPolygonBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTriangleBitFlags = detail::FaceBitFlagsConcept<T> && requires (T o) {
-    { o.__triangleBitFlags() } -> std::same_as<void>;
-};
+concept HasTriangleBitFlags =
+    detail::FaceBitFlagsConcept<T> && requires (T obj) {
+        { obj.__triangleBitFlags() } -> std::same_as<void>;
+    };
 
 /**
  * @brief HasFaceBitFlags concept is satisfied if one between @ref

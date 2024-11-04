@@ -36,10 +36,10 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasBoundingBox = requires (T o, const T& co) {
+concept HasBoundingBox = requires (T obj, const T& cObj) {
     typename T::BoundingBoxType;
-    { o.boundingBox() } -> std::same_as<typename T::BoundingBoxType&>;
-    { co.boundingBox() } -> std::same_as<const typename T::BoundingBoxType&>;
+    { obj.boundingBox() } -> std::same_as<typename T::BoundingBoxType&>;
+    { cObj.boundingBox() } -> std::same_as<const typename T::BoundingBoxType&>;
 };
 
 } // namespace vcl::comp

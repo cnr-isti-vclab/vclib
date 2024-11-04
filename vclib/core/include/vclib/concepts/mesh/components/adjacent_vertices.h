@@ -48,63 +48,57 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasAdjacentVertices = requires (
-    T                                            o,
-    const T&                                     co,
+    T                                            obj,
+    const T&                                     cObj,
     typename T::AdjacentVertexType               v,
+    typename T::AdjacentVertexIterator           it,
+    typename T::ConstAdjacentVertexIterator      cIt,
+    typename T::ConstAdjacentVertexIndexIterator cIIt,
+    typename T::AdjacentVertexType*              vP,
+    const typename T::AdjacentVertexType*        cVP,
     std::vector<typename T::AdjacentVertexType*> vec) {
-    // clang-format off
     typename T::AdjacentVertexType;
     typename T::AdjacentVertexIterator;
     typename T::ConstAdjacentVertexIterator;
     typename T::ConstAdjacentVertexIndexIterator;
 
-    { o.adjVerticesNumber() } -> std::same_as<uint>;
-    { o.adjVertex(uint()) } -> std::same_as<typename T::AdjacentVertexType*>;
-    { co.adjVertex(uint()) } ->
-        std::same_as<const typename T::AdjacentVertexType*>;
-    { co.adjVertexIndex(uint()) } -> std::same_as<uint>;
-    { o.adjVertexMod(int()) } -> std::same_as<typename T::AdjacentVertexType*>;
-    { co.adjVertexMod(int()) } ->
-        std::same_as<const typename T::AdjacentVertexType*>;
-    { co.adjVertexIndexMod(uint()) } -> std::same_as<uint>;
+    { obj.adjVerticesNumber() } -> std::same_as<uint>;
+    { obj.adjVertex(uint()) } -> std::same_as<decltype(vP)>;
+    { cObj.adjVertex(uint()) } -> std::same_as<decltype(cVP)>;
+    { cObj.adjVertexIndex(uint()) } -> std::same_as<uint>;
+    { obj.adjVertexMod(int()) } -> std::same_as<decltype(vP)>;
+    { cObj.adjVertexMod(int()) } -> std::same_as<decltype(cVP)>;
+    { cObj.adjVertexIndexMod(uint()) } -> std::same_as<uint>;
 
-    { o.setAdjVertex(uint(), &v) } -> std::same_as<void>;
-    { o.setAdjVertex(uint(), uint()) } -> std::same_as<void>;
-    { o.setAdjVertex(typename T::AdjacentVertexIterator(), &v) } ->
-        std::same_as<void>;
-    { o.setAdjVertex(typename T::AdjacentVertexIterator(), uint()) } ->
-        std::same_as<void>;
-    { o.setAdjVertex(typename T::ConstAdjacentVertexIterator(), &v) } ->
-        std::same_as<void>;
-    { o.setAdjVertex(typename T::ConstAdjacentVertexIterator(), uint()) } ->
-        std::same_as<void>;
-    { o.setAdjVertex(typename T::ConstAdjacentVertexIndexIterator(), &v) } ->
-        std::same_as<void>;
-    { o.setAdjVertex(typename T::ConstAdjacentVertexIndexIterator(), uint()) } ->
-        std::same_as<void>;
-    { o.setAdjVertexMod(int(), &v) } -> std::same_as<void>;
-    { o.setAdjVertexMod(int(), uint()) } -> std::same_as<void>;
-    { o.setAdjVertices(vec) } -> std::same_as<void>;
+    { obj.setAdjVertex(uint(), &v) } -> std::same_as<void>;
+    { obj.setAdjVertex(uint(), uint()) } -> std::same_as<void>;
+    { obj.setAdjVertex(it, &v) } -> std::same_as<void>;
+    { obj.setAdjVertex(it, uint()) } -> std::same_as<void>;
+    { obj.setAdjVertex(cIt, &v) } -> std::same_as<void>;
+    { obj.setAdjVertex(cIt, uint()) } -> std::same_as<void>;
+    { obj.setAdjVertex(cIIt, &v) } -> std::same_as<void>;
+    { obj.setAdjVertex(cIIt, uint()) } -> std::same_as<void>;
+    { obj.setAdjVertexMod(int(), &v) } -> std::same_as<void>;
+    { obj.setAdjVertexMod(int(), uint()) } -> std::same_as<void>;
+    { obj.setAdjVertices(vec) } -> std::same_as<void>;
 
-    { co.containsAdjVertex(&v) } -> std::same_as<bool>;
-    { co.containsAdjVertex(uint()) } -> std::same_as<bool>;
-    { co.indexOfAdjVertex(&v) } -> std::same_as<uint>;
-    { co.indexOfAdjVertex(uint()) } -> std::same_as<uint>;
+    { cObj.containsAdjVertex(&v) } -> std::same_as<bool>;
+    { cObj.containsAdjVertex(uint()) } -> std::same_as<bool>;
+    { cObj.indexOfAdjVertex(&v) } -> std::same_as<uint>;
+    { cObj.indexOfAdjVertex(uint()) } -> std::same_as<uint>;
 
-    { co.adjVertexBegin() } ->
-        std::same_as<typename T::ConstAdjacentVertexIterator>;
-    { co.adjVertexEnd() } ->
-        std::same_as<typename T::ConstAdjacentVertexIterator>;
+    { obj.adjVertexBegin() } -> std::same_as<decltype(it)>;
+    { obj.adjVertexEnd() } -> std::same_as<decltype(it)>;
 
-    { co.adjVertexIndexBegin() } ->
-        std::same_as<typename T::ConstAdjacentVertexIndexIterator>;
-    { co.adjVertexIndexEnd() } ->
-        std::same_as<typename T::ConstAdjacentVertexIndexIterator>;
+    { cObj.adjVertexBegin() } -> std::same_as<decltype(cIt)>;
+    { cObj.adjVertexEnd() } -> std::same_as<decltype(cIt)>;
 
-    { o.adjVertices() } -> vcl::RangeOf<typename T::AdjacentVertexType*>;
-    { co.adjVertices() } -> vcl::RangeOf<const typename T::AdjacentVertexType*>;
-    { co.adjVertexIndices() } -> vcl::RangeOf<uint>;
-    // clang-format on
+    { cObj.adjVertexIndexBegin() } -> std::same_as<decltype(cIIt)>;
+    { cObj.adjVertexIndexEnd() } -> std::same_as<decltype(cIIt)>;
+
+    { obj.adjVertices() } -> vcl::RangeOf<decltype(vP)>;
+    { cObj.adjVertices() } -> vcl::RangeOf<decltype(cVP)>;
+    { cObj.adjVertexIndices() } -> vcl::RangeOf<uint>;
 };
 
 /**
