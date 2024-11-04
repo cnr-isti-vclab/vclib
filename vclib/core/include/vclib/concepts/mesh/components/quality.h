@@ -42,10 +42,10 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasQuality = requires (T o, const T& co) {
+concept HasQuality = requires (T obj, const T& cObj) {
     typename T::QualityType;
-    { o.quality() } -> std::same_as<typename T::QualityType&>;
-    { co.quality() } -> std::same_as<const typename T::QualityType&>;
+    { obj.quality() } -> std::same_as<typename T::QualityType&>;
+    { cObj.quality() } -> std::same_as<const typename T::QualityType&>;
 };
 
 /**

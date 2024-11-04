@@ -42,11 +42,11 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasMark = requires (T o, const T& co) {
-    { co.mark() } -> std::same_as<int>;
-    { o.resetMark() } -> std::same_as<void>;
-    { o.incrementMark() } -> std::same_as<void>;
-    { o.decrementMark() } -> std::same_as<void>;
+concept HasMark = requires (T obj, const T& cObj) {
+    { cObj.mark() } -> std::same_as<int>;
+    { obj.resetMark() } -> std::same_as<void>;
+    { obj.incrementMark() } -> std::same_as<void>;
+    { obj.decrementMark() } -> std::same_as<void>;
 };
 
 /**

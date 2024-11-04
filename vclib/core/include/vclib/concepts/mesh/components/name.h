@@ -37,9 +37,9 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasName = requires (T o, const T& co) {
-    { o.name() } -> std::same_as<std::string&>;
-    { co.name() } -> std::same_as<const std::string&>;
+concept HasName = requires (T obj, const T& cObj) {
+    { obj.name() } -> std::same_as<std::string&>;
+    { cObj.name() } -> std::same_as<const std::string&>;
 };
 
 } // namespace vcl::comp

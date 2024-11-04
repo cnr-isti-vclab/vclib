@@ -38,10 +38,10 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasCustomComponents = requires (T o, const T& co, std::string s) {
-    { o.hasCustomComponent(std::string()) } -> std::same_as<bool>;
-    { o.template customComponent<int>(s) } -> std::same_as<int&>;
-    { co.template customComponent<int>(s) } -> std::same_as<const int&>;
+concept HasCustomComponents = requires (T obj, const T& cObj, std::string str) {
+    { obj.hasCustomComponent(std::string()) } -> std::same_as<bool>;
+    { obj.template customComponent<int>(str) } -> std::same_as<int&>;
+    { cObj.template customComponent<int>(str) } -> std::same_as<const int&>;
 };
 
 } // namespace vcl::comp
