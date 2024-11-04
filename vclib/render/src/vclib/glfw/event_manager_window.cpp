@@ -188,28 +188,17 @@ void EventManagerWindow::glfwKeyCallback(
     int key,
     int,
     int action,
-    int)
+    int mods)
 {
+    // GLFW modifiers are always set
+    setModifiers(glfw::fromGLFW((glfw::KeyboardModifiers) mods));
+
     vcl::Key::Enum k = glfw::fromGLFW((glfw::Key) key);
-    // GLFW modifier does not work as expected: modifiers are not updated
-    // when a key modifier is released. We have to handle this manually.
-    if (action == GLFW_PRESS) {
-        if (isModifierKey(k)) {
-            KeyModifiers mods                 = modifiers();
-            mods.at(KeyModifier::NO_MODIFIER) = false;
-            mods.at(keyToModifier(k))         = true;
-            setModifiers(mods);
-        }
+
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         onKeyPress(k);
     }
     else if (action == GLFW_RELEASE) {
-        if (isModifierKey(k)) {
-            KeyModifiers mods      = modifiers();
-            mods[keyToModifier(k)] = false;
-            if (mods.none())
-                mods[KeyModifier::NO_MODIFIER] = true;
-            setModifiers(mods);
-        }
         onKeyRelease(k);
     }
 }
@@ -218,9 +207,11 @@ void EventManagerWindow::glfwMouseButtonCallback(
     GLFWwindow*,
     int button,
     int action,
-    int)
+    int mods)
 {
     glfw::MouseButton btn = (glfw::MouseButton) button;
+
+    setModifiers(glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
     if (action == GLFW_PRESS) {
         onMousePress(glfw::fromGLFW(btn));
