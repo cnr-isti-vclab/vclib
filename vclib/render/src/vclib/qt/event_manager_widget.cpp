@@ -119,7 +119,7 @@ void EventManagerWidget::mouseReleaseEvent(QMouseEvent* event)
 
 void EventManagerWidget::wheelEvent(QWheelEvent* event)
 {
-    onMouseScroll(event->angleDelta().x(), event->angleDelta().y());
+    onMouseScroll(event->pixelDelta().x(), event->pixelDelta().y());
     Base::wheelEvent(event);
 }
 
