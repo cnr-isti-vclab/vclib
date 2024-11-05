@@ -89,6 +89,17 @@ void spaceStaticAsserts()
     // color
     static_assert(
         ColorConcept<Color>, "Color does not satisfy the ColorConcept");
+    static_assert(
+        ColorConcept<Color&>, "Color& does not satisfy the ColorConcept");
+    static_assert(
+        ColorConcept<const Color>,
+        "const Color does not satisfy the ColorConcept");
+    static_assert(
+        ColorConcept<const Color&>,
+        "const Color& does not satisfy the ColorConcept");
+    static_assert(
+        ColorConcept<Color&&>,
+        "Color&& does not satisfy the ColorConcept");
 
     // image
     static_assert(
