@@ -30,11 +30,11 @@
 namespace vcl {
 
 template<typename T>
-concept ElementConcept = requires (T o, const T& co) {
+concept ElementConcept = requires (const T& cObj) {
     T::ELEMENT_ID;
     typename T::Components;
     typename T::ParentMeshType;
-    { co.index() } -> std::same_as<uint>;
+    { cObj.index() } -> std::same_as<uint>;
 };
 
 } // namespace vcl

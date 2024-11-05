@@ -64,9 +64,9 @@ concept InputStreamable = requires (std::istream& is, T& value) {
  */
 template<typename T>
 concept Serializable =
-    requires (T& o, const T& co, std::ostream& os, std::istream& is) {
-        { co.serialize(os) } -> std::same_as<void>;
-        { o.deserialize(is) } -> std::same_as<void>;
+    requires (T& obj, const T& cObj, std::ostream& os, std::istream& is) {
+        { cObj.serialize(os) } -> std::same_as<void>;
+        { obj.deserialize(is) } -> std::same_as<void>;
     };
 
 } // namespace vcl

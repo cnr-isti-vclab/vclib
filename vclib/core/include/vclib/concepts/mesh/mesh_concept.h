@@ -51,16 +51,16 @@ namespace vcl {
  */
 template<typename T>
 concept MeshConcept =
-    mesh::HasVertexContainer<T> && requires (T o, const T& co) {
+    mesh::HasVertexContainer<T> && requires (T obj, const T& cObj) {
         typename T::Containers;
         typename T::Components;
 
-        { o.clear() } -> std::same_as<void>;
-        { co.isCompact() } -> std::same_as<bool>;
-        { o.compact() } -> std::same_as<void>;
-        { o.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
-        { o.importFrom(T()) } -> std::same_as<void>;
-        { o.swap(o) } -> std::same_as<void>;
+        { obj.clear() } -> std::same_as<void>;
+        { cObj.isCompact() } -> std::same_as<bool>;
+        { obj.compact() } -> std::same_as<void>;
+        { obj.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
+        { obj.importFrom(T()) } -> std::same_as<void>;
+        { obj.swap(obj) } -> std::same_as<void>;
     };
 
 /**

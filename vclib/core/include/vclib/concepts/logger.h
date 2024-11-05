@@ -42,47 +42,49 @@ namespace vcl {
  * @ingroup miscellaneous
  */
 template<typename T>
-concept LoggerConcept =
-    requires (T& o, const T& co, std::string msg, typename T::LogLevel lvl) {
-        typename T::LogLevel;
+concept LoggerConcept = requires (
+    T&                   obj,
+    const T&             cObj,
+    std::string          str,
+    uint                 n,
+    typename T::LogLevel lvl) {
+    typename T::LogLevel;
 
-        { o.enableIndentation() } -> std::same_as<void>;
-        { o.disableIndentation() } -> std::same_as<void>;
-        { o.enablePrintPercentage() } -> std::same_as<void>;
-        { o.disablePrintPercentage() } -> std::same_as<void>;
-        { o.setPrintLevel(lvl) } -> std::same_as<void>;
-        { o.enablePrintMessageDuringProgress() } -> std::same_as<void>;
-        { o.disablePrintMessageDuringProgress() } -> std::same_as<void>;
-        { o.enablePrintTimer() } -> std::same_as<void>;
-        { o.disablePrintTimer() } -> std::same_as<void>;
+    { obj.enableIndentation() } -> std::same_as<void>;
+    { obj.disableIndentation() } -> std::same_as<void>;
+    { obj.enablePrintPercentage() } -> std::same_as<void>;
+    { obj.disablePrintPercentage() } -> std::same_as<void>;
+    { obj.setPrintLevel(lvl) } -> std::same_as<void>;
+    { obj.enablePrintMessageDuringProgress() } -> std::same_as<void>;
+    { obj.disablePrintMessageDuringProgress() } -> std::same_as<void>;
+    { obj.enablePrintTimer() } -> std::same_as<void>;
+    { obj.disablePrintTimer() } -> std::same_as<void>;
 
-        { o.reset() } -> std::same_as<void>;
+    { obj.reset() } -> std::same_as<void>;
 
-        { o.setMaxLineWidth(uint()) } -> std::same_as<void>;
-        { o.startTimer() } -> std::same_as<void>;
-        { o.stopTimer() } -> std::same_as<void>;
-        { o.getTime() } -> std::same_as<double>;
+    { obj.setMaxLineWidth(n) } -> std::same_as<void>;
+    { obj.startTimer() } -> std::same_as<void>;
+    { obj.stopTimer() } -> std::same_as<void>;
+    { obj.getTime() } -> std::same_as<double>;
 
-        { o.startNewTask(double(), double(), msg) } -> std::same_as<void>;
-        { o.endTask(msg) } -> std::same_as<void>;
+    { obj.startNewTask(double(), double(), str) } -> std::same_as<void>;
+    { obj.endTask(str) } -> std::same_as<void>;
 
-        { co.percentage() } -> std::same_as<double>;
-        { o.setPercentage(uint()) } -> std::same_as<void>;
+    { cObj.percentage() } -> std::same_as<double>;
+    { obj.setPercentage(n) } -> std::same_as<void>;
 
-        { o.log(msg) } -> std::same_as<void>;
-        { o.log(lvl, msg) } -> std::same_as<void>;
-        { o.log(uint(), msg) } -> std::same_as<void>;
-        { o.log(uint(), lvl, msg) } -> std::same_as<void>;
+    { obj.log(str) } -> std::same_as<void>;
+    { obj.log(lvl, str) } -> std::same_as<void>;
+    { obj.log(n, str) } -> std::same_as<void>;
+    { obj.log(n, lvl, str) } -> std::same_as<void>;
 
-        { o.startProgress(msg, uint()) } -> std::same_as<void>;
-        { o.startProgress(msg, uint(), uint()) } -> std::same_as<void>;
-        { o.startProgress(msg, uint(), uint(), uint()) } -> std::same_as<void>;
-        {
-            o.startProgress(msg, uint(), uint(), uint(), uint())
-        } -> std::same_as<void>;
-        { o.endProgress() } -> std::same_as<void>;
-        { o.progress(uint()) } -> std::same_as<void>;
-    };
+    { obj.startProgress(str, n) } -> std::same_as<void>;
+    { obj.startProgress(str, n, n) } -> std::same_as<void>;
+    { obj.startProgress(str, n, n, n) } -> std::same_as<void>;
+    { obj.startProgress(str, n, n, n, n) } -> std::same_as<void>;
+    { obj.endProgress() } -> std::same_as<void>;
+    { obj.progress(n) } -> std::same_as<void>;
+};
 
 } // namespace vcl
 
