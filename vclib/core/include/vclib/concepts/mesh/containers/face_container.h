@@ -26,6 +26,8 @@
 #include <ranges>
 #include <vector>
 
+#include <vclib/concepts/ranges/range.h>
+
 #include "element_container.h"
 
 namespace vcl {
@@ -67,8 +69,8 @@ concept HasFaceContainer =
         { o.faceEnd() } -> std::same_as<typename T::FaceIterator>;
         { co.faceEnd() } -> std::same_as<typename T::ConstFaceIterator>;
 
-        requires std::ranges::range<decltype(o.faces())>;
-        requires std::ranges::range<decltype(co.faces())>;
+        { o.faces() } -> vcl::RangeOf<typename T::FaceType>;
+        { co.faces() } -> vcl::RangeOf<typename T::FaceType>;
     };
 
 } // namespace mesh

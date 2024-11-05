@@ -26,6 +26,8 @@
 #include <ranges>
 #include <vector>
 
+#include <vclib/concepts/ranges/range.h>
+
 #include "element_container.h"
 
 namespace vcl {
@@ -67,8 +69,8 @@ concept HasEdgeContainer =
         { o.edgeEnd() } -> std::same_as<typename T::EdgeIterator>;
         { co.edgeEnd() } -> std::same_as<typename T::ConstEdgeIterator>;
 
-        requires std::ranges::range<decltype(o.edges())>;
-        requires std::ranges::range<decltype(co.edges())>;
+        { o.edges() } -> vcl::RangeOf<typename T::EdgeType>;
+        { co.edges() } -> vcl::RangeOf<typename T::EdgeType>;
     };
 
 } // namespace mesh

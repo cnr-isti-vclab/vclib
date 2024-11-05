@@ -26,6 +26,8 @@
 #include <ranges>
 #include <vector>
 
+#include <vclib/concepts/ranges/range.h>
+
 #include "element_container.h"
 
 namespace vcl {
@@ -72,8 +74,8 @@ concept HasVertexContainer = requires (
     { o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
     { co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
 
-    requires std::ranges::range<decltype(o.vertices())>;
-    requires std::ranges::range<decltype(co.vertices())>;
+    { o.vertices() } -> vcl::RangeOf<typename T::VertexType>;
+    { co.vertices() } -> vcl::RangeOf<typename T::VertexType>;
 };
 
 } // namespace mesh
