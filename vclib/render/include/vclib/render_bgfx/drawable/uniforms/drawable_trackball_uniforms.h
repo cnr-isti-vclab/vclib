@@ -33,7 +33,7 @@ class DrawableTrackballUniforms
 {
     // first component is uint: number of vertices per circle
     // second component is uint: 1 if dragging, 0 otherwise
-    float mTrackBallSettings[4];
+    std::array<float, 4> mTrackBallSettings;
 
     ShaderUniform mTrackballSettingsUniform =
         ShaderUniform("u_trackballSettingsPack", bgfx::UniformType::Vec4);
@@ -55,7 +55,10 @@ public:
         mTrackBallSettings[1] = ShaderUniform::uintBitsToFloat((uint) dragging);
     }
 
-    void bind() const { mTrackballSettingsUniform.bind(mTrackBallSettings); }
+    void bind() const
+    {
+        mTrackballSettingsUniform.bind(mTrackBallSettings.data());
+    }
 };
 
 } // namespace vcl
