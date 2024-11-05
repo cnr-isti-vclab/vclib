@@ -36,13 +36,14 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTransformMatrix = requires (T o, const T& co) {
-    // clang-format off
+concept HasTransformMatrix = requires (
+    T                                      obj,
+    const T&                               cObj,
+    typename T::TransformMatrixType&       m,
+    const typename T::TransformMatrixType& cM) {
     typename T::TransformMatrixType;
-    { co.transformMatrix() } ->
-        std::same_as<const typename T::TransformMatrixType&>;
-    { o.transformMatrix() } -> std::same_as<typename T::TransformMatrixType&>;
-    // clang-format on
+    { cObj.transformMatrix() } -> std::same_as<decltype(cM)>;
+    { obj.transformMatrix() } -> std::same_as<decltype(m)>;
 };
 
 } // namespace vcl::comp

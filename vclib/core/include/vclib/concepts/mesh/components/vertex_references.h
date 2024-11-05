@@ -39,12 +39,16 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasVertexReferences = requires (
-    T                                    o,
-    const T&                             co,
+    T                                    obj,
+    const T&                             cObj,
     typename T::VertexType               v,
-    std::vector<typename T::VertexType*> vecv,
-    std::vector<uint>                    vecu) {
-    // clang-format off
+    typename T::VertexIterator           it,
+    typename T::ConstVertexIterator      cIt,
+    typename T::ConstVertexIndexIterator cIIt,
+    typename T::VertexType*              vP,
+    const typename T::VertexType*        cVP,
+    std::vector<typename T::VertexType*> vecV,
+    std::vector<uint>                    vecU) {
     T::VERTEX_NUMBER;
     typename T::VertexReferences;
 
@@ -53,50 +57,43 @@ concept HasVertexReferences = requires (
     typename T::ConstVertexIterator;
     typename T::ConstVertexIndexIterator;
 
-    { co.vertexNumber() } -> std::same_as<uint>;
-    { o.vertex(uint()) } -> std::same_as<typename T::VertexType*>;
-    { co.vertex(uint()) } -> std::same_as<const typename T::VertexType*>;
-    { co.vertexIndex(uint()) } -> std::same_as<uint>;
-    { o.vertexMod(int()) } -> std::same_as<typename T::VertexType*>;
-    { co.vertexMod(int()) } -> std::same_as<const typename T::VertexType*>;
-    { co.vertexIndexMod(int()) } -> std::same_as<uint>;
+    { cObj.vertexNumber() } -> std::same_as<uint>;
+    { obj.vertex(uint()) } -> std::same_as<decltype(vP)>;
+    { cObj.vertex(uint()) } -> std::same_as<decltype(cVP)>;
+    { cObj.vertexIndex(uint()) } -> std::same_as<uint>;
+    { obj.vertexMod(int()) } -> std::same_as<decltype(vP)>;
+    { cObj.vertexMod(int()) } -> std::same_as<decltype(cVP)>;
+    { cObj.vertexIndexMod(int()) } -> std::same_as<uint>;
 
-    { o.setVertex(uint(), &v) } -> std::same_as<void>;
-    { o.setVertex(uint(), uint()) } -> std::same_as<void>;
-    { o.setVertex(typename T::VertexIterator(), &v) } -> std::same_as<void>;
-    { o.setVertex(typename T::VertexIterator(), uint()) } -> std::same_as<void>;
-    { o.setVertex(typename T::ConstVertexIterator(), &v) } ->
-        std::same_as<void>;
-    { o.setVertex(typename T::ConstVertexIterator(), uint()) } ->
-        std::same_as<void>;
-    { o.setVertex(typename T::ConstVertexIndexIterator(), &v) } ->
-        std::same_as<void>;
-    { o.setVertex(typename T::ConstVertexIndexIterator(), uint()) } ->
-        std::same_as<void>;
-    { o.setVertexMod(int(), &v) } -> std::same_as<void>;
-    { o.setVertexMod(int(), uint()) } -> std::same_as<void>;
-    { o.setVertices(vecv) } -> std::same_as<void>;
-    { o.setVertices(vecu) } -> std::same_as<void>;
+    { obj.setVertex(uint(), &v) } -> std::same_as<void>;
+    { obj.setVertex(uint(), uint()) } -> std::same_as<void>;
+    { obj.setVertex(it, &v) } -> std::same_as<void>;
+    { obj.setVertex(it, uint()) } -> std::same_as<void>;
+    { obj.setVertex(cIt, &v) } -> std::same_as<void>;
+    { obj.setVertex(cIt, uint()) } -> std::same_as<void>;
+    { obj.setVertex(cIIt, &v) } -> std::same_as<void>;
+    { obj.setVertex(cIIt, uint()) } -> std::same_as<void>;
+    { obj.setVertexMod(int(), &v) } -> std::same_as<void>;
+    { obj.setVertexMod(int(), uint()) } -> std::same_as<void>;
+    { obj.setVertices(vecV) } -> std::same_as<void>;
+    { obj.setVertices(vecU) } -> std::same_as<void>;
 
-    { co.containsVertex(&v) } -> std::same_as<bool>;
-    { co.containsVertex(uint()) }-> std::same_as<bool>;
-    { co.indexOfVertex(&v) } -> std::same_as<uint>;
-    { co.indexOfVertex(uint()) } -> std::same_as<uint>;
-    { co.indexOfEdge(&v, &v) } -> std::same_as<uint>;
-    { co.indexOfEdge(uint(), uint()) } -> std::same_as<uint>;
+    { cObj.containsVertex(&v) } -> std::same_as<bool>;
+    { cObj.containsVertex(uint()) } -> std::same_as<bool>;
+    { cObj.indexOfVertex(&v) } -> std::same_as<uint>;
+    { cObj.indexOfVertex(uint()) } -> std::same_as<uint>;
+    { cObj.indexOfEdge(&v, &v) } -> std::same_as<uint>;
+    { cObj.indexOfEdge(uint(), uint()) } -> std::same_as<uint>;
 
-    { co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
-    { co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
+    { cObj.vertexBegin() } -> std::same_as<decltype(cIt)>;
+    { cObj.vertexEnd() } -> std::same_as<decltype(cIt)>;
 
-    { co.vertexIndexBegin() } ->
-        std::same_as<typename T::ConstVertexIndexIterator>;
-    { co.vertexIndexEnd() } ->
-        std::same_as<typename T::ConstVertexIndexIterator>;
+    { cObj.vertexIndexBegin() } -> std::same_as<decltype(cIIt)>;
+    { cObj.vertexIndexEnd() } -> std::same_as<decltype(cIIt)>;
 
-    { o.vertices() } -> vcl::RangeOf<typename T::VertexType*>;
-    { co.vertices() } -> vcl::RangeOf<const typename T::VertexType*>;
-    { co.vertexIndices() } -> vcl::RangeOf<uint>;
-    // clang-format on
+    { obj.vertices() } -> vcl::RangeOf<decltype(vP)>;
+    { cObj.vertices() } -> vcl::RangeOf<decltype(cVP)>;
+    { cObj.vertexIndices() } -> vcl::RangeOf<uint>;
 };
 
 } // namespace vcl::comp

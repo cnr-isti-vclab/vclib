@@ -45,39 +45,33 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasWedgeTexCoords = requires (
-    T                                          o,
-    const T&                                   co,
-    const typename T::WedgeTexCoordType&       t,
+    T                                          obj,
+    const T&                                   cObj,
+    typename T::WedgeTexCoordType&             t,
+    const typename T::WedgeTexCoordType&       cT,
+    typename T::WedgeTexCoordsIterator         it,
+    typename T::ConstWedgeTexCoordsIterator    cIt,
     std::vector<typename T::WedgeTexCoordType> v) {
-    // clang-format off
     T::WEDGE_TEX_COORD_NUMBER;
     typename T::WedgeTexCoordType;
     typename T::WedgeTexCoordsIterator;
     typename T::ConstWedgeTexCoordsIterator;
 
-    { o.wedgeTexCoord(uint()) } -> std::same_as<typename T::WedgeTexCoordType&>;
-    { co.wedgeTexCoord(uint()) } ->
-        std::same_as<const typename T::WedgeTexCoordType&>;
-    { o.wedgeTexCoordMod(int()) } ->
-        std::same_as<typename T::WedgeTexCoordType&>;
-    { co.wedgeTexCoordMod(int()) } ->
-        std::same_as<const typename T::WedgeTexCoordType&>;
-    { o.setWedgeTexCoord(uint(), t) } -> std::same_as<void>;
-    { o.setWedgeTexCoords(v) } -> std::same_as<void>;
-    { o.textureIndex() } -> std::same_as<short&>;
-    { co.textureIndex() } -> std::same_as<short>;
+    { obj.wedgeTexCoord(uint()) } -> std::same_as<decltype(t)>;
+    { cObj.wedgeTexCoord(uint()) } -> std::same_as<decltype(cT)>;
+    { obj.wedgeTexCoordMod(int()) } -> std::same_as<decltype(t)>;
+    { cObj.wedgeTexCoordMod(int()) } -> std::same_as<decltype(cT)>;
+    { obj.setWedgeTexCoord(uint(), cT) } -> std::same_as<void>;
+    { obj.setWedgeTexCoords(v) } -> std::same_as<void>;
+    { obj.textureIndex() } -> std::same_as<short&>;
+    { cObj.textureIndex() } -> std::same_as<short>;
 
-    { o.wedgeTexCoordBegin() } ->
-        std::same_as<typename T::WedgeTexCoordsIterator>;
-    { o.wedgeTexCoordEnd() } ->
-        std::same_as<typename T::WedgeTexCoordsIterator>;
-    { co.wedgeTexCoordBegin() } ->
-        std::same_as<typename T::ConstWedgeTexCoordsIterator>;
-    { co.wedgeTexCoordEnd() } ->
-        std::same_as<typename T::ConstWedgeTexCoordsIterator>;
-    o.wedgeTexCoords();
-    co.wedgeTexCoords();
-    // clang-format on
+    { obj.wedgeTexCoordBegin() } -> std::same_as<decltype(it)>;
+    { obj.wedgeTexCoordEnd() } -> std::same_as<decltype(it)>;
+    { cObj.wedgeTexCoordBegin() } -> std::same_as<decltype(cIt)>;
+    { cObj.wedgeTexCoordEnd() } -> std::same_as<decltype(cIt)>;
+    obj.wedgeTexCoords();
+    cObj.wedgeTexCoords();
 };
 
 /**

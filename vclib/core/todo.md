@@ -6,14 +6,15 @@
     - [ ] Add documentation on how to add a new mesh element using scripts
 - Concepts:
   - [ ] complete space data structures concepts
+  - [ ] fix ranges in texture and wedge concepts -> missing std::same_as<...>
   - [ ] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
 - Mesh:
   - Elements:
     - [ ] set properly elements concepts
   - Containers:
-    - Element container should provide fast compact function, that does not preserve elements order
+    - [ ] Element container should provide fast compact function, that does not preserve elements order
   - Components:
-    - references to elements should be available using ELEMENT_ID
+    - [ ] references to elements should be available using ELEM_ID
   - Mesh:
     - [ ] manage clean() for all components of mesh, not only element containers
   - Utils:
@@ -26,11 +27,11 @@
 - IO:
   - [ ] Manage read and write colors from integral to non integral types
 - Algorithms:
-  - [ ] Separate Mesh algorithms from core(?) algorithms
+  - [x] Separate Mesh algorithms from core(?) algorithms
   - [ ] Take views arguments instead of vectors- allows to be more general on algorithms
     - [ ] core/fitting
     - [ ] core/stat
-  - [ ] Implement exporter to VCG
+  - [x] Implement exporter to VCG
   - [ ] Implement importer/exporter from buffer
   - [ ] Shuffle algorithms should be all made using views
   - [ ] Shuffle algorithms should take as input a random_device instead of a boolean 'deterministic', and they should log the seed at debug level

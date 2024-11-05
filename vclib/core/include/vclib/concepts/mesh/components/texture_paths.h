@@ -38,29 +38,30 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTexturePaths = requires (T o, const T& co, std::string s) {
-    // clang-format off
+concept HasTexturePaths = requires (
+    T                                     obj,
+    const T&                              cObj,
+    typename T::TexFileNamesIterator      it,
+    typename T::ConstTexFileNamesIterator cIt,
+    std::string                           str) {
     typename T::TexFileNamesIterator;
     typename T::ConstTexFileNamesIterator;
 
-    { co.textureNumber() } -> std::same_as<uint>;
-    { co.texturePath(uint()) } -> std::same_as<const std::string&>;
-    { o.texturePath(uint()) } -> std::same_as<std::string&>;
-    { co.meshBasePath() } -> std::same_as<const std::string&>;
-    { o.meshBasePath() } -> std::same_as<std::string&>;
+    { cObj.textureNumber() } -> std::same_as<uint>;
+    { cObj.texturePath(uint()) } -> std::same_as<const std::string&>;
+    { obj.texturePath(uint()) } -> std::same_as<std::string&>;
+    { cObj.meshBasePath() } -> std::same_as<const std::string&>;
+    { obj.meshBasePath() } -> std::same_as<std::string&>;
 
-    { o.clearTexturePaths() } -> std::same_as<void>;
-    { o.pushTexturePath(s) } -> std::same_as<void>;
+    { obj.clearTexturePaths() } -> std::same_as<void>;
+    { obj.pushTexturePath(str) } -> std::same_as<void>;
 
-    { o.texturePathBegin() } -> std::same_as<typename T::TexFileNamesIterator>;
-    { o.texturePathEnd() } -> std::same_as<typename T::TexFileNamesIterator>;
-    { co.texturePathBegin() } ->
-        std::same_as<typename T::ConstTexFileNamesIterator>;
-    { co.texturePathEnd() } ->
-        std::same_as<typename T::ConstTexFileNamesIterator>;
-    o.texturePaths();
-    co.texturePaths();
-    // clang-format on
+    { obj.texturePathBegin() } -> std::same_as<decltype(it)>;
+    { obj.texturePathEnd() } -> std::same_as<decltype(it)>;
+    { cObj.texturePathBegin() } -> std::same_as<decltype(cIt)>;
+    { cObj.texturePathEnd() } -> std::same_as<decltype(cIt)>;
+    obj.texturePaths();
+    cObj.texturePaths();
 };
 
 } // namespace vcl::comp
