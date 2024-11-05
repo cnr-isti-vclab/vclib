@@ -28,13 +28,19 @@
 namespace vcl {
 
 /**
- * @brief The IsConst concept is satisfied if T is const or it is a pointer to
- * const.
+ * @brief The IsConst concept is satisfied if T satisfies one of the following
+ * conditions:
+ *
+ * - T is const;
+ * - T is a pointer to const;
+ * - T is a reference to const;
  *
  * @ingroup util_concepts
  */
 template<typename T>
-concept IsConst = std::is_const_v<typename std::remove_pointer_t<T>>;
+concept IsConst =
+    std::is_const_v<typename std::remove_pointer_t<T>> ||
+    std::is_const_v<typename std::remove_reference_t<T>>;
 
 } // namespace vcl
 
