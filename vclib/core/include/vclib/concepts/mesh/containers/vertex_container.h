@@ -43,39 +43,39 @@ namespace mesh {
  */
 template<typename T>
 concept HasVertexContainer = requires (
-    T                                 o,
-    const T&                          co,
-    typename T::VertexType*           v,
+    T                                 obj,
+    const T&                          cObj,
+    typename T::VertexType*           vP,
     typename T::VertexType::CoordType c) {
     typename T::VertexType;
     typename T::VertexIterator;
     typename T::ConstVertexIterator;
 
-    { o.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
-    { co.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
+    { obj.vertex(uint()) } -> std::same_as<typename T::VertexType&>;
+    { cObj.vertex(uint()) } -> std::same_as<const typename T::VertexType&>;
 
-    { co.vertexNumber() } -> std::same_as<uint>;
-    { co.vertexContainerSize() } -> std::same_as<uint>;
-    { co.deletedVertexNumber() } -> std::same_as<uint>;
-    o.deleteVertex(uint());
-    o.deleteVertex(v);
-    { o.vertexIndexIfCompact(uint()) } -> std::same_as<uint>;
-    { o.vertexCompactIndices() } -> std::same_as<std::vector<uint>>;
+    { cObj.vertexNumber() } -> std::same_as<uint>;
+    { cObj.vertexContainerSize() } -> std::same_as<uint>;
+    { cObj.deletedVertexNumber() } -> std::same_as<uint>;
+    { obj.deleteVertex(uint()) } -> std::same_as<void>;
+    { obj.deleteVertex(vP) } -> std::same_as<void>;
+    { obj.vertexIndexIfCompact(uint()) } -> std::same_as<uint>;
+    { obj.vertexCompactIndices() } -> std::same_as<std::vector<uint>>;
 
-    { o.addVertex() } -> std::same_as<uint>;
-    { o.addVertex(c) } -> std::same_as<uint>;
-    { o.addVertices(uint()) } -> std::same_as<uint>;
-    { o.addVertices(c, c, c, c) } -> std::same_as<uint>;
-    { o.reserveVertices(uint()) } -> std::same_as<void>;
-    { o.compactVertices() } -> std::same_as<void>;
+    { obj.addVertex() } -> std::same_as<uint>;
+    { obj.addVertex(c) } -> std::same_as<uint>;
+    { obj.addVertices(uint()) } -> std::same_as<uint>;
+    { obj.addVertices(c, c, c, c) } -> std::same_as<uint>;
+    { obj.reserveVertices(uint()) } -> std::same_as<void>;
+    { obj.compactVertices() } -> std::same_as<void>;
 
-    { o.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
-    { co.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
-    { o.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
-    { co.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
+    { obj.vertexBegin() } -> std::same_as<typename T::VertexIterator>;
+    { cObj.vertexBegin() } -> std::same_as<typename T::ConstVertexIterator>;
+    { obj.vertexEnd() } -> std::same_as<typename T::VertexIterator>;
+    { cObj.vertexEnd() } -> std::same_as<typename T::ConstVertexIterator>;
 
-    { o.vertices() } -> vcl::RangeOf<typename T::VertexType>;
-    { co.vertices() } -> vcl::RangeOf<typename T::VertexType>;
+    { obj.vertices() } -> vcl::RangeOf<typename T::VertexType>;
+    { cObj.vertices() } -> vcl::RangeOf<typename T::VertexType>;
 };
 
 } // namespace mesh

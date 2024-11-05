@@ -43,34 +43,34 @@ namespace mesh {
  */
 template<typename T>
 concept HasFaceContainer =
-    requires (T o, const T& co, typename T::FaceType* f) {
+    requires (T obj, const T& cObj, typename T::FaceType* fP) {
         typename T::FaceType;
         typename T::FaceIterator;
         typename T::ConstFaceIterator;
 
-        { o.face(uint()) } -> std::same_as<typename T::FaceType&>;
-        { co.face(uint()) } -> std::same_as<const typename T::FaceType&>;
+        { obj.face(uint()) } -> std::same_as<typename T::FaceType&>;
+        { cObj.face(uint()) } -> std::same_as<const typename T::FaceType&>;
 
-        { co.faceNumber() } -> std::same_as<uint>;
-        { co.faceContainerSize() } -> std::same_as<uint>;
-        { co.deletedFaceNumber() } -> std::same_as<uint>;
-        o.deleteFace(uint());
-        o.deleteFace(f);
-        { o.faceIndexIfCompact(uint()) } -> std::same_as<uint>;
-        { o.faceCompactIndices() } -> std::same_as<std::vector<uint>>;
+        { cObj.faceNumber() } -> std::same_as<uint>;
+        { cObj.faceContainerSize() } -> std::same_as<uint>;
+        { cObj.deletedFaceNumber() } -> std::same_as<uint>;
+        { obj.deleteFace(uint()) } -> std::same_as<void>;
+        { obj.deleteFace(fP) } -> std::same_as<void>;
+        { obj.faceIndexIfCompact(uint()) } -> std::same_as<uint>;
+        { obj.faceCompactIndices() } -> std::same_as<std::vector<uint>>;
 
-        { o.addFace() } -> std::same_as<uint>;
-        { o.addFaces(uint()) } -> std::same_as<uint>;
-        { o.reserveFaces(uint()) } -> std::same_as<void>;
-        { o.compactFaces() } -> std::same_as<void>;
+        { obj.addFace() } -> std::same_as<uint>;
+        { obj.addFaces(uint()) } -> std::same_as<uint>;
+        { obj.reserveFaces(uint()) } -> std::same_as<void>;
+        { obj.compactFaces() } -> std::same_as<void>;
 
-        { o.faceBegin() } -> std::same_as<typename T::FaceIterator>;
-        { co.faceBegin() } -> std::same_as<typename T::ConstFaceIterator>;
-        { o.faceEnd() } -> std::same_as<typename T::FaceIterator>;
-        { co.faceEnd() } -> std::same_as<typename T::ConstFaceIterator>;
+        { obj.faceBegin() } -> std::same_as<typename T::FaceIterator>;
+        { cObj.faceBegin() } -> std::same_as<typename T::ConstFaceIterator>;
+        { obj.faceEnd() } -> std::same_as<typename T::FaceIterator>;
+        { cObj.faceEnd() } -> std::same_as<typename T::ConstFaceIterator>;
 
-        { o.faces() } -> vcl::RangeOf<typename T::FaceType>;
-        { co.faces() } -> vcl::RangeOf<typename T::FaceType>;
+        { obj.faces() } -> vcl::RangeOf<typename T::FaceType>;
+        { cObj.faces() } -> vcl::RangeOf<typename T::FaceType>;
     };
 
 } // namespace mesh

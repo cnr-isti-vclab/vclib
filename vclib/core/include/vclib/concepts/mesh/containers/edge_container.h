@@ -43,34 +43,34 @@ namespace mesh {
  */
 template<typename T>
 concept HasEdgeContainer =
-    requires (T o, const T& co, typename T::EdgeType* e) {
+    requires (T obj, const T& cObj, typename T::EdgeType* eP) {
         typename T::EdgeType;
         typename T::EdgeIterator;
         typename T::ConstEdgeIterator;
 
-        { o.edge(uint()) } -> std::same_as<typename T::EdgeType&>;
-        { co.edge(uint()) } -> std::same_as<const typename T::EdgeType&>;
+        { obj.edge(uint()) } -> std::same_as<typename T::EdgeType&>;
+        { cObj.edge(uint()) } -> std::same_as<const typename T::EdgeType&>;
 
-        { co.edgeNumber() } -> std::same_as<uint>;
-        { co.edgeContainerSize() } -> std::same_as<uint>;
-        { co.deletedEdgeNumber() } -> std::same_as<uint>;
-        o.deleteEdge(uint());
-        o.deleteEdge(e);
-        { o.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
-        { o.edgeCompactIndices() } -> std::same_as<std::vector<uint>>;
+        { cObj.edgeNumber() } -> std::same_as<uint>;
+        { cObj.edgeContainerSize() } -> std::same_as<uint>;
+        { cObj.deletedEdgeNumber() } -> std::same_as<uint>;
+        { obj.deleteEdge(uint()) } -> std::same_as<void>;
+        { obj.deleteEdge(eP) } -> std::same_as<void>;
+        { obj.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
+        { obj.edgeCompactIndices() } -> std::same_as<std::vector<uint>>;
 
-        { o.addEdge() } -> std::same_as<uint>;
-        { o.addEdges(uint()) } -> std::same_as<uint>;
-        { o.reserveEdges(uint()) } -> std::same_as<void>;
-        { o.compactEdges() } -> std::same_as<void>;
+        { obj.addEdge() } -> std::same_as<uint>;
+        { obj.addEdges(uint()) } -> std::same_as<uint>;
+        { obj.reserveEdges(uint()) } -> std::same_as<void>;
+        { obj.compactEdges() } -> std::same_as<void>;
 
-        { o.edgeBegin() } -> std::same_as<typename T::EdgeIterator>;
-        { co.edgeBegin() } -> std::same_as<typename T::ConstEdgeIterator>;
-        { o.edgeEnd() } -> std::same_as<typename T::EdgeIterator>;
-        { co.edgeEnd() } -> std::same_as<typename T::ConstEdgeIterator>;
+        { obj.edgeBegin() } -> std::same_as<typename T::EdgeIterator>;
+        { cObj.edgeBegin() } -> std::same_as<typename T::ConstEdgeIterator>;
+        { obj.edgeEnd() } -> std::same_as<typename T::EdgeIterator>;
+        { cObj.edgeEnd() } -> std::same_as<typename T::ConstEdgeIterator>;
 
-        { o.edges() } -> vcl::RangeOf<typename T::EdgeType>;
-        { co.edges() } -> vcl::RangeOf<typename T::EdgeType>;
+        { obj.edges() } -> vcl::RangeOf<typename T::EdgeType>;
+        { cObj.edges() } -> vcl::RangeOf<typename T::EdgeType>;
     };
 
 } // namespace mesh
