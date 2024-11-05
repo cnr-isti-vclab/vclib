@@ -50,7 +50,7 @@ concept SamplerConcept = requires (T o, const T& co) {
     o.clear();
     o.reserve(uint());
     o.resize(uint());
-    
+
     co.begin();
     co.end();
 };

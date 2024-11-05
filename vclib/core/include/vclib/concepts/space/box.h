@@ -54,17 +54,19 @@ concept BoxConcept =
         { co.isEmpty() } -> std::same_as<bool>;
 
         // Boolean tests for whether a point lies inside or outside the box.
-        { co.isInside(p) }  -> std::same_as<bool>;
-        { co.isInsideOpenBox(p) }  -> std::same_as<bool>;
+        { co.isInside(p) } -> std::same_as<bool>;
+        { co.isInsideOpenBox(p) } -> std::same_as<bool>;
 
         // Boolean tests for whether two boxes overlap with each other.
-        { co.overlap(co) }  -> std::same_as<bool>;
-        { co.collide(co) }  -> std::same_as<bool>;
-        { co.intersects(co) }  -> std::same_as<bool>;
+        { co.overlap(co) } -> std::same_as<bool>;
+        { co.collide(co) } -> std::same_as<bool>;
+        { co.intersects(co) } -> std::same_as<bool>;
 
         // Accessors for various properties of the box.
         { co.diagonal() } -> std::same_as<typename T::PointType::ScalarType>;
-        { co.squaredDiagonal() } -> std::same_as<typename T::PointType::ScalarType>;
+        {
+            co.squaredDiagonal()
+        } -> std::same_as<typename T::PointType::ScalarType>;
         { co.center() } -> std::same_as<typename T::PointType>;
         { co.size() } -> std::same_as<typename T::PointType>;
         { co.volume() } -> std::same_as<typename T::PointType::ScalarType>;

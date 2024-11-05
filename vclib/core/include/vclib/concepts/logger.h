@@ -84,6 +84,6 @@ concept LoggerConcept =
         { o.progress(uint()) } -> std::same_as<void>;
     };
 
-} // nameaspace vcl
+} // namespace vcl
 
 #endif // VCL_CONCEPTS_LOGGER_H
