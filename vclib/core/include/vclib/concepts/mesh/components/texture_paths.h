@@ -25,6 +25,8 @@
 
 #include <string>
 
+#include <vclib/concepts/ranges/range.h>
+
 #include "component.h"
 
 namespace vcl::comp {
@@ -60,8 +62,8 @@ concept HasTexturePaths = requires (
     { obj.texturePathEnd() } -> std::same_as<decltype(it)>;
     { cObj.texturePathBegin() } -> std::same_as<decltype(cIt)>;
     { cObj.texturePathEnd() } -> std::same_as<decltype(cIt)>;
-    obj.texturePaths();
-    cObj.texturePaths();
+    { obj.texturePaths() } -> vcl::RangeOf<std::string>;
+    { cObj.texturePaths() } -> vcl::RangeOf<std::string>;
 };
 
 } // namespace vcl::comp

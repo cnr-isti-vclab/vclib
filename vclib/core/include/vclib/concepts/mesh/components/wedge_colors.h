@@ -25,6 +25,8 @@
 
 #include <vector>
 
+#include <vclib/concepts/ranges/range.h>
+
 #include "component.h"
 
 namespace vcl::comp {
@@ -47,8 +49,9 @@ template<typename T>
 concept HasWedgeColors = requires (
     T                                       obj,
     const T&                                cObj,
-    typename T::WedgeColorType&             c,
-    const typename T::WedgeColorType&       cC,
+    typename T::WedgeColorType              c,
+    typename T::WedgeColorType&             cR,
+    const typename T::WedgeColorType&       cCR,
     typename T::WedgeColorsIterator         it,
     typename T::ConstWedgeColorsIterator    cIt,
     std::vector<typename T::WedgeColorType> vec) {
@@ -57,19 +60,19 @@ concept HasWedgeColors = requires (
     typename T::WedgeColorsIterator;
     typename T::ConstWedgeColorsIterator;
 
-    { obj.wedgeColor(uint()) } -> std::same_as<decltype(c)>;
-    { cObj.wedgeColor(uint()) } -> std::same_as<decltype(cC)>;
-    { obj.wedgeColorMod(int()) } -> std::same_as<decltype(c)>;
-    { cObj.wedgeColorMod(int()) } -> std::same_as<decltype(cC)>;
-    { obj.setWedgeColor(uint(), cC) } -> std::same_as<void>;
+    { obj.wedgeColor(uint()) } -> std::same_as<decltype(cR)>;
+    { cObj.wedgeColor(uint()) } -> std::same_as<decltype(cCR)>;
+    { obj.wedgeColorMod(int()) } -> std::same_as<decltype(cR)>;
+    { cObj.wedgeColorMod(int()) } -> std::same_as<decltype(cCR)>;
+    { obj.setWedgeColor(uint(), cCR) } -> std::same_as<void>;
     { obj.setWedgeColors(vec) } -> std::same_as<void>;
 
     { obj.wedgeColorBegin() } -> std::same_as<decltype(it)>;
     { obj.wedgeColorEnd() } -> std::same_as<decltype(it)>;
     { cObj.wedgeColorBegin() } -> std::same_as<decltype(cIt)>;
     { cObj.wedgeColorEnd() } -> std::same_as<decltype(cIt)>;
-    obj.wedgeColors();
-    cObj.wedgeColors();
+    { obj.wedgeColors() } -> vcl::RangeOf<decltype(c)>;
+    { cObj.wedgeColors() } -> vcl::RangeOf<decltype(c)>;
 };
 
 /**

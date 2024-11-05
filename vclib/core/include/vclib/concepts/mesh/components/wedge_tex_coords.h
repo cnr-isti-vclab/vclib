@@ -25,6 +25,8 @@
 
 #include <vector>
 
+#include <vclib/concepts/ranges/range.h>
+
 #include "component.h"
 
 namespace vcl::comp {
@@ -47,8 +49,9 @@ template<typename T>
 concept HasWedgeTexCoords = requires (
     T                                          obj,
     const T&                                   cObj,
-    typename T::WedgeTexCoordType&             t,
-    const typename T::WedgeTexCoordType&       cT,
+    typename T::WedgeTexCoordType              t,
+    typename T::WedgeTexCoordType&             tR,
+    const typename T::WedgeTexCoordType&       cTR,
     typename T::WedgeTexCoordsIterator         it,
     typename T::ConstWedgeTexCoordsIterator    cIt,
     std::vector<typename T::WedgeTexCoordType> v) {
@@ -57,11 +60,11 @@ concept HasWedgeTexCoords = requires (
     typename T::WedgeTexCoordsIterator;
     typename T::ConstWedgeTexCoordsIterator;
 
-    { obj.wedgeTexCoord(uint()) } -> std::same_as<decltype(t)>;
-    { cObj.wedgeTexCoord(uint()) } -> std::same_as<decltype(cT)>;
-    { obj.wedgeTexCoordMod(int()) } -> std::same_as<decltype(t)>;
-    { cObj.wedgeTexCoordMod(int()) } -> std::same_as<decltype(cT)>;
-    { obj.setWedgeTexCoord(uint(), cT) } -> std::same_as<void>;
+    { obj.wedgeTexCoord(uint()) } -> std::same_as<decltype(tR)>;
+    { cObj.wedgeTexCoord(uint()) } -> std::same_as<decltype(cTR)>;
+    { obj.wedgeTexCoordMod(int()) } -> std::same_as<decltype(tR)>;
+    { cObj.wedgeTexCoordMod(int()) } -> std::same_as<decltype(cTR)>;
+    { obj.setWedgeTexCoord(uint(), cTR) } -> std::same_as<void>;
     { obj.setWedgeTexCoords(v) } -> std::same_as<void>;
     { obj.textureIndex() } -> std::same_as<short&>;
     { cObj.textureIndex() } -> std::same_as<short>;
@@ -70,8 +73,8 @@ concept HasWedgeTexCoords = requires (
     { obj.wedgeTexCoordEnd() } -> std::same_as<decltype(it)>;
     { cObj.wedgeTexCoordBegin() } -> std::same_as<decltype(cIt)>;
     { cObj.wedgeTexCoordEnd() } -> std::same_as<decltype(cIt)>;
-    obj.wedgeTexCoords();
-    cObj.wedgeTexCoords();
+    { obj.wedgeTexCoords() } -> vcl::RangeOf<decltype(t)>;
+    { cObj.wedgeTexCoords() } -> vcl::RangeOf<decltype(t)>;
 };
 
 /**

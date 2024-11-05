@@ -6,8 +6,8 @@
     - [ ] Add documentation on how to add a new mesh element using scripts
 - Concepts:
   - [ ] complete space data structures concepts
-  - [ ] fix ranges in texture and wedge concepts -> missing std::same_as<...>
-  - [ ] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
+  - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>
+  - [x] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
 - Mesh:
   - Elements:
     - [ ] set properly elements concepts

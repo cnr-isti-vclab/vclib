@@ -32,6 +32,11 @@ void polymeshStaticAsserts()
     static_assert(HasPolygons<PolyMesh>, "");
 
     static_assert(
+        HasTextureImages<PolyMesh>, "The PolyMesh has no texture images.");
+    static_assert(
+        !HasTexturePaths<PolyMesh>, "The PolyMesh has texture paths.");
+
+    static_assert(
         comp::IsTiedToVertexNumber<PolyMesh::Face::AdjacentFaces>, "");
     static_assert(
         !comp::IsTiedToVertexNumber<PolyMesh::Vertex::AdjacentFaces>, "");

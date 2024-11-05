@@ -25,6 +25,8 @@
 
 #include <string>
 
+#include <vclib/concepts/ranges/range.h>
+
 #include "component.h"
 
 namespace vcl::comp {
@@ -60,8 +62,8 @@ concept HasTextureImages = requires (
     { obj.textureEnd() } -> std::same_as<typename T::TextureIterator>;
     { cObj.textureBegin() } -> std::same_as<typename T::ConstTextureIterator>;
     { cObj.textureEnd() } -> std::same_as<typename T::ConstTextureIterator>;
-    obj.textures();
-    cObj.textures();
+    { obj.textures() } -> vcl::RangeOf<typename T::TextureType>;
+    { cObj.textures() } -> vcl::RangeOf<typename T::TextureType>;
 };
 
 } // namespace vcl::comp
