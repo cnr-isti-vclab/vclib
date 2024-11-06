@@ -5,6 +5,7 @@
   - [ ] Fix scripts to add a mesh element
     - [ ] Add documentation on how to add a new mesh element using scripts
 - Concepts:
+  - [ ] add constructor constraints on all concepts
   - [ ] concepts should work for all type of cvref qualified types
   - [ ] complete space data structures concepts
   - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>

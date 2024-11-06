@@ -37,6 +37,7 @@ set(HEADERS
     space/array.h
     space/box.h
     space/color.h
+    space/image.h
     space/point.h
 )
 

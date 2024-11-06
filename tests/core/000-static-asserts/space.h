@@ -28,6 +28,7 @@
 #include "space/array.h"
 #include "space/box.h"
 #include "space/color.h"
+#include "space/image.h"
 #include "space/point.h"
 
 void spaceStaticAsserts()
@@ -35,6 +36,7 @@ void spaceStaticAsserts()
     arrayStaticAsserts();
     boxStaticAsserts();
     colorStaticAsserts();
+    imageStaticAsserts();
     pointStaticAsserts();
 
     using namespace vcl;
@@ -42,11 +44,6 @@ void spaceStaticAsserts()
     // bitset
     static_assert(
         Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-
-    // image
-    static_assert(
-        ImageConcept<Image>, "Image does not satisfy the ImageConcept");
-    static_assert(Serializable<Image>, "Image is not serializable");
 
     // matrix
     static_assert(
