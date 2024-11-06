@@ -81,6 +81,9 @@ private:
         {{{KeyModifier::NO_MODIFIER}, 1}, TrackBallType::SCALE},
         {{{KeyModifier::CONTROL}, 1},     TrackBallType::ROLL },
         {{{KeyModifier::SHIFT}, 1},       TrackBallType::FOV  },
+#ifdef __APPLE__
+        {{{KeyModifier::SHIFT}, 0}, TrackBallType::FOV},
+#endif
     };
 
     std::map<
