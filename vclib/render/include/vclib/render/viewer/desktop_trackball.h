@@ -63,6 +63,7 @@ private:
 
     std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
         mDragMotionMap = {
+            // clang-format off
             {{MouseButton::LEFT, {KeyModifier::NO_MODIFIER}},
              TrackBallType::ARC                                               },
             {{MouseButton::LEFT, {KeyModifier::CONTROL}}, TrackBallType::PAN  },
@@ -74,6 +75,7 @@ private:
              TrackBallType::ROLL                                              },
             {{MouseButton::LEFT, {KeyModifier::SHIFT, KeyModifier::CONTROL}},
              TrackBallType::DIR_LIGHT_ARC                                     },
+            // clang-format on
     };
 
     using Axis = unsigned char;
