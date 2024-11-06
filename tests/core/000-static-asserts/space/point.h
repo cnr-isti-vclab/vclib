@@ -29,37 +29,74 @@ void pointStaticAsserts()
 {
     using namespace vcl;
 
+    using PointType = Point<uint16_t, 5>;
+    using Point2Type = Point2i;
+    using Point3Type = Point3f;
+    using Point4Type = Point4d;
+
+    PointType p = Eigen::Matrix<uint16_t, 1, 5>();
+
     // point
     static_assert(
-        PointConcept<Point<uint16_t, 5>>,
-        "Point does not satisfy the PointConcept");
+        PointConcept<PointType>, "Point does not satisfy the PointConcept");
+    static_assert(
+        PointConcept<const PointType>,
+        "const Point does not satisfy the PointConcept");
+    static_assert(
+        PointConcept<PointType&>, "Point& does not satisfy the PointConcept");
+    static_assert(
+        PointConcept<const PointType&>,
+        "const Point& does not satisfy the PointConcept");
+    static_assert(
+        PointConcept<PointType&&>, "Point&& does not satisfy the PointConcept");
 
     // point2
     static_assert(
-        Point2Concept<Point2i>, "Point2i does not satisfy the Point2Concept");
+        Point2Concept<Point2Type>, "Point2 does not satisfy the Point2Concept");
     static_assert(
-        Point2Concept<Point2f>, "Point2f does not satisfy the Point2Concept");
+        Point2Concept<const Point2Type>,
+        "const Point2 does not satisfy the Point2Concept");
     static_assert(
-        Point2Concept<Point2d>, "Point2d does not satisfy the Point2Concept");
-    static_assert(Serializable<Point2d>, "Point2d is not serializable");
+        Point2Concept<Point2Type&>,
+        "Point2& does not satisfy the Point2Concept");
+    static_assert(
+        Point2Concept<const Point2Type&>,
+        "const Point2& does not satisfy the Point2Concept");
+    static_assert(
+        Point2Concept<Point2Type&&>,
+        "Point2&& does not satisfy the Point2Concept");
 
     // point3
     static_assert(
-        Point3Concept<Point3i>, "Point3i does not satisfy the Point3Concept");
+        Point3Concept<Point3Type>, "Point3 does not satisfy the Point3Concept");
     static_assert(
-        Point3Concept<Point3f>, "Point3f does not satisfy the Point3Concept");
+        Point3Concept<const Point3Type>,
+        "const Point3 does not satisfy the Point3Concept");
     static_assert(
-        Point3Concept<Point3d>, "Point3d does not satisfy the Point3Concept");
-    static_assert(Serializable<Point3d>, "Point3d is not serializable");
+        Point3Concept<Point3Type&>,
+        "Point3& does not satisfy the Point3Concept");
+    static_assert(
+        Point3Concept<const Point3Type&>,
+        "const Point3& does not satisfy the Point3Concept");
+    static_assert(
+        Point3Concept<Point3Type&&>,
+        "Point3&& does not satisfy the Point3Concept");
 
     // point4
     static_assert(
-        Point4Concept<Point4i>, "Point4i does not satisfy the Point4Concept");
+        Point4Concept<Point4Type>, "Point4 does not satisfy the Point4Concept");
     static_assert(
-        Point4Concept<Point4f>, "Point4f does not satisfy the Point4Concept");
+        Point4Concept<const Point4Type>,
+        "const Point4 does not satisfy the Point4Concept");
     static_assert(
-        Point4Concept<Point4d>, "Point4d does not satisfy the Point4Concept");
-    static_assert(Serializable<Point4d>, "Point4d is not serializable");
+        Point4Concept<Point4Type&>,
+        "Point4& does not satisfy the Point4Concept");
+    static_assert(
+        Point4Concept<const Point4Type&>,
+        "const Point4& does not satisfy the Point4Concept");
+    static_assert(
+        Point4Concept<Point4Type&&>,
+        "Point4&& does not satisfy the Point4Concept");
 }
 
 #endif // POINT_H
