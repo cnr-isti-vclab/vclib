@@ -51,14 +51,14 @@ namespace vcl {
  * @tparam T: The type to be tested for conformity to the SegmentConcept.
  */
 template<typename T>
-concept SegmentConcept = requires (T o, const T& co) {
+concept SegmentConcept = requires (T obj, const T& cObj) {
     typename T::PointType;
     typename T::ScalarType;
-    o.DIM;
-    { o.p0() } -> std::same_as<typename T::PointType&>;
-    { co.p0() } -> std::same_as<const typename T::PointType&>;
-    { o.p1() } -> std::same_as<typename T::PointType&>;
-    { co.p1() } -> std::same_as<const typename T::PointType&>;
+    obj.DIM;
+    { obj.p0() } -> std::same_as<typename T::PointType&>;
+    { cObj.p0() } -> std::same_as<const typename T::PointType&>;
+    { obj.p1() } -> std::same_as<typename T::PointType&>;
+    { cObj.p1() } -> std::same_as<const typename T::PointType&>;
 };
 
 /**

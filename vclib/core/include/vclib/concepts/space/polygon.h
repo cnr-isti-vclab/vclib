@@ -28,28 +28,28 @@
 namespace vcl {
 
 template<typename T>
-concept ConstPolygonConcept = requires (T o, const T& co) {
+concept ConstPolygonConcept = requires (T obj, const T& cObj) {
     typename T::ScalarType;
     typename T::PointType;
 
-    co.DIM;
+    cObj.DIM;
 
-    { co.size() } -> std::same_as<uint>;
-    { co.point(uint()) } -> std::same_as<const typename T::PointType&>;
-    { co.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
-    { co.barycenter() } -> std::same_as<typename T::PointType>;
-    { co.perimeter() } -> std::same_as<typename T::ScalarType>;
-    { co.area() } -> std::same_as<typename T::ScalarType>;
+    { cObj.size() } -> std::same_as<uint>;
+    { cObj.point(uint()) } -> std::same_as<const typename T::PointType&>;
+    { cObj.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
+    { cObj.barycenter() } -> std::same_as<typename T::PointType>;
+    { cObj.perimeter() } -> std::same_as<typename T::ScalarType>;
+    { cObj.area() } -> std::same_as<typename T::ScalarType>;
 };
 
 template<typename T>
 concept PolygonConcept =
-    ConstPolygonConcept<T> && requires (T o, const typename T::PointType& p) {
-        { o.resize(uint()) } -> std::same_as<void>;
-        { o.reserve(uint()) } -> std::same_as<void>;
-        { o.clear() } -> std::same_as<void>;
-        { o.pushBack(p) } -> std::same_as<void>;
-        { o.point(uint()) } -> std::same_as<typename T::PointType&>;
+    ConstPolygonConcept<T> && requires (T obj, const typename T::PointType& p) {
+        { obj.resize(uint()) } -> std::same_as<void>;
+        { obj.reserve(uint()) } -> std::same_as<void>;
+        { obj.clear() } -> std::same_as<void>;
+        { obj.pushBack(p) } -> std::same_as<void>;
+        { obj.point(uint()) } -> std::same_as<typename T::PointType&>;
     };
 
 template<typename T>
@@ -60,8 +60,8 @@ concept Polygon2Concept = ConstPolygon2Concept<T> && PolygonConcept<T>;
 
 template<typename T>
 concept ConstPolygon3Concept =
-    ConstPolygonConcept<T> && T::DIM == 3 && requires (const T& co) {
-        { co.normal() } -> std::same_as<typename T::PointType>;
+    ConstPolygonConcept<T> && T::DIM == 3 && requires (const T& cObj) {
+        { cObj.normal() } -> std::same_as<typename T::PointType>;
     };
 
 template<typename T>

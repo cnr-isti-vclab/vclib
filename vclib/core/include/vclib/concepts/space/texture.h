@@ -30,9 +30,9 @@
 namespace vcl {
 
 template<typename T>
-concept TextureConcept = requires (T&& o) {
-    { o.path() } -> std::convertible_to<std::string>;
-    { o.image() } -> ImageConcept;
+concept TextureConcept = requires (T&& obj) {
+    { obj.path() } -> std::convertible_to<std::string>;
+    { obj.image() } -> ImageConcept;
 };
 
 } // namespace vcl

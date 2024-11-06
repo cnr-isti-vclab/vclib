@@ -39,20 +39,20 @@ namespace vcl {
  * @tparam T: The type to be tested for conformity to the SamplerConcept.
  */
 template<typename T>
-concept SamplerConcept = requires (T o, const T& co) {
+concept SamplerConcept = requires (T obj, const T& cObj) {
     typename T::PointType;
 
-    o.samples();
+    obj.samples();
 
-    { co.size() } -> std::same_as<std::size_t>;
-    co.sample(uint());
+    { cObj.size() } -> std::same_as<std::size_t>;
+    cObj.sample(uint());
 
-    o.clear();
-    o.reserve(uint());
-    o.resize(uint());
+    obj.clear();
+    obj.reserve(uint());
+    obj.resize(uint());
 
-    co.begin();
-    co.end();
+    cObj.begin();
+    cObj.end();
 };
 
 } // namespace vcl

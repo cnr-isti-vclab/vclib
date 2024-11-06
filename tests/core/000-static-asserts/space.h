@@ -105,6 +105,38 @@ void spaceStaticAsserts()
         ImageConcept<Image>, "Image does not satisfy the ImageConcept");
     static_assert(Serializable<Image>, "Image is not serializable");
 
+    // matrix
+    static_assert(
+        EigenMatrixConcept<Eigen::Matrix3d>,
+        "Matrix3d does not satisfy the EigenMatrixConcept");
+    static_assert(
+        EigenMatrixConcept<Eigen::Matrix3d&>,
+        "Matrix3d& does not satisfy the EigenMatrixConcept");
+    static_assert(
+        EigenMatrixConcept<const Eigen::Matrix3d>,
+        "const Matrix3d does not satisfy the EigenMatrixConcept");
+    static_assert(
+        EigenMatrixConcept<const Eigen::Matrix3d&>,
+        "const Matrix3d& does not satisfy the EigenMatrixConcept");
+    static_assert(
+        EigenMatrixConcept<Eigen::Matrix3d&&>,
+        "Matrix3d&& does not satisfy the EigenMatrixConcept");
+    static_assert(
+        ResizableEigenMatrixConcept<Eigen::MatrixX3d>,
+        "MatrixX3d does not satisfy the ResizableEigenMatrixConcept");
+    static_assert(
+        ResizableEigenMatrixConcept<Eigen::MatrixX3d&>,
+        "MatrixX3d& does not satisfy the ResizableEigenMatrixConcept");
+    static_assert(
+        ResizableEigenMatrixConcept<const Eigen::MatrixX3d>,
+        "const MatrixX3d does not satisfy the ResizableEigenMatrixConcept");
+    static_assert(
+        ResizableEigenMatrixConcept<const Eigen::MatrixX3d&>,
+        "const MatrixX3d& does not satisfy the ResizableEigenMatrixConcept");
+    static_assert(
+        ResizableEigenMatrixConcept<Eigen::MatrixX3d&&>,
+        "MatrixX3d&& does not satisfy the ResizableEigenMatrixConcept");
+
     // plane
     static_assert(
         PlaneConcept<Planef>, "Planef does not satisfy the PlaneConcept");

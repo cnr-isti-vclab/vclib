@@ -36,53 +36,53 @@ namespace vcl {
  * @ingroup space_concepts
  */
 template<typename T>
-concept PointConcept = requires (T o, const T& co) {
+concept PointConcept = requires (T obj, const T& cObj) {
     typename T::ScalarType;
-    o.DIM;
-    o.isDegenerate();
-    { co.dot(co) } -> std::same_as<typename T::ScalarType>;
-    { co.angle(co) } -> std::same_as<typename T::ScalarType>;
-    { co.dist(co) } -> std::same_as<typename T::ScalarType>;
-    { co.squaredDist(co) } -> std::same_as<typename T::ScalarType>;
-    { co.norm() } -> std::same_as<typename T::ScalarType>;
-    { co.squaredNorm() } -> std::same_as<typename T::ScalarType>;
-    { co.size() } -> std::same_as<uint>;
-    o.setConstant(typename T::ScalarType());
-    o.setZero();
-    o.setOnes();
-    o.normalize();
-    { co.hash() } -> std::same_as<std::size_t>;
+    obj.DIM;
+    { cObj.isDegenerate() } -> std::same_as<bool>;
+    { cObj.dot(cObj) } -> std::same_as<typename T::ScalarType>;
+    { cObj.angle(cObj) } -> std::same_as<typename T::ScalarType>;
+    { cObj.dist(cObj) } -> std::same_as<typename T::ScalarType>;
+    { cObj.squaredDist(cObj) } -> std::same_as<typename T::ScalarType>;
+    { cObj.norm() } -> std::same_as<typename T::ScalarType>;
+    { cObj.squaredNorm() } -> std::same_as<typename T::ScalarType>;
+    { cObj.size() } -> std::same_as<uint>;
+    obj.setConstant(typename T::ScalarType());
+    obj.setZero();
+    obj.setOnes();
+    obj.normalize();
+    { cObj.hash() } -> std::same_as<std::size_t>;
 
-    o(uint());
-    co(uint());
-    o[uint()];
-    co[uint()];
+    obj(uint());
+    cObj(uint());
+    obj[uint()];
+    cObj[uint()];
 
-    o = co;
+    obj = cObj;
 
-    { co == co } -> std::same_as<bool>;
-    co <=> co;
+    { cObj == cObj } -> std::same_as<bool>;
+    cObj <=> cObj;
 
-    o += typename T::ScalarType();
-    o += co;
+    obj += typename T::ScalarType();
+    obj += cObj;
 
-    o -= typename T::ScalarType();
-    o -= co;
+    obj -= typename T::ScalarType();
+    obj -= cObj;
 
-    o *= typename T::ScalarType();
-    o /= typename T::ScalarType();
+    obj *= typename T::ScalarType();
+    obj /= typename T::ScalarType();
 
-    { co.normalized() } -> std::convertible_to<T>;
-    { co + typename T::ScalarType() } -> std::convertible_to<T>;
-    { co + co } -> std::convertible_to<T>;
+    { cObj.normalized() } -> std::convertible_to<T>;
+    { cObj + typename T::ScalarType() } -> std::convertible_to<T>;
+    { cObj + cObj } -> std::convertible_to<T>;
 
-    { -co } -> std::convertible_to<T>;
-    { co - typename T::ScalarType() } -> std::convertible_to<T>;
-    { co - co } -> std::convertible_to<T>;
+    { -cObj } -> std::convertible_to<T>;
+    { cObj - typename T::ScalarType() } -> std::convertible_to<T>;
+    { cObj - cObj } -> std::convertible_to<T>;
 
-    { co* typename T::ScalarType() } -> std::convertible_to<T>;
+    { cObj * typename T::ScalarType() } -> std::convertible_to<T>;
 
-    { co / typename T::ScalarType() } -> std::convertible_to<T>;
+    { cObj / typename T::ScalarType() } -> std::convertible_to<T>;
 };
 
 /**

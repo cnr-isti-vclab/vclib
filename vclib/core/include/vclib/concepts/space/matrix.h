@@ -25,6 +25,8 @@
 
 #include "array.h"
 
+#include <vclib/concepts/const_correctness.h>
+
 namespace vcl {
 
 /**
@@ -39,17 +41,17 @@ namespace vcl {
  * - `T::operator()(std::size_t, std::size_t)`
  */
 template<typename T>
-concept EigenMatrixConcept = requires (T o, const T& co) {
-    typename T::Scalar;
+concept EigenMatrixConcept = requires (T&& obj) {
+    typename std::remove_reference_t<T>::Scalar;
 
-    co.RowsAtCompileTime;
-    co.ColsAtCompileTime;
+    obj.RowsAtCompileTime;
+    obj.ColsAtCompileTime;
 
-    co.rows();
-    co.cols();
+    obj.rows();
+    obj.cols();
 
-    o.operator()(std::size_t(), std::size_t());
-    co.operator()(std::size_t(), std::size_t());
+    obj.operator()(std::size_t(), std::size_t());
+    obj.operator()(std::size_t(), std::size_t());
 };
 
 /**
@@ -67,10 +69,11 @@ concept EigenMatrixConcept = requires (T o, const T& co) {
  * sizes of the matrix does not cause any error.
  */
 template<typename T>
-concept ResizableEigenMatrixConceipt = EigenMatrixConcept<T> && requires (T o) {
-    o.resize(std::size_t(), std::size_t());
-    o.conservativeResize(std::size_t(), std::size_t());
-};
+concept ResizableEigenMatrixConcept =
+    EigenMatrixConcept<T> && (vcl::IsConst<T> || requires (T&& obj) {
+        obj.resize(std::size_t(), std::size_t());
+        obj.conservativeResize(std::size_t(), std::size_t());
+    });
 
 /**
  * @brief Concept for 2D arrays (matrices). It is satisfied when `T` is a
@@ -80,7 +83,7 @@ concept ResizableEigenMatrixConceipt = EigenMatrixConcept<T> && requires (T o) {
  * trough their respective concepts.
  */
 template<typename T>
-concept MatrixConcept = ResizableEigenMatrixConceipt<T> || Array2Concept<T>;
+concept MatrixConcept = ResizableEigenMatrixConcept<T> || Array2Concept<T>;
 
 } // namespace vcl
 
