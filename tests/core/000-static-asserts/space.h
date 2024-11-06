@@ -26,10 +26,13 @@
 #include <vclib/mesh/tmp_meshes.h>
 
 #include "space/array.h"
+#include "space/point.h"
 
 void spaceStaticAsserts()
 {
     arrayStaticAsserts();
+
+    pointStaticAsserts();
 
     using namespace vcl;
 
@@ -106,31 +109,7 @@ void spaceStaticAsserts()
     static_assert(
         PlaneConcept<Planed>, "Planed does not satisfy the PlaneConcept");
 
-    // point2
-    static_assert(
-        Point2Concept<Point2i>, "Point2i does not satisfy the Point2Concept");
-    static_assert(
-        Point2Concept<Point2f>, "Point2f does not satisfy the Point2Concept");
-    static_assert(
-        Point2Concept<Point2d>, "Point2d does not satisfy the Point2Concept");
-    static_assert(Serializable<Point2d>, "Point2d is not serializable");
 
-    // point3
-    static_assert(
-        Point3Concept<Point3i>, "Point3i does not satisfy the Point3Concept");
-    static_assert(
-        Point3Concept<Point3f>, "Point3f does not satisfy the Point3Concept");
-    static_assert(
-        Point3Concept<Point3d>, "Point3d does not satisfy the Point3Concept");
-    static_assert(Serializable<Point3d>, "Point3d is not serializable");
-
-    static_assert(
-        Point4Concept<Point4i>, "Point4i does not satisfy the Point4Concept");
-    static_assert(
-        Point4Concept<Point4f>, "Point4f does not satisfy the Point4Concept");
-    static_assert(
-        Point4Concept<Point4d>, "Point4d does not satisfy the Point4Concept");
-    static_assert(Serializable<Point4d>, "Point4d is not serializable");
 
     static_assert(
         Polygon2Concept<Polygon2f>,

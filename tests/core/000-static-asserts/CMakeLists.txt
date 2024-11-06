@@ -34,6 +34,8 @@ set(HEADERS
     meshes/pointcloud.h
     meshes/polymesh.h
     meshes/trimesh.h
+    space/array.h
+    space/point.h
 )
 
 set(SOURCES

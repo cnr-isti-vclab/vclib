@@ -23,6 +23,7 @@
 #ifndef VCL_CONCEPTS_SPACE_POINT_H
 #define VCL_CONCEPTS_SPACE_POINT_H
 
+#include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/iterators.h>
 #include <vclib/types.h>
 
@@ -39,6 +40,7 @@ template<typename T>
 concept PointConcept = requires (T obj, const T& cObj) {
     typename T::ScalarType;
     obj.DIM;
+
     { cObj.isDegenerate() } -> std::same_as<bool>;
     { cObj.dot(cObj) } -> std::same_as<typename T::ScalarType>;
     { cObj.angle(cObj) } -> std::same_as<typename T::ScalarType>;
@@ -47,30 +49,14 @@ concept PointConcept = requires (T obj, const T& cObj) {
     { cObj.norm() } -> std::same_as<typename T::ScalarType>;
     { cObj.squaredNorm() } -> std::same_as<typename T::ScalarType>;
     { cObj.size() } -> std::same_as<uint>;
-    obj.setConstant(typename T::ScalarType());
-    obj.setZero();
-    obj.setOnes();
-    obj.normalize();
+
     { cObj.hash() } -> std::same_as<std::size_t>;
 
-    obj(uint());
     cObj(uint());
-    obj[uint()];
     cObj[uint()];
-
-    obj = cObj;
 
     { cObj == cObj } -> std::same_as<bool>;
     cObj <=> cObj;
-
-    obj += typename T::ScalarType();
-    obj += cObj;
-
-    obj -= typename T::ScalarType();
-    obj -= cObj;
-
-    obj *= typename T::ScalarType();
-    obj /= typename T::ScalarType();
 
     { cObj.normalized() } -> std::convertible_to<T>;
     { cObj + typename T::ScalarType() } -> std::convertible_to<T>;
@@ -83,6 +69,28 @@ concept PointConcept = requires (T obj, const T& cObj) {
     { cObj * typename T::ScalarType() } -> std::convertible_to<T>;
 
     { cObj / typename T::ScalarType() } -> std::convertible_to<T>;
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        obj.setConstant(typename T::ScalarType());
+        obj.setZero();
+        obj.setOnes();
+        obj.normalize();
+
+        obj(uint());
+        obj[uint()];
+
+        obj = cObj;
+
+        obj += typename T::ScalarType();
+        obj += cObj;
+
+        obj -= typename T::ScalarType();
+        obj -= cObj;
+
+        obj *= typename T::ScalarType();
+        obj /= typename T::ScalarType();
+    };
 };
 
 /**
