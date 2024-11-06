@@ -39,12 +39,12 @@ namespace vcl {
  */
 template<typename T>
 concept ArrayConcept = requires (
-    T obj,
-    const T& cObj,
-    typename T::Iterator it,
-    typename T::ConstIterator cIt,
-    typename T::ValueType v,
-    std::vector<typename T::ValueType> vecV,
+    T                                         obj,
+    const T&                                  cObj,
+    typename T::Iterator                      it,
+    typename T::ConstIterator                 cIt,
+    typename T::ValueType                     v,
+    std::vector<typename T::ValueType>        vecV,
     const std::vector<typename T::ValueType>& cVecVR) {
     typename T::ValueType;
     typename T::Scalar;

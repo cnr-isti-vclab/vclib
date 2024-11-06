@@ -40,10 +40,7 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTextureImages = requires (
-    T obj,
-    const T& cObj,
-    std::string str) {
+concept HasTextureImages = requires (T obj, const T& cObj, std::string str) {
     typename T::TextureType;
     typename T::TextureIterator;
     typename T::ConstTextureIterator;

@@ -37,8 +37,7 @@ namespace detail {
  * the color components.
  */
 template<typename T>
-concept NonConstColorConcept = vcl::IsConst<T> || requires(T&& obj)
-{
+concept NonConstColorConcept = vcl::IsConst<T> || requires (T&& obj) {
     { obj.red() } -> std::same_as<uint8_t&>;
     { obj.green() } -> std::same_as<uint8_t&>;
     { obj.blue() } -> std::same_as<uint8_t&>;
