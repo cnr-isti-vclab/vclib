@@ -41,6 +41,7 @@
     - [ ] uniform all the function, that should take an out argument of birthVertices/birthFaces
     - [ ] weights input argument of all the function should be a range
 - Space:
+  - [ ] add assert(!isNull()) on Box member functions like volume()
   - [ ] improve documentation for Grid data structures
   - [ ] move bipartite graph iterators from space to iterators (see iterators todo list)
 - Misc:

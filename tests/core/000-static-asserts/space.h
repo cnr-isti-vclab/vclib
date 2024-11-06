@@ -26,11 +26,14 @@
 #include <vclib/mesh/tmp_meshes.h>
 
 #include "space/array.h"
+#include "space/box.h"
 #include "space/point.h"
 
 void spaceStaticAsserts()
 {
     arrayStaticAsserts();
+
+    boxStaticAsserts();
 
     pointStaticAsserts();
 
@@ -39,18 +42,6 @@ void spaceStaticAsserts()
     // bitset
     static_assert(
         Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-
-    // box2
-    static_assert(Box2Concept<Box2i>, "Box2i does not satisfy the Box2Concept");
-    static_assert(Box2Concept<Box2f>, "Box2f does not satisfy the Box2Concept");
-    static_assert(Box2Concept<Box2d>, "Box2d does not satisfy the Box2Concept");
-    static_assert(Serializable<Box2d>, "Box2d is not serializable");
-
-    // box3
-    static_assert(Box3Concept<Box3i>, "Box3i does not satisfy the Box3Concept");
-    static_assert(Box3Concept<Box3f>, "Box3f does not satisfy the Box3Concept");
-    static_assert(Box3Concept<Box3d>, "Box3d does not satisfy the Box3Concept");
-    static_assert(Serializable<Box3d>, "Box3d is not serializable");
 
     // color
     static_assert(
