@@ -24,51 +24,14 @@
 #define SPACE_H
 
 #include <vclib/mesh/tmp_meshes.h>
-#include <vclib/space.h>
+
+#include "space/array.h"
 
 void spaceStaticAsserts()
 {
+    arrayStaticAsserts();
+
     using namespace vcl;
-
-    // array
-    static_assert(
-        ArrayConcept<Array<int, 2>>, "Array does not satisfy the ArrayConcept");
-
-    // array2
-    static_assert(
-        Array2Concept<Array2<int>>,
-        "Array2i does not satisfy the Array2Concept");
-    static_assert(
-        Array2Concept<Array2<float>>,
-        "Array2f does not satisfy the Array2Concept");
-    static_assert(
-        Array2Concept<Array2<double>>,
-        "Array2d does not satisfy the Array2Concept");
-    static_assert(Serializable<Array2<double>>, "Array2d is not serializable");
-
-    // array3
-    static_assert(
-        Array3Concept<Array3<int>>,
-        "Array3i does not satisfy the Array3Concept");
-    static_assert(
-        Array3Concept<Array3<float>>,
-        "Array3f does not satisfy the Array3Concept");
-    static_assert(
-        Array3Concept<Array3<double>>,
-        "Array3d does not satisfy the Array3Concept");
-    static_assert(Serializable<Array3<double>>, "Array3d is not serializable");
-
-    // array4
-    static_assert(
-        Array4Concept<Array4<int>>,
-        "Array4i does not satisfy the Array4Concept");
-    static_assert(
-        Array4Concept<Array4<float>>,
-        "Array4f does not satisfy the Array4Concept");
-    static_assert(
-        Array4Concept<Array4<double>>,
-        "Array4d does not satisfy the Array4Concept");
-    static_assert(Serializable<Array4<double>>, "Array4d is not serializable");
 
     // bitset
     static_assert(
