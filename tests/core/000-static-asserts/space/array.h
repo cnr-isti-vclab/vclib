@@ -38,7 +38,7 @@ void arrayStaticAsserts()
     static_assert(
         ArrayConcept<TestArray>, "Array does not satisfy the ArrayConcept");
     static_assert(
-        ArrayConcept<TestArray>,
+        ArrayConcept<const TestArray>,
         "const Array does not satisfy the ArrayConcept");
     static_assert(
         ArrayConcept<TestArray&>,
