@@ -25,6 +25,8 @@
 
 #include <type_traits>
 
+#include <vclib/types.h>
+
 namespace vcl {
 
 /**
@@ -38,8 +40,8 @@ namespace vcl {
  * @ingroup util_concepts
  */
 template<typename T>
-concept IsConst = std::is_const_v<typename std::remove_pointer_t<T>> ||
-                  std::is_const_v<typename std::remove_reference_t<T>>;
+concept IsConst = std::is_const_v<typename vcl::RemovePtr<T>> ||
+                  std::is_const_v<typename vcl::RemoveRef<T>>;
 
 } // namespace vcl
 

@@ -37,7 +37,7 @@ concept %EL_UC%PointerRangeConcept =
     Range<Rng> &&
     IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
     %EL_UC%Concept<typename std::decay_t<
-        std::remove_pointer_t<
+        vcl::RemovePtr<
             typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl

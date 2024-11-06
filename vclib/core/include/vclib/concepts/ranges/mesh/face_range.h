@@ -56,8 +56,8 @@ template<typename Rng>
 concept FacePointerRangeConcept =
     Range<Rng> &&
     IsPointer<typename std::ranges::iterator_t<Rng>::value_type> &&
-    FaceConcept<typename std::decay_t<std::remove_pointer_t<
-        typename std::ranges::iterator_t<Rng>::value_type>>>;
+    FaceConcept<typename std::decay_t<
+        vcl::RemovePtr<typename std::ranges::iterator_t<Rng>::value_type>>>;
 
 } // namespace vcl
 

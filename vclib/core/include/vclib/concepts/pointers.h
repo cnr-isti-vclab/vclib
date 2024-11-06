@@ -50,7 +50,7 @@ struct IsSharedPtr<std::shared_ptr<T>> : std::true_type
  * @ingroup util_concepts
  */
 template<typename T>
-concept IsPointer = std::is_pointer_v<std::remove_reference_t<T>>;
+concept IsPointer = std::is_pointer_v<RemoveRef<T>>;
 
 /**
  * @brief The IsSharedPointer concept is satisfied if T is a shared pointer.

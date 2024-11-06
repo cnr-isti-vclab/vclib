@@ -29,6 +29,32 @@
 namespace vcl {
 
 /**
+ * @brief Utility alias to get a type without the pointer.
+ * e.g. If T is int*, the resulting type is int.
+ *
+ * It corresponds to std::remove_pointer_t.
+ *
+ * @tparam T The input type.
+ *
+ * @ingroup types
+ */
+template<typename T>
+using RemovePtr = std::remove_pointer_t<T>;
+
+/**
+ * @brief Utility alias to get a type type without the reference.
+ * e.g. If T is int&, the resulting type is int.
+ *
+ * It corresponds to std::remove_reference_t.
+ *
+ * @tparam T The input type.
+ *
+ * @ingroup types
+ */
+template<typename T>
+using RemoveRef = std::remove_reference_t<T>;
+
+/**
  * @brief Utility alias to get clean type from an input type that could have a
  * reference or a pointer.
  *
@@ -37,8 +63,7 @@ namespace vcl {
  * @ingroup types
  */
 template<typename T>
-using RemoveCVRefAndPointer =
-    typename std::remove_cvref_t<std::remove_pointer_t<T>>;
+using RemoveCVRefAndPointer = std::remove_cvref_t<RemovePtr<T>>;
 
 /**
  * @brief Utility alias to get a pointer type without the constness.
@@ -52,8 +77,7 @@ using RemoveCVRefAndPointer =
 template<typename T>
 using RemoveConstFromPointer = std::conditional_t<
     std::is_pointer_v<T>,
-    std::add_pointer_t<
-        typename std::remove_cv_t<typename std::remove_pointer_t<T>>>,
+    std::add_pointer_t<std::remove_cv_t<RemovePtr<T>>>,
     T>;
 
 /**

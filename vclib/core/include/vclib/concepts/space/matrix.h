@@ -42,7 +42,7 @@ namespace vcl {
  */
 template<typename T>
 concept EigenMatrixConcept = requires (T&& obj) {
-    typename std::remove_reference_t<T>::Scalar;
+    typename RemoveRef<T>::Scalar;
 
     obj.RowsAtCompileTime;
     obj.ColsAtCompileTime;
