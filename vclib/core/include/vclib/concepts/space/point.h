@@ -39,7 +39,6 @@ namespace vcl {
 template<typename T>
 concept PointConcept = requires (
     T&& obj,
-    const T& cObj,
     typename RemoveRef<T>::ScalarType s,
     typename RemoveRef<T>::ScalarType& sR,
     typename RemoveRef<T>::Base& baseObjR) {
@@ -48,10 +47,10 @@ concept PointConcept = requires (
     obj.DIM;
 
     { obj.isDegenerate() } -> std::same_as<bool>;
-    { obj.dot(cObj) } -> std::same_as<decltype(s)>;
-    { obj.angle(cObj) } -> std::same_as<decltype(s)>;
-    { obj.dist(cObj) } -> std::same_as<decltype(s)>;
-    { obj.squaredDist(cObj) } -> std::same_as<decltype(s)>;
+    { obj.dot(obj) } -> std::same_as<decltype(s)>;
+    { obj.angle(obj) } -> std::same_as<decltype(s)>;
+    { obj.dist(obj) } -> std::same_as<decltype(s)>;
+    { obj.squaredDist(obj) } -> std::same_as<decltype(s)>;
     { obj.norm() } -> std::same_as<decltype(s)>;
     { obj.squaredNorm() } -> std::same_as<decltype(s)>;
     { obj.size() } -> std::same_as<uint>;
@@ -61,8 +60,8 @@ concept PointConcept = requires (
     { obj(uint()) } -> std::convertible_to<decltype(s)>;
     { obj[uint()] } -> std::convertible_to<decltype(s)>;
 
-    { obj == cObj } -> std::same_as<bool>;
-    { obj <=> cObj } -> std::convertible_to<std::partial_ordering>;
+    { obj == obj } -> std::same_as<bool>;
+    { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
 
     { obj.normalized() } -> std::convertible_to<RemoveRef<T>>;
     { obj + s } -> std::convertible_to<RemoveRef<T>>;
@@ -70,7 +69,7 @@ concept PointConcept = requires (
 
     { -obj } -> std::convertible_to<RemoveRef<T>>;
     { obj - s } -> std::convertible_to<RemoveRef<T>>;
-    { obj - cObj } -> std::convertible_to<RemoveRef<T>>;
+    { obj - obj } -> std::convertible_to<RemoveRef<T>>;
 
     { obj * s } -> std::convertible_to<RemoveRef<T>>;
 
@@ -86,13 +85,13 @@ concept PointConcept = requires (
         { obj(uint()) } -> std::same_as<decltype(sR)>;
         { obj[uint()] } -> std::same_as<decltype(sR)>;
 
-        { obj = cObj } -> std::same_as<T&>;
+        { obj = obj } -> std::same_as<T&>;
 
         { obj += s } -> std::same_as<T&>;
-        { obj += cObj } -> std::same_as<decltype(baseObjR)>;
+        { obj += obj } -> std::same_as<decltype(baseObjR)>;
 
         { obj -= s } -> std::same_as<T&>;
-        { obj -= cObj } -> std::same_as<decltype(baseObjR)>;
+        { obj -= obj } -> std::same_as<decltype(baseObjR)>;
 
         { obj *= s } -> std::same_as<decltype(baseObjR)>;
         { obj /= s } -> std::same_as<decltype(baseObjR)>;

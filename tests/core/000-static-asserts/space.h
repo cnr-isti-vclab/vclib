@@ -27,14 +27,14 @@
 
 #include "space/array.h"
 #include "space/box.h"
+#include "space/color.h"
 #include "space/point.h"
 
 void spaceStaticAsserts()
 {
     arrayStaticAsserts();
-
     boxStaticAsserts();
-
+    colorStaticAsserts();
     pointStaticAsserts();
 
     using namespace vcl;
@@ -42,20 +42,6 @@ void spaceStaticAsserts()
     // bitset
     static_assert(
         Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-
-    // color
-    static_assert(
-        ColorConcept<Color>, "Color does not satisfy the ColorConcept");
-    static_assert(
-        ColorConcept<Color&>, "Color& does not satisfy the ColorConcept");
-    static_assert(
-        ColorConcept<const Color>,
-        "const Color does not satisfy the ColorConcept");
-    static_assert(
-        ColorConcept<const Color&>,
-        "const Color& does not satisfy the ColorConcept");
-    static_assert(
-        ColorConcept<Color&&>, "Color&& does not satisfy the ColorConcept");
 
     // image
     static_assert(

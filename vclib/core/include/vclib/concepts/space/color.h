@@ -30,22 +30,6 @@
 
 namespace vcl {
 
-namespace detail {
-
-/**
- * @brief Additional concept to check if non-const objects provide access to
- * the color components.
- */
-template<typename T>
-concept NonConstColorConcept = vcl::IsConst<T> || requires (T&& obj) {
-    { obj.red() } -> std::same_as<uint8_t&>;
-    { obj.green() } -> std::same_as<uint8_t&>;
-    { obj.blue() } -> std::same_as<uint8_t&>;
-    { obj.alpha() } -> std::same_as<uint8_t&>;
-};
-
-} // namespace detail
-
 /**
  * @brief ColorConcept is satisfied only if a class provides the member
  * functions specified in this concept. These member functions allows to access
@@ -54,7 +38,7 @@ concept NonConstColorConcept = vcl::IsConst<T> || requires (T&& obj) {
  * @ingroup space_concepts
  */
 template<typename T>
-concept ColorConcept = detail::NonConstColorConcept<T> && requires (T&& obj) {
+concept ColorConcept = requires (T&& obj) {
     { obj.red() } -> std::convertible_to<uint8_t>;
     { obj.green() } -> std::convertible_to<uint8_t>;
     { obj.blue() } -> std::convertible_to<uint8_t>;
@@ -64,6 +48,14 @@ concept ColorConcept = detail::NonConstColorConcept<T> && requires (T&& obj) {
     { obj.greenF() } -> std::same_as<float>;
     { obj.blueF() } -> std::same_as<float>;
     { obj.alphaF() } -> std::same_as<float>;
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.red() } -> std::same_as<uint8_t&>;
+        { obj.green() } -> std::same_as<uint8_t&>;
+        { obj.blue() } -> std::same_as<uint8_t&>;
+        { obj.alpha() } -> std::same_as<uint8_t&>;
+    };
 };
 
 } // namespace vcl

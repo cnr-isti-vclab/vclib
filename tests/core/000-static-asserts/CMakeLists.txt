@@ -36,6 +36,7 @@ set(HEADERS
     meshes/trimesh.h
     space/array.h
     space/box.h
+    space/color.h
     space/point.h
 )
 

@@ -42,7 +42,6 @@ namespace vcl {
 template<typename T>
 concept BoxConcept = requires (
     T&&                                          obj,
-    const T&                                     cObj,
     typename RemoveRef<T>::PointType             p,
     typename RemoveRef<T>::PointType&            pR,
     typename RemoveRef<T>::PointType::ScalarType s) {
@@ -62,9 +61,9 @@ concept BoxConcept = requires (
     { obj.isInsideOpenBox(p) } -> std::same_as<bool>;
 
     // Boolean tests for whether two boxes overlap with each other.
-    { obj.overlap(cObj) } -> std::same_as<bool>;
-    { obj.collide(cObj) } -> std::same_as<bool>;
-    { obj.intersects(cObj) } -> std::same_as<bool>;
+    { obj.overlap(obj) } -> std::same_as<bool>;
+    { obj.collide(obj) } -> std::same_as<bool>;
+    { obj.intersects(obj) } -> std::same_as<bool>;
 
     // Accessors for various properties of the box.
     { obj.diagonal() } -> std::same_as<decltype(s)>;
@@ -75,11 +74,11 @@ concept BoxConcept = requires (
     { obj.dim(uint()) } -> std::convertible_to<decltype(s)>;
     { obj.minDim() } -> std::convertible_to<decltype(s)>;
     { obj.maxDim() } -> std::convertible_to<decltype(s)>;
-    { obj.intersection(cObj) } -> std::convertible_to<RemoveRef<T>>;
+    { obj.intersection(obj) } -> std::convertible_to<RemoveRef<T>>;
 
     // Comparison operators.
-    { obj == cObj } -> std::same_as<bool>;
-    { obj != cObj } -> std::same_as<bool>;
+    { obj == obj } -> std::same_as<bool>;
+    { obj != obj } -> std::same_as<bool>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -90,7 +89,7 @@ concept BoxConcept = requires (
         { obj.setNull() } -> std::same_as<void>;
         { obj.add(p) } -> std::same_as<void>;
         { obj.add(p, s) } -> std::same_as<void>;
-        { obj.add(cObj) } -> std::same_as<void>;
+        { obj.add(obj) } -> std::same_as<void>;
         { obj.translate(p) } -> std::same_as<void>;
     };
 };
