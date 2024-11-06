@@ -24,51 +24,17 @@
 #define SPACE_H
 
 #include <vclib/mesh/tmp_meshes.h>
-#include <vclib/space.h>
+
+#include "space/array.h"
+#include "space/point.h"
 
 void spaceStaticAsserts()
 {
+    arrayStaticAsserts();
+
+    pointStaticAsserts();
+
     using namespace vcl;
-
-    // array
-    static_assert(
-        ArrayConcept<Array<int, 2>>, "Array does not satisfy the ArrayConcept");
-
-    // array2
-    static_assert(
-        Array2Concept<Array2<int>>,
-        "Array2i does not satisfy the Array2Concept");
-    static_assert(
-        Array2Concept<Array2<float>>,
-        "Array2f does not satisfy the Array2Concept");
-    static_assert(
-        Array2Concept<Array2<double>>,
-        "Array2d does not satisfy the Array2Concept");
-    static_assert(Serializable<Array2<double>>, "Array2d is not serializable");
-
-    // array3
-    static_assert(
-        Array3Concept<Array3<int>>,
-        "Array3i does not satisfy the Array3Concept");
-    static_assert(
-        Array3Concept<Array3<float>>,
-        "Array3f does not satisfy the Array3Concept");
-    static_assert(
-        Array3Concept<Array3<double>>,
-        "Array3d does not satisfy the Array3Concept");
-    static_assert(Serializable<Array3<double>>, "Array3d is not serializable");
-
-    // array4
-    static_assert(
-        Array4Concept<Array4<int>>,
-        "Array4i does not satisfy the Array4Concept");
-    static_assert(
-        Array4Concept<Array4<float>>,
-        "Array4f does not satisfy the Array4Concept");
-    static_assert(
-        Array4Concept<Array4<double>>,
-        "Array4d does not satisfy the Array4Concept");
-    static_assert(Serializable<Array4<double>>, "Array4d is not serializable");
 
     // bitset
     static_assert(
@@ -143,31 +109,7 @@ void spaceStaticAsserts()
     static_assert(
         PlaneConcept<Planed>, "Planed does not satisfy the PlaneConcept");
 
-    // point2
-    static_assert(
-        Point2Concept<Point2i>, "Point2i does not satisfy the Point2Concept");
-    static_assert(
-        Point2Concept<Point2f>, "Point2f does not satisfy the Point2Concept");
-    static_assert(
-        Point2Concept<Point2d>, "Point2d does not satisfy the Point2Concept");
-    static_assert(Serializable<Point2d>, "Point2d is not serializable");
 
-    // point3
-    static_assert(
-        Point3Concept<Point3i>, "Point3i does not satisfy the Point3Concept");
-    static_assert(
-        Point3Concept<Point3f>, "Point3f does not satisfy the Point3Concept");
-    static_assert(
-        Point3Concept<Point3d>, "Point3d does not satisfy the Point3Concept");
-    static_assert(Serializable<Point3d>, "Point3d is not serializable");
-
-    static_assert(
-        Point4Concept<Point4i>, "Point4i does not satisfy the Point4Concept");
-    static_assert(
-        Point4Concept<Point4f>, "Point4f does not satisfy the Point4Concept");
-    static_assert(
-        Point4Concept<Point4d>, "Point4d does not satisfy the Point4Concept");
-    static_assert(Serializable<Point4d>, "Point4d is not serializable");
 
     static_assert(
         Polygon2Concept<Polygon2f>,

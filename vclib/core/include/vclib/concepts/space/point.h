@@ -23,6 +23,7 @@
 #ifndef VCL_CONCEPTS_SPACE_POINT_H
 #define VCL_CONCEPTS_SPACE_POINT_H
 
+#include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/iterators.h>
 #include <vclib/types.h>
 
@@ -36,53 +37,66 @@ namespace vcl {
  * @ingroup space_concepts
  */
 template<typename T>
-concept PointConcept = requires (T obj, const T& cObj) {
-    typename T::ScalarType;
+concept PointConcept = requires (
+    T&& obj,
+    const T& cObj,
+    typename RemoveRef<T>::ScalarType s,
+    typename RemoveRef<T>::ScalarType& sR,
+    typename RemoveRef<T>::Base& baseObjR) {
+    typename RemoveRef<T>::ScalarType;
+    typename RemoveRef<T>::Base;
     obj.DIM;
-    { cObj.isDegenerate() } -> std::same_as<bool>;
-    { cObj.dot(cObj) } -> std::same_as<typename T::ScalarType>;
-    { cObj.angle(cObj) } -> std::same_as<typename T::ScalarType>;
-    { cObj.dist(cObj) } -> std::same_as<typename T::ScalarType>;
-    { cObj.squaredDist(cObj) } -> std::same_as<typename T::ScalarType>;
-    { cObj.norm() } -> std::same_as<typename T::ScalarType>;
-    { cObj.squaredNorm() } -> std::same_as<typename T::ScalarType>;
-    { cObj.size() } -> std::same_as<uint>;
-    obj.setConstant(typename T::ScalarType());
-    obj.setZero();
-    obj.setOnes();
-    obj.normalize();
-    { cObj.hash() } -> std::same_as<std::size_t>;
 
-    obj(uint());
-    cObj(uint());
-    obj[uint()];
-    cObj[uint()];
+    { obj.isDegenerate() } -> std::same_as<bool>;
+    { obj.dot(cObj) } -> std::same_as<decltype(s)>;
+    { obj.angle(cObj) } -> std::same_as<decltype(s)>;
+    { obj.dist(cObj) } -> std::same_as<decltype(s)>;
+    { obj.squaredDist(cObj) } -> std::same_as<decltype(s)>;
+    { obj.norm() } -> std::same_as<decltype(s)>;
+    { obj.squaredNorm() } -> std::same_as<decltype(s)>;
+    { obj.size() } -> std::same_as<uint>;
 
-    obj = cObj;
+    { obj.hash() } -> std::same_as<std::size_t>;
 
-    { cObj == cObj } -> std::same_as<bool>;
-    cObj <=> cObj;
+    { obj(uint()) } -> std::convertible_to<decltype(s)>;
+    { obj[uint()] } -> std::convertible_to<decltype(s)>;
 
-    obj += typename T::ScalarType();
-    obj += cObj;
+    { obj == cObj } -> std::same_as<bool>;
+    { obj <=> cObj } -> std::convertible_to<std::partial_ordering>;
 
-    obj -= typename T::ScalarType();
-    obj -= cObj;
+    { obj.normalized() } -> std::convertible_to<RemoveRef<T>>;
+    { obj + s } -> std::convertible_to<RemoveRef<T>>;
+    { obj + obj } -> std::convertible_to<RemoveRef<T>>;
 
-    obj *= typename T::ScalarType();
-    obj /= typename T::ScalarType();
+    { -obj } -> std::convertible_to<RemoveRef<T>>;
+    { obj - s } -> std::convertible_to<RemoveRef<T>>;
+    { obj - cObj } -> std::convertible_to<RemoveRef<T>>;
 
-    { cObj.normalized() } -> std::convertible_to<T>;
-    { cObj + typename T::ScalarType() } -> std::convertible_to<T>;
-    { cObj + cObj } -> std::convertible_to<T>;
+    { obj * s } -> std::convertible_to<RemoveRef<T>>;
 
-    { -cObj } -> std::convertible_to<T>;
-    { cObj - typename T::ScalarType() } -> std::convertible_to<T>;
-    { cObj - cObj } -> std::convertible_to<T>;
+    { obj / s } -> std::convertible_to<RemoveRef<T>>;
 
-    { cObj * typename T::ScalarType() } -> std::convertible_to<T>;
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.setConstant(s) } -> std::same_as<decltype(baseObjR)>;
+        { obj.setZero() } -> std::same_as<decltype(baseObjR)>;
+        { obj.setOnes() } -> std::same_as<decltype(baseObjR)>;
+        { obj.normalize() } -> std::same_as<void>;
 
-    { cObj / typename T::ScalarType() } -> std::convertible_to<T>;
+        { obj(uint()) } -> std::same_as<decltype(sR)>;
+        { obj[uint()] } -> std::same_as<decltype(sR)>;
+
+        { obj = cObj } -> std::same_as<T&>;
+
+        { obj += s } -> std::same_as<T&>;
+        { obj += cObj } -> std::same_as<decltype(baseObjR)>;
+
+        { obj -= s } -> std::same_as<T&>;
+        { obj -= cObj } -> std::same_as<decltype(baseObjR)>;
+
+        { obj *= s } -> std::same_as<decltype(baseObjR)>;
+        { obj /= s } -> std::same_as<decltype(baseObjR)>;
+    };
 };
 
 /**
@@ -96,7 +110,7 @@ concept PointConcept = requires (T obj, const T& cObj) {
  * @ingroup space_concepts
  */
 template<typename T>
-concept Point2Concept = PointConcept<T> && T::DIM == 2;
+concept Point2Concept = PointConcept<T> && RemoveRef<T>::DIM == 2;
 
 /**
  * @brief Concept for points in three-dimensional space.
@@ -109,7 +123,10 @@ concept Point2Concept = PointConcept<T> && T::DIM == 2;
  * @ingroup space_concepts
  */
 template<typename T>
-concept Point3Concept = PointConcept<T> && T::DIM == 3;
+concept Point3Concept =
+    PointConcept<T> && RemoveRef<T>::DIM == 3 && requires (T&& obj) {
+        { obj.cross(obj) } -> std::convertible_to<RemoveRef<T>>;
+    };
 
 /**
  * @brief Concept for points in four-dimensional space.
@@ -122,7 +139,7 @@ concept Point3Concept = PointConcept<T> && T::DIM == 3;
  * @ingroup space_concepts
  */
 template<typename T>
-concept Point4Concept = PointConcept<T> && T::DIM == 4;
+concept Point4Concept = PointConcept<T> && RemoveRef<T>::DIM == 4;
 
 /**
  * @brief Concept for iterators that iterate over Points (class that satisfies
