@@ -102,7 +102,7 @@ private:
     bool       mDragging       = false;
     MotionType mCurrDragMotion = MOTION_NUMBER;
 
-    Point3<Scalar>  mInitialPoint;     // initial arcaball hit point
+    Point3<Scalar>  mInitialPoint;     // initial arcball hit point
     Affine3<Scalar> mInitialTransform; // initial transformation
     Quaternion<Scalar>
         mInitialDirRotation; // initial directional light rotation

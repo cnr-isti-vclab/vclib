@@ -30,4 +30,4 @@
   - [x] streamline trackball rendering (avoid error-prone explicit updates)
   - [ ] start integration of ImGUI along GLFW
   - [x] fix trackball bug on Qt implementation (pan after wheel zoom)
-  - [ ] fix event mapping for GLFW (it should be slightly different from Qt)
+  - [x] fix event mapping for GLFW (it should be slightly different from Qt)

@@ -59,7 +59,11 @@ private:
     Point3<Scalar> mDefaultTrackBallCenter;
     float          mDefaultTrackBallRadius = 1.0;
 
+    // current modifiers state (must be updated using setKeyModifiers)
     KeyModifiers mCurrentKeyModifiers = {KeyModifier::NO_MODIFIER};
+    // current mouse button (automatically updated)
+    // if dragging holds the current mouse button
+    MouseButton::Enum mCurrentMouseButton = MouseButton::NO_BUTTON;
 
     std::map<std::pair<MouseButton::Enum, KeyModifiers>, MotionType>
         mDragMotionMap = {
@@ -206,6 +210,8 @@ public:
 
     bool isDragging() const { return mTrackball.isDragging(); }
 
+    MotionType currentMotion() const { return mTrackball.currentMotion(); }
+
     DirectionalLight<Scalar> light() const { return mTrackball.light(); }
 
     const Camera<Scalar>& camera() const { return mTrackball.camera(); }
@@ -249,12 +255,25 @@ public:
 
     void moveMouse(int x, int y)
     {
+        // 
+        auto it = mDragMotionMap.find(std::make_pair(mCurrentMouseButton,
+                                                     mCurrentKeyModifiers));
+        if (it != mDragMotionMap.end()) {
+            mTrackball.beginDragMotion(it->second);
+        }
         mTrackball.setMousePosition(x, y);
         mTrackball.update();
     }
 
     void pressMouse(MouseButton::Enum button)
     {
+        // if dragging, do not update the current mouse button
+        if (mTrackball.isDragging()) {
+            return;
+        }
+
+        mCurrentMouseButton = button;
+
         auto it =
             mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
@@ -267,6 +286,11 @@ public:
 
     void releaseMouse(MouseButton::Enum button)
     {
+        // if dragging, update the current mouse button only if it matches
+        if (mTrackball.isDragging() && mCurrentMouseButton == button) {
+            mCurrentMouseButton = MouseButton::NO_BUTTON;
+        }
+
         auto it =
             mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
