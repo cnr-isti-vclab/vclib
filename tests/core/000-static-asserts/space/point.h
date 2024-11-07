@@ -29,7 +29,7 @@ void pointStaticAsserts()
 {
     using namespace vcl;
 
-    using PointType = Point<uint16_t, 5>;
+    using PointType  = Point<uint16_t, 5>;
     using Point2Type = Point2i;
     using Point3Type = Point3f;
     using Point4Type = Point4d;

@@ -83,8 +83,6 @@ void spaceStaticAsserts()
     static_assert(
         PlaneConcept<Planed>, "Planed does not satisfy the PlaneConcept");
 
-
-
     static_assert(
         Polygon2Concept<Polygon2f>,
         "Polygon2f does not satisfy the Polygon2Concept");

@@ -38,10 +38,10 @@ namespace vcl {
  */
 template<typename T>
 concept PointConcept = requires (
-    T&& obj,
-    typename RemoveRef<T>::ScalarType s,
+    T&&                                obj,
+    typename RemoveRef<T>::ScalarType  s,
     typename RemoveRef<T>::ScalarType& sR,
-    typename RemoveRef<T>::Base& baseObjR) {
+    typename RemoveRef<T>::Base&       baseObjR) {
     typename RemoveRef<T>::ScalarType;
     typename RemoveRef<T>::Base;
     obj.DIM;
@@ -71,7 +71,7 @@ concept PointConcept = requires (
     { obj - s } -> std::convertible_to<RemoveRef<T>>;
     { obj - obj } -> std::convertible_to<RemoveRef<T>>;
 
-    { obj * s } -> std::convertible_to<RemoveRef<T>>;
+    { obj* s } -> std::convertible_to<RemoveRef<T>>;
 
     { obj / s } -> std::convertible_to<RemoveRef<T>>;
 

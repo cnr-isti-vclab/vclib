@@ -29,7 +29,7 @@ void arrayStaticAsserts()
 {
     using namespace vcl;
 
-    using TestArray = Array<Point3d, 5>;
+    using TestArray  = Array<Point3d, 5>;
     using TestArray2 = Array<float, 2>;
     using TestArray3 = Array<double, 3>;
     using TestArray4 = Array<int, 4>;
@@ -41,21 +41,18 @@ void arrayStaticAsserts()
         ArrayConcept<const TestArray>,
         "const Array does not satisfy the ArrayConcept");
     static_assert(
-        ArrayConcept<TestArray&>,
-        "Array& does not satisfy the ArrayConcept");
+        ArrayConcept<TestArray&>, "Array& does not satisfy the ArrayConcept");
     static_assert(
         ArrayConcept<const TestArray&>,
         "const Array& does not satisfy the ArrayConcept");
     static_assert(
-        ArrayConcept<TestArray&&>,
-        "Array&& does not satisfy the ArrayConcept");
+        ArrayConcept<TestArray&&>, "Array&& does not satisfy the ArrayConcept");
 
     static_assert(Serializable<TestArray>, "Array is not serializable");
 
     // array2
     static_assert(
-        Array2Concept<TestArray2>,
-        "Array2 does not satisfy the Array2Concept");
+        Array2Concept<TestArray2>, "Array2 does not satisfy the Array2Concept");
     static_assert(
         Array2Concept<const TestArray2>,
         "const Array2 does not satisfy the Array2Concept");
@@ -73,8 +70,7 @@ void arrayStaticAsserts()
 
     // array3
     static_assert(
-        Array3Concept<TestArray3>,
-        "Array3 does not satisfy the Array3Concept");
+        Array3Concept<TestArray3>, "Array3 does not satisfy the Array3Concept");
     static_assert(
         Array3Concept<const TestArray3>,
         "const Array3 does not satisfy the Array3Concept");
@@ -92,8 +88,7 @@ void arrayStaticAsserts()
 
     // array4
     static_assert(
-        Array4Concept<TestArray4>,
-        "Array4 does not satisfy the Array4Concept");
+        Array4Concept<TestArray4>, "Array4 does not satisfy the Array4Concept");
     static_assert(
         Array4Concept<TestArray4&>,
         "Array4& does not satisfy the Array4Concept");

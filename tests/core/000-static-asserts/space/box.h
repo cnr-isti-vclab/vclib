@@ -29,7 +29,7 @@ void boxStaticAsserts()
 {
     using namespace vcl;
 
-    using BoxType = Box<Point<uint16_t, 5>>;
+    using BoxType  = Box<Point<uint16_t, 5>>;
     using Box2Type = Box2i;
     using Box3Type = Box3f;
 
