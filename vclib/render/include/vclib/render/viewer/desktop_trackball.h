@@ -259,7 +259,9 @@ public:
             mDragMotionMap.find(std::make_pair(button, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
             mTrackball.beginDragMotion(it->second);
-            mTrackball.update();
+            // no need to update here, it will be updated in moveMouse
+            // for event driven rendering (e.g., Qt) this can trigger
+            // an unwanted drag motion using the previous mouse position
         }
     }
 

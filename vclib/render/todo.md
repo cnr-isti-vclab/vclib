@@ -26,8 +26,8 @@
   - [ ] Draw lines trough shader - Work in progress
   - [x] check retina resolution on macOS + GLFW
   - [x] fix trackball initial scale using GLFW
-  - [ ] fix event handling for the trackball using GLFW (metrics)
-  - [ ] streamline trackball rendering (avoid error-prone explicit updates)
+  - [x] fix event handling for the trackball using GLFW (metrics)
+  - [x] streamline trackball rendering (avoid error-prone explicit updates)
   - [ ] start integration of ImGUI along GLFW
-  - [ ] fix trackball bug on Qt implementation (pan after wheel zoom)
+  - [x] fix trackball bug on Qt implementation (pan after wheel zoom)
   - [ ] fix event mapping for GLFW (it should be slightly different from Qt)
