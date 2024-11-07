@@ -51,6 +51,11 @@ ViewerCanvas::ViewerCanvas(
 
 void ViewerCanvas::draw()
 {
+    setDirectionalLightVisibility(
+        currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
+    updateDirectionalLight();
+    updateDrawableTrackball();
+
     bgfx::setViewTransform(
         viewId(), viewMatrix().data(), projectionMatrix().data());
 
@@ -71,7 +76,6 @@ void ViewerCanvas::draw()
     }
 
     if (mDrawTrackBall.isVisible()) {
-        updateDrawableTrackball();
         mDrawTrackBall.draw(viewId());
     }
 }
@@ -80,7 +84,6 @@ void ViewerCanvas::onResize(unsigned int width, unsigned int height)
 {
     Canvas::onResize(width, height);
     DTB::resizeViewer(width, height);
-    updateDrawableTrackball();
     update();
 }
 
@@ -88,58 +91,36 @@ void ViewerCanvas::onKeyPress(Key::Enum key)
 {
     ViewerI::onKeyPress(key);
     Canvas::onKeyPress(key);
-
-    if (modifiers()[KeyModifier::CONTROL] && modifiers()[KeyModifier::SHIFT]) {
-        setDirectionalLightVisibility(true);
-    }
-
-    updateDirectionalLight();
-    updateDrawableTrackball();
-
     update();
 }
 
 void ViewerCanvas::onKeyRelease(Key::Enum key)
 {
     ViewerI::onKeyRelease(key);
-
-    if (isDirectionalLightVisible()) {
-        if (!modifiers()[KeyModifier::CONTROL] ||
-            !modifiers()[KeyModifier::SHIFT]) {
-            setDirectionalLightVisibility(false);
-        }
-    }
-
     update();
 }
 
 void ViewerCanvas::onMouseMove(double x, double y)
 {
     ViewerI::onMouseMove(x, y);
-    updateDirectionalLight();
-    updateDrawableTrackball();
-
     update();
 }
 
 void ViewerCanvas::onMousePress(MouseButton::Enum button)
 {
     ViewerI::onMousePress(button);
-    updateDrawableTrackball();
     update();
 }
 
 void ViewerCanvas::onMouseRelease(MouseButton::Enum button)
 {
     ViewerI::onMouseRelease(button);
-    updateDrawableTrackball();
     update();
 }
 
 void ViewerCanvas::onMouseScroll(double dx, double dy)
 {
     ViewerI::onMouseScroll(dx, dy);
-    updateDrawableTrackball();
     update();
 }
 

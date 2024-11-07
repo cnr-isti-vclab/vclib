@@ -80,15 +80,17 @@ void ViewerI::onKeyPress(Key::Enum key)
 
     case Key::T: toggleTrackBallVisibility(); break;
 
-    default: keyPress(key); break;
+    default: break;
     }
 
+    DTB::keyPress(key);
     update();
 }
 
 void ViewerI::onKeyRelease(Key::Enum key)
 {
     setKeyModifiers(modifiers());
+    DTB::keyRelease(key);
     update();
 }
 

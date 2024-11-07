@@ -255,7 +255,7 @@ public:
 
     void moveMouse(int x, int y)
     {
-        // 
+        // ugly AF
         auto it = mDragMotionMap.find(std::make_pair(mCurrentMouseButton,
                                                      mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
@@ -322,9 +322,39 @@ public:
 
     void keyPress(Key::Enum key)
     {
-        auto it = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
-        if (it != mKeyAtomicMap.end()) {
-            it->second(mTrackball);
+        if (!mTrackball.isDragging()) {
+            auto it = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
+            if (it != mKeyAtomicMap.end()) {
+                it->second(mTrackball);
+            }
+        }
+
+        // dragging
+        auto it = mDragMotionMap.find(
+            std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
+        if (it != mDragMotionMap.end()) {
+            mTrackball.beginDragMotion(it->second);
+        } else {
+            mTrackball.endDragMotion(it->second);
+            mTrackball.update();
+        }
+    }
+
+    void keyRelease(Key::Enum key)
+    {
+        // ugly solution to end drag motion when a key is released
+        if (!mTrackball.isDragging())
+            return;
+
+        // dragging
+        auto it = mDragMotionMap.find(
+            std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
+        if (it != mDragMotionMap.end()) {
+            mTrackball.beginDragMotion(it->second);
+            // mTrackball.update();
+        } else {
+            mTrackball.endDragMotion(currentMotion());
+            mTrackball.update();
         }
     }
 
