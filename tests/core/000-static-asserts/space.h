@@ -30,6 +30,7 @@
 #include "space/color.h"
 #include "space/image.h"
 #include "space/matrix.h"
+#include "space/plane.h"
 #include "space/point.h"
 
 void spaceStaticAsserts()
@@ -39,6 +40,7 @@ void spaceStaticAsserts()
     colorStaticAsserts();
     imageStaticAsserts();
     matrixStaticAsserts();
+    planeStaticAsserts();
     pointStaticAsserts();
 
     using namespace vcl;
@@ -47,12 +49,7 @@ void spaceStaticAsserts()
     static_assert(
         Serializable<BitSet<char>>, "Bitset<char> is not serializable");
 
-    // plane
-    static_assert(
-        PlaneConcept<Planef>, "Planef does not satisfy the PlaneConcept");
-    static_assert(
-        PlaneConcept<Planed>, "Planed does not satisfy the PlaneConcept");
-
+    // polygon
     static_assert(
         Polygon2Concept<Polygon2f>,
         "Polygon2f does not satisfy the Polygon2Concept");

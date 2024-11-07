@@ -45,6 +45,7 @@ namespace vcl {
  *
  * @ingroup space_core
  */
+// TODO: Make Plane Serializable and add tests.
 template<typename Scalar, bool NORM = true>
 class Plane
 {

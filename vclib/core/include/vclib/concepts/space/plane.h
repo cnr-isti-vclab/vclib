@@ -25,6 +25,8 @@
 
 #include <vclib/types.h>
 
+#include "point.h"
+
 namespace vcl {
 
 /**
@@ -52,20 +54,30 @@ namespace vcl {
  * Doxygen comments above.
  */
 template<typename T>
-concept PlaneConcept =
-    requires (T obj, const T& cObj, const typename T::PointType& p) {
-        typename T::ScalarType;
-        typename T::PointType;
+concept PlaneConcept = requires (
+    T&&                               obj,
+    typename RemoveRef<T>::PointType  p,
+    typename RemoveRef<T>::ScalarType s) {
 
-        { cObj.direction() } -> std::same_as<const typename T::PointType&>;
-        { cObj.offset() } -> std::same_as<typename T::ScalarType>;
+    // inner types
+    typename RemoveRef<T>::ScalarType;
+    typename RemoveRef<T>::PointType;
 
-        { cObj.projectPoint(p) } -> std::same_as<typename T::PointType>;
-        { cObj.mirrorPoint(p) } -> std::same_as<typename T::PointType>;
+    // constructors
+    RemoveRef<T>();
+    RemoveRef<T>(p, s);
+    RemoveRef<T>(p, p);
+    RemoveRef<T>(p, p, p);
 
-        { cObj == cObj } -> std::same_as<bool>;
-        { cObj != cObj } -> std::same_as<bool>;
-    };
+    { obj.direction() } -> Point3Concept;
+    { obj.offset() } -> std::same_as<decltype(s)>;
+
+    { obj.projectPoint(p) } -> Point3Concept;
+    { obj.mirrorPoint(p) } -> Point3Concept;
+
+    { obj == obj } -> std::same_as<bool>;
+    { obj != obj } -> std::same_as<bool>;
+};
 
 } // namespace vcl
 
