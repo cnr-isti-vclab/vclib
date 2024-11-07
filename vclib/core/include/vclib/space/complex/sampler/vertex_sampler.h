@@ -9,6 +9,8 @@ namespace vcl {
 
 namespace detail {
 
+// TODO: make this class the default outside the detail namespace
+// and then define only the const version with CNST = true
 template<VertexConcept VertexType, bool CNST = false>
 class VertexSampler
 {

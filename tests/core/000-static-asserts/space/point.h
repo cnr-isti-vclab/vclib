@@ -97,6 +97,12 @@ void pointStaticAsserts()
     static_assert(
         Point4Concept<Point4Type&&>,
         "Point4&& does not satisfy the Point4Concept");
+
+    // TODO: check these concepts
+    // point iterators
+    static_assert(PointIteratorConcept<std::vector<Point2d>::iterator>, "");
+    static_assert(
+        PointIteratorConcept<std::vector<Point3d>::const_iterator>, "");
 }
 
 #endif // POINT_H

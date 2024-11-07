@@ -23,6 +23,7 @@
 #ifndef VCL_CONCEPTS_SPACE_SAMPLER_H
 #define VCL_CONCEPTS_SPACE_SAMPLER_H
 
+#include <vclib/concepts/const_correctness.h>
 #include <vclib/types/base.h>
 
 namespace vcl {
@@ -39,20 +40,25 @@ namespace vcl {
  * @tparam T: The type to be tested for conformity to the SamplerConcept.
  */
 template<typename T>
-concept SamplerConcept = requires (T obj, const T& cObj) {
-    typename T::PointType;
+concept SamplerConcept = requires (T&& obj) {
+    // TODO: make this concept more meaningful: add more requirements
+    // on return types and parameters.
+    typename RemoveRef<T>::PointType;
 
     obj.samples();
 
-    { cObj.size() } -> std::same_as<std::size_t>;
-    cObj.sample(uint());
+    { obj.size() } -> std::same_as<std::size_t>;
+    obj.sample(uint());
 
-    obj.clear();
-    obj.reserve(uint());
-    obj.resize(uint());
+    obj.begin();
+    obj.end();
 
-    cObj.begin();
-    cObj.end();
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        obj.clear();
+        obj.reserve(uint());
+        obj.resize(uint());
+    };
 };
 
 } // namespace vcl

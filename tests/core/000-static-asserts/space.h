@@ -33,6 +33,7 @@
 #include "space/plane.h"
 #include "space/point.h"
 #include "space/polygon.h"
+#include "space/sampler.h"
 
 void spaceStaticAsserts()
 {
@@ -44,39 +45,13 @@ void spaceStaticAsserts()
     planeStaticAsserts();
     pointStaticAsserts();
     polygonStaticAsserts();
+    samplerStaticAsserts();
 
     using namespace vcl;
 
     // bitset
     static_assert(
         Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-
-    // point iterators
-    static_assert(PointIteratorConcept<std::vector<Point2d>::iterator>, "");
-    static_assert(
-        PointIteratorConcept<std::vector<Point3d>::const_iterator>, "");
-
-    // sampler
-    static_assert(
-        SamplerConcept<MeshSampler<detail::TMPSimplePolyMesh>>,
-        "MeshSampler does not satisfy the SamplerConcept");
-
-    static_assert(
-        SamplerConcept<PointSampler<>>,
-        "PointSampler does not satisfy the SamplerConcept");
-
-    static_assert(
-        SamplerConcept<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
-        "VertexSampler does not satisfy the SamplerConcept");
-    static_assert(
-        SamplerConcept<ConstVertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
-        "ConstVertexSampler does not satisfy the SamplerConcept");
-    //     static_assert(
-    //        std::ranges::range<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
-    //        "");
-
-    //    VertexSampler<detail::TMPSimplePolyMesh::Vertex> v;
-    //    auto it = std::ranges::begin(v);
 
     // sphere
     static_assert(

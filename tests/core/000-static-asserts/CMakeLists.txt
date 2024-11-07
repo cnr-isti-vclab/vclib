@@ -42,6 +42,7 @@ set(HEADERS
     space/plane.h
     space/point.h
     space/polygon.h
+    space/sampler.h
 )
 
 set(SOURCES
