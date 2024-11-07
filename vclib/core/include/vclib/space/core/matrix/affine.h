@@ -33,7 +33,6 @@ namespace vcl {
 template<typename Scalar>
 using Affine3 = Eigen::Transform<Scalar, 3, Eigen::Affine>;
 
-using Affine3i = Affine3<int>;
 using Affine3f = Affine3<float>;
 using Affine3d = Affine3<double>;
 
