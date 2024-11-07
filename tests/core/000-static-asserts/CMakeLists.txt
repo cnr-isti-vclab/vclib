@@ -38,6 +38,7 @@ set(HEADERS
     space/box.h
     space/color.h
     space/image.h
+    space/matrix.h
     space/point.h
 )
 

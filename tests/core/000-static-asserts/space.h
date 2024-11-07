@@ -29,6 +29,7 @@
 #include "space/box.h"
 #include "space/color.h"
 #include "space/image.h"
+#include "space/matrix.h"
 #include "space/point.h"
 
 void spaceStaticAsserts()
@@ -37,6 +38,7 @@ void spaceStaticAsserts()
     boxStaticAsserts();
     colorStaticAsserts();
     imageStaticAsserts();
+    matrixStaticAsserts();
     pointStaticAsserts();
 
     using namespace vcl;
@@ -44,38 +46,6 @@ void spaceStaticAsserts()
     // bitset
     static_assert(
         Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-
-    // matrix
-    static_assert(
-        EigenMatrixConcept<Eigen::Matrix3d>,
-        "Matrix3d does not satisfy the EigenMatrixConcept");
-    static_assert(
-        EigenMatrixConcept<Eigen::Matrix3d&>,
-        "Matrix3d& does not satisfy the EigenMatrixConcept");
-    static_assert(
-        EigenMatrixConcept<const Eigen::Matrix3d>,
-        "const Matrix3d does not satisfy the EigenMatrixConcept");
-    static_assert(
-        EigenMatrixConcept<const Eigen::Matrix3d&>,
-        "const Matrix3d& does not satisfy the EigenMatrixConcept");
-    static_assert(
-        EigenMatrixConcept<Eigen::Matrix3d&&>,
-        "Matrix3d&& does not satisfy the EigenMatrixConcept");
-    static_assert(
-        ResizableEigenMatrixConcept<Eigen::MatrixX3d>,
-        "MatrixX3d does not satisfy the ResizableEigenMatrixConcept");
-    static_assert(
-        ResizableEigenMatrixConcept<Eigen::MatrixX3d&>,
-        "MatrixX3d& does not satisfy the ResizableEigenMatrixConcept");
-    static_assert(
-        ResizableEigenMatrixConcept<const Eigen::MatrixX3d>,
-        "const MatrixX3d does not satisfy the ResizableEigenMatrixConcept");
-    static_assert(
-        ResizableEigenMatrixConcept<const Eigen::MatrixX3d&>,
-        "const MatrixX3d& does not satisfy the ResizableEigenMatrixConcept");
-    static_assert(
-        ResizableEigenMatrixConcept<Eigen::MatrixX3d&&>,
-        "MatrixX3d&& does not satisfy the ResizableEigenMatrixConcept");
 
     // plane
     static_assert(
