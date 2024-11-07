@@ -25,47 +25,62 @@
 
 #include <vclib/types.h>
 
+#include "point.h"
+
 namespace vcl {
 
 template<typename T>
-concept ConstPolygonConcept = requires (T obj, const T& cObj) {
-    typename T::ScalarType;
-    typename T::PointType;
-
-    cObj.DIM;
-
-    { cObj.size() } -> std::same_as<uint>;
-    { cObj.point(uint()) } -> std::same_as<const typename T::PointType&>;
-    { cObj.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
-    { cObj.barycenter() } -> std::same_as<typename T::PointType>;
-    { cObj.perimeter() } -> std::same_as<typename T::ScalarType>;
-    { cObj.area() } -> std::same_as<typename T::ScalarType>;
-};
-
-template<typename T>
 concept PolygonConcept =
-    ConstPolygonConcept<T> && requires (T obj, const typename T::PointType& p) {
-        { obj.resize(uint()) } -> std::same_as<void>;
-        { obj.reserve(uint()) } -> std::same_as<void>;
-        { obj.clear() } -> std::same_as<void>;
-        { obj.pushBack(p) } -> std::same_as<void>;
-        { obj.point(uint()) } -> std::same_as<typename T::PointType&>;
+    requires (
+        T&&                               obj,
+        typename RemoveRef<T>::PointType  p,
+        typename RemoveRef<T>::PointType& pR,
+        typename RemoveRef<T>::ScalarType s,
+        std::vector<typename RemoveRef<T>::PointType> vecP,
+        std::vector<typename RemoveRef<T>::ScalarType> vecS) {
+        // type requirements
+        typename RemoveRef<T>::ScalarType;
+        typename RemoveRef<T>::PointType;
+        typename RemoveRef<T>::Iterator;
+        typename RemoveRef<T>::ConstIterator;
+
+        obj.DIM;
+
+        // constructors
+        RemoveRef<T>();
+        RemoveRef<T>(vecP.begin(), vecP.end());
+        RemoveRef<T>(vecP);
+
+        { obj.size() } -> std::same_as<uint>;
+        { obj.point(uint()) } -> PointConcept;
+        { obj.sideLength(uint()) } -> std::same_as<decltype(s)>;
+        { obj.barycenter() } -> PointConcept;
+        { obj.weightedBarycenter(vecS) } -> PointConcept;
+        { obj.perimeter() } -> std::same_as<decltype(s)>;
+        { obj.area() } -> std::same_as<decltype(s)>;
+        { obj.begin() } -> std::input_iterator;
+        { obj.end() } -> std::input_iterator;
+
+        // non const requirements
+        requires vcl::IsConst<T> || requires {
+            { obj.resize(uint()) } -> std::same_as<void>;
+            { obj.reserve(uint()) } -> std::same_as<void>;
+            { obj.clear() } -> std::same_as<void>;
+            { obj.pushBack(p) } -> std::same_as<void>;
+            { obj.point(uint()) } -> std::same_as<decltype(pR)>;
+            { obj.begin() } -> std::output_iterator<decltype(p)>;
+            { obj.end() } -> std::output_iterator<decltype(p)>;
+        };
     };
 
 template<typename T>
-concept ConstPolygon2Concept = ConstPolygonConcept<T> && T::DIM == 2;
+concept Polygon2Concept = PolygonConcept<T> && RemoveRef<T>::DIM == 2;
 
 template<typename T>
-concept Polygon2Concept = ConstPolygon2Concept<T> && PolygonConcept<T>;
-
-template<typename T>
-concept ConstPolygon3Concept =
-    ConstPolygonConcept<T> && T::DIM == 3 && requires (const T& cObj) {
-        { cObj.normal() } -> std::same_as<typename T::PointType>;
+concept Polygon3Concept =
+    PolygonConcept<T> && RemoveRef<T>::DIM == 3 && requires (T&& obj) {
+        { obj.normal() } -> Point3Concept;
     };
-
-template<typename T>
-concept Polygon3Concept = ConstPolygon3Concept<T> && PolygonConcept<T>;
 
 } // namespace vcl
 

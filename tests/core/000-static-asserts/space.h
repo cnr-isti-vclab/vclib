@@ -32,6 +32,7 @@
 #include "space/matrix.h"
 #include "space/plane.h"
 #include "space/point.h"
+#include "space/polygon.h"
 
 void spaceStaticAsserts()
 {
@@ -42,27 +43,13 @@ void spaceStaticAsserts()
     matrixStaticAsserts();
     planeStaticAsserts();
     pointStaticAsserts();
+    polygonStaticAsserts();
 
     using namespace vcl;
 
     // bitset
     static_assert(
         Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-
-    // polygon
-    static_assert(
-        Polygon2Concept<Polygon2f>,
-        "Polygon2f does not satisfy the Polygon2Concept");
-    static_assert(
-        Polygon2Concept<Polygon2d>,
-        "Polygon2d does not satisfy the Polygon2Concept");
-
-    static_assert(
-        Polygon3Concept<Polygon3f>,
-        "Polygon3f does not satisfy the Polygon3Concept");
-    static_assert(
-        Polygon3Concept<Polygon3d>,
-        "Polygon3d does not satisfy the Polygon3Concept");
 
     // point iterators
     static_assert(PointIteratorConcept<std::vector<Point2d>::iterator>, "");

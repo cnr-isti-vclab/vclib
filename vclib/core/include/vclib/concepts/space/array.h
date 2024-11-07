@@ -45,10 +45,10 @@ concept ArrayConcept = requires (
     typename RemoveRef<T>::ValueType                     v,
     typename RemoveRef<T>::Pointer                       ptr,
     typename RemoveRef<T>::ConstPointer                  cPtr,
-    typename RemoveRef<T>::Iterator                      it,
-    typename RemoveRef<T>::ConstIterator                 cIt,
     std::vector<typename RemoveRef<T>::ValueType>        vecV,
     const std::vector<typename RemoveRef<T>::ValueType>& cVecVR) {
+
+    // inner types
     typename RemoveRef<T>::ValueType;
     typename RemoveRef<T>::Scalar;
     typename RemoveRef<T>::ConstReference;
@@ -69,8 +69,8 @@ concept ArrayConcept = requires (
 
     obj.subArray(uint());
 
-    { obj.begin() } -> std::convertible_to<decltype(cIt)>;
-    { obj.end() } -> std::convertible_to<decltype(cIt)>;
+    { obj.begin() } -> std::input_iterator;
+    { obj.end() } -> std::input_iterator;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -81,8 +81,8 @@ concept ArrayConcept = requires (
         { obj.fill(v) } -> std::same_as<void>;
         { obj.clear() } -> std::same_as<void>;
 
-        { obj.begin() } -> std::same_as<decltype(it)>;
-        { obj.end() } -> std::same_as<decltype(it)>;
+        { obj.begin() } -> std::output_iterator<decltype(v)>;
+        { obj.end() } -> std::output_iterator<decltype(v)>;
     };
 };
 
