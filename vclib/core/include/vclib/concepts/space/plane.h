@@ -58,7 +58,6 @@ concept PlaneConcept = requires (
     T&&                               obj,
     typename RemoveRef<T>::PointType  p,
     typename RemoveRef<T>::ScalarType s) {
-
     // inner types
     typename RemoveRef<T>::ScalarType;
     typename RemoveRef<T>::PointType;

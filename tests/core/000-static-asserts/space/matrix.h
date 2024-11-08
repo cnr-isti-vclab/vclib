@@ -133,8 +133,7 @@ void matrixStaticAsserts()
         "Eigen::Vector&& does not satisfy the MatrixConcept");
 
     static_assert(
-        MatrixConcept<TestArray>,
-        "Array2 does not satisfy the MatrixConcept");
+        MatrixConcept<TestArray>, "Array2 does not satisfy the MatrixConcept");
     static_assert(
         MatrixConcept<TestArray&>,
         "Array2& does not satisfy the MatrixConcept");

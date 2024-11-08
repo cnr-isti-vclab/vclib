@@ -256,8 +256,8 @@ public:
     void moveMouse(int x, int y)
     {
         // ugly AF
-        auto it = mDragMotionMap.find(std::make_pair(mCurrentMouseButton,
-                                                     mCurrentKeyModifiers));
+        auto it = mDragMotionMap.find(
+            std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
             mTrackball.beginDragMotion(it->second);
         }
@@ -334,7 +334,8 @@ public:
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
             mTrackball.beginDragMotion(it->second);
-        } else {
+        }
+        else {
             mTrackball.endDragMotion(it->second);
             mTrackball.update();
         }
@@ -352,7 +353,8 @@ public:
         if (it != mDragMotionMap.end()) {
             mTrackball.beginDragMotion(it->second);
             // mTrackball.update();
-        } else {
+        }
+        else {
             mTrackball.endDragMotion(currentMotion());
             mTrackball.update();
         }

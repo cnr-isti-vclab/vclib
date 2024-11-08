@@ -41,14 +41,12 @@ void planeStaticAsserts()
         PlaneConcept<const PlaneType>,
         "const Plane does not satisfy the PlaneConcept");
     static_assert(
-        PlaneConcept<PlaneType&>,
-        "Plane& does not satisfy the PlaneConcept");
+        PlaneConcept<PlaneType&>, "Plane& does not satisfy the PlaneConcept");
     static_assert(
         PlaneConcept<const PlaneType&>,
         "const Plane& does not satisfy the PlaneConcept");
     static_assert(
-        PlaneConcept<PlaneType&&>,
-        "Plane&& does not satisfy the PlaneConcept");
+        PlaneConcept<PlaneType&&>, "Plane&& does not satisfy the PlaneConcept");
 }
 
 #endif // PLANE_H

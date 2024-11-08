@@ -47,7 +47,6 @@ concept ArrayConcept = requires (
     typename RemoveRef<T>::ConstPointer                  cPtr,
     std::vector<typename RemoveRef<T>::ValueType>        vecV,
     const std::vector<typename RemoveRef<T>::ValueType>& cVecVR) {
-
     // inner types
     typename RemoveRef<T>::ValueType;
     typename RemoveRef<T>::Scalar;

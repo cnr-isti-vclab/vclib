@@ -103,11 +103,11 @@ private:
     MotionType mCurrDragMotion = MOTION_NUMBER;
 
     // initial arcball hit point
-    Point3<Scalar>  mInitialPoint;
+    Point3<Scalar> mInitialPoint;
     // initial transformation
     Affine3<Scalar> mInitialTransform = Affine3<Scalar>::Identity();
     // initial light rotation
-    Quaternion<Scalar> mInitialDirRotation = Quaternion<Scalar>::Identity(); 
+    Quaternion<Scalar> mInitialDirRotation = Quaternion<Scalar>::Identity();
 
     Point2<Scalar> mCurrMousePosition;
     Point2<Scalar> mPrevMousePosition;

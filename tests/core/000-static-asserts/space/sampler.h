@@ -106,12 +106,12 @@ void samplerStaticAsserts()
 
     // TODO: fix these asserts
     // ranges
-//     static_assert(
-//        std::ranges::range<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
-//        "");
+    //     static_assert(
+    //        std::ranges::range<VertexSampler<detail::TMPSimplePolyMesh::Vertex>>,
+    //        "");
 
-//    VertexSampler<detail::TMPSimplePolyMesh::Vertex> v;
-//    auto it = std::ranges::begin(v);
+    //    VertexSampler<detail::TMPSimplePolyMesh::Vertex> v;
+    //    auto it = std::ranges::begin(v);
 }
 
 #endif // SAMPLER_H
