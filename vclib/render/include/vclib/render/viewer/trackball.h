@@ -117,9 +117,13 @@ public:
 
     void reset()
     {
-        auto tmp = mScreenSize;
+        auto screenSize = mScreenSize;
+        auto currMousePosition = mCurrMousePosition;
+        auto prevMousePosition = mPrevMousePosition;
         *this    = TrackBall();
-        setScreenSize(tmp);
+        setScreenSize(screenSize);
+        mCurrMousePosition = currMousePosition;
+        mPrevMousePosition = prevMousePosition;
     }
 
     /**
@@ -625,7 +629,7 @@ private:
 
     void rotate(const Quaternion<Scalar>& q) { mTransform.prerotate(q); }
 
-    void rotate(Point3<Scalar> axis, Scalar angleRad = M_PI / 6)
+    void rotate(Point3<Scalar> axis, Scalar angleRad)
     {
         mTransform.prerotate(Quaternion<Scalar>(angleRad, axis));
     }

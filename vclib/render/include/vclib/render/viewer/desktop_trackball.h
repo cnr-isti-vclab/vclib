@@ -322,12 +322,13 @@ public:
 
     void keyPress(Key::Enum key)
     {
-        if (!mTrackball.isDragging()) {
-            auto it = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
-            if (it != mKeyAtomicMap.end()) {
-                it->second(mTrackball);
-            }
+        // TODO: should we allow atomic motions while dragging?
+        // if (!mTrackball.isDragging()) {
+        auto atomicOp = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
+        if (atomicOp != mKeyAtomicMap.end()) {
+            atomicOp->second(mTrackball);
         }
+        // }
 
         // dragging
         auto it = mDragMotionMap.find(
