@@ -92,7 +92,7 @@ private:
 
     Quaternion<Scalar> mDirectionalLightTransform;
 
-    Point2<Scalar> mScreenSize = {1, 1};
+    Point2<Scalar> mScreenSize = {-1, -1};
 
     // trackball radius in camera space
     // this value affects the interaction and the visualization of the trackball
