@@ -117,10 +117,10 @@ public:
 
     void reset()
     {
-        auto screenSize = mScreenSize;
+        auto screenSize        = mScreenSize;
         auto currMousePosition = mCurrMousePosition;
         auto prevMousePosition = mPrevMousePosition;
-        *this    = TrackBall();
+        *this                  = TrackBall();
         setScreenSize(screenSize);
         mCurrMousePosition = currMousePosition;
         mPrevMousePosition = prevMousePosition;
