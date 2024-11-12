@@ -89,7 +89,7 @@ void ViewerI::onKeyPress(Key::Enum key)
 
 void ViewerI::onKeyRelease(Key::Enum key)
 {
-    setKeyModifiers(modifiers());
+    DTB::setKeyModifiers(modifiers());
     DTB::keyRelease(key);
     update();
 }
