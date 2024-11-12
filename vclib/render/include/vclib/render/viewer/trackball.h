@@ -664,8 +664,12 @@ private:
         const Scalar phi = (point - mInitialPoint).norm() / mRadius;
         ax.angle()       = phi;
 
-        mTransform = mInitialTransform;
-        mTransform.prerotate(ax);
+        // rotate from freezed transformation
+        // mTransform = mInitialTransform;
+        // mTransform.prerotate(ax);
+
+        // modify rotation only
+        mTransform.prerotate(ax * mInitialTransform.rotation() * mTransform.rotation().inverse());
     }
 
     /**-------------- Roll --------------**/

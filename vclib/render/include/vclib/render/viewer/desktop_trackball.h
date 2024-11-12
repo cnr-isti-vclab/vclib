@@ -322,13 +322,11 @@ public:
 
     void keyPress(Key::Enum key)
     {
-        // TODO: should we allow atomic motions while dragging?
-        // if (!mTrackball.isDragging()) {
+        // atomic motions are enabled while dragging
         auto atomicOp = mKeyAtomicMap.find({key, mCurrentKeyModifiers});
         if (atomicOp != mKeyAtomicMap.end()) {
             atomicOp->second(mTrackball);
         }
-        // }
 
         // dragging
         auto it = mDragMotionMap.find(
@@ -353,7 +351,6 @@ public:
             std::make_pair(mCurrentMouseButton, mCurrentKeyModifiers));
         if (it != mDragMotionMap.end()) {
             mTrackball.beginDragMotion(it->second);
-            // mTrackball.update();
         }
         else {
             mTrackball.endDragMotion(currentMotion());
