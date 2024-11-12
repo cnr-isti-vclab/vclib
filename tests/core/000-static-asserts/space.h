@@ -34,6 +34,7 @@
 #include "space/point.h"
 #include "space/polygon.h"
 #include "space/sampler.h"
+#include "space/segment.h"
 
 void spaceStaticAsserts()
 {
@@ -46,6 +47,7 @@ void spaceStaticAsserts()
     pointStaticAsserts();
     polygonStaticAsserts();
     samplerStaticAsserts();
+    segmentStaticAsserts();
 
     using namespace vcl;
 
