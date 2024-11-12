@@ -62,28 +62,26 @@ namespace vcl {
  */
 template<typename T>
 concept SphereConcept = requires (
-    T                            obj,
-    const T&                     cObj,
-    const typename T::PointType& p,
-    const typename T::BoxType&   b) {
-    typename T::ScalarType;
-    typename T::PointType;
-    typename T::BoxType;
+    T&&                               obj,
+    typename RemoveRef<T>::ScalarType s,
+    typename RemoveRef<T>::PointType  p,
+    typename RemoveRef<T>::BoxType    b) {
+    typename RemoveRef<T>::ScalarType;
+    typename RemoveRef<T>::PointType;
+    typename RemoveRef<T>::BoxType;
 
-    T::PointType::DIM == 3;
+    requires Point3Concept<typename RemoveRef<T>::PointType>;
 
-    { obj.center() } -> std::same_as<typename T::PointType&>;
-    { cObj.center() } -> std::same_as<const typename T::PointType&>;
-    { obj.radius() } -> std::same_as<typename T::ScalarType&>;
-    { cObj.radius() } -> std::same_as<const typename T::ScalarType&>;
+    { obj.center() } -> Point3Concept;
+    { obj.radius() } -> std::convertible_to<decltype(s)>;
 
-    { cObj.diameter() } -> std::same_as<typename T::ScalarType>;
-    { cObj.circumference() } -> std::same_as<typename T::ScalarType>;
-    { cObj.surfaceArea() } -> std::same_as<typename T::ScalarType>;
-    { cObj.volume() } -> std::same_as<typename T::ScalarType>;
+    { obj.diameter() } -> std::same_as<decltype(s)>;
+    { obj.circumference() } -> std::same_as<decltype(s)>;
+    { obj.surfaceArea() } -> std::same_as<decltype(s)>;
+    { obj.volume() } -> std::same_as<decltype(s)>;
 
-    { cObj.isInside(p) } -> std::same_as<bool>;
-    { cObj.intersects(b) } -> std::same_as<bool>;
+    { obj.isInside(p) } -> std::same_as<bool>;
+    { obj.intersects(b) } -> std::same_as<bool>;
 };
 
 } // namespace vcl
