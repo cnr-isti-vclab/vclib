@@ -45,6 +45,7 @@ set(HEADERS
     space/sampler.h
     space/segment.h
     space/sphere.h
+    space/texture.h
 )
 
 set(SOURCES

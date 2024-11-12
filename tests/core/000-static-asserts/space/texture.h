@@ -20,30 +20,32 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SPACE_TEXTURE_H
-#define VCL_CONCEPTS_SPACE_TEXTURE_H
+#ifndef TEXTURE_H
+#define TEXTURE_H
 
-#include <string>
+#include <vclib/space.h>
 
-#include "image.h"
+void textureStaticAsserts()
+{
+    using namespace vcl;
 
-namespace vcl {
+    // texture
+    static_assert(
+        TextureConcept<Texture>, "Texture does not satisfy the TextureConcept");
+    static_assert(
+        TextureConcept<const Texture>,
+        "const Texture does not satisfy the TextureConcept");
+    static_assert(
+        TextureConcept<Texture&>,
+        "Texture& does not satisfy the TextureConcept");
+    static_assert(
+        TextureConcept<const Texture&>,
+        "const Texture& does not satisfy the TextureConcept");
+    static_assert(
+        TextureConcept<Texture&&>,
+        "Texture&& does not satisfy the TextureConcept");
 
-template<typename T>
-concept TextureConcept = requires (T&& obj) {
-    // constructors
-    RemoveRef<T>();
-    RemoveRef<T>(std::string());
+    static_assert(Serializable<Texture>, "Texture is not serializable");
+}
 
-    { obj.path() } -> std::convertible_to<std::string>;
-    { obj.image() } -> ImageConcept;
-
-    // non const requirements
-    requires vcl::IsConst<T> || requires {
-        { obj.path() } -> std::same_as<std::string&>;
-    };
-};
-
-} // namespace vcl
-
-#endif // VCL_CONCEPTS_SPACE_TEXTURE_H
+#endif // TEXTURE_H

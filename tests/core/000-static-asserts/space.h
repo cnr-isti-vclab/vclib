@@ -36,6 +36,7 @@
 #include "space/sampler.h"
 #include "space/segment.h"
 #include "space/sphere.h"
+#include "space/texture.h"
 
 void spaceStaticAsserts()
 {
@@ -50,17 +51,13 @@ void spaceStaticAsserts()
     samplerStaticAsserts();
     segmentStaticAsserts();
     sphereStaticAsserts();
+    textureStaticAsserts();
 
     using namespace vcl;
 
     // bitset
     static_assert(
         Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-
-    // texture
-    static_assert(
-        TextureConcept<Texture>, "Texture does not satisfy the TextureConcept");
-    static_assert(Serializable<Texture>, "Texture is not serializable");
 
     // triangle
     static_assert(
