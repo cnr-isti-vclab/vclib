@@ -337,7 +337,7 @@ public:
             mTrackball.beginDragMotion(it->second);
         }
         else {
-            mTrackball.endDragMotion(it->second);
+            mTrackball.endDragMotion(currentMotion());
             mTrackball.update();
         }
     }
