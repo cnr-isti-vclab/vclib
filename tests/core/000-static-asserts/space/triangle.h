@@ -9,55 +9,50 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef SPACE_H
-#define SPACE_H
+#ifndef TRIANGLE_H
+#define TRIANGLE_H
 
-#include <vclib/mesh/tmp_meshes.h>
+#include <vclib/space.h>
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/texture.h"
-
-void spaceStaticAsserts()
+void triangleStaticAsserts()
 {
-    arrayStaticAsserts();
-    boxStaticAsserts();
-    colorStaticAsserts();
-    imageStaticAsserts();
-    matrixStaticAsserts();
-    planeStaticAsserts();
-    pointStaticAsserts();
-    polygonStaticAsserts();
-    samplerStaticAsserts();
-    segmentStaticAsserts();
-    sphereStaticAsserts();
-    textureStaticAsserts();
-
     using namespace vcl;
 
-    // bitset
+    using Triangle2Type = Triangle2f;
+    using Triangle3Type = Triangle3d;
+
+    using TriangleWrapper2Type = TriangleWrapper2f;
+    using TriangleWrapper3Type = TriangleWrapper3d;
+
+    // triangle2
     static_assert(
-        Serializable<BitSet<char>>, "Bitset<char> is not serializable");
+        Triangle2Concept<Triangle2Type>,
+        "Triangle2 does not satisfy the Triangle2Concept");
+
+    // triangle3
+    static_assert(
+        Triangle3Concept<Triangle3Type>,
+        "Triangle3 does not satisfy the Triangle3Concept");
+
+    // triangle wrapper2
+    static_assert(
+        Triangle2Concept<TriangleWrapper2Type>,
+        "TriangleWrapper2 does not satisfy the Triangle2Concept");
+
+    static_assert(
+        Triangle3Concept<TriangleWrapper3Type>,
+        "TriangleWrapper3 does not satisfy the Triangle3Concept");
 }
 
-#endif // SPACE_H
+#endif // TRIANGLE_H

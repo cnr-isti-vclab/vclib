@@ -23,6 +23,8 @@
 #ifndef VCL_ALGORITHMS_CORE_DISTANCE_MISC_H
 #define VCL_ALGORITHMS_CORE_DISTANCE_MISC_H
 
+#include <vclib/algorithms/core/bounding_box.h>
+#include <vclib/concepts/space/triangle.h>
 #include <vclib/space/core/plane.h>
 #include <vclib/space/core/segment.h>
 
@@ -196,8 +198,8 @@ auto distance(const SegmentType& segment, const PointType& point)
  * @ingroup core_distance
  */
 template<
-    Point3Concept         PointType,
-    ConstTriangle3Concept TriangleType,
+    Point3Concept    PointType,
+    Triangle3Concept TriangleType,
     typename ScalarType>
 auto boundedDistance(
     const PointType&    p,
@@ -338,8 +340,8 @@ auto boundedDistance(
  * @ingroup core_distance
  */
 template<
-    Point3Concept         PointType,
-    ConstTriangle3Concept TriangleType,
+    Point3Concept    PointType,
+    Triangle3Concept TriangleType,
     typename ScalarType>
 auto boundedDistance(
     const PointType&    p,
@@ -367,8 +369,8 @@ auto boundedDistance(
  * @ingroup core_distance
  */
 template<
-    Point3Concept         PointType,
-    ConstTriangle3Concept TriangleType,
+    Point3Concept    PointType,
+    Triangle3Concept TriangleType,
     typename ScalarType>
 auto distance(
     const PointType&    p,
@@ -395,8 +397,8 @@ auto distance(
  * @ingroup core_distance
  */
 template<
-    Point3Concept         PointType,
-    ConstTriangle3Concept TriangleType,
+    Point3Concept    PointType,
+    Triangle3Concept TriangleType,
     typename ScalarType>
 auto distance(
     const PointType&    p,
@@ -415,8 +417,8 @@ auto distance(
  * @ingroup core_distance
  */
 template<
-    ConstTriangle3Concept TriangleType,
-    Point3Concept         PointType,
+    Triangle3Concept TriangleType,
+    Point3Concept    PointType,
     typename ScalarType>
 auto distance(
     const TriangleType& triangle,

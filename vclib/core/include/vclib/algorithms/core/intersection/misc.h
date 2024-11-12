@@ -435,8 +435,7 @@ bool intersect(const BoxType& box, const SphereType& sphere)
  * triangle. If the barycentric coordinates satisfy certain conditions, then the
  * point is considered to intersect with the triangle.
  *
- * @tparam TriangleType: A type that satisfies the ConstTriangle2Concept
- * concept.
+ * @tparam TriangleType: A type that satisfies the Triangle2Concept concept.
  * @tparam PointType: A type that satisfies the Point2Concept concept.
  *
  * @param[in] triangle: The triangle to test for intersection.
@@ -446,7 +445,7 @@ bool intersect(const BoxType& box, const SphereType& sphere)
  *
  * @ingroup core_intersection
  */
-template<ConstTriangle2Concept TriangleType, Point2Concept PointType>
+template<Triangle2Concept TriangleType, Point2Concept PointType>
 bool intersect(const TriangleType& triangle, const PointType& point)
 {
     using TP         = TriangleType::PointType;
@@ -476,7 +475,7 @@ bool intersect(const TriangleType& triangle, const PointType& point)
  *
  * @ingroup core_intersection
  */
-template<Point2Concept PointType, ConstTriangle2Concept TriangleType>
+template<Point2Concept PointType, Triangle2Concept TriangleType>
 bool intersect(const PointType& point, const TriangleType& triangle)
 {
     return intersect(triangle, point);
@@ -486,8 +485,7 @@ bool intersect(const PointType& point, const TriangleType& triangle)
  * @brief Checks if a 3D point intersects/is inside a 3D triangle having its
  * points in counterclockwise order.
  *
- * @tparam TriangleType: A type that satisfies the ConstTriangle3Concept
- * concept.
+ * @tparam TriangleType: A type that satisfies the Triangle3Concept concept.
  * @tparam PointType: A type that satisfies the Point3Concept concept.
  *
  * @param[in] triangle: The triangle to test for intersection.
@@ -497,7 +495,7 @@ bool intersect(const PointType& point, const TriangleType& triangle)
  *
  * @ingroup core_intersection
  */
-template<ConstTriangle3Concept TriangleType, Point3Concept PointType>
+template<Triangle3Concept TriangleType, Point3Concept PointType>
 bool intersect(const TriangleType& triangle, const PointType& point)
 {
     PointType v1 = triangle.point(1) - triangle.point(0);
@@ -512,7 +510,7 @@ bool intersect(const TriangleType& triangle, const PointType& point)
  *
  * @ingroup core_intersection
  */
-template<Point3Concept PointType, ConstTriangle3Concept TriangleType>
+template<Point3Concept PointType, Triangle3Concept TriangleType>
 bool intersect(const PointType& point, const TriangleType& triangle)
 {
     return intersect(triangle, point);
@@ -528,8 +526,7 @@ bool intersect(const PointType& point, const TriangleType& triangle)
  * 2) normal of the triangle
  * 3) cross product(edge from tri, {x,y,z}-direction)
  *
- * @tparam TriangleType: A type that satisfies the ConstTriangle3Concept
- * concept.
+ * @tparam TriangleType: A type that satisfies the Triangle3Concept concept.
  * @tparam BoxType: A type that satisfies the Box3Concept concept.
  *
  * @param[in] triangle: The triangle to test for intersection.
@@ -541,7 +538,7 @@ bool intersect(const PointType& point, const TriangleType& triangle)
  *
  * @ingroup core_intersection
  */
-template<ConstTriangle3Concept TriangleType, Box3Concept BoxType>
+template<Triangle3Concept TriangleType, Box3Concept BoxType>
 bool intersect(const TriangleType& triangle, const BoxType& box)
 {
     using PointType  = TriangleType::PointType;
@@ -646,7 +643,7 @@ bool intersect(const TriangleType& triangle, const BoxType& box)
  *
  * @ingroup core_intersection
  */
-template<Box3Concept BoxType, ConstTriangle3Concept TriangleType>
+template<Box3Concept BoxType, Triangle3Concept TriangleType>
 bool intersect(const BoxType& box, const TriangleType& triangle)
 {
     return intersect(triangle, box);
@@ -667,9 +664,9 @@ bool intersect(const BoxType& box, const TriangleType& triangle)
  * @ingroup core_intersection
  */
 template<
-    ConstTriangle3Concept TriangleType,
-    SphereConcept         SphereType,
-    Point3Concept         PointType,
+    Triangle3Concept TriangleType,
+    SphereConcept    SphereType,
+    Point3Concept    PointType,
     typename ScalarType>
 bool intersect(
     const TriangleType&                triangle,
@@ -762,7 +759,7 @@ bool intersect(
  *
  * @ingroup core_intersection
  */
-template<ConstTriangle3Concept TriangleType, SphereConcept SphereType>
+template<Triangle3Concept TriangleType, SphereConcept SphereType>
 bool intersect(const TriangleType& triangle, const SphereType& sphere)
 {
     using SScalar = SphereType::ScalarType;
@@ -776,7 +773,7 @@ bool intersect(const TriangleType& triangle, const SphereType& sphere)
  *
  * @ingroup core_intersection
  */
-template<SphereConcept SphereType, ConstTriangle3Concept TriangleType>
+template<SphereConcept SphereType, Triangle3Concept TriangleType>
 bool intersect(const SphereType& sphere, const TriangleType& t)
 {
     return intersect(t, sphere);

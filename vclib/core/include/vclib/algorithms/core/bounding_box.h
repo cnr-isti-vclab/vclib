@@ -134,7 +134,7 @@ auto boundingBox(const SphereType& s)
  *
  * @ingroup core_bounding_box
  */
-template<ConstTriangleConcept TriangleType>
+template<TriangleConcept TriangleType>
 auto boundingBox(const TriangleType& t)
 {
     using PointType = TriangleType::PointType;

@@ -46,6 +46,7 @@ set(HEADERS
     space/segment.h
     space/sphere.h
     space/texture.h
+    space/triangle.h
 )
 
 set(SOURCES

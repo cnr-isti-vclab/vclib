@@ -25,61 +25,38 @@
 
 #include <vclib/types.h>
 
+#include "point.h"
+
 namespace vcl {
-
-/**
- * @brief Concept for types representing const triangles in Euclidean space.
- *
- * This concept is less strict than the vcl::TriangleConcept as it does not
- * require the type to be mutable (i.e., it does not require the type to provide
- * non-const member functions).
- *
- * @ingroup space_concepts
- */
-template<typename T>
-concept ConstTriangleConcept = requires (const T& cObj) {
-    typename T::ScalarType;
-    typename T::PointType;
-
-    cObj.DIM;
-    cObj.size() == 3;
-
-    { cObj.point(uint()) } -> std::same_as<const typename T::PointType&>;
-    { cObj.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
-    { cObj.barycenter() } -> std::same_as<typename T::PointType>;
-    { cObj.perimeter() } -> std::same_as<typename T::ScalarType>;
-    { cObj.area() } -> std::same_as<typename T::ScalarType>;
-};
 
 /**
  * @brief Concept for types representing triangles in Euclidean space.
  *
- * This concept is more strict than the vcl::ConstTriangleConcept as it requires
- * the type to be mutable (i.e., it requires the type to provide non-const
- * member functions).
- *
  * @ingroup space_concepts
  */
 template<typename T>
-concept TriangleConcept =
-    ConstTriangleConcept<T> && requires (T obj, const T& cObj) {
-        { obj.point(uint()) } -> std::same_as<typename T::PointType&>;
+concept TriangleConcept = requires (T&& obj) {
+    typename T::ScalarType;
+    typename T::PointType;
+
+    obj.DIM;
+    obj.size() == 3;
+
+    { obj.point(uint()) } -> PointConcept;
+    { obj.sideLength(uint()) } -> std::same_as<typename T::ScalarType>;
+    { obj.barycenter() } -> std::same_as<typename T::PointType>;
+    { obj.perimeter() } -> std::same_as<typename T::ScalarType>;
+    { obj.area() } -> std::same_as<typename T::ScalarType>;
+};
+
+template<typename T>
+concept Triangle2Concept = TriangleConcept<T> && T::DIM == 2;
+
+template<typename T>
+concept Triangle3Concept =
+    TriangleConcept<T> && T::DIM == 3 && requires (T&& obj) {
+        { obj.normal() } -> Point3Concept;
     };
-
-template<typename T>
-concept ConstTriangle2Concept = ConstTriangleConcept<T> && T::DIM == 2;
-
-template<typename T>
-concept Triangle2Concept = ConstTriangle2Concept<T> && TriangleConcept<T>;
-
-template<typename T>
-concept ConstTriangle3Concept =
-    ConstTriangleConcept<T> && T::DIM == 3 && requires (const T& cObj) {
-        { cObj.normal() } -> std::same_as<typename T::PointType>;
-    };
-
-template<typename T>
-concept Triangle3Concept = ConstTriangle3Concept<T> && TriangleConcept<T>;
 
 } // namespace vcl
 
