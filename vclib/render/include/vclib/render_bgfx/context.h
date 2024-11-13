@@ -30,7 +30,7 @@
 
 #include "context/callback.h"
 #include "context/font_manager.h"
-#include "context/program_manger.h"
+#include "context/program_manager.h"
 
 #define BGFX_INVALID_VIEW 65535
 

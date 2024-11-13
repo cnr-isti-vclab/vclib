@@ -22,7 +22,7 @@
 
 #include <stdexcept>
 
-#include <vclib/render_bgfx/context/program_manger.h>
+#include <vclib/render_bgfx/context/program_manager.h>
 
 #include <vclib/render_bgfx/context/embedded_shaders.h>
 #include <vclib/render_bgfx/context/load_program.h>
