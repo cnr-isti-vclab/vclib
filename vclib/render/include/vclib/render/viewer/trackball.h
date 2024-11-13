@@ -669,7 +669,9 @@ private:
         // mTransform.prerotate(ax);
 
         // modify rotation only
-        mTransform.prerotate(ax * mInitialTransform.rotation() * mTransform.rotation().inverse());
+        mTransform.prerotate(
+            ax * mInitialTransform.rotation() *
+            mTransform.rotation().inverse());
     }
 
     /**-------------- Roll --------------**/

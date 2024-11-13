@@ -183,31 +183,26 @@ void EventManagerWindow::glfwContentScaleCallback(
     onResize(width, height);
 }
 
-static int fixKeyboardMods(int key, int action, int mods) {
-    switch (key)
-    {
+static int fixKeyboardMods(int key, int action, int mods)
+{
+    switch (key) {
     case GLFW_KEY_LEFT_SHIFT:
     case GLFW_KEY_RIGHT_SHIFT:
-        return (action == GLFW_PRESS) ?
-                mods | GLFW_MOD_SHIFT :
-                mods & (~GLFW_MOD_SHIFT);
+        return (action == GLFW_PRESS) ? mods | GLFW_MOD_SHIFT :
+                                        mods & (~GLFW_MOD_SHIFT);
     case GLFW_KEY_LEFT_CONTROL:
     case GLFW_KEY_RIGHT_CONTROL:
-        return (action == GLFW_PRESS) ?
-                mods | GLFW_MOD_CONTROL :
-                mods & (~GLFW_MOD_CONTROL);
+        return (action == GLFW_PRESS) ? mods | GLFW_MOD_CONTROL :
+                                        mods & (~GLFW_MOD_CONTROL);
     case GLFW_KEY_LEFT_ALT:
     case GLFW_KEY_RIGHT_ALT:
-        return (action == GLFW_PRESS) ?
-                mods | GLFW_MOD_ALT :
-                mods & (~GLFW_MOD_ALT);
+        return (action == GLFW_PRESS) ? mods | GLFW_MOD_ALT :
+                                        mods & (~GLFW_MOD_ALT);
     case GLFW_KEY_LEFT_SUPER:
     case GLFW_KEY_RIGHT_SUPER:
-        return (action == GLFW_PRESS) ?
-                mods | GLFW_MOD_SUPER :
-                mods & (~GLFW_MOD_SUPER);
-    default:
-        break;
+        return (action == GLFW_PRESS) ? mods | GLFW_MOD_SUPER :
+                                        mods & (~GLFW_MOD_SUPER);
+    default: break;
     }
 
     return mods;
@@ -249,7 +244,7 @@ void EventManagerWindow::glfwMouseButtonCallback(
 
     setModifiers(glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
-        if (action == GLFW_PRESS) {
+    if (action == GLFW_PRESS) {
         onMousePress(glfw::fromGLFW(btn));
     }
     else if (action == GLFW_RELEASE) {

@@ -29,7 +29,7 @@ void sphereStaticAsserts()
 {
     using namespace vcl;
 
-    using SphereType  = Sphered;
+    using SphereType = Sphered;
 
     // sphere
     static_assert(
