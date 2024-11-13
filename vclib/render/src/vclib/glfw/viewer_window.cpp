@@ -78,4 +78,10 @@ void ViewerWindow::draw()
 #endif
 }
 
+void ViewerWindow::onResize(unsigned int width, unsigned int height)
+{
+    ViewerCanvas::onResize(width, height);
+    frame();
+}
+
 } // namespace vcl::glfw

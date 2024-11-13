@@ -53,6 +53,8 @@ public:
 
 protected:
     void draw() override;
+
+    void onResize(uint width, uint height) override;
 };
 
 } // namespace vcl::glfw
