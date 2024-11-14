@@ -24,7 +24,7 @@ include(${VCLIB_BGFX_CMAKE_DIR}/bgfxToolUtils.cmake)
 
 function(_set_bgfx_profiles)
     set(GLSL_PROFILE 140 PARENT_SCOPE)
-    set(GLSL_COMPUTE_PROFILE 300 PARENT_SCOPE)
+    set(GLSL_COMPUTE_PROFILE 400 PARENT_SCOPE)
     set(ESSL_PROFILE 320_es PARENT_SCOPE)
     set(SPIRV_PROFILE spirv PARENT_SCOPE)
     set(DX_PROFILE s_5_0 PARENT_SCOPE)
@@ -214,8 +214,9 @@ function(_add_bgfx_shader FILE DIR TARGET)
 
         # glsl
         set(GLSL_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/glsl/${DIR}/${FILENAME}.bin)
+        
         if(NOT "${TYPE}" STREQUAL "COMPUTE")
-            _bgfx_shaderc_parse(
+        _bgfx_shaderc_parse(
                 GLSL ${COMMON} 
                 LINUX PROFILE ${GLSL_PROFILE} 
                 OUTPUT ${GLSL_OUTPUT}
