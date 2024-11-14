@@ -22,17 +22,15 @@
 
 #include "loggers.h"
 #include "meshes.h"
+#include "ranges.h"
 #include "space.h"
 
 int main()
 {
     loggersStaticAsserts();
-
-    edgemeshStaticAsserts();
-    pointcloudStaticAsserts();
-    polymeshStaticAsserts();
-    trimeshStaticAsserts();
-
+    meshesStaticAsserts();
+    rangesStaticAsserts();
     spaceStaticAsserts();
+
     return 0;
 }

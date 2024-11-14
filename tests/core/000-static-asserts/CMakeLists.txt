@@ -28,6 +28,7 @@ project(vclib-test-${TEST_NAME})
 set(HEADERS
     meshes.h
     loggers.h
+    ranges.h
     space.h
     meshes/edgemesh.h
     meshes/mesh_views.h

@@ -28,4 +28,12 @@
 #include "meshes/polymesh.h"
 #include "meshes/trimesh.h"
 
+void meshesStaticAsserts()
+{
+    edgemeshStaticAsserts();
+    pointcloudStaticAsserts();
+    polymeshStaticAsserts();
+    trimeshStaticAsserts();
+}
+
 #endif // MESHES_H
