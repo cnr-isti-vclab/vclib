@@ -216,7 +216,7 @@ function(_add_bgfx_shader FILE DIR TARGET)
         set(GLSL_OUTPUT ${BGFX_SHADERS_OUTPUT_DIR}/glsl/${DIR}/${FILENAME}.bin)
         
         if(NOT "${TYPE}" STREQUAL "COMPUTE")
-        _bgfx_shaderc_parse(
+            _bgfx_shaderc_parse(
                 GLSL ${COMMON} 
                 LINUX PROFILE ${GLSL_PROFILE} 
                 OUTPUT ${GLSL_OUTPUT}
