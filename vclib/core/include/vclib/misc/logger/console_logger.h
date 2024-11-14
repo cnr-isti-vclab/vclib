@@ -73,7 +73,7 @@ protected:
 
     void setWidth(std::ostream& o, uint w) override { o << std::setw(w); }
 
-    void flush(std::ostream& o) override { o.flush(); }
+    void flush(std::ostream& o) const override { o.flush(); }
 };
 
 } // namespace vcl

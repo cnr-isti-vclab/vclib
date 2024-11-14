@@ -94,7 +94,7 @@ void TextEditLogger::setWidth(QTextStream& stream, uint width)
     stream.setFieldWidth(width);
 }
 
-void TextEditLogger::flush(QTextStream& stream)
+void TextEditLogger::flush(QTextStream& stream) const
 {
     stream.flush();
 }

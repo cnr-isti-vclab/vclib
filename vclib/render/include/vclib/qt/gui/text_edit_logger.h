@@ -70,7 +70,7 @@ protected:
 
     void setWidth(QTextStream& stream, uint width) override;
 
-    void flush(QTextStream& stream) override;
+    void flush(QTextStream& stream) const override;
 };
 
 } // namespace vcl::qt

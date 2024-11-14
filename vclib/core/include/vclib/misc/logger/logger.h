@@ -248,7 +248,7 @@ protected:
 
     virtual void setWidth(Stream& o, uint w) {}
 
-    virtual void flush(Stream& o) {}
+    virtual void flush(Stream& o) const {}
 
 private:
     void updateStep()
