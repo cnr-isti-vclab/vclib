@@ -118,7 +118,7 @@ private:
         uint         width,
         uint         height,
         bool         clear      = false,
-        bool         depth32bit = true);
+        bool         depth32bit = false);
 };
 
 } // namespace vcl

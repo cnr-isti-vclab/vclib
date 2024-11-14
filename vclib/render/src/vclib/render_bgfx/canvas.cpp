@@ -32,7 +32,8 @@ Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
 
     mViewId = Context::requestViewId(mWinId, displayId);
 
-    mFbh = createFrameBufferAndInitView(winId, mViewId, width, height, true);
+    mFbh = createFrameBufferAndInitView(
+        winId, mViewId, width, height, true, false);
 
     mTextView.init(width, height);
 }
@@ -137,7 +138,8 @@ void Canvas::onResize(uint width, uint height)
     if (bgfx::isValid(mFbh))
         bgfx::destroy(mFbh);
 
-    mFbh = createFrameBufferAndInitView(mWinId, mViewId, width, height);
+    mFbh = createFrameBufferAndInitView(
+        mWinId, mViewId, width, height, true, false);
 
     mTextView.resize(width, height);
 }
@@ -161,7 +163,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     bool         depth32bit)
 {
     bgfx::TextureFormat::Enum colorFormat = bgfx::TextureFormat::RGBA8;
-    bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::Count;
+    bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::D24;
 
     if (depth32bit) {
         depthFormat = bgfx::TextureFormat::D32;
@@ -170,10 +172,11 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
 
     if (view != 0) {
-        bgfx::FrameBufferHandle fbh = bgfx::createFrameBuffer(
+        fbh = bgfx::createFrameBuffer(
             winId, width, height, colorFormat, depthFormat);
         bgfx::setViewFrameBuffer(view, fbh);
     }
+    
     if (clear) {
         bgfx::setViewClear(
             view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
