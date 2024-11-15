@@ -6,6 +6,8 @@
 #include <ranges>
 #include <vector>
 
+#include <vclib/concepts/ranges/range.h>
+
 #include "element_container.h"
 
 namespace vcl {
@@ -21,37 +23,37 @@ namespace mesh {
  */
 template <typename T>
 concept Has%EL_UC%Container = requires(
-    T o,
-    const T& co,
-    typename T::%EL_UC%Type* e)
+    T obj,
+    const T& cObj,
+    typename T::%EL_UC%Type* eP)
 {
     typename T::%EL_UC%Type;
     typename T::%EL_UC%Iterator;
     typename T::Const%EL_UC%Iterator;
 
-    { o.%EL_C%(uint()) } -> std::same_as<typename T::%EL_UC%Type&>;
-    { co.%EL_C%(uint()) } -> std::same_as<const typename T::%EL_UC%Type&>;
+    { obj.%EL_C%(uint()) } -> std::same_as<typename T::%EL_UC%Type&>;
+    { cObj.%EL_C%(uint()) } -> std::same_as<const typename T::%EL_UC%Type&>;
 
-    { co.%EL_C%Number() } -> std::same_as<uint>;
-    { co.%EL_C%ContainerSize() } -> std::same_as<uint>;
-    { co.deleted%EL_UC%Number() } -> std::same_as<uint>;
-    o.delete%EL_UC%(uint());
-    o.delete%EL_UC%(e);
-    { o.%EL_C%IndexIfCompact(uint()) } -> std::same_as<uint>;
-    { o.%EL_C%CompactIndices() } -> std::same_as<std::vector<uint>>;
+    { cObj.%EL_C%Number() } -> std::same_as<uint>;
+    { cObj.%EL_C%ContainerSize() } -> std::same_as<uint>;
+    { cObj.deleted%EL_UC%Number() } -> std::same_as<uint>;
+    { obj.delete%EL_UC%(uint()) } -> std::same_as<void>;
+    { obj.delete%EL_UC%(eP) } -> std::same_as<void>;
+    { obj.%EL_C%IndexIfCompact(uint()) } -> std::same_as<uint>;
+    { obj.%EL_C%CompactIndices() } -> std::same_as<std::vector<uint>>;
 
-    { o.add%EL_UC%() } -> std::same_as<uint>;
-    { o.add%EL_UC%s(uint()) } -> std::same_as<uint>;
-    { o.reserve%EL_UC%s(uint()) } -> std::same_as<void>;
-    { o.compact%EL_UC%s() } -> std::same_as<void>;
+    { obj.add%EL_UC%() } -> std::same_as<uint>;
+    { obj.add%EL_UC%s(uint()) } -> std::same_as<uint>;
+    { obj.reserve%EL_UC%s(uint()) } -> std::same_as<void>;
+    { obj.compact%EL_UC%s() } -> std::same_as<void>;
 
-    { o.%EL_C%Begin() } -> std::same_as<typename T::%EL_UC%Iterator>;
-    { co.%EL_C%Begin() } -> std::same_as<typename T::Const%EL_UC%Iterator>;
-    { o.%EL_C%End() } -> std::same_as<typename T::%EL_UC%Iterator>;
-    { co.%EL_C%End() } -> std::same_as<typename T::Const%EL_UC%Iterator>;
+    { obj.%EL_C%Begin() } -> std::same_as<typename T::%EL_UC%Iterator>;
+    { cObj.%EL_C%Begin() } -> std::same_as<typename T::Const%EL_UC%Iterator>;
+    { obj.%EL_C%End() } -> std::same_as<typename T::%EL_UC%Iterator>;
+    { cObj.%EL_C%End() } -> std::same_as<typename T::Const%EL_UC%Iterator>;
 
-    requires std::ranges::range<decltype(o.%EL_C%s())>;
-    requires std::ranges::range<decltype(co.%EL_C%s())>;
+    { obj.%EL_C%s() } -> vcl::RangeOf<typename T::%EL_UC%Type>;
+    { cObj.%EL_C%s() } -> vcl::RangeOf<typename T::%EL_UC%Type>;
 };
 
 } // namespace vcl::mesh
