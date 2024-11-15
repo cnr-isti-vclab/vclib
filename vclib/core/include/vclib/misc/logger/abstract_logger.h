@@ -95,7 +95,7 @@ public:
      *
      * @return The time passed, expressed in seconds.
      */
-    virtual double getTime() = 0;
+    virtual double time() const = 0;
 
     virtual void startNewTask(
         double             fromPerc,

@@ -71,7 +71,7 @@ public:
 
     void stopTimer() override final {}
 
-    double getTime() override final { return 0; }
+    double time() const override final { return 0; }
 
     void startNewTask(double, double, const std::string&) override final {}
 

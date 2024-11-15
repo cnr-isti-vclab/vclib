@@ -120,7 +120,7 @@ public:
 
     void stopTimer() override final { mTimer.stop(); }
 
-    double getTime() override final { return mTimer.delay(); }
+    double time() const override final { return mTimer.delay(); }
 
     void startNewTask(double fromPerc, double toPerc, const std::string& action)
         override final

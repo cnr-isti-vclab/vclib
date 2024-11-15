@@ -86,10 +86,10 @@ void MeshProcessingMainWindow::openMesh()
             auto mesh = mActionManager.loadMeshAction(format)->load(
                 filename, params, logger());
             logger().stopTimer();
-            tTime += logger().getTime();
+            tTime += logger().time();
             logger().log(
                 TextEditLogger::MESSAGE_LOG,
-                pfn + " loaded in " + std::to_string(logger().getTime()) +
+                pfn + " loaded in " + std::to_string(logger().time()) +
                     " seconds.");
             mMeshVector->pushBack(makeMeshDrawable(mesh));
         }
@@ -141,7 +141,7 @@ void MeshProcessingMainWindow::saveMeshAs()
             logger().stopTimer();
             logger().log(
                 TextEditLogger::MESSAGE_LOG,
-                pfn + " saved in " + std::to_string(logger().getTime()) +
+                pfn + " saved in " + std::to_string(logger().time()) +
                     " seconds.");
         }
     }
@@ -191,7 +191,7 @@ void MeshProcessingMainWindow::applyFilter(
 
     logger().log(
         TextEditLogger::MESSAGE_LOG,
-        action->name() + " applied in " + std::to_string(logger().getTime()) +
+        action->name() + " applied in " + std::to_string(logger().time()) +
             " seconds.");
 
     for (const auto& m : inputOutputMeshes) {

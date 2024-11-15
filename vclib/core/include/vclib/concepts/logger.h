@@ -65,7 +65,7 @@ concept LoggerConcept = requires (
     { obj.setMaxLineWidth(n) } -> std::same_as<void>;
     { obj.startTimer() } -> std::same_as<void>;
     { obj.stopTimer() } -> std::same_as<void>;
-    { obj.getTime() } -> std::same_as<double>;
+    { cObj.time() } -> std::same_as<double>;
 
     { obj.startNewTask(double(), double(), str) } -> std::same_as<void>;
     { obj.endTask(str) } -> std::same_as<void>;
