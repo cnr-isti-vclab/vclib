@@ -73,8 +73,8 @@ concept LoggerConcept = requires (
     { cObj.percentage() } -> std::same_as<double>;
     { obj.setPercentage(n) } -> std::same_as<void>;
 
-    { obj.log(str) } -> std::same_as<void>;
-    { obj.log(str, lvl) } -> std::same_as<void>;
+    { cObj.log(str) } -> std::same_as<void>;
+    { cObj.log(str, lvl) } -> std::same_as<void>;
     { obj.log(n, str) } -> std::same_as<void>;
     { obj.log(n, str, lvl) } -> std::same_as<void>;
 

@@ -62,13 +62,13 @@ public:
     void setPercentage(uint newPerc) override;
 
 protected:
-    QTextStream* levelStream(LogLevel lvl) override;
+    QTextStream* levelStream(LogLevel lvl) const override;
 
-    void alignLeft(QTextStream& stream) override;
+    void alignLeft(QTextStream& stream) const override;
 
-    void alignRight(QTextStream& stream) override;
+    void alignRight(QTextStream& stream) const override;
 
-    void setWidth(QTextStream& stream, uint width) override;
+    void setWidth(QTextStream& stream, uint width) const override;
 
     void flush(QTextStream& stream) const override;
 };

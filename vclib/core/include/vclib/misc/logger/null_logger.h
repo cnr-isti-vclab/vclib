@@ -81,9 +81,9 @@ public:
 
     void setPercentage(uint) override final {}
 
-    void log(const std::string&) override final {}
+    void log(const std::string&) const override final {}
 
-    void log(const std::string&, LogLevel) override final {}
+    void log(const std::string&, LogLevel) const override final {}
 
     void log(uint, const std::string&) override final {}
 

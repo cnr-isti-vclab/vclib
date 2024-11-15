@@ -67,7 +67,7 @@ void TextEditLogger::setPercentage(uint newPerc)
     mUI->progressBar->update();
 }
 
-QTextStream* TextEditLogger::levelStream(LogLevel lvl)
+QTextStream* TextEditLogger::levelStream(LogLevel lvl) const
 {
     switch (lvl) {
     case LogLevel::DEBUG_LOG: return mDebugStream;
@@ -79,17 +79,17 @@ QTextStream* TextEditLogger::levelStream(LogLevel lvl)
     }
 }
 
-void TextEditLogger::alignLeft(QTextStream& stream)
+void TextEditLogger::alignLeft(QTextStream& stream) const
 {
     stream.setFieldAlignment(QTextStream::AlignLeft);
 }
 
-void TextEditLogger::alignRight(QTextStream& stream)
+void TextEditLogger::alignRight(QTextStream& stream) const
 {
     stream.setFieldAlignment(QTextStream::AlignRight);
 }
 
-void TextEditLogger::setWidth(QTextStream& stream, uint width)
+void TextEditLogger::setWidth(QTextStream& stream, uint width) const
 {
     stream.setFieldWidth(width);
 }

@@ -114,7 +114,7 @@ public:
      *
      * @param[in] msg: The message to print.
      */
-    virtual void log(const std::string& msg) = 0;
+    virtual void log(const std::string& msg) const = 0;
 
     /**
      * @brief Prints a message to the logger, with the given level and without
@@ -123,7 +123,7 @@ public:
      * @param[in] msg: The message to print.
      * @param[in] lvl: The level of the message.
      */
-    virtual void log(const std::string& msg, LogLevel lvl) = 0;
+    virtual void log(const std::string& msg, LogLevel lvl) const = 0;
 
     /**
      * @brief Prints a message to the logger, with the level
