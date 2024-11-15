@@ -176,7 +176,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
             winId, width, height, colorFormat, depthFormat);
         bgfx::setViewFrameBuffer(view, fbh);
     }
-    
+
     if (clear) {
         bgfx::setViewClear(
             view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
