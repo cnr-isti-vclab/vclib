@@ -23,8 +23,6 @@
 #ifndef SPACE_H
 #define SPACE_H
 
-#include <vclib/mesh/tmp_meshes.h>
-
 #include "space/array.h"
 #include "space/box.h"
 #include "space/color.h"
