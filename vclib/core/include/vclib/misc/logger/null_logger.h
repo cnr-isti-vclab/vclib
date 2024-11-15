@@ -83,11 +83,11 @@ public:
 
     void log(const std::string&) override final {}
 
-    void log(LogLevel, const std::string&) override final {}
+    void log(const std::string&, LogLevel) override final {}
 
     void log(uint, const std::string&) override final {}
 
-    void log(uint, LogLevel, const std::string&) override final {}
+    void log(uint, const std::string&, LogLevel) override final {}
 
     void startProgress(const std::string&, uint, uint = 0, uint = 0, uint = 0)
         override final

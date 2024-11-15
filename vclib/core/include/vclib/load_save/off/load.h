@@ -529,7 +529,7 @@ void loadOff(
         enableOptionalComponentsFromInfo(loadedInfo, m);
 
     if (nVertices == 0) {
-        log.log(LogType::WARNING_LOG, "The file has no vertices");
+        log.log("The file has no vertices", LogType::WARNING_LOG);
         return;
     }
 

@@ -167,20 +167,20 @@ public:
 
     void log(const std::string& msg) override final
     {
-        log(101, PROGRESS_LOG, msg);
+        log(101, msg, PROGRESS_LOG);
     }
 
-    void log(LogLevel lvl, const std::string& msg) override final
+    void log(const std::string& msg, LogLevel lvl) override final
     {
-        log(101, lvl, msg);
+        log(101, msg, lvl);
     }
 
     void log(uint perc, const std::string& msg) override final
     {
-        log(perc, PROGRESS_LOG, msg);
+        log(perc, msg, PROGRESS_LOG);
     }
 
-    void log(uint perc, LogLevel lvl, const std::string& msg) override final
+    void log(uint perc, const std::string& msg, LogLevel lvl) override final
     {
         if (perc >= 0 && perc <= 100)
             setPercentage(perc);
@@ -223,7 +223,7 @@ public:
         if (mLastProgress < progress) {
             mProgressPerc = progress * mProgressPercStep;
             if (mPrintMsgDuringProgress)
-                log(mProgressPerc, PROGRESS_LOG, mProgressMessage);
+                log(mProgressPerc, mProgressMessage, PROGRESS_LOG);
             else
                 setPercentage(mProgressPerc);
             mLastProgress = progress;
