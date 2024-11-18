@@ -42,8 +42,6 @@ Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
     // (re)create the framebuffers
     this->onResize(width, height);
 
-    // create the blith depth texture
-
     assert(bgfx::isValid(mOffscreenFbh));
 }
 
@@ -56,9 +54,12 @@ Canvas::~Canvas()
     if (bgfx::isValid(mOffscreenFbh))
         bgfx::destroy(mOffscreenFbh);
 
-    // deallocate the blit depth texture
+    // deallocate the blit textures
     if (bgfx::isValid(mBlitDepth))
         bgfx::destroy(mBlitDepth);
+
+    if (bgfx::isValid(mBlitColor))
+        bgfx::destroy(mBlitColor);
 
     // release the passes
     Context::releaseViewId(mViewId);
@@ -166,16 +167,16 @@ void Canvas::onResize(uint width, uint height)
     mOffscreenFbh = createFrameBufferAndInitView(
         nullptr, mViewOffscreenId, width, height, true, true);
 
-
     if (bgfx::isValid(mBlitDepth))
         bgfx::destroy(mBlitDepth);
 
+    // create the blith depth texture
     mBlitDepth = bgfx::createTexture2D(
         width,
         height,
         false,
         1,
-        bgfx::TextureFormat::D32,
+        bgfx::TextureFormat::D32F,
         0 | BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK |
             BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT |
             BGFX_SAMPLER_MIP_POINT | BGFX_SAMPLER_U_CLAMP |
@@ -183,6 +184,23 @@ void Canvas::onResize(uint width, uint height)
     assert(bgfx::isValid(mBlitDepth));
 
     mDepthData.resize(width*height);
+
+    // create the blith color texture
+    if (bgfx::isValid(mBlitColor))
+        bgfx::destroy(mBlitColor);
+    mBlitColor = bgfx::createTexture2D(
+        width,
+        height,
+        false,
+        1,
+        bgfx::TextureFormat::RGBA8,
+        0 | BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK |
+            BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT |
+            BGFX_SAMPLER_MIP_POINT | BGFX_SAMPLER_U_CLAMP |
+            BGFX_SAMPLER_V_CLAMP);
+    assert(bgfx::isValid(mBlitColor));
+
+    mColorData.resize(width*height);
 
     mTextView.resize(width, height);
 }
@@ -192,19 +210,40 @@ void Canvas::frame()
     bgfx::setViewFrameBuffer(mViewId, mFbh);
     bgfx::touch(mViewId);
     draw();
-    mTextView.frame(mFbh);
+    // mTextView.frame(mFbh);
 
-    if (mCurrFrame > 0 && mCurrFrame % 100 == 0) {
+    bool read = false;
+    if (mCurrFrame > 0 && mCurrFrame % 60 == 0) {
         offscreenFrame();
+        read = true;
     }
 
     mCurrFrame = bgfx::frame();
 
-    std::cerr << "frame: " << mCurrFrame << std::endl;
+    if (read)
+        readFrame();
+
+    // std::cerr << "frame: " << mCurrFrame << std::endl;
     if (mReadFrame != 0 && mReadFrame <= mCurrFrame) {
         mReadFrame = 0;
-        std::cerr << "DEPTH: " << mDepthData[0] << std::endl;
+        std::cerr << "frame: " << mCurrFrame << std::endl;
+        std::cerr << "Color: " << mColorData[0] << std::endl;
     }
+}
+
+void Canvas::readFrame()
+{
+        // blit the depth buffer
+    // auto depthTexture = bgfx::getTexture(mOffscreenFbh, 1);
+    // bgfx::blit(mViewOffscreenId, mBlitDepth,
+    //     0, 0, depthTexture);
+    // mReadFrame = bgfx::readTexture(mBlitDepth, mDepthData.data());
+
+    // blit the color buffer
+    auto colorTexture = bgfx::getTexture(mOffscreenFbh, 0);
+    bgfx::blit(mViewOffscreenId, mBlitColor,
+        0, 0, colorTexture);
+    mReadFrame = bgfx::readTexture(mBlitColor, mColorData.data());
 }
 
 void Canvas::offscreenFrame()
@@ -223,13 +262,6 @@ void Canvas::offscreenFrame()
     mViewId    = mViewOffscreenId;
     draw();
     mViewId = tmpId;
-
-    // blit the depth buffer
-    auto depthTexture = bgfx::getTexture(mOffscreenFbh, 1);
-    bgfx::blit(mViewOffscreenId, mBlitDepth,
-        0, 0, depthTexture);
-    // read the depth
-    mReadFrame = bgfx::readTexture(mBlitDepth, mDepthData.data());
 }
 
 bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
@@ -296,8 +328,6 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
             view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
     }
     bgfx::setViewRect(view, 0, 0, width, height);
-    bgfx::reset(width, height,
-        /*(winId == nullptr) ? BGFX_RESET_NONE : */BGFX_RESET_VSYNC);
     bgfx::touch(view);
 
     return fbh;

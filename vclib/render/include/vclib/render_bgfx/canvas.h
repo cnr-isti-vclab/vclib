@@ -71,10 +71,12 @@ class Canvas : public virtual vcl::EventManagerI
     bgfx::ViewId            mViewId = 0;
     bgfx::ViewId            mViewOffscreenId = 0;
 
-    // blit depth texture
+    // blit texture
     bgfx::TextureHandle mBlitDepth        = BGFX_INVALID_HANDLE;
-    // depth data
+    bgfx::TextureHandle mBlitColor        = BGFX_INVALID_HANDLE;
+    // blit data
     std::vector<float>  mDepthData        = {};
+    std::vector<uint32_t>  mColorData     = {};
     uint32_t            mReadFrame        = 0;
     uint32_t            mCurrFrame        = 0;
 
@@ -125,6 +127,7 @@ protected:
 
 private:
     void offscreenFrame();
+    void readFrame();
 
     static void createFrameBuffers();
 

@@ -85,9 +85,14 @@ Context::Context(void* windowHandle, void* displayHandle)
     init.platformData.ndt  = mDisplayHandle;
     init.resolution.width  = 1;
     init.resolution.height = 1;
-    init.resolution.reset  = BGFX_RESET_NONE;
+    init.resolution.reset  = BGFX_RESET_VSYNC;
     init.callback          = &mCallBack;
     bgfx::init(init);
+
+    std::cerr << "READ BACK SUPPORTED: " <<
+    ((bgfx::getCaps()->supported &
+    (BGFX_CAPS_TEXTURE_BLIT|BGFX_CAPS_TEXTURE_READ_BACK)) == 
+    (BGFX_CAPS_TEXTURE_BLIT|BGFX_CAPS_TEXTURE_READ_BACK)) << std::endl;
 
     if (windowHandle == nullptr) {
         vcl::closeWindow(mWindowHandle, mDisplayHandle);
