@@ -74,7 +74,7 @@ class Canvas : public virtual vcl::EventManagerI
     // blit depth texture
     bgfx::TextureHandle mBlitDepth        = BGFX_INVALID_HANDLE;
     // depth data
-    float               mDepthData        = 0;
+    std::vector<float>  mDepthData        = {};
     uint32_t            mReadFrame        = 0;
     uint32_t            mCurrFrame        = 0;
 
