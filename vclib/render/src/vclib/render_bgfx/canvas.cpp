@@ -193,7 +193,7 @@ void Canvas::frame()
     mCurrFrame = bgfx::frame();
 
     std::cerr << "frame: " << mCurrFrame << std::endl;
-    if (mReadFrame != 0 && mReadFrame >= mCurrFrame) {
+    if (mReadFrame != 0 && mReadFrame <= mCurrFrame) {
         mReadFrame = 0;
         std::cerr << "DEPTH: " << mDepthData << std::endl;
     }
