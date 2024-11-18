@@ -63,8 +63,20 @@ namespace vcl {
 class Canvas : public virtual vcl::EventManagerI
 {
     void*                   mWinId  = nullptr;
-    bgfx::FrameBufferHandle mFbh    = BGFX_INVALID_HANDLE;
+    // frame buffer for drawing the canvas
+    // BGFX_INVALID_HANDLE represents the default frame buffer of the window
+    bgfx::FrameBufferHandle mFbh          = BGFX_INVALID_HANDLE;
+    // frame buffer for drawing and reading back
+    bgfx::FrameBufferHandle mOffscreenFbh = BGFX_INVALID_HANDLE;
     bgfx::ViewId            mViewId = 0;
+    bgfx::ViewId            mViewOffscreenId = 0;
+
+    // blit depth texture
+    bgfx::TextureHandle mBlitDepth        = BGFX_INVALID_HANDLE;
+    // depth data
+    float               mDepthData        = 0;
+    uint32_t            mReadFrame        = 0;
+    uint32_t            mCurrFrame        = 0;
 
     TextView mTextView;
 
@@ -112,6 +124,10 @@ protected:
     void frame();
 
 private:
+    void offscreenFrame();
+
+    static void createFrameBuffers();
+
     static bgfx::FrameBufferHandle createFrameBufferAndInitView(
         void*        winId,
         bgfx::ViewId view,

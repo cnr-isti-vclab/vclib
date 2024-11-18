@@ -28,22 +28,51 @@ namespace vcl {
 
 Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
 {
+    // save window id
     mWinId = winId;
 
-    mViewId = Context::requestViewId(mWinId, displayId);
-
-    mFbh = createFrameBufferAndInitView(
-        winId, mViewId, width, height, true, false);
+    // get the passes:
+    // - drawing on screen
+    mViewId          = Context::requestViewId(mWinId, displayId);
+    // - drawing offscreen
+    mViewOffscreenId = Context::requestViewId(mWinId, displayId);
 
     mTextView.init(width, height);
+
+    // (re)create the framebuffers
+    this->onResize(width, height);
+
+    // create the blith depth texture
+    mBlitDepth =
+        bgfx::createTexture2D(1, 1, false, 1, bgfx::TextureFormat::D32, 0
+            | BGFX_TEXTURE_BLIT_DST
+            | BGFX_TEXTURE_READ_BACK
+            | BGFX_SAMPLER_MIN_POINT
+            | BGFX_SAMPLER_MAG_POINT
+            | BGFX_SAMPLER_MIP_POINT
+            | BGFX_SAMPLER_U_CLAMP
+            | BGFX_SAMPLER_V_CLAMP
+            );
+    assert(bgfx::isValid(mBlitDepth));
+    assert(bgfx::isValid(mOffscreenFbh));
 }
 
 Canvas::~Canvas()
 {
+    // deallocate the framebuffers
     if (bgfx::isValid(mFbh))
         bgfx::destroy(mFbh);
 
+    if (bgfx::isValid(mOffscreenFbh))
+        bgfx::destroy(mOffscreenFbh);
+
+    // deallocate the blit depth texture
+    if (bgfx::isValid(mBlitDepth))
+        bgfx::destroy(mBlitDepth);
+
+    // release the passes
     Context::releaseViewId(mViewId);
+    Context::releaseViewId(mViewOffscreenId);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -141,6 +170,12 @@ void Canvas::onResize(uint width, uint height)
     mFbh = createFrameBufferAndInitView(
         mWinId, mViewId, width, height, true, false);
 
+    if (bgfx::isValid(mOffscreenFbh))
+        bgfx::destroy(mOffscreenFbh);
+
+    mOffscreenFbh = createFrameBufferAndInitView(
+        nullptr, mViewOffscreenId, width, height, true, true);
+
     mTextView.resize(width, height);
 }
 
@@ -151,7 +186,43 @@ void Canvas::frame()
     draw();
     mTextView.frame(mFbh);
 
-    bgfx::frame();
+    if (mCurrFrame > 0 && mCurrFrame % 100 == 0) {
+        offscreenFrame();
+    }
+
+    mCurrFrame = bgfx::frame();
+
+    std::cerr << "frame: " << mCurrFrame << std::endl;
+    if (mReadFrame != 0 && mReadFrame >= mCurrFrame) {
+        mReadFrame = 0;
+        std::cerr << "DEPTH: " << mDepthData << std::endl;
+    }
+}
+
+void Canvas::offscreenFrame()
+{
+    // if already reading depth, do nothing
+    if (mReadFrame != 0) {
+        return;
+    }
+
+    // render offscren
+    bgfx::setViewFrameBuffer(mViewOffscreenId, mOffscreenFbh);
+    bgfx::touch(mViewOffscreenId);
+
+    // render changing the view
+    auto tmpId = mViewId;
+    mViewId    = mViewOffscreenId;
+    draw();
+    mViewId = tmpId;
+
+    // blit the depth buffer
+    auto depthTexture = bgfx::getTexture(mOffscreenFbh, 1);
+    bgfx::blit(mViewOffscreenId, mBlitDepth,
+        0, 0, depthTexture,
+        1022, 760, 1, 1);
+    // read the depth
+    mReadFrame = bgfx::readTexture(mBlitDepth, &mDepthData);
 }
 
 bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
@@ -171,9 +242,38 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
 
     bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
 
-    if (view != 0) {
-        fbh = bgfx::createFrameBuffer(
-            winId, width, height, colorFormat, depthFormat);
+    if (winId == nullptr) {
+        // create offscreen framebuffer with explicit textures
+        bgfx::TextureHandle fbtextures[2];
+        fbtextures[0] = bgfx::createTexture2D(
+                uint16_t(width)
+            , uint16_t(height)
+            , false
+            , 1
+            , colorFormat
+            , BGFX_TEXTURE_RT
+            | BGFX_SAMPLER_MIN_POINT
+			| BGFX_SAMPLER_MAG_POINT
+			| BGFX_SAMPLER_MIP_POINT
+			| BGFX_SAMPLER_U_CLAMP
+			| BGFX_SAMPLER_V_CLAMP
+            );
+
+        fbtextures[1] = bgfx::createTexture2D(
+                uint16_t(width)
+            , uint16_t(height)
+            , false
+            , 1
+            , depthFormat
+            , BGFX_TEXTURE_RT
+            | BGFX_SAMPLER_MIN_POINT
+			| BGFX_SAMPLER_MAG_POINT
+			| BGFX_SAMPLER_MIP_POINT
+			| BGFX_SAMPLER_U_CLAMP
+			| BGFX_SAMPLER_V_CLAMP
+            );
+        fbh = bgfx::createFrameBuffer(2, fbtextures, true);
+
         bgfx::setViewFrameBuffer(view, fbh);
     }
 
@@ -182,8 +282,10 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
             view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
     }
     bgfx::setViewRect(view, 0, 0, width, height);
-    bgfx::reset(width, height, BGFX_RESET_VSYNC);
+    bgfx::reset(width, height,
+        (winId == nullptr) ? BGFX_RESET_NONE : BGFX_RESET_VSYNC);
     bgfx::touch(view);
+
     return fbh;
 }
 
