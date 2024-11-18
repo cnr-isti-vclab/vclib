@@ -244,7 +244,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::D24;
 
     if (depth32bit) {
-        depthFormat = bgfx::TextureFormat::D32;
+        depthFormat = bgfx::TextureFormat::D32F;
     }
 
     bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
@@ -279,9 +279,16 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
 			| BGFX_SAMPLER_U_CLAMP
 			| BGFX_SAMPLER_V_CLAMP
             );
+
+        assert(bgfx::isValid(fbtextures[0]));
+        assert(bgfx::isValid(fbtextures[1]));
         fbh = bgfx::createFrameBuffer(2, fbtextures, true);
 
         bgfx::setViewFrameBuffer(view, fbh);
+    }
+    else
+    {
+        bgfx::reset(width, height, BGFX_RESET_VSYNC, colorFormat);
     }
 
     if (clear) {
