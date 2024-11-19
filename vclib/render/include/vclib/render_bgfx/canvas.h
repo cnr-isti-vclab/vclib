@@ -66,19 +66,19 @@ class Canvas : public virtual vcl::EventManagerI
     // frame buffer for drawing the canvas
     // BGFX_INVALID_HANDLE represents the default frame buffer of the window
     bgfx::FrameBufferHandle mFbh          = BGFX_INVALID_HANDLE;
-    // frame buffer for drawing and reading back
+    // frame buffer for offscreen drawing and reading back
     bgfx::FrameBufferHandle mOffscreenFbh = BGFX_INVALID_HANDLE;
     bgfx::ViewId            mViewId = 0;
     bgfx::ViewId            mViewOffscreenId = 0;
 
-    // blit texture
+    // blit textures
     bgfx::TextureHandle mBlitDepth        = BGFX_INVALID_HANDLE;
     bgfx::TextureHandle mBlitColor        = BGFX_INVALID_HANDLE;
     // blit data
-    std::vector<float>  mDepthData        = {};
-    std::vector<uint32_t>  mColorData     = {};
-    uint32_t            mReadFrame        = 0;
-    uint32_t            mCurrFrame        = 0;
+    std::vector<float>    mDepthData      = {};
+    std::vector<uint32_t> mColorData      = {};
+    uint32_t              mReadDepthFrame = 0;
+    uint32_t              mCurrFrame      = 0;
 
     TextView mTextView;
 
@@ -127,7 +127,7 @@ protected:
 
 private:
     void offscreenFrame();
-    void readFrame();
+    void requestReadDepth();
 
     static void createFrameBuffers();
 
@@ -137,6 +137,9 @@ private:
         uint         width,
         uint         height,
         bool         clear = false);
+
+    static Point<uint16_t,2> getBlitDepthSize(uint fbWidth, uint fbHeight);
+    static bgfx::TextureFormat::Enum getOffscreenDepthFormat();
 };
 
 } // namespace vcl
