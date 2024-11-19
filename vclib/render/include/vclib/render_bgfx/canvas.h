@@ -136,8 +136,7 @@ private:
         bgfx::ViewId view,
         uint         width,
         uint         height,
-        bool         clear      = false,
-        bool         depth32bit = false);
+        bool         clear = false);
 };
 
 } // namespace vcl

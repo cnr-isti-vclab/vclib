@@ -155,28 +155,37 @@ void Canvas::onKeyPress(Key::Enum key)
 
 void Canvas::onResize(uint width, uint height)
 {
+    // create window backbuffer
     if (bgfx::isValid(mFbh))
         bgfx::destroy(mFbh);
 
     mFbh = createFrameBufferAndInitView(
-        mWinId, mViewId, width, height, true, false);
+        mWinId, mViewId, width, height, true);
 
+    // create offscreen framebuffer
     if (bgfx::isValid(mOffscreenFbh))
         bgfx::destroy(mOffscreenFbh);
 
     mOffscreenFbh = createFrameBufferAndInitView(
-        nullptr, mViewOffscreenId, width, height, true, true);
+        nullptr, mViewOffscreenId, width, height, true);
+    assert(bgfx::isValid(mOffscreenFbh));
 
     if (bgfx::isValid(mBlitDepth))
         bgfx::destroy(mBlitDepth);
 
     // create the blith depth texture
     mBlitDepth = bgfx::createTexture2D(
-        width,
-        height,
+        1,
+        1,
         false,
         1,
+#if BX_PLATFORM_LINUX || BX_PLATFORM_WINDOWS
         bgfx::TextureFormat::D32F,
+#elif BX_PLATFORM_OSX
+        bgfx::TextureFormat::D32,
+#else
+        bgfx::TextureFormat::D32,
+#endif
         0 | BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK |
             BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT |
             BGFX_SAMPLER_MIP_POINT | BGFX_SAMPLER_U_CLAMP |
@@ -223,27 +232,26 @@ void Canvas::frame()
     if (read)
         readFrame();
 
-    // std::cerr << "frame: " << mCurrFrame << std::endl;
     if (mReadFrame != 0 && mReadFrame <= mCurrFrame) {
         mReadFrame = 0;
         std::cerr << "frame: " << mCurrFrame << std::endl;
-        std::cerr << "Color: " << mColorData[0] << std::endl;
+        std::cerr << "Depth: " << mDepthData[0] << std::endl;
     }
 }
 
 void Canvas::readFrame()
 {
-        // blit the depth buffer
-    // auto depthTexture = bgfx::getTexture(mOffscreenFbh, 1);
-    // bgfx::blit(mViewOffscreenId, mBlitDepth,
-    //     0, 0, depthTexture);
-    // mReadFrame = bgfx::readTexture(mBlitDepth, mDepthData.data());
+    // blit the depth buffer
+    auto depthTexture = bgfx::getTexture(mOffscreenFbh, 1);
+    bgfx::blit(mViewOffscreenId, mBlitDepth,
+        0, 0, depthTexture, 0, 0, 1, 1);
+    mReadFrame = bgfx::readTexture(mBlitDepth, mDepthData.data());
 
     // blit the color buffer
-    auto colorTexture = bgfx::getTexture(mOffscreenFbh, 0);
-    bgfx::blit(mViewOffscreenId, mBlitColor,
-        0, 0, colorTexture);
-    mReadFrame = bgfx::readTexture(mBlitColor, mColorData.data());
+    // auto colorTexture = bgfx::getTexture(mOffscreenFbh, 0);
+    // bgfx::blit(mViewOffscreenId, mBlitColor,
+    //     0, 0, colorTexture);
+    // mReadFrame = bgfx::readTexture(mBlitColor, mColorData.data());
 }
 
 void Canvas::offscreenFrame()
@@ -269,19 +277,23 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     bgfx::ViewId view,
     uint         width,
     uint         height,
-    bool         clear,
-    bool         depth32bit)
+    bool         clear)
 {
     bgfx::TextureFormat::Enum colorFormat = bgfx::TextureFormat::RGBA8;
-    bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::D24;
+    bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::D24S8;
 
-    if (depth32bit) {
-        depthFormat = bgfx::TextureFormat::D32F;
-    }
+    const bool offscreen = (winId == nullptr);
 
     bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
 
-    if (winId == nullptr) {
+    if (offscreen) {
+#if BX_PLATFORM_LINUX || BX_PLATFORM_WINDOWS
+        depthFormat = bgfx::TextureFormat::D32F;
+#elif BX_PLATFORM_OSX
+        depthFormat = bgfx::TextureFormat::D32;
+#else
+        depthFormat = bgfx::TextureFormat::D32;
+#endif
         // create offscreen framebuffer with explicit textures
         bgfx::TextureHandle fbtextures[2];
         fbtextures[0] = bgfx::createTexture2D(
