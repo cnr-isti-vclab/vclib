@@ -28,6 +28,57 @@
 
 namespace vcl {
 
+/**
+ * @brief Set the backend renderer type used by bgfx.
+ *
+ * This function can be called before the context is initialized, to set the
+ * type of renderer used by bgfx.
+ *
+ * Depending on the platform, some renderer types could not be available. In
+ * such cases, the renderer type is set to the default one.
+ *
+ * @warning This function must be called before the context is initialized.
+ * Otherwise, it throws an exception.
+ *
+ * @param[in] renderType: the renderer type to set.
+ */
+void Context::setRenderType(bgfx::RendererType::Enum renderType)
+{
+    if (sInitialized) {
+        throw std::runtime_error(
+            "Cannot change render type after the context has been initialized");
+    }
+    sRenderType = renderType;
+}
+
+/**
+ * @brief Return the backend renderer type used by bgfx.
+ *
+ * This function can be called before the context is initialized or after.
+ * If called before, it returns the default renderer type (or the one set by
+ * calling setRenderType). If called after, it returns the renderer type used
+ * by bgfx.
+ */
+bgfx::RendererType::Enum Context::renderType()
+{
+    return sRenderType;
+}
+
+/**
+ * @brief Return the capabilities of the backend renderer.
+ *
+ * This function can be called only after the context has been initialized.
+ * Otherwise, it throws an exception.
+ */
+bgfx::Caps Context::capabilites()
+{
+    if (!sInitialized) {
+        throw std::runtime_error(
+            "Cannot get capabilities before the context has been initialized");
+    }
+    return *bgfx::getCaps();
+}
+
 bgfx::ViewId Context::requestViewId(void* windowHandle, void* displayHandle)
 {
     bgfx::ViewId viewId =
@@ -58,6 +109,8 @@ void Context::setDebugVerbosity(bool verbose)
 
 Context::Context(void* windowHandle, void* displayHandle)
 {
+    sInitialized = true;
+
     if (windowHandle == nullptr) {
         std::cerr << "WARNING: The first window used to create the bgfx "
                      "context is a dummy window. This is not recommended."
@@ -81,7 +134,7 @@ Context::Context(void* windowHandle, void* displayHandle)
 
     bgfx::Init init;
     init.platformData.nwh  = mWindowHandle;
-    init.type              = renderType;
+    init.type              = sRenderType;
     init.platformData.ndt  = mDisplayHandle;
     init.resolution.width  = 1;
     init.resolution.height = 1;
@@ -103,6 +156,8 @@ Context::Context(void* windowHandle, void* displayHandle)
     // font manager must be created after bgfx::init
     mFontManager    = new FontManager();
     mProgramManager = new ProgramManager(bgfx::getCaps()->rendererType);
+
+    sRenderType = bgfx::getCaps()->rendererType;
 }
 
 Context::~Context()

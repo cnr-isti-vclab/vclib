@@ -47,9 +47,16 @@ class Context
     FontManager*    mFontManager    = nullptr;
     ProgramManager* mProgramManager = nullptr;
 
-public:
-    inline static bgfx::RendererType::Enum renderType =
+    inline static bool sInitialized = false;
+    inline static bgfx::RendererType::Enum sRenderType =
         bgfx::RendererType::Count;
+
+public:
+    static void setRenderType(bgfx::RendererType::Enum renderType);
+
+    static bgfx::RendererType::Enum renderType();
+
+    static bgfx::Caps capabilites();
 
     static bgfx::ViewId requestViewId(
         void* windowHandle  = nullptr,
