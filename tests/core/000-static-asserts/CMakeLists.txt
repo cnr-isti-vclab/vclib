@@ -30,6 +30,8 @@ set(HEADERS
     loggers.h
     ranges.h
     space.h
+    meshes/components/color.h
+    meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h
     meshes/pointcloud.h
@@ -58,3 +60,8 @@ vclib_add_test(
     ${TEST_NAME}
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})
+
+target_sources(vclib-core-test-000-static-asserts
+  PRIVATE
+
+)
