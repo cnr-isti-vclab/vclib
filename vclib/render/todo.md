@@ -28,8 +28,15 @@
   - [x] fix trackball initial scale using GLFW
   - [x] fix event handling for the trackball using GLFW (metrics)
   - [x] streamline trackball rendering (avoid error-prone explicit updates)
+  - [ ] implement BGFX ImGui backend
   - [ ] start integration of ImGUI along GLFW
   - [x] fix trackball bug on Qt implementation (pan after wheel zoom)
   - [x] fix event mapping for GLFW (it should be slightly different from Qt)
   - [x] solve trackball inconsistencies between motion and atomic operations
   - [x] fix trackball modifier keys on linux + GLFW
+  - [ ] implement depth reading (for trackball focus operation)
+  - [ ] implement trackball focus operation
+  - [ ] implement depth reading on legacy OpenGL
+  - [ ] implement offscreen color rendering for the snapshot function
+  - [ ] implement offscreen rendering for the trackball focus operation
+  - [ ] implement offscreen rendering on legacy OpenGL
