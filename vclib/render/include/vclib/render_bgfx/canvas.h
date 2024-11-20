@@ -73,13 +73,13 @@ class Canvas : public virtual vcl::EventManagerI
     bgfx::ViewId            mViewId = 0;
     bgfx::ViewId            mViewOffscreenId = 0;
 
+    // size of the canvas
     Point2<uint> mSize = {0, 0};
 
     // blit textures
-    bgfx::TextureHandle mBlitColor        = BGFX_INVALID_HANDLE;
+    // bgfx::TextureHandle mBlitColor        = BGFX_INVALID_HANDLE;
     // blit data
-    // std::vector<float>    mDepthData      = {};
-    std::vector<uint32_t> mColorData      = {};
+    // std::vector<uint32_t> mColorData      = {};
 
     // current frame
     uint32_t               mCurrFrame      = 0;
@@ -88,26 +88,29 @@ class Canvas : public virtual vcl::EventManagerI
     struct ReadDepthData
     {
         ReadDepthData(Point2i point, std::function<void(float)> callback)
-            : point(point), cb(callback) {
+            : point(point), callback(callback) {
             }
 
         ~ReadDepthData() {
-            if (bgfx::isValid(blitDepthTexture))
-                bgfx::destroy(blitDepthTexture);
+            if (bgfx::isValid(blitTexture))
+                bgfx::destroy(blitTexture);
         }
 
-        // frame# available for reading
-        uint32_t              frameAvailable   = 0;
-        // point to read the depth from
-        Point2i               point            = {-1, -1};
+        // frame # when data will be available for reading
+        uint32_t              frameAvailable = 0;
+        // point to read from
+        Point2i               point          = {-1, -1};
         // blit texture
-        bgfx::TextureHandle   blitDepthTexture = BGFX_INVALID_HANDLE;
-        // blit depth data
-        std::vector<float>    depthData        = {};
-        // callback to call when the depth data is available
-        std::function<void(float)> cb         = nullptr;
+        bgfx::TextureHandle   blitTexture    = BGFX_INVALID_HANDLE;
+        Point2<uint16_t>      blitSize       = {0, 0};
+        // data read from the blit texture
+        std::vector<float>    readData       = {};
+        // callback called when the data is available
+        std::function<void(float)> callback  = nullptr;
 
-        bool isSubmitted() const { return bgfx::isValid(blitDepthTexture); }
+        bool isSubmitted() const {
+            return bgfx::isValid(blitTexture);
+        }
     };
     std::optional<ReadDepthData> mReadDepth = std::nullopt;
 
@@ -164,11 +167,14 @@ private:
     // draw offscreen frame
     void offscreenFrame();
 
-    // submit the calls for blitting the depth buffer and reading it back
+    // submit the calls for blitting the offscreen depth buffer
+    // and reading it back
     void submitReadDepth();
 
     // read the depth data
     void readDepthData();
+
+    bool supportsReadback() const;
 
     static bgfx::FrameBufferHandle createFrameBufferAndInitView(
         void*        winId,

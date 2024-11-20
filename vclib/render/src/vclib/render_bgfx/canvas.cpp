@@ -32,6 +32,20 @@ static const bgfx::TextureFormat::Enum kDefaultColorFormat =
 static const bgfx::TextureFormat::Enum kDefaultDepthFormat =
     bgfx::TextureFormat::D24S8;
 
+// TODO: make at least the clear color configurable
+static const uint32_t kDefaultClearColor   = 0xffffffff;
+static const float    kDefaultClearDepth   = 1.0f;
+static const uint8_t  kDefaultClearStencil = 0;
+
+static const uint64_t kBlitFormat = 0
+        | BGFX_TEXTURE_BLIT_DST
+        | BGFX_TEXTURE_READ_BACK
+        | BGFX_SAMPLER_MIN_POINT
+        | BGFX_SAMPLER_MAG_POINT
+        | BGFX_SAMPLER_MIP_POINT
+        | BGFX_SAMPLER_U_CLAMP
+        | BGFX_SAMPLER_V_CLAMP;
+
 Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
 {
     // save window id
@@ -64,12 +78,13 @@ Canvas::~Canvas()
     // if (bgfx::isValid(mBlitDepth))
     //     bgfx::destroy(mBlitDepth);
 
-    if (bgfx::isValid(mBlitColor))
-        bgfx::destroy(mBlitColor);
+    // if (bgfx::isValid(mBlitColor))
+    //     bgfx::destroy(mBlitColor);
 
     // release the passes
     Context::releaseViewId(mViewId);
-    Context::releaseViewId(mViewOffscreenId);
+    if (mViewOffscreenId != 0)
+        Context::releaseViewId(mViewOffscreenId);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
@@ -159,15 +174,6 @@ void Canvas::onKeyPress(Key::Enum key)
     }
 }
 
-static const uint64_t kBlitFormat = 0
-        | BGFX_TEXTURE_BLIT_DST
-        | BGFX_TEXTURE_READ_BACK
-        | BGFX_SAMPLER_MIN_POINT
-        | BGFX_SAMPLER_MAG_POINT
-        | BGFX_SAMPLER_MIP_POINT
-        | BGFX_SAMPLER_U_CLAMP
-        | BGFX_SAMPLER_V_CLAMP;
-
 void Canvas::onResize(uint width, uint height)
 {
     mSize = {width, height};
@@ -180,10 +186,15 @@ void Canvas::onResize(uint width, uint height)
         mWinId, mViewId, width, height, true);
     assert(!bgfx::isValid(mFbh)); // the backbuffer is always non valid
 
-    // FIXME: this is inefficient
-    // 1. we keep the offscreen framebuffer allocated even if we don't need it
+    // resize the text view
+    mTextView.resize(width, height);
+
+    if (!supportsReadback())
+        return;
 
     // create offscreen framebuffer
+    // FIXME: this is inefficient
+    // 1. we keep the offscreen framebuffer allocated even if we don't need it
     if (bgfx::isValid(mOffscreenFbh))
         bgfx::destroy(mOffscreenFbh);
 
@@ -192,15 +203,6 @@ void Canvas::onResize(uint width, uint height)
     assert(bgfx::isValid(mOffscreenFbh));
 
     // // create the blit textures
-    // static const uint64_t kBlitFormat = 0
-    //     | BGFX_TEXTURE_BLIT_DST
-    //     | BGFX_TEXTURE_READ_BACK
-    //     | BGFX_SAMPLER_MIN_POINT
-    //     | BGFX_SAMPLER_MAG_POINT
-    //     | BGFX_SAMPLER_MIP_POINT
-    //     | BGFX_SAMPLER_U_CLAMP
-    //     | BGFX_SAMPLER_V_CLAMP;
-
     // // get read depth size (depends on the render type)
     // auto blitDepthSize = getBlitDepthSize(width, height);
 
@@ -214,17 +216,15 @@ void Canvas::onResize(uint width, uint height)
     // mDepthData.resize(blitDepthSize.x() * blitDepthSize.y());
 
     // create the blit color texture
-    if (bgfx::isValid(mBlitColor))
-        bgfx::destroy(mBlitColor);
+    // if (bgfx::isValid(mBlitColor))
+    //     bgfx::destroy(mBlitColor);
 
-    mBlitColor = bgfx::createTexture2D(width, height, false, 1,
-        kDefaultColorFormat, kBlitFormat);
-    assert(bgfx::isValid(mBlitColor));
+    // mBlitColor = bgfx::createTexture2D(width, height, false, 1,
+    //     kDefaultColorFormat, kBlitFormat);
+    // assert(bgfx::isValid(mBlitColor));
 
     // allocate the color data
-    mColorData.resize(width*height);
-
-    mTextView.resize(width, height);
+    // mColorData.resize(width*height);
 }
 
 void Canvas::frame()
@@ -256,9 +256,9 @@ bool Canvas::readDepth(
     const Point2i& point,
     std::function<void(float)> callback)
 {
-    // read already requested
-    if (mReadDepth != std::nullopt
-        || point.x() < 0 || point.y() < 0
+    if (!supportsReadback()               // feature unsupported
+        || mReadDepth != std::nullopt     // read already requested
+        || point.x() < 0 || point.y() < 0 // point out of bounds
         || point.x() >= mSize.x() || point.y() >= mSize.y()) {
         return false;
     }
@@ -272,14 +272,14 @@ void Canvas::submitReadDepth()
     assert(mReadDepth != std::nullopt && !mReadDepth->isSubmitted());
 
     // get read depth size (depends on the render type)
-    auto blitDepthSize = getBlitDepthSize();
+    const auto & blitSize = mReadDepth->blitSize = getBlitDepthSize();
 
     // create the blit depth texture
-    auto & blitTex = mReadDepth->blitDepthTexture;
+    auto & blitTex = mReadDepth->blitTexture;
     assert(!bgfx::isValid(blitTex));
     blitTex = bgfx::createTexture2D(
-        uint16_t(blitDepthSize.x()),
-        uint16_t(blitDepthSize.y()),
+        uint16_t(blitSize.x()),
+        uint16_t(blitSize.y()),
         false,
         1,
         getOffscreenDepthFormat(),
@@ -287,11 +287,11 @@ void Canvas::submitReadDepth()
     assert(bgfx::isValid(blitTex));
 
     // create the blit depth data
-    mReadDepth->depthData.resize(blitDepthSize.x() * blitDepthSize.y());
+    mReadDepth->readData.resize(blitSize.x() * blitSize.y());
 
     // blit the depth buffer
     const auto depthBuffer = bgfx::getTexture(mOffscreenFbh, 1);
-    if (mReadDepth->depthData.size() == 1) {
+    if (mReadDepth->readData.size() == 1) {
         // read a single fragment
         const auto & p = mReadDepth->point;
         bgfx::blit(mViewOffscreenId, blitTex, 0, 0,
@@ -304,7 +304,7 @@ void Canvas::submitReadDepth()
 
     // submit read from blit CPU texture
     mReadDepth->frameAvailable =
-        bgfx::readTexture(blitTex, mReadDepth->depthData.data());
+        bgfx::readTexture(blitTex, mReadDepth->readData.data());
 }
 
 void Canvas::readDepthData()
@@ -313,16 +313,33 @@ void Canvas::readDepthData()
 
     // check if read result is available
     if (mCurrFrame >= mReadDepth->frameAvailable) {
-        // if the depth buffer is a single fragment, return the value
-        float depthValue = mReadDepth->depthData[0];
+        float depthValue = 1.0f;
+        if (mReadDepth->readData.size() == 1) {
+            // if the depth buffer is a single fragment, return the value
+            depthValue = mReadDepth->readData[0];
+        } else {
+            // if the depth buffer is the entire buffer,
+            // get the value at the point
+            const auto & p = mReadDepth->point;
+            const auto & blitSize = mReadDepth->blitSize;
+            depthValue = mReadDepth->readData[
+                p.y() * blitSize.x() + p.x()];
+        }
+        // TODO: remove debug
         std::cerr << "frame: " << mCurrFrame << std::endl;
         std::cerr << "Depth: " << depthValue << std::endl;
 
         // cleanup
-        bgfx::destroy(mReadDepth->blitDepthTexture);
-        mReadDepth->cb(depthValue);
+        bgfx::destroy(mReadDepth->blitTexture);
+        mReadDepth->callback(depthValue);
         mReadDepth = std::nullopt;
     }
+}
+
+bool Canvas::supportsReadback() const
+{
+    return (Context::capabilites().supported & BGFX_CAPS_TEXTURE_BLIT)
+        && (Context::capabilites().supported & BGFX_CAPS_TEXTURE_READ_BACK);
 }
 
 void Canvas::offscreenFrame()
@@ -395,7 +412,8 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
 
     if (clear) {
         bgfx::setViewClear(
-            view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xffffffff, 1.0f, 0);
+            view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+            kDefaultClearColor, kDefaultClearDepth, kDefaultClearStencil);
     }
     bgfx::setViewRect(view, 0, 0, width, height);
     bgfx::touch(view);
@@ -408,23 +426,20 @@ Point2<uint16_t> Canvas::getBlitDepthSize()
     assert(!mSize.isZero());
 
     // get read depth size
-    Point<uint16_t,2> blitDepthSize;
     const auto renderType = Context::renderType();
     switch (renderType) {
     case bgfx::RendererType::Direct3D11:
     case bgfx::RendererType::Direct3D12:
-        blitDepthSize = {uint16_t(mSize.x()), uint16_t(mSize.y())};
-        break;
+        return {uint16_t(mSize.x()), uint16_t(mSize.y())};
     case bgfx::RendererType::Vulkan:
     case bgfx::RendererType::Metal:
-        blitDepthSize = {1, 1};
-        break;
+        return {1, 1};
     default:
         assert(false && "blit depth for untested render type");
         break;
     }
 
-    return blitDepthSize;
+    return {0,0};
 }
 
 bgfx::TextureFormat::Enum Canvas::getOffscreenDepthFormat()
@@ -442,6 +457,5 @@ bgfx::TextureFormat::Enum Canvas::getOffscreenDepthFormat()
     }
     return bgfx::TextureFormat::Count;
 }
-
 
 } // namespace vcl
