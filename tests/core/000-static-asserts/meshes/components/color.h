@@ -79,7 +79,6 @@ void colorComponentStaticAsserts()
     static_assert(
         comp::HasOptionalColor<TriMeshVertex&&>,
         "TriMesh Vertex&& does not satisfy the HasOptionalColor concept");
-
 }
 
 #endif // COMP_COLOR_H
