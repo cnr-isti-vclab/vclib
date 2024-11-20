@@ -28,6 +28,8 @@
 #include <vclib/render/interfaces/event_manager_i.h>
 #include <vclib/render_bgfx/text/text_view.h>
 
+#include <optional>
+
 namespace vcl {
 
 /**
