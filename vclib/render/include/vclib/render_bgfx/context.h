@@ -47,7 +47,7 @@ class Context
     FontManager*    mFontManager    = nullptr;
     ProgramManager* mProgramManager = nullptr;
 
-    inline static bool sInitialized = false;
+    inline static bool                     sInitialized = false;
     inline static bgfx::RendererType::Enum sRenderType =
         bgfx::RendererType::Count;
 
