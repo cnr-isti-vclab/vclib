@@ -59,7 +59,7 @@ namespace vcl {
  * The class provides two important member functions:
  * - frame(): this function must be called by the derived classes at the end of
  * each frame, after all the bgfx rendering commands have been issued;
- * - resize(width, height): this function must be called by the derived classes
+ * - onResize(width, height): this function must be called by the derived classes
  * whenever the window is resized.
  */
 class Canvas : public virtual vcl::EventManagerI

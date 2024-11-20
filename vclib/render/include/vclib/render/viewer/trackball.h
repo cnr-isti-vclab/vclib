@@ -167,7 +167,7 @@ public:
         // scale the linear part of the transformation
         // so the manipulator will be scaled around the origin
         mTransform.prescale(scale);
-        // TODO scale also near/far?
+        // TODO: scale also near/far?
     }
 
     void changeScale(Scalar factor) { mTransform.prescale(factor); }
@@ -616,7 +616,7 @@ private:
 
         // convert hit point to 3D
         // rescale in trackball space
-        // TODO Avoid cancellation issue with different solution
+        // FIXME: Avoid cancellation issue with different solution
         assert(hitPoint.x() == hitPoint.x());
         double factor =
             (h > 0.0 && hitPoint.y() > 0.0) ? hitPoint.y() / h : 0.0;

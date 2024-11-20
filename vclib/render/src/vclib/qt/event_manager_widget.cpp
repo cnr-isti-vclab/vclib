@@ -45,7 +45,7 @@ EventManagerWidget::EventManagerWidget(
     setAttribute(Qt::WA_PaintOnScreen); // do not remove - needed on macos and x
     // PaintOnScreen is bugged - prints unuseful warning messages
     // we will hide it:
-    // vcl::qt::MessageHider::activate(); // TODO check again
+    // vcl::qt::MessageHider::activate(); // TODO: check again if this is needed
     setAttribute(Qt::WA_DontCreateNativeAncestors);
     setAttribute(Qt::WA_NativeWindow);
 #endif

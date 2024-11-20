@@ -180,9 +180,8 @@ void Canvas::onResize(uint width, uint height)
         mWinId, mViewId, width, height, true);
     assert(!bgfx::isValid(mFbh)); // the backbuffer is always non valid
 
-    // TODO this is inefficient for two reasons:
+    // FIXME: this is inefficient
     // 1. we keep the offscreen framebuffer allocated even if we don't need it
-    // 2. we keep the blit textures and data allocated if we don't need them
 
     // create offscreen framebuffer
     if (bgfx::isValid(mOffscreenFbh))
