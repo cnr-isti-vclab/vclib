@@ -100,6 +100,10 @@ void ViewerWidget::paintEvent(QPaintEvent* event)
     bgfx::frame(); // needed on unix systems
 #endif             // __APPLE__ || __linux__
     QWidget::paintEvent(event);
+
+    if (mDepthReadRequested) {
+        update();
+    }
 }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void ViewerWidget::paintGL()
@@ -107,6 +111,23 @@ void ViewerWidget::paintGL()
     frame();
 }
 #endif
+
+void ViewerWidget::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    if (mDepthReadRequested)
+        return;
+
+    mDepthReadRequested = true;
+    const auto p = event->pos() * pixelRatio();
+    this->readDepth(
+        Point2i(p.x(), p.y()),
+            [=, this](float depth) {
+                mDepthReadRequested = false;
+                std::cout << "Depth at point ("
+                        << p.x() << ", " << p.y() << "): " << depth 
+                        << std::endl;
+        });
+}
 
 void ViewerWidget::showScreenShotDialog()
 {

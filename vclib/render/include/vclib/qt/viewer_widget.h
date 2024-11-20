@@ -68,7 +68,12 @@ private:
     void paintGL() override;
 #endif
 
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
+
     void showScreenShotDialog();
+
+private:
+    bool mDepthReadRequested = false;
 };
 
 } // namespace vcl::qt
