@@ -71,14 +71,43 @@ class Canvas : public virtual vcl::EventManagerI
     bgfx::ViewId            mViewId = 0;
     bgfx::ViewId            mViewOffscreenId = 0;
 
+    Point2<uint> mSize = {0, 0};
+
     // blit textures
-    bgfx::TextureHandle mBlitDepth        = BGFX_INVALID_HANDLE;
     bgfx::TextureHandle mBlitColor        = BGFX_INVALID_HANDLE;
     // blit data
-    std::vector<float>    mDepthData      = {};
+    // std::vector<float>    mDepthData      = {};
     std::vector<uint32_t> mColorData      = {};
-    uint32_t              mReadDepthFrame = 0;
-    uint32_t              mCurrFrame      = 0;
+
+    // current frame
+    uint32_t               mCurrFrame      = 0;
+
+    // depth readback
+    struct ReadDepthData
+    {
+        ReadDepthData(Point2i point, std::function<void(float)> callback)
+            : point(point), cb(callback) {
+            }
+
+        ~ReadDepthData() {
+            if (bgfx::isValid(blitDepthTexture))
+                bgfx::destroy(blitDepthTexture);
+        }
+
+        // frame# available for reading
+        uint32_t              frameAvailable   = 0;
+        // point to read the depth from
+        Point2i               point            = {-1, -1};
+        // blit texture
+        bgfx::TextureHandle   blitDepthTexture = BGFX_INVALID_HANDLE;
+        // blit depth data
+        std::vector<float>    depthData        = {};
+        // callback to call when the depth data is available
+        std::function<void(float)> cb         = nullptr;
+
+        bool isSubmitted() const { return bgfx::isValid(blitDepthTexture); }
+    };
+    std::optional<ReadDepthData> mReadDepth = std::nullopt;
 
     TextView mTextView;
 
@@ -118,6 +147,10 @@ public:
 
     void onKeyPress(Key::Enum key) override;
 
+    bool readDepth(
+        const Point2i& point,
+        std::function<void(float)> callback = nullptr);
+
 protected:
     virtual void draw() = 0;
 
@@ -126,10 +159,14 @@ protected:
     void frame();
 
 private:
+    // draw offscreen frame
     void offscreenFrame();
-    void requestReadDepth();
 
-    static void createFrameBuffers();
+    // submit the calls for blitting the depth buffer and reading it back
+    void submitReadDepth();
+
+    // read the depth data
+    void readDepthData();
 
     static bgfx::FrameBufferHandle createFrameBufferAndInitView(
         void*        winId,
@@ -138,7 +175,7 @@ private:
         uint         height,
         bool         clear = false);
 
-    static Point<uint16_t,2> getBlitDepthSize(uint fbWidth, uint fbHeight);
+    Point2<uint16_t> getBlitDepthSize();
     static bgfx::TextureFormat::Enum getOffscreenDepthFormat();
 };
 
