@@ -23,7 +23,7 @@
   - [ ] Implement picking (raytracing to get the triangle clicked by the mouse?)
   - [ ] Customizable background for canvas
   - [ ] check crash example 9015 mesh io stl (crashes if the bimba model (m1) is rendered)
-  - [ ] Draw lines trough shader - Work in progress
+  - [ ] Draw lines trough shader - Work in progress (BSc thesis)
   - [x] check retina resolution on macOS + GLFW
   - [x] fix trackball initial scale using GLFW
   - [x] fix event handling for the trackball using GLFW (metrics)
@@ -38,6 +38,5 @@
   - [ ] implement trackball focus operation
   - [ ] implement depth reading on legacy OpenGL
   - [ ] implement offscreen color rendering for the snapshot function
-  - [ ] implement offscreen rendering for the trackball focus operation
   - [ ] implement offscreen rendering on legacy OpenGL
   - [ ] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown
