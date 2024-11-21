@@ -34,9 +34,10 @@
   - [x] fix event mapping for GLFW (it should be slightly different from Qt)
   - [x] solve trackball inconsistencies between motion and atomic operations
   - [x] fix trackball modifier keys on linux + GLFW
-  - [ ] implement depth reading (for trackball focus operation)
+  - [x] implement depth reading (for trackball focus operation)
   - [ ] implement trackball focus operation
   - [ ] implement depth reading on legacy OpenGL
   - [ ] implement offscreen color rendering for the snapshot function
   - [ ] implement offscreen rendering for the trackball focus operation
   - [ ] implement offscreen rendering on legacy OpenGL
+  - [ ] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown
