@@ -36,7 +36,7 @@
   - [x] fix trackball modifier keys on linux + GLFW
   - [x] implement depth reading (for trackball focus operation)
   - [ ] implement trackball focus operation
-  - [ ] implement depth reading on legacy OpenGL
+  - [x] implement depth reading on legacy OpenGL
   - [ ] implement offscreen color rendering for the snapshot function
   - [ ] implement offscreen rendering on legacy OpenGL
   - [ ] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown

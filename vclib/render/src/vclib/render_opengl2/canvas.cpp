@@ -33,11 +33,19 @@ void Canvas::init(uint width, uint height)
 {
     glViewport(0, 0, width, height);
     glClearColor(1.f, 1.f, 1.f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void Canvas::screenShot(const std::string& filename, uint width, uint height)
 {
+}
+
+bool Canvas::readDepth(
+    const Point2i& point,
+    std::function<void(float)> callback)
+{
+    mReadDepthPoint = point;
+    mReadDepthCallback = callback;
+    return true;
 }
 
 void Canvas::onResize(uint width, uint height)
@@ -47,7 +55,41 @@ void Canvas::onResize(uint width, uint height)
 
 void Canvas::frame()
 {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     draw();
+
+    // if depth requested, read it
+    if (mReadDepthCallback)
+    {
+        readDepthData();
+    }
+}
+
+void Canvas::readDepthData()
+{
+     // get depth range
+    std::array<GLfloat,2> depthRange = {0,0};
+    glGetFloatv(GL_DEPTH_RANGE, depthRange.data());
+
+    // get viewport heigth only
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    // read depth
+    GLfloat depth = depthRange[1];
+    glReadPixels(
+        GLint(mReadDepthPoint.x()),
+        GLint(viewport[3] - mReadDepthPoint.y() - 1),
+        1, 1,
+        GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
+    
+    // normalize depth into [0,1] interval
+    depth = (depth - depthRange[0]) / (depthRange[1] - depthRange[0]);
+
+    // cleanup
+    mReadDepthPoint = {-1,-1};
+    mReadDepthCallback(float(depth));
+    mReadDepthCallback = nullptr;
 }
 
 } // namespace vcl
