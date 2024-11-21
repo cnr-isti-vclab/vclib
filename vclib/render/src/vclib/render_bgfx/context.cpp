@@ -142,11 +142,6 @@ Context::Context(void* windowHandle, void* displayHandle)
     init.callback          = &mCallBack;
     bgfx::init(init);
 
-    std::cerr << "READ BACK SUPPORTED: " <<
-    ((bgfx::getCaps()->supported &
-    (BGFX_CAPS_TEXTURE_BLIT|BGFX_CAPS_TEXTURE_READ_BACK)) == 
-    (BGFX_CAPS_TEXTURE_BLIT|BGFX_CAPS_TEXTURE_READ_BACK)) << std::endl;
-
     if (windowHandle == nullptr) {
         vcl::closeWindow(mWindowHandle, mDisplayHandle);
     }

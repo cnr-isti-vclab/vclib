@@ -325,10 +325,7 @@ void Canvas::readDepthData()
             depthValue = mReadDepth->readData[
                 p.y() * blitSize.x() + p.x()];
         }
-        // TODO: remove debug
-        std::cerr << "frame: " << mCurrFrame << std::endl;
-        std::cerr << "Depth: " << depthValue << std::endl;
-
+ 
         // cleanup
         bgfx::destroy(mReadDepth->blitTexture);
         mReadDepth->callback(depthValue);
@@ -338,8 +335,9 @@ void Canvas::readDepthData()
 
 bool Canvas::supportsReadback() const
 {
-    return (Context::capabilites().supported & BGFX_CAPS_TEXTURE_BLIT)
-        && (Context::capabilites().supported & BGFX_CAPS_TEXTURE_READ_BACK);
+    return (Context::capabilites().supported  &
+        (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK)) == 
+        (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK);
 }
 
 void Canvas::offscreenFrame()
