@@ -331,6 +331,44 @@ Matrix44 orthoProjectionMatrix(
     return res;
 }
 
+/**
+ * @brief Unprojects a screen position to a 3D point
+ *
+ * This function unprojects a screen position to a 3D point using the given
+ * model view projection matrix, the viewport and a flag indicating if the NDC
+ * coordinates are homogeneous.
+ *
+ * @param[in] screenPos: The screen position to unproject
+ * @param[in] modelViewProjection: The model view projection matrix (or any
+ * transform+projection matrix, depending on the space to unproject to)
+ * @param[in] viewport: The viewport
+ * @param[in] homogeneousNDC: Flag to indicate if the NDC coordinates are
+ * homogeneous (i.e., z is in [-1,1] if true, or [0,1] otherwise)
+ * @return The unprojected 3D point
+ */
+template<MatrixConcept Matrix44, Point3Concept PointType>
+PointType unproject(
+    const PointType& screenPos,
+    const Matrix44&  modelViewProjection,
+    const std::array<typename Matrix44::Scalar,4>& viewport,
+    bool             homogeneousNDC)
+{
+    using Scalar = Matrix44::Scalar;
+    const Matrix44 inv = modelViewProjection.inverse();
+    Point4<Scalar> p(
+        (screenPos.x() - viewport[0]) / viewport[2] * 2.0 - 1.0,
+        (screenPos.y() - viewport[1]) / viewport[3] * 2.0 - 1.0,
+        homogeneousNDC ? 2.0 * screenPos.z() - 1.0 : screenPos.z(),
+        1.0);
+    Point4<Scalar> res = inv * Eigen::Matrix<Scalar, 4, 1>(p);
+    if (res.w() == 0.0)
+    {
+        std::cerr << "unproject: division by zero" << std::endl;
+        return PointType::Zero();
+    }
+    return res.template head<3>() / res.w();
+}
+
 } // namespace vcl
 
 #endif // VCL_RENDER_VIEWER_MATRIX_H
