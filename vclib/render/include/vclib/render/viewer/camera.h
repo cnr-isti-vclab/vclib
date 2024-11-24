@@ -54,7 +54,7 @@ private:
     /* Intrinsics */
 
     /// @brief Field of view in degrees
-    Scalar mFovDeg = 60.0;
+    Scalar mFovDeg = 54.0;
 
     /// @brief Projection mode
     ProjectionMode::Enum mProjectionMode = ProjectionMode::PERSPECTIVE;

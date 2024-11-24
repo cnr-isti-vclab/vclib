@@ -81,6 +81,8 @@ private:
 
     static constexpr Scalar FOCUS_SCALE_FACTOR = 1.15;
 
+    static constexpr Scalar DEFAULT_FOV_DEG = 54.0;
+
     Camera<Scalar> mCamera;
 
     // Similarity holding the manipulator transformation.
@@ -113,7 +115,7 @@ private:
     Point2<Scalar> mPrevMousePosition;
 
 public:
-    TrackBall() { mCamera.setFieldOfViewAdaptingEyeDistance(60.0); }
+    TrackBall() { mCamera.setFieldOfViewAdaptingEyeDistance(DEFAULT_FOV_DEG); }
 
     void reset()
     {
