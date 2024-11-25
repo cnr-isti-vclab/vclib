@@ -35,7 +35,7 @@ HelloTriangleGLFW::~HelloTriangleGLFW()
 {
 }
 
-void HelloTriangleGLFW::draw()
+void HelloTriangleGLFW::drawContent()
 {
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);

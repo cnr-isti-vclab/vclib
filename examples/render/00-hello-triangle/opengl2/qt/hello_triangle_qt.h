@@ -32,7 +32,7 @@ public:
 
     ~HelloTriangleQt();
 
-    void draw() override;
+    void drawContent() override;
 };
 
 #endif // HELLO_TRIANGLE_QT_H

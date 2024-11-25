@@ -32,7 +32,7 @@ public:
 
     ~HelloTriangleGLFW();
 
-    void draw() override;
+    void drawContent() override;
 };
 
 #endif // HELLO_TRIANGLE_GLFW_H
