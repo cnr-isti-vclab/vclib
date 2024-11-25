@@ -244,6 +244,11 @@ public:
         resetTrackBall();
     }
 
+    void focus(const Point3<Scalar>& center)
+    {
+        mTrackball.applyAtomicMotion(TrackBallType::FOCUS, center);
+    }
+
     void resizeViewer(uint w, uint h)
     {
         mWidth  = w;
