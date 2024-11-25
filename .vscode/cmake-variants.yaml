@@ -24,6 +24,7 @@ modules:
       long: Core library and Render module, using BGFX as render backend
       settings:
         VCLIB_BUILD_MODULE_RENDER: ON
+        VCLIB_RENDER_BACKEND: bgfx
     render_opengl2:
       short: Render (OpenGL 2)
       long: Core library and Render module, using OpenGL 2 as render backend
