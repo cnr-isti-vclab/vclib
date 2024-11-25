@@ -56,13 +56,14 @@ void Canvas::onResize(uint width, uint height)
 void Canvas::frame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    draw();
 
     // if depth requested, read it
     if (mReadDepthCallback)
     {
+        drawContent();
         readDepthData();
     }
+    draw();
 }
 
 void Canvas::readDepthData()

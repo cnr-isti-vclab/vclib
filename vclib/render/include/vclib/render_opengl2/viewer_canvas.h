@@ -60,7 +60,7 @@ public:
     }
 
 protected:
-    void draw() override;
+    void drawContent() override;
 
     // events
     void onResize(unsigned int width, unsigned int height) override;

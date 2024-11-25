@@ -32,7 +32,7 @@ public:
 
     ~HelloTriangleQt();
 
-    void draw() override;
+    void drawContent() override;
 
 private:
     bgfx::VertexBufferHandle vbh;

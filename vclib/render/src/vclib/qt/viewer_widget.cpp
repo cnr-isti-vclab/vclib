@@ -119,14 +119,42 @@ void ViewerWidget::mouseDoubleClickEvent(QMouseEvent* event)
 
     mDepthReadRequested = true;
     const auto p = event->pos() * pixelRatio();
-    this->readDepth(
-        Point2i(p.x(), p.y()),
-            [=, this](float depth) {
-                mDepthReadRequested = false;
-                std::cout << "Depth at point ("
-                        << p.x() << ", " << p.y() << "): " << depth 
-                        << std::endl;
-        });
+
+#if defined(VCLIB_RENDER_BACKEND_BGFX)
+    const bool homogeneousNDC = Context::capabilites().homogeneousDepth;
+#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+    const bool homogeneousNDC = true;
+#endif
+
+    // create callback
+    const auto proj = projectionMatrix();
+    const auto view = viewMatrix();
+    std::array<float,4> vp = {
+        .0f,
+        .0f,
+        float(width() * pixelRatio()),
+        float(height() * pixelRatio())};
+    auto callback = [=, this](float depth) {
+        mDepthReadRequested = false;
+
+        // TODO: debug remove
+        std::cout << "Depth at point ("
+                << p.x() << ", " << p.y() << "): " << depth 
+                << std::endl;
+
+        // unproject the point
+        const Point3f p2d(p.x(), vp[3] - p.y(), depth);
+        auto unproj = unproject(
+            p2d, Matrix44<ScalarType>(proj*view), vp, homogeneousNDC);
+        
+        // TODO: debug remove
+        // print the unprojected point
+        std::cout << "Unprojected point: " << unproj << std::endl;
+
+        this->focus(unproj);
+        this->update();
+    };
+    this->readDepth(Point2i(p.x(), p.y()), callback);
 }
 
 void ViewerWidget::showScreenShotDialog()

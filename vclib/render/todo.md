@@ -40,3 +40,4 @@
   - [ ] implement offscreen color rendering for the snapshot function
   - [ ] implement offscreen rendering on legacy OpenGL
   - [ ] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown
+  - [ ] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities

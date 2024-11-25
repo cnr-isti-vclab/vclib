@@ -51,6 +51,23 @@ ViewerCanvas::ViewerCanvas(
 
 void ViewerCanvas::draw()
 {
+    drawContent();
+
+    if (mAxis.isVisible()) {
+        mAxis.draw(viewId());
+    }
+
+    if (mDirectionalLight.isVisible()) {
+        mDirectionalLight.draw(viewId());
+    }
+
+    if (mDrawTrackBall.isVisible()) {
+        mDrawTrackBall.draw(viewId());
+    }
+}
+
+void ViewerCanvas::drawContent()
+{
     setDirectionalLightVisibility(
         currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
     updateDirectionalLight();
@@ -66,18 +83,6 @@ void ViewerCanvas::draw()
 
     for (auto obj : drawableObjectVector())
         obj->draw(viewId());
-
-    if (mAxis.isVisible()) {
-        mAxis.draw(viewId());
-    }
-
-    if (mDirectionalLight.isVisible()) {
-        mDirectionalLight.draw(viewId());
-    }
-
-    if (mDrawTrackBall.isVisible()) {
-        mDrawTrackBall.draw(viewId());
-    }
 }
 
 void ViewerCanvas::onResize(unsigned int width, unsigned int height)

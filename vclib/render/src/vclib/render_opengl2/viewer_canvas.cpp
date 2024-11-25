@@ -70,7 +70,7 @@ void ViewerCanvas::init(uint width, uint height)
     }
 }
 
-void ViewerCanvas::draw()
+void ViewerCanvas::drawContent()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

@@ -92,7 +92,9 @@ public:
         std::function<void(float)> callback = nullptr);
 
 protected:
-    virtual void draw() = 0;
+    virtual void draw() { drawContent(); };
+
+    virtual void drawContent() = 0;
 
     void onResize(uint width, uint height) override;
 

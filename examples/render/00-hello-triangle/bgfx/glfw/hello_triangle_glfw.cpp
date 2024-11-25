@@ -36,7 +36,7 @@ HelloTriangleGLFW::~HelloTriangleGLFW()
     bgfx::destroy(program);
 }
 
-void HelloTriangleGLFW::draw()
+void HelloTriangleGLFW::drawContent()
 {
     drawOnView(viewId(), vbh, program);
 }

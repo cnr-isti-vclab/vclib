@@ -35,7 +35,7 @@ HelloTriangleQt::~HelloTriangleQt()
     bgfx::destroy(program);
 }
 
-void HelloTriangleQt::draw()
+void HelloTriangleQt::drawContent()
 {
     drawOnView(viewId(), vbh, program);
 }

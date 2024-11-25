@@ -351,7 +351,7 @@ void Canvas::offscreenFrame()
     // render changing the view
     auto tmpId = mViewId;
     mViewId    = mViewOffscreenId;
-    draw();
+    drawContent();
     mViewId = tmpId;
 }
 
