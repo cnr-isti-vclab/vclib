@@ -235,7 +235,7 @@ void EventManagerWindow::glfwKeyCallback(
 }
 
 void EventManagerWindow::glfwMouseButtonCallback(
-    GLFWwindow*,
+    GLFWwindow* win,
     int button,
     int action,
     int mods)
@@ -245,7 +245,29 @@ void EventManagerWindow::glfwMouseButtonCallback(
     setModifiers(glfw::fromGLFW((glfw::KeyboardModifiers) mods));
 
     if (action == GLFW_PRESS) {
-        onMousePress(glfw::fromGLFW(btn));
+        // handle double click
+        const double timeSeconds = glfwGetTime();
+        Point2d pos;
+        Point2d p;
+        Point2f scale;
+        glfwGetCursorPos(win, &pos.x(), &pos.y());
+        glfwGetWindowContentScale(win, &scale.x(), &scale.y());
+        pos = pos.cwiseProduct(scale.cast<double>());
+        if (timeSeconds - mLastPressedTime < DOUBLE_CLICK_TIME_SECS &&
+            button == mLastPressedButton &&
+            (mLastPressedPos - pos).norm() < DOUBLE_CLICK_DIST_PIXELS)
+        {
+                mLastPressedTime = 0.0;
+                mLastPressedButton = NO_BUTTON;
+                onMouseDoubleClick(glfw::fromGLFW(btn), pos.x(), pos.y());
+        }
+        else
+        {
+            mLastPressedTime = timeSeconds;
+            mLastPressedButton = button;
+            mLastPressedPos = pos;
+            onMousePress(glfw::fromGLFW(btn));
+        }
     }
     else if (action == GLFW_RELEASE) {
         onMouseRelease(glfw::fromGLFW(btn));

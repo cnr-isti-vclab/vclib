@@ -25,6 +25,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include <vclib/space/core/point.h>
 #include <vclib/render/interfaces/event_manager_i.h>
 
 namespace vcl::glfw {
@@ -82,7 +83,7 @@ protected:
         int mods);
 
     virtual void glfwMouseButtonCallback(
-        GLFWwindow*,
+        GLFWwindow* win,
         int button,
         int action,
         int mods);
@@ -96,6 +97,17 @@ protected:
 
 private:
     void setCallbacks();
+
+    // double click management
+    static constexpr int NO_BUTTON = GLFW_MOUSE_BUTTON_LAST + 1;
+    
+    // delta time between two clicks
+    static constexpr double DOUBLE_CLICK_TIME_SECS = 0.25; 
+    static constexpr double DOUBLE_CLICK_DIST_PIXELS = 4.0; // pixels?
+
+    double  mLastPressedTime   = 0.0;
+    int     mLastPressedButton = NO_BUTTON;
+    Point2d mLastPressedPos    = {0, 0};
 };
 
 } // namespace vcl::glfw
