@@ -137,10 +137,15 @@ void ViewerWidget::mouseDoubleClickEvent(QMouseEvent* event)
     auto callback = [=, this](float depth) {
         mDepthReadRequested = false;
 
+
         // TODO: debug remove
         std::cout << "Depth at point ("
                 << p.x() << ", " << p.y() << "): " << depth 
                 << std::endl;
+
+        if (depth == 1.0f) {
+            return;
+        }
 
         // unproject the point
         const Point3f p2d(p.x(), vp[3] - p.y(), depth);
@@ -154,6 +159,7 @@ void ViewerWidget::mouseDoubleClickEvent(QMouseEvent* event)
         this->focus(unproj);
         this->update();
     };
+    
     this->readDepth(Point2i(p.x(), p.y()), callback);
 }
 
