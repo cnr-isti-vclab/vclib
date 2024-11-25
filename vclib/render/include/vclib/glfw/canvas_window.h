@@ -46,7 +46,7 @@ public:
     void show();
 
 protected:
-    virtual void draw() override {}
+    virtual void drawContent() override {};
 };
 
 } // namespace vcl::glfw
