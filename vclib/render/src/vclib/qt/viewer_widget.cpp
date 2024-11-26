@@ -59,13 +59,7 @@ ViewerWidget::ViewerWidget(QWidget* parent) :
 {
 }
 
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-void ViewerWidget::update()
-{
-    // frame();
-    EventManagerWidget::update();
-}
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void ViewerWidget::initializeGL()
 {
     ViewerCanvas::init(width(), height());
@@ -100,10 +94,6 @@ void ViewerWidget::paintEvent(QPaintEvent* event)
     bgfx::frame(); // needed on unix systems
 #endif             // __APPLE__ || __linux__
     QWidget::paintEvent(event);
-
-    if (mDepthReadRequested) {
-        update();
-    }
 }
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void ViewerWidget::paintGL()
@@ -111,51 +101,6 @@ void ViewerWidget::paintGL()
     frame();
 }
 #endif
-
-void ViewerWidget::mouseDoubleClickEvent(QMouseEvent* event)
-{
-    if (mDepthReadRequested)
-        return;
-    mDepthReadRequested = true;
-
-    // get point
-    const auto p = event->pos() * pixelRatio();
-
-    // get the homogeneous NDC flag
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-    const bool homogeneousNDC = Context::capabilites().homogeneousDepth;
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
-    const bool homogeneousNDC = true;
-#endif
-
-    // create the callback
-    const auto proj = projectionMatrix();
-    const auto view = viewMatrix();
-    std::array<float,4> vp = {
-        .0f,
-        .0f,
-        float(width() * pixelRatio()),
-        float(height() * pixelRatio())};
-    auto callback = [=, this](float depth) {
-        mDepthReadRequested = false;
-
-        // if the depth is 1.0, the point is not in the scene
-        if (depth == 1.0f) {
-            return;
-        }
-
-        // unproject the point
-        const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-        auto unproj = unproject(
-            p2d, Matrix44<ScalarType>(proj*view), vp, homogeneousNDC);
-
-        this->focus(unproj);
-        this->update();
-    };
-    
-    // request the depth at the point
-    this->readDepth(Point2i(p.x(), p.y()), callback);
-}
 
 void ViewerWidget::showScreenShotDialog()
 {

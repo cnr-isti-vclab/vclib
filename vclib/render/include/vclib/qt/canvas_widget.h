@@ -51,7 +51,7 @@ public:
 
     virtual ~CanvasWidget();
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
-    void update() override;
+    // void update() override;
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void initializeGL() override;
 #endif

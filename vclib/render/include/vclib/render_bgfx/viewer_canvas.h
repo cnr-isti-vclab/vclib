@@ -89,7 +89,14 @@ protected:
 
     void onMouseScroll(double dx, double dy) override;
 
+    void onMouseDoubleClick(
+        MouseButton::Enum button,
+        double           x,
+        double           y) override;
+
 private:
+    bool mDepthReadRequested = false;
+
     bool isDirectionalLightVisible() const
     {
         return mDirectionalLight.isVisible();

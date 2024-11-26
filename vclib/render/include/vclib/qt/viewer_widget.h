@@ -49,9 +49,7 @@ public:
 
     virtual ~ViewerWidget() = default;
 
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-    void update() override;
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void initializeGL() override;
 #endif
 
@@ -68,12 +66,7 @@ private:
     void paintGL() override;
 #endif
 
-    void mouseDoubleClickEvent(QMouseEvent* event) override;
-
     void showScreenShotDialog();
-
-private:
-    bool mDepthReadRequested = false;
 };
 
 } // namespace vcl::qt

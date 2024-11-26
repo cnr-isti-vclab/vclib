@@ -106,7 +106,9 @@ protected:
     virtual void onMouseDoubleClick(
         MouseButton::Enum button,
         double x,
-        double y) {}
+        double y) {
+            std::cerr << "Mouse double click: " << x << ", " << y << std::endl;
+        }
 
     /**
      * @brief Called when the mouse wheel is scrolled.

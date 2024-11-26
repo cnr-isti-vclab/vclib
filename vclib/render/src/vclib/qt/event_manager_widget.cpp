@@ -117,6 +117,15 @@ void EventManagerWidget::mouseReleaseEvent(QMouseEvent* event)
     Base::mouseReleaseEvent(event);
 }
 
+void EventManagerWidget::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    onMouseDoubleClick(
+        vcl::qt::fromQt(event->button()),
+        event->pos().x() * pixelRatio(),
+        event->pos().y() * pixelRatio());
+    Base::mouseDoubleClickEvent(event);
+}
+
 void EventManagerWidget::wheelEvent(QWheelEvent* event)
 {
     onMouseScroll(event->pixelDelta().x(), event->pixelDelta().y());

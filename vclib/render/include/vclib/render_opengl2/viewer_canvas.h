@@ -64,6 +64,14 @@ protected:
 
     // events
     void onResize(unsigned int width, unsigned int height) override;
+
+    void onMouseDoubleClick(
+        MouseButton::Enum button,
+        double x,
+        double y) override;
+
+private:
+    bool mDepthReadRequested = false;
 };
 
 } // namespace vcl

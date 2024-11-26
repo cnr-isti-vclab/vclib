@@ -62,13 +62,7 @@ void CanvasWidget::draw()
 {
 }
 
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-void CanvasWidget::update()
-{
-    // frame();
-    EventManagerWidget::update();
-}
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void CanvasWidget::initializeGL()
 {
     Canvas::init(width(), height());

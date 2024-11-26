@@ -184,7 +184,7 @@ void Canvas::onResize(uint width, uint height)
 
     mFbh = createFrameBufferAndInitView(
         mWinId, mViewId, width, height, true);
-    assert(!bgfx::isValid(mFbh)); // the backbuffer is always non valid
+    assert(!bgfx::isValid(mFbh)); // the canvas backbuffer is always non valid
 
     // resize the text view
     mTextView.resize(width, height);
@@ -232,9 +232,9 @@ void Canvas::frame()
     bgfx::setViewFrameBuffer(mViewId, mFbh);
     bgfx::touch(mViewId);
     draw();
-    // mTextView.frame(mFbh);
+    mTextView.frame(mFbh);
 
-    bool newDepthRequested =
+    const bool newDepthRequested =
         (mReadDepth != std::nullopt && !mReadDepth->isSubmitted());
 
     if (newDepthRequested) {
@@ -246,7 +246,7 @@ void Canvas::frame()
         mCurrFrame = bgfx::frame();
     }
 
-    // read depth data if needed
+    // read depth data if available
     if (mReadDepth != std::nullopt) {
         readDepthData();
     }
@@ -330,6 +330,9 @@ void Canvas::readDepthData()
         bgfx::destroy(mReadDepth->blitTexture);
         mReadDepth->callback(depthValue);
         mReadDepth = std::nullopt;
+    } else {
+        // solicit new frames
+        this->update();
     }
 }
 

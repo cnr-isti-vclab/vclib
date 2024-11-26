@@ -31,6 +31,7 @@ Canvas::Canvas(void*, uint width, uint height, void*)
 
 void Canvas::init(uint width, uint height)
 {
+    mSize = {width, height};
     glViewport(0, 0, width, height);
     glClearColor(1.f, 1.f, 1.f, 1.0f);
 }
@@ -43,6 +44,11 @@ bool Canvas::readDepth(
     const Point2i& point,
     std::function<void(float)> callback)
 {
+    if (point.x() < 0 || point.y() < 0 ||// point out of bounds
+        point.x() >= mSize.x() || point.y() >= mSize.y()) {
+        return false;
+    }
+
     mReadDepthPoint = point;
     mReadDepthCallback = callback;
     return true;
@@ -50,6 +56,7 @@ bool Canvas::readDepth(
 
 void Canvas::onResize(uint width, uint height)
 {
+    mSize = {width, height};
     glViewport(0, 0, width, height);
 }
 

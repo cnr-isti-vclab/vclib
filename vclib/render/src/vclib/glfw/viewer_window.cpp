@@ -74,7 +74,7 @@ void ViewerWindow::draw()
 {
     ViewerCanvas::draw();
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-    glfwSwapBuffers(mWindow);
+    glfwSwapBuffers(mWindow); // TODO: check
 #endif
 }
 
