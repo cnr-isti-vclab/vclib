@@ -35,9 +35,9 @@
   - [X] solve trackball inconsistencies between motion and atomic operations
   - [X] fix trackball modifier keys on linux + GLFW
   - [X] implement depth reading (for trackball focus operation)
-  - [ ] implement trackball focus operation
+  - [X] implement trackball focus operation
   - [X] implement depth reading on legacy OpenGL
   - [ ] implement offscreen color rendering for the snapshot function
   - [ ] implement offscreen rendering on legacy OpenGL
   - [ ] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown
-  - [ ] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities
+  - [ ] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring
