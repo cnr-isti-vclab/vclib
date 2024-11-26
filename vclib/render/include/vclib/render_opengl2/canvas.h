@@ -72,6 +72,8 @@ class Canvas : public virtual vcl::EventManagerI
 {
     void* mWinId = nullptr;
 
+    Point2<uint> mSize = {0, 0};
+
     std::function<void(float)> mReadDepthCallback = nullptr;
     Point2i                    mReadDepthPoint = Point2i(-1, -1);
 
@@ -81,6 +83,8 @@ public:
     ~Canvas() {}
 
     void init(uint width, uint height);
+
+    Point2<uint> size() const { return mSize; }
 
     void screenShot(
         const std::string& filename,
