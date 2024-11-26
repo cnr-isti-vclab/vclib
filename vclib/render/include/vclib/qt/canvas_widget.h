@@ -50,9 +50,8 @@ public:
     explicit CanvasWidget(QWidget* parent);
 
     virtual ~CanvasWidget();
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-    // void update() override;
-#elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
+
+#if defined(VCLIB_RENDER_BACKEND_OPENGL2)
     void initializeGL() override;
 #endif
 
@@ -60,10 +59,6 @@ protected:
     virtual void draw() override;
 
 private:
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-    bool event(QEvent* event) override;
-#endif
-
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override;
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)

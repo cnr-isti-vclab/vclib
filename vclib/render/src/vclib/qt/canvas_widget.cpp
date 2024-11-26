@@ -70,17 +70,6 @@ void CanvasWidget::initializeGL()
 #endif
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
-bool CanvasWidget::event(QEvent* event)
-{
-    // if (event->type() == QEvent::UpdateRequest) {
-    //     frame();
-    //     return true;
-    // }
-    return EventManagerWidget::event(event);
-}
-#endif
-
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
 void CanvasWidget::paintEvent(QPaintEvent* event)
 {
     frame();

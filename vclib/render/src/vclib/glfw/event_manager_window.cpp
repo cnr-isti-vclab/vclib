@@ -248,11 +248,13 @@ void EventManagerWindow::glfwMouseButtonCallback(
         // handle double click
         const double timeSeconds = glfwGetTime();
         Point2d pos;
-        Point2d p;
         Point2f scale;
         glfwGetCursorPos(win, &pos.x(), &pos.y());
-        glfwGetWindowContentScale(win, &scale.x(), &scale.y());
-        pos = pos.cwiseProduct(scale.cast<double>());
+#ifdef __APPLE__
+        // only macOS has coherent coordinates with content scale
+        pos.x() *= contentScaleX();
+        pos.y() *= contentScaleY();
+#endif
         if (timeSeconds - mLastPressedTime < DOUBLE_CLICK_TIME_SECS &&
             button == mLastPressedButton &&
             (mLastPressedPos - pos).norm() < DOUBLE_CLICK_DIST_PIXELS)
@@ -280,7 +282,7 @@ void EventManagerWindow::glfwCursorPosCallback(
     double ypos)
 {
 #ifdef __APPLE__
-    // macOS retina display fix
+    // only macOS has coherent coordinates with content scale
     xpos *= contentScaleX();
     ypos *= contentScaleY();
 #endif
