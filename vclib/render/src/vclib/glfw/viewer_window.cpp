@@ -70,13 +70,13 @@ void ViewerWindow::show()
     }
 }
 
+#ifdef VCLIB_RENDER_BACKEND_OPENGL2
 void ViewerWindow::draw()
 {
     ViewerCanvas::draw();
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
     glfwSwapBuffers(mWindow); // TODO: check
-#endif
 }
+#endif
 
 void ViewerWindow::onResize(unsigned int width, unsigned int height)
 {

@@ -128,7 +128,12 @@ void EventManagerWidget::mouseDoubleClickEvent(QMouseEvent* event)
 
 void EventManagerWidget::wheelEvent(QWheelEvent* event)
 {
-    onMouseScroll(event->pixelDelta().x(), event->pixelDelta().y());
+    // FIXME: this is not correct, define a proper equivalence
+    if (!event->pixelDelta().isNull())
+        onMouseScroll(event->pixelDelta().x(), event->pixelDelta().y());
+    else
+        onMouseScroll(event->angleDelta().x(), event->angleDelta().y());
+
     Base::wheelEvent(event);
 }
 
