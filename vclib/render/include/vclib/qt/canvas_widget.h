@@ -55,9 +55,6 @@ public:
     void initializeGL() override;
 #endif
 
-protected:
-    virtual void draw() override;
-
 private:
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override;

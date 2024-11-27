@@ -58,10 +58,6 @@ CanvasWidget::~CanvasWidget()
 {
 }
 
-void CanvasWidget::draw()
-{
-}
-
 #if defined(VCLIB_RENDER_BACKEND_OPENGL2)
 void CanvasWidget::initializeGL()
 {
