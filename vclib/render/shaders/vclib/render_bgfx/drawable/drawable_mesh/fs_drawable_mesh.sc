@@ -76,7 +76,7 @@ void main()
     vec3 specular = vec3(0.0, 0.0, 0.0);
     vec4 light = vec4(1, 1, 1, 1);
 
-    vec3 normal = v_normal;
+    vec3 normal = normalize(v_normal);
 
     if (bool(primitive & VCL_MRS_DRAWING_POINTS)) {
         // if per vert shading
