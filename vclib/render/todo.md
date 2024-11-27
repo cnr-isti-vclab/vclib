@@ -37,6 +37,8 @@
   - [X] implement depth reading (for trackball focus operation)
   - [X] implement trackball focus operation
   - [X] implement depth reading on legacy OpenGL
+  - [ ] create offscreen buffer for reading on demand
+  - [ ] make a uniform offscreen read buffer request for depth and color
   - [ ] implement offscreen color rendering for the snapshot function
   - [ ] implement offscreen rendering on legacy OpenGL
   - [ ] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown
