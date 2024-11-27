@@ -64,6 +64,11 @@ namespace vcl {
  */
 class Canvas : public virtual vcl::EventManagerI
 {
+public:
+    using CallbackReadBuffer = std::function<void(std::vector<float>)>;
+
+private:
+
     void*                   mWinId  = nullptr;
     // frame buffer for drawing the canvas
     // BGFX_INVALID_HANDLE represents the default frame buffer of the window
@@ -85,13 +90,15 @@ class Canvas : public virtual vcl::EventManagerI
     uint32_t               mCurrFrame      = 0;
 
     // depth readback
-    struct ReadDepthData
+    struct ReadBufferRequest
     {
-        ReadDepthData(Point2i point, std::function<void(float)> callback)
+        ReadBufferRequest(
+            Point2i point,
+            CallbackReadBuffer callback)
             : point(point), callback(callback) {
             }
 
-        ~ReadDepthData() {
+        ~ReadBufferRequest() {
             if (bgfx::isValid(blitTexture))
                 bgfx::destroy(blitTexture);
         }
@@ -106,13 +113,13 @@ class Canvas : public virtual vcl::EventManagerI
         // data read from the blit texture
         std::vector<float>    readData       = {};
         // callback called when the data is available
-        std::function<void(float)> callback  = nullptr;
+        CallbackReadBuffer callback  = nullptr;
 
         bool isSubmitted() const {
             return bgfx::isValid(blitTexture);
         }
     };
-    std::optional<ReadDepthData> mReadDepth = std::nullopt;
+    std::optional<ReadBufferRequest> mReadDepth = std::nullopt;
 
     TextView mTextView;
 
@@ -156,7 +163,7 @@ public:
 
     bool readDepth(
         const Point2i& point,
-        std::function<void(float)> callback = nullptr);
+        CallbackReadBuffer callback = nullptr);
 
 protected:
     virtual void draw() { drawContent(); };

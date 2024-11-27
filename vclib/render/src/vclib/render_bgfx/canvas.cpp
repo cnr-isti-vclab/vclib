@@ -254,7 +254,7 @@ void Canvas::frame()
 
 bool Canvas::readDepth(
     const Point2i& point,
-    std::function<void(float)> callback)
+    CallbackReadBuffer callback)
 {
     if (!supportsReadback()               // feature unsupported
         || mReadDepth != std::nullopt     // read already requested
@@ -263,7 +263,7 @@ bool Canvas::readDepth(
         return false;
     }
 
-    mReadDepth = ReadDepthData(point, callback);
+    mReadDepth = ReadBufferRequest(point, callback);
     return true;
 }
 
@@ -328,7 +328,7 @@ void Canvas::readDepthData()
  
         // cleanup
         bgfx::destroy(mReadDepth->blitTexture);
-        mReadDepth->callback(depthValue);
+        mReadDepth->callback({depthValue});
         mReadDepth = std::nullopt;
     } else {
         // solicit new frames

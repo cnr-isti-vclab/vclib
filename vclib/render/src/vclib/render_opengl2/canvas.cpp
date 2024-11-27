@@ -42,7 +42,7 @@ void Canvas::screenShot(const std::string& filename, uint width, uint height)
 
 bool Canvas::readDepth(
     const Point2i& point,
-    std::function<void(float)> callback)
+    CallbackReadBuffer callback)
 {
     if (point.x() < 0 || point.y() < 0 ||// point out of bounds
         point.x() >= mSize.x() || point.y() >= mSize.y()) {
@@ -50,7 +50,7 @@ bool Canvas::readDepth(
     }
 
     mReadDepthPoint = point;
-    mReadDepthCallback = callback;
+    mReadBufferCallback = callback;
     return true;
 }
 
@@ -65,7 +65,7 @@ void Canvas::frame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // if depth requested, read it
-    if (mReadDepthCallback)
+    if (mReadBufferCallback)
     {
         drawContent();
         readDepthData();
@@ -95,10 +95,12 @@ void Canvas::readDepthData()
     // normalize depth into [0,1] interval
     depth = (depth - depthRange[0]) / (depthRange[1] - depthRange[0]);
 
+    // callback
+    mReadBufferCallback({depth});
+    
     // cleanup
     mReadDepthPoint = {-1,-1};
-    mReadDepthCallback(float(depth));
-    mReadDepthCallback = nullptr;
+    mReadBufferCallback = nullptr;
 }
 
 } // namespace vcl

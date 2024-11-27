@@ -134,8 +134,8 @@ void ViewerCanvas::onMouseDoubleClick(
     double           x,
     double           y)
 {
-    // FIXME: code duplication in for both OpenGL2 and BGFX
-    if (mDepthReadRequested)
+    // FIXME: code duplication for both OpenGL2 and BGFX
+    if (mReadRequested)
         return;
 
     // get point
@@ -152,10 +152,13 @@ void ViewerCanvas::onMouseDoubleClick(
         .0f,
         float(size().x()),
         float(size().y())};
-    auto callback = [=, this](float depth) {
-        mDepthReadRequested = false;
+    auto callback = [=, this](std::vector<float> data) {
+
+        assert(data.size() == 1);
+        mReadRequested = false;
 
         // if the depth is 1.0, the point is not in the scene
+        const float depth = data[0];
         if (depth == 1.0f) {
             return;
         }
@@ -169,8 +172,8 @@ void ViewerCanvas::onMouseDoubleClick(
         this->update();
     };
 
-    mDepthReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
-    if (mDepthReadRequested)
+    mReadRequested = this->readDepth(Point2i(p.x(), p.y()), callback);
+    if (mReadRequested)
         update();
 }
 

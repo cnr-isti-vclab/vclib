@@ -70,11 +70,13 @@ namespace vcl {
  */
 class Canvas : public virtual vcl::EventManagerI
 {
+    using CallbackReadBuffer = std::function<void(std::vector<float>)>;
+
     void* mWinId = nullptr;
 
     Point2<uint> mSize = {0, 0};
 
-    std::function<void(float)> mReadDepthCallback = nullptr;
+    CallbackReadBuffer mReadBufferCallback = nullptr;
     Point2i                    mReadDepthPoint = Point2i(-1, -1);
 
 public:
@@ -93,7 +95,7 @@ public:
 
     bool readDepth(
         const Point2i& point,
-        std::function<void(float)> callback = nullptr);
+        CallbackReadBuffer callback = nullptr);
 
 protected:
     virtual void draw() { drawContent(); };

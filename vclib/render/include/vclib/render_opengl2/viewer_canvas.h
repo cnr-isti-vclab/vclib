@@ -71,7 +71,7 @@ protected:
         double y) override;
 
 private:
-    bool mDepthReadRequested = false;
+    bool mReadRequested = false;
 };
 
 } // namespace vcl

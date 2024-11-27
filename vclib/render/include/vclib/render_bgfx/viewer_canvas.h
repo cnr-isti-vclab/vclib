@@ -95,7 +95,7 @@ protected:
         double           y) override;
 
 private:
-    bool mDepthReadRequested = false;
+    bool mReadRequested = false;
 
     bool isDirectionalLightVisible() const
     {
