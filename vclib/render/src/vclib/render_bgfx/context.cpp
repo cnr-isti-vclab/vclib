@@ -169,6 +169,7 @@ Context::~Context()
 
 Context& Context::instance(void* windowHandle, void* displayHandle)
 {
+    // TODO: can we avoid this dirty trick?
     static Context ctx(windowHandle, displayHandle);
     return ctx;
 }
