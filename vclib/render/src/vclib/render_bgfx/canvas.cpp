@@ -227,7 +227,7 @@ void Canvas::frame()
     bgfx::setViewFrameBuffer(mViewId, mFbh);
     bgfx::touch(mViewId);
     draw();
-    // mTextView.frame(mFbh);
+    mTextView.frame(mFbh);
 
     const bool newReadRequested =
         (mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
