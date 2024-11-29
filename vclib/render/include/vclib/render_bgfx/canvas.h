@@ -73,10 +73,7 @@ private:
     // frame buffer for drawing the canvas
     // BGFX_INVALID_HANDLE represents the default frame buffer of the window
     bgfx::FrameBufferHandle mFbh          = BGFX_INVALID_HANDLE;
-    // frame buffer for offscreen drawing and reading back
-    bgfx::FrameBufferHandle mOffscreenFbh = BGFX_INVALID_HANDLE;
     bgfx::ViewId            mViewId = 0;
-    bgfx::ViewId            mViewOffscreenId = 0;
 
     // size of the canvas
     Point2<uint> mSize = {0, 0};
@@ -92,34 +89,162 @@ private:
     // depth readback
     struct ReadBufferRequest
     {
+        enum Type {
+            COLOR = 0,
+            DEPTH = 1,
+            COUNT = 2
+        };
+
+        // Read depth constructor
         ReadBufferRequest(
-            Point2i point,
+            Point2i queryDepthPoint,
+            Point2<uint> framebufferSize,
             CallbackReadBuffer callback)
-            : point(point), callback(callback) {
+            : type(DEPTH), point(queryDepthPoint), callback(callback) {
+                
+                blitSize = getBlitDepthSize(framebufferSize);
+
+                // request a new view id (hopefully with no parameters)
+                viewOffscreenId = Context::requestViewId();
+
+                // create offscreen framebuffer
+                if (bgfx::isValid(offscreenFbh))
+                    bgfx::destroy(offscreenFbh);
+                
+                offscreenFbh = createFrameBufferAndInitView(
+                    nullptr,
+                    viewOffscreenId,
+                    framebufferSize.x(),
+                    framebufferSize.y(),
+                    true);
+                assert(bgfx::isValid(offscreenFbh));
             }
 
         ~ReadBufferRequest() {
             if (bgfx::isValid(blitTexture))
                 bgfx::destroy(blitTexture);
+
+            if (bgfx::isValid(offscreenFbh))
+                bgfx::destroy(offscreenFbh);
+            
+            if (viewOffscreenId != 0)
+                Context::releaseViewId(viewOffscreenId);
         }
+
+        ReadBufferRequest& operator=(ReadBufferRequest&& right) = default;
+
+        using FloatData = std::vector<float>;
+        using ByteData  = std::vector<uint8_t>;
+        using ReadData  = std::variant<FloatData, ByteData>;
+
+        // read back type
+        Type                  type           = COUNT;
 
         // frame # when data will be available for reading
         uint32_t              frameAvailable = 0;
         // point to read from
         Point2i               point          = {-1, -1};
+
+        // frame buffer for offscreen drawing and reading back
+        bgfx::FrameBufferHandle offscreenFbh    = BGFX_INVALID_HANDLE;
+        // view id for offscreen drawing
+        bgfx::ViewId            viewOffscreenId = 0;
+
         // blit texture
-        bgfx::TextureHandle   blitTexture    = BGFX_INVALID_HANDLE;
-        Point2<uint16_t>      blitSize       = {0, 0};
+        bgfx::TextureHandle blitTexture = BGFX_INVALID_HANDLE;
+        Point2<uint16_t>    blitSize    = {0, 0};
         // data read from the blit texture
-        std::vector<float>    readData       = {};
+        ReadData            readData    = {};
         // callback called when the data is available
-        CallbackReadBuffer callback  = nullptr;
+        CallbackReadBuffer  callback    = nullptr;
 
         bool isSubmitted() const {
             return bgfx::isValid(blitTexture);
         }
+
+        static const uint64_t kBlitFormat = 0
+        | BGFX_TEXTURE_BLIT_DST
+        | BGFX_TEXTURE_READ_BACK
+        | BGFX_SAMPLER_MIN_POINT
+        | BGFX_SAMPLER_MAG_POINT
+        | BGFX_SAMPLER_MIP_POINT
+        | BGFX_SAMPLER_U_CLAMP
+        | BGFX_SAMPLER_V_CLAMP;
+
+        bool submit() {
+            if (isSubmitted())
+                return false;
+            
+            switch (type) {
+            case DEPTH: {
+                // TODO: move to the constructor?
+                // create the blit depth texture
+                assert(!bgfx::isValid(blitTexture));
+                blitTexture = bgfx::createTexture2D(
+                    uint16_t(blitSize.x()),
+                    uint16_t(blitSize.y()),
+                    false,
+                    1,
+                    getOffscreenDepthFormat(),
+                    kBlitFormat);
+                assert(bgfx::isValid(blitTexture));
+
+                // allocate memory for blit depth data
+                const auto readSize = blitSize.x() * blitSize.y();
+                readData = std::vector<float>(readSize);
+
+                // blit depth buffer
+                const auto depthBuffer = bgfx::getTexture(
+                    offscreenFbh,
+                    uint8_t(type));
+                if (readSize == 1) {
+                    // read a single fragment
+                    bgfx::blit(viewOffscreenId, blitTexture, 0, 0,
+                        depthBuffer, uint16_t(point.x()), uint16_t(point.y()),
+                        1, 1);
+                } else {
+                    // read the entire depth buffer
+                    bgfx::blit(viewOffscreenId, blitTexture, 0, 0, depthBuffer);
+                }
+            }
+            break;
+            case COLOR: {
+                // TODO: implement color readback
+                // blit the color buffer
+                const auto colorBuffer = bgfx::getTexture(offscreenFbh, 0);
+                bgfx::blit(viewOffscreenId, blitTexture, 0, 0, colorBuffer);
+            }
+            break;
+            default:
+                assert(false && "unsupported readback type");
+                return false;
+            }
+
+            // submit read from blit CPU texture
+            frameAvailable = bgfx::readTexture(
+                blitTexture,
+                std::get<FloatData>(readData).data());
+            return true;
+        }
+
+        bool isAvailable(uint32_t currentFrame) const {
+            return frameAvailable != 0 
+                && currentFrame >= frameAvailable;
+        }
+
+        std::optional<float> readDepth() const {
+            if (type != DEPTH)
+                return std::nullopt;
+
+            assert(std::holds_alternative<FloatData>(readData));
+            const auto & data = std::get<FloatData>(readData);
+            if (data.size() == 1)
+                return data[0];
+            else
+                return data[point.y() * blitSize.x() + point.x()];
+        }
     };
-    std::optional<ReadBufferRequest> mReadDepth = std::nullopt;
+    std::optional<ReadBufferRequest> mReadRequest = std::nullopt;
 
     TextView mTextView;
 
@@ -161,6 +286,8 @@ public:
 
     void onKeyPress(Key::Enum key) override;
 
+    bool supportsReadback() const;
+
     bool readDepth(
         const Point2i& point,
         CallbackReadBuffer callback = nullptr);
@@ -180,12 +307,13 @@ private:
 
     // submit the calls for blitting the offscreen depth buffer
     // and reading it back
-    void submitReadDepth();
+    // void submitReadDepth();
 
-    // read the depth data
-    void readDepthData();
-
-    bool supportsReadback() const;
+    static bgfx::FrameBufferHandle createOffscreenFrameBufferAndInitView(
+        bgfx::ViewId view,
+        uint         width,
+        uint         height,
+        bool         clear = false);
 
     static bgfx::FrameBufferHandle createFrameBufferAndInitView(
         void*        winId,
@@ -194,7 +322,7 @@ private:
         uint         height,
         bool         clear = false);
 
-    Point2<uint16_t> getBlitDepthSize();
+    static Point2<uint16_t> getBlitDepthSize(Point2<uint> fbSize);
     static bgfx::TextureFormat::Enum getOffscreenDepthFormat();
 };
 
