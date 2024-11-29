@@ -56,9 +56,6 @@ public:
     void onKeyPress(Key::Enum key) override;
 
 private:
-#if defined(VCLIB_RENDER_BACKEND_BGFX)
-    bool event(QEvent* event) override;
-#endif
 
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
     void paintEvent(QPaintEvent* event) override;
