@@ -29,6 +29,7 @@
 #include <vclib/render_bgfx/text/text_view.h>
 
 #include <optional>
+#include <variant>
 
 namespace vcl {
 
