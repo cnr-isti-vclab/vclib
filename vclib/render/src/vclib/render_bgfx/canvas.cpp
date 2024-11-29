@@ -195,13 +195,11 @@ void Canvas::frame()
         mCurrFrame = bgfx::frame();
     }
 
-    if (mReadRequest != std::nullopt && mReadRequest->isAvailable(mCurrFrame)) {
+    if (mReadRequest != std::nullopt) {
         // read depth data if available
-        auto res = mReadRequest->readDepth();
-        if (res.has_value()) {
-            mReadRequest->callback({res.value()});
+        const bool done = mReadRequest->performRead(mCurrFrame);
+        if (done)
             mReadRequest = std::nullopt;
-        }
         // solicit new frame
         this->update();
     }
@@ -236,13 +234,13 @@ void Canvas::offscreenFrame()
 
     // render offscren
     bgfx::setViewFrameBuffer(
-        mReadRequest->viewOffscreenId,
-        mReadRequest->offscreenFbh);
-    bgfx::touch(mReadRequest->viewOffscreenId);
+        mReadRequest->viewId(),
+        mReadRequest->frameBuffer());
+    bgfx::touch(mReadRequest->viewId());
 
     // render changing the view
     auto tmpId = mViewId;
-    mViewId    = mReadRequest->viewOffscreenId;
+    mViewId    = mReadRequest->viewId();
     drawContent();
     mViewId = tmpId;
 }
@@ -256,6 +254,14 @@ bgfx::FrameBufferHandle Canvas::createOffscreenFrameBufferAndInitView(
     return createFrameBufferAndInitView(
         nullptr, view, width, height, clear);
 }
+
+static const uint64_t kRenderBufferflags = 0
+        | BGFX_TEXTURE_RT
+        | BGFX_SAMPLER_MIN_POINT
+        | BGFX_SAMPLER_MAG_POINT
+        | BGFX_SAMPLER_MIP_POINT
+        | BGFX_SAMPLER_U_CLAMP
+        | BGFX_SAMPLER_V_CLAMP;
 
 bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
     void*        winId,
@@ -276,13 +282,8 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
             , uint16_t(height)
             , false
             , 1
-            , kDefaultColorFormat
-            , BGFX_TEXTURE_RT
-            | BGFX_SAMPLER_MIN_POINT
-			| BGFX_SAMPLER_MAG_POINT
-			| BGFX_SAMPLER_MIP_POINT
-			| BGFX_SAMPLER_U_CLAMP
-			| BGFX_SAMPLER_V_CLAMP
+            , getOffscreenColorFormat()
+            , kRenderBufferflags
             );
 
         fbtextures[1] = bgfx::createTexture2D(
@@ -291,12 +292,7 @@ bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
             , false
             , 1
             , getOffscreenDepthFormat()
-            , BGFX_TEXTURE_RT
-            | BGFX_SAMPLER_MIN_POINT
-			| BGFX_SAMPLER_MAG_POINT
-			| BGFX_SAMPLER_MIP_POINT
-			| BGFX_SAMPLER_U_CLAMP
-			| BGFX_SAMPLER_V_CLAMP
+            , kRenderBufferflags
             );
 
         assert(bgfx::isValid(fbtextures[0]));
@@ -341,6 +337,11 @@ Point2<uint16_t> Canvas::getBlitDepthSize(Point2<uint> fbSize)
     }
 
     return {0,0};
+}
+
+bgfx::TextureFormat::Enum Canvas::getOffscreenColorFormat()
+{
+    return kDefaultColorFormat;
 }
 
 bgfx::TextureFormat::Enum Canvas::getOffscreenDepthFormat()

@@ -152,13 +152,14 @@ void ViewerCanvas::onMouseDoubleClick(
         .0f,
         float(size().x()),
         float(size().y())};
-    auto callback = [=, this](std::vector<float> data) {
+    auto callback = [=, this](const ReadData & data) {
 
-        assert(data.size() == 1);
+        assert(std::holds_alternative<std::vector<float>>(data));
+        const auto & d = std::get<std::vector<float>>(data);
         mReadRequested = false;
 
         // if the depth is 1.0, the point is not in the scene
-        const float depth = data[0];
+        const float depth = d[0];
         if (depth == 1.0f) {
             return;
         }
