@@ -97,9 +97,7 @@ inline bool containsCaseInsensitive(
 inline std::string toLower(const std::string& s)
 {
     std::string ret(s);
-    std::transform(s.begin(), s.end(), ret.begin(), [](unsigned char c) {
-        return std::tolower(c);
-    });
+    std::transform(s.begin(), s.end(), ret.begin(), ::tolower);
     return ret;
 }
 
