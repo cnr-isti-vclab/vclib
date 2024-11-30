@@ -399,16 +399,6 @@ public:
             drag(mCurrDragMotion);
     }
 
-    //     const Camera<Scalar>& camera() const { return mCamera; }
-
-    //     Matrix44<Scalar> viewMatrix() const { return mCamera.viewMatrix(); }
-
-    //     const Point3<Scalar>& center() const { return mCamera.center(); }
-
-    //     const Scalar radius() const { return mEyeCenterDist / RADIUS_RATIO; }
-
-    //     void resetDirectionalLight() { mDirLight.reset(); }
-
 private:
     /**-------------- Generic Functions  --------------**/
 

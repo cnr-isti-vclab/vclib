@@ -65,19 +65,21 @@ namespace vcl {
  */
 class Canvas : public virtual vcl::EventManagerI
 {
-    void*                   mWinId  = nullptr;
+    void* mWinId  = nullptr;
+
     // frame buffer for drawing the canvas
     // BGFX_INVALID_HANDLE represents the default frame buffer of the window
     bgfx::FrameBufferHandle mFbh          = BGFX_INVALID_HANDLE;
     bgfx::ViewId            mViewId = 0;
 
     // size of the canvas
-    Point2<uint> mSize = {0, 0};
+    Point2<uint> mSize      = {0, 0};
 
     // current frame
-    uint32_t               mCurrFrame      = 0;
+    uint32_t     mCurrFrame = 0;
 
-    // depth readback
+    // TODO: move this class to another file (namespace detail, for now)
+    // offscreen readback
     class ReadBufferRequest
     {
     public:
