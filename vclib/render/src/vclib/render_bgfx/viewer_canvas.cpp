@@ -166,7 +166,7 @@ void ViewerCanvas::onMouseDoubleClick(
 
         // unproject the point
         const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-        auto unproj = unproject(
+        const auto unproj = unproject(
             p2d, Matrix44<ScalarType>(proj*view), vp, homogeneousNDC);
 
         this->focus(unproj);

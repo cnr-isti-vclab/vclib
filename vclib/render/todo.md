@@ -37,10 +37,11 @@
   - [X] implement depth reading (for trackball focus operation)
   - [X] implement trackball focus operation
   - [X] implement depth reading on legacy OpenGL
-  - [ ] create offscreen buffer for reading on demand
-  - [ ] make a uniform offscreen read buffer request for depth and color
-  - [ ] implement offscreen color rendering for the snapshot function
+  - [X] create offscreen buffer for reading on demand
+  - [X] make a uniform offscreen read buffer request for depth and color
+  - [X] implement offscreen color rendering for the snapshot function
   - [ ] implement offscreen rendering on legacy OpenGL
   - [ ] fix BGFX LEAK: IndexBufferHandle 1 (max: 4096) on shutdown
   - [ ] change DesktopTrackball & ViewerI API to enable direct access to the Trackball functionalities + possible major class restructuring
   - [ ] update documentation of Canvas & co.
+  - [ ] implement screenshot custom size (slipt rendering into multiple steps)

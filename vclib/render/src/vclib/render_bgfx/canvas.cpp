@@ -24,6 +24,8 @@
 
 #include <vclib/render_bgfx/system/native_window_handle.h>
 
+#include <vclib/io/image.h>
+
 namespace vcl {
 
 static const bgfx::TextureFormat::Enum kDefaultColorFormat =
@@ -67,37 +69,34 @@ Canvas::~Canvas()
         bgfx::destroy(mFbh);
 }
 
-// TODO: remove bgfx screenshot alternative
-void Canvas::screenShot(const std::string& filename, uint width, uint height)
+bool Canvas::screenshot(const std::string& filename, uint width, uint height)
 {
-    if (width == 0 || height == 0) {
-        draw();
-        bgfx::requestScreenShot(mFbh, filename.c_str());
-        bgfx::frame();
+    if (!supportsReadback()                // feature unsupported
+        || mReadRequest != std::nullopt) { // read already requested
+        return false;
     }
-    else {
-        void* d;
-        void* w = vcl::createWindow("", width, height, d, true);
 
-        // setup view and frame buffer
-        bgfx::ViewId            v = Context::requestViewId();
-        bgfx::FrameBufferHandle fbh =
-            createFrameBufferAndInitView(w, v, width, height, true);
+    // get size
+    auto size = mSize;
+    if (width != 0 && height != 0)
+        size = {width, height};
 
-        // replace the current view with the new one
-        bgfx::ViewId tmpView = mViewId;
-        mViewId              = v;
-        draw();
-        mTextView.frame(fbh);
-        bgfx::requestScreenShot(fbh, filename.c_str());
-        bgfx::frame();
+    // color data callback
+    CallbackReadBuffer callback = [=](const ReadData & data) {
+        assert(std::holds_alternative<ReadBufferRequest::ByteData>(data));
+        const auto & d = std::get<ReadBufferRequest::ByteData>(data);
 
-        // restore the previous view and release the resources
-        mViewId = tmpView;
-        bgfx::destroy(fbh);
-        Context::releaseViewId(v);
-        vcl::closeWindow(w, d);
-    }
+        // save rgb image data into file using stb depending on file
+        try {
+            vcl::saveImageData(filename, size.x(), size.y(), d.data());
+        }
+        catch (const std::exception & e) {
+            std::cerr << "Error saving image: " << e.what() << std::endl;
+        }
+    };
+
+    mReadRequest.emplace(size, callback);
+    return true;
 }
 
 void Canvas::enableText(bool b)
@@ -205,7 +204,6 @@ void Canvas::frame()
     }
 }
 
-[[nodiscard]]
 bool Canvas::readDepth(
     const Point2i& point,
     CallbackReadBuffer callback)

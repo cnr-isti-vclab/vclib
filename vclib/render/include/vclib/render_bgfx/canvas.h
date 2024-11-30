@@ -321,7 +321,7 @@ public:
 
     bgfx::ViewId viewId() const { return mViewId; }
 
-    void screenShot(
+    bool screenshot(
         const std::string& filename,
         uint               width  = 0,
         uint               height = 0);

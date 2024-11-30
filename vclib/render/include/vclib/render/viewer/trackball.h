@@ -390,7 +390,7 @@ public:
      * @note: this member function must be called only when a drag motion
      * is in progress (e.g., when the mouse is dragging);
      */
-    void update()
+    void update() // TODO: rename this function (it just updates the motion)
     {
         assert(
             mDragging != (mCurrDragMotion == MOTION_NUMBER) &&
