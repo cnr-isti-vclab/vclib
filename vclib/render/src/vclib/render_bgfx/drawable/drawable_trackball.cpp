@@ -52,12 +52,10 @@ void DrawableTrackBall::draw(uint viewId) const
     if (isVisible()) {
         if (bgfx::isValid(mProgram)) {
             bgfx::setState(
-                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                0 | BGFX_STATE_WRITE_RGB |
                 BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS |
                 BGFX_STATE_PT_LINES |
-                BGFX_STATE_BLEND_FUNC(
-                    BGFX_STATE_BLEND_SRC_ALPHA,
-                    BGFX_STATE_BLEND_INV_SRC_ALPHA));
+                BGFX_STATE_BLEND_NORMAL);
 
             bgfx::setVertexBuffer(0, mVertexCoordBH);
             bgfx::setIndexBuffer(mEdgeIndexBH);

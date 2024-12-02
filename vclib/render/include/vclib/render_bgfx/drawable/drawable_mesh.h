@@ -77,8 +77,7 @@ public:
             uint64_t state =
                 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
                 BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                BGFX_STATE_BLEND_FUNC(
-                    BGFX_STATE_BLEND_SRC_ALPHA, BGFX_STATE_BLEND_INV_SRC_ALPHA);
+                BGFX_STATE_BLEND_NORMAL;
 
             if (mMRS.isSurfaceVisible()) {
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!
