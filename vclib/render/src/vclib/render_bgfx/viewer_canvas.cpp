@@ -147,6 +147,7 @@ void ViewerCanvas::onMouseDoubleClick(
     // create the callback
     const auto proj = projectionMatrix();
     const auto view = viewMatrix();
+    // viewport
     std::array<float,4> vp = {
         .0f,
         .0f,

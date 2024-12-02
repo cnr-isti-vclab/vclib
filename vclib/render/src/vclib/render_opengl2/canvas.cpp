@@ -22,6 +22,8 @@
 
 #include <vclib/render_opengl2/canvas.h>
 
+#include <vclib/io/image.h>
+
 namespace vcl {
 
 Canvas::Canvas(void*, uint width, uint height, void*)
@@ -36,8 +38,34 @@ void Canvas::init(uint width, uint height)
     glClearColor(1.f, 1.f, 1.f, 1.0f);
 }
 
-void Canvas::screenShot(const std::string& filename, uint width, uint height)
+bool Canvas::screenshot(const std::string& filename, uint width, uint height)
 {
+    (void)width;
+    (void)height;
+
+    std::vector<std::uint8_t> buffer(mSize.x() * mSize.y() * 4);
+    // read pixels
+    glReadPixels(
+        0,
+        0,
+        GLsizei(mSize.x()),
+        GLsizei(mSize.y()),
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        buffer.data());
+
+    // write image using stb
+    bool ret = true;
+    stbi_flip_vertically_on_write(1);
+    try {
+        saveImageData(filename, mSize.x(), mSize.y(), buffer.data());
+    }
+    catch (const std::exception& e) {
+        ret = false;
+    }
+    stbi_flip_vertically_on_write(0);
+
+    return ret;
 }
 
 bool Canvas::readDepth(
