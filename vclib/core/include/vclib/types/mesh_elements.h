@@ -23,9 +23,9 @@
 #ifndef VCL_TYPES_MESH_ELEMENTS_H
 #define VCL_TYPES_MESH_ELEMENTS_H
 
-#include <string>
-
 #include "base.h"
+
+#include <string>
 
 namespace vcl {
 
