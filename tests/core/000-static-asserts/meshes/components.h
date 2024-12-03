@@ -23,10 +23,12 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
+#include "components/bounding_box.h"
 #include "components/color.h"
 
 void componentsStaticAsserts()
 {
+    boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
 }
 

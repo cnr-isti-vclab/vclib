@@ -20,29 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
+#ifndef COMP_BOUNDING_BOX_H
+#define COMP_BOUNDING_BOX_H
 
-#include "component.h"
+#include <vclib/meshes.h>
 
-#include <vclib/concepts/space.h>
+void boundingBoxComponentStaticAsserts()
+{
+    using namespace vcl;
 
-namespace vcl::comp {
+    // test only the bounding box component
+    static_assert(
+        comp::HasBoundingBox<mesh::BoundingBox3d>,
+        "mesh::BoundingBox3d does not satisfy the HasBoundingBox concept");
+    static_assert(
+        comp::HasBoundingBox<const mesh::BoundingBox3d>,
+        "const mesh::BoundingBox3d does not satisfy the HasBoundingBox concept");
+    static_assert(
+        comp::HasBoundingBox<mesh::BoundingBox3d&>,
+        "mesh::BoundingBox3d& does not satisfy the HasBoundingBox concept");
+    static_assert(
+        comp::HasBoundingBox<const mesh::BoundingBox3d&>,
+        "const mesh::BoundingBox3d& does not satisfy the HasBoundingBox concept");
+    static_assert(
+        comp::HasBoundingBox<mesh::BoundingBox3d&&>,
+        "mesh::BoundingBox3d&& does not satisfy the HasBoundingBox concept");
 
-/**
- * @brief HasBoundingBox concept is satisfied only if a Element or Mesh class
- * provides the member functions specified in this concept. These member
- * functions allows to access to a @ref vcl::comp::BoundingBox component of a
- * given element/mesh.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasBoundingBox = requires (T&& obj) {
-    typename RemoveRef<T>::BoundingBoxType;
-    { obj.boundingBox() } -> Box3Concept;
-};
+    static_assert(
+        comp::HasBoundingBox<TriMesh>,
+        "TriMesh does not satisfy the HasBoundingBox concept");
+    static_assert(
+        comp::HasBoundingBox<const TriMesh>,
+        "const TriMesh does not satisfy the HasBoundingBox concept");
+    static_assert(
+        comp::HasBoundingBox<TriMesh&>,
+        "TriMesh& does not satisfy the HasBoundingBox concept");
+    static_assert(
+        comp::HasBoundingBox<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasBoundingBox concept");
+    static_assert(
+        comp::HasBoundingBox<TriMesh&&>,
+        "TriMesh&& does not satisfy the HasBoundingBox concept");
+}
 
-} // namespace vcl::comp
-
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
+#endif // COMP_BOUNDING_BOX_H

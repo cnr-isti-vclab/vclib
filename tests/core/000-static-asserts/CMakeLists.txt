@@ -30,6 +30,7 @@ set(HEADERS
     loggers.h
     ranges.h
     space.h
+    meshes/components/bounding_box.h
     meshes/components/color.h
     meshes/components.h
     meshes/edgemesh.h
