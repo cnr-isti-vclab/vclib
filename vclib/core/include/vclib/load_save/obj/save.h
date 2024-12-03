@@ -23,7 +23,7 @@
 #ifndef VCL_LOAD_SAVE_OBJ_SAVE_H
 #define VCL_LOAD_SAVE_OBJ_SAVE_H
 
-#include <map>
+#include "material.h"
 
 #include <vclib/exceptions/io.h>
 #include <vclib/io/file_info.h>
@@ -32,7 +32,7 @@
 #include <vclib/misc/logger.h>
 #include <vclib/space/complex/mesh_info.h>
 
-#include "material.h"
+#include <map>
 
 namespace vcl {
 

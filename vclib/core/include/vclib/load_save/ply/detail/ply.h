@@ -23,9 +23,9 @@
 #ifndef VCL_LOAD_SAVE_PLY_DETAIL_PLY_H
 #define VCL_LOAD_SAVE_PLY_DETAIL_PLY_H
 
-#include <list>
-
 #include <vclib/misc/tokenizer.h>
+
+#include <list>
 
 namespace vcl::detail {
 
