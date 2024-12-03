@@ -90,14 +90,14 @@ void rotate(
     bool                    updateNormals = true)
 {
     for (auto& v : mesh.vertices()) {
-        v.coord() *= m;
+        v.coord() = m * v.coord();
     }
 
     if (updateNormals) {
         if constexpr (HasPerVertexNormal<MeshType>) {
             if (isPerVertexNormalAvailable(mesh)) {
                 for (auto& v : mesh.vertices()) {
-                    v.normal() *= m;
+                    v.normal() = m * v.normal();
                 }
             }
         }
@@ -105,7 +105,7 @@ void rotate(
         if constexpr (HasPerFaceNormal<MeshType>) {
             if (isPerFaceNormalAvailable(mesh)) {
                 for (auto& f : mesh.faces()) {
-                    f.normal() *= m;
+                    f.normal() = m * f.normal();
                 }
             }
         }

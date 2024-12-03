@@ -161,7 +161,7 @@ void multiplyPerElementNormalsByMatrix(
             " normals by matrix...");
 
     parallelFor(mesh.template elements<ELEM_ID>(), [&](auto& e) {
-        e.normal() *= mat;
+        e.normal() = mat * e.normal();
     });
 
     log.log(
