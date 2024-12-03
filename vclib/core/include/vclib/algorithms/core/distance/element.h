@@ -23,13 +23,13 @@
 #ifndef VCL_ALGORITHMS_CORE_DISTANCE_ELEMENT_H
 #define VCL_ALGORITHMS_CORE_DISTANCE_ELEMENT_H
 
+#include "misc.h"
+
 #include <vclib/algorithms/core/bounding_box.h>
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/concepts/mesh.h>
 #include <vclib/math/min_max.h>
 #include <vclib/space/core/triangle_wrapper.h>
-
-#include "misc.h"
 
 namespace vcl {
 
