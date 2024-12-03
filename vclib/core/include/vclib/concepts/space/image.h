@@ -23,11 +23,11 @@
 #ifndef VCL_CONCEPTS_SPACE_IMAGE_H
 #define VCL_CONCEPTS_SPACE_IMAGE_H
 
-#include <string>
+#include "color.h"
 
 #include <vclib/types.h>
 
-#include "color.h"
+#include <string>
 
 namespace vcl {
 

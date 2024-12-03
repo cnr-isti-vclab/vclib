@@ -23,11 +23,11 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_ADJACENT_FACES_H
 
-#include <vector>
+#include "component.h"
 
 #include <vclib/concepts/ranges/range.h>
 
-#include "component.h"
+#include <vector>
 
 namespace vcl::comp {
 

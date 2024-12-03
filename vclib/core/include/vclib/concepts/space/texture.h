@@ -23,9 +23,9 @@
 #ifndef VCL_CONCEPTS_SPACE_TEXTURE_H
 #define VCL_CONCEPTS_SPACE_TEXTURE_H
 
-#include <string>
-
 #include "image.h"
+
+#include <string>
 
 namespace vcl {
 

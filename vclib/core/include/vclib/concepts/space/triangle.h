@@ -23,9 +23,9 @@
 #ifndef VCL_CONCEPTS_SPACE_TRIANGLE_H
 #define VCL_CONCEPTS_SPACE_TRIANGLE_H
 
-#include <vclib/types.h>
-
 #include "point.h"
+
+#include <vclib/types.h>
 
 namespace vcl {
 
