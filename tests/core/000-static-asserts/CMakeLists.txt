@@ -32,6 +32,7 @@ set(HEADERS
     space.h
     meshes/components/bounding_box.h
     meshes/components/color.h
+    meshes/components/coordinate.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h
