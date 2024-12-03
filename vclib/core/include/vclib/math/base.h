@@ -23,11 +23,11 @@
 #ifndef VCL_MATH_BASE_H
 #define VCL_MATH_BASE_H
 
+#include <vclib/types.h>
+
 #include <cassert>
 #include <cmath>
 #include <limits>
-
-#include <vclib/types.h>
 
 namespace vcl {
 
