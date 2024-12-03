@@ -23,15 +23,14 @@
 #ifndef VCL_ALGORITHMS_MESH_CLEAN_H
 #define VCL_ALGORITHMS_MESH_CLEAN_H
 
-#include <map>
-#include <set>
-#include <stack>
-#include <vector>
-
 #include <vclib/algorithms/core/polygon/ear_cut.h>
 #include <vclib/algorithms/mesh/sort.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/complex/mesh_pos.h>
+
+#include <set>
+#include <stack>
+#include <vector>
 
 /**
  * @defgroup clean Cleaning and Repairing Algorithms

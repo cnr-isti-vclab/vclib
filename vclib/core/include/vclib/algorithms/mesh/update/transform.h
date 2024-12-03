@@ -23,10 +23,10 @@
 #ifndef VCL_ALGORITHMS_MESH_UPDATE_TRANSFORM_H
 #define VCL_ALGORITHMS_MESH_UPDATE_TRANSFORM_H
 
+#include "normal.h"
+
 #include <vclib/math/transform.h>
 #include <vclib/mesh/requirements.h>
-
-#include "normal.h"
 
 namespace vcl {
 

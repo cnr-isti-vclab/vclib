@@ -23,8 +23,6 @@
 #ifndef VCL_ALGORITHMS_MESH_UPDATE_CURVATURE_H
 #define VCL_ALGORITHMS_MESH_UPDATE_CURVATURE_H
 
-#include <mutex>
-
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/algorithms/core/stat.h>
 #include <vclib/algorithms/mesh/intersection.h>
@@ -39,6 +37,8 @@
 #include <vclib/space/complex/mesh_pos.h>
 #include <vclib/space/core/principal_curvature.h>
 #include <vclib/views/pointers.h>
+
+#include <mutex>
 
 namespace vcl {
 
