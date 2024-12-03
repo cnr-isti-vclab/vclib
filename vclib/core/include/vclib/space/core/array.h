@@ -23,17 +23,17 @@
 #ifndef VCL_SPACE_CORE_ARRAY_H
 #define VCL_SPACE_CORE_ARRAY_H
 
-#include <array>
-#include <cassert>
-#include <iomanip>
-#include <utility>
-#include <vector>
-
 #include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/space/array.h>
 #include <vclib/io/serialization.h>
 #include <vclib/misc/nested_initializer_lists.h>
 #include <vclib/types.h>
+
+#include <array>
+#include <cassert>
+#include <iomanip>
+#include <utility>
+#include <vector>
 
 namespace vcl {
 
