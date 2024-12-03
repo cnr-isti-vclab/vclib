@@ -23,14 +23,14 @@
 #ifndef VCL_SPACE_COMPLEX_GRID_STATIC_GRID_H
 #define VCL_SPACE_COMPLEX_GRID_STATIC_GRID_H
 
-#include <set>
-#include <vector>
-
-#include <vclib/concepts/ranges/mesh/vertex_range.h>
-
 #include "abstract_grid.h"
 #include "iterators/static_grid_iterator.h"
 #include "regular_grid.h"
+
+#include <vclib/concepts/ranges/mesh/vertex_range.h>
+
+#include <set>
+#include <vector>
 
 namespace vcl {
 

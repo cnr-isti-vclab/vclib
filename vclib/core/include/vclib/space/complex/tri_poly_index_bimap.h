@@ -23,9 +23,9 @@
 #ifndef VCL_SPACE_COMPLEX_TRI_POLY_INDEX_BIMAP_H
 #define VCL_SPACE_COMPLEX_TRI_POLY_INDEX_BIMAP_H
 
-#include <vector>
-
 #include <vclib/types.h>
+
+#include <vector>
 
 namespace vcl {
 
