@@ -20,13 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <QGuiApplication>
-#include <QMouseEvent>
-
 #include <vclib/qt/event_manager_widget.h>
 
 #include <vclib/qt/input.h>
 #include <vclib/qt/message_hider.h>
+
+#include <QGuiApplication>
+#include <QMouseEvent>
 
 namespace vcl::qt {
 

@@ -20,13 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
+#include <vclib/qt/canvas_widget.h>
+
+#include <vclib/qt/input.h>
+#include <vclib/qt/message_hider.h>
+
 #include <QApplication>
 #include <QMouseEvent>
-
-#include <vclib/qt/canvas_widget.h>
-#include <vclib/qt/input.h>
-
-#include <vclib/qt/message_hider.h>
 
 namespace vcl::qt {
 

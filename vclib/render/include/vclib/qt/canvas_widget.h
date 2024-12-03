@@ -23,11 +23,11 @@
 #ifndef VCL_EXT_QT_CANVAS_WIDGET_H
 #define VCL_EXT_QT_CANVAS_WIDGET_H
 
-#include <QVBoxLayout>
+#include "event_manager_widget.h"
 
 #include <vclib/render/canvas.h>
 
-#include "event_manager_widget.h"
+#include <QVBoxLayout>
 
 namespace vcl::qt {
 

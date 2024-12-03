@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H
 #define VCL_EXT_QT_GUI_DRAWABLE_OBJECT_FRAME_H
 
-#include <QFrame>
-
 #include <vclib/render/interfaces/drawable_object_i.h>
+
+#include <QFrame>
 
 namespace vcl::qt {
 

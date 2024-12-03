@@ -20,8 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ui_drawable_object_frame.h"
 #include <vclib/qt/gui/drawable_object_frame.h>
+
+#include "ui_drawable_object_frame.h"
 
 #include <vclib/render/interfaces/drawable_mesh_i.h>
 

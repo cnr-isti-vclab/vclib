@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_QT_VIEWER_WIDGET_H
 #define VCL_EXT_QT_VIEWER_WIDGET_H
 
-#include <vclib/render/viewer_canvas.h>
-
 #include "event_manager_widget.h"
+
+#include <vclib/render/viewer_canvas.h>
 
 namespace vcl::qt {
 

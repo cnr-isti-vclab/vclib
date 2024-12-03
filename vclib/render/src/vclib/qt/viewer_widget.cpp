@@ -22,10 +22,10 @@
 
 #include <vclib/qt/viewer_widget.h>
 
-#include <QMouseEvent>
-
 #include <vclib/qt/gui/screen_shot_dialog.h>
 #include <vclib/qt/input.h>
+
+#include <QMouseEvent>
 
 namespace vcl::qt {
 

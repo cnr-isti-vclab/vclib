@@ -20,8 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ui_mesh_viewer.h"
 #include <vclib/qt/mesh_viewer.h>
+
+#include "ui_mesh_viewer.h"
 
 #include <vclib/render/drawable/drawable_mesh.h>
 

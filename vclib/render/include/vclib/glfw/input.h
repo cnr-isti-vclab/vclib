@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_GLFW_INPUT_H
 #define VCL_EXT_GLFW_INPUT_H
 
-#include <GLFW/glfw3.h>
-
 #include <vclib/render/input.h>
+
+#include <GLFW/glfw3.h>
 
 namespace vcl::glfw {
 

@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_GLFW_EVENT_MANAGER_WINDOW_H
 #define VCL_EXT_GLFW_EVENT_MANAGER_WINDOW_H
 
-#include <GLFW/glfw3.h>
-
 #include <vclib/render/interfaces/event_manager_i.h>
+
+#include <GLFW/glfw3.h>
 
 namespace vcl::glfw {
 

@@ -24,7 +24,6 @@
 #define VCL_EXT_QT_GUI_SCREEN_SHOT_DIALOG_H
 
 #include <QFileDialog>
-
 #include <QSpinBox>
 
 namespace vcl::qt {
