@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_NORMAL_H
 #define VCL_MESH_COMPONENTS_NORMAL_H
 
+#include "bases/component.h"
+
 #include <vclib/concepts/mesh/components/normal.h>
 #include <vclib/space/core/point.h>
-
-#include "bases/component.h"
 
 namespace vcl::comp {
 

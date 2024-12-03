@@ -23,11 +23,11 @@
 #ifndef VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H
 #define VCL_MESH_REQUIREMENTS_FACE_REQUIREMENTS_H
 
-#include <vclib/concepts/mesh.h>
-#include <vclib/exceptions/mesh.h>
-
 #include "../containers/face_container.h"
 #include "element_requirements.h"
+
+#include <vclib/concepts/mesh.h>
+#include <vclib/exceptions/mesh.h>
 
 /**
  * @defgroup face_requirements Face Requirements

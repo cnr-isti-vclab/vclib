@@ -23,18 +23,19 @@
 #ifndef VCL_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 #define VCL_MESH_CONTAINERS_ELEMENT_CONTAINER_H
 
-#include <vector>
+#include "custom_component_vector_handle.h"
+#include "custom_components_vector_map.h"
+#include "vertical_components_vector_tuple.h"
 
 #include <vclib/concepts/mesh/components.h>
 #include <vclib/concepts/mesh/containers.h>
 #include <vclib/concepts/mesh/elements/element.h>
+#include <vclib/io/serialization.h>
 #include <vclib/mesh/components/bases/component.h>
 #include <vclib/mesh/iterators/element_container_iterator.h>
 #include <vclib/types/view.h>
 
-#include "custom_component_vector_handle.h"
-#include "custom_components_vector_map.h"
-#include "vertical_components_vector_tuple.h"
+#include <vector>
 
 namespace vcl::mesh {
 

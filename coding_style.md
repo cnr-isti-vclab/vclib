@@ -15,6 +15,11 @@ classes and functions);
 
 VCLib uses the following coding style rules:
 
+- The order of inclusion of headers should be the following (each subsection in alphabetical order):
+  1. h file corresponding to this cpp file (if applicable);
+  2. headers from the same component;
+  3. headers from other components;
+  4. system headers.
 - Generally, the code of the library uses CamelCase: use upper case letters as word separators
 - Class names and type names start with an upper case letter;
 - Functions, member functions, non-const variables and namespaces start with a lower case letter;

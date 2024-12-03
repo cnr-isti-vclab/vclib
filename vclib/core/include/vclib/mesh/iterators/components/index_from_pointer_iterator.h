@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_ITERATORS_COMPONENTS_INDEX_FROM_POINTER_ITERATOR_H
 #define VCL_MESH_ITERATORS_COMPONENTS_INDEX_FROM_POINTER_ITERATOR_H
 
-#include <iterator>
-
 #include <vclib/types.h>
+
+#include <iterator>
 
 namespace vcl {
 

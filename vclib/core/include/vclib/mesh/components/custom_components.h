@@ -23,13 +23,13 @@
 #ifndef VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 #define VCL_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
-#include <any>
-#include <string>
-#include <vector>
+#include "detail/custom_components_data.h"
 
 #include <vclib/concepts/mesh/components/custom_components.h>
 
-#include "detail/custom_components_data.h"
+#include <any>
+#include <string>
+#include <vector>
 
 namespace vcl::comp {
 

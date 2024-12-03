@@ -23,9 +23,9 @@
 #ifndef VCL_MESH_ELEMENTS_VERTEX_H
 #define VCL_MESH_ELEMENTS_VERTEX_H
 
-#include <vclib/concepts/mesh/elements/vertex.h>
-
 #include "element.h"
+
+#include <vclib/concepts/mesh/elements/vertex.h>
 
 namespace vcl {
 
