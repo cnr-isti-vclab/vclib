@@ -23,13 +23,13 @@
 #ifndef VCL_IO_FILE_INFO_H
 #define VCL_IO_FILE_INFO_H
 
+#include <vclib/exceptions/io.h>
+#include <vclib/types.h>
+
 #include <filesystem>
 #include <fstream>
 #include <string>
 #include <vector>
-
-#include <vclib/exceptions/io.h>
-#include <vclib/types.h>
 
 namespace vcl {
 

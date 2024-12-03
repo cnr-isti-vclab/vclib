@@ -23,12 +23,12 @@
 #ifndef VCL_IO_READ_H
 #define VCL_IO_READ_H
 
+#include "file_info.h"
+#include "serialization/deserialize.h"
+
 #include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/misc/string.h>
 #include <vclib/misc/tokenizer.h>
-
-#include "file_info.h"
-#include "serialization/deserialize.h"
 
 namespace vcl {
 
