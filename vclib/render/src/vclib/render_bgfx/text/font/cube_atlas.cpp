@@ -25,13 +25,13 @@
 * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
 */
 
+#include <vclib/render_bgfx/text/font/cube_atlas.h>
+
 #include <bx/bx.h>
 #include <bgfx/bgfx.h>
 
 #include <limits.h> // INT_MAX
 #include <vector>
-
-#include <vclib/render_bgfx/text/font/cube_atlas.h>
 
 namespace bgfx {
 

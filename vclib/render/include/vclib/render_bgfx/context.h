@@ -23,14 +23,14 @@
 #ifndef VCL_BGFX_RENDER_CONTEXT_H
 #define VCL_BGFX_RENDER_CONTEXT_H
 
-#include <stack>
+#include "context/callback.h"
+#include "context/font_manager.h"
+#include "context/program_manager.h"
 
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 
-#include "context/callback.h"
-#include "context/font_manager.h"
-#include "context/program_manager.h"
+#include <stack>
 
 #define BGFX_INVALID_VIEW 65535
 

@@ -24,9 +24,9 @@
 
 #include <vclib/space/core/image.h>
 
-#include <iostream>
-
 #include <bx/debug.h>
+
+#include <iostream>
 
 namespace vcl {
 

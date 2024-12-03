@@ -20,11 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <iostream>
-
 #include <vclib/render_bgfx/context.h>
+
 #include <vclib/render_bgfx/system/native_window_handle.h>
 #include <vclib/types/base.h>
+
+#include <iostream>
 
 namespace vcl {
 

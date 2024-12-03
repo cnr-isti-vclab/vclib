@@ -23,11 +23,11 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 #define VCL_BGFX_RENDER_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
-#include <bgfx/bgfx.h>
+#include "mesh_render_buffers_macros.h"
 
 #include <vclib/render/drawable/mesh/mesh_render_data.h>
 
-#include "mesh_render_buffers_macros.h"
+#include <bgfx/bgfx.h>
 
 namespace vcl {
 

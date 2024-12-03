@@ -23,10 +23,10 @@
 #ifndef VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_EMBEDDED_SHADER_H
 #define VCL_BGFX_RENDER_CONTEXT_EMBEDDED_SHADERS_EMBEDDED_SHADER_H
 
+#include <bgfx/embedded_shader.h>
+
 #include <array>
 #include <string>
-
-#include <bgfx/embedded_shader.h>
 
 namespace vcl {
 

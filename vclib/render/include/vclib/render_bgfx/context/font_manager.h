@@ -23,11 +23,11 @@
 #ifndef VCL_BGFX_RENDER_TEXT_CONTEXT_FONT_MANAGER_H
 #define VCL_BGFX_RENDER_TEXT_CONTEXT_FONT_MANAGER_H
 
-#include <map>
-#include <string>
-
 #include <vclib/render_bgfx/text/embedded_fonts.h>
 #include <vclib/render_bgfx/text/font/font_manager.h>
+
+#include <map>
+#include <string>
 
 namespace vcl {
 

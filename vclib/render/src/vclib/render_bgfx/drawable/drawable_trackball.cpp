@@ -23,7 +23,6 @@
 #include <vclib/render_bgfx/drawable/drawable_trackball.h>
 
 #include <vclib/algorithms/core/polygon/create.h>
-
 #include <vclib/math/transform.h>
 
 namespace vcl {

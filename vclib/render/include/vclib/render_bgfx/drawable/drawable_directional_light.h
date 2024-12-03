@@ -23,7 +23,7 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
 #define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
 
-#include <bgfx/bgfx.h>
+#include "uniforms/drawable_directional_light_uniforms.h"
 
 #include <vclib/render/interfaces/drawable_object_i.h>
 #include <vclib/render/viewer/lights/directional_light.h>
@@ -31,7 +31,7 @@
 
 #include <vclib/render_bgfx/context.h>
 
-#include "uniforms/drawable_directional_light_uniforms.h"
+#include <bgfx/bgfx.h>
 
 namespace vcl {
 

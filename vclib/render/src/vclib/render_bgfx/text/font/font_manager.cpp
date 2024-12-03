@@ -25,6 +25,10 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
+#include <vclib/render_bgfx/text/font/font_manager.h>
+
+#include <vclib/render_bgfx/text/font/cube_atlas.h>
+
 #include <bx/bx.h>
 #include <bx/math.h>
 #include <stb/stb_truetype.h>
@@ -49,9 +53,6 @@ BX_PRAGMA_DIAGNOSTIC_POP()
 #endif
 
 namespace stl = tinystl;
-
-#include <vclib/render_bgfx/text/font/font_manager.h>
-#include <vclib/render_bgfx/text/font/cube_atlas.h>
 
 namespace bgfx {
 
