@@ -23,12 +23,13 @@
 #ifndef VCL_PROCESSING_ACTIONS_LOAD_MESH_STL_LOAD_MESH_ACTION_H
 #define VCL_PROCESSING_ACTIONS_LOAD_MESH_STL_LOAD_MESH_ACTION_H
 
-#include <vclib/algorithms/mesh/clean.h>
-#include <vclib/load_save/stl/load.h>
 #include <vclib/processing/action_interfaces/load_mesh_action.h>
 #include <vclib/processing/functions.h>
 #include <vclib/processing/meshes.h>
 #include <vclib/processing/parameters.h>
+
+#include <vclib/algorithms/mesh/clean.h>
+#include <vclib/load_save/stl/load.h>
 
 namespace vcl::proc {
 

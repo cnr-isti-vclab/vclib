@@ -23,8 +23,9 @@
 #ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_CONVEX_HULL_FILTER_H
 #define VCL_PROCESSING_ACTIONS_FILTER_MESH_GENERATE_CONVEX_HULL_FILTER_H
 
-#include <vclib/algorithms/mesh/convex_hull.h>
 #include <vclib/processing/action_interfaces/filter_mesh_action.h>
+
+#include <vclib/algorithms/mesh/convex_hull.h>
 
 namespace vcl::proc {
 

@@ -23,9 +23,9 @@
 #ifndef VCL_PROCESSING_PARAMETER_VECTOR_H
 #define VCL_PROCESSING_PARAMETER_VECTOR_H
 
-#include <vclib/space/core/vector/polymorphic_object_vector.h>
-
 #include "parameters/parameter.h"
+
+#include <vclib/space/core/vector/polymorphic_object_vector.h>
 
 namespace vcl::proc {
 
