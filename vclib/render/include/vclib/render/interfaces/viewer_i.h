@@ -23,12 +23,12 @@
 #ifndef VCL_RENDER_INTERFACES_VIEWER_I_H
 #define VCL_RENDER_INTERFACES_VIEWER_I_H
 
-#include <memory>
+#include "event_manager_i.h"
 
 #include <vclib/render/drawable/drawable_object_vector.h>
 #include <vclib/render/viewer/desktop_trackball.h>
 
-#include "event_manager_i.h"
+#include <memory>
 
 namespace vcl {
 

@@ -23,14 +23,14 @@
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 
+#include "mesh_render_settings.h"
+
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/math/min_max.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/complex/tri_poly_index_bimap.h>
 #include <vclib/space/core/image.h>
 #include <vclib/space/core/texture.h>
-
-#include "mesh_render_settings.h"
 
 namespace vcl {
 

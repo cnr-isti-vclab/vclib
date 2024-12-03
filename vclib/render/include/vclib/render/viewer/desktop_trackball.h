@@ -23,13 +23,12 @@
 #ifndef VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 #define VCL_RENDER_VIEWER_DESKTOP_TRACKBALL_H
 
-#include <map>
-
-#include <vclib/space/core/bit_set.h>
+#include "trackball.h"
 
 #include <vclib/render/input.h>
+#include <vclib/space/core/bit_set.h>
 
-#include "trackball.h"
+#include <map>
 
 namespace vcl {
 
