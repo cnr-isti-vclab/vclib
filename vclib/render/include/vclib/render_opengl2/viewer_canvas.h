@@ -23,11 +23,11 @@
 #ifndef VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
 #define VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
 
-#include <memory>
-
 #include <vclib/render/interfaces/viewer_i.h>
 
 #include <vclib/render_opengl2/canvas.h>
+
+#include <memory>
 
 namespace vcl {
 
