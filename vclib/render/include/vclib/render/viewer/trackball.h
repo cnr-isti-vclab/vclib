@@ -135,7 +135,7 @@ public:
     {
         reset();
         mTransform.scale(scale);
-        mTransform.translate(-center.transpose());
+        mTransform.translate(-center);
     }
 
     void resetDirectionalLight()
@@ -153,7 +153,7 @@ public:
     {
         // transform the center (world space) using the current transformation
         // then translate it to the origin
-        mTransform.pretranslate(-(mTransform * center.transpose()));
+        mTransform.pretranslate(-(mTransform * center));
     }
 
     Scalar scale() const
@@ -639,7 +639,7 @@ private:
      * @note from the trackball center
      * Y range is [-1, 1] and X is [-aspectRatio, aspectRatio]
      */
-    void translate(Point3<Scalar> t) { mTransform.pretranslate(t.transpose()); }
+    void translate(Point3<Scalar> t) { mTransform.pretranslate(t); }
 
     void rotateDirLight(const Quaternion<Scalar>& rotation)
     {

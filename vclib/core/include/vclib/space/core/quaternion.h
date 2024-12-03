@@ -167,13 +167,13 @@ public:
      */
     Point3<Scalar> operator*(const Point3<Scalar>& p) const
     {
-        Eigen::Matrix<Scalar, 1, 3> fc = Base::vec().cross(p);
+        Eigen::Matrix<Scalar, 3, 1> fc = Base::vec().cross(p);
 
-        Eigen::Matrix<Scalar, 1, 3> fd = p * Base::w();
+        Eigen::Matrix<Scalar, 3, 1> fd = p * Base::w();
 
-        Eigen::Matrix<Scalar, 1, 3> s = fc + fd;
+        Eigen::Matrix<Scalar, 3, 1> s = fc + fd;
 
-        Eigen::Matrix<Scalar, 1, 3> sc = Base::vec().cross(s);
+        Eigen::Matrix<Scalar, 3, 1> sc = Base::vec().cross(s);
 
         return Point3<Scalar>(p + sc * 2.0);
     }
