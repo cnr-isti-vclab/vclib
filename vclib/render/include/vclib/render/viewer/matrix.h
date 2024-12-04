@@ -348,10 +348,10 @@ Matrix44 orthoProjectionMatrix(
  */
 template<MatrixConcept Matrix44, Point3Concept PointType>
 PointType unproject(
-    const PointType& screenPos,
-    const Matrix44&  modelViewProjection,
-    const std::array<typename Matrix44::Scalar,4>& viewport,
-    bool             homogeneousNDC)
+    const PointType&                         screenPos,
+    const Matrix44&                          modelViewProjection,
+    const Point4<typename Matrix44::Scalar>& viewport,
+    bool                                     homogeneousNDC)
 {
     using Scalar = Matrix44::Scalar;
     const Matrix44 inv = modelViewProjection.inverse();
@@ -360,13 +360,12 @@ PointType unproject(
         (screenPos.y() - viewport[1]) / viewport[3] * 2.0 - 1.0,
         homogeneousNDC ? 2.0 * screenPos.z() - 1.0 : screenPos.z(),
         1.0);
-    Point4<Scalar> res = inv * Eigen::Matrix<Scalar, 4, 1>(p);
-    if (res.w() == 0.0)
+    p = inv * p;
+    if (p.w() == 0.0)
     {
-        std::cerr << "unproject: division by zero" << std::endl;
-        return PointType::Zero();
+        throw std::runtime_error("unproject: division by zero");
     }
-    return res.template head<3>() / res.w();
+    return p.template head<3>() / p.w();
 }
 
 } // namespace vcl
