@@ -33,6 +33,7 @@ set(HEADERS
     meshes/components/bounding_box.h
     meshes/components/color.h
     meshes/components/coordinate.h
+    meshes/components/mark.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h
@@ -65,5 +66,6 @@ vclib_add_test(
 
 target_sources(vclib-core-test-000-static-asserts
   PRIVATE
+
 
 )

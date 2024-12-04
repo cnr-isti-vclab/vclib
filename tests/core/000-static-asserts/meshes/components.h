@@ -26,12 +26,14 @@
 #include "components/bounding_box.h"
 #include "components/color.h"
 #include "components/coordinate.h"
+#include "components/mark.h"
 
 void componentsStaticAsserts()
 {
     boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
     coordinateComponentStaticAsserts();
+    markComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H
