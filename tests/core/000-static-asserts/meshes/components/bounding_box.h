@@ -35,13 +35,15 @@ void boundingBoxComponentStaticAsserts()
         "mesh::BoundingBox3d does not satisfy the HasBoundingBox concept");
     static_assert(
         comp::HasBoundingBox<const mesh::BoundingBox3d>,
-        "const mesh::BoundingBox3d does not satisfy the HasBoundingBox concept");
+        "const mesh::BoundingBox3d does not satisfy the HasBoundingBox "
+        "concept");
     static_assert(
         comp::HasBoundingBox<mesh::BoundingBox3d&>,
         "mesh::BoundingBox3d& does not satisfy the HasBoundingBox concept");
     static_assert(
         comp::HasBoundingBox<const mesh::BoundingBox3d&>,
-        "const mesh::BoundingBox3d& does not satisfy the HasBoundingBox concept");
+        "const mesh::BoundingBox3d& does not satisfy the HasBoundingBox "
+        "concept");
     static_assert(
         comp::HasBoundingBox<mesh::BoundingBox3d&&>,
         "mesh::BoundingBox3d&& does not satisfy the HasBoundingBox concept");

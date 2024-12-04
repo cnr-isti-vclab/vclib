@@ -28,9 +28,9 @@
 #include <vclib/math/base.h>
 #include <vclib/misc/hash.h>
 
-#include <compare>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <compare>
 
 namespace vcl {
 

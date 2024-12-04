@@ -23,8 +23,6 @@
 #ifndef VCL_MISC_PARALLEL_H
 #define VCL_MISC_PARALLEL_H
 
-
-
 #include <vclib/concepts/range.h>
 #include <vclib/types.h>
 
