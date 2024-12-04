@@ -27,6 +27,7 @@
 #include "components/color.h"
 #include "components/coordinate.h"
 #include "components/mark.h"
+#include "components/name.h"
 
 void componentsStaticAsserts()
 {
@@ -34,6 +35,7 @@ void componentsStaticAsserts()
     colorComponentStaticAsserts();
     coordinateComponentStaticAsserts();
     markComponentStaticAsserts();
+    nameComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H

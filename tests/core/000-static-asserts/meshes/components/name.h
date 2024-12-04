@@ -20,34 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
+#ifndef COMP_NAME_H
+#define COMP_NAME_H
 
-#include "component.h"
+#include <vclib/meshes.h>
 
-#include <vclib/concepts/const_correctness.h>
+void nameComponentStaticAsserts()
+{
+    using namespace vcl;
 
-#include <string>
+    // test only the name component
+    static_assert(
+        comp::HasName<mesh::Name>,
+        "mesh::Name does not satisfy the HasName concept");
+    static_assert(
+        comp::HasName<const mesh::Name>,
+        "const mesh::Name does not satisfy the HasName "
+        "concept");
+    static_assert(
+        comp::HasName<mesh::Name&>,
+        "mesh::Name& does not satisfy the HasName concept");
+    static_assert(
+        comp::HasName<const mesh::Name&>,
+        "const mesh::Name& does not satisfy the HasName "
+        "concept");
+    static_assert(
+        comp::HasName<mesh::Name&&>,
+        "mesh::Name&& does not satisfy the HasName concept");
 
-namespace vcl::comp {
+    static_assert(
+        comp::HasName<TriMesh>,
+        "TriMesh does not satisfy the HasName concept");
+    static_assert(
+        comp::HasName<const TriMesh>,
+        "const TriMesh does not satisfy the HasName concept");
+    static_assert(
+        comp::HasName<TriMesh&>,
+        "TriMesh& does not satisfy the HasName concept");
+    static_assert(
+        comp::HasName<const TriMesh&>,
+        "const TriMesh& does not satisfy the HasName concept");
+    static_assert(
+        comp::HasName<TriMesh&&>,
+        "TriMesh&& does not satisfy the HasName concept");
+}
 
-/**
- * @brief HasName concept is satisfied only if a Element or Mesh class provides
- * the member functions specified in this concept. These member functions allows
- * to access to a @ref vcl::comp::Name component of a given element/mesh.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasName = requires (T&& obj) {
-    { obj.name() } -> std::convertible_to<std::string>;
-
-    // non const requirements
-    requires vcl::IsConst<T> || requires {
-        { obj.name() } -> std::same_as<std::string&>;
-    };
-};
-
-} // namespace vcl::comp
-
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
+#endif // COMP_NAME_H
