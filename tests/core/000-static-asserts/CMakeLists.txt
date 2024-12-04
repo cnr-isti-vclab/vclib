@@ -36,6 +36,7 @@ set(HEADERS
     meshes/components/mark.h
     meshes/components/name.h
     meshes/components/normal.h
+    meshes/components/principal_curvature.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h

@@ -29,6 +29,7 @@
 #include "components/mark.h"
 #include "components/name.h"
 #include "components/normal.h"
+#include "components/principal_curvature.h"
 
 void componentsStaticAsserts()
 {
@@ -38,6 +39,7 @@ void componentsStaticAsserts()
     markComponentStaticAsserts();
     nameComponentStaticAsserts();
     normalComponentStaticAsserts();
+    principalCurvatureComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H
