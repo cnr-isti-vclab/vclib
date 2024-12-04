@@ -30,6 +30,7 @@
 #include "components/name.h"
 #include "components/normal.h"
 #include "components/principal_curvature.h"
+#include "components/quality.h"
 
 void componentsStaticAsserts()
 {
@@ -40,6 +41,7 @@ void componentsStaticAsserts()
     nameComponentStaticAsserts();
     normalComponentStaticAsserts();
     principalCurvatureComponentStaticAsserts();
+    qualityComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H

@@ -36,7 +36,7 @@ set(HEADERS
     meshes/components/mark.h
     meshes/components/name.h
     meshes/components/normal.h
-    meshes/components/principal_curvature.h
+    meshes/components/quality.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h
@@ -76,3 +76,4 @@ target_sources(vclib-core-test-000-static-asserts
 
 
 )
+
