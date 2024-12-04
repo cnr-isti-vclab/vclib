@@ -55,6 +55,7 @@ set(HEADERS
     space/sampler.h
     space/segment.h
     space/sphere.h
+    space/tex_coord.h
     space/texture.h
     space/triangle.h
 )

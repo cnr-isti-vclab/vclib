@@ -20,31 +20,47 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_SPACE_H
-#define VCL_CONCEPTS_SPACE_H
+#ifndef VCL_CONCEPTS_SPACE_TEX_COORD_H
+#define VCL_CONCEPTS_SPACE_TEX_COORD_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/matrix.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/texture.h"
-#include "space/triangle.h"
+#include <vclib/concepts/const_correctness.h>
+#include <vclib/types.h>
+
+namespace vcl {
 
 /**
- * @defgroup space_concepts Space Concepts
- * @ingroup lib_concepts
+ * @brief A concept representing a Texture Coordinate.
  *
- * @brief List of concepts for types related to the Spatial data structures of
- * the library. They allow to discriminate between different Data Structures
- * types and their features.
+ * @tparam T: The type to be tested for conformity to the BoxConcept.
  */
+template<typename T>
+concept TexCoordConcept = requires (
+    T&&                                obj,
+    typename RemoveRef<T>::ScalarType  s,
+    typename RemoveRef<T>::ScalarType& sR) {
+    typename RemoveRef<T>::ScalarType;
 
-#endif // VCL_CONCEPTS_SPACE_H
+    { obj.u() } -> std::convertible_to<decltype(s)>;
+    { obj.v() } -> std::convertible_to<decltype(s)>;
+
+    { obj == obj } -> std::same_as<bool>;
+
+    { obj(uint()) } -> std::convertible_to<decltype(s)>;
+    { obj[uint()] } -> std::convertible_to<decltype(s)>;
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.u() } -> std::same_as<decltype(sR)>;
+        { obj.v() } -> std::same_as<decltype(sR)>;
+        { obj.setU(s) } -> std::same_as<void>;
+        { obj.setV(s) } -> std::same_as<void>;
+        { obj.set(s, s) } -> std::same_as<void>;
+
+        { obj(uint()) } -> std::same_as<decltype(sR)>;
+        { obj[uint()] } -> std::same_as<decltype(sR)>;
+    };
+};
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_SPACE_TEX_COORD_H
