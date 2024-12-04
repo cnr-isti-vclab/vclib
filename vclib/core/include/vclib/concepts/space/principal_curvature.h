@@ -9,55 +9,51 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the GNU General Public License as published by      *
- * the Free Software Foundation; either version 3 of the License, or         *
+ * it under the terms of the Mozilla Public License Version 2.0 as published *
+ * by the Mozilla Foundation; either version 2 of the License, or            *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
- * for more details.                                                         *
+ * Mozilla Public License Version 2.0                                        *
+ * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef SPACE_H
-#define SPACE_H
+#ifndef VCL_CONCEPTS_SPACE_PRINCIPAL_CURVATURE_H
+#define VCL_CONCEPTS_SPACE_PRINCIPAL_CURVATURE_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/texture.h"
+#include "point.h"
 
-void spaceStaticAsserts()
-{
-    arrayStaticAsserts();
-    boxStaticAsserts();
-    colorStaticAsserts();
-    imageStaticAsserts();
-    matrixStaticAsserts();
-    planeStaticAsserts();
-    pointStaticAsserts();
-    polygonStaticAsserts();
-    principalCurvatureStaticAsserts();
-    samplerStaticAsserts();
-    segmentStaticAsserts();
-    sphereStaticAsserts();
-    textureStaticAsserts();
+#include <vclib/types.h>
 
-    using namespace vcl;
+namespace vcl {
 
-    // bitset
-    static_assert(
-        Serializable<BitSet<char>>, "Bitset<char> is not serializable");
-}
+/**
+ * @brief Concept for types representing principal curvature directions
+ * and values at a point on a 3D surface.
+ *
+ * @ingroup space_concepts
+ */
+template<typename T>
+concept PrincipalCurvatureConcept = requires (
+    T&&                                obj,
+    typename RemoveRef<T>::ScalarType  s,
+    typename RemoveRef<T>::ScalarType& sR) {
+    typename RemoveRef<T>::ScalarType;
 
-#endif // SPACE_H
+    { obj.maxDir() } -> PointConcept;
+    { obj.minDir() } -> PointConcept;
+    { obj.maxValue() } -> std::convertible_to<decltype(s)>;
+    { obj.minValue() } -> std::convertible_to<decltype(s)>;
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.maxValue() } -> std::same_as<decltype(sR)>;
+        { obj.minValue() } -> std::same_as<decltype(sR)>;
+    };
+};
+
+} // namespace vcl
+
+#endif // VCL_CONCEPTS_SPACE_PRINCIPAL_CURVATURE_H

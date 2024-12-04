@@ -37,7 +37,6 @@ namespace vcl {
 template<typename T>
 concept TriangleConcept = requires (
     T&&                               obj,
-    typename RemoveRef<T>::PointType& pR,
     typename RemoveRef<T>::ScalarType s) {
     typename RemoveRef<T>::ScalarType;
     typename RemoveRef<T>::PointType;

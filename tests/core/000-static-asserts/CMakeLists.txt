@@ -50,6 +50,7 @@ set(HEADERS
     space/plane.h
     space/point.h
     space/polygon.h
+    space/principal_curvature.h
     space/sampler.h
     space/segment.h
     space/sphere.h
@@ -68,6 +69,7 @@ vclib_add_test(
 
 target_sources(vclib-core-test-000-static-asserts
   PRIVATE
+
 
 
 

@@ -20,44 +20,35 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef SPACE_H
-#define SPACE_H
+#ifndef PRINCIPAL_CURVATURE_H
+#define PRINCIPAL_CURVATURE_H
 
-#include "space/array.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/texture.h"
+#include <vclib/space.h>
 
-void spaceStaticAsserts()
+void principalCurvatureStaticAsserts()
 {
-    arrayStaticAsserts();
-    boxStaticAsserts();
-    colorStaticAsserts();
-    imageStaticAsserts();
-    matrixStaticAsserts();
-    planeStaticAsserts();
-    pointStaticAsserts();
-    polygonStaticAsserts();
-    principalCurvatureStaticAsserts();
-    samplerStaticAsserts();
-    segmentStaticAsserts();
-    sphereStaticAsserts();
-    textureStaticAsserts();
-
     using namespace vcl;
 
-    // bitset
+    using PrincipalCurvatureType = PrincipalCurvature<double>;
+
+    // PrincipalCurvature
     static_assert(
-        Serializable<BitSet<char>>, "Bitset<char> is not serializable");
+        PrincipalCurvatureConcept<PrincipalCurvatureType>,
+        "PrincipalCurvature does not satisfy the PrincipalCurvatureConcept");
+    static_assert(
+        PrincipalCurvatureConcept<const PrincipalCurvatureType>,
+        "const PrincipalCurvature does not satisfy the "
+        "PrincipalCurvatureConcept");
+    static_assert(
+        PrincipalCurvatureConcept<PrincipalCurvatureType&>,
+        "PrincipalCurvature& does not satisfy the PrincipalCurvatureConcept");
+    static_assert(
+        PrincipalCurvatureConcept<const PrincipalCurvatureType&>,
+        "const PrincipalCurvature& does not satisfy the "
+        "PrincipalCurvatureConcept");
+    static_assert(
+        PrincipalCurvatureConcept<PrincipalCurvatureType&&>,
+        "PrincipalCurvature&& does not satisfy the PrincipalCurvatureConcept");
 }
 
-#endif // SPACE_H
+#endif // PRINCIPAL_CURVATURE_H
