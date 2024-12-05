@@ -31,6 +31,7 @@
 #include "components/normal.h"
 #include "components/principal_curvature.h"
 #include "components/quality.h"
+#include "components/tex_coord.h"
 
 void componentsStaticAsserts()
 {
@@ -42,6 +43,7 @@ void componentsStaticAsserts()
     normalComponentStaticAsserts();
     principalCurvatureComponentStaticAsserts();
     qualityComponentStaticAsserts();
+    texCoordComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H

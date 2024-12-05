@@ -37,6 +37,7 @@ set(HEADERS
     meshes/components/name.h
     meshes/components/normal.h
     meshes/components/quality.h
+    meshes/components/tex_coord.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h
@@ -71,6 +72,7 @@ vclib_add_test(
 
 target_sources(vclib-core-test-000-static-asserts
   PRIVATE
+
 
 
 
