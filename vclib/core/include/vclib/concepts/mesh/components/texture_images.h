@@ -32,14 +32,13 @@
 namespace vcl::comp {
 
 /**
- * @brief HasTextureImages concept is satisfied only if a Element or Mesh class
+ * @brief HasTextureImages concept is satisfied only if a Mesh class
  * provides the member functions specified in this concept. These member
  * functions allows to access to a @ref vcl::comp::TextureImages component of a
- * given element/mesh.
+ * given mesh.
  *
  * @ingroup components_concepts
  */
-// TODO: reuse HasTexturePaths concept
 template<typename T>
 concept HasTextureImages = HasTexturePaths<T> &&
     requires (T&& obj, typename RemoveRef<T>::TextureType t) {

@@ -23,8 +23,6 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 
-#include "component.h"
-
 #include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/const_correctness.h>
 
@@ -33,10 +31,14 @@
 namespace vcl::comp {
 
 /**
- * @brief HasTexturePaths concept is satisfied only if a Element or Mesh class
+ * @brief HasTexturePaths concept is satisfied only if a Mesh class
  * provides the member functions specified in this concept. These member
  * functions allows to access to a @ref vcl::comp::TexturePaths component of a
- * given element/mesh.
+ * given mesh.
+ *
+ * @note This concept is satisfied also if a Mesh provides the @ref
+ * vcl::comp::TextureImages component, since the texture paths are stored along
+ * with the textures.
  *
  * @ingroup components_concepts
  */

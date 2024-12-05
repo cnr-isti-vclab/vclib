@@ -23,8 +23,6 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_BOUNDING_BOX_H
 
-#include "component.h"
-
 #include <vclib/concepts/space.h>
 
 namespace vcl::comp {

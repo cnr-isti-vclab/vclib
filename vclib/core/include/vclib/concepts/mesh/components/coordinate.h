@@ -23,8 +23,6 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
 
-#include "component.h"
-
 #include <vclib/concepts/space.h>
 
 namespace vcl::comp {

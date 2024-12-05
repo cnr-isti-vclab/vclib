@@ -23,8 +23,6 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
-#include "component.h"
-
 #include <string>
 
 namespace vcl::comp {
