@@ -25,7 +25,9 @@
 
 #include "component.h"
 
+#include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts/space/texture.h>
 
 #include <string>
 
@@ -40,28 +42,33 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTextureImages = requires (T obj, const T& cObj, std::string str) {
-    typename T::TextureType;
-    typename T::TextureIterator;
-    typename T::ConstTextureIterator;
+concept HasTextureImages =
+    requires (T&& obj, typename RemoveRef<T>::TextureType t) {
+        typename RemoveRef<T>::TextureType;
+        typename RemoveRef<T>::TextureIterator;
+        typename RemoveRef<T>::ConstTextureIterator;
 
-    { cObj.textureNumber() } -> std::same_as<uint>;
-    { cObj.texture(uint()) } -> std::same_as<const typename T::TextureType&>;
-    { obj.texture(uint()) } -> std::same_as<typename T::TextureType&>;
-    { cObj.meshBasePath() } -> std::same_as<const std::string&>;
-    { obj.meshBasePath() } -> std::same_as<std::string&>;
+        { obj.textureNumber() } -> std::same_as<uint>;
+        { obj.texture(uint()) } -> TextureConcept;
 
-    { obj.clearTextures() } -> std::same_as<void>;
-    { obj.pushTexture(str) } -> std::same_as<void>;
-    { obj.pushTexture(typename T::TextureType()) } -> std::same_as<void>;
+        { obj.meshBasePath() } -> std::convertible_to<std::string>;
 
-    { obj.textureBegin() } -> std::same_as<typename T::TextureIterator>;
-    { obj.textureEnd() } -> std::same_as<typename T::TextureIterator>;
-    { cObj.textureBegin() } -> std::same_as<typename T::ConstTextureIterator>;
-    { cObj.textureEnd() } -> std::same_as<typename T::ConstTextureIterator>;
-    { obj.textures() } -> vcl::RangeOf<typename T::TextureType>;
-    { cObj.textures() } -> vcl::RangeOf<typename T::TextureType>;
-};
+        { obj.textureBegin() } -> std::input_iterator;
+        { obj.textureEnd() } -> std::input_iterator;
+        { obj.textures() } -> vcl::RangeOf<decltype(t)>;
+
+        // non const requirements
+        requires vcl::IsConst<T> || requires {
+            { obj.meshBasePath() } -> std::same_as<std::string&>;
+
+            { obj.clearTextures() } -> std::same_as<void>;
+            { obj.pushTexture(std::string()) } -> std::same_as<void>;
+            { obj.pushTexture(t) } -> std::same_as<void>;
+
+            { obj.textureBegin() } -> std::output_iterator<decltype(t)>;
+            { obj.textureEnd() } -> std::output_iterator<decltype(t)>;
+        };
+    };
 
 } // namespace vcl::comp
 
