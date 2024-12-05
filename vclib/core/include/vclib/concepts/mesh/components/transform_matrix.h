@@ -23,7 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_TRANSFORM_MATRIX_H
 
-#include <concepts>
+#include <vclib/concepts/space/matrix.h>
 
 namespace vcl::comp {
 
@@ -36,14 +36,9 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTransformMatrix = requires (
-    T                                      obj,
-    const T&                               cObj,
-    typename T::TransformMatrixType&       m,
-    const typename T::TransformMatrixType& cM) {
-    typename T::TransformMatrixType;
-    { cObj.transformMatrix() } -> std::same_as<decltype(cM)>;
-    { obj.transformMatrix() } -> std::same_as<decltype(m)>;
+concept HasTransformMatrix = requires (T&& obj) {
+    typename RemoveRef<T>::TransformMatrixType;
+    { obj.transformMatrix() } -> Matrix44Concept;
 };
 
 } // namespace vcl::comp

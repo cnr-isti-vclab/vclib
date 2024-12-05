@@ -33,6 +33,7 @@
 #include "components/quality.h"
 #include "components/tex_coord.h"
 #include "components/textures.h"
+#include "components/transform_matrix.h"
 
 void componentsStaticAsserts()
 {
@@ -46,6 +47,7 @@ void componentsStaticAsserts()
     qualityComponentStaticAsserts();
     texCoordComponentStaticAsserts();
     texturesComponentStaticAsserts();
+    transformMatrixComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H

@@ -39,6 +39,7 @@ set(HEADERS
     meshes/components/quality.h
     meshes/components/tex_coord.h
     meshes/components/textures.h
+    meshes/components/transform_matrix.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h
