@@ -79,6 +79,22 @@ concept EigenMatrixConcept = requires (T&& obj) {
 template<typename T>
 concept MatrixConcept = EigenMatrixConcept<T> || Array2Concept<T>;
 
+/**
+ * @brief Concept for 3x3 matrices.
+ */
+template<typename T>
+concept Matrix33Concept =
+    EigenMatrixConcept<T> && (RemoveRef<T>::RowsAtCompileTime == 3) &&
+    (RemoveRef<T>::ColsAtCompileTime == 3);
+
+/**
+ * @brief Concept for 4x4 matrices.
+ */
+template<typename T>
+concept Matrix44Concept =
+    EigenMatrixConcept<T> && (RemoveRef<T>::RowsAtCompileTime == 4) &&
+    (RemoveRef<T>::ColsAtCompileTime == 4);
+
 } // namespace vcl
 
 #endif // VCL_CONCEPTS_SPACE_MATRIX_H

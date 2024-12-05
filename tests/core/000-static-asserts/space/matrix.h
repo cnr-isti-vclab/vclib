@@ -146,6 +146,38 @@ void matrixStaticAsserts()
     static_assert(
         MatrixConcept<TestArray&&>,
         "Array2&& does not satisfy the MatrixConcept");
+
+    static_assert(
+        Matrix33Concept<Matrix33f>,
+        "Matrix33f does not satisfy the Matrix33Concept");
+    static_assert(
+        Matrix33Concept<Matrix33f&>,
+        "Matrix33f& does not satisfy the Matrix33Concept");
+    static_assert(
+        Matrix33Concept<const Matrix33f>,
+        "const Matrix33f does not satisfy the Matrix33Concept");
+    static_assert(
+        Matrix33Concept<const Matrix33f&>,
+        "const Matrix33f& does not satisfy the Matrix33Concept");
+    static_assert(
+        Matrix33Concept<Matrix33f&&>,
+        "Matrix33f&& does not satisfy the Matrix33Concept");
+
+    static_assert(
+        Matrix44Concept<Matrix44f>,
+        "Matrix44f does not satisfy the Matrix44Concept");
+    static_assert(
+        Matrix44Concept<Matrix44f&>,
+        "Matrix44f& does not satisfy the Matrix44Concept");
+    static_assert(
+        Matrix44Concept<const Matrix44f>,
+        "const Matrix44f does not satisfy the Matrix44Concept");
+    static_assert(
+        Matrix44Concept<const Matrix44f&>,
+        "const Matrix44f& does not satisfy the Matrix44Concept");
+    static_assert(
+        Matrix44Concept<Matrix44f&&>,
+        "Matrix44f&& does not satisfy the Matrix44Concept");
 }
 
 #endif // MATRIX_H
