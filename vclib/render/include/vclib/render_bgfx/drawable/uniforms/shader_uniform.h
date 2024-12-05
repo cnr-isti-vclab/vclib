@@ -23,6 +23,8 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_SHADER_UNIFORM_H
 #define VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_SHADER_UNIFORM_H
 
+#include <vclib/types.h>
+
 #include <bgfx/bgfx.h>
 
 #include <string>

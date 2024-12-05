@@ -23,14 +23,14 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_MESH_H
 #define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_MESH_H
 
-#include <bgfx/bgfx.h>
-
 #include <vclib/render/interfaces/drawable_mesh_i.h>
 
 #include <vclib/render_bgfx/context.h>
 #include <vclib/render_bgfx/drawable/mesh/mesh_render_buffers.h>
 #include <vclib/render_bgfx/drawable/uniforms/drawable_mesh_uniforms.h>
 #include <vclib/render_bgfx/drawable/uniforms/mesh_render_settings_uniforms.h>
+
+#include <bgfx/bgfx.h>
 
 namespace vcl {
 

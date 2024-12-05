@@ -22,12 +22,12 @@
 
 #include <vclib/qt/gui/text_edit_logger.h>
 
+#include "ui_text_edit_logger.h"
+
 #include <vclib/qt/gui/text_edit_logger/debug_io_device.h>
 #include <vclib/qt/gui/text_edit_logger/error_io_device.h>
 #include <vclib/qt/gui/text_edit_logger/message_io_device.h>
 #include <vclib/qt/gui/text_edit_logger/warning_io_device.h>
-
-#include "ui_text_edit_logger.h"
 
 namespace vcl::qt {
 

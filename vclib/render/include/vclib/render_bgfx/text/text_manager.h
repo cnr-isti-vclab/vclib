@@ -23,12 +23,12 @@
 #ifndef VCL_BGFX_RENDER_TEXT_TEXT_MANAGER_H
 #define VCL_BGFX_RENDER_TEXT_TEXT_MANAGER_H
 
-#include <string>
+#include "embedded_fonts/embedded_font.h"
+#include "font/text_buffer_manager.h"
 
 #include <vclib/space/core/color.h>
 
-#include "embedded_fonts/embedded_font.h"
-#include "font/text_buffer_manager.h"
+#include <string>
 
 namespace vcl {
 

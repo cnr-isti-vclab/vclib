@@ -23,9 +23,9 @@
 #ifndef VCL_SPACE_CORE_COLOR_H
 #define VCL_SPACE_CORE_COLOR_H
 
-#include <vector>
-
 #include "point.h"
+
+#include <vector>
 
 namespace vcl {
 

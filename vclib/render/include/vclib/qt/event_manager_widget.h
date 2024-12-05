@@ -23,13 +23,13 @@
 #ifndef VCL_EXT_QT_EVENT_MANAGER_WIDGET_H
 #define VCL_EXT_QT_EVENT_MANAGER_WIDGET_H
 
+#include <vclib/render/interfaces/event_manager_i.h>
+
 #if defined(VCLIB_RENDER_BACKEND_BGFX)
 #include <QWidget>
 #elif defined(VCLIB_RENDER_BACKEND_OPENGL2)
 #include <QOpenGLWidget>
 #endif
-
-#include <vclib/render/interfaces/event_manager_i.h>
 
 namespace vcl::qt {
 

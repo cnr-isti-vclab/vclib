@@ -23,13 +23,13 @@
 #ifndef VCL_PROCESSING_PARAMETERS_PARAMETER_H
 #define VCL_PROCESSING_PARAMETERS_PARAMETER_H
 
-#include <any>
-#include <memory>
-#include <string>
-
 #include <vclib/processing/settings.h>
 #include <vclib/space/core/color.h>
 #include <vclib/space/core/point.h>
+
+#include <any>
+#include <memory>
+#include <string>
 
 namespace vcl::proc {
 

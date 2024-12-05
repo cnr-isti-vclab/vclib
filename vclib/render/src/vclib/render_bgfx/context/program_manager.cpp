@@ -20,12 +20,12 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <stdexcept>
-
 #include <vclib/render_bgfx/context/program_manager.h>
 
 #include <vclib/render_bgfx/context/embedded_shaders.h>
 #include <vclib/render_bgfx/context/load_program.h>
+
+#include <stdexcept>
 
 namespace vcl {
 

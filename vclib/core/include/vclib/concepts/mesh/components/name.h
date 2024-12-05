@@ -23,9 +23,9 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_NAME_H
 
-#include <string>
+#include <vclib/concepts/const_correctness.h>
 
-#include "component.h"
+#include <string>
 
 namespace vcl::comp {
 
@@ -37,9 +37,13 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasName = requires (T obj, const T& cObj) {
-    { obj.name() } -> std::same_as<std::string&>;
-    { cObj.name() } -> std::same_as<const std::string&>;
+concept HasName = requires (T&& obj) {
+    { obj.name() } -> std::convertible_to<std::string>;
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.name() } -> std::same_as<std::string&>;
+    };
 };
 
 } // namespace vcl::comp

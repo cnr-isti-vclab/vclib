@@ -23,11 +23,11 @@
 #ifndef VCL_SPACE_COMPLEX_GRID_HASH_TABLE_GRID_H
 #define VCL_SPACE_COMPLEX_GRID_HASH_TABLE_GRID_H
 
-#include <set>
-#include <unordered_map>
-
 #include "abstract_grid.h"
 #include "regular_grid.h"
+
+#include <set>
+#include <unordered_map>
 
 namespace vcl {
 

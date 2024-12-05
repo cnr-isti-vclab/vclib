@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 #define VCL_MESH_COMPONENTS_ADJACENT_FACES_H
 
+#include "bases/reference_container_component.h"
+
 #include <vclib/concepts/mesh/components/adjacent_faces.h>
 #include <vclib/types/view.h>
-
-#include "bases/reference_container_component.h"
 
 namespace vcl::comp {
 

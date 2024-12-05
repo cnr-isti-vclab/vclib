@@ -23,11 +23,11 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_CAMERA_UNIFORMS_H
 #define VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_CAMERA_UNIFORMS_H
 
+#include "shader_uniform.h"
+
 #include <vclib/render/viewer/camera.h>
 
 #include <bgfx/bgfx.h>
-
-#include "shader_uniform.h"
 
 namespace vcl {
 

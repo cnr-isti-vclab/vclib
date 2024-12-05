@@ -23,8 +23,6 @@
 #ifndef VCL_PROCESSING_MESHES_MESH_I_H
 #define VCL_PROCESSING_MESHES_MESH_I_H
 
-#include <memory>
-
 #include <vclib/concepts/mesh/mesh_concept.h>
 
 namespace vcl::proc {

@@ -23,11 +23,11 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
 #define VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_MESH_RENDER_SETTINGS_UNIFORMS_H
 
+#include "shader_uniform.h"
+
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 #include <bgfx/bgfx.h>
-
-#include "shader_uniform.h"
 
 namespace vcl {
 

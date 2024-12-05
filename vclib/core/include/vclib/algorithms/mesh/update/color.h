@@ -23,13 +23,13 @@
 #ifndef VCL_ALGORITHMS_MESH_UPDATE_COLOR_H
 #define VCL_ALGORITHMS_MESH_UPDATE_COLOR_H
 
-#include <set>
-
 #include <vclib/algorithms/mesh/stat.h>
 #include <vclib/math/perlin_noise.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/core/color.h>
 #include <vclib/views/mesh.h>
+
+#include <set>
 
 namespace vcl {
 

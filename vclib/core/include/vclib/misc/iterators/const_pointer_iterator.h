@@ -23,10 +23,10 @@
 #ifndef VCL_MISC_ITERATORS_CONST_POINTER_ITERATOR_H
 #define VCL_MISC_ITERATORS_CONST_POINTER_ITERATOR_H
 
-#include <iterator>
-
 #include <vclib/concepts/pointers.h>
 #include <vclib/types/const_correctness.h>
+
+#include <iterator>
 
 namespace vcl {
 

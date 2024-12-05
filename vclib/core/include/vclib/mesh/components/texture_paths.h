@@ -23,14 +23,15 @@
 #ifndef VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
 #define VCL_MESH_COMPONENTS_TEXTURE_PATHS_H
 
-#include <string>
-#include <vector>
+#include "bases/component.h"
 
 #include <vclib/concepts/mesh/components/texture_images.h>
 #include <vclib/concepts/mesh/components/texture_paths.h>
+#include <vclib/io/serialization.h>
 #include <vclib/types/view.h>
 
-#include "bases/component.h"
+#include <string>
+#include <vector>
 
 namespace vcl::comp {
 
@@ -224,10 +225,6 @@ protected:
     void importFrom(const Element& e, bool = true)
     {
         if constexpr (HasTexturePaths<Element>) {
-            texPaths()     = e.texPaths();
-            meshBasePath() = e.meshBasePath();
-        }
-        if constexpr (HasTextureImages<Element>) {
             texPaths().clear();
             for (const auto& tex : e.textures()) {
                 texPaths().push_back(tex.path());

@@ -23,7 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_COORDINATE_H
 
-#include "component.h"
+#include <vclib/concepts/space.h>
 
 namespace vcl::comp {
 
@@ -36,10 +36,9 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasCoordinate = requires (T obj, const T& cObj) {
-    typename T::CoordType;
-    { obj.coord() } -> std::same_as<typename T::CoordType&>;
-    { cObj.coord() } -> std::same_as<const typename T::CoordType&>;
+concept HasCoordinate = requires (T&& obj) {
+    typename RemoveRef<T>::CoordType;
+    { obj.coord() } -> PointConcept;
 };
 
 } // namespace vcl::comp

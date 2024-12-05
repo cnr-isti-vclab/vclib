@@ -23,7 +23,8 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_AXIS_H
 #define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_AXIS_H
 
-#include <bgfx/bgfx.h>
+#include "mesh/mesh_render_buffers.h"
+#include "uniforms/drawable_axis_uniforms.h"
 
 #include <vclib/meshes/tri_mesh.h>
 #include <vclib/render/interfaces/drawable_object_i.h>
@@ -31,8 +32,7 @@
 
 #include <vclib/render_bgfx/context.h>
 
-#include "mesh/mesh_render_buffers.h"
-#include "uniforms/drawable_axis_uniforms.h"
+#include <bgfx/bgfx.h>
 
 namespace vcl {
 

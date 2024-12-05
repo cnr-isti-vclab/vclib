@@ -24,7 +24,6 @@
 #define VCL_RENDER_DRAWABLE_DRAWABLE_OBJECT_VECTOR_H
 
 #include <vclib/render/interfaces/drawable_object_i.h>
-
 #include <vclib/space/core/box.h>
 #include <vclib/space/core/vector/polymorphic_object_vector.h>
 

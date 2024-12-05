@@ -23,6 +23,8 @@
 #ifndef VCL_LOAD_SAVE_PLY_DETAIL_FACE_H
 #define VCL_LOAD_SAVE_PLY_DETAIL_FACE_H
 
+#include "header.h"
+
 #include <vclib/algorithms/mesh/polygon.h>
 #include <vclib/exceptions/io.h>
 #include <vclib/io/file_type.h>
@@ -30,8 +32,6 @@
 #include <vclib/io/write.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/misc/tokenizer.h>
-
-#include "header.h"
 
 namespace vcl::detail {
 

@@ -23,11 +23,11 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_DIRECTIONAL_LIGHT_UNIFORMS_H
 #define VCL_BGFX_RENDER_DRAWABLE_UNIFORMS_DIRECTIONAL_LIGHT_UNIFORMS_H
 
+#include "shader_uniform.h"
+
 #include <vclib/render/viewer/lights/directional_light.h>
 
 #include <bgfx/bgfx.h>
-
-#include "shader_uniform.h"
 
 namespace vcl {
 

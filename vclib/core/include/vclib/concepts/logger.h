@@ -23,10 +23,10 @@
 #ifndef VCL_CONCEPTS_LOGGER_H
 #define VCL_CONCEPTS_LOGGER_H
 
-#include <string>
-
 #include <vclib/concepts/const_correctness.h>
 #include <vclib/types.h>
+
+#include <string>
 
 namespace vcl {
 

@@ -23,11 +23,11 @@
 #ifndef VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_EDGES_FRAME_H
 #define VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_EDGES_FRAME_H
 
-#include <QFrame>
+#include "generic_mesh_render_settings_frame.h"
 
 #include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
-#include "generic_mesh_render_settings_frame.h"
+#include <QFrame>
 
 namespace vcl::qt {
 

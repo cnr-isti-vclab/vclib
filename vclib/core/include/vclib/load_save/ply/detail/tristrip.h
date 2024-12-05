@@ -23,12 +23,12 @@
 #ifndef VCL_LOAD_SAVE_PLY_DETAIL_TRISTRIP_H
 #define VCL_LOAD_SAVE_PLY_DETAIL_TRISTRIP_H
 
-#include <istream>
+#include "header.h"
 
 #include <vclib/io/read.h>
 #include <vclib/misc/tokenizer.h>
 
-#include "header.h"
+#include <istream>
 
 namespace vcl::detail {
 

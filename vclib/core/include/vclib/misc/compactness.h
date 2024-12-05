@@ -23,9 +23,9 @@
 #ifndef VCL_MISC_COMPACTNESS_H
 #define VCL_MISC_COMPACTNESS_H
 
-#include <vector>
-
 #include <vclib/types.h>
+
+#include <vector>
 
 namespace vcl {
 

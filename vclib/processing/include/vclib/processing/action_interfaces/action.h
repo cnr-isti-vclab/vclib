@@ -23,13 +23,13 @@
 #ifndef VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
 #define VCL_PROCESSING_ACTION_INTERFACES_ACTION_H
 
-#include <algorithm>
-#include <memory>
-
 #include <vclib/misc/logger.h>
 #include <vclib/misc/string.h>
 #include <vclib/processing/meshes/mesh_i.h>
 #include <vclib/types.h>
+
+#include <algorithm>
+#include <memory>
 
 namespace vcl::proc {
 

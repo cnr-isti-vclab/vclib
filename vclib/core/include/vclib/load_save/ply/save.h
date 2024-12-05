@@ -23,14 +23,14 @@
 #ifndef VCL_LOAD_SAVE_PLY_SAVE_H
 #define VCL_LOAD_SAVE_PLY_SAVE_H
 
-#include <vclib/exceptions/io.h>
-#include <vclib/load_save/settings.h>
-#include <vclib/misc/logger.h>
-
 #include "detail/edge.h"
 #include "detail/extra.h"
 #include "detail/face.h"
 #include "detail/vertex.h"
+
+#include <vclib/exceptions/io.h>
+#include <vclib/load_save/settings.h>
+#include <vclib/misc/logger.h>
 
 namespace vcl {
 

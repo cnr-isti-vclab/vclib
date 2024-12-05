@@ -23,9 +23,9 @@
 #ifndef VCL_MISC_TUPLE_H
 #define VCL_MISC_TUPLE_H
 
-#include <tuple>
-
 #include <vclib/types.h>
+
+#include <tuple>
 
 namespace vcl {
 

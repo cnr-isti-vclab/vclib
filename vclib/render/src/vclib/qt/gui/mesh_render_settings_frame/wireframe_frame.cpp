@@ -20,8 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ui_wireframe_frame.h"
 #include <vclib/qt/gui/mesh_render_settings_frame/wireframe_frame.h>
+
+#include "ui_wireframe_frame.h"
 
 #include <QColorDialog>
 #include <QStandardItemModel>

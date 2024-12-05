@@ -23,10 +23,10 @@
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_SETTINGS_H
 
+#include "mesh_render_settings_macros.h"
+
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/core/color.h>
-
-#include "mesh_render_settings_macros.h"
 
 namespace vcl {
 
@@ -545,9 +545,7 @@ public:
                         }
                     }
 
-                    if constexpr (
-                        vcl::HasTexturePaths<MeshType> ||
-                        vcl::HasTextureImages<MeshType>) {
+                    if constexpr (vcl::HasTexturePaths<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m))
                                 mDrawModeCapability0 |= VCL_MRS_SURF_TEX_VERTEX;

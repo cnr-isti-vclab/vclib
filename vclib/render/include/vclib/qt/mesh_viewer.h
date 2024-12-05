@@ -23,11 +23,10 @@
 #ifndef VCL_EXT_QT_MESH_VIEWER_H
 #define VCL_EXT_QT_MESH_VIEWER_H
 
-#include <QWidget>
-
+#include <vclib/qt/gui/text_edit_logger.h>
 #include <vclib/render/drawable/drawable_object_vector.h>
 
-#include <vclib/qt/gui/text_edit_logger.h>
+#include <QWidget>
 
 namespace vcl::qt {
 

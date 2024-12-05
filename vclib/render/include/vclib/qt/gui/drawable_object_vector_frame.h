@@ -23,11 +23,11 @@
 #ifndef VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
 #define VCL_EXT_QT_GUI_DRAWABLE_OBJECT_VECTOR_FRAME_H
 
-#include <QFrame>
+#include "drawable_object_frame.h"
 
 #include <vclib/render/drawable/drawable_object_vector.h>
 
-#include "drawable_object_frame.h"
+#include <QFrame>
 
 namespace vcl::qt {
 

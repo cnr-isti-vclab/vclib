@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_COORDINATE_H
 #define VCL_MESH_COMPONENTS_COORDINATE_H
 
+#include "bases/component.h"
+
 #include <vclib/concepts/mesh/components/coordinate.h>
 #include <vclib/space/core/point.h>
-
-#include "bases/component.h"
 
 namespace vcl::comp {
 

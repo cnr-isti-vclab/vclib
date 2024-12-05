@@ -23,11 +23,11 @@
 #ifndef VCL_SPACE_COMPLEX_MESH_INERTIA_H
 #define VCL_SPACE_COMPLEX_MESH_INERTIA_H
 
-#include <Eigen/Eigenvalues>
-
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/core/point.h>
+
+#include <Eigen/Eigenvalues>
 
 namespace vcl {
 

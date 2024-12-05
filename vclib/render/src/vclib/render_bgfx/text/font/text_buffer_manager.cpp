@@ -25,16 +25,17 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
-#include <bgfx/bgfx.h>
-
-#include <stddef.h> // offsetof
-#include <wchar.h>  // wcslen
-
 #include <vclib/render_bgfx/text/font/text_buffer_manager.h>
+
 #include <vclib/render_bgfx/text/font/utf8.h>
 #include <vclib/render_bgfx/text/font/cube_atlas.h>
 
 #include <vclib/render_bgfx/context.h>
+
+#include <bgfx/bgfx.h>
+
+#include <stddef.h> // offsetof
+#include <wchar.h>  // wcslen
 
 #define MAX_BUFFERED_CHARACTERS (8192 - 5)
 

@@ -23,11 +23,11 @@
 #ifndef VCL_MATH_DISTRIBUTION_H
 #define VCL_MATH_DISTRIBUTION_H
 
+#include <vclib/types.h>
+
 #include <cmath>
 #include <limits>
 #include <set>
-
-#include <vclib/types.h>
 
 namespace vcl {
 

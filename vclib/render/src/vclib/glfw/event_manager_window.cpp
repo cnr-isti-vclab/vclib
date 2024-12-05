@@ -22,8 +22,6 @@
 
 #include <vclib/glfw/event_manager_window.h>
 
-#include <iostream>
-
 #include <vclib/glfw/input.h>
 
 #if defined(__linux__)
@@ -39,6 +37,8 @@
 #endif
 
 #include <GLFW/glfw3native.h>
+
+#include <iostream>
 
 namespace vcl::glfw {
 

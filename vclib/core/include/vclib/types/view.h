@@ -23,8 +23,6 @@
 #ifndef VCL_TYPES_VIEW_H
 #define VCL_TYPES_VIEW_H
 
-#include <ranges>
-
 #define ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
 #if __has_include(<zip_view.hpp>)
 #include <zip_view.hpp>
@@ -34,6 +32,8 @@
 #include "../../../external/zip-views-1.0/zip_view.hpp"
 #endif
 #undef ZIP_VIEW_INJECT_STD_VIEWS_NAMESPACE
+
+#include <ranges>
 
 namespace vcl {
 

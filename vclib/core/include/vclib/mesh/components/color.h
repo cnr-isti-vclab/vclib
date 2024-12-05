@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_COLOR_H
 #define VCL_MESH_COMPONENTS_COLOR_H
 
+#include "bases/component.h"
+
 #include <vclib/concepts/mesh/components/color.h>
 #include <vclib/space/core/color.h>
-
-#include "bases/component.h"
 
 namespace vcl::comp {
 

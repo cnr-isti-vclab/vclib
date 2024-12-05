@@ -26,6 +26,7 @@
 */
 
 #include <vclib/render_bgfx/text/font/text_metrics.h>
+
 #include <vclib/render_bgfx/text/font/utf8.h>
 
 namespace bgfx {

@@ -20,16 +20,17 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include "ui_mesh_render_settings_frame.h"
 #include <vclib/qt/gui/mesh_render_settings_frame.h>
 
-#include <QColorDialog>
-#include <QStandardItemModel>
+#include "ui_mesh_render_settings_frame.h"
 
 #include <vclib/qt/gui/mesh_render_settings_frame/edges_frame.h>
 #include <vclib/qt/gui/mesh_render_settings_frame/points_frame.h>
 #include <vclib/qt/gui/mesh_render_settings_frame/surface_frame.h>
 #include <vclib/qt/gui/mesh_render_settings_frame/wireframe_frame.h>
+
+#include <QColorDialog>
+#include <QStandardItemModel>
 
 namespace vcl::qt {
 

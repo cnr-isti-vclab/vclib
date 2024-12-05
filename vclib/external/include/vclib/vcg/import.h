@@ -23,11 +23,11 @@
 #ifndef VCL_EXT_VCG_IMPORT_H
 #define VCL_EXT_VCG_IMPORT_H
 
+#include "type_mapping.h"
+
 #include <vclib/mesh/requirements.h>
 
 #include <vcg/complex/complex.h>
-
-#include "type_mapping.h"
 
 namespace vcl::vc {
 
@@ -371,12 +371,6 @@ void importMeshFromVCGMesh(
             vcgMesh.bbox.min.X(), vcgMesh.bbox.min.Y(), vcgMesh.bbox.min.Z());
         mesh.boundingBox().max() = PointType(
             vcgMesh.bbox.max.X(), vcgMesh.bbox.max.Y(), vcgMesh.bbox.max.Z());
-    }
-
-    if constexpr (HasTextureImages<MeshType>) {
-        for (const auto& s : vcgMesh.textures) {
-            mesh.pushTexture(s);
-        }
     }
 
     if constexpr (HasTexturePaths<MeshType>) {

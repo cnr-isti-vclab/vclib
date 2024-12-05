@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 #define VCL_MESH_COMPONENTS_POLYGON_BIT_FLAGS_H
 
+#include "bases/container_component.h"
+
 #include <vclib/concepts/mesh/components/bit_flags.h>
 #include <vclib/space/core/bit_set.h>
-
-#include "bases/container_component.h"
 
 namespace vcl::comp {
 

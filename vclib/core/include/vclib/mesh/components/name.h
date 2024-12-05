@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_NAME_H
 #define VCL_MESH_COMPONENTS_NAME_H
 
+#include "bases/component.h"
+
 #include <vclib/concepts/mesh/components/name.h>
 #include <vclib/misc/string.h>
-
-#include "bases/component.h"
 
 namespace vcl::comp {
 

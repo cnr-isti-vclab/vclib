@@ -23,12 +23,12 @@
 #ifndef VCL_PROCESSING_ACTION_INTERFACES_LOAD_IMAGE_ACTION_H
 #define VCL_PROCESSING_ACTION_INTERFACES_LOAD_IMAGE_ACTION_H
 
-#include <vector>
-
 #include "action.h"
 
 #include <vclib/io/file_format.h>
 #include <vclib/space/core/image.h>
+
+#include <vector>
 
 namespace vcl::proc {
 

@@ -30,7 +30,16 @@ set(HEADERS
     loggers.h
     ranges.h
     space.h
+    meshes/components/bounding_box.h
     meshes/components/color.h
+    meshes/components/coordinate.h
+    meshes/components/mark.h
+    meshes/components/name.h
+    meshes/components/normal.h
+    meshes/components/quality.h
+    meshes/components/tex_coord.h
+    meshes/components/textures.h
+    meshes/components/transform_matrix.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h
@@ -45,9 +54,11 @@ set(HEADERS
     space/plane.h
     space/point.h
     space/polygon.h
+    space/principal_curvature.h
     space/sampler.h
     space/segment.h
     space/sphere.h
+    space/tex_coord.h
     space/texture.h
     space/triangle.h
 )
@@ -64,4 +75,12 @@ vclib_add_test(
 target_sources(vclib-core-test-000-static-asserts
   PRIVATE
 
+
+
+
+
+
+
+
 )
+

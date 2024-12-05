@@ -23,8 +23,6 @@
 #ifndef VCL_ALGORITHMS_MESH_FACE_TOPOLOGY_H
 #define VCL_ALGORITHMS_MESH_FACE_TOPOLOGY_H
 
-#include <set>
-
 #include <vclib/concepts/mesh.h>
 #include <vclib/exceptions/mesh.h>
 #include <vclib/mesh/iterators/face/edge_adj_face_iterator.h>
@@ -32,6 +30,8 @@
 #include <vclib/space/complex/mesh_pos.h>
 #include <vclib/space/core/polygon.h>
 #include <vclib/views/mesh.h>
+
+#include <set>
 
 namespace vcl {
 

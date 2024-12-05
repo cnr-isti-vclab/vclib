@@ -23,9 +23,9 @@
 #ifndef VCL_EXT_GLFW_VIEWER_WINDOW_H
 #define VCL_EXT_GLFW_VIEWER_WINDOW_H
 
-#include <vclib/render/viewer_canvas.h>
-
 #include "event_manager_window.h"
+
+#include <vclib/render/viewer_canvas.h>
 
 namespace vcl::glfw {
 

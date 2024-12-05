@@ -23,12 +23,12 @@
 #ifndef VCL_ALGORITHMS_MESH_CREATE_SPHERE_H
 #define VCL_ALGORITHMS_MESH_CREATE_SPHERE_H
 
+#include "icosahedron.h"
+
 #include <vclib/algorithms/mesh/clean.h>
 #include <vclib/algorithms/mesh/update/transform.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/core/sphere.h>
-
-#include "icosahedron.h"
 
 namespace vcl {
 

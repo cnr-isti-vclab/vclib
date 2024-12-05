@@ -23,12 +23,12 @@
 #ifndef VCL_IO_FILE_FORMAT_H
 #define VCL_IO_FILE_FORMAT_H
 
+#include <vclib/concepts/ranges/range.h>
+#include <vclib/misc/string.h>
+
 #include <algorithm>
 #include <string>
 #include <vector>
-
-#include <vclib/concepts/ranges/range.h>
-#include <vclib/misc/string.h>
 
 namespace vcl {
 

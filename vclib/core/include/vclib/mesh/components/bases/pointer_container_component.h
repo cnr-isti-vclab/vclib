@@ -23,10 +23,10 @@
 #ifndef VCL_MESH_COMPONENTS_BASES_POINTER_CONTAINER_COMPONENT_H
 #define VCL_MESH_COMPONENTS_BASES_POINTER_CONTAINER_COMPONENT_H
 
+#include "container_component.h"
+
 #include <vclib/mesh/iterators/components/index_from_pointer_iterator.h>
 #include <vclib/misc/iterators/const_pointer_iterator.h>
-
-#include "container_component.h"
 
 namespace vcl::comp {
 

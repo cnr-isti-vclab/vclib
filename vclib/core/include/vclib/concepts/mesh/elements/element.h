@@ -23,8 +23,6 @@
 #ifndef VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
 #define VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
 
-#include <string>
-
 #include <vclib/types.h>
 
 namespace vcl {

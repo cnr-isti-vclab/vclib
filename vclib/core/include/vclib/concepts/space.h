@@ -30,9 +30,11 @@
 #include "space/matrix.h"
 #include "space/point.h"
 #include "space/polygon.h"
+#include "space/principal_curvature.h"
 #include "space/sampler.h"
 #include "space/segment.h"
 #include "space/sphere.h"
+#include "space/tex_coord.h"
 #include "space/texture.h"
 #include "space/triangle.h"
 

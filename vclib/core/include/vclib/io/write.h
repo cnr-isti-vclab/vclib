@@ -23,16 +23,16 @@
 #ifndef VCL_IO_WRITE_H
 #define VCL_IO_WRITE_H
 
-#include <filesystem>
-#include <fstream>
-#include <typeindex>
+#include "file_info.h"
+#include "file_type.h"
+#include "serialization/serialize.h"
 
 #include <vclib/concepts/mesh/elements/element.h>
 #include <vclib/types.h>
 
-#include "file_info.h"
-#include "file_type.h"
-#include "serialization/serialize.h"
+#include <filesystem>
+#include <fstream>
+#include <typeindex>
 
 namespace vcl {
 

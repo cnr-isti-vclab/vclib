@@ -23,10 +23,10 @@
 #ifndef VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_GENERIC_MESH_RENDER_SETTINGS_FRAME_H
 #define VCL_EXT_QT_GUI_MESH_RENDER_SETTINGS_FRAME_GENERIC_MESH_RENDER_SETTINGS_FRAME_H
 
+#include <vclib/render/drawable/mesh/mesh_render_settings.h>
+
 #include <QFrame>
 #include <QPushButton>
-
-#include <vclib/render/drawable/mesh/mesh_render_settings.h>
 
 namespace vcl::qt {
 

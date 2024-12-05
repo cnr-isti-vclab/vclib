@@ -23,15 +23,15 @@
 #ifndef VCL_IO_SERIALIZATION_DESERIALIZE_H
 #define VCL_IO_SERIALIZATION_DESERIALIZE_H
 
-#include <array>
-#include <bit>
-#include <istream>
-#include <vector>
+#include "endian.h"
 
 #include <vclib/concepts/serialization.h>
 #include <vclib/concepts/types.h>
 
-#include "endian.h"
+#include <array>
+#include <bit>
+#include <istream>
+#include <vector>
 
 namespace vcl {
 

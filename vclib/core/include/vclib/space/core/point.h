@@ -23,15 +23,14 @@
 #ifndef VCL_SPACE_CORE_POINT_H
 #define VCL_SPACE_CORE_POINT_H
 
-#include <compare>
-
-#include <Eigen/Core>
-#include <Eigen/Geometry>
-
 #include <vclib/concepts/space/point.h>
 #include <vclib/io/serialization.h>
 #include <vclib/math/base.h>
 #include <vclib/misc/hash.h>
+
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <compare>
 
 namespace vcl {
 

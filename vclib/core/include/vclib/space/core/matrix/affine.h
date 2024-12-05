@@ -23,10 +23,10 @@
 #ifndef VCL_SPACE_CORE_MATRIX_AFFINE_H
 #define VCL_SPACE_CORE_MATRIX_AFFINE_H
 
-#include <Eigen/Core>
-
 #include <vclib/concepts/space/matrix.h>
 #include <vclib/concepts/space/point.h>
+
+#include <Eigen/Core>
 
 namespace vcl {
 

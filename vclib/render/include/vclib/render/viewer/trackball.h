@@ -23,12 +23,12 @@
 #ifndef VCL_RENDER_VIEWER_TRACKBALL_H
 #define VCL_RENDER_VIEWER_TRACKBALL_H
 
-#include <variant>
+#include "camera.h"
+#include "lights/directional_light.h"
 
 #include <vclib/space/core/quaternion.h>
 
-#include "camera.h"
-#include "lights/directional_light.h"
+#include <variant>
 
 namespace vcl {
 

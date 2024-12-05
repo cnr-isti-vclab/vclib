@@ -23,14 +23,14 @@
 #ifndef VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 #define VCL_RENDER_DRAWABLE_MESH_MESH_RENDER_DATA_H
 
+#include "mesh_render_settings.h"
+
 #include <vclib/algorithms/core/polygon.h>
 #include <vclib/math/min_max.h>
 #include <vclib/mesh/requirements.h>
 #include <vclib/space/complex/tri_poly_index_bimap.h>
 #include <vclib/space/core/image.h>
 #include <vclib/space/core/texture.h>
-
-#include "mesh_render_settings.h"
 
 namespace vcl {
 
@@ -656,13 +656,6 @@ private:
 
     void fillTextures(const MeshType& m)
     {
-        if constexpr (vcl::HasTexturePaths<MeshType>) {
-            for (uint i = 0; i < m.textureNumber(); ++i) {
-                vcl::Image txt(m.meshBasePath() + m.texturePath(i));
-                txt.mirror();
-                mTextures.push_back(txt);
-            }
-        }
         if constexpr (vcl::HasTextureImages<MeshType>) {
             for (const vcl::Texture& t : m.textures()) {
                 if (t.image().isNull()) {
@@ -674,6 +667,13 @@ private:
                     mTextures.push_back(t.image());
                     mTextures.back().mirror();
                 }
+            }
+        }
+        else if constexpr (vcl::HasTexturePaths<MeshType>) {
+            for (uint i = 0; i < m.textureNumber(); ++i) {
+                vcl::Image txt(m.meshBasePath() + m.texturePath(i));
+                txt.mirror();
+                mTextures.push_back(txt);
             }
         }
     }

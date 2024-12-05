@@ -25,8 +25,6 @@
 
 #include <string>
 
-#include "component.h"
-
 namespace vcl::comp {
 
 /**

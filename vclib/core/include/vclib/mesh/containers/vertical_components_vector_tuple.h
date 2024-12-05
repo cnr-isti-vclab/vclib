@@ -23,14 +23,14 @@
 #ifndef VCL_MESH_CONTAINERS_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
 #define VCL_MESH_CONTAINERS_VERTICAL_COMPONENTS_VECTOR_TUPLE_H
 
-#include <array>
-#include <tuple>
-#include <vector>
-
 #include <vclib/concepts/mesh/components/component.h>
 #include <vclib/misc/compactness.h>
 #include <vclib/misc/tuple.h>
 #include <vclib/types.h>
+
+#include <array>
+#include <tuple>
+#include <vector>
 
 namespace vcl::mesh {
 

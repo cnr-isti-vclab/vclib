@@ -23,10 +23,10 @@
 #ifndef VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H
 #define VCL_PROCESSING_ACTIONS_FILTER_MESH_CREATE_H
 
+#include "create/create_cone_filter.h"
+
 #include <memory>
 #include <vector>
-
-#include "create/create_cone_filter.h"
 
 namespace vcl::proc {
 

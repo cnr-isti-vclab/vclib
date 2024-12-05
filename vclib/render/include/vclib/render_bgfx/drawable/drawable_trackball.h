@@ -23,14 +23,13 @@
 #ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
 #define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
 
+#include "uniforms/drawable_trackball_uniforms.h"
+
 #include <vclib/render/drawable/trackball/trackball_render_data.h>
 #include <vclib/render/interfaces/drawable_object_i.h>
-
-#include <vclib/render_bgfx/context.h>
-
 #include <vclib/space/core/matrix.h>
 
-#include "uniforms/drawable_trackball_uniforms.h"
+#include <vclib/render_bgfx/context.h>
 
 namespace vcl {
 

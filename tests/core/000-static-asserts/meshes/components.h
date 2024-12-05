@@ -23,11 +23,31 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
+#include "components/bounding_box.h"
 #include "components/color.h"
+#include "components/coordinate.h"
+#include "components/mark.h"
+#include "components/name.h"
+#include "components/normal.h"
+#include "components/principal_curvature.h"
+#include "components/quality.h"
+#include "components/tex_coord.h"
+#include "components/textures.h"
+#include "components/transform_matrix.h"
 
 void componentsStaticAsserts()
 {
+    boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
+    coordinateComponentStaticAsserts();
+    markComponentStaticAsserts();
+    nameComponentStaticAsserts();
+    normalComponentStaticAsserts();
+    principalCurvatureComponentStaticAsserts();
+    qualityComponentStaticAsserts();
+    texCoordComponentStaticAsserts();
+    texturesComponentStaticAsserts();
+    transformMatrixComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H

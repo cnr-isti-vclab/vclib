@@ -23,11 +23,11 @@
 #ifndef VCL_MISC_LOGGER_NULL_LOGGER_H
 #define VCL_MISC_LOGGER_NULL_LOGGER_H
 
-#include <string>
+#include "abstract_logger.h"
 
 #include <vclib/concepts/logger.h>
 
-#include "abstract_logger.h"
+#include <string>
 
 namespace vcl {
 
