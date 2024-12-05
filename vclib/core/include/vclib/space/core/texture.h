@@ -41,11 +41,33 @@ public:
     /**
      * @brief Load a texture from a file.
      *
-     * @param[in] filename: the name of the file.
+     * @param[in] path: the path of the texture file.
      */
-    Texture(const std::string& filename) : mPath(filename)
+    Texture(const std::string& path) : mPath(path)
     {
-        mImg.load(filename);
+        mImg.load(path);
+    }
+
+    /**
+     * @brief Creates a Texture object, with the given image and its path.
+     *
+     * @param[in] img: the image.
+     * @param[in] path: the path of the texture file.
+     */
+    Texture(const vcl::Image& img, const std::string& path) :
+            mImg(img), mPath(path)
+    {
+    }
+
+    /**
+     * @brief Creates a Texture object, with the given image and its path.
+     *
+     * @param[in] img: the image.
+     * @param[in] path: the path of the texture file.
+     */
+    Texture(vcl::Image&& img, const std::string& path) :
+            mImg(std::move(img)), mPath(path)
+    {
     }
 
     /**
