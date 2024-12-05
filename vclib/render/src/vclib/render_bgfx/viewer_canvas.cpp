@@ -142,9 +142,10 @@ void ViewerCanvas::onMouseDoubleClick(
     const Point2d p(x,y);
 
     // get the homogeneous NDC flag
-    const bool homogeneousNDC = Context::capabilites().homogeneousDepth;
+    const bool homogeneousNDC =
+        Context::instance().capabilites().homogeneousDepth;
 
-    // create the callback
+    // matrices
     const auto proj = projectionMatrix();
     const auto view = viewMatrix();
     // viewport
@@ -153,6 +154,7 @@ void ViewerCanvas::onMouseDoubleClick(
         .0f,
         float(size().x()),
         float(size().y())};
+    // create the callback
     auto callback = [=, this](const ReadData & data) {
 
         assert(std::holds_alternative<std::vector<float>>(data));

@@ -48,8 +48,11 @@ class DrawableDirectionalLight : public DrawableObjectI
 
     DrawableDirectionalLightUniforms mUniform;
 
-    bgfx::ProgramHandle mProgram = Context::programManager().getProgram(
-        VclProgram::DRAWABLE_DIRECTIONAL_LIGHT);
+    // TODO: can we be sure that this is called after the context initialization
+    // triggered by a window?
+    bgfx::ProgramHandle mProgram =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_DIRECTIONAL_LIGHT);
 
 public:
     DrawableDirectionalLight();

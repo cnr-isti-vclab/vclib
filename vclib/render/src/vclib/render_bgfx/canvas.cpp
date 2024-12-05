@@ -28,33 +28,13 @@
 
 namespace vcl {
 
-static const bgfx::TextureFormat::Enum kDefaultColorFormat =
-    bgfx::TextureFormat::RGBA8;
-
-static const bgfx::TextureFormat::Enum kDefaultDepthFormat =
-    bgfx::TextureFormat::D24S8;
-
-// TODO: make at least the clear color configurable
-static const uint32_t kDefaultClearColor   = 0xffffffff;
-static const float    kDefaultClearDepth   = 1.0f;
-static const uint8_t  kDefaultClearStencil = 0;
-
-static const uint64_t kBlitFormat = 0
-        | BGFX_TEXTURE_BLIT_DST
-        | BGFX_TEXTURE_READ_BACK
-        | BGFX_SAMPLER_MIN_POINT
-        | BGFX_SAMPLER_MAG_POINT
-        | BGFX_SAMPLER_MIP_POINT
-        | BGFX_SAMPLER_U_CLAMP
-        | BGFX_SAMPLER_V_CLAMP;
-
 Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
 {
     // save window id
     mWinId = winId;
 
     // on screen framebuffer
-    mViewId          = Context::requestViewId(mWinId, displayId);
+    mViewId = Context::instance(mWinId, displayId).requestViewId();
 
     mTextView.init(width, height);
 
@@ -67,36 +47,11 @@ Canvas::~Canvas()
     // deallocate the framebuffers
     if (bgfx::isValid(mFbh))
         bgfx::destroy(mFbh);
-}
 
-bool Canvas::screenshot(const std::string& filename, uint width, uint height)
-{
-    if (!supportsReadback()                // feature unsupported
-        || mReadRequest != std::nullopt) { // read already requested
-        return false;
-    }
-
-    // get size
-    auto size = mSize;
-    if (width != 0 && height != 0)
-        size = {width, height};
-
-    // color data callback
-    CallbackReadBuffer callback = [=](const ReadData & data) {
-        assert(std::holds_alternative<ReadBufferRequest::ByteData>(data));
-        const auto & d = std::get<ReadBufferRequest::ByteData>(data);
-
-        // save rgb image data into file using stb depending on file
-        try {
-            vcl::saveImageData(filename, size.x(), size.y(), d.data());
-        }
-        catch (const std::exception & e) {
-            std::cerr << "Error saving image: " << e.what() << std::endl;
-        }
-    };
-
-    mReadRequest.emplace(size, callback);
-    return true;
+    // release the view id
+    auto & ctx = Context::instance();
+    if (ctx.isValidViewId(mViewId))
+        ctx.releaseViewId(mViewId);
 }
 
 void Canvas::enableText(bool b)
@@ -162,9 +117,15 @@ void Canvas::onResize(uint width, uint height)
     if (bgfx::isValid(mFbh))
         bgfx::destroy(mFbh);
 
-    mFbh = createFrameBufferAndInitView(
-        mWinId, mViewId, width, height, true);
-    assert(!bgfx::isValid(mFbh)); // the canvas backbuffer is always non valid
+    auto & ctx = Context::instance();
+    mFbh = ctx.createFramebufferAndInitView(
+        mWinId,
+        mViewId,
+        width,
+        height,
+        true);
+    // the canvas framebuffer is non valid for the default window
+    assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
 
     // resize the text view
     mTextView.resize(width, height);
@@ -208,9 +169,10 @@ bool Canvas::readDepth(
     const Point2i& point,
     CallbackReadBuffer callback)
 {
-    if (!supportsReadback()               // feature unsupported
-        || mReadRequest != std::nullopt   // read already requested
-        || point.x() < 0 || point.y() < 0 // point out of bounds
+
+    if (!Context::instance().supportsReadback() // feature unsupported
+        || mReadRequest != std::nullopt         // read already requested
+        || point.x() < 0 || point.y() < 0       // point out of bounds
         || point.x() >= mSize.x() || point.y() >= mSize.y()) {
         return false;
     }
@@ -219,11 +181,34 @@ bool Canvas::readDepth(
     return true;
 }
 
-bool Canvas::supportsReadback() const
+bool Canvas::screenshot(const std::string& filename, uint width, uint height)
 {
-    return (Context::capabilites().supported  &
-        (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK)) == 
-        (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK);
+    if (!Context::instance().supportsReadback() // feature unsupported
+        || mReadRequest != std::nullopt) {      // read already requested
+        return false;
+    }
+
+    // get size
+    auto size = mSize;
+    if (width != 0 && height != 0)
+        size = {width, height};
+
+    // color data callback
+    CallbackReadBuffer callback = [=](const ReadData & data) {
+        assert(std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
+        const auto & d = std::get<ReadFramebufferRequest::ByteData>(data);
+
+        // save rgb image data into file using stb depending on file
+        try {
+            vcl::saveImageData(filename, size.x(), size.y(), d.data());
+        }
+        catch (const std::exception & e) {
+            std::cerr << "Error saving image: " << e.what() << std::endl;
+        }
+    };
+
+    mReadRequest.emplace(size, callback);
+    return true;
 }
 
 void Canvas::offscreenFrame()
@@ -241,121 +226,6 @@ void Canvas::offscreenFrame()
     mViewId    = mReadRequest->viewId();
     drawContent();
     mViewId = tmpId;
-}
-
-bgfx::FrameBufferHandle Canvas::createOffscreenFrameBufferAndInitView(
-    bgfx::ViewId view,
-    uint         width,
-    uint         height,
-    bool         clear)
-{
-    return createFrameBufferAndInitView(
-        nullptr, view, width, height, clear);
-}
-
-static const uint64_t kRenderBufferflags = 0
-        | BGFX_TEXTURE_RT
-        | BGFX_SAMPLER_MIN_POINT
-        | BGFX_SAMPLER_MAG_POINT
-        | BGFX_SAMPLER_MIP_POINT
-        | BGFX_SAMPLER_U_CLAMP
-        | BGFX_SAMPLER_V_CLAMP;
-
-bgfx::FrameBufferHandle Canvas::createFrameBufferAndInitView(
-    void*        winId,
-    bgfx::ViewId view,
-    uint         width,
-    uint         height,
-    bool         clear)
-{
-    const bool offscreen = (winId == nullptr);
-
-    bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
-
-    if (offscreen) {
-        // create offscreen framebuffer with explicit textures
-        bgfx::TextureHandle fbtextures[2];
-        fbtextures[0] = bgfx::createTexture2D(
-              uint16_t(width)
-            , uint16_t(height)
-            , false
-            , 1
-            , getOffscreenColorFormat()
-            , kRenderBufferflags
-            );
-
-        fbtextures[1] = bgfx::createTexture2D(
-              uint16_t(width)
-            , uint16_t(height)
-            , false
-            , 1
-            , getOffscreenDepthFormat()
-            , kRenderBufferflags
-            );
-
-        assert(bgfx::isValid(fbtextures[0]));
-        assert(bgfx::isValid(fbtextures[1]));
-        fbh = bgfx::createFrameBuffer(2, fbtextures, true);
-        assert(bgfx::isValid(fbh));
-
-        bgfx::setViewFrameBuffer(view, fbh);
-    }
-    else
-    {
-        bgfx::reset(width, height, BGFX_RESET_VSYNC, kDefaultColorFormat);
-    }
-
-    if (clear) {
-        bgfx::setViewClear(
-            view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
-            kDefaultClearColor, kDefaultClearDepth, kDefaultClearStencil);
-    }
-    bgfx::setViewRect(view, 0, 0, width, height);
-    bgfx::touch(view);
-
-    return fbh;
-}
-
-Point2<uint16_t> Canvas::getBlitDepthSize(Point2<uint> fbSize)
-{
-    assert(!fbSize.isZero());
-
-    // get read depth size
-    const auto renderType = Context::renderType();
-    switch (renderType) {
-    case bgfx::RendererType::Direct3D11:
-    case bgfx::RendererType::Direct3D12:
-        return {uint16_t(fbSize.x()), uint16_t(fbSize.y())};
-    case bgfx::RendererType::Vulkan:
-    case bgfx::RendererType::Metal:
-        return {1, 1};
-    default:
-        assert(false && "blit depth for untested render type");
-        break;
-    }
-
-    return {0,0};
-}
-
-bgfx::TextureFormat::Enum Canvas::getOffscreenColorFormat()
-{
-    return kDefaultColorFormat;
-}
-
-bgfx::TextureFormat::Enum Canvas::getOffscreenDepthFormat()
-{
-    const auto renderType = Context::renderType();
-    switch (renderType) {
-    case bgfx::RendererType::Direct3D11:
-    case bgfx::RendererType::Direct3D12:
-    case bgfx::RendererType::Vulkan:
-        return bgfx::TextureFormat::D32F;
-    case bgfx::RendererType::Metal:
-        return bgfx::TextureFormat::D32;
-    default:
-        assert(false && "offscreen depth untested for current render type");
-    }
-    return bgfx::TextureFormat::Count;
 }
 
 } // namespace vcl

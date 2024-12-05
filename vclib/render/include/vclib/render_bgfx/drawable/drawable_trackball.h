@@ -41,8 +41,11 @@ class DrawableTrackBall : public DrawableObjectI, protected TrackballRenderData
     bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
     bgfx::IndexBufferHandle  mEdgeIndexBH   = BGFX_INVALID_HANDLE;
 
+    // TODO: can we be sure that this is called after the context initialization
+    // triggered by a window?
     bgfx::ProgramHandle mProgram =
-        Context::programManager().getProgram(VclProgram::DRAWABLE_TRACKBALL);
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_TRACKBALL);
 
     DrawableTrackballUniforms mUniforms;
 

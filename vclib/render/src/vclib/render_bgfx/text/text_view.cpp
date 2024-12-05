@@ -35,7 +35,7 @@ TextView::TextView()
 TextView::~TextView()
 {
     if (isTextEnabled())
-        Context::releaseViewId(mView);
+        Context::instance().releaseViewId(mView);
 }
 
 void TextView::init(uint width, uint height)
@@ -55,15 +55,16 @@ void TextView::init(uint width, uint height)
 
 void TextView::enableText(bool b)
 {
-    if (isViewValid(mView)) {
+    auto & ctx = Context::instance();
+    if (ctx.isValidViewId(mView)) {
         if (!b) {
-            Context::releaseViewId(mView);
-            mView = BGFX_INVALID_HANDLE;
+            ctx.releaseViewId(mView);
+            mView = BGFX_INVALID_VIEW;
         }
     }
     else {
         if (b) {
-            mView = Context::requestViewId();
+            mView = ctx.requestViewId();
             updateProjMatrix();
             bgfx::setViewRect(mView, 0, 0, mWidth, mHeight);
             bgfx::touch(mView);
@@ -73,7 +74,7 @@ void TextView::enableText(bool b)
 
 bool TextView::isTextEnabled() const
 {
-    return isViewValid(mView);
+    return Context::instance().isValidViewId(mView);
 }
 
 void TextView::setTextFont(VclFont::Enum font, uint fontSize)

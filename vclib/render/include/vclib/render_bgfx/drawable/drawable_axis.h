@@ -53,7 +53,8 @@ class DrawableAxis : public DrawableObjectI
     MeshRenderBuffers<vcl::TriMesh> mArrowBuffers[2]; // 0: cylinder, 1: cone
 
     bgfx::ProgramHandle mProgram =
-        Context::programManager().getProgram(VclProgram::DRAWABLE_AXIS);
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_AXIS);
 
     mutable DrawableAxisUniforms mUniforms;
 

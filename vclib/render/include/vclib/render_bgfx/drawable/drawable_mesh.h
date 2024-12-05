@@ -40,7 +40,7 @@ class DrawableMesh : public DrawableMeshI, public MeshType
     MeshRenderBuffers<MeshType> mMRB;
 
     bgfx::ProgramHandle mProgram =
-        Context::programManager().getProgram(VclProgram::DRAWABLE_MESH);
+        Context::instance().programManager().getProgram(VclProgram::DRAWABLE_MESH);
 
     DrawableMeshUniforms               mMeshUniforms;
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
