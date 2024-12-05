@@ -65,8 +65,12 @@ namespace vcl {
  */
 class Canvas : public virtual vcl::EventManagerI
 {
+public:
     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
+    using CallbackReadBuffer     = ReadFramebufferRequest::CallbackReadBuffer;
+    using ReadData               = ReadFramebufferRequest::ReadData;
 
+private:
     void* mWinId  = nullptr;
 
     // frame buffer for drawing the canvas
@@ -121,9 +125,6 @@ public:
     void onKeyPress(Key::Enum key) override;
 
     bool supportsReadback() const;
-
-    using CallbackReadBuffer = ReadFramebufferRequest::CallbackReadBuffer;
-    using ReadData = ReadFramebufferRequest::ReadData;
 
     [[nodiscard]]
     bool readDepth(
