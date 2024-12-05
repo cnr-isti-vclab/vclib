@@ -30,7 +30,6 @@
 #include <vclib/render_bgfx/read_framebuffer_request.h>
 
 #include <optional>
-#include <variant>
 
 namespace vcl {
 
