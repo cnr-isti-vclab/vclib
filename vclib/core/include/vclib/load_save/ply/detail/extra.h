@@ -44,19 +44,17 @@ void readPlyTextures(
     if constexpr (vcl::HasTexturePaths<MeshType>) {
         for (const std::string& str : header.textureFileNames()) {
             mesh.pushTexturePath(str);
-        }
-    }
-    if constexpr (vcl::HasTextureImages<MeshType>) {
-        for (const std::string& str : header.textureFileNames()) {
-            vcl::Texture t;
-            t.path() = str;
-            if (settings.loadTextureImages) {
-                bool b = t.image().load(mesh.meshBasePath() + str);
-                if (!b) {
-                    log.log("Cannot load texture " + str, LogType::WARNING_LOG);
+            if constexpr (vcl::HasTextureImages<MeshType>) {
+                uint k = mesh.textureNumber() - 1;
+                if (settings.loadTextureImages) {
+                    bool b =
+                        mesh.texture(k).image().load(mesh.meshBasePath() + str);
+                    if (!b) {
+                        log.log(
+                            "Cannot load texture " + str, LogType::WARNING_LOG);
+                    }
                 }
             }
-            mesh.pushTexture(t);
         }
     }
 }
@@ -69,19 +67,18 @@ void writePlyTextures(
     const SaveSettings& settings)
 {
     if constexpr (vcl::HasTexturePaths<MeshType>) {
+        uint k = 0;
         for (const std::string& str : mesh.texturePaths()) {
             header.pushTextureFileName(str);
-        }
-    }
-    if constexpr (vcl::HasTextureImages<MeshType>) {
-        for (const vcl::Texture& t : mesh.textures()) {
-            header.pushTextureFileName(t.path());
-            if (settings.saveTextureImages) {
-                try {
-                    t.image().save(mesh.meshBasePath() + t.path());
-                }
-                catch (const std::runtime_error& e) {
-                    log.log(e.what(), LogType::WARNING_LOG);
+            k++;
+            if constexpr (vcl::HasTextureImages<MeshType>) {
+                if (settings.saveTextureImages) {
+                    try {
+                        mesh.texture(k).image().save(mesh.meshBasePath() + str);
+                    }
+                    catch (const std::runtime_error& e) {
+                        log.log(e.what(), LogType::WARNING_LOG);
+                    }
                 }
             }
         }

@@ -147,11 +147,6 @@ void loadObjMaterials(
                     mat.mapId = mesh.textureNumber();
                     mesh.pushTexturePath(mat.map_Kd);
                 }
-                else if constexpr (HasTextureImages<MeshType>) {
-                    loadedInfo.setTextures();
-                    mat.mapId = mesh.textureNumber();
-                    mesh.pushTexture(mat.map_Kd);
-                }
                 else {
                     mat.mapId = nt++;
                 }
@@ -478,7 +473,7 @@ void loadObj(
     // the current material, set by 'usemtl'
     detail::ObjMaterial currentMaterial;
 
-    if constexpr (HasTexturePaths<MeshType> || HasTextureImages<MeshType>) {
+    if constexpr (HasTexturePaths<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
 

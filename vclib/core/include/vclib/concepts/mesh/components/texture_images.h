@@ -24,6 +24,7 @@
 #define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H
 
 #include "component.h"
+#include "texture_paths.h"
 
 #include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/ranges/range.h>
@@ -41,6 +42,7 @@ namespace vcl::comp {
  *
  * @ingroup components_concepts
  */
+// TODO: reuse HasTexturePaths concept
 template<typename T>
 concept HasTextureImages =
     requires (T&& obj, typename RemoveRef<T>::TextureType t) {

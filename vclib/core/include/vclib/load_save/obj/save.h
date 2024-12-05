@@ -74,9 +74,6 @@ ObjMaterial objMaterialFromFace(
             if constexpr (HasTexturePaths<MeshType>) {
                 mat.map_Kd = m.texturePath(f.textureIndex());
             }
-            if constexpr (HasTextureImages<MeshType>) {
-                mat.map_Kd = m.texture(f.textureIndex()).path();
-            }
         }
     }
     return mat;

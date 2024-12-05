@@ -545,9 +545,7 @@ public:
                         }
                     }
 
-                    if constexpr (
-                        vcl::HasTexturePaths<MeshType> ||
-                        vcl::HasTextureImages<MeshType>) {
+                    if constexpr (vcl::HasTexturePaths<MeshType>) {
                         if constexpr (vcl::HasPerVertexTexCoord<MeshType>) {
                             if (vcl::isPerVertexTexCoordAvailable(m))
                                 mDrawModeCapability0 |= VCL_MRS_SURF_TEX_VERTEX;

@@ -656,13 +656,6 @@ private:
 
     void fillTextures(const MeshType& m)
     {
-        if constexpr (vcl::HasTexturePaths<MeshType>) {
-            for (uint i = 0; i < m.textureNumber(); ++i) {
-                vcl::Image txt(m.meshBasePath() + m.texturePath(i));
-                txt.mirror();
-                mTextures.push_back(txt);
-            }
-        }
         if constexpr (vcl::HasTextureImages<MeshType>) {
             for (const vcl::Texture& t : m.textures()) {
                 if (t.image().isNull()) {
@@ -674,6 +667,13 @@ private:
                     mTextures.push_back(t.image());
                     mTextures.back().mirror();
                 }
+            }
+        }
+        else if constexpr (vcl::HasTexturePaths<MeshType>) {
+            for (uint i = 0; i < m.textureNumber(); ++i) {
+                vcl::Image txt(m.meshBasePath() + m.texturePath(i));
+                txt.mirror();
+                mTextures.push_back(txt);
             }
         }
     }

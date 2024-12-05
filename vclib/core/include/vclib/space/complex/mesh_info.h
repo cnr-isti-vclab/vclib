@@ -265,8 +265,7 @@ public:
             //         setEdgeColors(true, UCHAR);
         }
 
-        if constexpr (
-            vcl::HasTexturePaths<Mesh> || vcl::HasTextureImages<Mesh>) {
+        if constexpr (vcl::HasTexturePaths<Mesh>) {
             if (m.textureNumber() > 0) {
                 setTextures(true);
             }

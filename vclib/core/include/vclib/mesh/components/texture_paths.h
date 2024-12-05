@@ -27,6 +27,7 @@
 
 #include <vclib/concepts/mesh/components/texture_images.h>
 #include <vclib/concepts/mesh/components/texture_paths.h>
+#include <vclib/io/serialization.h>
 #include <vclib/types/view.h>
 
 #include <string>
@@ -224,10 +225,6 @@ protected:
     void importFrom(const Element& e, bool = true)
     {
         if constexpr (HasTexturePaths<Element>) {
-            texPaths()     = e.texPaths();
-            meshBasePath() = e.meshBasePath();
-        }
-        if constexpr (HasTextureImages<Element>) {
             texPaths().clear();
             for (const auto& tex : e.textures()) {
                 texPaths().push_back(tex.path());

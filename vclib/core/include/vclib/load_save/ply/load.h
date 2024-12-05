@@ -59,7 +59,7 @@ void loadPly(
     if constexpr (HasName<MeshType>) {
         m.name() = FileInfo::fileNameWithoutExtension(filename);
     }
-    if constexpr (HasTexturePaths<MeshType> || HasTextureImages<MeshType>) {
+    if constexpr (HasTexturePaths<MeshType>) {
         m.meshBasePath() = FileInfo::pathWithoutFileName(filename);
     }
 
