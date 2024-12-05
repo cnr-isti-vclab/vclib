@@ -78,6 +78,20 @@ void ViewerWindow::draw()
 }
 #endif
 
+void ViewerWindow::onKeyPress(Key::Enum key)
+{
+    switch (key) {
+    case Key::S:
+        if (modifiers()[KeyModifier::CONTROL]) {
+            if (!ViewerCanvas::screenshot("screenshot.png"))
+                std::cerr << "Failed to save screenshot" << std::endl;
+        }
+        break;
+
+    default: ViewerCanvas::onKeyPress(key); break;
+    }
+}
+
 void ViewerWindow::onResize(unsigned int width, unsigned int height)
 {
     ViewerCanvas::onResize(width, height);

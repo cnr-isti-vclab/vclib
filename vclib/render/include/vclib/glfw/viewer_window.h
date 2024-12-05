@@ -56,6 +56,8 @@ protected:
     void draw() override;
 #endif
 
+    void onKeyPress(Key::Enum key) override;
+
     void onResize(uint width, uint height) override;
 };
 
