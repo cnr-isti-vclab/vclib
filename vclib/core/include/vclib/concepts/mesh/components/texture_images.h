@@ -23,11 +23,8 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_IMAGES_H
 
-#include "component.h"
 #include "texture_paths.h"
 
-#include <vclib/concepts/const_correctness.h>
-#include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/space/texture.h>
 
 #include <string>
@@ -44,16 +41,13 @@ namespace vcl::comp {
  */
 // TODO: reuse HasTexturePaths concept
 template<typename T>
-concept HasTextureImages =
+concept HasTextureImages = HasTexturePaths<T> &&
     requires (T&& obj, typename RemoveRef<T>::TextureType t) {
         typename RemoveRef<T>::TextureType;
         typename RemoveRef<T>::TextureIterator;
         typename RemoveRef<T>::ConstTextureIterator;
 
-        { obj.textureNumber() } -> std::same_as<uint>;
         { obj.texture(uint()) } -> TextureConcept;
-
-        { obj.meshBasePath() } -> std::convertible_to<std::string>;
 
         { obj.textureBegin() } -> std::input_iterator;
         { obj.textureEnd() } -> std::input_iterator;
@@ -61,8 +55,6 @@ concept HasTextureImages =
 
         // non const requirements
         requires vcl::IsConst<T> || requires {
-            { obj.meshBasePath() } -> std::same_as<std::string&>;
-
             { obj.clearTextures() } -> std::same_as<void>;
             { obj.pushTexture(std::string()) } -> std::same_as<void>;
             { obj.pushTexture(t) } -> std::same_as<void>;

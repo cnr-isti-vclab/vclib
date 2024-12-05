@@ -26,6 +26,7 @@
 #include "component.h"
 
 #include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts/const_correctness.h>
 
 #include <string>
 
@@ -40,30 +41,30 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTexturePaths = requires (
-    T                                     obj,
-    const T&                              cObj,
-    typename T::TexFileNamesIterator      it,
-    typename T::ConstTexFileNamesIterator cIt,
-    std::string                           str) {
-    typename T::TexFileNamesIterator;
-    typename T::ConstTexFileNamesIterator;
+concept HasTexturePaths = requires (T&& obj) {
+    typename RemoveRef<T>::TexFileNamesIterator;
+    typename RemoveRef<T>::ConstTexFileNamesIterator;
 
-    { cObj.textureNumber() } -> std::same_as<uint>;
-    { cObj.texturePath(uint()) } -> std::same_as<const std::string&>;
-    { obj.texturePath(uint()) } -> std::same_as<std::string&>;
-    { cObj.meshBasePath() } -> std::same_as<const std::string&>;
-    { obj.meshBasePath() } -> std::same_as<std::string&>;
+    { obj.textureNumber() } -> std::same_as<uint>;
+    { obj.texturePath(uint()) } -> std::convertible_to<std::string>;
 
-    { obj.clearTexturePaths() } -> std::same_as<void>;
-    { obj.pushTexturePath(str) } -> std::same_as<void>;
+    { obj.meshBasePath() } -> std::convertible_to<std::string>;
 
-    { obj.texturePathBegin() } -> std::same_as<decltype(it)>;
-    { obj.texturePathEnd() } -> std::same_as<decltype(it)>;
-    { cObj.texturePathBegin() } -> std::same_as<decltype(cIt)>;
-    { cObj.texturePathEnd() } -> std::same_as<decltype(cIt)>;
+    { obj.texturePathBegin() } -> std::input_iterator;
+    { obj.texturePathEnd() } -> std::input_iterator;
     { obj.texturePaths() } -> vcl::RangeOf<std::string>;
-    { cObj.texturePaths() } -> vcl::RangeOf<std::string>;
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.texturePath(uint()) } -> std::same_as<std::string&>;
+        { obj.meshBasePath() } -> std::same_as<std::string&>;
+
+        { obj.clearTexturePaths() } -> std::same_as<void>;
+        { obj.pushTexturePath(std::string()) } -> std::same_as<void>;
+
+        { obj.texturePathBegin() } -> std::output_iterator<std::string>;
+        { obj.texturePathEnd() } -> std::output_iterator<std::string>;
+    };
 };
 
 } // namespace vcl::comp
