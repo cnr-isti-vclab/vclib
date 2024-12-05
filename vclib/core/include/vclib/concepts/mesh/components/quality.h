@@ -45,8 +45,8 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasQuality = requires (
-    T&& obj,
-    typename RemoveRef<T>::QualityType q,
+    T&&                                 obj,
+    typename RemoveRef<T>::QualityType  q,
     typename RemoveRef<T>::QualityType& qR) {
     typename RemoveRef<T>::QualityType;
     { obj.quality() } -> std::convertible_to<decltype(q)>;

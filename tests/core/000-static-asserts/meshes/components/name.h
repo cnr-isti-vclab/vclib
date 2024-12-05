@@ -49,8 +49,7 @@ void nameComponentStaticAsserts()
         "mesh::Name&& does not satisfy the HasName concept");
 
     static_assert(
-        comp::HasName<TriMesh>,
-        "TriMesh does not satisfy the HasName concept");
+        comp::HasName<TriMesh>, "TriMesh does not satisfy the HasName concept");
     static_assert(
         comp::HasName<const TriMesh>,
         "const TriMesh does not satisfy the HasName concept");
