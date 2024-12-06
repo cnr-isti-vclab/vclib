@@ -64,6 +64,10 @@ struct Square : public Shape
 int main()
 {
     static_assert(vcl::Cloneable<Shape>, "");
+    static_assert(vcl::Cloneable<const Shape>, "");
+    static_assert(vcl::Cloneable<Shape&>, "");
+    static_assert(vcl::Cloneable<const Shape&>, "");
+    static_assert(vcl::Cloneable<Shape&&>, "");
 
     vcl::PolymorphicObjectVector<Shape> vec;
 
