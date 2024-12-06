@@ -25,8 +25,6 @@
 
 #include <vclib/meshes.h>
 
-
-
 void texturesComponentStaticAsserts()
 {
     using namespace vcl;

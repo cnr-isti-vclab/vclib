@@ -131,15 +131,15 @@ void ViewerCanvas::onMouseScroll(double dx, double dy)
 
 void ViewerCanvas::onMouseDoubleClick(
     MouseButton::Enum button,
-    double           x,
-    double           y)
+    double            x,
+    double            y)
 {
     // FIXME: code duplication for both OpenGL2 and BGFX
     if (mReadRequested)
         return;
 
     // get point
-    const Point2d p(x,y);
+    const Point2d p(x, y);
 
     // get the homogeneous NDC flag
     const bool homogeneousNDC =
@@ -149,16 +149,11 @@ void ViewerCanvas::onMouseDoubleClick(
     const auto proj = projectionMatrix();
     const auto view = viewMatrix();
     // viewport
-    const Point4f vp = {
-        .0f,
-        .0f,
-        float(size().x()),
-        float(size().y())};
+    const Point4f vp = {.0f, .0f, float(size().x()), float(size().y())};
     // create the callback
-    auto callback = [=, this](const ReadData & data) {
-
+    auto callback = [=, this](const ReadData& data) {
         assert(std::holds_alternative<std::vector<float>>(data));
-        const auto & d = std::get<std::vector<float>>(data);
+        const auto& d  = std::get<std::vector<float>>(data);
         mReadRequested = false;
 
         // if the depth is 1.0, the point is not in the scene
@@ -169,8 +164,8 @@ void ViewerCanvas::onMouseDoubleClick(
 
         // unproject the point
         const Point3f p2d(p.x(), vp[3] - p.y(), depth);
-        const auto unproj = unproject(
-            p2d, Matrix44<ScalarType>(proj*view), vp, homogeneousNDC);
+        const auto    unproj = unproject(
+            p2d, Matrix44<ScalarType>(proj * view), vp, homogeneousNDC);
 
         this->focus(unproj);
         this->update();

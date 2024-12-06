@@ -40,7 +40,8 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasTextureImages = HasTexturePaths<T> &&
+concept HasTextureImages =
+    HasTexturePaths<T> &&
     requires (T&& obj, typename RemoveRef<T>::TextureType t) {
         typename RemoveRef<T>::TextureType;
         typename RemoveRef<T>::TextureIterator;

@@ -30,8 +30,8 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 
-#include <stack>
 #include <mutex>
+#include <stack>
 
 #define BGFX_INVALID_VIEW 65535
 
@@ -81,18 +81,15 @@ public:
 
     static void shutdown();
 
-
     static bgfx::RendererType::Enum renderType();
 
     static void setRenderType(bgfx::RendererType::Enum renderType);
 
-
     static void setDebugVerbosity(bool verbose);
-
 
     bool isHeadless() const;
 
-    const bgfx::Caps & capabilites() const;
+    const bgfx::Caps& capabilites() const;
 
     bool supportsReadback() const;
 
@@ -103,7 +100,6 @@ public:
      * @param[in] windowHandle: The window handle to check.
      */
     bool isDefaultWindow(void* windowHandle) const;
-
 
     bool isValidViewId(bgfx::ViewId viewId) const;
 
@@ -118,40 +114,40 @@ public:
         bgfx::TextureFormat::D24S8;
 
     /**
-    * @brief Create a framebuffer with with 2 attachments (color and depth)
-    *
-    * @param[in] width: The width of the framebuffer.
-    * @param[in] height: The height of the framebuffer.
-    * @param[in] colorFormat: The format of the color attachment.
-    * @param[in] depthFormat: The format of the depth attachment.
-    *
-    * @return The handle of the created framebuffer.
-    */
+     * @brief Create a framebuffer with with 2 attachments (color and depth)
+     *
+     * @param[in] width: The width of the framebuffer.
+     * @param[in] height: The height of the framebuffer.
+     * @param[in] colorFormat: The format of the color attachment.
+     * @param[in] depthFormat: The format of the depth attachment.
+     *
+     * @return The handle of the created framebuffer.
+     */
     bgfx::FrameBufferHandle createFramebuffer(
-        uint16_t width,
-        uint16_t height,
+        uint16_t                  width,
+        uint16_t                  height,
         bgfx::TextureFormat::Enum colorFormat = DefaultColorFormat,
         bgfx::TextureFormat::Enum depthFormat = DefaultDepthFormat);
 
     void resetDefaultFramebuffer(
-        uint16_t width,
-        uint16_t height,
+        uint16_t                  width,
+        uint16_t                  height,
         bgfx::TextureFormat::Enum colorFormat = DefaultColorFormat);
 
     bgfx::FrameBufferHandle createFramebufferAndInitView(
-        void*        winId,
-        bgfx::ViewId view,
-        uint16_t     width,
-        uint16_t     height,
-        bool         clear = false,
+        void*                     winId,
+        bgfx::ViewId              view,
+        uint16_t                  width,
+        uint16_t                  height,
+        bool                      clear       = false,
         bgfx::TextureFormat::Enum colorFormat = DefaultColorFormat,
         bgfx::TextureFormat::Enum depthFormat = DefaultDepthFormat);
 
     bgfx::FrameBufferHandle createOffscreenFramebufferAndInitView(
-        bgfx::ViewId view,
-        uint16_t     width,
-        uint16_t     height,
-        bool         clear = false,
+        bgfx::ViewId              view,
+        uint16_t                  width,
+        uint16_t                  height,
+        bool                      clear       = false,
         bgfx::TextureFormat::Enum colorFormat = DefaultColorFormat,
         bgfx::TextureFormat::Enum depthFormat = DefaultDepthFormat);
 

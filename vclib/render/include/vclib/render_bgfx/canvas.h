@@ -26,8 +26,8 @@
 #include <vclib/types.h>
 
 #include <vclib/render/interfaces/event_manager_i.h>
-#include <vclib/render_bgfx/text/text_view.h>
 #include <vclib/render_bgfx/read_framebuffer_request.h>
+#include <vclib/render_bgfx/text/text_view.h>
 
 #include <optional>
 
@@ -60,8 +60,8 @@ namespace vcl {
  * The class provides two important member functions:
  * - frame(): this function must be called by the derived classes at the end of
  * each frame, after all the bgfx rendering commands have been issued;
- * - onResize(width, height): this function must be called by the derived classes
- * whenever the window is resized.
+ * - onResize(width, height): this function must be called by the derived
+ * classes whenever the window is resized.
  */
 class Canvas : public virtual vcl::EventManagerI
 {
@@ -71,7 +71,7 @@ public:
     using ReadData               = ReadFramebufferRequest::ReadData;
 
 private:
-    void* mWinId  = nullptr;
+    void* mWinId = nullptr;
 
     // frame buffer for drawing the canvas
     // BGFX_INVALID_HANDLE represents the default frame buffer of the window
@@ -79,12 +79,12 @@ private:
     bgfx::FrameBufferHandle mFbh    = BGFX_INVALID_HANDLE;
 
     // size of the canvas
-    Point2<uint> mSize      = {0, 0};
+    Point2<uint> mSize = {0, 0};
 
     // TODO background color
 
     // current frame
-    uint32_t     mCurrFrame = 0;
+    uint32_t mCurrFrame = 0;
 
     // offscreen readback request
     std::optional<ReadFramebufferRequest> mReadRequest = std::nullopt;
@@ -126,9 +126,8 @@ public:
 
     bool supportsReadback() const;
 
-    [[nodiscard]]
-    bool readDepth(
-        const Point2i& point,
+    [[nodiscard]] bool readDepth(
+        const Point2i&     point,
         CallbackReadBuffer callback = nullptr);
 
     bool screenshot(

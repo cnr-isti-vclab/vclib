@@ -93,9 +93,7 @@ public:
         uint               width  = 0,
         uint               height = 0);
 
-    bool readDepth(
-        const Point2i& point,
-        CallbackReadBuffer callback = nullptr);
+    bool readDepth(const Point2i& point, CallbackReadBuffer callback = nullptr);
 
 protected:
     virtual void draw() { drawContent(); };

@@ -43,10 +43,7 @@ public:
      *
      * @param[in] path: the path of the texture file.
      */
-    Texture(const std::string& path) : mPath(path)
-    {
-        mImg.load(path);
-    }
+    Texture(const std::string& path) : mPath(path) { mImg.load(path); }
 
     /**
      * @brief Creates a Texture object, with the given image and its path.

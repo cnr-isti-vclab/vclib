@@ -84,9 +84,9 @@ protected:
 
     virtual void glfwMouseButtonCallback(
         GLFWwindow* win,
-        int button,
-        int action,
-        int mods);
+        int         button,
+        int         action,
+        int         mods);
 
     virtual void glfwCursorPosCallback(GLFWwindow*, double xpos, double ypos);
 
@@ -100,9 +100,9 @@ private:
 
     // double click management
     static constexpr int NO_BUTTON = GLFW_MOUSE_BUTTON_LAST + 1;
-    
+
     // delta time between two clicks
-    static constexpr double DOUBLE_CLICK_TIME_SECS = 0.25; 
+    static constexpr double DOUBLE_CLICK_TIME_SECS   = 0.25;
     static constexpr double DOUBLE_CLICK_DIST_PIXELS = 4.0; // pixels?
 
     double  mLastPressedTime   = 0.0;

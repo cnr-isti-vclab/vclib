@@ -69,7 +69,8 @@ void texCoordComponentStaticAsserts()
         "TriMesh Vertex does not satisfy the HasOptionalTexCoord concept");
     static_assert(
         comp::HasOptionalTexCoord<const TriMeshVertex>,
-        "const TriMesh Vertex does not satisfy the HasOptionalTexCoord concept");
+        "const TriMesh Vertex does not satisfy the HasOptionalTexCoord "
+        "concept");
     static_assert(
         comp::HasOptionalTexCoord<TriMeshVertex&>,
         "TriMesh Vertex& does not satisfy the HasOptionalTexCoord concept");
