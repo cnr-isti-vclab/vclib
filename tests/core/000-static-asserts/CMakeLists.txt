@@ -47,6 +47,7 @@ set(HEADERS
     meshes/polymesh.h
     meshes/trimesh.h
     space/array.h
+    space/bit_set.h
     space/box.h
     space/color.h
     space/image.h

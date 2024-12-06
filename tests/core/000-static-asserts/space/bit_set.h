@@ -20,48 +20,36 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef SPACE_H
-#define SPACE_H
+#ifndef BIT_SET_H
+#define BIT_SET_H
 
-#include "space/array.h"
-#include "space/bit_set.h"
-#include "space/box.h"
-#include "space/color.h"
-#include "space/image.h"
-#include "space/matrix.h"
-#include "space/plane.h"
-#include "space/point.h"
-#include "space/polygon.h"
-#include "space/principal_curvature.h"
-#include "space/sampler.h"
-#include "space/segment.h"
-#include "space/sphere.h"
-#include "space/tex_coord.h"
-#include "space/texture.h"
+#include <vclib/space.h>
 
-void spaceStaticAsserts()
+void bitSetStaticAsserts()
 {
-    arrayStaticAsserts();
-    bitSetStaticAsserts();
-    boxStaticAsserts();
-    colorStaticAsserts();
-    imageStaticAsserts();
-    matrixStaticAsserts();
-    planeStaticAsserts();
-    pointStaticAsserts();
-    polygonStaticAsserts();
-    principalCurvatureStaticAsserts();
-    samplerStaticAsserts();
-    segmentStaticAsserts();
-    sphereStaticAsserts();
-    texCoordStaticAsserts();
-    textureStaticAsserts();
-
     using namespace vcl;
+
+    using BitSetType  = BitSet<uint16_t>;
+
+    static_assert(BitProxyConcept<BitProxy<uint16_t>>, "");
 
     // bitset
     static_assert(
-        Serializable<BitSet<char>>, "Bitset<char> is not serializable");
+        BitSetConcept<BitSetType>, "BitSet does not satisfy the BitSetConcept");
+    static_assert(
+        BitSetConcept<BitSetType&>,
+        "BitSet& does not satisfy the BitSetConcept");
+    static_assert(
+        BitSetConcept<const BitSetType>,
+        "const BitSet does not satisfy the BitSetConcept");
+    static_assert(
+        BitSetConcept<const BitSetType&>,
+        "const BitSet& does not satisfy the BitSetConcept");
+    static_assert(
+        BitSetConcept<BitSetType&&>,
+        "BitSet&& does not satisfy the BitSetConcept");
+
+    static_assert(Serializable<BitSetType>, "BitSet is not serializable");
 }
 
-#endif // SPACE_H
+#endif // BIT_SET_H
