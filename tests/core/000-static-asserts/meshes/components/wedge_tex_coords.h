@@ -29,8 +29,8 @@ void wedgeTexCoordsComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshFace   = trimesh::Face<float, true>;
-    using PolyMeshFace  = polymesh::Face<float, true>;
+    using TriMeshFace  = trimesh::Face<float, true>;
+    using PolyMeshFace = polymesh::Face<float, true>;
 
     // test only the TriangleWedgeTexCoords and PolygonWedgeTexCoords components
     static_assert(
@@ -76,36 +76,75 @@ void wedgeTexCoordsComponentStaticAsserts()
         "HasWedgeTexCoords concept");
 
     static_assert(
-        comp::HasFaceBitFlags<TriMeshFace>,
-        "TriMesh Face does not satisfy the HasFaceBitFlags concept");
+        comp::HasWedgeTexCoords<TriMeshFace>,
+        "TriMesh Face does not satisfy the HasWedgeTexCoords concept");
     static_assert(
-        comp::HasFaceBitFlags<const TriMeshFace>,
-        "const TriMesh Face does not satisfy the HasFaceBitFlags concept");
+        comp::HasWedgeTexCoords<const TriMeshFace>,
+        "const TriMesh Face does not satisfy the HasWedgeTexCoords concept");
     static_assert(
-        comp::HasFaceBitFlags<TriMeshFace&>,
-        "TriMesh Face& does not satisfy the HasFaceBitFlags concept");
+        comp::HasWedgeTexCoords<TriMeshFace&>,
+        "TriMesh Face& does not satisfy the HasWedgeTexCoords concept");
     static_assert(
-        comp::HasFaceBitFlags<const TriMeshFace&>,
-        "const TriMesh Face& does not satisfy the HasFaceBitFlags concept");
+        comp::HasWedgeTexCoords<const TriMeshFace&>,
+        "const TriMesh Face& does not satisfy the HasWedgeTexCoords concept");
     static_assert(
-        comp::HasFaceBitFlags<TriMeshFace&&>,
-        "TriMesh Face&& does not satisfy the HasFaceBitFlags concept");
+        comp::HasWedgeTexCoords<TriMeshFace&&>,
+        "TriMesh Face&& does not satisfy the HasWedgeTexCoords concept");
 
     static_assert(
-        comp::HasFaceBitFlags<PolyMeshFace>,
-        "PolyMesh Face does not satisfy the HasFaceBitFlags concept");
+        comp::HasOptionalWedgeTexCoords<TriMeshFace>,
+        "TriMesh Face does not satisfy the HasOptionalWedgeTexCoords concept");
     static_assert(
-        comp::HasFaceBitFlags<const PolyMeshFace>,
-        "const PolyMesh Face does not satisfy the HasFaceBitFlags concept");
+        comp::HasOptionalWedgeTexCoords<const TriMeshFace>,
+        "const TriMesh Face does not satisfy the HasOptionalWedgeTexCoords "
+        "concept");
     static_assert(
-        comp::HasFaceBitFlags<PolyMeshFace&>,
-        "PolyMesh Face& does not satisfy the HasFaceBitFlags concept");
+        comp::HasOptionalWedgeTexCoords<TriMeshFace&>,
+        "TriMesh Face& does not satisfy the HasOptionalWedgeTexCoords concept");
     static_assert(
-        comp::HasFaceBitFlags<const PolyMeshFace&>,
-        "const PolyMesh Face& does not satisfy the HasFaceBitFlags concept");
+        comp::HasOptionalWedgeTexCoords<const TriMeshFace&>,
+        "const TriMesh Face& does not satisfy the HasOptionalWedgeTexCoords "
+        "concept");
     static_assert(
-        comp::HasFaceBitFlags<PolyMeshFace&&>,
-        "PolyMesh Face&& does not satisfy the HasFaceBitFlags concept");
+        comp::HasOptionalWedgeTexCoords<TriMeshFace&&>,
+        "TriMesh Face&& does not satisfy the HasOptionalWedgeTexCoords "
+        "concept");
+
+    static_assert(
+        comp::HasWedgeTexCoords<PolyMeshFace>,
+        "PolyMesh Face does not satisfy the HasWedgeTexCoords concept");
+    static_assert(
+        comp::HasWedgeTexCoords<const PolyMeshFace>,
+        "const PolyMesh Face does not satisfy the HasWedgeTexCoords concept");
+    static_assert(
+        comp::HasWedgeTexCoords<PolyMeshFace&>,
+        "PolyMesh Face& does not satisfy the HasWedgeTexCoords concept");
+    static_assert(
+        comp::HasWedgeTexCoords<const PolyMeshFace&>,
+        "const PolyMesh Face& does not satisfy the HasWedgeTexCoords concept");
+    static_assert(
+        comp::HasWedgeTexCoords<PolyMeshFace&&>,
+        "PolyMesh Face&& does not satisfy the HasWedgeTexCoords concept");
+
+    static_assert(
+        comp::HasOptionalWedgeTexCoords<PolyMeshFace>,
+        "PolyMesh Face does not satisfy the HasOptionalWedgeTexCoords concept");
+    static_assert(
+        comp::HasOptionalWedgeTexCoords<const PolyMeshFace>,
+        "const PolyMesh Face does not satisfy the HasOptionalWedgeTexCoords "
+        "concept");
+    static_assert(
+        comp::HasOptionalWedgeTexCoords<PolyMeshFace&>,
+        "PolyMesh Face& does not satisfy the HasOptionalWedgeTexCoords "
+        "concept");
+    static_assert(
+        comp::HasOptionalWedgeTexCoords<const PolyMeshFace&>,
+        "const PolyMesh Face& does not satisfy the HasOptionalWedgeTexCoords "
+        "concept");
+    static_assert(
+        comp::HasOptionalWedgeTexCoords<PolyMeshFace&&>,
+        "PolyMesh Face&& does not satisfy the HasOptionalWedgeTexCoords "
+        "concept");
 }
 
 #endif // COMP_WEDGE_TEX_COORDS_H
