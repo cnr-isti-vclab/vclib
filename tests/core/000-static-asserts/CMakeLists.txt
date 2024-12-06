@@ -41,6 +41,7 @@ set(HEADERS
     meshes/components/tex_coord.h
     meshes/components/textures.h
     meshes/components/transform_matrix.h
+    meshes/components/wedge_tex_coords.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h

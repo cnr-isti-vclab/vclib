@@ -35,6 +35,7 @@
 #include "components/tex_coord.h"
 #include "components/textures.h"
 #include "components/transform_matrix.h"
+#include "components/wedge_tex_coords.h"
 
 void componentsStaticAsserts()
 {
@@ -50,6 +51,7 @@ void componentsStaticAsserts()
     texCoordComponentStaticAsserts();
     texturesComponentStaticAsserts();
     transformMatrixComponentStaticAsserts();
+    wedgeTexCoordsComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H
