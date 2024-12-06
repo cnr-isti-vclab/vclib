@@ -259,10 +259,7 @@ public:
      *
      * @return an iterator to the beginning of the vector of texture paths.
      */
-    TexFileNamesIterator texturePathBegin()
-    {
-        return Base::data().pathBegin();
-    }
+    TexFileNamesIterator texturePathBegin() { return Base::data().pathBegin(); }
 
     /**
      * @brief Returns an iterator to the end of the vector of texture paths.
@@ -273,10 +270,7 @@ public:
      *
      * @return an iterator to the end of the vector of texture paths.
      */
-    TexFileNamesIterator texturePathEnd()
-    {
-        return Base::data().pathEnd();
-    }
+    TexFileNamesIterator texturePathEnd() { return Base::data().pathEnd(); }
 
     /**
      * @brief Returns a const iterator to the beginning of the vector of texture
@@ -368,10 +362,7 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over the vector of texture paths.
      */
-    auto texturePaths()
-    {
-        return Base::data().paths();
-    }
+    auto texturePaths() { return Base::data().paths(); }
 
     /**
      * @brief Returns a lightweigth const view object that stores the begin and
@@ -392,10 +383,7 @@ public:
      * @return a lightweight view object that can be used in range-based for
      * loops to iterate over the vector of texture paths.
      */
-    auto texturePaths() const
-    {
-        return Base::data().paths();
-    }
+    auto texturePaths() const { return Base::data().paths(); }
 
 protected:
     // Component interface functions

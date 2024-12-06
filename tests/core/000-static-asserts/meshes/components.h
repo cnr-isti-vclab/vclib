@@ -23,6 +23,7 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
+#include "components/bit_flags.h"
 #include "components/bounding_box.h"
 #include "components/color.h"
 #include "components/coordinate.h"
@@ -34,9 +35,12 @@
 #include "components/tex_coord.h"
 #include "components/textures.h"
 #include "components/transform_matrix.h"
+#include "components/wedge_colors.h"
+#include "components/wedge_tex_coords.h"
 
 void componentsStaticAsserts()
 {
+    bitFlagsComponentStaticAsserts();
     boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
     coordinateComponentStaticAsserts();
@@ -48,6 +52,8 @@ void componentsStaticAsserts()
     texCoordComponentStaticAsserts();
     texturesComponentStaticAsserts();
     transformMatrixComponentStaticAsserts();
+    wedgeColorsComponentStaticAsserts();
+    wedgeTexCoordsComponentStaticAsserts();
 }
 
 #endif // COMPONENTS_H

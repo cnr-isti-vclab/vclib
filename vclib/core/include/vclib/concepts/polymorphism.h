@@ -23,6 +23,8 @@
 #ifndef VCL_CONCEPTS_POLYMORPHISM_H
 #define VCL_CONCEPTS_POLYMORPHISM_H
 
+#include "const_correctness.h"
+
 #include <concepts>
 #include <memory>
 
@@ -48,8 +50,33 @@ namespace vcl {
  * @ingroup util_concepts
  */
 template<typename T>
-concept Cloneable = requires (const T& obj) {
-    { obj.clone() } -> std::same_as<std::shared_ptr<T>>;
+concept Cloneable = requires (T&& obj) {
+    // TODO: Right now, this concept can be used only with a base class that has
+    // a clone method, because the concept requires that the return type of the
+    // clone method is a shared pointer to the same class as the object. This is
+    // not always the case, especially when the clone method is overridden in
+    // derived classes. We need to find a way to make this concept work with
+    // overridden clone methods.
+    //
+    // However, we should also consider the consequences of this change for the
+    // class vcl::PolymorphicObjectVector, which relies on this concept to
+    // determine if an object can be cloned, and stores objects of the Base
+    // class in a vector.
+    //
+    // Example:
+    // class Base {
+    // public:
+    //     virtual std::shared_ptr<Base> clone() const = 0;
+    // };
+    //
+    // class Derived : public Base {
+    // public:
+    //     std::shared_ptr<Derived> clone() const { ... }
+    // };
+    //
+    // static_assert(vcl::Cloneable<Base>, ""); // OK
+    // static_assert(vcl::Cloneable<Derived>, ""); // Error, but should work
+    { obj.clone() } -> std::same_as<std::shared_ptr<std::remove_cvref_t<T>>>;
 };
 
 } // namespace vcl

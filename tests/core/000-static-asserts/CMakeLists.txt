@@ -31,6 +31,7 @@ set(HEADERS
     ranges.h
     space.h
     meshes/components/bounding_box.h
+    meshes/components/bit_flags.h
     meshes/components/color.h
     meshes/components/coordinate.h
     meshes/components/mark.h
@@ -40,6 +41,8 @@ set(HEADERS
     meshes/components/tex_coord.h
     meshes/components/textures.h
     meshes/components/transform_matrix.h
+    meshes/components/wedge_colors.h
+    meshes/components/wedge_tex_coords.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/mesh_views.h
@@ -47,6 +50,7 @@ set(HEADERS
     meshes/polymesh.h
     meshes/trimesh.h
     space/array.h
+    space/bit_set.h
     space/box.h
     space/color.h
     space/image.h
@@ -74,6 +78,7 @@ vclib_add_test(
 
 target_sources(vclib-core-test-000-static-asserts
   PRIVATE
+
 
 
 

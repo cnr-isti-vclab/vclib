@@ -241,9 +241,9 @@ void EventManagerWindow::glfwKeyCallback(
 
 void EventManagerWindow::glfwMouseButtonCallback(
     GLFWwindow* win,
-    int button,
-    int action,
-    int mods)
+    int         button,
+    int         action,
+    int         mods)
 {
     glfw::MouseButton btn = (glfw::MouseButton) button;
 
@@ -252,8 +252,8 @@ void EventManagerWindow::glfwMouseButtonCallback(
     if (action == GLFW_PRESS) {
         // handle double click
         const double timeSeconds = glfwGetTime();
-        Point2d pos;
-        Point2f scale;
+        Point2d      pos;
+        Point2f      scale;
         glfwGetCursorPos(win, &pos.x(), &pos.y());
 #ifdef __APPLE__
         // only macOS has coherent coordinates with content scale
@@ -262,17 +262,15 @@ void EventManagerWindow::glfwMouseButtonCallback(
 #endif
         if (timeSeconds - mLastPressedTime < DOUBLE_CLICK_TIME_SECS &&
             button == mLastPressedButton &&
-            (mLastPressedPos - pos).norm() < DOUBLE_CLICK_DIST_PIXELS)
-        {
-                mLastPressedTime = 0.0;
-                mLastPressedButton = NO_BUTTON;
-                onMouseDoubleClick(glfw::fromGLFW(btn), pos.x(), pos.y());
+            (mLastPressedPos - pos).norm() < DOUBLE_CLICK_DIST_PIXELS) {
+            mLastPressedTime   = 0.0;
+            mLastPressedButton = NO_BUTTON;
+            onMouseDoubleClick(glfw::fromGLFW(btn), pos.x(), pos.y());
         }
-        else
-        {
-            mLastPressedTime = timeSeconds;
+        else {
+            mLastPressedTime   = timeSeconds;
             mLastPressedButton = button;
-            mLastPressedPos = pos;
+            mLastPressedPos    = pos;
             onMousePress(glfw::fromGLFW(btn));
         }
     }

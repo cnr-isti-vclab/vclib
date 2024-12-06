@@ -353,7 +353,7 @@ PointType unproject(
     const Point4<typename Matrix44::Scalar>& viewport,
     bool                                     homogeneousNDC)
 {
-    using Scalar = Matrix44::Scalar;
+    using Scalar       = Matrix44::Scalar;
     const Matrix44 inv = modelViewProjection.inverse();
     Point4<Scalar> p(
         (screenPos.x() - viewport[0]) / viewport[2] * 2.0 - 1.0,
@@ -361,8 +361,7 @@ PointType unproject(
         homogeneousNDC ? 2.0 * screenPos.z() - 1.0 : screenPos.z(),
         1.0);
     p = inv * p;
-    if (p.w() == 0.0)
-    {
+    if (p.w() == 0.0) {
         throw std::runtime_error("unproject: division by zero");
     }
     return p.template head<3>() / p.w();

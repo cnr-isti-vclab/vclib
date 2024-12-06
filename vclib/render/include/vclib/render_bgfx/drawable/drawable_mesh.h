@@ -40,7 +40,8 @@ class DrawableMesh : public DrawableMeshI, public MeshType
     MeshRenderBuffers<MeshType> mMRB;
 
     bgfx::ProgramHandle mProgram =
-        Context::instance().programManager().getProgram(VclProgram::DRAWABLE_MESH);
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_MESH);
 
     DrawableMeshUniforms               mMeshUniforms;
     mutable MeshRenderSettingsUniforms mMeshRenderSettingsUniforms;
@@ -74,10 +75,9 @@ public:
     void draw(uint viewId) const override
     {
         if (bgfx::isValid(mProgram)) {
-            uint64_t state =
-                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
-                BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
-                BGFX_STATE_BLEND_NORMAL;
+            uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A |
+                             BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LEQUAL |
+                             BGFX_STATE_BLEND_NORMAL;
 
             if (mMRS.isSurfaceVisible()) {
                 mMRB.bindTextures(); // Bind textures before vertex buffers!!

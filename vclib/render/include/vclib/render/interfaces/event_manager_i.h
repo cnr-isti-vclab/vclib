@@ -105,8 +105,10 @@ protected:
      */
     virtual void onMouseDoubleClick(
         MouseButton::Enum button,
-        double x,
-        double y) {}
+        double            x,
+        double            y)
+    {
+    }
 
     /**
      * @brief Called when the mouse wheel is scrolled.

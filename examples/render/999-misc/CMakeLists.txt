@@ -28,4 +28,8 @@ if (VCLIB_RENDER_BACKEND STREQUAL "bgfx")
     if (TARGET vclib-3rd-glfw)
         add_subdirectory(bgfx-glfw)
     endif()
+
+    if (TARGET vclib-3rd-qt)
+        add_subdirectory(bgfx-qt)
+    endif()
 endif()

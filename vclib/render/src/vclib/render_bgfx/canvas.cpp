@@ -49,7 +49,7 @@ Canvas::~Canvas()
         bgfx::destroy(mFbh);
 
     // release the view id
-    auto & ctx = Context::instance();
+    auto& ctx = Context::instance();
     if (ctx.isValidViewId(mViewId))
         ctx.releaseViewId(mViewId);
 }
@@ -117,13 +117,9 @@ void Canvas::onResize(uint width, uint height)
     if (bgfx::isValid(mFbh))
         bgfx::destroy(mFbh);
 
-    auto & ctx = Context::instance();
-    mFbh = ctx.createFramebufferAndInitView(
-        mWinId,
-        mViewId,
-        width,
-        height,
-        true);
+    auto& ctx = Context::instance();
+    mFbh =
+        ctx.createFramebufferAndInitView(mWinId, mViewId, width, height, true);
     // the canvas framebuffer is non valid for the default window
     assert(ctx.isDefaultWindow(mWinId) == !bgfx::isValid(mFbh));
 
@@ -165,11 +161,8 @@ void Canvas::frame()
     }
 }
 
-bool Canvas::readDepth(
-    const Point2i& point,
-    CallbackReadBuffer callback)
+bool Canvas::readDepth(const Point2i& point, CallbackReadBuffer callback)
 {
-
     if (!Context::instance().supportsReadback() // feature unsupported
         || mReadRequest != std::nullopt         // read already requested
         || point.x() < 0 || point.y() < 0       // point out of bounds
@@ -194,15 +187,15 @@ bool Canvas::screenshot(const std::string& filename, uint width, uint height)
         size = {width, height};
 
     // color data callback
-    CallbackReadBuffer callback = [=](const ReadData & data) {
+    CallbackReadBuffer callback = [=](const ReadData& data) {
         assert(std::holds_alternative<ReadFramebufferRequest::ByteData>(data));
-        const auto & d = std::get<ReadFramebufferRequest::ByteData>(data);
+        const auto& d = std::get<ReadFramebufferRequest::ByteData>(data);
 
         // save rgb image data into file using stb depending on file
         try {
             vcl::saveImageData(filename, size.x(), size.y(), d.data());
         }
-        catch (const std::exception & e) {
+        catch (const std::exception& e) {
             std::cerr << "Error saving image: " << e.what() << std::endl;
         }
     };
@@ -217,8 +210,7 @@ void Canvas::offscreenFrame()
 
     // render offscren
     bgfx::setViewFrameBuffer(
-        mReadRequest->viewId(),
-        mReadRequest->frameBuffer());
+        mReadRequest->viewId(), mReadRequest->frameBuffer());
     bgfx::touch(mReadRequest->viewId());
 
     // render changing the view

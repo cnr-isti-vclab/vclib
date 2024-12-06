@@ -23,8 +23,8 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 
-#include <vclib/concepts/ranges/range.h>
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/ranges/range.h>
 
 #include <string>
 

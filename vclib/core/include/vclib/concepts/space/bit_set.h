@@ -20,67 +20,67 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render_bgfx/drawable/drawable_trackball.h>
+#ifndef VCL_CONCEPTS_SPACE_BIT_SET_H
+#define VCL_CONCEPTS_SPACE_BIT_SET_H
 
-#include <vclib/algorithms/core/polygon/create.h>
-#include <vclib/math/transform.h>
+#include <vclib/concepts/const_correctness.h>
+
+#include <concepts>
 
 namespace vcl {
 
-DrawableTrackBall::DrawableTrackBall() : TrackballRenderData(128)
-{
-    mUniforms.setNumberOfVerticesPerAxis(128);
+/**
+ * @brief BitProxyConcept is satisfied only if a class provides the member
+ * functions specified in this concept. These member functions allows to access
+ * to a bool reference from a bit saved in a mask, and then allow assignment.
+ *
+ * @ingroup space_concepts
+ */
+template<typename T>
+concept BitProxyConcept = requires (T&& obj) {
+    requires std::convertible_to<T, bool>;
 
-    createBuffers();
-}
+    obj = bool();
+    obj |= bool();
+    obj &= bool();
+    obj /= bool();
+};
 
-DrawableTrackBall::~DrawableTrackBall()
-{
-    if (bgfx::isValid(mVertexCoordBH)) {
-        bgfx::destroy(mVertexCoordBH);
-    }
-}
+/**
+ * @brief BitSetConcept is satisfied only if a class provides the member
+ * functions specified in this concept. These member functions allows to a list
+ * of bits encoded in a integral type.
+ *
+ * @ingroup space_concepts
+ */
+template<typename T>
+concept BitSetConcept = requires (T&& obj) {
+    { obj.size() } -> std::same_as<std::size_t>;
 
-void DrawableTrackBall::updateDragging(bool isDragging)
-{
-    mUniforms.setDragging(isDragging);
-}
+    { obj.at(uint()) } -> std::convertible_to<bool>;
+    { obj[uint()] } -> std::convertible_to<bool>;
 
-void DrawableTrackBall::draw(uint viewId) const
-{
-    if (isVisible()) {
-        if (bgfx::isValid(mProgram)) {
-            bgfx::setState(
-                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
-                BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
-                BGFX_STATE_BLEND_NORMAL);
+    { obj.all() } -> std::same_as<bool>;
+    { obj.any() } -> std::same_as<bool>;
+    { obj.none() } -> std::same_as<bool>;
 
-            bgfx::setVertexBuffer(0, mVertexCoordBH);
-            bgfx::setIndexBuffer(mEdgeIndexBH);
+    { obj == obj } -> std::same_as<bool>;
+    { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
 
-            bgfx::setTransform(transformData());
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.at(uint()) } -> BitProxyConcept;
+        { obj[uint()] } -> BitProxyConcept;
 
-            mUniforms.bind();
-
-            bgfx::submit(viewId, mProgram);
-        }
-    }
-}
-
-void DrawableTrackBall::createBuffers()
-{
-    // vertex buffer
-    bgfx::VertexLayout layout;
-    layout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-        .end();
-
-    mVertexCoordBH = bgfx::createVertexBuffer(
-        bgfx::makeRef(vertexBufferData(), vertexNumber() * 3 * sizeof(float)),
-        layout);
-
-    mEdgeIndexBH = bgfx::createIndexBuffer(
-        bgfx::makeRef(edgeBufferData(), edgeNumber() * sizeof(uint16_t)));
-}
+        obj.set();
+        obj.set(bool(), uint());
+        obj.reset();
+        obj.reset(uint());
+        obj.flip();
+        obj.flip(uint());
+    };
+};
 
 } // namespace vcl
+
+#endif // VCL_CONCEPTS_SPACE_BIT_SET_H

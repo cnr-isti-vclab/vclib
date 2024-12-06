@@ -29,7 +29,7 @@
 
 namespace vcl {
 
-Context* Context::sInstancePtr = nullptr;
+Context*   Context::sInstancePtr = nullptr;
 std::mutex Context::sMutex;
 
 void Context::init(void* windowHandle, void* displayHandle)
@@ -69,7 +69,8 @@ void Context::shutdown()
  */
 bgfx::RendererType::Enum Context::renderType()
 {
-    assert(!isInitialized() ||
+    assert(
+        !isInitialized() ||
         (instance().capabilites().rendererType == sRenderType));
     return sRenderType;
 }
@@ -110,21 +111,22 @@ bool Context::isHeadless() const
 /**
  * @brief Return the capabilities of the backend renderer.
  */
-const bgfx::Caps & Context::capabilites() const
+const bgfx::Caps& Context::capabilites() const
 {
     return *bgfx::getCaps();
 }
 
-bool Context::supportsReadback() const {
+bool Context::supportsReadback() const
+{
     return (capabilites().supported &
-        (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK)) == 
-        (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK);
+            (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK)) ==
+           (BGFX_CAPS_TEXTURE_BLIT | BGFX_CAPS_TEXTURE_READ_BACK);
 }
 
 bgfx::ViewId Context::requestViewId()
 {
     std::lock_guard<std::mutex> lock(sMutex);
-    bgfx::ViewId viewId = mViewStack.top();
+    bgfx::ViewId                viewId = mViewStack.top();
     mViewStack.pop();
     return viewId;
 }
@@ -145,42 +147,35 @@ bool Context::isValidViewId(bgfx::ViewId viewId) const
     return viewId <= capabilites().limits.maxViews;
 }
 
-static const uint64_t kRenderBufferflags = 0
-        | BGFX_TEXTURE_RT
-        | BGFX_SAMPLER_MIN_POINT
-        | BGFX_SAMPLER_MAG_POINT
-        | BGFX_SAMPLER_MIP_POINT
-        | BGFX_SAMPLER_U_CLAMP
-        | BGFX_SAMPLER_V_CLAMP;
-
+static const uint64_t kRenderBufferflags =
+    0 | BGFX_TEXTURE_RT | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT |
+    BGFX_SAMPLER_MIP_POINT | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
 
 bgfx::FrameBufferHandle Context::createFramebuffer(
-        uint16_t width,
-        uint16_t height,
-        bgfx::TextureFormat::Enum colorFormat,
-        bgfx::TextureFormat::Enum depthFormat)
+    uint16_t                  width,
+    uint16_t                  height,
+    bgfx::TextureFormat::Enum colorFormat,
+    bgfx::TextureFormat::Enum depthFormat)
 {
     bgfx::FrameBufferHandle fbh = BGFX_INVALID_HANDLE;
 
     // create offscreen framebuffer with explicit textures
     bgfx::TextureHandle fbtextures[2];
     fbtextures[0] = bgfx::createTexture2D(
-            uint16_t(width)
-        , uint16_t(height)
-        , false
-        , 1
-        , colorFormat
-        , kRenderBufferflags
-        );
+        uint16_t(width),
+        uint16_t(height),
+        false,
+        1,
+        colorFormat,
+        kRenderBufferflags);
 
     fbtextures[1] = bgfx::createTexture2D(
-            uint16_t(width)
-        , uint16_t(height)
-        , false
-        , 1
-        , depthFormat
-        , kRenderBufferflags
-        );
+        uint16_t(width),
+        uint16_t(height),
+        false,
+        1,
+        depthFormat,
+        kRenderBufferflags);
 
     assert(bgfx::isValid(fbtextures[0]));
     assert(bgfx::isValid(fbtextures[1]));
@@ -192,9 +187,9 @@ bgfx::FrameBufferHandle Context::createFramebuffer(
 }
 
 void Context::resetDefaultFramebuffer(
-        uint16_t width,
-        uint16_t height,
-        bgfx::TextureFormat::Enum colorFormat)
+    uint16_t                  width,
+    uint16_t                  height,
+    bgfx::TextureFormat::Enum colorFormat)
 {
     // TODO: manage the reset flags elsewhere
     bgfx::reset(width, height, BGFX_RESET_VSYNC, colorFormat);
@@ -205,15 +200,15 @@ static const float    kDefaultClearDepth   = 1.0f;
 static const uint8_t  kDefaultClearStencil = 0;
 
 bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
-    void*        winId,
-    bgfx::ViewId view,
-    uint16_t     width,
-    uint16_t     height,
-    bool         clear,
+    void*                     winId,
+    bgfx::ViewId              view,
+    uint16_t                  width,
+    uint16_t                  height,
+    bool                      clear,
     bgfx::TextureFormat::Enum colorFormat,
-    bgfx::TextureFormat::Enum depthFormat) {
-
-    const bool offscreen     = (winId == nullptr);
+    bgfx::TextureFormat::Enum depthFormat)
+{
+    const bool offscreen = (winId == nullptr);
     const bool defaultWindow =
         (mWindowHandle != nullptr) && (winId == mWindowHandle);
 
@@ -229,17 +224,19 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
         resetDefaultFramebuffer(width, height, colorFormat);
     }
     else {
-        // create framebuffer 
-        fbh = createFramebuffer(
-            width, height, colorFormat, depthFormat);
+        // create framebuffer
+        fbh = createFramebuffer(width, height, colorFormat, depthFormat);
     }
     // set view on framebuffer even if it must be done every frame
     bgfx::setViewFrameBuffer(view, fbh);
 
     if (clear) {
         bgfx::setViewClear(
-            view, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
-            kDefaultClearColor, kDefaultClearDepth, kDefaultClearStencil);
+            view,
+            BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL,
+            kDefaultClearColor,
+            kDefaultClearDepth,
+            kDefaultClearStencil);
     }
 
     bgfx::setViewRect(view, 0, 0, width, height);
@@ -249,10 +246,10 @@ bgfx::FrameBufferHandle Context::createFramebufferAndInitView(
 }
 
 bgfx::FrameBufferHandle Context::createOffscreenFramebufferAndInitView(
-    bgfx::ViewId view,
-    uint16_t     width,
-    uint16_t     height,
-    bool         clear,
+    bgfx::ViewId              view,
+    uint16_t                  width,
+    uint16_t                  height,
+    bool                      clear,
     bgfx::TextureFormat::Enum colorFormat,
     bgfx::TextureFormat::Enum depthFormat)
 {
@@ -278,11 +275,11 @@ Context::Context(void* windowHandle, void* displayHandle)
         // Headless context
         if (forceWindow) {
             std::cerr << "WARNING: The first window used to create the bgfx "
-                        "context is a dummy window. This is not recommended."
-                    << std::endl;
+                         "context is a dummy window. This is not recommended."
+                      << std::endl;
             std::cerr
                 << "Be sure to pass a valid window handle when requesting the "
-                "context instance for the first time."
+                   "context instance for the first time."
                 << std::endl;
             mWindowHandle = vcl::createWindow("", 1, 1, mDisplayHandle, true);
         }
@@ -298,7 +295,7 @@ Context::Context(void* windowHandle, void* displayHandle)
     if (!isHeadless()) {
         bgfx::renderFrame(); // needed for macos
     }
-#endif                   // __APPLE__
+#endif // __APPLE__
 
     bgfx::Init init;
     init.platformData.nwh  = mWindowHandle;

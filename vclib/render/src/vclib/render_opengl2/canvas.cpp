@@ -40,8 +40,8 @@ void Canvas::init(uint width, uint height)
 
 bool Canvas::screenshot(const std::string& filename, uint width, uint height)
 {
-    (void)width;
-    (void)height;
+    (void) width;
+    (void) height;
 
     std::vector<std::uint8_t> buffer(mSize.x() * mSize.y() * 4);
     // read pixels
@@ -68,16 +68,14 @@ bool Canvas::screenshot(const std::string& filename, uint width, uint height)
     return ret;
 }
 
-bool Canvas::readDepth(
-    const Point2i& point,
-    CallbackReadBuffer callback)
+bool Canvas::readDepth(const Point2i& point, CallbackReadBuffer callback)
 {
-    if (point.x() < 0 || point.y() < 0 ||// point out of bounds
+    if (point.x() < 0 || point.y() < 0 || // point out of bounds
         point.x() >= mSize.x() || point.y() >= mSize.y()) {
         return false;
     }
 
-    mReadDepthPoint = point;
+    mReadDepthPoint     = point;
     mReadBufferCallback = callback;
     return true;
 }
@@ -93,8 +91,7 @@ void Canvas::frame()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // if depth requested, read it
-    if (mReadBufferCallback)
-    {
+    if (mReadBufferCallback) {
         drawContent();
         readDepthData();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -104,8 +101,8 @@ void Canvas::frame()
 
 void Canvas::readDepthData()
 {
-     // get depth range
-    std::array<GLfloat,2> depthRange = {0,0};
+    // get depth range
+    std::array<GLfloat, 2> depthRange = {0, 0};
     glGetFloatv(GL_DEPTH_RANGE, depthRange.data());
 
     // get viewport heigth only
@@ -117,17 +114,20 @@ void Canvas::readDepthData()
     glReadPixels(
         GLint(mReadDepthPoint.x()),
         GLint(viewport[3] - mReadDepthPoint.y() - 1),
-        1, 1,
-        GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-    
+        1,
+        1,
+        GL_DEPTH_COMPONENT,
+        GL_FLOAT,
+        &depth);
+
     // normalize depth into [0,1] interval
     depth = (depth - depthRange[0]) / (depthRange[1] - depthRange[0]);
 
     // callback
     mReadBufferCallback({depth});
-    
+
     // cleanup
-    mReadDepthPoint = {-1,-1};
+    mReadDepthPoint     = {-1, -1};
     mReadBufferCallback = nullptr;
 }
 

@@ -55,7 +55,7 @@ void TextView::init(uint width, uint height)
 
 void TextView::enableText(bool b)
 {
-    auto & ctx = Context::instance();
+    auto& ctx = Context::instance();
     if (ctx.isValidViewId(mView)) {
         if (!b) {
             ctx.releaseViewId(mView);

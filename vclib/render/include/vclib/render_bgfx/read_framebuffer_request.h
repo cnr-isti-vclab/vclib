@@ -19,17 +19,17 @@
  * Mozilla Public License Version 2.0                                        *
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
- 
+
 #ifndef VCL_BGFX_RENDER_READ_FRAMEBUFFER_REQUEST_H
 #define VCL_BGFX_RENDER_READ_FRAMEBUFFER_REQUEST_H
 
 #include <bgfx/bgfx.h>
 #include <vclib/space/core/point.h>
 
-#include <vector>
-#include <variant>
-#include <functional>
 #include <cstdint>
+#include <functional>
+#include <variant>
+#include <vector>
 
 namespace vcl {
 
@@ -38,20 +38,20 @@ namespace detail {
 class ReadFramebufferRequest
 {
 public:
-    using FloatData = std::vector<float>;
-    using ByteData  = std::vector<uint8_t>;
-    using ReadData  = std::variant<FloatData, ByteData>;
-    using CallbackReadBuffer = std::function<void(const ReadData &)>;
+    using FloatData          = std::vector<float>;
+    using ByteData           = std::vector<uint8_t>;
+    using ReadData           = std::variant<FloatData, ByteData>;
+    using CallbackReadBuffer = std::function<void(const ReadData&)>;
 
     // Read depth constructor
     ReadFramebufferRequest(
-        Point2i queryDepthPoint,
-        Point2<uint> framebufferSize,
+        Point2i            queryDepthPoint,
+        Point2<uint>       framebufferSize,
         CallbackReadBuffer callback);
 
     // read color constructor
     ReadFramebufferRequest(
-        Point2<uint> framebufferSize,
+        Point2<uint>       framebufferSize,
         CallbackReadBuffer callback);
 
     ~ReadFramebufferRequest();
@@ -68,8 +68,7 @@ public:
 
     bool isAvailable(uint32_t currentFrame) const;
 
-    [[nodiscard]]
-    bool performRead(uint32_t currFrame) const;
+    [[nodiscard]] bool performRead(uint32_t currFrame) const;
 
 private:
     enum Type {
@@ -79,25 +78,25 @@ private:
     };
 
     // read back type
-    Type                  type           = COUNT;
+    Type type = COUNT;
 
     // frame # when data will be available for reading
-    uint32_t              frameAvailable = 0;
+    uint32_t frameAvailable = 0;
     // point to read from
-    Point2i               point          = {-1, -1};
+    Point2i point = {-1, -1};
 
     // frame buffer for offscreen drawing and reading back
-    bgfx::FrameBufferHandle offscreenFbh    = BGFX_INVALID_HANDLE;
+    bgfx::FrameBufferHandle offscreenFbh = BGFX_INVALID_HANDLE;
     // view id for offscreen drawing
-    bgfx::ViewId            viewOffscreenId = 0;
+    bgfx::ViewId viewOffscreenId = 0;
 
     // blit texture
-    bgfx::TextureHandle blitTexture  = BGFX_INVALID_HANDLE;
-    Point2<uint16_t>    blitSize     = {0, 0};
+    bgfx::TextureHandle blitTexture = BGFX_INVALID_HANDLE;
+    Point2<uint16_t>    blitSize    = {0, 0};
     // data read from the blit texture
-    ReadData            readData     = {};
+    ReadData readData = {};
     // callback called when the data is available
-    CallbackReadBuffer  readCallback = nullptr;
+    CallbackReadBuffer readCallback = nullptr;
     // submitted flag
     bool submitted = false;
 };

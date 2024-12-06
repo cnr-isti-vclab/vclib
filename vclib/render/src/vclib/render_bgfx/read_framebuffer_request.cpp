@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#include <vclib/render_bgfx/read_framebuffer_request.h>
 #include <vclib/render_bgfx/context.h>
+#include <vclib/render_bgfx/read_framebuffer_request.h>
 
 namespace vcl {
 
@@ -38,14 +38,11 @@ static Point2<uint16_t> getBlitDepthSize(Point2<uint> fbSize)
     case bgfx::RendererType::Direct3D12:
         return {uint16_t(fbSize.x()), uint16_t(fbSize.y())};
     case bgfx::RendererType::Vulkan:
-    case bgfx::RendererType::Metal:
-        return {1, 1};
-    default:
-        assert(false && "blit depth for untested render type");
-        break;
+    case bgfx::RendererType::Metal: return {1, 1};
+    default: assert(false && "blit depth for untested render type"); break;
     }
 
-    return {0,0};
+    return {0, 0};
 }
 
 static bgfx::TextureFormat::Enum getOffscreenColorFormat()
@@ -59,35 +56,29 @@ static bgfx::TextureFormat::Enum getOffscreenDepthFormat()
     switch (renderType) {
     case bgfx::RendererType::Direct3D11:
     case bgfx::RendererType::Direct3D12:
-    case bgfx::RendererType::Vulkan:
-        return bgfx::TextureFormat::D32F;
-    case bgfx::RendererType::Metal:
-        return bgfx::TextureFormat::D32;
+    case bgfx::RendererType::Vulkan: return bgfx::TextureFormat::D32F;
+    case bgfx::RendererType::Metal: return bgfx::TextureFormat::D32;
     default:
         assert(false && "offscreen depth untested for current render type");
     }
     return bgfx::TextureFormat::Count;
 }
 
-static const uint64_t kBlitFormat = 0
-    | BGFX_TEXTURE_BLIT_DST
-    | BGFX_TEXTURE_READ_BACK
-    | BGFX_SAMPLER_MIN_POINT
-    | BGFX_SAMPLER_MAG_POINT
-    | BGFX_SAMPLER_MIP_POINT
-    | BGFX_SAMPLER_U_CLAMP
-    | BGFX_SAMPLER_V_CLAMP;
+static const uint64_t kBlitFormat =
+    0 | BGFX_TEXTURE_BLIT_DST | BGFX_TEXTURE_READ_BACK |
+    BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT |
+    BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
 
 // Read depth constructor
 ReadFramebufferRequest::ReadFramebufferRequest(
-    Point2i queryDepthPoint,
-    Point2<uint> framebufferSize,
-    CallbackReadBuffer callback)
-    : type(DEPTH), point(queryDepthPoint), readCallback(callback) {
-
+    Point2i            queryDepthPoint,
+    Point2<uint>       framebufferSize,
+    CallbackReadBuffer callback) :
+        type(DEPTH), point(queryDepthPoint), readCallback(callback)
+{
     blitSize = getBlitDepthSize(framebufferSize);
 
-    auto & ctx = Context::instance();
+    auto& ctx       = Context::instance();
     viewOffscreenId = ctx.requestViewId();
 
     offscreenFbh = ctx.createOffscreenFramebufferAndInitView(
@@ -112,20 +103,17 @@ ReadFramebufferRequest::ReadFramebufferRequest(
 
 // read color constructor
 ReadFramebufferRequest::ReadFramebufferRequest(
-    Point2<uint> framebufferSize,
-    CallbackReadBuffer callback)
-    : type(COLOR), point(0,0), readCallback(callback) {
-        
+    Point2<uint>       framebufferSize,
+    CallbackReadBuffer callback) :
+        type(COLOR), point(0, 0), readCallback(callback)
+{
     blitSize = framebufferSize.cast<uint16_t>();
 
-    auto & ctx = Context::instance();
+    auto& ctx       = Context::instance();
     viewOffscreenId = ctx.requestViewId();
-    
+
     offscreenFbh = ctx.createOffscreenFramebufferAndInitView(
-        viewOffscreenId,
-        framebufferSize.x(),
-        framebufferSize.y(),
-        true);
+        viewOffscreenId, framebufferSize.x(), framebufferSize.y(), true);
     assert(bgfx::isValid(offscreenFbh));
 
     // create the blit depth texture
@@ -139,42 +127,45 @@ ReadFramebufferRequest::ReadFramebufferRequest(
     assert(bgfx::isValid(blitTexture));
 }
 
-ReadFramebufferRequest::~ReadFramebufferRequest() {
+ReadFramebufferRequest::~ReadFramebufferRequest()
+{
     if (bgfx::isValid(blitTexture))
         bgfx::destroy(blitTexture);
 
     if (bgfx::isValid(offscreenFbh))
         bgfx::destroy(offscreenFbh);
-    
+
     if (viewOffscreenId != 0) {
-        auto & ctx = Context::instance();
+        auto& ctx = Context::instance();
         ctx.releaseViewId(viewOffscreenId);
     }
 }
 
-bgfx::ViewId ReadFramebufferRequest::viewId() const {
+bgfx::ViewId ReadFramebufferRequest::viewId() const
+{
     return viewOffscreenId;
 }
 
-bgfx::FrameBufferHandle ReadFramebufferRequest::frameBuffer() const {
+bgfx::FrameBufferHandle ReadFramebufferRequest::frameBuffer() const
+{
     return offscreenFbh;
 }
 
-bool ReadFramebufferRequest::isSubmitted() const {
+bool ReadFramebufferRequest::isSubmitted() const
+{
     return submitted;
 }
 
-bool ReadFramebufferRequest::submit() {
+bool ReadFramebufferRequest::submit()
+{
     if (submitted)
         return false;
-    
+
     // pixel size
     const auto readPixelSize = blitSize.x() * blitSize.y();
 
     // source buffer
-    const auto srcBuffer = bgfx::getTexture(
-        offscreenFbh,
-        uint8_t(type));
+    const auto srcBuffer = bgfx::getTexture(offscreenFbh, uint8_t(type));
 
     switch (type) {
     case DEPTH: {
@@ -182,19 +173,25 @@ bool ReadFramebufferRequest::submit() {
         readData = FloatData(readPixelSize);
         if (readPixelSize == 1) {
             // read a single fragment
-            bgfx::blit(viewOffscreenId, blitTexture, 0, 0,
-                srcBuffer, uint16_t(point.x()), uint16_t(point.y()),
-                1, 1);
-        } else {
+            bgfx::blit(
+                viewOffscreenId,
+                blitTexture,
+                0,
+                0,
+                srcBuffer,
+                uint16_t(point.x()),
+                uint16_t(point.y()),
+                1,
+                1);
+        }
+        else {
             // read the entire depth buffer
             bgfx::blit(viewOffscreenId, blitTexture, 0, 0, srcBuffer);
         }
         // submit read from blit CPU texture
         frameAvailable = bgfx::readTexture(
-            blitTexture,
-            std::get<FloatData>(readData).data());
-    }
-    break;
+            blitTexture, std::get<FloatData>(readData).data());
+    } break;
     case COLOR: {
         // allocate memory for blit color data
         readData = ByteData(readPixelSize * 4);
@@ -202,48 +199,42 @@ bool ReadFramebufferRequest::submit() {
         // read the entire depth buffer
         bgfx::blit(viewOffscreenId, blitTexture, 0, 0, srcBuffer);
 
-        frameAvailable = bgfx::readTexture(
-            blitTexture,
-            std::get<ByteData>(readData).data());
-    }
-    break;
-    default:
-        assert(false && "unsupported readback type");
-        return false;
+        frameAvailable =
+            bgfx::readTexture(blitTexture, std::get<ByteData>(readData).data());
+    } break;
+    default: assert(false && "unsupported readback type"); return false;
     }
 
     submitted = true;
     return true;
 }
 
-bool ReadFramebufferRequest::isAvailable(uint32_t currentFrame) const {
-    return frameAvailable != 0 
-        && currentFrame >= frameAvailable;
+bool ReadFramebufferRequest::isAvailable(uint32_t currentFrame) const
+{
+    return frameAvailable != 0 && currentFrame >= frameAvailable;
 }
 
-bool ReadFramebufferRequest::performRead(uint32_t currFrame) const {
+bool ReadFramebufferRequest::performRead(uint32_t currFrame) const
+{
     if (!isAvailable(currFrame))
         return false;
 
     switch (type) {
     case DEPTH: {
         assert(std::holds_alternative<FloatData>(readData));
-        const auto & data = std::get<FloatData>(readData);
+        const auto& data = std::get<FloatData>(readData);
         if (data.size() == 1)
             this->readCallback(readData);
         else {
-            this->readCallback(FloatData(
-                {data[point.y() * blitSize.x() + point.x()]}));
+            this->readCallback(
+                FloatData({data[point.y() * blitSize.x() + point.x()]}));
         }
-    }
-    break;
+    } break;
     case COLOR: {
         assert(std::holds_alternative<ByteData>(readData));
         this->readCallback(readData);
-    }
-    break;
-        default:
-        assert(false && "unsupported readback type");
+    } break;
+    default: assert(false && "unsupported readback type");
     }
     return true;
 }
