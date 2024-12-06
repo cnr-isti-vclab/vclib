@@ -67,11 +67,19 @@ namespace detail {
  * that are contained on both the BitFlags components for Face Elements.
  */
 template<typename T>
-concept FaceBitFlagsConcept = HasBitFlags<T> && requires (const T& cObj) {
-    { cObj.edgeOnBorder(uint()) } -> std::same_as<bool>;
-    { cObj.edgeSelected(uint()) } -> std::same_as<bool>;
-    { cObj.edgeVisited(uint()) } -> std::same_as<bool>;
-    { cObj.edgeFaux(uint()) } -> std::same_as<bool>;
+concept FaceBitFlagsConcept = HasBitFlags<T> && requires (T&& obj) {
+    { obj.edgeOnBorder(uint()) } -> std::convertible_to<bool>;
+    { obj.edgeSelected(uint()) } -> std::convertible_to<bool>;
+    { obj.edgeVisited(uint()) } -> std::convertible_to<bool>;
+    { obj.edgeFaux(uint()) } -> std::convertible_to<bool>;
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.edgeOnBorder(uint()) } -> BitProxyConcept;
+        { obj.edgeSelected(uint()) } -> BitProxyConcept;
+        { obj.edgeVisited(uint()) } -> BitProxyConcept;
+        { obj.edgeFaux(uint()) } -> BitProxyConcept;
+    };
 };
 
 } // namespace detail
@@ -86,7 +94,7 @@ concept FaceBitFlagsConcept = HasBitFlags<T> && requires (const T& cObj) {
  */
 template<typename T>
 concept HasPolygonBitFlags =
-    detail::FaceBitFlagsConcept<T> && requires (T obj) {
+    detail::FaceBitFlagsConcept<T> && requires (T&& obj) {
         { obj.__polygonBitFlags() } -> std::same_as<void>;
     };
 
@@ -100,7 +108,7 @@ concept HasPolygonBitFlags =
  */
 template<typename T>
 concept HasTriangleBitFlags =
-    detail::FaceBitFlagsConcept<T> && requires (T obj) {
+    detail::FaceBitFlagsConcept<T> && requires (T&& obj) {
         { obj.__triangleBitFlags() } -> std::same_as<void>;
     };
 
