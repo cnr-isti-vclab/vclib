@@ -64,6 +64,8 @@ protected:
 
     void* displayId();
 
+    GLFWwindow* glfwWindow() const;
+
     // callbacks
     virtual void glfwFramebufferSizeCallback(
         GLFWwindow*,

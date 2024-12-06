@@ -162,6 +162,11 @@ void* EventManagerWindow::displayId()
     return ndt;
 }
 
+GLFWwindow* EventManagerWindow::glfwWindow() const
+{
+    return mWindow;
+}
+
 void EventManagerWindow::glfwFramebufferSizeCallback(
     GLFWwindow*,
     int width,
