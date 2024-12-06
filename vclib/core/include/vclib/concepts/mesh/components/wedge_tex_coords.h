@@ -27,6 +27,7 @@
 
 #include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/ranges/range.h>
+#include <vclib/concepts/space/tex_coord.h>
 
 #include <vector>
 
@@ -48,17 +49,16 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasWedgeTexCoords = requires (
-    T&&                                        obj,
+    T&&                                                   obj,
     typename RemoveRef<T>::WedgeTexCoordType              t,
-    typename RemoveRef<T>::WedgeTexCoordType&             tR,
-    std::vector<typename RemoveRef<T>::WedgeTexCoordType> v) {
+    std::vector<typename RemoveRef<T>::WedgeTexCoordType> vec) {
     RemoveRef<T>::WEDGE_TEX_COORD_NUMBER;
     typename RemoveRef<T>::WedgeTexCoordType;
     typename RemoveRef<T>::WedgeTexCoordsIterator;
     typename RemoveRef<T>::ConstWedgeTexCoordsIterator;
 
-    { obj.wedgeTexCoord(uint()) } -> std::convertible_to<decltype(t)>;
-    { obj.wedgeTexCoordMod(int()) } -> std::convertible_to<decltype(t)>;
+    { obj.wedgeTexCoord(uint()) } -> TexCoordConcept;
+    { obj.wedgeTexCoordMod(int()) } -> TexCoordConcept;
 
     { obj.textureIndex() } -> std::convertible_to<short>;
 
@@ -69,10 +69,8 @@ concept HasWedgeTexCoords = requires (
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
-        { obj.wedgeTexCoord(uint()) } -> std::same_as<decltype(tR)>;
-        { obj.wedgeTexCoordMod(int()) } -> std::same_as<decltype(tR)>;
         { obj.setWedgeTexCoord(uint(), t) } -> std::same_as<void>;
-        { obj.setWedgeTexCoords(v) } -> std::same_as<void>;
+        { obj.setWedgeTexCoords(vec) } -> std::same_as<void>;
 
         { obj.textureIndex() } -> std::same_as<short&>;
 
