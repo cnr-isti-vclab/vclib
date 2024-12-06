@@ -20,36 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef COMPONENTS_H
-#define COMPONENTS_H
+#ifndef COMP_BIT_FLAGS_H
+#define COMP_BIT_FLAGS_H
 
-#include "components/bit_flags.h"
-#include "components/bounding_box.h"
-#include "components/color.h"
-#include "components/coordinate.h"
-#include "components/mark.h"
-#include "components/name.h"
-#include "components/normal.h"
-#include "components/principal_curvature.h"
-#include "components/quality.h"
-#include "components/tex_coord.h"
-#include "components/textures.h"
-#include "components/transform_matrix.h"
+#include <vclib/meshes.h>
 
-void componentsStaticAsserts()
+void bitFlagsComponentStaticAsserts()
 {
-    bitFlagsComponentStaticAsserts();
-    boundingBoxComponentStaticAsserts();
-    colorComponentStaticAsserts();
-    coordinateComponentStaticAsserts();
-    markComponentStaticAsserts();
-    nameComponentStaticAsserts();
-    normalComponentStaticAsserts();
-    principalCurvatureComponentStaticAsserts();
-    qualityComponentStaticAsserts();
-    texCoordComponentStaticAsserts();
-    texturesComponentStaticAsserts();
-    transformMatrixComponentStaticAsserts();
+    using namespace vcl;
+
+    using TriMeshVertex = trimesh::Vertex<float, true>;
+
+    // test only the coordinate component
+    static_assert(
+        comp::HasBitFlags<vert::BitFlags>,
+        "vert::BitFlags does not satisfy the HasBitFlags concept");
+    static_assert(
+        comp::HasBitFlags<const vert::BitFlags>,
+        "const vert::BitFlags does not satisfy the HasBitFlags concept");
+    static_assert(
+        comp::HasBitFlags<vert::BitFlags&>,
+        "vert::BitFlags& does not satisfy the HasBitFlags concept");
+    static_assert(
+        comp::HasBitFlags<const vert::BitFlags&>,
+        "const vert::BitFlags& does not satisfy the HasBitFlags concept");
+    static_assert(
+        comp::HasBitFlags<vert::BitFlags&&>,
+        "vert::BitFlags&& does not satisfy the HasBitFlags concept");
+
+    static_assert(
+        comp::HasBitFlags<TriMeshVertex>,
+        "TriMesh Vertex does not satisfy the HasBitFlags concept");
+    static_assert(
+        comp::HasBitFlags<const TriMeshVertex>,
+        "const TriMesh Vertex does not satisfy the HasBitFlags concept");
+    static_assert(
+        comp::HasBitFlags<TriMeshVertex&>,
+        "TriMesh Vertex& does not satisfy the HasBitFlags concept");
+    static_assert(
+        comp::HasBitFlags<const TriMeshVertex&>,
+        "const TriMesh Vertex& does not satisfy the HasBitFlags concept");
+    static_assert(
+        comp::HasBitFlags<TriMeshVertex&&>,
+        "TriMesh Vertex&& does not satisfy the HasBitFlags concept");
 }
 
-#endif // COMPONENTS_H
+#endif // COMP_BIT_FLAGS_H

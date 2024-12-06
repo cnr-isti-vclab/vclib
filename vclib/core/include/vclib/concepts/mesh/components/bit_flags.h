@@ -23,6 +23,8 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_BIT_FLAGS_H
 
+#include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/space/bit_set.h>
 #include <vclib/types/base.h>
 
 #include <concepts>
@@ -37,16 +39,24 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasBitFlags = requires (T obj, const T& cObj) {
-    { cObj.deleted() } -> std::same_as<bool>;
-    { cObj.selected() } -> std::same_as<bool>;
-    { cObj.onBorder() } -> std::same_as<bool>;
-    { cObj.selected() } -> std::same_as<bool>;
-    { cObj.userBit(uint()) } -> std::same_as<bool>;
+concept HasBitFlags = requires (T&& obj) {
+    { obj.deleted() } -> std::same_as<bool>;
+    { obj.selected() } -> std::convertible_to<bool>;
+    { obj.onBorder() } -> std::convertible_to<bool>;
+    { obj.selected() } -> std::convertible_to<bool>;
+    { obj.userBit(uint()) } -> std::convertible_to<bool>;
 
-    { obj.resetBitFlags() } -> std::same_as<void>;
-    { obj.importFlagsFromVCGFormat(int()) } -> std::same_as<void>;
-    { cObj.exportFlagsToVCGFormat() } -> std::same_as<int>;
+    { obj.exportFlagsToVCGFormat() } -> std::same_as<int>;
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.selected() } -> BitProxyConcept;
+        { obj.onBorder() } -> BitProxyConcept;
+        { obj.selected() } -> BitProxyConcept;
+        { obj.userBit(uint()) } -> BitProxyConcept;
+        { obj.resetBitFlags() } -> std::same_as<void>;
+        { obj.importFlagsFromVCGFormat(int()) } -> std::same_as<void>;
+    };
 };
 
 namespace detail {

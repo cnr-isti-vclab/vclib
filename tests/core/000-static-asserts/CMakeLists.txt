@@ -31,6 +31,7 @@ set(HEADERS
     ranges.h
     space.h
     meshes/components/bounding_box.h
+    meshes/components/bit_flags.h
     meshes/components/color.h
     meshes/components/coordinate.h
     meshes/components/mark.h
@@ -75,6 +76,7 @@ vclib_add_test(
 
 target_sources(vclib-core-test-000-static-asserts
   PRIVATE
+
 
 
 
