@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include <QWidget>
 #include <QApplication>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QWidget>
 
 #include <vclib/qt/viewer_widget.h>
 
@@ -11,6 +11,7 @@ template<typename T>
 class Basic : public vcl::qt::ViewerWidget
 {
     T t = 42;
+
 public:
     Basic(QWidget* parent = nullptr) : vcl::qt::ViewerWidget(parent)
     {
@@ -29,10 +30,9 @@ public:
     void f() { std::cout << "C::f()" << t << std::endl; }
 
 public slots:
+
     void onButtonClicked() { std::cout << "C::onButtonClicked()" << std::endl; }
 };
-
-
 
 template<template<typename> typename C, template<typename> typename E>
 class Minestrone : public C<Minestrone<C, E>>, public E<Minestrone<C, E>>
@@ -40,12 +40,8 @@ class Minestrone : public C<Minestrone<C, E>>, public E<Minestrone<C, E>>
 public:
     using EventManagerType = E<Minestrone<C, E>>;
 
-    void foo()
-    {
-        C<Minestrone<C, E>>::drawWithInit();
-    };
+    void foo() { C<Minestrone<C, E>>::drawWithInit(); };
 };
-
 
 template<class Derived>
 class Canvas
@@ -56,6 +52,7 @@ public:
         derived().init();
         draw();
     };
+
     virtual void draw() { std::cerr << "draw\n"; };
 
 private:
@@ -69,12 +66,10 @@ public:
     void init() { std::cerr << "init\n"; };
 };
 
-
 class Gesu : public Minestrone<Canvas, EventManager>
 {
     virtual void draw() override { std::cerr << "Gesu::draw\n"; }
 };
-
 
 int main(int argc, char** argv)
 {

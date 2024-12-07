@@ -29,7 +29,7 @@ void bitSetStaticAsserts()
 {
     using namespace vcl;
 
-    using BitSetType  = BitSet<uint16_t>;
+    using BitSetType = BitSet<uint16_t>;
 
     static_assert(BitProxyConcept<BitProxy<uint16_t>>, "");
 
