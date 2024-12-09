@@ -32,6 +32,7 @@ set(HEADERS
     space.h
     meshes/components/adjacent_edges.h
     meshes/components/adjacent_faces.h
+    meshes/components/adjacent_vertices.h
     meshes/components/bounding_box.h
     meshes/components/bit_flags.h
     meshes/components/color.h

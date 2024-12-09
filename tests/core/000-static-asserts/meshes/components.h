@@ -25,6 +25,7 @@
 
 #include "components/adjacent_edges.h"
 #include "components/adjacent_faces.h"
+#include "components/adjacent_vertices.h"
 #include "components/bit_flags.h"
 #include "components/bounding_box.h"
 #include "components/color.h"
@@ -45,6 +46,7 @@ void componentsStaticAsserts()
 {
     adjacentEdgesComponentStaticAsserts();
     adjacentFacesComponentStaticAsserts();
+    adjacentVerticesComponentStaticAsserts();
     bitFlagsComponentStaticAsserts();
     boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
