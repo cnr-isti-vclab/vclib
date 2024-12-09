@@ -61,7 +61,7 @@ concept HasVertexReferences = requires (
     { obj.vertex(uint()) } -> std::convertible_to<decltype(cVP)>;
     { obj.vertexIndex(uint()) } -> std::same_as<uint>;
     { obj.vertexMod(int()) } -> std::convertible_to<decltype(cVP)>;
-    { obj.vertexIndexMod(int()) } -> std::convertible_to<uint>;
+    { obj.vertexIndexMod(int()) } -> std::same_as<uint>;
 
     { obj.containsVertex(&v) } -> std::same_as<bool>;
     { obj.containsVertex(uint()) } -> std::same_as<bool>;

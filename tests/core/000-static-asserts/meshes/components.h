@@ -23,6 +23,7 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
+#include "components/adjacent_faces.h"
 #include "components/bit_flags.h"
 #include "components/bounding_box.h"
 #include "components/color.h"
@@ -41,6 +42,7 @@
 
 void componentsStaticAsserts()
 {
+    adjacentFacesComponentStaticAsserts();
     bitFlagsComponentStaticAsserts();
     boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
