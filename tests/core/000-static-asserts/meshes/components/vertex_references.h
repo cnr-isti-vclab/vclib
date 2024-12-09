@@ -29,7 +29,8 @@ void vertexReferencesComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshVertex = trimesh::Vertex<float, true>;
+    using TriMeshVertex = trimesh::Vertex<float, false>;
+    using TriMeshVertexI = trimesh::Vertex<float, true>;
 
     using TriMeshFace  = trimesh::Face<float, false>;
     using TriMeshFaceI = trimesh::Face<float, true>;
@@ -37,7 +38,7 @@ void vertexReferencesComponentStaticAsserts()
     using EdgeMeshEdge  = edgemesh::Edge<float, false>;
     using EdgeMeshEdgeI = edgemesh::Edge<float, true>;
 
-    using VIComponent = face::VertexIndices<TriMeshVertex, 3, TriMeshFace>;
+    using VIComponent = face::VertexIndices<TriMeshVertexI, 3, TriMeshFaceI>;
     using VPComponent = face::VertexPointers<TriMeshVertex, 3, TriMeshFace>;
 
     // test only the vertex indices/pointers component
