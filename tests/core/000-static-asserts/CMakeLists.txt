@@ -41,6 +41,7 @@ set(HEADERS
     meshes/components/tex_coord.h
     meshes/components/textures.h
     meshes/components/transform_matrix.h
+    meshes/components/vertex_references.h
     meshes/components/wedge_colors.h
     meshes/components/wedge_tex_coords.h
     meshes/components.h
@@ -76,16 +77,4 @@ vclib_add_test(
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})
 
-target_sources(vclib-core-test-000-static-asserts
-  PRIVATE
-
-
-
-
-
-
-
-
-
-)
 
