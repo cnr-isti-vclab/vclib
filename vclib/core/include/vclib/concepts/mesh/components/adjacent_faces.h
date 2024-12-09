@@ -105,7 +105,7 @@ concept HasAdjacentFaces = requires (
         { obj.setAdjFaces(vec) } -> std::same_as<void>;
 
         // { obj.adjFaceBegin() } -> std::output_iterator<decltype(fP)>;
-        // { obj.adjFaceBegin() } -> std::output_iterator<decltype(fP)>;
+        // { obj.adjFaceEnd() } -> std::output_iterator<decltype(fP)>;
 
         { obj.adjFaces() } -> vcl::RangeOf<decltype(fP)>;
     };
@@ -137,7 +137,7 @@ concept HasOptionalAdjacentFaces =
 template<typename T>
 concept HasRightNumberOfAdjacentFaces =
     !comp::IsTiedToVertexNumber<typename RemoveRef<T>::AdjacentFaces> ||
-    T::VERTEX_NUMBER == T::ADJ_FACE_NUMBER;
+    RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::ADJ_FACE_NUMBER;
 
 /**
  * @private

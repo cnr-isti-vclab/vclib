@@ -25,6 +25,7 @@
 
 #include "component.h"
 
+#include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -47,58 +48,67 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasAdjacentEdges = requires (
-    T                                          obj,
-    const T&                                   cObj,
-    typename T::AdjacentEdgeType               e,
-    typename T::AdjacentEdgeIterator           it,
-    typename T::ConstAdjacentEdgeIterator      cIt,
-    typename T::ConstAdjacentEdgeIndexIterator cIIt,
-    typename T::AdjacentEdgeType*              eP,
-    const typename T::AdjacentEdgeType*        cEP,
-    std::vector<typename T::AdjacentEdgeType*> vec) {
-    T::ADJ_EDGE_NUMBER;
-    typename T::AdjacentEdgeType;
-    typename T::AdjacentEdgeIterator;
-    typename T::ConstAdjacentEdgeIterator;
-    typename T::ConstAdjacentEdgeIndexIterator;
+    T&&                                                   obj,
+    typename RemoveRef<T>::AdjacentEdgeType               e,
+    typename RemoveRef<T>::AdjacentEdgeIterator           it,
+    typename RemoveRef<T>::ConstAdjacentEdgeIterator      cIt,
+    typename RemoveRef<T>::ConstAdjacentEdgeIndexIterator cIIt,
+    typename RemoveRef<T>::AdjacentEdgeType*              eP,
+    const typename RemoveRef<T>::AdjacentEdgeType*        cEP,
+    std::vector<typename RemoveRef<T>::AdjacentEdgeType*> vec) {
+    RemoveRef<T>::ADJ_EDGE_NUMBER;
+    typename RemoveRef<T>::AdjacentEdgeType;
+    typename RemoveRef<T>::AdjacentEdgeIterator;
+    typename RemoveRef<T>::ConstAdjacentEdgeIterator;
+    typename RemoveRef<T>::ConstAdjacentEdgeIndexIterator;
 
     { obj.adjEdgesNumber() } -> std::same_as<uint>;
-    { obj.adjEdge(uint()) } -> std::same_as<decltype(eP)>;
-    { cObj.adjEdge(uint()) } -> std::same_as<decltype(cEP)>;
-    { cObj.adjEdgeIndex(uint()) } -> std::same_as<uint>;
-    { obj.adjEdgeMod(int()) } -> std::same_as<decltype(eP)>;
-    { cObj.adjEdgeMod(int()) } -> std::same_as<decltype(cEP)>;
-    { cObj.adjEdgeIndexMod(uint()) } -> std::same_as<uint>;
 
-    { obj.setAdjEdge(uint(), &e) } -> std::same_as<void>;
-    { obj.setAdjEdge(uint(), uint()) } -> std::same_as<void>;
-    { obj.setAdjEdge(it, &e) } -> std::same_as<void>;
-    { obj.setAdjEdge(it, uint()) } -> std::same_as<void>;
-    { obj.setAdjEdge(cIt, &e) } -> std::same_as<void>;
-    { obj.setAdjEdge(cIt, uint()) } -> std::same_as<void>;
-    { obj.setAdjEdge(cIIt, &e) } -> std::same_as<void>;
-    { obj.setAdjEdge(cIIt, uint()) } -> std::same_as<void>;
-    { obj.setAdjEdgeMod(int(), &e) } -> std::same_as<void>;
-    { obj.setAdjEdgeMod(int(), uint()) } -> std::same_as<void>;
-    { obj.setAdjEdges(vec) } -> std::same_as<void>;
+    { obj.adjEdge(uint()) } -> std::convertible_to<decltype(cEP)>;
+    { obj.adjEdgeIndex(uint()) } -> std::same_as<uint>;
+    { obj.adjEdgeMod(int()) } -> std::convertible_to<decltype(cEP)>;
+    { obj.adjEdgeIndexMod(uint()) } -> std::same_as<uint>;
 
-    { cObj.containsAdjEdge(&e) } -> std::same_as<bool>;
-    { cObj.containsAdjEdge(uint()) } -> std::same_as<bool>;
-    { cObj.indexOfAdjEdge(&e) } -> std::same_as<uint>;
-    { cObj.indexOfAdjEdge(uint()) } -> std::same_as<uint>;
+    { obj.containsAdjEdge(&e) } -> std::same_as<bool>;
+    { obj.containsAdjEdge(uint()) } -> std::same_as<bool>;
+    { obj.indexOfAdjEdge(&e) } -> std::same_as<uint>;
+    { obj.indexOfAdjEdge(uint()) } -> std::same_as<uint>;
 
-    { obj.adjEdgeBegin() } -> std::same_as<decltype(it)>;
-    { obj.adjEdgeEnd() } -> std::same_as<decltype(it)>;
+    { obj.adjEdgeBegin() } -> std::input_iterator;
+    { obj.adjEdgeEnd() } -> std::input_iterator;
 
-    { cObj.adjEdgeBegin() } -> std::same_as<decltype(cIt)>;
-    { cObj.adjEdgeEnd() } -> std::same_as<decltype(cIt)>;
+    { obj.adjEdgeIndexBegin() } -> std::input_iterator;
+    { obj.adjEdgeIndexEnd() } -> std::input_iterator;
 
-    { cObj.adjEdgeIndexBegin() } -> std::same_as<decltype(cIIt)>;
-    { cObj.adjEdgeIndexEnd() } -> std::same_as<decltype(cIIt)>;
+    { obj.adjEdgeIndices() } -> vcl::RangeOf<uint>;
 
-    { obj.adjEdges() } -> vcl::RangeOf<decltype(eP)>;
-    { cObj.adjEdges() } -> vcl::RangeOf<decltype(cEP)>;
-    { cObj.adjEdgeIndices() } -> vcl::RangeOf<uint>;
+    // const requirements
+    requires !vcl::IsConst<T> || requires {
+        { obj.adjEdges() } -> vcl::RangeOf<decltype(cEP)>;
+    };
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.adjEdge(uint()) } -> std::same_as<decltype(eP)>;
+        { obj.adjEdgeMod(int()) } -> std::same_as<decltype(eP)>;
+
+        { obj.setAdjEdge(uint(), &e) } -> std::same_as<void>;
+        { obj.setAdjEdge(uint(), uint()) } -> std::same_as<void>;
+        { obj.setAdjEdge(it, &e) } -> std::same_as<void>;
+        { obj.setAdjEdge(it, uint()) } -> std::same_as<void>;
+        { obj.setAdjEdge(cIt, &e) } -> std::same_as<void>;
+        { obj.setAdjEdge(cIt, uint()) } -> std::same_as<void>;
+        { obj.setAdjEdge(cIIt, &e) } -> std::same_as<void>;
+        { obj.setAdjEdge(cIIt, uint()) } -> std::same_as<void>;
+        { obj.setAdjEdgeMod(int(), &e) } -> std::same_as<void>;
+        { obj.setAdjEdgeMod(int(), uint()) } -> std::same_as<void>;
+        { obj.setAdjEdges(vec) } -> std::same_as<void>;
+
+        // { obj.adjEdgeBegin() } -> std::output_iterator<decltype(eP)>;
+        // { obj.adjEdgeEnd() } -> std::output_iterator<decltype(eP)>;
+
+        { obj.adjEdges() } -> vcl::RangeOf<decltype(eP)>;
+    };
 };
 
 /**
@@ -110,7 +120,8 @@ concept HasAdjacentEdges = requires (
  */
 template<typename T>
 concept HasOptionalAdjacentEdges =
-    HasAdjacentEdges<T> && IsOptionalComponent<typename T::AdjacentEdges>;
+    HasAdjacentEdges<T> &&
+    IsOptionalComponent<typename RemoveRef<T>::AdjacentEdges>;
 
 /**
  * @private
@@ -125,8 +136,8 @@ concept HasOptionalAdjacentEdges =
  */
 template<typename T>
 concept HasRightNumberOfAdjacentEdges =
-    !comp::IsTiedToVertexNumber<typename T::AdjacentEdges> ||
-    T::VERTEX_NUMBER == T::ADJ_EDGE_NUMBER;
+    !comp::IsTiedToVertexNumber<typename RemoveRef<T>::AdjacentEdges> ||
+    RemoveRef<T>::VERTEX_NUMBER == RemoveRef<T>::ADJ_EDGE_NUMBER;
 
 /**
  * @private
