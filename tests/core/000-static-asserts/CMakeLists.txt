@@ -36,6 +36,7 @@ set(HEADERS
     meshes/components/bounding_box.h
     meshes/components/bit_flags.h
     meshes/components/color.h
+    meshes/components/component.h
     meshes/components/coordinate.h
     meshes/components/mark.h
     meshes/components/name.h

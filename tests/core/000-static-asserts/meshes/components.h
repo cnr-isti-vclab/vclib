@@ -29,6 +29,7 @@
 #include "components/bit_flags.h"
 #include "components/bounding_box.h"
 #include "components/color.h"
+#include "components/component.h"
 #include "components/coordinate.h"
 #include "components/mark.h"
 #include "components/name.h"
@@ -44,6 +45,8 @@
 
 void componentsStaticAsserts()
 {
+    componentStaticAsserts();
+
     adjacentEdgesComponentStaticAsserts();
     adjacentFacesComponentStaticAsserts();
     adjacentVerticesComponentStaticAsserts();

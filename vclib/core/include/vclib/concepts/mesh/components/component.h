@@ -42,7 +42,7 @@ namespace vcl::comp {
  */
 template<typename T>
 concept ComponentConcept = requires {
-    { T::COMPONENT_ID } -> std::same_as<const uint&>;
+    { RemoveRef<T>::COMPONENT_ID } -> std::same_as<const uint&>;
 };
 
 /**
@@ -54,9 +54,9 @@ concept ComponentConcept = requires {
  * @ingroup components_concepts
  */
 template<typename T>
-concept IsVerticalComponent = T::IS_VERTICAL == true && requires {
-    typename T::DataValueType;
-    { T::IS_VERTICAL } -> std::same_as<const bool&>;
+concept IsVerticalComponent = RemoveRef<T>::IS_VERTICAL == true && requires {
+    typename RemoveRef<T>::DataValueType;
+    { RemoveRef<T>::IS_VERTICAL } -> std::same_as<const bool&>;
 };
 
 /**
@@ -69,8 +69,8 @@ concept IsVerticalComponent = T::IS_VERTICAL == true && requires {
  */
 template<typename T>
 concept IsOptionalComponent =
-    IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires {
-        { T::IS_OPTIONAL } -> std::same_as<const bool&>;
+    IsVerticalComponent<T> && RemoveRef<T>::IS_OPTIONAL == true && requires {
+        { RemoveRef<T>::IS_OPTIONAL } -> std::same_as<const bool&>;
     };
 
 /**
@@ -87,7 +87,7 @@ concept IsOptionalComponent =
  * @tparam T The type to be evaluated.
  */
 template<typename T>
-concept HasInitMemberFunction = requires (T obj) {
+concept HasInitMemberFunction = requires (T&& obj) {
     { obj.init() } -> std::same_as<void>;
 };
 
@@ -100,7 +100,7 @@ concept HasInitMemberFunction = requires (T obj) {
  * @tparam T The type to be evaluated.
  */
 template<typename T>
-concept HasIsAvailableMemberFunction = requires (T obj) {
+concept HasIsAvailableMemberFunction = requires (T&& obj) {
     { obj.isAvailable() } -> std::same_as<bool>;
 };
 
