@@ -50,7 +50,6 @@ concept HasVertexReferences = requires (
     std::vector<typename T::VertexType*> vecV,
     std::vector<uint>                    vecU) {
     T::VERTEX_NUMBER;
-    typename T::VertexReferences;
 
     typename T::VertexType;
     typename T::VertexIterator;
