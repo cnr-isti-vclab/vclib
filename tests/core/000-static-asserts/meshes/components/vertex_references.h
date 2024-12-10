@@ -29,7 +29,7 @@ void vertexReferencesComponentStaticAsserts()
 {
     using namespace vcl;
 
-    using TriMeshVertex = trimesh::Vertex<float, false>;
+    using TriMeshVertex  = trimesh::Vertex<float, false>;
     using TriMeshVertexI = trimesh::Vertex<float, true>;
 
     using TriMeshFace  = trimesh::Face<float, false>;
