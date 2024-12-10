@@ -54,10 +54,11 @@ concept ComponentConcept = requires {
  * @ingroup components_concepts
  */
 template<typename T>
-concept IsVerticalComponent = RemoveRef<T>::IS_VERTICAL == true && requires {
-    typename RemoveRef<T>::DataValueType;
-    { RemoveRef<T>::IS_VERTICAL } -> std::same_as<const bool&>;
-};
+concept IsVerticalComponent =
+    ComponentConcept<T> && RemoveRef<T>::IS_VERTICAL == true && requires {
+        typename RemoveRef<T>::DataValueType;
+        { RemoveRef<T>::IS_VERTICAL } -> std::same_as<const bool&>;
+    };
 
 /**
  * @brief Evaluates to true if the type `T` is a component that is stored
@@ -87,7 +88,7 @@ concept IsOptionalComponent =
  * @tparam T The type to be evaluated.
  */
 template<typename T>
-concept HasInitMemberFunction = requires (T&& obj) {
+concept HasInitMemberFunction = ComponentConcept<T> && requires (T&& obj) {
     { obj.init() } -> std::same_as<void>;
 };
 
@@ -100,9 +101,10 @@ concept HasInitMemberFunction = requires (T&& obj) {
  * @tparam T The type to be evaluated.
  */
 template<typename T>
-concept HasIsAvailableMemberFunction = requires (T&& obj) {
-    { obj.isAvailable() } -> std::same_as<bool>;
-};
+concept HasIsAvailableMemberFunction =
+    ComponentConcept<T> && requires (T&& obj) {
+        { obj.isAvailable() } -> std::same_as<bool>;
+    };
 
 /**
  * @private
@@ -119,11 +121,12 @@ concept HasIsAvailableMemberFunction = requires (T&& obj) {
  * @tparam T the type to be evaluated.
  */
 template<typename T>
-concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
+concept IsTiedToVertexNumber =
+    ComponentConcept<T> && RemoveRef<T>::TIED_TO_VERTEX_NUMBER;
 
 /**
  * @private
- * @brief The HasReferencesOfType concept checks whether a component T stores
+ * @brief The HasReferencesOfType concept checks whether a *component* T stores
  * references (pointers or indices) of a type (element) R.
  *
  * Each component that store pointers/indices of a type R, must:
@@ -146,8 +149,8 @@ concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
  * @tparam R the type of the references.
  */
 template<typename T, typename R>
-concept HasReferencesOfType =
-    std::is_base_of<ReferencesComponentTriggerer<R>, T>::value;
+concept HasReferencesOfType = ComponentConcept<T> && std::
+    is_base_of<ReferencesComponentTriggerer<RemoveRef<R>>, RemoveRef<T>>::value;
 
 /**
  * @private
