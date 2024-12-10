@@ -49,11 +49,13 @@ set(HEADERS
     meshes/components/vertex_references.h
     meshes/components/wedge_colors.h
     meshes/components/wedge_tex_coords.h
+    meshes/containers/element_container.h
     meshes/elements/edge.h
     meshes/elements/element.h
     meshes/elements/face.h
     meshes/elements/vertex.h
     meshes/components.h
+    meshes/containers.h
     meshes/edgemesh.h
     meshes/elements.h
     meshes/mesh_views.h

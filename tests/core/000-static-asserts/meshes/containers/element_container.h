@@ -20,22 +20,33 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
-#define VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
+#ifndef CONT_ELEMENT_CONTAINER_H
+#define CONT_ELEMENT_CONTAINER_H
 
-#include <vclib/types/pointers.h>
-#include <vclib/types/mesh_containers.h>
+#include <vclib/meshes.h>
 
-namespace vcl::mesh {
+void elementContainerStaticAsserts()
+{
+    using namespace vcl;
 
-/**
- * @brief ElementContainerConcept is a concept satisfied when the type T is an
- * Element Container.
- */
-template<typename T>
-concept ElementContainerConcept =
-    std::is_base_of<ElementContainerTriggerer, RemoveRef<T>>::value;
+    using VertexContainer =
+        mesh::VertexContainer<trimesh::Vertex<float, false>>;
 
-} // namespace vcl::mesh
+    static_assert(
+        mesh::ElementContainerConcept<VertexContainer>,
+        "VertexContainer does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<const VertexContainer>,
+        "const VertexContainer does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<VertexContainer&>,
+        "VertexContainer& does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<const VertexContainer&>,
+        "const VertexContainer& does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<VertexContainer&&>,
+        "VertexContainer&& does not satisfy the ElementContainerConcept");
+}
 
-#endif // VCL_CONCEPTS_MESH_CONTAINERS_ELEMENT_CONTAINER_H
+#endif // CONT_ELEMENT_CONTAINER_H
