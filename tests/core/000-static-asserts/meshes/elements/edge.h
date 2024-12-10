@@ -20,17 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef ELEMENTS_H
-#define ELEMENTS_H
+#ifndef ELEM_EDGE_H
+#define ELEM_EDGE_H
 
-#include "elements/edge.h"
-#include "elements/element.h"
+#include <vclib/meshes.h>
 
-void elementsStaticAsserts()
+void edgeStaticAsserts()
 {
-    elementStaticAsserts();
+    using namespace vcl;
 
-    edgeStaticAsserts();
+    using EMEdge  = edgemesh::Edge<float, false>;
+    using EMEdgeI = edgemesh::Edge<float, true>;
+
+    static_assert(
+        EdgeConcept<EMEdge>,
+        "EMEdge does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<const EMEdge>,
+        "const EMEdge does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<EMEdge&>,
+        "EMEdge& does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<const EMEdge&>,
+        "const EMEdge& does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<EMEdge&&>,
+        "EMEdge&& does not satisfy the EdgeConcept");
+
+    static_assert(
+        EdgeConcept<EMEdgeI>,
+        "EMEdgeI does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<const EMEdgeI>,
+        "const EMEdgeI does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<EMEdgeI&>,
+        "EMEdgeI& does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<const EMEdgeI&>,
+        "const EMEdgeI& does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<EMEdgeI&&>,
+        "EMEdgeI&& does not satisfy the EdgeConcept");
 }
 
-#endif // ELEMENTS_H
+#endif // ELEM_EDGE_H

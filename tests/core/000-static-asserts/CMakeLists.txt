@@ -49,6 +49,7 @@ set(HEADERS
     meshes/components/vertex_references.h
     meshes/components/wedge_colors.h
     meshes/components/wedge_tex_coords.h
+    meshes/elements/edge.h
     meshes/elements/element.h
     meshes/components.h
     meshes/edgemesh.h

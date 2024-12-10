@@ -92,9 +92,10 @@ concept HasVertexReferences = comp::HasVertexReferences<T>;
  * @ingroup edge_concepts
  */
 template<typename T>
-concept EdgeConcept = ElementConcept<T> && T::ELEMENT_ID == ElemId::EDGE &&
-                      edge::HasBitFlags<T> && edge::HasVertexReferences<T> &&
-                      T::VERTEX_NUMBER == 2;
+concept EdgeConcept =
+    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::EDGE &&
+    edge::HasBitFlags<T> && edge::HasVertexReferences<T> &&
+    RemoveRef<T>::VERTEX_NUMBER == 2;
 
 } // namespace vcl
 

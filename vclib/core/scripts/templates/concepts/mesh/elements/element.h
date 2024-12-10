@@ -43,7 +43,7 @@ namespace %EL_NS% {
  */
 template<typename T>
 concept %EL_UC%Concept =
-    ElementConcept<T> && T::ELEMENT_TYPE == ElemId::%EL_U% &&
+    ElementConcept<T> && RemoveRef<T>::ELEMENT_TYPE == ElemId::%EL_U% &&
     %EL_NS%::HasBitFlags<T>;
 
 } // namespace vcl
