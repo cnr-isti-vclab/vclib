@@ -8,6 +8,7 @@
   - [ ] add constructor constraints on all concepts
   - [ ] concepts should work for all type of cvref qualified types
   - [ ] complete space data structures concepts
+  - [ ] implement vcl::InputIterator<IteratorType, IteratedType> as it is done in std::output_iterator
   - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>
   - [x] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
 - Mesh:
