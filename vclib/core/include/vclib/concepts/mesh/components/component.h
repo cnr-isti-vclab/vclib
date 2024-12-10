@@ -176,8 +176,9 @@ concept HasOptionalReferencesOfType =
  * @tparam R the type of the pointers.
  */
 template<typename T, typename R>
-concept HasPointersOfType = HasReferencesOfType<T, R> &&
-                            requires (T obj) { obj.template pointers<R>(); };
+concept HasPointersOfType = HasReferencesOfType<T, R> && requires (T&& obj) {
+    obj.template pointers<RemoveRef<R>>();
+};
 
 /**
  * @private
@@ -189,8 +190,7 @@ concept HasPointersOfType = HasReferencesOfType<T, R> &&
  */
 template<typename T, typename R>
 concept HasOptionalPointersOfType =
-    HasOptionalReferencesOfType<T, R> &&
-    requires (T obj) { obj.template pointers<R>(); };
+    IsOptionalComponent<T> && HasPointersOfType<T, R>;
 
 /**
  * @private
@@ -204,8 +204,9 @@ concept HasOptionalPointersOfType =
  * @tparam R the type of the indices.
  */
 template<typename T, typename R>
-concept HasIndicesOfType = HasReferencesOfType<T, R> &&
-                           requires (T obj) { obj.template indices<R>(); };
+concept HasIndicesOfType = HasReferencesOfType<T, R> && requires (T&& obj) {
+    obj.template indices<RemoveRef<R>>();
+};
 
 /**
  * @private
@@ -217,8 +218,7 @@ concept HasIndicesOfType = HasReferencesOfType<T, R> &&
  */
 template<typename T, typename R>
 concept HasOptionalIndicesOfType =
-    HasOptionalReferencesOfType<T, R> &&
-    requires (T obj) { obj.template indices<R>(); };
+    IsOptionalComponent<T> && HasIndicesOfType<T, R>;
 
 // ======== Has Component Concepts ======== //
 // Concepts that needs to be called on a type T that has the "Components" type
