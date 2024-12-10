@@ -30,6 +30,28 @@
 
 namespace vcl {
 
+namespace mesh {
+
+template<typename MeshType, uint ELEM_ID>
+concept HasElementContainer =
+    HasContainerOfElementPred<ELEM_ID, MeshType>::value;
+
+template<typename MeshType, uint ELEM_ID, uint COMP_ID>
+concept HasPerElementComponent =
+    HasElementContainer<MeshType, ELEM_ID> &&
+    comp::HasComponentOfType<
+        typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
+        COMP_ID>;
+
+template<typename MeshType, uint ELEM_ID, uint COMP_ID>
+concept HasPerElementOptionalComponent =
+    HasElementContainer<MeshType, ELEM_ID> &&
+    comp::HasOptionalComponentOfType<
+        typename ContainerOfElementType<ELEM_ID, MeshType>::ElementType,
+        COMP_ID>;
+
+} // namespace mesh
+
 /**
  * @brief The Mesh Concept is evaluated to true when the type is a Mesh.
  *
