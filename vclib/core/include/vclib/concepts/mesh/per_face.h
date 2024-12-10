@@ -36,6 +36,18 @@
 
 namespace vcl {
 
+template<typename MeshType>
+concept HasTriangles =
+    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
+
+template<typename MeshType>
+concept HasQuads =
+    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
+
+template<typename MeshType>
+concept HasPolygons =
+    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
+
 /**
  * @brief Concept that checks if a Mesh has the per Face AdjacentEdges
  * component.
