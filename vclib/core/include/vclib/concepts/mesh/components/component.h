@@ -241,8 +241,8 @@ concept HasOptionalIndicesOfType =
  * @ingroup elements_concepts
  */
 template<typename T, uint COMP_ID>
-concept HasComponentOfType =
-    detail::ComponentOfTypePred<COMP_ID, typename T::Components>::value;
+concept HasComponentOfType = detail::
+    ComponentOfTypePred<COMP_ID, typename RemoveRef<T>::Components>::value;
 
 /**
  * @brief The HasVerticalComponentOfType concept checks whether a type `T` (that
@@ -263,7 +263,8 @@ concept HasComponentOfType =
 template<typename T, uint COMP_ID>
 concept HasVerticalComponentOfType =
     HasComponentOfType<T, COMP_ID> &&
-    IsVerticalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
+    IsVerticalComponent<
+        ComponentOfType<COMP_ID, typename RemoveRef<T>::Components>>;
 
 /**
  * @brief The HasOptionalComponentOfType concept checks whether a type `T` (that
@@ -284,7 +285,8 @@ concept HasVerticalComponentOfType =
 template<typename T, uint COMP_ID>
 concept HasOptionalComponentOfType =
     HasComponentOfType<T, COMP_ID> &&
-    IsOptionalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
+    IsOptionalComponent<
+        ComponentOfType<COMP_ID, typename RemoveRef<T>::Components>>;
 
 } // namespace vcl::comp
 

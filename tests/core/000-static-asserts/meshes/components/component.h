@@ -739,6 +739,152 @@ void componentStaticAsserts()
         !comp::HasOptionalIndicesOfType<OptionalAdjEdgesI, const TEMEdgeI&>,
         "OptionalAdjEdgesI does satisfy the HasOptionalIndicesOfType const "
         "TEMEdgeI& concept");
+
+    // HasComponentOfType
+    static_assert(
+        comp::HasComponentOfType<TEMVertex, CompId::COORDINATE>,
+        "TEMVertex does not satisfy the HasComponentOfType COORDINATE concept");
+    static_assert(
+        comp::HasComponentOfType<const TEMVertex, CompId::COORDINATE>,
+        "const TEMVertex does not satisfy the HasComponentOfType COORDINATE "
+        "concept");
+    static_assert(
+        comp::HasComponentOfType<TEMVertex&, CompId::COORDINATE>,
+        "TEMVertex& does not satisfy the HasComponentOfType COORDINATE "
+        "concept");
+    static_assert(
+        comp::HasComponentOfType<const TEMVertex&, CompId::COORDINATE>,
+        "const TEMVertex& does not satisfy the HasComponentOfType COORDINATE "
+        "concept");
+    static_assert(
+        comp::HasComponentOfType<TEMVertex&&, CompId::COORDINATE>,
+        "TEMVertex&& does not satisfy the HasComponentOfType COORDINATE "
+        "concept");
+
+    static_assert(
+        comp::HasComponentOfType<TEMVertex, CompId::COLOR>,
+        "TEMVertex does not satisfy the HasComponentOfType COLOR concept");
+    static_assert(
+        comp::HasComponentOfType<const TEMVertex, CompId::COLOR>,
+        "const TEMVertex does not satisfy the HasComponentOfType COLOR "
+        "concept");
+    static_assert(
+        comp::HasComponentOfType<TEMVertex&, CompId::COLOR>,
+        "TEMVertex& does not satisfy the HasComponentOfType COLOR concept");
+    static_assert(
+        comp::HasComponentOfType<const TEMVertex&, CompId::COLOR>,
+        "const TEMVertex& does not satisfy the HasComponentOfType COLOR "
+        "concept");
+    static_assert(
+        comp::HasComponentOfType<TEMVertex&&, CompId::COLOR>,
+        "TEMVertex&& does not satisfy the HasComponentOfType COLOR concept");
+
+    static_assert(
+        !comp::HasComponentOfType<TEMVertex, CompId::VERTEX_REFERENCES>,
+        "TEMVertex does satisfy the HasComponentOfType VERTEX_REFERENCES "
+        "concept");
+    static_assert(
+        !comp::HasComponentOfType<const TEMVertex, CompId::VERTEX_REFERENCES>,
+        "const TEMVertex does satisfy the HasComponentOfType VERTEX_REFERENCES "
+        "concept");
+    static_assert(
+        !comp::HasComponentOfType<TEMVertex&, CompId::VERTEX_REFERENCES>,
+        "TEMVertex& does satisfy the HasComponentOfType VERTEX_REFERENCES "
+        "concept");
+    static_assert(
+        !comp::HasComponentOfType<const TEMVertex&, CompId::VERTEX_REFERENCES>,
+        "const TEMVertex& does satisfy the HasComponentOfType "
+        "VERTEX_REFERENCES concept");
+    static_assert(
+        !comp::HasComponentOfType<TEMVertex&&, CompId::VERTEX_REFERENCES>,
+        "TEMVertex&& does satisfy the HasComponentOfType VERTEX_REFERENCES "
+        "concept");
+
+    // HasVerticalComponentOfType
+    static_assert(
+        !comp::HasVerticalComponentOfType<TEMVertex, CompId::COORDINATE>,
+        "TEMVertex does satisfy the HasVerticalComponentOfType COORDINATE "
+        "concept");
+    static_assert(
+        !comp::HasVerticalComponentOfType<const TEMVertex, CompId::COORDINATE>,
+        "const TEMVertex does satisfy the HasVerticalComponentOfType "
+        "COORDINATE concept");
+    static_assert(
+        !comp::HasVerticalComponentOfType<TEMVertex&, CompId::COORDINATE>,
+        "TEMVertex& does satisfy the HasVerticalComponentOfType COORDINATE "
+        "concept");
+    static_assert(
+        !comp::HasVerticalComponentOfType<const TEMVertex&, CompId::COORDINATE>,
+        "const TEMVertex& does satisfy the HasVerticalComponentOfType "
+        "COORDINATE concept");
+    static_assert(
+        !comp::HasVerticalComponentOfType<TEMVertex&&, CompId::COORDINATE>,
+        "TEMVertex&& does satisfy the HasVerticalComponentOfType COORDINATE "
+        "concept");
+
+    static_assert(
+        comp::HasVerticalComponentOfType<TEMVertex, CompId::COLOR>,
+        "TEMVertex does not satisfy the HasVerticalComponentOfType COLOR "
+        "concept");
+    static_assert(
+        comp::HasVerticalComponentOfType<const TEMVertex, CompId::COLOR>,
+        "const TEMVertex does not satisfy the HasVerticalComponentOfType COLOR "
+        "concept");
+    static_assert(
+        comp::HasVerticalComponentOfType<TEMVertex&, CompId::COLOR>,
+        "TEMVertex& does not satisfy the HasVerticalComponentOfType COLOR "
+        "concept");
+    static_assert(
+        comp::HasVerticalComponentOfType<const TEMVertex&, CompId::COLOR>,
+        "const TEMVertex& does not satisfy the HasVerticalComponentOfType "
+        "COLOR concept");
+    static_assert(
+        comp::HasVerticalComponentOfType<TEMVertex&&, CompId::COLOR>,
+        "TEMVertex&& does not satisfy the HasVerticalComponentOfType COLOR "
+        "concept");
+
+    // HasOptionalComponentOfType
+    static_assert(
+        !comp::HasOptionalComponentOfType<TEMVertex, CompId::COORDINATE>,
+        "TEMVertex does satisfy the HasOptionalComponentOfType COORDINATE "
+        "concept");
+    static_assert(
+        !comp::HasOptionalComponentOfType<const TEMVertex, CompId::COORDINATE>,
+        "const TEMVertex does satisfy the HasOptionalComponentOfType "
+        "COORDINATE concept");
+    static_assert(
+        !comp::HasOptionalComponentOfType<TEMVertex&, CompId::COORDINATE>,
+        "TEMVertex& does satisfy the HasOptionalComponentOfType COORDINATE "
+        "concept");
+    static_assert(
+        !comp::HasOptionalComponentOfType<const TEMVertex&, CompId::COORDINATE>,
+        "const TEMVertex& does satisfy the HasOptionalComponentOfType "
+        "COORDINATE concept");
+    static_assert(
+        !comp::HasOptionalComponentOfType<TEMVertex&&, CompId::COORDINATE>,
+        "TEMVertex&& does satisfy the HasOptionalComponentOfType COORDINATE "
+        "concept");
+
+    static_assert(
+        comp::HasOptionalComponentOfType<TEMVertex, CompId::COLOR>,
+        "TEMVertex does not satisfy the HasOptionalComponentOfType COLOR "
+        "concept");
+    static_assert(
+        comp::HasOptionalComponentOfType<const TEMVertex, CompId::COLOR>,
+        "const TEMVertex does not satisfy the HasOptionalComponentOfType COLOR "
+        "concept");
+    static_assert(
+        comp::HasOptionalComponentOfType<TEMVertex&, CompId::COLOR>,
+        "TEMVertex& does not satisfy the HasOptionalComponentOfType COLOR "
+        "concept");
+    static_assert(
+        comp::HasOptionalComponentOfType<const TEMVertex&, CompId::COLOR>,
+        "const TEMVertex& does not satisfy the HasOptionalComponentOfType "
+        "COLOR concept");
+    static_assert(
+        comp::HasOptionalComponentOfType<TEMVertex&&, CompId::COLOR>,
+        "TEMVertex&& does not satisfy the HasOptionalComponentOfType COLOR "
+        "concept");
 }
 
 #endif // COMP_COMPONENT_H
