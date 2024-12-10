@@ -49,8 +49,10 @@ set(HEADERS
     meshes/components/vertex_references.h
     meshes/components/wedge_colors.h
     meshes/components/wedge_tex_coords.h
+    meshes/elements/element.h
     meshes/components.h
     meshes/edgemesh.h
+    meshes/elements.h
     meshes/mesh_views.h
     meshes/pointcloud.h
     meshes/polymesh.h

@@ -20,21 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
-#define VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
+#ifndef ELEM_ELEMENT_H
+#define ELEM_ELEMENT_H
 
-#include <vclib/types.h>
+#include <vclib/meshes.h>
 
-namespace vcl {
+void elementStaticAsserts()
+{
+    using namespace vcl;
 
-template<typename T>
-concept ElementConcept = requires (T&& obj) {
-    RemoveRef<T>::ELEMENT_ID;
-    typename RemoveRef<T>::Components;
-    typename RemoveRef<T>::ParentMeshType;
-    { obj.index() } -> std::same_as<uint>;
-};
+    using TMVertex  = trimesh::Vertex<float, false>;
+    using TMVertexI = trimesh::Vertex<float, true>;
 
-} // namespace vcl
+    static_assert(
+        ElementConcept<TMVertex>,
+        "TMVertex does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<const TMVertex>,
+        "const TMVertex does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<TMVertex&>,
+        "TMVertex& does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<const TMVertex&>,
+        "const TMVertex& does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<TMVertex&&>,
+        "TMVertex&& does not satisfy the ElementConcept");
 
-#endif // VCL_CONCEPTS_MESH_ELEMENTS_ELEMENT_H
+    static_assert(
+        ElementConcept<TMVertexI>,
+        "TMVertexI does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<const TMVertexI>,
+        "const TMVertexI does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<TMVertexI&>,
+        "TMVertexI& does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<const TMVertexI&>,
+        "const TMVertexI& does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<TMVertexI&&>,
+        "TMVertexI&& does not satisfy the ElementConcept");
+}
+
+#endif // ELEM_ELEMENT_H
