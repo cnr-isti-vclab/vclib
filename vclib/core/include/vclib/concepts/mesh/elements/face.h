@@ -122,15 +122,16 @@ concept HasOptionalWedgeTexCoords = comp::HasOptionalWedgeTexCoords<T>;
  */
 template<typename T>
 concept FaceConcept =
-    ElementConcept<T> && T::ELEMENT_ID == ElemId::FACE &&
+    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::FACE &&
     face::HasBitFlags<T> && face::HasVertexReferences<T> &&
-    (T::VERTEX_NUMBER < 0 || T::VERTEX_NUMBER >= 3) &&
-    (!face::HasTriangleBitFlags<T> || T::VERTEX_NUMBER == 3) &&
+    (RemoveRef<T>::VERTEX_NUMBER < 0 || RemoveRef<T>::VERTEX_NUMBER >= 3) &&
+    (!face::HasTriangleBitFlags<T> || RemoveRef<T>::VERTEX_NUMBER == 3) &&
     comp::SanityCheckAdjacentEdges<T> && comp::SanityCheckAdjacentFaces<T> &&
     comp::SanityCheckWedgeColors<T> && comp::SanityCheckWedgeTexCoords<T>;
 
 template<typename T>
-concept TriangleFaceConcept = T::VERTEX_NUMBER == 3 && FaceConcept<T>;
+concept TriangleFaceConcept =
+    RemoveRef<T>::VERTEX_NUMBER == 3 && FaceConcept<T>;
 
 /**
  * @brief The PolygonFaceConcept describes how a Face element class should be
@@ -145,7 +146,7 @@ concept TriangleFaceConcept = T::VERTEX_NUMBER == 3 && FaceConcept<T>;
  * @ingroup face_concepts
  */
 template<typename T>
-concept PolygonFaceConcept = T::VERTEX_NUMBER < 0 && FaceConcept<T>;
+concept PolygonFaceConcept = RemoveRef<T>::VERTEX_NUMBER < 0 && FaceConcept<T>;
 
 } // namespace vcl
 

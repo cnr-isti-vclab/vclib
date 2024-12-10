@@ -25,12 +25,14 @@
 
 #include "elements/edge.h"
 #include "elements/element.h"
+#include "elements/face.h"
 
 void elementsStaticAsserts()
 {
     elementStaticAsserts();
 
     edgeStaticAsserts();
+    faceStaticAsserts();
 }
 
 #endif // ELEMENTS_H

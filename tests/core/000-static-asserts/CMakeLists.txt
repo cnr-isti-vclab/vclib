@@ -51,6 +51,7 @@ set(HEADERS
     meshes/components/wedge_tex_coords.h
     meshes/elements/edge.h
     meshes/elements/element.h
+    meshes/elements/face.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/elements.h
@@ -84,5 +85,4 @@ vclib_add_test(
     ${TEST_NAME}
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})
-
 
