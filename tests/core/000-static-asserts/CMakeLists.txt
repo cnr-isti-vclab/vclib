@@ -52,6 +52,7 @@ set(HEADERS
     meshes/elements/edge.h
     meshes/elements/element.h
     meshes/elements/face.h
+    meshes/elements/vertex.h
     meshes/components.h
     meshes/edgemesh.h
     meshes/elements.h
@@ -85,4 +86,3 @@ vclib_add_test(
     ${TEST_NAME}
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})
-

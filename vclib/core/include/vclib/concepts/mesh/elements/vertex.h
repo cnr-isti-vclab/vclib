@@ -103,8 +103,9 @@ concept HasOptionalTexCoord = comp::HasOptionalTexCoord<T>;
  * @ingroup vert_concepts
  */
 template<typename T>
-concept VertexConcept = ElementConcept<T> && T::ELEMENT_ID == ElemId::VERTEX &&
-                        vert::HasBitFlags<T> && vert::HasCoordinate<T>;
+concept VertexConcept =
+    ElementConcept<T> && RemoveRef<T>::ELEMENT_ID == ElemId::VERTEX &&
+    vert::HasBitFlags<T> && vert::HasCoordinate<T>;
 
 } // namespace vcl
 

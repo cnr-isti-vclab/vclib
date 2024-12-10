@@ -20,21 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef ELEMENTS_H
-#define ELEMENTS_H
+#ifndef ELEM_VERTEX_H
+#define ELEM_VERTEX_H
 
-#include "elements/edge.h"
-#include "elements/element.h"
-#include "elements/face.h"
-#include "elements/vertex.h"
+#include <vclib/meshes.h>
 
-void elementsStaticAsserts()
+void vertexStaticAsserts()
 {
-    elementStaticAsserts();
+    using namespace vcl;
 
-    edgeStaticAsserts();
-    faceStaticAsserts();
-    vertexStaticAsserts();
+    using TMVertex  = trimesh::Vertex<float, false>;
+    using TMVertexI = trimesh::Vertex<float, true>;
+
+    static_assert(
+        VertexConcept<TMVertex>,
+        "TMVertex does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<const TMVertex>,
+        "const TMVertex does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<TMVertex&>,
+        "TMVertex& does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<const TMVertex&>,
+        "const TMVertex& does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<TMVertex&&>,
+        "TMVertex&& does not satisfy the VertexConcept");
+
+    static_assert(
+        VertexConcept<TMVertexI>,
+        "TMVertexI does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<const TMVertexI>,
+        "const TMVertexI does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<TMVertexI&>,
+        "TMVertexI& does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<const TMVertexI&>,
+        "const TMVertexI& does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<TMVertexI&&>,
+        "TMVertexI&& does not satisfy the VertexConcept");
 }
 
-#endif // ELEMENTS_H
+#endif // ELEM_VERTEX_H
