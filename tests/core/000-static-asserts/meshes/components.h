@@ -31,6 +31,7 @@
 #include "components/color.h"
 #include "components/component.h"
 #include "components/coordinate.h"
+#include "components/custom_components.h"
 #include "components/mark.h"
 #include "components/name.h"
 #include "components/normal.h"
@@ -54,6 +55,7 @@ void componentsStaticAsserts()
     boundingBoxComponentStaticAsserts();
     colorComponentStaticAsserts();
     coordinateComponentStaticAsserts();
+    customComponentsComponentStaticAsserts();
     markComponentStaticAsserts();
     nameComponentStaticAsserts();
     normalComponentStaticAsserts();

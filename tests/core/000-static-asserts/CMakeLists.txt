@@ -38,6 +38,7 @@ set(HEADERS
     meshes/components/color.h
     meshes/components/component.h
     meshes/components/coordinate.h
+    meshes/components/custom_components.h
     meshes/components/mark.h
     meshes/components/name.h
     meshes/components/normal.h

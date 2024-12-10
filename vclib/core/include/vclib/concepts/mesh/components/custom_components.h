@@ -23,6 +23,8 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
 
+#include <vclib/concepts/const_correctness.h>
+
 #include <string>
 
 namespace vcl::comp {
@@ -36,11 +38,24 @@ namespace vcl::comp {
  * @ingroup components_concepts
  */
 template<typename T>
-concept HasCustomComponents = requires (T obj, const T& cObj, std::string str) {
-    { obj.hasCustomComponent(std::string()) } -> std::same_as<bool>;
-    { obj.template customComponent<int>(str) } -> std::same_as<int&>;
-    { cObj.template customComponent<int>(str) } -> std::same_as<const int&>;
-};
+concept HasCustomComponents =
+    requires (T&& obj, std::string str, std::vector<std::string> vStr) {
+        { obj.hasCustomComponent(str) } -> std::same_as<bool>;
+        {
+            obj.template isCustomComponentOfType<int>(str)
+        } -> std::same_as<bool>;
+        { obj.customComponentType(str) } -> std::same_as<std::type_index>;
+        {
+            obj.template customComponentNamesOfType<int>()
+        } -> std::same_as<decltype(vStr)>;
+
+        { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
+
+        // non const requirements
+        requires vcl::IsConst<T> || requires {
+            { obj.template customComponent<int>(str) } -> std::same_as<int&>;
+        };
+    };
 
 } // namespace vcl::comp
 
