@@ -3,9 +3,9 @@
 #ifndef VCL_MESH_ELEMENTS_%EL_U%_H
 #define VCL_MESH_ELEMENTS_%EL_U%_H
 
-#include <vclib/concepts/mesh/elements/%EL%.h>
-
 #include "element.h"
+
+#include <vclib/concepts/mesh/elements/%EL%.h>
 
 namespace vcl {
 

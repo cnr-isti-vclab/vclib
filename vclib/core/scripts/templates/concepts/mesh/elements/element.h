@@ -3,9 +3,9 @@
 #ifndef VCL_CONCEPTS_MESH_ELEMENTS_%EL_U%_H
 #define VCL_CONCEPTS_MESH_ELEMENTS_%EL_U%_H
 
-#include <vclib/concepts/mesh/components.h>
-
 #include "element.h"
+
+#include <vclib/concepts/mesh/components.h>
 
 /**
  * @defgroup %EL%_concepts %EL_UC% Concepts
