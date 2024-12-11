@@ -60,6 +60,6 @@ if (CAN_BUILD_VCLIB_EXAMPLES)
 endif()
 
 
-if(TARGET vclib-3rd-imgui)
-add_subdirectory(910-viewer-imgui)
+if(TARGET vclib-3rd-imgui AND TARGET vclib-3rd-bgfx)
+    add_subdirectory(910-viewer-imgui)
 endif()

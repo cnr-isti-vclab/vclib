@@ -20,10 +20,10 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-if (TARGET vclib-3rd-glfw AND TARGET vclib-3rd-bgfx)
+if (TARGET vclib-3rd-glfw)
     message(STATUS "- ImGui - using downloaded source")
 
-    # ImGui (glfw and opengl3+)
+    # ImGui (glfw + bgfx)
     FetchContent_Declare(
         imgui
         GIT_REPOSITORY https://github.com/ocornut/imgui.git
@@ -34,12 +34,17 @@ if (TARGET vclib-3rd-glfw AND TARGET vclib-3rd-bgfx)
     file(GLOB IMGUI_SOURCES ${imgui_SOURCE_DIR}/*.cpp ${imgui_SOURCE_DIR}/*.h)
     add_library(imgui STATIC
         ${IMGUI_SOURCES}
-        ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp
-        # ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-        # ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h
+        ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp # TODO: std::string? check
         ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
         ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h
     )
+    if (VCLIB_RENDER_BACKEND STREQUAL "opengl2")
+        target_sources(imgui PRIVATE
+            ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl2.cpp
+            ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl2.h
+        )
+    endif()
+
     target_link_libraries(imgui PRIVATE glfw)
     target_include_directories(imgui PUBLIC
         ${imgui_SOURCE_DIR}
@@ -58,5 +63,5 @@ if (TARGET vclib-3rd-glfw AND TARGET vclib-3rd-bgfx)
     list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-imgui)
 
 else()
-    message(STATUS "- ImGui - skipped (glfw3 or BGFX not found)")
+    message(STATUS "- ImGui - skipped (glfw3 not found)")
 endif()
