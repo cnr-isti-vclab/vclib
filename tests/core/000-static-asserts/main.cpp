@@ -21,6 +21,7 @@
  ****************************************************************************/
 
 #include "loggers.h"
+#include "mesh.h"
 #include "meshes.h"
 #include "ranges.h"
 #include "space.h"
@@ -28,6 +29,7 @@
 int main()
 {
     loggersStaticAsserts();
+    meshStaticAsserts();
     meshesStaticAsserts();
     rangesStaticAsserts();
     spaceStaticAsserts();

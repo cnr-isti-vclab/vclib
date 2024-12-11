@@ -20,32 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_H
-#define VCL_CONCEPTS_MESH_H
+#ifndef CONTAINERS_H
+#define CONTAINERS_H
 
-#include "mesh/containers.h"
+#include "containers/edge_container.h"
+#include "containers/element_container.h"
+#include "containers/face_container.h"
+#include "containers/vertex_container.h"
 
-#include "mesh/per_edge.h"
-#include "mesh/per_face.h"
-#include "mesh/per_mesh.h"
-#include "mesh/per_vertex.h"
+void containersStaticAsserts()
+{
+    elementContainerStaticAsserts();
 
-/**
- * @defgroup mesh_concepts Mesh Concepts
- * @ingroup lib_concepts
- * @ingroup mesh
- *
- * @brief List of concepts for types related to the Mesh data structures of the
- * library. They allow to discriminate between different Mesh types, their
- * elements and the element components.
- */
+    edgeContainerStaticAsserts();
+    faceContainerStaticAsserts();
+    vertexContainerStaticAsserts();
+}
 
-/**
- * @defgroup element_concepts Element Concepts
- * @ingroup mesh_concepts
- * @ingroup elements
- *
- * @brief List of concepts for types related to the Elements of a Mesh.
- */
-
-#endif // VCL_CONCEPTS_MESH_H
+#endif // CONTAINERS_H
