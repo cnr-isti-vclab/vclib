@@ -20,19 +20,18 @@
  * for more details.                                                         *
  ****************************************************************************/
 
-#include "loggers.h"
-#include "mesh.h"
-#include "meshes.h"
-#include "ranges.h"
-#include "space.h"
+#ifndef MESH_H
+#define MESH_H
 
-int main()
+#include "mesh/components.h"
+#include "mesh/containers.h"
+#include "mesh/elements.h"
+
+void meshStaticAsserts()
 {
-    loggersStaticAsserts();
-    meshStaticAsserts();
-    meshesStaticAsserts();
-    rangesStaticAsserts();
-    spaceStaticAsserts();
-
-    return 0;
+    componentsStaticAsserts();
+    elementsStaticAsserts();
+    containersStaticAsserts();
 }
+
+#endif // MESH_H

@@ -26,41 +26,42 @@ set(TEST_NAME 000-static-asserts)
 project(vclib-test-${TEST_NAME})
 
 set(HEADERS
-    meshes.h
     loggers.h
+    mesh.h
+    meshes.h
     ranges.h
     space.h
-    meshes/components/adjacent_edges.h
-    meshes/components/adjacent_faces.h
-    meshes/components/adjacent_vertices.h
-    meshes/components/bounding_box.h
-    meshes/components/bit_flags.h
-    meshes/components/color.h
-    meshes/components/component.h
-    meshes/components/coordinate.h
-    meshes/components/custom_components.h
-    meshes/components/mark.h
-    meshes/components/name.h
-    meshes/components/normal.h
-    meshes/components/quality.h
-    meshes/components/tex_coord.h
-    meshes/components/textures.h
-    meshes/components/transform_matrix.h
-    meshes/components/vertex_references.h
-    meshes/components/wedge_colors.h
-    meshes/components/wedge_tex_coords.h
-    meshes/containers/edge_container.h
-    meshes/containers/element_container.h
-    meshes/containers/face_container.h
-    meshes/containers/vertex_container.h
-    meshes/elements/edge.h
-    meshes/elements/element.h
-    meshes/elements/face.h
-    meshes/elements/vertex.h
-    meshes/components.h
-    meshes/containers.h
+    mesh/components.h
+    mesh/containers.h
+    mesh/elements.h
+    mesh/components/adjacent_edges.h
+    mesh/components/adjacent_faces.h
+    mesh/components/adjacent_vertices.h
+    mesh/components/bounding_box.h
+    mesh/components/bit_flags.h
+    mesh/components/color.h
+    mesh/components/component.h
+    mesh/components/coordinate.h
+    mesh/components/custom_components.h
+    mesh/components/mark.h
+    mesh/components/name.h
+    mesh/components/normal.h
+    mesh/components/quality.h
+    mesh/components/tex_coord.h
+    mesh/components/textures.h
+    mesh/components/transform_matrix.h
+    mesh/components/vertex_references.h
+    mesh/components/wedge_colors.h
+    mesh/components/wedge_tex_coords.h
+    mesh/containers/edge_container.h
+    mesh/containers/element_container.h
+    mesh/containers/face_container.h
+    mesh/containers/vertex_container.h
+    mesh/elements/edge.h
+    mesh/elements/element.h
+    mesh/elements/face.h
+    mesh/elements/vertex.h
     meshes/edgemesh.h
-    meshes/elements.h
     meshes/mesh_views.h
     meshes/pointcloud.h
     meshes/polymesh.h
