@@ -49,7 +49,7 @@ public:
 
     ~ViewerWindow() override = default;
 
-    void show();
+    virtual void show();
 
 protected:
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
