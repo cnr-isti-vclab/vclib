@@ -27,7 +27,6 @@
 
 #include <vclib/concepts/ranges/range.h>
 
-#include <ranges>
 #include <vector>
 
 namespace vcl {

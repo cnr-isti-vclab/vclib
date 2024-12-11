@@ -20,23 +20,49 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
-#define VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
+#ifndef ELEM_ELEMENT_H
+#define ELEM_ELEMENT_H
 
-#include "mesh_concept.h"
-#include "per_edge.h"
+#include <vclib/meshes.h>
 
-namespace vcl {
+void elementStaticAsserts()
+{
+    using namespace vcl;
 
-/**
- * @brief The EdgeMeshConcept is evaluated true if the type T is a Mesh (it
- * satisfies the @ref vcl::MeshConcept) and has an EdgeContainer.
- *
- * @ingroup mesh_concepts
- */
-template<typename T>
-concept EdgeMeshConcept = MeshConcept<T> && mesh::HasEdgeContainer<T>;
+    using TMVertex  = trimesh::Vertex<float, false>;
+    using TMVertexI = trimesh::Vertex<float, true>;
 
-} // namespace vcl
+    static_assert(
+        ElementConcept<TMVertex>,
+        "TMVertex does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<const TMVertex>,
+        "const TMVertex does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<TMVertex&>,
+        "TMVertex& does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<const TMVertex&>,
+        "const TMVertex& does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<TMVertex&&>,
+        "TMVertex&& does not satisfy the ElementConcept");
 
-#endif // VCL_CONCEPTS_MESH_EDGE_MESH_CONCEPT_H
+    static_assert(
+        ElementConcept<TMVertexI>,
+        "TMVertexI does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<const TMVertexI>,
+        "const TMVertexI does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<TMVertexI&>,
+        "TMVertexI& does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<const TMVertexI&>,
+        "const TMVertexI& does not satisfy the ElementConcept");
+    static_assert(
+        ElementConcept<TMVertexI&&>,
+        "TMVertexI&& does not satisfy the ElementConcept");
+}
+
+#endif // ELEM_ELEMENT_H

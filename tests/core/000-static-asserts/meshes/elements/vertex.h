@@ -20,43 +20,48 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#ifndef ELEM_VERTEX_H
+#define ELEM_VERTEX_H
 
-#include <vclib/concepts/const_correctness.h>
+#include <vclib/meshes.h>
 
-#include <string>
+void vertexStaticAsserts()
+{
+    using namespace vcl;
 
-namespace vcl::comp {
+    using TMVertex  = trimesh::Vertex<float, false>;
+    using TMVertexI = trimesh::Vertex<float, true>;
 
-/**
- * @brief HasCustomComponents concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to a @ref
- * vcl::comp::CustomComponents component of a given element.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasCustomComponents =
-    requires (T&& obj, std::string str, std::vector<std::string> vStr) {
-        { obj.hasCustomComponent(str) } -> std::same_as<bool>;
-        {
-            obj.template isCustomComponentOfType<int>(str)
-        } -> std::same_as<bool>;
-        { obj.customComponentType(str) } -> std::same_as<std::type_index>;
-        {
-            obj.template customComponentNamesOfType<int>()
-        } -> std::same_as<decltype(vStr)>;
+    static_assert(
+        VertexConcept<TMVertex>, "TMVertex does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<const TMVertex>,
+        "const TMVertex does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<TMVertex&>,
+        "TMVertex& does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<const TMVertex&>,
+        "const TMVertex& does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<TMVertex&&>,
+        "TMVertex&& does not satisfy the VertexConcept");
 
-        { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
+    static_assert(
+        VertexConcept<TMVertexI>,
+        "TMVertexI does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<const TMVertexI>,
+        "const TMVertexI does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<TMVertexI&>,
+        "TMVertexI& does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<const TMVertexI&>,
+        "const TMVertexI& does not satisfy the VertexConcept");
+    static_assert(
+        VertexConcept<TMVertexI&&>,
+        "TMVertexI&& does not satisfy the VertexConcept");
+}
 
-        // non const requirements
-        requires vcl::IsConst<T> || requires {
-            { obj.template customComponent<int>(str) } -> std::same_as<int&>;
-        };
-    };
-
-} // namespace vcl::comp
-
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#endif // ELEM_VERTEX_H

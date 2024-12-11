@@ -23,6 +23,7 @@
 #ifndef VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 #define VCL_CONCEPTS_MESH_COMPONENTS_VERTEX_REFERENCES_H
 
+#include <vclib/concepts/const_correctness.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -39,61 +40,72 @@ namespace vcl::comp {
  */
 template<typename T>
 concept HasVertexReferences = requires (
-    T                                    obj,
-    const T&                             cObj,
-    typename T::VertexType               v,
-    typename T::VertexIterator           it,
-    typename T::ConstVertexIterator      cIt,
-    typename T::ConstVertexIndexIterator cIIt,
-    typename T::VertexType*              vP,
-    const typename T::VertexType*        cVP,
-    std::vector<typename T::VertexType*> vecV,
-    std::vector<uint>                    vecU) {
-    T::VERTEX_NUMBER;
-    typename T::VertexReferences;
+    T&&                                             obj,
+    typename RemoveRef<T>::VertexType               v,
+    typename RemoveRef<T>::VertexIterator           it,
+    typename RemoveRef<T>::ConstVertexIterator      cIt,
+    typename RemoveRef<T>::ConstVertexIndexIterator cIIt,
+    typename RemoveRef<T>::VertexType*              vP,
+    const typename RemoveRef<T>::VertexType*        cVP,
+    std::vector<typename RemoveRef<T>::VertexType*> vecV,
+    std::vector<uint>                               vecU) {
+    RemoveRef<T>::VERTEX_NUMBER;
 
-    typename T::VertexType;
-    typename T::VertexIterator;
-    typename T::ConstVertexIterator;
-    typename T::ConstVertexIndexIterator;
+    typename RemoveRef<T>::VertexType;
+    typename RemoveRef<T>::VertexIterator;
+    typename RemoveRef<T>::ConstVertexIterator;
+    typename RemoveRef<T>::ConstVertexIndexIterator;
 
-    { cObj.vertexNumber() } -> std::same_as<uint>;
-    { obj.vertex(uint()) } -> std::same_as<decltype(vP)>;
-    { cObj.vertex(uint()) } -> std::same_as<decltype(cVP)>;
-    { cObj.vertexIndex(uint()) } -> std::same_as<uint>;
-    { obj.vertexMod(int()) } -> std::same_as<decltype(vP)>;
-    { cObj.vertexMod(int()) } -> std::same_as<decltype(cVP)>;
-    { cObj.vertexIndexMod(int()) } -> std::same_as<uint>;
+    { obj.vertexNumber() } -> std::same_as<uint>;
 
-    { obj.setVertex(uint(), &v) } -> std::same_as<void>;
-    { obj.setVertex(uint(), uint()) } -> std::same_as<void>;
-    { obj.setVertex(it, &v) } -> std::same_as<void>;
-    { obj.setVertex(it, uint()) } -> std::same_as<void>;
-    { obj.setVertex(cIt, &v) } -> std::same_as<void>;
-    { obj.setVertex(cIt, uint()) } -> std::same_as<void>;
-    { obj.setVertex(cIIt, &v) } -> std::same_as<void>;
-    { obj.setVertex(cIIt, uint()) } -> std::same_as<void>;
-    { obj.setVertexMod(int(), &v) } -> std::same_as<void>;
-    { obj.setVertexMod(int(), uint()) } -> std::same_as<void>;
-    { obj.setVertices(vecV) } -> std::same_as<void>;
-    { obj.setVertices(vecU) } -> std::same_as<void>;
+    { obj.vertex(uint()) } -> std::convertible_to<decltype(cVP)>;
+    { obj.vertexIndex(uint()) } -> std::same_as<uint>;
+    { obj.vertexMod(int()) } -> std::convertible_to<decltype(cVP)>;
+    { obj.vertexIndexMod(int()) } -> std::same_as<uint>;
 
-    { cObj.containsVertex(&v) } -> std::same_as<bool>;
-    { cObj.containsVertex(uint()) } -> std::same_as<bool>;
-    { cObj.indexOfVertex(&v) } -> std::same_as<uint>;
-    { cObj.indexOfVertex(uint()) } -> std::same_as<uint>;
-    { cObj.indexOfEdge(&v, &v) } -> std::same_as<uint>;
-    { cObj.indexOfEdge(uint(), uint()) } -> std::same_as<uint>;
+    { obj.containsVertex(&v) } -> std::same_as<bool>;
+    { obj.containsVertex(uint()) } -> std::same_as<bool>;
+    { obj.indexOfVertex(&v) } -> std::same_as<uint>;
+    { obj.indexOfVertex(uint()) } -> std::same_as<uint>;
+    { obj.indexOfEdge(&v, &v) } -> std::same_as<uint>;
+    { obj.indexOfEdge(uint(), uint()) } -> std::same_as<uint>;
 
-    { cObj.vertexBegin() } -> std::same_as<decltype(cIt)>;
-    { cObj.vertexEnd() } -> std::same_as<decltype(cIt)>;
+    { obj.vertexBegin() } -> std::input_iterator;
+    { obj.vertexEnd() } -> std::input_iterator;
 
-    { cObj.vertexIndexBegin() } -> std::same_as<decltype(cIIt)>;
-    { cObj.vertexIndexEnd() } -> std::same_as<decltype(cIIt)>;
+    { obj.vertexIndexBegin() } -> std::input_iterator;
+    { obj.vertexIndexEnd() } -> std::input_iterator;
 
-    { obj.vertices() } -> vcl::RangeOf<decltype(vP)>;
-    { cObj.vertices() } -> vcl::RangeOf<decltype(cVP)>;
-    { cObj.vertexIndices() } -> vcl::RangeOf<uint>;
+    { obj.vertexIndices() } -> vcl::RangeOf<uint>;
+
+    // const requirements
+    requires !vcl::IsConst<T> || requires {
+        { obj.vertices() } -> vcl::RangeOf<decltype(cVP)>;
+    };
+
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.vertex(uint()) } -> std::same_as<decltype(vP)>;
+        { obj.vertexMod(int()) } -> std::same_as<decltype(vP)>;
+
+        { obj.setVertex(uint(), &v) } -> std::same_as<void>;
+        { obj.setVertex(uint(), uint()) } -> std::same_as<void>;
+        { obj.setVertex(it, &v) } -> std::same_as<void>;
+        { obj.setVertex(it, uint()) } -> std::same_as<void>;
+        { obj.setVertex(cIt, &v) } -> std::same_as<void>;
+        { obj.setVertex(cIt, uint()) } -> std::same_as<void>;
+        { obj.setVertex(cIIt, &v) } -> std::same_as<void>;
+        { obj.setVertex(cIIt, uint()) } -> std::same_as<void>;
+        { obj.setVertexMod(int(), &v) } -> std::same_as<void>;
+        { obj.setVertexMod(int(), uint()) } -> std::same_as<void>;
+        { obj.setVertices(vecV) } -> std::same_as<void>;
+        { obj.setVertices(vecU) } -> std::same_as<void>;
+
+        // { obj.vertexBegin() } -> std::output_iterator<decltype(vP)>;
+        // { obj.vertexEnd() } -> std::output_iterator<decltype(vP)>;
+
+        { obj.vertices() } -> vcl::RangeOf<decltype(vP)>;
+    };
 };
 
 } // namespace vcl::comp

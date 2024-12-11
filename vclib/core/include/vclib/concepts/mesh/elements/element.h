@@ -28,11 +28,11 @@
 namespace vcl {
 
 template<typename T>
-concept ElementConcept = requires (const T& cObj) {
-    T::ELEMENT_ID;
-    typename T::Components;
-    typename T::ParentMeshType;
-    { cObj.index() } -> std::same_as<uint>;
+concept ElementConcept = requires (T&& obj) {
+    RemoveRef<T>::ELEMENT_ID;
+    typename RemoveRef<T>::Components;
+    typename RemoveRef<T>::ParentMeshType;
+    { obj.index() } -> std::same_as<uint>;
 };
 
 } // namespace vcl

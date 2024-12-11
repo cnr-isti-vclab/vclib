@@ -23,8 +23,8 @@
 #ifndef VCL_CONCEPTS_MESH_H
 #define VCL_CONCEPTS_MESH_H
 
-#include "mesh/edge_mesh_concept.h"
-#include "mesh/face_mesh_concept.h"
+#include "mesh/per_edge.h"
+#include "mesh/per_face.h"
 #include "mesh/per_mesh.h"
 #include "mesh/per_vertex.h"
 

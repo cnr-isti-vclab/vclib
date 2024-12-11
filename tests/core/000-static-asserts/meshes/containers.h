@@ -20,43 +20,19 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#ifndef CONTAINERS_H
+#define CONTAINERS_H
 
-#include <vclib/concepts/const_correctness.h>
+#include "containers/edge_container.h"
+#include "containers/element_container.h"
+#include "containers/vertex_container.h"
 
-#include <string>
+void containersStaticAsserts()
+{
+    elementContainerStaticAsserts();
 
-namespace vcl::comp {
+    edgeContainerStaticAsserts();
+    vertexContainerStaticAsserts();
+}
 
-/**
- * @brief HasCustomComponents concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to a @ref
- * vcl::comp::CustomComponents component of a given element.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasCustomComponents =
-    requires (T&& obj, std::string str, std::vector<std::string> vStr) {
-        { obj.hasCustomComponent(str) } -> std::same_as<bool>;
-        {
-            obj.template isCustomComponentOfType<int>(str)
-        } -> std::same_as<bool>;
-        { obj.customComponentType(str) } -> std::same_as<std::type_index>;
-        {
-            obj.template customComponentNamesOfType<int>()
-        } -> std::same_as<decltype(vStr)>;
-
-        { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
-
-        // non const requirements
-        requires vcl::IsConst<T> || requires {
-            { obj.template customComponent<int>(str) } -> std::same_as<int&>;
-        };
-    };
-
-} // namespace vcl::comp
-
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#endif // CONTAINERS_H

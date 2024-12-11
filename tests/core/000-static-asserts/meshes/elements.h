@@ -20,44 +20,21 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H
-#define VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H
+#ifndef ELEMENTS_H
+#define ELEMENTS_H
 
-#include "mesh_concept.h"
-#include "per_face.h"
+#include "elements/edge.h"
+#include "elements/element.h"
+#include "elements/face.h"
+#include "elements/vertex.h"
 
-namespace vcl {
+void elementsStaticAsserts()
+{
+    elementStaticAsserts();
 
-template<typename MeshType>
-concept HasTriangles =
-    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 3;
+    edgeStaticAsserts();
+    faceStaticAsserts();
+    vertexStaticAsserts();
+}
 
-template<typename MeshType>
-concept HasQuads =
-    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == 4;
-
-template<typename MeshType>
-concept HasPolygons =
-    vcl::HasFaces<MeshType> && MeshType::FaceType::VERTEX_NUMBER == -1;
-
-/**
- * @brief The FaceMeshConcept is evaluated true if the type T is a Mesh (it
- * satisfies the @ref vcl::MeshConcept) and has a FaceContainer.
- *
- * @ingroup mesh_concepts
- */
-template<typename T>
-concept FaceMeshConcept = MeshConcept<T> && mesh::HasFaceContainer<T>;
-
-template<typename T>
-concept TriangleMeshConcept = FaceMeshConcept<T> && HasTriangles<T>;
-
-template<typename T>
-concept QuadMeshConcept = FaceMeshConcept<T> && HasQuads<T>;
-
-template<typename T>
-concept PolygonMeshConcept = FaceMeshConcept<T> && HasPolygons<T>;
-
-} // namespace vcl
-
-#endif // VCL_CONCEPTS_MESH_FACE_MESH_CONCEPT_H
+#endif // ELEMENTS_H

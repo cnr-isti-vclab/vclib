@@ -6,7 +6,6 @@ from generators.el_concept import generate_elem_concept
 from generators.el_container import generate_elem_container
 from generators.el_container_concept import generate_elem_container_concept
 from generators.el_header import generate_elem_header
-from generators.el_mesh_concept import generate_elem_mesh_concepts
 from generators.el_range_concept import generate_elem_range_concept
 from generators.el_requirements import generate_elem_requirements
 from generators.el_view import generate_elem_view
@@ -32,7 +31,6 @@ def main():
 
     gen_function_list = [
         generate_per_elem_concepts,
-        generate_elem_mesh_concepts,
         generate_elem_container_concept,
         generate_elem_concept,
         generate_elem_range_concept,

@@ -30,10 +30,15 @@ set(HEADERS
     loggers.h
     ranges.h
     space.h
+    meshes/components/adjacent_edges.h
+    meshes/components/adjacent_faces.h
+    meshes/components/adjacent_vertices.h
     meshes/components/bounding_box.h
     meshes/components/bit_flags.h
     meshes/components/color.h
+    meshes/components/component.h
     meshes/components/coordinate.h
+    meshes/components/custom_components.h
     meshes/components/mark.h
     meshes/components/name.h
     meshes/components/normal.h
@@ -41,10 +46,20 @@ set(HEADERS
     meshes/components/tex_coord.h
     meshes/components/textures.h
     meshes/components/transform_matrix.h
+    meshes/components/vertex_references.h
     meshes/components/wedge_colors.h
     meshes/components/wedge_tex_coords.h
+    meshes/containers/edge_container.h
+    meshes/containers/element_container.h
+    meshes/containers/vertex_container.h
+    meshes/elements/edge.h
+    meshes/elements/element.h
+    meshes/elements/face.h
+    meshes/elements/vertex.h
     meshes/components.h
+    meshes/containers.h
     meshes/edgemesh.h
+    meshes/elements.h
     meshes/mesh_views.h
     meshes/pointcloud.h
     meshes/polymesh.h
@@ -75,17 +90,3 @@ vclib_add_test(
     ${TEST_NAME}
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})
-
-target_sources(vclib-core-test-000-static-asserts
-  PRIVATE
-
-
-
-
-
-
-
-
-
-)
-

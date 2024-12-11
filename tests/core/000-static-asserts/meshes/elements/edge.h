@@ -20,43 +20,43 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
-#define VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#ifndef ELEM_EDGE_H
+#define ELEM_EDGE_H
 
-#include <vclib/concepts/const_correctness.h>
+#include <vclib/meshes.h>
 
-#include <string>
+void edgeStaticAsserts()
+{
+    using namespace vcl;
 
-namespace vcl::comp {
+    using EMEdge  = edgemesh::Edge<float, false>;
+    using EMEdgeI = edgemesh::Edge<float, true>;
 
-/**
- * @brief HasCustomComponents concept is satisfied only if a Element class
- * provides the types and member functions specified in this concept. These
- * types and member functions allow to access to a @ref
- * vcl::comp::CustomComponents component of a given element.
- *
- * @ingroup components_concepts
- */
-template<typename T>
-concept HasCustomComponents =
-    requires (T&& obj, std::string str, std::vector<std::string> vStr) {
-        { obj.hasCustomComponent(str) } -> std::same_as<bool>;
-        {
-            obj.template isCustomComponentOfType<int>(str)
-        } -> std::same_as<bool>;
-        { obj.customComponentType(str) } -> std::same_as<std::type_index>;
-        {
-            obj.template customComponentNamesOfType<int>()
-        } -> std::same_as<decltype(vStr)>;
+    static_assert(
+        EdgeConcept<EMEdge>, "EMEdge does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<const EMEdge>,
+        "const EMEdge does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<EMEdge&>, "EMEdge& does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<const EMEdge&>,
+        "const EMEdge& does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<EMEdge&&>, "EMEdge&& does not satisfy the EdgeConcept");
 
-        { obj.template customComponent<int>(str) } -> std::convertible_to<int>;
+    static_assert(
+        EdgeConcept<EMEdgeI>, "EMEdgeI does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<const EMEdgeI>,
+        "const EMEdgeI does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<EMEdgeI&>, "EMEdgeI& does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<const EMEdgeI&>,
+        "const EMEdgeI& does not satisfy the EdgeConcept");
+    static_assert(
+        EdgeConcept<EMEdgeI&&>, "EMEdgeI&& does not satisfy the EdgeConcept");
+}
 
-        // non const requirements
-        requires vcl::IsConst<T> || requires {
-            { obj.template customComponent<int>(str) } -> std::same_as<int&>;
-        };
-    };
-
-} // namespace vcl::comp
-
-#endif // VCL_CONCEPTS_MESH_COMPONENTS_CUSTOM_COMPONENTS_H
+#endif // ELEM_EDGE_H

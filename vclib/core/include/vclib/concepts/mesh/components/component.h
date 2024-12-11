@@ -42,7 +42,7 @@ namespace vcl::comp {
  */
 template<typename T>
 concept ComponentConcept = requires {
-    { T::COMPONENT_ID } -> std::same_as<const uint&>;
+    { RemoveRef<T>::COMPONENT_ID } -> std::same_as<const uint&>;
 };
 
 /**
@@ -54,10 +54,11 @@ concept ComponentConcept = requires {
  * @ingroup components_concepts
  */
 template<typename T>
-concept IsVerticalComponent = T::IS_VERTICAL == true && requires {
-    typename T::DataValueType;
-    { T::IS_VERTICAL } -> std::same_as<const bool&>;
-};
+concept IsVerticalComponent =
+    ComponentConcept<T> && RemoveRef<T>::IS_VERTICAL == true && requires {
+        typename RemoveRef<T>::DataValueType;
+        { RemoveRef<T>::IS_VERTICAL } -> std::same_as<const bool&>;
+    };
 
 /**
  * @brief Evaluates to true if the type `T` is a component that is stored
@@ -69,8 +70,8 @@ concept IsVerticalComponent = T::IS_VERTICAL == true && requires {
  */
 template<typename T>
 concept IsOptionalComponent =
-    IsVerticalComponent<T> && T::IS_OPTIONAL == true && requires {
-        { T::IS_OPTIONAL } -> std::same_as<const bool&>;
+    IsVerticalComponent<T> && RemoveRef<T>::IS_OPTIONAL == true && requires {
+        { RemoveRef<T>::IS_OPTIONAL } -> std::same_as<const bool&>;
     };
 
 /**
@@ -87,7 +88,7 @@ concept IsOptionalComponent =
  * @tparam T The type to be evaluated.
  */
 template<typename T>
-concept HasInitMemberFunction = requires (T obj) {
+concept HasInitMemberFunction = ComponentConcept<T> && requires (T&& obj) {
     { obj.init() } -> std::same_as<void>;
 };
 
@@ -100,9 +101,10 @@ concept HasInitMemberFunction = requires (T obj) {
  * @tparam T The type to be evaluated.
  */
 template<typename T>
-concept HasIsAvailableMemberFunction = requires (T obj) {
-    { obj.isAvailable() } -> std::same_as<bool>;
-};
+concept HasIsAvailableMemberFunction =
+    ComponentConcept<T> && requires (T&& obj) {
+        { obj.isAvailable() } -> std::same_as<bool>;
+    };
 
 /**
  * @private
@@ -119,11 +121,12 @@ concept HasIsAvailableMemberFunction = requires (T obj) {
  * @tparam T the type to be evaluated.
  */
 template<typename T>
-concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
+concept IsTiedToVertexNumber =
+    ComponentConcept<T> && RemoveRef<T>::TIED_TO_VERTEX_NUMBER;
 
 /**
  * @private
- * @brief The HasReferencesOfType concept checks whether a component T stores
+ * @brief The HasReferencesOfType concept checks whether a *component* T stores
  * references (pointers or indices) of a type (element) R.
  *
  * Each component that store pointers/indices of a type R, must:
@@ -147,7 +150,9 @@ concept IsTiedToVertexNumber = T::TIED_TO_VERTEX_NUMBER;
  */
 template<typename T, typename R>
 concept HasReferencesOfType =
-    std::is_base_of<ReferencesComponentTriggerer<R>, T>::value;
+    ComponentConcept<T> &&
+    std::is_base_of<ReferencesComponentTriggerer<RemoveRef<R>>, RemoveRef<T>>::
+        value;
 
 /**
  * @private
@@ -173,8 +178,9 @@ concept HasOptionalReferencesOfType =
  * @tparam R the type of the pointers.
  */
 template<typename T, typename R>
-concept HasPointersOfType = HasReferencesOfType<T, R> &&
-                            requires (T obj) { obj.template pointers<R>(); };
+concept HasPointersOfType = HasReferencesOfType<T, R> && requires (T&& obj) {
+    obj.template pointers<RemoveRef<R>>();
+};
 
 /**
  * @private
@@ -186,8 +192,7 @@ concept HasPointersOfType = HasReferencesOfType<T, R> &&
  */
 template<typename T, typename R>
 concept HasOptionalPointersOfType =
-    HasOptionalReferencesOfType<T, R> &&
-    requires (T obj) { obj.template pointers<R>(); };
+    IsOptionalComponent<T> && HasPointersOfType<T, R>;
 
 /**
  * @private
@@ -201,8 +206,9 @@ concept HasOptionalPointersOfType =
  * @tparam R the type of the indices.
  */
 template<typename T, typename R>
-concept HasIndicesOfType = HasReferencesOfType<T, R> &&
-                           requires (T obj) { obj.template indices<R>(); };
+concept HasIndicesOfType = HasReferencesOfType<T, R> && requires (T&& obj) {
+    obj.template indices<RemoveRef<R>>();
+};
 
 /**
  * @private
@@ -214,8 +220,7 @@ concept HasIndicesOfType = HasReferencesOfType<T, R> &&
  */
 template<typename T, typename R>
 concept HasOptionalIndicesOfType =
-    HasOptionalReferencesOfType<T, R> &&
-    requires (T obj) { obj.template indices<R>(); };
+    IsOptionalComponent<T> && HasIndicesOfType<T, R>;
 
 // ======== Has Component Concepts ======== //
 // Concepts that needs to be called on a type T that has the "Components" type
@@ -238,8 +243,8 @@ concept HasOptionalIndicesOfType =
  * @ingroup elements_concepts
  */
 template<typename T, uint COMP_ID>
-concept HasComponentOfType =
-    detail::ComponentOfTypePred<COMP_ID, typename T::Components>::value;
+concept HasComponentOfType = detail::
+    ComponentOfTypePred<COMP_ID, typename RemoveRef<T>::Components>::value;
 
 /**
  * @brief The HasVerticalComponentOfType concept checks whether a type `T` (that
@@ -260,7 +265,8 @@ concept HasComponentOfType =
 template<typename T, uint COMP_ID>
 concept HasVerticalComponentOfType =
     HasComponentOfType<T, COMP_ID> &&
-    IsVerticalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
+    IsVerticalComponent<
+        ComponentOfType<COMP_ID, typename RemoveRef<T>::Components>>;
 
 /**
  * @brief The HasOptionalComponentOfType concept checks whether a type `T` (that
@@ -281,7 +287,8 @@ concept HasVerticalComponentOfType =
 template<typename T, uint COMP_ID>
 concept HasOptionalComponentOfType =
     HasComponentOfType<T, COMP_ID> &&
-    IsOptionalComponent<ComponentOfType<COMP_ID, typename T::Components>>;
+    IsOptionalComponent<
+        ComponentOfType<COMP_ID, typename RemoveRef<T>::Components>>;
 
 } // namespace vcl::comp
 
