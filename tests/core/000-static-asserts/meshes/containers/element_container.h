@@ -31,6 +31,10 @@ void elementContainerStaticAsserts()
 
     using VertexContainer =
         mesh::VertexContainer<trimesh::Vertex<float, false>>;
+    using FaceContainer =
+        mesh::FaceContainer<trimesh::Face<float, false>>;
+    using EdgeContainer =
+        mesh::EdgeContainer<edgemesh::Edge<float, false>>;
 
     static_assert(
         mesh::ElementContainerConcept<VertexContainer>,
@@ -47,6 +51,38 @@ void elementContainerStaticAsserts()
     static_assert(
         mesh::ElementContainerConcept<VertexContainer&&>,
         "VertexContainer&& does not satisfy the ElementContainerConcept");
+
+    static_assert(
+        mesh::ElementContainerConcept<FaceContainer>,
+        "FaceContainer does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<const FaceContainer>,
+        "const FaceContainer does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<FaceContainer&>,
+        "FaceContainer& does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<const FaceContainer&>,
+        "const FaceContainer& does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<FaceContainer&&>,
+        "FaceContainer&& does not satisfy the ElementContainerConcept");
+
+    static_assert(
+        mesh::ElementContainerConcept<EdgeContainer>,
+        "EdgeContainer does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<const EdgeContainer>,
+        "const EdgeContainer does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<EdgeContainer&>,
+        "EdgeContainer& does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<const EdgeContainer&>,
+        "const EdgeContainer& does not satisfy the ElementContainerConcept");
+    static_assert(
+        mesh::ElementContainerConcept<EdgeContainer&&>,
+        "EdgeContainer&& does not satisfy the ElementContainerConcept");
 }
 
 #endif // CONT_ELEMENT_CONTAINER_H

@@ -23,11 +23,14 @@
 #ifndef CONTAINERS_H
 #define CONTAINERS_H
 
+#include "containers/edge_container.h"
 #include "containers/element_container.h"
 
 void containersStaticAsserts()
 {
     elementContainerStaticAsserts();
+
+    edgeContainerStaticAsserts();
 }
 
 #endif // CONTAINERS_H
