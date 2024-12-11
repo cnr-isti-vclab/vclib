@@ -33,8 +33,7 @@ void vertexStaticAsserts()
     using TMVertexI = trimesh::Vertex<float, true>;
 
     static_assert(
-        VertexConcept<TMVertex>,
-        "TMVertex does not satisfy the VertexConcept");
+        VertexConcept<TMVertex>, "TMVertex does not satisfy the VertexConcept");
     static_assert(
         VertexConcept<const TMVertex>,
         "const TMVertex does not satisfy the VertexConcept");

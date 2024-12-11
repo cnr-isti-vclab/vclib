@@ -33,36 +33,30 @@ void edgeStaticAsserts()
     using EMEdgeI = edgemesh::Edge<float, true>;
 
     static_assert(
-        EdgeConcept<EMEdge>,
-        "EMEdge does not satisfy the EdgeConcept");
+        EdgeConcept<EMEdge>, "EMEdge does not satisfy the EdgeConcept");
     static_assert(
         EdgeConcept<const EMEdge>,
         "const EMEdge does not satisfy the EdgeConcept");
     static_assert(
-        EdgeConcept<EMEdge&>,
-        "EMEdge& does not satisfy the EdgeConcept");
+        EdgeConcept<EMEdge&>, "EMEdge& does not satisfy the EdgeConcept");
     static_assert(
         EdgeConcept<const EMEdge&>,
         "const EMEdge& does not satisfy the EdgeConcept");
     static_assert(
-        EdgeConcept<EMEdge&&>,
-        "EMEdge&& does not satisfy the EdgeConcept");
+        EdgeConcept<EMEdge&&>, "EMEdge&& does not satisfy the EdgeConcept");
 
     static_assert(
-        EdgeConcept<EMEdgeI>,
-        "EMEdgeI does not satisfy the EdgeConcept");
+        EdgeConcept<EMEdgeI>, "EMEdgeI does not satisfy the EdgeConcept");
     static_assert(
         EdgeConcept<const EMEdgeI>,
         "const EMEdgeI does not satisfy the EdgeConcept");
     static_assert(
-        EdgeConcept<EMEdgeI&>,
-        "EMEdgeI& does not satisfy the EdgeConcept");
+        EdgeConcept<EMEdgeI&>, "EMEdgeI& does not satisfy the EdgeConcept");
     static_assert(
         EdgeConcept<const EMEdgeI&>,
         "const EMEdgeI& does not satisfy the EdgeConcept");
     static_assert(
-        EdgeConcept<EMEdgeI&&>,
-        "EMEdgeI&& does not satisfy the EdgeConcept");
+        EdgeConcept<EMEdgeI&&>, "EMEdgeI&& does not satisfy the EdgeConcept");
 }
 
 #endif // ELEM_EDGE_H

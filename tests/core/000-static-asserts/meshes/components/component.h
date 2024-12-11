@@ -165,7 +165,8 @@ void componentStaticAsserts()
     // IsOptionalComponent
     static_assert(
         !comp::IsOptionalComponent<vert::Color>,
-        "vert::Color doesIsTiedToVertexNumber satisfy the OptionalComponent concept");
+        "vert::Color doesIsTiedToVertexNumber satisfy the OptionalComponent "
+        "concept");
     static_assert(
         !comp::IsOptionalComponent<const vert::Color>,
         "const vert::Color does satisfy the OptionalComponent concept");
@@ -381,35 +382,42 @@ void componentStaticAsserts()
         "concept");
     static_assert(
         !comp::HasReferencesOfType<OptionalAdjEdgesI, const TEMEdgeI&>,
-        "OptionalAdjEdgesI does satisfy the HasReferencesOfType const TEMEdgeI& "
+        "OptionalAdjEdgesI does satisfy the HasReferencesOfType const "
+        "TEMEdgeI& "
         "concept");
 
     static_assert(
         !comp::HasReferencesOfType<OptionalAdjEdges, TEMFace>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace concept");
+        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
+        "concept");
     static_assert(
         !comp::HasReferencesOfType<const OptionalAdjEdges, TEMFace>,
         "const OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
         "concept");
     static_assert(
         !comp::HasReferencesOfType<OptionalAdjEdges&, TEMFace>,
-        "OptionalAdjEdges& does satisfy the HasReferencesOfType TEMFace concept");
+        "OptionalAdjEdges& does satisfy the HasReferencesOfType TEMFace "
+        "concept");
     static_assert(
         !comp::HasReferencesOfType<const OptionalAdjEdges&, TEMFace>,
         "const OptionalAdjEdges& does satisfy the HasReferencesOfType TEMFace "
         "concept");
     static_assert(
         !comp::HasReferencesOfType<OptionalAdjEdges&&, TEMFace>,
-        "OptionalAdjEdges&& does satisfy the HasReferencesOfType TEMFace concept");
+        "OptionalAdjEdges&& does satisfy the HasReferencesOfType TEMFace "
+        "concept");
     static_assert(
         !comp::HasReferencesOfType<OptionalAdjEdges, TEMFace&>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace concept");
+        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
+        "concept");
     static_assert(
         !comp::HasReferencesOfType<OptionalAdjEdges, TEMFace&&>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace concept");
+        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
+        "concept");
     static_assert(
         !comp::HasReferencesOfType<OptionalAdjEdges, const TEMFace&>,
-        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace concept");
+        "OptionalAdjEdges does satisfy the HasReferencesOfType TEMFace "
+        "concept");
 
     // HasOptionalReferencesOfType
     static_assert(
@@ -522,7 +530,8 @@ void componentStaticAsserts()
         "TEMEdgeI concept");
     static_assert(
         !comp::HasPointersOfType<OptionalAdjEdgesI&, TEMEdgeI>,
-        "OptionalAdjEdgesI& does satisfy the HasPointersOfType TEMEdgeI concept");
+        "OptionalAdjEdgesI& does satisfy the HasPointersOfType TEMEdgeI "
+        "concept");
     static_assert(
         !comp::HasPointersOfType<const OptionalAdjEdgesI&, TEMEdgeI>,
         "const OptionalAdjEdgesI& does satisfy the HasPointersOfType "
@@ -533,7 +542,8 @@ void componentStaticAsserts()
         "concept");
     static_assert(
         !comp::HasPointersOfType<OptionalAdjEdgesI, TEMEdgeI&>,
-        "OptionalAdjEdgesI does satisfy the HasPointersOfType TEMEdgeI& concept");
+        "OptionalAdjEdgesI does satisfy the HasPointersOfType TEMEdgeI& "
+        "concept");
     static_assert(
         !comp::HasPointersOfType<OptionalAdjEdgesI, TEMEdgeI&&>,
         "OptionalAdjEdgesI does satisfy the HasPointersOfType TEMEdgeI&& "

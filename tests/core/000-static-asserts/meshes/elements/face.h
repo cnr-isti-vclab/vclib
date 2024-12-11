@@ -35,68 +35,56 @@ void faceStaticAsserts()
     using PMFaceI = polymesh::Face<float, true>;
 
     static_assert(
-        FaceConcept<TMFace>,
-        "TMFace does not satisfy the FaceConcept");
+        FaceConcept<TMFace>, "TMFace does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const TMFace>,
         "const TMFace does not satisfy the FaceConcept");
     static_assert(
-        FaceConcept<TMFace&>,
-        "TMFace& does not satisfy the FaceConcept");
+        FaceConcept<TMFace&>, "TMFace& does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const TMFace&>,
         "const TMFace& does not satisfy the FaceConcept");
     static_assert(
-        FaceConcept<TMFace&&>,
-        "TMFace&& does not satisfy the FaceConcept");
+        FaceConcept<TMFace&&>, "TMFace&& does not satisfy the FaceConcept");
 
     static_assert(
-        FaceConcept<TMFaceI>,
-        "TMFaceI does not satisfy the FaceConcept");
+        FaceConcept<TMFaceI>, "TMFaceI does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const TMFaceI>,
         "const TMFaceI does not satisfy the FaceConcept");
     static_assert(
-        FaceConcept<TMFaceI&>,
-        "TMFaceI& does not satisfy the FaceConcept");
+        FaceConcept<TMFaceI&>, "TMFaceI& does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const TMFaceI&>,
         "const TMFaceI& does not satisfy the FaceConcept");
     static_assert(
-        FaceConcept<TMFaceI&&>,
-        "TMFaceI&& does not satisfy the FaceConcept");
+        FaceConcept<TMFaceI&&>, "TMFaceI&& does not satisfy the FaceConcept");
 
     static_assert(
-        FaceConcept<PMFace>,
-        "PMFace does not satisfy the FaceConcept");
+        FaceConcept<PMFace>, "PMFace does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const PMFace>,
         "const PMFace does not satisfy the FaceConcept");
     static_assert(
-        FaceConcept<PMFace&>,
-        "PMFace& does not satisfy the FaceConcept");
+        FaceConcept<PMFace&>, "PMFace& does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const PMFace&>,
         "const PMFace& does not satisfy the FaceConcept");
     static_assert(
-        FaceConcept<PMFace&&>,
-        "PMFace&& does not satisfy the FaceConcept");
+        FaceConcept<PMFace&&>, "PMFace&& does not satisfy the FaceConcept");
 
     static_assert(
-        FaceConcept<PMFaceI>,
-        "PMFaceI does not satisfy the FaceConcept");
+        FaceConcept<PMFaceI>, "PMFaceI does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const PMFaceI>,
         "const PMFaceI does not satisfy the FaceConcept");
     static_assert(
-        FaceConcept<PMFaceI&>,
-        "PMFaceI& does not satisfy the FaceConcept");
+        FaceConcept<PMFaceI&>, "PMFaceI& does not satisfy the FaceConcept");
     static_assert(
         FaceConcept<const PMFaceI&>,
         "const PMFaceI& does not satisfy the FaceConcept");
     static_assert(
-        FaceConcept<PMFaceI&&>,
-        "PMFaceI&& does not satisfy the FaceConcept");
+        FaceConcept<PMFaceI&&>, "PMFaceI&& does not satisfy the FaceConcept");
 
     static_assert(
         TriangleFaceConcept<TMFace>,

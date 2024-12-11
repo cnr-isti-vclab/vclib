@@ -149,8 +149,10 @@ concept IsTiedToVertexNumber =
  * @tparam R the type of the references.
  */
 template<typename T, typename R>
-concept HasReferencesOfType = ComponentConcept<T> && std::
-    is_base_of<ReferencesComponentTriggerer<RemoveRef<R>>, RemoveRef<T>>::value;
+concept HasReferencesOfType =
+    ComponentConcept<T> &&
+    std::is_base_of<ReferencesComponentTriggerer<RemoveRef<R>>, RemoveRef<T>>::
+        value;
 
 /**
  * @private
