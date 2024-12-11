@@ -51,6 +51,7 @@ set(HEADERS
     meshes/components/wedge_tex_coords.h
     meshes/containers/edge_container.h
     meshes/containers/element_container.h
+    meshes/containers/face_container.h
     meshes/containers/vertex_container.h
     meshes/elements/edge.h
     meshes/elements/element.h

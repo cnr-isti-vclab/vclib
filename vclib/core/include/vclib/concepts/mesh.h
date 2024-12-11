@@ -23,6 +23,8 @@
 #ifndef VCL_CONCEPTS_MESH_H
 #define VCL_CONCEPTS_MESH_H
 
+#include "mesh/containers.h"
+
 #include "mesh/per_edge.h"
 #include "mesh/per_face.h"
 #include "mesh/per_mesh.h"
