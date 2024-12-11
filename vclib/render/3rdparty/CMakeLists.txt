@@ -70,5 +70,8 @@ include(qt.cmake)
 ### GLFW
 include(glfw.cmake)
 
+### ImGui
+include(imgui.cmake)
+
 set(VCLIB_RENDER_3RDPARTY_LIBRARIES
     ${VCLIB_RENDER_3RDPARTY_LIBRARIES} PARENT_SCOPE)

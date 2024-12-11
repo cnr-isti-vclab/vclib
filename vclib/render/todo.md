@@ -28,7 +28,8 @@
   - [X] fix trackball initial scale using GLFW
   - [X] fix event handling for the trackball using GLFW (metrics)
   - [X] streamline trackball rendering (avoid error-prone explicit updates)
-  - [ ] implement BGFX ImGui backend
+  - [X] implement BGFX ImGui Rendering backend
+  - [ ] fix BGFX ImGui backend scaling issues with GLFW (macOS + ???)
   - [ ] start integration of ImGUI along GLFW
   - [X] fix trackball bug on Qt implementation (pan after wheel zoom)
   - [X] fix event mapping for GLFW (it should be slightly different from Qt)

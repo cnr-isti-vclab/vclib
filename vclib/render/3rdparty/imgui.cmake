@@ -20,46 +20,40 @@
 #* (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
 #****************************************************************************/
 
-cmake_minimum_required(VERSION 3.24)
-project(vclib-render-examples)
+if (TARGET vclib-3rd-glfw AND TARGET vclib-3rd-bgfx)
+    message(STATUS "- ImGui - using downloaded source")
 
-set(CMAKE_COMPILE_WARNING_AS_ERROR ${VCLIB_COMPILE_WARNINGS_AS_ERRORS})
+    # ImGui (glfw and opengl3+)
+    FetchContent_Declare(
+        imgui
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
+        GIT_TAG        master
+    )
+    FetchContent_MakeAvailable(imgui)
 
-if (TARGET vclib-3rd-qt)
-    add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_QT)
-    set(CAN_BUILD_VCLIB_EXAMPLES true)
-endif()
-if(TARGET vclib-3rd-glfw)
-    if (NOT CAN_BUILD_VCLIB_EXAMPLES)
-        add_compile_definitions(VCLIB_RENDER_EXAMPLES_WITH_GLFW)
-        set(CAN_BUILD_VCLIB_EXAMPLES true)
-    endif()
-endif()
+    file(GLOB IMGUI_SOURCES ${imgui_SOURCE_DIR}/*.cpp ${imgui_SOURCE_DIR}/*.h)
+    add_library(imgui STATIC
+        ${IMGUI_SOURCES}
+        ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp
+        # ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+        # ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h
+    )
+    target_link_libraries(imgui PRIVATE glfw)
+    target_include_directories(imgui PUBLIC
+        ${imgui_SOURCE_DIR}
+        ${imgui_SOURCE_DIR}/misc/cpp
+        ${imgui_SOURCE_DIR}/backends
+    )
+    # this is the way to include the custom imconfig.h
+    # target_compile_definitions(imgui PRIVATE IMGUI_USER_CONFIG="<vclib/render_bgfx/imgui/imconfig.h>")
 
-add_subdirectory(common)
+    add_library(vclib-3rd-imgui INTERFACE)
+    target_link_libraries(vclib-3rd-imgui INTERFACE imgui)
 
-add_subdirectory(00-hello-triangle)
-add_subdirectory(01-viewer)
-add_subdirectory(02-mesh-viewer)
-add_subdirectory(03-viewer-with-text)
+    list(APPEND VCLIB_RENDER_3RDPARTY_LIBRARIES vclib-3rd-imgui)
 
-if (TARGET vclib-processing)
-    add_subdirectory(800-processing-main-window)
-endif()
-
-add_subdirectory(999-misc)
-
-if (CAN_BUILD_VCLIB_EXAMPLES)
-    # the following examples are the same of the ones in the core module,
-    # but they add a viewer at the end in order to visualize the results
-    add_subdirectory(9015-mesh-io-stl)
-    add_subdirectory(9018-mesh-principal-curvature)
-    add_subdirectory(9019-mesh-sampling)
-    add_subdirectory(9021-mesh-sphere-intersection)
-    add_subdirectory(9026-crease-edges-mesh)
-endif()
-
-
-if(TARGET vclib-3rd-imgui)
-add_subdirectory(910-viewer-imgui)
+else()
+    message(STATUS "- ImGui - skipped (glfw3 or BGFX not found)")
 endif()
