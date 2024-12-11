@@ -28,7 +28,7 @@
 
 namespace bx { struct AllocatorI; }
 
-IMGUI_IMPL_API void     ImGui_ImplBgfx_Init(float _fontSize = 18.0f, bx::AllocatorI* _allocator = NULL);
+IMGUI_IMPL_API void     ImGui_ImplBgfx_Init(float _fontSize = 18.0f);
 // void imguiCreate(float _fontSize = 18.0f, bx::AllocatorI* _allocator = NULL);
 IMGUI_IMPL_API void     ImGui_ImplBgfx_Shutdown();
 // void imguiDestroy();

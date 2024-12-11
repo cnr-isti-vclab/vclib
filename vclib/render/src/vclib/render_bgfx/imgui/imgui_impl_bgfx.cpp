@@ -103,8 +103,9 @@ static FontRangeMerge s_fontRangeMerge[] =
 	{ s_iconsFontAwesomeTtf, sizeof(s_iconsFontAwesomeTtf), { ICON_MIN_FA, ICON_MAX_FA, 0 } },
 };
 
-static void* memAlloc(size_t _size, void* _userData);
-static void memFree(void* _ptr, void* _userData);
+// NO custom allocator
+// static void* memAlloc(size_t _size, void* _userData);
+// static void memFree(void* _ptr, void* _userData);
 
 struct OcornutImguiContext
 {
@@ -240,24 +241,24 @@ struct OcornutImguiContext
 		}
 	}
 
-	void create(float _fontSize, bx::AllocatorI* _allocator)
+	void create(float _fontSize)
 	{
 		IMGUI_CHECKVERSION();
 
-		m_allocator = _allocator;
+		// m_allocator = _allocator;
 
-		if (NULL == _allocator)
-		{
-			static bx::DefaultAllocator allocator;
-			m_allocator = &allocator;
-		}
+		// if (NULL == _allocator)
+		// {
+		// 	static bx::DefaultAllocator allocator;
+		// 	m_allocator = &allocator;
+		// }
 
 		m_viewId = 255;
 		// NO performance and input management
 		// m_lastScroll = 0;
 		// m_last = bx::getHPCounter();
 
-		ImGui::SetAllocatorFunctions(memAlloc, memFree, NULL);
+		// ImGui::SetAllocatorFunctions(memAlloc, memFree, NULL);
 
 		// Lazy initialization of context
 		// m_imgui = ImGui::CreateContext();
@@ -464,7 +465,8 @@ struct OcornutImguiContext
 	{
 		// NO DOCKING
 		// ImGui::ShutdownDockContext();
-		ImGui::DestroyContext(m_imgui);
+		// No destory context
+		// ImGui::DestroyContext(m_imgui);
 
 		bgfx::destroy(s_tex);
 		bgfx::destroy(m_texture);
@@ -473,7 +475,7 @@ struct OcornutImguiContext
 		bgfx::destroy(m_imageProgram);
 		bgfx::destroy(m_program);
 
-		m_allocator = NULL;
+		// m_allocator = NULL;
 	}
 
 	// void setupStyle(bool _dark)
@@ -559,7 +561,7 @@ struct OcornutImguiContext
 	}
 
 	ImGuiContext*       m_imgui;
-	bx::AllocatorI*     m_allocator;
+	// bx::AllocatorI*     m_allocator;
 	bgfx::VertexLayout  m_layout;
 	bgfx::ProgramHandle m_program;
 	bgfx::ProgramHandle m_imageProgram;
@@ -577,44 +579,45 @@ struct OcornutImguiContext
 
 static OcornutImguiContext s_ctx;
 
-static void* memAlloc(size_t _size, void* _userData)
-{
-	BX_UNUSED(_userData);
-	return bx::alloc(s_ctx.m_allocator, _size);
-}
+// NO custom allocator
+// static void* memAlloc(size_t _size, void* _userData)
+// {
+// 	BX_UNUSED(_userData);
+// 	return bx::alloc(s_ctx.m_allocator, _size);
+// }
 
-static void memFree(void* _ptr, void* _userData)
-{
-	BX_UNUSED(_userData);
-	bx::free(s_ctx.m_allocator, _ptr);
-}
+// static void memFree(void* _ptr, void* _userData)
+// {
+// 	BX_UNUSED(_userData);
+// 	bx::free(s_ctx.m_allocator, _ptr);
+// }
 
-void imguiCreate(float _fontSize, bx::AllocatorI* _allocator)
-{
-	s_ctx.create(_fontSize, _allocator);
-}
+// void imguiCreate(float _fontSize, bx::AllocatorI* _allocator)
+// {
+// 	s_ctx.create(_fontSize, _allocator);
+// }
 
-void imguiDestroy()
-{
-	s_ctx.destroy();
-}
+// void imguiDestroy()
+// {
+// 	s_ctx.destroy();
+// }
 
-void imguiBeginFrame(int32_t _mx, int32_t _my, uint8_t _button, int32_t _scroll, uint16_t _width, uint16_t _height, int _inputChar, bgfx::ViewId _viewId)
-{
-	// s_ctx.beginFrame(_mx, _my, _button, _scroll, _width, _height, _inputChar, _viewId);
-}
+// void imguiBeginFrame(int32_t _mx, int32_t _my, uint8_t _button, int32_t _scroll, uint16_t _width, uint16_t _height, int _inputChar, bgfx::ViewId _viewId)
+// {
+// 	// s_ctx.beginFrame(_mx, _my, _button, _scroll, _width, _height, _inputChar, _viewId);
+// }
 
-void imguiEndFrame()
-{
-	s_ctx.endFrame();
-}
+// void imguiEndFrame()
+// {
+// 	s_ctx.endFrame();
+// }
 
 
 
 // General API *****************************************************************
-void ImGui_ImplBgfx_Init(float _fontSize, bx::AllocatorI* _allocator)
+void ImGui_ImplBgfx_Init(float _fontSize)
 {
-	s_ctx.create(_fontSize, _allocator); // TODO check content
+	s_ctx.create(_fontSize);
 }
 
 void ImGui_ImplBgfx_Shutdown()

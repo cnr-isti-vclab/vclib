@@ -83,6 +83,11 @@ void ViewerWindowImgui::show()
 
         frame();
     }
+
+    // cleanup
+    ImGui_ImplBgfx_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void ViewerWindowImgui::draw()
@@ -96,9 +101,10 @@ void ViewerWindowImgui::draw()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    // demo window
+    // ImGui demo window
     ImGui::ShowDemoWindow();
 
+    // actual drawing
     ViewerCanvas::draw();
 
     // Rendering
