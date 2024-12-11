@@ -25,12 +25,14 @@
 
 #include "containers/edge_container.h"
 #include "containers/element_container.h"
+#include "containers/vertex_container.h"
 
 void containersStaticAsserts()
 {
     elementContainerStaticAsserts();
 
     edgeContainerStaticAsserts();
+    vertexContainerStaticAsserts();
 }
 
 #endif // CONTAINERS_H

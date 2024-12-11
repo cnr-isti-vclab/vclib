@@ -58,7 +58,7 @@ concept HasEdgeContainer =
         { obj.deletedEdgeNumber() } -> std::same_as<uint>;
 
         { obj.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
-        { obj.edgeCompactIndices() } -> std::same_as<std::vector<uint>>;
+        { obj.edgeCompactIndices() } -> std::same_as<decltype(vec)>;
 
         { obj.edgeBegin() } -> std::input_iterator;
         { obj.edgeEnd() } -> std::input_iterator;
