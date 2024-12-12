@@ -80,6 +80,10 @@ void ViewerWindowImgui::show()
             ImGui_ImplGlfw_Sleep(10);
             continue;
         }
+        
+        // print imgui io display size and framebuffer scale
+        std::cout << "DisplaySize: " << io.DisplaySize.x << "x" << io.DisplaySize.y << std::endl;
+        std::cout << "FramebufferScale: " << io.DisplayFramebufferScale.x << "x" << io.DisplayFramebufferScale.y << std::endl;
 
         frame();
     }
