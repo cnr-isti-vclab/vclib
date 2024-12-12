@@ -36,6 +36,7 @@ set(HEADERS
     mesh/elements.h
     mesh/mesh_concept.h
     mesh/per_edge.h
+    mesh/per_face.h
     mesh/per_vertex.h
     mesh/components/adjacent_edges.h
     mesh/components/adjacent_faces.h
