@@ -35,6 +35,7 @@ set(HEADERS
     mesh/containers.h
     mesh/elements.h
     mesh/mesh_concept.h
+    mesh/per_vertex.h
     mesh/components/adjacent_edges.h
     mesh/components/adjacent_faces.h
     mesh/components/adjacent_vertices.h
@@ -93,8 +94,3 @@ vclib_add_test(
     ${TEST_NAME}
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})
-
-target_sources(vclib-core-test-000-static-asserts
-  PRIVATE
-
-)

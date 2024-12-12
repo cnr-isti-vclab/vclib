@@ -27,6 +27,7 @@
 #include "mesh/containers.h"
 #include "mesh/elements.h"
 #include "mesh/mesh_concept.h"
+#include "mesh/per_vertex.h"
 
 void meshStaticAsserts()
 {
@@ -35,6 +36,8 @@ void meshStaticAsserts()
     containersStaticAsserts();
 
     meshConceptStaticAsserts();
+
+    perVertexStaticAsserts();
 }
 
 #endif // MESH_H

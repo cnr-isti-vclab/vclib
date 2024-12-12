@@ -29,6 +29,8 @@ void meshConceptStaticAsserts()
 {
     using namespace vcl;
 
+    using TMVertex = TriMesh::Vertex;
+
     static_assert(
         mesh::HasElementContainer<TriMesh, ElemId::VERTEX>,
         "TriMesh does not satisfy the HasElementContainer VERTEX");
@@ -249,6 +251,38 @@ void meshConceptStaticAsserts()
         "const TriMesh& does not satisfy the MeshConcept");
     static_assert(
         MeshConcept<TriMesh&&>, "TriMesh&& does not satisfy the MeshConcept");
+
+    static_assert(
+        ElementOrMeshConcept<TriMesh>,
+        "TriMesh does not satisfy the ElementOrMeshConcept");
+    static_assert(
+        ElementOrMeshConcept<const TriMesh>,
+        "const TriMesh does not satisfy the ElementOrMeshConcept");
+    static_assert(
+        ElementOrMeshConcept<TriMesh&>,
+        "TriMesh& does not satisfy the ElementOrMeshConcept");
+    static_assert(
+        ElementOrMeshConcept<const TriMesh&>,
+        "const TriMesh& does not satisfy the ElementOrMeshConcept");
+    static_assert(
+        ElementOrMeshConcept<TriMesh&&>,
+        "TriMesh&& does not satisfy the ElementOrMeshConcept");
+
+    static_assert(
+        ElementOrMeshConcept<TMVertex>,
+        "TriMesh Vertex does not satisfy the ElementOrMeshConcept");
+    static_assert(
+        ElementOrMeshConcept<const TMVertex>,
+        "const TriMesh Vertex does not satisfy the ElementOrMeshConcept");
+    static_assert(
+        ElementOrMeshConcept<TMVertex&>,
+        "TriMesh Vertex& does not satisfy the ElementOrMeshConcept");
+    static_assert(
+        ElementOrMeshConcept<const TMVertex&>,
+        "const TriMesh Vertex& does not satisfy the ElementOrMeshConcept");
+    static_assert(
+        ElementOrMeshConcept<TMVertex&&>,
+        "TriMesh Vertex&& does not satisfy the ElementOrMeshConcept");
 }
 
 #endif // MESH_CONCEPT_H
