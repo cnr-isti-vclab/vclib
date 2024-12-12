@@ -26,12 +26,15 @@
 #include "mesh/components.h"
 #include "mesh/containers.h"
 #include "mesh/elements.h"
+#include "mesh/mesh_concept.h"
 
 void meshStaticAsserts()
 {
     componentsStaticAsserts();
     elementsStaticAsserts();
     containersStaticAsserts();
+
+    meshConceptStaticAsserts();
 }
 
 #endif // MESH_H

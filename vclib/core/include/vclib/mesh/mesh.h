@@ -888,7 +888,7 @@ public:
      * container would be compacted.
      */
     template<uint ELEM_ID>
-    std::vector<uint> conpactIndices() const
+    std::vector<uint> compactIndices() const
         requires (hasContainerOf<ELEM_ID>())
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
@@ -1179,7 +1179,7 @@ public:
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
-        return Cont::template hasElemCustomComponent(name);
+        return Cont::hasElemCustomComponent(name);
     }
 
     /**
@@ -1200,7 +1200,7 @@ public:
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
-        return Cont::template elemCustomComponentNames();
+        return Cont::elemCustomComponentNames();
     }
 
     /**
@@ -1245,7 +1245,7 @@ public:
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
-        return Cont::template elemCustomComponentType(name);
+        return Cont::elemCustomComponentType(name);
     }
 
     /**
@@ -1308,7 +1308,7 @@ public:
     {
         using Cont = ContainerOfElement<ELEM_ID>::type;
 
-        Cont::template deleteElemCustomComponent(name);
+        Cont::deleteElemCustomComponent(name);
     }
 
     /**
