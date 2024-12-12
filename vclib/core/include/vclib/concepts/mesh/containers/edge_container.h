@@ -40,53 +40,52 @@ namespace mesh {
  * @ingroup containers_concepts
  */
 template<typename T>
-concept HasEdgeContainer =
-    requires (
-        T&&                                          obj,
-        typename RemoveRef<T>::EdgeType              e,
-        typename RemoveRef<T>::EdgeType*             eP,
-        typename RemoveRef<T>::EdgeType&             eR,
-        typename RemoveRef<T>::EdgeType::VertexType* vP,
-        std::vector<uint>                            vec) {
-        typename RemoveRef<T>::EdgeType;
-        typename RemoveRef<T>::EdgeIterator;
-        typename RemoveRef<T>::ConstEdgeIterator;
+concept HasEdgeContainer = requires (
+    T&&                                          obj,
+    typename RemoveRef<T>::EdgeType              e,
+    typename RemoveRef<T>::EdgeType*             eP,
+    typename RemoveRef<T>::EdgeType&             eR,
+    typename RemoveRef<T>::EdgeType::VertexType* vP,
+    std::vector<uint>                            vec) {
+    typename RemoveRef<T>::EdgeType;
+    typename RemoveRef<T>::EdgeIterator;
+    typename RemoveRef<T>::ConstEdgeIterator;
 
-        { obj.edge(uint()) } -> std::convertible_to<decltype(e)>;
-        { obj.edgeNumber() } -> std::same_as<uint>;
-        { obj.edgeContainerSize() } -> std::same_as<uint>;
-        { obj.deletedEdgeNumber() } -> std::same_as<uint>;
+    { obj.edge(uint()) } -> std::convertible_to<decltype(e)>;
+    { obj.edgeNumber() } -> std::same_as<uint>;
+    { obj.edgeContainerSize() } -> std::same_as<uint>;
+    { obj.deletedEdgeNumber() } -> std::same_as<uint>;
 
-        { obj.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
-        { obj.edgeCompactIndices() } -> std::same_as<decltype(vec)>;
+    { obj.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
+    { obj.edgeCompactIndices() } -> std::same_as<decltype(vec)>;
 
-        { obj.edgeBegin() } -> std::input_iterator;
-        { obj.edgeEnd() } -> std::input_iterator;
-        { obj.edges() } -> vcl::RangeOf<decltype(e)>;
+    { obj.edgeBegin() } -> std::input_iterator;
+    { obj.edgeEnd() } -> std::input_iterator;
+    { obj.edges() } -> vcl::RangeOf<decltype(e)>;
 
-        // non const requirements
-        requires vcl::IsConst<T> || requires {
-            { obj.edge(uint()) } -> std::same_as<decltype(eR)>;
+    // non const requirements
+    requires vcl::IsConst<T> || requires {
+        { obj.edge(uint()) } -> std::same_as<decltype(eR)>;
 
-            { obj.addEdge() } -> std::same_as<uint>;
-            { obj.addEdge(uint(), uint()) } -> std::same_as<uint>;
-            { obj.addEdge(vP, vP) } -> std::same_as<uint>;
-            { obj.addEdges(uint()) } -> std::same_as<uint>;
-            { obj.clearEdges() } -> std::same_as<void>;
-            { obj.resizeEdges(uint()) } -> std::same_as<void>;
-            { obj.reserveEdges(uint()) } -> std::same_as<void>;
-            { obj.compactEdges() } -> std::same_as<void>;
-            { obj.deleteEdge(uint()) } -> std::same_as<void>;
-            { obj.deleteEdge(eP) } -> std::same_as<void>;
-            { obj.updateEdgeIndices(vec) } -> std::same_as<void>;
+        { obj.addEdge() } -> std::same_as<uint>;
+        { obj.addEdge(uint(), uint()) } -> std::same_as<uint>;
+        { obj.addEdge(vP, vP) } -> std::same_as<uint>;
+        { obj.addEdges(uint()) } -> std::same_as<uint>;
+        { obj.clearEdges() } -> std::same_as<void>;
+        { obj.resizeEdges(uint()) } -> std::same_as<void>;
+        { obj.reserveEdges(uint()) } -> std::same_as<void>;
+        { obj.compactEdges() } -> std::same_as<void>;
+        { obj.deleteEdge(uint()) } -> std::same_as<void>;
+        { obj.deleteEdge(eP) } -> std::same_as<void>;
+        { obj.updateEdgeIndices(vec) } -> std::same_as<void>;
 
-            { obj.edgeBegin() } -> std::output_iterator<decltype(e)>;
-            { obj.edgeEnd() } -> std::output_iterator<decltype(e)>;
+        { obj.edgeBegin() } -> std::output_iterator<decltype(e)>;
+        { obj.edgeEnd() } -> std::output_iterator<decltype(e)>;
 
-            { obj.enableAllPerEdgeOptionalComponents() } -> std::same_as<void>;
-            { obj.disableAllPerEdgeOptionalComponents() } -> std::same_as<void>;
-        };
+        { obj.enableAllPerEdgeOptionalComponents() } -> std::same_as<void>;
+        { obj.disableAllPerEdgeOptionalComponents() } -> std::same_as<void>;
     };
+};
 
 } // namespace mesh
 
