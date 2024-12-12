@@ -53,12 +53,12 @@ ViewerWindowImgui::ViewerWindowImgui(void* parent) :
 
 void ViewerWindowImgui::show()
 {
-    // TODO: OpneGL 2 version
+    // TODO: OpenGL 2 version
 
     // setup ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     // Enable Gamepad Controls

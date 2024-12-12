@@ -129,6 +129,7 @@ struct OcornutImguiContext
 
 		const bgfx::Caps* caps = bgfx::getCaps();
 		{
+			// the projection matrix is made using non-scaled coordinates
 			float ortho[16];
 			float x = _drawData->DisplayPos.x;
 			float y = _drawData->DisplayPos.y;
@@ -137,6 +138,7 @@ struct OcornutImguiContext
 
 			bx::mtxOrtho(ortho, x, x + width, y + height, y, 0.0f, 1000.0f, 0.0f, caps->homogeneousDepth);
 			bgfx::setViewTransform(m_viewId, NULL, ortho);
+			// the viewport is set using scaled coordinates
 			bgfx::setViewRect(m_viewId, 0, 0, uint16_t(dispWidth), uint16_t(dispHeight) );
 		}
 
@@ -423,6 +425,8 @@ struct OcornutImguiContext
 			ImFontConfig config;
 			config.FontDataOwnedByAtlas = false;
 			config.MergeMode = false;
+			// TODO: when we remove fonts from the imgui_impl_bgfx.cpp move this outside 
+			config.RasterizerMultiply = 2.0f;
 //			config.MergeGlyphCenterV = true;
 
 			const ImWchar* ranges = io.Fonts->GetGlyphRangesCyrillic();
