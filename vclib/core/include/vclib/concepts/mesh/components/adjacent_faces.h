@@ -26,6 +26,7 @@
 #include "component.h"
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -74,17 +75,17 @@ concept HasAdjacentFaces = requires (
     { obj.indexOfAdjFace(&f) } -> std::same_as<uint>;
     { obj.indexOfAdjFace(uint()) } -> std::same_as<uint>;
 
-    { obj.adjFaceBegin() } -> std::input_iterator;
-    { obj.adjFaceEnd() } -> std::input_iterator;
+    { obj.adjFaceBegin() } -> InputIterator<decltype(cFP)>;
+    { obj.adjFaceEnd() } -> InputIterator<decltype(cFP)>;
 
-    { obj.adjFaceIndexBegin() } -> std::input_iterator;
-    { obj.adjFaceIndexEnd() } -> std::input_iterator;
+    { obj.adjFaceIndexBegin() } -> InputIterator<uint>;
+    { obj.adjFaceIndexEnd() } -> InputIterator<uint>;
 
-    { obj.adjFaceIndices() } -> vcl::RangeOf<uint>;
+    { obj.adjFaceIndices() } -> RangeOf<uint>;
 
     // const requirements
     requires !vcl::IsConst<T> || requires {
-        { obj.adjFaces() } -> vcl::RangeOf<decltype(cFP)>;
+        { obj.adjFaces() } -> RangeOf<decltype(cFP)>;
     };
 
     // non const requirements
@@ -104,10 +105,16 @@ concept HasAdjacentFaces = requires (
         { obj.setAdjFaceMod(int(), uint()) } -> std::same_as<void>;
         { obj.setAdjFaces(vec) } -> std::same_as<void>;
 
-        // { obj.adjFaceBegin() } -> std::output_iterator<decltype(fP)>;
-        // { obj.adjFaceEnd() } -> std::output_iterator<decltype(fP)>;
+        // for references components, the iterators returned by begin() and
+        // end() are input iterators because they do not allow to modify the
+        // content of the container (the only way to do that is by using the set
+        // member functions). However, they allow to modify the elements
+        // pointed by the iterators (const references components allow to
+        // iterate only trough const pointers instead).
+        { obj.adjFaceBegin() } -> InputIterator<decltype(fP)>;
+        { obj.adjFaceEnd() } -> InputIterator<decltype(fP)>;
 
-        { obj.adjFaces() } -> vcl::RangeOf<decltype(fP)>;
+        { obj.adjFaces() } -> RangeOf<decltype(fP)>;
     };
 };
 

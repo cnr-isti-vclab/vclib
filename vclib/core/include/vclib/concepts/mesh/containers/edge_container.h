@@ -24,6 +24,7 @@
 #define VCL_CONCEPTS_MESH_CONTAINERS_EDGE_CONTAINER_H
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -59,9 +60,10 @@ concept HasEdgeContainer = requires (
     { obj.edgeIndexIfCompact(uint()) } -> std::same_as<uint>;
     { obj.edgeCompactIndices() } -> std::same_as<decltype(vec)>;
 
-    { obj.edgeBegin() } -> std::input_iterator;
-    { obj.edgeEnd() } -> std::input_iterator;
-    { obj.edges() } -> vcl::RangeOf<decltype(e)>;
+    { obj.edgeBegin() } -> InputIterator<decltype(e)>;
+    { obj.edgeEnd() } -> InputIterator<decltype(e)>;
+    { obj.edges() } -> RangeOf<decltype(e)>;
+    { obj.edges(bool()) } -> RangeOf<decltype(e)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -79,8 +81,8 @@ concept HasEdgeContainer = requires (
         { obj.deleteEdge(eP) } -> std::same_as<void>;
         { obj.updateEdgeIndices(vec) } -> std::same_as<void>;
 
-        { obj.edgeBegin() } -> std::output_iterator<decltype(e)>;
-        { obj.edgeEnd() } -> std::output_iterator<decltype(e)>;
+        { obj.edgeBegin() } -> OutputIterator<decltype(e)>;
+        { obj.edgeEnd() } -> OutputIterator<decltype(e)>;
 
         { obj.enableAllPerEdgeOptionalComponents() } -> std::same_as<void>;
         { obj.disableAllPerEdgeOptionalComponents() } -> std::same_as<void>;

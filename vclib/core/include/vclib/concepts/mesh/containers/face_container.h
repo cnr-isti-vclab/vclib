@@ -24,6 +24,7 @@
 #define VCL_CONCEPTS_MESH_CONTAINERS_FACE_CONTAINER_H
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -60,10 +61,10 @@ concept HasFaceContainer = requires (
     { obj.faceIndexIfCompact(uint()) } -> std::same_as<uint>;
     { obj.faceCompactIndices() } -> std::same_as<decltype(vecU)>;
 
-    { obj.faceBegin() } -> std::input_iterator;
-    { obj.faceEnd() } -> std::input_iterator;
-    { obj.faces() } -> vcl::RangeOf<decltype(f)>;
-    { obj.faces(bool()) } -> vcl::RangeOf<decltype(f)>;
+    { obj.faceBegin() } -> InputIterator<decltype(f)>;
+    { obj.faceEnd() } -> InputIterator<decltype(f)>;
+    { obj.faces() } -> RangeOf<decltype(f)>;
+    { obj.faces(bool()) } -> RangeOf<decltype(f)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -83,8 +84,8 @@ concept HasFaceContainer = requires (
         { obj.deleteFace(fP) } -> std::same_as<void>;
         { obj.updateFaceIndices(vecU) } -> std::same_as<void>;
 
-        { obj.faceBegin() } -> std::output_iterator<decltype(f)>;
-        { obj.faceEnd() } -> std::output_iterator<decltype(f)>;
+        { obj.faceBegin() } -> OutputIterator<decltype(f)>;
+        { obj.faceEnd() } -> OutputIterator<decltype(f)>;
 
         { obj.enableAllPerFaceOptionalComponents() } -> std::same_as<void>;
         { obj.disableAllPerFaceOptionalComponents() } -> std::same_as<void>;

@@ -26,6 +26,7 @@
 #include "component.h"
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -74,17 +75,17 @@ concept HasAdjacentVertices = requires (
     { obj.indexOfAdjVertex(&v) } -> std::same_as<uint>;
     { obj.indexOfAdjVertex(uint()) } -> std::same_as<uint>;
 
-    { obj.adjVertexBegin() } -> std::input_iterator;
-    { obj.adjVertexEnd() } -> std::input_iterator;
+    { obj.adjVertexBegin() } -> InputIterator<decltype(cVP)>;
+    { obj.adjVertexEnd() } -> InputIterator<decltype(cVP)>;
 
-    { obj.adjVertexIndexBegin() } -> std::input_iterator;
-    { obj.adjVertexIndexEnd() } -> std::input_iterator;
+    { obj.adjVertexIndexBegin() } -> InputIterator<uint>;
+    { obj.adjVertexIndexEnd() } -> InputIterator<uint>;
 
-    { obj.adjVertexIndices() } -> vcl::RangeOf<uint>;
+    { obj.adjVertexIndices() } -> RangeOf<uint>;
 
     // const requirements
     requires !vcl::IsConst<T> || requires {
-        { obj.adjVertices() } -> vcl::RangeOf<decltype(cVP)>;
+        { obj.adjVertices() } -> RangeOf<decltype(cVP)>;
     };
 
     // non const requirements
@@ -104,10 +105,16 @@ concept HasAdjacentVertices = requires (
         { obj.setAdjVertexMod(int(), uint()) } -> std::same_as<void>;
         { obj.setAdjVertices(vec) } -> std::same_as<void>;
 
-        // { obj.adjVertexBegin() } -> std::output_iterator<decltype(vP)>;
-        // { obj.adjVertexEnd() } -> std::output_iterator<decltype(vP)>;
+        // for references components, the iterators returned by begin() and
+        // end() are input iterators because they do not allow to modify the
+        // content of the container (the only way to do that is by using the set
+        // member functions). However, they allow to modify the elements
+        // pointed by the iterators (const references components allow to
+        // iterate only trough const pointers instead).
+        { obj.adjVertexBegin() } -> InputIterator<decltype(vP)>;
+        { obj.adjVertexEnd() } -> InputIterator<decltype(vP)>;
 
-        { obj.adjVertices() } -> vcl::RangeOf<decltype(vP)>;
+        { obj.adjVertices() } -> RangeOf<decltype(vP)>;
     };
 };
 

@@ -123,9 +123,11 @@ concept MeshConcept =
             obj.template compactIndices<ElemId::VERTEX>()
         } -> std::same_as<decltype(vec)>;
 
-        { obj.template begin<ElemId::VERTEX>() } -> std::input_iterator;
-        { obj.template begin<ElemId::VERTEX>(bool()) } -> std::input_iterator;
-        { obj.template end<ElemId::VERTEX>() } -> std::input_iterator;
+        { obj.template begin<ElemId::VERTEX>() } -> InputIterator<decltype(v)>;
+        {
+            obj.template begin<ElemId::VERTEX>(bool())
+        } -> InputIterator<decltype(v)>;
+        { obj.template end<ElemId::VERTEX>() } -> InputIterator<decltype(v)>;
         { obj.template elements<ElemId::VERTEX>() } -> RangeOf<decltype(v)>;
         {
             obj.template elements<ElemId::VERTEX>(bool())
@@ -172,13 +174,13 @@ concept MeshConcept =
 
             {
                 obj.template begin<ElemId::VERTEX>()
-            } -> std::output_iterator<decltype(v)>;
+            } -> OutputIterator<decltype(v)>;
             {
                 obj.template begin<ElemId::VERTEX>(bool())
-            } -> std::output_iterator<decltype(v)>;
+            } -> OutputIterator<decltype(v)>;
             {
                 obj.template end<ElemId::VERTEX>()
-            } -> std::output_iterator<decltype(v)>;
+            } -> OutputIterator<decltype(v)>;
         };
     };
 

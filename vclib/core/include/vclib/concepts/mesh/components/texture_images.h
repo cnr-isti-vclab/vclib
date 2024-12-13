@@ -49,9 +49,9 @@ concept HasTextureImages =
 
         { obj.texture(uint()) } -> TextureConcept;
 
-        { obj.textureBegin() } -> std::input_iterator;
-        { obj.textureEnd() } -> std::input_iterator;
-        { obj.textures() } -> vcl::RangeOf<decltype(t)>;
+        { obj.textureBegin() } -> InputIterator<decltype(t)>;
+        { obj.textureEnd() } -> InputIterator<decltype(t)>;
+        { obj.textures() } -> RangeOf<decltype(t)>;
 
         // non const requirements
         requires vcl::IsConst<T> || requires {
@@ -59,8 +59,8 @@ concept HasTextureImages =
             { obj.pushTexture(std::string()) } -> std::same_as<void>;
             { obj.pushTexture(t) } -> std::same_as<void>;
 
-            { obj.textureBegin() } -> std::output_iterator<decltype(t)>;
-            { obj.textureEnd() } -> std::output_iterator<decltype(t)>;
+            { obj.textureBegin() } -> OutputIterator<decltype(t)>;
+            { obj.textureEnd() } -> OutputIterator<decltype(t)>;
         };
     };
 

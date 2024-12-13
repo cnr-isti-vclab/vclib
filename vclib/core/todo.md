@@ -4,13 +4,15 @@
   - [ ] Enumerations should be declared in a struct to avoid name collisions
   - [ ] Fix scripts to add a mesh element
     - [ ] Add documentation on how to add a new mesh element using scripts
+  - [ ] Remove usage of "vcl::" inside vcl namespace where it can be avoided
 - Concepts:
   - [ ] add constructor constraints on all concepts
   - [x] concepts should work for all type of cvref qualified types
   - [ ] complete space data structures concepts
-  - [ ] implement vcl::InputIterator<IteratorType, IteratedType> as it is done in std::output_iterator
+  - [x] implement vcl::InputIterator<IteratorType, IteratedType> as it is done in std::output_iterator
   - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>
   - [x] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
+  - [ ] rename RangeOf to InputRange, and implement OutputRange concept (be consistent with Input/OutputIterator concepts).
 - Mesh:
   - Elements:
     - [ ] set properly elements concepts

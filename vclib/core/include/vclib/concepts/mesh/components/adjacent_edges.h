@@ -26,6 +26,7 @@
 #include "component.h"
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -74,17 +75,17 @@ concept HasAdjacentEdges = requires (
     { obj.indexOfAdjEdge(&e) } -> std::same_as<uint>;
     { obj.indexOfAdjEdge(uint()) } -> std::same_as<uint>;
 
-    { obj.adjEdgeBegin() } -> std::input_iterator;
-    { obj.adjEdgeEnd() } -> std::input_iterator;
+    { obj.adjEdgeBegin() } -> InputIterator<decltype(cEP)>;
+    { obj.adjEdgeEnd() } -> InputIterator<decltype(cEP)>;
 
-    { obj.adjEdgeIndexBegin() } -> std::input_iterator;
-    { obj.adjEdgeIndexEnd() } -> std::input_iterator;
+    { obj.adjEdgeIndexBegin() } -> InputIterator<uint>;
+    { obj.adjEdgeIndexEnd() } -> InputIterator<uint>;
 
-    { obj.adjEdgeIndices() } -> vcl::RangeOf<uint>;
+    { obj.adjEdgeIndices() } -> RangeOf<uint>;
 
     // const requirements
     requires !vcl::IsConst<T> || requires {
-        { obj.adjEdges() } -> vcl::RangeOf<decltype(cEP)>;
+        { obj.adjEdges() } -> RangeOf<decltype(cEP)>;
     };
 
     // non const requirements
@@ -104,10 +105,16 @@ concept HasAdjacentEdges = requires (
         { obj.setAdjEdgeMod(int(), uint()) } -> std::same_as<void>;
         { obj.setAdjEdges(vec) } -> std::same_as<void>;
 
-        // { obj.adjEdgeBegin() } -> std::output_iterator<decltype(eP)>;
-        // { obj.adjEdgeEnd() } -> std::output_iterator<decltype(eP)>;
+        // for references components, the iterators returned by begin() and
+        // end() are input iterators because they do not allow to modify the
+        // content of the container (the only way to do that is by using the set
+        // member functions). However, they allow to modify the elements
+        // pointed by the iterators (const references components allow to
+        // iterate only trough const pointers instead).
+        { obj.adjEdgeBegin() } -> InputIterator<decltype(eP)>;
+        { obj.adjEdgeEnd() } -> InputIterator<decltype(eP)>;
 
-        { obj.adjEdges() } -> vcl::RangeOf<decltype(eP)>;
+        { obj.adjEdges() } -> RangeOf<decltype(eP)>;
     };
 };
 
