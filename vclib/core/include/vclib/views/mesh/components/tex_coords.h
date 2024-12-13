@@ -33,10 +33,6 @@ namespace vcl::views {
 
 namespace detail {
 
-template<typename T>
-concept CleanWedgeTexCoordsConcept =
-    comp::HasWedgeTexCoords<std::remove_cvref_t<T>>;
-
 inline constexpr auto texCoord = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->texCoord();
@@ -55,7 +51,7 @@ struct TexCoordsView
         return std::forward<R>(r) | std::views::transform(texCoord);
     }
 
-    template<CleanWedgeTexCoordsConcept R>
+    template<comp::HasWedgeTexCoords R>
     friend constexpr auto operator|(R&& r, TexCoordsView)
     {
         if constexpr (IsPointer<R>)

@@ -29,6 +29,7 @@
 #include "mesh/mesh_concept.h"
 #include "mesh/per_edge.h"
 #include "mesh/per_face.h"
+#include "mesh/per_mesh.h"
 #include "mesh/per_vertex.h"
 
 void meshStaticAsserts()
@@ -41,6 +42,7 @@ void meshStaticAsserts()
 
     perEdgeStaticAsserts();
     perFaceStaticAsserts();
+    perMeshStaticAsserts();
     perVertexStaticAsserts();
 }
 

@@ -28,24 +28,17 @@
 namespace vcl::views {
 namespace detail {
 
-template<typename T>
-concept CleanMeshConcept = MeshConcept<std::remove_cvref_t<T>>;
-
-template<typename T>
-concept CleanVertexRefsConcept =
-    comp::HasVertexReferences<std::remove_cvref_t<T>>;
-
 struct VerticesView
 {
     constexpr VerticesView() = default;
 
-    template<CleanMeshConcept R>
+    template<MeshConcept R>
     friend constexpr auto operator|(R&& r, VerticesView)
     {
         return r.vertices();
     }
 
-    template<CleanVertexRefsConcept R>
+    template<comp::HasVertexReferences R>
     friend constexpr auto operator|(R&& r, VerticesView)
     {
         return r.vertices();

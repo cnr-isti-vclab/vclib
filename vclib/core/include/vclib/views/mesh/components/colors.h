@@ -33,9 +33,6 @@ namespace vcl::views {
 
 namespace detail {
 
-template<typename T>
-concept CleanWedgeColorsConcept = comp::HasWedgeColors<std::remove_cvref_t<T>>;
-
 inline constexpr auto color = [](auto&& p) -> decltype(auto) {
     if constexpr (IsPointer<decltype(p)>)
         return p->color();
@@ -53,7 +50,7 @@ struct ColorsView
         return std::forward<R>(r) | std::views::transform(color);
     }
 
-    template<CleanWedgeColorsConcept R>
+    template<comp::HasWedgeColors R>
     friend constexpr auto operator|(R&& r, ColorsView)
     {
         if constexpr (IsPointer<R>)

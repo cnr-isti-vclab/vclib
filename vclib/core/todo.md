@@ -6,7 +6,7 @@
     - [ ] Add documentation on how to add a new mesh element using scripts
 - Concepts:
   - [ ] add constructor constraints on all concepts
-  - [ ] concepts should work for all type of cvref qualified types
+  - [x] concepts should work for all type of cvref qualified types
   - [ ] complete space data structures concepts
   - [ ] implement vcl::InputIterator<IteratorType, IteratedType> as it is done in std::output_iterator
   - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>
