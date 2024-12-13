@@ -20,65 +20,41 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_CONCEPTS_ITERATORS_H
-#define VCL_CONCEPTS_ITERATORS_H
+#ifndef ITERATORS_H
+#define ITERATORS_H
 
-#include <iterator>
-#include <type_traits>
+#include <vclib/concepts/iterators.h>
 
-namespace vcl {
+#include <vector>
 
-/**
- * @brief The IteratorConcept is satisfied if T is an input or output iterator.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept IteratorConcept = std::input_or_output_iterator<T>;
+void iteratorsStaticAsserts()
+{
+    using namespace vcl;
 
-/**
- * @brief The InputIterator concept is satisfied if T is an input iterator
- * that implements the `operator*` returning a value convertible to V.
- *
- * @ingroup util_concepts
- */
-template<typename T, typename V>
-concept InputIterator =
-    std::input_iterator<T> && std::indirectly_readable<T> && requires(T i) {
-        { *i } -> std::convertible_to<V>;
-    };
+    using StdVecInt = std::vector<int>;
 
-/**
- * @brief The OutputIterator concept is satisfied if T is an output iterator
- * that implements the `operator*` returning a reference to V.
- *
- * @see https://en.cppreference.com/w/cpp/iterator/output_iterator
- *
- * @ingroup util_concepts
- */
-template<typename T, typename V>
-concept OutputIterator = std::output_iterator<T, V>;
+    static_assert(
+        IteratorConcept<StdVecInt::iterator>,
+        "std::vector<int>::iterator does not satisfy the IteratorConcept");
+    static_assert(
+        IteratorConcept<StdVecInt::const_iterator>,
+        "std::vector<int>::const_iterator does not satisfy the IteratorConcept");
 
-/**
- * @brief The IteratorOverClass concept is satisfied if T is an iterator having
- * its `value_type` that is a class.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept IteratesOverClass =
-    IteratorConcept<T> && std::is_class_v<typename T::value_type>;
+    static_assert(
+        InputIterator<StdVecInt::iterator, int>,
+        "std::vector<int>::iterator does not satisfy the InputIterator concept");
+    static_assert(
+        InputIterator<StdVecInt::const_iterator, int>,
+        "std::vector<int>::const_iterator does not satisfy the InputIterator concept");
 
-/**
- * @brief The IteratorOverPointer concept is satisfied if T is an iterator
- * having its `value_type ` that is a pointer.
- *
- * @ingroup util_concepts
- */
-template<typename T>
-concept IteratesOverPointer =
-    IteratorConcept<T> && std::is_pointer_v<typename T::value_type>;
+    static_assert(
+        OutputIterator<StdVecInt::iterator, int>,
+        "std::vector<int>::iterator does not satisfy the OutputIterator "
+        "concept");
+    static_assert(
+        !OutputIterator<StdVecInt::const_iterator, int>,
+        "std::vector<int>::iterator does satisfy the OutputIterator "
+        "concept");
+}
 
-} // namespace vcl
-
-#endif // VCL_CONCEPTS_ITERATORS_H
+#endif // ITERATORS_H

@@ -24,6 +24,8 @@
 #define VCL_CONCEPTS_SPACE_ARRAY_H
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
+#include <vclib/concepts/ranges/range.h>
 
 #include <vclib/types.h>
 
@@ -68,8 +70,10 @@ concept ArrayConcept = requires (
 
     obj.subArray(uint());
 
-    { obj.begin() } -> std::input_iterator;
-    { obj.end() } -> std::input_iterator;
+    { obj.begin() } -> InputIterator<decltype(v)>;
+    { obj.end() } -> InputIterator<decltype(v)>;
+
+    requires RangeOf<T, decltype(v)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -80,8 +84,8 @@ concept ArrayConcept = requires (
         { obj.fill(v) } -> std::same_as<void>;
         { obj.clear() } -> std::same_as<void>;
 
-        { obj.begin() } -> std::output_iterator<decltype(v)>;
-        { obj.end() } -> std::output_iterator<decltype(v)>;
+        { obj.begin() } -> OutputIterator<decltype(v)>;
+        { obj.end() } -> OutputIterator<decltype(v)>;
     };
 };
 

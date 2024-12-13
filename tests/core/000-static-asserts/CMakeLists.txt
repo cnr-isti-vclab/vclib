@@ -27,6 +27,7 @@ project(vclib-test-${TEST_NAME})
 
 set(HEADERS
     loggers.h
+    iterators.h
     mesh.h
     meshes.h
     ranges.h
