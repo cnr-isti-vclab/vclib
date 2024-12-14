@@ -44,7 +44,7 @@ concept IteratorConcept = std::input_or_output_iterator<T>;
  */
 template<typename T, typename V>
 concept InputIterator =
-    std::input_iterator<T> && std::indirectly_readable<T> && requires(T i) {
+    std::input_iterator<T> && std::indirectly_readable<T> && requires (T i) {
         { *i } -> std::convertible_to<V>;
     };
 

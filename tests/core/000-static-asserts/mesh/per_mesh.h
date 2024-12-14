@@ -30,8 +30,7 @@ void perMeshStaticAsserts()
     using namespace vcl;
 
     static_assert(
-        HasBoundingBox<TriMesh>,
-        "TriMesh does not satisfy the HasBoundingBox");
+        HasBoundingBox<TriMesh>, "TriMesh does not satisfy the HasBoundingBox");
     static_assert(
         HasBoundingBox<const TriMesh>,
         "const TriMesh does not satisfy the HasBoundingBox");
@@ -45,21 +44,15 @@ void perMeshStaticAsserts()
         HasBoundingBox<TriMesh&&>,
         "TriMesh&& does not satisfy the HasBoundingBox");
 
+    static_assert(HasColor<TriMesh>, "TriMesh does not satisfy the HasColor");
     static_assert(
-        HasColor<TriMesh>,
-        "TriMesh does not satisfy the HasColor");
-    static_assert(
-        HasColor<const TriMesh>,
-        "const TriMesh does not satisfy the HasColor");
-    static_assert(
-        HasColor<TriMesh&>,
-        "TriMesh& does not satisfy the HasColor");
+        HasColor<const TriMesh>, "const TriMesh does not satisfy the HasColor");
+    static_assert(HasColor<TriMesh&>, "TriMesh& does not satisfy the HasColor");
     static_assert(
         HasColor<const TriMesh&>,
         "const TriMesh& does not satisfy the HasColor");
     static_assert(
-        HasColor<TriMesh&&>,
-        "TriMesh&& does not satisfy the HasColor");
+        HasColor<TriMesh&&>, "TriMesh&& does not satisfy the HasColor");
 
     static_assert(
         HasCustomComponents<TriMesh>,
@@ -77,37 +70,21 @@ void perMeshStaticAsserts()
         HasCustomComponents<TriMesh&&>,
         "TriMesh&& does not satisfy the HasCustomComponents");
 
+    static_assert(HasMark<TriMesh>, "TriMesh does not satisfy the HasMark");
     static_assert(
-        HasMark<TriMesh>,
-        "TriMesh does not satisfy the HasMark");
+        HasMark<const TriMesh>, "const TriMesh does not satisfy the HasMark");
+    static_assert(HasMark<TriMesh&>, "TriMesh& does not satisfy the HasMark");
     static_assert(
-        HasMark<const TriMesh>,
-        "const TriMesh does not satisfy the HasMark");
-    static_assert(
-        HasMark<TriMesh&>,
-        "TriMesh& does not satisfy the HasMark");
-    static_assert(
-        HasMark<const TriMesh&>,
-        "const TriMesh& does not satisfy the HasMark");
-    static_assert(
-        HasMark<TriMesh&&>,
-        "TriMesh&& does not satisfy the HasMark");
+        HasMark<const TriMesh&>, "const TriMesh& does not satisfy the HasMark");
+    static_assert(HasMark<TriMesh&&>, "TriMesh&& does not satisfy the HasMark");
 
+    static_assert(HasName<TriMesh>, "TriMesh does not satisfy the HasName");
     static_assert(
-        HasName<TriMesh>,
-        "TriMesh does not satisfy the HasName");
+        HasName<const TriMesh>, "const TriMesh does not satisfy the HasName");
+    static_assert(HasName<TriMesh&>, "TriMesh& does not satisfy the HasName");
     static_assert(
-        HasName<const TriMesh>,
-        "const TriMesh does not satisfy the HasName");
-    static_assert(
-        HasName<TriMesh&>,
-        "TriMesh& does not satisfy the HasName");
-    static_assert(
-        HasName<const TriMesh&>,
-        "const TriMesh& does not satisfy the HasName");
-    static_assert(
-        HasName<TriMesh&&>,
-        "TriMesh&& does not satisfy the HasName");
+        HasName<const TriMesh&>, "const TriMesh& does not satisfy the HasName");
+    static_assert(HasName<TriMesh&&>, "TriMesh&& does not satisfy the HasName");
 
     static_assert(
         HasTextureImages<TriMesh>,

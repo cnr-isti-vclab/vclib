@@ -38,14 +38,17 @@ void iteratorsStaticAsserts()
         "std::vector<int>::iterator does not satisfy the IteratorConcept");
     static_assert(
         IteratorConcept<StdVecInt::const_iterator>,
-        "std::vector<int>::const_iterator does not satisfy the IteratorConcept");
+        "std::vector<int>::const_iterator does not satisfy the "
+        "IteratorConcept");
 
     static_assert(
         InputIterator<StdVecInt::iterator, int>,
-        "std::vector<int>::iterator does not satisfy the InputIterator concept");
+        "std::vector<int>::iterator does not satisfy the InputIterator "
+        "concept");
     static_assert(
         InputIterator<StdVecInt::const_iterator, int>,
-        "std::vector<int>::const_iterator does not satisfy the InputIterator concept");
+        "std::vector<int>::const_iterator does not satisfy the InputIterator "
+        "concept");
 
     static_assert(
         OutputIterator<StdVecInt::iterator, int>,
