@@ -51,7 +51,7 @@ concept HasTextureImages =
 
         { obj.textureBegin() } -> InputIterator<decltype(t)>;
         { obj.textureEnd() } -> InputIterator<decltype(t)>;
-        { obj.textures() } -> RangeOf<decltype(t)>;
+        { obj.textures() } -> InputRange<decltype(t)>;
 
         // non const requirements
         requires vcl::IsConst<T> || requires {
@@ -61,6 +61,7 @@ concept HasTextureImages =
 
             { obj.textureBegin() } -> OutputIterator<decltype(t)>;
             { obj.textureEnd() } -> OutputIterator<decltype(t)>;
+            { obj.textures() } -> OutputRange<decltype(t)>;
         };
     };
 

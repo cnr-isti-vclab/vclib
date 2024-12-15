@@ -81,12 +81,8 @@ concept HasAdjacentVertices = requires (
     { obj.adjVertexIndexBegin() } -> InputIterator<uint>;
     { obj.adjVertexIndexEnd() } -> InputIterator<uint>;
 
-    { obj.adjVertexIndices() } -> RangeOf<uint>;
-
-    // const requirements
-    requires !vcl::IsConst<T> || requires {
-        { obj.adjVertices() } -> RangeOf<decltype(cVP)>;
-    };
+    { obj.adjVertices() } -> InputRange<decltype(cVP)>;
+    { obj.adjVertexIndices() } -> InputRange<uint>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -114,7 +110,7 @@ concept HasAdjacentVertices = requires (
         { obj.adjVertexBegin() } -> InputIterator<decltype(vP)>;
         { obj.adjVertexEnd() } -> InputIterator<decltype(vP)>;
 
-        { obj.adjVertices() } -> RangeOf<decltype(vP)>;
+        { obj.adjVertices() } -> InputRange<decltype(vP)>;
     };
 };
 

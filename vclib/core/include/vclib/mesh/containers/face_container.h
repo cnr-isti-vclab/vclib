@@ -157,8 +157,8 @@ public:
 
     template<Range Rng>
     uint addFace(Rng&& r) requires (
-        RangeOfConvertibleTo<Rng, typename Face::VertexType*> ||
-        RangeOfConvertibleTo<Rng, uint>)
+        InputRange<Rng, typename Face::VertexType*> ||
+        InputRange<Rng, uint>)
     {
         auto begin = std::ranges::begin(r);
         auto end   = std::ranges::end(r);

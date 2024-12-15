@@ -401,7 +401,7 @@ public:
      * @param[in] r: The range of values to set the elements of the Vector to.
      */
     template<Range Rng>
-    void set(Rng&& r) requires RangeOfConvertibleTo<Rng, T>
+    void set(Rng&& r) requires InputRange<Rng, T>
     {
         if constexpr (N >= 0) {
             uint n = std::min(

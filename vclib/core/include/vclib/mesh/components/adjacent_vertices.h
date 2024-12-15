@@ -332,7 +332,7 @@ public:
      * @param[in] r: range of adjacent vertices to set.
      */
     template<Range Rng>
-    void setAdjVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, Vertex*>
+    void setAdjVertices(Rng&& r) requires InputRange<Rng, Vertex*>
     {
         Base::setElements(r);
     }
@@ -349,7 +349,7 @@ public:
      * @param[in] r: range of indices of adjacent vertices to set.
      */
     template<Range Rng>
-    void setAdjVertices(Rng&& r) requires RangeOfConvertibleTo<Rng, uint>
+    void setAdjVertices(Rng&& r) requires InputRange<Rng, uint>
     {
         Base::setElements(r);
     }

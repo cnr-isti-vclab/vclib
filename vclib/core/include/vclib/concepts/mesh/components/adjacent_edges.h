@@ -81,12 +81,8 @@ concept HasAdjacentEdges = requires (
     { obj.adjEdgeIndexBegin() } -> InputIterator<uint>;
     { obj.adjEdgeIndexEnd() } -> InputIterator<uint>;
 
-    { obj.adjEdgeIndices() } -> RangeOf<uint>;
-
-    // const requirements
-    requires !vcl::IsConst<T> || requires {
-        { obj.adjEdges() } -> RangeOf<decltype(cEP)>;
-    };
+    { obj.adjEdges() } -> InputRange<decltype(cEP)>;
+    { obj.adjEdgeIndices() } -> InputRange<uint>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -114,7 +110,7 @@ concept HasAdjacentEdges = requires (
         { obj.adjEdgeBegin() } -> InputIterator<decltype(eP)>;
         { obj.adjEdgeEnd() } -> InputIterator<decltype(eP)>;
 
-        { obj.adjEdges() } -> RangeOf<decltype(eP)>;
+        { obj.adjEdges() } -> InputRange<decltype(eP)>;
     };
 };
 

@@ -128,10 +128,10 @@ concept MeshConcept =
             obj.template begin<ElemId::VERTEX>(bool())
         } -> InputIterator<decltype(v)>;
         { obj.template end<ElemId::VERTEX>() } -> InputIterator<decltype(v)>;
-        { obj.template elements<ElemId::VERTEX>() } -> RangeOf<decltype(v)>;
+        { obj.template elements<ElemId::VERTEX>() } -> InputRange<decltype(v)>;
         {
             obj.template elements<ElemId::VERTEX>(bool())
-        } -> RangeOf<decltype(v)>;
+        } -> InputRange<decltype(v)>;
 
         // non const requirements
         requires vcl::IsConst<T> || requires {
@@ -181,6 +181,12 @@ concept MeshConcept =
             {
                 obj.template end<ElemId::VERTEX>()
             } -> OutputIterator<decltype(v)>;
+            {
+                obj.template elements<ElemId::VERTEX>()
+            } -> OutputRange<decltype(v)>;
+            {
+                obj.template elements<ElemId::VERTEX>(bool())
+            } -> OutputRange<decltype(v)>;
         };
     };
 

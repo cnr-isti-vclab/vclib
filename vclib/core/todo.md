@@ -12,7 +12,7 @@
   - [x] implement vcl::InputIterator<IteratorType, IteratedType> as it is done in std::output_iterator
   - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>
   - [x] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
-  - [ ] rename RangeOf to InputRange, and implement OutputRange concept (be consistent with Input/OutputIterator concepts).
+  - [x] rename RangeOf to InputRange, and implement OutputRange concept (be consistent with Input/OutputIterator concepts).
 - Mesh:
   - Elements:
     - [ ] set properly elements concepts

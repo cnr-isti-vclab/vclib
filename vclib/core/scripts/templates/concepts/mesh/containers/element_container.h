@@ -42,8 +42,8 @@ concept Has%EL_UC%Container = requires(
 
     { obj.%EL_C%Begin() } -> InputIterator<decltype(e)>;
     { obj.%EL_C%End() } -> InputIterator<decltype(e)>;
-    { obj.%EL_C%s() } -> RangeOf<decltype(e)>;
-    { obj.%EL_C%s(bool()) } -> RangeOf<decltype(e)>;
+    { obj.%EL_C%s() } -> InputRange<decltype(e)>;
+    { obj.%EL_C%s(bool()) } -> InputRange<decltype(e)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -61,6 +61,8 @@ concept Has%EL_UC%Container = requires(
 
         { obj.%EL_C%Begin() } -> OutputIterator<decltype(e)>;
         { obj.%EL_C%End() } -> OutputIterator<decltype(e)>;
+        { obj.%EL_C%s() } -> OutputRange<decltype(e)>;
+        { obj.%EL_C%s(bool()) } -> OutputRange<decltype(e)>;
 
         { obj.enableAllPer%EL_UC%OptionalComponents() } -> std::same_as<void>;
         { obj.disableAllPer%EL_UC%OptionalComponents() } -> std::same_as<void>;

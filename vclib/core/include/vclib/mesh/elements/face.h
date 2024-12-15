@@ -82,9 +82,8 @@ public:
      * counterclockwise order that will be set as vertices of the face.
      */
     template<Range Rng>
-    void setVertices(Rng&& r) requires (
-        RangeOfConvertibleTo<Rng, VertexType*> ||
-        RangeOfConvertibleTo<Rng, uint>)
+    void setVertices(Rng&& r)
+        requires (InputRange<Rng, VertexType*> || InputRange<Rng, uint>)
     {
         using F = Face<MeshType, TypeWrapper<Comps...>>;
 

@@ -77,12 +77,8 @@ concept HasVertexReferences = requires (
     { obj.vertexIndexBegin() } -> InputIterator<uint>;
     { obj.vertexIndexEnd() } -> InputIterator<uint>;
 
-    { obj.vertexIndices() } -> RangeOf<uint>;
-
-    // const requirements
-    requires !vcl::IsConst<T> || requires {
-        { obj.vertices() } -> RangeOf<decltype(cVP)>;
-    };
+    { obj.vertices() } -> InputRange<decltype(cVP)>;
+    { obj.vertexIndices() } -> InputRange<uint>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -111,7 +107,7 @@ concept HasVertexReferences = requires (
         { obj.vertexBegin() } -> InputIterator<decltype(vP)>;
         { obj.vertexEnd() } -> InputIterator<decltype(vP)>;
 
-        { obj.vertices() } -> RangeOf<decltype(vP)>;
+        { obj.vertices() } -> InputRange<decltype(vP)>;
     };
 };
 

@@ -63,8 +63,8 @@ concept HasFaceContainer = requires (
 
     { obj.faceBegin() } -> InputIterator<decltype(f)>;
     { obj.faceEnd() } -> InputIterator<decltype(f)>;
-    { obj.faces() } -> RangeOf<decltype(f)>;
-    { obj.faces(bool()) } -> RangeOf<decltype(f)>;
+    { obj.faces() } -> InputRange<decltype(f)>;
+    { obj.faces(bool()) } -> InputRange<decltype(f)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -86,6 +86,8 @@ concept HasFaceContainer = requires (
 
         { obj.faceBegin() } -> OutputIterator<decltype(f)>;
         { obj.faceEnd() } -> OutputIterator<decltype(f)>;
+        { obj.faces() } -> OutputRange<decltype(f)>;
+        { obj.faces(bool()) } -> OutputRange<decltype(f)>;
 
         { obj.enableAllPerFaceOptionalComponents() } -> std::same_as<void>;
         { obj.disableAllPerFaceOptionalComponents() } -> std::same_as<void>;

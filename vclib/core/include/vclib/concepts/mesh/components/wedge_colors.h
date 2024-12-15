@@ -63,7 +63,7 @@ concept HasWedgeColors = requires (
     { obj.wedgeColorBegin() } -> InputIterator<decltype(c)>;
     { obj.wedgeColorEnd() } -> InputIterator<decltype(c)>;
 
-    { obj.wedgeColors() } -> RangeOf<decltype(c)>;
+    { obj.wedgeColors() } -> InputRange<decltype(c)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -72,6 +72,8 @@ concept HasWedgeColors = requires (
 
         { obj.wedgeColorBegin() } -> OutputIterator<decltype(c)>;
         { obj.wedgeColorEnd() } -> OutputIterator<decltype(c)>;
+
+        { obj.wedgeColors() } -> OutputRange<decltype(c)>;
     };
 };
 

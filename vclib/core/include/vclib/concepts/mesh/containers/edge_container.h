@@ -62,8 +62,8 @@ concept HasEdgeContainer = requires (
 
     { obj.edgeBegin() } -> InputIterator<decltype(e)>;
     { obj.edgeEnd() } -> InputIterator<decltype(e)>;
-    { obj.edges() } -> RangeOf<decltype(e)>;
-    { obj.edges(bool()) } -> RangeOf<decltype(e)>;
+    { obj.edges() } -> InputRange<decltype(e)>;
+    { obj.edges(bool()) } -> InputRange<decltype(e)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -83,6 +83,9 @@ concept HasEdgeContainer = requires (
 
         { obj.edgeBegin() } -> OutputIterator<decltype(e)>;
         { obj.edgeEnd() } -> OutputIterator<decltype(e)>;
+
+        { obj.edges() } -> OutputRange<decltype(e)>;
+        { obj.edges(bool()) } -> OutputRange<decltype(e)>;
 
         { obj.enableAllPerEdgeOptionalComponents() } -> std::same_as<void>;
         { obj.disableAllPerEdgeOptionalComponents() } -> std::same_as<void>;

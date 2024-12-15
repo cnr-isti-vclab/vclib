@@ -73,7 +73,7 @@ concept ArrayConcept = requires (
     { obj.begin() } -> InputIterator<decltype(v)>;
     { obj.end() } -> InputIterator<decltype(v)>;
 
-    requires RangeOf<T, decltype(v)>;
+    requires InputRange<T, decltype(v)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -86,6 +86,8 @@ concept ArrayConcept = requires (
 
         { obj.begin() } -> OutputIterator<decltype(v)>;
         { obj.end() } -> OutputIterator<decltype(v)>;
+
+        requires OutputRange<T, decltype(v)>;
     };
 };
 

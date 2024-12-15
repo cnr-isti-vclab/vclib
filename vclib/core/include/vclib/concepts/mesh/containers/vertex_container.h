@@ -62,8 +62,8 @@ concept HasVertexContainer = requires (
 
     { obj.vertexBegin() } -> InputIterator<decltype(v)>;
     { obj.vertexEnd() } -> InputIterator<decltype(v)>;
-    { obj.vertices() } -> RangeOf<decltype(v)>;
-    { obj.vertices(bool()) } -> RangeOf<decltype(v)>;
+    { obj.vertices() } -> InputRange<decltype(v)>;
+    { obj.vertices(bool()) } -> InputRange<decltype(v)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -83,6 +83,8 @@ concept HasVertexContainer = requires (
 
         { obj.vertexBegin() } -> OutputIterator<decltype(v)>;
         { obj.vertexEnd() } -> OutputIterator<decltype(v)>;
+        { obj.vertices() } -> OutputRange<decltype(v)>;
+        { obj.vertices(bool()) } -> OutputRange<decltype(v)>;
 
         { obj.enableAllPerVertexOptionalComponents() } -> std::same_as<void>;
         { obj.disableAllPerVertexOptionalComponents() } -> std::same_as<void>;

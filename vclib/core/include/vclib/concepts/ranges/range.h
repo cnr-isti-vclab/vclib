@@ -40,22 +40,78 @@ concept Range = std::ranges::range<T>;
 
 /**
  * @brief Utility concept that is evaluated true the Range R has a value_type
- * that is T.
+ * that is exactly T.
+ *
+ * This concept is useful when you need to check that a range has a value_type
+ * that is exactly T, and not convertible to T. When this concept is satisfied
+ * the following code will always compile:
+ *
+ * @code
+ * for (const T& value : range) {
+ *     // do something with value
+ *     ...
+ * }
+ * @endcode
+ *
+ * @note If the type of the range is not T, this concept will be evaluated
+ * false, even if it is convertible to T. If you need to check that the range
+ * has a value_type that is convertible to T, use the InputRange concept.
+ *
+ * @tparam R The range type.
+ * @tparam T The value type.
  *
  * @ingroup util_concepts
  */
 template<typename R, typename T>
-concept RangeOf = Range<R> && std::is_same_v<std::ranges::range_value_t<R>, T>;
+concept RangeOf = Range<R> && std::same_as<std::ranges::range_value_t<R>, T>;
 
 /**
- * @brief Utility concept that is evaluated true the Range R has a value_type
- * that is convertible to T.
+ * @brief Utility concept that is evaluated true the Range R is an Input Range
+ * and has a value_type that is convertible to T.
+ *
+ * This concept is useful when you need to check that a range has a value_type
+ * that is convertible to T. When this concept is satisfied the following code
+ * will always compile:
+ *
+ * @code
+ * for (T value : range) {
+ *     // do something with value
+ *     ...
+ * }
+ * @endcode
+ *
+ * @tparam R The range type.
+ * @tparam T The value type.
  *
  * @ingroup util_concepts
  */
 template<typename R, typename T>
-concept RangeOfConvertibleTo =
+concept InputRange =
     Range<R> && std::convertible_to<std::ranges::range_value_t<R>, T>;
+
+/**
+ * @brief Utility concept that is evaluated true the Range R is an Output Range
+ * and has a value_type that is T.
+ *
+ * This concept is useful when you need to check that a range has a value_type
+ * that is exactly T, and it can be modified. When this concept is satisfied
+ * the following code will always compile:
+ *
+ * @code
+ * for (T& value : range) {
+ *     // do something with value
+ *     ...
+ * }
+ * @endcode
+ *
+ * @tparam R The range type.
+ * @tparam T The value type.
+ *
+ * @ingroup util_concepts
+ */
+template<typename R, typename T>
+concept OutputRange = Range<R> && std::ranges::output_range<R, T> &&
+                      std::same_as<std::ranges::range_value_t<R>, T>;
 
 } // namespace vcl
 

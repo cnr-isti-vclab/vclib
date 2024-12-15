@@ -81,12 +81,8 @@ concept HasAdjacentFaces = requires (
     { obj.adjFaceIndexBegin() } -> InputIterator<uint>;
     { obj.adjFaceIndexEnd() } -> InputIterator<uint>;
 
-    { obj.adjFaceIndices() } -> RangeOf<uint>;
-
-    // const requirements
-    requires !vcl::IsConst<T> || requires {
-        { obj.adjFaces() } -> RangeOf<decltype(cFP)>;
-    };
+    { obj.adjFaces() } -> InputRange<decltype(cFP)>;
+    { obj.adjFaceIndices() } -> InputRange<uint>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -114,7 +110,7 @@ concept HasAdjacentFaces = requires (
         { obj.adjFaceBegin() } -> InputIterator<decltype(fP)>;
         { obj.adjFaceEnd() } -> InputIterator<decltype(fP)>;
 
-        { obj.adjFaces() } -> RangeOf<decltype(fP)>;
+        { obj.adjFaces() } -> InputRange<decltype(fP)>;
     };
 };
 

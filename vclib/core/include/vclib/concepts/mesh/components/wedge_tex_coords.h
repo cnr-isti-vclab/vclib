@@ -66,7 +66,7 @@ concept HasWedgeTexCoords = requires (
     { obj.wedgeTexCoordBegin() } -> InputIterator<decltype(t)>;
     { obj.wedgeTexCoordEnd() } -> InputIterator<decltype(t)>;
 
-    { obj.wedgeTexCoords() } -> RangeOf<decltype(t)>;
+    { obj.wedgeTexCoords() } -> InputRange<decltype(t)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -77,6 +77,8 @@ concept HasWedgeTexCoords = requires (
 
         { obj.wedgeTexCoordBegin() } -> OutputIterator<decltype(t)>;
         { obj.wedgeTexCoordEnd() } -> OutputIterator<decltype(t)>;
+
+        { obj.wedgeTexCoords() } -> OutputRange<decltype(t)>;
     };
 };
 

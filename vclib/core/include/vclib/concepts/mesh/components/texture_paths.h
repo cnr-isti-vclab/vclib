@@ -55,7 +55,7 @@ concept HasTexturePaths = requires (T&& obj) {
 
     { obj.texturePathBegin() } -> InputIterator<std::string>;
     { obj.texturePathEnd() } -> InputIterator<std::string>;
-    { obj.texturePaths() } -> RangeOf<std::string>;
+    { obj.texturePaths() } -> InputRange<std::string>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -67,6 +67,7 @@ concept HasTexturePaths = requires (T&& obj) {
 
         { obj.texturePathBegin() } -> OutputIterator<std::string>;
         { obj.texturePathEnd() } -> OutputIterator<std::string>;
+        { obj.texturePaths() } -> OutputRange<std::string>;
     };
 };
 

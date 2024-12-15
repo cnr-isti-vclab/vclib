@@ -310,7 +310,7 @@ public:
      * @param[in] r: The range of values to set the elements of the Vector to.
      */
     template<Range Rng>
-    void set(Rng&& r) requires RangeOfConvertibleTo<Rng, T>
+    void set(Rng&& r) requires InputRange<Rng, T>
     {
         uint n = std::ranges::distance(r);
 

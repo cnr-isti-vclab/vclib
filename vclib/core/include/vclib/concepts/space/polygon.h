@@ -62,7 +62,7 @@ concept PolygonConcept = requires (
     { obj.begin() } -> InputIterator<decltype(p)>;
     { obj.end() } -> InputIterator<decltype(p)>;
 
-    requires RangeOf<T, decltype(p)>;
+    requires InputRange<T, decltype(p)>;
 
     // non const requirements
     requires vcl::IsConst<T> || requires {
@@ -73,6 +73,8 @@ concept PolygonConcept = requires (
         { obj.point(uint()) } -> std::same_as<decltype(pR)>;
         { obj.begin() } -> OutputIterator<decltype(p)>;
         { obj.end() } -> OutputIterator<decltype(p)>;
+
+        requires OutputRange<T, decltype(p)>;
     };
 };
 

@@ -103,7 +103,7 @@ public:
      * @param[in] range: the range of points that define the polygon.
      */
     template<vcl::Range R>
-    Polygon(R&& range) requires (vcl::RangeOf<R, PointT>)
+    Polygon(R&& range) requires (vcl::InputRange<R, PointT>)
             : mPoints(std::ranges::begin(range), std::ranges::end(range))
     {
     }
