@@ -34,12 +34,21 @@ namespace vcl {
  */
 template<typename T>
 concept SegmentConcept =
-    requires (T&& obj, typename RemoveRef<T>::ScalarType s) {
+    requires (
+        T&&                               obj,
+        typename RemoveRef<T>::PointType  p,
+        typename RemoveRef<T>::ScalarType s) {
         typename RemoveRef<T>::PointType;
         typename RemoveRef<T>::ScalarType;
+
         obj.DIM;
+
+        RemoveRef<T>();
+        RemoveRef<T>(p, p);
+
         { obj.p0() } -> PointConcept;
         { obj.p1() } -> PointConcept;
+
         { obj.midPoint() } -> PointConcept;
         { obj.direction() } -> PointConcept;
         { obj.normalizedDirection() } -> PointConcept;

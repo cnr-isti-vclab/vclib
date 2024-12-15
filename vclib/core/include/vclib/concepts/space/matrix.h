@@ -53,6 +53,8 @@ template<typename T>
 concept EigenMatrixConcept = requires (T&& obj) {
     typename RemoveRef<T>::Scalar;
 
+    RemoveRef<T>();
+
     obj.RowsAtCompileTime;
     obj.ColsAtCompileTime;
 

@@ -48,6 +48,11 @@ concept BoxConcept = requires (
     typename RemoveRef<T>::PointType;
     obj.DIM;
 
+    // Constructors
+    RemoveRef<T>();
+    RemoveRef<T>(p);
+    RemoveRef<T>(p, p);
+
     // Accessors for the minimum and maximum corners of the box.
     { obj.min() } -> PointConcept;
     { obj.max() } -> PointConcept;

@@ -42,6 +42,8 @@ concept PrincipalCurvatureConcept = requires (
     typename RemoveRef<T>::ScalarType& sR) {
     typename RemoveRef<T>::ScalarType;
 
+    RemoveRef<T>();
+
     { obj.maxDir() } -> PointConcept;
     { obj.minDir() } -> PointConcept;
     { obj.maxValue() } -> std::convertible_to<decltype(s)>;

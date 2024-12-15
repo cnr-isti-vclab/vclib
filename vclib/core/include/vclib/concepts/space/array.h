@@ -61,6 +61,8 @@ concept ArrayConcept = requires (
 
     obj.DIM;
 
+    RemoveRef<T>();
+
     { obj.size(std::size_t()) } -> std::integral;
     { obj.empty() } -> std::convertible_to<bool>;
 

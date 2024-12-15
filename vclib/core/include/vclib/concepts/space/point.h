@@ -46,6 +46,9 @@ concept PointConcept = requires (
     typename RemoveRef<T>::Base;
     obj.DIM;
 
+    RemoveRef<T>();
+    RemoveRef<T>(obj);
+
     { obj.isDegenerate() } -> std::same_as<bool>;
     { obj.dot(obj) } -> std::same_as<decltype(s)>;
     { obj.angle(obj) } -> std::same_as<decltype(s)>;

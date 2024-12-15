@@ -40,6 +40,9 @@ concept TexCoordConcept = requires (
     typename RemoveRef<T>::ScalarType& sR) {
     typename RemoveRef<T>::ScalarType;
 
+    RemoveRef<T>();
+    RemoveRef<T>(s, s);
+
     { obj.u() } -> std::convertible_to<decltype(s)>;
     { obj.v() } -> std::convertible_to<decltype(s)>;
 
