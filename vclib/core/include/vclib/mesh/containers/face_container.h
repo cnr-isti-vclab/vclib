@@ -157,8 +157,7 @@ public:
 
     template<Range Rng>
     uint addFace(Rng&& r) requires (
-        InputRange<Rng, typename Face::VertexType*> ||
-        InputRange<Rng, uint>)
+        InputRange<Rng, typename Face::VertexType*> || InputRange<Rng, uint>)
     {
         auto begin = std::ranges::begin(r);
         auto end   = std::ranges::end(r);
