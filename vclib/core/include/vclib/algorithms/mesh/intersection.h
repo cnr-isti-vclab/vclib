@@ -188,9 +188,9 @@ EdgeMesh intersection(const MeshType& m, const PlaneType& pl)
  */
 template<FaceMeshConcept MeshType, typename SScalar>
 MeshType intersection(
-    const MeshType&             m,
-    const vcl::Sphere<SScalar>& sphere,
-    double                      tol)
+    const MeshType&        m,
+    const Sphere<SScalar>& sphere,
+    double                 tol)
 {
     using VertexType = MeshType::VertexType;
     using CoordType  = VertexType::CoordType;
@@ -273,7 +273,7 @@ MeshType intersection(
  * @ingroup intersection_mesh
  */
 template<FaceMeshConcept MeshType, typename SScalar>
-MeshType intersection(const MeshType& m, const vcl::Sphere<SScalar>& sphere)
+MeshType intersection(const MeshType& m, const Sphere<SScalar>& sphere)
 {
     double tol = M_PI * sphere.radius() * sphere.radius() / 100000;
     return intersection(m, sphere, tol);

@@ -37,20 +37,20 @@ namespace detail {
 
 struct ColorAvgInfo
 {
-    vcl::Point4<uint> c   = vcl::Point4<uint>(0, 0, 0, 0);
-    uint              cnt = 0;
+    Point4<uint> c;
+    uint         cnt = 0;
 };
 
 template<uint ELEM_ID, FaceMeshConcept MeshType>
 void setPerElemColorFromVertexColor(MeshType& m)
 {
-    vcl::requirePerVertexColor(m);
-    vcl::requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
+    requirePerVertexColor(m);
+    requirePerElementComponent<ELEM_ID, CompId::COLOR>(m);
 
     using VertexType = MeshType::VertexType;
 
     for (auto& f : m.template elements<ELEM_ID>()) {
-        vcl::Point4<uint> avg(0, 0, 0, 0);
+        Point4<uint> avg(0, 0, 0, 0);
         for (const VertexType* v : f.vertices()) {
             avg += v->color().template cast<uint>();
         }
@@ -80,11 +80,11 @@ void setPerElemColorFromVertexColor(MeshType& m)
  */
 template<MeshConcept MeshType>
 void setPerVertexColor(
-    MeshType&  m,
-    vcl::Color c            = vcl::Color::White,
-    bool       onlySelected = false)
+    MeshType& m,
+    Color     c            = Color::White,
+    bool      onlySelected = false)
 {
-    vcl::requirePerVertexColor(m);
+    requirePerVertexColor(m);
 
     if (onlySelected) {
         std::ranges::fill(m.vertices() | views::selected | views::colors, c);
@@ -114,11 +114,11 @@ void setPerVertexColor(
  */
 template<FaceMeshConcept MeshType>
 void setPerFaceColor(
-    MeshType&  m,
-    vcl::Color c            = vcl::Color::White,
-    bool       onlySelected = false)
+    MeshType& m,
+    Color     c            = Color::White,
+    bool      onlySelected = false)
 {
-    vcl::requirePerFaceColor(m);
+    requirePerFaceColor(m);
 
     if (onlySelected) {
         std::ranges::fill(m.faces() | views::selected | views::colors, c);
@@ -148,11 +148,11 @@ void setPerFaceColor(
  */
 template<EdgeMeshConcept MeshType>
 void setPerEdgeColor(
-    MeshType&  m,
-    vcl::Color c            = vcl::Color::White,
-    bool       onlySelected = false)
+    MeshType& m,
+    Color     c            = Color::White,
+    bool      onlySelected = false)
 {
-    vcl::requirePerEdgeColor(m);
+    requirePerEdgeColor(m);
 
     if (onlySelected) {
         std::ranges::fill(m.edges() | views::selected | views::colors, c);
@@ -174,7 +174,7 @@ void setPerEdgeColor(
  * @ingroup update
  */
 template<HasColor MeshType>
-void setMeshColor(MeshType& m, vcl::Color c = vcl::Color::White)
+void setMeshColor(MeshType& m, Color c = Color::White)
 {
     m.color() = c;
 }
@@ -198,8 +198,8 @@ void setMeshColor(MeshType& m, vcl::Color c = vcl::Color::White)
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceColor(MeshType& m)
 {
-    vcl::requirePerVertexColor(m);
-    vcl::requirePerFaceColor(m);
+    requirePerVertexColor(m);
+    requirePerFaceColor(m);
 
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
@@ -289,12 +289,12 @@ void setPerEdgeColorFromVertexColor(MeshType& m)
 template<MeshConcept MeshType>
 void setPerVertexColorFromQuality(
     MeshType&                                  m,
-    vcl::Color::ColorMap                       colorMap   = vcl::Color::RedBlue,
+    Color::ColorMap                            colorMap   = Color::RedBlue,
     typename MeshType::VertexType::QualityType minQuality = 0,
     typename MeshType::VertexType::QualityType maxQuality = 0)
 {
-    vcl::requirePerVertexColor(m);
-    vcl::requirePerVertexQuality(m);
+    requirePerVertexColor(m);
+    requirePerVertexQuality(m);
 
     using VertexType  = MeshType::VertexType;
     using QualityType = VertexType::QualityType;
@@ -337,12 +337,12 @@ void setPerVertexColorFromQuality(
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromQuality(
     MeshType&                                m,
-    vcl::Color::ColorMap                     colorMap   = vcl::Color::RedBlue,
+    Color::ColorMap                          colorMap   = Color::RedBlue,
     typename MeshType::FaceType::QualityType minQuality = 0,
     typename MeshType::FaceType::QualityType maxQuality = 0)
 {
-    vcl::requirePerFaceColor(m);
-    vcl::requirePerFaceQuality(m);
+    requirePerFaceColor(m);
+    requirePerFaceQuality(m);
 
     using FaceType    = MeshType::FaceType;
     using QualityType = FaceType::QualityType;
@@ -387,15 +387,15 @@ void setPerFaceColorFromQuality(
 template<FaceMeshConcept MeshType>
 void setPerVertexColorFromFaceBorderFlag(
     MeshType& m,
-    Color     borderColor   = vcl::Color::Blue,
-    Color     internalColor = vcl::Color::White,
-    Color     mixColor      = vcl::Color::Cyan)
+    Color     borderColor   = Color::Blue,
+    Color     internalColor = Color::White,
+    Color     mixColor      = Color::Cyan)
 {
-    vcl::requirePerVertexColor(m);
+    requirePerVertexColor(m);
 
     using FaceType = MeshType::FaceType;
 
-    const vcl::Color baseColor = Color::Green;
+    const Color baseColor = Color::Green;
 
     setPerVertexColor(m, baseColor);
 
@@ -479,7 +479,7 @@ void setPerFaceColorFromConnectedComponents(
 template<FaceMeshConcept MeshType>
 void setPerFaceColorFromConnectedComponents(MeshType& m)
 {
-    vcl::requirePerFaceColor(m);
+    requirePerFaceColor(m);
 
     std::vector<std::set<uint>> connComps = connectedComponents(m);
 
@@ -516,7 +516,7 @@ void setPerFaceColorScattering(
     uint      nColors        = 50,
     bool      checkFauxEdges = true)
 {
-    vcl::requirePerFaceColor(m);
+    requirePerFaceColor(m);
 
     using FaceType = MeshType::FaceType;
 
@@ -570,7 +570,7 @@ void setPerVertexColorPerlinNoise(
     PointType offset     = PointType(0, 0, 0),
     bool      onSelected = false)
 {
-    vcl::requirePerVertexColor(m);
+    requirePerVertexColor(m);
 
     using VertexType = MeshType::VertexType;
 
@@ -617,7 +617,7 @@ void setPerVertexPerlinColor(
     Color     color2     = Color::White,
     bool      onSelected = false)
 {
-    vcl::requirePerVertexColor(m);
+    requirePerVertexColor(m);
 
     using VertexType = MeshType::VertexType;
 

@@ -190,7 +190,7 @@ public:
      * @param[in] r: range of colors to set.
      */
     template<Range Rng>
-    void setWedgeColors(Rng&& r) requires RangeOfConvertibleTo<Rng, vcl::Color>
+    void setWedgeColors(Rng&& r) requires InputRange<Rng, vcl::Color>
     {
         colors().set(r);
     }

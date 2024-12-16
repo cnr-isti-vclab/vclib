@@ -67,7 +67,7 @@ bool intersect(const FaceType& f, const Box<PointType>& box)
     else {
         bool b = false;
 
-        std::vector<uint> tris = vcl::earCut(f);
+        std::vector<uint> tris = earCut(f);
         for (uint i = 0; i < tris.size() && !b; i += 3) {
             b |= intersect(
                 TriangleWrapper(
@@ -146,7 +146,7 @@ bool intersect(
             bool      b = false;
             PointType w;
 
-            std::vector<uint> tris = vcl::earCut(f);
+            std::vector<uint> tris = earCut(f);
             for (uint i = 0; i < tris.size() && !b; i += 3) {
                 b |= intersect(
                     TriangleWrapper(

@@ -31,14 +31,11 @@ namespace vcl::views {
 
 namespace detail {
 
-template<typename T>
-concept CleanAdjFacesConcept = comp::HasAdjacentFaces<std::remove_cvref_t<T>>;
-
 struct AdjFacesView
 {
     constexpr AdjFacesView() = default;
 
-    template<CleanAdjFacesConcept R>
+    template<comp::HasAdjacentFaces R>
     friend constexpr auto operator|(R&& r, AdjFacesView)
     {
         if constexpr (IsPointer<R>)

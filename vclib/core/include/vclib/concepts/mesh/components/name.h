@@ -41,7 +41,7 @@ concept HasName = requires (T&& obj) {
     { obj.name() } -> std::convertible_to<std::string>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.name() } -> std::same_as<std::string&>;
     };
 };

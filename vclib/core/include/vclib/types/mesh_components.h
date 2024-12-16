@@ -171,7 +171,7 @@ private:
 public:
     // TypeWrapper of the found container, if any
     using type =
-        typename vcl::FilterTypesByCondition<SameCompPred, Components...>::type;
+        typename FilterTypesByCondition<SameCompPred, Components...>::type;
     static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 

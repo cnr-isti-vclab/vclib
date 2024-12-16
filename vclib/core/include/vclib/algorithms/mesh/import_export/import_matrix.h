@@ -97,21 +97,20 @@ void importElementColorsFromMatrix(MeshType& mesh, const CMatrix& colors)
         // Matrix has colors in range 0-255
         if constexpr (std::integral<MatrixScalar>) {
             if (colors.cols() == 3) {
-                e.color() =
-                    vcl::Color(colors(i, 0), colors(i, 1), colors(i, 2));
+                e.color() = Color(colors(i, 0), colors(i, 1), colors(i, 2));
             }
             else {
-                e.color() = vcl::Color(
+                e.color() = Color(
                     colors(i, 0), colors(i, 1), colors(i, 2), colors(i, 3));
             }
         }
         else { // Matrix has colors in range 0-1
             if (colors.cols() == 3) {
-                e.color() = vcl::Color(
+                e.color() = Color(
                     colors(i, 0) * 255, colors(i, 1) * 255, colors(i, 2) * 255);
             }
             else {
-                e.color() = vcl::Color(
+                e.color() = Color(
                     colors(i, 0) * 255,
                     colors(i, 1) * 255,
                     colors(i, 2) * 255,

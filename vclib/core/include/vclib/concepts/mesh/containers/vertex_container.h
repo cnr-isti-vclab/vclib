@@ -24,6 +24,7 @@
 #define VCL_CONCEPTS_MESH_CONTAINERS_VERTEX_CONTAINER_H
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -59,12 +60,13 @@ concept HasVertexContainer = requires (
     { obj.vertexIndexIfCompact(uint()) } -> std::same_as<uint>;
     { obj.vertexCompactIndices() } -> std::same_as<decltype(vec)>;
 
-    { obj.vertexBegin() } -> std::input_iterator;
-    { obj.vertexEnd() } -> std::input_iterator;
-    { obj.vertices() } -> vcl::RangeOf<decltype(v)>;
+    { obj.vertexBegin() } -> InputIterator<decltype(v)>;
+    { obj.vertexEnd() } -> InputIterator<decltype(v)>;
+    { obj.vertices() } -> InputRange<decltype(v)>;
+    { obj.vertices(bool()) } -> InputRange<decltype(v)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.vertex(uint()) } -> std::same_as<decltype(vR)>;
 
         { obj.addVertex() } -> std::same_as<uint>;
@@ -79,8 +81,10 @@ concept HasVertexContainer = requires (
         { obj.deleteVertex(vP) } -> std::same_as<void>;
         { obj.updateVertexIndices(vec) } -> std::same_as<void>;
 
-        { obj.vertexBegin() } -> std::output_iterator<decltype(v)>;
-        { obj.vertexEnd() } -> std::output_iterator<decltype(v)>;
+        { obj.vertexBegin() } -> OutputIterator<decltype(v)>;
+        { obj.vertexEnd() } -> OutputIterator<decltype(v)>;
+        { obj.vertices() } -> OutputRange<decltype(v)>;
+        { obj.vertices(bool()) } -> OutputRange<decltype(v)>;
 
         { obj.enableAllPerVertexOptionalComponents() } -> std::same_as<void>;
         { obj.disableAllPerVertexOptionalComponents() } -> std::same_as<void>;
@@ -123,7 +127,7 @@ concept HasVertexContainer = requires (
  * @ingroup containers_concepts
  */
 template<typename... Args>
-concept HasVertices = (vcl::mesh::HasVertexContainer<Args> || ...);
+concept HasVertices = (mesh::HasVertexContainer<Args> || ...);
 
 } // namespace vcl
 

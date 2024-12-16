@@ -2,15 +2,17 @@
 
 - General:
   - [ ] Enumerations should be declared in a struct to avoid name collisions
-  - [ ] Fix scripts to add a mesh element
+  - [x] Fix scripts to add a mesh element
     - [ ] Add documentation on how to add a new mesh element using scripts
+  - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided
 - Concepts:
-  - [ ] add constructor constraints on all concepts
-  - [ ] concepts should work for all type of cvref qualified types
+  - [x] add constructor constraints on all concepts
+  - [x] concepts should work for all type of cvref qualified types
   - [ ] complete space data structures concepts
-  - [ ] implement vcl::InputIterator<IteratorType, IteratedType> as it is done in std::output_iterator
+  - [x] implement vcl::InputIterator<IteratorType, IteratedType> as it is done in std::output_iterator
   - [x] fix ranges in texture and wedge concepts -> missing std::same_as<...>
   - [x] remove clang-format on and off when [this issue](https://github.com/llvm/llvm-project/issues/59412) will be fixed
+  - [x] rename RangeOf to InputRange, and implement OutputRange concept (be consistent with Input/OutputIterator concepts).
 - Mesh:
   - Elements:
     - [ ] set properly elements concepts
@@ -48,6 +50,7 @@
   - [ ] move bipartite graph iterators from space to iterators (see iterators todo list)
 - Misc:
   - [ ] implement non-static member functions for FileInfo class
+  - [ ] implement Range helper types (e.g. RangeType<R> that returns the type iterated in the range)
 - External:
   - [ ] remove zip-iterator library when c++23 zip-view will be supported
   - [ ] look for a json header only library that is compatible with c++20 modules

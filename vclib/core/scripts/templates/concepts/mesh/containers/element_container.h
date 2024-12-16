@@ -4,6 +4,7 @@
 #define VCL_CONCEPTS_MESH_CONTAINERS_%EL_U%_CONTAINER_H
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <vector>
@@ -39,12 +40,13 @@ concept Has%EL_UC%Container = requires(
     { obj.%EL_C%IndexIfCompact(uint()) } -> std::same_as<uint>;
     { obj.%EL_C%CompactIndices() } -> std::same_as<decltype(vec)>;
 
-    { obj.%EL_C%Begin() } -> std::input_iterator;
-    { obj.%EL_C%End() } -> std::input_iterator;
-    { obj.%EL_C%s() } -> vcl::RangeOf<decltype(e)>;
+    { obj.%EL_C%Begin() } -> InputIterator<decltype(e)>;
+    { obj.%EL_C%End() } -> InputIterator<decltype(e)>;
+    { obj.%EL_C%s() } -> InputRange<decltype(e)>;
+    { obj.%EL_C%s(bool()) } -> InputRange<decltype(e)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.%EL_C%(uint()) } -> std::same_as<decltype(eR)>;
 
         { obj.add%EL_UC%() } -> std::same_as<uint>;
@@ -57,8 +59,10 @@ concept Has%EL_UC%Container = requires(
         { obj.delete%EL_UC%(eP) } -> std::same_as<void>;
         { obj.update%EL_UC%Indices(vec) } -> std::same_as<void>;
 
-        { obj.%EL_C%Begin() } -> std::output_iterator<decltype(e)>;
-        { obj.%EL_C%End() } -> std::output_iterator<decltype(e)>;
+        { obj.%EL_C%Begin() } -> OutputIterator<decltype(e)>;
+        { obj.%EL_C%End() } -> OutputIterator<decltype(e)>;
+        { obj.%EL_C%s() } -> OutputRange<decltype(e)>;
+        { obj.%EL_C%s(bool()) } -> OutputRange<decltype(e)>;
 
         { obj.enableAllPer%EL_UC%OptionalComponents() } -> std::same_as<void>;
         { obj.disableAllPer%EL_UC%OptionalComponents() } -> std::same_as<void>;
@@ -103,7 +107,7 @@ concept Has%EL_UC%Container = requires(
  * @ingroup containers_concepts
  */
 template<typename... Args>
-concept Has%EL_UC%s = (vcl::mesh::Has%EL_UC%Container<Args> || ...);
+concept Has%EL_UC%s = (mesh::Has%EL_UC%Container<Args> || ...);
 
 } // namespace vcl
 

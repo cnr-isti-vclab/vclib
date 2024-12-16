@@ -239,7 +239,7 @@ void saveObj(
     }
 
     // faces
-    if constexpr (vcl::HasFaces<MeshType>) {
+    if constexpr (HasFaces<MeshType>) {
         using VertexType = MeshType::VertexType;
         using FaceType   = MeshType::FaceType;
 

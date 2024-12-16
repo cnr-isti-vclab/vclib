@@ -24,6 +24,7 @@
 #define VCL_TYPES_MESH_CONTAINERS_H
 
 #include "base.h"
+#include "pointers.h"
 #include "variadic_templates.h"
 
 namespace vcl {
@@ -54,7 +55,7 @@ private:
 public:
     // TypeWrapper of the found container, if any
     using type =
-        typename vcl::FilterTypesByCondition<SameElPred, Containers...>::type;
+        typename FilterTypesByCondition<SameElPred, Containers...>::type;
     static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 
@@ -79,7 +80,7 @@ template<typename T>
 struct IsElementContainerPred
 {
     static const bool value =
-        std::is_base_of<ElementContainerTriggerer, T>::value;
+        std::is_base_of<ElementContainerTriggerer, RemoveRef<T>>::value;
 };
 
 /**
@@ -107,7 +108,7 @@ struct ContainerOfElement
 public:
     using type = FirstTypeT<typename detail::ContainerOfElementPred<
         ELEM_ID,
-        typename MeshType::Containers>::type>;
+        typename RemoveRef<MeshType>::Containers>::type>;
 };
 
 /**
@@ -136,15 +137,16 @@ template<typename El, typename MeshType>
 struct HasContainerOfPred
 {
     static constexpr bool value = detail::ContainerOfElementPred<
-        El::ELEMENT_ID,
-        typename MeshType::Containers>::value;
+        RemoveRef<El>::ELEMENT_ID,
+        typename RemoveRef<MeshType>::Containers>::value;
 };
 
 template<uint ELEM_ID, typename MeshType>
 struct HasContainerOfElementPred
 {
-    static constexpr bool value = detail::
-        ContainerOfElementPred<ELEM_ID, typename MeshType::Containers>::value;
+    static constexpr bool value = detail::ContainerOfElementPred<
+        ELEM_ID,
+        typename RemoveRef<MeshType>::Containers>::value;
 };
 
 } // namespace mesh

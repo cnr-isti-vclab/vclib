@@ -24,6 +24,7 @@
 #define VCL_CONCEPTS_MESH_COMPONENTS_TEXTURE_PATHS_H
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
 #include <vclib/concepts/ranges/range.h>
 
 #include <string>
@@ -52,20 +53,21 @@ concept HasTexturePaths = requires (T&& obj) {
 
     { obj.meshBasePath() } -> std::convertible_to<std::string>;
 
-    { obj.texturePathBegin() } -> std::input_iterator;
-    { obj.texturePathEnd() } -> std::input_iterator;
-    { obj.texturePaths() } -> vcl::RangeOf<std::string>;
+    { obj.texturePathBegin() } -> InputIterator<std::string>;
+    { obj.texturePathEnd() } -> InputIterator<std::string>;
+    { obj.texturePaths() } -> InputRange<std::string>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.texturePath(uint()) } -> std::same_as<std::string&>;
         { obj.meshBasePath() } -> std::same_as<std::string&>;
 
         { obj.clearTexturePaths() } -> std::same_as<void>;
         { obj.pushTexturePath(std::string()) } -> std::same_as<void>;
 
-        { obj.texturePathBegin() } -> std::output_iterator<std::string>;
-        { obj.texturePathEnd() } -> std::output_iterator<std::string>;
+        { obj.texturePathBegin() } -> OutputIterator<std::string>;
+        { obj.texturePathEnd() } -> OutputIterator<std::string>;
+        { obj.texturePaths() } -> OutputRange<std::string>;
     };
 };
 

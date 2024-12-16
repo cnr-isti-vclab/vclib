@@ -24,6 +24,8 @@
 #define VCL_CONCEPTS_SPACE_ARRAY_H
 
 #include <vclib/concepts/const_correctness.h>
+#include <vclib/concepts/iterators.h>
+#include <vclib/concepts/ranges/range.h>
 
 #include <vclib/types.h>
 
@@ -59,6 +61,8 @@ concept ArrayConcept = requires (
 
     obj.DIM;
 
+    RemoveRef<T>();
+
     { obj.size(std::size_t()) } -> std::integral;
     { obj.empty() } -> std::convertible_to<bool>;
 
@@ -68,11 +72,13 @@ concept ArrayConcept = requires (
 
     obj.subArray(uint());
 
-    { obj.begin() } -> std::input_iterator;
-    { obj.end() } -> std::input_iterator;
+    { obj.begin() } -> InputIterator<decltype(v)>;
+    { obj.end() } -> InputIterator<decltype(v)>;
+
+    requires InputRange<T, decltype(v)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.data() } -> std::same_as<decltype(ptr)>;
 
         { obj.stdVector() } -> std::same_as<decltype(vecV)>;
@@ -80,8 +86,10 @@ concept ArrayConcept = requires (
         { obj.fill(v) } -> std::same_as<void>;
         { obj.clear() } -> std::same_as<void>;
 
-        { obj.begin() } -> std::output_iterator<decltype(v)>;
-        { obj.end() } -> std::output_iterator<decltype(v)>;
+        { obj.begin() } -> OutputIterator<decltype(v)>;
+        { obj.end() } -> OutputIterator<decltype(v)>;
+
+        requires OutputRange<T, decltype(v)>;
     };
 };
 
@@ -116,7 +124,7 @@ concept Array2Concept =
         { obj.data(n) } -> std::convertible_to<decltype(cPtr)>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             { obj.operator()(n, n) } -> std::same_as<decltype(ref)>;
 
             { obj.data(n) } -> std::same_as<decltype(ptr)>;
@@ -158,7 +166,7 @@ concept Array3Concept =
         { obj.data(n, n) } -> std::convertible_to<decltype(cPtr)>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             { obj.operator()(n, n, n) } -> std::same_as<decltype(ref)>;
             { obj.data(n) } -> std::same_as<decltype(ptr)>;
             { obj.data(n, n) } -> std::same_as<decltype(ptr)>;
@@ -200,7 +208,7 @@ concept Array4Concept =
         { obj.data(n, n, n) } -> std::convertible_to<decltype(cPtr)>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             { obj.operator()(n, n, n, n) } -> std::same_as<decltype(ref)>;
 
             { obj.data(n) } -> std::same_as<decltype(ptr)>;

@@ -52,7 +52,7 @@ concept HasQuality = requires (
     { obj.quality() } -> std::convertible_to<decltype(q)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.quality() } -> std::same_as<decltype(qR)>;
     };
 };

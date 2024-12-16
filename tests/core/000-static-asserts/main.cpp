@@ -20,7 +20,9 @@
  * for more details.                                                         *
  ****************************************************************************/
 
+#include "const_correctness.h"
 #include "loggers.h"
+#include "iterators.h"
 #include "mesh.h"
 #include "meshes.h"
 #include "ranges.h"
@@ -28,7 +30,9 @@
 
 int main()
 {
+    constCorrectnessStaticAsserts();
     loggersStaticAsserts();
+    iteratorsStaticAsserts();
     meshStaticAsserts();
     meshesStaticAsserts();
     rangesStaticAsserts();

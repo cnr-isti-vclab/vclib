@@ -80,8 +80,8 @@ public:
         double nx, ny, nz;
 
         for (const FaceType& f : m.faces()) {
-            if (vcl::faceArea(f) > std::numeric_limits<float>::min()) {
-                Point3<ScalarType> fn = vcl::faceNormal(f);
+            if (faceArea(f) > std::numeric_limits<float>::min()) {
+                Point3<ScalarType> fn = faceNormal(f);
                 fn.normalize();
 
                 nx = std::abs(fn[0]);
@@ -192,7 +192,7 @@ private:
 
     static ScalarType cube(const ScalarType& x) { return x * x * x; }
 
-    void faceIntegrals(const FaceType& f, const vcl::Point3<ScalarType>& n)
+    void faceIntegrals(const FaceType& f, const Point3<ScalarType>& n)
     {
         ScalarType w;
         double     k1, k2, k3, k4;

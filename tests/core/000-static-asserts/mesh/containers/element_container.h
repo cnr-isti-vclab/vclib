@@ -31,10 +31,8 @@ void elementContainerStaticAsserts()
 
     using VertexContainer =
         mesh::VertexContainer<trimesh::Vertex<float, false>>;
-    using FaceContainer =
-        mesh::FaceContainer<trimesh::Face<float, false>>;
-    using EdgeContainer =
-        mesh::EdgeContainer<edgemesh::Edge<float, false>>;
+    using FaceContainer = mesh::FaceContainer<trimesh::Face<float, false>>;
+    using EdgeContainer = mesh::EdgeContainer<edgemesh::Edge<float, false>>;
 
     static_assert(
         mesh::ElementContainerConcept<VertexContainer>,

@@ -89,7 +89,7 @@ namespace vcl {
  */
 template<typename Scalar, bool INDEXED>
 class EdgeMeshT :
-        public vcl::Mesh<
+        public Mesh<
             mesh::VertexContainer<edgemesh::Vertex<Scalar, INDEXED>>,
             mesh::EdgeContainer<edgemesh::Edge<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,

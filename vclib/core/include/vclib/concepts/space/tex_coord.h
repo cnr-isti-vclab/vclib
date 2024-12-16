@@ -40,6 +40,9 @@ concept TexCoordConcept = requires (
     typename RemoveRef<T>::ScalarType& sR) {
     typename RemoveRef<T>::ScalarType;
 
+    RemoveRef<T>();
+    RemoveRef<T>(s, s);
+
     { obj.u() } -> std::convertible_to<decltype(s)>;
     { obj.v() } -> std::convertible_to<decltype(s)>;
 
@@ -49,7 +52,7 @@ concept TexCoordConcept = requires (
     { obj[uint()] } -> std::convertible_to<decltype(s)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.u() } -> std::same_as<decltype(sR)>;
         { obj.v() } -> std::same_as<decltype(sR)>;
         { obj.setU(s) } -> std::same_as<void>;

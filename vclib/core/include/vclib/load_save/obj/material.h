@@ -49,7 +49,7 @@ struct ObjMaterial
 
     ObjMaterial() = default;
 
-    ObjMaterial(const vcl::Color& c) : hasColor(true)
+    ObjMaterial(const Color& c) : hasColor(true)
     {
         Kd.x() = c.redF();
         Kd.y() = c.greenF();
@@ -61,7 +61,7 @@ struct ObjMaterial
     {
     }
 
-    ObjMaterial(const vcl::Color& c, const std::string& txtName) :
+    ObjMaterial(const Color& c, const std::string& txtName) :
             map_Kd(txtName), hasColor(true), hasTexture(true)
     {
         Kd.x() = c.redF();
@@ -72,9 +72,9 @@ struct ObjMaterial
 
     bool isEmpty() const { return !hasColor && !hasTexture; }
 
-    vcl::Color color() const
+    Color color() const
     {
-        return vcl::Color(Kd.x() * 255, Kd.y() * 255, Kd.z() * 255, d * 255);
+        return Color(Kd.x() * 255, Kd.y() * 255, Kd.z() * 255, d * 255);
     }
 
     const std::string& texture() const { return map_Kd; }

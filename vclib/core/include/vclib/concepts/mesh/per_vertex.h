@@ -50,7 +50,7 @@ namespace vcl {
 template<typename MeshType>
 concept HasPerVertexAdjacentEdges =
     HasVertices<MeshType> &&
-    vcl::vert::HasAdjacentEdges<typename MeshType::VertexType>;
+    vert::HasAdjacentEdges<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex AdjacentFaces
@@ -66,7 +66,7 @@ concept HasPerVertexAdjacentEdges =
 template<typename MeshType>
 concept HasPerVertexAdjacentFaces =
     HasVertices<MeshType> &&
-    vcl::vert::HasAdjacentFaces<typename MeshType::VertexType>;
+    vert::HasAdjacentFaces<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex AdjacentVertices
@@ -82,7 +82,7 @@ concept HasPerVertexAdjacentFaces =
 template<typename MeshType>
 concept HasPerVertexAdjacentVertices =
     HasVertices<MeshType> &&
-    vcl::vert::HasAdjacentVertices<typename MeshType::VertexType>;
+    vert::HasAdjacentVertices<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex Color component.
@@ -96,7 +96,8 @@ concept HasPerVertexAdjacentVertices =
  */
 template<typename MeshType>
 concept HasPerVertexColor =
-    HasVertices<MeshType> && vcl::vert::HasColor<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vert::HasColor<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex Mark component.
@@ -110,7 +111,8 @@ concept HasPerVertexColor =
  */
 template<typename MeshType>
 concept HasPerVertexMark =
-    HasVertices<MeshType> && vcl::vert::HasMark<typename MeshType::VertexType>;
+    HasVertices<MeshType> &&
+    vert::HasMark<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex Normal component.
@@ -125,7 +127,7 @@ concept HasPerVertexMark =
 template<typename MeshType>
 concept HasPerVertexNormal =
     HasVertices<MeshType> &&
-    vcl::vert::HasNormal<typename MeshType::VertexType>;
+    vert::HasNormal<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex PrincipalCurvature
@@ -141,7 +143,7 @@ concept HasPerVertexNormal =
 template<typename MeshType>
 concept HasPerVertexPrincipalCurvature =
     HasVertices<MeshType> &&
-    vcl::vert::HasPrincipalCurvature<typename MeshType::VertexType>;
+    vert::HasPrincipalCurvature<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex Quality component.
@@ -156,7 +158,7 @@ concept HasPerVertexPrincipalCurvature =
 template<typename MeshType>
 concept HasPerVertexQuality =
     HasVertices<MeshType> &&
-    vcl::vert::HasQuality<typename MeshType::VertexType>;
+    vert::HasQuality<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex TexCoord component.
@@ -171,7 +173,7 @@ concept HasPerVertexQuality =
 template<typename MeshType>
 concept HasPerVertexTexCoord =
     HasVertices<MeshType> &&
-    vcl::vert::HasTexCoord<typename MeshType::VertexType>;
+    vert::HasTexCoord<typename RemoveRef<MeshType>::VertexType>;
 
 /**
  * @brief Concept that checks if a Mesh has the per Vertex CustomComponents.
@@ -185,7 +187,7 @@ concept HasPerVertexTexCoord =
 template<typename MeshType>
 concept HasPerVertexCustomComponents =
     HasVertices<MeshType> &&
-    vcl::vert::HasCustomComponents<typename MeshType::VertexType>;
+    vert::HasCustomComponents<typename RemoveRef<MeshType>::VertexType>;
 
 } // namespace vcl
 

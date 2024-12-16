@@ -54,7 +54,7 @@ concept SamplerConcept = requires (T&& obj) {
     obj.end();
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         obj.clear();
         obj.reserve(uint());
         obj.resize(uint());

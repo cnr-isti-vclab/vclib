@@ -26,12 +26,24 @@
 #include "mesh/components.h"
 #include "mesh/containers.h"
 #include "mesh/elements.h"
+#include "mesh/mesh_concept.h"
+#include "mesh/per_edge.h"
+#include "mesh/per_face.h"
+#include "mesh/per_mesh.h"
+#include "mesh/per_vertex.h"
 
 void meshStaticAsserts()
 {
     componentsStaticAsserts();
     elementsStaticAsserts();
     containersStaticAsserts();
+
+    meshConceptStaticAsserts();
+
+    perEdgeStaticAsserts();
+    perFaceStaticAsserts();
+    perMeshStaticAsserts();
+    perVertexStaticAsserts();
 }
 
 #endif // MESH_H

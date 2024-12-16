@@ -53,7 +53,7 @@ concept ImageConcept = requires (T&& obj, const void* dataPtr, uint n) {
     { obj.save(std::string(), uint()) } -> std::same_as<void>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.load(std::string()) } -> std::same_as<bool>;
 
         { obj.mirror() } -> std::same_as<void>;

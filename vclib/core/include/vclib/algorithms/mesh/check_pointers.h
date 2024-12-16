@@ -39,10 +39,10 @@ bool checkParentMeshPointers(const MeshType& mesh)
     for (const auto& el : mesh.template elements<ELEM_ID>()) {
         if (el.parentMesh() != &mesh) {
             throw InconsistentMeshException(
-                "The " + vcl::elementEnumString<ELEM_ID>() + " n. " +
-                vcl::toString(el.index()) + " has a wrong Parent Mesh.\n" +
-                "Expected: " + vcl::toString(&mesh) + "; " +
-                "Found: " + vcl::toString(el.parentMesh()));
+                "The " + elementEnumString<ELEM_ID>() + " n. " +
+                toString(el.index()) + " has a wrong Parent Mesh.\n" +
+                "Expected: " + toString(&mesh) + "; " +
+                "Found: " + toString(el.parentMesh()));
             return false;
         }
     }
@@ -87,14 +87,14 @@ bool checkElementPointersInElementContainerOnComponent(
                     if (ptr != nullptr) {
                         if (ptr < first || ptr >= last) {
                             throw InconsistentMeshException(
-                                "The " + vcl::elementEnumString<ELEM_ID>() +
-                                " n. " + vcl::toString(el.index()) +
+                                "The " + elementEnumString<ELEM_ID>() +
+                                " n. " + toString(el.index()) +
                                 " has a wrong pointer in " +
-                                vcl::componentEnumString<Comp::COMPONENT_ID>() +
+                                componentEnumString<Comp::COMPONENT_ID>() +
                                 " component.\n" + "The pointer " +
-                                vcl::toString(ptr) + " is out of range [" +
-                                vcl::toString(first) + ", " +
-                                vcl::toString(last) + ")");
+                                toString(ptr) + " is out of range [" +
+                                toString(first) + ", " +
+                                toString(last) + ")");
                             return false;
                         }
                     }
@@ -134,13 +134,13 @@ bool checkElementPointersInElementContainerOnComponent(
                     if (i != UINT_NULL) {
                         if (i >= last - first) {
                             throw InconsistentMeshException(
-                                "The " + vcl::elementEnumString<ELEM_ID>() +
-                                " n. " + vcl::toString(el.index()) +
+                                "The " + elementEnumString<ELEM_ID>() +
+                                " n. " + toString(el.index()) +
                                 " has a wrong index in " +
-                                vcl::componentEnumString<Comp::COMPONENT_ID>() +
+                                componentEnumString<Comp::COMPONENT_ID>() +
                                 " component.\n" + "The index " +
-                                vcl::toString(i) + " is out of range [ 0, " +
-                                vcl::toString(last - first) + ")");
+                                toString(i) + " is out of range [ 0, " +
+                                toString(last - first) + ")");
                             return false;
                         }
                     }

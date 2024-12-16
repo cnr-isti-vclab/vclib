@@ -72,6 +72,9 @@ concept SphereConcept = requires (
 
     requires Point3Concept<typename RemoveRef<T>::PointType>;
 
+    RemoveRef<T>();
+    RemoveRef<T>(p, s);
+
     { obj.center() } -> Point3Concept;
     { obj.radius() } -> std::convertible_to<decltype(s)>;
 

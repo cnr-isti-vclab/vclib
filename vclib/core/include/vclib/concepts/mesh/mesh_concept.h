@@ -75,16 +75,119 @@ concept HasPerElementOptionalComponent =
  */
 template<typename T>
 concept MeshConcept =
-    mesh::HasVertexContainer<T> && requires (T obj, const T& cObj) {
-        typename T::Containers;
-        typename T::Components;
+    // the mesh has a VertexContainer
+    mesh::HasVertexContainer<T> && requires (
+                                       T&&                                obj,
+                                       typename RemoveRef<T>::VertexType  v,
+                                       typename RemoveRef<T>::VertexType& vR,
+                                       typename RemoveRef<T>::VertexType* vP,
+                                       std::vector<uint>                  vec) {
+        // The mesh defines TypeWrappers for Containers and Components
+        typename RemoveRef<T>::Containers;
+        typename RemoveRef<T>::Components;
 
-        { obj.clear() } -> std::same_as<void>;
-        { cObj.isCompact() } -> std::same_as<bool>;
-        { obj.compact() } -> std::same_as<void>;
-        { obj.enableSameOptionalComponentsOf(T()) } -> std::same_as<void>;
-        { obj.importFrom(T()) } -> std::same_as<void>;
-        { obj.swap(obj) } -> std::same_as<void>;
+        // calling MeshType::ElementType<ElemId::VERTEX> does return the
+        // VertexType
+        requires std::same_as<
+            decltype(v),
+            typename RemoveRef<T>::template ElementType<ElemId::VERTEX>>;
+
+        // can call hasContainerOf static function with element types
+        requires RemoveRef<T>::template hasContainerOf<decltype(v)>();
+
+        // can call hasContainerOf static function with element ids
+        requires RemoveRef<T>::template hasContainerOf<ElemId::VERTEX>();
+
+        // can call the hasPerElementComponent static function
+        requires RemoveRef<T>::template hasPerElementComponent<
+            ElemId::VERTEX,
+            CompId::COORDINATE>();
+
+        // constructors
+        RemoveRef<T>();
+        RemoveRef<T>(obj);
+
+        // member functions
+        { obj.isCompact() } -> std::same_as<bool>;
+        { obj.index(v) } -> std::same_as<uint>;
+
+        // generic per ElemId member functions
+        {
+            obj.template element<ElemId::VERTEX>(uint())
+        } -> std::convertible_to<decltype(v)>;
+
+        { obj.template number<ElemId::VERTEX>() } -> std::same_as<uint>;
+        { obj.template containerSize<ElemId::VERTEX>() } -> std::same_as<uint>;
+        { obj.template deletedNumber<ElemId::VERTEX>() } -> std::same_as<uint>;
+        {
+            obj.template compactIndices<ElemId::VERTEX>()
+        } -> std::same_as<decltype(vec)>;
+
+        { obj.template begin<ElemId::VERTEX>() } -> InputIterator<decltype(v)>;
+        {
+            obj.template begin<ElemId::VERTEX>(bool())
+        } -> InputIterator<decltype(v)>;
+        { obj.template end<ElemId::VERTEX>() } -> InputIterator<decltype(v)>;
+        { obj.template elements<ElemId::VERTEX>() } -> InputRange<decltype(v)>;
+        {
+            obj.template elements<ElemId::VERTEX>(bool())
+        } -> InputRange<decltype(v)>;
+
+        // non const requirements
+        requires IsConst<T> || requires {
+            // member functions
+            { obj.clear() } -> std::same_as<void>;
+            { obj.compact() } -> std::same_as<void>;
+            { obj.enableAllOptionalComponents() } -> std::same_as<void>;
+            { obj.disableAllOptionalComponents() } -> std::same_as<void>;
+            { obj.enableSameOptionalComponentsOf(obj) } -> std::same_as<void>;
+            { obj.append(obj) } -> std::same_as<void>;
+            { obj.importFrom(obj) } -> std::same_as<void>;
+            { obj.swap(obj) } -> std::same_as<void>;
+            { obj.deleteElement(v) } -> std::same_as<void>;
+            { obj.deleteElement(vP) } -> std::same_as<void>;
+
+            // assignment operator
+            { obj = obj } -> std::same_as<T&>;
+
+            // generic per ElemId member functions
+            {
+                obj.template element<ElemId::VERTEX>(uint())
+            } -> std::same_as<decltype(vR)>;
+            { obj.template add<ElemId::VERTEX>() } -> std::same_as<uint>;
+            { obj.template add<ElemId::VERTEX>(uint()) } -> std::same_as<uint>;
+            {
+                obj.template clearElements<ElemId::VERTEX>()
+            } -> std::same_as<void>;
+            {
+                obj.template resize<ElemId::VERTEX>(uint())
+            } -> std::same_as<void>;
+            {
+                obj.template reserve<ElemId::VERTEX>(uint())
+            } -> std::same_as<void>;
+            {
+                obj.template deleteElement<ElemId::VERTEX>(uint())
+            } -> std::same_as<void>;
+            {
+                obj.template updateIndices<ElemId::VERTEX>(vec)
+            } -> std::same_as<void>;
+
+            {
+                obj.template begin<ElemId::VERTEX>()
+            } -> OutputIterator<decltype(v)>;
+            {
+                obj.template begin<ElemId::VERTEX>(bool())
+            } -> OutputIterator<decltype(v)>;
+            {
+                obj.template end<ElemId::VERTEX>()
+            } -> OutputIterator<decltype(v)>;
+            {
+                obj.template elements<ElemId::VERTEX>()
+            } -> OutputRange<decltype(v)>;
+            {
+                obj.template elements<ElemId::VERTEX>(bool())
+            } -> OutputRange<decltype(v)>;
+        };
     };
 
 /**

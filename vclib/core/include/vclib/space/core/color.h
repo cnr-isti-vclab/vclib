@@ -447,7 +447,7 @@ public:
      * @param[in] v
      * @param[in] alpha:
      */
-    void setHsv(uint h, uint8_t s, uint8_t v, uint8_t alpha = 255)
+    void setHsv(uint8_t h, uint8_t s, uint8_t v, uint8_t alpha = 255)
     {
         w() = alpha;
         if (s == 0) {

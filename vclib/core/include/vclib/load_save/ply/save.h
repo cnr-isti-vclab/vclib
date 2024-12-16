@@ -55,12 +55,12 @@ void savePly(
         settings.binary ? ply::BINARY_LITTLE_ENDIAN : ply::ASCII, meshInfo);
     header.setNumberVertices(m.vertexNumber());
 
-    if constexpr (vcl::HasFaces<MeshType>) {
+    if constexpr (HasFaces<MeshType>) {
         if (header.hasFaces()) {
             header.setNumberFaces(m.faceNumber());
         }
     }
-    if constexpr (vcl::HasEdges<MeshType>) {
+    if constexpr (HasEdges<MeshType>) {
         if (header.hasEdges()) {
             header.setNumberEdges(m.edgeNumber());
         }
@@ -75,13 +75,13 @@ void savePly(
 
     writePlyVertices(fp, header, m);
 
-    if constexpr (vcl::HasFaces<MeshType>) {
+    if constexpr (HasFaces<MeshType>) {
         if (header.hasFaces()) {
             writePlyFaces(fp, header, m);
         }
     }
 
-    if constexpr (vcl::HasEdges<MeshType>) {
+    if constexpr (HasEdges<MeshType>) {
         if (header.hasEdges()) {
             writePlyEdges(fp, header, m);
         }

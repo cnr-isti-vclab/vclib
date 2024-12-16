@@ -108,7 +108,7 @@ public:
         AbsGrid::insert(begin, end);
     }
 
-    template<vcl::Range Rng>
+    template<Range Rng>
     HashTableGrid(Rng&& r, const IntersectsCellFunction& intersects = nullptr) :
             HashTableGrid(
                 std::ranges::begin(r),

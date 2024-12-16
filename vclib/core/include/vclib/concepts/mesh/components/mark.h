@@ -48,7 +48,7 @@ concept HasMark = requires (T&& obj) {
     { obj.mark() } -> std::same_as<int>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.resetMark() } -> std::same_as<void>;
         { obj.incrementMark() } -> std::same_as<void>;
         { obj.decrementMark() } -> std::same_as<void>;

@@ -36,7 +36,7 @@ template<MeshConcept MeshType>
 class MeshSampler
 {
     using CoordView =
-        decltype(vcl::View<typename MeshType::VertexIterator>() | views::coords);
+        decltype(View<typename MeshType::VertexIterator>() | views::coords);
 
     MeshType mMesh;
 
@@ -47,9 +47,9 @@ public:
 
     MeshSampler()
     {
-        vcl::enableIfPerVertexNormalOptional(mMesh);
-        vcl::enableIfPerVertexQualityOptional(mMesh);
-        if constexpr (vcl::HasName<MeshType>) {
+        enableIfPerVertexNormalOptional(mMesh);
+        enableIfPerVertexQualityOptional(mMesh);
+        if constexpr (HasName<MeshType>) {
             mMesh.name() = "Sampling";
         }
     }
@@ -101,10 +101,10 @@ public:
             (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u));
 
         if constexpr (
-            vcl::HasPerVertexQuality<MeshType> &&
-            vcl::edge::HasQuality<EdgeType>) {
+            HasPerVertexQuality<MeshType> &&
+            edge::HasQuality<EdgeType>) {
             if (copyQuality) {
-                if (vcl::isPerVertexQualityAvailable(mMesh) &&
+                if (isPerVertexQualityAvailable(mMesh) &&
                     comp::isQualityAvailableOn(e)) {
                     mMesh.vertex(vi).quality() = e.quality();
                 }
@@ -121,10 +121,10 @@ public:
             (e.vertex(0).coord() * (1 - u)) + (e.vertex(1).coord() * u);
 
         if constexpr (
-            vcl::HasPerVertexQuality<MeshType> &&
-            vcl::edge::HasQuality<EdgeType>) {
+            HasPerVertexQuality<MeshType> &&
+            edge::HasQuality<EdgeType>) {
             if (copyQuality) {
-                if (vcl::isPerVertexQualityAvailable(mMesh) &&
+                if (isPerVertexQualityAvailable(mMesh) &&
                     comp::isQualityAvailableOn(e)) {
                     mMesh.vertex(i).quality() = e.quality();
                 }
@@ -140,7 +140,7 @@ public:
         bool            copyNormal  = false,
         bool            copyQuality = true)
     {
-        uint vi = mMesh.addVertex(vcl::faceBarycenter(f));
+        uint vi = mMesh.addVertex(faceBarycenter(f));
 
         copyComponents(vi, f, copyNormal, copyQuality);
         setBirthElement(vi, "birthFace", f.index());
@@ -153,7 +153,7 @@ public:
         bool            copyNormal  = false,
         bool            copyQuality = true)
     {
-        mMesh.vertex(i).coord() = vcl::faceBarycenter(f);
+        mMesh.vertex(i).coord() = faceBarycenter(f);
 
         copyComponents(i, f, copyNormal, copyQuality);
         setBirthElement(i, "birthFace", f.index());
@@ -258,10 +258,10 @@ private:
         bool            copyQuality)
     {
         if constexpr (
-            vcl::HasPerVertexNormal<MeshType> &&
-            vcl::face::HasNormal<FaceType>) {
+            HasPerVertexNormal<MeshType> &&
+            face::HasNormal<FaceType>) {
             if (copyNormal) {
-                if (vcl::isPerVertexNormalAvailable(mMesh) &&
+                if (isPerVertexNormalAvailable(mMesh) &&
                     comp::isNormalAvailableOn(f)) {
                     mMesh.vertex(vi).normal() = f.normal();
                 }
@@ -269,10 +269,10 @@ private:
         }
 
         if constexpr (
-            vcl::HasPerVertexQuality<MeshType> &&
-            vcl::face::HasQuality<FaceType>) {
+            HasPerVertexQuality<MeshType> &&
+            face::HasQuality<FaceType>) {
             if (copyQuality) {
-                if (vcl::isPerVertexQualityAvailable(mMesh) &&
+                if (isPerVertexQualityAvailable(mMesh) &&
                     comp::isQualityAvailableOn(f)) {
                     mMesh.vertex(vi).quality() = f.quality();
                 }
@@ -282,7 +282,7 @@ private:
 
     void setBirthElement(uint vi, const std::string& key, uint value)
     {
-        if constexpr (vcl::HasPerVertexCustomComponents<MeshType>) {
+        if constexpr (HasPerVertexCustomComponents<MeshType>) {
             if (!mMesh.hasPerVertexCustomComponent(key)) {
                 mMesh.template addPerVertexCustomComponent<uint>(key);
             }

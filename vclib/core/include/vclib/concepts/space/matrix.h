@@ -53,6 +53,8 @@ template<typename T>
 concept EigenMatrixConcept = requires (T&& obj) {
     typename RemoveRef<T>::Scalar;
 
+    RemoveRef<T>();
+
     obj.RowsAtCompileTime;
     obj.ColsAtCompileTime;
 
@@ -63,7 +65,7 @@ concept EigenMatrixConcept = requires (T&& obj) {
     obj.operator()(std::size_t(), std::size_t());
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         obj.resize(std::size_t(), std::size_t());
         obj.conservativeResize(std::size_t(), std::size_t());
     };

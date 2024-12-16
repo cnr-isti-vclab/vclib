@@ -26,7 +26,9 @@ set(TEST_NAME 000-static-asserts)
 project(vclib-test-${TEST_NAME})
 
 set(HEADERS
+    const_correctness.h
     loggers.h
+    iterators.h
     mesh.h
     meshes.h
     ranges.h
@@ -34,6 +36,11 @@ set(HEADERS
     mesh/components.h
     mesh/containers.h
     mesh/elements.h
+    mesh/mesh_concept.h
+    mesh/per_edge.h
+    mesh/per_face.h
+    mesh/per_mesh.h
+    mesh/per_vertex.h
     mesh/components/adjacent_edges.h
     mesh/components/adjacent_faces.h
     mesh/components/adjacent_vertices.h
@@ -92,3 +99,8 @@ vclib_add_test(
     ${TEST_NAME}
     SOURCES ${HEADERS} ${SOURCES}
     ${HEADER_ONLY_OPTION})
+
+target_sources(vclib-core-test-000-static-asserts
+  PRIVATE
+
+)

@@ -58,7 +58,7 @@ concept LoggerConcept = requires (
     { obj.log(str, lvl) } -> std::same_as<void>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.enableIndentation() } -> std::same_as<void>;
         { obj.disableIndentation() } -> std::same_as<void>;
         { obj.enablePrintPercentage() } -> std::same_as<void>;

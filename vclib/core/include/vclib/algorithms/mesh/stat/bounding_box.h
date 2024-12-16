@@ -45,7 +45,7 @@ template<MeshConcept MeshType>
 auto boundingBox(const MeshType& m)
 {
     using VertexType = MeshType::VertexType;
-    vcl::Box<typename VertexType::CoordType> b;
+    Box<typename VertexType::CoordType> b;
 
     for (const VertexType& v : m.vertices()) {
         b.add(v.coord());

@@ -63,7 +63,7 @@ inline void saveImageData(
     uint                 quality = 90)
 {
     std::string ext = FileInfo::extension(filename);
-    ext             = vcl::toLower(ext);
+    ext             = toLower(ext);
     int ret         = 0;
     if (ext == ".png") {
         ret = stbi_write_png(filename.c_str(), w, h, 4, data, 0);
@@ -78,11 +78,11 @@ inline void saveImageData(
         ret = stbi_write_jpg(filename.c_str(), w, h, 4, data, quality);
     }
     else {
-        throw vcl::UnknownFileFormatException(ext);
+        throw UnknownFileFormatException(ext);
     }
 
     if (ret == 0) {
-        throw vcl::CannotOpenFileException(filename);
+        throw CannotOpenFileException(filename);
     }
 }
 
