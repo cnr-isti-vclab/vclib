@@ -58,7 +58,7 @@ concept HasTexturePaths = requires (T&& obj) {
     { obj.texturePaths() } -> InputRange<std::string>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.texturePath(uint()) } -> std::same_as<std::string&>;
         { obj.meshBasePath() } -> std::same_as<std::string&>;
 

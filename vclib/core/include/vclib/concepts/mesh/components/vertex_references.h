@@ -81,7 +81,7 @@ concept HasVertexReferences = requires (
     { obj.vertexIndices() } -> InputRange<uint>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.vertex(uint()) } -> std::same_as<decltype(vP)>;
         { obj.vertexMod(int()) } -> std::same_as<decltype(vP)>;
 

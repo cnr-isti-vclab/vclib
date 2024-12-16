@@ -54,7 +54,7 @@ concept HasTextureImages =
         { obj.textures() } -> InputRange<decltype(t)>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             { obj.clearTextures() } -> std::same_as<void>;
             { obj.pushTexture(std::string()) } -> std::same_as<void>;
             { obj.pushTexture(t) } -> std::same_as<void>;

@@ -66,7 +66,7 @@ namespace vcl {
  */
 template<typename Scalar>
 class PointCloudT :
-        public vcl::Mesh<
+        public Mesh<
             mesh::VertexContainer<pointcloud::Vertex<Scalar>>,
             mesh::BoundingBox3<Scalar>,
             mesh::Mark,

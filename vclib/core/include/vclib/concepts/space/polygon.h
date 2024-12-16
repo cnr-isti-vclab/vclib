@@ -65,7 +65,7 @@ concept PolygonConcept = requires (
     requires InputRange<T, decltype(p)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.resize(uint()) } -> std::same_as<void>;
         { obj.reserve(uint()) } -> std::same_as<void>;
         { obj.clear() } -> std::same_as<void>;

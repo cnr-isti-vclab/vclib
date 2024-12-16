@@ -194,7 +194,7 @@ void multiplyPerElementNormalsByMatrix(
     bool                     removeScalingFromMatrix = true,
     LogType&                 log                     = nullLogger)
 {
-    vcl::requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
+    requirePerElementComponent<ELEM_ID, CompId::NORMAL>(mesh);
 
     Matrix33<MScalar> m33 = mat.block(0, 0, 3, 3);
     multiplyPerElementNormalsByMatrix<ELEM_ID>(
@@ -222,15 +222,19 @@ void clearPerVertexNormals(MeshConcept auto& mesh, LogType& log = nullLogger)
  *   - Vertices:
  *     - Normal
  *
+ * @note Only VertexReferences (VertexPointers or VertexIndices) component is
+ * checked for each element of the mesh. AdjacentVertices component or other
+ * componens that store vertex references are not considered.
+ *
  * @param[in,out] mesh: The mesh on which clear the referenced vertex normals.
  * @param[in,out] log: The logger used to log the performed operations.
  */
 template<MeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void clearPerReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
 {
-    vcl::requirePerVertexNormal(mesh);
+    requirePerVertexNormal(mesh);
 
-    // function that is called for each container Cont
+    // function that is called for each container Cont of the mesh
     auto f = [&]<mesh::ElementContainerConcept Cont>() {
         using Elem = typename Cont::ElementType; // the Element type of Cont
         if constexpr (comp::HasVertexReferences<Elem>) { // if Elem has vertices
@@ -245,7 +249,7 @@ void clearPerReferencedVertexNormals(MeshType& mesh, LogType& log = nullLogger)
     log.log(0, "Clearing per-Vertex normals...");
 
     // apply the function f to all the containers of the mesh
-    vcl::ForEachType<typename MeshType::Containers>::apply(f);
+    ForEachType<typename MeshType::Containers>::apply(f);
 
     log.log(100, "Per-Vertex normals cleared.");
 }
@@ -283,6 +287,10 @@ void normalizePerVertexNormals(
  *     - Normal
  *   - Face
  *
+ * @note Only VertexReferences (VertexPointers or VertexIndices) component is
+ * checked for each element of the mesh. AdjacentVertices component or other
+ * componens that store vertex references are not considered.
+ *
  * @param[in,out] mesh: the mesh on which normalize the vertex normals.
  * @param[in,out] log: The logger used to log the performed operations.
  */
@@ -291,7 +299,7 @@ void normalizePerReferencedVertexNormals(
     MeshType& mesh,
     LogType&  log = nullLogger)
 {
-    vcl::requirePerVertexNormal(mesh);
+    requirePerVertexNormal(mesh);
 
     // function that is called for each container Cont
     auto f = [&]<mesh::ElementContainerConcept Cont>() {
@@ -308,7 +316,7 @@ void normalizePerReferencedVertexNormals(
     log.log(0, "Normalizing per-Vertex normals...");
 
     // apply the function f to all the containers of the mesh
-    vcl::ForEachType<typename MeshType::Containers>::apply(f);
+    ForEachType<typename MeshType::Containers>::apply(f);
 
     log.log(100, "Per-Vertex normals normalized.");
 }
@@ -384,9 +392,9 @@ void updatePerFaceNormals(
     bool                  normalize = true,
     LogType&              log       = nullLogger)
 {
-    vcl::requirePerFaceNormal(mesh);
+    requirePerFaceNormal(mesh);
 
-    using FaceType   = vcl::RemoveRef<decltype(mesh)>::FaceType;
+    using FaceType   = RemoveRef<decltype(mesh)>::FaceType;
     using ScalarType = FaceType::NormalType::ScalarType;
 
     log.log(0, "Updating per-Face normals...");
@@ -427,7 +435,7 @@ void updatePerVertexNormals(
     bool                  normalize = true,
     LogType&              log       = nullLogger)
 {
-    using VertexType = vcl::RemoveRef<decltype(mesh)>::VertexType;
+    using VertexType = RemoveRef<decltype(mesh)>::VertexType;
     using NScalar    = VertexType::NormalType::ScalarType;
 
     log.log(0, "Updating per-Vertex normals...");
@@ -476,9 +484,9 @@ void updatePerVertexNormalsFromFaceNormals(
     bool                  normalize = true,
     LogType&              log       = nullLogger)
 {
-    vcl::requirePerFaceNormal(mesh);
+    requirePerFaceNormal(mesh);
 
-    using VertexType = vcl::RemoveRef<decltype(mesh)>::VertexType;
+    using VertexType = RemoveRef<decltype(mesh)>::VertexType;
     using ScalarType = VertexType::NormalType::ScalarType;
 
     log.log(0, "Updating per-Vertex normals...");
@@ -582,7 +590,7 @@ void updatePerVertexNormalsAngleWeighted(
     bool                  normalize = true,
     LogType&              log       = nullLogger)
 {
-    using VertexType  = vcl::RemoveRef<decltype(mesh)>::VertexType;
+    using VertexType  = RemoveRef<decltype(mesh)>::VertexType;
     using NormalType  = VertexType::NormalType;
     using NScalarType = NormalType::ScalarType;
 
@@ -656,7 +664,7 @@ void updatePerVertexNormalsNelsonMaxWeighted(
     bool                  normalize = true,
     LogType&              log       = nullLogger)
 {
-    using VertexType  = vcl::RemoveRef<decltype(mesh)>::VertexType;
+    using VertexType  = RemoveRef<decltype(mesh)>::VertexType;
     using NScalarType = VertexType::NormalType::ScalarType;
 
     log.log(0, "Updating per-Vertex normals...");

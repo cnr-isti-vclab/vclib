@@ -71,7 +71,7 @@ concept BitSetConcept = requires (T&& obj) {
     { obj <=> obj } -> std::convertible_to<std::partial_ordering>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.at(uint()) } -> BitProxyConcept;
         { obj[uint()] } -> BitProxyConcept;
 

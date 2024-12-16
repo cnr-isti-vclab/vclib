@@ -67,7 +67,7 @@ concept HasFaceContainer = requires (
     { obj.faces(bool()) } -> InputRange<decltype(f)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.face(uint()) } -> std::same_as<decltype(fR)>;
 
         { obj.addFace() } -> std::same_as<uint>;
@@ -130,7 +130,7 @@ concept HasFaceContainer = requires (
  * @ingroup containers_concepts
  */
 template<typename... Args>
-concept HasFaces = (vcl::mesh::HasFaceContainer<Args> || ...);
+concept HasFaces = (mesh::HasFaceContainer<Args> || ...);
 
 } // namespace vcl
 

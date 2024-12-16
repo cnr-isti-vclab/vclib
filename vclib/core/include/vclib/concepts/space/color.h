@@ -83,7 +83,7 @@ concept ColorConcept = requires (
     { obj < obj } -> std::same_as<bool>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.red() } -> std::same_as<uint8_t&>;
         { obj.green() } -> std::same_as<uint8_t&>;
         { obj.blue() } -> std::same_as<uint8_t&>;

@@ -69,7 +69,7 @@ concept HasWedgeTexCoords = requires (
     { obj.wedgeTexCoords() } -> InputRange<decltype(t)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.setWedgeTexCoord(uint(), t) } -> std::same_as<void>;
         { obj.setWedgeTexCoords(vec) } -> std::same_as<void>;
 

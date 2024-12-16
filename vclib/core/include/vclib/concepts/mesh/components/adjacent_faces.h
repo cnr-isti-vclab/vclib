@@ -85,7 +85,7 @@ concept HasAdjacentFaces = requires (
     { obj.adjFaceIndices() } -> InputRange<uint>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.adjFace(uint()) } -> std::same_as<decltype(fP)>;
         { obj.adjFaceMod(int()) } -> std::same_as<decltype(fP)>;
 

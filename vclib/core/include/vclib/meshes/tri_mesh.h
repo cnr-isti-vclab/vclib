@@ -85,7 +85,7 @@ namespace vcl {
  */
 template<typename Scalar, bool INDEXED>
 class TriMeshT :
-        public vcl::Mesh<
+        public Mesh<
             mesh::VertexContainer<trimesh::Vertex<Scalar, INDEXED>>,
             mesh::FaceContainer<trimesh::Face<Scalar, INDEXED>>,
             mesh::BoundingBox3<Scalar>,

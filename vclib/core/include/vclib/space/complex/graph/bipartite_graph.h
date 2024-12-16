@@ -77,8 +77,8 @@ public:
     using RightNodeIterator =
         NodeIterator<typename std::vector<UndirectedNode<T2>>::const_iterator>;
 
-    using LeftNodeView  = vcl::View<LeftNodeIterator>;
-    using RightNodeView = vcl::View<RightNodeIterator>;
+    using LeftNodeView  = View<LeftNodeIterator>;
+    using RightNodeView = View<RightNodeIterator>;
 
     using AdjacentLeftNodeIterator = detail::AdjacentLeftNodeIterator<
         BipartiteGraph<T1, T2>,
@@ -87,8 +87,8 @@ public:
         BipartiteGraph<T1, T2>,
         std::unordered_set<unsigned int>::const_iterator>;
 
-    using AdjacentLeftNodeView  = vcl::View<AdjacentLeftNodeIterator>;
-    using AdjacentRightNodeView = vcl::View<AdjacentRightNodeIterator>;
+    using AdjacentLeftNodeView  = View<AdjacentLeftNodeIterator>;
+    using AdjacentRightNodeView = View<AdjacentRightNodeIterator>;
 
     /**
      * @brief Default constructor. It creates an empty Bipartite Graph.

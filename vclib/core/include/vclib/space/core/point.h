@@ -512,7 +512,7 @@ public:
     {
         std::size_t h = 0;
         for (size_t i = 0; i < DIM; ++i)
-            vcl::hashCombine(h, at(i));
+            hashCombine(h, at(i));
         return h;
     }
 

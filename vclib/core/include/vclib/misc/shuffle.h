@@ -39,7 +39,7 @@ namespace vcl {
  *
  * @ingroup miscellaneous
  */
-template<vcl::Range R>
+template<Range R>
 void shuffle(R&& range, bool deterministic = false)
 {
     std::random_device rd;

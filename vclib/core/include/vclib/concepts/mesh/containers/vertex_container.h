@@ -66,7 +66,7 @@ concept HasVertexContainer = requires (
     { obj.vertices(bool()) } -> InputRange<decltype(v)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.vertex(uint()) } -> std::same_as<decltype(vR)>;
 
         { obj.addVertex() } -> std::same_as<uint>;
@@ -127,7 +127,7 @@ concept HasVertexContainer = requires (
  * @ingroup containers_concepts
  */
 template<typename... Args>
-concept HasVertices = (vcl::mesh::HasVertexContainer<Args> || ...);
+concept HasVertices = (mesh::HasVertexContainer<Args> || ...);
 
 } // namespace vcl
 

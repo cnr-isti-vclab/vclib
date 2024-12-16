@@ -630,7 +630,7 @@ bool intersect(const TriangleType& triangle, const BoxType& box)
      *  compute plane equation of triangle: normal*x+d=0
      */
     normal = e0.cross(e1);
-    vcl::Plane<ScalarType> plane(
+    Plane<ScalarType> plane(
         triangle.point(0), triangle.point(1), triangle.point(2));
     if (!intersect(plane, box))
         return false;

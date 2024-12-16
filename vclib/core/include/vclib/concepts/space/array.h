@@ -78,7 +78,7 @@ concept ArrayConcept = requires (
     requires InputRange<T, decltype(v)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.data() } -> std::same_as<decltype(ptr)>;
 
         { obj.stdVector() } -> std::same_as<decltype(vecV)>;
@@ -124,7 +124,7 @@ concept Array2Concept =
         { obj.data(n) } -> std::convertible_to<decltype(cPtr)>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             { obj.operator()(n, n) } -> std::same_as<decltype(ref)>;
 
             { obj.data(n) } -> std::same_as<decltype(ptr)>;
@@ -166,7 +166,7 @@ concept Array3Concept =
         { obj.data(n, n) } -> std::convertible_to<decltype(cPtr)>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             { obj.operator()(n, n, n) } -> std::same_as<decltype(ref)>;
             { obj.data(n) } -> std::same_as<decltype(ptr)>;
             { obj.data(n, n) } -> std::same_as<decltype(ptr)>;
@@ -208,7 +208,7 @@ concept Array4Concept =
         { obj.data(n, n, n) } -> std::convertible_to<decltype(cPtr)>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             { obj.operator()(n, n, n, n) } -> std::same_as<decltype(ref)>;
 
             { obj.data(n) } -> std::same_as<decltype(ptr)>;

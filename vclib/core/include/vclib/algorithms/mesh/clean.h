@@ -190,15 +190,15 @@ public:
     SentinelType sentinel() const { return s; }
 
 private:
-    vcl::Vector<IndexType, N> v;
-    SentinelType              s;
+    Vector<IndexType, N> v;
+    SentinelType         s;
 };
 
 template<FaceMeshConcept MeshType>
 std::vector<bool> nonManifoldVerticesVectorBool(const MeshType& m)
-    requires vcl::HasPerFaceAdjacentFaces<MeshType>
+    requires HasPerFaceAdjacentFaces<MeshType>
 {
-    vcl::requirePerFaceAdjacentFaces(m);
+    requirePerFaceAdjacentFaces(m);
 
     using FaceType = MeshType::FaceType;
 
@@ -661,9 +661,9 @@ bool isWaterTight(const MeshType& m)
  */
 template<FaceMeshConcept MeshType>
 uint numberHoles(const MeshType& m)
-    requires vcl::HasPerFaceAdjacentFaces<MeshType>
+    requires HasPerFaceAdjacentFaces<MeshType>
 {
-    vcl::requirePerFaceAdjacentFaces(m);
+    requirePerFaceAdjacentFaces(m);
 
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
@@ -718,9 +718,9 @@ uint numberHoles(const MeshType& m)
  */
 template<FaceMeshConcept MeshType>
 std::vector<std::set<uint>> connectedComponents(const MeshType& m)
-    requires vcl::HasPerFaceAdjacentFaces<MeshType>
+    requires HasPerFaceAdjacentFaces<MeshType>
 {
-    vcl::requirePerFaceAdjacentFaces(m);
+    requirePerFaceAdjacentFaces(m);
 
     using FaceType = MeshType::FaceType;
 

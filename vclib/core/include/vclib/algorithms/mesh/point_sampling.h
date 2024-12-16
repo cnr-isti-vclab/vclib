@@ -238,7 +238,7 @@ SamplerType vertexUniformPointSampling(
     bool               onlySelected  = false,
     bool               deterministic = false)
 {
-    uint vn = onlySelected ? vcl::vertexSelectionNumber(m) : m.vertexNumber();
+    uint vn = onlySelected ? vertexSelectionNumber(m) : m.vertexNumber();
 
     if (nSamples >= vn) {
         return allVerticesPointSampling<SamplerType>(
@@ -337,7 +337,7 @@ SamplerType faceUniformPointSampling(
     bool               onlySelected  = false,
     bool               deterministic = false)
 {
-    uint fn = onlySelected ? vcl::faceSelectionNumber(m) : m.faceNumber();
+    uint fn = onlySelected ? faceSelectionNumber(m) : m.faceNumber();
 
     if (nSamples >= fn) {
         return allFacesPointSampling<SamplerType>(m, birthFaces, onlySelected);
@@ -636,7 +636,7 @@ SamplerType vertexQualityWeightedPointSampling(
     uint            nSamples,
     bool            deterministic = false)
 {
-    vcl::requirePerVertexQuality(m);
+    requirePerVertexQuality(m);
 
     using VertexType  = MeshType::VertexType;
     using QualityType = VertexType::QualityType;
@@ -669,7 +669,7 @@ SamplerType faceQualityWeightedPointSampling(
     uint            nSamples,
     bool            deterministic = false)
 {
-    vcl::requirePerFaceQuality(m);
+    requirePerFaceQuality(m);
 
     using FaceType    = MeshType::FaceType;
     using QualityType = FaceType::QualityType;
@@ -712,7 +712,7 @@ SamplerType vertexAreaWeightedPointSampling(
     // for each vertex, store in weights the adjacent faces area and their
     // number
     for (const FaceType& f : m.faces()) {
-        ScalarType area = vcl::faceArea(f);
+        ScalarType area = faceArea(f);
         for (const VertexType* v : f.vertices()) {
             weights[m.index(v)] += area;
             cnt[m.index(v)]++;
@@ -752,7 +752,7 @@ SamplerType faceAreaWeightedPointSampling(
     std::vector<double> weights(m.faceContainerSize());
 
     for (const FaceType& f : m.faces()) {
-        weights[m.index(f)] = vcl::faceArea(f);
+        weights[m.index(f)] = faceArea(f);
     }
 
     return faceWeightedPointSampling<SamplerType>(
@@ -790,8 +790,8 @@ SamplerType montecarloPointSampling(
     using FaceType   = MeshType::FaceType;
     using Interval   = std::pair<ScalarType, const FaceType*>;
 
-    vcl::FirstElementPairComparator<Interval> comparator;
-    SamplerType                               sampler;
+    FirstElementPairComparator<Interval> comparator;
+    SamplerType                          sampler;
 
     // Reserve space in the sampler and birthFaces vectors
     sampler.reserve(nSamples);
@@ -809,7 +809,7 @@ SamplerType montecarloPointSampling(
     uint                  i    = 0;
     ScalarType            area = 0;
     for (const FaceType& f : m.faces()) {
-        area += vcl::faceArea(f);
+        area += faceArea(f);
         intervals[i] = std::make_pair(area, &f);
         i++;
     }
@@ -829,7 +829,7 @@ SamplerType montecarloPointSampling(
 
         sampler.add(
             *it->second,
-            vcl::randomPolygonBarycentricCoordinate<ScalarType>(
+            randomPolygonBarycentricCoordinate<ScalarType>(
                 it->second->vertexNumber(), gen));
         birthFaces.push_back(it->second->index());
     }
@@ -880,7 +880,7 @@ SamplerType stratifiedMontecarloPointSampling(
     if (deterministic)
         gen = std::mt19937(0);
 
-    double area              = vcl::surfaceArea(m);
+    double area              = surfaceArea(m);
     double samplePerAreaUnit = nSamples / area;
     // Montecarlo sampling.
     double floatSampleNum = 0.0;
@@ -888,13 +888,13 @@ SamplerType stratifiedMontecarloPointSampling(
     for (const FaceType& f : m.faces()) {
         // compute # samples in the current face (taking into account of the
         // remainders)
-        floatSampleNum += vcl::faceArea(f) * samplePerAreaUnit;
+        floatSampleNum += faceArea(f) * samplePerAreaUnit;
         int faceSampleNum = (int) floatSampleNum;
         // for every sample p_i in T...
         for (int i = 0; i < faceSampleNum; i++)
             ps.add(
                 f,
-                vcl::randomPolygonBarycentricCoordinate<ScalarType>(
+                randomPolygonBarycentricCoordinate<ScalarType>(
                     f.vertexNumber(), gen));
         floatSampleNum -= (double) faceSampleNum;
     }
@@ -940,19 +940,18 @@ SamplerType montecarloPoissonPointSampling(
     if (deterministic)
         gen = std::mt19937(0);
 
-    ScalarType area              = vcl::surfaceArea(m);
+    ScalarType area              = surfaceArea(m);
     ScalarType samplePerAreaUnit = nSamples / area;
 
     for (const FaceType& f : m.faces()) {
-        ScalarType areaT = vcl::faceArea(f);
-        int        faceSampleNum =
-            vcl::poissonRandomNumber(areaT * samplePerAreaUnit, gen);
+        ScalarType areaT = faceArea(f);
+        int faceSampleNum = poissonRandomNumber(areaT * samplePerAreaUnit, gen);
 
         // for every sample p_i in T...
         for (int i = 0; i < faceSampleNum; i++)
             ps.add(
                 f,
-                vcl::randomPolygonBarycentricCoordinate<ScalarType>(
+                randomPolygonBarycentricCoordinate<ScalarType>(
                     f.vertexNumber(), gen));
     }
 
@@ -981,7 +980,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
             averageQ += r[m.index(f.vertex(i))];
 
         averageQ /= f.vertexNumber();
-        return averageQ * averageQ * vcl::faceArea(f);
+        return averageQ * averageQ * faceArea(f);
     };
 
     SamplerType ps;
@@ -992,7 +991,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
         gen = std::mt19937(0);
 
     std::vector<ScalarType> radius =
-        vcl::vertexRadiusFromWeights(m, weights, 1.0, variance, true);
+        vertexRadiusFromWeights(m, weights, 1.0, variance, true);
 
     ScalarType wArea = 0;
     for (const FaceType& f : m.faces())
@@ -1011,7 +1010,7 @@ SamplerType vertexWeightedMontecarloPointSampling(
         for (uint i = 0; i < faceSampleNum; i++)
             ps.add(
                 f,
-                vcl::randomPolygonBarycentricCoordinate<ScalarType>(
+                randomPolygonBarycentricCoordinate<ScalarType>(
                     f.vertexNumber(), gen));
 
         floatSampleNum -= (double) faceSampleNum;
@@ -1027,7 +1026,7 @@ SamplerType vertexQualityWeightedMontecarloPointSampling(
     double          variance,
     bool            deterministic = false)
 {
-    vcl::requirePerVertexQuality(m);
+    requirePerVertexQuality(m);
 
     using VertexType  = MeshType::VertexType;
     using QualityType = VertexType::QualityType;

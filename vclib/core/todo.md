@@ -2,9 +2,9 @@
 
 - General:
   - [ ] Enumerations should be declared in a struct to avoid name collisions
-  - [ ] Fix scripts to add a mesh element
+  - [x] Fix scripts to add a mesh element
     - [ ] Add documentation on how to add a new mesh element using scripts
-  - [ ] Remove usage of "vcl::" inside vcl namespace where it can be avoided
+  - [x] Remove usage of "vcl::" inside vcl namespace where it can be avoided
 - Concepts:
   - [x] add constructor constraints on all concepts
   - [x] concepts should work for all type of cvref qualified types
@@ -50,6 +50,7 @@
   - [ ] move bipartite graph iterators from space to iterators (see iterators todo list)
 - Misc:
   - [ ] implement non-static member functions for FileInfo class
+  - [ ] implement Range helper types (e.g. RangeType<R> that returns the type iterated in the range)
 - External:
   - [ ] remove zip-iterator library when c++23 zip-view will be supported
   - [ ] look for a json header only library that is compatible with c++20 modules

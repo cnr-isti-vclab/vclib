@@ -50,9 +50,9 @@ typedef enum {
 template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 {
-    vcl::requirePerVertexPrincipalCurvature(m);
-    vcl::requirePerVertexAdjacentFaces(m);
-    vcl::requirePerFaceAdjacentFaces(m);
+    requirePerVertexPrincipalCurvature(m);
+    requirePerVertexAdjacentFaces(m);
+    requirePerFaceAdjacentFaces(m);
 
     using VertexType = MeshType::VertexType;
     using CoordType  = VertexType::CoordType;
@@ -70,8 +70,8 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
 
     log.log(0, "Updating per vertex normals...");
 
-    vcl::updatePerVertexNormalsAngleWeighted(m);
-    vcl::normalizePerVertexNormals(m);
+    updatePerVertexNormalsAngleWeighted(m);
+    normalizePerVertexNormals(m);
 
     log.log(5, "Computing per vertex curvature...");
     // log every 5%, starting from 5% to 100%
@@ -81,7 +81,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
         std::vector<ScalarType> weights;
         std::vector<AdjVertex>  vertices;
 
-        vcl::MeshPos<FaceType> pos(v.adjFace(0), &v);
+        MeshPos<FaceType> pos(v.adjFace(0), &v);
         const VertexType*      firstVertex = pos.adjVertex();
         const VertexType*      tmpVertex;
         float                  totalDoubleAreaSize = 0;
@@ -94,7 +94,7 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
             AdjVertex adjV;
             adjV.isBorder   = pos.isEdgeOnBorder();
             adjV.vert       = tmpVertex;
-            adjV.doubleArea = vcl::faceArea(*pos.face()) * 2;
+            adjV.doubleArea = faceArea(*pos.face()) * 2;
             totalDoubleAreaSize += adjV.doubleArea;
             vertices.push_back(adjV);
         } while (tmpVertex != firstVertex);
@@ -261,7 +261,7 @@ void updatePrincipalCurvaturePCA(
     using NormalType = VertexType::NormalType;
     using FaceType   = MeshType::FaceType;
 
-    using VGrid         = vcl::StaticGrid3<VertexType*, ScalarType>;
+    using VGrid         = StaticGrid3<VertexType*, ScalarType>;
     using VGridIterator = VGrid::ConstIterator;
 
     VGrid      pGrid;
@@ -269,31 +269,31 @@ void updatePrincipalCurvaturePCA(
 
     log.log(0, "Updating per vertex normals...");
 
-    vcl::updatePerVertexNormalsAngleWeighted(m);
-    vcl::normalizePerVertexNormals(m);
+    updatePerVertexNormalsAngleWeighted(m);
+    normalizePerVertexNormals(m);
 
     log.log(0, "Computing per vertex curvature...");
     log.startProgress("", m.vertexNumber());
 
     if (montecarloSampling) {
-        area  = vcl::surfaceArea(m);
+        area  = surfaceArea(m);
         pGrid = VGrid(m.vertices() | views::addrOf);
         pGrid.build();
     }
 
-    vcl::parallelFor(m.vertices(), [&](VertexType& v) {
+    parallelFor(m.vertices(), [&](VertexType& v) {
         // for (VertexType& v : m.vertices()) {
-        vcl::Matrix33<ScalarType> A, eigenvectors;
+        Matrix33<ScalarType> A, eigenvectors;
         CoordType                 bp, eigenvalues;
         if (montecarloSampling) {
-            vcl::Sphere                s(v.coord(), radius);
+            Sphere                     s(v.coord(), radius);
             std::vector<VGridIterator> vec = pGrid.valuesInSphere(s);
             std::vector<CoordType>     points;
             points.reserve(vec.size());
             for (const auto& it : vec) {
                 points.push_back(it->second->coord());
             }
-            A = vcl::covarianceMatrixOfPointCloud(points);
+            A = covarianceMatrixOfPointCloud(points);
             A *= area * area / 1000;
         }
         else {
@@ -325,11 +325,11 @@ void updatePrincipalCurvaturePCA(
         v.principalCurvature().minDir() =
             (eigenvectors.col((best + 2) % 3).normalized());
 
-        vcl::Matrix33<ScalarType> rot;
+        Matrix33<ScalarType> rot;
         ScalarType                angle;
         angle = acos(v.principalCurvature().maxDir().dot(v.normal()));
 
-        rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(
+        rot = rotationMatrix<Matrix33<ScalarType>>(
             CoordType(v.principalCurvature().maxDir().cross(v.normal())),
             -(M_PI * 0.5 - angle));
 
@@ -337,7 +337,7 @@ void updatePrincipalCurvaturePCA(
 
         angle = acos(v.principalCurvature().minDir().dot(v.normal()));
 
-        rot = vcl::rotationMatrix<vcl::Matrix33<ScalarType>>(
+        rot = rotationMatrix<Matrix33<ScalarType>>(
             CoordType(v.principalCurvature().minDir().cross(v.normal())),
             -(M_PI * 0.5 - angle));
 
@@ -377,7 +377,7 @@ void updatePrincipalCurvaturePCA(
 template<FaceMeshConcept MeshType, LoggerConcept LogType = NullLogger>
 void updatePrincipalCurvature(MeshType& m, LogType& log = nullLogger)
 {
-    vcl::requirePerVertexPrincipalCurvature(m);
+    requirePerVertexPrincipalCurvature(m);
 
     updatePrincipalCurvatureTaubin95(m, log);
 }
@@ -388,7 +388,7 @@ void updatePrincipalCurvature(
     VCLibPrincipalCurvatureAlgorithm alg = VCL_PRINCIPAL_CURVATURE_TAUBIN95,
     LogType&                         log = nullLogger)
 {
-    vcl::requirePerVertexPrincipalCurvature(m);
+    requirePerVertexPrincipalCurvature(m);
 
     double radius;
     switch (alg) {
@@ -396,7 +396,7 @@ void updatePrincipalCurvature(
         updatePrincipalCurvatureTaubin95(m, log);
         break;
     case VCL_PRINCIPAL_CURVATURE_PCA:
-        radius = vcl::boundingBox(m).diagonal() * 0.1;
+        radius = boundingBox(m).diagonal() * 0.1;
         updatePrincipalCurvaturePCA(m, radius, true, log);
     }
 }

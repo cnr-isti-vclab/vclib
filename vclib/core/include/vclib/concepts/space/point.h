@@ -79,7 +79,7 @@ concept PointConcept = requires (
     { obj / s } -> std::convertible_to<RemoveRef<T>>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.setConstant(s) } -> std::same_as<decltype(baseObjR)>;
         { obj.setZero() } -> std::same_as<decltype(baseObjR)>;
         { obj.setOnes() } -> std::same_as<decltype(baseObjR)>;

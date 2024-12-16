@@ -86,7 +86,7 @@ concept BoxConcept = requires (
     { obj != obj } -> std::same_as<bool>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.min() } -> std::same_as<decltype(pR)>;
         { obj.max() } -> std::same_as<decltype(pR)>;
 

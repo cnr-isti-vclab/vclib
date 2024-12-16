@@ -168,7 +168,7 @@ public:
     template<typename ItType>
     Vector(ItType first, ItType last)
     {
-        set(vcl::View(first, last));
+        set(View(first, last));
     }
 
     /**
@@ -207,7 +207,7 @@ public:
      */
     explicit Vector(std::initializer_list<T> list)
     {
-        set(vcl::View(std::begin(list), std::end(list)));
+        set(View(std::begin(list), std::end(list)));
     }
 
     /**

@@ -103,13 +103,13 @@ auto covarianceMatrixOfPointCloud(const MeshType& m)
     using VertexType = MeshType::VertexType;
     using ScalarType = VertexType::CoordType::ScalarType;
 
-    auto barycenter = vcl::barycenter(m);
+    auto bar = barycenter(m);
 
     Matrix33<ScalarType> mm;
     mm.setZero();
     // compute covariance matrix
     for (const VertexType& v : m.vertices()) {
-        auto e = v.coord() - barycenter;
+        auto e = v.coord() - bar;
         m += e.outerProduct(e);
     }
     return m;
@@ -245,7 +245,7 @@ std::vector<std::pair<uint, uint>> creaseFaceEdges(
     double          angleRadPos,
     bool            alsoBorderEdges = false)
 {
-    vcl::requirePerFaceAdjacentFaces(m);
+    requirePerFaceAdjacentFaces(m);
 
     std::vector<std::pair<uint, uint>> creaseEdges;
 
@@ -259,7 +259,7 @@ std::vector<std::pair<uint, uint>> creaseFaceEdges(
             }
             else {
                 // internal edge
-                double angle = vcl::faceDihedralAngleOnEdge(f, i);
+                double angle = faceDihedralAngleOnEdge(f, i);
                 if (angle < angleRadNeg || angle > angleRadPos) {
                     creaseEdges.push_back({f.index(), i});
                 }

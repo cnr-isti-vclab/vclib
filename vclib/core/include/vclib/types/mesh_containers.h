@@ -55,7 +55,7 @@ private:
 public:
     // TypeWrapper of the found container, if any
     using type =
-        typename vcl::FilterTypesByCondition<SameElPred, Containers...>::type;
+        typename FilterTypesByCondition<SameElPred, Containers...>::type;
     static constexpr bool value = NumberOfTypes<type>::value == 1;
 };
 

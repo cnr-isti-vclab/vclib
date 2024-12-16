@@ -72,11 +72,11 @@ void readPlyTriStripsTxt(
     MeshType&        m)
 {
     for (uint tid = 0; tid < header.numberTriStrips(); ++tid) {
-        vcl::Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
-        vcl::Tokenizer::iterator token = spaceTokenizer.begin();
+        Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
+        Tokenizer::iterator token = spaceTokenizer.begin();
         for (const PlyProperty& p : header.triStripsProperties()) {
             if (token == spaceTokenizer.end()) {
-                throw vcl::MalformedFileException("Unexpected end of line.");
+                throw MalformedFileException("Unexpected end of line.");
             }
             bool hasBeenRead = false;
             if (p.name == ply::vertex_indices) {

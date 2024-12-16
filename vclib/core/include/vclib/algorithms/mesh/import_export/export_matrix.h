@@ -101,7 +101,7 @@ Matrix vertexMatrix(const MeshType& mesh)
 template<MatrixConcept Matrix, FaceMeshConcept MeshType>
 Matrix faceMatrix(const MeshType& mesh)
 {
-    vcl::requireVertexContainerCompactness(mesh);
+    requireVertexContainerCompactness(mesh);
 
     Matrix F(mesh.faceNumber(), 3);
 
@@ -162,7 +162,7 @@ Matrix faceMatrix(const MeshType& mesh)
 template<typename Vect, FaceMeshConcept MeshType>
 Vect faceSizesVector(const MeshType& mesh)
 {
-    vcl::requireVertexContainerCompactness(mesh);
+    requireVertexContainerCompactness(mesh);
 
     Vect F(mesh.faceNumber());
 
@@ -205,7 +205,7 @@ Vect faceSizesVector(const MeshType& mesh)
 template<MatrixConcept Matrix, EdgeMeshConcept MeshType>
 Matrix edgeMatrix(const MeshType& mesh)
 {
-    vcl::requireVertexContainerCompactness(mesh);
+    requireVertexContainerCompactness(mesh);
 
     Matrix E(mesh.edgeNumber(), 2);
 

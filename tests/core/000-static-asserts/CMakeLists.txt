@@ -26,6 +26,7 @@ set(TEST_NAME 000-static-asserts)
 project(vclib-test-${TEST_NAME})
 
 set(HEADERS
+    const_correctness.h
     loggers.h
     iterators.h
     mesh.h

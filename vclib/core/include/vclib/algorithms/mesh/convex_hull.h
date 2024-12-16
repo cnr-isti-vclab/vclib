@@ -24,6 +24,7 @@
 #define VCL_ALGORITHMS_MESH_CONVEX_HULL_H
 
 #include <vclib/algorithms/core/box/box3.h>
+#include <vclib/algorithms/core/bounding_box.h>
 #include <vclib/algorithms/core/visibility.h>
 #include <vclib/algorithms/mesh/create/tetrahedron.h>
 #include <vclib/algorithms/mesh/update/topology.h>
@@ -47,17 +48,13 @@ namespace detail {
  * @tparam R
  * @param points
  */
-template<vcl::Range R>
+template<Range R>
 void firstTetOptimization(R&& points)
 {
     using PointType = std::ranges::range_value_t<R>;
     using Iterator  = std::ranges::iterator_t<R>;
 
-    vcl::Box<PointType> box;
-
-    for (const auto& p : points) {
-        box.add(p);
-    }
+    Box<PointType> box = boundingBox(points);
 
     std::array<std::pair<double, Iterator>, 6> distances;
 
@@ -94,11 +91,11 @@ void firstTetOptimization(R&& points)
  * @param points
  * @param deterministic
  */
-template<vcl::Range R>
+template<Range R>
 void shufflePoints(R&& points, bool deterministic = false)
-    requires vcl::Point3Concept<std::ranges::range_value_t<R>>
+    requires Point3Concept<std::ranges::range_value_t<R>>
 {
-    vcl::shuffle(points, deterministic);
+    shuffle(points, deterministic);
 
     firstTetOptimization(points);
 
@@ -110,7 +107,7 @@ void shufflePoints(R&& points, bool deterministic = false)
 
     auto rEnd = std::ranges::end(points);
 
-    while (itP != rEnd && vcl::arePointsCoplanar(*itP0, *itP1, *itP2, *itP)) {
+    while (itP != rEnd && arePointsCoplanar(*itP0, *itP1, *itP2, *itP)) {
         itP = std::next(itP);
     }
 
@@ -132,30 +129,30 @@ MeshType makeTetrahedron(
 
     MeshType result;
 
-    if (vcl::trianglePointVisibility(p0, p1, p2, p3)) {
-        result = vcl::createTetrahedron<MeshType>(p0, p2, p1, p3);
+    if (trianglePointVisibility(p0, p1, p2, p3)) {
+        result = createTetrahedron<MeshType>(p0, p2, p1, p3);
     }
     else {
-        result = vcl::createTetrahedron<MeshType>(p0, p1, p2, p3);
+        result = createTetrahedron<MeshType>(p0, p1, p2, p3);
     }
 
-    if constexpr (vcl::face::HasOptionalAdjacentFaces<FaceType>) {
+    if constexpr (face::HasOptionalAdjacentFaces<FaceType>) {
         result.enablePerFaceAdjacentFaces();
     }
 
-    vcl::updatePerFaceAdjacentFaces(result);
+    updatePerFaceAdjacentFaces(result);
 
     return result;
 }
 
 template<FaceMeshConcept MeshType, Range R>
 auto initConflictGraph(const MeshType& mesh, R&& points)
-    requires vcl::Point3Concept<std::ranges::range_value_t<R>>
+    requires Point3Concept<std::ranges::range_value_t<R>>
 {
     using PointType  = std::ranges::range_value_t<R>;
     using MPointType = MeshType::VertexType::CoordType;
     using FaceType   = MeshType::FaceType;
-    using GraphType  = vcl::BipartiteGraph<PointType, uint>;
+    using GraphType  = BipartiteGraph<PointType, uint>;
 
     // left nodes are points, right nodes are faces
     // an arc (conflict) is added if a point is visible from a face
@@ -168,7 +165,7 @@ auto initConflictGraph(const MeshType& mesh, R&& points)
     for (const auto& point : points) {
         bool added = false;
         for (const auto& face : mesh.faces()) {
-            if (vcl::facePointVisibility(face, point)) {
+            if (facePointVisibility(face, point)) {
                 if (!added) {
                     graph.addLeftNode(point);
                     added = true;
@@ -362,7 +359,7 @@ void updateNewConflicts(
         const FaceType& face = convexHull.face(newFaces[i]);
 
         for (const auto& p : potentialConflictPoints[i]) {
-            if (vcl::facePointVisibility(face, p)) {
+            if (facePointVisibility(face, p)) {
                 conflictGraph.addArc(p, newFaces[i]);
             }
         }
@@ -387,14 +384,14 @@ MeshType convexHull(
     const R& points,
     bool     deterministic = false,
     LogType& log           = nullLogger)
-    requires vcl::Point3Concept<std::ranges::range_value_t<R>>
+    requires Point3Concept<std::ranges::range_value_t<R>>
 {
     using PointType  = std::ranges::range_value_t<R>;
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
 
     static_assert(
-        vcl::face::HasAdjacentFaces<FaceType>,
+        face::HasAdjacentFaces<FaceType>,
         "MeshType must have per-face adjacent faces.");
 
     log.log(0, "Shuffling points...");
@@ -482,7 +479,7 @@ MeshType convexHull(
  */
 template<FaceMeshConcept MeshType, Range R, LoggerConcept LogType = NullLogger>
 MeshType convexHull(const R& points, LogType& log)
-    requires vcl::Point3Concept<std::ranges::range_value_t<R>>
+    requires Point3Concept<std::ranges::range_value_t<R>>
 {
     return convexHull<MeshType>(points, false, log);
 }

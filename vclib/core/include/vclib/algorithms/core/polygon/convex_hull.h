@@ -69,7 +69,7 @@ void grahamScanOnContainer(
     // Skip points not at the left of first-last segment
     do {
         it1++;
-    } while (it1 != last && !vcl::areCounterClockwise(*first, *last, *it1));
+    } while (it1 != last && !areCounterClockwise(*first, *last, *it1));
 
     if (it1 != last) {
         // Initialize stack with the first element which could be in the convex
@@ -89,8 +89,8 @@ void grahamScanOnContainer(
         for (it1++; it1 != last; it1++) {
             // Skip point for which last element is on the right of
             // it1 - it2 segment
-            if (vcl::areCounterClockwise(*it1, *it2, *last)) {
-                while (!vcl::areCounterClockwise(*it2, *it3, *it1)) {
+            if (areCounterClockwise(*it1, *it2, *last)) {
+                while (!areCounterClockwise(*it2, *it3, *it1)) {
                     // Pop from stack
                     stack.pop_back();
 
@@ -168,7 +168,7 @@ auto convexHull(InputIterator first, InputIterator end)
     return convexHull;
 }
 
-template<vcl::Range InputContainer>
+template<Range InputContainer>
 auto convexHull(const InputContainer& container)
     requires Point2Concept<std::ranges::range_value_t<InputContainer>>
 {

@@ -77,17 +77,17 @@ public:
 
         std::string line;
         std::getline(file, line);
-        vcl::removeCarriageReturn(line);
+        removeCarriageReturn(line);
         if (line.compare(0, 3, "ply") == 0) {
             bool        error        = false;
             bool        firstElement = true;
             std::string headerLine;
             PlyElement  element;
             do {
-                vcl::Tokenizer spaceTokenizer =
+                Tokenizer spaceTokenizer =
                     readAndTokenizeNextNonEmptyLine(file);
                 if (!error) {
-                    vcl::Tokenizer::iterator token = spaceTokenizer.begin();
+                    Tokenizer::iterator token = spaceTokenizer.begin();
                     headerLine                     = *token;
                     if (headerLine == "format") {
                         token++;
@@ -104,16 +104,16 @@ public:
                     else if (headerLine == "comment") {
                         token++;
                         if (token != spaceTokenizer.end()) {
-                            if (vcl::containsCaseInsensitive(
+                            if (containsCaseInsensitive(
                                     *token, "texture")) {
                                 ++token;
                                 if (token != spaceTokenizer.end()) {
                                     std::string textName = *token;
-                                    auto        it = vcl::findCaseInsensitive(
+                                    auto        it = findCaseInsensitive(
                                         textName, "<this>");
                                     if (it != textName.end()) {
                                         uint        pos = it - textName.begin();
-                                        std::string fn  = vcl::FileInfo::
+                                        std::string fn  = FileInfo::
                                             fileNameWithoutExtension(filename);
                                         textName =
                                             textName.substr(0, pos) + fn +
@@ -587,10 +587,10 @@ public:
     iterator end() const { return mElements.end(); }
 
 private:
-    PlyElement readElement(const vcl::Tokenizer& lineTokenizer) const
+    PlyElement readElement(const Tokenizer& lineTokenizer) const
     {
         PlyElement               e;
-        vcl::Tokenizer::iterator token = lineTokenizer.begin();
+        Tokenizer::iterator token = lineTokenizer.begin();
         std::string              s     = *(++token);
         if (s == "vertex") {
             e.type           = ply::VERTEX;
@@ -616,10 +616,10 @@ private:
         return e;
     }
 
-    PlyProperty readProperty(const vcl::Tokenizer& lineTokenizer) const
+    PlyProperty readProperty(const Tokenizer& lineTokenizer) const
     {
         PlyProperty              p;
-        vcl::Tokenizer::iterator token = lineTokenizer.begin();
+        Tokenizer::iterator token = lineTokenizer.begin();
         std::string              type  = *(++token);
         if (type == "list") {
             p.list               = true;

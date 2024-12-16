@@ -154,7 +154,7 @@ public:
      * @note The number of levels of the nested initializer lists must
      * correspond to the number of dimensions of the array.
      */
-    Array(vcl::NestedInitializerLists<T, N> values)
+    Array(NestedInitializerLists<T, N> values)
     {
         initializeNestedLists(values);
     }
@@ -611,7 +611,7 @@ private:
         return ind;
     }
 
-    void initializeNestedLists(vcl::NestedInitializerLists<T, N> values)
+    void initializeNestedLists(NestedInitializerLists<T, N> values)
     {
         std::list<std::size_t> szs =
             NestedInitializerListsProcessor<T, N>::maxDimensionsLevels(values);

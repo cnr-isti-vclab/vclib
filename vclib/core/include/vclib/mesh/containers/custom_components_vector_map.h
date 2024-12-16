@@ -139,7 +139,7 @@ public:
     void compact(const std::vector<uint>& newIndices)
     {
         for (auto& p : mMap) {
-            vcl::compactVector(p.second, newIndices);
+            compactVector(p.second, newIndices);
         }
     }
 

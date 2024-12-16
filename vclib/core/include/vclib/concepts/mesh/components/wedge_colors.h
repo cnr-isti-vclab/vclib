@@ -66,7 +66,7 @@ concept HasWedgeColors = requires (
     { obj.wedgeColors() } -> InputRange<decltype(c)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.setWedgeColor(uint(), c) } -> std::same_as<void>;
         { obj.setWedgeColors(vec) } -> std::same_as<void>;
 

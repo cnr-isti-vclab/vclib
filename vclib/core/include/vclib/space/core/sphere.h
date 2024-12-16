@@ -32,17 +32,17 @@ namespace vcl {
 template<typename Scalar>
 class Sphere
 {
-    vcl::Point3<Scalar> mCenter;
-    Scalar              mRadius;
+    Point3<Scalar> mCenter;
+    Scalar         mRadius;
 
 public:
     using ScalarType = Scalar;
-    using PointType  = vcl::Point3<Scalar>;
-    using BoxType    = vcl::Box3<Scalar>;
+    using PointType  = Point3<Scalar>;
+    using BoxType    = Box3<Scalar>;
 
     Sphere() {}
 
-    Sphere(const vcl::Point3<Scalar>& center, Scalar radius) :
+    Sphere(const Point3<Scalar>& center, Scalar radius) :
             mCenter(center), mRadius(radius)
     {
     }
@@ -74,7 +74,7 @@ public:
 
     Scalar volume() const { return (4.0 / 3) * M_PI * std::pow(mRadius, 3); }
 
-    bool isInside(const vcl::Point3<Scalar>& p) const
+    bool isInside(const Point3<Scalar>& p) const
     {
         return mCenter.dist(p) <= mRadius;
     }

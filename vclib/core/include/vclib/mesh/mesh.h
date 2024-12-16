@@ -109,18 +109,18 @@ public:
      * which the Mesh inherits (Args) that are ElementContainers (they satisfy
      * the ElementContainerConcept).
      */
-    using Containers = vcl::FilterTypesByCondition<
+    using Containers = FilterTypesByCondition<
         mesh::IsElementContainerPred,
-        vcl::TypeWrapper<Args...>>::type;
+        TypeWrapper<Args...>>::type;
 
     /**
      * @brief Components is an alias to a vcl::TypeWrapper that wraps all the
      * types from which the Mesh inherits (Args) that are Components (they
      * satisfy the ComponentConcept).
      */
-    using Components = vcl::FilterTypesByCondition<
+    using Components = FilterTypesByCondition<
         comp::IsComponentPred,
-        vcl::TypeWrapper<Args...>>::type;
+        TypeWrapper<Args...>>::type;
 
     /**
      * @brief ElementType is an alias that exposes the type of the Element

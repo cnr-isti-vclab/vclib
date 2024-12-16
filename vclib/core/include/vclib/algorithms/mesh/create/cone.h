@@ -61,7 +61,7 @@ MeshType createCone(
 
     if (radiusBottom != 0) {
         for (uint i = 0; i < subdivisions; ++i) {
-            ScalarType a = vcl::toRad(i * 360.0 / subdivisions);
+            ScalarType a = toRad(i * 360.0 / subdivisions);
             mesh.addVertex(CoordType(
                 radiusBottom * std::cos(a),
                 -height / 2.0,
@@ -73,7 +73,7 @@ MeshType createCone(
 
     if (radiusTop != 0) {
         for (uint i = 0; i < subdivisions; ++i) {
-            ScalarType a = vcl::toRad(i * 360.0 / subdivisions);
+            ScalarType a = toRad(i * 360.0 / subdivisions);
             mesh.addVertex(CoordType(
                 radiusTop * std::cos(a),
                 height / 2.0,

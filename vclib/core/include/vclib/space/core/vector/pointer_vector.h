@@ -80,7 +80,7 @@ public:
     // types
     using ValueType = Base::ValueType;
 
-    using ConstValueType = vcl::MakeConstPointerT<ValueType>;
+    using ConstValueType = MakeConstPointerT<ValueType>;
 
     using Reference = Base::Reference;
 

@@ -103,7 +103,7 @@ public:
             }
         }
         else {
-            throw vcl::MalformedFileException("Cannot read data from file.");
+            throw MalformedFileException("Cannot read data from file.");
         }
         return false;
     }

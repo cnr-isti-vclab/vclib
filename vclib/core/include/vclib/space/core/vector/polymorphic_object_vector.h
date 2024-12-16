@@ -193,7 +193,7 @@ public:
     template<typename ItType>
     PolymorphicObjectVector(ItType first, ItType last)
     {
-        set(vcl::View(first, last));
+        set(View(first, last));
     }
 
     /**

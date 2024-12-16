@@ -111,7 +111,7 @@ namespace vcl {
  */
 template<typename Scalar, bool INDEXED>
 class TriEdgeMeshT :
-        public vcl::Mesh<
+        public Mesh<
             mesh::VertexContainer<triedgemesh::Vertex<Scalar, INDEXED>>,
             mesh::FaceContainer<triedgemesh::Face<Scalar, INDEXED>>,
             mesh::EdgeContainer<triedgemesh::Edge<Scalar, INDEXED>>,

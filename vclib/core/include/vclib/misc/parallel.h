@@ -116,7 +116,7 @@ void parallelFor(const Iterator& begin, const Iterator& end, Lambda&& F)
  * @param[in] r: a range having begin() and end() functions
  * @param[in] F: lambda function that takes the iterated type as input
  */
-template<vcl::Range Rng, typename Lambda>
+template<Range Rng, typename Lambda>
 void parallelFor(Rng&& r, Lambda&& F)
 {
     parallelFor(std::ranges::begin(r), std::ranges::end(r), F);
@@ -137,7 +137,7 @@ void parallelFor(Rng&& r, Lambda&& F)
  * @param[in] r: a range having begin() and end() functions
  * @param[in] F: lambda function that takes the iterated type as input
  */
-template<vcl::Range Rng, typename Lambda>
+template<Range Rng, typename Lambda>
 void parallelFor(const Rng& r, Lambda&& F)
 {
     parallelFor(std::ranges::begin(r), std::ranges::end(r), F);

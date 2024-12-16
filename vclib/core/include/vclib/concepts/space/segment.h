@@ -63,7 +63,7 @@ concept SegmentConcept = requires (
     { obj / s } -> std::convertible_to<RemoveRef<T>>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.flip() } -> std::same_as<void>;
 
         { obj = obj } -> std::same_as<T&>;

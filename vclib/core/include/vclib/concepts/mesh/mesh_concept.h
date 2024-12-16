@@ -134,7 +134,7 @@ concept MeshConcept =
         } -> InputRange<decltype(v)>;
 
         // non const requirements
-        requires vcl::IsConst<T> || requires {
+        requires IsConst<T> || requires {
             // member functions
             { obj.clear() } -> std::same_as<void>;
             { obj.compact() } -> std::same_as<void>;

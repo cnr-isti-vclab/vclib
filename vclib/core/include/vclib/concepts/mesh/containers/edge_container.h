@@ -66,7 +66,7 @@ concept HasEdgeContainer = requires (
     { obj.edges(bool()) } -> InputRange<decltype(e)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.edge(uint()) } -> std::same_as<decltype(eR)>;
 
         { obj.addEdge() } -> std::same_as<uint>;
@@ -128,7 +128,7 @@ concept HasEdgeContainer = requires (
  * @ingroup containers_concepts
  */
 template<typename... Args>
-concept HasEdges = (vcl::mesh::HasEdgeContainer<Args> || ...);
+concept HasEdges = (mesh::HasEdgeContainer<Args> || ...);
 
 } // namespace vcl
 

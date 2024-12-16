@@ -45,7 +45,7 @@ void setPerVertexQuality(
     MeshType&                                  m,
     typename MeshType::VertexType::QualityType s)
 {
-    vcl::requirePerVertexQuality(m);
+    requirePerVertexQuality(m);
 
     using VertexType = MeshType::VertexType;
 
@@ -68,7 +68,7 @@ void setPerVertexQuality(
 template<FaceMeshConcept MeshType>
 void setPerFaceQuality(MeshType& m, typename MeshType::FaceType::QualityType s)
 {
-    vcl::requirePerFaceQuality(m);
+    requirePerFaceQuality(m);
 
     using FaceType = MeshType::FaceType;
 
@@ -95,7 +95,7 @@ void clampPerVertexQuality(
     typename MeshType::VertexType::QualityType minS,
     typename MeshType::VertexType::QualityType maxS)
 {
-    vcl::requirePerVertexQuality(m);
+    requirePerVertexQuality(m);
 
     using VertexType = MeshType::VertexType;
 
@@ -122,7 +122,7 @@ void clampPerFaceQuality(
     typename MeshType::FaceType::QualityType minS,
     typename MeshType::FaceType::QualityType maxS)
 {
-    vcl::requirePerFaceQuality(m);
+    requirePerFaceQuality(m);
 
     using FaceType = MeshType::FaceType;
 
@@ -150,7 +150,7 @@ void normalizePerVertexQuality(
     typename MeshType::VertexType::QualityType minS = 0,
     typename MeshType::VertexType::QualityType maxS = 1)
 {
-    vcl::requirePerVertexQuality(m);
+    requirePerVertexQuality(m);
 
     using VertexType  = MeshType::VertexType;
     using QualityType = VertexType::QualityType;
@@ -183,7 +183,7 @@ void normalizePerFaceQuality(
     typename MeshType::FaceType::QualityType minS = 0,
     typename MeshType::FaceType::QualityType maxS = 1)
 {
-    vcl::requirePerFaceQuality(m);
+    requirePerFaceQuality(m);
 
     using FaceType    = MeshType::FaceType;
     using QualityType = FaceType::QualityType;
@@ -212,7 +212,7 @@ void normalizePerFaceQuality(
 template<FaceMeshConcept MeshType>
 void setPerVertexQualityFromVertexValence(MeshType& m)
 {
-    vcl::requirePerVertexQuality(m);
+    requirePerVertexQuality(m);
 
     using VertexType = MeshType::VertexType;
     using FaceType   = MeshType::FaceType;
@@ -239,7 +239,7 @@ void setPerVertexQualityFromVertexValence(MeshType& m)
 template<FaceMeshConcept MeshType>
 void setPerFaceQualityFromFaceArea(MeshType& m)
 {
-    vcl::requirePerFaceQuality(m);
+    requirePerFaceQuality(m);
 
     using FaceType = MeshType::FaceType;
 
@@ -251,8 +251,8 @@ void setPerFaceQualityFromFaceArea(MeshType& m)
 template<MeshConcept MeshType>
 void setPerVertexQualityFromPrincipalCurvatureGaussian(MeshType& m)
 {
-    vcl::requirePerVertexQuality(m);
-    vcl::requirePerVertexPrincipalCurvature(m);
+    requirePerVertexQuality(m);
+    requirePerVertexPrincipalCurvature(m);
 
     using VertexType = MeshType::VertexType;
 
@@ -265,8 +265,8 @@ void setPerVertexQualityFromPrincipalCurvatureGaussian(MeshType& m)
 template<MeshConcept MeshType>
 void setPerVertexQualityFromPrincipalCurvatureMean(MeshType& m)
 {
-    vcl::requirePerVertexQuality(m);
-    vcl::requirePerVertexPrincipalCurvature(m);
+    requirePerVertexQuality(m);
+    requirePerVertexPrincipalCurvature(m);
 
     using VertexType = MeshType::VertexType;
 
@@ -280,8 +280,8 @@ void setPerVertexQualityFromPrincipalCurvatureMean(MeshType& m)
 template<MeshConcept MeshType>
 void setPerVertexQualityFromPrincipalCurvatureMinValue(MeshType& m)
 {
-    vcl::requirePerVertexQuality(m);
-    vcl::requirePerVertexPrincipalCurvature(m);
+    requirePerVertexQuality(m);
+    requirePerVertexPrincipalCurvature(m);
 
     using VertexType = MeshType::VertexType;
 
@@ -293,8 +293,8 @@ void setPerVertexQualityFromPrincipalCurvatureMinValue(MeshType& m)
 template<MeshConcept MeshType>
 void setPerVertexQualityFromPrincipalCurvatureMaxValue(MeshType& m)
 {
-    vcl::requirePerVertexQuality(m);
-    vcl::requirePerVertexPrincipalCurvature(m);
+    requirePerVertexQuality(m);
+    requirePerVertexPrincipalCurvature(m);
 
     using VertexType = MeshType::VertexType;
 
@@ -317,8 +317,8 @@ void setPerVertexQualityFromPrincipalCurvatureMaxValue(MeshType& m)
 template<MeshConcept MeshType>
 void setPerVertexQualityFromPrincipalCurvatureShapeIndex(MeshType& m)
 {
-    vcl::requirePerVertexQuality(m);
-    vcl::requirePerVertexPrincipalCurvature(m);
+    requirePerVertexQuality(m);
+    requirePerVertexPrincipalCurvature(m);
 
     using VertexType = MeshType::VertexType;
     using ScalarType = VertexType::PrincipalCurvatureType::ScalarType;
@@ -346,8 +346,8 @@ void setPerVertexQualityFromPrincipalCurvatureShapeIndex(MeshType& m)
 template<MeshConcept MeshType>
 void setPerVertexQualityFromPrincipalCurvatureCurvedness(MeshType& m)
 {
-    vcl::requirePerVertexQuality(m);
-    vcl::requirePerVertexPrincipalCurvature(m);
+    requirePerVertexQuality(m);
+    requirePerVertexPrincipalCurvature(m);
 
     using VertexType = MeshType::VertexType;
     using ScalarType = VertexType::PrincipalCurvatureType::ScalarType;

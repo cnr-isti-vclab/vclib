@@ -85,7 +85,7 @@ concept HasAdjacentEdges = requires (
     { obj.adjEdgeIndices() } -> InputRange<uint>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.adjEdge(uint()) } -> std::same_as<decltype(eP)>;
         { obj.adjEdgeMod(int()) } -> std::same_as<decltype(eP)>;
 

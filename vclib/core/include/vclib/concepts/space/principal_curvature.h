@@ -50,7 +50,7 @@ concept PrincipalCurvatureConcept = requires (
     { obj.minValue() } -> std::convertible_to<decltype(s)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.maxValue() } -> std::same_as<decltype(sR)>;
         { obj.minValue() } -> std::same_as<decltype(sR)>;
     };

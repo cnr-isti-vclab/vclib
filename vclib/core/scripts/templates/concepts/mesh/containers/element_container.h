@@ -46,7 +46,7 @@ concept Has%EL_UC%Container = requires(
     { obj.%EL_C%s(bool()) } -> InputRange<decltype(e)>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.%EL_C%(uint()) } -> std::same_as<decltype(eR)>;
 
         { obj.add%EL_UC%() } -> std::same_as<uint>;
@@ -107,7 +107,7 @@ concept Has%EL_UC%Container = requires(
  * @ingroup containers_concepts
  */
 template<typename... Args>
-concept Has%EL_UC%s = (vcl::mesh::Has%EL_UC%Container<Args> || ...);
+concept Has%EL_UC%s = (mesh::Has%EL_UC%Container<Args> || ...);
 
 } // namespace vcl
 

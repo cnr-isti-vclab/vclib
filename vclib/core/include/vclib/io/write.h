@@ -61,7 +61,7 @@ inline std::ofstream openOutputFileStream(
     // need to set binary or windows will fail
     fp.open(actualFileName, std::ofstream::binary);
     if (!fp) {
-        throw vcl::CannotOpenFileException(actualFileName);
+        throw CannotOpenFileException(actualFileName);
     }
 
     return fp;

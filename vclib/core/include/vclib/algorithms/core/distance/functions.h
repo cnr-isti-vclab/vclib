@@ -47,7 +47,7 @@ namespace detail {
  */
 template<typename Obj1, typename Obj2, typename ST>
 concept BoundedDistFunctionExists =
-    requires (Obj1 o1, Obj2 o2, ST v) { vcl::boundedDistance(o1, o2, v); };
+    requires (Obj1 o1, Obj2 o2, ST v) { boundedDistance(o1, o2, v); };
 
 } // namespace detail
 
@@ -81,7 +81,7 @@ template<typename Obj1, typename Obj2>
 auto distFunction()
 {
     auto f = [](const Obj1& o1, const Obj2& o2) {
-        return vcl::distance(o1, o2);
+        return distance(o1, o2);
     };
 
     return f;
@@ -131,14 +131,14 @@ auto boundedDistFunction()
 {
     if constexpr (detail::BoundedDistFunctionExists<Obj1, Obj2, ScalarType>) {
         auto f = [](const Obj1& o1, const Obj2& o2, ScalarType s) {
-            return vcl::boundedDistance(o1, o2, s);
+            return boundedDistance(o1, o2, s);
         };
 
         return f;
     }
     else {
         auto f = [](const Obj1& o1, const Obj2& o2, ScalarType) {
-            return vcl::distance(o1, o2);
+            return distance(o1, o2);
         };
 
         return f;

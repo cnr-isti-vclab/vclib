@@ -63,7 +63,7 @@ void save(
     const SaveSettings& settings = SaveSettings())
 {
     std::string ext = FileInfo::extension(filename);
-    ext             = vcl::toLower(ext);
+    ext             = toLower(ext);
     if (ext == ".obj") {
         saveObj(m, filename, log, settings);
     }
@@ -77,7 +77,7 @@ void save(
         saveStl(m, filename, log, settings);
     }
     else {
-        throw vcl::UnknownFileFormatException(ext);
+        throw UnknownFileFormatException(ext);
     }
 }
 

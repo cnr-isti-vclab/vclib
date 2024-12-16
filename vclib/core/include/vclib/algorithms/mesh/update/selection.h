@@ -32,7 +32,7 @@ namespace vcl {
 
 namespace detail {
 
-template<vcl::Range Rng>
+template<Range Rng>
 void clearSelection(Rng&& r)
 {
     for (auto& e : r) {

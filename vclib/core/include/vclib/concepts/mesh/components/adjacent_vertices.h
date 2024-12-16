@@ -85,7 +85,7 @@ concept HasAdjacentVertices = requires (
     { obj.adjVertexIndices() } -> InputRange<uint>;
 
     // non const requirements
-    requires vcl::IsConst<T> || requires {
+    requires IsConst<T> || requires {
         { obj.adjVertex(uint()) } -> std::same_as<decltype(vP)>;
         { obj.adjVertexMod(int()) } -> std::same_as<decltype(vP)>;
 

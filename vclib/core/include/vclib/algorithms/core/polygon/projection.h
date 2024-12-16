@@ -74,7 +74,7 @@ auto project(Iterator begin, Iterator end)
  *
  * @ingroup core_polygon
  */
-template<vcl::Range R>
+template<Range R>
 auto project(R&& polygon) requires Point3Concept<std::ranges::range_value_t<R>>
 {
     return project(polygon.begin(), polygon.end());
