@@ -20,58 +20,13 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
-#define VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#ifndef VCL_RENDER_CONFIG_H
+#define VCL_RENDER_CONFIG_H
 
-#include <vclib/render/interfaces/viewer_i.h>
+// default render backend is bgfx
+#if !defined(VCLIB_RENDER_BACKEND_BGFX) && \
+    !defined(VCLIB_RENDER_BACKEND_OPENGL2)
+#define VCLIB_RENDER_BACKEND_BGFX
+#endif
 
-#include <vclib/render_opengl2/canvas.h>
-
-#include <memory>
-
-namespace vcl {
-
-class ViewerCanvasOpenGL2 : public vcl::CanvasOpenGL2, public ViewerI
-{
-public:
-    ViewerCanvasOpenGL2(
-        void* winId,
-        uint  width     = 1024,
-        uint  height    = 768,
-        void* displayId = nullptr);
-
-    ViewerCanvasOpenGL2(
-        void*                                        winId,
-        const std::shared_ptr<DrawableObjectVector>& v,
-        uint                                         width     = 1024,
-        uint                                         height    = 768,
-        void*                                        displayId = nullptr);
-
-    void init(uint width, uint height);
-
-    void toggleAxisVisibility() override
-    {
-        // todo
-    }
-
-    void toggleTrackBallVisibility() override
-    {
-        // todo
-    }
-
-protected:
-    void drawContent() override;
-
-    // events
-    void onResize(unsigned int width, unsigned int height) override;
-
-    void onMouseDoubleClick(MouseButton::Enum button, double x, double y)
-        override;
-
-private:
-    bool mReadRequested = false;
-};
-
-} // namespace vcl
-
-#endif // VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#endif // VCL_RENDER_CONFIG_H

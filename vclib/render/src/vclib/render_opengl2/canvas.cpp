@@ -26,19 +26,19 @@
 
 namespace vcl {
 
-Canvas::Canvas(void*, uint width, uint height, void*)
+CanvasOpenGL2::CanvasOpenGL2(void*, uint width, uint height, void*)
 {
     init(width, height);
 }
 
-void Canvas::init(uint width, uint height)
+void CanvasOpenGL2::init(uint width, uint height)
 {
     mSize = {width, height};
     glViewport(0, 0, width, height);
     glClearColor(1.f, 1.f, 1.f, 1.0f);
 }
 
-bool Canvas::screenshot(const std::string& filename, uint width, uint height)
+bool CanvasOpenGL2::screenshot(const std::string& filename, uint width, uint height)
 {
     (void) width;
     (void) height;
@@ -68,7 +68,7 @@ bool Canvas::screenshot(const std::string& filename, uint width, uint height)
     return ret;
 }
 
-bool Canvas::readDepth(const Point2i& point, CallbackReadBuffer callback)
+bool CanvasOpenGL2::readDepth(const Point2i& point, CallbackReadBuffer callback)
 {
     if (point.x() < 0 || point.y() < 0 || // point out of bounds
         point.x() >= mSize.x() || point.y() >= mSize.y()) {
@@ -80,13 +80,13 @@ bool Canvas::readDepth(const Point2i& point, CallbackReadBuffer callback)
     return true;
 }
 
-void Canvas::onResize(uint width, uint height)
+void CanvasOpenGL2::onResize(uint width, uint height)
 {
     mSize = {width, height};
     glViewport(0, 0, width, height);
 }
 
-void Canvas::frame()
+void CanvasOpenGL2::frame()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -99,7 +99,7 @@ void Canvas::frame()
     draw();
 }
 
-void Canvas::readDepthData()
+void CanvasOpenGL2::readDepthData()
 {
     // get depth range
     std::array<GLfloat, 2> depthRange = {0, 0};

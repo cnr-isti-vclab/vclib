@@ -28,7 +28,7 @@
 
 namespace vcl {
 
-Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
+CanvasBGFX::CanvasBGFX(void* winId, uint width, uint height, void* displayId)
 {
     // save window id
     mWinId = winId;
@@ -39,10 +39,10 @@ Canvas::Canvas(void* winId, uint width, uint height, void* displayId)
     mTextView.init(width, height);
 
     // (re)create the framebuffers
-    Canvas::onResize(width, height);
+    CanvasBGFX::onResize(width, height);
 }
 
-Canvas::~Canvas()
+CanvasBGFX::~CanvasBGFX()
 {
     // deallocate the framebuffers
     if (bgfx::isValid(mFbh))
@@ -54,32 +54,32 @@ Canvas::~Canvas()
         ctx.releaseViewId(mViewId);
 }
 
-void Canvas::enableText(bool b)
+void CanvasBGFX::enableText(bool b)
 {
     mTextView.enableText(b);
 }
 
-bool Canvas::isTextEnabled() const
+bool CanvasBGFX::isTextEnabled() const
 {
     return mTextView.isTextEnabled();
 }
 
-void Canvas::setTextFont(VclFont::Enum font, uint fontSize)
+void CanvasBGFX::setTextFont(VclFont::Enum font, uint fontSize)
 {
     mTextView.setTextFont(font, fontSize);
 }
 
-void Canvas::setTextFont(const std::string& fontName, uint fontSize)
+void CanvasBGFX::setTextFont(const std::string& fontName, uint fontSize)
 {
     mTextView.setTextFont(fontName, fontSize);
 }
 
-void Canvas::clearText()
+void CanvasBGFX::clearText()
 {
     mTextView.clearText();
 }
 
-void Canvas::appendStaticText(
+void CanvasBGFX::appendStaticText(
     const Point2f&     pos,
     const std::string& text,
     const Color&       color)
@@ -87,7 +87,7 @@ void Canvas::appendStaticText(
     mTextView.appendStaticText(pos, text, color);
 }
 
-void Canvas::appendTransientText(
+void CanvasBGFX::appendTransientText(
     const Point2f&     pos,
     const std::string& text,
     const Color&       color)
@@ -95,7 +95,7 @@ void Canvas::appendTransientText(
     mTextView.appendTransientText(pos, text, color);
 }
 
-void Canvas::onKeyPress(Key::Enum key)
+void CanvasBGFX::onKeyPress(Key::Enum key)
 {
     if (key == Key::F1) {
         if (mStatsEnabled) {
@@ -109,7 +109,7 @@ void Canvas::onKeyPress(Key::Enum key)
     }
 }
 
-void Canvas::onResize(uint width, uint height)
+void CanvasBGFX::onResize(uint width, uint height)
 {
     mSize = {width, height};
 
@@ -127,7 +127,7 @@ void Canvas::onResize(uint width, uint height)
     mTextView.resize(width, height);
 }
 
-void Canvas::frame()
+void CanvasBGFX::frame()
 {
     bgfx::setViewFrameBuffer(mViewId, mFbh);
     bgfx::touch(mViewId);
@@ -161,7 +161,7 @@ void Canvas::frame()
     }
 }
 
-bool Canvas::readDepth(const Point2i& point, CallbackReadBuffer callback)
+bool CanvasBGFX::readDepth(const Point2i& point, CallbackReadBuffer callback)
 {
     if (!Context::instance().supportsReadback() // feature unsupported
         || mReadRequest != std::nullopt         // read already requested
@@ -174,7 +174,7 @@ bool Canvas::readDepth(const Point2i& point, CallbackReadBuffer callback)
     return true;
 }
 
-bool Canvas::screenshot(const std::string& filename, uint width, uint height)
+bool CanvasBGFX::screenshot(const std::string& filename, uint width, uint height)
 {
     if (!Context::instance().supportsReadback() // feature unsupported
         || mReadRequest != std::nullopt) {      // read already requested
@@ -204,7 +204,7 @@ bool Canvas::screenshot(const std::string& filename, uint width, uint height)
     return true;
 }
 
-void Canvas::offscreenFrame()
+void CanvasBGFX::offscreenFrame()
 {
     assert(mReadRequest != std::nullopt && !mReadRequest->isSubmitted());
 

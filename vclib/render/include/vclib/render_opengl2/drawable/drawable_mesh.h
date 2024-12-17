@@ -77,22 +77,22 @@ inline void _check_gl_error(const char* file, int line)
 #define check_gl_error() _check_gl_error(__FILE__, __LINE__)
 
 template<MeshConcept MeshType>
-class DrawableMesh : public DrawableMeshI, public MeshType
+class DrawableMeshOpenGL2 : public DrawableMeshI, public MeshType
 {
     MeshRenderData<MeshType> mMRD;
 
     std::vector<uint> mTextID;
 
 public:
-    DrawableMesh() = default;
+    DrawableMeshOpenGL2() = default;
 
-    DrawableMesh(const MeshType& mesh) : DrawableMeshI(mesh), MeshType(mesh)
+    DrawableMeshOpenGL2(const MeshType& mesh) : DrawableMeshI(mesh), MeshType(mesh)
     {
         updateBuffers();
         mMRS.setDefaultSettingsFromCapability();
     }
 
-    ~DrawableMesh() = default;
+    ~DrawableMeshOpenGL2() = default;
 
     void updateBuffers() override
     {
@@ -191,7 +191,7 @@ public:
 
     std::shared_ptr<DrawableObjectI> clone() const override
     {
-        return std::make_shared<DrawableMesh>(*this);
+        return std::make_shared<DrawableMeshOpenGL2>(*this);
     }
 
 private:

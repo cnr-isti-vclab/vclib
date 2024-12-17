@@ -63,7 +63,7 @@ namespace vcl {
  * - onResize(width, height): this function must be called by the derived
  * classes whenever the window is resized.
  */
-class Canvas : public virtual vcl::EventManagerI
+class CanvasBGFX : public virtual vcl::EventManagerI
 {
 public:
     using ReadFramebufferRequest = detail::ReadFramebufferRequest;
@@ -95,9 +95,9 @@ private:
     bool mStatsEnabled = false;
 
 public:
-    Canvas(void* winId, uint width, uint height, void* displayId = nullptr);
+    CanvasBGFX(void* winId, uint width, uint height, void* displayId = nullptr);
 
-    ~Canvas();
+    ~CanvasBGFX();
 
     Point2<uint> size() const { return mSize; }
 

@@ -28,28 +28,28 @@
 
 namespace vcl {
 
-ViewerCanvas::ViewerCanvas(
+ViewerCanvasBGFX::ViewerCanvasBGFX(
     void* winId,
     uint  width,
     uint  height,
     void* displayId) :
-        Canvas(winId, width, height, displayId), ViewerI(width, height)
+        CanvasBGFX(winId, width, height, displayId), ViewerI(width, height)
 {
     mCameraUniforms.updateCamera(DTB::camera());
     mDirectionalLightUniforms.updateLight(DTB::light());
 }
 
-ViewerCanvas::ViewerCanvas(
+ViewerCanvasBGFX::ViewerCanvasBGFX(
     void*                                        winId,
     const std::shared_ptr<DrawableObjectVector>& v,
     uint                                         width,
     uint                                         height,
-    void* displayId) : ViewerCanvas(winId, width, height, displayId)
+    void* displayId) : ViewerCanvasBGFX(winId, width, height, displayId)
 {
     setDrawableObjectVector(v);
 }
 
-void ViewerCanvas::draw()
+void ViewerCanvasBGFX::draw()
 {
     drawContent();
 
@@ -66,7 +66,7 @@ void ViewerCanvas::draw()
     }
 }
 
-void ViewerCanvas::drawContent()
+void ViewerCanvasBGFX::drawContent()
 {
     setDirectionalLightVisibility(
         currentMotion() == DTB::TrackBallType::DIR_LIGHT_ARC);
@@ -85,51 +85,51 @@ void ViewerCanvas::drawContent()
         obj->draw(viewId());
 }
 
-void ViewerCanvas::onResize(unsigned int width, unsigned int height)
+void ViewerCanvasBGFX::onResize(unsigned int width, unsigned int height)
 {
-    Canvas::onResize(width, height);
+    CanvasBGFX::onResize(width, height);
     DTB::resizeViewer(width, height);
     update();
 }
 
-void ViewerCanvas::onKeyPress(Key::Enum key)
+void ViewerCanvasBGFX::onKeyPress(Key::Enum key)
 {
     ViewerI::onKeyPress(key);
-    Canvas::onKeyPress(key);
+    CanvasBGFX::onKeyPress(key);
     update();
 }
 
-void ViewerCanvas::onKeyRelease(Key::Enum key)
+void ViewerCanvasBGFX::onKeyRelease(Key::Enum key)
 {
     ViewerI::onKeyRelease(key);
     update();
 }
 
-void ViewerCanvas::onMouseMove(double x, double y)
+void ViewerCanvasBGFX::onMouseMove(double x, double y)
 {
     ViewerI::onMouseMove(x, y);
     update();
 }
 
-void ViewerCanvas::onMousePress(MouseButton::Enum button)
+void ViewerCanvasBGFX::onMousePress(MouseButton::Enum button)
 {
     ViewerI::onMousePress(button);
     update();
 }
 
-void ViewerCanvas::onMouseRelease(MouseButton::Enum button)
+void ViewerCanvasBGFX::onMouseRelease(MouseButton::Enum button)
 {
     ViewerI::onMouseRelease(button);
     update();
 }
 
-void ViewerCanvas::onMouseScroll(double dx, double dy)
+void ViewerCanvasBGFX::onMouseScroll(double dx, double dy)
 {
     ViewerI::onMouseScroll(dx, dy);
     update();
 }
 
-void ViewerCanvas::onMouseDoubleClick(
+void ViewerCanvasBGFX::onMouseDoubleClick(
     MouseButton::Enum button,
     double            x,
     double            y)
