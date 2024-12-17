@@ -26,11 +26,11 @@
 #include "config.h"
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/render_bgfx/canvas.h>
+#include <vclib/bgfx/canvas.h>
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/render_opengl2/canvas.h>
+#include <vclib/opengl2/canvas.h>
 #endif
 
 namespace vcl {

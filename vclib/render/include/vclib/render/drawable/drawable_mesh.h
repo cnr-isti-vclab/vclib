@@ -26,11 +26,11 @@
 #include <vclib/render/config.h>
 
 #ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/render_bgfx/drawable/drawable_mesh.h>
+#include <vclib/bgfx/drawable/drawable_mesh.h>
 #endif
 
 #ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/render_opengl2/drawable/drawable_mesh.h>
+#include <vclib/opengl2/drawable/drawable_mesh.h>
 #endif
 
 namespace vcl {

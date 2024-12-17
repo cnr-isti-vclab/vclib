@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
-#define VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
+#ifndef VCL_QT_GUI_TEXT_EDIT_LOGGER_H
+#define VCL_QT_GUI_TEXT_EDIT_LOGGER_H
 
 #include <vclib/misc/logger/logger.h>
 #include <vclib/qt/gui/text_edit_logger/debug_io_device.h>
@@ -74,4 +74,4 @@ protected:
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_TEXT_EDIT_LOGGER_H
+#endif // VCL_QT_GUI_TEXT_EDIT_LOGGER_H

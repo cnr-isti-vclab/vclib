@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_SCREEN_SHOT_DIALOG_H
-#define VCL_EXT_QT_GUI_SCREEN_SHOT_DIALOG_H
+#ifndef VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
+#define VCL_QT_GUI_SCREEN_SHOT_DIALOG_H
 
 #include <QFileDialog>
 #include <QSpinBox>
@@ -43,4 +43,4 @@ public:
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_SCREEN_SHOT_DIALOG_H
+#endif // VCL_QT_GUI_SCREEN_SHOT_DIALOG_H

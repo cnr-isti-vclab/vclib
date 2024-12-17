@@ -1,5 +1,5 @@
-#ifndef VCL_EXT_QT_MESSAGE_HIDER_H
-#define VCL_EXT_QT_MESSAGE_HIDER_H
+#ifndef VCL_QT_MESSAGE_HIDER_H
+#define VCL_QT_MESSAGE_HIDER_H
 
 #include <QtMessageHandler>
 
@@ -68,4 +68,4 @@ public:
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_MESSAGE_HIDER_H
+#endif // VCL_QT_MESSAGE_HIDER_H
