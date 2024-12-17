@@ -23,8 +23,8 @@
 // Copyright (c) 2008-2009 Bjoern Hoehrmann <bjoern@hoehrmann.de>
 // See http://bjoern.hoehrmann.de/utf-8/decoder/dfa/ for details.
 
-#ifndef UTF8_H_HEADER_GUARD
-#define UTF8_H_HEADER_GUARD
+#ifndef VCL_BGFX_TEXT_FONT_UTF8_H
+#define VCL_BGFX_TEXT_FONT_UTF8_H
 
 #include <stdint.h>
 
@@ -37,4 +37,4 @@ uint32_t utf8_decode(uint32_t* _state, uint32_t* _codep, uint8_t _ch);
 
 } // namespace bgfx
 
-#endif // UTF8_H_HEADER_GUARD
+#endif // VCL_BGFX_TEXT_FONT_UTF8_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_DRAWABLE_MESH_MESH_RENDER_BUFFERS_MACROS_H
-#define VCL_BGFX_RENDER_DRAWABLE_MESH_MESH_RENDER_BUFFERS_MACROS_H
+#ifndef VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_MACROS_H
+#define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_MACROS_H
 
 /**
  * These macros are used both on the library and on the shader side.
@@ -40,4 +40,4 @@
 #define VCL_MRB_TEXTURE6 14
 #define VCL_MRB_TEXTURE7 15
 
-#endif // VCL_BGFX_RENDER_DRAWABLE_MESH_MESH_RENDER_BUFFERS_MACROS_H
+#endif // VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_MACROS_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_RENDER_DRAWABLE_DRAW_OBJECTS3_H
-#define VCL_OPENGL2_RENDER_DRAWABLE_DRAW_OBJECTS3_H
+#ifndef VCL_OPENGL2_DRAWABLE_DRAW_OBJECTS3_H
+#define VCL_OPENGL2_DRAWABLE_DRAW_OBJECTS3_H
 
 #include <vclib/space/core/color.h>
 
@@ -107,4 +107,4 @@ void drawBox3(const std::vector<Point3d>& p, const Color& c, int width = 3);
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_RENDER_DRAWABLE_DRAW_OBJECTS3_H
+#endif // VCL_OPENGL2_DRAWABLE_DRAW_OBJECTS3_H

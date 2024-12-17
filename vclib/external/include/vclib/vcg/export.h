@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_VCG_EXPORT_H
-#define VCL_EXT_VCG_EXPORT_H
+#ifndef VCL_VCG_EXPORT_H
+#define VCL_VCG_EXPORT_H
 
 #include <vclib/mesh/requirements.h>
 
@@ -161,4 +161,4 @@ void exportMeshToVCGMesh(const MeshType& mesh, VCGMeshType& vcgMesh)
 
 } // namespace vcl::vc
 
-#endif // VCL_EXT_VCG_EXPORT_H
+#endif // VCL_VCG_EXPORT_H

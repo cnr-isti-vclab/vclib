@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_CONTEXT_PROGRAM_MANAGER_H
-#define VCL_BGFX_RENDER_CONTEXT_PROGRAM_MANAGER_H
+#ifndef VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
+#define VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H
 
 #include "embedded_shaders/embedded_shader.h"
 
@@ -60,4 +60,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_CONTEXT_PROGRAM_MANAGER_H
+#endif // VCL_BGFX_CONTEXT_PROGRAM_MANAGER_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
-#define VCL_BGFX_RENDER_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
+#ifndef VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
+#define VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
 
 #include "mesh_render_buffers_macros.h"
 
@@ -416,4 +416,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H
+#endif // VCL_BGFX_DRAWABLE_MESH_MESH_RENDER_BUFFERS_H

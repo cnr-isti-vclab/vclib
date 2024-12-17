@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_VCG_TYPE_MAPPING_H
-#define VCL_EXT_VCG_TYPE_MAPPING_H
+#ifndef VCL_VCG_TYPE_MAPPING_H
+#define VCL_VCG_TYPE_MAPPING_H
 
 #include "concepts.h"
 
@@ -143,4 +143,4 @@ auto toVCG(const T& vclPoint)
 
 } // namespace vcl::vc
 
-#endif // VCL_EXT_VCG_TYPE_MAPPING_H
+#endif // VCL_VCG_TYPE_MAPPING_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
-#define VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
+#ifndef VCL_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
+#define VCL_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
 
 #include <QDockWidget>
 
@@ -61,4 +61,4 @@ private slots:
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H
+#endif // VCL_QT_GUI_PROCESSING_FILTER_MESH_DOCK_WIDGET_H

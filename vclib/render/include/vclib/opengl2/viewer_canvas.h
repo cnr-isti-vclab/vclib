@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
-#define VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#ifndef VCL_OPENGL2_VIEWER_CANVAS_H
+#define VCL_OPENGL2_VIEWER_CANVAS_H
 
 #include <vclib/render/interfaces/viewer_i.h>
 
@@ -74,4 +74,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_OPENGL2_RENDER_VIEWER_CANVAS_H
+#endif // VCL_OPENGL2_VIEWER_CANVAS_H

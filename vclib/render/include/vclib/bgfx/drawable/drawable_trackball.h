@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
-#define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_H
 
 #include "uniforms/drawable_trackball_uniforms.h"
 
@@ -79,4 +79,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_TRACKBALL_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
-#define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
 
 #include "uniforms/drawable_directional_light_uniforms.h"
 
@@ -91,4 +91,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_DIRECTIONAL_LIGHT_H

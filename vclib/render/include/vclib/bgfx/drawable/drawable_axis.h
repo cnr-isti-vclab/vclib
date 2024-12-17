@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_AXIS_H
-#define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_AXIS_H
+#ifndef VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_H
+#define VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_H
 
 #include "mesh/mesh_render_buffers.h"
 #include "uniforms/drawable_axis_uniforms.h"
@@ -88,4 +88,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_AXIS_H
+#endif // VCL_BGFX_DRAWABLE_DRAWABLE_AXIS_H

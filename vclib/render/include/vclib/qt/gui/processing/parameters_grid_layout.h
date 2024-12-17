@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
-#define VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
+#ifndef VCL_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
+#define VCL_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
 
 #include <QGridLayout>
 
@@ -54,4 +54,4 @@ private:
 
 } // namespace vcl::qt
 
-#endif // VCL_EXT_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H
+#endif // VCL_QT_GUI_PROCESSING_PARAMETERS_GRID_LAYOUT_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_TEXT_TEXT_MANAGER_H
-#define VCL_BGFX_RENDER_TEXT_TEXT_MANAGER_H
+#ifndef VCL_BGFX_TEXT_TEXT_MANAGER_H
+#define VCL_BGFX_TEXT_TEXT_MANAGER_H
 
 #include "embedded_fonts/embedded_font.h"
 #include "font/text_buffer_manager.h"
@@ -68,4 +68,4 @@ public:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_TEXT_TEXT_MANAGER_H
+#endif // VCL_BGFX_TEXT_TEXT_MANAGER_H

@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_TEXT_EMBEDDED_FONTS_DROID_SANS_H
-#define VCL_BGFX_RENDER_TEXT_EMBEDDED_FONTS_DROID_SANS_H
+#ifndef VCL_BGFX_TEXT_EMBEDDED_FONTS_DROID_SANS_H
+#define VCL_BGFX_TEXT_EMBEDDED_FONTS_DROID_SANS_H
 
 #include "embedded_font.h"
 
@@ -35,4 +35,4 @@ struct EmbeddedFont<VclFont::DROID_SANS>
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_TEXT_EMBEDDED_FONTS_DROID_SANS_H
+#endif // VCL_BGFX_TEXT_EMBEDDED_FONTS_DROID_SANS_H

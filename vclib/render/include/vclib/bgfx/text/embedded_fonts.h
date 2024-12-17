@@ -20,9 +20,9 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_EXT_BGFX_TEXT_EMBEDDED_FONTS_H
-#define VCL_BGFX_EXT_BGFX_TEXT_EMBEDDED_FONTS_H
+#ifndef VCL_BGFX_TEXT_EMBEDDED_FONTS_H
+#define VCL_BGFX_TEXT_EMBEDDED_FONTS_H
 
 #include "embedded_fonts/droid_sans.h"
 
-#endif // VCL_BGFX_EXT_BGFX_TEXT_EMBEDDED_FONTS_H
+#endif // VCL_BGFX_TEXT_EMBEDDED_FONTS_H

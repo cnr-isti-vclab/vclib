@@ -31,8 +31,10 @@ def replace_headers_in_dir(folder_path):
     for file_path in glob.glob(os.path.join(folder_path, '*')):
         if os.path.isdir(file_path):
             replace_headers_in_dir(file_path)
-        elif file_path.endswith(('.h', '.cpp')):
-            replace_header(file_path, header_string)
+        elif file_path.endswith(('.h', '.cpp', '.sc', '.sh')):
+            # if file_path does not contain 'varying.def.sc'
+            if 'varying.def.sc' not in file_path:
+                replace_header(file_path, header_string)
 
 def replace_cmake_headers_in_dir(folder_path, recursive=True):
     # get the path where this script is located
@@ -65,19 +67,36 @@ def replace_shader_headers_in_dir(folder_path):
             replace_header(file_path, header_string)
 
 if __name__ == "__main__":
-    replace_headers_in_dir('../include/vclib/')
     replace_headers_in_dir('../examples/')
     replace_headers_in_dir('../tests/')
-    replace_cmake_headers_in_dir('../')
-    replace_cmake_headers_in_dir('../include/vclib/')
-    replace_cmake_headers_in_dir('../external/', recursive=False)
+    replace_cmake_headers_in_dir('../', recursive=False)
     replace_cmake_headers_in_dir('../cmake/')
     replace_cmake_headers_in_dir('../examples/')
     replace_cmake_headers_in_dir('../tests/')
 
+    vcl_modules = ['core', 'external', 'processing','render']
+
+    os.chdir('../vclib/')
+    for module in vcl_modules:
+        replace_headers_in_dir(module + '/include/vclib/')
+        replace_cmake_headers_in_dir(module + '/include/vclib/', recursive=False)
+
+        if os.path.exists(module + '/3rdparty'):
+            replace_cmake_headers_in_dir(module + '/3rdparty', recursive=False)
+
+        if os.path.exists(module + '/src/'):
+            replace_headers_in_dir(module + '/src/')
+        
+        if os.path.exists(module + '/shaders/'):
+            replace_shader_headers_in_dir(module + '/shaders/')
+
+    #replace_headers_in_dir('../include/vclib/')    
+    #replace_cmake_headers_in_dir('../include/vclib/')
+    #replace_cmake_headers_in_dir('../external/', recursive=False)
+
     # for vclib-render module, that has sources and shaders in different folders
-    if os.path.exists('../src/'):
-        replace_headers_in_dir('../src/')
+    #if os.path.exists('../src/'):
+    #    replace_headers_in_dir('../src/')
     
-    if os.path.exists('../shaders/'):
-        replace_shader_headers_in_dir('../shaders/')
+    #if os.path.exists('../shaders/'):
+    #    replace_shader_headers_in_dir('../shaders/')

@@ -25,8 +25,8 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
-#ifndef CUBE_ATLAS_H_HEADER_GUARD
-#define CUBE_ATLAS_H_HEADER_GUARD
+#ifndef VCL_BGFX_TEXT_FONT_CUBE_ATLAS_H
+#define VCL_BGFX_TEXT_FONT_CUBE_ATLAS_H
 
 /// Inspired from texture-atlas from freetype-gl (http://code.google.com/p/freetype-gl/)
 /// by Nicolas Rougier (Nicolas.Rougier@inria.fr)
@@ -177,4 +177,4 @@ private:
 
 } // namespace bgfx
 
-#endif // CUBE_ATLAS_H_HEADER_GUARD
+#endif // VCL_BGFX_TEXT_FONT_CUBE_ATLAS_H

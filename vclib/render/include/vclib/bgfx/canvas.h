@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_BGFX_RENDER_CANVAS_H
-#define VCL_BGFX_RENDER_CANVAS_H
+#ifndef VCL_BGFX_CANVAS_H
+#define VCL_BGFX_CANVAS_H
 
 #include <vclib/types.h>
 
@@ -151,4 +151,4 @@ private:
 
 } // namespace vcl
 
-#endif // VCL_BGFX_RENDER_CANVAS_H
+#endif // VCL_BGFX_CANVAS_H

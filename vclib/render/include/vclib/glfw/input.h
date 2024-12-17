@@ -20,8 +20,8 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_EXT_GLFW_INPUT_H
-#define VCL_EXT_GLFW_INPUT_H
+#ifndef VCL_GLFW_INPUT_H
+#define VCL_GLFW_INPUT_H
 
 #include <vclib/render/input.h>
 
@@ -47,4 +47,4 @@ KeyModifiers fromGLFW(glfw::KeyboardModifiers mods);
 
 } // namespace vcl::glfw
 
-#endif // VCL_EXT_GLFW_INPUT_H
+#endif // VCL_GLFW_INPUT_H
