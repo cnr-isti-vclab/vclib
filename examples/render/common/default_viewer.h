@@ -53,7 +53,7 @@ int showMeshesOnDefaultViewer(int argc, char** argv, const MeshTypes&... meshes)
     std::shared_ptr<vcl::DrawableObjectVector> vector =
         std::make_shared<vcl::DrawableObjectVector>();
 
-    (vector->pushBack(vcl::DrawableMesh(meshes)), ...);
+    (vector->pushBack(vcl::DrawableMesh<MeshTypes>(meshes)), ...);
 
     viewer.setDrawableObjectVector(vector);
 
