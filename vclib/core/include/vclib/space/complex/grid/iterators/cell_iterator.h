@@ -46,9 +46,8 @@ public:
         mFirst = mEnd = mIt;
     }
 
-    CellIterator(
-        const Point<uint, N>& first,
-        const Point<uint, N>& end) : mIt(first), mFirst(first), mEnd(end)
+    CellIterator(const Point<uint, N>& first, const Point<uint, N>& end) :
+            mIt(first), mFirst(first), mEnd(end)
     {
     }
 

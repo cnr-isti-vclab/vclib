@@ -233,7 +233,7 @@ inline void readOffHeader(
     fileInfo.clear();
     Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
     Tokenizer::iterator token  = tokens.begin();
-    std::string              header = *token;
+    std::string         header = *token;
 
     // the OFF string is in the header go on parsing it.
     if (header.rfind("OFF") != std::basic_string<char>::npos) {
@@ -248,8 +248,7 @@ inline void readOffHeader(
                 throw MalformedFileException(
                     "Unsupported Homogeneus components in OFF.");
             else if (header[u] == 'n')
-                throw MalformedFileException(
-                    "Unsupported High Dimension OFF.");
+                throw MalformedFileException("Unsupported High Dimension OFF.");
         }
     }
     else
@@ -358,8 +357,7 @@ void readOffVertices(
             (int) tokens.size() - nReadComponents - nTexCoords;
 
         if constexpr (HasPerVertexColor<MeshType>) {
-            if (isPerVertexColorAvailable(mesh) &&
-                fileInfo.hasVertexColors()) {
+            if (isPerVertexColorAvailable(mesh) && fileInfo.hasVertexColors()) {
                 if (nColorComponents != 1 && nColorComponents != 3 &&
                     nColorComponents != 4)
                     throw MalformedFileException(
@@ -413,8 +411,8 @@ void readOffFaces(
         log.startProgress("Reading faces", nf);
 
         for (uint fid = 0; fid < nf; ++fid) {
-            Tokenizer tokens = readAndTokenizeNextNonEmptyLine(file);
-            Tokenizer::iterator token = tokens.begin();
+            Tokenizer           tokens = readAndTokenizeNextNonEmptyLine(file);
+            Tokenizer::iterator token  = tokens.begin();
             mesh.addFace();
             FaceType& f = mesh.face(mesh.faceNumber() - 1);
 

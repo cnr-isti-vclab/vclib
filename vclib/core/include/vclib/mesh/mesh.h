@@ -118,9 +118,9 @@ public:
      * types from which the Mesh inherits (Args) that are Components (they
      * satisfy the ComponentConcept).
      */
-    using Components = FilterTypesByCondition<
-        comp::IsComponentPred,
-        TypeWrapper<Args...>>::type;
+    using Components =
+        FilterTypesByCondition<comp::IsComponentPred, TypeWrapper<Args...>>::
+            type;
 
     /**
      * @brief ElementType is an alias that exposes the type of the Element

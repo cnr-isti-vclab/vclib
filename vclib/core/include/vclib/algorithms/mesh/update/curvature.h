@@ -82,9 +82,9 @@ void updatePrincipalCurvatureTaubin95(MeshType& m, LogType& log)
         std::vector<AdjVertex>  vertices;
 
         MeshPos<FaceType> pos(v.adjFace(0), &v);
-        const VertexType*      firstVertex = pos.adjVertex();
-        const VertexType*      tmpVertex;
-        float                  totalDoubleAreaSize = 0;
+        const VertexType* firstVertex = pos.adjVertex();
+        const VertexType* tmpVertex;
+        float             totalDoubleAreaSize = 0;
 
         // compute the area of each triangle around the central vertex as well
         // as their total area
@@ -284,7 +284,7 @@ void updatePrincipalCurvaturePCA(
     parallelFor(m.vertices(), [&](VertexType& v) {
         // for (VertexType& v : m.vertices()) {
         Matrix33<ScalarType> A, eigenvectors;
-        CoordType                 bp, eigenvalues;
+        CoordType            bp, eigenvalues;
         if (montecarloSampling) {
             Sphere                     s(v.coord(), radius);
             std::vector<VGridIterator> vec = pGrid.valuesInSphere(s);
@@ -326,7 +326,7 @@ void updatePrincipalCurvaturePCA(
             (eigenvectors.col((best + 2) % 3).normalized());
 
         Matrix33<ScalarType> rot;
-        ScalarType                angle;
+        ScalarType           angle;
         angle = acos(v.principalCurvature().maxDir().dot(v.normal()));
 
         rot = rotationMatrix<Matrix33<ScalarType>>(

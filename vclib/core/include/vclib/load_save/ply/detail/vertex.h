@@ -119,8 +119,8 @@ void readPlyVertexTxt(
     MeshType&                     mesh,
     const std::list<PlyProperty>& vertexProperties)
 {
-    Tokenizer spaceTokenizer  = readAndTokenizeNextNonEmptyLine(file);
-    Tokenizer::iterator token = spaceTokenizer.begin();
+    Tokenizer           spaceTokenizer = readAndTokenizeNextNonEmptyLine(file);
+    Tokenizer::iterator token          = spaceTokenizer.begin();
     for (const PlyProperty& p : vertexProperties) {
         if (token == spaceTokenizer.end()) {
             throw MalformedFileException("Unexpected end of line.");

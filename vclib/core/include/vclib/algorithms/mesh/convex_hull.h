@@ -23,8 +23,8 @@
 #ifndef VCL_ALGORITHMS_MESH_CONVEX_HULL_H
 #define VCL_ALGORITHMS_MESH_CONVEX_HULL_H
 
-#include <vclib/algorithms/core/box/box3.h>
 #include <vclib/algorithms/core/bounding_box.h>
+#include <vclib/algorithms/core/box/box3.h>
 #include <vclib/algorithms/core/visibility.h>
 #include <vclib/algorithms/mesh/create/tetrahedron.h>
 #include <vclib/algorithms/mesh/update/topology.h>
