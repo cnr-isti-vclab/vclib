@@ -20,30 +20,20 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CANVAS_H
-#define VCL_RENDER_CANVAS_H
+$input a_position, a_normal, a_color0, a_texcoord0, a_texcoord1
+$output v_position, v_normal, v_color, v_texcoord0, v_texcoord1
 
-#include "config.h"
+#include <vclib/bgfx/drawable/drawable_mesh/uniforms.sh>
+#include <vclib/render/drawable/mesh/mesh_render_settings_macros.h>
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/canvas.h>
-#endif
+void main()
+{
+    gl_Position = mul(u_modelViewProj, vec4(a_position, 1.0));
+    v_position = mul(u_modelView, vec4(a_position, 1.0)).xyz;
+    v_normal = normalize(mul(u_modelView, vec4(a_normal, 0.0) ).xyz);
+    v_texcoord0 = a_texcoord0;
+    v_texcoord1 = a_texcoord1;
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/canvas.h>
-#endif
-
-namespace vcl {
-
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
-#endif
-
-} // namespace vcl
-
-
-#endif // VCL_RENDER_CANVAS_H
+    // default case - color is taken from buffer
+    v_color = a_color0;
+}

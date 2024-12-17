@@ -20,30 +20,31 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CANVAS_H
-#define VCL_RENDER_CANVAS_H
+$input v_position
+$input v_normal
 
-#include "config.h"
+#include <vclib/bgfx/drawable/drawable_axis/uniforms.sh>
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/canvas.h>
-#endif
+void main()
+{
+    // color
+    vec4 color = u_axisColor;
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/canvas.h>
-#endif
+    /***** compute light ******/
+    // default values - no shading
+    vec3 specular = vec3(0.0, 0.0, 0.0);
+    vec4 light = vec4(1, 1, 1, 1);
 
-namespace vcl {
+    // compute light
+    light = computeLight(u_lightDir, u_lightColor, v_normal);
+    vec3 camEyePos = mul(u_modelView, vec4(u_cameraEyePos, 1.0)).xyz;
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
-#endif
+    specular = computeSpecular(
+        v_position,
+        camEyePos,
+        u_lightDir,
+        u_lightColor,
+        v_normal);
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
-#endif
-
-} // namespace vcl
-
-
-#endif // VCL_RENDER_CANVAS_H
+    gl_FragColor = light * u_axisColor + vec4(specular, 0);
+}

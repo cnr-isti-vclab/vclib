@@ -21,7 +21,7 @@
  ****************************************************************************/
 
 
-#include <vclib/render_bgfx/imgui/imgui_impl_bgfx.h>
+#include <vclib/bgfx/imgui/imgui_impl_bgfx.h>
 #include <imgui_impl_glfw.h>
 #include <vclib/glfw/viewer_window_imgui.h>
 

@@ -20,30 +20,15 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CANVAS_H
-#define VCL_RENDER_CANVAS_H
+#include <vclib/bgfx/text/embedded_fonts/droid_sans.h>
 
-#include "config.h"
-
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/canvas.h>
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/canvas.h>
-#endif
+#include <assets/fonts/droidsans.ttf.bin.h>
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
-#endif
+FontData vcl::EmbeddedFont<VclFont::DROID_SANS>::embeddedFont()
+{
+    return {droidsans, sizeof(droidsans)};
+}
 
 } // namespace vcl
-
-
-#endif // VCL_RENDER_CANVAS_H

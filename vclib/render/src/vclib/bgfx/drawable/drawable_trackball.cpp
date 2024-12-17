@@ -20,30 +20,67 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CANVAS_H
-#define VCL_RENDER_CANVAS_H
+#include <vclib/bgfx/drawable/drawable_trackball.h>
 
-#include "config.h"
-
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/canvas.h>
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/canvas.h>
-#endif
+#include <vclib/algorithms/core/polygon/create.h>
+#include <vclib/math/transform.h>
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
-#endif
+DrawableTrackBall::DrawableTrackBall() : TrackballRenderData(128)
+{
+    mUniforms.setNumberOfVerticesPerAxis(128);
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
-#endif
+    createBuffers();
+}
+
+DrawableTrackBall::~DrawableTrackBall()
+{
+    if (bgfx::isValid(mVertexCoordBH)) {
+        bgfx::destroy(mVertexCoordBH);
+    }
+}
+
+void DrawableTrackBall::updateDragging(bool isDragging)
+{
+    mUniforms.setDragging(isDragging);
+}
+
+void DrawableTrackBall::draw(uint viewId) const
+{
+    if (isVisible()) {
+        if (bgfx::isValid(mProgram)) {
+            bgfx::setState(
+                0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z |
+                BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_PT_LINES |
+                BGFX_STATE_BLEND_NORMAL);
+
+            bgfx::setVertexBuffer(0, mVertexCoordBH);
+            bgfx::setIndexBuffer(mEdgeIndexBH);
+
+            bgfx::setTransform(transformData());
+
+            mUniforms.bind();
+
+            bgfx::submit(viewId, mProgram);
+        }
+    }
+}
+
+void DrawableTrackBall::createBuffers()
+{
+    // vertex buffer
+    bgfx::VertexLayout layout;
+    layout.begin()
+        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+        .end();
+
+    mVertexCoordBH = bgfx::createVertexBuffer(
+        bgfx::makeRef(vertexBufferData(), vertexNumber() * 3 * sizeof(float)),
+        layout);
+
+    mEdgeIndexBH = bgfx::createIndexBuffer(
+        bgfx::makeRef(edgeBufferData(), edgeNumber() * sizeof(uint16_t)));
+}
 
 } // namespace vcl
-
-
-#endif // VCL_RENDER_CANVAS_H

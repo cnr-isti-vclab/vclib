@@ -20,30 +20,25 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CANVAS_H
-#define VCL_RENDER_CANVAS_H
+$input a_position
 
-#include "config.h"
+$output v_color
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/canvas.h>
-#endif
+#include <vclib/bgfx/drawable/drawable_trackball/uniforms.sh>
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/canvas.h>
-#endif
+void main()
+{
+    uint nVerticesPerCircle = floatBitsToUint(u_nVerticesPerCircleFloat);
+    uint isDragging = floatBitsToUint(u_isDraggingFloat);
+    float alpha = isDragging != 0u ? 0.9f : 0.5f;
 
-namespace vcl {
+    gl_Position = mul(u_proj, mul(u_model[0], vec4(a_position, 1.0)));
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
-#endif
-
-} // namespace vcl
-
-
-#endif // VCL_RENDER_CANVAS_H
+    // Compute the color
+    if (gl_VertexID < nVerticesPerCircle) // x
+        v_color = vec4(1.0, 0.0, 0.0, alpha);
+    else if (gl_VertexID < nVerticesPerCircle * 2) // y
+        v_color = vec4(0.0, 1.0, 0.0, alpha);
+    else // z
+        v_color = vec4(0.0, 0.0, 1.0, alpha);
+}

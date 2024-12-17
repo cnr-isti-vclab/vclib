@@ -20,30 +20,26 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CANVAS_H
-#define VCL_RENDER_CANVAS_H
+#ifndef VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_DIRECTIONAL_LIGHT_H
+#define VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_DIRECTIONAL_LIGHT_H
 
-#include "config.h"
-
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/canvas.h>
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/canvas.h>
-#endif
+#include "embedded_shader.h"
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
-#endif
+template<>
+struct EmbeddedShader<VclProgram::DRAWABLE_DIRECTIONAL_LIGHT>
+{
+    static bgfx::EmbeddedShader::Data vertexEmbeddedShader(
+        bgfx::RendererType::Enum type);
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
-#endif
+    static bgfx::EmbeddedShader::Data fragmentEmbeddedShader(
+        bgfx::RendererType::Enum type);
+
+    static bgfx::EmbeddedShader::Data computeEmbeddedShader(
+        bgfx::RendererType::Enum type);
+};
 
 } // namespace vcl
 
-
-#endif // VCL_RENDER_CANVAS_H
+#endif // VCL_BGFX_CONTEXT_EMBEDDED_SHADERS_DRAWABLE_DIRECTIONAL_LIGHT_H

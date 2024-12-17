@@ -9,41 +9,45 @@
  * All rights reserved.                                                      *
  *                                                                           *
  * This program is free software; you can redistribute it and/or modify      *
- * it under the terms of the Mozilla Public License Version 2.0 as published *
- * by the Mozilla Foundation; either version 2 of the License, or            *
+ * it under the terms of the GNU General Public License as published by      *
+ * the Free Software Foundation; either version 3 of the License, or         *
  * (at your option) any later version.                                       *
  *                                                                           *
  * This program is distributed in the hope that it will be useful,           *
  * but WITHOUT ANY WARRANTY; without even the implied warranty of            *
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the              *
- * Mozilla Public License Version 2.0                                        *
- * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
+ * GNU General Public License (http://www.gnu.org/licenses/gpl.txt)          *
+ * for more details.                                                         *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CANVAS_H
-#define VCL_RENDER_CANVAS_H
+#include <vclib/bgfx/system/native_window_handle.h>
 
-#include "config.h"
+#import <Cocoa/Cocoa.h>
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/canvas.h>
-#endif
+namespace vcl::detail {
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/canvas.h>
-#endif
+void* cretateCocoaWindow(
+    const char* title,
+    int         width,
+    int         height,
+    bool        hidden)
+{
+    NSRect rect = NSMakeRect(0, 0, width, height);
+    NSWindow* window = [
+        [NSWindow alloc]
+        initWithContentRect:rect
+                  styleMask:0
+                    backing:NSBackingStoreBuffered defer:NO
+    ];
+    NSString* appName = [NSString stringWithUTF8String: title];
+    [window setTitle:appName];
+    [window setBackgroundColor:[NSColor blackColor]];
+    return (void*) window;
+}
 
-namespace vcl {
+void closeCocoaWindow(void* window)
+{
+    [(NSWindow*) window close];
+}
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
-#endif
-
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
-#endif
-
-} // namespace vcl
-
-
-#endif // VCL_RENDER_CANVAS_H
+} // namespace vcl::detail

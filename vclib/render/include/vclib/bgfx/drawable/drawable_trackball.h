@@ -20,30 +20,63 @@
  * (https://www.mozilla.org/en-US/MPL/2.0/) for more details.                *
  ****************************************************************************/
 
-#ifndef VCL_RENDER_CANVAS_H
-#define VCL_RENDER_CANVAS_H
+#ifndef VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
+#define VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
 
-#include "config.h"
+#include "uniforms/drawable_trackball_uniforms.h"
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-#include <vclib/bgfx/canvas.h>
-#endif
+#include <vclib/render/drawable/trackball/trackball_render_data.h>
+#include <vclib/render/interfaces/drawable_object_i.h>
+#include <vclib/space/core/matrix.h>
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-#include <vclib/opengl2/canvas.h>
-#endif
+#include <vclib/bgfx/context.h>
 
 namespace vcl {
 
-#ifdef VCLIB_RENDER_BACKEND_BGFX
-using Canvas = CanvasBGFX;
-#endif
+class DrawableTrackBall : public DrawableObjectI, protected TrackballRenderData
+{
+    bool mVisible = true;
 
-#ifdef VCLIB_RENDER_BACKEND_OPENGL2
-using Canvas = CanvasOpenGL2;
-#endif
+    bgfx::VertexBufferHandle mVertexCoordBH = BGFX_INVALID_HANDLE;
+    bgfx::IndexBufferHandle  mEdgeIndexBH   = BGFX_INVALID_HANDLE;
+
+    // TODO: can we be sure that this is called after the context initialization
+    // triggered by a window?
+    bgfx::ProgramHandle mProgram =
+        Context::instance().programManager().getProgram(
+            VclProgram::DRAWABLE_TRACKBALL);
+
+    DrawableTrackballUniforms mUniforms;
+
+public:
+    using TrackballRenderData::setTransform;
+
+    // TODO: manage copy and swap
+    DrawableTrackBall();
+
+    ~DrawableTrackBall();
+
+    void updateDragging(bool isDragging);
+
+    // DrawableObject interface
+
+    void draw(uint viewId) const override;
+
+    Box3d boundingBox() const override { return Box3d(); }
+
+    std::shared_ptr<DrawableObjectI> clone() const override
+    {
+        return std::make_shared<DrawableTrackBall>(*this);
+    }
+
+    bool isVisible() const override { return mVisible; }
+
+    void setVisibility(bool vis) override { mVisible = vis; }
+
+private:
+    void createBuffers();
+};
 
 } // namespace vcl
 
-
-#endif // VCL_RENDER_CANVAS_H
+#endif // VCL_BGFX_RENDER_DRAWABLE_DRAWABLE_TRACKBALL_H
