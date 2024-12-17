@@ -29,8 +29,10 @@ def replace_header_guard(file_string, file_path):
     
     return '\n'.join(lines)
 
-def replace_header_guards_in_dir(folder_path):
+def replace_header_guards_in_dir(folder_path, path_to_exclude=None):
     for file_path in glob.glob(os.path.join(folder_path, '*')):
+        if path_to_exclude and file_path.startswith(path_to_exclude):
+            continue
         if os.path.isdir(file_path):
             replace_header_guards_in_dir(file_path)
         elif file_path.endswith(('.h', '.hpp')):
@@ -44,7 +46,13 @@ def replace_header_guards_in_dir(folder_path):
                 file.write(file_string)
 
 if __name__ == "__main__":
-    # move to the root directory '../include/vclib/'
-    os.chdir('../include/vclib/')
+    vcl_modules = ['core', 'external', 'processing','render']
 
-    replace_header_guards_in_dir('')
+    os.chdir('../vclib/')
+
+    for module in vcl_modules:
+        os.chdir(module + '/include/vclib/')
+
+        replace_header_guards_in_dir('', 'bgfx/text/font')
+
+        os.chdir('../../../')
